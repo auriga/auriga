@@ -392,6 +392,7 @@ struct mmo_charstatus {
 	int merc_fame[MAX_MERC_TYPE],merc_call[MAX_MERC_TYPE];
 
 	short weapon,shield;
+	short robe;
 	short head_top,head_mid,head_bottom;
 	short costume_head_top,costume_head_mid,costume_head_bottom;
 
@@ -408,6 +409,8 @@ struct mmo_charstatus {
 	struct friend_data friend_data[MAX_FRIEND];
 	struct hotkey hotkey[MAX_HOTKEYS];
 	unsigned int delete_date;
+	short refuse_partyinvite;
+	short show_equip;
 };
 
 struct registry {

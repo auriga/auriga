@@ -67,7 +67,7 @@ struct mob_db {
 	} mvpitem[3];
 	short view_class,view_size;
 	short hair,hair_color,clothes_color;
-	short weapon,shield,head_top,head_mid,head_bottom;
+	short weapon,shield,robe,head_top,head_mid,head_bottom;
 	short group_id;
 	unsigned char sex,pcview_flag;
 	unsigned int option;
@@ -190,6 +190,7 @@ int mob_heal(struct mob_data*,int);
 #define mob_get_clothes_color(a) mob_db[(a)].clothes_color
 #define mob_get_weapon(a)        mob_db[(a)].weapon
 #define mob_get_shield(a)        mob_db[(a)].shield
+#define mob_get_robe(a)          mob_db[(a)].robe
 #define mob_get_head_top(a)      mob_db[(a)].head_top
 #define mob_get_head_mid(a)      mob_db[(a)].head_mid
 #define mob_get_head_bottom(a)   mob_db[(a)].head_bottom

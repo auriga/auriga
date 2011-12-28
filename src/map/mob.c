@@ -3858,7 +3858,7 @@ static int mob_readdb_mobavail(void)
 	char line[1024];
 	int ln = 0;
 	int class_,j,k;
-	char *str[14],*p,*np;
+	char *str[15],*p,*np;
 
 	if( (fp=fopen("db/mob_avail.txt","r"))==NULL ){
 		printf("can't read db/mob_avail.txt\n");
@@ -3905,12 +3905,13 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].clothes_color = atoi(str[6]);
 			mob_db[class_].weapon        = atoi(str[7]);
 			mob_db[class_].shield        = atoi(str[8]);
-			mob_db[class_].head_top      = atoi(str[9]);
-			mob_db[class_].head_mid      = atoi(str[10]);
-			mob_db[class_].head_bottom   = atoi(str[11]);
-			mob_db[class_].option        = ((unsigned int)atoi(str[12])) & ~(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING);
+			mob_db[class_].robe          = atoi(str[9]);
+			mob_db[class_].head_top      = atoi(str[10]);
+			mob_db[class_].head_mid      = atoi(str[11]);
+			mob_db[class_].head_bottom   = atoi(str[12]);
+			mob_db[class_].option        = ((unsigned int)atoi(str[13])) & ~(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING);
 
-			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[13]));
+			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[14]));
 		}
 		ln++;
 	}

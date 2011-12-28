@@ -1,4 +1,26 @@
 ----------------------------------------
+//0888 [2011/12/29] by popori
+
+・ストレージエンジンをMyISAMからInnoDBに変更する (sql-files/main.sql sql-files/Auriga888_changetable.sql)
+　そもそもMyISAMはAurigaに不向きかと
+
+・肩装備、パーティー勧誘拒否フラグ、装備公開をセーブデータとして保存するように
+ (sql-files/main.sql sql-files/Auriga888_changetable.sql src/common/mmo.h src/char/txt/chardb_txt.c src/char/sql/chardb_sql.c
+　src/map/clif.c src/map/map.h src/map/party.c)
+
+・0x9eの上位パケット0x84b用にPACKETVER20101020を追加 (vc_make.bat bcc32_make.bat Makefile src/map/clif.c)
+
+・packet_dbに無駄な重複があったのでcleanup (db/packet_db.txt)
+
+・2010-11-24aRagexeRE以降のpacket長追加 (db/packet_db.txt)
+
+・PACKETVER20110111を追加 (vc_make.bat bcc32_make.bat Makefile src/*/*.dsp)
+
+・PACKETVER20110111から肩装備の表示に対応させるため上位パケットを実装 (src/char/char.c src/map/map.h src/map/clif.c src/map/pc.c)
+
+・上記の変更に伴いmob_avail.txtに肩装備を表示出来るように拡張 (db/mob_avail.txt src/map/mob.* src/map/clif.c)
+
+----------------------------------------
 //0887 [2011/12/29] by popori
 
 ・PACKETVERのリナンバリング based on eathena

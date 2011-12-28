@@ -1,0 +1,40 @@
+# change engine to InnoDB
+ALTER TABLE `login` ENGINE = InnoDB;
+ALTER TABLE `loginlog` ENGINE = InnoDB;
+ALTER TABLE `worldreg` ENGINE = InnoDB;
+ALTER TABLE `char_data` ENGINE = InnoDB;
+ALTER TABLE `friend` ENGINE = InnoDB;
+ALTER TABLE `cart_inventory` ENGINE = InnoDB;
+ALTER TABLE `inventory` ENGINE = InnoDB;
+ALTER TABLE `charlog` ENGINE = InnoDB;
+ALTER TABLE `skill` ENGINE = InnoDB;
+ALTER TABLE `memo` ENGINE = InnoDB;
+ALTER TABLE `feel_info` ENGINE = InnoDB;
+ALTER TABLE `hotkey` ENGINE = InnoDB;
+ALTER TABLE `guild` ENGINE = InnoDB;
+ALTER TABLE `guild_alliance` ENGINE = InnoDB;
+ALTER TABLE `guild_castle` ENGINE = InnoDB;
+ALTER TABLE `guild_expulsion` ENGINE = InnoDB;
+ALTER TABLE `guild_member` ENGINE = InnoDB;
+ALTER TABLE `guild_position` ENGINE = InnoDB;
+ALTER TABLE `guild_skill` ENGINE = InnoDB;
+ALTER TABLE `homunculus` ENGINE = InnoDB;
+ALTER TABLE `homunculus_skill` ENGINE = InnoDB;
+ALTER TABLE `mail` ENGINE = InnoDB;
+ALTER TABLE `mail_data` ENGINE = InnoDB;
+ALTER TABLE `mercenary` ENGINE = InnoDB;
+ALTER TABLE `party` ENGINE = InnoDB;
+ALTER TABLE `pet` ENGINE = InnoDB;
+ALTER TABLE `quest` ENGINE = InnoDB;
+ALTER TABLE `status_change` ENGINE = InnoDB;
+ALTER TABLE `storage` ENGINE = InnoDB;
+ALTER TABLE `guild_storage` ENGINE = InnoDB;
+ALTER TABLE `interlog` ENGINE = InnoDB;
+ALTER TABLE `accountreg` ENGINE = InnoDB;
+ALTER TABLE `globalreg` ENGINE = InnoDB;
+ALTER TABLE `mapreg` ENGINE = InnoDB;
+
+# add `char_data` table structure
+ALTER TABLE `char_data` ADD `robe` smallint(6) NOT NULL DEFAULT '0' AFTER `shield`;
+ALTER TABLE `char_data` ADD `refuse_partyinvite` smallint(6) NOT NULL DEFAULT '0' AFTER `delete_date`;
+ALTER TABLE `char_data` ADD `show_equip` smallint(6) NOT NULL DEFAULT '0' AFTER `refuse_partyinvite`;

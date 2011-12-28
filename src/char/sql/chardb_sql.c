@@ -215,10 +215,10 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
 		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`,"
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`,"
-		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `head_top`, `head_mid`, `head_bottom`,"
+		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`costume_head_top`, `costume_head_mid`, `costume_head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
-		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`"
+		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id);
 
 	sql_res = sqldbs_store_result(&mysql_handle);
@@ -272,23 +272,27 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		p->st.clothes_color       = atoi(sql_row[32]);
 		p->st.weapon              = atoi(sql_row[33]);
 		p->st.shield              = atoi(sql_row[34]);
-		p->st.head_top            = atoi(sql_row[35]);
-		p->st.head_mid            = atoi(sql_row[36]);
-		p->st.head_bottom         = atoi(sql_row[37]);
-		p->st.costume_head_top    = atoi(sql_row[38]);
-		p->st.costume_head_mid    = atoi(sql_row[39]);
-		p->st.costume_head_bottom = atoi(sql_row[40]);
-		strncpy(p->st.last_point.map,sql_row[41],24);
-		p->st.last_point.x        = atoi(sql_row[42]);
-		p->st.last_point.y        = atoi(sql_row[43]);
-		strncpy(p->st.save_point.map,sql_row[44],24);
-		p->st.save_point.x        = atoi(sql_row[45]);
-		p->st.save_point.y        = atoi(sql_row[46]);
-		p->st.partner_id          = atoi(sql_row[47]);
-		p->st.parent_id[0]        = atoi(sql_row[48]);
-		p->st.parent_id[1]        = atoi(sql_row[49]);
-		p->st.baby_id             = atoi(sql_row[50]);
-		p->st.delete_date         = atoi(sql_row[51]);
+		p->st.robe                = atoi(sql_row[35]);
+		p->st.head_top            = atoi(sql_row[36]);
+		p->st.head_mid            = atoi(sql_row[37]);
+		p->st.head_bottom         = atoi(sql_row[38]);
+		p->st.robe                = atoi(sql_row[39]);
+		p->st.costume_head_top    = atoi(sql_row[40]);
+		p->st.costume_head_mid    = atoi(sql_row[41]);
+		p->st.costume_head_bottom = atoi(sql_row[42]);
+		strncpy(p->st.last_point.map,sql_row[43],24);
+		p->st.last_point.x        = atoi(sql_row[44]);
+		p->st.last_point.y        = atoi(sql_row[45]);
+		strncpy(p->st.save_point.map,sql_row[46],2);
+		p->st.save_point.x        = atoi(sql_row[47]);
+		p->st.save_point.y        = atoi(sql_row[48]);
+		p->st.partner_id          = atoi(sql_row[49]);
+		p->st.parent_id[0]        = atoi(sql_row[50]);
+		p->st.parent_id[1]        = atoi(sql_row[51]);
+		p->st.baby_id             = atoi(sql_row[52]);
+		p->st.delete_date         = atoi(sql_row[53]);
+		p->st.refuse_partyinvite  = atoi(sql_row[54]);
+		p->st.show_equip          = atoi(sql_row[55]);
 
 		// force \0 terminal
 		p->st.name[23]           = '\0';
@@ -581,6 +585,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(clothes_color      ,"clothes_color");
 	UPDATE_NUM(weapon             ,"weapon");
 	UPDATE_NUM(shield             ,"shield");
+	UPDATE_NUM(robe               ,"robe");
 	UPDATE_NUM(head_top           ,"head_top");
 	UPDATE_NUM(head_mid           ,"head_mid");
 	UPDATE_NUM(head_bottom        ,"head_bottom");
@@ -598,6 +603,8 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(parent_id[1]       ,"parent_id2");
 	UPDATE_NUM(baby_id            ,"baby_id");
 	UPDATE_UNUM(delete_date       ,"delete_date");
+	UPDATE_UNUM(refuse_partyinvite,"refuse_partyinvite");
+	UPDATE_UNUM(show_equip        ,"show_equip");
 
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);

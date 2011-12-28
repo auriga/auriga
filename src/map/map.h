@@ -355,7 +355,6 @@ struct map_session_data {
 		unsigned guild_creating : 1;
 		unsigned homun_creating : 1;
 		unsigned merc_creating : 1;
-		unsigned refuse_partyinvite : 1;
 		unsigned deal_mode : 1;
 		unsigned deal_locked : 2;
 		unsigned party_sended : 1;
@@ -368,7 +367,6 @@ struct map_session_data {
 		unsigned sn_doridori : 1;
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
-		unsigned show_equip : 1;
 		unsigned store : 2;	// 0:何も開いていない, 1:露店を開いている, 2:購買露店を開いている
 	} state;
 	struct {
@@ -1157,6 +1155,9 @@ enum {
 	LOOK_CLOTHES_COLOR,
 	LOOK_SHIELD,
 	LOOK_SHOES,
+	LOOK_BODY,
+	LOOK_FLOOR,
+	LOOK_ROBE,
 };
 
 // CELL

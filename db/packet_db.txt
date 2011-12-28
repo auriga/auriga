@@ -1744,7 +1744,6 @@
 //0x029b,80
 
 //2008-09-10aSakexe
-//0x0072,25,useskilltoid,6:10:21
 //0x0078,55
 //0x007c,42
 //0x007e,102,useskilltopos,5:9:12:20:22
@@ -1752,8 +1751,6 @@
 //0x0085,11,changedir,7:10
 //0x008c,11,getcharnamerequest,7
 //0x0094,14,movetokafra,7:10
-//0x009b,26,wanttoconnection,4:9:17:18:25
-//0x009f,14,useitem,4:10
 //0x00a2,15,solvecharname,11
 //0x00a7,8,walktoxy,5
 //0x00f3,-1,globalmessage,2:4
@@ -1761,7 +1758,6 @@
 //0x00f7,22,movefromkafra,14:18
 //0x0113,22,useskilltopos,5:9:12:20
 //0x0116,10,dropitem,5:8
-//0x0190,19,actionrequest,5:18
 //0x0193,2,closekafra,0
 //0x01fd,15,repairitem,2
 //0x022c,65
@@ -1776,7 +1772,6 @@
 //0x0439,8,useitem,2:4
 
 //2008-11-26cSakexe
-//0x0072,25,useskilltoid,6:10:21
 //0x0078,55
 //0x007c,42
 //0x007e,102,useskilltopos,5:9:12:20:22
@@ -1784,8 +1779,6 @@
 //0x0085,11,changedir,7:10
 //0x008c,11,getcharnamerequest,7
 //0x0094,14,movetokafra,7:10
-//0x009b,26,wanttoconnection,4:9:17:18:25
-//0x009f,14,useitem,4:10
 //0x00a2,15,solvecharname,11
 //0x00a7,8,walktoxy,5
 //0x00f3,-1,globalmessage,2:4
@@ -1793,7 +1786,6 @@
 //0x00f7,22,movefromkafra,14:18
 //0x0113,22,useskilltopos,5:9:12:20
 //0x0116,10,dropitem,5:8
-//0x0190,19,actionrequest,5:18
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -1809,7 +1801,6 @@
 //0x0439,8,useitem,2:4
 
 //2009-01-14aSakexe
-//0x0072,25,useskilltoid,6:10:21
 //0x0078,55
 //0x007c,42
 //0x007e,102,useskilltopos,5:9:12:20:22
@@ -1817,8 +1808,6 @@
 //0x0085,11,changedir,7:10
 //0x008c,11,getcharnamerequest,7
 //0x0094,14,movetokafra,7:10
-//0x009b,26,wanttoconnection,4:9:17:18:25
-//0x009f,14,useitem,4:10
 //0x00a2,15,solvecharname,11
 //0x00a7,8,walktoxy,5
 //0x00f3,-1,globalmessage,2:4
@@ -1826,7 +1815,6 @@
 //0x00f7,22,movefromkafra,14:18
 //0x0113,22,useskilltopos,5:9:12:20
 //0x0116,10,dropitem,5:8
-//0x0190,19,actionrequest,5:18
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -1847,7 +1835,6 @@
 // 以下は RagnarokRE
 
 //2008-08-27aRagexeRE
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -1855,8 +1842,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -1864,7 +1849,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01fd,15,repairitem,2
 //0x022c,65
@@ -1874,7 +1858,6 @@
 //0x02e5,9
 
 //2008-09-10aRagexeRE
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -1882,8 +1865,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -1891,7 +1872,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01fd,15,repairitem,2
 //0x022c,65
@@ -1906,7 +1886,6 @@
 //0x0439,8,useitem,2:4
 
 //2008-11-26aRagexeRE
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -1914,8 +1893,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -1923,7 +1900,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -1941,8 +1917,6 @@
 //0x0441,4
 
 //2008-12-17bRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -1950,8 +1924,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -1959,7 +1931,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -1978,8 +1949,6 @@
 //0x0442,8
 
 //2009-01-14aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -1987,8 +1956,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -1996,7 +1963,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2016,8 +1982,6 @@
 //0x0442,8
 
 //2009-06-03aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2025,8 +1989,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2034,7 +1996,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2054,8 +2015,6 @@
 //0x0442,8
 
 //2009-06-17aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2063,8 +2022,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2072,7 +2029,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2093,8 +2049,6 @@
 //0x07d9,268
 
 //2009-09-22aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2102,8 +2056,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2111,7 +2063,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2134,8 +2085,6 @@
 //0x07e7,32
 
 //2009-10-06aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2143,8 +2092,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2152,7 +2099,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2181,8 +2127,6 @@
 //0x07f4,3
 
 //2009-10-27aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2190,8 +2134,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2199,7 +2141,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2228,8 +2169,6 @@
 //0x07f4,3
 
 //2009-12-15aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2237,8 +2176,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2246,7 +2183,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2275,8 +2211,6 @@
 //0x07f4,3
 
 //2009-12-29aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2284,8 +2218,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2293,7 +2225,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2322,8 +2253,6 @@
 //0x07f4,3
 
 //2010-02-09aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2331,8 +2260,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2340,7 +2267,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2369,8 +2295,6 @@
 //0x07f4,3
 
 //2010-04-06aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2378,8 +2302,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2387,7 +2309,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2417,8 +2338,6 @@
 //0x081a,6
 
 //2010-04-13aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2426,8 +2345,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2435,7 +2352,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2465,8 +2381,6 @@
 //0x081a,10
 
 //2010-04-14dRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2474,8 +2388,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2483,7 +2395,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2514,8 +2425,6 @@
 //0x081b,8
 
 //2010-04-20aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2523,8 +2432,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2532,7 +2439,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2569,8 +2475,6 @@
 //0x081c,10
 
 //2010-06-08aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2578,8 +2482,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00f3,-1,globalmessage,2:4
@@ -2587,7 +2489,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2625,8 +2526,6 @@
 //0x0838,2
 
 //2010-06-29aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2634,8 +2533,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00aa,9
@@ -2644,7 +2541,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2683,8 +2579,6 @@
 //0x0838,2
 
 //2010-07-01aRagexeRE
-//0x006d,114
-//0x0072,22,useskilltoid,9:15:18
 //0x0078,55
 //0x007c,44
 //0x007e,105,useskilltopos,10:14:18:23:25
@@ -2692,8 +2586,6 @@
 //0x0089,11,ticksend,7
 //0x008c,14,getcharnamerequest,10
 //0x0094,19,movetokafra,3:15
-//0x009b,34,wanttoconnection,7:15:25:29:33
-//0x009f,20,useitem,7:20
 //0x00a2,14,solvecharname,10
 //0x00a7,9,walktoxy,6
 //0x00aa,9
@@ -2702,7 +2594,6 @@
 //0x00f7,17,movefromkafra,3:13
 //0x0113,25,useskilltopos,10:14:18:23
 //0x0116,17,dropitem,6:15
-//0x0190,23,actionrequest,9:22
 //0x0193,2,closekafra,0
 //0x01a2,37
 //0x01fd,15,repairitem,2
@@ -2742,26 +2633,66 @@
 //0x083a,5
 
 //2010-07-14aRagexeRE
-0x006d,114
-0x0072,22,useskilltoid,9:15:18
+//0x0078,55
+//0x007c,44
+//0x007e,105,useskilltopos,10:14:18:23:25
+//0x0085,10,changedir,4:9
+//0x0089,11,ticksend,7
+//0x008c,14,getcharnamerequest,10
+//0x0094,19,movetokafra,3:15
+//0x00a2,14,solvecharname,10
+//0x00a7,9,walktoxy,6
+//0x00aa,9
+//0x00f3,-1,globalmessage,2:4
+//0x00f5,11,takeitem,7
+//0x00f7,17,movefromkafra,3:13
+//0x0113,25,useskilltopos,10:14:18:23
+//0x0116,17,dropitem,6:15
+//0x0193,2,closekafra,0
+//0x01a2,37
+//0x01fd,15,repairitem,2
+//0x022c,65
+//0x0288,10,npcpointshopbuy,2:4:6
+//0x0289,12
+//0x029b,80
+//0x02bf,0
+//0x02c0,0
+//0x0436,19,wanttoconnection,2:6:10:14:18
+//0x0437,7,actionrequest,2:6
+//0x0438,10,useskilltoid,2:4:6
+//0x0439,8,useitem,2:4
+//0x043f,25
+//0x0440,10
+//0x0441,4
+//0x0442,8
+//0x07d9,268
+//0x07e6,8
+//0x07e7,32
+//0x07ec,8
+//0x07ed,10
+//0x07f0,6
+//0x07f1,18
+//0x07f2,8
+//0x07f3,6
+//0x07f4,3
+//0x0812,8
+//0x0814,86
+//0x0815,2
+//0x0817,6
+//0x0819,-1
+//0x081a,4
+//0x081b,10
+//0x081c,10
+//0x0838,2
+//0x083a,5
+//0x841,4
+
+//2010-11-24aRagexeRE
 0x0078,55
 0x007c,44
-0x007e,105,useskilltopos,10:14:18:23:25
-0x0085,10,changedir,4:9
-0x0089,11,ticksend,7
-0x008c,14,getcharnamerequest,10
-0x0094,19,movetokafra,3:15
-0x009b,34,wanttoconnection,7:15:25:29:33
-0x009f,20,useitem,7:20
-0x00a2,14,solvecharname,10
-0x00a7,9,walktoxy,6
 0x00aa,9
 0x00f3,-1,globalmessage,2:4
-0x00f5,11,takeitem,7
-0x00f7,17,movefromkafra,3:13
 0x0113,25,useskilltopos,10:14:18:23
-0x0116,17,dropitem,6:15
-0x0190,23,actionrequest,9:22
 0x0193,2,closekafra,0
 0x01a2,37
 0x01fd,15,repairitem,2
@@ -2771,6 +2702,17 @@
 0x029b,80
 0x02bf,0
 0x02c0,0
+0x035f,5,walktoxy,2
+0x0360,6,ticksend,2
+0x0361,5,changedir,2:4
+0x0362,6,takeitem,2
+0x0363,6,dropitem,2:4
+0x0364,8,movetokafra,2:4
+0x0365,8,movefromkafra,2:4
+0x0366,10,useskilltopos,2:4:6:8
+0x0367,90,useskilltopos,2:4:6:8:10
+0x0368,6,getcharnamerequest,2
+0x0369,6,solvecharname,2
 0x0436,19,wanttoconnection,2:6:10:14:18
 0x0437,7,actionrequest,2:6
 0x0438,10,useskilltoid,2:4:6
