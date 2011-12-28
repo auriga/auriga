@@ -1299,12 +1299,18 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		/* クリティカル攻撃 */
 		damage += atkmax;
 		if(sd) {
+			int trans_bonus = 0;
+
 			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
+			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
+				trans_bonus = 25;
 			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0)
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon])) / 100;
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
 
 			// クリティカル時ダメージ増加
-			damage += damage * sd->critical_damage / 100;
+			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1002)
+				trans_bonus = 5;
+			damage += damage * (sd->critical_damage + trans_bonus) / 100;
 
 			if(sd->state.arrow_atk)
 				damage += sd->arrow_atk;
@@ -1316,9 +1322,13 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		else
 			damage += atkmin;
 		if(sd) {
+			int trans_bonus = 0;
+
 			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
+			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
+				trans_bonus = 25;
 			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0) {
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon])) / 100;
+				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
 			}
 		}
 	}
@@ -6657,6 +6667,7 @@ int battle_config_read(const char *cfgName)
 		{ "max_buyingstore_zeny",               &battle_config.max_buyingstore_zeny,               99990000 },
 		{ "max_buyingstore_amount",             &battle_config.max_buyingstore_amount,             9999     },
 		{ "allow_same_activeitem",              &battle_config.allow_same_activeitem,              0        },
+		{ "disable_transform_when_gvg",         &battle_config.disable_transform_when_gvg,         1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

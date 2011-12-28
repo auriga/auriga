@@ -188,7 +188,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 530- */
 	SI_LIFE_FORCE_F,SI_PROMOTE_HEALTH_RESERCH,SI_ENERGY_DRINK_RESERCH,SI_EXTRACT_WHITE_POTION_Z,SI_VITATA_500,SI_EXTRACT_SALAMINE_JUICE,SI_SAVAGE_STEAK,SI_COCKTAIL_WARG_BLOOD,SI_MINOR_BBQ,SI_SIROMA_ICE_TEA,
 	/* 540- */
-	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 
 };
 
@@ -1392,6 +1392,8 @@ L_RECALC:
 			sd->def += sd->sc.data[SC_MEAL_INCDEF].val1;
 		if(sd->sc.data[SC_MEAL_INCMDEF].timer != -1)
 			sd->mdef += sd->sc.data[SC_MEAL_INCMDEF].val1;
+		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1109)
+			sd->hit += 5;
 	}
 
 	if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {	// マッドネスキャンセラー
@@ -1833,6 +1835,11 @@ L_RECALC:
 			sd->matk1 += (sd->matk1*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
 			sd->matk2 += (sd->matk2*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
 			sd->mdef2 -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
+		}
+		// MATK上昇 (モンスター変身のマルドゥーク、バンシー用)
+		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1140 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1867)) {
+			sd->matk1 += 25;
+			sd->matk2 += 25;
 		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
@@ -2663,6 +2670,10 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// ファイティングスピリット
 		if(sd->sc.data[SC_EISIR].timer != -1)
 			bonus_add -= sd->sc.data[SC_EISIR].val3;
+
+		// モンスター変身デビルチ
+		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1109)
+			bonus_add -= -10;
 	}
 
 	/* 太陽と月と星の悪魔 */
@@ -6181,6 +6192,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 
+		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
+			icon_val1 = val1;	// val1はモンスターID
+			calc_flag = 1;
+			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
 		case SC_SPEEDUP1:			/* スピードポーション */
 		case SC_WALKSPEED:			/* 移動速度増加(スクリプト) */
@@ -8166,6 +8181,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 					skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
 				}
 			}
+			break;
+		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
+			if(sd)
+				clif_status_change(bl,SI_MONSTER_TRANSFORM,-1,0,0,0,0);
 			break;
 		/* option1 */
 		case SC_FREEZE:

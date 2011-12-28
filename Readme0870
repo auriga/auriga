@@ -1,4 +1,15 @@
 ----------------------------------------
+//0895 [2011/12/29] by popori
+
+・モンスター変身アイテムの実装 (src/map/status.* src/map/battle.c db/scdata_db.txt db/item_db.txt db/const.txt)
+　※ゴーレムは被弾時のインデュア発動確率が分からなかったので効果未実装
+
+・battle_auriga.cofに「disable_transform_when_gvg」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+　デフォルトはyes
+
+・2Dレイヤー装備アイテムを追加 (db/item_db.txt)
+
+----------------------------------------
 //0894 [2011/12/29] by popori
 
 ・0x8b9の送信タイミングを0x6b前にするよう変更と追加 (src/char/char.c)

@@ -512,6 +512,7 @@
 540,SC_DROCERA_HERB_STEAMED,0,1,0,0	// ドロセラのハーブ煮
 541,SC_PUTTI_TAILS_NOODLES,0,1,0,0	// プティットのしっぽ麺
 542,SC_STOMACHACHE,0,1,0,0		// 腹痛
+543,SC_MONSTER_TRANSFORM,1,1,0,0		// モンスター変身
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

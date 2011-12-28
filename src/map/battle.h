@@ -590,6 +590,7 @@ extern struct Battle_Config {
 	int max_buyingstore_zeny;
 	int max_buyingstore_amount;
 	int allow_same_activeitem;
+	int disable_transform_when_gvg;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

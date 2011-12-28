@@ -1452,6 +1452,10 @@
 2561,Unknown_Item,強化したフード,4,,,,,,,,,2,4,,,,,{},{}
 2562,Unknown_Item,強化したマフラー,4,,,,,,,,,2,4,,,,,{},{}
 2563,Unknown_Item,強化したマント,4,,,,,,,,,2,4,,,,,{},{}
+2573,Archangel_Wings,大天使の羽,4,1,,20,,18,,1,1000333311,2,4,,1,1,1,{},{}
+2576,Bag_Of_Adventyrer,冒険家のリュックサック,4,1,,20,,20,,1,1000333311,2,4,,1,2,1,{},{ skill 1013,1; if(getequiprefinerycnt(5) >= 9) { if(readparam(bStr) >= 90) bonus bAtk,30; if(readparam(bAgi) >= 90) { bonus bAspdAddRate,8; bonus bAspd,1; } if(readparam(bVit) >= 90) bonus2 bSubEle,0,10; if(readparam(bInt) >= 90) bonus bMatk,50; if(readparam(bDex) >= 90) bonus bAddLongWeaponDamage,10; if(readparam(bLuk) >= 90) bonus bAddCriticalDamage,15; } else if(getequiprefinerycnt(5) >= 7) { if(readparam(bStr) >= 90) bonus bAtk,20; if(readparam(bAgi) >= 90) bonus bAspdAddRate,8; if(readparam(bVit) >= 90) bonus2 bSubEle,0,5; if(readparam(bInt) >= 90) bonus bMatk,30; if(readparam(bDex) >= 90) bonus bAddLongWeaponDamage,5; if(readparam(bLuk) >= 90) bonus bAddCriticalDamage,10; } }
+
+2589,Wings_Of_Fallen_Angel,墮天使の翼,4,1,,20,,18,,,1000333311,2,4,,1,3,1,{},{ bonus bLuk,2; bonus bMdef,18; bonus2 bSubEle,7,30; bonus2 bSubEle,6,-30; bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 
 2601,Ring,リング,4,30000,,100,,0,,0,991944702,2,136,,20,0,,{},{ bonus bStr,2; }
 2602,Earring,イヤリング,4,30000,,100,,0,,0,991944702,2,136,,20,0,,{},{ bonus bInt,2; }
@@ -4688,6 +4692,14 @@
 12475,Unknown_Item,キュアーフリー,2,,,50,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Bleed; sc_end SC_Curse; sc_end SC_REVERSEORCISH; sc_end SC_ELEMENTUNDEAD; },{}
 12548,Buy_Market_Permit2,不始末な購入露店ライセンス,2,500,,10,,,,,1000333311,2,,,,,,{ openbuyingstore 2; },{}
 
+12658,Unknown_Item,変身スクロール(デビルチ),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1109; },{}
+12659,Unknown_Item,変身スクロール(レイドリックアーチャー),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1276; },{}
+12660,Unknown_Item,変身スクロール(マブカ),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1884; },{}
+12661,Unknown_Item,変身スクロール(マルドゥーク),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1140; },{}
+12662,Unknown_Item,変身スクロール(バンシー),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1867; },{}
+12663,Unknown_Item,変身スクロール(ポリン),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1002; },{}
+12664,Unknown_Item,変身スクロール(ゴーレム),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1040; },{}
+
 12701,Old_Blue_Box_F,古く青い箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem rand(7851,7853),1; },{}
 12702,Old_Blue_Box_F,気持ち青い箱,2,,,200,,,,,1000333311,2,,,,,,{/* 確認されている出現アイテム;ファイアーウォールLV5 ライトニングボルトLV5 フロストダイバーLV5 プレゼントボックス */},{}
 12703,Vit_Dish10_,神聖な卵,2,,,50,,,,,1000333311,2,,,,,,{},{}
@@ -6370,6 +6382,17 @@
 16356,Unknown_Item,アンチデモンシールドの箱,2,,,10,,,,,1000333311,2,,,,,,{ getitem 2152,1; },{}
 
 16570,Unknown_Item,マッスル騎士団旅情編の箱,2,,,0,,,,,1000333311,2,,,,,,{},{}
+
+16998,Archangel_Wings_Box,大天使の羽の箱,18,1,,1,,,,,1000333311,,,,,,,{ getitem 2573,1; },{}
+16999,Bag_Of_Adventyrer_Bix,冒険家のリュックサックの箱,18,1,,1,,,,,1000333311,,,,,,,{ getitem 2576,1; },{}
+
+17037,Unknown_Item,変身スクロール(デビルチ)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12658,10; },{}
+17038,Unknown_Item,変身スクロール(レイドリックアーチャー)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12659,10; },{}
+17039,Unknown_Item,変身スクロール(マブカ)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12660,10; },{}
+17040,Unknown_Item,変身スクロール(マルドゥーク)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12661,10; },{}
+17041,Unknown_Item,変身スクロール(バンシー)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12662,10; },{}
+17042,Unknown_Item,変身スクロール(ポリン)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12663,10; },{}
+17043,Unknown_Item,変身スクロール(ゴーレム)10個の箱,18,1,,1,,,,,1000333311,2,,,,,,{ getitem 12664,10; },{}
 
 18000,Cannon_Ball,キャノンボール,19,100,,10,100,,,,1024,2,32768,,,,,{},{}
 18001,Holy_Cannon_Ball,ホーリーキャノンボール,19,200,,10,120,,,,1024,2,32768,,,,,{},{ bonus bAtkEle,6; }

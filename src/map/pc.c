@@ -4387,6 +4387,11 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			sd->dev.val1[i] = sd->dev.val2[i] = 0;
 		}
 	}
+	// 攻城戦時にモンスター変身を解除させるか
+	if(battle_config.disable_transform_when_gvg) {
+		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
+			status_change_end(&sd->bl, SC_MONSTER_TRANSFORM, -1);
+	}
 
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {
