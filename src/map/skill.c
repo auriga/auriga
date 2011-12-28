@@ -8613,7 +8613,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case WM_LULLABY_DEEPSLEEP:	/* 安らぎの子守唄 */
 		if(bl->id != src->id) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_DEEP_SLEEP,8800 + 200 * skilllv,status_get_lv(src)))
-				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		}
 		break;
 	case WM_SIRCLEOFNATURE:		/* 循環する自然の音 */
@@ -8722,7 +8722,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SO_ARRULLO:	/* アルージョ */
 		if(flag&1) {
 			if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),skilllv*500+4500,status_get_lv(src))) {
-				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
 			}
 		} else {
 			int ar = (skilllv + 1) / 2;
@@ -17293,7 +17293,7 @@ static int skill_trample( struct block_list *bl, va_list ap )
 	if(atn_rand()%100 >= 25 + skilllv * 25)
 		return 0;
 
-	if(!skill_get_inf2(sg->skill_id)&0x40)
+	if(!(skill_get_inf2(sg->skill_id)&0x40))
 		return 0;
 
 	switch(sg->unit_id)

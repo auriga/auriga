@@ -1,4 +1,15 @@
 ----------------------------------------
+//0893 [2011/12/29] by popori
+
+・gcc環境下でのwarning修正 (src/map/skill.c)
+
+・SC_DEEP_SLEEPをpretimerで発動させるように変更 (src/map/skill.c)
+
+・dspファイルの更新 (src/*/*.dsp)
+
+・packet_db.txtの修正と追加 (db/packet_db.txt)
+
+----------------------------------------
 //0892 [2011/12/29] by popori
 
 ・拡張ノービスの実装
