@@ -1,4 +1,13 @@
 ----------------------------------------
+//0889 [2011/12/29] by popori
+
+・PACKETVER20110309の追加 (char.c)
+
+・PACKETVER20110928の追加 (char.c)
+
+・PACKETVER20111025の追加 (char.c vc_make.bat bcc32_make.bat Makefile src/*/*.dsp)
+
+----------------------------------------
 //0888 [2011/12/29] by popori
 
 ・ストレージエンジンをMyISAMからInnoDBに変更する (sql-files/main.sql sql-files/Auriga888_changetable.sql)
