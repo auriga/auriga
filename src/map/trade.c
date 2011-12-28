@@ -50,7 +50,7 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 
 	target_sd = map_id2sd(target_id);
 	if(target_sd && target_sd->bl.prev && sd != target_sd) { // check same player to avoid hack
-		if(target_sd->state.vending || target_sd->state.buyingstore || target_sd->state.mail_appending) {
+		if(target_sd->state.store || target_sd->state.mail_appending) {
 			clif_tradestart(sd, 4);
 			return;
 		}

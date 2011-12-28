@@ -1,4 +1,14 @@
 ----------------------------------------
+//0886 [2011/12/29] by popori
+
+・露店と購買露店中の判定をリファクタリング
+ (src/map/buyingstore.c src/map/chat.c src/map/clif.c src/map/map.h
+　src/map/pc.c src/map/trade.c src/map/unit.c src/map/vending.c)
+
+・VC2008以上でのマルチプロセスビルドのサポート (vc_make.bat)
+　※マルチプロセッサ、マルチコアでVC2008環境下であればビルド速度が向上します。
+
+----------------------------------------
 //0885 [2011/10/29] by Blaze
 
 ・全ての3次職スキルの詠唱時間、射程距離、消費SPなどを本鯖仕様に更新 (db/skill_db.txt, db/skill_cast_db.txt, db/skill_require_db.txt)

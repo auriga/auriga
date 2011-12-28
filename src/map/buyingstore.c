@@ -77,7 +77,7 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
 	nullpo_retr(false, sd);
 
 	// 購買露店ウインドウが開ける状態かチェック
-	if( sd->state.vending || sd->state.buyingstore || sd->state.deal_mode )
+	if( sd->state.store || sd->state.deal_mode )
 	{
 		return false;
 	}
@@ -133,15 +133,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	}
 
 	// 露店開設中は開設不可
-	if( sd->state.vending )
-	{
-		sd->buyingstore.count = 0;
-		clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
-		return;
-	}
-
-	// 購買露店開設中は開設不可
-	if( sd->state.buyingstore )
+	if( sd->state.store )
 	{
 		sd->buyingstore.count = 0;
 		clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
@@ -264,7 +256,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	unit_stopattack(&sd->bl);
 
 	// 購買露店オープン
-	sd->state.buyingstore = 1;
+	sd->state.store = 2;
 	sd->buyer_id = ++buyingstore_id;
 	sd->buyingstore.limit_zeny = limit_zeny;
 	sd->buyingstore.count = i;
@@ -286,9 +278,9 @@ void buyingstore_close(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	if( sd->state.buyingstore )
+	if( sd->state.store == 2 )
 	{
-		sd->state.buyingstore = 0;
+		sd->state.store = 0;
 		memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * sd->buyingstore.count);
 		clif_close_buyingstore(&sd->bl, -1);
 	}
@@ -322,11 +314,11 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 		return;
 
 	// 自身が露店開設中かチェック
-	if( sd->state.vending )
+	if( sd->state.store )
 		return;
 
-	// 対象が購買露店を閉鎖中もしくは自身が購買露店開設中かチェック
-	if( !ssd->state.buyingstore || sd->state.buyingstore )
+	// 対象が購買露店を閉鎖中
+	if( !ssd->state.store != 2 )
 		return;
 
 	// 対象が取引中もしくは自身が取引中かチェック
@@ -402,8 +394,8 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		return;
 	}
 
-	// 対象が購買露店開設中かチェック
-	if( !ssd->state.buyingstore )
+	// 対象が露店開設中かチェック
+	if( !ssd->state.store != 2 )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
@@ -424,14 +416,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	}
 
 	// 露店開設中は売却不可
-	if( sd->state.vending )
-	{
-		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
-		return;
-	}
-
-	// 購買露店開設中は売却不可
-	if( sd->state.buyingstore )
+	if( sd->state.store )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;

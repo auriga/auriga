@@ -61,10 +61,10 @@ void vending_closevending(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	if(sd->state.vending)
+	if(sd->state.store == 1)
 	{
 		sd->vend_num  = 0; // on principle
-		sd->state.vending = 0;
+		sd->state.store = 0;
 		clif_closevendingboard(&sd->bl,-1);
 	}
 
@@ -85,11 +85,9 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 		return;
 	if( vsd->bl.prev == NULL )
 		return;
-	if( !vsd->state.vending )
+	if( vsd->state.store != 1 )
 		return;
-	if( sd->state.vending )
-		return;
-	if( sd->state.buyingstore )
+	if( sd->state.store )
 		return;
 	if( vsd->state.deal_mode != 0 || sd->state.deal_mode != 0 )
 	{
@@ -133,9 +131,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		return;
 	if( unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
 		return;
-	if( sd->state.vending )
-		return;
-	if( sd->state.buyingstore )
+	if( sd->state.store )
 		return;
 	if( sd->state.deal_mode )
 		return;
@@ -296,11 +292,7 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 	}
 
 	// player must close its actual shop before
-	if( sd->state.vending )
-		return;
-
-	// 購買露店中は開設不可
-	if( sd->state.buyingstore )
+	if( sd->state.store )
 		return;
 
 	// normal client can not send 'void' shop title
@@ -377,7 +369,7 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 
 	sd->vender_id = ++vending_id;
 	sd->vend_num  = i;
-	sd->state.vending = 1;
+	sd->state.store = 1;
 	memset(sd->message, 0, sizeof(sd->message));
 	strncpy(sd->message, shop_title, 80);
 	if( clif_openvending(sd) > 0 )
@@ -388,7 +380,7 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 	{
 		sd->vender_id = 0;
 		sd->vend_num = 0; // on principle
-		sd->state.vending = 0;
+		sd->state.store = 0;
 	}
 
 	return;

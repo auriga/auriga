@@ -114,7 +114,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 	if((cd = map_id2cd(chatid)) == NULL)
 		return;
 
-	if(cd->bl.m != sd->bl.m || sd->state.vending || sd->state.buyingstore || sd->state.joinchat || unit_distance(cd->bl.x,cd->bl.y,sd->bl.x,sd->bl.y) > AREA_SIZE) {
+	if(cd->bl.m != sd->bl.m || sd->state.store || sd->state.joinchat || unit_distance(cd->bl.x,cd->bl.y,sd->bl.x,sd->bl.y) > AREA_SIZE) {
 		clif_joinchatfail(sd,3);
 		return;
 	}

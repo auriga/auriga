@@ -369,8 +369,7 @@ struct map_session_data {
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
 		unsigned show_equip : 1;
-		unsigned vending : 1;
-		unsigned buyingstore : 1;
+		unsigned store : 2;	// 0:何も開いていない, 1:露店を開いている, 2:購買露店を開いている
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
