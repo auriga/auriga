@@ -197,6 +197,7 @@ int login_httpd_config_read(const char *w1, const char *w2)
 
 void login_httpd_init(void)
 {
+#ifndef NO_HTTPD
 	socket_set_httpd_page_connection_func( login_httpd_socket_ctrl_panel_func );
 	do_init_httpd();
 	do_init_graph();
@@ -206,6 +207,7 @@ void login_httpd_init(void)
 	httpd_pages( "/account", login_httpd_account );
 	httpd_default_page( httpd_send_file );
 	httpd_set_auth_func( 1, login_httpd_auth_func );
+#endif
 
 	return;
 }

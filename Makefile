@@ -71,7 +71,7 @@ CFLAGS += -O3
 CFLAGS += -ffast-math
 
 ifeq ($(GCC_VERSION), 4)
-    CFLAGS += -Wno-unused-parameter -Wno-pointer-sign
+    CFLAGS += -Wno-unused-parameter -Wno-pointer-sign -fno-strict-aliasing
 endif
 
 ifdef SQLFLAG
@@ -101,7 +101,7 @@ endif
 #CFLAGS += -DCMP_AUTHFIFO_LOGIN2
 
 # disable httpd
-#CFLAGS += -DNO_HTTPD
+CFLAGS += -DNO_HTTPD
 
 # disable httpd-external-CGI
 CFLAGS += -DNO_HTTPD_CGI

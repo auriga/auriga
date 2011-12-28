@@ -60,8 +60,8 @@ set __base__=-DTXT_ONLY
 @rem ケーブルTV等グローバルIPが外部に出ないプロバイダからは接続不可になります
 :set __SKIP__=-DCMP_AUTHFIFO_IP -DCMP_AUTHFIFO_LOGIN2
 
-@rem httpd を完全に無効にする場合コメントアウトをはずす(通常はコメントアウト)
-:set __NO_HTTPD__=-DNO_HTTPD
+@rem httpd を完全に無効にする場合コメントアウトをはずす
+set __NO_HTTPD__=-DNO_HTTPD
 
 @rem httpd で外部 CGI を使う場合はコメントアウトする
 set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI

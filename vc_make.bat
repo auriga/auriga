@@ -163,7 +163,7 @@ rem set __CMP_AFL2__=/D "CMP_AUTHFIFO_LOGIN2"
 rem set __CMP_AFIP__=/D "CMP_AUTHFIFO_IP"
 
 rem httpd を完全に無効にする場合コメントアウトをはずす
-rem set __NO_HTTPD__=/D "NO_HTTPD"
+set __NO_HTTPD__=/D "NO_HTTPD"
 
 rem httpd で外部 CGI を使う場合はコメントアウトする
 set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"

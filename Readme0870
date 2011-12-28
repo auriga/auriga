@@ -1,4 +1,20 @@
 ----------------------------------------
+//0896 [2011/12/29] by popori
+
+・キャラ作成パラメータバインド時のタイプを修正 (src/char/sql/chardb_sql.c)
+　soldoutさん、yooske61さんに感謝
+
+・2011-12-28aRagexeREまでのパケット長追記 (db/packet_db.txt)
+
+・dropableフラグが真の時はNPCで売却を不可とするよう変更 (src/map/npc.c)
+
+・モンスター変身アイテムと2Dレイヤー装備に関するフラグを追加 (db/item_db2.txt)
+
+・httpdをデフォルトで無効にする (Makefile bcc32_make.bat vc_make.bat src/login/login_httpd.c)
+
+・GCC4以上の時は-fno-strict-aliasingを指定するように変更 (Makefile)
+
+----------------------------------------
 //0895 [2011/12/29] by popori
 
 ・モンスター変身アイテムの実装 (src/map/status.* src/map/battle.c db/scdata_db.txt db/item_db.txt db/const.txt)
