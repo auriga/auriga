@@ -71,7 +71,7 @@ void clif_delitem(struct map_session_data *sd, short type, int n, int amount);
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid);
 void clif_updatestatus(struct map_session_data *sd, int type);
 void clif_changestatus(struct block_list *bl, int type, int val);
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2);	// area
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2, int is_spdamage);	// area
 void clif_takeitem(struct block_list *src, int dst_id);
 void clif_changelook(struct block_list *bl, int type, int val);
 void clif_send_clothcolor(struct block_list *bl);

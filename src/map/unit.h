@@ -73,7 +73,7 @@ int unit_counttargeted(struct block_list *bl,int target_lv);
 int unit_dataset(struct block_list *bl);
 
 int unit_heal(struct block_list *bl,int hp,int sp);
-int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int tick,int sdelay,int ddelay,int damage,int div,int type,int damage2);
+int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int tick,int sdelay,int ddelay,int damage,int div,int type,int damage2,int is_spdamage);
 // その他
 int unit_isdead(struct block_list *bl);
 int unit_iscasting(struct block_list *bl);

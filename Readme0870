@@ -1,4 +1,19 @@
 ----------------------------------------
+//0890 [2011/12/29] by popori
+
+・PACKETVER20110111より0x2d7の上位パケット0x859に対応 (src/map/clif.c)
+
+・LOC_***の定義更新 (src/map/itemdb.h)
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+・PACKETVER20110719の追加 (vc_make.bat bcc32_make.bat Makefile)
+
+・0x1c9の上位パケット0x8c7の実装 (src/map/clif.c)
+
+・0x2e1の上位パケット0x8c8の実装 (src/map/battle.c src/map/clif.* src/map/skill.c src/map/status.c src/map/unit.*)
+
+----------------------------------------
 //0889 [2011/12/29] by popori
 
 ・PACKETVER20110309の追加 (char.c)

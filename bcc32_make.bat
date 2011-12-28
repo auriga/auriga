@@ -11,6 +11,7 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 @rem パケット定義
 @rem 2011-10-25aRagexeRE: 20111025
 @rem 2011-09-28aRagexeRE: 20110928
+@rem 2011-07-19aRagexeRE: 20110719
 @rem 2011-03-09aRagexeRE: 20110309
 @rem 2011-01-11aRagexeRE: 20110111
 @rem 2010-10-20aRagexeRE: 20101020

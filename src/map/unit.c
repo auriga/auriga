@@ -1920,7 +1920,7 @@ int unit_heal(struct block_list *bl,int hp,int sp)
  *
  *------------------------------------------
  */
-int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int tick,int sdelay,int ddelay,int damage,int div_,int type,int damage2)
+int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int tick,int sdelay,int ddelay,int damage,int div_,int type,int damage2,int is_spdamage)
 {
 	nullpo_retr(0, target);
 
@@ -1930,7 +1930,7 @@ int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int
 	if(target->type == BL_MOB) {
 		mob_attacktarget((struct mob_data*)target,src,0);
 	}
-	clif_damage(target,target,tick,sdelay,ddelay,damage,div_,type,damage2);
+	clif_damage(target,target,tick,sdelay,ddelay,damage,div_,type,damage2,0);
 	battle_damage(src,target,damage + damage2,0,0,0);
 	return 0;
 }

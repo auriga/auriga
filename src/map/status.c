@@ -8105,7 +8105,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_WHITEIMPRISON:	/* ホワイトインプリズン */
 			{
 				int dmg = 400 * sc->data[type].val1;
-				clif_damage(bl,bl,gettick(),0,0,dmg,0,9,0);
+				clif_damage(bl,bl,gettick(),0,0,dmg,0,9,0,0);
 				battle_damage(bl,bl,dmg,0,0,0);
 			}
 			break;
@@ -9094,7 +9094,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(++sc->data[type].val3 % 3 == 0) {
 				int damage = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
 				sc->data[type].val3 = 0;
-				clif_damage(bl,bl,tick,0,0,1000 + damage,0,9,0);
+				clif_damage(bl,bl,tick,0,0,1000 + damage,0,9,0,0);
 				battle_damage(bl,bl,1000 + damage,0,0,0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {

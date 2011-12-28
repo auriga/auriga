@@ -123,7 +123,7 @@ int battle_damage_area(struct block_list *bl,va_list ap)
 	tick    = va_arg(ap,unsigned int);
 
 	if(battle_check_target(src,bl,flag) > 0) {
-		clif_damage(bl,bl,tick,status_get_amotion(bl),status_get_dmotion(bl),damage,0,9,0);
+		clif_damage(bl,bl,tick,status_get_amotion(bl),status_get_dmotion(bl),damage,0,9,0,0);
 		battle_damage(src,bl,damage,skillid,skilllv,flag);
 	}
 
@@ -192,7 +192,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 					if(msd->dev.val1[i] != target->id)
 						continue;
 					// ダメージモーション付きでダメージ表示
-					clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0);
+					clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0,0);
 					battle_damage(bl,&msd->bl,damage,skillid,skilllv,flag);
 					map_freeblock_unlock();
 					return 0;
@@ -216,7 +216,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 					status_change_end(&tsd->bl,SC__SHADOWFORM,-1);
 				}
 				// ダメージモーション付きでダメージ表示
-				clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0);
+				clif_damage(&msd->bl,&msd->bl,gettick(),0,status_get_dmotion(&msd->bl),damage,0,0,0,0);
 				battle_damage(bl,&msd->bl,damage,skillid,skilllv,flag);
 				map_freeblock_unlock();
 				return 0;
@@ -4784,16 +4784,16 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			}
 		}
 		if(rsdamage > 0)
-			clif_damage(src,src,tick,wd.amotion,wd.dmotion,rsdamage,1,4,0);
+			clif_damage(src,src,tick,wd.amotion,wd.dmotion,rsdamage,1,4,0,0);
 		if(ridamage > 0)
-			clif_damage(src,src,tick,wd.amotion,wd.dmotion,ridamage,1,4,0);
+			clif_damage(src,src,tick,wd.amotion,wd.dmotion,ridamage,1,4,0,0);
 	}
 
-	clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2);
+	clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2, 0);
 
 	// 二刀流左手とカタール追撃のミス表示(無理やり〜)
 	if(sd && (sd->status.weapon >= WT_DOUBLE_DD || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
-		clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0);
+		clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0, 0);
 
 	if(sd && sd->splash_range > 0 && (wd.damage > 0 || wd.damage2 > 0) && (!sc || sc->data[SC_SACRIFICE].timer == -1))
 		skill_castend_damage_id(src,target,0,-1,tick,0);
@@ -5390,7 +5390,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				}
 			}
 			if(rdamage > 0)
-				clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0);
+				clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0,0);
 		}
 	}
 	if(attack_type&BF_MAGIC && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う

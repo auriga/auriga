@@ -3122,7 +3122,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case CH_PALMSTRIKE:		/* 猛虎硬爬山 */
-		clif_damage(src,bl,tick,status_get_amotion(src),0,-1,1,4,0);	// 攻撃モーションのみ入れる
+		clif_damage(src,bl,tick,status_get_amotion(src),0,-1,1,4,0,0);	// 攻撃モーションのみ入れる
 		skill_addtimerskill(src,tick+1000,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
 		break;
 	case MO_EXTREMITYFIST:	/* 阿修羅覇鳳拳 */
@@ -6733,7 +6733,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case NPC_SMOKING:			/* 喫煙 */
-		clif_damage(src,src,tick,status_get_amotion(src),status_get_dmotion(src),3,1,0,0);
+		clif_damage(src,src,tick,status_get_amotion(src),status_get_dmotion(src),3,1,0,0,0);
 		break;
 
 	case NPC_HALLUCINATION:
@@ -8661,7 +8661,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int dmg = 9999;
 				if(status_get_max_hp(src) < dmg)
 					dmg = status_get_max_hp(src);
-				clif_damage(bl,bl,tick,0,0,dmg,0,9,0);
+				clif_damage(bl,bl,tick,0,0,dmg,0,9,0,0);
 				battle_damage(bl,bl,dmg,0,0,0);
 			}
 			if(!unit_isdead(bl))
@@ -10856,7 +10856,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		if (battle_check_target(&src->bl,bl,BCT_ENEMY) > 0)		// 敵対象
 		{
 			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
-		//	unit_fixdamage(&src->bl,bl,0, 0, 0,sg->skill_lv*200+200,1, 4, 0);
+		//	unit_fixdamage(&src->bl,bl,0, 0, 0,sg->skill_lv*200+200,1, 4, 0, 0);
 		}
 		break;
 	case UNT_TATAMIGAESHI:	/* 畳返し */
@@ -14699,7 +14699,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 					case 3: pc_break_equip(tsd,LOC_HEAD2);   break;
 				}
 			}
-			unit_fixdamage(src,target,0, 0, 0,1000,1, 4, 0);
+			unit_fixdamage(src,target,0, 0, 0,1000,1, 4, 0, 0);
 			break;
 		case 4:
 			/* 力(Strength) - 30秒間ATKが半分に落ちる */
@@ -14774,11 +14774,11 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 				status_change_pretimer(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0,gettick()+status_get_amotion(src));
 			if(!(status_get_mode(target)&0x20))	// ボス属性以外
 				status_change_start(target,SC_THE_DEVIL,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
-			unit_fixdamage(src,target,0, 0, 0,6666,1, 4, 0);
+			unit_fixdamage(src,target,0, 0, 0,6666,1, 4, 0, 0);
 			break;
 		case 11:
 			/* 塔(The Tower) - 防御力無視4444固定ダメージ */
-			unit_fixdamage(src,target,0, 0, 0,4444,1, 4, 0);
+			unit_fixdamage(src,target,0, 0, 0,4444,1, 4, 0, 0);
 			break;
 		case 12:
 			/* 星(The Star) - 星が回る すなわち、5秒間スタンにかかる */

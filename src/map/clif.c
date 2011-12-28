@@ -6640,7 +6640,7 @@ void clif_storageclose(struct map_session_data *sd)
  * 通常攻撃エフェクト＆ダメージ
  *------------------------------------------
  */
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2)
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2, int is_spdamage)
 {
 	unsigned char buf[36];
 	struct status_change *sc;
@@ -6673,7 +6673,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFB(buf,26)=type;
 	WBUFW(buf,27)=damage2;
 	clif_send(buf,packet_db[0x8a].len,src,AREA);
-#else
+#elif PACKETVER < 20110719
 	WBUFW(buf,0)=0x2e1;
 	WBUFL(buf,2)=src->id;
 	WBUFL(buf,6)=dst->id;
@@ -6685,6 +6685,19 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFB(buf,28)=type;
 	WBUFL(buf,29)=damage2;
 	clif_send(buf,packet_db[0x2e1].len,src,AREA);
+#else
+	WBUFW(buf,0)=0x8c8;
+	WBUFL(buf,2)=src->id;
+	WBUFL(buf,6)=dst->id;
+	WBUFL(buf,10)=tick;
+	WBUFL(buf,14)=sdelay;
+	WBUFL(buf,18)=ddelay;
+	WBUFL(buf,22)=damage;
+	WBUFB(buf,26)=is_spdamage;
+	WBUFW(buf,27)=div_;
+	WBUFB(buf,29)=type;
+	WBUFL(buf,30)=damage2;
+	clif_send(buf,packet_db[0x8c8].len,src,AREA);
 #endif
 
 	return;
@@ -6936,7 +6949,22 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 
 	fd=sd->fd;
 
-#if PACKETVER >= 3
+#if PACKETVER < 3
+	WFIFOW(fd, 0)=0x11f;
+	WFIFOL(fd, 2)=unit->bl.id;
+	WFIFOL(fd, 6)=unit->group->src_id;
+	WFIFOW(fd,10)=unit->bl.x;
+	WFIFOW(fd,12)=unit->bl.y;
+	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+		WFIFOB(fd,14)=UNT_ATTACK_SKILLS;
+	else
+		WFIFOB(fd,14)=unit->group->unit_id;
+	WFIFOB(fd,15)=1;
+	WFIFOSET(fd,packet_db[0x11f].len);
+
+	if(unit->group->skill_id == WZ_ICEWALL)
+		clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
+#elif PACKETVER < 20110719
 	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
@@ -6948,24 +6976,61 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 		WFIFOB(fd,16)=1;
 		memcpy(WFIFOP(fd,17),unit->group->valstr,80);
 		WFIFOSET(fd,packet_db[0x1c9].len);
+	} else {
+		WFIFOW(fd, 0)=0x11f;
+		WFIFOL(fd, 2)=unit->bl.id;
+		WFIFOL(fd, 6)=unit->group->src_id;
+		WFIFOW(fd,10)=unit->bl.x;
+		WFIFOW(fd,12)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WFIFOB(fd,14)=UNT_ATTACK_SKILLS;
+		else
+			WFIFOB(fd,14)=unit->group->unit_id;
+		WFIFOB(fd,15)=1;
+		WFIFOSET(fd,packet_db[0x11f].len);
 
-		return;
+		if(unit->group->skill_id == WZ_ICEWALL)
+			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
+	}
+#else
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
+		WFIFOW(fd, 0)=0x1c9;
+		WFIFOL(fd, 2)=unit->bl.id;
+		WFIFOL(fd, 6)=unit->group->src_id;
+		WFIFOW(fd,10)=unit->bl.x;
+		WFIFOW(fd,12)=unit->bl.y;
+		WFIFOB(fd,14)=unit->group->unit_id;
+		WFIFOB(fd,15)=1;
+		WFIFOB(fd,16)=1;
+		memcpy(WFIFOP(fd,17),unit->group->valstr,80);
+		WFIFOSET(fd,packet_db[0x1c9].len);
+	} else {
+		struct block_list *src = map_id2bl(unit->group->src_id);
+
+		WFIFOW(fd, 0)=0x8c7;
+		WFIFOW(fd, 2)=19;
+		WFIFOL(fd, 4)=unit->bl.id;
+		WFIFOL(fd, 8)=unit->group->src_id;
+		WFIFOW(fd,12)=unit->bl.x;
+		WFIFOW(fd,14)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WFIFOB(fd,16)=UNT_ATTACK_SKILLS;
+		else
+			WFIFOB(fd,16)=unit->group->unit_id;
+		if(src && src->type == BL_PC) {
+			struct map_session_data *src_sd = (struct map_session_data *)src;
+
+			WFIFOB(fd,17)= pc_checkskill(src_sd,WL_RADIUS);
+		} else {
+			WFIFOB(fd,17)=0;
+		}
+		WFIFOB(fd,18)=1;
+		WFIFOSET(fd,WFIFOW(fd,2));
+
+		if(unit->group->skill_id == WZ_ICEWALL)
+			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 	}
 #endif
-	WFIFOW(fd, 0)=0x11f;
-	WFIFOL(fd, 2)=unit->bl.id;
-	WFIFOL(fd, 6)=unit->group->src_id;
-	WFIFOW(fd,10)=unit->bl.x;
-	WFIFOW(fd,12)=unit->bl.y;
-	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
-		WFIFOB(fd,14)=UNT_ATTACK_SKILLS;
-	else
-		WFIFOB(fd,14)=unit->group->unit_id;
-	WFIFOB(fd,15)=0;
-	WFIFOSET(fd,packet_db[0x11f].len);
-
-	if(unit->group->skill_id == WZ_ICEWALL)
-		clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 
 	return;
 }
@@ -7665,7 +7730,19 @@ void clif_skill_setunit(struct skill_unit *unit)
 
 	nullpo_retv(unit);
 
-#if PACKETVER >= 3
+#if PACKETVER < 3
+	WBUFW(buf, 0)=0x11f;
+	WBUFL(buf, 2)=unit->bl.id;
+	WBUFL(buf, 6)=unit->group->src_id;
+	WBUFW(buf,10)=unit->bl.x;
+	WBUFW(buf,12)=unit->bl.y;
+	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+		WBUFB(buf,14)=UNT_ATTACK_SKILLS;
+	else
+		WBUFB(buf,14)=unit->group->unit_id;
+	WBUFB(buf,15)=1;
+	clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
+#elif PACKETVER < 20110719
 	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
 		WBUFW(buf, 0)=0x1c9;
 		WBUFL(buf, 2)=unit->bl.id;
@@ -7677,21 +7754,55 @@ void clif_skill_setunit(struct skill_unit *unit)
 		WBUFB(buf,16)=1;
 		memcpy(WBUFP(buf,17),unit->group->valstr,80);
 		clif_send(buf,packet_db[0x1c9].len,&unit->bl,AREA);
+	} else {
+		WBUFW(buf, 0)=0x11f;
+		WBUFL(buf, 2)=unit->bl.id;
+		WBUFL(buf, 6)=unit->group->src_id;
+		WBUFW(buf,10)=unit->bl.x;
+		WBUFW(buf,12)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WBUFB(buf,14)=UNT_ATTACK_SKILLS;
+		else
+			WBUFB(buf,14)=unit->group->unit_id;
+		WBUFB(buf,15)=1;
+		clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
+	}
+#else
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
+		WBUFW(buf, 0)=0x1c9;
+		WBUFL(buf, 2)=unit->bl.id;
+		WBUFL(buf, 6)=unit->group->src_id;
+		WBUFW(buf,10)=unit->bl.x;
+		WBUFW(buf,12)=unit->bl.y;
+		WBUFB(buf,14)=unit->group->unit_id;
+		WBUFB(buf,15)=1;
+		WBUFB(buf,16)=1;
+		memcpy(WBUFP(buf,17),unit->group->valstr,80);
+		clif_send(buf,packet_db[0x1c9].len,&unit->bl,AREA);
+	} else {
+		struct block_list *src = map_id2bl(unit->group->src_id);
 
-		return;
+		WBUFW(buf, 0)=0x8c7;
+		WBUFW(buf, 2)=19;
+		WBUFL(buf, 4)=unit->bl.id;
+		WBUFL(buf, 8)=unit->group->src_id;
+		WBUFW(buf,12)=unit->bl.x;
+		WBUFW(buf,14)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WBUFB(buf,16)=UNT_ATTACK_SKILLS;
+		else
+			WBUFB(buf,16)=unit->group->unit_id;
+		if(src && src->type == BL_PC) {
+			struct map_session_data *sd = (struct map_session_data *)src;
+
+			WBUFB(buf,17)= pc_checkskill(sd,WL_RADIUS);
+		} else {
+			WBUFB(buf,17)=0;
+		}
+		WBUFB(buf,18)=1;
+		clif_send(buf,WBUFW(buf,2),&unit->bl,AREA);
 	}
 #endif
-	WBUFW(buf, 0)=0x11f;
-	WBUFL(buf, 2)=unit->bl.id;
-	WBUFL(buf, 6)=unit->group->src_id;
-	WBUFW(buf,10)=unit->bl.x;
-	WBUFW(buf,12)=unit->bl.y;
-	if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
-		WBUFB(buf,14)=UNT_ATTACK_SKILLS;
-	else
-		WBUFB(buf,14)=unit->group->unit_id;
-	WBUFB(buf,15)=0;
-	clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 
 	return;
 }
@@ -12519,7 +12630,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 		WFIFOW(fd,2) = 43 + n*26;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 20110111
 	WFIFOW(fd,0) = 0x2d7;
 	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
 	WFIFOW(fd,28) = tsd->status.class_;
@@ -12584,6 +12695,74 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	}
 	if(n) {
 		WFIFOW(fd,2) = 43 + n*28;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#else
+	WFIFOW(fd,0) = 0x859;
+	memcpy(WFIFOP(fd,4), tsd->status.name, 24);
+	WFIFOW(fd,28) = tsd->status.class_;
+	WFIFOW(fd,30) = tsd->status.hair;
+	WFIFOW(fd,32) = tsd->status.head_bottom;
+	WFIFOW(fd,34) = tsd->status.head_mid;
+	WFIFOW(fd,36) = tsd->status.head_top;
+	WFIFOW(fd,38) = tsd->status.robe;
+	WFIFOW(fd,40) = tsd->status.hair_color;
+	WFIFOW(fd,42) = tsd->status.clothes_color;
+	WFIFOB(fd,44) = tsd->sex;
+
+	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+			continue;
+		WFIFOW(fd,n*28+45) = i + 2;
+		if(tsd->inventory_data[i]->view_id > 0)
+			WFIFOW(fd,n*28+47) = tsd->inventory_data[i]->view_id;
+		else
+			WFIFOW(fd,n*28+47) = tsd->status.inventory[i].nameid;
+		WFIFOB(fd,n*28+49) = tsd->inventory_data[i]->type;
+		WFIFOB(fd,n*28+50) = tsd->status.inventory[i].identify;
+		WFIFOW(fd,n*28+51) = pc_equippoint(tsd,i);
+		WFIFOW(fd,n*28+53) = tsd->status.inventory[i].equip;
+		WFIFOB(fd,n*28+55) = tsd->status.inventory[i].attribute;
+		WFIFOB(fd,n*28+56) = tsd->status.inventory[i].refine;
+		if(itemdb_isspecial(tsd->status.inventory[i].card[0])) {
+			if(tsd->inventory_data[i]->flag.pet_egg) {
+				WFIFOW(fd,n*28+57) = 0;
+				WFIFOW(fd,n*28+59) = 0;
+				WFIFOW(fd,n*28+61) = 0;
+			} else {
+				WFIFOW(fd,n*28+57) = tsd->status.inventory[i].card[0];
+				WFIFOW(fd,n*28+59) = tsd->status.inventory[i].card[1];
+				WFIFOW(fd,n*28+61) = tsd->status.inventory[i].card[2];
+			}
+			WFIFOW(fd,n*28+63) = tsd->status.inventory[i].card[3];
+		} else {
+			if(tsd->status.inventory[i].card[0] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[0])) > 0)
+				WFIFOW(fd,n*28+57) = j;
+			else
+				WFIFOW(fd,n*28+57) = tsd->status.inventory[i].card[0];
+			if(tsd->status.inventory[i].card[1] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[1])) > 0)
+				WFIFOW(fd,n*28+59) = j;
+			else
+				WFIFOW(fd,n*28+59) = tsd->status.inventory[i].card[1];
+			if(tsd->status.inventory[i].card[2] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[2])) > 0)
+				WFIFOW(fd,n*28+61) = j;
+			else
+				WFIFOW(fd,n*28+61) = tsd->status.inventory[i].card[2];
+			if(tsd->status.inventory[i].card[3] > 0 && (j = itemdb_viewid(tsd->status.inventory[i].card[3])) > 0)
+				WFIFOW(fd,n*28+63) = j;
+			else
+				WFIFOW(fd,n*28+63) = tsd->status.inventory[i].card[3];
+		}
+		WFIFOL(fd,n*28+65) = tsd->status.inventory[i].limit;
+		WFIFOW(fd,n*28+69) = 0;
+		if(tsd->inventory_data[i]->equip&LOC_HEAD_TMB)
+			WFIFOW(fd,n*28+71)=tsd->inventory_data[i]->look;
+		else
+			WFIFOW(fd,n*28+71)=0;
+		n++;
+	}
+	if(n) {
+		WFIFOW(fd,2) = 45 + n*28;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
