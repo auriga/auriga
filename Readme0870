@@ -1,4 +1,15 @@
 ----------------------------------------
+//0898 [2012/01/04] by popori
+
+・char.cのPACKETVERの不整合を修正 (src/char/char.c)
+　soldoutさんに感謝
+
+・SQLモード時、キャラデータロードに不正が生じるのを修正 (src/char/sql/chardb_sql.c)
+　soldoutさんに感謝
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+----------------------------------------
 //0897 [2011/12/31] by popori
 
 ・0896変更点の「dropableフラグが真の時はNPCで売却を不可とするよう変更」の条件式が間違えていたので修正 (src/map/npc.c)
