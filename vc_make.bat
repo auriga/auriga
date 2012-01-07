@@ -118,8 +118,8 @@ rem ---- VC++ 6.0 の設定ここまで
 
 rem ----------------------------------------------------------------
 rem SQL の設定 / 必要ならコメントアウトをはずす
-rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.0\Include;%INCLUDE%
-rem set LIB=C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt;%LIB%
+rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.5\include;%INCLUDE%
+rem set LIB=C:\Program Files\MySQL\MySQL Server 5.5\lib;%LIB%
 
 rem ----------------------------------------------------------------
 rem VC8以上 で指定できないオプションの回避処理

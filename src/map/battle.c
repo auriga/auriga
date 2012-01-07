@@ -4853,7 +4853,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 	}
 
-	if((damage = wd.damage + wd.damage2) > 0 && src != target && (t_sc && t_sc->data[SC_KYOMU].timer != -1)) {
+	if((damage = wd.damage + wd.damage2) > 0 && src != target && (t_sc && t_sc->data[SC_KYOMU].timer == -1)) {
 		if(t_sc && t_sc->data[SC_REFLECTDAMAGE].timer != -1) {	// リフレクトダメージ反射
 			int maxdamage, rddamage;
 			maxdamage = status_get_max_hp(target) * status_get_lv(target) / 100;
@@ -5455,7 +5455,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
-	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (sc && sc->data[SC_KYOMU].timer != -1)) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆虚無の影ではない
+	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (sc && sc->data[SC_KYOMU].timer == -1)) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆虚無の影ではない
 		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
 			if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
 				if(tsd) {	// 対象がPCの時
