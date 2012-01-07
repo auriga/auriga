@@ -1,4 +1,29 @@
 ----------------------------------------
+//0901 [2012/01/08] by popori
+
+・2012-01-04bRagexeの解析結果と、更新を行っていなかった解析済みのパケットをclient_packetへ追記 (doc/client_packet.txt)
+
+・スキル「KG_KYOMU」に魔法反射無効も付けてみる (src/map/battle.c)
+
+・battle_auriga.confに以下の設定項目を追加 (conf/battle_auriga.conf src/map/atcommand.c src/map/battle.* src/map/pc.c src/map/status.c)
+　// 拡張スーパーノービスのステータス限界
+　esnv_status_max: 120
+
+　// 養子拡張スーパーノービスのステータス限界
+　esnv_baby_status_max: 108
+
+　// 拡張スーパーノービスの秒間最大攻撃回数を設定。
+　// 単位はms(デフォルトは140で秒間7.1回の攻撃回数)
+　esnv_max_aspd: 140
+
+　// 影狼、朧のステータス限界
+　ko_status_max: 120
+
+　// 影狼、朧の秒間最大攻撃回数を設定。
+　// 単位はms(デフォルトは140で秒間7.1回の攻撃回数)
+　ko_max_aspd: 140
+
+----------------------------------------
 //0900 [2012/01/08] by popori
 
 ・スキル「KG_KYOMU」の反射無効の条件式を間違えていたので修正 (src/map/battle.c)

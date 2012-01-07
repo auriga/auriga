@@ -2228,6 +2228,14 @@ L_RECALC:
 		sd->aspd = battle_config.third_max_aspd;
 		sd->amotion = sd->aspd>>1;
 	}
+	else if(sd->s_class.job == PC_JOB_ESNV) {
+		sd->aspd = battle_config.esnv_max_aspd;
+		sd->amotion = sd->aspd>>1;
+	}
+	else if(sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB) {
+		sd->aspd = battle_config.ko_max_aspd;
+		sd->amotion = sd->aspd>>1;
+	}
 	else if(!pc_is3rdclass(sd) && sd->aspd < battle_config.max_aspd) {
 		sd->aspd = battle_config.max_aspd;
 		sd->amotion = sd->aspd>>1;

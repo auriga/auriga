@@ -5521,7 +5521,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				clif_damage(src,src,tick, dmg.amotion,0,rdamage,1,4,0,0);
 		}
 	}
-	if(attack_type&BF_MAGIC && damage > 0 && src != bl) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う
+	if(attack_type&BF_MAGIC && damage > 0 && src != bl && (sc && sc->data[SC_KYOMU].timer == -1)) {	// 魔法スキル＆ダメージあり＆使用者と対象者が違う＆虚無の影状態ではない
 		if(tsd && src == dsrc) {	// 対象がPCの時
 			if(tsd->magic_damage_return > 0 && atn_rand()%100 < tsd->magic_damage_return) {	// 魔法攻撃跳ね返し？※
 				rdamage = damage;
@@ -6786,6 +6786,11 @@ int battle_config_read(const char *cfgName)
 		{ "max_buyingstore_amount",             &battle_config.max_buyingstore_amount,             9999     },
 		{ "allow_same_activeitem",              &battle_config.allow_same_activeitem,              0        },
 		{ "disable_transform_when_gvg",         &battle_config.disable_transform_when_gvg,         1        },
+		{ "esnv_status_max",                    &battle_config.esnv_status_max,                    120      },
+		{ "esnv_baby_status_max",               &battle_config.esnv_baby_status_max,               108      },
+		{ "esnv_max_aspd",                      &battle_config.esnv_max_aspd,                      140      },
+		{ "ko_status_max",                      &battle_config.ko_status_max,                      120      },
+		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
 		{ NULL,                                 NULL,                                              0        },
 	};
 
