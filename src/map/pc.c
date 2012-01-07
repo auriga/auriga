@@ -69,11 +69,11 @@ static int exp_table[20][MAX_LEVEL];
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 
 // JOB TABLE
-//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC
+//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC,ESNV,KG,OB
 int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 通常
-	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 転生
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 養子
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 通常
+	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 転生
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 養子
 };
 
 static const unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
@@ -748,7 +748,8 @@ int pc_equippoint(struct map_session_data *sd,int n)
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
 		if(look == 1 || look == 2 || look == 6) {
-			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC))
+			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC ||
+				pc_checkskill(sd,KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB))
 				return 34;
 		}
 	}
@@ -945,6 +946,11 @@ static int pc_check_useclass(struct map_session_data *sd, unsigned int class_)
 		case PC_JOB_SC:		// シャドウチェイサー
 			// 暫定ローグと同等
 			job_bit = 0x00020000;
+			break;
+		case PC_JOB_KG:		// 影狼
+		case PC_JOB_OB:		// 朧
+			// 暫定忍者と同等
+			job_bit = 0x20000000;
 			break;
 		default:
 			return 0;
@@ -5152,6 +5158,14 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_NC;
 			bj.upper = PC_UPPER_BABY;
 			break;
+		case PC_CLASS_KG:
+			bj.job   = PC_JOB_KG;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_OB:
+			bj.job   = PC_JOB_OB;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
 		default:
 			bj.job   = PC_JOB_NV;
 			bj.upper = PC_UPPER_NORMAL;
@@ -5266,6 +5280,12 @@ int pc_calc_class_job(int job, int upper)
 				class_ = job - PC_JOB_LG + PC_CLASS_LG_B;
 			else
 				class_ = job - PC_JOB_LG + PC_CLASS_LG;
+			break;
+		case PC_JOB_KG:
+			class_ = PC_CLASS_KG;
+			break;
+		case PC_JOB_OB:
+			class_ = PC_CLASS_OB;
 			break;
 	}
 
@@ -5648,6 +5668,8 @@ int pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
 		case PC_CLASS_ESNV:	// 拡張スーパーノービス
 		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
+		case PC_CLASS_KG:	// 影狼
+		case PC_CLASS_OB:	// 朧
 			table = 7;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -5830,6 +5852,8 @@ int pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
 		case PC_CLASS_ESNV:	// 拡張スーパーノービス
 		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
+		case PC_CLASS_KG:	// 影狼
+		case PC_CLASS_OB:	// 朧
 			table = 18;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -7318,7 +7342,11 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 
 	if((sd->sex == SEX_FEMALE && job == PC_JOB_BA) || (sd->sex == SEX_MALE && job == PC_JOB_DC) ||
 	   (sd->sex == SEX_FEMALE && job == PC_JOB_MI) || (sd->sex == SEX_MALE && job == PC_JOB_WA) ||
-	   sd->status.class_ == b_class)	// はバードになれない、♂はダンサーになれない
+	   sd->status.class_ == b_class)	// SEX_FEMALEはバードになれない、SEX_MALEはダンサーになれない
+		return 1;
+
+	if((sd->sex == SEX_FEMALE && job == PC_JOB_KG) || (sd->sex == SEX_MALE && job == PC_JOB_OB) ||
+	   sd->status.class_ == b_class)	// SEX_FEMALEは影狼になれない、SEX_MALEは朧になれない
 		return 1;
 
 	sd->status.class_ = sd->view_class = b_class;
@@ -8047,7 +8075,8 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	// 二刀流処理
 	if( pos == LOC_RLARM && 	// 一応、装備要求箇所が二刀流武器かチェックする
 	    id->equip == LOC_RARM &&	// 単手武器
-	    (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC) ) // 左手修錬有
+	    (pc_checkskill(sd, AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC ||
+	     pc_checkskill(sd, KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB) ) // 左手修錬有
 	{
 		int tpos = 0;
 		if(sd->equip_index[8] >= 0)

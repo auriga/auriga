@@ -136,6 +136,14 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		case Job_SuperNovice:
 			setarray '@job_id,Job_ExpandedSuperNovice;
 			break;
+		case Job_Ninja:
+			if(Sex) {
+				setarray '@job_id,Job_Kagerou;
+			}
+			else {
+				setarray '@job_id,Job_Oboro;
+			}
+			break;
 	}
 	if('@job_id[0] == 0) {
 		mes "[転職カプラ]";
@@ -352,6 +360,12 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 			case Job_ExpandedSuperNovice:
 				set '@job_name$['@i],"拡張スーパーノービス";
 				break;
+			case Job_Kagerou:
+				set '@job_name$['@i],"影狼";
+				break;
+			case Job_Oboro:
+				set '@job_name$['@i],"朧";
+				break;
 		}
 	}
 	set '@job_name$['@max],"やめる";
@@ -525,6 +539,29 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 			if(BaseLevel < 99) {
 				mes "[転職カプラ]";
 				mes "拡張スーパーノービスに転職するには";
+				mes "Baseレベルが99必要です。";
+				mes "Baseレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			break;
+		case Job_Kagerou:
+		case Job_Oboro:
+			if(JobLevel < 70) {
+				mes "[転職カプラ]";
+				mes '@job_name$[0] + "に転職するには";
+				mes "Jobレベルが70必要です。";
+				mes "Jobレベルを上げてきてから";
+				mes "またお越しください。";
+				close2;
+				cutin "kafra_04",255;
+				end;
+			}
+			if(BaseLevel < 99) {
+				mes "[転職カプラ]";
+				mes '@job_name$[0] + "に転職するには";
 				mes "Baseレベルが99必要です。";
 				mes "Baseレベルを上げてきてから";
 				mes "またお越しください。";

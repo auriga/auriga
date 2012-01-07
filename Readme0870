@@ -1,4 +1,22 @@
 ----------------------------------------
+//0899 [2012/01/08] by popori
+
+・影狼、朧の実装
+ (src/common/mmo.h src/char/char.c src/map/battle.c src/map/pc.* src/map/script.c src/map/skill.* src/map/status.*
+　src/map/unit.c db/const.txt db/job_db*.txt script/sample/npc_custom_jobchange.txt db/skill_db.txt db/skill_db2.txt
+　db/skill_cast_db.txt db/skill_require_db.txt db/skill_require_db2.txt db/skill_tree.txt db/scdata_db.txt db/item_arrowtype.txt
+　db/item_db.txt db/skill_unit_db.txt)
+
+　※JobボーナスとHP,SPは現行Aurigaの忍者と同一で暫定
+　　基本ASPDはリニューアル後の忍者と同一で暫定
+
+・packet_db.txtの修正 (db/packet_db.txt)
+　うに〜くさんに感謝
+
+・mob_avail.txtの読み込み修正 (db/mob_avail.txt)
+　うに〜くさんに感謝
+
+----------------------------------------
 //0898 [2012/01/04] by popori
 
 ・char.cのPACKETVERの不整合を修正 (src/char/char.c)

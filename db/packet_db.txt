@@ -3085,7 +3085,7 @@
 0x0362,5,hommenu,4
 0x0364,8,movefromkafra,2:4
 0x0365,18,bookingregreq,2:4:6:8:10:12:14:16
-0x0366,90,useskilltoposinfo,2:4:6:8:10
+0x0366,90,useskilltopos,2:4:6:8:10
 0x0368,6,solvecharname,2
 0x0369,7,actionrequest,2:6
 0x0437,5,walktoxy,2

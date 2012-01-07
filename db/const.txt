@@ -53,6 +53,8 @@ Job_Shura		39
 Job_Genetic		40
 Job_ShadowChaser	41
 Job_ExpandedSuperNovice	42
+Job_Kagerou	43
+Job_Oboro	44
 
 //Class定義値
 CLASS_NV	0

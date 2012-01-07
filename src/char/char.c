@@ -1406,21 +1406,29 @@ int parse_tologin(int fd)
 				for(i=0;i<found_char;i++){
 					int flag = 0;
 					memcpy(&st,&csd.found_char[i]->st,sizeof(struct mmo_charstatus));
-					// 雷鳥は職も変更
+					// 雷鳥、影狼、朧は職も変更
 					if(st.class_ == PC_CLASS_BA || st.class_ == PC_CLASS_DC) {
 						flag = 1; st.class_ = (sex ? PC_CLASS_BA : PC_CLASS_DC);
 					} else if(st.class_ == PC_CLASS_BA_H || st.class_ == PC_CLASS_DC_H) {
 						flag = 1; st.class_ = (sex ? PC_CLASS_BA_H : PC_CLASS_DC_H);
 					} else if(st.class_ == PC_CLASS_BA_B || st.class_ == PC_CLASS_DC_B) {
 						flag = 1; st.class_ = (sex ? PC_CLASS_BA_B : PC_CLASS_DC_B);
+					} else if(st.class_ == PC_CLASS_MI || st.class_ == PC_CLASS_WA) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_MI : PC_CLASS_WA);
+					} else if(st.class_ == PC_CLASS_MI_H || st.class_ == PC_CLASS_WA_H) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_MI_H : PC_CLASS_WA_H);
+					} else if(st.class_ == PC_CLASS_MI_B || st.class_ == PC_CLASS_WA_B) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_MI_B : PC_CLASS_WA_B);
+					} else if(st.class_ == PC_CLASS_KG || st.class_ == PC_CLASS_OB) {
+						flag = 1; st.class_ = (sex ? PC_CLASS_KG : PC_CLASS_OB);
 					}
 					if(flag) {
-						// 雷鳥装備外し
+						// 雷鳥、影狼、朧装備外し
 						int j;
 						for(j=0;j<MAX_INVENTORY;j++) {
 							if(st.inventory[j].equip) st.inventory[j].equip=0;
 						}
-						// 雷鳥スキルリセット
+						// 雷鳥、影狼、朧スキルリセット
 						for(j=0;j<MAX_PCSKILL;j++) {
 							if(st.skill[j].id>0 && !st.skill[j].flag){
 								st.skill_point += st.skill[j].lv;

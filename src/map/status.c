@@ -188,7 +188,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 530- */
 	SI_LIFE_FORCE_F,SI_PROMOTE_HEALTH_RESERCH,SI_ENERGY_DRINK_RESERCH,SI_EXTRACT_WHITE_POTION_Z,SI_VITATA_500,SI_EXTRACT_SALAMINE_JUICE,SI_SAVAGE_STEAK,SI_COCKTAIL_WARG_BLOOD,SI_MINOR_BBQ,SI_SIROMA_ICE_TEA,
 	/* 540- */
-	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_BLANK,
 
 };
 
@@ -1840,6 +1840,11 @@ L_RECALC:
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1140 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1867)) {
 			sd->matk1 += 25;
 			sd->matk2 += 25;
+		}
+		// 十六夜
+		if(sd->sc.data[SC_IZAYOI].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_IZAYOI].val2;
+			sd->matk2 += sd->sc.data[SC_IZAYOI].val2;
 		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
@@ -6064,6 +6069,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_VACUUM_EXTREME:		/* バキュームエクストリーム */
 		case SC_THORNS_TRAP:		/* ソーントラップ */
 		case SC_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
+		case SC_KG_KAGEHUMI:		/* 影踏み */
+		case SC_KYOMU:				/* 虚無の影 */
+		case SC_AKAITSUKI:			/* 紅月 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -6189,6 +6197,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
+		case SC_IZAYOI:				/* 十六夜 */
 			calc_flag = 1;
 			break;
 
@@ -7295,6 +7304,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
+		case SC_KAGEMUSYA:		/* 影武者 */
+			calc_flag = 1;
+			tick = 1000;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -7837,6 +7850,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
+		case SC_IZAYOI:				/* 十六夜 */
+		case SC_KG_KAGEHUMI:		/* 影踏み */
+		case SC_KYOMU:				/* 虚無の影 */
+		case SC_KAGEMUSYA:			/* 影武者 */
+		case SC_AKAITSUKI:			/* 紅月 */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -9103,8 +9121,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_RENOVATIO:		/* レノヴァティオ */
 		if((--sc->data[type].val3) > 0) {
 			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
-			if(heal)
-				unit_heal(bl, heal, 0);
+			if(heal) {
+				if(sc->data[SC_AKAITSUKI].timer != -1)
+					unit_fixdamage(bl,bl,gettick(),0,status_get_dmotion(bl),heal,0,0,0,0);
+				else
+					unit_heal(bl, heal, 0);
+			}
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -9389,6 +9411,15 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			unit_heal(bl, -hp, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_KAGEMUSYA:	/* 影武者 */
+		if(sd) {
+			if(sd->status.sp >= 1) {
+				sd->status.sp -= 1;
+				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
 		}
 		break;
 	}

@@ -937,6 +937,14 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	sc = status_get_sc(src);
 
+	// 虚無の影中はスキル使用に失敗することがある(確率暫定)
+	if(sc && sc->data[SC_KYOMU].timer != -1) {
+		if(atn_rand()%100 < 10) {
+			if(src_sd)
+				clif_skill_fail(src_sd,skill_num,0,0,0);
+		}
+	}
+
 	// ターゲットの自動選択
 	switch(skill_num) {
 	case TK_STORMKICK:		/* 旋風蹴り */
@@ -1274,6 +1282,14 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	sc = status_get_sc(src);
 
+	// 虚無の影中はスキル使用に失敗することがある(確率暫定)
+	if(sc && sc->data[SC_KYOMU].timer != -1) {
+		if(atn_rand()%100 < 10) {
+			if(src_sd)
+				clif_skill_fail(src_sd,skill_num,0,0,0);
+		}
+	}
+
 	// スキル制限
 	zone = skill_get_zone(skill_num);
 	if(zone) {
@@ -1554,7 +1570,8 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_DIAMONDDUST].timer != -1 ||	// ダイヤモンドダスト
 		    sc->data[SC_VACUUM_EXTREME].timer != -1 ||	// バキュームエクストリーム
 		    sc->data[SC_THORNS_TRAP].timer != -1 ||	// ソーントラップ
-		    sc->data[SC_BANANA_BOMB].timer != -1	// バナナ爆弾
+		    sc->data[SC_BANANA_BOMB].timer != -1 ||	// バナナ爆弾
+			sc->data[SC_KG_KAGEHUMI].timer != -1	// 影踏み
 		)
 			return 0;
 

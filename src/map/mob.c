@@ -3872,7 +3872,7 @@ static int mob_readdb_mobavail(void)
 			continue;
 		memset(str,0,sizeof(str));
 
-		for(j=0,p=line;j<14;j++){
+		for(j=0,p=line;j<15;j++){
 			if((np=strchr(p,','))!=NULL){
 				str[j]=p;
 				*np=0;

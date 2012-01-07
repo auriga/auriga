@@ -513,6 +513,11 @@
 541,SC_PUTTI_TAILS_NOODLES,0,1,0,0	// プティットのしっぽ麺
 542,SC_STOMACHACHE,0,1,0,0		// 腹痛
 543,SC_MONSTER_TRANSFORM,1,1,0,0		// モンスター変身
+544,SC_IZAYOI,1,75,0,0		// 十六夜
+545,SC_KG_KAGEHUMI,0,0,0,0		// 影踏み
+546,SC_KYOMU,0,0,0,0		// 虚無の影
+547,SC_KAGEMUSYA,0,0,0,0		// 影武者
+548,SC_AKAITSUKI,0,0,0,0		// 紅月
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

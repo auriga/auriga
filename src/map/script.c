@@ -7940,11 +7940,11 @@ int buildin_changesex(struct script_state *st)
 
 	if(sd->sex==SEX_FEMALE){
 		sd->sex=SEX_MALE;
-		if(sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)
+		if(sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA || sd->s_class.job == PC_JOB_OB)
 			sd->status.class_ -= 1;
 	} else {
 		sd->sex=SEX_FEMALE;
-		if(sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI)
+		if(sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI || sd->s_class.job == PC_JOB_KG)
 			sd->status.class_ += 1;
 	}
 	chrif_changesex(sd->status.account_id,sd->sex);
@@ -12289,6 +12289,10 @@ int buildin_getbaseclass(struct script_state *st)
 		case PC_CLASS_DK:
 		case PC_CLASS_DA:
 			class_ = PC_CLASS_MB;
+			break;
+		case PC_CLASS_KG:
+		case PC_CLASS_OB:
+			class_ = PC_CLASS_NJ;
 			break;
 		}
 	}

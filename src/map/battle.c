@@ -1527,6 +1527,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
 				break;
 			}
+			// 影武者
+			if(sc && sc->data[SC_KAGEMUSYA].timer != -1) {
+				if((skill = sc->data[SC_KAGEMUSYA].val1) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < skill*5) {
+					calc_flag.da = 1;
+					calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
+				}
+				break;
+			}
 			// チェーンアクション
 			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
 				calc_flag.da = 1;
@@ -1661,6 +1669,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case MO_INVESTIGATE:		// 発勁
 		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
 		case NJ_ISSEN:			// 一閃
+		case KO_BAKURETSU:		// 爆裂苦無
 			calc_flag.hitrate = 1000000;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
@@ -1699,6 +1708,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_RANGEATTACK:		// 遠距離攻撃
 		case NJ_ZENYNAGE:		// 銭投げ
 		case NPC_CRITICALWOUND:		// 致命傷攻撃
+		case KO_MUCHANAGE:			// 無茶投げ
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case PA_SHIELDCHAIN:		// シールドチェイン
@@ -2847,6 +2857,53 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 			break;
+		case KO_SETSUDAN:		// 霊魂絶断
+			DMG_FIX( 100 * skill_lv, 100 );
+			status_change_soulclear(target);
+			break;
+		case KO_BAKURETSU:		// 爆裂苦無
+			{
+				int rate = (src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU) : 1;
+				rate *= 10 * skill_lv;
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case KO_HAPPOKUNAI:		// 八方苦無
+			{
+				int rate = 50 + skill_lv * 10;
+				if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
+					rate *= src_sd->arrow_atk;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case KO_MUCHANAGE:	// 無茶投げ
+			{
+				int dmg = 0;
+				if(src_sd) {
+					dmg = src_sd->zenynage_damage;
+				} else {
+					dmg = skill_get_zeny(KO_MUCHANAGE,skill_lv)/2;
+					if(dmg > 0)
+						dmg += atn_rand()%dmg;
+					else
+						dmg = 5000*skill_lv + atn_rand()%(5000*skill_lv);
+				}
+				if(wflag > 1)
+					dmg /= wflag;
+				if(t_mode & 0x20)
+					dmg /= 2;
+				DMG_SET( dmg );
+				calc_flag.nocardfix = 1;
+			}
+			break;
+		case KO_HUUMARANKA:	// 風魔手裏剣乱華
+			{
+				int rate = (src_sd)? pc_checkskill(src_sd, NJ_HUUMA) : 1;
+				rate *= status_get_agi(src) + status_get_dex(src) + 150 * skill_lv;
+				DMG_FIX( rate, 100 );
+			}
+			break;
 		case 0:			// 通常攻撃
 			DMG_FIX( 100, 100 );
 			break;
@@ -2867,6 +2924,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CR_ACIDDEMONSTRATION:
 		case NJ_ZENYNAGE:
 		case GN_FIRE_EXPANSION_ACID:
+		case KO_MUCHANAGE:
 			break;
 		default:
 			if( wd.type != 0 )	// クリティカル時は無効
@@ -2937,6 +2995,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_CRITICALSLASH:
 		case GS_PIERCINGSHOT:
 		case GN_FIRE_EXPANSION_ACID:
+		case KO_MUCHANAGE:
 			break;
 		default:
 			if(wd.type != 0)	// クリティカル時は無効
@@ -3125,6 +3184,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case CR_ACIDDEMONSTRATION:
 			case NJ_ZENYNAGE:
 			case GN_FIRE_EXPANSION_ACID:
+			case KO_MUCHANAGE:
 				break;
 			default:
 				wd.damage += status_get_atk2(src);
@@ -3199,6 +3259,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    case NJ_ZENYNAGE:
 		    case LG_RAYOFGENESIS:
 		    case GN_FIRE_EXPANSION_ACID:
+			case KO_MUCHANAGE:
 				break;
 			default:
 				if(skill_lv < 0)
@@ -3424,6 +3485,50 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix += t_sc->data[SC_ORATIO].val2;
 		if(t_sc->data[SC_DEEP_SLEEP].timer != -1)		// 安息の子守唄
 			cardfix += 50;
+		if(skill_num == KO_SETSUDAN) {	// KO_SETSUDANの魂ボーナス
+			int soul_lv = 0;
+			if(t_sc->data[SC_ALCHEMIST].timer != -1)
+				soul_lv = t_sc->data[SC_ALCHEMIST].val1;
+			else if(t_sc->data[SC_MONK].timer != -1)
+				soul_lv = t_sc->data[SC_MONK].val1;
+			else if(t_sc->data[SC_STAR].timer != -1)
+				soul_lv = t_sc->data[SC_STAR].val1;
+			else if(t_sc->data[SC_SAGE].timer != -1)
+				soul_lv = t_sc->data[SC_SAGE].val1;
+			else if(t_sc->data[SC_CRUSADER].timer != -1)
+				soul_lv = t_sc->data[SC_CRUSADER].val1;
+			else if(t_sc->data[SC_SUPERNOVICE].timer != -1)
+				soul_lv = t_sc->data[SC_SUPERNOVICE].val1;
+			else if(t_sc->data[SC_KNIGHT].timer != -1)
+				soul_lv = t_sc->data[SC_KNIGHT].val1;
+			else if(t_sc->data[SC_WIZARD].timer != -1)
+				soul_lv = t_sc->data[SC_WIZARD].val1;
+			else if(t_sc->data[SC_PRIEST].timer != -1)
+				soul_lv = t_sc->data[SC_PRIEST].val1;
+			else if(t_sc->data[SC_BARDDANCER].timer != -1)
+				soul_lv = t_sc->data[SC_BARDDANCER].val1;
+			else if(t_sc->data[SC_ROGUE].timer != -1)
+				soul_lv = t_sc->data[SC_ROGUE].val1;
+			else if(t_sc->data[SC_ASSASIN].timer != -1)
+				soul_lv = t_sc->data[SC_ASSASIN].val1;
+			else if(t_sc->data[SC_BLACKSMITH].timer != -1)
+				soul_lv = t_sc->data[SC_BLACKSMITH].val1;
+			else if(t_sc->data[SC_HUNTER].timer != -1)
+				soul_lv = t_sc->data[SC_HUNTER].val1;
+			else if(t_sc->data[SC_SOULLINKER].timer != -1)
+				soul_lv = t_sc->data[SC_SOULLINKER].val1;
+			else if(t_sc->data[SC_HIGH].timer != -1)
+				soul_lv = t_sc->data[SC_HIGH].val1;
+			else if(t_sc->data[SC_DEATHKINGHT].timer != -1)
+				soul_lv = t_sc->data[SC_DEATHKINGHT].val1;
+			else if(t_sc->data[SC_COLLECTOR].timer != -1)
+				soul_lv = t_sc->data[SC_COLLECTOR].val1;
+			else if(t_sc->data[SC_NINJA].timer != -1)
+				soul_lv = t_sc->data[SC_NINJA].val1;
+			else if(t_sc->data[SC_GUNNER].timer != -1)
+				soul_lv = t_sc->data[SC_GUNNER].val1;
+			cardfix += 10 * soul_lv;
+		}
 		if(cardfix != 100) {
 			DMG_FIX( cardfix, 100 );	// ステータス異常補正によるダメージ減少
 		}
@@ -3550,10 +3655,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		// 右手修練(60% 〜 100%) 右手全般
 		skill = pc_checkskill(src_sd,AS_RIGHT);
 		wd.damage = wd.damage * (50 + (skill * 10))/100;
+		// 右手修練(80% 〜 120%) 右手全般
+		skill = pc_checkskill(src_sd,KO_RIGHT);
+		wd.damage = wd.damage * (70 + (skill * 10))/100;
 		if(dmg > 0 && wd.damage < 1) wd.damage = 1;
 		// 左手修練(40% 〜 80%) 左手全般
 		skill = pc_checkskill(src_sd,AS_LEFT);
 		wd.damage2 = wd.damage2 * (30 + (skill * 10))/100;
+		// 左手修練(60% 〜 100%) 左手全般
+		skill = pc_checkskill(src_sd,KO_LEFT);
+		wd.damage2 = wd.damage2 * (50 + (skill * 10))/100;
 		if(dmg2 > 0 && wd.damage2 < 1) wd.damage2 = 1;
 	} else {
 		wd.damage2 = 0;	// 念のため0を明示しておく
@@ -4030,6 +4141,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				matk1 += sc->data[SC_ENCHANTBLADE].val2;
 				matk2 += sc->data[SC_ENCHANTBLADE].val2;
 			}
+			break;
+		case AB_HIGHNESSHEAL:	// ハイネスヒール
+			mgd.damage = skill_calc_heal(bl,skill_lv)/2;
+			mgd.damage *= (170 + 30 * skill_lv) / 100;
+			if(sd)	// メディタティオを乗せる
+				mgd.damage += mgd.damage * pc_checkskill(sd,HP_MEDITATIO)*2/100;
+			normalmagic_flag = 0;
 			break;
 		case AB_JUDEX:		// ジュデックス
 			MATK_FIX( ((skill_lv < 5)? 280 + 20 * skill_lv: 400) * status_get_lv(bl) / 100, 100 );
@@ -4735,7 +4853,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 	}
 
-	if((damage = wd.damage + wd.damage2) > 0 && src != target) {
+	if((damage = wd.damage + wd.damage2) > 0 && src != target && (t_sc && t_sc->data[SC_KYOMU].timer != -1)) {
 		if(t_sc && t_sc->data[SC_REFLECTDAMAGE].timer != -1) {	// リフレクトダメージ反射
 			int maxdamage, rddamage;
 			maxdamage = status_get_max_hp(target) * status_get_lv(target) / 100;
@@ -5337,7 +5455,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
-	if(attack_type&BF_WEAPON && damage > 0 && src != bl) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う
+	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (sc && sc->data[SC_KYOMU].timer != -1)) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆虚無の影ではない
 		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
 			if(dmg.flag&BF_SHORT) {	// 近距離攻撃時
 				if(tsd) {	// 対象がPCの時
