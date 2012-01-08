@@ -1223,7 +1223,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		int watk   = (lh == 0)? status_get_atk(src): status_get_atk_(src);
 		int dex    = status_get_dex(src);
 		int t_size = status_get_size(target);
-		int idx    = (lh == 0)? sd->equip_index[9]: sd->equip_index[8];
+		int idx    = (lh == 0)? sd->equip_index[EQUIP_INDEX_RARM]: sd->equip_index[EQUIP_INDEX_LARM];
 
 		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc && sc->data[SC_CHANGE].timer != -1)) {
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
@@ -2289,7 +2289,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd) {
 				int s_dex = status_get_dex(src);
 				int s_luk = status_get_luk(src);
-				int idx   = src_sd->equip_index[8];
+				int idx   = src_sd->equip_index[EQUIP_INDEX_LARM];
 				DMG_SET( s_str+(s_str/10)*(s_str/10)+(s_dex/5)+(s_luk/5) );
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
 					DMG_ADD( src_sd->status.inventory[idx].refine*4 + src_sd->inventory_data[idx]->weight/10 );
@@ -2527,7 +2527,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int dmg = 100;
 				if(src_sd) {
-					int idx = src_sd->equip_index[9];
+					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
 					if(idx >= 0 && src_sd->inventory_data[idx])
 						dmg += 100 * src_sd->inventory_data[idx]->refine * src_sd->inventory_data[idx]->wlv;
 				}
@@ -2617,7 +2617,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NC_AXEBOOMERANG:	// アックスブーメラン
 			if(src_sd) {
-				int idx = src_sd->equip_index[9];
+				int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
 				DMG_FIX( (160 + 40 * skill_lv + src_sd->inventory_data[idx]->weight/10) * status_get_lv(src) / 150, 100 );
 			} else {
@@ -2655,7 +2655,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case LG_SHIELDPRESS:	// シールドプレス
 			if(src_sd) {
-				int idx = src_sd->equip_index[8];
+				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
 					DMG_FIX( (150 * skill_lv + status_get_str(src) + src_sd->inventory_data[idx]->weight/10) * status_get_lv(src) / 100, 100);
 				}
@@ -2675,7 +2675,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case LG_SHIELDSPELL:	// シールドスペル
 			if(src_sd) {
-				int idx = src_sd->equip_index[8];
+				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
 					DMG_FIX( 1000 + src_sd->inventory_data[idx]->def * 100, 100 );
 				}
@@ -2707,7 +2707,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case LG_EARTHDRIVE:	// アースドライブ
 			if(src_sd) {
-				int idx = src_sd->equip_index[8];
+				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
 					DMG_FIX( ((100 + 100 * skill_lv) * src_sd->inventory_data[idx]->weight / 1000) * status_get_lv(src) / 100, 100 );
 			} else {
@@ -3194,8 +3194,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			switch (skill_num) {
 			case CR_SHIELDBOOMERANG:	// シールドブーメラン
-				if(src_sd->equip_index[8] >= 0) {
-					int idx = src_sd->equip_index[8];
+				if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
+					int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 					if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
 						wd.damage += src_sd->inventory_data[idx]->weight/10;
 						wd.damage += src_sd->status.inventory[idx].refine * status_get_overrefine_bonus(0);
@@ -3203,8 +3203,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				break;
 			case LK_SPIRALPIERCE:		// スパイラルピアース
-				if(src_sd->equip_index[9] >= 0) {	// {((STR/10)^2 ＋ 武器重量×スキル倍率×0.8) × サイズ補正 ＋ 精錬}×カード倍率×属性倍率×5の模様
-					int idx = src_sd->equip_index[9];
+				if(src_sd->equip_index[EQUIP_INDEX_RARM] >= 0) {	// {((STR/10)^2 ＋ 武器重量×スキル倍率×0.8) × サイズ補正 ＋ 精錬}×カード倍率×属性倍率×5の模様
+					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
 					if(src_sd->inventory_data[idx] && itemdb_isweapon(src_sd->inventory_data[idx]->nameid)) {
 						wd.damage = ( ( (s_str/10)*(s_str/10) + src_sd->inventory_data[idx]->weight * (skill_lv * 4 + 8 ) / 100 )
 									* (5 - t_size) / 4 + status_get_atk2(src) ) * 5;
@@ -3212,8 +3212,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				break;
 			case PA_SHIELDCHAIN:		// シールドチェイン
-				if(src_sd->equip_index[8] >= 0) {
-					int idx = src_sd->equip_index[8];
+				if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
+					int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 					if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
 						int refinedamage = 2*(src_sd->status.inventory[idx].refine-4) + src_sd->status.inventory[idx].refine * src_sd->status.inventory[idx].refine;
 						wd.damage = wd.damage * (100+30*skill_lv)/100;
@@ -3577,8 +3577,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		break;
 	case LG_SHIELDPRESS:	// シールドプレス
 		if(src_sd) {
-			if(src_sd->equip_index[8] >= 0) {
-				int idx = src_sd->equip_index[8];
+			if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
+				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 				if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
 					DMG_ADD( src_sd->status.inventory[idx].refine * status_get_vit(src) );
 				}
@@ -4227,7 +4227,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case LG_SHIELDSPELL:	// シールドスペル
 			if(sd) {
-				int idx = sd->equip_index[8];
+				int idx = sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
 					//MATK_FIX( 1000 + sd->inventory_data[idx]->mdef * 100, 100 );
 					MATK_FIX( 1000 + sd->inventory_data[idx]->def * 50, 100 );		// 暫定でDef/2
@@ -6232,7 +6232,7 @@ int battle_delarrow(struct map_session_data* sd,int num,int skillid)
 		mask = skill_get_arrow_type(skillid);
 	}
 
-	idx = sd->equip_index[10];
+	idx = sd->equip_index[EQUIP_INDEX_LACCESSORY];
 	if(idx >= 0 && sd->status.inventory[idx].amount >= num && sd->inventory_data[idx]->arrow_type & mask) {
 		if(battle_config.arrow_decrement)
 			pc_delitem(sd,idx,num,0,0);
@@ -6791,6 +6791,7 @@ int battle_config_read(const char *cfgName)
 		{ "esnv_max_aspd",                      &battle_config.esnv_max_aspd,                      140      },
 		{ "ko_status_max",                      &battle_config.ko_status_max,                      120      },
 		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
+		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

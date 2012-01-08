@@ -65,6 +65,8 @@ CREATE TABLE `char_data` (
   `costume_head_top` smallint(6) NOT NULL default '0',
   `costume_head_mid` smallint(6) NOT NULL default '0',
   `costume_head_bottom` smallint(6) NOT NULL default '0',
+  `costume_robe` smallint(6) NOT NULL default '0',
+  `costume_floor` smallint(6) NOT NULL default '0',
   `last_map` varchar(24) NOT NULL default 'new_5-1.gat',
   `last_x` smallint(6) NOT NULL default '53',
   `last_y` smallint(6) NOT NULL default '111',

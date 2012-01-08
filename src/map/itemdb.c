@@ -199,8 +199,7 @@ int itemdb_isequip2(struct item_data *data)
 	int result=0;
 
 	if(data) {
-		int type = data->type;
-		switch(type) {
+		switch(data->type) {
 			case ITEMTYPE_HEAL:
 			case ITEMTYPE_SPECIAL:
 			case ITEMTYPE_EVENT:
@@ -239,6 +238,7 @@ int itemdb_isequip3(int nameid)
 		case ITEMTYPE_ARMORMB:
 		case ITEMTYPE_ARMORTMB:
 		case ITEMTYPE_GUN:
+		case ITEMTYPE_COSTUME:
 			result = 1;
 			break;
 		default:
@@ -288,6 +288,7 @@ int itemdb_isarmor(int nameid)
 		case ITEMTYPE_ARMORTB:
 		case ITEMTYPE_ARMORMB:
 		case ITEMTYPE_ARMORTMB:
+		case ITEMTYPE_COSTUME:
 			result = 1;
 			break;
 		default:

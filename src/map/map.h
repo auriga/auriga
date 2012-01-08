@@ -157,6 +157,28 @@ enum {
 	WT_DOUBLE_MAX		// 二刀流最大値
 };
 
+// 装備インデックス
+enum e_equip_index
+{
+	EQUIP_INDEX_LACCESSORY		= 0,
+	EQUIP_INDEX_RACCESSORY		= 1,
+	EQUIP_INDEX_SHOES			= 2,
+	EQUIP_INDEX_ROBE			= 3,
+	EQUIP_INDEX_HEAD			= 4,
+	EQUIP_INDEX_HEAD3			= 5,
+	EQUIP_INDEX_HEAD2			= 6,
+	EQUIP_INDEX_BODY			= 7,
+	EQUIP_INDEX_LARM			= 8,
+	EQUIP_INDEX_RARM			= 9,
+	EQUIP_INDEX_ARROW			= 10,
+	EQUIP_INDEX_COSTUME_HEAD	= 11,
+	EQUIP_INDEX_COSTUME_HEAD3	= 12,
+	EQUIP_INDEX_COSTUME_HEAD2	= 13,
+	EQUIP_INDEX_COSTUME_ROBE	= 14,
+	EQUIP_INDEX_COSTUME_FLOOR	= 15,
+	EQUIP_INDEX_MAX				= 16,
+};
+
 struct block_list {
 	struct block_list *next,*prev;
 	int id;
@@ -389,7 +411,7 @@ struct map_session_data {
 	struct linkdb_node *inventory_timer;
 	unsigned int inventory_sortkey;
 	unsigned int cart_sortkey;
-	short equip_index[11];
+	short equip_index[EQUIP_INDEX_MAX];
 	unsigned short unbreakable_equip;
 	int weight,max_weight;
 	int cart_weight,cart_max_weight,cart_num,cart_max_num;

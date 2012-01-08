@@ -77,7 +77,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 	nullpo_retr(-1, p);
 
 	str_p += sprintf(str_p,"%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d"
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d,%u,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name,
 		p->st.class_,p->st.base_level,p->st.job_level,
@@ -89,7 +89,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 		p->st.party_id,p->st.guild_id,p->st.pet_id,p->st.homun_id,p->st.merc_id,
 		p->st.hair,p->st.hair_color,p->st.clothes_color,
 		p->st.weapon,p->st.shield,p->st.robe,p->st.head_top,p->st.head_mid,p->st.head_bottom,
-		p->st.costume_head_top,p->st.costume_head_mid,p->st.costume_head_bottom,
+		p->st.costume_head_top,p->st.costume_head_mid,p->st.costume_head_bottom,p->st.costume_robe,p->st.costume_floor,
 		p->st.last_point.map,p->st.last_point.x,p->st.last_point.y,
 		p->st.save_point.map,p->st.save_point.x,p->st.save_point.y,
 		p->st.partner_id,p->st.parent_id[0],p->st.parent_id[1],p->st.baby_id,
@@ -168,14 +168,14 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 {
 	char tmp_str[3][256];
-	int tmp_int[53];
+	int tmp_int[55];
 	int set,next,len,i,n;
 
 	nullpo_retr(0, p);
 
-	// Auriga-0888以降の形式
+	// Auriga-0902以降の形式
 	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d"
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d"
 		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -187,21 +187,18 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
 		&tmp_int[30],&tmp_int[31],&tmp_int[32],
 		&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],&tmp_int[38],
-		&tmp_int[39],&tmp_int[40],&tmp_int[41],
-		tmp_str[1],&tmp_int[42],&tmp_int[43],
-		tmp_str[2],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],
-		&tmp_int[51],&tmp_int[52],&next
+		&tmp_int[39],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],
+		tmp_str[1],&tmp_int[44],&tmp_int[45],
+		tmp_str[2],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],&tmp_int[51],&tmp_int[52],
+		&tmp_int[53],&tmp_int[54],&next
 	);
 
-	if(set != 56)
+	if(set != 58)
 	{
-		// Auriga-0837以降の形式
-		tmp_int[35] = 0;	// robe
-		tmp_int[51] = 0;	// refuse_partyinvite
-		tmp_int[52] = 0;	// show_equip
+		// Auriga-0888以降の形式
 		set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-			"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d"
-			"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d%n",
+			"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d"
+			"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 			&tmp_int[3],&tmp_int[4],&tmp_int[5],
 			&tmp_int[6],&tmp_int[7],&tmp_int[8],
@@ -211,21 +208,21 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
 			&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
 			&tmp_int[30],&tmp_int[31],&tmp_int[32],
-			&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
-			&tmp_int[38],&tmp_int[39],&tmp_int[40],
-			tmp_str[1],&tmp_int[41],&tmp_int[42],
-			tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&next
+			&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],&tmp_int[38],
+			&tmp_int[39],&tmp_int[40],&tmp_int[41],
+			tmp_str[1],&tmp_int[42],&tmp_int[43],
+			tmp_str[2],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],
+			&tmp_int[51],&tmp_int[52],&next
 		);
-		if(set != 53)
+		if(set != 56)
 		{
-			// Auriga-0309〜0596および0600以降の形式
-			tmp_int[38] = 0;	// costume_head_top
-			tmp_int[39] = 0;	// costume_head_mid
-			tmp_int[40] = 0;	// costume_head_bottom
-			tmp_int[49] = 0;	// delete_date
+			// Auriga-0837以降の形式
+			tmp_int[35] = 0;	// robe
+			tmp_int[51] = 0;	// refuse_partyinvite
+			tmp_int[52] = 0;	// show_equip
 			set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-				"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-				"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+				"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d"
+				"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d%n",
 				&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],
 				&tmp_int[6],&tmp_int[7],&tmp_int[8],
@@ -236,14 +233,19 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 				&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
 				&tmp_int[30],&tmp_int[31],&tmp_int[32],
 				&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
+				&tmp_int[38],&tmp_int[39],&tmp_int[40],
 				tmp_str[1],&tmp_int[41],&tmp_int[42],
-				tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&next
+				tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&next
 			);
-
-			if(set != 49) {
-				// Auriga-0597〜0599の形式
+			if(set != 53)
+			{
+				// Auriga-0309〜0596および0600以降の形式
+				tmp_int[38] = 0;	// costume_head_top
+				tmp_int[39] = 0;	// costume_head_mid
+				tmp_int[40] = 0;	// costume_head_bottom
+				tmp_int[49] = 0;	// delete_date
 				set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-					"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%*d,%*d,%*d,%*d,%*d,%*d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+					"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 					"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
 					&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 					&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -260,10 +262,9 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 				);
 
 				if(set != 49) {
-					// Auriga-089以降の形式
-					tmp_int[29] = 0;	// merc_id
+					// Auriga-0597〜0599の形式
 					set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-						"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+						"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%*d,%*d,%*d,%*d,%*d,%*d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 						"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
 						&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 						&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -272,17 +273,18 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 						&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 						&tmp_int[19],&tmp_int[20],
 						&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
-						&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
+						&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
 						&tmp_int[30],&tmp_int[31],&tmp_int[32],
 						&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
 						tmp_str[1],&tmp_int[41],&tmp_int[42],
 						tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&next
 					);
 
-					if(set != 48) {
-						tmp_int[24] = 0;	// die_counter
+					if(set != 49) {
+						// Auriga-089以降の形式
+						tmp_int[29] = 0;	// merc_id
 						set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-							"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+							"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 							"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
 							&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 							&tmp_int[3],&tmp_int[4],&tmp_int[5],
@@ -290,7 +292,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 							&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
 							&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 							&tmp_int[19],&tmp_int[20],
-							&tmp_int[21],&tmp_int[22],&tmp_int[23],
+							&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
 							&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
 							&tmp_int[30],&tmp_int[31],&tmp_int[32],
 							&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
@@ -298,8 +300,28 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 							tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&next
 						);
 
-					if(set != 47)
-						return 0;	// Athena1881以前の古い形式はサポートしない
+						if(set != 48) {
+							tmp_int[24] = 0;	// die_counter
+							set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+								"\t%u,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
+								"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+								&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
+								&tmp_int[3],&tmp_int[4],&tmp_int[5],
+								&tmp_int[6],&tmp_int[7],&tmp_int[8],
+								&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],
+								&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
+								&tmp_int[19],&tmp_int[20],
+								&tmp_int[21],&tmp_int[22],&tmp_int[23],
+								&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],
+								&tmp_int[30],&tmp_int[31],&tmp_int[32],
+								&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
+								tmp_str[1],&tmp_int[41],&tmp_int[42],
+								tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&next
+							);
+
+						if(set != 47)
+							return 0;	// Athena1881以前の古い形式はサポートしない
+						}
 					}
 				}
 			}

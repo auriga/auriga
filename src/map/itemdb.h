@@ -174,7 +174,8 @@ enum {
 	LOC_COSTUME_ROBE		= 0x2000,	// コスチューム肩
 	LOC_COSTUME_HEAD_TB		= 0x1400,	// コスチューム上下段
 	LOC_COSTUME_HEAD_MB		= 0x1800,	// コスチューム中下段
-	LOC_COSTUME_HEAD_TMB	= 0x1C00	// コスチューム上中下段
+	LOC_COSTUME_HEAD_TMB	= 0x1C00,	// コスチューム上中下段
+	LOC_COSTUME_FLOOR		= 0x4000,	// コスチュームFLOOR
 };
 
 #endif

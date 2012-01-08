@@ -619,16 +619,18 @@ L_RECALC:
 	memset(sd->def_eleenemy,0,sizeof(sd->def_eleenemy));
 	memset(&sd->skill_addspcost,0,sizeof(sd->skill_addspcost));
 
-	for(i=0; i<10; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
+		if(i == EQUIP_INDEX_ARROW)
+			continue;
 		idx = sd->equip_index[i];
 		current_equip_item_index = i;	// 部位チェック用
 		if(idx < 0)
 			continue;
-		if(i == 9 && sd->equip_index[8] == idx)
+		if(i == EQUIP_INDEX_RARM && sd->equip_index[EQUIP_INDEX_LARM] == idx)
 			continue;
-		if(i == 5 && sd->equip_index[4] == idx)
+		if(i == EQUIP_INDEX_HEAD3 && sd->equip_index[EQUIP_INDEX_HEAD] == idx)
 			continue;
-		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
+		if(i == EQUIP_INDEX_HEAD2 && (sd->equip_index[EQUIP_INDEX_HEAD3] == idx || sd->equip_index[EQUIP_INDEX_HEAD] == idx))
 			continue;
 
 		if(sd->inventory_data[idx]) {
@@ -639,7 +641,7 @@ L_RECALC:
 						int c = sd->status.inventory[idx].card[j];
 						current_equip_name_id = c;		// オートスペル(重複チェック用)
 						if(c > 0) {
-							if(i == 8 && sd->status.inventory[idx].equip == LOC_LARM)
+							if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
 								sd->state.lr_flag = 1;
 							if(calclimit == 2)
 								run_script(itemdb_usescript(c),0,sd->bl.id,0);
@@ -680,23 +682,25 @@ L_RECALC:
 	memcpy(sd->paramcard,sd->parame,sizeof(sd->paramcard));
 
 	// 装備品によるステータス変化はここで実行
-	for(i=0; i<10; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
+		if(i == EQUIP_INDEX_ARROW)
+			continue;
 		idx = sd->equip_index[i];
 		current_equip_item_index = i;	// 部位チェック用
 		if(idx < 0)
 			continue;
-		if(i == 9 && sd->equip_index[8] == idx)
+		if(i == EQUIP_INDEX_RARM && sd->equip_index[EQUIP_INDEX_LARM] == idx)
 			continue;
-		if(i == 5 && sd->equip_index[4] == idx)
+		if(i == EQUIP_INDEX_HEAD3 && sd->equip_index[EQUIP_INDEX_HEAD] == idx)
 			continue;
-		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
+		if(i == EQUIP_INDEX_HEAD2 && (sd->equip_index[EQUIP_INDEX_HEAD3] == idx || sd->equip_index[EQUIP_INDEX_HEAD] == idx))
 			continue;
 		if(sd->inventory_data[idx]) {
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->def += sd->inventory_data[idx]->def;
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				int r,wlv = sd->inventory_data[idx]->wlv;
-				if(i == 8 && sd->status.inventory[idx].equip == LOC_LARM) {
+				if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM) {
 					// 二刀流用データ入力
 					sd->watk_ += sd->inventory_data[idx]->atk;
 					sd->watk_2 = (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
@@ -749,8 +753,8 @@ L_RECALC:
 		}
 	}
 
-	if(sd->equip_index[10] >= 0) { // 矢
-		idx = sd->equip_index[10];
+	if(sd->equip_index[EQUIP_INDEX_ARROW] >= 0) { // 矢
+		idx = sd->equip_index[EQUIP_INDEX_ARROW];
 		if(sd->inventory_data[idx]) {		// まだ属性が入っていない
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->state.lr_flag = 2;
@@ -1755,7 +1759,7 @@ L_RECALC:
 			// ATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
-			idx = sd->equip_index[8];
+			idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[idx]->nameid))
 				sd->watk_ = sd->watk_ * 50/100;
 		}
@@ -1768,7 +1772,7 @@ L_RECALC:
 			// ATK半減、MATK半減
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
-			idx = sd->equip_index[8];
+			idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				sd->watk_ = sd->watk_ * 50/100;
 			}
@@ -1779,7 +1783,7 @@ L_RECALC:
 			// ATK、MATK、回避、命中、防御力が全て20%ずつ下落する
 			sd->base_atk = sd->base_atk * 80/100;
 			sd->watk = sd->watk * 80/100;
-			idx = sd->equip_index[8];
+			idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				sd->watk_ = sd->watk_ * 80/100;
 			}
@@ -1796,7 +1800,7 @@ L_RECALC:
 			sd->def  += sd->sc.data[SC_DRUMBATTLE].val3;
 		}
 		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ニーベルングの指輪
-			idx = sd->equip_index[9];
+			idx = sd->equip_index[EQUIP_INDEX_RARM];
 			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 				sd->watk += sd->sc.data[SC_NIBELUNGEN].val2;
 			// 左手には適用しない
@@ -1817,7 +1821,7 @@ L_RECALC:
 		if(sd->sc.data[SC_CONCENTRATION].timer != -1) {	// コンセントレーション
 			sd->base_atk = sd->base_atk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->watk = sd->watk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
-			idx = sd->equip_index[8];
+			idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[idx]->nameid))
 				sd->watk_ = sd->watk_ * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
@@ -7169,7 +7173,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_EXEEDBREAK:			/* イクシードブレイク */
 			if(sd) {
-				int idx = sd->equip_index[9];
+				int idx = sd->equip_index[EQUIP_INDEX_RARM];
 				val2 = val1 * 150 + sd->status.job_level * 15;
 				if(idx >= 0 && sd->inventory_data[idx])
 					val2 += sd->inventory_data[idx]->weight/10 * sd->inventory_data[idx]->wlv * sd->status.base_level / 100;

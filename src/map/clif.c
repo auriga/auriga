@@ -683,28 +683,28 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,12)=sd->sc.option;
 	WBUFW(buf,14)=sd->view_class;
 	WBUFW(buf,16)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,18)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,18)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,18)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,18)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,18)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[8EQUIP_INDEX_LARM
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,20)=0;
@@ -736,28 +736,28 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,12)=sd->sc.option;
 	WBUFW(buf,16)=sd->view_class;
 	WBUFW(buf,18)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,20)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,22)=0;
@@ -789,28 +789,28 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,12)=sd->sc.option;
 	WBUFW(buf,16)=sd->view_class;
 	WBUFW(buf,18)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,20)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,22)=0;
@@ -845,28 +845,28 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,15)=sd->sc.option;
 	WBUFW(buf,19)=sd->view_class;
 	WBUFW(buf,21)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,25)=0;
@@ -902,28 +902,28 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,15)=sd->sc.option;
 	WBUFW(buf,19)=sd->view_class;
 	WBUFW(buf,21)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,25)=0;
@@ -1001,28 +1001,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,12)=sd->sc.option;
 	WBUFW(buf,14)=sd->view_class;
 	WBUFW(buf,16)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,18)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,18)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,18)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,18)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,18)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,20)=0;
@@ -1054,28 +1054,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,12)=sd->sc.option;
 	WBUFW(buf,16)=sd->view_class;
 	WBUFW(buf,18)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,20)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,20)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,20)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,22)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,22)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,22)=0;
@@ -1108,28 +1108,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,13)=sd->sc.option;
 	WBUFW(buf,17)=sd->view_class;
 	WBUFW(buf,19)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,21)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,21)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,21)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,21)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,21)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
@@ -1162,28 +1162,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,13)=sd->sc.option;
 	WBUFW(buf,17)=sd->view_class;
 	WBUFW(buf,19)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,21)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,21)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,21)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,21)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,21)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
@@ -1218,28 +1218,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,15)=sd->sc.option;
 	WBUFW(buf,19)=sd->view_class;
 	WBUFW(buf,21)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,25)=0;
@@ -1275,28 +1275,28 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,15)=sd->sc.option;
 	WBUFW(buf,19)=sd->view_class;
 	WBUFW(buf,21)=sd->status.hair;
-	if(sd->equip_index[9] >= 0
-	&& sd->inventory_data[sd->equip_index[9]]
+	if(sd->equip_index[EQUIP_INDEX_RARM] >= 0
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[9]]->view_id > 0)
-			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[9]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id > 0)
+			WBUFW(buf,23)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_RARM]]->view_id;
 		else
-			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[9]].nameid;
+			WBUFW(buf,23)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].nameid;
 	}
 	else
 		WBUFW(buf,23)=0;
-	if(sd->equip_index[8] >= 0
-	&& sd->equip_index[8] != sd->equip_index[9]
-	&& sd->inventory_data[sd->equip_index[8]]
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
+	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
-		if(sd->inventory_data[sd->equip_index[8]]->view_id > 0)
-			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[8]]->view_id;
+		if(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id > 0)
+			WBUFW(buf,25)=sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->view_id;
 		else
-			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[8]].nameid;
+			WBUFW(buf,25)=sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].nameid;
 	}
 	else
 		WBUFW(buf,25)=0;
@@ -5330,7 +5330,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
 			switch (type) {
 			case LOOK_SHOES:
 				val = 0;
-				if((idx = sd->equip_index[2]) >= 0 && sd->inventory_data[idx]) {
+				if((idx = sd->equip_index[EQUIP_INDEX_SHOES]) >= 0 && sd->inventory_data[idx]) {
 					if(sd->inventory_data[idx]->view_id > 0)
 						val = sd->inventory_data[idx]->view_id;
 					else
@@ -5343,13 +5343,13 @@ void clif_changelook(struct block_list *bl, int type, int val)
 				type = LOOK_WEAPON;
 				if(sd->view_class == PC_CLASS_WE || sd->view_class == PC_CLASS_ST || sd->view_class == PC_CLASS_SU)
 					break;
-				if((idx = sd->equip_index[9]) >= 0 && sd->inventory_data[idx]) {
+				if((idx = sd->equip_index[EQUIP_INDEX_RARM]) >= 0 && sd->inventory_data[idx]) {
 					if(sd->inventory_data[idx]->view_id > 0)
 						val = sd->inventory_data[idx]->view_id;
 					else
 						val = sd->status.inventory[idx].nameid;
 				}
-				if((idx = sd->equip_index[8]) >= 0 && idx != sd->equip_index[9] && sd->inventory_data[idx]) {
+				if((idx = sd->equip_index[EQUIP_INDEX_LARM]) >= 0 && idx != sd->equip_index[9] && sd->inventory_data[idx]) {
 					if(sd->inventory_data[idx]->view_id > 0)
 						shield = sd->inventory_data[idx]->view_id;
 					else

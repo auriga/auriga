@@ -76,7 +76,8 @@ int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
 	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50 }, // 養子
 };
 
-static const unsigned int equip_pos[11] = { LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW };
+static const unsigned int equip_pos[EQUIP_INDEX_MAX] =
+{ LOC_LACCESSORY,LOC_RACCESSORY,LOC_SHOES,LOC_ROBE,LOC_HEAD,LOC_HEAD3,LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ARROW,LOC_COSTUME_HEAD,LOC_COSTUME_HEAD3,LOC_COSTUME_HEAD2,LOC_COSTUME_ROBE,LOC_COSTUME_FLOOR };
 
 static char GM_account_filename[1024] = "conf/GM_account.txt";
 static struct dbt *gm_account_db = NULL;
@@ -4393,11 +4394,6 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			sd->dev.val1[i] = sd->dev.val2[i] = 0;
 		}
 	}
-	// 攻城戦時にモンスター変身を解除させるか
-	if(battle_config.disable_transform_when_gvg) {
-		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
-			status_change_end(&sd->bl, SC_MONSTER_TRANSFORM, -1);
-	}
 
 	if(sd->bl.prev != NULL) {
 		if(m != sd->bl.m) {
@@ -4430,6 +4426,21 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	sd->bl.m = m;
 	sd->bl.x = x;
 	sd->bl.y = y;
+
+	if(map[sd->bl.m].flag.gvg) {
+		// 攻城戦時にモンスター変身を解除させるか
+		if(battle_config.disable_transform_when_gvg) {
+			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
+				status_change_end(&sd->bl, SC_MONSTER_TRANSFORM, -1);
+		}
+		// 攻城戦時にコスチュームアイテムを解除させるか
+		if(battle_config.disable_costume_when_gvg) {
+			for(i = EQUIP_INDEX_COSTUME_HEAD; i < EQUIP_INDEX_MAX; i++) {
+				if(sd->equip_index[i] >= 0 && !pc_isequip(sd,sd->equip_index[i]))
+					pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
+			}
+		}
+	}
 
 	// ペットの移動
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
@@ -4875,7 +4886,7 @@ int pc_checkequip(struct map_session_data *sd,int pos)
 
 	nullpo_retr(-1, sd);
 
-	for(i=0; i<11; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(pos & equip_pos[i])
 			return sd->equip_index[i];
 	}
@@ -7377,7 +7388,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	clif_updatestatus(sd,SP_JOBEXP);
 	clif_updatestatus(sd,SP_NEXTJOBEXP);
 
-	for(i=0; i<11; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(sd->equip_index[i] >= 0 && !pc_isequip(sd,sd->equip_index[i]))
 			pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
 	}
@@ -8078,10 +8089,10 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	}
 	if(pos == LOC_RLACCESSORY) {	// アクセサリ用例外処理
 		int epor = 0;
-		if(sd->equip_index[0] >= 0)
-			epor |= sd->status.inventory[sd->equip_index[0]].equip;
-		if(sd->equip_index[1] >= 0)
-			epor |= sd->status.inventory[sd->equip_index[1]].equip;
+		if(sd->equip_index[EQUIP_INDEX_LACCESSORY] >= 0)
+			epor |= sd->status.inventory[sd->equip_index[EQUIP_INDEX_LACCESSORY]].equip;
+		if(sd->equip_index[EQUIP_INDEX_RACCESSORY] >= 0)
+			epor |= sd->status.inventory[sd->equip_index[EQUIP_INDEX_RACCESSORY]].equip;
 		epor &= LOC_RLACCESSORY;
 		pos = (epor == LOC_RACCESSORY) ? LOC_LACCESSORY : LOC_RACCESSORY;
 	}
@@ -8093,15 +8104,15 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 	     pc_checkskill(sd, KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB) ) // 左手修錬有
 	{
 		int tpos = 0;
-		if(sd->equip_index[8] >= 0)
-			tpos |= sd->status.inventory[sd->equip_index[8]].equip;
-		if(sd->equip_index[9] >= 0)
-			tpos |= sd->status.inventory[sd->equip_index[9]].equip;
+		if(sd->equip_index[EQUIP_INDEX_LARM] >= 0)
+			tpos |= sd->status.inventory[sd->equip_index[EQUIP_INDEX_LARM]].equip;
+		if(sd->equip_index[EQUIP_INDEX_RARM] >= 0)
+			tpos |= sd->status.inventory[sd->equip_index[EQUIP_INDEX_RARM]].equip;
 		tpos &= LOC_RARM;
 		pos = (tpos == LOC_RARM) ? LOC_LARM : LOC_RARM;
 	}
 
-	for(i=0; i<11; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(sd->equip_index[i] >= 0 && sd->status.inventory[sd->equip_index[i]].equip & pos) {
 			pc_unequipitem(sd,sd->equip_index[i],1);
 		}
@@ -8114,7 +8125,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		clif_equipitemack(sd,n,pos,1);
 	}
 
-	for(i=0; i<11; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(pos & equip_pos[i])
 			sd->equip_index[i] = n;
 	}
@@ -8153,21 +8164,45 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			sd->status.head_bottom = sd->inventory_data[n]->look;
 		else
 			sd->status.head_bottom = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+		if(!sd->status.costume_head_bottom)
+			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+	}
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
+		if(sd->inventory_data[n])
+			sd->status.costume_head_bottom = sd->inventory_data[n]->look;
+		else
+			sd->status.costume_head_bottom = 0;
+		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.costume_head_bottom);
 	}
 	if(sd->status.inventory[n].equip & LOC_HEAD2) {
 		if(sd->inventory_data[n])
 			sd->status.head_top = sd->inventory_data[n]->look;
 		else
 			sd->status.head_top = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+		if(!sd->status.costume_head_top)
+			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+	}
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
+		if(sd->inventory_data[n])
+			sd->status.costume_head_top = sd->inventory_data[n]->look;
+		else
+			sd->status.costume_head_top = 0;
+		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.costume_head_top);
 	}
 	if(sd->status.inventory[n].equip & LOC_HEAD3) {
 		if(sd->inventory_data[n])
 			sd->status.head_mid = sd->inventory_data[n]->look;
 		else
 			sd->status.head_mid = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+		if(!sd->status.costume_head_mid)
+			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+	}
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
+		if(sd->inventory_data[n])
+			sd->status.costume_head_mid = sd->inventory_data[n]->look;
+		else
+			sd->status.costume_head_mid = 0;
+		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.costume_head_mid);
 	}
 	if(sd->status.inventory[n].equip & LOC_SHOES)
 		clif_changelook(&sd->bl,LOOK_SHOES,0);
@@ -8176,7 +8211,22 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			sd->status.robe = sd->inventory_data[n]->look;
 		else
 			sd->status.robe = 0;
-		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+		if(!sd->status.costume_robe)
+			clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+	}
+	if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
+		if(sd->inventory_data[n])
+			sd->status.costume_robe = sd->inventory_data[n]->look;
+		else
+			sd->status.costume_robe = 0;
+		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.costume_robe);
+	}
+	if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
+		if(sd->inventory_data[n])
+			sd->status.costume_floor = sd->inventory_data[n]->look;
+		else
+			sd->status.costume_floor = 0;
+		clif_changelook(&sd->bl,LOOK_FLOOR,sd->status.costume_floor);
 	}
 
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
@@ -8210,7 +8260,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 		printf("unequip %d %x:%x\n",n,pc_equippoint(sd,n),sd->status.inventory[n].equip);
 	if(sd->status.inventory[n].equip) {
 		int i;
-		for(i=0; i<11; i++) {
+		for(i=0; i<EQUIP_INDEX_MAX; i++) {
 			if(sd->status.inventory[n].equip & equip_pos[i])
 			{
 				sd->equip_index[i] = -1;
@@ -8248,21 +8298,45 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD) {
 			sd->status.head_bottom = 0;
-			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+			if(!sd->status.costume_head_bottom)
+				clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+		}
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
+			sd->status.costume_head_bottom = 0;
+			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,( sd->status.head_bottom )? sd->status.head_bottom : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD2) {
 			sd->status.head_top = 0;
-			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+			if(!sd->status.costume_head_top)
+				clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+		}
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
+			sd->status.costume_head_top = 0;
+			clif_changelook(&sd->bl,LOOK_HEAD_TOP,( sd->status.head_top )? sd->status.head_top : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD3) {
 			sd->status.head_mid = 0;
-			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+			if(!sd->status.costume_head_mid)
+				clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+		}
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
+			sd->status.costume_head_mid = 0;
+			clif_changelook(&sd->bl,LOOK_HEAD_MID,( sd->status.head_mid )? sd->status.head_mid : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_SHOES)
 			clif_changelook(&sd->bl,LOOK_SHOES,0);
 		if(sd->status.inventory[n].equip & LOC_ROBE) {
 			sd->status.robe = 0;
-			clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+			if(!sd->status.costume_robe)
+				clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+		}
+		if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
+			sd->status.costume_robe = 0;
+			clif_changelook(&sd->bl,LOOK_ROBE,( sd->status.robe )? sd->status.robe : 0);
+		}
+		if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
+			sd->status.costume_floor = 0;
+			clif_changelook(&sd->bl,LOOK_FLOOR,sd->status.costume_floor);
 		}
 
 		clif_unequipitemack(sd,n,sd->status.inventory[n].equip,1);
@@ -8317,15 +8391,17 @@ int pc_equippeditem(struct map_session_data *sd,int id)
 
 	nullpo_retr(0, sd);
 
-	for(i=0; i<10; i++) {
+	for(i=0; i<EQUIP_INDEX_MAX; i++) {
+		if(i == EQUIP_INDEX_ARROW)
+			continue;
 		idx = sd->equip_index[i];
 		if(idx < 0)
 			continue;
-		if(i == 9 && sd->equip_index[8] == idx)
+		if(i == EQUIP_INDEX_RARM && sd->equip_index[EQUIP_INDEX_LARM] == idx)
 			continue;
-		if(i == 5 && sd->equip_index[4] == idx)
+		if(i == EQUIP_INDEX_HEAD3 && sd->equip_index[EQUIP_INDEX_HEAD] == idx)
 			continue;
-		if(i == 6 && (sd->equip_index[5] == idx || sd->equip_index[4] == idx))
+		if(i == EQUIP_INDEX_HEAD2 && (sd->equip_index[EQUIP_INDEX_HEAD3] == idx || sd->equip_index[EQUIP_INDEX_HEAD] == idx))
 			continue;
 
 		if(sd->inventory_data[idx]) {
@@ -8375,7 +8451,7 @@ static int pc_setequipindex(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	for(i=0; i<11; i++)
+	for(i=0; i<EQUIP_INDEX_MAX; i++)
 		sd->equip_index[i] = -1;
 
 	for(i=0; i<MAX_INVENTORY; i++) {
@@ -8384,7 +8460,7 @@ static int pc_setequipindex(struct map_session_data *sd)
 		if(!sd->status.inventory[i].equip)
 			continue;
 
-		for(j=0; j<11; j++) {
+		for(j=0; j<EQUIP_INDEX_MAX; j++) {
 			if(sd->status.inventory[i].equip & equip_pos[j])
 				sd->equip_index[j] = i;
 		}
@@ -8898,7 +8974,7 @@ int pc_break_equip(struct map_session_data *sd, unsigned short where)
 				return 0;
 			break;
 		case LOC_LARM:
-			if(sd->equip_index[8] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[8]]->nameid))	// 左手が武器なら
+			if(sd->equip_index[EQUIP_INDEX_LARM] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->nameid))	// 左手が武器なら
 				return 0;
 			if(sd->sc.data[SC_CP_SHIELD].timer != -1)
 				return 0;
@@ -8936,27 +9012,27 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 	nullpo_retr(-1, sd);
 
 	switch(where) {
-		case 0: // アクセサリ左
-		case 1:	// アクセサリ右
-		case 2: // 靴
-		case 3:	// 肩
+		case EQUIP_INDEX_LACCESSORY: // アクセサリ左
+		case EQUIP_INDEX_RACCESSORY:	// アクセサリ右
+		case EQUIP_INDEX_SHOES: // 靴
+		case EQUIP_INDEX_ROBE:	// 肩
 			break;
-		case 4:	// 頭下段
-		case 5:	// 頭中段
-		case 6:	// 頭上段
+		case EQUIP_INDEX_HEAD:	// 頭下段
+		case EQUIP_INDEX_HEAD3:	// 頭中段
+		case EQUIP_INDEX_HEAD2:	// 頭上段
 			if(sd->unbreakable_equip & LOC_HEAD2)
 				return 0;
 			if(sd->sc.data[SC_CP_HELM].timer != -1)
 				return 0;
 			break;
-		case 7:	// 体
+		case EQUIP_INDEX_BODY:	// 体
 			if(sd->unbreakable_equip & LOC_BODY)
 				return 0;
 			if(sd->sc.data[SC_CP_ARMOR].timer != -1)
 				return 0;
 			break;
-		case 8:	// 左手
-			if(sd->equip_index[8] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[8]]->nameid)) {	// 武器
+		case EQUIP_INDEX_LARM:	// 左手
+			if(sd->equip_index[EQUIP_INDEX_LARM] >= 0 && itemdb_isweapon(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->nameid)) {	// 武器
 				if(sd->unbreakable_equip & LOC_RARM)
 					return 0;
 				if(sd->sc.data[SC_CP_WEAPON].timer != -1)
@@ -8968,13 +9044,13 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 					return 0;
 			}
 			break;
-		case 9:	// 右手
+		case EQUIP_INDEX_RARM:	// 右手
 			if(sd->unbreakable_equip & LOC_RARM)
 				return 0;
 			if(sd->sc.data[SC_CP_WEAPON].timer != -1)
 				return 0;
 			break;
-		case 10: // 矢
+		case EQUIP_INDEX_ARROW: // 矢
 			break;
 		default:
 			return -1;

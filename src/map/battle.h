@@ -596,6 +596,7 @@ extern struct Battle_Config {
 	int esnv_max_aspd;
 	int ko_status_max;
 	int ko_max_aspd;
+	int disable_costume_when_gvg;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

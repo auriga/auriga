@@ -6112,7 +6112,8 @@ int buildin_strcharinfo(struct script_state *st)
 }
 
 // pc.cのequip_posと順番が異なることに注意
-static const unsigned int equip_pos[11]={LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW};
+static const unsigned int equip_pos[EQUIP_INDEX_MAX]=
+{LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW,LOC_COSTUME_HEAD2,LOC_COSTUME_HEAD3,LOC_COSTUME_HEAD,LOC_COSTUME_ROBE,LOC_COSTUME_FLOOR};
 
 /*==========================================
  * 指定位置の装備品のIDを取得
@@ -6124,7 +6125,7 @@ int buildin_getequipid(struct script_state *st)
 	struct map_session_data *sd = script_rid2sd(st);
 
 	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i = pc_checkequip(sd,equip_pos[num-1]);
 
 	if(i >= 0) {
@@ -6145,7 +6146,7 @@ int buildin_getequipname(struct script_state *st)
 {
 	int num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(num > 0 && num <= 11) {
+	if(num > 0 && num <= EQUIP_INDEX_MAX) {
 		struct map_session_data *sd = script_rid2sd(st);
 		int i = pc_checkequip(sd,equip_pos[num-1]);
 		char *buf;
@@ -6176,7 +6177,7 @@ int buildin_getequipisequiped(struct script_state *st)
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0){
 		push_val(st->stack,C_INT,1);
@@ -6199,7 +6200,7 @@ int buildin_getequipisenableref(struct script_state *st)
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0 && sd->inventory_data[i] && sd->inventory_data[i]->refine != 0)
 		push_val(st->stack,C_INT,1);
@@ -6220,7 +6221,7 @@ int buildin_getequipisidentify(struct script_state *st)
 
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0)
 		push_val(st->stack,C_INT,sd->status.inventory[i].identify);
@@ -6241,7 +6242,7 @@ int buildin_getequiprefinerycnt(struct script_state *st)
 
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0)
 		push_val(st->stack,C_INT,sd->status.inventory[i].refine);
@@ -6262,7 +6263,7 @@ int buildin_getequipweaponlv(struct script_state *st)
 
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0 && sd->inventory_data[i])
 		push_val(st->stack,C_INT,sd->inventory_data[i]->wlv);
@@ -6283,7 +6284,7 @@ int buildin_getequippercentrefinery(struct script_state *st)
 
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0)
 		push_val(st->stack,C_INT,status_percentrefinery(sd,&sd->status.inventory[i]));
@@ -6305,7 +6306,7 @@ int buildin_successrefitem(struct script_state *st)
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0) {
 		int ep=sd->status.inventory[i].equip;
@@ -6329,7 +6330,7 @@ int buildin_failedrefitem(struct script_state *st)
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0)
 		skill_fail_weaponrefine(sd,i);
@@ -8883,7 +8884,7 @@ int buildin_getequipcardcnt(struct script_state *st)
 	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sd=script_rid2sd(st);
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 
 	if(i >= 0) {
@@ -8981,7 +8982,7 @@ int buildin_successremovecards(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i = pc_checkequip(sd,equip_pos[num-1]);
 
 	if(st->end > st->start+3) {
@@ -9012,7 +9013,7 @@ int buildin_failedremovecards(struct script_state *st)
 	if(typefail < 0 || typefail > 3)
 		return 0;
 
-	if(num > 0 && num <= 11)
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i = pc_checkequip(sd,equip_pos[num-1]);
 
 	if(st->end > st->start+4)
@@ -9895,12 +9896,12 @@ int buildin_unequip(struct script_state *st)
 	if( st->end>st->start+2 )
 		num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if( num > 0 && num <= 11 ) {
+	if( num > 0 && num <= EQUIP_INDEX_MAX ) {
 		i = pc_checkequip(sd,equip_pos[num-1]);
 		if(i >= 0)
 			pc_unequipitem(sd,i,0);
 	} else {
-		for(i=0;i<11;i++) {
+		for(i=0;i<EQUIP_INDEX_MAX;i++) {
 			if(sd->equip_index[i] >= 0 )
 				pc_unequipitem(sd,sd->equip_index[i],0);
 		}

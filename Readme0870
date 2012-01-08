@@ -1,4 +1,23 @@
 ----------------------------------------
+//0902 [2012/01/09] by popori
+
+・コスチュームシステムの実装
+ (db/item_db.txt sql-files/Auriga902_changetable.sql sql-files/main.sql src/char/sql/chardb_sql.c src/char/txt/chardb_txt.c
+　src/common/mmo.h src/map/battle.c src/map/clif.c src/map/itemdb.* src/map/map.h src/map/pc.* src/map/script.c src/map/status.c
+　doc/script_ref.txt doc/db_ref.txt)
+
+・分かりづらいequip_indexのマジックナンバーをenumを使って回避する
+ (src/map/battle.c src/map/clif.c src/map/itemdb.* src/map/map.h src/map/pc.* src/map/script.c src/map/status.c)
+
+・battle_auriga.confの設定項目「disable_transform_when_gvg」が正常に動作しないのを修正 (src/map/pc.c)
+　disable_transform_when_gvgを無効にしたい場合、item_db2.txtのzoneのフラグも修正すること
+
+・battle_auriga.confに設定項目「disable_costume_when_gvg」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+　GvGでコスチュームアイテムを無効にするか
+　デフォルト有効
+　disable_costume_when_gvgを無効にしたい場合、item_db2.txtのzoneのフラグも修正すること
+
+----------------------------------------
 //0901 [2012/01/08] by popori
 
 ・2012-01-04bRagexeの解析結果と、更新を行っていなかった解析済みのパケットをclient_packetへ追記 (doc/client_packet.txt)
