@@ -196,6 +196,8 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	if(set != 58)
 	{
 		// Auriga-0888以降の形式
+		tmp_int[42] = 0;	// costume_robe
+		tmp_int[43] = 0;	// costume_floor
 		set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 			"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d"
 			"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
@@ -210,9 +212,9 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			&tmp_int[30],&tmp_int[31],&tmp_int[32],
 			&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],&tmp_int[38],
 			&tmp_int[39],&tmp_int[40],&tmp_int[41],
-			tmp_str[1],&tmp_int[42],&tmp_int[43],
-			tmp_str[2],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],
-			&tmp_int[51],&tmp_int[52],&next
+			tmp_str[1],&tmp_int[44],&tmp_int[45],
+			tmp_str[2],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],&tmp_int[51],&tmp_int[52],
+			&tmp_int[53],&tmp_int[54],&next
 		);
 		if(set != 56)
 		{
@@ -232,10 +234,10 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 				&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
 				&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
 				&tmp_int[30],&tmp_int[31],&tmp_int[32],
-				&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
-				&tmp_int[38],&tmp_int[39],&tmp_int[40],
-				tmp_str[1],&tmp_int[41],&tmp_int[42],
-				tmp_str[2],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&next
+				&tmp_int[33],&tmp_int[34],&tmp_int[36],&tmp_int[37],&tmp_int[38],
+				&tmp_int[39],&tmp_int[40],&tmp_int[41],
+				tmp_str[1],&tmp_int[42],&tmp_int[43],
+				tmp_str[2],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],&tmp_int[49],&tmp_int[50],&next
 			);
 			if(set != 53)
 			{
@@ -379,17 +381,19 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	p->st.costume_head_top    = tmp_int[39];
 	p->st.costume_head_mid    = tmp_int[40];
 	p->st.costume_head_bottom = tmp_int[41];
-	p->st.last_point.x        = tmp_int[42];
-	p->st.last_point.y        = tmp_int[43];
-	p->st.save_point.x        = tmp_int[44];
-	p->st.save_point.y        = tmp_int[45];
-	p->st.partner_id          = tmp_int[46];
-	p->st.parent_id[0]        = tmp_int[47];
-	p->st.parent_id[1]        = tmp_int[48];
-	p->st.baby_id             = tmp_int[49];
-	p->st.delete_date         = (unsigned int)tmp_int[50];
-	p->st.refuse_partyinvite  = tmp_int[51];
-	p->st.show_equip          = tmp_int[52];
+	p->st.costume_robe        = tmp_int[42];
+	p->st.costume_floor       = tmp_int[43];
+	p->st.last_point.x        = tmp_int[44];
+	p->st.last_point.y        = tmp_int[45];
+	p->st.save_point.x        = tmp_int[46];
+	p->st.save_point.y        = tmp_int[47];
+	p->st.partner_id          = tmp_int[48];
+	p->st.parent_id[0]        = tmp_int[49];
+	p->st.parent_id[1]        = tmp_int[50];
+	p->st.baby_id             = tmp_int[51];
+	p->st.delete_date         = (unsigned int)tmp_int[52];
+	p->st.refuse_partyinvite  = tmp_int[53];
+	p->st.show_equip          = tmp_int[54];
 
 	if(str[next]=='\n' || str[next]=='\r')
 		return 1;	// 新規データ

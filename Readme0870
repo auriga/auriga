@@ -1,4 +1,14 @@
 ----------------------------------------
+//0903 [2012/01/10] by popori
+
+・TXTのキャラデータ読み込み修正 (src/char/chardb_txt.c)
+　lamunesさんに感謝
+
+・SC_AKAITSUKIの判定式を修正 (src/map/skill.c)
+
+・client_packet,txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
 //0902 [2012/01/09] by popori
 
 ・コスチュームシステムの実装

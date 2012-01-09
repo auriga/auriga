@@ -11175,7 +11175,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 						hp = sd->status.max_hp - sd->status.hp;
 					}
 					if(hp > 0) {
-						if(sc && sc->data[SC_AKAITSUKI].timer == -1) {
+						if(sc && sc->data[SC_AKAITSUKI].timer != -1) {
 							unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),hp,0,0,0,0);
 						} else {
 							sd->status.hp += hp;
