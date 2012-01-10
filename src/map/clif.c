@@ -130,7 +130,7 @@ enum {
 
 #define WBUFLV(p,pos,lv,class_) \
 	if(battle_config.clif_fix_level) { \
-		if((class_) >= PC_CLASS_RK && (class_) <= PC_CLASS_NC2_B) { \
+		if((class_) >= PC_CLASS_RK && (class_) <= PC_CLASS_NC2_B || ((class_) == PC_CLASS_ESNV || (class_) >= PC_CLASS_KG && (class_) <= PC_CLASS_OB)) { \
 			WBUFW((p),(pos)) = ((lv) > 150)? 150: (lv); \
 		} else { \
 			WBUFW((p),(pos)) = ((lv) > 99)? 99: (lv); \
@@ -697,7 +697,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 		WBUFW(buf,18)=0;
 	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
 	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
-	&& sd->inventory_data[sd->equip_index[8EQUIP_INDEX_LARM
+	&& sd->inventory_data[sd->equip_index[8EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
@@ -17564,6 +17564,26 @@ static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 戦場入場登録
+ *------------------------------------------
+ */
+static void clif_parse_RegBattleGround(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * 個人タブへアイテム移動
+ *------------------------------------------
+ */
+static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -17878,6 +17898,8 @@ static void packetdb_readdb(void)
 		{ clif_parse_SellBuyingStoreReq,        "sellbuyingstorereq"        },
 		{ clif_parse_GMrecall2,                 "recall2"                   },
 		{ clif_parse_GMremove2,                 "gmremove2"                 },
+		{ clif_parse_RegBattleGround,           "regbattleground"           },
+		{ clif_parse_MoveItem,                  "moveitem"                  },
 		{ NULL,                                 NULL                        },
 	};
 

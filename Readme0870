@@ -1,4 +1,18 @@
 ----------------------------------------
+//0904 [2012/01/11] by popori
+
+・コスチューム装備のカード読み込みの修正 (src/map/status.c)
+
+・battle_auriga.confのclif_fix_levelに拡張スーパーノービス、影狼、朧を対応 (src/map/clif.c)
+
+・コスチューム装備の装備中viewidのセーブデータは保存しないよう変更する
+ (src/char/txt/chardb_txt.c src/char/sql/chardb_sql/.c common/mmo.h src/map/pc.c sql-files/Auriga904_changetable.sql sql-files/main.sql)
+
+・UnknownPacketダンプのログ抑制のためにpacket_db.txtの更新 (db/packet_db.txt)
+
+・ついでにclient_packet.txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
 //0903 [2012/01/10] by popori
 
 ・TXTのキャラデータ読み込み修正 (src/char/chardb_txt.c)

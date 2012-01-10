@@ -8164,45 +8164,36 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			sd->status.head_bottom = sd->inventory_data[n]->look;
 		else
 			sd->status.head_bottom = 0;
-		if(!sd->status.costume_head_bottom)
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] < 0)
 			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 	}
 	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
 		if(sd->inventory_data[n])
-			sd->status.costume_head_bottom = sd->inventory_data[n]->look;
-		else
-			sd->status.costume_head_bottom = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.costume_head_bottom);
+			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->inventory_data[n]->look);
 	}
 	if(sd->status.inventory[n].equip & LOC_HEAD2) {
 		if(sd->inventory_data[n])
 			sd->status.head_top = sd->inventory_data[n]->look;
 		else
 			sd->status.head_top = 0;
-		if(!sd->status.costume_head_top)
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] < 0)
 			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 	}
 	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
 		if(sd->inventory_data[n])
-			sd->status.costume_head_top = sd->inventory_data[n]->look;
-		else
-			sd->status.costume_head_top = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.costume_head_top);
+			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->inventory_data[n]->look);
 	}
 	if(sd->status.inventory[n].equip & LOC_HEAD3) {
 		if(sd->inventory_data[n])
 			sd->status.head_mid = sd->inventory_data[n]->look;
 		else
 			sd->status.head_mid = 0;
-		if(!sd->status.costume_head_mid)
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] < 0)
 			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 	}
 	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
 		if(sd->inventory_data[n])
-			sd->status.costume_head_mid = sd->inventory_data[n]->look;
-		else
-			sd->status.costume_head_mid = 0;
-		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.costume_head_mid);
+			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->inventory_data[n]->look);
 	}
 	if(sd->status.inventory[n].equip & LOC_SHOES)
 		clif_changelook(&sd->bl,LOOK_SHOES,0);
@@ -8211,22 +8202,16 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			sd->status.robe = sd->inventory_data[n]->look;
 		else
 			sd->status.robe = 0;
-		if(!sd->status.costume_robe)
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] < 0)
 			clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
 	}
 	if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
 		if(sd->inventory_data[n])
-			sd->status.costume_robe = sd->inventory_data[n]->look;
-		else
-			sd->status.costume_robe = 0;
-		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.costume_robe);
+			clif_changelook(&sd->bl,LOOK_ROBE,sd->inventory_data[n]->look);
 	}
 	if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
 		if(sd->inventory_data[n])
-			sd->status.costume_floor = sd->inventory_data[n]->look;
-		else
-			sd->status.costume_floor = 0;
-		clif_changelook(&sd->bl,LOOK_FLOOR,sd->status.costume_floor);
+			clif_changelook(&sd->bl,LOOK_FLOOR,sd->inventory_data[n]->look);
 	}
 
 	pc_checkallowskill(sd);	// 装備品でスキルか解除されるかチェック
@@ -8298,45 +8283,40 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD) {
 			sd->status.head_bottom = 0;
-			if(!sd->status.costume_head_bottom)
+			if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] < 0)
 				clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 		}
 		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
-			sd->status.costume_head_bottom = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,( sd->status.head_bottom )? sd->status.head_bottom : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD2) {
 			sd->status.head_top = 0;
-			if(!sd->status.costume_head_top)
+			if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] < 0)
 				clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 		}
 		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
-			sd->status.costume_head_top = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_TOP,( sd->status.head_top )? sd->status.head_top : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_HEAD3) {
 			sd->status.head_mid = 0;
-			if(!sd->status.costume_head_mid)
+			if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] < 0)
 				clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 		}
 		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
-			sd->status.costume_head_mid = 0;
 			clif_changelook(&sd->bl,LOOK_HEAD_MID,( sd->status.head_mid )? sd->status.head_mid : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_SHOES)
 			clif_changelook(&sd->bl,LOOK_SHOES,0);
 		if(sd->status.inventory[n].equip & LOC_ROBE) {
 			sd->status.robe = 0;
-			if(!sd->status.costume_robe)
+			if(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] < 0)
 				clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
 		}
 		if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
-			sd->status.costume_robe = 0;
 			clif_changelook(&sd->bl,LOOK_ROBE,( sd->status.robe )? sd->status.robe : 0);
 		}
 		if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
-			sd->status.costume_floor = 0;
-			clif_changelook(&sd->bl,LOOK_FLOOR,sd->status.costume_floor);
+			clif_changelook(&sd->bl,LOOK_FLOOR,0);
 		}
 
 		clif_unequipitemack(sd,n,sd->status.inventory[n].equip,1);

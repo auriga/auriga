@@ -483,8 +483,6 @@ struct mmo_charstatus {
 	short weapon,shield;
 	short robe;
 	short head_top,head_mid,head_bottom;
-	short costume_head_top,costume_head_mid,costume_head_bottom;
-	short costume_robe,costume_floor;
 
 	char name[24];
 	unsigned short base_level,job_level;
