@@ -7423,10 +7423,25 @@ static int pc_equiplookall(struct map_session_data *sd)
 	clif_changelook(&sd->bl,LOOK_WEAPON,0);
 	clif_changelook(&sd->bl,LOOK_SHOES,0);
 #endif
-	clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
-	clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
-	clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
-	clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+	if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]])
+		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look);
+	else
+		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+
+	if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]])
+		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look);
+	else
+		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+
+	if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]])
+		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look);
+	else
+		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+
+	if(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]])
+		clif_changelook(&sd->bl,LOOK_ROBE,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]->look);
+	else
+		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
 
 	return 0;
 }

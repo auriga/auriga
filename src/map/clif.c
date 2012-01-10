@@ -870,9 +870,9 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	}
 	else
 		WBUFW(buf,25)=0;
-	WBUFW(buf,27)=sd->status.head_bottom;
-	WBUFW(buf,29)=sd->status.head_top;
-	WBUFW(buf,31)=sd->status.head_mid;
+	WBUFW(buf,27)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look : sd->status.head_bottom;
+	WBUFW(buf,29)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look : sd->status.head_top;
+	WBUFW(buf,31)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look : sd->status.head_mid;
 	WBUFW(buf,33)=sd->status.hair_color;
 	WBUFW(buf,35)=sd->status.clothes_color;
 	WBUFW(buf,37)=sd->head_dir;
@@ -927,13 +927,13 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	}
 	else
 		WBUFW(buf,25)=0;
-	WBUFW(buf,27)=sd->status.head_bottom;
-	WBUFW(buf,29)=sd->status.head_top;
-	WBUFW(buf,31)=sd->status.head_mid;
+	WBUFW(buf,27)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look : sd->status.head_bottom;
+	WBUFW(buf,29)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look : sd->status.head_top;
+	WBUFW(buf,31)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look : sd->status.head_mid;
 	WBUFW(buf,33)=sd->status.hair_color;
 	WBUFW(buf,35)=sd->status.clothes_color;
 	WBUFW(buf,37)=sd->head_dir;
-	WBUFW(buf,39)=sd->status.robe;
+	WBUFW(buf,39)=(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]->look : sd->status.robe;
 	WBUFL(buf,41)=sd->status.guild_id;
 	WBUFW(buf,45)=sd->guild_emblem_id;
 	WBUFW(buf,47)=sd->status.manner;
@@ -1243,10 +1243,10 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	}
 	else
 		WBUFW(buf,25)=0;
-	WBUFW(buf,27)=sd->status.head_bottom;
+	WBUFW(buf,27)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look : sd->status.head_bottom;
 	WBUFL(buf,29)=gettick();
-	WBUFW(buf,33)=sd->status.head_top;
-	WBUFW(buf,35)=sd->status.head_mid;
+	WBUFW(buf,33)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look : sd->status.head_top;
+	WBUFW(buf,35)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look : sd->status.head_mid;
 	WBUFW(buf,37)=sd->status.hair_color;
 	WBUFW(buf,39)=sd->status.clothes_color;
 	WBUFW(buf,41)=sd->head_dir;
@@ -1300,14 +1300,14 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	}
 	else
 		WBUFW(buf,25)=0;
-	WBUFW(buf,27)=sd->status.head_bottom;
+	WBUFW(buf,27)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look : sd->status.head_bottom;
 	WBUFL(buf,29)=gettick();
-	WBUFW(buf,33)=sd->status.head_top;
-	WBUFW(buf,35)=sd->status.head_mid;
+	WBUFW(buf,33)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look : sd->status.head_top;
+	WBUFW(buf,35)=(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look : sd->status.head_mid;
 	WBUFW(buf,37)=sd->status.hair_color;
 	WBUFW(buf,39)=sd->status.clothes_color;
 	WBUFW(buf,41)=sd->head_dir;
-	WBUFW(buf,43)=sd->status.robe;
+	WBUFW(buf,43)=(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]) ? sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]->look : sd->status.robe;
 	WBUFL(buf,45)=sd->status.guild_id;
 	WBUFW(buf,49)=sd->guild_emblem_id;
 	WBUFW(buf,51)=sd->status.manner;
@@ -13600,6 +13600,18 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 			clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 		if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 900)
 			clif_pet_emotion(sd->pd,(sd->pd->class_ - 100)*100 + 50 + pet_hungry_val(sd));
+
+		// コスチューム
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]])
+			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]]->look);
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]])
+			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]]->look);
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]])
+			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]]->look);
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_ROBE] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]])
+			clif_changelook(&sd->bl,LOOK_ROBE,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]]->look);
+		if(sd->equip_index[EQUIP_INDEX_COSTUME_FLOOR] >= 0  && sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_FLOOR]])
+			clif_changelook(&sd->bl,LOOK_FLOOR,sd->inventory_data[sd->equip_index[EQUIP_INDEX_COSTUME_FLOOR]]->look);
 	}
 
 	// param
