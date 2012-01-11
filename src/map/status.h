@@ -692,6 +692,7 @@ enum {
 	SC_KYOMU				= 546,
 	SC_KAGEMUSYA			= 547,
 	SC_AKAITSUKI			= 548,
+	SC_ALL_RIDING			= 549,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -1326,7 +1327,7 @@ enum {
 	//SI_SPIRITS_SAVEINFO1	= 609,
 	//SI_SPIRITS_SAVEINFO2	= 610,
 	//SI_MAGIC_CANDY	= 611,
-	//SI_ALL_RIDING	= 613,
+	SI_ALL_RIDING	= 613,
 	//SI_MACRO	= 615,
 	//SI_MACRO_POSTDELAY	= 616,
 	//SI_BEER_BOTTLE_CAP	= 617,

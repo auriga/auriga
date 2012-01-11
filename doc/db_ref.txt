@@ -409,7 +409,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
 ==========================================================================
 10. db/item_db2.txt
 --------------------------------------------------------------------------
-ID,Upper,Zone,Dropable,Storageable,Cartable,Dalay
+ID,Upper,Zone,Dropable,Storageable,Cartable,Dalay,Buyingable,Nonconsume
 
 ID          = アイテムID
 Upper       = 転生による使用・装備制限
@@ -439,6 +439,8 @@ Delay       = 使用後に指定した時間ディレイを付ける、単位は
               ただしどのアイテムも使えなくなるので注意
 Buyingable  = 購買露店で買い取り可能かどうか
               0 : 不可（デフォルト） 1 : 可
+Nonconsume  = 使用時アイテム数を消費しない
+              0 : 消費する（デフォルト） 1 : 消費しない
 
 
 ==========================================================================

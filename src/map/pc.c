@@ -3593,6 +3593,10 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 0, 0);
 		snprintf(output, sizeof(output), msg_txt(187), ((data->view_id > 0)? itemdb_jname(data->view_id): data->jname));
 		clif_disp_onlyself(sd->fd, output);
+
+		// 搭乗用の手綱が削除される場合はSC_ALL_RIDINGを解除する
+		if(data->nameid == 12622)
+			status_change_end(&sd->bl,SC_ALL_RIDING,-1);
 	}
 
 	return -1;
@@ -3934,20 +3938,29 @@ void pc_useitem(struct map_session_data *sd, int n)
 	else
 		sd->use_nameditem = 0;
 
-	if(battle_config.item_res) {
-		if(sd->sc.data[SC_HAPPY].timer != -1 &&
-		   (nameid == 686 || nameid == 687) &&
-		   sd->status.sp >= 10 &&
-		   atn_rand()%100 >= 11 - sd->sc.data[SC_HAPPY].val1) {
-			// 楽しい状態なら確率的にアーススパイクスクロールの消費無し
+	if(battle_config.item_res)
+	{
+		// nonconsumeフラグが真ならアイテムを消費しない
+		if(itemdb_isnonconsume(nameid))
+		{
+			clif_useitemack(sd,n,amount,1);
+		}
+		// 楽しい状態なら確率的にアーススパイクスクロールの消費無し
+		else if(sd->sc.data[SC_HAPPY].timer != -1 && (nameid == 686 || nameid == 687) &&
+		   sd->status.sp >= 10 && atn_rand()%100 >= 11 - sd->sc.data[SC_HAPPY].val1)
+		{
 			sd->status.sp -= 10;
 			clif_updatestatus(sd,SP_SP);
 			clif_useitemack(sd,n,amount,1);
-		} else {
+		}
+		else
+		{
 			clif_useitemack(sd,n,amount-1,1);
 			pc_delitem(sd,n,1,1,0);
 		}
-	} else {
+	}
+	else
+	{
 		clif_useitemack(sd,n,amount,1);
 	}
 

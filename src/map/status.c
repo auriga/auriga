@@ -188,7 +188,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 530- */
 	SI_LIFE_FORCE_F,SI_PROMOTE_HEALTH_RESERCH,SI_ENERGY_DRINK_RESERCH,SI_EXTRACT_WHITE_POTION_Z,SI_VITATA_500,SI_EXTRACT_SALAMINE_JUICE,SI_SAVAGE_STEAK,SI_COCKTAIL_WARG_BLOOD,SI_MINOR_BBQ,SI_SIROMA_ICE_TEA,
 	/* 540- */
-	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_BLANK,
+	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 
 };
 
@@ -3103,6 +3103,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			haste_val2 = bonus;
 	}
 
+	// 搭乗システム
+	if(sd->sc.data[SC_ALL_RIDING].timer != -1) {
+		if(haste_val2 < 25)
+			haste_val2 = 25;
+	}
+
 	/* bonus_rateの最低値を設定 */
 	bonus_rate = slow_val - haste_val1 - haste_val2;
 	if(bonus_rate < -60)
@@ -5955,6 +5961,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	}
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
+		if(type == SC_ALL_RIDING) {	// 搭乗システム
+			status_change_end(bl,type,-1);
+			return 0;
+		}
 		if(sc->data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 &&
 			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND && type != SC_SHAPESHIFT)
@@ -6225,6 +6235,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			icon_val1 = val1;	// val1はモンスターID
 			calc_flag = 1;
 			break;
+		case SC_ALL_RIDING:			/* 搭乗システム */
+			if(sd) {
+				// 既に既存の乗り物に搭乗中である場合は何もしない
+				if(pc_isriding(sd) || pc_isdragon(sd) || pc_iswolfmount(sd) || pc_isgear(sd))
+					return 0;
+				icon_val1 = sd->status.class_;	// val1はクラスID
+			}
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
 		case SC_SPEEDUP1:			/* スピードポーション */
 		case SC_WALKSPEED:			/* 移動速度増加(スクリプト) */
@@ -7900,6 +7921,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SWING:				/* スイングダンス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
+		case SC_ALL_RIDING:			/* 搭乗システム */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -8881,6 +8903,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
 	case LG_EXEEDBREAK:
+	case SC_ALL_RIDING:	/* 搭乗システム */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

@@ -6232,7 +6232,7 @@ int battle_delarrow(struct map_session_data* sd,int num,int skillid)
 		mask = skill_get_arrow_type(skillid);
 	}
 
-	idx = sd->equip_index[EQUIP_INDEX_LACCESSORY];
+	idx = sd->equip_index[EQUIP_INDEX_ARROW];
 	if(idx >= 0 && sd->status.inventory[idx].amount >= num && sd->inventory_data[idx]->arrow_type & mask) {
 		if(battle_config.arrow_decrement)
 			pc_delitem(sd,idx,num,0,0);

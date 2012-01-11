@@ -4699,6 +4699,8 @@
 12475,Unknown_Item,キュアーフリー,2,,,50,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Bleed; sc_end SC_Curse; sc_end SC_REVERSEORCISH; sc_end SC_ELEMENTUNDEAD; },{}
 12548,Buy_Market_Permit2,不始末な購入露店ライセンス,2,500,,10,,,,,1000333311,2,,,,,,{ openbuyingstore 2; },{}
 
+12622,Reins_of_Mount,搭乗用手綱,2,10,,0,,,,,1000333311,2,,,1,,,{ sc_start SC_ALL_RIDING,9999,0; },{}
+
 12658,Unknown_Item,変身スクロール(デビルチ),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1109; },{}
 12659,Unknown_Item,変身スクロール(レイドリックアーチャー),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1276; },{}
 12660,Unknown_Item,変身スクロール(マブカ),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1884; },{}
@@ -4706,6 +4708,8 @@
 12662,Unknown_Item,変身スクロール(バンシー),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1867; },{}
 12663,Unknown_Item,変身スクロール(ポリン),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1002; },{}
 12664,Unknown_Item,変身スクロール(ゴーレム),2,1,,1,,,,,1000333311,2,,,,,,{ sc_start SC_MONSTER_TRANSFORM,1200000,1040; },{}
+
+16682,Reins_of_Mount_Box,搭乗用手綱の箱,18,10,,10,,,,,1000333311,2,,,,,,{ getitem2 12622,1,1,0,0,0,0,0,0,2592000; },{}
 
 12701,Old_Blue_Box_F,古く青い箱,2,,,200,,,,,1000333311,2,,,,,,{ getitem rand(7851,7853),1; },{}
 12702,Old_Blue_Box_F,気持ち青い箱,2,,,200,,,,,1000333311,2,,,,,,{/* 確認されている出現アイテム;ファイアーウォールLV5 ライトニングボルトLV5 フロストダイバーLV5 プレゼントボックス */},{}

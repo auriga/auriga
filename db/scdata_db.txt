@@ -518,6 +518,7 @@
 546,SC_KYOMU,0,0,0,0		// 虚無の影
 547,SC_KAGEMUSYA,0,0,0,0		// 影武者
 548,SC_AKAITSUKI,0,0,0,0		// 紅月
+549,SC_ALL_RIDING,0,0,0,0		// 搭乗システム
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

@@ -355,6 +355,20 @@ int itemdb_isbuyingable(int nameid)
 	return 0;
 }
 
+/*==========================================
+ * 使用しても消費しないアイテムは1、そうでないアイテムは0
+ *------------------------------------------
+ */
+int itemdb_isnonconsume(int nameid)
+{
+	struct item_data *id = itemdb_exists(nameid);
+
+	if(id && id->flag.nonconsume)
+		return 1;
+
+	return 0;
+}
+
 
 //
 // 初期化
@@ -522,7 +536,7 @@ static int itemdb_read_itemdb(void)
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
-		for(j=0,np=p=line;j<8 && p;j++){
+		for(j=0,np=p=line;j<9 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
@@ -542,6 +556,7 @@ static int itemdb_read_itemdb(void)
 		id->flag.cartable    = (atoi(str[5]) == 0)? 0: 1;
 		id->delay            = atoi(str[6]);
 		id->flag.buyingable  = (atoi(str[7]) == 0)? 0: 1;
+		id->flag.nonconsume  = (atoi(str[8]) == 0)? 0: 1;
 	}
 	fclose(fp);
 	printf("read db/item_db2.txt done (count=%d)\n",ln);

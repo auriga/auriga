@@ -1,4 +1,16 @@
 ----------------------------------------
+//0906 [2012/01/12] by popori
+
+・矢の判定が誤っていた個所を修正 (src/map/battle.c)
+　kuroneko_datenさんに感謝
+
+・搭乗システムの実装
+ (db/const.txt db/item_db.txt db/item_db2.txt db/scdata_db.txt doc/db_ref.txt src/map/itemdb.* src/map/pc.c src/map/status.*)
+
+・item_db2.txtにNonconsumeフラグの追加
+　詳細はdb_ref.txt参照のこと
+
+----------------------------------------
 //0905 [2012/01/11] by popori
 
 ・コスチュームシステムでグラフィクが反映されない場合のがあるのを修正 (src/map/clif.c src/map/pc.c)
