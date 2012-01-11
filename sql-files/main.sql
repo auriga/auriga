@@ -75,6 +75,7 @@ CREATE TABLE `char_data` (
   `delete_date` int(11) unsigned NOT NULL default '0',
   `refuse_partyinvite` smallint(6) NOT NULL default '0',
   `show_equip` smallint(6) NOT NULL default '0',
+  `font` smallint(6) NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),

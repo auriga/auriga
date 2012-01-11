@@ -1,4 +1,14 @@
 ----------------------------------------
+//0908 [2012/01/12] by popori
+
+・フォントアイテムの実装
+ (db/item_db.txt db/item_db2.txt doc/script_ref.txt sql-files/Auriga908_changetable.sql sql-files/main.sql
+　src/char/sql/chardb_sql.c src/char/txt/chardb_txt.c src/common/mmo.h src/map/clif.* src/map/pc.c src/map/script.c)
+
+・clif.cの修正 (src/map/clif.c)
+　かんなぎさんに感謝
+
+----------------------------------------
 //0907 [2012/01/12] by popori
 
 ・item_db2.txtのフラグ値修正 (db/item_db.txt)

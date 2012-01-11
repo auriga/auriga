@@ -2235,6 +2235,14 @@ AurigaNPCScript
 
 			最大<count>種類買い取り可能な購買露店を開設します。
 
+		setfont命令
+			setfont <type>;
+
+			type		数値
+
+			<type>のフォントをセットします。
+			既に<type>と同じフォントタイプがセットされている場合、0に初期化します。
+
 
 	＊関数
 		rand関数

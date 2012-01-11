@@ -217,7 +217,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
-		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`"
+		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id);
 
 	sql_res = sqldbs_store_result(&mysql_handle);
@@ -288,6 +288,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		p->st.delete_date         = atoi(sql_row[49]);
 		p->st.refuse_partyinvite  = atoi(sql_row[50]);
 		p->st.show_equip          = atoi(sql_row[51]);
+		p->st.font                = atoi(sql_row[52]);
 
 		// force \0 terminal
 		p->st.name[23]           = '\0';
@@ -597,6 +598,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_UNUM(delete_date       ,"delete_date");
 	UPDATE_UNUM(refuse_partyinvite,"refuse_partyinvite");
 	UPDATE_UNUM(show_equip        ,"show_equip");
+	UPDATE_UNUM(font              ,"font");
 
 	if(sep == ',') {
 		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);

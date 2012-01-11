@@ -499,6 +499,7 @@ struct mmo_charstatus {
 	unsigned int delete_date;
 	short refuse_partyinvite;
 	short show_equip;
+	short font;
 };
 
 struct registry {

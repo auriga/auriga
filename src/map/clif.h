@@ -233,6 +233,7 @@ void clif_msgstringtable(struct map_session_data *sd, int line);
 void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data);
 void clif_break_equip(struct map_session_data *sd, int where);
 void clif_send_equipopen(struct map_session_data *sd);
+void clif_setfont(struct map_session_data *sd);
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
 void clif_autoshadowspell(struct map_session_data *sd, short lv);
 void clif_mshield(struct map_session_data *sd, int num);

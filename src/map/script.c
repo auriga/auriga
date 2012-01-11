@@ -4019,6 +4019,7 @@ int buildin_getquestlimit(struct script_state *st);
 int buildin_getquestcount(struct script_state *st);
 int buildin_getquestmaxcount(struct script_state *st);
 int buildin_openbuyingstore(struct script_state *st);
+int buildin_setfont(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4300,6 +4301,7 @@ struct script_function buildin_func[] = {
 	{buildin_getquestcount,"getquestcount","i*"},
 	{buildin_getquestmaxcount,"getquestmaxcount","i*"},
 	{buildin_openbuyingstore,"openbuyingstore","i"},
+	{buildin_setfont,"setfont","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -12444,6 +12446,27 @@ int buildin_openbuyingstore(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	buyingstore_openstorewindow(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+
+	return 0;
+}
+
+/*==========================================
+ * フォントタイプのセット
+ *------------------------------------------
+ */
+int buildin_setfont(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	nullpo_retr(0, sd);
+
+	if(sd->status.font == type)
+		sd->status.font = 0;
+	else
+		sd->status.font = type;
+
+	clif_setfont(sd);
 
 	return 0;
 }

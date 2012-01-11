@@ -461,7 +461,7 @@ void clif_authok(struct map_session_data *sd)
 	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
-	WFIFOW(fd,11)=0;	// font
+	WFIFOW(fd,11)=sd->status.font;
 	WFIFOSET(fd,packet_db[0x2eb].len);
 #endif
 
@@ -697,7 +697,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 		WBUFW(buf,18)=0;
 	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0
 	&& sd->equip_index[EQUIP_INDEX_LARM] != sd->equip_index[EQUIP_INDEX_RARM]
-	&& sd->inventory_data[sd->equip_index[8EQUIP_INDEX_LARM]]
+	&& sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]
 	&& sd->view_class != PC_CLASS_WE
 	&& sd->view_class != PC_CLASS_ST
 	&& sd->view_class != PC_CLASS_SU) {
@@ -831,7 +831,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,54)=5;
 	WBUFB(buf,55)=sd->state.dead_sit;
 	WBUFLV(buf,56,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,58)=0;
+	WBUFW(buf,58)=sd->status.font;
 
 	return packet_db[0x2ee].len;
 #elif PACKETVER < 20110111
@@ -887,7 +887,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,57)=5;
 	WBUFB(buf,58)=sd->state.dead_sit;
 	WBUFLV(buf,59,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,61)=0;	// font
+	WBUFW(buf,61)=sd->status.font;
 	strncpy(WBUFP(buf,63),sd->status.name,24);
 
 	return WBUFW(buf,2);
@@ -945,7 +945,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,59)=5;
 	WBUFB(buf,60)=sd->state.dead_sit;
 	WBUFLV(buf,61,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,63)=0;	// font
+	WBUFW(buf,63)=sd->status.font;
 	strncpy(WBUFP(buf,65),sd->status.name,24);
 
 	return WBUFW(buf,2);
@@ -1204,7 +1204,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,61)=0;
 	WBUFB(buf,62)=0;
 	WBUFLV(buf,63,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,65)=0;
+	WBUFW(buf,65)=sd->status.font;
 
 	return packet_db[0x2ec].len;
 #elif PACKETVER < 20110111
@@ -1260,7 +1260,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,63)=5;
 	WBUFB(buf,64)=5;
 	WBUFLV(buf,65,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,67)=0;	// font
+	WBUFW(buf,67)=sd->status.font;
 	strncpy(WBUFP(buf,69),sd->status.name,24);
 
 	return WBUFW(buf,2);
@@ -1318,7 +1318,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,65)=5;
 	WBUFB(buf,66)=5;
 	WBUFLV(buf,67,sd->status.base_level,sd->status.class_);
-	WBUFW(buf,69)=0;	// font
+	WBUFW(buf,69)=sd->status.font;
 	strncpy(WBUFP(buf,71),sd->status.name,24);
 
 	return WBUFW(buf,2);
@@ -2946,13 +2946,14 @@ void clif_spawnpc(struct map_session_data *sd)
 	len = packet_db[0x2ed].len;
 	WFIFOW(sd->fd,0)=0x2ed;
 	WFIFOLV(sd->fd,55,sd->status.base_level,sd->status.class_);
+	WFIFOW(sd->fd,57)=sd->status.font;
 #elif PACKETVER < 20110111
 	len = 62 + (int)strlen(sd->status.name);
 	WFIFOW(sd->fd,0)=0x7f8;
 	WFIFOW(sd->fd,2)=(unsigned short)len;
 	WFIFOB(sd->fd,4)=0;
 	WFIFOLV(sd->fd,58,sd->status.base_level,sd->status.class_);
-	WFIFOW(sd->fd,60)=0;	// font
+	WFIFOW(sd->fd,60)=sd->status.font;
 	strncpy(WFIFOP(sd->fd,62),sd->status.name,24);
 #else
 	len = 64 + (int)strlen(sd->status.name);
@@ -2960,7 +2961,7 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOW(sd->fd,2)=(unsigned short)len;
 	WFIFOB(sd->fd,4)=0;
 	WFIFOLV(sd->fd,60,sd->status.base_level,sd->status.class_);
-	WFIFOW(sd->fd,62)=0;	// font
+	WFIFOW(sd->fd,62)=sd->status.font;
 	strncpy(WFIFOP(sd->fd,64),sd->status.name,24);
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
@@ -12786,6 +12787,24 @@ void clif_send_equipopen(struct map_session_data *sd)
 	WFIFOB(fd,2) = (unsigned char)sd->status.show_equip;
 	WFIFOSET(fd,packet_db[0x2da].len);
 #endif
+
+	return;
+}
+
+/*==========================================
+ * フォントをセットする
+ *------------------------------------------
+ */
+void clif_setfont(struct map_session_data *sd)
+{
+	unsigned char buf[8];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0x2ef;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFW(buf,6)=sd->status.font;
+	clif_send(buf,packet_db[0x2ef].len,&sd->bl,AREA);
 
 	return;
 }

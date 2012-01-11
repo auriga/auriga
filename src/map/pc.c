@@ -3597,6 +3597,12 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		// 搭乗用の手綱が削除される場合はSC_ALL_RIDINGを解除する
 		if(data->nameid == 12622)
 			status_change_end(&sd->bl,SC_ALL_RIDING,-1);
+
+		// フォントアイテムの削除時はフォントを初期化する
+		if(data->nameid == 12287 || data->nameid == 12288 || data->nameid == 12289 || data->nameid == 12304 ||
+		   data->nameid == 12305 || data->nameid == 12306 || data->nameid == 12307 || data->nameid == 12308 ||
+		   data->nameid == 12309)
+			sd->status.font = 0;
 	}
 
 	return -1;
