@@ -2864,7 +2864,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KO_BAKURETSU:		// 爆裂苦無
 			{
 				int rate = (src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU) : 1;
-				rate *= 10 * skill_lv;
+				rate *= 50 * skill_lv;
 				DMG_FIX( rate, 100 );
 			}
 			break;

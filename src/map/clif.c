@@ -14007,7 +14007,8 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) ||	// ダンス中
 	   sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
 	   sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
-	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// 呪縛陣
+	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||		// 呪縛陣
+	   sd->sc.data[SC_ALL_RIDING].timer != -1)		// 搭乗システム
 		return;
 
 	tick=gettick();
@@ -14990,7 +14991,8 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc.data[SC_WEDDING].timer != -1 ||
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	    sd->sc.data[SC_SANTA].timer != -1 ||
-	    sd->sc.data[SC_SUMMER].timer != -1 )
+	    sd->sc.data[SC_SUMMER].timer != -1 ||
+	    sd->sc.data[SC_ALL_RIDING].timer != -1)
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -15144,7 +15146,8 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	    sd->sc.data[SC_GOSPEL].timer != -1 ||
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	    sd->sc.data[SC_SANTA].timer != -1 ||
-	    sd->sc.data[SC_SUMMER].timer != -1 )
+	    sd->sc.data[SC_SUMMER].timer != -1 ||
+	    sd->sc.data[SC_ALL_RIDING].timer != -1)
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -15194,7 +15197,8 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 	   sd->sc.data[SC_GOSPEL].timer != -1 ||
 	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	   sd->sc.data[SC_SANTA].timer != -1 ||
-	   sd->sc.data[SC_SUMMER].timer != -1)
+	   sd->sc.data[SC_SUMMER].timer != -1 ||
+	   sd->sc.data[SC_ALL_RIDING].timer != -1)
 		return;
 
 	if(sd->invincible_timer != -1)
