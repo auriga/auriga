@@ -1,4 +1,15 @@
 ----------------------------------------
+//0911 [2012/01/22] by popori
+
+・コスチュームシステムを本家仕様に修正 (src/map/clif.c src/map/pc.c)
+
+・アイテムフラグを少し修正 (db/item_db2.txt)
+
+・アルデバランのカプラ職員からスーパーノービスと拡張スーパーノービスがカートをレンタル出来なくなっていたのを修正
+ (script/npc/job/npc_job_23supernovice.txt)
+　716さんに感謝
+
+----------------------------------------
 //0910 [2012/01/22] by popori
 
 ・0886のバグ修正とマジックナンバー削減 (src/map/buyingstore.c src/map/clif.c src/map/pc.* src/map/vending.c)

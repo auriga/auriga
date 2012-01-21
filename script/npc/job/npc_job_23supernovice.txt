@@ -286,7 +286,7 @@ aldeba_in.gat,216,169,5	script	セレイ	86,{
 //------------------------------------------
 
 aldebaran.gat,54,238,5	script	カプラ職員	117,{
-	if(Job != Job_SuperNovice || Job != Job_ExpandedSuperNovice) {
+	if(Job != Job_SuperNovice && Job != Job_ExpandedSuperNovice) {
 		mes "[カプラ職員]";
 		mes "こんにちは〜。申し訳ございませんが";
 		mes "私がお客様にして差し上げられることは";
