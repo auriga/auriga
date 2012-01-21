@@ -6751,10 +6751,10 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		if(cd && cd->usersd[0]==dstsd)
 			clif_dispchat(cd,sd->fd);
 	}
-	if(dstsd->state.store == 1) {
+	if(dstsd->state.store == STORE_TYPE_VENDING) {
 		clif_showvendingboard(&dstsd->bl,dstsd->message,sd->fd);
 	}
-	if(dstsd->state.store == 2) {
+	if(dstsd->state.store == STORE_TYPE_BUYINGSTORE) {
 		clif_show_buyingstore(&dstsd->bl,dstsd->message,sd->fd);
 	}
 
@@ -7141,10 +7141,10 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 				if(cd && cd->usersd[0] == dstsd)
 					clif_dispchat(cd,sd->fd);
 			}
-			if(dstsd->state.store == 1) {
+			if(dstsd->state.store == STORE_TYPE_VENDING) {
 				clif_closevendingboard(&dstsd->bl,sd->fd);
 			}
-			if(dstsd->state.store == 2) {
+			if(dstsd->state.store == STORE_TYPE_BUYINGSTORE) {
 				clif_close_buyingstore(&dstsd->bl,sd->fd);
 			}
 		}

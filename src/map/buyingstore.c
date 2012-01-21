@@ -256,7 +256,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	unit_stopattack(&sd->bl);
 
 	// 購買露店オープン
-	sd->state.store = 2;
+	sd->state.store = STORE_TYPE_BUYINGSTORE;
 	sd->buyer_id = ++buyingstore_id;
 	sd->buyingstore.limit_zeny = limit_zeny;
 	sd->buyingstore.count = i;
@@ -278,9 +278,9 @@ void buyingstore_close(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	if( sd->state.store == 2 )
+	if( sd->state.store == STORE_TYPE_BUYINGSTORE )
 	{
-		sd->state.store = 0;
+		sd->state.store = STORE_TYPE_NONE;
 		memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * sd->buyingstore.count);
 		clif_close_buyingstore(&sd->bl, -1);
 	}
@@ -318,7 +318,7 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 		return;
 
 	// 対象が購買露店を閉鎖中
-	if( !ssd->state.store != 2 )
+	if( ssd->state.store != STORE_TYPE_BUYINGSTORE )
 		return;
 
 	// 対象が取引中もしくは自身が取引中かチェック
@@ -395,7 +395,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	}
 
 	// 対象が露店開設中かチェック
-	if( !ssd->state.store != 2 )
+	if( ssd->state.store != STORE_TYPE_BUYINGSTORE )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;

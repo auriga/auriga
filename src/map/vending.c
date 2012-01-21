@@ -61,10 +61,10 @@ void vending_closevending(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
 
-	if(sd->state.store == 1)
+	if(sd->state.store == STORE_TYPE_VENDING)
 	{
 		sd->vend_num  = 0; // on principle
-		sd->state.store = 0;
+		sd->state.store = STORE_TYPE_NONE;
 		clif_closevendingboard(&sd->bl,-1);
 	}
 
@@ -85,7 +85,7 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 		return;
 	if( vsd->bl.prev == NULL )
 		return;
-	if( vsd->state.store != 1 )
+	if( vsd->state.store != STORE_TYPE_VENDING )
 		return;
 	if( sd->state.store )
 		return;
@@ -369,7 +369,7 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 
 	sd->vender_id = ++vending_id;
 	sd->vend_num  = i;
-	sd->state.store = 1;
+	sd->state.store = STORE_TYPE_VENDING;
 	memset(sd->message, 0, sizeof(sd->message));
 	strncpy(sd->message, shop_title, 80);
 	if( clif_openvending(sd) > 0 )
@@ -380,7 +380,7 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 	{
 		sd->vender_id = 0;
 		sd->vend_num = 0; // on principle
-		sd->state.store = 0;
+		sd->state.store = STORE_TYPE_NONE;
 	}
 
 	return;

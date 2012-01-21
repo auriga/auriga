@@ -238,4 +238,11 @@ enum {
 	ADDITEM_OVERAMOUNT,
 };
 
+enum e_store_type
+{
+	STORE_TYPE_NONE			= 0,
+	STORE_TYPE_VENDING		= 1,
+	STORE_TYPE_BUYINGSTORE	= 2,
+};
+
 #endif

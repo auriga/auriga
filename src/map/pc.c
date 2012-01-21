@@ -6508,9 +6508,9 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	sd->status.hp = 0;
 
-	if(sd->state.store == 1)
+	if(sd->state.store == STORE_TYPE_VENDING)
 		vending_closevending(sd);
-	if(sd->state.store == 2)
+	if(sd->state.store == STORE_TYPE_BUYINGSTORE)
 		buyingstore_close(sd);
 
 	pc_delspiritball(sd,sd->spiritball.num,0);
