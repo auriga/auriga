@@ -1571,6 +1571,7 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_VACUUM_EXTREME].timer != -1 ||	// バキュームエクストリーム
 		    sc->data[SC_THORNS_TRAP].timer != -1 ||	// ソーントラップ
 		    sc->data[SC_BANANA_BOMB].timer != -1 ||	// バナナ爆弾
+			sc->data[SC_MEIKYOUSISUI].timer != -1 ||	// 明鏡止水
 			sc->data[SC_KG_KAGEHUMI].timer != -1	// 影踏み
 		)
 			return 0;

@@ -303,9 +303,9 @@ int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hのenumのSC_***とあ�
 	/* 3001- */
 	SC_HIDING,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 3011- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	SC_MEIKYOUSISUI,-1,SC_KYOUGAKU,SC_CURSE,-1,-1,-1,-1,-1,-1,
 	/* 3021- */
-	-1,SC_IZAYOI,SC_KG_KAGEHUMI,SC_KYOMU,SC_KAGEMUSYA,-1,-1,-1,SC_AKAITSUKI,
+	SC_CONFUSION,SC_IZAYOI,SC_KG_KAGEHUMI,SC_KYOMU,SC_KAGEMUSYA,-1,-1,-1,SC_AKAITSUKI,
 };
 
 /* (スキル番号 - HOM_SKILLID)＝＞ステータス異常番号変換テーブル */
@@ -8909,6 +8909,57 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd) {
 			clif_making_list(sd,PRD_S_PHARMACY,skillid,skilllv);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case KO_MEIKYOUSISUI:		/* 明鏡止水 */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case KO_KYOUGAKU:		/* 驚愕 */
+		// プレイヤー以外には使用不可
+		if(bl->type != BL_PC)
+			break;
+		// 味方には使用不可
+		if(battle_check_target(src,bl,BCT_PARTY) > 0)
+			break;
+		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+		if(atn_rand() % 10000 < 1000 * skilllv)	// 確率暫定
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skilllv*5 + atn_rand() % (skilllv*5),0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case KO_JYUSATSU:		/* 呪殺 */
+		// プレイヤー以外には使用不可
+		if(bl->type != BL_PC)
+			break;
+		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);
+		if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),skilllv*1500,status_get_lv(src))) {	// 確率暫定
+			int damage = skilllv*1000;
+			clif_damage(src,bl,tick,0,0,damage,0,9,0,0);
+			battle_damage(src,bl,damage,0,0,0);
+			if(status_get_lv(src) >= status_get_lv(bl)) {
+				if(atn_rand() % 10000 < 100 * skilllv) {	// 確率暫定
+					// コーマ
+					if(dstsd) {
+						dstsd->status.hp = 1;
+						clif_updatestatus(dstsd,SP_HP);
+					}
+				}
+			}
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		}
+		break;
+	case KO_GENWAKU:		/* 幻惑 */
+		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+		if(atn_rand() % 10000 < 1000 * skilllv) {	// 確率暫定
+			int x = bl->x;
+			int y = bl->y;
+			unit_movepos(bl,src->x,src->y,0);
+			unit_movepos(src,x,y,0);
+			if(!(status_get_mode(bl)&0x20)) {	// ボス属性以外
+				if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),1000,status_get_lv(src)))	// 確率暫定
+					status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
+			}
+			if(atn_rand() % 10000 < status_change_rate(src,GetSkillStatusChangeTable(skillid),1000,status_get_lv(bl)))	// 確率暫定
+				status_change_pretimer(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
 		}
 		break;
 	case KO_IZAYOI:		/* 十六夜 */

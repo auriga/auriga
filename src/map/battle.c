@@ -741,6 +741,11 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 				}
 			}
 		}
+
+		// 明鏡止水(確率暫定)
+		if(sc->data[SC_MEIKYOUSISUI].timer != -1 && atn_rand()%100 < sc->data[SC_MEIKYOUSISUI].val1 * 2) {
+			damage = 0;
+		}
 	}
 
 	if(damage > 0) {

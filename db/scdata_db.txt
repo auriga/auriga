@@ -519,6 +519,8 @@
 547,SC_KAGEMUSYA,0,0,0,0		// 影武者
 548,SC_AKAITSUKI,0,0,0,0		// 紅月
 549,SC_ALL_RIDING,0,0,0,0		// 搭乗システム
+550,SC_MEIKYOUSISUI,0,0,0,0		// 明鏡止水
+551,SC_KYOUGAKU,0,0,0,0		// 驚愕
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

@@ -14361,7 +14361,7 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 	if ((sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	     sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
-	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1)
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
 		return;
 
 	// 未鑑定もしくは破壊されている
@@ -14404,7 +14404,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1)
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
 		return;
 	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
@@ -14999,7 +14999,8 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	    sd->sc.data[SC_SANTA].timer != -1 ||
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
-	    sd->sc.data[SC_ALL_RIDING].timer != -1)
+	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+		(sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_TOME)))
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -15154,7 +15155,8 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	    sd->sc.data[SC_SANTA].timer != -1 ||
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
-	    sd->sc.data[SC_ALL_RIDING].timer != -1)
+	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+	    sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -15205,7 +15207,8 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||
 	   sd->sc.data[SC_SANTA].timer != -1 ||
 	   sd->sc.data[SC_SUMMER].timer != -1 ||
-	   sd->sc.data[SC_ALL_RIDING].timer != -1)
+	   sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+	   sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
 		return;
 
 	if(sd->invincible_timer != -1)

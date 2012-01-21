@@ -1,4 +1,15 @@
 ----------------------------------------
+//0912 [2012/01/22] by popori
+
+・スキル「明鏡止水」「幻術 - 驚愕」「幻術 - 呪殺」「幻術 - 幻惑」の実装
+ (db/scdata_db.txt db/skill_db.txt db/skill_cast_db.txt src/map/battle.c src/map/clif.c src/map/skill.c src/map/status.* src/map/unit.c)
+
+・スキル「フォースオブバンガード」の状態異常タイマーがおかしいのを修正 (src/map/status.c)
+　rapisさんに感謝
+
+・気付いた範囲でpacket_db.txtのcleanup (db/packet_db.txt)
+
+----------------------------------------
 //0911 [2012/01/22] by popori
 
 ・コスチュームシステムを本家仕様に修正 (src/map/clif.c src/map/pc.c)

@@ -189,6 +189,8 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	SI_LIFE_FORCE_F,SI_PROMOTE_HEALTH_RESERCH,SI_ENERGY_DRINK_RESERCH,SI_EXTRACT_WHITE_POTION_Z,SI_VITATA_500,SI_EXTRACT_SALAMINE_JUICE,SI_SAVAGE_STEAK,SI_COCKTAIL_WARG_BLOOD,SI_MINOR_BBQ,SI_SIROMA_ICE_TEA,
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
+	/* 550- */
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 
 };
 
@@ -1339,6 +1341,14 @@ L_RECALC:
 			sd->paramb[3] = sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[4] = sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[5] = sd->sc.data[SC_HARMONIZE].val2;
+		}
+		if(sd->sc.data[SC_KYOUGAKU].timer != -1) {	// 驚愕
+			sd->paramb[0] -= sd->sc.data[SC_KYOUGAKU].val2;
+			sd->paramb[1] -= sd->sc.data[SC_KYOUGAKU].val2;
+			sd->paramb[2] -= sd->sc.data[SC_KYOUGAKU].val2;
+			sd->paramb[3] -= sd->sc.data[SC_KYOUGAKU].val2;
+			sd->paramb[4] -= sd->sc.data[SC_KYOUGAKU].val2;
+			sd->paramb[5] -= sd->sc.data[SC_KYOUGAKU].val2;
 		}
 	}
 
@@ -6227,7 +6237,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
-		case SC_IZAYOI:				/* 十六夜 */
 			calc_flag = 1;
 			break;
 
@@ -6244,6 +6253,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			ud->state.change_speed = 1;
+			break;
+		case SC_KYOUGAKU:			/* 驚愕 */
+			icon_val1 = 1002;	// 暫定でポリン
+			calc_flag = 1;
 			break;
 
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -7222,6 +7235,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_BANDING:	/* バンディング */
 			tick = 5000;
+			icon_tick = 9999;
 			calc_flag = 1;
 			break;
 		case SC_SITDOWN_FORCE:		/* 転倒 */
@@ -7345,9 +7359,19 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
-		case SC_KAGEMUSYA:		/* 影武者 */
-			calc_flag = 1;
+		case SC_MEIKYOUSISUI:		/* 明鏡止水 */
+			val2 = tick / 1000;
 			tick = 1000;
+			calc_flag = 1;
+			break;
+		case SC_IZAYOI:				/* 十六夜 */
+			val3 = tick / 1000;
+			tick = 1000;
+			calc_flag = 1;
+			break;
+		case SC_KAGEMUSYA:		/* 影武者 */
+			tick = 1000;
+			calc_flag = 1;
 			break;
 		default:
 			if(battle_config.error_log)
@@ -7891,6 +7915,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
+		case SC_MEIKYOUSISUI:		/* 明鏡止水 */
 		case SC_IZAYOI:				/* 十六夜 */
 		case SC_KG_KAGEHUMI:		/* 影踏み */
 		case SC_KYOMU:				/* 虚無の影 */
@@ -8245,6 +8270,12 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
 			if(sd)
 				clif_status_change(bl,SI_MONSTER_TRANSFORM,-1,0,0,0,0);
+			calc_flag = 1;
+			break;
+		case SC_KYOUGAKU:			/* 驚愕 */
+			if(sd)
+				clif_status_change(bl,SI_KYOUGAKU,-1,0,0,0,0);
+			calc_flag = 1;
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -9454,6 +9485,45 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			unit_heal(bl, -hp, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_MEIKYOUSISUI:		/* 明鏡止水 */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * (sc->data[type].val1 * 2) / 100);
+				int sp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * sc->data[type].val1 / 100);
+				if(sd->status.max_hp >= sd->status.hp + hp) {
+					sd->status.hp += hp;
+					clif_updatestatus(sd,SP_HP);
+				} else {
+					sd->status.hp = sd->status.max_hp;
+					clif_updatestatus(sd,SP_HP);
+				}
+				if(sd->status.max_sp >= sd->status.sp + sp) {
+					sd->status.sp += sp;
+					clif_updatestatus(sd,SP_SP);
+				} else {
+					sd->status.sp = sd->status.max_sp;
+					clif_updatestatus(sd,SP_SP);
+				}
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_IZAYOI:		/* 十六夜 */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				int sp = 1 * sc->data[type].val1;
+				if(sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
 		}
 		break;
 	case SC_KAGEMUSYA:	/* 影武者 */
