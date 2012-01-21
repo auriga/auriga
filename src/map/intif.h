@@ -22,16 +22,20 @@
 #ifndef _INTIF_H_
 #define _INFIF_H_
 
+#include "utils.h"
+
 int intif_parse(int fd);
 
+// メッセージ送信関連
 void intif_GMmessage(char* mes, size_t len, int flag);
 int intif_announce(char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y);
-
 void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int mes_len);
 
+// アカウント変数関連
 int intif_saveaccountreg(struct map_session_data *sd);
 int intif_request_accountreg(struct map_session_data *sd);
 
+// 倉庫関連
 int intif_request_storage(int account_id);
 int intif_send_storage(struct storage *stor);
 int intif_request_guild_storage(int account_id,int guild_id);
@@ -40,6 +44,7 @@ int intif_trylock_guild_storage(struct map_session_data *sd,int npc_id);
 int intif_unlock_guild_storage(int guild_id);
 int intif_deadlock_guild_storage(int guild_id);
 
+// パーティー関連
 void intif_create_party(struct map_session_data *sd, char *name, int item, int item2);
 int intif_request_partyinfo(int party_id);
 void intif_party_addmember(struct map_session_data *sd);
@@ -51,6 +56,7 @@ int intif_party_message(int party_id,int account_id,char *mes,int len);
 int intif_party_checkconflict(int party_id,int account_id,int char_id);
 int intif_party_leaderchange(int party_id,int account_id,int char_id);
 
+// ギルド関連
 void intif_guild_create(const char *name, const struct guild_member *master);
 void intif_guild_request_info(int guild_id);
 int intif_guild_addmember(int guild_id,struct guild_member *m);
@@ -69,41 +75,48 @@ void intif_guild_emblem(int guild_id, unsigned short len, const char *data);
 int intif_guild_castle_dataload(int castle_id,int index);
 int intif_guild_castle_datasave(int castle_id,int index, int value);
 
+// ペット関連
 void intif_create_pet(int account_id, int char_id, short pet_type, short pet_lv, short pet_egg_id,
 	short pet_equip, short intimate, short hungry, char rename_flag, char incubate, char *pet_name);
 void intif_request_petdata(int account_id, int char_id, int pet_id);
 void intif_save_petdata(int account_id, struct s_pet *p);
 void intif_delete_petdata(int pet_id);
 
+// ホムンクルス関連
 void intif_create_hom(int account_id, int char_id, struct mmo_homunstatus *h);
 void intif_request_homdata(int account_id, int char_id, int homun_id);
 void intif_save_homdata(int account_id, struct mmo_homunstatus *h);
 void intif_delete_homdata(int account_id, int char_id, int homun_id);
 
+// 傭兵関連
 void intif_create_merc(int account_id, int char_id, struct mmo_mercstatus *m);
 void intif_request_mercdata(int account_id, int char_id, int merc_id);
 void intif_save_mercdata(int account_id, struct mmo_mercstatus *m);
 void intif_delete_mercdata(int account_id, int char_id, int merc_id);
 
+// メール関連
+int intif_mailbox(int char_id);
+int intif_sendmail(struct mail_data *md);
+int intif_deletemail(int char_id, int mail_num);
+int intif_readmail(int char_id, int mail_num);
+int intif_mail_getappend(int char_id, int mail_num);
+int intif_mail_checkmail(int accound_id, struct mail_data *md);
+int intif_mail_deleteappend(int char_id, int mail_num);
+
+// 状態異常関連
+int intif_request_scdata(int account_id,int char_id);
+int intif_save_scdata(struct map_session_data *sd);
+
+// クエストリスト関連
+int intif_request_quest(int account_id,int char_id);
+int intif_save_quest(struct map_session_data *sd);
+
+// その他
 int intif_jumpto(int account_id,char *name);
 int intif_where(int account_id,char *name);
 int intif_charmovereq(struct map_session_data *sd,char *name,int flag);
 int intif_charmovereq2(struct map_session_data *sd,char *name,char *mapname,short x, short y,int flag);
 int intif_displaymessage(int account_id, char* mes);
-
-int intif_mailbox(int char_id);
-int intif_sendmail(struct mail_data *md);
-int intif_deletemail(int char_id,int mail_num);
-int intif_readmail(int char_id,int mail_num);
-int intif_mail_getappend(int char_id,int mail_num);
-int intif_mail_checkmail(int accound_id,struct mail_data *md);
-
-int intif_request_scdata(int account_id,int char_id);
-int intif_save_scdata(struct map_session_data *sd);
-
-int intif_request_quest(int account_id,int char_id);
-int intif_save_quest(struct map_session_data *sd);
-
 int intif_char_connect_limit(int limit);
 
 #endif

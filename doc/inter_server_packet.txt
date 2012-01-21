@@ -237,12 +237,14 @@ R 384c <account>.l <mail_num>.l <flag>.B
 	メールの削除通知
 S 304d <char_id>.l <mail_num>.l
 	メールに添付されたもの受信
-R 384d <len>.w <account>.l <zeny>.l <struct item>.?B
+R 384d <len>.w <account>.l <zeny>.l <mail_num>.l <struct item>.?B
 	指定されたメールに添付されていた物の情報送信
 S 304e <len>.w <account>.l <struct mail_data>.?B
 	メールを受け取る人がいるか確認要求
 R 384e <len>.w <account>.l <struct mail_data>.?B
 	メールチェックOK
+S 304f <char_id>.l <mail_num>.l
+	mail_numの添付アイテム、Zenyの情報更新
 
 S 3070 <len>.w <account_id>.l <char_id>.l <struct mmo_mercstatus>.?B
 	傭兵生成要求

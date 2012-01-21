@@ -88,7 +88,7 @@ int mapif_mail_delmail(int fd,int account,unsigned int mail_num,int flag)
 	return 0;
 }
 
-int mapif_mail_getappend(int fd,int account,struct mail_data *md)
+int mapif_mail_getappend(int fd, int account, struct mail_data *md)
 {
 	int size = sizeof(struct item);
 
@@ -98,14 +98,13 @@ int mapif_mail_getappend(int fd,int account,struct mail_data *md)
 		return 1;
 
 	WFIFOW(fd,0)=0x384d;
-	WFIFOW(fd,2)=12+size;
+	WFIFOW(fd,2)=16+size;
 	WFIFOL(fd,4)=account;
 	WFIFOL(fd,8)=(md->zeny <= 0)? 0: md->zeny;
-	memcpy(WFIFOP(fd,12),&md->item,size);
+	WFIFOL(fd,12)=md->mail_num;
+	memcpy(WFIFOP(fd,16),&md->item,size);
 	WFIFOSET(fd,WFIFOW(fd,2));
 
-	memset(&md->item,0,size);
-	md->zeny=0;
 	return 0;
 }
 
@@ -140,10 +139,13 @@ int mapif_parse_OpenMailBox(int fd)
 	memset(md, 0, sizeof(md));
 
 	m = maildb_load(char_id);
-	if(m) {
+	if(m)
+	{
 		maildb_read_mail(char_id, m, md);
 		mapif_send_mailbox(fd,rd->st.name,m->store,md);
-	} else {
+	}
+	else
+	{
 		mapif_send_mailbox(fd,rd->st.name,0,md);
 	}
 	return 0;
@@ -165,33 +167,46 @@ int mapif_parse_SendMail(int fd)
 		return 0;
 
 	rd = chardb_nick2chardata(md.receive_name);
-	if(rd == NULL) {	// 受け取る人が存在しません
+
+	// 受け取る人が存在しません
+	if(rd == NULL)
+	{
 		mapif_mail_res(fd,sd->st.account_id,1);
 		return 0;
 	}
-	if(sd->st.account_id == rd->st.account_id) {	// 同じアカウントには送れない
+
+	// 同じアカウントには送れない
+	if(sd->st.account_id == rd->st.account_id)
+	{
 		mapif_mail_res(fd,sd->st.account_id,1);
 		return 0;
 	}
 
 	// 保存だの何だの
 	m = maildb_load(rd->st.char_id);
-	if(m) {
+	if(m)
+	{
 		struct mail m2;
-		if(m->store >= MAIL_STORE_MAX) {
-			// 最大受信数を越える場合は送信成功扱いにしておく？
-			mapif_mail_res(fd,sd->st.account_id,0);
-			return 0;
+		if(m->store >= MAIL_STORE_MAX)
+		{
+			// 最大受信数を越える場合は一番古いメールを削除する
+			struct mail_data md[MAIL_STORE_MAX];
+
+			maildb_read_mail(rd->st.char_id, m, md);
+			maildb_deletemail(rd->st.char_id,md[0].mail_num,m);
 		}
 		memcpy(&m2,m,sizeof(struct mail));
 		m2.rates++;
 		m2.store++;
 		maildb_save(&m2);
 		md.mail_num = m2.rates;
-	} else {
+	}
+	else
+	{
 		maildb_new(rd->st.account_id,rd->st.char_id);
 		md.mail_num = 1;
 	}
+
 	maildb_store_mail(rd->st.char_id,&md);	// 保存
 	mapif_mail_res(fd,sd->st.account_id,0);	// 送信成功
 	mapif_mail_newmail(fd,&md);		// 新着メール通知
@@ -209,6 +224,7 @@ int mapif_parse_DeleteMail(int fd)
 
 	flag = maildb_deletemail(m->char_id,RFIFOL(fd,6),m);
 	mapif_mail_delmail(fd,m->account_id,RFIFOL(fd,6),!flag);	// 結果送信
+
 	return 0;
 }
 
@@ -221,17 +237,21 @@ int mapif_parse_ReadMail(int fd)
 	if((m = maildb_load(char_id)) == NULL)
 		return 0;
 
-	if(m->store > 0) {
+	if(m->store > 0)
+	{
 		struct mail_data md[MAIL_STORE_MAX];
 		int i;
 
 		memset(md, 0, sizeof(md));
 		maildb_read_mail(char_id, m, md);
 
-		for(i = 0; i < m->store; i++) {
-			if(md[i].mail_num == mail_num) {
+		for( i = 0; i < m->store; i++ )
+		{
+			if(md[i].mail_num == mail_num)
+			{
 				mapif_mail_readmail(fd,&md[i]);
-				if(!md[i].read) {
+				if(!md[i].read)
+				{
 					md[i].read = 1;
 					maildb_save_mail(char_id,i,m->store,md);
 					mapif_send_mailbox(fd,md[i].char_name,m->store,md);
@@ -240,6 +260,7 @@ int mapif_parse_ReadMail(int fd)
 			}
 		}
 	}
+
 	return 0;
 }
 
@@ -252,23 +273,25 @@ int mapif_parse_GetAppend(int fd)
 	if((m = maildb_load(char_id)) == NULL)
 		return 0;
 
-	if(m->store > 0) {
+	if(m->store > 0)
+	{
 		struct mail_data md[MAIL_STORE_MAX];
 		int i;
 
 		memset(md, 0, sizeof(md));
 		maildb_read_mail(char_id, m, md);
 
-		for(i = 0; i < m->store; i++) {
-			if(md[i].mail_num == mail_num){
-				if(!mapif_mail_getappend(fd,m->account_id,&md[i])) {
-					maildb_save_mail(char_id,i,m->store,md);
+		for( i = 0; i < m->store; i++ )
+		{
+			if(md[i].mail_num == mail_num)
+			{
+				if(!mapif_mail_getappend(fd,m->account_id,&md[i]))
 					mapif_mail_readmail(fd,&md[i]);
-				}
 				break;
 			}
 		}
 	}
+
 	return 0;
 }
 
@@ -282,11 +305,44 @@ int mapif_parse_CheckMail(int fd)
 		return 0;
 
 	rd = chardb_nick2chardata(md->receive_name);
-	if(rd == NULL || rd->st.account_id == send_id) {
-		// 受け取る人が存在しません
+
+	// 受け取る人が存在しません
+	if(rd == NULL || rd->st.account_id == send_id)
 		mapif_mail_res(fd,send_id,1);
-	} else {
+	else
 		mapif_mail_checkok(fd,send_id,md);
+
+	return 0;
+}
+
+int mapif_parse_DeleteAppend(int fd)
+{
+	int char_id = RFIFOL(fd,2);
+	unsigned int mail_num = RFIFOL(fd,6);
+	const struct mail *m = maildb_load(char_id);
+
+	if( !m )
+		return 0;
+
+	if(m->store > 0)
+	{
+		struct mail_data md[MAIL_STORE_MAX];
+		int i;
+
+		memset(md, 0, sizeof(md));
+		maildb_read_mail(char_id, m, md);
+
+		for( i = 0; i < m->store; i++ )
+		{
+			if( md[i].mail_num == mail_num )
+			{
+				// ここで添付アイテムとzenyを削除する
+				memset(&md[i].item, 0, sizeof(struct item));
+				md[i].zeny = 0;
+				maildb_save_mail(char_id, i, m->store, md);
+				break;
+			}
+		}
 	}
 
 	return 0;
@@ -300,12 +356,13 @@ int mapif_parse_CheckMail(int fd)
 int inter_mail_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)) {
-	case 0x3049: mapif_parse_OpenMailBox(fd); break;
-	case 0x304a: mapif_parse_SendMail(fd);    break;
-	case 0x304b: mapif_parse_DeleteMail(fd);  break;
-	case 0x304c: mapif_parse_ReadMail(fd);    break;
-	case 0x304d: mapif_parse_GetAppend(fd);   break;
-	case 0x304e: mapif_parse_CheckMail(fd);   break;
+	case 0x3049: mapif_parse_OpenMailBox(fd);    break;
+	case 0x304a: mapif_parse_SendMail(fd);       break;
+	case 0x304b: mapif_parse_DeleteMail(fd);     break;
+	case 0x304c: mapif_parse_ReadMail(fd);       break;
+	case 0x304d: mapif_parse_GetAppend(fd);      break;
+	case 0x304e: mapif_parse_CheckMail(fd);      break;
+	case 0x304f: mapif_parse_DeleteAppend(fd);   break;
 	default:
 		return 0;
 	}

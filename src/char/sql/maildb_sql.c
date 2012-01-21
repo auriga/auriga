@@ -116,11 +116,6 @@ bool maildb_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[M
 			md[i].times     = (unsigned int)atoi(sql_row[5]);
 			md[i].body_size = (unsigned int)atoi(sql_row[6]);
 
-			// force \0 terminal
-			md[i].char_name[23]    = '\0';
-			md[i].receive_name[23] = '\0';
-			md[i].title[39]        = '\0';
-
 			if(md[i].body_size > sizeof(md[i].body)) {
 				printf("mail_read_mail: %d invalid body size %d!!\n", char_id, md[i].body_size);
 				md[i].body_size = sizeof(md[i].body);
@@ -178,21 +173,18 @@ bool maildb_sql_deletemail(int char_id,unsigned int mail_num,const struct mail *
 	memset(md, 0, sizeof(md));
 	maildb_sql_read_mail(char_id, m, md);
 
-	for(i = 0; i < m->store; i++) {
-		if(md[i].mail_num == mail_num) {
-			if((md[i].item.nameid > 0 && md[i].item.amount > 0) || md[i].zeny > 0) {
-				// 添付アイテム・Zenyがあるとメール削除できない（anti hacker）
-				return false;
-			}
+	for( i = 0; i < m->store; i++ )
+	{
+		if(md[i].mail_num == mail_num)
 			break;
-		}
 	}
 	if(i >= m->store)
 		return false;
 
 	sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, mail_num);
 
-	if(sqldbs_affected_rows(&mysql_handle) <= 0) {
+	if(sqldbs_affected_rows(&mysql_handle) <= 0)
+	{
 		// 削除失敗
 		return false;
 	}
@@ -227,7 +219,7 @@ bool maildb_sql_delete(int char_id)
 	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
 		return result;
 
-	//try
+	// try
 	do
 	{
 		// cache
@@ -272,7 +264,7 @@ bool maildb_sql_delete(int char_id)
 				aFree(m);
 			}
 		}
-	}while(0);
+	} while(0);
 
 	// end transaction
 	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
@@ -287,11 +279,13 @@ const struct mail* maildb_sql_load(int char_id)
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 
-	if(m && m->char_id == char_id) {
-		// 既にキャッシュが存在する
+	// 既にキャッシュが存在する
+	if(m && m->char_id == char_id)
 		return m;
-	}
-	if(m == NULL) {
+
+	// キャッシュの作成
+	if(m == NULL)
+	{
 		m = (struct mail *)aMalloc(sizeof(struct mail));
 		numdb_insert(mail_db,char_id,m);
 	}
@@ -367,7 +361,7 @@ bool maildb_sql_save(struct mail* m2)
 			if(m3)
 				memcpy(m3,m2,sizeof(struct mail));
 		}
-	}while(0);
+	} while(0);
 
 	// end transaction
 	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");

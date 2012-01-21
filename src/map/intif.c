@@ -1142,6 +1142,23 @@ int intif_mail_checkmail(int account_id,struct mail_data *md)
 }
 
 /*==========================================
+ * mail_numの添付アイテム、Zenyの削除
+ *------------------------------------------
+ */
+int intif_mail_deleteappend(int char_id, int mail_num)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0)  = 0x304f;
+	WFIFOL(inter_fd,2)  = char_id;
+	WFIFOL(inter_fd,6)  = mail_num;
+	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+
+/*==========================================
  * ステータス異常データ要求
  *------------------------------------------
  */
@@ -1877,7 +1894,7 @@ static int intif_parse_MailDeleteRes(int fd)
 
 static int intif_parse_MailGetAppend(int fd)
 {
-	mail_getappend(RFIFOL(fd,4),RFIFOL(fd,8),(struct item *)RFIFOP(fd,12));
+	mail_getappend(RFIFOL(fd,4),RFIFOL(fd,8),RFIFOL(fd,12),(struct item *)RFIFOP(fd,16));
 
 	return 0;
 }

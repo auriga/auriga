@@ -1,4 +1,16 @@
 ----------------------------------------
+//0909 [2012/01/22] by popori
+
+・メールの最大保存数を超えるメールを受信しようとした場合は、一番古いメールを削除して受信するように変更 (src/char/int_mail.c)
+
+・zeny、添付アイテムが存在するメールも削除可能なよう変更 (src/char/sql/maildb_sql.c src/char/txt/maildb_txt.c)
+
+・メールの添付データの取得に失敗した時でも添付情報を削除していたので、添付データのロストが起こりうる可能性があったのを修正
+ (src/char/inter.c src/char/int_main.c src/map/intif.* src/map/mail.* doc/inter_server_packet.txt)
+
+・mail_dataテーブルを少し変更 (sql-files/main.sql sql-files/Auriga909_changetable.sql src/char/sql/maildb_sql.c)
+
+----------------------------------------
 //0908 [2012/01/12] by popori
 
 ・フォントアイテムの実装

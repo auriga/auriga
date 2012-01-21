@@ -26,6 +26,7 @@
 
 #include "nullpo.h"
 #include "malloc.h"
+#include "utils.h"
 
 #include "map.h"
 #include "mail.h"
@@ -38,7 +39,7 @@
  * アイテムやZenyを添付
  *------------------------------------------
  */
-void mail_setitem(struct map_session_data *sd,int idx,int amount)
+void mail_setitem(struct map_session_data *sd, int idx, int amount)
 {
 	nullpo_retv(sd);
 
@@ -98,7 +99,7 @@ int mail_removeitem(struct map_session_data *sd, int flag)
  * 添付アイテムやZenyをチェックして減らす
  *------------------------------------------
  */
-static int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
+static int mail_checkappend(struct map_session_data *sd, struct mail_data *md)
 {
 	nullpo_retr(1, sd);
 	nullpo_retr(1, md);
@@ -129,7 +130,7 @@ static int mail_checkappend(struct map_session_data *sd,struct mail_data *md)
  * 送信前チェック
  *------------------------------------------
  */
-int mail_checkmail(struct map_session_data *sd,char *name,char *title,char *body,int len)
+int mail_checkmail(struct map_session_data *sd, char *name, char *title, char *body, int len)
 {
 	struct map_session_data *rd = map_nick2sd(name);
 	struct mail_data md;
@@ -168,7 +169,7 @@ int mail_checkmail(struct map_session_data *sd,char *name,char *title,char *body
  * 送信→Interへ
  *------------------------------------------
  */
-int mail_sendmail(struct map_session_data *sd,struct mail_data *md)
+int mail_sendmail(struct map_session_data *sd, struct mail_data *md)
 {
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
@@ -191,24 +192,47 @@ int mail_sendmail(struct map_session_data *sd,struct mail_data *md)
  * 添付アイテムやZenyを取得
  *------------------------------------------
  */
-int mail_getappend(int account_id,int zeny,struct item *item)
+void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 {
+	bool result = true;
 	struct map_session_data *sd;
 
-	nullpo_retr(0, item);
+	nullpo_retv(item);
 
 	sd = map_id2sd(account_id);
-	if(sd) {
-		if(zeny > 0) {
-			sd->status.zeny += zeny;
-			clif_updatestatus(sd,SP_ZENY);
+	if( sd )
+	{
+		// アイテムの取得
+		if( item->nameid > 0 && item->amount > 0 )
+		{
+			result = pc_checkadditem(sd,item->nameid,item->amount);
+			switch( result )
+			{
+				case 0:
+					clif_mail_getappend(sd->fd,0);
+					break;
+				case 4:
+					clif_mail_getappend(sd->fd,2);
+					result = false;
+					break;
+				default:
+					clif_mail_getappend(sd->fd,1);
+					result = false;
+			}
 		}
-		if(item->nameid > 0 && item->amount > 0) {
-			if(pc_additem(sd,item,item->amount))
-				clif_mail_getappend(sd->fd,1);
-			else
-				clif_mail_getappend(sd->fd,0);
+
+		// アイテムの取得に成功した場合、添付ファイルの削除をキャラ鯖に要求する
+		if( result == true )
+		{
+			// Zenyの取得
+			if( zeny > 0 )
+			{
+				sd->status.zeny += zeny;
+				clif_updatestatus(sd,SP_ZENY);
+			}
+			intif_mail_deleteappend(sd->status.char_id,mail_num);
 		}
 	}
-	return 0;
+
+	return;
 }

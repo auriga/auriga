@@ -208,13 +208,8 @@ bool maildb_txt_deletemail(int char_id,unsigned int mail_num,const struct mail *
 	maildb_txt_read_mail(char_id, m, md);
 
 	for(i = 0; i < m->store; i++) {
-		if(md[i].mail_num == mail_num) {
-			if((md[i].item.nameid > 0 && md[i].item.amount > 0) || md[i].zeny > 0) {
-				// 添付アイテム・Zenyがあるとメール削除できない（anti hacker）
-				return false;
-			}
+		if(md[i].mail_num == mail_num)
 			break;
-		}
 	}
 	if(i >= m->store)
 		return false;
