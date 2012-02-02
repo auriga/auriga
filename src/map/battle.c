@@ -3657,19 +3657,23 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		calc_flag.lh = 0;
 	} else if(src_sd && calc_flag.lh && src_sd->status.weapon != WT_KATAR) {		// 左手があるなら右手・左手修練の適用
 		int dmg = wd.damage, dmg2 = wd.damage2;
-		// 右手修練(60% 〜 100%) 右手全般
-		skill = pc_checkskill(src_sd,AS_RIGHT);
-		wd.damage = wd.damage * (50 + (skill * 10))/100;
-		// 右手修練(80% 〜 120%) 右手全般
-		skill = pc_checkskill(src_sd,KO_RIGHT);
-		wd.damage = wd.damage * (70 + (skill * 10))/100;
+		// 影狼・朧の場合
+		if(src_sd->s_class.job == PC_JOB_KG || src_sd->s_class.job == PC_JOB_OB) {
+			// 右手修練(80% 〜 120%) 右手全般
+			skill = pc_checkskill(src_sd,KO_RIGHT);
+			wd.damage = wd.damage * (70 + (skill * 10))/100;
+			// 左手修練(60% 〜 100%) 左手全般
+			skill = pc_checkskill(src_sd,KO_LEFT);
+			wd.damage2 = wd.damage2 * (50 + (skill * 10))/100;
+		} else {
+			// 右手修練(60% 〜 100%) 右手全般
+			skill = pc_checkskill(src_sd,AS_RIGHT);
+			wd.damage = wd.damage * (50 + (skill * 10))/100;
+			// 左手修練(40% 〜 80%) 左手全般
+			skill = pc_checkskill(src_sd,AS_LEFT);
+			wd.damage2 = wd.damage2 * (30 + (skill * 10))/100;
+		}
 		if(dmg > 0 && wd.damage < 1) wd.damage = 1;
-		// 左手修練(40% 〜 80%) 左手全般
-		skill = pc_checkskill(src_sd,AS_LEFT);
-		wd.damage2 = wd.damage2 * (30 + (skill * 10))/100;
-		// 左手修練(60% 〜 100%) 左手全般
-		skill = pc_checkskill(src_sd,KO_LEFT);
-		wd.damage2 = wd.damage2 * (50 + (skill * 10))/100;
 		if(dmg2 > 0 && wd.damage2 < 1) wd.damage2 = 1;
 	} else {
 		wd.damage2 = 0;	// 念のため0を明示しておく

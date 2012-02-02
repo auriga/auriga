@@ -1,4 +1,19 @@
 ----------------------------------------
+//0913 [2012/02/03] by refis
+
+・影狼、朧スキル「明鏡止水」のSP回復不具合を修正 (src/map/status.c)
+	Thanks かんなぎ さん
+
+・拡張スーパーノービス、影狼、朧の秒間最大攻撃回数が固定になる不具合を修正 (src/map/status.c)
+	Thanks barusu2 さん、rapis さん
+
+・二刀流時の右手・左手修練のダメージ計算式を修正 (src/map/battle.c)
+	Thanks dragontail789 さん
+
+・add_damage_class_count、add_damage_class_count_、add_magic_damage_class_countはintである必要がないのでshortに変更
+ (src/map/map.h)
+
+----------------------------------------
 //0912 [2012/01/22] by popori
 
 ・スキル「明鏡止水」「幻術 - 驚愕」「幻術 - 呪殺」「幻術 - 幻惑」の実装

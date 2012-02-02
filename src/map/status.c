@@ -2250,11 +2250,11 @@ L_RECALC:
 		sd->aspd = battle_config.third_max_aspd;
 		sd->amotion = sd->aspd>>1;
 	}
-	else if(sd->s_class.job == PC_JOB_ESNV) {
+	else if(sd->s_class.job == PC_JOB_ESNV && sd->aspd < battle_config.esnv_max_aspd) {
 		sd->aspd = battle_config.esnv_max_aspd;
 		sd->amotion = sd->aspd>>1;
 	}
-	else if(sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB) {
+	else if((sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB) && sd->aspd < battle_config.ko_max_aspd) {
 		sd->aspd = battle_config.ko_max_aspd;
 		sd->amotion = sd->aspd>>1;
 	}
@@ -9491,7 +9491,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * (sc->data[type].val1 * 2) / 100);
-				int sp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * sc->data[type].val1 / 100);
+				int sp = (int)((atn_bignumber)status_get_max_sp(&sd->bl) * sc->data[type].val1 / 100);
 				if(sd->status.max_hp >= sd->status.hp + hp) {
 					sd->status.hp += hp;
 					clif_updatestatus(sd,SP_HP);

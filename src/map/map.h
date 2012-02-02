@@ -530,7 +530,7 @@ struct map_session_data {
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
 	int def_ratio_atk_ele,def_ratio_atk_race,def_ratio_atk_enemy;
 	int def_ratio_atk_ele_,def_ratio_atk_race_,def_ratio_atk_enemy_;
-	int add_damage_class_count,add_damage_class_count_,add_magic_damage_class_count;
+	short add_damage_class_count,add_damage_class_count_,add_magic_damage_class_count;
 	short add_damage_classid[10],add_damage_classid_[10],add_magic_damage_classid[10];
 	int add_damage_classrate[10],add_damage_classrate_[10],add_magic_damage_classrate[10];
 	short add_def_class_count,add_mdef_class_count;
