@@ -13,13 +13,13 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bLuk,n;						LUK+n
 	bonus bMaxHP,n;						最大HP+n
 	bonus bMaxSP,n;						最大SP+n
-	bonus bMaxHPrate,n;					最大HP+n% 
+	bonus bMaxHPrate,n;					最大HP+n%
 	bonus bMaxSPrate,n;					最大SP+n%
 	bonus bAtk,n;						攻撃力+n
 	bonus bAtk2,n;						攻撃力2+n
-	bonus bAtkRate						攻撃力+n%
-	bonus2 bWeaponAtk,n,x;				タイプnの武器を装備しているときに攻撃力+x。
-	bonus2 bWeaponAtkRate,n,x;			タイプnの武器を装備しているときに攻撃力+x%。
+	bonus bAtkRate,n;					攻撃力+n%
+	bonus2 bWeaponAtk,n,x;				タイプnの武器を装備しているときに攻撃力+x
+	bonus2 bWeaponAtkRate,n,x;			タイプnの武器を装備しているときに攻撃力+x%
 					0,素手	1,短剣	2,片手剣　3,両手剣　4,片手槍　5,両手槍	6,片手斧　7,両手斧　8,鈍器　9,両手鈍器　10,杖　11,弓　12,ナックル　13,楽器　14,鞭　15,本　16,カタール
 					17,ハンドガン　18,ライフル　19,ショットガン　20,ガトリングガン　21,グレネードランチャー　22,手裏剣
 					23,短剣+短剣　24,片手剣+片手剣　25,片手斧+片手斧　26,短剣+片手剣　27,短剣+片手斧　28,片手剣+片手斧
@@ -88,21 +88,21 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bHPRatePenaltyUnrig,n;		装備解除時MaxHPのn%消費
 	bonus bSPRatePenaltyUnrig,n;		装備解除時MaxSPのn%消費
 	bonus bRestartFullRecover,n;		復活した時HPとSPを全て回復(nは無意味)
-	bonus bHPGainValue,n				敵を倒したとき、HPをn回復
-	bonus bSPGainValue,n				敵を倒したとき、SPをn回復
+	bonus bHPGainValue,n;				敵を倒したとき、HPをn回復
+	bonus bSPGainValue,n;				敵を倒したとき、SPをn回復
 	bonus2 bItemHealRate,n,x;			アイテム使用時nグループの回復効果+x%
 					1:ポーション 2:ハーブ 3:飴 4:ジュース 5:にく 6:さしみ 7:アイスクリーム　(item_group_db.txt参照)
 	bonus2 bSPVanish,n,x;				物理攻撃時n%の確率で敵の現SPをx%消失させる (nとxは加算)
 	bonus2 bRaise,n,x;					死亡時n%の確率でMaxHPのx%で蘇生(nは万分率)
 	bonus3 bRaise,n,x,y;				死亡時n%の確率でMaxHP/SPのx/y%で蘇生(nは万分率)
-	bonus2 bHPDrainRate,n,x;			敵に与えたダメージをn%確率でx%をHPに吸収。(nとxは+される)
-	bonus2 bSPDrainRate,n,x;			敵に与えたダメージをn%確率でx%をSPに吸収。(nとxは+される)
-	bonus2 bHPDrainValue,n,x;			敵に与えたダメージをn%確率でxをHPに吸収。(nとxは+される)
-	bonus2 bSPDrainValue,n,x;			敵に与えたダメージをn%確率でxをSPに吸収。(nとxは+される)
+	bonus2 bHPDrainRate,n,x;			敵に与えたダメージをn%確率でx%をHPに吸収(nとxは+される)
+	bonus2 bSPDrainRate,n,x;			敵に与えたダメージをn%確率でx%をSPに吸収(nとxは+される)
+	bonus2 bHPDrainValue,n,x;			敵に与えたダメージをn%確率でxをHPに吸収(nとxは+される)
+	bonus2 bSPDrainValue,n,x;			敵に与えたダメージをn%確率でxをSPに吸収(nとxは+される)
 	bonus2 bHPPenaltyTime,n,x;			nミリ秒ごとにxずつＨＰ減少
 	bonus2 bSPPenaltyTime,n,x;			nミリ秒ごとにxずつＳＰ減少
-	bonus3 bDefeatHPDrainValue,n,x,y;	n種族を倒した時x%確率でyをHPに吸収。(xとyは+される)
-	bonus3 bDefeatSPDrainValue,n,x,y;	n種族を倒した時x%確率でyをSPに吸収。(xとyは+される)
+	bonus3 bDefeatHPDrainValue,n,x,y;	n種族を倒した時x%確率でyをHPに吸収(xとyは+される)
+	bonus3 bDefeatSPDrainValue,n,x,y;	n種族を倒した時x%確率でyをSPに吸収(xとyは+される)
 					0,無形　1,不死　2,動物　3,植物　4,昆虫　5,魚貝　6,悪魔　7,人間　8,天使　9,竜族　10,全種族
 
 
@@ -186,9 +186,9 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 
 
 ・ダメージ反射
-	bonus bShortWeaponDamageReturn,n;	近距離物理攻撃のn%を敵に跳ね返す(ダメージは減らない。nは+される。)
-	bonus bLongWeaponDamageReturn,n;	遠距離物理攻撃のn%を敵に跳ね返す(ダメージは減らない。nは+される。)
-	bonus bMagicDamageReturn,n;			魔法攻撃をn%の確率で敵に跳ね返す(ダメージは減らない。nは+される。)
+	bonus bShortWeaponDamageReturn,n;	近距離物理攻撃のn%を敵に跳ね返す(ダメージは減らない。nは+される)
+	bonus bLongWeaponDamageReturn,n;	遠距離物理攻撃のn%を敵に跳ね返す(ダメージは減らない。nは+される)
+	bonus bMagicDamageReturn,n;			魔法攻撃をn%の確率で敵に跳ね返す(ダメージは減らない。nは+される)
 
 
 ・スキル関連
@@ -269,7 +269,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus3 bRevAutoActiveMagic,n,x,y;	魔法ダメージを受けた時、アイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
 	bonus4 bAutoActiveSkill,n,x,y,z;	スキルn使用時、アイテムxをy%確率(万分率)でz秒(ms)の間、活性化状態にします。
 	bonus4 bAutoActiveItem,n,x,y,z;		zの条件でアイテムnをx%確率(万分率)でy秒(ms)の間、活性化状態にします。
-						条件zは下記を参照。
+						条件zは下記を参照
 						動作1：指定しない場合は攻撃
 						    EAS_ATTACK			攻撃（ダメージを与えたとき）
 						    EAS_REVENGE			反撃（ダメージを受けたとき）
@@ -338,8 +338,6 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 
 
 ・追加経験値
-	bonus2 bExpRate,n,x;				n種族を倒した時x%の経験増加
-	bonus2 bJobRate,n,x;				n種族を倒した時x%の経験増加
 	bonus2 bExpRate,n,x;				n種族を倒した時x%の経験増加(xは+される)
 	bonus2 bJobRate,n,x;				n種族を倒した時x%の経験増加(xは+される)
 					0,無形　1,不死　2,動物　3,植物　4,昆虫　5,魚貝　6,悪魔　7,人間　8,天使　9,竜族　10,全種族
