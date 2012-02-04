@@ -1901,7 +1901,7 @@ L_RECALC:
 			sd->flee -= sd->flee*25/100;
 		}
 		if(sd->sc.data[SC_WINDWALK].timer != -1)	// ウィンドウォーク
-			sd->flee += sd->flee*(sd->sc.data[SC_WINDWALK].val2)/100;
+			sd->flee += sd->sc.data[SC_WINDWALK].val2;
 		if(sd->sc.data[SC_SPIDERWEB].timer != -1)	// スパイダーウェブ
 			sd->flee -= 50;
 		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// トゥルーサイト
@@ -3658,7 +3658,7 @@ int status_get_flee(struct block_list *bl)
 		if(sc->data[SC_BLIND].timer != -1 && bl->type != BL_PC)
 			flee -= flee*25/100;
 		if(sc->data[SC_WINDWALK].timer != -1 && bl->type != BL_PC)		// ウィンドウォーク
-			flee += flee*(sc->data[SC_WINDWALK].val2)/100;
+			flee += sc->data[SC_WINDWALK].val2;
 		if(sc->data[SC_SPIDERWEB].timer != -1 && bl->type != BL_PC)	// スパイダーウェブ
 			flee -= 50;
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)	// THE SUN

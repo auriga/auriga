@@ -4935,13 +4935,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int heal;
 			int heal_get_jobexp;
 			int lv;
-			if(skillid == AB_HIGHNESSHEAL) {
-				lv = pc_checkskill(sd,AL_HEAL);
-				if(lv < 1)
-					lv = 1;
-			} else {
-				lv = skilllv;
-			}
+			lv = (skillid == AB_HIGHNESSHEAL)? 10: skilllv;
 			heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, lv));
 			sc = status_get_sc(bl);
 			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)

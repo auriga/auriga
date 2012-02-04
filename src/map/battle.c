@@ -2916,6 +2916,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(skill_lv < 0)
 			calc_flag.nocardfix = 1;
 
+		/* スキル倍率計算に加算終了 */
+		if(add_rate > 0)
+			add_rate = 0;
+
 		/* 13．ファイティングの追加ダメージ */
 		wd.damage += tk_power_damage;
 		if(calc_flag.lh)
