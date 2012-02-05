@@ -1,4 +1,36 @@
 ----------------------------------------
+//0916 [2012/02/06] by refis
+
+・スキル「オーディンの力」実装
+ (db/scdata_db.txt db/skill_db.txt db/skill_db2.txt db/skill_cast_db.txt db/skill_require_db.txt src/common/mmo.h src/map/skill.* src/map/status.*)
+
+・アイテムボーナス「bonus2 bAddSkillCastTime」「bonus2 bFixCastrate」「bonus2 bAddSkillSubHealRate」「bonus2 bAddSkillCoolDown」追加
+ (db/const.txt doc/item_bonus.txt src/map/map.h src/map/skill.c src/map/pc.c src/map/status.c)
+　bonus2 bAddSkillCastTime,n,x;
+　指定スキルnの詠唱時間をxミリ秒増加させます。
+　ex)　bonus2 bAddSkillCastTime,19,1000;	// スキルファイアーボルトの詠唱時間を1000ms(1秒)増加
+
+　bonus2 bFixCastrate,n,x;
+　固定詠唱時間をn%増加させます(xが0の場合、値の低い物が適用。xが0以外の場合、nは+される)
+　ex)　bonus2 bFixCastrate,-20,0;	// これ以上値の低い効果を受けていない場合固定詠唱時間を20%減少
+　ex)　bonus2 bFixCastrate,-5,1;	// 固定詠唱時間を5%減少(上記ボーナスと共に設定すると25%減少)
+
+　bonus2 bAddSkillSubHealRate,n,x;
+　指定スキルnを受けたときの回復量をx%増加させます。
+　ex)　bonus2 bAddSkillSubHealRate,28,10;	// スキルヒールを受けたときの回復量を10%増加
+
+　bonus2 bAddSkillCoolDown,n,x;
+　指定スキルnのクールタイムをxミリ秒増加させます(3次職スキル以外は無視されます)
+　ex)　bonus2 bAddSkillCoolDown,2051,-3000;	// スキルハイネスヒールのクールタイムを3000ms(3秒)減少
+
+・mob_group_dbを更新 (db/mob_group_db.txt)
+
+・NPC商店はNOTOCフラグとNOTDCフラグを確認してDUPE警告を表示するよう変更してみる (src/map/npc.c)
+
+・ドキュメントファイルの細かい修正 (doc/db_ref.txt doc/item_bonus.txt)
+	Thanks Akayumi さん、hyper_001 さん
+
+----------------------------------------
 //0915 [2012/02/05] by refis
 
 ・存在しないアイテムボーナスの説明の削除とその他細かい修正 (doc/item_bonus.txt)

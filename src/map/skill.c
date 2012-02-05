@@ -298,6 +298,12 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hのenumのSC_***と�
 	-1,-1,-1,-1,SC_SACRAMENT,-1,SC_FEAR,-1,-1,
 };
 
+/* (スキル番号 - QUEST_SKILLID)＝＞ステータス異常番号変換テーブル */
+int QuestSkillStatusChangeTable[MAX_QUESTSKILL] = {	/* status.hのenumのSC_***とあわせること */
+	/* 2533- */
+	-1,-1,-1,-1,SC_ODINS_POWER,
+};
+
 /* (スキル番号 - KO_SKILLID)＝＞ステータス異常番号変換テーブル */
 int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hのenumのSC_***とあわせること */
 	/* 3001- */
@@ -426,6 +432,9 @@ int GetSkillStatusChangeTable(int id)
 
 	if(id >= THIRD_SKILLID && id < MAX_THIRD_SKILLID)
 		return SkillStatusChangeTable3[id - THIRD_SKILLID];
+
+	if(id >= QUEST_SKILLID && id < MAX_QUEST_SKILLID)
+		return QuestSkillStatusChangeTable[id - QUEST_SKILLID];
 
 	if(id >= KO_SKILLID && id < MAX_KO_SKILLID)
 		return SkillStatusChangeTableKO[id - KO_SKILLID];
@@ -2723,6 +2732,13 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 
 			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	// クールタイムは3次職スキルのみ
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
+				if(src_sd->skill_cooldown.count > 0) {
+					int i;
+					for(i=0; i<src_sd->skill_cooldown.count; i++) {
+						if(src_ud->skillid == src_sd->skill_cooldown.id[i])
+							cooldown += src_sd->skill_cooldown.time[i];
+					}
+				}
 				if(cooldown > 0) {
 					src_sd->skillcooldown[src_ud->skillid - THIRD_SKILLID] = tick + cooldown;
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
@@ -5541,6 +5557,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SR_GENTLETOUCH_ENERGYGAIN:	/* 点穴 -球- */
 	case WM_GLOOMYDAY:			/* メランコリー */
 	case GN_CARTBOOST:			/* カートブースト */
+	case ALL_ODINS_POWER:		/* オーディンの力 */
 	case MS_REFLECTSHIELD:
 	case MER_QUICKEN:			/* ウェポンクイッケン */
 	case MER_AUTOBERSERK:
@@ -9145,6 +9162,13 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 
 			if(src_ud->skillid >= THIRD_SKILLID && src_ud->skillid < MAX_THIRD_SKILLID) {	//クールタイムは3次職スキルのみ
 				int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
+				if(src_sd->skill_cooldown.count > 0) {
+					int i;
+					for(i=0; i<src_sd->skill_cooldown.count; i++) {
+						if(src_ud->skillid == src_sd->skill_cooldown.id[i])
+							cooldown += src_sd->skill_cooldown.time[i];
+					}
+				}
 				if(cooldown > 0) {
 					src_sd->skillcooldown[src_ud->skillid - THIRD_SKILLID] = tick + cooldown;
 					clif_skill_cooldown(src_sd, src_ud->skillid, cooldown);
@@ -13880,6 +13904,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 	struct status_change *sc;
 	struct map_session_data *sd = NULL;
 	int reduce_time = 0;	// 削減時間
+	int i;
 
 	nullpo_retr(0, bl);
 
@@ -13899,6 +13924,13 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		}
 	}
 
+	// カードによる詠唱時間増減効果
+	if(casttime > 0 && sd && sd->skill_addcast.count > 0) {
+		for(i=0; i<sd->skill_addcast.count; i++) {
+			if(skillid == sd->skill_addcast.id[i])
+				casttime += sd->skill_addcast.time[i];
+		}
+	}
 	if(casttime > 0) {
 		/* ラディウス */
 		if(sd && pc_checkskill(sd,WL_RADIUS)) {
@@ -13957,7 +13989,6 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 
 		// カードによる詠唱時間増減効果
 		if(sd && sd->skill_addcastrate.count > 0) {
-			int i;
 			for(i=0; i<sd->skill_addcastrate.count; i++) {
 				if(skillid == sd->skill_addcastrate.id[i])
 					casttime = casttime * (100 + sd->skill_addcastrate.rate[i])/100;
@@ -13987,9 +14018,12 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		if(sc && sc->data[SC_DANCE_WITH_WUG].timer != -1) {
 			reduce_time2 += 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
 		}
+
+		if(sd) {
+			fixedtime = fixedtime * (sd->fixcastrate + sd->fixcastrate_) / 100;
+		}
 		// カードによる固定詠唱時間増減効果
 		if(sd && sd->skill_fixcastrate.count > 0) {
-			int i;
 			for(i=0; i<sd->skill_fixcastrate.count; i++) {
 				if(skillid == sd->skill_fixcastrate.id[i])
 					reduce_time2 -= sd->skill_fixcastrate.rate[i];
@@ -17824,15 +17858,19 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
  */
 int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal)
 {
-	struct map_session_data *sd = NULL;
+	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc = NULL;
+	int i;
 
 	nullpo_retr(0, src);
 
 	if(src->type == BL_PC)
 		sd = (struct map_session_data *)src;
-	if(bl)
+	if(bl){
 		sc = status_get_sc(bl);
+		if(bl->type == BL_PC)
+			tsd = (struct map_session_data *)bl;
+	}
 
 	if(sc && sc->data[SC_CRITICALWOUND].timer != -1)
 		heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
@@ -17840,10 +17878,18 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 		heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
 
 	if(sd && sd->skill_healup.count > 0 && heal > 0 && skill_id > 0) {
-		int i;
 		for(i = 0; i < sd->skill_healup.count; i++) {
 			if(skill_id == sd->skill_healup.id[i]) {
 				heal += heal * sd->skill_healup.rate[i] / 100;
+				break;
+			}
+		}
+	}
+
+	if(tsd && tsd->skill_subhealup.count > 0 && heal > 0 && skill_id > 0) {
+		for(i = 0; i < tsd->skill_subhealup.count; i++) {
+			if(skill_id == tsd->skill_subhealup.id[i]) {
+				heal += heal * tsd->skill_subhealup.rate[i] / 100;
 				break;
 			}
 		}

@@ -1410,8 +1410,16 @@ static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
 				if(value < 0) {
 					value = id->value_buy;
 				}
-				sell_max = pc_modifysellvalue(NULL, id->value_sell);
-				buy_max  = pc_modifybuyvalue(NULL, value);
+				if(id->flag.value_notoc)	//NOTOCフラグを判定
+					sell_max = id->value_sell;
+				else
+					sell_max = pc_modifysellvalue(NULL, id->value_sell);
+
+				if(id->flag.value_notdc)	//NOTDCフラグを判定
+					buy_max  = value;
+				else
+					buy_max  = pc_modifybuyvalue(NULL, value);
+
 				if(sell_max > buy_max) {
 					// 売り値が買い値を越える可能性があるので警告
 					printf("warning shop sell value (id = %d, %dz > %dz) : %s line %d\a\n", nameid, sell_max, buy_max, w3, lines);

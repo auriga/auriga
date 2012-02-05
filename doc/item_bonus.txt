@@ -201,12 +201,16 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bNoCastCancel2,n;				キャスティングをキャンセルされない(GVGでもキャンセルされない、nは無意味)
 	bonus bNoGemStone,n;				スキルを使う時ジェムストーンを消耗しない(nは無意味)
 	bonus bSkillDelayRate,n;			スキル使用後ディレイ+n%
+	bonus2 bFixCastrate,n,x;			固定詠唱時間+n%(xが0の場合、値の低い物が適用。xが0以外の場合、nは+される)
 	bonus2 bAddSkillDamageRate,n,x; 	スキルnのダメージをx%増加
 	bonus2 bAddSkillBlow,n,x;			スキルnにxマスの吹き飛ばし効果追加
 	bonus2 bAddFixCastRate,n,x;			スキルnの固定詠唱時間をx%増加
-	bonus2 bAddSkillHealRate,n,x;			スキルnの回復量をx%増加
+	bonus2 bAddSkillHealRate,n,x;		スキルnの回復量をx%増加
+	bonus2 bAddSkillSubHealRate,n,x;	スキルnを受けたときの回復量をx%増加
 	bonus2 bAddCastRate,n,x;			スキルnの詠唱時間をx%増加
+	bonus2 bAddSkillCastTime,n,x;		スキルnの詠唱時間をxミリ秒増加
 	bonus2 bAddSpCost,n,x;				スキルnの消費SPを+x
+	bonus2 bAddSkillCoolDown,n,x;		スキルnのクールタイムをxミリ秒増加(nが3次職スキル以外は無効)
 
 
 ・オートスペル
@@ -309,7 +313,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bResEff,e,n;					状態異常eの耐性+n%(nは万分率)
 					Eff_Blind		暗黒			Eff_Sleep		睡眠
 					Eff_Poison		毒				Eff_Freeze		凍結
-					Eff_Silenc		沈黙			Eff_Stun		スタン
+					Eff_Silence		沈黙			Eff_Stun		スタン
 					Eff_Curse		呪い			Eff_Confusion	混乱
 					Eff_Stone		石化			Eff_Bleed		出血)
 	bonus bCurseByMuramasa,n;			LV>LUKの時,n%の確率で呪いにかかる(nは万分率)
@@ -353,7 +357,7 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus bNoKnockback,n;				ノックバックしなくなる(nは無意味)
 
 
-・特殊	
+・特殊
 	bonus bAutoStatusCalcPc,n;	ステータス異常nが終了する度に強制的にstatu_calc_pcを呼び出す
 　　					例:装備している間アスムプティオ状態
     					,{},{ bonus bAutoStatusCalcPc,110; sc_start 110,1000,0; }

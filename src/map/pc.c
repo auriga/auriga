@@ -2981,6 +2981,14 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			else sd->eternal_status_change[type2] = 1000;
 		}
 		break;
+	case SP_FIXCASTRATE:
+		if(!val) {
+			if(sd->fixcastrate > 100 + type2)
+				sd->fixcastrate = 100 + type2;
+		} else {
+			sd->fixcastrate_ += type2;
+		}
+		break;
 	case SP_ADD_FIX_CAST_RATE:
 		// update
 		for(i=0; i<sd->skill_fixcastrate.count; i++)
@@ -3017,6 +3025,44 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_addcastrate.rate[sd->skill_addcastrate.count] = val;
 		sd->skill_addcastrate.count++;
 		break;
+	case SP_ADD_CAST_TIME:
+		// update
+		for(i=0; i<sd->skill_addcast.count; i++)
+		{
+			if(sd->skill_addcast.id[i] == type2)
+			{
+				sd->skill_addcast.time[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_addcast.count == MAX_SKILL_ADDCASTTIME)
+			break;
+		// add
+		sd->skill_addcast.id[sd->skill_addcast.count] = type2;
+		sd->skill_addcast.time[sd->skill_addcast.count] = val;
+		sd->skill_addcast.count++;
+		break;
+	case SP_ADD_COOL_DOWN:
+		if(type2 < THIRD_SKILLID || type2 >= MAX_THIRD_SKILLID)	// クールタイムは3次職スキルのみ
+			break;
+		// update
+		for(i=0; i<sd->skill_cooldown.count; i++)
+		{
+			if(sd->skill_cooldown.id[i] == type2)
+			{
+				sd->skill_cooldown.time[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_cooldown.count == MAX_SKILL_ADDCOOLDOWN)
+			break;
+		// add
+		sd->skill_cooldown.id[sd->skill_cooldown.count] = type2;
+		sd->skill_cooldown.time[sd->skill_cooldown.count] = val;
+		sd->skill_cooldown.count++;
+		break;
 	case SP_ADD_SKILL_HEAL_RATE:
 		// update
 		for(i=0; i<sd->skill_healup.count; i++)
@@ -3034,6 +3080,24 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_healup.id[sd->skill_healup.count] = type2;
 		sd->skill_healup.rate[sd->skill_healup.count] = val;
 		sd->skill_healup.count++;
+		break;
+	case SP_ADD_SKILL_SUBHEAL_RATE:
+		// update
+		for(i=0; i<sd->skill_subhealup.count; i++)
+		{
+			if(sd->skill_subhealup.id[i] == type2)
+			{
+				sd->skill_subhealup.rate[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_subhealup.count == MAX_SKILL_HEAL_UP)
+			break;
+		// add
+		sd->skill_subhealup.id[sd->skill_subhealup.count] = type2;
+		sd->skill_subhealup.rate[sd->skill_subhealup.count] = val;
+		sd->skill_subhealup.count++;
 		break;
 	case SP_ADD_SP_COST:
 		//update

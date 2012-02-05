@@ -190,7 +190,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 
 };
 
@@ -467,6 +467,8 @@ L_RECALC:
 	sd->hprate              = battle_config.hp_rate;
 	sd->sprate              = battle_config.sp_rate;
 	sd->castrate            = 100;
+	sd->fixcastrate         = 100;
+	sd->fixcastrate_        = 0;
 	sd->dsprate             = 100;
 	sd->base_atk            = 0;
 	sd->arrow_atk           = 0;
@@ -620,6 +622,9 @@ L_RECALC:
 	memset(&sd->activeitem,0,sizeof(sd->activeitem));
 	memset(sd->def_eleenemy,0,sizeof(sd->def_eleenemy));
 	memset(&sd->skill_addspcost,0,sizeof(sd->skill_addspcost));
+	memset(&sd->skill_subhealup,0,sizeof(sd->skill_subhealup));
+	memset(&sd->skill_addcast,0,sizeof(sd->skill_addcast));
+	memset(&sd->skill_cooldown,0,sizeof(sd->skill_cooldown));
 
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(i == EQUIP_INDEX_ARROW)
@@ -2175,6 +2180,14 @@ L_RECALC:
 		// カートブースト
 		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1) {
 			sd->watk += sd->sc.data[SC_GN_CARTBOOST].val1 * 10;
+		}
+		// オーディンの力
+		if(sd->sc.data[SC_ODINS_POWER].timer != -1) {
+			sd->watk += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+			sd->matk1 += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+			sd->matk2 += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+			sd->def -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+			sd->mdef -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 		}
 		// ファイアーエクスパンション(煙幕)
 		if(sd->sc.data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1) {
@@ -3890,6 +3903,8 @@ int status_get_baseatk(struct block_list *bl)
 			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 			batk += sc->data[SC_STRIKING].val3;
+		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
+			batk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 	}
 	if(batk < 1) batk = 1;	// base_atkは最低でも1
 	return batk;
@@ -3959,6 +3974,8 @@ int status_get_atk(struct block_list *bl)
 			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 			atk += sc->data[SC_STRIKING].val3;
+		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
+			atk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 	}
 	if(atk < 0) atk = 0;
 	return atk;
@@ -4055,6 +4072,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 			if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
 				atk2 += sc->data[SC_STRIKING].val3;
+			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
+				atk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 		}
 		if(atk2 < 0) atk2 = 0;
 	}
@@ -4120,6 +4139,8 @@ int status_get_matk1(struct block_list *bl)
 				matk1 = matk1*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1)
 				matk1 = matk1*80/100;
+			if(sc->data[SC_ODINS_POWER].timer != -1)	// オーディンの力
+				matk1 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 		}
 	}
 	return matk1;
@@ -4169,6 +4190,8 @@ int status_get_matk2(struct block_list *bl)
 				matk2 = matk2*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1)
 				matk2 = matk2*80/100;
+			if(sc->data[SC_ODINS_POWER].timer != -1)	// オーディンの力
+				matk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 		}
 	}
 	return matk2;
@@ -4269,6 +4292,9 @@ int status_get_def(struct block_list *bl)
 			// フライデーナイトフィーバー
 			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)
 				def = def * (90 - 10 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
+			// オーディンの力
+			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
+				def -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
 		}
 		// 詠唱中は詠唱時減算率に基づいて減算
 		if(ud && ud->skilltimer != -1) {
@@ -4325,6 +4351,9 @@ int status_get_mdef(struct block_list *bl)
 			// ニュートラルバリアー
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
+			// オーディンの力
+			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
+				mdef -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
 		}
 	}
 	if(mdef < 0) mdef = 0;
@@ -6240,6 +6269,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
+		case SC_ODINS_POWER:		/* オーディンの力 */
 			calc_flag = 1;
 			break;
 
@@ -7924,6 +7954,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_KYOMU:				/* 虚無の影 */
 		case SC_KAGEMUSYA:			/* 影武者 */
 		case SC_AKAITSUKI:			/* 紅月 */
+		case SC_ODINS_POWER:		/* オーディンの力 */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */

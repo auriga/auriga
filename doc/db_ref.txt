@@ -93,7 +93,7 @@ id,cloable,misfire,zone,damage_rate,range_type,amotion_delay,reserve1,reserve2
 
 id: スキルのIDです。
 cloable: クローンスキルで盗作可能か設定します。
-	0-盗作不可 1-転生前なら可能 2-転生後なら可能 4-養子なら可能
+	0-盗作不可 1-転生前なら可能 2-転生後なら可能 4-養子なら可能 8-リプロデュースなら可能
 misfire: 不発するスキルか設定します。
 	0-不発しない 1-不発する
 zone: 場所によるスキル制限をするか。

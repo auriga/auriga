@@ -48,6 +48,8 @@
 #define MAX_SKILL_HEAL_UP	5	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTRATE	10 	//スキルの詠唱時間を減らせる数
+#define MAX_SKILL_ADDCASTTIME	10 	//スキルの詠唱時間を減らせる数
+#define MAX_SKILL_ADDCOOLDOWN	10 	//スキルのクールタイムを減らせる数
 #define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
 #define MAX_SKILL_ADDSPCOST	10 	//スキルの消費SPを増やせる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
@@ -507,7 +509,7 @@ struct map_session_data {
 	int fix_damage;
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int atk_ele,def_ele,star,overrefine;
-	int castrate,hprate,sprate,dsprate;
+	int castrate,fixcastrate,fixcastrate_,hprate,sprate,dsprate;
 	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[MAX_SIZE_FIX];
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
 	int def_eleenemy[ELE_MAX];
@@ -771,10 +773,28 @@ struct map_session_data {
 	} skill_addcastrate;
 
 	struct {
+		short id[MAX_SKILL_ADDCASTTIME];
+		int time[MAX_SKILL_ADDCASTTIME];
+		short count;
+	} skill_addcast;
+
+	struct {
+		short id[MAX_SKILL_ADDCOOLDOWN];
+		int time[MAX_SKILL_ADDCOOLDOWN];
+		short count;
+	} skill_cooldown;
+
+	struct {
 		short id[MAX_SKILL_HEAL_UP];
 		short rate[MAX_SKILL_HEAL_UP];
 		short count;
 	} skill_healup;
+
+	struct {
+		short id[MAX_SKILL_HEAL_UP];
+		short rate[MAX_SKILL_HEAL_UP];
+		short count;
+	} skill_subhealup;
 
 	struct {
 		short id[MAX_SKILL_ADDSPCOST];
@@ -1149,7 +1169,8 @@ enum {
 	SP_ADD_FIX_CAST_RATE,SP_ADD_SKILL_HEAL_RATE,SP_MATK2_RATE,SP_AUTOACTIVE_WEAPON,SP_AUTOACTIVE_MAGIC,	// 1156-1160
 	SP_REVAUTOACTIVE_WEAPON,SP_REVAUTOACTIVE_MAGIC,SP_AUTOACTIVE_ITEM,SP_ADDEFFSKILL,SP_SKILLAUTOSPELL,	// 1161-1165
 	SP_SKILLAUTOSPELL2,SP_SKILLAUTOSELFSPELL,SP_SKILLAUTOSELFSPELL2,SP_AUTOACTIVE_SKILL,SP_ADD_CAST_RATE,	// 1166-1170
-	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,SP_ADD_SP_COST,	// 1173
+	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,SP_ADD_SP_COST,SP_FIXCASTRATE,SP_ADD_SKILL_SUBHEAL_RATE,   // 1170-1175
+	SP_ADD_CAST_TIME,SP_ADD_COOL_DOWN,   // 1176
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

@@ -91,7 +91,7 @@
 #define MAX_SKILL       700
 #define MAX_SECONDSKILL  19
 #define MAX_THIRDSKILL  520
-#define MAX_QUESTSKILL    4
+#define MAX_QUESTSKILL    5
 #define MAX_KOSKILL      29
 #define MAX_HOMSKILL     16
 #define MAX_MERCSKILL    37
