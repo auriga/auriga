@@ -202,7 +202,7 @@ void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 	sd = map_id2sd(account_id);
 	if( sd )
 	{
-		// アイテムの取得
+		// アイテムチェック
 		if( item->nameid > 0 && item->amount > 0 )
 		{
 			result = pc_checkadditem(sd,item->nameid,item->amount);
@@ -211,7 +211,7 @@ void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 				case 0:
 					clif_mail_getappend(sd->fd,0);
 					break;
-				case 4:
+				case 2:
 					clif_mail_getappend(sd->fd,2);
 					result = false;
 					break;
@@ -221,9 +221,22 @@ void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 			}
 		}
 
+		// Zenyチェック
+		if( zeny > 0 )
+		{
+			if( sd->status.zeny > MAX_ZENY - zeny )
+				result = false;
+		}
+
 		// アイテムの取得に成功した場合、添付ファイルの削除をキャラ鯖に要求する
 		if( result == true )
 		{
+			// アイテムの取得
+			if( item->nameid > 0 && item->amount > 0 )
+			{
+				pc_additem(sd, item, item->amount);
+			}
+
 			// Zenyの取得
 			if( zeny > 0 )
 			{

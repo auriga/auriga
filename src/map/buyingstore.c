@@ -506,7 +506,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 			return;
 		}
 
-		// 重要計算
+		// 重量計算
 		weight += itemdb_weight(sd->inventory_data[idx]->nameid) * amount;
 
 		// 重量チェック
@@ -520,6 +520,14 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		zeny += amount * ssd->buyingstore.item[listidx].value;
 
 		// Zenyチェック
+		if( sd->status.zeny > MAX_ZENY - zeny )
+		{
+			// 買取対象アイテムの合計金額が、キャラクターが所持可能な最大金額(2,147,483,647 Zeny)を超過しています。
+			clif_msgstringtable(sd, 0x74e);
+			return;
+		}
+
+		// 買い取り限度チェック
 		if( zeny > ssd->buyingstore.limit_zeny )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_ZENY, 0);
