@@ -22,9 +22,9 @@ alberta_in.gat,58,52,4	script	買取担当組合員	59,{
 		while(1){
 			next;
 			input '@num;
-			if('num > 0 && '@num <= 10)
+			if('@num > 0 && '@num <= 10)
 				break;
-			if('num == 0) {
+			if('@num == 0) {
 				mes "[買取担当組合員]";
 				mes "ん？";
 				mes "いらないのかい？";
@@ -260,9 +260,9 @@ que_job01.gat,68,84,0	script	闇商人	881,{
 		while(1){
 			next;
 			input '@num;
-			if('num > 0 && '@num <= 10)
+			if('@num > 0 && '@num <= 10)
 				break;
-			if('num == 0) {
+			if('@num == 0) {
 				mes "[闇商人]";
 				mes "ん？";
 				mes "いらないのか……";
