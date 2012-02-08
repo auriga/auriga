@@ -1,7 +1,7 @@
 //-----------------------------------------------
 //==== 買取露店開設 - ALL_BUYING_STORE
 //-----------------------------------------------
-alberta_in.gat,58,52,6	script	買取担当組合員	429,{
+alberta_in.gat,58,52,4	script	買取担当組合員	59,{
 	if(getskilllv(2535)>0) {
 		mes "[買取担当組合員]";
 		mes "やあ、こんにちは。";
@@ -227,7 +227,8 @@ alberta_in.gat,58,52,6	script	買取担当組合員	429,{
 	mes "うまく活用してくれよ。";
 	close;
 }
-que_job01.gat,68,84,0	script	闇商人	429,{
+
+que_job01.gat,68,84,0	script	闇商人	881,{
 	if(getskilllv(2535)>0) {
 		mes "[闇商人]";
 		mes "……ん……、";
