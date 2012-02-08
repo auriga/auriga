@@ -1640,7 +1640,7 @@
 2781,Aumdura's_Grace,アウドムラの恩恵,4,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus2 bExpRate,10,5; bonus2 bJobRate,10,5; bonus2 bSubRace,10,-5; bonus2 bMagicSubRace,10,-5; bonus2 bSubRace,11,-5; bonus2 bMagicSubRace,11,-5; }
 2782,Ring_Of_Wise_King,知恵の王の指輪,4,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus bMaxHP,50; bonus bMaxSP,20; }
 2783,Eyes_Stone_Ring,リングオブアイズ,4,,,100,,0,,1,1000333311,2,136,,70,,,{},{ bonus bCritical,2; bonus bMaxSP,25; }
-2784,Oh_Holy_Night,ホーリーオルゴール,4,,,100,,0,,,1000333311,2,136,,,,,{},{}
+2784,Oh_Holy_Night,ホーリーオルゴール,4,,,100,,0,,,1000333311,2,136,,,,,{},{ skill 698,1; }
 2785,Orleans_Glove_M,オルレアンの手袋,4,,,100,,0,,1,2088958,2,136,,90,,,{},{ bonus bDex,2; bonus bMatkRate,3; }
 2786,Spiritual_Ring_M,スピリチュアルリング,4,,,100,,0,,0,1000333311,2,136,,,,,{},{ bonus bInt,2; bonus bDex,1; if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,70,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
 2787,Waterdrop_Brooch,水玉のブローチ,4,,,200,,0,,1,2088958,2,136,,75,,,{},{}
@@ -3196,7 +3196,7 @@
 6367,Unknown_Item,カプラコイン,3,,,0,,,,,,,,,,,,{},{}
 6368,Unknown_Item,エンドレスタワーコイン,3,,,0,,,,,,,,,,,,{},{}
 
-6377,Buy_Market_Permit,購入露店ライセンス,3,20,,10,,,,,,,,,,,,{},{}
+6377,Buy_Market_Permit,買取露店ライセンス,3,20,,10,,,,,,,,,,,,{},{}
 
 6401,Unknown_Item,ヤシの樹液,3,,-1,500,,,,,,,,,,,,{},{}
 6402,Unknown_Item,ヤシの実,3,0,,50,,,,,,,,,,,,{},{}
@@ -4697,7 +4697,7 @@
 12437,Unknown_Item,濃縮サラマインジュース,2,,,50,,,,,1000333311,2,,,,,,{ sc_start SC_EXTRACT_SALAMINE_JUICE,500000,10; },{}
 
 12475,Unknown_Item,キュアーフリー,2,,,50,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Bleed; sc_end SC_Curse; sc_end SC_REVERSEORCISH; sc_end SC_ELEMENTUNDEAD; },{}
-12548,Buy_Market_Permit2,不始末な購入露店ライセンス,2,500,,10,,,,,1000333311,2,,,,,,{ openbuyingstore 2; },{}
+12548,Buy_Market_Permit2,偽造買取露店ライセンス,2,20,,10,,,,,1000333311,2,,,,,,{ openbuyingstore 2; },{}
 
 12622,Reins_of_Mount,搭乗用手綱,2,10,,0,,,,,1000333311,2,,,1,,,{ sc_start SC_ALL_RIDING,9999,0; },{}
 

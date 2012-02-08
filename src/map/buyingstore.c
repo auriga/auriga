@@ -38,10 +38,10 @@
 #include "trade.h"
 #include "unit.h"
 
-// 購買露店ID
+// 買取露店ID
 static unsigned int buyingstore_id = 0;
 
-// 購買露店開設失敗定義
+// 買取露店開設失敗定義
 enum e_open_failstore
 {
 	FAILED_OPEN_INVALIDDATA	= 1,
@@ -49,14 +49,14 @@ enum e_open_failstore
 	FAILED_OPEN_NODATA		= 8,
 };
 
-// 購買露店閉鎖定義
+// 買取露店閉鎖定義
 enum e_close_store
 {
 	CLOSE_ZENY		= 3,
 	CLOSE_NOITEM	= 4,
 };
 
-// 購買露店買い取り失敗定義
+// 買取露店買い取り失敗定義
 enum e_trade_failstore
 {
 	FAILED_TRADE_INVALIDDATA	= 5,
@@ -65,10 +65,10 @@ enum e_trade_failstore
 };
 
 /*==========================================
- * 購買露店ウインドウ表示処理
+ * 買取露店ウインドウ表示処理
  *
- * @param sd 購買露店開設要求者
- * @param count 購買露店最大登録アイテム数
+ * @param sd 買取露店開設要求者
+ * @param count 買取露店最大登録アイテム数
  * @return falseならウインドウ表示不可状態
  *------------------------------------------
  */
@@ -76,7 +76,7 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
 {
 	nullpo_retr(false, sd);
 
-	// 購買露店ウインドウが開ける状態かチェック
+	// 買取露店ウインドウが開ける状態かチェック
 	if( sd->state.store || sd->state.deal_mode )
 	{
 		return false;
@@ -95,12 +95,12 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
 }
 
 /*==========================================
- * 購買露店開設処理
+ * 買取露店開設処理
  *
- * @param sd 購買露店開設要求者
+ * @param sd 買取露店開設要求者
  * @param limit_zeny 最大買収金額
  * @param result trueなら開設する
- * @param store_name 購買露店名
+ * @param store_name 買取露店名
  * @param data アイテムデータ
  * @param count アイテムデータ個数
  *------------------------------------------
@@ -112,7 +112,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 
 	nullpo_retv(sd);
 
-	// 購買露店キャンセル
+	// 買取露店キャンセル
 	if( result == false )
 		return;
 
@@ -170,7 +170,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	// プレイヤーの重量取得
 	weight = sd->weight;
 
-	// 購買露店データ初期化
+	// 買取露店データ初期化
 	memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
 
 	// アイテムリストのチェック
@@ -181,7 +181,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		int value    = *(int *)(data + 8*i + 4);
 		int idx;
 
-		// 自分が所持しているアイテムでないと購買出来ない
+		// 自分が所持しているアイテムでないと買取出来ない
 		if( (idx = pc_search_inventory(sd, nameid)) == -1 )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
@@ -213,7 +213,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// 購買露店で買い取り可能なアイテムかチェック
+		// 買取露店で買い取り可能なアイテムかチェック
 		if( itemdb_isbuyingable(nameid) != 1 )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
@@ -236,7 +236,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			}
 		}
 
-		// 購買露店データにセット
+		// 買取露店データにセット
 		weight += id->weight * amount;
 		sd->buyingstore.item[i].nameid = nameid;
 		sd->buyingstore.item[i].amount = amount;
@@ -255,7 +255,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	unit_stop_walking(&sd->bl, 1);
 	unit_stopattack(&sd->bl);
 
-	// 購買露店オープン
+	// 買取露店オープン
 	sd->state.store = STORE_TYPE_BUYINGSTORE;
 	sd->buyer_id = ++buyingstore_id;
 	sd->buyingstore.limit_zeny = limit_zeny;
@@ -269,9 +269,9 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 }
 
 /*==========================================
- * 購買露店閉鎖処理
+ * 買取露店閉鎖処理
  *
- * @param sd 購買露店閉鎖要求者
+ * @param sd 買取露店閉鎖要求者
  *------------------------------------------
  */
 void buyingstore_close(struct map_session_data *sd)
@@ -289,10 +289,10 @@ void buyingstore_close(struct map_session_data *sd)
 }
 
 /*==========================================
- * 購買露店アイテムリスト表示
+ * 買取露店アイテムリスト表示
  *
- * @param sd 購買露店アイテムリスト回覧要求者
- * @param account_id 購買露店開設者アカウントID
+ * @param sd 買取露店アイテムリスト回覧要求者
+ * @param account_id 買取露店開設者アカウントID
  *------------------------------------------
  */
 void buyingstore_itemlist(struct map_session_data* sd, int account_id)
@@ -317,7 +317,7 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 	if( sd->state.store )
 		return;
 
-	// 対象が購買露店を閉鎖中
+	// 対象が買取露店を閉鎖中
 	if( ssd->state.store != STORE_TYPE_BUYINGSTORE )
 		return;
 
@@ -340,11 +340,11 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 }
 
 /*==========================================
- * 購買露店アイテム売却処理
+ * 買取露店アイテム売却処理
  *
  * @param sd 売却者
- * @param account_id 購買露店開設者アカウントID
- * @param buyer_id 購買露店開設者ストアID
+ * @param account_id 買取露店開設者アカウントID
+ * @param buyer_id 買取露店開設者ストアID
  * @param data アイテムデータ
  * @param count アイテムデータ個数
  *------------------------------------------
@@ -429,10 +429,10 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		return;
 	}
 
-	// 購買露店開設者の重量取得
+	// 買取露店開設者の重量取得
 	weight = ssd->weight;
 
-	// 購買露店開設者の空きアイテム欄の個数取得
+	// 買取露店開設者の空きアイテム欄の個数取得
 	blank = pc_inventoryblank(ssd);
 
 	// アイテムデータ確認処理

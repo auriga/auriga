@@ -1,4 +1,19 @@
 ----------------------------------------
+//0918 [2012/02/09] by refis
+
+・買取露店開設関連を本家仕様に修正
+ (db/item_db.txt db/item_db2.txt db/skill_db.txt db/skill_require_db.txt db/skill_tree.txt src/map/buyingstore.c src/map/clif.c src/map/skill.c)
+
+・買取露店関連NPCを追加 (conf/map_auriga.conf script/npc/quest/npc_quest_skillget3.txt)
+
+・ついでにMAP定義を追加 (conf/map_auriga.conf)
+
+・スキル「ホーリーナイト」、「エルディカスティスへの帰還」、「モーラへの帰還」実装
+ (db/skill_db.txt db/skill_db2.txt db/skill_cast_db.txt db/skill_require_db.txt src/map/skill.*)
+
+・ALL_DREAM_SUMMERNIGHTの定義が異なっているのを修正 (src/map/skill.h)
+
+----------------------------------------
 //0917 [2012/02/06] by refis
 
 ・買取露店でアイテム販売時にZENYチェックを追加 (src/map/buyingstore.c)

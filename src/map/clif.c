@@ -13149,7 +13149,7 @@ void clif_deletebooking(struct map_session_data* sd, unsigned int id)
 }
 
 /*==========================================
- * 購買露店ウインドウオープン
+ * 買取露店ウインドウオープン
  *------------------------------------------
  */
 void clif_openwindow_buyingstore(struct map_session_data *sd)
@@ -13167,7 +13167,7 @@ void clif_openwindow_buyingstore(struct map_session_data *sd)
 }
 
 /*==========================================
- * 購買露店開設失敗
+ * 買取露店開設失敗
  *------------------------------------------
  */
 void clif_failed_openbuyingstore(struct map_session_data *sd, unsigned short result, int weight)
@@ -13186,7 +13186,7 @@ void clif_failed_openbuyingstore(struct map_session_data *sd, unsigned short res
 }
 
 /*==========================================
- * 購買露店自アイテムリスト
+ * 買取露店自アイテムリスト
  *------------------------------------------
  */
 void clif_showmylist_buyingstore(struct map_session_data *sd)
@@ -13215,7 +13215,7 @@ void clif_showmylist_buyingstore(struct map_session_data *sd)
 }
 
 /*==========================================
- * 購買露店表示
+ * 買取露店表示
  *------------------------------------------
  */
 void clif_show_buyingstore(struct block_list *bl, const char *store_title, int fd)
@@ -13238,7 +13238,7 @@ void clif_show_buyingstore(struct block_list *bl, const char *store_title, int f
 }
 
 /*==========================================
- * 購買露店閉鎖
+ * 買取露店閉鎖
  *------------------------------------------
  */
 void clif_close_buyingstore(struct block_list *bl, int fd)
@@ -13260,7 +13260,7 @@ void clif_close_buyingstore(struct block_list *bl, int fd)
 }
 
 /*==========================================
- * 購買露店アイテムリスト
+ * 買取露店アイテムリスト
  *------------------------------------------
  */
 void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_data *ssd)
@@ -13291,7 +13291,7 @@ void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_d
 }
 
 /*==========================================
- * 購買露店終了
+ * 買取露店終了
  *------------------------------------------
  */
 void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
@@ -13309,7 +13309,7 @@ void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
 }
 
 /*==========================================
- * 購買露店アイテム更新
+ * 買取露店アイテム更新
  *------------------------------------------
  */
 void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount)
@@ -13329,7 +13329,7 @@ void clif_update_buyingstore(struct map_session_data *sd, short nameid, short am
 }
 
 /*==========================================
- * 購買露店アイテム削除
+ * 買取露店アイテム削除
  *------------------------------------------
  */
 void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amount, int value)
@@ -13349,7 +13349,7 @@ void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amoun
 }
 
 /*==========================================
- * 購買露店買い取り失敗
+ * 買取露店買い取り失敗
  *------------------------------------------
  */
 void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid)
@@ -17513,7 +17513,7 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * 購買露店開設要求
+ * 買取露店開設要求
  *------------------------------------------
  */
 static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -17530,7 +17530,7 @@ static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * 購買露店閉鎖要求
+ * 買取露店閉鎖要求
  *------------------------------------------
  */
 static void clif_parse_CloseBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -17541,7 +17541,7 @@ static void clif_parse_CloseBuyingStoreReq(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * 購買露店アイテムリスト要求
+ * 買取露店アイテムリスト要求
  *------------------------------------------
  */
 static void clif_parse_ClickBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -17554,7 +17554,7 @@ static void clif_parse_ClickBuyingStoreReq(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * 購買露店アイテム売却要求
+ * 買取露店アイテム売却要求
  *------------------------------------------
  */
 static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)

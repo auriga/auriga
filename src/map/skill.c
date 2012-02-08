@@ -7427,9 +7427,43 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_end(bl,SC_NEN,-1);
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		break;
-	case ALL_BUYING_STORE:			/* 購買露店開設 */
+	case ALL_BUYING_STORE:			/* 買取露店開設 */
 		if(sd) {
-			clif_skill_nodamage(src, bl, skillid, skilllv, buyingstore_openstorewindow(sd, MAX_BUYINGSTORE_COUNT));
+			buyingstore_openstorewindow(sd, MAX_BUYINGSTORE_COUNT);
+		}
+		break;
+	case ALL_WEWISH:			/* ホーリーナイト */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		break;
+	case RETURN_TO_ELDICASTES:		/* エルディカスティスへの帰還 */
+	case ALL_GUARDIAN_RECALL:		/* モーラへの帰還 */
+		if(sd) {
+			int x, y;
+			char mapname[24];
+
+			if(battle_config.noportal_flag) {
+				if(map[sd->bl.m].flag.noportal)		// noportalで禁止
+					break;
+			} else {
+				if(map[sd->bl.m].flag.noteleport)	// noteleportで禁止
+					break;
+			}
+			if(skillid == RETURN_TO_ELDICASTES) {
+				x = 198;
+				y = 187;
+				strncpy(mapname,"dicastes01.gat",24);
+			} else {
+				x = 44;
+				y = 151;
+				strncpy(mapname,"mora.gat",24);
+			}
+
+			if(pc_setpos(sd,mapname,x,y,3)) {
+				//mapが存在しなかった
+				clif_skill_fail(sd,skillid,0,0,0);
+				map_freeblock_unlock();
+				return 0;
+			}
 		}
 		break;
 	case HAMI_CASTLE:		/* キャストリング */
