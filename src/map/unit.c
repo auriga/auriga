@@ -2200,6 +2200,10 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		// メール添付情報を破棄
 		mail_removeitem(sd,0);
 
+		// スキルメニューを取り消し
+		if(sd->skill_menu.id > 0)
+			memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
+
 		pc_delinvincibletimer(sd);		// 無敵タイマー削除
 
 		// PVP タイマー削除

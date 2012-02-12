@@ -1,7 +1,7 @@
 //-----------------------------------------------
 //==== 買取露店開設 - ALL_BUYING_STORE
 //-----------------------------------------------
-alberta_in.gat,58,52,4	script	買取担当組合員	59,{
+-	script	買取担当組合員#buy	59,{
 	if(getskilllv(2535)>0) {
 		mes "[買取担当組合員]";
 		mes "やあ、こんにちは。";
@@ -22,7 +22,7 @@ alberta_in.gat,58,52,4	script	買取担当組合員	59,{
 		while(1){
 			next;
 			input '@num;
-			if('@num > 0 && '@num <= 10)
+			if('@num > 0 && '@num <= 50)
 				break;
 			if('@num == 0) {
 				mes "[買取担当組合員]";
@@ -71,22 +71,6 @@ alberta_in.gat,58,52,4	script	買取担当組合員	59,{
 	mes "今回、商人組合で";
 	mes "個人での買取の許可が";
 	mes "下りたのを知っているかい？";
-	next;
-	mes "[買取担当組合員]";
-	mes "アルベルタ商人組合の買取担当だ。";
-	mes "君は……";
-	next;
-	mes "[買取担当組合員]";
-	mes "アルベルタ商人組合の買取担当だ。";
-	mes "君は……";
-	next;
-	mes "[買取担当組合員]";
-	mes "アルベルタ商人組合の買取担当だ。";
-	mes "君は……";
-	next;
-	mes "[買取担当組合員]";
-	mes "アルベルタ商人組合の買取担当だ。";
-	mes "君は……";
 	next;
 	if(select("知らない","そんな許可がなくても買取していた")==1) {
 		mes "[買取担当組合員]";
@@ -227,6 +211,8 @@ alberta_in.gat,58,52,4	script	買取担当組合員	59,{
 	mes "うまく活用してくれよ。";
 	close;
 }
+prt_in.gat,126,65,4	duplicate(買取担当組合員#buy)	買取担当組合員#Prt	59
+alberta_in.gat,58,52,4	duplicate(買取担当組合員#buy)	買取担当組合員#Alb	59
 
 que_job01.gat,68,84,0	script	闇商人	881,{
 	if(getskilllv(2535)>0) {

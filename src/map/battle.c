@@ -2514,7 +2514,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					dmg -= 100;
 				if(s_ele == ELE_FIRE)	// 火属性武器装備時
 					dmg = dmg * 150 / 100;
-				DMG_FIX( dmg * status_get_lv(src) / 200, 100 );
+				DMG_FIX( dmg * (100 + status_get_lv(src)) / 200, 100 );
 			}
 			break;
 		case RK_DRAGONBREATH:	// ドラゴンブレス
@@ -2622,9 +2622,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NC_AXEBOOMERANG:	// アックスブーメラン
 			if(src_sd) {
+				int dmg = 160 + 40 * skill_lv;
 				int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
-				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid))
-				DMG_FIX( (160 + 40 * skill_lv + src_sd->inventory_data[idx]->weight/10) * status_get_lv(src) / 150, 100 );
+				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isweapon(src_sd->inventory_data[idx]->nameid))
+					dmg += src_sd->inventory_data[idx]->weight/10;
+				DMG_FIX( dmg * status_get_lv(src) / 150, 100 );
 			} else {
 				DMG_FIX( (160 + 40 * skill_lv) * status_get_lv(src) / 150, 100 );
 			}
@@ -2653,7 +2655,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 200 + 100 * skill_lv, 100 );
 			break;
 		case LG_CANNONSPEAR:	// キャノンスピア
-			DMG_FIX( (50 + status_get_str(src)) * skill_lv, 100 );
+			DMG_FIX( (50 + status_get_str(src)) * skill_lv * status_get_lv(src) / 100, 100 );
 			break;
 		case LG_BANISHINGPOINT:	// バニシングポイント
 			DMG_FIX( 50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,SM_BASH): 0) * 30, 100 );
