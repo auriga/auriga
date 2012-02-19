@@ -1007,7 +1007,7 @@ int npc_pointshop_buy(struct map_session_data *sd, int nameid, int amount)
 		return 5;
 
 	point = nd->u.shop_item[i].value * amount;
-	if(point > sd->shop_point)
+	if(point < 0 || point > sd->shop_point)
 		return 6;
 
 	switch(pc_checkadditem(sd, nameid, amount)) {
