@@ -12011,7 +12011,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			case SL_STAR:        if(job != PC_JOB_SG) fail = 1; break; // ケンセイの魂
 			case SL_SAGE:        if(job != PC_JOB_SA && job != PC_JOB_SO) fail = 1; break; // セージの魂
 			case SL_CRUSADER:    if(job != PC_JOB_CR && job != PC_JOB_LG) fail = 1; break; // クルセイダーの魂
-			case SL_SUPERNOVICE: if(job != PC_JOB_SNV || job != PC_JOB_ESNV) fail = 1; break; // スーパーノービスの魂
+			case SL_SUPERNOVICE: if(job != PC_JOB_SNV && job != PC_JOB_ESNV) fail = 1; break; // スーパーノービスの魂
 			case SL_KNIGHT:      if(job != PC_JOB_KN && job != PC_JOB_RK) fail = 1; break; // ナイトの魂
 			case SL_WIZARD:      if(job != PC_JOB_WZ && job != PC_JOB_WL) fail = 1; break; // ウィザードの魂
 			case SL_PRIEST:      if(job != PC_JOB_PR && job != PC_JOB_AB) fail = 1; break; // プリーストの魂
