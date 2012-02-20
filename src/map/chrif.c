@@ -359,20 +359,20 @@ static int chrif_saveack(int fd)
 	int type = RFIFOB(fd,6);
 
 	if(sd) {
-		if(type == 2) {	//キャラクターセレクト
+		if(type == 1) {		// 切断
+			close(sd->fd);
+			map_deliddb(&sd->bl);
+			if(sd->bl.prev)
+				map_delblock(&sd->bl);
+		} else if(type == 2) {	// キャラクターセレクト
 			chrif_charselectreq(sd);
-		} else if(type == 3) {	//別マップサーバーへ移動
+		} else if(type == 3) {	// 別マップサーバーへ移動
 			unsigned long ip;
 			unsigned short port;
 
 			if(map_mapname2ipport(sd->status.last_point.map,&ip,&port) == 0) {
 				chrif_changemapserver(sd,sd->status.last_point.map,sd->status.last_point.x,sd->status.last_point.y,ip,port);
 			}
-		} else {	//切断
-			close(fd);
-			map_deliddb(&sd->bl);
-			if(sd->bl.prev)
-				map_delblock(&sd->bl);
 		}
 	}
 

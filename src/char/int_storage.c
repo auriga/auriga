@@ -224,7 +224,7 @@ static int guild_storage_deadlock_timer_sub(void *key, void *data, va_list ap)
 {
 	struct guild_storage *gs = (struct guild_storage *)data;
 
-	if(gs && gs->storage_status == 1)
+	if(gs && gs->storage_status == 1 && gs->last_fd >= 0)
 		mapif_checklock_guild_storage(gs->guild_id);
 
 	return 0;
