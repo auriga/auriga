@@ -1,4 +1,21 @@
 ----------------------------------------
+//0923 [2012/02/22] by refis
+
+・変動詠唱と固定詠唱の計算式を修正 (src/map/skill.c)
+
+・アイテムボーナス「bonus2 bFixCastrate」のリファクタリング (src/map/pc.c src/map/skill.c src/map/status.c)
+
+・スキル「フロストミスティ」、「ジャックフロスト」、「コメット」に斜線チェックを追加 (src/map/skill.c)
+
+・スキル「フロストミスティ」の状態異常付与はダメージと斜線チェックなしで判定させる (src/map/skill.c)
+
+・アイテムデータの更新 (db/item_db.txt)
+	Thanks lowl さん、rapis さん
+
+・モンスターデータの更新 (db/mob_db.txt db/mob_group_db.txt db/mob_skill_db.txt)
+　※一部R化後のデータは暫定です
+
+----------------------------------------
 //0922 [2012/02/20] by refis
 
 ・CLASS定義の補完と修正 (db/const.txt src/common/mmo.h)

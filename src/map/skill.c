@@ -1359,10 +1359,6 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		status_change_start(bl,SC_DECREASEAGI,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
-	case WL_FROSTMISTY:		/* フロストミスティ */
-		if(atn_rand() % 10000 < 2000 + skilllv * 1000)
-			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
-		break;
 	case WL_JACKFROST:		/* ジャックフロスト */
 		if(!tsc || tsc->data[SC_FREEZE].timer == -1) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,10000,status_get_lv(src)))
@@ -3740,7 +3736,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case HW_NAPALMVULCAN:		/* ナパームバルカン */
 	case AB_JUDEX:				/* ジュデックス */
 	case WL_SOULEXPANSION:		/* ソウルエクスパンション */
-	case WL_FROSTMISTY:			/* フロストミスティ */
 	case SO_POISON_BUSTER:		/* ポイズンバスター */
 	case SO_VARETYR_SPEAR:		/* ヴェラチュールスピア */
 		if(flag&1) {
@@ -3753,7 +3748,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				} else {
 					count = skill_area_temp[0];
 				}
-				if(skillid != HW_NAPALMVULCAN && skillid != AB_JUDEX && skillid != WL_SOULEXPANSION && skillid != WL_FROSTMISTY && skillid != WL_CRIMSONROCK)
+				if(skillid != HW_NAPALMVULCAN && skillid != AB_JUDEX && skillid != WL_SOULEXPANSION && skillid != WL_CRIMSONROCK)
 					count |= 0x0500;
 				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,count);
 			}
@@ -3791,13 +3786,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					ar = (skilllv > 3)? 2: 1;
 					skill_area_temp[2] = bl->x;
 					skill_area_temp[3] = bl->y;
-					break;
-				case WL_FROSTMISTY:		/* フロストミスティ */
-					ar = 13;
-					srcflg = 1;
-					skill_area_temp[2] = bl->x;
-					skill_area_temp[3] = bl->y;
-					bl = src;
 					break;
 				case SO_POISON_BUSTER:	/* ポイズンバスター */
 					ar = (skilllv / 5) + 1;
@@ -4280,8 +4268,29 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		status_change_end(src,SC_ROLLINGCUTTER,-1);
 		break;
+	case WL_FROSTMISTY:		/* フロストミスティ */
+		if(flag&1) {
+			if(bl->id != skill_area_temp[1]) {
+				if(path_search_long(NULL,src->m,src->x,src->y,bl->x,bl->y)) {
+					battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+				}
+				if(atn_rand() % 10000 < 2000 + skilllv * 1000)
+					status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+			}
+		} else {
+			/* スキルエフェクト表示 */
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			skill_area_temp[1] = src->id;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-13,src->y-13,src->x+13,src->y+13,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	case WL_JACKFROST:		/* ジャックフロスト */
 		if(flag&1) {
+			if(!path_search_long(NULL,src->m,src->x,src->y,bl->x,bl->y))
+				break;
 			if(bl->id != skill_area_temp[1]) {
 				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 			}
@@ -4330,6 +4339,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		skill_addtimerskill(src,tick + 300,bl->id,0,0,WL_HELLINFERNO,skilllv,0,(0x0f<<20)|0x500|flag|1);
 		break;
 	case WL_COMET:				/* コメット */
+		if(!path_search_long(NULL,bl->m,bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]))
+			break;
 		if(bl->id != skill_area_temp[1]) {
 			int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 			int type;
@@ -13937,7 +13948,6 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 {
 	struct status_change *sc;
 	struct map_session_data *sd = NULL;
-	int reduce_time = 0;	// 削減時間
 	int i;
 
 	nullpo_retr(0, bl);
@@ -13966,10 +13976,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		}
 	}
 	if(casttime > 0) {
-		/* ラディウス */
-		if(sd && pc_checkskill(sd,WL_RADIUS)) {
-			reduce_time += (2 + pc_checkskill(sd,WL_RADIUS) * 2);
-		}
+		int reduce_time = 0;	// 削減時間
 
 		/* サフラギウム */
 		if(sc && sc->data[SC_SUFFRAGIUM].timer != -1) {
@@ -14008,10 +14015,6 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			if(sc->data[SC_SLOWCAST].timer != -1)
 				reduce_time -= sc->data[SC_SLOWCAST].val1 * 20;
 
-			/* フロストミスティ */
-			if(sc->data[SC_FROSTMISTY].timer != -1)
-				reduce_time -= 15;
-
 			/* マスカレード ： レイジーネス */
 			if(sc->data[SC__LAZINESS].timer != -1)
 				reduce_time -= sc->data[SC__LAZINESS].val1 * 10;
@@ -14028,9 +14031,9 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 					casttime = casttime * (100 + sd->skill_addcastrate.rate[i])/100;
 			}
 		}
-	}
 
-	casttime = casttime * (100 - reduce_time)/100;
+		casttime = casttime * (100 - reduce_time) / 100;
+	}
 
 	if(casttime < 0)
 		casttime = 0;
@@ -14045,25 +14048,37 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 
 		/* サクラメント */
 		if(sc && sc->data[SC_SACRAMENT].timer != -1) {
-			reduce_time2 += sc->data[SC_SACRAMENT].val2;
+			if(reduce_time2 < sc->data[SC_SACRAMENT].val2)
+				reduce_time2 = sc->data[SC_SACRAMENT].val2;
 		}
 
 		/* ダンスウィズウォーグ */
 		if(sc && sc->data[SC_DANCE_WITH_WUG].timer != -1) {
-			reduce_time2 += 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
+			int val = 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
+			if(reduce_time2 < val)
+				reduce_time2 = val;
 		}
 
 		if(sd) {
-			fixedtime = fixedtime * (sd->fixcastrate + sd->fixcastrate_) / 100;
+			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_;
 		}
 		// カードによる固定詠唱時間増減効果
 		if(sd && sd->skill_fixcastrate.count > 0) {
 			for(i=0; i<sd->skill_fixcastrate.count; i++) {
 				if(skillid == sd->skill_fixcastrate.id[i])
-					reduce_time2 -= sd->skill_fixcastrate.rate[i];
+					fixedtime = fixedtime * (100 + sd->skill_fixcastrate.rate[i]) / 100;
 			}
 		}
-		fixedtime -= fixedtime * reduce_time2 / 100;
+
+		/* スロウキャスト */
+		if(sc && sc->data[SC_SLOWCAST].timer != -1)
+			reduce_time2 -= sc->data[SC_SLOWCAST].val1 * 20;
+
+		/* フロストミスティ */
+		if(sc && sc->data[SC_FROSTMISTY].timer != -1)
+			reduce_time2 -= 15;
+
+		fixedtime = fixedtime * (100 - reduce_time2) / 100;
 	}
 	/* ハウリングオブマンドラゴラ */
 	if(sc && sc->data[SC_MANDRAGORA].timer != -1) {

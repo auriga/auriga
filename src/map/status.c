@@ -467,7 +467,7 @@ L_RECALC:
 	sd->hprate              = battle_config.hp_rate;
 	sd->sprate              = battle_config.sp_rate;
 	sd->castrate            = 100;
-	sd->fixcastrate         = 100;
+	sd->fixcastrate         = 0;
 	sd->fixcastrate_        = 0;
 	sd->dsprate             = 100;
 	sd->base_atk            = 0;
