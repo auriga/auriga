@@ -102,22 +102,22 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 	for(i=0;i<MAX_INVENTORY;i++) {
 		if(p->st.inventory[i].nameid) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
 			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3],
-			p->st.inventory[i].limit);
+			p->st.inventory[i].limit,p->st.inventory[i].private);
 		}
 	}
 	*(str_p++)='\t';
 
 	for(i=0;i<MAX_CART;i++) {
 		if(p->st.cart[i].nameid) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
+			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
 			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3],
-			p->st.cart[i].limit);
+			p->st.cart[i].limit,p->st.cart[i].private);
 		}
 	}
 	*(str_p++)='\t';
@@ -480,19 +480,28 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		// Auriga-0300以降の形式
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
+		// Auriga-0995以降の形式
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12) {
-			tmp_int[11] = 0;	// limit
-			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13) {
+			// Auriga-0300以降の形式
+			tmp_int[12] = 0;	// private
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 				&tmp_int[4],&tmp_int[5],&tmp_int[6],
-				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-			if(set!=11)
-				return 0;
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+			if(set!=12) {
+				tmp_int[11] = 0;	// limit
+				set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+					&tmp_int[4],&tmp_int[5],&tmp_int[6],
+					&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+				if(set!=11)
+					return 0;
+			}
 		}
 		if(i < MAX_INVENTORY) {
 			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
@@ -507,6 +516,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
 			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
+			p->st.inventory[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -514,19 +524,28 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	}
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		// Auriga-0300以降の形式
+		// Auriga-0995以降の形式
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12) {
-			tmp_int[11] = 0;	// limit
-			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13) {
+			// Auriga-0300以降の形式
+			tmp_int[12] = 0;	// private
+			set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 				&tmp_int[4],&tmp_int[5],&tmp_int[6],
-				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-			if(set!=11)
-				return 0;
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+			if(set!=12) {
+				tmp_int[11] = 0;	// limit
+				set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+					&tmp_int[4],&tmp_int[5],&tmp_int[6],
+					&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+				if(set!=11)
+					return 0;
+			}
 		}
 		if(i < MAX_CART) {
 			p->st.cart[i].id        = (unsigned int)tmp_int[0];
@@ -541,6 +560,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
 			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
+			p->st.cart[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')

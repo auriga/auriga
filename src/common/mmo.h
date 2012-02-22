@@ -444,6 +444,7 @@ struct item {
 	char attribute;
 	short card[4];
 	unsigned int limit;
+	char private;
 };
 struct point{
 	char map[24];

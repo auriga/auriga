@@ -74,7 +74,7 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 
 	sprintf(
 		tmp_sql,"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
+		"`card0`, `card1`, `card2`, `card3`, `limit`, `private` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
 	);
 
 	sqldbs_query(&mysql_handle, tmp_sql);
@@ -94,6 +94,7 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 			item[i].card[2]   = atoi(sql_row[9]);
 			item[i].card[3]   = atoi(sql_row[10]);
 			item[i].limit     = (unsigned int)atoi(sql_row[11]);
+			item[i].private   = atoi(sql_row[12]);
 		}
 		sqldbs_free_result(sql_res);
 	}
@@ -146,7 +147,7 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 		p  = tmp_sql;
 		p += sprintf(
 			p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-			"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`) VALUES",tablename,selectoption
+			"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`, `private`) VALUES",tablename,selectoption
 		);
 
 		for( i = 0 ; i < max ; i++ )
@@ -154,10 +155,10 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 			if(item[i].nameid)
 			{
 				p += sprintf(
-					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
 					sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 					item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-					item[i].card[2],item[i].card[3],item[i].limit
+					item[i].card[2],item[i].card[3],item[i].limit,item[i].private
 				);
 				sep = ',';
 			}

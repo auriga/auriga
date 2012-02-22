@@ -5320,7 +5320,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*22+17)=sd->status.inventory[i].card[2];
 		WFIFOW(fd,n*22+19)=sd->status.inventory[i].card[3];
 		WFIFOL(fd,n*22+21)=sd->status.inventory[i].limit;
-		WFIFOB(fd,n*22+25)=sd->status.inventory[i].identify;
+		WFIFOB(fd,n*22+25)=sd->status.inventory[i].identify+(sd->status.inventory[i].private?2:0);
 		n++;
 	}
 	if(n){
@@ -5617,7 +5617,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOL(fd,n*27+22)=sd->status.inventory[i].limit;
 		WFIFOW(fd,n*27+26)=0;
 		WFIFOW(fd,n*27+28)=sd->inventory_data[i]->look;
-		WFIFOB(fd,n*27+30)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0);
+		WFIFOB(fd,n*27+30)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private?4:0);
 		n++;
 	}
 	if(n){
@@ -15042,6 +15042,25 @@ void clif_elementball(struct map_session_data *sd)
 }
 
 /*==========================================
+ * アイテム個人タブ移動
+ *------------------------------------------
+ */
+void clif_privateitem(struct map_session_data *sd, short idx, char flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x908;
+	WFIFOW(fd,2) = idx + 2;
+	WFIFOB(fd,4) = flag;
+	WFIFOSET(fd,packet_db[0x908].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -19433,7 +19452,26 @@ static void clif_parse_RegBattleGround(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int idx;
+	char flag;
+
+	nullpo_retv(sd);
+
+	idx = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2;
+	if(idx < 0 || idx >= MAX_INVENTORY)
+		return;
+
+	flag = RFIFOB(fd,GETPACKETPOS(cmd,1));
+
+	if(sd->status.inventory[idx].private && flag == 1 )
+		sd->status.inventory[idx].private = 0;
+	else if(flag == 0)
+		sd->status.inventory[idx].private = 1;
+	else
+		return;
+
+	clif_privateitem(sd, idx, flag);
+
 	return;
 }
 

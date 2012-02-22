@@ -1,4 +1,15 @@
 ----------------------------------------
+//0995 [2012/02/23] by Blaze
+
+・アイテムウィンドウの個人タブ実装 (map/clif.*)
+
+・アイテム情報に個人タブ有効フラグを追加 (common/mmo.h, char/sql/chardb_sql.c, char/txt/chardb_txt.c)
+
+・TXT:AURIGA_JOURNALを16に引き上げ (common/journal.c.)
+
+・SQL:インベントリテーブルに個人タブ情報を追加（sql-files/main.sql, sql-files/Auriga995_changetable.sql）
+
+----------------------------------------
 //0994 [2012/02/21] by refis
 
 ・ギルド倉庫デッドロックのチェック部分を修正 (char/int_storage.c)

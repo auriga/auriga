@@ -15,6 +15,7 @@ CREATE TABLE `cart_inventory` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
+  `private` tinyint(4) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `id`)
 ) ENGINE = InnoDB;
 
@@ -259,6 +260,7 @@ CREATE TABLE `guild_storage` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
+  `private` tinyint(4) unsigned NOT NULL default '0',
   PRIMARY KEY (`guild_id`, `id`)
 ) ENGINE = InnoDB;
 
@@ -287,6 +289,7 @@ CREATE TABLE `inventory` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
+  `private` tinyint(4) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `id`)
 ) ENGINE = InnoDB;
 
@@ -399,6 +402,7 @@ CREATE TABLE `storage` (
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
+  `private` tinyint(4) unsigned NOT NULL default '0',
   PRIMARY KEY (`account_id`, `id`)
 ) ENGINE = InnoDB;
 
