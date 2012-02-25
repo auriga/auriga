@@ -432,11 +432,11 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 		st.skill[id].lv = merc_skill_tree[class_][i].max;
 	}
 
-	// 召喚回数+1
-	merc_set_call(sd, merc_db[class_].class_type, 1);
-
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
+
+	// 召喚回数+1
+	merc_set_call(sd, merc_db[class_].class_type, 1);
 
 	return 1;
 #else
@@ -689,10 +689,7 @@ int merc_set_fame(struct map_session_data *sd, short type, int val)
  */
 int merc_set_call(struct map_session_data *sd, short type, int val)
 {
-	struct merc_data *mcd;;
-
 	nullpo_retr(0, sd);
-	nullpo_retr(0, mcd = sd->mcd);
 
 	if(type < 0 || type >= MAX_MERC_TYPE)
 		return 0;
