@@ -1303,6 +1303,15 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 	if(type == 0x0a) {
 		/* クリティカル攻撃 */
 		damage += atkmax;
+
+		// 点穴 -反-
+		if(sc && sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+			damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+		}
+		// ストライキング
+		if(sc && sc->data[SC_STRIKING].timer != -1) {
+			damage += sc->data[SC_STRIKING].val3;
+		}
 		if(sd) {
 			int trans_bonus = 0;
 
@@ -1326,6 +1335,15 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			damage += atkmin + atn_rand() % (atkmax - atkmin + 1);
 		else
 			damage += atkmin;
+
+		// 点穴 -反-
+		if(sc && sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+			damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+		}
+		// ストライキング
+		if(sc && sc->data[SC_STRIKING].timer != -1) {
+			damage += sc->data[SC_STRIKING].val3;
+		}
 		if(sd) {
 			int trans_bonus = 0;
 
@@ -3026,6 +3044,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					t_def2 -= t_def2 * sc->data[SC_EXPIATIO].val2 / 100;
 				}
 
+				// 点穴 -活-
+				if(t_sc && t_sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
+					t_def2 += t_sc->data[SC_GENTLETOUCH_REVITALIZE].val2;
+				}
+
 				if(battle_config.vit_penalty_type > 0 && (!t_sc || t_sc->data[SC_STEELBODY].timer == -1)) {
 					int target_count = 1;
 
@@ -3048,6 +3071,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						if(t_def2 < 1) t_def2 = 1;
 						if(t_vit  < 1) t_vit  = 1;
 					}
+				}
+
+				// フォースオブバンガード
+				if(t_sc && t_sc->data[SC_FORCEOFVANGUARD].timer != -1) {
+					t_def1 += (t_def1 * t_sc->data[SC_FORCEOFVANGUARD].val1 * 2) / 100;
+				}
+				// エコーの歌
+				if(t_sc && t_sc->data[SC_ECHOSONG].timer != -1) {
+					// 実際には除算DEF増加だが、暫定で減算DEF
+					t_def2 += t_def2 * t_sc->data[SC_ECHOSONG].val4 / 100;
 				}
 
 				// ディバインプロテクション
@@ -3250,6 +3283,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage = wd.damage * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
 				if(calc_flag.lh)
 					wd.damage2 = wd.damage2 * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
+			}
+			// カートブースト
+			if(sc->data[SC_GN_CARTBOOST].timer != -1) {
+				wd.damage += sc->data[SC_GN_CARTBOOST].val1 * 10;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_GN_CARTBOOST].val1 * 10;
 			}
 		}
 
@@ -3720,11 +3759,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(wd.damage > 0 && wd.damage2 < 1)
 			wd.damage2 = 1;
 	}
-	if(skill_num == TF_POISON) {
+	switch(skill_num) {
+	case TF_POISON:
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
-	}
-	if(skill_num == MC_CARTREVOLUTION) {
+		break;
+	case MC_CARTREVOLUTION:
+	case LG_SHIELDPRESS:
+	case SR_FALLENEMPIRE:
+	case SR_TIGERCANNON:
+	case SR_GATEOFHELL:
 		wd.damage = battle_attr_fix(wd.damage, ELE_NEUTRAL, status_get_element(target) );
+		break;
 	}
 
 	/* 32．完全回避の判定 */
@@ -4317,6 +4362,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(rate > 0) {
 			mdef1 = mdef1 * rate / 100;
 			mdef2 = mdef2 * rate / 100;
+
+			// 恋人たちの為のシンフォニー
+			if(t_sc && t_sc->data[SC_SYMPHONY_LOVE].timer != -1) {
+				// 実際には除算MDEF増加だが、暫定で減算MDEF
+				mdef2 += mdef2 * t_sc->data[SC_SYMPHONY_LOVE].val4 / 100;
+			}
+
 			if(battle_config.magic_defense_type) {
 				mgd.damage = mgd.damage - (mdef1 * battle_config.magic_defense_type) - mdef2;
 			} else {

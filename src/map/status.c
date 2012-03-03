@@ -2112,7 +2112,6 @@ L_RECALC:
 		// フォースオブバンガード
 		if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1) {
 			sd->status.max_hp += (sd->status.max_hp * sd->sc.data[SC_FORCEOFVANGUARD].val1 * 3) / 100;
-			sd->def += (sd->def * sd->sc.data[SC_FORCEOFVANGUARD].val1 * 2) / 100;
 		}
 		// プレスティージ
 		if(sd->sc.data[SC_PRESTIGE].timer != -1) {
@@ -2140,23 +2139,11 @@ L_RECALC:
 		}
 		// 点穴 -反-
 		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-			sd->watk += sd->sc.data[SC_GENTLETOUCH_CHANGE].val2;
 			sd->status.max_hp -= sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_CHANGE].val1 * 2) / 100;
 		}
 		// 点穴 -活-
 		if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 3) / 100;
-			sd->def2 += sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val2;
-		}
-		// 恋人たちの為のシンフォニー
-		if(sd->sc.data[SC_SYMPHONY_LOVE].timer != -1) {
-			// 実際には除算MDEF増加だが、暫定で減算MDEF
-			sd->mdef2 += sd->mdef2 * sd->sc.data[SC_SYMPHONY_LOVE].val4 / 100;
-		}
-		// エコーの歌
-		if(sd->sc.data[SC_ECHOSONG].timer != -1) {
-			// 実際には除算DEF増加だが、暫定で減算DEF
-			sd->def2 += sd->def2 * sd->sc.data[SC_ECHOSONG].val4 / 100;
 		}
 		// メランコリー
 		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
@@ -2174,12 +2161,7 @@ L_RECALC:
 		}
 		// ストライキング
 		if(sd->sc.data[SC_STRIKING].timer != -1) {
-			sd->watk += sd->sc.data[SC_STRIKING].val3;
 			sd->critical += 10 * sd->sc.data[SC_STRIKING].val1;
-		}
-		// カートブースト
-		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1) {
-			sd->watk += sd->sc.data[SC_GN_CARTBOOST].val1 * 10;
 		}
 		// オーディンの力
 		if(sd->sc.data[SC_ODINS_POWER].timer != -1) {
@@ -4283,9 +4265,6 @@ int status_get_def(struct block_list *bl)
 			// ニュートラルバリアー
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				def = def * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
-			// フォースオブバンガード
-			if(sc->data[SC_FORCEOFVANGUARD].timer != -1 && bl->type != BL_PC)
-				def = def * (100 + 2 * sc->data[SC_FORCEOFVANGUARD].val1) / 100;
 			// アースドライブ
 			if(sc->data[SC_EARTHDRIVE].timer != -1 && bl->type != BL_PC)
 				def = def * 85 / 100;
@@ -4418,9 +4397,6 @@ int status_get_def2(struct block_list *bl)
 		// プレスティージ
 		if(sc->data[SC_PRESTIGE].timer != -1 && bl->type == BL_MOB)
 			def2 += sc->data[SC_PRESTIGE].val2;
-		// 点穴 -活-
-		if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1 && bl->type == BL_MOB)
-			def2 += sc->data[SC_GENTLETOUCH_REVITALIZE].val2;
 	}
 	if(def2 < 1) def2 = 1;
 	return def2;

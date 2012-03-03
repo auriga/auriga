@@ -1,4 +1,20 @@
 ----------------------------------------
+//0925 [2012/03/04] by refis
+
+・スキル「買取露店開設」が習得できなかった点を修正 (script/npc/quest/npc_quest_skillget3.txt)
+	Thanks Akayumi さん
+
+・ジェネティックスキル「カートブースト」の追加ダメージ計算の位置を修正 (script/npc/quest/npc_quest_skillget3.txt)
+
+・スキル「点穴 -反-」、「ストライキング」の武器ATK上昇計算の位置を修正 (src/map/battle.c src/map/status.c)
+ ※本来はサイズ補正前に計算
+
+・スキル「フォースオブバンガード」、「点穴 -活-」、「エコーの歌」、「恋人たちの為のシンフォニー」のDEF/MDEF上昇計算の位置を修正
+ (src/map/battle.c src/map/status.c)
+
+・スキル「シールドプレス」、「大纏崩捶」、「號砲」、「羅刹破凰撃」を最終無属性に修正 (src/map/battle.c)
+
+----------------------------------------
 //0924 [2012/02/26] by refis
 
 ・mob_group_db拡張に伴うボーナス最大値の修正 (src/map/map.h)
