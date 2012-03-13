@@ -5519,11 +5519,11 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		job_exp  = job_exp  * sd->sc.data[SC_MEAL_INCJOB].val1 / 100;
 	}
 	if (sd->sc.data[SC_COMBATHAN].timer != -1) {
-		base_rate = sd->sc.data[SC_COMBATHAN].val1;
-		job_rate  = sd->sc.data[SC_COMBATHAN].val1;
+		base_rate += sd->sc.data[SC_COMBATHAN].val1;
+		job_rate  += sd->sc.data[SC_COMBATHAN].val1;
 	}
 	if (sd->sc.data[SC_JOB_COMBATHAN].timer != -1) {
-		job_rate  = sd->sc.data[SC_JOB_COMBATHAN].val1;
+		job_rate  += sd->sc.data[SC_JOB_COMBATHAN].val1;
 	}
 
 	if (base_rate != 100)

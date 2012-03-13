@@ -1,4 +1,9 @@
 ----------------------------------------
+//0927 [2012/03/14] by refis
+
+・0926のミスを修正 (db/scdata.txt src/map/pc.c)
+
+----------------------------------------
 //0926 [2012/03/14] by refis
 
 ・騎乗システムを一部修正 (db/scdata.txt src/map/clif.c src/map/skill.c src/map/status.c)
