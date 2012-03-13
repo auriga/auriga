@@ -8334,6 +8334,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						OPTION_PECO | OPTION_DRAGONMASK | OPTION_WUG | OPTION_WUGRIDER)));	// カートなどの付属品を削除
 					pet_return_egg(dstsd);
 					homun_return_embryo(dstsd);
+					status_change_end(bl,SC_ALL_RIDING,-1);
 				}
 				break;
 			case SC_IGNORANCE:		/* マスカレード ： イグノアランス */

@@ -190,7 +190,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 
 };
 
@@ -3108,7 +3108,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			haste_val2 = bonus;
 	}
 
-	// 搭乗システム
+	// 騎乗システム
 	if(sd->sc.data[SC_ALL_RIDING].timer != -1) {
 		if(haste_val2 < 25)
 			haste_val2 = 25;
@@ -5979,7 +5979,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	}
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
-		if(type == SC_ALL_RIDING) {	// 搭乗システム
+		if(type == SC_ALL_RIDING) {	// 騎乗システム
 			status_change_end(bl,type,-1);
 			return 0;
 		}
@@ -6056,6 +6056,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_MEAL_INCJOB:
 		case SC_COMBATHAN:			/* 戦闘教範 */
 		case SC_LIFEINSURANCE:			/* 生命保険証 */
+		case SC_JOB_COMBATHAN:		/* JOB教範 */
 		case SC_FORCEWALKING:
 		case SC_TKCOMBO:			/* テコンコンボ */
 		case SC_TRIPLEATTACK_RATE_UP:
@@ -6253,7 +6254,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			icon_val1 = val1;	// val1はモンスターID
 			calc_flag = 1;
 			break;
-		case SC_ALL_RIDING:			/* 搭乗システム */
+		case SC_ALL_RIDING:			/* 騎乗システム */
 			if(sd) {
 				// 既に既存の乗り物に搭乗中である場合は何もしない
 				if(pc_isriding(sd) || pc_isdragon(sd) || pc_iswolfmount(sd) || pc_isgear(sd))
@@ -7956,7 +7957,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SWING:				/* スイングダンス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
-		case SC_ALL_RIDING:			/* 搭乗システム */
+		case SC_ALL_RIDING:			/* 騎乗システム */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -8944,7 +8945,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
 	case LG_EXEEDBREAK:
-	case SC_ALL_RIDING:	/* 搭乗システム */
+	case SC_ALL_RIDING:	/* 騎乗システム */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

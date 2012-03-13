@@ -1,4 +1,20 @@
 ----------------------------------------
+//0926 [2012/03/14] by refis
+
+・騎乗システムを一部修正 (db/scdata.txt src/map/clif.c src/map/skill.c src/map/status.c)
+
+・身代わりの護符を実装 (db/item.txt src/map/pc.c)
+
+・Job教範の効果を実装 (db/const.txt db/scdata.txt src/map/pc.c src/map/status.*)
+
+・戦闘教範の仕様を変更 (src/map/pc.c)
+
+・関連アイテムのデータを修正 (db/item.txt)
+
+・amotionの設定がずれているミスを修正 (db/job_db1.txt)
+	Thanks kuroneko_daten さん、かんなぎ さん
+
+----------------------------------------
 //0925 [2012/03/04] by refis
 
 ・スキル「買取露店開設」が習得できなかった点を修正 (script/npc/quest/npc_quest_skillget3.txt)

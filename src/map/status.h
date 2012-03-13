@@ -695,6 +695,7 @@ enum {
 	SC_MEIKYOUSISUI			= 550,
 	SC_KYOUGAKU				= 551,
 	SC_ODINS_POWER			= 552,
+	SC_JOB_COMBATHAN		= 553,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -1019,7 +1020,7 @@ enum {
 	//SI_REUSE_LIMIT_E  = 309,
 	//SI_REUSE_LIMIT_F  = 310,
 	//SI_INVINCIBLE     = 311,
-	//SI_CPLUSONLYJOBEXP= 312,
+	SI_CPLUSONLYJOBEXP  = 312,
 	//SI_PARTYFLEE      = 313,
 	//SI_ANGEL_PROTECT  = 314,
 	//SI_ENDURE_MDEF    = 315,

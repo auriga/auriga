@@ -496,6 +496,7 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, int per, int type)
 {
 	atn_bignumber loss_base = 0, loss_job = 0;
+	int idx,loss = 0;
 
 	nullpo_retr(0, sd);
 
@@ -513,6 +514,8 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 	if(sd->s_class.job == PC_JOB_NV || map[sd->bl.m].flag.gvg)
 		return 0;
 
+	idx = pc_search_inventory(sd, 6413);	// 身代わりの護符
+
 	// レディムプティオのペナルティの場合、オーラならば現在の取得経験値から差し引く
 	if(battle_config.death_penalty_base > 0) {
 		int nextbase;
@@ -524,11 +527,14 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 		loss_base = loss_base * battle_config.death_penalty_base / 10000 * per / 100;
 
 		if(loss_base) {
-			sd->status.base_exp -= (int)loss_base;
-			if(sd->status.base_exp < 0)
-				sd->status.base_exp = 0;
-			if(type&1)
-				clif_updatestatus(sd,SP_BASEEXP);
+			if(idx < 0) {
+				sd->status.base_exp -= (int)loss_base;
+				if(sd->status.base_exp < 0)
+					sd->status.base_exp = 0;
+				if(type&1)
+					clif_updatestatus(sd,SP_BASEEXP);
+			} else
+				loss++;
 		}
 	}
 
@@ -542,12 +548,20 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 		loss_job = loss_job * battle_config.death_penalty_job / 10000 * per / 100;
 
 		if(loss_job) {
-			sd->status.job_exp -= (int)loss_job;
-			if(sd->status.job_exp < 0)
-				sd->status.job_exp = 0;
-			if(type&1)
-				clif_updatestatus(sd,SP_JOBEXP);
+			if(idx < 0) {
+				sd->status.job_exp -= (int)loss_job;
+				if(sd->status.job_exp < 0)
+					sd->status.job_exp = 0;
+				if(type&1)
+					clif_updatestatus(sd,SP_JOBEXP);
+			} else
+				loss++;
 		}
+	}
+
+	if(loss) {
+		pc_delitem(sd,idx,1,0,1);
+		clif_msgstringtable(sd,0x729);	// 身代わりの護符が自動消費されました。
 	}
 
 	if(ssd) {
@@ -5479,6 +5493,9 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
  */
 int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp, short quest)
 {
+	int base_rate = 100;
+	int job_rate = 100;
+
 	nullpo_retr(0, sd);
 
 	if (sd->bl.prev == NULL || unit_isdead(&sd->bl))
@@ -5502,9 +5519,17 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		job_exp  = job_exp  * sd->sc.data[SC_MEAL_INCJOB].val1 / 100;
 	}
 	if (sd->sc.data[SC_COMBATHAN].timer != -1) {
-		base_exp = base_exp * sd->sc.data[SC_COMBATHAN].val1 / 100;
-		job_exp  = job_exp  * sd->sc.data[SC_COMBATHAN].val1 / 100;
+		base_rate = sd->sc.data[SC_COMBATHAN].val1;
+		job_rate  = sd->sc.data[SC_COMBATHAN].val1;
 	}
+	if (sd->sc.data[SC_JOB_COMBATHAN].timer != -1) {
+		job_rate  = sd->sc.data[SC_JOB_COMBATHAN].val1;
+	}
+
+	if (base_rate != 100)
+		base_exp = base_exp * base_rate / 100;
+	if (job_rate != 100)
+		job_exp  = job_exp  * job_rate / 100;
 
 	// マーダラーボーナス
 	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
