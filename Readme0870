@@ -1,4 +1,18 @@
 ----------------------------------------
+//0928 [2012/03/28] by refis
+
+・アイテムボーナス「bonus2 bFixCastrate」の判定式を修正 (src/map/pc.c)
+	Thanks Akayumi さん
+
+・ウォーロックスキル「ソウルエクスパンション」のダメージ計算式を修正 (src/map/battle.c)
+	Thanks かんなぎ さん
+
+・レンジャースキル「エイムドボルト」の拘束時のダメージ計算式を修正 (src/map/battle.c)
+	Thanks velvet0001 さん
+
+・命令文「npcskillsupport」で発動元と対象を指定できるように変更 (doc/script_ref.txt src/map/script.c)
+
+----------------------------------------
 //0927 [2012/03/14] by refis
 
 ・0926のミスを修正 (db/scdata.txt src/map/pc.c)

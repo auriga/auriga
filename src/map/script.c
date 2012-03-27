@@ -4265,7 +4265,7 @@ struct script_function buildin_func[] = {
 	{buildin_getitemid,"getitemid","s"},
 	{buildin_getguildmembers,"getguildmembers","i"},
 	{buildin_npcskillattack,"npcskillattack","iii"},
-	{buildin_npcskillsupport,"npcskillsupport","ii"},
+	{buildin_npcskillsupport,"npcskillsupport","ii*"},
 	{buildin_npcskillpos,"npcskillpos","iiii"},
 	{buildin_strnpcinfo,"strnpcinfo","i"},
 	{buildin_getpartyleader,"getpartyleader","i"},
@@ -11048,17 +11048,33 @@ int buildin_npcskillattack(struct script_state *st)
  */
 int buildin_npcskillsupport(struct script_state *st)
 {
+	struct npc_data *nd;
 	struct map_session_data *sd = script_rid2sd(st);
-	struct block_list *bl = map_id2bl(st->oid);
+	struct block_list *bl = map_id2bl(st->oid), *tbl;
 	int skillid=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	int heal=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	nullpo_retr(0, sd);
 
+	tbl = &sd->bl;
+
+	if(st->end > st->start+4) {
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+4])));
+		if(nd)
+			bl = &nd->bl;
+	}
 	if(bl == NULL || bl->type != BL_NPC)
 		bl = &sd->bl;
 
-	clif_skill_nodamage(bl,&sd->bl,skillid,heal,1);
+	if(st->end > st->start+5) {
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+5])));
+		if(nd)
+			tbl = &nd->bl;
+	}
+	if(tbl == NULL || tbl->type != BL_NPC)
+		tbl = &sd->bl;
+
+	clif_skill_nodamage(bl,tbl,skillid,heal,1);
 
 	return 0;
 }

@@ -2997,7 +2997,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		break;
 	case SP_FIXCASTRATE:
 		if(!val) {
-			if(sd->fixcastrate > -(type2))
+			if(sd->fixcastrate < -(type2))
 				sd->fixcastrate = -(type2);
 		} else {
 			sd->fixcastrate_ += -(type2);

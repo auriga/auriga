@@ -2012,13 +2012,17 @@ AurigaNPCScript
 			この命令で正常に作動するのは、攻撃スキルエフェクトに限ります。
 
 		npcskillsupport命令
-			npcskillsupport <skillid>,<val>;
+			npcskillsupport <skillid>,<val>[,<name1>][,<name2>];
 
 			skillid		表示するスキルのID
 			val		表示する回復量
+			name1	NPC名、省略すると命令したNPC
+			name2	NPC名、省略するとプレイヤー
 
-			命令したNPCが<skillid>で指定したスキルのエフェクトをプレイヤーに与えます。
-			命令元のNPCが存在しない場合はプレイヤーが発動元になります。
+			<name1>で指定したNPCが<skillid>で指定したスキルのエフェクトを<name2>に与えます。
+			<name1>で指定したNPCが存在しない場合はプレイヤーが発動元になります。
+			<name2>で指定したNPCが存在しない場合はプレイヤーが対象になります。
+
 			スキルにヒールを指定した場合は、<val>の値の回復エフェクトを表示します。
 			（実際に回復することはありません）
 			それ以外のスキルの場合、<val>にはスキルLvを入力してください。

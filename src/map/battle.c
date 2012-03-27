@@ -2598,7 +2598,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 200 + 50 * skill_lv, 100 );
 			break;
 		case RA_AIMEDBOLT:		// エイムドボルト
-			DMG_FIX( (200 + 20 * skill_lv) * wd.div_, 100 );
+			DMG_FIX( (200 + 20 * skill_lv) * wd.div_ * wd.div_, 100 );
 			break;
 		case RA_WUGDASH:		// ウォーグダッシュ
 			DMG_FIX( 300, 100 );
@@ -4224,12 +4224,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( 200 + 20 * skill_lv, 100 );
 			break;
 		case WL_SOULEXPANSION:		// ソウルエクスパンション
-			if(t_sc && t_sc->data[SC_WHITEIMPRISON].timer != -1) {
-				status_change_end(target,SC_WHITEIMPRISON,-1);
-				MATK_FIX( (800 + 200 * skill_lv) * status_get_lv(bl) / 100, 100 );
-			} else {
-				MATK_FIX( (400 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
-			}
+			MATK_FIX( (status_get_int(bl) +  400 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			break;
 		case WL_FROSTMISTY:	// フロストミスティ
 			MATK_FIX( (200 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
@@ -4468,6 +4463,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	if(t_sc && t_sc->data[SC_HERMODE].timer != -1 && t_sc->data[SC_HERMODE].val1 == 1)	// ヘルモードなら魔法ダメージなし
 		mgd.damage = 0;
+
+	if(skill_num == WL_SOULEXPANSION && t_sc && t_sc->data[SC_WHITEIMPRISON].timer != -1) {	// ソウルエクスパンション
+		status_change_end(target,SC_WHITEIMPRISON,-1);
+		mgd.damage += mgd.damage;
+	}
 
 	/* 10．固定ダメージ */
 	if(skill_num == HW_GRAVITATION)	// グラビテーションフィールド
