@@ -1,4 +1,17 @@
 ----------------------------------------
+//0929 [2012/04/01] by refis
+
+・スーパーノービスの台詞コマンドが使えなくなっていたのを修正 (src/map/clif.c)
+	Thanks unsyu さん
+
+・シャドウチェイサースキル「オートシャドウスペル」の持続時間設定の誤りを修正 (src/map/skill.c)
+	Thanks rain さん、unsyu さん
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+・client_packet.txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
 //0928 [2012/03/28] by refis
 
 ・アイテムボーナス「bonus2 bFixCastrate」の判定式を修正 (src/map/pc.c)

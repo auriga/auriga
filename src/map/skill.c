@@ -16929,7 +16929,7 @@ void skill_autoshadowspell(struct map_session_data *sd, int skillid)
 		shadowlv = (sd->skill_menu.lv + 1) / 2;
 		skilllv = (skilllv > shadowlv)? shadowlv: skilllv;
 
-		status_change_start(&sd->bl,SC__AUTOSHADOWSPELL,sd->skill_menu.lv,skillid,skilllv,0,skill_get_time(SC__AUTOSHADOWSPELL,sd->skill_menu.lv),0);
+		status_change_start(&sd->bl,SC__AUTOSHADOWSPELL,sd->skill_menu.lv,skillid,skilllv,0,skill_get_time(SC_AUTOSHADOWSPELL,sd->skill_menu.lv),0);
 	}
 
 	return;

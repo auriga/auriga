@@ -16471,7 +16471,7 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->s_class.job != PC_JOB_SNV || sd->s_class.job != PC_JOB_ESNV)
+	if(sd->s_class.job != PC_JOB_SNV && sd->s_class.job != PC_JOB_ESNV)
 		return;
 
 	next = pc_nextbaseexp(sd);
