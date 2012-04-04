@@ -2078,7 +2078,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 			num = 1;
 	}
 
-	if(mob_db[class_].mode & 0x20) {
+	if(mob_db[class_].mode & MD_BOSS) {
 		if(mob_db[class_].mexp > 0) {
 			if(battle_config.mob_mvp_boss_delay_rate != 100) {
 				delay1 = delay1 * battle_config.mob_mvp_boss_delay_rate / 100;
@@ -2135,7 +2135,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
 		md->attacked_id = 0;
 		md->speed       = mob_db[class_].speed;
 
-		if(mob_db[class_].mode & 0x02)
+		if(mob_db[class_].mode & MD_ITEMLOOT)
 			md->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 		else
 			md->lootitem = NULL;

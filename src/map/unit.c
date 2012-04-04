@@ -132,7 +132,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 		if(md) {
 			int x = md->bl.x+dirx[wpd.path[0]];
 			int y = md->bl.y+diry[wpd.path[0]];
-			if (map_getcell(bl->m,x,y,CELL_CHKBASILICA) && !(status_get_mode(bl)&0x20)) {
+			if (map_getcell(bl->m,x,y,CELL_CHKBASILICA) && !(status_get_mode(bl)&MD_BOSS)) {
 				ud->state.change_walk_target=0;
 				return 0;
 			}
@@ -495,7 +495,7 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 	if( ud == NULL ) return 0;
 
 	// 移動出来ないユニットは弾く(ペットは除く)
-	if( !pd && !(status_get_mode(bl)&0x01) )
+	if( !pd && !(status_get_mode(bl)&MD_CANMOVE) )
 		return 0;
 
 	if( !unit_can_move(bl) )
@@ -1155,7 +1155,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		clif_skillcasting(src, src->id, target_id, 0, 0, skill_num,casttime);
 
 		/* 詠唱反応モンスター */
-		if(src_sd && target_md && status_get_mode(&target_md->bl)&0x10 && target_md->ud.attacktimer == -1 && src_sd->invincible_timer == -1) {
+		if(src_sd && target_md && status_get_mode(&target_md->bl)&MD_CASTSENSOR && target_md->ud.attacktimer == -1 && src_sd->invincible_timer == -1) {
 			target_md->target_id = src->id;
 			target_md->min_chase = 13;
 		}
@@ -1712,9 +1712,9 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		mode = status_get_mode(src);
 		race = status_get_race(src);
 
-		if( !(mode&0x80) )
+		if( !(mode&MD_CANATTACK) )
 			return 0;
-		if( !(mode&0x20) ) {
+		if( !(mode&MD_BOSS) ) {
 			if( tsc && (tsc->data[SC_FORCEWALKING].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1) )
 				return 0;
 			if( target_sd ) {
@@ -1746,7 +1746,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	dist  = unit_distance(src->x,src->y,target->x,target->y);
 	range = status_get_range(src);
-	if( src_md && status_get_mode(src) & 1 )
+	if( src_md && status_get_mode(src) & MD_CANMOVE )
 		range++;
 	if(src_sd && (src_sd->status.weapon != WT_BOW && !(src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)))
 		range++;

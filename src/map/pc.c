@@ -4295,7 +4295,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 
 	if(battle_config.item_rate <= 0 || md->state.steal_flag)
 		return 0;
-	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&0x20)
+	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&MD_BOSS)
 		return 0;
 	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;

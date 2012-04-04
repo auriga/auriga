@@ -6920,7 +6920,7 @@ int buildin_monster(struct script_state *st)
 
 		// ランダム召還じゃないならドロップあり
 		if(mob_id == -1) {
-			if(md->mode&0x20) {	// 手抜きボス属性
+			if(md->mode&MD_BOSS) {	// 手抜きボス属性
 				md->state.nodrop = battle_config.branch_boss_no_drop;
 				md->state.noexp  = battle_config.branch_boss_no_exp;
 				md->state.nomvp  = battle_config.branch_boss_no_mvp;
@@ -9988,7 +9988,7 @@ int buildin_summon(struct script_state *st)
 	if((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
-		md->mode        = mob_db[md->class_].mode | 0x04;
+		md->mode        = mob_db[md->class_].mode | MD_AGGRESSIVE;
 		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}

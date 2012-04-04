@@ -5501,7 +5501,7 @@ int status_get_mode(struct block_list *bl)
 		return mob_db[((struct pet_data *)bl)->class_].mode;
 	}
 
-	return 0x01;	// とりあえず動くということで1
+	return MD_CANMOVE;	// とりあえず動くということで1
 }
 
 /*==========================================
@@ -5530,7 +5530,7 @@ int status_get_enemy_type(struct block_list *bl)
 
 	if( bl->type == BL_PC )
 		return 1;
-	else if( bl->type == BL_MOB && !(status_get_mode(bl)&0x20) )
+	else if( bl->type == BL_MOB && !(status_get_mode(bl)&MD_BOSS) )
 		return 2;
 	else if( bl->type == BL_HOM )
 		return 3;
@@ -5939,7 +5939,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	// ボス属性には無効(ただしカードによる効果は適用される)
-	if( mode&0x20 && !(flag&1) && status_is_disable(type,0x01) ) {
+	if( mode&MD_BOSS && !(flag&1) && status_is_disable(type,0x01) ) {
 		if(type == SC_BLESSING && !battle_check_undead(race,elem) && race != RCT_DEMON) {
 			// ブレスは不死/悪魔でないなら効く
 			;
@@ -6943,7 +6943,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SWOO:			/* エスウ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
-			if(status_get_mode(bl)&0x20)
+			if(status_get_mode(bl)&MD_BOSS)
 				tick /= 5;
 			break;
 		case SC_MONK:			/* モンクの魂 */
@@ -8187,7 +8187,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SELFDESTRUCTION:	/* 自爆 */
 			unit_stop_walking(bl,5);
 			if(md) {
-				md->mode &= ~0x1;
+				md->mode &= ~MD_CANMOVE;
 				md->state.special_mob_ai = 2;
 			}
 			break;
@@ -9056,7 +9056,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 	case SC_SELFDESTRUCTION:		/* 自爆 */
-		if(md && unit_iscasting(&md->bl) && md->state.special_mob_ai > 2 && md->mode&0x1 && md->speed > 0) {
+		if(md && unit_iscasting(&md->bl) && md->state.special_mob_ai > 2 && md->mode&MD_CANMOVE && md->speed > 0) {
 			md->speed -= 5;
 			if(md->speed <= 0)
 				md->speed = 1;

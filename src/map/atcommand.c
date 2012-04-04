@@ -3687,7 +3687,7 @@ int atcommand_summon(const int fd, struct map_session_data* sd, AtCommandType co
 	if ((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
-		md->mode        = mob_db[md->class_].mode | 0x04;
+		md->mode        = mob_db[md->class_].mode | MD_AGGRESSIVE;
 		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}
@@ -4028,11 +4028,11 @@ static int atcommand_mobsearch_sub(struct block_list *bl,va_list ap)
 		case -1:
 			break;
 		case -2:
-			if ( !(status_get_mode(&md->bl)&0x20) )
+			if ( !(status_get_mode(&md->bl)&MD_BOSS) )
 				return 0;
 			break;
 		case -3:
-			if ( !(status_get_mode(&md->bl)&0x20) || mob_db[md->class_].mexp <= 0 )
+			if ( !(status_get_mode(&md->bl)&MD_BOSS) || mob_db[md->class_].mexp <= 0 )
 				return 0;
 			break;
 		default:

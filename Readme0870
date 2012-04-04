@@ -1,4 +1,14 @@
 ----------------------------------------
+//0932 [2012/04/05] by refis
+
+・MODEのマジックナンバーをenumで回避する
+ (src/map/atcommand.c src/map/battle.c src/map/mob.c src/map/npc.c src/map/pc.c src/map/pet.c src/map/script.c src/map/skill.c src/map/status.* src/map/unit.c)
+
+・接触反応AI、低レベルターゲッティングAIを実装 (doc/db_ref.txt src/map/mob.c)
+
+・mob_db.txtを更新 (db/mob_db.txt)
+
+----------------------------------------
 //0931 [2012/04/05] by refis
 
 ・討伐データベースの初期化忘れを修正 (src/map/quest.c)

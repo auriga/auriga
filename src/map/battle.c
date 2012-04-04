@@ -239,10 +239,10 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 		int ele  = status_get_elem_type(target);
 		int mode = status_get_mode(target);
 
-		if((!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_ele[ele]) ||
-		   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[race]) ||
-		   (mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
-		   (!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]))
+		if((!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_ele[ele]) ||
+		   (!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race[race]) ||
+		   (mode&MD_BOSS && atn_rand()%10000 < sd->weapon_coma_race[RCT_BOSS]) ||
+		   (!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race[RCT_NONBOSS]))
 		{
 			int hp = status_get_hp(target);
 			if(tsd)       pc_damage(bl,tsd,hp);
@@ -250,10 +250,10 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(thd)  homun_damage(bl,thd,hp);
 			else if(tmcd) merc_damage(bl,tmcd,hp);
 		}
-		else if((!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_ele2[ele]) ||
-			(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[race]) ||
-			(mode&0x20 && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
-			(!(mode&0x20) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]))
+		else if((!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_ele2[ele]) ||
+			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[race]) ||
+			(mode&MD_BOSS && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
+			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]))
 		{
 			int hp = status_get_hp(target) - 1;
 			if(tsd)       pc_damage(bl,tsd,hp);
@@ -466,7 +466,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 			damage += damage * sc->data[SC_INCDAMAGE].val1/100;
 
 		// バジリカ
-		if(sc->data[SC_BASILICA].timer != -1 && damage > 0 && !(status_get_mode(src)&0x20))
+		if(sc->data[SC_BASILICA].timer != -1 && damage > 0 && !(status_get_mode(src)&MD_BOSS))
 			damage = 0;
 
 		// ウォールオブフォグ
@@ -2457,7 +2457,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					else
 						dmg = 500*skill_lv + atn_rand()%(500*skill_lv);
 				}
-				if(target->type == BL_PC || t_mode & 0x20) {
+				if(target->type == BL_PC || t_mode & MD_BOSS) {
 					dmg /= 2;
 				}
 				DMG_SET( dmg );
@@ -2916,7 +2916,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				if(wflag > 1)
 					dmg /= wflag;
-				if(t_mode & 0x20)
+				if(t_mode & MD_BOSS)
 					dmg /= 2;
 				DMG_SET( dmg );
 				calc_flag.nocardfix = 1;
@@ -2967,7 +2967,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// bIgnoreDef系判定
 				ignored_rate  = ignored_rate  - src_sd->ignore_def_ele[t_ele]  - src_sd->ignore_def_race[t_race]  - src_sd->ignore_def_enemy[t_enemy];
 				ignored_rate_ = ignored_rate_ - src_sd->ignore_def_ele_[t_ele] - src_sd->ignore_def_race_[t_race] - src_sd->ignore_def_enemy_[t_enemy];
-				if(t_mode & 0x20) {
+				if(t_mode & MD_BOSS) {
 					ignored_rate  -= src_sd->ignore_def_race[RCT_BOSS];
 					ignored_rate_ -= src_sd->ignore_def_race_[RCT_BOSS];
 				} else {
@@ -2982,7 +2982,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 
 				if(skill_num != CR_GRANDCROSS && skill_num != AM_ACIDTERROR && skill_num != LG_RAYOFGENESIS) {
-					int mask = (1<<t_race) | ( (t_mode&0x20)? (1<<10): (1<<11) );
+					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<10): (1<<11) );
 
 					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
 					if( !calc_flag.idef && ignored_rate == 100 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
@@ -3384,7 +3384,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				cardfix = cardfix*(100+src_sd->addsize[t_size]+src_sd->arrow_addsize[t_size])/100;	// サイズによるダメージ修正(弓矢による追加あり)
 				cardfix = cardfix*(100+src_sd->addgroup[t_group]+src_sd->arrow_addgroup[t_group])/100;	// グループによるダメージ修正(弓矢による追加あり)
 			}
-			if(t_mode & 0x20) {	// ボス
+			if(t_mode & MD_BOSS) {	// ボス
 				if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外なら
 					if(!battle_config.left_cardfix_to_right) {
 						// 左手カード補正設定無し
@@ -3445,7 +3445,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix = cardfix*(100+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正左手
 			cardfix = cardfix*(100+src_sd->addsize_[t_size])/100;	// サイズによるダメージ修正左手
 			cardfix = cardfix*(100+src_sd->addgroup_[t_group])/100;	// グループによるダメージ修正左手
-			if(t_mode & 0x20)	// ボス
+			if(t_mode & MD_BOSS)	// ボス
 				cardfix = cardfix*(100+src_sd->addrace_[RCT_BOSS])/100;		// ボスモンスターに追加ダメージ左手
 			else
 				cardfix = cardfix*(100+src_sd->addrace_[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ左手
@@ -3487,7 +3487,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		cardfix = cardfix*(100-target_sd->subsize[s_size])/100;			// サイズによるダメージ耐性
 		cardfix = cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
 
-		if(status_get_mode(src) & 0x20)
+		if(status_get_mode(src) & MD_BOSS)
 			cardfix = cardfix*(100-target_sd->subrace[RCT_BOSS])/100;	// ボスからの攻撃はダメージ減少
 		else
 			cardfix = cardfix*(100-target_sd->subrace[RCT_NONBOSS])/100;	// ボス以外からの攻撃はダメージ減少
@@ -3790,7 +3790,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 33．固定ダメージ2 */
-	if(t_mode&0x40) {	// MobのModeに頑強フラグが立っているときの処理
+	if(t_mode&MD_PLANT) {	// MobのModeに頑強フラグが立っているときの処理
 		if(wd.damage > 0)
 			wd.damage = 1;
 		if(wd.damage2 > 0)
@@ -4030,7 +4030,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				thres = skill_lv * 20 + status_get_luk(bl) + status_get_int(bl) + status_get_lv(bl) + 200 - (hp * 200 / mhp);
 				if(thres > 700)
 					thres = 700;
-				if(atn_rand()%1000 < thres && !(t_mode&0x20))	// 成功
+				if(atn_rand()%1000 < thres && !(t_mode&MD_BOSS))	// 成功
 					mgd.damage = hp;
 				else					// 失敗
 					mgd.damage = status_get_lv(bl) + status_get_int(bl) + skill_lv * 10;
@@ -4349,7 +4349,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			mgd.damage = matk2;
 		if(sd) {
 			rate = rate - sd->ignore_mdef_ele[t_ele] - sd->ignore_mdef_race[t_race] - sd->ignore_mdef_enemy[t_enemy];
-			if(t_mode & 0x20)
+			if(t_mode & MD_BOSS)
 				rate -= sd->ignore_mdef_race[RCT_BOSS];
 			else
 				rate -= sd->ignore_mdef_race[RCT_NONBOSS];
@@ -4380,7 +4380,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		cardfix = cardfix*(100+sd->magic_addrace[t_race])/100;
 		cardfix = cardfix*(100+sd->magic_addele[t_ele])/100;
 		cardfix = cardfix*(100+sd->magic_addenemy[t_enemy])/100;
-		if(t_mode & 0x20)
+		if(t_mode & MD_BOSS)
 			cardfix = cardfix*(100+sd->magic_addrace[RCT_BOSS])/100;
 		else
 			cardfix = cardfix*(100+sd->magic_addrace[RCT_NONBOSS])/100;
@@ -4413,7 +4413,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		cardfix = cardfix*(100-tsd->magic_subsize[status_get_size(bl)])/100;		// サイズによるダメージ耐性
 		cardfix = cardfix*(100-tsd->magic_subrace[race])/100;
 		cardfix = cardfix*(100-tsd->long_attack_def_rate)/100;	// 遠距離耐性によるダメージ減少
-		if(status_get_mode(bl) & 0x20)
+		if(status_get_mode(bl) & MD_BOSS)
 			cardfix = cardfix*(100-tsd->magic_subrace[RCT_BOSS])/100;
 		else
 			cardfix = cardfix*(100-tsd->magic_subrace[RCT_NONBOSS])/100;
@@ -4493,13 +4493,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			case NJ_KOUENKA:
 			case NJ_HYOUSENSOU:
 			case NJ_HUUJIN:
-				if(t_mode&0x40) // 草・きのこ等
+				if(t_mode&MD_PLANT) // 草・きのこ等
 					mgd.damage = mgd.div_;
 				else
 					mgd.damage *= mgd.div_;
 				break;
 			default:
-				if(t_mode&0x40) {	 // 草・きのこ等
+				if(t_mode&MD_PLANT) {	 // 草・きのこ等
 					if(battle_config.skill_min_damage)
 						mgd.damage = mgd.div_;
 					else
@@ -4748,7 +4748,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	}
 
 	/* ７．固定ダメージ */
-	if(status_get_mode(target)&0x40 && mid.damage > 0)	// 草・きのこ等
+	if(status_get_mode(target)&MD_PLANT && mid.damage > 0)	// 草・きのこ等
 		mid.damage = 1;
 
 	/* ８．カードによるダメージ追加処理 */
@@ -4941,7 +4941,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
 			// デスバウンド反射
-			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))
 			{
 				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -4961,7 +4961,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				rsdamage += damage / 100;
 			}
 			// 破砕柱反射
-			if(t_sc && t_sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&0x20) && atn_rand()%100 < 94 + t_sc->data[SC_CRESCENTELBOW].val1)
+			if(t_sc && t_sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&MD_BOSS) && atn_rand()%100 < 94 + t_sc->data[SC_CRESCENTELBOW].val1)
 			{
 				rsdamage += damage * (50 * t_sc->data[SC_CRESCENTELBOW].val1) / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -5170,7 +5170,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			status_change_end(target,SC_AUTOCOUNTER,-1);
 		}
 		if(t_sc->data[SC_BLADESTOP_WAIT].timer != -1 &&
-		   !(status_get_mode(src)&0x20) &&
+		   !(status_get_mode(src)&MD_BOSS) &&
 		   (map[target->m].flag.pvp || unit_distance2(src,target) <= 2)) {	// PvP以外での有効射程は2セル
 			int lv  = t_sc->data[SC_BLADESTOP_WAIT].val1;
 			int sec = skill_get_time2(MO_BLADESTOP,lv);
@@ -5263,7 +5263,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			return 0;
 	}
 	if(sc) {
-		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&0x20) && skill_get_pl(skillid) != ELE_EARTH && skillid != HW_GRAVITATION)	// ハイディング状態でBOSSでなくスキルの属性が地属性でなくグラビテーションフィールドでないなら何もしない
+		if(sc->data[SC_HIDING].timer != -1 && !(status_get_mode(src)&MD_BOSS) && skill_get_pl(skillid) != ELE_EARTH && skillid != HW_GRAVITATION)	// ハイディング状態でBOSSでなくスキルの属性が地属性でなくグラビテーションフィールドでないなら何もしない
 			return 0;
 		if(sc->data[SC_CHASEWALK].timer != -1 && skillid == AL_RUWACH)	// チェイスウォーク状態でルアフ無効
 			return 0;
@@ -5545,7 +5545,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 				// デスバウンド時
-				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&0x20) && map_check_dir(map_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
+				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && map_check_dir(map_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
 				{
 					rdamage += damage * sc->data[SC_DEATHBOUND].val2 / 100;
 					if(rdamage < 1) rdamage = 1;
@@ -5565,7 +5565,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					rdamage += damage / 100;
 				}
 				// 破砕柱反射
-				if(sc && sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&0x20) && atn_rand()%100 < 94 + sc->data[SC_CRESCENTELBOW].val1)
+				if(sc && sc->data[SC_CRESCENTELBOW].timer != -1 && !(status_get_mode(src)&MD_BOSS) && atn_rand()%100 < 94 + sc->data[SC_CRESCENTELBOW].val1)
 				{
 					rdamage += damage * (50 * sc->data[SC_CRESCENTELBOW].val1) / 100;
 					if(rdamage < 1) rdamage = 1;
@@ -5599,7 +5599,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		// カイト
 		if(damage > 0 && sc && sc->data[SC_KAITE].timer != -1 && skillid != HW_GRAVITATION)
 		{
-			if(src->type == BL_PC || (status_get_lv(src) < 80 && !(status_get_mode(src)&0x20)))
+			if(src->type == BL_PC || (status_get_lv(src) < 80 && !(status_get_mode(src)&MD_BOSS)))
 			{
 				int idx;
 				clif_misceffect2(bl,438);
@@ -5655,7 +5655,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* 吹き飛ばし補正 */
 	if(skillid == WZ_STORMGUST) {
 		// アンデッド以外の通常MOBはストームガストの3HIT目で弾かれない(滑りの布石)
-		if(sc && sc->data[SC_FREEZE].val3 == 2 && !(status_get_mode(bl)&0x20) && !battle_check_undead(status_get_race(bl), status_get_elem_type(bl))) {
+		if(sc && sc->data[SC_FREEZE].val3 == 2 && !(status_get_mode(bl)&MD_BOSS) && !battle_check_undead(status_get_race(bl), status_get_elem_type(bl))) {
 			dmg.blewcount = 0;
 		}
 	}
@@ -5709,7 +5709,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	if(skillid == RG_INTIMIDATE) {
 		/* インティミデイト */
-		if(damage > 0 && !(status_get_mode(bl)&0x20) && !map[src->m].flag.gvg) {
+		if(damage > 0 && !(status_get_mode(bl)&MD_BOSS) && !map[src->m].flag.gvg) {
 			int rate = 90 + status_get_lv(src) - status_get_lv(bl);
 			if(atn_rand()%100 < rate)
 				skill_addtimerskill(src,tick + status_get_amotion(src) + 500,bl->id,0,0,skillid,skilllv,0,flag);
@@ -6089,7 +6089,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		struct mob_data *md = (struct mob_data*)target;
 		int mode = mob_db[pd->class_].mode;
 		int race = mob_db[pd->class_].race;
-		if(mob_db[pd->class_].mexp <= 0 && !(mode&0x20) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) ) {
+		if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) ) {
 			return 1; // 失敗
 		} else {
 			return 0; // 成功
