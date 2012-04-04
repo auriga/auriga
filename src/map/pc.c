@@ -2138,7 +2138,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_MDEF2:
 		if(sd->state.lr_flag != 2)
-			sd->mdef += val;
+			sd->mdef2 += val;
 		break;
 	case SP_HIT:
 		if(sd->state.lr_flag != 2)

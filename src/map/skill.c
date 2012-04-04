@@ -2952,7 +2952,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RK_WINDCUTTER:		/* ウィンドカッター */
 	case RK_DRAGONBREATH:	/* ドラゴンブレス */
 	case AB_DUPLELIGHT_MELEE:	/* デュプレライト(物理) */
-	case RA_AIMEDBOLT:		/* エイムドボルト */
 	case RA_WUGBITE:		/* ウォーグバイト */
 	case NC_BOOSTKNUCKLE:	/* ブーストナックル */
 	case NC_PILEBUNKER:		/* パイルバンカー */
@@ -4378,6 +4377,17 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
+		break;
+	case RA_AIMEDBOLT:      /* エイムドボルト */
+		if(sd) {
+			int cost = 1;
+			sc = status_get_sc(bl);
+			if(sc && (sc->data[SC_ANKLE].timer != -1 || sc->data[SC_ELECTRICSHOCKER].timer != -1 || sc->data[SC_WUGBITE].timer != -1))
+				cost = status_get_size(bl) + 2;
+			if(cost > 0 && !battle_delarrow(sd,cost,skillid))   // 矢の消費
+				break;
+		}
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case RA_WUGDASH:		/* ウォーグダッシュ */
 		if(flag&1) {

@@ -36,9 +36,11 @@ extern struct quest_db quest_db[MAX_QUEST_DB];
 int quest_search_db(int quest_id);
 int quest_search_index(struct map_session_data *sd, int quest_id);
 struct quest_data *quest_get_data(struct map_session_data *sd, int quest_id);
+int quest_search_mobid(int mob_id);
 int quest_addlist(struct map_session_data *sd, int quest_id);
 int quest_updatelist(struct map_session_data *sd, int old_id, int new_id);
 int quest_dellist(struct map_session_data *sd, int quest_id);
+int quest_killcount_sub(struct block_list *tbl, va_list ap);
 int quest_killcount(struct map_session_data *sd, int mob_id);
 
 void quest_reload(void);

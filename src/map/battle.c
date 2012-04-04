@@ -5294,6 +5294,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				case GS_DESPERADO:
 				case GS_GROUNDDRIFT:
 				case RA_ARROWSTORM:
+				case RA_AIMEDBOLT:
 					// 既に消費処理は完了しているので除外
 					break;
 				case SN_SHARPSHOOTING:

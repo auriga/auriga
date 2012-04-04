@@ -1,4 +1,16 @@
 ----------------------------------------
+//0930 [2012/04/05] by refis
+
+・レンジャースキル「エイムドボルト」の矢消費量を修正 (db/skill_require_db2.txt src/map/battle.c src/map/skill.c)
+	Thanks unsyu さん
+
+・アイテムボーナス「bonus bMdef2」でMdefが上昇する不具合を修正 (src/map/pc.c)
+
+・クエストシステムの討伐カウントがパーティーメンバーにも反映されるよう修正 (src/map/mob.c src/map/quest.*)
+
+・敵が討伐対象かどうか事前に調べるよう変更 (src/map/mob.c src/map/quest.*)
+
+----------------------------------------
 //0929 [2012/04/01] by refis
 
 ・スーパーノービスの台詞コマンドが使えなくなっていたのを修正 (src/map/clif.c)

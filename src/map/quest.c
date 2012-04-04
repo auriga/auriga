@@ -35,6 +35,8 @@
 
 /* クエストデータベース */
 struct quest_db quest_db[MAX_QUEST_DB];
+/* 討伐対象データベース */
+int quest_killdb[MAX_QUEST_DB];
 
 /*==========================================
  * クエストDBのデータを検索
@@ -82,6 +84,29 @@ struct quest_data *quest_get_data(struct map_session_data *sd, int quest_id)
 		return &sd->quest[idx];
 
 	return NULL;
+}
+
+/*==========================================
+ * 討伐対象かチェック
+ *------------------------------------------
+ */
+int quest_search_mobid(int mob_id)
+{
+	int min = -1;
+	int max = MAX_QUEST_DB;
+
+	// binary search
+	while(max - min > 1) {
+		int mid = (min + max) / 2;
+		if(quest_killdb[mid] == mob_id)
+			return 1;
+
+		if(quest_killdb[mid] > mob_id)
+			max = mid;
+		else
+			min = mid;
+	}
+	return 0;
 }
 
 /*==========================================
@@ -218,6 +243,27 @@ int quest_dellist(struct map_session_data *sd, int quest_id)
 	return 0;
 }
 
+int quest_killcount_sub(struct block_list *tbl, va_list ap)
+{
+	struct map_session_data *sd;
+	int mob_id, party_id;
+
+	nullpo_retr(0, tbl);
+	nullpo_retr(0, sd = (struct map_session_data *)tbl);
+
+	party_id = va_arg(ap,int);
+	mob_id = va_arg(ap,int);
+
+	if(!sd->questlist)
+		return 0;
+	if(sd->status.party_id != party_id)
+		return 0;
+
+	quest_killcount(sd, mob_id);
+
+	return 1;
+}
+
 /*==========================================
  * クエストリスト討伐数更新
  *------------------------------------------
@@ -244,6 +290,14 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 	return 0;
 }
 
+static int quest_sort_id(const void *_i1, const void *_i2)
+{
+	int *i1 = (int *)_i1;
+	int *i2 = (int *)_i2;
+
+	return (i1 > i2)? 1 : (i1 < i2)? -1 : 0;
+}
+
 /*==========================================
  * クエスト設定ファイル読み込み
  * quest_db.txt クエストデータ
@@ -251,7 +305,7 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
  */
 static int quest_readdb(void)
 {
-	int i,j;
+	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
 
@@ -263,6 +317,7 @@ static int quest_readdb(void)
 		return 1;
 	}
 	i=0;
+	k=-1;
 	while(fgets(line,1020,fp)){
 		char *split[9];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -285,11 +340,18 @@ static int quest_readdb(void)
 		for(j = 0; j < sizeof(quest_db[0].mob)/sizeof(quest_db[0].mob[0]); j++) {
 			quest_db[i].mob[j].id    = (short)atoi(split[3+j*2]);
 			quest_db[i].mob[j].count = (short)atoi(split[4+j*2]);
+
+			if(++k >= MAX_QUEST_DB)
+				continue;
+			quest_killdb[k]          = quest_db[i].mob[j].id;
 		}
 
 		if(++i >= MAX_QUEST_DB)
 			break;
 	}
+	//討伐データベースのソート
+	qsort(quest_killdb, MAX_QUEST_DB, sizeof(int), quest_sort_id);
+
 	fclose(fp);
 	printf("read db/quest_db.txt done (count=%d)\n",i);
 
