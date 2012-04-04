@@ -71,7 +71,7 @@
 #include "buyingstore.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0x950
+#define MAX_PACKET_DB 0x970
 
 struct packet_db {
 	short len;

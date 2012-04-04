@@ -213,6 +213,8 @@ ATCOMMAND_FUNC(readvars);
 ATCOMMAND_FUNC(writevars);
 ATCOMMAND_FUNC(cloneskill);
 ATCOMMAND_FUNC(cloneskill2);
+ATCOMMAND_FUNC(reproduce);
+ATCOMMAND_FUNC(reproduce2);
 ATCOMMAND_FUNC(mobinfo);
 ATCOMMAND_FUNC(homlevel);
 ATCOMMAND_FUNC(homviewclass);
@@ -384,6 +386,8 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_WriteVars,          "@writevars",        0, atcommand_writevars,           NULL },
 	{ AtCommand_CloneSkill,         "@cloneskill",       0, atcommand_cloneskill,          NULL },
 	{ AtCommand_CloneSkill2,        "@cloneskill2",      0, atcommand_cloneskill2,         NULL },
+	{ AtCommand_Reproduce,          "@reproduce",        0, atcommand_reproduce,           NULL },
+	{ AtCommand_Reproduce2,         "@reproduce2",       0, atcommand_reproduce2,          NULL },
 	{ AtCommand_MobInfo,            "@mobinfo",          0, atcommand_mobinfo,             NULL },
 	{ AtCommand_HomLevel,           "@homlv",            0, atcommand_homlevel,            NULL },
 	{ AtCommand_HomViewClass,       "@homviewclass",     0, atcommand_homviewclass,        NULL },
@@ -5353,6 +5357,66 @@ int atcommand_cloneskill2(const int fd, struct map_session_data* sd, AtCommandTy
 	cloneskilllv      = pc_checkskill(sd,RG_PLAGIARISM);
 	sd->skill_clone.id = skillid;
 	sd->skill_clone.lv = (skilllv > cloneskilllv) ? cloneskilllv : skilllv;
+	clif_skillinfoblock(sd);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int atcommand_reproduce(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int skillid, skilllv = 0, ret;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+
+	if ((ret = sscanf(message, "%d %d", &skillid, &skilllv)) < 1)
+		return -1;
+
+	if (skillid < 0)
+		return 0;
+
+	if (ret == 1)
+		skilllv = skill_get_max(skillid);
+
+	if (pc_checkskill(sd,SC_REPRODUCE) && sd->sc.data[SC__REPRODUCE].timer != -1)
+		skill_reproduce(sd, skillid, skilllv);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int atcommand_reproduce2(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int reproducelv, skillid, skilllv = 0, ret;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+
+	if ((ret = sscanf(message, "%d %d", &skillid, &skilllv)) < 1)
+		return -1;
+
+	if (skillid < 0)
+		return 0;
+
+	if (ret == 1)
+		skilllv = skill_get_max(skillid);
+	if (skilllv < 0)
+		skilllv = 0;
+
+	reproducelv      = pc_checkskill(sd,SC_REPRODUCE);
+	sd->skill_reproduce.id = skillid;
+	sd->skill_reproduce.lv = (skilllv > reproducelv) ? reproducelv : skilllv;
 	clif_skillinfoblock(sd);
 
 	return 0;

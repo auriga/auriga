@@ -257,7 +257,9 @@ changemaptype
         @writevars @str$ "X Y" ABCD -> ABCDというキャラクターのキャラ一時変数@str$を文字列 X Y に変更する
 
 @cloneskill ID [LV]     ---- 指定したクローン可能なスキルを覚える、LV省略時は最大値
-@cloneskill2 ID [LV]    ---- 指定したスキルを覚える、LV省略時は最大値
+@cloneskill2 ID [LV]    ---- 指定したクローンスキルを覚える、LV省略時は最大値
+@reproduce ID [LV]     ---- 指定したリプロデュース可能なスキルを覚える、LV省略時は最大値
+@reproduce2 ID [LV]    ---- 指定したリプロデューススキルを覚える、LV省略時は最大値
 
 @mobinfo mobid/name     ---- mobdbを検索し、情報を表示する
 

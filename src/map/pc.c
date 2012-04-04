@@ -7013,6 +7013,12 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_SHOP_POINT:
 		val = sd->shop_point;
 		break;
+	case SP_REPRODUCE_ID:
+		val = sd->skill_reproduce.id;
+		break;
+	case SP_REPRODUCE_LV:
+		val = sd->skill_reproduce.lv;
+		break;
 	}
 
 	return val;
@@ -7193,6 +7199,16 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_SHOP_POINT:
 		sd->shop_point = val;
 		pc_setglobalreg(sd,"PC_SHOP_POINT",val);
+		return 0;
+	case SP_REPRODUCE_ID:
+		sd->skill_reproduce.id = val;
+		pc_setglobalreg(sd,"PC_REPRODUCE_ID",val);
+		clif_skillinfoblock(sd);
+		return 0;
+	case SP_REPRODUCE_LV:
+		sd->skill_reproduce.lv = val;
+		pc_setglobalreg(sd,"PC_REPRODUCE_LV",val);
+		clif_skillinfoblock(sd);
 		return 0;
 	}
 

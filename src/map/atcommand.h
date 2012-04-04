@@ -182,6 +182,8 @@ typedef enum {
 	AtCommand_WriteVars,
 	AtCommand_CloneSkill,
 	AtCommand_CloneSkill2,
+	AtCommand_Reproduce,
+	AtCommand_Reproduce2,
 	AtCommand_MobInfo,
 	AtCommand_HomLevel,
 	AtCommand_HomViewClass,

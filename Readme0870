@@ -1,4 +1,17 @@
 ----------------------------------------
+//0931 [2012/04/05] by refis
+
+・討伐データベースの初期化忘れを修正 (src/map/quest.c)
+
+・MAX_PACKET_DBの拡張 (src/map/clif.c)
+
+・grfの初期位置を本家にあわせて変更 (conf/grf-files.txt)
+
+・@reproduce、@reproduce2を追加 (conf/atcommand_auriga.conf conf/help.txt src/map/atcommand.*)
+
+・リプロデュースをスクリプトから操作できるよう定数を追加 (db/const.txt src/map/map.h src/map/pc.c)
+
+----------------------------------------
 //0930 [2012/04/05] by refis
 
 ・レンジャースキル「エイムドボルト」の矢消費量を修正 (db/skill_require_db2.txt src/map/battle.c src/map/skill.c)

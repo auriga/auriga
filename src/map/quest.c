@@ -310,6 +310,7 @@ static int quest_readdb(void)
 	char line[1024],*p;
 
 	memset(&quest_db, 0, sizeof(quest_db));
+	memset(&quest_killdb, 0, sizeof(quest_killdb));
 
 	fp=fopen("db/quest_db.txt","r");
 	if(fp==NULL){
