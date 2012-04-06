@@ -2146,7 +2146,7 @@ static int skill_check_unit_range2_sub( struct block_list *bl,va_list ap )
 		return 0;
 
 	skillid = va_arg(ap,int);
-	if(skillid == HP_BASILICA && bl->type == BL_PC)
+	if(skillid == HP_BASILICA && skill_area_temp[1] == bl->id)
 		return 0;
 
 	return 1;
@@ -8095,7 +8095,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			} else {
 				int dir = status_get_dir(bl);
-				if(map_count_oncell(sd->bl.m,sd->bl.x+dirx[dir],sd->bl.y+diry[dir],BL_PC|BL_MOB|BL_NPC) == 0)
+				if(map_getcell(sd->bl.m,sd->bl.x+dirx[dir],sd->bl.y+diry[dir],CELL_CHKPASS) && map_count_oncell(sd->bl.m,sd->bl.x+dirx[dir],sd->bl.y+diry[dir],BL_PC|BL_MOB|BL_NPC) == 0)
 					status_change_start(bl,SC_WUGDASH,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
 		}
@@ -12111,6 +12111,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		break;
 	case HP_BASILICA:		/* バジリカ */
 		if(!type) {
+			skill_area_temp[1] = bl->id;
 			// 詠唱開始時のみチェック
 			if(skill_check_unit_range(bl->m,bl->x,bl->y,cnd->id,cnd->lv)) {
 				if(sd)
