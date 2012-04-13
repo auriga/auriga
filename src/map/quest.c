@@ -290,10 +290,14 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 	return 0;
 }
 
+/*==========================================
+ * 討伐データベースのソート
+ *------------------------------------------
+ */
 static int quest_sort_id(const void *_i1, const void *_i2)
 {
-	int *i1 = (int *)_i1;
-	int *i2 = (int *)_i2;
+	int i1 = *((int *)_i1);
+	int i2 = *((int *)_i2);
 
 	return (i1 > i2)? 1 : (i1 < i2)? -1 : 0;
 }
@@ -350,7 +354,7 @@ static int quest_readdb(void)
 		if(++i >= MAX_QUEST_DB)
 			break;
 	}
-	//討伐データベースのソート
+	// 討伐データベースのソート
 	qsort(quest_killdb, MAX_QUEST_DB, sizeof(int), quest_sort_id);
 
 	fclose(fp);
