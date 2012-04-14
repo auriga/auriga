@@ -68,6 +68,15 @@ static char *msg_table[MSG_NUMBER]; /* Server messages */
 static AtCommandInfo *synonym_table; /* table for GM command synonyms */
 static int synonym_count = 0; /* number of synonyms */
 
+#define MAX_ATCOMMAND_GO 50
+struct atcommand_go_db {
+	int nameid;
+	char code[8];
+	char mapname[24];
+	short x,y;
+};
+static struct atcommand_go_db atcommand_go_db[MAX_ATCOMMAND_GO];
+
 #define ATCOMMAND_FUNC(x) int atcommand_ ## x (const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 
 ATCOMMAND_FUNC(rurap);
@@ -1983,60 +1992,39 @@ int atcommand_model(const int fd, struct map_session_data* sd, AtCommandType com
  */
 int atcommand_go(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int town;
-	char *np = NULL;
-	static const struct {
-		struct point p;
-		int len;
-	} data[] = {
-		{ { "prontera.gat",    156, 191 }, 2 },	// 0=プロンテラ
-		{ { "morocc.gat",      156,  93 }, 1 },	// 1=モロク
-		{ { "geffen.gat",      119,  59 }, 2 },	// 2=ゲフェン
-		{ { "payon.gat",       174, 104 }, 2 },	// 3=フェイヨン
-		{ { "alberta.gat",     192, 147 }, 2 },	// 4=アルベルタ
-		{ { "izlude.gat",      128, 114 }, 1 },	// 5=イズルード
-		{ { "aldebaran.gat",   140, 131 }, 2 },	// 6=アルデバラン
-		{ { "xmas.gat",        147, 134 }, 1 },	// 7=ルティエ
-		{ { "comodo.gat",      209, 143 }, 1 },	// 8=コモド
-		{ { "yuno.gat",        157,  51 }, 1 },	// 9=ジュノー
-		{ { "amatsu.gat",      198,  84 }, 2 },	// 10=アマツ
-		{ { "gonryun.gat",     160, 120 }, 2 },	// 11=コンロン
-		{ { "umbala.gat",       89, 157 }, 1 },	// 12=ウンバラ
-		{ { "niflheim.gat",    202, 177 }, 1 },	// 13=ニブルヘルム
-		{ { "louyang.gat",     217,  40 }, 2 },	// 14=龍之城
-		{ { "jawaii.gat",      241, 116 }, 1 },	// 15=ジャワイ
-		{ { "ayothaya.gat",    217, 187 }, 2 },	// 16=アユタヤ
-		{ { "einbroch.gat",    149,  38 }, 5 },	// 17=アインブロック(南口)
-		{ { "einbroch.gat",    158, 317 }, 5 },	// 18=アインブロック(北口)
-		{ { "einbech.gat",     103, 197 }, 5 },	// 19=アインベフ
-		{ { "lighthalzen.gat", 214, 322 }, 2 },	// 20=リヒタルゼン
-		{ { "hugel.gat",        95,  63 }, 1 },	// 21=フィゲル
-		{ { "rachel.gat",      131, 115 }, 1 },	// 22=ラヘル
-		{ { "veins.gat",       216, 123 }, 1 },	// 23=ベインズ
-	};
+	char map_code[100];
+	int i, idx = -1;
 
 	nullpo_retr(-1, sd);
 
-	if (!message || !*message)
+	if(!message || !*message)
+		return -1;
+	if(sscanf(message, "%99s", map_code) < 1)
 		return -1;
 
-	town = strtol(message, &np, 10);
-	if (np && *np) {
-		// MAP名の可能性があるのでチェック
-		int i;
-		town = -1;
-		for (i = 0; i < sizeof(data)/sizeof(data[0]); i++) {
-			if (strncasecmp(message, data[i].p.map, data[i].len) == 0) {
-				town = i;
+	if(isdigit(*map_code)) {
+		int go_id = atoi(map_code);
+		// DBのIDから検索
+		for(i=0; i<MAX_ATCOMMAND_GO; i++) {
+			if(atcommand_go_db[i].nameid == go_id) {
+				idx = i;
+				break;
+			}
+		}
+	}
+	else {
+		// DBの略称名(code)から検索
+		for(i=0; i<MAX_ATCOMMAND_GO; i++) {
+			if(strcmpi(atcommand_go_db[i].code,map_code) == 0) {
+				idx = i;
 				break;
 			}
 		}
 	}
 
-	if (town >= 0 &&
-	    town <= battle_config.atcommand_go_significant_values &&
-	    town < (int)(sizeof(data) / sizeof(data[0]))) {
-		pc_setpos(sd, data[town].p.map, data[town].p.x, data[town].p.y, 3);
+	if(idx >= 0) {
+		if(pc_setpos(sd, atcommand_go_db[idx].mapname, atcommand_go_db[idx].x, atcommand_go_db[idx].y, 3))
+			clif_displaymessage(fd, msg_txt(38));
 	} else {
 		clif_displaymessage(fd, msg_txt(38));
 	}
@@ -5782,6 +5770,87 @@ int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType 
 		limit = 1800;
 
 	merc_callmerc(sd, class_, limit);
+
+	return 0;
+}
+
+/*==========================================
+ * @コマンド設定ファイル読み込み
+ * atcommand_go_db.txt @go設定ファイル
+ *------------------------------------------
+ */
+static int atcommand_readdb(void)
+{
+	int i,j,k;
+	FILE *fp;
+	char line[1024],*p;
+
+	memset(&atcommand_go_db, 0, sizeof(atcommand_go_db));
+
+	fp=fopen("db/atcommand_go_db.txt","r");
+	if(fp==NULL){
+		printf("can't read db/atcommand_go_db.txt\n");
+		return 1;
+	}
+	i=0;
+	k=-1;
+	while(fgets(line,1020,fp)){
+		char *split[5];
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		memset(split,0,sizeof(split));
+		for(j=0,p=line;j<5 && p;j++){
+			split[j]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(j < 5)
+			continue;
+		if(i < 0 || i >= MAX_ATCOMMAND_GO)
+			continue;
+
+		atcommand_go_db[i].nameid = atoi(split[0]);
+		strncpy(atcommand_go_db[i].code,split[1],8);
+		strncpy(atcommand_go_db[i].mapname,split[2],24);
+		atcommand_go_db[i].x  = (short)atoi(split[3]);
+		atcommand_go_db[i].y  = (short)atoi(split[4]);
+
+		// mapnameに拡張子".gat"指定が無い場合
+		if(strstr(atcommand_go_db[i].mapname, ".gat") == NULL && strlen(atcommand_go_db[i].mapname) < 19)
+			strcat(atcommand_go_db[i].mapname, ".gat");
+
+		// force \0 terminal
+		atcommand_go_db[i].code[7] = '\0';
+		atcommand_go_db[i].mapname[23] = '\0';
+
+		if(++i >= MAX_ATCOMMAND_GO)
+			break;
+	}
+
+	fclose(fp);
+	printf("read db/atcommand_go_db.txt done (count=%d)\n",i);
+
+	return 0;
+}
+
+/*==========================================
+ * リロード
+ *------------------------------------------
+ */
+void atcommand_reload(void)
+{
+	atcommand_readdb();
+}
+
+/*==========================================
+ * クエスト初期化処理
+ *------------------------------------------
+ */
+int do_init_atcommand(void)
+{
+	atcommand_readdb();
 
 	return 0;
 }

@@ -6733,7 +6733,6 @@ int battle_config_read(const char *cfgName)
 		{ "hermode_wp_check",                   &battle_config.hermode_wp_check,                   1        },
 		{ "hermode_no_walking",                 &battle_config.hermode_no_walking,                 0        },
 		{ "hermode_gvg_only",                   &battle_config.hermode_gvg_only,                   1        },
-		{ "atcommand_go_significant_values",    &battle_config.atcommand_go_significant_values,    22       },
 		{ "redemptio_penalty_type",             &battle_config.redemptio_penalty_type,             1        },
 		{ "allow_weaponrearch_to_weaponrefine", &battle_config.allow_weaponrearch_to_weaponrefine, 0        },
 		{ "boss_no_knockbacking",               &battle_config.boss_no_knockbacking,               1        },

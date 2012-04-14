@@ -1,4 +1,13 @@
 ----------------------------------------
+//0935 [2012/04/15] by Blaze
+
+・「@go」コマンドの行き先を外部ファイルで設定できるように変更（atcommand.*, map.c）
+
+・「@go」コマンドの行き先を設定するDBを追加（db/atcommand_go_db.txt, doc/db_ref.txt）
+
+・戦闘設定「atcommand_go_significant_values」を廃止 (battle.*, conf/battle_auriga.conf)
+
+----------------------------------------
 //0934 [2012/04/14] by refis
 
 ・討伐データベースのソート処理を修正 (src/map/quest.c)

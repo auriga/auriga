@@ -1,0 +1,29 @@
+//atcommand_go_db.txt
+//ID,MapCode,GatName,MapX,MapY
+0,prt,prontera.gat,156,195	// 0:prt#ルーンミッドガッツ王国の首都プロンテラ#
+1,moc,morocc.gat,156,92		// 1:moc#砂漠の都市モロク#
+2,gef,geffen.gat,120,69		// 2:gef#魔法の都市ゲフェン#
+3,pay,payon.gat,183,100		// 3:pay#山岳の都市フェイヨン#
+4,alb,alberta.gat,117,56	// 4:alb#港の都市アルベルタ#
+5,iz,izlude.gat,128,91		// 5:iz#衛星都市イズルード#
+6,alde,aldebaran.gat,140,113	// 6:alde#国境都市アルデバラン#
+7,xmas,xmas.gat,148,131		// 7:xmas#雪の街ルティエ#
+8,cmd,comodo.gat,188,148	// 8:cmd#幻想の島コモド#
+9,yuno,yuno.gat,157,196		// 9:yuno#シュバルツバルド共和国の首都ジュノー#
+10,ama,amatsu.gat,112,145	// 10:ama#泉水の国アマツ#
+11,gon,gonryun.gat,160,118	// 11:gon#神仙の島コンロン#
+12,um,umbala.gat,88,153		// 12:um#ウータン族の村ウンバラ#
+13,nif,nif_in.gat,18,20		// 13:nif#死者の街ニブルヘイム#
+14,lou,louyang.gat,217,97	// 14:lou#古都 龍之城#
+15,ayo,ayothaya.gat,216,167	// 15:ayo#アユタヤ#
+16,ein,einbroch.gat,230,192	// 16:ein#鋼鉄の都市アインブロック#
+17,ein2,einbech.gat,173,129	// 17:ein2#採鉱の村アインベフ#
+18,lhz,lighthalzen.gat,159,92	// 18:lhz#企業都市リヒタルゼン#
+19,hu,hugel.gat,93,159		// 19:hu#田園都市フィゲル#
+20,ra,rachel.gat,118,132	// 20:ra#アルナベルツ教国首都 ラヘル#
+21,ve,veins.gat,214,125		// 21:ve#峡谷都市ベインス#
+22,mosk,moscovia.gat,220,193	// 22:mosk#モスコビア#
+23,mid,mid_camp.gat,56,139	// 23:mid#ミッドガルド連合軍駐屯地#
+24,bra,brasilis.gat,195,215	// 24:bra#ブラジリス#
+25,dew,dewata.gat,199,177	// 25:dew#デワタ#
+26,mal,malangdo.gat,143,119	// 26:mal#マラン島#

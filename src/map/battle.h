@@ -442,7 +442,6 @@ extern struct Battle_Config {
 	int hermode_wp_check_range;
 	int hermode_wp_check;
 	int hermode_no_walking;
-	int atcommand_go_significant_values;
 	int redemptio_penalty_type;
 	int allow_weaponrearch_to_weaponrefine;
 	int boss_no_knockbacking;

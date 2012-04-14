@@ -3056,6 +3056,7 @@ int do_init(int argc,char *argv[])
 	add_timer_func_list(map_clearflooritem_timer);
 	add_timer_interval(gettick()+1000,map_freeblock_timer,0,NULL,600*1000);
 
+	do_init_atcommand();
 	do_init_battle();
 	do_init_chrif();
 	do_init_clif();
