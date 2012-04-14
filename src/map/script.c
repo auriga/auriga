@@ -4020,6 +4020,7 @@ int buildin_getquestcount(struct script_state *st);
 int buildin_getquestmaxcount(struct script_state *st);
 int buildin_openbuyingstore(struct script_state *st);
 int buildin_setfont(struct script_state *st);
+int buildin_callshop(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4302,6 +4303,7 @@ struct script_function buildin_func[] = {
 	{buildin_getquestmaxcount,"getquestmaxcount","i*"},
 	{buildin_openbuyingstore,"openbuyingstore","i"},
 	{buildin_setfont,"setfont","i"},
+	{buildin_callshop,"callshop","s*"},
 	{NULL,NULL,NULL}
 };
 
@@ -12483,6 +12485,40 @@ int buildin_setfont(struct script_state *st)
 		sd->status.font = type;
 
 	clif_setfont(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * shopを呼び出す。
+ *------------------------------------------
+ */
+int buildin_callshop(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	struct npc_data *nd;
+	const char *shopname;
+	int flag = 0;
+
+	nullpo_retr(0, sd);
+
+	shopname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	nd = npc_name2id(shopname);
+	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP)) {
+		return 0;
+	}
+
+	if(st->end>st->start+3)
+		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(nd->subtype == SHOP) {
+		switch(flag) {
+			case 1: npc_buysellsel(sd,nd->bl.id,0); break;	//購入ウィンドウ
+			case 2: npc_buysellsel(sd,nd->bl.id,1); break;	//売却ウィンドウ
+			default: clif_npcbuysell(sd,nd->bl.id); break;	//メニューを開く
+		}
+	} else
+		clif_pointshop_list(sd, nd);
 
 	return 0;
 }

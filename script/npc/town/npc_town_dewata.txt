@@ -213,7 +213,14 @@ dewata.gat,104,289,6	script	エステティシャン	537,{
 //============================================================
 // 食堂マスター
 //------------------------------------------------------------
-dewata.gat,141,109,5	shop	食堂マスター	886,11532
+-	shop	dew_callshop	-1,11532
+dewata.gat,141,109,5	script	食堂マスター	886,{
+	callshop "dew_callshop";
+	end;
+OnInit:
+	waitingroom "ナシゴレン販売",0;
+	end;
+}
 
 dewata.gat,146,109,6	script	食堂マスター#dew	886,{
 	mes "[食堂マスター]";
@@ -345,6 +352,9 @@ dewata.gat,146,109,6	script	食堂マスター#dew	886,{
 		close;
 	}
 	close;
+OnInit:
+	waitingroom "サテ販売",0;
+	end;
 }
 
 dewata.gat,147,106,6	script	美食家	85,{

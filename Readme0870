@@ -1,4 +1,11 @@
 ----------------------------------------
+//0936 [2012/04/15] by refis
+
+・「callshop」関数を追加 (doc/script_ref.txt src/map/script.c)
+
+・デワタの一部NPCにチャットバルーンを追加 (script/npc/town/npc_town_dewata.txt)
+
+----------------------------------------
 //0935 [2012/04/15] by Blaze
 
 ・「@go」コマンドの行き先を外部ファイルで設定できるように変更（atcommand.*, map.c）
