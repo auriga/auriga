@@ -405,6 +405,25 @@ static int itemdb_read_itemslottable(void)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static void itemdb_split_atoi(char *str, int *melee, int *magic)
+{
+	int i, val[2];
+
+	for (i=0; i<2 && str; i++) {
+		val[i] = atoi(str);
+		str = strchr(str,':');
+		if (str)
+			*str++=0;
+	}
+	*melee = val[0];
+	*magic = val[1];
+	return;
+}
+
+/*==========================================
  * アイテムデータベースの読み込み
  *------------------------------------------
  */
@@ -464,7 +483,7 @@ static int itemdb_read_itemdb(void)
 			}
 			id->weight = atoi(str[6]);
 			id->atk    = atoi(str[7]);
-			id->def    = atoi(str[8]);
+			itemdb_split_atoi(str[8],&id->def,&id->mdef);
 			id->range  = atoi(str[9]);
 			id->slot   = atoi(str[10]);
 			id->class_ = (unsigned int)strtoul(str[11],NULL,0);

@@ -42,6 +42,7 @@ struct item_data {
 	int weight;
 	int atk;
 	int def;
+	int mdef;
 	int range;
 	int slot;
 	int look;
@@ -86,6 +87,7 @@ struct item_data* itemdb_exists(int nameid);
 #define itemdb_type(n)        itemdb_search(n)->type
 #define itemdb_atk(n)         itemdb_search(n)->atk
 #define itemdb_def(n)         itemdb_search(n)->def
+#define itemdb_mdef(n)        itemdb_search(n)->mdef
 #define itemdb_look(n)        itemdb_search(n)->look
 #define itemdb_weight(n)      itemdb_search(n)->weight
 #define itemdb_equip(n)       itemdb_search(n)->equip

@@ -1,4 +1,11 @@
 ----------------------------------------
+//0939 [2012/04/16] by refis
+
+・item_dbにMDEFを指定できるように拡張 (db/item_db.txt src/map/itemdb.* src/map/status.c)
+
+・「シールドスペル」でMDEFの代わりに暫定でDEFを利用していた箇所を修正 (src/map/battle.c)
+
+----------------------------------------
 //0938 [2012/04/16] by refis
 
 ・「checkitemblank」関数を追加 (doc/script_ref.txt src/map/script.c)

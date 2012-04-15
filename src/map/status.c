@@ -713,6 +713,7 @@ L_RECALC:
 		if(sd->inventory_data[idx]) {
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->def += sd->inventory_data[idx]->def;
+			sd->mdef += sd->inventory_data[idx]->mdef;
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				int r,wlv = sd->inventory_data[idx]->wlv;
 				if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM) {

@@ -4284,8 +4284,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(sd) {
 				int idx = sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
-					//MATK_FIX( 1000 + sd->inventory_data[idx]->mdef * 100, 100 );
-					MATK_FIX( 1000 + sd->inventory_data[idx]->def * 50, 100 );		// 暫定でDef/2
+					MATK_FIX( 1000 + sd->inventory_data[idx]->mdef * 100, 100 );
 				}
 			}
 			else {
