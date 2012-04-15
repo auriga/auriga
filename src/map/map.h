@@ -439,6 +439,7 @@ struct map_session_data {
 	struct quest_data quest[MAX_QUESTLIST];
 	int questlist;
 	struct buyingstore buyingstore;
+	int inventory_num;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis拒否リスト
 

@@ -3691,14 +3691,17 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
  */
 static int pc_setitemlimit(struct map_session_data *sd)
 {
-	int i;
+	int i,j;
 	unsigned int now  = (unsigned int)time(NULL);
 	unsigned int tick = gettick();
 
 	nullpo_retr(0, sd);
 
-	for(i = 0; i < MAX_INVENTORY; i++) {
-		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].limit > 0) {
+	for(i = 0,j = 0; i < MAX_INVENTORY && j < sd->inventory_num; i++) {
+		if(sd->status.inventory[i].nameid <= 0)
+			continue;
+		j++;
+		if(sd->status.inventory[i].limit > 0) {
 			int tid = pc_checkitemlimit(sd, i, tick, now, 1);
 			if(tid >= 0)
 				linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
@@ -3784,6 +3787,7 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 	sd->status.inventory[i].id = ++sd->inventory_sortkey;
 	sd->inventory_data[i]      = data;
 	sd->weight += w;
+	sd->inventory_num++;
 	clif_additem(sd,i,amount,0);
 	clif_updatestatus(sd,SP_WEIGHT);
 
@@ -3835,6 +3839,7 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type, short 
 				delete_timer(tid - 1, pc_itemlimit_timer);
 		}
 		memset(&sd->status.inventory[n],0,sizeof(sd->status.inventory[0]));
+		sd->inventory_num--;
 		sd->inventory_data[n] = NULL;
 	}
 	if(!(type&1))
@@ -8606,16 +8611,17 @@ static int pc_comp_item(const void *_i1, const void *_i2)
  */
 static int pc_setequipindex(struct map_session_data *sd)
 {
-	int i,j;
+	int i,j,k;
 
 	nullpo_retr(0, sd);
 
 	for(i=0; i<EQUIP_INDEX_MAX; i++)
 		sd->equip_index[i] = -1;
 
-	for(i=0; i<MAX_INVENTORY; i++) {
+	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
 		if(sd->status.inventory[i].nameid <= 0)
 			continue;
+		k++;
 		if(!sd->status.inventory[i].equip)
 			continue;
 
@@ -8692,6 +8698,7 @@ int pc_checkitem(struct map_session_data *sd)
 		qsort(sd->status.inventory, MAX_INVENTORY, sizeof(struct item), pc_comp_item);
 		sd->state.inventory_dirty = 0;
 		sd->inventory_sortkey = 0;
+		sd->inventory_num = 0;
 
 		if(sd->inventory_timer) {
 			// 使用期限のあるアイテムならidをサーチしてインデックスを再設定
@@ -8721,6 +8728,7 @@ int pc_checkitem(struct map_session_data *sd)
 					// 位置が変わったのでデータベースを再設定
 					sd->inventory_data[i] = itemdb_search(itemid);
 				}
+				sd->inventory_num++;
 			} else {
 				sd->status.inventory[i].id = 0;
 				sd->inventory_data[i] = NULL;
@@ -9082,6 +9090,7 @@ int pc_divorce(struct map_session_data *sd)
 	for(i=0; i<MAX_INVENTORY; i++) {
 		if(sd->status.inventory[i].nameid == WEDDING_RING_M || sd->status.inventory[i].nameid == WEDDING_RING_F) {
 			pc_delitem(sd,i,1,0,0);
+			break;
 		}
 	}
 	if(p_sd && p_sd->status.name[0])

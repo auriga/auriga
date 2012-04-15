@@ -3815,14 +3815,15 @@ void clif_buylist(struct map_session_data *sd, struct npc_data *nd)
  */
 void clif_selllist(struct map_session_data *sd)
 {
-	int fd,i,c=0,val;
+	int fd,i,j,c=0,val;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0xc7;
-	for(i=0;i<MAX_INVENTORY;i++) {
+	for(i=0,j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
 		if(sd->status.inventory[i].nameid > 0 && sd->inventory_data[i]) {
+			j++;
 			val=sd->inventory_data[i]->value_sell;
 			if(val < 0)
 				continue;
@@ -4287,7 +4288,7 @@ void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid)
  */
 void clif_itemlist(struct map_session_data *sd)
 {
-	int i,n,fd,arrow=-1;
+	int i,j,n=0,fd,arrow=-1;
 
 	nullpo_retv(sd);
 
@@ -4295,8 +4296,11 @@ void clif_itemlist(struct map_session_data *sd)
 
 #if PACKETVER < 5
 	WFIFOW(fd,0)=0xa3;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL || itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL)
+			continue;
+		j++;
+		if(itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*10+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4320,8 +4324,11 @@ void clif_itemlist(struct map_session_data *sd)
 	}
 #elif PACKETVER < 20080102
 	WFIFOW(fd,0)=0x1ee;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL || itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL)
+			continue;
+		j++;
+		if(itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*18+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4349,8 +4356,11 @@ void clif_itemlist(struct map_session_data *sd)
 	}
 #else
 	WFIFOW(fd,0)=0x2e8;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL || itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid <=0 || sd->inventory_data[i] == NULL)
+			continue;
+		j++;
+		if(itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*22+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4390,7 +4400,7 @@ void clif_itemlist(struct map_session_data *sd)
  */
 void clif_equiplist(struct map_session_data *sd)
 {
-	int i,j,n,fd;
+	int i,j,k,n=0,fd;
 
 	nullpo_retv(sd);
 
@@ -4398,8 +4408,11 @@ void clif_equiplist(struct map_session_data *sd)
 
 #if PACKETVER < 20070711
 	WFIFOW(fd,0)=0xa4;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*20+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4449,8 +4462,11 @@ void clif_equiplist(struct map_session_data *sd)
 	}
 #elif PACKETVER < 20070904
 	WFIFOW(fd,0)=0x295;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*24+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4501,8 +4517,11 @@ void clif_equiplist(struct map_session_data *sd)
 	}
 #elif PACKETVER < 20100629
 	WFIFOW(fd,0)=0x2d0;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*26+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -4554,8 +4573,11 @@ void clif_equiplist(struct map_session_data *sd)
 	}
 #else
 	WFIFOW(fd,0)=0x2d0;
-	for(i=0,n=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL || !itemdb_isequip2(sd->inventory_data[i]))
+	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(sd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*28+4)=i+2;
 		if(sd->inventory_data[i]->view_id > 0)
@@ -8389,7 +8411,7 @@ void clif_solved_charname(struct map_session_data *sd, int char_id)
  */
 static void clif_use_card(struct map_session_data *sd, int idx)
 {
-	int i, j, c = 0;
+	int i, j, k = 0, c = 0;
 	int ep, fd;
 
 	nullpo_retv(sd);
@@ -8404,9 +8426,10 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 	fd = sd->fd;
 
 	WFIFOW(fd,0)=0x17b;
-	for(i = 0; i < MAX_INVENTORY; i++) {
+	for(i = 0; i < MAX_INVENTORY && k<sd->inventory_num; i++) {
 		if(sd->inventory_data[i] == NULL)
 			continue;
+		k++;
 		if(!itemdb_isarmor(sd->inventory_data[i]->nameid) && !itemdb_isweapon(sd->inventory_data[i]->nameid))	// 武器防具じゃない
 			continue;
 		if(itemdb_isspecial(sd->status.inventory[i].card[0]))
@@ -8458,14 +8481,17 @@ void clif_insert_card(struct map_session_data *sd, int idx_equip, int idx_card, 
  */
 void clif_item_identify_list(struct map_session_data *sd)
 {
-	int i,c,fd;
+	int i,j,c=0,fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x177;
-	for(i=c=0;i<MAX_INVENTORY;i++){
-		if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].identify!=1){
+	for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
+		if(sd->status.inventory[i].nameid <= 0)
+			continue;
+		j++;
+		if(sd->status.inventory[i].identify != 1) {
 			WFIFOW(fd,c*2+4)=i+2;
 			c++;
 		}
@@ -8559,7 +8585,7 @@ void clif_baby_req_fail(struct map_session_data *sd, int type)
  */
 void clif_item_repair_list(struct map_session_data *sd, struct map_session_data *dstsd)
 {
-	int i,c,fd;
+	int i,j,c=0,fd;
 	int nameid;
 
 	nullpo_retv(sd);
@@ -8567,8 +8593,11 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1fc;
-	for(i=c=0;i<MAX_INVENTORY;i++){
-		if((nameid=dstsd->status.inventory[i].nameid) > 0 && dstsd->status.inventory[i].attribute!=0){
+	for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
+		if((nameid=dstsd->status.inventory[i].nameid) <= 0)
+			continue;
+		j++;
+		if(dstsd->status.inventory[i].attribute != 0) {
 			WFIFOW(fd,c*13+4) = i;
 			WFIFOW(fd,c*13+6) = nameid;
 			WFIFOL(fd,c*13+8) = sd->status.char_id;
@@ -8625,7 +8654,7 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
  */
 void clif_weapon_refine_list(struct map_session_data *sd)
 {
-	int i,c,fd;
+	int i,j,c=0,fd;
 	int skilllv;
 
 	nullpo_retv(sd);
@@ -8634,12 +8663,14 @@ void clif_weapon_refine_list(struct map_session_data *sd)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x221;
-	for(i=c=0;i<MAX_INVENTORY;i++){
-		if( sd->status.inventory[i].nameid > 0 &&
-		    sd->status.inventory[i].identify == 1 &&
-		    sd->inventory_data[i]->refine &&
-		    itemdb_wlv(sd->status.inventory[i].nameid) >=1 &&
-		    !(sd->status.inventory[i].equip&0x0022) )
+	for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
+		if(sd->status.inventory[i].nameid <= 0)
+			continue;
+		j++;
+		if(sd->status.inventory[i].identify == 1 &&
+		   sd->inventory_data[i]->refine &&
+		   itemdb_wlv(sd->status.inventory[i].nameid) >=1 &&
+		   !(sd->status.inventory[i].equip&0x0022))
 		{
 			WFIFOW(fd,c*13+ 4)=i+2;
 			WFIFOW(fd,c*13+ 6)=sd->status.inventory[i].nameid;
@@ -9925,17 +9956,18 @@ void clif_pet_rulet(struct map_session_data *sd, unsigned char data)
  */
 void clif_sendegg(struct map_session_data *sd)
 {
-	int i,n=0,fd;
+	int i,j,n=0,fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1a6;
 	if(sd->status.pet_id <= 0) {
-		for(i=0;i<MAX_INVENTORY;i++){
-			if(sd->status.inventory[i].nameid<=0 ||
-			   sd->inventory_data[i] == NULL ||
-			   !sd->inventory_data[i]->flag.pet_egg ||
+		for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
+			if(sd->status.inventory[i].nameid <= 0 || sd->inventory_data[i] == NULL)
+				continue;
+			j++;
+			if(!sd->inventory_data[i]->flag.pet_egg ||
 			   sd->status.inventory[i].amount<=0)
 				continue;
 			WFIFOW(fd,n*2+4)=i+2;
@@ -12561,7 +12593,7 @@ void clif_break_equip(struct map_session_data *sd, int where)
  */
 void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *tsd)
 {
-	int i, j, n, fd;
+	int i, j, k, n=0, fd;
 
 	nullpo_retv(sd);
 	nullpo_retv(tsd);
@@ -12580,8 +12612,11 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,40) = tsd->status.clothes_color;
 	WFIFOB(fd,42) = tsd->sex;
 
-	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
-		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(tsd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*26+43) = i + 2;
 		if(tsd->inventory_data[i]->view_id > 0)
@@ -12643,8 +12678,11 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,40) = tsd->status.clothes_color;
 	WFIFOB(fd,42) = tsd->sex;
 
-	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
-		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(tsd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*28+43) = i + 2;
 		if(tsd->inventory_data[i]->view_id > 0)
@@ -12711,8 +12749,11 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,42) = tsd->status.clothes_color;
 	WFIFOB(fd,44) = tsd->sex;
 
-	for(i = 0, n = 0; i < MAX_INVENTORY; i++) {
-		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL || !itemdb_isequip2(tsd->inventory_data[i]))
+	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(tsd->inventory_data[i]))
 			continue;
 		WFIFOW(fd,n*28+45) = i + 2;
 		if(tsd->inventory_data[i]->view_id > 0)

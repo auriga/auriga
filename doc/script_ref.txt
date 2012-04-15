@@ -2323,6 +2323,11 @@ AurigaNPCScript
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 
+		checkitemblank関数
+			checkitemblank()
+
+			対象PCのアイテム種類数に空きがあるならば1を、なければ0を返します。
+
 		strcharinfo関数
 			strcharinfo(<n>)
 

@@ -1,4 +1,11 @@
 ----------------------------------------
+//0938 [2012/04/16] by refis
+
+・「checkitemblank」関数を追加 (doc/script_ref.txt src/map/script.c)
+
+・インベントリの不要なループを抑制させるよう処理を修正 (src/map/chrif.c src/map/clif.c src/map/map.h src/map/pc.c src/map/skill.c)
+
+----------------------------------------
 //0937 [2012/04/16] by Blaze
 
 ・スクリプト命令「progressbar」を実装（script.c, clif.*, pc.c, unit.c, map.h, db/packet_db.txt, doc/script_ref.txt）

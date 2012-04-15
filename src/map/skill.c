@@ -1229,6 +1229,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				if(sd->status.inventory[i].nameid == 7517) {
 					y = (sd->status.inventory[i].amount > 4)? 4: sd->status.inventory[i].amount;
 					pc_delitem(sd,i,y,0,1);
+					break;
 				}
 			}
 			status_change_start(bl,SC_FLING,skilllv+y,0,0,0,skill_get_time2(skillid,skilllv),0);

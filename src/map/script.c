@@ -3779,6 +3779,7 @@ int buildin_viewpoint(struct script_state *st);
 int buildin_countitem(struct script_state *st);
 int buildin_countcartitem(struct script_state *st);
 int buildin_checkweight(struct script_state *st);
+int buildin_checkitemblank(struct script_state *st);
 int buildin_readparam(struct script_state *st);
 int buildin_getcharid(struct script_state *st);
 int buildin_getcharname(struct script_state *st);
@@ -4066,6 +4067,7 @@ struct script_function buildin_func[] = {
 	{buildin_countitem,"countitem","i"},
 	{buildin_countcartitem,"countcartitem","i"},
 	{buildin_checkweight,"checkweight","ii"},
+	{buildin_checkitemblank,"checkitemblank",""},
 	{buildin_readparam,"readparam","i*"},
 	{buildin_getcharid,"getcharid","i*"},
 	{buildin_getcharname,"getcharname","i"},
@@ -5517,6 +5519,22 @@ int buildin_checkweight(struct script_state *st)
 		}
 	}
 	push_val(st->stack,C_INT,0);
+	return 0;
+}
+
+/*==========================================
+ * インベントリの空きチェック
+ *------------------------------------------
+ */
+int buildin_checkitemblank(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	if(sd && pc_search_inventory(sd,0) >= 0) {
+		push_val(st->stack,C_INT,1);
+	} else {
+		push_val(st->stack,C_INT,0);
+	}
 	return 0;
 }
 
