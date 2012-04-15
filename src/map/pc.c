@@ -6446,6 +6446,10 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 		skill_sit(sd,0);
 	}
 
+	// 詠唱バー表示中だったら中断
+	if(sd->progressbar.npc_id)
+		clif_progressbar_abort(sd);
+
 	// 歩いていたら足を止める
 	if(((sd->sc.data[SC_ENDURE].timer == -1 && sd->sc.data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure) || map[sd->bl.m].flag.gvg) && !unit_isrunning(&sd->bl))
 		unit_stop_walking(&sd->bl,battle_config.pc_hit_stop_type);

@@ -802,6 +802,11 @@ struct map_session_data {
 		short count;
 	} skill_addspcost;
 
+	struct {
+		unsigned int tick;
+		int npc_id;
+	} progressbar;
+
 	short hotkey_set;
 	int shop_point;
 

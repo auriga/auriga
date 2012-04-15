@@ -1384,34 +1384,50 @@ ein_fild01.gat,28,261,0	warp	cavewarp0101	1,1,cave.gat,97,24
 
 
 //==============================================================
-// -----  鉱山の村マヌク  -----
+// -----  鉱山の街 マヌク  -----
 // man_fild01.gat	マヌクフィールド 01
+// man_fild02.gat	マヌクフィールド 02
+// man_fild03.gat	マヌクフィールド 03
 // -----
 // mid_camp.gat		ミッドガルド連合軍駐屯地
+// manuk.gat		鉱山の街 マヌク
 //==============================================================
 //マヌクフィールド 01⇒ミッドガルド連合軍駐屯地
 man_fild01.gat,35,232,0		warp	manukwarp0101	1,1,mid_camp.gat,341,176
+//マヌクフィールド 02⇒鉱山の街 マヌク
+man_fild02.gat,139,41,0		warp	manukwarp0102	1,1,manuk.gat,112,356
 
 //マヌクフィールド 01⇔マヌクフィールド 03
 man_fild01.gat,103,55,0		warp	manukwarp5001	1,1,man_fild03.gat,84,366
 man_fild03.gat,84,369,0		warp	manukwarp5002	1,1,man_fild01.gat,103,58
+//マヌクフィールド 01⇔マヌクフィールド 02
+man_fild01.gat,372,230,0	warp	manukwarp5003	1,1,man_fild02.gat,34,261
+man_fild02.gat,32,261,0		warp	manukwarp5004	1,1,man_fild01.gat,369,230
 
 
 //==============================================================
-// -----  前線基地スプレンディッド  -----
-// spl_fild01.gat	スプレンディッドフィールド 02
+// -----  前線基地 スプレンディッド  -----
+// spl_fild01.gat	スプレンディッドフィールド 01
+// spl_fild02.gat	スプレンディッドフィールド 02
+// spl_fild03.gat	スプレンディッドフィールド 03
 // -----
 // mid_camp.gat		ミッドガルド連合軍駐屯地
+// splendide.gat	前線基地 スプレンディッド
 //==============================================================
 //スプレンディッドフィールド 02⇒ミッドガルド連合軍駐屯地
 spl_fild02.gat,382,143,0	warp	splendidewarp0101	1,1,mid_camp.gat,16,143
 spl_fild02.gat,383,216,0	warp	splendidewarp0102	1,1,mid_camp.gat,12,215
+//スプレンディッドフィールド 02⇒前線基地 スプレンディッド
+spl_fild02.gat,6,241,0		warp	splendidewarp0103	1,1,splendide.gat,386,251
 
 //スプレンディッドフィールド 02⇔スプレンディッドフィールド 03
 spl_fild02.gat,310,10,0		warp	splendidewarp5001	1,1,spl_fild03.gat,306,376
 spl_fild03.gat,306,379,0	warp	splendidewarp5002	1,1,spl_fild02.gat,311,12
 spl_fild02.gat,103,30,0		warp	splendidewarp5003	1,1,spl_fild03.gat,99,370
 spl_fild03.gat,99,373,0		warp	splendidewarp5004	1,1,spl_fild02.gat,102,32
+//スプレンディッドフィールド 01⇔スプレンディッドフィールド 02
+spl_fild01.gat,289,28,0		warp	splendidewarp5005	1,1,spl_fild02.gat,292,377
+spl_fild02.gat,293,379,0	warp	splendidewarp5006	1,1,spl_fild01.gat,289,30
 
 
 

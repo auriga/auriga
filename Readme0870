@@ -1,4 +1,32 @@
 ----------------------------------------
+//0937 [2012/04/16] by Blaze
+
+・スクリプト命令「progressbar」を実装（script.c, clif.*, pc.c, unit.c, map.h, db/packet_db.txt, doc/script_ref.txt）
+　※移動による中断状態のキャンセルは未実装です
+
+・アッシュ・バキュームNPC実装（npc_quest_ashvacuum.txt）
+	-> 異世界クエスト実装
+	-> 駐屯地の人々クエスト実装
+	-> 会議のおともクエスト実装
+	-> 生態研究クエスト実装
+	-> 飼育場のお手伝いクエスト実装
+	-> 小さな妖精クエスト実装
+	-> 木の巨人クエスト実装
+	-> 猫の手サービスクエスト実装
+		Thanks to Xia
+　※魔王モロク追跡クエストと三ヶ国への報告書クエストは未実装
+
+・アッシュ・バキューム関連マップのwarp追加（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・アッシュ・バキューム関連マップのmob追加（npc_monster_manfild.txt, npc_monster_splfild.txt）
+
+・アッシュ・バキューム関連マップのmapflag追加（mapflag.txt）
+
+・map_auriga.conf更新（map_auriga.conf）
+
+・0936の「callshop」の説明を微修正（doc/script_ref.txt）
+
+----------------------------------------
 //0936 [2012/04/15] by refis
 
 ・「callshop」関数を追加 (doc/script_ref.txt src/map/script.c)

@@ -4021,6 +4021,7 @@ int buildin_getquestmaxcount(struct script_state *st);
 int buildin_openbuyingstore(struct script_state *st);
 int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
+int buildin_progressbar(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4304,6 +4305,7 @@ struct script_function buildin_func[] = {
 	{buildin_openbuyingstore,"openbuyingstore","i"},
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
+	{buildin_progressbar,"progressbar","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -12519,6 +12521,32 @@ int buildin_callshop(struct script_state *st)
 		}
 	} else
 		clif_pointshop_list(sd, nd);
+
+	return 0;
+}
+
+/*==========================================
+ * 詠唱バー表示
+ *------------------------------------------
+ */
+int buildin_progressbar(struct script_state *st)
+{
+	struct map_session_data *sd = map_id2sd(st->rid);
+	unsigned int tick;
+
+	nullpo_retr(0, sd);
+
+	tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(tick) {
+		if(sd->npc_id == st->oid) {
+			sd->npc_id = 0;
+		}
+		st->state = STOP;
+		sd->progressbar.npc_id = st->oid;
+		sd->progressbar.tick = gettick() + tick;
+		clif_progressbar(sd, sd->progressbar.npc_id, tick/1000);
+	}
 
 	return 0;
 }

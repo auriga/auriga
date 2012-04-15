@@ -12810,6 +12810,42 @@ void clif_setfont(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 詠唱バー表示
+ *------------------------------------------
+ */
+void clif_progressbar(struct map_session_data *sd, int npcid, unsigned int tick)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x02f0;
+	WFIFOL(fd,2) = npcid;
+	WFIFOL(fd,6) = tick;
+	WFIFOSET(fd,packet_db[0x2f0].len);
+
+	return;
+}
+
+/*==========================================
+ * 詠唱バー中断
+ *------------------------------------------
+ */
+void clif_progressbar_abort(struct map_session_data *sd)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x02f2;
+	WFIFOSET(fd,packet_db[0x2f2].len);
+
+	return;
+}
+
+/*==========================================
  * スキル固有ディレイ表示
  *------------------------------------------
  */
@@ -17513,6 +17549,24 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 詠唱バー完了
+ *------------------------------------------
+ */
+static void clif_parse_ProgressBar(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	//スクリプト実行
+	if(gettick() < sd->progressbar.tick)
+		sd->npc_scriptstate = 2;	//END
+	npc_scriptcont(sd, sd->progressbar.npc_id);
+
+	memset(&sd->progressbar,0,sizeof(sd->progressbar));
+
+	return;
+}
+
+/*==========================================
  * 買取露店開設要求
  *------------------------------------------
  */
@@ -17918,6 +17972,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_SelectSkill,               "selectskill"               },
 		{ clif_parse_ConvertItem,               "convertitem"               },
 		{ clif_parse_QuestState,                "queststate"                },
+		{ clif_parse_ProgressBar,               "progressbar"               },
 		{ clif_parse_OpenBuyingStoreReq,        "openbuyingstorereq"        },
 		{ clif_parse_CloseBuyingStoreReq,       "closebuyingstorereq"       },
 		{ clif_parse_ClickBuyingStoreReq,       "clickbuyingstorereq"       },

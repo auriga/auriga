@@ -211,6 +211,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		sd->regen.spirithptick = 0;
 		sd->regen.spiritsptick = 0;
 		sd->state.warp_waiting  = 0;
+		// 歩いたので詠唱バー表示中断
+		if(sd->progressbar.npc_id)
+			clif_progressbar_abort(sd);
 	}
 
 	sc = status_get_sc(bl);
