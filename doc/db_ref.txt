@@ -337,6 +337,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,V
       WEIGHT       = 重量x10 (10ならば重量1になる)
       ATK          = 攻撃力            (装備品の場合設定しましょう)
       DEF          = 防御力            (装備品の場合設定しましょう)
+                     魔法防御力も設定する場合は「:」を使います。
       RANGE        = 射程              (装備品の場合設定しましょう)
       SLOT         = カードスロット数  (装備品の場合設定しましょう)
       JOB          = 使用可能職業      (装備品/消費系アイテムの場合設定しましょう)

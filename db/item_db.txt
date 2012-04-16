@@ -1135,10 +1135,10 @@
 2203,Glasses,グラス,4,4000,,100,,0,,0,1000333311,2,512,,0,3,,{},{}
 2204,Glasses_,グラス,4,4000,,100,,0,,1,1000333311,2,512,,0,3,,{},{}
 2205,Diver's_Goggles,ダイバーゴーグル,4,3500,,100,,0,,0,1000333311,2,512,,0,10,,{},{}
-2206,Wedding_Veil,ヴェール,4,23000,,100,,0,,0,1000333311,2,256,,0,44,1,{},{ bonus bMdef,5; }
+2206,Wedding_Veil,ヴェール,4,23000,,100,,0:5,,0,1000333311,2,256,,0,44,1,{},{}
 2207,Fancy_Flower,装飾用花,4,20,,100,,0,,0,1000333311,2,256,,0,4,,{},{ bonus2 bSubRace,3,10; bonus2 bMagicSubRace,3,10; }
-2208,Ribbon,リボン,4,800,,100,,1,,0,1000333311,2,256,,0,17,1,{},{ bonus bMdef,3; }
-2209,Ribbon_,リボン,4,800,,100,,1,,1,1000333311,2,256,,0,17,1,{},{ bonus bMdef,3; }
+2208,Ribbon,リボン,4,800,,100,,1:3,,0,1000333311,2,256,,0,17,1,{},{}
+2209,Ribbon_,リボン,4,800,,100,,1:3,,1,1000333311,2,256,,0,17,1,{},{}
 2210,Hair_Band,ヘアバンド,4,500,,100,,1,,0,1000333311,2,256,,0,9,0,{},{}
 2211,Bandana,頭巾,4,400,,100,,1,,0,1000333311,2,256,,0,6,1,{},{}
 2212,Eye_Bandage,眼帯,4,1000,,100,,0,,0,1000333311,2,512,,0,13,0,{},{}
@@ -1159,13 +1159,13 @@
 2227,Cap_,キャップ,4,12000,,400,,4,,1,1989866,2,256,,0,14,1,{},{}
 2228,Helm,ヘルム,4,44000,,600,,6,,0,16514,2,256,,0,40,1,{},{}
 2229,Helm_,ヘルム,4,44000,,600,,6,,1,16514,2,256,,0,40,1,{},{}
-2230,Gemmed_Sallet,ジュエルヘルム,4,50000,,500,,4,,0,414946,2,256,,0,0,1,{},{ bonus bMdef,3; }
-2231,Gemmed_Sallet_,ジュエルヘルム,4,50000,,500,,4,,1,414946,2,256,,0,0,1,{},{ bonus bMdef,3; }
-2232,Circlet,サークレット,4,7500,,300,,3,,0,134316820,2,256,,0,18,1,{},{ bonus bMdef,3; }
-2233,Circlet_,サークレット,4,7500,,300,,3,,1,134316820,2,256,,0,18,1,{},{ bonus bMdef,3; }
+2230,Gemmed_Sallet,ジュエルヘルム,4,50000,,500,,4:3,,0,414946,2,256,,0,0,1,{},{}
+2231,Gemmed_Sallet_,ジュエルヘルム,4,50000,,500,,4:3,,1,414946,2,256,,0,0,1,{},{}
+2232,Circlet,サークレット,4,7500,,300,,3:3,,0,134316820,2,256,,0,18,1,{},{}
+2233,Circlet_,サークレット,4,7500,,300,,3:3,,1,134316820,2,256,,0,18,1,{},{}
 2234,Tiara,ティアラ,4,20,,400,,4,,0,991944702,2,256,,45,19,1,{},{ bonus bInt,2; }
 2235,Crown,クラウン,4,20,,400,,4,,0,991944702,2,256,,45,45,1,{},{ bonus bInt,2; }
-2236,Santa's_Hat,サンタのぼうし,4,20,,100,,1,,0,1000333311,2,256,,0,20,1,{},{ bonus bMdef,1; bonus bLuk,1; }
+2236,Santa's_Hat,サンタのぼうし,4,20,,100,,1:1,,0,1000333311,2,256,,0,20,1,{},{ bonus bLuk,1; }
 2237,Weird_Goatee,顎ひげ,4,2,,100,,0,,0,1000333311,2,1,,0,21,0,{},{}
 2238,Weird_Moustache,口ひげ,4,2,,100,,0,,0,1000333311,2,1,,0,22,0,{},{}
 2239,One_Eyed_Glass,片目眼鏡,4,10000,,100,,0,,0,1000333311,2,512,,0,23,,{},{}
@@ -1173,18 +1173,18 @@
 2241,Granpa_Beard,白ひげ,4,5000,,100,,0,,0,1000333311,2,1,,0,25,0,{},{}
 2242,Luxury_Sunglasses,高級サングラス,4,24000,,100,,1,,0,1000333311,2,512,,0,26,0,{},{ bonus2 bResEff,Eff_Blind,1000; }
 2243,Spinning_Eyes,スピングラス,4,20000,,100,,1,,0,1000333311,2,512,,0,27,0,{},{ bonus2 bResEff,Eff_Blind,1500; }
-2244,Big_Sis'_Ribbon,大きなリボン,4,15000,,200,,2,,0,991944702,2,256,,0,28,1,{},{ bonus bMdef,3; }
+2244,Big_Sis'_Ribbon,大きなリボン,4,15000,,200,,2:3,,0,991944702,2,256,,0,28,1,{},{}
 2245,Sweet_Gents,スイートジェントル,4,15000,,400,,3,,0,991944702,2,256,,0,29,1,{},{}
 2246,Golden_Gear,ゴールデンヘッドギア,4,20,,900,,5,,0,991944702,2,256,,40,30,1,{},{}
 2247,Oldman's_Romance,オールドスターロマンス,4,15000,,400,,3,,0,991944702,2,256,,0,31,1,{},{}
 2248,Western_Grace,ウェスタングレイス,4,15000,,400,,3,,0,991944702,2,256,,0,32,1,{},{}
 2249,Coronet,コロネット,4,20,,300,,3,,0,991944702,2,256,,0,33,1,{},{ bonus bInt,1; }
 2250,Fillet,リボンのヘアバンド,4,500,,100,,1,,0,991944702,2,256,,0,34,,{},{ bonus bMaxSP,20; }
-2251,Holy_Bonnet,聖職者の帽子,4,30000,,100,,5,,0,33040,2,256,,0,35,1,{},{ bonus bMdef,3; }
+2251,Holy_Bonnet,聖職者の帽子,4,30000,,100,,5:3,,0,33040,2,256,,0,35,1,{},{}
 2252,Star_Sparkling,ウィザードハット,4,20,,300,,4,,0,134283780,2,256,,0,36,1,{},{ bonus bMaxSP,100; }
 2253,Sunflower,装飾用ひまわり,4,20,,100,,1,,0,1000333311,2,256,,0,37,,{},{ bonus2 bSubRace,4,10; bonus2 bMagicSubRace,4,10; }
-2254,Angelic_Chain,天使のヘアバンド,4,20,,100,,2,,0,991944702,2,256,,0,38,1,{},{ bonus bMdef,3; bonus bAgi,1; bonus bLuk,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
-2255,Satanic_Chain,悪魔のヘアバンド,4,20,,100,,3,,0,991944702,2,256,,0,39,1,{},{ bonus bMdef,2; bonus bStr,1; bonus2 bSubRace,8,3; bonus2 bMagicSubRace,8,3; }
+2254,Angelic_Chain,天使のヘアバンド,4,20,,100,,2:3,,0,991944702,2,256,,0,38,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
+2255,Satanic_Chain,悪魔のヘアバンド,4,20,,100,,3:2,,0,991944702,2,256,,0,39,1,{},{ bonus bStr,1; bonus2 bSubRace,8,3; bonus2 bMagicSubRace,8,3; }
 2256,Magestic_Goat,マジェスティックゴート,4,20,,800,,5,,0,50611362,2,256,,0,41,1,{},{ bonus bStr,1; }
 2257,Snowy_Horn,真っ白いツノ,4,20,,100,,2,,0,1000333311,2,256,,0,42,1,{},{}
 2258,Sharp_Gear,シャープヘッドギア,4,20,,1000,,6,,0,50779634,2,256,,50,43,1,{},{}
@@ -1469,14 +1469,14 @@
 2605,Brooch,ブローチ,4,30000,,100,,0,,0,991944702,2,136,,20,0,,{},{ bonus bAgi,2; }
 
 2607,Clip,クリップ,4,30000,,100,,0,,1,1000333311,2,136,,0,0,0,{},{ bonus bMaxSP,10; }
-2608,Rosary,ロザリー,4,15000,,100,,0,,0,991944702,2,136,,20,0,,{},{ bonus bMdef,5; bonus bLuk,2; }
+2608,Rosary,ロザリー,4,15000,,100,,0:5,,0,991944702,2,136,,20,0,,{},{ bonus bLuk,2; }
 2609,Skul_Ring,骸骨の指輪,4,10000,,100,,0,,0,1000333311,2,136,,0,0,,{},{}
 2610,Gold_Ring,金の指輪,4,30000,,100,,0,,0,1000333311,2,136,,0,0,0,{},{}
 2611,Silver_Ring,銀の指輪,4,20000,,100,,0,,0,1000333311,2,136,,0,0,0,{},{}
 2612,Flower_Ring,花の指輪,4,1500,,100,,0,,0,1000333311,2,136,,0,0,0,{},{}
 2613,Diamond_Ring,ダイヤの指輪,4,45000,,100,,0,,0,1000333311,2,136,,0,0,0,{},{}
 2614,An_Eye_Of_Dullahan,デュラハンアイ,4,90000,,100,,0,,0,991944702,2,136,,50,0,,{},{ bonus2 bSubRace,2,4; bonus2 bMagicSubRace,2,4; bonus2 bResEff,Eff_Poison,10000; }
-2615,Safety_Ring,セイフティリング,4,75000,,100,,3,,0,991944702,2,136,,40,0,,{},{ bonus bMdef,3; }
+2615,Safety_Ring,セイフティリング,4,75000,,100,,3:3,,0,991944702,2,136,,40,0,,{},{ }
 2616,Critical_Ring,クリティカルリング,4,75000,,100,,0,,0,991944702,2,136,,40,0,,{},{ bonus bCritical,5; }
 2617,Mitten_Of_Presbyter,神官の手袋,4,2,,100,,1,,0,991944702,2,136,,35,0,,{},{ bonus bInt,1; }
 2618,Matyr's_Flea_Guard,マーターの首輪,4,2,,100,,1,,0,991944702,2,136,,35,0,,{},{ bonus bAgi,1; }
@@ -1487,11 +1487,11 @@
 2623,Necklace_,ネックレス,4,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bVit,1; }
 2624,Glove_,グローブ,4,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bDex,1; }
 2625,Brooch_,ブローチ,4,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bAgi,1; }
-2626,Rosary_,ロザリオ,4,30000,,100,,0,,1,991944702,2,136,,90,0,,{},{ bonus bMdef,3; bonus bLuk,1; }
+2626,Rosary_,ロザリオ,4,30000,,100,,0:3,,1,991944702,2,136,,90,0,,{},{ bonus bLuk,1; }
 2627,Belt,ベルト,4,20000,,1200,,0,,1,1000333311,2,136,,25,0,0,{},{}
 2628,Novice_Armlet,ノービスアミュレット,4,400,,200,,0,,1,8388609,2,136,,0,0,,{},{}
-2629,Magingiorde,メギンギョルド,4,20,,8000,,2,,0,1000333311,2,136,,94,0,,{},{ bonus bStr,40; bonus bMdef,7; }
-2630,Brysinggamen,ブリーシンガメン,4,20,,1500,,1,,0,1000333311,2,136,,94,0,,{},{ bonus bStr,6; bonus bAgi,6; bonus bVit,6; bonus bInt,6; bonus bLuk,10; bonus bMdef,5; }
+2629,Magingiorde,メギンギョルド,4,20,,8000,,2:7,,0,1000333311,2,136,,94,0,,{},{ bonus bStr,40; }
+2630,Brysinggamen,ブリーシンガメン,4,20,,1500,,1:5,,0,1000333311,2,136,,94,0,,{},{ bonus bStr,6; bonus bAgi,6; bonus bVit,6; bonus bInt,6; bonus bLuk,10; }
 2631,First_Age_Ring,アニバーサリーリング,4,0,,10,,0,,0,1000333311,2,136,,0,0,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2632,Korean_Trinket,,0,,,,,,,,,,,,,,,{},{}
 2633,Jade_Ring,,0,,,,,,,,,,,,,,,{},{}
@@ -1501,12 +1501,12 @@
 2637,Silver_Ring_,クリスマスリング,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bLuk,1; }
 2638,Exorcize_Sachet,退魔の風呂敷,4,20000,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,1; bonus bLuk,1; }
 2639,Purification_Sachet,退魔の風呂敷,4,20000,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bInt,1; bonus bAgi,1; }
-2640,Kafra_Ring,カプラリング,4,20,,200,,1,,0,991944702,2,136,,0,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bInt,1; bonus bLuk,1; bonus bMdef,1; }
+2640,Kafra_Ring,カプラリング,4,20,,200,,1:1,,0,991944702,2,136,,0,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bInt,1; bonus bLuk,1; }
 2641,Fashionable_Sack,おしゃれヒップバッグ,4,20,,700,,0,,0,263200,2,136,,50,,,{},{ bonus bStr,2; }
 2642,Serin's_Gold_Ring,セリンの指輪,4,,-1,0,,0,,0,1000333311,2,136,,0,,,{},{}
 2643,Serin's_Gold_Ring_,セリンの指輪,4,45000,,100,,0,,0,1000333311,2,136,,0,,,{},{}
 2644,The_Sign_,The Sign,4,,-1,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; }
-2645,Moonlight_Ring,月光の指輪,4,40000,,200,,0,,0,537006144,2,136,,60,,,{},{ bonus bMdef,2; bonus bCritical,3; bonus bAspdAddRate,3; }
+2645,Moonlight_Ring,月光の指輪,4,40000,,200,,0:2,,0,537006144,2,136,,60,,,{},{ bonus bCritical,3; bonus bAspdAddRate,3; }
 2646,Bunch_Of_Carnation,カーネーションの花束,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 2647,Nile_Rose,ナイルローズ,4,20,,100,,0,,1,1000333311,2,136,,0,,,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
 2648,Morpheus's_Ring,モルフェウスの指輪,4,20,,100,,0,,0,991944702,2,136,,33,,,{},{ bonus bInt,1; bonus bMaxSPrate,5; }
@@ -1515,18 +1515,18 @@
 2651,Morrigane's_Pendant,モリガンのペンダント,4,20,,200,,0,,0,991944702,2,136,,61,,,{},{ bonus bStr,2; bonus bCritical,3; }
 2652,Cursed_Lucky_Brooch,呪われた幸運の女神のブローチ,4,20,,100,,0,,0,1000333311,2,136,,40,,,{},{ bonus bCritical,6; if (getiteminfo(getequipid(4),16) !=11) { bonus2 bAddEff2,Eff_Curse,50;} }
 2653,Sacrifice_Ring,サクリファイスリング,4,20,,100,,0,,0,991944702,2,136,,90,,,{},{ bonus2 bRaise,10000,50; bonus bLossEquipWhenDie,10000; }
-2654,Shinobi's_Sash,忍の腰帯,4,20,,300,,1,,0,537006144,2,136,,30,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bMdef,1; if(!(equippeditem(2337) || equippeditem(2359))) end; bonus bUseSPrate,-20; bonus bMaxHP,300; }
+2654,Shinobi's_Sash,忍の腰帯,4,20,,300,,1:1,,0,537006144,2,136,,30,,,{},{ bonus bStr,1; bonus bAgi,1; if(!(equippeditem(2337) || equippeditem(2359))) end; bonus bUseSPrate,-20; bonus bMaxHP,300; }
 2655,Bloody_Iron_Ball,血塗られた鉄球,4,50000,,4000,,0,,0,991944702,2,136,,0,,,{},{}
 2656,Hyper_Changer,ハイパーモードチェンジャー,4,20,,1000,,1,,0,537285858,2,136,,0,,,{},{ bonus bMaxHP,50; }
 2657,Lab_Passport,研究所の通行パス,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{}
 2658,Nile_Rose_,ナイルローズ,4,20,,100,,0,,1,1000333311,2,136,,0,,,{},{ bonus bMaxHP,10; }
-2659,Vesper_Core01,ヴェスパーコア1,4,20,,100,,1,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bMdef,3; bonus bInt,2; bonus bMaxSPrate,5; }
-2660,Vesper_Core02,ヴェスパーコア2,4,20,,100,,1,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bMdef,3; bonus bStr,3; bonus bBaseAtk,10; }
-2661,Vesper_Core03,ヴェスパーコア3,4,20,,100,,1,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bMdef,3; bonus bAgi,3; bonus bFlee,5; }
-2662,Vesper_Core04,ヴェスパーコア4,4,20,,100,,1,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bMdef,3; bonus bDex,3; bonus bHit,10; }
+2659,Vesper_Core01,ヴェスパーコア1,4,20,,100,,1:3,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bInt,2; bonus bMaxSPrate,5; }
+2660,Vesper_Core02,ヴェスパーコア2,4,20,,100,,1:3,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bStr,3; bonus bBaseAtk,10; }
+2661,Vesper_Core03,ヴェスパーコア3,4,20,,100,,1:3,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bAgi,3; bonus bFlee,5; }
+2662,Vesper_Core04,ヴェスパーコア4,4,20,,100,,1:3,,0,2088832,2,136,,0,,,{},{ bonus bDef,1; bonus bDex,3; bonus bHit,10; }
 2663,Gauntlet_Of_Accuracy,命中のガントレット,4,20,,900,,0,,0,1000333311,2,136,,75,,,{},{ bonus bHit,15; bonus bStr,1; }
 2664,Scarf_Belt,スカーフベルト,4,20,,200,,0,,0,991944702,2,136,,75,,,{},{ bonus bDex,2; bonus bInt,1; }
-2665,Ring_Of_Exorcism,退魔の指輪,4,20,,500,,0,,0,33040,2,136,,60,,,{},{ bonus2 bExpRate,1,5; bonus2 bExpRate,6,5; bonus bMdef,1; }
+2665,Ring_Of_Exorcism,退魔の指輪,4,20,,500,,0:1,,0,33040,2,136,,60,,,{},{ bonus2 bExpRate,1,5; bonus2 bExpRate,6,5; }
 2666,Lamp_Of_Hope,希望の灯,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,2; bonus2 bResEff,Eff_Blind,1000; }
 2667,Glove_Of_Archer,名射手のグローブ,4,20,,300,,0,,0,991944702,2,136,,60,,,{},{ bonus bDex,1; bonus bHit,5; bonus bCritical,5; }
 2668,Women’s_Glory,女性の光栄,4,20,,1500,,1,,0,1000333311,2,136,,94,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; bonus bSPrecovRate,20; }
@@ -1540,7 +1540,7 @@
 2676,Hunter_Earring,ハンターイヤリング,4,20,,300,,0,,0,1000333311,2,136,,0,,,{},{ bonus3 bAddMonsterDropItem,7618,11,1000; }
 2677,Spiritual_Ring,スピリチュアルリング,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bInt,2; bonus bDex,1; if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,70,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
 2678,Ring_Of_Flame_Lord,リングオブフレームロード,4,20,,100,,0,,0,2088832,2,136,,0,,,{},{ bonus bStr,2; bonus bVit,1; bonus bBaseAtk,15; bonus2 bSubEle,3,10; bonus3 bAutoSelfSpell,401,1,300; bonus3 bAutoSelfSpell,270,5,100; bonus3 bAutoSpell,367,2,300; bonus3 bAutoSpell,17,1,1500; bonus3 bAutoSpell,62,5,200; if(equippeditem(2679)==0) end; bonus3 bAutoSpell,271,1,30; bonus3 bAutoSpell,78,1,200; bonus3 bAutoSpell,136,5,500; bonus3 bAutoSpell,266,5,200; bonus3 bAutoSpell,406,2,500; }
-2679,Ring_Of_Resonance,リングオブレゾナンス,4,20,,100,,2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus bMdef,2; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
+2679,Ring_Of_Resonance,リングオブレゾナンス,4,20,,100,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2680,Lesser_Elemental_Ring,下級精霊の指輪,4,20,,100,,,,0,1000333311,2,136,,0,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus3 bAutoSpell,93,1,800; bonus3 bAutoSelfSpell,40,1,500; bonus3 bAutoSelfSpell,151,1,1000; bonus3 bAutoSelfSpell,1013,1,100; bonus3 bRevAutoSelfSpell,411,5,200; bonus3 bRevAutoSelfSpell,426,3,300; bonus3 bRevAutoSelfSpell,142,1,1000; bonus3 bRevAutoSelfSpell,150,1,500; }
 2681,Republic_Ring,共和国記念日指輪,4,20,,1000,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 2682,Ring_Of_Water,水の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,1,5; }
@@ -1555,17 +1555,17 @@
 2691,Necklace_C,ネックレスR,4,,-1,100,,0,,0,991944702,2,136,,1,0,,{},{ bonus bVit,4; }
 2692,Glove_C,グローブR,4,,-1,100,,0,,0,991944702,2,136,,1,0,,{},{ bonus bDex,4; }
 2693,Brooch_C,ブローチR,4,,-1,100,,0,,0,991944702,2,136,,1,0,,{},{ bonus bAgi,4; }
-2694,Rosary_C,ロザリオR,4,,-1,100,,0,,0,991944702,2,136,,1,0,,{},{ bonus bLuk,4; bonus bMdef,5; }
-2695,Safety_Ring_C,セイフティリングR,4,,-1,100,,5,,0,991944702,2,136,,1,0,,{},{ bonus bMdef,5; }
-2696,Vesper_Core01_C,ヴェスパーコア01R,4,,-1,0,,1,,0,991944702,2,136,,1,0,,{},{ bonus bMdef,3; bonus bInt,2; bonus bMaxSPrate,5; }
-2697,Vesper_Core02_C,ヴェスパーコア02R,4,,-1,0,,1,,0,991944702,2,136,,1,0,,{},{ bonus bMdef,3; bonus bStr,3; bonus bBaseAtk,10; }
-2698,Vesper_Core03_C,ヴェスパーコア03R,4,,-1,0,,1,,0,991944702,2,136,,1,0,,{},{ bonus bMdef,3; bonus bAgi,3; bonus bFlee,5; }
-2699,Vesper_Core04_C,ヴェスパーコア04R,4,,-1,0,,1,,0,991944702,2,136,,1,0,,{},{ bonus bMdef,3; bonus bDex,3; bonus bHit,10; }
+2694,Rosary_C,ロザリオR,4,,-1,100,,0:5,,0,991944702,2,136,,1,0,,{},{ bonus bLuk,4; }
+2695,Safety_Ring_C,セイフティリングR,4,,-1,100,,5:5,,0,991944702,2,136,,1,0,,{},{}
+2696,Vesper_Core01_C,ヴェスパーコア01R,4,,-1,0,,1:3,,0,991944702,2,136,,1,0,,{},{ bonus bInt,2; bonus bMaxSPrate,5; }
+2697,Vesper_Core02_C,ヴェスパーコア02R,4,,-1,0,,1:3,,0,991944702,2,136,,1,0,,{},{ bonus bStr,3; bonus bBaseAtk,10; }
+2698,Vesper_Core03_C,ヴェスパーコア03R,4,,-1,0,,1:3,,0,991944702,2,136,,1,0,,{},{ bonus bAgi,3; bonus bFlee,5; }
+2699,Vesper_Core04_C,ヴェスパーコア04R,4,,-1,0,,1:3,,0,991944702,2,136,,1,0,,{},{ bonus bDex,3; bonus bHit,10; }
 2700,Red_Silk_Seal,封印の赤い絹,4,20,,100,,0,,0,16514,2,136,,60,0,,{},{}
 2701,Orleans_Glove,オルレアンの手袋,4,20,,100,,0,,1,2088958,2,136,,90,0,,{},{ bonus bDex,2; bonus bMatkRate,3; }
 2702,Bison_Horn,野牛の角,4,20,,100,,0,,1,2088958,2,136,,90,0,,{},{ bonus bAgi,2; }
 2703,Expert_Ring,エキスパートリング,4,20,,150,,0,,1,2088958,2,136,,50,0,,{},{ bonus bSkillDelayRate,-5; bonus bUseSPrate,5; }
-2704,Golden_Accessories,ゴールデンアクセサリー,4,20,,100,,4,,0,1000333311,2,136,,0,,,{},{ bonus bMdef,4; }
+2704,Golden_Accessories,ゴールデンアクセサリー,4,20,,100,,4:4,,0,1000333311,2,136,,0,,,{},{}
 2705,Golden_Accessories_,ゴールデンアクセサリー,4,20,,100,,4,,0,1000333311,2,136,,0,,,{},{ bonus3 bAddMonsterDropItem,12018,11,500; }
 2706,Arrest_Handcuffs,手錠,4,20,,0,,,,0,1000333311,2,136,,0,,,{},{}
 2707,Gusli,グスリ,4,20,,100,,0,,0,1000333311,2,136,,0,0,,{},{}
@@ -1583,8 +1583,8 @@
 2719,Iron_Wrist,アイアンリスト,4,20,,700,,1,,0,279714,2,136,,50,,,{},{ bonus2 bAddSkillDamageRate,5,6; bonus2 bAddSkillDamageRate,42,6; }
 2720,SM_Medalion,武功勲章,4,20,,0,,1,,0,33570946,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bHit,10; bonus bMaxHP,500; bonus bMaxSP,50; bonus2 bAddEffShort,Eff_Stun,100; }
 2721,TF_Medalion,武功勲章,4,20,,0,,1,,0,536903952,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bFlee,10; bonus bMaxHP,300; bonus bMaxSP,80; bonus2 bAddEffShort,Eff_Poison,100; }
-2722,AL_Medalion,武功勲章,4,20,,0,,1,,0,134250768,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bMdef,6; bonus bMaxHP,600; bonus2 bAddEffShort,Eff_Silence,100; }
-2723,MG_Medalion,武功勲章,4,20,,0,,1,,0,66052,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bMdef,6; bonus bMaxHP,600; bonus2 bAddRevEff,Eff_Stone,100; }
+2722,AL_Medalion,武功勲章,4,20,,0,,1:6,,0,134250768,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bMaxHP,600; bonus2 bAddEffShort,Eff_Silence,100; }
+2723,MG_Medalion,武功勲章,4,20,,0,,1:6,,0,66052,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bMaxHP,600; bonus2 bAddRevEff,Eff_Stone,100; }
 2724,AC_Medalion,武功勲章,4,20,,0,,1,,0,135232,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bCritical,10; bonus bMaxHP,300; bonus bMaxSP,80; bonus2 bAddEffLong,Eff_Blind,100; }
 2725,MC_Medalion,武功勲章,4,20,,0,,1,,0,263200,2,136,,70,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bAspdAddRate,10; bonus bMaxHP,500; bonus bMaxSP,50; bonus2 bAddEffShort,Eff_Curse,100; }
 2726,Feather_of_Icarus,イカロスの羽,4,20,,100,,0,,0,2048,2,136,,70,,,{},{ bonus bMaxSP,50; bonus bDex,3; }
@@ -1597,20 +1597,20 @@
 2733,Officer's_Medalion,保安官バッジ,4,20,,0,,1,,0,268435456,2,136,,80,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; bonus bCritical,10; bonus bMaxHP,300; bonus bMaxSP,80; bonus2 bAddEffLong,Eff_Blind,500; }
 2734,Patrol_Mission,任務命令書,4,,,0,,,,,,,,,,,,{},{}
 2735,Patrol_Mission_,任務命令書,4,,,0,,,,,,,,,,,,{},{}
-2736,Navel_Ring,ボディーピアス,4,20,,100,,0,,0,991944702,2,136,,75,,,{},{ bonus bDex,3; bonus bLuk,1; bonus bMdef,2; }
+2736,Navel_Ring,ボディーピアス,4,20,,100,,0:2,,0,991944702,2,136,,75,,,{},{ bonus bDex,3; bonus bLuk,1; }
 2737,Foot_Ring,アンクレット,4,20,,150,,0,,0,991944702,2,136,,75,,,{},{ bonus bVit,3; bonus bHPrecovRate,10; }
 2738,Shiny_Coin,光る記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,10,6; bonus2 bAddRace,11,6; bonus bMatkRate,6; }
 2739,Ordinary_Coin,一般記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; }
 2740,Rusty_Coin,錆びた記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,10,3; bonus2 bAddRace,11,3; bonus bMatkRate,3; }
 2741,All_In_One_Ring,オールインワンリング,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ skill 26,1; skill 28,1; bonus bNoCastCancel,0; bonus bCastrate,10; bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2742,Unknown_Item,幸運のクリップ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
-2743,Angelic_Ring,エンジェリックリング,4,,,100,,0,,0,2088832,2,136,,70,,,{},{ bonus bInt,2; bonus bDex,1; bonus bMdef,2; bonus4 bAutoActiveSkill,28,2743,1000,3000; bonus4 bAutoActiveSkill,70,2743,1000,3000; bonus4 bAutoActiveSkill,231,2743,1000,3000; if(checkactiveitem()) { misceffect 348,""; bonus2 bAddSkillHealRate,28,20; bonus2 bAddSkillHealRate,70,20; bonus2 bAddSkillHealRate,231,20; } }
+2743,Angelic_Ring,エンジェリックリング,4,,,100,,0:2,,0,2088832,2,136,,70,,,{},{ bonus bInt,2; bonus bDex,1; bonus4 bAutoActiveSkill,28,2743,1000,3000; bonus4 bAutoActiveSkill,70,2743,1000,3000; bonus4 bAutoActiveSkill,231,2743,1000,3000; if(checkactiveitem()) { misceffect 348,""; bonus2 bAddSkillHealRate,28,20; bonus2 bAddSkillHealRate,70,20; bonus2 bAddSkillHealRate,231,20; } }
 2744,Sprint_Ring,スプリントリング,4,,,100,,0,,0,2088832,2,136,,,,,{},{ bonus bCastrate,-10; bonus bSkillDelayRate,5; }
-2745,Pinguicula_Corsage,キュートな花飾り,4,,,200,,0,,1,2088832,2,136,,,,,{},{ bonus bMdef,2; bonus bMaxSP,25; }
+2745,Pinguicula_Corsage,キュートな花飾り,4,,,200,,0:2,,1,2088832,2,136,,,,,{},{ bonus bMaxSP,25; }
 2746,Cold_Heart,冷静な心,4,,,100,,1,,0,4096,2,136,,80,,,{},{ bonus bAgi,3; if(equippeditem(2620)==0) end; bonus2 bAddSize,1,8; bonus bAspdAddRate,3; }
 2747,Black_Cat,ブラックキャット,4,,,100,,1,,0,131072,2,136,,80,,,{},{ bonus bDex,3; if(equippeditem(2620)==0) end; bonus2 bAddSize,2,8; bonus bHit,3; bonus bCastrate,-3; }
-2748,Cursed_Star,カーズドスター,4,,,200,,0,,0,1574920,2,136,,84,,,{},{ bonus bDex,2; bonus bLuk,-1; bonus bMdef,3; bonus2 bHPPenaltyTime,10000,50; bonus bHPPenaltyUnrig,300; if(equippeditem(1741)) { bonus2 bAddEffLong,Eff_Curse,400; bonus bBaseAtk,25; } else bonus2 bAddEffLong,Eff_Curse,200; }
-2749,Linen_Glove,リネングローブ,4,,,120,,1,,1,2088832,2,136,,90,,,{},{ bonus bAgi,2; bonus bDex,1; bonus bMdef,1; }
+2748,Cursed_Star,カーズドスター,4,,,200,,0:3,,0,1574920,2,136,,84,,,{},{ bonus bDex,2; bonus bLuk,-1; bonus2 bHPPenaltyTime,10000,50; bonus bHPPenaltyUnrig,300; if(equippeditem(1741)) { bonus2 bAddEffLong,Eff_Curse,400; bonus bBaseAtk,25; } else bonus2 bAddEffLong,Eff_Curse,200; }
+2749,Linen_Glove,リネングローブ,4,,,120,,1:1,,1,2088832,2,136,,90,,,{},{ bonus bAgi,2; bonus bDex,1; }
 2750,Unknown_Item,真夏の夜の夢,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
 2751,Academy_of_Badge,アカデミーバッジ,4,,,100,,,,,1000333311,2,136,,,,,{},{ if(BaseLevel<80) { bonus bMaxHP,400; bonus bMaxSP,200; } }
 2752,Praxinus_C,プラックシナス,4,,,0,,0,,0,1000333311,2,136,,1,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; }
@@ -1654,13 +1654,13 @@
 2790,Bradium_Brooch,ブラディウムのブローチ,4,,,200,,0,,1,2088958,2,136,,60,,,{},{ bonus bFlee,4; bonus bAspdAddRate,2; bonus bAgi,1;}
 2791,Just_Got_Fish,とれたての魚,4,,,0,,0,,1,1000333311,2,136,,,,,{},{ bonus bHit,3; /*旧正月イベント中： bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bCritical,10; bonus bHit,10; ：＆スロット0*/ }
 2792,Ring_Of_Flame_Lord_I,リングオブフレームロード,4,,,0,,0,,0,2088832,2,136,,0,,,{},{ bonus bStr,2; bonus bVit,1; bonus bBaseAtk,15; bonus2 bSubEle,3,10; bonus3 bAutoSelfSpell,401,1,300; bonus3 bAutoSelfSpell,270,5,100; bonus3 bAutoSpell,367,2,300; bonus3 bAutoSpell,17,1,1500; bonus3 bAutoSpell,62,5,200; if(equippeditem(2793)==0) end; bonus3 bAutoSpell,271,1,30; bonus3 bAutoSpell,78,1,200; bonus3 bAutoSpell,136,5,500; bonus3 bAutoSpell,266,5,200; bonus3 bAutoSpell,406,2,500; }
-2793,Ring_Of_Resonance_I,リングオブレゾナンス,4,,,0,,2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus bMdef,2; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
+2793,Ring_Of_Resonance_I,リングオブレゾナンス,4,,,0,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2794,Magic_Stone_Ring,魔力石の指輪,4,,,0,,0,,1,16514,2,136,,0,,,{},{ bonus bStr,2; }
 2795,Green_Apple_Ring,熟していないリンゴの指輪,4,,,0,,0,,0,991944702,2,136,,99,,,{},{}
 2796,Magical_Stone,魔力を秘めた石（スプレンディッド）,4,,,200,,0,,0,66052,2,136,,99,,,{},{}
 2797,Magical_Stone_,魔力を秘めた石（マヌク）,4,,,200,,0,,0,66052,2,136,,99,,,{},{}
 2798,Will_Of_Exhausted_Angel,くたびれた天使の意思,4,,,200,,0,,0,33024,2,136,,99,,,{},{}
-2799,Kuirpenring,クイールペンリング,4,,,100,,0,,1,1000333311,2,136,,0,,,{},{ bonus bMdef,1; if(equippeditem(2714)==0) end; bonus bMaxHP,BaseLevel*3; bonus bMaxSP,JobLevel; bonus2 bSubEle,0,3; }
+2799,Kuirpenring,クイールペンリング,4,,,100,,0:1,,1,1000333311,2,136,,0,,,{},{ if(equippeditem(2714)==0) end; bonus bMaxHP,BaseLevel*3; bonus bMaxSP,JobLevel; bonus2 bSubEle,0,3; }
 2800,Unknown_Item,加速装置,4,100000,,100,,0,,1,1024,2,136,,90,,,{},{ bonus bAgi,2; }
 2801,Unknown_Item,ホバリングブースター,4,100000,,2000,,0,,1,1024,2,136,,90,,,{},{ bonus bAgi,1; }
 2802,Unknown_Item,自爆装置,4,500000,,1000,,0,,1,1024,2,136,,90,,,{},{}
@@ -1676,7 +1676,7 @@
 2812,Unknown_Item,フレイヤの魂のブレスレット,4,,,200,,1,,0,1000333311,2,136,,20,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2813,Unknown_Item,フレイヤの魂のブレスレット,4,,,200,,1,,0,1000333311,2,136,,20,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2814,Unknown_Item,フレイヤの魂のブレスレット,4,,,200,,1,,0,1000333311,2,136,,20,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
-2815,Unknown_Item,水の指輪,4,,,10,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bMdef,2; bonus bMaxSP,20; if(BaseLevel>=41) end; bonus2 bItemHealRate,1,50-BaseLevel; bonus2 bItemHealRate,8,50-BaseLevel; /*レベルに比例して回復量減少する効果は暫定処理*/ }
+2815,Unknown_Item,水の指輪,4,,,10,,0:2,,0,1000333311,2,136,,0,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bMaxSP,20; if(BaseLevel>=41) end; bonus2 bItemHealRate,1,50-BaseLevel; bonus2 bItemHealRate,8,50-BaseLevel; /*レベルに比例して回復量減少する効果は暫定処理*/ }
 2816,Unknown_Item,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
 2817,Unknown_Item,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
 2818,Unknown_Item,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
@@ -2252,30 +2252,30 @@
 4806,Unknown_Item,Matk + 3%,6,,,,,,,,,1023,,,,,,{},{ bonus bMatkRate,3; bonus bCastrate,-1; }
 
 5001,Headset,ヘッドフォン,4,20,,200,,3,,0,991944702,2,256,,0,87,1,{},{ bonus2 bResEff,Eff_Curse,1000; }
-5002,Gemmed_Crown,ジュエルクラウン,4,20,,600,,4,,0,414946,2,256,,60,88,1,{},{ bonus bMdef,3; bonus bInt,2; bonus bLuk,1; }
-5003,Joker_Jester,ピエロの帽子,4,20,,100,,1,,0,991944702,2,256,,0,89,1,{},{ bonus bMdef,5; bonus bLuk,2; }
+5002,Gemmed_Crown,ジュエルクラウン,4,20,,600,,4:3,,0,414946,2,256,,60,88,1,{},{ bonus bInt,2; bonus bLuk,1; }
+5003,Joker_Jester,ピエロの帽子,4,20,,100,,1:5,,0,991944702,2,256,,0,89,1,{},{ bonus bLuk,2; }
 5004,Oxygen_Mask,酸素マスク,4,20,,200,,0,,0,991944702,2,1,,0,90,,{},{ bonus2 bResEff,Eff_Poison,2000; }
 5005,Gas_Mask,ガスマスク,13,20,,100,,1,,0,991944702,2,513,,0,91,,{},{ bonus2 bResEff,Eff_Poison,3000; }
 5006,Machoman_Glasses,ハートファンデーション,4,36000,,100,,1,,0,991944702,2,512,,0,92,,{},{}
-5007,Loard_Circlet,ロードサークレット,4,20,,200,,3,,0,991944702,2,256,,55,93,1,{},{ bonus bMdef,4; bonus bStr,1; bonus bInt,1; bonus bLuk,1; }
+5007,Loard_Circlet,ロードサークレット,4,20,,200,,3:4,,0,991944702,2,256,,55,93,1,{},{ bonus bStr,1; bonus bInt,1; bonus bLuk,1; }
 5008,Puppy_Love,仮初めの恋,4,20,,100,,1,,0,991944702,2,256,,0,94,,{},{}
-5009,Safety_Helmet,工事帽,4,20,,500,,3,,0,991944702,2,256,,0,95,1,{},{ bonus bMdef,3; bonus bUnbreakableHelm,0; }
+5009,Safety_Helmet,工事帽,4,20,,500,,3:3,,0,991944702,2,256,,0,95,1,{},{ bonus bUnbreakableHelm,0; }
 5010,Indian_Hair_Piece,インディアンのヘアバンド,4,20,,100,,3,,0,1000333311,2,256,,0,96,1,{},{}
 5011,Antenna,アンテナ,4,20,,100,,3,,0,1000333311,2,256,,0,97,1,{},{}
-5012,Ph.D_Hat,学者帽,4,20,,200,,3,,0,991944702,2,256,,0,98,1,{},{ bonus bMdef,3; }
-5013,Horn_Of_Lord_Kaho,ロードカホの角,4,20,,100,,5,,0,1000333311,2,256,,0,99,1,{},{ bonus bMdef,10; bonus bStr,5; bonus bAgi,10; bonus bVit,10; bonus bInt,5; bonus bLuk,20; }
+5012,Ph.D_Hat,学者帽,4,20,,200,,3:3,,0,991944702,2,256,,0,98,1,{},{}
+5013,Horn_Of_Lord_Kaho,ロードカホの角,4,20,,100,,5:10,,0,1000333311,2,256,,0,99,1,{},{ bonus bStr,5; bonus bAgi,10; bonus bVit,10; bonus bInt,5; bonus bLuk,20; }
 5014,Fin_Helm,えらヘルム,4,20,,300,,2,,0,16514,2,512,,65,100,,{},{}
 5015,Egg_Shell,装飾用卵殻,4,20,,200,,3,,0,1000333311,2,256,,0,101,0,{},{}
 5016,Boy's_Cap,学生帽,4,20,,100,,2,,0,991944702,2,256,,0,102,1,{},{}
 5017,Bone_Helm,ボーンヘルム,4,20,,800,,7,,0,279714,2,256,,70,103,1,{},{ bonus2 bSubEle,7,-15; }
 5018,Feather_Bonnet,羽毛帽子,4,20,,300,,4,,0,1574920,2,256,,0,104,1,{},{ bonus bAgi,1; }
 5019,Corsair,コルセア,4,20,,500,,5,,0,991944702,2,256,,0,105,1,{},{ bonus bVit,1; }
-5020,Kafra_Band,カプラのヘアバンド,4,20,,500,,3,,0,1000333311,2,256,,0,106,1,{},{ bonus bMdef,3; }
+5020,Kafra_Band,カプラのヘアバンド,4,20,,500,,3:3,,0,1000333311,2,256,,0,106,1,{},{}
 5021,Bankruptcy_Of_Heart,お金を失った者の心,4,20,,1200,,4,,0,263200,2,256,,38,107,1,{},{ bonus bInt,1; bonus bDex,1; }
 5022,Helm_Of_Sun,太陽神の兜,11,20,,2400,,4,,0,169860992,2,768,,0,138,1,{},{ bonus bStr,3; bonus bInt,2; }
 5023,Hat_Of_Bundle,風呂敷包み,4,20,,1000,,0,,0,263200,2,256,,0,108,1,{},{}
 5024,Hat_Of_Cake,ケーキ帽,4,20,,1000,,1,,0,1000333311,2,256,,0,109,1,{},{}
-5025,Helm_Of_Angel,天使の兜,4,20,,1600,,5,,0,169860992,2,256,,74,110,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus bMdef,3; }
+5025,Helm_Of_Angel,天使の兜,4,20,,1600,,5:3,,0,169860992,2,256,,74,110,1,{},{ bonus bAgi,1; bonus bLuk,1; }
 5026,Hat_Of_Cook,コック帽,4,20,,300,,1,,0,991944702,2,256,,50,111,1,{},{ bonus bDex,1; }
 5027,Wizardry_Hat,とんがり帽子,4,20,,300,,1,,0,134283780,2,256,,0,112,1,{},{ bonus bInt,2; bonus bMaxSP,150; }
 5028,Candle,ろうそく,4,20,,150,,0,,0,1000333311,2,256,,0,113,1,{},{}
@@ -2308,7 +2308,7 @@
 5055,Novice_Egg_Cap,初心者用偽卵殻,4,,,1,,3,,0,8388609,2,256,,0,101,,{},{}
 5056,Love_Berry,愛の実,4,,,100,,0,,0,991944702,2,256,,0,140,1,{},{}
 5057,Ear_Of_Black_Cat,黒い猫耳,4,16000,,200,,2,,0,1000333311,2,256,,45,141,1,{},{}
-5058,Drooping_Kitty,たれ猫,4,250000,,500,,1,,0,991944702,2,256,,0,142,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
+5058,Drooping_Kitty,たれ猫,4,250000,,500,,1:15,,0,991944702,2,256,,0,142,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
 5059,Brown_Bear_Cap,くま帽子,4,20,,800,,3,,0,1000333311,2,256,,50,143,1,{},{}
 5060,Party_Hat,パーティー帽,4,20,,300,,3,,0,1000333311,2,256,,0,144,1,{},{ bonus bLuk,1; }
 5061,Flower_Hairpin,花のかんざし,4,20,,100,,1,,0,1000333311,2,256,,0,145,1,{},{}
@@ -2316,13 +2316,13 @@
 5063,Plaster,絆創膏,4,20,,100,,1,,0,991944702,2,256,,0,147,1,{},{}
 5064,Leaf_Headgear,変身木の葉,4,20,,100,,1,,0,1000333311,2,256,,0,148,1,{},{}
 5065,Fish_On_Head,青い魚,4,20,,500,,2,,0,1000333311,2,256,,50,149,1,{},{ bonus2 bAddRace,5,10; }
-5066,Horn_Of_Succubus,サキュバスの角,4,20,,800,,4,,0,991944702,2,256,,70,150,1,{},{ bonus bInt,1; bonus bMdef,10; }
+5066,Horn_Of_Succubus,サキュバスの角,4,20,,800,,4:10,,0,991944702,2,256,,70,150,1,{},{ bonus bInt,1; }
 5067,Sombrero,ソンブレロ,4,20,,350,,4,,0,991944702,2,256,,0,151,1,{},{ bonus bAgi,1; }
 5068,Ear_Of_Devil's_Wing,悪魔の羽耳,4,20,,100,,1,,0,1000333311,2,512,,70,152,,{},{ bonus bStr,1; }
 5069,Mask_Of_Fox,狐のお面,4,20,,300,,1,,0,991944702,2,256,,0,153,1,{},{ bonus bAgi,1; bonus bLuk,1; }
 5070,Headband_Of_Power,熱血鉢巻き,4,20,,100,,1,,0,991944702,2,256,,0,154,1,{},{ bonus bStr,2; }
 5071,Indian_Headband,インディアンの鉢巻き,4,20,,200,,1,,0,991944702,2,256,,0,155,1,{},{ bonus bDex,1; }
-5072,Inccubus_Horn,インキュバスの角,4,20,,800,,4,,0,991944702,2,256,,70,156,1,{},{ bonus bAgi,1; bonus bMdef,10; }
+5072,Inccubus_Horn,インキュバスの角,4,20,,800,,4:10,,0,991944702,2,256,,70,156,1,{},{ bonus bAgi,1; }
 5073,Cap_Of_Concentration,姿勢矯正帽,4,20,,700,,2,,0,991944702,2,256,,0,157,1,{},{ bonus bDex,2; }
 5074,Ear_Of_Angel's_Wing,天使の羽耳,4,20,,100,,1,,0,1000333311,2,512,,70,158,,{},{ bonus bStr,1; }
 5075,Cowboy_Hat,カウボーイハット,4,20,,500,,4,,0,1000333311,2,256,,0,159,1,{},{}
@@ -2333,7 +2333,7 @@
 5080,Headgear_Of_Queen,古代女王の髪飾り,4,20,,400,,4,,0,1000333311,2,256,,45,164,1,{},{}
 5081,Mistress_Crown,ミストレスの王冠,4,20,,100,,0,,0,991944702,2,256,,75,165,1,{},{ bonus bInt,2; bonus bMaxSP,100; bonus bUnbreakableHelm,0; }
 5082,Mushroom_Band,キノコヘアバンド,4,20,,100,,2,,0,1000333311,2,256,,0,166,1,{},{}
-5083,Red_Tailed_Ribbon,赤いリボン,4,20,,200,,1,,0,1000333311,2,256,,45,167,1,{},{ bonus bMdef,10; }
+5083,Red_Tailed_Ribbon,赤いリボン,4,20,,200,,1:10,,0,1000333311,2,256,,45,167,1,{},{}
 5084,Lazy_Raccoon,やる気のないタヌキ,4,20,,500,,1,,0,991944702,2,256,,0,168,1,{},{ bonus2 bResEff,Eff_Sleep,2000; }
 5085,Pair_Of_Red_Ribbon,ツインリボン,4,20,,100,,1,,0,1000333311,2,512,,45,169,,{},{}
 5086,Alarm_Mask,アラームの仮面,13,20,,100,,2,,0,991944702,2,513,,0,170,,{},{ bonus2 bResEff,Eff_Blind,5000; }
@@ -2349,7 +2349,7 @@
 5096,Assassin_Mask_,アサシンマスク,4,20,,100,,0,,0,4352,2,1,,70,180,,{},{}
 5097,Cone_Hat_,アニバーサリーハット,4,,,300,,3,,0,1000333311,2,256,,0,144,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 5098,Tiger_Mask,タイガーマスク,11,20,,400,,2,,0,1000333311,2,768,,50,181,,{},{ bonus bStr,3; bonus bMaxHP,100; }
-5099,Cat_Hat,ネコミミキャップ,4,20,,300,,1,,0,1000333311,2,256,,0,182,1,{},{ bonus bLuk,2; bonus bMdef,10; bonus2 bSubRace,2,5; bonus2 bMagicSubRace,2,5; }
+5099,Cat_Hat,ネコミミキャップ,4,20,,300,,1:10,,0,1000333311,2,256,,0,182,1,{},{ bonus bLuk,2; bonus2 bSubRace,2,5; bonus2 bMagicSubRace,2,5; }
 5100,Sales_Signboard,セール表示板,4,20,,800,,0,,0,1000333311,2,256,,75,183,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bLuk,1; }
 5101,Takius_Blindfold,真理の目隠し,4,20,,100,,0,,0,1000333311,2,512,,0,184,,{},{}
 5102,Round_Eyes,丸い瞳,4,20,,100,,0,,0,1000333311,2,512,,0,185,,{},{}
@@ -2374,22 +2374,22 @@
 5121,Zherlthsh_Mask,ジルタスの仮面,11,20,,100,,3,,0,991944702,2,768,,70,200,1,{},{ bonus2 bAddRace,7,5; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
 5122,Magni_Cap,マグニキャップ,4,30000,,1000,,5,,0,991944702,2,256,,65,250,1,{},{ bonus bStr,2; }
 5123,Ulle_Cap,ウルキャップ,4,30000,,500,,3,,1,991944702,2,256,,65,254,1,{},{ bonus bDex,2; bonus bAgi,1; if(equippeditem(2353)==1 && readparam(bDex)>=70) bonus bUseSPrate,-10; }
-5124,Fricca_Circlet,フリッグのサークレット,4,30000,,300,,3,,0,991944702,2,256,,65,251,1,{},{ bonus bMdef,10; bonus bInt,2; bonus bMaxSP,50; }
+5124,Fricca_Circlet,フリッグのサークレット,4,30000,,300,,3:10,,0,991944702,2,256,,65,251,1,{},{ bonus bInt,2; bonus bMaxSP,50; }
 5125,Kiss_Of_Angel,天使の口づけ,4,10000,,300,,3,,1,8388609,2,256,,50,255,1,{},{ bonus bSPrecovRate,3; }
 5126,Morpheus's_Hood,モルフェウスの頭巾,4,30000,,200,,1,,0,991944702,2,256,,33,256,1,{},{ bonus bInt,2; if(equippeditem(2518)==0 || equippeditem(2648)==0 || equippeditem(2649)==0) end; bonus bInt,5; bonus bMdef,11; bonus bMaxSPrate,20; bonus bNoCastCancel,0; bonus bCastrate,25; }
 5127,Morrigane's_Helm,モリガンのヘルム,4,30000,,500,,4,,0,991944702,2,256,,61,257,1,{},{ bonus bLuk,2; bonus bBaseAtk,3; if(equippeditem(2519)==0 || equippeditem(2650)==0 || equippeditem(2651)==0) end; bonus bStr,2; bonus bLuk,9; bonus bCritical,13; bonus bBaseAtk,18; bonus bFlee2,13; }
-5128,Goibne's_Helmet,ゴヴニュの兜,4,30000,,500,,5,,0,991944702,2,256,,54,258,1,{},{ bonus bVit,3; bonus bMdef,3; if(getequipid(2)==2354 && getequipid(5)==2520 && getequipid(6)==2419) { bonus bVit,5; bonus bMaxHPrate,15; bonus bMaxSPrate,5; bonus bDef,5; bonus bMdef,15; bonus2 bSubEle,1,10; bonus2 bSubEle,2,10; bonus2 bSubEle,3,10; bonus2 bSubEle,4,10; }
+5128,Goibne's_Helmet,ゴヴニュの兜,4,30000,,500,,5:3,,0,991944702,2,256,,54,258,1,{},{ bonus bVit,3; if(getequipid(2)==2354 && getequipid(5)==2520 && getequipid(6)==2419) { bonus bVit,5; bonus bMaxHPrate,15; bonus bMaxSPrate,5; bonus bDef,5; bonus bMdef,15; bonus2 bSubEle,1,10; bonus2 bSubEle,2,10; bonus2 bSubEle,3,10; bonus2 bSubEle,4,10; }
 5129,Bird_Nest,巣立ちを迎えた鳥の巣,4,20,,400,,1,,0,1000333311,2,256,,55,201,,{},{ bonus bAgi,2; bonus2 bSubRace,2,10; bonus2 bMagicSubRace,2,10; }
-5130,Lion_Mask,ライオンマスク,11,20,,700,,0,,0,169860992,2,768,,75,202,1,{},{ bonus bMdef,1; bonus2 bAddRevEff,Eff_Silence,1000; }
+5130,Lion_Mask,ライオンマスク,11,20,,700,,0:1,,0,169860992,2,768,,75,202,1,{},{ bonus2 bAddRevEff,Eff_Silence,1000; }
 5131,Close_Helmet,クローズヘルメット,14,20,,1200,,8,,0,16514,2,769,,75,203,1,{},{ bonus bVit,3; bonus bMaxHPrate,3; }
 5132,Angeling_Hat,エンジェリング帽,4,20,,700,,2,,0,1000333311,2,256,,38,204,1,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 5133,Sheep_Hat,羊帽子,4,20,,150,,1,,0,33040,2,256,,,205,,{},{ bonus bShortWeaponDamageReturn,5; }
 5134,Pumpkin_Hat,パンプキンハット2008,4,20,,200,,3,,0,1000333311,2,256,,0,206,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; bonus2 bAddRace,6,3; bonus2 bMagicAddRace,6,3; /*カボチャ回復量500%*/ }
 5135,Cyclops_Visor,サイクロプスアイ,4,,,200,,,,,991944702,2,512,,75,207,,{},{ bonus bMaxSP,50; }
-5136,Santa's_Hat_,ルイーゼのサンタ帽,4,20,,100,,3,,0,1000333311,2,256,,0,20,1,{},{ bonus bLuk,1; bonus bMdef,1; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; bonus2 bSubRace,6,5; bonus2 bMagicSubRace,6,5; bonus2 bSubRace,8,5; bonus2 bMagicSubRace,8,5; bonus3 bAutoSelfSpell,34,10,500; bonus3 bAutoSelfSpell,28,3,500; bonus3 bAddMonsterDropItem,12355,11,100; }
+5136,Santa's_Hat_,ルイーゼのサンタ帽,4,20,,100,,3:1,,0,1000333311,2,256,,0,20,1,{},{ bonus bLuk,1; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; bonus2 bSubRace,6,5; bonus2 bMagicSubRace,6,5; bonus2 bSubRace,8,5; bonus2 bMagicSubRace,8,5; bonus3 bAutoSelfSpell,34,10,500; bonus3 bAutoSelfSpell,28,3,500; bonus3 bAddMonsterDropItem,12355,11,100; }
 5137,Alice_Doll,たれ人形,4,,,500,,0,,1,1000333311,2,256,,30,208,,{},{ bonus bStr,1; bonus2 bAddRace,7,10; }
-5138,Magic_Eyes,マジックアイズ,4,,,300,,1,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastrate,-10; bonus bMdef,5; }
-5139,Hibiscus,ハイビスカス,4,,,200,,0,,0,1000333311,2,256,,10,210,,{},{ bonus bMdef,5; bonus bDex,1; bonus bInt,1; }
+5138,Magic_Eyes,マジックアイズ,4,,,300,,1:5,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastrate,-10; }
+5139,Hibiscus,ハイビスカス,4,,,200,,0:5,,0,1000333311,2,256,,10,210,,{},{ bonus bDex,1; bonus bInt,1; }
 5140,Charming_Ribbon,かわいいリボン,4,,,400,,0,,1,1000333311,2,256,,10,211,1,{},{ bonus2 bSubRace,1,5; bonus2 bMagicSubRace,1,5; bonus2 bSubRace,6,5; bonus2 bMagicSubRace,6,5; }
 5141,Marionette_Doll,マリオネット人形,4,20,,400,,0,,1,991944702,2,256,,30,212,1,{},{ bonus bStr,1; }
 5142,Crescent_Helm,三日月の兜,11,,,3000,,8,,0,1000333311,2,768,,50,213,1,{},{ bonus bVit,1; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
@@ -2402,13 +2402,13 @@
 5149,Silver_Tiara,シルバーティアラ,4,,,100,,0,,0,1000333311,2,256,,,218,1,{},{ bonus bInt,2; }
 5150,Joker_Jester_,道化師の帽子,4,,,100,,1,,0,1000333311,2,256,,,219,,{},{}
 5151,Headset_OST,音符のヘッドフォン,11,,,200,,4,,1,1000333311,2,768,,,220,1,{},{ bonus2 bResEff,Eff_Stun,1000; bonus2 bResEff,Eff_Freeze,1000; }
-5152,Chinese_Crown,鳳凰の冠,11,,,2000,,2,,0,1000333311,2,768,,,221,1,{},{ bonus bInt,1; bonus bMdef,2; bonus2 bResEff,Eff_Stun,1000; }
+5152,Chinese_Crown,鳳凰の冠,11,,,2000,,2:2,,0,1000333311,2,768,,,221,1,{},{ bonus bInt,1; bonus2 bResEff,Eff_Stun,1000; }
 5153,Angeling_Hairpin,エンジェリングヘアピン,4,,,700,,3,,0,1000333311,2,256,,,222,1,{},{ bonus bFlee,5; if(getequipid(2)!=2358) end; bonus bLuk,6; bonus bFlee,5; bonus bInt,2; }
 5154,Sunglasses_F,お父さんのサングラス,4,,,100,,3,,0,1000333311,2,512,,,12,,{},{}
 5155,Granpa_Beard_F,お父さんの白ひげ,4,,,100,,0,,0,1000333311,2,1,,,25,,{},{ bonus bBaseAtk,20; }
 5156,Flu_Mask_F,お父さんのマスク,4,,,100,,0,,0,1000333311,2,1,,,8,,{},{ bonus bMatkRate,1; }
 5157,Viking_Helm_,オーク族のヘルム,4,20,,500,,5,,1,414946,2,256,,0,86,1,{},{}
-5158,Holy_Bonnet_,聖職者の帽子,4,30000,,100,,5,,1,33040,2,256,,0,35,1,{},{ bonus bMdef,3; }
+5158,Holy_Bonnet_,聖職者の帽子,4,30000,,100,,5:3,,1,33040,2,256,,0,35,1,{},{}
 5159,Golden_Gear_,ゴールデンヘッドギア,4,20,,900,,5,,1,991944702,2,256,,40,30,1,{},{}
 5160,Magestic_Goat_,マジェスティックゴート,4,20,,800,,5,,1,50611362,2,256,,0,41,1,{},{ bonus bStr,1; }
 5161,Sharp_Gear_,シャープヘッドギア,4,20,,1000,,6,,1,50779634,2,256,,50,43,1,{},{}
@@ -2420,12 +2420,12 @@
 5167,Munak_Turban_,ムナック帽,14,20,,300,,5,,1,1000333311,2,769,,0,51,,{},{ bonus2 bSubRace,1,10; bonus2 bMagicSubRace,1,10; }
 5168,Bongun_Hat_,ボンゴン帽,14,20,,300,,5,,1,1000333311,2,769,,0,139,,{},{}
 5169,Bride_Mask,花嫁の仮面,11,30000,,500,,4,,1,1000333311,2,768,,40,223,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bLuk,2; bonus bCritical,5; } }
-5170,Feather_Beret,羽のベレー,4,30000,,600,,1,,0,991944702,2,256,,0,224,1,{},{ bonus bMdef,1; bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
-5171,Valkyrie_Helm,ヴァルキリーヘルム,4,100000,,1000,,5,,1,991944702,2,256,,0,225,1,{},{ bonus bMdef,5; if((getequipid(2)==2357 && getequipid(6)==2421 && getequipid(5)==2524)==0) end; bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
+5170,Feather_Beret,羽のベレー,4,30000,,600,,1:1,,0,991944702,2,256,,0,224,1,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
+5171,Valkyrie_Helm,ヴァルキリーヘルム,4,100000,,1000,,5:5,,1,991944702,2,256,,0,225,1,{},{ if((getequipid(2)==2357 && getequipid(6)==2421 && getequipid(5)==2524)==0) end; bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5172,Beret,ベレー,4,30000,,700,,0,,0,1000333311,2,256,,0,226,,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 5173,Satto_Hat,使道の帽子,4,30000,,400,,3,,1,1000333311,2,256,,60,227,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bAgi,1; bonus bHPrecovRate,3; } }
 5174,Ayam,アヤム,4,30000,,400,,3,,1,1000333311,2,256,,60,228,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bInt,1; bonus bSPrecovRate,3; } }
-5175,Censor_Bar,モザイク,4,30000,,100,,0,,0,1000333311,2,512,,0,229,,{},{ bonus bMdef,1; bonus bHit,-5; bonus2 bResEff,Eff_Curse,500; }
+5175,Censor_Bar,モザイク,4,30000,,100,,0:1,,0,1000333311,2,512,,0,229,,{},{ bonus bHit,-5; bonus2 bResEff,Eff_Curse,500; }
 5176,Hahoe_Mask,老人の仮面,13,30000,,100,,2,,0,1000333311,2,513,,30,230,,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bLuk,1; bonus bFlee2,2; } }
 5177,Guardian_Lion_Mask,獅子の仮面,11,30000,,500,,5,,1,1000333311,2,768,,40,231,1,{},{ if(getbaseclass(Class) == CLASS_TK) { bonus bDex,2; bonus bBaseAtk,getequiprefinerycnt(1)*2; bonus2 bAddEffShort,Eff_Stun,100; } }
 5178,Candle_,ろうそく,4,,,150,,0,,0,1000333311,2,256,,0,113,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
@@ -2437,17 +2437,17 @@
 5184,Captain_Hat,キャプテンハット,4,,,500,,4,,0,991944702,2,256,,30,236,1,{},{ bonus2 bSubEle,1,5; }
 5185,Laurel_Wreath,月桂樹の冠,4,,,100,,1,,1,1000333311,2,256,,10,237,1,{},{ bonus bLuk,3; bonus2 bResEff,Eff_Blind,500; bonus2 bResEff,Eff_Curse,500; }
 5186,Geographer_Band,装飾用ジオグラファー,4,,,500,,1,,0,1000333311,2,256,,30,238,,{},{ bonus bInt,1; bonus3 bRevAutoSelfSpell,28,1,500; }
-5187,Twin_Ribbon,乙女のツインリボン,4,,,200,,0,,1,1000333311,2,256,,30,239,1,{},{ bonus bMdef,3; bonus bMaxSP,30; bonus bSPrecovRate,5; }
+5187,Twin_Ribbon,乙女のツインリボン,4,,,200,,0:3,,1,1000333311,2,256,,30,239,1,{},{ bonus bMaxSP,30; bonus bSPrecovRate,5; }
 5188,Minstrel_Hat,伝説の吟遊詩人の帽子,4,,,500,,2,,0,1000333311,2,256,,50,240,1,{},{ bonus bInt,1; bonus bDex,1; }
 5189,Fallen_Leaves,落ち葉,4,,,100,,0,,0,1000333311,2,256,,0,241,1,{},{ bonus bMaxHP,40; bonus bMaxSP,40; }
 5190,Baseball_Cap_,独立記念帽子,4,,,0,,3,,1,1000333311,2,256,,0,216,1,{},{}
-5191,Ribbon_Black,リボン（黒）,4,,,100,,1,,1,1000333311,2,256,,0,242,1,{},{ bonus bMdef,3; }
-5192,Ribbon_Yellow,リボン（黄）,4,,,100,,1,,1,1000333311,2,256,,0,243,1,{},{ bonus bMdef,3; }
-5193,Ribbon_Green,リボン（緑）,4,,,100,,1,,1,1000333311,2,256,,0,244,1,{},{ bonus bMdef,3; }
-5194,Ribbon_Pink,リボン（桃）,4,,,100,,1,,1,1000333311,2,256,,0,245,1,{},{ bonus bMdef,3; }
-5195,Ribbon_Red,リボン（赤）,4,,,100,,1,,1,1000333311,2,256,,0,246,1,{},{ bonus bMdef,3; }
-5196,Ribbon_Orange,リボン（朱）,4,,,100,,1,,1,1000333311,2,256,,0,247,1,{},{ bonus bMdef,3; bonus4 bAutoSpell,85,1,100,EAS_ATTACK|EAS_NOSP; }
-5197,Ribbon_White,リボン（白）,4,,,100,,1,,1,1000333311,2,256,,0,248,1,{},{ bonus bMdef,3; }
+5191,Ribbon_Black,リボン（黒）,4,,,100,,1:3,,1,1000333311,2,256,,0,242,1,{},{}
+5192,Ribbon_Yellow,リボン（黄）,4,,,100,,1:3,,1,1000333311,2,256,,0,243,1,{},{}
+5193,Ribbon_Green,リボン（緑）,4,,,100,,1:3,,1,1000333311,2,256,,0,244,1,{},{}
+5194,Ribbon_Pink,リボン（桃）,4,,,100,,1:3,,1,1000333311,2,256,,0,245,1,{},{}
+5195,Ribbon_Red,リボン（赤）,4,,,100,,1:3,,1,1000333311,2,256,,0,246,1,{},{}
+5196,Ribbon_Orange,リボン（朱）,4,,,100,,1:3,,1,1000333311,2,256,,0,247,1,{},{ bonus4 bAutoSpell,85,1,100,EAS_ATTACK|EAS_NOSP; }
+5197,Ribbon_White,リボン（白）,4,,,100,,1:3,,1,1000333311,2,256,,0,248,1,{},{}
 5198,Drooping_Bunny,たれウサギ,4,,,100,,1,,0,1000333311,2,256,,0,249,1,{},{ bonus bDex,1; bonus bFlee,2; }
 5199,Baseball_Cap_I,野球帽,4,,,200,,3,,0,1000333311,2,256,,0,216,1,{},{ bonus bSpeedRate,25; }
 5200,Coppola,コッポラ,4,,,300,,0,,0,1000333311,2,256,,0,252,1,{},{}
@@ -2455,36 +2455,36 @@
 5202,Pumpkin_Hat_,パンプキンハット,4,20,,200,,2,,0,1000333311,2,256,,0,206,1,{},{ bonus bInt,2; bonus bDex,2; bonus bVit,2; bonus bStr,2; bonus bAgi,2; bonus bLuk,2; bonus2 bSubRace,6,5; bonus2 bMagicSubRace,6,5; bonus3 bAddMonsterDropItem,529,7,5; }
 5203,Tongue_Mask,ぺろりんマスク,13,20,,200,,2,,0,1000333311,2,513,,0,253,,{},{}
 5204,Event_Pierrot_Nose,トナカイの鼻,4,20,,100,,0,,0,1000333311,2,1,,0,49,,{},{ bonus2 bResEff,Eff_Blind,3000; bonus3 bAddMonsterDropItem,12130,11,10; }
-5205,Wreath,皇帝の月桂冠,11,,,1000,,3,,1,1000333311,2,768,,0,261,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus bMdef,3; }
+5205,Wreath,皇帝の月桂冠,11,,,1000,,3:3,,1,1000333311,2,768,,0,261,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5206,Romantic_White_Flower,白い花びら,4,,,100,,0,,0,991944702,2,1,,0,259,,{},{ bonus2 bSubRace,2,3; bonus2 bMagicSubRace,2,3; }
 5207,Gold_Spirit_Chain,金の魂のリング,4,,,100,,0,,0,1000333311,2,256,,0,260,,{},{ bonus2 bSubEle,6,5; bonus bLuk,1; }
 5208,Rideword_Hat,ライドワード帽,4,20,,300,,2,,1,991944702,2,256,,40,262,1,{},{ bonus2 bHPDrainRate,5,8; bonus2 bSPDrainRate,1,4; bonus2 bHPPenaltyTime,5000,10; }
 5209,Yellow_Baseball_Cap,黄色い野球帽,4,20,,300,,2,,,991944702,2,256,,,263,1,{},{}
 5210,Flying_Angel,天使の忘れもの,4,20,,300,,1,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastrate,-3; bonus bAspdAddRate,3; }
-5211,Dress_Hat,ドレスハット,4,20,,200,,2,,1,1000333311,2,256,,20,265,1,{},{ bonus bMdef,7; }
+5211,Dress_Hat,ドレスハット,4,20,,200,,2:7,,1,1000333311,2,256,,20,265,1,{},{}
 5212,Satellite_Hairband,サテライトヘアバンド,4,20,,1000,,3,,1,1000333311,2,256,,30,266,1,{},{ bonus bMaxHP,50; bonus bMaxSP,10; skill 24,1; }
-5213,Black_Bunny_Band,バニーヘアバンド,4,20,,200,,2,,0,1000333311,2,256,,,267,1,{},{ bonus bAgi,2; bonus bMdef,3; }
+5213,Black_Bunny_Band,バニーヘアバンド,4,20,,200,,2:3,,0,1000333311,2,256,,,267,1,{},{ bonus bAgi,2; }
 5214,Moonlight_Flower_Hat,月夜花帽,11,20,,200,,3,,0,1000333311,2,768,,,268,1,{},{ bonus bDex,1; bonus3 bAutoSelfSpell,29,1,300; }
-5215,Angelic_Chain_,天使のヘアバンド,4,20,,100,,2,,0,991944702,2,256,,0,38,1,{},{ bonus bMdef,3; bonus bDex,1; bonus bInt,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
+5215,Angelic_Chain_,天使のヘアバンド,4,20,,100,,2:3,,0,991944702,2,256,,0,38,1,{},{ bonus bDex,1; bonus bInt,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
 5216,Satanic_Chain_,悪魔のヘアバンド,4,20,,100,,3,,0,991944702,2,256,,0,39,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bFlee,3; bonus2 bSubRace,8,3; bonus2 bMagicSubRace,8,3; }
 5217,Magestic_Goat_TW,マジェスティックゴート,4,20,,800,,5,,0,50611362,2,256,,0,41,1,{},{ bonus bStr,2; }
 5218,Bunny_Band_,ウサギのヘアバンド,4,20,,100,,2,,0,1000333311,2,256,,0,15,1,{},{ bonus bInt,2; }
-5219,Drooping_Kitty_,たれ猫,4,20,,500,,1,,0,991944702,2,256,,0,142,1,{},{ bonus bMdef,18; bonus bFlee,3; }
+5219,Drooping_Kitty_,たれ猫,4,20,,500,,1:18,,0,991944702,2,256,,0,142,1,{},{ bonus bFlee,3; }
 5220,Smoking_Pipe_,パイプタバコ,4,20,,100,,0,,0,991944702,2,1,,0,55,,{},{ bonus bVit,1; bonus2 bSubRace,2,5; bonus2 bMagicSubRace,2,5; }
 5221,Pair_Of_Red_Ribbon_,ツインリボン,4,20,,100,,1,,0,1000333311,2,512,,45,169,,{},{ bonus bFlee,5; }
 5222,Fish_On_Head_,青い魚,4,20,,500,,2,,0,1000333311,2,256,,50,149,1,{},{ bonus bAgi,1; bonus bDex,1; }
 5223,Decorative_Golden_Bell_,大きな金の鈴,11,20,,200,,2,,0,991944702,2,768,,35,175,1,{},{ bonus bAgi,2; }
 5224,Helmet_of_Orc_Hero_,オークヒーローの兜,11,20,,900,,5,,0,991944702,2,768,,55,178,1,{},{ bonus bStr,2; bonus bVit,1; bonus bMaxHPrate,10; }
-5225,Marcher_Hat,聖なるマーチングハット,4,20,,200,,2,,1,1000333311,2,256,,10,269,1,{},{ bonus bMdef,2; bonus bStr,2; bonus3 bRevAutoSelfSpell,33,5,100; }
+5225,Marcher_Hat,聖なるマーチングハット,4,20,,200,,2:2,,1,1000333311,2,256,,10,269,1,{},{ bonus bStr,2; bonus3 bRevAutoSelfSpell,33,5,100; }
 5226,Mini_Propeller_,プロペラ,4,20,,200,,2,,0,1000333311,2,256,,0,270,1,{},{ bonus bAgi,2; bonus bDex,1; bonus bFlee,10; bonus bCastrate,-getequiprefinerycnt(1); }
 5227,Red_Deviruchi_Cap,子悪魔帽（赤）,4,20,,800,,2,,0,991944702,2,256,,64,271,1,{},{ bonus bStr,1; bonus bInt,1; }
 5228,White_Deviruchi_Cap,子悪魔帽（白）,4,20,,800,,2,,0,991944702,2,256,,64,272,1,{},{ bonus bStr,1; bonus bInt,1; }
 5229,Gray_Deviruchi_Cap,子悪魔帽（灰）,4,20,,800,,2,,0,991944702,2,256,,64,273,1,{},{ bonus bStr,1; bonus bInt,1; }
-5230,White_Drooping_Kitty,たれ猫（白）,4,20,,500,,1,,0,991944702,2,256,,0,274,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
-5231,Gray_Drooping_Kitty,たれ猫（灰）,4,20,,500,,1,,0,991944702,2,256,,0,275,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
-5232,Pink_Drooping_Kitty,たれ猫（桃）,4,20,,500,,1,,0,991944702,2,256,,0,276,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
-5233,Blue_Drooping_Kitty,たれ猫（青）,4,20,,500,,1,,0,991944702,2,256,,0,277,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
-5234,Yellow_Drooping_Kitty,たれ猫（黄）,4,20,,500,,1,,0,991944702,2,256,,0,278,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
+5230,White_Drooping_Kitty,たれ猫（白）,4,20,,500,,1:15,,0,991944702,2,256,,0,274,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
+5231,Gray_Drooping_Kitty,たれ猫（灰）,4,20,,500,,1:15,,0,991944702,2,256,,0,275,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
+5232,Pink_Drooping_Kitty,たれ猫（桃）,4,20,,500,,1:15,,0,991944702,2,256,,0,276,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
+5233,Blue_Drooping_Kitty,たれ猫（青）,4,20,,500,,1:15,,0,991944702,2,256,,0,277,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
+5234,Yellow_Drooping_Kitty,たれ猫（黄）,4,20,,500,,1:15,,0,991944702,2,256,,0,278,1,{},{ bonus2 bResEff,Eff_Curse,3000; }
 5235,Gray_Fur_Hat,毛糸の帽子（灰）,4,20,,350,,2,,0,1000333311,2,256,,0,279,1,{},{ bonus bLuk,1; }
 5236,Blue_Fur_Hat,毛糸の帽子（青）,4,20,,350,,2,,0,1000333311,2,256,,0,280,1,{},{ bonus bLuk,1; }
 5237,Pink_Fur_Hat,毛糸の帽子（桃）,4,20,,350,,2,,0,1000333311,2,256,,0,281,1,{},{ bonus bLuk,1; }
@@ -2496,8 +2496,8 @@
 5243,Chullos,耳あて帽,11,20,,800,,2,,1,1000333311,2,768,,0,287,1,{},{ bonus2 bResEff,Eff_Freeze,1000; }
 5244,Elven_Blindfold,妖精の目隠し,4,,,200,,1,,0,1000333311,2,512,,,288,,{},{ bonus2 bResEff,Eff_Blind,10000; }
 5245,Elven_Sunglasses,妖精のサングラス,4,,,200,,1,,0,1000333311,2,512,,,289,,{},{ bonus2 bResEff,Eff_Blind,500; }
-5246,Angelic_Helm,天使のヘルム,4,,,700,,3,,0,1000333311,2,256,,,38,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus bMdef,3; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
-5247,Satanic_Helm,悪魔のヘルム,4,,,700,,4,,0,1000333311,2,256,,,39,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus bMdef,3; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
+5246,Angelic_Helm,天使のヘルム,4,,,700,,3:3,,0,1000333311,2,256,,,38,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
+5247,Satanic_Helm,悪魔のヘルム,4,,,700,,4:3,,0,1000333311,2,256,,,39,1,{},{ bonus bAgi,1; bonus bLuk,1; bonus2 bSubRace,6,3; bonus2 bMagicSubRace,6,3; }
 5248,Robotic_Blindfold,ロボットの目隠し,4,,,200,,1,,0,1000333311,2,512,,,82,,{},{ bonus2 bResEff,Eff_Blind,10000; }
 5249,Human_Blindfold,人間の目隠し,4,,,200,,1,,0,1000333311,2,512,,,82,,{},{ bonus2 bResEff,Eff_Blind,10000; }
 5250,Robotic_Ears,ロボット耳,4,,,100,,0,,0,1000333311,2,512,,,73,,{},{}
@@ -2507,7 +2507,7 @@
 5254,Deviling_Hat,デビルリング帽,4,20,,350,,1,,0,1000333311,2,256,,20,298,1,{},{ bonus bStr,1; bonus bCritical,3; bonus2 bSubRace,8,-20; bonus2 bMagicSubRace,8,-20; if(getequiprefinerycnt(1)>=6) bonus bCritical,getequiprefinerycnt(1)-5; }
 5255,Triple_Poring_Hat,三段ポリン帽,4,20,,600,,3,,0,1000333311,2,256,,20,299,,{},{ bonus bLuk,3; bonus3 bAutoSpell,1013,1,100; }
 5256,Valkyrie_Feather_Band,ヴァルキリーフェザーバンド,4,20,,100,,1,,1,1000333311,2,256,,20,300,1,{},{ bonus bInt,1; bonus3 bRevAutoSelfSpell,28,1,500; }
-5257,Soulless_Wing,ソウルレスウィング,4,20,,300,,2,,0,991944702,2,256,,20,301,1,{},{ bonus bMdef,2; }
+5257,Soulless_Wing,ソウルレスウィング,4,20,,300,,2:2,,0,991944702,2,256,,20,301,1,{},{}
 5258,Afro_Wig,アフロかつら,4,20,,100,,0,,1,1000333311,2,256,,10,302,1,{},{ bonus3 bAutoSelfSpell,142,1,3000; bonus2 bSubEle,0,1; }
 5259,Elephant_Hat_,象帽子,4,,,500,,3,,0,1000333311,2,256,,0,215,1,{},{ bonus bVit,1; bonus3 bAutoSpell,86,3,300; skill 31,1; }
 5260,Cookie_Hat,クッキー帽子,4,,,500,,2,,0,1000333311,2,256,,0,217,1,{},{ bonus bAgi,1; bonus bFlee2,5; bonus bAddCriticalDamage,5; }
@@ -2516,12 +2516,12 @@
 5263,Ati_Atihan_Hat,パグダヤ,14,20,,100,,1,,0,991944702,2,769,,20,303,1,{},{ bonus bDex,2; bonus bMatkRate,3; if (getequiprefinerycnt(1)>=6) bonus bMatkRate,getequiprefinerycnt(1)-5; }
 5264,Aussie_Flag_Hat,オーストラリア国旗帽子,4,,,500,,4,,0,1000333311,2,256,,0,304,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 5265,Apple_Of_Archer_C,名射手のりんごR,4,,-1,200,,7,,0,991944702,2,256,,1,72,1,{},{ bonus bDex,4; }
-5266,Bunny_Band_C,ウサギのヘアバンドR,4,,,100,,9,,0,1000333311,2,256,,0,15,1,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; bonus bMdef,5; }
+5266,Bunny_Band_C,ウサギのヘアバンドR,4,,,100,,9:5,,0,1000333311,2,256,,0,15,1,{},{ bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 5267,Sahkkat_C,笠R,4,,-1,0,,10,,0,1000333311,2,256,,0,67,1,{},{ bonus bAgi,3; }
-5268,Lord_Circlet_C,ロードサークレットR,4,,-1,0,,10,,0,991944702,2,256,,1,93,1,{},{ bonus bMdef,4; bonus bStr,3; bonus bInt,3; bonus bLuk,3; }
+5268,Lord_Circlet_C,ロードサークレットR,4,,-1,0,,10:4,,0,991944702,2,256,,1,93,1,{},{ bonus bStr,3; bonus bInt,3; bonus bLuk,3; }
 5269,Flying_Angel_,翔ける天使,4,,,300,,1,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastrate,-3; bonus bAspdAddRate,3; }
 5270,Fallen_Leaves_,落ち葉,4,,,100,,1,,1,1000333311,2,256,,,241,1,{},{ bonus bFlee2,5; }
-5271,Chinese_Crown_,鳳冠,11,,,500,,4,,1,1000333311,2,768,,,221,1,{},{ bonus bMdef,3; bonus2 bSubRace,10,getequiprefinerycnt(1); bonus2 bMagicSubRace,10,getequiprefinerycnt(1); }
+5271,Chinese_Crown_,鳳冠,11,,,500,,4:3,,1,1000333311,2,768,,,221,1,{},{ bonus2 bSubRace,10,getequiprefinerycnt(1); bonus2 bMagicSubRace,10,getequiprefinerycnt(1); }
 5272,Tongue_Mask_,あかんべー仮面,13,,,100,,2,,0,1000333311,2,513,,,253,,{},{ bonus3 bRevAutoSpell,6,5,500; }
 5273,Happy_Wig,ハッピーアフロかつら,4,,,100,,0,,1,1000333311,2,256,,10,305,1,{},{ bonus3 bAutoSelfSpell,142,1,3000; bonus2 bSubEle,0,1; }
 5274,Shiny_Wig,シャイニーアフロかつら,4,,,100,,0,,1,1000333311,2,256,,10,306,1,{},{ bonus3 bAutoSelfSpell,142,1,3000; bonus2 bSubEle,0,1; }
@@ -2529,7 +2529,7 @@
 5276,Fantastic_Wig,ファンタスティックアフロかつら,11,,,100,,0,,1,1000333311,2,768,,10,308,1,{},{ bonus3 bAutoSelfSpell,142,1,3000; bonus2 bSubEle,0,1; }
 5277,Yellow_Bandana,黄色の頭巾,4,,,100,,1,,0,991944702,2,256,,20,309,1,{},{ bonus bLuk,2; bonus bVit,2; bonus bLongAtkDef,10; }
 5278,Yellow_Ribbon,黄色のリボン,4,,,100,,1,,0,991944702,2,256,,20,310,1,{},{ bonus bLuk,2; bonus bVit,2; bonus bLongAtkDef,10; }
-5279,Drooping_Kitty_C,たれ猫R,4,,-1,0,,1,,0,991944702,2,256,,,142,,{},{ bonus bMdef,15; bonus2 bResEff,Eff_Curse,3000; }
+5279,Drooping_Kitty_C,たれ猫R,4,,-1,0,,1:15,,0,991944702,2,256,,,142,,{},{ bonus2 bResEff,Eff_Curse,3000; }
 5280,Magestic_Goat_C,マジェスティックゴートR,4,,-1,800,,5,,0,991944702,2,256,,,41,,{},{ bonus bStr,1; }
 5281,Deviruchi_Cap_C,子悪魔帽R,4,,-1,0,,2,,0,991944702,2,256,,,123,,{},{ bonus bStr,1; bonus bInt,1; }
 5282,euRO_Baseball_Cap,野球帽,4,,,0,,3,,1,1000333311,2,256,,,216,1,{},{}
@@ -2538,14 +2538,14 @@
 5285,Vane_Hairpin,風車のかんざし,4,20,,300,,2,,1,1000333311,2,256,,30,313,,{},{ bonus bAgi,2; }
 5286,Pecopeco_Hairband,ペコペコのヘアバンド,4,20,,100,,3,,0,1000333311,2,256,,70,314,1,{},{ bonus bSpeedRate,25; bonus bAspdAddRate,-10; bonus bCastrate,25; }
 5287,Vacation_Hat,避暑地の帽子,4,20,,200,,1,,1,1000333311,2,256,,30,315,,{},{ bonus bVit,1; }
-5288,Red_Glasses,赤いメガネ,4,20,,100,,1,,0,1000333311,2,512,,10,316,,{},{ bonus bMdef,5; }
-5289,Vanilmirth_Hat,バニルミルトの帽子,4,20,,1000,,0,,0,1000333311,2,256,,30,317,,{},{ bonus bUnbreakableHelm,1; bonus bMdef,5; bonus3 bAutoSpell,19,1,100; bonus3 bAutoSpell,14,1,100; bonus3 bAutoSpell,20,1,100; bonus3 bAutoSpell,90,1,100; }
+5288,Red_Glasses,赤いメガネ,4,20,,100,,1:5,,0,1000333311,2,512,,10,316,,{},{}
+5289,Vanilmirth_Hat,バニルミルトの帽子,4,20,,1000,,0:5,,0,1000333311,2,256,,30,317,,{},{ bonus bUnbreakableHelm,1; bonus3 bAutoSpell,19,1,100; bonus3 bAutoSpell,14,1,100; bonus3 bAutoSpell,20,1,100; bonus3 bAutoSpell,90,1,100; }
 5290,Drooping_Bunny_,たれうさぎ,4,20,,100,,1,,0,1000333311,2,256,,0,249,1,{},{ bonus bDex,1; bonus bFlee,2; }
 5291,Kettle_Hat,魔法のやかん,4,20,,600,,4,,0,1000333311,2,256,,30,318,1,{},{ bonus4 bAutoSpell,286,2,300,EAS_ATTACK|EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bAutoSpell,86,3,300; }
 5292,Dragon_Skull,龍の骸骨,4,20,,800,,5,,0,1000333311,2,256,,50,319,1,{},{ bonus2 bSubRace,9,5; bonus2 bMagicSubRace,9,5; }
 5293,Ramen_Hat,ラーメン,4,20,,500,,1,,0,1000333311,2,256,,30,320,,{},{ bonus bDex,4; bonus bInt,-1; }
 5294,Whisper_Mask,ウィスパーマスク,14,20,,100,,0,,0,1000333311,2,769,,10,321,,{},{ bonus bAgi,3; bonus2 bSubEle,8,-10; }
-5295,Golden_Bandana,ゴールデンヘルム,11,,,2400,,4,,0,1000333311,2,768,,,138,1,{},{ bonus bMdef,4; }
+5295,Golden_Bandana,ゴールデンヘルム,11,,,2400,,4:4,,0,1000333311,2,768,,,138,1,{},{}
 5296,Drooping_Nine_Tail_,たれ九尾狐,4,,,300,,1,,1,1000333311,2,256,,,296,,{},{ bonus bAgi,1; bonus bDex,1; }
 5297,Soulless_Wing_,ソウルリースリング,4,,,300,,2,,1,1000333311,2,256,,,301,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5298,Marvelous_Wig_,アフロかつら,4,,,100,,1,,1,1000333311,2,256,,,302,1,{},{ bonus2 bSubEle,1,-5; bonus2 bSubEle,3,-5; bonus2 bSubEle,0,5; }
@@ -2557,11 +2557,11 @@
 5304,Cap_Of_Blindness,暗黒のフード,14,,,800,,4,,1,1000333311,2,769,,30,326,1,{},{ bonus2 bResEff,Eff_Blind,10000; bonus2 bResEff,Eff_Curse,700; }
 5305,Pirate_Dagger,海賊のナイフ（RJC）,4,,,100,,0,,0,1000333311,2,1,,,327,,{},{}
 5306,Freyja_Crown,フレイヤのクラウン,4,,,500,,12,,0,991944702,2,256,,,328,,{},{ bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
-5307,Carmen_Miranda's_Hat,カルメンミランダの帽子,4,,,400,,3,,0,1000333311,2,256,,,329,1,{},{ bonus bMdef,3; bonus3 bRevAutoSpell,1011,1,500; }
+5307,Carmen_Miranda's_Hat,カルメンミランダの帽子,4,,,400,,3:3,,0,1000333311,2,256,,,329,1,{},{ bonus3 bRevAutoSpell,1011,1,500; }
 5308,Brazilian_Flag_Hat,ブラジル国旗帽子,4,,,300,,3,,1,1000333311,2,256,,,330,1,{},{ bonus bSpeedRate,25; }
 5309,Wool_Mask,モヒカンの仮面,14,,,200,,1,,0,1000333311,2,769,,,331,1,{},{ skill 220,1; }
 5310,Bulb_Hairband,輝く電球のヘアバンド,4,,,100,,3,,1,1000333311,2,256,,,332,1,{},{ bonus2 bSubEle,7,10; skill 10,1; }
-5311,Large_Hibiscus,大きなハイビスカス,4,,,100,,1,,1,1000333311,2,256,,,333,1,{},{ bonus bMdef,15; }
+5311,Large_Hibiscus,大きなハイビスカス,4,,,100,,1:15,,1,1000333311,2,256,,,333,1,{},{}
 5312,Ayothaya_Hat,アユタヤ王の帽子,4,,,100,,5,,1,414946,2,256,,,334,1,{},{ bonus bStr,1; bonus2 bAddRace,7,5; }
 5313,Diadem,ダイアデム,11,,,100,,3,,1,1000333311,2,768,,,335,1,{},{ bonus bInt,1; bonus bMatkRate,3; bonus bCastrate,3; }
 5314,Hockey_Mask,ホッケーマスク（RJC）,13,,,100,,1,,0,1000333311,2,513,,50,336,,{},{ bonus2 bAddRace,7,5; }
@@ -2572,7 +2572,7 @@
 5319,Hellomother_Hat,ママの帽子,4,,,200,,2,,0,991944702,2,256,,10,341,1,{},{ bonus bLuk,3; }
 5320,Champion_Wreath,チャンピオンの月桂冠,4,,,500,,4,,0,991944702,2,256,,,261,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus3 bRevAutoSelfSpell,28,1,500; }
 5321,Indonesian_Bandana,インドネシアヘアバンド,4,,,500,,4,,0,1000333311,2,256,,,342,1,{},{ bonus3 bAddMonsterDropItem,518,11,90; }
-5322,Scarf,スカーフ,4,,,100,,2,,0,1000333311,2,256,,24,343,,{},{ bonus bFlee,5; bonus bMdef,2; }
+5322,Scarf,スカーフ,4,,,100,,2:2,,0,1000333311,2,256,,24,343,,{},{ bonus bFlee,5; }
 5323,Misstrance_Crown,ミストレンスの王冠,4,,,0,,10,,0,1000333311,2,256,,,165,,{},{ bonus bInt,2; bonus bDex,2; bonus bVit,2; bonus bStr,2; bonus bAgi,2; bonus bLuk,2; }
 5324,Little_Angel_Doll,たれ慰める者,4,,,300,,2,,0,1000333311,2,256,,10,344,,{},{ bonus bDex,3; bonus3 bRevAutoSpell,254,3,500; }
 5325,Robo_Eye,ロボアイズ,4,,,200,,1,,0,1000333311,2,512,,10,345,,{},{ bonus2 bAddRace,10,3; bonus2 bAddRace,11,3; bonus bMatkRate,3; bonus bDex,1; }
@@ -2580,11 +2580,11 @@
 5327,Orc_Hero_Helm_C,オークヒーローの兜R,11,,,0,,10,,0,991944702,2,768,,1,178,,{},{ bonus bStr,5; bonus bVit,3; }
 5328,Evil_Wing_Ears_C,悪魔の羽耳R,4,,,0,,2,,0,1000333311,2,512,,0,152,,{},{ bonus bStr,1; }
 5329,Dark_Blindfold_C,闇の目隠しR,4,,,0,,1,,0,991944702,2,512,,,187,,{},{ bonus2 bResEff,Eff_Blind,10000; bonus2 bResEff,Eff_Stun,500; }
-5330,kRO_Drooping_Kitty_C,たれ猫R,4,,,0,,6,,0,991944702,2,256,,1,142,,{},{ bonus bMDef,15; bonus2 bResEff,Eff_Curse,4000; bonus2 bResEff,Eff_Curse,1000; }
+5330,kRO_Drooping_Kitty_C,たれ猫R,4,,,0,,6:15,,0,991944702,2,256,,1,142,,{},{ bonus2 bResEff,Eff_Curse,4000; bonus2 bResEff,Eff_Curse,1000; }
 5331,Corsair_C,コルセアR,4,,,0,,10,,0,991944702,2,256,,,105,,{},{ bonus bVit,3; bonus bInt,3; }
 5332,Loki_Mask,ロキマスク,13,20,,200,,2,,0,1000333311,2,513,,20,346,,{},{ bonus bFlee2,3; }
-5333,Radio_Antenna,電波アンテナ,4,20,,1500,,2,,0,1000333311,2,256,,60,347,1,{},{ bonus bMdef,2; skill 20,1; }
-5334,Angeling_Wanna_Fly,エンジェリング帽,4,20,,700,,0,,0,1000333311,2,256,,38,348,,{},{ bonus bLuk,2; bonus bMdef,2; }
+5333,Radio_Antenna,電波アンテナ,4,20,,1500,,2:2,,0,1000333311,2,256,,60,347,1,{},{ skill 20,1; }
+5334,Angeling_Wanna_Fly,エンジェリング帽,4,20,,700,,0:2,,0,1000333311,2,256,,38,348,,{},{ bonus bLuk,2; }
 5335,Jumping_Poring,飛び跳ねポリン,4,20,,300,,2,,0,1000333311,2,256,,0,349,,{},{ bonus bLuk,1; bonus bUnbreakableHelm,0; }
 5336,Guildsman_Recruiter,ギルドメンバー募集帽,4,20,,700,,2,,0,1000333311,2,256,,10,350,1,{},{}
 5337,Party_Recruiter_Hat,パーティーメンバー募集帽,4,20,,700,,2,,0,1000333311,2,256,,10,351,1,{},{}
@@ -2597,8 +2597,8 @@
 5344,Binit_Doll_Hat,たれビニット人形,4,20,,500,,0,,1,1000333311,2,256,,60,358,,{},{ bonus bVit,2; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
 5345,Debril_Doll_Hat,たれＷ人形,4,20,,500,,0,,1,1000333311,2,256,,60,359,,{},{ bonus bLuk,2; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
 5346,Gf_Recruiter_Hat,ガールフレンド募集帽,4,20,,700,,2,,0,1000333311,2,256,,10,360,1,{},{}
-5347,Ph.D_Hat_,学者帽,4,20,,200,,3,,1,991944702,2,256,,0,98,1,{},{ bonus bMdef,3; }
-5348,Big_Sis_Ribbon_,大きなリボン,4,20,,200,,2,,1,991944702,2,256,,0,28,1,{},{ bonus bMdef,3; }
+5347,Ph.D_Hat_,学者帽,4,20,,200,,3:3,,1,991944702,2,256,,0,98,1,{},{}
+5348,Big_Sis_Ribbon_,大きなリボン,4,20,,200,,2:3,,1,991944702,2,256,,0,28,1,{},{}
 5349,Boy's_Cap_,学生帽,4,20,,100,,2,,1,991944702,2,256,,0,102,1,{},{}
 5350,Pirate_Bandana_,海賊の頭巾,4,20,,100,,3,,1,991944702,2,256,,0,74,1,{},{ bonus bStr,1; }
 5351,Sunflower_,装飾用ひまわり,4,20,,100,,1,,1,1000333311,2,256,,0,37,,{},{ bonus2 bSubRace,4,10; bonus2 bMagicSubRace,4,10; }
@@ -2607,8 +2607,8 @@
 5354,Songkok,ムスリム帽子,4,20,,100,,2,,0,1000333311,2,256,,0,362,,{},{ bonus bCastrate,-5; }
 5355,Selendang,ムスリム帽子,4,20,,100,,2,,0,1000333311,2,256,,0,363,,{},{ bonus bCastrate,-5; }
 5356,Pumpkin_Hat_H,パンプキンハット2007,4,20,,200,,3,,0,1000333311,2,256,,0,206,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; bonus2 bAddRace,6,5; bonus2 bMagicAddRace,6,5; }
-5357,Victory_Wings,勝利の翼,11,20,,200,,10,,0,1000333311,2,768,,0,365,,{},{ bonus bMdef,10; bonus bUnbreakableHelm,0; }
-5358,Pecopeco_Ears,ペコペコの羽耳,4,20,,100,,1,,0,1000333311,2,512,,70,366,,{},{ bonus bAgi,1; bonus bMdef,2; }
+5357,Victory_Wings,勝利の翼,11,20,,200,,10:10,,0,1000333311,2,768,,0,365,,{},{ bonus bUnbreakableHelm,0; }
+5358,Pecopeco_Ears,ペコペコの羽耳,4,20,,100,,1:2,,0,1000333311,2,512,,70,366,,{},{ bonus bAgi,1; }
 5359,Ship_Captain's_Hat,船長の帽子,4,20,,500,,3,,0,1000333311,2,256,,30,367,1,{},{ bonus bAddLongWeaponDamage,3; }
 5360,Hukke's_Blackcat_Ears,ヒュッケの黒い猫耳,4,20,,200,,2,,0,1000333311,2,256,,45,368,1,{},{ bonus bDefRate,-50; bonus bDef2Rate,-50; bonus bFlee,10; bonus bCritical,3; bonus bAddCriticalDamage,10; }
 5361,Gang_Scarf,ギャングスカーフ,4,20,,100,,0,,0,1000333311,2,1,,60,369,,{},{ bonus bBaseAtk,5; if(getbaseclass(Class,2) == CLASS_RG) skill 223,1; }
@@ -2617,13 +2617,13 @@
 5364,Evil_Snake_Lord_Hat,黒蛇王の帽子,4,20,,500,,2,,1,1000333311,2,256,,60,372,1,{},{ bonus bStr,1; bonus bAgi,2; bonus bInt,1; }
 5365,Magnolia_Hat,めだまやき,4,20,,1000,,3,,1,1000333311,2,256,,0,373,,{},{ skill 120,1; bonus2 bResEff,Eff_Stun,500; }
 5366,Love_Dad_Bandana,王の帽子,4,20,,200,,3,,0,1000333311,2,256,,0,374,1,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
-5367,Hyegun_Hat,ヒェグン帽,14,20,,100,,5,,1,1000333311,2,769,,10,375,,{},{ bonus bMdef,3; bonus2 bSubRace,6,10; bonus2 bMagicSubRace,6,10; }
+5367,Hyegun_Hat,ヒェグン帽,14,20,,100,,5:3,,1,1000333311,2,769,,10,375,,{},{ bonus2 bSubRace,6,10; bonus2 bMagicSubRace,6,10; }
 5368,White_Wing,光の羽,4,20,,100,,2,,0,1000333311,2,256,,0,,1,{},{ bonus3 bAddMonsterDropItem,12280,11,5; }
 5369,Dark_Wing,闇の羽,4,20,,100,,2,,0,1000333311,2,256,,0,,1,{},{ bonus3 bAddMonsterDropItem,12279,11,5; }
 5370,Orchid_Hairband,蘭のヘアバンド（RJC）,4,20,,200,,1,,0,1000333311,2,256,,0,376,1,{},{ bonus bInt,1; }
 5371,Judge_Cap,裁判官の帽子（RJC）,11,20,,300,,2,,0,1000333311,2,768,,0,377,1,{},{ bonus bLuk,1; bonus bMaxSP,30; }
-5372,Drooping_White_Kitty,たれ白猫,4,20,,500,,1,,0,1000333311,2,256,,0,378,1,{},{ bonus bMatkRate,3; bonus bMaxSPrate,3; bonus bMdef,3; bonus bSkillDelayRate,-3; }
-5373,Darkness_Helm,ダークネスヘルム（RJC）,11,20,,300,,2,,0,1000333311,2,768,,,379,1,{},{ bonus bDex,3; bonus bMdef,1; }
+5372,Drooping_White_Kitty,たれ白猫,4,20,,500,,1:3,,0,1000333311,2,256,,0,378,1,{},{ bonus bMatkRate,3; bonus bMaxSPrate,3; bonus bSkillDelayRate,-3; }
+5373,Darkness_Helm,ダークネスヘルム（RJC）,11,20,,300,,2:1,,0,1000333311,2,768,,,379,1,{},{ bonus bDex,3; }
 5374,L_Magestic_Goat,大型マジェスティックゴート,4,20,,800,,5,,0,991944702,2,256,,0,380,1,{},{ bonus2 bAddRace,7,12; bonus bBaseAtk,JobLevel/2; }
 5375,L_Orc_Hero_Helm,大型オークヒーローの兜,11,20,,900,,5,,1,991944702,2,768,,55,381,1,{},{ bonus bStr,2; bonus bVit,1; }
 5376,Satanic_Chain_P,サタニックチェーン,11,20,,100,,3,,1,1000333311,2,256,,0,382,1,{},{ bonus bMaxSP,120; bonus2 bAddEff2,Eff_Curse,100; }
@@ -2631,13 +2631,13 @@
 5378,Rabbit_Ear_Hat,兎耳帽子,4,20,,300,,0,,0,1000333311,2,256,,0,384,1,{},{ bonus bAgi,3; bonus3 bRevAutoSelfSpell,29,5,300; }
 5379,Balloon_Hat,バルーンハット,4,20,,800,,3,,1,1000333311,2,256,,0,385,1,{},{ bonus bCastrate,-getequiprefinerycnt(1); }
 5380,Fish_Head_Hat,魚帽子,4,20,,400,,1,,0,1000333311,2,256,,0,386,1,{},{ bonus3 bAutoSelfSpell,281,1,300; }
-5381,Santa_Poring_Hat,サンタポリン帽,4,20,,100,,2,,1,1000333311,2,256,,0,387,,{},{ bonus2 bAddEle,7,3; bonus2 bMagicAddEle,7,3; bonus2 bSubEle,7,3; bonus bMdef,2; }
+5381,Santa_Poring_Hat,サンタポリン帽,4,20,,100,,2:2,,1,1000333311,2,256,,0,387,,{},{ bonus2 bAddEle,7,3; bonus2 bMagicAddEle,7,3; bonus2 bSubEle,7,3; }
 5382,Bell_Ribbon,小さな鈴のリボン,4,20,,200,,3,,1,1000333311,2,256,,0,388,1,{},{ bonus bVit,1; skill 33,1; }
 5383,Hunting_Cap,ハンティングキャップ,4,20,,250,,3,,1,991944702,2,256,,50,389,1,{},{ bonus bLuk,1; bonus2 bAddRace,2,10; }
 5384,Twin_Pompom_by_JB,ツインポンポンサンタ帽,4,20,,100,,1,,0,1000333311,2,256,,0,390,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; skill 93,1; bonus3 bRevAutoSelfSpell,29,1,500; }
 5385,Yoyo_Hat,ヨーヨー帽,4,20,,300,,1,,0,1000333311,2,256,,20,391,1,{},{ skill 51,1; }
-5386,NewYear_Suit_Hat,新年福帽子,4,20,,70,,7,,0,1000333311,2,256,,0,228,,{},{ bonus bMdef,7; bonus bFlee,7; bonus bShortWeaponDamageReturn,7; bonus3 bAddMonsterDropItem,12198,11,5; }
-5387,Neko_Mimi_Kafra,カプラの猫耳ヘアバンド,4,20,,200,,1,,1,1000333311,2,256,,30,392,1,{},{ bonus bMdef,5; bonus2 bAddEff2,Eff_Blind,10; bonus2 bAddEff2,Eff_Sleep,10; bonus2 bAddEff2,Eff_Poison,10; bonus2 bAddEff2,Eff_Freeze,10; bonus2 bAddEff2,Eff_Silenc,10; bonus2 bAddEff2,Eff_Stun,10; bonus2 bAddEff2,Eff_Curse,10; }
+5386,NewYear_Suit_Hat,新年福帽子,4,20,,70,,7:7,,0,1000333311,2,256,,0,228,,{},{ bonus bFlee,7; bonus bShortWeaponDamageReturn,7; bonus3 bAddMonsterDropItem,12198,11,5; }
+5387,Neko_Mimi_Kafra,カプラの猫耳ヘアバンド,4,20,,200,,1:5,,1,1000333311,2,256,,30,392,1,{},{ bonus2 bAddEff2,Eff_Blind,10; bonus2 bAddEff2,Eff_Sleep,10; bonus2 bAddEff2,Eff_Poison,10; bonus2 bAddEff2,Eff_Freeze,10; bonus2 bAddEff2,Eff_Silenc,10; bonus2 bAddEff2,Eff_Stun,10; bonus2 bAddEff2,Eff_Curse,10; }
 5388,Snake_Head,蛇頭帽子,4,20,,200,,1,,1,1000333311,2,256,,30,393,1,{},{ bonus bDoubleRate,25; }
 5389,Angel_Spirit,女神の仮面,4,20,,200,,0,,0,1000333311,2,512,,30,394,,{},{ bonus2 bAddRace,10,2; bonus2 bAddRace,11,2; bonus bMatkRate,2; }
 5390,Frozen_Twin_Pompom,青いツインポンポンサンタ帽,4,20,,100,,2,,0,1000333311,2,256,,0,395,1,{},{ bonus2 bResEff,Eff_Freeze,3000; }
@@ -2648,10 +2648,10 @@
 5395,Tiraya_Bonnet,ティラヤボネット,4,20,,500,,2,,0,1000333311,2,256,,,398,1,{},{ bonus bVit,2; }
 5396,Jasper_Crest,ジャスパークレスト,4,20,,700,,3,,1,1000333311,2,256,,0,399,1,{},{ bonus bDex,1; bonus2 bAddRace,1,5; bonus2 bAddEle,9,5; if(getequiprefinerycnt(1)<6){ bonus2 bAddEff2,Eff_Blind,100; /*発動率暫定*/ } if(getequiprefinerycnt(1)>=9){ bonus bDex,2; } }
 5397,Scuba_Mask,スキューバマスク,4,20,,100,,0,,0,1000333311,2,512,,0,400,,{},{ bonus2 bSubEle,1,10; }
-5398,Bone_Head,ボーンヘッド,4,20,,1200,,5,,1,279714,2,256,,85,401,1,{},{ bonus bStr,2; bonus bMdef,5; bonus2 bResEff,Eff_Stun,500; bonus2 bResEff,Eff_Bleed,500; bonus bUnbreakableHelm,n;}
+5398,Bone_Head,ボーンヘッド,4,20,,1200,,5:5,,1,279714,2,256,,85,401,1,{},{ bonus bStr,2; bonus2 bResEff,Eff_Stun,500; bonus2 bResEff,Eff_Bleed,500; bonus bUnbreakableHelm,n;}
 5399,Mandragora_Cap,マンドラゴラキャップ,4,20,,300,,1,,1,2088832,2,256,,85,402,,{},{ bonus bVit,3; bonus3 bRevAutoSpell,326,5,300; }
 5400,Fox_Hat,狐帽子,14,20,,200,,0,,0,1000333311,2,769,,0,403,1,{},{ bonus bLuk,1; }
-5401,Black_Glasses,黒縁メガネ,4,20,,200,,1,,0,1000333311,2,512,,70,404,,{},{ bonus bInt,1; bonus bMdef,2; }
+5401,Black_Glasses,黒縁メガネ,4,20,,200,,1:2,,0,1000333311,2,512,,70,404,,{},{ bonus bInt,1; }
 5402,Mischievous_Fairy,いたずらな妖精,4,20,,200,,1,,0,1000333311,2,512,,70,405,,{},{ bonus bFlee2,3; }
 5403,Fish_In_Mouth,くわえた魚,4,20,,200,,0,,0,1000333311,2,1,,30,406,,{},{ bonus3 bAddMonsterDropItem,579,11,500; bonus2 bItemHealRate,10,25; }
 5404,Blue_Ribbon,ブルーリボン,4,20,,100,,1,,1,1000333311,2,256,,45,407,1,{},{ bonus4 bAutoSpell,45,2,300,EAS_SHORT|EAS_SELF|EAS_NOSP; }
@@ -2665,14 +2665,14 @@
 5412,Sweet_Candy,甘いキャンディ,4,,,100,,1,,0,1000333311,2,1,,,414,,{},{}
 5413,Pop_Corn_Hat,ポップコーン帽子,4,20,,300,,2,,0,1000333311,2,256,,0,415,1,{},{ bonus2 bSubEle,4,10; }
 5414,Camp_Fire_Hat,キャンプファイアー帽子,4,20,,300,,2,,0,1000333311,2,256,,0,416,1,{},{ bonus2 bSubEle,3,10; bonus3 bAutoSpell,17,5,500; }
-5415,Poring_Cake_Hat,ポリンケーキ帽子,4,,,1000,,5,,0,1000333311,2,256,,40,417,1,{},{ bonus bMdef,5; bonus bCritical,5; bonus bFlee,5; bonus bFlee2,5; bonus bAspdAddRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; }
+5415,Poring_Cake_Hat,ポリンケーキ帽子,4,,,1000,,5:5,,0,1000333311,2,256,,40,417,1,{},{ bonus bCritical,5; bonus bFlee,5; bonus bFlee2,5; bonus bAspdAddRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; }
 5416,Beer_Hat,ビール帽子,4,,,600,,2,,0,991944702,2,256,,18,418,1,{},{}
 5417,Crown_Parrot,王冠オウム,4,,,200,,1,,1,1000333311,2,256,,,419,,{},{ bonus2 bResEff,Eff_Silence,10000; bonus bInt,1; bonus3 bRevAutoSpell,326,1,10; }
 5418,Soldier_Hat,クルーザー帽,4,,,400,,4,,1,1000333311,2,256,,,420,1,{},{ bonus2 bAddRace,10,3; bonus2 bAddRace,11,3; bonus bStr,1; bonus bUseSPrate,10; }
 5419,Evolved_Leaf,進化した草の葉,4,,,100,,0,,0,1000333311,2,1,,,57,,{},{ bonus bVit,1; bonus2 bSubRace,3,5; bonus2 bMagicSubRace,3,5; }
-5420,Mask_Of_Ifrit,イフリート仮面,14,,,0,,8,,0,991944702,2,769,,70,421,,{},{ bonus bStr,1; bonus bInt,1; bonus bMdef,5; bonus2 bSubEle,3,10; bonus2 bSubEle,1,-10; skill 10,1; bonus3 bRevAutoSpell,83,3,500; bonus3 bAutoSpell,19,3,500; }
-5421,Ifrit's_Ear,イフリートの耳,4,,,100,,0,,0,1000333311,2,512,,70,422,,{},{ bonus bStr,1; bonus bMdef,3; bonus2 bAddSkillDamageRate,19,2; bonus2 bAddSkillDamageRate,80,2; bonus2 bAddSkillDamageRate,83,2; bonus2 bAddSkillDamageRate,5,2; bonus2 bAddSkillDamageRate,56,2; bonus2 bAddSkillDamageRate,7,2; bonus2 bSubEle,3,5; bonus2 bSubEle,1,-5; }
-5422,Linguistic_Book_Cap,文字本帽子,4,,,70,,0,,0,1000333311,2,256,,,423,1,{},{ bonus bInt,1; bonus bMdef,2; }
+5420,Mask_Of_Ifrit,イフリート仮面,14,,,0,,8:5,,0,991944702,2,769,,70,421,,{},{ bonus bStr,1; bonus bInt,1; bonus2 bSubEle,3,10; bonus2 bSubEle,1,-10; skill 10,1; bonus3 bRevAutoSpell,83,3,500; bonus3 bAutoSpell,19,3,500; }
+5421,Ifrit's_Ear,イフリートの耳,4,,,100,,0:3,,0,1000333311,2,512,,70,422,,{},{ bonus bStr,1; bonus2 bAddSkillDamageRate,19,2; bonus2 bAddSkillDamageRate,80,2; bonus2 bAddSkillDamageRate,83,2; bonus2 bAddSkillDamageRate,5,2; bonus2 bAddSkillDamageRate,56,2; bonus2 bAddSkillDamageRate,7,2; bonus2 bSubEle,3,5; bonus2 bSubEle,1,-5; }
+5422,Linguistic_Book_Cap,文字本帽子,4,,,70,,0:2,,0,1000333311,2,256,,,423,1,{},{ bonus bInt,1; }
 5423,Lovecap_China,I LOVE CHINA,4,,,250,,5,,0,1000333311,2,256,,,424,,{},{ bonus bDex,3; bonus2 bSubRace,7,10; bonus2 bMagicSubRace,7,10; }
 5424,Fanta_Orange_Can,ファンタ オレンジ缶,4,,,100,,2,,1,1000333311,2,256,,,425,1,{},{}
 5425,Fanta_Grape_Can,ファンタ グレープ缶,4,,,100,,2,,1,1000333311,2,256,,,426,1,{},{}
@@ -2686,18 +2686,18 @@
 5433,Golden_Wreath,黄金月桂樹,4,,,100,,0,,,1000333311,2,256,,,434,1,{},{}
 5434,Unknown_Item,コカ・コーラ缶,4,,,100,,2,,1,1000333311,2,256,,,435,,{},{}
 5435,Unknown_Item,コカ・コーラ帽,4,,,100,,2,,1,1000333311,2,256,,,436,,{},{ bonus bStr,1; }
-5436,Unknown_Item,フラワーヴェール,4,,,200,,1,,0,1000333311,2,256,,,437,1,{},{ bonus bLuk,3; bonus bMdef,2; }
+5436,Unknown_Item,フラワーヴェール,4,,,200,,1:2,,0,1000333311,2,256,,,437,1,{},{ bonus bLuk,3; }
 5437,Flower_Of_Fairy,天女の花,4,,,200,,1,,1,1000333311,2,256,,,438,1,{},{}
 5438,Fillet_Green,グリーンヘアバンド,4,,,100,,1,,0,991944702,2,256,,,439,,{},{ bonus bMaxSP,20; }
 5439,Fillet_Red,レッドヘアバンド,4,,,100,,1,,0,991944702,2,256,,,440,,{},{ bonus bMaxSP,20; }
 5440,Fillet_Blue,ブルーヘアバンド,4,,,100,,1,,0,991944702,2,256,,,441,,{},{ bonus bMaxSP,20; }
 5441,Fillet_White,ホワイトヘアバンド,4,,,100,,1,,0,991944702,2,256,,,442,,{},{ bonus bMaxSP,20; }
 5442,Necktie,ネクタイ,4,,,100,,3,,1,1000333311,2,256,,70,443,1,{},{ bonus bVit,1; if(getequipid(9)==5040) { bonus bAspdAddRate,3; bonus bCastrate,-3; bonus bHit,-5; bonus bUseSPrate,5; } }
-5443,Status_Of_Baby_Angel,赤ちゃん天使像,4,,,600,,3,,1,1000333311,2,256,,70,444,1,{},{ bonus bMdef,2; bonus3 bRevAutoSelfSpell,72,1,300; }
+5443,Status_Of_Baby_Angel,赤ちゃん天使像,4,,,600,,3:2,,1,1000333311,2,256,,70,444,1,{},{ bonus3 bRevAutoSelfSpell,72,1,300; }
 5444,Hair_Brush,頭櫛,4,,,100,,0,,0,1000333311,2,256,,,445,1,{},{ bonus bCritical,6; }
 5445,Candy_Cane_In_The_Mouth,口にくわえたスティックキャンディ,4,,,100,,0,,0,1000333311,2,1,,,446,,{},{ bonus bMaxSP,5; }
 5446,Cat_Foot_Hairpin,肉球のヘアピン,4,,,200,,0,,1,1000333311,2,256,,,447,1,{},{ bonus bFlee,5; bonus bFlee2,3; }
-5447,Frog_Cap,蛙帽子,4,,,500,,3,,0,1000333311,2,256,,70,448,1,{},{ bonus2 bAddRace,4,12; bonus2 bMagicAddRace,4,12; bonus bMdef,1; }
+5447,Frog_Cap,蛙帽子,4,,,500,,3:1,,0,1000333311,2,256,,70,448,1,{},{ bonus2 bAddRace,4,12; bonus2 bMagicAddRace,4,12; }
 5448,Solo_Play_Box1,一人遊び箱,14,,,300,,0,,1,1000333311,2,769,,,449,1,{},{ skill 220,1; }
 5449,Solo_Play_Box2,カードボードボックス,14,,,400,,7,,0,1000333311,2,769,,,450,0,{},{ bonus2 bAddEff,Eff_Curse,1000; }
 5450,Sun_Cap,太陽帽子,4,,,1000,,0,,0,991944702,2,256,,20,451,1,{},{}
@@ -2713,12 +2713,12 @@
 5460,Adv_Dragon_Skull,進化した龍の骸骨,4,,,1000,,7,,0,1000333311,2,256,,60,457,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bMaxHPrate,3; }
 5461,Adv_Whisper_Mask,進化したウィスパーマスク,14,,,300,,1,,0,1000333311,2,769,,50,458,1,{},{ bonus bDex,3; bonus2 bSubEle,8,20; }
 5462,Spiked_Scarf,棘のスカーフ,4,,,100,,1,,0,1000333311,2,1,,90,459,,{},{ bonus bVit,1; bonus2 bAddRace,7,1; bonus2 bMagicAddRace,7,1; bonus2 bSubRace,7,1; bonus2 bMagicSubRace,7,1; }
-5463,Rainbow_Scarf,虹スカーフ,4,,,100,,1,,0,1000333311,2,1,,90,460,,{},{ bonus bInt,1; bonus bMdef,2; bonus bMatkRate,1; }
+5463,Rainbow_Scarf,虹スカーフ,4,,,100,,1:2,,0,1000333311,2,1,,90,460,,{},{ bonus bInt,1; bonus bMatkRate,1; }
 5464,Zaha_Doll_Hat,たれペクソジン人形,4,,,0,,1,,0,1000333311,2,256,,,461,,{},{ bonus bInt,2; skill 74,3; }
-5465,Celestial_Hat,大空の帽子,4,,,500,,3,,1,1000333311,2,256,,40,462,1,{},{ bonus bLuk,2; bonus bMdef,5; if(getequiprefinerycnt(1)>=5) bonus bLuk,getequiprefinerycnt(1)-4; }
+5465,Celestial_Hat,大空の帽子,4,,,500,,3:5,,1,1000333311,2,256,,40,462,1,{},{ bonus bLuk,2; if(getequiprefinerycnt(1)>=5) bonus bLuk,getequiprefinerycnt(1)-4; }
 5466,Wind_Milestone,風の道標,4,,,100,,2,,1,1000333311,2,256,,30,463,1,{},{ bonus bAgi,2; skill 26,1; }
 5467,Helm_Of_Dragoon,ドラグーンヘルム,4,,,2000,,5,,,1000333311,2,256,,50,464,1,{},{ bonus2 bAddRace,9,20; bonus2 bMagicAddRace,9,20; bonus3 bAutoSelfSpell,659,1,300; }
-5468,Parade_Cap,パレード帽,4,,,800,,3,,1,1000333311,2,256,,,465,1,{},{ bonus bSkillDelayRate,-5; bonus bMdef,2; if (getequiprefinerycnt(1)<6) end; bonus bSkillDelayRate,getequiprefinerycnt(1)*-1; bonus bSkillDelayRate,5; }
+5468,Parade_Cap,パレード帽,4,,,800,,3:2,,1,1000333311,2,256,,,465,1,{},{ bonus bSkillDelayRate,-5; if (getequiprefinerycnt(1)<6) end; bonus bSkillDelayRate,getequiprefinerycnt(1)*-1; bonus bSkillDelayRate,5; }
 5469,Noble_Hat,ノーブルハット,4,,,300,,2,,,1000333311,2,256,,30,466,1,{},{ bonus bStr,2; bonus3 bAutoSelfSpell,111,1,50; /*オートスペル発動率は暫定0.5%*/ }
 5470,Eyes_Of_Darkness,ダークネスアイズ,4,,,100,,1,,,1000333311,2,512,,50,467,,{},{ bonus bDex,1; bonus2 bResEff,Eff_Blind,10000; }
 5471,Hairband_Of_Reginleif,レギンレイヴの翼,4,,,800,,1,,,1000333311,2,512,,50,468,,{},{ bonus2 bSubEle,1,3; bonus2 bSubEle,3,3; bonus2 bSubEle,7,3; bonus2 bSubEle,9,3; }
@@ -2729,7 +2729,7 @@
 5476,Hairband_Of_Grandpeco,グランペコのヘアバンド,11,,,800,,2,,,1000333311,2,768,,30,473,1,{},{ bonus bStr,2; bonus bMaxHPrate,-10; bonus2 bAddGroup,2,15; }
 5477,Bro_Flag,ブラジル国旗,4,,,100,,1,,1,991944702,2,256,,30,474,1,{},{ skill 5,1; }
 5478,Classic_Hat,クラシックハット,4,,,500,,3,,0,1000333311,2,256,,,475,1,{},{bonus bStr,2; bonus bMaxHP,300; }
-5479,Shaman's_Hair_Ornament,シャーマンの髪飾り,4,,,300,,1,,0,1000333311,2,256,,30,476,1,{},{ bonus bMaxHP,50; bonus bMdef,3; bonus2 bSubEle,0,5; if( ( (getequipid(7)==2777) || (getequipid(8)==2777) ) && ( (getequipid(7)==2778) || (getequipid(8)==2778) ) ) bonus bMaxHP,300; bonus bCastrate,15; bonus bMatkRate,5; bonus bNoCastCancel,0; }
+5479,Shaman's_Hair_Ornament,シャーマンの髪飾り,4,,,300,,1:3,,0,1000333311,2,256,,30,476,1,{},{ bonus bMaxHP,50; bonus2 bSubEle,0,5; if( ( (getequipid(7)==2777) || (getequipid(8)==2777) ) && ( (getequipid(7)==2778) || (getequipid(8)==2778) ) ) bonus bMaxHP,300; bonus bCastrate,15; bonus bMatkRate,5; bonus bNoCastCancel,0; }
 5480,Bizofnil_Wing_Deco,ヴィゾフニルの羽飾り,4,,,1000,,3,,1,1000333311,2,256,,30,477,1,{},{ bonus3 bAutoSelfSpell,66,3,300; /*発動率は暫定*/ }
 5481,Hermose_Cap,ヘルモーズキャップ,4,,,1000,,1,,0,1000333311,2,256,,10,478,1,{},{ bonus bAspdAddRate,10; bonus bBaseAtk,-20; bonus bMatkRate,-10; }
 5482,Dark_Knight_Mask,ダークナイトマスク,14,,,3000,,5,,0,1000333311,2,769,,80,479,1,{},{ bonus bStr,3; if( ( (getequipid(7)==2779) || (getequipid(8)==2779) ) && ( (getequipid(7)==2780) || (getequipid(8)==2780) ) ) bonus bMatkRate,10; bonus bInt,5; bonus2 bSubRace,8,10; bonus2 bMagicSubRace,8,10; }
@@ -2738,7 +2738,7 @@
 5485,Tiger_Face,タイガーフェイス,13,,,300,,0,,0,1000333311,2,513,,50,483,0,{},{ bonus2 bAddRace,2,5; }
 5486,J_Anniversary_Hat,アニバーサリー帽,4,,,300,,3,,0,1000333311,2,256,,,395,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 5487,J_Poringcake_Hat,ポリンケーキ帽,4,,,500,,1,,0,1000333311,2,256,,,417,1,{},{ bonus bLuk,2; }
-5488,J_Twin_Santahat,かわいいサンタ帽,4,,,100,,1,,0,1000333311,2,256,,,390,1,{},{ bonus bLuk,1; bonus bMdef,1; }
+5488,J_Twin_Santahat,かわいいサンタ帽,4,,,100,,1:1,,0,1000333311,2,256,,,390,1,{},{ bonus bLuk,1; }
 5489,Love_Daddy,ラブダディ,4,,,100,,0,,0,1000333311,2,256,,,484,1,{},{ bonus bDex,2; }
 5490,Anubis_Helm,アヌビスの兜,4,,,0,,3,,0,1000333311,2,256,,70,485,1,{},{ bonus2 bSubRace,10,10; bonus2 bMagicSubRace,10,10; bonus2 bAddSkillHealRate,28,10; }
 5491,Hat_Of_Outlaw,無法者の帽子,4,,,800,,3,,0,1000333311,2,256,,,486,1,{},{ bonus bStr,2; bonus2 bSubEle,3,10; }
@@ -2753,19 +2753,19 @@
 5500,Icecream_Hat,アイスクリーム帽子,4,,,250,,3,,0,1000333311,2,256,,30,488,1,{},{ skill 88,2; bonus2 bSubEle,1,15; if(getequiprefinerycnt(1)>=8) bonus2 bSubEle,1,5; bonus bUnbreakableHelm,0; }
 5501,Pirate's_Pride,海賊の自尊心,4,,,100,,3,,0,1000333311,2,256,,10,496,1,{},{}
 5502,Necromencer's_Hood,ネクロマンサーの頭巾,11,,,100,,2,,1,1000333311,2,768,,10,491,1,{},{ bonus3 bRevAutoSpell,340,5,300; /*AS発動率は暫定値*/ }
-5503,Rabbit_Magic_Hat,兎魔術帽子,4,,,800,,2,,0,1000333311,2,256,,45,497,1,{},{ bonus bDex,2; bonus bAgi,2; bonus bMdef,1; bonus bAspdAddRate,3; bonus bSkillDelayRate,-4; }
-5504,China_Wedding_Veil,RO5周年記念ヴェール,14,,,500,,5,,0,1000333311,2,769,,70,489,1,{},{ bonus bMdef,10; }
+5503,Rabbit_Magic_Hat,兎魔術帽子,4,,,800,,2:1,,0,1000333311,2,256,,45,497,1,{},{ bonus bDex,2; bonus bAgi,2; bonus bAspdAddRate,3; bonus bSkillDelayRate,-4; }
+5504,China_Wedding_Veil,RO5周年記念ヴェール,14,,,500,,5:10,,0,1000333311,2,769,,70,489,1,{},{}
 5505,Asara_Fairy_Hat,アスラ妖精帽子,11,,,500,,2,,0,1000333311,2,768,,50,492,1,{},{ skill 328,1; bonus bDex,2; bonus bLuk,2; }
 5506,Blue_Pajamas_Hat,ブルーパジャマ帽子,4,,,100,,2,,0,1000333311,2,256,,,501,1,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; }
 5507,Pink_Pajamas_Hat,ピンクパジャマ帽子,4,,,100,,2,,0,1000333311,2,256,,,502,1,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,5; }
-5508,Shark_Hat,シャークハット,4,,,500,,3,,0,1000333311,2,256,,,503,1,{},{ bonus bStr,1; bonus bAgi,2; bonus bMdef,1; bonus2 bAddEle,1,5; bonus2 bSubEle,1,10; }
-5509,Sting_Hat,スティング帽子,4,,,1000,,5,,0,1000333311,2,256,,,504,1,{},{ bonus bStr,2; bonus bVit,1; bonus bMdef,3; bonus2 bAddEle,3,5; bonus2 bSubEle,2,5; bonus3 bRevAutoSpell,90,1,300; /*暫定3%*/ }
-5510,Shower_Cap,シャワーキャップ,4,,,0,,2,,0,1000333311,2,256,,,507,1,{},{ bonus bMdef,3; bonus bFlee,3; bonus2 bSubEle,1,10; bonus2 bSubRace,5,10; bonus2 bMagicSubRace,5,10; }
+5508,Shark_Hat,シャークハット,4,,,500,,3:1,,0,1000333311,2,256,,,503,1,{},{ bonus bStr,1; bonus bAgi,2; bonus2 bAddEle,1,5; bonus2 bSubEle,1,10; }
+5509,Sting_Hat,スティング帽子,4,,,1000,,5:3,,0,1000333311,2,256,,,504,1,{},{ bonus bStr,2; bonus bVit,1; bonus2 bAddEle,3,5; bonus2 bSubEle,2,5; bonus3 bRevAutoSpell,90,1,300; /*暫定3%*/ }
+5510,Shower_Cap,シャワーキャップ,4,,,0,,2:3,,0,1000333311,2,256,,,507,1,{},{ bonus bFlee,3; bonus2 bSubEle,1,10; bonus2 bSubRace,5,10; bonus2 bMagicSubRace,5,10; }
 5511,Samambaia,サマンバイア,11,,,1000,,5,,1,1000333311,2,768,,30,508,1,{},{ bonus bSPrecovRate,8; }
 5512,Unknown_Item,宝瓶宮の宝冠,4,,,300,,3,,0,1000333311,2,256,,70,509,1,{},{ bonus bStr,2; bonus bFlee,10; bonus2 bSubEle,4,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bBaseAtk,15; }
 5513,Unknown_Item,宝瓶宮の王冠,4,,,300,,3,,0,1000333311,2,256,,70,510,1,{},{ bonus bStr,2; bonus bFlee,10; bonus2 bSubEle,4,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bBaseAtk,15; }
-5514,Unknown_Item,双魚宮の宝冠,4,,,300,,3,,0,1000333311,2,256,,70,511,1,{},{ bonus bInt,2; bonus bMdef,5; bonus2 bSubEle,1,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bMatkRate,2; }
-5515,Unknown_Item,双魚宮の王冠,4,,,300,,3,,0,1000333311,2,256,,70,512,1,{},{ bonus bInt,2; bonus bMdef,5; bonus2 bSubEle,1,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bMatkRate,2; }
+5514,Unknown_Item,双魚宮の宝冠,4,,,300,,3:5,,0,1000333311,2,256,,70,511,1,{},{ bonus bInt,2; bonus2 bSubEle,1,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bMatkRate,2; }
+5515,Unknown_Item,双魚宮の王冠,4,,,300,,3:5,,0,1000333311,2,256,,70,512,1,{},{ bonus bInt,2; bonus2 bSubEle,1,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bMatkRate,2; }
 5516,Hawk_Eyes01,イーグルアイ,4,,,1000,,0,,0,2048,2,512,,0,,,{},{ bonus bDex,1; bonus bAddLongWeaponDamage,3; }
 5517,Hawk_Eyes02,量産型イーグルアイ,4,,,1000,,0,,0,1574920,2,512,,0,,,{},{}
 5518,L_Magestic_Goat2,大型マジェスティックゴート,4,,,800,,5,,0,1000333311,2,256,,50,513,1,{},{ bonus2 bSubRace,7,12; bonus2 bMagicSubRace,7,12; bonus bBaseAtk,JobLevel/2; /*暫定ジョブの1/2ごとに1*/ }
@@ -2777,7 +2777,7 @@
 5524,Sakura_Milk_Tea_Hat,紅茶花伝 桜 ミルクティー帽,4,20,,100,,2,,1,1000333311,2,256,,0,518,1,{},{ bonus bVit,1; }
 5525,First_Leaf_Tea_Hat,一 茶花帽,4,20,,100,,2,,1,1000333311,2,256,,0,519,1,{},{ bonus bMaxHP,80; bonus bMaxSP,20; }
 5526,Lady_Tanee_Doll,レディータニー人形,4,,,100,,0,,0,1000333311,2,256,,0,520,1,{},{ bonus3 bAddMonsterDropItem,513,11,30; /*ドロップ率は暫定*/ }
-5527,Lunatic_Hat,ルナティック帽子,4,,,300,,2,,0,1000333311,2,256,,0,521,1,{},{ bonus bLuk,5; bonus bMdef,2; bonus bFlee2,5; bonus3 bAddMonsterDropItem,622,2,30; /*ドロップ率は暫定*/ }
+5527,Lunatic_Hat,ルナティック帽子,4,,,300,,2:2,,0,1000333311,2,256,,0,521,1,{},{ bonus bLuk,5; bonus bFlee2,5; bonus3 bAddMonsterDropItem,622,2,30; /*ドロップ率は暫定*/ }
 5528,King_Frog_Hat,かえる王子の帽子,4,,,500,,2,,1,991944702,2,256,,30,522,1,{},{ bonus bAgi,1; }
 5529,Evil's_Bone_Hat,魔王の骨兜,11,,,600,,6,,0,1000333311,2,768,,70,523,1,{},{ bonus bDex,3; bonus2 bSubEle,0,5; skill 88,1; }
 5530,Raven_Cap,カラス帽子,4,,,100,,3,,1,1000333311,2,256,,,524,1,{},{}
@@ -2785,11 +2785,11 @@
 5532,Pirate_Dagger_J,海賊の短剣,4,,,100,,0,,0,1000333311,2,1,,30,327,,{},{ bonus bShortWeaponDamageReturn,1; }
 5533,Emperor_Wreath_J,皇帝の月桂冠,4,,,800,,3,,1,1000333311,2,256,,80,261,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 5534,Fox_Hat_J,白狐の仮面,13,,,100,,1,,0,1000333311,2,513,,70,403,0,{},{ bonus bAgi,1; bonus bFlee2,2; }
-5535,Side_Cap,サイドキャップ,4,,,500,,3,,0,1000333311,2,256,,0,529,1,{},{ bonus bVit,1; bonus bDex,1; bonus bMdef,3; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; bonus2 bAddRace,7,6; }
+5535,Side_Cap,サイドキャップ,4,,,500,,3:3,,0,1000333311,2,256,,0,529,1,{},{ bonus bVit,1; bonus bDex,1; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; bonus2 bAddRace,7,6; }
 5536,Spare_Card,スペアカード,4,,,10,,1,,0,1000333311,2,1,,10,526,,{},{ bonus3 bAddMonsterDropItem,6187,11,1; /* ドロップ率は暫定 */}
 5537,Quati_Hat,クアティハット,4,,,700,,1,,1,1000333311,2,256,,45,527,,{},{ bonus bAgi,3; }
 5538,Tucan_Hat,オオハシ帽子,11,,,600,,2,,1,1000333311,2,768,,45,528,,{},{ bonus bDex,3; }
-5539,Jaguar_Hat,ジャガー帽子,14,,,400,,4,,1,1000333311,2,769,,25,530,1,{},{ bonus bMdef,2; skill 155,1; }
+5539,Jaguar_Hat,ジャガー帽子,14,,,400,,4:2,,1,1000333311,2,769,,25,530,1,{},{ skill 155,1; }
 5540,Unknown_Item,プレイヤー魂サークレット,4,,,700,,4,,0,1000333311,2,256,,20,18,,{},{ bonus bStr,1; bonus bInt,1; bonus bDex,1; }
 5541,Unknown_Item,プレイヤー魂サークレット,4,,,700,,4,,0,1000333311,2,256,,20,18,,{},{ bonus bStr,1; bonus bInt,1; bonus bDex,1; }
 5542,Unknown_Item,プレイヤー魂サークレット,4,,,700,,4,,0,1000333311,2,256,,20,18,,{},{ bonus bStr,1; bonus bInt,1; bonus bDex,1; }
@@ -2802,8 +2802,8 @@
 5549,Unknown_Item,金牛宮の宝冠,4,,,300,,3,,0,1000333311,2,256,,70,535,1,{},{ bonus bDex,2; bonus bSkillDelayRate,-2; bonus2 bSubEle,2,5; if(getequiprefinerycnt(1)>=7) bonus bDex,1; bonus bVit,1; bonus bMatkRate,1; }
 5550,Unknown_Item,金牛宮の王冠,4,,,300,,3,,0,1000333311,2,256,,70,536,1,{},{ bonus bDex,2; bonus bSkillDelayRate,-2; bonus2 bSubEle,2,5; if(getequiprefinerycnt(1)>=7) bonus bDex,1; bonus bVit,1; bonus bMatkRate,1; }
 5551,Unknown_Item,神聖な卵帽子,4,,,0,,2,,0,1000333311,2,256,,0,537,1,{},{ bonus3 bRevAutoSelfSpell,28,1,500; bonus bSpeedRate,25; /*発動確率＆移動速度は暫定*/ }
-5552,Unknown_Item,祭用ロードサークレット,4,,,0,,8,,0,1000333311,2,256,,0,93,1,{},{ bonus bStr,3; bonus bInt,3; bonus bMdef,3; }
-5553,Unknown_Item,祭用ウサギのヘアバンド,4,,,0,,7,,0,1000333311,2,256,,0,15,1,{},{ bonus bMdef,4; bonus2 bSubRace,7,9; bonus2 bMagicSubRace,7,9; }
+5552,Unknown_Item,祭用ロードサークレット,4,,,0,,8:3,,0,1000333311,2,256,,0,93,1,{},{ bonus bStr,3; bonus bInt,3; }
+5553,Unknown_Item,祭用ウサギのヘアバンド,4,,,0,,7:4,,0,1000333311,2,256,,0,15,1,{},{ bonus2 bSubRace,7,9; bonus2 bMagicSubRace,7,9; }
 5554,Unknown_Item,タコ帽子,4,,,200,,3,,0,1000333311,2,256,,20,538,1,{},{bonus3 bRevAutoSpell,6,5,500; bonus bUnbreakableHelm,0; /*発動確率は暫定*/ }
 5555,Unknown_Item,たれリーフキャット,4,,,200,,0,,0,1000333311,2,256,,30,539,,{},{}
 5556,Unknown_Item,オットー帽子,14,,,500,,3,,0,1000333311,2,769,,55,540,1,{},{ bonus bInt,1; bonus3 bRevAutoSelfSpell,88,1,500; /*発動確率は暫定*/ }
@@ -2812,7 +2812,7 @@
 5559,Unknown_Item,真白な布切れ,11,,,0,,5,,0,1000333311,2,768,,1,543,1,{},{}
 5560,Unknown_Item,角兜,4,,,3000,,3,,0,1000333311,2,256,,75,322,1,{},{ bonus bMaxHP,100; bonus bNoKnockback,0; bonus2 bSubEle,0,-30; bonus2 bSubEle,1,-30; bonus2 bSubEle,2,-30; bonus2 bSubEle,3,-30; bonus2 bSubEle,4,-30; bonus2 bSubEle,5,-30; bonus2 bSubEle,6,-30; bonus2 bSubEle,7,-30; bonus2 bSubEle,8,-30; bonus2 bSubEle,9,-30;}
 5561,Unknown_Item,ウサギの魔術帽子,4,,,800,,1,,0,1000333311,2,256,,0,497,1,{},{ bonus bInt,1; bonus bMaxSP,50; bonus3 bAutoSpell,19,1,30; bonus3 bAutoSpell,14,1,30; bonus3 bAutoSpell,20,1,30; bonus3 bAutoSpell,90,1,30; bonus3 bAutoSpell,19,2,30; bonus3 bAutoSpell,14,2,30; bonus3 bAutoSpell,20,2,30; bonus3 bAutoSpell,90,2,30; bonus3 bAutoSpell,19,3,30; bonus3 bAutoSpell,14,3,30; bonus3 bAutoSpell,20,3,30; bonus3 bAutoSpell,90,3,30; bonus3 bRevAutoSelfSpell,28,1,500; /* 発動率は暫定 */ }
-5562,Unknown_Item,真実の愛,11,,,100,,0,,1,1000333311,2,768,,45,489,1,{},{ bonus bMdef,10; bonus bCastrate,-10; bonus bUseSPrate,-5; }
+5562,Unknown_Item,真実の愛,11,,,100,,0:10,,1,1000333311,2,768,,45,489,1,{},{ bonus bCastrate,-10; bonus bUseSPrate,-5; }
 5563,Unknown_Item,タナトスの苦悩の帽子,4,,,100,,3,,0,1000333311,2,256,,,547,1,{},{ bonus bUnbreakableHelm,0; bonus3 bRevAutoSpell,78,1,300; /*発動率暫定*/ }
 5564,Unknown_Item,邪気の王冠,11,,,300,,3,,0,1000333311,2,768,,85,544,1,{},{ bonus bInt,4; bonus bCastrate,-10; }
 5565,Unknown_Item,降龍羅漢の仮面,13,,,0,,5,,0,1000333311,2,513,,0,545,,{},{ bonus2 bAddRace,7,10; }
@@ -2831,7 +2831,7 @@
 5578,Unknown_Item,航海帽子,4,,,10,,1,,0,1000333311,2,256,,0,236,1,{},{ bonus bAgi,2; }
 5579,Unknown_Item,彷徨う者の笠,11,,,300,,2,,0,1000333311,2,768,,70,558,1,{},{ bonus bAgi,2; }
 5580,Unknown_Item,レッドベレー,4,,,70,,0,,0,1000333311,2,256,,0,559,,{},{ bonus2 bAddRace,7,5; bonus2 bSubRace,7,5; bonus2 bMagicSubRace,7,5; }
-5581,Unknown_Item,巨蟹宮の宝冠,4,,,300,,3,,0,1000333311,2,256,,70,560,1,{},{ bonus bInt,2; bonus2 bSubEle,1,5; bonus bMdef,1; bonus bMatkRate,2; bonus2 bAddSkillHealRate,28,3; bonus2 bItemHealRate,1,3; bonus2 bItemHealRate,2,3; bonus2 bItemHealRate,3,3; bonus2 bItemHealRate,4,3; bonus2 bItemHealRate,5,3; bonus2 bItemHealRate,6,3; }
+5581,Unknown_Item,巨蟹宮の宝冠,4,,,300,,3:1,,0,1000333311,2,256,,70,560,1,{},{ bonus bInt,2; bonus2 bSubEle,1,5; bonus bMatkRate,2; bonus2 bAddSkillHealRate,28,3; bonus2 bItemHealRate,1,3; bonus2 bItemHealRate,2,3; bonus2 bItemHealRate,3,3; bonus2 bItemHealRate,4,3; bonus2 bItemHealRate,5,3; bonus2 bItemHealRate,6,3; }
 5582,Unknown_Item,巨蟹宮の王冠,4,,,30,,3,,0,1000333311,2,256,,70,561,1,{},{ bonus bStr,2; bonus2 bSubEle,1,5; if(getequiprefinerycnt(1)>=7) bonus bDef,1; bonus bBaseAtk,15; bonus bFlee,10; }
 5583,Unknown_Item,楽園団ハット,4,,,,,,,,,2,,,,,,{},{}
 5584,Unknown_Item,マジェスティックデビルホルン,4,,,,,,,,,,,,,,,{},{}
@@ -2851,7 +2851,7 @@
 5659,Unknown_Item,スリーパー帽子,4,,,400,,1,,,1000333311,2,256,,,590,,{},{ bonus3 bAutoSelfSpell2,283,1,100; /* 暫定 */ }
 5660,Unknown_Item,グリフォン帽子,4,,,400,,1,,,1000333311,2,256,,,591,,{},{ bonus3 bAutoSelfSpell2,282,1,100; /* 暫定 */ }
 
-5665,Shaman_Hat,ノルンの羽帽子,4,,,100,,1,,1,1000333311,2,256,,30,596,1,{},{ bonus bMaxSP,30; bonus bMdef,3; bonus2 bAddEle,1,10; }
+5665,Shaman_Hat,ノルンの羽帽子,4,,,100,,1:3,,1,1000333311,2,256,,30,596,1,{},{ bonus bMaxSP,30; bonus2 bAddEle,1,10; }
 
 5669,Unknown_Item,ポリンパーティー帽,4,,,300,,1,,,1000333311,2,256,,,340,,{},{}
 5670,Unknown_Item,怪盗アニバーサリー帽,4,,,300,,3,,,1000333311,2,256,,,599,,{},{ bonus bAgi,1; if(getequipid(9) == 2239) { bonus3 bAutoSpell,50,1,1000; } else { bonus3 bAutoSpell,50,1,100; }; /* 暫定 */ }
@@ -2870,7 +2870,7 @@
 
 5743,Unknown_Item,だいだい帽,4,,,100,,,,,1000333311,2,256,,,621,,{},{ bonus bLuk,3; bonus bUnbreakableHelm,1; bonus3 bAddMonsterDropItem,582,11,500; /* ドロップ率暫定 */ }
 
-5759,Noah_Hat,ノアの帽子,4,,,500,,1,,,1000333311,2,256,,,636,1,{},{ bonus bMdef,3; bonus bSPrecovRate,3; if(getbaseclass(Class) == CLASS_AL) { bonus2 bAddSkillDamageRate,156,5; if(getequiprefinerycnt(1)>=7) bonus2 bAddSkillDamageRate,156,5; } }
+5759,Noah_Hat,ノアの帽子,4,,,500,,1:3,,,1000333311,2,256,,,636,1,{},{ bonus bSPrecovRate,3; if(getbaseclass(Class) == CLASS_AL) { bonus2 bAddSkillDamageRate,156,5; if(getequiprefinerycnt(1)>=7) bonus2 bAddSkillDamageRate,156,5; } }
 
 5764,Unknown_Item,ラブラビットフード,14,,,300,,1,,1,1000333311,2,769,,10,,,{},{}
 
@@ -2893,7 +2893,7 @@
 
 5815,Unknown_Item,クラシックハット,4,,,500,,1,,1,1000333311,2,256,,,475,1,{},{ bonus bStr,1; bonus2 bAddSize,0,5; bonus2 bAddSize,1,5; bonus2 bAddSize,2,5; }
 5816,Unknown_Item,ニューカウボーイハット,4,,,500,,0,,1,1000333311,2,256,,,411,1,{},{ bonus bBaseAtk,15; bonus bFlee,-5; }
-5817,Unknown_Item,バレンタインの印,4,,,0,,3,,0,1000333311,2,136,,,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,3; bonus bStr,2; bonus bVit,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bFlee,10; bonus bAspd,1; bonus bMdef,3; bonus2 bItemHealRate,1,10; bonus2 bItemHealRate,8,10; bonus2 bAddSkillHealRate,28,10; bonus2 bAddSkillHealRate,231,10; /*本来は自分が使用したスキルのみ回復量UP*/ }
+5817,Unknown_Item,バレンタインの印,4,,,0,,3:3,,0,1000333311,2,136,,,,,{},{ bonus2 bAddRace,10,5; bonus2 bAddRace,11,5; bonus bMatkRate,3; bonus bStr,2; bonus bVit,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bFlee,10; bonus bAspd,1; bonus2 bItemHealRate,1,10; bonus2 bItemHealRate,8,10; bonus2 bAddSkillHealRate,28,10; bonus2 bAddSkillHealRate,231,10; /*本来は自分が使用したスキルのみ回復量UP*/ }
 5818,Unknown_Item,カーニバル祭帽子,4,,,0,,3,,0,1000333311,2,256,,,505,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 5819,Unknown_Item,カーニバル祭サークレット,4,,,0,,3,,0,1000333311,2,256,,,506,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 5820,Unknown_Item,黒い妖精の耳,4,,,100,,1,,0,1000333311,2,512,,,498,,{},{}
@@ -2901,8 +2901,8 @@
 5822,Unknown_Item,愛のひよこ帽子,4,,,100,,2,,0,1000333311,2,256,,,500,1,{},{ bonus bLuk,4; bonus bMaxHP,100; bonus bMaxSP,100; bonus2 bSubRace,7,7; bonus2 bMagicSubRace,7,7; bonus2 bSubRace,2,7; bonus2 bMagicSubRace,2,7; }
 5823,Unknown_Item,愛の矢,4,,,100,,1,,0,1000333311,2,136,,,,,{},{ bonus bDex,5; bonus bAgi,5; }
 5824,Unknown_Item,エイプリルフール帽子,4,,,300,,3,,0,1000333311,2,256,,30,265,1,{},{}
-5825,Unknown_Item,騎士団の栄誉バッジ,4,,,0,,1,,0,1000333311,2,136,,,,,{},{ bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; bonus bMaxHP,1500; bonus bMdef,1; }
-5826,Unknown_Item,ヴァルキリーの兜,4,,,0,,5,,0,1000333311,2,256,,,225,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bAspdAddRate,3; bonus bCastrate,-3; bonus bMdef,5; }
+5825,Unknown_Item,騎士団の栄誉バッジ,4,,,0,,1:1,,0,1000333311,2,136,,,,,{},{ bonus2 bAddRace,10,10; bonus2 bAddRace,11,10; bonus bMatkRate,10; bonus bMaxHP,1500; }
+5826,Unknown_Item,ヴァルキリーの兜,4,,,0,,5:5,,0,1000333311,2,256,,,225,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bAspdAddRate,3; bonus bCastrate,-3; }
 
 6000,Unknown_Item,闇の灰,3,,,0,,,,,,,,,,,,{},{}
 6001,Unknown_Item,火の精髄,3,,,10,,,,,,,,,,,,{},{}

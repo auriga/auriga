@@ -412,11 +412,15 @@ static void itemdb_split_atoi(char *str, int *melee, int *magic)
 {
 	int i, val[2];
 
-	for (i=0; i<2 && str; i++) {
-		val[i] = atoi(str);
-		str = strchr(str,':');
-		if (str)
-			*str++=0;
+	for (i=0; i<2; i++) {
+		if(str) {
+			val[i] = atoi(str);
+			str = strchr(str,':');
+			if (str)
+				*str++=0;
+		} else {
+			val[i] = 0;
+		}
 	}
 	*melee = val[0];
 	*magic = val[1];
