@@ -3947,8 +3947,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	if(sd) {
 		sd->state.attack_type = BF_MAGIC;
-		if(sd->matk_rate != 100)
-			MATK_FIX( sd->matk_rate, 100 );
 		sd->state.arrow_atk = 0;
 	}
 
