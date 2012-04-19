@@ -6766,7 +6766,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)
 			clif_status_change(&dstsd->bl,SI_ALL_RIDING,1,0,1,25,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
-			clif_status_change(&dstsd->bl,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SI_MONSTER_TRANSFORM].val1,0,0);
+			clif_status_change(&dstsd->bl,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
 	}
 
 	if(dstsd->chatID) {
@@ -11369,6 +11369,23 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 	WFIFOL(fd,27)=interval;
 	WFIFOL(fd,31)=bl->id;
 	WFIFOSET(fd,packet_db[0x1d3].len);
+
+	return;
+}
+
+/*==========================================
+ * 残影
+ *------------------------------------------
+ */
+void clif_bodyrelocation(struct block_list *bl, int x, int y)
+{
+	unsigned char buf[10];
+
+	WBUFW(buf,0) = 0x8d2;
+	WBUFL(buf,2) = bl->id;
+	WBUFW(buf,6) = x;
+	WBUFW(buf,8) = y;
+	clif_send(buf,packet_db[0x8d2].len,bl,AREA);
 
 	return;
 }

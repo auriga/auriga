@@ -9547,7 +9547,12 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				if(sd) {
 					sd->skillstatictimer[MO_EXTREMITYFIST] = tick + 2000;
 				}
+#if PACKETVER < 20111025
 				clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
+#else
+				clif_skill_nodamage(src,src,skillid,skilllv,1);
+				clif_bodyrelocation(src,src->x,src->y);
+#endif
 			}
 		}
 		break;

@@ -112,6 +112,7 @@ void clif_changematerial_list(struct map_session_data *sd);
 void clif_skill_message(struct map_session_data *sd, int skillid, int type);
 void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest);
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval);
+void clif_bodyrelocation(struct block_list *bl, int x, int y);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, char *name);
