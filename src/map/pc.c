@@ -7526,7 +7526,6 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	}
 
 	clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
-	clif_send_clothcolor(&sd->bl);
 
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
@@ -7665,7 +7664,6 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 
 	sd->sc.option = type;
 	clif_changeoption(&sd->bl);
-	clif_send_clothcolor(&sd->bl);
 	status_calc_pc(sd,0);
 #if PACKETVER > 20080102
 	clif_skillinfoblock(sd);

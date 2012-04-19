@@ -1168,7 +1168,6 @@ int atcommand_hide(const int fd, struct map_session_data* sd, AtCommandType comm
 			clif_clearchar(&sd->bl,0);
 	}
 	clif_changeoption(&sd->bl);
-	clif_send_clothcolor(&sd->bl);
 
 	return 0;
 }

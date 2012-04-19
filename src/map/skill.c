@@ -12111,9 +12111,10 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			return 0;
 		break;
 	case HP_BASILICA:		/* バジリカ */
-		if(!type) {
+		if(!type) {	// 詠唱開始時のみチェック
+			if(sc && sc->data[SC_BASILICA].timer != -1)
+				break;
 			skill_area_temp[1] = bl->id;
-			// 詠唱開始時のみチェック
 			if(skill_check_unit_range(bl->m,bl->x,bl->y,cnd->id,cnd->lv)) {
 				if(sd)
 					clif_skill_fail(sd,cnd->id,0,0,0);

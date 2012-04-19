@@ -3156,7 +3156,6 @@ void clif_spawnmob(struct mob_data *md)
 	len = clif_mob0078(md,buf);
 	clif_send(buf,len,&md->bl,AREA);
 
-	clif_send_clothcolor(&md->bl);
 	if(md->view_size!=0)
 		clif_misceffect2(&md->bl,422+md->view_size);
 
@@ -3229,7 +3228,6 @@ void clif_spawnpet(struct pet_data *pd)
 	len = clif_pet0078(pd,buf);
 	clif_send(buf,len,&pd->bl,AREA);
 
-	clif_send_clothcolor(&pd->bl);
 	if(pd->view_size!=0)
 		clif_misceffect2(&pd->bl,422+pd->view_size);
 
@@ -5408,7 +5406,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
  * 服色パケット送り付け（基本色を除く）
  *------------------------------------------
  */
-void clif_send_clothcolor(struct block_list *bl)
+/*void clif_send_clothcolor(struct block_list *bl)
 {
 	short color;
 	unsigned char buf[16];
@@ -5434,7 +5432,7 @@ void clif_send_clothcolor(struct block_list *bl)
 	clif_send(buf,packet_db[0x1d7].len,bl,AREA);
 #endif
 	return;
-}
+}*/
 
 /*==========================================
  *
@@ -6765,7 +6763,10 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			len = clif_set0078(dstsd,WFIFOP(sd->fd,0));
 			WFIFOSET(sd->fd,len);
 		}
-		clif_send_clothcolor(&dstsd->bl);
+		if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)
+			clif_status_change(&dstsd->bl,SI_ALL_RIDING,1,0,1,25,0);
+		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
+			clif_status_change(&dstsd->bl,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SI_MONSTER_TRANSFORM].val1,0,0);
 	}
 
 	if(dstsd->chatID) {
@@ -6842,7 +6843,6 @@ static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* m
 		WFIFOSET(sd->fd,len);
 	}
 
-	clif_send_clothcolor(&md->bl);
 	if(md->view_size!=0)
 		clif_misceffect2(&md->bl,422+md->view_size);
 
@@ -6868,7 +6868,6 @@ static void clif_getareachar_pet(struct map_session_data* sd, struct pet_data* p
 		WFIFOSET(sd->fd,len);
 	}
 
-	clif_send_clothcolor(&pd->bl);
 	if(pd->view_size!=0)
 		clif_misceffect2(&pd->bl,422+pd->view_size);
 
@@ -10863,11 +10862,18 @@ void clif_guild_explusion(struct map_session_data *sd, const char *name, const c
 
 	nullpo_retv(sd);
 
+#if PACKETVER < 20100803
 	WBUFW(buf, 0)=0x15c;
 	memcpy(WBUFP(buf, 2),name,24);
 	memcpy(WBUFP(buf,26),mes,40);
 	strncpy(WBUFP(buf,66),"dummy",24);
 	clif_send(buf,packet_db[0x15c].len,&sd->bl,GUILD);
+#else
+	WBUFW(buf, 0)=0x839;
+	memcpy(WBUFP(buf, 2),name,24);
+	memcpy(WBUFP(buf,26),mes,40);
+	clif_send(buf,packet_db[0x839].len,&sd->bl,GUILD);
+#endif
 
 	return;
 }
@@ -10884,6 +10890,8 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 	nullpo_retv(g);
 
 	fd=sd->fd;
+
+#if PACKETVER < 20100803
 	WFIFOW(fd,0)=0x163;
 	for(i = 0; i < MAX_GUILDEXPLUSION; i++) {
 		struct guild_explusion *e=&g->explusion[i];
@@ -10896,6 +10904,19 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 	}
 	WFIFOW(fd,2)=c*88+4;
 	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	WFIFOW(fd,0)=0x163;
+	for(i = 0; i < MAX_GUILDEXPLUSION; i++) {
+		struct guild_explusion *e=&g->explusion[i];
+		if(e->account_id>0){
+			memcpy(WFIFOP(fd,c*88+ 4),e->name,24);
+			memcpy(WFIFOP(fd,c*88+28),e->mes,40);
+			c++;
+		}
+	}
+	WFIFOW(fd,2)=c*64+4;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
 
 	return;
 }
@@ -13719,8 +13740,6 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_changeoption(&sd->bl);
 	clif_changeoption(&sd->bl);
 
-	clif_send_clothcolor(&sd->bl);
-
 	// 暫定赤エモ防止処理
 	if(sd->status.manner < 0) {
 		if(battle_config.nomanner_mode)
@@ -16449,7 +16468,6 @@ static void clif_parse_GMHide(int fd,struct map_session_data *sd, int cmd)
 			clif_displaymessage(fd, msg_txt(11)); // invisible!
 		}
 		clif_changeoption(&sd->bl);
-		clif_send_clothcolor(&sd->bl);
 	}
 }
 

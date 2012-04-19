@@ -1,4 +1,23 @@
 ----------------------------------------
+//0942 [2012/04/20] by refis
+
+・搭乗システム、モンスター変身中キャラが画面に入ったとき、正常に表示されなかったのを修正 (src/map/clif.c src/map/status.c)
+	-> 相互の干渉関係が不明なため、搭乗システムが優先される暫定処置です
+		Thanks うに〜く さん、ryokucha さん
+
+・アサシンスキル「クローキング」で壁沿い移動時の無効な判定を修正 (src/map/status.c)
+	Thanks Akayumi さん
+
+・ハイプリーストスキル「バジリカ」の解除時はユニット判定しないよう修正 (src/map/skill.c)
+	Thanks Akayumi さん
+
+・ギルド追放関連のパケットを更新 (src/map/clif.c)
+	Thanks Akayumi さん
+
+・服色変更パケットは服色変更時のみ発行されるため、clif_send_clothcolor()は使用しないよう修正
+ (src/map/atcommand.c src/map/clif.* src/map/pc.c src/map/script.c src/map/status.c)
+
+----------------------------------------
 //0941 [2012/04/19] by refis
 
 ・ジェネティックスキル「カート改造」、「剣修練」、「スリングアイテム」の最大Lvを修正 (db/skill_db.txt)

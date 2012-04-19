@@ -2985,7 +2985,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		}
 
 		// クローキング(壁沿い移動)
-		if(sd->sc.data[SC_CLOAKING].timer != -1 && (sd->sc.data[SC_CLOAKING].val4&1) == 1) {
+		if(sd->sc.data[SC_CLOAKING].timer != -1) {
 			int i;
 			int check = 1;
 			for(i=0; i<8; i++) {
@@ -6260,7 +6260,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				// 既に既存の乗り物に搭乗中である場合は何もしない
 				if(pc_isriding(sd) || pc_isdragon(sd) || pc_iswolfmount(sd) || pc_isgear(sd))
 					return 0;
-				icon_val1 = sd->status.class_;	// val1はクラスID
+				icon_val1 = 1;	// val1は1
+				icon_val2 = 25;	// val2は25(移動速度向上)
 			}
 			calc_flag = 1;
 			ud->state.change_speed = 1;
@@ -7647,7 +7648,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	/* optionの変更 */
 	if(opt_flag == 1) {
 		clif_changeoption(bl);
-		clif_send_clothcolor(bl);
 	} else if(opt_flag == 2) {
 		clif_changeoption2(bl);
 	}
@@ -8508,7 +8508,6 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	/* optionの変更 */
 	if(opt_flag == 1) {
 		clif_changeoption(bl);
-		clif_send_clothcolor(bl);
 	} else if(opt_flag == 2) {
 		clif_changeoption2(bl);
 	}
@@ -8858,7 +8857,6 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			unit_stop_walking(bl,1);
 			sc->opt1 = OPT1_STONECURSE;
 			clif_changeoption(bl);
-			clif_send_clothcolor(bl);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		else if((--sc->data[type].val3) > 0) {
@@ -9677,7 +9675,6 @@ int status_change_clear(struct block_list *bl,int type)
 
 	if(type != 1) {
 		clif_changeoption(bl);
-		clif_send_clothcolor(bl);
 	}
 
 	return 0;
