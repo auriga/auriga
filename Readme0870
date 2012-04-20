@@ -1,4 +1,17 @@
 ----------------------------------------
+//0944 [2012/04/21] by refis
+
+・ギルド追放メンバリストのミスを修正 (src/map/clif.c)
+	Thanks ryokucha さん
+
+・clif_bodyrelocation()のnullチェック忘れを修正 (src/map/clif.c)
+
+・NPCスキル「不死属性付与」は属性レベル2以上にならないよう修正 (src/map/skill.c)
+	Thanks Akayumi さん
+
+・3次職のBaseLv90〜98迄のHP・SPデータを追加 (db/job_hp_db.txt db/job_sp_db.txt)
+
+----------------------------------------
 //0943 [2012/04/20] by refis
 
 ・モンスター変身でサーバーがクラッシュしてしまうミスを修正 (src/map/clif.c)

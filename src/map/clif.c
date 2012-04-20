@@ -10909,8 +10909,8 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 	for(i = 0; i < MAX_GUILDEXPLUSION; i++) {
 		struct guild_explusion *e=&g->explusion[i];
 		if(e->account_id>0){
-			memcpy(WFIFOP(fd,c*88+ 4),e->name,24);
-			memcpy(WFIFOP(fd,c*88+28),e->mes,40);
+			memcpy(WFIFOP(fd,c*64+ 4),e->name,24);
+			memcpy(WFIFOP(fd,c*64+28),e->mes,40);
 			c++;
 		}
 	}
@@ -11380,6 +11380,8 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 void clif_bodyrelocation(struct block_list *bl, int x, int y)
 {
 	unsigned char buf[10];
+
+	nullpo_retv(bl);
 
 	WBUFW(buf,0) = 0x8d2;
 	WBUFL(buf,2) = bl->id;
