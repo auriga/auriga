@@ -2777,7 +2777,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFB(buf,51)=0;
 	WBUFLV(buf,53,status_get_lv(&mcd->bl),mcd->view_class);
 #elif PACKETVER < 20110111
-	len = 63 + (int)strlen(mcd->status.name);
+	len = 63 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x7f9;
@@ -2793,9 +2793,9 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,47)=mcd->sc.opt3;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFLV(buf,59,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,63),mcd->status.name,24);
+	strncpy(WBUFP(buf,63),mcd->name,24);
 #else
-	len = 65 + (int)strlen(mcd->status.name);
+	len = 65 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x857;
@@ -2811,7 +2811,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,49)=mcd->sc.opt3;
 	WBUFPOS(buf,55,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFLV(buf,61,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,65),mcd->status.name,24);
+	strncpy(WBUFP(buf,65),mcd->name,24);
 #endif
 	return len;
 }
@@ -2845,7 +2845,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFB(buf,57)=0;
 	WBUFLV(buf,58,status_get_lv(&mcd->bl),mcd->view_class);
 #elif PACKETVER < 20110111
-	len = 69 + (int)strlen(mcd->status.name);
+	len = 69 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x7f7;
@@ -2862,9 +2862,9 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,51)=mcd->sc.opt3;
 	WBUFPOS2(buf,57,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFLV(buf,65,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,69),mcd->status.name,24);
+	strncpy(WBUFP(buf,69),mcd->name,24);
 #else
-	len = 71 + (int)strlen(mcd->status.name);
+	len = 71 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x856;
@@ -2881,7 +2881,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,53)=mcd->sc.opt3;
 	WBUFPOS2(buf,59,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,71),mcd->status.name,24);
+	strncpy(WBUFP(buf,71),mcd->name,24);
 #endif
 	return len;
 }
@@ -3340,7 +3340,7 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,29)=8;
 	WBUFPOS(buf,37,mcd->bl.x,mcd->bl.y,mcd->dir);
 #elif PACKETVER < 20110111
-	len = 62 + (int)strlen(mcd->status.name);
+	len = 62 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x7f8;
@@ -3352,9 +3352,9 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,33)=9;
 	WBUFPOS(buf,53,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFLV(buf,58,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,62),mcd->status.name,24);
+	strncpy(WBUFP(buf,62),mcd->name,24);
 #else
-	len = 64 + (int)strlen(mcd->status.name);
+	len = 64 + (int)strlen(mcd->name);
 	memset(buf,0,len);
 
 	WBUFW(buf,0)=0x858;
@@ -3366,7 +3366,7 @@ void clif_spawnmerc(struct merc_data *mcd)
 	WBUFW(buf,33)=9;
 	WBUFPOS(buf,55,mcd->bl.x,mcd->bl.y,mcd->dir);
 	WBUFLV(buf,60,status_get_lv(&mcd->bl),mcd->view_class);
-	strncpy(WBUFP(buf,64),mcd->status.name,24);
+	strncpy(WBUFP(buf,64),mcd->name,24);
 #endif
 	clif_send(buf,len,&mcd->bl,AREA);
 
@@ -12259,16 +12259,16 @@ void clif_send_mercstatus(struct map_session_data *sd)
 	WFIFOW(fd,16) = mcd->mdef;
 	WFIFOW(fd,18) = mcd->flee;
 	WFIFOW(fd,20) = mcd->amotion;
-	memcpy(WFIFOP(fd,22), mcd->status.name, 24);
-	WFIFOW(fd,46) = mcd->status.base_level;
+	memcpy(WFIFOP(fd,22), mcd->name, 24);
+	WFIFOW(fd,46) = mcd->base_level;
 #if PACKETVER < 20071106
 	WFIFOW(fd,48) = mcd->status.hp;
 	WFIFOW(fd,50) = mcd->max_hp;
 	WFIFOW(fd,52) = mcd->status.sp;
 	WFIFOW(fd,54) = mcd->max_sp;
 	WFIFOL(fd,56) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,60) = sd->status.merc_fame[mcd->class_type];	// 名声値
-	WFIFOL(fd,62) = sd->status.merc_call[mcd->class_type];	// 召喚回数
+	WFIFOW(fd,60) = merc_get_fame(sd, mcd->status.class_);	// 名声値
+	WFIFOL(fd,62) = merc_get_call(sd, mcd->status.class_);	// 召喚回数
 	WFIFOL(fd,66) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,70) = mcd->attackrange;	// 攻撃範囲
 #else
@@ -12277,8 +12277,8 @@ void clif_send_mercstatus(struct map_session_data *sd)
 	WFIFOL(fd,56) = mcd->status.sp;
 	WFIFOL(fd,60) = mcd->max_sp;
 	WFIFOL(fd,64) = mcd->status.limit;	// 雇用期限
-	WFIFOW(fd,68) = sd->status.merc_fame[mcd->class_type];	// 名声値
-	WFIFOL(fd,70) = sd->status.merc_call[mcd->class_type];	// 召喚回数
+	WFIFOW(fd,68) = merc_get_fame(sd, mcd->status.class_);	// 名声値
+	WFIFOL(fd,70) = merc_get_call(sd, mcd->status.class_);	// 召喚回数
 	WFIFOL(fd,74) = mcd->status.kill_count;	// キルカウント
 	WFIFOW(fd,78) = mcd->attackrange;	// 攻撃範囲
 #endif
@@ -12303,8 +12303,8 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x29d;
 	for(i = 0; i < MAX_MERCSKILL; i++) {
-		if((id = mcd->status.skill[i].id) != 0) {
-			skill_lv = mcd->status.skill[i].lv;
+		if((id = mcd->skill[i].id) != 0) {
+			skill_lv = mcd->skill[i].lv;
 			WFIFOW(fd,len  )  = id;
 			WFIFOL(fd,len+2)  = skill_get_inf(id);
 			WFIFOW(fd,len+6)  = skill_lv;
@@ -12312,7 +12312,7 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+10) = skill_get_fixed_range(&mcd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
 			if(!(skill_get_inf2(id)&0x01))
-				WFIFOB(fd,len+36) = (skill_lv < merc_get_skilltree_max(mcd->status.class_,id) && mcd->status.skill[i].flag == 0)? 1: 0;
+				WFIFOB(fd,len+36) = (skill_lv < merc_get_skilltree_max(mcd->status.class_,id) && mcd->skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
 			len += 37;
@@ -12385,7 +12385,7 @@ void clif_mercupdatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,4) = mcd->status.kill_count;
 		break;
 	case SP_MERC_FAME:
-		WFIFOL(fd,4) = sd->status.merc_fame[mcd->class_type];
+		WFIFOL(fd,4) = merc_get_fame(sd, mcd->status.class_);
 		break;
 	}
 	WFIFOSET(fd,packet_db[0x2a2].len);
@@ -13950,7 +13950,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		WFIFOSET(fd,packet_db[0x95].len);
 		break;
 	case BL_MERC:
-		memcpy(WFIFOP(fd,6),((struct merc_data*)bl)->status.name,24);
+		memcpy(WFIFOP(fd,6),((struct merc_data*)bl)->name,24);
 		WFIFOSET(fd,packet_db[0x95].len);
 		break;
 	default:

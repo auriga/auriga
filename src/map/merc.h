@@ -24,20 +24,20 @@
 
 #include "map.h"
 
-#define MERC_NATURAL_HEAL_HP_INTERVAL 2000
-#define MERC_NATURAL_HEAL_SP_INTERVAL 4000
+#define MERC_NATURAL_HEAL_HP_INTERVAL 8000
+#define MERC_NATURAL_HEAL_SP_INTERVAL 6000
 
 #define MAX_MERCSKILL_TREE 16
 
 struct merc_db {
-	short class_, class_type;
+	short class_;
 	char name[24],jname[24];
 	unsigned short lv;
 	int max_hp,max_sp;
 	int atk1,atk2;
 	int def,mdef;
 	int str,agi,vit,int_,dex,luk;
-	short view_class,size,race;
+	short size,race;
 	int element;
 	int range;
 	int speed,adelay,amotion,dmotion;
@@ -45,6 +45,7 @@ struct merc_db {
 };
 extern struct merc_db merc_db[MAX_MERC_DB];
 
+int merc_search_index(int nameid);
 int merc_get_skilltree_max(int class_,int skillid);
 
 int merc_callmerc(struct map_session_data *sd, int class_, unsigned int limit);
@@ -57,8 +58,10 @@ int merc_save_data(struct map_session_data *sd);
 int merc_calc_status(struct merc_data *mcd);
 int merc_checkskill(struct merc_data *mcd,int skill_id);
 
-int merc_set_fame(struct map_session_data *sd, short type, int val);
-int merc_set_call(struct map_session_data *sd, short type, int val);
+int merc_get_fame(struct map_session_data *sd, int class_);
+int merc_set_fame(struct map_session_data *sd, int class_, int val);
+int merc_get_call(struct map_session_data *sd, int class_);
+int merc_set_call(struct map_session_data *sd, int class_, int val);
 
 int merc_killcount(struct merc_data *mcd,unsigned short lv);
 int merc_gainexp(struct merc_data *mcd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);

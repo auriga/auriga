@@ -421,8 +421,8 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		sqldbs_free_result(sql_res);
 	}
 
-	// mercenary
-	sqldbs_query(&mysql_handle, "SELECT `type`, `fame`, `call` FROM `" MERC_TABLE "` WHERE `char_id`='%d'", char_id);
+	// mercenary_employ
+	sqldbs_query(&mysql_handle, "SELECT `type`, `fame`, `call` FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", char_id);
 	sql_res = sqldbs_store_result(&mysql_handle);
 
 	if (sql_res) {
@@ -698,13 +698,13 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	if (memcmp(st1->merc_fame,st2->merc_fame,sizeof(st1->merc_fame)) ||
 	    memcmp(st1->merc_call,st2->merc_call,sizeof(st1->merc_call)))
 	{
-		sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+		sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", st2->char_id);
 
 		for(i = 0; i < MAX_MERC_TYPE; i++) {
 			if(st2->merc_fame[i] > 0 || st2->merc_call[i] > 0) {
 				sqldbs_query(
 					&mysql_handle,
-					"INSERT INTO `" MERC_TABLE "` (`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
+					"INSERT INTO `" MERC_EMPLOY_TABLE "` (`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
 					st2->char_id, i, st2->merc_fame[i], st2->merc_call[i]
 				);
 			}
@@ -1006,7 +1006,7 @@ bool chardb_sql_delete_sub(int char_id)
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id) == false )
 
 		// delete merc
-		if( sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_TABLE "` WHERE `char_id`='%d'", char_id) == false )
+		if( sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", char_id) == false )
 			break;
 
 		// success

@@ -54,17 +54,56 @@ static struct merc_skill_tree_entry {
 	int max;
 } merc_skill_tree[MAX_MERC_DB][MAX_MERCSKILL_TREE];
 
+static int merc_count;
+
+/*==========================================
+ * 傭兵DBの検索
+ *------------------------------------------
+ */
+int merc_search_index(int nameid)
+{
+	int i;
+
+	for(i=0; i<merc_count; i++) {
+		if(merc_db[i].class_ <= 0)
+			continue;
+		if(merc_db[i].class_ == nameid)
+			return i;
+	}
+	return -1;
+}
+
+/*==========================================
+ * 傭兵種別の取得
+ *------------------------------------------
+ */
+static int merc_get_type(int class_)
+{
+	if(class_ >= 6017 && class_ <= 6026)
+		return 0;
+	if(class_ >= 6027 && class_ <= 6036)
+		return 1;
+	if(class_ >= 6037 && class_ <= 6046)
+		return 2;
+
+	return -1;
+}
+
 /*==========================================
  * スキルツリー情報の検索
  *------------------------------------------
  */
 static struct merc_skill_tree_entry* merc_search_skilltree(int class_, int skillid)
 {
+	int i;
 	int min = -1;
 	int max = MAX_MERCSKILL_TREE;
 	struct merc_skill_tree_entry *st;
 
-	st = merc_skill_tree[class_ - MERC_ID];
+	i = merc_search_index(class_);
+	if(i < 0)
+		return NULL;
+	st = merc_skill_tree[i];
 
 	// binary search
 	while(max - min > 1) {
@@ -174,10 +213,9 @@ static int merc_employ_timer(int tid,unsigned int tick,int id,void *data)
 	sd->mcd->limit_timer = -1;
 
 	// 名声値+1
-	merc_set_fame(sd, sd->mcd->class_type, 1);
+	merc_set_fame(sd, sd->mcd->status.class_, 1);
 
-	//clif_disp_onlyself(sd->fd, msg_txt(188));	// 傭兵雇用時間が満了しました。
-	clif_msgstringtable(sd, 0x4f2);
+	clif_msgstringtable(sd, 0x4f2);	// 傭兵使用時間が完了しました。
 	merc_delete_data(sd);
 
 	return 0;
@@ -211,7 +249,9 @@ int merc_calc_status(struct merc_data *mcd)
 
 	nullpo_retr(1, mcd);
 
-	class_ = mcd->status.class_ - MERC_ID;
+	class_ = merc_search_index(mcd->status.class_);
+	if(class_ < 0)
+		return 1;
 
 	mcd->atk1     = merc_db[class_].atk1;
 	mcd->atk2     = merc_db[class_].atk2;
@@ -222,15 +262,18 @@ int merc_calc_status(struct merc_data *mcd)
 	mcd->def      = merc_db[class_].def;
 	mcd->mdef     = merc_db[class_].mdef;
 	mcd->critical = 0;
-	mcd->max_hp   = mcd->status.max_hp;
-	mcd->max_sp   = mcd->status.max_sp;
-	mcd->str      = mcd->status.str;
-	mcd->agi      = mcd->status.agi;
-	mcd->vit      = mcd->status.vit;
-	mcd->dex      = mcd->status.dex;
-	mcd->int_     = mcd->status.int_;
-	mcd->luk      = mcd->status.luk;
-	mcd->speed    = DEFAULT_WALK_SPEED;
+	mcd->max_hp   = merc_db[class_].max_hp;
+	mcd->max_sp   = merc_db[class_].max_sp;
+	mcd->str      = merc_db[class_].str;
+	mcd->agi      = merc_db[class_].agi;
+	mcd->vit      = merc_db[class_].vit;
+	mcd->dex      = merc_db[class_].dex;
+	mcd->int_     = merc_db[class_].int_;
+	mcd->luk      = merc_db[class_].luk;
+	if(mcd->msd)
+		mcd->speed    = status_get_speed(&mcd->msd->bl);
+	else
+		mcd->speed    = merc_db[class_].speed;
 	mcd->amotion  = merc_db[class_].amotion;
 	mcd->nhealhp  = 0;
 	mcd->nhealsp  = 0;
@@ -254,6 +297,19 @@ int merc_calc_status(struct merc_data *mcd)
 				mcd->speed = mcd->speed *((mcd->sc.data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
 			}
 		}
+
+		if(mcd->sc.data[SC_MER_FLEE].timer != -1)	// 傭兵ボーナス(FLEE)
+			mcd->flee += mcd->sc.data[SC_MER_FLEE].val2;
+		if(mcd->sc.data[SC_MER_ATK].timer != -1) {	// 傭兵ボーナス(ATK)
+			mcd->atk1 += mcd->sc.data[SC_MER_ATK].val2;
+			mcd->atk2 += mcd->sc.data[SC_MER_ATK].val2;
+		}
+		if(mcd->sc.data[SC_MER_HP].timer != -1)	// 傭兵ボーナス(HP)
+			hp_rate += mcd->sc.data[SC_MER_HP].val2;
+		if(mcd->sc.data[SC_MER_SP].timer != -1)	// 傭兵ボーナス(SP)
+			sp_rate += mcd->sc.data[SC_MER_SP].val2;
+		if(mcd->sc.data[SC_MER_HIT].timer != -1)	// 傭兵ボーナス(HIT)
+			mcd->hit += mcd->sc.data[SC_MER_HIT].val2;
 
 		// ゴスペルALL+20
 		if(mcd->sc.data[SC_INCALLSTATUS].timer != -1) {
@@ -289,8 +345,8 @@ int merc_calc_status(struct merc_data *mcd)
 		if(mcd->sc.data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
 			short subagi = 0;
 			short subdex = 0;
-			subagi = (mcd->status.agi/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->status.agi/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
-			subdex = (mcd->status.dex/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->status.dex/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
+			subagi = (mcd->agi/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->agi/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
+			subdex = (mcd->dex/2 < mcd->sc.data[SC_QUAGMIRE].val1*10) ? mcd->dex/2 : mcd->sc.data[SC_QUAGMIRE].val1*10;
 			if(map[mcd->bl.m].flag.pvp || map[mcd->bl.m].flag.gvg) {
 				subagi /= 2;
 				subdex /= 2;
@@ -321,12 +377,10 @@ int merc_calc_status(struct merc_data *mcd)
 			aspd_rate -= 30;
 	}
 
-
-
 	mcd->matk1    += mcd->int_+(mcd->int_/ 5) * (mcd->int_/ 5);
 	mcd->matk2    += mcd->int_+(mcd->int_/ 7) * (mcd->int_/ 7);
-	mcd->hit      += mcd->dex + mcd->status.base_level;
-	mcd->flee     += mcd->agi + mcd->status.base_level;
+	mcd->hit      += mcd->dex + mcd->base_level;
+	mcd->flee     += mcd->agi + mcd->base_level;
 	mcd->critical += mcd->luk * 3 + 10;
 
 	// 補正
@@ -371,7 +425,7 @@ int merc_calc_status(struct merc_data *mcd)
 		mcd->nhealsp = mcd->nhealsp*mcd->sprecov_rate/100;
 
 	if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
-	    mcd->status.hp < mcd->status.max_hp>>2 &&
+	    mcd->status.hp < mcd->max_hp>>2 &&
 	    (mcd->sc.data[SC_PROVOKE].timer == -1 || mcd->sc.data[SC_PROVOKE].val2 == 0) &&
 	    !unit_isdead(&mcd->bl) )
 	{
@@ -388,9 +442,8 @@ int merc_calc_status(struct merc_data *mcd)
  */
 int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 {
-#ifdef TXT_ONLY
 	struct mmo_mercstatus st;
-	int i, id;
+	int i;
 
 	nullpo_retr(0, sd);
 
@@ -399,50 +452,26 @@ int merc_callmerc(struct map_session_data *sd,int class_, unsigned int limit)
 	if(sd->state.merc_creating)
 		return 0;
 
-	class_ -= MERC_ID;
-	if(class_ < 0 || class_ >= MAX_MERC_DB)
+	i = merc_search_index(class_);
+	if(i < 0)
 		return 0;
 
 	memset(&st, 0, sizeof(st));
 
-	memcpy(st.name, merc_db[class_].jname , 24);
-	st.class_     = class_ + MERC_ID;
+	st.class_     = class_;
 	st.account_id = sd->status.account_id;
 	st.char_id    = sd->status.char_id;
-	st.base_level = merc_db[class_].lv;
-
-	// 初期ステータスをDBから埋め込み
-	st.max_hp = merc_db[class_].max_hp;
-	st.max_sp = merc_db[class_].max_sp;
-	st.str    = merc_db[class_].str;
-	st.agi    = merc_db[class_].agi;
-	st.vit    = merc_db[class_].vit;
-	st.int_   = merc_db[class_].int_;
-	st.dex    = merc_db[class_].dex;
-	st.luk    = merc_db[class_].luk;
+	st.hp = merc_db[i].max_hp;
+	st.sp = merc_db[i].max_sp;
 	st.limit  = limit + (unsigned int)time(NULL);
-
-	st.hp = st.max_hp;
-	st.sp = st.max_sp;
-
-	// スキル取得
-	for(i = 0; (id = merc_skill_tree[class_][i].id) > 0; i++) {
-		id -= MERC_SKILLID;
-		st.skill[id].id = id + MERC_SKILLID;
-		st.skill[id].lv = merc_skill_tree[class_][i].max;
-	}
 
 	sd->state.merc_creating = 1;
 	intif_create_merc(sd->status.account_id,sd->status.char_id,&st);
 
 	// 召喚回数+1
-	merc_set_call(sd, merc_db[class_].class_type, 1);
+	merc_set_call(sd, class_, 1);
 
 	return 1;
-#else
-	// SQLモードは非対応
-	return 0;
-#endif
 }
 
 static int merc_natural_heal_hp(int tid,unsigned int tick,int id,void *data);
@@ -455,7 +484,7 @@ static int merc_natural_heal_sp(int tid,unsigned int tick,int id,void *data);
 static int merc_data_init(struct map_session_data *sd)
 {
 	struct merc_data *mcd;
-	int i,class_;
+	int i, class_, id;
 	unsigned int tick = gettick();
 	unsigned int now  = (unsigned int)time(NULL);
 	unsigned int diff;
@@ -463,27 +492,35 @@ static int merc_data_init(struct map_session_data *sd)
 	nullpo_retr(1, sd);
 	nullpo_retr(1, mcd = sd->mcd);
 
-	class_ = sd->mcd->status.class_ - MERC_ID;
+	class_ = merc_search_index(sd->mcd->status.class_);
+	if(class_ < 0)
+		return 1;
 
-	mcd->bl.m    = sd->bl.m;
 	mcd->bl.prev = mcd->bl.next = NULL;
+	mcd->bl.id   = npc_get_new_npc_id();
+	mcd->bl.m    = sd->bl.m;
 	mcd->bl.x    = mcd->ud.to_x = sd->bl.x;
 	mcd->bl.y    = mcd->ud.to_y = sd->bl.y;
 	merc_calc_pos(mcd,sd->bl.x,sd->bl.y,sd->dir);
-	mcd->bl.x        = mcd->ud.to_x;
-	mcd->bl.y        = mcd->ud.to_y;
-	mcd->bl.id       = npc_get_new_npc_id();
+	mcd->bl.x    = mcd->ud.to_x;
+	mcd->bl.y    = mcd->ud.to_y;
+	mcd->bl.type = BL_MERC;
+	memcpy(mcd->name, merc_db[class_].jname , 24);
 	mcd->dir         = sd->dir;
 	mcd->speed       = status_get_speed(&sd->bl);	// 歩行速度は、コール時の主人のspeedになる
-	mcd->bl.type     = BL_MERC;
 	mcd->target_id   = 0;
 	mcd->msd         = sd;
-	mcd->class_type  = merc_db[class_].class_type;
-	mcd->view_class  = merc_db[class_].view_class;
+	mcd->view_class  = sd->mcd->status.class_;
+	mcd->base_level  = merc_db[class_].lv;
 	mcd->attackrange = merc_db[class_].range;
 
-	for(i=0; i<MAX_MERCSKILL; i++)
+	// スキル取得
+	for(i = 0; (id = merc_skill_tree[class_][i].id) > 0; i++) {
+		id -= MERC_SKILLID;
+		mcd->skill[id].id = id + MERC_SKILLID;
+		mcd->skill[id].lv = merc_skill_tree[class_][i].max;
 		mcd->skillstatictimer[i] = tick;
+	}
 
 	unit_dataset(&mcd->bl);
 
@@ -505,9 +542,6 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->sc.opt1  = OPT1_NORMAL;
 	mcd->sc.opt2  = OPT2_NORMAL;
 	mcd->sc.opt3  = OPT3_NORMAL;
-
-	mcd->status.option &= OPTION_MASK;
-	mcd->sc.option = mcd->status.option;	// optionはscに移して使う
 
 	merc_calc_status(mcd);			// ステータス計算
 	map_addiddb(&mcd->bl);
@@ -586,9 +620,6 @@ int merc_delete_data(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(sd->status.merc_id > 0 && sd->mcd) {
-		// 親密度保存
-		//if(battle_config.save_homun_temporal_intimate)
-		//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",2000);	// 初期値に
 		unit_free(&sd->mcd->bl,0);
 		intif_delete_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
 		sd->status.merc_id = 0;
@@ -617,8 +648,7 @@ int merc_menu(struct map_session_data *sd, int menunum)
 			clif_mercskillinfoblock(sd);
 			break;
 		case 2:
-			//clif_disp_onlyself(sd->fd, msg_txt(190));	// 傭兵を解雇しました。
-			clif_msgstringtable(sd, 0x4f4);
+			clif_msgstringtable(sd, 0x4f4);	// 傭兵が解雇されました。
 			merc_delete_data(sd);
 			break;
 	}
@@ -654,24 +684,39 @@ int merc_checkskill(struct merc_data *mcd,int skill_id)
 
 	if(skill_id >= MAX_MERCSKILL)
 		return 0;
-	if(mcd->status.skill[skill_id].id == skill_id + MERC_SKILLID)
-		return mcd->status.skill[skill_id].lv;
+	if(mcd->skill[skill_id].id == skill_id + MERC_SKILLID)
+		return mcd->skill[skill_id].lv;
 
 	return 0;
+}
+
+/*==========================================
+ * 名声値の取得
+ *------------------------------------------
+ */
+int merc_get_fame(struct map_session_data *sd, int class_)
+{
+	int type = merc_get_type(class_);
+
+	nullpo_retr(0, sd);
+
+	if(type < 0 || type > MAX_MERC_TYPE)
+		return 0;
+
+	return sd->status.merc_fame[type];
 }
 
 /*==========================================
  * 名声値の増減
  *------------------------------------------
  */
-int merc_set_fame(struct map_session_data *sd, short type, int val)
+int merc_set_fame(struct map_session_data *sd, int class_, int val)
 {
-	struct merc_data *mcd;
+	int type = merc_get_type(class_);
 
 	nullpo_retr(0, sd);
-	nullpo_retr(0, mcd = sd->mcd);
 
-	if(type < 0 || type >= MAX_MERC_TYPE)
+	if(type < 0 || type > MAX_MERC_TYPE)
 		return 0;
 
 	sd->status.merc_fame[type] += val;
@@ -684,14 +729,32 @@ int merc_set_fame(struct map_session_data *sd, short type, int val)
 }
 
 /*==========================================
+ * 召喚回数の取得
+ *------------------------------------------
+ */
+int merc_get_call(struct map_session_data *sd, int class_)
+{
+	int type = merc_get_type(class_);
+
+	nullpo_retr(0, sd);
+
+	if(type < 0 || type > MAX_MERC_TYPE)
+		return 0;
+
+	return sd->status.merc_call[type];
+}
+
+/*==========================================
  * 召喚回数の増減
  *------------------------------------------
  */
-int merc_set_call(struct map_session_data *sd, short type, int val)
+int merc_set_call(struct map_session_data *sd, int class_, int val)
 {
+	int type = merc_get_type(class_);
+
 	nullpo_retr(0, sd);
 
-	if(type < 0 || type >= MAX_MERC_TYPE)
+	if(type < 0 || type > MAX_MERC_TYPE)
 		return 0;
 
 	sd->status.merc_call[type] += val;
@@ -707,15 +770,18 @@ int merc_set_call(struct map_session_data *sd, short type, int val)
  */
 int merc_killcount(struct merc_data *mcd, unsigned short lv)
 {
+	static const int type[] = { SC_MER_FLEE, SC_MER_ATK, SC_MER_HP, SC_MER_SP, SC_MER_HIT };
+
 	nullpo_retr(0, mcd);
 
 	// 相手のレベルが自分のレベルの1/2以上か？
-	if(lv >= mcd->status.base_level / 2) {
+	if(lv >= mcd->base_level / 2) {
 		mcd->status.kill_count++;
 
-		// キルカウント50毎に名声値+1
+		// キルカウント50毎に名声値+1、キルカウントボーナス
 		if(mcd->status.kill_count % 50 == 0) {
-			merc_set_fame(mcd->msd, mcd->class_type, 1);
+			merc_set_fame(mcd->msd, mcd->status.class_, 1);
+			status_change_start(&mcd->bl,type[atn_rand()%(sizeof(type)/sizeof(type[0]))],atn_rand()%5+1,0,0,0,600000,0);
 		}
 
 		if(mcd->msd)
@@ -799,23 +865,19 @@ int merc_damage(struct block_list *src,struct merc_data *mcd,int damage)
 
 	// 死亡していた
 	if(mcd->status.hp <= 0) {
-		//if(battle_config.save_homun_temporal_intimate)
-		//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
-
 		// スキルユニットからの離脱
 		mcd->status.hp = 1;
 		skill_unit_move(&mcd->bl,gettick(),0);
 		mcd->status.hp = 0;
 
 		// 名声値-1
-		merc_set_fame(sd, mcd->class_type, -1);
+		merc_set_fame(sd, mcd->status.class_, -1);
 
-		//clif_disp_onlyself(sd->fd, msg_txt(189));	// 傭兵が死亡しました。
-		clif_msgstringtable(sd, 0x4f3);
+		clif_msgstringtable(sd, 0x4f3);	// 傭兵が倒れました。
 		merc_delete_data(sd);
 	} else {
 		if( mcd->sc.data[SC_AUTOBERSERK].timer != -1 &&
-		    mcd->status.hp < mcd->status.max_hp>>2 &&
+		    mcd->status.hp < mcd->max_hp>>2 &&
 		    (mcd->sc.data[SC_PROVOKE].timer == -1 || mcd->sc.data[SC_PROVOKE].val2 == 0) )
 		{
 			// オートバーサーク発動
@@ -952,12 +1014,6 @@ int merc_save_data(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, mcd = sd->mcd);
 
-	//if(battle_config.save_homun_temporal_intimate)
-	//	pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",mcd->intimate);
-
-	// optionのコピー
-	mcd->status.option = mcd->sc.option;
-
 	intif_save_mercdata(sd->status.account_id,&sd->mcd->status);
 
 	return 0;
@@ -974,7 +1030,7 @@ static int read_merc_db(void)
 {
 	FILE *fp;
 	char line[4096];
-	int i, j;
+	int i, j, k;
 	int lines, count = 0;
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/merc_db.txt", "db/addon/merc_db_add.txt" };
@@ -997,8 +1053,7 @@ static int read_merc_db(void)
 		lines=count=0;
 		while(fgets(line,sizeof(line),fp)){
 			int nameid;
-			short class_type;
-			char *str[26],*p,*np;
+			char *str[24],*p,*np;
 			lines++;
 
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -1006,7 +1061,7 @@ static int read_merc_db(void)
 			if(line[0] == '/' && line[1] == '/')
 				continue;
 
-			for(j=0,p=line;j<26;j++){
+			for(j=0,p=line;j<24;j++){
 				if((np=strchr(p,','))!=NULL){
 					str[j]=p;
 					*np=0;
@@ -1017,47 +1072,49 @@ static int read_merc_db(void)
 				}
 			}
 
+			if(merc_count >= MAX_MERC_DB)
+				break;
+
 			nameid = atoi(str[0]);
-			j = nameid - MERC_ID;
 
-			if(j < 0 || j >= MAX_MERC_DB)
+			if(nameid <= 0)
 				continue;
 
-			class_type = atoi(str[4]);
-			if(class_type < 0 || class_type >= MAX_MERC_TYPE)
-				continue;
+			k = merc_search_index(nameid);
+			j = (k >= 0)? k: merc_count;
 
-			merc_db[j].class_     = nameid;
-			merc_db[j].class_type = class_type;
-			merc_db[j].view_class = atoi(str[1]);
-			strncpy(merc_db[j].name,str[2],24);
-			strncpy(merc_db[j].jname,str[3],24);
-			merc_db[j].lv      = atoi(str[5]);
-			merc_db[j].max_hp  = atoi(str[6]);
-			merc_db[j].max_sp  = atoi(str[7]);
-			merc_db[j].range   = atoi(str[8]);
-			merc_db[j].atk1    = atoi(str[9]);
-			merc_db[j].atk2    = atoi(str[10]);
-			merc_db[j].def     = atoi(str[11]);
-			merc_db[j].mdef    = atoi(str[12]);
-			merc_db[j].str     = atoi(str[13]);
-			merc_db[j].agi     = atoi(str[14]);
-			merc_db[j].vit     = atoi(str[15]);
-			merc_db[j].int_    = atoi(str[16]);
-			merc_db[j].dex     = atoi(str[17]);
-			merc_db[j].luk     = atoi(str[18]);
-
-			merc_db[j].size    = atoi(str[19]);
-			merc_db[j].race    = atoi(str[20]);
-			merc_db[j].element = atoi(str[21]);
-			merc_db[j].speed   = atoi(str[22]);
-			merc_db[j].adelay  = atoi(str[23]);
-			merc_db[j].amotion = atoi(str[24]);
-			merc_db[j].dmotion = atoi(str[25]);
+			merc_db[j].class_  = nameid;
+			strncpy(merc_db[j].name,str[1],24);
+			strncpy(merc_db[j].jname,str[2],24);
+			merc_db[j].lv      = atoi(str[3]);
+			merc_db[j].max_hp  = atoi(str[4]);
+			merc_db[j].max_sp  = atoi(str[5]);
+			merc_db[j].range   = atoi(str[6]);
+			merc_db[j].atk1    = atoi(str[7]);
+			merc_db[j].atk2    = atoi(str[8]);
+			merc_db[j].def     = atoi(str[9]);
+			merc_db[j].mdef    = atoi(str[10]);
+			merc_db[j].str     = atoi(str[11]);
+			merc_db[j].agi     = atoi(str[12]);
+			merc_db[j].vit     = atoi(str[13]);
+			merc_db[j].int_    = atoi(str[14]);
+			merc_db[j].dex     = atoi(str[15]);
+			merc_db[j].luk     = atoi(str[16]);
+			merc_db[j].size    = atoi(str[17]);
+			merc_db[j].race    = atoi(str[18]);
+			merc_db[j].element = atoi(str[19]);
+			merc_db[j].speed   = atoi(str[20]);
+			merc_db[j].adelay  = atoi(str[21]);
+			merc_db[j].amotion = atoi(str[22]);
+			merc_db[j].dmotion = atoi(str[23]);
 
 			// force \0 terminal
 			merc_db[j].name[23]  = '\0';
 			merc_db[j].jname[23] = '\0';
+
+			if(k < 0)
+				merc_count++;
+			count++;
 
 			if((np = strchr(p,'{')) == NULL)
 				continue;
@@ -1067,7 +1124,6 @@ static int read_merc_db(void)
 			script = parse_script(np,filename[i],lines);
 
 			merc_db[j].script = (script != &error_code)? script: NULL;
-			count++;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);
@@ -1109,8 +1165,8 @@ static int read_merc_skilldb(void)
 		if(j < 3)
 			continue;
 		class_ = atoi(split[0]);
-		i = class_ - MERC_ID;
-		if(i < 0 || i >= MAX_MERC_DB)
+		i = merc_search_index(class_);
+		if(i < 0)
 			continue;
 
 		skillid = atoi(split[1]);
@@ -1162,6 +1218,7 @@ void merc_reload(void)
  */
 int do_init_merc(void)
 {
+	merc_count = 0;
 	read_merc_db();
 	read_merc_skilldb();
 
@@ -1180,7 +1237,7 @@ int do_final_merc(void)
 {
 	int i;
 
-	for(i = 0; i < MAX_MERC_DB; i++) {
+	for(i = 0; i < merc_count; i++) {
 		if(merc_db[i].script) {
 			script_free_code(merc_db[i].script);
 		}

@@ -75,8 +75,7 @@
 #define MAX_HOMUN_DB 16			// ホムの数
 #define HOM_ID 6001			// ホムID開始値
 
-#define MAX_MERC_DB 30			// 傭兵の数
-#define MERC_ID 6017			// 傭兵IDの開始値
+#define MAX_MERC_DB 50			// 傭兵の数
 #define MAX_MERC_TYPE 3			// 傭兵の種類
 
 // スキルID定義
@@ -94,7 +93,7 @@
 #define MAX_QUESTSKILL    5
 #define MAX_KOSKILL      29
 #define MAX_HOMSKILL     16
-#define MAX_MERCSKILL    37
+#define MAX_MERCSKILL    40
 #define MAX_GUILDSKILL   16
 
 #define MAX_SECOND_SKILLID (SECOND_SKILLID+MAX_SECONDSKILL)	// 2次職クエストスキルIDの最大値
@@ -560,12 +559,7 @@ struct mmo_mercstatus {
 	int char_id;
 	int merc_id;
 	short class_;
-	int hp,max_hp,sp,max_sp;
-	char name[24];
-	unsigned short base_level;
-	short str,agi,vit,int_,dex,luk;
-	unsigned int option;
-	struct skill skill[MAX_MERCSKILL];
+	int hp,sp;
 	unsigned int kill_count;
 	unsigned int limit;
 };

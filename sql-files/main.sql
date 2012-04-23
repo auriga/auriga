@@ -551,6 +551,21 @@ CREATE TABLE `hotkey` (
 # Table: 'mercenary'
 #
 CREATE TABLE `mercenary` (
+  `merc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `class` smallint(6) NOT NULL default '0',
+  `account_id` int(11) NOT NULL default '0',
+  `char_id` int(11) NOT NULL default '0',
+  `hp` int(11) NOT NULL default '0',
+  `sp` int(11) NOT NULL default '0',
+  `kill_count` int(11) NOT NULL DEFAULT '0',
+  `limit` int(11) unsigned NOT NULL default '0',
+  PRIMARY KEY (`merc_id`)
+) ENGINE = InnoDB;
+
+# Database: Ragnarok
+# Table: 'mercenary_employ'
+#
+CREATE TABLE `mercenary_employ` (
   `char_id` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   `fame` int(11) NOT NULL DEFAULT '0',

@@ -68,7 +68,7 @@ extern char tmp_sql[65535];
 #define MAIL_TABLE            "mail"
 #define MAIL_DATA_TABLE       "mail_data"
 #define MERC_TABLE            "mercenary"
-#define MERC_SKILL_TABLE      "mercenary_skill"
+#define MERC_EMPLOY_TABLE     "mercenary_employ"
 #define PARTY_TABLE           "party"
 #define PET_TABLE             "pet"
 #define QUEST_TABLE           "quest"

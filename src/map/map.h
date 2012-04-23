@@ -987,10 +987,12 @@ struct merc_data {
 	struct unit_data  ud;
 	struct mmo_mercstatus status;
 	struct status_change sc;
+	char name[24];
 	short dir;
 	short speed;
 	short view_size;
 	int invincible_timer;
+	int base_level;
 	int hp_sub,sp_sub;
 	int max_hp,max_sp;
 	int str,agi,vit,int_,dex,luk;
@@ -1001,8 +1003,9 @@ struct merc_data {
 	short adelay,amotion,dmotion;
 	short attackrange;
 	int target_id;
+	struct skill skill[MAX_MERCSKILL];
 	unsigned int skillstatictimer[MAX_MERCSKILL];
-	short class_type,view_class;
+	short view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;

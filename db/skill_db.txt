@@ -1105,6 +1105,9 @@
 8235,0,6,4,0,1,1,1,no,0,0,0,none,0	//MER_SCAPEGOAT#身代わり#
 8236,5,6,1,0,1,10,0,yes,0,0,0,magic,0	//MER_LEXDIVINA#レックスディビーナ#
 8237,9,6,1,0,1,1,1,yes,0,0,0,magic,0	//MER_ESTIMATION#モンスター情報#
+8238,9,6,16,6,1,10,1,yes,0,0,0,magic,0	//MER_KYRIE#キリエエレイソン#
+8239,9,6,16,0,1,10,1,yes,0,0,0,magic,0	//MER_BLESSING#ブレッシング#
+8240,9,6,16,6,1,10,1,yes,0,0,0,magic,0	//MER_INCAGI#速度増加#
 
 10000,0,0,0,0,0,1,0,no,0,0,0,none,0	//GD_APPROVAL#正規ギルド承認#
 10001,0,0,0,0,0,1,0,no,0,0,0,none,0	//GD_KAFRACONTRACT#カプラ雇用#

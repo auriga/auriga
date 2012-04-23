@@ -68,27 +68,15 @@ int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 
 static int merc_tostr(char *str,struct mmo_mercstatus *m)
 {
-	int i;
 	char *str_p = str;
-	unsigned short sk_lv;
 
 	if(!m) return 0;
 
-	str_p += sprintf(str,"%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
-		m->merc_id,m->class_,m->name,
+	str_p += sprintf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
+		m->merc_id,m->class_,
 		m->account_id,m->char_id,
-		m->base_level,m->max_hp,m->hp,m->max_sp,m->sp,
-		m->str,m->agi,m->vit,m->int_,m->dex,m->luk,
-		m->kill_count,m->limit);
+		m->hp,m->sp,m->kill_count,m->limit);
 
-	*(str_p++)='\t';
-
-	for(i=0;i<MAX_MERCSKILL;i++) {
-		if(m->skill[i].id && m->skill[i].flag!=1){
-			sk_lv = (m->skill[i].flag==0)? m->skill[i].lv: m->skill[i].flag-2;
-			str_p += sprintf(str_p,"%d,%d ",m->skill[i].id,sk_lv);
-		}
-	}
 	*(str_p++)='\t';
 
 	*str_p='\0';
@@ -97,66 +85,44 @@ static int merc_tostr(char *str,struct mmo_mercstatus *m)
 
 static int merc_fromstr(char *str,struct mmo_mercstatus *m)
 {
-	int i,s,next,set,len;
-	int tmp_int[17];
+	int set, dummy;
+	int tmp_int[8];
 	char tmp_str[256];
 
 	if(!m) return 0;
 
 	memset(m,0,sizeof(struct mmo_mercstatus));
 
-	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u%n",
-		&tmp_int[0],&tmp_int[1],tmp_str,
+	// Auriga-0945以降の形式
+	set=sscanf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
+		&tmp_int[0],&tmp_int[1],
 		&tmp_int[2],&tmp_int[3],
-		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],
-		&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],
-		&tmp_int[15],&tmp_int[16],&next);
+		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7]);
 
-	if(s!=18)
-		return 1;
+	if(set!=8)
+	{
+		// Auriga-0597以降の形式
+		set=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
+			&tmp_int[0],&tmp_int[1],tmp_str,
+			&tmp_int[2],&tmp_int[3],
+			&dummy,&dummy,&tmp_int[4],&dummy,&tmp_int[5],
+			&dummy,&dummy,&dummy,&dummy,&dummy,&dummy,
+			&tmp_int[6],&tmp_int[7]);
+		if(set!=18)
+		{
+			return 1;
+		}
+	}
 
 	m->merc_id      = tmp_int[0];
 	m->class_       = tmp_int[1];
-	strncpy(m->name,tmp_str,24);
-	m->name[23] = '\0';	// force \0 terminal
 	m->account_id   = tmp_int[2];
 	m->char_id      = tmp_int[3];
-	m->base_level   = tmp_int[4];
-	m->max_hp       = tmp_int[5];
-	m->hp           = tmp_int[6];
-	m->max_sp       = tmp_int[7];
-	m->sp           = tmp_int[8];
-	m->str          = tmp_int[9];
-	m->agi          = tmp_int[10];
-	m->vit          = tmp_int[11];
-	m->int_         = tmp_int[12];
-	m->dex          = tmp_int[13];
-	m->luk          = tmp_int[14];
-	m->kill_count   = tmp_int[15];
-	m->limit        = (unsigned int)tmp_int[16];
-	m->option       = 0;
+	m->hp           = tmp_int[4];
+	m->sp           = tmp_int[5];
+	m->kill_count   = tmp_int[6];
+	m->limit        = (unsigned int)tmp_int[7];
 
-	if(str[next]=='\n' || str[next]=='\r')
-		return 1;	// スキル情報なし
-
-	next++;
-	for(i=0;str[next] && str[next]!='\t';i++){
-		int n;
-		set=sscanf(str+next,"%d,%d%n",
-			&tmp_int[0],&tmp_int[1],&len);
-		if(set!=2)
-			return 0;
-		n = tmp_int[0]-MERC_SKILLID;
-		if(n >= 0 && n < MAX_MERCSKILL) {
-			m->skill[n].id = tmp_int[0];
-			m->skill[n].lv = tmp_int[1];
-		} else {
-			printf("merc_fromstr: invaild skill id: %d\n", tmp_int[0]);
-		}
-		next+=len;
-		if(str[next]==' ')
-			next++;
-	}
 	return 0;
 }
 

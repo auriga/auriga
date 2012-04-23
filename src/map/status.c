@@ -190,7 +190,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_BLANK,
 
 };
 
@@ -3221,7 +3221,7 @@ int status_get_lv(struct block_list *bl)
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		return ((struct homun_data *)bl)->status.base_level;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		return ((struct merc_data *)bl)->status.base_level;
+		return ((struct merc_data *)bl)->base_level;
 
 	return 0;
 }
@@ -3391,7 +3391,7 @@ int status_get_str(struct block_list *bl)
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		str = ((struct homun_data *)bl)->status.str;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
-		str = ((struct merc_data *)bl)->status.str;
+		str = ((struct merc_data *)bl)->str;
 
 	if(sc && bl->type != BL_HOM) {
 		if(sc->data[SC_LOUD].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
@@ -5212,7 +5212,7 @@ int status_get_element(struct block_list *bl)
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		ret = homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].element;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		ret = merc_db[((struct merc_data *)bl)->status.class_-MERC_ID].element;
+		ret = merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].element;
 
 	return ret;
 }
@@ -5428,7 +5428,7 @@ int status_get_race(struct block_list *bl)
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].race;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		return merc_db[((struct merc_data *)bl)->status.class_-MERC_ID].race;
+		return merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].race;
 	else
 		return RCT_FORMLESS;
 
@@ -5480,7 +5480,7 @@ int status_get_size(struct block_list *bl)
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].size;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		return merc_db[((struct merc_data *)bl)->status.class_-MERC_ID].size;
+		return merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].size;
 	}
 
 	return 1;
@@ -7385,6 +7385,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			calc_flag = 1;
 			break;
+		case SC_MER_FLEE:		/* 傭兵ボーナス(FLEE) */
+		case SC_MER_ATK:		/* 傭兵ボーナス(ATK) */
+		case SC_MER_HIT:		/* 傭兵ボーナス(HIT) */
+			val2 = val1 * 15;
+			calc_flag = 1;
+			break;
+		case SC_MER_HP:			/* 傭兵ボーナス(HP) */
+		case SC_MER_SP:			/* 傭兵ボーナス(SP) */
+			val2 = val1 * 5;
+			calc_flag = 1;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -7933,6 +7944,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_KAGEMUSYA:			/* 影武者 */
 		case SC_AKAITSUKI:			/* 紅月 */
 		case SC_ODINS_POWER:		/* オーディンの力 */
+		case SC_MER_FLEE:			/* 傭兵ボーナス(FLEE) */
+		case SC_MER_ATK:			/* 傭兵ボーナス(ATK) */
+		case SC_MER_HP:				/* 傭兵ボーナス(HP) */
+		case SC_MER_SP:				/* 傭兵ボーナス(SP) */
+		case SC_MER_HIT:			/* 傭兵ボーナス(HIT) */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */

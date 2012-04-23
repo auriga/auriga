@@ -523,6 +523,11 @@
 551,SC_KYOUGAKU,0,0,0,0		// 驚愕
 552,SC_ODINS_POWER,0,1,0,0		// オーディンの力
 553,SC_JOB_COMBATHAN,1,0,0,0			// Job教範
+554,SC_MER_FLEE,1,0,0,0			// 傭兵ボーナス(FLEE)
+555,SC_MER_ATK,1,0,0,0		// 傭兵ボーナス(ATK)
+556,SC_MER_HP,1,0,0,0		// 傭兵ボーナス(HIT)
+557,SC_MER_SP,1,0,0,0		// 傭兵ボーナス(HP)
+558,SC_MER_HIT,1,0,0,0		// 傭兵ボーナス(SP)
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

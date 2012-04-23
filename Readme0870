@@ -1,4 +1,34 @@
 ----------------------------------------
+//0945 [2012/04/24] by Blaze
+
+・傭兵データ構造の見直し（common/mmo.h, map.h, merc.*, clif.c, status.c, skill.c）
+	-> BaseLvや各種ステータス、スキル情報などはsaveデータに保存しない様に変更。
+
+・傭兵をSQLモードに対応 (char/sql/mercdb_sql.c, sql-files/main.sql, sql-files/Auriga945_changetable.sql)
+	-> 既存のプレイヤーが持つ傭兵雇用情報は「mercenary」から「mercenary_employ」にテーブル名を変更
+	-> 傭兵自身のデータを「mercenary」テーブルに保存するように。
+
+・モンスター傭兵実装（common/mmo.h, merc.*, db/merc_db.txt, merc_skill_tree.txt）
+	-> 傭兵IDを定められたID（6017〜6046）しか登録できなかったのを任意のIDで登録できるように変更。
+
+・傭兵DBの構造を変更（merc.*, db/merc_db.txt, db/addon/merc_db_add.txt, doc/db_ref.txt）
+	-> 傭兵のクラスIDを任意に定義できる様にした為、ViewClassを廃止
+	-> 傭兵の種類は内部で処理させるようにした為、ClassTypeを廃止
+
+・傭兵のキルカウントボーナス実装（merc.c, status.*, db/scdata_db.txt）
+
+・傭兵専用スキル「キリエエレイソン」「ブレッシング」「速度増加」を追加（skill.*, db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt）
+
+・傭兵の自然回復が短かったのを修正（merc.h）
+	-> HPの自然回復：2000ms → 8000ms、SPの自然回復：4000ms → 6000ms
+
+・傭兵に処理させるスクリプトを追加（script.c, doc/script_ref.txt）
+	-> mercheal命令：連れている傭兵のHP/SPを回復させます。
+	-> mercsc_start命令：連れている傭兵を状態変化させます。
+
+・傭兵関係のアイテム実装（db/item_db.txt）
+
+----------------------------------------
 //0944 [2012/04/21] by refis
 
 ・ギルド追放メンバリストのミスを修正 (src/map/clif.c)

@@ -4023,6 +4023,8 @@ int buildin_openbuyingstore(struct script_state *st);
 int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
+int buildin_mercheal(struct script_state *st);
+int buildin_mercsc_start(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4308,6 +4310,8 @@ struct script_function buildin_func[] = {
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
 	{buildin_progressbar,"progressbar","i"},
+	{buildin_mercheal,"mercheal","ii"},
+	{buildin_mercsc_start,"mercsc_start","iii"},
 	{NULL,NULL,NULL}
 };
 
@@ -12565,5 +12569,45 @@ int buildin_progressbar(struct script_state *st)
 		clif_progressbar(sd, sd->progressbar.npc_id, tick/1000);
 	}
 
+	return 0;
+}
+
+/*==========================================
+ * 傭兵回復
+ *------------------------------------------
+ */
+int buildin_mercheal(struct script_state *st)
+{
+	int hp,sp;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+	nullpo_retr(0, sd->mcd);
+
+	hp = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	sp = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	merc_heal(sd->mcd,hp,sp);
+	return 0;
+}
+
+/*==========================================
+ * 傭兵状態変化
+ *------------------------------------------
+ */
+int buildin_mercsc_start(struct script_state *st)
+{
+	int type, tick, val1;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+	nullpo_retr(0, sd->mcd);
+
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	tick = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	val1 = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	if(!unit_isdead(&sd->mcd->bl) && status_change_rate(&sd->mcd->bl,type,10000,0) > 0)
+		status_change_start(&sd->mcd->bl,type,val1,0,0,0,tick,0);
 	return 0;
 }
