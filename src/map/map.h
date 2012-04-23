@@ -80,9 +80,10 @@ enum {
 	BL_NPC   = 0x080,
 	BL_CHAT  = 0x100,
 	BL_GRP   = 0x200,
+	BL_ELEM  = 0x400,
 };
 
-#define BL_CHAR (BL_PC | BL_MOB | BL_HOM | BL_MERC)
+#define BL_CHAR (BL_PC | BL_MOB | BL_HOM | BL_MERC | BL_ELEM)
 #define BL_ALL 0xfff
 
 enum {
@@ -704,6 +705,7 @@ struct map_session_data {
 	struct mmo_homunstatus hom;
 
 	struct merc_data *mcd;
+	struct elem_data *eld;
 
 	// ギルドスキル計算用 0:影響外 0>影響下
 	// 移動時の判定に使用
@@ -1005,6 +1007,37 @@ struct merc_data {
 	int target_id;
 	struct skill skill[MAX_MERCSKILL];
 	unsigned int skillstatictimer[MAX_MERCSKILL];
+	short view_class;
+	int nhealhp,nhealsp;
+	int hprecov_rate,sprecov_rate;
+	int natural_heal_hp,natural_heal_sp;
+	int limit_timer;
+	struct map_session_data *msd;
+};
+
+struct elem_data {
+	struct block_list bl;
+	struct unit_data  ud;
+	struct mmo_elemstatus status;
+	struct status_change sc;
+	char name[24];
+	short dir;
+	short speed;
+	short view_size;
+	int invincible_timer;
+	int base_level;
+	int hp_sub,sp_sub;
+	int max_hp,max_sp;
+	int str,agi,vit,int_,dex,luk;
+	short atk1,atk2;
+	short matk1,matk2;
+	short def,mdef;
+	short hit,critical,flee;
+	short adelay,amotion,dmotion;
+	short attackrange;
+	int target_id;
+	struct skill skill[MAX_ELEMSKILL];
+	unsigned int skillstatictimer[MAX_ELEMSKILL];
 	short view_class;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
@@ -1352,6 +1385,7 @@ struct map_session_data * map_id2sd(int);
 struct mob_data * map_id2md(int);
 struct homun_data * map_id2hd(int);
 struct merc_data * map_id2mcd(int);
+struct elem_data * map_id2eld(int);
 struct npc_data * map_id2nd(int);
 struct chat_data * map_id2cd(int);
 struct skill_unit * map_id2su(int);
@@ -1409,6 +1443,7 @@ typedef struct mob_data         TBL_MOB;
 typedef struct pet_data         TBL_PET;
 typedef struct homun_data       TBL_HOM;
 typedef struct merc_data        TBL_MERC;
+typedef struct elem_data        TBL_ELEM;
 typedef struct flooritem_data   TBL_ITEM;
 typedef struct skill_unit       TBL_SKILL;
 typedef struct npc_data         TBL_NPC;

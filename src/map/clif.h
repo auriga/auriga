@@ -145,6 +145,8 @@ int clif_hominsight(struct block_list *bl, va_list ap);
 int clif_homoutsight(struct block_list *bl, va_list ap);
 int clif_mercinsight(struct block_list *bl, va_list ap);
 int clif_mercoutsight(struct block_list *bl, va_list ap);
+int clif_eleminsight(struct block_list *bl, va_list ap);
+int clif_elemoutsight(struct block_list *bl, va_list ap);
 
 void clif_class_change(struct block_list *bl, int class_, int type);
 
@@ -359,6 +361,11 @@ void clif_spawnmerc(struct merc_data *mcd);
 void clif_send_mercstatus(struct map_session_data *sd);
 void clif_mercskillinfoblock(struct map_session_data *sd);
 void clif_mercupdatestatus(struct map_session_data *sd, int type);
+
+// elem
+void clif_spawnelem(struct elem_data *eld);
+void clif_send_elemstatus(struct map_session_data *sd);
+void clif_elemupdatestatus(struct map_session_data *sd, int type);
 
 // quest
 void clif_questlist(struct map_session_data *sd);

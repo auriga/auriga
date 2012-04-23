@@ -2890,6 +2890,163 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
  *
  *------------------------------------------
  */
+static int clif_elem0078(struct elem_data *eld,unsigned char *buf)
+{
+	int len;
+
+	nullpo_retr(0, eld);
+
+#if PACKETVER < 20071106
+	len = packet_db[0x78].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x78;
+	WBUFL(buf,2) =eld->bl.id;
+	WBUFW(buf,6) =eld->speed;
+	WBUFW(buf,8) =eld->sc.opt1;
+	WBUFW(buf,10)=eld->sc.opt2;
+	WBUFW(buf,12)=eld->sc.option;
+	WBUFW(buf,14)=eld->view_class;
+	WBUFW(buf,16)=battle_config.pet0078_hair_id;
+	WBUFW(buf,20)=0;
+	WBUFW(buf,42)=eld->sc.opt3;
+	WBUFPOS(buf,46,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFB(buf,49)=0;
+	WBUFB(buf,50)=0;
+	WBUFLV(buf,52,status_get_lv(&eld->bl),eld->view_class);
+#elif PACKETVER < 20091104
+	len = packet_db[0x78].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x78;
+	WBUFB(buf,2) =0;
+	WBUFL(buf,3) =eld->bl.id;
+	WBUFW(buf,7) =eld->speed;
+	WBUFW(buf,9) =eld->sc.opt1;
+	WBUFW(buf,11)=eld->sc.opt2;
+	WBUFW(buf,13)=eld->sc.option;
+	WBUFW(buf,15)=eld->view_class;
+	WBUFW(buf,17)=battle_config.pet0078_hair_id;
+	WBUFW(buf,21)=0;
+	WBUFW(buf,43)=eld->sc.opt3;
+	WBUFPOS(buf,47,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFB(buf,50)=0;
+	WBUFB(buf,51)=0;
+	WBUFLV(buf,53,status_get_lv(&eld->bl),eld->view_class);
+#elif PACKETVER < 20110111
+	len = 63 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x7f9;
+	WBUFW(buf,2) =(unsigned short)len;
+	WBUFB(buf,4) =9;
+	WBUFL(buf,5) =eld->bl.id;
+	WBUFW(buf,9) =eld->speed;
+	WBUFW(buf,11)=eld->sc.opt1;
+	WBUFW(buf,13)=eld->sc.opt2;
+	WBUFL(buf,15)=eld->sc.option;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,21)=100;
+	WBUFL(buf,47)=eld->sc.opt3;
+	WBUFPOS(buf,53,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFLV(buf,59,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,63),eld->name,24);
+#else
+	len = 65 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x857;
+	WBUFW(buf,2) =(unsigned short)len;
+	WBUFB(buf,4) =9;
+	WBUFL(buf,5) =eld->bl.id;
+	WBUFW(buf,9) =eld->speed;
+	WBUFW(buf,11)=eld->sc.opt1;
+	WBUFW(buf,13)=eld->sc.opt2;
+	WBUFL(buf,15)=eld->sc.option;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,21)=100;
+	WBUFL(buf,49)=eld->sc.opt3;
+	WBUFPOS(buf,55,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFLV(buf,61,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,65),eld->name,24);
+#endif
+	return len;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
+{
+	int len;
+
+	nullpo_retr(0, eld);
+
+#if PACKETVER < 20091104
+	len = packet_db[0x7b].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x7b;
+	WBUFL(buf,2) =eld->bl.id;
+	WBUFW(buf,6) =eld->speed;
+	WBUFW(buf,8) =eld->sc.opt1;
+	WBUFW(buf,10)=eld->sc.opt2;
+	WBUFW(buf,12)=eld->sc.option;
+	WBUFW(buf,14)=eld->view_class;
+	WBUFW(buf,16)=battle_config.pet0078_hair_id;
+	WBUFL(buf,22)=gettick();
+	WBUFW(buf,46)=eld->sc.opt3;
+	WBUFPOS2(buf,50,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
+	WBUFB(buf,56)=0;
+	WBUFB(buf,57)=0;
+	WBUFLV(buf,58,status_get_lv(&eld->bl),eld->view_class);
+#elif PACKETVER < 20110111
+	len = 69 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x7f7;
+	WBUFW(buf,2) =(unsigned short)len;
+	WBUFB(buf,4) =9;
+	WBUFL(buf,5) =eld->bl.id;
+	WBUFW(buf,9) =eld->speed;
+	WBUFW(buf,11)=eld->sc.opt1;
+	WBUFW(buf,13)=eld->sc.opt2;
+	WBUFL(buf,15)=eld->sc.option;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,21)=100;
+	WBUFL(buf,29)=gettick();
+	WBUFL(buf,51)=eld->sc.opt3;
+	WBUFPOS2(buf,57,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
+	WBUFLV(buf,65,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,69),eld->name,24);
+#else
+	len = 71 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x856;
+	WBUFW(buf,2) =(unsigned short)len;
+	WBUFB(buf,4) =9;
+	WBUFL(buf,5) =eld->bl.id;
+	WBUFW(buf,9) =eld->speed;
+	WBUFW(buf,11)=eld->sc.opt1;
+	WBUFW(buf,13)=eld->sc.opt2;
+	WBUFL(buf,15)=eld->sc.option;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,21)=100;
+	WBUFL(buf,29)=gettick();
+	WBUFL(buf,53)=eld->sc.opt3;
+	WBUFPOS2(buf,59,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
+	WBUFLV(buf,67,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,71),eld->name,24);
+#endif
+	return len;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static void clif_set01e1(const int fd, struct map_session_data *dstsd, short num)
 {
 	nullpo_retv(dstsd);
@@ -3380,6 +3537,75 @@ void clif_spawnmerc(struct merc_data *mcd)
  *
  *------------------------------------------
  */
+void clif_spawnelem(struct elem_data *eld)
+{
+	unsigned char buf[128];
+	int len;
+
+	nullpo_retv(eld);
+
+#if PACKETVER < 20071106
+	len = packet_db[0x7c].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x7c;
+	WBUFL(buf,2) =eld->bl.id;
+	WBUFW(buf,6) =eld->speed;
+	WBUFW(buf,20)=eld->view_class;
+	WBUFW(buf,28)=8;
+	WBUFPOS(buf,36,eld->bl.x,eld->bl.y,eld->dir);
+#elif PACKETVER < 20091104
+	len = packet_db[0x7c].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0) =0x7c;
+	WBUFB(buf,2) =0;
+	WBUFL(buf,3) =eld->bl.id;
+	WBUFW(buf,7) =eld->speed;
+	WBUFW(buf,21)=eld->view_class;
+	WBUFW(buf,29)=8;
+	WBUFPOS(buf,37,eld->bl.x,eld->bl.y,eld->dir);
+#elif PACKETVER < 20110111
+	len = 62 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x7f8;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=9;
+	WBUFL(buf,5)=eld->bl.id;
+	WBUFW(buf,9)=eld->speed;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,33)=9;
+	WBUFPOS(buf,53,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFLV(buf,58,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,62),eld->name,24);
+#else
+	len = 64 + (int)strlen(eld->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x858;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=9;
+	WBUFL(buf,5)=eld->bl.id;
+	WBUFW(buf,9)=eld->speed;
+	WBUFW(buf,19)=eld->view_class;
+	WBUFW(buf,33)=9;
+	WBUFPOS(buf,55,eld->bl.x,eld->bl.y,eld->dir);
+	WBUFLV(buf,60,status_get_lv(&eld->bl),eld->view_class);
+	strncpy(WBUFP(buf,64),eld->name,24);
+#endif
+	clif_send(buf,len,&eld->bl,AREA);
+
+	if(eld->view_size!=0)
+		clif_misceffect2(&eld->bl,422+eld->view_size);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static void clif_servertick(struct map_session_data *sd)
 {
 	int fd;
@@ -3461,6 +3687,14 @@ static void clif_move_sub(struct block_list *bl)
 			struct merc_data *mcd = (struct merc_data *)bl;
 			len = clif_merc007b(mcd,buf);
 			clif_send(buf,len,&mcd->bl,AREA_WOS);
+			break;
+		}
+		case BL_ELEM:
+		{
+			unsigned char buf[128];
+			struct elem_data *eld = (struct elem_data *)bl;
+			len = clif_elem007b(eld,buf);
+			clif_send(buf,len,&eld->bl,AREA_WOS);
 			break;
 		}
 		default:
@@ -3698,6 +3932,13 @@ int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 				len = clif_merc007b(mcd,buf);
 			} else {
 				len = clif_merc0078(mcd,buf);
+			}
+		} else if( bl->type == BL_ELEM ) {
+			struct elem_data *eld = (struct elem_data *)bl;
+			if(eld->ud.walktimer != -1) {
+				len = clif_elem007b(eld,buf);
+			} else {
+				len = clif_elem0078(eld,buf);
 			}
 		} else {
 			WBUFW(buf,0)=0x88;
@@ -5873,6 +6114,8 @@ void clif_changeoption2(struct block_list *bl)
 		WBUFLV(buf,10,status_get_lv(bl),((struct homun_data *)bl)->view_class);
 	} else if(bl->type == BL_MERC) {
 		WBUFLV(buf,10,status_get_lv(bl),((struct merc_data *)bl)->view_class);
+	} else if(bl->type == BL_ELEM) {
+		WBUFLV(buf,10,status_get_lv(bl),((struct elem_data *)bl)->view_class);
 	} else if(bl->type == BL_PET) {
 		WBUFLV(buf,10,status_get_lv(bl),((struct pet_data *)bl)->class_);
 	}
@@ -6929,6 +7172,33 @@ static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data*
 }
 
 /*==========================================
+ * ELEM表示
+ *------------------------------------------
+ */
+static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data* eld)
+{
+	int len;
+
+	nullpo_retv(sd);
+	nullpo_retv(eld);
+
+	if(eld->ud.walktimer != -1){
+		len = clif_elem007b(eld,WFIFOP(sd->fd,0));
+		WFIFOSET(sd->fd,len);
+	} else {
+		// 0x78だと座標ズレを起こす
+		//len = clif_elem0078(eld,WFIFOP(sd->fd,0));
+		//WFIFOSET(sd->fd,len);
+		len = clif_elem007b(eld,WFIFOP(sd->fd,0));
+		WFIFOSET(sd->fd,len);
+	}
+	if(eld->view_size!=0)
+		clif_misceffect2(&eld->bl,422+eld->view_size);
+
+	return;
+}
+
+/*==========================================
  * ITEM表示
  *------------------------------------------
  */
@@ -7130,6 +7400,9 @@ static int clif_getareachar(struct block_list* bl, va_list ap)
 	case BL_MERC:
 		clif_getareachar_merc(sd,(struct merc_data *)bl);
 		break;
+	case BL_ELEM:
+		clif_getareachar_elem(sd,(struct elem_data *)bl);
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("get area char ??? %d\n",bl->type);
@@ -7178,6 +7451,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 	case BL_PET:
 	case BL_HOM:
 	case BL_MERC:
+	case BL_ELEM:
 		clif_clearchar_id(bl->id,0,sd->fd);
 		break;
 	case BL_ITEM:
@@ -7231,6 +7505,9 @@ int clif_pcinsight(struct block_list *bl,va_list ap)
 		break;
 	case BL_MERC:
 		clif_getareachar_merc(sd,(struct merc_data *)bl);
+		break;
+	case BL_ELEM:
+		clif_getareachar_elem(sd,(struct elem_data *)bl);
 		break;
 	}
 
@@ -7385,6 +7662,44 @@ int clif_mercoutsight(struct block_list *bl,va_list ap)
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
 	clif_clearchar_id(mcd->bl.id,0,sd->fd);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_eleminsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct elem_data *eld;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, eld = va_arg(ap,struct elem_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_getareachar_elem(sd,eld);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_elemoutsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct elem_data *eld;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, eld = va_arg(ap,struct elem_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_clearchar_id(eld->bl.id,0,sd->fd);
 
 	return 0;
 }
@@ -13485,6 +13800,65 @@ void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, sho
 }
 
 /*==========================================
+ * 精霊ステータス送信
+ *------------------------------------------
+ */
+void clif_send_elemstatus(struct map_session_data *sd)
+{
+	int fd;
+	struct elem_data *eld;
+
+	nullpo_retv(sd);
+	nullpo_retv(eld = sd->eld);
+
+	fd = sd->fd;
+	WFIFOW(fd,0)  = 0x81d;
+	WFIFOL(fd,2)  = eld->bl.id;
+	WFIFOL(fd,6)  = eld->status.hp;
+	WFIFOL(fd,10) = eld->max_hp;
+	WFIFOL(fd,14) = eld->status.sp;
+	WFIFOL(fd,18) = eld->max_sp;
+	WFIFOSET(fd,packet_db[0x81d].len);
+
+	return;
+}
+
+/*==========================================
+ * 精霊ステータス更新
+ *------------------------------------------
+ */
+void clif_elemupdatestatus(struct map_session_data *sd, int type)
+{
+	int fd;
+	struct elem_data *eld;
+
+	nullpo_retv(sd);
+	nullpo_retv(eld = sd->eld);
+
+	fd = sd->fd;
+
+	WFIFOW(fd,0)  = 0x81e;
+	WFIFOW(fd,2)  = type;
+	switch(type){
+	case SP_HP:
+		WFIFOL(fd,4) = eld->status.hp;
+		break;
+	case SP_MAXHP:
+		WFIFOL(fd,4) = eld->max_hp;
+		break;
+	case SP_SP:
+		WFIFOL(fd,4) = eld->status.sp;
+		break;
+	case SP_MAXSP:
+		WFIFOL(fd,4) = eld->max_sp;
+		break;
+	}
+	WFIFOSET(fd,packet_db[0x81e].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -13713,6 +14087,13 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_spawnmerc(sd->mcd);
 		clif_send_mercstatus(sd);
 		clif_mercskillinfoblock(sd);
+	}
+	// 精霊
+	if(sd->eld) {
+		map_addblock(&sd->eld->bl);
+		mob_ai_hard_spawn( &sd->eld->bl, 1 );
+		clif_spawnelem(sd->eld);
+		clif_send_elemstatus(sd);
 	}
 
 	if(sd->state.connect_new) {
@@ -13951,6 +14332,10 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		break;
 	case BL_MERC:
 		memcpy(WFIFOP(fd,6),((struct merc_data*)bl)->name,24);
+		WFIFOSET(fd,packet_db[0x95].len);
+		break;
+	case BL_ELEM:
+		memcpy(WFIFOP(fd,6),((struct elem_data*)bl)->name,24);
 		WFIFOSET(fd,packet_db[0x95].len);
 		break;
 	default:
@@ -14225,6 +14610,9 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 		}
 		if(sd->mcd) {
 			unit_free(&sd->mcd->bl, 0);
+		}
+		if(sd->eld) {
+			unit_free(&sd->eld->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd, 1);

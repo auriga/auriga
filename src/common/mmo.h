@@ -78,6 +78,9 @@
 #define MAX_MERC_DB 50			// 傭兵の数
 #define MAX_MERC_TYPE 3			// 傭兵の種類
 
+#define MAX_ELEM_DB 12			// 精霊の数
+#define ELEM_ID 2114			// 精霊IDの開始値
+
 // スキルID定義
 #define SECOND_SKILLID 1001		// 2次職クエストスキルIDの開始値
 #define THIRD_SKILLID  2001		// 3次職スキルIDの開始値
@@ -85,6 +88,7 @@
 #define KO_SKILLID     3001		// 影狼、朧IDの開始値
 #define HOM_SKILLID    8001		// ホムスキルIDの開始値
 #define MERC_SKILLID   8201		// 傭兵スキルIDの開始値
+#define ELEM_SKILLID   8401		// 精霊スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
 #define MAX_SKILL       700
@@ -94,6 +98,7 @@
 #define MAX_KOSKILL      29
 #define MAX_HOMSKILL     16
 #define MAX_MERCSKILL    40
+#define MAX_ELEMSKILL    42
 #define MAX_GUILDSKILL   16
 
 #define MAX_SECOND_SKILLID (SECOND_SKILLID+MAX_SECONDSKILL)	// 2次職クエストスキルIDの最大値
@@ -102,9 +107,10 @@
 #define MAX_KO_SKILLID     (KO_SKILLID+MAX_KOSKILL)			// 影狼、朧スキルIDの最大値
 #define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
 #define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
+#define MAX_ELEM_SKILLID   (ELEM_SKILLID+MAX_ELEMSKILL)		// 精霊スキルIDの最大値
 #define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
 
-#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_KOSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_GUILDSKILL)
+#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_KOSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
 #define MAX_PCSKILL  MAX_KO_SKILLID		// PCが使用可能の最大のスキルID
 
 #define MAX_QUEST_DB 1000
@@ -493,7 +499,7 @@ struct mmo_charstatus {
 	short karma,manner;
 	int die_counter;
 	short hair,hair_color,clothes_color;
-	int party_id,guild_id,pet_id,homun_id,merc_id;
+	int party_id,guild_id,pet_id,homun_id,merc_id,elem_id;
 
 	int merc_fame[MAX_MERC_TYPE],merc_call[MAX_MERC_TYPE];
 
@@ -562,6 +568,14 @@ struct mmo_mercstatus {
 	int hp,sp;
 	unsigned int kill_count;
 	unsigned int limit;
+};
+
+struct mmo_elemstatus {
+	int account_id;
+	int char_id;
+	int elem_id;
+	short class_;
+	int hp,sp;
 };
 
 struct storage {

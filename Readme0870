@@ -1,4 +1,17 @@
 ----------------------------------------
+//0946 [2012/04/24] by Blaze
+
+・ソーサラーの精霊スキル実装準備
+	-> mmo.hに精霊の情報定義を追加（common/mmo.h）
+	-> block_typeにBL_ELEMを新規追加（map.h）
+	-> 精霊の基本情報構造体を新規追加（map.h）
+	-> 精霊の表示系パケット（0x78,0x7b,0x7c,0x28,0x95）を新規追加（clif.*）
+	-> 精霊のステータス更新パケット（0x81d,0x81e）を新規追加（clif.*）
+	-> 精霊のスキル定義追加（skill.h, db/skill_db.txt, db/skill_db2.txt db/skill_require_db.txt）
+	-> 精霊の基本情報DBとスキルDBを新規追加（db/elem_db.txt, db/elem_skill_tree.txt）
+
+
+----------------------------------------
 //0945 [2012/04/24] by Blaze
 
 ・傭兵データ構造の見直し（common/mmo.h, map.h, merc.*, clif.c, status.c, skill.c）
