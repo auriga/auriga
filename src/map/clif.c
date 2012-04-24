@@ -8423,10 +8423,10 @@ void clif_status_change_id(int fd, int id, int type, unsigned char flag, unsigne
 	WFIFOW(fd,2)=type;
 	WFIFOL(fd,4)=id;
 	WFIFOB(fd,8)=flag;
-	WFIFOL(buf,9)=tick;
-	WFIFOL(buf,13)=val1;
-	WFIFOL(buf,17)=val2;
-	WFIFOL(buf,21)=val3;
+	WFIFOL(fd,9)=tick;
+	WFIFOL(fd,13)=val1;
+	WFIFOL(fd,17)=val2;
+	WFIFOL(fd,21)=val3;
 	WFIFOSET(fd,packet_db[0x43f].len);
 
 	return;
