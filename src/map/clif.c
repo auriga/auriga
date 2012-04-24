@@ -7007,9 +7007,9 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			WFIFOSET(sd->fd,len);
 		}
 		if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)
-			clif_status_change(&dstsd->bl,SI_ALL_RIDING,1,0,1,25,0);
+			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
-			clif_status_change(&dstsd->bl,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+			clif_status_change_id(sd->fd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
 	}
 
 	if(dstsd->chatID) {
@@ -8411,6 +8411,28 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 }
 
 /*==========================================
+ * 状態異常アイコン/メッセージ表示
+ *------------------------------------------
+ */
+void clif_status_change_id(int fd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3)
+{
+	if(fd < 0)
+		return;
+
+	WFIFOW(fd,0)=0x43f;
+	WFIFOW(fd,2)=type;
+	WFIFOL(fd,4)=id;
+	WFIFOB(fd,8)=flag;
+	WFIFOL(buf,9)=tick;
+	WFIFOL(buf,13)=val1;
+	WFIFOL(buf,17)=val2;
+	WFIFOL(buf,21)=val3;
+	WFIFOSET(fd,packet_db[0x43f].len);
+
+	return;
+}
+
+/*==========================================
  * メッセージ表示
  *------------------------------------------
  */
@@ -8907,7 +8929,7 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1fc;
-	for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
+	for(i=j=0;i<MAX_INVENTORY && j<dstsd->inventory_num;i++) {
 		if((nameid=dstsd->status.inventory[i].nameid) <= 0)
 			continue;
 		j++;
@@ -12967,7 +12989,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,40) = tsd->status.clothes_color;
 	WFIFOB(fd,42) = tsd->sex;
 
-	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+	for(i=0,k=0; i<MAX_INVENTORY && k<tsd->inventory_num; i++) {
 		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
 			continue;
 		k++;
@@ -13033,7 +13055,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,40) = tsd->status.clothes_color;
 	WFIFOB(fd,42) = tsd->sex;
 
-	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+	for(i=0,k=0; i<MAX_INVENTORY && k<tsd->inventory_num; i++) {
 		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
 			continue;
 		k++;
@@ -13104,7 +13126,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 	WFIFOW(fd,42) = tsd->status.clothes_color;
 	WFIFOB(fd,44) = tsd->sex;
 
-	for(i=0,k=0; i<MAX_INVENTORY && k<sd->inventory_num; i++) {
+	for(i=0,k=0; i<MAX_INVENTORY && k<tsd->inventory_num; i++) {
 		if(tsd->status.inventory[i].nameid <= 0 || tsd->inventory_data[i] == NULL)
 			continue;
 		k++;
