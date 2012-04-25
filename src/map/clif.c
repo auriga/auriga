@@ -4860,7 +4860,7 @@ void clif_equiplist(struct map_session_data *sd)
 		}
 		WFIFOL(fd,n*28+24)=sd->status.inventory[i].limit;
 		WFIFOW(fd,n*28+28)=0;
-		WFIFOW(fd,n*28+30)=0;
+		WFIFOW(fd,n*28+30)=sd->inventory_data[i]->look;
 		n++;
 	}
 	if(n){
@@ -5206,7 +5206,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		}
 		WFIFOL(fd,len+20)=item[i].limit;
 		WFIFOW(fd,len+24)=0;
-		WFIFOW(fd,len+26)=0;
+		WFIFOW(fd,len+26)=id->look;
 		len += 28;
 	}
 #endif
@@ -9528,7 +9528,7 @@ void clif_cart_equiplist(struct map_session_data *sd)
 		}
 		WFIFOL(fd,n*28+24)=sd->status.cart[i].limit;
 		WFIFOW(fd,n*28+28)=0;
-		WFIFOW(fd,n*28+30)=0;
+		WFIFOW(fd,n*28+30)=id->look;
 		n++;
 	}
 	if(n){
@@ -13504,7 +13504,7 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 	if(list) {
 		for(i=0; i<count; i++) {
 			struct booking_data *bd = list[i];
-			WFIFOL(fd,n*48+5)=bd->id;
+			WFIFOL(fd,n*48+5)=bd->id; 
 			memcpy(WFIFOP(fd,n*48+9),bd->name,24);
 			WFIFOL(fd,n*48+33)=bd->time;
 			WFIFOW(fd,n*48+37)=bd->lv;
@@ -17995,13 +17995,13 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 			case 1:
 				/* 四元素分析Lv1 */
 				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 1) {
-
+					
 				}
 				break;
 			case 2:
 				/* 四元素分析Lv2 */
 				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 2) {
-
+					
 				}
 				break;
 		}

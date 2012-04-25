@@ -171,7 +171,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	weight = sd->weight;
 
 	// 買取露店データ初期化
-	memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+	memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 
 	// アイテムリストのチェック
 	for( i = 0; i < count; i++ )
@@ -184,7 +184,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		// 自分が所持しているアイテムでないと買取出来ない
 		if( (idx = pc_search_inventory(sd, nameid)) == -1 )
 		{
-			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 			clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 			return;
 		}
@@ -192,7 +192,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		// 個数のチェック
 		if( amount <= 0 || sd->status.inventory[idx].amount+amount > battle_config.max_buyingstore_amount )
 		{
-			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 			clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 			return;
 		}
@@ -200,7 +200,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		// アイテムIDの存在チェック
 		if( (id = itemdb_exists(nameid)) == NULL )
 		{
-			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 			clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 			return;
 		}
@@ -208,7 +208,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		// 金額チェック
 		if( value <= 0 || value > battle_config.max_buyingstore_zeny )
 		{
-			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 			clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 			return;
 		}
@@ -216,7 +216,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		// 買取露店で買い取り可能なアイテムかチェック
 		if( itemdb_isbuyingable(nameid) != 1 )
 		{
-			memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 			clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 			return;
 		}
@@ -229,7 +229,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			{
 				if( sd->buyingstore.item[j].nameid == nameid )
 				{
-					memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+					memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 					clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 					return;
 				}
@@ -246,7 +246,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	// 重量チェック
 	if( (sd->max_weight*90) / 100 < weight )
 	{
-		memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * count);
+		memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 		clif_failed_openbuyingstore(sd, FAILED_OPEN_WEIGHT, 0);
 		return;
 	}
@@ -281,7 +281,7 @@ void buyingstore_close(struct map_session_data *sd)
 	if( sd->state.store == STORE_TYPE_BUYINGSTORE )
 	{
 		sd->state.store = STORE_TYPE_NONE;
-		memset(&sd->buyingstore, 0, sizeof(struct buyingstore) * sd->buyingstore.count);
+		memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 		clif_close_buyingstore(&sd->bl, -1);
 	}
 
