@@ -1936,10 +1936,10 @@ R 02e8 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.
 	所有消耗品&収集品リスト
 	矢の場合は<?>.2Bが0x8000になる
 	0x1eeの上位版
-R 02e9 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
+R 02e9 <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <WearState>.w <card>.4w <time>.l}.22B*
 	カート内アイテム。消耗品/収集品
 	0x1efの上位版
-R 02ea <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <?>.2B <card>.4w <time>.l}.22B*
+R 02ea <len>.w {<index>.w <item ID>.w <type>.B <identify flag>.B <amount>.w <WearState>.w <card>.4w <time>.l}.22B*
 	カプラさんに預けてある消耗品&収集品リスト
 	0x1f0の上位版
 R 02eb <server tick>.l <coordidate>.3B <05 05固定>.2B <font>.w
@@ -2469,7 +2469,14 @@ R 08af <account_id>.l <CurWaitingNum>.l
 S 08b0 <account_id>.l <AuthCode>.l <userLevel>.l <client_type>.w <sex>.B
 	waitingログイン
 	キャラ鯖用
-
+R 08b1 <len>.w { <?>.w <?>.B }.3B
+	未調査
+R 08b2 <len>.w <AccountArea>.w { unknown structure }.?
+	ログイン用パケット
+	未調査
+R 08b3 <len>.w <target_aid>.l <?>.?B
+	<len>-8バイトを<?>.?Bからmemcpyする
+	未調査
 R 08b4
 	start_colection
 S 08b5 <target_id>.l
@@ -2642,35 +2649,34 @@ S 08fc
 	未調査
 S 08fd
 	未調査
-R 08fe
-	現状は多分無視されている
+R 08fe <len>.w { <?>.l <?>.l <?>.l }.12B
 	未調査
 R 08ff <?>.l <?>.w <?>.l <?>.l <?>.l <?>.l
 	未調査
-R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <?>.2B <card>.4w <time>.l <attribute>.B }.22B
+R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
 	所有消耗品&収集品リスト
 	矢の場合は<?>.2Bが0x8000になる
 	0x2e8の上位版
 	<attribute>
 	0x1 鑑定済み
 	0x2 個人タブ
-R 0901 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <?>.w <look>.w <attribute>.B }.27B
+R 0901 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
 	所有装備リスト、0x2d0の上位版
 	<attribute>
 	0x1 鑑定済み
 	0x2 破損
 	0x4 個人タブ
-R 0902 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <?>.2B <card>.4w <time>.l <attribute>.B }.22B
+R 0902 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
 	カート内アイテム。消耗品/収集品
 	0x2e9の上位版
-R 0903 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <?>.w <look>.w <attribute>.B }.27B
+R 0903 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
 	カート内装備リスト、0x2d2の上位版
-R 0904 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <?>.2B <card>.4w <time>.l <attribute>.B }.22B
+R 0904 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
 	カプラさんに預けてある消耗品&収集品リスト
 	0x2eaの上位版
-R 0905 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <?>.w <look>.w <attribute>.B }.27B
+R 0905 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
 	カプラさんに預けてある装備リスト、0x2d1の上位版
-R 0906 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <?>.w <look>.w <attribute>.B }.27B
+R 0906 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
 	プレイヤー装備ウィンドウ情報
 	0x859の上位版
 S 0907 <index>.w <type>.B
@@ -2678,15 +2684,80 @@ S 0907 <index>.w <type>.B
 R 0908 <index>.w <type>.B
 	0x907の応答
 	個人タブへアイテム移動
-S 0909
+R 0909 <?>.l
 	未調査
 S 090a <message>.24B
 	未調査
-S 090b
+R 090b <?>.l <?>.24B
 	未調査
-S 090c
+R 090c <?>.l <?>.24B
 	未調査
-S 090d
+R 090d
+	kROでは無視するよう処理されている
 	未調査
-S 090e
+R 090e
+	未調査
+R 090f <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.w <?>.w <?>.l <?>.l <?>.B
+	未調査
+	可変長ではないっぽい
+	ヘッダ含めて合計73バイト
+S 0910
+	未調査
+S 0911
+	未調査
+S 0912
+	未調査
+S 0913
+	未調査
+R 0914 <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.8B <?>.w <?>.w <?>.l <?>.l <?>.B
+	未調査
+	可変長ではないっぽい?
+	ヘッダ含めて合計80バイト
+R 0915 <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.w <?>.w <?>.l <?>.l <?>.B <?>.B
+	未調査
+	可変長ではないっぽい?
+	ヘッダ含めて合計74バイト
+S 0916
+	未調査
+S 0917-0969
+	未定義
+	ヘッダスクランブルの予約用っぽい
+S 096a <?>.l
+	未調査
+R 096b <?>.w
+	未調査
+R 096c <?>.l
+	未調査
+R 096d <len>.w { <?>.w <?>.w }.4B
+	未調査
+S 096e
+	未調査
+R 096f <?>.w <?>.w <type>.B
+	未調査
+	<type>は0,1,2のみ
+S 0970
+	未調査
+R 0971 <?>.l
+	未調査
+S 0972
+	未調査
+S 0973
+	未調査
+S 0974
+	未調査
+S 0975
+	kROでは無視するよう処理されている
+	未調査
+R 0976
+	kROでは無視するよう処理されている
+	未調査
+R 0977 <?>.l <?>.l <?>.l
+	未調査
+S 0978
+	未調査
+S 0979
+	未調査
+R 0980 <len>.w <?>.l { <?>.l <?>.w <?>.w <?>.B <?>.l }.9B
+	未調査
+S 0981
 	未調査
