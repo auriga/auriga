@@ -1,4 +1,22 @@
 ----------------------------------------
+//0951 [2012/04/28] by Blaze
+
+・精霊システム仮実装
+	-> 精霊の作成、削除、召喚者追従まで実装（map/elem.*, map/battle.c, map/mob.c, map/pc.c, map/skill.c, map/status.c, map/unit.c, map/map.dsp, map/map_sql.dsp）
+	-> interサーバの精霊データ送受信処理を実装（map/intif.*, char/inter.c, char/int_elem.*, char/char.dsp, char/char_sql.dsp, doc/inter_server_packet.txt）
+	-> charサーバの精霊データ保存処理を実装（char/char.c, char/sql/elemdb_sql.*, char/txt/elemdb_txt.*, char/char.dsp, char/char_sql.dsp）
+	-> プレイヤーの精霊情報を保存するように変更（char/sql/chardb_sql.c, char/txt/chardb_txt.c, sql-files/main.sql, Auriga951_changetable.sql）
+	-> SQL:新規テーブル「elemental」追加（common/sqldbs.h, sql-files/main.sql, Auriga951_changetable.sql）
+	-> TXT:JOURNAL_IDENTIFIERを14->15に引き上げ (common/journal.c)
+	-> 精霊保存データに"mode"と"limit"を追加 (common/mmo.h)
+	-> 精霊データ定義にAIタイマー追加、不要な定義を削除（map/map.h）
+	-> 精霊の初期化、破棄、block_list取得処理を追加（map/map.c）
+	-> 戦闘設定に「elem_max_aspd」を追加（map/battle.*, conf/battle_auriga.conf）
+※精霊の処理が安定化するまで、skill_dbからソーサラーの精霊スキル定義を無効にしています。
+
+・TXT:Auriga-0888およびAuriga-0902にて、旧形式のデータとindexがずれているために一部データが破壊される不具合を修正（char/txt/chardb_txt.c）
+
+----------------------------------------
 //0950 [2012/04/28] by popori
 
 ・2012-4-24aRagexeREの解析結果を記載 (doc/client_packet.txt)

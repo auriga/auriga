@@ -60,6 +60,7 @@
 #include "ranking.h"
 #include "merc.h"
 #include "buyingstore.h"
+#include "elem.h"
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 
@@ -1292,6 +1293,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// 傭兵初期化
 	sd->mcd = NULL;
 
+	// 精霊初期化
+	sd->eld = NULL;
+
 #ifdef DYNAMIC_SC_DATA
 	// ダミー挿入
 	sd->sc.data = dummy_sc_data;
@@ -1355,13 +1359,15 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		return 1;
 	}
 
-	// ペット、ホム、傭兵データ要求
+	// ペット、ホム、傭兵、精霊データ要求
 	if(sd->status.pet_id > 0)
 		intif_request_petdata(sd->status.account_id,sd->status.char_id,sd->status.pet_id);
 	if(sd->status.homun_id > 0)
 		intif_request_homdata(sd->status.account_id,sd->status.char_id,sd->status.homun_id);
 	if(sd->status.merc_id > 0)
 		intif_request_mercdata(sd->status.account_id,sd->status.char_id,sd->status.merc_id);
+	if(sd->status.elem_id > 0)
+		intif_request_elemdata(sd->status.account_id,sd->status.char_id,sd->status.elem_id);
 
 	// パーティ、ギルドデータの要求
 	if( sd->status.party_id > 0 && party_search(sd->status.party_id) == NULL )
@@ -4418,6 +4424,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			if( sd->mcd ) {
 				unit_free(&sd->mcd->bl, 0);
 			}
+			if( sd->eld ) {
+				unit_free(&sd->eld->bl, 0);
+			}
 			unit_free(&sd->bl,clrtype);
 			strncpy(sd->status.last_point.map,mapname,24);
 			sd->status.last_point.x = x;
@@ -4520,6 +4529,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		if(sd->status.merc_id > 0 && sd->mcd) {
 			unit_remove_map(&sd->mcd->bl, clrtype&0xffff, !move_flag);
 		}
+		if(sd->status.elem_id > 0 && sd->eld) {
+			unit_remove_map(&sd->eld->bl, clrtype&0xffff, !move_flag);
+		}
 		clif_changemap(sd,map[m].name,x,y);
 	}
 
@@ -4563,6 +4575,13 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		sd->mcd->bl.x = sd->mcd->ud.to_x = x;
 		sd->mcd->bl.y = sd->mcd->ud.to_y = y;
 		sd->mcd->dir  = sd->dir;
+	}
+	// 精霊の移動
+	if(sd->status.elem_id > 0 && sd->eld) {
+		sd->eld->bl.m = m;
+		sd->eld->bl.x = sd->eld->ud.to_x = x;
+		sd->eld->bl.y = sd->eld->ud.to_y = y;
+		sd->eld->dir  = sd->dir;
 	}
 
 	// OnPCMoveMapイベント
@@ -9833,6 +9852,8 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 			homun_save_data(sd);
 		if(sd->status.merc_id > 0 && sd->mcd)
 			merc_save_data(sd);
+		if(sd->status.elem_id > 0 && sd->eld)
+			elem_save_data(sd);
 		chrif_save(sd,0);
 		if(sd->state.storage_flag == 2)
 			storage_guild_storagesave(sd);

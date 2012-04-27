@@ -52,6 +52,7 @@
 #include "merc.h"
 #include "booking.h"
 #include "buyingstore.h"
+#include "elem.h"
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data);
 static int unit_attack_timer(int tid,unsigned int tick,int id,void *data);
@@ -91,6 +92,7 @@ struct unit_data* unit_bl2ud(struct block_list *bl)
 	if( bl->type == BL_PET  ) return &((struct pet_data*)bl)->ud;
 	if( bl->type == BL_HOM  ) return &((struct homun_data*)bl)->ud;
 	if( bl->type == BL_MERC ) return &((struct merc_data*)bl)->ud;
+	if( bl->type == BL_ELEM ) return &((struct elem_data*)bl)->ud;
 	return NULL;
 }
 
@@ -176,6 +178,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct unit_data        *ud  = NULL;
 	struct status_change    *sc  = NULL;
 
@@ -192,6 +195,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		ud = &hd->ud;
 	} else if( (mcd = BL_DOWNCAST( BL_MERC, bl ) ) ) {
 		ud = &mcd->ud;
+	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
+		ud = &eld->ud;
 	}
 	if(ud == NULL) return 0;
 
@@ -227,6 +232,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	else if(pd)  pd->dir  = dir;
 	else if(hd)  hd->dir  = dir;
 	else if(mcd) mcd->dir = dir;
+	else if(eld) eld->dir = dir;
 
 	dx = dirx[(int)dir];
 	dy = diry[(int)dir];
@@ -239,7 +245,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,sd,0);
 	} else if(md) {
 		map_foreachinmovearea(clif_moboutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,md);
-		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM|BL_MERC,md,0);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM|BL_MERC|BL_ELEM,md,0);
 	} else if(pd) {
 		map_foreachinmovearea(clif_petoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,pd);
 	} else if(hd) {
@@ -248,6 +254,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	} else if(mcd) {
 		map_foreachinmovearea(clif_mercoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,mcd);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,mcd,0);
+	} else if(eld) {
+		map_foreachinmovearea(clif_elemoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,eld);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,eld,0);
 	}
 	ud->walktimer = -1;
 
@@ -287,7 +296,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,sd,1);
 	} else if(md) {
 		map_foreachinmovearea(clif_mobinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,md);
-		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM|BL_MERC,md,1);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM|BL_MERC|BL_ELEM,md,1);
 	} else if(pd) {
 		map_foreachinmovearea(clif_petinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,pd);
 	} else if(hd) {
@@ -296,6 +305,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	} else if(mcd) {
 		map_foreachinmovearea(clif_mercinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,mcd);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,mcd,1);
+	} else if(eld) {
+		map_foreachinmovearea(clif_eleminsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,eld);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,eld,1);
 	}
 	ud->walktimer = -1;
 
@@ -480,6 +492,7 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct status_change    *sc  = NULL;
 
 	nullpo_retr(0, bl);
@@ -494,6 +507,8 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 		ud = &hd->ud;
 	} else if( (mcd = BL_DOWNCAST( BL_MERC, bl ) ) ) {
 		ud = &mcd->ud;
+	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
+		ud = &eld->ud;
 	}
 	if( ud == NULL ) return 0;
 
@@ -611,6 +626,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct unit_data        *ud  = NULL;
 
 	nullpo_retr(1, bl);
@@ -627,6 +643,8 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		ud = &hd->ud;
 	} else if( (mcd = BL_DOWNCAST( BL_MERC, bl ) ) ) {
 		ud = &mcd->ud;
+	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
+		ud = &eld->ud;
 	}
 	if( ud == NULL ) return 1;
 
@@ -676,7 +694,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_MOB,sd,0);
 	} else if(md) {
 		map_foreachinmovearea(clif_moboutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,md);
-		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM|BL_MERC,md,0);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_PC|BL_HOM|BL_MERC|BL_ELEM,md,0);
 	} else if(pd) {
 		map_foreachinmovearea(clif_petoutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,pd);
 	} else if(hd) {
@@ -685,6 +703,9 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	} else if(mcd) {
 		map_foreachinmovearea(clif_mercoutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,mcd);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_MOB,mcd,0);
+	} else if(eld) {
+		map_foreachinmovearea(clif_elemoutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,eld);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_MOB,eld,0);
 	}
 
 	if(!pd) skill_unit_move(bl,tick,0);
@@ -699,7 +720,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,-dx,-dy,BL_MOB,sd,1);
 	} else if(md) {
 		map_foreachinmovearea(clif_mobinsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_PC,md);
-		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM|BL_MERC,md,1);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,-dx,-dy,BL_PC|BL_HOM|BL_MERC|BL_ELEM,md,1);
 	} else if(pd) {
 		map_foreachinmovearea(clif_petinsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_PC,pd);
 	} else if(hd) {
@@ -708,6 +729,9 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	} else if(mcd) {
 		map_foreachinmovearea(clif_mercinsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_PC,mcd);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,-dx,-dy,BL_MOB,mcd,1);
+	} else if(eld) {
+		map_foreachinmovearea(clif_eleminsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_PC,eld);
+		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,-dx,-dy,BL_MOB,eld,1);
 	}
 
 	if( flag&1 )		// 吹き飛ばし用パケット送信
@@ -771,6 +795,8 @@ int unit_setdir(struct block_list *bl,int dir)
 		((struct homun_data *)bl)->dir = dir;
 	else if(bl->type == BL_MERC)
 		((struct merc_data *)bl)->dir = dir;
+	else if(bl->type == BL_ELEM)
+		((struct elem_data *)bl)->dir = dir;
 
 	clif_changedir( bl, dir, dir );
 	return 0;
@@ -787,6 +813,7 @@ int unit_stop_walking(struct block_list *bl,int type)
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct unit_data        *ud  = NULL;
 
 	nullpo_retr(0, bl);
@@ -801,6 +828,8 @@ int unit_stop_walking(struct block_list *bl,int type)
 		ud = &hd->ud;
 	} else if( (mcd = BL_DOWNCAST( BL_MERC, bl ) ) ) {
 		ud = &mcd->ud;
+	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
+		ud = &eld->ud;
 	}
 	if( ud == NULL ) return 0;
 
@@ -876,6 +905,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct mob_data         *src_md  = NULL;
 	struct homun_data       *src_hd  = NULL;
 	struct merc_data        *src_mcd = NULL;
+	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
 	unsigned int tick;
 	int range;
@@ -884,6 +914,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct mob_data         *target_md  = NULL;
 	struct homun_data       *target_hd  = NULL;
 	struct merc_data        *target_mcd = NULL;
+	struct elem_data        *target_eld = NULL;
 	int forcecast = 0, zone = 0, nomemorize = 0;
 	struct status_change *sc;
 
@@ -899,6 +930,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		src_ud = &src_hd->ud;
 	} else if( (src_mcd = BL_DOWNCAST( BL_MERC, src ) ) ) {
 		src_ud = &src_mcd->ud;
+	} else if( (src_eld = BL_DOWNCAST( BL_ELEM, src ) ) ) {
+		src_ud = &src_eld->ud;
 	}
 	if( src_ud == NULL ) return 0;
 
@@ -1010,6 +1043,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	target_md  = BL_DOWNCAST( BL_MOB,  target );
 	target_hd  = BL_DOWNCAST( BL_HOM,  target );
 	target_mcd = BL_DOWNCAST( BL_MERC, target );
+	target_eld = BL_DOWNCAST( BL_ELEM, target );
 
 	// 直前のスキル状況の記録
 	if(src_sd) {
@@ -1167,7 +1201,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			int id = target_md->target_id;
 			if(battle_config.mob_changetarget_byskill || id == 0)
 			{
-				if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC)
+				if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM)
 					target_md->target_id = src->id;
 			}
 			mobskill_use(target_md,tick,MSC_CASTTARGETED);
@@ -1258,6 +1292,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	struct mob_data         *src_md  = NULL;
 	struct homun_data       *src_hd  = NULL;
 	struct merc_data        *src_mcd = NULL;
+	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
 	int zone;
 	unsigned int tick = gettick();
@@ -1278,6 +1313,8 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		src_ud = &src_hd->ud;
 	} else if( (src_mcd = BL_DOWNCAST( BL_MERC, src ) ) ) {
 		src_ud = &src_mcd->ud;
+	} else if( (src_eld = BL_DOWNCAST( BL_ELEM, src ) ) ) {
+		src_ud = &src_eld->ud;
 	}
 	if( src_ud == NULL ) return 0;
 
@@ -1637,6 +1674,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	struct mob_data         *src_md  = NULL, *target_md  = NULL;
 	struct homun_data       *src_hd  = NULL, *target_hd  = NULL;
 	struct merc_data        *src_mcd = NULL, *target_mcd = NULL;
+	struct elem_data        *src_eld = NULL, *target_eld = NULL;
 
 	if((src = map_id2bl(id)) == NULL)
 		return 0;
@@ -1688,11 +1726,13 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	src_md  = BL_DOWNCAST( BL_MOB,  src );
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
+	src_eld = BL_DOWNCAST( BL_ELEM, src );
 
 	target_sd  = BL_DOWNCAST( BL_PC ,  target );
 	target_md  = BL_DOWNCAST( BL_MOB,  target );
 	target_hd  = BL_DOWNCAST( BL_HOM,  target );
 	target_mcd = BL_DOWNCAST( BL_MERC, target );
+	target_eld = BL_DOWNCAST( BL_ELEM, target );
 
 	if( src_sd ) {
 		// 異常などで攻撃できない
@@ -1778,6 +1818,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 			src_hd->dir = dir;
 		else if(src_mcd && battle_config.monster_attack_direction_change)
 			src_mcd->dir = dir;
+		else if(src_eld && battle_config.monster_attack_direction_change)
+			src_eld->dir = dir;
 		else if(src_ud->walktimer != -1)
 			unit_stop_walking(src,1);
 
@@ -1933,6 +1975,8 @@ int unit_heal(struct block_list *bl,int hp,int sp)
 		homun_heal((struct homun_data*)bl,hp,sp);
 	else if(bl->type == BL_MERC)
 		merc_heal((struct merc_data*)bl,hp,sp);
+	else if(bl->type == BL_ELEM)
+		elem_heal((struct elem_data*)bl,hp,sp);
 
 	return 0;
 }
@@ -1999,6 +2043,11 @@ static int unit_counttargeted_sub(struct block_list *bl, va_list ap)
 		if( mcd && mcd->target_id == id && mcd->ud.attacktimer != -1 && mcd->ud.attacktarget_lv >= target_lv ) {
 			return 1;
 		}
+	} else if(bl->type == BL_ELEM) {
+		struct elem_data *eld = (struct elem_data *)bl;
+		if( eld && eld->target_id == id && eld->ud.attacktimer != -1 && eld->ud.attacktarget_lv >= target_lv ) {
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -2040,6 +2089,9 @@ int unit_isdead(struct block_list *bl)
 	} else if(bl->type == BL_MERC) {
 		struct merc_data *mcd = (struct merc_data *)bl;
 		return mcd->status.hp <= 0;
+	} else if(bl->type == BL_ELEM) {
+		struct elem_data *eld = (struct elem_data *)bl;
+		return eld->status.hp <= 0;
 	}
 	return 0;
 }
@@ -2088,6 +2140,9 @@ int unit_changeviewsize(struct block_list *bl,int size)
 	} else if(bl->type == BL_MERC) {
 		struct merc_data *mcd = (struct merc_data *)bl;
 		mcd->view_size = size;
+	} else if(bl->type == BL_ELEM) {
+		struct elem_data *eld = (struct elem_data *)bl;
+		eld->view_size = size;
 	} else if(bl->type == BL_NPC) {
 		struct npc_data *nd = (struct npc_data *)bl;
 		nd->view_size = size;
@@ -2316,6 +2371,12 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		clif_clearchar_area(&mcd->bl,clrtype);
 		mob_ai_hard_spawn( &mcd->bl, 0 );
 		map_delblock(&mcd->bl);
+	} else if(bl->type == BL_ELEM) {
+		struct elem_data *eld = (struct elem_data*)bl;
+
+		clif_clearchar_area(&eld->bl,clrtype);
+		mob_ai_hard_spawn( &eld->bl, 0 );
+		map_delblock(&eld->bl);
 	}
 	map_freeblock_unlock();
 	return 0;
@@ -2430,6 +2491,23 @@ int unit_free(struct block_list *bl, int clrtype)
 		status_free_sc_data(&mcd->sc);
 #endif
 		map_freeblock(mcd);
+	} else if( bl->type == BL_ELEM ) {
+		struct elem_data *eld = (struct elem_data*)bl;
+		struct map_session_data *sd = eld->msd;
+
+		status_change_clear(&eld->bl,1);			// ステータス異常を解除する
+		if(sd && sd->eld) {
+			elem_summon_timer_delete(sd->eld);
+			elem_save_data(sd);
+			if(sd->eld->natural_heal_hp != -1 || sd->eld->natural_heal_sp != -1)
+				elem_natural_heal_timer_delete(sd->eld);
+			sd->eld = NULL;
+		}
+		map_deliddb(&eld->bl);
+#ifdef DYNAMIC_SC_DATA
+		status_free_sc_data(&eld->sc);
+#endif
+		map_freeblock(eld);
 	}
 	map_freeblock_unlock();
 

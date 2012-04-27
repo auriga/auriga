@@ -52,6 +52,7 @@
 #include "int_status.h"
 #include "int_merc.h"
 #include "int_quest.h"
+#include "int_elem.h"
 
 static struct mmo_map_server server[MAX_MAP_SERVERS];
 static int server_fd[MAX_MAP_SERVERS];
@@ -1128,6 +1129,9 @@ static int char_delete(const struct mmo_chardata *cd)
 	// 傭兵削除
 	if(cd->st.merc_id)
 		mercdb_delete(cd->st.merc_id);
+	// 精霊削除
+	if(cd->st.elem_id)
+		elemdb_delete(cd->st.elem_id);
 	// ギルド脱退
 	if(cd->st.guild_id)
 		inter_guild_leave(cd->st.guild_id, cd->st.account_id, cd->st.char_id);
@@ -3495,6 +3499,7 @@ void do_final(void)
 	petdb_final();
 	homundb_final();
 	mercdb_final();
+	elemdb_final();
 	guilddb_final();
 	partydb_final();
 	storagedb_final();

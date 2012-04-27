@@ -56,6 +56,7 @@
 #include "mail.h"
 #include "npc.h"
 #include "merc.h"
+#include "elem.h"
 
 static const int packet_len_table[]={
 	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
@@ -65,7 +66,7 @@ static const int packet_len_table[]={
 	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	-1, 7, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
-	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
+	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0, -1, 7,  3, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 };
@@ -251,6 +252,64 @@ void intif_delete_mercdata(int account_id, int char_id, int merc_id)
 	WFIFOL(inter_fd, 2) = account_id;
 	WFIFOL(inter_fd, 6) = char_id;
 	WFIFOL(inter_fd,10) = merc_id;
+	WFIFOSET(inter_fd,14);
+
+	return;
+}
+
+// 精霊
+void intif_create_elem(int account_id, int char_id, struct mmo_elemstatus *m)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd,0) = 0x307c;
+	WFIFOW(inter_fd,2) = sizeof(struct mmo_elemstatus) + 12;
+	WFIFOL(inter_fd,4) = account_id;
+	WFIFOL(inter_fd,8) = char_id;
+	memcpy(WFIFOP(inter_fd,12),m,sizeof(struct mmo_elemstatus));
+	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+
+	return;
+}
+
+void intif_request_elemdata(int account_id, int char_id, int elem_id)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd, 0) = 0x307d;
+	WFIFOL(inter_fd, 2) = account_id;
+	WFIFOL(inter_fd, 6) = char_id;
+	WFIFOL(inter_fd,10) = elem_id;
+	WFIFOSET(inter_fd,14);
+
+	return;
+}
+
+void intif_save_elemdata(int account_id, struct mmo_elemstatus *m)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd,0) = 0x307e;
+	WFIFOW(inter_fd,2) = sizeof(struct mmo_elemstatus) + 8;
+	WFIFOL(inter_fd,4) = account_id;
+	memcpy(WFIFOP(inter_fd,8),m,sizeof(struct mmo_elemstatus));
+	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+
+	return;
+}
+
+void intif_delete_elemdata(int account_id, int char_id, int elem_id)
+{
+	if (inter_fd < 0)
+		return;
+
+	WFIFOW(inter_fd, 0) = 0x307f;
+	WFIFOL(inter_fd, 2) = account_id;
+	WFIFOL(inter_fd, 6) = char_id;
+	WFIFOL(inter_fd,10) = elem_id;
 	WFIFOSET(inter_fd,14);
 
 	return;
@@ -1833,6 +1892,46 @@ static int intif_parse_DeleteMercOk(int fd)
 }
 
 /*==========================================
+ * 精霊
+ *------------------------------------------
+ */
+static int intif_parse_RecvElemData(int fd)
+{
+	struct mmo_elemstatus p;
+	int len=RFIFOW(fd,2);
+
+	if(sizeof(struct mmo_elemstatus)!=len-13) {
+		if(battle_config.etc_log)
+			printf("intif: elem data: data size error %lu %d\n",(unsigned long)sizeof(struct mmo_elemstatus),len-13);
+	} else {
+		memcpy(&p,RFIFOP(fd,13),sizeof(struct mmo_elemstatus));
+		elem_recv_elemdata(RFIFOL(fd,4),RFIFOL(fd,8),&p,RFIFOB(fd,12));
+	}
+
+	return 0;
+}
+
+static int intif_parse_SaveElemOk(int fd)
+{
+	if(RFIFOB(fd,6) == 1) {
+		if(battle_config.error_log)
+			printf("elem data save failure\n");
+	}
+
+	return 0;
+}
+
+static int intif_parse_DeleteElemOk(int fd)
+{
+	if(RFIFOB(fd,2) == false) {
+		if(battle_config.error_log)
+			printf("elem data delete failure\n");
+	}
+
+	return 0;
+}
+
+/*==========================================
  * メール関連
  *------------------------------------------
  */
@@ -2185,6 +2284,9 @@ int intif_parse(int fd)
 	case 0x3872: intif_parse_DeleteMercOk(fd); break;
 	case 0x3878: intif_parse_LoadStatusChange(fd); break;
 	case 0x3879: intif_parse_SaveStatusChange(fd); break;
+	case 0x387c: intif_parse_RecvElemData(fd); break;
+	case 0x387d: intif_parse_SaveElemOk(fd); break;
+	case 0x387e: intif_parse_DeleteElemOk(fd); break;
 	case 0x3880: intif_parse_CreatePet(fd); break;
 	case 0x3881: intif_parse_RecvPetData(fd); break;
 	case 0x3882: intif_parse_SavePetOk(fd); break;

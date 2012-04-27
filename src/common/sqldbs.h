@@ -56,6 +56,7 @@ extern char tmp_sql[65535];
 #define MEMO_TABLE            "memo"
 #define FEEL_TABLE            "feel_info"
 #define HOTKEY_TABLE          "hotkey"
+#define ELEM_TABLE            "elemental"
 #define GUILD_TABLE           "guild"
 #define GUILD_ALLIANCE_TABLE  "guild_alliance"
 #define GUILD_CASTLE_TABLE    "guild_castle"

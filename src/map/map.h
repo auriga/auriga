@@ -380,6 +380,7 @@ struct map_session_data {
 		unsigned guild_creating : 1;
 		unsigned homun_creating : 1;
 		unsigned merc_creating : 1;
+		unsigned elem_creating : 1;
 		unsigned deal_mode : 1;
 		unsigned deal_locked : 2;
 		unsigned party_sended : 1;
@@ -1026,7 +1027,6 @@ struct elem_data {
 	short view_size;
 	int invincible_timer;
 	int base_level;
-	int hp_sub,sp_sub;
 	int max_hp,max_sp;
 	int str,agi,vit,int_,dex,luk;
 	short atk1,atk2;
@@ -1039,6 +1039,7 @@ struct elem_data {
 	struct skill skill[MAX_ELEMSKILL];
 	unsigned int skillstatictimer[MAX_ELEMSKILL];
 	short view_class;
+	unsigned int last_thinktime;
 	int nhealhp,nhealsp;
 	int hprecov_rate,sprecov_rate;
 	int natural_heal_hp,natural_heal_sp;

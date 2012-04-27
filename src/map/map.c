@@ -65,6 +65,7 @@
 #include "merc.h"
 #include "quest.h"
 #include "booking.h"
+#include "elem.h"
 
 // 極力 staticでローカルに収める
 static struct dbt *id_db        = NULL;
@@ -1472,6 +1473,9 @@ int map_quit(struct map_session_data *sd)
 		if(sd->mcd) {
 			unit_free( &sd->mcd->bl, 0);
 		}
+		if(sd->eld) {
+			unit_free( &sd->eld->bl, 0);
+		}
 		unit_free(&sd->bl, 2);
 		chrif_save(sd, 1);
 		sd->state.waitingdisconnect = 1;
@@ -1559,6 +1563,22 @@ struct merc_data * map_id2mcd(int id)
 		bl = (struct block_list *)numdb_search(id_db,id);
 		if(bl && bl->type == BL_MERC)
 			return (struct merc_data *)bl;
+	}
+	return NULL;
+}
+
+/*==========================================
+ * id番号のELEMを探す。居なければNULL
+ *------------------------------------------
+ */
+struct elem_data * map_id2eld(int id)
+{
+	struct block_list *bl;
+
+	if(id > 0) {
+		bl = (struct block_list *)numdb_search(id_db,id);
+		if(bl && bl->type == BL_ELEM)
+			return (struct elem_data *)bl;
 	}
 	return NULL;
 }
@@ -2925,6 +2945,7 @@ void do_final(void)
 	do_final_pet();
 	do_final_homun();
 	do_final_merc();
+	do_final_elem();
 	do_final_friend();
 	do_final_unit();
 	do_final_mob();
@@ -3074,6 +3095,7 @@ int do_init(int argc,char *argv[])
 	do_init_pet();
 	do_init_homun();
 	do_init_merc();
+	do_init_elem();
 	do_init_status();
 	do_init_friend();
 	do_init_ranking();

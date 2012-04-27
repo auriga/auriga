@@ -51,6 +51,7 @@
 #include "ranking.h"
 #include "merc.h"
 #include "quest.h"
+#include "elem.h"
 
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
 #define MOB_LAZYWARPPERC     20		// 手抜きモードMOBのワープ確率（千分率）
@@ -1212,7 +1213,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 	sbl  = va_arg(ap, struct block_list*);
 	flag = va_arg(ap, int);
 
-	if( (sbl->type & (BL_PC | BL_HOM | BL_MERC)) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
+	if( (sbl->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM)) && tbl->type == BL_MOB && (md = (struct mob_data *)tbl) ) {
 		if( flag ) {
 			if( md->ai_pc_count++ == 0 )
 				mob_ai_hard_add( md );
@@ -1221,7 +1222,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 				mob_ai_hard_del( md );
 		}
 	}
-	if( sbl->type == BL_MOB && (tbl->type & (BL_PC | BL_HOM | BL_MERC)) && (md = (struct mob_data *)sbl) ) {
+	if( sbl->type == BL_MOB && (tbl->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM)) && (md = (struct mob_data *)sbl) ) {
 		if( flag ) {
 			if( md->ai_pc_count++ == 0 )
 				mob_ai_hard_add( md );
@@ -1246,7 +1247,7 @@ int mob_ai_hard_spawn( struct block_list *bl, int flag )
 		map_foreachinarea( mob_ai_hard_spawn_sub , bl->m,
 			bl->x - AREA_SIZE * 2, bl->y - AREA_SIZE * 2,
 			bl->x + AREA_SIZE * 2, bl->y + AREA_SIZE * 2,
-			(bl->type == BL_MOB ? BL_PC|BL_HOM|BL_MERC : BL_MOB), bl, flag
+			(bl->type == BL_MOB ? BL_PC|BL_HOM|BL_MERC|BL_ELEM : BL_MOB), bl, flag
 		);
 	}
 	return 0;
@@ -1645,8 +1646,8 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 					id = src_md->master_id;
 				}
 			}
-		} else if(src->type == BL_HOM || src->type == BL_MERC) {
-			// ホム・傭兵の場合はIDを負に反転する
+		} else if(src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM) {
+			// ホム・傭兵・精霊の場合はIDを負に反転する
 			damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
 			linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
 			id = src->id;
@@ -1811,9 +1812,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(tmpsd)
 				tmpbl[i] = &tmpsd->bl;
 		} else {
-			tmpbl[i] = map_id2bl(-id);	// ホム・傭兵の場合はIDが負に反転されている
+			tmpbl[i] = map_id2bl(-id);	// ホム・傭兵・精霊の場合はIDが負に反転されている
 		}
-		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM && tmpbl[i]->type != BL_MERC) ) {
+		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM && tmpbl[i]->type != BL_MERC && tmpbl[i]->type != BL_ELEM) ) {
 			tmpbl[i] = NULL;
 			continue;
 		}
@@ -1923,6 +1924,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				struct merc_data *tmcd = (struct merc_data *)tmpbl[i];
 				if(tmcd)
 					merc_gainexp(tmcd, md, base_exp, job_exp);
+			}
+			else if( tmpbl[i]->type == BL_ELEM ) {
+				struct elem_data *teld = (struct elem_data *)tmpbl[i];
+				if(teld)
+					elem_gainexp(teld, md, base_exp, job_exp);
 			}
 			else if( tmpbl[i]->type == BL_PC ) {
 				tmpsd = (struct map_session_data *)tmpbl[i];
@@ -2090,6 +2096,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			mvpsd = ((struct homun_data *)mvp[0].bl)->msd;	// ホムが取ったMVPは、主人へ
 		} else if(mvp[0].bl->type == BL_MERC) {
 			mvpsd = ((struct merc_data *)mvp[0].bl)->msd;	// 傭兵が取ったMVPは、主人へ
+		} else if(mvp[0].bl->type == BL_ELEM) {
+			mvpsd = ((struct elem_data *)mvp[0].bl)->msd;	// 精霊が取ったMVPは、主人へ
 		}
 		if( mvpsd ) {
 			int j,ret;
@@ -2185,6 +2193,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ssd = ((struct homun_data *)src)->msd;
 			else if(src && src->type == BL_MERC)
 				ssd = ((struct merc_data *)src)->msd;
+			else if(src && src->type == BL_ELEM)
+				ssd = ((struct elem_data *)src)->msd;
 
 			if(ssd == NULL) {
 				if(mvp[0].bl != NULL && mvp[0].bl->type == BL_PC) {

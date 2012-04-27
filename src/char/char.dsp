@@ -149,6 +149,10 @@ SOURCE=..\..\src\char\int_quest.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_elem.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\txt\accregdb_txt.c
 # End Source File
 # Begin Source File
@@ -182,6 +186,10 @@ SOURCE=..\..\src\char\txt\petdb_txt.c
 # Begin Source File
 
 SOURCE=..\..\src\char\txt\questdb_txt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\txt\elemdb_txt.c
 # End Source File
 # Begin Source File
 
@@ -301,6 +309,10 @@ SOURCE=..\..\src\char\int_quest.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_elem.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\txt\accregdb_txt.h
 # End Source File
 # Begin Source File
@@ -334,6 +346,10 @@ SOURCE=..\..\src\char\txt\petdb_txt.h
 # Begin Source File
 
 SOURCE=..\..\src\char\txt\questdb_txt.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\txt\elemdb_txt.h
 # End Source File
 # Begin Source File
 

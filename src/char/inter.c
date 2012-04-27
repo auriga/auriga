@@ -40,6 +40,7 @@
 #include "int_status.h"
 #include "int_merc.h"
 #include "int_quest.h"
+#include "int_elem.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
@@ -53,7 +54,7 @@ int inter_recv_packet_length[] = {
 	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1,10,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
 	10,-1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
-	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3070-
+	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0, -1,14, -1,14,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
 };
@@ -135,6 +136,8 @@ int inter_config_read(const char *cfgName)
 				continue;
 			if(questdb_config_read_sub(w1,w2))
 				continue;
+			if(elemdb_config_read_sub(w1,w2))
+				continue;
 		}
 	}
 	fclose(fp);
@@ -152,6 +155,7 @@ int inter_sync(void)
 	petdb_sync();
 	homundb_sync();
 	mercdb_sync();
+	elemdb_sync();
 	partydb_sync();
 	guilddb_sync();
 	accregdb_sync();
@@ -174,6 +178,7 @@ int inter_init(const char *file)
 	petdb_init();
 	homundb_init();
 	mercdb_init();
+	elemdb_init();
 	partydb_init();
 	guilddb_init();
 	accregdb_init();
@@ -474,6 +479,8 @@ int inter_parse_frommap(int fd)
 		if( inter_hom_parse_frommap(fd) )
 			break;
 		if( inter_merc_parse_frommap(fd) )
+			break;
+		if( inter_elem_parse_frommap(fd) )
 			break;
 		if( inter_mail_parse_frommap(fd) )
 			break;

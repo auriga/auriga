@@ -253,6 +253,10 @@ SOURCE=..\..\src\map\buyingstore.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\elem.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -430,6 +434,10 @@ SOURCE=..\..\src\map\booking.h
 # Begin Source File
 
 SOURCE=..\..\src\map\buyingstore.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\elem.h
 # End Source File
 # Begin Source File
 

@@ -133,6 +133,7 @@ extern struct Battle_Config {
 	int monster_max_aspd;
 	int homun_max_aspd;
 	int merc_max_aspd;
+	int elem_max_aspd;
 	int atc_gmonly;
 	int gm_allskill;
 	int gm_allskill_addabra;

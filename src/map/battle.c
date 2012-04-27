@@ -45,6 +45,7 @@
 #include "unit.h"
 #include "ranking.h"
 #include "merc.h"
+#include "elem.h"
 
 struct Battle_Config battle_config;
 
@@ -140,6 +141,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	struct mob_data   *tmd  = NULL;
 	struct homun_data *thd  = NULL;
 	struct merc_data  *tmcd = NULL;
+	struct elem_data  *teld = NULL;
 
 	nullpo_retr(0, target);	// blはNULLで呼ばれることがあるので他でチェック
 
@@ -171,6 +173,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	tmd  = BL_DOWNCAST( BL_MOB,  target );
 	thd  = BL_DOWNCAST( BL_HOM,  target );
 	tmcd = BL_DOWNCAST( BL_MERC, target );
+	teld = BL_DOWNCAST( BL_ELEM, target );
 
 	if(tsd) {
 		// ディボーションをかけられている
@@ -231,6 +234,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	else if(tmd)  mob_damage(bl,tmd,damage,0);
 	else if(thd)  homun_damage(bl,thd,damage);
 	else if(tmcd) merc_damage(bl,tmcd,damage);
+	else if(teld) elem_damage(bl,teld,damage);
 
 	// カード効果のコーマ・即死
 	if(sd && target && target->prev && !unit_isdead(target) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
@@ -249,6 +253,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(tmd)  mob_damage(bl,tmd,hp,0);
 			else if(thd)  homun_damage(bl,thd,hp);
 			else if(tmcd) merc_damage(bl,tmcd,hp);
+			else if(teld) elem_damage(bl,teld,hp);
 		}
 		else if((!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_ele2[ele]) ||
 			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[race]) ||
@@ -260,6 +265,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			else if(tmd)  mob_damage(bl,tmd,hp,0);
 			else if(thd)  homun_damage(bl,thd,hp);
 			else if(tmcd) merc_damage(bl,tmcd,hp);
+			else if(teld) elem_damage(bl,teld,hp);
 		}
 	}
 
@@ -309,6 +315,8 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
 		return homun_heal((struct homun_data *)target,hp,sp);
 	else if(target->type == BL_MERC)
 		return merc_heal((struct merc_data *)target,hp,sp);
+	else if(target->type == BL_ELEM)
+		return elem_heal((struct elem_data *)target,hp,sp);
 
 	return 0;
 }
@@ -878,7 +886,7 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 		int mtg = tmd->target_id;
 		if (battle_config.mob_changetarget_byskill != 0 || mtg == 0)
 		{
-			if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC)
+			if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM)
 				tmd->target_id = src->id;
 		}
 		mobskill_event(tmd,flag);
@@ -1376,6 +1384,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	struct pet_data         *src_pd  = NULL;
 	struct homun_data       *src_hd  = NULL, *target_hd  = NULL;
 	struct merc_data        *src_mcd = NULL, *target_mcd = NULL;
+	struct elem_data        *src_eld = NULL, *target_eld = NULL;
 	struct status_change    *sc      = NULL, *t_sc       = NULL;
 	int s_ele, s_ele_, s_str;
 	int t_vit, t_race, t_ele, t_enemy, t_size, t_mode, t_group, t_class;
@@ -1408,11 +1417,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	src_pd  = BL_DOWNCAST( BL_PET,  src );
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
+	src_eld = BL_DOWNCAST( BL_ELEM, src );
 
 	target_sd  = BL_DOWNCAST( BL_PC,   target );
 	target_md  = BL_DOWNCAST( BL_MOB,  target );
 	target_hd  = BL_DOWNCAST( BL_HOM,  target );
 	target_mcd = BL_DOWNCAST( BL_MERC, target );
+	target_eld = BL_DOWNCAST( BL_ELEM, target );
 
 	// アタッカー
 	s_ele  = status_get_attack_element(src);	// 属性
@@ -1481,8 +1492,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if( (src_sd && battle_config.pc_attack_attr_none) ||
 	    (src_md && battle_config.mob_attack_attr_none) ||
 	    (src_pd && battle_config.pet_attack_attr_none) ||
-	     src_hd ||
-	     src_mcd )
+	     src_hd || src_mcd || src_eld )
 	{
 		// 属性無し(!=無属性)
 		if (s_ele == ELE_NEUTRAL)
@@ -1522,7 +1532,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		} else {
 			src_sd->state.arrow_atk = 0;	// 初期化
 		}
-	} else if(src_md || src_pd || src_mcd) {
+	} else if(src_md || src_pd || src_mcd || src_eld) {
 		if(status_get_range(src) > 3)
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
 	}
@@ -3909,6 +3919,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	struct mob_data         *tmd  = NULL;
 	struct homun_data       *thd  = NULL;
 	struct merc_data        *tmcd = NULL;
+	struct elem_data        *teld = NULL;
 	struct status_change    *sc   = NULL, *t_sc = NULL;
 	int matk1, matk2, ele, race;
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
@@ -3928,6 +3939,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	tmd  = BL_DOWNCAST( BL_MOB,  target );
 	thd  = BL_DOWNCAST( BL_HOM,  target );
 	tmcd = BL_DOWNCAST( BL_MERC, target );
+	teld = BL_DOWNCAST( BL_ELEM, target );
 
 	// アタッカー
 	matk1 = status_get_matk1(bl);
@@ -4438,8 +4450,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(battle_config.gx_dupele)
 			mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));	// 属性2回かかる
 		if(bl == target) {
-			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC)
-				mgd.damage = 0;		// MOB,HOM,MERCが使う場合は反動無し
+			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC || bl->type == BL_ELEM)
+				mgd.damage = 0;		// MOB,HOM,MERC,ELEMが使う場合は反動無し
 			else
 				mgd.damage /= 2;	// 反動は半分
 		}
@@ -4896,6 +4908,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			((struct homun_data *)src)->dir = map_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_MERC && battle_config.monster_attack_direction_change)	// merc_attack_direction_change
 			((struct merc_data *)src)->dir = map_calc_dir(src, target->x,target->y);
+		else if(src->type == BL_ELEM && battle_config.monster_attack_direction_change)	// elem_attack_direction_change
+			((struct elem_data *)src)->dir = map_calc_dir(src, target->x,target->y);
 		wd = battle_calc_weapon_attack(src,target,KN_AUTOCOUNTER,flag&0xff,0);
 	} else {
 		wd = battle_calc_weapon_attack(src,target,0,0,0);
@@ -5747,7 +5761,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				int target = md->target_id;
 				if(battle_config.mob_changetarget_byskill == 1 || target == 0)
 				{
-					if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC)
+					if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM)
 						md->target_id = src->id;
 				}
 				mobskill_use(md,tick,MSC_SKILLUSED|(skillid<<16));
@@ -6001,8 +6015,8 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 						else
 							return 1;
 					}
-				} else if(target->type == BL_HOM || target->type == BL_MERC) {
-					// special_mob_aiで対象がホムか傭兵ならエラーで返す
+				} else if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM) {
+					// special_mob_aiで対象がホム、傭兵、精霊ならエラーで返す
 					return -1;
 				}
 			}
@@ -6187,6 +6201,10 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	    (ss->type == BL_MOB && target->type == BL_MERC) )
 		return 0;	// MERCvsMOBなら敵
 
+	if( (ss->type == BL_ELEM && target->type == BL_MOB) ||
+	    (ss->type == BL_MOB && target->type == BL_ELEM) )
+		return 0;	// ELEMvsMOBなら敵
+
 	if(!(map[ss->m].flag.pvp || map[ss->m].flag.gvg)) {
 		if( (ss->type == BL_PC && target->type == BL_HOM) ||
 		    (ss->type == BL_HOM && target->type == BL_PC) )
@@ -6195,12 +6213,16 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		if( (ss->type == BL_PC && target->type == BL_MERC) ||
 		    (ss->type == BL_MERC && target->type == BL_PC) )
 			return 1;	// PvでもGvでもないなら、PCvsMERCは味方
+
+		if( (ss->type == BL_PC && target->type == BL_ELEM) ||
+		    (ss->type == BL_ELEM && target->type == BL_PC) )
+			return 1;	// PvでもGvでもないなら、PCvsELEMは味方
 	}
 
 	// 同PTとか同盟Guildとかは後回し（＝＝
-	if(ss->type == BL_HOM || ss->type == BL_MERC) {
+	if(ss->type == BL_HOM || ss->type == BL_MERC || ss->type == BL_ELEM) {
 		if(map[ss->m].flag.pvp) {	// PVP
-			if(target->type == BL_HOM || target->type == BL_MERC)
+			if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)
 				return 0;
 			if(target->type == BL_PC) {
 				struct map_session_data *msd = NULL;
@@ -6208,22 +6230,26 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 					msd = ((struct homun_data*)ss)->msd;
 				else if(ss->type == BL_MERC)
 					msd = ((struct merc_data*)ss)->msd;
+				else if(ss->type == BL_ELEM)
+					msd = ((struct elem_data*)ss)->msd;
 				if(msd == NULL || target != &msd->bl)
 					return 0;
 			}
 		}
 		if(map[ss->m].flag.gvg) {	// GVG
-			if(target->type == BL_HOM || target->type == BL_MERC)
+			if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)
 				return 0;
 		}
 	}
-	if(ss->type == BL_PC && (target->type == BL_HOM || target->type == BL_MERC)) {
+	if(ss->type == BL_PC && (target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)) {
 		if(map[ss->m].flag.pvp) {	// PVP
 			struct map_session_data *msd = NULL;
 			if(target->type == BL_HOM)
 				msd = ((struct homun_data*)target)->msd;
 			else if(target->type == BL_MERC)
 				msd = ((struct merc_data*)target)->msd;
+			else if(target->type == BL_ELEM)
+				msd = ((struct elem_data*)target)->msd;
 			if(msd == NULL || ss != &msd->bl)
 				return 0;
 		}
@@ -6404,6 +6430,7 @@ int battle_config_read(const char *cfgName)
 		{ "monster_max_aspd",                   &battle_config.monster_max_aspd,                   200      },
 		{ "homun_max_aspd",                     &battle_config.homun_max_aspd,                     200      },
 		{ "merc_max_aspd",                      &battle_config.merc_max_aspd,                      200      },
+		{ "elem_max_aspd",                      &battle_config.elem_max_aspd,                      200      },
 		{ "atcommand_gm_only",                  &battle_config.atc_gmonly,                         1        },
 		{ "gm_all_skill",                       &battle_config.gm_allskill,                        1        },
 		{ "gm_all_skill_add_abra",              &battle_config.gm_allskill_addabra,                0        },

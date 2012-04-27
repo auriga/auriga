@@ -52,6 +52,7 @@
 #include "npc.h"
 #include "merc.h"
 #include "buyingstore.h"
+#include "elem.h"
 
 #define SKILLUNITTIMER_INVERVAL	100
 
@@ -783,8 +784,8 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	if(skilllv < 0) return 0;
 
-	// PC,MOB,PET,MERC以外は追加効果の対象外
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_PET && bl->type != BL_MERC)
+	// PC,MOB,PET,MERC,ELEM以外は追加効果の対象外
+	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_PET && bl->type != BL_MERC && bl->type != BL_ELEM)
 		return 0;
 
 	// グラウンドドリフトのときはsrcを設置者に置換
@@ -2565,6 +2566,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	struct mob_data         *src_md   = NULL;
 	struct homun_data       *src_hd   = NULL;
 	struct merc_data        *src_mcd  = NULL;
+	struct elem_data        *src_eld  = NULL;
 	struct unit_data        *src_ud   = NULL;
 	struct status_change    *tsc      = NULL;
 	int inf2;
@@ -2579,6 +2581,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	src_md  = BL_DOWNCAST( BL_MOB,  src );
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
+	src_eld = BL_DOWNCAST( BL_ELEM, src );
 
 	if(src_ud->skillid != SA_CASTCANCEL && !(src_ud->skillid == SO_SPELLFIST && (src_sd && (src_sd->skill_used.id == MG_FIREBOLT || src_sd->skill_used.id == MG_COLDBOLT || src_sd->skill_used.id == MG_LIGHTNINGBOLT)))) {
 		if( src_ud->skilltimer != tid )	// タイマIDの確認
@@ -2707,8 +2710,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 
-		// PC,HOM,MERCは使用条件チェック
-		if(src_sd || src_hd || src_mcd) {
+		// PC,HOM,MERC,ELEMは使用条件チェック
+		if(src_sd || src_hd || src_mcd || src_eld) {
 			if(!skill_check_condition(src,1))
 				break;
 		}
@@ -2814,6 +2817,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct status_change    *sc  = NULL;
 	int is_enemy = 1;
 
@@ -2829,6 +2833,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	md  = BL_DOWNCAST( BL_MOB,  src );
 	hd  = BL_DOWNCAST( BL_HOM,  src );
 	mcd = BL_DOWNCAST( BL_MERC, src );
+	eld = BL_DOWNCAST( BL_ELEM, src );
 
 	switch(skillid) {
 		case CR_GRANDCROSS:
@@ -4918,6 +4923,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	struct mob_data         *md  = NULL, *dstmd  = NULL;
 	struct homun_data       *hd  = NULL, *dsthd  = NULL;
 	struct merc_data        *mcd = NULL, *dstmcd = NULL;
+	struct elem_data        *eld = NULL, *dsteld = NULL;
 	struct status_change    *sc  = NULL;
 	int is_enemy = 1;
 
@@ -4935,11 +4941,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	md  = BL_DOWNCAST( BL_MOB,  src );
 	hd  = BL_DOWNCAST( BL_HOM,  src );
 	mcd = BL_DOWNCAST( BL_MERC, src );
+	eld = BL_DOWNCAST( BL_ELEM, src );
 
 	dstsd  = BL_DOWNCAST( BL_PC,   bl );
 	dstmd  = BL_DOWNCAST( BL_MOB,  bl );
 	dsthd  = BL_DOWNCAST( BL_HOM,  bl );
 	dstmcd = BL_DOWNCAST( BL_MERC, bl );
+	dsteld = BL_DOWNCAST( BL_ELEM, bl );
 
 	if(sd && unit_isdead(&sd->bl))
 		return 1;
@@ -6199,6 +6207,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd)       msd = sd;
 				else if(hd)  msd = hd->msd;
 				else if(mcd) msd = mcd->msd;
+				else if(eld) msd = eld->msd;
 
 				if(msd == NULL)
 					break;
@@ -8886,6 +8895,60 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case SO_EL_CONTROL:		/* エレメンタルコントロール */
+		if(sd) {
+			if(sd->eld) {
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+				elem_delete_data(sd);
+			}
+			else
+				clif_skill_fail(sd,skillid,0,0,0);
+		}
+		break;
+	case SO_SUMMON_AGNI:	/* サモンアグニ */
+	case SO_SUMMON_AQUA:	/* サモンアクア */
+	case SO_SUMMON_VENTUS:	/* サモンベントス */
+	case SO_SUMMON_TERA:	/* サモンテラ */
+		if(sd) {
+			int elem_id;
+			switch(skillid) {
+				case SO_SUMMON_AGNI:   elem_id = 2114 + skilllv - 1; break;
+				case SO_SUMMON_AQUA:   elem_id = 2117 + skilllv - 1; break;
+				case SO_SUMMON_VENTUS: elem_id = 2120 + skilllv - 1; break;
+				case SO_SUMMON_TERA:   elem_id = 2123 + skilllv - 1; break;
+			}
+
+			// 既に精霊を召喚している場合は削除してから再召喚
+			if(sd->eld)
+				elem_delete_data(sd);
+
+			elem_create_data(sd,elem_id,skill_get_time(skillid,skilllv));
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case SO_EL_ACTION:	/* エレメンタルアクション */
+		if(sd && sd->eld) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case SO_EL_CURE:	/* エレメンタルキュアー */
+		if(sd && sd->eld) {
+			int hp = sd->status.max_hp * 10 / 100;
+			int sp = sd->status.max_sp * 10 / 100;
+			if(sd->status.hp >= hp && sd->status.sp >= sp) {
+				sd->status.hp -= hp;
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_HP);
+				clif_updatestatus(sd,SP_SP);
+
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+				elem_heal(sd->eld,sd->eld->max_hp*10/100,sd->eld->max_sp*10/100);
+			}
+			else {
+				clif_skill_fail(sd,skillid,0,0,0);
+			}
+		}
+		break;
 	case GN_BLOOD_SUCKER:		/* ブラッドサッカー */
 	case GN_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9108,6 +9171,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	struct mob_data         *src_md  = NULL;
 	struct homun_data       *src_hd  = NULL;
 	struct merc_data        *src_mcd = NULL;
+	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
 	int range;
 
@@ -9121,6 +9185,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	src_md  = BL_DOWNCAST( BL_MOB,  src );
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
+	src_eld = BL_DOWNCAST( BL_ELEM, src );
 
 	if( src_ud->skilltimer != tid )	// タイマIDの確認
 		return 0;
@@ -9197,8 +9262,8 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 
-		// PC,HOM,MERCは使用条件チェック
-		if(src_sd || src_hd || src_mcd) {
+		// PC,HOM,MERC,ELEMは使用条件チェック
+		if(src_sd || src_hd || src_mcd || src_eld) {
 			if(!skill_check_condition(src,1))
 				break;
 		}
@@ -10391,7 +10456,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		if(unit->alive && unit->range == 0) {
 			map_foreachinarea(skill_unit_effect,unit->bl.m,
 				unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
-				(BL_PC|BL_MOB|BL_MERC),&unit->bl,gettick(),1);
+				(BL_PC|BL_MOB|BL_MERC|BL_ELEM),&unit->bl,gettick(),1);
 		}
 	}
 
@@ -11377,7 +11442,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		int target = md->target_id;
 		if(battle_config.mob_changetarget_byskill == 1 || target == 0)
 		{
-			if(ss->type == BL_PC || ss->type == BL_HOM || ss->type == BL_MERC)
+			if(ss->type == BL_PC || ss->type == BL_HOM || ss->type == BL_MERC || ss->type == BL_ELEM)
 				md->target_id = ss->id;
 		}
 		mobskill_use(md,tick,MSC_SKILLUSED|(sg->skill_id<<16));
@@ -11552,7 +11617,7 @@ static int skill_unit_effect(struct block_list *bl,va_list ap)
 	tick = va_arg(ap,unsigned int);
 	flag = va_arg(ap,unsigned int);
 
-	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC | BL_ELEM)))
 		return 0;
 
 	if(!unit->alive)
@@ -11900,7 +11965,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 static int skill_check_condition2_mob(struct mob_data *md, struct skill_condition *cnd, int type);
 static int skill_check_condition2_pet(struct pet_data *pd, struct skill_condition *cnd, int type);
 static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condition *cnd, int type);
-static int skill_check_condition2_merc(struct merc_data *hd, struct skill_condition *cnd, int type);
+static int skill_check_condition2_merc(struct merc_data *mcd, struct skill_condition *cnd, int type);
+static int skill_check_condition2_elem(struct elem_data *eld, struct skill_condition *cnd, int type);
 
 int skill_check_condition(struct block_list *bl, int type)
 {
@@ -12290,6 +12356,8 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		return skill_check_condition2_hom((struct homun_data*)bl, cnd, type);
 	if(bl->type == BL_MERC)
 		return skill_check_condition2_merc((struct merc_data*)bl, cnd, type);
+	if(bl->type == BL_ELEM)
+		return skill_check_condition2_elem((struct elem_data*)bl, cnd, type);
 
 	return 0;
 }
@@ -13294,6 +13362,24 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
+	case SO_SUMMON_AGNI:	/* サモンアグニ */
+	case SO_SUMMON_AQUA:	/* サモンアクア */
+	case SO_SUMMON_VENTUS:	/* サモンベントス */
+	case SO_SUMMON_TERA:	/* サモンテラ */
+		{
+			int skill = pc_checkskill(sd,SO_EL_SYMPATHY);
+			if(skill > 0) {
+				sp -= sp * (5 + skill * 5) / 100;
+			}
+		}
+		break;
+	case SO_EL_ACTION:	/* エレメンタルアクション */
+	case SO_EL_CURE:	/* エレメンタルキュアー */
+		if(!sd->eld) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
 	case GD_BATTLEORDER:		/* 臨戦態勢 */
 	case GD_REGENERATION:		/* 激励 */
 	case GD_RESTORE:		/* 治療 */
@@ -13869,6 +13955,106 @@ static int skill_check_condition2_merc(struct merc_data *mcd, struct skill_condi
 	return 1;
 }
 
+// ELEM用判定( 0: 使用失敗 1: 使用成功 )
+static int skill_check_condition2_elem(struct elem_data *eld, struct skill_condition *cnd, int type)
+{
+	int i,hp,sp,hp_rate,sp_rate,zeny,state,skilldb_id;
+	struct map_session_data* msd;
+	struct block_list *bl;
+	int itemid[10],amount[10];
+
+	nullpo_retr(0, eld);
+	nullpo_retr(0, cnd);
+	nullpo_retr(0, msd = eld->msd);
+	nullpo_retr(0, bl = &eld->bl);
+
+	skilldb_id = skill_get_skilldb_id(cnd->id);
+	hp         = skill_get_hp(cnd->id, cnd->lv);	/* 消費HP */
+	sp         = skill_get_sp(cnd->id, cnd->lv);	/* 消費SP */
+	hp_rate    = (cnd->lv <= 0)? 0: skill_db[skilldb_id].hp_rate[cnd->lv-1];
+	sp_rate    = (cnd->lv <= 0)? 0: skill_db[skilldb_id].sp_rate[cnd->lv-1];
+	zeny       = skill_get_zeny(cnd->id,cnd->lv);
+	state      = skill_db[skilldb_id].state;
+
+	for(i=0; i<10; i++) {
+		itemid[i] = skill_db[skilldb_id].itemid[i];
+		amount[i] = skill_db[skilldb_id].amount[i];
+	}
+
+	if(hp_rate > 0)
+		hp += eld->status.hp * hp_rate / 100;
+	else
+		hp += eld->max_hp * abs(hp_rate) / 100;
+	if(sp_rate > 0)
+		sp += eld->status.sp * sp_rate / 100;
+	else
+		sp += eld->max_sp * abs(sp_rate) / 100;
+
+	if(!(type&2)) {
+		if(hp > 0 && eld->status.hp < hp)	/* HPチェック */
+			return 0;
+		if(sp > 0 && eld->status.sp < sp)	/* SPチェック */
+			return 0;
+		if(zeny > 0 && msd->status.zeny < zeny)
+			return 0;
+	}
+
+	switch(state) {
+	case SST_SIGHT:
+		if(eld->sc.data[SC_SIGHT].timer == -1) {
+			return 0;
+		}
+		break;
+	case SST_EXPLOSIONSPIRITS:
+		if(eld->sc.data[SC_EXPLOSIONSPIRITS].timer == -1) {
+			return 0;
+		}
+		break;
+	case SST_CARTBOOST:
+		if(eld->sc.data[SC_CARTBOOST].timer == -1) {
+			return 0;
+		}
+		break;
+	case SST_NEN:
+		if(eld->sc.data[SC_NEN].timer == -1) {
+			return 0;
+		}
+		break;
+	case SST_MOVE_ENABLE:
+		if(path_search(NULL,bl->m,bl->x,bl->y,cnd->x,cnd->y,1) == -1) {
+			return 0;
+		}
+		break;
+	case SST_WATER:
+		if(!map[bl->m].flag.rain) {
+			// 水場判定
+			if( !map_getcell(bl->m,bl->x,bl->y,CELL_CHKWATER) &&
+				map_find_skill_unit_oncell(bl,bl->x,bl->y,SA_LANDPROTECTOR,NULL) &&
+			    eld->sc.data[SC_DELUGE].timer == -1 &&
+			    eld->sc.data[SC_SUITON].timer == -1 )
+				return 0;
+		}
+		break;
+	}
+
+	if(skill_item_consume(&eld->bl, cnd, type, itemid, amount) == 0)
+		return 0;
+
+	if(type == 1) {
+		if(sp > 0) {				// SP消費
+			eld->status.sp -= sp;
+			clif_elemupdatestatus(msd,SP_SP);
+		}
+		if(hp > 0) {				// HP消費
+			eld->status.hp -= hp;
+			clif_elemupdatestatus(msd,SP_HP);
+		}
+		if(zeny > 0)				// Zeny消費
+			pc_payzeny(msd,zeny);
+	}
+	return 1;
+}
+
 /*==========================================
  * スキルによるアイテム消費
  *------------------------------------------
@@ -13888,6 +14074,8 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		sd = ((struct homun_data *)bl)->msd;
 	else if(bl->type == BL_MERC)
 		sd = ((struct merc_data *)bl)->msd;
+	else if(bl->type == BL_ELEM)
+		sd = ((struct elem_data *)bl)->msd;
 
 	if(sd == NULL)
 		return 0;
@@ -13909,7 +14097,8 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 				}
 			}
 		}
-		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION || cnd->id == GN_FIRE_EXPANSION || cnd->id == KO_MAKIBISHI)
+		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION || cnd->id == GN_FIRE_EXPANSION || cnd->id == KO_MAKIBISHI ||
+			cnd->id == SO_SUMMON_AGNI || cnd->id == SO_SUMMON_AQUA || cnd->id == SO_SUMMON_VENTUS || cnd->id == SO_SUMMON_TERA)
 			&& i != x)
 			continue;
 
@@ -15520,7 +15709,7 @@ int skill_delunit(struct skill_unit *unit)
 	/* onoutイベント呼び出し */
 	if(!unit->range) {
 		map_foreachinarea(skill_unit_effect,unit->bl.m,
-			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,(BL_PC|BL_MOB|BL_MERC),
+			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,(BL_PC|BL_MOB|BL_MERC|BL_ELEM),
 			&unit->bl,gettick(),0);
 	}
 
@@ -15700,7 +15889,7 @@ static int skill_unit_timer_sub_onplace(struct block_list *bl, va_list ap)
 
 	if(!unit || !unit->alive)
 		return 0;
-	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC)))
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC | BL_ELEM)))
 		return 0;
 
 	nullpo_retr(0, group = unit->group);
@@ -15744,7 +15933,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 	if(range >= 0 && group->interval != -1)
 	{
 		map_foreachinarea(skill_unit_timer_sub_onplace, bl->m,
-			bl->x-range,bl->y-range,bl->x+range,bl->y+range,(BL_PC|BL_MOB|BL_MERC),unit,tick);
+			bl->x-range,bl->y-range,bl->x+range,bl->y+range,(BL_PC|BL_MOB|BL_MERC|BL_ELEM),unit,tick);
 		if(!unit->alive)
 			return 0;
 		// マグヌスは発動したユニットは削除する
@@ -15937,7 +16126,7 @@ int skill_unit_move(struct block_list *bl,unsigned int tick,int flag)
 	if(bl->prev == NULL)
 		return 0;
 
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_MERC)
+	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_MERC && bl->type != BL_ELEM)
 		return 0;
 
 	map_foreachinarea(skill_unit_move_sub,bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,bl,tick,flag);
@@ -16014,7 +16203,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 		if(!(m_flag[i]&0x2)) {
 			// ユニットがなくなる場所でスキルユニット影響を消す
 			map_foreachinarea(skill_unit_effect,unit1->bl.m,
-				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC),
+				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC|BL_ELEM),
 				&unit1->bl,tick,0);
 		}
 		if(m_flag[i] == 0) {
@@ -16053,7 +16242,7 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 		if(!(m_flag[i]&0x2)) {
 			// 移動後の場所でスキルユニットを発動
 			map_foreachinarea(skill_unit_effect,unit1->bl.m,
-				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC),
+				unit1->bl.x,unit1->bl.y,unit1->bl.x,unit1->bl.y,(BL_PC|BL_MOB|BL_MERC|BL_ELEM),
 				&unit1->bl,tick,1);
 		}
 	}

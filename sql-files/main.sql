@@ -53,6 +53,7 @@ CREATE TABLE `char_data` (
   `pet_id` int(11) NOT NULL default '0',
   `homun_id` int(11) NOT NULL DEFAULT '0',
   `merc_id` int(11) NOT NULL DEFAULT '0',
+  `elem_id` int(11) NOT NULL DEFAULT '0',
   `hair` smallint(6) NOT NULL default '0',
   `hair_color` smallint(6) NOT NULL default '0',
   `clothes_color` smallint(6) NOT NULL default '0',
@@ -592,4 +593,19 @@ CREATE TABLE `quest` (
   `mobmax3` smallint(6) NOT NULL default '0',
   `mobcnt3` smallint(6) NOT NULL default '0',
   PRIMARY KEY (`char_id`, `nameid`)
+) ENGINE = InnoDB;
+
+# Database: Ragnarok
+# Table: 'elemental'
+#
+CREATE TABLE `elemental` (
+  `elem_id` int(11) NOT NULL AUTO_INCREMENT,
+  `class` smallint(6) NOT NULL default '0',
+  `account_id` int(11) NOT NULL default '0',
+  `char_id` int(11) NOT NULL default '0',
+  `mode` smallint(6) NOT NULL default '0',
+  `hp` int(11) NOT NULL default '0',
+  `sp` int(11) NOT NULL default '0',
+  `limit` int(11) unsigned NOT NULL default '0',
+  PRIMARY KEY (`elem_id`)
 ) ENGINE = InnoDB;

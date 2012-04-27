@@ -574,8 +574,9 @@ struct mmo_elemstatus {
 	int account_id;
 	int char_id;
 	int elem_id;
-	short class_;
+	short class_, mode;
 	int hp,sp;
+	unsigned int limit;
 };
 
 struct storage {

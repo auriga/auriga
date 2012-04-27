@@ -269,6 +269,20 @@ S 3079 <len>.w <account_id>.l <char_id>.l { <type>.w <val1>.l <val2>.l <val3>.l 
 R 3879 <account_id>.l <flag>.B
 	ステータス異常データ保存終了
 	flag=0 成功（現在の仕様では必ず0なので、返信を待たなくてもいい）
+S 307c <len>.w <account_id>.l <char_id>.l <struct mmo_elemstatus>.?B
+	精霊生成要求
+R 387c <len>.w <account_id>.l <flag>.B <struct mmo_elemstatus>.?B
+	精霊データ受信
+S 307d <account_id>.l <char_id>.l <elem_id>.l
+	精霊データ要求
+R 387d <account_id>.l <flag>.B
+	精霊データ保存終了
+S 307e <len>.w <account_id>.l <struct mmo_elemstatus>.?B
+	精霊データ保存要求
+R 387e <flag>.B
+	精霊データ削除終了
+S 307f <account_id>.l <char_id>.l <elem_id>.l
+	精霊データ削除要求
 S 3080 <account_id>.l <char_id>.I <pet_type>.w <pet_lv>.w <pet_egg_id>.w 
 	<pet_equip>.w <pet_intimate>.w <pet_hungry>.w <rename_flag>.B <incubate>.B 
 	<pet_name>.24B
