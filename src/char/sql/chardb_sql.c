@@ -722,42 +722,29 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	return true;
 }
 
-const struct mmo_chardata* chardb_sql_make(int account_id,unsigned char *dat,int *flag)
+const struct mmo_chardata* chardb_sql_make(int account_id, char *name, short str, short agi, short vit, short int_, short dex, short luk, int hair_color, int hair, unsigned char slot, int *flag)
 {
 	int i, char_id;
-	short str, agi, vit, int_, dex, luk;
-	short hair, hair_color;
-	unsigned char slot;
-	char name[24], buf[256];
+	char buf[256];
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
 	MYSQL_STMT *stmt;
 	bool result = false;
 
-	memset(name, 0, sizeof(name));
-	for(i = 0; i < 24 && dat[i]; i++) {
-		if(dat[i] < 0x20 || dat[i] == 0x7f)
+	for(i = 0; i < 24 && name[i]; i++) {
+		if(name[i] < 0x20 || name[i] == 0x7f)
 		// MySQLのバグをAuriga側で抑制
-		//if(dat[i]<0x20 || dat[i]==0x7f || dat[i]>=0xfd)
+		//if(name[i]<0x20 || name[i]==0x7f || name[i]>=0xfd)
 			return NULL;
-		name[i] = dat[i];
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	slot = dat[30];
 	if( slot >= max_char_slot )
 	{
 		*flag = 0x03;
 		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
 		return NULL;
 	}
-
-	str  = dat[24];
-	agi  = dat[25];
-	vit  = dat[26];
-	int_ = dat[27];
-	dex  = dat[28];
-	luk  = dat[29];
 
 	if( str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9 )
 		return NULL;
@@ -779,9 +766,6 @@ const struct mmo_chardata* chardb_sql_make(int account_id,unsigned char *dat,int
 		);
 		return NULL;
 	}
-
-	hair       = dat[33];
-	hair_color = dat[31];
 
 	if( hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR )
 	{

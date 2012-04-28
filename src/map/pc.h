@@ -36,7 +36,7 @@
 #define pc_iscloaking(sd)   (!((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 #define pc_ischasewalk(sd)  (((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 
-#define pc_iscarton(sd) ((sd)->sc.option&OPTION_CARTMASK)
+#define pc_iscarton(sd) ((sd)->sc.option&OPTION_CARTMASK || (sd)->sc.data[SC_ON_PUSH_CART].timer != -1)
 #define pc_isfalcon(sd) ((sd)->sc.option&OPTION_FALCON)
 #define pc_isriding(sd) ((sd)->sc.option&OPTION_PECO)
 #define pc_isinvisible(sd) ((sd)->sc.option&OPTION_SPECIALHIDING)

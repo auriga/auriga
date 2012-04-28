@@ -191,7 +191,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_BLANK,
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_ON_PUSH_CART
 
 };
 
@@ -6078,7 +6078,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		}
 		if(sc->data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 &&
-			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND && type != SC_SHAPESHIFT)
+			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND &&
+			type != SC_SHAPESHIFT && type != SC_ON_PUSH_CART)
 			return 0;
 		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
@@ -7488,6 +7489,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1 * 5;
 			calc_flag = 1;
 			break;
+		case SC_ON_PUSH_CART:	/* カート */
+			icon_val1 = val1;	// カートタイプを渡す
+			ud->state.change_speed = 1;
+			calc_flag = 1;
+			if(sd) {
+				clif_cart_itemlist(sd);
+				clif_cart_equiplist(sd);
+				clif_updatestatus(sd,SP_CARTINFO);
+			}
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -7745,6 +7756,13 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SUMMER:
 			sc->option |= OPTION_SUMMER;
 			opt_flag = 1;
+			break;
+		case SC_ON_PUSH_CART:	/* カート */
+#if PACKETVER < 20120201
+			// 古いクライアントはオプションを更新する
+			sc->option = (sc->option & ~OPTION_CARTMASK) | val1;
+			opt_flag = 1;
+#endif
 			break;
 	}
 
@@ -8074,6 +8092,16 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ALL_RIDING:			/* 騎乗システム */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
+			break;
+		case SC_ON_PUSH_CART:		/* カート */
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			if(sc->data[SC_CARTBOOST].timer != -1)
+				status_change_end(bl, SC_CARTBOOST, -1);
+			if(sc->data[SC_GN_CARTBOOST].timer != -1)
+				status_change_end(bl, SC_GN_CARTBOOST, -1);
+			if(sd)
+				clif_cart_clear(sd);
 			break;
 		case SC_ELEMENTWATER:		// 水
 		case SC_ELEMENTGROUND:		// 土
@@ -8616,6 +8644,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			sc->option &= ~OPTION_SUMMER;
 			opt_flag = 1;
 			break;
+		case SC_ON_PUSH_CART:
+#if PACKETVER < 20120201
+			// 古いクライアントはオプションを更新する
+			sc->option &= ~sc->data[type].val1;
+			opt_flag = 1;
+#endif
+			break;
 	}
 
 	/* optionの変更 */
@@ -9065,6 +9100,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_WUGDASH:
 	case LG_EXEEDBREAK:
 	case SC_ALL_RIDING:	/* 騎乗システム */
+	case SC_ON_PUSH_CART:	/* カート */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

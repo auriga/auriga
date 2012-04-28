@@ -827,35 +827,21 @@ void chardb_txt_final(void)
 #endif
 }
 
-const struct mmo_chardata *chardb_txt_make(int account_id,unsigned char *dat,int *flag)
+const struct mmo_chardata *chardb_txt_make(int account_id, char *name, short str, short agi, short vit, short int_, short dex, short luk, int hair_color, int hair, unsigned char slot, int *flag)
 {
 	int n, idx;
-	short str, agi, vit, int_, dex, luk;
-	short hair, hair_color;
-	unsigned char slot;
-	char name[24];
 
-	memset(name, 0, sizeof(name));
-	for(n = 0; n < 24 && dat[n]; n++) {
-		if(dat[n] < 0x20 || dat[n] == 0x7f)
+	for(n = 0; n < 24 && name[n]; n++) {
+		if(name[n] < 0x20 || name[n] == 0x7f)
 			return NULL;
-		name[n] = dat[n];
 	}
 	name[23] = '\0';	// force \0 terminal
 
-	slot = dat[30];
 	if(slot >= max_char_slot) {
 		*flag = 0x03;
 		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
 		return NULL;
 	}
-
-	str  = dat[24];
-	agi  = dat[25];
-	vit  = dat[26];
-	int_ = dat[27];
-	dex  = dat[28];
-	luk  = dat[29];
 
 	if(str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9)
 		return NULL;
@@ -875,9 +861,6 @@ const struct mmo_chardata *chardb_txt_make(int account_id,unsigned char *dat,int
 		);
 		return NULL;
 	}
-
-	hair       = dat[33];
-	hair_color = dat[31];
 
 	if(hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR) {
 		charlog_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);

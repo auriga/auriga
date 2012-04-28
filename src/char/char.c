@@ -2297,9 +2297,32 @@ int parse_char(int fd)
 		//	printf("parse_char : %d %d %d\n",fd,RFIFOREST(fd),cmd);
 
 		// 不正パケットの処理
-		if( sd == NULL && cmd != 0x65 && cmd != 0x20b && cmd != 0x187 && cmd != 0x258 && cmd != 0x228 &&
-		    cmd != 0x7e5 && cmd != 0x7e7 && cmd != 0x827 && cmd != 0x829 && cmd != 0x82b && cmd != 0x2af8 && cmd != 0x7530 && cmd != 0x7532 && cmd != 0x2b2a && cmd != 0x2b2c )
-			cmd = 0xffff;	// パケットダンプを表示させる
+		if( sd == NULL)
+		{
+			switch(cmd)
+			{
+				// 認証系のパケットはセッションデータが作られていないため許可
+				case 0x65:
+				case 0x187:
+				case 0x20b:
+				case 0x228:
+				case 0x258:
+				case 0x7e5:
+				case 0x7e7:
+				case 0x827:
+				case 0x829:
+				case 0x82b:
+				case 0x2af8:
+				case 0x2b2a:
+				case 0x2b2c:
+				case 0x7530:
+				case 0x7532:
+					break;
+				// それ以外のパケットは認証済みではないので不正
+				default:
+					cmd = 0xffff;	// パケットダンプを表示させる
+			}
+		}
 
 		switch(cmd) {
 		case 0x20b:		// 20040622暗号化ragexe対応
@@ -2511,13 +2534,40 @@ int parse_char(int fd)
 			}
 			break;
 
-		case 0x67:	// 作成
-			if(RFIFOREST(fd)<37)
+		case 0x67:	// キャラクター作成
+		case 0x970:
+			if( cmd == 0x67 && RFIFOREST(fd) < 37 )
+				return 0;
+			if( cmd == 0x970 && RFIFOREST(fd) < 31 )
 				return 0;
 			{
+				// キャラ作成パラメータの取得
+#if PACKETVER < 20120307
+				char *name  = RFIFOP(fd,2);
+				short str   = RFIFOB(fd,26);
+				short agi   = RFIFOB(fd,27);
+				short vit   = RFIFOB(fd,28);
+				short int_  = RFIFOB(fd,29);
+				short dex   = RFIFOB(fd,30);
+				short luk   = RFIFOB(fd,31);
+				unsigned char slot = RFIFOB(fd,32);
+				int hair_color = RFIFOW(fd,33);
+				int hair = RFIFOW(fd,35);
+#else
+				char *name  = RFIFOP(fd,2);
+				short str   = 5;
+				short agi   = 5;
+				short vit   = 5;
+				short int_  = 5;
+				short dex   = 5;
+				short luk   = 5;
+				unsigned char slot = RFIFOB(fd,26);
+				int hair_color = RFIFOW(fd,27);
+				int hair = RFIFOW(fd,29);
+#endif
 				int flag=0x04;
 				int i = 0;
-				const struct mmo_chardata *cd = chardb_make(sd->account_id,RFIFOP(fd,2),&flag);
+				const struct mmo_chardata *cd = chardb_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
 				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 
@@ -2896,7 +2946,11 @@ int parse_char(int fd)
 				WFIFOL(fd,142) = 0;	// TODO: Add-Ons
 				WFIFOSET(fd,146);
 #endif
+#if PACKETVER < 20120307
 				RFIFOSKIP(fd,37);
+#else
+				RFIFOSKIP(fd,31);
+#endif
 
 				for(ch=0;ch<max_char_slot;ch++) {
 					if(sd->found_char[ch] == NULL) {

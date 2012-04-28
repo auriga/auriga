@@ -1,4 +1,14 @@
 ----------------------------------------
+//0954 [2012/04/29] by popori
+
+・PACKETVER「20120201」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.c src/map/pc.* src/map/skill.c src/map/status.* db/scdata_db.txt)
+　->カートの処理方式を状態異常管理に変更
+　->新規追加されたカート9種類に対応
+
+・PACKETCER「20120307」の追加 (src/char/char.c src/char/txt/chardb_txt* src/char/sql/chardb_sql* *.dsp vc_make.bat Makefile bcc32_make.bat)
+　->キャラ作成パケット0x970に対応
+
+----------------------------------------
 //0953 [2012/04/29] by refis
 
 ・0952で接触反応が動作しない不具合の修正とコメントの訂正 (src/map/mob.c)

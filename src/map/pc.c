@@ -7669,16 +7669,38 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 	}
 
 	if( (type&OPTION_CARTMASK) && !pc_iscarton(sd) ) {
-		clif_cart_itemlist(sd);
-		clif_cart_equiplist(sd);
-		clif_updatestatus(sd,SP_CARTINFO);
+#if PACKETVER >= 20120201
+		// オプション値からカートタイプを変換する
+		switch(type) {
+			case OPTION_PUSHCART:
+				type = CART_TYPE_NORMAL;
+				break;
+			case OPTION_PUSHCART2:
+				type = CART_TYPE_LEVEL40;
+				break;
+			case OPTION_PUSHCART3:
+				type = CART_TYPE_LEVEL65;
+				break;
+			case OPTION_PUSHCART4:
+				type = CART_TYPE_LEVEL80;
+				break;
+			case OPTION_PUSHCART5:
+				type = CART_TYPE_LEVEL90;
+				break;
+		}
+#endif
+		status_change_start(&sd->bl,SC_ON_PUSH_CART,type,0,0,0,9999,0);
+#if PACKETVER > 20080102
+		clif_skillinfoblock(sd);
+#endif
+		return;
 	}
 	else if( !(type&OPTION_CARTMASK) && pc_iscarton(sd) ) {
-		if(sd->sc.data[SC_CARTBOOST].timer != -1)
-			status_change_end(&sd->bl,SC_CARTBOOST,-1);
-		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1)
-			status_change_end(&sd->bl,SC_GN_CARTBOOST,-1);
-		clif_cart_clear(sd);
+		status_change_end(&sd->bl,SC_ON_PUSH_CART,-1);
+#if PACKETVER > 20080102
+		clif_skillinfoblock(sd);
+#endif
+		return;
 	}
 
 	sd->sc.option = type;
@@ -7699,13 +7721,29 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 	static struct {
 		const unsigned int opt;
 		const unsigned short level;
-	} cart[] = {
+	} cart[] =
+	{
+#if PACKETVER < 20120201
+		// 古いクライアントではオプション値で管理
 		{ OPTION_NOTHING,  0 },
 		{ OPTION_PUSHCART,  0 },
 		{ OPTION_PUSHCART2, 40 },
 		{ OPTION_PUSHCART3, 65 },
 		{ OPTION_PUSHCART4, 80 },
 		{ OPTION_PUSHCART5, 90 },
+#else
+		// 新しいクライアントでは状態異常のval1で管理
+		{ CART_TYPE_NOTHING,  0 },
+		{ CART_TYPE_NORMAL,   0 },
+		{ CART_TYPE_LEVEL40,  40 },
+		{ CART_TYPE_LEVEL65,  65 },
+		{ CART_TYPE_LEVEL80,  80 },
+		{ CART_TYPE_LEVEL90,  90 },
+		{ CART_TYPE_LEVEL101, 101 },
+		{ CART_TYPE_LEVEL111, 111 },
+		{ CART_TYPE_LEVEL121, 121 },
+		{ CART_TYPE_LEVEL131, 131 },
+#endif
 	};
 
 	nullpo_retv(sd);
@@ -7716,7 +7754,7 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 	if(pc_checkskill(sd,MC_PUSHCART) > 0) {	// プッシュカートスキル所持
 		if(sd->status.base_level > cart[type].level) {
 			// suppress actual cart; conserv other options
-			pc_setoption(sd, (sd->sc.option & ~OPTION_CARTMASK) | cart[type].opt);
+			status_change_start(&sd->bl,SC_ON_PUSH_CART,cart[type].opt,0,0,0,9999,0);
 		}
 	}
 

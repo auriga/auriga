@@ -8360,6 +8360,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					pet_return_egg(dstsd);
 					homun_return_embryo(dstsd);
 					status_change_end(bl,SC_ALL_RIDING,-1);
+					status_change_end(bl,SC_ON_PUSH_CART,-1);
 				}
 				break;
 			case SC_IGNORANCE:		/* マスカレード ： イグノアランス */

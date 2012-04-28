@@ -2919,7 +2919,7 @@ static int clif_elem0078(struct elem_data *eld,unsigned char *buf)
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x78;
-	WBUFB(buf,2) =0;
+	WBUFB(buf,2) =10;
 	WBUFL(buf,3) =eld->bl.id;
 	WBUFW(buf,7) =eld->speed;
 	WBUFW(buf,9) =eld->sc.opt1;
@@ -2939,7 +2939,7 @@ static int clif_elem0078(struct elem_data *eld,unsigned char *buf)
 
 	WBUFW(buf,0) =0x7f9;
 	WBUFW(buf,2) =(unsigned short)len;
-	WBUFB(buf,4) =9;
+	WBUFB(buf,4) =10;
 	WBUFL(buf,5) =eld->bl.id;
 	WBUFW(buf,9) =eld->speed;
 	WBUFW(buf,11)=eld->sc.opt1;
@@ -2957,7 +2957,7 @@ static int clif_elem0078(struct elem_data *eld,unsigned char *buf)
 
 	WBUFW(buf,0) =0x857;
 	WBUFW(buf,2) =(unsigned short)len;
-	WBUFB(buf,4) =9;
+	WBUFB(buf,4) =10;
 	WBUFL(buf,5) =eld->bl.id;
 	WBUFW(buf,9) =eld->speed;
 	WBUFW(buf,11)=eld->sc.opt1;
@@ -3007,7 +3007,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 
 	WBUFW(buf,0) =0x7f7;
 	WBUFW(buf,2) =(unsigned short)len;
-	WBUFB(buf,4) =9;
+	WBUFB(buf,4) =10;
 	WBUFL(buf,5) =eld->bl.id;
 	WBUFW(buf,9) =eld->speed;
 	WBUFW(buf,11)=eld->sc.opt1;
@@ -3026,7 +3026,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 
 	WBUFW(buf,0) =0x856;
 	WBUFW(buf,2) =(unsigned short)len;
-	WBUFB(buf,4) =9;
+	WBUFB(buf,4) =10;
 	WBUFL(buf,5) =eld->bl.id;
 	WBUFW(buf,9) =eld->speed;
 	WBUFW(buf,11)=eld->sc.opt1;
@@ -3559,7 +3559,7 @@ void clif_spawnelem(struct elem_data *eld)
 	memset(buf,0,len);
 
 	WBUFW(buf,0) =0x7c;
-	WBUFB(buf,2) =0;
+	WBUFB(buf,2) =10;
 	WBUFL(buf,3) =eld->bl.id;
 	WBUFW(buf,7) =eld->speed;
 	WBUFW(buf,21)=eld->view_class;
@@ -3571,7 +3571,7 @@ void clif_spawnelem(struct elem_data *eld)
 
 	WBUFW(buf,0)=0x7f8;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=9;
+	WBUFB(buf,4)=10;
 	WBUFL(buf,5)=eld->bl.id;
 	WBUFW(buf,9)=eld->speed;
 	WBUFW(buf,19)=eld->view_class;
@@ -3585,7 +3585,7 @@ void clif_spawnelem(struct elem_data *eld)
 
 	WBUFW(buf,0)=0x858;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=9;
+	WBUFB(buf,4)=10;
 	WBUFL(buf,5)=eld->bl.id;
 	WBUFW(buf,9)=eld->speed;
 	WBUFW(buf,19)=eld->view_class;
@@ -7006,10 +7006,12 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			len = clif_set0078(dstsd,WFIFOP(sd->fd,0));
 			WFIFOSET(sd->fd,len);
 		}
-		if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)
-			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
-		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)
+		if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// 搭乗システム
 			clif_status_change_id(sd->fd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// モンスター変身システム
+			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
+		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
+			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
 	}
 
 	if(dstsd->chatID) {
@@ -15338,6 +15340,7 @@ static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
 	if (sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
 	pc_setoption(sd,0);
+	status_change_end(&sd->bl,SC_ON_PUSH_CART,-1);
 
 	return;
 }
@@ -15348,7 +15351,8 @@ static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ChangeCart(int fd,struct map_session_data *sd, int cmd)
 {
-	pc_setcart(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)));
+	if(pc_iscarton(sd))
+		pc_setcart(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)));
 
 	return;
 }

@@ -528,6 +528,7 @@
 556,SC_MER_HP,1,0,0,0		// 傭兵ボーナス(HIT)
 557,SC_MER_SP,1,0,0,0		// 傭兵ボーナス(HP)
 558,SC_MER_HIT,1,0,0,0		// 傭兵ボーナス(SP)
+559,SC_ON_PUSH_CART,1,0,0,0		// カート
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
