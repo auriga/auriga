@@ -78,7 +78,7 @@ static int mmo_char_tostr(char *str,struct mmo_chardata *p)
 
 	str_p += sprintf(str_p,"%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
-		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d,%u,%d,%d,%d,%d\t",
+		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d,%u,%d,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name,
 		p->st.class_,p->st.base_level,p->st.job_level,
 		p->st.base_exp,p->st.job_exp,p->st.zeny,
@@ -175,8 +175,8 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 
 	// Auriga-0951以降の形式
 	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
-		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
+		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
 		&tmp_int[6],&tmp_int[7],&tmp_int[8],

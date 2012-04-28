@@ -909,7 +909,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	else
 		tbl = map_id2bl(md->target_id);
 
-	// まず攻撃されたか確認（アクティブなら25%の確率でターゲット変更）
+	// まず攻撃されたか確認
 	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || mob_can_changetarget(md,mode)) )
 	{
 		struct block_list *abl = map_id2bl(md->attacked_id);
@@ -977,7 +977,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	// 接触反応判定
-	if( md->target_id > 0 && mode&MD_CHANGECHASE && (md->state.skillstate == MSS_CHASE && md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
+	if( md->target_id > 0 && mode&MD_CHANGECHASE && (md->state.skillstate == MSS_CHASE || md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
 		search_flag |= 8;
 	}
 
