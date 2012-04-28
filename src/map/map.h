@@ -63,6 +63,7 @@
 #define MAX_FREEZE_SPELL 7	// リーディングスペルブックで保持できるスキル数
 #define MAX_SPIRITBALL 15	// 気功・コインの最大数
 #define MAX_BUYINGSTORE_COUNT 5	// 購買露店最大アイテム登録数
+#define MAX_BOOKING_MEMO_LENGTH 37	// パーティーブッキングの募集メモ最大文字数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -1051,6 +1052,7 @@ struct elem_data {
 struct booking_data {
 	unsigned int id;
 	char name[24];
+	char memo[MAX_BOOKING_MEMO_LENGTH];
 	unsigned int time;
 	int lv;
 	int map;

@@ -13483,9 +13483,15 @@ void clif_bookingregack(struct map_session_data *sd, int flag)
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+#if PACKETVER < 20120222
 	WFIFOW(fd,0) = 0x803;
 	WFIFOW(fd,2) = flag;
 	WFIFOSET(fd,packet_db[0x803].len);
+#else
+	WFIFOW(fd,0) = 0x8e6;
+	WFIFOW(fd,2) = flag;
+	WFIFOSET(fd,packet_db[0x8e6].len);
+#endif
 
 	return;
 }
@@ -13496,12 +13502,14 @@ void clif_bookingregack(struct map_session_data *sd, int flag)
  */
 void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag)
 {
-	int i,j,fd;
+	int i,fd;
+	int j=0;
 	int n=0;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+#if PACKETVER < 20120222
 	WFIFOW(fd,0) = 0x805;
 	if(list) {
 		for(i=0; i<count; i++) {
@@ -13519,6 +13527,23 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 	WFIFOW(fd,2)=5+n*48;
 	WFIFOB(fd,4)=(flag > 0) ? 1 : 0;
 	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	WFIFOW(fd,0) = 0x8e8;
+	if(list) {
+		for(i = 0; i < count; i++) {
+			struct booking_data *bd = list[i];
+			WFIFOL(fd,n*71+5)=bd->id;
+			WFIFOL(fd,n*71+9)=bd->time;
+			memcpy(WFIFOP(fd,n*71+13),bd->name,24);
+			WFIFOW(fd,n*71+37)=bd->lv;
+			memcpy(WFIFOP(fd,n*71+39),bd->memo,MAX_BOOKING_MEMO_LENGTH);
+			n++;
+		}
+	}
+	WFIFOW(fd,2)=5+n*71;
+	WFIFOB(fd,4)=(flag > 0) ? 1 : 0;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
 
 	return;
 }
@@ -13534,9 +13559,15 @@ void clif_deletebookingack(struct map_session_data* sd, int flag)
 	nullpo_retv(sd);
 
 	fd = sd->fd;
+#if PACKETVER < 20120222
 	WFIFOW(fd,0) = 0x807;
 	WFIFOW(fd,2) = flag;
 	WFIFOSET(fd,packet_db[0x807].len);
+#else
+	WFIFOW(fd,0) = 0x8ea;
+	WFIFOW(fd,2) = flag;
+	WFIFOSET(fd,packet_db[0x8ea].len);
+#endif
 
 	return;
 }
@@ -13547,12 +13578,13 @@ void clif_deletebookingack(struct map_session_data* sd, int flag)
  */
 void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd)
 {
-	int i;
-	unsigned char buf[50];
+	int i=0;
+	unsigned char buf[73];
 
 	nullpo_retv(sd);
 	nullpo_retv(bd);
 
+#if PACKETVER < 20120222
 	WBUFW(buf,0) = 0x809;
 	WBUFL(buf,2) = bd->id;
 	memcpy(WBUFP(buf,6),bd->name,24);
@@ -13562,27 +13594,44 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
 	for(i=0; i<6; i++)
 		WBUFW(buf,38+i*2) = bd->job[i];
 	clif_send(buf,packet_db[0x809].len,&sd->bl,ALL_CLIENT);
+#else
+	WBUFW(buf,0) = 0x8ec;
+	WBUFL(buf,2) = bd->id;
+	WBUFL(buf,6) = bd->time;
+	memcpy(WBUFP(buf,10),bd->name,24);
+	WBUFW(buf,34) = bd->lv;
+	memcpy(WBUFP(buf,36),bd->memo,MAX_BOOKING_MEMO_LENGTH);
+
+	clif_send(buf,packet_db[0x8ec].len,&sd->bl,ALL_CLIENT);
+#endif
 
 	return;
 }
 
 /*==========================================
- * パーティーブッキングリスト追加
+ * パーティーブッキングリスト更新
  *------------------------------------------
  */
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd)
 {
-	int i;
-	unsigned char buf[18];
+	int i=0;
+	unsigned char buf[47];
 
 	nullpo_retv(sd);
 	nullpo_retv(bd);
 
+#if PACKETVER < 20120222
 	WBUFW(buf,0) = 0x80a;
 	WBUFL(buf,2) = bd->id;
 	for(i=0; i<6; i++)
 		WBUFW(buf,6+i*2) = bd->job[i];
 	clif_send(buf,packet_db[0x80a].len,&sd->bl,ALL_CLIENT);
+#else
+	WBUFW(buf,0) = 0x8ed;
+	WBUFL(buf,2) = bd->id;
+	memcpy(WBUFP(buf,6),bd->memo,MAX_BOOKING_MEMO_LENGTH);
+	clif_send(buf,packet_db[0x8ed].len,&sd->bl,ALL_CLIENT);
+#endif
 
 	return;
 }
@@ -13597,9 +13646,15 @@ void clif_deletebooking(struct map_session_data* sd, unsigned int id)
 
 	nullpo_retv(sd);
 
+#if PACKETVER < 20120222
 	WBUFW(buf,0) = 0x80b;
 	WBUFL(buf,2) = id;
 	clif_send(buf,packet_db[0x80b].len,&sd->bl,ALL_CLIENT);
+#else
+	WBUFW(buf,0) = 0x8ee;
+	WBUFL(buf,2) = id;
+	clif_send(buf,packet_db[0x8ee].len,&sd->bl,ALL_CLIENT);
+#endif
 
 	return;
 }
@@ -17905,6 +17960,8 @@ static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *s
 	int i,lv,map;
 	int job[6];
 
+	nullpo_retv(sd);
+
 	lv = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	map = RFIFOW(fd,GETPACKETPOS(cmd,1));
 	for(i=0; i<6; i++)
@@ -17916,15 +17973,59 @@ static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *s
 }
 
 /*==========================================
+ * パーティーブッキング登録2
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingRegisterReq2(int fd,struct map_session_data *sd, int cmd)
+{
+	int lv;
+	char *memo;
+
+	nullpo_retv(sd);
+
+	// parse
+	lv   = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	memo = (char *)RFIFOP(fd,GETPACKETPOS(cmd,1));
+
+	// 登録処理
+	booking_register2(sd,lv,memo);
+
+	return;
+}
+
+/*==========================================
  * パーティーブッキング検索要求
  *------------------------------------------
  */
 static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	booking_searchcond(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOW(fd,GETPACKETPOS(cmd,1)),RFIFOW(fd,GETPACKETPOS(cmd,2)),RFIFOL(fd,GETPACKETPOS(cmd,3)),RFIFOW(fd,GETPACKETPOS(cmd,4)));
 
 	return;
 }
+
+/*==========================================
+ * パーティーブッキング検索要求2
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingSearchReq2(int fd,struct map_session_data *sd, int cmd)
+{
+	int lv;
+	// TODO:残り6バイトは何に使うのか不明
+
+	nullpo_retv(sd);
+
+	// parse
+	lv = RFIFOW(fd,GETPACKETPOS(cmd,0));
+
+	// 検索処理
+	booking_searchcond2(sd,lv);
+
+	return;
+}
+
 
 /*==========================================
  * パーティーブッキング削除要求
@@ -17932,6 +18033,21 @@ static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd,
  */
 static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
+	booking_delete(sd);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング削除要求2
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingDeleteReq2(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
 	booking_delete(sd);
 
 	return;
@@ -17946,10 +18062,32 @@ static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd,
 	int i;
 	int job[6];
 
+	nullpo_retv(sd);
+
 	for(i=0; i<6; i++)
 		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,i));
 
 	booking_update(sd,job);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングアップデート要求2
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingUpdateReq2(int fd,struct map_session_data *sd, int cmd)
+{
+	unsigned char data;	// TODO:使用用途不明
+	char *memo;
+
+	nullpo_retv(sd);
+
+	// parse
+	data   = RFIFOB(fd,GETPACKETPOS(cmd,0));
+	memo = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
+
+	booking_update2(sd,data,memo);
 
 	return;
 }
@@ -18473,6 +18611,10 @@ static void packetdb_readdb(void)
 		{ clif_parse_GMremove2,                 "gmremove2"                 },
 		{ clif_parse_RegBattleGround,           "regbattleground"           },
 		{ clif_parse_MoveItem,                  "moveitem"                  },
+		{ clif_parse_PartyBookingRegisterReq2,  "bookingregreq2"            },
+		{ clif_parse_PartyBookingSearchReq2,    "bookingsearchreq2"         },
+		{ clif_parse_PartyBookingDeleteReq2,    "bookingdelreq2"            },
+		{ clif_parse_PartyBookingUpdateReq2,    "bookingupdatereq2"         },
 		{ NULL,                                 NULL                        },
 	};
 

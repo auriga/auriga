@@ -1,4 +1,12 @@
 ----------------------------------------
+//0955 [2012/04/29] by popori
+
+・PACKETVER「20120222」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.* src/map/booking.* src/map/map.h db/packet_db.txt doc/client_packet.txt)
+　->新仕様のパーティーブッキング対応
+
+・2012-04-10aRagexeRE用のpacket_db.txtの追加 (db/packet_db.txt)
+
+----------------------------------------
 //0954 [2012/04/29] by popori
 
 ・PACKETVER「20120201」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.c src/map/pc.* src/map/skill.c src/map/status.* db/scdata_db.txt)

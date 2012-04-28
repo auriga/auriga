@@ -32,6 +32,15 @@
 #include "clif.h"
 #include "map.h"
 
+// 1ページの最大検索数
+#define MAX_RESULT 10
+
+// 最大MAPID
+#define MAX_BOOKING_MAPID 193
+
+// 最大JOBID
+#define MAX_BOOKING_JOBID 64
+
 static struct dbt *booking_db = NULL;
 static int booking_mapid[MAX_BOOKING_MAPID];
 static int booking_jobid[MAX_BOOKING_JOBID];
@@ -39,6 +48,10 @@ static unsigned int booking_id = 0;
 
 /*==========================================
  * MAPIDが有効かチェック
+ *
+ * @note private
+ * @param map クライアントから受信したMapID
+ * @return 有効であれば1 無効であれば0
  *------------------------------------------
  */
 static int booking_search_mapid(int map)
@@ -65,6 +78,11 @@ static int booking_search_mapid(int map)
 
 /*==========================================
  * JOBIDが有効かチェック
+ *
+ * @note private
+ * @param job クライアントから受信したJobID
+ * @return 有効であれば1
+ *         無効であれば0
  *------------------------------------------
  */
 static int booking_search_jobid(int job)
@@ -91,6 +109,11 @@ static int booking_search_jobid(int job)
 
 /*==========================================
  * 該当IDのブッキングリスト検索
+ *
+ * @note private
+ * @param booking_id 検索対象パーティーブッキングID
+ * @return booking_dbに格納されているbooking_data構造体
+ *         見つからなければNULL
  *------------------------------------------
  */
 static struct booking_data *booking_search(unsigned int booking_id)
@@ -99,10 +122,24 @@ static struct booking_data *booking_search(unsigned int booking_id)
 }
 
 /*==========================================
- * 条件でブッキングリスト検索
+ * 条件でブッキングリスト検索(旧仕様)
+ *
+ * @note private
+ * @param key booking_searchcond_subでは未使用
+ * @param data booking_dbに格納されているbooking_data構造体
+ * @param ap 可変長引数
+ *           lv :検索条件のレベル
+ *           map:検索条件のマップ
+ *           job:検索条件の職業
+ *           last_index:検索ページのインデックス末尾
+ *           result_count:最大検索試行回数
+ *           count:検索数カウンタ
+ *           booking_data:検索結果格納用booking_data構造体
+ * @return 検索が終了すれば0
+ *         検索を中断したのなら1
  *------------------------------------------
  */
-static int booking_searchcond_sub(void *key,void *data,va_list ap)
+static int booking_searchcond_sub(void *key, void *data, va_list ap)
 {
 	struct booking_data *bd = (struct booking_data *)data;
 	int lv  = va_arg(ap,int);
@@ -142,6 +179,51 @@ static int booking_searchcond_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
+/*==========================================
+ * 条件でブッキングリスト検索(新仕様)
+ *
+ * @note private
+ * @param key 未使用
+ * @param data booking_dbに格納されているbooking_data構造体
+ * @param ap 可変長引数
+ *           lv :検索条件のレベル
+ *           result_count:最大検索試行回数
+ *           count:検索数カウンタ
+ *           booking_data:検索結果格納用booking_data構造体
+ * @return 検索が終了すれば0
+ *         検索を中断したのなら1
+ *------------------------------------------
+ */
+static int booking_searchcond_sub2(void *key, void *data, va_list ap)
+{
+	struct booking_data *bd = (struct booking_data *)data;
+	int lv  = va_arg(ap,int);
+	int result_count = va_arg(ap,int);
+	int *count       = va_arg(ap,int *);
+	struct booking_data **list = va_arg(ap,struct booking_data **);
+
+	if(lv > 0 && (bd->lv < lv - battle_config.party_booking_lv || bd->lv > lv))	// Lvが条件と合わない
+		return 0;
+
+	if((*count) >= result_count)	// result_countまでで検索終了
+		return 1;
+
+	list[(*count)++] = bd;
+
+	return 0;
+}
+
+/*==========================================
+ * 該当IDのブッキングリスト検索(旧仕様)
+ *
+ * @note public
+ * @param lv 検索対象のレベル
+ * @param map 検索対象のマップ
+ * @param job 検索対象の職業
+ * @param last_index 検索ページのインデックス末尾
+ * @param result_count 最大検索試行回数
+ *------------------------------------------
+ */
 void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, unsigned int last_index, int result_count)
 {
 	int flag;
@@ -166,7 +248,39 @@ void booking_searchcond(struct map_session_data *sd, int lv, int map, int job, u
 }
 
 /*==========================================
- * パーティーブッキング登録
+ * 該当IDのブッキングリスト検索(新仕様)
+ *
+ * @note public
+ * @param lv 検索対象のレベル
+ *------------------------------------------
+ */
+void booking_searchcond2(struct map_session_data *sd, int lv)
+{
+	int flag;
+	int count=0;
+	struct booking_data *list[MAX_RESULT];	// TODO:暫定的なので仕様が分かり次第修正する
+
+	nullpo_retv(sd);
+
+	if(lv > MAX_LEVEL || lv < 0)	// レベルが不正
+		return;
+
+	memset(list,0,sizeof(list));
+
+	flag = numdb_foreach(booking_db,booking_searchcond_sub2,lv,MAX_RESULT,&count,&list);
+	clif_searchbookingack(sd,list,count,flag);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング登録(旧仕様)
+ *
+ * @note public
+ * @param sd 登録要求者
+ * @param lv 募集レベル
+ * @param map 募集マップ
+ * @param job 募集職業
  *------------------------------------------
  */
 void booking_register(struct map_session_data *sd, int lv, int map, int *job)
@@ -205,6 +319,7 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
 
 	sd->booking_id = bd->id;
 
+	// 応答パケット送信
 	clif_bookingregack(sd,0);
 	clif_insertbookinglist(sd,bd);
 
@@ -212,7 +327,55 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
 }
 
 /*==========================================
- * パーティーブッキング登録情報修正
+ * パーティーブッキング登録(新仕様)
+ *
+ * @note public
+ * @param sd 登録要求者
+ * @param lv 募集レベル
+ * @param memo 募集時のメッセージ
+ * @param data とりあえず用意しただけ
+ *------------------------------------------
+ */
+void booking_register2(struct map_session_data *sd, int lv, char *memo)
+{
+	struct booking_data *bd;
+
+	nullpo_retv(sd);
+
+	if(sd->booking_id > 0) {	// 既に登録中
+		clif_bookingregack(sd,2);
+		return;
+	}
+	if(lv > MAX_LEVEL || lv < 0) {	// レベルが不正
+		clif_bookingregack(sd,1);
+		return;
+	}
+
+	// PTブッキングリストに登録
+	bd = (struct booking_data *)aCalloc(1,sizeof(struct booking_data));
+	bd->id = ++booking_id;
+	numdb_insert(booking_db,booking_id,bd);
+	memcpy(bd->name,sd->status.name,24);
+	bd->time = (unsigned int)time(NULL);
+	bd->lv = lv;
+	strncpy(bd->memo,memo,MAX_BOOKING_MEMO_LENGTH);
+	bd->memo[MAX_BOOKING_MEMO_LENGTH-1] = '\0';
+
+	sd->booking_id = bd->id;
+
+	// 応答パケット送信
+	clif_bookingregack(sd,0);
+	clif_insertbookinglist(sd,bd);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキング登録情報修正(旧仕様)
+ *
+ * @note public
+ * @param sd 登録情報修正要求者
+ * @param job 募集職業
  *------------------------------------------
  */
 void booking_update(struct map_session_data *sd, int *job)
@@ -242,7 +405,40 @@ void booking_update(struct map_session_data *sd, int *job)
 }
 
 /*==========================================
- * パーティーブッキングリスト削除
+ * パーティーブッキング登録情報修正(新仕様)
+ *
+ * @note public
+ * @param sd 登録情報修正要求者
+ * @param lv 募集レベル
+ * @param memo 募集時のメッセージ
+ *------------------------------------------
+ */
+void booking_update2(struct map_session_data *sd, unsigned char data, char *memo)
+{
+	struct booking_data *bd;
+
+	nullpo_retv(sd);
+
+	// 自身の登録情報を検索
+	bd = booking_search(sd->booking_id);
+	if(bd == NULL)
+		return;
+
+	// 登録情報修正
+	bd->time = (unsigned int)time(NULL);
+	strncpy(bd->memo,memo,MAX_BOOKING_MEMO_LENGTH);
+	bd->memo[MAX_BOOKING_MEMO_LENGTH-1] = '\0';
+
+	clif_updatebookinglist(sd,bd);
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングリスト削除(旧仕様)
+ *
+ * @note public
+ * @param sd 登録情報削除要求者
  *------------------------------------------
  */
 void booking_delete(struct map_session_data *sd)
@@ -264,6 +460,10 @@ void booking_delete(struct map_session_data *sd)
 
 /*==========================================
  * パーティーブッキングデータ読み込み
+ *
+ * @note private
+ * @return 成功であれば1
+ *         失敗であれば-1
  *------------------------------------------
  */
 static int read_booking_db(void)
@@ -365,9 +565,15 @@ static int read_booking_db(void)
 
 /*==========================================
  * 終了
+ *
+ * @note private
+ * @param key 未使用
+ * @aram data メモリ解放するデータ
+ * @param ap 未使用
+ * @return 常に0を返却
  *------------------------------------------
  */
-static int booking_db_final(void *key,void *data,va_list ap)
+static int booking_db_final(void *key, void *data, va_list ap)
 {
 	aFree(data);
 
@@ -384,6 +590,8 @@ void do_final_booking(void)
 
 /*==========================================
  * 初期化
+ *
+ * @note private
  *------------------------------------------
  */
 void do_init_booking(void)
