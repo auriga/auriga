@@ -373,6 +373,7 @@ int mob_spawn(int id)
 	md->master_dist = 0;
 
 	md->state.skillstate = MSS_IDLE;
+	md->state.angry      = md->mode&MD_ANGRY?1:0;
 	md->last_thinktime   = tick;
 	md->next_walktime    = tick + atn_rand()%50 + 5000;
 
@@ -530,6 +531,27 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 		}
 	}
 	return 1;
+}
+
+/*==========================================
+ * 攻撃対象の変更が可能か
+ *------------------------------------------
+ */
+static int mob_can_changetarget(struct mob_data* md, int mode)
+{
+	nullpo_ret(md);
+
+	switch(md->state.skillstate) {
+		case MSS_ATTACK:
+			return (mode&MD_CHANGETARGET_MELEE);
+		case MSS_CHASE:
+			return (mode&MD_CHANGETARGET_CHASE);
+		case MSS_ANGRY:
+		case MSS_FOLLOW:
+			return 1;
+		default:
+			return 0;
+	}
 }
 
 /*==========================================
@@ -888,7 +910,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		tbl = map_id2bl(md->target_id);
 
 	// まず攻撃されたか確認（アクティブなら25%の確率でターゲット変更）
-	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || (mode&MD_AGGRESSIVE && atn_rand()%100 < 25)) )
+	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || mob_can_changetarget(md,mode)) )
 	{
 		struct block_list *abl = map_id2bl(md->attacked_id);
 		struct map_session_data *asd = NULL;
@@ -914,6 +936,15 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 					md->min_chase = 26;
 			}
 		}
+
+		// ハイパーアクティブAIの狂化
+		if(md->state.angry) {
+			md->state.angry = 0;
+			if(md->state.skillstate == MSS_ANGRY)
+				md->state.skillstate = MSS_ATTACK;
+			if(md->state.skillstate == MSS_FOLLOW)
+				md->state.skillstate = MSS_CHASE;
+		}
 	}
 
 	md->state.master_check = 0;
@@ -926,7 +957,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	// リンク / アクティヴ / ルートモンスターの検索
 	// アクティヴ判定
-	if( md->target_id < MAX_FLOORITEM && mode&MD_AGGRESSIVE && !md->state.master_check && battle_config.monster_active_enable ) {
+	if( ((md->target_id < MAX_FLOORITEM && mode&MD_AGGRESSIVE) || md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
 		search_flag |= 1;
 	}
 
@@ -946,7 +977,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	// 接触反応判定
-	if( md->target_id > 0 && mode&MD_CHANGECHASE && md->state.skillstate == MSS_CHASE && !md->state.master_check && battle_config.monster_active_enable ) {
+	if( md->target_id > 0 && mode&MD_CHANGECHASE && (md->state.skillstate == MSS_CHASE && md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
 		search_flag |= 8;
 	}
 
@@ -996,7 +1027,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 					mobskill_use(md,tick,-1);
 				return search_flag;
 			}
-			md->state.skillstate = MSS_CHASE;	// 突撃時スキル
+			md->state.skillstate = md->state.angry?MSS_FOLLOW:MSS_CHASE;	// 突撃時スキル
 			mobskill_use(md,tick,-1);
 			if(md->ud.walktimer != -1 && unit_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) < 2)
 				return search_flag; // 既に移動中
@@ -1036,7 +1067,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			if(battle_config.mob_attack_fixwalkpos)	// 強制位置補正
 				clif_fixwalkpos(&md->bl);
 			unit_attack(&md->bl, md->target_id, attack_type);
-			md->state.skillstate = MSS_ATTACK;
+			md->state.skillstate = md->state.angry?MSS_ANGRY:MSS_ATTACK;
 		}
 		return search_flag;
 	} else if(tbl->type == BL_ITEM && md->lootitem) {
@@ -3284,9 +3315,9 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 
 	if(md->state.skillstate != MSS_DEAD) {
 		if(md->ud.attacktimer != -1) {
-			md->state.skillstate = MSS_ATTACK;
+			md->state.skillstate = md->state.angry?MSS_ANGRY:MSS_ATTACK;
 		}
-		if(md->ud.walktimer != -1 && md->state.skillstate != MSS_CHASE) {
+		if(md->ud.walktimer != -1 && md->state.skillstate != MSS_CHASE && md->state.skillstate != MSS_FOLLOW) {
 			md->state.skillstate = MSS_WALK;
 		}
 	}
@@ -4117,6 +4148,8 @@ static int mob_readskilldb(void)
 		{ "loot",              MSS_LOOT              },
 		{ "chase",             MSS_CHASE             },
 		{ "command",           MSS_COMMANDONLY       },
+		{ "angry",             MSS_ANGRY             },
+		{ "follow",            MSS_FOLLOW            },
 	}, target[] = {
 		{ "target",            MST_TARGET            },
 		{ "self",              MST_SELF              },

@@ -5698,6 +5698,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int range = skill_get_fixed_range(src,skillid,skilllv);
 			mob_target(dstmd,src,range);
 			battle_join_struggle(dstmd, src);
+			if(dstmd->state.angry)
+				dstmd->state.angry = 0;
 		}
 		if(sd)	// 使用者がプレイヤーのとき詠唱妨害
 			unit_skillcastcancel(bl,2);

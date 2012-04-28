@@ -166,6 +166,8 @@ enum {
 	MSS_LOOT        = 6,	// ルート
 	MSS_CHASE       = 7,	// 突撃
 	MSS_COMMANDONLY = 8,	// 命令専用
+	MSS_ANGRY       = 9,	// 攻撃(非狂化)
+	MSS_FOLLOW      = 10,	// 突撃(非狂化)
 };
 
 int mobdb_searchname(const char *str);

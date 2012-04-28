@@ -1195,6 +1195,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(src_sd && target_md && status_get_mode(&target_md->bl)&MD_CASTSENSOR && target_md->ud.attacktimer == -1 && src_sd->invincible_timer == -1) {
 			target_md->target_id = src->id;
 			target_md->min_chase = 13;
+			if(target_md->state.angry)
+				target_md->state.angry = 0;
 		}
 		/* 反撃などのMOBスキル判定 */
 		if(target_md) {
