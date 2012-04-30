@@ -191,7 +191,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_ON_PUSH_CART
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_ON_PUSH_CART,SI_ZENKAI,SI_KO_JYUMONJIKIRI
 
 };
 
@@ -2195,11 +2195,18 @@ L_RECALC:
 			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_VITATA_500].val2 / 100;
 		}
 	}
+
 	// テコンランカーボーナス
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
 	{
 		sd->status.max_hp *= 3;
 		sd->status.max_sp *= 3;
+	}
+
+	// 影狼・朧の球体(暫定)
+	if(sd->elementball.num && sd->elementball.ele == ELE_EARTH) {
+		sd->base_atk += sd->elementball.num * 3;
+		sd->def      += sd->elementball.num;
 	}
 
 	// MATK乗算処理(杖補正)
@@ -5302,8 +5309,12 @@ int status_get_attack_element(struct block_list *bl)
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		ret = ELE_NEUTRAL;
-	else if(bl->type == BL_PC && (struct map_session_data *)bl)
-		ret = ((struct map_session_data *)bl)->atk_ele;
+	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
+		if(((struct map_session_data *)bl)->elementball.num)
+			ret = ((struct map_session_data *)bl)->elementball.ele;
+		else
+			ret = ((struct map_session_data *)bl)->atk_ele;
+	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
@@ -5347,8 +5358,12 @@ int status_get_attack_element2(struct block_list *bl)
 	nullpo_retr(ELE_NEUTRAL, bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		int ret = ((struct map_session_data *)bl)->atk_ele_;
+		int ret;
 		struct status_change *sc = status_get_sc(bl);
+		if(((struct map_session_data *)bl)->elementball.num)
+			ret = ((struct map_session_data *)bl)->elementball.ele;
+		else
+			ret = ((struct map_session_data *)bl)->atk_ele_;
 
 		if(sc) {
 			if(sc->data[SC_FROSTWEAPON].timer != -1)		// フロストウェポン
@@ -5390,7 +5405,11 @@ int status_get_attack_element_nw(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 
-	if(bl->type == BL_HOM && (struct homun_data *)bl)
+	if(bl->type == BL_PC && (struct map_session_data *)bl) {
+		if(((struct map_session_data *)bl)->elementball.num)
+			ret = ((struct map_session_data *)bl)->elementball.ele;
+	}
+	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		ret = ELE_NONE;	// 無属性
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
 		ret = ELE_NONE;	// 無属性
@@ -6215,6 +6234,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KG_KAGEHUMI:		/* 影踏み */
 		case SC_KYOMU:				/* 虚無の影 */
 		case SC_AKAITSUKI:			/* 紅月 */
+		case SC_KO_ZENKAI:			/* 術式全開 */
+		case SC_KO_JYUMONJIKIRI:	/* 十文字斬り */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -8425,7 +8446,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				clif_status_change(bl,SI_MONSTER_TRANSFORM,-1,0,0,0,0);
 			calc_flag = 1;
 			break;
-		case SC_KYOUGAKU:			/* 驚愕 */
+		case SC_KYOUGAKU:	/* 驚愕 */
 			if(sd)
 				clif_status_change(bl,SI_KYOUGAKU,-1,0,0,0,0);
 			calc_flag = 1;

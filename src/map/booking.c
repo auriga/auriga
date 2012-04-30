@@ -333,7 +333,6 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
  * @param sd 登録要求者
  * @param lv 募集レベル
  * @param memo 募集時のメッセージ
- * @param data とりあえず用意しただけ
  *------------------------------------------
  */
 void booking_register2(struct map_session_data *sd, int lv, char *memo)
@@ -409,11 +408,10 @@ void booking_update(struct map_session_data *sd, int *job)
  *
  * @note public
  * @param sd 登録情報修正要求者
- * @param lv 募集レベル
  * @param memo 募集時のメッセージ
  *------------------------------------------
  */
-void booking_update2(struct map_session_data *sd, unsigned char data, char *memo)
+void booking_update2(struct map_session_data *sd, char *memo)
 {
 	struct booking_data *bd;
 

@@ -489,6 +489,149 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 }
 
 /*==========================================
+ * 影狼・朧の球体タイマー
+ *-----------------------------------------
+ */
+static int pc_elementball_timer(int tid, unsigned int tick, int id, void *data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	int i;
+
+	if( sd == NULL )
+		return 1;
+
+	// 不正なタイマーID
+	if( sd->elementball.timer[0] != tid )
+	{
+		if(battle_config.error_log)
+			printf("elementball_timer %d != %d\n",sd->elementball.timer[0],tid);
+		return 0;
+	}
+
+	// 球体のタイマークリア
+	sd->elementball.timer[0] = -1;
+	for( i = 1; i < sd->elementball.num; i++ )
+	{
+		sd->elementball.timer[i-1] = sd->elementball.timer[i];
+		sd->elementball.timer[i] = -1;
+	}
+
+	// 球体の数を減らす
+	sd->elementball.num--;
+	if(sd->elementball.num < 0)
+		sd->elementball.num = 0;
+
+	// 属性値クリア
+	if(!sd->elementball.num)
+		sd->elementball.ele = ELE_NEUTRAL;
+
+	// パケット送信
+	clif_elementball(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * 影狼・朧の球体セット
+ *-----------------------------------------
+ */
+int pc_addelementball(struct map_session_data *sd, int interval, int max, short ele)
+{
+	nullpo_retr(0, sd);
+
+	// 最大値チェック
+	if(max > MAX_ELEMENTBALL)
+		max = MAX_ELEMENTBALL;
+
+	// 負数チェック
+	if(sd->elementball.num < 0)
+		sd->elementball.num = 0;
+
+	if( max > 0 )
+	{
+		if( sd->elementball.num >= max )
+		{
+			int i;
+			if( sd->elementball.timer[0] != -1 )
+			{
+				delete_timer(sd->elementball.timer[0],pc_elementball_timer);
+				sd->elementball.timer[0] = -1;
+			}
+			for( i = 1; i < max; i++ )
+			{
+				sd->elementball.timer[i-1] = sd->elementball.timer[i];
+				sd->elementball.timer[i] = -1;
+			}
+		}
+		else
+			sd->elementball.num++;
+		sd->elementball.timer[sd->elementball.num-1] = add_timer(gettick()+interval+sd->elementball.num,pc_elementball_timer,sd->bl.id,NULL);
+		sd->elementball.ele = ele;
+	}
+
+	// 土属性ならdefとatkが向上するためステータスを計算させる
+	if(ele == ELE_EARTH)
+		status_calc_pc(sd,0);
+
+	// パケット送信
+	clif_elementball(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * 影狼・朧のタイマー削除
+ *-----------------------------------------
+ */
+int pc_delelementball(struct map_session_data *sd, int count, int type)
+{
+	int i;
+
+	nullpo_retr(0, sd);
+
+	// 負数チェック
+	if( sd->elementball.num <= 0 )
+	{
+		sd->elementball.num = 0;
+		sd->elementball.ele = ELE_NEUTRAL;
+		return 0;
+	}
+
+	// 削除数のチェック
+	if(count > sd->elementball.num)
+		count = sd->elementball.num;
+
+	sd->elementball.num -= count;
+
+	// 属性値クリア
+	if(sd->elementball.num < 1)
+		sd->elementball.ele = ELE_NEUTRAL;
+
+	if(count > MAX_ELEMENTBALL)
+		count = MAX_ELEMENTBALL;
+
+	for( i = 0; i < count; i++ )
+	{
+		if( sd->elementball.timer[i] != -1 )
+		{
+			delete_timer(sd->elementball.timer[i],pc_elementball_timer);
+			sd->elementball.timer[i] = -1;
+		}
+	}
+
+	for( i = count; i < MAX_ELEMENTBALL; i++ )
+	{
+		sd->elementball.timer[i-count] = sd->elementball.timer[i];
+		sd->elementball.timer[i] = -1;
+	}
+
+	if(!type)
+		clif_elementball(sd);
+
+	return 0;
+}
+
+/*==========================================
  * Expペナルティ
  *   type&1 : 経験値更新
  *   type&2 : レディムプティオ
@@ -1243,11 +1386,20 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	memset(&sd->regen,0,sizeof(sd->regen));
 
+	// 気功・コイン・影狼、朧の球体初期化
 	sd->spiritball.num = 0;
+	sd->spiritball.old = 0;
+	sd->coin.num = 0;
+	sd->elementball.num = 0;
+	sd->elementball.ele = ELE_NEUTRAL;
 
 	for(i=0; i<MAX_SPIRITBALL; i++) {
 		sd->spiritball.timer[i] = -1;
 		sd->coin.timer[i]   = -1;
+	}
+
+	for(i=0; i<MAX_ELEMENTBALL; i++) {
+		sd->elementball.timer[i] = -1;
 	}
 
 	for(i=0; i<MAX_ACTIVEITEM; i++) {
@@ -6631,6 +6783,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	pc_delspiritball(sd,sd->spiritball.num,0);
 	pc_delcoin(sd,sd->coin.num,0);
+	pc_delelementball(sd,sd->elementball.num,0);
 
 	if(sd->status.pet_id > 0 && sd->pd && sd->petDB) {
 		sd->pet.intimate -= sd->petDB->die;

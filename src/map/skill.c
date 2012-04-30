@@ -308,9 +308,9 @@ int QuestSkillStatusChangeTable[MAX_QUESTSKILL] = {	/* status.hのenumのSC_***�
 /* (スキル番号 - KO_SKILLID)＝＞ステータス異常番号変換テーブル */
 int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hのenumのSC_***とあわせること */
 	/* 3001- */
-	SC_HIDING,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	SC_HIDING,-1,-1,SC_KO_JYUMONJIKIRI,-1,-1,-1,-1,-1,-1,
 	/* 3011- */
-	SC_MEIKYOUSISUI,-1,SC_KYOUGAKU,SC_CURSE,-1,-1,-1,-1,-1,-1,
+	SC_MEIKYOUSISUI,-1,SC_KYOUGAKU,SC_CURSE,-1,-1,-1,-1,-1,SC_KO_ZENKAI,
 	/* 3021- */
 	SC_CONFUSION,SC_IZAYOI,SC_KG_KAGEHUMI,SC_KYOMU,SC_KAGEMUSYA,-1,-1,-1,SC_AKAITSUKI,
 };
@@ -3269,6 +3269,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			status_change_end(src, SC_HIDING, -1);	// ハイディング解除
 		}
 		break;
+	case KO_JYUMONJIKIRI:		/* 十文字斬り */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
 
 	/* 武器系範囲攻撃スキル */
 	case AC_SHOWER:			/* アローシャワー */
@@ -3655,6 +3659,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case AB_DUPLELIGHT_MAGIC:	/* デュプレライト(魔法) */
 	case LG_RAYOFGENESIS:		/* レイオブジェネシス */
 	case WM_METALICSOUND:		/* メタリックサウンド */
+	case KO_KAIHOU:				/* 術式解放 */
 		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case ALL_RESURRECTION:		/* リザレクション */
@@ -9084,6 +9089,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		}
 		break;
+	case KO_KAHU_ENTEN:	/* 火符 -炎天- */
+	case KO_HYOUHU_HUBUKI:	/* 氷符 -吹雪- */
+	case KO_KAZEHU_SEIRAN:	/* 風符 -青藍- */
+	case KO_DOHU_KOUKAI:	/* 土符 -剛塊- */
+		if(sd) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			pc_addelementball(sd,skill_get_time(skillid,skilllv),MAX_ELEMENTBALL,skill_get_pl(skillid));
+		}
+		break;
 	case KO_GENWAKU:		/* 幻惑 */
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		if(atn_rand() % 10000 < 1000 * skilllv) {	// 確率暫定
@@ -9152,6 +9166,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			break;
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case KO_ZENKAI:		/* 術式全開 */
+		skill_clear_element_field(src);	// 既に自分が発動している属性場をクリア
+		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
 		break;
 	default:
 		printf("skill_castend_nodamage_id: Unknown skill used:%d\n",skillid);
@@ -9540,7 +9558,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case SA_VIOLENTGALE:		/* バイオレントゲイル */
 	case SA_LANDPROTECTOR:		/* ランドプロテクター */
 	case NJ_SUITON:			/* 水遁 */
-	case NJ_KAENSIN:		/* 火炎陣*/
+	case NJ_KAENSIN:		/* 火炎陣 */
 		skill_clear_element_field(src);	// 既に自分が発動している属性場をクリア
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
@@ -10290,6 +10308,33 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	case LG_BANDING:	/* バンディング */
 		limit = 600000;		// 時間切れ無し
 		break;
+	case KO_ZENKAI:		/* 術式全開 */
+		if(sd) {
+			// 召喚中の球体の属性に応じてunit_idを変化させる
+			switch(sd->elementball.ele) {
+				case ELE_WATER:
+					unit_id = UNT_ZENKAI_WATER;
+					val1    = ELE_WATER;	// val1は属性値
+					break;
+				case ELE_EARTH:
+					unit_id = UNT_ZENKAI_GROUND;
+					val1    = ELE_EARTH;	// val1は属性値
+					break;
+				case ELE_FIRE:
+					unit_id = UNT_ZENKAI_FIRE;
+					val1    = ELE_FIRE;	// val1は属性値
+					break;
+				case ELE_WIND:
+					unit_id = UNT_ZENKAI_WIND;
+					val1    = ELE_WIND;	// val1は属性値
+					break;
+			}
+			// 召喚中の球体の数に応じてlimitが延びる
+			limit += (sd->elementball.num - 1) * 6000;
+		} else {
+			val1 = ELE_FIRE;	// val1は属性値
+		}
+		break;
 	}
 
 	nullpo_retr( NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id,gettick()) );
@@ -10704,6 +10749,67 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 		}
 		status_change_start(bl,SC_STEALTHFIELD,sg->skill_lv,sg->val1,sg->val2,
 				src->bl.id,skill_get_time2(sg->skill_id,sg->skill_lv),0);
+		break;
+	case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
+	case UNT_ZENKAI_GROUND:	/* 術式全開(地属性) */
+	case UNT_ZENKAI_FIRE:	/* 術式全開(火属性) */
+	case UNT_ZENKAI_WIND:	/* 術式全開(風属性) */
+		if( sc && sc->data[type].timer != -1 ) {
+			unit2 = map_id2su(sc->data[type].val2);
+			if( unit2 && unit2->group && ( unit2 == src || DIFF_TICK(sg->tick,unit2->group->tick) <= 0 ) )
+				break;
+		}
+		status_change_start(bl,type,sg->skill_lv,src->bl.id,sg->val1,15,skill_get_time2(sg->skill_id,sg->skill_lv),0);
+		// 敵ならユニットに応じて状態異常を付与する
+		if( battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 ) {
+			switch(sg->unit_id) {
+				case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
+					switch(atn_rand()%3) {
+					case 0:	// 凍結
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_FREEZE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 氷結
+						status_change_pretimer(bl,SC_FROSTMISTY,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 2:	// 冷凍
+						status_change_pretimer(bl,SC_DIAMONDDUST,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+				case UNT_ZENKAI_GROUND:	/* 術式全開(地属性) */
+					switch(atn_rand()%2) {
+					case 0:	// 石化
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_STONE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_STONE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 毒
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_POISON,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+				case UNT_ZENKAI_FIRE:	/* 術式全開(火属性) */
+					// 発火
+					status_change_pretimer(bl,SC_HELLINFERNO,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+					break;
+				case UNT_ZENKAI_WIND:	/* 術式全開(風属性) */
+					switch(atn_rand()%3) {
+					case 0:	// 沈黙
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_SILENCE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 睡眠
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_SLEEP,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 2:	// 深い睡眠
+						status_change_pretimer(bl,SC_DEEP_SLEEP,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+			}
+		}
 		break;
 /*	default:
 		if(battle_config.error_log)
@@ -11437,6 +11543,61 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_MAKIBISHI:	/* 撒菱 */
 		unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),20*sg->skill_lv,0,0,0,0);
 		break;
+	case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
+	case UNT_ZENKAI_GROUND:	/* 術式全開(地属性) */
+	case UNT_ZENKAI_FIRE:	/* 術式全開(火属性) */
+	case UNT_ZENKAI_WIND:	/* 術式全開(風属性) */
+		// 敵ならユニットに応じて状態異常を付与する
+		if( battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 ) {
+			switch(sg->unit_id) {
+				case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
+					switch(atn_rand()%3) {
+					case 0:	// 凍結
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_FREEZE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 氷結
+						status_change_pretimer(bl,SC_FROSTMISTY,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 2:	// 冷凍
+						status_change_pretimer(bl,SC_DIAMONDDUST,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+				case UNT_ZENKAI_GROUND:	/* 術式全開(地属性) */
+					switch(atn_rand()%2) {
+					case 0:	// 石化
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_STONE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_STONE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 毒
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_POISON,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+				case UNT_ZENKAI_FIRE:	/* 術式全開(火属性) */
+					// 発火
+					status_change_pretimer(bl,SC_HELLINFERNO,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+					break;
+				case UNT_ZENKAI_WIND:	/* 術式全開(風属性) */
+					switch(atn_rand()%3) {
+					case 0:	// 沈黙
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_SILENCE,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 1:	// 睡眠
+						if(atn_rand() % 10000 < status_change_rate(bl,SC_SLEEP,10000,status_get_lv(&src->bl)))
+							status_change_pretimer(bl,SC_SLEEP,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					case 2:	// 深い睡眠
+						status_change_pretimer(bl,SC_DEEP_SLEEP,sg->skill_lv,0,0,0,30000,0,tick+status_get_amotion(&src->bl));
+						break;
+					}
+					break;
+			}
+		}
+		break;
 	}
 
 	if(bl->type == BL_MOB && ss != bl)	/* スキル使用条件のMOBスキル */
@@ -11590,6 +11751,17 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 			if (target && target == bl)
 				status_change_end(bl,SC_THORNS_TRAP,-1);
 			sg->limit = DIFF_TICK(tick,sg->tick)+1000;
+		}
+		break;
+	case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
+	case UNT_ZENKAI_GROUND:	/* 術式全開(地属性) */
+	case UNT_ZENKAI_FIRE:	/* 術式全開(火属性) */
+	case UNT_ZENKAI_WIND:	/* 術式全開(風属性) */
+		sc = status_get_sc(bl);
+		type = GetSkillStatusChangeTable(sg->skill_id);
+		if( type == -1 ) break;
+		if (sc && sc->data[type].timer != -1 && sc->data[type].val2 == src->bl.id) {
+			status_change_end(bl,type,-1);
 		}
 		break;
 /*	default:
@@ -13383,6 +13555,28 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
+	case KO_KAHU_ENTEN:	/* 火符 -炎天- */
+	case KO_HYOUHU_HUBUKI:	/* 氷符 -吹雪- */
+	case KO_KAZEHU_SEIRAN:	/* 風符 -青藍- */
+	case KO_DOHU_KOUKAI:	/* 土符 -剛塊- */
+		if(sd->elementball.num >= MAX_ELEMENTBALL) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		if(sd->elementball.num) {
+			if(sd->elementball.ele != skill_get_pl(cnd->id)) {
+				clif_skill_fail(sd,cnd->id,0,0,0);
+				return 0;
+			}
+		}
+		break;
+	case KO_KAIHOU:	/* 術式解放 */
+	case KO_ZENKAI:	/* 術式全開 */
+		if(sd->elementball.num < 1) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
 	case GD_BATTLEORDER:		/* 臨戦態勢 */
 	case GD_REGENERATION:		/* 激励 */
 	case GD_RESTORE:		/* 治療 */
@@ -15026,6 +15220,7 @@ static int skill_clear_element_field(struct block_list *bl)
 				case SA_LANDPROTECTOR:
 				case NJ_SUITON:
 				case NJ_KAENSIN:
+				case KO_ZENKAI:
 					skill_delunitgroup(group);
 					break;
 			}
@@ -15653,6 +15848,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case MA_FREEZINGTRAP:
 		case KO_HUUMARANKA:
 		case KO_MAKIBISHI:
+		case KO_ZENKAI:
 			skill_delunit(unit);
 			break;
 	}

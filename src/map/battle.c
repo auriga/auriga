@@ -360,10 +360,11 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
  * ダメージ最終計算
  *------------------------------------------
  */
-static int battle_calc_damage(struct block_list *src,struct block_list *bl,int damage,int div_,int skill_num,int skill_lv,int flag)
+static int battle_calc_damage(struct block_list *src, struct block_list *bl, int damage, int div_, int skill_num, int skill_lv, int flag)
 {
-	struct map_session_data *tsd = NULL;
-	struct mob_data         *tmd = NULL;
+	struct map_session_data *tsd    = NULL;
+	struct map_session_data *src_sd = NULL;
+	struct mob_data         *tmd    = NULL;
 	struct unit_data *ud;
 	struct status_change *sc, *src_sc;
 	unsigned int tick = gettick();
@@ -371,8 +372,9 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 
-	tsd = BL_DOWNCAST( BL_PC,  bl );
-	tmd = BL_DOWNCAST( BL_MOB, bl );
+	tsd    = BL_DOWNCAST( BL_PC,  bl );
+	src_sd = BL_DOWNCAST( BL_PC,  src);
+	tmd    = BL_DOWNCAST( BL_MOB, bl );
 
 	ud = unit_bl2ud(bl);
 	sc = status_get_sc(bl);
@@ -456,6 +458,38 @@ static int battle_calc_damage(struct block_list *src,struct block_list *bl,int d
 					damage = damage * src_sc->data[SC_SPL_MATK].val1 / 100;
 					break;
 				}
+			}
+		}
+		// 術式全開の属性ダメージ増加
+		if(src_sc->data[SC_KO_ZENKAI].timer != -1 && damage > 0) {
+			// val3に属性値が入ってるので一致すればダメージ増加
+			if( (flag&BF_SKILL && skill_get_pl(skill_num) == src_sc->data[SC_KO_ZENKAI].val3) ||
+				(!(flag&BF_SKILL) && status_get_attack_element(src) == src_sc->data[SC_KO_ZENKAI].val3) )
+					damage += damage * src_sc->data[SC_KO_ZENKAI].val4 / 100;
+		}
+	}
+
+	if(src_sd && damage > 0) {
+		// 影狼・朧の球体による忍法ダメージ増加
+		if(src_sd->elementball.num) {
+			switch(skill_num) {
+				case NJ_KOUENKA:
+				case NJ_KAENSIN:
+				case NJ_BAKUENRYU:
+					if(src_sd->elementball.ele == ELE_FIRE)
+						damage += damage * src_sd->elementball.num * 5 / 100;
+					break;
+				case NJ_HYOUSENSOU:
+				case NJ_HYOUSYOURAKU:
+					if(src_sd->elementball.ele == ELE_WATER)
+						damage += damage * src_sd->elementball.num * 5 / 100;
+					break;
+				case NJ_HUUJIN:
+				case NJ_RAIGEKISAI:
+				case NJ_KAMAITACHI:
+					if(src_sd->elementball.ele == ELE_WIND)
+						damage += damage * src_sd->elementball.num * 5 / 100;
+					break;
 			}
 		}
 	}
@@ -2892,6 +2926,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 			break;
+		case KO_JYUMONJIKIRI:	// 十文字斬り
+			{
+				int rate = 150 * skill_lv;
+
+				if( sc && sc->data[SC_KO_JYUMONJIKIRI].timer != -1 )
+					rate += 75 * skill_lv;
+				DMG_FIX( rate , 100 );
+			}
+			break;
 		case KO_SETSUDAN:		// 霊魂絶断
 			DMG_FIX( 100 * skill_lv, 100 );
 			status_change_soulclear(target);
@@ -4343,6 +4386,18 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case GN_SPORE_EXPLOSION: /* スポアエクスプロージョン */
 			MATK_FIX( 400 + 100 * skill_lv, 100 );
 			break;
+		case KO_KAIHOU:	/* 術式解放 */
+			if(sd) {
+				// 召喚中の球体の属性を適用する
+				ele = sd->elementball.ele;
+				// 召喚中の球体の数に応じてHITが変化する
+				MATK_FIX( 200 , 100 );
+				mgd.div_ = sd->elementball.num;
+			} else {
+				MATK_FIX( 200 * 10, 100 );
+				mgd.div_ = 10;
+			}
+			break;
 	}
 
 	/* ４．一般魔法ダメージ計算 */
@@ -4502,6 +4557,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			case NJ_KOUENKA:
 			case NJ_HYOUSENSOU:
 			case NJ_HUUJIN:
+			case KO_KAIHOU:	/* 術式解放 */
 				if(t_mode&MD_PLANT) // 草・きのこ等
 					mgd.damage = mgd.div_;
 				else

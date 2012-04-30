@@ -2419,6 +2419,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		pc_cleareventtimer(sd);					// イベントタイマを破棄する
 		pc_delspiritball(sd,sd->spiritball.num,1);	// 気功削除
 		pc_delcoin(sd,sd->coin.num,1);				// コイン削除
+		pc_delelementball(sd,sd->elementball.num,1);	// 影狼・朧の球体削除
 		booking_delete(sd);
 		//storage_storage_save(sd);
 		storage_delete(sd->status.account_id);

@@ -3076,6 +3076,23 @@ static void clif_set0192(int fd, int m, int x, int y, int type)
 }
 
 /*==========================================
+ * 影狼・朧の球体表示(ID指定送信)
+ *------------------------------------------
+ */
+static void clif_elementball_id(const int fd, struct map_session_data *dstsd)
+{
+	nullpo_retv(dstsd);
+
+	WFIFOW(fd,0)=0x8cf;
+	WFIFOL(fd,2)=dstsd->bl.id;
+	WFIFOW(fd,6)=dstsd->elementball.ele;
+	WFIFOW(fd,8)=dstsd->elementball.num;
+	WFIFOSET(fd,packet_db[0x8cf].len);
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -3127,6 +3144,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_spiritball(sd);
 	if(sd->coin.num > 0)
 		clif_coin(sd);
+	if(sd->elementball.num > 0)	// 影狼・朧の球体表示
+		clif_elementball(sd);
 	if(sd->sc.data[SC_BERKANA].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_BERKANA].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
@@ -7006,9 +7025,12 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			len = clif_set0078(dstsd,WFIFOP(sd->fd,0));
 			WFIFOSET(sd->fd,len);
 		}
-		if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// 搭乗システム
+
+		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
+			clif_status_change_id(sd->fd,dstsd->bl.id,SI_KYOUGAKU,1,0,dstsd->sc.data[SI_KYOUGAKU].val1,0,0);
+		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
 			clif_status_change_id(sd->fd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
-		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// モンスター変身システム
+		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// 搭乗システム
 			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
 			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
@@ -7032,6 +7054,11 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 
 	if(dstsd->coin.num > 0) {
 		clif_set01e1(sd->fd,dstsd,dstsd->coin.num);
+	}
+
+	// 影狼・朧の球体表示
+	if(dstsd->elementball.num > 0) {
+		clif_elementball_id(sd->fd,dstsd);
 	}
 
 	if(sd->status.manner < 0)
@@ -13938,6 +13965,25 @@ void clif_elemupdatestatus(struct map_session_data *sd, int type)
 }
 
 /*==========================================
+ * 影狼・朧の球体表示(エリア送信)
+ *------------------------------------------
+ */
+void clif_elementball(struct map_session_data *sd)
+{
+	unsigned char buf[10];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0x8cf;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFW(buf,6)=sd->elementball.ele;
+	WBUFW(buf,8)=sd->elementball.num;
+	clif_send(buf,packet_db[0x8cf].len,&sd->bl,AREA);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -18078,16 +18124,14 @@ static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd,
  */
 static void clif_parse_PartyBookingUpdateReq2(int fd,struct map_session_data *sd, int cmd)
 {
-	unsigned char data;	// TODO:使用用途不明
 	char *memo;
 
 	nullpo_retv(sd);
 
 	// parse
-	data   = RFIFOB(fd,GETPACKETPOS(cmd,0));
-	memo = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
+	memo = (char *)RFIFOP(fd, GETPACKETPOS(cmd,0));
 
-	booking_update2(sd,data,memo);
+	booking_update2(sd,memo);
 
 	return;
 }

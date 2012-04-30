@@ -1024,7 +1024,7 @@
 3001,0,6,4,0,1,1,1,yes,0,0,0,none,0	//KO_YAMIKUMO#闇雲#
 3002,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_RIGHT#右手修練#
 3003,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_LEFT#左手修練#
-3004,3:4:5:6:7,8,1,0,1,5,2,yes,0,0,0,weapon,0	//KO_JYUMONJIKIRI#十文字斬り#
+3004,3:4:5:6:7,8,1,0,0,5,2,yes,0,0,0,weapon,0	//KO_JYUMONJIKIRI#十文字斬り#
 3005,2,6,1,0,0,5,1,yes,0,0,0,weapon,0	//KO_SETSUDAN#霊魂絶断#
 3006,7:8:9:10:11,6,2,0,0,5,1,yes,0,0,0,weapon,0	//KO_BAKURETSU#爆裂苦無#
 3007,0,6,4,0,2,5,1,yes,0,0,0,weapon,0	//KO_HAPPOKUNAI#八方苦無#
@@ -1035,12 +1035,12 @@
 3012,0,6,4,0,0,5,1,yes,0,0,0,none,0	//KO_ZANZOU#残像#
 3013,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_KYOUGAKU#驚愕#
 3014,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_JYUSATSU#呪殺#
-3015,1,6,4,0,0,1,1,yes,0,0,0,none,0	//KO_KAHU_ENTEN#火符:炎天#
-3016,1,6,4,0,0,1,1,yes,0,0,0,none,0	//KO_HYOUHU_HUBUKI#氷符:吹雪#
-3017,1,6,4,0,0,1,1,yes,0,0,0,none,0	//KO_KAZEHU_SEIRAN#風符:青藍#
-3018,1,6,4,0,0,1,1,yes,0,0,0,none,0	//KO_DOHU_KOUKAI#土符:剛塊#
-3019,11,6,1,0,0,1,1,yes,0,0,0,none,0	//KO_KAIHOU#術式解放#
-3020,1,6,1,0,0,1,1,yes,0,0,0,none,0	//KO_ZENKAI#術式全開#
+3015,0,6,4,3,1,1,1,yes,0,0,0,none,0	//KO_KAHU_ENTEN#火符:炎天#
+3016,0,6,4,1,1,1,1,yes,0,0,0,none,0	//KO_HYOUHU_HUBUKI#氷符:吹雪#
+3017,0,6,4,4,1,1,1,yes,0,0,0,none,0	//KO_KAZEHU_SEIRAN#風符:青藍#
+3018,0,6,4,2,1,1,1,yes,0,0,0,none,0	//KO_DOHU_KOUKAI#土符:剛塊#
+3019,11,8,1,0,0,1,1,yes,0,0,0,magic,0	//KO_KAIHOU#術式解放#
+3020,1,6,4,0,1,1,1,yes,0,0,0,none,0	//KO_ZENKAI#術式全開#
 3021,5:6:7:8:9,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_GENWAKU#幻惑#
 3022,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KO_IZAYOI#十六夜#
 3023,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KG_KAGEHUMI#影踏み#

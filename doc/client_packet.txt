@@ -2619,7 +2619,7 @@ R 08ea <result>.w
 	パーティーブッキング登録中止応答
 	result = 0 成功
 	result = 1-3 失敗
-S 08eb <?>.B <memo>.36B
+S 08eb <memo>.37B
 	パーティーブッキング登録情報修正要求(新仕様)
 R 08ec <ID>.l <time>.l <name>.24B <level>.w <memo>.37B
 	パーティーブッキングリスト更新?(新仕様)
@@ -2659,8 +2659,9 @@ S 08fd
 	未調査
 R 08fe <len>.w { <?>.l <?>.l <?>.l }.12B
 	未調査
-R 08ff <?>.l <?>.w <?>.l <?>.l <?>.l <?>.l
-	未調査
+R 08ff <type>.w <ID>.l <tick>.l <val1>.l <val2>.l <val3>.l
+	0x43fと同じルーチンを呼び出している
+	0x43fでいうところの<switch>.Bを常に1で呼び出しているため、<tick>.l経過後自動でアイコンを消去してくれるとかそんなんっぽい(未確認)
 R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
 	所有消耗品&収集品リスト
 	矢の場合は<?>.2Bが0x8000になる

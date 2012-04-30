@@ -32,7 +32,7 @@ void booking_update(struct map_session_data *sd, int *job);
 // 新仕様のパーティーブッキング
 void booking_searchcond2(struct map_session_data *sd, int lv);
 void booking_register2(struct map_session_data *sd, int lv, char *memo);
-void booking_update2(struct map_session_data *sd, unsigned char data, char *memo);
+void booking_update2(struct map_session_data *sd, char *memo);
 
 // 新旧仕様の共通関数
 void booking_delete(struct map_session_data *sd);

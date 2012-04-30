@@ -64,6 +64,7 @@
 #define MAX_SPIRITBALL 15	// 気功・コインの最大数
 #define MAX_BUYINGSTORE_COUNT 5	// 購買露店最大アイテム登録数
 #define MAX_BOOKING_MEMO_LENGTH 37	// パーティーブッキングの募集メモ最大文字数
+#define MAX_ELEMENTBALL 10	// 影狼・朧の球体最大数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -664,6 +665,12 @@ struct map_session_data {
 		short num;
 		unsigned int timer[MAX_SPIRITBALL];
 	} coin;
+
+	struct {
+		short num;
+		short ele;
+		unsigned int timer[MAX_ELEMENTBALL];
+	} elementball;
 
 	int reg_num;
 	struct script_reg *reg;

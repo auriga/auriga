@@ -1,4 +1,28 @@
 ----------------------------------------
+//0956 [2012/05/01] by popori
+
+・0955のパケット修正 (db/packet_db.txt src/map/booking.* src/map/clif.c)
+
+・2012-03-28aRagexeRE用のパケットDB追加 (db/packet_db.txt)
+
+・クライアントの解析結果を追記 (doc/client_packet.txt)
+
+・状態異常「驚愕」にかかった際、画面外からの再表示するとモンスターの姿とならないのを修正 (src/map/clif.c)
+　※表示の優先順位を以下にします
+　　驚愕 > モンスター変身 > 搭乗システム
+
+・以下のスキルを実装
+ (db/skill_cast_db.txt db/skill_db.txt db/skill_unit_db.txt db/scdata_db.txt src/map/battle.c src/map/clif.* src/map/map.h src/map/pc.* src/map/skill.* src/map/status.* src/map/unit.c)
+　
+　KO_JYUMONJIKIRI
+　KO_KAHU_ENTEN
+　KO_HYOUHU_HUBUKI
+　KO_KAZEHU_SEIRAN
+　KO_DOHU_KOUKAI
+　KO_KAIHOU
+　KO_ZENKAI
+
+----------------------------------------
 //0955 [2012/04/29] by popori
 
 ・PACKETVER「20120222」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.* src/map/booking.* src/map/map.h db/packet_db.txt doc/client_packet.txt)
