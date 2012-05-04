@@ -62,12 +62,12 @@ int elem_get_skilltree_max(int class_,int skillid);
 int elem_create_data(struct map_session_data *sd, int class_, unsigned int limit);
 int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int flag);
 int elem_delete_data(struct map_session_data *sd);
-int elem_change_mode(struct map_session_data *sd);
 int elem_save_data(struct map_session_data *sd);
 
 int elem_calc_status(struct elem_data *eld);
 int elem_checkskill(struct elem_data *eld,int skill_id);
-
+int elem_change_mode(struct elem_data *eld, int mode);
+int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode);
 int elem_gainexp(struct elem_data *eld,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int elem_damage(struct block_list *src,struct elem_data *eld,int damage);
 int elem_heal(struct elem_data *eld,int hp,int sp);

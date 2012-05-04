@@ -69,6 +69,7 @@
 #include "quest.h"
 #include "booking.h"
 #include "buyingstore.h"
+#include "elem.h"
 
 /* パケットデータベース */
 #define MAX_PACKET_DB 0x970
@@ -15574,6 +15575,26 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		}
 		return;
 	}
+	if(skillnum >= ELEM_SKILLID && skillnum < MAX_ELEM_SKILLID) {
+		// 精霊スキル
+		struct elem_data *eld = sd->eld;
+		if( eld && (lv = elem_checkskill(eld,skillnum)) ) {
+			if(skilllv > lv)
+				skilllv = lv;
+			if(eld->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, eld->ud.canact_tick) < 0)
+				return;
+			if(DIFF_TICK(tick, eld->skillstatictimer[skillnum-ELEM_SKILLID]) < 0)
+				return;
+
+			if(inf & INF_TOME)	// 自分が対象
+				unit_skilluse_id(&eld->bl,eld->bl.id,skillnum,skilllv);
+			else
+				unit_skilluse_id(&eld->bl,target_id,skillnum,skilllv);
+		}
+		return;
+	}
 	if(skillnum >= GUILD_SKILLID) {
 		struct guild *g = guild_search(sd->status.guild_id);
 
@@ -15741,6 +15762,23 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 				return;
 
 			unit_skilluse_pos(&mcd->bl,x,y,skillnum,skilllv);
+		}
+		return;
+	}
+	if(skillnum >= ELEM_SKILLID && skillnum < MAX_ELEM_SKILLID) {
+		// 精霊スキル
+		struct elem_data *eld = sd->eld;
+		if( eld && (lv = elem_checkskill(eld,skillnum)) ) {
+			if(skilllv > lv)
+				skilllv = lv;
+			if(eld->ud.skilltimer != -1)
+				return;
+			if(DIFF_TICK(tick, eld->ud.canact_tick) < 0)
+				return;
+			if(DIFF_TICK(tick, eld->skillstatictimer[skillnum-ELEM_SKILLID]) < 0)
+				return;
+
+			unit_skilluse_pos(&eld->bl,x,y,skillnum,skilllv);
 		}
 		return;
 	}

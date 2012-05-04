@@ -225,6 +225,22 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 				return 0;
 			}
 		}
+		// ウォータースクリーンをかけられている
+		if( tsd && tsd->eld &&
+		    tsd->sc.data[SC_WATER_SCREEN].timer != -1 &&
+		    skillid != PA_PRESSURE &&
+		    skillid != SA_COMA &&
+		    skillid != NPC_DARKBLESSING &&
+		    (skillid != CR_GRANDCROSS || bl == NULL || bl != target) )
+		{
+			struct elem_data *eld = tsd->eld;
+
+			// ダメージモーション付きでダメージ表示
+			clif_damage(&eld->bl,&eld->bl,gettick(),0,status_get_dmotion(&eld->bl),damage,0,0,0,0);
+			battle_damage(bl,&eld->bl,damage,skillid,skilllv,flag);
+			map_freeblock_unlock();
+			return 0;
+		}
 	}
 
 	status_change_attacked_end(target);	// 凍結・石化・睡眠を消去
@@ -2982,6 +2998,39 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( rate, 100 );
 			}
 			break;
+		case EL_CIRCLE_OF_FIRE:	// サークルオブファイア
+			DMG_FIX( 300, 100 );
+			break;
+		case EL_FIRE_BOMB_ATK:	// ファイアーボム(攻撃)
+			DMG_FIX( 300, 100 );
+			break;
+		case EL_FIRE_WAVE_ATK:	// ファイアーウェーブ(攻撃)
+			DMG_FIX( 600, 100 );
+			break;
+		case EL_WATER_SCREW_ATK:	// ウォータースクリュー(攻撃)
+			DMG_FIX( 1000, 100 );
+			break;
+		case EL_TIDAL_WEAPON:	// タイダルウェポン
+			DMG_FIX( 1500, 100 );
+			break;
+		case EL_WIND_SLASH:	// ウィンドスラッシュ
+			DMG_FIX( 200, 100 );
+			break;
+		case EL_HURRICANE:	// ハリケーンレイジ
+			DMG_FIX( 700, 100 );
+			break;
+		case EL_TYPOON_MIS:	// タイフーンミサイル
+			DMG_FIX( 1000, 100 );
+			break;
+		case EL_STONE_HAMMER:	// ストーンハンマー
+			DMG_FIX( 500, 100 );
+			break;
+		case EL_ROCK_CRUSHER:	// ロックランチャー
+			DMG_FIX( 800, 100 );
+			break;
+		case EL_STONE_RAIN:	// ストーンレイン
+			DMG_FIX( 800, 100 );
+			break;
 		case 0:			// 通常攻撃
 			DMG_FIX( 100, 100 );
 			break;
@@ -4105,7 +4154,19 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(battle_check_undead(t_race,t_ele))
 				MATK_FIX( 20+skill_lv, 20 );	// MATKに補正じゃ駄目ですかね？
 			break;
-		case MG_FIREBALL:	// ファイヤーボール
+		case MG_COLDBOLT:	// コールドボルト
+			if(sc && sc->data[SC_AQUAPLAY].timer != -1) {
+				MATK_FIX( 100+sc->data[SC_AQUAPLAY].val3, 100 );
+			}
+			break;
+		case MG_FROSTDIVER:	// フロストダイバー
+			if(sc && sc->data[SC_AQUAPLAY].timer != -1) {
+				MATK_FIX( 100+10*skill_lv+sc->data[SC_AQUAPLAY].val3, 100 );
+			} else {
+				MATK_FIX( 100+10*skill_lv, 100 );
+			}
+			break;
+		case MG_FIREBALL:	// ファイアーボール
 			if(flag > 2) {
 				matk1 = matk2 = 0;
 			} else {
@@ -4118,18 +4179,33 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 					MATK_FIX( 3, 4 );
 			}
 			break;
-		case MG_FIREWALL:	// ファイヤーウォール
+		case MG_FIREWALL:	// ファイアーウォール
 			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
 				mgd.blewcount = 0;
 			else
 				mgd.blewcount |= 0x10000;
-			MATK_FIX( 1, 2 );
+			if(sc && sc->data[SC_PYROTECHNIC].timer != -1) {
+				MATK_FIX( 50+sc->data[SC_PYROTECHNIC].val3, 100 );
+			} else {
+				MATK_FIX( 50, 100 );
+			}
+			break;
+		case MG_FIREBOLT:	// ファイアーボルト
+			if(sc && sc->data[SC_PYROTECHNIC].timer != -1) {
+				MATK_FIX( 100+sc->data[SC_PYROTECHNIC].val3, 100 );
+			}
+			break;
+		case MG_LIGHTNINGBOLT:	// ライトニングボルト
+			if(sc && sc->data[SC_GUST].timer != -1) {
+				MATK_FIX( 100+sc->data[SC_GUST].val3, 100 );
+			}
 			break;
 		case MG_THUNDERSTORM:	// サンダーストーム
-			MATK_FIX( 80, 100 );
-			break;
-		case MG_FROSTDIVER:	// フロストダイバ
-			MATK_FIX( 100+10*skill_lv, 100 );
+			if(sc && sc->data[SC_GUST].timer != -1) {
+				MATK_FIX( 80+sc->data[SC_GUST].val3, 100 );
+			} else {
+				MATK_FIX( 80, 100 );
+			}
 			break;
 		case WZ_FROSTNOVA:	// フロストノヴァ
 			MATK_FIX( 200+20*skill_lv, 300 );
@@ -4170,6 +4246,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case WZ_STORMGUST:	// ストームガスト
 			MATK_FIX( 100+40*skill_lv, 100 );
 			//mgd.blewcount |= 0x10000;
+			break;
+		case WZ_EARTHSPIKE:	// アーススパイク
+		case WZ_HEAVENDRIVE:	// ヘヴンズドライブ
+			if(sc && sc->data[SC_PETROLOGY].timer != -1) {
+				MATK_FIX( 100+sc->data[SC_PETROLOGY].val3, 100 );
+			}
 			break;
 		case AL_HOLYLIGHT:	// ホーリーライト
 			MATK_FIX( 125, 100 );
@@ -4362,26 +4444,72 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			break;
 		case SO_FIREWALK:		/* ファイアーウォーク */
+			if(sc && sc->data[SC_HEATER].timer != -1) {
+				MATK_FIX( 90 * skill_lv + sc->data[SC_HEATER].val3, 100 );
+			} else {
+				MATK_FIX( 90 * skill_lv, 100 );
+			}
+			break;
 		case SO_ELECTRICWALK:	/* エレクトリックウォーク */
-			MATK_FIX( 90 * skill_lv, 100 );
+			if(sc && sc->data[SC_BLAST].timer != -1) {
+				MATK_FIX( 90 * skill_lv + sc->data[SC_BLAST].val3, 100 );
+			} else {
+				MATK_FIX( 90 * skill_lv, 100 );
+			}
 			break;
 		case SO_EARTHGRAVE:		/* アースグレイブ */
-			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			if(sc && sc->data[SC_CURSED_SOIL].timer != -1) {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 + sc->data[SC_CURSED_SOIL].val3, 100 );
+			} else {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_SEISMICWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case SO_DIAMONDDUST:	/* ダイヤモンドダスト */
-			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			if(sc && sc->data[SC_COOLER].timer != -1) {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 + sc->data[SC_COOLER].val3, 100 );
+			} else {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_FROSTWEAPON): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case SO_POISON_BUSTER:	/* ポイズンバスター */
-			MATK_FIX( 1200 + 300 * skill_lv, 100 );
+			if(sc && sc->data[SC_CURSED_SOIL].timer != -1) {
+				MATK_FIX( 1200 + 300 * skill_lv + sc->data[SC_CURSED_SOIL].val3, 100 );
+			} else {
+				MATK_FIX( 1200 + 300 * skill_lv, 100 );
+			}
 			break;
 		case SO_PSYCHIC_WAVE:	/* サイキックウェーブ */
-			MATK_FIX( ( 70 * skill_lv + status_get_int(bl) * 3 ) * status_get_lv(bl) / 100, 100 );
+			{
+				int rate = 0;
+				if(sc && sc->data[SC_HEATER].timer != -1) {
+					ele = ELE_FIRE;
+					rate = sc->data[SC_HEATER].val3;
+				} else if(sc && sc->data[SC_COOLER].timer != -1) {
+					ele = ELE_WATER;
+					rate = sc->data[SC_COOLER].val3;
+				} else if(sc && sc->data[SC_BLAST].timer != -1) {
+					ele = ELE_WIND;
+					rate = sc->data[SC_BLAST].val3;
+				} else if(sc && sc->data[SC_CURSED_SOIL].timer != -1) {
+					ele = ELE_EARTH;
+					rate = sc->data[SC_CURSED_SOIL].val3;
+				}
+				MATK_FIX( ( 70 * skill_lv + status_get_int(bl) * 3 ) * status_get_lv(bl) / 100 + rate, 100 );
+			}
 			break;
 		case SO_CLOUD_KILL:		/* クラウドキル */
-			MATK_FIX( ( 40 * skill_lv ) * status_get_lv(bl) / 100, 100 );
+			if(sc && sc->data[SC_CURSED_SOIL].timer != -1) {
+				MATK_FIX( ( 40 * skill_lv ) * status_get_lv(bl) / 100 + sc->data[SC_CURSED_SOIL].val3, 100 );
+			} else {
+				MATK_FIX( ( 40 * skill_lv ) * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case SO_VARETYR_SPEAR:	/* ヴェラチュールスピア */
-			MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_LIGHTNINGLOADER): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			if(sc && sc->data[SC_BLAST].timer != -1) {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_LIGHTNINGLOADER): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100 + sc->data[SC_BLAST].val3, 100 );
+			} else {
+				MATK_FIX( ( ( (sd)? pc_checkskill(sd,SA_LIGHTNINGLOADER): 1 ) * 200 + skill_lv * status_get_int(bl) ) * status_get_lv(bl) / 100, 100 );
+			}
 			break;
 		case GN_SPORE_EXPLOSION: /* スポアエクスプロージョン */
 			MATK_FIX( 400 + 100 * skill_lv, 100 );
@@ -4397,6 +4525,34 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				MATK_FIX( 200 * 10, 100 );
 				mgd.div_ = 10;
 			}
+			break;
+		case EL_FIRE_MANTLE:	/* ファイアーマントル */
+			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
+				mgd.blewcount = 0;
+			else
+				mgd.blewcount |= 0x10000;
+			MATK_FIX( 1000, 100 );
+			break;
+		case EL_FIRE_ARROW:		/* ファイアーアロー */
+			MATK_FIX( 300, 100 );
+			break;
+		case EL_FIRE_BOMB:		/* ファイアーボム */
+			MATK_FIX( 500, 100 );
+			break;
+		case EL_FIRE_WAVE:		/* ファイアーウェーブ */
+			MATK_FIX( 1200, 100 );
+			break;
+		case EL_WATER_SCREW:	/* ウォータースクリュー */
+			MATK_FIX( 1000, 100 );
+			break;
+		case EL_HURRICANE_ATK:	/* ハリケーンレイジ(攻撃) */
+			MATK_FIX( 500, 100 );
+			break;
+		case EL_TYPOON_MIS_ATK:	/* タイフーンミサイル(攻撃) */
+			MATK_FIX( 1200, 100 );
+			break;
+		case EL_ROCK_CRUSHER_ATK:	/* ロックランチャー(攻撃) */
+			MATK_FIX( 300, 100 );
 			break;
 	}
 
@@ -5167,6 +5323,22 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(sd->spiritball.num < max)
 			pc_addspiritball(sd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
 	}
+	// トロピック
+	if(sc && sc->data[SC_TROPIC].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+		skill_castend_damage_id(src,target,MG_FIREBOLT,5,tick,flag);
+	}
+	// クールエアー
+	if(sc && sc->data[SC_CHILLY_AIR].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+		skill_castend_damage_id(src,target,MG_COLDBOLT,5,tick,flag);
+	}
+	// ワイルドストーム
+	if(sc && sc->data[SC_WILD_STORM].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+		skill_castend_damage_id(src,target,MG_LIGHTNINGBOLT,5,tick,flag);
+	}
+	// アップヘイバル
+	if(sc && sc->data[SC_UPHEAVAL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+		skill_castend_damage_id(src,target,WZ_EARTHSPIKE,5,tick,flag);
+	}
 
 	// カードによるオートスペル
 	if(sd && target != &sd->bl && (wd.damage > 0 || wd.damage2 > 0))
@@ -5275,6 +5447,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 		if(t_sc->data[SC__DEADLYINFECT].timer != -1 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {	// デッドリーインフェクト
 			status_change_copy(target,src);
+		}
+		if(t_sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {	// サークルオブファイア
+			battle_skill_attack(BF_WEAPON,target,target,src,EL_CIRCLE_OF_FIRE,t_sc->data[SC_CIRCLE_OF_FIRE].val1,tick,(0x0f<<20)|0x0500);
 		}
 	}
 
@@ -5913,6 +6088,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	if(dmg.flag&BF_SHORT && sc && sc->data[SC__DEADLYINFECT].timer != -1 && damage > 0) {
 		status_change_copy(bl,src);
 	}
+	/* サークルオブファイア */
+	if(sc && sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && dmg.flag&BF_SHORT && src != bl && damage > 0) {
+		battle_skill_attack(BF_WEAPON,bl,bl,src,EL_CIRCLE_OF_FIRE,sc->data[SC_CIRCLE_OF_FIRE].val1,tick,(0x0f<<20)|0x0500);
+	}
+
 	map_freeblock_unlock();
 
 	return dmg.damage+dmg.damage2;	/* 与ダメを返す */

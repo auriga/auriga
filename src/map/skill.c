@@ -284,7 +284,7 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hのenumのSC_***と�
 	/* 2441- */
 	-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,SC_SPELLFIST,SC_BLEED,SC_DIAMONDDUST,-1,-1,-1,
 	/* 2451- */
-	SC_STRIKING,SC_WARMER,SC_VACUUM_EXTREME,-1,SC_DEEP_SLEEP,-1,-1,-1,-1,-1,
+	SC_STRIKING,SC_WARMER,SC_VACUUM_EXTREME,-1,SC_DEEP_SLEEP,-1,SC_SUMMON_ELEM,SC_SUMMON_ELEM,SC_SUMMON_ELEM,SC_SUMMON_ELEM,
 	/* 2461- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 2471- */
@@ -317,29 +317,43 @@ int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hのenumのSC_***とあ�
 
 /* (スキル番号 - HOM_SKILLID)＝＞ステータス異常番号変換テーブル */
 int HomSkillStatusChangeTable[MAX_HOMSKILL] = {	/* status.hのenumのSC_***とあわせること */
-	/* 0- */
+	/* 8000- */
 	-1,SC_AVOID,-1,SC_CHANGE,-1,SC_DEFENCE,-1,SC_BLOODLUST,-1,SC_FLEET,
-	/* 10- */
+	/* 8010- */
 	SC_SPEED,-1,-1,-1,-1,-1,
 };
 
 /* (スキル番号 - MERC_SKILLID)＝＞ステータス異常番号変換テーブル */
 int MercSkillStatusChangeTable[MAX_MERCSKILL] = {	/* status.hのenumのSC_***とあわせること */
-	/* 0- */
+	/* 8201- */
 	-1,SC_MAGNUM,-1,SC_PARRYING,SC_REFLECTSHIELD,SC_BERSERK,SC_DOUBLE,-1,-1,-1,
-	/* 10- */
+	/* 8211- */
 	-1,-1,-1,-1,-1,-1,-1,-1,SC_DEFENDER,SC_AUTOGUARD,
-	/* 20- */
+	/* 8221- */
 	SC_DEVOTION,SC_MAGNIFICAT,SC_WEAPONQUICKEN,SC_SIGHT,-1,-1,-1,-1,-1,-1,
-	/* 30- */
+	/* 8231- */
 	-1,SC_PROVOKE,SC_AUTOBERSERK,SC_DECREASEAGI,-1,SC_SILENCE,-1,SC_KYRIE,SC_BLESSING,SC_INCREASEAGI,
+};
+
+/* (スキル番号 - ELEM_SKILLID)＝＞ステータス異常番号変換テーブル */
+int ElemSkillStatusChangeTable[MAX_ELEMSKILL] = {	/* status.hのenumのSC_***とあわせること */
+	/* 8401- */
+	SC_CIRCLE_OF_FIRE,SC_FIRE_CLOAK,-1,SC_WATER_SCREEN,SC_WATER_DROP,SC_WATER_BARRIER,SC_WIND_STEP,SC_WIND_CURTAIN,SC_ZEPHYR,SC_SOLID_SKIN,
+	/* 8411- */
+	SC_STONE_SHIELD,SC_POWER_OF_GAIA,SC_PYROTECHNIC,SC_HEATER,SC_TROPIC,SC_AQUAPLAY,SC_COOLER,SC_CHILLY_AIR,SC_GUST,SC_BLAST,
+	/* 8421- */
+	SC_WILD_STORM,SC_PETROLOGY,SC_CURSED_SOIL,SC_UPHEAVAL,-1,-1,-1,-1,-1,-1,
+	/* 8431- */
+	-1,-1,SC_TIDAL_WEAPON,-1,-1,-1,-1,-1,-1,SC_ROCK_CRUSHER,
+	/* 8441- */
+	SC_ROCK_CRUSHER_ATK,-1,
 };
 
 /* (スキル番号 - GUILD_SKILLID)＝＞ステータス異常番号変換テーブル */
 int GuildSkillStatusChangeTable[MAX_GUILDSKILL] = {	/* status.hのenumのSC_***とあわせること */
-	/* 0- */
+	/* 10000- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 10- */
+	/* 10010- */
 	SC_BATTLEORDER,SC_REGENERATION,-1,-1,-1,-1,
 };
 
@@ -445,6 +459,9 @@ int GetSkillStatusChangeTable(int id)
 
 	if(id >= MERC_SKILLID && id < MAX_MERC_SKILLID)
 		return MercSkillStatusChangeTable[id - MERC_SKILLID];
+
+	if(id >= ELEM_SKILLID && id < MAX_ELEM_SKILLID)
+		return ElemSkillStatusChangeTable[id - ELEM_SKILLID];
 
 	if(id >= GUILD_SKILLID && id < MAX_GUILD_SKILLID)
 		return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
@@ -2979,6 +2996,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GN_SLINGITEM_RANGEMELEEATK:	/* スリングアイテム(遠距離攻撃) */
 	case KO_SETSUDAN:		/* 霊魂絶断 */
 	case KO_BAKURETSU:		/* 爆裂苦無 */
+	case EL_WIND_SLASH:		/* ウィンドスラッシュ */
+	case EL_STONE_HAMMER:	/* ストーンハンマー */
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case NPC_GUIDEDATTACK:	/* ガイデッドアタック */
@@ -3660,6 +3679,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case LG_RAYOFGENESIS:		/* レイオブジェネシス */
 	case WM_METALICSOUND:		/* メタリックサウンド */
 	case KO_KAIHOU:				/* 術式解放 */
+	case EL_FIRE_ARROW:			/* ファイアーアロー */
+	case EL_ICE_NEEDLE:			/* アイスニードル */
 		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case ALL_RESURRECTION:		/* リザレクション */
@@ -4892,6 +4913,72 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+		}
+		break;
+	case EL_FIRE_BOMB:		/* ファイアーボム */
+	case EL_FIRE_WAVE:		/* ファイアーウェーブ */
+	case EL_WATER_SCREW:	/* ウォータースクリュー */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid+1,skilllv,tick,(0x0f<<20)|0x0500);
+		} else {
+			if(atn_rand()%10000 < 7000) {
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			} else {
+				clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+				map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
+			}
+		}
+		break;
+	case EL_TIDAL_WEAPON:	/* タイダルウェポン */
+		if(atn_rand()%10000 < 7000) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else if(eld && eld->msd) {
+			clif_skill_nodamage(src,&eld->msd->bl,skillid,skilllv,1);
+			//clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			status_change_start(&eld->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid)+1,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
+	case EL_HURRICANE:		/* ハリケーンレイジ */
+		if(flag&1) {
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid+1,skilllv,tick,(0x0f<<20)|0x0500);
+		} else {
+			if(atn_rand()%10000 < 7000) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			} else {
+				clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+				map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
+			}
+		}
+		break;
+	case EL_TYPOON_MIS:		/* タイフーンミサイル */
+	case EL_ROCK_CRUSHER:	/* ロックランチャー */
+		if(atn_rand()%10000 < 7000) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid+1,skilllv,tick,flag);
+		}
+		break;
+	case EL_STONE_RAIN:		/* ストーンレイン */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			if(atn_rand()%10000 < 7000) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			} else {
+				clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+				map_foreachinarea(skill_area_sub,
+					bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
+			}
 		}
 		break;
 	case 0:
@@ -8904,13 +8991,21 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SO_EL_CONTROL:		/* エレメンタルコントロール */
-		if(sd) {
-			if(sd->eld) {
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(sd && sd->eld) {
+			int mode;
+
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if(skilllv == 4) {
 				elem_delete_data(sd);
+				break;
 			}
-			else
-				clif_skill_fail(sd,skillid,0,0,0);
+			switch(skilllv) {
+				case 1:  mode = ELMODE_PASSIVE;   break;
+				case 2:  mode = ELMODE_DEFENSIVE; break;
+				case 3:  mode = ELMODE_OFFENSIVE; break;
+				default: mode = ELMODE_WAIT;      break;
+			}
+			elem_change_mode(sd->eld, mode);
 		}
 		break;
 	case SO_SUMMON_AGNI:	/* サモンアグニ */
@@ -8926,17 +9021,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				case SO_SUMMON_TERA:   elem_id = 2123 + skilllv - 1; break;
 			}
 
-			// 既に精霊を召喚している場合は削除してから再召喚
-			if(sd->eld)
-				elem_delete_data(sd);
+			// 精霊召喚中の場合は一旦解除する
+			if(sd->sc.data[GetSkillStatusChangeTable(skillid)].timer != -1)
+				status_change_end(src,GetSkillStatusChangeTable(skillid),-1);
 
-			elem_create_data(sd,elem_id,skill_get_time(skillid,skilllv));
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			elem_create_data(sd,elem_id,skill_get_time(skillid,skilllv)/1000);
+			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case SO_EL_ACTION:	/* エレメンタルアクション */
 		if(sd && sd->eld) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			elem_skilluse(sd->eld, bl, ELMODE_OFFENSIVE);
 		}
 		break;
 	case SO_EL_CURE:	/* エレメンタルキュアー */
@@ -8944,16 +9041,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			int hp = sd->status.max_hp * 10 / 100;
 			int sp = sd->status.max_sp * 10 / 100;
 			if(sd->status.hp >= hp && sd->status.sp >= sp) {
+				int hp2 = sd->eld->max_hp * 10 / 100;
+				int sp2 = sd->eld->max_sp * 10 / 100;
+
 				sd->status.hp -= hp;
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_HP);
 				clif_updatestatus(sd,SP_SP);
 
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				elem_heal(sd->eld,sd->eld->max_hp*10/100,sd->eld->max_sp*10/100);
-			}
-			else {
-				clif_skill_fail(sd,skillid,0,0,0);
+				elem_heal(sd->eld,hp2,sp2);
 			}
 		}
 		break;
@@ -9170,6 +9267,41 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case KO_ZENKAI:		/* 術式全開 */
 		skill_clear_element_field(src);	// 既に自分が発動している属性場をクリア
 		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
+		break;
+	case EL_CIRCLE_OF_FIRE:	/* サークルオブファイア */
+	case EL_FIRE_CLOAK:		/* ファイアークローク */
+	case EL_WATER_SCREEN:	/* ウォータースクリーン */
+	case EL_WATER_DROP:		/* ウォータードロップ */
+	case EL_WIND_STEP:		/* ウィンドステップ */
+	case EL_WIND_CURTAIN:	/* ウィンドカーテン */
+	case EL_SOLID_SKIN:		/* ソリッドスキン */
+	case EL_STONE_SHIELD:	/* ストーンシールド */
+	case EL_PYROTECHNIC:	/* パイロテクニック */
+	case EL_HEATER:			/* ヒーター */
+	case EL_TROPIC:			/* トロピック */
+	case EL_AQUAPLAY:		/* アクアプレイ */
+	case EL_COOLER:			/* クーラー */
+	case EL_CHILLY_AIR:		/* クールエアー */
+	case EL_GUST:			/* ガスト */
+	case EL_BLAST:			/* ブラスト */
+	case EL_WILD_STORM:		/* ワイルドストーム */
+	case EL_PETROLOGY:		/* ペトロジー */
+	case EL_CURSED_SOIL:	/* カースドソイル */
+	case EL_UPHEAVAL:		/* アップヘイバル */
+		if(eld && eld->msd) {
+			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			status_change_start(&eld->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid)+1,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
+	case EL_FIRE_MANTLE:		/* ファイアーマントル */
+	case EL_WATER_BARRIER:		/* ウォーターバリアー */
+	case EL_ZEPHYR:				/* ゼファー */
+	case EL_POWER_OF_GAIA:		/* パワーオブガイア */
+		if(eld && eld->msd) {
+			clif_skill_poseffect(src,skillid,skilllv,eld->msd->bl.x,eld->msd->bl.y,tick);
+			skill_unitsetting(src,skillid,skilllv,eld->msd->bl.x,eld->msd->bl.y,0);
+		}
 		break;
 	default:
 		printf("skill_castend_nodamage_id: Unknown skill used:%d\n",skillid);
@@ -9467,6 +9599,10 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case SO_CLOUD_KILL:			/* クラウドキル */
 	case SO_WARMER:				/* ウォーマー */
 	case SO_VACUUM_EXTREME:		/* バキュームエクストリーム */
+	case SO_FIRE_INSIGNIA:		/* ファイアーインシグニア */
+	case SO_WATER_INSIGNIA:		/* ウォーターインシグニア */
+	case SO_WIND_INSIGNIA:		/* ウィンドインシグニア */
+	case SO_EARTH_INSIGNIA:		/* アースインシグニア */
 	case GN_THORNS_TRAP:		/* ソーントラップ */
 	case GN_DEMONIC_FIRE:		/* デモニックファイアー */
 	case GN_HELLS_PLANT:		/* ヘルズプラント */
@@ -10334,6 +10470,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		} else {
 			val1 = ELE_FIRE;	// val1は属性値
 		}
+		break;
+	case EL_FIRE_MANTLE:		/* ファイアーマントル */
+		val2 = skilllv;
 		break;
 	}
 
@@ -11540,6 +11679,13 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		battle_skill_attack(BF_MISC,ss,&src->bl,bl,GN_HELLS_PLANT_ATK,sg->skill_lv,tick,0);
 		skill_delunit(src);
 		break;
+	case UNT_FIRE_MANTLE:	/* ファイアーマントル */
+		do {
+			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
+		} while((--src->val2) > 0 && !unit_isdead(bl) && bl->x == src->bl.x && bl->y == src->bl.y);
+		if (src->val2 <= 0)
+			skill_delunit(src);
+		break;
 	case UNT_MAKIBISHI:	/* 撒菱 */
 		unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),20*sg->skill_lv,0,0,0,0);
 		break;
@@ -12190,7 +12336,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 
 	sc = status_get_sc(bl);
 
-	// PC, MOB, PET, HOM, MERC 共通の失敗はここに記述
+	// PC, MOB, PET, HOM, MERC, ELEM 共通の失敗はここに記述
 
 	// 状態異常関連
 	if(sc && sc->count > 0)
@@ -13548,10 +13694,24 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
+	case SO_EL_CONTROL:	/* エレメンタルコントロール */
 	case SO_EL_ACTION:	/* エレメンタルアクション */
+		if(!sd->eld) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
 	case SO_EL_CURE:	/* エレメンタルキュアー */
 		if(!sd->eld) {
 			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		if(sd->status.sp < sd->status.max_sp * 10 / 100) {
+			clif_skill_fail(sd,cnd->id,0x01,0,0);
+			return 0;
+		}
+		if(sd->status.hp < sd->status.max_hp * 10 / 100) {
+			clif_skill_fail(sd,cnd->id,0x02,0,0);
 			return 0;
 		}
 		break;
@@ -14295,7 +14455,8 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 			}
 		}
 		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION || cnd->id == GN_FIRE_EXPANSION || cnd->id == KO_MAKIBISHI ||
-			cnd->id == SO_SUMMON_AGNI || cnd->id == SO_SUMMON_AQUA || cnd->id == SO_SUMMON_VENTUS || cnd->id == SO_SUMMON_TERA)
+			cnd->id == SO_SUMMON_AGNI || cnd->id == SO_SUMMON_AQUA || cnd->id == SO_SUMMON_VENTUS || cnd->id == SO_SUMMON_TERA ||
+			cnd->id == SO_FIRE_INSIGNIA || cnd->id == SO_WATER_INSIGNIA || cnd->id == SO_WIND_INSIGNIA || cnd->id == SO_EARTH_INSIGNIA)
 			&& i != x)
 			continue;
 
@@ -14332,6 +14493,22 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		}
 		// ハンターのトラップスキルはユニット設置時にアイテム消費
 		if(cnd->id >= HT_SKIDTRAP && (cnd->id <= HT_CLAYMORETRAP || cnd->id == HT_TALKIEBOX)) {
+			idx[i] = -1;
+		}
+		// トロピック時、50%の確率で消費しない
+		if(sc && sc->data[SC_TROPIC].timer != -1 && (cnd->id == SA_FLAMELAUNCHER || cnd->id == SA_VOLCANO) && atn_rand()%100 < 50) {
+			idx[i] = -1;
+		}
+		// クールエアー時、50%の確率で消費しない
+		if(sc && sc->data[SC_CHILLY_AIR].timer != -1 && (cnd->id == SA_FROSTWEAPON || cnd->id == SA_DELUGE) && atn_rand()%100 < 50) {
+			idx[i] = -1;
+		}
+		// ワイルドストーム時、50%の確率で消費しない
+		if(sc && sc->data[SC_WILD_STORM].timer != -1 && (cnd->id == SA_LIGHTNINGLOADER || cnd->id == SA_VIOLENTGALE) && atn_rand()%100 < 50) {
+			idx[i] = -1;
+		}
+		// アップヘイバル時、50%の確率で消費しない
+		if(sc && sc->data[SC_UPHEAVAL].timer != -1 && cnd->id == SA_SEISMICWEAPON && atn_rand()%100 < 50) {
 			idx[i] = -1;
 		}
 	}
@@ -18598,6 +18775,15 @@ static void skill_init_unit_layout(void)
 					 0, 1, 1, 2, 2, 2, 2, 2
 				};
 				skill_unit_layout[pos].count = 16;
+				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
+				break;
+			}
+			case EL_FIRE_MANTLE:		/* ファイアーマントル */
+			{
+				static const int dx[] = {-1, 0, 1, 1, 1, 0,-1,-1};
+				static const int dy[] = {-1,-1,-1, 0, 1, 1, 1, 0};
+				skill_unit_layout[pos].count = 8;
 				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
 				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
 				break;

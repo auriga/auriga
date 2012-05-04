@@ -345,8 +345,6 @@ int elem_calc_status(struct elem_data *eld)
 
 		if(eld->sc.data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// 速度増加による移動速度増加
 			sc_speed_rate = 75;
-		if(eld->sc.data[SC_BERSERK].timer != -1 && sc_speed_rate > 75)	// バーサークによる移動速度増加
-			sc_speed_rate = 75;
 
 		eld->speed = eld->speed * sc_speed_rate / 100;
 
@@ -401,32 +399,15 @@ int elem_calc_status(struct elem_data *eld)
 			eld->dex -= subdex;
 		}
 
-		if(eld->sc.data[SC_BERSERK].timer != -1) {	// バーサーク
-			def_rate  = 0;
-			mdef_rate = 0;
-			aspd_rate -= 30;
-			eld->flee -= eld->flee * 50 / 100;
-			eld->max_hp = eld->max_hp * 3;
-		}
-
-		if(eld->sc.data[SC_DEFENDER].timer != -1) {	// ディフェンダー
-			eld->amotion += (25 - eld->sc.data[SC_DEFENDER].val1*5);
-			eld->speed = (eld->speed * (155 - eld->sc.data[SC_DEFENDER].val1*5)) / 100;
-		}
-
-		// ウェポンクイッケン
-		if(eld->sc.data[SC_WEAPONQUICKEN].timer != -1 &&
-		   eld->sc.data[SC_QUAGMIRE].timer == -1 &&
-		   eld->sc.data[SC_DONTFORGETME].timer == -1 &&
-		   eld->sc.data[SC_DECREASEAGI].timer == -1)
-			aspd_rate -= 30;
+		if(eld->sc.data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// タイダルウェポン(精霊)
+			atk_rate += eld->sc.data[SC_TIDAL_WEAPON_OPTION].val2;
 	}
 
 	// エレメンタルシンパシー
 	if(eld->msd) {
 		int skill = pc_checkskill(eld->msd,SO_EL_SYMPATHY);
 		eld->max_hp += 500 * skill;
-		eld->max_sp += 500 * skill;
+		eld->max_sp += 50 * skill;
 		eld->atk1 += 25 * skill;
 		eld->atk2 += 25 * skill;
 	}
@@ -497,7 +478,7 @@ int elem_calc_status(struct elem_data *eld)
 int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 {
 	struct mmo_elemstatus st;
-	int i;
+	int i, skill;
 
 	nullpo_retr(1, sd);
 
@@ -510,14 +491,16 @@ int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 	if(i < 0)
 		return 1;
 
+	skill = pc_checkskill(sd,SO_EL_SYMPATHY);
+
 	memset(&st, 0, sizeof(st));
 
 	st.class_     = class_;
 	st.account_id = sd->status.account_id;
 	st.char_id    = sd->status.char_id;
 	st.mode  = ELMODE_WAIT;
-	st.hp    = elem_db[i].max_hp;
-	st.sp    = elem_db[i].max_sp;
+	st.hp    = elem_db[i].max_hp + 500 * skill;
+	st.sp    = elem_db[i].max_sp + 50 * skill;
 	st.limit = limit + (unsigned int)time(NULL);
 
 	sd->state.elem_creating = 1;
@@ -596,8 +579,8 @@ static int elem_data_init(struct map_session_data *sd)
 	elem_calc_status(eld);			// ステータス計算
 	map_addiddb(&eld->bl);
 
-	eld->natural_heal_hp = add_timer(tick+ELEM_NATURAL_HEAL_HP_INTERVAL,elem_natural_heal_hp,eld->bl.id,NULL);
-	eld->natural_heal_sp = add_timer(tick+ELEM_NATURAL_HEAL_SP_INTERVAL,elem_natural_heal_sp,eld->bl.id,NULL);
+	eld->natural_heal_hp = (eld->status.mode == ELMODE_WAIT)? add_timer(tick+ELEM_NATURAL_HEAL_HP_INTERVAL,elem_natural_heal_hp,eld->bl.id,NULL): -1;
+	eld->natural_heal_sp = (eld->status.mode == ELMODE_WAIT)? add_timer(tick+ELEM_NATURAL_HEAL_SP_INTERVAL,elem_natural_heal_sp,eld->bl.id,NULL): -1;
 
 	if(eld->status.limit > now)
 		diff = (eld->status.limit - now) * 1000;
@@ -669,6 +652,7 @@ int elem_delete_data(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(sd->status.elem_id > 0 && sd->eld) {
+		status_change_elemclear(&sd->bl);
 		unit_free(&sd->eld->bl,0);
 		intif_delete_elemdata(sd->status.account_id,sd->status.char_id,sd->status.elem_id);
 		sd->status.elem_id = 0;
@@ -695,6 +679,85 @@ int elem_checkskill(struct elem_data *eld,int skill_id)
 		return 0;
 	if(eld->skill[skill_id].id == skill_id + ELEM_SKILLID)
 		return eld->skill[skill_id].lv;
+
+	return 0;
+}
+
+/*==========================================
+ * 精霊モード変更
+ *------------------------------------------
+ */
+int elem_change_mode(struct elem_data *eld, int mode)
+{
+	unsigned int tick;
+
+	nullpo_retr(1, eld);
+
+	if(mode < ELMODE_WAIT || mode > ELMODE_OFFENSIVE)
+		return 1;
+
+	elem_unlocktarget(eld);
+
+	// 精霊のステータス変化を終了
+	status_change_elemclear(&eld->bl);
+	if(eld->msd)
+		status_change_elemclear(&eld->msd->bl);
+
+	// 指定されたモードが現モードと同じであれば待機モード
+	if(eld->status.mode == mode)
+		eld->status.mode = ELMODE_WAIT;
+	else
+		eld->status.mode = mode;
+
+	// 待機モードに変更するときは自然回復タイマー開始
+	if(eld->status.mode == ELMODE_WAIT) {
+		tick = gettick();
+
+		if(eld->natural_heal_hp == -1)
+			eld->natural_heal_hp = add_timer(tick+ELEM_NATURAL_HEAL_HP_INTERVAL,elem_natural_heal_hp,eld->bl.id,NULL);
+		if(eld->natural_heal_sp == -1)
+			eld->natural_heal_sp = add_timer(tick+ELEM_NATURAL_HEAL_SP_INTERVAL,elem_natural_heal_sp,eld->bl.id,NULL);
+	}
+	else if(eld->natural_heal_hp != -1 || eld->natural_heal_sp != -1)
+		elem_natural_heal_timer_delete(eld);
+
+	// 支援モードか防御モードに変更するときはスキル使用
+	if(eld->status.mode == ELMODE_PASSIVE || eld->status.mode == ELMODE_DEFENSIVE)
+		elem_skilluse(eld,&eld->bl,eld->status.mode);
+
+	return 0;
+}
+
+/*==========================================
+ * 精霊スキル使用
+ *------------------------------------------
+ */
+int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode)
+{
+	struct elem_skill_tree_entry *st;
+	int idx, i;
+	short skillid = 0, skilllv = 0;
+
+	nullpo_retr(1, eld);
+	nullpo_retr(1, bl);
+
+	idx = elem_search_index(eld->status.class_);
+	if(idx < 0)
+		return 1;
+	st = elem_skill_tree[idx];
+
+	for(i = 0; i < MAX_ELEMSKILL_TREE; i++) {
+		if(st[i].mode == mode) {
+			skillid = st[i].id;
+			skilllv = st[i].max;
+			break;
+		}
+	}
+
+	if(skillid > 0) {
+		if(unit_skilluse_id(&eld->bl,bl->id,skillid,skilllv) == 0)
+			clif_emotion(&eld->bl,9);
+	}
 
 	return 0;
 }
@@ -1022,9 +1085,6 @@ static int read_elem_db(void)
 				}
 			}
 
-			if(elem_count >= MAX_ELEM_DB)
-				break;
-
 			nameid = atoi(str[0]);
 
 			if(nameid <= 0)
@@ -1032,6 +1092,9 @@ static int read_elem_db(void)
 
 			k = elem_search_index(nameid);
 			j = (k >= 0)? k: elem_count;
+
+			if(j >= MAX_ELEM_DB)
+				continue;
 
 			elem_db[j].class_  = nameid;
 			strncpy(elem_db[j].name,str[1],24);

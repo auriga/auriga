@@ -191,8 +191,19 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 540- */
 	SI_DROCERA_HERB_STEAMED,SI_PUTTI_TAILS_NOODLES,SI_STOMACHACHE,SI_MONSTER_TRANSFORM,SI_IZAYOI,SI_KG_KAGEHUMI,SI_KYOMU,SI_KAGEMUSYA,SI_AKAITSUKI,SI_ALL_RIDING,
 	/* 550- */
-	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_ON_PUSH_CART,SI_ZENKAI,SI_KO_JYUMONJIKIRI
-
+	SI_MEIKYOUSISUI,SI_KYOUGAKU,SI_ODINS_POWER,SI_CPLUSONLYJOBEXP,SI_MER_FLEE,SI_MER_ATK,SI_MER_HP,SI_MER_SP,SI_MER_HIT,SI_ON_PUSH_CART,
+	/* 560- */
+	SI_ZENKAI,SI_KO_JYUMONJIKIRI,SI_SUMMON_AGNI,SI_CIRCLE_OF_FIRE,SI_CIRCLE_OF_FIRE_OPTION,SI_FIRE_CLOAK,SI_FIRE_CLOAK_OPTION,SI_WATER_SCREEN,SI_WATER_SCREEN_OPTION,SI_WATER_DROP,
+	/* 570- */
+	SI_WATER_DROP_OPTION,SI_WATER_BARRIER,SI_WIND_STEP,SI_WIND_STEP_OPTION,SI_WIND_CURTAIN,SI_WIND_CURTAIN_OPTION,SI_ZEPHYR,SI_SOLID_SKIN,SI_SOLID_SKIN_OPTION,SI_STONE_SHIELD,
+	/* 580- */
+	SI_STONE_SHIELD_OPTION,SI_POWER_OF_GAIA,SI_PYROTECHNIC,SI_PYROTECHNIC_OPTION,SI_HEATER,SI_HEATER_OPTION,SI_TROPIC,SI_TROPIC_OPTION,SI_AQUAPLAY,SI_AQUAPLAY_OPTION,
+	/* 590- */
+	SI_COOLER,SI_COOLER_OPTION,SI_CHILLY_AIR,SI_CHILLY_AIR_OPTION,SI_GUST,SI_GUST_OPTION,SI_BLAST,SI_BLAST_OPTION,SI_WILD_STORM,SI_WILD_STORM_OPTION,
+	/* 600- */
+	SI_PETROLOGY,SI_PETROLOGY_OPTION,SI_CURSED_SOIL,SI_CURSED_SOIL_OPTION,SI_UPHEAVAL,SI_UPHEAVAL_OPTION,SI_TIDAL_WEAPON,SI_TIDAL_WEAPON_OPTION,SI_ROCK_CRUSHER,SI_ROCK_CRUSHER_ATK,
+	/* 610- */
+	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA
 };
 
 /*==========================================
@@ -2194,6 +2205,74 @@ L_RECALC:
 		if(sd->sc.data[SC_VITATA_500].timer != -1) {
 			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_VITATA_500].val2 / 100;
 		}
+		// ファイアークローク
+		if(sd->sc.data[SC_FIRE_CLOAK].timer != -1) {
+			sd->subele[ELE_FIRE] += sd->sc.data[SC_FIRE_CLOAK].val2;
+			sd->subele[ELE_WATER] -= sd->sc.data[SC_FIRE_CLOAK].val3;
+		}
+		// ウォータードロップ
+		if(sd->sc.data[SC_WATER_DROP].timer != -1) {
+			sd->subele[ELE_WATER] += sd->sc.data[SC_WATER_DROP].val2;
+			sd->subele[ELE_WIND] -= sd->sc.data[SC_WATER_DROP].val3;
+		}
+		// ウィンドステップ
+		if(sd->sc.data[SC_WIND_STEP].timer != -1) {
+			sd->flee += sd->sc.data[SC_WIND_STEP].val2;
+		}
+		// ウィンドカーテン
+		if(sd->sc.data[SC_WIND_CURTAIN].timer != -1) {
+			sd->subele[ELE_WIND] += sd->sc.data[SC_WIND_CURTAIN].val2;
+			sd->subele[ELE_EARTH] -= sd->sc.data[SC_WIND_CURTAIN].val3;
+		}
+		// ソリッドスキン
+		if(sd->sc.data[SC_SOLID_SKIN].timer != -1) {
+			sd->def += sd->def * sd->sc.data[SC_SOLID_SKIN].val2 / 100;
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_SOLID_SKIN].val3 / 100;
+		}
+		// ストーンシールド
+		if(sd->sc.data[SC_STONE_SHIELD].timer != -1) {
+			sd->subele[ELE_EARTH] += sd->sc.data[SC_STONE_SHIELD].val2;
+			sd->subele[ELE_FIRE] -= sd->sc.data[SC_STONE_SHIELD].val3;
+		}
+		// パイロテクニック
+		if(sd->sc.data[SC_PYROTECHNIC].timer != -1) {
+			sd->watk += sd->sc.data[SC_PYROTECHNIC].val2;
+		}
+		// ヒーター
+		if(sd->sc.data[SC_HEATER].timer != -1) {
+			sd->watk += sd->sc.data[SC_HEATER].val2;
+		}
+		// トロピック
+		if(sd->sc.data[SC_TROPIC].timer != -1) {
+			sd->watk += sd->sc.data[SC_TROPIC].val2;
+		}
+		// アクアプレイ
+		if(sd->sc.data[SC_AQUAPLAY].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_AQUAPLAY].val2;
+			sd->matk2 += sd->sc.data[SC_AQUAPLAY].val2;
+		}
+		// クーラー
+		if(sd->sc.data[SC_COOLER].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_COOLER].val2;
+			sd->matk2 += sd->sc.data[SC_COOLER].val2;
+		}
+		// クールエアー
+		if(sd->sc.data[SC_CHILLY_AIR].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_CHILLY_AIR].val2;
+			sd->matk2 += sd->sc.data[SC_CHILLY_AIR].val2;
+		}
+		// ペトロジー
+		if(sd->sc.data[SC_PETROLOGY].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_PETROLOGY].val2 / 100;
+		}
+		// カースドソイル
+		if(sd->sc.data[SC_CURSED_SOIL].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_CURSED_SOIL].val2 / 100;
+		}
+		// アップヘイバル
+		if(sd->sc.data[SC_UPHEAVAL].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_UPHEAVAL].val2 / 100;
+		}
 	}
 
 	// テコンランカーボーナス
@@ -2710,6 +2789,18 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		if(sd->sc.data[SC_EISIR].timer != -1)
 			bonus_add -= sd->sc.data[SC_EISIR].val3;
 
+		// ガスト
+		if(sd->sc.data[SC_GUST].timer != -1)
+			bonus_add -= sd->sc.data[SC_GUST].val2;
+
+		// ブラスト
+		if(sd->sc.data[SC_BLAST].timer != -1)
+			bonus_add -= sd->sc.data[SC_BLAST].val2;
+
+		// ワイルドストーム
+		if(sd->sc.data[SC_WILD_STORM].timer != -1)
+			bonus_add -= sd->sc.data[SC_WILD_STORM].val2;
+
 		// モンスター変身デビルチ
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1109)
 			bonus_add -= -10;
@@ -3064,6 +3155,13 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		if(sd->sc.data[SC_SPEEDUP0].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
+		}
+
+		// ウィンドステップ
+		if(sd->sc.data[SC_WIND_STEP].timer != -1) {
+			int bonus = sd->sc.data[SC_WIND_STEP].val3;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
 		}
 
 		/* speedが減少するステータス計算2 */
@@ -5345,6 +5443,8 @@ int status_get_attack_element(struct block_list *bl)
 			ret = ELE_UNDEAD;
 		if(sc->data[SC_SEVENWIND].timer != -1)		// 暖かい風
 			ret = sc->data[SC_SEVENWIND].val3;
+		if(sc->data[SC_TIDAL_WEAPON].timer != -1 || sc->data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// タイダルウェポン
+			ret = ELE_WATER;
 	}
 	return ret;
 }
@@ -6236,6 +6336,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_AKAITSUKI:			/* 紅月 */
 		case SC_KO_ZENKAI:			/* 術式全開 */
 		case SC_KO_JYUMONJIKIRI:	/* 十文字斬り */
+		case SC_CIRCLE_OF_FIRE:		/* サークルオブファイア */
+		case SC_TIDAL_WEAPON:		/* タイダルウェポン */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -6362,6 +6464,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
 		case SC_ODINS_POWER:		/* オーディンの力 */
+		case SC_ZEPHYR:				/* ゼファー */
 			calc_flag = 1;
 			break;
 
@@ -6404,6 +6507,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
+		case SC_POWER_OF_GAIA:		/* パワーオブガイア */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -7520,6 +7624,130 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				clif_updatestatus(sd,SP_CARTINFO);
 			}
 			break;
+		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = val1 * 3 + 2;		// SP消費量
+			break;
+		case SC_FIRE_CLOAK:		/* ファイアークローク */
+		case SC_WATER_DROP:		/* ウォータードロップ */
+		case SC_WIND_CURTAIN:	/* ウィンドカーテン */
+		case SC_STONE_SHIELD:	/* ストーンシールド */
+			val2 = 100;		// 属性耐性増加値
+			val3 = 100;		// 属性耐性減少値
+			calc_flag = 1;
+			break;
+		case SC_WATER_SCREEN:	/* ウォータースクリーン */
+			val2 = tick / 5000;
+			tick = 5000;
+			break;
+		case SC_WIND_STEP:			/* ウィンドステップ */
+			val2 = 10;	// Flee増加値
+			val3 = 50;	// 移動速度増加率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_SOLID_SKIN:			/* ソリッドスキン */
+			val2 = 10;	// Def増加率
+			val3 = 25;	// MaxHP増加率
+			calc_flag = 1;
+			break;
+		case SC_PYROTECHNIC:	/* パイロテクニック */
+			val2 = 40;	// Atk増加値
+			val3 = 10;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_HEATER:	/* ヒーター */
+			val2 = 80;	// Atk増加値
+			val3 = 20;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_TROPIC:	/* トロピック */
+			val2 = 120;	// Atk増加値
+			calc_flag = 1;
+			break;
+		case SC_AQUAPLAY:	/* アクアプレイ */
+			val2 = 40;	// Matk増加値
+			val3 = 10;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_COOLER:	/* クーラー */
+			val2 = 80;	// Matk増加値
+			val3 = 20;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_CHILLY_AIR:	/* クールエアー */
+			val2 = 120;	// Matk増加値
+			calc_flag = 1;
+			break;
+		case SC_GUST:	/* ガスト */
+			val2 = 50;	// Aspd増加値
+			val3 = 10;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_BLAST:	/* ブラスト */
+			val2 = 50;	// Aspd増加値
+			val3 = 10;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_WILD_STORM:	/* ワイルドストーム */
+			val2 = 50;	// Aspd増加値
+			calc_flag = 1;
+			break;
+		case SC_PETROLOGY:	/* ペトロジー */
+			val2 = 5;	// MaxHP増加率
+			val3 = 10;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_CURSED_SOIL:	/* カースドソイル */
+			val2 = 10;	// MaxHP増加率
+			val3 = 20;	// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_UPHEAVAL:	/* アップヘイバル */
+			val2 = 15;	// MaxHP増加率
+			calc_flag = 1;
+			break;
+		case SC_TIDAL_WEAPON_OPTION:	/* タイダルウェポン(精霊) */
+			val2 = 20;	// Atk増加率
+			calc_flag = 1;
+			break;
+		case SC_CIRCLE_OF_FIRE_OPTION:	/* サークルオブファイア(精霊) */
+		case SC_FIRE_CLOAK_OPTION:		/* ファイアークローク(精霊) */
+		case SC_WATER_SCREEN_OPTION:	/* ウォータースクリーン(精霊) */
+		case SC_WATER_DROP_OPTION:		/* ウォータードロップ(精霊) */
+		case SC_WIND_STEP_OPTION:		/* ウィンドステップ(精霊) */
+		case SC_WIND_CURTAIN_OPTION:	/* ウィンドカーテン(精霊) */
+		case SC_SOLID_SKIN_OPTION:		/* ソリッドスキン(精霊) */
+		case SC_STONE_SHIELD_OPTION:	/* ストーンシールド(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = 5;		// SP消費量
+			break;
+		case SC_PYROTECHNIC_OPTION:	/* パイロテクニック(精霊) */
+		case SC_AQUAPLAY_OPTION:	/* アクアプレイ(精霊) */
+		case SC_GUST_OPTION:		/* ガスト(精霊) */
+		case SC_PETROLOGY_OPTION:	/* ペトロジー(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = 10;		// SP消費量
+			break;
+		case SC_HEATER_OPTION:		/* ヒーター(精霊) */
+		case SC_COOLER_OPTION:		/* クーラー(精霊) */
+		case SC_BLAST_OPTION:		/* ブラスト(精霊) */
+		case SC_CURSED_SOIL_OPTION:	/* カースドソイル(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = 20;		// SP消費量
+			break;
+		case SC_TROPIC_OPTION:		/* トロピック(精霊) */
+		case SC_CHILLY_AIR_OPTION:	/* クールエアー(精霊) */
+		case SC_WILD_STORM_OPTION:	/* ワイルドストーム(精霊) */
+		case SC_UPHEAVAL_OPTION:	/* アップヘイバル(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = 30;		// SP消費量
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -8085,6 +8313,24 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_MER_HP:				/* 傭兵ボーナス(HP) */
 		case SC_MER_SP:				/* 傭兵ボーナス(SP) */
 		case SC_MER_HIT:			/* 傭兵ボーナス(HIT) */
+		case SC_FIRE_CLOAK:			/* ファイアークローク */
+		case SC_WATER_DROP:			/* ウォータードロップ */
+		case SC_WIND_CURTAIN:		/* ウィンドカーテン */
+		case SC_SOLID_SKIN:			/* ソリッドスキン */
+		case SC_STONE_SHIELD:		/* ストーンシールド */
+		case SC_PYROTECHNIC:		/* パイロテクニック */
+		case SC_HEATER:				/* ヒーター */
+		case SC_TROPIC:				/* トロピック */
+		case SC_AQUAPLAY:			/* アクアプレイ */
+		case SC_COOLER:				/* クーラー */
+		case SC_CHILLY_AIR:			/* クールエアー */
+		case SC_GUST:				/* ガスト */
+		case SC_BLAST:				/* ブラスト */
+		case SC_WILD_STORM:			/* ワイルドストーム */
+		case SC_PETROLOGY:			/* ペトロジー */
+		case SC_CURSED_SOIL:		/* カースドソイル */
+		case SC_UPHEAVAL:			/* アップヘイバル */
+		case SC_TIDAL_WEAPON_OPTION:	/* タイダルウェポン(精霊) */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -8111,6 +8357,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
 		case SC_ALL_RIDING:			/* 騎乗システム */
+		case SC_WIND_STEP:			/* ウィンドステップ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -8450,6 +8697,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			if(sd)
 				clif_status_change(bl,SI_KYOUGAKU,-1,0,0,0,0);
 			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
+			if(sd && sd->eld)
+				elem_delete_data(sd);
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -9722,6 +9973,74 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
+	case SC_SUMMON_ELEM:	/* サモンエレメンタル */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->status.sp >= sc->data[type].val3) {
+					sd->status.sp -= sc->data[type].val3;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(10000+tick, status_change_timer, bl->id, data);
+				}
+			} else {
+				timer = add_timer(10000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_WATER_SCREEN:	/* ウォータースクリーン */
+		if((--sc->data[type].val2) > 0) {
+			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
+			if(heal)
+				unit_heal(bl, heal, 0);
+			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_CIRCLE_OF_FIRE_OPTION:	/* サークルオブファイア(精霊) */
+	case SC_FIRE_CLOAK_OPTION:		/* ファイアークローク(精霊) */
+	case SC_WATER_SCREEN_OPTION:	/* ウォータースクリーン(精霊) */
+	case SC_WATER_DROP_OPTION:		/* ウォータードロップ(精霊) */
+	case SC_WIND_STEP_OPTION:		/* ウィンドステップ(精霊) */
+	case SC_WIND_CURTAIN_OPTION:	/* ウィンドカーテン(精霊) */
+	case SC_SOLID_SKIN_OPTION:		/* ソリッドスキン(精霊) */
+	case SC_STONE_SHIELD_OPTION:	/* ストーンシールド(精霊) */
+		if((--sc->data[type].val2) > 0) {
+			if(eld) {
+				if(eld->status.sp >= sc->data[type].val3) {
+					eld->status.sp -= sc->data[type].val3;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_PYROTECHNIC_OPTION:	/* パイロテクニック(精霊) */
+	case SC_AQUAPLAY_OPTION:	/* アクアプレイ(精霊) */
+	case SC_GUST_OPTION:		/* ガスト(精霊) */
+	case SC_PETROLOGY_OPTION:	/* ペトロジー(精霊) */
+	case SC_HEATER_OPTION:		/* ヒーター(精霊) */
+	case SC_COOLER_OPTION:		/* クーラー(精霊) */
+	case SC_BLAST_OPTION:		/* ブラスト(精霊) */
+	case SC_CURSED_SOIL_OPTION:	/* カースドソイル(精霊) */
+	case SC_TROPIC_OPTION:		/* トロピック(精霊) */
+	case SC_CHILLY_AIR_OPTION:	/* クールエアー(精霊) */
+	case SC_WILD_STORM_OPTION:	/* ワイルドストーム(精霊) */
+	case SC_UPHEAVAL_OPTION:	/* アップヘイバル(精霊) */
+		if((--sc->data[type].val2) > 0) {
+			if(eld) {
+				if(eld->status.sp >= sc->data[type].val3) {
+					eld->status.sp -= sc->data[type].val3;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					timer = add_timer(10000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(10000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -10183,6 +10502,115 @@ int status_change_soulclear(struct block_list *bl)
 		status_change_end(bl,SC_DEATHKINGHT,-1);
 	if(sc->data[SC_COLLECTOR].timer != -1)
 		status_change_end(bl,SC_COLLECTOR,-1);
+
+	return 0;
+}
+
+/*==========================================
+ * ステータス異常(精霊)終了
+ *------------------------------------------
+ */
+int status_change_elemclear(struct block_list *bl)
+{
+	struct status_change *sc;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sc = status_get_sc(bl));
+
+	if(sc->data[SC_CIRCLE_OF_FIRE].timer != -1)
+		status_change_end(bl,SC_CIRCLE_OF_FIRE,-1);
+	if(sc->data[SC_CIRCLE_OF_FIRE_OPTION].timer != -1)
+		status_change_end(bl,SC_CIRCLE_OF_FIRE_OPTION,-1);
+	if(sc->data[SC_FIRE_CLOAK].timer != -1)
+		status_change_end(bl,SC_FIRE_CLOAK,-1);
+	if(sc->data[SC_FIRE_CLOAK_OPTION].timer != -1)
+		status_change_end(bl,SC_FIRE_CLOAK_OPTION,-1);
+	if(sc->data[SC_WATER_SCREEN].timer != -1)
+		status_change_end(bl,SC_WATER_SCREEN,-1);
+	if(sc->data[SC_WATER_SCREEN_OPTION].timer != -1)
+		status_change_end(bl,SC_WATER_SCREEN_OPTION,-1);
+	if(sc->data[SC_WATER_DROP].timer != -1)
+		status_change_end(bl,SC_WATER_DROP,-1);
+	if(sc->data[SC_WATER_DROP_OPTION].timer != -1)
+		status_change_end(bl,SC_WATER_DROP_OPTION,-1);
+	//if(sc->data[SC_WATER_BARRIER].timer != -1)
+	//	status_change_end(bl,SC_WATER_BARRIER,-1);
+	if(sc->data[SC_WIND_STEP].timer != -1)
+		status_change_end(bl,SC_WIND_STEP,-1);
+	if(sc->data[SC_WIND_STEP_OPTION].timer != -1)
+		status_change_end(bl,SC_WIND_STEP_OPTION,-1);
+	if(sc->data[SC_WIND_CURTAIN].timer != -1)
+		status_change_end(bl,SC_WIND_CURTAIN,-1);
+	if(sc->data[SC_WIND_CURTAIN_OPTION].timer != -1)
+		status_change_end(bl,SC_WIND_CURTAIN_OPTION,-1);
+	//if(sc->data[SC_ZEPHYR].timer != -1)
+	//	status_change_end(bl,SC_ZEPHYR,-1);
+	if(sc->data[SC_SOLID_SKIN].timer != -1)
+		status_change_end(bl,SC_SOLID_SKIN,-1);
+	if(sc->data[SC_SOLID_SKIN_OPTION].timer != -1)
+		status_change_end(bl,SC_SOLID_SKIN_OPTION,-1);
+	if(sc->data[SC_STONE_SHIELD].timer != -1)
+		status_change_end(bl,SC_STONE_SHIELD,-1);
+	if(sc->data[SC_STONE_SHIELD_OPTION].timer != -1)
+		status_change_end(bl,SC_STONE_SHIELD_OPTION,-1);
+	//if(sc->data[SC_POWER_OF_GAIA].timer != -1)
+	//	status_change_end(bl,SC_POWER_OF_GAIA,-1);
+	if(sc->data[SC_PYROTECHNIC].timer != -1)
+		status_change_end(bl,SC_PYROTECHNIC,-1);
+	if(sc->data[SC_PYROTECHNIC_OPTION].timer != -1)
+		status_change_end(bl,SC_PYROTECHNIC_OPTION,-1);
+	if(sc->data[SC_HEATER].timer != -1)
+		status_change_end(bl,SC_HEATER,-1);
+	if(sc->data[SC_HEATER_OPTION].timer != -1)
+		status_change_end(bl,SC_HEATER_OPTION,-1);
+	if(sc->data[SC_TROPIC].timer != -1)
+		status_change_end(bl,SC_TROPIC,-1);
+	if(sc->data[SC_TROPIC_OPTION].timer != -1)
+		status_change_end(bl,SC_TROPIC_OPTION,-1);
+	if(sc->data[SC_AQUAPLAY].timer != -1)
+		status_change_end(bl,SC_AQUAPLAY,-1);
+	if(sc->data[SC_AQUAPLAY_OPTION].timer != -1)
+		status_change_end(bl,SC_AQUAPLAY_OPTION,-1);
+	if(sc->data[SC_COOLER].timer != -1)
+		status_change_end(bl,SC_COOLER,-1);
+	if(sc->data[SC_COOLER_OPTION].timer != -1)
+		status_change_end(bl,SC_COOLER_OPTION,-1);
+	if(sc->data[SC_CHILLY_AIR].timer != -1)
+		status_change_end(bl,SC_CHILLY_AIR,-1);
+	if(sc->data[SC_CHILLY_AIR_OPTION].timer != -1)
+		status_change_end(bl,SC_CHILLY_AIR_OPTION,-1);
+	if(sc->data[SC_GUST].timer != -1)
+		status_change_end(bl,SC_GUST,-1);
+	if(sc->data[SC_GUST_OPTION].timer != -1)
+		status_change_end(bl,SC_GUST_OPTION,-1);
+	if(sc->data[SC_BLAST].timer != -1)
+		status_change_end(bl,SC_BLAST,-1);
+	if(sc->data[SC_BLAST_OPTION].timer != -1)
+		status_change_end(bl,SC_BLAST_OPTION,-1);
+	if(sc->data[SC_WILD_STORM].timer != -1)
+		status_change_end(bl,SC_WILD_STORM,-1);
+	if(sc->data[SC_WILD_STORM_OPTION].timer != -1)
+		status_change_end(bl,SC_WILD_STORM_OPTION,-1);
+	if(sc->data[SC_PETROLOGY].timer != -1)
+		status_change_end(bl,SC_PETROLOGY,-1);
+	if(sc->data[SC_PETROLOGY_OPTION].timer != -1)
+		status_change_end(bl,SC_PETROLOGY_OPTION,-1);
+	if(sc->data[SC_CURSED_SOIL].timer != -1)
+		status_change_end(bl,SC_CURSED_SOIL,-1);
+	if(sc->data[SC_CURSED_SOIL_OPTION].timer != -1)
+		status_change_end(bl,SC_CURSED_SOIL_OPTION,-1);
+	if(sc->data[SC_UPHEAVAL].timer != -1)
+		status_change_end(bl,SC_UPHEAVAL,-1);
+	if(sc->data[SC_UPHEAVAL_OPTION].timer != -1)
+		status_change_end(bl,SC_UPHEAVAL_OPTION,-1);
+	if(sc->data[SC_TIDAL_WEAPON].timer != -1)
+		status_change_end(bl,SC_TIDAL_WEAPON,-1);
+	if(sc->data[SC_TIDAL_WEAPON_OPTION].timer != -1)
+		status_change_end(bl,SC_TIDAL_WEAPON_OPTION,-1);
+	//if(sc->data[SC_ROCK_CRUSHER].timer != -1)
+	//	status_change_end(bl,SC_ROCK_CRUSHER,-1);
+	//if(sc->data[SC_ROCK_CRUSHER_ATK].timer != -1)
+	//	status_change_end(bl,SC_ROCK_CRUSHER_ATK,-1);
 
 	return 0;
 }

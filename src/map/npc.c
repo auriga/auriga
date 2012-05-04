@@ -2556,8 +2556,8 @@ int do_final_npc(void)
 					aFree(md);
 				}
 				md = NULL;
-			} else if(bl->type == BL_PET || bl->type == BL_HOM || bl->type == BL_MERC) {
-				printf("do_final_npc: remain PET, HOM, or MERC ?\n");
+			} else if(bl->type == BL_PET || bl->type == BL_HOM || bl->type == BL_MERC || bl->type == BL_ELEM) {
+				printf("do_final_npc: remain PET, HOM, MERC or ELEM ?\n");
 				unit_free(bl,0);
 			}
 		}

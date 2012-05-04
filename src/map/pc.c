@@ -9974,6 +9974,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_BANDING].timer == -1 &&	// バンディング状態はSPが回復しない
 		    sd->sc.data[SC_SIRCLEOFNATURE].timer == -1 &&	// 循環する自然の音状態はSPが回復しない
 		    sd->sc.data[SC_STRIKING].timer == -1 &&	// ストライキング状態はSPが回復しない
+		    sd->sc.data[SC_SUMMON_ELEM].timer == -1 &&	// サモンエレメンタル状態はSPが回復しない
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {

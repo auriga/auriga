@@ -969,19 +969,19 @@
 2453,9,6,2,0,1,5,1,yes,0,0,0,magic,0	//SO_VACUUM_EXTREME#バキュームエクストリーム#
 2454,9,6,1,4,0,5,1,yes,0,0,0,magic,0	//SO_VARETYR_SPEAR#ヴェラチュールスピアー#
 2455,9,6,1,0,1,5,1,yes,0,0,0,magic,0	//SO_ARRULLO#アルージョ#
-2456,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EL_CONTROL#エレメンタルコントロール#
+2456,0,6,4,0,1,4,1,yes,0,0,0,magic,0	//SO_EL_CONTROL#エレメンタルコントロール#
 2457,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_SUMMON_AGNI#サモンアグニ#
 2458,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_SUMMON_AQUA#サモンアクア#
 2459,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_SUMMON_VENTUS#サモンベントス#
 2460,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_SUMMON_TERA#サモンテラ#
-2461,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EL_ACTION#エレメンタルアクション#
-2462,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EL_ANALYSIS#エレメンタルアナライシス#
-2463,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EL_SYMPATHY#エレメンタルシンパシー#
-2464,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EL_CURE#エレメンタルキュアー#
-2465,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_FIRE_INSIGNIA#ファイアーインシグニア#
-2466,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_WATER_INSIGNIA#ウォーターインシグニア#
-2467,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_WIND_INSIGNIA#ウィンドインシグニア#
-2468,0,0,0,0,0,10,0,yes,0,0,0,weapon,0	//SO_EARTH_INSIGNIA#アースインシグニア#
+2461,5,6,1,0,1,1,1,yes,0,0,0,magic,0	//SO_EL_ACTION#エレメンタルアクション#
+2462,0,6,4,0,1,2,1,yes,0,0,0,magic,0	//SO_EL_ANALYSIS#エレメンタルアナライシス#
+2463,0,0,0,0,0,5,0,no,0,0,0,none,0	//SO_EL_SYMPATHY#エレメンタルシンパシー#
+2464,0,6,4,0,1,1,1,yes,0,0,0,magic,0	//SO_EL_CURE#エレメンタルキュアー#
+2465,9,6,2,3,1,3,1,yes,0,0,0,magic,0	//SO_FIRE_INSIGNIA#ファイアーインシグニア#
+2466,9,6,2,1,1,3,1,yes,0,0,0,magic,0	//SO_WATER_INSIGNIA#ウォーターインシグニア#
+2467,9,6,2,4,1,3,1,yes,0,0,0,magic,0	//SO_WIND_INSIGNIA#ウィンドインシグニア#
+2468,9,6,2,2,1,3,1,yes,0,0,0,magic,0	//SO_EARTH_INSIGNIA#アースインシグニア#
 
 2474,0,0,0,0,0,5,0,no,0,0,0,none,0	//GN_TRAINING_SWORD#剣修練#
 2475,0,0,0,0,0,5,0,no,0,0,0,none,0	//GN_REMODELING_CART#カート改造#
@@ -1109,9 +1109,9 @@
 8239,9,6,16,0,1,10,1,yes,0,0,0,magic,0	//MER_BLESSING#ブレッシング#
 8240,9,6,16,6,1,10,1,yes,0,0,0,magic,0	//MER_INCAGI#速度増加#
 
-8401,0,6,4,3,0,1,1,no,0,0,0,weapon,2	//EL_CIRCLE_OF_FIRE#サークルオブファイア#
+8401,0,6,4,3,1,1,1,no,0,0,0,weapon,2	//EL_CIRCLE_OF_FIRE#サークルオブファイア#
 8402,0,6,4,3,1,1,1,no,0,0,0,none,0	//EL_FIRE_CLOAK#ファイアークローク#
-8403,0,6,4,3,0,1,1,no,0,0,3,magic,2	//EL_FIRE_MANTLE#ファイアーマントル#
+8403,0,6,4,3,1,1,1,no,0,0,3,magic,2	//EL_FIRE_MANTLE#ファイアーマントル#
 8404,0,6,4,1,1,1,1,no,0,0,0,none,0	//EL_WATER_SCREEN#ウォータースクリーン#
 8405,0,6,4,1,1,1,1,no,0,0,0,none,0	//EL_WATER_DROP#ウォータードロップ#
 8406,0,6,4,1,1,1,1,no,0,0,0,none,0	//EL_WATER_BARRIER#ウォーターバリアー#
@@ -1133,7 +1133,7 @@
 8422,0,6,4,2,1,1,1,no,0,0,0,none,0	//EL_PETROLOGY#ペトロジー#
 8423,0,6,4,2,1,1,1,no,0,0,0,none,0	//EL_CURSED_SOIL#カースドソイル#
 8424,0,6,4,2,1,1,1,no,0,0,0,none,0	//EL_UPHEAVAL#アップヘイバル#
-8425,6,6,1,3,0,1,1,no,0,0,0,magic,2	//EL_FIRE_ARROW#ファイアーアロー#
+8425,6,6,1,3,0,1,1,no,0,0,0,magic,0	//EL_FIRE_ARROW#ファイアーアロー#
 8426,6,6,1,3,0,1,1,no,0,0,0,magic,0	//EL_FIRE_BOMB#ファイアーボム#
 8427,6,6,1,3,0,1,1,no,0,0,0,weapon,0	//EL_FIRE_BOMB_ATK#ファイアーボム(攻撃)#
 8428,6,6,1,3,0,1,1,no,0,0,0,magic,0	//EL_FIRE_WAVE#ファイアーウェーブ#
@@ -1150,7 +1150,7 @@
 8439,5,6,1,2,0,1,1,no,0,0,0,weapon,0	//EL_STONE_HAMMER#ストーンハンマー#
 8440,3,6,1,2,0,1,1,no,0,0,0,weapon,0	//EL_ROCK_CRUSHER#ロックランチャー#
 8441,5,6,1,2,0,1,1,no,0,0,0,magic,0	//EL_ROCK_CRUSHER_ATK#ロックランチャー(攻撃)#
-8442,9,6,1,2,0,1,1,no,0,0,0,weapon,0	//EL_STONE_RAIN#ストーンレイン#
+8442,9,8,1,2,0,1,5,no,0,0,0,weapon,0	//EL_STONE_RAIN#ストーンレイン#
 
 10000,0,0,0,0,0,1,0,no,0,0,0,none,0	//GD_APPROVAL#正規ギルド承認#
 10001,0,0,0,0,0,1,0,no,0,0,0,none,0	//GD_KAFRACONTRACT#カプラ雇用#
