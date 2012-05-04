@@ -2543,7 +2543,7 @@ int parse_char(int fd)
 			{
 				// キャラ作成パラメータの取得
 #if PACKETVER < 20120307
-				char *name  = RFIFOP(fd,2);
+				unsigned char *name  = RFIFOP(fd,2);
 				short str   = RFIFOB(fd,26);
 				short agi   = RFIFOB(fd,27);
 				short vit   = RFIFOB(fd,28);
@@ -2554,7 +2554,7 @@ int parse_char(int fd)
 				int hair_color = RFIFOW(fd,33);
 				int hair = RFIFOW(fd,35);
 #else
-				char *name  = RFIFOP(fd,2);
+				unsigned char *name  = RFIFOP(fd,2);
 				short str   = 5;
 				short agi   = 5;
 				short vit   = 5;

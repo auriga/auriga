@@ -827,7 +827,7 @@ void chardb_txt_final(void)
 #endif
 }
 
-const struct mmo_chardata *chardb_txt_make(int account_id, char *name, short str, short agi, short vit, short int_, short dex, short luk, int hair_color, int hair, unsigned char slot, int *flag)
+const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, int hair_color, int hair, unsigned char slot, int *flag)
 {
 	int n, idx;
 
