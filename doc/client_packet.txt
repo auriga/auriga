@@ -2455,7 +2455,7 @@ R 0858 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=8 HOM
 	type=9 MER
 	type=10 ELEM(ソーサラーの妖精)
-R 0859 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute>.B <refine>.B <card>.4w <time>.l <flag>.w}.26B*
+R 0859 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B {<index>.w <item ID>.w <type>.B <identify flag>.B <equip type>.w <equip point>.w <attribute>.B <refine>.B <card>.4w <time>.l <flag>.w}.28B*
 	プレイヤー装備ウィンドウ情報
 	0x2d7の上位版
 R 085a - 08ad
@@ -2662,35 +2662,35 @@ R 08fe <len>.w { <?>.l <?>.l <?>.l }.12B
 R 08ff <type>.w <ID>.l <tick>.l <val1>.l <val2>.l <val3>.l
 	0x43fと同じルーチンを呼び出している
 	0x43fでいうところの<switch>.Bを常に1で呼び出しているため、<tick>.l経過後自動でアイコンを消去してくれるとかそんなんっぽい(未確認)
-R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
+R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
 	所有消耗品&収集品リスト
-	矢の場合は<?>.2Bが0x8000になる
+	矢の場合は<WearState>.2Bが0x8000になる
 	0x2e8の上位版
 	<attribute>
 	0x1 鑑定済み
 	0x2 個人タブ
-R 0901 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
+R 0901 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	所有装備リスト、0x2d0の上位版
 	<attribute>
 	0x1 鑑定済み
 	0x2 破損
 	0x4 個人タブ
-R 0902 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
+R 0902 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
 	カート内アイテム。消耗品/収集品
 	0x2e9の上位版
-R 0903 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
+R 0903 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	カート内装備リスト、0x2d2の上位版
-R 0904 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
+R 0904 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
 	カプラさんに預けてある消耗品&収集品リスト
 	0x2eaの上位版
-R 0905 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
+R 0905 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	カプラさんに預けてある装備リスト、0x2d1の上位版
-R 0906 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B
+R 0906 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	プレイヤー装備ウィンドウ情報
 	0x859の上位版
 S 0907 <index>.w <type>.B
 	個人タブへアイテム移動
-R 0908 <index>.w <type>.B
+R 0908 <index>.w <favorite>.B
 	0x907の応答
 	個人タブへアイテム移動
 R 0909 <?>.l

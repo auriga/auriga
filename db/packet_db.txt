@@ -3221,7 +3221,7 @@
 //0x0957,90,useskilltopos,2:4:6:8:10
 //0x095c,10,useskilltopos,2:4:6:8
 //0x0963,7,actionrequest,2:6
-//0x0966,5,hommenu,2:4
+//0x0966,5,hommenu,4
 
 //2012-03-28aRagexeRE
 //0x0078,55
@@ -3323,7 +3323,7 @@
 0x086c,8,movetokafra,2:4
 0x0871,5,changedir,2:4
 0x0884,6,solvecharname,2
-0x0885,5,hommenu,2:4
+0x0885,5,hommenu,4
 0x0886,6,ticksend,2
 0x0889,6,getcharnamerequest,2
 0x0891,6,dropitem,2:4
