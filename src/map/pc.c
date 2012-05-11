@@ -7843,6 +7843,9 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		}
 #endif
 		status_change_start(&sd->bl,SC_ON_PUSH_CART,type,0,0,0,9999,0);
+		clif_cart_itemlist(sd);
+		clif_cart_equiplist(sd);
+		clif_updatestatus(sd,SP_CARTINFO);
 #if PACKETVER > 20080102
 		clif_skillinfoblock(sd);
 #endif

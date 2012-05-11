@@ -7618,11 +7618,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			icon_val1 = val1;	// カートタイプを渡す
 			ud->state.change_speed = 1;
 			calc_flag = 1;
-			if(sd) {
-				clif_cart_itemlist(sd);
-				clif_cart_equiplist(sd);
-				clif_updatestatus(sd,SP_CARTINFO);
-			}
 			break;
 		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
 			val2 = tick / 10000;
@@ -8368,8 +8363,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				status_change_end(bl, SC_CARTBOOST, -1);
 			if(sc->data[SC_GN_CARTBOOST].timer != -1)
 				status_change_end(bl, SC_GN_CARTBOOST, -1);
-			if(sd)
+			if(sd) {
+				clif_status_change(bl,SI_ON_PUSH_CART,-1,0,0,0,0);
 				clif_cart_clear(sd);
+			}
 			break;
 		case SC_ELEMENTWATER:		// 水
 		case SC_ELEMENTGROUND:		// 土
