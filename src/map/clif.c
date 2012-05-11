@@ -14468,7 +14468,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(pc_iscarton(sd)){
 		// OPTION->SCの初回変換
 		if(sd->sc.data[SC_ON_PUSH_CART].timer == -1) {
-			int type = (sd->sc.option&OPTION_CARTMASK)
+			int type = (sd->sc.option&OPTION_CARTMASK);
 #if PACKETVER >= 20120201
 			// オプション値からカートタイプを変換する
 			switch(type) {
