@@ -14466,31 +14466,6 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_equiplist(sd);
 	// cart
 	if(pc_iscarton(sd)){
-		// OPTION->SCの初回変換
-		if(sd->sc.data[SC_ON_PUSH_CART].timer == -1) {
-			int type = (sd->sc.option&OPTION_CARTMASK);
-#if PACKETVER >= 20120201
-			// オプション値からカートタイプを変換する
-			switch(type) {
-				case OPTION_PUSHCART:
-					type = CART_TYPE_NORMAL;
-					break;
-				case OPTION_PUSHCART2:
-					type = CART_TYPE_LEVEL40;
-					break;
-				case OPTION_PUSHCART3:
-					type = CART_TYPE_LEVEL65;
-					break;
-				case OPTION_PUSHCART4:
-					type = CART_TYPE_LEVEL80;
-					break;
-				case OPTION_PUSHCART5:
-					type = CART_TYPE_LEVEL90;
-					break;
-			}
-#endif
-			status_change_start(&sd->bl,SC_ON_PUSH_CART,type,0,0,0,9999,0);
-		}
 		clif_cart_itemlist(sd);
 		clif_cart_equiplist(sd);
 		clif_updatestatus(sd,SP_CARTINFO);

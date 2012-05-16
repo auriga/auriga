@@ -516,7 +516,7 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 	if( !(mode&MD_BOSS) && tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
 		((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;
-	if((mode&MD_TARGETLOWERLEVEL) && status_get_lv(bl) >= mob_db[md->class_].lv-5)
+	if((mode&MD_TARGETLOWERLEVEL) && !md->target_id && status_get_lv(bl) >= mob_db[md->class_].lv-5)
 		return 0;
 
 	if(bl->type == BL_PC) {

@@ -3,7 +3,7 @@
 //= Registry ===================================================================
 // HUNT_QUE -> 0〜
 //==============================================================================
--	script	討伐隊　隊長#Hunt	951,{
+prontera.gat,122,53,3	script	討伐隊　隊長#Hunt_Prt	951,{
 	if(BaseLevel < 80) {
 		mes "[討伐隊　隊長]";
 		mes "う〜む……";
@@ -187,7 +187,7 @@ OnInit:
 	end;
 }
 
--	script	討伐隊　補佐官#Hunt	952,{
+prontera.gat,122,50,3	script	討伐隊　補佐官#Hunt_Prt	952,{
 	if(BaseLevel < 80) {
 		mes "[討伐隊　補佐官]";
 		mes "う〜ん……";
@@ -381,35 +381,33 @@ OnInit:
 	close;
 }
 
-prontera.gat,122,53,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Prt	951
-prontera.gat,122,50,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Prt	952
-izlude.gat,132,119,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Iz	951
-izlude.gat,135,122,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Iz	952
-payon.gat,167,109,5		duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Pay	951
-payon.gat,167,113,5		duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Pay	952
-geffen.gat,115,68,5		duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Gef	951
-geffen.gat,115,72,5		duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Gef	952
-alberta.gat,106,69,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Alb	951
-alberta.gat,104,67,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Alb	952
-morocc.gat,150,104,5	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Moc	951
-morocc.gat,153,107,5	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Moc	952
-alderaban.gat,146,113,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Alde	951
-alderaban.gat,146,110,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Alde	952
-yuno.gat,143,188,3		duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Yuno	951
-yuno.gat,141,188,3		duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Yuno	952
-lighthalzen.gat,167,102,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Lhz	951
-lighthalzen.gat,170,105,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Lhz	952
-hugel.gat,107,152,3		duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Hu	951
-hugel.gat,110,152,3		duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Hu	952
-rachel.gat,108,131,5	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Ra	951
-rachel.gat,108,135,5	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Ra	952
-veins.gat,203,132,3		duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Ve	951
-veins.gat,201,132,3		duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Ve	952
-amatsu.gat,107,162,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Ama	951
-amatsu.gat,104,162,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Ama	952
-moscovia.gat,218,198,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Mosk	951
-moscovia.gat,217,196,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Mosk	952
-brasilis.gat,191,264,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Bra	951
-brasilis.gat,188,264,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Bra	952
-mid_camp.gat,61,129,3	duplicate(討伐隊　隊長#Hunt)	討伐隊　隊長#Hunt_Mid	951
-mid_camp.gat,58,132,3	duplicate(討伐隊　補佐官#Hunt)	討伐隊　補佐官#Hunt_Mid	952
+izlude.gat,132,119,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Iz	951
+izlude.gat,135,122,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Iz	952
+payon.gat,167,109,5		duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Pay	951
+payon.gat,167,113,5		duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Pay	952
+geffen.gat,115,68,5		duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Gef	951
+geffen.gat,115,72,5		duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Gef	952
+alberta.gat,106,69,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Alb	951
+alberta.gat,104,67,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Alb	952
+morocc.gat,150,104,5	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Moc	951
+morocc.gat,153,107,5	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Moc	952
+alderaban.gat,146,113,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Alde	951
+alderaban.gat,146,110,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Alde	952
+yuno.gat,143,188,3		duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Yuno	951
+yuno.gat,141,188,3		duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Yuno	952
+lighthalzen.gat,167,102,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Lhz	951
+lighthalzen.gat,170,105,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Lhz	952
+hugel.gat,107,152,3		duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Hu	951
+hugel.gat,110,152,3		duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Hu	952
+rachel.gat,108,131,5	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Ra	951
+rachel.gat,108,135,5	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Ra	952
+veins.gat,203,132,3		duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Ve	951
+veins.gat,201,132,3		duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Ve	952
+amatsu.gat,107,162,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Ama	951
+amatsu.gat,104,162,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Ama	952
+moscovia.gat,218,198,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Mosk	951
+moscovia.gat,217,196,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Mosk	952
+brasilis.gat,191,264,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Bra	951
+brasilis.gat,188,264,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Bra	952
+mid_camp.gat,61,129,3	duplicate(討伐隊　隊長#Hunt_Prt)	討伐隊　隊長#Hunt_Mid	951
+mid_camp.gat,58,132,3	duplicate(討伐隊　補佐官#Hunt_Prt)	討伐隊　補佐官#Hunt_Mid	952

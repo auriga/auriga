@@ -7618,6 +7618,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			icon_val1 = val1;	// カートタイプを渡す
 			ud->state.change_speed = 1;
 			calc_flag = 1;
+			if(sd && val2) {
+				clif_cart_itemlist(sd);
+				clif_cart_equiplist(sd);
+				clif_updatestatus(sd,SP_CARTINFO);
+			}
+			val2 = 1;
 			break;
 		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
 			val2 = tick / 10000;

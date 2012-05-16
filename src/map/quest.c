@@ -346,7 +346,7 @@ static int quest_readdb(void)
 			quest_db[i].mob[j].id    = (short)atoi(split[3+j*2]);
 			quest_db[i].mob[j].count = (short)atoi(split[4+j*2]);
 
-			if(++k >= MAX_QUEST_DB)
+			if(!quest_db[i].mob[j].id || ++k >= MAX_QUEST_DB)
 				continue;
 			quest_killdb[k]          = quest_db[i].mob[j].id;
 		}

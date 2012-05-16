@@ -1,4 +1,17 @@
 ----------------------------------------
+//0962 [2012/05/17] by refis
+
+・討伐クエストNPCを読み込むとエラーが出るので修正 (npc_quest_hunting.txt)
+
+・カートの処理が上手く動いていないので修正 (src/map/clif.c src/map/pc.c src/map/status.c)
+
+・AI「強敵に非アクティブ」の敵が非反撃になるミスを修正 (src/map/mob.c)
+	Thanks rain さん
+
+・討伐データベース登録時に0を除外するように修正 (src/map/quest.c)
+	Thanks East さん、pneuma さん
+
+----------------------------------------
 //0961 [2012/05/12] by refis
 
 ・0960のミスを修正 (src/map/clif.c)

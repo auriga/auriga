@@ -7842,10 +7842,7 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 				break;
 		}
 #endif
-		status_change_start(&sd->bl,SC_ON_PUSH_CART,type,0,0,0,9999,0);
-		clif_cart_itemlist(sd);
-		clif_cart_equiplist(sd);
-		clif_updatestatus(sd,SP_CARTINFO);
+		status_change_start(&sd->bl,SC_ON_PUSH_CART,type,1,0,0,9999,0);
 #if PACKETVER > 20080102
 		clif_skillinfoblock(sd);
 #endif
@@ -7910,7 +7907,11 @@ void pc_setcart(struct map_session_data *sd, unsigned short type)
 	if(pc_checkskill(sd,MC_PUSHCART) > 0) {	// プッシュカートスキル所持
 		if(sd->status.base_level > cart[type].level) {
 			// suppress actual cart; conserv other options
-			status_change_start(&sd->bl,SC_ON_PUSH_CART,cart[type].opt,0,0,0,9999,0);
+			if( pc_iscarton(sd) ) {
+				status_change_start(&sd->bl,SC_ON_PUSH_CART,cart[type].opt,0,0,0,9999,0);
+			} else {
+				status_change_start(&sd->bl,SC_ON_PUSH_CART,cart[type].opt,1,0,0,9999,0);
+			}
 		}
 	}
 
