@@ -9036,6 +9036,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			elem_skilluse(sd->eld, bl, ELMODE_OFFENSIVE);
 		}
 		break;
+	case SO_EL_ANALYSIS:	/* エレメンタルアナライシス */
+		if(sd) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			clif_convertitem(sd,skillid,skilllv);
+		}
+		break;
 	case SO_EL_CURE:	/* エレメンタルキュアー */
 		if(sd && sd->eld) {
 			int hp = sd->status.max_hp * 10 / 100;
@@ -9129,7 +9135,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GN_CHANGEMATERIAL:	/* チェンジマテリアル */
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			clif_changematerial_list(sd);
+			clif_convertitem(sd,skillid,0);
 		}
 		break;
 	case GN_MIX_COOKING:	/* ミックスクッキング */
@@ -17599,6 +17605,87 @@ void skill_changematerial(struct map_session_data *sd, int num, unsigned short *
 	}
 
 	clif_skill_message(sd, GN_CHANGEMATERIAL, 1575);	// 失敗しました。
+
+	return;
+}
+
+/*==========================================
+ * エレメンタルアナライシス
+ *------------------------------------------
+ */
+void skill_el_analysis(struct map_session_data *sd, int num, int skilllv, unsigned short *item_list)
+{
+	int i, nameid, amount, result, addnum, flag;
+	struct item tmp_item;
+
+	nullpo_retv(sd);
+	nullpo_retv(item_list);
+
+	if(num <= 0) {
+		clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+		return;
+	}
+
+	for(i = 0; i < num; i++) {
+		int idx = item_list[i * 2] - 2;
+		if(idx < 0 || idx >= MAX_INVENTORY) {
+			// anti hacker
+			clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+			return;
+		}
+		nameid = sd->status.inventory[idx].nameid;
+		amount = item_list[i * 2 + 1];
+		if(amount <= 0) {
+			// anti hacker
+			clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+			return;
+		}
+
+		switch(nameid) {
+			case 994: result = 990; break;	// フレイムハート > レッドブラッド
+			case 995: result = 991; break;	// ミスティックフローズン > クリスタルブルー
+			case 996: result = 992; break;	// ラフウィンド > ウィンドオブヴェルデュール
+			case 997: result = 993; break;	// グレイトネイチャ > イエローライブ
+			case 990: result = 994; break;	// レッドブラッド > フレイムハート
+			case 991: result = 995; break;	// クリスタルブルー > ミスティックフローズン
+			case 992: result = 996; break;	// ウィンドオブヴェルデュール > ラフウィンド
+			case 993: result = 997; break;	// イエローライブ > グレイトネイチャ
+			default:
+				clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+				return;
+		}
+
+		switch(skilllv) {
+			case 1:		// エレメンタルアナライシス Lv1
+				addnum = amount * (atn_rand()%5 + 5);
+				break;
+			case 2:		// エレメンタルアナライシス Lv2
+				addnum = amount / 10;
+				break;
+			default:
+				clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+				return;
+		}
+
+		if(addnum <= 0) {
+			// anti hacker
+			clif_skill_message(sd, SO_EL_ANALYSIS, 1575);	// 失敗しました。
+			return;
+		}
+
+		pc_delitem(sd, idx, amount, 0, 1);	// アイテム消費
+
+		memset(&tmp_item, 0, sizeof(tmp_item));
+		tmp_item.nameid = result;
+		tmp_item.amount = addnum;
+		tmp_item.identify = 1;
+		if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+			clif_additem(sd, 0, 0, flag);
+			map_addflooritem(&tmp_item, tmp_item.amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 0);
+		}
+	}
+
+	clif_skill_message(sd, SO_EL_ANALYSIS, 1574);	// 成功しました。
 
 	return;
 }

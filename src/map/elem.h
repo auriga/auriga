@@ -71,7 +71,6 @@ int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode);
 int elem_gainexp(struct elem_data *eld,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp);
 int elem_damage(struct block_list *src,struct elem_data *eld,int damage);
 int elem_heal(struct elem_data *eld,int hp,int sp);
-int elem_warp(struct elem_data *eld,int m,int x,int y);
 
 int elem_natural_heal_timer_delete(struct elem_data *eld);
 int elem_summon_timer_delete(struct elem_data *eld);

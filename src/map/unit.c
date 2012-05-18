@@ -1828,6 +1828,11 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		if( src_md && mobskill_use(src_md,tick,-2) ) {	// スキル使用
 			return 1;
 		}
+		if(src_eld && atn_rand()%10000 < battle_config.elem_attackskill_rate) {	// 精霊のスキル使用
+			elem_skilluse(src_eld,target,ELMODE_OFFENSIVE);
+			return 1;
+		}
+
 		if(!sc || (sc->data[SC_COMBO].timer == -1 && sc->data[SC_TKCOMBO].timer == -1)) {
 			map_freeblock_lock();
 			unit_stop_walking(src,1);

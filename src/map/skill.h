@@ -301,6 +301,7 @@ void skill_reading_sb(struct map_session_data *sd, int nameid);
 void skill_magicdecoy(struct map_session_data *sd, int nameid);
 void skill_autoshadowspell(struct map_session_data *sd, int skillid);
 void skill_changematerial(struct map_session_data *sd, int num, unsigned short *item_list);
+void skill_el_analysis(struct map_session_data *sd, int num, int skilllv, unsigned short *item_list);
 
 // mobスキルのため
 int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag );

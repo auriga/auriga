@@ -108,7 +108,7 @@ void clif_callpartner(struct map_session_data *sd);
 void clif_divorced(struct map_session_data *sd, const char *name);
 void clif_baby_req_fail(struct map_session_data *sd, int type);
 void clif_sitting(struct block_list *bl, int sit);
-void clif_changematerial_list(struct map_session_data *sd);
+void clif_convertitem(struct map_session_data *sd, int skillid, int skilllv);
 void clif_skill_message(struct map_session_data *sd, int skillid, int type);
 void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest);
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval);

@@ -7119,6 +7119,7 @@ int battle_config_read(const char *cfgName)
 		{ "ko_status_max",                      &battle_config.ko_status_max,                      120      },
 		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
 		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },
+		{ "elem_attackskill_rate",              &battle_config.elem_attackskill_rate,              500      },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

@@ -232,6 +232,114 @@ int elem_summon_timer_delete(struct elem_data *eld)
 }
 
 /*==========================================
+ * 指定IDの存在場所への到達可能性
+ *------------------------------------------
+ */
+static int elem_can_reach(struct elem_data *eld,struct block_list *bl,int range)
+{
+	struct walkpath_data wpd;
+
+	nullpo_retr(0, eld);
+	nullpo_retr(0, bl);
+
+	if(eld->bl.m != bl-> m)	// 違うマップ
+		return 0;
+
+	if( range > 0 && range < unit_distance(eld->bl.x,eld->bl.y,bl->x,bl->y) )	// 遠すぎる
+		return 0;
+
+	if( eld->bl.x == bl->x && eld->bl.y == bl->y )	// 同じマス
+		return 1;
+
+	if( eld->attackrange > 6 ) {
+		// 攻撃可能な場合は遠距離攻撃、それ以外は移動を試みる
+		if( path_search_long(NULL,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y) )
+			return 1;
+	}
+
+	// 障害物判定
+	wpd.path_len = 0;
+	wpd.path_pos = 0;
+	if( !path_search(&wpd,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y,0) && wpd.path_len <= AREA_SIZE )
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
+ * ターゲットのロックが可能かどうか
+ *------------------------------------------
+ */
+static int elem_can_lock(struct elem_data *eld, struct block_list *bl)
+{
+	struct status_change *tsc;
+
+	nullpo_retr(0, eld);
+
+	if(bl == NULL || unit_isdead(bl))
+		return 0;
+
+	tsc  = status_get_sc(bl);
+
+	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
+		return 0;
+	if( tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
+		(tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
+		return 0;
+
+	if(bl->type == BL_PC) {
+		struct map_session_data *tsd = (struct map_session_data *)bl;
+		if(tsd) {
+			if( tsd->invincible_timer != -1 )
+				return 0;
+			if( pc_isinvisible(tsd) )
+				return 0;
+			if( tsd->state.gangsterparadise )
+				return 0;
+		}
+	}
+	return 1;
+}
+
+/*==========================================
+ * 精霊策敵ルーティン
+ *------------------------------------------
+ */
+static int elem_ai_sub_timer_search(struct block_list *bl,va_list ap)
+{
+	struct elem_data *eld = NULL;
+	int count, dist, range;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, eld = va_arg(ap,struct elem_data *));
+
+	count = va_arg(ap,int);
+
+	if( eld->bl.id == bl->id )
+		return 0; // self
+
+	dist = unit_distance(eld->bl.x,eld->bl.y,bl->x,bl->y);
+
+	// アクティブ
+	range = (eld->sc.data[SC_BLIND].timer != -1 || eld->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
+
+	// ターゲット射程内にいるなら、ロックする
+	if(dist <= range && battle_check_target(&eld->bl,bl,BCT_ENEMY) >= 1 && elem_can_lock(eld,bl)) {
+		// 射線チェック
+		cell_t cell_flag = (eld->attackrange > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
+		if( path_search_long_real(NULL,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y,cell_flag) &&
+		    elem_can_reach(eld,bl,range) &&
+		    atn_rand()%1000 < 1000/(++count) )	// 範囲内PCで等確率にする
+		{
+			eld->target_id = bl->id;
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
  * 精霊AI処理
  *------------------------------------------
  */
@@ -260,21 +368,105 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 	eld->last_thinktime = tick;
 
 	dist = unit_distance2(&eld->bl,&msd->bl);
-	if(dist > AREA_SIZE) {
-		elem_unlocktarget(eld);
-		elem_warp(eld,msd->bl.m,msd->bl.x,msd->bl.y);
+	if(dist > 12) {
+		if(eld->target_id) {
+			unit_stopattack(&eld->bl);
+			elem_unlocktarget(eld);
+		}
+		if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
+			return 0;
+		eld->speed = (msd->speed >> 1);
+		if(eld->speed <= 0)
+			eld->speed = 1;
+		elem_calc_pos(eld,msd->bl.x,msd->bl.y,msd->dir);
+		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
 		return 0;
 	}
-	else if(dist > MAX_ELEMDISTANCE) {
-		int x = msd->bl.x;
-		int y = msd->bl.y;
-		if(eld->target_id)
-			elem_unlocktarget(eld);
-		if(eld->ud.walktimer != -1)
+
+	if(eld->status.mode == ELMODE_OFFENSIVE) {
+		struct block_list *tbl = NULL;
+		int count = 0;
+
+		if(eld->target_id == 0) {
+			map_foreachinarea(elem_ai_sub_timer_search,eld->bl.m,
+							  msd->bl.x-AREA_SIZE,msd->bl.y-AREA_SIZE,
+							  msd->bl.x+AREA_SIZE,msd->bl.y+AREA_SIZE,
+							  BL_CHAR,eld,count);
+		}
+
+		if( eld->target_id <= 0 || (tbl = map_id2bl(eld->target_id)) == NULL ||
+		    tbl->m != eld->bl.m || tbl->prev == NULL ||
+		    (dist = unit_distance(eld->bl.x,eld->bl.y,tbl->x,tbl->y)) >= AREA_SIZE )
+		{
+			// 対象が居ない / どこかに消えた / 視界外
+			if(eld->target_id > 0) {
+				elem_unlocktarget(eld);
+				if(eld->ud.walktimer != -1)
+					unit_stop_walking(&eld->bl,5);	// 歩行中なら停止
+				return 0;
+			}
+		} else if(tbl->type & BL_CHAR) {
+			if(!elem_can_lock(eld,tbl)) {
+				// スキルなどによる策敵妨害判定
+				elem_unlocktarget(eld);
+			} else if(!battle_check_range(&eld->bl,tbl,eld->attackrange)) {
+				// 攻撃範囲外なので移動
+				if( !unit_can_move(&eld->bl) || unit_isrunning(&eld->bl) ) {	// 動けない状態にある
+					// アンクル、蜘蛛の巣拘束中は強制待機
+					if(eld->sc.data && (eld->sc.data[SC_ANKLE].timer != -1 || eld->sc.data[SC_SPIDERWEB].timer != -1 ||
+					   eld->sc.data[SC_ELECTRICSHOCKER].timer != -1 || eld->sc.data[SC_MAGNETICFIELD].timer != -1 ||
+					   eld->sc.data[SC_SITDOWN_FORCE].timer != -1 || eld->sc.data[SC_FALLENEMPIRE].timer != -1 ||
+					   eld->sc.data[SC_NETHERWORLD].timer != -1 || eld->sc.data[SC_VACUUM_EXTREME].timer != -1 ||
+					   eld->sc.data[SC_THORNS_TRAP].timer != -1 || eld->sc.data[SC_BANANA_BOMB].timer != -1))
+						elem_unlocktarget(eld);
+					return 0;
+				}
+				if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,tbl->x,tbl->y) < 2)
+					return 0; // 既に移動中
+				if( !elem_can_reach(eld,tbl,AREA_SIZE) ) {
+					elem_unlocktarget(eld);	// 移動できないのでタゲ解除（IWとか？）
+				} else {
+					// 追跡
+					int dx, dy, ret, i = 0;
+					do {
+						if(i == 0) {
+							// 最初はAEGISと同じ方法で検索
+							dx = tbl->x - eld->bl.x;
+							dy = tbl->y - eld->bl.y;
+							if(dx < 0) dx++; else if(dx > 0) dx--;
+							if(dy < 0) dy++; else if(dy > 0) dy--;
+						} else {
+							// だめならAthena式(ランダム)
+							dx = tbl->x - eld->bl.x + atn_rand()%3 - 1;
+							dy = tbl->y - eld->bl.y + atn_rand()%3 - 1;
+						}
+						ret = unit_walktoxy(&eld->bl,eld->bl.x+dx,eld->bl.y+dy);
+						i++;
+					} while(ret == 0 && i < 5);
+
+					if(ret == 0) { // 移動不可能な所からの攻撃なら2歩下る
+						if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
+						if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
+						unit_walktoxy(&eld->bl,eld->bl.x+dx,eld->bl.y+dy);
+					}
+				}
+			} else {
+				// 攻撃射程範囲内
+				if(eld->ud.walktimer != -1)
+					unit_stop_walking(&eld->bl,1);	// 歩行中なら停止
+				if(eld->ud.attacktimer != -1 || eld->ud.canact_tick > gettick())
+					return 0; // 既に攻撃中
+				unit_attack(&eld->bl, eld->target_id, 1);
+			}
 			return 0;
-		if(DIFF_TICK(tick, eld->ud.canmove_tick) < 0)
+		}
+	}
+
+	if(dist > MAX_ELEMDISTANCE && eld->target_id == 0) {
+		if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
 			return 0;
+		eld->speed = msd->speed;
 		elem_calc_pos(eld,msd->bl.x,msd->bl.y,msd->dir);
 		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
@@ -332,7 +524,9 @@ int elem_calc_status(struct elem_data *eld)
 		eld->speed    = status_get_speed(&eld->msd->bl);
 	else
 		eld->speed    = elem_db[class_].speed;
+	eld->adelay   = elem_db[class_].adelay;
 	eld->amotion  = elem_db[class_].amotion;
+	eld->dmotion  = elem_db[class_].dmotion;
 	eld->nhealhp  = 0;
 	eld->nhealsp  = 0;
 	eld->hprecov_rate = 100;
@@ -877,67 +1071,6 @@ int elem_heal(struct elem_data *eld,int hp,int sp)
 	}
 
 	return hp + sp;
-}
-
-/*==========================================
- * ワープ
- *------------------------------------------
- */
-int elem_warp(struct elem_data *eld,int m,int x,int y)
-{
-	int moveblock;
-	int i = 0, xs = 0, ys = 0, bx = x, by = y;
-	unsigned int tick = gettick();
-
-	nullpo_retr(0, eld);
-
-	if(eld->bl.prev == NULL)
-		return 0;
-
-	if(m < 0)
-		m = eld->bl.m;
-
-	clif_clearchar_area(&eld->bl,3);
-
-	if(bx > 0 && by > 0) {	// 位置指定の場合周囲９セルを探索
-		xs = ys = 9;
-	}
-
-	while( (x < 0 || y < 0 || map_getcell(m,x,y,CELL_CHKNOPASS)) && (i++) < 1000 ) {
-		if( xs > 0 && ys > 0 && i < 250 ) {	// 指定位置付近の探索
-			x = bx+atn_rand()%xs-xs/2;
-			y = by+atn_rand()%ys-ys/2;
-		} else {				// 完全ランダム探索
-			x = atn_rand()%(map[m].xs-2)+1;
-			y = atn_rand()%(map[m].ys-2)+1;
-		}
-	}
-	eld->dir = 0;
-	if(i >= 1000) {
-		m = eld->bl.m;
-		x = eld->bl.x;
-		y = eld->bl.y;
-		if(battle_config.error_log)
-			printf("ELEM %d warp to (%d,%d) failed\n",eld->bl.id,bx,by);
-	}
-
-	moveblock = map_block_is_differ(&eld->bl,m,x,y);
-
-	skill_unit_move(&eld->bl,tick,0);
-
-	if(moveblock)
-		map_delblock(&eld->bl);
-	eld->bl.m = m;
-	eld->bl.x = eld->ud.to_x = x;
-	eld->bl.y = eld->ud.to_y = y;
-	eld->target_id   = 0;
-	if(moveblock)
-		map_addblock(&eld->bl);
-
-	skill_unit_move(&eld->bl,tick,1);
-	clif_spawnelem(eld);
-
-	return 0;
 }
 
 /*==========================================

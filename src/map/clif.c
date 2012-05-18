@@ -13724,22 +13724,24 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 }
 
 /*==========================================
- * チェンジマテリアル合成リスト
+ * アイテム合成リスト
  *------------------------------------------
  */
-void clif_changematerial_list(struct map_session_data *sd)
+void clif_convertitem(struct map_session_data *sd, int skillid, int skilllv)
 {
+#if PACKETVER > 20090715
 	int fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x7e3;
-	WFIFOL(fd,2) = 0;
+	WFIFOL(fd,2) = skilllv;
 	WFIFOSET(fd, packet_db[0x7e3].len);
 
-	sd->skill_menu.id = GN_CHANGEMATERIAL;
-	sd->skill_menu.lv = 1;
+	sd->skill_menu.id = skillid;
+	sd->skill_menu.lv = skilllv;
+#endif
 
 	return;
 }
@@ -18547,15 +18549,10 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 				}
 				break;
 			case 1:
-				/* 四元素分析Lv1 */
-				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 1) {
-					
-				}
-				break;
 			case 2:
-				/* 四元素分析Lv2 */
-				if(sd->skill_menu.id == SO_EL_ANALYSIS && sd->skill_menu.lv == 2) {
-					
+				/* エレメンタルアナライシス */
+				if(sd->skill_menu.id == SO_EL_ANALYSIS) {
+					skill_el_analysis(sd, num, type, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,3)));
 				}
 				break;
 		}
