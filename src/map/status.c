@@ -1487,7 +1487,7 @@ L_RECALC:
 	// 太陽と月と星の悪魔
 	if((skill = pc_checkskill(sd,SG_DEVIL)) > 0 && sd->status.job_level >= 50)
 	{
-		clif_status_load(sd,SI_DEVIL,1);
+		clif_status_load_id(sd,SI_DEVIL,1);
 	}
 
 	// 太陽と月と星の融合
@@ -2391,16 +2391,16 @@ L_RECALC:
 
 	// bTigereyeがなくなっていたらパケット送って元に戻す
 	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc.data[SC_TIGEREYE].timer == -1)
-		clif_status_load(sd, SI_TIGEREYE, 0);
+		clif_status_load_id(sd,SI_TIGEREYE,0);
 
 	// bInfiniteEndureがなくなっていたらパケットを送って元に戻す
 	if(b_endure == 1 && sd->special_state.infinite_endure == 0)
-		clif_status_load(sd, SI_ENDURE, 0);
+		clif_status_load_id(sd,SI_ENDURE,0);
 	// bSpeedRateがなくなっていたらパケットを送って元に戻す
 	if(b_speedrate != 0 && sd->speed_rate == 0)
-		clif_status_load(sd, SI_MOVHASTE_INFINITY, 0);
+		clif_status_load_id(sd,SI_MOVHASTE_INFINITY,0);
 	else if(b_speedrate < sd->speed_rate)
-		clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
+		clif_status_load_id(sd,SI_MOVHASTE_INFINITY,1);
 
 	// 計算処理ここまで
 	if( sd->status_calc_pc_process > 1 ) {
@@ -5840,7 +5840,6 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			sc_flag = 1;
 			break;
 		case SC_SLEEP:	// 睡眠
-		case SC_DEEP_SLEEP:	// 安息の子守唄
 			rate += src_level*10 - rate * status_get_int(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
@@ -8369,10 +8368,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				status_change_end(bl, SC_CARTBOOST, -1);
 			if(sc->data[SC_GN_CARTBOOST].timer != -1)
 				status_change_end(bl, SC_GN_CARTBOOST, -1);
-			if(sd) {
-				clif_status_change(bl,SI_ON_PUSH_CART,-1,0,0,0,0);
+			if(sd)
 				clif_cart_clear(sd);
-			}
 			break;
 		case SC_ELEMENTWATER:		// 水
 		case SC_ELEMENTGROUND:		// 土
@@ -8473,13 +8470,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_BERSERK:			/* バーサーク */
 			calc_flag = 1;
 			if(sd) {
-				clif_status_change(bl,SI_INCREASEAGI,0,0,0,0,0);	// アイコン消去
+				clif_status_load_id(sd,SI_INCREASEAGI,0);	// アイコン消去
 				status_change_start(bl,SC_NATURAL_HEAL_STOP,0,0,0,0,skill_get_time2(LK_BERSERK,sc->data[type].val1),0);
 			}
 			break;
 		case SC_HALLUCINATION:
 			if(sd)
-				clif_status_change(bl,SI_HALLUCINATION,0,0,0,0,0);	// アイコン消去
+				clif_status_load_id(sd,SI_HALLUCINATION,0);	// アイコン消去
 			break;
 
 		case SC_ENDURE:				/* インデュア */
@@ -8613,7 +8610,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_SEVENWIND:	/* 暖かい風 */
 			if(sd)
-				clif_status_change(bl,sc->data[type].val2,0,0,0,0,0);
+				clif_status_load_id(sd,sc->data[type].val2,0);
 			break;
 		case SC_AUTOBERSERK:
 			if(sc->data[SC_PROVOKE].timer != -1 && sc->data[SC_PROVOKE].val2 == 1) {
@@ -8692,13 +8689,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			}
 			break;
 		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
-			if(sd)
-				clif_status_change(bl,SI_MONSTER_TRANSFORM,-1,0,0,0,0);
 			calc_flag = 1;
 			break;
 		case SC_KYOUGAKU:	/* 驚愕 */
-			if(sd)
-				clif_status_change(bl,SI_KYOUGAKU,-1,0,0,0,0);
 			calc_flag = 1;
 			break;
 		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
@@ -8718,8 +8711,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 	}
 
-	if(StatusIconChangeTable[type] != SI_BLANK)
-		clif_status_change(bl,StatusIconChangeTable[type],0,0,0,0,0);	// アイコン消去
+	if(StatusIconChangeTable[type] != SI_BLANK)	// アイコン消去
+		clif_status_load(bl,StatusIconChangeTable[type],0);
 
 	switch(type) {	/* 正常に戻るときなにか処理が必要 */
 		// opt1
@@ -8877,7 +8870,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_HIDING:
 			// 霞斬りでない通常のハイドならアイコン消去
 			if(sd && sc->data[type].val3 == 0)
-				clif_status_change(bl,SI_HIDING,0,0,0,0,0);
+				clif_status_load_id(sd,SI_HIDING,0);
 			sc->option &= ~OPTION_HIDE;
 			opt_flag = 1;
 			break;
@@ -9080,7 +9073,9 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 	struct status_pretimer *stpt;
 
 	nullpo_retr(1, bl);
-	nullpo_retr(1, ud = unit_bl2ud(bl));
+	ud = unit_bl2ud(bl);
+	if(ud == NULL)
+		return 0;
 
 	stpt = (struct status_pretimer *)aCalloc(1, sizeof(struct status_pretimer));
 	stpt->timer     = add_timer(pre_tick, status_pretimer_timer, bl->id, stpt);

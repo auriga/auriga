@@ -193,9 +193,10 @@ void clif_mission_mob(struct map_session_data *sd, int id, int count);
 void clif_angel_message(struct map_session_data *sd);
 void clif_feel_display(struct map_session_data *sd, int skilllv);
 
-void clif_status_load(struct map_session_data *sd, int type, unsigned char flag);
+void clif_status_load(struct block_list *bl, int type, unsigned char flag);
+void clif_status_load_id(struct map_session_data *sd, int type, unsigned char flag);
 void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
-void clif_status_change_id(int fd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
+void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len);
 void clif_wis_end(int fd, unsigned short flag);

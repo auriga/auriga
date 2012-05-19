@@ -1,4 +1,18 @@
 ----------------------------------------
+//0964 [2012/05/20] by refis
+
+・clif_status_load、clif_status_change_idの処理を変更
+	-> 既存のclif_status_loadをclif_status_load_idに名称変更し、新たに広範囲用のclif_status_loadを追加
+　　　(src/map/atcommand.c src/map/clif.* src/map/pc.c src/map/status.c)
+	-> 統一的にclif_status_change_idの第1引数にmap_session_dataを用いるよう変更 (src/map/clif.*)
+
+・状態異常の解除にclif_status_loadを利用するように変更 (src/map/status.c)
+
+・状態異常「深い睡眠」はステータスで耐性を得られないよう修正 (src/map/status.c)
+
+・status_change_pretimerはスキルユニットに対しても呼ばれる可能性があるのでユニットチェックを変更 (src/map/status.c)
+
+----------------------------------------
 //0963 [2012/05/19] by Blaze
 
 ・精霊システム実装

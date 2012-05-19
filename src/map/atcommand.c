@@ -3008,7 +3008,7 @@ int atcommand_night(const int fd, struct map_session_data* sd, AtCommandType com
 
 	for (i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			//clif_status_load(pl_sd,SI_MIRACLE,1);
+			//clif_status_load_id(pl_sd,SI_MIRACLE,1);
 			clif_displaymessage(pl_sd->fd, msg_txt(59));
 		}
 	}
@@ -3027,7 +3027,7 @@ int atcommand_day(const int fd, struct map_session_data* sd, AtCommandType comma
 
 	for (i = 0; i < fd_max; i++) {
 		if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
-			//clif_status_load(pl_sd,SI_MIRACLE,0);
+			//clif_status_load_id(pl_sd,SI_MIRACLE,0);
 			clif_displaymessage(pl_sd->fd, msg_txt(60));
 		}
 	}

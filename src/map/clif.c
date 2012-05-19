@@ -7202,13 +7202,13 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		}
 
 		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
-			clif_status_change_id(sd->fd,dstsd->bl.id,SI_KYOUGAKU,1,0,dstsd->sc.data[SI_KYOUGAKU].val1,0,0);
+			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,dstsd->sc.data[SI_KYOUGAKU].val1,0,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
-			clif_status_change_id(sd->fd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+			clif_status_change_id(sd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
 		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// 搭乗システム
-			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
+			clif_status_change_id(sd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
-			clif_status_change_id(sd->fd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
+			clif_status_change_id(sd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
 	}
 
 	if(dstsd->chatID) {
@@ -8538,10 +8538,29 @@ void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int
 }
 
 /*==========================================
+ * 状態異常アイコン/メッセージ表示（全体）
+ *------------------------------------------
+ */
+void clif_status_load(struct block_list *bl, int type, unsigned char flag)
+{
+	unsigned char buf[10];
+
+	nullpo_retv(bl);
+
+	WBUFW(buf,0)=0x196;
+	WBUFW(buf,2)=type;
+	WBUFL(buf,4)=bl->id;
+	WBUFB(buf,8)=flag;
+	clif_send(buf,packet_db[0x196].len,bl,AREA);
+
+	return;
+}
+
+/*==========================================
  * 状態異常アイコン/メッセージ表示
  *------------------------------------------
  */
-void clif_status_load(struct map_session_data *sd, int type, unsigned char flag)
+void clif_status_load_id(struct map_session_data *sd, int type, unsigned char flag)
 {
 	int fd;
 
@@ -8618,11 +8637,13 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
  * 状態異常アイコン/メッセージ表示
  *------------------------------------------
  */
-void clif_status_change_id(int fd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3)
+void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3)
 {
-	if(fd < 0)
-		return;
+	int fd;
 
+	nullpo_retv(sd);
+
+	fd=sd->fd;
 	WFIFOW(fd,0)=0x43f;
 	WFIFOW(fd,2)=type;
 	WFIFOL(fd,4)=id;
@@ -14613,9 +14634,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		sd->state.connect_new = 0;
 
 		if(pc_isriding(sd) || pc_isdragon(sd))
-			clif_status_load(sd,SI_RIDING,1);
+			clif_status_load_id(sd,SI_RIDING,1);
 		if(pc_isfalcon(sd))
-			clif_status_load(sd,SI_FALCON,1);
+			clif_status_load_id(sd,SI_FALCON,1);
 
 		// OnPCLoginイベント
 		if(battle_config.pc_login_script)

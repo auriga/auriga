@@ -2019,14 +2019,14 @@ int pc_checkweighticon(struct map_session_data *sd)
 		return 0;
 
 	if(sd->state.icon_weight == 1)
-		clif_status_load(sd,SI_WEIGHT50,0);
+		clif_status_load_id(sd,SI_WEIGHT50,0);
 	else if(sd->state.icon_weight == 2)
-		clif_status_load(sd,SI_WEIGHT90,0);
+		clif_status_load_id(sd,SI_WEIGHT90,0);
 
 	if(flag == 1)
-		clif_status_load(sd,SI_WEIGHT50,1);
+		clif_status_load_id(sd,SI_WEIGHT50,1);
 	else if(flag == 2)
-		clif_status_load(sd,SI_WEIGHT90,1);
+		clif_status_load_id(sd,SI_WEIGHT90,1);
 
 	sd->state.icon_weight = flag;
 
@@ -2384,7 +2384,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2) {
 			if(sd->speed_rate < val) {
 				sd->speed_rate = val;
-				//clif_status_load(sd,SI_MOVHASTE_INFINITY,1);
+				//clif_status_load_id(sd,SI_MOVHASTE_INFINITY,1);
 			}
 		}
 		break;
@@ -2555,7 +2555,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 	case SP_INFINITE_ENDURE:
 		if(sd->state.lr_flag != 2) {
 			sd->special_state.infinite_endure = 1;
-			clif_status_load(sd, SI_ENDURE, 1);
+			clif_status_load_id(sd, SI_ENDURE, 1);
 		}
 		break;
 	case SP_UNBREAKABLE_WEAPON:
@@ -2696,7 +2696,7 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_TIGEREYE:
 		sd->special_state.infinite_tigereye = 1;
-		clif_status_load(sd, SI_TIGEREYE, 1);
+		clif_status_load_id(sd, SI_TIGEREYE, 1);
 		break;
 	case SP_AUTO_STATUS_CALC_PC:
 		if(val >= 0 && val < MAX_STATUSCHANGE)
@@ -7798,27 +7798,27 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 	nullpo_retv(sd);
 
 	if( (type&OPTION_FALCON) && !pc_isfalcon(sd) ) {
-		clif_status_load(sd,SI_FALCON,1);
+		clif_status_load_id(sd,SI_FALCON,1);
 	}
 	else if( !(type&OPTION_FALCON) && pc_isfalcon(sd) ) {
-		clif_status_load(sd,SI_FALCON,0);
+		clif_status_load_id(sd,SI_FALCON,0);
 	}
 
 	if( ((type&OPTION_PECO) && !pc_isriding(sd)) || ((type&OPTION_DRAGONMASK) && !pc_isdragon(sd)) ) {
-		clif_status_load(sd,SI_RIDING,1);
+		clif_status_load_id(sd,SI_RIDING,1);
 	}
 	else if( !(type&OPTION_PECO) && pc_isriding(sd) && !(type&OPTION_DRAGONMASK) ) {
-		clif_status_load(sd,SI_RIDING,0);
+		clif_status_load_id(sd,SI_RIDING,0);
 	}
 	else if( !(type&OPTION_DRAGONMASK) && pc_isdragon(sd) && !(type&OPTION_PECO) ) {
-		clif_status_load(sd,SI_RIDING,0);
+		clif_status_load_id(sd,SI_RIDING,0);
 	}
 
 	if( (type&OPTION_WUGRIDER) && !pc_iswolfmount(sd) ) {
-		clif_status_load(sd,SI_WUGRIDER,1);
+		clif_status_load_id(sd,SI_WUGRIDER,1);
 	}
 	else if( !(type&OPTION_WUGRIDER) && pc_iswolfmount(sd) ) {
-		clif_status_load(sd,SI_WUGRIDER,0);
+		clif_status_load_id(sd,SI_WUGRIDER,0);
 	}
 
 	if( (type&OPTION_CARTMASK) && !pc_iscarton(sd) ) {
