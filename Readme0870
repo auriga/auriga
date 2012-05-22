@@ -1,4 +1,18 @@
 ----------------------------------------
+//0965 [2012/05/23] by refis
+
+・一部のNPCの動作を修正
+	-> 位置、判定文、台詞を修正(npc_job_11hunter.txt npc_job_14crusader.txt npc_misc_guide.txt npc_misc_kafra.txt npc_quest_potion.txt npc_quest_skillget3.txt npc_quest_smilegirl.txt)
+	-> テイミング商人の品揃えを更新 (npc_town_geffen.txt npc_town_izlude.txt npc_town_lighthalzen.txt npc_town_morocc.txt npc_town_payon.txt npc_town_prontera.txt npc_town_yuno.txt)
+
+・魔法書販売のクエストNPCを追加 (conf/map_auriga.conf npc_quest_magicbook.txt)
+
+・状態異常「驚愕」にかかった相手が視界に入ったときの不具合を修正 (src/map/clif.c)
+
+・スキル「マスカレード：グルーミー」のペットとホムに対する処理のチェックを強化 (src/map/skill.c)
+	Thanks Akayumi さん
+
+----------------------------------------
 //0964 [2012/05/20] by refis
 
 ・clif_status_load、clif_status_change_idの処理を変更

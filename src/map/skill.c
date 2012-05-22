@@ -8449,8 +8449,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(dstsd) {
 					pc_setoption(dstsd,(dstsd->sc.option & ~(OPTION_CARTMASK | OPTION_FALCON |
 						OPTION_PECO | OPTION_DRAGONMASK | OPTION_WUG | OPTION_WUGRIDER)));	// カートなどの付属品を削除
-					pet_return_egg(dstsd);
-					homun_return_embryo(dstsd);
+					if(dstsd->pd) pet_return_egg(dstsd);
+					if(dstsd->hd) homun_return_embryo(dstsd);
 					status_change_end(bl,SC_ALL_RIDING,-1);
 					status_change_end(bl,SC_ON_PUSH_CART,-1);
 				}

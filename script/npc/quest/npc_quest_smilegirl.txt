@@ -81,7 +81,7 @@
 	}
 }
 
-prontera.gat,157,187,4	duplicate(SmileGirl)	スマイルマスク職員	92
+prontera.gat,157,196,4	duplicate(SmileGirl)	スマイルマスク職員	92
 aldebaran.gat,136,135,4	duplicate(SmileGirl)	スマイルマスク職員	92
 geffen.gat,119,107,4	duplicate(SmileGirl)	スマイルマスク職員	92
 alberta.gat,113,53,4	duplicate(SmileGirl)	スマイルマスク職員	92

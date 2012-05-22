@@ -180,7 +180,7 @@ function	script	KafraMain	{
 			mes "サービスです。";
 			return;
 		}
-		if(Cart) {
+		if(checkcart()) {
 			mes "[カプラ職員]";
 			mes "お客様は現在カートを";
 			mes "利用されています。";
