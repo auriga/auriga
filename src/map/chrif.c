@@ -46,7 +46,7 @@
 
 static const int packet_len_table[]={
 	60, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
-	 6,-1,19, 7,-1,41,40, 0,		// 2b00-2b07
+	 6,-1,19, 7,-1,41,40, 7,		// 2b00-2b07
 	 6,40,-1,10, 9, 7, 0, 0,		// 2b08-2b0f
 	-1,-1, 6, 3, 3, 3,-1, 6,		// 2b10-2b17
 	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
@@ -180,10 +180,11 @@ int chrif_save(struct map_session_data *sd, int final)
 	}
 
 	WFIFOW(char_fd,0)=0x2b01;
-	WFIFOW(char_fd,2)=sizeof(sd->status)+12;
+	WFIFOW(char_fd,2)=sizeof(sd->status)+13;
 	WFIFOL(char_fd,4)=sd->bl.id;
 	WFIFOL(char_fd,8)=sd->char_id;
-	memcpy(WFIFOP(char_fd,12),&sd->status,sizeof(sd->status));
+	WFIFOB(char_fd,12) = final;
+	memcpy(WFIFOP(char_fd,13),&sd->status,sizeof(sd->status));
 	WFIFOSET(char_fd,WFIFOW(char_fd,2));
 
 	return 0;
@@ -344,6 +345,36 @@ static int chrif_changemapserverack(int fd)
 		return 0;
 	}
 	clif_changemapserver(sd,RFIFOP(fd,14),RFIFOW(fd,30),RFIFOW(fd,32),RFIFOL(fd,34),RFIFOW(fd,38));
+
+	return 0;
+}
+
+/*==========================================
+ * キャラクターデータ保存ack
+ *------------------------------------------
+ */
+static int chrif_saveack(int fd)
+{
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
+	int type = RFIFOB(fd,6);
+
+	if(sd) {
+		if(type == 2) {	//キャラクターセレクト
+			chrif_charselectreq(sd);
+		} else if(type == 3) {	//別マップサーバーへ移動
+			unsigned long ip;
+			unsigned short port;
+
+			if(map_mapname2ipport(sd->status.last_point.map,&ip,&port) == 0) {
+				chrif_changemapserver(sd,sd->status.last_point.map,sd->status.last_point.x,sd->status.last_point.y,ip,port);
+			}
+		} else {	//切断
+			close(fd);
+			map_deliddb(&sd->bl);
+			if(sd->bl.prev)
+				map_delblock(&sd->bl);
+		}
+	}
 
 	return 0;
 }
@@ -987,6 +1018,7 @@ int chrif_parse(int fd)
 		case 0x2b03: clif_charselectok(RFIFOL(fd,2)); break;
 		case 0x2b04: chrif_recvmap(fd); break;
 		case 0x2b06: chrif_changemapserverack(fd); break;
+		case 0x2b07: chrif_saveack(fd); break;
 		case 0x2b09: map_addchariddb(RFIFOL(fd,2),RFIFOP(fd,6),RFIFOL(fd,30),RFIFOL(fd,34),RFIFOW(fd,38)); break;
 		case 0x2b0b: chrif_changedgm(fd); break;
 		case 0x2b0d: chrif_changedsex(fd); break;

@@ -3767,7 +3767,6 @@ void clif_move(struct block_list *bl)
 static void clif_quitsave(struct map_session_data *sd)
 {
 	map_quit(sd);
-	chrif_chardisconnect(sd);
 
 	return;
 }
@@ -15095,8 +15094,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 			unit_free(&sd->eld->bl, 0);
 		}
 		unit_free(&sd->bl, 2);
-		chrif_save(sd, 1);
-		chrif_charselectreq(sd);
+		chrif_save(sd, 2);
 		sd->state.waitingdisconnect = 1;
 		break;
 	}
@@ -18733,15 +18731,6 @@ static int clif_disconnect(int fd)
 
 	if(sd && sd->state.auth) {
 		clif_quitsave(sd);
-	}
-	close(fd);
-
-	if(sd) {
-		struct map_session_data *tmpsd = map_id2sd(sd->bl.id);
-		if(tmpsd == sd)
-			map_deliddb(&sd->bl);
-		if(sd->bl.prev)
-			map_delblock(&sd->bl);
 	}
 
 	return 0;

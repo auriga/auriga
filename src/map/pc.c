@@ -4583,8 +4583,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			strncpy(sd->status.last_point.map,mapname,24);
 			sd->status.last_point.x = x;
 			sd->status.last_point.y = y;
-			chrif_save(sd, 1);
-			chrif_changemapserver(sd,mapname,x,y,ip,port);
+			chrif_save(sd, 3);
 			sd->state.waitingdisconnect = 1;
 			return 0;
 		}
