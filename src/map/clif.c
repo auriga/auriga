@@ -8754,7 +8754,6 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
-#if PACKETVER < 20080820
 	WBUFW(buf,0) = 0x1c3;
 	WBUFW(buf,2) = (unsigned short)(len+16);
 	WBUFL(buf,4) = color;
@@ -8770,23 +8769,6 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 	          (flag == 2) ? AREA:
 	          (flag == 3) ? SELF:
 	          ALL_CLIENT);
-#else
-	WBUFW(buf,0) = 0x40c;
-	WBUFW(buf,2) = (unsigned short)(len+16);
-	WBUFL(buf,4) = color;
-	WBUFW(buf,8) = type;
-	WBUFW(buf,10) = size;
-	WBUFW(buf,12) = align;
-	WBUFW(buf,14) = pos_y;
-	memcpy(WBUFP(buf,16), mes, len);
-
-	flag &= 0x07;
-	clif_send(buf, WBUFW(buf,2), bl,
-	          (flag == 1) ? ALL_SAMEMAP:
-	          (flag == 2) ? AREA:
-	          (flag == 3) ? SELF:
-	          ALL_CLIENT);
-#endif
 	aFree(buf);
 
 	return;
@@ -13271,6 +13253,28 @@ void clif_break_equip(struct map_session_data *sd, int where)
 	WBUFL(buf,4) = sd->bl.id;
 	clif_send(buf,packet_db[0x2bb].len,&sd->bl,PARTY_SAMEMAP_WOS);
 #endif
+
+	return;
+}
+
+/*==========================================
+ * msgstringtable表示（引数あり）
+ *------------------------------------------
+ */
+void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes)
+{
+	int fd;
+	size_t len;
+
+	nullpo_retv(sd);
+
+	fd  = sd->fd;
+	len = strlen(mes)+1;
+	WFIFOW(fd,0) = 0x2c2;
+	WFIFOW(fd,2) = (unsigned short)(len+6);
+	WFIFOW(fd,4) = line;
+	memcpy(WFIFOP(fd,6),mes,len);
+	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
 }

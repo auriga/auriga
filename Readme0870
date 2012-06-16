@@ -1,4 +1,30 @@
 ----------------------------------------
+//0967 [2012/06/17] by Blaze
+
+・メモリアルダンジョン実装準備
+	-> メモリアルダンジョン用ソース追加（memorial.*, map.c, map.dsp, map_sql.dsp）
+	-> スクリプト命令・関数のIFのみ追加（script.c, doc/script_ref.txt）
+	　※処理内容は未実装です
+		mdcreate命令:メモリアルダンジョンの生成を要求します
+		mddelete命令:メモリアルダンジョンの削除を要求します
+		mdenter関数:メモリアルダンジョンへの入場を要求し、処理結果を返します
+		getmdmapname関数:複製されたMAP名称を返します
+		getmdnpcname関数:複製されたNPC名称を返します
+	-> メモリアルダンジョン用DB追加（db/memorial_db.txt, doc/db_ref.txt）
+
+・エンドレスタワーNPC実装（script/npc/memorial/npc_memorial_tower.txt）
+　※システム実装まではNPC読み込み対象外にしています。
+
+・エンドレスタワー関連マップのマップフラグ追加（script/mapflag/mapflag.txt, script/mapflag/mapflag_memorial.txt, conf/map_auriga.conf）
+
+・エンドレスタワー関連MOBのデータ一部修正（db/mob_db.txt, db/mob_skill_db.txt）
+
+・パケット0x2c2「引数付きmsgstringtable表示」を実装（clif.*）
+
+・announceが表示されない不具合対策で使用パケットを0x40cから0x1c3に暫定変更（clif.c）
+	Thanks Akayumi さん
+
+----------------------------------------
 //0966 [2012/06/03] by refis
 
 ・キャラクターのデータセーブは応答を返すよう変更

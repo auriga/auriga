@@ -75,6 +75,7 @@
 #include "merc.h"
 #include "quest.h"
 #include "buyingstore.h"
+#include "memorial.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -4025,6 +4026,11 @@ int buildin_callshop(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
 int buildin_mercheal(struct script_state *st);
 int buildin_mercsc_start(struct script_state *st);
+int buildin_mdcreate(struct script_state *st);
+int buildin_mddelete(struct script_state *st);
+int buildin_mdenter(struct script_state *st);
+int buildin_getmdmapname(struct script_state *st);
+int buildin_getmdnpcname(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4312,6 +4318,11 @@ struct script_function buildin_func[] = {
 	{buildin_progressbar,"progressbar","i"},
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},
+	{buildin_mdcreate,"mdcreate","s*"},
+	{buildin_mddelete,"mddelete","s*"},
+	{buildin_mdenter,"mdenter","s"},
+	{buildin_getmdmapname,"getmdmapname","s"},
+	{buildin_getmdnpcname,"getmdnpcname","s"},
 	{NULL,NULL,NULL}
 };
 
@@ -12609,5 +12620,95 @@ int buildin_mercsc_start(struct script_state *st)
 
 	if(!unit_isdead(&sd->mcd->bl) && status_change_rate(&sd->mcd->bl,type,10000,0) > 0)
 		status_change_start(&sd->mcd->bl,type,val1,0,0,0,tick,0);
+	return 0;
+}
+/*==========================================
+ * メモリアルダンジョン作成
+ *------------------------------------------
+ */
+int buildin_mdcreate(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	char *memorial_name;
+	int party_id, ret;
+
+	nullpo_retr(0, sd);
+
+	memorial_name = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	if(st->end>st->start+3)
+		party_id = conv_num(st,&(st->stack->stack_data[st->start+3]));
+	else
+		party_id = sd->status.party_id;
+
+	ret = memorial_create(memorial_name, party_id);
+	switch(ret) {
+		case MDERR_EXISTS:		// 既に生成済み
+			clif_msgstringtable2(sd, 0x52a, memorial_name);	// メモリアルダンジョン「%s」の予約が重複生成要請により失敗しました。
+			break;
+		case MDERR_PERMISSION:	// 権限がない
+			clif_msgstringtable2(sd, 0x529, memorial_name);	// メモリアルダンジョン「%s」の予約が権限問題により失敗しました。
+			break;
+		case MDERR_RESERVED:	// 既に予約済み
+			clif_msgstringtable2(sd, 0x528, memorial_name);	// メモリアルダンジョン「%s」の予約が予約重複により失敗しました。
+			break;
+		case MDERR_ERROR:		// その他エラー
+			clif_msgstringtable2(sd, 0x527, memorial_name);	// メモリアルダンジョン「%s」の予約に失敗しました。
+			break;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * メモリアルダンジョン削除
+ *------------------------------------------
+ */
+int buildin_mddelete(struct script_state *st)
+{
+	return 0;
+}
+
+/*==========================================
+ * メモリアルダンジョン入場
+ *------------------------------------------
+ */
+int buildin_mdenter(struct script_state *st)
+{
+	int ret;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	ret = memorial_enter(sd, conv_str(st,& (st->stack->stack_data[st->start+2])));
+
+	push_val(st->stack,C_INT,ret);
+
+	return 0;
+}
+
+/*==========================================
+ * メモリアルダンジョンMAP名取得
+ *------------------------------------------
+ */
+int buildin_getmdmapname(struct script_state *st)
+{
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+
+	return 0;
+}
+
+/*==========================================
+ * メモリアルダンジョンNPC名取得
+ *------------------------------------------
+ */
+int buildin_getmdnpcname(struct script_state *st)
+{
+	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+
 	return 0;
 }

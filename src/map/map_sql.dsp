@@ -257,6 +257,10 @@ SOURCE=..\..\src\map\elem.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\memorial.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -442,6 +446,10 @@ SOURCE=..\..\src\map\buyingstore.h
 # Begin Source File
 
 SOURCE=..\..\src\map\elem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\memorial.c
 # End Source File
 # Begin Source File
 

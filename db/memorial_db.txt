@@ -1,0 +1,4 @@
+//メモリアルダンジョンデータ
+//ID,Name,LimitTime,EnterMap,EnterX,EnterY,Map1,Map2,Map3,Map4,Map5,Map6,Map7,Map8,Map9,Map10
+1,Endless Tower,240,1@tower.gat,50,355,1@tower.gat,2@tower.gat,3@tower.gat,4@tower.gat,5@tower.gat,6@tower.gat,,,,
+2,Sealed Shrine,120,1@cata.gat,100,224,1@cata.gat,2@cata.gat,,,,,,,,

@@ -66,6 +66,7 @@
 #include "quest.h"
 #include "booking.h"
 #include "elem.h"
+#include "memorial.h"
 
 // 極力 staticでローカルに収める
 static struct dbt *id_db        = NULL;
@@ -2939,6 +2940,7 @@ void do_final(void)
 	do_final_storage();
 	do_final_guild();
 	do_final_clif();
+	do_final_memorial();
 	do_final_pc();
 	do_final_party();
 	do_final_booking();
@@ -3087,6 +3089,7 @@ int do_init(int argc,char *argv[])
 	do_init_quest();
 	do_init_mob();		// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
 	do_init_npc();
+	do_init_memorial();
 	do_init_pc();
 	do_init_party();
 	do_init_booking();
