@@ -7586,8 +7586,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				strncpy(mapname,"mora.gat",24);
 			}
 
-			if(pc_setpos(sd,mapname,x,y,3)) {
-				//mapが存在しなかった
+			if(pc_setpos(sd,mapname,x,y,0)) {
+				// マップが存在しなかった
 				clif_skill_fail(sd,skillid,0,0,0);
 				map_freeblock_unlock();
 				return 0;

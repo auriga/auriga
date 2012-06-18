@@ -4,7 +4,7 @@
 // HUNT_QUE -> 0〜
 //==============================================================================
 prontera.gat,122,53,3	script	討伐隊　隊長#Hunt_Prt	951,{
-	if(BaseLevel < 80) {
+	if(BaseLevel < 70) {
 		mes "[討伐隊　隊長]";
 		mes "う〜む……";
 		mes "なかなか良い逸材の";
@@ -16,7 +16,7 @@ prontera.gat,122,53,3	script	討伐隊　隊長#Hunt_Prt	951,{
 		mes "貴君の気持ちはありがたいが";
 		mes "いまの貴君ではまだ";
 		mes "力不足のように見える。";
-		mes "^FF0000せめて、BaseLvが80以上";
+		mes "^FF0000せめて、BaseLvが70以上";
 		mes "あればな……^000000";
 		close;
 	}
@@ -120,6 +120,21 @@ prontera.gat,122,53,3	script	討伐隊　隊長#Hunt_Prt	951,{
 		mes "聞いてくれ。";
 		close;
 	case 2:
+		if(BaseLevel < 70) {
+			mes "[討伐隊　隊長]";
+			mes "ん？　貴君は討伐隊へ";
+			mes "協力してくれている者ではないか。";
+			mes "見かけぬうちに、少々力が";
+			mes "弱まっているようだな。";
+			next;
+			mes "[討伐隊　隊長]";
+			mes "討伐へ参加するには";
+			mes "^FF0000BaseLv70以上^000000でないと";
+			mes "厳しいだろう。";
+			mes "すまないが、BaseLvを上げてから";
+			mes "また来てくれ。";
+			close;
+		}
 		for(set '@queid,106700; '@queid < 107000; set '@queid,'@queid+1) {
 			if(checkquest('@queid)&4) {
 				emotion 5;
@@ -188,7 +203,7 @@ OnInit:
 }
 
 prontera.gat,122,50,3	script	討伐隊　補佐官#Hunt_Prt	952,{
-	if(BaseLevel < 80) {
+	if(BaseLevel < 70) {
 		mes "[討伐隊　補佐官]";
 		mes "う〜ん……";
 		mes "中々、協力者が集まりませんね……";
@@ -201,7 +216,7 @@ prontera.gat,122,50,3	script	討伐隊　補佐官#Hunt_Prt	952,{
 		mes "お気持ちはありがたいですが";
 		mes "いまの貴方ではまだ";
 		mes "力不足のように見えます。";
-		mes "^FF0000せめて、BaseLvが80以上";
+		mes "^FF0000せめて、BaseLvが70以上";
 		mes "あれば……^000000";
 		close;
 	}
@@ -247,6 +262,24 @@ prontera.gat,122,50,3	script	討伐隊　補佐官#Hunt_Prt	952,{
 		set HUNT_QUE,2;
 		close;
 	case 2:
+		if(BaseLevel < 70) {
+			mes "[討伐隊　補佐官]";
+			mes "おや？　貴方は討伐隊へ";
+			mes "協力してくれている";
+			mes strcharinfo(0)+ "様";
+			mes "ではありませんか。";
+			mes "見かけないうちに、少々力が";
+			mes "弱まってしまっているようですね。";
+			next;
+			mes "[討伐隊　補佐官]";
+			mes "討伐へ参加するには";
+			mes "^FF0000BaseLv70以上^000000でないと";
+			mes "厳しいと思われます。";
+			mes "申し訳ありませんが、";
+			mes "BaseLvを上げてから";
+			mes "またいらしてください。";
+			close;
+		}
 		break;
 	}
 	if('quelist1[0] == 0) {

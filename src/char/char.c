@@ -1938,15 +1938,16 @@ int parse_frommap(int fd)
 			{
 				int account_id = RFIFOL(fd,2);
 				int login_id1  = RFIFOL(fd,6);
+				int char_id    = RFIFOL(fd,10);
 				int sex        = RFIFOB(fd,40);
 
 				if( auth_fifo_pos >= AUTH_FIFO_SIZE )
 					auth_fifo_pos = 0;
 
 				auth_fifo[auth_fifo_pos].account_id = account_id;
-				auth_fifo[auth_fifo_pos].char_id    = 0;
+				auth_fifo[auth_fifo_pos].char_id    = char_id;
 				auth_fifo[auth_fifo_pos].login_id1  = login_id1;
-				auth_fifo[auth_fifo_pos].delflag    = 2;
+				auth_fifo[auth_fifo_pos].delflag    = 0;
 				auth_fifo[auth_fifo_pos].ip         = session[fd]->client_addr.sin_addr.s_addr;
 				auth_fifo[auth_fifo_pos].sex        = sex;
 				auth_fifo_pos++;
