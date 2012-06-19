@@ -1,4 +1,11 @@
 ----------------------------------------
+//0970 [2012/06/20] by popori
+
+・2012-06-18aRagexeREのpacket_dbを追加 (db/packet_db.txt)
+
+・docを少し修正 (doc/client_packet.txt doc/client_packet.txt)
+
+----------------------------------------
 //0969 [2012/06/20] by popori
 
 ・wis送信パケットをパケット仕様に合わせて変更 (src/char/inter.c src/map/clif.* src/map/inter.c doc/inter_server_packet.txt doc/client_packet.txt)

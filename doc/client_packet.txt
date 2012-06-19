@@ -2649,7 +2649,6 @@ R 08f6 <ID>.l <mapname>.16B
 	パーティーリーダーからの召喚要求
 S 08f7 <result>.B
 	0x8f6の応答
-	0x8f6の応答
 	result = 0 OKボタン押下
 	result = 1 Cancelボタン押下
 R 08f8 <?>.l <type>.B

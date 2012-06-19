@@ -348,5 +348,3 @@ S 3093 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
 R 3893 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
-S 3094 <len>.w <party_id>.l { <account_id>.l }.4B*
-	account_idに召喚要求
