@@ -2569,8 +2569,8 @@ int parse_char(int fd)
 				short dex   = RFIFOB(fd,30);
 				short luk   = RFIFOB(fd,31);
 				unsigned char slot = RFIFOB(fd,32);
-				int hair_color = RFIFOW(fd,33);
-				int hair = RFIFOW(fd,35);
+				short hair_color = RFIFOW(fd,33);
+				short hair = RFIFOW(fd,35);
 #else
 				unsigned char *name  = RFIFOP(fd,2);
 				short str   = 5;
@@ -2580,8 +2580,8 @@ int parse_char(int fd)
 				short dex   = 5;
 				short luk   = 5;
 				unsigned char slot = RFIFOB(fd,26);
-				int hair_color = RFIFOW(fd,27);
-				int hair = RFIFOW(fd,29);
+				short hair_color = RFIFOW(fd,27);
+				short hair = RFIFOW(fd,29);
 #endif
 				int flag=0x04;
 				int i = 0;

@@ -30,9 +30,9 @@ S 3000 <len>.w <message>.?B
 	GMメッセージ送信要求
 R 3800 <len>.w <message>.?B
 	GMメッセージ
-S 3001 <len>.w <src-nick>.24B <dst-nick>.24B <message>.?B
+S 3001 <len>.w <gmlevel>.l <src-nick>.24B <dst-nick>.24B <message>.?B
 	Wis送信要求
-R 3801 <len>.w <wis-id>.l <src-nick>.24B <dst-nick>.24B <message>.?B
+R 3801 <len>.w <wis-id>.l <gmlevel>.l <src-nick>.24B <dst-nick>.24B <message>.?B
 	Wisデータ受信
 	wis-id=inter鯖内部のWis-id：map鯖では3002で送信するためだけに使う
 S 3002 <wis-id>.l <flag>.B
@@ -348,3 +348,5 @@ S 3093 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
 R 3893 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
+S 3094 <len>.w <party_id>.l { <account_id>.l }.4B*
+	account_idに召喚要求

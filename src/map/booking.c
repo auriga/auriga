@@ -31,6 +31,7 @@
 #include "booking.h"
 #include "clif.h"
 #include "map.h"
+#include "party.h"
 
 // 1ページの最大検索数
 #define MAX_RESULT 10
@@ -338,14 +339,34 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
 void booking_register2(struct map_session_data *sd, int lv, char *memo)
 {
 	struct booking_data *bd;
+	struct party *party;
+	int i;
 
 	nullpo_retv(sd);
 
-	if(sd->booking_id > 0) {	// 既に登録中
+	// 登録要求者がパーティーリーダーかチェック
+	if( (party = party_search(sd->status.party_id)) == NULL )
+		return;
+	for( i = 0; i < MAX_PARTY; i++ )
+	{
+		if( party->member[i].account_id == sd->status.account_id && party->member[i].char_id == sd->status.char_id)
+		{
+			if( party->member[i].leader == 0 )
+			{
+				clif_bookingregack(sd,1);
+				return;
+			}
+		}
+	}
+
+	// 既に登録中
+	if(sd->booking_id > 0) {
 		clif_bookingregack(sd,2);
 		return;
 	}
-	if(lv > MAX_LEVEL || lv < 0) {	// レベルが不正
+
+	// レベルが不正
+	if(lv > MAX_LEVEL || lv < 0) {
 		clif_bookingregack(sd,1);
 		return;
 	}

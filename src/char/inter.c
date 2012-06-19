@@ -60,7 +60,7 @@ int inter_recv_packet_length[] = {
 };
 
 struct WisData {
-	int id,fd,count,len;
+	int id,fd,count,len,gmlevel;
 	unsigned int tick;
 	char src[24],dst[24],msg[512];
 };
@@ -222,11 +222,12 @@ int mapif_wis_message(struct WisData *wd)
 	unsigned char buf[1024];
 
 	WBUFW(buf, 0)=0x3801;
-	WBUFW(buf, 2)=56 + wd->len;
+	WBUFW(buf, 2)=60 + wd->len;
 	WBUFL(buf, 4)=wd->id;
-	memcpy(WBUFP(buf, 8),wd->src,24);
-	memcpy(WBUFP(buf,32),wd->dst,24);
-	memcpy(WBUFP(buf,56),wd->msg,wd->len);
+	WBUFL(buf, 8)=wd->gmlevel;
+	memcpy(WBUFP(buf,12),wd->src,24);
+	memcpy(WBUFP(buf,36),wd->dst,24);
+	memcpy(WBUFP(buf,60),wd->msg,wd->len);
 	wd->count = mapif_sendall(buf,WBUFW(buf,2));
 
 	return 0;
@@ -294,7 +295,7 @@ int mapif_parse_WisRequest(int fd)
 	struct WisData* wd;
 	static int wisid = 0;
 
-	if(RFIFOW(fd,2) - 52 >= sizeof(wd->msg)) {
+	if(RFIFOW(fd,2) - 56 >= sizeof(wd->msg)) {
 		printf("inter: Wis message size too long.\n");
 		return 0;
 	}
@@ -304,10 +305,11 @@ int mapif_parse_WisRequest(int fd)
 
 	wd->id  = ++wisid;
 	wd->fd  = fd;
-	wd->len = RFIFOW(fd,2) - 52;
-	memcpy(wd->src, RFIFOP(fd, 4), 24);
-	memcpy(wd->dst, RFIFOP(fd,28), 24);
-	memcpy(wd->msg, RFIFOP(fd,52), wd->len);
+	wd->len = RFIFOW(fd,2) - 56;
+	wd->gmlevel = RFIFOL(fd,4);
+	memcpy(wd->src, RFIFOP(fd, 8), 24);
+	memcpy(wd->dst, RFIFOP(fd,32), 24);
+	memcpy(wd->msg, RFIFOP(fd,56), wd->len);
 	wd->tick = gettick();
 	numdb_insert(wis_db, wd->id, wd);
 	mapif_wis_message(wd);

@@ -1,4 +1,19 @@
 ----------------------------------------
+//0969 [2012/06/20] by popori
+
+・wis送信パケットをパケット仕様に合わせて変更 (src/char/inter.c src/map/clif.* src/map/inter.c doc/inter_server_packet.txt doc/client_packet.txt)
+
+・少しリファクタ (src/common/mmo.h src/map/clif.c)
+
+・新仕様のパーティーブッキングはパーティーリーダーでないと登録が出来ないよう修正 (src/map/booking.c)
+
+・パケットの解析結果を記載と修正 (doc/client_packet.txt)
+
+・キャラ作成時のパラメータの型を一部変更 (src/char/char.c src/char/txt/chardb_txt.* src/char/sql/chardb_sql.*)
+
+・2012-06-18aRagexeREまでのパケット長の追記と一部クリーンアップと修正 (db/packet_db.txt)
+
+----------------------------------------
 //0968 [2012/06/19] by refis
 
 ・討伐クエストNPCのセリフとクエスト開始可能レベルを更新 (npc_quest_hunting.txt)

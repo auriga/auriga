@@ -189,7 +189,7 @@ R 0095 <ID>.l <nick>.24B
 S 0096 <len>.w <nick>.24B <message>.?B
 	wis送信
 R 0097 <len>.w <nick>.24B <message>.?B
-       <len>.w <nick>.24B <flag?>.l <message>.?B(2009-11-04aRagexeRE以降)
+       <len>.w <nick>.24B <isAdmin>.l <message>.?B(2009-11-04aRagexeRE以降)
 	wis受信
 R 0098 <type>.B
 	type=00 wis送信成功
@@ -2020,11 +2020,13 @@ S 03de <AuthData1>.l <AuthData2>.l <AuthData3>.l <AuthData4>.l
 R 03e2 <len>.w <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <param2>.w <type>.B <param3>.l
 	02e1の上位版?
 R 03e3〜040b
-	03e2と同じ？使用用途不明
+	03e2と同じ
+	使用用途不明
 R 040c <len>.w <color>.l <type>.w <size>.w <align>.w <y>.w <message>.?B
 	01c3と同じ
 R 040d〜0435
-	040cと同じ？使用用途不明
+	040cと同じ
+	使用用途不明
 S 0436 <account ID>.l <charactor ID>.l <login ID1>.l <login ID2>.l <sex>.B
 	0072と同じ（2008-09-10aSakexe以降）
 S 0437 <target ID>.l <type>.B
@@ -2361,8 +2363,7 @@ R 082c <charID>.l <result>.l
 	result=1 成功
 	result=2 データベースエラー
 R 082d <len>.w <NormalSlotNum>.B <PremiumSlotNum>.B <BillingSlotNum>.B <ProducibleSlotNum>.B <ValidSlotNum>.B <m_extension>.20B
-	0x6bの上位版?
-	未調査
+	0x6bの上位版
 S 0835 <len>.w <StoreType>.B <maxPrice>.l <minPrice>.l <ItemIDListSize>.B <CardIDListSize>.B
 	露店検索システム検索要求
 R 0836 <len>.w <IsFirstPage>.B <IsNexPage>.B <RemainedSearchCnt>.B { <SSI_ID>.l <ID>.l <StoreName>.80B <item_id>.w <item_type>.B <price>.l <count>.w <refine>.B <card>.4w }.106B
@@ -2539,7 +2540,7 @@ R 08cb <len>.w <?>.w <?>.w <?>.w { <type>.l <?>.w <?>.B }.7B
 	未調査
 S 08cc
 	未調査
-S 08cd
+R 08cd <ID>.l <x>.w <y>.w
 	未調査
 R 08ce
 	未調査
@@ -2565,16 +2566,19 @@ S 08d5
 R 08d6 <dummy>.4B
 	<dummy>.4Bは読み込まれていない
 	未調査
-S 08d7 <?>.w <map_name>.24B
-	戦場入場登録
-R 08d8 <type>.B <mesasge>.24B
+S 08d7 <type>.w <name>.24B
+	戦場入場登録要求
+	type = 1 個人
+	type = 2 パーティー
+	type = 4 ギルド
+R 08d8 <type>.B <name>.24B
 	<type>.Bは1-10まで存在する
 	<type>.Bが1だとse_btg_request.wavを読み込む処理が組まれている
 	未調査
-R 08d9 <message>.24B <?>.l
+R 08d9 <name>.24B <?>.l
 	未調査
-S 08da <message>.24B
-	未調査
+S 08da <name>.24B
+	戦場入場登録削除要求
 R 08db <type>.B <message>.24B
 	<type>.Bは1,3,11のみ他は無視
 	未調査
@@ -2622,49 +2626,54 @@ R 08ea <result>.w
 S 08eb <memo>.37B
 	パーティーブッキング登録情報修正要求(新仕様)
 R 08ec <ID>.l <time>.l <name>.24B <level>.w <memo>.37B
-	パーティーブッキングリスト更新?(新仕様)
+	パーティーブッキングリスト更新(新仕様)
 R 08ed <ID>.l <memo>.37B
 	パーティーブッキング登録情報修正応答
 R 08ee <ID>.l
 	パーティーブッキングリスト削除(新仕様)
-S 08ef
+S 08ef <ID>.l
+	パーティーブッキングリストから除外要求
+S 08f0 <?>.l
 	未調査
-S 08f0
+S 08f1 <ID>.l
+	パーティーブッキングリストからパーティー加入要求
+R 08f2 <?>.l <?>.l <?>.w <?>.24B
 	未調査
-S 08f1
-	未調査
-S 08f2
-	未調査
-S 08f3
+R 08f3 <len>.w <?>.l { <?>.l <?>.24B }.28B
 	未調査
 S 08f4
 	未調査
-S 08f5
+S 08f5 <len>.w { <ID>.l }.4B
+	パーティーメンバ召喚要求
+R 08f6 <ID>.l <mapname>.16B
+	パーティーリーダーからの召喚要求
+S 08f7 <result>.B
+	0x8f6の応答
+	0x8f6の応答
+	result = 0 OKボタン押下
+	result = 1 Cancelボタン押下
+R 08f8 <?>.l <type>.B
 	未調査
-S 08f6
+	typeは0,1,2,4のみ
+S 08f9 <?>.l
 	未調査
-S 08f7 <?>.B
+R 08fa <?>.l
 	未調査
-S 08f8
-	未調査
-S 08f9
-	未調査
-S 08fa
-	未調査
-S 08fb
-	未調査
+S 08fb <ID>.l
+	パーティーブッキングリストからのパーティー加入要求キャンセル
 S 08fc
 	未調査
-S 08fd
+R 08fd <type>.l
 	未調査
+	typeは0-10まで
 R 08fe <len>.w { <?>.l <?>.l <?>.l }.12B
 	未調査
-R 08ff <type>.w <ID>.l <tick>.l <val1>.l <val2>.l <val3>.l
-	0x43fと同じルーチンを呼び出している
-	0x43fでいうところの<switch>.Bを常に1で呼び出しているため、<tick>.l経過後自動でアイコンを消去してくれるとかそんなんっぽい(未確認)
-R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
+R 08ff <ID>.l <type>.w <tick>.l <val1>.l <val2>.l <val3>.l
+	0x43fの上位版?
+	0x43fの<switch>.Bを常に1で呼び出している
+R 0900 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
 	所有消耗品&収集品リスト
-	矢の場合は<WearState>.2Bが0x8000になる
+	矢の場合は<WearState>.wが0x8000になる
 	0x2e8の上位版
 	<attribute>
 	0x1 鑑定済み
@@ -2706,10 +2715,19 @@ R 090d
 	未調査
 R 090e
 	未調査
-R 090f <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.w <?>.w <?>.l <?>.l <?>.B
-	未調査
-	可変長ではないっぽい
-	ヘッダ含めて合計73バイト
+R 090f <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B
+	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報(0x858の上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
 S 0910
 	未調査
 S 0911
@@ -2718,14 +2736,32 @@ S 0912
 	未調査
 S 0913
 	未調査
-R 0914 <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.8B <?>.w <?>.w <?>.l <?>.l <?>.B
-	未調査
-	可変長ではないっぽい?
-	ヘッダ含めて合計80バイト
-R 0915 <len>.w <?>.B <?>.l <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.w <?>.l <?>.w <?>.w <?>.l <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.B <?>.w <?>.w <?>.l <?>.l <?>.B <?>.B
-	未調査
-	可変長ではないっぽい?
-	ヘッダ含めて合計74バイト
+R 0914 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0固定?>.2B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B
+	表示範囲内キャラ移動情報(0x856の上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
+R 0915 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B
+	マップロード時&移動時用、向き付き用キャラ情報(0x857の上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
 S 0916
 	未調査
 S 0917-0969
@@ -2766,7 +2802,10 @@ S 0978
 	未調査
 S 0979
 	未調査
-R 0980 <len>.w <?>.l { <?>.l <?>.w <?>.w <?>.B <?>.l }.11B
+R 097a
 	未調査
-S 0981
+R 097b <len>.w <?>.w <?>.w <?>.w { <type>.l <?>.w <?>.B }.7B
+	0x8cbと一緒
+	未調査
+R 0980 <len>.w <?>.l { <?>.l <?>.w <?>.w <?>.B <?>.l }.11B
 	未調査

@@ -372,10 +372,11 @@ void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int m
 		return;
 
 	WFIFOW(inter_fd,0) = 0x3001;
-	WFIFOW(inter_fd,2) = mes_len+52;
-	memcpy(WFIFOP(inter_fd,4),sd->status.name,24);
-	memcpy(WFIFOP(inter_fd,28),nick,24);
-	memcpy(WFIFOP(inter_fd,52),mes,mes_len);
+	WFIFOW(inter_fd,2) = mes_len+56;
+	WFIFOL(inter_fd,4) = pc_isGM(sd);
+	memcpy(WFIFOP(inter_fd,8),sd->status.name,24);
+	memcpy(WFIFOP(inter_fd,32),nick,24);
+	memcpy(WFIFOP(inter_fd,56),mes,mes_len);
 	WFIFOSET(inter_fd, WFIFOW(inter_fd,2) );
 
 	return;
@@ -1357,13 +1358,14 @@ int intif_char_connect_limit(int limit)
 // wis受信
 static int intif_parse_WisMessage(int fd)
 {
-	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,32));
+	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,36));
 	int id = RFIFOL(fd,4);
+	int gmlevel = RFIFOL(fd,8);
 	int i, j = 0;
 
 	if(sd) {
 		for(i=0; i<MAX_WIS_REFUSAL; i++) {	//拒否リストに名前があるかどうか判定してあれば拒否
-			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,8)) == 0) {
+			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,12)) == 0) {
 				j++;
 				break;
 			}
@@ -1373,7 +1375,7 @@ static int intif_parse_WisMessage(int fd)
 		} else if(j > 0) {
 			intif_wis_replay(id,2);	// 受信拒否
 		} else {
-			clif_wis_message(sd->fd,RFIFOP(fd,8),RFIFOP(fd,56),RFIFOW(fd,2)-56);
+			clif_wis_message(sd->fd,RFIFOP(fd,12),RFIFOP(fd,60),RFIFOW(fd,2)-60,gmlevel);
 			intif_wis_replay(id,0);	// 送信成功
 		}
 	} else {

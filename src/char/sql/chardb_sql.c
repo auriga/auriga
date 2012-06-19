@@ -722,7 +722,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	return true;
 }
 
-const struct mmo_chardata* chardb_sql_make(int account_id, unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, int hair_color, int hair, unsigned char slot, int *flag)
+const struct mmo_chardata* chardb_sql_make(int account_id, unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
 {
 	int i, char_id;
 	char buf[256];

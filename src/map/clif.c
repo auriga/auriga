@@ -6579,7 +6579,7 @@ void clif_traderequest(struct map_session_data *sd, char *name)
 	nullpo_retv((target_sd = map_id2sd(sd->trade.partner)));
 	WFIFOW(fd,0)=0x1f4;
 	strncpy(WFIFOP(fd,2),name,24);
-	WFIFOL(fd,26)=target_sd->status.char_id;	// 良く分からないからとりあえずchar_id
+	WFIFOL(fd,26)=target_sd->status.char_id;
 	WFIFOW(fd,30)=target_sd->status.base_level;
 	WFIFOSET(fd,packet_db[0x1f4].len);
 #endif
@@ -6607,7 +6607,7 @@ void clif_tradestart(struct map_session_data *sd, unsigned char type)
 	target_sd = map_id2sd(sd->trade.partner);
 	WFIFOW(fd,0)=0x1f5;
 	WFIFOB(fd,2)=type;
-	WFIFOL(fd,3)=(target_sd!=NULL)?target_sd->status.char_id:0;	// 良く分からないからとりあえずchar_id
+	WFIFOL(fd,3)=(target_sd!=NULL)?target_sd->status.char_id:0;
 	WFIFOW(fd,7)=(target_sd!=NULL)?target_sd->status.base_level:0;
 	WFIFOSET(fd,packet_db[0x1f5].len);
 #endif
@@ -8889,7 +8889,7 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
  * Wisを送信する
  *------------------------------------------
  */
-void clif_wis_message(int fd,char *nick,char *mes, int mes_len)
+void clif_wis_message(int fd, char *nick, char *mes, int mes_len, int gmlevel)
 {
 	WFIFOW(fd,0)=0x97;
 
@@ -8901,7 +8901,7 @@ void clif_wis_message(int fd,char *nick,char *mes, int mes_len)
 #else
 	WFIFOW(fd,2)=mes_len + 32;
 	memcpy(WFIFOP(fd,4),nick,24);
-	WFIFOL(fd,28)=0;	// Unknown
+	WFIFOL(fd,28)=gmlevel;
 	memcpy(WFIFOP(fd,32),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 #endif
@@ -12777,16 +12777,7 @@ void clif_update_temper(struct map_session_data *sd)
  */
 void clif_send_hotkey(struct map_session_data *sd)
 {
-#if PACKETVER >= 20070711
-	int i, j, fd, hotkeys;
-
-#if PACKETVER >= 20090617
-	hotkeys = 38;
-#elif PACKETVER > 20090603
-	hotkeys = 36;
-#else
-	hotkeys = 27;
-#endif
+	int i, j, fd;
 
 	nullpo_retv(sd);
 
@@ -12796,23 +12787,32 @@ void clif_send_hotkey(struct map_session_data *sd)
 	memset(WFIFOP(fd,0), 0, packet_db[0x2b9].len);
 
 	WFIFOW(fd,0) = 0x2b9;
-	for(i = 0, j = sd->hotkey_set * hotkeys; i < hotkeys && j < MAX_HOTKEYS; i++, j++) {
+	for(i = 0, j = sd->hotkey_set * 27; i < 27 && j < MAX_HOTKEYS; i++, j++) {
 		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
 		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
 	WFIFOSET(fd,packet_db[0x2b9].len);
-#else
+#elif PACKETVER < 20090617
 	memset(WFIFOP(fd,0), 0, packet_db[0x7d9].len);
 
 	WFIFOW(fd,0) = 0x7d9;
-	for(i = 0, j = sd->hotkey_set * hotkeys; i < hotkeys && j < MAX_HOTKEYS; i++, j++) {
+	for(i = 0, j = sd->hotkey_set * 36; i < 36 && j < MAX_HOTKEYS; i++, j++) {
 		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
 		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
 	WFIFOSET(fd,packet_db[0x7d9].len);
-#endif
+#else
+	memset(WFIFOP(fd,0), 0, packet_db[0x7d9].len);
+
+	WFIFOW(fd,0) = 0x7d9;
+	for(i = 0, j = sd->hotkey_set * 38; i < 38 && j < MAX_HOTKEYS; i++, j++) {
+		WFIFOB(fd,7*i+2) = sd->status.hotkey[j].type;
+		WFIFOL(fd,7*i+3) = sd->status.hotkey[j].id;
+		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
+	}
+	WFIFOSET(fd,packet_db[0x7d9].len);
 #endif
 
 	return;
@@ -18172,24 +18172,35 @@ static void clif_parse_Making(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 {
-	int idx, hotkeys;
-#if PACKETVER >= 20090617
-	hotkeys = 38;
-#elif PACKETVER >= 20090603
-	hotkeys = 36;
-#else
-	hotkeys = 27;
-#endif
+	int idx;
 
 	nullpo_retv(sd);
 
-	idx = sd->hotkey_set * hotkeys + RFIFOW(fd,GETPACKETPOS(cmd,0));
+#if PACKETVER < 20090603
+	idx = sd->hotkey_set * 27 + RFIFOW(fd,GETPACKETPOS(cmd,0));
 	if(idx < 0 || idx >= MAX_HOTKEYS)
 		return;
 
 	sd->status.hotkey[idx].type = RFIFOB(fd,GETPACKETPOS(cmd,1));
 	sd->status.hotkey[idx].id   = RFIFOL(fd,GETPACKETPOS(cmd,2));
 	sd->status.hotkey[idx].lv   = RFIFOW(fd,GETPACKETPOS(cmd,3));
+#elif PACKETVER < 20090617
+	idx = sd->hotkey_set * 36 + RFIFOW(fd,GETPACKETPOS(cmd,0));
+	if(idx < 0 || idx >= MAX_HOTKEYS)
+		return;
+
+	sd->status.hotkey[idx].type = RFIFOB(fd,GETPACKETPOS(cmd,1));
+	sd->status.hotkey[idx].id   = RFIFOL(fd,GETPACKETPOS(cmd,2));
+	sd->status.hotkey[idx].lv   = RFIFOW(fd,GETPACKETPOS(cmd,3));
+#else
+	idx = sd->hotkey_set * 38 + RFIFOW(fd,GETPACKETPOS(cmd,0));
+	if(idx < 0 || idx >= MAX_HOTKEYS)
+		return;
+
+	sd->status.hotkey[idx].type = RFIFOB(fd,GETPACKETPOS(cmd,1));
+	sd->status.hotkey[idx].id   = RFIFOL(fd,GETPACKETPOS(cmd,2));
+	sd->status.hotkey[idx].lv   = RFIFOW(fd,GETPACKETPOS(cmd,3));
+#endif
 
 	return;
 }
@@ -18726,6 +18737,50 @@ static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * パーティーブッキングリストから除外
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingIgnoreReq(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングリストからパーティー加入リクエスト
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingJoinPartyReq(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングメンバー召喚リクエスト
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingSummonMember(int fd,struct map_session_data *sd, int cmd)
+{
+	int len = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4;
+	const unsigned char *account_list = RFIFOP(fd,GETPACKETPOS(cmd,1));
+
+	// TODO
+
+	return;
+}
+
+/*==========================================
+ * パーティーブッキングリストからパーティー加入リクエストキャンセル
+ *------------------------------------------
+ */
+static void clif_parse_PartyBookingJoinPartyCancel(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -19038,6 +19093,10 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingSearchReq2,    "bookingsearchreq2"         },
 		{ clif_parse_PartyBookingDeleteReq2,    "bookingdelreq2"            },
 		{ clif_parse_PartyBookingUpdateReq2,    "bookingupdatereq2"         },
+		{ clif_parse_PartyBookingIgnoreReq,     "bookingignorereq"          },
+		{ clif_parse_PartyBookingJoinPartyReq,  "bookingjoinpartyreq"       },
+		{ clif_parse_PartyBookingSummonMember,  "bookingsummonmember"       },
+		{ clif_parse_PartyBookingJoinPartyCancel,"bookingjoinpartycancel"   },
 		{ NULL,                                 NULL                        },
 	};
 
