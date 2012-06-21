@@ -2254,8 +2254,16 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,53)=md->sc.opt3;
 	WBUFPOS2(buf,59,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-	WBUFL(buf,71) = status_get_max_hp(&md->bl);
-	WBUFL(buf,75) = status_get_hp(&md->bl);
+	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
+	if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
+		md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	{
+		WBUFL(buf,71) = 0xffffffff;
+		WBUFL(buf,75) = 0xffffffff;
+	} else {
+		WBUFL(buf,71) = status_get_max_hp(&md->bl);
+		WBUFL(buf,75) = status_get_hp(&md->bl);
+	}
 	WBUFB(buf,79) = 0;
 #endif
 	return len;
