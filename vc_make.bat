@@ -19,9 +19,11 @@ set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
 rem パケット定義
+rem 2012-03-28aRagexeRE: 20120328
 rem 2012-03-07aRagexeRE: 20120307
 rem 2012-02-22aRagexeRE: 20120222
 rem 2012-02-01aRagexeRE: 20120201
+rem 2011-11-02aRagexeRE: 20111102
 rem 2011-10-25aRagexeRE: 20111025
 rem 2011-09-28aRagexeRE: 20110928
 rem 2011-07-19aRagexeRE: 20110719
@@ -53,7 +55,7 @@ rem 2007-07-11aSakexe: 20070711
 rem 2007-05-21aSakexe: 20070521
 rem 2007-02-12aSakexe: 20070212
 rem 2006-10-23aSakexe: 20061023
-set __PACKETDEF__=/D "PACKETVER=20120307" /D "NEW_006b"
+set __PACKETDEF__=/D "PACKETVER=20120328" /D "NEW_006b"
 
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）

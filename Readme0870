@@ -1,4 +1,15 @@
 ----------------------------------------
+//0971 [2012/06/22] by popori
+
+・PACKETVER「20111102」を追加 (vc_make.bat bcc32_make.bat Makefile src/map/clif.c)
+  → 0x43fの上位版0x8ffを追加
+
+・暫定的にPACKETVER「20120328」を追加 (vc_make.bat bcc32_make.bat Makefile *.dsp src/map/clif.c)
+  → 0x856、0x857、0x858の上位版0x90f、0x914、0x915を追加
+  ※ モンスターのHP表示条件(PC・パーティーメンバ・ホム・傭兵・精霊がダメージを与える/受ける)に関しては未実装
+     エンペリウム、BOSS、特定状態異常時以外は全て表示するようになっています
+
+----------------------------------------
 //0970 [2012/06/20] by popori
 
 ・2012-06-18aRagexeREのpacket_dbを追加 (db/packet_db.txt)
