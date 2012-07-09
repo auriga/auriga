@@ -14698,6 +14698,8 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 
 	if(skillid == SA_MAGICROD)
 		return 0;
+	if(bl->type == BL_MOB) // MOBはスキルディレイ0
+		return 0;
 
 	sc = status_get_sc(bl);
 

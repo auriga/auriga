@@ -1,4 +1,24 @@
 ----------------------------------------
+//0973 [2012/07/10] by refis
+
+・3次職関連NPCを追加
+	-> 3次転職NPCと関連販売NPCを追加 (conf/map_auriga.conf npc_job_thirdclass.txt)
+	-> アルケミスト材料商人を修正 (npc_town_aldebaran.txt)
+	-> 影工房へのwarpを追加 (npc_warp_town.txt)
+
+・item_dbを更新 (db/item_db.txt)
+
+・2012-06-18aRagexeREのpacket_dbを一部修正 (db/packet_db.txt)
+	Thanks Eco さん
+
+・影狼、朧スキル「撒菱」の持続時間の誤りを修正 (db/skill_cast_db.txt)
+	Thanks かんなぎ さん
+
+・モンスターにはスキルディレイを適用しないよう修正 (src/map/skill.c)
+　※mob_skill_db上のMOB専用スキルクールのみ影響する
+	Thanks Apache さん
+
+----------------------------------------
 //0972 [2012/06/22] by popori
 
 ・0971のコミット漏れコードを追加 (src/map/clif.c)

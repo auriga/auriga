@@ -2314,3 +2314,33 @@ bra_in01.gat,206,98,0	warp	brasiliswarp1020	1,1,brasilis.gat,120,160
 dewata.gat,44,252,0		warp	dewatawarp0501	1,1,dew_fild01.gat,373,212
 //デワタ 室内⇒デワタフィールド 01
 dew_in01.gat,16,31,0	warp	dewatawarp0502	1,1,dew_fild01.gat,59,273
+
+
+
+//---3次職追加マップ
+
+
+//==============================================================
+// -----  影工房 -----
+// s_atelier.gat		影工房
+//==============================================================
+//プロンテラ影工房
+prontera.gat,272,108,0	warp	s_atelierwarp1001	1,1,s_atelier.gat,13,119
+s_atelier.gat,10,119,0	warp	s_atelierwarp1002	1,1,prontera.gat,268,108
+s_atelier.gat,31,128,0	warp	s_atelierwarp1003	1,1,s_atelier.gat,76,125
+s_atelier.gat,76,128,0	warp	s_atelierwarp1004	1,1,s_atelier.gat,28,128
+//ラヘル影工房
+rachel.gat,180,115,0	warp	s_atelierwarp1005	1,1,s_atelier.gat,130,70
+s_atelier.gat,131,75,0	warp	s_atelierwarp1006	1,1,rachel.gat,180,118
+s_atelier.gat,117,71,0	warp	s_atelierwarp1007	1,1,s_atelier.gat,171,72
+s_atelier.gat,166,72,0	warp	s_atelierwarp1008	1,1,s_atelier.gat,117,67
+//ジュノー影工房
+yuno.gat,278,67,0		warp	s_atelierwarp1009	1,1,s_atelier.gat,109,123
+s_atelier.gat,105,123,0	warp	s_atelierwarp1010	1,1,yuno.gat,275,67
+s_atelier.gat,108,129,0	warp	s_atelierwarp1011	1,1,s_atelier.gat,159,125
+s_atelier.gat,159,130,0	warp	s_atelierwarp1012	1,1,s_atelier.gat,112,129
+//リヒタルゼン影工房
+lighthalzen.gat,41,52,0	warp	s_atelierwarp1013	1,1,s_atelier.gat,18,75
+s_atelier.gat,18,79,0	warp	s_atelierwarp1014	1,1,lighthalzen.gat,41,56
+s_atelier.gat,32,64,0	warp	s_atelierwarp1015	1,1,s_atelier.gat,80,63
+s_atelier.gat,80,66,0	warp	s_atelierwarp1016	1,1,s_atelier.gat,32,62

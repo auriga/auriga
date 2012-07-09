@@ -2951,6 +2951,7 @@
 0x0361,5,hommenu,4
 0x0362,6,dropitem,2:4
 0x0364,8,movefromkafra,2:4
+0x0366,90,useskilltopos,2:4:6:8:10
 0x0368,6,solvecharname,2
 0x0369,7,actionrequest,2:6
 0x0437,5,walktoxy,2
