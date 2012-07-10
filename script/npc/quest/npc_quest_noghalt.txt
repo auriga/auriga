@@ -341,12 +341,12 @@ tha_t01.gat,149,78,4	script	ガイド	90,{
 		mes "目をお通しになってから、";
 		mes "署名なさってください。";
 		next;
-		mes "-小さな字がびっしりと";
-		mes "書かれた紙を渡された-";
+		mes "‐小さな字がびっしりと";
+		mes "書かれた紙を渡された‐";
 		next;
 		mes "＜契約書＞";
 		mes "1.この契約書は、";
-		mes "レッケンベル（以降「甲」）と";
+		mes "レッケンベル（以降「甲」)と";
 		mes strcharinfo(0)+ "（以降「乙」）間の";
 		mes "契約として効力を発揮する。";
 		mes "1-1.この契約の名称は、";
@@ -354,7 +354,7 @@ tha_t01.gat,149,78,4	script	ガイド	90,{
 		mes "2.契約の効力は、両者が契約書に";
 		mes "署名することで発生する。";
 		mes "3.任務による成果は、「乙」によって";
-		mes "提示できる証拠によって確認する。";
+		mes "提示される証拠によって確認する。";
 		mes "3-1.証拠は、次の通りとする。";
 		mes "…………";
 		mes "4.各証拠物を規定数以上、";
@@ -377,7 +377,7 @@ tha_t01.gat,149,78,4	script	ガイド	90,{
 		mes "…………";
 		mes "………………";
 		mes "　　　　　　　　レッケンベル";
-		mes "　　　　　　　　" +strcharinfo(0);
+		mes "　　　　　　　　"+ strcharinfo(0);
 		next;
 		if(select("署名する","署名しない")==2) {
 			mes "[ティーチェ]";
@@ -393,8 +393,8 @@ tha_t01.gat,149,78,4	script	ガイド	90,{
 			mes "またお訪ねください。";
 			close;
 		}
-		mes "-同じ内容が書かれた";
-		mes "二枚の契約書に署名した-";
+		mes "‐同じ内容が書かれた";
+		mes "二枚の契約書に署名した‐";
 		next;
 		mes "[ティーチェ]";
 		mes "ありがとうございます。";
@@ -458,12 +458,52 @@ tha_t01.gat,140,78,4	script	ガイド	831,{
 		case 3: set '@itemid,7441; break;
 		case 4: set '@itemid,7442; break;
 		}
+		if(countitem('@itemid) < 1) {
+			mes "[リエ]";
+			mes "…………";
+			mes "あの〜、「" +getitemname('@itemid)+ "」が";
+			mes "ないようですが……。";
+			mes "もう一度お荷物を";
+			mes "確認してください〜。";
+			close;
+		}
+		set '@num,countitem('@itemid);
+		set '@zeny,1000*'@num;
+		set '@exp,2000*'@num;
 		mes "[リエ]";
-		mes "…………";
-		mes "あの〜、「" +getitemname('@itemid)+ "」が";
-		mes "ないようですが……。";
-		mes "もう一度お荷物を";
-		mes "確認してください〜。";
+		mes "「" +getitemname('@itemid)+ "」一個当たりの報酬は、";
+		mes "お金：1,000Zeny";
+		mes "追加報酬：2,000exp";
+		mes "になりますね〜。";
+		next;
+		mes "[リエ]";
+		mes "現在、お持ちの「" +getitemname('@itemid)+ "」は、";
+		mes '@num+ "個なので……";
+		mes "お金：" +'@zeny+ "Zeny";
+		mes "追加報酬：" +'@exp+ "exp";
+		mes "になりますね〜。";
+		next;
+		mes "[リエ]";
+		mes "報酬を受けとります〜？";
+		next;
+		if(select("はい","いいえ")==2) {
+			mes "[リエ]";
+			mes "報酬を受け取りたくなったら、";
+			mes "いつでも来てください〜。";
+			close;
+		}
+		mes "[リエ]";
+		mes "ありがとうございます〜。";
+		mes "では、精算しますね〜。";
+		next;
+		mes "[リエ]";
+		mes "お金：" +'@zeny+ "Zeny";
+		mes "追加報酬：" +'@exp+ "exp";
+		mes "をお渡しします〜。";
+		mes "また、お願いしますね〜。";
+		delitem '@itemid,'@num;
+		set Zeny,Zeny+'@zeny;
+		getexp '@exp,0;
 		close;
 	}
 	mes "[リエ]";

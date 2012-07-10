@@ -8,7 +8,7 @@ prontera.gat,73,140,0	script	牛乳商人	86,{
 	mes "たった 15Zenyでミルク1個と";
 	mes "交換してあげますよー";
 	next;
-	switch (select("空きビンを全部交換する","やめる")) {
+	switch(select("空きビンを全部交換する","やめる")) {
 	case 1:
 		if(countitem(713)<1) {
 			mes "[牛乳商人]";
@@ -20,7 +20,7 @@ prontera.gat,73,140,0	script	牛乳商人	86,{
 		if(Zeny<'@num*15) {
 			mes "[牛乳商人]";
 			mes "あれ、お金が足りませんね。";
-			mes "15 Zeny足りません……";
+			mes ('@num*15)+ " Zeny足りません……";
 			close;
 		}
 		if(checkweight(519,'@num)==0) {
