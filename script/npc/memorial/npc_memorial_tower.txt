@@ -420,6 +420,7 @@ e_tower.gat,81,105,0	script	塔の守護石	406,{
 		mes "^FF0000刻の呪い^000000を受けている状態。";
 		mes "呪いが解けるまで";
 		mes "鍵の作成、入場を行う資格はない。";
+		close;
 	}
 	else {
 		if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
@@ -1691,6 +1692,8 @@ OnKilled5:
 			mes "では二つの剣を合わせて";
 			mes "両手剣にしてあげましょう。^000000";
 			next;
+			delitem 13412,1;
+			delitem 13413,1;
 			getitem 1185,1;
 		}
 		else {
@@ -1699,6 +1702,7 @@ OnKilled5:
 			mes "^FF0000分かりました。";
 			mes "二つの剣はそのままの状態に";
 			mes "しておきましょう。^000000";
+			next;
 		}
 		mes "[彷徨う魂]";
 		mes "^FF0000もっと話がしたいですが、";

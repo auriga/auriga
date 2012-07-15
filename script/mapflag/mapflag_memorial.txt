@@ -17,8 +17,8 @@
 2@tower.gat	mapflag	noteleport		dummy
 2@tower.gat	mapflag	nobranch		dummy
 2@tower.gat	mapflag	monster_noteleport	dummy
-1@tower.gat	mapflag	noicewall	dummy
-1@tower.gat	mapflag	noabra		dummy
+2@tower.gat	mapflag	noicewall	dummy
+2@tower.gat	mapflag	noabra		dummy
 
 //============================================================
 // エンドレスタワー 3層（51〜75F） - 3@tower.gat
@@ -28,8 +28,8 @@
 3@tower.gat	mapflag	noteleport		dummy
 3@tower.gat	mapflag	nobranch		dummy
 3@tower.gat	mapflag	monster_noteleport	dummy
-1@tower.gat	mapflag	noicewall	dummy
-1@tower.gat	mapflag	noabra		dummy
+3@tower.gat	mapflag	noicewall	dummy
+3@tower.gat	mapflag	noabra		dummy
 
 //============================================================
 // エンドレスタワー 4層（76〜99F） - 4@tower.gat
@@ -39,8 +39,8 @@
 4@tower.gat	mapflag	noteleport		dummy
 4@tower.gat	mapflag	nobranch		dummy
 4@tower.gat	mapflag	monster_noteleport	dummy
-1@tower.gat	mapflag	noicewall	dummy
-1@tower.gat	mapflag	noabra		dummy
+4@tower.gat	mapflag	noicewall	dummy
+4@tower.gat	mapflag	noabra		dummy
 
 //============================================================
 // エンドレスタワー 5層（100F） - 5@tower.gat
@@ -50,8 +50,8 @@
 5@tower.gat	mapflag	noteleport		dummy
 5@tower.gat	mapflag	nobranch		dummy
 5@tower.gat	mapflag	monster_noteleport	dummy
-1@tower.gat	mapflag	noicewall	dummy
-1@tower.gat	mapflag	noabra		dummy
+5@tower.gat	mapflag	noicewall	dummy
+5@tower.gat	mapflag	noabra		dummy
 
 //============================================================
 // エンドレスタワー 覇王の間 - 6@tower.gat
@@ -61,5 +61,5 @@
 6@tower.gat	mapflag	noteleport		dummy
 6@tower.gat	mapflag	nobranch		dummy
 6@tower.gat	mapflag	monster_noteleport	dummy
-1@tower.gat	mapflag	noicewall	dummy
-1@tower.gat	mapflag	noabra		dummy
+6@tower.gat	mapflag	noicewall	dummy
+6@tower.gat	mapflag	noabra		dummy

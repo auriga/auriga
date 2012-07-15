@@ -1,4 +1,16 @@
 ----------------------------------------
+//0975 [2012/07/16] by refis
+
+・幻想の花を利用したアルケミスト転職の会話を補完 (npc_job_18alchemist.txt)
+
+・イズルードの街のNPC配置を更新 (npc_job_28gunslinger.txt npc_town_izlude.txt)
+
+・0967の内容を少し修正 (doc/script_ref.txt mapflag_memorial.txt npc_memorial_tower.txt)
+
+・PK設定のとき、マーダラーポイントが0でもボーナスが付与されるミスを修正 (src/map/pc.c)
+	Thanks kroe さん
+
+----------------------------------------
 //0974 [2012/07/11] by refis
 
 ・タナトスタワーNPCの会話を補完 (npc_quest_noghalt.txt)

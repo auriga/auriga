@@ -3648,8 +3648,10 @@ int pc_modifysellvalue(struct map_session_data *sd,int orig_value)
 		rate = 5 + skill * 2 - ((skill >= 10)? 1: 0);
 
 	// マーダラーボーナス
-	if(sd == NULL || ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point)
-		rate += 10;
+	if(battle_config.pk_murderer_point > 0) {
+		if(sd == NULL || ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point)
+			rate += 10;
+	}
 	if(rate)
 		val = (int)((atn_bignumber)orig_value * (100 + rate) / 100);
 
@@ -5707,9 +5709,11 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		job_exp  = job_exp  * job_rate / 100;
 
 	// マーダラーボーナス
-	if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
-		base_exp *= 2;
-		job_exp  *= 2;
+	if(battle_config.pk_murderer_point > 0) {
+		if(ranking_get_point(sd,RK_PK) >= battle_config.pk_murderer_point) {
+			base_exp *= 2;
+			job_exp  *= 2;
+		}
 	}
 
 	if (sd->status.guild_id > 0) {	// ギルドに上納
