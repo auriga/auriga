@@ -1,4 +1,26 @@
 ----------------------------------------
+//0977 [2012/08/09] by refis
+
+・モンスターの詠唱時間は状態異常の影響を受けないよう修正 (src/map/mob.c)
+
+・「checkitemblank」関数はインベントリの空き数を返すよう仕様変更 (doc/script_ref.txt src/map/script.c)
+
+・精錬石関連NPCを修正 (npc_misc_refine.txt)
+	-> 精錬石販売NPCにアイテム所持種チェックを追加
+	-> 精錬石交換NPCを複数鉱石交換に対応
+
+・ステータスが正常に表示されない場合がある不具合を修正 (src/map/status.c)
+	Thanks テディ さん
+
+・NPCスキル「ドラゴンフィアー」の呪いを混乱に修正 (src/map/skill.c)
+	Thanks rapis さん
+
+・別種同一名モンスターの名称を修正
+	-> dungeonの修正 (npc_monster_juperos.txt npc_monster_magdun.txt npc_monster_odintem.txt npc_monster_thanatos.txt npc_monster_xmasdun.txt)
+	-> fieldの修正 (npc_monster_geffild.txt npc_monster_hufild.txt npc_monster_mjolnir.txt npc_monster_mocfild.txt npc_monster_prtfild.txt npc_monster_yunofild.txt)
+		Thanks pneuma さん
+
+----------------------------------------
 //0976 [2012/07/16] by refis
 
 ・0975のミスを修正 (npc_job_18alchemist.txt npc_job_28gunslinger.txt)

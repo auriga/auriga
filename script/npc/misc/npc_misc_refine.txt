@@ -754,6 +754,14 @@ prontera.gat,123,65,1	script	フランツ	85,{
 //--------------------------------------------------------------------
 
 -	script	BuyStone	-1,{
+	if(chackitemblank()==0) {
+		mes "- 所持アイテムの種類数が -";
+		mes "- 多いため、アイテムを受けとる -";
+		mes "- ことができません。 -";
+		mes "- 所持アイテムを減らしてから -";
+		mes "- 再度話しかけてください。 -";
+		close;
+	}
 	mes "["+strnpcinfo(0)+"]";
 	mes "鉄や鋼鉄の武器を精錬する時に";
 	mes "使える金属を売っています。";
@@ -840,12 +848,19 @@ ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
 //--------------------------------------------------------------------
 
 -	script	ChangeStone	-1,{
+	if(chackitemblank()==0) {
+		mes "- 所持アイテムの種類数が -";
+		mes "- 多いため、アイテムを受けとる -";
+		mes "- ことができません。 -";
+		mes "- 所持アイテムを減らしてから -";
+		mes "- 再度話しかけてください。 -";
+		close;
+	}
 	mes "["+strnpcinfo(3)+"]";	//識別子を参照
 	mes "オリデオコンやエルニウムの原石を";
-	mes "私に持ってきたら、すぐに";
-	mes "オリデオコンとエルニウムに";
-	mes "してやる。但し、原石は";
-	mes "各5つずつ持ってくるように。";
+	mes "僕に持ってきたら、すぐに";
+	mes "オリデオコンとエルニウムにしてあげる。";
+	mes "但し、原石は各5つ以上持ってくるように。";
 	next;
 	switch (select("オリデオコンを作る","エルニウムを作る","属性石について聞く")) {
 	case 1:
@@ -858,10 +873,10 @@ ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
 		break;
 	case 3:
 		mes "["+strnpcinfo(3)+"]";
-		mes "属性石か…";
+		mes "属性石ねえ…";
 		mes "私の金属精錬人生20年で";
-		mes "話はよく聞いたが実際には";
-		mes "見たことはない。";
+		mes "話はよく聞いたけど実際には";
+		mes "見たことはないな。";
 		mes "聞くところによると、金属が";
 		mes "火、水、地、風の属性を持つらしい。";
 		next;
@@ -870,19 +885,53 @@ ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
 		mes "混入すれば、属性を持つ武器を";
 		mes "作れるという…";
 		mes "はは…そんなことができるのは";
-		mes "相当な精錬職人だろうな。";
+		mes "相当な精錬職人だろうね。";
 		close;
 	}
 	if(countitem('@itemid)<5) {
 		mes "["+strnpcinfo(3)+"]";
-		mes "ハハハハ、冗談だろ？";
-		mes getitemname('@itemid)+ "が5つ無いと";
-		mes getitemname('@gain)+ "が作れないと";
-		mes "言ったじゃないか。";
+		mes "え？冗談でしょ？";
+		mes getitemname('@itemid)+ "が5つ以上無いと";
+		mes getitemname('@gain)+ "が作れないと言ったじゃないか。";
 		close;
 	}
-	delitem '@itemid,5;
-	getitem '@gain,1;
+	mes "["+strnpcinfo(3)+"]";
+	mes getitemname('@gain)+ "を作る量はどうする？";
+	next;
+	if(select("1個分だけ作る","作れるだけ作る")==1) {
+		if(checkweight('@gain,1)==0) {
+			mes "‐所持アイテムの重量が重い為";
+			mes "　危険です。";
+			mes "　所持アイテムを減らしてから、";
+			mes "　再度話しかけてください‐";
+			close;
+		}
+		delitem '@itemid,5;
+		getitem '@gain,1;
+		mes "["+strnpcinfo(3)+"]";
+		mes "ほら、約束の" +getitemname('@gain)+ "だ。";
+		mes "いつでもまた来てくれ。";
+		close;
+	}
+	set '@num,countitem('@itemid)/5;
+	mes "["+strnpcinfo(3)+"]";
+	mes getitemname('@itemid)+ "^FF0000" +('@num*5)+ "^000000個で";
+	mes getitemname('@gain)+ "^FF0000" +'@num+ "^000000個作ればいい？";
+	next;
+	if(select("やっぱりやめます","お願いします")==1) {
+		mes "["+strnpcinfo(3)+"]";
+		mes "いつでもまた来てくれ。";
+		close;
+	}
+	if(checkweight('@gain,1)==0) {
+		mes "‐所持アイテムの重量が重い為";
+		mes "　危険です。";
+		mes "　所持アイテムを減らしてから、";
+		mes "　再度話しかけてください‐";
+		close;
+	}
+	delitem '@itemid,'@num*5;
+	getitem '@gain,'@num;
 	mes "["+strnpcinfo(3)+"]";
 	mes "ほら、約束の" +getitemname('@gain)+ "だ。";
 	mes "いつでもまた来てくれ。";

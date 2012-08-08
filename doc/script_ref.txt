@@ -2362,7 +2362,7 @@ AurigaNPCScript
 		checkitemblank関数
 			checkitemblank()
 
-			対象PCのアイテム種類数に空きがあるならば1を、なければ0を返します。
+			対象PCのアイテム種類数に空きがあるならばその数量を、なければ0を返します。
 
 		strcharinfo関数
 			strcharinfo(<n>)

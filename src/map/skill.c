@@ -7695,7 +7695,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_WIDEHELLDIGNITY:	/* ヘルディグニティ */
 		if(flag&1) {
 			if(skillid == NPC_DRAGONFEAR) {
-				const int sc_type[4] = { SC_STUN, SC_CURSE, SC_SILENCE, SC_BLEED };
+				const int sc_type[4] = { SC_STUN, SC_CONFUSION, SC_SILENCE, SC_BLEED };
 				int n = atn_rand() % 4;
 				// upkeep_time2は配列の添え字に従う
 				if(atn_rand() % 10000 < status_change_rate(bl,sc_type[n],10000,status_get_lv(src)))

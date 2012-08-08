@@ -26,8 +26,8 @@ yuno_fild02.gat,0,0,0,0		monster	ビートル	1494,40,0,0,0
 yuno_fild02.gat,0,0,0,0		monster	ダスティネス	1114,20,0,0,0
 yuno_fild02.gat,0,0,0,0		monster	ハンターフライ	1035,10,0,0,0
 yuno_fild02.gat,92,200,43,52	monster	ワイルドローズ	1261,5,0,0,0
-yuno_fild02.gat,185,310,170,37	monster	ノーバス	1715,2,1200000,600000,0
-yuno_fild02.gat,298,194,55,158	monster	ノーバス	1718,2,1200000,600000,0
+yuno_fild02.gat,185,310,170,37	monster	レッドノーバス		1715,2,1200000,600000,0
+yuno_fild02.gat,298,194,55,158	monster	イエローノーバス	1718,2,1200000,600000,0
 yuno_fild02.gat,0,0,0,0		monster	赤い草		1078,10,1800000,900000,1
 yuno_fild02.gat,0,0,0,0		monster	黄色草		1081,10,1800000,900000,1
 yuno_fild02.gat,0,0,0,0		monster	緑色草		1080,10,1800000,900000,1

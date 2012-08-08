@@ -322,7 +322,7 @@ int status_is_disable(int type,int mask)
 int status_calc_pc(struct map_session_data* sd,int first)
 {
 	// 注意：ここでは変数の宣言のみにとどめ、初期化はL_RECALCの後にやること。
-	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_parame[6],b_hit,b_flee;
+	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_paramc[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	int b_watk_,b_watk_2;
@@ -359,7 +359,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_weight     = sd->weight;
 	b_max_weight = sd->max_weight;
 	memcpy(b_paramb, &sd->paramb, sizeof(b_paramb));
-	memcpy(b_parame, &sd->paramc, sizeof(b_parame));
+	memcpy(b_paramc, &sd->paramc, sizeof(b_paramc));
 	memcpy(b_skill, &sd->status.skill, sizeof(b_skill));
 	b_hit         = sd->hit;
 	b_flee        = sd->flee;
@@ -2463,7 +2463,7 @@ L_RECALC:
 	}
 
 	for(i=0; i<6; i++) {
-		if(b_paramb[i] + b_parame[i] != sd->paramb[i] + sd->parame[i])
+		if(b_paramb[i] + b_paramc[i] != sd->paramb[i] + sd->paramc[i])
 			clif_updatestatus(sd,SP_STR+i);
 	}
 

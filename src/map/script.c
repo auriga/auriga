@@ -5538,18 +5538,18 @@ int buildin_checkweight(struct script_state *st)
 }
 
 /*==========================================
- * インベントリの空きチェック
+ * インベントリの空き数チェック
  *------------------------------------------
  */
 int buildin_checkitemblank(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int amount = 0;
 
-	if(sd && pc_search_inventory(sd,0) >= 0) {
-		push_val(st->stack,C_INT,1);
-	} else {
-		push_val(st->stack,C_INT,0);
-	}
+	if(sd)
+		amount = pc_inventoryblank(sd);
+
+	push_val(st->stack,C_INT,amount);
 	return 0;
 }
 

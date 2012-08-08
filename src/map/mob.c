@@ -3250,7 +3250,7 @@ static int mobskill_use_id(struct mob_data *md,struct block_list *target,int ski
 	mds = mob_db[md->class_].skill;
 	ms  = &mds[skill_idx];
 
-	casttime     = skill_castfix(&md->bl, ms->skill_id, ms->casttime, 0);
+	casttime     = ms->casttime;
 	md->skillidx = skill_idx;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
@@ -3279,7 +3279,7 @@ static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int 
 	mds = mob_db[md->class_].skill;
 	ms  = &mds[skill_idx];
 
-	casttime     = skill_castfix(&md->bl, ms->skill_id, ms->casttime, 0);
+	casttime     = ms->casttime;
 	md->skillidx = skill_idx;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
