@@ -754,7 +754,7 @@ prontera.gat,123,65,1	script	フランツ	85,{
 //--------------------------------------------------------------------
 
 -	script	BuyStone	-1,{
-	if(chackitemblank()==0) {
+	if(checkitemblank()==0) {
 		mes "- 所持アイテムの種類数が -";
 		mes "- 多いため、アイテムを受けとる -";
 		mes "- ことができません。 -";
@@ -848,7 +848,7 @@ ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
 //--------------------------------------------------------------------
 
 -	script	ChangeStone	-1,{
-	if(chackitemblank()==0) {
+	if(checkitemblank()==0) {
 		mes "- 所持アイテムの種類数が -";
 		mes "- 多いため、アイテムを受けとる -";
 		mes "- ことができません。 -";
