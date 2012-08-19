@@ -1,4 +1,13 @@
 ----------------------------------------
+//0979 [2012/08/20] by refis
+
+・別種同一名モンスターの名称変更の欠損分を補完 (npc_monster_abyss.txt)
+
+・itemデータの更新 (item_db.txt item_db2.txt)
+
+・mobデータの更新 (mob_db.txt mob_skill_db.txt)
+
+----------------------------------------
 //0978 [2012/08/11] by refis
 
 ・0977での関数のスペルミスを修正 (npc_misc_refine.txt)
