@@ -813,7 +813,7 @@
 1523,Spike,スパイク,5,20,,700,85,,1,0,33040,2,2,4,40,8,1,{},{ bonus bCritical,40; bonus bDefRate,-67; bonus bDef2Rate,-67; }
 1524,Golden_Mace,ゴールデンメイス,5,20,,800,110,,1,1,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,1,10; bonus bUnbreakableWeapon,0; }
 1525,Long_Mace,ロングメイス,5,20,,800,135,,3,0,33040,2,2,4,40,8,1,{},{ bonus bLongAtkDef,10; }
-1526,Slash,スラッシュ ,5,20,,1000,145,,1,0,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,1,15; bonus2 bExpRate,1,5; bonus2 bJobRate,1,5; bonus2 bWeaponComaRace2,1,10; }
+1526,Slash,スラッシュ,5,20,,1000,145,,1,0,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,1,15; bonus2 bExpRate,1,5; bonus2 bJobRate,1,5; bonus2 bWeaponComaRace2,1,10; }
 1527,Quadrille,カドリール,5,20,,900,165,,1,0,33040,2,2,4,40,8,1,{},{ bonus2 bAddRace,7,10; bonus2 bAddEle,2,10; bonus2 bAddEle,9,10; }
 1528,Grand_Cross,グランドクロス,5,20,,1500,140,,1,0,33040,2,2,4,40,8,1,{},{ bonus bAtkEle,6; bonus3 bAutoSpell,77,3,1000; bonus3 bDefeatSPDrainValue,1,100,3; bonus2 bSPDrainValue,100,1; }
 1529,Iron_Driver,アイアンドライバー,5,20,,3000,155,,1,0,33024,2,2,3,78,8,1,{},{}
@@ -1825,9 +1825,9 @@
 2813,Unknown_Item,フレイヤの魂のブレスレット,4,,,200,,1,,0,1000333311,2,136,,20,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2814,Unknown_Item,フレイヤの魂のブレスレット,4,,,200,,1,,0,1000333311,2,136,,20,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2815,Th_Ring_Of_Water,水の指輪,4,,,10,,0:2,,0,1000333311,2,136,,0,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; bonus bMaxSP,20; if(BaseLevel>=41) end; bonus2 bItemHealRate,1,50-BaseLevel; bonus2 bItemHealRate,8,50-BaseLevel; /*レベルに比例して回復量減少する効果は暫定処理*/ }
-2816,Radar_Ring1,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
-2817,Radar_Ring2,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
-2818,Radar_Ring3,レイドリング ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
+2816,Radar_Ring1,レイドリング,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
+2817,Radar_Ring2,レイドリング,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
+2818,Radar_Ring3,レイドリング,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
 2819,Swordman_Manual,ソードマン手引書,4,,,100,,0,,0,8388609,2,136,,1,,,{},{ bonus bMaxSP,100; }
 2820,Thief_Manual,シーフ手引書,4,,,100,,0,,0,8388609,2,136,,1,,,{},{ bonus bMaxSP,100; }
 2821,Acolyte_Manual,アコライト手引書,4,,,100,,0,,0,8388609,2,136,,1,,,{},{ bonus bMaxSP,100; }
@@ -2687,7 +2687,7 @@
 5064,Leaf_Headgear,変身木の葉,4,20,,100,,1,,0,1000333311,2,256,,0,148,1,{},{}
 5065,Fish_On_Head,青い魚,4,20,,500,,2,,0,1000333311,2,256,,50,149,1,{},{ bonus2 bAddRace,5,10; }
 5066,Horn_Of_Succubus,サキュバスの角,4,20,,800,,4:10,,0,991944702,2,256,,70,150,1,{},{ bonus bInt,1; }
-5067,Sombrero,ソンブレロ ,4,20,,350,,4,,0,991944702,2,256,,0,151,1,{},{ bonus bAgi,1; }
+5067,Sombrero,ソンブレロ,4,20,,350,,4,,0,991944702,2,256,,0,151,1,{},{ bonus bAgi,1; }
 5068,Ear_Of_Devil's_Wing,悪魔の羽耳,4,20,,100,,1,,0,1000333311,2,512,,70,152,,{},{ bonus bStr,1; }
 5069,Mask_Of_Fox,狐のお面,4,20,,300,,1,,0,991944702,2,256,,0,153,1,{},{ bonus bAgi,1; bonus bLuk,1; }
 5070,Headband_Of_Power,熱血鉢巻き,4,20,,100,,1,,0,991944702,2,256,,0,154,1,{},{ bonus bStr,2; }
@@ -4269,7 +4269,7 @@
 7358,Embelem_Piece__,紋章の欠片,3,5000,,10,,,,,,,,,,,,{},{}
 7359,Embelem_Piece___,紋章の欠片,3,5000,,10,,,,,,,,,,,,{},{}
 7360,RO_Festival_Ticket,ROフェスティバル招待券,3,,,10,,,,,,,,,,,,{},{}
-7361,Unknown_Item ,1/1超合金ポリン人形,3,,,0,,,,,,,,,,,,{/*jROユナイトカーニバル*/},{}
+7361,Unknown_Item,1/1超合金ポリン人形,3,,,0,,,,,,,,,,,,{/*jROユナイトカーニバル*/},{}
 7362,No2_Ball,2番玉,3,,,10,,,,,,,,,,,,{},{}
 7363,No3_Ball,3番玉,3,,,10,,,,,,,,,,,,{},{}
 7364,No4_Ball,4番玉,3,,,10,,,,,,,,,,,,{},{}
@@ -7963,7 +7963,7 @@
 
 18717,UnknownItem,スカルフード,14,20,,500,,10:2,,1,1000333311,,769,,70,,,{},{}
 
-18719,Unknown_Item,エンジェルステアーズ,4,20,,500,,0,,,1000333311,2,256,,30,874,0,{ bonus3 bAutoSpell2,19,5,1000; bonus3 bAutoSpell2,17,5,1000; }
+18719,Unknown_Item,エンジェルステアーズ,4,20,,500,,0,,,1000333311,2,256,,30,874,0,{ sc_start SC_HAT_EFFECT,9999,1; },{ bonus3 bAutoSpell2,19,5,1000; bonus3 bAutoSpell2,17,5,1000; }
 18720,Magical_Booster,マジカルブースター,4,,20,300,,0,,,1000333311,2,512,,30,873,0,{},{ bonus bMatkRate,3;if(equippeditem(5672)){if(getequiprefinerycnt(1)>=5){bonus2 bMagicAddRace,10,3+4*(getequiprefinerycnt(1)>=7);bonus2 bSubRace,11,-5;}else{bonus2 bMagicAddRace,10,2;}}if(equippeditem(1626)||equippeditem(1665)){if(getequiprefinerycnt(4)<10){bonus bMatk,15*getequiprefinerycnt(4);}else{bonus bMatk,200;bonus bCastrate,-10;}}if(equippeditem(1621)||equippeditem(1622)){if(getequiprefinerycnt(4)<10){bonus bMatk,20*getequiprefinerycnt(4);}else{bonus bMatk,250;bonus bSkillDelayRate,-10;}} }
 18721,Sweet_Valentine_Hat,スウィートバレンタイン帽,4,,,0,,1,,,1000333311,2,256,,1,865,1,{},{}
 18722,Unknown_Item,イドゥンの羽耳,4,,,0,,1,,,1000333311,2,512,,80,724,,{},{}

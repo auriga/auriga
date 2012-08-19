@@ -583,6 +583,7 @@
 611,SC_WATER_INSIGNIA,0,1,0,0		// ウォーターインシグニア
 612,SC_WIND_INSIGNIA,0,1,0,0		// ウィンドインシグニア
 613,SC_EARTH_INSIGNIA,0,1,0,0		// アースインシグニア
+614,SC_HAT_EFFECT,1,0,0,0		// 頭装備エフェクト
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

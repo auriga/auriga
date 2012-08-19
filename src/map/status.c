@@ -203,7 +203,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 600- */
 	SI_PETROLOGY,SI_PETROLOGY_OPTION,SI_CURSED_SOIL,SI_CURSED_SOIL_OPTION,SI_UPHEAVAL,SI_UPHEAVAL_OPTION,SI_TIDAL_WEAPON,SI_TIDAL_WEAPON_OPTION,SI_ROCK_CRUSHER,SI_ROCK_CRUSHER_ATK,
 	/* 610- */
-	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA
+	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT
 };
 
 /*==========================================
@@ -6190,7 +6190,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	}
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
-		if(type == SC_ALL_RIDING) {	// 騎乗システム
+		if(type == SC_ALL_RIDING || type == SC_HAT_EFFECT) {
 			status_change_end(bl,type,-1);
 			return 0;
 		}
@@ -6485,6 +6485,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KYOUGAKU:			/* 驚愕 */
 			icon_val1 = 1002;	// 暫定でポリン
 			calc_flag = 1;
+			break;
+		case SC_HAT_EFFECT:			/* 頭装備エフェクト */
+			icon_val1 = val1;
 			break;
 
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -9371,6 +9374,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case LG_EXEEDBREAK:
 	case SC_ALL_RIDING:	/* 騎乗システム */
 	case SC_ON_PUSH_CART:	/* カート */
+	case SC_HAT_EFFECT:	/* 頭装備エフェクト */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

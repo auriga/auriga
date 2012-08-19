@@ -7857,6 +7857,8 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			clif_status_change_id(sd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
 			clif_status_change_id(sd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
+		if(dstsd->sc.data[SC_HAT_EFFECT].timer != -1)	// 頭装備エフェクト
+			clif_status_change_id(sd,dstsd->bl.id,SI_HAT_EFFECT,1,9999,dstsd->sc.data[SC_HAT_EFFECT].val1,0,0);
 	}
 
 	if(dstsd->chatID) {

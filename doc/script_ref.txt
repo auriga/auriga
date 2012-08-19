@@ -2089,13 +2089,17 @@ AurigaNPCScript
 			省略すると0で無期限となります。
 
 		getexp命令
-			getexp <base>,<job>;
+			getexp <base>,<job>[,<quest>];
 
 			base,job	数値
+			quest		数値、省略可
+				quest=0 （exp取得時文字が黄色になる）
+				quest=1 （exp取得時文字が紫色になる）
 
 			プレイヤーのBase経験値を<base>分、Job経験値を<job>分増加させます。
 			埋め込み変数であるBASEEXPやJOBEXPを直接操作するのとは異なり、戦闘教範による補正を受けたり、
 			ギルドへの上納などが自動的に行われます。
+			<quest>で表示色が変わります。省略時は1です。
 
 		makemerc命令
 			makemerc <merc_id>,<time>;

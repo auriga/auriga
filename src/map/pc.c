@@ -1215,7 +1215,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		{
 			// 一応レベル制限チェック
 			if(item->elv > 0 && sd->status.base_level < item->elv)
-				return 0;
+				return -1;
 			// 頭でストリップなら失敗
 			if(item->equip & LOC_HEAD2 && sd->sc.data[SC_STRIPHELM].timer != -1)
 				return 0;
@@ -1236,7 +1236,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 			return 0;
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
-		return 0;
+		return -1;
 	if(pc_check_useclass(sd,item->class_) == 0)
 		return 0;
 
@@ -4143,7 +4143,7 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 	if(item->sex != SEX_SERVER && sd->sex != item->sex)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
-		return 0;
+		return -1;
 	if(pc_check_useclass(sd,item->class_) == 0)
 		return 0;
 
@@ -4166,6 +4166,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 {
 	int nameid,amount;
 	struct item_data *item;
+	int flag;
 
 	nullpo_retv(sd);
 
@@ -4175,9 +4176,12 @@ void pc_useitem(struct map_session_data *sd, int n)
 	item   = sd->inventory_data[n];
 	nameid = sd->status.inventory[n].nameid;
 	amount = sd->status.inventory[n].amount;
+	flag   = pc_isUseitem(sd,n);
 
-	if(nameid <= 0 || amount <= 0 || !pc_isUseitem(sd,n)) {
+	if(nameid <= 0 || amount <= 0 || !flag) {
 		clif_useitemack(sd,n,0,0);
+		if(flag < 0)
+			clif_msgstringtable(sd, 0x6ee);	// アイテムを使用できるレベルに達していません。
 		return;
 	}
 	sd->use_itemid = nameid;
@@ -8421,17 +8425,21 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 {
 	int i,nameid;
 	struct item_data *id;
+	int flag;
 
 	nullpo_retv(sd);
 	nullpo_retv(id = sd->inventory_data[n]);
 
 	nameid = sd->status.inventory[n].nameid;
-	pos = pc_equippoint(sd,n);
+	pos    = pc_equippoint(sd,n);
+	flag   = pc_isequip(sd,n);
 
 	if(battle_config.battle_log)
 		printf("equip %d(%d) %x:%x\n",nameid,n,id->equip,pos);
-	if(!pc_isequip(sd,n) || !pos) {
+	if(!flag || !pos) {
 		clif_equipitemack(sd,n,0,0);	// fail
+		if(flag < 0)
+			clif_msgstringtable(sd, 0x6ed);	// アイテムを装備できるレベルに達していません。
 		return;
 	}
 	if(pos == LOC_RLACCESSORY) {	// アクセサリ用例外処理

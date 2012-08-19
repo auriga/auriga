@@ -1,4 +1,15 @@
 ----------------------------------------
+//0980 [2012/08/20] by refis
+
+・itemの名称に半角スペースが混じっているミスを修正 (item_db.txt)
+
+・スクリプト命令「getexp」の表示色を変えられるよう拡張 (doc/script_ref.txt script.c)
+
+・アイテム使用時のレベル制限チェックでエラーメッセージを出力するよう変更 (pc.c)
+
+・状態異常「SC_HAT_EFFECT」を実装 (const.txt item_db.txt scdata_db.txt clif.c status.*)
+
+----------------------------------------
 //0979 [2012/08/20] by refis
 
 ・別種同一名モンスターの名称変更の欠損分を補完 (npc_monster_abyss.txt)

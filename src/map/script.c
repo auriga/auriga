@@ -4288,7 +4288,7 @@ struct script_function buildin_func[] = {
 	{buildin_sqlquery,"sqlquery","s*"},
 	{buildin_strescape,"strescape","s"},
 	{buildin_dropitem,"dropitem","siiiii*"},
-	{buildin_getexp,"getexp","ii"},
+	{buildin_getexp,"getexp","ii*"},
 	{buildin_getiteminfo,"getiteminfo","si"},
 	{buildin_getonlinepartymember,"getonlinepartymember","*"},
 	{buildin_getonlineguildmember,"getonlineguildmember","*"},
@@ -11546,17 +11546,19 @@ int buildin_dropitem(struct script_state *st)
  */
 int buildin_getexp(struct script_state *st)
 {
-	int base,job;
+	int base, job, quest = 1;
 	struct map_session_data *sd = script_rid2sd(st);
 
 	nullpo_retr(0, sd);
 
 	base = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	job  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		quest = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(base < 0 || job < 0)
 		return 0;
-	pc_gainexp(sd,NULL,base,job,1);
+	pc_gainexp(sd,NULL,base,job,quest);
 
 	return 0;
 }
