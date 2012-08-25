@@ -3325,6 +3325,18 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		if(sd->state.lr_flag != 2)
 			sd->def_eleenemy[type2] += val;
 		break;
+	case SP_ADD_ELEWEAPONDAMAGE_RATE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
+		if(sd->state.lr_flag != 2)
+			sd->skill_eleweapon_dmgup[type2] += val;
+		break;
+	case SP_ADD_ELEMAGICDAMAGE_RATE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
+		if(sd->state.lr_flag != 2)
+			sd->skill_elemagic_dmgup[type2] += val;
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("pc_bonus2: unknown type %d %d %d!\n",type,type2,val);
@@ -5705,6 +5717,10 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 	if (sd->sc.data[SC_JOB_COMBATHAN].timer != -1) {
 		job_rate  += sd->sc.data[SC_JOB_COMBATHAN].val1;
+	}
+	if (sd->sc.data[SC_JP_EVENT04].timer != -1 && status_get_race(&md->bl) == RCT_FISH) {
+		base_rate += sd->sc.data[SC_JP_EVENT04].val1;
+		job_rate  += sd->sc.data[SC_JP_EVENT04].val1;
 	}
 
 	if (base_rate != 100)

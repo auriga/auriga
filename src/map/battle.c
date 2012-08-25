@@ -476,6 +476,10 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				}
 			}
 		}
+		if(src_sc->data[SC_JP_EVENT01].timer != -1 && damage > 0 && flag&BF_WEAPON && status_get_race(bl) == RCT_FISH)
+			damage += damage * src_sc->data[SC_JP_EVENT01].val1 / 100;
+		if(src_sc->data[SC_JP_EVENT02].timer != -1 && damage > 0 && flag&BF_MAGIC && status_get_race(bl) == RCT_FISH)
+			damage += damage * src_sc->data[SC_JP_EVENT02].val1 / 100;
 		// 術式全開の属性ダメージ増加
 		if(src_sc->data[SC_KO_ZENKAI].timer != -1 && damage > 0) {
 			// val3に属性値が入ってるので一致すればダメージ増加
@@ -798,6 +802,10 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 					break;
 				}
 			}
+		}
+
+		if(sc->data[SC_JP_EVENT03].timer != -1 && damage > 0 && status_get_race(src) == RCT_FISH) {
+			damage -= damage * sc->data[SC_JP_EVENT03].val1 / 100;
 		}
 
 		// 明鏡止水(確率暫定)
@@ -3526,14 +3534,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 			}
 		}
-		// カード効果による特定スキルのダメージ増幅（武器スキル）
-		if(src_sd->skill_dmgup.count > 0 && skill_num > 0 && wd.damage > 0) {
-			for( i=0; i<src_sd->skill_dmgup.count; i++ ) {
-				if( skill_num == src_sd->skill_dmgup.id[i] ) {
-					cardfix = cardfix*(100+src_sd->skill_dmgup.rate[i])/100;
-					break;
+		if(skill_num > 0 && wd.damage > 0) {
+			int rate = 100;
+
+			// カード効果による特定スキルのダメージ増幅（武器スキル）
+			if(src_sd->skill_dmgup.count > 0) {
+				for(i=0; i<src_sd->skill_dmgup.count; i++) {
+					if(skill_num == src_sd->skill_dmgup.id[i]) {
+						rate += src_sd->skill_dmgup.rate[i];
+						break;
+					}
 				}
 			}
+			// カード効果による特定属性スキルのダメージ増幅（武器スキル）
+			rate += src_sd->skill_eleweapon_dmgup[s_ele];
+			cardfix = cardfix*rate/100;
 		}
 		wd.damage = wd.damage*cardfix/100;	// カード補正によるダメージ増加
 	}
@@ -4611,14 +4626,21 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				break;
 			}
 		}
-		// カード効果による特定スキルのダメージ増幅（魔法スキル）
-		if(sd->skill_dmgup.count > 0 && skill_num > 0) {
-			for(i=0; i<sd->skill_dmgup.count; i++) {
-				if(skill_num == sd->skill_dmgup.id[i]) {
-					cardfix = cardfix*(100+sd->skill_dmgup.rate[i])/100;
-					break;
+		if(skill_num > 0 && mgd.damage > 0) {
+			int rate = 100;
+
+			// カード効果による特定スキルのダメージ増幅（魔法スキル）
+			if(sd->skill_dmgup.count > 0) {
+				for(i=0; i<sd->skill_dmgup.count; i++) {
+					if(skill_num == sd->skill_dmgup.id[i]) {
+						rate += sd->skill_dmgup.rate[i];
+						break;
+					}
 				}
 			}
+			// カード効果による特定属性スキルのダメージ増幅（魔法スキル）
+			rate += sd->skill_elemagic_dmgup[ele];
+			cardfix = cardfix*rate/100;
 		}
 		mgd.damage = mgd.damage*cardfix/100;
 	}

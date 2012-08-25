@@ -211,6 +211,9 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 	bonus2 bAddSkillCastTime,n,x;		スキルnの詠唱時間をxミリ秒増加
 	bonus2 bAddSpCost,n,x;				スキルnの消費SPを+x
 	bonus2 bAddSkillCoolDown,n,x;		スキルnのクールタイムをxミリ秒増加(nが3次職スキル以外は無効)
+	bonus2 bAddEleWeaponDamageRate,n,x;	n属性の物理スキルダメージをx%増加
+	bonus2 bAddEleMagicDamageRate,n,x;	n属性の魔法スキルダメージをx%増加
+					0,無　1,水　2,土　3,火　4,風　5,毒　6,聖　7,闇　8,念　9,不死
 
 
 ・オートスペル

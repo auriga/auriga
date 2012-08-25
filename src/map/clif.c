@@ -7857,6 +7857,8 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			clif_status_change_id(sd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
 			clif_status_change_id(sd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
+		if(dstsd->sc.data[SC_BANDING].timer != -1)	// バンディング
+			clif_status_change_id(sd,dstsd->bl.id,SI_BANDING,1,9999,dstsd->sc.data[SC_BANDING].val1,0,0);
 		if(dstsd->sc.data[SC_HAT_EFFECT].timer != -1)	// 頭装備エフェクト
 			clif_status_change_id(sd,dstsd->bl.id,SI_HAT_EFFECT,1,9999,dstsd->sc.data[SC_HAT_EFFECT].val1,0,0);
 	}
@@ -10988,6 +10990,24 @@ void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigne
 	WFIFOL(fd,26)=flag;
 	WFIFOSET(fd,packet_db[0x2c5].len);
 #endif
+
+	return;
+}
+
+/*==========================================
+ * パーティ加入要請可否
+ *------------------------------------------
+ */
+void clif_send_partyconfig(struct map_session_data *sd)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x2c9;
+	WFIFOB(fd,2) = (unsigned char)sd->status.refuse_partyinvite;
+	WFIFOSET(fd,packet_db[0x2c9].len);
 
 	return;
 }
@@ -15265,6 +15285,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 
 		clif_skillinfoblock(sd);
 		clif_send_hotkey(sd);
+		clif_send_partyconfig(sd);
 		clif_send_equipopen(sd);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
 		clif_updatestatus(sd,SP_NEXTJOBEXP);

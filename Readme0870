@@ -1,4 +1,30 @@
 ----------------------------------------
+//0981 [2012/08/26] by refis
+
+・ログイン時にパーティ加入要請可否設定を出力するよう変更 (clif.*)
+	Thanks NP3228 さん
+
+・item_dbのずれの修正とついでに少し更新 (db/item_db.txt)
+	Thanks dent さん
+
+・状態異常「SC_BANDING」中のキャラが視界に入ったときにアイコン情報を送信させる (clif.c)
+
+・状態異常「SC_JP_EVENT01」「SC_JP_EVENT02」「SC_JP_EVENT03」「SC_JP_EVENT04」を実装
+ (db/const.txt db/item_db.txt db/scdata_db.txt battle.c pc.c status.*)
+	Thanks alsion0609 さん
+
+・アイテムボーナス「bonus2 bAddEleWeaponDamageRate」「bonus2 bAddEleMagicDamageRate」追加
+ (db/const.txt db/item_db.txt doc/item_bonus.txt battle.c map.h pc.c skill.c status.c)
+	Thanks unsyu さん
+　bonus2 bAddEleWeaponDamageRate,n,x;
+　n属性の物理スキルダメージをx%増加。
+　ex)　bonus2 bAddEleWeaponDamageRate,3,10;	// 火属性物理スキルのダメージが10%増加
+
+　bonus2 bAddEleMagicDamageRate,n,x;
+　n属性の魔法スキルダメージをx%増加。
+　ex)　bonus2 bAddEleMagicDamageRate,1,10;	// 水属性魔法スキルのダメージが10%増加
+
+----------------------------------------
 //0980 [2012/08/20] by refis
 
 ・itemの名称に半角スペースが混じっているミスを修正 (item_db.txt)

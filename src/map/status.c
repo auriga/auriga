@@ -203,7 +203,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 600- */
 	SI_PETROLOGY,SI_PETROLOGY_OPTION,SI_CURSED_SOIL,SI_CURSED_SOIL_OPTION,SI_UPHEAVAL,SI_UPHEAVAL_OPTION,SI_TIDAL_WEAPON,SI_TIDAL_WEAPON_OPTION,SI_ROCK_CRUSHER,SI_ROCK_CRUSHER_ATK,
 	/* 610- */
-	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT
+	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04
 };
 
 /*==========================================
@@ -637,6 +637,8 @@ L_RECALC:
 	memset(&sd->skill_subhealup,0,sizeof(sd->skill_subhealup));
 	memset(&sd->skill_addcast,0,sizeof(sd->skill_addcast));
 	memset(&sd->skill_cooldown,0,sizeof(sd->skill_cooldown));
+	memset(&sd->skill_eleweapon_dmgup,0,sizeof(sd->skill_eleweapon_dmgup));
+	memset(&sd->skill_elemagic_dmgup,0,sizeof(sd->skill_elemagic_dmgup));
 
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(i == EQUIP_INDEX_ARROW)
@@ -6337,6 +6339,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KO_JYUMONJIKIRI:	/* 十文字斬り */
 		case SC_CIRCLE_OF_FIRE:		/* サークルオブファイア */
 		case SC_TIDAL_WEAPON:		/* タイダルウェポン */
+		case SC_JP_EVENT01:
+		case SC_JP_EVENT02:
+		case SC_JP_EVENT03:
+		case SC_JP_EVENT04:
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
