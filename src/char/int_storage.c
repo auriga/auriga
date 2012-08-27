@@ -112,11 +112,13 @@ int mapif_unlock_guild_storage_ack(int fd,int guild_id,char succeed)
 }
 
 // ギルド倉庫デッドロックチェック
-int mapif_checklock_guild_storage(int fd,int guild_id)
+int mapif_checklock_guild_storage(int guild_id)
 {
-	WFIFOW(fd,0) = 0x381c;
-	WFIFOL(fd,2) = guild_id;
-	WFIFOSET(fd,6);
+	unsigned char buf[6];
+
+	WBUFW(buf,0) = 0x381c;
+	WBUFL(buf,2) = guild_id;
+	mapif_sendall(buf,6);
 	return 0;
 }
 
@@ -222,8 +224,8 @@ static int guild_storage_deadlock_timer_sub(void *key, void *data, va_list ap)
 {
 	struct guild_storage *gs = (struct guild_storage *)data;
 
-	if(gs && gs->storage_status == 1 && gs->last_fd >= 0)
-		mapif_checklock_guild_storage(gs->last_fd, gs->guild_id);
+	if(gs && gs->storage_status == 1)
+		mapif_checklock_guild_storage(gs->guild_id);
 
 	return 0;
 }
