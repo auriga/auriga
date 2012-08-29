@@ -318,7 +318,10 @@ bAutoSpell,bAutoSelfSpell,bRevAutoSpell,bRevAutoSelfSpellは16個まで有効で
 					Eff_Poison		毒				Eff_Freeze		凍結
 					Eff_Silence		沈黙			Eff_Stun		スタン
 					Eff_Curse		呪い			Eff_Confusion	混乱
-					Eff_Stone		石化			Eff_Bleed		出血)
+					Eff_Stone		石化			Eff_Bleed		出血
+					Eff_Fear		恐怖			Eff_Burning		発火
+					Eff_DeepSleep	深い睡眠		Eff_Frostmisty	氷結
+					Eff_Cold		冷凍			Eff_Siren		魅惑
 	bonus bCurseByMuramasa,n;			LV>LUKの時,n%の確率で呪いにかかる(nは万分率)
 
 

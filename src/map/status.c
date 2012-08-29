@@ -10740,6 +10740,99 @@ int status_change_removemap_end(struct block_list *bl)
 }
 
 /*==========================================
+ * アイテムによるステータス異常開始
+ *------------------------------------------
+ */
+int status_change_addeff_start(struct block_list *src, struct block_list *bl, int id, int rate, int type, unsigned int tick)
+{
+	struct map_session_data *sd = NULL;
+
+	const int sc2[] = {
+		MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
+		NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
+		NPC_SILENCEATTACK,0,NPC_BLINDATTACK,LK_HEADCRUSH,
+		NPC_WIDEHEALTHFEAR,NPC_WIDEBODYBURNNING,NPC_WIDE_DEEP_SLEEP,
+		NPC_WIDEFROSTMISTY,NPC_WIDECOLD,NPC_WIDESIREN
+	};
+	const int sc_id[] = {
+		SC_STONE,SC_FREEZE,SC_STUN,
+		SC_SLEEP,SC_POISON,SC_CURSE,
+		SC_SILENCE,SC_CONFUSION,SC_BLIND,SC_BLEED,
+		SC_FEAR,SC_HELLINFERNO,SC_DEEP_SLEEP,
+		SC_FROSTMISTY,SC_DIAMONDDUST,SC_SIREN
+	};
+
+	nullpo_retr(0, src);
+	nullpo_retr(0, bl);
+
+	if(src->type != BL_PC || !(bl->type & BL_CHAR))
+		return 0;
+
+	sd = (struct map_session_data *)src;
+
+	if(atn_rand() % 10000 < status_change_rate(bl,sc_id[id],rate,sd->status.base_level)) {
+
+		if(battle_config.battle_log) {
+			if(type==1)
+				printf("PC %d skill_skilladdeff: cardによる状態異常発動 %d %d %d\n",sd->bl.id,sd->skill_addeff.id[id],id,rate);
+			else if(type==2)
+				printf("PC %d skill_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,id,rate);
+			else if(type==3)
+				printf("PC %d skill_addeff2: cardによる状態異常発動 %d %d\n",sd->bl.id,id,rate);
+			else if(type==4)
+				printf("PC %d magic_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,id,rate);
+			else
+				printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",sd->bl.id,id,sd->addreveff[id]);
+		}
+
+		switch(sc_id[id]) {
+			case SC_STONE:
+			case SC_FREEZE:
+			case SC_STUN:
+			case SC_SLEEP:
+			case SC_POISON:
+			case SC_CURSE:
+			case SC_SILENCE:
+			case SC_CONFUSION:
+			case SC_BLIND:
+			case SC_BLEED:
+				if(type)
+					status_change_pretimer(bl,sc_id[id],7,0,0,0,((sc_id[id] == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[id],7)),0,tick+status_get_amotion(src)+500);
+				else
+					status_change_start(bl,sc_id[id],7,0,0,0,((sc_id[id] == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[id],7)),0);
+				break;
+			case SC_FEAR:
+				if(type)
+					status_change_pretimer(bl,sc_id[id],1,0,0,0,skill_get_time2(sc2[id],1),0,tick+status_get_amotion(src)+500);
+				else
+					status_change_start(bl,sc_id[id],1,0,0,0,skill_get_time2(sc2[id],1),0);
+				break;
+			case SC_FROSTMISTY:
+			case SC_HELLINFERNO:
+				if(type)
+					status_change_pretimer(bl,sc_id[id],1,0,0,0,10000+skill_get_time2(sc2[id],1),0,tick+status_get_amotion(src)+500);
+				else
+					status_change_start(bl,sc_id[id],1,0,0,0,10000+skill_get_time2(sc2[id],1),0);
+				break;
+			case SC_DEEP_SLEEP:
+			case SC_DIAMONDDUST:
+				if(type)
+					status_change_pretimer(bl,sc_id[id],1,0,0,0,3000+skill_get_time2(sc2[id],1),0,tick+status_get_amotion(src)+500);
+				else
+					status_change_start(bl,sc_id[id],1,0,0,0,3000+skill_get_time2(sc2[id],1),0);
+				break;
+			case SC_SIREN:
+				if(type)
+					status_change_pretimer(bl,sc_id[id],1,src->id,0,0,skill_get_time2(sc2[id],1),0,tick+status_get_amotion(src)+500);
+				else
+					status_change_start(bl,sc_id[id],1,src->id,0,0,skill_get_time2(sc2[id],1),0);
+				break;
+		}
+	}
+	return 0;
+}
+
+/*==========================================
  * データベース読み込み
  *------------------------------------------
  */

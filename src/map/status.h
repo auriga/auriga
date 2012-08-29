@@ -116,6 +116,7 @@ int status_change_hidden_end(struct block_list *bl);
 int status_change_removemap_end(struct block_list *bl);
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level);
 int status_change_copy(struct block_list *src,struct block_list *bl);
+int status_change_addeff_start(struct block_list *src, struct block_list *bl, int id, int rate, int type, unsigned int tick);
 
 // 状態チェック
 int status_check_no_magic_damage(struct block_list *bl);

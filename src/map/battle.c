@@ -993,24 +993,13 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	if(tsd && src != &tsd->bl && tsd->addreveff_flag && !unit_isdead(src) && tsd->status.hp > 0 && damage > 0 && flag&BF_WEAPON)
 	{
 		int i;
-		const int sc2[] = {
-			MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
-			NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
-			NPC_SILENCEATTACK,0,NPC_BLINDATTACK,LK_HEADCRUSH
-		};
 
-		for(i = SC_STONE; i <= SC_BLEED; i++) {
-			int rate = tsd->addreveff[i-SC_STONE];
+		for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
+			int rate = tsd->addreveff[i];
 			if(battle_config.reveff_plus_addeff)
-				rate += tsd->addeff[i-SC_STONE] + tsd->arrow_addeff[i-SC_STONE];
+				rate += tsd->addeff[i] + tsd->arrow_addeff[i];
 
-			if(src->type & BL_CHAR) {
-				if(atn_rand() % 10000 < status_change_rate(src,i,rate,tsd->status.base_level)) {
-					if(battle_config.battle_log)
-						printf("PC %d skill_addreveff: cardによる異常発動 %d %d\n",tsd->bl.id,i,tsd->addreveff[i-SC_STONE]);
-					status_change_start(src,i,7,0,0,0,(i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7),0);
-				}
-			}
+			status_change_addeff_start(bl,src,i,rate,0,tick);
 		}
 	}
 

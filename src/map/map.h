@@ -50,7 +50,7 @@
 #define MAX_SKILL_ADDCASTRATE	10 	//スキルの詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTTIME	10 	//スキルの詠唱時間を減らせる数
 #define MAX_SKILL_ADDCOOLDOWN	10 	//スキルのクールタイムを減らせる数
-#define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
+#define MAX_SKILL_ADDEFF	16	// スキルで追加状態異常化できる数
 #define MAX_SKILL_ADDSPCOST	10 	//スキルの消費SPを増やせる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
@@ -519,20 +519,20 @@ struct map_session_data {
 	int skill_eleweapon_dmgup[ELE_MAX],skill_elemagic_dmgup[ELE_MAX];
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
 	int def_eleenemy[ELE_MAX];
-	int addeff[10],addeff2[10],reseff[10],addeff_range_flag[10];
+	int addeff[16],addeff2[16],reseff[16],addeff_range_flag[16];
 	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	// 二刀流のために追加
 	int atk_ele_,star_,overrefine_;				// 二刀流のために追加
 	int base_atk,atk_rate;
 	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// 指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
-	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[10],arrow_addeff2[10];
+	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[16],arrow_addeff2[16];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_add,aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate,matk2_rate;
 	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
 	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];
 	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[4];
-	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4],magic_addeff[10];
+	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4],magic_addeff[16];
 	int magic_subrace[RCT_MAX],magic_subsize[MAX_SIZE_FIX];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
@@ -565,7 +565,7 @@ struct map_session_data {
 	int critical_damage;
 	short hp_recov_stop;
 	short sp_recov_stop;
-	int addreveff[10];
+	int addreveff[16];
 	int addreveff_flag;
 	int critical_race[10];
 	short sp_gain_value, hp_gain_value;
@@ -619,7 +619,7 @@ struct map_session_data {
 
 	struct {
 		short id[MAX_SKILL_ADDEFF];
-		short addeff[MAX_SKILL_ADDEFF][10];
+		short addeff[MAX_SKILL_ADDEFF][16];
 		short count;
 	} skill_addeff;
 

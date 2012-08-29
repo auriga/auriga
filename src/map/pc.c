@@ -3027,7 +3027,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_ADDREVEFF:
-		if(type2 >= 0 || type2 < 10) {
+		if(type2 >= 0 || type2 < 16) {
 			sd->addreveff[type2] += val;
 			sd->addreveff_flag = 1;
 		}

@@ -1,4 +1,13 @@
 ----------------------------------------
+//0983 [2012/08/30] by refis
+
+・状態異常関連アイテムボーナスに「恐怖」「発火」「深い睡眠」「氷結」「冷凍」「魅惑」を指定できるよう拡張
+ (db/const.txt doc/item_bonus.txt common/mmo.h battle.c map.h pc.c skill.* status.*)
+	Thanks Apache さん
+
+・上記に伴うスキル定義を追加 (db/skill_cast_db.txt db/skill_db2.txt db/skill_db.txt)
+
+----------------------------------------
 //0982 [2012/08/28] by refis
 
 ・ギルド倉庫デッドロックチェックにlast_fdを利用しないよう変更 (char/int_storage.c)

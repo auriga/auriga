@@ -608,6 +608,12 @@ Eff_Silence	6
 Eff_Confusion	7
 Eff_Blind	8
 Eff_Bleed	9
+Eff_Fear	10
+Eff_Burning	11
+Eff_DeepSleep	12
+Eff_Frostmisty	13
+Eff_Cold	14
+Eff_Siren	15
 
 SC_Stone	128
 SC_Freeze	129

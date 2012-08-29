@@ -1740,13 +1740,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		for(i = 0; i < sd->skill_addeff.count; i++) {
 			if(sd->skill_addeff.id[i] == skillid) {
 				int j, rate;
-				for(j = SC_STONE; j <= SC_BLEED; j++) {
-					rate = sd->skill_addeff.addeff[i][j-SC_STONE];
-					if(atn_rand() % 10000 < status_change_rate(bl,j,rate,sd->status.base_level)){
-						if(battle_config.battle_log)
-							printf("PC %d skill_skilladdeff: cardによる状態異常発動 %d %d %d\n",sd->bl.id,skillid,j,rate);
-						status_change_pretimer(bl,j,7,0,0,0,(j == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[j-SC_STONE],7),0,tick+status_get_amotion(src)+500);
-					}
+				for(j = 0; j <= MAX_SKILL_ADDEFF; j++) {
+					rate = sd->skill_addeff.addeff[i][j];
+					status_change_addeff_start(src,bl,j,rate,1,tick);
 				}
 			}
 		}
@@ -1762,33 +1758,25 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(sd) {
 			int i, rate;
 
-			for(i = SC_STONE; i <= SC_BLEED; i++) {
+			for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
 				if(!dstmd || dstmd->class_ != 1288) {
-					if(sd->addeff_range_flag[i-SC_STONE] > 2) {
-						sd->addeff_range_flag[i-SC_STONE] -= 2;	// レンジフラグがあれば元に戻す
+					if(sd->addeff_range_flag[i] > 2) {
+						sd->addeff_range_flag[i] -= 2;	// レンジフラグがあれば元に戻す
 						continue;
 					}
 
-					rate = sd->addeff[i-SC_STONE];
+					rate = sd->addeff[i];
 					if(sd->state.arrow_atk)
-						rate += sd->arrow_addeff[i-SC_STONE];
+						rate += sd->arrow_addeff[i];
 
-					if(atn_rand() % 10000 < status_change_rate(bl,i,rate,status_get_lv(src))){
-						if(battle_config.battle_log)
-							printf("PC %d skill_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
-						status_change_pretimer(bl,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_amotion(src)+500);
-					}
+					status_change_addeff_start(src,bl,i,rate,2,tick);
 				}
 
-				rate = sd->addeff2[i-SC_STONE];
+				rate = sd->addeff2[i];
 				if(sd->state.arrow_atk)
-					rate += sd->arrow_addeff2[i-SC_STONE];
+					rate += sd->arrow_addeff2[i];
 
-				if(atn_rand() % 10000 < status_change_rate(src,i,rate,status_get_lv(src))){
-					if(battle_config.battle_log)
-						printf("PC %d skill_addeff2: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
-					status_change_pretimer(src,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_amotion(src)+500);
-				}
+				status_change_addeff_start(src,src,i,rate,3,tick);
 			}
 		}
 
@@ -1840,13 +1828,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	} else if(attack_type&BF_MAGIC) {
 		if(sd) {
 			int i, rate;
-			for(i = SC_STONE; i <= SC_BLEED; i++) {
-				rate = sd->magic_addeff[i-SC_STONE];
-				if(atn_rand() % 10000 < status_change_rate(bl,i,rate,status_get_lv(src))) {
-					if(battle_config.battle_log)
-						printf("PC %d magic_addeff: cardによる状態異常発動 %d %d\n",sd->bl.id,i,rate);
-					status_change_pretimer(bl,i,7,0,0,0,((i == SC_CONFUSION)? 10000+7000: skill_get_time2(sc2[i-SC_STONE],7)),0,tick+status_get_amotion(src)+500);
-				}
+			for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
+				rate = sd->magic_addeff[i];
+				status_change_addeff_start(src,bl,i,rate,4,tick);
 			}
 		}
 	}
