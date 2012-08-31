@@ -3926,8 +3926,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage -= wd.damage2;
 		}
 	}
+	/* 35. 点穴 -球-による気弾の生成 */
+	if(src_sd && sc && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && (wd.damage > 0 || wd.damage2 > 0)) {
+		int max = (src_sd->s_class.job == PC_JOB_MO || src_sd->s_class.job == PC_JOB_SR)? pc_checkskill(src_sd,MO_CALLSPIRITS): skill_get_max(MO_CALLSPIRITS);
+		if(sc->data[SC_RAISINGDRAGON].timer != -1)
+			max += sc->data[SC_RAISINGDRAGON].val1;
+		if(src_sd->spiritball.num < max)
+			pc_addspiritball(src_sd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
+	}
 
-	/* 35．物理攻撃スキルによるオートスペル発動(item_bonus) */
+	/* 36．物理攻撃スキルによるオートスペル発動(item_bonus) */
 	if(wd.flag&BF_SKILL && src_sd && target != &src_sd->bl && (wd.damage + wd.damage2) > 0)
 	{
 		unsigned int asflag = EAS_ATTACK;
@@ -3954,7 +3962,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		skill_bonus_autospell(&src_sd->bl,target,asflag,tick,0);
 	}
 
-	/* 36．太陽と月と星の融合 HP2%消費 */
+	/* 37．太陽と月と星の融合 HP2%消費 */
 	if(src_sd && sc && sc->data[SC_FUSION].timer != -1)
 	{
 		int hp;
@@ -3968,7 +3976,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		pc_heal(src_sd,-hp,0);
 	}
 
-	/* 37．カアヒ */
+	/* 38．カアヒ */
 	if(skill_num == 0 && wd.flag&BF_WEAPON && t_sc && t_sc->data[SC_KAAHI].timer != -1)
 	{
 		int kaahi_lv = t_sc->data[SC_KAAHI].val1;
@@ -3987,11 +3995,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	/* 38．太陽と月と星の奇跡 */
+	/* 39．太陽と月と星の奇跡 */
 	if(src_sd && wd.flag&BF_WEAPON && src_sd->s_class.job == PC_JOB_SG && atn_rand()%10000 < battle_config.sg_miracle_rate)
 		status_change_start(src,SC_MIRACLE,1,0,0,0,3600000,0);
 
-	/* 39．計算結果の最終補正 */
+	/* 40．計算結果の最終補正 */
 	if(!calc_flag.lh)
 		wd.damage2 = 0;
 	wd.amotion = status_get_amotion(src);
