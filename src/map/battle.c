@@ -5763,10 +5763,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			break;
 		case SR_FALLENEMPIRE:	// 大纏崩捶
 			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
-			if(damage < status_get_hp(bl)) {
-				 // 號砲取得＆気球2個保持時または羅刹破凰撃取得＆気球5個保持かつ＆爆裂波動時ディレイ
-				if(((pc_checkskill(sd, SR_TIGERCANNON) > 0 && sd->spiritball.num >= 2) || pc_checkskill(sd, SR_GATEOFHELL) > 0) &&
-					sd->spiritball.num >= 5 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1)
+			if(damage < status_get_hp(bl))
+			{
+				 // 號砲取得＆気球2個保持時＆爆裂波動状態　または　羅刹破凰撃取得＆気球5個保持
+				if( (pc_checkskill(sd, SR_TIGERCANNON) > 0 && sd->spiritball.num >= 2 && sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) ||
+					(pc_checkskill(sd, SR_GATEOFHELL)  > 0 && sd->spiritball.num >= 5))
 				{
 					delay += 300 * battle_config.combo_delay_rate /100;
 					// コンボ入力時間の最低保障追加
@@ -5775,7 +5776,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				}
 				status_change_start(src,SC_COMBO,SR_FALLENEMPIRE,skilllv,0,0,delay,0);
 			}
-			if(delay > 0) {
+			if(delay > 0)
+			{
 				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
 				clif_combo_delay(src,delay);
 			}
