@@ -11600,24 +11600,22 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		skill_delunit(src);
 		break;
 	case UNT_WARMER:	/* ウォーマー */
-		if(battle_check_target(&src->bl,bl,BCT_NOENEMY)) {
-			if(sc && sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1)
-				status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,0,0,0,sg->limit,0);
-			if(bl->type == BL_PC) {
-				struct map_session_data *sd = (struct map_session_data *)bl;
+		if(sc && sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1)
+			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,0,0,0,sg->limit,0);
+		if(bl->type == BL_PC) {
+			struct map_session_data *sd = (struct map_session_data *)bl;
 
-				if(sd->status.hp < sd->status.max_hp) {
-					int hp = sd->status.max_hp * sg->skill_lv / 100;
-					if(sd->status.hp + hp > sd->status.max_hp) {
-						hp = sd->status.max_hp - sd->status.hp;
-					}
-					if(hp > 0) {
-						if(sc && sc->data[SC_AKAITSUKI].timer != -1) {
-							unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),hp,0,0,0,0);
-						} else {
-							sd->status.hp += hp;
-							clif_heal(sd->fd,SP_HP,hp);
-						}
+			if(sd->status.hp < sd->status.max_hp) {
+				int hp = sd->status.max_hp * sg->skill_lv / 100;
+				if(sd->status.hp + hp > sd->status.max_hp) {
+					hp = sd->status.max_hp - sd->status.hp;
+				}
+				if(hp > 0) {
+					if(sc && sc->data[SC_AKAITSUKI].timer != -1) {
+						unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),hp,0,0,0,0);
+					} else {
+						sd->status.hp += hp;
+						clif_heal(sd->fd,SP_HP,hp);
 					}
 				}
 			}
