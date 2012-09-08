@@ -274,7 +274,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 		else if((!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_ele2[ele]) ||
 			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[race]) ||
 			(mode&MD_BOSS && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]) ||
-			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_BOSS]))
+			(!(mode&MD_BOSS) && atn_rand()%10000 < sd->weapon_coma_race2[RCT_NONBOSS]))
 		{
 			int hp = status_get_hp(target) - 1;
 			if(tsd)       pc_damage(bl,tsd,hp);

@@ -4190,7 +4190,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 	amount = sd->status.inventory[n].amount;
 	flag   = pc_isUseitem(sd,n);
 
-	if(nameid <= 0 || amount <= 0 || !flag) {
+	if(nameid <= 0 || amount <= 0 || flag <= 0) {
 		clif_useitemack(sd,n,0,0);
 		if(flag < 0)
 			clif_msgstringtable(sd, 0x6ee);	// アイテムを使用できるレベルに達していません。
@@ -4718,7 +4718,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		// 攻城戦時にコスチュームアイテムを解除させるか
 		if(battle_config.disable_costume_when_gvg) {
 			for(i = EQUIP_INDEX_COSTUME_HEAD; i < EQUIP_INDEX_MAX; i++) {
-				if(sd->equip_index[i] >= 0 && !pc_isequip(sd,sd->equip_index[i]))
+				if(sd->equip_index[i] >= 0 && pc_isequip(sd,sd->equip_index[i]) <= 0)
 					pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
 			}
 		}
@@ -7716,7 +7716,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	clif_updatestatus(sd,SP_NEXTJOBEXP);
 
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
-		if(sd->equip_index[i] >= 0 && !pc_isequip(sd,sd->equip_index[i]))
+		if(sd->equip_index[i] >= 0 && pc_isequip(sd,sd->equip_index[i]) <= 0)
 			pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
 	}
 
@@ -8452,7 +8452,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 
 	if(battle_config.battle_log)
 		printf("equip %d(%d) %x:%x\n",nameid,n,id->equip,pos);
-	if(!flag || !pos) {
+	if(flag <= 0 || !pos) {
 		clif_equipitemack(sd,n,0,0);	// fail
 		if(flag < 0)
 			clif_msgstringtable(sd, 0x6ed);	// アイテムを装備できるレベルに達していません。
@@ -9000,7 +9000,7 @@ int pc_checkitem(struct map_session_data *sd)
 		// 装備制限チェック
 		nullpo_retr(0, sd->inventory_data[i]);
 		if(sd->status.inventory[i].equip) {
-			if(!pc_isequip(sd, i)) {
+			if(pc_isequip(sd, i) <= 0) {
 				sd->status.inventory[i].equip = 0;
 				calc_flag = 1;
 			}
