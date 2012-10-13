@@ -1169,18 +1169,22 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			}
 			break;
 		case WT_1HSPEAR:
-			// 槍修練(+4 〜 +40,+5 〜 +50) 槍
+			// 槍修練(+4 〜 +40,+5 〜 +50,+10 〜 +100) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
-				if(!pc_isriding(sd) && !pc_isdragon(sd))
+				if(pc_isdragon(sd) && pc_checkskill(sd,RK_DRAGONTRAINING) >= 5)
+					damage += (skill * 10);	// ドラゴンに乗っててトレーニングLvMAX
+				else if(!pc_isriding(sd) && !pc_isdragon(sd))
 					damage += (skill * 4);	// ペコに乗ってない
 				else
 					damage += (skill * 5);	// ペコに乗ってる
 			}
 			break;
 		case WT_2HSPEAR:
-			// 槍修練(+4 〜 +40,+5 〜 +50) 槍
+			// 槍修練(+4 〜 +40,+5 〜 +50,+10 〜 +100) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
-				if(!pc_isriding(sd) && !pc_isdragon(sd))
+				if(pc_isdragon(sd) && pc_checkskill(sd,RK_DRAGONTRAINING) >= 5)
+					damage += (skill * 10);	// ドラゴンに乗っててトレーニングLvMAX
+				else if(!pc_isriding(sd) && !pc_isdragon(sd))
 					damage += (skill * 4);	// ペコに乗ってない
 				else
 					damage += (skill * 5);	// ペコに乗ってる
@@ -5906,6 +5910,12 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		case NPC_SELFDESTRUCTION:
 		case NPC_SELFDESTRUCTION2:
 			dmg.blewcount |= SAB_NODAMAGE;
+			break;
+		case WL_TETRAVORTEX_FIRE:	// テトラボルテックス(火)
+		case WL_TETRAVORTEX_WATER:	// テトラボルテックス(水)
+		case WL_TETRAVORTEX_WIND:	// テトラボルテックス(風)
+		case WL_TETRAVORTEX_GROUND:	// テトラボルテックス(地)
+			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, WL_TETRAVORTEX, lv, type);
 			break;
 		default:
 			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, lv, type);

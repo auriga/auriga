@@ -2392,15 +2392,18 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				break;
 			case NPC_EARTHQUAKE:			/* アースクエイク */
 			case WL_HELLINFERNO:			/* ヘルインフェルノ */
-			case WL_TETRAVORTEX_FIRE:		/* テトラボルテックス(火) */
-			case WL_TETRAVORTEX_WATER:		/* テトラボルテックス(水) */
-			case WL_TETRAVORTEX_WIND:		/* テトラボルテックス(風) */
-			case WL_TETRAVORTEX_GROUND:		/* テトラボルテックス(地) */
 			case WL_SUMMON_ATK_FIRE:		/* サモンファイアボール(攻撃) */
 			case WL_SUMMON_ATK_WIND:		/* サモンボールライトニング(攻撃) */
 			case WL_SUMMON_ATK_WATER:		/* サモンウォーターボール(攻撃) */
 			case WL_SUMMON_ATK_GROUND:		/* サモンストーン(攻撃) */
 			case WM_REVERBERATION_MAGIC:	/* 振動残響(魔法) */
+				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
+				break;
+			case WL_TETRAVORTEX_FIRE:		/* テトラボルテックス(火) */
+			case WL_TETRAVORTEX_WATER:		/* テトラボルテックス(水) */
+			case WL_TETRAVORTEX_WIND:		/* テトラボルテックス(風) */
+			case WL_TETRAVORTEX_GROUND:		/* テトラボルテックス(地) */
+				clif_skill_nodamage(src,target,skl->skill_id,skl->skill_lv,1);
 				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
 			case RA_SENSITIVEKEEN:		/* 鋭敏な嗅覚のウォグバイト追撃 */
@@ -8080,10 +8083,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					}
 				}
 			}
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, WL_TETRAVORTEX_FIRE, -1, 0);	// エフェクトを出すための暫定処置
 			for(i = 0; i < 4; i++) {
-				skill_addtimerskill(src,tick + 200 * i,bl->id,0,0,summon_id[i],skilllv,0,(0x0f<<20)|0x0500);
+				skill_addtimerskill(src,tick + 250 * i,bl->id,0,0,summon_id[i],skilllv,0,0x0500);
 			}
 			status_change_pretimer(bl,GetSkillStatusChangeTable(summon_id[atn_rand()%4]),skilllv,0,0,0,skill_get_time(summon_id[atn_rand()%4],skilllv),0,tick+status_get_amotion(src));
 		}

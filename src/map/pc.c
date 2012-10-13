@@ -6465,6 +6465,8 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
 		status_calc_pc(sd,0);
 		clif_skillup(sd,skill_num);
 		clif_updatestatus(sd,SP_SKILLPOINT);
+		if(skill_num == GN_REMODELING_CART)
+			clif_updatestatus(sd,SP_CARTINFO);
 #if PACKETVER < 20071128
 		clif_skillinfoblock(sd);
 #endif
