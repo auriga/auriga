@@ -7822,6 +7822,9 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 {
 	nullpo_retv(sd);
 
+	if( ((type&OPTION_MADOGEAR) || pc_isgear(sd)) && pc_iscarton(sd) )
+		type |= (sd->sc.option&OPTION_CARTMASK);
+
 	if( (type&OPTION_FALCON) && !pc_isfalcon(sd) ) {
 		clif_status_load_id(sd,SI_FALCON,1);
 	}
@@ -7996,9 +7999,9 @@ int pc_setgear(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
-	//if(pc_checkskill(sd,NC_MADOLICENCE) > 0) { // 魔導ギアライセンススキル所持
+	if(pc_checkskill(sd,NC_MADOLICENCE) > 0) { // 魔導ギアライセンススキル所持
 		pc_setoption(sd,OPTION_MADOGEAR);
-	//}
+	}
 	return 0;
 }
 
