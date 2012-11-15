@@ -880,8 +880,8 @@ L_RECALC:
 			sd->matk_rate += 10;
 		}
 	}
-	// 1度も死んでないJob70スパノビに+10
-	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->status.die_counter == 0 && sd->status.job_level >= 70) {
+	// 1度も死んでないJob70スパノビor拡張スパノビに+10
+	if(((sd->s_class.job == PC_JOB_SNV && sd->status.job_level >= 70) || sd->s_class.job == PC_JOB_ESNV) && sd->status.die_counter == 0) {
 		sd->paramb[0] += 10;
 		sd->paramb[1] += 10;
 		sd->paramb[2] += 10;
@@ -7205,7 +7205,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				// 1%で死亡フラグ消す
 				if(atn_rand()%10000 < battle_config.repeal_die_counter_rate) {
 					sd->status.die_counter = 0;	// 死にカウンターリセット
-					if(sd->status.job_level >= 70)
+					if(sd->status.job_level >= 70 || sd->s_class.job == PC_JOB_ESNV)
 						clif_misceffect(&sd->bl,7);	// スパノビ天使
 				}
 				if(battle_config.disp_job_soul_state_change)
