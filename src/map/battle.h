@@ -598,6 +598,7 @@ extern struct Battle_Config {
 	int ko_max_aspd;
 	int disable_costume_when_gvg;
 	int elem_attackskill_rate;
+	int slave_inherit_mode;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

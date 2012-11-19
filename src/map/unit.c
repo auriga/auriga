@@ -1747,7 +1747,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 
 	if( src_md ) {
 		int mode, race;
-		if((src_md->sc.opt1 > OPT1_NORMAL && src_md->sc.opt1 != OPT1_BURNNING) || src_md->sc.option&OPTION_HIDE)
+		if(src_md->sc.opt1 > OPT1_NORMAL && src_md->sc.opt1 != OPT1_BURNNING)
 			return 0;
 		if(src_md->sc.data[SC_WINKCHARM].timer != -1 && src_md->sc.data[SC_WINKCHARM].val2 == target->id)
 			return 0;

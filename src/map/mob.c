@@ -1023,6 +1023,8 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				   md->sc.data[SC_NETHERWORLD].timer != -1 || md->sc.data[SC_VACUUM_EXTREME].timer != -1 ||
 				   md->sc.data[SC_THORNS_TRAP].timer != -1 || md->sc.data[SC_BANANA_BOMB].timer != -1))
 					mob_unlocktarget(md,tick);
+				if(md->sc.option&OPTION_HIDE)
+					mob_unlocktarget(md,tick);
 				if(DIFF_TICK(md->ud.canmove_tick,tick) <= 0)	// ダメージディレイ中でないならスキル使用
 					mobskill_use(md,tick,-1);
 				return search_flag;
@@ -2606,7 +2608,7 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 	md->bl.m = m;
 	md->bl.x = md->ud.to_x = x;
 	md->bl.y = md->ud.to_y = y;
-	md->target_id   = 0;	// タゲを解除する
+	//md->target_id   = 0;	// タゲを解除する
 	md->attacked_id = 0;
 	md->state.skillstate = MSS_IDLE;
 	if(moveblock)
@@ -2741,6 +2743,24 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 			md->state.nodrop = battle_config.summonslave_no_drop;
 			md->state.noexp  = battle_config.summonslave_no_exp;
 			md->state.nomvp  = battle_config.summonslave_no_mvp;
+			switch (battle_config.slave_inherit_mode) {
+			case 0:
+				break;
+			case 1: // アクティブ
+				if (!(md->mode&MD_AGGRESSIVE))
+					md->mode = md->mode | MD_AGGRESSIVE;
+				break;
+			case 2: // ノンアクティブ
+				if (md->mode&MD_AGGRESSIVE)
+					md->mode = md->mode & ~MD_AGGRESSIVE;
+				break;
+			default: // 主人と同じ
+				if (md2->mode&MD_AGGRESSIVE)
+					md->mode = md->mode | MD_AGGRESSIVE;
+				else
+					md->mode = md->mode & ~MD_AGGRESSIVE;
+				break;
+			}
 		} else {
 			md->state.nodrop = battle_config.summonmonster_no_drop;
 			md->state.noexp  = battle_config.summonmonster_no_exp;

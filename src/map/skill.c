@@ -14012,21 +14012,6 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 	if(md->sc.option&OPTION_CLOAKING && (cnd->id == TF_HIDING || cnd->id == KO_YAMIKUMO))
 		return 0;
 
-	if(md->sc.option&OPTION_HIDE) {
-		switch(cnd->id) {
-		case TF_HIDING:
-		case AS_GRIMTOOTH:
-		case RG_BACKSTAP:
-		case RG_RAID:
-		case NJ_KIRIKAGE:
-		case NJ_SHADOWJUMP:
-		case KO_YAMIKUMO:
-			break;
-		default:
-			return 0;
-		}
-	}
-
 	if(md->sc.opt1 > OPT1_NORMAL && md->sc.opt1 != OPT1_BURNNING)
 		return 0;
 

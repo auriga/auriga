@@ -3624,10 +3624,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
 		//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
 
-		for(i=SC_STONE; i<=SC_BLEED; i++) {
-			if( (src_sd->addeff_range_flag[i-SC_STONE] == 1 && wd.flag&BF_LONG ) ||
-			    (src_sd->addeff_range_flag[i-SC_STONE] == 2 && wd.flag&BF_SHORT) ) {
-				src_sd->addeff_range_flag[i-SC_STONE] += 2;
+		for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
+			if( (src_sd->addeff_range_flag[i] == 1 && wd.flag&BF_LONG ) ||
+			    (src_sd->addeff_range_flag[i] == 2 && wd.flag&BF_SHORT) ) {
+				src_sd->addeff_range_flag[i] += 2;
 			}
 		}
 	}
@@ -7151,6 +7151,7 @@ int battle_config_read(const char *cfgName)
 		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
 		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },
 		{ "elem_attackskill_rate",              &battle_config.elem_attackskill_rate,              500      },
+		{ "slave_inherit_mode",                 &battle_config.slave_inherit_mode,                 2        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 
