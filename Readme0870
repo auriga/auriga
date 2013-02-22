@@ -1,4 +1,24 @@
 ----------------------------------------
+//0996 [2013/02/23] by Blaze
+
+・メモリアルダンジョン実装（map.*, memorial.*, clif.*, npc.*, pc.c, party.c, script.c, unit.c）
+	-> MAP複製処理追加（map.*）
+	-> NPC複製・消去処理追加（npc.*）
+	-> 指定MAPのNPCイベント実行処理を追加（npc.*）
+	-> メモリアルダンジョン情報通知パケット実装（clif.*）
+	-> メモリアルダンジョン関連のスクリプト命令・関数実装（script.c, doc/script_ref.txt）
+
+・パーティー情報構造体にメモリアルダンジョンID追加（common/mmo.h, char/int_party.c）
+
+・メモリアルダンジョンDBの仕様変更（memorial.c, db/memorial_db.txt）
+	-> 制限時間を分指定から秒指定に変更
+	-> 分割MAP数を10から8に削減
+
+・スクリプト命令「mddelete」のパラメータから、名称指定は不要に変更（script.c, doc/script_ref.txt）
+
+・エンドレスタワーNPCの読み込み設定追加（conf/map_auriga.conf）
+
+----------------------------------------
 //0995 [2012/02/23] by Blaze
 
 ・アイテムウィンドウの個人タブ実装 (map/clif.*)

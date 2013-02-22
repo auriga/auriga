@@ -65,6 +65,7 @@
 #define MAX_BUYINGSTORE_COUNT 5	// 購買露店最大アイテム登録数
 #define MAX_BOOKING_MEMO_LENGTH 37	// パーティーブッキングの募集メモ最大文字数
 #define MAX_ELEMENTBALL 10	// 影狼・朧の球体最大数
+#define MAX_MEMORIAL_MAP 200	// メモリアルダンジョンマップ最大生成数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -1131,6 +1132,7 @@ struct map_data {
 		short drop_flag;
 	} drop_list[MAX_DROP_PER_MAP];
 	struct mob_data *mvpboss;
+	int memorial_id;
 };
 
 struct map_data_other_server {
@@ -1373,6 +1375,10 @@ int map_quit(struct map_session_data *);
 
 // npc
 int map_addnpc(int,struct npc_data *);
+
+// メモリアルダンジョン関連
+int map_addmdmap(const char*,int);
+int map_delmdmap(int);
 
 // 床アイテム関連
 int map_clearflooritem_timer(int,unsigned int,int,void*);

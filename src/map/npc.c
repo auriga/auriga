@@ -47,6 +47,7 @@
 #include "skill.h"
 #include "unit.h"
 #include "status.h"
+#include "memorial.h"
 
 struct npc_src_list {
 	struct npc_src_list * next;
@@ -66,9 +67,12 @@ struct event_data {
 	int pos;
 	char *key;
 	struct event_data *next;
+	struct event_data *prev;
 };
 
 static struct tm ev_tm_b;	// 時計イベント用
+
+static int npc_exportlabel_data(struct npc_data *nd);
 
 
 /*==========================================
@@ -230,6 +234,31 @@ int npc_event_doall(const char *name)
 
 	while(ev) {
 		if(ev->nd) {
+			run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
+			c++;
+		}
+		ev = ev->next;
+	}
+
+	return c;
+}
+
+/*==========================================
+ * 指定マップ全てのNPCのOn*イベント実行
+ *------------------------------------------
+ */
+int npc_event_doall_map(const char *name, int m)
+{
+	struct event_data *ev;
+	int c = 0;
+	char buf[64] = "::";
+
+	strncpy(buf+2,name,61);
+	ev = (struct event_data *)strdb_search(ev_db, buf);
+
+	while(ev) {
+		if(ev->nd && ev->nd->bl.m == m) {
+			// 指定MAP内のNPCでのみ発動
 			run_script(ev->nd->u.scr.script,ev->pos,0,ev->nd->bl.id);
 			c++;
 		}
@@ -1139,6 +1168,201 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 	return 0;
 }
 
+/*==========================================
+ * メモリアルダンジョンNPC追加
+ *------------------------------------------
+ */
+int npc_addmdnpc(struct npc_data *src_nd, int m)
+{
+	struct npc_data *nd;
+
+	nullpo_retr(0, src_nd);
+	if(m < 0)
+		return 0;
+
+	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
+	snprintf(nd->name, sizeof(nd->name), "%s#%.3d", src_nd->name, map[m].memorial_id);
+	snprintf(nd->exname, sizeof(nd->exname), "%s#%.3d", src_nd->exname, map[m].memorial_id);
+	nd->name[23] = '\0';
+	nd->exname[23] = '\0';
+
+	nd->bl.prev = nd->bl.next = NULL;
+	nd->bl.m    = m;
+	nd->bl.x    = src_nd->bl.x;
+	nd->bl.y    = src_nd->bl.y;
+	nd->bl.id   = npc_get_new_npc_id();
+	nd->dir     = src_nd->dir;
+	nd->flag    = 0;
+	nd->class_  = src_nd->class_;
+	nd->speed   = 200;
+	nd->chat_id = 0;
+	nd->option  = OPTION_NOTHING;
+	nd->bl.type = BL_NPC;
+	nd->subtype = src_nd->subtype;
+
+	switch(nd->subtype) {
+	case SCRIPT:
+		{
+			int script_size = src_nd->u.scr.script->script_size;
+			struct script_code *code = (struct script_code *)aMalloc(sizeof(struct script_code) + script_size);
+			code->script_vars = NULL;
+			code->script_size = script_size;
+			memcpy(code->script_buf, src_nd->u.scr.script->script_buf, script_size);
+
+			nd->u.scr.script         = code;
+			nd->u.scr.xs             = src_nd->u.scr.xs;
+			nd->u.scr.ys             = src_nd->u.scr.ys;
+			nd->u.scr.label_list     = src_nd->u.scr.label_list;
+			nd->u.scr.label_list_num = src_nd->u.scr.label_list_num;
+			nd->u.scr.src_id         = src_nd->bl.id;
+		}
+		break;
+	case SHOP:
+	case POINTSHOP:
+		{
+			int pos = 0;
+			while(src_nd->u.shop_item[pos++].nameid);
+			nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(src_nd->u.shop_item[0]) * pos);
+			memcpy(&nd->u.shop_item, &src_nd->u.shop_item, sizeof(src_nd->u.shop_item[0]) * pos);
+		}
+		break;
+	case WARP:
+		{
+			int warp_m = memorial_mapname2mapid(src_nd->u.warp.name, map[m].memorial_id);
+			nd->u.warp.xs = src_nd->u.warp.xs;
+			nd->u.warp.ys = src_nd->u.warp.ys;
+			nd->u.warp.x = src_nd->u.warp.x;
+			nd->u.warp.y = src_nd->u.warp.y;
+			if(warp_m < 0)
+				memcpy(nd->u.warp.name, src_nd->u.warp.name, sizeof(nd->u.warp.name));
+			else
+				memcpy(nd->u.warp.name, map[warp_m].name, sizeof(nd->u.warp.name));
+		}
+		break;
+	}
+
+	if(m >= 0) {
+		map_addblock(&nd->bl);
+		if(nd->subtype == WARP || (nd->subtype == SCRIPT && nd->u.scr.xs > 0 && nd->u.scr.ys > 0))	// 接触型なので登録
+			nd->n = map_addnpc(m,nd);
+		else
+			map_addiddb(&nd->bl);
+
+		if(nd->class_ < 0) {	// イベント型
+			struct event_data *ev, *old_ev;
+			ev       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
+			ev->key  = NULL;
+			ev->nd   = nd;
+			ev->pos  = 0;
+			ev->next = NULL;
+			old_ev   = (struct event_data *)strdb_insert(ev_db,nd->exname,ev);
+			if(old_ev) {
+				// イベントが重複している場合。ここでreturnすると以前の処理が
+				// 中途半端になる為、処理を続行する。
+				printf("npc_parse_script : dup event name %s\n",nd->exname);
+				aFree(old_ev);
+			}
+		} else {
+			clif_spawnnpc(nd);
+		}
+	} else {
+		map_addiddb(&nd->bl);
+	}
+	strdb_insert(npcname_db,nd->exname,nd);
+
+	// イベント用ラベルデータのエクスポート
+	if(nd->subtype == SCRIPT)
+		npc_exportlabel_data(nd);
+
+	return 1;
+}
+
+/*==========================================
+ * NPC解放
+ *------------------------------------------
+ */
+int npc_free(struct npc_data *nd)
+{
+	struct chat_data  *cd;
+	struct event_data *ev;
+
+	nullpo_retr(0, nd);
+
+	// blocklistから消去
+	if(nd->bl.prev) {
+		map_delblock( &nd->bl );
+		map_deliddb( &nd->bl );
+	}
+
+	// チャット消去
+	if(nd->chat_id && (cd = map_id2cd(nd->chat_id))) {
+		aFree(cd);
+		cd = NULL;
+	}
+
+	if(nd->subtype == SCRIPT) {
+		// タイマー解放
+		if(nd->u.scr.timer_event)
+			aFree(nd->u.scr.timer_event);
+		// スクリプトコード解放
+		if(nd->u.scr.script) {
+			script_free_code(nd->u.scr.script);
+			nd->u.scr.script = NULL;
+		}
+		// ラベルデータのイベント解放
+		if(nd->u.scr.label_list) {
+			int i;
+			for(i = 0; i < nd->u.scr.label_list_num; i++) {
+				char key[50];
+
+				snprintf(key, 50, "%s::%s", nd->exname, nd->u.scr.label_list[i].name);
+				ev = (struct event_data *)strdb_search(ev_db,key);
+				if(ev) {
+					strdb_erase(ev_db,key);
+
+					// ノードのリンク変更
+					if(ev->prev)
+						ev->prev->next = ev->next;
+					if(ev->next)
+						ev->next->prev = ev->prev;
+
+					aFree(ev->key);
+					aFree(ev);
+				}
+			}
+		}
+		// ラベルデータ解放（元NPCのみ）
+		if(nd->u.scr.src_id == 0) {
+			aFree(nd->u.scr.label_list);
+			nd->u.scr.label_list = NULL;
+		}
+	}
+
+	// イベント型NPC
+	if(nd->class_ < 0) {
+		ev = (struct event_data *)strdb_search(ev_db,nd->exname);
+		if(ev) {
+			strdb_erase(ev_db,nd->exname);
+
+			// ノードのリンク変更
+			if(ev->prev)
+				ev->prev->next = ev->next;
+			if(ev->next)
+				ev->next->prev = ev->prev;
+
+			aFree(ev->key);
+			aFree(ev);
+		}
+	}
+
+	strdb_erase(npcname_db,nd->exname);
+
+	map_deliddb(&nd->bl);
+	map_freeblock(nd);
+
+	return 1;
+}
+
 //
 // 初期化関係
 //
@@ -1607,6 +1831,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
 				node = node->next;
 			}
 			node->next = ev;
+			ev->prev = node;
 		}
 		else if(sscanf(lname,"OnTimer%d%n",&t,&n) == 1 && lname[n] == '\0') {
 			// タイマーイベント

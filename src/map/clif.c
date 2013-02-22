@@ -13979,6 +13979,106 @@ void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes
 }
 
 /*==========================================
+ * メモリアルダンジョン作成
+ *------------------------------------------
+ */
+void clif_memorial_create(struct map_session_data *sd, const char *name, int num, int flag)
+{
+#if PACKETVER >= 20071128
+	unsigned char buf[65];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x2cb;
+	memcpy(WBUFP(buf,2),name,61);
+	WBUFW(buf,63) = num;
+	if(flag) {	// パーティー全体に送信
+		clif_send(buf,packet_db[0x2cb].len,&sd->bl,PARTY);
+	} else {	// 個別に送信
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cb].len);
+		WFIFOSET(sd->fd,packet_db[0x2cb].len);
+	}
+#endif
+
+	return;
+}
+
+/*==========================================
+ * メモリアルダンジョン待機状態変更
+ *------------------------------------------
+ */
+void clif_memorial_changewait(struct map_session_data *sd, int num, int flag)
+{
+#if PACKETVER >= 20071128
+	unsigned char buf[4];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x2cc;
+	WBUFW(buf,2) = num;
+	if(flag) {	// パーティー全体に送信
+		clif_send(buf,packet_db[0x2cc].len,&sd->bl,PARTY);
+	} else {	// 個別に送信
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cc].len);
+		WFIFOSET(sd->fd,packet_db[0x2cc].len);
+	}
+#endif
+
+	return;
+}
+
+/*==========================================
+ * メモリアルダンジョン状態通知
+ *------------------------------------------
+ */
+void clif_memorial_status(struct map_session_data *sd, const char *name, unsigned int limit1, unsigned int limit2, int flag)
+{
+#if PACKETVER >= 20071128
+	unsigned char buf[71];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x2cd;
+	memcpy(WBUFP(buf,2),name,61);
+	WBUFL(buf,63) = limit1;
+	WBUFL(buf,67) = limit2;
+	if(flag) {	// パーティー全体に送信
+		clif_send(buf,packet_db[0x2cd].len,&sd->bl,PARTY);
+	} else {	// 個別に送信
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cd].len);
+		WFIFOSET(sd->fd,packet_db[0x2cd].len);
+	}
+#endif
+
+	return;
+}
+
+/*==========================================
+ * メモリアルダンジョン進行変更通知
+ *------------------------------------------
+ */
+void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned int limit, int flag)
+{
+#if PACKETVER >= 20071128
+	unsigned char buf[10];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0) = 0x2ce;
+	WBUFL(buf,2) = type;
+	WBUFL(buf,6) = limit;
+	if(flag) {	// パーティー全体に送信
+		clif_send(buf,packet_db[0x2ce].len,&sd->bl,PARTY);
+	} else {	// 個別に送信
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2ce].len);
+		WFIFOSET(sd->fd,packet_db[0x2ce].len);
+	}
+#endif
+
+	return;
+}
+
+/*==========================================
  * 装備ウィンドウ情報
  *------------------------------------------
  */

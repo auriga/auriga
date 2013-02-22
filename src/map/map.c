@@ -89,6 +89,7 @@ static struct delay_item_drop2 *delayitem_head = NULL, *delayitem_tail = NULL;
 struct map_data *map = NULL;
 int map_num = 0;
 static int map_max = 0;
+static int map_mdmap_start = 0;
 
 int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
 int autosave_gvg_rate = 100;
@@ -1768,6 +1769,135 @@ int map_addnpc(int m,struct npc_data *nd)
 }
 
 /*==========================================
+ * メモリアルダンジョンmap追加
+ *------------------------------------------
+ */
+int map_addmdmap(const char *name, int id)
+{
+	int src_m = map_mapname2mapid(name);
+	int dst_m, i;
+	size_t size;
+
+	if(src_m < 0)
+		return -1;
+
+	for(i = map_mdmap_start; i < map_max; i++) {
+		if(!map[i].name[0])
+			break;
+	}
+	if(i < map_num) {
+		// 旧メモリアルダンジョン削除済み領域を流用する
+		dst_m = i;
+	}
+	else if(i < map_max) {
+		// map_numをインクリメント
+		dst_m = map_num++;
+	}
+	else {
+		// 追加余裕なし
+		printf("map_addmdmap failed. map_num(%d) > map_max(%d)\n",map_num, map_max);
+	}
+
+	// マップ情報複製
+	memcpy(&map[dst_m], &map[src_m], sizeof(struct map_data));
+
+	// マップ情報編集
+	snprintf(map[dst_m].name, sizeof(map[dst_m].name), "%.3d%s", id, name);
+	map[dst_m].m = dst_m;
+	map[dst_m].memorial_id = id;
+	map[dst_m].users = 0;
+
+	memset(map[dst_m].npc, 0, sizeof(map[dst_m].npc));
+	map[dst_m].npc_num = 0;
+	map[dst_m].mvpboss = NULL;
+
+	size = map[dst_m].bxs * map[dst_m].bys * sizeof(struct block_list*);
+	map[dst_m].block = (struct block_list **)aCalloc(1,size);
+	map[dst_m].block_mob = (struct block_list **)aCalloc(1,size);
+
+	strdb_insert(map_db,map[dst_m].name,&map[dst_m]);
+
+	return dst_m;
+}
+
+/*==========================================
+ * メモリアルダンジョンPC離脱
+ *------------------------------------------
+ */
+static int map_mdmap_leave(struct block_list *bl, va_list ap)
+{
+	struct map_session_data* sd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	pc_setpos(sd, sd->status.save_point.map, sd->status.save_point.x, sd->status.save_point.y, 3);
+
+	return 1;
+}
+
+/*==========================================
+ * メモリアルダンジョンblock関連削除
+ *------------------------------------------
+ */
+static int map_mdmap_clean(struct block_list *bl, va_list ap)
+{
+	nullpo_retr(0, bl);
+
+	switch(bl->type) {
+	case BL_PC:
+		map_quit((struct map_session_data *)bl);
+		break;
+	case BL_MOB:
+		unit_remove_map(bl,3,0);
+	case BL_PET:
+	case BL_HOM:
+	case BL_MERC:
+		break;
+	case BL_ITEM:
+		map_clearflooritem(bl->id);
+		break;
+	case BL_SKILL:
+		skill_delunit((struct skill_unit *)bl);
+		break;
+	case BL_NPC:
+		npc_free((struct npc_data *)bl);
+		break;
+	}
+
+	return 1;
+}
+
+/*==========================================
+ * メモリアルダンジョンmap削除
+ *------------------------------------------
+ */
+int map_delmdmap(int m)
+{
+	if(m < 0)
+		return 0;
+	if(map[m].memorial_id == 0)
+		return 0;
+
+	// マップ内のPC離脱
+	map_foreachinarea(map_mdmap_leave, m, 0, 0, map[m].xs, map[m].ys, BL_PC);
+
+	// マップ内のblocklist解放
+	map_foreachinarea(map_mdmap_clean, m, 0, 0, map[m].xs, map[m].ys, BL_ALL);
+
+	// マップ情報初期化
+	if(map[m].block)
+		aFree(map[m].block);
+	if(map[m].block_mob)
+		aFree(map[m].block_mob);
+
+	strdb_erase(map_db,map[m].name);
+	memset(&map[m], 0, sizeof(map[0]));
+
+	return 1;
+}
+
+/*==========================================
  * map名からmap番号へ変換
  *------------------------------------------
  */
@@ -2439,7 +2569,7 @@ static void map_addmap(const char *mapname)
 			return;		// 既に追加済みのMAP
 	}
 
-	if(map_num >= map_max) {
+	if(map_num + MAX_MEMORIAL_MAP >= map_max) {
 		map_max += 128;
 		map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_max);
 	}
@@ -2568,8 +2698,8 @@ static void map_readallmap(void)
 	map_readwater();
 
 	// リサイズ
-	map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_num);
-	map_max = map_num;
+	map_max = map_num + MAX_MEMORIAL_MAP;
+	map = (struct map_data *)aRealloc(map, sizeof(struct map_data) * map_max);
 
 	for(i = 0; i < map_num; i++) {
 		char fn[32];
@@ -2590,6 +2720,9 @@ static void map_readallmap(void)
 		printf("%d maps in configuration file. %d map%s removed.\n", map_num + maps_removed, maps_removed, (maps_removed > 1) ? "s" : "");
 	}
 	printf("Map read done (%d map%s, %d map%s in cache). %24s\n", map_num, (map_num > 1) ? "s" : "", cache, (cache > 1) ? "s" : "", "");
+
+	// メモリアルダンジョンマップ生成開始インデックスを設定
+	map_mdmap_start = map_num;
 
 	// マップキャッシュを閉じる
 	map_cache_close();
@@ -2983,6 +3116,7 @@ void do_final(void)
 	}
 	map_num = 0;
 	map_max = 0;
+	map_mdmap_start = 0;
 
 	if(waterlist) {
 		aFree(waterlist);

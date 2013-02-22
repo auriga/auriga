@@ -24,32 +24,52 @@
 
 #include "map.h"
 
-#define MAX_MEMORIAL_DB			10		// メモリアルダンジョンDB最大数
-#define MAX_MEMORIAL_MAP		500		// 最大生成数
-#define MAX_MEMORIAL_SEGMAP		10		// 最大分割マップ数
+#define MAX_MEMORIAL_DATA		50		// メモリアルダンジョン最大登録数
+#define MAX_MEMORIAL_SEGMAP		8		// メモリアルダンジョン最大分割マップ数
 
 enum {
-	MDERR_NOERROR = 0,
-	MDERR_EXISTS,
-	MDERR_PERMISSION,
-	MDERR_RESERVED,
-	MDERR_ERROR,
+	MDCREATE_NOERROR = 0,
+	MDCREATE_EXISTS,
+	MDCREATE_PERMISSION,
+	MDCREATE_RESERVED,
+	MDCREATE_ERROR
 };
 
-struct memorial_db {
-	short memorial_id;
-	char name[61];
-	int limit;
-	struct {
-		char mapname[24];
-		short x, y;
-	} enter;
-	char mapname[MAX_MEMORIAL_SEGMAP][24];
+enum {
+	MDENTER_NOERROR = 0,
+	MDENTER_NOPARTY,
+	MDENTER_NOCREATE,
+	MDENTER_ERROR
 };
-struct memorial_db memorial_db[MAX_MEMORIAL_DB];
+
+enum {
+	MDSTATE_FREE = 0,
+	MDSTATE_IDLE,
+	MDSTATE_BUSY
+};
+
+struct memorial_data {
+	short type;
+	int state;
+	int party_id;
+	unsigned int keep_limit;
+	int keep_timer;
+	unsigned int idle_limit;
+	int idle_timer;
+	int users;
+	struct {
+		int m;
+		int src_m;
+	} map[MAX_MEMORIAL_SEGMAP];
+} memorial_data[MAX_MEMORIAL_DATA];
 
 int memorial_create(const char *memorial_name, int party_id);
+int memorial_delete(int memorial_id);
 int memorial_enter(struct map_session_data *sd, const char *memorial_name);
+int memorial_reqinfo(struct map_session_data *sd, int memorial_id);
+int memorial_addusers(int memorial_id);
+int memorial_delusers(int memorial_id);
+int memorial_mapname2mapid(const char *name, int memorial_id);
 
 int do_init_memorial(void);
 int do_final_memorial(void);

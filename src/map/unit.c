@@ -53,6 +53,7 @@
 #include "booking.h"
 #include "buyingstore.h"
 #include "elem.h"
+#include "memorial.h"
 
 static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data);
 static int unit_attack_timer(int tid,unsigned int tick,int id,void *data);
@@ -2415,6 +2416,10 @@ int unit_free(struct block_list *bl, int clrtype)
 		// OnPCLogoutイベント
 		if(battle_config.pc_logout_script)
 			npc_event_doall_id("OnPCLogout",sd->bl.id,sd->bl.m);
+
+		// メモリアルダンジョンに居る場合はユーザー数削除
+		if(map[sd->bl.m].memorial_id)
+			memorial_delusers(map[sd->bl.m].memorial_id);
 
 		friend_send_online( sd, 1 );			// 友達リストのログアウトメッセージ送信
 		party_send_logout(sd);					// パーティのログアウトメッセージ送信

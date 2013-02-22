@@ -400,6 +400,12 @@ void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amoun
 void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid);
 void clif_failed_trybuyingstore(struct map_session_data *sd, short result);
 
+// memorial
+void clif_memorial_create(struct map_session_data *sd, const char *name, int num, int flag);
+void clif_memorial_changewait(struct map_session_data *sd, int num, int flag);
+void clif_memorial_status(struct map_session_data *sd, const char *name, unsigned int limit1, unsigned int limit2, int flag);
+void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned int limit, int flag);
+
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 

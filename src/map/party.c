@@ -40,6 +40,7 @@
 #include "skill.h"
 #include "unit.h"
 #include "atcommand.h"
+#include "memorial.h"
 
 #define PARTY_SEND_XYHP_INVERVAL	1000	// 座標やＨＰ送信の間隔
 
@@ -533,6 +534,14 @@ void party_member_leaved(int party_id, int account_id, int char_id)
 	if(sd && sd->status.party_id == party_id && sd->status.char_id == char_id) {
 		sd->status.party_id    = 0;
 		sd->state.party_sended = 0;
+		// メモリアルダンジョンに居る場合
+		if(map[sd->bl.m].memorial_id) {
+			pc_setpos(sd, sd->status.save_point.map, sd->status.save_point.x, sd->status.save_point.y, 3);
+		}
+		// メモリアルダンジョン情報ウィンドウを閉じる
+		if(p && p->memorial_id) {
+			clif_memorial_changestatus(sd, 4, 0, 0);
+		}
 	}
 
 	return;
@@ -555,8 +564,21 @@ void party_broken(int party_id)
 			clif_party_leaved(p, p->member[i].sd, p->member[i].account_id, p->member[i].name, 0x10);
 			p->member[i].sd->status.party_id    = 0;
 			p->member[i].sd->state.party_sended = 0;
+			// メモリアルダンジョンに居る場合
+			if(map[p->member[i].sd->bl.m].memorial_id) {
+				pc_setpos(p->member[i].sd, p->member[i].sd->status.save_point.map, p->member[i].sd->status.save_point.x, p->member[i].sd->status.save_point.y, 3);
+			}
+			// メモリアルダンジョン情報ウィンドウを閉じる
+			if(p->memorial_id) {
+				clif_memorial_changestatus(p->member[i].sd, 4, 0, 0);
+			}
 		}
 	}
+
+	// メモリアルダンジョン削除
+	if(p->memorial_id)
+		memorial_delete(p->memorial_id);
+
 	numdb_erase(party_db,party_id);
 	aFree(p);
 
@@ -741,6 +763,9 @@ void party_send_movemap(struct map_session_data *sd)
 			clif_party_info(p,sd->fd);
 			clif_party_option(p,sd,0x100);
 			sd->state.party_sended = 1;
+			// メモリアルダンジョン情報
+			if(p->memorial_id)
+				memorial_reqinfo(sd, p->memorial_id);
 		}
 	}
 

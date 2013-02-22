@@ -61,6 +61,7 @@
 #include "merc.h"
 #include "buyingstore.h"
 #include "elem.h"
+#include "memorial.h"
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 
@@ -801,6 +802,10 @@ int pc_makesavestatus(struct map_session_data *sd)
 			memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
 		else
 			memcpy(&sd->status.last_point,&m->save,sizeof(sd->status.last_point));
+	}
+	// メモリアルダンジョンに居るので、位置をセーブ場所に変更
+	else if(map[sd->bl.m].memorial_id) {
+		memcpy(&sd->status.last_point,&sd->status.save_point,sizeof(sd->status.last_point));
 	}
 
 	// アルケミの連続成功数保存
@@ -4648,6 +4653,15 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		// 凸面鏡の効果削除
 		if(sd->sc.data[SC_BOSSMAPINFO].timer != -1)
 			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
+		// メモリアルダンジョンのユーザー数チェック
+		if(map[m].memorial_id != map[sd->bl.m].memorial_id) {
+			// メモリアルダンジョンのユーザー数追加
+			if(map[m].memorial_id)
+				memorial_addusers(map[m].memorial_id);
+			// メモリアルダンジョンのユーザー数削除
+			if(map[sd->bl.m].memorial_id)
+				memorial_delusers(map[sd->bl.m].memorial_id);
+		}
 	}
 	status_change_hidden_end(&sd->bl);
 

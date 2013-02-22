@@ -619,6 +619,7 @@ struct party {
 	char name[24];
 	unsigned char exp;
 	unsigned char item;
+	int memorial_id;
 	struct party_member member[MAX_PARTY];
 };
 

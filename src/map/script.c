@@ -3486,6 +3486,39 @@ static int script_mapname2mapid(struct script_state *st,const char *mapname)
 }
 
 /*==========================================
+ * script情報からメモリアルID取得
+ *------------------------------------------
+ */
+static int script_getmemorialid(struct script_state *st)
+{
+	struct npc_data *nd = map_id2nd(st->oid);
+	int memorial_id = 0;
+
+	// 実行NPCから取得
+	if(nd) {
+		memorial_id = map[nd->bl.m].memorial_id;
+	}
+
+	// 実行NPCがメモリアルダンジョン不在の場合はPCから取得
+	if(memorial_id == 0) {
+		struct map_session_data *sd = script_rid2sd(st);
+		if(sd) {
+			memorial_id = map[sd->bl.m].memorial_id;
+
+			// PCがメモリアルダンジョン不在の場合はPTから取得
+			if(memorial_id == 0) {
+				struct party *pt = party_search(sd->status.party_id);
+				if(pt) {
+					memorial_id = pt->memorial_id;
+				}
+			}
+		}
+	}
+
+	return memorial_id;
+}
+
+/*==========================================
  * @readvars, @writevars用関数
  *------------------------------------------
  */
@@ -4319,7 +4352,7 @@ struct script_function buildin_func[] = {
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},
 	{buildin_mdcreate,"mdcreate","s*"},
-	{buildin_mddelete,"mddelete","s*"},
+	{buildin_mddelete,"mddelete","*"},
 	{buildin_mdenter,"mdenter","s"},
 	{buildin_getmdmapname,"getmdmapname","s"},
 	{buildin_getmdnpcname,"getmdnpcname","s"},
@@ -12645,16 +12678,16 @@ int buildin_mdcreate(struct script_state *st)
 
 	ret = memorial_create(memorial_name, party_id);
 	switch(ret) {
-		case MDERR_EXISTS:		// 既に生成済み
+		case MDCREATE_EXISTS:		// 既に生成済み
 			clif_msgstringtable2(sd, 0x52a, memorial_name);	// メモリアルダンジョン「%s」の予約が重複生成要請により失敗しました。
 			break;
-		case MDERR_PERMISSION:	// 権限がない
+		case MDCREATE_PERMISSION:	// 権限がない
 			clif_msgstringtable2(sd, 0x529, memorial_name);	// メモリアルダンジョン「%s」の予約が権限問題により失敗しました。
 			break;
-		case MDERR_RESERVED:	// 既に予約済み
+		case MDCREATE_RESERVED:		// 既に予約済み
 			clif_msgstringtable2(sd, 0x528, memorial_name);	// メモリアルダンジョン「%s」の予約が予約重複により失敗しました。
 			break;
-		case MDERR_ERROR:		// その他エラー
+		case MDCREATE_ERROR:		// その他エラー
 			clif_msgstringtable2(sd, 0x527, memorial_name);	// メモリアルダンジョン「%s」の予約に失敗しました。
 			break;
 	}
@@ -12668,6 +12701,21 @@ int buildin_mdcreate(struct script_state *st)
  */
 int buildin_mddelete(struct script_state *st)
 {
+	struct map_session_data *sd = script_rid2sd(st);
+	struct party *pt = NULL;
+	int party_id = 0;
+
+	if(st->end>st->start+2)
+		party_id = conv_num(st,&(st->stack->stack_data[st->start+2]));
+	else if(sd)
+		party_id = sd->status.party_id;
+
+	if(party_id > 0) {
+		pt = party_search(sd->status.party_id);
+		if(pt)
+			memorial_delete(pt->memorial_id);
+	}
+
 	return 0;
 }
 
@@ -12696,8 +12744,13 @@ int buildin_mdenter(struct script_state *st)
 int buildin_getmdmapname(struct script_state *st)
 {
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int id = script_getmemorialid(st);
+	int m = memorial_mapname2mapid(str, id);
 
-	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+	if(m < 0)
+		push_str(st->stack,C_CONSTSTR,"");
+	else
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(map[m].name));
 
 	return 0;
 }
@@ -12708,9 +12761,17 @@ int buildin_getmdmapname(struct script_state *st)
  */
 int buildin_getmdnpcname(struct script_state *st)
 {
+	char name[24];
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	int id = script_getmemorialid(st);
+	int m = memorial_mapname2mapid(str, id);
 
-	push_str(st->stack,C_STR,(unsigned char *)aStrdup(str));
+	if(id > 0)
+		snprintf(name, 24, "%s#%.3d", str, id);
+	else
+		memcpy(name, str, 24);
+
+	push_str(st->stack,C_STR,(unsigned char *)aStrdup(name));
 
 	return 0;
 }
