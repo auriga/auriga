@@ -1215,6 +1215,11 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 			nd->u.scr.label_list     = src_nd->u.scr.label_list;
 			nd->u.scr.label_list_num = src_nd->u.scr.label_list_num;
 			nd->u.scr.src_id         = src_nd->bl.id;
+			nd->u.scr.timer_event    = NULL;
+			nd->u.scr.timer          = -1;
+			nd->u.scr.timerid        = -1;
+			nd->u.scr.timeramount    = 0;
+			nd->u.scr.nexttimer      = -1;
 		}
 		break;
 	case SHOP:
