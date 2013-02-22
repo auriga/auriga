@@ -203,7 +203,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 600- */
 	SI_PETROLOGY,SI_PETROLOGY_OPTION,SI_CURSED_SOIL,SI_CURSED_SOIL_OPTION,SI_UPHEAVAL,SI_UPHEAVAL_OPTION,SI_TIDAL_WEAPON,SI_TIDAL_WEAPON_OPTION,SI_ROCK_CRUSHER,SI_ROCK_CRUSHER_ATK,
 	/* 610- */
-	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04
+	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM
 };
 
 /*==========================================
@@ -6495,6 +6495,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HAT_EFFECT:			/* 頭装備エフェクト */
 			icon_val1 = val1;
 			break;
+		case SC_ACTIVE_MONSTER_TRANSFORM:	/* アクティブモンスター変身 */
+			icon_val1 = val1;	// val1はモンスターID
+			break;
 
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
 		case SC_SPEEDUP1:			/* スピードポーション */
@@ -9381,6 +9384,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ALL_RIDING:	/* 騎乗システム */
 	case SC_ON_PUSH_CART:	/* カート */
 	case SC_HAT_EFFECT:	/* 頭装備エフェクト */
+	case SC_ACTIVE_MONSTER_TRANSFORM:	/* アクティブモンスター変身 */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:

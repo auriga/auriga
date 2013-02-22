@@ -420,7 +420,21 @@ e_tower.gat,81,105,0	script	塔の守護石	406,{
 		mes "^FF0000刻の呪い^000000を受けている状態。";
 		mes "呪いが解けるまで";
 		mes "鍵の作成、入場を行う資格はない。";
-		close;
+		next;
+		switch(select("アルベルタに帰還","キャンセル")){
+		case 1:
+			mes "【塔の守護石】";
+			mes "元の場所への帰還術を";
+			mes "発動……";
+			close2;
+			warp "alberta",223,36;
+			end;
+		case 2:
+			mes "【塔の守護石】";
+			mes "元の場所への帰還術の";
+			mes "発動を中止……";
+			close;
+		}
 	}
 	else {
 		if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
@@ -440,6 +454,12 @@ e_tower.gat,81,105,0	script	塔の守護石	406,{
 	next;
 	switch(select('@str1$,'@str2$,"アルベルタに帰還","キャンセル")) {
 	case 1:
+		if(getpartyleader(getcharid(1)) != strcharinfo(0)) {
+			mes "【塔の守護石】";
+			mes "代表権が無くなっている。";
+			mes "再試行せよ。";
+			close;
+		}
 		mdcreate "Endless Tower";
 		mes "【塔の守護石】";
 		mes "■パーティー名";
@@ -447,7 +467,7 @@ e_tower.gat,81,105,0	script	塔の守護石	406,{
 		mes "■パーティーリーダー";
 		mes "^0000FF" +getpartyleader(getcharid(1))+ "^000000";
 		mes " ";
-		mes "^006600Endless Tower^000000の鍵の作成試行中。";
+		mes "^006400Endless Tower^000000の鍵の作成試行中。";
 		next;
 		mes "【塔の守護石】";
 		mes "作成に成功した場合は";

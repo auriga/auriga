@@ -4020,6 +4020,7 @@ int buildin_strnpcinfo(struct script_state *st);
 int buildin_getpartyleader(struct script_state *st);
 int buildin_getstrlen(struct script_state *st);
 int buildin_substr(struct script_state *st);
+int buildin_strstr(struct script_state *st);
 int buildin_distance(struct script_state *st);
 int buildin_homundel(struct script_state *st);
 int buildin_homunrename(struct script_state *st);
@@ -4064,6 +4065,7 @@ int buildin_mddelete(struct script_state *st);
 int buildin_mdenter(struct script_state *st);
 int buildin_getmdmapname(struct script_state *st);
 int buildin_getmdnpcname(struct script_state *st);
+int buildin_active_montransform(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4123,7 +4125,7 @@ struct script_function buildin_func[] = {
 	{buildin_getequipisequiped,"getequipisequiped","i"},
 	{buildin_getequipisenableref,"getequipisenableref","i"},
 	{buildin_getequipisidentify,"getequipisidentify","i"},
-	{buildin_getequiprefinerycnt,"getequiprefinerycnt","i"},
+	{buildin_getequiprefinerycnt,"getequiprefinerycnt","*"},
 	{buildin_getequipweaponlv,"getequipweaponlv","i"},
 	{buildin_getequippercentrefinery,"getequippercentrefinery","i"},
 	{buildin_successrefitem,"successrefitem","i"},
@@ -4316,6 +4318,7 @@ struct script_function buildin_func[] = {
 	{buildin_getpartyleader,"getpartyleader","i"},
 	{buildin_getstrlen,"getstrlen","s"},
 	{buildin_substr,"substr","si*"},
+	{buildin_strstr,"strstr","ss"},
 	{buildin_distance,"distance","i*"},
 	{buildin_recalcstatus,"recalcstatus","*"},
 	{buildin_sqlquery,"sqlquery","s*"},
@@ -4356,6 +4359,7 @@ struct script_function buildin_func[] = {
 	{buildin_mdenter,"mdenter","s"},
 	{buildin_getmdmapname,"getmdmapname","s"},
 	{buildin_getmdnpcname,"getmdnpcname","s"},
+	{buildin_active_montransform,"active_montransform","i*"},
 	{NULL,NULL,NULL}
 };
 
@@ -6312,7 +6316,11 @@ int buildin_getequiprefinerycnt(struct script_state *st)
 	int num, i = -1;
 	struct map_session_data *sd;
 
-	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end>st->start+2)
+		num = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	else
+		num = current_equip_item_index + 1;
+
 	sd=script_rid2sd(st);
 	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
@@ -11303,6 +11311,48 @@ int buildin_substr(struct script_state *st)
 }
 
 /*==========================================
+ * 文字列中に指定文字が含まれているかどうか
+ *------------------------------------------
+ */
+int buildin_strstr(struct script_state *st)
+{
+	const char *str;
+	const char *cmpstr;
+	int len, offset = 0;
+	int pos = 0;
+
+	str    = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	cmpstr = conv_str(st,& (st->stack->stack_data[st->start+3]));
+
+	len = (int)strlen(str);
+
+	do {
+		if(*str != *cmpstr && offset) {
+			cmpstr -= offset;
+			pos += offset;
+			offset = 0;
+		}
+
+		if(*str == *cmpstr) {
+			cmpstr++;
+			if(*cmpstr == 0)
+				break;
+			offset++;
+		}
+		else {
+			pos++;
+		}
+	} while(*str++);
+
+	if(pos < len)
+		push_val(st->stack,C_INT,1);
+	else
+		push_val(st->stack,C_INT,0);
+
+	return 0;
+}
+
+/*==========================================
  * PCとNPC間の距離を返す
  *------------------------------------------
  */
@@ -12772,6 +12822,35 @@ int buildin_getmdnpcname(struct script_state *st)
 		memcpy(name, str, 24);
 
 	push_str(st->stack,C_STR,(unsigned char *)aStrdup(name));
+
+	return 0;
+}
+
+/*==========================================
+ * アクティブモンスター変身
+ *------------------------------------------
+ */
+int buildin_active_montransform(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int id, mob_class;
+
+	mob_class = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		id = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	else
+		id = current_equip_name_id;
+
+	if(sd) {
+		int i;
+		for(i = 0; i < sd->activeitem.count; i++) {
+			if(sd->activeitem_id2[i] == id && sd->activeitem_timer[i] != -1) {
+				if(!unit_isdead(&sd->bl) && status_change_rate(&sd->bl,SC_ACTIVE_MONSTER_TRANSFORM,10000,0) > 0)
+					status_change_start(&sd->bl,SC_ACTIVE_MONSTER_TRANSFORM,mob_class,id,0,0,60000,0);
+				return 0;
+			}
+		}
+	}
 
 	return 0;
 }

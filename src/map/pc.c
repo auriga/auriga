@@ -2121,6 +2121,9 @@ static int pc_activeitem_timer(int tid,unsigned int tick,int id,void *data)
 
 	for(i = 0; i < MAX_ACTIVEITEM; i++) {
 		if(sd->activeitem_timer[i] == tid) {
+			if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1 &&
+			   sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val2 == sd->activeitem_id2[i])	// アクティブモンスター変身
+				status_change_end(&sd->bl, SC_ACTIVE_MONSTER_TRANSFORM, -1);
 			sd->activeitem_timer[i] = -1;
 			sd->activeitem_id2[i] = 0;
 			status_calc_pc(sd,0);

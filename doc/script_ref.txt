@@ -2311,6 +2311,16 @@ AurigaNPCScript
 			指定したパーティーで生成されているメモリアルダンジョンを削除します。
 			パーティーIDを省略時、自分のパーティーを参照します。
 
+		active_montransform命令
+			active_montransform <mobid>[,<itemid>];
+
+			<mobid>		変身するモンスターのID
+			<itemid>	アイテムID、省略可
+
+			<itemid>が活性化状態のとき、<mobid>に変身します。
+			<itemid>が非活性化状態になったとき、変身が解除されます。
+			<itemid>を省略時、記述されたアイテムが参照されます。
+
 
 	＊関数
 		rand関数
@@ -2412,11 +2422,12 @@ AurigaNPCScript
 			12,コスチューム上段、13,コスチューム中段、14,コスチューム下段、15,コスチューム肩、16,コスチュームFloor
 
 		getequiprefinerycnt関数
-			getequiprefinerycnt(<n>)
+			getequiprefinerycnt([<n>])
 
-			n		数値
+			n		数値、省略可
 
 			精錬の度合いを返します。
+			EquipScript上でnを省略時、記述されたアイテムが参照されます。
 			n:1,頭装備、2,鎧、3,左手、4,右手、5,かけるもの、6,靴、7,アクセ１、8,アクセ２、9,頭中段、10,頭下段、11,矢
 			12,コスチューム上段、13,コスチューム中段、14,コスチューム下段、15,コスチューム肩、16,コスチュームFloor
 
@@ -3194,6 +3205,15 @@ AurigaNPCScript
 			この関数を利用することにより広範囲な文字列処理が可能です。
 			関数の仕様の確認と、汎用ユーザー定義関数スクリプトがサンプル（npc_func_library.txt）
 			にありますので参照してください。
+
+		strstr 関数
+			strstr(<string1>,<string2>)
+
+			<string1>	文字列1
+			<string2>	文字列2
+
+			<string1>から<string2>を検索します。
+			<string1>に<string2>が含まれる場合は1を、そうでなければ0を返します。
 
 		distance 関数
 			distance(<id>[,<name>])

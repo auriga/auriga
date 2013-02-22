@@ -7853,6 +7853,8 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,1002,0,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
 			clif_status_change_id(sd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+		else if(dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
+			clif_status_change_id(sd,dstsd->bl.id,SI_ACTIVE_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
 		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// 搭乗システム
 			clif_status_change_id(sd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
 		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート

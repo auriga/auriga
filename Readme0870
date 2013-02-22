@@ -1,4 +1,22 @@
 ----------------------------------------
+//0998 [2013/02/23] by refis
+
+・0975以降タワー生成NPCから帰還できなくなっていたミスの修正と会話の補完（npc_memorial_tower.txt）
+
+・スキル関連定義を更新（skill.h）
+
+・スクリプト関数「getequiprefinerycnt」で位置指定を省略できるよう仕様変更（script.c doc/script_ref.txt）
+
+・スクリプト関数「strstr」を実装（script.c doc/script_ref.txt）
+
+・スクリプト命令「active_montransform」を実装
+（db/scdata_db.txt doc/script_ref.txt clif.c pc.c script.c status.*）
+
+・item_dbを更新（db/item_db.txt）
+	-> アクティブモンスター変身関連のアイテム実装
+	-> アイテムドロップ、オートスペル系装備の暫定確率であった一部装備を正しい値に修正
+
+----------------------------------------
 //0997 [2013/02/23] by Blaze
 
 ・メモリアルダンジョン複製NPCがタイマーイベントを発行するとき、delete_timer errorが出ていた不具合修正（map/npc.c）
