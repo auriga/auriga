@@ -114,6 +114,9 @@ CFLAGS += -DNO_HTTPD_CGI
 # disable csvdb via script
 #CFLAGS += -DNO_CSVDB_SCRIPT
 
+# usable pre refine system
+CFLAGS += -DPRE_RENEWAL
+
 # usable MB
 #CFLAGS += -DCLASS_MB
 

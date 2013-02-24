@@ -1,0 +1,2 @@
+//R化前skill_cast_db.txt＠Auriga
+//id,cast_list,fixed_cast_list,delay_list,cool_list,upkeep_time,upkeep_time2

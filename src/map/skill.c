@@ -18951,17 +18951,28 @@ static int skill_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
+#ifdef PRE_RENEWAL
+	const char *filename[] = {
+		"db/skill_db.txt",         "db/pre/skill_db_pre.txt",         "db/addon/skill_db_add.txt",
+		"db/skill_require_db.txt", "db/pre/skill_require_db_pre.txt", "db/addon/skill_require_db_add.txt",
+		"db/skill_cast_db.txt",    "db/pre/skill_cast_db_pre.txt",    "db/addon/skill_cast_db_add.txt",
+		"db/produce_db.txt",       "db/pre/produce_db_pre.txt",       "db/addon/produce_db_add.txt"
+	};
+	static const int max = 3;
+#else
 	const char *filename[] = {
 		"db/skill_db.txt",         "db/addon/skill_db_add.txt",
 		"db/skill_require_db.txt", "db/addon/skill_require_db_add.txt",
 		"db/skill_cast_db.txt",    "db/addon/skill_cast_db_add.txt",
 		"db/produce_db.txt",       "db/addon/produce_db_add.txt"
 	};
+	static const int max = 2;
+#endif
 
 	memset(skill_db,0,sizeof(skill_db));
 
 	/* スキルデータベース */
-	for(m=0; m<2; m++){
+	for(m=0; m<max; m++){
 		fp=fopen(filename[m],"r");
 		if(fp==NULL){
 			if(m>0)
@@ -19052,11 +19063,11 @@ static int skill_readdb(void)
 	printf("read db/skill_db2.txt done (count=%d)\n",k);
 
 	/* スキル要求データベース */
-	for(m=2; m<4; m++){
+	for(m=max; m<max*2; m++){
 		int n;
 		fp=fopen(filename[m],"r");
 		if(fp==NULL){
-			if(m>2)
+			if(m>max)
 				continue;
 			printf("can't read %s\n",filename[m]);
 			return 1;
@@ -19174,10 +19185,10 @@ static int skill_readdb(void)
 	printf("read db/skill_require_db2.txt done (count=%d)\n",k);
 
 	/* キャスティングデータベース */
-	for(m=4; m<6; m++){
+	for(m=max*2; m<max*3; m++){
 		fp=fopen(filename[m],"r");
 		if(fp==NULL){
-			if(m>4)
+			if(m>max*2)
 				continue;
 			printf("can't read %s\n",filename[m]);
 			return 1;
@@ -19246,11 +19257,11 @@ static int skill_readdb(void)
 	/* 製造系スキルデータベース */
 	memset(skill_produce_db,0,sizeof(skill_produce_db));
 
-	for(m=6; m<8; m++){
+	for(m=max*3; m<max*4; m++){
 		int count=0;
 		fp=fopen(filename[m],"r");
 		if(fp==NULL){
-			if(m>6)
+			if(m>max*3)
 				continue;
 			printf("can't read %s\n",filename[m]);
 			return 1;

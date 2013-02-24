@@ -287,7 +287,7 @@ Pos: clif.c内の関数で使用される変数に使う項目のパケット位
 ==========================================================================
 9. db/item_db.txt
 --------------------------------------------------------------------------
-ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}
+ID,Name,Jname,Type,Price,Sell,Weight,ATK:MATK,DEF:MDEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}
 
      ITEM_ID       = 使ってないitemIDを指定(連番でなくても問題ありません)
                      ※オリジナル武器を作る場合、攻撃モーションを既存の物にする為には

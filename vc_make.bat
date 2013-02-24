@@ -176,6 +176,9 @@ set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
+rem R化前のシステムを使う場合はコメントアウトをはずす
+set __PRE_RENEWAL__=/D "PRE_RENEWAL"
+
 rem MB を使う場合はコメントアウトをはずす
 rem set __EXCLASS__=/D "CLASS_MB"
 

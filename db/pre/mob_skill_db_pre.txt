@@ -1,0 +1,2 @@
+//R化前mob_skill_db.txt＠Auriga
+//MOB_ID,ダミー文字列,STATE,SKILL_ID,SKILL_LV,万分率,casttime,delay,妨害可能,ターゲット,条件タイプ,条件値,値1,値2,値3,値4,値5,使用時エモーション

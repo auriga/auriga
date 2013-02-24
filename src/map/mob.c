@@ -3784,12 +3784,17 @@ static int mob_readdb(void)
 {
 	FILE *fp;
 	char line[1024];
-	const char *filename[] = { "db/mob_db.txt","db/addon/mob_db_add.txt" };
 	int n;
-
+#ifdef PRE_RENEWAL
+	const char *filename[] = { "db/mob_db.txt","db/pre/mob_db_add_pre.txt","db/addon/mob_db_add.txt" };
+	static const int max = 3;
+#else
+	const char *filename[] = { "db/mob_db.txt","db/addon/mob_db_add.txt" };
+	static const int max = 2;
+#endif
 	memset(mob_db_real,0,sizeof(mob_db_real));
 
-	for(n=0;n<2;n++){
+	for(n=0;n<max;n++){
 		fp=fopen(filename[n],"r");
 		if(fp==NULL){
 			if(n>0)
@@ -4202,9 +4207,15 @@ static int mob_readskilldb(void)
 	};
 
 	int x, lineno;
+#ifdef PRE_RENEWAL
+	const char *filename[] = { "db/mob_skill_db.txt","db/pre/mob_skill_db_pre.txt","db/addon/mob_skill_db_add.txt" };
+	static const int max = 3;
+#else
 	const char *filename[] = { "db/mob_skill_db.txt","db/addon/mob_skill_db_add.txt" };
+	static const int max = 2;
+#endif
 
-	for(x=0;x<2;x++){
+	for(x=0;x<max;x++){
 		fp=fopen(filename[x],"r");
 		if(fp==NULL){
 			if(x==0)

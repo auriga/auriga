@@ -726,6 +726,8 @@ L_RECALC:
 			continue;
 		if(sd->inventory_data[idx]) {
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
+			sd->matk1 += sd->inventory_data[idx]->matk;
+			sd->matk2 += sd->inventory_data[idx]->matk;
 			sd->def += sd->inventory_data[idx]->def;
 			sd->mdef += sd->inventory_data[idx]->mdef;
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {

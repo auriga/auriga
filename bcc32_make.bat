@@ -74,6 +74,9 @@ set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI
 @rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 :set __NO_CSVDB_SCRIPT__=-DNO_CSVDB_SCRIPT
 
+rem R化前のシステムを使う場合はコメントアウトをはずす
+set __PRE_RENEWAL__=-DPRE_RENEWAL
+
 @rem MBでごにょごにょ (通常はコメントアウト)
 :set __EXCLASS__=-DCLASS_MB
 
@@ -131,7 +134,7 @@ if "%_model_%"=="AMD32" set __cpu__=-5 -Oc -Ov -f -ff
 if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
-set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__%
+set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__PRE_RENEWAL__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__%
 set __include__=-I../common/ -I../common/zlib/ %__sqlinclude__%
 
 if "%__ZLIB__%"=="" goto NOZLIB

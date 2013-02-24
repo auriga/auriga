@@ -441,9 +441,15 @@ static int itemdb_read_itemdb(void)
 	struct item_data *id;
 	struct script_code *script = NULL;
 	int i=0;
+#ifdef PRE_RENEWAL
+	const char *filename[] = { "db/item_db.txt","db/pre/item_db_pre.txt","db/addon/item_db_add.txt" };
+	static const int max = 3;
+#else
 	const char *filename[] = { "db/item_db.txt","db/addon/item_db_add.txt" };
+	static const int max = 2;
+#endif
 
-	for(i=0;i<2;i++){
+	for(i=0;i<max;i++){
 		fp=fopen(filename[i],"r");
 		if(fp==NULL){
 			if(i>0)
@@ -486,7 +492,7 @@ static int itemdb_read_itemdb(void)
 				id->value_sell = atoi(str[4])/2;
 			}
 			id->weight = atoi(str[6]);
-			id->atk    = atoi(str[7]);
+			itemdb_split_atoi(str[7],&id->atk,&id->matk);
 			itemdb_split_atoi(str[8],&id->def,&id->mdef);
 			id->range  = atoi(str[9]);
 			id->slot   = atoi(str[10]);

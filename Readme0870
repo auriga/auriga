@@ -1,4 +1,27 @@
 ----------------------------------------
+//1000 [2013/02/25] by Blaze
+
+・コンパイラオプション「PRE_RENEWAL」を追加（Makefile, bcc32_make.bat, vc_make.bat）
+	-> システムをR化前/後で切り替えます。
+　	※R化システム実装完了までは"有効"推奨です。
+
+・R化前/後のDB住み分け第1弾（itemdb.c, mob.c, skill.c）
+	-> 「PRE_RENEWAL」有効時、通常DB読み込み後に以下のDBをアドオンします。
+	　・item_db_pre.txt
+	　・mob_db_pre.txt
+	　・mob_skill_db_pre.txt
+	　・skill_db_pre.txt
+	　・skill_cast_db_pre.txt
+	　・skill_require_db_pre.txt
+	※Auriga-1000以降、db直下の各DBはR化後データをサポート、
+	　R化前データは「db/pre」配下のDBでサポートとなります。
+
+・item_db.txtのATK項でMATKを指定できるように拡張（itemdb.*, statuc.c, doc/db_ref.txt）
+	-> 「DEF:MDEF」と同じ書式で「ATK:MATK」と記載することで、MATKを定義できます。
+
+・item_db.txtをR化後データに合わせて修正（db/item_db.txt）
+
+----------------------------------------
 //0999 [2013/02/25] by refis
 
 ・0998のitem_db更新をフォローアップ（db/item_db.txt）
