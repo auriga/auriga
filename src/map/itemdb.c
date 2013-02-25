@@ -618,6 +618,34 @@ static int itemdb_read_itemdb(void)
 	fclose(fp);
 	printf("read db/item_arrowtype.txt done\n");
 
+	fp=fopen("db/item_cardtype.txt","r");
+	if(fp==NULL){
+		printf("can't read db/item_cardtype.txt\n");
+		return 0;
+	}
+	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(j=0,np=p=line;j<4 && p;j++){
+			str[j]=p;
+			p=strchr(p,',');
+			if(p){ *p++=0; np=p; }
+		}
+		if(str[0] == NULL || str[3] == NULL)
+			continue;
+
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
+			continue;
+		//ID,Name,Jname,type
+		id->card_type = atoi(str[3]);
+	}
+	fclose(fp);
+	printf("read db/item_cardtype.txt done\n");
+
 	fp=fopen("db/item_group_db.txt","r");
 	if(fp==NULL){
 		printf("can't read db/item_group_db.txt\n");

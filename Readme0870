@@ -1,4 +1,15 @@
 ----------------------------------------
+//1001 [2013/02/26] by refis
+
+・vc_make.batでコンパイラオプション「PRE_RENEWAL」が付加されない誤りを修正（vc_make.bat）
+
+・ヒドゥンエンチャントシステムを実装
+	-> カードの種類を設定するitem_cardtype.txtを追加（db/item_cardtype.txt doc/db_ref.txt map/itemdb.*）
+	-> スロット外のカードも読み込むように処理を更新（pc.c script.c status.c）
+	-> ヒドゥンエンチャントNPCを追加（conf/map_auriga.conf script/npc/quest/npc_quest_hiddenenchant.txt）
+		Thanks Base on tomo さん
+
+----------------------------------------
 //1000 [2013/02/25] by Blaze
 
 ・コンパイラオプション「PRE_RENEWAL」を追加（Makefile, bcc32_make.bat, vc_make.bat）

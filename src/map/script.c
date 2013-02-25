@@ -8992,7 +8992,7 @@ int buildin_getequipcardcnt(struct script_state *st)
 static int removecards_sub(struct map_session_data *sd,int i,int typefail,int pos)
 {
 	struct item item_tmp;
-	int j,n,flag,slot,removed_flag=0;
+	int j,n,flag,removed_flag=0;
 	short card_set[4] = { 0,0,0,0 };
 
 	if(i < 0 || i >= MAX_INVENTORY)
@@ -9000,17 +9000,14 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 	if(itemdb_isspecial(sd->status.inventory[i].card[0]))	// 製造・名前入りは処理しない
 		return 0;
 
-	slot = sd->inventory_data[i]->slot;
-	if(slot > 4)
-		slot = 4;
-	if(pos < 0 || pos > slot)
+	if(pos < 0)
 		return 0;
 
-	for(n=0,j=0; n < slot; n++) {
+	for(n=0,j=0; n < 4; n++) {
 		short card_id = sd->status.inventory[i].card[n];
 		if(card_id <= 0 || itemdb_type(card_id) != ITEMTYPE_CARD)
 			continue;
-		if(pos == 0 || pos-1 == n) {			// 指定ポジションと一致した場合
+		if((pos == 0 || pos-1 == n) && itemdb_cardtype(card_id) != 2) {	// 指定ポジションと一致かつhiddenではない場合
 			removed_flag = 1;
 			if(typefail == 2 || typefail == 4) {	// カード返却
 				memset(&item_tmp, 0, sizeof(item_tmp));
@@ -9022,7 +9019,10 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 				}
 			}
 		} else {
-			card_set[j++] = card_id;	// 取り外し対象外のカードを保存
+			if(itemdb_cardtype(card_id) == 2)
+				card_set[n] = card_id;	// 取り外し対象外のカードを保存
+			else
+				card_set[j++] = card_id;	// 取り外し対象外のカードを保存
 		}
 	}
 

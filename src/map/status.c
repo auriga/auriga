@@ -661,32 +661,34 @@ L_RECALC:
 		if(sd->inventory_data[idx]) {
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
-					int j;
-					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
-						int c = sd->status.inventory[idx].card[j];
+					int j, c;
+					for(j=0; j<4; j++) {	// カード
+						if((c = sd->status.inventory[idx].card[j]) <= 0)
+							continue;
+						if(sd->inventory_data[idx]->slot >= j && itemdb_cardtype(c) != 2)
+							continue;
 						current_equip_name_id = c;		// オートスペル(重複チェック用)
-						if(c > 0) {
-							if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
-								sd->state.lr_flag = 1;
-							if(calclimit == 2)
-								run_script(itemdb_usescript(c),0,sd->bl.id,0);
-							run_script(itemdb_equipscript(c),0,sd->bl.id,0);
-							sd->state.lr_flag = 0;
-						}
+						if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
+							sd->state.lr_flag = 1;
+						if(calclimit == 2)
+							run_script(itemdb_usescript(c),0,sd->bl.id,0);
+						run_script(itemdb_equipscript(c),0,sd->bl.id,0);
+						sd->state.lr_flag = 0;
 					}
 				}
 			}
 			else if(itemdb_isarmor(sd->inventory_data[idx]->nameid)) { // 防具
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
-					int j;
-					for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
-						int c = sd->status.inventory[idx].card[j];
+					int j, c;
+					for(j=0; j<4; j++) {	// カード
+						if((c = sd->status.inventory[idx].card[j]) <= 0)
+							continue;
+						if(sd->inventory_data[idx]->slot >= j && itemdb_cardtype(c) != 2)
+							continue;
 						current_equip_name_id = c;		// オートスペル(重複チェック用)
-						if(c > 0) {
-							if(calclimit == 2)
-								run_script(itemdb_usescript(c),0,sd->bl.id,0);
-							run_script(itemdb_equipscript(c),0,sd->bl.id,0);
-						}
+						if(calclimit == 2)
+							run_script(itemdb_usescript(c),0,sd->bl.id,0);
+						run_script(itemdb_equipscript(c),0,sd->bl.id,0);
 					}
 				}
 			}

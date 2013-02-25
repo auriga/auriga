@@ -70,6 +70,7 @@ struct item_data {
 	int upper; 	//0:all(7に強制変換) 1:転生前 2:転生 4:養子
 	int zone;	//0:制限無 1:normal 2:pvp 4:gvg 8:pk 16:turbo 32:noteleport 64:noreturn 128:nobranch
 	int arrow_type;
+	int card_type;
 };
 
 struct random_item_data {
@@ -100,6 +101,7 @@ struct item_data* itemdb_exists(int nameid);
 #define itemdb_slot(n)        itemdb_search(n)->slot
 #define itemdb_value_buy(n)   itemdb_search(n)->value_buy
 #define itemdb_value_sell(n)  itemdb_search(n)->value_sell
+#define itemdb_cardtype(n)    itemdb_search(n)->card_type
 #define itemdb_value_notdc(n) itemdb_search(n)->flag.value_notdc
 #define itemdb_value_notoc(n) itemdb_search(n)->flag.value_notoc
 

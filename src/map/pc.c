@@ -3598,13 +3598,24 @@ void pc_insert_card(struct map_session_data *sd, int idx_card, int idx_equip)
 		    (sd->inventory_data[idx_equip]->equip & ep) == 0 ||						// 装備個所違い
 		    (itemdb_isweapon(sd->inventory_data[idx_equip]->nameid) && ep == LOC_LARM) ||					// 両手武器と盾カード
 		    (sd->inventory_data[idx_card]->type != ITEMTYPE_CARD) ||						// Prevent Hack [Ancyker]
-		    sd->status.inventory[idx_equip].equip )
+		    sd->status.inventory[idx_equip].equip ||
+		    itemdb_cardtype(sd->inventory_data[idx_card]->nameid) == 2 )	// hidden
 		{
 			clif_insert_card(sd, idx_equip, idx_card, 1);	// flag: 1=fail, 0:success
 			return;
 		}
 		for(i=0; i<sd->inventory_data[idx_equip]->slot; i++) {
 			if(sd->status.inventory[idx_equip].card[i] == 0) {
+				// 複数の同一カードが許可されているかチェック
+				if(!itemdb_cardtype(sd->inventory_data[idx_card]->nameid)) {
+					int j;
+					for(j=0; j<i; j++) {
+						if(sd->status.inventory[idx_equip].card[j] == cardid) {
+							clif_insert_card(sd, idx_equip, idx_card, 1);	// flag: 1=fail, 0:success
+							return;
+						}
+					}
+				}
 				// 空きスロットがあったので差し込む
 				sd->status.inventory[idx_equip].card[i] = cardid;
 
@@ -8833,7 +8844,7 @@ int pc_equippeditem(struct map_session_data *sd,int id)
 			if(sd->status.inventory[idx].nameid == id)
 				n++;
 
-			for(j=0; j<sd->inventory_data[idx]->slot; j++) {	// カード
+			for(j=0; j<4; j++) {	// カード
 				if(sd->status.inventory[idx].card[j] == id)
 					n++;
 			}
