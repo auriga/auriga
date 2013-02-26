@@ -1747,8 +1747,8 @@ int map_addnpc(int m,struct npc_data *nd)
 	nullpo_retr(0, nd);
 
 	if(m < 0 || m >= map_num)
-		return -1
-;
+		return -1;
+
 	for(i = 0; i < map[m].npc_num && i < MAX_NPC_PER_MAP; i++) {
 		if(map[m].npc[i] == NULL)
 			break;

@@ -62,7 +62,7 @@ function	script	HseSub	{
 	case 1:	set '@rate,55;	break;
 	case 2:	set '@rate,60;	break;
 	}
-	set '@succsess,rand(1,'@rate)
+	set '@succsess,rand(1,'@rate);
 	if((6 + 12 + 18) >= '@succsess) {
 		//成功
 		switch(rand(6)) {
@@ -241,7 +241,7 @@ prontera.gat,83,108,6	script	細工職人・師範	814,{
 	switch(select("^006400B級^000000","^0000FFA級^000000","^FF0000S級^000000","やめる")) {
 	case 1:
 		set '@rank,0;
-		set '@zeny$,300,000;
+		set '@zeny$,"300,000";
 		set '@price,300000;
 		switch(select("^006400B級その①^000000","^006400B級その②^000000","やめる")) {
 		case 1:
@@ -418,7 +418,7 @@ prontera.gat,83,108,6	script	細工職人・師範	814,{
 
 	case 2:	// A級
 		set '@rank,1;
-		set '@zeny$,500,000;
+		set '@zeny$,"500,000";
 		set '@price,500000;
 		switch(select("^0000FFA級その①^000000","^0000FFA級その②^000000","やめる")) {
 		case 1:	// A級その①
@@ -538,7 +538,7 @@ prontera.gat,83,108,6	script	細工職人・師範	814,{
 		break;
 	case 3:	// S級
 		set '@rank,2;
-		set '@zeny$,1,000,000;
+		set '@zeny$,"1,000,000";
 		set '@price,1000000;
 		switch(select(
 			"かわいいリボン[1]","ドレスハット[1]","ハイビスカス[0]","パレード帽[1]","マジェスティックゴート[1]",
@@ -624,7 +624,7 @@ prontera.gat,83,108,6	script	細工職人・師範	814,{
 	case 1:	set '@rate,55;	break;
 	case 2:	set '@rate,60;	break;
 	}
-	set '@succsess,rand(1,'@rate)
+	set '@succsess,rand(1,'@rate);
 	if((6 + 12 + 18) >= '@succsess) {
 		//成功
 		switch(rand(6)) {

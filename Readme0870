@@ -1,4 +1,12 @@
 ----------------------------------------
+//1002 [2013/02/27] by refis
+
+・typo修正（map/map.c script/npc/quest/npc_quest_hiddenenchant.txt）
+	Thanks rapis さん
+
+・闇販売員の修正、及びポイント商人の追加（script/npc/job/npc_job_thirdclass.txt）
+
+----------------------------------------
 //1001 [2013/02/26] by refis
 
 ・vc_make.batでコンパイラオプション「PRE_RENEWAL」が付加されない誤りを修正（vc_make.bat）
