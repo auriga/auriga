@@ -637,6 +637,13 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 	if( (flag & 1) && (bl->type & BL_CHAR) ) {
 		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
 
+		// ハイパーアクティブ追尾は最も近い敵をターゲットする
+		if(smd->state.skillstate == MSS_FOLLOW) {
+			struct block_list *tbl = map_id2bl(smd->target_id);
+			if(tbl)
+				range = unit_distance(smd->bl.x,smd->bl.y,tbl->x,tbl->y);
+		}
+
 		// ターゲット射程内にいるなら、ロックする
 		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl) ) {
 			// 射線チェック
@@ -1133,6 +1140,8 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	// 待機時スキル使用
 	if(md->state.skillstate == MSS_IDLE) {
+		if((md->mode&MD_ANGRY) && !md->state.angry)	// 待機時にハイパーアクティブへ戻す
+			md->state.angry = 1;
 		if(++md->idlecount%10 == 0) {		// 10回に1度使用判定
 			md->idlecount = 0;
 			if( mobskill_use(md,tick,-1) ) {
