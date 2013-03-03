@@ -665,7 +665,7 @@ L_RECALC:
 					for(j=0; j<4; j++) {	// カード
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
-						if(sd->inventory_data[idx]->slot >= j && itemdb_cardtype(c) != 2)
+						if(sd->inventory_data[idx]->slot < j && itemdb_cardtype(c) != 2)
 							continue;
 						current_equip_name_id = c;		// オートスペル(重複チェック用)
 						if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
@@ -683,7 +683,7 @@ L_RECALC:
 					for(j=0; j<4; j++) {	// カード
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
-						if(sd->inventory_data[idx]->slot >= j && itemdb_cardtype(c) != 2)
+						if(sd->inventory_data[idx]->slot < j && itemdb_cardtype(c) != 2)
 							continue;
 						current_equip_name_id = c;		// オートスペル(重複チェック用)
 						if(calclimit == 2)
