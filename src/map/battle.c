@@ -994,7 +994,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	{
 		int i;
 
-		for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
+		for(i = 0; i < MAX_SKILL_ADDEFF; i++) {
 			int rate = tsd->addreveff[i];
 			if(battle_config.reveff_plus_addeff)
 				rate += tsd->addeff[i] + tsd->arrow_addeff[i];
@@ -3624,7 +3624,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		//   addeff_range_flag  0:指定無し 1:近距離 2:遠距離 3,4:それぞれのレンジで状態異常を発動させない
 		//   flagがあり、攻撃タイプとflagが一致しないときは、flag+2する
 
-		for(i = 0; i <= MAX_SKILL_ADDEFF; i++) {
+		for(i = 0; i < MAX_SKILL_ADDEFF; i++) {
 			if( (src_sd->addeff_range_flag[i] == 1 && wd.flag&BF_LONG ) ||
 			    (src_sd->addeff_range_flag[i] == 2 && wd.flag&BF_SHORT) ) {
 				src_sd->addeff_range_flag[i] += 2;

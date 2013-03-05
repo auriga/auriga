@@ -10755,14 +10755,14 @@ int status_change_addeff_start(struct block_list *src, struct block_list *bl, in
 {
 	struct map_session_data *sd = NULL;
 
-	const int sc2[] = {
+	static const int sc2[] = {
 		MG_STONECURSE,MG_FROSTDIVER,NPC_STUNATTACK,
 		NPC_SLEEPATTACK,TF_POISON,NPC_CURSEATTACK,
 		NPC_SILENCEATTACK,0,NPC_BLINDATTACK,LK_HEADCRUSH,
 		NPC_WIDEHEALTHFEAR,NPC_WIDEBODYBURNNING,NPC_WIDE_DEEP_SLEEP,
 		NPC_WIDEFROSTMISTY,NPC_WIDECOLD,NPC_WIDESIREN
 	};
-	const int sc_id[] = {
+	static const int sc_id[] = {
 		SC_STONE,SC_FREEZE,SC_STUN,
 		SC_SLEEP,SC_POISON,SC_CURSE,
 		SC_SILENCE,SC_CONFUSION,SC_BLIND,SC_BLEED,

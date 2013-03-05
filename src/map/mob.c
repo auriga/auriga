@@ -2556,6 +2556,10 @@ int mob_heal(struct mob_data *md,int heal)
 	nullpo_retr(0, md);
 
 	md->hp += heal;
+	if( md->hp <= 0 ) {
+		md->hp = 1;		// 死亡時スキル対策
+		mob_damage(NULL,md,1,0);
+	} else
 	if( max_hp < md->hp )
 		md->hp = max_hp;
 	return 0;
