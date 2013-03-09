@@ -764,6 +764,8 @@ enum {
 	SC_JP_EVENT03			= 617,
 	SC_JP_EVENT04			= 618,
 	SC_ACTIVE_MONSTER_TRANSFORM	= 619,
+	SC_INVINCIBLE			= 620,
+	SC_INVINCIBLEOFF		= 621,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

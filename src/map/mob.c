@@ -61,6 +61,7 @@ static struct mob_db mob_db_real[MOB_ID_MAX-MOB_ID_MIN];
 struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 
 static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
+static struct mob_talk mob_talk_db[MAX_MOB_TALK];
 
 const int manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
 const int splendide_mob[5] = {1991,1992,1993,1994,1995};
@@ -3712,6 +3713,24 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
+ * Mobの発言
+ *------------------------------------------
+ */
+int mob_talk(struct mob_data *md, unsigned short msg_id)
+{
+	char output[256];
+
+	nullpo_retr(0, md);
+
+	if(msg_id <= 0 || mob_talk_db[msg_id-1].msg == NULL)
+		return 0;
+	snprintf(output, sizeof output, "%s : %s", md->name, mob_talk_db[msg_id-1].msg);
+	clif_GlobalMessage2(&md->bl, mob_talk_db[msg_id-1].color, output, strlen(output)+1);
+
+	return 1;
+}
+
+/*==========================================
  * スキル用タイマー削除（未使用）
  *------------------------------------------
  */
@@ -4119,6 +4138,52 @@ static int mob_read_randommonster(void)
 }
 
 /*==========================================
+ * db/mob_talk_db.txt読み込み
+ *------------------------------------------
+ */
+static int mob_readtalkdb(void)
+{
+	FILE *fp;
+	char line[1024];
+	char *str[3],*p;
+	int msgid,i;
+
+	memset(&mob_talk_db, 0, sizeof(mob_talk_db));
+
+	if((fp = fopen("db/mob_talk_db.txt","r")) == NULL) {
+		printf("can't read db/mob_talk_db.txt\n");
+		return 0;
+	}
+
+	while(fgets(line,sizeof(line),fp)) {
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(i=0,p=line; i<3 && p; i++) {
+			str[i]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
+		}
+		if(str[0] == NULL || str[1] == NULL || str[2] == NULL)
+			continue;
+
+		msgid = atoi(str[0]) - 1;
+		if(msgid < 0 || msgid >= MAX_MOB_TALK)
+			continue;
+
+		mob_talk_db[msgid].color = (unsigned int)strtoul(str[1],NULL,0);
+		strncpy(mob_talk_db[msgid].msg, str[2], 200);
+		mob_talk_db[msgid].msg[199] = '\0';		// force \0 terminal
+	}
+	fclose(fp);
+	printf("read db/mob_talk_db.txt done\n");
+
+	return 0;
+}
+
+/*==========================================
  * db/mob_skill_db.txt読み込み
  *------------------------------------------
  */
@@ -4420,6 +4485,7 @@ void mob_reload(void)
 	mob_readdb();
 	mob_readdb_mobavail();
 	mob_read_randommonster();
+	mob_readtalkdb();
 	mob_readskilldb();
 }
 
@@ -4432,6 +4498,7 @@ int do_init_mob(void)
 	mob_readdb();
 	mob_readdb_mobavail();
 	mob_read_randommonster();
+	mob_readtalkdb();
 	mob_readskilldb();
 
 	add_timer_func_list(mob_delayspawn);

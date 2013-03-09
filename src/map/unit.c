@@ -290,7 +290,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		if(sd->sc.data[SC_BANDING].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
 	}
-
+	if(md) {
+		if(sc && sc->data[SC_DANCING].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sc->data[SC_DANCING].val2),bl->m,dx,dy);
+	}
 	ud->walktimer = 1;
 	if(sd) {
 		map_foreachinmovearea(clif_pcinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_ALL,sd);
@@ -774,6 +777,12 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		else
 			sd->areanpc_id=0;
 	}
+	if(md) {
+		struct status_change *sc = NULL;
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_DANCING].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sc->data[SC_DANCING].val2),bl->m,dx,dy);
+	}
 
 	return 0;
 }
@@ -1189,9 +1198,9 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		printf("PC %d skill use target_id=%d skill=%d lv=%d cast=%d\n",src->id,target_id,skill_num,skill_lv,casttime);
 
 	tick = gettick();
-	if( casttime > 0 || forcecast ) { /* 詠唱が必要 */
-		clif_skillcasting(src, src->id, target_id, 0, 0, skill_num,casttime);
+	clif_skillcasting(src, src->id, target_id, 0, 0, skill_num,casttime);
 
+	if( casttime > 0 || forcecast ) { /* 詠唱が必要 */
 		/* 詠唱反応モンスター */
 		if(src_sd && target_md && status_get_mode(&target_md->bl)&MD_CASTSENSOR && target_md->ud.attacktimer == -1 && src_sd->invincible_timer == -1) {
 			target_md->target_id = src->id;

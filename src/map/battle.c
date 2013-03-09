@@ -411,6 +411,13 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage = damage*damage_rate/100;
 	}
 
+	if(sc && sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
+		if(skill_num == PR_SANCTUARY)
+			damage = 1;
+		else
+			damage = 0;
+	}
+
 	if(sc && sc->data[SC_WHITEIMPRISON].timer != -1) {
 		// ホワイトインプリズン状態は念属性以外はダメージを受けない
 		if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
@@ -476,6 +483,8 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				}
 			}
 		}
+		if(src_sc->data[SC_INVINCIBLE].timer != -1 && src_sc->data[SC_INVINCIBLEOFF].timer == -1)
+			damage += damage * 75 / 100;
 		if(src_sc->data[SC_JP_EVENT01].timer != -1 && damage > 0 && flag&BF_WEAPON && status_get_race(bl) == RCT_FISH)
 			damage += damage * src_sc->data[SC_JP_EVENT01].val1 / 100;
 		if(src_sc->data[SC_JP_EVENT02].timer != -1 && damage > 0 && flag&BF_MAGIC && status_get_race(bl) == RCT_FISH)
@@ -4942,6 +4951,9 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		break;
 	case HVAN_EXPLOSION:		// バイオエクスプロージョン
 		mid.damage = status_get_hp(bl)*(50+50*skill_lv)/100;
+		break;
+	case NPC_DISSONANCE:
+		mid.damage = 30 + skill_lv * 10;
 		break;
 	default:
 		mid.damage = status_get_baseatk(bl);

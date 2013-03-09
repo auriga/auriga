@@ -589,6 +589,8 @@
 617,SC_JP_EVENT03,1,0,0,0		// 魚貝形モンスター(ダメージ減少)
 618,SC_JP_EVENT04,1,0,0,0		// 魚貝形モンスター(獲得経験値上昇)
 619,SC_ACTIVE_MONSTER_TRANSFORM,0,1,0,0	// アクティブモンスター変身
+620,SC_INVINCIBLE,0,0,0,0		// インビンシブル
+621,SC_INVINCIBLEOFF,0,0,0,0		// インビンシブルオフ
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

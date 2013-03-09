@@ -91,11 +91,11 @@
 #define ELEM_SKILLID   8401		// 精霊スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_SKILL       706
+#define MAX_SKILL       708
 #define MAX_SECONDSKILL  19
 #define MAX_THIRDSKILL  520
-#define MAX_QUESTSKILL    5
-#define MAX_KOSKILL      29
+#define MAX_QUESTSKILL   16
+#define MAX_KOSKILL      35
 #define MAX_HOMSKILL     16
 #define MAX_MERCSKILL    40
 #define MAX_ELEMSKILL    42

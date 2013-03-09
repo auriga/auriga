@@ -91,6 +91,7 @@ void clif_changeoption(struct block_list *bl);
 void clif_changeoption2(struct block_list *bl);
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);
 void clif_GlobalMessage(struct block_list *bl,const char *message);
+void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len);
 void clif_createchat(struct map_session_data *sd, unsigned char fail);
 void clif_dispchat(struct chat_data *cd, int fd);
 void clif_joinchatfail(struct map_session_data *sd, unsigned char fail);

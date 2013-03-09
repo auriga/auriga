@@ -203,7 +203,9 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 600- */
 	SI_PETROLOGY,SI_PETROLOGY_OPTION,SI_CURSED_SOIL,SI_CURSED_SOIL_OPTION,SI_UPHEAVAL,SI_UPHEAVAL_OPTION,SI_TIDAL_WEAPON,SI_TIDAL_WEAPON_OPTION,SI_ROCK_CRUSHER,SI_ROCK_CRUSHER_ATK,
 	/* 610- */
-	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM
+	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM,
+	/* 620- */
+	SI_BLANK,SI_BLANK
 };
 
 /*==========================================
@@ -4769,6 +4771,12 @@ int status_get_speed(struct block_list *bl)
 					haste_val = bonus;
 			}
 
+			// インビンシブル
+			if(sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
+				if(haste_val < 75)
+					haste_val = 75;
+			}
+
 			/* その他 */
 
 			// ディフェンダー
@@ -6474,6 +6482,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_STOMACHACHE:		/* 腹痛 */
 		case SC_ODINS_POWER:		/* オーディンの力 */
 		case SC_ZEPHYR:				/* ゼファー */
+		case SC_INVINCIBLE:			/* インビンシブル */
+		case SC_INVINCIBLEOFF:		/* インビンシブルオフ */
 			calc_flag = 1;
 			break;
 
@@ -8347,6 +8357,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_CURSED_SOIL:		/* カースドソイル */
 		case SC_UPHEAVAL:			/* アップヘイバル */
 		case SC_TIDAL_WEAPON_OPTION:	/* タイダルウェポン(精霊) */
+		case SC_INVINCIBLE:			/* インビンシブル */
+		case SC_INVINCIBLEOFF:		/* インビンシブルオフ */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -9389,6 +9401,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ON_PUSH_CART:	/* カート */
 	case SC_HAT_EFFECT:	/* 頭装備エフェクト */
 	case SC_ACTIVE_MONSTER_TRANSFORM:	/* アクティブモンスター変身 */
+	case SC_INVINCIBLE:	/* インビンシブル */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -9455,7 +9468,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					1000+tick, status_change_timer,
 					bl->id, data);
 			}
-		}
+		} else if(md)
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		break;
 	case SC_BERSERK:		/* バーサーク */
 		{

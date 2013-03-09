@@ -29,6 +29,7 @@
 #define MAX_RAND_MOB_ENTRY	1000
 #define MAX_RAND_MOB_AMOUNT	10000
 #define ITEM_DROP_COUNT 10
+#define MAX_MOB_TALK 100
 
 #define MIN_MOBTHINKTIME 100
 
@@ -84,6 +85,11 @@ struct random_mob_data_entry {
 struct random_mob_data {
 	struct random_mob_data_entry data[MAX_RAND_MOB_ENTRY];
 	int entry;
+};
+
+struct mob_talk {
+	unsigned int color;
+	char msg[200];
 };
 
 extern const int manuk_mob[8];
@@ -222,6 +228,7 @@ void mob_reload(void);
 int mob_delayspawn(int tid,unsigned int tick,int id,void *data);
 int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(struct block_list *bl,int item,int drop);
+int mob_talk(struct mob_data *md, unsigned short msg_id);
 
 int mob_ai_sub_hard(struct mob_data *md,unsigned int tick);
 int mob_ai_hard_add(struct mob_data *md);

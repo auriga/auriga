@@ -9430,6 +9430,26 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
 }
 
 /*==========================================
+ * グローバルメッセージ（マルチカラー）
+ *------------------------------------------
+ */
+void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len)
+{
+	unsigned char buf[256];
+
+	color = (color & 0x0000FF) << 16 | (color & 0x00FF00) | (color & 0xFF0000) >> 16;
+
+	WBUFW(buf,0) = 0x2c1;
+	WBUFW(buf,2) = (unsigned short)(len+12);
+	WBUFL(buf,4) = bl->id;
+	WBUFL(buf,8) = color;
+	memcpy(WBUFP(buf,12), mes, len);
+	clif_send(buf, WBUFW(buf,2), bl, AREA_CHAT_WOC);
+
+	return;
+}
+
+/*==========================================
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */

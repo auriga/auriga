@@ -1,4 +1,24 @@
 ----------------------------------------
+//1006 [2013/03/10] by refis
+
+・MAX_MOBSKILLを49に拡張（map/map.h）
+
+・mob_talk_dbを追加（db/mob_talk_db.txt doc/db_ref.txt map/clif.* mob.*）
+
+・以下のスキルを実装
+	-> NPCスキル「セリフアナウンス」、「インビンシブル」、「インビンシブルオフ」
+		（db/mob_skill_db.txt scdata_db.txt skill_cast_db.txt skill_db.txt skill_db2.txt src/battle.c skill.c status.*）
+	-> NPCスキル「不死属性変化」、「不協和音」、「自分勝手なダンス」
+		（db/skill_cast_db.txt skill_db.txt skill_db2.txt skill_unit_db.txt common/mmo.h map/battle.c skill.c status.c unit.c）
+	-> 「スノーフリップ」、「ピオニーマミー」、「ぴしゃりハーブ」、「世界樹のほこり」、「エクラージュへの帰還」
+		（db/skill_cast_db.txt skill_db.txt skill_db2.txt skill_require_db.txt common/mmo.h skill.c）
+
+・無詠唱でも詠唱パケットを投げるよう修正（unit.c）
+	-> ブレッシング等の無詠唱スキルがバトルチャットに表示されない問題のため
+
+・スキル「エルディカスティスへの帰還」、「モーラへの帰還」をテレポート不可MAPでも使用できるよう修正（skill.c）
+
+----------------------------------------
 //1005 [2013/03/06] by refis
 
 ・httpdをデフォルトで無効にする補足 (login.dsp, login_sql.dsp)
