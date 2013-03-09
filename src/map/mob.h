@@ -228,6 +228,7 @@ void mob_reload(void);
 int mob_delayspawn(int tid,unsigned int tick,int id,void *data);
 int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(struct block_list *bl,int item,int drop);
+struct block_list * mob_selecttarget(struct mob_data *md, int range);
 int mob_talk(struct mob_data *md, unsigned short msg_id);
 
 int mob_ai_sub_hard(struct mob_data *md,unsigned int tick);

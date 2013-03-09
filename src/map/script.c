@@ -4066,6 +4066,12 @@ int buildin_mdenter(struct script_state *st);
 int buildin_getmdmapname(struct script_state *st);
 int buildin_getmdnpcname(struct script_state *st);
 int buildin_active_montransform(struct script_state *st);
+int buildin_callmonster(struct script_state *st);
+int buildin_removemonster(struct script_state *st);
+int buildin_mobuseskill(struct script_state *st);
+int buildin_areamobuseskill(struct script_state *st);
+int buildin_getequipcardid(struct script_state *st);
+int buildin_setpartyinmap(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4360,6 +4366,12 @@ struct script_function buildin_func[] = {
 	{buildin_getmdmapname,"getmdmapname","s"},
 	{buildin_getmdnpcname,"getmdnpcname","s"},
 	{buildin_active_montransform,"active_montransform","i*"},
+	{buildin_callmonster,"callmonster","siiss*"},
+	{buildin_removemonster,"removemonster","i"},
+	{buildin_mobuseskill,"mobuseskill","iiiiiii"},
+	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiii"},
+	{buildin_getequipcardid,"getequipcardid","ii"},
+	{buildin_setpartyinmap,"setpartyinmap","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -12849,6 +12861,293 @@ int buildin_active_montransform(struct script_state *st)
 					status_change_start(&sd->bl,SC_ACTIVE_MONSTER_TRANSFORM,mob_class,id,0,0,60000,0);
 				return 0;
 			}
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * モンスター発生
+ *------------------------------------------
+ */
+int buildin_callmonster(struct script_state *st)
+{
+	int mob_id,m,x,y,id;
+	char *str,*mapname,*mobname;
+	const char *event = "";
+	struct mob_data *md;
+
+	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x       = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y       = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	str     = conv_str(st,& (st->stack->stack_data[st->start+5]));
+	mobname = conv_str(st,& (st->stack->stack_data[st->start+6]));
+
+	if((mob_id = atoi(mobname)) == 0)
+		mob_id = mobdb_searchname(mobname);
+	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+		return 0;
+
+	if(st->end > st->start+7) {
+		event = conv_str(st,& (st->stack->stack_data[st->start+7]));
+	}
+
+	if((m = script_mapname2mapid(st,mapname)) < 0)
+		return 0;
+
+	id = mob_once_spawn(map_id2sd(st->rid),m,x,y,str,mob_id,1,event);
+
+	if((md = map_id2md(id)) != NULL)
+	{
+		// ランダム召還じゃないならドロップあり
+		if(mob_id == -1) {
+			if(md->mode&MD_BOSS) {	// 手抜きボス属性
+				md->state.nodrop = battle_config.branch_boss_no_drop;
+				md->state.noexp  = battle_config.branch_boss_no_exp;
+				md->state.nomvp  = battle_config.branch_boss_no_mvp;
+			} else {
+				md->state.nodrop = battle_config.branch_mob_no_drop;
+				md->state.noexp  = battle_config.branch_mob_no_exp;
+				md->state.nomvp  = battle_config.branch_mob_no_mvp;
+			}
+		}
+	}
+
+	push_val(st->stack,C_INT,id);
+
+	return 0;
+}
+
+/*==========================================
+ * モンスター消去
+ *------------------------------------------
+ */
+int buildin_removemonster(struct script_state *st)
+{
+	int id;
+	struct block_list *bl;
+
+	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	bl = map_id2bl(id);
+
+	if(!bl || bl->type != BL_MOB || unit_remove_map(bl,1,0))
+		push_val(st->stack,C_INT,0);
+	else
+		push_val(st->stack,C_INT,1);
+
+	return 0;
+}
+
+/*==========================================
+ * モンスタースキル行使
+ *------------------------------------------
+ */
+int buildin_mobuseskill(struct script_state *st)
+{
+	struct mob_data *md;
+	struct block_list *tbl;
+	int id,skillid,skilllv,casttime,cancel,eff_id,target;
+
+	id       = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	skillid  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	skilllv  = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	casttime = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	cancel   = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	eff_id   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	target   = conv_num(st,& (st->stack->stack_data[st->start+8]));
+
+	if((md = map_id2md(id)) == NULL)
+		return 0;
+	if(skillid <= 0 || skilllv <= 0)
+		return 0;
+
+	switch(target) {
+		case 0: tbl = map_id2bl(md->bl.id); break;
+		case 1: tbl = map_id2bl(md->target_id); break;
+		case 2: tbl = map_id2bl(md->master_id); break;
+		default:tbl = mob_selecttarget(md, skill_get_fixed_range(&md->bl,skillid,skilllv)); break;
+	}
+
+	if(!tbl)
+		return 0;
+
+	if(md->ud.skilltimer != -1)
+		unit_skillcastcancel(&md->bl,0);
+
+	if(skill_get_inf(skillid) & INF_TOGROUND)
+		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	else
+		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
+
+	if(eff_id > 0)
+		mob_talk(md, eff_id);
+	else
+		clif_emotion(&md->bl, -1 * eff_id);
+
+	return 0;
+}
+
+/*==========================================
+ * 範囲指定モンスタースキル行使
+ *------------------------------------------
+ */
+static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
+{
+	struct mob_data *md = (struct mob_data *)bl;
+	struct block_list *tbl;
+	int mob_id   = va_arg(ap,int);
+	int skillid  = va_arg(ap,int);
+	int skilllv  = va_arg(ap,int);
+	int casttime = va_arg(ap,int);
+	int cancel   = va_arg(ap,int);
+	int eff_id   = va_arg(ap,int);
+	int target   = va_arg(ap,int);
+
+	if(mob_id > 0 && md->class_ != mob_id)
+		return 0;
+	if(skillid <= 0 || skilllv <= 0)
+		return 0;
+
+	switch(target) {
+		case 0: tbl = map_id2bl(md->bl.id); break;
+		case 1: tbl = map_id2bl(md->target_id); break;
+		case 2: tbl = map_id2bl(md->master_id); break;
+		default:tbl = mob_selecttarget(md, skill_get_fixed_range(&md->bl,skillid,skilllv)); break;
+	}
+
+	if(!tbl)
+		return 0;
+
+	if(md->ud.skilltimer != -1)
+		unit_skillcastcancel(bl,0);
+
+	if(skill_get_inf(skillid) & INF_TOGROUND)
+		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	else
+		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
+
+	if(eff_id > 0)
+		mob_talk(md, eff_id);
+	else
+		clif_emotion(&md->bl, -1 * eff_id);
+
+	return 0;
+}
+
+int buildin_areamobuseskill(struct script_state *st)
+{
+	int mob_id,m,x0,y0,x1,y1;
+	int skillid,skilllv,casttime,cancel,eff_id,target;
+	char *mapname;
+
+	mapname  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x0       = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y0       = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x1       = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y1       = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	mob_id   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	skillid  = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	skilllv  = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	casttime = conv_num(st,& (st->stack->stack_data[st->start+10]));
+	cancel   = conv_num(st,& (st->stack->stack_data[st->start+11]));
+	eff_id   = conv_num(st,& (st->stack->stack_data[st->start+12]));
+	target   = conv_num(st,& (st->stack->stack_data[st->start+13]));
+
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		map_foreachinarea(buildin_mobuseskill_sub,m,x0,y0,x1,y1,BL_MOB,mob_id,skillid,skilllv,casttime,cancel,eff_id,target);
+	return 0;
+}
+
+/*==========================================
+ * 装備の指定スロットのカード取得
+ *------------------------------------------
+ */
+int buildin_getequipcardid(struct script_state *st)
+{
+	int num, pos, i = -1;
+	struct map_session_data *sd;
+
+	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	pos = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	sd  = script_rid2sd(st);
+
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
+		i=pc_checkequip(sd,equip_pos[num-1]);
+	if(pos < 0 || pos >= 4)
+		pos = 0;
+
+	if(i >= 0) {
+		int card_id;
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])){ // 製造・名前入りはカードなし
+			push_val(st->stack,C_INT,0);
+			return 0;
+		}
+		card_id = sd->status.inventory[i].card[pos];
+		if(card_id > 0 && itemdb_type(card_id) == ITEMTYPE_CARD) {
+			push_val(st->stack,C_INT,card_id);
+			return 0;
+		}
+	}
+	push_val(st->stack,C_INT,0);
+	return 0;
+}
+
+/*==========================================
+ * パーティーメンバーへ変数設定
+ *------------------------------------------
+ */
+int buildin_setpartyinmap(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int num,m;
+	char *name;
+	char prefix, postfix;
+	struct party *pt = NULL;
+
+	nullpo_retr(0, sd);
+
+	if( st->stack->stack_data[st->start+2].type != C_NAME ) {
+		printf("buildin_setpartyinmap: param not name\n");
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+2].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if( prefix == '$' || prefix == '\'' )
+		return 0;
+
+	m  = sd->bl.m;
+	pt = party_search(sd->status.party_id);
+
+	if(pt != NULL) {
+		int i;
+		for(i=0; i<MAX_PARTY; i++) {
+			sd = pt->member[i].sd;
+			if(sd != NULL && pt->member[i].online && sd->bl.m == m) {
+				if( postfix == '$' ) {
+					// 文字列
+					char *str = conv_str(st,& (st->stack->stack_data[st->start+3]));
+					set_reg(st,sd,num,name,(void*)str,st->stack->stack_data[st->start+2].ref);
+				} else {
+					// 数値
+					int val = conv_num(st,& (st->stack->stack_data[st->start+3]));
+					set_reg(st,sd,num,name,INT2PTR(val),st->stack->stack_data[st->start+2].ref);
+				}
+			}
+		}
+	} else {
+		if( postfix == '$' ) {
+			// 文字列
+			char *str = conv_str(st,& (st->stack->stack_data[st->start+3]));
+			set_reg(st,sd,num,name,(void*)str,st->stack->stack_data[st->start+2].ref);
+		} else {
+			// 数値
+			int val = conv_num(st,& (st->stack->stack_data[st->start+3]));
+			set_reg(st,sd,num,name,INT2PTR(val),st->stack->stack_data[st->start+2].ref);
 		}
 	}
 

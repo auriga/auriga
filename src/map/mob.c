@@ -3713,6 +3713,24 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
+ * 指定範囲内のターゲットを選定
+ *------------------------------------------
+ */
+struct block_list * mob_selecttarget(struct mob_data *md, int range)
+{
+	struct block_list *tbl = NULL;
+	int c = 0;
+
+	nullpo_retr(0, md);
+
+	map_foreachinarea(mobskill_anothertarget,
+		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
+		BL_CHAR,md,MST_ANOTHERTARGET,&c,&tbl);
+
+	return (tbl != NULL)? tbl: NULL;
+}
+
+/*==========================================
  * Mobの発言
  *------------------------------------------
  */

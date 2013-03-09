@@ -1,4 +1,17 @@
 ----------------------------------------
+//1007 [2013/03/10] by refis
+
+・モンスター操作用のスクリプト命令、関数を追加（doc/script_ref.txt map/mob.* map/script.c）
+	-> callmonster 関数：モンスターを召喚し、オブジェクトIDを返します
+	-> removemonster 関数：オブジェクトIDのモンスターの殺害を要求し、処理結果を返します
+	-> mobuseskill 命令：オブジェクトIDのモンスターにスキルを使用させます
+	-> areamobuseskill 命令：指定範囲のモンスターにスキルを使用させます
+
+・スクリプト命令「setpartyinmap」を実装（doc/script_ref.txt script.c）
+
+・スクリプト関数「getequipcardid」を実装（doc/script_ref.txt script.c）
+
+----------------------------------------
 //1006 [2013/03/10] by refis
 
 ・MAX_MOBSKILLを49に拡張（map/map.h）

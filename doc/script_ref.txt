@@ -2321,6 +2321,49 @@ AurigaNPCScript
 			<itemid>が非活性化状態になったとき、変身が解除されます。
 			<itemid>を省略時、記述されたアイテムが参照されます。
 
+		mobuseskill命令
+			mobuseskill <object_id>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<target_type>;
+
+			object_id		数値
+			skillid			使用するスキルのID
+			skilllv			使用するスキルのLv
+			casttime		詠唱時間（ms）
+			cast_cancel		0=中断不可, 1=中断可能
+			emotion			数値
+			target_type		0=自身, 1=ターゲット, 2=マスター, 3=ランダム
+
+			<object_id>で指定したモンスターに対し
+			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+
+		areamobuseskill命令
+			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<target>;
+
+			gatname				文字列
+			x0,y0,x1,y1,mobid	数値
+			skillid				使用するスキルのID
+			skilllv				使用するスキルのLv
+			casttime			詠唱時間（ms）
+			cast_cancel			0=中断不可, 1=中断可能
+			emotion				数値
+			target_type			0=自身, 1=ターゲット, 2=マスター, 3=ランダム
+
+			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内の<mobid>に指定されたIDのモンスターに対し
+			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
+			<mobid>が-1の場合、範囲内にいる全てのモンスターが対象になります。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+
+		setpartyinmap命令
+			setpartyinmap <variable>,<n>;
+
+			variable	変数
+			n		数値/文字列
+
+			実行PCと同一マップに存在するパーティーメンバーの<variable>に<n>を代入します。
+			マップサーバー変数、スクリプト変数を指定することはできません。
+			実行PCがパーティー未所属の場合はset命令と等価になります。
+			文字列型を使用するときは変数名にポストフィックスを忘れないで下さい。
+
 
 	＊関数
 		rand関数
@@ -3436,6 +3479,37 @@ AurigaNPCScript
 			指定したNPC名称が複製されているNPCの場合、複製後のNPC名称を返します。
 			複製されているかどうかは関数の実行者が存在しているMAPから判断します。
 			複製されていない場合、指定したNPC名称をそのまま返します。
+
+		callmonster 関数
+			callmonster(<gatname>,<x>,<y>,<mobname>,<mobid>[,<event>]);
+
+			gatname,mobname	文字列
+			x,y,mobid	数値
+			event		文字列、省略可
+
+			<gatname>の座標<x>,<y>に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを1体出現させます。
+			成功した場合はobject_idを、そうでなければ0を返します。
+
+			<gatname>がthisの場合命令を実行したNPCのMAP、
+			<x><y>が-1の場合、スクリプトを実行したプレイヤーの座標、
+			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
+			そのモンスターを倒したとき<event>を開始します。
+
+		removemonster 関数
+			removemonster(<object_id>);
+
+			object_id	数値
+
+			<object_id>のモンスターを殺します。
+			成功した場合は1を、そうでなければ0を返します。
+
+		getequipcardid 関数
+			getequipcardid(<num>,<pos>);
+
+			<num>	1-16までの整数を指定します。詳しくはgetequipidを参照のこと。
+			<pos>	0-3までの整数を指定します。
+
+			指定した部位のアイテムの<pos>に刺さっているカードのIDを返します
 
 
 	＊csv アクセス命令 / 関数
