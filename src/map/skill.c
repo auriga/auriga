@@ -3326,7 +3326,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 			/* スキルエフェクト表示 */
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			skill_area_temp[1] = src->id;
 			skill_area_temp[2] = src->x;
 			skill_area_temp[3] = src->y;
@@ -3338,6 +3337,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_SKILL,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case NPC_SPLASHATTACK:	/* スプラッシュアタック */

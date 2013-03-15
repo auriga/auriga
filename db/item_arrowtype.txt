@@ -25,6 +25,8 @@
 1770,Iron_Arrow,鉄の矢,1
 1771,Venom_Knife,ベノムナイフ,2
 1772,Unknown_Item,神聖な矢の矢,1
+1773,Arrow_Of_Elf,エルフの矢,1
+1774,Hunting_Arrow,狩人の矢,1
 13200,Bullet,バレット,124
 13201,Silver_Bullet,シルバーバレット,124
 13202,Cell_of_Blood,ブラッドバレット,124

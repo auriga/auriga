@@ -1,4 +1,29 @@
 ----------------------------------------
+//1009 [2013/03/16] by refis
+
+・一部スキルの近距離、遠距離判定を修正（skill_db2.txt）
+
+・エルフの矢と狩人の矢が使用できないミスを修正（item_arrowtype.txt）
+
+・メカニックスキル「魔導ギアライセンス」の修練加重値を修正（battle.c）
+
+・メカニックスキル「斧修練」が鈍器にも影響を及ぼすよう修正（battle.c status.c）
+
+・ナイトスキル「ブランディッシュスピア」のダメージ計算式の異常を修正（battle.c）
+
+・ソードマンスキル「マグナムブレイク」のダメージ増加効果はスキル使用後に発現するよう修正（skill.c）
+
+・ソーサラースキル「ヴェラチュールスピア」に物理ダメージが加算されるよう修正（battle.c）
+
+・スクリプト関数「getequiprefinerycnt」で位置指定を省略した際の参照不具合を修正（script.c）
+
+・item_dbを更新（item_db.txt）
+	-> ヒール効果増加の統括function「ItemdbAlmightyHeal」の追加（item_db.txt, script/function/function_itemdb.txt）
+	-> アイテムドロップ、オートスペル、オートアクティブのLv、確率を修正
+	-> bAtk, bAtkRate, bAddShortWeaponDamageを使用しているアイテムの効果を適切なものに修正
+	-> Matk関係がR化していない一部武器を修正
+
+----------------------------------------
 //1008 [2013/03/10] by refis
 
 ・1006,1007のコメントに誤りがあったのを修正（db/skill_unit_db.txt doc/script_ref.txt）

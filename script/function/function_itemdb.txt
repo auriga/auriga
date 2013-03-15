@@ -41,3 +41,34 @@ function	script	ItemdbResetSkill	{
 	}
 	return;
 }
+
+//============================================================
+// ヒール系効果向上総合
+//------------------------------------------------------------
+function	script	ItemdbAlmightyHeal	{
+	set '@flag,getarg(0);
+	set '@val,getarg(1);
+	if('@flag&1) {
+		bonus2 bAddSkillHealRate,28,'@val;	/* ヒール */
+		bonus2 bAddSkillDamageRate,28,'@val;
+	}
+	if('@flag&2) {
+		bonus2 bAddSkillHealRate,70,'@val;	/* サンクチュアリ */
+		bonus2 bAddSkillDamageRate,70,'@val;
+	}
+	if('@flag&4)
+		bonus2 bAddSkillHealRate,231,'@val;	/* ポーションピッチャー */
+	if('@flag&8)
+		bonus2 bAddSkillHealRate,478,'@val;	/* スリムポーションピッチャー */
+	if('@flag&16)
+		bonus2 bAddSkillHealRate,322,'@val;	/* イドゥンの林檎 */
+	if('@flag&32) {
+		bonus2 bAddSkillHealRate,2043,'@val;	/* コルセオヒール */
+		bonus2 bAddSkillDamageRate,2043,'@val;
+	}
+	if('@flag&64) {
+		bonus2 bAddSkillHealRate,2051,'@val;	/* ハイネスヒール */
+		bonus2 bAddSkillDamageRate,2051,'@val;
+	}
+	return;
+}

@@ -6325,17 +6325,17 @@ int buildin_getequipisidentify(struct script_state *st)
  */
 int buildin_getequiprefinerycnt(struct script_state *st)
 {
-	int num, i = -1;
+	int num = 0, i = -1;
 	struct map_session_data *sd;
 
 	if(st->end>st->start+2)
 		num = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	else
-		num = current_equip_item_index + 1;
 
 	sd=script_rid2sd(st);
 	if(num > 0 && num <= EQUIP_INDEX_MAX)
 		i=pc_checkequip(sd,equip_pos[num-1]);
+	else
+		i=sd->equip_index[current_equip_item_index];
 	if(i >= 0)
 		push_val(st->stack,C_INT,sd->status.inventory[i].refine);
 	else

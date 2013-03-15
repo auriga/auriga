@@ -1144,10 +1144,10 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 		damage += (skill * 5);
 	}
 
-	// 魔導ギアライセンス(+40 〜 +120)
+	// 魔導ギアライセンス(+15 〜 +75)
 	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MADOLICENCE)) > 0)
 	{
-		damage += (20 + skill * 20);
+		damage += (skill * 15);
 	}
 
 	// 火と大地の研究(+10 〜 +50) vs 火属性 or 地属性
@@ -1219,6 +1219,9 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			// メイス修練(+3 〜 +30) メイス
 			if((skill = pc_checkskill(sd,PR_MACEMASTERY)) > 0) {
 				damage += (skill * 3);
+			}
+			if((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0) {
+				damage += (skill * 4);
 			}
 			break;
 		case WT_2HMACE:
@@ -1505,7 +1508,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	t_def2  = status_get_def2(target);
 	t_sc    = status_get_sc(target);		// 対象のステータス異常
 
-	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS)
+	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR)
 		src_sd->state.attack_type = BF_WEAPON;	// 攻撃タイプは武器攻撃
 
 	/* １．オートカウンター処理 */
@@ -1515,6 +1518,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if( skill_num != CR_GRANDCROSS &&
 		    skill_num != NPC_GRANDDARKNESS &&
 		    skill_num != LG_RAYOFGENESIS &&
+		    skill_num != SO_VARETYR_SPEAR &&
 		    t_sc &&
 		    t_sc->data[SC_AUTOCOUNTER].timer != -1 )
 		{
@@ -2110,24 +2114,25 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KN_BRANDISHSPEAR:	// ブランディッシュスピア
 		case ML_BRANDISH:
 			{
-				int rate = 100+20*skill_lv;
+				int rate = 1000+200*skill_lv;
+				int bds = 0;
 				if(wflag == 1) {
 					if(skill_lv > 3)
-						rate += rate/2;
+						bds += rate/2;
 					if(skill_lv > 6)
-						rate += rate/4;
+						bds += rate/4;
 					if(skill_lv > 9)
-						rate += rate/8;
+						bds += rate/8;
 				} else if(wflag == 2) {
 					if(skill_lv > 6)
-						rate += rate/2;
+						bds += rate/2;
 					if(skill_lv > 9)
-						rate += rate/4;
+						bds += rate/4;
 				} else if(wflag == 3) {
 					if(skill_lv > 3)
-						rate += rate/2;
+						bds += rate/2;
 				}
-				DMG_FIX( rate, 100 );
+				DMG_FIX( rate+bds, 1000 );
 			}
 			break;
 		case KN_BOWLINGBASH:	// ボウリングバッシュ
@@ -2902,6 +2907,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case WM_SOUND_OF_DESTRUCTION:	// サウンドオブディストラクション
 			DMG_FIX( 250, 100 );
+			break;
+		case SO_VARETYR_SPEAR:	// ヴェラチュールスピア
+			if(sc && sc->data[SC_BLAST].timer != -1) {
+				DMG_FIX( ( 50 * ( (src_sd)? pc_checkskill(src_sd,SO_STRIKING): 1 ) + 50 * skill_lv) * status_get_lv(src) / 100 + sc->data[SC_BLAST].val3, 100 );
+			} else {
+				DMG_FIX( ( 50 * ( (src_sd)? pc_checkskill(src_sd,SO_STRIKING): 1 ) + 50 * skill_lv) * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case GN_CART_TORNADO:	// カートトルネード
 			DMG_FIX( 100 + 50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,GN_REMODELING_CART): 1) * 100, 100 );
@@ -3920,13 +3932,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS) {
+	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
 		// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
 		wd.damage = wd.damage2 = 0;
 	}
 
 	/* 34．ダメージ最終計算 */
-	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS) {
+	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
 		if(wd.damage2 < 1) {		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
 		} else if(wd.damage < 1) {	// 右手がミス？
@@ -4677,6 +4689,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		}
 		cardfix = cardfix*(100-tsd->magic_def_rate)/100;
 		mgd.damage = mgd.damage*cardfix/100;
+	}
+
+	if(skill_num == SO_VARETYR_SPEAR) {	// ヴェラチュールスピア
+		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		wd = battle_calc_weapon_attack(bl,target,skill_num,skill_lv,flag);
+		mgd.damage += wd.damage;
 	}
 
 	if(mgd.damage < 0)
