@@ -1,4 +1,11 @@
 ----------------------------------------
+//1011 [2013/03/17] by Rayce
+
+・脆弱性強化（clif.c, memorial.c, script.c）
+
+・mob_talk() の引数をunsigned shortからintに変更（mob.*）
+
+----------------------------------------
 //1010 [2013/03/17] by Rayce
 
 ・getmdmapname関数およびgetmdnpcname関数をマップ未所属のNPCから実行すると

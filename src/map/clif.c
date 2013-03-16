@@ -9435,7 +9435,9 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  */
 void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len)
 {
-	unsigned char buf[256];
+	unsigned char *buf = (unsigned char *)aMalloc(len+12);
+
+	nullpo_retv(bl);
 
 	color = (color & 0x0000FF) << 16 | (color & 0x00FF00) | (color & 0xFF0000) >> 16;
 
@@ -14013,6 +14015,7 @@ void clif_memorial_create(struct map_session_data *sd, const char *name, int num
 
 	WBUFW(buf,0) = 0x2cb;
 	memcpy(WBUFP(buf,2),name,61);
+	WBUFB(buf,62) = '\0';	// \0 terminal
 	WBUFW(buf,63) = num;
 	if(flag) {	// パーティー全体に送信
 		clif_send(buf,packet_db[0x2cb].len,&sd->bl,PARTY);
@@ -14062,6 +14065,7 @@ void clif_memorial_status(struct map_session_data *sd, const char *name, unsigne
 
 	WBUFW(buf,0) = 0x2cd;
 	memcpy(WBUFP(buf,2),name,61);
+	WBUFB(buf,62) = '\0';	// \0 terminal
 	WBUFL(buf,63) = limit1;
 	WBUFL(buf,67) = limit2;
 	if(flag) {	// パーティー全体に送信
@@ -14945,6 +14949,8 @@ void clif_show_buyingstore(struct block_list *bl, const char *store_title, int f
 	WBUFW(buf,0) = 0x814;
 	WBUFL(buf,2) = bl->id;
 	memcpy(WBUFP(buf,6), store_title, 80);
+	WBUFB(buf,85) = '\0';	// \0 terminal
+
 	if(fd >= 0) {
 		memcpy(WFIFOP(fd,0),buf,packet_db[0x814].len);
 		WFIFOSET(fd,packet_db[0x814].len);

@@ -573,6 +573,8 @@ int memorial_reqinfo(struct map_session_data *sd, int memorial_id)
 	struct memorial_db *db;
 	int i;
 
+	nullpo_retr(1, sd);
+
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
 
@@ -765,6 +767,5 @@ int do_init_memorial(void)
  */
 int do_final_memorial(void)
 {
-
 	return 0;
 }

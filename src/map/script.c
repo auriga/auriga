@@ -11139,13 +11139,11 @@ int buildin_npcskillsupport(struct script_state *st)
 {
 	struct npc_data *nd;
 	struct map_session_data *sd = script_rid2sd(st);
-	struct block_list *bl = map_id2bl(st->oid), *tbl;
+	struct block_list *bl = map_id2bl(st->oid), *tbl = NULL;
 	int skillid=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	int heal=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	nullpo_retr(0, sd);
-
-	tbl = &sd->bl;
 
 	if(st->end > st->start+4) {
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+4])));
@@ -12614,10 +12612,13 @@ int buildin_getquestmaxcount(struct script_state *st)
 int buildin_openbuyingstore(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int count;
 
 	nullpo_retr(0, sd);
 
-	buyingstore_openstorewindow(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+	count = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	buyingstore_openstorewindow(sd, count);
 
 	return 0;
 }
@@ -12811,11 +12812,12 @@ int buildin_mddelete(struct script_state *st)
  */
 int buildin_mdenter(struct script_state *st)
 {
-	int ret = MDENTER_ERROR;
 	struct map_session_data *sd = script_rid2sd(st);
+	int ret = MDENTER_ERROR;
+	char *name = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
 	if(sd) {
-		ret = memorial_enter(sd, conv_str(st,& (st->stack->stack_data[st->start+2])));
+		ret = memorial_enter(sd, name);
 	}
 
 	push_val(st->stack,C_INT,ret);
@@ -13020,7 +13022,7 @@ int buildin_mobuseskill(struct script_state *st)
  */
 static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 {
-	struct mob_data *md = (struct mob_data *)bl;
+	struct mob_data *md;
 	struct block_list *tbl;
 	int mob_id   = va_arg(ap,int);
 	int skillid  = va_arg(ap,int);
@@ -13030,16 +13032,18 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 	int eff_id   = va_arg(ap,int);
 	int target   = va_arg(ap,int);
 
+	nullpo_retr(0, md = (struct mob_data *)bl);
+
 	if(mob_id > 0 && md->class_ != mob_id)
 		return 0;
 	if(skillid <= 0 || skilllv <= 0)
 		return 0;
 
 	switch(target) {
-		case 0: tbl = map_id2bl(md->bl.id); break;
-		case 1: tbl = map_id2bl(md->target_id); break;
-		case 2: tbl = map_id2bl(md->master_id); break;
-		default:tbl = mob_selecttarget(md, skill_get_fixed_range(&md->bl,skillid,skilllv)); break;
+		case 0:  tbl = map_id2bl(md->bl.id); break;
+		case 1:  tbl = map_id2bl(md->target_id); break;
+		case 2:  tbl = map_id2bl(md->master_id); break;
+		default: tbl = mob_selecttarget(md, skill_get_fixed_range(&md->bl,skillid,skilllv)); break;
 	}
 
 	if(!tbl)

@@ -3734,7 +3734,7 @@ struct block_list * mob_selecttarget(struct mob_data *md, int range)
  * Mobの発言
  *------------------------------------------
  */
-int mob_talk(struct mob_data *md, unsigned short msg_id)
+int mob_talk(struct mob_data *md, int msg_id)
 {
 	char output[256];
 
