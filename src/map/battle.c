@@ -676,7 +676,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 
-		// スパーダーウェブ
+		// スパイダーウェブ
 		if(sc->data[SC_SPIDERWEB].timer != -1 && damage > 0) {
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE) ||
 			    (!(flag&BF_SKILL) && status_get_attack_element(src) == ELE_FIRE) )
@@ -3946,7 +3946,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		} else {			// 両手、カタールの場合はちょっと計算ややこしい
 			int dmg = wd.damage+wd.damage2;
 			wd.damage  = battle_calc_damage(src,target,dmg,wd.div_,skill_num,skill_lv,wd.flag);
-			wd.damage2 = (wd.damage2*100/dmg)*wd.damage/100;
+			wd.damage2 = (int)((wd.damage2*100/(float)dmg)*wd.damage/100);
 			if(wd.damage > 1 && wd.damage2 < 1) wd.damage2 = 1;
 			wd.damage -= wd.damage2;
 		}
@@ -4035,7 +4035,38 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	return wd;
 }
 
-#define MATK_FIX( a,b ) { matk1 = matk1*(a+(add_rate*b/100))/(b); matk2 = matk2*(a+(add_rate*b/100))/(b); }
+/*==========================================
+ * 基本武器ダメージ計算
+ *------------------------------------------
+ */
+int battle_calc_base_magic_damage(struct block_list *src)
+{
+	int matk1  = status_get_matk1(src);	// 最大Matk
+	int matk2  = status_get_matk2(src);	// 最低Matk
+	int damage = matk2;
+	struct status_change *sc = NULL;
+
+	nullpo_retr(1, src);
+
+	sc = status_get_sc(src);
+
+	// リコグナイズドスペル
+	if(sc && sc->data[SC_RECOGNIZEDSPELL].timer != -1) {
+		matk1 = (matk1 > matk2)? matk1: matk2;
+		matk2 = (matk2 > matk1)? matk2: matk1;
+	}
+
+	if(matk1 > matk2)
+		damage += atn_rand()%(matk1-matk2+1);
+
+	// 魔法力増幅
+	if(sc && sc->data[SC_MAGICPOWER].timer != -1)
+		damage += damage * (sc->data[SC_MAGICPOWER].val1 * 5) / 100;
+
+	return ((damage>0)?damage:1);
+}
+
+#define MATK_FIX( a,b ) { mgd.damage = mgd.damage*(a+(add_rate*b/100))/(b); }
 
 /*==========================================
  * 魔法ダメージ計算
@@ -4050,7 +4081,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	struct merc_data        *tmcd = NULL;
 	struct elem_data        *teld = NULL;
 	struct status_change    *sc   = NULL, *t_sc = NULL;
-	int matk1, matk2, ele, race;
+	int ele, race;
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
@@ -4071,8 +4102,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	teld = BL_DOWNCAST( BL_ELEM, target );
 
 	// アタッカー
-	matk1 = status_get_matk1(bl);
-	matk2 = status_get_matk2(bl);
 	ele   = skill_get_pl(skill_num);
 	race  = status_get_race(bl);
 	sc    = status_get_sc(bl);
@@ -4117,11 +4146,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 	}
 
-	/* ２．魔法力増幅によるMATK増加 */
-	if (sc && sc->data[SC_MAGICPOWER].timer != -1) {
-		matk1 += (matk1 * sc->data[SC_MAGICPOWER].val1 * 5)/100;
-		matk2 += (matk2 * sc->data[SC_MAGICPOWER].val1 * 5)/100;
-	}
+	/* ２．魔法攻撃基礎計算 */
+	mgd.damage = battle_calc_base_magic_damage(bl);
 
 	/* スキル倍率計算に加算 */
 	if(sc) {
@@ -4205,7 +4231,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case MG_FIREBALL:	// ファイアーボール
 			if(flag > 2) {
-				matk1 = matk2 = 0;
+				mgd.damage = 0;
 			} else {
 				if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
 					MATK_FIX( 1000, 100 );
@@ -4255,8 +4281,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			} else {
 				MATK_FIX( 40+20*skill_lv, 100 );
 			}
-			matk1 += 50;
-			matk2 += 50;
+			mgd.damage += 50;
 			break;
 		case WZ_SIGHTRASHER:
 			if(bl->type == BL_MOB && battle_config.monster_skill_over && skill_lv >= battle_config.monster_skill_over) {
@@ -4350,8 +4375,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_EARTHQUAKE:	// アースクエイク
 			{
 				static const int dmg[10] = { 300, 500, 600, 800, 1000, 1200, 1300, 1500, 1600, 1800 };
-				matk1 = status_get_atk(bl);
-				matk2 = status_get_atk2(bl);
+				int matk1 = status_get_atk(bl);
+				int matk2 = status_get_atk2(bl);
+
+				mgd.damage = matk2+atn_rand()%(matk1-matk2+1);
 				if(mdef1 < 1000000)
 					mdef1 = mdef2 = 0;	// MDEF無視
 				if(skill_lv <= sizeof(dmg)/sizeof(dmg[0])) {
@@ -4370,8 +4397,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case RK_ENCHANTBLADE:	// エンチャントブレイド
 			if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
-				matk1 += sc->data[SC_ENCHANTBLADE].val2;
-				matk2 += sc->data[SC_ENCHANTBLADE].val2;
+				mgd.damage += sc->data[SC_ENCHANTBLADE].val2;
 			}
 			break;
 		case AB_HIGHNESSHEAL:	// ハイネスヒール
@@ -4596,14 +4622,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	/* ４．一般魔法ダメージ計算 */
 	if(normalmagic_flag) {
 		int rate = 100;
-		if (sc && sc->data[SC_RECOGNIZEDSPELL].timer != -1) {	// リゴグナイズドスペル
-			matk1 = (matk1 > matk2)? matk1: matk2;
-			matk2 = (matk2 > matk1)? matk2: matk1;
-		}
-		if(matk1 > matk2)
-			mgd.damage = matk2+atn_rand()%(matk1-matk2+1);
-		else
-			mgd.damage = matk2;
 		if(sd) {
 			rate = rate - sd->ignore_mdef_ele[t_ele] - sd->ignore_mdef_race[t_race] - sd->ignore_mdef_enemy[t_enemy];
 			if(t_mode & MD_BOSS)
@@ -4964,6 +4982,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		{
 			int damage = 5 * skill_lv * (skill_lv + 2);
 			mid.damage = (int_ / 2) * damage * (100 + ((sd)? pc_checkskill(sd,AM_CANNIBALIZE) : 0) * 20) / 100;
+			mid.damage = battle_attr_fix(mid.damage, ELE_NEUTRAL, status_get_element(target));
 			damagefix = 0;
 		}
 		break;

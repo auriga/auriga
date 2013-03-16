@@ -72,6 +72,7 @@ int battle_weapon_attack( struct block_list *bl,struct block_list *target,
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
 	struct block_list *bl,int skillid,int skilllv,unsigned int tick,int flag);
 int battle_skill_attack_area(struct block_list *bl,va_list ap);
+int battle_calc_base_magic_damage(struct block_list *src);
 
 enum {
 	BCT_NOENEMY = 0x00000,
