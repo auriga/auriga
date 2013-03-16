@@ -550,6 +550,9 @@ struct map_session_data {
 	int monster_drop_race[10],monster_drop_itemrate[10];
 	int double_add_rate,speed_add_rate,aspd_add_rate,perfect_hit_add, get_zeny_add_num,get_zeny_add_num2;
 	short splash_range,splash_add_range;
+#ifndef PRE_RENEWAL
+	int plus_atk,plus_matk;
+#endif
 
 	struct {
 		short p_rate;

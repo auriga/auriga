@@ -6235,6 +6235,7 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 	case SP_ASPD:
 		WFIFOL(fd,4)=sd->amotion;
 		break;
+#ifdef PRE_RENEWAL
 	case SP_ATK1:
 		WFIFOL(fd,4)=sd->base_atk+sd->watk+sd->watk_;
 		break;
@@ -6253,11 +6254,35 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 	case SP_MDEF2:
 		WFIFOL(fd,4)=sd->mdef2;
 		break;
+#else
+	case SP_ATK1:
+		WFIFOL(fd,4)=sd->base_atk;
+		break;
+	case SP_DEF1:
+		WFIFOL(fd,4)=sd->def2;
+		break;
+	case SP_MDEF1:
+		WFIFOL(fd,4)=sd->mdef2;
+		break;
+	case SP_ATK2:
+		WFIFOL(fd,4)=sd->watk+sd->watk_+sd->watk2+sd->watk_2+sd->plus_atk;
+		break;
+	case SP_DEF2:
+		WFIFOL(fd,4)=sd->def;
+		break;
+	case SP_MDEF2:
+		WFIFOL(fd,4)=sd->mdef;
+		break;
+#endif
 	case SP_CRITICAL:
 		WFIFOL(fd,4)=sd->critical/10;
 		break;
 	case SP_MATK1:
+#ifdef PRE_RENEWAL
 		WFIFOL(fd,4)=sd->matk1;
+#else
+		WFIFOL(fd,4)=sd->matk1+sd->plus_matk;
+#endif
 		break;
 	case SP_MATK2:
 		WFIFOL(fd,4)=sd->matk2;
@@ -6543,6 +6568,7 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOB(fd,14)=(sd->status.luk > 255)? 255:sd->status.luk;
 	WFIFOB(fd,15)=pc_need_status_point(sd,SP_LUK);
 
+#ifdef PRE_RENEWAL
 	WFIFOW(fd,16) = sd->base_atk + sd->watk + sd->watk_;
 	WFIFOW(fd,18) = sd->watk2 + sd->watk_2;	// atk bonus
 	WFIFOW(fd,20) = sd->matk1;
@@ -6557,6 +6583,22 @@ static void clif_initialstatus(struct map_session_data *sd)
 	WFIFOW(fd,38) = sd->critical/10;
 	WFIFOW(fd,40) = sd->amotion;
 	WFIFOW(fd,42) = 0;
+#else
+	WFIFOW(fd,16) = sd->base_atk;
+	WFIFOW(fd,18) = sd->watk + sd->watk_ + sd->watk2 + sd->watk_2 + sd->plus_atk;	// atk
+	WFIFOW(fd,20) = sd->matk1 + sd->plus_matk;
+	WFIFOW(fd,22) = sd->matk2;
+	WFIFOW(fd,24) = sd->def2;
+	WFIFOW(fd,26) = sd->def;	// def
+	WFIFOW(fd,28) = sd->mdef2;
+	WFIFOW(fd,30) = sd->mdef;	// mdef
+	WFIFOW(fd,32) = sd->hit;
+	WFIFOW(fd,34) = sd->flee;
+	WFIFOW(fd,36) = sd->flee2/10;
+	WFIFOW(fd,38) = sd->critical/10;
+	WFIFOW(fd,40) = sd->amotion;
+	WFIFOW(fd,42) = 0;
+#endif
 
 	WFIFOSET(fd,packet_db[0xbd].len);
 

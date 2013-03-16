@@ -2278,7 +2278,11 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_BASE_ATK:
 		if(sd->state.lr_flag != 2)
+#ifdef PRE_RENEWAL
 			sd->base_atk += val;
+#else
+			sd->plus_atk += val;
+#endif
 		break;
 	case SP_MATK1:
 		if(sd->state.lr_flag != 2)
@@ -2290,8 +2294,12 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_MATK:
 		if(sd->state.lr_flag != 2) {
+#ifdef PRE_RENEWAL
 			sd->matk1 += val;
 			sd->matk2 += val;
+#else
+			sd->plus_matk += val;
+#endif
 		}
 		break;
 	case SP_DEF1:

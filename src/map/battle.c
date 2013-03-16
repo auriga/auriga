@@ -1565,7 +1565,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			s_ele_ = ELE_NONE;
 	}
 
-	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	// 命中率計算
+#ifdef PRE_RENEWAL
+	calc_flag.hitrate = status_get_hit(src) - t_flee + 80;	// pre命中率計算
+#else
+	calc_flag.hitrate = status_get_hit(src) - t_flee;	// RE命中率計算
+#endif
 
 	if(t_sc && t_sc->data[SC_FOGWALL].timer != -1) {
 		// 霧のHIT補正
@@ -1966,6 +1970,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd && src_sd->state.arrow_atk && src_sd->arrow_atk > 0)
 				wd.damage += atn_rand()%(src_sd->arrow_atk+1);
 		}
+
+#ifndef PRE_RENEWAL
+		if(src_sd) {
+			wd.damage += src_sd->plus_atk;
+		}
+#endif
 
 		/* 10．ファイティング計算 */
 		if(src_sd && (skill = pc_checkskill(src_sd,TK_POWER) > 0) && src_sd->status.party_id > 0)
@@ -4057,7 +4067,9 @@ int battle_calc_base_magic_damage(struct block_list *src)
 	}
 
 	if(matk1 > matk2)
-		damage += atn_rand()%(matk1-matk2+1);
+		damage = matk2+atn_rand()%(matk1-matk2+1);
+	else
+		damage = matk2;
 
 	// 魔法力増幅
 	if(sc && sc->data[SC_MAGICPOWER].timer != -1)
@@ -4148,6 +4160,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	/* ２．魔法攻撃基礎計算 */
 	mgd.damage = battle_calc_base_magic_damage(bl);
+
+#ifndef PRE_RENEWAL
+	if(sd) {
+		mgd.damage += sd->plus_matk;
+	}
+#endif
 
 	/* スキル倍率計算に加算 */
 	if(sc) {
@@ -4920,7 +4938,11 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case NPC_DARKBREATH:
 		{
 			struct status_change *t_sc = status_get_sc(target);
+#ifdef PRE_RENEWAL
 			int hitrate = status_get_hit(bl) - status_get_flee(target) + 80;
+#else
+			int hitrate = status_get_hit(bl) - status_get_flee(target);
+#endif
 			int t_hp = status_get_hp(target);
 			hitrate = (hitrate > 95)? 95: (hitrate < 5)? 5: hitrate;
 			if(t_sc && (t_sc->data[SC_SLEEP].timer != -1 || t_sc->data[SC_STUN].timer != -1 ||

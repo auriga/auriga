@@ -335,6 +335,9 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int pele,pdef_ele;
 	int str,dstr,dex;
 	int calclimit = 2; // 初回はuse script込みで実行
+#ifndef PRE_RENEWAL
+	int b_plus_atk,b_plus_matk;
+#endif
 
 	nullpo_retr(0, sd);
 
@@ -384,6 +387,10 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_speedrate   = sd->speed_rate;
 	b_watk_       = sd->watk_;
 	b_watk_2      = sd->watk_2;
+#ifndef PRE_RENEWAL
+	b_plus_atk    = sd->plus_atk;
+	b_plus_matk   = sd->plus_matk;
+#endif
 
 L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
@@ -485,6 +492,10 @@ L_RECALC:
 	sd->fixcastrate_        = 0;
 	sd->dsprate             = 100;
 	sd->base_atk            = 0;
+#ifndef PRE_RENEWAL
+	sd->plus_atk            = 0;
+	sd->plus_matk           = 0;
+#endif
 	sd->arrow_atk           = 0;
 	sd->arrow_ele           = 0;
 	sd->arrow_hit           = 0;
@@ -731,7 +742,9 @@ L_RECALC:
 		if(sd->inventory_data[idx]) {
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->matk1 += sd->inventory_data[idx]->matk;
+#ifdef PRE_RENEWAL
 			sd->matk2 += sd->inventory_data[idx]->matk;
+#endif
 			sd->def += sd->inventory_data[idx]->def;
 			sd->mdef += sd->inventory_data[idx]->mdef;
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
@@ -740,6 +753,10 @@ L_RECALC:
 					// 二刀流用データ入力
 					sd->watk_ += sd->inventory_data[idx]->atk;
 					sd->watk_2 = (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+#ifndef PRE_RENEWAL
+					if(sd->status.weapon != WT_BOW)	// 弓には精錬MATKボーナスがない
+						sd->matk1 += r*refine_db[wlv].safety_bonus;
+#endif
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine_ = r*refine_db[wlv].over_bonus;
 
@@ -762,6 +779,10 @@ L_RECALC:
 					// 二刀流武器以外
 					sd->watk  += sd->inventory_data[idx]->atk;
 					sd->watk2 += (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+#ifndef PRE_RENEWAL
+					if(sd->status.weapon != WT_BOW)	// 弓には精錬MATKボーナスがない
+						sd->matk1 += r*refine_db[wlv].safety_bonus;
+#endif
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine += r*refine_db[wlv].over_bonus;
 
@@ -1401,6 +1422,7 @@ L_RECALC:
 		str = sd->paramc[0];
 		dex = sd->paramc[4];
 	}
+#ifdef PRE_RENEWAL
 	dstr = str/10;
 
 	sd->base_atk += str + dstr*dstr + dex/5 + sd->paramc[5]/5;
@@ -1419,6 +1441,19 @@ L_RECALC:
 	sd->mdef2    += sd->paramc[3];
 	sd->flee2    += sd->paramc[5] + 10;
 	sd->critical += sd->paramc[5] * 3 + 10;
+#else
+	dstr = sd->paramc[3]/8;
+
+	sd->base_atk += (int)(str + dex/5. + sd->paramc[5]/3. + sd->status.base_level/4.);
+	sd->matk2    += sd->paramc[3] + (dstr*dstr*dstr)/40 + sd->paramc[5]/3;
+
+	sd->hit      += 175 + sd->paramc[4] + sd->paramc[5]/3 + sd->status.base_level;
+	sd->flee     += 100 + sd->paramc[1] + sd->paramc[5]/5 + sd->status.base_level;
+	sd->def2     += (int)(sd->paramc[2]/2. + sd->status.base_level/2. + sd->paramc[1]/5.);
+	sd->mdef2    += (int)(sd->paramc[3] + sd->status.base_level/4. + sd->paramc[2]/5. + sd->paramc[4]/5.);
+	sd->flee2    += sd->paramc[5] + 10;
+	sd->critical += sd->paramc[5]*33/10 + 10;
+#endif
 
 	// アイテム補正
 	if(sd->sc.count > 0) {
@@ -2379,8 +2414,13 @@ L_RECALC:
 		sd->dmotion = 400;
 
 	// MATK最低値保障
+#ifdef PRE_RENEWAL
 	if(sd->matk1 < 1)
 	 	sd->matk1 = 1;
+#else
+	if(sd->matk1 < 1)
+		sd->matk1 = 0;
+#endif
 	if(sd->matk2 < 1)
 		sd->matk2 = 1;
 
@@ -2483,6 +2523,7 @@ L_RECALC:
 		clif_updatestatus(sd,SP_FLEE1);
 	if(b_aspd != sd->aspd)
 		clif_updatestatus(sd,SP_ASPD);
+#ifdef PRE_RENEWAL
 	if(b_watk != sd->watk || b_watk_ != sd->watk_ || b_base_atk != sd->base_atk)
 		clif_updatestatus(sd,SP_ATK1);
 	if(b_def != sd->def)
@@ -2491,18 +2532,40 @@ L_RECALC:
 		clif_updatestatus(sd,SP_ATK2);
 	if(b_def2 != sd->def2)
 		clif_updatestatus(sd,SP_DEF2);
+#else
+	if(b_base_atk != sd->base_atk)
+		clif_updatestatus(sd,SP_ATK1);
+	if(b_def2 != sd->def2)
+		clif_updatestatus(sd,SP_DEF1);
+	if(b_watk != sd->watk || b_watk_ != sd->watk_ || b_watk2 != sd->watk2 || b_watk_2 != sd->watk_2 || b_plus_atk != sd->plus_atk)
+		clif_updatestatus(sd,SP_ATK2);
+	if(b_def != sd->def)
+		clif_updatestatus(sd,SP_DEF2);
+#endif
 	if(b_flee2 != sd->flee2)
 		clif_updatestatus(sd,SP_FLEE2);
 	if(b_critical != sd->critical)
 		clif_updatestatus(sd,SP_CRITICAL);
+#ifdef PRE_RENEWAL
 	if(b_matk1 != sd->matk1)
 		clif_updatestatus(sd,SP_MATK1);
+#else
+	if(b_matk1 != sd->matk1 || b_plus_matk != sd->plus_matk)
+		clif_updatestatus(sd,SP_MATK1);
+#endif
 	if(b_matk2 != sd->matk2)
 		clif_updatestatus(sd,SP_MATK2);
+#ifdef PRE_RENEWAL
 	if(b_mdef != sd->mdef)
 		clif_updatestatus(sd,SP_MDEF1);
 	if(b_mdef2 != sd->mdef2)
 		clif_updatestatus(sd,SP_MDEF2);
+#else
+	if(b_mdef2 != sd->mdef2)
+		clif_updatestatus(sd,SP_MDEF1);
+	if(b_mdef != sd->mdef)
+		clif_updatestatus(sd,SP_MDEF2);
+#endif
 	if(b_attackrange != sd->range.attackrange)
 		clif_updatestatus(sd,SP_ATTACKRANGE);
 	if(b_max_hp != sd->status.max_hp)
@@ -3794,6 +3857,11 @@ int status_get_flee(struct block_list *bl)
 	else
 		flee = status_get_agi(bl) + status_get_lv(bl);
 
+#ifndef PRE_RENEWAL
+	if(bl->type != BL_PC)
+		flee += 100;
+#endif
+
 	if(sc && bl->type != BL_HOM) {
 		if(sc->data[SC_WHISTLE].timer != -1 && bl->type != BL_PC)
 			flee += sc->data[SC_WHISTLE].val1 + sc->data[SC_WHISTLE].val2 + sc->data[SC_WHISTLE].val3;
@@ -3861,22 +3929,26 @@ int status_get_flee(struct block_list *bl)
  */
 int status_get_hit(struct block_list *bl)
 {
-	int hit = 1;
+	int hit = 0;
 
 	nullpo_retr(1, bl);
 
+#ifndef PRE_RENEWAL
+	if(bl->type != BL_PC)
+		hit = 150;
+#endif
 	if(bl->type == BL_PC) {
 		hit = ((struct map_session_data *)bl)->hit;
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
-		hit = ((struct homun_data *)bl)->hit;
+		hit += ((struct homun_data *)bl)->hit;
 	} else if(bl->type == BL_MERC && ((struct merc_data *)bl)) {
-		hit = ((struct merc_data *)bl)->hit;
+		hit += ((struct merc_data *)bl)->hit;
 	} else if(bl->type == BL_ELEM && ((struct elem_data *)bl)) {
-		hit = ((struct elem_data *)bl)->hit;
+		hit += ((struct elem_data *)bl)->hit;
 	} else {
 		struct status_change *sc = status_get_sc(bl);
 
-		hit = status_get_dex(bl) + status_get_lv(bl);
+		hit += status_get_dex(bl) + status_get_lv(bl);
 		if(sc) {
 			if(sc->data[SC_HUMMING].timer != -1)
 				hit += hit*(sc->data[SC_HUMMING].val1*2+sc->data[SC_HUMMING].val2 + sc->data[SC_HUMMING].val3)/100;
@@ -3947,8 +4019,13 @@ int status_get_critical(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
+#ifdef PRE_RENEWAL
 		critical = status_get_luk(bl)*3 + 10;
 		critical += ((struct map_session_data *)bl)->critical - ((((struct map_session_data *)bl)->paramc[5]*3) + 10);
+#else
+		critical = status_get_luk(bl)*33/10 + 10;
+		critical += ((struct map_session_data *)bl)->critical - ((((struct map_session_data *)bl)->paramc[5]*33/10) + 10);
+#endif
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
 		critical = ((struct homun_data *)bl)->critical;
 	} else if(bl->type == BL_MERC && ((struct merc_data *)bl)) {
@@ -3995,7 +4072,9 @@ int status_get_baseatk(struct block_list *bl)
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd) {
 			batk = sd->base_atk;	// 設定されているbase_atk
+#ifdef PRE_RENEWAL
 			batk += sd->weapon_atk[sd->status.weapon];
+#endif
 		}
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
 		batk = 1;
@@ -4004,10 +4083,14 @@ int status_get_baseatk(struct block_list *bl)
 	} else if(bl->type == BL_ELEM && ((struct elem_data *)bl)) {
 		batk = 1;
 	} else {	// それ以外なら
+#ifdef PRE_RENEWAL
 		int str, dstr;
 		str  = status_get_str(bl);	// STR
 		dstr = str/10;
 		batk = dstr*dstr + str;	// base_atkを計算する
+#else
+		batk = status_get_str(bl) + status_get_lv(bl);	// base_atkを計算する
+#endif
 	}
 	if(sc) {	// 状態異常あり
 		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)	// ブラッディラスト
@@ -4520,7 +4603,11 @@ int status_get_def2(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl)
 		def2 = ((struct map_session_data *)bl)->def2;
 	else if(bl->type == BL_MOB && (struct mob_data *)bl)
+#ifdef PRE_RENEWAL
 		def2 = mob_db[((struct mob_data *)bl)->class_].vit;
+#else
+		def2 = (int)(mob_db[((struct mob_data *)bl)->class_].vit/(float)2 + mob_db[((struct mob_data *)bl)->class_].lv/(float)2);
+#endif
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		def2 = mob_db[((struct pet_data *)bl)->class_].vit;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
@@ -4584,9 +4671,17 @@ int status_get_mdef2(struct block_list *bl)
 	sc = status_get_sc(bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
+#ifdef PRE_RENEWAL
 		mdef2 = mob_db[((struct mob_data *)bl)->class_].int_ + (mob_db[((struct mob_data *)bl)->class_].vit>>1);
+#else
+		mdef2 = (int)(mob_db[((struct mob_data *)bl)->class_].int_/(float)4 + mob_db[((struct mob_data *)bl)->class_].lv/(float)4);
+#endif
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
+#ifdef PRE_RENEWAL
 		mdef2 = ((struct map_session_data *)bl)->mdef2 + (((struct map_session_data *)bl)->paramc[2]>>1);
+#else
+		mdef2 = ((struct map_session_data *)bl)->mdef2;
+#endif
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		mdef2 = mob_db[((struct pet_data *)bl)->class_].int_ + (mob_db[((struct pet_data *)bl)->class_].vit>>1);
 	else if (bl->type == BL_HOM && (struct homun_data *)bl)
