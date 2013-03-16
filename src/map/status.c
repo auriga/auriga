@@ -6017,6 +6017,7 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 		return 0;
 
 	tick = gettick();
+	status_calc_pc_stop_begin(bl);
 
 	for(type = 0; type < MAX_STATUSCHANGE; type++) {
 		if(scdata_db[type].copyable) {
@@ -6029,7 +6030,7 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 			}
 		}
 	}
-
+	status_calc_pc_stop_end(bl);
 
 	return 0;
 }

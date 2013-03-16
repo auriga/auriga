@@ -826,104 +826,104 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	switch(skillid) {
 	case 0:
-		/* 自動鷹 */
-		if( sd &&
-		    pc_isfalcon(sd) &&
-		    (skill = pc_checkskill(sd,HT_BLITZBEAT)) > 0 &&
-		    (sd->status.weapon == WT_BOW || battle_config.allow_any_weapon_autoblitz) &&
-		    atn_rand()%10000 < sd->paramc[5]*30+100 )
-		{
-			int lv = (sd->status.job_level+9)/10;
-			skill_castend_damage_id(src,bl,HT_BLITZBEAT,(skill < lv)? skill: lv,tick,0xf00000);
-		}
-		/* 自動ウォーグストライク */
-		if( sd &&
-		    pc_iswolf(sd) &&
-		    (skill = pc_checkskill(sd,RA_WUGSTRIKE)) > 0 &&
-		    atn_rand()%10000 < sd->paramc[5]*30+100 )
-		{
-			skill_castend_damage_id(src,bl,RA_WUGSTRIKE,skill,tick,0xf00000);
-		}
-		/* スナッチャー */
-		if(sd && sd->status.weapon != WT_BOW && (skill = pc_checkskill(sd,RG_SNATCHER)) > 0) {
-			int skill2;
-			if((skill*15 + 55) + (skill2 = pc_checkskill(sd,TF_STEAL))*10 > atn_rand()%1000) {
-				if(dstmd && pc_steal_item(sd,dstmd))
-					clif_skill_nodamage(src,bl,TF_STEAL,skill2,1);
-				else if(battle_config.display_snatcher_skill_fail)
-					clif_skill_fail(sd,skillid,0,0,0);
+		if(sd) {
+			/* 自動鷹 */
+			if( pc_isfalcon(sd) &&
+			    (skill = pc_checkskill(sd,HT_BLITZBEAT)) > 0 &&
+			    (sd->status.weapon == WT_BOW || battle_config.allow_any_weapon_autoblitz) &&
+			    atn_rand()%10000 < sd->paramc[5]*30+100 )
+			{
+				int lv = (sd->status.job_level+9)/10;
+				skill_castend_damage_id(src,bl,HT_BLITZBEAT,(skill < lv)? skill: lv,tick,0xf00000);
 			}
-		}
-		/* テコン蹴り構え */
-		if(sd && sd->sc.data[SC_TKCOMBO].timer == -1) {
-			int id = 0, lv = 0;
-			if(sd->sc.data[SC_READYSTORM].timer != -1 && (lv = pc_checkskill(sd,TK_STORMKICK)) > 0 && atn_rand()%100 < 15) {
-				// フェオリチャギ
-				id = TK_STORMKICK;
+			/* 自動ウォーグストライク */
+			if( pc_iswolf(sd) &&
+			    (skill = pc_checkskill(sd,RA_WUGSTRIKE)) > 0 &&
+			    atn_rand()%10000 < sd->paramc[5]*30+100 )
+			{
+				skill_castend_damage_id(src,bl,RA_WUGSTRIKE,skill,tick,0xf00000);
 			}
-			else if(sd->sc.data[SC_READYDOWN].timer != -1 && (lv = pc_checkskill(sd,TK_DOWNKICK)) > 0 && atn_rand()%100 < 15) {
-				// ネリョチャギ
-				id = TK_DOWNKICK;
-			}
-			else if(sd->sc.data[SC_READYTURN].timer != -1 && (lv = pc_checkskill(sd,TK_TURNKICK)) > 0 && atn_rand()%100 < 15) {
-				// トルリョチャギ
-				id = TK_TURNKICK;
-			}
-			else if(sd->sc.data[SC_READYCOUNTER].timer != -1 && (lv = pc_checkskill(sd,TK_COUNTER)) > 0) {
-				// アプチャオルリギ
-				int counter_rate = 20;
-				if(sd->sc.data[SC_COUNTER_RATE_UP].timer != -1 && (skill = pc_checkskill(sd,SG_FRIEND)) > 0) {
-					counter_rate += counter_rate * (50 + 50 * skill);
-					status_change_end(&sd->bl,SC_COUNTER_RATE_UP,-1);
-				}
-				if(atn_rand()%100 < counter_rate)
-					id = TK_COUNTER;
-			}
-			if(id > 0 && lv > 0) {
-				int delay = status_get_adelay(src) + 2000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
-				// TKコンボ入力時間の最低保障追加
-				if(delay < battle_config.tkcombo_delay_lower_limits) {
-					delay = battle_config.tkcombo_delay_lower_limits;
-				}
-				if(delay > 0) {
-					status_change_start(&sd->bl,SC_TKCOMBO,id,lv,0,0,delay,0);
-					sd->ud.attackabletime = tick + delay;
-				}
-				clif_skill_nodamage(&sd->bl,&sd->bl,id-1,pc_checkskill(sd,id-1),1);
-			}
-		}
-		/* エンチャントデットリーポイズン(猛毒効果) */
-		if(sd && sd->sc.data[SC_EDP].timer != -1 && !(status_get_mode(bl)&MD_BOSS)) {
-			if(atn_rand() % 10000 < status_change_rate(bl,SC_DPOISON,sd->sc.data[SC_EDP].val2,sd->status.base_level)) {
-				int lv = sd->sc.data[SC_EDP].val1;
-				status_change_pretimer(bl,SC_DPOISON,lv,0,0,0,skill_get_time2(ASC_EDP,lv),0,tick+status_get_amotion(src));
-			}
-		}
-		/* メルトダウン */
-		if(sd && sd->sc.data[SC_MELTDOWN].timer != -1) {
-			if(atn_rand() % 100 < sd->sc.data[SC_MELTDOWN].val1) {
-				// 武器破壊
-				if(dstsd) {
-					pc_break_equip(dstsd, LOC_RARM);
-				} else {
-					status_change_start(bl,SC_STRIPWEAPON,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+			/* スナッチャー */
+			if(sd->status.weapon != WT_BOW && (skill = pc_checkskill(sd,RG_SNATCHER)) > 0) {
+				int skill2;
+				if((skill*15 + 55) + (skill2 = pc_checkskill(sd,TF_STEAL))*10 > atn_rand()%1000) {
+					if(dstmd && pc_steal_item(sd,dstmd))
+						clif_skill_nodamage(src,bl,TF_STEAL,skill2,1);
+					else if(battle_config.display_snatcher_skill_fail)
+						clif_skill_fail(sd,skillid,0,0,0);
 				}
 			}
-			if(atn_rand() % 1000 < sd->sc.data[SC_MELTDOWN].val1*7) {
-				// 鎧破壊
-				if(dstsd) {
-					pc_break_equip(dstsd, LOC_BODY);
-				} else {
-					status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+			/* テコン蹴り構え */
+			if(sd->sc.data[SC_TKCOMBO].timer == -1) {
+				int id = 0, lv = 0;
+				if(sd->sc.data[SC_READYSTORM].timer != -1 && (lv = pc_checkskill(sd,TK_STORMKICK)) > 0 && atn_rand()%100 < 15) {
+					// フェオリチャギ
+					id = TK_STORMKICK;
+				}
+				else if(sd->sc.data[SC_READYDOWN].timer != -1 && (lv = pc_checkskill(sd,TK_DOWNKICK)) > 0 && atn_rand()%100 < 15) {
+					// ネリョチャギ
+					id = TK_DOWNKICK;
+				}
+				else if(sd->sc.data[SC_READYTURN].timer != -1 && (lv = pc_checkskill(sd,TK_TURNKICK)) > 0 && atn_rand()%100 < 15) {
+					// トルリョチャギ
+					id = TK_TURNKICK;
+				}
+				else if(sd->sc.data[SC_READYCOUNTER].timer != -1 && (lv = pc_checkskill(sd,TK_COUNTER)) > 0) {
+					// アプチャオルリギ
+					int counter_rate = 20;
+					if(sd->sc.data[SC_COUNTER_RATE_UP].timer != -1 && (skill = pc_checkskill(sd,SG_FRIEND)) > 0) {
+						counter_rate += counter_rate * (50 + 50 * skill);
+						status_change_end(&sd->bl,SC_COUNTER_RATE_UP,-1);
+					}
+					if(atn_rand()%100 < counter_rate)
+						id = TK_COUNTER;
+				}
+				if(id > 0 && lv > 0) {
+					int delay = status_get_adelay(src) + 2000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
+					// TKコンボ入力時間の最低保障追加
+					if(delay < battle_config.tkcombo_delay_lower_limits) {
+						delay = battle_config.tkcombo_delay_lower_limits;
+					}
+					if(delay > 0) {
+						status_change_start(&sd->bl,SC_TKCOMBO,id,lv,0,0,delay,0);
+						sd->ud.attackabletime = tick + delay;
+					}
+					clif_skill_nodamage(&sd->bl,&sd->bl,id-1,pc_checkskill(sd,id-1),1);
 				}
 			}
-		}
-		/* ポイズニングウェポン */
-		if(sd && sd->sc.data[SC_POISONINGWEAPON].timer != -1 && !(status_get_mode(bl)&MD_BOSS)) {
-			int lv   = sd->sc.data[SC_POISONINGWEAPON].val1;
-			int type = sd->sc.data[SC_POISONINGWEAPON].val2;
-			if(atn_rand() % 10000 < status_change_rate(bl,type,sd->sc.data[SC_POISONINGWEAPON].val3,status_get_lv(src)))
-				status_change_start(bl,type,lv,0,0,0,skill_get_time2(GC_POISONINGWEAPON,lv),0);
+			/* エンチャントデットリーポイズン(猛毒効果) */
+			if(sd->sc.data[SC_EDP].timer != -1 && !(status_get_mode(bl)&MD_BOSS)) {
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_DPOISON,sd->sc.data[SC_EDP].val2,sd->status.base_level)) {
+					int lv = sd->sc.data[SC_EDP].val1;
+					status_change_pretimer(bl,SC_DPOISON,lv,0,0,0,skill_get_time2(ASC_EDP,lv),0,tick+status_get_amotion(src));
+				}
+			}
+			/* メルトダウン */
+			if(sd->sc.data[SC_MELTDOWN].timer != -1) {
+				if(atn_rand() % 100 < sd->sc.data[SC_MELTDOWN].val1) {
+					// 武器破壊
+					if(dstsd) {
+						pc_break_equip(dstsd, LOC_RARM);
+					} else {
+						status_change_start(bl,SC_STRIPWEAPON,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+					}
+				}
+				if(atn_rand() % 1000 < sd->sc.data[SC_MELTDOWN].val1*7) {
+					// 鎧破壊
+					if(dstsd) {
+						pc_break_equip(dstsd, LOC_BODY);
+					} else {
+						status_change_start(bl,SC_STRIPARMOR,1,0,0,0,skill_get_time2(WS_MELTDOWN,sd->sc.data[SC_MELTDOWN].val1),0);
+					}
+				}
+			}
+			/* ポイズニングウェポン */
+			if(sd->sc.data[SC_POISONINGWEAPON].timer != -1 && !(status_get_mode(bl)&MD_BOSS)) {
+				int lv   = sd->sc.data[SC_POISONINGWEAPON].val1;
+				int type = sd->sc.data[SC_POISONINGWEAPON].val2;
+				if(atn_rand() % 10000 < status_change_rate(bl,type,sd->sc.data[SC_POISONINGWEAPON].val3,status_get_lv(src)))
+					status_change_start(bl,type,lv,0,0,0,skill_get_time2(GC_POISONINGWEAPON,lv),0);
+			}
 		}
 		break;
 	case SM_BASH:			/* バッシュ（急所攻撃） */
@@ -1562,42 +1562,44 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case SR_HOWLINGOFLION:	/* 獅子吼 */
 		if(atn_rand() % 10000 < 500 + skilllv * 500)
 			status_change_pretimer(bl,SC_FEAR,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
-		if(tsc->data[SC_SWING].timer != -1)
-			status_change_end(bl,SC_SWING,-1);
-		if(tsc->data[SC_SYMPHONY_LOVE].timer != -1)
-			status_change_end(bl,SC_SYMPHONY_LOVE,-1);
-		if(tsc->data[SC_MOONLIT_SERENADE].timer != -1)
-			status_change_end(bl,SC_MOONLIT_SERENADE,-1);
-		if(tsc->data[SC_RUSH_WINDMILL].timer != -1)
-			status_change_end(bl,SC_RUSH_WINDMILL,-1);
-		if(tsc->data[SC_ECHOSONG].timer != -1)
-			status_change_end(bl,SC_ECHOSONG,-1);
-		if(tsc->data[SC_HARMONIZE].timer != -1)
-			status_change_end(bl,SC_HARMONIZE,-1);
-		if(tsc->data[SC_SIREN].timer != -1)
-			status_change_end(bl,SC_SIREN,-1);
-		if(tsc->data[SC_SIRCLEOFNATURE].timer != -1)
-			status_change_end(bl,SC_SIRCLEOFNATURE,-1);
-		if(tsc->data[SC_GLOOMYDAY].timer != -1)
-			status_change_end(bl,SC_GLOOMYDAY,-1);
-		if(tsc->data[SC_SONG_OF_MANA].timer != -1)
-			status_change_end(bl,SC_SONG_OF_MANA,-1);
-		if(tsc->data[SC_DANCE_WITH_WUG].timer != -1)
-			status_change_end(bl,SC_DANCE_WITH_WUG,-1);
-		if(tsc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1)
-			status_change_end(bl,SC_SATURDAY_NIGHT_FEVER,-1);
-		if(tsc->data[SC_LERADS_DEW].timer != -1)
-			status_change_end(bl,SC_LERADS_DEW,-1);
-		if(tsc->data[SC_MELODYOFSINK].timer != -1)
-			status_change_end(bl,SC_MELODYOFSINK,-1);
-		if(tsc->data[SC_BEYOND_OF_WARCRY].timer != -1)
-			status_change_end(bl,SC_BEYOND_OF_WARCRY,-1);
-		if(tsc->data[SC_UNLIMITED_HUMMING_VOICE].timer != -1)
-			status_change_end(bl,SC_UNLIMITED_HUMMING_VOICE,-1);
+		if(tsc) {
+			if(tsc->data[SC_SWING].timer != -1)
+				status_change_end(bl,SC_SWING,-1);
+			if(tsc->data[SC_SYMPHONY_LOVE].timer != -1)
+				status_change_end(bl,SC_SYMPHONY_LOVE,-1);
+			if(tsc->data[SC_MOONLIT_SERENADE].timer != -1)
+				status_change_end(bl,SC_MOONLIT_SERENADE,-1);
+			if(tsc->data[SC_RUSH_WINDMILL].timer != -1)
+				status_change_end(bl,SC_RUSH_WINDMILL,-1);
+			if(tsc->data[SC_ECHOSONG].timer != -1)
+				status_change_end(bl,SC_ECHOSONG,-1);
+			if(tsc->data[SC_HARMONIZE].timer != -1)
+				status_change_end(bl,SC_HARMONIZE,-1);
+			if(tsc->data[SC_SIREN].timer != -1)
+				status_change_end(bl,SC_SIREN,-1);
+			if(tsc->data[SC_SIRCLEOFNATURE].timer != -1)
+				status_change_end(bl,SC_SIRCLEOFNATURE,-1);
+			if(tsc->data[SC_GLOOMYDAY].timer != -1)
+				status_change_end(bl,SC_GLOOMYDAY,-1);
+			if(tsc->data[SC_SONG_OF_MANA].timer != -1)
+				status_change_end(bl,SC_SONG_OF_MANA,-1);
+			if(tsc->data[SC_DANCE_WITH_WUG].timer != -1)
+				status_change_end(bl,SC_DANCE_WITH_WUG,-1);
+			if(tsc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1)
+				status_change_end(bl,SC_SATURDAY_NIGHT_FEVER,-1);
+			if(tsc->data[SC_LERADS_DEW].timer != -1)
+				status_change_end(bl,SC_LERADS_DEW,-1);
+			if(tsc->data[SC_MELODYOFSINK].timer != -1)
+				status_change_end(bl,SC_MELODYOFSINK,-1);
+			if(tsc->data[SC_BEYOND_OF_WARCRY].timer != -1)
+				status_change_end(bl,SC_BEYOND_OF_WARCRY,-1);
+			if(tsc->data[SC_UNLIMITED_HUMMING_VOICE].timer != -1)
+				status_change_end(bl,SC_UNLIMITED_HUMMING_VOICE,-1);
+		}
 		break;
 
 	case WM_SOUND_OF_DESTRUCTION:	/* サウンドオブディストラクション */
-		if(atn_rand() % 10000 < 4000 + skilllv * 1000 - (status_get_lv(bl) / 5 + status_get_dex(bl) / 5 + status_get_int(bl) / 5) * 100) {
+		if(tsc && atn_rand() % 10000 < 4000 + skilllv * 1000 - (status_get_lv(bl) / 5 + status_get_dex(bl) / 5 + status_get_int(bl) / 5) * 100) {
 			if(tsc->data[SC_SWING].timer != -1)
 				status_change_end(bl,SC_SWING,-1);
 			if(tsc->data[SC_SYMPHONY_LOVE].timer != -1)
@@ -7890,6 +7892,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GC_ANTIDOTE:			/* アンチドート */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_calc_pc_stop_begin(bl);
+
 		status_change_end(bl, SC_TOXIN, -1);
 		status_change_end(bl, SC_PARALIZE, -1);
 		status_change_end(bl, SC_VENOMBLEED, -1);
@@ -7898,6 +7902,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_end(bl, SC_PYREXIA, -1);
 		status_change_end(bl, SC_OBLIVIONCURSE, -1);
 		status_change_end(bl, SC_LEECHEND, -1);
+
+		status_calc_pc_stop_end(bl);
 		break;
 	case GC_POISONINGWEAPON:	/* ポイズニングウェポン */
 		if(sd) {
@@ -7942,11 +7948,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(lv2 > 0)
 					heal += heal * (lv2 * 2) / 100;
 
-				if( dstsd && dstsd->sc.data[SC_BERSERK].timer != -1)
-					heal = 0; 	// バーサーク中はヒール０
+				if(dstsd) {
+					if(dstsd->sc.data[SC_BERSERK].timer != -1)
+						heal = 0; 	// バーサーク中はヒール０
 
-				if( dstsd && pc_isgear(dstsd))
-					heal = 0; 	// 魔道ギア搭乗中はヒール０
+					if(pc_isgear(dstsd))
+						heal = 0; 	// 魔道ギア搭乗中はヒール０
+				}
 
 				clif_skill_nodamage(&sd->bl,bl,skillid,heal,1);
 				battle_heal(&sd->bl,bl,heal,0,0);
@@ -8081,9 +8089,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case WL_TETRAVORTEX:		/* テトラボルテックス */
 		{
 			int summon_id[4] = { WL_TETRAVORTEX_FIRE, WL_TETRAVORTEX_WATER, WL_TETRAVORTEX_WIND, WL_TETRAVORTEX_GROUND };
-			int c = 0, i;
+			int i;
 			sc = status_get_sc(src);
 			if(sc) {
+				int c = 0;
 				for(i = 0; i < 5; i++) {
 					if(sc->data[SC_SUMMONBALL1 + i].timer != -1) {
 						if(c < 4) {
@@ -8767,6 +8776,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			battle_heal(NULL,bl,heal,0,0);
 			if(atn_rand()%100 < skilllv * 5 + status_get_dex(src) / 2) {
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+				status_calc_pc_stop_begin(bl);
+
 				status_change_end(bl, SC_STONE, -1);
 				status_change_end(bl, SC_FREEZE, -1);
 				status_change_end(bl, SC_STUN, -1);
@@ -8784,6 +8795,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				status_change_end(bl, SC_PYREXIA, -1);
 				status_change_end(bl, SC_OBLIVIONCURSE, -1);
 				status_change_end(bl, SC_LEECHEND, -1);
+
+				status_calc_pc_stop_end(bl);
 			}
 		}
 		break;
@@ -14542,21 +14555,24 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		if(cnd->id >= HT_SKIDTRAP && (cnd->id <= HT_CLAYMORETRAP || cnd->id == HT_TALKIEBOX)) {
 			idx[i] = -1;
 		}
-		// トロピック時、50%の確率で消費しない
-		if(sc && sc->data[SC_TROPIC].timer != -1 && (cnd->id == SA_FLAMELAUNCHER || cnd->id == SA_VOLCANO) && atn_rand()%100 < 50) {
-			idx[i] = -1;
-		}
-		// クールエアー時、50%の確率で消費しない
-		if(sc && sc->data[SC_CHILLY_AIR].timer != -1 && (cnd->id == SA_FROSTWEAPON || cnd->id == SA_DELUGE) && atn_rand()%100 < 50) {
-			idx[i] = -1;
-		}
-		// ワイルドストーム時、50%の確率で消費しない
-		if(sc && sc->data[SC_WILD_STORM].timer != -1 && (cnd->id == SA_LIGHTNINGLOADER || cnd->id == SA_VIOLENTGALE) && atn_rand()%100 < 50) {
-			idx[i] = -1;
-		}
-		// アップヘイバル時、50%の確率で消費しない
-		if(sc && sc->data[SC_UPHEAVAL].timer != -1 && cnd->id == SA_SEISMICWEAPON && atn_rand()%100 < 50) {
-			idx[i] = -1;
+
+		if(sc) {
+			// トロピック時、50%の確率で消費しない
+			if(sc->data[SC_TROPIC].timer != -1 && (cnd->id == SA_FLAMELAUNCHER || cnd->id == SA_VOLCANO) && atn_rand()%100 < 50) {
+				idx[i] = -1;
+			}
+			// クールエアー時、50%の確率で消費しない
+			if(sc->data[SC_CHILLY_AIR].timer != -1 && (cnd->id == SA_FROSTWEAPON || cnd->id == SA_DELUGE) && atn_rand()%100 < 50) {
+				idx[i] = -1;
+			}
+			// ワイルドストーム時、50%の確率で消費しない
+			if(sc->data[SC_WILD_STORM].timer != -1 && (cnd->id == SA_LIGHTNINGLOADER || cnd->id == SA_VIOLENTGALE) && atn_rand()%100 < 50) {
+				idx[i] = -1;
+			}
+			// アップヘイバル時、50%の確率で消費しない
+			if(sc->data[SC_UPHEAVAL].timer != -1 && cnd->id == SA_SEISMICWEAPON && atn_rand()%100 < 50) {
+				idx[i] = -1;
+			}
 		}
 	}
 
@@ -14678,47 +14694,55 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			reduce_time2 += (5 + pc_checkskill(sd,WL_RADIUS) * 5);
 		}
 
-		/* サクラメント */
-		if(sc && sc->data[SC_SACRAMENT].timer != -1) {
-			if(reduce_time2 < sc->data[SC_SACRAMENT].val2)
-				reduce_time2 = sc->data[SC_SACRAMENT].val2;
-		}
+		if(sc) {
+			/* サクラメント */
+			if(sc->data[SC_SACRAMENT].timer != -1) {
+				if(reduce_time2 < sc->data[SC_SACRAMENT].val2)
+					reduce_time2 = sc->data[SC_SACRAMENT].val2;
+			}
 
-		/* ダンスウィズウォーグ */
-		if(sc && sc->data[SC_DANCE_WITH_WUG].timer != -1) {
-			int val = 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
-			if(reduce_time2 < val)
-				reduce_time2 = val;
+			/* ダンスウィズウォーグ */
+			if(sc->data[SC_DANCE_WITH_WUG].timer != -1) {
+				int val = 20 + sc->data[SC_DANCE_WITH_WUG].val4 * 10;
+				if(reduce_time2 < val)
+					reduce_time2 = val;
+			}
 		}
 
 		if(sd) {
 			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_;
-		}
-		// カードによる固定詠唱時間増減効果
-		if(sd && sd->skill_fixcastrate.count > 0) {
-			for(i=0; i<sd->skill_fixcastrate.count; i++) {
-				if(skillid == sd->skill_fixcastrate.id[i])
-					fixedtime = fixedtime * (100 + sd->skill_fixcastrate.rate[i]) / 100;
+
+			// カードによる固定詠唱時間増減効果
+			if(sd->skill_fixcastrate.count > 0) {
+				for(i=0; i<sd->skill_fixcastrate.count; i++) {
+					if(skillid == sd->skill_fixcastrate.id[i])
+						fixedtime = fixedtime * (100 + sd->skill_fixcastrate.rate[i]) / 100;
+				}
 			}
 		}
 
-		/* スロウキャスト */
-		if(sc && sc->data[SC_SLOWCAST].timer != -1)
-			reduce_time2 -= sc->data[SC_SLOWCAST].val1 * 20;
+		if(sc) {
+			/* スロウキャスト */
+			if(sc->data[SC_SLOWCAST].timer != -1)
+				reduce_time2 -= sc->data[SC_SLOWCAST].val1 * 20;
 
-		/* フロストミスティ */
-		if(sc && sc->data[SC_FROSTMISTY].timer != -1)
-			reduce_time2 -= 15;
+			/* フロストミスティ */
+			if(sc->data[SC_FROSTMISTY].timer != -1)
+				reduce_time2 -= 15;
+		}
 
 		fixedtime = fixedtime * (100 - reduce_time2) / 100;
 	}
-	/* ハウリングオブマンドラゴラ */
-	if(sc && sc->data[SC_MANDRAGORA].timer != -1) {
-		fixedtime += sc->data[SC_MANDRAGORA].val3;		// 強制固定詠唱増加
+
+	if(sc) {
+		/* ハウリングオブマンドラゴラ */
+		if(sc->data[SC_MANDRAGORA].timer != -1) {
+			fixedtime += sc->data[SC_MANDRAGORA].val3;		// 強制固定詠唱増加
+		}
+		/* 十六夜 */
+		if(sc->data[SC_IZAYOI].timer != -1 && skillid > 521 && skillid < 545)
+			fixedtime = 0;
 	}
-	/* 十六夜 */
-	if(sc && sc->data[SC_IZAYOI].timer != -1 && skillid > 521 && skillid < 545)
-		fixedtime = 0;
 	if(fixedtime < 0)
 		fixedtime = 0;
 

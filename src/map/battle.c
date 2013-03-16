@@ -4051,12 +4051,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
  */
 int battle_calc_base_magic_damage(struct block_list *src)
 {
-	int matk1  = status_get_matk1(src);	// 最大Matk
-	int matk2  = status_get_matk2(src);	// 最低Matk
-	int damage = matk2;
+	int matk1, matk2, damage = 0;
 	struct status_change *sc = NULL;
 
 	nullpo_retr(1, src);
+
+	matk1 = status_get_matk1(src);	// 最大Matk
+	matk2 = status_get_matk2(src);	// 最低Matk
 
 	sc = status_get_sc(src);
 
@@ -4066,6 +4067,7 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		matk2 = (matk2 > matk1)? matk2: matk1;
 	}
 
+	damage = matk2;
 	if(matk1 > matk2)
 		damage = matk2+atn_rand()%(matk1-matk2+1);
 	else
@@ -4562,18 +4564,20 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case SO_PSYCHIC_WAVE:	/* サイキックウェーブ */
 			{
 				int rate = 0;
-				if(sc && sc->data[SC_HEATER].timer != -1) {
-					ele = ELE_FIRE;
-					rate = sc->data[SC_HEATER].val3;
-				} else if(sc && sc->data[SC_COOLER].timer != -1) {
-					ele = ELE_WATER;
-					rate = sc->data[SC_COOLER].val3;
-				} else if(sc && sc->data[SC_BLAST].timer != -1) {
-					ele = ELE_WIND;
-					rate = sc->data[SC_BLAST].val3;
-				} else if(sc && sc->data[SC_CURSED_SOIL].timer != -1) {
-					ele = ELE_EARTH;
-					rate = sc->data[SC_CURSED_SOIL].val3;
+				if(sc) {
+					if(sc->data[SC_HEATER].timer != -1) {
+						ele = ELE_FIRE;
+						rate = sc->data[SC_HEATER].val3;
+					} else if(sc->data[SC_COOLER].timer != -1) {
+						ele = ELE_WATER;
+						rate = sc->data[SC_COOLER].val3;
+					} else if(sc->data[SC_BLAST].timer != -1) {
+						ele = ELE_WIND;
+						rate = sc->data[SC_BLAST].val3;
+					} else if(sc->data[SC_CURSED_SOIL].timer != -1) {
+						ele = ELE_EARTH;
+						rate = sc->data[SC_CURSED_SOIL].val3;
+					}
 				}
 				MATK_FIX( ( 70 * skill_lv + status_get_int(bl) * 3 ) * status_get_lv(bl) / 100 + rate, 100 );
 			}
@@ -5324,114 +5328,127 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			}
 		}
 	}
-	if(sc && sc->data[SC_AUTOSPELL].timer != -1 && atn_rand()%100 < sc->data[SC_AUTOSPELL].val4) {
-		int spellid = sc->data[SC_AUTOSPELL].val2;
-		int spelllv = sc->data[SC_AUTOSPELL].val3;
-		int r = atn_rand()%100;
-		int sp = 0, fail = 0;
 
-		if(r >= 50)
-			spelllv -= 2;
-		else if(r >= 15)
-			spelllv--;
-		if(spelllv < 1)
-			spelllv = 1;
+	/* 状態異常 */
+	if(sc) {
+		// オートスペル
+		if(sc->data[SC_AUTOSPELL].timer != -1 && atn_rand()%100 < sc->data[SC_AUTOSPELL].val4) {
+			int spellid = sc->data[SC_AUTOSPELL].val2;
+			int spelllv = sc->data[SC_AUTOSPELL].val3;
+			int r = atn_rand()%100;
+			int sp = 0, fail = 0;
 
-		if(sd) {
-			if(sc->data[SC_SAGE].timer != -1)	// セージの魂
-				spelllv = pc_checkskill(sd,spellid);
-			sp = skill_get_sp(spellid,spelllv)*2/3;
-			if(sd->status.sp < sp)
-				fail = 1;
-		}
-		if(!fail) {
-			if(battle_config.skill_autospell_delay_enable) {
-				struct unit_data *ud = unit_bl2ud(src);
-				if(ud) {
-					int delay = skill_delayfix(src, spellid, spelllv);
-					ud->canact_tick = tick + delay;
-				}
+			if(r >= 50)
+				spelllv -= 2;
+			else if(r >= 15)
+				spelllv--;
+			if(spelllv < 1)
+				spelllv = 1;
+
+			if(sd) {
+				if(sc->data[SC_SAGE].timer != -1)	// セージの魂
+					spelllv = pc_checkskill(sd,spellid);
+				sp = skill_get_sp(spellid,spelllv)*2/3;
+				if(sd->status.sp < sp)
+					fail = 1;
 			}
+			if(!fail) {
+				if(battle_config.skill_autospell_delay_enable) {
+					struct unit_data *ud = unit_bl2ud(src);
+					if(ud) {
+						int delay = skill_delayfix(src, spellid, spelllv);
+						ud->canact_tick = tick + delay;
+					}
+				}
+				if(skill_get_inf(spellid) & INF_TOGROUND) {
+					fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
+				} else {
+					switch(skill_get_nk(spellid) & 3) {
+					case 0:
+					case 2:	/* 攻撃系 */
+						fail = skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+						break;
+					case 1:	/* 支援系 */
+						if( (spellid == AL_HEAL || (spellid == ALL_RESURRECTION && target->type != BL_PC)) &&
+						    battle_check_undead(status_get_race(target),status_get_elem_type(target)) )
+							fail = skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+						else
+							fail = skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
+						break;
+					}
+				}
+				if(sd && !fail)
+					pc_heal(sd,0,-sp);
+			}
+		}
+
+		// デュプレライト
+		if(sc->data[SC_DUPLELIGHT].timer != -1) {
+			if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val2) {
+				skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MELEE,sc->data[SC_DUPLELIGHT].val1,tick,flag);
+			}
+			else if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val3) {
+				skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MAGIC,sc->data[SC_DUPLELIGHT].val1,tick,flag);
+			}
+		}
+
+		// シャドウオートスペル
+		if(sc->data[SC__AUTOSHADOWSPELL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC__AUTOSHADOWSPELL].val4) {
+			int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
+			int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
+
 			if(skill_get_inf(spellid) & INF_TOGROUND) {
-				fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
+				skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 			} else {
 				switch(skill_get_nk(spellid) & 3) {
 				case 0:
 				case 2:	/* 攻撃系 */
-					fail = skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+					skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
 					break;
 				case 1:	/* 支援系 */
 					if( (spellid == AL_HEAL || (spellid == ALL_RESURRECTION && target->type != BL_PC)) &&
 					    battle_check_undead(status_get_race(target),status_get_elem_type(target)) )
-						fail = skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
+						skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
 					else
-						fail = skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
+						skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
 					break;
 				}
 			}
-			if(sd && !fail)
-				pc_heal(sd,0,-sp);
 		}
-	}
-	// デュプレライト
-	if(sc && sc->data[SC_DUPLELIGHT].timer != -1) {
-		if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val2) {
-			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MELEE,sc->data[SC_DUPLELIGHT].val1,tick,flag);
-		}
-		else if(atn_rand()%100 < sc->data[SC_DUPLELIGHT].val3) {
-			skill_addtimerskill(src,tick+status_get_adelay(src) / 2,target->id,0,0,AB_DUPLELIGHT_MAGIC,sc->data[SC_DUPLELIGHT].val1,tick,flag);
-		}
-	}
-	// シャドウオートスペル
-	if(sc && sc->data[SC__AUTOSHADOWSPELL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC__AUTOSHADOWSPELL].val4) {
-		int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
-		int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
 
-		if(skill_get_inf(spellid) & INF_TOGROUND) {
-			skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
-		} else {
-			switch(skill_get_nk(spellid) & 3) {
-			case 0:
-			case 2:	/* 攻撃系 */
-				skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
-				break;
-			case 1:	/* 支援系 */
-				if( (spellid == AL_HEAL || (spellid == ALL_RESURRECTION && target->type != BL_PC)) &&
-				    battle_check_undead(status_get_race(target),status_get_elem_type(target)) )
-					skill_castend_damage_id(src,target,spellid,spelllv,tick,flag);
-				else
-					skill_castend_nodamage_id(src,target,spellid,spelllv,tick,flag);
-				break;
-			}
+		// デッドリーインフェクト
+		if(sc->data[SC__DEADLYINFECT].timer != -1 && (wd.damage > 0 || wd.damage2 > 0)) {
+			status_change_copy(src,target);
 		}
-	}
-	// デッドリーインフェクト
-	if(sc && sc->data[SC__DEADLYINFECT].timer != -1 && (wd.damage > 0 || wd.damage2 > 0)) {
-		status_change_copy(src,target);
-	}
-	// 点穴 -球-
-	if(sd && sc && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {
-		int max = (sd->s_class.job == PC_JOB_MO || sd->s_class.job == PC_JOB_SR)? pc_checkskill(sd,MO_CALLSPIRITS): skill_get_max(MO_CALLSPIRITS);
-		if(sc->data[SC_RAISINGDRAGON].timer != -1)
-			max += sc->data[SC_RAISINGDRAGON].val1;
-		if(sd->spiritball.num < max)
-			pc_addspiritball(sd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
-	}
-	// トロピック
-	if(sc && sc->data[SC_TROPIC].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
-		skill_castend_damage_id(src,target,MG_FIREBOLT,5,tick,flag);
-	}
-	// クールエアー
-	if(sc && sc->data[SC_CHILLY_AIR].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
-		skill_castend_damage_id(src,target,MG_COLDBOLT,5,tick,flag);
-	}
-	// ワイルドストーム
-	if(sc && sc->data[SC_WILD_STORM].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
-		skill_castend_damage_id(src,target,MG_LIGHTNINGBOLT,5,tick,flag);
-	}
-	// アップヘイバル
-	if(sc && sc->data[SC_UPHEAVAL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
-		skill_castend_damage_id(src,target,WZ_EARTHSPIKE,5,tick,flag);
+
+		// 点穴 -球-
+		if(sd && sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1 && atn_rand()%100 < sc->data[SC_GENTLETOUCH_ENERGYGAIN].val2 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {
+			int max = (sd->s_class.job == PC_JOB_MO || sd->s_class.job == PC_JOB_SR)? pc_checkskill(sd,MO_CALLSPIRITS): skill_get_max(MO_CALLSPIRITS);
+			if(sc->data[SC_RAISINGDRAGON].timer != -1)
+				max += sc->data[SC_RAISINGDRAGON].val1;
+			if(sd->spiritball.num < max)
+				pc_addspiritball(sd,skill_get_time2(SR_GENTLETOUCH_ENERGYGAIN,sc->data[SC_GENTLETOUCH_ENERGYGAIN].val1),1);
+		}
+
+		// トロピック
+		if(sc->data[SC_TROPIC].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+			skill_castend_damage_id(src,target,MG_FIREBOLT,5,tick,flag);
+		}
+
+		// クールエアー
+		if(sc->data[SC_CHILLY_AIR].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+			skill_castend_damage_id(src,target,MG_COLDBOLT,5,tick,flag);
+		}
+
+		// ワイルドストーム
+		if(sc->data[SC_WILD_STORM].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+			skill_castend_damage_id(src,target,MG_LIGHTNINGBOLT,5,tick,flag);
+		}
+
+		// アップヘイバル
+		if(sc->data[SC_UPHEAVAL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
+			skill_castend_damage_id(src,target,WZ_EARTHSPIKE,5,tick,flag);
+		}
 	}
 
 	// カードによるオートスペル
@@ -6018,11 +6035,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* リプロデュース & クローンスキル */
 	if(damage > 0 && dmg.flag&BF_SKILL && tsd && sc) {
 		/* リプロデュース判定 */
-		if(pc_checkskill(tsd,SC_REPRODUCE) && sc->data[SC__REPRODUCE].timer != -1) {
+		if(sc->data[SC__REPRODUCE].timer != -1 && pc_checkskill(tsd,SC_REPRODUCE)) {
 			skill_reproduce(tsd,skillid,skilllv);
 		}
 		/* クローンスキル判定 */
-		else if(pc_checkskill(tsd,RG_PLAGIARISM) && sc->data[SC_PRESERVE].timer == -1) {
+		else if(sc->data[SC_PRESERVE].timer == -1 && pc_checkskill(tsd,RG_PLAGIARISM)) {
 			skill_clone(tsd,skillid,skilllv);
 		}
 	}
@@ -6073,17 +6090,19 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			else if(skillid != TK_TURNKICK)
 				skill_additional_effect(src,bl,skillid,skilllv,attack_type,tick);
 
-			// 號砲のSP消費
-			if(tsd && skillid == SR_TIGERCANNON) {
-				pc_heal(tsd,0,-(damage / 10));
-			}
-			// メタリックサウンドのSP消費
-			if(tsd && skillid == WM_METALICSOUND) {
-				int sp = damage;
-				int lesson_lv = (sd)? pc_checkskill(sd,WM_LESSON): 0;
-				lesson_lv = (lesson_lv > 10)? 10: lesson_lv;
-				sp = sp / (110 - 10 * lesson_lv);
-				pc_heal(tsd,0,-sp);
+			if(tsd) {
+				// 號砲のSP消費
+				if(skillid == SR_TIGERCANNON) {
+					pc_heal(tsd,0,-(damage / 10));
+				}
+				// メタリックサウンドのSP消費
+				if(skillid == WM_METALICSOUND) {
+					int sp = damage;
+					int lesson_lv = (sd)? pc_checkskill(sd,WM_LESSON): 0;
+					lesson_lv = (lesson_lv > 10)? 10: lesson_lv;
+					sp = sp / (110 - 10 * lesson_lv);
+					pc_heal(tsd,0,-sp);
+				}
 			}
 		}
 
@@ -6191,7 +6210,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		status_change_copy(bl,src);
 	}
 	/* サークルオブファイア */
-	if(sc && sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && dmg.flag&BF_SHORT && src != bl && damage > 0) {
+	if(dmg.flag&BF_SHORT && sc && sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && src != bl && damage > 0) {
 		battle_skill_attack(BF_WEAPON,bl,bl,src,EL_CIRCLE_OF_FIRE,sc->data[SC_CIRCLE_OF_FIRE].val1,tick,(0x0f<<20)|0x0500);
 	}
 
