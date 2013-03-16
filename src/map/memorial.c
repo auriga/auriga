@@ -178,7 +178,7 @@ static int memorial_addmap(int memorial_id)
 		}
 	}
 
-	printf("memorial_addmap:[%s] memorial_id=%.3d map_count=%d npc_count=%d\n",db->name, memorial_id, cnt_map, cnt_npc);
+	printf("memorial_addmap:[%s] memorial_id=%03d map_count=%d npc_count=%d\n",db->name, memorial_id, cnt_map, cnt_npc);
 
 	return 1;
 }
@@ -511,7 +511,7 @@ int memorial_delete(int memorial_id)
 	md->users = 0;
 	memset(memorial_data[i].map, 0, sizeof(memorial_data[i].map));
 
-	printf("memorial_delete: memorial_id=%.3d count=%d\n",memorial_id, count);
+	printf("memorial_delete: memorial_id=%03d count=%d\n",memorial_id, count);
 
 	return 0;
 }

@@ -1781,6 +1781,12 @@ int map_addmdmap(const char *name, int id)
 	if(src_m < 0)
 		return -1;
 
+	if(strlen(name) > 20) {
+		// against buffer overflow
+		printf("map_addmdmap: can't add long map name \"%s\"\n", name);
+		return -1;
+	}
+
 	for(i = map_mdmap_start; i < map_max; i++) {
 		if(!map[i].name[0])
 			break;
@@ -1802,7 +1808,9 @@ int map_addmdmap(const char *name, int id)
 	memcpy(&map[dst_m], &map[src_m], sizeof(struct map_data));
 
 	// マップ情報編集
-	snprintf(map[dst_m].name, sizeof(map[dst_m].name), "%.3d%s", id, name);
+	snprintf(map[dst_m].name, sizeof(map[dst_m].name), "%03d%s", id, name);
+	map[dst_m].name[23] = '\0';
+
 	map[dst_m].m = dst_m;
 	map[dst_m].memorial_id = id;
 	map[dst_m].users = 0;
@@ -2729,7 +2737,7 @@ static void map_readallmap(void)
 
 	if(map_num <= 0) {
 		printf("ERROR: no map found.\n");
-		exit(1);
+		//exit(1);
 	}
 
 	return;

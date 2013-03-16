@@ -3495,7 +3495,7 @@ static int script_getmemorialid(struct script_state *st)
 	int memorial_id = 0;
 
 	// 実行NPCから取得
-	if(nd) {
+	if(nd && nd->bl.m >= 0) {
 		memorial_id = map[nd->bl.m].memorial_id;
 	}
 
@@ -12116,7 +12116,7 @@ int buildin_musiceffect(struct script_state *st)
 static int buildin_musiceffect_sub(struct block_list *bl,va_list ap)
 {
 	struct map_session_data *sd;
-	char *name   = va_arg(ap,char *);
+	char *name = va_arg(ap,char *);
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
@@ -12460,10 +12460,13 @@ int buildin_getbaseclass(struct script_state *st)
 int buildin_setquest(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int quest_id;
 
 	nullpo_retr(0, sd);
 
-	quest_addlist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	quest_addlist(sd, quest_id);
 
 	return 0;
 }
@@ -12475,10 +12478,14 @@ int buildin_setquest(struct script_state *st)
 int buildin_chgquest(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int old_id, new_id;
 
 	nullpo_retr(0, sd);
 
-	quest_updatelist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])), conv_num(st,& (st->stack->stack_data[st->start+3])));
+	old_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	new_id = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	quest_updatelist(sd, old_id, new_id);
 
 	return 0;
 }
@@ -12490,10 +12497,13 @@ int buildin_chgquest(struct script_state *st)
 int buildin_delquest(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int quest_id;
 
 	nullpo_retr(0, sd);
 
-	quest_dellist(sd, conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	quest_dellist(sd, quest_id);
 
 	return 0;
 }
@@ -12504,10 +12514,13 @@ int buildin_delquest(struct script_state *st)
  */
 int buildin_checkquest(struct script_state *st)
 {
+	struct map_session_data *sd = script_rid2sd(st);
 	struct quest_data *qd;
-	int i, ret = 0;
+	int quest_id, i, ret = 0;
 
-	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	qd = quest_get_data(sd, quest_id);
 	if(qd) {
 		ret |= 0x05;	// クエスト受注済み+討伐数クリア
 		if(qd->limit < (unsigned int)time(NULL))
@@ -12531,9 +12544,13 @@ int buildin_checkquest(struct script_state *st)
  */
 int buildin_getquestlimit(struct script_state *st)
 {
+	struct map_session_data *sd = script_rid2sd(st);
 	struct quest_data *qd;
+	int quest_id;
 
-	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	qd = quest_get_data(sd, quest_id);
 
 	push_val(st->stack,C_INT,(qd)? qd->limit: 0);
 
@@ -12546,13 +12563,16 @@ int buildin_getquestlimit(struct script_state *st)
  */
 int buildin_getquestcount(struct script_state *st)
 {
+	struct map_session_data *sd = script_rid2sd(st);
 	struct quest_data *qd;
-	int idx = 0, ret = 0;
+	int quest_id, idx = 0, ret = 0;
 
-	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end>st->start+3)
+		idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	qd = quest_get_data(sd, quest_id);
 	if(qd) {
-		if(st->end>st->start+3)
-			idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
 		if(idx < 0 || idx >= 3)
 			idx = 0;
 		ret = qd->mob[idx].count;
@@ -12568,13 +12588,16 @@ int buildin_getquestcount(struct script_state *st)
  */
 int buildin_getquestmaxcount(struct script_state *st)
 {
+	struct map_session_data *sd = script_rid2sd(st);
 	struct quest_data *qd;
-	int idx = 0, ret = 0;
+	int quest_id, idx = 0, ret = 0;
 
-	qd = quest_get_data(script_rid2sd(st), conv_num(st,& (st->stack->stack_data[st->start+2])));
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end>st->start+3)
+		idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	qd = quest_get_data(sd, quest_id);
 	if(qd) {
-		if(st->end>st->start+3)
-			idx = conv_num(st,& (st->stack->stack_data[st->start+3]));
 		if(idx < 0 || idx >= 3)
 			idx = 0;
 		ret = qd->mob[idx].max;
@@ -12648,8 +12671,9 @@ int buildin_callshop(struct script_state *st)
 			case 2: npc_buysellsel(sd,nd->bl.id,1); break;	//売却ウィンドウ
 			default: clif_npcbuysell(sd,nd->bl.id); break;	//メニューを開く
 		}
-	} else
+	} else {
 		clif_pointshop_list(sd, nd);
+	}
 
 	return 0;
 }
@@ -12787,12 +12811,12 @@ int buildin_mddelete(struct script_state *st)
  */
 int buildin_mdenter(struct script_state *st)
 {
-	int ret;
+	int ret = MDENTER_ERROR;
 	struct map_session_data *sd = script_rid2sd(st);
 
-	nullpo_retr(0, sd);
-
-	ret = memorial_enter(sd, conv_str(st,& (st->stack->stack_data[st->start+2])));
+	if(sd) {
+		ret = memorial_enter(sd, conv_str(st,& (st->stack->stack_data[st->start+2])));
+	}
 
 	push_val(st->stack,C_INT,ret);
 
@@ -12823,17 +12847,19 @@ int buildin_getmdmapname(struct script_state *st)
  */
 int buildin_getmdnpcname(struct script_state *st)
 {
-	char name[24];
+	unsigned char *name;
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int id = script_getmemorialid(st);
 	int m = memorial_mapname2mapid(str, id);
 
-	if(id > 0)
-		snprintf(name, 24, "%s#%.3d", str, id);
-	else
-		memcpy(name, str, 24);
+	if(id > 0) {
+		name = (unsigned char *)aCalloc(strlen(str) + 5, sizeof(unsigned char));
+		sprintf(name, "%s#%03d", str, id);
+	} else {
+		name = (unsigned char *)aStrdup(str);
+	}
 
-	push_str(st->stack,C_STR,(unsigned char *)aStrdup(name));
+	push_str(st->stack,C_STR,name);
 
 	return 0;
 }
