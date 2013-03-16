@@ -1,4 +1,24 @@
 ----------------------------------------
+//1015 [2013/03/17] by Rayce
+
+・スクリプトのswitch構文の直後は } と case と default のみを許可するように強化（script.c）
+
+  以下のコードは今後エラーになります。
+
+	-	script	Tester	-1,{
+	OnInit:
+		switch (rand(3)) {
+			debugmes "insert";
+			case 0:
+				debugmes "0";
+				break;
+			default:
+				debugmes "etc";
+				break;
+		}
+	}
+
+----------------------------------------
 //1014 [2013/03/17] by Rayce
 
 ・battle_calc_base_magic_damage でnullpo判定が正しく出来るように呼び出し順を修正（battle.c）

@@ -1442,7 +1442,16 @@ static unsigned char* parse_syntax(unsigned char *p)
 				disp_error_message("need '{'",p);
 			}
 			add_scriptc(C_FUNC);
-			return p + 1;
+
+			// switchの直後は } とcaseとdefaultのみ許可
+			p = skip_space(p + 1);
+			p2 = skip_word(p);
+			if(*p2 == '}' || (p2 - p == 4 && !strncasecmp(p,"case",4)) || (p2 - p == 7 && !strncasecmp(p,"default",7))) {
+				;
+			} else {
+				disp_error_message("not found '}' or 'case' or 'default'",p);
+			}
+			return p;
 		}
 		break;
 	case 'w':
