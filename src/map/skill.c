@@ -8315,7 +8315,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NC_MAGNETICFIELD:	/* マグネティックフィールド */
 		if(flag&1) {
 			sc = status_get_sc(bl);
-			if(!sc || sc->data[SC_HOVERING].timer == -1 || sc->data[SC_MAGNETICFIELD].timer == -1) {
+			if(!sc || (sc->data[SC_HOVERING].timer == -1 && sc->data[SC_MAGNETICFIELD].timer == -1)) {
 				int sec = skill_get_time(skillid,skilllv) - status_get_agi(bl)*100;
 				if(status_get_mode(bl)&MD_BOSS)
 					sec /= 5;
@@ -8330,7 +8330,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sc = status_get_sc(src);
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			// ホバーリング状態じゃなければ自信にも状態異常
-			if(!sc || sc->data[SC_HOVERING].timer == -1 || sc->data[SC_MAGNETICFIELD].timer == -1) {
+			if(!sc || (sc->data[SC_HOVERING].timer == -1 && sc->data[SC_MAGNETICFIELD].timer == -1)) {
 				int sec = skill_get_time(skillid,skilllv) - status_get_agi(src)*100;
 				if(status_get_mode(src)&MD_BOSS)
 					sec /= 5;
@@ -11317,6 +11317,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		{
 			int splash_count = 0;
 			int i = src->range;
+			int sec;
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
 			if(sg->unit_id == UNT_SANDMAN || sg->unit_id == UNT_CLAYMORETRAP || sg->unit_id == UNT_MAGENTATRAP || sg->unit_id == UNT_COBALTTRAP ||
@@ -11324,6 +11325,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			{
 				i++;
 			}
+			sec = (sg->unit_id == UNT_FIRINGTRAP)? 0: ((sg->unit_id == UNT_CLUSTERBOMB)? 1000: 1500);
 			splash_count = map_foreachinarea(skill_count_target,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
@@ -11334,7 +11336,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 						(BL_CHAR|BL_SKILL),src,tick,splash_count);
 			sg->unit_id = UNT_USED_TRAPS;
 			clif_changelook(&src->bl,LOOK_BASE,sg->unit_id);
-			sg->limit=DIFF_TICK(tick,sg->tick)+1500;
+			sg->limit = DIFF_TICK(tick,sg->tick) + sec;
 		}
 		break;
 
@@ -18235,7 +18237,7 @@ static int skill_chainlightning( struct block_list *bl,va_list ap )
  */
 static int skill_detonator( struct block_list *bl, va_list ap )
 {
-	int ar;
+	int ar, sec = 0;
 	struct block_list *src;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -18256,8 +18258,9 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 		case UNT_FLASHER:
 		case UNT_CLAYMORETRAP:
 		case UNT_CLUSTERBOMB:
-		case UNT_FIRINGTRAP:
 		case UNT_ICEBOUNDTRAP:
+			sec = 1500;
+		case UNT_FIRINGTRAP:
 			ar = unit->range;
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
@@ -18268,6 +18271,7 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 			// クラスターボムは効果範囲を3セル広げる
 			if(sg->unit_id == UNT_CLUSTERBOMB) {
 				ar += 3;
+				sec = 1000;
 			}
 
 			// 罠を発動させる
@@ -18279,7 +18283,7 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 			// 起動した罠の後処理
 			sg->unit_id = UNT_USED_TRAPS;
 			clif_changelook(bl,LOOK_BASE,sg->unit_id);
-			sg->limit = DIFF_TICK(gettick(),sg->tick) + 1500;
+			sg->limit = DIFF_TICK(gettick(),sg->tick) + sec;
 			break;
 
 		case UNT_TALKIEBOX:
@@ -18346,7 +18350,7 @@ static int skill_maelstrom( struct block_list *bl, va_list ap )
  */
 static int skill_trample( struct block_list *bl, va_list ap )
 {
-	int ar,skilllv;
+	int ar, skilllv, sec = 0;
 	struct block_list *src;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -18371,8 +18375,9 @@ static int skill_trample( struct block_list *bl, va_list ap )
 		case UNT_FLASHER:
 		case UNT_CLAYMORETRAP:
 		case UNT_CLUSTERBOMB:
-		case UNT_FIRINGTRAP:
 		case UNT_ICEBOUNDTRAP:
+			sec = 1500;
+		case UNT_FIRINGTRAP:
 			ar = unit->range;
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
@@ -18383,6 +18388,7 @@ static int skill_trample( struct block_list *bl, va_list ap )
 			// クラスターボムは効果範囲を3セル広げる
 			if(sg->unit_id == UNT_CLUSTERBOMB) {
 				ar += 3;
+				sec = 1000;
 			}
 
 			// 罠を発動させる
@@ -18394,7 +18400,7 @@ static int skill_trample( struct block_list *bl, va_list ap )
 			// 起動した罠の後処理
 			sg->unit_id = UNT_USED_TRAPS;
 			clif_changelook(bl,LOOK_BASE,sg->unit_id);
-			sg->limit = DIFF_TICK(gettick(),sg->tick) + 1500;
+			sg->limit = DIFF_TICK(gettick(),sg->tick) + sec;
 			break;
 
 		case UNT_TALKIEBOX:

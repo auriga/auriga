@@ -1412,7 +1412,12 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		atkmin = atkmax;
 	}
 
-	if(type == 0x0a) {
+#ifdef PRE_RENEWAL
+	if(type == 0x0a)
+#else
+	if(type == 0x0a || skill_num == NPC_CRITICALSLASH)
+#endif
+	{
 		/* クリティカル攻撃 */
 		damage += atkmax;
 
@@ -1479,9 +1484,6 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 #ifndef PRE_RENEWAL
 	if(sd) {
 		int t_size = status_get_size(target);
-
-		if(sd->state.arrow_atk)
-			damage += sd->arrow_atk;
 
 		if(!lh)
 			damage += status_get_atk2(src);
@@ -2063,12 +2065,89 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage += atn_rand()%(src_sd->arrow_atk+1);
 		}
 #else
-		if(src_sd) {	// 武器Atkの補正
+		/* （RE）防御無視判定および錐効果ダメージ計算 */
+		switch (skill_num) {
+		case MC_CARTREVOLUTION:
+		case KN_AUTOCOUNTER:
+		case MO_EXTREMITYFIST:
+		case CR_ACIDDEMONSTRATION:
+		case ASC_BREAKER:
+		case NJ_ZENYNAGE:
+		case GN_FIRE_EXPANSION_ACID:
+		case KO_MUCHANAGE:
+			break;
+		default:
+			if( skill_num == WS_CARTTERMINATION && !battle_config.def_ratio_atk_to_carttermination )
+				break;
+			if( skill_num == PA_SHIELDCHAIN && !battle_config.def_ratio_atk_to_shieldchain )
+				break;
+			if(src_sd && t_def1 < 1000000)
+			{
+				// bIgnoreDef系判定
+				ignored_rate  = ignored_rate  - src_sd->ignore_def_ele[t_ele]  - src_sd->ignore_def_race[t_race]  - src_sd->ignore_def_enemy[t_enemy];
+				ignored_rate_ = ignored_rate_ - src_sd->ignore_def_ele_[t_ele] - src_sd->ignore_def_race_[t_race] - src_sd->ignore_def_enemy_[t_enemy];
+				if(t_mode & MD_BOSS) {
+					ignored_rate  -= src_sd->ignore_def_race[RCT_BOSS];
+					ignored_rate_ -= src_sd->ignore_def_race_[RCT_BOSS];
+				} else {
+					ignored_rate  -= src_sd->ignore_def_race[RCT_NONBOSS];
+					ignored_rate_ -= src_sd->ignore_def_race_[RCT_NONBOSS];
+				}
+
+				if(battle_config.left_cardfix_to_right) {
+					// 左手カード補正設定あり
+					ignored_rate -= 100 - ignored_rate_;
+					ignored_rate_ = 100;
+				}
+
+				if(skill_num != CR_GRANDCROSS && skill_num != AM_ACIDTERROR && skill_num != LG_RAYOFGENESIS) {
+					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<10): (1<<11) );
+					int def_fix  = (ignored_rate  > 0)? (t_def1 * ignored_rate  / 100): 0;
+					int def_fix_ = (ignored_rate_ > 0)? (t_def1 * ignored_rate_ / 100): 0;
+
+					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
+					if( !calc_flag.idef && def_fix > 0 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy) || skill_num == MO_INVESTIGATE) ) {
+						if(!calc_flag.idef_) {
+							wd.damage += def_fix / 2;
+							calc_flag.idef = 1;
+						}
+					}
+					if( calc_flag.lh ) {
+						if( !calc_flag.idef_ && def_fix_ > 0 && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
+							if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
+								wd.damage2 += def_fix_ / 2;
+								calc_flag.idef_ = 1;
+								if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
+									wd.damage += def_fix / 2;
+									calc_flag.idef = 1;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// グランドクロス、グランドダークネスはDEF無視を強制解除
+			if(skill_num == CR_GRANDCROSS || skill_num == NPC_GRANDDARKNESS) {
+				calc_flag.idef  = 0;
+				calc_flag.idef_ = 0;
+			}
+			break;
+		}
+
+		// （RE）武器Atkの補正
+		if(src_sd) {
 			int trans_bonus = 0;
 
 			wd.damage += src_sd->plus_atk;
 			if(calc_flag.lh)
 				wd.damage2 += src_sd->plus_atk;
+			if(sd->state.arrow_atk) {
+				wd.damage += sd->arrow_atk;
+				if(calc_flag.lh)
+					wd.damage2 += sd->arrow_atk;
+			}
+
 			if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
 				trans_bonus += 25;
 			if(src_sd->atk_rate != 100 || src_sd->weapon_atk_rate[src_sd->weapontype1] != 0 || src_sd->weapon_atk_rate[src_sd->weapontype2] != 0 || trans_bonus) {
@@ -2229,14 +2308,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage2 += battle_attr_fix(status_get_baseatk(src), s_ele__, status_get_element(target));
 		}
 
-		/* （RE）カードによるダメージ減衰処理２ */
-		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
-			int s_race  = status_get_race(src);
-			cardfix = 100;
-			cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
-			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
-		}
-
 		if(src_sd) {
 			// 星のかけら、気球の適用
 			int hit_bonus  = src_sd->spiritball.num * 3 + src_sd->coin.num * 3 + src_sd->bonus_damage;
@@ -2276,6 +2347,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
 				break;
 			}
+		}
+
+		/* （RE）カードによるダメージ減衰処理２ */
+		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
+			int s_race  = status_get_race(src);
+			cardfix = 100;
+			cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
+			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
 		}
 
 		// （RE）クリティカルダメージ増加
@@ -3386,6 +3465,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(calc_flag.lh)
 			wd.damage2 += tk_power_damage2;
 
+#ifdef PRE_RENEWAL
 		/* 14．防御無視判定および錐効果ダメージ計算 */
 		switch (skill_num) {
 		case KN_AUTOCOUNTER:
@@ -3454,6 +3534,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		}
+#endif
 
 		/* 15．対象の防御力によるダメージの減少 */
 		switch (skill_num) {

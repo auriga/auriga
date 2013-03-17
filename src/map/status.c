@@ -3980,8 +3980,9 @@ int status_get_hit(struct block_list *bl)
 			if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(催涙)
 				hit -= hit*(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2)/100;
 		}
-		if(hit < 1) hit = 1;
 	}
+	if(hit < 1) hit = 1;
+
 	return hit;
 }
 
