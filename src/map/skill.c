@@ -8349,14 +8349,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NC_STEALTHFIELD:		/* ステルスフィールド */
 		{
 			struct skill_unit_group *sg;
+			int type = GetSkillStatusChangeTable(skillid);
+			if(type < 0)
+				break;
 			sc = status_get_sc(src);
-			if(sc && sc->data[GetSkillStatusChangeTable(skillid)].timer != -1) {
-				status_change_end(src,GetSkillStatusChangeTable(skillid),-1);
+			if(sc && sc->data[type].timer != -1) {
+				status_change_end(src,type,-1);
 			}
 			sg = skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
 			if(sg) {
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,sg->bl.id,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,type,skilllv,0,0,sg->bl.id,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
@@ -9028,6 +9031,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SO_SUMMON_TERA:	/* サモンテラ */
 		if(sd) {
 			int elem_id;
+			int type = GetSkillStatusChangeTable(skillid);
+			if(type < 0)
+				break;
+
 			switch(skillid) {
 				case SO_SUMMON_AGNI:   elem_id = 2114 + skilllv - 1; break;
 				case SO_SUMMON_AQUA:   elem_id = 2117 + skilllv - 1; break;
@@ -9036,12 +9043,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 
 			// 精霊召喚中の場合は一旦解除する
-			if(sd->sc.data[GetSkillStatusChangeTable(skillid)].timer != -1)
-				status_change_end(src,GetSkillStatusChangeTable(skillid),-1);
+			if(sd->sc.data[type].timer != -1)
+				status_change_end(src,type,-1);
 
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			elem_create_data(sd,elem_id,skill_get_time(skillid,skilllv)/1000);
-			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(src,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case SO_EL_ACTION:	/* エレメンタルアクション */
@@ -9220,14 +9227,17 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(atn_rand() % 10000 < 1000 * skilllv) {	// 確率暫定
 			int x = bl->x;
 			int y = bl->y;
+			int type = GetSkillStatusChangeTable(skillid);
+			if(type < 0)
+				break;
 			unit_movepos(bl,src->x,src->y,0);
 			unit_movepos(src,x,y,0);
 			if(!(status_get_mode(bl)&MD_BOSS)) {	// ボス属性以外
-				if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),1000,status_get_lv(src)))	// 確率暫定
-					status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
+				if(atn_rand() % 10000 < status_change_rate(bl,type,1000,status_get_lv(src)))	// 確率暫定
+					status_change_pretimer(bl,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
 			}
-			if(atn_rand() % 10000 < status_change_rate(src,GetSkillStatusChangeTable(skillid),1000,status_get_lv(bl)))	// 確率暫定
-				status_change_pretimer(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
+			if(atn_rand() % 10000 < status_change_rate(src,type,1000,status_get_lv(bl)))	// 確率暫定
+				status_change_pretimer(src,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
 		}
 		break;
 	case KO_IZAYOI:		/* 十六夜 */

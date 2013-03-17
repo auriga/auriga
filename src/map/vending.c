@@ -274,7 +274,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
  * 露店開設
  *------------------------------------------
  */
-void vending_openvending(struct map_session_data *sd, short count, char *shop_title, bool is_open, const unsigned char *data)
+void vending_openvending(struct map_session_data *sd, short count, const char *shop_title, bool is_open, const unsigned char *data)
 {
 	int i, vending_skill_lv;
 
@@ -308,9 +308,6 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 		trade_tradecancel(sd);
 	if( sd->chatID )
 		chat_leavechat(sd, 0);
-
-	// normal client send NULL -> force it (against hacker)
-	shop_title[79] = '\0';
 
 	// check if at least 1 item, and not more than possible
 	if( count < 1 || count > MAX_VENDING || count > 2 + vending_skill_lv )
@@ -370,8 +367,9 @@ void vending_openvending(struct map_session_data *sd, short count, char *shop_ti
 	sd->vender_id = ++vending_id;
 	sd->vend_num  = i;
 	sd->state.store = STORE_TYPE_VENDING;
-	memset(sd->message, 0, sizeof(sd->message));
 	strncpy(sd->message, shop_title, 80);
+	sd->message[79] = '\0';
+
 	if( clif_openvending(sd) > 0 )
 	{
 		clif_showvendingboard(&sd->bl, shop_title, -1);

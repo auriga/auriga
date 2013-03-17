@@ -105,7 +105,7 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
  * @param count アイテムデータ個数
  *------------------------------------------
  */
-void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool result, char *store_name, const unsigned char *data, int count)
+void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool result, const char *store_name, const unsigned char *data, int count)
 {
 	int i, weight;
 	struct item_data *id;
@@ -155,9 +155,6 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
 		return;
 	}
-
-	// 末尾にnull文字をセット
-	store_name[79] = '\0';
 
 	// デタッチさせる
 	if( sd->npc_id )
@@ -260,8 +257,9 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	sd->buyer_id = ++buyingstore_id;
 	sd->buyingstore.limit_zeny = limit_zeny;
 	sd->buyingstore.count = i;
-	memset(sd->message, 0, sizeof(sd->message));
 	strncpy(sd->message, store_name, 80);
+	sd->message[79] = '\0';
+
 	clif_showmylist_buyingstore(sd);
 	clif_show_buyingstore(&sd->bl, sd->message, -1);
 

@@ -1,4 +1,15 @@
 ----------------------------------------
+//1017 [2013/03/18] by Rayce
+
+・1011以降、clif_GlobalMessage2() でメモリリークが発生していたのを修正（clif.c）
+	reported by ChowZenkiさん, thx a lot!
+
+・露店開設および買取露店開設の関数の汎用性を上げるために、タイトルの \0 補正を
+  clif.cに移動する（clif.c, buyingstore.*, vending.*）
+
+・GetSkillStatusChangeTable の呼び出しのまとめ（skill.c）
+
+----------------------------------------
 //1016 [2013/03/18] by refis
 
 ・物理、魔法ダメージの基礎計算をpreとREで分割（battle.c）

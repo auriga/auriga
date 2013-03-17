@@ -9490,6 +9490,8 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 	memcpy(WBUFP(buf,12), mes, len);
 	clif_send(buf, WBUFW(buf,2), bl, AREA_CHAT_WOC);
 
+	aFree(buf);
+
 	return;
 }
 
@@ -17829,6 +17831,9 @@ static void clif_parse_OpenVending(int fd,struct map_session_data *sd, int cmd)
 	bool is_open = ( RFIFOB(fd,GETPACKETPOS(cmd,2)) ) ? true : false;
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,3));
 
+	// normal client send NULL -> force it (against hacker)
+	shop_title[79] = '\0';
+
 	vending_openvending(sd, ( len <= 0 ) ? 0 : len/8, shop_title, is_open, data);
 
 	return;
@@ -19540,6 +19545,9 @@ static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, in
 	bool result = ( RFIFOB(fd,GETPACKETPOS(cmd,2)) ) ? true : false;
 	char *store_name = RFIFOP(fd,GETPACKETPOS(cmd,3));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,4));
+
+	// 末尾にnull文字をセット
+	store_name[79] = '\0';
 
 	buyingstore_openstore(sd, limit_zeny, result, store_name, data, ( len <= 0 ) ? 0 : len/8);
 
