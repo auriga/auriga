@@ -2286,7 +2286,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// クリティカル時ダメージ増加
 				if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1002)
 					trans_bonus += 5;
-				DMG_FIX( src_sd->critical_damage + trans_bonus, 100 );
+				wd.damage = wd.damage * (src_sd->critical_damage + trans_bonus) / 100;
 			}
 		}
 
@@ -4163,7 +4163,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 #ifndef PRE_RENEWAL
 	/* （RE）クリティカル */
-	if(wd.type == 0x0a || skill_num == NPC_CRITICALSLASH || skill_num == LG_PINPOINTATTACK ||
+	if(wd.type == 0x0a || skill_num == LG_PINPOINTATTACK ||
 		((calc_flag.idef || calc_flag.idef_) && (skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING))
 	)
 		wd.damage = wd.damage * 140 / 100;
@@ -4449,7 +4449,7 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		damage += matk2;
 	// 過剰精錬の計算
 	if(sd && sd->overrefine)
-		damage += (atn_rand()%sd->overrefine+1);
+		damage += (atn_rand()%sd->overrefine)+1;
 #endif
 
 	// 魔法力増幅

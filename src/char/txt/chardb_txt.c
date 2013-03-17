@@ -525,7 +525,7 @@ static int mmo_char_fromstr(char *str,struct mmo_chardata *p)
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
 		// Auriga-0995以降の形式
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
 			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
