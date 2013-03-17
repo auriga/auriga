@@ -266,7 +266,11 @@ void skill_marionette2(struct map_session_data *dstsd,int src_id);
 int skill_shadowform(struct map_session_data *sd,int target_id);
 void skill_shadowform2(struct map_session_data *dstsd);
 
-#define skill_calc_heal(bl,skill_lv) ( (status_get_lv(bl) + status_get_int(bl)) / 8 * (4 + (skill_lv) * 8) )
+#ifdef PRE_RENEWAL
+	#define skill_calc_heal(bl,skill_lv) ( (status_get_lv(bl) + status_get_int(bl)) / 8 * (4 + (skill_lv) * 8) )
+#else
+	#define skill_calc_heal(bl,skill_lv) ( ((status_get_lv(bl) + status_get_int(bl)) / 5) * 3 * skill_lv )
+#endif
 int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal);
 
 int skill_castend_id(int tid, unsigned int tick, int id, void *data);

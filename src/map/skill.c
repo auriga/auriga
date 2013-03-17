@@ -5083,13 +5083,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal = 0; 	// バーサーク中はヒール０
 			if(dstsd && pc_isgear(dstsd))
 				heal = 0; 	// 魔道ギア搭乗中はヒール０
-			if(sd) {
-				int skill = pc_checkskill(sd,HP_MEDITATIO);
-				if(skill > 0)	// メディタティオ
-					heal += heal * (skill * 2) / 100;
-				if(dstsd && sd->status.partner_id == dstsd->status.char_id && (sd->s_class.job == PC_CLASS_SNV || sd->s_class.job == PC_CLASS_ESNV) && sd->sex == SEX_FEMALE)
-					heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
-			}
+			if(sd && dstsd && sd->status.partner_id == dstsd->status.char_id && (sd->s_class.job == PC_CLASS_SNV || sd->s_class.job == PC_CLASS_ESNV) && sd->sex == SEX_FEMALE)
+				heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			if(skillid == AB_HIGHNESSHEAL)
 				heal = heal * (170 + 30 * skilllv) / 100;
 			if(sc && sc->data[SC_KAITE].timer != -1) {	// カイト
@@ -7942,11 +7937,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			if(skillid == AB_CHEAL) {
 				int heal;
-				int lv2 = pc_checkskill(sd,HP_MEDITATIO);
 
 				heal = skill_fix_heal(&sd->bl, bl, skillid, skill_calc_heal(&sd->bl, lv));
-				if(lv2 > 0)
-					heal += heal * (lv2 * 2) / 100;
 
 				if(dstsd) {
 					if(dstsd->sc.data[SC_BERSERK].timer != -1)
@@ -18654,7 +18646,7 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 {
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc = NULL;
-	int i;
+	int i, skill = 0, rate = 0;
 
 	nullpo_retr(0, src);
 
@@ -18671,14 +18663,32 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 	if(sc && sc->data[SC_DEATHHURT].timer != -1)
 		heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
 
-	if(sd && sd->skill_healup.count > 0 && heal > 0 && skill_id > 0) {
-		for(i = 0; i < sd->skill_healup.count; i++) {
-			if(skill_id == sd->skill_healup.id[i]) {
-				heal += heal * sd->skill_healup.rate[i] / 100;
-				break;
+	if(sd) {
+		if(sd->skill_healup.count > 0 && heal > 0 && skill_id > 0) {
+			for(i = 0; i < sd->skill_healup.count; i++) {
+				if(skill_id == sd->skill_healup.id[i]) {
+					rate += sd->skill_healup.rate[i];
+					break;
+				}
 			}
 		}
+
+		// メディタティオ
+		skill += pc_checkskill(sd,HP_MEDITATIO);
 	}
+
+#ifndef PRE_RENEWAL
+	if(skill > 0)
+		rate += skill * 2;
+#endif
+
+	if(rate > 0)
+		heal += heal * rate / 100;
+
+#ifndef PRE_RENEWAL
+	// Matkの加算
+	heal += battle_calc_base_magic_damage(src);
+#endif
 
 	if(tsd && tsd->skill_subhealup.count > 0 && heal > 0 && skill_id > 0) {
 		for(i = 0; i < tsd->skill_subhealup.count; i++) {
@@ -18688,6 +18698,11 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 			}
 		}
 	}
+
+#ifdef PRE_RENEWAL
+	if(skill > 0)	// メディタティオ
+		heal += heal * (skill*2) / 100;
+#endif
 
 	return heal;
 }

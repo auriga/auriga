@@ -369,7 +369,11 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 	if(damage < 0 && rate < 0)	// 負×負の場合は結果を負にする
 		rate = -rate;
 
+#ifdef PRE_RENEWAL
 	return damage * rate / 100;
+#else
+	return damage + (damage * (rate - 100) / 100);
+#endif
 }
 
 /*==========================================
@@ -1284,7 +1288,10 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 static int battle_calc_base_damage(struct block_list *src,struct block_list *target,int skill_num,int type,int lh)
 {
 	int damage = 0;
-	int atkmin, atkmax, weapon;
+	int atkmin, atkmax;
+#ifdef PRE_RENEWAL
+	int weapon;
+#endif
 	struct map_session_data *sd   = NULL;
 	struct status_change *sc = NULL;
 
@@ -1298,18 +1305,34 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 	if(sd) {
 		int watk   = (lh == 0)? status_get_atk(src): status_get_atk_(src);
 		int dex    = status_get_dex(src);
-		int t_size = status_get_size(target);
 		int idx    = (lh == 0)? sd->equip_index[EQUIP_INDEX_RARM]: sd->equip_index[EQUIP_INDEX_LARM];
+#ifdef PRE_RENEWAL
+		int t_size = status_get_size(target);
+#else
+		short wlv  = 0;
+		int cost   = 0;
+		int str    = status_get_str(src);
+
+		// Dex依存武器はDexを基本値とする
+		if( sd->status.weapon == WT_BOW ||
+			sd->status.weapon == WT_MUSICAL ||
+			sd->status.weapon == WT_WHIP ||
+			(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE) )
+			str = dex;
+#endif
 
 		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc && sc->data[SC_CHANGE].timer != -1)) {
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			damage = status_get_matk1(src);
+#ifdef PRE_RENEWAL
 		} else {
 			damage = status_get_baseatk(src);
+#endif
 		}
 
 		atkmin = dex;	// 最低ATKはDEXで初期化
 
+#ifdef PRE_RENEWAL
 		if(idx >= 0 && sd->inventory_data[idx])
 			atkmin = atkmin * (80 + sd->inventory_data[idx]->wlv * 20) / 100;
 		if(sd->state.arrow_atk)						// 武器が弓矢の場合
@@ -1349,11 +1372,29 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			damage += (atn_rand() % sd->overrefine ) + 1;
 		if(lh && sd->overrefine_ > 0)
 			damage += (atn_rand() % sd->overrefine_) + 1;
+#else
+		// 武器があるなら武器Lvとコスト計算
+		if(idx >= 0 && sd->inventory_data[idx]) {
+			int dstr = str/10;
+			damage = str + dstr*dstr*dstr/60;	// Strボーナス計算
+			wlv = sd->inventory_data[idx]->wlv;
+			cost = (watk*2/3) - (dstr*dstr) * (80 + wlv * 20) / 100;
+			if(cost < 0)	// コストは0以下にならない
+				cost = 0;
+		}
+		// 最大武器Atkと最低武器Atk計算
+		atkmin = atkmin * (80 + wlv * 20) / 100 - cost;
+		atkmax = watk * (140 + wlv * 10) / 100 - cost;
+		if(atkmin > atkmax)
+			atkmin = atkmax;
+#endif
 	} else {
+#ifdef PRE_RENEWAL
 		if(battle_config.enemy_str)
 			damage = status_get_baseatk(src);
 		else
 			damage = 0;
+#endif
 		if(skill_num == HW_MAGICCRASHER || (skill_num == 0 && sc && sc->data[SC_CHANGE].timer != -1)) {
 			// マジッククラッシャーまたはメンタルチェンジ中の通常攻撃ならMATKで殴る
 			atkmin = status_get_matk1(src);
@@ -1375,14 +1416,17 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		/* クリティカル攻撃 */
 		damage += atkmax;
 
-		// 点穴 -反-
-		if(sc && sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-			damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+		if(sc) {
+			// 点穴 -反-
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+				damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+			}
+			// ストライキング
+			if(sc->data[SC_STRIKING].timer != -1) {
+				damage += sc->data[SC_STRIKING].val3;
+			}
 		}
-		// ストライキング
-		if(sc && sc->data[SC_STRIKING].timer != -1) {
-			damage += sc->data[SC_STRIKING].val3;
-		}
+#ifdef PRE_RENEWAL
 		if(sd) {
 			int trans_bonus = 0;
 
@@ -1400,6 +1444,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			if(sd->state.arrow_atk)
 				damage += sd->arrow_atk;
 		}
+#endif
 	} else {
 		/* 通常攻撃・スキル攻撃 */
 		if(atkmax > atkmin)
@@ -1407,14 +1452,17 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		else
 			damage += atkmin;
 
-		// 点穴 -反-
-		if(sc && sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-			damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+		if(sc) {
+			// 点穴 -反-
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
+				damage += sc->data[SC_GENTLETOUCH_CHANGE].val2;
+			}
+			// ストライキング
+			if(sc->data[SC_STRIKING].timer != -1) {
+				damage += sc->data[SC_STRIKING].val3;
+			}
 		}
-		// ストライキング
-		if(sc && sc->data[SC_STRIKING].timer != -1) {
-			damage += sc->data[SC_STRIKING].val3;
-		}
+#ifdef PRE_RENEWAL
 		if(sd) {
 			int trans_bonus = 0;
 
@@ -1425,7 +1473,45 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
 			}
 		}
+#endif
 	}
+
+#ifndef PRE_RENEWAL
+	if(sd) {
+		int t_size = status_get_size(target);
+
+		if(sd->state.arrow_atk)
+			damage += sd->arrow_atk;
+
+		if(!lh)
+			damage += status_get_atk2(src);
+		if(lh)
+			damage += status_get_atk_2(src);
+
+		/* 過剰精錬ボーナス */
+		if( sd->status.weapon != WT_BOW &&	// 弓と銃には過剰精錬ボーナスがない
+			(sd->status.weapon < WT_HANDGUN || sd->status.weapon > WT_GRENADE) ) {
+			if(!lh && sd->overrefine > 0)
+				damage += (atn_rand() % sd->overrefine ) + 1;
+			if(lh && sd->overrefine_ > 0)
+				damage += (atn_rand() % sd->overrefine_) + 1;
+		}
+
+		/* サイズ修正 */
+		if(pc_isriding(sd) && (sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR) && t_size == 1) {
+			// ペコ騎乗していて、槍で中型を攻撃した場合はサイズ修正を100にする
+		} else if(pc_isdragon(sd) && (sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR)) {
+			// ドラゴン騎乗中の槍はサイズ修正を100にする
+		} else if(sc && sc->data[SC_WEAPONPERFECTION].timer != -1) {
+			// ウェポンパーフェクション
+		} else if(sd->special_state.no_sizefix) {
+			// ドレイクカード
+		} else {
+			int rate = (lh == 0)? sd->atkmods[t_size]: sd->atkmods_[t_size];
+			damage = (damage * rate) / 100;
+		}
+	}
+#endif
 
 	return damage;
 }
@@ -1963,17 +2049,33 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* ９．基本ダメージの算出 */
 		wd.damage = battle_calc_base_damage(src, target, skill_num, wd.type, 0);
+#ifdef PRE_RENEWAL
 		if(calc_flag.lh)
 			wd.damage2 = battle_calc_base_damage(src, target, skill_num, wd.type, 1);
+#else
+		if(calc_flag.lh)
+			wd.damage2 = battle_calc_base_damage(src, target, skill_num, 0, 1);
+#endif
 
+#ifdef PRE_RENEWAL
 		if(wd.type == 0) {	// クリティカルでないとき矢のダメージを加算
 			if(src_sd && src_sd->state.arrow_atk && src_sd->arrow_atk > 0)
 				wd.damage += atn_rand()%(src_sd->arrow_atk+1);
 		}
+#else
+		if(src_sd) {	// 武器Atkの補正
+			int trans_bonus = 0;
 
-#ifndef PRE_RENEWAL
-		if(src_sd) {
 			wd.damage += src_sd->plus_atk;
+			if(calc_flag.lh)
+				wd.damage2 += src_sd->plus_atk;
+			if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
+				trans_bonus += 25;
+			if(src_sd->atk_rate != 100 || src_sd->weapon_atk_rate[src_sd->weapontype1] != 0 || src_sd->weapon_atk_rate[src_sd->weapontype2] != 0 || trans_bonus) {
+				wd.damage = (wd.damage * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype1] + trans_bonus)) / 100;
+				if(calc_flag.lh)
+					wd.damage2 = (wd.damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype2] + trans_bonus)) / 100;
+			}
 		}
 #endif
 
@@ -1993,6 +2095,211 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		damage_ot += wd.damage;
 		if(calc_flag.lh)
 			damage_ot2 += wd.damage2;
+
+#ifndef PRE_RENEWAL
+		/* （RE）カードによるダメージ追加処理 */
+		if( src_sd && wd.damage > 0 && calc_flag.rh ) {
+			if(!src_sd->state.arrow_atk) {	// 弓矢以外
+				if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
+					wd.damage = wd.damage*(100+src_sd->addrace[t_race])/100;	// 種族によるダメージ修正
+					wd.damage = wd.damage*(100+src_sd->addsize[t_size])/100;	// サイズによるダメージ修正
+					wd.damage = wd.damage*(100+src_sd->addele[t_ele])/100;	// 属性によるダメージ修正
+					wd.damage = wd.damage*(100+src_sd->addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正
+					wd.damage = wd.damage*(100+src_sd->addgroup[t_group])/100;	// グループによるダメージ修正
+				} else {
+					wd.damage = wd.damage*(100+src_sd->addrace[t_race]+src_sd->addrace_[t_race])/100;		// 種族によるダメージ修正(左手による追加あり)
+					wd.damage = wd.damage*(100+src_sd->addsize[t_size]+src_sd->addsize_[t_size])/100;		// サイズによるダメージ修正(左手による追加あり)
+					wd.damage = wd.damage*(100+src_sd->addele[t_ele]+src_sd->addele_[t_ele])/100;		// 属性によるダメージ修正(左手による追加あり)
+					wd.damage = wd.damage*(100+src_sd->addenemy[t_enemy]+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正(左手による追加あり)
+					wd.damage = wd.damage*(100+src_sd->addgroup[t_group]+src_sd->addgroup_[t_group])/100;	// グループによるダメージ修正(左手による追加あり)
+				}
+			} else { // 弓矢
+				wd.damage = wd.damage*(100+src_sd->addrace[t_race]+src_sd->arrow_addrace[t_race])/100;	// 種族によるダメージ修正(弓矢による追加あり)
+				wd.damage = wd.damage*(100+src_sd->addsize[t_size]+src_sd->arrow_addsize[t_size])/100;	// サイズによるダメージ修正(弓矢による追加あり)
+				wd.damage = wd.damage*(100+src_sd->addele[t_ele]+src_sd->arrow_addele[t_ele])/100;		// 属性によるダメージ修正(弓矢による追加あり)
+				wd.damage = wd.damage*(100+src_sd->addenemy[t_enemy]+src_sd->arrow_addenemy[t_enemy])/100;	// 敵タイプによるダメージ修正(弓矢による追加あり)
+				wd.damage = wd.damage*(100+src_sd->addgroup[t_group]+src_sd->arrow_addgroup[t_group])/100;	// グループによるダメージ修正(弓矢による追加あり)
+			}
+			if(t_mode & MD_BOSS) {	// ボス
+				if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外なら
+					if(!battle_config.left_cardfix_to_right) {
+						// 左手カード補正設定無し
+						wd.damage = wd.damage*(100+src_sd->addrace[RCT_BOSS])/100;					// ボスモンスターに追加ダメージ
+					} else {
+						// 左手カード補正設定あり
+						wd.damage = wd.damage*(100+src_sd->addrace[RCT_BOSS]+src_sd->addrace_[RCT_BOSS])/100;	// ボスモンスターに追加ダメージ(左手による追加あり)
+					}
+				} else {	// 弓矢攻撃
+					wd.damage = wd.damage*(100+src_sd->addrace[RCT_BOSS]+src_sd->arrow_addrace[RCT_BOSS])/100;		// ボスモンスターに追加ダメージ(弓矢による追加あり)
+				}
+			} else {		// ボスじゃない
+				if(!src_sd->state.arrow_atk) {	// 弓矢攻撃以外
+					if(!battle_config.left_cardfix_to_right) {
+						// 左手カード補正設定無し
+						wd.damage = wd.damage*(100+src_sd->addrace[RCT_NONBOSS])/100;				// ボス以外モンスターに追加ダメージ
+					} else {
+						// 左手カード補正設定あり
+						wd.damage = wd.damage*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->addrace_[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(左手による追加あり)
+					}
+				} else {
+					wd.damage = wd.damage*(100+src_sd->addrace[RCT_NONBOSS]+src_sd->arrow_addrace[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ(弓矢による追加あり)
+				}
+			}
+			// 特定Class用補正処理(少女の日記→ボンゴン用？)
+			for(i=0; i<src_sd->add_damage_class_count; i++) {
+				if(src_sd->add_damage_classid[i] == t_class) {
+					wd.damage = wd.damage*(100+src_sd->add_damage_classrate[i])/100;
+					break;
+				}
+			}
+		}
+
+		/* （RE）カードによる左手ダメージ追加処理 */
+		if( src_sd && wd.damage2 > 0 && calc_flag.lh ) {
+//			if(!battle_config.left_cardfix_to_right) {	// 左手カード補正設定無し
+				wd.damage2 = wd.damage2*(100+src_sd->addrace_[t_race])/100;	// 種族によるダメージ修正左手
+				wd.damage2 = wd.damage2*(100+src_sd->addsize_[t_size])/100;	// サイズによるダメージ修正左手
+				wd.damage2 = wd.damage2*(100+src_sd->addele_[t_ele])/100;	// 属性によるダメージ修正左手
+				wd.damage2 = wd.damage2*(100+src_sd->addenemy_[t_enemy])/100;	// 敵タイプによるダメージ修正左手
+				wd.damage2 = wd.damage2*(100+src_sd->addgroup_[t_group])/100;	// グループによるダメージ修正左手
+				if(t_mode & MD_BOSS)	// ボス
+					wd.damage2 = wd.damage2*(100+src_sd->addrace_[RCT_BOSS])/100;		// ボスモンスターに追加ダメージ左手
+				else
+					wd.damage2 = wd.damage2*(100+src_sd->addrace_[RCT_NONBOSS])/100;	// ボス以外モンスターに追加ダメージ左手
+//			}
+			// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
+			for(i=0; i<src_sd->add_damage_class_count_; i++) {
+				if(src_sd->add_damage_classid_[i] == t_class) {
+					wd.damage2 = wd.damage2*(100+src_sd->add_damage_classrate_[i])/100;
+					break;
+				}
+			}
+		}
+
+		/* （RE）カードによるダメージ減衰処理 */
+		if( target_sd && (wd.damage > 0 || wd.damage2 > 0 || damage_sbr > 0) && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
+			int s_enemy = status_get_enemy_type(src);
+			int s_size  = status_get_size(src);
+			int s_group = status_get_group(src);
+			int ele_type= status_get_elem_type(src);
+			cardfix = 100;
+			if (s_ele == ELE_NONE)
+				cardfix = cardfix*(100-target_sd->subele[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+			else
+				cardfix = cardfix*(100-target_sd->subele[s_ele])/100;		// 属性によるダメージ耐性
+			if (ele_type == ELE_NONE)
+				cardfix = cardfix*(100-target_sd->def_eleenemy[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+			else
+				cardfix = cardfix*(100-target_sd->def_eleenemy[ele_type])/100;		// 敵属性によるダメージ耐性
+			cardfix = cardfix*(100-target_sd->subenemy[s_enemy])/100;		// 敵タイプによるダメージ耐性
+			cardfix = cardfix*(100-target_sd->subsize[s_size])/100;			// サイズによるダメージ耐性
+			cardfix = cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
+
+			if(status_get_mode(src) & MD_BOSS)
+				cardfix = cardfix*(100-target_sd->subrace[RCT_BOSS])/100;	// ボスからの攻撃はダメージ減少
+			else
+				cardfix = cardfix*(100-target_sd->subrace[RCT_NONBOSS])/100;	// ボス以外からの攻撃はダメージ減少
+
+			// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
+			for(i=0; i<target_sd->add_def_class_count; i++) {
+				if(target_sd->add_def_classid[i] == status_get_class(src)) {
+					cardfix = cardfix*(100-target_sd->add_def_classrate[i])/100;
+					break;
+				}
+			}
+			if(wd.flag&BF_LONG && !(src_md && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
+				cardfix = cardfix*(100-target_sd->long_attack_def_rate)/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
+			if(wd.flag&BF_SHORT)
+				cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// 近距離攻撃はダメージ減少(該当無し？)
+			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
+
+			damage_sbr = damage_sbr * cardfix / 100;	// カード補正によるソウルブレイカーの魔法ダメージ減少
+		}
+
+		/* （RE）属性の適用 */
+		wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
+		if(calc_flag.lh)
+			wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
+
+		// （RE）ステータスAtkを加算
+		if(src_sd || (!src_sd && battle_config.enemy_str)) {
+			int s_ele__ = ELE_NEUTRAL;		// 基本無属性
+			wd.damage += battle_attr_fix(status_get_baseatk(src), s_ele__, status_get_element(target));
+			if(calc_flag.lh)
+				wd.damage2 += battle_attr_fix(status_get_baseatk(src), s_ele__, status_get_element(target));
+		}
+
+		/* （RE）カードによるダメージ減衰処理２ */
+		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
+			int s_race  = status_get_race(src);
+			cardfix = 100;
+			cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
+			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
+		}
+
+		if(src_sd) {
+			// 星のかけら、気球の適用
+			int hit_bonus  = src_sd->spiritball.num * 3 + src_sd->coin.num * 3 + src_sd->bonus_damage;
+			int hit_damage = hit_bonus + src_sd->star + src_sd->ranker_weapon_bonus;
+
+			if(skill_num == NJ_KUNAI) {	// 苦無投げ
+				if(src_sd->arrow_atk) {
+					hit_damage += src_sd->arrow_atk * 3;
+				}
+				wd.damage += hit_damage * 3;
+			} else if(skill_num != NC_ARMSCANNON) {
+				wd.damage += hit_damage;
+				if(calc_flag.lh)
+					wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
+			}
+
+			switch(skill_num) {
+			case MC_CARTREVOLUTION:
+		    case MO_INVESTIGATE:
+		    case MO_EXTREMITYFIST:
+		    case CR_GRANDCROSS:
+		    case NPC_GRANDDARKNESS:
+			case PA_SHIELDCHAIN:
+			case CR_ACIDDEMONSTRATION:
+			case ASC_BREAKER:
+		    case NJ_ZENYNAGE:
+			case SO_VARETYR_SPEAR:
+		    case LG_RAYOFGENESIS:
+		    case GN_FIRE_EXPANSION_ACID:
+			case KO_MUCHANAGE:
+				break;
+			default:
+				if(skill_lv < 0)
+					break;
+				wd.damage = battle_addmastery(src_sd,target,wd.damage,0);
+				if(calc_flag.lh)
+					wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
+				break;
+			}
+		}
+
+		// （RE）クリティカルダメージ増加
+		if(wd.type == 0x0a) {
+			if(src_sd) {
+				int trans_bonus = 100;
+
+				// クリティカル時ダメージ増加
+				if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1002)
+					trans_bonus += 5;
+				DMG_FIX( src_sd->critical_damage + trans_bonus, 100 );
+			}
+		}
+
+		if( src_sd && wd.damage > 0 && calc_flag.rh ) {
+			// （RE）カード効果による特定レンジ攻撃のダメージ増幅
+			if(wd.flag&BF_SHORT) {
+				wd.damage = wd.damage * (100+src_sd->short_weapon_damege_rate) / 100;
+			}
+			if(wd.flag&BF_LONG) {
+				wd.damage = wd.damage * (100+src_sd->long_weapon_damege_rate) / 100;
+			}
+		}
+#endif
 
 		/* スキル倍率計算に加算 */
 		if(sc) {
@@ -3161,8 +3468,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KO_MUCHANAGE:
 			break;
 		default:
+#ifdef PRE_RENEWAL
 			if(wd.type != 0)	// クリティカル時は無効
 				break;
+#endif
 			// 太陽と月と星の融合 DEF無視
 			if(sc && sc->data[SC_FUSION].timer != -1)
 				calc_flag.idef = 1;
@@ -3248,8 +3557,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							wd.damage = wd.damage - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
+#ifdef PRE_RENEWAL
 							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot * (100 - t_def1_fix) /100;
+#else
+							wd.damage = wd.damage * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
+							damage_ot = damage_ot * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
+#endif
 						}
 					}
 				}
@@ -3264,8 +3578,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							wd.damage2 = wd.damage2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot2 = damage_ot2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
+#ifdef PRE_RENEWAL
 							wd.damage2 = wd.damage2 * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot2 = damage_ot2 * (100 - t_def1_fix) /100;
+#else
+							wd.damage2 = wd.damage2 * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
+							damage_ot2 = damage_ot2 * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
+#endif
 						}
 					}
 				}
@@ -3355,6 +3674,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* 17．精錬ダメージの追加 */
 		if( src_sd ) {
+#ifdef PRE_RENEWAL
 			switch(skill_num) {
 			case MO_INVESTIGATE:
 			case MO_EXTREMITYFIST:
@@ -3370,6 +3690,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage2 += status_get_atk_2(src);
 				break;
 			}
+#endif
 			switch (skill_num) {
 			case CR_SHIELDBOOMERANG:	// シールドブーメラン
 				if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
@@ -3433,6 +3754,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		/* 18．スキル修正２（修練系）*/
 		// 修練ダメージ(右手のみ) ソニックブロー時は別処理（1撃に付き1/8適応)
 		if(src_sd) {
+#ifdef PRE_RENEWAL
 			switch(skill_num) {
 		    case MO_INVESTIGATE:
 		    case MO_EXTREMITYFIST:
@@ -3453,6 +3775,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage2 = battle_addmastery(src_sd,target,wd.damage2,1);
 				break;
 			}
+#endif
 
 			if(target->type & BL_CHAR) {
 				int rate = 0;
@@ -3493,6 +3816,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
+#ifdef PRE_RENEWAL
 	/* 20．カードによるダメージ追加処理 */
 	if( src_sd && wd.damage > 0 && calc_flag.rh ) {
 		cardfix = 100;
@@ -3600,6 +3924,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		wd.damage2 = wd.damage2*cardfix/100;	// カード補正による左手ダメージ増加
 	}
+#endif
 
 	/* 22．ソウルブレイカーの魔法ダメージとランダムダメージ計算 */
 	if(skill_num == ASC_BREAKER) {
@@ -3607,6 +3932,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		damage_sbr += 500 + (atn_rand() % 500);	// ランダムダメージ
 	}
 
+#ifdef PRE_RENEWAL
 	/* 23．カードによるダメージ減衰処理 */
 	if( target_sd && (wd.damage > 0 || wd.damage2 > 0 || damage_sbr > 0) ) {	// 対象がPCの場合
 		int s_race  = status_get_race(src);
@@ -3648,6 +3974,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		damage_sbr = damage_sbr * cardfix / 100;	// カード補正によるソウルブレイカーの魔法ダメージ減少
 	}
+#endif
 
 	/* 24．アイテムボーナスのフラグ処理 */
 	if(src_sd && wd.flag&BF_WEAPON) {
@@ -3728,10 +4055,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(wd.damage  < 0) wd.damage  = 0;
 	if(wd.damage2 < 0) wd.damage2 = 0;
 
+#ifdef PRE_RENEWAL
 	/* 26．属性の適用 */
 	wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 	if(calc_flag.lh)
 		wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
+#endif
 
 	/* 27．スキル修正４（追加ダメージ） */
 	if(sc && sc->data[SC_MAGNUM].timer != -1) {	// マグナムブレイク状態
@@ -3813,6 +4142,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		break;
 	}
 
+#ifdef PRE_RENEWAL
 	if(src_sd) {
 		// 星のかけら、気球の適用
 		int hit_bonus  = src_sd->spiritball.num * 3 + src_sd->coin.num * 3 + src_sd->bonus_damage;
@@ -3829,6 +4159,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
 		}
 	}
+#endif
+
+#ifndef PRE_RENEWAL
+	/* （RE）クリティカル */
+	if(wd.type == 0x0a || skill_num == NPC_CRITICALSLASH || skill_num == LG_PINPOINTATTACK ||
+		((calc_flag.idef || calc_flag.idef_) && (skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING))
+	)
+		wd.damage = wd.damage * 140 / 100;
+#endif
 
 	/* 29．必中固定ダメージ */
 	if(src_sd && src_sd->special_state.fix_damage)
@@ -4053,13 +4392,43 @@ int battle_calc_base_magic_damage(struct block_list *src)
 {
 	int matk1, matk2, damage = 0;
 	struct status_change *sc = NULL;
+#ifndef PRE_RENEWAL
+	struct map_session_data *sd = NULL;
+#endif
 
 	nullpo_retr(1, src);
 
-	matk1 = status_get_matk1(src);	// 最大Matk
-	matk2 = status_get_matk2(src);	// 最低Matk
+	matk1 = status_get_matk1(src);	// pre:最大Matk, RE:武器Matk
+	matk2 = status_get_matk2(src);	// pre:最低Matk, RE:ステータスMatk
 
 	sc = status_get_sc(src);
+
+#ifndef PRE_RENEWAL
+	if(src->type == BL_PC)
+		sd = (struct map_session_data *)src;
+
+	if(sd) {
+		short wlv = 0;
+		int cost  = 0;
+		int int_  = status_get_int(src);
+		int idx   = sd->equip_index[EQUIP_INDEX_RARM];
+
+		damage = matk2;		// ステータスMatkを確保
+
+		// 武器があるなら武器Lvとコスト計算
+		if(idx >= 0 && sd->inventory_data[idx]) {
+			wlv  = sd->inventory_data[idx]->wlv;
+			cost = matk1-(int_/5)*(8+wlv);
+			if(cost < 0)	// コストは0以下にならない
+				cost = 0;
+		}
+		// 最大武器Matkと最低武器Matk計算
+		matk1 = matk1 * (100+20*wlv)/100 - cost;
+		matk2 = int_/5 * (200+50*wlv)/100 - cost;
+		if(matk2 > matk1)
+			matk2 = matk1;
+	}
+#endif
 
 	// リコグナイズドスペル
 	if(sc && sc->data[SC_RECOGNIZEDSPELL].timer != -1) {
@@ -4067,11 +4436,21 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		matk2 = (matk2 > matk1)? matk2: matk1;
 	}
 
-	damage = matk2;
+#ifdef PRE_RENEWAL
 	if(matk1 > matk2)
 		damage = matk2+atn_rand()%(matk1-matk2+1);
 	else
 		damage = matk2;
+#else
+	// ステータスMatk+武器Matk計算
+	if(matk1 > matk2)
+		damage += matk2+atn_rand()%(matk1-matk2+1);
+	else
+		damage += matk2;
+	// 過剰精錬の計算
+	if(sd && sd->overrefine)
+		damage += (atn_rand()%sd->overrefine+1);
+#endif
 
 	// 魔法力増幅
 	if(sc && sc->data[SC_MAGICPOWER].timer != -1)
@@ -4100,6 +4479,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
 	int add_rate = 0;
+#ifndef PRE_RENEWAL
+	int heal;
+#endif
 
 	// return前の処理があるので情報出力部のみ変更
 	if( bl == NULL || target == NULL || target->type == BL_PET ) {
@@ -4164,8 +4546,34 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	mgd.damage = battle_calc_base_magic_damage(bl);
 
 #ifndef PRE_RENEWAL
+	// ヒールの計算用に確保
+	heal = mgd.damage;
+
 	if(sd) {
 		mgd.damage += sd->plus_matk;
+		// （RE）MATK乗算処理(杖補正以外)
+		if(sd->matk_rate != 100)
+			MATK_FIX( sd->matk_rate, 100 );
+	}
+
+	/* （RE）カードによるダメージ追加処理 */
+	if(sd && mgd.damage > 0) {
+		cardfix = 100;
+		cardfix = cardfix*(100+sd->magic_addrace[t_race])/100;
+		cardfix = cardfix*(100+sd->magic_addele[t_ele])/100;
+		cardfix = cardfix*(100+sd->magic_addenemy[t_enemy])/100;
+		if(t_mode & MD_BOSS)
+			cardfix = cardfix*(100+sd->magic_addrace[RCT_BOSS])/100;
+		else
+			cardfix = cardfix*(100+sd->magic_addrace[RCT_NONBOSS])/100;
+		t_class = status_get_class(target);
+		for(i=0; i<sd->add_magic_damage_class_count; i++) {
+			if(sd->add_magic_damage_classid[i] == t_class) {
+				cardfix = cardfix*(100+sd->add_magic_damage_classrate[i])/100;
+				break;
+			}
+		}
+		mgd.damage = mgd.damage*cardfix/100;
 	}
 #endif
 
@@ -4187,9 +4595,30 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	{
 		case AL_HEAL:	// ヒールor聖体
 		case PR_BENEDICTIO:
+#ifdef PRE_RENEWAL
 			mgd.damage = skill_calc_heal(bl,skill_lv)/2;
-			if(sd)	// メディタティオを乗せる
-				mgd.damage += mgd.damage * pc_checkskill(sd,HP_MEDITATIO)*2/100;
+#else
+			mgd.damage = skill_calc_heal(bl,skill_lv);
+#endif
+			if(sd) {	// 向上効果を乗せる
+				int rate = 0;
+#ifndef PRE_RENEWAL
+				if(sd->skill_dmgup.count > 0) {
+					for(i=0; i<sd->skill_dmgup.count; i++) {
+						if(skill_num == sd->skill_dmgup.id[i]) {
+							rate += sd->skill_dmgup.rate[i];
+							break;
+						}
+					}
+				}
+#endif
+				rate += pc_checkskill(sd,HP_MEDITATIO)*2;
+				mgd.damage += mgd.damage * rate / 100;
+			}
+#ifndef PRE_RENEWAL
+			mgd.damage += heal;	// Matkの加算
+			mgd.damage = mgd.damage / 2;
+#endif
 			normalmagic_flag = 0;
 			break;
 		case PR_ASPERSIO:		// アスペルシオ
@@ -4199,6 +4628,16 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case PR_SANCTUARY:	// サンクチュアリ
 			ele = ELE_HOLY;
 			mgd.damage = (skill_lv > 6)? 388: 50*skill_lv;
+#ifndef PRE_RENEWAL
+			if(sd && sd->skill_dmgup.count > 0) {	// 向上効果を乗せる
+				for(i=0; i<sd->skill_dmgup.count; i++) {
+					if(skill_num == sd->skill_dmgup.id[i]) {
+						mgd.damage += mgd.damage * sd->skill_dmgup.rate[i] / 100;
+						break;
+					}
+				}
+			}
+#endif
 			normalmagic_flag = 0;
 			mgd.blewcount |= 0x10000;
 			break;
@@ -4421,10 +4860,27 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			break;
 		case AB_HIGHNESSHEAL:	// ハイネスヒール
-			mgd.damage = skill_calc_heal(bl,skill_lv)/2;
-			mgd.damage *= (170 + 30 * skill_lv) / 100;
-			if(sd)	// メディタティオを乗せる
-				mgd.damage += mgd.damage * pc_checkskill(sd,HP_MEDITATIO)*2/100;
+			mgd.damage = skill_calc_heal(bl,10);
+			if(sd) {	// 向上効果を乗せる
+				int rate = 0;
+#ifndef PRE_RENEWAL
+				if(sd->skill_dmgup.count > 0) {
+					for(i=0; i<sd->skill_dmgup.count; i++) {
+						if(skill_num == sd->skill_dmgup.id[i]) {
+							rate += sd->skill_dmgup.rate[i];
+							break;
+						}
+					}
+				}
+#endif
+				rate += pc_checkskill(sd,HP_MEDITATIO)*2;
+				mgd.damage += mgd.damage * rate / 100;
+			}
+#ifndef PRE_RENEWAL
+			mgd.damage += heal;	// Matkの加算
+#endif
+			mgd.damage = mgd.damage * (170 + 30 * skill_lv) / 100;
+			mgd.damage = mgd.damage / 2;
 			normalmagic_flag = 0;
 			break;
 		case AB_JUDEX:		// ジュデックス
@@ -4664,13 +5120,24 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(battle_config.magic_defense_type) {
 				mgd.damage = mgd.damage - (mdef1 * battle_config.magic_defense_type) - mdef2;
 			} else {
+#ifdef PRE_RENEWAL
 				mgd.damage = (mgd.damage*(100-mdef1))/100 - mdef2;
+#else
+				if(skill_num == RK_ENCHANTBLADE) {
+					// エンチャントブレイドは除算MDEFを減算処理させる
+					mgd.damage = mgd.damage - mdef1;
+				} else if(skill_num != MG_NAPALMBEAT && skill_num != WZ_FIREPILLAR && skill_num != HW_NAPALMVULCAN && skill_num != SO_VARETYR_SPEAR){
+					// ナパームビート,ナパームバルカン,ファイアピラー,ヴェラチュールスピアは除算MDEF貫通
+					mgd.damage = (mgd.damage*(1000+mdef1))/(1000+mdef1*10);
+				}
+#endif
 			}
 		}
 		if(mgd.damage < 1)	// プレイヤーの魔法スキルは1ダメージ保証無し
 			mgd.damage = (!battle_config.skill_min_damage && bl->type == BL_PC)? 0: 1;
 	}
 
+#ifdef PRE_RENEWAL
 	/* ５．カードによるダメージ追加処理 */
 	if(sd && mgd.damage > 0) {
 		cardfix = 100;
@@ -4706,6 +5173,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		}
 		mgd.damage = mgd.damage*cardfix/100;
 	}
+#endif
 
 	/* ６．カードによるダメージ減衰処理 */
 	if(tsd && mgd.damage > 0) {
@@ -4731,6 +5199,14 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		mgd.damage = mgd.damage*cardfix/100;
 	}
 
+#ifndef PRE_RENEWAL
+	if(normalmagic_flag && mgd.damage > 0) {
+		mgd.damage -= mdef2;
+		if(mgd.damage < 1)	// プレイヤーの魔法スキルは1ダメージ保証無し
+			mgd.damage = (!battle_config.skill_min_damage && bl->type == BL_PC)? 0: 1;
+	}
+#endif
+
 	if(skill_num == SO_VARETYR_SPEAR) {	// ヴェラチュールスピア
 		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		wd = battle_calc_weapon_attack(bl,target,skill_num,skill_lv,flag);
@@ -4743,6 +5219,23 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	/* ７．属性の適用 */
 	mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));
 
+#ifndef PRE_RENEWAL
+	if(sd && mgd.damage > 0 && normalmagic_flag) {
+		cardfix = 100;
+		// （RE）カード効果による特定スキルのダメージ増幅（魔法スキル）
+		if(sd->skill_dmgup.count > 0 && skill_num > 0) {
+			for(i=0; i<sd->skill_dmgup.count; i++) {
+				if(skill_num == sd->skill_dmgup.id[i]) {
+					cardfix += sd->skill_dmgup.rate[i];
+					break;
+				}
+			}
+		}
+		// （RE）カード効果による特定属性スキルのダメージ増幅（魔法スキル）
+		cardfix += sd->skill_elemagic_dmgup[ele];
+		mgd.damage = mgd.damage*cardfix/100;
+	}
+#endif
 	/* ８．スキル修正１ */
 	if(skill_num == CR_GRANDCROSS || skill_num == NPC_GRANDDARKNESS) {	// グランドクロス
 		static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
