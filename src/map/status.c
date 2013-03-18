@@ -1747,14 +1747,6 @@ L_RECALC:
 		sd->addrace_[RCT_DRAGON] += skill;
 		sd->subrace[RCT_DRAGON]  += skill;
 	}
-	if((skill = pc_checkskill(sd,AB_EUCHARISTICA)) > 0) {	// エウカリスティカ
-		sd->addele[ELE_DARK]    += skill;
-		sd->addele_[ELE_DARK]   += skill;
-		sd->addele[ELE_UNDEAD]  += skill;
-		sd->addele_[ELE_UNDEAD] += skill;
-		sd->subele[ELE_DARK]    += skill;
-		sd->subele[ELE_UNDEAD]  += skill;
-	}
 	// Flee上昇
 	if((skill = pc_checkskill(sd,TF_MISS)) > 0) {	// 回避率増加
 		if(sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_RG || sd->s_class.job == PC_JOB_GC || sd->s_class.job == PC_JOB_SC)
@@ -1809,13 +1801,15 @@ L_RECALC:
 		// ATK/DEF変化形
 		if(sd->sc.data[SC_ANGELUS].timer != -1)	// エンジェラス
 			sd->def2 = sd->def2*(110+5*sd->sc.data[SC_ANGELUS].val1)/100;
-		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// インポシティオマヌス
+#ifdef PRE_RENEWAL
+		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// イムポシティオマヌス
 			sd->watk += sd->sc.data[SC_IMPOSITIO].val1*5;
 			// 左手には適用しない
 			//idx = sd->equip_index[8];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
+#endif
 		if(sd->sc.data[SC__BLOODYLUST].timer != -1) {	// ブラッディラスト
 			sd->def2 = sd->def2*(100 - 55) / 100;
 #ifdef PRE_RENEWAL
@@ -1925,8 +1919,10 @@ L_RECALC:
 			sd->matk2 += sd->sc.data[SC_INCMATK].val1;
 		}
 		if(sd->sc.data[SC_MINDBREAKER].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->matk1 += (sd->matk1*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
 			sd->matk2 += (sd->matk2*20*sd->sc.data[SC_MINDBREAKER].val1)/100;
+#endif
 			sd->mdef2 -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
 		}
 		// MATK上昇 (モンスター変身のマルドゥーク、バンシー用)
@@ -4278,9 +4274,9 @@ int status_get_atk2(struct block_list *bl)
 			atk2 = mob_db[((struct pet_data*)bl)->class_].atk2;
 		}
 		if(sc) {
+#ifdef PRE_RENEWAL
 			if(sc->data[SC_IMPOSITIO].timer != -1)
 				atk2 += sc->data[SC_IMPOSITIO].val1*5;
-#ifdef PRE_RENEWAL
 			if(sc->data[SC__BLOODYLUST].timer != -1)
 				atk2 = atk2*(100+32)/100;
 			else if(sc->data[SC_PROVOKE].timer != -1)
@@ -4381,8 +4377,10 @@ int status_get_matk1(struct block_list *bl)
 		}
 
 		if(sc) {
+#ifdef PRE_RENEWAL
 			if(sc->data[SC_MINDBREAKER].timer != -1)
 				matk1 += (matk1*20*sc->data[SC_MINDBREAKER].val1)/100;
+#endif
 			if(sc->data[SC_STRENGTH].timer != -1)
 				matk1 = matk1*50/100;
 			if(sc->data[SC_THE_DEVIL].timer != -1)
@@ -4434,8 +4432,10 @@ int status_get_matk2(struct block_list *bl)
 		}
 
 		if(sc) {
+#ifdef PRE_RENEWAL
 			if(sc->data[SC_MINDBREAKER].timer != -1)
 				matk2 += (matk2*20*sc->data[SC_MINDBREAKER].val1)/100;
+#endif
 			if(sc->data[SC_STRENGTH].timer != -1)
 				matk2 = matk2*50/100;
 			if(sc->data[SC_THE_DEVIL].timer != -1)

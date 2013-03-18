@@ -18391,7 +18391,6 @@ static int skill_trample( struct block_list *bl, va_list ap )
 			// クラスターボムは効果範囲を3セル広げる
 			if(sg->unit_id == UNT_CLUSTERBOMB) {
 				ar += 3;
-				sec = 1000;
 			}
 
 			sec = (sg->unit_id == UNT_FIRINGTRAP)? 0: ((sg->unit_id == UNT_CLUSTERBOMB)? 1000: 1500);
