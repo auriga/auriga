@@ -4532,6 +4532,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			if(sd) {
+				sd->status.sp = 0;
+				clif_updatestatus(sd,SP_SP);
+			}
 		}
 		break;
 	case NC_AXETORNADO:	/* アックストルネード */

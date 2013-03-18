@@ -1151,6 +1151,13 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			damage += status_get_str(&sd->bl);
 	}
 
+#ifndef PRE_RENEWAL
+	// 武器研究(+2 〜 +20)
+	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0) {
+		damage += (skill * 2);
+	}
+#endif
+
 	// レンジャーメイン(+5 〜 +50) vs 動物 or 植物 or 魚類
 	if((skill = pc_checkskill(sd,RA_RANGERMAIN)) > 0 && (race == RCT_BRUTE || race == RCT_PLANT || race == RCT_FISH) )
 	{
@@ -1605,7 +1612,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	t_def2  = status_get_def2(target);
 	t_sc    = status_get_sc(target);		// 対象のステータス異常
 
-	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR)
+	if(src_sd && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != RA_CLUSTERBOMB && skill_num != RA_FIRINGTRAP && skill_num != RA_ICEBOUNDTRAP &&
+	   skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR)
 		src_sd->state.attack_type = BF_WEAPON;	// 攻撃タイプは武器攻撃
 
 	/* １．オートカウンター処理 */
@@ -1614,6 +1622,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	) {
 		if( skill_num != CR_GRANDCROSS &&
 		    skill_num != NPC_GRANDDARKNESS &&
+		    skill_num != RA_CLUSTERBOMB &&
+		    skill_num != RA_FIRINGTRAP &&
+		    skill_num != RA_ICEBOUNDTRAP &&
 		    skill_num != LG_RAYOFGENESIS &&
 		    skill_num != SO_VARETYR_SPEAR &&
 		    t_sc &&
@@ -1673,6 +1684,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		calc_flag.hitrate -= 50;
 	}
 	if(src_sd) {
+		// 斧修練
+		if((skill = pc_checkskill(src_sd,NC_TRAININGAXE)) > 0) {
+			if(src_sd->status.weapon == WT_1HAXE || src_sd->status.weapon == WT_2HAXE)
+				calc_flag.hitrate += skill*3;
+			if(src_sd->status.weapon == WT_MACE)
+				calc_flag.hitrate += skill*2;
+		}
 		// 武器研究
 		calc_flag.hitrate += calc_flag.hitrate * 2 * pc_checkskill(src_sd, BS_WEAPONRESEARCH) / 100;
 	}
@@ -1940,6 +1958,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.div_ = t_size + 2;
 			}
 			break;
+		case RA_WUGDASH:		// ウォーグダッシュ
+		case RA_WUGSTRIKE:		// ウォーグストライク
+		case RA_WUGBITE:		// ウォーグバイト
+			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+				s_ele = src_sd->arrow_ele;
+			break;
+		case NC_ARMSCANNON:
+			calc_flag.hitrate = 1000000;
+			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+				s_ele = src_sd->arrow_ele;
+			break;
 		case SC_FATALMENACE:	// フェイタルメナス
 			calc_flag.hitrate -= 5 + (6 - skill_lv) * 5;
 			break;
@@ -1947,6 +1976,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			calc_flag.hitrate = calc_flag.hitrate*(100+5*skill_lv)/100;
 			break;
 		case MC_CARTREVOLUTION:		// カートレボリューション
+#ifndef PRE_RENEWAL
+			calc_flag.hitrate = 1000000;
+#endif
 		case GN_CART_TORNADO:		// カートトルネード
 		case GN_CARTCANNON:			// カートキャノン
 			if(src_sd && (skill = pc_checkskill(src_sd,GN_REMODELING_CART)) > 0)
@@ -2416,11 +2448,24 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case CR_ACIDDEMONSTRATION:
 			case ASC_BREAKER:
 		    case NJ_ZENYNAGE:
+			case RA_CLUSTERBOMB:
+			case RA_FIRINGTRAP:
+			case RA_ICEBOUNDTRAP:
 			case SO_VARETYR_SPEAR:
 		    case LG_RAYOFGENESIS:
 		    case GN_FIRE_EXPANSION_ACID:
 			case KO_MUCHANAGE:
 				break;
+			case NC_ARMSCANNON:
+				if(pc_isgear(src_sd) && (skill = pc_checkskill(src_sd,NC_MADOLICENCE)) > 0) {	// 魔導ギアライセンス
+					wd.damage += 15 * skill;
+				}
+				break;
+			case RA_WUGSTRIKE:
+			case RA_WUGBITE:
+				if((skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウォーグによるダメージ増加
+					wd.damage += 6 * skill;
+				}
 			default:
 				if(skill_lv < 0)
 					break;
@@ -2480,12 +2525,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		/* スキル倍率計算に加算 */
 		if(sc) {
 #ifndef PRE_RENEWAL
+			// オーバートラスト
+			if(sc->data[SC_OVERTHRUST].timer != -1 && skill_num != MC_CARTREVOLUTION)
+				add_rate += sc->data[SC_OVERTHRUST].val3;
+			// オーバートラストマックス
+			if(sc->data[SC_OVERTHRUSTMAX].timer != -1 && skill_num != MC_CARTREVOLUTION)
+				add_rate += 20*sc->data[SC_OVERTHRUSTMAX].val1;
 			// ブラッディラスト
 			if(sc->data[SC__BLOODYLUST].timer != -1)
 				add_rate += 32;
 			// プロボック
 			else if(sc->data[SC_PROVOKE].timer != -1)
 				add_rate += 2 + 3 * sc->data[SC_PROVOKE].val1;
+			// トゥルーサイト
+			if(sc->data[SC_TRUESIGHT].timer != -1)
+				add_rate += 2*sc->data[SC_TRUESIGHT].val1;
 			// コンセントレーション
 			if(sc->data[SC_CONCENTRATION].timer != -1)
 				add_rate += 5*sc->data[SC_CONCENTRATION].val1;
@@ -2524,6 +2578,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(add_rate > 0)
 					DMG_ADD( weight/2*skill_lv*add_rate/100 );
 			}
+			break;
+		case NC_ARMSCANNON:	// アームズキャノン
+			if(src_sd && src_sd->arrow_atk) {
+				DMG_ADD( src_sd->arrow_atk );
+			}
+			DMG_FIX( (200 + (500 - 100 * t_size) * skill_lv) * status_get_lv(src) / 150, 100 );
 			break;
 		}
 
@@ -2587,7 +2647,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
+#ifdef PRE_RENEWAL
 			DMG_FIX( 75+5*skill_lv, 100 );
+#else
+			DMG_FIX( 150+10*skill_lv, 100 );
+#endif
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			wd.blewcount = 0;
@@ -2707,11 +2771,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 130, 100 );
 			break;
 		case MC_CARTREVOLUTION:	// カートレボリューション
+#ifdef PRE_RENEWAL
 			if(src_sd && src_sd->cart_max_weight > 0 && src_sd->cart_weight > 0) {
 				DMG_FIX( 150 + pc_checkskill(src_sd,BS_WEAPONRESEARCH) + src_sd->cart_weight*100/src_sd->cart_max_weight, 100 );
 			} else {
 				DMG_FIX( 150, 100 );
 			}
+#endif
 			wd.blewcount = 0;
 			break;
 		case NPC_COMBOATTACK:	// 多段攻撃
@@ -2946,8 +3012,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int rate = (skill_lv >= 16)? 1: 16-skill_lv;
 				if(src_sd && src_sd->cart_max_weight > 0 && src_sd->cart_weight > 0) {
+#ifdef PRE_RENEWAL
 					DMG_FIX( src_sd->cart_weight, rate*100 );
 					DMG_FIX( 8000, src_sd->cart_max_weight );
+#else
+					rate = src_sd->cart_weight / 10 / rate;
+					DMG_FIX( rate, 100 );
+#endif
 				} else if(!src_sd) {
 					DMG_FIX( 80, rate );
 				}
@@ -3212,17 +3283,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
 			DMG_FIX( 100 + 10 * skill_lv, 100 );
 			break;
+		case RA_CLUSTERBOMB:	// クラスターボム
+			DMG_FIX( 200 + 100 * skill_lv, 100 );
+			break;
+		case RA_FIRINGTRAP:		// ファイアリングトラップ
+		case RA_ICEBOUNDTRAP:	// アイスバウンドトラップ
+			DMG_FIX( 100, 100 );
+			break;
 		case RA_ARROWSTORM:		// アローストーム
 			DMG_FIX( 200 + 50 * skill_lv, 100 );
 			break;
 		case RA_AIMEDBOLT:		// エイムドボルト
-			DMG_FIX( (200 + 20 * skill_lv) * wd.div_ * wd.div_, 100 );
+			DMG_FIX( (200 + 20 * skill_lv) * wd.div_, 100 );
 			break;
 		case RA_WUGDASH:		// ウォーグダッシュ
 			DMG_FIX( 300, 100 );
-			if(src_sd) {
-				DMG_ADD( (5 / 4 * src_sd->weight / 10 + pc_checkskill(src_sd,RA_TOOTHOFWUG) * 6) * 3 );
-			}
 			break;
 		case RA_WUGSTRIKE:		// ウォーグストライク
 			DMG_FIX( 120 * skill_lv, 100 );
@@ -3246,14 +3321,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NC_COLDSLOWER:		// コールドスローワー
 			DMG_FIX( (300 + 300 * skill_lv) * status_get_lv(src) / 150, 100 );
 			break;
-		case NC_ARMSCANNON:	// アームズキャノン
-			DMG_FIX( (200 + (500 - 100 * t_size) * skill_lv) * status_get_lv(src) / 150, 100 );
-			break;
 		case NC_SELFDESTRUCTION:	// セルフディストラクション
-			DMG_SET( (status_get_sp(src) + status_get_vit(src)) * 20 * status_get_lv(src) / 100 + status_get_hp(src) );
-			if(src_sd) {
-				src_sd->status.sp = 0;
-				clif_updatestatus(src_sd,SP_SP);
+			{
+				int lv = src_sd ? pc_checkskill(src_sd,NC_MAINFRAME) : 2;
+				DMG_SET( (status_get_sp(src) + status_get_vit(src)) * 20 * skill_lv / 3 * status_get_lv(src) / 100 );
+				wd.damage = wd.damage * (80 + 10 * lv) / 100;
+				DMG_ADD( status_get_hp(src) );
 			}
 			break;
 		case NC_AXEBOOMERANG:	// アックスブーメラン
@@ -3268,7 +3341,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case NC_POWERSWING:	// パワースイング
-			DMG_FIX( (200 + 20 * skill_lv + status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 150, 100 );
+			DMG_FIX( 180 + 20 * skill_lv + (status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 150, 100 );
 			break;
 		case NC_AXETORNADO:	// アックストルネード
 			{
@@ -3685,6 +3758,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* 15．対象の防御力によるダメージの減少 */
 		switch (skill_num) {
+#ifndef PRE_RENEWAL
+		case MC_CARTREVOLUTION:
+#endif
 		case KN_AUTOCOUNTER:
 		case MO_INVESTIGATE:
 		case MO_EXTREMITYFIST:
@@ -3692,6 +3768,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_ZENYNAGE:
 		case NPC_CRITICALSLASH:
 		case GS_PIERCINGSHOT:
+		case RA_CLUSTERBOMB:
+		case RA_FIRINGTRAP:
+		case RA_ICEBOUNDTRAP:
+		case NC_ARMSCANNON:
 		case GN_FIRE_EXPANSION_ACID:
 		case KO_MUCHANAGE:
 			break;
@@ -3811,6 +3891,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							damage_ot = damage_ot * (100 - t_def1_fix) /100;
 #else
 							switch (skill_num) {
+							case NC_SELFDESTRUCTION:
 							case SO_VARETYR_SPEAR:
 								wd.damage = wd.damage - (t_def1_fix + t_def2_fix);
 								damage_ot = damage_ot - (t_def1_fix + t_def2_fix);
@@ -3851,6 +3932,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		/* 16．状態異常中のダメージ追加でクリティカルにも有効なスキル */
 		if (sc) {
+#ifdef PRE_RENEWAL
 			// オーバートラスト
 			if(sc->data[SC_OVERTHRUST].timer != -1) {
 				wd.damage += damage_ot*sc->data[SC_OVERTHRUST].val3/100;
@@ -3867,7 +3949,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_TRUESIGHT].timer != -1) {
 				DMG_FIX( 100+2*sc->data[SC_TRUESIGHT].val1, 100 );
 			}
-#ifdef PRE_RENEWAL
 			// バーサーク
 			if(sc->data[SC_BERSERK].timer != -1) {
 				DMG_FIX( 200, 100 );
@@ -3908,7 +3989,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 #ifdef PRE_RENEWAL
 			// エンチャントブレイド
-			if(sc->data[SC_ENCHANTBLADE].timer != -1 && !skill_num) {
+			if(sc->data[SC_ENCHANTBLADE].timer != -1 && (!skill_num || skill_num == RA_FIRINGTRAP || skill_num == RA_ICEBOUNDTRAP) ) {
 				static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 				ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
 				wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
@@ -3985,12 +4066,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				break;
-			case RA_WUGSTRIKE:	// ウォーグストライク
-			case RA_WUGBITE:	// ウォーグバイト
-				if((skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウォーグによるダメージ増加
-					wd.damage += 6 * skill;
-				}
-				break;
 			}
 		}
 
@@ -4002,6 +4077,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh)
 					wd.damage2 = wd.damage2 * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
 			}
+#ifdef PRE_RENEWAL
+			// カートブースト
+			if(sc->data[SC_GN_CARTBOOST].timer != -1) {
+				wd.damage += sc->data[SC_GN_CARTBOOST].val1 * 10;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_GN_CARTBOOST].val1 * 10;
+			}
+#endif
 		}
 
 		// 0未満だった場合1に補正
@@ -4062,10 +4145,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
+#ifdef PRE_RENEWAL
 	/* 19．スキル修正３（必中ダメージ）*/
 	if( src_sd && (skill = pc_checkskill(src_sd,BS_WEAPONRESEARCH)) > 0) {
 		DMG_ADD( skill*2 );
 	}
+#endif
 	if( src_sd && (skill = pc_checkskill(src_sd,TK_RUN)) > 0) {	// タイリギパッシブで蹴りの威力加算
 		if( (skill_num == TK_DOWNKICK || skill_num == TK_STORMKICK || skill_num == TK_TURNKICK || skill_num == TK_COUNTER) &&
 		    src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 == WT_FIST ) {
@@ -4260,6 +4345,23 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		rate += src_sd->skill_eleweapon_dmgup[s_ele];
 		wd.damage = wd.damage*rate/100;
 	}
+
+	if(wd.damage > 0) {
+		switch (skill_num) {
+		case MC_CARTREVOLUTION:	// カートレボリューション
+			wd.damage = wd.damage * src_sd->cart_weight/src_sd->cart_max_weight + wd.damage * 150 / 100;
+			wd.damage = wd.damage - (t_def1 + t_def2);
+			break;
+		case NC_ARMSCANNON:
+			wd.damage = wd.damage - (t_def1 + t_def2);
+			break;
+		case RA_WUGDASH:
+			if(src_sd && (skill = pc_checkskill(src_sd,RA_TOOTHOFWUG)) > 0) {	// トゥースオブウォーグによるダメージ増加
+				DMG_ADD( ((src_sd->weight / 10 * 5 / 4) + skill * 6) * 3 );
+			}
+			break;
+		}
+	}
 #endif
 
 	/* 24．アイテムボーナスのフラグ処理 */
@@ -4400,7 +4502,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(sc) {
 #ifndef PRE_RENEWAL
 		// エンチャントブレイド
-		if(sc->data[SC_ENCHANTBLADE].timer != -1 && wd.damage > 0 && !skill_num) {
+		if(sc->data[SC_ENCHANTBLADE].timer != -1 && wd.damage > 0 && (!skill_num || skill_num == RA_FIRINGTRAP || skill_num == RA_ICEBOUNDTRAP) ) {
 			static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
 			wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
@@ -4575,6 +4677,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
 		break;
 	case MC_CARTREVOLUTION:
+	case NC_ARMSCANNON:
+	case NC_SELFDESTRUCTION:
 	case LG_SHIELDPRESS:
 	case SR_FALLENEMPIRE:
 	case SR_TIGERCANNON:
@@ -4612,13 +4716,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
-	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
+	if( target_sd && target_sd->special_state.no_weapon_damage && skill_num != CR_GRANDCROSS && skill_num != RA_CLUSTERBOMB && skill_num != RA_FIRINGTRAP && skill_num != RA_ICEBOUNDTRAP &&
+	    skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
 		// bNoWeaponDamageでグランドクロスじゃない場合はダメージが0
 		wd.damage = wd.damage2 = 0;
 	}
 
 	/* 34．ダメージ最終計算 */
-	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
+	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != RA_CLUSTERBOMB && skill_num != RA_FIRINGTRAP && skill_num != RA_ICEBOUNDTRAP &&
+	   skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
 		if(wd.damage2 < 1) {		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
 		} else if(wd.damage < 1) {	// 右手がミス？
@@ -5819,18 +5925,28 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	/* ２．基本ダメージ計算(スキルごとに処理) */
 	switch(skill_num)
 	{
+#ifdef PRE_RENEWAL
 	case HT_LANDMINE:	// ランドマイン
 	case MA_LANDMINE:
 		mid.damage = skill_lv*(dex+75)*(100+int_)/100;
 		break;
-
 	case HT_BLASTMINE:	// ブラストマイン
 		mid.damage = skill_lv*(dex/2+50)*(100+int_)/100;
 		break;
-
 	case HT_CLAYMORETRAP:	// クレイモアートラップ
 		mid.damage = skill_lv*(dex/2+75)*(100+int_)/100;
 		break;
+#else
+	case HT_LANDMINE:	// ランドマイン
+	case MA_LANDMINE:
+	case HT_BLASTMINE:	// ブラストマイン
+	case HT_CLAYMORETRAP:	// クレイモアートラップ
+		mid.damage = (int)(dex * (3+status_get_lv(bl)/(float)100) * (1+int_/(float)35) * skill_lv);
+		mid.damage = (mid.damage * 80 / 100) + (rand()%(mid.damage * 20 / 100));
+		if(sd)
+			mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
+		break;
+#endif
 
 	case HT_BLITZBEAT:	// ブリッツビート
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
@@ -5910,11 +6026,17 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		}
 		break;
 	case RA_CLUSTERBOMB:		// クラスターボム
-		mid.damage = ((status_get_lv(bl) + dex) * 5 * skill_lv) + (status_get_baseatk(bl) * 7) + (int_ * 5);
-		break;
 	case RA_FIRINGTRAP:			// ファイアリングトラップ
 	case RA_ICEBOUNDTRAP:		// アイスバウンドトラップ
-		mid.damage = ((status_get_lv(bl) + dex) * 5 * skill_lv) + status_get_baseatk(bl) + (int_ * 5);
+		{
+			static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			wd = battle_calc_weapon_attack(bl,target,skill_num,skill_lv,flag);
+			mid.damage = wd.damage;
+			mid.damage += (int)((1+status_get_lv(bl)/(float)150) * (100 + dex) * 3 * skill_lv) + (int_ * 5);
+			mid.flag |= wd.flag;
+			if(sd)
+				mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
+		}
 		break;
 	case GN_THORNS_TRAP:		// ソーントラップ
 		mid.damage = 100 + 200 * skill_lv + int_;
