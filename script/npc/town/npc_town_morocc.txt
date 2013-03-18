@@ -742,451 +742,438 @@ moc_castle.gat,136,134,3	duplicate(番兵#morocc)	番兵	707
 //- Registry -------------------------------------------------
 // MOC_1QUE -> 0〜128
 //------------------------------------------------------------
-morocc.gat,43,108,5	script	鋭い印象の少年	82,{
-	if(countitem(7416)) {
-		mes "[ジャック]";
-		mes "推薦状？";
-		mes "ずいぶん古い遺物を持ってきたな。";
-		mes "まあ、とりあえず中にいるマスターに";
-		mes "会ってみな。";
-		close;
-	}
-	if(getbaseclass(Class,2) == CLASS_AS) {
-		mes "[ジャック]";
-		mes "街の半分が破壊されたと言うのに";
-		mes "未だにここを訪れる人がいるんだよな。";
-		mes "あの騒ぎの中でも無事だったアジトが";
-		mes "そんなに珍しいのか？";
-		close;
-	}
-	mes "[ジャック]";
-	mes "何をしてるんだ？";
-	mes "こんな所でウロチョロしているより、";
-	mes "早く避難地域に向かった方がいい。";
-	close;
-}
-
-morocc.gat,45,110,0	script	#mocbar1	45,2,2,{
-	if(MOC_1QUE || getbaseclass(Class,2) == CLASS_AS) {
-		warp "que_job01.gat",9,94;
-		end;
-	}
-	mes "[ジャック]";
-	mes "……そこは誰でも通れる場所ではない。";
-	next;
-	mes "[ジャック]";
-	mes "でも、状況が昔とは違うからな。";
-	mes "好きにしな！";
-	close2;
-	warp "que_job01.gat",9,94;
-	end;
-}
-
-que_job01.gat,6,94,0	warp	#mocbar2	2,2,morocc.gat,45,103
-
-que_job01.gat,17,48,0	warp	#mocbar3	2,2,que_job01.gat,68,92
-
-que_job01.gat,68,96,0	warp	#mocbar4	2,2,que_job01.gat,17,53
-
-que_job01.gat,80,77,0	script	#mocbar5	45,2,2,{
-	if(MOC_1QUE > 1) {
-		warp "que_job01.gat",61,50;
-		end;
-	}
-	mes "[リテルン]";
-	mes "おいおい、そこはお前みたいな奴が";
-	mes "入れる場所じゃないぜ？";
-	mes "マスター！　こいつは許可したの？";
-	next;
-	if(PRT_2QUE != 24) {
-		mes "[マスター]";
-		mes "いや、許可していない。";
-		next;
-		mes "[リテルン]";
-		mes "だってさ。じゃぁな！";
-		close2;
-		warp "que_job01.gat",85,77;
-		end;
-	}
-	mes "[" +strcharinfo(0)+ "]";
-	mes "貴方とは関係ありません。";
-	mes "私は関係者に会わなくては";
-	mes "いけないんです！";
-	next;
-	mes "[リテルン]";
-	mes "マスター！　こいつどうする？";
-	mes "何だか、面倒そうだぜ？";
-	next;
-	mes "[マスター]";
-	mes "いいさ、好きにさせてやれ。";
-	mes "どうせその一つ先に行ったところで、";
-	mes "何も無いからな。";
-	next;
-	mes "[リテルン]";
-	mes "ふ〜ん、マスターがそう言うなら……";
-	mes "一杯おごってくれたら許可しよう。";
-	mes "この酒な、1,000Zenyだ。";
-	next;
-	if(select("わかりました","断ります")==2) {
-		mes "[リテルン]";
-		mes "断るって？";
-		mes "それじゃぁ俺もお断りだ！";
-		close2;
-		warp "que_job01.gat",85,77;
-		end;
-	}
-	if(Zeny < 1000) {
-		mes "[リテルン]";
-		mes "ん……何だ、金無いのか？";
-		mes "ヒョー！　これじゃぁ水も飲めないぜ？";
-		mes "あ〜あ、話になんないよ！";
-		close2;
-		warp "que_job01.gat",85,77;
-		end;
-	}
-	mes "[リテルン]";
-	mes "よしよし、そうこなくっちゃな！";
-	mes "マスター！　一杯よろしく！";
-	set Zeny,Zeny-1000;
-	next;
-	mes "[リテルン]";
-	mes "さぁ、入って入って！";
-	close2;
-	warp "que_job01.gat",61,50;
-	end;
-}
-
-que_job01.gat,65,50,0	warp	#mocbar5-2	2,2,que_job01.gat,84,77
-
-que_job01.gat,70,84,1	script	少女#Kimmie	882,{
-	mes "[少女]";
-	mes "世の中が……どうしてこんな風に";
-	mes "変わってしまったのでしょう。";
-	mes "シクシク……";
-	mes "何事もうまくいきませんし……";
-	emotion 28;
-	next;
-	mes "[" +strcharinfo(0)+ "]";
-	mes "可哀想だな……";
-	mes "これが現実と言うものか。";
-	close;
-}
-
-que_job01.gat,81,79,5	script	遊んでいる騎士	733,{
-	mes "[リテルン]";
-	mes "ナイトがここで何をしてるかって？";
-	mes "ナイトはここにいちゃいけないのか？";
-	if(getbaseclass(Class,2) == CLASS_KN) mes "お前だってナイトだろうが……";
-	next;
-	mes "[リテルン]";
-	mes "復旧作業に疲れてしまって、";
-	mes "ちょっと休憩に来ただけさ。";
-	mes "誰にも邪魔されず一杯飲める場所は";
-	mes "そうそうあるもんじゃないしな。";
-	close;
-}
-
-que_job01.gat,82,95,3	script	バーマスター	46,{
-	if(getbaseclass(Class,2) == CLASS_AS) {
-		mes "[マスター]";
-		mes "いらっしゃい。";
-		mes "何か飲むかい？";
-	}
-	else if(getbaseclass(Class) == CLASS_TF) {
-		mes "[マスター]";
-		mes "……お前みたいなよそ者が";
-		mes "入ってくるってことは、ジャックの奴";
-		mes "居眠りしてやがるのか？";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "マスター、客に向かっていきなり";
-		mes "それはないんじゃないですか？";
-		next;
-		mes "[マスター]";
-		mes "ふん……まぁいいか。";
-		mes "注文は？";
-		next;
-	}
-	else {
-		mes "[マスター]";
-		mes "ん……？";
-		mes "お前、アサシンでも、";
-		mes "モロクの住民でもないようだが……";
-		mes "まぁ今日はいいが、あまり頻繁に";
-		mes "出入りしないでくれよ。";
-		mes "さ、注文は？";
-	}
-	next;
-	switch(select("注文する","任務について","やめる")) {
-	case 1:
-		mes "[マスター]";
-		mes "トロピカル・ソグラト、";
-		mes "ヴァーミリオン・ザ・ビーチ、";
-		mes "どっちを飲むかね？";
-		next;
-		if(select("トロピカル・ソグラト","ヴァーミリオン・ザ・ビーチ","タダで飲める物はないの？")==3) {
-			mes "[マスター]";
-			mes "……";
-			mes "金が無いなら出て行きな。";
-			close;
-		}
-		if(getbaseclass(Class,2) == CLASS_AS) {
-			mes "[マスター]";
-			mes "お前には特別に安くしよう。";
-			if(Zeny < 800) {
-				mes "ん……金が足りないようだな。";
-				mes "所持金を確認してから注文してくれ。";
-				mes "アサシンは、特価800Zenyだ。";
-				close;
-			}
-			mes "さ、出来たよ。";
-			if(@menu == 1) {
-				mes "果汁が主成分ではあるが、";
-				mes "飲みすぎには注意しろよ。";
-			}
-			set Zeny,Zeny-800;
-			getitem 12111+@menu,1;
-			close;
-		}
-		if(Zeny < 1000) {
-			mes "[マスター]";
-			mes "おいおい、所持金を確認してから";
-			mes "注文してくれよ。";
-			mes "一杯1,000Zenyだ。";
-			close;
-		}
-		mes "[マスター]";
-		mes "ほら、出来たぞ。";
-		if(@menu == 1)
-			mes "果汁が主成分ではあるが、";
-		mes "飲みすぎには注意してくれ。";
-		set Zeny,Zeny-1000;
-		getitem 12111+@menu,1;
-		close;
-	case 2:
-		if(MOC_1QUE == 1) {
-			if(getbaseclass(Class,2) == CLASS_AS) {
-				mes "[マスター]";
-				mes "……残念だが遅すぎたようだな。";
-				mes "依頼をしたのは確かだが、";
-				mes "もうその必要はなくなってしまった。";
-				mes "せっかく来て貰ったのにすまんな。";
-				close;
-			}
-			mes "[マスター]";
-			mes "ん……？";
-			next;
-			menu "推薦状を見せる。",-;
-			if(countitem(7416) < 1) {
-				mes "[マスター]";
-				mes "今頃か……？";
-				next;
-				mes "[マスター]";
-				mes "怪しい奴だな……";
-				mes "……";
-				mes "おい、こいつを追い出せ！";
-				next;
-				mes "[客達]";
-				mes "はい！";
-				next;
-				mes "-大勢に取り囲まれ、";
-				mes "店の外へ叩き出された-";
-				close2;
-				warp "morocc.gat",45,106;
-				end;
-			}
-			mes "[マスター]";
-			mes "……残念だが遅すぎたようだな。";
-			mes "各ギルドに協力を求めたのは確かだが、";
-			mes "もうその必要はなくなってしまった。";
-			mes "せっかく来て貰ったのにすまんな。";
-			close;
-		}
-		if(getbaseclass(Class,2) == CLASS_AS) {
-			mes "[マスター]";
-			mes "お前は……まだ任務を受けたことが";
-			mes "ないようだな。";
-			next;
-			mes "[マスター]";
-			mes "……ここが気に入ったか？";
-			mes "お前がその気なら、ギルドマスターに";
-			mes "お前を推薦してやろう。";
-			mes "ただし、もっと強くなってからな。";
-			close;
-		}
-		mes "[マスター]";
-		mes "任務？　何の話だ？";
-		mes "わけのわからない事言わず、";
-		mes "注文をしてくれ。";
-		close;
-	case 3:
-		mes "[マスター]";
-		mes "ふむ……";
-		close;
-	}
-}
-
-que_job01.gat,49,49,4	script	タオ	877,{
-	if(getbaseclass(Class,2) == CLASS_AS) {
-		mes "[タオ]";
-		mes "いらっしゃいにゃん。";
-		mes "何の用にゃん？";
-		next;
-		mes "[タオ]";
-		mes "用がなければ帰って欲しいにゃん。";
-		mes "誰でも入れる場所じゃないにゃん。";
-		mes "それに、どうせあの部屋には";
-		mes "入れないにゃん。";
-		next;
-		mes "[タオ]";
-		mes "いや入っても大丈夫だったのかにゃん？";
-		mes "わからなくなってきたにゃ〜ん！";
-		mes "タオもう門番嫌いだにゃ〜ん！";
-		close;
-	}
-	mes "[タオ]";
-	mes "止まるにゃ！　何の用にゃ!!";
-	next;
-	switch(select("何でこんな所にちびっこが？","君こそ何をしてるの？","……何故猫言葉なの……？")) {
-	case 1:
-		mes "[タオ]";
-		mes "失礼にゃん！";
-		mes "タオは立派な門番だにゃん！";
-		mes "ちびっこ違うにゃん！";
-		next;
-		mes "[タオ]";
-		mes "何か用件があって来たように見えるが、";
-		mes "今日は運が悪かったにゃん。";
-		mes "マスターとマルザナが左の部屋に";
-		mes "いる事は絶対に教えてやらないにゃん！";
-		close;
-	case 2:
-		mes "[タオ]";
-		mes "タオは、ここの門番にゃ！";
-		mes "怪しい奴は絶対通さないんにゃ!!";
-		mes "にゃるるるるるるる！";
-		next;
-		mes "[タオ]";
-		mes "お前は怪しいにゃ！";
-		mes "通すわけにはいかないにゃ〜!!";
-		close;
-	case 3:
-		mes "[タオ]";
-		mes "それはだにゃ……";
-		mes "だいぶ前の事になるんだがにゃ……";
-		next;
-		mes "[タオ]";
-		mes "大きなリボンが欲しくて、";
-		mes "ワイルドローズを探しに行ったのにゃ。";
-		mes "そしたらいきなり後ろから……";
-		next;
-		mes "[タオ]";
-		mes "にゃにゃ!?";
-		mes "何でお前にこんな話をしなきゃ";
-		mes "いけないんにゃ!?";
-		next;
-		mes "[タオ]";
-		mes "にゃるるるるるるる!!";
-		mes "お前は何者にゃ！";
-		next;
-		if(getbaseclass(Class,2) != CLASS_AS) {
-			mes "[タオ]";
-			mes "今すぐ出て行くにゃ！";
-			close;
-		}
-		mes "[" +strcharinfo(0)+ "]";
-		mes "タオ、お" +(Sex? "兄": "姉")+ "さんを覚えてないのかい？";
-		next;
-		mes "[タオ]";
-		mes "にゃにゃ？　知らないにゃ！";
-		mes "とにかくここは関係者以外";
-		mes "立ち入り禁止にゃ〜〜!!";
-		close;
-	}
-}
-
-que_job01.gat,51,55,0	script	#roombar1	45,1,1,{
-	if(getnpctimer(1)) {
-		mes "[タオ]";
-		mes "今は中に人がいるにゃ。";
-		mes "後でまた来るにゃ〜！";
-		close2;
-		warp "que_job01.gat",52,50;
-		end;
-	}
-	initnpctimer;
-	announce "マスターゾーンの第1区域が警戒体制に入ります。",9,0x70DBDB;
-	if(PRT_2QUE == 24)
-		hideoffnpc "マルザナ#poison";
-	else
-		hideoffnpc "バルデス#moc1";
-	mes "[タオ]";
-	mes "保安魔法がかかってるにゃ。";
-	mes "^4D4DFF4分^000000与えるにゃ。";
-	mes "その間に全部終らせるにゃ！";
-	close2;
-	warp "que_job01.gat",11,7;
-	end;
-OnTimer240000:
-	areawarp "que_job01.gat",6,4,19,23,"que_job01.gat",52,50;
-	end;
-OnTimer245000:
-	hideonnpc "バルデス#moc1";
-	hideonnpc "マルザナ#poison";
-	end;
-OnTimer250000:
-	announce "マスターゾーンの第1区域警戒を解除します。",9,0x70DBDB;
-	stopnpctimer;
-	end;
-OnStop:
-	announce "マスターゾーンの第1区域警戒を解除します。",9,0x70DBDB;
-	hideonnpc "バルデス#moc1";
-	hideonnpc "マルザナ#poison";
-	stopnpctimer;
-	end;
-}
-
-que_job01.gat,11,4,0	script	#roombar1exit	45,1,1,{
-	warp "que_job01.gat",52,50;
-	donpcevent "#roombar1::OnStop";
-	end;
-}
-
-que_job01.gat,51,44,0	script	#roombar2	45,1,1,{
-	warp "que_job01.gat",80,23;
-	end;
-}
-
-que_job01.gat,80,27,0	script	#roombar2exit	45,1,1,{
-	warp "que_job01.gat",52,50;
-	end;
-}
-
-que_job01.gat,16,21,5	script	バルデス#moc1	55,{
-	if(countitem(7416)) delitem 7416,countitem(7416);
-	if(countitem(7417)) delitem 7417,countitem(7417);
-	if(countitem(7418)) delitem 7418,countitem(7418);
-	if(getbaseclass(Class,2) == CLASS_AS) {
-		mes "[バルデス]";
-		mes "今はお前に依頼したい任務はない。";
-		mes "魔王の復活で一杯一杯でな。";
-		mes "すまないが、もう帰ってくれないか？";
-		next;
-		mes "[バルデス]";
-		mes "仕事が入ったら連絡しよう。";
-		mes "……帰るがいい。";
-		close;
-	}
-	mes "[バルデス]";
-	mes "すまないが、帰ってくれないか？";
-	mes "魔王の復活でとても忙しいのだ。";
-	mes "……以前依頼した仕事の件なら";
-	mes "もう忘れてくれ。";
-	close;
-OnInit:
-	hideonnpc;
-	end;
-}
+//「npc_quest_ashvacuum.txt」へ移動
+//morocc.gat,43,108,5	script	鋭い印象の少年	82,{
+//	if(countitem(7416)) {
+//		mes "[ジャック]";
+//		mes "推薦状？";
+//		mes "ずいぶん古い遺物を持ってきたな。";
+//		mes "まあ、とりあえず中にいるマスターに";
+//		mes "会ってみな。";
+//		close;
+//	}
+//	if(getbaseclass(Class,2) == CLASS_AS) {
+//		mes "[ジャック]";
+//		mes "街の半分が破壊されたと言うのに";
+//		mes "未だにここを訪れる人がいるんだよな。";
+//		mes "あの騒ぎの中でも無事だったアジトが";
+//		mes "そんなに珍しいのか？";
+//		close;
+//	}
+//	mes "[ジャック]";
+//	mes "何をしてるんだ？";
+//	mes "こんな所でウロチョロしているより、";
+//	mes "早く避難地域に向かった方がいい。";
+//	close;
+//}
+//
+//morocc.gat,45,110,0	script	#mocbar1	45,2,2,{
+//	if(MOC_1QUE || getbaseclass(Class,2) == CLASS_AS) {
+//		warp "que_job01.gat",9,94;
+//		end;
+//	}
+//	mes "[ジャック]";
+//	mes "……そこは誰でも通れる場所ではない。";
+//	next;
+//	mes "[ジャック]";
+//	mes "でも、状況が昔とは違うからな。";
+//	mes "好きにしな！";
+//	close2;
+//	warp "que_job01.gat",9,94;
+//	end;
+//}
+//
+//que_job01.gat,6,94,0	warp	#mocbar2	2,2,morocc.gat,45,103
+//
+//que_job01.gat,17,48,0	warp	#mocbar3	2,2,que_job01.gat,68,92
+//
+//que_job01.gat,68,96,0	warp	#mocbar4	2,2,que_job01.gat,17,53
+//
+//que_job01.gat,80,77,0	script	#mocbar5	45,2,2,{
+//	if(MOC_1QUE > 1) {
+//		warp "que_job01.gat",61,50;
+//		end;
+//	}
+//	mes "[リテルン]";
+//	mes "おいおい、そこはお前みたいな奴が";
+//	mes "入れる場所じゃないぜ？";
+//	mes "マスター！　こいつは許可したの？";
+//	next;
+//	if(PRT_2QUE != 24) {
+//		mes "[マスター]";
+//		mes "いや、許可していない。";
+//		next;
+//		mes "[リテルン]";
+//		mes "だってさ。じゃぁな！";
+//		close2;
+//		warp "que_job01.gat",85,77;
+//		end;
+//	}
+//	mes "[" +strcharinfo(0)+ "]";
+//	mes "貴方とは関係ありません。";
+//	mes "私は関係者に会わなくては";
+//	mes "いけないんです！";
+//	next;
+//	mes "[リテルン]";
+//	mes "マスター！　こいつどうする？";
+//	mes "何だか、面倒そうだぜ？";
+//	next;
+//	mes "[マスター]";
+//	mes "いいさ、好きにさせてやれ。";
+//	mes "どうせその一つ先に行ったところで、";
+//	mes "何も無いからな。";
+//	next;
+//	mes "[リテルン]";
+//	mes "ふ〜ん、マスターがそう言うなら……";
+//	mes "一杯おごってくれたら許可しよう。";
+//	mes "この酒な、1,000Zenyだ。";
+//	next;
+//	if(select("わかりました","断ります")==2) {
+//		mes "[リテルン]";
+//		mes "断るって？";
+//		mes "それじゃぁ俺もお断りだ！";
+//		close2;
+//		warp "que_job01.gat",85,77;
+//		end;
+//	}
+//	if(Zeny < 1000) {
+//		mes "[リテルン]";
+//		mes "ん……何だ、金無いのか？";
+//		mes "ヒョー！　これじゃぁ水も飲めないぜ？";
+//		mes "あ〜あ、話になんないよ！";
+//		close2;
+//		warp "que_job01.gat",85,77;
+//		end;
+//	}
+//	mes "[リテルン]";
+//	mes "よしよし、そうこなくっちゃな！";
+//	mes "マスター！　一杯よろしく！";
+//	set Zeny,Zeny-1000;
+//	next;
+//	mes "[リテルン]";
+//	mes "さぁ、入って入って！";
+//	close2;
+//	warp "que_job01.gat",61,50;
+//	end;
+//}
+//
+//que_job01.gat,65,50,0	warp	#mocbar5-2	2,2,que_job01.gat,84,77
+//
+//que_job01.gat,81,79,5	script	遊んでいる騎士	733,{
+//	mes "[リテルン]";
+//	mes "ナイトがここで何をしてるかって？";
+//	mes "ナイトはここにいちゃいけないのか？";
+//	if(getbaseclass(Class,2) == CLASS_KN) mes "お前だってナイトだろうが……";
+//	next;
+//	mes "[リテルン]";
+//	mes "復旧作業に疲れてしまって、";
+//	mes "ちょっと休憩に来ただけさ。";
+//	mes "誰にも邪魔されず一杯飲める場所は";
+//	mes "そうそうあるもんじゃないしな。";
+//	close;
+//}
+//
+//que_job01.gat,82,95,3	script	バーマスター	46,{
+//	if(getbaseclass(Class,2) == CLASS_AS) {
+//		mes "[マスター]";
+//		mes "いらっしゃい。";
+//		mes "何か飲むかい？";
+//	}
+//	else if(getbaseclass(Class) == CLASS_TF) {
+//		mes "[マスター]";
+//		mes "……お前みたいなよそ者が";
+//		mes "入ってくるってことは、ジャックの奴";
+//		mes "居眠りしてやがるのか？";
+//		next;
+//		mes "[" +strcharinfo(0)+ "]";
+//		mes "マスター、客に向かっていきなり";
+//		mes "それはないんじゃないですか？";
+//		next;
+//		mes "[マスター]";
+//		mes "ふん……まぁいいか。";
+//		mes "注文は？";
+//		next;
+//	}
+//	else {
+//		mes "[マスター]";
+//		mes "ん……？";
+//		mes "お前、アサシンでも、";
+//		mes "モロクの住民でもないようだが……";
+//		mes "まぁ今日はいいが、あまり頻繁に";
+//		mes "出入りしないでくれよ。";
+//		mes "さ、注文は？";
+//	}
+//	next;
+//	switch(select("注文する","任務について","やめる")) {
+//	case 1:
+//		mes "[マスター]";
+//		mes "トロピカル・ソグラト、";
+//		mes "ヴァーミリオン・ザ・ビーチ、";
+//		mes "どっちを飲むかね？";
+//		next;
+//		if(select("トロピカル・ソグラト","ヴァーミリオン・ザ・ビーチ","タダで飲める物はないの？")==3) {
+//			mes "[マスター]";
+//			mes "……";
+//			mes "金が無いなら出て行きな。";
+//			close;
+//		}
+//		if(getbaseclass(Class,2) == CLASS_AS) {
+//			mes "[マスター]";
+//			mes "お前には特別に安くしよう。";
+//			if(Zeny < 800) {
+//				mes "ん……金が足りないようだな。";
+//				mes "所持金を確認してから注文してくれ。";
+//				mes "アサシンは、特価800Zenyだ。";
+//				close;
+//			}
+//			mes "さ、出来たよ。";
+//			if(@menu == 1) {
+//				mes "果汁が主成分ではあるが、";
+//				mes "飲みすぎには注意しろよ。";
+//			}
+//			set Zeny,Zeny-800;
+//			getitem 12111+@menu,1;
+//			close;
+//		}
+//		if(Zeny < 1000) {
+//			mes "[マスター]";
+//			mes "おいおい、所持金を確認してから";
+//			mes "注文してくれよ。";
+//			mes "一杯1,000Zenyだ。";
+//			close;
+//		}
+//		mes "[マスター]";
+//		mes "ほら、出来たぞ。";
+//		if(@menu == 1)
+//			mes "果汁が主成分ではあるが、";
+//		mes "飲みすぎには注意してくれ。";
+//		set Zeny,Zeny-1000;
+//		getitem 12111+@menu,1;
+//		close;
+//	case 2:
+//		if(MOC_1QUE == 1) {
+//			if(getbaseclass(Class,2) == CLASS_AS) {
+//				mes "[マスター]";
+//				mes "……残念だが遅すぎたようだな。";
+//				mes "依頼をしたのは確かだが、";
+//				mes "もうその必要はなくなってしまった。";
+//				mes "せっかく来て貰ったのにすまんな。";
+//				close;
+//			}
+//			mes "[マスター]";
+//			mes "ん……？";
+//			next;
+//			menu "推薦状を見せる。",-;
+//			if(countitem(7416) < 1) {
+//				mes "[マスター]";
+//				mes "今頃か……？";
+//				next;
+//				mes "[マスター]";
+//				mes "怪しい奴だな……";
+//				mes "……";
+//				mes "おい、こいつを追い出せ！";
+//				next;
+//				mes "[客達]";
+//				mes "はい！";
+//				next;
+//				mes "-大勢に取り囲まれ、";
+//				mes "店の外へ叩き出された-";
+//				close2;
+//				warp "morocc.gat",45,106;
+//				end;
+//			}
+//			mes "[マスター]";
+//			mes "……残念だが遅すぎたようだな。";
+//			mes "各ギルドに協力を求めたのは確かだが、";
+//			mes "もうその必要はなくなってしまった。";
+//			mes "せっかく来て貰ったのにすまんな。";
+//			close;
+//		}
+//		if(getbaseclass(Class,2) == CLASS_AS) {
+//			mes "[マスター]";
+//			mes "お前は……まだ任務を受けたことが";
+//			mes "ないようだな。";
+//			next;
+//			mes "[マスター]";
+//			mes "……ここが気に入ったか？";
+//			mes "お前がその気なら、ギルドマスターに";
+//			mes "お前を推薦してやろう。";
+//			mes "ただし、もっと強くなってからな。";
+//			close;
+//		}
+//		mes "[マスター]";
+//		mes "任務？　何の話だ？";
+//		mes "わけのわからない事言わず、";
+//		mes "注文をしてくれ。";
+//		close;
+//	case 3:
+//		mes "[マスター]";
+//		mes "ふむ……";
+//		close;
+//	}
+//}
+//
+//que_job01.gat,49,49,4	script	タオ	877,{
+//	if(getbaseclass(Class,2) == CLASS_AS) {
+//		mes "[タオ]";
+//		mes "いらっしゃいにゃん。";
+//		mes "何の用にゃん？";
+//		next;
+//		mes "[タオ]";
+//		mes "用がなければ帰って欲しいにゃん。";
+//		mes "誰でも入れる場所じゃないにゃん。";
+//		mes "それに、どうせあの部屋には";
+//		mes "入れないにゃん。";
+//		next;
+//		mes "[タオ]";
+//		mes "いや入っても大丈夫だったのかにゃん？";
+//		mes "わからなくなってきたにゃ〜ん！";
+//		mes "タオもう門番嫌いだにゃ〜ん！";
+//		close;
+//	}
+//	mes "[タオ]";
+//	mes "止まるにゃ！　何の用にゃ!!";
+//	next;
+//	switch(select("何でこんな所にちびっこが？","君こそ何をしてるの？","……何故猫言葉なの……？")) {
+//	case 1:
+//		mes "[タオ]";
+//		mes "失礼にゃん！";
+//		mes "タオは立派な門番だにゃん！";
+//		mes "ちびっこ違うにゃん！";
+//		next;
+//		mes "[タオ]";
+//		mes "何か用件があって来たように見えるが、";
+//		mes "今日は運が悪かったにゃん。";
+//		mes "マスターとマルザナが左の部屋に";
+//		mes "いる事は絶対に教えてやらないにゃん！";
+//		close;
+//	case 2:
+//		mes "[タオ]";
+//		mes "タオは、ここの門番にゃ！";
+//		mes "怪しい奴は絶対通さないんにゃ!!";
+//		mes "にゃるるるるるるる！";
+//		next;
+//		mes "[タオ]";
+//		mes "お前は怪しいにゃ！";
+//		mes "通すわけにはいかないにゃ〜!!";
+//		close;
+//	case 3:
+//		mes "[タオ]";
+//		mes "それはだにゃ……";
+//		mes "だいぶ前の事になるんだがにゃ……";
+//		next;
+//		mes "[タオ]";
+//		mes "大きなリボンが欲しくて、";
+//		mes "ワイルドローズを探しに行ったのにゃ。";
+//		mes "そしたらいきなり後ろから……";
+//		next;
+//		mes "[タオ]";
+//		mes "にゃにゃ!?";
+//		mes "何でお前にこんな話をしなきゃ";
+//		mes "いけないんにゃ!?";
+//		next;
+//		mes "[タオ]";
+//		mes "にゃるるるるるるる!!";
+//		mes "お前は何者にゃ！";
+//		next;
+//		if(getbaseclass(Class,2) != CLASS_AS) {
+//			mes "[タオ]";
+//			mes "今すぐ出て行くにゃ！";
+//			close;
+//		}
+//		mes "[" +strcharinfo(0)+ "]";
+//		mes "タオ、お" +(Sex? "兄": "姉")+ "さんを覚えてないのかい？";
+//		next;
+//		mes "[タオ]";
+//		mes "にゃにゃ？　知らないにゃ！";
+//		mes "とにかくここは関係者以外";
+//		mes "立ち入り禁止にゃ〜〜!!";
+//		close;
+//	}
+//}
+//
+//que_job01.gat,51,55,0	script	#roombar1	45,1,1,{
+//	if(getnpctimer(1)) {
+//		mes "[タオ]";
+//		mes "今は中に人がいるにゃ。";
+//		mes "後でまた来るにゃ〜！";
+//		close2;
+//		warp "que_job01.gat",52,50;
+//		end;
+//	}
+//	initnpctimer;
+//	announce "マスターゾーンの第1区域が警戒体制に入ります。",9,0x70DBDB;
+//	if(PRT_2QUE == 24)
+//		hideoffnpc "マルザナ#poison";
+//	else
+//		hideoffnpc "バルデス#moc1";
+//	mes "[タオ]";
+//	mes "保安魔法がかかってるにゃ。";
+//	mes "^4D4DFF4分^000000与えるにゃ。";
+//	mes "その間に全部終らせるにゃ！";
+//	close2;
+//	warp "que_job01.gat",11,7;
+//	end;
+//OnTimer240000:
+//	areawarp "que_job01.gat",6,4,19,23,"que_job01.gat",52,50;
+//	end;
+//OnTimer245000:
+//	hideonnpc "バルデス#moc1";
+//	hideonnpc "マルザナ#poison";
+//	end;
+//OnTimer250000:
+//	announce "マスターゾーンの第1区域警戒を解除します。",9,0x70DBDB;
+//	stopnpctimer;
+//	end;
+//OnStop:
+//	announce "マスターゾーンの第1区域警戒を解除します。",9,0x70DBDB;
+//	hideonnpc "バルデス#moc1";
+//	hideonnpc "マルザナ#poison";
+//	stopnpctimer;
+//	end;
+//}
+//
+//que_job01.gat,11,4,0	script	#roombar1exit	45,1,1,{
+//	warp "que_job01.gat",52,50;
+//	donpcevent "#roombar1::OnStop";
+//	end;
+//}
+//
+//que_job01.gat,51,44,0	script	#roombar2	45,1,1,{
+//	warp "que_job01.gat",80,23;
+//	end;
+//}
+//
+//que_job01.gat,80,27,0	script	#roombar2exit	45,1,1,{
+//	warp "que_job01.gat",52,50;
+//	end;
+//}
+//
+//que_job01.gat,16,21,5	script	バルデス#moc1	55,{
+//	if(countitem(7416)) delitem 7416,countitem(7416);
+//	if(countitem(7417)) delitem 7417,countitem(7417);
+//	if(countitem(7418)) delitem 7418,countitem(7418);
+//	if(getbaseclass(Class,2) == CLASS_AS) {
+//		mes "[バルデス]";
+//		mes "今はお前に依頼したい任務はない。";
+//		mes "魔王の復活で一杯一杯でな。";
+//		mes "すまないが、もう帰ってくれないか？";
+//		next;
+//		mes "[バルデス]";
+//		mes "仕事が入ったら連絡しよう。";
+//		mes "……帰るがいい。";
+//		close;
+//	}
+//	mes "[バルデス]";
+//	mes "すまないが、帰ってくれないか？";
+//	mes "魔王の復活でとても忙しいのだ。";
+//	mes "……以前依頼した仕事の件なら";
+//	mes "もう忘れてくれ。";
+//	close;
+//OnInit:
+//	hideonnpc;
+//	end;
+//}
 
 yuno_in04.gat,180,106,3	script	読書中の少女	73,{
 	mes "[" +strcharinfo(0)+ "]";
@@ -1225,6 +1212,20 @@ morocc_in.gat,46,125,5	script	歴史学者助手	729,{
 	mes "[セピト]";
 	mes "まさかこの目で魔王の姿を";
 	mes "見る事になるとはね……";
+	close;
+}
+
+que_job01.gat,70,84,1	script	少女#Kimmie	882,{
+	mes "[少女]";
+	mes "世の中が……どうしてこんな風に";
+	mes "変わってしまったのでしょう。";
+	mes "シクシク……";
+	mes "何事もうまくいきませんし……";
+	emotion 28;
+	next;
+	mes "[" +strcharinfo(0)+ "]";
+	mes "可哀想だな……";
+	mes "これが現実と言うものか。";
 	close;
 }
 

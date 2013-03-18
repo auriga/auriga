@@ -2142,10 +2142,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage += src_sd->plus_atk;
 			if(calc_flag.lh)
 				wd.damage2 += src_sd->plus_atk;
-			if(sd->state.arrow_atk) {
-				wd.damage += sd->arrow_atk;
+			if(src_sd->state.arrow_atk) {
+				wd.damage += src_sd->arrow_atk;
 				if(calc_flag.lh)
-					wd.damage2 += sd->arrow_atk;
+					wd.damage2 += src_sd->arrow_atk;
 			}
 
 			if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
