@@ -1818,8 +1818,10 @@ L_RECALC:
 		}
 		if(sd->sc.data[SC__BLOODYLUST].timer != -1) {	// ブラッディラスト
 			sd->def2 = sd->def2*(100 - 55) / 100;
+#ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk*(100 + 32) / 100;
 			sd->watk = sd->watk*(100 + 32) / 100;
+#endif
 			// 左手には適用しない
 			//idx = sd->equip_index[8];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
@@ -1827,8 +1829,10 @@ L_RECALC:
 		}
 		else if(sd->sc.data[SC_PROVOKE].timer != -1) {	// プロボック
 			sd->def2 = sd->def2*(100 - 5 - 5 * sd->sc.data[SC_PROVOKE].val1) / 100;
+#ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
 			sd->watk = sd->watk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
+#endif
 			// 左手には適用しない
 			//idx = sd->equip_index[8];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
@@ -1902,11 +1906,13 @@ L_RECALC:
 			sd->def2 = 0;
 
 		if(sd->sc.data[SC_CONCENTRATION].timer != -1) {	// コンセントレーション
+#ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->watk = sd->watk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isweapon(sd->inventory_data[idx]->nameid))
 				sd->watk_ = sd->watk_ * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
+#endif
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->def2 = sd->def2 * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 		}
@@ -4103,6 +4109,7 @@ int status_get_baseatk(struct block_list *bl)
 #endif
 	}
 	if(sc) {	// 状態異常あり
+#ifdef PRE_RENEWAL
 		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)	// ブラッディラスト
 			batk = batk*(100+32)/100;	// base_atk増加
 		else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)	// PCでプロボック(SM_PROVOKE)状態
@@ -4111,6 +4118,7 @@ int status_get_baseatk(struct block_list *bl)
 			batk -= batk*25/100;	// base_atkが25%減少
 		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// コンセントレーション
 			batk += batk*(5*sc->data[SC_CONCENTRATION].val1)/100;
+#endif
 		if(sc->data[SC_JOINTBEAT].timer != -1 && sc->data[SC_JOINTBEAT].val4 == 4)	// ジョイントビートで腰
 			batk -= batk*25/100;
 		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
@@ -4172,6 +4180,7 @@ int status_get_atk(struct block_list *bl)
 	}
 
 	if(sc) {
+#ifdef PRE_RENEWAL
 		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)
 			atk = atk*(100+32)/100;
 		else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)
@@ -4180,6 +4189,7 @@ int status_get_atk(struct block_list *bl)
 			atk -= atk*25/100;
 		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// コンセントレーション
 			atk += atk*(5*sc->data[SC_CONCENTRATION].val1)/100;
+#endif
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
 			atk *= 3;
 		if(sc->data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
@@ -4225,8 +4235,10 @@ int status_get_atk_(struct block_list *bl)
 	if(bl->type == BL_PC && (sd = (struct map_session_data *)bl)) {
 		int atk = sd->watk_;
 
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_CURSE].timer != -1)
 			atk -= atk*25/100;
+#endif
 		return atk;
 	}
 	return 0;
@@ -4268,20 +4280,24 @@ int status_get_atk2(struct block_list *bl)
 		if(sc) {
 			if(sc->data[SC_IMPOSITIO].timer != -1)
 				atk2 += sc->data[SC_IMPOSITIO].val1*5;
+#ifdef PRE_RENEWAL
 			if(sc->data[SC__BLOODYLUST].timer != -1)
 				atk2 = atk2*(100+32)/100;
 			else if(sc->data[SC_PROVOKE].timer != -1)
 				atk2 = atk2*(100+2+3*sc->data[SC_PROVOKE].val1)/100;
 			if(sc->data[SC_CURSE].timer != -1)
 				atk2 -= atk2*25/100;
+#endif
 			if(sc->data[SC_DRUMBATTLE].timer != -1)
 				atk2 += sc->data[SC_DRUMBATTLE].val2;
 			if(sc->data[SC_NIBELUNGEN].timer != -1 && (status_get_element(bl)/10) >= 8 )
 				atk2 += sc->data[SC_NIBELUNGEN].val2;
 			if(sc->data[SC_STRIPWEAPON].timer != -1)
 				atk2 -= atk2*10/100;
+#ifdef PRE_RENEWAL
 			if(sc->data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
 				atk2 += atk2*(5*sc->data[SC_CONCENTRATION].val1)/100;
+#endif
 			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
 				atk2 *= 3;
 			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム

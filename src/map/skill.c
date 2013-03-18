@@ -3339,7 +3339,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_SKILL,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
-			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,ELE_FIRE,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case NPC_SPLASHATTACK:	/* スプラッシュアタック */
@@ -7255,6 +7255,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				time += pc_checkskill(sd,GC_RESEARCHNEWPOISON) * 3000;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,time,0);
+#ifndef PRE_RENEWAL
+			// pre時の計算式が不明のためRE限定
+			status_change_start(bl,SC_MAGNUM,skilllv,ELE_POISON,0,0,time,0);
+#endif
 		}
 		break;
 	case RG_CLOSECONFINE:		/* クローズコンファイン */
@@ -18237,7 +18241,7 @@ static int skill_chainlightning( struct block_list *bl,va_list ap )
  */
 static int skill_detonator( struct block_list *bl, va_list ap )
 {
-	int ar, sec = 0;
+	int ar, sec;
 	struct block_list *src;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -18258,9 +18262,8 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 		case UNT_FLASHER:
 		case UNT_CLAYMORETRAP:
 		case UNT_CLUSTERBOMB:
-		case UNT_ICEBOUNDTRAP:
-			sec = 1500;
 		case UNT_FIRINGTRAP:
+		case UNT_ICEBOUNDTRAP:
 			ar = unit->range;
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
@@ -18271,8 +18274,9 @@ static int skill_detonator( struct block_list *bl, va_list ap )
 			// クラスターボムは効果範囲を3セル広げる
 			if(sg->unit_id == UNT_CLUSTERBOMB) {
 				ar += 3;
-				sec = 1000;
 			}
+
+			sec = (sg->unit_id == UNT_FIRINGTRAP)? 0: ((sg->unit_id == UNT_CLUSTERBOMB)? 1000: 1500);
 
 			// 罠を発動させる
 			map_foreachinarea(skill_trap_splash,unit->bl.m,
@@ -18350,7 +18354,7 @@ static int skill_maelstrom( struct block_list *bl, va_list ap )
  */
 static int skill_trample( struct block_list *bl, va_list ap )
 {
-	int ar, skilllv, sec = 0;
+	int ar, skilllv, sec;
 	struct block_list *src;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -18375,9 +18379,8 @@ static int skill_trample( struct block_list *bl, va_list ap )
 		case UNT_FLASHER:
 		case UNT_CLAYMORETRAP:
 		case UNT_CLUSTERBOMB:
-		case UNT_ICEBOUNDTRAP:
-			sec = 1500;
 		case UNT_FIRINGTRAP:
+		case UNT_ICEBOUNDTRAP:
 			ar = unit->range;
 
 			// サンドマンとクレイモアは効果範囲を1セル広げる
@@ -18390,6 +18393,8 @@ static int skill_trample( struct block_list *bl, va_list ap )
 				ar += 3;
 				sec = 1000;
 			}
+
+			sec = (sg->unit_id == UNT_FIRINGTRAP)? 0: ((sg->unit_id == UNT_CLUSTERBOMB)? 1000: 1500);
 
 			// 罠を発動させる
 			map_foreachinarea(skill_trap_splash,unit->bl.m,

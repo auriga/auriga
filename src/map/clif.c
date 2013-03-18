@@ -9141,9 +9141,17 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 	WBUFW(buf, 4)=mob_db[md->class_].lv;
 	WBUFW(buf, 6)=mob_db[md->class_].size;
 	WBUFL(buf, 8)=md->hp;
+#ifdef PRE_RENEWAL
 	WBUFW(buf,12)=status_get_def2(&md->bl);
+#else
+	WBUFW(buf,12)=status_get_def(&md->bl);
+#endif
 	WBUFW(buf,14)=mob_db[md->class_].race;
+#ifdef PRE_RENEWAL
 	WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mob_db[md->class_].vit>>1);
+#else
+	WBUFW(buf,16)=status_get_mdef(&md->bl);
+#endif
 	WBUFW(buf,18)=status_get_elem_type(&md->bl);
 	for(i=0; i<9 && i<ELE_MAX-1; i++)
 		WBUFB(buf,20+i) = battle_attr_fix(100,i+1,md->def_ele);

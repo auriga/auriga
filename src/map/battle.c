@@ -2065,6 +2065,45 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage += atn_rand()%(src_sd->arrow_atk+1);
 		}
 #else
+		// （RE）マグナムブレイク状態
+		if(sc && sc->data[SC_MAGNUM].timer != -1) {
+			int rate = 0;
+			if(sc->data[SC_MAGNUM].val2 == ELE_FIRE && skill_num != GN_CART_TORNADO) {
+				rate = 20;
+			} else if(sc->data[SC_MAGNUM].val2 == ELE_POISON) {
+				switch(skill_num) {
+				case 0:
+				case SM_BASH:
+				case SM_MAGNUM:
+				case MS_MAGNUM:
+				case TF_POISON:
+				case AS_SONICBLOW:
+				case AS_GRIMTOOTH:
+				case ASC_BREAKER:
+				case GC_CROSSIMPACT:
+				case GC_DARKILLUSION:
+				case GC_VENOMPRESSURE:
+				case GC_COUNTERSLASH:
+				case GC_PHANTOMMENACE:
+				case GC_ROLLINGCUTTER:
+				case GC_CROSSRIPPERSLASHER:
+					rate = 25;
+					break;
+				}
+			}
+			if(rate > 0) {
+				int bonus_damage;
+				bonus_damage = battle_attr_fix(wd.damage, sc->data[SC_MAGNUM].val2, status_get_element(target));
+				if(bonus_damage > 0)
+					wd.damage += bonus_damage * rate / 100;
+				if(calc_flag.lh) {
+					bonus_damage = battle_attr_fix(wd.damage2, sc->data[SC_MAGNUM].val2, status_get_element(target));
+					if(bonus_damage > 0)
+						wd.damage2 += bonus_damage * rate / 100;
+				}
+			}
+		}
+
 		/* （RE）防御無視判定および錐効果ダメージ計算 */
 		switch (skill_num) {
 		case MC_CARTREVOLUTION:
@@ -2368,6 +2407,57 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage = wd.damage * (src_sd->critical_damage + trans_bonus) / 100;
 			}
 		}
+#endif
+
+		/* スキル倍率計算に加算 */
+		if(sc) {
+#ifndef PRE_RENEWAL
+			// ブラッディラスト
+			if(sc->data[SC__BLOODYLUST].timer != -1)
+				add_rate += 32;
+			// プロボック
+			else if(sc->data[SC_PROVOKE].timer != -1)
+				add_rate += 2 + 3 * sc->data[SC_PROVOKE].val1;
+			// コンセントレーション
+			if(sc->data[SC_CONCENTRATION].timer != -1)
+				add_rate += 5*sc->data[SC_CONCENTRATION].val1;
+			// バーサーク
+			if(sc->data[SC_BERSERK].timer != -1)
+				add_rate += 200;
+			// 呪い
+			if(sc->data[SC_CURSE].timer != -1)
+				add_rate -= 25;
+#endif
+			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
+				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
+			}
+			if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
+				add_rate += sc->data[SC_BEYOND_OF_WARCRY].val1 * 5 + sc->data[SC_BEYOND_OF_WARCRY].val4 * 3;
+			}
+			if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
+				add_rate -= sc->data[SC_MELODYOFSINK].val1 * 5;
+			}
+		}
+
+#ifndef PRE_RENEWAL
+		switch( skill_num ) {
+		case LK_SPIRALPIERCE:	// スパイラルピアース
+		case ML_SPIRALPIERCE:
+			{
+				int weight = 0;
+				if(src_sd && src_sd->equip_index[EQUIP_INDEX_RARM] >= 0) {
+					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
+					if(src_sd->inventory_data[idx] && itemdb_isweapon(src_sd->inventory_data[idx]->nameid)) {
+						weight = src_sd->inventory_data[idx]->weight/10;
+					}
+				}
+				DMG_FIX( 100+50*skill_lv, 100 );
+				DMG_ADD( weight*(skill_lv*(skill_lv+2)*25)/100 );
+				if(add_rate > 0)
+					DMG_ADD( weight/2*skill_lv*add_rate/100 );
+			}
+			break;
+		}
 
 		if( src_sd && wd.damage > 0 && calc_flag.rh ) {
 			// （RE）カード効果による特定レンジ攻撃のダメージ増幅
@@ -2379,19 +2469,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 #endif
-
-		/* スキル倍率計算に加算 */
-		if(sc) {
-			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
-				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
-			}
-			if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
-				add_rate += sc->data[SC_BEYOND_OF_WARCRY].val1 * 5 + sc->data[SC_BEYOND_OF_WARCRY].val4 * 3;
-			}
-			if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
-				add_rate -= sc->data[SC_MELODYOFSINK].val1 * 5;
-			}
-		}
 
 		/* 12．スキル修正１（攻撃力倍加系）*/
 		switch( skill_num ) {
@@ -2420,7 +2497,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
-			DMG_FIX( (90+10*skill_lv)*2, 100 );
+			DMG_FIX( 90+10*skill_lv, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
@@ -2498,10 +2575,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case KN_PIERCE:		// ピアース
 		case ML_PIERCE:
-			DMG_FIX( (100+10*skill_lv) * wd.div_, 100 );
+			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
 		case KN_SPEARSTAB:	// スピアスタブ
+#ifdef PRE_RENEWAL
 			DMG_FIX( 100+15*skill_lv, 100 );
+#else
+			DMG_FIX( 100+20*skill_lv, 100 );
+#endif
 			wd.blewcount = 0;
 			break;
 		case KN_SPEARBOOMERANG:	// スピアブーメラン
@@ -2566,7 +2647,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.blewcount = 0;
 			break;
 		case NPC_COMBOATTACK:	// 多段攻撃
-			DMG_FIX( 50*wd.div_, 100 );
+			DMG_FIX( 50, 100 );
 			break;
 		case NPC_RANDOMATTACK:	// ランダムATK攻撃
 			DMG_FIX( 50+atn_rand()%150, 100 );
@@ -2722,10 +2803,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CH_PALMSTRIKE:	// 猛虎硬派山
 			DMG_FIX( 200+100*skill_lv, 100 );
 			break;
+#ifdef PRE_RENEWAL
 		case LK_SPIRALPIERCE:	// スパイラルピアース
 		case ML_SPIRALPIERCE:
 			DMG_FIX( 80+40*skill_lv, 100 );
 			break;
+#endif
 		case LK_HEADCRUSH:	// ヘッドクラッシュ
 			DMG_FIX( 100+40*skill_lv, 100 );
 			break;
@@ -2985,10 +3068,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+10*skill_lv, 100 );
 			break;
 		case RK_SONICWAVE:	// ソニックウェーブ
-			DMG_FIX( (500 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
+			DMG_FIX( (500 + 100 * skill_lv) * (status_get_lv(src)+100) / 200, 100 );
 			break;
 		case RK_HUNDREDSPEAR:	// ハンドレッドスピア
-			DMG_FIX( (600 + 40 * skill_lv + ((src_sd)? pc_checkskill(src_sd,LK_SPIRALPIERCE): 0) * 20) * status_get_lv(src) / 100, 100 );
+			DMG_FIX( (600 + 40 * skill_lv + ((src_sd)? pc_checkskill(src_sd,LK_SPIRALPIERCE): 0) * 20) * (status_get_lv(src)+100) / 200, 100 );
 			break;
 		case RK_WINDCUTTER:	// ウィンドカッター
 			DMG_FIX( (100 + 50 * skill_lv) * status_get_lv(src) / 100, 100 );
@@ -3008,13 +3091,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 			{
-				int lv = src_sd ? pc_checkskill(src_sd,RK_DRAGONTRAINING) : 0;
-				if( lv >= 5 ) {
-					DMG_SET( (status_get_hp(src) / 50 + status_get_max_sp(src) / 4) * skill_lv * status_get_lv(src) / 100 * 80 / 100 );
-				}
-				else {
-					DMG_SET( (status_get_hp(src) * 13 / 1000 + status_get_max_sp(src) * 16 / 100) * skill_lv * status_get_lv(src) / 100 * (95 + 5 * lv) / 100 );
-				}
+				int dmg = src_sd ? pc_checkskill(src_sd,RK_DRAGONTRAINING) : 0;
+				dmg = (status_get_hp(src) / 50 + status_get_max_sp(src) / 4) * skill_lv * status_get_lv(src) / 150 * (90 + 5 * dmg) / 100;
+				DMG_SET( battle_attr_fix(dmg, s_ele, status_get_element(target)) );
 			}
 			break;
 		case RK_CRUSHSTRIKE:	// クラッシュストライク
@@ -3023,7 +3102,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(src_sd) {
 					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
 					if(idx >= 0 && src_sd->inventory_data[idx])
-						dmg += 100 * src_sd->inventory_data[idx]->refine * src_sd->inventory_data[idx]->wlv;
+						dmg = itemdb_atk(src_sd->inventory_data[idx]->nameid) + 600 * src_sd->inventory_data[idx]->wlv + 100 * src_sd->status.inventory[idx].refine * src_sd->inventory_data[idx]->wlv;
 				}
 				DMG_FIX( dmg, 100 );
 			}
@@ -3032,7 +3111,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ((src_sd)? pc_checkskill(src_sd,RK_RUNEMASTERY): 1) * 100 + (status_get_int(src) / 4) * 100, 100 );
 			break;
 		case RK_PHANTOMTHRUST:	// ファントムスラスト
-			DMG_FIX( (50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,KN_SPEARMASTERY): 0) * 10) * status_get_lv(src) / 100, 100 );
+			DMG_FIX( (50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,KN_SPEARMASTERY): 0) * 10) * status_get_lv(src) / 150, 100 );
 			break;
 		case GC_CROSSIMPACT:	// クロスインパクト
 			DMG_FIX( 1150 + 50 * skill_lv, 100 );
@@ -3691,10 +3770,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_TRUESIGHT].timer != -1) {
 				DMG_FIX( 100+2*sc->data[SC_TRUESIGHT].val1, 100 );
 			}
+#ifdef PRE_RENEWAL
 			// バーサーク
 			if(sc->data[SC_BERSERK].timer != -1) {
 				DMG_FIX( 200, 100 );
 			}
+#endif
 			// エンチャントデッドリーポイズン
 			if(sc->data[SC_EDP].timer != -1 && !calc_flag.nocardfix) {
 				// 右手のみに効果がのる。カード効果無効のスキルには乗らない
@@ -3728,12 +3809,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage2 = 0;
 				status_change_end(src, SC_EXEEDBREAK,-1);
 			}
+#ifdef PRE_RENEWAL
 			// エンチャントブレイド
 			if(sc->data[SC_ENCHANTBLADE].timer != -1 && !skill_num) {
 				static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 				ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
 				wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
 			}
+#endif
 			// ジャイアントグロース
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
 				if(atn_rand() % 10000 < 500) {
@@ -3782,6 +3865,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				break;
+#ifdef PRE_RENEWAL
 			case LK_SPIRALPIERCE:		// スパイラルピアース
 				if(src_sd->equip_index[EQUIP_INDEX_RARM] >= 0) {	// {((STR/10)^2 ＋ 武器重量×スキル倍率×0.8) × サイズ補正 ＋ 精錬}×カード倍率×属性倍率×5の模様
 					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
@@ -3791,6 +3875,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 				}
 				break;
+#endif
 			case PA_SHIELDCHAIN:		// シールドチェイン
 				if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
 					int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
@@ -4133,6 +4218,39 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 
+	/* 多段ヒット計算 */
+	switch(skill_num) {
+	case AC_DOUBLE:		// ダブルストレイフィング
+	case MA_DOUBLE:
+	case KN_PIERCE:		// ピアース
+	case ML_PIERCE:
+	case NPC_COMBOATTACK:	// 多段攻撃
+#ifndef PRE_RENEWAL
+	case LK_SPIRALPIERCE:	// スパイラルピアース
+#endif
+		// Hit数分修練等が乗るタイプ
+		if(wd.div_ > 1)
+			wd.damage *= wd.div_;
+		break;
+	case AS_SONICBLOW:		// ソニックブロー
+	case CR_HOLYCROSS:		// ホーリークロス
+	case MO_CHAINCOMBO:		// 連打掌
+	case CH_CHAINCRUSH:		// 連柱崩撃
+	case CG_ARROWVULCAN:	// アローバルカン
+	case RK_HUNDREDSPEAR:	// ハンドレッドスピア
+	case GC_CROSSIMPACT:	// クロスインパクト
+	case RA_ARROWSTORM:		// アローストーム
+	case NC_AXETORNADO:		// アックストルネード
+	case SC_TRIANGLESHOT:	// トライアングルショット
+	case LG_RAYOFGENESIS:	// レイオブジェネシス
+	case LG_EARTHDRIVE:		// アースドライブ
+	case SR_DRAGONCOMBO:	// 双龍脚
+	case SR_SKYNETBLOW:		// 天羅地網
+	case SR_FALLENEMPIRE:	// 大纏崩捶
+		// 1Hitを分割して表示するスキル
+		break;
+	}
+
 	if(wd.damage  < 0) wd.damage  = 0;
 	if(wd.damage2 < 0) wd.damage2 = 0;
 
@@ -4141,7 +4259,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 	if(calc_flag.lh)
 		wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
-#endif
 
 	/* 27．スキル修正４（追加ダメージ） */
 	if(sc && sc->data[SC_MAGNUM].timer != -1) {	// マグナムブレイク状態
@@ -4150,6 +4267,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_ADD( bonus_damage );
 		}
 	}
+#endif
 	if(skill_num == ASC_BREAKER) {			// ソウルブレイカー
 		wd.damage += damage_sbr;	// 魔法ダメージとランダムダメージを加算
 		if(t_def1 < 1000000) {
@@ -4157,11 +4275,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage -= (t_def1 + t_def2 + ((vitbonusmax < 1)? 0: atn_rand()%(vitbonusmax+1)) + status_get_mdef(target) + status_get_mdef2(target))/2;
 		}
 	}
-	if(sc && sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {	// スペルフィスト
-		wd = battle_calc_attack(BF_MAGIC,src,target,sc->data[SC_SPELLFIST].val2,1,wd.flag);
-		wd.damage = wd.damage * (sc->data[SC_SPELLFIST].val1 + sc->data[SC_SPELLFIST].val3);
-		if((--sc->data[SC_SPELLFIST].val4) <= 0)
-			status_change_end(src, SC_SPELLFIST,-1);
+	if(sc) {
+#ifndef PRE_RENEWAL
+		// エンチャントブレイド
+		if(sc->data[SC_ENCHANTBLADE].timer != -1 && wd.damage > 0 && !skill_num) {
+			static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
+			wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
+		}
+#endif
+		if(sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {	// スペルフィスト
+			wd = battle_calc_attack(BF_MAGIC,src,target,sc->data[SC_SPELLFIST].val2,1,wd.flag);
+			wd.damage = wd.damage * (sc->data[SC_SPELLFIST].val1 + sc->data[SC_SPELLFIST].val3);
+			if((--sc->data[SC_SPELLFIST].val4) <= 0)
+				status_change_end(src, SC_SPELLFIST,-1);
+		}
 	}
 
 	/* 28．必中ダメージの加算 */
@@ -4234,7 +4362,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				hit_damage += src_sd->arrow_atk * 3;
 			}
 			wd.damage += hit_damage * 3;
-		} else {
+		} else if(skill_num != NC_ARMSCANNON) {
 			wd.damage += hit_damage;
 			if(calc_flag.lh)
 				wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
