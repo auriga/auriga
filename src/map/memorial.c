@@ -764,5 +764,10 @@ int do_init_memorial(void)
  */
 int do_final_memorial(void)
 {
+	int i;
+
+	for(i = 1; i <= MAX_MEMORIAL_DATA; i++)
+		memorial_delete(i);
+
 	return 0;
 }

@@ -3075,13 +3075,13 @@ void do_final(void)
 	chrif_flush_fifo();				// パケット送信
 
 	do_final_battle();
+	do_final_memorial();
 	do_final_npc();
 	do_final_script();
 	do_final_itemdb();
 	do_final_storage();
 	do_final_guild();
 	do_final_clif();
-	do_final_memorial();
 	do_final_pc();
 	do_final_party();
 	do_final_booking();

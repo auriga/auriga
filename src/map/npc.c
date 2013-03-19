@@ -1210,12 +1210,14 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	switch(nd->subtype) {
 	case SCRIPT:
 		{
-			int script_size = src_nd->u.scr.script->script_size;
-			struct script_code *code = (struct script_code *)aMalloc(sizeof(struct script_code) + script_size);
-			code->script_vars = NULL;
-			code->script_size = script_size;
-			memcpy(code->script_buf, src_nd->u.scr.script->script_buf, script_size);
-
+			struct script_code *code = NULL;
+			if(src_nd->u.scr.script) {
+				int script_size = src_nd->u.scr.script->script_size;
+				code = (struct script_code *)aMalloc(sizeof(struct script_code) + script_size);
+				code->script_vars = NULL;
+				code->script_size = script_size;
+				memcpy(code->script_buf, src_nd->u.scr.script->script_buf, script_size);
+			}
 			nd->u.scr.script         = code;
 			nd->u.scr.xs             = src_nd->u.scr.xs;
 			nd->u.scr.ys             = src_nd->u.scr.ys;
