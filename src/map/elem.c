@@ -121,65 +121,6 @@ int elem_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-static int elem_calc_pos(struct elem_data *eld,int tx,int ty,int dir)
-{
-	int x,y,dx,dy;
-	int i,j=0,k;
-
-	nullpo_retr(0, eld);
-
-	eld->ud.to_x = tx;
-	eld->ud.to_y = ty;
-
-	if(dir >= 0 && dir < 8) {
-		dx = -dirx[dir]*MIN_ELEMDISTANCE;
-		dy = -diry[dir]*MIN_ELEMDISTANCE;
-		x = tx + dx;
-		y = ty + dy;
-		if(!(j=unit_can_reach(&eld->bl,x,y))) {
-			if(dx > 0) x--;
-			else if(dx < 0) x++;
-			if(dy > 0) y--;
-			else if(dy < 0) y++;
-			if(!(j=unit_can_reach(&eld->bl,x,y))) {
-				for(i=0;i<12;i++) {
-					k = atn_rand()%8;
-					dx = -dirx[k]*MIN_ELEMDISTANCE;
-					dy = -diry[k]*MIN_ELEMDISTANCE;
-					x = tx + dx;
-					y = ty + dy;
-					if((j=unit_can_reach(&eld->bl,x,y)))
-						break;
-					else {
-						if(dx > 0) x--;
-						else if(dx < 0) x++;
-						if(dy > 0) y--;
-						else if(dy < 0) y++;
-						if((j=unit_can_reach(&eld->bl,x,y)))
-							break;
-					}
-				}
-				if(!j) {
-					x = tx;
-					y = ty;
-					if(!unit_can_reach(&eld->bl,x,y))
-						return 1;
-				}
-			}
-		}
-	}
-	else
-		return 1;
-
-	eld->ud.to_x = x;
-	eld->ud.to_y = y;
-	return 0;
-}
-
-/*==========================================
  * ロック解除
  *------------------------------------------
  */
@@ -378,7 +319,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 		eld->speed = (msd->speed >> 1);
 		if(eld->speed <= 0)
 			eld->speed = 1;
-		elem_calc_pos(eld,msd->bl.x,msd->bl.y,msd->dir);
+		unit_calc_pos(&eld->ud,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
 		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
 		return 0;
@@ -467,7 +408,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 		if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
 			return 0;
 		eld->speed = msd->speed;
-		elem_calc_pos(eld,msd->bl.x,msd->bl.y,msd->dir);
+		unit_calc_pos(&eld->ud,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
 		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
 		return 0;

@@ -889,6 +889,65 @@ int unit_stop_walking(struct block_list *bl,int type)
 }
 
 /*==========================================
+ * 位置移動計算（PET, HOM, MERC, ELEM用）
+ *------------------------------------------
+ */
+int unit_calc_pos(struct unit_data *ud,int tx,int ty,int dir,int distance)
+{
+	int x,y,dx,dy;
+	int i,j=0,k;
+
+	nullpo_retr(0, ud);
+
+	ud->to_x = tx;
+	ud->to_y = ty;
+
+	if(dir >= 0 && dir < 8) {
+		dx = -dirx[dir] * distance;
+		dy = -diry[dir] * distance;
+		x = tx + dx;
+		y = ty + dy;
+		if(!(j=unit_can_reach(ud->bl,x,y))) {
+			if(dx > 0) x--;
+			else if(dx < 0) x++;
+			if(dy > 0) y--;
+			else if(dy < 0) y++;
+			if(!(j=unit_can_reach(ud->bl,x,y))) {
+				for(i=0;i<12;i++) {
+					k = atn_rand()%8;
+					dx = -dirx[k] * distance;
+					dy = -diry[k] * distance;
+					x = tx + dx;
+					y = ty + dy;
+					if((j=unit_can_reach(ud->bl,x,y)))
+						break;
+					else {
+						if(dx > 0) x--;
+						else if(dx < 0) x++;
+						if(dy > 0) y--;
+						else if(dy < 0) y++;
+						if((j=unit_can_reach(ud->bl,x,y)))
+							break;
+					}
+				}
+				if(!j) {
+					x = tx;
+					y = ty;
+					if(!unit_can_reach(ud->bl,x,y))
+						return 1;
+				}
+			}
+		}
+	}
+	else
+		return 1;
+
+	ud->to_x = x;
+	ud->to_y = y;
+	return 0;
+}
+
+/*==========================================
  * スキル使用（ID指定）
  *------------------------------------------
  */

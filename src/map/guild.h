@@ -43,7 +43,7 @@ int guild_checkskill(struct guild *g,int id);
 
 void do_init_guild(void);
 struct guild *guild_search(int guild_id);
-struct guild *guild_searchname(char *str);
+struct guild *guild_searchname(const char *str);
 struct guild_castle *guild_castle_search(int gcid);
 
 struct guild_castle *guild_mapname2gc(const char *mapname);

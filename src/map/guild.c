@@ -186,7 +186,7 @@ static int guild_searchname_sub(void *key,void *data,va_list ap)
 	return 0;
 }
 
-struct guild* guild_searchname(char *str)
+struct guild* guild_searchname(const char *str)
 {
 	struct guild *g = NULL;
 

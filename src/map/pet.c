@@ -88,65 +88,6 @@ int pet_hungry_val(struct map_session_data *sd)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-static int pet_calc_pos(struct pet_data *pd,int tx,int ty,int dir)
-{
-	int x,y,dx,dy;
-	int i,j=0,k;
-
-	nullpo_retr(0, pd);
-
-	pd->ud.to_x = tx;
-	pd->ud.to_y = ty;
-
-	if(dir >= 0 && dir < 8) {
-		dx = -dirx[dir]*2;
-		dy = -diry[dir]*2;
-		x = tx + dx;
-		y = ty + dy;
-		if(!(j=unit_can_reach(&pd->bl,x,y))) {
-			if(dx > 0) x--;
-			else if(dx < 0) x++;
-			if(dy > 0) y--;
-			else if(dy < 0) y++;
-			if(!(j=unit_can_reach(&pd->bl,x,y))) {
-				for(i=0;i<12;i++) {
-					k = atn_rand()%8;
-					dx = -dirx[k]*2;
-					dy = -diry[k]*2;
-					x = tx + dx;
-					y = ty + dy;
-					if((j=unit_can_reach(&pd->bl,x,y)))
-						break;
-					else {
-						if(dx > 0) x--;
-						else if(dx < 0) x++;
-						if(dy > 0) y--;
-						else if(dy < 0) y++;
-						if((j=unit_can_reach(&pd->bl,x,y)))
-							break;
-					}
-				}
-				if(!j) {
-					x = tx;
-					y = ty;
-					if(!unit_can_reach(&pd->bl,x,y))
-						return 1;
-				}
-			}
-		}
-	}
-	else
-		return 1;
-
-	pd->ud.to_x = x;
-	pd->ud.to_y = y;
-	return 0;
-}
-
-/*==========================================
  * ペットの攻撃対象決定
  *------------------------------------------
  */
@@ -336,7 +277,7 @@ static int pet_data_init(struct map_session_data *sd)
 	pd->bl.prev = pd->bl.next = NULL;
 	pd->bl.x    = pd->ud.to_x = sd->bl.x;
 	pd->bl.y    = pd->ud.to_y = sd->bl.y;
-	pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 	pd->bl.x  = pd->ud.to_x;
 	pd->bl.y  = pd->ud.to_y;
 	pd->bl.id = npc_get_new_npc_id();
@@ -990,7 +931,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		pd->speed = (sd->speed >> 1);
 		if(pd->speed <= 0)
 			pd->speed = 1;
-		pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
+		unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 			pet_randomwalk(pd,tick);
 		return 0;
@@ -1159,7 +1100,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			pd->speed = status_get_speed(&sd->bl);
 		else
 			pd->speed = sd->petDB->speed;
-		pet_calc_pos(pd,sd->bl.x,sd->bl.y,sd->dir);
+		unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 			pet_randomwalk(pd,tick);
 	}

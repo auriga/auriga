@@ -76,9 +76,9 @@ static int party_searchname_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-struct party* party_searchname(char *str)
+struct party* party_searchname(const char *str)
 {
-	struct party *p=NULL;
+	struct party *p = NULL;
 
 	numdb_foreach(party_db,party_searchname_sub,str,&p);
 

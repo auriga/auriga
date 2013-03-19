@@ -106,65 +106,6 @@ int homun_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-static int homun_calc_pos(struct homun_data *hd,int tx,int ty,int dir)
-{
-	int x,y,dx,dy;
-	int i,j=0,k;
-
-	nullpo_retr(0, hd);
-
-	hd->ud.to_x = tx;
-	hd->ud.to_y = ty;
-
-	if(dir >= 0 && dir < 8) {
-		dx = -dirx[dir]*2;
-		dy = -diry[dir]*2;
-		x = tx + dx;
-		y = ty + dy;
-		if(!(j=unit_can_reach(&hd->bl,x,y))) {
-			if(dx > 0) x--;
-			else if(dx < 0) x++;
-			if(dy > 0) y--;
-			else if(dy < 0) y++;
-			if(!(j=unit_can_reach(&hd->bl,x,y))) {
-				for(i=0;i<12;i++) {
-					k = atn_rand()%8;
-					dx = -dirx[k]*2;
-					dy = -diry[k]*2;
-					x = tx + dx;
-					y = ty + dy;
-					if((j=unit_can_reach(&hd->bl,x,y)))
-						break;
-					else {
-						if(dx > 0) x--;
-						else if(dx < 0) x++;
-						if(dy > 0) y--;
-						else if(dy < 0) y++;
-						if((j=unit_can_reach(&hd->bl,x,y)))
-							break;
-					}
-				}
-				if(!j) {
-					x = tx;
-					y = ty;
-					if(!unit_can_reach(&hd->bl,x,y))
-						return 1;
-				}
-			}
-		}
-	}
-	else
-		return 1;
-
-	hd->ud.to_x = x;
-	hd->ud.to_y = y;
-	return 0;
-}
-
-/*==========================================
  * 腹減り
  *------------------------------------------
  */
@@ -629,7 +570,7 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->bl.prev = hd->bl.next = NULL;
 	hd->bl.x    = hd->ud.to_x = sd->bl.x;
 	hd->bl.y    = hd->ud.to_y = sd->bl.y;
-	homun_calc_pos(hd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_calc_pos(&hd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 	hd->bl.x             = hd->ud.to_x;
 	hd->bl.y             = hd->ud.to_y;
 	hd->bl.id            = npc_get_new_npc_id();
@@ -965,7 +906,7 @@ int homun_return_master(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, hd = sd->hd);
 
-	homun_calc_pos(hd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_calc_pos(&hd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 	unit_walktoxy(&hd->bl,hd->ud.to_x,hd->ud.to_y);
 	return 0;
 }

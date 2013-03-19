@@ -34,7 +34,7 @@ struct block_list;
 void do_init_party(void);
 void do_final_party(void);
 struct party *party_search(int party_id);
-struct party* party_searchname(char *str);
+struct party* party_searchname(const char *str);
 
 void party_create(struct map_session_data *sd, const char *name, int item, int item2);
 void party_created(int account_id, unsigned char fail, int party_id, const char *name);

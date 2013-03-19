@@ -136,65 +136,6 @@ int merc_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- *
- *------------------------------------------
- */
-static int merc_calc_pos(struct merc_data *mcd,int tx,int ty,int dir)
-{
-	int x,y,dx,dy;
-	int i,j=0,k;
-
-	nullpo_retr(0, mcd);
-
-	mcd->ud.to_x = tx;
-	mcd->ud.to_y = ty;
-
-	if(dir >= 0 && dir < 8) {
-		dx = -dirx[dir]*2;
-		dy = -diry[dir]*2;
-		x = tx + dx;
-		y = ty + dy;
-		if(!(j=unit_can_reach(&mcd->bl,x,y))) {
-			if(dx > 0) x--;
-			else if(dx < 0) x++;
-			if(dy > 0) y--;
-			else if(dy < 0) y++;
-			if(!(j=unit_can_reach(&mcd->bl,x,y))) {
-				for(i=0;i<12;i++) {
-					k = atn_rand()%8;
-					dx = -dirx[k]*2;
-					dy = -diry[k]*2;
-					x = tx + dx;
-					y = ty + dy;
-					if((j=unit_can_reach(&mcd->bl,x,y)))
-						break;
-					else {
-						if(dx > 0) x--;
-						else if(dx < 0) x++;
-						if(dy > 0) y--;
-						else if(dy < 0) y++;
-						if((j=unit_can_reach(&mcd->bl,x,y)))
-							break;
-					}
-				}
-				if(!j) {
-					x = tx;
-					y = ty;
-					if(!unit_can_reach(&mcd->bl,x,y))
-						return 1;
-				}
-			}
-		}
-	}
-	else
-		return 1;
-
-	mcd->ud.to_x = x;
-	mcd->ud.to_y = y;
-	return 0;
-}
-
-/*==========================================
  * 雇用期限タイマー
  *------------------------------------------
  */
@@ -501,7 +442,7 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.m    = sd->bl.m;
 	mcd->bl.x    = mcd->ud.to_x = sd->bl.x;
 	mcd->bl.y    = mcd->ud.to_y = sd->bl.y;
-	merc_calc_pos(mcd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_calc_pos(&mcd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 	mcd->bl.x    = mcd->ud.to_x;
 	mcd->bl.y    = mcd->ud.to_y;
 	mcd->bl.type = BL_MERC;
@@ -666,7 +607,7 @@ int merc_return_master(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, mcd = sd->mcd);
 
-	merc_calc_pos(mcd,sd->bl.x,sd->bl.y,sd->dir);
+	unit_calc_pos(&mcd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
 	unit_walktoxy(&mcd->bl,mcd->ud.to_x,mcd->ud.to_y);
 	return 0;
 }

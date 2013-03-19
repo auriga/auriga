@@ -1,4 +1,17 @@
 ----------------------------------------
+//1024 [2013/03/20] by Rayce
+
+・名前からメモリアルダンジョンを探す際、存在しない名前を指定するとnullpoエラー
+  扱いになるのを修正（memorial.c）
+
+・意味のないNULLチェックを削除（memorial.c）
+
+・party_searchname と guild_searchname の引数にconstを付ける（party.*, guild.*）
+
+・ペット, ホム, 傭兵, 精霊の位置移動計算処理をunit.cに集約
+  （pet.c, homun.c, merc.c, elem.c, unit.*）
+
+----------------------------------------
 //1023 [2013/03/19] by refis
 
 ・ハンター、ブラックスミス系列職業スキルのダメージ計算式をpreとREで分割（battle.c skill.c status.c）

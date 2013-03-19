@@ -132,8 +132,8 @@ static int memorial_addmap(int memorial_id)
 
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 0;
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return 0;
+
+	md = &memorial_data[memorial_id-1];
 
 	// 予約待機中でない
 	if(md->state != MDSTATE_IDLE)
@@ -354,7 +354,8 @@ int memorial_create(const char *memorial_name, int party_id)
 	struct memorial_db *db = memorial_searchname_db(memorial_name);
 	struct party *pt = party_search(party_id);
 
-	nullpo_retr(MDCREATE_ERROR, db);
+	if(db == NULL)
+		return MDCREATE_ERROR;
 
 	// パーティー未所属
 	if(pt == NULL)
@@ -424,13 +425,14 @@ int memorial_delete(int memorial_id)
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
 
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return 1;
+	md = &memorial_data[memorial_id-1];
 
-	if(md->state == MDSTATE_FREE)
+	if(md->state == MDSTATE_FREE) {
 		return 1;
+	}
+
 	// 予約中
-	else if(md->state == MDSTATE_IDLE) {
+	if(md->state == MDSTATE_IDLE) {
 		// 予約テーブルから削除
 		for(i = 0; i < memorial_wait.count; i++) {
 			if(memorial_wait.id[i] == memorial_id) {
@@ -528,7 +530,9 @@ int memorial_enter(struct map_session_data *sd, const char *memorial_name)
 	int m;
 
 	nullpo_retr(MDENTER_ERROR, sd);
-	nullpo_retr(MDENTER_ERROR, db);
+
+	if(db == NULL)
+		return MDENTER_ERROR;
 
 	// パーティー未加入
 	if(sd->status.party_id == 0)
@@ -539,8 +543,8 @@ int memorial_enter(struct map_session_data *sd, const char *memorial_name)
 	// メモリアルダンジョン未生成
 	if(pt->memorial_id == 0)
 		return MDENTER_NOCREATE;
-	if((md = &memorial_data[pt->memorial_id-1]) == NULL)
-		return MDENTER_NOCREATE;
+
+	md = &memorial_data[pt->memorial_id-1];
 	if(md->party_id != pt->party_id)
 		return MDENTER_NOCREATE;
 	if(md->state != MDSTATE_BUSY)
@@ -578,8 +582,7 @@ int memorial_reqinfo(struct map_session_data *sd, int memorial_id)
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
 
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return 1;
+	md = &memorial_data[memorial_id-1];
 
 	if((db = memorial_searchtype_db(md->type)) == NULL)
 		return 1;
@@ -612,9 +615,7 @@ int memorial_addusers(int memorial_id)
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
 
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return 1;
-
+	md = &memorial_data[memorial_id-1];
 	if(md->state != MDSTATE_BUSY)
 		return 1;
 
@@ -641,9 +642,7 @@ int memorial_delusers(int memorial_id)
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
 
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return 1;
-
+	md = &memorial_data[memorial_id-1];
 	if(md->state != MDSTATE_BUSY)
 		return 1;
 
@@ -670,9 +669,7 @@ int memorial_mapname2mapid(const char *name, int memorial_id)
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return m;
 
-	if((md = &memorial_data[memorial_id-1]) == NULL)
-		return m;
-
+	md = &memorial_data[memorial_id-1];
 	if(md->state != MDSTATE_BUSY)
 		return m;
 
