@@ -559,6 +559,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 
+#ifdef PRE_RENEWAL
 		// セイフティウォール
 		if(sc->data[SC_SAFETYWALL].timer != -1 && flag&BF_SHORT) {
 			struct skill_unit *unit = map_id2su(sc->data[SC_SAFETYWALL].val2);
@@ -570,6 +571,35 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				status_change_end(bl,SC_SAFETYWALL,-1);
 			}
 		}
+#else
+		// キリエエレイソン
+		if(sc->data[SC_KYRIE].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_KYRIE];
+			scd->val2 -= damage;
+			if(flag&BF_WEAPON) {
+				if(scd->val2 >= 0)
+					damage = 0;
+				else
+					damage = -scd->val2;
+			}
+			if(--scd->val3 <= 0 || scd->val2 <= 0 || skill_num == AL_HOLYLIGHT)
+				status_change_end(bl, SC_KYRIE, -1);
+		}
+		// セイフティウォール
+		if(sc->data[SC_SAFETYWALL].timer != -1 && damage > 0 && flag&BF_SHORT) {
+			struct skill_unit *unit = map_id2su(sc->data[SC_SAFETYWALL].val2);
+			if(unit && unit->group) {
+				unit->group->val1 -= damage;
+				unit->group->val2--;
+				if(unit->group->val1 > 0 && unit->group->val2 > 0)
+					return 0;
+				skill_delunit(unit);
+				damage = 0;
+			} else {
+				status_change_end(bl,SC_SAFETYWALL,-1);
+			}
+		}
+#endif
 
 		// カウプ
 		if(sc->data[SC_KAUPE].timer != -1 && atn_rand()%100 < sc->data[SC_KAUPE].val2) {
@@ -622,6 +652,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 
+#ifdef PRE_RENEWAL
 		// キリエエレイソン
 		if(sc->data[SC_KYRIE].timer != -1 && damage > 0) {
 			struct status_change_data *scd = &sc->data[SC_KYRIE];
@@ -635,6 +666,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			if(--scd->val3 <= 0 || scd->val2 <= 0 || skill_num == AL_HOLYLIGHT)
 				status_change_end(bl, SC_KYRIE, -1);
 		}
+#endif
 
 		// インデュア
 		if(sc->data[SC_ENDURE].timer != -1 && damage > 0 && flag&BF_WEAPON && src->type != BL_PC) {
@@ -801,6 +833,33 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		if(sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1 && damage > 0 && flag&(BF_SHORT|BF_LONG) && skill_num != PA_PRESSURE) {
 			damage -= damage * sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].val2 / 100;
 		}
+
+#ifndef PRE_RENEWAL
+		// サプライズアタック
+		if(sc->data[SC_RAID].timer != -1 && sc->data[SC_RAID].val1 > 0) {
+			sc->data[SC_RAID].val1--;
+			if(status_get_mode(bl)&MD_BOSS)
+				damage += damage * 10 / 100;
+			else
+				damage += damage * 20 / 100;
+		}
+		// ストーンスキン
+		if(sc->data[SC_STONESKIN].timer != -1 && damage > 0) {
+			if(flag&BF_WEAPON) {
+				damage = damage * (100 - 20 * sc->data[SC_STONESKIN].val1) / 100;
+			} else if(flag&BF_MAGIC) {
+				damage = damage * (100 + 20 * sc->data[SC_STONESKIN].val1) / 100;
+			}
+		}
+		// アンチマジック
+		if(sc->data[SC_ANTIMAGIC].timer != -1 && damage > 0) {
+			if(flag&BF_MAGIC) {
+				damage = damage * (100 + 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
+			} else if(flag&BF_WEAPON) {
+				damage = damage * (100 - 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
+			}
+		}
+#endif
 
 		// マヌクフィールドMOBダメージ減少
 		if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
@@ -2907,7 +2966,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case RG_RAID:		// サプライズアタック
+#ifdef PRE_RENEWAL
 			DMG_FIX( 100+40*skill_lv, 100 );
+#else
+			DMG_FIX( 100+80*skill_lv, 100 );
+#endif
 			break;
 		case RG_INTIMIDATE:	// インティミデイト
 			DMG_FIX( 100+30*skill_lv, 100 );
@@ -3924,6 +3987,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RA_ICEBOUNDTRAP:
 		case GC_COUNTERSLASH:
 		case NC_ARMSCANNON:
+		case NC_SELFDESTRUCTION:
+		case LG_RAYOFGENESIS:
 		case GN_FIRE_EXPANSION_ACID:
 		case KO_MUCHANAGE:
 			break;
@@ -8514,6 +8579,7 @@ int battle_config_read(const char *cfgName)
 		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },
 		{ "elem_attackskill_rate",              &battle_config.elem_attackskill_rate,              500      },
 		{ "slave_inherit_mode",                 &battle_config.slave_inherit_mode,                 2        },
+		{ "no_casting_int",                     &battle_config.no_cast_int,                        115      },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

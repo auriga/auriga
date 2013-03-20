@@ -766,6 +766,7 @@ enum {
 	SC_ACTIVE_MONSTER_TRANSFORM	= 619,
 	SC_INVINCIBLE			= 620,
 	SC_INVINCIBLEOFF		= 621,
+	SC_RAID					= 622,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

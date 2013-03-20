@@ -1,4 +1,24 @@
 ----------------------------------------
+//1027 [2013/03/21] by refis
+
+・ローグ系列職業スキルのダメージ計算式をpreとREで分割（battle.c skill.c）
+
+・（RE）「SC_RAID」を実装（db/scdata_db.txt db/skill_cast_db.txt battle.c skill.c status.*）
+
+・（RE）サプライズアタック、アローシャワーの効果範囲拡張に対応（skill.c）
+
+・（RE）ストームガストの凍結処理変更に対応（skill.c）
+
+・1026のDEF無視スキルの設定に抜けがあったので補完修正（battle.c）
+
+・キリエエレイソン、セイフティウォール、ストーンスキン、アンチマジック状態をpreとREで分割（battle.c skill.c）
+
+・（RE）戦闘設定「no_casting_int」を追加、詠唱計算式変更に対応（conf/battle_auriga.conf battle.* skill.c）
+	-> 戦闘設定「no_casting_int」は戦闘設定「no_casting_dex」と併用して利用します
+	-> 例：no_casting_dex150、no_casting_int115の場合、DEX+INT/2の合計が265以上で詠唱無しになります
+	-> 例：no_casting_dex265、no_casting_int0の場合、DEXが265以上で詠唱無しになります
+
+----------------------------------------
 //1026 [2013/03/21] by refis
 
 ・クルセイダー系列職業スキルのダメージ計算式をpreとREで分割（battle.c）

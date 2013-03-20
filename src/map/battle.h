@@ -600,6 +600,7 @@ extern struct Battle_Config {
 	int disable_costume_when_gvg;
 	int elem_attackskill_rate;
 	int slave_inherit_mode;
+	int no_cast_int;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

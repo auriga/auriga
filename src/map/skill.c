@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 #include "db.h"
 #include "timer.h"
@@ -988,6 +989,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case WZ_STORMGUST:		/* ストームガスト */
+#ifdef PRE_RENEWAL
 #ifdef DYNAMIC_SC_DATA
 		status_calloc_sc_data(tsc);
 #endif
@@ -1006,6 +1008,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				}
 			}
 		}
+#else
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,7500-500*skilllv,status_get_lv(src)))
+			status_change_pretimer(bl,SC_FREEZE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+#endif
 		break;
 
 	case HT_LANDMINE:		/* ランドマイン */
@@ -1061,10 +1067,21 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		break;
 
 	case RG_RAID:			/* サプライズアタック */
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,1000+300*skilllv,status_get_lv(src)))
-			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,3000,0,tick+status_get_amotion(src));
-		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,1000+300*skilllv,status_get_lv(src)))
-			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		{
+#ifdef PRE_RENEWAL
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,1000+300*skilllv,status_get_lv(src)))
+				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,3000,0,tick+status_get_amotion(src));
+#else
+			struct status_change *sc = status_get_sc(src);
+			if(sc && sc->data[SC_RAID].timer != -1 && sc->data[SC_RAID].val2 > 0) {
+				sc->data[SC_RAID].val2--;
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,1000+300*skilllv,status_get_lv(src)))
+					status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,3000,0,tick+status_get_amotion(src));
+			}
+#endif
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,1000+300*skilllv,status_get_lv(src)))
+				status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		}
 		break;
 	case BA_FROSTJOKE:		/* 寒いジョーク */
 		if(status_get_hp(bl) > 0) {	// 対象が死んでいない
@@ -2895,7 +2912,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TF_POISON:			/* インベナム */
 	case TF_SPRINKLESAND:	/* 砂まき */
 	case AC_CHARGEARROW:	/* チャージアロー */
-	case RG_RAID:			/* サプライズアタック */
 	case ASC_METEORASSAULT:	/* メテオアサルト */
 	case RG_INTIMIDATE:		/* インティミデイト */
 	case AM_ACIDTERROR:		/* アシッドテラー */
@@ -3039,6 +3055,12 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		sc = status_get_sc(src);
 		if(sc && sc->data[SC_BLADESTOP].timer != -1)
 			status_change_end(src,SC_BLADESTOP,-1);
+		break;
+	case RG_RAID:			/* サプライズアタック */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+#ifndef PRE_RENEWAL
+		status_change_start(bl,SC_RAID,7,0,0,0,skill_get_time(skillid,skilllv),0 );
+#endif
 		break;
 	case RG_BACKSTAP:		/* バックスタブ */
 		{
@@ -5974,12 +5996,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case RG_RAID:			/* サプライズアタック */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		map_foreachinarea(skill_area_sub,
-			bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
-			src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-			skill_castend_damage_id);
-		status_change_end(src, SC_HIDING, -1);	// ハイディング解除
+		{
+			int ar = 1;
+#ifndef PRE_RENEWAL
+			ar += 2;
+#endif
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_start(src,SC_RAID,0,10,0,0,skill_get_time(skillid,skilllv),0 );
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			status_change_end(src, SC_HIDING, -1);	// ハイディング解除
+		}
 		break;
 	case ASC_METEORASSAULT:	/* メテオアサルト */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9600,22 +9629,28 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	{
 	case AC_SHOWER:				/* アローシャワー */
 	case MA_SHOWER:
-		if(sd) {
-			int cost = skill_get_arrow_cost(skillid,skilllv);
-			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
-				break;
+		{
+			int ar = 1;
+#ifndef PRE_RENEWAL
+			ar = (skilllv>5? 2: 1);
+#endif
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = x;
+			skill_area_temp[3] = y;
+			map_foreachinarea(skill_area_sub,
+				src->m,x-ar,y-ar,x+ar,y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			map_foreachinarea(skill_area_trap_sub,
+				src->m,x-ar,y-ar,x+ar,y+ar,BL_SKILL,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
 		}
-		skill_area_temp[1] = src->id;
-		skill_area_temp[2] = x;
-		skill_area_temp[3] = y;
-		map_foreachinarea(skill_area_sub,
-			src->m,x-1,y-1,x+1,y+1,(BL_CHAR|BL_SKILL),
-			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-			skill_castend_damage_id);
-		map_foreachinarea(skill_area_trap_sub,
-			src->m,x-1,y-1,x+1,y+1,BL_SKILL,
-			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-			skill_castend_damage_id);
 		break;
 
 	case PR_BENEDICTIO:			/* 聖体降福 */
@@ -10369,6 +10404,10 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 
 	switch (skillid) {
 	case MG_SAFETYWALL:			/* セイフティウォール */
+#ifndef PRE_RENEWAL
+		val1 = 13000+300*skilllv;
+		if(sd) val1 += sd->status.max_sp;
+#endif
 		val2 = skilllv+1;
 		break;
 	case WZ_METEOR:
@@ -14644,11 +14683,22 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			status_change_end(bl, SC_SUFFRAGIUM, -1);
 		}
 
-		// dexの影響を計算する
+		// ステータスの影響を計算する
 		if(bl->type != BL_MOB) {
 			int dex = status_get_dex(bl);
-			if(battle_config.no_cast_dex > dex) {
-				casttime = casttime * (battle_config.no_cast_dex - dex) / battle_config.no_cast_dex;
+			int max = (int)battle_config.no_cast_dex;
+#ifndef PRE_RENEWAL
+			if(battle_config.no_cast_int > 0) {
+				dex += status_get_int(bl) / 2;
+				max += (int)battle_config.no_cast_int;
+			}
+#endif
+			if(max > dex) {
+#ifdef PRE_RENEWAL
+				casttime = casttime * (max - dex) / max;
+#else
+				casttime = (int)(casttime * (1 - sqrt(dex/(float)max)));
+#endif
 				if(sd) {
 					casttime = casttime * battle_config.cast_rate / 100;
 					reduce_time += 100 - sd->castrate;
