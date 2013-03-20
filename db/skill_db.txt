@@ -844,7 +844,7 @@
 2255,0,0,0,0,0,5,0,no,0,0,0,none,0	//NC_MADOLICENCE#魔導ギアライセンス#
 2256,11,6,1,0,4,5,1,no,0,0,0,weapon,0	//NC_BOOSTKNUCKLE#ブーストナックル#
 2257,3,6,1,0,0,3,1,yes,0,0,0,weapon,0	//NC_PILEBUNKER#パイルバンカー#
-2258,13,8,1,0,4,3,5,yes,0,0,0,weapon,0	//NC_VULCANARM#バルカンアーム#
+2258,13,8,1,0,4,3,1,yes,0,0,0,weapon,0	//NC_VULCANARM#バルカンアーム#
 2259,5,6,1,3,4,3,1,no,0,0,0,weapon,0	//NC_FLAMELAUNCHER#フレイムスローワー#
 2260,7,6,2,1,4,3,1,no,0,0,0,weapon,0	//NC_COLDSLOWER#コールドスローワー#
 2261,7,6,2,0,4,3,1,no,0,0,0,weapon,0	//NC_ARMSCANNON#アームズキャノン#
@@ -866,7 +866,7 @@
 2277,0,0,0,0,0,5,0,no,0,0,0,none,0	//NC_RESEARCHFE#火と大地の研究#
 2278,4:5:6:7:8,6,1,0,0,5,1,yes,0,0,0,weapon,2:3:4:5:6	//NC_AXEBOOMERANG#アックスブーメラン#
 2279,1,6,1,0,0,5,1,yes,0,0,0,weapon,0	//NC_POWERSWING#パワースイング#
-2280,0,8,4,0,0,5,5,yes,0,0,0,weapon,0	//NC_AXETORNADO#アックストルネード#
+2280,0,8,4,0,0,5,6,yes,0,0,0,weapon,0	//NC_AXETORNADO#アックストルネード#
 2281,2,6,2,0,1,5,1,yes,0,0,2,weapon,0	//NC_SILVERSNIPER#FAW シルバースナイパー#
 2282,2,6,2,0,1,5,1,yes,0,0,2,weapon,0	//NC_MAGICDECOY#FAW マジックデコイ#
 2283,2,6,1,0,0,1,1,yes,0,0,0,weapon,0	//NC_DISJOINT#FAW 解体#
@@ -909,7 +909,7 @@
 2321,1,8,2,6,0,5,7,yes,0,0,0,magic,0	//LG_RAYOFGENESIS#レイオブジェネシス#
 2322,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//LG_PIETY#パイエティ#
 2323,0,8,4,2,0,5,5,yes,0,0,0,weapon,0	//LG_EARTHDRIVE#アースドライブ#
-2324,9,8,1,0,0,5,3,yes,0,0,0,weapon,0	//LG_HESPERUSLIT#ヘスペルスリット#
+2324,9,8,1,0,0,5,1,yes,0,0,0,weapon,0	//LG_HESPERUSLIT#ヘスペルスリット#
 2325,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//LG_INSPIRATION#インスピレーション#
 2326,1,8,1,0,0,10,2,yes,0,0,0,weapon,0	//SR_DRAGONCOMBO#双龍脚#
 2327,0,8,4,0,0,5,3,yes,0,0,0,weapon,3	//SR_SKYNETBLOW#天羅地網#

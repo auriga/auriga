@@ -1886,9 +1886,11 @@ L_RECALC:
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
 		}
 
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_INCATK2].timer != -1) {
 			sd->watk = sd->watk*(100+sd->sc.data[SC_INCATK2].val1)/100;
 		}
+#endif
 
 		if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1)
 			sd->def = sd->def * (100 - sd->sc.data[SC_SIGNUMCRUCIS].val2)/100;
@@ -1983,6 +1985,10 @@ L_RECALC:
 			sd->flee += sd->sc.data[SC_HALLUCINATIONWALK].val1 * 50;
 		if(sd->sc.data[SC_INFRAREDSCAN].timer != -1)	// インフラレッドスキャン
 			sd->flee -= sd->flee*30/100;
+#ifndef PRE_RENEWAL
+		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // スピアクイッケン
+			sd->flee += 2*(sd->sc.data[SC_SPEARQUICKEN].val1);
+#endif
 
 		// ガンスリンガースキル
 		if(sd->sc.data[SC_FLING].timer != -1) {		// フライング
@@ -2120,6 +2126,10 @@ L_RECALC:
 			sd->addeff[4] += sd->sc.data[SC_ENCPOISON].val2;
 		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// トゥルーサイト
 			sd->critical += 10*(sd->sc.data[SC_TRUESIGHT].val1);
+#ifndef PRE_RENEWAL
+		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // スピアクイッケン
+			sd->critical += 3*(sd->sc.data[SC_SPEARQUICKEN].val1);
+#endif
 
 		/*
 		if(sd->sc.data[SC_VOLCANO].timer != -1)	// エンチャントポイズン(属性はbattle.cで)
@@ -2130,7 +2140,11 @@ L_RECALC:
 
 		// ファイティングスピリット
 		if(sd->sc.data[SC_EISIR].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_EISIR].val2;
+#else
+			sd->plus_atk += sd->sc.data[SC_EISIR].val2;
+#endif
 		}
 		// 恐怖
 		if(sd->sc.data[SC_FEAR].timer != -1) {
@@ -2161,11 +2175,19 @@ L_RECALC:
 		}
 		// シールドスペル(DEF)
 		if(sd->sc.data[SC_SHIELDSPELL_DEF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_DEF].val2 == 2) {
+#ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
+#else
+			sd->plus_atk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
+#endif
 		}
 		// シールドスペル(精錬)
 		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_REF].val2 == 2) {
+#ifdef PRE_RENEWAL
 			sd->def2 += sd->sc.data[SC_SHIELDSPELL_REF].val3;
+#else
+			sd->def += sd->sc.data[SC_SHIELDSPELL_REF].val3;
+#endif
 		}
 		// フォースオブバンガード
 		if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1) {
@@ -2173,12 +2195,21 @@ L_RECALC:
 		}
 		// プレスティージ
 		if(sd->sc.data[SC_PRESTIGE].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->def2 += sd->sc.data[SC_PRESTIGE].val2;
+#else
+			sd->def += sd->sc.data[SC_PRESTIGE].val2;
+#endif
 		}
 		// バンディング
-		if(sd->sc.data[SC_BANDING].timer != -1 && sd->sc.data[SC_BANDING].val2 > 0) {
+		if(sd->sc.data[SC_BANDING].timer != -1 && sd->sc.data[SC_BANDING].val2 > 1) {
+#ifdef PRE_RENEWAL
 			sd->base_atk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
 			sd->def2 += (5 + sd->sc.data[SC_BANDING].val1) * sd->sc.data[SC_BANDING].val2;
+#else
+			sd->plus_atk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
+			sd->def += (5 + sd->sc.data[SC_BANDING].val1) * sd->sc.data[SC_BANDING].val2;
+#endif
 		}
 		// アースドライブ
 		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
@@ -2187,7 +2218,11 @@ L_RECALC:
 		// インスピレーション
 		if(sd->sc.data[SC_INSPIRATION].timer != -1) {
 			sd->status.max_hp += (600 + sd->status.max_hp / 20) * sd->sc.data[SC_INSPIRATION].val1;
+#ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_INSPIRATION].val1 * 40 + sd->status.job_level * 3;
+#else
+			sd->plus_atk += sd->sc.data[SC_INSPIRATION].val1 * 40 + sd->status.job_level * 3;
+#endif
 			sd->hit += 25 + sd->sc.data[SC_INSPIRATION].val1 * 5;
 		}
 		// 潜竜昇天
@@ -2223,9 +2258,14 @@ L_RECALC:
 		}
 		// オーディンの力
 		if(sd->sc.data[SC_ODINS_POWER].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->watk += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 			sd->matk1 += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 			sd->matk2 += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+#else
+			sd->plus_atk += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+			sd->plus_matk += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
+#endif
 			sd->def -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 			sd->mdef -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 		}
@@ -3900,6 +3940,10 @@ int status_get_flee(struct block_list *bl)
 			flee += flee * sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].val2 / 100;
 		if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(催涙)
 			flee -= flee * sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
+#ifndef PRE_RENEWAL
+		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)      // スピアクイッケン
+			flee += sc->data[SC_SPEARQUICKEN].val1 * 2;
+#endif
 	}
 
 	// 回避率補正
@@ -4057,6 +4101,10 @@ int status_get_critical(struct block_list *bl)
 			critical -= critical * (sc->data[SC__UNLUCKY].val1 * 10) / 100;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ストライキング
 			critical += 10 * sc->data[SC_STRIKING].val1;
+#ifndef PRE_RENEWAL
+		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)   // スピアクイッケン
+			critical += 3*sc->data[SC_SPEARQUICKEN].val1;
+#endif
 	}
 	if(critical < 1) critical = 1;
 	return critical;
@@ -4129,8 +4177,6 @@ int status_get_baseatk(struct block_list *bl)
 			batk += sc->data[SC_SHIELDSPELL_DEF].val3;
 		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
-			batk += sc->data[SC_STRIKING].val3;
 		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 			batk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 	}
@@ -4172,6 +4218,7 @@ int status_get_atk(struct block_list *bl)
 	}
 
 	if(sc) {
+		int rate = 100;
 #ifdef PRE_RENEWAL
 		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)
 			atk = atk*(100+32)/100;
@@ -4183,7 +4230,7 @@ int status_get_atk(struct block_list *bl)
 			atk += atk*(5*sc->data[SC_CONCENTRATION].val1)/100;
 #endif
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
-			atk *= 3;
+			rate += 200;
 		if(sc->data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
 			atk -= atk*25/100;
 		if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
@@ -4197,17 +4244,17 @@ int status_get_atk(struct block_list *bl)
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			atk = atk*80/100;
 		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
-			atk *= 4;
+			rate += 300;
 		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
 			atk += sc->data[SC_SHIELDSPELL_DEF].val3;
 		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-		if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
-			atk += sc->data[SC_STRIKING].val3;
 		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 			atk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+		if(rate != 100)	// NPC爆裂波動とエスクを倍率加算させる
+			atk = atk * rate / 100;
 	}
 	if(atk < 0) atk = 0;
 	return atk;
@@ -4270,6 +4317,7 @@ int status_get_atk2(struct block_list *bl)
 			atk2 = mob_db[((struct pet_data*)bl)->class_].atk2;
 		}
 		if(sc) {
+			int rate = 100;
 #ifdef PRE_RENEWAL
 			if(sc->data[SC_IMPOSITIO].timer != -1)
 				atk2 += sc->data[SC_IMPOSITIO].val1*5;
@@ -4291,7 +4339,7 @@ int status_get_atk2(struct block_list *bl)
 				atk2 += atk2*(5*sc->data[SC_CONCENTRATION].val1)/100;
 #endif
 			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
-				atk2 *= 3;
+				rate += 200;
 			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
 				atk2 -= atk2*25/100;
 			if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
@@ -4303,17 +4351,17 @@ int status_get_atk2(struct block_list *bl)
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*80/100;
 			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
-				atk2 *= 4;
+				rate += 300;
 			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
 				atk2 += sc->data[SC_SHIELDSPELL_DEF].val3;
 			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// フライデーナイトフィーバー
 				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-			if(sc->data[SC_STRIKING].timer != -1 && bl->type == BL_MOB)	// ストライキング
-				atk2 += sc->data[SC_STRIKING].val3;
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 				atk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+			if(rate != 100)	// NPC爆裂波動とエスクを倍率加算させる
+				atk2 = atk2 * rate / 100;
 		}
 		if(atk2 < 0) atk2 = 0;
 	}
@@ -7591,7 +7639,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_EXEEDBREAK:			/* イクシードブレイク */
 			if(sd) {
 				int idx = sd->equip_index[EQUIP_INDEX_RARM];
-				val2 = val1 * 150 + sd->status.job_level * 15;
+				val2 = 100 + val1 * 150 + sd->status.job_level * 15;
 				if(idx >= 0 && sd->inventory_data[idx])
 					val2 += sd->inventory_data[idx]->weight/10 * sd->inventory_data[idx]->wlv * sd->status.base_level / 100;
 			}
