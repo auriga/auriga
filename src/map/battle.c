@@ -1560,10 +1560,17 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 	if(sd) {
 		int t_size = status_get_size(target);
 
-		if(!lh)
-			damage += status_get_atk2(src);
-		if(lh)
-			damage += status_get_atk_2(src);
+		switch(skill_num) {
+		case NJ_ZENYNAGE:
+		case KO_MUCHANAGE:
+			break;
+		default:
+			if(!lh)
+				damage += status_get_atk2(src);
+			if(lh)
+				damage += status_get_atk_2(src);
+			break;
+		}
 
 		/* 過剰精錬ボーナス */
 		if( sd->status.weapon != WT_BOW &&	// 弓と銃には過剰精錬ボーナスがない
@@ -1961,6 +1968,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AS_SPLASHER:		// ベナムスプラッシャー
 #ifndef PRE_RENEWAL
 		case MO_INVESTIGATE:		// 発勁
+		case GS_MAGICALBULLET:	// マジカルバレット
 #endif
 		case NPC_EXPULSION:		// エクスパルシオン
 		case RK_DRAGONBREATH:	// ドラゴンブレス
@@ -2026,9 +2034,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NJ_SYURIKEN:		// 手裏剣投げ
 		case NJ_KUNAI:			// 苦無投げ
+#ifndef PRE_RENEWAL
+			calc_flag.hitrate = 1000000;
+#endif
 			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
+#ifndef PRE_RENEWAL
+		case NJ_TATAMIGAESHI:	// 畳返し
+			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+			break;
+#endif
 		case GC_VENOMPRESSURE:	// ベナムプレッシャー
 			calc_flag.hitrate += 10 + skill_lv * 4;
 			break;
@@ -2250,6 +2266,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_ACIDTERROR:
 		case CR_ACIDDEMONSTRATION:
 		case ASC_BREAKER:
+		case NJ_SYURIKEN:
+		case NJ_KUNAI:
 		case NJ_ZENYNAGE:
 		case LG_RAYOFGENESIS:
 		case GN_FIRE_EXPANSION_ACID:
@@ -2332,6 +2350,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage2 = (wd.damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype2] + trans_bonus)) / 100;
 			}
 		}
+		if(skill_num == TF_POISON)
+			wd.damage += 15*skill_lv;
 #endif
 
 #ifdef PRE_RENEWAL
@@ -2508,9 +2528,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）属性の適用 */
-		wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
-		if(calc_flag.lh)
-			wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
+		if(skill_num != NJ_ISSEN) {
+			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
+			if(calc_flag.lh)
+				wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
+		}
 
 		// （RE）ステータスAtkを加算
 		if(src_sd || (!src_sd && battle_config.enemy_str)) {
@@ -2530,10 +2552,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 			if(skill_num == NJ_KUNAI) {	// 苦無投げ
 				if(src_sd->arrow_atk) {
-					hit_damage += src_sd->arrow_atk * 3;
+					hit_damage += src_sd->arrow_atk;
 				}
-				wd.damage += hit_damage * 3;
-			} else if(skill_num != MO_INVESTIGATE && skill_num != MO_EXTREMITYFIST && skill_num != NC_ARMSCANNON && skill_num != SR_RAMPAGEBLASTER) {
+				wd.damage += hit_damage;
+			} else if(skill_num != MO_INVESTIGATE && skill_num != MO_EXTREMITYFIST && skill_num != GS_MAGICALBULLET && skill_num != GS_PIERCINGSHOT && skill_num != NC_ARMSCANNON && skill_num != SR_RAMPAGEBLASTER) {
 				wd.damage += hit_damage;
 				if(calc_flag.lh)
 					wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
@@ -2712,6 +2734,50 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
+		case NJ_SYURIKEN:	// 手裏剣投げ
+			if(src_sd) {
+				skill = pc_checkskill(src_sd,NJ_TOBIDOUGU);
+				DMG_ADD( skill * 3 );
+				if(src_sd->arrow_atk) {
+					DMG_ADD( src_sd->arrow_atk );
+				}
+			}
+			DMG_ADD( skill_lv*4 );
+			wd.damage = wd.damage - (t_def1 + t_def2);
+			break;
+		case NJ_KUNAI:		// 苦無投げ
+			DMG_FIX( 300, 100 );
+			wd.damage = wd.damage - (t_def1 + t_def2);
+			break;
+		case NJ_ISSEN:		// 一閃
+			{
+				int maxhp = status_get_max_hp(src) / 100;
+				int hp = status_get_hp(src);
+				if(maxhp < hp) {
+					wd.damage = wd.damage * skill_lv + hp;
+					unit_heal(src,-(hp-maxhp),0);
+					if(sc) {
+						if(sc->data[SC_BUNSINJYUTSU].timer != -1 && sc->data[SC_BUNSINJYUTSU].val3 > 0) {
+							wd.div_ = 2 + sc->data[SC_BUNSINJYUTSU].val3;
+							wd.damage = wd.damage * (120+20*sc->data[SC_BUNSINJYUTSU].val3) / 100;
+							status_change_end(src,SC_BUNSINJYUTSU,-1);
+						}
+						if(sc->data[SC_NEN].timer != -1)
+							status_change_end(src,SC_NEN,-1);
+					}
+				}
+				wd.damage = wd.damage - (t_def1 + t_def2);
+			}
+			break;
+		case GS_MAGICALBULLET:	// マジカルバレット
+			{
+				static struct Damage mgd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+				mgd = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
+				wd.damage += mgd.damage;
+				wd.damage = wd.damage - (t_def1 + t_def2);
+			}
+			break;
 		case LK_SPIRALPIERCE:	// スパイラルピアース
 		case ML_SPIRALPIERCE:
 			{
@@ -2834,11 +2900,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
-#ifndef PRE_RENEWAL
-		case TF_POISON:
-			wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
-			break;
-#endif
 		case HT_FREEZINGTRAP:		// フリージングトラップ
 			calc_flag.nocardfix = 1;
 			break;
@@ -3296,6 +3357,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 500, 100 );
 			calc_flag.nocardfix = 1;
 			break;
+#ifdef PRE_RENEWAL
 		case GS_MAGICALBULLET:	// マジカルバレット
 			{
 				int matk1 = status_get_matk1(src);
@@ -3306,6 +3368,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage += matk2;
 			}
 			break;
+#endif
 		case GS_TRACKING:	// トラッキング
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
@@ -3328,7 +3391,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
 			}
+#ifdef PRE_RENEWAL
 			DMG_FIX( 100+20*skill_lv, 100 );
+#else
+			if(src_sd && src_sd->status.weapon == WT_RIFLE) {
+				DMG_FIX( 150+30*skill_lv, 100 );
+			} else {
+				DMG_FIX( 100+20*skill_lv, 100 );
+			}
+#endif
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
@@ -3385,8 +3456,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_HUUMA:		// 風魔手裏剣投げ
 			{
 				int rate = 150+150*skill_lv;
+#ifdef PRE_RENEWAL
 				if(wflag > 1)
 					rate /= wflag;
+#endif
 				DMG_FIX( rate, 100 );
 			}
 			break;
@@ -3411,7 +3484,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case NJ_TATAMIGAESHI:	// 畳返し
+#ifdef PRE_RENEWAL
 			DMG_FIX( 100+10*skill_lv, 100 );
+#else
+			DMG_FIX( 200+20*skill_lv, 100 );
+			wd.damage = wd.damage - (t_def1 + t_def2);
+#endif
 			break;
 		case NJ_KASUMIKIRI:	// 霞斬り
 			DMG_FIX( 100+10*skill_lv, 100 );
@@ -3419,6 +3497,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_KIRIKAGE:	// 影斬り
 			DMG_FIX( skill_lv, 1 );
 			break;
+#ifdef PRE_RENEWAL
 		case NJ_ISSEN:		// 一閃
 			{
 				int hp = status_get_hp(src);
@@ -3428,6 +3507,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					status_change_end(src,SC_NEN,-1);
 			}
 			break;
+#endif
 		case NPC_FIREBREATH:		// ファイアブレス
 		case NPC_ICEBREATH:		// アイスブレス
 		case NPC_THUNDERBREATH:		// サンダーブレス
@@ -4067,6 +4147,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_ACIDTERROR:
 		case ASC_BREAKER:
 		case PA_SHIELDCHAIN:
+		case GS_MAGICALBULLET:
+		case NJ_SYURIKEN:
+		case NJ_KUNAI:
+		case NJ_ISSEN:
+		case NJ_TATAMIGAESHI:
 #endif
 		case KN_AUTOCOUNTER:
 		case MO_INVESTIGATE:
@@ -4200,16 +4285,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot * (100 - t_def1_fix) /100;
 #else
-							switch (skill_num) {
-							case SO_VARETYR_SPEAR:
-								wd.damage = wd.damage - (t_def1_fix + t_def2_fix);
-								damage_ot = damage_ot - (t_def1_fix + t_def2_fix);
-								break;
-							default:
-								wd.damage = wd.damage * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
-								damage_ot = damage_ot * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
-								break;
-							}
+							wd.damage = wd.damage * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
+							damage_ot = damage_ot * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
 #endif
 						}
 					}
@@ -4690,6 +4767,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NC_ARMSCANNON:
 		case NC_SELFDESTRUCTION:
+		case SO_VARETYR_SPEAR:
 			wd.damage = wd.damage - (t_def1 + t_def2);
 			break;
 		case RA_WUGDASH:
@@ -4788,6 +4866,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case MO_FINGEROFFENSIVE:	// 指弾
 	case NPC_COMBOATTACK:	// 多段攻撃
 #ifndef PRE_RENEWAL
+	case NJ_KUNAI:			// 苦無投げ
 	case LK_SPIRALPIERCE:	// スパイラルピアース
 	case PA_SHIELDCHAIN:	// シールドチェイン
 #endif
@@ -4859,6 +4938,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	/* 28．必中ダメージの加算 */
 	switch(skill_num) {
+#ifdef PRE_RENEWAL
 	case NJ_SYURIKEN:	// 手裏剣投げ
 		if(src_sd) {
 			skill = pc_checkskill(src_sd,NJ_TOBIDOUGU);
@@ -4869,6 +4949,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		DMG_ADD( skill_lv*4 );
 		break;
+#endif
 	case LG_SHIELDPRESS:	// シールドプレス
 		if(src_sd) {
 			if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
@@ -5029,10 +5110,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case AM_DEMONSTRATION:
 		wd.damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target) );
 		break;
+	case GS_MAGICALBULLET:
+		wd.damage = battle_attr_fix(wd.damage, ELE_GHOST, status_get_element(target) );
+		break;
 	case AM_ACIDTERROR:
 	case MO_EXTREMITYFIST:
 	case CR_ACIDDEMONSTRATION:
 	case GN_FIRE_EXPANSION_ACID:
+	case NJ_SYURIKEN:
+	case NJ_KUNAI:
+	case NJ_ISSEN:
 	case CR_SHIELDBOOMERANG:
 	case PA_SHIELDCHAIN:
 #endif
@@ -5693,6 +5780,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( 50, 100 );
 			break;
 		case NJ_HUUJIN:		// 風刃
+#ifndef PRE_RENEWAL
+			MATK_FIX( 150, 100 );
+#endif
 			break;
 		case NJ_HYOUSENSOU:	// 氷閃槍
 			if(t_sc && t_sc->data[SC_SUITON].timer != -1) {

@@ -7876,7 +7876,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					skill_castend_nodamage_id);
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_area_temp[0]*7,((sd)? pc_checkskill(sd,RK_RUNEMASTERY): 0)*4,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_area_temp[0]*7,((sd)? pc_checkskill(sd,RK_RUNEMASTERY): 0),0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case GC_WEAPONCRUSH:	/* ウェポンクラッシュ */
@@ -8610,8 +8610,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sd) {
 					int idx = sd->equip_index[8];
 					if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
-						//time = time * sd->inventory_data[idx]->mdef;
-						time = time * sd->inventory_data[idx]->def;		// 暫定でDef使用
+						time = time * sd->inventory_data[idx]->mdef;
 					}
 				}
 				status_change_pretimer(bl,SC_SILENCE,1,0,0,0,time,0,tick+status_get_amotion(src));
@@ -8647,8 +8646,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					}
 					break;
 				case 2:
-					//val = sd->inventory_data[idx]->mdef;
-					val = sd->inventory_data[idx]->def;		// 暫定でDef使用
+					val = sd->inventory_data[idx]->mdef;
 					if(atn_rand()%100 >= val * 10) {
 						clif_skill_fail(sd,skillid,0,0,0);
 						break;
@@ -8694,7 +8692,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						status_change_start(bl,SC_SHIELDSPELL_REF,skilllv,1,val*10,0,val*30000,0);
 					}
 					else {					// DEF増加
-						status_change_start(bl,SC_SHIELDSPELL_REF,skilllv,2,val*10,0,val*20000,0);
+						status_change_start(bl,SC_SHIELDSPELL_REF,skilllv,2,val*10*sd->status.base_level/100,0,val*20000,0);
 					}
 					break;
 				}
@@ -8834,9 +8832,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SR_GENTLETOUCH_CHANGE:		/* 点穴 -反- */
 		{
-			int val = (status_get_str(src) / 2 + status_get_dex(src) / 4) * skilllv / 5;
+			int val1 = (status_get_str(src) / 2 + status_get_dex(src) / 4) * skilllv / 5;
+			int val2 = (200 / status_get_int(src)) * skilllv;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,val,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,val1,val2>0? val2: 0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
 	case SR_GENTLETOUCH_REVITALIZE:	/* 点穴 -活- */
@@ -9806,7 +9805,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		} else {
 			skill_unitsetting(src,skillid,skilllv,x,y,0);
 		}
-
 		break;
 
 	case SA_VOLCANO:		/* ボルケーノ */
@@ -10005,6 +10003,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 					skill_castend_nodamage_id);
 			}
 		}
+		break;
+	case NJ_HUUMA:		/* 風魔手裏剣投げ */
+		skill_area_temp[0] = 0;
+		skill_area_temp[1] = src->id;
+		map_foreachinarea(skill_area_sub,
+			src->m,x-1,y-1,x+1,y+1,(BL_CHAR|BL_SKILL),
+			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+			skill_castend_damage_id);
 		break;
 	case NJ_SHADOWJUMP:	/* 影跳び */
 		if(sd && map[sd->bl.m].flag.gvg) {
@@ -10466,14 +10472,26 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			limit <<= 2;
 		break;
 	case BA_WHISTLE:			/* 口笛 */
+#ifdef PRE_RENEWAL
 		if(sd)
 			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
 		val2 = status_get_agi(src)/10;
+#else
+		if(sd)
+			val1 = pc_checkskill(sd,BA_MUSICALLESSON)>>1;
+		val2 = status_get_agi(src)/15;
+#endif
 		break;
 	case DC_HUMMING:			/* ハミング */
+#ifdef PRE_RENEWAL
 		if(sd)
 			val1 = pc_checkskill(sd,DC_DANCINGLESSON)>>1;
 		val2 = status_get_dex(src)/10;
+#else
+		if(sd)
+			val1 = pc_checkskill(sd,DC_DANCINGLESSON);
+		val2 = status_get_dex(src)/15;
+#endif
 		break;
 	case DC_DONTFORGETME:		/* 私を忘れないで… */
 		val1 = status_get_dex(src)/10 + 3*skilllv + 5;

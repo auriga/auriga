@@ -1,2 +1,4 @@
 //R化前skill_db.txt＠Auriga
 //id,range,hit,inf,pl,nk,max,list_num,castcancel,cast_defence_rate,inf2,maxcount,skill_type,blow_count
+525,9,8,1,0,0,5,3:3:4:4:5,yes,0,0,0,weapon,0	//NJ_HUUMA#風魔手裏剣投げ#
+544,-5,6,1,0,0,10,1,yes,0,0,0,weapon,0	//NJ_ISSEN#一閃#

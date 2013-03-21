@@ -1948,17 +1948,33 @@ L_RECALC:
 		}
 
 		// HIT/FLEE変化系
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
 			sd->flee += sd->sc.data[SC_WHISTLE].val1 + sd->sc.data[SC_WHISTLE].val2 + sd->sc.data[SC_WHISTLE].val3;
 		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // 口笛
 			sd->flee += sd->sc.data[SC_WHISTLE_].val1 + sd->sc.data[SC_WHISTLE_].val2 + sd->sc.data[SC_WHISTLE_].val3;
 		}
+#else
+		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // 口笛
+			sd->flee += sd->sc.data[SC_WHISTLE].val1*3 + sd->sc.data[SC_WHISTLE].val2 + sd->sc.data[SC_WHISTLE].val3;
+		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // 口笛
+			sd->flee += sd->sc.data[SC_WHISTLE_].val1*3 + sd->sc.data[SC_WHISTLE_].val2 + sd->sc.data[SC_WHISTLE_].val3;
+		}
+#endif
 
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ハミング
 			sd->hit += 10+sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3;
 		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ハミング
 			sd->hit += 10+sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3;
 		}
+#else
+		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ハミング
+			sd->hit += 20+sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3;
+		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ハミング
+			sd->hit += 20+sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3;
+		}
+#endif
 
 		if(sd->sc.data[SC_VIOLENTGALE].timer != -1 && sd->def_ele == ELE_WIND) {	// バイオレントゲイル
 			sd->flee += sd->flee*sd->sc.data[SC_VIOLENTGALE].val3/100;
@@ -2878,7 +2894,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 		// 点穴 -反-
 		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-			int bonus = sd->sc.data[SC_GENTLETOUCH_CHANGE].val3;
+			int bonus = sd->sc.data[SC_GENTLETOUCH_CHANGE].val4;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
@@ -4653,6 +4669,9 @@ int status_get_mdef(struct block_list *bl)
 			// オーディンの力
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
 				mdef -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
+			// 点穴 -反-
+			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
+				mdef -= sc->data[SC_GENTLETOUCH_CHANGE].val3;
 		}
 	}
 	if(mdef < 0) mdef = 0;
@@ -5178,7 +5197,7 @@ int status_get_adelay(struct block_list *bl)
 
 			// 点穴 -反-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val3;
+				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val4;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
@@ -5419,7 +5438,7 @@ int status_get_amotion(struct block_list *bl)
 
 			// 点穴 -反-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
-				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val3;
+				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val4;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
@@ -6616,7 +6635,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_WEAPONQUICKEN:			/* ウェポンクイッケン */
 		case SC_WE_FEMALE:			/* あなたに尽くします */
 		case SC_TURISUSS:			/* ジャイアントグロース */
-		case SC_EISIR:				/* ファイティングスピリット */
 		case SC_HALLUCINATIONWALK2:	/* ハルシネーションウォーク(ペナルティ) */
 		case SC_INFRAREDSCAN:		/* インフラレッドスキャン */
 		case SC_ANALYZE:			/* アナライズ */
@@ -7458,6 +7476,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sd)
 				clif_mshield(sd, val2);
 			break;
+		case SC_EISIR:				/* ファイティングスピリット */
+			calc_flag = 1;
+			val3 = (val3>9)? 4: (val3>7)? 3: (val3>4)? 2: (val3>2)? 1: 0;
+			break;
 		case SC_URUZ:				/* アバンダンス */
 			val3 = tick / 10000;
 			if(val3 < 1)
@@ -7705,7 +7727,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			// 点穴 -活-が掛かっていたら解除
 			if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_REVITALIZE,-1);
-			val3 = status_get_agi(bl) / 15;		// ASPD上昇値
+			val4 = status_get_agi(bl) / 15;		// ASPD上昇値
 			calc_flag = 1;
 			break;
 		case SC_GENTLETOUCH_REVITALIZE:	/* 点穴 -活- */

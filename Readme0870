@@ -1,4 +1,30 @@
 ----------------------------------------
+//1030 [2013/03/22] by refis
+
+・手裏剣投げ、苦無投げ、風魔手裏剣投げ、銭投げ、畳返し、一閃、風刃のダメージ計算式をpreとREで分割（db/skill_db.txt pre/skill_db_pre.txt battle.c）
+
+・マジカルバレット、ピアーシングショットのダメージ計算式をpreとREで分割（battle.c）
+
+・口笛、ハミング状態をpreとREで分割（skill.c status.c）
+
+・（RE）風魔手裏剣投げを対象指定から地面指定に修正（db/skill_db.txt pre/skill_db_pre.txt skill.c）
+
+・（RE）インベナムの固定ダメージ加算位置を修正（battle.c）
+
+・（RE）スプレッドアタック、霞斬り、影斬りの使用条件を修正（skill_require_db.txt, pre/skill_require_db_pre.txt）
+	Thanks alsion0609 さん
+
+・ヴェラチュールスピアのDEF計算位置を修正して処理をスリムにする（battle.c）
+
+・点穴 -反-でMdefが減少するよう修正（skill.c status.c）
+
+・ファイティングスピリットのAspd増加率を修正（skill.c status.c）
+
+・シールドスペルのDEF増加にBaseLv補正を追加（skill.c）
+
+・シールドスペルが装備Mdefの代わりにDefを利用していた箇所を修正（skill.c）
+
+----------------------------------------
 //1029 [2013/03/22] by refis
 
 ・モンク、アルケミスト系列職業スキルのダメージ計算式をpreとREで分割（db/skill_db2.txt battle.c skill.c）
