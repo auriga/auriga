@@ -1488,6 +1488,7 @@ L_RECALC:
 	if(sd->sc.data[SC_VOLCANO].timer != -1 && sd->def_ele == ELE_FIRE) {	// ボルケーノ
 		sd->base_atk += sd->sc.data[SC_VOLCANO].val3;
 	}
+#ifdef PRE_RENEWAL
 	if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
 		sd->base_atk += sd->sc.data[SC_DRUMBATTLE].val2;
 		//idx = sd->equip_index[8];
@@ -1495,6 +1496,7 @@ L_RECALC:
 		//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
 		//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 	}
+#endif
 
 	if(sd->base_atk < 1)
 		sd->base_atk = 1;
@@ -1876,6 +1878,7 @@ L_RECALC:
 		if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
 			sd->def  += sd->sc.data[SC_DRUMBATTLE].val3;
 		}
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ニーベルングの指輪
 			idx = sd->equip_index[EQUIP_INDEX_RARM];
 			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
@@ -1886,7 +1889,6 @@ L_RECALC:
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
 		}
 
-#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_INCATK2].timer != -1) {
 			sd->watk = sd->watk*(100+sd->sc.data[SC_INCATK2].val1)/100;
 		}
@@ -4327,11 +4329,11 @@ int status_get_atk2(struct block_list *bl)
 				atk2 = atk2*(100+2+3*sc->data[SC_PROVOKE].val1)/100;
 			if(sc->data[SC_CURSE].timer != -1)
 				atk2 -= atk2*25/100;
-#endif
 			if(sc->data[SC_DRUMBATTLE].timer != -1)
 				atk2 += sc->data[SC_DRUMBATTLE].val2;
 			if(sc->data[SC_NIBELUNGEN].timer != -1 && (status_get_element(bl)/10) >= 8 )
 				atk2 += sc->data[SC_NIBELUNGEN].val2;
+#endif
 			if(sc->data[SC_STRIPWEAPON].timer != -1)
 				atk2 -= atk2*10/100;
 #ifdef PRE_RENEWAL
@@ -6997,12 +6999,21 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_DRUMBATTLE:			/* 戦太鼓の響き */
 			calc_flag = 1;
+#ifdef PRE_RENEWAL
 			val2 = (val1+1)*25;
 			val3 = (val1+1)*2;
+#else
+			val2 = 100+val1*30;
+			val3 = val1*10;
+#endif
 			break;
 		case SC_NIBELUNGEN:			/* ニーベルングの指輪 */
 			calc_flag = 1;
+#ifdef PRE_RENEWAL
 			val2 = (val1+2)*25;
+#else
+			val2 = val1*40;
+#endif
 			break;
 		case SC_SIEGFRIED:			/* 不死身のジークフリード */
 			calc_flag = 1;
@@ -7711,12 +7722,19 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
+		case SC_RUSH_WINDMILL:		/* 風車に向かって突撃 */
+			val4 = (val1 * 6) + (val2 / 5) + val3;
+			break;
+		case SC_MOONLIT_SERENADE:	/* 月明かりのセレナーデ */
+			val4 = (val1 * 5) + (val2 / 4) + val3;
+			break;
 		case SC_ECHOSONG:			/* エコーの歌 */
 			calc_flag = 1;
-		case SC_MOONLIT_SERENADE:	/* 月明かりのセレナーデ */
-		case SC_RUSH_WINDMILL:		/* 風車に向かって突撃 */
-			val4 = (val1 * 6) + (val2 * 2 / 10) + val3;
+			val4 = (val1 * 6) + (val2 / 4) + val3;
+			break;
+		case SC_SYMPHONY_LOVE:		/* 恋人たちの為のシンフォニー */
+			calc_flag = 1;
+			val4 = (val1 * 12) + (val2 / 4) + val3;
 			break;
 		case SC_WINKCHARM:	/* 魅惑のウィンク */
 		case SC_SIREN:		/* セイレーンの声 */

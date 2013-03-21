@@ -2568,6 +2568,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh)
 					wd.damage2 += sc->data[SC_IMPOSITIO].val1*5;
 			}
+			// 戦太鼓の響き
+			if(sc->data[SC_DRUMBATTLE].timer != -1) {
+				wd.damage += sc->data[SC_DRUMBATTLE].val2;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_DRUMBATTLE].val2;
+			}
+			// ニーベルングの指輪
+			if(sc->data[SC_NIBELUNGEN].timer != -1) {
+				wd.damage += sc->data[SC_NIBELUNGEN].val2;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_NIBELUNGEN].val2;
+			}
 			// カートブースト
 			if(sc->data[SC_GN_CARTBOOST].timer != -1) {
 				wd.damage += sc->data[SC_GN_CARTBOOST].val1 * 10;
@@ -2612,10 +2624,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(sc) {
 #ifndef PRE_RENEWAL
 			// オーバートラスト
-			if(sc->data[SC_OVERTHRUST].timer != -1 && skill_num != MC_CARTREVOLUTION)
+			if(sc->data[SC_OVERTHRUST].timer != -1)
 				add_rate += sc->data[SC_OVERTHRUST].val3;
 			// オーバートラストマックス
-			if(sc->data[SC_OVERTHRUSTMAX].timer != -1 && skill_num != MC_CARTREVOLUTION)
+			if(sc->data[SC_OVERTHRUSTMAX].timer != -1)
 				add_rate += 20*sc->data[SC_OVERTHRUSTMAX].val1;
 			// ブラッディラスト
 			if(sc->data[SC__BLOODYLUST].timer != -1)
@@ -2720,7 +2732,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					rate = rate/2;
 				sbr = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
 				wd.damage = wd.damage * (rate+add_rate) / 100;
-				wd.damage += sbr.damage * (rate+add_rate) / 100;
+				wd.damage += sbr.damage * rate / 100;
 				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
 			}
 			break;
@@ -3694,7 +3706,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ( 200 * skill_lv + ((s_ele == ELE_WIND)? 50 * skill_lv: 0) ) * status_get_lv(src) / 100, 100 );
 			break;
 		case WM_REVERBERATION_MELEE:	// 振動残響(物理)
-			DMG_FIX( 300 + 100 * skill_lv, 100 );
+			DMG_FIX( (300 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
 			if(wflag > 1) {
 				DMG_FIX( 1, wflag );
 			}
@@ -4574,9 +4586,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// メランコリー
 			if(sc->data[SC_GLOOMYDAY].timer != -1 && (skill_num == KN_BRANDISHSPEAR || skill_num == LK_SPIRALPIERCE || skill_num == CR_SHIELDCHARGE ||
 			   skill_num == CR_SHIELDBOOMERANG || skill_num == PA_SHIELDCHAIN || skill_num == LG_SHIELDPRESS)) {
-				wd.damage = wd.damage * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
-				if(calc_flag.lh)
-					wd.damage2 = wd.damage2 * (175 + sc->data[SC_GLOOMYDAY].val1 * 25) / 100;
+				rate += 75 + sc->data[SC_GLOOMYDAY].val1 * 25;
 			}
 		}
 		wd.damage = wd.damage*rate/100;
@@ -4700,6 +4710,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case PA_SHIELDCHAIN:	// シールドチェイン
 #endif
 	case RA_AIMEDBOLT:		// エイムドボルト
+	case LG_HESPERUSLIT:	// ヘスペルスリット
 		// Hit数分修練等が乗るタイプ
 		if(wd.div_ > 1)
 			wd.damage *= wd.div_;
@@ -5752,14 +5763,14 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case WM_METALICSOUND:	/* メタリックサウンド */
 			if(t_sc && (t_sc->data[SC_SLEEP].timer != -1 || t_sc->data[SC_DEEP_SLEEP].timer != -1)) {
-				MATK_FIX( ( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 55 ) * 2, 100 );
+				MATK_FIX( ( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 60 ) * status_get_lv(bl) / 100 * 2, 100 );
 			}
 			else {
-				MATK_FIX( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 55, 100 );
+				MATK_FIX( ( ( 120 * skill_lv ) + ( (sd)? pc_checkskill(sd,WM_LESSON): 0 ) * 60 ) * status_get_lv(bl) / 100, 100 );
 			}
 			break;
 		case WM_REVERBERATION_MAGIC:	/* 振動残響(魔法) */
-			MATK_FIX( 100 + 100 * skill_lv, 100 );
+			MATK_FIX( (100 + 100 * skill_lv) * status_get_lv(bl) / 100, 100 );
 			if(flag > 1) {
 				MATK_FIX( 1, flag );
 			}
