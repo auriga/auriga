@@ -4750,7 +4750,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|1);
 				}
 				else {
-					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+					battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag&~1);
 				}
 			}
 		} else {
@@ -13001,6 +13001,11 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 	}
 
+#ifndef PRE_RENEWAL
+	if(spiritball > 0)
+		sd->spiritball.old = 0;
+#endif
+
 	switch( cnd->id ) {
 	case SL_SMA:	/* エスマ */
 		if(!(type&1) && sd->sc.data[SC_SMA].timer==-1){	// エスマ詠唱可能状態
@@ -13263,16 +13268,25 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case MO_COMBOFINISH:		/* 猛龍拳 */
 		if(sd->sc.data[SC_COMBO].timer == -1 || sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO)
 			return 0;
+#ifndef PRE_RENEWAL
+		sd->spiritball.old = sd->spiritball.num;
+#endif
 		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
 		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK &&
 		   sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO && sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH))
 			return 0;
+#ifndef PRE_RENEWAL
+		sd->spiritball.old = sd->spiritball.num;
+#endif
 		break;
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
 		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK && sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO &&
 		   sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_TIGERFIST))
 			return 0;
+#ifndef PRE_RENEWAL
+		sd->spiritball.old = sd->spiritball.num;
+#endif
 		break;
 	case MO_EXTREMITYFIST:		/* 阿修羅覇鳳拳 */
 		if((sd->sc.data[SC_COMBO].timer != -1 && (sd->sc.data[SC_COMBO].val1 == MO_COMBOFINISH || sd->sc.data[SC_COMBO].val1 == CH_CHAINCRUSH)) || sd->sc.data[SC_BLADESTOP].timer!=-1)

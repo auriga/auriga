@@ -1936,12 +1936,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				calc_flag.hitrate = 1000000;
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
-		case AM_ACIDTERROR:		// アシッドテラー
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
 		case NPC_CRITICALSLASH:		// 防御無視攻撃
 		case NPC_GUIDEDATTACK:		// ガイデッドアタック
+#ifdef PRE_RENEWAL
+		case AM_ACIDTERROR:		// アシッドテラー
 		case MO_INVESTIGATE:		// 発勁
+#endif
 		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
 		case NJ_ISSEN:			// 一閃
 		case KO_BAKURETSU:		// 爆裂苦無
@@ -1953,10 +1955,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #ifdef PRE_RENEWAL
 		case CR_GRANDCROSS:		// グランドクロス
 		case NPC_GRANDDARKNESS:		// グランドダークネス
-#endif
 		case AM_DEMONSTRATION:		// デモンストレーション
+#endif
 		case TK_COUNTER:		// アプチャオルリギ
 		case AS_SPLASHER:		// ベナムスプラッシャー
+#ifndef PRE_RENEWAL
+		case MO_INVESTIGATE:		// 発勁
+#endif
 		case NPC_EXPULSION:		// エクスパルシオン
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 		case GC_PHANTOMMENACE:		// ファントムメナス
@@ -1967,7 +1972,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #ifndef PRE_RENEWAL
 		case CR_GRANDCROSS:		// グランドクロス
 		case NPC_GRANDDARKNESS:		// グランドダークネス
+		case AM_DEMONSTRATION:		// デモンストレーション
+		case AM_ACIDTERROR:		// アシッドテラー
 			if(src_sd) s_ele = s_ele_ = src_sd->atk_ele;
+			e = status_get_attack_element_nw(src);
+			if(e != ELE_NEUTRAL) {
+				// 武器に属性が付与されているなら、付与属性に変更
+				s_ele = s_ele_ = e;
+			}
 			calc_flag.hitrate = 1000000;
 			break;
 #endif
@@ -2234,12 +2246,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CR_GRANDCROSS:
 		case NPC_GRANDDARKNESS:
 		case MO_EXTREMITYFIST:
+		case AM_DEMONSTRATION:
+		case AM_ACIDTERROR:
 		case CR_ACIDDEMONSTRATION:
 		case ASC_BREAKER:
 		case NJ_ZENYNAGE:
 		case LG_RAYOFGENESIS:
 		case GN_FIRE_EXPANSION_ACID:
 		case KO_MUCHANAGE:
+			break;
+		case MO_INVESTIGATE:
+			wd.damage += t_def1 / 2;
 			break;
 		default:
 			if( skill_num == WS_CARTTERMINATION && !battle_config.def_ratio_atk_to_carttermination )
@@ -2271,7 +2288,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					int def_fix_ = (ignored_rate_ > 0)? (t_def1 * ignored_rate_ / 100): 0;
 
 					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
-					if( !calc_flag.idef && def_fix > 0 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy) || skill_num == MO_INVESTIGATE) ) {
+					if( !calc_flag.idef && def_fix > 0 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
 						if(!calc_flag.idef_) {
 							wd.damage += def_fix / 2;
 							calc_flag.idef = 1;
@@ -2463,7 +2480,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）属性補正 */
-		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) ) {
+		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST) {
 			cardfix = 100;
 			if(sc) {
 				// ボルケーノ
@@ -2508,7 +2525,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		if(src_sd) {
 			// 星のかけら、気球の適用
-			int hit_bonus  = src_sd->spiritball.num * 3 + src_sd->coin.num * 3 + src_sd->bonus_damage;
+			int hit_bonus  = (src_sd->spiritball.old>0? src_sd->spiritball.old * 3: src_sd->spiritball.num * 3) + src_sd->coin.num * 3 + src_sd->bonus_damage;
 			int hit_damage = hit_bonus + src_sd->star + src_sd->ranker_weapon_bonus;
 
 			if(skill_num == NJ_KUNAI) {	// 苦無投げ
@@ -2516,7 +2533,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					hit_damage += src_sd->arrow_atk * 3;
 				}
 				wd.damage += hit_damage * 3;
-			} else if(skill_num != NC_ARMSCANNON) {
+			} else if(skill_num != MO_INVESTIGATE && skill_num != MO_EXTREMITYFIST && skill_num != NC_ARMSCANNON && skill_num != SR_RAMPAGEBLASTER) {
 				wd.damage += hit_damage;
 				if(calc_flag.lh)
 					wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
@@ -2524,20 +2541,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 			switch(skill_num) {
 			case MC_CARTREVOLUTION:
-		    case MO_INVESTIGATE:
-		    case MO_EXTREMITYFIST:
-		    case CR_GRANDCROSS:
-		    case NPC_GRANDDARKNESS:
+			case MO_INVESTIGATE:
+			case MO_EXTREMITYFIST:
+			case CR_GRANDCROSS:
+			case NPC_GRANDDARKNESS:
+			case AM_DEMONSTRATION:
+			case AM_ACIDTERROR:
 			case PA_SHIELDCHAIN:
 			case CR_ACIDDEMONSTRATION:
 			case ASC_BREAKER:
-		    case NJ_ZENYNAGE:
+			case NJ_ZENYNAGE:
 			case RA_CLUSTERBOMB:
 			case RA_FIRINGTRAP:
 			case RA_ICEBOUNDTRAP:
 			case SO_VARETYR_SPEAR:
-		    case LG_RAYOFGENESIS:
-		    case GN_FIRE_EXPANSION_ACID:
+			case LG_RAYOFGENESIS:
+			case GN_FIRE_EXPANSION_ACID:
 			case KO_MUCHANAGE:
 				break;
 			case NC_ARMSCANNON:
@@ -2561,7 +2580,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）修練系BUFF処理 */
-		if(sc) {
+		if(sc && skill_num != MO_EXTREMITYFIST) {
 			// イムポシティオマヌス
 			if(sc->data[SC_IMPOSITIO].timer != -1) {
 				wd.damage += sc->data[SC_IMPOSITIO].val1*5;
@@ -2723,6 +2742,20 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( 100+30*skill_lv, 100 );
 			}
 			break;
+		case AM_DEMONSTRATION:	// デモンストレーション
+		case AM_ACIDTERROR:	// アシッドテラー
+			{
+				static struct Damage mgd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+				int rate = 100+skill_lv*((skill_num==AM_ACIDTERROR)? 100: 20);
+
+				mgd = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
+				wd.damage += mgd.damage;
+				wd.damage = wd.damage * rate / 100;
+				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
+				if(skill_num == AM_ACIDTERROR && (t_mode&MD_BOSS))
+					wd.damage = wd.damage / 2;
+			}
+			break;
 		case ASC_BREAKER:	// ソウルブレイカー
 			{
 				static struct Damage sbr = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -2734,6 +2767,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage = wd.damage * (rate+add_rate) / 100;
 				wd.damage += sbr.damage * rate / 100;
 				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
+			}
+			break;
+		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
+		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
+			{
+				static struct Damage ads = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+				atn_bignumber dmg;
+				ads = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
+				wd.damage = wd.damage * (100+add_rate) / 100;
+				wd.damage += ads.damage;
+				dmg = (atn_bignumber)wd.damage * t_vit * 7 / 10;
+				dmg = (dmg - ((t_def1 + t_def2)/2 + (status_get_mdef(target) + status_get_mdef2(target))/2))/10 * skill_lv;
+				if(target->type != BL_MOB)
+					dmg /= 2;
+				DMG_SET( (int)dmg );
 			}
 			break;
 		case NC_ARMSCANNON:	// アームズキャノン
@@ -3009,6 +3057,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if (!battle_config.gx_cardfix)
 				calc_flag.nocardfix = 1;
 			break;
+#ifdef PRE_RENEWAL
 		case AM_DEMONSTRATION:	// デモンストレーション
 			DMG_FIX( 100+20*skill_lv, 100 );
 			calc_flag.nocardfix = 1;
@@ -3017,35 +3066,59 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+40*skill_lv, 100 );
 			calc_flag.nocardfix = 1;
 			break;
+#endif
 		case MO_TRIPLEATTACK:	// 三段掌
 			DMG_FIX( 100+20*skill_lv, 100 );
 			break;
 		case MO_FINGEROFFENSIVE:	// 指弾
-			DMG_FIX( (100+50*skill_lv) * wd.div_, 100 );
+#ifdef PRE_RENEWAL
+			DMG_FIX( 100+50*skill_lv, 100 );
+#else
+			DMG_FIX( 125+25*skill_lv, 100 );
+#endif
 			break;
 		case MO_INVESTIGATE:	// 発勁
+#ifdef PRE_RENEWAL
 			if(t_def1 < 1000000) {
 				DMG_FIX( (100+75*skill_lv) * (t_def1 + t_def2), 100*50 );
 			}
+#else
+			DMG_FIX( 100+75*skill_lv, 100 );
+#endif
 			break;
 		case MO_BALKYOUNG:
 			DMG_FIX( 300, 100 );
 			break;
 		case MO_EXTREMITYFIST:	// 阿修羅覇鳳拳
 			if(src_sd) {
+#ifdef PRE_RENEWAL
 				DMG_FIX( 8+src_sd->status.sp/10, 1 );
+#else
+				wd.damage = wd.damage * (800+src_sd->status.sp*10) / 100;
+#endif
 				src_sd->status.sp = 0;
 				clif_updatestatus(src_sd,SP_SP);
 			} else {
 				DMG_FIX( 8, 1 );
 			}
 			DMG_ADD( 250+150*skill_lv );
+#ifndef PRE_RENEWAL
+			wd.damage -= t_def1 + t_def2;
+#endif
 			break;
 		case MO_CHAINCOMBO:	// 連打掌
+#ifdef PRE_RENEWAL
 			DMG_FIX( 150+50*skill_lv, 100 );
+#else
+			DMG_FIX( 250+50*skill_lv, 100 );
+#endif
 			break;
 		case MO_COMBOFINISH:	// 猛龍拳
+#ifdef PRE_RENEWAL
 			DMG_FIX( 240+60*skill_lv, 100 );
+#else
+			DMG_FIX( 450+50*skill_lv, 100 );
+#endif
 			// PTには入っている
 			// カウンターアタックの確率上昇
 			if(src_sd && src_sd->status.party_id > 0) {
@@ -3203,6 +3276,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			calc_flag.nocardfix = 1;
 			break;
+#ifdef PRE_RENEWAL
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
 			{
@@ -3214,6 +3288,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			calc_flag.nocardfix = 1;
 			break;
+#endif
 		case GS_TRIPLEACTION:	// トリプルアクション
 			DMG_FIX( 450, 100 );
 			break;
@@ -3631,26 +3706,30 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ( 100 + 40 * skill_lv ) * status_get_lv(src) / 100, 100 );
 			break;
 		case SR_SKYNETBLOW:	// 天羅地網
-			DMG_FIX( 80 * skill_lv + status_get_agi(src), 100 );
+			if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_DRAGONCOMBO) {
+				DMG_FIX( (100 * skill_lv + status_get_agi(src) + 150) * status_get_lv(src) / 100, 100 );		// コンボ発動時
+			} else {
+				DMG_FIX( (80 * skill_lv + status_get_agi(src)) * status_get_lv(src) / 100, 100 );		// 通常時
+			}
 			break;
 		case SR_EARTHSHAKER:	// 地雷震
 			if(!wflag) {	// 通常
-				DMG_FIX( 50 + 50 * skill_lv, 100 );
+				DMG_FIX( (50 * skill_lv * status_get_lv(src) / 100) + status_get_int(src) * 2, 100 );
 			} else {	// ハイド相手
-				DMG_FIX( 150 + 150 * skill_lv, 100 );
+				DMG_FIX( (150 * skill_lv * status_get_lv(src) / 100) + status_get_int(src) * 3, 100 );
 			}
 			break;
 		case SR_FALLENEMPIRE:	// 大纏崩墜
-			DMG_FIX( 100 + 150 * skill_lv, 100 );
+			DMG_FIX( (100 + 150 * skill_lv) * status_get_lv(src) / 150, 100 );
 			break;
 		case SR_TIGERCANNON:	// 號砲
 			if(src_sd) {
 				int hp = status_get_max_hp(src) * (10 + skill_lv * 2) / 100;
 				int sp = status_get_max_sp(src) * (5 + skill_lv) / 100 - 1;
 				if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
-					DMG_FIX( (hp + sp + 1) / 4 * 2 * status_get_lv(src) / 150 , 100 );		// コンボ発動時
+					DMG_FIX( (hp + sp + 1) / 4 * 2 * status_get_lv(src) / 100 , 100 );		// コンボ発動時
 				} else {
-					DMG_FIX( (hp + sp + 1) / 4 * status_get_lv(src) / 150 , 100 );			// 通常時
+					DMG_FIX( (hp + sp + 1) / 4 * status_get_lv(src) / 100 , 100 );			// 通常時
 				}
 				// HP,SP消費
 				if(src_sd->status.hp > hp) {
@@ -3671,12 +3750,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SR_RAMPAGEBLASTER:	// 爆気散弾
 			if(src_sd && src_sd->spiritball.old) {
 				if(sc && sc->data[SC_EXPLOSIONSPIRITS].timer != -1) {
-					DMG_FIX( (100 + 20 * skill_lv) * src_sd->spiritball.old * status_get_lv(src) / 150  * 125 / 100, 100 );
+					DMG_FIX( (125 + 25 * skill_lv) * status_get_lv(src) / 150 * src_sd->spiritball.old, 100 );
 				} else {
-					DMG_FIX( 20 * skill_lv * src_sd->spiritball.old, 100 );
+					DMG_FIX( 20 * skill_lv * status_get_lv(src) / 150 * src_sd->spiritball.old, 100 );
 				}
 			} else if(sc && sc->data[SC_EXPLOSIONSPIRITS].timer != -1) {
-				DMG_FIX( (100 + 20 * skill_lv) * status_get_lv(src) / 150 * 125 / 100, 100 );
+				DMG_FIX( (125 + 25 * skill_lv) * status_get_lv(src) / 150, 100 );
 			} else {
 				DMG_FIX( 20 * skill_lv * status_get_lv(src) / 150, 100 );
 			}
@@ -3691,7 +3770,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case SR_WINDMILL:	// 旋風腿
-			DMG_FIX( 200, 100 );
+			DMG_FIX( (status_get_lv(src) + status_get_dex(src)) * status_get_lv(src) / 100, 100 );
 			break;
 		case SR_GATEOFHELL:	// 羅刹破凰撃
 			DMG_FIX( 500 * skill_lv * status_get_lv(src) / 100, 100 );
@@ -3700,7 +3779,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ( 100 * skill_lv + status_get_dex(src) ) * status_get_lv(src) / 100, 100 );
 			break;
 		case SR_HOWLINGOFLION:	// 獅子吼
-			DMG_FIX( 180 * skill_lv, 100 );
+			DMG_FIX( 200 * skill_lv * status_get_lv(src) / 100, 100 );
 			break;
 		case SR_RIDEINLIGHTNING:	// 雷光弾
 			DMG_FIX( ( 200 * skill_lv + ((s_ele == ELE_WIND)? 50 * skill_lv: 0) ) * status_get_lv(src) / 100, 100 );
@@ -3732,7 +3811,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100 + 50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,GN_REMODELING_CART): 1) * 100, 100 );
 			break;
 		case GN_CARTCANNON:		// カートキャノン
-			DMG_FIX( 350 + 50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,GN_REMODELING_CART): 1) * status_get_int(src) / 2, 100 );
+			DMG_FIX( 350 + 50 * skill_lv + ((src_sd)? pc_checkskill(src_sd,GN_REMODELING_CART): 1) * (status_get_int(src) / 2), 100 );
 			break;
 		case GN_WALLOFTHORN:	// ソーンウォール
 			DMG_FIX( 150 + 50 * skill_lv, 100 );
@@ -3984,6 +4063,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CR_SHIELDBOOMERANG:
 		case CR_GRANDCROSS:
 		case NPC_GRANDDARKNESS:
+		case AM_DEMONSTRATION:
+		case AM_ACIDTERROR:
 		case ASC_BREAKER:
 		case PA_SHIELDCHAIN:
 #endif
@@ -4704,6 +4785,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case MA_DOUBLE:
 	case KN_PIERCE:		// ピアース
 	case ML_PIERCE:
+	case MO_FINGEROFFENSIVE:	// 指弾
 	case NPC_COMBOATTACK:	// 多段攻撃
 #ifndef PRE_RENEWAL
 	case LK_SPIRALPIERCE:	// スパイラルピアース
@@ -4944,6 +5026,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
 		break;
 #else
+	case AM_DEMONSTRATION:
+		wd.damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target) );
+		break;
+	case AM_ACIDTERROR:
+	case MO_EXTREMITYFIST:
+	case CR_ACIDDEMONSTRATION:
+	case GN_FIRE_EXPANSION_ACID:
 	case CR_SHIELDBOOMERANG:
 	case PA_SHIELDCHAIN:
 #endif
@@ -5568,7 +5657,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				normalmagic_flag = 0;
 			}
 			break;
+		case AM_DEMONSTRATION:	// デモンストレーション
+		case AM_ACIDTERROR:	// アシッドテラー
 		case ASC_BREAKER:	// ソウルブレイカー
+		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
+		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
 			normalmagic_flag = 0;
 			break;
 #endif
@@ -6152,7 +6245,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	}
 
 	/* 13．ダメージ最終計算 */
-	if(skill_num != ASC_BREAKER)
+	if(skill_num != ASC_BREAKER && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID)
 		mgd.damage = battle_calc_damage(bl,target,mgd.damage,mgd.div_,skill_num,skill_lv,mgd.flag);
 
 	/* 14．魔法でもオートスペル発動(item_bonus) */
