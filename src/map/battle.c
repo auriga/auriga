@@ -4733,7 +4733,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					rate += 100;
 			}
 			// ファイティング
-			if(skill = pc_checkskill(src_sd,TK_POWER) > 0 && src_sd->status.party_id > 0) {
+			if((skill = pc_checkskill(src_sd,TK_POWER)) > 0 && src_sd->status.party_id > 0) {
 				int member_num = party_check_same_map_member_count(src_sd);
 				if(member_num > 0) {
 					rate += member_num * skill * 2;

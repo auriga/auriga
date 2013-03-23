@@ -35,6 +35,8 @@
 
 static bool httpd_new_account_flag = false;
 
+#ifndef NO_HTTPD
+
 static double login_httpd_users(void)
 {
 	int i;
@@ -172,6 +174,8 @@ static int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_d
 	strcpy( passwd, acc->pass );
 	return 1;
 }
+
+#endif
 
 int login_httpd_config_read(const char *w1, const char *w2)
 {

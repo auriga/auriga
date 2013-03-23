@@ -1575,8 +1575,10 @@ int do_init(int argc,char **argv)
 	login_fd = make_listen_port(config.login_port, listen_ip);
 	if(config.login_sport != 0 && config.login_port != config.login_sport)
 		login_sfd = make_listen_port(config.login_sport, config.login_sip);
-	if(login_init() == false)
+	if(login_init() == false) {
+		printf("FATAL ERROR: login_init() failed !!\n");
 		exit(1);
+	}
 
 	read_gm_account();
 	set_defaultparse(parse_login);

@@ -3639,8 +3639,11 @@ int do_init(int argc,char **argv)
 		memset(&server[i], 0, sizeof(struct mmo_map_server));
 	}
 	char_online_db = numdb_init();
-	if(chardb_init() == false)
+	if(chardb_init() == false) {
+		printf("FATAL ERROR: chardb_init() failed !!\n");
 		exit(1);
+	}
+
 	inter_storage_init();
 	chardb_build_ranking();
 	read_gm_account();

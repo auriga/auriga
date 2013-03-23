@@ -239,8 +239,10 @@ int do_init(int argc,char **argv)
 	rc = sqldbs_connect(&mysql_handle,
 		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive
 	);
-	if(rc)
+	if(rc) {
+		printf("FATAL ERROR: sqldbs_connect() failed !!\n");
 		exit(1);
+	}
 
 	printf("Warning : Make sure you backup your databases before continuing!\n");
 	printf("Convert start...\n");

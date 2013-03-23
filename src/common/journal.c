@@ -49,6 +49,8 @@ struct journal_header {
 	int key, flag;
 };
 
+static int journal_first = 1;
+
 static int journal_flush_timer( int tid, unsigned int tick, int id, void *data );
 
 // ==========================================
@@ -56,11 +58,9 @@ static int journal_flush_timer( int tid, unsigned int tick, int id, void *data )
 // ------------------------------------------
 static void journal_init_( struct journal* j, size_t datasize, const char* filename )
 {
-	static int first = 1;
-
-	if( first ) {
+	if( journal_first ) {
 		grfio_load_zlib();
-		first = 0;
+		journal_first = 0;
 	}
 	memset( j, 0, sizeof( struct journal ) );
 	j->db = numdb_init();
@@ -168,6 +168,12 @@ static int journal_final_sub( void* key, void* data, va_list ap )
 // ------------------------------------------
 void journal_final( struct journal* j )
 {
+	if( journal_first )
+	{
+		// ジャーナルは一度も初期化されてないので何もしない
+		return;
+	}
+
 	// キャッシュフラッシュ用のタイマー削除
 	if( j->cache_timer != -1 )
 	{

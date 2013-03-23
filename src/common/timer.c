@@ -98,11 +98,16 @@ unsigned int gettick_nocache(void)
 #ifdef WINDOWS
 	gettick_count = 256;
 	return gettick_cache = GetTickCount();
+#elif defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+	struct timespec tp;
+	clock_gettime(CLOCK_MONOTONIC, &tp);
+	gettick_count = 256;
+	return gettick_cache = tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
 #else
 	struct timeval tval;
-	gettimeofday(&tval,NULL);
+	gettimeofday(&tval, NULL);
 	gettick_count = 256;
-	return gettick_cache = tval.tv_sec * 1000 + tval.tv_usec/1000;
+	return gettick_cache = tval.tv_sec * 1000 + tval.tv_usec / 1000;
 #endif
 }
 
@@ -341,9 +346,9 @@ int delete_timer(int id,int (*func)(int,unsigned int,int,void*))
 	}
 	if (timer_data[id].func != func) {
 		printf(
-			"delete_timer error : function dismatch 0x%p (%s) != 0x%p (%s)\n",
-			timer_data[id].func, search_timer_func_list(timer_data[id].func),
-			func, search_timer_func_list(func)
+			"delete_timer error : function '%s' (0x%p) dismatch '%s' (0x%p) ... id = %d\n",
+			search_timer_func_list(timer_data[id].func), timer_data[id].func,
+			search_timer_func_list(func), func, id
 		);
 		return -2;
 	}

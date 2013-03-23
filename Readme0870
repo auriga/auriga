@@ -1,4 +1,18 @@
 ----------------------------------------
+//1032 [2013/03/24] by Rayce
+
+・gccでの警告修正（login_httpd.c, battle.c, clif.c）
+
+・Linux環境で gettimeofday() の代わりに精度の高い clock_getime() を使えるように拡張（timer.c）
+
+・タイマー削除時のエラーメッセージの内容を変更（timer.c）
+
+・サーバ起動に失敗したときはメッセージを表示するように変更（login.c, char.c, converter.c）
+
+・JOURNAL有効時、サーバ起動に失敗すると「delete_timer error : function dismatch」が発生する
+  問題を修正（journal.c）
+
+----------------------------------------
 //1031 [2013/03/24] by Rayce
 
 ・gccでの警告修正（char.c, atcommand.c, clif.c, map.c, memorial.c, script.c, skill.c）

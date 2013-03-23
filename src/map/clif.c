@@ -1474,7 +1474,6 @@ void clif_class_change(struct block_list *bl,int class_,int type)
 static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 {
 	int len;
-	struct status_change *sc = status_get_sc(&md->bl);
 
 	nullpo_retr(0, md);
 
@@ -1714,9 +1713,10 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,58)=5;
 		WBUFB(buf,59)=5;
 		WBUFLV(buf,61,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
-			md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,65) = 0xffffffff;
 			WBUFL(buf,69) = 0xffffffff;
@@ -1841,9 +1841,10 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,49)=md->sc.opt3;
 	WBUFPOS(buf,55,md->bl.x,md->bl.y,md->dir);
 	WBUFLV(buf,61,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
-		md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+	   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
 	{
 		WBUFL(buf,65) = 0xffffffff;
 		WBUFL(buf,69) = 0xffffffff;
@@ -1863,7 +1864,6 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 {
 	int len;
-	struct status_change *sc = status_get_sc(&md->bl);
 
 	nullpo_retr(0, md);
 
@@ -2145,9 +2145,10 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,65)=5;
 		WBUFB(buf,66)=5;
 		WBUFLV(buf,67,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
-			md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,71) = 0xffffffff;
 			WBUFL(buf,75) = 0xffffffff;
@@ -2254,9 +2255,10 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,53)=md->sc.opt3;
 	WBUFPOS2(buf,59,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
-		md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+	   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
 	{
 		WBUFL(buf,71) = 0xffffffff;
 		WBUFL(buf,75) = 0xffffffff;
@@ -3820,7 +3822,6 @@ void clif_spawnmob(struct mob_data *md)
 {
 	unsigned char buf[128];
 	int len;
-	struct status_change *sc = status_get_sc(&md->bl);
 
 	nullpo_retv(md);
 
@@ -3900,9 +3901,10 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,33)=5;
 		WBUFPOS(buf,55,md->bl.x,md->bl.y,md->dir);
 		WBUFLV(buf,60,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if((sc && (sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 || sc->data[SC_INVISIBLE].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1)) ||
-			md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,64)=0xffffffff;
 			WBUFL(buf,68)=0xffffffff;
@@ -19691,8 +19693,8 @@ static void clif_parse_PartyBookingJoinPartyReq(int fd,struct map_session_data *
  */
 static void clif_parse_PartyBookingSummonMember(int fd,struct map_session_data *sd, int cmd)
 {
-	int len = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4;
-	const unsigned char *account_list = RFIFOP(fd,GETPACKETPOS(cmd,1));
+	//int len = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4;
+	//const unsigned char *account_list = RFIFOP(fd,GETPACKETPOS(cmd,1));
 
 	// TODO
 
