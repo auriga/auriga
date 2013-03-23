@@ -4191,7 +4191,7 @@ int atcommand_giveitem(const int fd, struct map_session_data* sd, AtCommandType 
 	} else if (strcmp(character,"ALL") == 0) {	// 名前がALLなら、接続者全員へ
 		int i;
 		for (i = 0; i < fd_max; i++) {
-			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data)) {
+			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				atcommand_giveitem_sub(pl_sd,item_data,number);
 				msg_output(pl_sd->fd, msg_txt(97), item_data->jname, number);
 			}

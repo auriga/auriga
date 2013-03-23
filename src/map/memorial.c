@@ -266,7 +266,7 @@ static int memorial_startkeeptimer(struct memorial_data *md, int memorial_id)
 	md->keep_timer = add_timer(gettick()+db->limit*1000, memorial_delete_timer, memorial_id, NULL);
 
 	// パーティーに情報通知
-	if(pt = party_search(md->party_id)) {
+	if((pt = party_search(md->party_id)) != NULL) {
 		for(i = 0; i < MAX_PARTY; i++) {
 			if(pt->member[i].sd) {
 				clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
@@ -332,7 +332,7 @@ static int memorial_stopidletimer(struct memorial_data *md)
 	md->idle_timer = -1;
 
 	// パーティーに情報通知
-	if(pt = party_search(md->party_id)) {
+	if((pt = party_search(md->party_id)) != NULL) {
 		for(i = 0; i < MAX_PARTY; i++) {
 			if(pt->member[i].sd) {
 				clif_memorial_changestatus(pt->member[i].sd, 0, md->idle_limit, 1);

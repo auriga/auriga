@@ -9066,7 +9066,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SO_SUMMON_VENTUS:	/* サモンベントス */
 	case SO_SUMMON_TERA:	/* サモンテラ */
 		if(sd) {
-			int elem_id;
+			int elem_id = 0;
 			int type = GetSkillStatusChangeTable(skillid);
 			if(type < 0)
 				break;

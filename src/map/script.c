@@ -12861,7 +12861,6 @@ int buildin_getmdnpcname(struct script_state *st)
 	unsigned char *name;
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int id = script_getmemorialid(st);
-	int m = memorial_mapname2mapid(str, id);
 
 	if(id > 0) {
 		name = (unsigned char *)aCalloc(strlen(str) + 5, sizeof(unsigned char));

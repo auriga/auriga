@@ -1,4 +1,11 @@
 ----------------------------------------
+//1031 [2013/03/24] by Rayce
+
+・gccでの警告修正（char.c, atcommand.c, clif.c, map.c, memorial.c, script.c, skill.c）
+
+・@giveitem をALL指定で実行時、未認証のキャラクターにもアイテムが付与される可能性を修正（atcommand.c）
+
+----------------------------------------
 //1030 [2013/03/22] by refis
 
 ・手裏剣投げ、苦無投げ、風魔手裏剣投げ、銭投げ、畳返し、一閃、風刃のダメージ計算式をpreとREで分割（db/skill_db.txt pre/skill_db_pre.txt battle.c）

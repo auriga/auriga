@@ -1775,7 +1775,7 @@ int map_addnpc(int m,struct npc_data *nd)
 int map_addmdmap(const char *name, int id)
 {
 	int src_m = map_mapname2mapid(name);
-	int dst_m, i;
+	int dst_m = -1, i;
 	size_t size;
 
 	if(src_m < 0)
@@ -1802,6 +1802,7 @@ int map_addmdmap(const char *name, int id)
 	else {
 		// 追加余裕なし
 		printf("map_addmdmap failed. map_num(%d) > map_max(%d)\n",map_num, map_max);
+		return -1;
 	}
 
 	// マップ情報複製

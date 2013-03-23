@@ -131,7 +131,7 @@ enum {
 
 #define WBUFLV(p,pos,lv,class_) \
 	if(battle_config.clif_fix_level) { \
-		if((class_) >= PC_CLASS_RK && (class_) <= PC_CLASS_NC2_B || ((class_) == PC_CLASS_ESNV || (class_) >= PC_CLASS_KG && (class_) <= PC_CLASS_OB)) { \
+		if(((class_) >= PC_CLASS_RK && (class_) <= PC_CLASS_NC2_B) || (class_) == PC_CLASS_ESNV || ((class_) >= PC_CLASS_KG && (class_) <= PC_CLASS_OB)) { \
 			WBUFW((p),(pos)) = ((lv) > 150)? 150: (lv); \
 		} else { \
 			WBUFW((p),(pos)) = ((lv) > 99)? 99: (lv); \
@@ -14766,7 +14766,6 @@ void clif_bookingregack(struct map_session_data *sd, int flag)
 void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag)
 {
 	int i,fd;
-	int j=0;
 	int n=0;
 
 	nullpo_retv(sd);
@@ -14775,6 +14774,7 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 #if PACKETVER < 20120222
 	WFIFOW(fd,0) = 0x805;
 	if(list) {
+		int j;
 		for(i=0; i<count; i++) {
 			struct booking_data *bd = list[i];
 			WFIFOL(fd,n*48+5)=bd->id; 
@@ -14841,7 +14841,6 @@ void clif_deletebookingack(struct map_session_data* sd, int flag)
  */
 void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd)
 {
-	int i=0;
 	unsigned char buf[73];
 
 	nullpo_retv(sd);
@@ -14854,8 +14853,11 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
 	WBUFL(buf,30) = bd->time;
 	WBUFW(buf,34) = bd->lv;
 	WBUFW(buf,36) = bd->map;
-	for(i=0; i<6; i++)
-		WBUFW(buf,38+i*2) = bd->job[i];
+	{
+		int i;
+		for(i=0; i<6; i++)
+			WBUFW(buf,38+i*2) = bd->job[i];
+	}
 	clif_send(buf,packet_db[0x809].len,&sd->bl,ALL_CLIENT);
 #else
 	WBUFW(buf,0) = 0x8ec;
@@ -14877,7 +14879,6 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
  */
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd)
 {
-	int i=0;
 	unsigned char buf[47];
 
 	nullpo_retv(sd);
@@ -14886,8 +14887,11 @@ void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd
 #if PACKETVER < 20120222
 	WBUFW(buf,0) = 0x80a;
 	WBUFL(buf,2) = bd->id;
-	for(i=0; i<6; i++)
-		WBUFW(buf,6+i*2) = bd->job[i];
+	{
+		int i;
+		for(i=0; i<6; i++)
+			WBUFW(buf,6+i*2) = bd->job[i];
+	}
 	clif_send(buf,packet_db[0x80a].len,&sd->bl,ALL_CLIENT);
 #else
 	WBUFW(buf,0) = 0x8ed;
@@ -16432,7 +16436,7 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 #elif PACKETVER < 20100803
 		int nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
 		int count  = RFIFOW(fd,GETPACKETPOS(cmd,1));
-		int points = RFIFOL(fd,GETPACKETPOS(cmd,2));
+		//int points = RFIFOL(fd,GETPACKETPOS(cmd,2));
 		fail = npc_pointshop_buy(sd,nameid,count);
 
 		WFIFOW(fd,0)  = 0x289;
@@ -16442,7 +16446,7 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 		WFIFOSET(fd,packet_db[0x289].len);
 #else
 		int len    = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 10;
-		int points = RFIFOL(fd,GETPACKETPOS(cmd,1));
+		//int points = RFIFOL(fd,GETPACKETPOS(cmd,1));
 		int count  = RFIFOW(fd,GETPACKETPOS(cmd,2));
 		const unsigned short *item_list = (const unsigned short *)RFIFOP(fd,GETPACKETPOS(cmd,3));
 		fail = npc_pointshop_buylist(sd,( len <= 0 ) ? 0 : len/4,count,item_list);
