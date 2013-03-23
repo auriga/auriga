@@ -187,7 +187,7 @@ static int elem_can_reach(struct elem_data *eld,struct block_list *bl,int range)
 	if(eld->bl.m != bl-> m)	// 違うマップ
 		return 0;
 
-	if( range > 0 && range < unit_distance(eld->bl.x,eld->bl.y,bl->x,bl->y) )	// 遠すぎる
+	if( range > 0 && range < path_distance(eld->bl.x,eld->bl.y,bl->x,bl->y) )	// 遠すぎる
 		return 0;
 
 	if( eld->bl.x == bl->x && eld->bl.y == bl->y )	// 同じマス
@@ -261,7 +261,7 @@ static int elem_ai_sub_timer_search(struct block_list *bl,va_list ap)
 	if( eld->bl.id == bl->id )
 		return 0; // self
 
-	dist = unit_distance(eld->bl.x,eld->bl.y,bl->x,bl->y);
+	dist = path_distance(eld->bl.x,eld->bl.y,bl->x,bl->y);
 
 	// アクティブ
 	range = (eld->sc.data[SC_BLIND].timer != -1 || eld->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
@@ -309,13 +309,13 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 
 	eld->last_thinktime = tick;
 
-	dist = unit_distance2(&eld->bl,&msd->bl);
+	dist = unit_distance(&eld->bl,&msd->bl);
 	if(dist > 12) {
 		if(eld->target_id) {
 			unit_stopattack(&eld->bl);
 			elem_unlocktarget(eld);
 		}
-		if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
+		if(eld->ud.walktimer != -1 && path_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
 			return 0;
 		eld->speed = (msd->speed >> 1);
 		if(eld->speed <= 0)
@@ -339,7 +339,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 
 		if( eld->target_id <= 0 || (tbl = map_id2bl(eld->target_id)) == NULL ||
 		    tbl->m != eld->bl.m || tbl->prev == NULL ||
-		    (dist = unit_distance(eld->bl.x,eld->bl.y,tbl->x,tbl->y)) >= AREA_SIZE )
+		    (dist = path_distance(eld->bl.x,eld->bl.y,tbl->x,tbl->y)) >= AREA_SIZE )
 		{
 			// 対象が居ない / どこかに消えた / 視界外
 			if(eld->target_id > 0) {
@@ -364,7 +364,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 						elem_unlocktarget(eld);
 					return 0;
 				}
-				if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,tbl->x,tbl->y) < 2)
+				if(eld->ud.walktimer != -1 && path_distance(eld->ud.to_x,eld->ud.to_y,tbl->x,tbl->y) < 2)
 					return 0; // 既に移動中
 				if( !elem_can_reach(eld,tbl,AREA_SIZE) ) {
 					elem_unlocktarget(eld);	// 移動できないのでタゲ解除（IWとか？）
@@ -406,7 +406,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 	}
 
 	if(dist > MAX_ELEMDISTANCE && eld->target_id == 0) {
-		if(eld->ud.walktimer != -1 && unit_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
+		if(eld->ud.walktimer != -1 && path_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
 			return 0;
 		eld->speed = msd->speed;
 		unit_calc_pos(&eld->ud,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);

@@ -37,13 +37,13 @@
 #include "npc.h"
 #include "pc.h"
 #include "map.h"
+#include "path.h"
 #include "skill.h"
 #include "mob.h"
 #include "intif.h"
 #include "clif.h"
 #include "status.h"
 #include "atcommand.h"
-#include "unit.h"
 
 static struct dbt *guild_db = NULL;
 static struct dbt *guild_expcache_db = NULL;
@@ -724,7 +724,7 @@ void guild_invite(struct map_session_data *sd, int account_id)
 	if (sd->bl.m != tsd->bl.m)
 		return;
 	// and in visible area of member
-	if (unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
+	if (path_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
 		return;
 
 	// GVGでは勧誘できない
@@ -1616,7 +1616,7 @@ void guild_reqalliance(struct map_session_data *sd, int account_id)
 	if (sd->bl.m != tsd->bl.m)
 		return;
 	// and in visible area of member
-	if (unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
+	if (path_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
 		return;
 
 	// 攻城戦中では同盟できない
@@ -1764,7 +1764,7 @@ void guild_opposition(struct map_session_data *sd, int account_id)
 
 	if(sd->bl.m != tsd->bl.m)
 		return;
-	if(unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
+	if(path_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
 		return;
 
 	// 攻城戦中では敵対できない

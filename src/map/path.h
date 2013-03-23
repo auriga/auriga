@@ -36,5 +36,6 @@ int path_blownpos(int m,int x0,int y0,int dx,int dy,int count,int flag);
 
 int path_check_dir(int s_dir,int t_dir);
 int path_calc_dir(struct block_list *src,int x,int y);
+int path_distance(int x0,int y0,int x1,int y1);
 
 #endif

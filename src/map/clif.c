@@ -15641,7 +15641,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 	bl=map_id2bl(account_id);
 	if(bl==NULL)
 		return;
-	if(sd->bl.m != bl->m || unit_distance2(&sd->bl,bl) > AREA_SIZE)
+	if(sd->bl.m != bl->m || unit_distance(&sd->bl,bl) > AREA_SIZE)
 		return;
 
 	memset(WFIFOP(fd,0), 0, packet_db[0x195].len);
@@ -16486,7 +16486,7 @@ static void clif_parse_CreateChatRoom(int fd,struct map_session_data *sd, int cm
 	chat_title = (char *)RFIFOP(fd,GETPACKETPOS(cmd,4)); // don't include \0
 	if (chat_title[0] == '\0')
 		return;
-	chat_createchat(sd, RFIFOW(fd,GETPACKETPOS(cmd,1)), RFIFOB(fd,GETPACKETPOS(cmd,2)), (char *)RFIFOP(fd,GETPACKETPOS(cmd,3)), chat_title, len - GETPACKETPOS(cmd,4));
+	chat_createchat(sd, RFIFOW(fd,GETPACKETPOS(cmd,1)), RFIFOB(fd,GETPACKETPOS(cmd,2)), (const char *)RFIFOP(fd,GETPACKETPOS(cmd,3)), chat_title, len - GETPACKETPOS(cmd,4));
 
 	return;
 }
@@ -16528,7 +16528,7 @@ static void clif_parse_ChatRoomStatusChange(int fd,struct map_session_data *sd, 
  */
 static void clif_parse_ChangeChatOwner(int fd,struct map_session_data *sd, int cmd)
 {
-	chat_changechatowner(sd, (char *)RFIFOP(fd,GETPACKETPOS(cmd,1)));
+	chat_changechatowner(sd, (const char *)RFIFOP(fd,GETPACKETPOS(cmd,1)));
 
 	return;
 }
@@ -16539,7 +16539,7 @@ static void clif_parse_ChangeChatOwner(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_KickFromChat(int fd,struct map_session_data *sd, int cmd)
 {
-	chat_kickchat(sd, (char *)RFIFOP(fd,GETPACKETPOS(cmd,0)));
+	chat_kickchat(sd, (const char *)RFIFOP(fd,GETPACKETPOS(cmd,0)));
 
 	return;
 }

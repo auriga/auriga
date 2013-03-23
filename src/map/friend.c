@@ -25,6 +25,7 @@
 
 #include "friend.h"
 #include "map.h"
+#include "path.h"
 #include "clif.h"
 #include "chrif.h"
 #include "pc.h"
@@ -32,7 +33,6 @@
 #include "battle.h"
 #include "nullpo.h"
 #include "atcommand.h"
-#include "unit.h"
 
 static struct dbt * online_db = NULL;
 
@@ -62,7 +62,7 @@ int friend_add_request( struct map_session_data *sd, char* name )
 
 	if(sd->bl.m != tsd->bl.m)
 		return 0;
-	if(unit_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
+	if(path_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE)
 		return 0;
 	if(sd->status.char_id == tsd->status.char_id)
 		return 0;

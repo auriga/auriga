@@ -29,10 +29,10 @@
 #include "nullpo.h"
 #include "malloc.h"
 #include "map.h"
+#include "path.h"
 #include "clif.h"
 #include "chat.h"
 #include "npc.h"
-#include "unit.h"
 
 /*==========================================
  * 規定人数以上でイベントが定義されてるなら実行
@@ -52,7 +52,7 @@ static int chat_triggerevent(struct chat_data *cd)
  * チャットルーム作成
  *------------------------------------------
  */
-void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned char pub, char* pass, char* title, int titlelen)
+void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned char pub, const char* pass, const char* title, int titlelen)
 {
 	struct chat_data *cd;
 
@@ -105,7 +105,7 @@ void chat_createchat(struct map_session_data *sd, unsigned short limit, unsigned
  * 既存チャットルームに参加
  *------------------------------------------
  */
-void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
+void chat_joinchat(struct map_session_data *sd, int chatid, const char* pass)
 {
 	struct chat_data *cd;
 
@@ -114,11 +114,11 @@ void chat_joinchat(struct map_session_data *sd, int chatid, char* pass)
 	if((cd = map_id2cd(chatid)) == NULL)
 		return;
 
-	if(cd->bl.m != sd->bl.m || sd->state.store || sd->state.joinchat || unit_distance(cd->bl.x,cd->bl.y,sd->bl.x,sd->bl.y) > AREA_SIZE) {
+	if(cd->bl.m != sd->bl.m || sd->state.store || sd->state.joinchat || path_distance(cd->bl.x,cd->bl.y,sd->bl.x,sd->bl.y) > AREA_SIZE) {
 		clif_joinchatfail(sd,3);
 		return;
 	}
-	if(cd->limit <= cd->users) {
+	if(cd->limit <= cd->users || cd->users >= sizeof(cd->usersd)/sizeof(cd->usersd[0])) {
 		clif_joinchatfail(sd,0);
 		return;
 	}
@@ -229,7 +229,7 @@ int chat_leavechat(struct map_session_data *sd, unsigned char flag)
  * チャットルームの持ち主を譲る
  *------------------------------------------
  */
-void chat_changechatowner(struct map_session_data *sd, char *nextownername)
+void chat_changechatowner(struct map_session_data *sd, const char *nextownername)
 {
 	struct chat_data *cd;
 	struct map_session_data *tmp_sd;
@@ -276,7 +276,7 @@ void chat_changechatowner(struct map_session_data *sd, char *nextownername)
  * チャットの状態(タイトル等)を変更
  *------------------------------------------
  */
-void chat_changechatstatus(struct map_session_data *sd, unsigned short limit, unsigned char pub, char* pass, char* title, int titlelen)
+void chat_changechatstatus(struct map_session_data *sd, unsigned short limit, unsigned char pub, const char* pass, const char* title, int titlelen)
 {
 	struct chat_data *cd;
 
@@ -305,7 +305,7 @@ void chat_changechatstatus(struct map_session_data *sd, unsigned short limit, un
  * チャットルームから蹴り出す
  *------------------------------------------
  */
-void chat_kickchat(struct map_session_data *sd, char *kickusername)
+void chat_kickchat(struct map_session_data *sd, const char *kickusername)
 {
 	struct chat_data *cd;
 	int i;
@@ -332,7 +332,7 @@ void chat_kickchat(struct map_session_data *sd, char *kickusername)
  *------------------------------------------
  */
 int chat_createnpcchat(
-	struct npc_data *nd,int limit,int pub,int trigger,char* title,size_t titlelen,const char *ev,
+	struct npc_data *nd,int limit,int pub,int trigger,const char* title,int titlelen,const char *ev,
 	int zeny,int lowlv,int highlv,unsigned int job,int upper)
 {
 	int change_flag = 0;
@@ -363,8 +363,8 @@ int chat_createnpcchat(
 	cd->trigger = (trigger > 0)? trigger: limit;
 	cd->pub     = pub;
 
-	if(titlelen >= sizeof(cd->title) - 1) {
-		titlelen = sizeof(cd->title) - 1;
+	if(titlelen >= (int)(sizeof(cd->title) - 1)) {
+		titlelen = (int)(sizeof(cd->title) - 1);
 	}
 	memcpy(cd->title,title,titlelen);
 	cd->title[titlelen] = 0;

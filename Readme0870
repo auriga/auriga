@@ -1,4 +1,16 @@
 ----------------------------------------
+//1034 [2013/03/24] by Rayce
+
+・スクリプトのmddelete命令で、引数にパーティIDを指定しても自分のPTが参照されていたのを修正（script.c）
+
+・チャット参加時におけるバッファオーバーフロー対策（chat.c）
+
+・char型の引数にconstを付与する（chat.*, clif.c）
+
+・unit_distance を path.cに移動
+  関数名も path_distance に改名し、unit_distance2 を unit_distance に改名する（unit.*, path.*）
+
+----------------------------------------
 //1033 [2013/03/24] by Rayce
 
 ・map.hに定義されているpath系の関数をpath.hに移動（map.h, path.h）

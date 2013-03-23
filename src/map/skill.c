@@ -2651,7 +2651,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		} else if(src_ud->skillid == RG_BACKSTAP) {
 			int dir   = path_calc_dir(src,target->x,target->y);
 			int t_dir = status_get_dir(target);
-			int dist  = unit_distance2(src,target);
+			int dist  = unit_distance(src,target);
 			if(target->type != BL_SKILL && (dist == 0 || path_check_dir(dir,t_dir)))
 				break;
 		}
@@ -3067,7 +3067,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		{
 			int dir   = path_calc_dir(src,bl->x,bl->y);
 			int t_dir = status_get_dir(bl);
-			int dist  = unit_distance2(src,bl);
+			int dist  = unit_distance(src,bl);
 			if((dist > 0 && !path_check_dir(dir,t_dir)) || bl->type == BL_SKILL) {
 				sc = status_get_sc(src);
 				if(sc && sc->data[SC_HIDING].timer != -1)
@@ -3148,7 +3148,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case TK_JUMPKICK:	/* ティオアプチャギ */
 	case NJ_ISSEN:		/* 一閃 */
 		{
-			int dist = unit_distance2(src,bl);
+			int dist = unit_distance(src,bl);
 			if(sd && (skillid != KN_CHARGEATK || battle_config.gvg_chargeattack_move || !map[sd->bl.m].flag.gvg)) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
@@ -3272,7 +3272,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case NJ_KIRIKAGE:		/* 影斬り */
 		{
-			int dist = unit_distance2(src,bl);
+			int dist = unit_distance(src,bl);
 			if(sd && pc_checkskill(sd,NJ_SHADOWJUMP) + 4 >= dist) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
@@ -3340,7 +3340,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1]) {
 				int x = skill_area_temp[2], y = skill_area_temp[3];
 				int type;
-				if(unit_distance(bl->x,bl->y,x,y) > 1)
+				if(path_distance(bl->x,bl->y,x,y) > 1)
 					type = 1;	// 外周
 				else
 					type = 0;	// 内周
@@ -3797,7 +3797,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				int count;
 				if(skillid == MG_FIREBALL) {
 					/* ファイヤーボールなら中心からの距離を計算 */
-					count = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
+					count = path_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 				} else {
 					count = skill_area_temp[0];
 				}
@@ -4155,7 +4155,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]) {
 				if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500))
-					skill_blown(src,bl,4 - unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]));
+					skill_blown(src,bl,4 - path_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]));
 			}
 		} else {
 			/* スキルエフェクト表示 */
@@ -4197,7 +4197,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RA_WUGSTRIKE:		/* ウォーグストライク */
 	case LG_PINPOINTATTACK:	/* ピンポイントアタック */
 		{
-			int dist = unit_distance2(src,bl);
+			int dist = unit_distance(src,bl);
 			if(sd && !map[sd->bl.m].flag.gvg && dist > 1 && (skillid != RA_WUGSTRIKE || pc_iswolfmount(sd))) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
@@ -4395,7 +4395,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(!path_search_long(NULL,bl->m,bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]))
 			break;
 		if(bl->id != skill_area_temp[1]) {
-			int dist = unit_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
+			int dist = path_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 			int type;
 			if(dist > 5)
 				type = 3;	// 遠距離
@@ -4673,9 +4673,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case LG_OVERBRAND_BRANDISH:		/* オーバーブランド(薙ぎ) */
 		{
-			int dist = unit_distance2(src,bl);
+			int dist = unit_distance(src,bl);
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
-			if(unit_distance2(src,bl) < skill_get_blewcount(skillid,skilllv) + dist) {
+			if(unit_distance(src,bl) < skill_get_blewcount(skillid,skilllv) + dist) {
 				battle_skill_attack(BF_WEAPON,src,src,bl,LG_OVERBRAND_PLUSATK,skilllv,tick,0x0500);
 			}
 		}
@@ -4771,7 +4771,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case SR_KNUCKLEARROW:	/* 修羅身弾 */
 		{
-			int dist = unit_distance2(src,bl);
+			int dist = unit_distance(src,bl);
 			if(sd && !map[sd->bl.m].flag.gvg && dist > 1) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
@@ -4804,7 +4804,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			} else {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 			}
-			if(unit_distance2(src,bl) < skill_get_blewcount(skillid,skilllv)) {
+			if(unit_distance(src,bl) < skill_get_blewcount(skillid,skilllv)) {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500|1);
 			}
 		}
@@ -4914,7 +4914,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case GN_BLOOD_SUCKER:	/* ブラッドサッカー */
-		if(unit_distance2(src,bl) < 12){
+		if(unit_distance(src,bl) < 12){
 			int heal = battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500);
 			heal = heal * (5 + skilllv * 5) / 100;
 			if(status_get_hp(src) + heal > status_get_max_hp(src))
@@ -7383,7 +7383,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					continue;
 				if(sd->bl.m != member->bl.m)
 					continue;
-				if(unit_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y) <= range) {
+				if(path_distance(sd->bl.x,sd->bl.y,member->bl.x,member->bl.y) <= range) {
 					clif_skill_nodamage(src,&member->bl,skillid,skilllv,1);
 					if(skillid == GD_RESTORE) {
 						// バーサーク中のメンバーには使用不可
@@ -7570,7 +7570,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 弾の消費
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			rate = 5000 - (unit_distance2(src,bl) / 3) * 1000;
+			rate = 5000 - (unit_distance(src,bl) / 3) * 1000;
 			if(rate < 2000)
 				rate = 2000;
 
@@ -9522,7 +9522,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			range += battle_config.mob_skill_add_range;
 
 		if(!src_sd || battle_config.check_skillpos_range) {	// 発動元がPCで射程チェック無しならこの処理は無視してクライアントの情報を信頼する
-			if(range < unit_distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
+			if(range < path_distance(src->x,src->y,src_ud->skillx,src_ud->skilly)) {
 				if(src_sd && battle_config.skill_out_range_consume)
 					skill_check_condition(&src_sd->bl,1);	// アイテム消費
 				break;
@@ -11592,7 +11592,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			break;
 		if(!(status_get_mode(bl)&MD_BOSS))
 		{
-			int d = unit_distance2(&src->bl,bl);
+			int d = unit_distance(&src->bl,bl);
 			int range = skill_get_unit_range(sg->skill_id,sg->skill_lv);
 			int count = (d < range)? range-d+2: 1;
 			skill_blown(&src->bl,bl,count|SAB_NODAMAGE);
@@ -15133,7 +15133,7 @@ int skill_devotion3(struct map_session_data *msd,int target_id)
 	if((sd = map_id2sd(target_id)) == NULL)
 		return 1;
 
-	if(unit_distance2(&msd->bl, &sd->bl) > pc_checkskill(msd,CR_DEVOTION) + 6) {	// 許容範囲を超えてた
+	if(unit_distance(&msd->bl, &sd->bl) > pc_checkskill(msd,CR_DEVOTION) + 6) {	// 許容範囲を超えてた
 		int n;
 		for(n=0; n<5; n++) {
 			if(msd->dev.val1[n] == sd->bl.id) {
@@ -15165,7 +15165,7 @@ int skill_marionette(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	if(unit_distance2(&sd->bl, &tsd->bl) > 7) {	// 許容範囲を超えてた
+	if(unit_distance(&sd->bl, &tsd->bl) > 7) {	// 許容範囲を超えてた
 		status_change_end(&sd->bl,SC_MARIONETTE,-1);
 		return 1;
 	}
@@ -15205,7 +15205,7 @@ int skill_shadowform(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	if(unit_distance2(&sd->bl, &tsd->bl) > 14) {	// 許容範囲を超えてた
+	if(unit_distance(&sd->bl, &tsd->bl) > 14) {	// 許容範囲を超えてた
 		status_change_end(&sd->bl,SC__SHADOWFORM,-1);
 		return 1;
 	}

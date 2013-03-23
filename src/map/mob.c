@@ -474,7 +474,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 		}
 	}
 
-	if( range > 0 && range < unit_distance(md->bl.x,md->bl.y,bl->x,bl->y) )	// 遠すぎる
+	if( range > 0 && range < path_distance(md->bl.x,md->bl.y,bl->x,bl->y) )	// 遠すぎる
 		return 0;
 
 	if( md->bl.x == bl->x && md->bl.y == bl->y )	// 同じマス
@@ -605,7 +605,7 @@ int mob_attacktarget(struct mob_data *md,struct block_list *target,int flag)
 		return 0;
 
 	unit_stopattack(&md->bl);
-	mob_target(md,target,unit_distance(md->bl.x,md->bl.y,target->x,target->y));
+	mob_target(md,target,path_distance(md->bl.x,md->bl.y,target->x,target->y));
 	//md->state.skillstate = MSS_CHASE;	// 突撃時スキル
 
 	return 0;
@@ -633,7 +633,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 	if( smd->bl.id == bl->id )
 		return 0; // self
 
-	dist = unit_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
+	dist = path_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
 
 	// アクティブ
 	if( (flag & 1) && (bl->type & BL_CHAR) ) {
@@ -643,7 +643,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 		if(smd->state.skillstate == MSS_FOLLOW) {
 			struct block_list *tbl = map_id2bl(smd->target_id);
 			if(tbl)
-				range = unit_distance(smd->bl.x,smd->bl.y,tbl->x,tbl->y);
+				range = path_distance(smd->bl.x,smd->bl.y,tbl->x,tbl->y);
 		}
 
 		// ターゲット射程内にいるなら、ロックする
@@ -745,7 +745,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 	// 主との距離を測る
 	old_dist = md->master_dist;
-	md->master_dist = unit_distance(md->bl.x,md->bl.y,mmd->bl.x,mmd->bl.y);
+	md->master_dist = path_distance(md->bl.x,md->bl.y,mmd->bl.x,mmd->bl.y);
 
 	// 直前まで主が近くにいたのでテレポートして追いかける
 	if(old_dist < 10 && md->master_dist > 18) {
@@ -792,7 +792,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 		struct block_list *tbl = map_id2bl(mmd->target_id);
 		if(tbl && (tbl->type != BL_ITEM || md->mode & MD_ITEMLOOT) && mob_can_lock(md,tbl)) {
 			md->target_id = tbl->id;
-			md->min_chase = 5 + unit_distance(md->bl.x,md->bl.y,tbl->x,tbl->y);
+			md->min_chase = 5 + path_distance(md->bl.x,md->bl.y,tbl->x,tbl->y);
 			md->state.master_check = 1;
 		}
 	}
@@ -930,7 +930,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		    abl->prev == NULL ||
 		    md->bl.m != abl->m ||
 		    (abl->type == BL_PC && (asd = (struct map_session_data *)abl) && (asd->invincible_timer != -1 || pc_isinvisible(asd))) ||
-		    (dist = unit_distance(md->bl.x,md->bl.y,abl->x,abl->y)) >= 32 ||
+		    (dist = path_distance(md->bl.x,md->bl.y,abl->x,abl->y)) >= 32 ||
 		    battle_check_target(&md->bl,abl,BCT_ENEMY) <= 0 ) {
 			md->attacked_id = 0;
 		}
@@ -1003,7 +1003,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	if( md->target_id <= 0 || (tbl = map_id2bl(md->target_id)) == NULL ||
 	    tbl->m != md->bl.m || tbl->prev == NULL ||
-	    (dist = unit_distance(md->bl.x,md->bl.y,tbl->x,tbl->y)) >= md->min_chase )
+	    (dist = path_distance(md->bl.x,md->bl.y,tbl->x,tbl->y)) >= md->min_chase )
 	{
 		// 対象が居ない / どこかに消えた / 視界外
 		if(md->target_id > 0) {
@@ -1040,7 +1040,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			}
 			md->state.skillstate = md->state.angry?MSS_FOLLOW:MSS_CHASE;	// 突撃時スキル
 			mobskill_use(md,tick,-1);
-			if(md->ud.walktimer != -1 && unit_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) < 2)
+			if(md->ud.walktimer != -1 && path_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) < 2)
 				return search_flag; // 既に移動中
 			if( !mob_can_reach(md,tbl,(md->min_chase > 13)? md->min_chase: 13) ) {
 				mob_unlocktarget(md,tick);	// 移動できないのでタゲ解除（IWとか？）
@@ -1092,7 +1092,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				return search_flag;
 			md->state.skillstate = MSS_LOOT;	// ルート時スキル使用
 			mobskill_use(md,tick,-1);
-			if(md->ud.walktimer != -1 && unit_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) <= 0)
+			if(md->ud.walktimer != -1 && path_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) <= 0)
 				return search_flag; // 既に移動中
 			if( !unit_walktoxy(&md->bl,tbl->x,tbl->y) )
 				mob_unlocktarget(md,tick);// 移動できないのでタゲ解除（IWとか？）

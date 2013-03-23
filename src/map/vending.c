@@ -25,6 +25,7 @@
 #include "clif.h"
 #include "itemdb.h"
 #include "map.h"
+#include "path.h"
 #include "vending.h"
 #include "pc.h"
 #include "skill.h"
@@ -96,7 +97,7 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 	}
 	if( sd->bl.m != vsd->bl.m )
 		return;
-	if( unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
+	if( path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
 		return;
 
 	clif_vendinglist(sd, vsd);
@@ -129,7 +130,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		return;
 	if( sd->bl.m != vsd->bl.m )
 		return;
-	if( unit_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
+	if( path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
 		return;
 	if( sd->state.store )
 		return;

@@ -33,6 +33,7 @@
 #include "clif.h"
 #include "itemdb.h"
 #include "map.h"
+#include "path.h"
 #include "npc.h"
 #include "pc.h"
 #include "trade.h"
@@ -328,7 +329,7 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 		return;
 
 	// 対象と自身がAREA_SIZE内に居るかチェック
-	if( unit_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
+	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
 		return;
 
 	// アイテムリストを送る
@@ -386,7 +387,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	}
 
 	// 対象と自身がAREA_SIZE内かチェック
-	if( unit_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
+	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;

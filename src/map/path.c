@@ -553,3 +553,18 @@ int path_calc_dir(struct block_list *src,int x,int y)
 	}
 	return dir;
 }
+
+/*==========================================
+ * 二点間の距離を返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int path_distance(int x0,int y0,int x1,int y1)
+{
+	int dx,dy;
+
+	dx = abs(x0 - x1);
+	dy = abs(y0 - y1);
+
+	return (dx > dy) ? dx : dy;
+}

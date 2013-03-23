@@ -64,22 +64,12 @@ static int unit_attack_timer(int tid,unsigned int tick,int id,void *data);
  * 戻りは整数で0以上
  *------------------------------------------
  */
-int unit_distance(int x0,int y0,int x1,int y1)
-{
-	int dx,dy;
-
-	dx = abs(x0 - x1);
-	dy = abs(y0 - y1);
-
-	return (dx > dy) ? dx : dy;
-}
-
-int unit_distance2( struct block_list *bl, struct block_list *bl2)
+int unit_distance( struct block_list *bl, struct block_list *bl2)
 {
 	nullpo_retr(0, bl);
 	nullpo_retr(0, bl2);
 
-	return unit_distance(bl->x,bl->y,bl2->x,bl2->y);
+	return path_distance(bl->x,bl->y,bl2->x,bl2->y);
 }
 
 /*==========================================
@@ -351,7 +341,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			/* ダンスチェック */
 			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
 				// 範囲外に出たら止める
-				if(unit_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y) > 4)
+				if(path_distance(sd->bl.x,sd->bl.y,sd->dance.x,sd->dance.y) > 4)
 					skill_stop_dancing(&sd->bl,0);
 			}
 			/* ヘルモードチェック */
@@ -1217,7 +1207,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		break;
 	case KN_CHARGEATK:	/* チャージアタック */
 		{
-			int dist = unit_distance(src->x,src->y,target->x,target->y);
+			int dist = path_distance(src->x,src->y,target->x,target->y);
 			if(dist >= 4 && dist <= 6)
 				casttime = casttime * 2;
 			else if(dist > 6)
@@ -1859,7 +1849,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		}
 	}
 
-	dist  = unit_distance(src->x,src->y,target->x,target->y);
+	dist  = path_distance(src->x,src->y,target->x,target->y);
 	range = status_get_range(src);
 	if( src_md && status_get_mode(src) & MD_CANMOVE )
 		range++;

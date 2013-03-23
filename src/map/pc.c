@@ -4153,7 +4153,7 @@ void pc_takeitem(struct map_session_data *sd, struct flooritem_data *fitem)
 	nullpo_retv(sd);
 	nullpo_retv(fitem);
 
-	if(unit_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y) > 2)
+	if(path_distance(fitem->bl.x,fitem->bl.y,sd->bl.x,sd->bl.y) > 2)
 		return;	// 距離が遠い
 
 	if(sd->status.party_id > 0)

@@ -32,6 +32,7 @@
 
 #include "pc.h"
 #include "map.h"
+#include "path.h"
 #include "intif.h"
 #include "clif.h"
 #include "chrif.h"
@@ -110,7 +111,7 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 		if(md) {
 			int mode = mob_db[pd->class_].mode;
 			int race = mob_db[pd->class_].race;
-			if(pd->bl.m != md->bl.m || md->bl.prev == NULL || unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
+			if(pd->bl.m != md->bl.m || md->bl.prev == NULL || path_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				return 0;
 			if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) )
 				return 0;
@@ -920,13 +921,13 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		return 0;
 	}
 
-	dist = unit_distance(sd->bl.x,sd->bl.y,pd->bl.x,pd->bl.y);
+	dist = path_distance(sd->bl.x,sd->bl.y,pd->bl.x,pd->bl.y);
 	if(dist > 12 || (pd->target_id > 0 && dist > 9)) {
 		if(pd->target_id > 0) {
 			unit_stopattack(&pd->bl);
 			pet_unlocktarget(pd);
 		}
-		if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3)
+		if(pd->ud.walktimer != -1 && path_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3)
 			return 0;
 		pd->speed = (sd->speed >> 1);
 		if(pd->speed <= 0)
@@ -960,12 +961,12 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		struct mob_data *md = map_id2md(pd->target_id);
 
 		if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
-		   unit_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13) {
+		   path_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13) {
 			pet_unlocktarget(pd);
 		} else if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON)) {
 			pet_unlocktarget(pd);
 		} else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)) {
-			if(pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
+			if(pd->ud.walktimer != -1 && path_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
 				return 0;
 			if(!unit_can_reach(&pd->bl,md->bl.x,md->bl.y)) {
 				pet_unlocktarget(pd);
@@ -1020,12 +1021,12 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		struct block_list *bl_item = map_id2bl(pd->target_id);
 
 		if(bl_item == NULL || bl_item->type != BL_ITEM || bl_item->m != pd->bl.m ||
-		   (dist = unit_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) > loot_range) {
+		   (dist = path_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) > loot_range) {
 			 // 遠すぎるかアイテムがなくなった
 			pet_unlocktarget(pd);
 		} else if(dist > 0) {
 			int dx, dy;
-			if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || unit_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
+			if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || path_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
 				return 0; // 既に移動中
 
 			pd->next_walktime = tick + 500;
@@ -1084,7 +1085,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		// 待機時、適当に歩き回る
 		/*
 		if(pc_issit(sd)) {
-			if(dist < 5 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5) {
+			if(dist < 5 && path_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5) {
 				if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 					pet_randomwalk(pd,tick);
 				return 0;
@@ -1094,7 +1095,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			return 0;
 		}
 		*/
-		if(dist <= 3 || (pd->ud.walktimer != -1 && unit_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3))
+		if(dist <= 3 || (pd->ud.walktimer != -1 && path_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3))
 			return 0;
 		if(battle_config.pet_speed_is_same_as_pc == 1)
 			pd->speed = status_get_speed(&sd->bl);

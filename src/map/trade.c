@@ -62,7 +62,7 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 		}
 		if(target_sd->trade.partner != 0) {
 			clif_tradestart(sd, 2);
-		} else if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
+		} else if(sd->bl.m != target_sd->bl.m || unit_distance(&sd->bl, &target_sd->bl) > 2) {
 			clif_tradestart(sd, 0);
 		} else if(battle_config.gvg_trade_request_refused && map[sd->bl.m].flag.gvg &&
 		          target_sd->status.guild_id > 0 && sd->status.guild_id != target_sd->status.guild_id) {
@@ -102,7 +102,7 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 
 	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
-		if(sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
+		if(sd->bl.m != target_sd->bl.m || unit_distance(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
 		}
@@ -189,7 +189,7 @@ void trade_tradeok(struct map_session_data *sd)
 
 	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
-		if (sd->bl.m != target_sd->bl.m || unit_distance2(&sd->bl, &target_sd->bl) > 2) {
+		if (sd->bl.m != target_sd->bl.m || unit_distance(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;
 		}

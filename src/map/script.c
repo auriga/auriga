@@ -8087,7 +8087,7 @@ int buildin_waitingroom(struct script_state *st)
 		upper = conv_num(st,& (st->stack->stack_data[st->start+10]));
 	}
 	chat_createnpcchat(map_id2nd(st->oid),
-		limit,pub,trigger,name,strlen(name)+1,ev,zeny,lowlv,highlv,job,upper);
+		limit,pub,trigger,name,(int)(strlen(name)+1),ev,zeny,lowlv,highlv,job,upper);
 	return 0;
 }
 
@@ -11387,7 +11387,7 @@ int buildin_distance(struct script_state *st)
 		nd = map_id2nd(st->oid);
 
 	if(sd && nd && sd->bl.m == nd->bl.m)
-		push_val(st->stack,C_INT,unit_distance2(&sd->bl,&nd->bl));
+		push_val(st->stack,C_INT,unit_distance(&sd->bl,&nd->bl));
 	else
 		push_val(st->stack,C_INT,-1);
 	return 0;
@@ -12798,7 +12798,6 @@ int buildin_mdcreate(struct script_state *st)
 int buildin_mddelete(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	struct party *pt = NULL;
 	int party_id = 0;
 
 	if(st->end>st->start+2)
@@ -12807,7 +12806,7 @@ int buildin_mddelete(struct script_state *st)
 		party_id = sd->status.party_id;
 
 	if(party_id > 0) {
-		pt = party_search(sd->status.party_id);
+		struct party *pt = party_search(party_id);
 		if(pt)
 			memorial_delete(pt->memorial_id);
 	}

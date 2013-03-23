@@ -74,7 +74,7 @@ static int battle_delay_damage_sub(int tid,unsigned int tick,int id,void *data)
 		struct block_list *target = map_id2bl(dat->target);
 
 		if(map_id2bl(id) == dat->src && target && target->prev != NULL) {
-			if(dat->src->m == target->m && dat->dist + 10 >= unit_distance2(dat->src, target))
+			if(dat->src->m == target->m && dat->dist + 10 >= unit_distance(dat->src, target))
 				battle_damage(dat->src,target,dat->damage,dat->skillid,dat->skilllv,dat->flag);
 		}
 		aFree(dat);
@@ -96,7 +96,7 @@ int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_li
 	dat->skillid = skillid;
 	dat->skilllv = skilllv;
 	dat->flag    = flag;
-	dat->dist    = unit_distance2(src, target);
+	dat->dist    = unit_distance(src, target);
 	add_timer2(tick,battle_delay_damage_sub,src->id,dat);
 
 	return 0;
@@ -1700,7 +1700,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// グランドクロスでなく、対象がオートカウンター状態の場合
 			int dir   = path_calc_dir(src,target->x,target->y);
 			int t_dir = status_get_dir(target);
-			int dist  = unit_distance2(src,target);
+			int dist  = unit_distance(src,target);
 
 			if(dist <= 0 || path_check_dir(dir,t_dir) ) {
 				// 対象との距離が0以下、または対象の正面？
@@ -2105,7 +2105,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			case 1:	// 通常遠距離
 				if(battle_config.calc_dist_flag&1 && (src->type != BL_PC || target->type != BL_PC)) {	// PC vs PCは強制無視
-					int target_dist = unit_distance2(src,target);	// 距離を取得
+					int target_dist = unit_distance(src,target);	// 距離を取得
 					if(target_dist < battle_config.allow_sw_dist) {	// 設定した距離より小さい＝近距離からの攻撃
 						if(src->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
 							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
@@ -2949,7 +2949,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case KN_CHARGEATK:	// チャージアタック
 			{
-				int dist = unit_distance2(src,target)-1;
+				int dist = unit_distance(src,target)-1;
 				if(dist > 2)
 					DMG_FIX( 100+100*(dist/3), 100 );
 			}
@@ -3552,7 +3552,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RK_IGNITIONBREAK:	// イグニッションブレイク
 			{
 				int dmg = 200 + 200 * skill_lv;
-				int dist = unit_distance2(src,target);
+				int dist = unit_distance(src,target);
 				if(dist > 3)			// 遠距離
 					dmg /= 2;
 				else if(dist > 1)		// 中距離
@@ -3689,7 +3689,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NC_AXETORNADO:	// アックストルネード
 			{
 				int dmg = 200 + 100 * skill_lv + status_get_vit(src);
-				int dist = unit_distance2(src,target);
+				int dist = unit_distance(src,target);
 				if((skill_lv < 3 && dist > 1) || dist > 2)	// 外周
 					dmg = dmg * 75 / 100;
 				if(s_ele == ELE_WIND)	// 風属性武器装備時
@@ -5413,7 +5413,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case 1:	// 通常遠距離
 			if(battle_config.calc_dist_flag & 2) {	// 魔法の時計算するか？ +2で計算する
-				int target_dist = unit_distance2(bl,target);	// 距離を取得
+				int target_dist = unit_distance(bl,target);	// 距離を取得
 				if(target_dist < battle_config.allow_sw_dist) {	// SWで防げる距離より小さい＝近距離からの攻撃
 					if(bl->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
 						mgd.flag = (mgd.flag&~BF_RANGEMASK)|BF_SHORT;
@@ -7053,7 +7053,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		}
 		if(t_sc->data[SC_BLADESTOP_WAIT].timer != -1 &&
 		   !(status_get_mode(src)&MD_BOSS) &&
-		   (map[target->m].flag.pvp || unit_distance2(src,target) <= 2)) {	// PvP以外での有効射程は2セル
+		   (map[target->m].flag.pvp || unit_distance(src,target) <= 2)) {	// PvP以外での有効射程は2セル
 			int lv  = t_sc->data[SC_BLADESTOP_WAIT].val1;
 			int sec = skill_get_time2(MO_BLADESTOP,lv);
 			status_change_end(target,SC_BLADESTOP_WAIT,-1);
@@ -8160,7 +8160,7 @@ int battle_check_range(struct block_list *src,struct block_list *bl,int range)
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 
-	arange = unit_distance(src->x,src->y,bl->x,bl->y);
+	arange = path_distance(src->x,src->y,bl->x,bl->y);
 
 	if(src->m != bl->m)	// 違うマップ
 		return 0;

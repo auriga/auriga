@@ -31,7 +31,8 @@ int unit_walktoxy( struct block_list *bl, int x, int y);
 int unit_walktodir(struct block_list *bl,int step);
 int unit_forcewalktodir(struct block_list *bl,int distance);
 
-int unit_distance2( struct block_list *bl, struct block_list *bl2);
+int unit_distance( struct block_list *bl, struct block_list *bl2);
+
 // 歩行停止
 // typeは以下の組み合わせ :
 //     1: 位置情報の送信( この関数の後に位置情報を送信する場合は不要 )
@@ -83,7 +84,6 @@ int unit_iswalking(struct block_list *bl);
 
 struct unit_data* unit_bl2ud(struct block_list *bl);
 int unit_remove_map(struct block_list *bl, int clrtype, int flag);
-int unit_distance(int x0,int y0,int x1,int y1);
 int unit_free(struct block_list *bl, int clrtype);
 int unit_changeviewsize(struct block_list *bl,int size);
 int unit_mobstopattacked(struct map_session_data *sd,va_list ap);
