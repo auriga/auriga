@@ -657,7 +657,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	FILE *fp;
 	long grf_size,list_size;
 	unsigned char grf_header[0x2e];
-	int lop,entry,entrys;
+	int entry,entrys;
 	unsigned int grf_version;
 	size_t ofs,ofs2;
 	unsigned char *fname;
@@ -712,11 +712,15 @@ static int grfio_entryread(const char *gfname,int gentry)
 				}
 				srclen=getlong(grf_filelist+ofs2)-getlong(grf_filelist+ofs2+8)-715;
 
+				ext_ptr = strrchr(fname, '.');
+				if(!ext_ptr)
+					continue;
+
 				// gat,txt,rsw以外は不要なので読み込まない
-				ext_ptr = fname + strlen(fname) - 4;
 				if(strcasecmp(ext_ptr,".gat") == 0) {	// もし必要ならばgnd,act,sprもsrccount=0
 					srccount = 0;
 				} else if(strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
+					int lop;
 					for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
 						;
 				} else {
@@ -731,7 +735,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 				aentry.type           = type;
 				strncpy(aentry.fn,fname,sizeof(aentry.fn)-1);
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
-#ifdef	GRFIO_LOCAL
+#ifdef GRFIO_LOCAL
 				aentry.gentry         = -(gentry+1);	// 負数にするのは初回LocalFileCheckをさせるためのFlagとして
 #else
 				aentry.gentry         = gentry+1;		// 初回LocalFileCheck無し
@@ -805,8 +809,11 @@ static int grfio_entryread(const char *gfname,int gentry)
 			}
 			ofs2 = ofs+strlen(grf_filelist+ofs)+1;
 
+			ext_ptr = strrchr(fname, '.');
+			if(!ext_ptr)
+				continue;
+
 			// gat,txt,rsw以外は不要なので読み込まない
-			ext_ptr = fname + strlen(fname) -4;
 			if(strcasecmp(ext_ptr,".gat") != 0 && strcasecmp(ext_ptr,".txt") != 0 && strcasecmp(ext_ptr,".rsw") != 0)
 				continue;
 
@@ -815,8 +822,11 @@ static int grfio_entryread(const char *gfname,int gentry)
 				srclen=getlong(grf_filelist+ofs2);
 				switch (type) {
 				case 3:
-					for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
-						;
+					{
+						int lop;
+						for(lop=10,srccount=1;srclen>=lop;lop=lop*10,srccount++)
+							;
+					}
 					break;
 				case 5:
 					srccount = 0;
@@ -833,7 +843,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 				aentry.type           = type;
 				strncpy(aentry.fn,fname,sizeof(aentry.fn)-1);
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
-#ifdef	GRFIO_LOCAL
+#ifdef GRFIO_LOCAL
 				aentry.gentry         = -(gentry+1);	// 負数にするのは初回LocalFileCheckをさせるためのFlagとして
 #else
 				aentry.gentry         = gentry+1;		// 初回LocalFileCheck無し
@@ -845,7 +855,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 		printf(" Entered files: %d.\n",count);
 		aFree(grf_filelist);
 	  }
-		break;
+	  break;
 
 	default: //****** Grf Other version ******
 		fclose(fp);
@@ -864,7 +874,7 @@ static void grfio_resourcecheck(const char *data_dir)
 {
 	int size,count=0;
 	unsigned char *buf,*ptr;
-	char w1[256],w2[256],src[256],dst[256],res_txt[1024];
+	char w1[256],w2[256],src[512],dst[512],res_txt[1024];
 	FILELIST *entry;
 
 	snprintf(res_txt, sizeof(res_txt), "%sdata\\resnametable.txt", data_dir);
@@ -881,8 +891,11 @@ static void grfio_resourcecheck(const char *data_dir)
 			char *ext_ptr;
 			w2[sizeof(w2)-1] = 0;
 
+			ext_ptr = strrchr(w2, '.');
+			if(!ext_ptr)
+				continue;
+
 			// gat,txt,rswのみチェック
-			ext_ptr = w2 + strlen(w2) - 4;
 			if(strcasecmp(ext_ptr,".gat") == 0 || strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
 				sprintf(dst,"data\\%s",w2);
 
@@ -934,8 +947,6 @@ int grfio_add(const char *fname)
  */
 static void grfio_final(void)
 {
-	int lop;
-
 	if (filelist != NULL) {
 		aFree(filelist);
 		filelist = NULL;
@@ -944,6 +955,7 @@ static void grfio_final(void)
 	filelist_maxentry = 0;
 
 	if (gentry_table != NULL) {
+		int lop;
 		for(lop=0;lop<gentry_entrys;lop++) {
 			if (gentry_table[lop]!=NULL) {
 				aFree(gentry_table[lop]);
