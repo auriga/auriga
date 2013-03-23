@@ -1,4 +1,12 @@
 ----------------------------------------
+//1033 [2013/03/24] by Rayce
+
+・map.hに定義されているpath系の関数をpath.hに移動（map.h, path.h）
+
+・map_check_dir と map_calc_dir をpath.cに移動
+  関数名も path_check_dir および path_calc_dir に改名（map.*, path.*）
+
+----------------------------------------
 //1032 [2013/03/24] by Rayce
 
 ・gccでの警告修正（login_httpd.c, battle.c, clif.c）

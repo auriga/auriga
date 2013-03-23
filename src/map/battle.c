@@ -32,6 +32,7 @@
 
 #include "battle.h"
 #include "map.h"
+#include "path.h"
 #include "pc.h"
 #include "skill.h"
 #include "mob.h"
@@ -698,7 +699,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		if(sc->data[SC_PARRYING].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != WS_CARTTERMINATION) {
 			if(atn_rand()%100 < sc->data[SC_PARRYING].val2)
 			{
-				int dir = map_calc_dir(bl,src->x,src->y);
+				int dir = path_calc_dir(bl,src->x,src->y);
 				damage = 0;
 				clif_skill_nodamage(bl,bl,sc->data[SC_PARRYING].val4,sc->data[SC_PARRYING].val1,1);	// val4はスキルID
 				clif_changedir(bl,dir,dir);
@@ -1697,11 +1698,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    t_sc->data[SC_AUTOCOUNTER].timer != -1 )
 		{
 			// グランドクロスでなく、対象がオートカウンター状態の場合
-			int dir   = map_calc_dir(src,target->x,target->y);
+			int dir   = path_calc_dir(src,target->x,target->y);
 			int t_dir = status_get_dir(target);
 			int dist  = unit_distance2(src,target);
 
-			if(dist <= 0 || map_check_dir(dir,t_dir) ) {
+			if(dist <= 0 || path_check_dir(dir,t_dir) ) {
 				// 対象との距離が0以下、または対象の正面？
 				t_sc->data[SC_AUTOCOUNTER].val3 = 0;
 				t_sc->data[SC_AUTOCOUNTER].val4 = 1;
@@ -6742,15 +6743,15 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 
 	if(flag&0x8000) {
 		if(sd && battle_config.pc_attack_direction_change)
-			sd->dir = sd->head_dir = map_calc_dir(src, target->x,target->y);
+			sd->dir = sd->head_dir = path_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_MOB && battle_config.monster_attack_direction_change)
-			((struct mob_data *)src)->dir = map_calc_dir(src, target->x,target->y);
+			((struct mob_data *)src)->dir = path_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_HOM && battle_config.monster_attack_direction_change)	// homun_attack_direction_change
-			((struct homun_data *)src)->dir = map_calc_dir(src, target->x,target->y);
+			((struct homun_data *)src)->dir = path_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_MERC && battle_config.monster_attack_direction_change)	// merc_attack_direction_change
-			((struct merc_data *)src)->dir = map_calc_dir(src, target->x,target->y);
+			((struct merc_data *)src)->dir = path_calc_dir(src, target->x,target->y);
 		else if(src->type == BL_ELEM && battle_config.monster_attack_direction_change)	// elem_attack_direction_change
-			((struct elem_data *)src)->dir = map_calc_dir(src, target->x,target->y);
+			((struct elem_data *)src)->dir = path_calc_dir(src, target->x,target->y);
 		wd = battle_calc_weapon_attack(src,target,KN_AUTOCOUNTER,flag&0xff,0);
 	} else {
 		wd = battle_calc_weapon_attack(src,target,0,0,0);
@@ -6793,7 +6794,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
 			}
 			// デスバウンド反射
-			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && map_check_dir(map_calc_dir(src,target->x,target->y),status_get_dir(target)))
+			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && path_check_dir(path_calc_dir(src,target->x,target->y),status_get_dir(target)))
 			{
 				rsdamage += damage * t_sc->data[SC_DEATHBOUND].val2 / 100;
 				if(rsdamage < 1) rsdamage = 1;
@@ -7431,7 +7432,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 					if(rdamage < 1) rdamage = 1;
 				}
 				// デスバウンド時
-				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && map_check_dir(map_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
+				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && path_check_dir(path_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
 				{
 					rdamage += damage * sc->data[SC_DEATHBOUND].val2 / 100;
 					if(rdamage < 1) rdamage = 1;
@@ -7514,7 +7515,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		if(rdamage > 0) {
 			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, ((src == dsrc)? lv: -1), type);
 			if(dmg.blewcount > 0 && !map[src->m].flag.gvg) {
-				int dir = map_calc_dir(src,bl->x,bl->y);
+				int dir = path_calc_dir(src,bl->x,bl->y);
 				if(dir == 0)
 					dir = 8;
 				skill_blown(src,src,dmg.blewcount|(dir<<20));	// 対象に対する向きと逆方向に飛ばす

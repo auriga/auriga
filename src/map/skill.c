@@ -35,6 +35,7 @@
 #include "guild.h"
 #include "skill.h"
 #include "map.h"
+#include "path.h"
 #include "clif.h"
 #include "pc.h"
 #include "pet.h"
@@ -427,7 +428,7 @@ static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,s
 	if(src->x == x && src->y == y)
 		dir = 6;
 	else
-		dir = map_calc_dir(src,x,y);
+		dir = path_calc_dir(src,x,y);
 
 	if(skillid == MG_FIREWALL)
 		return &skill_unit_layout[firewall_unit_pos+dir];
@@ -1930,7 +1931,7 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 		dir = status_get_dir(target);
 	}
 	else {
-		dir = map_calc_dir(target,src->x,src->y);
+		dir = path_calc_dir(target,src->x,src->y);
 	}
 	if(dir >= 0 && dir < 8) {
 		dx = -dirx[dir];
@@ -2506,7 +2507,7 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				break;
 			case LG_OVERBRAND_BRANDISH:		/* オーバーブランド(薙ぎ) */
 				{
-					int dir = map_calc_dir(src,skl->x,skl->y);
+					int dir = path_calc_dir(src,skl->x,skl->y);
 					map_foreachinshootpath(
 						skill_area_sub,src->m,src->x,src->y,dirx[dir],diry[dir],3,5,(BL_CHAR|BL_SKILL),
 						src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY,skill_castend_damage_id
@@ -2648,10 +2649,10 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				break;
 			}
 		} else if(src_ud->skillid == RG_BACKSTAP) {
-			int dir   = map_calc_dir(src,target->x,target->y);
+			int dir   = path_calc_dir(src,target->x,target->y);
 			int t_dir = status_get_dir(target);
 			int dist  = unit_distance2(src,target);
-			if(target->type != BL_SKILL && (dist == 0 || map_check_dir(dir,t_dir)))
+			if(target->type != BL_SKILL && (dist == 0 || path_check_dir(dir,t_dir)))
 				break;
 		}
 
@@ -3064,15 +3065,15 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case RG_BACKSTAP:		/* バックスタブ */
 		{
-			int dir   = map_calc_dir(src,bl->x,bl->y);
+			int dir   = path_calc_dir(src,bl->x,bl->y);
 			int t_dir = status_get_dir(bl);
 			int dist  = unit_distance2(src,bl);
-			if((dist > 0 && !map_check_dir(dir,t_dir)) || bl->type == BL_SKILL) {
+			if((dist > 0 && !path_check_dir(dir,t_dir)) || bl->type == BL_SKILL) {
 				sc = status_get_sc(src);
 				if(sc && sc->data[SC_HIDING].timer != -1)
 					status_change_end(src, SC_HIDING, -1);	// ハイディング解除
 				if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag)>0) { // 攻撃を受けた目標は振り向く
-					unit_setdir(bl, map_calc_dir(bl,src->x,src->y));
+					unit_setdir(bl, path_calc_dir(bl,src->x,src->y));
 				}
 			} else if(sd) {
 				clif_skill_fail(sd,skillid,0,0,0);
@@ -3499,7 +3500,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_blown(src,bl,skill_area_temp[2]);
 		} else {
 			int x = bl->x, y = bl->y;
-			int i, dir = map_calc_dir(bl,src->x,src->y);
+			int i, dir = path_calc_dir(bl,src->x,src->y);
 			if(dir == 0)
 				dir = 8;
 			skill_area_temp[1] = bl->id;
@@ -3525,7 +3526,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
 			skill_area_temp[1]++;
 		} else {
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
 				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],12,1,(BL_CHAR|BL_SKILL),
@@ -3600,7 +3601,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(flag&1) {
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
 		} else {
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			map_foreachinshootpath(
 				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],14,4,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
@@ -3892,7 +3893,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
 			skill_area_temp[1]++;
 		} else {
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
 				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],skill_get_fixed_range(src,skillid,skilllv),1,
@@ -4514,7 +4515,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
 			skill_area_temp[1]++;
 		} else {
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			int posx = -dirx[dir] * 2, posy = -diry[dir] * 2;
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
@@ -4639,7 +4640,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
 			skill_area_temp[1]++;
 		} else {
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			skill_area_temp[1] = 0;
 			map_foreachinshootpath(
 				skill_area_sub,bl->m,src->x,src->y,dirx[dir],diry[dir],11,1,(BL_CHAR|BL_SKILL),
@@ -6021,7 +6022,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case ML_BRANDISH:
 		{
 			int c, n = 4;
-			int dir = map_calc_dir(src,bl->x,bl->y);
+			int dir = path_calc_dir(src,bl->x,bl->y);
 			struct square tc;
 
 			skill_brandishspear_first(&tc,dir,bl->x,bl->y);
@@ -7305,7 +7306,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(src,GetSkillStatusChangeTable(skillid),1,1,src->id,bl->id,skill_get_time(skillid,skilllv),0);
 
-			dir = map_calc_dir(src,bl->x,bl->y);
+			dir = path_calc_dir(src,bl->x,bl->y);
 			//unit_setdir(src,dir);
 			unit_movepos(bl,src->x+dirx[dir],src->y+diry[dir],0);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),1,2,bl->id,src->id,skill_get_time(skillid,skilllv),0);
@@ -10076,7 +10077,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case WL_EARTHSTRAIN:		/* アースストレイン */
 		{
-			int dir = (src->x == x && src->y == y)? 6: map_calc_dir(src,x,y);
+			int dir = (src->x == x && src->y == y)? 6: path_calc_dir(src,x,y);
 			int tmpx, tmpy;
 			int addx = 0, addy = 0;
 			int i, loop = skilllv + 4;
@@ -10165,7 +10166,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case LG_OVERBRAND:		/* オーバーブランド */
 		{
-			int dir = map_calc_dir(src,x,y);
+			int dir = path_calc_dir(src,x,y);
 			map_foreachinshootpath(
 				skill_area_sub,src->m,src->x,src->y,dirx[dir],diry[dir],6,1,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick,flag|BCT_ENEMY,skill_castend_damage_id
@@ -11349,7 +11350,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			if( (bl->x == src->bl.x && bl->y == src->bl.y) || (bl->x == xs && bl->y == ys) ) {
 				dir = 6;	// 罠の直上か設置時の位置に居るなら真西に飛ぶ
 			} else {
-				dir = map_calc_dir(bl,xs,ys);
+				dir = path_calc_dir(bl,xs,ys);
 				if(dir == 0)
 					dir = 8;
 			}

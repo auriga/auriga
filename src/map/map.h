@@ -1425,24 +1425,6 @@ void map_addnickdb(struct map_session_data *);
 struct map_session_data * map_nick2sd(char*);
 int map_field_setting(void);
 
-
-// その他
-int map_check_dir(int s_dir,int t_dir);
-int map_calc_dir(struct block_list *src,int x,int y);
-
-extern const int dirx[], diry[];
-
-// path.cより
-int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1,int easy,cell_t flag);
-#define path_search(wpd,m,x0,y0,x1,y1,easy)  path_search_real(wpd,m,x0,y0,x1,y1,easy,CELL_CHKNOPASS)
-#define path_search2(wpd,m,x0,y0,x1,y1,easy) path_search_real(wpd,m,x0,y0,x1,y1,easy,CELL_CHKNONE)
-#define path_search3(wpd,m,x0,y0,x1,y1,easy) path_search_real(wpd,m,x0,y0,x1,y1,easy,CELL_CHKWALL)
-
-int path_search_long_real(struct shootpath_data *spd,int m,int x0,int y0,int x1,int y1,cell_t flag);
-#define path_search_long(spd,m,x0,y0,x1,y1) path_search_long_real(spd,m,x0,y0,x1,y1,CELL_CHKWALL)
-
-int path_blownpos(int m,int x0,int y0,int dx,int dy,int count,int flag);
-
 int map_who(int fd);
 
 // block_list 関連のキャストは間違いを侵しやすいので、

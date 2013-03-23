@@ -39,6 +39,7 @@
 #include "elem.h"
 #include "intif.h"
 #include "map.h"
+#include "path.h"
 #include "mob.h"
 #include "npc.h"
 #include "pc.h"

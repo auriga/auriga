@@ -33,6 +33,7 @@
 #include "utils.h"
 
 #include "map.h"
+#include "path.h"
 #include "chrif.h"
 #include "clif.h"
 #include "intif.h"

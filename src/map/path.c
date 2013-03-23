@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "map.h"
+#include "path.h"
 #include "battle.h"
 #include "nullpo.h"
 
@@ -37,6 +38,10 @@ struct tmp_path {
 };
 
 #define calc_index(x,y) (((x)+(y)*MAX_WALKPATH) & (MAX_WALKPATH*MAX_WALKPATH-1))
+
+// 向き計算用
+const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
+const int diry[8] = { 1, 1, 0,-1,-1,-1, 0, 1 };
 
 static const unsigned char walk_choice[3][3] =
 {
@@ -490,4 +495,61 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 	}
 
 	return -1;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int path_check_dir(int s_dir,int t_dir)
+{
+	if( s_dir == t_dir || s_dir == ((t_dir-1)&0x07) || s_dir == ((t_dir+1)&0x07) )
+		return 0;
+
+	return 1;
+}
+
+/*==========================================
+ * 彼我の方向を計算
+ *------------------------------------------
+ */
+int path_calc_dir(struct block_list *src,int x,int y)
+{
+	int dir = 0;
+	int dx, dy;
+
+	nullpo_retr(0, src);
+
+	dx = x - src->x;
+	dy = y - src->y;
+
+	if(dx == 0 && dy == 0) {
+		// 彼我の場所一致
+		dir = 0;	// 上
+	}
+	else if(dx >= 0 && dy >= 0) {
+		// 方向的に右上
+		if(dx * 3 - 1 < dy)   dir = 0;	// 上
+		else if(dx > dy * 3)  dir = 6;	// 右
+		else                  dir = 7;	// 右上
+	}
+	else if(dx >= 0 && dy <= 0) {
+		// 方向的に右下
+		if(dx * 3 - 1 < -dy)  dir = 4;	// 下
+		else if(dx > -dy * 3) dir = 6;	// 右
+		else                  dir = 5;	// 右下
+	}
+	else if(dx <= 0 && dy <= 0) {
+		// 方向的に左下
+		if(dx * 3 + 1 > dy)   dir = 4;	// 下
+		else if(dx < dy * 3)  dir = 2;	// 左
+		else                  dir = 3;	// 左下
+	}
+	else {
+		// 方向的に左上
+		if(-dx * 3 - 1 < dy)  dir = 0;	// 上
+		else if(-dx > dy * 3) dir = 2;	// 左
+		else                  dir = 1;	// 左上
+	}
+	return dir;
 }

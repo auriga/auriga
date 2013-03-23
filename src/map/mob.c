@@ -34,6 +34,7 @@
 
 #include "atcommand.h"
 #include "map.h"
+#include "path.h"
 #include "clif.h"
 #include "intif.h"
 #include "pc.h"
@@ -1712,7 +1713,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		if(skillidx >= 0 && mobskill_use_id(md,&md->bl,skillidx)) {
 			// 発動した自爆によって既に消滅している可能性があるので必ずチェックする
 			if(md && md->hp > 0 && md->bl.prev != NULL) {
-				md->dir = map_calc_dir(src,md->bl.x,md->bl.y);
+				md->dir = path_calc_dir(src,md->bl.x,md->bl.y);
 				md->mode |= MD_CANMOVE;
 				md->state.special_mob_ai++;
 				md->speed = mob_db[md->class_].speed;

@@ -29,6 +29,7 @@
 #include "utils.h"
 
 #include "map.h"
+#include "path.h"
 #include "pc.h"
 #include "mob.h"
 #include "pet.h"
@@ -674,7 +675,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 			break;
 	}
 
-	dir = map_calc_dir(bl, dst_x, dst_y);
+	dir = path_calc_dir(bl, dst_x, dst_y);
 	if(sd)
 		pc_setdir(sd, dir, dir);
 
@@ -1878,7 +1879,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		src_ud->attackabletime = tick + status_get_adelay(src);
 	} else {
 		// 向き設定
-		int dir = map_calc_dir(src, target->x,target->y);
+		int dir = path_calc_dir(src, target->x,target->y);
 		if(src_sd && battle_config.pc_attack_direction_change)
 			pc_setdir(src_sd, dir, dir);
 		else if(src_pd && battle_config.monster_attack_direction_change)

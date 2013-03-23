@@ -40,6 +40,7 @@
 #include "sqldbs.h"
 
 #include "map.h"
+#include "path.h"
 #include "chrif.h"
 #include "clif.h"
 #include "intif.h"
@@ -119,11 +120,6 @@ char extra_add_file_txt[256] = "map_extra_add.txt"; // to add items from externa
 static char map_cache_file[256]   = "map.info";	// マップキャッシュファイル名
 static char grf_path_txt[256]     = "conf/grf-files.txt";
 static char water_height_txt[256] = "conf/water_height.txt";
-
-// 向き計算用
-const int dirx[8] = { 0,-1,-1,-1, 0, 1, 1, 1 };
-const int diry[8] = { 1, 1, 0,-1,-1,-1, 0, 1 };
-
 
 #ifdef TXT_ONLY
 
@@ -1935,63 +1931,6 @@ int map_mapname2ipport(const char *name,unsigned long *ip,unsigned short *port)
 	*ip   = mdos->ip;
 	*port = mdos->port;
 	return 0;
-}
-
-/*==========================================
- *
- *------------------------------------------
- */
-int map_check_dir(int s_dir,int t_dir)
-{
-	if( s_dir == t_dir || s_dir == ((t_dir-1)&0x07) || s_dir == ((t_dir+1)&0x07) )
-		return 0;
-
-	return 1;
-}
-
-/*==========================================
- * 彼我の方向を計算
- *------------------------------------------
- */
-int map_calc_dir(struct block_list *src,int x,int y)
-{
-	int dir = 0;
-	int dx, dy;
-
-	nullpo_retr(0, src);
-
-	dx = x - src->x;
-	dy = y - src->y;
-
-	if(dx == 0 && dy == 0) {
-		// 彼我の場所一致
-		dir = 0;	// 上
-	}
-	else if(dx >= 0 && dy >= 0) {
-		// 方向的に右上
-		if(dx * 3 - 1 < dy)   dir = 0;	// 上
-		else if(dx > dy * 3)  dir = 6;	// 右
-		else                  dir = 7;	// 右上
-	}
-	else if(dx >= 0 && dy <= 0) {
-		// 方向的に右下
-		if(dx * 3 - 1 < -dy)  dir = 4;	// 下
-		else if(dx > -dy * 3) dir = 6;	// 右
-		else                  dir = 5;	// 右下
-	}
-	else if(dx <= 0 && dy <= 0) {
-		// 方向的に左下
-		if(dx * 3 + 1 > dy)   dir = 4;	// 下
-		else if(dx < dy * 3)  dir = 2;	// 左
-		else                  dir = 3;	// 左下
-	}
-	else {
-		// 方向的に左上
-		if(-dx * 3 - 1 < dy)  dir = 0;	// 上
-		else if(-dx > dy * 3) dir = 2;	// 左
-		else                  dir = 1;	// 左上
-	}
-	return dir;
 }
 
 // gat系

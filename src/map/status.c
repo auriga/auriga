@@ -34,6 +34,7 @@
 
 #include "pc.h"
 #include "map.h"
+#include "path.h"
 #include "pet.h"
 #include "homun.h"
 #include "mob.h"
