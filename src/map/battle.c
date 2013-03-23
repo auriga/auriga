@@ -2538,6 +2538,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		// （RE）ステータスAtkを加算
 		if(src_sd || (!src_sd && battle_config.enemy_str)) {
 			int s_ele__ = ELE_NEUTRAL;		// 基本無属性
+			if(sc && sc->data[SC_SEVENWIND].timer != -1) {	// 暖かい風はステータスAtkにもかかる
+				s_ele__ = sc->data[SC_SEVENWIND].val3;
+			}
 			wd.damage += battle_attr_fix(status_get_baseatk(src), s_ele__, status_get_element(target));
 			/* （RE）左手ダメージの計算処理 */
 			if(calc_flag.lh) {

@@ -6948,6 +6948,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_SEVENWIND:			/* 暖かい風 */
 			status_enchant_elemental_end(bl,SC_ENCPOISON);	// エンチャントポイズンは重複してもよい？
+#ifdef PRE_RENEWAL
 			switch(val1) {
 				case 1:  val2 = SI_SEISMICWEAPON;   val3 = ELE_EARTH; break;
 				case 2:  val2 = SI_LIGHTNINGLOADER; val3 = ELE_WIND;  break;
@@ -6956,6 +6957,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				case 5:  val2 = SI_ATTENELEMENT;    val3 = ELE_GHOST; break;
 				default: val2 = SI_DARKELEMENT;     val3 = ELE_DARK;  break;
 			}
+#else
+			switch(val1) {
+				case 1:  val2 = SI_SEISMICWEAPON;   val3 = ELE_EARTH; break;
+				case 2:  val2 = SI_LIGHTNINGLOADER; val3 = ELE_WIND;  break;
+				case 3:  val2 = SI_FROSTWEAPON;     val3 = ELE_WATER; break;
+				case 4:  val2 = SI_FLAMELAUNCHER;   val3 = ELE_FIRE;  break;
+				case 5:  val2 = SI_ATTENELEMENT;    val3 = ELE_GHOST; break;
+				case 6:  val2 = SI_DARKELEMENT;     val3 = ELE_DARK;  break;
+				default: val2 = SI_ASPERSIO;        val3 = ELE_HOLY;  break;
+			}
+#endif
 			if(sd) {
 				clif_status_change(bl,val2,1,icon_tick,0,0,0);
 			}

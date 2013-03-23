@@ -5568,7 +5568,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case TK_SEVENWIND:		/* 暖かい風 */
 		{
+#ifdef PRE_RENEWAL
 			int type = (skilllv < 7)? GetSkillStatusChangeTable(skillid): SC_ASPERSIO;
+#else
+			int type = GetSkillStatusChangeTable(skillid);
+#endif
 			status_change_start(bl,type,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
