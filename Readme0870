@@ -1,4 +1,9 @@
 ----------------------------------------
+//1040 [2013/03/25] by refis
+
+・不要なmob_dbの更新箇所を巻き戻し（mob_db.txt）
+
+----------------------------------------
 //1039 [2013/03/25] by refis
 
 ・mob_db, mob_skill_dbをリニューアルデータに更新（mob_db.txt, mob_skill_db.txt, pre/mob_skill_db_pre.txt）
