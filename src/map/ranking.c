@@ -28,7 +28,7 @@
 #include "nullpo.h"
 #include "clif.h"
 #include "pc.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "chrif.h"
 
 static struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
@@ -328,7 +328,6 @@ int ranking_clif_display(struct map_session_data * sd,int ranking_id)
 int ranking_display(struct map_session_data * sd,int ranking_id,int begin,int end)
 {
 	int i;
-	char output[128];
 
 	nullpo_retr(0, sd);
 
@@ -341,18 +340,15 @@ int ranking_display(struct map_session_data * sd,int ranking_id,int begin,int en
 	if(end >= MAX_RANKER)
 		end = MAX_RANKER-1;
 
-	snprintf(output, sizeof(output), msg_txt(140), ranking_title[ranking_id]);
-	clif_displaymessage(sd->fd,output);
+	msg_output(sd->fd, msg_txt(140), ranking_title[ranking_id]);
 
 	for(i=begin; i<=end; i++)
 	{
 		const char *name = (ranking_data[ranking_id][i].name[0] == 0)? msg_txt(143): ranking_data[ranking_id][i].name;
-		snprintf(output, sizeof(output), msg_txt(141), i+1, name, ranking_data[ranking_id][i].point);
-		clif_displaymessage(sd->fd, output);
+		msg_output(sd->fd, msg_txt(141), i+1, name, ranking_data[ranking_id][i].point);
 	}
 	clif_displaymessage(sd->fd, msg_txt(142));
-	snprintf(output, sizeof(output), msg_txt(139), sd->status.name, ranking_title[ranking_id], sd->ranking_point[ranking_id]);
-	clif_displaymessage(sd->fd, output);
+	msg_output(sd->fd, msg_txt(139), sd->status.name, ranking_title[ranking_id], sd->ranking_point[ranking_id]);
 
 	return 1;
 }
@@ -363,15 +359,13 @@ int ranking_display(struct map_session_data * sd,int ranking_id,int begin,int en
  */
 int ranking_display_point(struct map_session_data * sd,int ranking_id)
 {
-	char output[128];
-
 	nullpo_retr(0, sd);
 
 	// ランキング対象がない
 	if(ranking_id < 0 || MAX_RANKING <= ranking_id)
 		return 0;
-	snprintf(output, sizeof(output), msg_txt(139), sd->status.name, ranking_title[ranking_id], sd->ranking_point[ranking_id]);
-	clif_displaymessage(sd->fd, output);
+
+	msg_output(sd->fd, msg_txt(139), sd->status.name, ranking_title[ranking_id], sd->ranking_point[ranking_id]);
 
 	return 1;
 }

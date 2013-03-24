@@ -49,7 +49,7 @@
 #include "date.h"
 #include "unit.h"
 #include "homun.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "ranking.h"
 #include "npc.h"
 #include "merc.h"

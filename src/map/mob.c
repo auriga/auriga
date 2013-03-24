@@ -32,7 +32,7 @@
 #include "malloc.h"
 #include "utils.h"
 
-#include "atcommand.h"
+#include "msg.h"
 #include "map.h"
 #include "path.h"
 #include "clif.h"

@@ -38,7 +38,7 @@
 #include "intif.h"
 #include "npc.h"
 #include "pc.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "friend.h"
 #include "ranking.h"
 #include "status.h"

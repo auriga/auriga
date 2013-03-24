@@ -1,4 +1,14 @@
 ----------------------------------------
+//1038 [2013/03/25] by Rayce
+
+・msg_auriga.conf の管理をatcommand.*から切り離し、msg.* を新設
+
+  ※msg_txt() を使いたい場合、atcommand.h ではなく msg.h をincludeしてください。
+    これにより atcommand.* との依存度を減らすことができます。
+
+・ハードコーディングされているメッセージを msg_auriga.conf に移植（status.c）
+
+----------------------------------------
 //1037 [2013/03/25] by Rayce
 
 ・mob.h でexternしている manuk_mob 配列と splendide_mob 配列を battle_calc_damage関数内に

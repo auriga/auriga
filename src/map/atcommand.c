@@ -35,6 +35,7 @@
 #include "db.h"
 
 #include "map.h"
+#include "msg.h"
 #include "chrif.h"
 #include "intif.h"
 #include "clif.h"
@@ -61,9 +62,6 @@ static char command_symbol = '@'; /* first char of the commands */
 
 #define COMMAND_HASH_SIZE 127
 static AtCommandInfo *command_hash_table[COMMAND_HASH_SIZE];
-
-#define MSG_NUMBER 200
-static char *msg_table[MSG_NUMBER]; /* Server messages */
 
 static AtCommandInfo *synonym_table; /* table for GM command synonyms */
 static int synonym_count = 0; /* number of synonyms */
@@ -415,24 +413,6 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_Unknown,            NULL,              100, NULL,                          NULL },
 };
 
-/*==========================================
- * フォーマット付きメッセージ出力
- *------------------------------------------
- */
-static void msg_output(const int fd, const char *format, ...)
-{
-	char output[256];
-	va_list ap;
-
-	va_start(ap, format);
-	vsnprintf(output, sizeof(output), format, ap);
-	va_end(ap);
-
-	clif_displaymessage(fd, output);
-
-	return;
-}
-
 /*===============================================
  * This function return the GM command symbol
  *-----------------------------------------------
@@ -578,87 +558,6 @@ AtCommandType is_atcommand(const int fd, struct map_session_data* sd, const char
 	return is_atcommand_sub(fd, sd, str, 0);
 }
 
-/*==========================================
- * Return the message string of the specified number
- *------------------------------------------
- */
-const char * msg_txt(int msg_number)
-{
-	if (msg_number < 0 || msg_number >= MSG_NUMBER) {
-		if (battle_config.error_log)
-			printf("Message text error: Invalid message number: %d.\n", msg_number);
-	} else if (msg_table[msg_number] != NULL && msg_table[msg_number][0] != '\0') {
-		return msg_table[msg_number];
-	}
-
-	return "<no message>";
-}
-
-/*==========================================
- * Read Message Data
- *------------------------------------------
- */
-int msg_config_read(const char *cfgName)
-{
-	static int msg_config_read_done = 0; /* for multiple configuration reading */
-	int msg_number;
-	char line[1024], w1[1024], w2[1024];
-	FILE *fp;
-
-	// init table
-	if (msg_config_read_done == 0) {
-		memset(&msg_table[0], 0, sizeof(msg_table[0]) * MSG_NUMBER);
-		msg_config_read_done = 1;
-	}
-
-	fp = fopen(cfgName, "r");
-	if (fp == NULL) {
-		printf("File not found: %s.\n", cfgName);
-		return 1;
-	}
-
-	line[sizeof(line)-1] = '\0';
-	while (fgets(line, sizeof(line)-1, fp)) {
-		if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
-			continue;
-		if (sscanf(line,"%d: %[^\r\n]",&msg_number,w2) != 2) {
-			if (sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)
-				continue;
-			if (strcmpi(w1,"import") == 0) {
-				msg_config_read(w2);
-			}
-			continue;
-		}
-		if (msg_number >= 0 && msg_number < MSG_NUMBER) {
-			if (msg_table[msg_number]) {
-				aFree(msg_table[msg_number]);
-			}
-			msg_table[msg_number] = (char *)aStrdup(w2);
-		} else if (battle_config.error_log) {
-			printf("file [%s]: Invalid message number: %d.\n", cfgName, msg_number);
-		}
-	}
-	fclose(fp);
-
-	return 0;
-}
-
-/*==========================================
- * Free Message Data
- *------------------------------------------
- */
-static void do_final_msg_config(void)
-{
-	int msg_number;
-
-	for (msg_number = 0; msg_number < MSG_NUMBER; msg_number++) {
-		if (msg_table[msg_number]) {
-			aFree(msg_table[msg_number]);
-		}
-	}
-
-	return;
-}
 
 /*==========================================
  *
@@ -687,7 +586,6 @@ static void atcommand_synonym_free(void)
  */
 void do_final_atcommand(void)
 {
-	do_final_msg_config();
 	atcommand_synonym_free();
 
 	return;

@@ -216,9 +216,7 @@ char GM_Symbol(void);
 int get_atcommand_level(const AtCommandType type);
 
 int atcommand_config_read(const char *cfgName);
-int msg_config_read(const char *cfgName);
 
-const char * msg_txt(int msg_number);
 void do_final_atcommand(void);
 void atcommand_reload(void);
 int do_init_atcommand(void);

@@ -40,7 +40,7 @@
 #include "status.h"
 #include "skill.h"
 #include "unit.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "memorial.h"
 
 #define PARTY_SEND_XYHP_INVERVAL	1000	// 座標やＨＰ送信の間隔
@@ -952,9 +952,7 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 			} else {
 				if(battle_config.party_item_share_show && psd[i] != sd) {
 #if PACKETVER < 20071106
-					char output[128];
-					snprintf(output, sizeof(output), msg_txt(177), psd[i]->status.name);
-					clif_displaymessage(sd->fd,output);
+					msg_output(sd->fd, msg_txt(177), psd[i]->status.name);	// %sさんにアイテムが分配されました
 #else
 					clif_show_partyshareitem(sd,item_data);
 #endif

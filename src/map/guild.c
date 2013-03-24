@@ -43,7 +43,7 @@
 #include "intif.h"
 #include "clif.h"
 #include "status.h"
-#include "atcommand.h"
+#include "msg.h"
 
 static struct dbt *guild_db = NULL;
 static struct dbt *guild_expcache_db = NULL;

@@ -32,7 +32,7 @@
 #include "db.h"
 #include "battle.h"
 #include "nullpo.h"
-#include "atcommand.h"
+#include "msg.h"
 
 static struct dbt * online_db = NULL;
 

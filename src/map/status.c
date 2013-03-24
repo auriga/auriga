@@ -49,6 +49,7 @@
 #include "ranking.h"
 #include "merc.h"
 #include "elem.h"
+#include "msg.h"
 
 static struct job_db {
 	int max_weight_base;
@@ -6823,49 +6824,57 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ELEMENTWATER:		// 水
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTWATER);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に水属性が付与されました。");
+				// 防具に水属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(195));
 			}
 			break;
 		case SC_ELEMENTGROUND:		// 土
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTGROUND);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に土属性が付与されました。");
+				// 防具に土属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(196));
 			}
 			break;
 		case SC_ELEMENTFIRE:		// 火
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTFIRE);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に火属性が付与されました。");
+				// 防具に火属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(197));
 			}
 			break;
 		case SC_ELEMENTWIND:		// 風
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTWIND);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に風属性が付与されました。");
+				// 防具に風属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(198));
 			}
 			break;
 		case SC_ELEMENTHOLY:		// 光
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTHOLY);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に聖属性が付与されました。");
+				// 防具に聖属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(199));
 			}
 			break;
 		case SC_ELEMENTDARK:		// 闇
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTDARK);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に闇属性が付与されました。");
+				// 防具に闇属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(200));
 			}
 			break;
 		case SC_ELEMENTELEKINESIS:	// 念
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTELEKINESIS);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に念属性が付与されました。");
+				// 防具に念属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(201));
 			}
 			break;
 		case SC_ELEMENTPOISON:		// 毒
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTPOISON);
 			if(sd) {
-				clif_displaymessage(sd->fd,"防具に毒属性が付与されました。");
+				// 防具に毒属性が付与されました。
+				clif_displaymessage(sd->fd, msg_txt(202));
 			}
 			break;
 		case SC_ELEMENTUNDEAD:		// 不死
@@ -6884,9 +6893,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			status_change_race_end(bl,type);
 			if(sd) {
 				const char *race_name[] = { "無形", "不死", "動物", "植物", "昆虫", "", "魚貝", "悪魔", "人間", "天使", "竜" };
-				char message[64];
-				sprintf(message,"種族が%sになりました",race_name[type-SC_RACEUNKNOWN]);
-				clif_displaymessage(sd->fd,message);
+				msg_output(sd->fd, msg_txt(204), race_name[type-SC_RACEUNKNOWN]);	// 種族が%sになりました
 			}
 			break;
 		case SC_MAGICROD:
@@ -7415,7 +7422,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_DEATHKINGHT:		/* デスナイトの魂 */
 		case SC_COLLECTOR:		/* コレクターの魂 */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd,"魂状態になりました");
+				clif_disp_onlyself(sd->fd, msg_txt(206));	// 魂状態になりました
 			break;
 		case SC_KNIGHT:			/* ナイトの魂 */
 		case SC_ALCHEMIST:		/* アルケミストの魂 */
@@ -7424,7 +7431,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HUNTER:			/* ハンターの魂 */
 		case SC_HIGH:			/* 一次上位職業の魂 */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd,"魂状態になりました");
+				clif_disp_onlyself(sd->fd, msg_txt(206));	// 魂状態になりました
 			calc_flag = 1;
 			break;
 		case SC_SUPERNOVICE:		/* スーパーノービスの魂 */
@@ -7436,7 +7443,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 						clif_misceffect(&sd->bl,7);	// スパノビ天使
 				}
 				if(battle_config.disp_job_soul_state_change)
-					clif_disp_onlyself(sd->fd,"魂状態になりました");
+					clif_disp_onlyself(sd->fd, msg_txt(206));	// 魂状態になりました
 			}
 			calc_flag = 1;
 			break;
@@ -8630,7 +8637,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ELEMENTPOISON:		// 毒
 		//case SC_ELEMENTUNDEAD:	// 不死
 			if(sd)
-				clif_displaymessage(sd->fd,"防具の属性が元に戻りました");
+				clif_displaymessage(sd->fd, msg_txt(203));	// 防具の属性が元に戻りました
 			break;
 		case SC_RACEUNKNOWN:
 		case SC_RACEUNDEAD:
@@ -8643,7 +8650,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_RACEANGEL:
 		case SC_RACEDRAGON:
 			if(sd)
-				clif_displaymessage(sd->fd,"種族が元に戻りました");
+				clif_displaymessage(sd->fd, msg_txt(205));	// 種族が元に戻りました
 			break;
 		case SC_RUN:			/* タイリギ */
 		case SC_WUGDASH:		/* ウォーグダッシュ */
@@ -8665,7 +8672,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_DEATHKINGHT:		/* デスナイトの魂 */
 		case SC_COLLECTOR:		/* コレクターの魂 */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd,"魂状態が終了しました");
+				clif_disp_onlyself(sd->fd, msg_txt(207));	// 魂状態が終了しました
 			break;
 		case SC_KNIGHT:			/* ナイトの魂 */
 		case SC_ALCHEMIST:		/* アルケミストの魂 */
@@ -8674,7 +8681,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_HUNTER:			/* ハンターの魂 */
 		case SC_HIGH:			/* 一次上位職業の魂 */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd,"魂状態が終了しました");
+				clif_disp_onlyself(sd->fd, msg_txt(207));	// 魂状態が終了しました
 			calc_flag = 1;
 			break;
 		case SC_POEMBRAGI:			/* ブラギ */

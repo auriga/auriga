@@ -51,7 +51,7 @@
 #include "guild.h"
 #include "pet.h"
 #include "homun.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "status.h"
 #include "mail.h"
 #include "npc.h"
@@ -2135,15 +2135,12 @@ static int intif_parse_CharPos(int fd)
 	int flag=RFIFOB(fd,30);
 
 	if(sd){
-		char output[200];
-
 		if(flag==1){
 			pc_setpos(sd,RFIFOP(fd,31),RFIFOW(fd,47),RFIFOW(fd,49),3);
-			snprintf(output, sizeof output, msg_txt(4), RFIFOP(fd,6));
+			msg_output(sd->fd, msg_txt(4), RFIFOP(fd,6));	// Jump to %s
 		}else{
-			snprintf(output, sizeof output, "%s %s %d %d",RFIFOP(fd,6),RFIFOP(fd,31),RFIFOW(fd,47),RFIFOW(fd,49));
+			msg_output(sd->fd, "%s %s %d %d", RFIFOP(fd,6), RFIFOP(fd,31), RFIFOW(fd,47), RFIFOW(fd,49));
 		}
-		clif_displaymessage(sd->fd, output);
 	}
 	return 0;
 }

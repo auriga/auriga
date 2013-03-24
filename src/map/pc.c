@@ -37,7 +37,7 @@
 #include "chrif.h"
 #include "clif.h"
 #include "intif.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "pc.h"
 #include "npc.h"
 #include "mob.h"
@@ -4460,7 +4460,6 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 {
 	struct map_session_data *sd;
 	struct item_data *item = NULL;
-	char output[200];
 	int type, fd = -1;
 
 	nullpo_retr(0, bl);
@@ -4480,13 +4479,12 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 
 	if(!type) {
 		if(item == NULL)
-			snprintf(output, sizeof(output), msg_txt(136), sd->status.name);
+			msg_output(fd, msg_txt(136), sd->status.name);	// %sがUnknown_Itemをスティールしました
 		else
-			snprintf(output, sizeof(output), msg_txt(137), sd->status.name, item->jname);
+			msg_output(fd, msg_txt(137), sd->status.name, item->jname);	// %sが%sをスティールしました
 	} else {
-		snprintf(output, sizeof(output), msg_txt(138), sd->status.name);
+		msg_output(fd, msg_txt(138), sd->status.name);	// %sは重量オーバーによりアイテムを取得できませんでした
 	}
-	clif_displaymessage(fd, output);
 
 	return 0;
 }
@@ -10496,7 +10494,6 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 	int item_id, quantity;
 	struct map_session_data *pl_sd;
 	struct item_data *item_data;
-	char output[200];
 
 	// do we use extra system?
 	if (!battle_config.extra_system_flag)
@@ -10615,8 +10612,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 					if (pl_sd->status.zeny < -quantity)
 						quantity = -pl_sd->status.zeny;
 					if (quantity < 0) {
-						snprintf(output, sizeof output, msg_txt(149), -quantity); // Server (special action): you lost %ld zenys.
-						clif_displaymessage(pl_sd->fd, output);
+						msg_output(pl_sd->fd, msg_txt(149), -quantity); // Server (special action): you lost %ld zenys.
 						pl_sd->status.zeny += quantity;
 						clif_updatestatus(pl_sd, SP_ZENY);
 						// line changed -> file must be rewriten
@@ -10628,8 +10624,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 					if (quantity > MAX_ZENY - pl_sd->status.zeny)
 						quantity = MAX_ZENY - pl_sd->status.zeny;
 					if (quantity > 0) {
-						snprintf(output, sizeof output, msg_txt(150), quantity); // Server (special action): you gain %ld zenys.
-						clif_displaymessage(pl_sd->fd, output);
+						msg_output(pl_sd->fd, msg_txt(150), quantity); // Server (special action): you gain %ld zenys.
 						pl_sd->status.zeny += quantity;
 						clif_updatestatus(pl_sd, SP_ZENY);
 						// line changed -> file must be rewriten
@@ -10650,8 +10645,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
 					 				intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 								pc_delitem(pl_sd, j, -quantity, 0, 0);
-								snprintf(output, sizeof output, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
-								clif_displaymessage(pl_sd->fd, output);
+								msg_output(pl_sd->fd, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.
 								// line changed -> file must be rewriten
 								extra_dat[i].quantity -= quantity;
 								quantity = extra_dat[i].quantity; // to continue loop
@@ -10678,8 +10672,7 @@ static int pc_extra(int tid, unsigned int tick, int id, void *data)
 						item_tmp.nameid = item_id;
 						item_tmp.identify = 1;
 						if (pc_additem(pl_sd, &item_tmp, quantity) == 0) { // item added
-							snprintf(output, sizeof output, msg_txt(152), quantity, item_data->jname); // Server (special action): you obtain %ld %s.
-							clif_displaymessage(pl_sd->fd, output);
+							msg_output(pl_sd->fd, msg_txt(152), quantity, item_data->jname); // Server (special action): you obtain %ld %s.
 							// line changed -> file must be rewriten
 							extra_dat[i].quantity -= quantity;
 							change_flag = 1;

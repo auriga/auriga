@@ -35,7 +35,7 @@
 #include "npc.h"
 #include "trade.h"
 #include "chrif.h"
-#include "atcommand.h"
+#include "msg.h"
 #include "unit.h"
 #include "status.h"
 

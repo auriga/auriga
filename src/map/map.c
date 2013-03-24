@@ -41,6 +41,7 @@
 
 #include "map.h"
 #include "path.h"
+#include "msg.h"
 #include "chrif.h"
 #include "clif.h"
 #include "intif.h"
@@ -3083,6 +3084,9 @@ void do_final(void)
 	if(id_db)
 		numdb_final(id_db, NULL);
 
+	// メッセージの解放は一番最後
+	do_final_msg_config();
+
 	exit_dbn();
 	do_final_timer();
 }
@@ -3135,6 +3139,10 @@ int do_init(int argc,char *argv[])
 	if(map_config_read(map_conf_filename)) {
 		exit(1);
 	}
+
+	// メッセージの読み込みは一番最初
+	msg_config_read(msg_conf_filename);
+
 	chrif_setip();
 	clif_setip();
 	printf("MAP Server Tag: %s\n", map_server_tag);
@@ -3142,7 +3150,6 @@ int do_init(int argc,char *argv[])
 	battle_config_read(battle_conf_filename);
 	atcommand_config_read(atcommand_conf_filename);
 	script_config_read(script_conf_filename);
-	msg_config_read(msg_conf_filename);
 
 	socket_set_httpd_page_connection_func(map_socket_ctrl_panel_func);
 

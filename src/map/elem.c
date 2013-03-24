@@ -32,7 +32,6 @@
 #include "utils.h"
 #include "mmo.h"
 
-#include "atcommand.h"
 #include "battle.h"
 #include "clif.h"
 #include "chrif.h"

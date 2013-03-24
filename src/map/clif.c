@@ -52,6 +52,7 @@
 #include "script.h"
 #include "skill.h"
 #include "atcommand.h"
+#include "msg.h"
 #include "intif.h"
 #include "battle.h"
 #include "mob.h"
