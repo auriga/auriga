@@ -1,4 +1,16 @@
 ----------------------------------------
+//1037 [2013/03/25] by Rayce
+
+・mob.h でexternしている manuk_mob 配列と splendide_mob 配列を battle_calc_damage関数内に
+  移動し依存性を減らす（battle.c, mob.*）
+
+・安全性のため、ranking_title 配列と ranking_reg 配列のサイズにMAX_RANKINGを明示する（ranking.c）
+
+・一部の配列を可変にして柔軟性を上げる（atcommand.c, status.c）
+
+・呼び出し回数が少ないconstからstaticを撤廃（skill.c）
+
+----------------------------------------
 //1036 [2013/03/24] by Rayce
 
 ・grfio.cで拡張子を検索するルーチンを汎用化（grfio.c）

@@ -390,6 +390,9 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	struct status_change *sc, *src_sc;
 	unsigned int tick = gettick();
 
+	static const int manuk_mob[] = { 1986,1987,1988,1989,1990,1997,1998,1999 };
+	static const int splendide_mob[] = { 1991,1992,1993,1994,1995 };
+
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
 

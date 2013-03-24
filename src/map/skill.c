@@ -18890,12 +18890,12 @@ static int skill_split_strtol(char *str,int *val,int num,int base)
  */
 static void skill_init_unit_layout(void)
 {
-	int i,j,size,pos = 0;
+	int i,j,pos = 0;
 
 	memset(skill_unit_layout,0,sizeof(skill_unit_layout));
 	// 矩形のユニット配置を作成する
 	for (i=0; i<=MAX_SQUARE_LAYOUT; i++) {
-		size = i*2+1;
+		int size = i*2+1;
 		skill_unit_layout[i].count = size*size;
 		for (j=0; j<size*size; j++) {
 			skill_unit_layout[i].dx[j] = (j%size-i);
@@ -18915,10 +18915,10 @@ static void skill_init_unit_layout(void)
 				break;
 			case PR_SANCTUARY:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-1, 0, 1,-2,-1, 0, 1, 2,-2,-1,
 					 0, 1, 2,-2,-1, 0, 1, 2,-1, 0, 1};
-				static const int dy[]={
+				const int dy[]={
 					-2,-2,-2,-1,-1,-1,-1,-1, 0, 0,
 					 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2};
 				skill_unit_layout[pos].count = 21;
@@ -18928,11 +18928,11 @@ static void skill_init_unit_layout(void)
 			}
 			case PR_MAGNUS:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-1, 0, 1,-1, 0, 1,-3,-2,-1, 0,
 					 1, 2, 3,-3,-2,-1, 0, 1, 2, 3,
 					-3,-2,-1, 0, 1, 2, 3,-1, 0, 1,-1, 0, 1};
-				static const int dy[] = {
+				const int dy[] = {
 					-3,-3,-3,-2,-2,-2,-1,-1,-1,-1,
 					-1,-1,-1, 0, 0, 0, 0, 0, 0, 0,
 					 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3};
@@ -18943,11 +18943,11 @@ static void skill_init_unit_layout(void)
 			}
 			case WZ_FROSTNOVA:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,
 					-2,-1, 1, 2,-2,-1, 0, 1, 2,-2,
 					-1, 0, 1, 2};
-				static const int dy[]={
+				const int dy[]={
 					-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,
 					 0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 					 2, 2, 2, 2};
@@ -18958,8 +18958,8 @@ static void skill_init_unit_layout(void)
 			}
 			case AS_VENOMDUST:
 			{
-				static const int dx[] = {-1, 0, 0, 0, 1};
-				static const int dy[] = { 0,-1, 0, 1, 0};
+				const int dx[] = {-1, 0, 0, 0, 1};
+				const int dy[] = { 0,-1, 0, 1, 0};
 				skill_unit_layout[pos].count = 5;
 				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
 				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
@@ -18968,11 +18968,11 @@ static void skill_init_unit_layout(void)
 			case CR_GRANDCROSS:
 			case NPC_GRANDDARKNESS:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					 0, 0,-1, 0, 1,-2,-1, 0, 1, 2,
 					-4,-3,-2,-1, 0, 1, 2, 3, 4,-2,
 					-1, 0, 1, 2,-1, 0, 1, 0, 0};
-				static const int dy[] = {
+				const int dy[] = {
 					-4,-3,-2,-2,-2,-1,-1,-1,-1,-1,
 					 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 					 1, 1, 1, 1, 2, 2, 2, 3, 4};
@@ -18983,9 +18983,9 @@ static void skill_init_unit_layout(void)
 			}
 			case PF_FOGWALL:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,-2,-1, 0, 1, 2};
-				static const int dy[] = {
+				const int dy[] = {
 					-1,-1,-1,-1,-1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1};
 				skill_unit_layout[pos].count = 15;
 				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
@@ -18994,12 +18994,12 @@ static void skill_init_unit_layout(void)
 			}
 			case PA_GOSPEL:
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-1, 0, 1,-1, 0, 1,-3,-2,-1, 0,
 					 1, 2, 3,-3,-2,-1, 0, 1, 2, 3,
 					-3,-2,-1, 0, 1, 2, 3,-1, 0, 1,
 					-1, 0, 1};
-				static const int dy[] = {
+				const int dy[] = {
 					-3,-3,-3,-2,-2,-2,-1,-1,-1,-1,
 					-1,-1,-1, 0, 0, 0, 0, 0, 0, 0,
 					 1, 1, 1, 1, 1, 1, 1, 2, 2, 2,
@@ -19012,14 +19012,14 @@ static void skill_init_unit_layout(void)
 			case NJ_TATAMIGAESHI:
 			{
 				// Lv1（3x3でトータル4セル）
-				static const int dx1[] = {-1, 1, 0, 0};
-				static const int dy1[] = { 0, 0,-1, 1};
+				const int dx1[] = {-1, 1, 0, 0};
+				const int dy1[] = { 0, 0,-1, 1};
 				// Lv2,3（5x5でトータル8セル）
-				static const int dx2[] = {-2,-1, 1, 2, 0, 0, 0, 0};
-				static const int dy2[] = { 0, 0, 0, 0,-2,-1, 1, 2};
+				const int dx2[] = {-2,-1, 1, 2, 0, 0, 0, 0};
+				const int dy2[] = { 0, 0, 0, 0,-2,-1, 1, 2};
 				// Lv4,5（7x7でトータル12セル）
-				static const int dx3[] = {-3,-2,-1, 1, 2, 3, 0, 0, 0, 0, 0, 0};
-				static const int dy3[] = { 0, 0, 0, 0, 0, 0,-3,-2,-1, 1, 2, 3};
+				const int dx3[] = {-3,-2,-1, 1, 2, 3, 0, 0, 0, 0, 0, 0};
+				const int dy3[] = { 0, 0, 0, 0, 0, 0,-3,-2,-1, 1, 2, 3};
 				// Lv1のセット
 				j = 0;
 				skill_unit_layout[pos].count = 4;
@@ -19050,11 +19050,11 @@ static void skill_init_unit_layout(void)
 			}
 			case GN_WALLOFTHORN:		/* ソーンウォール */
 			{
-				static const int dx[] = {
+				const int dx[] = {
 					-2,-1, 0, 1, 2,-2, 2,-2,
 					 2,-2, 2,-2,-1, 0, 1, 2,
 				};
-				static const int dy[] = {
+				const int dy[] = {
 					-2,-2,-2,-2,-2,-1,-1, 0,
 					 0, 1, 1, 2, 2, 2, 2, 2
 				};
@@ -19065,8 +19065,8 @@ static void skill_init_unit_layout(void)
 			}
 			case EL_FIRE_MANTLE:		/* ファイアーマントル */
 			{
-				static const int dx[] = {-1, 0, 1, 1, 1, 0,-1,-1};
-				static const int dy[] = {-1,-1,-1, 0, 1, 1, 1, 0};
+				const int dx[] = {-1, 0, 1, 1, 1, 0,-1,-1};
+				const int dy[] = {-1,-1,-1, 0, 1, 1, 1, 0};
 				skill_unit_layout[pos].count = 8;
 				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
 				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
@@ -19185,7 +19185,7 @@ static int skill_readdb(void)
 		"db/skill_cast_db.txt",    "db/pre/skill_cast_db_pre.txt",    "db/addon/skill_cast_db_add.txt",
 		"db/produce_db.txt",       "db/pre/produce_db_pre.txt",       "db/addon/produce_db_add.txt"
 	};
-	static const int max = 3;
+	const int max = 3;
 #else
 	const char *filename[] = {
 		"db/skill_db.txt",         "db/addon/skill_db_add.txt",
@@ -19193,7 +19193,7 @@ static int skill_readdb(void)
 		"db/skill_cast_db.txt",    "db/addon/skill_cast_db_add.txt",
 		"db/produce_db.txt",       "db/addon/produce_db_add.txt"
 	};
-	static const int max = 2;
+	const int max = 2;
 #endif
 
 	memset(skill_db,0,sizeof(skill_db));

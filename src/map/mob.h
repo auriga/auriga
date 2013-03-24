@@ -92,9 +92,6 @@ struct mob_talk {
 	char msg[200];
 };
 
-extern const int manuk_mob[8];
-extern const int splendide_mob[5];
-
 enum {
 	MST_TARGET = 0,
 	MST_SELF,

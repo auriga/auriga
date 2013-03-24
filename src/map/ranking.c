@@ -33,7 +33,7 @@
 
 static struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
 
-static char ranking_title[][64] = {
+static const char *ranking_title[MAX_RANKING] = {
 	"BLACKSMITH",
 	"ALCHEMIST",
 	"TAEKWON",
@@ -41,7 +41,7 @@ static char ranking_title[][64] = {
 	//"PVP",
 };
 
-static char ranking_reg[][32] = {
+static const char *ranking_reg[MAX_RANKING] = {
 	"PC_BLACKSMITH_POINT",
 	"PC_ALCHEMIST_POINT",
 	"PC_TAEKWON_POINT",

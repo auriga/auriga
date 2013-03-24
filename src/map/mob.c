@@ -64,9 +64,6 @@ struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
 static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 static struct mob_talk mob_talk_db[MAX_MOB_TALK];
 
-const int manuk_mob[8] = {1986,1987,1988,1989,1990,1997,1998,1999};
-const int splendide_mob[5] = {1991,1992,1993,1994,1995};
-
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
