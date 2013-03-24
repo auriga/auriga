@@ -1,4 +1,12 @@
 ----------------------------------------
+//1039 [2013/03/25] by refis
+
+・mob_db, mob_skill_dbをリニューアルデータに更新（mob_db.txt, mob_skill_db.txt, pre/mob_skill_db_pre.txt）
+	ATK1, ATK2項目以外のステータス、ドロップ、使用スキルをR化データへ修正（非RRデータ）
+
+・pre/mob_dbの異世界モンスターの一部にステータスが設定されていない箇所があったので修正（pre/mob_db_pre.txt）
+
+----------------------------------------
 //1038 [2013/03/25] by Rayce
 
 ・msg_auriga.conf の管理をatcommand.*から切り離し、msg.* を新設
