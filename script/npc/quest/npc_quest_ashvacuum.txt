@@ -16804,7 +16804,7 @@ OnTimer600000:
 	killmonster "spl_fild03.gat","spl_fild03_mon::OnKilled";
 OnInit:
 	areamonster "spl_fild03.gat",0,0,0,0,"ヒルスリオン",1989,4,"spl_fild03_mon::OnKilled";
-	areamonster "spl_fild03.gat",0,0,0,0,"コルヌス",1980,5,"spl_fild03_mon::OnKilled";
+	areamonster "spl_fild03.gat",0,0,0,0,"コルヌス",1992,5,"spl_fild03_mon::OnKilled";
 	areamonster "spl_fild03.gat",0,0,0,0,"ナーガ",1993,5,"spl_fild03_mon::OnKilled";
 	initnpctimer;
 	end;

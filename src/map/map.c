@@ -1867,6 +1867,7 @@ static int map_mdmap_clean(struct block_list *bl, va_list ap)
 		skill_delunit((struct skill_unit *)bl);
 		break;
 	case BL_NPC:
+		npc_timerevent_stop((struct npc_data *)bl);
 		npc_free((struct npc_data *)bl);
 		break;
 	}
