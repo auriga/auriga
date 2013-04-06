@@ -2137,10 +2137,12 @@ L_RECALC:
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val2;
 		}
 
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_STEELBODY].timer != -1) {	// 金剛
 			sd->def = 90;
 			sd->mdef = 90;
 		}
+#endif
 		if(sd->sc.data[SC_ENCPOISON].timer != -1)
 			sd->addeff[4] += sd->sc.data[SC_ENCPOISON].val2;
 		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// トゥルーサイト

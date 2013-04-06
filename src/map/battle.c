@@ -6789,7 +6789,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			map_foreachinarea(battle_damage_area,target->m,
 				target->x-3,target->y-3,target->x+3,target->y+3,BL_CHAR,
 				target,rddamage,LG_REFLECTDAMAGE,t_sc->data[SC_REFLECTDAMAGE].val1,flag|BCT_ENEMY|1,tick);
-		}else if(wd.flag&BF_SHORT) {
+		} else if(wd.flag&BF_SHORT) {
 			if(tsd && tsd->short_weapon_damage_return > 0) {
 				ridamage += damage * tsd->short_weapon_damage_return / 100;
 			}
@@ -6842,6 +6842,12 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(ridamage > 0)
 			clif_damage(src,src,tick,wd.amotion,wd.dmotion,ridamage,1,4,0,0);
 	}
+#ifndef PRE_RENEWAL
+	if(t_sc && t_sc->data[SC_STEELBODY].timer != -1 && (wd.damage > 0 || wd.damage2 > 0)) {
+		wd.damage  = wd.damage  * 10 / 100;
+		wd.damage2 = wd.damage2 * 10 / 100;
+	}
+#endif
 
 	clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2, 0);
 
@@ -7529,6 +7535,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			memset(&dmg,0,sizeof(dmg));
 		}
 	}
+#ifndef PRE_RENEWAL
+	if(sc && sc->data[SC_STEELBODY].timer != -1 && damage > 0) {
+		damage = damage * 10 / 100;
+	}
+#endif
 
 	/* ダメージパケット送信 */
 	if(damage != -1) {
