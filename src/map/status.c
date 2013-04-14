@@ -9626,7 +9626,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_BERKANA:
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
-	case LG_EXEEDBREAK:
+	case SC_EXEEDBREAK:
 	case SC_ALL_RIDING:	/* 騎乗システム */
 	case SC_ON_PUSH_CART:	/* カート */
 	case SC_HAT_EFFECT:	/* 頭装備エフェクト */

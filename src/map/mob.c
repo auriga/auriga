@@ -3834,7 +3834,7 @@ static int mob_readdb(void)
 	char line[1024];
 	int n;
 #ifdef PRE_RENEWAL
-	const char *filename[] = { "db/mob_db.txt","db/pre/mob_db_add_pre.txt","db/addon/mob_db_add.txt" };
+	const char *filename[] = { "db/mob_db.txt","db/pre/mob_db_pre.txt","db/addon/mob_db_add.txt" };
 	static const int max = 3;
 #else
 	const char *filename[] = { "db/mob_db.txt","db/addon/mob_db_add.txt" };
