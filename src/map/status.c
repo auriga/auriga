@@ -56,7 +56,7 @@ static struct job_db {
 	int hp_base[MAX_LEVEL];
 	int sp_base[MAX_LEVEL];
 	int bonus[PC_UPPER_MAX][MAX_LEVEL];
-	int aspd_base[WT_MAX];
+	int aspd_base[WT_MAX+1];
 } job_db[PC_JOB_MAX];
 
 static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
@@ -2487,7 +2487,7 @@ L_RECALC:
 	 	sd->matk1 = 1;
 #else
 	if(sd->matk1 < 1)
-		sd->matk1 = 0;
+	 	sd->matk1 = 0;
 #endif
 	if(sd->matk2 < 1)
 		sd->matk2 = 1;
@@ -2681,6 +2681,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	int skilllv;
 	int tmp;
 	char berserk_flag  = 0;
+#ifndef PRE_RENEWAL
+	double penalty   = 100;
+#endif
 
 	nullpo_retr(0, sd);
 
@@ -2690,6 +2693,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		return (fix_aspd < 100)? 100:fix_aspd;
 	}
 
+#ifdef PRE_RENEWAL
 	/* 基本ASPDの計算 */
 	if(sd->status.weapon < WT_MAX)	// 片手の場合は値をそのまま取得
 		base_amotion = job_db[sd->s_class.job].aspd_base[sd->status.weapon];
@@ -2703,9 +2707,44 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		base_amotion = base_amotion - 1000 * (50+10*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100 - (base_amotion * sd->paramc[4] / 1000) - (base_amotion * sd->paramc[1] / 250) + 1000;
 	else	// 騎乗していない
 		base_amotion = base_amotion - (base_amotion * sd->paramc[4] / 1000) - (base_amotion * sd->paramc[1] / 250);
+#else
+	/* 基本ASPDの計算 */
+	if(sd->status.weapon < WT_MAX) {	// 片手の場合は値をそのまま取得
+		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->status.weapon]) / 10;
+		if(base_amotion > 144)
+			penalty = (100-(base_amotion-144)*2);
+		else
+			penalty = 100;
+	} else {	// 2刀の場合は2刀用の計算を行う
+		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype1]) / 10;
+		base_amotion = base_amotion + (((2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype2]) / 10) - 194) / 4;
+	}
 
+	/* 基本ASPDに各パラメータのボーナスを適用 */
+	if(sd->status.weapon < WT_MAX){
+		if( sd->status.weapon == WT_BOW ||
+		    sd->status.weapon == WT_MUSICAL ||
+		    sd->status.weapon == WT_WHIP ||
+		    (sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE) )
+			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10-1/(float)400) + sd->paramc[4]*9/(float)49) * penalty/100)));
+		else
+			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10+10/(float)111) + sd->paramc[4]*9/(float)49) * penalty/100)));
+	} else {
+		base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10-1/(float)400) + sd->paramc[4]*9/(float)49)*1.05)));
+	}
+	base_amotion = (2000-base_amotion*10);
+#endif
+
+	/* 盾ペナルティの加算 */
+	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]] && itemdb_isarmor(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->nameid) && job_db[sd->s_class.job].aspd_base[WT_MAX] != 0)
+		base_amotion += job_db[sd->s_class.job].aspd_base[WT_MAX];
+
+#ifdef PRE_RENEWAL
 	/* ボーナスADD_ASPDの計算 */
 	amotion = base_amotion + sd->aspd_add;
+#else
+	amotion = base_amotion;
+#endif
 
 	/* amotionが変化する状態異常の計算 */
 	if(sd->sc.count > 0) {
@@ -2919,8 +2958,13 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		/* その他 */
 
 		// バーサーク
+#ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_BERSERK].timer != -1)
 			berserk_flag = 1;
+#else
+		if(sd->sc.data[SC_BERSERK].timer != -1 && sd->sc.data[SC_TWOHANDQUICKEN].timer == -1)
+			berserk_flag = 1;
+#endif
 
 		// ディフェンダー
 		if(sd->sc.data[SC_DEFENDER].timer != -1)
@@ -2957,11 +3001,13 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	/* slow_valとhaste_val1とhaste_val2を加算する */
 	bonus_rate = slow_val - haste_val1 - haste_val2;
 
+#ifdef PRE_RENEWAL
 	/* bonus_rateにアイテムのボーナスを加算する */
 	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
 		sd->aspd_rate += sd->aspd_add_rate;
 		bonus_rate -= sd->aspd_rate;
 	}
+#endif
 
 	/* バーサーク */
 	if(berserk_flag)
@@ -2986,6 +3032,22 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	/* bonus_addの加算 */
 	if(bonus_add != 0)
 		amotion += bonus_add;
+
+#ifndef PRE_RENEWAL
+	if(pc_isriding(sd))	// 騎兵修練
+		amotion = amotion * (50+10*pc_checkskill(sd,KN_CAVALIERMASTERY)) / 100;
+	else if(pc_isdragon(sd))	// ドラゴントレーニング
+		amotion = amotion * (75+5*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100;
+
+	/* アイテムのボーナスを加算する */
+	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
+		sd->aspd_rate += sd->aspd_add_rate;
+		amotion = amotion * (sd->aspd_rate+100) / 100;
+	}
+
+	/* ボーナスADD_ASPDの計算 */
+	amotion += sd->aspd_add;
+#endif
 
 	/* 小数切り上げ */
 	amotion = ceil(amotion);
@@ -7028,7 +7090,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_SPEARQUICKEN:		/* スピアクイッケン */
 			calc_flag = 1;
+#ifdef PRE_RENEWAL
 			val2 = 20+val1;
+#else
+			val2 = 30;
+#endif
 			break;
 		case SC_BLADESTOP:		/* 白刃取り */
 			if(val2 == 2)
@@ -10030,7 +10096,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd->status.sp >= sp) {
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
-				timer = add_timer(10000+tick, status_change_timer,bl->id, data);
+				timer = add_timer(10000+tick, status_change_timer,bl->id, data);	
 			}
 		}
 		break;
@@ -10040,7 +10106,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd->status.sp >= sp) {
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
-				timer = add_timer(5000+tick, status_change_timer,bl->id, data);
+				timer = add_timer(5000+tick, status_change_timer,bl->id, data);	
 			}
 		}
 		break;
@@ -10100,11 +10166,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				int sp = 4 * sc->data[type].val1;
 				if(sd && sd->status.sp >= sp) {
 					unit_heal(bl, hp, -sp);
-					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 				}
 			} else {
 				unit_heal(bl, hp, 0);
-				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 			}
 		}
 		break;
@@ -10120,7 +10186,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				}
 				clif_updatestatus(sd,SP_SP);
 			}
-			timer = add_timer(5000+tick, status_change_timer,bl->id, data);
+			timer = add_timer(5000+tick, status_change_timer,bl->id, data);	
 		}
 		break;
 	case SC_SATURDAY_NIGHT_FEVER:		/* フライデーナイトフィーバー */
@@ -11092,18 +11158,24 @@ int status_readdb(void) {
 	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
+	char *filename;
 
 	memset(&job_db, 0, sizeof(job_db));
 
 	// JOB補正数値１
-	fp=fopen("db/job_db1.txt","r");
+#ifdef PRE_RENEWAL
+	filename = "db/pre/job_db1_pre.txt";
+#else
+	filename = "db/job_db1.txt";
+#endif
+	fp=fopen(filename,"r");
 	if(fp==NULL){
-		printf("can't read db/job_db1.txt\n");
+		printf("can't read %s\n",filename);
 		return 1;
 	}
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[WT_MAX+4];
+		char *split[WT_MAX+5];
 		int hp_coefficient, sp_coefficient;
 
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -11111,7 +11183,7 @@ int status_readdb(void) {
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<WT_MAX+4 && p;j++){
+		for(j=0,p=line;j<WT_MAX+5 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
@@ -11140,14 +11212,14 @@ int status_readdb(void) {
 			}
 		}
 
-		for(j=0; j<WT_MAX && split[j+4]; j++) {
+		for(j=0; j<WT_MAX+1 && split[j+4]; j++) {
 			job_db[i].aspd_base[j] = atoi(split[j+4]);
 		}
 		if(++i >= PC_JOB_MAX)
 			break;
 	}
 	fclose(fp);
-	printf("read db/job_db1.txt done\n");
+	printf("read %s done\n",filename);
 
 	// 基本HP個別設定
 	fp=fopen("db/job_hp_db.txt","r");

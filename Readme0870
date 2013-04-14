@@ -1,4 +1,16 @@
 ----------------------------------------
+//1044 [2013/04/15] by refis
+
+・ASPD計算式をpreとREで分割（db/job_db1_pre.txt db/pre/job_db1_pre.txt status.c）
+	-> 盾装備時のASPDペナルティの対応
+	-> DB対応の為、pre/job_db1_pre.txtを追加
+		「PRE_RENEWAL」有効時、job_db1.txtの代わりにpre/job_db1_pre.txtを読み込みます。
+
+・拡張スーパーノービスの経験値、JOB補正テーブルを修正（db/job_db2.txt db/job_db2-2.txt pc.c）
+
+・typo修正（npc_memorial_tower.txt）
+
+----------------------------------------
 //1043 [2013/04/15] by refis
 
 ・状態異常「SC_EXEEDBREAK」のtypo修正（status.c）

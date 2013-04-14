@@ -427,7 +427,7 @@ e_tower.gat,81,105,0	script	塔の守護石	406,{
 			mes "元の場所への帰還術を";
 			mes "発動……";
 			close2;
-			warp "alberta",223,36;
+			warp "alberta.gat",223,36;
 			end;
 		case 2:
 			mes "【塔の守護石】";

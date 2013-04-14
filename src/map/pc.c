@@ -913,7 +913,7 @@ int pc_equippoint(struct map_session_data *sd,int n)
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
 		if(look == 1 || look == 2 || look == 6) {
-			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC ||
+			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC || 
 				pc_checkskill(sd,KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB))
 				return 34;
 		}
@@ -6018,8 +6018,6 @@ int pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
 		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
-		case PC_CLASS_ESNV:	// 拡張スーパーノービス
-		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 		case PC_CLASS_KG:	// 影狼
 		case PC_CLASS_OB:	// 朧
 			table = 7;
@@ -6045,6 +6043,8 @@ int pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_ESNV:	// 拡張スーパーノービス
+		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 			table = 8;
 			break;
 		default:	// それ以外
@@ -6202,8 +6202,6 @@ int pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
 		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
-		case PC_CLASS_ESNV:	// 拡張スーパーノービス
-		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 		case PC_CLASS_KG:	// 影狼
 		case PC_CLASS_OB:	// 朧
 			table = 18;
@@ -6229,6 +6227,8 @@ int pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
+		case PC_CLASS_ESNV:	// 拡張スーパーノービス
+		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
 			table = 19;
 			break;
 		default:
