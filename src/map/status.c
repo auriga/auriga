@@ -3042,7 +3042,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	/* アイテムのボーナスを加算する */
 	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
 		sd->aspd_rate += sd->aspd_add_rate;
-		amotion = amotion * (sd->aspd_rate+100) / 100;
+		amotion = amotion * (100-sd->aspd_rate) / 100;
 	}
 
 	/* ボーナスADD_ASPDの計算 */

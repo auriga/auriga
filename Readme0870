@@ -1,4 +1,10 @@
 ----------------------------------------
+//1045 [2013/04/17] by refis
+
+・Aspd向上効果の計算処理が誤っていたのを修正（status.c）
+	Thanks nekoko さん
+
+----------------------------------------
 //1044 [2013/04/15] by refis
 
 ・ASPD計算式をpreとREで分割（db/job_db1_pre.txt db/pre/job_db1_pre.txt status.c）
