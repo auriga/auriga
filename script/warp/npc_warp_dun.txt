@@ -83,8 +83,10 @@ xmas_dun02.gat,129,130,0	warp	xmaswarp4002		1,1,xmas_dun01.gat,132,130
 //		warp "moc_fild15.gat",251,248;
 //	end;
 //}
-anthell01.gat,35,267,0	warp	anthellwarp0501		1,1,moc_fild20.gat,161,144
-anthell02.gat,171,170,0	warp	anthellwarp0502		1,1,moc_fild20.gat,333,315
+//anthell01.gat,35,267,0	warp	anthellwarp0501		1,1,moc_fild20.gat,161,144
+//anthell02.gat,171,170,0	warp	anthellwarp0502		1,1,moc_fild20.gat,333,315
+anthell01.gat,35,267,0		warp	anthellwarp0501		1,1,cmd_fild08.gat,330,355
+anthell02.gat,171,170,0		warp	anthellwarp0502		1,1,cmd_fild08.gat,344,82
 
 anthell01.gat,253,32,0		warp	anthellwarp4001		2,1,anthell02.gat,34,263
 anthell02.gat,32,267,0		warp	anthellwarp4001		2,2,anthell01.gat,253,35
@@ -116,7 +118,7 @@ gef_dun02.gat,106,134,0		warp	geffenwarp4004		2,1,gef_dun01.gat,197,40
 // iz_dun02.gat		イズルード海底洞窟3層
 // iz_dun03.gat		イズルード海底洞窟4層
 // iz_dun04.gat		イズルード海底神殿
-// iz_dun05.gat		イズルード海底神殿
+// iz_dun05.gat		イズルード海底都市
 // -----
 // izlu2dun.gatt	バイラン島
 //==============================================================
@@ -132,6 +134,7 @@ iz_dun02.gat,339,331,0		warp	izludewarp4007		2,2,iz_dun03.gat,32,63
 iz_dun03.gat,29,63,0		warp	izludewarp4008		2,2,iz_dun02.gat,339,328
 iz_dun03.gat,264,245,0		warp	izludewarp4009		1,2,iz_dun04.gat,26,27
 iz_dun04.gat,26,24,0		warp	izludewarp4010		2,2,iz_dun03.gat,261,245
+iz_dun05.gat,141,188,0		warp	izludewarp4011		1,1,iz_dun04.gat,129,225
 
 
 
@@ -1190,6 +1193,34 @@ nyd_dun02.gat,56,264,0	warp	nydhogwarp4002	1,1,nyd_dun01.gat,249,143
 //滝の中の洞窟 01⇔滝の中の洞窟 02
 bra_dun01.gat,199,35,0	warp	brasiliswarp4001	1,1,bra_dun02.gat,261,263
 bra_dun02.gat,261,265,0	warp	brasiliswarp4002	1,1,bra_dun01.gat,199,37
+
+
+
+//---エルディカスティス追加マップ
+
+
+//==============================================================
+// -----  エルディカスティス -----
+// dic_dun01.gat	カミダルトンネル
+// dic_dun02.gat	スカラバホール
+// dic_dun03.gat	スカラバガーデン
+//==============================================================
+//カミダルトンネル⇔カミダル山麓 01
+dic_dun01.gat,371,44,0		warp	dicasteswarp0501	1,1,dic_fild01.gat,28,79
+
+//カミダルトンネル
+dic_dun01.gat,87,212,0		warp	dicasteswarp4001	1,1,dic_dun01.gat,169,227
+dic_dun01.gat,165,227,0		warp	dicasteswarp4002	1,1,dic_dun01.gat,83,212
+dic_dun01.gat,371,228,0		warp	dicasteswarp4003	1,1,dic_dun01.gat,32,156
+dic_dun01.gat,28,156,0		warp	dicasteswarp4004	1,1,dic_dun01.gat,367,228
+dic_dun01.gat,371,172,0		warp	dicasteswarp4005	1,1,dic_dun01.gat,32,100
+dic_dun01.gat,28,100,0		warp	dicasteswarp4006	1,1,dic_dun01.gat,367,172
+dic_dun01.gat,371,100,0		warp	dicasteswarp4007	1,1,dic_dun01.gat,33,43
+dic_dun01.gat,29,43,0		warp	dicasteswarp4008	1,1,dic_dun01.gat,367,100
+//スカラバホール⇒カミダルトンネル
+dic_dun02.gat,102,148,0		warp	dicasteswarp4009	1,1,dic_dun01.gat,290,99
+//スカラバガーデン⇒カミダルトンネル
+dic_dun03.gat,102,148,0		warp	dicasteswarp4010	1,1,dic_dun01.gat,290,99
 
 
 

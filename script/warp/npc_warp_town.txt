@@ -1247,7 +1247,8 @@ gon_in.gat,31,97,0		warp	gonryunwarp1016		1,1,gon_in.gat,39,35
 // um_dun01.gat		大樹の道
 // um_fild04.gat	フムガジャング
 //==============================================================
-umbala.gat,106,285,0		warp	umbalawarp0401		1,1,um_dun01.gat,42,30
+//umbala.gat,106,285,0		warp	umbalawarp0401		1,1,um_dun01.gat,42,30
+umbala.gat,106,285,0		warp	umbalawarp0401		1,1,yggdrasil01.gat,39,63
 umbala.gat,130,79,0		warp	umbalawarp0501		1,1,um_fild04.gat,215,336
 
 //チャビバタンの家北
@@ -2247,6 +2248,51 @@ mid_campin.gat,376,136,0	warp	midcampwarp1026		1,1,mid_camp.gat,163,234
 //鉱山の街 マヌク⇒マヌクフィールド 02
 manuk.gat,114,357,0	warp	manukwarp0501	1,1,man_fild02.gat,138,43
 
+//首長の家
+manuk.gat,311,142,0	warp	manukwarp1001	1,1,man_in01.gat,277,41
+man_in01.gat,275,41,0	warp	manukwarp1002	1,1,manuk.gat,309,142
+man_in01.gat,318,17,0	warp	manukwarp1003	1,1,man_in01.gat,388,16
+man_in01.gat,390,16,0	warp	manukwarp1004	1,1,man_in01.gat,316,17
+//研究所
+manuk.gat,310,201,0	warp	manukwarp1005	1,1,man_in01.gat,358,121
+man_in01.gat,358,119,0	warp	manukwarp1006	1,1,manuk.gat,310,199
+man_in01.gat,328,141,0	warp	manukwarp1007	1,1,man_in01.gat,324,220
+man_in01.gat,324,222,0	warp	manukwarp1008	1,1,man_in01.gat,328,139
+//地下監獄
+manuk.gat,255,110,0	warp	manukwarp1009	1,1,man_in01.gat,7,61
+man_in01.gat,5,61,0	warp	manukwarp1010	1,1,manuk.gat,253,110
+man_in01.gat,11,19,0	warp	manukwarp1011	1,1,man_in01.gat,182,32
+man_in01.gat,182,34,0	warp	manukwarp1012	1,1,man_in01.gat,11,21
+//住居
+manuk.gat,257,228,0	warp	manukwarp1013	1,1,man_in01.gat,130,267
+man_in01.gat,130,265,0	warp	manukwarp1014	1,1,manuk.gat,258,226
+manuk.gat,265,237,0	warp	manukwarp1015	1,1,man_in01.gat,180,267
+man_in01.gat,180,265,0	warp	manukwarp1016	1,1,manuk.gat,267,235
+manuk.gat,276,247,0	warp	manukwarp1017	1,1,man_in01.gat,230,267
+man_in01.gat,230,265,0	warp	manukwarp1018	1,1,manuk.gat,276,245
+manuk.gat,288,249,0	warp	manukwarp1019	1,1,man_in01.gat,280,267
+man_in01.gat,280,265,0	warp	manukwarp1020	1,1,manuk.gat,289,247
+manuk.gat,302,243,0	warp	manukwarp1021	1,1,man_in01.gat,330,267
+man_in01.gat,330,265,0	warp	manukwarp1022	1,1,manuk.gat,300,241
+manuk.gat,311,234,0	warp	manukwarp1023	1,1,man_in01.gat,380,267
+man_in01.gat,380,265,0	warp	manukwarp1024	1,1,manuk.gat,309,232
+//食堂
+manuk.gat,253,195,0	warp	manukwarp1025	1,1,man_in01.gat,24,284
+man_in01.gat,26,284,0	warp	manukwarp1026	1,1,manuk.gat,255,195
+man_in01.gat,5,275,0	warp	manukwarp1027	1,1,man_in01.gat,7,221
+man_in01.gat,7,219,0	warp	manukwarp1028	1,1,man_in01.gat,7,276
+man_in01.gat,22,275,0	warp	manukwarp1029	1,1,man_in01.gat,76,279
+man_in01.gat,74,279,0	warp	manukwarp1030	1,1,man_in01.gat,20,275
+manuk.gat,235,124,0	warp	manukwarp1031	1,1,man_in01.gat,70,171
+man_in01.gat,70,169,0	warp	manukwarp1032	1,1,manuk.gat,235,122
+man_in01.gat,61,190,0	warp	manukwarp1033	1,1,man_in01.gat,63,238
+man_in01.gat,61,238,0	warp	manukwarp1034	1,1,man_in01.gat,61,188
+man_in01.gat,61,173,0	warp	manukwarp1035	1,1,man_in01.gat,20,173
+man_in01.gat,20,175,0	warp	manukwarp1036	1,1,man_in01.gat,61,175
+//民家
+manuk.gat,279,115,0	warp	manukwarp1037	1,1,man_in01.gat,123,224
+man_in01.gat,123,226,0	warp	manukwarp1038	1,1,manuk.gat,278,117
+
 
 //==============================================================
 // -----  前線基地 スプレンディッド  -----
@@ -2257,7 +2303,55 @@ manuk.gat,114,357,0	warp	manukwarp0501	1,1,man_fild02.gat,138,43
 // spl_fild02.gat	スプレンディッドフィールド 02
 //==============================================================
 //前線基地 スプレンディッド⇒スプレンディッドフィールド 02
-splendide.gat,388,252,0		warp	splendidewarp0501	1,1,spl_fild02.gat,8,241
+splendide.gat,388,252,0	warp	splendidewarp0501	1,1,spl_fild02.gat,8,241
+
+//司令部
+splendide.gat,197,193,0	warp	splendidewarp1001	1,1,spl_in01.gat,110,19
+spl_in01.gat,110,17,0	warp	splendidewarp1002	1,1,splendide.gat,197,191
+spl_in01.gat,124,38,0	warp	splendidewarp1003	1,1,spl_in01.gat,236,36
+spl_in01.gat,238,36,0	warp	splendidewarp1004	1,1,spl_in01.gat,126,38
+spl_in01.gat,95,38,0	warp	splendidewarp1005	1,1,spl_in01.gat,199,36
+spl_in01.gat,197,36,0	warp	splendidewarp1006	1,1,spl_in01.gat,93,38
+spl_in01.gat,218,22,0	warp	splendidewarp1007	1,1,spl_in01.gat,310,19
+spl_in01.gat,310,17,0	warp	splendidewarp1008	1,1,spl_in01.gat,218,20
+//住居
+splendide.gat,240,317,0	warp	splendidewarp1009	1,1,spl_in02.gat,224,232
+spl_in02.gat,222,232,0	warp	splendidewarp1010	1,1,splendide.gat,238,317
+splendide.gat,230,299,0	warp	splendidewarp1011	1,1,spl_in02.gat,207,195
+spl_in02.gat,207,193,0	warp	splendidewarp1012	1,1,splendide.gat,228,299
+splendide.gat,214,310,0	warp	splendidewarp1013	1,1,spl_in02.gat,180,223
+spl_in02.gat,180,221,0	warp	splendidewarp1014	1,1,splendide.gat,214,308
+splendide.gat,157,316,0	warp	splendidewarp1015	1,1,spl_in02.gat,108,213
+spl_in02.gat,108,211,0	warp	splendidewarp1016	1,1,splendide.gat,157,314
+splendide.gat,119,324,0	warp	splendidewarp1017	1,1,spl_in02.gat,61,229
+spl_in02.gat,62,227,0	warp	splendidewarp1018	1,1,splendide.gat,119,322
+splendide.gat,286,128,0	warp	splendidewarp1019	1,1,spl_in02.gat,236,63
+spl_in02.gat,234,64,0	warp	splendidewarp1020	1,1,splendide.gat,284,129
+splendide.gat,259,112,0	warp	splendidewarp1021	1,1,spl_in02.gat,189,41
+spl_in02.gat,187,42,0	warp	splendidewarp1022	1,1,splendide.gat,259,114
+splendide.gat,286,229,0	warp	splendidewarp1023	1,1,spl_in02.gat,137,66
+spl_in02.gat,135,66,0	warp	splendidewarp1024	1,1,splendide.gat,284,228
+splendide.gat,299,251,0	warp	splendidewarp1025	1,1,spl_in02.gat,140,93
+spl_in02.gat,139,91,0	warp	splendidewarp1026	1,1,splendide.gat,297,250
+splendide.gat,132,68,0	warp	splendidewarp1027	1,1,spl_in02.gat,45,52
+spl_in02.gat,44,54,0	warp	splendidewarp1028	1,1,splendide.gat,133,70
+//地下監獄
+splendide.gat,170,168,0	warp	splendidewarp1029	1,1,spl_in01.gat,190,301
+spl_in01.gat,190,299,0	warp	splendidewarp1030	1,1,splendide.gat,170,166
+spl_in01.gat,191,320,0	warp	splendidewarp1031	1,1,spl_in01.gat,276,334
+spl_in01.gat,276,336,0	warp	splendidewarp1032	1,1,spl_in01.gat,190,322
+//食堂
+splendide.gat,156,210,0	warp	splendidewarp1033	1,1,spl_in01.gat,171,189
+spl_in01.gat,171,187,0	warp	splendidewarp1034	1,1,splendide.gat,156,208
+//商店
+splendide.gat,198,240,0	warp	splendidewarp1035	1,1,spl_in01.gat,110,301
+spl_in01.gat,110,299,0	warp	splendidewarp1036	1,1,splendide.gat,198,238
+//民家
+splendide.gat,238,212,0	warp	splendidewarp1037	1,1,spl_in01.gat,30,215
+spl_in01.gat,30,213,0	warp	splendidewarp1038	1,1,splendide.gat,237,210
+//研究所
+splendide.gat,228,164,0	warp	splendidewarp1039	1,1,spl_in01.gat,30,301
+spl_in01.gat,30,299,0	warp	splendidewarp1040	1,1,splendide.gat,228,162
 
 
 
@@ -2297,6 +2391,46 @@ bra_in01.gat,50,145,0	warp	brasiliswarp1017	1,1,bra_in01.gat,81,143
 bra_in01.gat,79,142,0	warp	brasiliswarp1018	1,1,bra_in01.gat,47,144
 bra_in01.gat,138,174,0	warp	brasiliswarp1019	1,1,bra_in01.gat,12,183
 bra_in01.gat,206,98,0	warp	brasiliswarp1020	1,1,brasilis.gat,120,160
+
+
+
+//---エルディカスティス追加マップ
+
+
+//==============================================================
+// -----  エルディカスティス -----
+// dicastes01.gat	サファ族の首都 エルディカスティス
+// dicastes02.gat	ブルーメヴァルト
+// dic_in01.gat		エルディカスティス 室内
+// -----
+// dic_fild01.gat	カミダル山麓 01
+//==============================================================
+//サファ族の首都 エルディカスティス⇒カミダル山麓 01
+dicastes01.gat,199,34,0		warp	dicasteswarp0501	1,1,dic_fild01.gat,149,279
+
+//サファ族の首都 エルディカスティス⇔ブルーメヴァルト
+dicastes01.gat,198,353,0	warp	dicasteswarp1001	1,1,dicastes02.gat,120,80
+dicastes02.gat,120,77,0		warp	dicasteswarp1002	1,1,dicastes01.gat,197,351
+//ブルーメヴァルト⇔ディエル
+dicastes02.gat,120,237,0	warp	dicasteswarp1003	1,1,dic_in01.gat,45,246
+dic_in01.gat,45,244,0		warp	dicasteswarp1004	1,1,dicastes02.gat,119,235
+//酒場バールブルーメ
+dicastes01.gat,136,103,0	warp	dicasteswarp1005	1,1,dic_in01.gat,26,98
+dic_in01.gat,26,96,0		warp	dicasteswarp1006	1,1,dicastes01.gat,137,106
+//戦士の訓練所
+dicastes01.gat,255,175,0	warp	dicasteswarp1007	1,1,dic_in01.gat,344,272
+dic_in01.gat,342,271,0		warp	dicasteswarp1008	1,1,dicastes01.gat,255,173
+//工場
+dicastes01.gat,94,259,0		warp	dicasteswarp1009	1,1,dic_in01.gat,390,53
+dic_in01.gat,390,55,0		warp	dicasteswarp1010	1,1,dicastes01.gat,95,257
+//居住区域
+dicastes01.gat,283,285,0	warp	dicasteswarp1011	1,1,dic_in01.gat,45,30
+dic_in01.gat,45,28,0		warp	dicasteswarp1012	1,1,dicastes01.gat,281,284
+//研究所
+dicastes01.gat,163,297,0	warp	dicasteswarp1013	1,1,dic_in01.gat,371,101
+dic_in01.gat,372,99,0		warp	dicasteswarp1014	1,1,dicastes01.gat,163,295
+//アハト執務室
+dic_in01.gat,299,248,0		warp	dicasteswarp1015	1,1,dic_in01.gat,262,191
 
 
 
@@ -2344,3 +2478,17 @@ lighthalzen.gat,41,52,0	warp	s_atelierwarp1013	1,1,s_atelier.gat,18,75
 s_atelier.gat,18,79,0	warp	s_atelierwarp1014	1,1,lighthalzen.gat,41,56
 s_atelier.gat,32,64,0	warp	s_atelierwarp1015	1,1,s_atelier.gat,80,63
 s_atelier.gat,80,66,0	warp	s_atelierwarp1016	1,1,s_atelier.gat,32,62
+
+
+
+//---ビフロスト追加マップ
+
+
+//==============================================================
+// -----  ビフロスト -----
+// splendide.gat	前線基地 スプレンディッド
+// -----
+// bif_fild01.gat	ビフロストフィールド 01
+//==============================================================
+//前線基地 スプレンディッド⇒ビフロストフィールド 01
+splendide.gat,275,390,0		warp	bifrostwarp0501	1,1,bif_fild01.gat,316,50

@@ -5114,7 +5114,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal *= 2;	// スパノビの嫁が旦那にヒールすると2倍になる
 			if(skillid == AB_HIGHNESSHEAL)
 				heal = heal * (170 + 30 * skilllv) / 100;
-			if(sc && sc->data[SC_KAITE].timer != -1) {	// カイト
+			if(sc && sc->data[SC_KAITE].timer != -1
+#ifndef PRE_RENEWAL
+				&& atn_rand()%100 < 50
+#endif
+			) {	// カイト
 				clif_misceffect2(bl,438);
 				if(--sc->data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
@@ -5155,7 +5159,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal = 0;	// バーサーク中はヒール０
 			if(dstsd && pc_isgear(dstsd))
 				heal = 0; 	// 魔道ギア搭乗中はヒール０
-			if(sc && sc->data[SC_KAITE].timer != -1) {	// カイト
+			if(sc && sc->data[SC_KAITE].timer != -1
+#ifndef PRE_RENEWAL
+				&& atn_rand()%100 < 50
+#endif
+			) {	// カイト
 				clif_misceffect2(bl,438);
 				if(--sc->data[SC_KAITE].val2 <= 0)
 					status_change_end(bl, SC_KAITE, -1);
@@ -13135,6 +13143,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			if(sd->sc.data[SC_PRIEST].timer!=-1)
 				sp = sp * 5;
 			break;
+#ifndef PRE_RENEWAL
+		case AS_SONICBLOW:	/* ソニックブロー */
+			if(sd->sc.data[SC_ASSASIN].timer != -1)
+				sp = sp * 2;
+			break;
+#endif
 		case SL_SMA:		/* エスマ */
 		case SL_STUN:		/* エスタン */
 		case SL_STIN:		/* エスティン */
@@ -13188,6 +13202,21 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 			break;
 	}
+#ifndef PRE_RENEWAL
+	// バードとダンサーの魂
+	if(sd->sc.data[SC_BARDDANCER].timer != -1)
+		sp += sp * 50 / 100;	/* 消費SP増加 */
+	// ウィザードの魂
+	if(sd->sc.data[SC_WIZARD].timer != -1) {
+		for(i=0; i<10; i++) {
+			if(itemid[i] <= 0)
+				continue;
+			if(itemid[i] == 717)
+				sp += sp * 50 / 100;	/* 消費SP増加 */
+		}
+	}
+#endif
+
 	if(sd->dsprate!=100)
 		sp=sp*sd->dsprate/100;	/* 消費SP修正 */
 
@@ -14757,6 +14786,20 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			if(type >= 0) {
 				reduce_time += (sc->data[type].val1*3 + sc->data[type].val2 + (sc->data[type].val3>>16));
 			}
+
+#ifndef PRE_RENEWAL
+			/* ウィザードの魂 */
+			if(sc->data[SC_WIZARD].timer != -1) {
+				int itemid;
+				for(i=0; i<10; i++) {
+					itemid = skill_db[skill_get_skilldb_id(skillid)].itemid[i];
+					if(itemid <= 0)
+						continue;
+					if(itemid == 717)
+						reduce_time -= 50;
+				}
+			}
+#endif
 
 			/* スロウキャスト */
 			if(sc->data[SC_SLOWCAST].timer != -1)

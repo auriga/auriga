@@ -7586,6 +7586,10 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val1 * 10) / 100;
 		if(sd->sc.data[SC_DEATHHURT].timer != -1)	// デスハート
 			hp = hp * (100 - sd->sc.data[SC_DEATHHURT].val2) / 100;
+#ifndef PRE_RENEWAL
+		if(sd->sc.data[SC_FUSION].timer != -1)	// 太陽と月と星の融合
+			hp = hp * 25 / 100;
+#endif
 	}
 	if(sp > 0) {
 		bonus = (sd->paramc[3]<<1) + 100 + pc_checkskill(sd,MG_SRECOVERY)*10;
@@ -10046,6 +10050,9 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC_SIRCLEOFNATURE].timer == -1 &&	// 循環する自然の音状態はSPが回復しない
 		    sd->sc.data[SC_STRIKING].timer == -1 &&	// ストライキング状態はSPが回復しない
 		    sd->sc.data[SC_SUMMON_ELEM].timer == -1 &&	// サモンエレメンタル状態はSPが回復しない
+#ifndef PRE_RENEWAL
+		    sd->sc.data[SC_FUSION].timer == -1 &&	// 太陽と月と星の融合状態はSPが回復しない
+#endif
 		    sd->sc.data[SC_NATURAL_HEAL_STOP].timer == -1 )
 			pc_natural_heal_sp(sd);
 	} else {

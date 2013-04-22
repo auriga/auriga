@@ -323,8 +323,8 @@ moc_fild02.gat,378,272,0	warp	moroccwarp0201		1,1,pay_gld.gat,20,276
 
 //moc_fild04.gat,219,327,0	warp	moroccwarp0401		3,4,anthell01.gat,35,262
 //moc_fild15.gat,258,253,0	warp	moroccwarp0402		3,3,anthell01.gat,35,262
-moc_fild20.gat,156,143,0	warp	moroccwarp0401		1,1,anthell01.gat,35,263
-moc_fild20.gat,337,315,0	warp	moroccwarp0402		1,1,anthell02.gat,168,170
+//moc_fild20.gat,156,143,0	warp	moroccwarp0401		1,1,anthell01.gat,35,263
+//moc_fild20.gat,337,315,0	warp	moroccwarp0402		1,1,anthell02.gat,168,170
 
 moc_fild04.gat,219,327,0	script	#moroccwarp0401		45,3,4,{
 	set ANTHELL_FLAG,0;
@@ -776,6 +776,8 @@ cmd_fild08.gat,76,31,0		warp	comodowarp5029		2,1,cmd_fild09.gat,76,375
 cmd_fild09.gat,75,382,0		warp	comodowarp5030		2,1,cmd_fild08.gat,75,42
 cmd_fild08.gat,309,48,0		warp	comodowarp5031		2,1,cmd_fild09.gat,307,374
 cmd_fild09.gat,309,381,0	warp	comodowarp5032		2,1,cmd_fild08.gat,309,60
+cmd_fild08.gat,335,355,0	warp	comodowarp5033		1,1,anthell01.gat,35,263
+cmd_fild08.gat,348,82,0		warp	comodowarp5034		1,1,anthell02.gat,168,170
 
 
 
@@ -1199,6 +1201,9 @@ ein_fild05.gat,76,294,0		warp	hugelwarp5028	1,1,ein_fild04.gat,336,292
 //アインブロックフィールド05⇔アインブロックフィールド06
 ein_fild05.gat,376,183,0	warp	hugelwarp5029	1,1,ein_fild06.gat,47,166
 ein_fild06.gat,42,171,0		warp	hugelwarp5030	1,1,ein_fild05.gat,371,183
+//アインブロックフィールド01⇔アインブロックフィールド05
+ein_fild01.gat,106,34,0		warp	hugelwarp5031	1,1,ein_fild05.gat,172,366
+ein_fild05.gat,172,371,0	warp	hugelwarp5032	1,1,ein_fild01.gat,106,40
 
 //==============================================================
 //オーディン神殿01⇔オーディン神殿02
@@ -1445,6 +1450,25 @@ bra_fild01.gat,72,34,0		warp	brasiliswarp0101	1,1,brasilis.gat,309,334
 
 
 
+//---エルディカスティス追加マップ
+
+
+//==============================================================
+// -----  エルディカスティス -----
+// dic_fild01.gat	カミダル山麓 01
+// dic_fild02.gat	カミダル山麓 02
+// -----
+// dic_dun01.gat	カミダルトンネル
+//==============================================================
+//カミダル山麓 01⇒カミダルトンネル
+dic_fild01.gat,24,79,0		warp	dicasteswarp0401	1,1,dic_dun01.gat,366,45
+
+//カミダル山麓 01⇔カミダル山麓 02
+dic_fild01.gat,69,23,0		warp	dicasteswarp5001	1,1,dic_fild02.gat,70,373
+dic_fild02.gat,71,375,0		warp	dicasteswarp5002	1,1,dic_fild01.gat,69,25
+
+
+
 //---デワタ追加マップ
 
 
@@ -1463,3 +1487,17 @@ dew_fild01.gat,57,273,0		warp	dewatawarp0102	1,1,dew_in01.gat,15,33
 
 //デワタフィールド 01⇒イスタナ洞窟
 dew_fild01.gat,48,65,0		warp	dewatawarp0401	1,1,dew_dun02.gat,302,30
+
+
+
+//---ビフロスト追加マップ
+
+
+//==============================================================
+// -----  ビフロスト -----
+// bif_fild01.gat	ビフロストフィールド 01
+// -----
+// splendide.gat	前線基地 スプレンディッド
+//==============================================================
+//ビフロストフィールド 01⇒前線基地 スプレンディッド
+bif_fild01.gat,318,48,0		warp	bifrostwarp0101	1,1,splendide.gat,270,378

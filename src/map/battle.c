@@ -2518,6 +2518,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					cardfix += sc->data[SC_DELUGE].val4;
 			}
 			if(t_sc) {
+				// カイト
+				if(t_sc->data[SC_KAITE].timer != -1)
+					cardfix += 300;
 				// スパイダーウェブ
 //				if(t_sc->data[SC_SPIDERWEB].timer != -1 && s_ele == ELE_FIRE)
 //					cardfix += 100;
@@ -2738,7 +2741,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				add_rate -= sc->data[SC_MELODYOFSINK].val1 * 5;
 			}
 		}
-
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
 		case NJ_SYURIKEN:	// 手裏剣投げ
@@ -7496,8 +7498,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			}
 		}
 		// カイト
-		if(damage > 0 && sc && sc->data[SC_KAITE].timer != -1 && skillid != HW_GRAVITATION)
-		{
+		if(damage > 0 && sc && sc->data[SC_KAITE].timer != -1 && skillid != HW_GRAVITATION
+#ifndef PRE_RENEWAL
+			 && src == dsrc && atn_rand()%100 < 50
+#endif
+		) {
 			if(src->type == BL_PC || (status_get_lv(src) < 80 && !(status_get_mode(src)&MD_BOSS)))
 			{
 				int idx;
