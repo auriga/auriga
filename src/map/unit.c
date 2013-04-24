@@ -883,12 +883,28 @@ int unit_stop_walking(struct block_list *bl,int type)
  * 位置移動計算（PET, HOM, MERC, ELEM用）
  *------------------------------------------
  */
-int unit_calc_pos(struct unit_data *ud,int tx,int ty,int dir,int distance)
+int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance)
 {
+	struct pet_data   *pd = NULL;
+	struct homun_data *hd = NULL;
+	struct merc_data *mcd = NULL;
+	struct elem_data *eld = NULL;
+	struct unit_data  *ud = NULL;
 	int x,y,dx,dy;
 	int i,j=0,k;
 
-	nullpo_retr(0, ud);
+	nullpo_retr(0, bl);
+
+	if( (pd = BL_DOWNCAST( BL_PET, bl ) ) ) {
+		ud = &pd->ud;
+	} else if( (hd = BL_DOWNCAST( BL_HOM, bl ) ) ) {
+		ud = &hd->ud;
+	} else if( (mcd = BL_DOWNCAST( BL_MERC, bl ) ) ) {
+		ud = &mcd->ud;
+	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
+		ud = &eld->ud;
+	}
+	if( ud == NULL ) return 0;
 
 	ud->to_x = tx;
 	ud->to_y = ty;

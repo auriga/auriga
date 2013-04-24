@@ -1,4 +1,11 @@
 ----------------------------------------
+//1047 [2013/04/25] by refis
+
+・ELEM, HOM, MERC, PET呼び出し時、unit_datasetより先にunit_calc_posが呼ばれるため
+　nullpoエラーが発生するのでunit_calc_posの第一引数をblock_listに変更して回避させる
+（elem.c homun.c merc.c pet.c unit.*）
+
+----------------------------------------
 //1046 [2013/04/23] by refis
 
 ・太陽と月と星の融合、カイト、バードとダンサーの魂、

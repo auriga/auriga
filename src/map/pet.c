@@ -278,7 +278,7 @@ static int pet_data_init(struct map_session_data *sd)
 	pd->bl.prev = pd->bl.next = NULL;
 	pd->bl.x    = pd->ud.to_x = sd->bl.x;
 	pd->bl.y    = pd->ud.to_y = sd->bl.y;
-	unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+	unit_calc_pos(&pd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 	pd->bl.x  = pd->ud.to_x;
 	pd->bl.y  = pd->ud.to_y;
 	pd->bl.id = npc_get_new_npc_id();
@@ -932,7 +932,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		pd->speed = (sd->speed >> 1);
 		if(pd->speed <= 0)
 			pd->speed = 1;
-		unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+		unit_calc_pos(&pd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 			pet_randomwalk(pd,tick);
 		return 0;
@@ -1101,7 +1101,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			pd->speed = status_get_speed(&sd->bl);
 		else
 			pd->speed = sd->petDB->speed;
-		unit_calc_pos(&pd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+		unit_calc_pos(&pd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 		if(!unit_walktoxy(&pd->bl,pd->ud.to_x,pd->ud.to_y))
 			pet_randomwalk(pd,tick);
 	}

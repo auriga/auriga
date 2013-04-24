@@ -44,7 +44,7 @@ int unit_stop_walking(struct block_list *bl,int type);
 int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag);
 int unit_setdir(struct block_list *bl,int dir);
 
-int unit_calc_pos(struct unit_data *ud,int tx,int ty,int dir,int distance);
+int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance);
 
 // そこまで歩行でたどり着けるかの判定
 int unit_can_reach(struct block_list *bl,int x,int y);

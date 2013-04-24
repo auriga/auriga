@@ -319,7 +319,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 		eld->speed = (msd->speed >> 1);
 		if(eld->speed <= 0)
 			eld->speed = 1;
-		unit_calc_pos(&eld->ud,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
+		unit_calc_pos(&eld->bl,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
 		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
 		return 0;
@@ -408,7 +408,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 		if(eld->ud.walktimer != -1 && path_distance(eld->ud.to_x,eld->ud.to_y,msd->bl.x,msd->bl.y) <= MIN_ELEMDISTANCE)
 			return 0;
 		eld->speed = msd->speed;
-		unit_calc_pos(&eld->ud,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
+		unit_calc_pos(&eld->bl,msd->bl.x,msd->bl.y,msd->dir,MIN_ELEMDISTANCE);
 		unit_walktoxy(&eld->bl,eld->ud.to_x,eld->ud.to_y);
 
 		return 0;

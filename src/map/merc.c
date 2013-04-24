@@ -441,7 +441,7 @@ static int merc_data_init(struct map_session_data *sd)
 	mcd->bl.m    = sd->bl.m;
 	mcd->bl.x    = mcd->ud.to_x = sd->bl.x;
 	mcd->bl.y    = mcd->ud.to_y = sd->bl.y;
-	unit_calc_pos(&mcd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+	unit_calc_pos(&mcd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 	mcd->bl.x    = mcd->ud.to_x;
 	mcd->bl.y    = mcd->ud.to_y;
 	mcd->bl.type = BL_MERC;
@@ -606,7 +606,7 @@ int merc_return_master(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, mcd = sd->mcd);
 
-	unit_calc_pos(&mcd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+	unit_calc_pos(&mcd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 	unit_walktoxy(&mcd->bl,mcd->ud.to_x,mcd->ud.to_y);
 	return 0;
 }

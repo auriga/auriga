@@ -570,7 +570,7 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->bl.prev = hd->bl.next = NULL;
 	hd->bl.x    = hd->ud.to_x = sd->bl.x;
 	hd->bl.y    = hd->ud.to_y = sd->bl.y;
-	unit_calc_pos(&hd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+	unit_calc_pos(&hd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 	hd->bl.x             = hd->ud.to_x;
 	hd->bl.y             = hd->ud.to_y;
 	hd->bl.id            = npc_get_new_npc_id();
@@ -906,7 +906,7 @@ int homun_return_master(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 	nullpo_retr(0, hd = sd->hd);
 
-	unit_calc_pos(&hd->ud,sd->bl.x,sd->bl.y,sd->dir,2);
+	unit_calc_pos(&hd->bl,sd->bl.x,sd->bl.y,sd->dir,2);
 	unit_walktoxy(&hd->bl,hd->ud.to_x,hd->ud.to_y);
 	return 0;
 }
