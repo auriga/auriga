@@ -1,4 +1,20 @@
 ----------------------------------------
+//1048 [2013/04/29] by refis
+
+・カプラ転送拡張、ウンバラ属性石分解NPC調整を取り込み（npc_town_umbala.txt npc_misc_kafra.txt）
+	Thanks boitata さん
+
+・MAP定義を更新（conf/map_auriga.conf）
+
+・ガンスリンガー、忍者、メカニック関連NPCを追加（npc_job_28gunslinger.txt npc_job_29ninja.txt npc_job_thirdclass.txt）
+
+・頭装備作成NPCを追加（db/quest_db.txt npc_quest_hat6.txt）
+
+・次元の狭間01のワープポイント実装（npc_warp_fild.txt）
+
+・次元の狭間01のコンチネンタルガードが接触反応するので修正（npc_town_morocc.txt）
+
+----------------------------------------
 //1047 [2013/04/25] by refis
 
 ・ELEM, HOM, MERC, PET呼び出し時、unit_datasetより先にunit_calc_posが呼ばれるため

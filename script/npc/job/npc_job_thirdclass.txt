@@ -392,7 +392,7 @@ prontera.gat,125,208,5	script	グリフォン管理兵	105,{
 // 魔導ギアレンタル
 //------------------------------------------
 
-prontera.gat,163,178,3	script	魔導ギア管理兵#pro	105,{
+-	script	3rdRentalGear	-1,{
 	if(Job != Job_Mechanic) {
 		mes "[魔導ギア管理兵]";
 		mes "私はメカニックの方へお貸しする";
@@ -407,7 +407,6 @@ prontera.gat,163,178,3	script	魔導ギア管理兵#pro	105,{
 	next;
 	switch(select("カートを借りる","魔導ギアに乗る","乗らない")) {
 	case 1:
-		//未調査
 		if(checkcart()) {
 			mes "[魔導ギア管理兵]";
 			mes "既にカートを";
@@ -418,7 +417,6 @@ prontera.gat,163,178,3	script	魔導ギア管理兵#pro	105,{
 		close;
 	case 2:
 		if(checkgear()) {
-			//未調査
 			mes "[魔導ギア管理兵]";
 			mes "すでに魔導ギアに乗って";
 			mes "いらっしゃいますね。";
@@ -433,7 +431,6 @@ prontera.gat,163,178,3	script	魔導ギア管理兵#pro	105,{
 			mes "習得してからお越しください。";
 			close;
 		}
-		//未調査
 		setgear;
 		close;
 	case 3:
@@ -445,6 +442,9 @@ prontera.gat,163,178,3	script	魔導ギア管理兵#pro	105,{
 	}
 }
 
+prontera.gat,163,178,3		duplicate(3rdRentalGear)	魔導ギア管理兵#pro		105
+dicastes01.gat,187,203,3	duplicate(3rdRentalGear)	魔導ギア管理兵#dicas	105
+mora.gat,91,112,3			duplicate(3rdRentalGear)	魔導ギア管理兵#mora		105
 
 //==========================================
 // ルーン原石販売員 - ルーンナイト
