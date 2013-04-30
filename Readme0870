@@ -1,4 +1,12 @@
 ----------------------------------------
+//1049 [2013/05/01] by refis
+
+・skill_cast_dbをリニューアルデータに更新（skill_cast_db.txt, skill_cast_db_pre.txt）
+
+・1048で忍者関連NPCがduplicateエラーを起こしていたのを修正（npc_job_29ninja.txt）
+	Thanks うに〜く さん
+
+----------------------------------------
 //1048 [2013/04/29] by refis
 
 ・カプラ転送拡張、ウンバラ属性石分解NPC調整を取り込み（npc_town_umbala.txt npc_misc_kafra.txt）
