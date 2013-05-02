@@ -8797,6 +8797,7 @@ int battle_config_read(const char *cfgName)
 		{ "elem_attackskill_rate",              &battle_config.elem_attackskill_rate,              500      },
 		{ "slave_inherit_mode",                 &battle_config.slave_inherit_mode,                 2        },
 		{ "no_casting_int",                     &battle_config.no_cast_int,                        115      },
+		{ "monster_atk2_to_matk",               &battle_config.monster_atk2_to_matk,               1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

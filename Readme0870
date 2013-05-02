@@ -1,4 +1,15 @@
 ----------------------------------------
+//1050 [2013/05/03] by refis
+
+・頭装備作成NPCのミスを修正（map_auriga.conf npc_quest_hat6.txt）
+
+・モンスターのATK, MATKを修正
+	-> mob_db.txtのATK1, ATK2項目を暫定値で更新（db/mob_db.txt）
+	-> 戦闘設定「monster_atk2_to_matk」を追加（battle_auriga.conf battle.* status.c）
+		「PRE_RENEWAL」無効時にyesの場合、mob_db.txtのATK2項目をMATKとして扱い、RENEWAL用計算されます
+		それ以外の場合、今まで同様の計算処理になります
+
+----------------------------------------
 //1049 [2013/05/01] by refis
 
 ・skill_cast_dbをリニューアルデータに更新（skill_cast_db.txt, skill_cast_db_pre.txt）

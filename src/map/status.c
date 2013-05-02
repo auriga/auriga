@@ -4292,7 +4292,12 @@ int status_get_atk(struct block_list *bl)
 		struct mob_data *md = (struct mob_data *)bl;
 		if(md) {
 			int guardup_lv = md->guardup_lv;
-			atk = mob_db[md->class_].atk1;
+#ifndef PRE_RENEWAL
+			if(battle_config.monster_atk2_to_matk)
+				atk = mob_db[md->class_].atk1 * 8 / 10;
+			else
+#endif
+				atk = mob_db[md->class_].atk1;
 			if(guardup_lv > 0)
 				atk += 1000*guardup_lv;
 		}
@@ -4392,7 +4397,12 @@ int status_get_atk2(struct block_list *bl)
 			struct mob_data *md = (struct mob_data *)bl;
 			if(md) {
 				int guardup_lv = md->guardup_lv;
-				atk2 = mob_db[md->class_].atk2;
+#ifndef PRE_RENEWAL
+				if(battle_config.monster_atk2_to_matk)
+					atk2 = mob_db[md->class_].atk1 * 12 / 10;
+				else
+#endif
+					atk2 = mob_db[md->class_].atk2;
 				if(guardup_lv > 0)
 					atk2 += 1000*guardup_lv;
 			}
@@ -4491,7 +4501,12 @@ int status_get_matk1(struct block_list *bl)
 		struct status_change *sc = status_get_sc(bl);
 		int int_ = status_get_int(bl);
 
-		matk1 = int_+(int_/5)*(int_/5);
+#ifndef PRE_RENEWAL
+		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
+			matk1 = mob_db[status_get_class(bl)].atk2 * 13 / 10;
+		else
+#endif
+			matk1 = int_+(int_/5)*(int_/5);
 
 		// MOBのmax_sp値をMATK補正値で乗っ取る時
 		if(battle_config.mob_take_over_sp == 1) {
@@ -4546,7 +4561,12 @@ int status_get_matk2(struct block_list *bl)
 		struct status_change *sc = status_get_sc(bl);
 		int int_ = status_get_int(bl);
 
-		matk2 = int_+(int_/7)*(int_/7);
+#ifndef PRE_RENEWAL
+		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
+			matk2 = mob_db[status_get_class(bl)].atk2 * 7 / 10;
+		else
+#endif
+			matk2 = int_+(int_/7)*(int_/7);
 
 		// MOBのmax_sp値をMATK補正値で乗っ取る時
 		if(battle_config.mob_take_over_sp == 1) {

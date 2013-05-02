@@ -601,6 +601,7 @@ extern struct Battle_Config {
 	int elem_attackskill_rate;
 	int slave_inherit_mode;
 	int no_cast_int;
+	int monster_atk2_to_matk;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
