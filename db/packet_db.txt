@@ -1110,13 +1110,13 @@
 0x0841,4
 0x0842,6,recall2,2
 0x0843,6,gmremove2,2
-0x0844,2
+0x0844,2,npcpointshopopen,0
 0x0845,10
 0x0846,4
 0x0847,-1
-0x0848,-1
+0x0848,-1,npcpointshopbuy,2
 0x0849,16
-0x084a,2
+0x084a,2,npcpointshopclose,0
 0x084b,19
 0x084c,10
 0x084d,10
@@ -1242,7 +1242,7 @@
 0x08c6,4
 0x08c7,-1
 0x08c8,34
-0x08c9,4,pointshopopen,2
+0x08c9,4,npcpointshopitemlist,2
 0x08ca,-1
 0x08cb,-1
 0x08cc,109
@@ -3004,7 +3004,7 @@
 0x0940,-1,sellbuyingstorereq,2:4:8:12
 0x096a,6,getcharnamerequest,2
 
-//2013-03-20Ragexe
+//2013-03-20eRagexe
 0x0078,55
 0x007c,44
 0x00aa,9

@@ -252,6 +252,7 @@ void clif_partyleader_info(struct party *p, int old_account_id, int account_id);
 void clif_elementball(struct map_session_data *sd);
 void clif_privateitem(struct map_session_data *sd, short idx, char flag);
 void clif_send_partyconfig(struct map_session_data *sd);
+void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

@@ -438,7 +438,7 @@ struct item {
 	unsigned int id;
 	short nameid;
 	short amount;
-	unsigned short equip;
+	unsigned int equip;
 	char identify;
 	char refine;
 	char attribute;

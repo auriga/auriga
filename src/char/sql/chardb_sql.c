@@ -85,7 +85,7 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 			item[i].id        = (unsigned int)atoi(sql_row[0]);
 			item[i].nameid    = atoi(sql_row[1]);
 			item[i].amount    = atoi(sql_row[2]);
-			item[i].equip     = atoi(sql_row[3]);
+			item[i].equip     = (unsigned int)atoi(sql_row[3]);
 			item[i].identify  = atoi(sql_row[4]);
 			item[i].refine    = atoi(sql_row[5]);
 			item[i].attribute = atoi(sql_row[6]);

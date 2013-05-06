@@ -2547,13 +2547,10 @@ R 08ce
 R 08cf <ID>.l <val>.w <num>.w
 	影狼・朧スキル用の球体
 	<val>.wは属性
-R 08d0 <?>.w <?>.w <?>.w <?>.B
-	<?>.Bはtrue/falseのみ
-	未調査
-R 08d1 <dummy>.w <?>.w <?>.B
-	<dummy>.wは未使用で無視されているっぽい
-	<?>.wは<?>.Bがfalseの時のみ読み込む
-	未調査
+R 08d0 <index>.w <equip point>.w <flag>.w <type>.B
+	アイテム装備応答。type=00の場合装備失敗? equip pointもゴミの模様
+R 08d1 <index>.w <equip point>.w <type>.B
+	装備解除応答。type=00の場合失敗? equip pointもゴミの模様
 R 08d2 <ID>.l <x>.w <y>.w
 	MAP上のx,y地点へ高速移動する
 	残影用のエフェクト？
@@ -2763,11 +2760,9 @@ R 0915 <len>.w <type>.B <ID>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w 
 	type=10 ELEM(ソーサラーの妖精)
 S 0916
 	未調査
-S 0917-0969
+S 0917-096a
 	未定義
 	ヘッダスクランブルの予約用っぽい
-S 096a <?>.l
-	未調査
 R 096b <?>.w
 	未調査
 R 096c <?>.l
@@ -2789,18 +2784,19 @@ S 0973
 	未調査
 S 0974
 	未調査
-S 0975
+R 0975 <len>.w <name>.24B { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
 	kROでは無視するよう処理されている
-	未調査
-R 0976
+	jRO用カプラさんに預けてある消耗品&収集品リスト
+	0x904の上位版
+R 0976 <len>.w <name>.24B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	kROでは無視するよう処理されている
-	未調査
-R 0977 <?>.l <?>.l <?>.l
-	未調査
-S 0978
-	未調査
-S 0979
-	未調査
+	カプラさんに預けてある装備リスト、0x905の上位版
+R 0977 <ID>.l <CurHP>.l <MaxHP>.l
+	モンスターのHP情報
+S 0978 <ID>.l
+	サーバー統合前情報要求
+R 0979 <worldname>.24B <charname>.18B
+	サーバー統合前情報
 R 097a
 	未調査
 R 097b <len>.w <?>.w <?>.w <?>.w { <type>.l <?>.w <?>.B }.7B
@@ -2808,3 +2804,53 @@ R 097b <len>.w <?>.w <?>.w <?>.w { <type>.l <?>.w <?>.B }.7B
 	未調査
 R 0980 <len>.w <?>.l { <?>.l <?>.w <?>.w <?>.B <?>.l }.11B
 	未調査
+R 0983 <type>.w <ID>.l <switch>.B <maxtick>.l <tick>.l <val1>.l <val2>.l <val3>.l
+	増強系スキル使用時のメッセージ色々、0x43fの上位版
+R 0984 <ID>.l <type>.w <maxtick>.l <tick>.l <val1>.l <val2>.l <val3>.l
+	0x8ffの上位版
+	0x983の<switch>.Bを常に1で呼び出している
+R 0985 <len>.w { <skillid>.w <maxtick>.l <tick>.l }.10B*
+	0x43eの上位版
+	スキル固有ディレイリスト？
+R 0990 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.l <type>.B <fail>.B <time>.l <flag?>.w
+	アイテム獲得、0x2d4の上位版
+R 0991 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B
+	所有消耗品&収集品リスト
+	矢の場合は<WearState>.wが0x8000になる
+	0x900の上位版
+	<attribute>
+	0x1 鑑定済み
+	0x2 個人タブ
+R 0992 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
+	所有装備リスト、0x901の上位版
+	<attribute>
+	0x1 鑑定済み
+	0x2 破損
+	0x4 個人タブ
+R 0993 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
+	カート内アイテム。消耗品/収集品
+	0x902の上位版
+R 0994 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
+	カート内装備リスト、0x903の上位版
+R 0995 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
+	カプラさんに預けてある消耗品&収集品リスト
+	0x904の上位版
+R 0996 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
+	カプラさんに預けてある装備リスト、0x905の上位版
+R 0997 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
+	プレイヤー装備ウィンドウ情報
+	0x906の上位版
+S 0998 <index>.w <equip type>.l
+	アイテム装備、0xa9の上位版
+R 0999 <index>.w <equip point>.l <flag>.w <type>.B
+	アイテム装備応答。type=00の場合装備失敗?
+	0xaaの上位版
+R 099a <index>.w <equip point>.l <type>.B
+	装備解除応答。type=00の場合失敗?
+	0xacの上位版
+R 099b <len>.w <type>.w <mapInfoTable>.?B
+	0x2e7の上位版
+	未調査
+R 099f <dst ID>.l <src ID>.l <X>.w <Y>.w <type>.l <RadiusRange>.B <isVisible>.B
+	スキルユニット生成
+	0x8c7の上位版

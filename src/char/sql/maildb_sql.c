@@ -133,7 +133,7 @@ bool maildb_sql_read_mail(int char_id,const struct mail *m,struct mail_data md[M
 			md[i].item.id        = (unsigned int)atoi(sql_row[9]);
 			md[i].item.nameid    = atoi(sql_row[10]);
 			md[i].item.amount    = atoi(sql_row[11]);
-			md[i].item.equip     = atoi(sql_row[12]);
+			md[i].item.equip     = (unsigned int)atoi(sql_row[12]);
 			md[i].item.identify  = atoi(sql_row[13]);
 			md[i].item.refine    = atoi(sql_row[14]);
 			md[i].item.attribute = atoi(sql_row[15]);

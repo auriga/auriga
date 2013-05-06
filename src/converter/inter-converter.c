@@ -238,7 +238,7 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 	md->item.id        = (unsigned int)tmp_int[3];
 	md->item.nameid    = tmp_int[4];
 	md->item.amount    = tmp_int[5];
-	md->item.equip     = tmp_int[6];
+	md->item.equip     = (unsigned int)tmp_int[6];
 	md->item.identify  = tmp_int[7];
 	md->item.refine    = tmp_int[8];
 	md->item.attribute = tmp_int[9];

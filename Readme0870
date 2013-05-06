@@ -1,4 +1,25 @@
 ----------------------------------------
+//1053 [2013/05/07] by refis
+
+・PACKETVER「20120404」を追加 (vc_make.bat bcc32_make.bat Makefile clif.* mob.c)
+	-> パケット0x977「モンスターHPバー更新」を実装
+
+・PACKETVER「20120618」を追加 (vc_make.bat bcc32_make.bat Makefile clif.c)
+	-> 状態異常アイコン表示に0x8ffではなく0x983を利用するようにする
+
+・アイテム情報の装着箇所情報を修正
+ (common/mmo.h, char/sql/chardb_sql.c, char/sql/maildb_sql.c, char/txt/chardb_txt.c, char/txt/maildb_txt.c,
+　char/txt/storagedb_txt.c, converter/char-converter.c, converter/inter-converter.c)
+
+・TXT:AURIGA_JOURNALを17に引き上げ (common/journal.c.)
+
+・SQL:インベントリテーブルの装着箇所情報を修正（sql-files/main.sql, sql-files/Auriga1053_changetable.sql）
+
+・テーブル定義更新 (db/packet_db.txt clif.c skill.h status.h)
+
+・client_packet.txtを少し追記と修正 (doc/client_packet.txt)
+
+----------------------------------------
 //1052 [2013/05/07] by refis
 
 ・map_sql.dspの誤り修正（map_sql.dsp）

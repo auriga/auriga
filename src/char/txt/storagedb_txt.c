@@ -114,7 +114,7 @@ static int storage_fromstr(char *str,struct storage *p)
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
 			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = tmp_int[3];
+			p->store_item[i].equip     = (unsigned int)tmp_int[3];
 			p->store_item[i].identify  = tmp_int[4];
 			p->store_item[i].refine    = tmp_int[5];
 			p->store_item[i].attribute = tmp_int[6];
@@ -304,7 +304,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
 			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = tmp_int[3];
+			p->store_item[i].equip     = (unsigned int)tmp_int[3];
 			p->store_item[i].identify  = tmp_int[4];
 			p->store_item[i].refine    = tmp_int[5];
 			p->store_item[i].attribute = tmp_int[6];

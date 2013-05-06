@@ -6,6 +6,8 @@ CC = gcc -pipe
 GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 
 # 2012-09-25aRagexeRE: 20120925
+# 2012-06-18aRagexeRE: 20120618
+# 2012-04-04aRagexeRE: 20120404
 # 2012-03-28aRagexeRE: 20120328
 # 2012-03-07aRagexeRE: 20120307
 # 2012-02-22aRagexeRE: 20120222

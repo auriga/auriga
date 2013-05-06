@@ -1724,6 +1724,20 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		map_freeblock_lock();
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
+	} else {
+		struct map_session_data *sd = NULL;
+
+		if(src->type == BL_PC) {
+			sd = (struct map_session_data *)src;
+		} else if(src->type == BL_HOM) {
+			sd = ((struct homun_data *)src)->msd;
+		} else if(src->type == BL_MERC) {
+			sd = ((struct merc_data *)src)->msd;
+		} else if(src->type == BL_ELEM) {
+			sd = ((struct elem_data *)src)->msd;
+		}
+		if(sd)
+			clif_monster_hpinfo(sd, md);
 	}
 	return 0;
 }

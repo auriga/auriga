@@ -149,7 +149,7 @@ bool maildb_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[M
 			md[i].item.id        = (unsigned int)tmp_int[3];
 			md[i].item.nameid    = tmp_int[4];
 			md[i].item.amount    = tmp_int[5];
-			md[i].item.equip     = tmp_int[6];
+			md[i].item.equip     = (unsigned int)tmp_int[6];
 			md[i].item.identify  = tmp_int[7];
 			md[i].item.refine    = tmp_int[8];
 			md[i].item.attribute = tmp_int[9];

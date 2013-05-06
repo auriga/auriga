@@ -9613,7 +9613,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 	WBUFL(buf,4)=bl->id;
 	WBUFB(buf,8)=flag;
 	clif_send(buf,packet_db[0x196].len,bl,AREA);
-#elif PACKETVER < 20111102
+#elif PACKETVER < 20120618
 	WBUFW(buf,0)=0x43f;
 	WBUFW(buf,2)=type;
 	WBUFL(buf,4)=bl->id;
@@ -9624,18 +9624,16 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 	WBUFL(buf,21)=val3;
 	clif_send(buf,packet_db[0x43f].len,bl,AREA);
 #else
-	// 0x8ffはアイコンOFFパケットを送信する必要が無い
-	if(flag == 0)
-		return;
-
-	WBUFW(buf,0)=0x8ff;
-	WBUFL(buf,2)=bl->id;
-	WBUFW(buf,6)=type;
-	WBUFL(buf,8)=tick;
-	WBUFL(buf,12)=val1;
-	WBUFL(buf,16)=val2;
-	WBUFL(buf,20)=val3;
-	clif_send(buf,packet_db[0x8ff].len,bl,AREA);
+	WBUFW(buf,0)=0x983;
+	WBUFW(buf,2)=type;
+	WBUFL(buf,4)=bl->id;
+	WBUFB(buf,8)=flag;
+	WBUFL(buf,9)=tick;	// 最大持続時間
+	WBUFL(buf,13)=tick;
+	WBUFL(buf,17)=val1;
+	WBUFL(buf,21)=val2;
+	WBUFL(buf,25)=val3;
+	clif_send(buf,packet_db[0x983].len,bl,AREA);
 #endif
 
 	return;
@@ -9652,7 +9650,7 @@ void clif_status_change_id(struct map_session_data *sd, int id, int type, unsign
 	nullpo_retv(sd);
 
 	fd=sd->fd;
-#if PACKETVER < 20111102
+#if PACKETVER < 20120618
 	WFIFOW(fd,0)=0x43f;
 	WFIFOW(fd,2)=type;
 	WFIFOL(fd,4)=id;
@@ -9663,18 +9661,16 @@ void clif_status_change_id(struct map_session_data *sd, int id, int type, unsign
 	WFIFOL(fd,21)=val3;
 	WFIFOSET(fd,packet_db[0x43f].len);
 #else
-	// 0x8ffはアイコンOFFパケットを送信する必要が無い
-	if(flag == 0)
-		return;
-
-	WFIFOW(fd,0)=0x8ff;
-	WFIFOL(fd,2)=id;
-	WFIFOW(fd,6)=type;
-	WFIFOL(fd,8)=tick;
-	WFIFOL(fd,12)=val1;
-	WFIFOL(fd,16)=val2;
-	WFIFOL(fd,20)=val3;
-	WFIFOSET(fd,packet_db[0x8ff].len);
+	WFIFOW(fd,0)=0x983;
+	WFIFOW(fd,2)=type;
+	WFIFOL(fd,4)=id;
+	WFIFOB(fd,8)=flag;
+	WFIFOL(fd,9)=tick;	// 最大持続時間
+	WFIFOL(fd,13)=tick;
+	WFIFOL(fd,17)=val1;
+	WFIFOL(fd,21)=val2;
+	WFIFOL(fd,25)=val3;
+	WFIFOSET(fd,packet_db[0x983].len);
 #endif
 
 	return;
@@ -15693,6 +15689,41 @@ void clif_privateitem(struct map_session_data *sd, short idx, char flag)
 }
 
 /*==========================================
+* モンスターHPバー更新
+*------------------------------------------
+*/
+void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
+{
+#if PACKETVER >= 20120404
+	unsigned char buf[16];
+
+	nullpo_retv(sd);
+	nullpo_retv(md);
+
+	WBUFW(buf,0) = 0x977;
+	WBUFL(buf,2) = md->bl.id;
+	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
+	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+	md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	{
+		WBUFL(buf,6) = 0xffffffff;
+		WBUFL(buf,10) = 0xffffffff;
+	} else {
+		WBUFL(buf,6) = status_get_hp(&md->bl);
+		WBUFL(buf,10) = status_get_max_hp(&md->bl);
+	}
+	if(sd->status.party_id>0) {
+		clif_send(buf,packet_db[0x977].len,&sd->bl,PARTY_AREA);
+	} else {
+		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x977].len);
+		WFIFOSET(sd->fd,packet_db[0x977].len);
+	}
+#endif
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -16854,6 +16885,36 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 	WFIFOB(fd,2)=fail;
 	WFIFOSET(fd,packet_db[0xcb].len);
 
+	return;
+}
+
+/*==========================================
+ * スペシャルアイテム購入アイコン
+ *------------------------------------------
+ */
+static void clif_parse_NpcPointShopOpen(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_NpcPointShopClose(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_NpcPointShopItemList(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
 	return;
 }
 
@@ -20162,16 +20223,6 @@ static void clif_parse_PartyBookingJoinPartyCancel(int fd,struct map_session_dat
 }
 
 /*==========================================
- * スペシャルアイテム購入アイコン
- *------------------------------------------
- */
-static void clif_parse_PointShopOpen(int fd,struct map_session_data *sd, int cmd)
-{
-	// TODO
-	return;
-}
-
-/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -20324,6 +20375,9 @@ static void packetdb_readdb(void)
 		{ clif_parse_NpcBuySellSelected,        "npcbuysellselected"        },
 		{ clif_parse_NpcBuyListSend,            "npcbuylistsend"            },
 		{ clif_parse_NpcSellListSend,           "npcselllistsend"           },
+		{ clif_parse_NpcPointShopOpen,          "npcpointshopopen"          },
+		{ clif_parse_NpcPointShopClose,         "npcpointshopclose"         },
+		{ clif_parse_NpcPointShopItemList,      "npcpointshopitemlist"      },
 		{ clif_parse_NpcPointShopBuy,           "npcpointshopbuy"           },
 		{ clif_parse_CreateChatRoom,            "createchatroom"            },
 		{ clif_parse_ChatAddMember,             "chataddmember"             },
@@ -20488,7 +20542,6 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingJoinPartyReq,  "bookingjoinpartyreq"       },
 		{ clif_parse_PartyBookingSummonMember,  "bookingsummonmember"       },
 		{ clif_parse_PartyBookingJoinPartyCancel,"bookingjoinpartycancel"   },
-		{ clif_parse_PointShopOpen,             "pointshopopen"             },
 		{ NULL,                                 NULL                        },
 	};
 

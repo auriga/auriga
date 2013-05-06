@@ -211,7 +211,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
 			p->st.inventory[i].nameid    = tmp_int[1];
 			p->st.inventory[i].amount    = tmp_int[2];
-			p->st.inventory[i].equip     = tmp_int[3];
+			p->st.inventory[i].equip     = (unsigned int)tmp_int[3];
 			p->st.inventory[i].identify  = tmp_int[4];
 			p->st.inventory[i].refine    = tmp_int[5];
 			p->st.inventory[i].attribute = tmp_int[6];
@@ -237,7 +237,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].id        = (unsigned int)tmp_int[0];
 			p->st.cart[i].nameid    = tmp_int[1];
 			p->st.cart[i].amount    = tmp_int[2];
-			p->st.cart[i].equip     = tmp_int[3];
+			p->st.cart[i].equip     = (unsigned int)tmp_int[3];
 			p->st.cart[i].identify  = tmp_int[4];
 			p->st.cart[i].refine    = tmp_int[5];
 			p->st.cart[i].attribute = tmp_int[6];
@@ -586,7 +586,7 @@ static int storage_fromstr(char *str, struct storage *p)
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
 			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = tmp_int[3];
+			p->store_item[i].equip     = (unsigned int)tmp_int[3];
 			p->store_item[i].identify  = tmp_int[4];
 			p->store_item[i].refine    = tmp_int[5];
 			p->store_item[i].attribute = tmp_int[6];
@@ -1098,7 +1098,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
 			p->store_item[i].nameid    = tmp_int[1];
 			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = tmp_int[3];
+			p->store_item[i].equip     = (unsigned int)tmp_int[3];
 			p->store_item[i].identify  = tmp_int[4];
 			p->store_item[i].refine    = tmp_int[5];
 			p->store_item[i].attribute = tmp_int[6];
