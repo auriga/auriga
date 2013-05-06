@@ -1,4 +1,17 @@
 ----------------------------------------
+//1051 [2013/05/07] by refis
+
+・dspファイルにmsg.*が抜けているので修正（map.dsp, map_sql.dsp）
+
+・2013-03-20eRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+・暫定的にPACKETVER「20120925」を追加 (vc_make.bat bcc32_make.bat Makefile *.dsp clif.c)
+	-> 0xaa、0xac、0x2d4、0x8c7、0x900、0x901、0x902、0x903、0x904、0x905、0x906の上位版、
+	   0x990、0x991、0x992、0x993、0x994、0x995、0x996、0x997、0x999、0x99a、0x99fを追加
+
+・シャドウ装備用に処理を拡張 (doc/db_ref.txt clif.c itemdb.h map.h pc.c)
+
+----------------------------------------
 //1050 [2013/05/03] by refis
 
 ・頭装備作成NPCのミスを修正（map_auriga.conf npc_quest_hat6.txt）

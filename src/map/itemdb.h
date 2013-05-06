@@ -184,6 +184,12 @@ enum {
 	LOC_COSTUME_HEAD_MB		= 0x1800,	// コスチューム中下段
 	LOC_COSTUME_HEAD_TMB	= 0x1C00,	// コスチューム上中下段
 	LOC_COSTUME_FLOOR		= 0x4000,	// コスチュームFLOOR
+	LOC_ARMOR_SHADOW		= 0x10000,	// アーマーシャドウ
+	LOC_WEAPON_SHADOW		= 0x20000,	// ウェポンシャドウ
+	LOC_SHIELD_SHADOW		= 0x40000,	// シールドシャドウ
+	LOC_SHOES_SHADOW		= 0x80000,	// シューズシャドウ
+	LOC_RACCESSORY_SHADOW	= 0x100000,	// アクセサリ右シャドウ
+	LOC_LACCESSORY_SHADOW	= 0x200000,	// アクセサリ左シャドウ
 };
 
 #endif
