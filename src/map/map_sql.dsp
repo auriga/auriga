@@ -453,11 +453,11 @@ SOURCE=..\..\src\map\elem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\map\memorial.c
+SOURCE=..\..\src\map\memorial.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\map\msg.c
+SOURCE=..\..\src\map\msg.h
 # End Source File
 # Begin Source File
 
