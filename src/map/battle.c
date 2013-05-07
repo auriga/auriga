@@ -419,6 +419,9 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage = damage*damage_rate/100;
 	}
 
+	if(tmd && tmd->mode&MD_SKILLIMMUNITY && skill_num > 0)
+		damage = 0;
+
 	if(sc && sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
 		if(skill_num == PR_SANCTUARY)
 			damage = 1;
@@ -4389,10 +4392,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
 				wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
 			}
-#endif
 			// ジャイアントグロース
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
-				if(atn_rand() % 10000 < 500) {
+				if(atn_rand() % 10000 < 1500) {
 					wd.damage *= 3;
 					if(calc_flag.lh)
 						wd.damage2 *= 3;
@@ -4401,6 +4403,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					pc_break_equip(src_sd, LOC_RARM);
 				}
 			}
+#endif
 			// シールドスペル
 			if(sc->data[SC_SHIELDSPELL_REF].timer != -1 && sc->data[SC_SHIELDSPELL_REF].val2 == 1 && !skill_num) {
 				if(target_sd && atn_rand() % 100 < sc->data[SC_SHIELDSPELL_REF].val3) {
@@ -4935,6 +4938,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
 			wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
+		}
+		// ジャイアントグロース
+		if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
+			if(atn_rand() % 10000 < 1500) {
+				wd.damage *= 3;
+				if(calc_flag.lh)
+					wd.damage2 *= 3;
+			}
+			if(src_sd && atn_rand() % 10000 < 100) {
+				pc_break_equip(src_sd, LOC_RARM);
+			}
 		}
 #endif
 		if(sc->data[SC_SPELLFIST].timer != -1 && !skill_num) {	// スペルフィスト

@@ -1248,6 +1248,17 @@ int parse_tologin(int fd)
 					WFIFOW(fdc,10) = 0;
 					WFIFOSET(fdc,12);
 #endif
+#if PACKETVER >= 20120925
+					WFIFOW(fdc,0) = 0x82d;
+					WFIFOW(fdc,2) = 29;
+					WFIFOB(fdc,4) = max_char_slot;
+					WFIFOB(fdc,5) = 0;
+					WFIFOB(fdc,6) = 0;
+					WFIFOB(fdc,7) = max_char_slot;
+					WFIFOB(fdc,8) = max_char_slot;
+					memset(WFIFOP(fdc,9), 0, 20);
+					WFIFOSET(fdc,29);
+#endif
 					mmo_char_send006b(fdc,sd);
 				} else {
 					WFIFOW(fdc,0)=0x6c;
@@ -1261,6 +1272,17 @@ int parse_tologin(int fd)
 				WFIFOL(fdc,6) = sd->account_id;
 				WFIFOW(fdc,10) = 0;
 				WFIFOSET(fdc,12);
+#endif
+#if PACKETVER >= 20120925
+				WFIFOW(fdc,0) = 0x82d;
+				WFIFOW(fdc,2) = 29;
+				WFIFOB(fdc,4) = max_char_slot;
+				WFIFOB(fdc,5) = 0;
+				WFIFOB(fdc,6) = 0;
+				WFIFOB(fdc,7) = max_char_slot;
+				WFIFOB(fdc,8) = max_char_slot;
+				memset(WFIFOP(fdc,9), 0, 20);
+				WFIFOSET(fdc,29);
 #endif
 				mmo_char_send006b(fdc,sd);
 			}
@@ -2436,6 +2458,17 @@ int parse_char(int fd)
 							WFIFOW(fd,10) = 0;
 							WFIFOSET(fd,12);
 #endif
+#if PACKETVER >= 20120925
+							WFIFOW(fd,0) = 0x82d;
+							WFIFOW(fd,2) = 29;
+							WFIFOB(fd,4) = max_char_slot;
+							WFIFOB(fd,5) = 0;
+							WFIFOB(fd,6) = 0;
+							WFIFOB(fd,7) = max_char_slot;
+							WFIFOB(fd,8) = max_char_slot;
+							memset(WFIFOP(fd,9), 0, 20);
+							WFIFOSET(fd,29);
+#endif
 							mmo_char_send006b(fd,sd);
 						}
 						else
@@ -2455,6 +2488,18 @@ int parse_char(int fd)
 						WFIFOW(fd,10) = 0;
 						WFIFOSET(fd,12);
 #endif
+#if PACKETVER >= 20120925
+						WFIFOW(fd,0) = 0x82d;
+						WFIFOW(fd,2) = 29;
+						WFIFOB(fd,4) = max_char_slot;
+						WFIFOB(fd,5) = 0;
+						WFIFOB(fd,6) = 0;
+						WFIFOB(fd,7) = max_char_slot;
+						WFIFOB(fd,8) = max_char_slot;
+						memset(WFIFOP(fd,9), 0, 20);
+						WFIFOSET(fd,29);
+#endif
+
 						mmo_char_send006b(fd,sd);
 					}
 				}

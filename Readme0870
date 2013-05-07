@@ -1,4 +1,13 @@
 ----------------------------------------
+//1054 [2013/05/08] by refis
+
+・パケット0x82dを実装（char.c）
+
+・MOBAI「スキル無効」実装 (db/mob_db.txt doc/db_ref.txt battle.c skill.c status.h)
+
+・状態異常「ジャイアントグロース」の発動確率と計算位置を修正 (battle.c)
+
+----------------------------------------
 //1053 [2013/05/07] by refis
 
 ・PACKETVER「20120404」を追加 (vc_make.bat bcc32_make.bat Makefile clif.* mob.c)

@@ -5069,6 +5069,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	if(sd && unit_isdead(&sd->bl))
 		return 1;
+	if(!md && dstmd && dstmd->mode&MD_SKILLIMMUNITY)
+		return 1;
 
 	switch(skillid) {
 		case KN_BRANDISHSPEAR:
@@ -11144,6 +11146,9 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	sc = status_get_sc(bl);
+
+	if(status_get_mode(bl)&MD_SKILLIMMUNITY)
+		return 0;
 
 	// 対象がホバーリング状態の場合は一部無効
 	if(sc && sc->data[SC_HOVERING].timer != -1) {
