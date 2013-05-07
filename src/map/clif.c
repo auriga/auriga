@@ -9883,6 +9883,29 @@ void clif_send0199(int m, unsigned short type)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_mapproperty2(struct map_session_data *sd)
+{
+#if PACKETVER >= 20120925
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x99b;
+	WFIFOW(fd,2) = 0;
+	WFIFOB(fd,4) = 0xb | ((map[sd->bl.m].flag.gvg)?0x4:0) | ((map[sd->bl.m].flag.pvp)?0x20:0);
+	WFIFOB(fd,5) = 0x6;
+	WFIFOW(fd,6) = 0;
+	WFIFOSET(fd,packet_db[0x99b].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * PVP順位
  *------------------------------------------
  */
@@ -15903,6 +15926,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	friend_send_info(sd);
 	friend_send_online(sd, 0);
 
+	// mapinfo
+	clif_maptypeproperty2(sd);
+
 	// pvp
 	if(sd->pvp_timer != -1)
 		delete_timer(sd->pvp_timer,pc_calc_pvprank_timer);
@@ -20223,6 +20249,16 @@ static void clif_parse_PartyBookingJoinPartyCancel(int fd,struct map_session_dat
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_BlockingPlayCancel(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -20542,6 +20578,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingJoinPartyReq,  "bookingjoinpartyreq"       },
 		{ clif_parse_PartyBookingSummonMember,  "bookingsummonmember"       },
 		{ clif_parse_PartyBookingJoinPartyCancel,"bookingjoinpartycancel"   },
+		{ clif_parse_BlockingPlayCancel,        "blockplaycancel"           },
 		{ NULL,                                 NULL                        },
 	};
 

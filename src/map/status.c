@@ -4068,7 +4068,7 @@ int status_get_hit(struct block_list *bl)
 	nullpo_retr(1, bl);
 
 #ifndef PRE_RENEWAL
-	if(bl->type != BL_PC)
+	if(bl->type != BL_PC && bl->type != BL_HOM)
 		hit = 150;
 #endif
 	if(bl->type == BL_PC) {
@@ -4216,7 +4216,11 @@ int status_get_baseatk(struct block_list *bl)
 #endif
 		}
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {
+#ifdef PRE_RENEWAL
 		batk = 1;
+#else
+		batk = status_get_str(bl) + status_get_lv(bl);
+#endif
 	} else if(bl->type == BL_MERC && ((struct merc_data *)bl)) {
 		batk = 1;
 	} else if(bl->type == BL_ELEM && ((struct elem_data *)bl)) {
@@ -4490,7 +4494,11 @@ int status_get_matk1(struct block_list *bl)
 	if (bl->type == BL_PC) {
 		matk1 = ((struct map_session_data *)bl)->matk1;
 	} else if (bl->type == BL_HOM) {
+#ifdef PRE_RENEWAL
 		matk1 = ((struct homun_data *)bl)->matk-((struct homun_data *)bl)->matk/10;
+#else
+		matk1 = ((struct homun_data *)bl)->matk;
+#endif
 	} else if (bl->type == BL_MERC) {
 		matk1 = ((struct merc_data *)bl)->matk1;
 	} else if (bl->type == BL_ELEM) {
@@ -4550,7 +4558,11 @@ int status_get_matk2(struct block_list *bl)
 	if (bl->type == BL_PC) {
 		matk2 = ((struct map_session_data *)bl)->matk2;
 	} else if (bl->type == BL_HOM) {
+#ifdef PRE_RENEWAL
 		matk2 = ((struct homun_data *)bl)->matk;
+#else
+		matk2 = ((struct homun_data *)bl)->matk-((struct homun_data *)bl)->matk/10;
+#endif
 	} else if (bl->type == BL_MERC) {
 		matk2 = ((struct merc_data *)bl)->matk2;
 	} else if (bl->type == BL_ELEM) {

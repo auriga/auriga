@@ -8637,8 +8637,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int rate,val;
 				switch(skilllv) {
 				case 1:
+#ifdef PRE_RENEWAL
+					val = sd->inventory_data[idx]->def * 10;
+#else
 					val = sd->inventory_data[idx]->def;
-					if(atn_rand()%100 >= val * 10) {
+#endif
+					if(atn_rand()%100 >= val) {
 						clif_skill_fail(sd,skillid,0,0,0);
 						break;
 					}
@@ -8646,7 +8650,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					clif_skill_nodamage(src,bl,skillid,skilllv,1);
 					rate = atn_rand()%100;
 					if(rate < 50) {			// 範囲物理攻撃
-						int ar = val / 3;
+						int ar = (val>80? 3: (val>40? 2: 1));
 						skill_area_temp[1] = src->id;
 						map_foreachinarea(skill_area_sub,
 							src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
@@ -8654,10 +8658,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 							skill_castend_damage_id);
 					}
 					else if(rate < 75) {	// 物理攻撃反射
-						status_change_start(bl,SC_SHIELDSPELL_DEF,skilllv,1,val*10,0,val*20000,0);
+						status_change_start(bl,SC_SHIELDSPELL_DEF,skilllv,1,val/10,0,val*2000,0);
 					}
 					else {					// 攻撃力増加
-						status_change_start(bl,SC_SHIELDSPELL_DEF,skilllv,2,val*10,0,val*30000,0);
+						status_change_start(bl,SC_SHIELDSPELL_DEF,skilllv,2,val,0,val*3000,0);
 					}
 					break;
 				case 2:

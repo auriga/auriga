@@ -1,4 +1,19 @@
 ----------------------------------------
+//1055 [2013/05/08] by refis
+
+・2012-06-18aRagexeREのpacket_dbを修正 (db/packet_db.txt)
+	Thanks Akayumi さん
+
+・[RE]:ロイヤルガードスキル「シールドスペル」Lv1の効果異常を修正 (skill.c)
+	Thanks shisuka さん
+
+・[RE]:ホムンクルスのステータス計算を修正 (homun.c, status.c)
+
+・パケット0x99b「マッププロパティ通知」を実装 (db/packet_db.txt, clif.*)
+	-> UnknownPacketダンプのログ抑制のためにpacket_db.txtの更新
+	-> カートウィンドウ開閉のための暫定処理です
+
+----------------------------------------
 //1054 [2013/05/08] by refis
 
 ・パケット0x82dを実装（char.c）

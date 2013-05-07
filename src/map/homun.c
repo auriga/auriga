@@ -374,6 +374,7 @@ int homun_calc_status(struct homun_data *hd)
 	blv    = hd->status.base_level;
 	aspd_k = homun_db[hd->status.class_-HOM_ID].aspd_k;
 
+#ifdef PRE_RENEWAL
 	hd->atk      += hd->str * 2 + blv + dstr * dstr;
 	hd->matk     += hd->int_+(hd->int_/ 5) * (hd->int_/ 5);
 	hd->hit      += hd->dex + blv;
@@ -381,6 +382,15 @@ int homun_calc_status(struct homun_data *hd)
 	hd->def      += hd->vit + hd->vit / 5 + blv / 10;
 	hd->mdef     += hd->int_/ 5 + blv / 10;
 	hd->critical += hd->luk / 3 + 1;
+#else
+	hd->atk      += (hd->str + hd->dex + hd->luk) / 3 + blv / 10;
+	hd->matk     += hd->int_ + (hd->int_ + hd->dex + hd->luk) + blv / 10 * 2;
+	hd->hit      += hd->dex + blv + 150;
+	hd->flee     += hd->agi + blv + blv / 10;
+	hd->def      += (hd->vit + blv / 10) * 2 + (hd->agi + blv / 10) / 2 + blv / 2;
+	hd->mdef     += hd->int_/ 5 + blv / 10;
+	hd->critical += hd->luk / 3 + 1;
+#endif
 
 	aspd = aspd_k - aspd_k * hd->dex / 1000 - (aspd_k * hd->agi / 250);
 
