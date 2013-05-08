@@ -1131,6 +1131,7 @@ struct map_data {
 		int norevive;
 		int nocommand;
 		int nojump;
+		int town;
 	} flag;
 	struct point save;
 	struct npc_data *npc[MAX_NPC_PER_MAP];
@@ -1250,7 +1251,7 @@ enum {
 	MF_GVG,MF_GVG_NOPARTY,MF_GVG_NIGHTMAREDROP,MF_NOZENYPENALTY,MF_NOTRADE,MF_NOSKILL,MF_NOABRA,MF_NODROP,	// 13-20
 	MF_SNOW,MF_FOG,MF_SAKURA,MF_LEAVES,MF_RAIN,MF_FIREWORKS,MF_CLOUD1,MF_CLOUD2,MF_CLOUD3,MF_BASEEXP_RATE,	// 21-30
 	MF_JOBEXP_RATE,MF_PK,MF_PK_NOPARTY,MF_PK_NOGUILD,MF_PK_NIGHTMAREDROP,MF_PK_NOCALCRANK,MF_NOICEWALL,	// 31-37
-	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,									// 38-41
+	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,MF_TOWN,							// 38-42
 };
 
 enum {
@@ -1430,6 +1431,7 @@ int map_foreachiddb(int (*)(void*,void*,va_list),...);
 void map_addnickdb(struct map_session_data *);
 struct map_session_data * map_nick2sd(char*);
 int map_field_setting(void);
+int map_getmaptype(int m);
 
 int map_who(int fd);
 

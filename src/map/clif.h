@@ -253,7 +253,7 @@ void clif_elementball(struct map_session_data *sd);
 void clif_privateitem(struct map_session_data *sd, short idx, char flag);
 void clif_send_partyconfig(struct map_session_data *sd);
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
-void clif_mapproperty2(struct map_session_data *sd);
+void clif_mapproperty(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

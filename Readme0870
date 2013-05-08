@@ -1,4 +1,17 @@
 ----------------------------------------
+//1056 [2013/05/09] by refis
+
+・0x99bの下位版、0x2e7を追加 (db/packet_db.txt, clif.*, map.*)
+
+・マップフラグ「town」を追加 (const.txt, script_ref.txt, mapflag.txt, atcommand.c, map.h, npc.c, script.c, skill.c)
+	-> マップフラグ「nopenalty」有効時のスキル使用不可処理を移譲
+	-> 街MAPに「town」フラグを追加
+
+・室内MAPにマップフラグ「noicewall」を追加 (mapflag.txt)
+
+・一部クエストMAPにマップフラグ「noskill」を追加 (mapflag.txt)
+
+----------------------------------------
 //1055 [2013/05/08] by refis
 
 ・2012-06-18aRagexeREのpacket_dbを修正 (db/packet_db.txt)

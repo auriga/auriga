@@ -995,7 +995,7 @@
 0x0444,-1
 0x0445,10
 0x0446,14
-0x0447,0
+0x0447,2,blockplaycancel,0
 0x0448,-1
 0x0449,4
 0x044a,6
@@ -3021,7 +3021,6 @@
 0x0363,6,ticksend,2
 0x0438,6,dropitem,2:4
 0x0439,8,useitem,2:4
-0x0447,2,blockplaycancel,0
 0x07d9,268
 0x086d,26,friendaddrequest,2
 0x086f,26,partyinvite2,2

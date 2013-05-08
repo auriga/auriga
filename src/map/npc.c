@@ -2558,6 +2558,8 @@ int npc_set_mapflag(int m,char *w3,char *w4)
 		map[m].flag.nocommand = atoi(w4);
 	} else if (strcmpi(w3,"nojump") == 0) {
 		map[m].flag.nojump ^= 1;
+	} else if (strcmpi(w3,"town") == 0) {
+		map[m].flag.town ^= 1;
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
 	}

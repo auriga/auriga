@@ -3822,6 +3822,7 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 		(map[m_id].flag.gvg) ? "True" : "False",
 		(map[m_id].flag.gvg_noparty) ? "True" : "False");
 
+	msg_output(fd, "Town: %s", (map[m_id].flag.town) ? "True" : "False");
 	msg_output(fd, "No Dead Branch: %s", (map[m_id].flag.nobranch) ? "True" : "False");
 	msg_output(fd, "No Memo: %s", (map[m_id].flag.nomemo) ? "True" : "False");
 	msg_output(fd, "No Penalty: %s", (map[m_id].flag.nopenalty) ? "True" : "False");

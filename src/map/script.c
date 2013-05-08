@@ -8449,6 +8449,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_NOREVIVE:           return &map[m].flag.norevive;
 		case MF_NOCOMMAND:          return &map[m].flag.nocommand;
 		case MF_NOJUMP:             return &map[m].flag.nojump;
+		case MF_TOWN:               return &map[m].flag.town;
 	}
 	return NULL;
 }

@@ -9886,16 +9886,48 @@ void clif_send0199(int m, unsigned short type)
  *
  *------------------------------------------
  */
-void clif_mapproperty2(struct map_session_data *sd)
+void clif_mapproperty(struct map_session_data *sd)
 {
-#if PACKETVER >= 20120925
 	int fd;
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
+#if PACKETVER < 20120925
+	WFIFOW(fd,0) = 0x2e7;
+	WFIFOW(fd,2) = 33;
+	WFIFOW(fd,4) = map_getmaptype(sd->bl.m);
+	WFIFOB(fd,6) = (map[sd->bl.m].flag.pk)? 0x1: 0;
+	WFIFOB(fd,7) = (map[sd->bl.m].flag.noteleport)? 0: 0x1;
+	WFIFOB(fd,8) = (map[sd->bl.m].flag.nomemo)? 0: 0x1;
+	WFIFOB(fd,9) = (map[sd->bl.m].flag.pvp_nightmaredrop)? 0x1: 0;
+	WFIFOB(fd,10) = (map[sd->bl.m].flag.nopenalty)? 0: 0x1;
+	WFIFOB(fd,11) = (map[sd->bl.m].flag.nosave)? 0x1: 0;
+	WFIFOB(fd,12) = (map[sd->bl.m].flag.nobranch)? 0x1: 0;	// 0
+	WFIFOB(fd,13) = (map[sd->bl.m].flag.pvp_noparty)? 0x1: 0;
+	WFIFOB(fd,14) = (map[sd->bl.m].flag.pvp_noguild)? 0x1: 0;
+	WFIFOB(fd,15) = (map[sd->bl.m].flag.gvg)? 0x1: 0;
+	WFIFOB(fd,16) = 0;	// pk server
+	WFIFOB(fd,17) = 0;	// pvp server
+	WFIFOB(fd,18) = (map[sd->bl.m].flag.noskill)? 0x1: 0;
+	WFIFOB(fd,19) = (map[sd->bl.m].flag.turbo)? 0x1: 0;
+	WFIFOB(fd,20) = (map[sd->bl.m].flag.noreturn)? 0x1: 0;
+	WFIFOB(fd,21) = (map[sd->bl.m].flag.gvg)? 0x1: 0;	// simple effect
+	WFIFOB(fd,22) = (map[sd->bl.m].flag.gvg)? 0x1: 0;	// disable lockon
+	WFIFOB(fd,23) = (map[sd->bl.m].flag.pvp)? 0x1: 0;	// count pk
+	WFIFOB(fd,24) = 0;	// no party formation
+	WFIFOB(fd,25) = 0;	// battle field
+	WFIFOB(fd,26) = (map[sd->bl.m].flag.gvg)? 0x1: 0;	// disable costume item
+	WFIFOB(fd,27) = 0;
+	WFIFOB(fd,28) = 0;
+	WFIFOB(fd,29) = 0;
+	WFIFOB(fd,30) = 0;
+	WFIFOB(fd,31) = 1;	// show hp bar
+	WFIFOB(fd,32) = 0;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#else
 	WFIFOW(fd,0) = 0x99b;
-	WFIFOW(fd,2) = 0;
+	WFIFOW(fd,2) = map_getmaptype(sd->bl.m);
 	WFIFOB(fd,4) = 0xb | ((map[sd->bl.m].flag.gvg)?0x4:0) | ((map[sd->bl.m].flag.pvp)?0x20:0);
 	WFIFOB(fd,5) = 0x6;
 	WFIFOW(fd,6) = 0;
@@ -15927,7 +15959,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	friend_send_online(sd, 0);
 
 	// mapinfo
-	clif_maptypeproperty2(sd);
+	clif_mapproperty(sd);
 
 	// pvp
 	if(sd->pvp_timer != -1)
