@@ -6841,6 +6841,9 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	if(sd->state.store == STORE_TYPE_BUYINGSTORE)
 		buyingstore_close(sd);
 
+	if(pc_isgear(sd))		// 魔導ギアを解除
+		pc_setoption(sd, (sd->sc.option & ~OPTION_MADOGEAR));
+
 	pc_delspiritball(sd,sd->spiritball.num,0);
 	pc_delcoin(sd,sd->coin.num,0);
 	pc_delelementball(sd,sd->elementball.num,0);
@@ -7862,7 +7865,7 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 	nullpo_retv(sd);
 
 	if( ((type&OPTION_MADOGEAR) || pc_isgear(sd)) && pc_iscarton(sd) )
-		type |= (sd->sc.option&OPTION_CARTMASK);
+		type |= (sd->sc.option&OPTION_CARTMASK) | OPTION_PUSHCART;
 
 	if( (type&OPTION_FALCON) && !pc_isfalcon(sd) ) {
 		clif_status_load_id(sd,SI_FALCON,1);
@@ -7890,6 +7893,9 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 
 	if( (type&OPTION_CARTMASK) && !pc_iscarton(sd) ) {
 #if PACKETVER >= 20120201
+		sd->sc.option = type;
+		clif_changeoption(&sd->bl);
+
 		// オプション値からカートタイプを変換する
 		switch(type) {
 			case OPTION_PUSHCART:
@@ -7916,6 +7922,8 @@ void pc_setoption(struct map_session_data *sd, unsigned int type)
 		return;
 	}
 	else if( !(type&OPTION_CARTMASK) && pc_iscarton(sd) ) {
+		sd->sc.option = type;
+		clif_changeoption(&sd->bl);
 		status_change_end(&sd->bl,SC_ON_PUSH_CART,-1);
 #if PACKETVER > 20080102
 		clif_skillinfoblock(sd);

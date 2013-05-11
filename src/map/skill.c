@@ -18850,7 +18850,8 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 
 #ifndef PRE_RENEWAL
 	// Matkの加算
-	heal += battle_calc_base_magic_damage(src);
+	if(skill_id == AL_HEAL || skill_id == AB_CHEAL || skill_id == AB_HIGHNESSHEAL)
+		heal += battle_calc_base_magic_damage(src);
 #endif
 
 	if(tsd && tsd->skill_subhealup.count > 0 && heal > 0 && skill_id > 0) {

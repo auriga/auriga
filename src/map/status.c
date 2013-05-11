@@ -6203,6 +6203,8 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 
 	if(sc->count <= 0)
 		return 0;
+	if(sc->data[SC__DEADLYINFECT].timer != -1 && atn_rand()%100 > sc->data[SC__DEADLYINFECT].val1*20)
+		return 0;
 
 	tick = gettick();
 	status_calc_pc_stop_begin(bl);
@@ -6338,6 +6340,28 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FORCEOFVANGUARD:
 			if(sc->data[type].timer != -1) {
 				status_change_end(bl,type,-1);
+				return 0;
+			}
+			break;
+		// 3次新毒スキル
+		case SC_TOXIN:
+		case SC_PARALIZE:
+		case SC_VENOMBLEED:
+		case SC_MAGICMUSHROOM:
+		case SC_DEATHHURT:
+		case SC_PYREXIA:
+		case SC_OBLIVIONCURSE:
+		case SC_LEECHEND:
+			if(sc->data[SC_TOXIN].timer != -1 ||
+			   sc->data[SC_PARALIZE].timer != -1 ||
+			   sc->data[SC_VENOMBLEED].timer != -1 ||
+			   sc->data[SC_MAGICMUSHROOM].timer != -1 ||
+			   sc->data[SC_DEATHHURT].timer != -1 ||
+			   sc->data[SC_PYREXIA].timer != -1 ||
+			   sc->data[SC_OBLIVIONCURSE].timer != -1 ||
+			   sc->data[SC_LEECHEND].timer != -1
+			) {
+				// 新毒は重複させない
 				return 0;
 			}
 			break;
