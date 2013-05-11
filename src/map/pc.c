@@ -4035,8 +4035,8 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type, short 
 		}
 		if(sd->status.inventory[n].limit > 0) {
 			int tid = PTR2INT(linkdb_erase(&sd->inventory_timer, INT2PTR(n)));
-			if(tid > 0)
-				delete_timer(tid - 1, pc_itemlimit_timer);
+			if(tid >= 0)
+				delete_timer(tid, pc_itemlimit_timer);
 		}
 		memset(&sd->status.inventory[n],0,sizeof(sd->status.inventory[0]));
 		sd->inventory_num--;
