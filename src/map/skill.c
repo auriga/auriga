@@ -19231,6 +19231,7 @@ static int skill_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
+	char *filename2;
 #ifdef PRE_RENEWAL
 	const char *filename[] = {
 		"db/skill_db.txt",         "db/pre/skill_db_pre.txt",         "db/addon/skill_db_add.txt",
@@ -19501,9 +19502,14 @@ static int skill_readdb(void)
 	}
 
 	/* スキルユニットデータベース */
-	fp = fopen("db/skill_unit_db.txt","r");
+#ifdef PRE_RENEWAL
+	filename2 = "db/pre/skill_unit_db_pre.txt";
+#else
+	filename2 = "db/skill_unit_db.txt";
+#endif
+	fp = fopen(filename2,"r");
 	if (fp==NULL) {
-		printf("can't read db/skill_unit_db.txt\n");
+		printf("can't read %s\n",filename2);
 		return 1;
 	}
 	k = 0;
@@ -19531,7 +19537,7 @@ static int skill_readdb(void)
 		k++;
 	}
 	fclose(fp);
-	printf("read db/skill_unit_db.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n",filename2,k);
 	skill_init_unit_layout();
 
 	/* 製造系スキルデータベース */

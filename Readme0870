@@ -1,4 +1,15 @@
 ----------------------------------------
+//1059 [2013/05/13] by refis
+
+・attr_fix, skill_tree, skill_unit_dbのR化前/後のDB対応の為以下のDBを追加（pc.c, skill.c）
+	-> 「PRE_RENEWAL」有効時、通常DBの代わりに以下のDBを読み込みます。
+	　・attr_fix_pre.txt
+	　・skill_tree_pre.txt
+	　・skill_unit_db_pre.txt
+
+・attr_fix.txt, skill_tree.txt, skill_unit_db.txtをR化後データに合わせて修正（attr_fix.txt, skill_tree.txt, skill_unit_db.txt）
+
+----------------------------------------
 //1058 [2013/05/12] by refis
 
 ・[RE]:アルケミストスキル「斧修練」が片手剣にも影響するよう修正 (battle.c)

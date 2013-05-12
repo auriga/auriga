@@ -10263,6 +10263,7 @@ int pc_readdb(void)
 	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
+	char *filename;
 
 	// 必要経験値読み込み
 	memset(exp_table, 0, sizeof(exp_table));
@@ -10309,9 +10310,13 @@ int pc_readdb(void)
 
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
-	fp = fopen("db/skill_tree.txt","r");
+#ifdef PRE_RENEWAL
+	filename = "db/pre/skill_tree_pre.txt";
+#else
+	filename = "db/skill_tree.txt";
+#endif
 	if(fp == NULL) {
-		printf("can't read db/skill_tree.txt\n");
+		printf("can't read %s\n",filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)) {
@@ -10381,7 +10386,7 @@ int pc_readdb(void)
 		// 養子のスキルツリーを通常職と同一にする場合
 		memcpy(&skill_tree[PC_UPPER_BABY], &skill_tree[PC_UPPER_NORMAL], sizeof(skill_tree[PC_UPPER_NORMAL]));
 	}
-	printf("read db/skill_tree.txt done\n");
+	printf("read %s done\n",filename);
 
 	// 属性修正テーブル
 	for(i=0; i<MAX_ELE_LEVEL; i++) {
@@ -10390,9 +10395,14 @@ int pc_readdb(void)
 				attr_fix_table[i][j][k] = 100;
 		}
 	}
-	fp = fopen("db/attr_fix.txt","r");
+#ifdef PRE_RENEWAL
+	filename = "db/pre/attr_fix_pre.txt";
+#else
+	filename = "db/attr_fix.txt";
+#endif
+	fp = fopen(filename,"r");
 	if(fp == NULL) {
-		printf("can't read db/attr_fix.txt\n");
+		printf("can't read %s\n",filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)) {
@@ -10434,7 +10444,7 @@ int pc_readdb(void)
 		}
 	}
 	fclose(fp);
-	printf("read db/attr_fix.txt done\n");
+	printf("read %s done\n",filename);
 
 	return 0;
 }
