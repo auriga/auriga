@@ -62,7 +62,7 @@ static struct job_db {
 static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
 
 static struct refine_db {
-	int safety_bonus;
+	int safety_bonus[MAX_REFINE];
 	int over_bonus;
 	int limit;
 	int per[MAX_REFINE];
@@ -753,10 +753,11 @@ L_RECALC:
 				if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM) {
 					// 二刀流用データ入力
 					sd->watk_ += sd->inventory_data[idx]->atk;
-					sd->watk_2 = (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+					if((r = sd->status.inventory[idx].refine) > 0)
+						sd->watk_2 = refine_db[wlv].safety_bonus[r-1];	// 精錬攻撃力
 #ifndef PRE_RENEWAL
-					if(sd->status.weapon != WT_BOW)	// 弓には精錬MATKボーナスがない
-						sd->matk1 += r*refine_db[wlv].safety_bonus;
+					if(sd->status.weapon != WT_BOW && r > 0)	// 弓には精錬MATKボーナスがない
+						sd->matk1 += refine_db[wlv].safety_bonus[r-1];
 #endif
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine_ = r*refine_db[wlv].over_bonus;
@@ -779,10 +780,11 @@ L_RECALC:
 				} else {
 					// 二刀流武器以外
 					sd->watk  += sd->inventory_data[idx]->atk;
-					sd->watk2 += (r = sd->status.inventory[idx].refine) * refine_db[wlv].safety_bonus;	// 精錬攻撃力
+					if((r = sd->status.inventory[idx].refine) > 0)
+						sd->watk2 += refine_db[wlv].safety_bonus[r-1];	// 精錬攻撃力
 #ifndef PRE_RENEWAL
-					if(sd->status.weapon != WT_BOW)	// 弓には精錬MATKボーナスがない
-						sd->matk1 += r*refine_db[wlv].safety_bonus;
+					if(sd->status.weapon != WT_BOW && r > 0)	// 弓には精錬MATKボーナスがない
+						sd->matk1 += refine_db[wlv].safety_bonus[r-1];
 #endif
 					if((r -= refine_db[wlv].limit) > 0)	// 過剰精錬ボーナス
 						sd->overrefine += r*refine_db[wlv].over_bonus;
@@ -803,7 +805,8 @@ L_RECALC:
 				}
 			} else if(itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
 				sd->watk  += sd->inventory_data[idx]->atk;
-				refinedef += sd->status.inventory[idx].refine*refine_db[0].safety_bonus;
+				if(sd->status.inventory[idx].refine > 0)
+					refinedef += refine_db[0].safety_bonus[sd->status.inventory[idx].refine - 1];
 				if(calclimit == 2)
 					run_script(sd->inventory_data[idx]->use_script,0,sd->bl.id,0);
 				run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
@@ -11207,6 +11210,31 @@ int status_change_addeff_start(struct block_list *src, struct block_list *bl, in
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static void status_split_atoi(char *str, int *num1, int *num2)
+{
+	int i, val[2];
+
+	for (i=0; i<2; i++) {
+		if(str) {
+			val[i] = atoi(str);
+			str = strchr(str,':');
+			if (str)
+				*str++=0;
+		} else {
+			val[i] = 0;
+		}
+	}
+	if(val[0])
+		*num1 = val[0];
+	if(val[1])
+		*num2 = val[1];
+	return;
+}
+
+/*==========================================
  * データベース読み込み
  *------------------------------------------
  */
@@ -11386,15 +11414,21 @@ int status_readdb(void) {
 
 	// 精錬データテーブル
 	for(i=0; i<MAX_WEAPON_LEVEL+1; i++) {
-		refine_db[i].safety_bonus = 0;
+		for(j=0; j<MAX_REFINE; j++)
+			refine_db[i].safety_bonus[j] = 0;
 		refine_db[i].over_bonus   = 0;
 		refine_db[i].limit        = MAX_REFINE;
 		for(j=0; j<MAX_REFINE; j++)
 			refine_db[i].per[j] = 0;
 	}
-	fp=fopen("db/refine_db.txt","r");
+#ifdef PRE_RENEWAL
+	filename = "db/pre/refine_db_pre.txt";
+#else
+	filename = "db/refine_db.txt";
+#endif
+	fp=fopen(filename,"r");
 	if(fp==NULL){
-		printf("can't read db/refine_db.txt\n");
+		printf("can't read %s\n",filename);
 		return 1;
 	}
 	i=0;
@@ -11412,17 +11446,19 @@ int status_readdb(void) {
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		refine_db[i].safety_bonus = atoi(split[0]);	// 精錬ボーナス
+		for(j=0; j<MAX_REFINE; j++) {
+			refine_db[i].safety_bonus[j] = atoi(split[0]) * (j+1);	// 精錬ボーナス
+		}
 		refine_db[i].over_bonus   = atoi(split[1]);	// 過剰精錬ボーナス
 		refine_db[i].limit        = atoi(split[2]);	// 安全精錬限界
 		for(j=0; j<MAX_REFINE && split[j+3]; j++) {
-			refine_db[i].per[j] = atoi(split[j+3]);
+			status_split_atoi(split[j+3], &refine_db[i].per[j], &refine_db[i].safety_bonus[j]);
 		}
 		if(++i > MAX_WEAPON_LEVEL)
 			break;
 	}
 	fclose(fp);
-		printf("read db/refine_db.txt done\n");
+	printf("read %s done\n",filename);
 
 	// サイズ補正テーブル
 	for(i=0; i<MAX_SIZE_FIX; i++) {
