@@ -10315,6 +10315,7 @@ int pc_readdb(void)
 #else
 	filename = "db/skill_tree.txt";
 #endif
+	fp = fopen(filename,"r");
 	if(fp == NULL) {
 		printf("can't read %s\n",filename);
 		return 1;
