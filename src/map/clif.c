@@ -3685,6 +3685,23 @@ void clif_spawnpc(struct map_session_data *sd)
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
 
+	// 完全なインビジブルモードなら送信しない
+	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
+		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
+			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,1002,0,0);
+		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
+			clif_seteffect_enter(&sd->bl,SI_MONSTER_TRANSFORM,0,sd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
+			clif_seteffect_enter(&sd->bl,SI_ACTIVE_MONSTER_TRANSFORM,0,sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
+		else if(sd->sc.data[SC_ALL_RIDING].timer != -1)	// 搭乗システム
+			clif_seteffect_enter(&sd->bl,SI_ALL_RIDING,9999,1,25,0);
+		if(sd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート
+			clif_seteffect_enter(&sd->bl,SI_ON_PUSH_CART,9999,sd->sc.data[SC_ON_PUSH_CART].val1,0,0);
+		if(sd->sc.data[SC_BANDING].timer != -1)	// バンディング
+			clif_seteffect_enter(&sd->bl,SI_BANDING,9999,sd->sc.data[SC_BANDING].val1,0,0);
+		if(sd->sc.data[SC_HAT_EFFECT].timer != -1)	// 頭装備エフェクト
+			clif_seteffect_enter(&sd->bl,SI_HAT_EFFECT,9999,sd->sc.data[SC_HAT_EFFECT].val1,0,0);
+	}
 	if(sd->spiritball.num > 0)
 		clif_spiritball(sd);
 	if(sd->coin.num > 0)
@@ -9671,6 +9688,50 @@ void clif_status_change_id(struct map_session_data *sd, int id, int type, unsign
 	WFIFOL(fd,21)=val2;
 	WFIFOL(fd,25)=val3;
 	WFIFOSET(fd,packet_db[0x983].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ * 状態異常エフェクト表示（全体）
+ *------------------------------------------
+ */
+void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3)
+{
+	unsigned char buf[32];
+
+	nullpo_retv(bl);
+
+#if PACKETVER < 20111102
+	WBUFW(buf,0)=0x43f;
+	WBUFW(buf,2)=type;
+	WBUFL(buf,4)=bl->id;
+	WBUFB(buf,8)=1;
+	WBUFL(buf,9)=tick;
+	WBUFL(buf,13)=val1;
+	WBUFL(buf,17)=val2;
+	WBUFL(buf,21)=val3;
+	clif_send(buf,packet_db[0x43f].len,bl,AREA);
+#elif PACKETVER < 20120618
+	WBUFW(buf,0)=0x8ff;
+	WBUFL(buf,2)=bl->id;
+	WBUFW(buf,6)=type;
+	WBUFL(buf,8)=tick;
+	WBUFL(buf,12)=val1;
+	WBUFL(buf,16)=val2;
+	WBUFL(buf,20)=val3;
+	clif_send(buf,packet_db[0x8ff].len,bl,AREA);
+#else
+	WBUFW(buf,0)=0x984;
+	WBUFL(buf,2)=bl->id;
+	WBUFW(buf,6)=type;
+	WBUFL(buf,8)=tick;	// 最大持続時間
+	WBUFL(buf,12)=tick;
+	WBUFL(buf,16)=val1;
+	WBUFL(buf,20)=val2;
+	WBUFL(buf,24)=val3;
+	clif_send(buf,packet_db[0x984].len,bl,AREA);
 #endif
 
 	return;

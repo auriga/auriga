@@ -198,6 +198,7 @@ void clif_status_load(struct block_list *bl, int type, unsigned char flag);
 void clif_status_load_id(struct map_session_data *sd, int type, unsigned char flag);
 void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
+void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3);
 
 void clif_wis_message(int fd,char *nick,char *mes, int mes_len, int gmlevel);
 void clif_wis_end(int fd, unsigned short flag);

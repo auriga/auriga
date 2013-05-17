@@ -6951,6 +6951,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			sp = sd->status.sp - dstsd->status.sp;
+#ifndef PRE_RENEWAL
+			sp = sp / 2;
+#endif
 			pc_heal(sd,0,-sp);
 			pc_heal(dstsd,0,sp);
 		}
@@ -7109,6 +7112,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_emotion(&md->bl,mob_db[md->class_].skill[md->skillidx].val[0]);
 			if(mob_db[md->class_].skill[md->skillidx].val[1]) {	// モードチェンジ
 				md->mode = mob_db[md->class_].skill[md->skillidx].val[1];
+				unit_stop_walking(&md->bl,1);
+				unit_stopattack(&md->bl);
 				mob_unlocktarget(md, tick);
 			}
 			status_change_end(src,SC_MODECHANGE,-1);
