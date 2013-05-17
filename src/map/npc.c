@@ -475,6 +475,62 @@ int npc_settimerevent_tick(struct npc_data *nd,int newtimer)
 }
 
 /*==========================================
+ * タイムアウト実行
+ *------------------------------------------
+ */
+static int npc_timeout_timer(int tid,unsigned int tick,int id,void *data)
+{
+	struct map_session_data* sd = NULL;
+
+	if((sd = map_id2sd(id)) == NULL || sd->npc_id == 0) {
+		if(sd) {
+			sd->npc_idle_timer = -1;
+		}
+		return 0;
+	}
+
+	if(battle_config.npc_timeout_time > 0 && DIFF_TICK(tick, sd->npc_idle_tick) > (battle_config.npc_timeout_time*1000)) {
+		clif_scriptclose(sd,sd->npc_id);
+		sd->npc_id         =  0;
+		sd->npc_idle_timer = -1;
+	} else {
+		sd->npc_idle_timer = add_timer(gettick()+1000,npc_timeout_timer,sd->bl.id,0);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * タイムアウトタイマー開始
+ *------------------------------------------
+ */
+int npc_timeout_start(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if( sd->npc_idle_timer == -1 )
+		sd->npc_idle_timer = add_timer(gettick()+1000,npc_timeout_timer,sd->bl.id,0);
+	sd->npc_idle_tick = gettick();
+
+	return 0;
+}
+
+/*==========================================
+ * タイムアウトタイマー終了
+ *------------------------------------------
+ */
+int npc_timeout_stop(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if( sd->npc_idle_timer != -1 ) {
+		delete_timer(sd->npc_idle_timer,npc_timeout_timer);
+		sd->npc_idle_timer = -1;
+	}
+	return 0;
+}
+
+/*==========================================
  * イベント型のNPC処理
  *------------------------------------------
  */
@@ -763,6 +819,8 @@ void npc_scriptcont(struct map_session_data *sd, int id)
 	nd = map_id2nd(id);
 	if (npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return;
+
+	sd->npc_idle_tick = gettick();
 
 	run_script(nd->u.scr.script,sd->npc_pos,sd->bl.id,id);
 
@@ -2052,7 +2110,6 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
 		label_dup    = nd2->u.scr.label_list;
 		label_dupnum = nd2->u.scr.label_list_num;
 		src_id       = nd2->bl.id;
-
 	}
 	// end of スクリプト解析
 
@@ -2836,6 +2893,7 @@ int do_init_npc(void)
 	add_timer_func_list(npc_event_timer);
 	add_timer_func_list(npc_event_do_clock);
 	add_timer_func_list(npc_timerevent);
+	add_timer_func_list(npc_timeout_timer);
 
 	return 0;
 }

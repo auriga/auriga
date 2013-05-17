@@ -2944,6 +2944,8 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 	st->oid = oid;
 	st->scriptroot = rootscript;
 	st->sleep.timer = -1;
+	if(sd)
+		npc_timeout_start(sd);
 	run_script_main(st);	// stのfreeも含めてこの内部で処理する
 }
 
@@ -3007,6 +3009,8 @@ static void run_script_awake(struct script_state *st)
 		st->sleep.tick = 0;
 	}
 	st->sleep.timer = -1;
+	if(sd)
+		npc_timeout_start(sd);
 
 	run_script_main(st);
 	return;
@@ -3118,6 +3122,7 @@ static void run_script_main(struct script_state *st)
 		if(sd) {
 			// デタッチされたかどうかの判定用
 			sd->npc_sleep = &st->sleep;
+			npc_timeout_stop(sd);
 		}
 		st->sleep.timer = add_timer(gettick() + st->sleep.tick, run_script_timer, 0, st);
 		linkdb_insert(&sleep_db, INT2PTR(st->oid), st);
@@ -3139,8 +3144,10 @@ static void run_script_main(struct script_state *st)
 		sd->npc_pos         = st->pos;
 	} else {
 		// 実行が終わった or 続行不可能なのでスタッククリア
-		if(sd && st->oid == sd->npc_id) {
-			npc_event_dequeue(sd);
+		if(sd) {
+			npc_timeout_stop(sd);
+			if(st->oid == sd->npc_id)
+				npc_event_dequeue(sd);
 		}
 		st->pos = -1;
 		script_free_stack(st->stack);
@@ -8364,6 +8371,7 @@ int buildin_attachrid(struct script_state *st)
 	sd = map_id2sd(st->rid);
 	if(sd && sd->npc_id == 0) {
 		sd->npc_id = st->oid;
+		npc_timeout_start(sd);
 	}
 	push_val(st->stack,C_INT,(sd ? 1: 0));
 
@@ -8381,6 +8389,7 @@ int buildin_detachrid(struct script_state *st)
 	st->rid = 0;
 	if(sd && sd->npc_id == st->oid) {
 		sd->npc_id = 0;
+		npc_timeout_stop(sd);
 	}
 	return 0;
 }

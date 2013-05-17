@@ -833,6 +833,8 @@ struct map_session_data {
 	short hotkey_set;
 	int shop_point;
 
+	unsigned int npc_idle_timer;		// NPCのタイムアウト用
+	unsigned int npc_idle_tick;
 
 	unsigned int skillcooldown[MAX_THIRDSKILL];		// クールタイム（暫定的に3次職スキルのみ）
 	int freeze_sp_slot;

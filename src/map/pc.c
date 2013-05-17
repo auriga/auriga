@@ -1387,6 +1387,8 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->invincible_timer = -1;
 	sd->view_size = 0;
 	sd->booking_id = 0;
+	sd->npc_idle_timer = -1;
+	sd->npc_idle_tick = tick;
 
 	sd->trade.partner = 0;
 
