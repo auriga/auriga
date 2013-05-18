@@ -8025,7 +8025,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			/* 個別の処理 */
 			if( dstsd && dstsd->special_state.no_magic_damage )
 				break;
-			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid,skill_get_time(skillid,skilllv),0);	// キリエエレイソンと区別するためにval4にskillidを格納
 		} else {
 			/* パーティ全体への処理 */
@@ -8087,11 +8087,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case AB_SILENTIUM:	/* シレンティウム */
 		if(flag&1) {
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),10000,status_get_lv(src)))
 				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		} else {
 			int ar = 4 + skilllv;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -8876,7 +8876,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case MI_ECHOSONG:			/* エコーの歌 */
 		if((flag&1) || sd == NULL || sd->status.party_id == 0) {
 			/* 個別の処理 */
-			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,((sd)? sd->status.job_level: 0),((sd)? pc_checkskill(sd,WM_LESSON): 0),0,skill_get_time(skillid,skilllv),0);
 		} else {
 			int ar = 6 + skilllv;
@@ -9635,6 +9635,9 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case AM_CANNIBALIZE:
 	case AM_SPHEREMINE:
 	case CR_CULTIVATION:
+	case RA_CLUSTERBOMB:
+	case RA_FIRINGTRAP:
+	case RA_ICEBOUNDTRAP:
 		break;
 	default:
 		clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
