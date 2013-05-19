@@ -1,4 +1,19 @@
 ----------------------------------------
+//1066 [2013/05/20] by refis
+
+・モンスター「ダンデリオンのメンバー」のステータス修正（mob_db.txt, pre/mob_db_pre.txt）
+
+・アイテム「足鎖」のセット効果を修正（item_db.txt, mob_group_db.txt）
+
+・item_db.txtの更新（const.txt, item_db.txt, item_random.txt）
+
+・item_db2.txtの更新（item_db2.txt）
+
+・mob_db.txtの更新（mob_db.txt）
+
+・mob_skill_db.txtの更新（mob_skill_db.txt）
+
+----------------------------------------
 //1065 [2013/05/19] by refis
 
 ・[RE]:攻撃を回避出来なかった場合、追加状態異常判定するよう修正（battle.c）
