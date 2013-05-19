@@ -1,4 +1,24 @@
 ----------------------------------------
+//1067 [2013/05/20] by refis
+
+・マラン島NPC実装（npc_town_malangdo.txt）
+	-> 猫達の定期集会クエスト実装
+	-> ニャンキー団クエスト実装
+		Thanks Pneuma さん
+
+・マラン島関連マップのwarp追加（npc_warp_dun.txt, npc_warp_town.txt）
+
+・マラン島関連マップのmob追加（npc_monster_malangdo.txt）
+
+・mapflag.txtの更新（mapflag.txt）
+
+・quest_db.txtの更新（quest_db.txt）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+・モンスター「ブラディウムゴーレム」使用スキルの誤りを修正（mob_skill_db.txt）
+
+----------------------------------------
 //1066 [2013/05/20] by refis
 
 ・モンスター「ダンデリオンのメンバー」のステータス修正（mob_db.txt, pre/mob_db_pre.txt）

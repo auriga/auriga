@@ -2492,3 +2492,61 @@ s_atelier.gat,80,66,0	warp	s_atelierwarp1016	1,1,s_atelier.gat,32,62
 //==============================================================
 //前線基地 スプレンディッド⇒ビフロストフィールド 01
 splendide.gat,275,390,0		warp	bifrostwarp0501	1,1,bif_fild01.gat,316,50
+
+
+
+//---マラン島追加マップ
+
+
+//==============================================================
+// -----  マラン島 -----
+// malangdo.gat	マラン島
+// -----
+// mal_in01.gat	マラン島 室内
+// mal_in02.gat	ナビ号 船内
+// mal_dun01.gat	星明りの珊瑚礁
+//==============================================================
+//マラン島⇒星明りの珊瑚礁
+malangdo.gat,73,239,0	warp	malangdowarp0401	1,1,mal_dun01.gat,33,230
+
+//ナビ号
+malangdo.gat,162,163,0	warp	malangdowarp1001	1,1,mal_in02.gat,58,61
+mal_in02.gat,60,61,0	warp	malangdowarp1002	1,1,malangdo.gat,164,163
+mal_in02.gat,51,60,0	warp	malangdowarp1003	1,1,mal_in02.gat,31,60
+mal_in02.gat,34,60,0	warp	malangdowarp1004	1,1,mal_in02.gat,53,59
+mal_in02.gat,63,66,0	warp	malangdowarp1005	1,1,mal_in02.gat,63,89
+mal_in02.gat,64,87,0	warp	malangdowarp1006	1,1,mal_in02.gat,63,64
+mal_in02.gat,101,66,0	warp	malangdowarp1007	1,1,mal_in02.gat,101,89
+mal_in02.gat,102,87,0	warp	malangdowarp1008	1,1,mal_in02.gat,101,64
+mal_in02.gat,137,66,0	warp	malangdowarp1009	1,1,mal_in02.gat,139,89
+mal_in02.gat,140,87,0	warp	malangdowarp1010	1,1,mal_in02.gat,137,64
+mal_in02.gat,63,53,0	warp	malangdowarp1011	1,1,mal_in02.gat,63,33
+mal_in02.gat,63,35,0	warp	malangdowarp1012	1,1,mal_in02.gat,64,55
+mal_in02.gat,101,53,0	warp	malangdowarp1013	1,1,mal_in02.gat,101,33
+mal_in02.gat,101,35,0	warp	malangdowarp1014	1,1,mal_in02.gat,102,55
+mal_in02.gat,137,53,0	warp	malangdowarp1015	1,1,mal_in02.gat,139,33
+mal_in02.gat,139,35,0	warp	malangdowarp1016	1,1,mal_in02.gat,138,55
+mal_in02.gat,142,60,0	warp	malangdowarp1017	1,1,mal_in02.gat,162,61
+mal_in02.gat,159,61,0	warp	malangdowarp1018	1,1,mal_in02.gat,140,59
+//西の家
+malangdo.gat,112,167,0	warp	malangdowarp1019	1,1,mal_in01.gat,17,163
+mal_in01.gat,18,161,0	warp	malangdowarp1020	1,1,malangdo.gat,115,166
+mal_in01.gat,18,173,0	warp	malangdowarp1021	1,1,mal_in01.gat,72,173
+mal_in01.gat,75,174,0	warp	malangdowarp1022	1,1,mal_in01.gat,18,171
+mal_in01.gat,73,170,0	warp	malangdowarp1023	1,1,mal_in01.gat,124,172
+mal_in01.gat,124,175,0	warp	malangdowarp1024	1,1,mal_in01.gat,70,170
+//民家
+malangdo.gat,113,151,0	warp	malangdowarp1025	1,1,mal_in01.gat,28,118
+mal_in01.gat,30,119,0	warp	malangdowarp1026	1,1,malangdo.gat,115,150
+mal_in01.gat,20,119,0	warp	malangdowarp1027	1,1,mal_in01.gat,65,117
+mal_in01.gat,67,118,0	warp	malangdowarp1028	1,1,mal_in01.gat,21,117
+//旅館
+malangdo.gat,135,109,0	warp	malangdowarp1029	1,1,mal_in01.gat,19,76
+mal_in01.gat,18,78,0	warp	malangdowarp1030	1,1,malangdo.gat,135,111
+mal_in01.gat,18,67,0	warp	malangdowarp1031	1,1,mal_in01.gat,65,65
+mal_in01.gat,67,66,0	warp	malangdowarp1032	1,1,mal_in01.gat,20,67
+//道具屋
+malangdo.gat,240,150,0	warp	malangdowarp1033	1,1,mal_in01.gat,11,17
+mal_in01.gat,9,16,0		warp	malangdowarp1034	1,1,malangdo.gat,238,149
+mal_in01.gat,20,15,0	warp	malangdowarp1035	1,1,mal_in01.gat,65,11
+mal_in01.gat,67,12,0	warp	malangdowarp1036	1,1,mal_in01.gat,20,13
