@@ -6323,8 +6323,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	}
 
 	/* 11．固定ダメージ */
-	if(skill_num == HW_GRAVITATION)	// グラビテーションフィールド
+	if(skill_num == HW_GRAVITATION) {	// グラビテーションフィールド
+#ifdef PRE_RENEWAL
 		mgd.damage = 200+200*skill_lv;
+#else
+		mgd.damage = 500+100*skill_lv;
+#endif
+	}
 
 	/* 12．ヒット回数によるダメージ倍加 */
 	if(mgd.damage > 0) {

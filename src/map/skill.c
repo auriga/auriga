@@ -13768,6 +13768,28 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 		}
 		break;
+	case NC_MAGICDECOY:      /* FAW マジックデコイ */
+		if(type&1){
+			const int mob_id[4] = {
+				2043, 2044, 2046, 2045
+			};
+			int c=0;
+			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
+
+			if(battle_config.pc_land_skill_limit && maxcount > 0) {
+				for(i = 0; i < 4; i++) {
+					c += map_foreachinarea(
+						skill_check_condition_mob_master_sub, bl->m, 0, 0, map[bl->m].xs,
+						map[bl->m].ys, BL_MOB, bl->id, mob_id[i]
+					);
+				}
+				if(c >= maxcount){
+					clif_skill_fail(sd,cnd->id,0,0,0);
+					return 0;
+				}
+			}
+		}
+		break;
 	case SC_REPRODUCE:	/* リプロデュース */
 		if(sd->sc.data[SC__REPRODUCE].timer != -1)
 			sp = 0;		// 解除する場合はSP消費しない

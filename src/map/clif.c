@@ -20362,6 +20362,16 @@ static int clif_disconnect(int fd)
 	if(sd && sd->state.auth) {
 		clif_quitsave(sd);
 	}
+	close(fd);
+
+	if(sd) {
+		struct map_session_data *tmpsd = map_id2sd(sd->bl.id);
+		if(tmpsd == sd)
+			map_deliddb(&sd->bl);
+		if(sd->bl.prev)
+			map_delblock(&sd->bl);
+	}
+
 
 	return 0;
 }

@@ -43,6 +43,8 @@
 #define MEMORIAL_INVERVAL	60000	// メモリアルダンジョン予約処理間隔(ms)
 #define MEMORIAL_LIMIT		300		// メモリアルダンジョン入場・無人制限時間(秒)
 
+struct memorial_data memorial_data[MAX_MEMORIAL_DATA];
+
 static struct memorial_db{
 	short type;
 	char name[61];

@@ -61,7 +61,8 @@ struct memorial_data {
 		int m;
 		int src_m;
 	} map[MAX_MEMORIAL_SEGMAP];
-} memorial_data[MAX_MEMORIAL_DATA];
+};
+extern struct memorial_data memorial_data[MAX_MEMORIAL_DATA];
 
 int memorial_create(const char *memorial_name, int party_id);
 int memorial_delete(int memorial_id);

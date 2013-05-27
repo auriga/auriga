@@ -2661,6 +2661,7 @@ static int map_readmap(int m,const char *fn,int *cache)
 	map[m].npc_num = 0;
 	map[m].users   = 0;
 	memset(&map[m].flag,0,sizeof(map[m].flag));
+	memset(&map[m].drop_list,0,sizeof(map[m].drop_list));
 	map[m].bxs = (map[m].xs + BLOCK_SIZE - 1) / BLOCK_SIZE;
 	map[m].bys = (map[m].ys + BLOCK_SIZE - 1) / BLOCK_SIZE;
 	size = map[m].bxs * map[m].bys * sizeof(struct block_list*);
