@@ -3527,6 +3527,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 #endif
+		case NPC_CRITICALSLASH:		// クリティカルスラッシュ
 		case NPC_FIREBREATH:		// ファイアブレス
 		case NPC_ICEBREATH:		// アイスブレス
 		case NPC_THUNDERBREATH:		// サンダーブレス

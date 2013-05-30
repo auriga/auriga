@@ -5732,7 +5732,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case LK_PARRYING:		/* パリイング */
 	case MG_SIGHT:			/* サイト */
-	case NPC_WIDESIGHT:		/* ワイドサイト */
 	case MS_PARRYING:
 	case MER_SIGHT:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -7767,6 +7766,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
 		}
+		break;
+	case NPC_WIDESIGHT:		/* ワイドサイト */
+		clif_skill_nodamage(src,bl,MG_SIGHT,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid,skill_get_time(skillid,skilllv),0);
 		break;
 	case NPC_SLOWCAST:		/* スロウキャスト */
 		if(flag&1) {

@@ -2152,7 +2152,7 @@ L_RECALC:
 			sd->critical += 10*(sd->sc.data[SC_TRUESIGHT].val1);
 #ifndef PRE_RENEWAL
 		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // スピアクイッケン
-			sd->critical += 3*(sd->sc.data[SC_SPEARQUICKEN].val1);
+			sd->critical += 30*(sd->sc.data[SC_SPEARQUICKEN].val1);
 #endif
 
 		/*
@@ -3038,9 +3038,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 #ifndef PRE_RENEWAL
 	if(pc_isriding(sd))	// 騎兵修練
-		amotion = amotion * (50+10*pc_checkskill(sd,KN_CAVALIERMASTERY)) / 100;
+		amotion = amotion * (150-10*pc_checkskill(sd,KN_CAVALIERMASTERY)) / 100;
 	else if(pc_isdragon(sd))	// ドラゴントレーニング
-		amotion = amotion * (75+5*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100;
+		amotion = amotion * (125-5*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100;
 
 	/* アイテムのボーナスを加算する */
 	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
@@ -4189,7 +4189,7 @@ int status_get_critical(struct block_list *bl)
 			critical += 10 * sc->data[SC_STRIKING].val1;
 #ifndef PRE_RENEWAL
 		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)   // スピアクイッケン
-			critical += 3*sc->data[SC_SPEARQUICKEN].val1;
+			critical += 30*sc->data[SC_SPEARQUICKEN].val1;
 #endif
 	}
 	if(critical < 1) critical = 1;
@@ -9584,7 +9584,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			else if(type == SC_SIGHTBLASTER)
 				range = 1;
 			else
-				range = (sc->data[type].val4 == NPC_WIDESIGHT)? 5: 3;
+				range = (sc->data[type].val4 == NPC_WIDESIGHT)? 14: 3;
 
 			map_foreachinarea(status_change_timer_sub,
 				bl->m, bl->x-range, bl->y-range, bl->x+range,bl->y+range, BL_CHAR,
