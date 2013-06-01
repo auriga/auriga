@@ -3769,11 +3769,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd) {
 				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
-					DMG_FIX( 1000 + src_sd->inventory_data[idx]->def * 100, 100 );
+#ifdef PRE_RENEWAL
+					DMG_FIX( status_get_lv(src) * 4 + src_sd->inventory_data[idx]->def * 100 + status_get_vit(src) * 2, 100 );
+#else
+					DMG_FIX( status_get_lv(src) * 4 + src_sd->inventory_data[idx]->def * 10 + status_get_vit(src) * 2, 100 );
+#endif
 				}
 			}
 			else {
-				DMG_FIX( 1000, 100 );
+				DMG_FIX( status_get_lv(src) * 4 + status_get_vit(src) * 2, 100 );
 			}
 			break;
 		case LG_OVERBRAND:	// オーバーブランド
@@ -5969,11 +5973,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if(sd) {
 				int idx = sd->equip_index[EQUIP_INDEX_LARM];
 				if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
-					MATK_FIX( 1000 + sd->inventory_data[idx]->mdef * 100, 100 );
+					MATK_FIX( status_get_lv(bl) * 4 + sd->inventory_data[idx]->mdef * 100 + status_get_int(bl) * 2, 100 );
 				}
 			}
 			else {
-				MATK_FIX( 1000, 100 );
+				MATK_FIX( status_get_lv(bl) * 4 + status_get_int(bl) * 2, 100 );
 			}
 			break;
 		case LG_RAYOFGENESIS:			/* レイオブジェネシス */
