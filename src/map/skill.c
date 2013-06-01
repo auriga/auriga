@@ -7291,7 +7291,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			unit_skilluse_id(&sd->bl,src->id,sd->skill_dance.id,sd->skill_dance.lv);
 		break;
 	case AS_SPLASHER:		/* ベナムスプラッシャー */
-		if((atn_bignumber)status_get_max_hp(bl)*3/4 < status_get_hp(bl) || status_get_mode(bl)&MD_BOSS) {
+		if(
+#ifdef PRE_RENEWAL
+			(atn_bignumber)status_get_max_hp(bl)*3/4 < status_get_hp(bl) ||
+#endif
+			status_get_mode(bl)&MD_BOSS) {
 			// HPが3/4以上残っているか相手がボス属性なら失敗
 			clif_skill_fail(sd,skillid,0,0,0);
 			map_freeblock_unlock();
@@ -9732,7 +9736,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
 	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
-	case NJ_RAIGEKISAI:			/* 雷撃砕 */
 	case NPC_EVILLAND:			/* イビルランド */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
 	case SC_MANHOLE:			/* マンホール */
@@ -10041,6 +10044,12 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			src->m,x-1,y-1,x+1,y+1,(BL_CHAR|BL_SKILL),
 			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 			skill_castend_damage_id);
+		break;
+	case NJ_RAIGEKISAI:	/* 雷撃砕 */
+#ifndef PRE_RENEWAL
+		clif_skill_nodamage(src,src,skillid,skilllv,1);
+#endif
+		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 	case NJ_SHADOWJUMP:	/* 影跳び */
 		if(sd && map[sd->bl.m].flag.gvg) {
@@ -16023,10 +16032,18 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				if(battle_config.trap_splash_on) {
 					int i;
 					for(i = 0; i < splash_count; i++) {
+#ifdef PRE_RENEWAL
 						battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+#else
+						battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,((sg->val2)?0x0500:0)|splash_count);
+#endif
 					}
 				} else {
+#ifdef PRE_RENEWAL
 					battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
+#else
+					battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,((sg->val2)?0x0500:0)|splash_count);
+#endif
 				}
 				break;
 			case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */

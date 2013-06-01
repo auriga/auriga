@@ -1489,7 +1489,11 @@ L_RECALC:
 	if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
 		sd->base_atk += 20+(sd->sc.data[SC_GATLINGFEVER].val1*10);
 	}
-	if(sd->sc.data[SC_VOLCANO].timer != -1 && sd->def_ele == ELE_FIRE) {	// ボルケーノ
+	if(sd->sc.data[SC_VOLCANO].timer != -1
+#ifdef PRE_RENEWAL
+		&& sd->def_ele == ELE_FIRE
+#endif
+	) {	// ボルケーノ
 		sd->base_atk += sd->sc.data[SC_VOLCANO].val3;
 	}
 #ifdef PRE_RENEWAL
@@ -1980,7 +1984,11 @@ L_RECALC:
 		}
 #endif
 
-		if(sd->sc.data[SC_VIOLENTGALE].timer != -1 && sd->def_ele == ELE_WIND) {	// バイオレントゲイル
+		if(sd->sc.data[SC_VIOLENTGALE].timer != -1
+#ifdef PRE_RENEWAL
+			&& sd->def_ele == ELE_WIND
+#endif
+		) {	// バイオレントゲイル
 			sd->flee += sd->flee*sd->sc.data[SC_VIOLENTGALE].val3/100;
 		}
 		if(sd->sc.data[SC_BLIND].timer != -1) {	// 暗黒
@@ -2110,7 +2118,11 @@ L_RECALC:
 						+sd->sc.data[SC_APPLEIDUN_].val3/10) * sd->status.max_hp)/100;
 		}
 
-		if(sd->sc.data[SC_DELUGE].timer != -1 && sd->def_ele == ELE_WATER) {	// デリュージ
+		if(sd->sc.data[SC_DELUGE].timer != -1
+#ifdef PRE_RENEWAL
+			&& sd->def_ele == ELE_WATER
+#endif
+		) {	// デリュージ
 			sd->status.max_hp += sd->status.max_hp*sd->sc.data[SC_DELUGE].val3/100;
 		}
 		if(sd->sc.data[SC_SERVICE4U].timer != -1) {	// サービスフォーユー

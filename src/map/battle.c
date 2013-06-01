@@ -3295,9 +3295,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case AS_SPLASHER:	// ベナムスプラッシャー
 			if(src_sd) {
+#ifdef PRE_RENEWAL
 				DMG_FIX( 500+50*skill_lv+20*pc_checkskill(src_sd,AS_POISONREACT), 100 );
+#else
+				DMG_FIX( 500+75*skill_lv, 100 );
+#endif
 			} else {
+#ifdef PRE_RENEWAL
 				DMG_FIX( 500+50*skill_lv, 100 );
+#else
+				DMG_FIX( 500+75*skill_lv, 100 );
+#endif
 			}
 			calc_flag.nocardfix = 1;
 			break;
@@ -6253,6 +6261,15 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		cardfix = 100;
 
 #ifndef PRE_RENEWAL
+		// ボルケーノ
+		if(t_sc->data[SC_VOLCANO].timer != -1 && ele == ELE_FIRE)
+			cardfix += t_sc->data[SC_VOLCANO].val4;
+		// バイオレントゲイル
+		if(t_sc->data[SC_VIOLENTGALE].timer != -1 && ele == ELE_WIND)
+			cardfix += t_sc->data[SC_VIOLENTGALE].val4;
+		// デリュージ
+		if(t_sc->data[SC_DELUGE].timer != -1 && ele == ELE_FIRE)
+			cardfix += t_sc->data[SC_DELUGE].val4;
 //		if(t_sc->data[SC_SPIDERWEB].timer != -1 && ele == ELE_FIRE)		// スパイダーウェブ
 //			cardfix += 100;
 #endif
@@ -6470,6 +6487,8 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		mid.damage = (mid.damage * 80 / 100) + (rand()%(mid.damage * 20 / 100));
 		if(sd)
 			mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
+		if(flag > 1 && (skill_num == HT_BLASTMINE || skill_num == HT_CLAYMORETRAP))
+			mid.damage /= flag;
 		break;
 #endif
 
@@ -6827,6 +6846,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			   (sd || t_sc->data[SC_DEVOTION].timer == -1))	// 被ディボーション者ならPCから以外は反応しない
 			{
 				rsdamage += damage * t_sc->data[SC_REFLECTSHIELD].val2 / 100;
+#ifndef PRE_RENEWAL
+				if(rsdamage > status_get_max_hp(target))
+					rsdamage = status_get_max_hp(target);
+#endif
 			}
 			// デスバウンド反射
 			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && path_check_dir(path_calc_dir(src,target->x,target->y),status_get_dir(target)))
