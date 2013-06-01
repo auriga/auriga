@@ -9702,16 +9702,12 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	bsp = sd->status.sp;
 
 	inc_num = pc_spheal(sd);
-#ifndef PRE_RENEWAL
-	if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1)
-		inc_num = inc_num / 2;	// 爆裂波動状態はSP自然回復速度が50%
-#endif
-	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) ||
-#ifdef PRE_RENEWAL
-		sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 ||
-#endif
-		sd->sc.data[SC_MONK].timer != -1)
+	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) || sd->sc.data[SC_EXPLOSIONSPIRITS].timer == -1 || sd->sc.data[SC_MONK].timer != -1)
 		sd->regen.sp += inc_num;
+#ifndef PRE_RENEWAL
+	else if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1)
+		sd->regen.sp += inc_num / 2;	// 爆裂波動状態はSP自然回復速度が50%
+#endif
 	if(sd->ud.walktimer == -1)
 		sd->regen.sptick += natural_heal_diff_tick;
 	else

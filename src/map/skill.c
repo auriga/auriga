@@ -16032,18 +16032,10 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				if(battle_config.trap_splash_on) {
 					int i;
 					for(i = 0; i < splash_count; i++) {
-#ifdef PRE_RENEWAL
 						battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
-#else
-						battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,((sg->val2)?0x0500:0)|splash_count);
-#endif
 					}
 				} else {
-#ifdef PRE_RENEWAL
 					battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,(sg->val2)?0x0500:0);
-#else
-					battle_skill_attack(BF_MISC,ss,&unit->bl,bl,sg->skill_id,sg->skill_lv,tick,((sg->val2)?0x0500:0)|splash_count);
-#endif
 				}
 				break;
 			case UNT_ELECTRICSHOCKER:	/* エレクトリックショッカー */

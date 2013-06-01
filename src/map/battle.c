@@ -6491,8 +6491,6 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		mid.damage = (mid.damage * 80 / 100) + (rand()%(mid.damage * 20 / 100));
 		if(sd)
 			mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
-		if(flag > 1 && (skill_num == HT_BLASTMINE || skill_num == HT_CLAYMORETRAP))
-			mid.damage /= flag;
 		break;
 #endif
 
