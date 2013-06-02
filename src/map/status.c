@@ -2035,6 +2035,7 @@ L_RECALC:
 			sd->flee     -= sd->sc.data[SC_GATLINGFEVER].val1*5;
 		}
 
+#ifdef PRE_RENEWAL
 		// ストーンスキン
 		if(sd->sc.data[SC_STONESKIN].timer != -1) {
 			sd->def  = sd->def  * (100 + 20 * sd->sc.data[SC_STONESKIN].val1) / 100;
@@ -2045,6 +2046,7 @@ L_RECALC:
 			sd->def  = sd->def  * (100 - 20 * sd->sc.data[SC_ANTIMAGIC].val1) / 100;
 			sd->mdef = sd->mdef * (100 + 20 * sd->sc.data[SC_ANTIMAGIC].val1) / 100;
 		}
+#endif
 
 		// 耐性
 		if(sd->sc.data[SC_RESISTWATER].timer != -1)
@@ -4696,12 +4698,14 @@ int status_get_def(struct block_list *bl)
 			// エスク
 			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)
 				def = def/2;
+#ifdef PRE_RENEWAL
 			// ストーンスキン
 			if(sc->data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
 				def = def * (100 + 20 * sc->data[SC_STONESKIN].val1) / 100;
 			// アンチマジック
 			if(sc->data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
+#endif
 			// フロストミスティ
 			if(sc->data[SC_FROSTMISTY].timer != -1 && bl->type != BL_PC)
 				def = def * 90 / 100;
@@ -4766,12 +4770,14 @@ int status_get_mdef(struct block_list *bl)
 			// 凍結、石化時は1.25倍
 			if(sc->data[SC_FREEZE].timer != -1 || (sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0))
 				mdef = mdef*125/100;
+#ifdef PRE_RENEWAL
 			// ストーンスキン
 			if(sc->data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 - 20 * sc->data[SC_STONESKIN].val1) / 100;
 			// アンチマジック
 			if(sc->data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 + 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
+#endif
 			// アナライズ
 			if(sc->data[SC_ANALYZE].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 - 14 * sc->data[SC_ANALYZE].val1) / 100;
@@ -6130,6 +6136,9 @@ int status_check_no_magic_damage(struct block_list *bl)
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 {
 	int sc_flag = 0;
+#ifndef PRE_RENEWAL
+	int cap;
+#endif
 
 	nullpo_retr(0, bl);
 
@@ -6139,7 +6148,16 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 	if(rate <= 0)	// 確率が0以下のものは失敗
 		return 0;
 
+#ifndef PRE_RENEWAL
+	cap = src_level - status_get_lv(bl);
+	if(cap <= 0)	// 対象のほうがレベルが高い場合は0
+		cap = 0;
+	else
+		cap = cap * cap / 5;
+#endif
+
 	switch(type) {	// 状態異常耐性ステータス rateは万分率
+#ifdef PRE_RENEWAL
 		case SC_STONE:	// 石化
 		case SC_FREEZE:	// 凍結
 			rate += src_level*10 - rate * status_get_mdef(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
@@ -6169,6 +6187,34 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 			rate += status_get_luk(bl)*10 + -(rate * (status_get_str(bl)*10 + status_get_int(bl)*10) / 2000) - src_level*10 + status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
+#else
+		case SC_STONE:	// 石化
+		case SC_FREEZE:	// 凍結
+			rate = rate * (100 - (status_get_mdef(bl) - cap)) / 100;
+			sc_flag = 1;
+			break;
+		case SC_STUN:	// スタン
+		case SC_POISON:	// 毒
+		case SC_DPOISON:	// 猛毒
+			rate = rate * (100 - (status_get_vit(bl) - cap)) / 100;
+			sc_flag = 1;
+			break;
+		case SC_SLEEP:	// 睡眠
+		case SC_BLEED:	// 出血
+			rate = rate * (100 - (status_get_agi(bl) - cap)) / 100;
+			sc_flag = 1;
+			break;
+		case SC_BLIND:	// 暗黒
+		case SC_SILENCE:	// 沈黙
+			rate = rate * (100 - (status_get_int(bl) - cap)) / 100;
+			sc_flag = 1;
+			break;
+		case SC_CONFUSION:	// 混乱
+		case SC_CURSE:	// 呪い
+			rate = rate * (100 - (status_get_luk(bl) - cap)) / 100;
+			sc_flag = 1;
+			break;
+#endif
 		case SC_TOXIN:
 		case SC_PARALIZE:
 		case SC_VENOMBLEED:
@@ -6460,6 +6506,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 					printf("PC %d skill_sc_start: cardによる異常耐性発動\n", sd->bl.id);
 				return 0;
 			}
+#ifndef PRE_RENEWAL
+			tick = tick * (10000 - scdef) / 10000;
+			if(tick <= 0)
+				return 0;
+#endif
 		}
 	}
 
@@ -7266,7 +7317,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		/* option1 */
 		case SC_STONE:				/* 石化 */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += 100 * status_get_luk(bl) - status_get_mdef(bl) * tick / 100;
+#else
+				tick += 3000 - tick * status_get_mdef(bl) / 100;
+#endif
 			}
 			val3 = tick / 1000;
 			if(val3 < 1)
@@ -7278,17 +7333,29 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_SLEEP:				/* 睡眠 */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_int(bl) / 100;
+#else
+				tick += 1000 - tick * status_get_agi(bl) / 100;
+#endif
 			}
 			break;
 		case SC_FREEZE:				/* 凍結 */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += 10 * status_get_luk(bl) - tick * status_get_mdef(bl) / 100;
+#else
+				tick += 3000 - tick * status_get_mdef(bl) / 100;
+#endif
 			}
 			break;
 		case SC_STUN:				/* スタン（val2にミリ秒セット） */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
+#else
+				tick += 1000 - tick * status_get_vit(bl) / 100;
+#endif
 			}
 			break;
 		/* option2 */
@@ -7334,30 +7401,50 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				break;
 			}
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
+#else
+				tick += 1000 - tick * status_get_int(bl) / 100;
+#endif
 			}
 			break;
 		case SC_BLIND:				/* 暗黒 */
 			calc_flag = 1;
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * (status_get_vit(bl) + status_get_int(bl)) / 200;
+#else
+				tick += 1000 - tick * status_get_int(bl) / 100;
+#endif
 			}
 			break;
 		case SC_CURSE:				/* 呪い */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
+#else
+				tick += 1000 - tick * status_get_luk(bl) / 100;
+#endif
 			}
 			break;
 		case SC_CONFUSION:			/* 混乱 */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * (status_get_str(bl) + status_get_int(bl)) / 200;
+#else
+				tick += 1000 - tick * status_get_luk(bl) / 100;
+#endif
 			}
 			break;
 		case SC_BLEED:				/* 出血 */
 			if(!(flag&2)) {
+#ifdef PRE_RENEWAL
 				icon_tick = tick = -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100 + tick;
+#else
+				icon_tick = tick = 1000 - tick * status_get_agi(bl) / 100 + tick;
+#endif
 			}
 			val3 = (tick < 10000)? 1: tick / 10000;
 			tick = 10000;	// ダメージ発生は10sec毎

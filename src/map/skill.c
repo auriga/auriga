@@ -8087,7 +8087,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case AB_CLEARANCE:		/* クリアランス */
 		if(atn_rand() % 100 < 30 + skilllv * 10) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_release(bl,0x02);		// 暫定でディスペルと同効果
+			status_change_release(bl,0x200);
 		} else if(sd) {
 			clif_skill_fail(sd,skillid,0,0,0);
 		}

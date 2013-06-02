@@ -4,43 +4,43 @@
 // 　※注：SaveFlagが-1のものは基本的に変更しないでください、サーバクラッシュする可能性があります
 
 0,SC_PROVOKE,1,7,1,1			// プロボック
-1,SC_ENDURE,1,7,0,0			// インデュア
+1,SC_ENDURE,1,519,0,0			// インデュア
 2,SC_TWOHANDQUICKEN,1,135,14,0		// ツーハンドクイッケン
-3,SC_CONCENTRATE,1,7,0,0			// 集中力向上
+3,SC_CONCENTRATE,1,519,0,0			// 集中力向上
 4,SC_HIDING,0,5,0,0			// ハイディング
 5,SC_CLOAKING,0,5,0,0			// クローキング
-6,SC_ENCPOISON,0,103,0,0			// エンチャントポイズン
+6,SC_ENCPOISON,0,615,0,0			// エンチャントポイズン
 7,SC_POISONREACT,0,7,0,0			// ポイズンリアクト
 8,SC_QUAGMIRE,0,15,0,1			// クァグマイア
-9,SC_ANGELUS,1,103,0,0			// エンジェラス
-10,SC_BLESSING,1,103,1,0			// ブレッシング
+9,SC_ANGELUS,1,615,0,0			// エンジェラス
+10,SC_BLESSING,1,615,1,0			// ブレッシング
 11,SC_SIGNUMCRUCIS,0,15,0,1		// シグナムクルシス
-12,SC_INCREASEAGI,1,231,6,0		// 速度増加
-13,SC_DECREASEAGI,0,15,17,1		// 速度減少
+12,SC_INCREASEAGI,1,743,6,0		// 速度増加
+13,SC_DECREASEAGI,0,527,17,1		// 速度減少
 14,SC_SLOWPOISON,0,103,0,0		// スローポイズン
-15,SC_IMPOSITIO,1,103,0,0			// イムポシティオマヌス
-16,SC_SUFFRAGIUM,0,103,0,0		// サフラギウム
-17,SC_ASPERSIO,1,103,0,0			// アスペルシオ
+15,SC_IMPOSITIO,1,615,0,0			// イムポシティオマヌス
+16,SC_SUFFRAGIUM,0,615,0,0		// サフラギウム
+17,SC_ASPERSIO,1,615,0,0			// アスペルシオ
 18,SC_BENEDICTIO,0,103,0,0		// 聖体降臨
-19,SC_KYRIE,1,359,0,0			// キリエエレイソン
-20,SC_MAGNIFICAT,1,103,0,0		// マグニフィカート
-21,SC_GLORIA,1,103,0,0			// グロリア
+19,SC_KYRIE,1,871,0,0			// キリエエレイソン
+20,SC_MAGNIFICAT,1,615,0,0		// マグニフィカート
+21,SC_GLORIA,1,615,0,0			// グロリア
 22,SC_AETERNA,0,7,0,1			// レックスエーテルナ
 23,SC_ADRENALINE,1,135,14,0		// アドレナリンラッシュ
 24,SC_WEAPONPERFECTION,1,7,0,0		// ウェポンパーフェクション
 25,SC_OVERTHRUST,1,7,0,0			// オーバートラスト
-26,SC_MAXIMIZEPOWER,1,7,0,0		// マキシマイズパワー
+26,SC_MAXIMIZEPOWER,1,519,0,0		// マキシマイズパワー
 //
 29,SC_TRICKDEAD,0,7,0,0			// 死んだふり
-30,SC_LOUD,1,7,6,0			// ラウドボイス
-31,SC_ENERGYCOAT,1,7,0,0			// エナジーコート
+30,SC_LOUD,1,519,6,0			// ラウドボイス
+31,SC_ENERGYCOAT,1,519,0,0			// エナジーコート
 32,SC_PK_PENALTY,0,0,0,0			// PKのペナルティ
 33,SC_REVERSEORCISH,0,15,0,1		// リバースオーキッシュ
 34,SC_HALLUCINATION,0,9,0,1		// 幻覚
 //
 37,SC_SPEEDPOTION0,1,7,0,0		// スピードアップポーション
 38,SC_SPEEDPOTION1,1,7,0,0		// ハイスピードアップポーション
-39,SC_SPEEDPOTION2,1,7,0,0		// バーサークポーション
+39,SC_SPEEDPOTION2,1,519,0,0		// バーサークポーション
 40,SC_SPEEDUP0,0,0,0,0			// 移動速度増加(アイテム)
 41,SC_SPEEDUP1,0,7,0,0			// スピードポーション
 42,SC_WALKSPEED,0,0,0,0			// 移動速度増加(スクリプト)
@@ -58,16 +58,16 @@
 58,SC_AUTOGUARD,0,263,0,0			// オートガード
 59,SC_REFLECTSHIELD,0,7,0,0		// リフレクトシールド
 60,SC_DEVOTION,-1,7,0,0			// ディボーション
-61,SC_PROVIDENCE,0,7,0,0			// プロヴィデンス
+61,SC_PROVIDENCE,0,519,0,0			// プロヴィデンス
 62,SC_DEFENDER,0,7,0,0			// ディフェンダー
 63,SC_SANTA,1,1,0,0			// サンタ
 64,SC_SUMMER,1,1,0,0			// 涼しい夏衣装
-65,SC_AUTOSPELL,0,7,0,0			// オートスペル
+65,SC_AUTOSPELL,0,519,0,0			// オートスペル
 //
-68,SC_SPEARQUICKEN,1,135,14,0		// スピアクイッケン
+68,SC_SPEARQUICKEN,1,647,14,0		// スピアクイッケン
 //
 86,SC_EXPLOSIONSPIRITS,0,7,0,0		// 爆裂波動
-87,SC_STEELBODY,0,263,0,0			// 金剛
+87,SC_STEELBODY,0,775,0,0			// 金剛
 //
 89,SC_COMBO,0,1,0,0			// モンクコンボ
 90,SC_FLAMELAUNCHER,1,103,0,0		// フレイムランチャー
@@ -76,16 +76,16 @@
 93,SC_SEISMICWEAPON,1,103,0,0		// サイズミックウェポン
 //
 102,SC_WE_FEMALE,0,1,0,0			// あなたに尽くします
-103,SC_AURABLADE,1,7,0,0			// オーラブレード
+103,SC_AURABLADE,1,519,0,0			// オーラブレード
 104,SC_PARRYING,1,7,0,0			// パリイング
-105,SC_CONCENTRATION,1,7,6,0		// コンセントレーション
+105,SC_CONCENTRATION,1,519,6,0		// コンセントレーション
 106,SC_TENSIONRELAX,0,7,0,0		// テンションリラックス
-107,SC_BERSERK,0,7,0,0			// バーサーク
+107,SC_BERSERK,0,519,0,0			// バーサーク
 //
-110,SC_ASSUMPTIO,1,103,0,0		// アスムプティオ
+110,SC_ASSUMPTIO,1,615,0,0		// アスムプティオ
 //
-113,SC_MAGICPOWER,1,7,0,0			// 魔法力増幅
-114,SC_EDP,0,5,0,0			// エンチャントデッドリーポイズン
+113,SC_MAGICPOWER,1,519,0,0			// 魔法力増幅
+114,SC_EDP,0,517,0,0			// エンチャントデッドリーポイズン
 115,SC_TRUESIGHT,1,5,0,0			// トゥルーサイト
 116,SC_WINDWALK,1,5,6,0			// ウインドウォーク
 117,SC_MELTDOWN,0,4,1,0			// メルトダウン
@@ -98,16 +98,16 @@
 124,SC_HEADCRUSH,0,7,0,1			// ヘッドクラッシュ
 125,SC_JOINTBEAT,0,7,0,1			// ジョイントビート
 //
-128,SC_STONE,0,15,17,0			// 石化
-129,SC_FREEZE,0,15,17,0			// 氷結
-130,SC_STUN,0,15,17,1			// スタン
-131,SC_SLEEP,0,15,17,0			// 睡眠
-132,SC_POISON,1,15,17,1			// 毒
-133,SC_CURSE,1,15,17,1			// 呪い
-134,SC_SILENCE,1,15,17,1			// 沈黙
-135,SC_CONFUSION,0,15,17,1		// 混乱
-136,SC_BLIND,1,15,17,1			// 暗闇
-137,SC_BLEED,1,13,17,1			// 出血
+128,SC_STONE,0,527,17,0			// 石化
+129,SC_FREEZE,0,527,17,0			// 凍結
+130,SC_STUN,0,527,17,1			// スタン
+131,SC_SLEEP,0,527,17,0			// 睡眠
+132,SC_POISON,1,527,17,1			// 毒
+133,SC_CURSE,1,527,17,1			// 呪い
+134,SC_SILENCE,1,527,17,1			// 沈黙
+135,SC_CONFUSION,0,527,17,1		// 混乱
+136,SC_BLIND,1,527,17,1			// 暗闇
+137,SC_BLEED,1,525,17,1			// 出血
 //
 140,SC_SAFETYWALL,-1,1,0,0		// セーフティーウォール
 141,SC_PNEUMA,-1,1,0,0			// ニューマ
@@ -357,12 +357,12 @@
 385,SC_NATURAL_HEAL_STOP,0,1,0,0		// 自然回復停止
 386,SC_REBIRTH,0,0,0,0			// リバース
 387,SC_HELLPOWER,1,0,0,1			// ヘルパワー
-388,SC_ENCHANTBLADE,0,1,0,0		// エンチャントブレイド
+388,SC_ENCHANTBLADE,0,513,0,0		// エンチャントブレイド
 389,SC_BERKANA,0,257,0,0			// ミレニアムシールド
 390,SC_NAUTHIZ,0,1,0,0			// リフレッシュ
-391,SC_TURISUSS,0,1,0,0			// ジャイアントグロース
+391,SC_TURISUSS,0,513,0,0			// ジャイアントグロース
 392,SC_HAGALAZ,0,1,0,0			// ストーンハードスキン
-393,SC_ISHA,0,1,0,0			// バイタリティアクティベーション
+393,SC_ISHA,0,513,0,0			// バイタリティアクティベーション
 394,SC_EISIR,0,1,0,0			// ファイティングスピリット
 395,SC_URUZ,0,1,0,0			// アバンダンス
 396,SC_DEATHBOUND,0,1,0,0			// デスバウンド
@@ -378,25 +378,25 @@
 406,SC_TOXIN,0,1,1,1			// トキシン
 407,SC_PARALIZE,0,1,1,1			// パラライズ
 408,SC_VENOMBLEED,0,1,1,1			// ベナムブリード
-409,SC_MAGICMUSHROOM,0,1,1,1		// マジックマッシュルーム
+409,SC_MAGICMUSHROOM,0,513,1,1		// マジックマッシュルーム
 410,SC_DEATHHURT,0,1,1,1			// デスハート
 411,SC_PYREXIA,0,1,1,1			// パイレックシア
 412,SC_OBLIVIONCURSE,0,1,1,0		// オブリビオンカース
 413,SC_LEECHEND,0,1,1,1			// リーチエンド
 414,SC_EPICLESIS,0,1,0,0			// エピクレシス
 415,SC_ORATIO,0,1,0,1			// オラティオ
-416,SC_LAUDAAGNUS,0,1,0,0			// ラウダアグヌス
-417,SC_LAUDARAMUS,0,1,0,0			// ラウダラムス
-418,SC_RENOVATIO,0,1,0,0			// レノヴァティオ
+416,SC_LAUDAAGNUS,0,513,0,0			// ラウダアグヌス
+417,SC_LAUDARAMUS,0,513,0,0			// ラウダラムス
+418,SC_RENOVATIO,0,513,0,0			// レノヴァティオ
 419,SC_EXPIATIO,0,1,0,0			// エクスピアティオ
 420,SC_DUPLELIGHT,0,1,0,0			// デュプレライト
 421,SC_SACRAMENT,0,1,0,0			// サクラメント
 422,SC_WHITEIMPRISON,0,1,1,0		// ホワイトインプリズン
-423,SC_FROSTMISTY,0,1,1,1			// フロストミスティ
+423,SC_FROSTMISTY,0,513,1,1			// フロストミスティ
 424,SC_MARSHOFABYSS,0,1,1,1		// マーシュオブアビス
-425,SC_RECOGNIZEDSPELL,0,1,0,0		// リコグナイズドスペル
+425,SC_RECOGNIZEDSPELL,0,513,0,0		// リコグナイズドスペル
 426,SC_STASIS,0,1,1,1			// ステイシス
-427,SC_HELLINFERNO,0,1,1,1		// ヘルインフェルノ
+427,SC_HELLINFERNO,0,513,1,1		// ヘルインフェルノ
 428,SC_SUMMONBALL1,0,1,0,0		// サモンボール(1個目)
 429,SC_SUMMONBALL2,0,1,0,0		// サモンボール(2個目)
 430,SC_SUMMONBALL3,0,1,0,0		// サモンボール(3個目)
@@ -491,7 +491,7 @@
 519,SC_SPORE_EXPLOSION,0,1,0,0		// スポアエクスプロージョン
 520,SC_FIRE_EXPANSION_SMOKE_POWDER,0,1,0,0	// ファイアーエクスパンション(煙幕)
 521,SC_FIRE_EXPANSION_TEAR_GAS,0,1,0,0	// ファイアーエクスパンション(催涙)
-522,SC_MANDRAGORA,0,1,0,1			// ハウリングマンドラゴラ
+522,SC_MANDRAGORA,0,513,0,1			// ハウリングマンドラゴラ
 523,SC_MELON_BOMB,0,1,0,0			// メロン爆弾
 524,SC_BANANA_BOMB,0,1,0,0		// バナナ爆弾
 525,SC_MYSTERIOUS_POWDER,0,1,0,0		// 不思議な粉
