@@ -728,6 +728,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 
+#ifdef PRE_RENEWAL
 		// スパイダーウェブ
 		if(sc->data[SC_SPIDERWEB].timer != -1 && damage > 0) {
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE) ||
@@ -737,6 +738,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				status_change_end(bl, SC_SPIDERWEB, -1);
 			}
 		}
+#endif
 
 		// ミレニアムシールド
 		if(sc->data[SC_BERKANA].timer != -1 && damage > 0) {
@@ -1965,11 +1967,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case AM_ACIDTERROR:		// アシッドテラー
 		case MO_INVESTIGATE:		// 発勁
 #endif
-		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
-		case NJ_ISSEN:			// 一閃
 		case KO_BAKURETSU:		// 爆裂苦無
 			calc_flag.hitrate = 1000000;
 			s_ele = s_ele_ = ELE_NEUTRAL;
+			break;
+		case MO_EXTREMITYFIST:		// 阿修羅覇鳳拳
+		case NJ_ISSEN:			// 一閃
+			calc_flag.hitrate = 1000000;
+#ifdef PRE_RENEWAL
+			s_ele = s_ele_ = ELE_NEUTRAL;
+#endif
 			break;
 		case HVAN_EXPLOSION:		// バイオエクスプロージョン
 		case RG_BACKSTAP:		// バックスタブ
@@ -2513,8 +2520,23 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( 100-skill, 100 );
 		}
 
+		// スパイダーウェブ
+		if(t_sc && t_sc->data[SC_SPIDERWEB].timer != -1 && s_ele == ELE_FIRE) {
+			wd.damage <<= 1;
+			if(calc_flag.lh)
+				wd.damage2 <<= 1;
+			status_change_end(bl, SC_SPIDERWEB, -1);
+		}
+
+		/* （RE）属性の適用 */
+		if(skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
+			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
+			if(calc_flag.lh)
+				wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
+		}
+
 		/* （RE）属性補正 */
-		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST) {
+		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
 			cardfix = 100;
 			if(sc) {
 				// ボルケーノ
@@ -2531,9 +2553,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// カイト
 				if(t_sc->data[SC_KAITE].timer != -1)
 					cardfix += 300;
-				// スパイダーウェブ
-//				if(t_sc->data[SC_SPIDERWEB].timer != -1 && s_ele == ELE_FIRE)
-//					cardfix += 100;
 				// ベナムインプレス
 				if(t_sc->data[SC_VENOMIMPRESS].timer != -1 && s_ele == ELE_POISON)
 					cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
@@ -2542,13 +2561,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					cardfix += t_sc->data[SC_ORATIO].val1;
 			}
 			DMG_FIX( cardfix, 100 );
-		}
-
-		/* （RE）属性の適用 */
-		if(skill_num != NJ_ISSEN) {
-			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
-			if(calc_flag.lh)
-				wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
 		}
 
 		// （RE）ステータスAtkを加算
@@ -6257,6 +6269,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	if(mgd.damage < 0)
 		mgd.damage = 0;
 
+#ifndef PRE_RENEWAL
+	if(t_sc && t_sc->data[SC_SPIDERWEB].timer != -1 && ele == ELE_FIRE && mgd.damage > 0 && normalmagic_flag) {	// スパイダーウェブ
+		mgd.damage <<= 1;
+		status_change_end(bl, SC_SPIDERWEB, -1);
+	}
+#endif
+
 	/* ７．属性の適用 */
 	mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));
 
@@ -6274,8 +6293,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		// デリュージ
 		if(t_sc->data[SC_DELUGE].timer != -1 && ele == ELE_FIRE)
 			cardfix += t_sc->data[SC_DELUGE].val4;
-//		if(t_sc->data[SC_SPIDERWEB].timer != -1 && ele == ELE_FIRE)		// スパイダーウェブ
-//			cardfix += 100;
 #endif
 		if(t_sc->data[SC_VENOMIMPRESS].timer != -1 && ele == ELE_POISON)		// ベナムインプレス
 			cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
@@ -7250,6 +7267,8 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				case GS_GROUNDDRIFT:
 				case RA_ARROWSTORM:
 				case RA_AIMEDBOLT:
+				case NC_ARMSCANNON:
+				case KO_HAPPOKUNAI:
 					// 既に消費処理は完了しているので除外
 					break;
 				case SN_SHARPSHOOTING:
@@ -7499,6 +7518,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				   skillid != GN_FIRE_EXPANSION_ACID)
 				{
 					rdamage += damage * sc->data[SC_REFLECTSHIELD].val2 / 100;	// 跳ね返し計算
+#ifndef PRE_RENEWAL
+					if(rdamage > status_get_max_hp(bl))
+						rdamage = status_get_max_hp(bl);
+#endif
 					if(rdamage < 1) rdamage = 1;
 				}
 				// デスバウンド時

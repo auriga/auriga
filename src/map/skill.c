@@ -3661,6 +3661,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
 			int ar = (skilllv < 5)? 4 : 5;
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
 			/* スキルエフェクト表示 */
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -10168,6 +10173,11 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NC_ARMSCANNON:		/* アームズキャノン */
 		{
 			int ar = 4 - skilllv;
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
 			skill_area_temp[1] = src->id;
 			skill_area_temp[2] = x;
 			skill_area_temp[3] = y;
