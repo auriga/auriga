@@ -2525,7 +2525,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage <<= 1;
 			if(calc_flag.lh)
 				wd.damage2 <<= 1;
-			status_change_end(bl, SC_SPIDERWEB, -1);
+			status_change_end(target, SC_SPIDERWEB, -1);
 		}
 
 		/* （RE）属性の適用 */

@@ -11381,8 +11381,12 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		{
 			int i = src->range;
 			int splash_count = 0;
+#ifdef PRE_RENEWAL
 			if(sg->skill_lv>5)
 				i += 2;
+#else
+			i += 1;
+#endif
 			splash_count = map_foreachinarea(skill_count_target,src->bl.m,
 						src->bl.x-i,src->bl.y-i,
 						src->bl.x+i,src->bl.y+i,
@@ -16600,8 +16604,13 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 	}
 
 	// イドゥンの林檎による回復
-	if(group->unit_id == UNT_APPLEIDUN && DIFF_TICK(tick,group->tick) >= 6000 * group->val3)
-	{
+	if(group->unit_id == UNT_APPLEIDUN &&
+#ifdef PRE_RENEWAL
+		DIFF_TICK(tick,group->tick) >= 6000 * group->val3
+#else
+		DIFF_TICK(tick,group->tick) >= 5000 * group->val3
+#endif
+	) {
 		struct block_list *src = map_id2bl(group->src_id);
 		if(src == NULL)
 			return 0;
@@ -19048,6 +19057,7 @@ static void skill_init_unit_layout(void)
 			}
 			case WZ_FROSTNOVA:
 			{
+#ifdef PRE_RENEWAL
 				const int dx[] = {
 					-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,
 					-2,-1, 1, 2,-2,-1, 0, 1, 2,-2,
@@ -19057,6 +19067,19 @@ static void skill_init_unit_layout(void)
 					 0, 0, 0, 0, 1, 1, 1, 1, 1, 2,
 					 2, 2, 2, 2};
 				skill_unit_layout[pos].count = 24;
+#else
+				const int dx[] = {
+					-3,-2,-1, 0, 1, 2, 3,-3,-2,-1, 0, 1, 2, 3,
+					-3,-2,-1, 0, 1, 2, 3,-3,-2,-1, 1, 2, 3,-3,
+					-2,-1, 0, 1, 2, 3,-3,-2,-1, 0, 1, 2, 3,-3,
+					-2,-1, 0, 1, 2, 3};
+				const int dy[]={
+					-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,
+					-1,-1,-1,-1,-1,-1,-1, 0, 0, 0, 0, 0, 0, 1,
+					 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3,
+					 3, 3, 3, 3, 3, 3};
+				skill_unit_layout[pos].count = 48;
+#endif
 				memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
 				memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
 				break;

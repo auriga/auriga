@@ -1805,8 +1805,13 @@ L_RECALC:
 			sd->flee += 10;
 
 		// ATK/DEF変化形
-		if(sd->sc.data[SC_ANGELUS].timer != -1)	// エンジェラス
+		if(sd->sc.data[SC_ANGELUS].timer != -1) {	// エンジェラス
+#ifdef PRE_RENEWAL
 			sd->def2 = sd->def2*(110+5*sd->sc.data[SC_ANGELUS].val1)/100;
+#else
+			sd->def2 = sd->def2+sd->paramc[2]/2*(100+5*sd->sc.data[SC_ANGELUS].val1)/100;
+#endif
+		}
 #ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// イムポシティオマヌス
 			sd->watk += sd->sc.data[SC_IMPOSITIO].val1*5;
@@ -4827,8 +4832,13 @@ int status_get_def2(struct block_list *bl)
 		def2 = ((struct elem_data *)bl)->vit;
 
 	if(sc) {
-		if(sc->data[SC_ANGELUS].timer != -1 && bl->type != BL_PC)
+		if(sc->data[SC_ANGELUS].timer != -1 && bl->type != BL_PC) {
+#ifdef PRE_RENEWAL
 			def2 = def2*(110+5*sc->data[SC_ANGELUS].val1)/100;
+#else
+			def2 = def2*(100+5*sc->data[SC_ANGELUS].val1)/100;
+#endif
+		}
 		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)
 			def2 = def2 * (100 - 55) / 100;
 		else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)
@@ -9748,12 +9758,15 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_LULLABY:	/* 子守唄 */
 		if((--sc->data[type].val2) > 0) {
 			struct skill_unit *unit = map_id2su(sc->data[type].val4);
+#ifdef PRE_RENEWAL
+			int interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/10;
+#else
+			int interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/15;
+#endif
 			if(!unit || !unit->group || unit->group->src_id == bl->id)
 				break;
 			skill_additional_effect(bl,bl,unit->group->skill_id,sc->data[type].val1,BF_LONG|BF_SKILL|BF_MISC,tick);
-			timer = add_timer(
-				skill_get_time(unit->group->skill_id,unit->group->skill_lv)/10+tick, status_change_timer,
-				bl->id, data);
+			timer = add_timer(interval+tick, status_change_timer, bl->id, data);
 		}
 		break;
 
