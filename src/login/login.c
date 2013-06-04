@@ -1027,6 +1027,9 @@ int parse_login(int fd)
 			case 0x02b0:
 				printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
 				break;
+			case 0x0825:
+				printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,9));
+				break;
 			default:
 				if( cmd < 0x7530 )
 					printf("parse_login : %d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
@@ -1066,9 +1069,12 @@ int parse_login(int fd)
 		case 0x0277:	// クライアントログイン要求？
 		case 0x027c:	// 暗号化ログイン要求
 		case 0x02b0:	// クライアントログイン要求（langtype=0）
+		case 0x0825:	// シングルサインオンログイン要求（langtype=0）
 		{
 			int result = -1;
 			bool enc_flag;
+			int version;
+			int clienttype;
 
 			switch(cmd)
 			{
@@ -1096,22 +1102,44 @@ int parse_login(int fd)
 					if(RFIFOREST(fd) < 85)
 						return 0;
 					break;
+				case 0x0825:
+					if(RFIFOREST(fd) < 4 || RFIFOREST(fd) < RFIFOW(fd, 2))
+						return 0;
+					break;
 			}
 
 			enc_flag = (cmd == 0x1dd || cmd == 0x1fa || cmd == 0x27c);
 
-			memcpy(sd->userid,RFIFOP(fd,6),24);
-			sd->userid[23] = '\0';
+			if(cmd == 0x0825) {
+				char *token = (char *)RFIFOP(fd,0x5c);
+				size_t len = RFIFOREST(fd) - 0x5c;
 
-			if(enc_flag)
-			{
-				memcpy(sd->pass, RFIFOP(fd,30), 16);
-				sd->pass[16] = '\0';	// binary data
-			}
-			else
-			{
-				memcpy(sd->pass, RFIFOP(fd,30), 24);
-				sd->pass[23] = '\0';
+				version = RFIFOL(fd,4);
+				clienttype = RFIFOB(fd,8);
+				memcpy(sd->userid,RFIFOP(fd,9),24);
+				sd->userid[23] = '\0';
+
+				if(len > 0 && len < 24) {
+					memcpy(sd->pass,token,len+1);
+					sd->pass[len+1] = '\0';
+				}
+			} else {
+				version = RFIFOL(fd,2);
+				memcpy(sd->userid,RFIFOP(fd,6),24);
+				sd->userid[23] = '\0';
+
+				if(enc_flag)
+				{
+					memcpy(sd->pass, RFIFOP(fd,30), 16);
+					sd->pass[16] = '\0';	// binary data
+					clienttype = RFIFOB(fd,46);
+				}
+				else
+				{
+					memcpy(sd->pass, RFIFOP(fd,30), 24);
+					sd->pass[23] = '\0';
+					clienttype = RFIFOB(fd,54);
+				}
 			}
 
 			{
@@ -1120,9 +1148,9 @@ int parse_login(int fd)
 				loginlog_log("client connection request %s from %s", sd->userid, sd->lastip);
 			}
 
-			if( config.login_version > 0 && config.login_version != RFIFOL(fd,2) )	// 規定外のバージョンからの接続を拒否
+			if( config.login_version > 0 && config.login_version != version )	// 規定外のバージョンからの接続を拒否
 				result = 5;
-			if( config.login_type > 0 && config.login_type != ((enc_flag)? RFIFOB(fd,46): RFIFOB(fd,54)) )	// 規定外のタイプからの接続を拒否
+			if( config.login_type > 0 && config.login_type != clienttype )	// 規定外のタイプからの接続を拒否
 				result = 5;
 			if( strlen(sd->userid) < 4 )	// IDが4字未満を拒否
 				result = 3;
