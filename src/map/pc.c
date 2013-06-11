@@ -9708,6 +9708,13 @@ static int pc_natural_heal_sp(struct map_session_data *sd)
 	else if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1)
 		sd->regen.sp += inc_num / 2;	// 爆裂波動状態はSP自然回復速度が50%
 #endif
+	if(sd->sc.data[SC_DANCING].timer != -1) {		// ダンス状態ではSPが回復しない
+		sd->regen.sp = 0;
+		if(pc_checkskill(sd,WM_LESSON) == 0) {		// レッスン習得済みならレッスン効果のみ有効
+			sd->regen.sptick = 0;
+		}
+	}
+
 	if(sd->ud.walktimer == -1)
 		sd->regen.sptick += natural_heal_diff_tick;
 	else
@@ -10044,13 +10051,11 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		pc_natural_heal_hp(sd);
 		if( sd->sc.data[SC_MAXIMIZEPOWER].timer == -1 &&	// マキシマイズパワー状態ではSPが回復しない
 		    sd->sc.data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
-		    sd->sc.data[SC_DANCING].timer == -1 &&		// ダンス状態ではSPが回復しない
 		    sd->sc.data[SC_BERSERK].timer == -1 &&		// バーサーク状態ではSPが回復しない
 		    sd->sc.data[SC_ISHA].timer == -1 &&		// バイタリティアクティベーション状態ではSPが回復しない
 		    sd->sc.data[SC_WEAPONBLOCKING].timer == -1 &&		// ウェポンブロッキング状態ではSPが回復しない
 		    sd->sc.data[SC_TOXIN].timer == -1 &&	// トキシン状態ではSPが回復しない
 		    sd->sc.data[SC_OBLIVIONCURSE].timer == -1 &&		// オブリビオンカース状態ではSPが回復しない
-		    sd->sc.data[SC_SPELLBOOK].timer == -1 &&	// スペル保存状態ではSPが回復しない
 		    sd->sc.data[SC_ELECTRICSHOCKER].timer == -1 &&	// エレクトリックショッカー状態ではSPが回復しない
 		    sd->sc.data[SC_CAMOUFLAGE].timer == -1 &&		// カモフラージュ状態ではSPが回復しない
 		    sd->sc.data[SC_MAGNETICFIELD].timer == -1 &&	// マグネティックフィールド状態ではSPが回復しない

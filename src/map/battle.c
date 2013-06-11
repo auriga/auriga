@@ -1990,6 +1990,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #ifndef PRE_RENEWAL
 		case MO_INVESTIGATE:		// 発勁
 		case GS_MAGICALBULLET:	// マジカルバレット
+		case ASC_BREAKER:		// ソウルブレイカー
 #endif
 		case NPC_EXPULSION:		// エクスパルシオン
 		case RK_DRAGONBREATH:	// ドラゴンブレス
