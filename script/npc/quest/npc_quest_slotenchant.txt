@@ -1428,3 +1428,764 @@ moc_ruins.gat,154,86,3	duplicate(レアブルレム#slot)	レアブルレム	86
 payon.gat,236,199,3	duplicate(レアブルレム#slot)	レアブルレム	86
 lighthalzen.gat,96,137,3	duplicate(レアブルレム#slot)	レアブルレム	86
 
+//==================================================
+// プロブルレム
+//==================================================
+prontera.gat,81,106,6	script	プロブルレム	97,{
+	mes "[プロブルレム]";
+	mes "私は異世界の技術を使い";
+	mes "防具にスロットエンチャントが";
+	mes "できる技術者です。";
+	mes "スロットエンチャントとは、";
+	mes "装備品にスロットを追加する";
+	mes "技術の事です。";
+	next;
+	mes "[プロブルレム]";
+	mes "二人の兄に指導してもらった技術と";
+	mes "独自に入手した異世界の技術を融合し";
+	mes "非常に高度なスロットエンチャントに";
+	mes "成功する事が出来ました。";
+	next;
+	mes "[プロブルレム]";
+	mes "あまりにも危険な技術の為、";
+	mes "二人の兄は反対しましたが";
+	mes "私はこのスロットエンチャントを";
+	mes "もっと世界に広めて";
+	mes "有効に使って欲しいと思っています。";
+	next;
+	mes "[プロブルレム]";
+	mes "もし、武器に対して";
+	mes "スロットを追加したかったら";
+	mes "双子の兄のアラブルレムに";
+	mes "頼んで見てください。";
+	next;
+	mes "[プロブルレム]";
+	mes "さて、スロットを追加したい";
+	mes "防具はありますか？";
+	mes "品によって、手数料や必要な材料、";
+	mes "成功率が違いますのでご注意を。";
+	next;
+	switch(select("防具を選ぶ","説明を詳しく聞く","話をやめる")) {
+	case 1:
+		mes "[プロブルレム]";
+		mes "手数料や材料などによって";
+		mes "4段級に分かれています。";
+		mes "まず、スロットを追加したいアイテムの";
+		mes "階級を選んで下さい。";
+		next;
+		set '@class,select("C級","B級","A級","S級","やめる");
+		switch('@class) {
+			case 1:	//C級
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "C級のどの防具にしますか？";
+				next;
+				switch(select("ゴヴニュの軍靴","マグニキャップ","フレイシューズ","駆魔の聖書","やめる")) {
+					case 1:	//ゴヴニュの軍靴
+						set '@delid,2419;
+						set '@getid,2493;
+						set '@need,999;
+						set '@amount,10;
+						set '@price,50000;
+						break;
+					case 2:	//マグニキャップ
+						set '@delid,5122;
+						set '@getid,18594;
+						set '@need,999;
+						set '@amount,30;
+						set '@price,100000;
+						break;
+					case 3:	//フレイシューズ
+						set '@delid,2417;
+						set '@getid,2488;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 4:	//駆魔の聖書
+						set '@delid,2129;
+						set '@getid,2166;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 5:	//やめる
+						mes "[プロブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 2:	//B級
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "B級のどの防具にしますか？";
+				next;
+				switch(select("シャドウウォーカー","ぼろマント","クリティカルリング","やめる")) {
+					case 1:	//シャドウウォーカー
+						set '@delid,2426;
+						set '@getid,2486;
+						set '@need,985;
+						set '@amount,15;
+						set '@price,400000;
+						break;
+					case 2:	//ぼろマント
+						set '@delid,2508;
+						set '@getid,2588;
+						set '@need,985;
+						set '@amount,20;
+						set '@price,500000;
+						break;
+					case 3:	//クリティカルリング
+						set '@delid,2616;
+						set '@getid,2943;
+						set '@need,985;
+						set '@amount,20;
+						set '@price,500000;
+						break;
+					case 4:	//やめる
+						mes "[プロブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 3:	//A級
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "A級のどの防具にしますか？";
+				next;
+				switch(select("ヴィダルのブーツ","セフィロトシューズ","モリガンのベルト","モルフェウスの腕輪","ゴヴニュの肩飾り","やめる")) {
+					case 1:	//ヴィダルのブーツ
+						set '@delid,2418;
+						set '@getid,2489;
+						set '@need,985;
+						set '@amount,30;
+						set '@price,700000;
+						break;
+					case 2:	//セフィロトシューズ
+						set '@delid,2450;
+						set '@getid,2487;
+						set '@need,985;
+						set '@amount,30;
+						set '@price,700000;
+						break;
+					case 3:	//モリガンのベルト
+						set '@delid,2650;
+						set '@getid,2900;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 4:	//モルフェウスの腕輪
+						set '@delid,2649;
+						set '@getid,2903;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 5:	//ゴヴニュの肩飾り
+						set '@delid,2520;
+						set '@getid,2599;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 6:	//やめる
+						mes "[プロブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 4:	//S級
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "S級のどの防具にしますか？";
+				next;
+				switch(select("モリガンのペンダント","モルフェウスの指輪","ガラスの靴","エベシ嵐のうねり","クレイトス大地の裂け目","シャピニハ海の叫び","ルシウス火山の激しさ","ルーンブーツ","やめる")) {
+					case 1:	//モリガンのペンダント
+						set '@delid,2651;
+						set '@getid,2901;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 2:	//モルフェウスの指輪
+						set '@delid,2648;
+						set '@getid,2902;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 3:	//ガラスの靴
+						set '@delid,2407;
+						set '@getid,2494;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 4:	//エベシ嵐のうねり
+						set '@delid,2348;
+						set '@getid,2349;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 5:	//クレイトス大地の裂け目
+						set '@delid,2350;
+						set '@getid,2351;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 6:	//シャピニハ海の叫び
+						set '@delid,2346;
+						set '@getid,2347;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 7:	//ルシウス火山の激しさ
+						set '@delid,2344;
+						set '@getid,2345;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 8:	//ルーンブーツ
+						set '@delid,2481;
+						set '@getid,2490;
+						set '@need,969;
+						set '@amount,1;
+						set '@price,3000000;
+						break;
+					case 9:	//やめる
+						mes "[プロブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 5:	//やめる
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "もし興味がわきましたら";
+				mes "またお越しください。";
+				close;
+		}
+		mes "[プロブルレム]";
+		mes "^3355FF" +getitemname('@delid)+ "^000000ですね。";
+		mes "ではご確認します。";
+		mes "　";
+		mes "まず、手数料として^3355FF" +'@price+ "Zeny^000000と";
+		mes "^3355FF" +getitemname('@need)+ "^000000を^3355FF" +'@amount+ "個^000000いただきます。";
+		next;
+		mes "[プロブルレム]";
+		mes "そして、エンチャントは";
+		mes "必ずしも成功するとは限りません。";
+		mes "^FF0000失敗すると、防具は消えてしまいます。^000000";
+		mes "また、成功すると、今までの";
+		mes "^FF0000精錬値及び挿していたカードが^000000";
+		mes "^FF0000消えてしまいます。";
+		next;
+		mes "[プロブルレム]";
+		mes "エンチャントを行いますか？";
+		next;
+		if(select("^FF0000今回はやめておく^000000","^3355FFお願いします^000000") == 1) {
+			mes "[プロブルレム]";
+			mes "わかりました。";
+			mes "もし興味がわきましたら";
+			mes "またお越しください。";
+			close;
+		}
+		if(countitem('@delid) < 1 || countitem('@need) < '@amount || Zeny < '@price) {
+			mes "[プロブルレム]";
+			mes "材料かお金が足りませんよ？";
+			close;
+		}
+		delitem '@delid,1;
+		delitem '@need,'@amount;
+		set Zeny,Zeny-'@price;
+		switch('@class) {
+			case 1: set '@success,25; break; //C級
+			case 2: set '@success,20; break; //B級
+			case 3: set '@success,15; break; //A級
+			case 4: set '@success,10; break; //S級
+		}
+		if(rand(100) < '@success) {
+			if('@class == 4)
+				misceffect 90;
+			else
+				misceffect 83;
+			mes "[プロブルレム]";
+			mes "OK、成功しました。";
+			mes "おめでとうございます。";
+			getitem '@getid,1;
+		}
+		else {
+			misceffect 183;
+			mes "[プロブルレム]";
+			mes "う……失敗です。";
+			mes "どうやら運が無かったようです。";
+			mes "……そう落ち込まないでください。";
+			mes "今度はきっと成功しますよ。";
+		}
+		next;
+		mes "[プロブルレム]";
+		mes "それでは、またご利用ください。";
+		close;
+	case 2:
+		mes "[プロブルレム]";
+		mes "スロットエンチャントとは、";
+		mes "装備品にスロットを追加する技術。";
+		mes "成否に関わらず材料は全て消滅します。";
+		next;
+		mes "[プロブルレム]";
+		mes "また、例え成功したとしても";
+		mes "精錬・カード・属性、";
+		mes "ヒドゥンスロットエンチャント等の";
+		mes "付与効果は全て消滅します。";
+		next;
+		mes "[プロブルレム]";
+		mes "さらに、一部の装備品だけですが";
+		mes "スロットが同時に複数追加されたり、";
+		mes "基本性能が変化する物があります。";
+		next;
+		mes "[プロブルレム]";
+		mes "そして、気をつけなければならない点が";
+		mes "一つあります。";
+		mes "例えば……「+7マント [0]」と";
+		mes "ただの「マント [0]」を持って、";
+		mes "私にスロットエンチャントを依頼すると";
+		mes "どちらが対象になると思いますか？";
+		next;
+		mes "[プロブルレム]";
+		mes "正解はわからない……";
+		mes "つまり、対象のアイテムが";
+		mes "どういった物か、私は一切";
+		mes "気にせずに作業するという事です。";
+		next;
+		mes "[プロブルレム]";
+		mes "^FF0000スロット数以外は、^000000";
+		mes "^FF0000一切関係ありません。^000000";
+		mes "^FF0000例え未鑑定だろうが、^000000";
+		mes "^FF0000破損していようが、^000000";
+		mes "^FF0000スロットエンチャントを行います。^000000";
+		next;
+		mes "[プロブルレム]";
+		mes "^FF0000しかし、誰かが作った製造品だと^000000";
+		mes "^FF0000スロットの数に関係なく^000000";
+		mes "^FF0000スロットエンチャントの^000000";
+		mes "^FF0000対象アイテムとなります。^000000";
+		next;
+		mes "[プロブルレム]";
+		mes "^FF0000特定のアイテムだけに^000000";
+		mes "^FF0000スロットエンチャントを^000000";
+		mes "^FF0000行いたいのなら、同じ名前の^000000";
+		mes "^FF0000アイテムを倉庫にでも^000000";
+		mes "^FF0000預けておいた方がいいです。^000000";
+		next;
+		mes "[プロブルレム]";
+		mes "この事を忘れ、別のアイテムが";
+		mes "スロットエンチャントの対象になっても";
+		mes "私は一切責任を取りません。";
+		mes "十分に注意してください。";
+		next;
+		mes "[プロブルレム]";
+		mes "他に説明する事は特にありません。";
+		mes "百聞は一見にしかず。";
+		mes "まずはスロットエンチャントに";
+		mes "挑戦してみたらどうですか？";
+		close;
+	case 3:
+		mes "[プロブルレム]";
+		mes "そうですか……";
+		close;
+	}
+}
+
+//==================================================
+// アラブルレム
+//==================================================
+prontera.gat,79,104,6	script	アラブルレム	97,{
+	mes "[アラブルレム]";
+	mes "私は異世界の技術を使い";
+	mes "武器にスロットエンチャントが";
+	mes "できる技術者です。";
+	mes "スロットエンチャントとは、";
+	mes "装備品にスロットを追加する";
+	mes "技術の事です。";
+	next;
+	mes "[アラブルレム]";
+	mes "二人の兄に指導してもらった技術と";
+	mes "独自に入手した異世界の技術を融合し";
+	mes "非常に高度なスロットエンチャントに";
+	mes "成功する事が出来ました。";
+	next;
+	mes "[アラブルレム]";
+	mes "あまりにも危険な技術の為、";
+	mes "二人の兄は反対しましたが";
+	mes "私はこのスロットエンチャントを";
+	mes "もっと世界に広めて";
+	mes "有効に使って欲しいと思っています。";
+	next;
+	mes "[アラブルレム]";
+	mes "もし、防具に対して";
+	mes "スロットを追加したかったら";
+	mes "双子の弟のプロブルレムに";
+	mes "頼んで見てください。";
+	next;
+	mes "[アラブルレム]";
+	mes "さて、スロットを追加したい";
+	mes "武器はありますか？";
+	mes "品によって、手数料や必要な材料、";
+	mes "成功率が違いますのでご注意を。";
+	next;
+	switch(select("武器を選ぶ","説明を詳しく聞く","話をやめる")) {
+	case 1:
+		mes "[アラブルレム]";
+		mes "手数料や材料などによって";
+		mes "4段級に分かれています。";
+		mes "まず、スロットを追加したいアイテムの";
+		mes "階級を選んで下さい。";
+		next;
+		set '@class,select("C級","B級","A級","S級","やめる");
+		switch('@class) {
+			case 1:	//C級
+				mes "[アラブルレム]";
+				mes "わかりました。";
+				mes "C級のどの武器にしますか？";
+				next;
+				switch(select("骸骨の杖","オーキッシュソード","ファイアーブランド","アイスファルシオン","治癒の杖","やめる")) {
+					case 1:	//骸骨の杖
+						set '@delid,1615;
+						set '@getid,1662;
+						set '@need,999;
+						set '@amount,30;
+						set '@price,100000;
+						break;
+					case 2:	//オーキッシュソード
+						set '@delid,1124;
+						set '@getid,13437;
+						set '@need,999;
+						set '@amount,30;
+						set '@price,100000;
+						break;
+					case 3:	//ファイアーブランド
+						set '@delid,1133;
+						set '@getid,13435;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 4:	//アイスファルシオン
+						set '@delid,1131;
+						set '@getid,13436;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 5:	//治癒の杖
+						set '@delid,1625;
+						set '@getid,1666;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 6:	//やめる
+						mes "[アラブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 2:	//B級
+				mes "[アラブルレム]";
+				mes "わかりました。";
+				mes "B級のどの武器にしますか？";
+				next;
+				switch(select("ネメシス","ドラゴンの遺産","カウンターダガー","アイボリーナイフ","ブラディウムハンマー","やめる")) {
+					case 1:	//ネメシス
+						set '@delid,1541;
+						set '@getid,16022;
+						set '@need,984;
+						set '@amount,3;
+						set '@price,300000;
+						break;
+					case 2:	//ドラゴンの遺産
+						set '@delid,1559;
+						set '@getid,1589;
+						set '@need,984;
+						set '@amount,3;
+						set '@price,300000;
+						break;
+					case 3:	//カウンターダガー
+						set '@delid,1242;
+						set '@getid,13073;
+						set '@need,984;
+						set '@amount,5;
+						set '@price,400000;
+						break;
+					case 4:	//アイボリーナイフ
+						set '@delid,13039;
+						set '@getid,13082;
+						set '@need,984;
+						set '@amount,5;
+						set '@price,400000;
+						break;
+					case 5:	//ブラディウムハンマー
+						set '@delid,1385;
+						set '@getid,1397;
+						set '@need,984;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 6:	//やめる
+						mes "[アラブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 3:	//A級
+				mes "[アラブルレム]";
+				mes "わかりました。";
+				mes "A級のどの武器にしますか？";
+				next;
+				switch(select("スタッフオブオルド","インバーススケイル","ブラッディティアーズ","ディバインクロス","スタッフオブピアーシング","やめる")) {
+					case 1:	//スタッフオブオルド
+						set '@delid,1648;
+						set '@getid,1663;
+						set '@need,6224;
+						set '@amount,5;
+						set '@price,700000;
+						break;
+					case 2:	//インバーススケイル
+						set '@delid,1269;
+						set '@getid,1297;
+						set '@need,6224;
+						set '@amount,5;
+						set '@price,700000;
+						break;
+					case 3:	//ブラッディティアーズ
+						set '@delid,1271;
+						set '@getid,1295;
+						set '@need,6224;
+						set '@amount,10;
+						set '@price,800000;
+						break;
+					case 4:	//ディバインクロス
+						set '@delid,2001;
+						set '@getid,2017;
+						set '@need,6224;
+						set '@amount,10;
+						set '@price,800000;
+						break;
+					case 5:	//スタッフオブピアーシング
+						set '@delid,1626;
+						set '@getid,1665;
+						set '@need,6224;
+						set '@amount,10;
+						set '@price,800000;
+						break;
+					case 6:	//やめる
+						mes "[アラブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 4:	//S級
+				mes "[アラブルレム]";
+				mes "わかりました。";
+				mes "S級のどの武器にしますか？";
+				next;
+				switch(select("村正","アルカブリンガー","カドリール","茨の杖","オークアーチャーの弓","やめる")) {
+					case 1:	//村正
+						set '@delid,1164;
+						set '@getid,21003;
+						set '@need,6224;
+						set '@amount,15;
+						set '@price,1000000;
+						break;
+					case 2:	//アルカブリンガー
+						set '@delid,1191;
+						set '@getid,21004;
+						set '@need,6224;
+						set '@amount,15;
+						set '@price,1000000;
+						break;
+					case 3:	//カドリール
+						set '@delid,1527;
+						set '@getid,16024;
+						set '@need,6224;
+						set '@amount,15;
+						set '@price,1000000;
+						break;
+					case 4:	//茨の杖
+						set '@delid,1636;
+						set '@getid,1664;
+						set '@need,6224;
+						set '@amount,20;
+						set '@price,2000000;
+						break;
+					case 5:	//オークアーチャーの弓
+						set '@delid,1734;
+						set '@getid,18115;
+						set '@need,6224;
+						set '@amount,20;
+						set '@price,2000000;
+						break;
+					case 6:	//やめる
+						mes "[アラブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 5:	//やめる
+				mes "[アラブルレム]";
+				mes "わかりました。";
+				mes "もし興味がわきましたら";
+				mes "またお越しください。";
+				close;
+			}
+		mes "[アラブルレム]";
+		mes "^3355FF" +getitemname('@delid)+ "^000000ですね。";
+		mes "ではご確認します。";
+		mes "　";
+		mes "まず、手数料として^3355FF" +'@price+ "Zeny^000000と";
+		mes "^3355FF" +getitemname('@need)+ "^000000を^3355FF" +'@amount+ "個^000000いただきます。";
+		next;
+		mes "[アラブルレム]";
+		mes "そして、エンチャントは";
+		mes "必ずしも成功するとは限りません。";
+		mes "^FF0000失敗すると、防具は消えてしまいます。^000000";
+		mes "また、成功すると、今までの";
+		mes "^FF0000精錬値及び挿していたカードが^000000";
+		mes "^FF0000消えてしまいます。";
+		next;
+		mes "[アラブルレム]";
+		mes "エンチャントを行いますか？";
+		next;
+		if(select("^FF0000今回はやめておく^000000","^3355FFお願いします^000000") == 1) {
+			mes "[アラブルレム]";
+			mes "わかりました。";
+			mes "もし興味がわきましたら";
+			mes "またお越しください。";
+			close;
+		}
+		if(countitem('@delid) < 1 || countitem('@need) < '@amount || Zeny < '@price) {
+			mes "[アラブルレム]";
+			mes "材料かお金が足りませんよ？";
+			close;
+		}
+		delitem '@delid,1;
+		delitem '@need,'@amount;
+		set Zeny,Zeny-'@price;
+		switch('@class) {
+			case 1: set '@success,25; break; //C級
+			case 2: set '@success,20; break; //B級
+			case 3: set '@success,15; break; //A級
+			case 4: set '@success,10; break; //S級
+		}
+		if(rand(100) < '@success) {
+			if('@class == 4)
+				misceffect 90;
+			else
+				misceffect 83;
+			mes "[アラブルレム]";
+			mes "OK、成功しました。";
+			mes "おめでとうございます。";
+			getitem '@getid,1;
+		}
+		else {
+			misceffect 183;
+			mes "[アラブルレム]";
+			mes "う……失敗です。";
+			mes "どうやら運が無かったようです。";
+			mes "……そう落ち込まないでください。";
+			mes "今度はきっと成功しますよ。";
+		}
+		next;
+		mes "[アラブルレム]";
+		mes "それでは、またご利用ください。";
+		close;
+	case 2:
+		mes "[アラブルレム]";
+		mes "スロットエンチャントとは、";
+		mes "装備品にスロットを追加する技術。";
+		mes "成否に関わらず材料は全て消滅します。";
+		next;
+		mes "[アラブルレム]";
+		mes "また、例え成功したとしても";
+		mes "精錬・カード・属性、";
+		mes "ヒドゥンスロットエンチャント等の";
+		mes "付与効果は全て消滅します。";
+		next;
+		mes "[アラブルレム]";
+		mes "さらに、一部の装備品だけですが";
+		mes "スロットが同時に複数追加されたり、";
+		mes "基本性能が変化する物があります。";
+		next;
+		mes "[アラブルレム]";
+		mes "そして、気をつけなければならない点が";
+		mes "一つあります。";
+		mes "例えば……「+7マント [0]」と";
+		mes "ただの「マント [0]」を持って、";
+		mes "私にスロットエンチャントを依頼すると";
+		mes "どちらが対象になると思いますか？";
+		next;
+		mes "[アラブルレム]";
+		mes "正解はわからない……";
+		mes "つまり、対象のアイテムが";
+		mes "どういった物か、私は一切";
+		mes "気にせずに作業するという事です。";
+		next;
+		mes "[アラブルレム]";
+		mes "^FF0000スロット数以外は、^000000";
+		mes "^FF0000一切関係ありません。^000000";
+		mes "^FF0000例え未鑑定だろうが、^000000";
+		mes "^FF0000破損していようが、^000000";
+		mes "^FF0000スロットエンチャントを行います。^000000";
+		next;
+		mes "[アラブルレム]";
+		mes "^FF0000しかし、誰かが作った製造品だと^000000";
+		mes "^FF0000スロットの数に関係なく^000000";
+		mes "^FF0000スロットエンチャントの^000000";
+		mes "^FF0000対象アイテムとなります。^000000";
+		next;
+		mes "[アラブルレム]";
+		mes "^FF0000特定のアイテムだけに^000000";
+		mes "^FF0000スロットエンチャントを^000000";
+		mes "^FF0000行いたいのなら、同じ名前の^000000";
+		mes "^FF0000アイテムを倉庫にでも^000000";
+		mes "^FF0000預けておいた方がいいです。^000000";
+		next;
+		mes "[アラブルレム]";
+		mes "この事を忘れ、別のアイテムが";
+		mes "スロットエンチャントの対象になっても";
+		mes "私は一切責任を取りません。";
+		mes "十分に注意してください。";
+		next;
+		mes "[アラブルレム]";
+		mes "他に説明する事は特にありません。";
+		mes "百聞は一見にしかず。";
+		mes "まずはスロットエンチャントに";
+		mes "挑戦してみたらどうですか？";
+		close;
+	case 3:
+		mes "[アラブルレム]";
+		mes "そうですか……";
+		close;
+	}
+}
