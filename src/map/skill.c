@@ -7808,7 +7808,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case NPC_TALK:			/* トーク */
-		if(md && md->skillidx > 0) {
+		if(md && md->skillidx != -1) {
 			mob_talk(md,mob_db[md->class_].skill[md->skillidx].val[0]);
 		}
 		break;
@@ -9924,7 +9924,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		{
 			struct status_change *sc = status_get_sc(src);
 			if(!sc || sc->data[SC_ANKLE].timer == -1) {
-				unit_movepos(src,x,y,0);
 				if(sd) {
 					sd->skillstatictimer[MO_EXTREMITYFIST] = tick + 2000;
 				}
@@ -9934,6 +9933,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				clif_skill_nodamage(src,src,skillid,skilllv,1);
 				clif_bodyrelocation(src,src->x,src->y);
 #endif
+				unit_movepos(src,x,y,1);
 			}
 		}
 		break;
@@ -17384,6 +17384,8 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 					amount = 3 + atn_rand()%3;
 				else if(sd->skill_menu.lv >= 6)
 					amount = 3;
+				else if(sd->skill_menu.lv == 1)
+					amount = 1;
 				else
 					amount = 2;
 				clif_skill_message(sd, sd->skill_menu.id, 1574);	// 成功しました。

@@ -2733,7 +2733,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				case MS_MAGNUM:
 				case TF_POISON:
 				case AS_SONICBLOW:
-				case ASC_BREAKER:
 				case GC_CROSSIMPACT:
 				case GC_DARKILLUSION:
 				case GC_VENOMPRESSURE:
@@ -2864,6 +2863,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				sbr = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
 				wd.damage = wd.damage * (rate+add_rate) / 100;
 				wd.damage += sbr.damage * rate / 100;
+				if(sc && sc->data[SC_EDP].timer != -1) {
+					if(map[src->m].flag.pk && target->type == BL_PC) {
+						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 100) / 100;
+					} else if(map[src->m].flag.gvg) {
+						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 100) / 100;
+					} else if(map[src->m].flag.pvp) {
+						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 100) / 100;
+					} else {
+						wd.damage = wd.damage * (150 + sc->data[SC_EDP].val1 * 50) / 100;
+					}
+				}
 				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
 			}
 			break;
