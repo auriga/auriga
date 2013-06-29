@@ -1868,6 +1868,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		if(t_sc && t_sc->data[SC_SLEEP].timer != -1)
 			cri <<= 1;		// 睡眠中はクリティカルが倍に
+		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val3 >= 0)	// カモフラージュ
+			cri += 1000 - (10 - sc->data[SC_CAMOUFLAGE].val3) * 100;
 		if(calc_flag.autocounter)
 			cri = 1000;
 
@@ -2654,6 +2656,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh)
 					wd.damage2 += sc->data[SC_NIBELUNGEN].val2;
 			}
+			// カモフラージュ
+			if(sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val3 >= 0) {
+				wd.damage += 300 - (10 - sc->data[SC_CAMOUFLAGE].val3) * 30;
+				if(calc_flag.lh)
+					wd.damage2 += 300 - (10 - sc->data[SC_CAMOUFLAGE].val3) * 30;
+			}
 			// カートブースト
 			if(sc->data[SC_GN_CARTBOOST].timer != -1) {
 				wd.damage += sc->data[SC_GN_CARTBOOST].val1 * 10;
@@ -3329,6 +3337,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #else
 				DMG_FIX( 500+75*skill_lv, 100 );
 #endif
+			}
+			if(wflag > 1) {
+				DMG_FIX( 1, wflag );
 			}
 			calc_flag.nocardfix = 1;
 			break;
@@ -4278,6 +4289,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(t_sc && t_sc->data[SC_FORCEOFVANGUARD].timer != -1) {
 					t_def1 += (t_def1 * t_sc->data[SC_FORCEOFVANGUARD].val1 * 2) / 100;
 				}
+				// カモフラージュ
+				if(t_sc && t_sc->data[SC_CAMOUFLAGE].timer != -1 && t_sc->data[SC_CAMOUFLAGE].val3 >= 0)
+					t_def1 -= t_def1 * ((10 - t_sc->data[SC_CAMOUFLAGE].val3) * 5) / 100;
 				// エコーの歌
 				if(t_sc && t_sc->data[SC_ECHOSONG].timer != -1) {
 					// 実際には除算DEF増加だが、暫定で減算DEF
@@ -4301,6 +4315,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					if(t_sc->data[SC_ECHOSONG].timer != -1) {
 						reduce += t_sc->data[SC_ECHOSONG].val4;
 					}
+					// カモフラージュ
+					if(t_sc->data[SC_CAMOUFLAGE].timer != -1 && t_sc->data[SC_CAMOUFLAGE].val3 >= 0)
+						reduce -= (10 - t_sc->data[SC_CAMOUFLAGE].val3) * 5;
 					t_def1 = t_def1 * reduce / 100;
 				}
 #endif

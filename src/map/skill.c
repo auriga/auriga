@@ -2602,6 +2602,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	struct elem_data        *src_eld  = NULL;
 	struct unit_data        *src_ud   = NULL;
 	struct status_change    *tsc      = NULL;
+	struct status_change    *sc       = NULL;
 	int inf2;
 
 	nullpo_retr(0, src);
@@ -2632,6 +2633,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	target = map_id2bl(src_ud->skilltarget);
 	if(target)
 		tsc = status_get_sc(target);
+	sc = status_get_sc(src);
 
 	// スキル条件確認
 	do {
@@ -2782,6 +2784,14 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 #endif
 		}
 
+		// エモ
+		if(src_md && src_md->skillidx != -1)
+		{
+			short emotion = mob_db[src_md->class_].skill[src_md->skillidx].emotion;
+			if(emotion >= 0)
+				clif_emotion(&src_md->bl,emotion);
+		}
+
 		switch( skill_get_nk(src_ud->skillid)&3 )
 		{
 		case 0:	/* 攻撃系 */
@@ -2823,6 +2833,10 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		}
 		if( src_md )
 			src_md->skillidx = -1;
+
+		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && src_ud->skillid != RA_CAMOUFLAGE) {
+			status_change_end(src,SC_CAMOUFLAGE,-1);
+		}
 		return 0;
 	} while(0);
 
@@ -2891,14 +2905,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					is_enemy = 0;
 			}
 			break;
-	}
-
-	// エモ
-	if(md && md->skillidx != -1)
-	{
-		short emotion = mob_db[md->class_].skill[md->skillidx].emotion;
-		if(emotion >= 0)
-			clif_emotion(&md->bl,emotion);
 	}
 
 	map_freeblock_lock();
@@ -3384,9 +3390,15 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case AS_SPLASHER:		/* ベナムスプラッシャー */
 		if(flag&1) {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500|skill_area_temp[0]);
 		} else {
 			int ar = 2;
+			skill_area_temp[0] = 0;
+			//分散範囲は3x3 攻撃範囲は5x5
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY,
+				skill_area_sub_count);
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -5086,14 +5098,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					is_enemy = 0;
 			}
 			break;
-	}
-
-	// エモ
-	if(md && md->skillidx != -1)
-	{
-		short emotion = mob_db[md->class_].skill[md->skillidx].emotion;
-		if(emotion >= 0)
-			clif_emotion(&md->bl,emotion);
 	}
 
 	map_freeblock_lock();
@@ -8287,26 +8291,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case RA_CAMOUFLAGE:	/* カモフラージュ */
-		sc = status_get_sc(src);
-		if(sc && sc->data[GetSkillStatusChangeTable(skillid)].timer != -1) {
-			/* 解除する */
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_end(bl, GetSkillStatusChangeTable(skillid), -1);
-		} else {
-			if(sd && skilllv < 3) {		// 周りに壁があるかのチェック
-				int i;
-				for(i=0; i<8;i++){
-					if(map_getcell(bl->m,bl->x+dirx[i],bl->y+diry[i],CELL_CHKNOPASS))
-						break;
-				}
-				if(i >= 8) {
-					clif_skill_fail(sd,skillid,0,0,0);
+		if(sd && skilllv < 3) {		// 周りに壁があるかのチェック
+			int i;
+			for(i=0; i<8;i++){
+				if(map_getcell(bl->m,bl->x+dirx[i],bl->y+diry[i],CELL_CHKNOPASS))
 					break;
-				}
 			}
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(i >= 8) {
+				clif_skill_fail(sd,skillid,0,0,0);
+				break;
+			}
 		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case NC_F_SIDESLIDE:	/* フロントサイドスライド */
 	case NC_B_SIDESLIDE:	/* リアサイドスライド */
@@ -9475,6 +9472,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	struct merc_data        *src_mcd = NULL;
 	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
+	struct status_change    *sc      = NULL;
 	int range;
 
 	nullpo_retr(0, src);
@@ -9488,6 +9486,8 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	src_hd  = BL_DOWNCAST( BL_HOM,  src );
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
 	src_eld = BL_DOWNCAST( BL_ELEM, src );
+
+	sc = status_get_sc(src);
 
 	if( src_ud->skilltimer != tid )	// タイマIDの確認
 		return 0;
@@ -9605,10 +9605,22 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
 #endif
 		}
+
+		// エモ
+		if(src_md && src_md->skillidx != -1)
+		{
+			short emotion = mob_db[src_md->class_].skill[src_md->skillidx].emotion;
+			if(emotion >= 0)
+				clif_emotion(&src_md->bl,emotion);
+		}
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 
 		if(src_md)
 			src_md->skillidx = -1;
+
+		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && src_ud->skillid != RA_CAMOUFLAGE) {
+			status_change_end(src,SC_CAMOUFLAGE,-1);
+		}
 		return 0;
 	} while(0);
 
@@ -9653,14 +9665,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	default:
 		clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
-	}
-
-	// エモ
-	if(md && md->skillidx != -1)
-	{
-		short emotion = mob_db[md->class_].skill[md->skillidx].emotion;
-		if(emotion >= 0)
-			clif_emotion(&md->bl,emotion);
 	}
 
 	switch(skillid)
@@ -13290,7 +13294,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case TK_RUN:			/* タイリギ */
 	case GS_GATLINGFEVER:		/* ガトリングフィーバー */
 	case CR_SHRINK:			/* シュリンク */
-	case RA_CAMOUFLAGE:		/* カモフラージュ */
+	//case RA_CAMOUFLAGE:		/* カモフラージュ */
 	case ML_AUTOGUARD:
 	case KO_YAMIKUMO:		/* 闇雲 */
 		{
@@ -13368,16 +13372,14 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 #endif
 		break;
 	case CH_TIGERFIST:		/* 伏虎拳 */
-		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK &&
-		   sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO && sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH))
+		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH))
 			return 0;
 #ifndef PRE_RENEWAL
 		sd->spiritball.old = sd->spiritball.num;
 #endif
 		break;
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
-		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_TRIPLEATTACK && sd->sc.data[SC_COMBO].val1 != MO_CHAINCOMBO &&
-		   sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_TIGERFIST))
+		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_TIGERFIST))
 			return 0;
 #ifndef PRE_RENEWAL
 		sd->spiritball.old = sd->spiritball.num;

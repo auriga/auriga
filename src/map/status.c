@@ -6404,7 +6404,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FUSION:
 		case SC_WEAPONBLOCKING:
 		case SC_CLOAKINGEXCEED:
-		case SC_CAMOUFLAGE:
+		//case SC_CAMOUFLAGE:
 		case SC__REPRODUCE:
 		case SC__INVISIBILITY:
 		case SC_REFLECTDAMAGE:
@@ -10173,6 +10173,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_CAMOUFLAGE:	/* カモフラージュ */
 		if((--sc->data[type].val2) > 0) {
+			if((++sc->data[type].val3) > 10)
+				sc->data[type].val3 = 10;
 			if(sd) {
 				int sp = 7 - sc->data[type].val1;
 				if(sp > 0 && sd->status.sp >= sp) {

@@ -1,4 +1,21 @@
 ----------------------------------------
+//1081 [2013/06/30] by refis
+
+・2012-06-18aRagexeREのpacket_dbを一部修正 (db/packet_db.txt)
+	Thanks Gee さん
+
+・アサシンスキル「ベナムスプラッシャー」を分散スプラッシュ計算に修正（battle.c skill.c）
+	Thanks Akayumi さん
+
+・レンジャースキル「カモフラージュ」の挙動修正、Atk増加効果、Cri増加効果、Def減少効果を追加（battle.c skill.c status.c unit.c）
+	Thanks Akayumi さん
+
+・チャンピオンスキル「伏虎拳」、「連柱崩撃」のコンボ条件式を修正（skill.c）
+	Thanks Akayumi さん
+
+・エモーションが付帯しているMOBスキルが範囲攻撃の時、ターゲット分エモーションが実行されるのを修正（skill.c）
+
+----------------------------------------
 //1080 [2013/06/21] by refis
 
 ・[RE]:「EDP」状態中のスキル「ソウルブレイカー」ダメージ計算式を修正（battle.c）
