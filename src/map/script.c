@@ -11168,6 +11168,8 @@ int buildin_npcskillsupport(struct script_state *st)
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+4])));
 		if(nd)
 			bl = &nd->bl;
+		else
+			bl = NULL;
 	}
 	if(bl == NULL || bl->type != BL_NPC)
 		bl = &sd->bl;

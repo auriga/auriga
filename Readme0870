@@ -1,4 +1,12 @@
 ----------------------------------------
+//1082 [2013/06/30] by refis
+
+・「npcskillsupport」命令で発動元に存在しないNPCを指定しても実行NPCが指定される誤りを修正（script.c）
+	Thanks Gee さん
+
+・itembonus「bAddSkillHealRate」、「bAddSkillSubHealRate」の有効上限を7に修正（doc/item_bonus.txt map.h）
+
+----------------------------------------
 //1081 [2013/06/30] by refis
 
 ・2012-06-18aRagexeREのpacket_dbを一部修正 (db/packet_db.txt)

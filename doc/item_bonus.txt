@@ -11,6 +11,8 @@
 --------------------------------------------------------------------------
  有効上限 5個
 	bAddSkillBlow
+
+ 有効上限 7個
 	bAddSkillHealRate
 	bAddSkillSubHealRate
 

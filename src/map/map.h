@@ -45,7 +45,7 @@
 #define MAX_ITEMGROUP	12
 #define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
-#define MAX_SKILL_HEAL_UP	5	// スキルの回復量を強化できる数
+#define MAX_SKILL_HEAL_UP	7	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTRATE	10 	//スキルの詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTTIME	10 	//スキルの詠唱時間を減らせる数
