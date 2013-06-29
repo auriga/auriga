@@ -6741,6 +6741,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_JP_EVENT02:
 		case SC_JP_EVENT03:
 		case SC_JP_EVENT04:
+		case SC_RAID:
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */

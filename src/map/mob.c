@@ -4494,10 +4494,14 @@ static int mob_readskilldb(void)
 
 			ms->val[3] = atoi(sp[15]);
 			ms->val[4] = atoi(sp[16]);
-			if(strlen(sp[17]) > 1)
-				ms->emotion = atoi(sp[17]);
-			else
-				ms->emotion = -1;
+			ms->emotion = -1;
+			ms->msg_id  = 0;
+			if(strlen(sp[17]) > 1) {
+				if(atoi(sp[17]) >= 0)
+					ms->emotion = atoi(sp[17]);
+				else
+					ms->msg_id  = -1 * atoi(sp[17]);
+			}
 			mob_db[mob_id].maxskill = i+1;
 		}
 		fclose(fp);

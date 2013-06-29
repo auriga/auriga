@@ -43,6 +43,7 @@ struct mob_skill {
 	short target;
 	int val[5];
 	short emotion;
+	short msg_id;
 };
 
 struct mob_db {

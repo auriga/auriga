@@ -2784,12 +2784,15 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 #endif
 		}
 
-		// エモ
+		// エモ、チャット
 		if(src_md && src_md->skillidx != -1)
 		{
 			short emotion = mob_db[src_md->class_].skill[src_md->skillidx].emotion;
+			short msg_id = mob_db[src_md->class_].skill[src_md->skillidx].msg_id;
 			if(emotion >= 0)
 				clif_emotion(&src_md->bl,emotion);
+			if(msg_id > 0)
+				mob_talk(src_md,msg_id);
 		}
 
 		switch( skill_get_nk(src_ud->skillid)&3 )
@@ -9606,12 +9609,15 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 #endif
 		}
 
-		// エモ
+		// エモ、チャット
 		if(src_md && src_md->skillidx != -1)
 		{
 			short emotion = mob_db[src_md->class_].skill[src_md->skillidx].emotion;
+			short msg_id = mob_db[src_md->class_].skill[src_md->skillidx].msg_id;
 			if(emotion >= 0)
 				clif_emotion(&src_md->bl,emotion);
+			if(msg_id > 0)
+				mob_talk(src_md,msg_id);
 		}
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 
