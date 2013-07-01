@@ -1499,6 +1499,9 @@ OnTimer120000:
 //------------------------------------------------------------
 5@tower.gat,0,0,0	script	TowerControl5	-1,{
 OnStart:
+	if('lv > 0)
+		end;
+	set 'lv,100;
 	set '@mdmap$,getmdmapname("5@tower.gat");
 	set '@mdnpc$,getmdnpcname("TowerControl5");
 	monster '@mdmap$,83,85,"エントヴァイエン",1957,1,'@mdnpc$+ "::OnKilled";
@@ -1595,6 +1598,9 @@ OnTimer2000:
 
 6@tower.gat,0,0,0	script	TowerControl6	-1,{
 OnStart:
+	if('lv > 0)
+		end;
+	set 'lv,102;
 	areamonster getmdmapname("6@tower.gat"),154,73,156,75,"監視者ウィレス",1627,10,getmdnpcname("TowerControl6")+ "::OnKilled";
 	set 'count,10;
 	end;
