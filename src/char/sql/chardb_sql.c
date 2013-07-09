@@ -822,13 +822,19 @@ const struct mmo_chardata* chardb_sql_make(int account_id, unsigned char *name, 
 		int hp = 40 * (100 + vit) / 100;
 		int max_sp = 11 * (100 + int_) / 100;
 		int sp = 11 * (100 + int_) / 100;
+#if PACKETVER < 20120307
+		int status_point = 0;
+#else
+		int status_point = 48;
+		str = agi = vit = int_ = dex = luk = 1;
+#endif
 
 		// prepare
 		if( sqldbs_stmt_prepare(stmt,
 			"INSERT INTO `" CHAR_TABLE "` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
-			"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`hair`,`hair_color`,`last_map`,`last_x`,"
+			"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`status_point`,`hair`,`hair_color`,`last_map`,`last_x`,"
 			"`last_y`,`save_map`,`save_x`,`save_y`) VALUES (?,?,?,?,?,?,?,"
-			"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+			"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 			) == false )
 			break;
 
@@ -847,14 +853,15 @@ const struct mmo_chardata* chardb_sql_make(int account_id, unsigned char *name, 
 		sqldbs_stmt_bind_param(&bind[11],SQL_DATA_TYPE_INT,INT2PTR(&hp),0,0,0);
 		sqldbs_stmt_bind_param(&bind[12],SQL_DATA_TYPE_INT,INT2PTR(&max_sp),0,0,0);
 		sqldbs_stmt_bind_param(&bind[13],SQL_DATA_TYPE_INT,INT2PTR(&sp),0,0,0);
-		sqldbs_stmt_bind_param(&bind[14],SQL_DATA_TYPE_SHORT,INT2PTR(&hair),0,0,0);
-		sqldbs_stmt_bind_param(&bind[15],SQL_DATA_TYPE_SHORT,INT2PTR(&hair_color),0,0,0);
-		sqldbs_stmt_bind_param(&bind[16],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
-		sqldbs_stmt_bind_param(&bind[17],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
-		sqldbs_stmt_bind_param(&bind[18],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
-		sqldbs_stmt_bind_param(&bind[19],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
-		sqldbs_stmt_bind_param(&bind[20],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
-		sqldbs_stmt_bind_param(&bind[21],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
+		sqldbs_stmt_bind_param(&bind[14],SQL_DATA_TYPE_SHORT,INT2PTR(&status_point),0,0,0);
+		sqldbs_stmt_bind_param(&bind[15],SQL_DATA_TYPE_SHORT,INT2PTR(&hair),0,0,0);
+		sqldbs_stmt_bind_param(&bind[16],SQL_DATA_TYPE_SHORT,INT2PTR(&hair_color),0,0,0);
+		sqldbs_stmt_bind_param(&bind[17],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
+		sqldbs_stmt_bind_param(&bind[18],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
+		sqldbs_stmt_bind_param(&bind[19],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
+		sqldbs_stmt_bind_param(&bind[20],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
+		sqldbs_stmt_bind_param(&bind[21],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
+		sqldbs_stmt_bind_param(&bind[22],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
 
 		// execute
 		if( sqldbs_stmt_execute(stmt,bind) == false )

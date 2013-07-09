@@ -12875,7 +12875,7 @@ int buildin_getmdnpcname(struct script_state *st)
 
 	if(id > 0) {
 		name = (unsigned char *)aCalloc(strlen(str) + 5, sizeof(unsigned char));
-		sprintf(name, "%s#%03d", str, id);
+		sprintf(name, "%s_%03d", str, id);
 	} else {
 		name = (unsigned char *)aStrdup(str);
 	}

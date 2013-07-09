@@ -7147,7 +7147,12 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->status.partner_id;
 		break;
 	case SP_CART:
+#if PACKETVER < 20120201
 		val = sd->sc.option&OPTION_CARTMASK;
+#else
+		if(sd->sc.data[SC_ON_PUSH_CART].timer != -1)
+			val = sd->sc.data[SC_ON_PUSH_CART].val1;
+#endif
 		break;
 	case SP_STR:
 		val = sd->status.str;

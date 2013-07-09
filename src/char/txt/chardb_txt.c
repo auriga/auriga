@@ -850,6 +850,7 @@ void chardb_txt_final(void)
 const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
 {
 	int n, idx;
+	int status_point = 0;
 
 	for(n = 0; n < 24 && name[n]; n++) {
 		if(name[n] < 0x20 || name[n] == 0x7f)
@@ -923,6 +924,11 @@ const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, 
 	}
 	memset(&char_dat[n], 0, sizeof(char_dat[0]));
 
+#if PACKETVER >= 20120307
+	status_point = 48;
+	str = agi = vit = int_ = dex = luk = 1;
+#endif
+
 	char_dat[n].st.char_id       = char_id_count++;
 	char_dat[n].st.account_id    = account_id;
 	char_dat[n].st.char_num      = slot;
@@ -943,7 +949,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, 
 	char_dat[n].st.max_sp        = 11 * (100 + int_) / 100;
 	char_dat[n].st.hp            = char_dat[n].st.max_hp;
 	char_dat[n].st.sp            = char_dat[n].st.max_sp;
-	char_dat[n].st.status_point  = 0;
+	char_dat[n].st.status_point  = status_point;
 	char_dat[n].st.skill_point   = 0;
 	char_dat[n].st.option        = 0;
 	char_dat[n].st.karma         = 0;

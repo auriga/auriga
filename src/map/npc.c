@@ -1239,15 +1239,15 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	if(m < 0)
 		return 0;
 
-	if(strlen(src_nd->name) > 19 || strlen(src_nd->exname) > 19) {
+	if(strlen(src_nd->exname) > 19) {
 		// against buffer overflow
-		printf("npc_addmdnpc: can't add long npc name \"%s\" or \"%s\"\n", src_nd->name, src_nd->exname);
+		printf("npc_addmdnpc: can't add long npc name \"%s\"\n", src_nd->exname);
 		return 0;
 	}
 
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
-	snprintf(nd->name, sizeof(nd->name), "%s#%03d", src_nd->name, map[m].memorial_id);
-	snprintf(nd->exname, sizeof(nd->exname), "%s#%03d", src_nd->exname, map[m].memorial_id);
+	strcpy(nd->name, src_nd->name);
+	snprintf(nd->exname, sizeof(nd->exname), "%s_%03d", src_nd->exname, map[m].memorial_id);
 	nd->name[23] = '\0';
 	nd->exname[23] = '\0';
 
