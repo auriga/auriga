@@ -1,4 +1,13 @@
 ----------------------------------------
+//1086 [2013/07/10] by refis
+
+・txt-converterのcharサーバーデータテーブルを更新（char-converter.c）
+	Thanks hikaru1112 さん
+
+・影狼、朧スキル「術式全開」のユニット配置を修正（skill_unit_db.txt）
+	Thanks Akayumi さん
+
+----------------------------------------
 //1085 [2013/07/10] by refis
 
 ・メモリアルダンジョン複製NPCの命名規則を変更（npc.c, script.c）

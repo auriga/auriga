@@ -75,16 +75,16 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 	p  = tmp_sql;
 	p += sprintf(
 		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit` ) VALUES",tablename,selectoption
+		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`, `private`) VALUES",tablename,selectoption
 	);
 
 	for(i = 0 ; i < max ; i++) {
 		if(item[i].nameid) {
 			p += sprintf(
-				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u','%d')",
 				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-				item[i].card[2],item[i].card[3],item[i].limit
+				item[i].card[2],item[i].card[3],item[i].limit,item[i].private
 			);
 			sep = ',';
 		}
@@ -106,8 +106,8 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	int set,next,len,i,n;
 
 	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
-		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
-		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
+		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d"
+		"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],&tmp_int[2],tmp_str[0],
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],
 		&tmp_int[6],&tmp_int[7],&tmp_int[8],
@@ -115,13 +115,14 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],
 		&tmp_int[19],&tmp_int[20],
 		&tmp_int[21],&tmp_int[22],&tmp_int[23],&tmp_int[24],
-		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],
-		&tmp_int[30],&tmp_int[31],&tmp_int[32],
-		&tmp_int[33],&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],
-		tmp_str[1],&tmp_int[38],&tmp_int[39],
-		tmp_str[2],&tmp_int[40],&tmp_int[41],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&next
+		&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&tmp_int[29],&tmp_int[30],
+		&tmp_int[31],&tmp_int[32],&tmp_int[33],
+		&tmp_int[34],&tmp_int[35],&tmp_int[36],&tmp_int[37],&tmp_int[38],&tmp_int[39],
+		tmp_str[1],&tmp_int[40],&tmp_int[41],
+		tmp_str[2],&tmp_int[42],&tmp_int[43],&tmp_int[44],&tmp_int[45],&tmp_int[46],&tmp_int[47],&tmp_int[48],
+		&tmp_int[49],&tmp_int[50],&tmp_int[51],&next
 	);
-	if(set != 49)
+	if(set != 55)
 		return 1;
 
 	strncpy(p->st.name, tmp_str[0], 24);
@@ -133,52 +134,58 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	p->st.last_point.map[23] = '\0';
 	p->st.save_point.map[23] = '\0';
 
-	p->st.char_id       = tmp_int[0];
-	p->st.account_id    = tmp_int[1];
-	p->st.char_num      = tmp_int[2];
-	p->st.class_        = tmp_int[3];
-	p->st.base_level    = tmp_int[4];
-	p->st.job_level     = tmp_int[5];
-	p->st.base_exp      = tmp_int[6];
-	p->st.job_exp       = tmp_int[7];
-	p->st.zeny          = tmp_int[8];
-	p->st.hp            = tmp_int[9];
-	p->st.max_hp        = tmp_int[10];
-	p->st.sp            = tmp_int[11];
-	p->st.max_sp        = tmp_int[12];
-	p->st.str           = tmp_int[13];
-	p->st.agi           = tmp_int[14];
-	p->st.vit           = tmp_int[15];
-	p->st.int_          = tmp_int[16];
-	p->st.dex           = tmp_int[17];
-	p->st.luk           = tmp_int[18];
-	p->st.status_point  = tmp_int[19];
-	p->st.skill_point   = tmp_int[20];
-	p->st.option        = (unsigned int)tmp_int[21];
-	p->st.karma         = tmp_int[22];
-	p->st.manner        = tmp_int[23];
-	p->st.die_counter   = tmp_int[24];
-	p->st.party_id      = tmp_int[25];
-	p->st.guild_id      = tmp_int[26];
-	p->st.pet_id        = tmp_int[27];
-	p->st.homun_id      = tmp_int[28];
-	p->st.merc_id       = tmp_int[29];
-	p->st.hair          = tmp_int[30];
-	p->st.hair_color    = tmp_int[31];
-	p->st.clothes_color = tmp_int[32];
-	p->st.weapon        = tmp_int[33];
-	p->st.shield        = tmp_int[34];
-	p->st.head_top      = tmp_int[35];
-	p->st.head_mid      = tmp_int[36];
-	p->st.head_bottom   = tmp_int[37];
-	p->st.last_point.x  = tmp_int[38];
-	p->st.last_point.y  = tmp_int[39];
-	p->st.save_point.x  = tmp_int[40];
-	p->st.save_point.y  = tmp_int[41];
-	p->st.partner_id    = tmp_int[42];
-	p->st.parent_id[0]  = tmp_int[43];
-	p->st.parent_id[1]  = tmp_int[44];
-	p->st.baby_id       = tmp_int[45];
+	p->st.char_id             = tmp_int[0];
+	p->st.account_id          = tmp_int[1];
+	p->st.char_num            = tmp_int[2];
+	p->st.class_              = tmp_int[3];
+	p->st.base_level          = tmp_int[4];
+	p->st.job_level           = tmp_int[5];
+	p->st.base_exp            = tmp_int[6];
+	p->st.job_exp             = tmp_int[7];
+	p->st.zeny                = tmp_int[8];
+	p->st.hp                  = tmp_int[9];
+	p->st.max_hp              = tmp_int[10];
+	p->st.sp                  = tmp_int[11];
+	p->st.max_sp              = tmp_int[12];
+	p->st.str                 = tmp_int[13];
+	p->st.agi                 = tmp_int[14];
+	p->st.vit                 = tmp_int[15];
+	p->st.int_                = tmp_int[16];
+	p->st.dex                 = tmp_int[17];
+	p->st.luk                 = tmp_int[18];
+	p->st.status_point        = tmp_int[19];
+	p->st.skill_point         = tmp_int[20];
+	p->st.option              = (unsigned int)tmp_int[21];
+	p->st.karma               = tmp_int[22];
+	p->st.manner              = tmp_int[23];
+	p->st.die_counter         = tmp_int[24];
+	p->st.party_id            = tmp_int[25];
+	p->st.guild_id            = tmp_int[26];
+	p->st.pet_id              = tmp_int[27];
+	p->st.homun_id            = tmp_int[28];
+	p->st.merc_id             = tmp_int[29];
+	p->st.elem_id             = tmp_int[30];
+	p->st.hair                = tmp_int[31];
+	p->st.hair_color          = tmp_int[32];
+	p->st.clothes_color       = tmp_int[33];
+	p->st.weapon              = tmp_int[34];
+	p->st.shield              = tmp_int[35];
+	p->st.robe                = tmp_int[36];
+	p->st.head_top            = tmp_int[37];
+	p->st.head_mid            = tmp_int[38];
+	p->st.head_bottom         = tmp_int[39];
+	p->st.last_point.x        = tmp_int[40];
+	p->st.last_point.y        = tmp_int[41];
+	p->st.save_point.x        = tmp_int[42];
+	p->st.save_point.y        = tmp_int[43];
+	p->st.partner_id          = tmp_int[44];
+	p->st.parent_id[0]        = tmp_int[45];
+	p->st.parent_id[1]        = tmp_int[46];
+	p->st.baby_id             = tmp_int[47];
+	p->st.delete_date         = (unsigned int)tmp_int[48];
+	p->st.refuse_partyinvite  = tmp_int[49];
+	p->st.show_equip          = tmp_int[50];
+	p->st.font                = tmp_int[51];
 
 	if(str[next]=='\n' || str[next]=='\r')
 		return 0;	// 新規データ
@@ -204,8 +211,9 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13)
 			return 1;
 		if(i < MAX_INVENTORY) {
 			p->st.inventory[i].id        = (unsigned int)tmp_int[0];
@@ -220,6 +228,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
 			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
+			p->st.inventory[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -230,8 +239,9 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13)
 			return 1;
 		if(i < MAX_CART) {
 			p->st.cart[i].id        = (unsigned int)tmp_int[0];
@@ -246,6 +256,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
 			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
+			p->st.cart[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -327,6 +338,21 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			next++;
 	}
 
+	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
+		set=sscanf(str+next,"%d,%d,%d%n",&tmp_int[0],&tmp_int[1],&tmp_int[2],&len);
+		if(set!=3) {
+			return 0;
+		}
+		n = tmp_int[0];
+		if(n >= 0 && n < MAX_MERC_TYPE) {
+			p->st.merc_fame[n] = tmp_int[1];
+			p->st.merc_call[n] = tmp_int[2];
+		}
+		next+=len;
+		if(str[next]==' ')
+			next++;
+	}
+
 	return 0;
 }
 
@@ -348,20 +374,21 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 		"`base_exp` = '%d', `job_exp` = '%d', `zeny` = '%d',"
 		"`max_hp` = '%d', `hp` = '%d', `max_sp` = '%d', `sp` = '%d', `status_point` = '%d', `skill_point` = '%d',"
 		"`str` = '%d', `agi` = '%d', `vit` = '%d', `int` = '%d', `dex` = '%d', `luk` = '%d',"
-		"`option` = '%u', `karma` = '%d', `manner` = '%d', `die_counter` = '%d', `party_id` = '%d', `guild_id` = '%d', `pet_id` = '%d', `homun_id` = '%d', `merc_id` = '%d',"
-		"`hair` = '%d', `hair_color` = '%d', `clothes_color` = '%d', `weapon` = '%d', `shield` = '%d', `head_top` = '%d', `head_mid` = '%d', `head_bottom` = '%d',"
+		"`option` = '%u', `karma` = '%d', `manner` = '%d', `die_counter` = '%d', `party_id` = '%d', `guild_id` = '%d', `pet_id` = '%d', `homun_id` = '%d', `merc_id` = '%d', `elem_id` = '%d',"
+		"`hair` = '%d', `hair_color` = '%d', `clothes_color` = '%d', `weapon` = '%d', `shield` = '%d', `robe` = '%d', `head_top` = '%d', `head_mid` = '%d', `head_bottom` = '%d',"
 		"`last_map` = '%s', `last_x` = '%d', `last_y` = '%d', `save_map` = '%s', `save_x` = '%d', `save_y` = '%d',"
-		"`partner_id` = '%d', `parent_id` = '%d', `parent_id2` = '%d', `baby_id` = '%d'",
+		"`partner_id` = '%d', `parent_id` = '%d', `parent_id2` = '%d', `baby_id` = '%d', `delete_date` = '%d', `refuse_partyinvite` = '%d', `show_equip` = '%d', `font` = '%d'",
 		char_id, st->account_id, st->char_num, strecpy(buf,st->name), st->class_ , st->base_level, st->job_level,
 		st->base_exp, st->job_exp, st->zeny,
 		st->max_hp, st->hp, st->max_sp, st->sp, st->status_point, st->skill_point,
 		st->str, st->agi, st->vit, st->int_, st->dex, st->luk,
-		st->option, st->karma, st->manner, st->die_counter, st->party_id, st->guild_id, st->pet_id, st->homun_id, st->merc_id,
+		st->option, st->karma, st->manner, st->die_counter, st->party_id, st->guild_id, st->pet_id, st->homun_id, st->merc_id, st->elem_id,
 		st->hair, st->hair_color, st->clothes_color,
-		st->weapon, st->shield, st->head_top, st->head_mid, st->head_bottom,
+		st->weapon, st->shield, st->robe, st->head_top, st->head_mid, st->head_bottom,
 		st->last_point.map, st->last_point.x, st->last_point.y,
 		st->save_point.map, st->save_point.x, st->save_point.y,
-		st->partner_id , st->parent_id[0] ,st->parent_id[1] , st->baby_id
+		st->partner_id, st->parent_id[0], st->parent_id[1], st->baby_id,
+		st->delete_date, st->refuse_partyinvite, st->show_equip, st->font
 	);
 	if(mysql_query(&mysql_handle, tmp_sql) ) {
 		printf("DB server Error (insert `char_data`)- %s\n", mysql_error(&mysql_handle) );
@@ -443,6 +470,23 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 			);
 			if(mysql_query(&mysql_handle, tmp_sql))
 				printf("DB server Error (insert `hotkey`)- %s\n", mysql_error(&mysql_handle));
+		}
+	}
+
+	// mercenary
+	sprintf(tmp_sql,"DELETE FROM `mercenary` WHERE `char_id`='%d'",char_id);
+	if(mysql_query(&mysql_handle, tmp_sql)) {
+		printf("DB server Error (delete `mercenary`)- %s\n", mysql_error(&mysql_handle));
+	}
+
+	for(i = 0; i < MAX_MERC_TYPE; i++) {
+		if(st->merc_fame[i] > 0 || st->merc_call[i] > 0) {
+			sprintf(
+				tmp_sql,"INSERT INTO `mercenary`(`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
+				char_id, i, st->merc_fame[i], st->merc_call[i]
+			);
+			if(mysql_query(&mysql_handle, tmp_sql))
+				printf("DB server Error (insert `mercenary`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
@@ -576,11 +620,12 @@ static int storage_fromstr(char *str, struct storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13)
 			return 1;
 		if(i < MAX_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -595,6 +640,7 @@ static int storage_fromstr(char *str, struct storage *p)
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
 			p->store_item[i].limit     = (unsigned int)tmp_int[11];
+			p->store_item[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1091,8 +1137,9 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set!=12)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
+			&tmp_int[12],&len);
+		if(set!=13)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -1107,6 +1154,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
 			p->store_item[i].limit     = (unsigned int)tmp_int[11];
+			p->store_item[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
