@@ -5630,6 +5630,250 @@ int pc_calc_class_job(int job, int upper)
 }
 
 /*==========================================
+ * クラスIDから元の職業を返す
+ *------------------------------------------
+ */
+int pc_calc_job_class(int class_)
+{
+	int job = 0;
+
+	switch(class_){
+		case PC_CLASS_NV:
+		case PC_CLASS_NV_H:
+		case PC_CLASS_NV_B:
+			job = PC_JOB_NV;
+			break;
+		case PC_CLASS_SM:
+		case PC_CLASS_SM_H:
+		case PC_CLASS_SM_B:
+			job = PC_JOB_SM;
+			break;
+		case PC_CLASS_MG:
+		case PC_CLASS_MG_H:
+		case PC_CLASS_MG_B:
+			job = PC_JOB_MG;
+			break;
+		case PC_CLASS_AC:
+		case PC_CLASS_AC_H:
+		case PC_CLASS_AC_B:
+			job = PC_JOB_AC;
+			break;
+		case PC_CLASS_AL:
+		case PC_CLASS_AL_H:
+		case PC_CLASS_AL_B:
+			job = PC_JOB_AL;
+			break;
+		case PC_CLASS_MC:
+		case PC_CLASS_MC_H:
+		case PC_CLASS_MC_B:
+			job = PC_JOB_MC;
+			break;
+		case PC_CLASS_TF:
+		case PC_CLASS_TF_H:
+		case PC_CLASS_TF_B:
+			job = PC_JOB_TF;
+			break;
+		case PC_CLASS_KN:
+		case PC_CLASS_KN2:
+		case PC_CLASS_KN_H:
+		case PC_CLASS_KN2_H:
+		case PC_CLASS_KN_B:
+		case PC_CLASS_KN2_B:
+			job = PC_JOB_KN;
+			break;
+		case PC_CLASS_PR:
+		case PC_CLASS_PR_H:
+		case PC_CLASS_PR_B:
+			job = PC_JOB_PR;
+			break;
+		case PC_CLASS_WZ:
+		case PC_CLASS_WZ_H:
+		case PC_CLASS_WZ_B:
+			job = PC_JOB_WZ;
+			break;
+		case PC_CLASS_BS:
+		case PC_CLASS_BS_H:
+		case PC_CLASS_BS_B:
+			job = PC_JOB_BS;
+			break;
+		case PC_CLASS_HT:
+		case PC_CLASS_HT_H:
+		case PC_CLASS_HT_B:
+			job = PC_JOB_HT;
+			break;
+		case PC_CLASS_AS:
+		case PC_CLASS_AS_H:
+		case PC_CLASS_AS_B:
+			job = PC_JOB_AS;
+			break;
+		case PC_CLASS_CR:
+		case PC_CLASS_CR2:
+		case PC_CLASS_CR_H:
+		case PC_CLASS_CR2_H:
+		case PC_CLASS_CR_B:
+		case PC_CLASS_CR2_B:
+			job = PC_JOB_CR;
+			break;
+		case PC_CLASS_MO:
+		case PC_CLASS_MO_H:
+		case PC_CLASS_MO_B:
+			job = PC_JOB_MO;
+			break;
+		case PC_CLASS_SA:
+		case PC_CLASS_SA_H:
+		case PC_CLASS_SA_B:
+			job = PC_JOB_SA;
+			break;
+		case PC_CLASS_RG:
+		case PC_CLASS_RG_H:
+		case PC_CLASS_RG_B:
+			job = PC_JOB_RG;
+			break;
+		case PC_CLASS_AM:
+		case PC_CLASS_AM_H:
+		case PC_CLASS_AM_B:
+			job = PC_JOB_AM;
+			break;
+		case PC_CLASS_BA:
+		case PC_CLASS_BA_H:
+		case PC_CLASS_BA_B:
+			job = PC_JOB_BA;
+			break;
+		case PC_CLASS_DC:
+		case PC_CLASS_DC_H:
+		case PC_CLASS_DC_B:
+			job = PC_JOB_DC;
+			break;
+		case PC_CLASS_SNV:
+		case PC_CLASS_SNV_B:
+			job = PC_JOB_SNV;
+			break;
+		case PC_CLASS_ESNV:
+		case PC_CLASS_ESNV_B:
+			job = PC_JOB_ESNV;
+			break;
+		case PC_CLASS_TK:
+			job = PC_JOB_TK;
+			break;
+		case PC_CLASS_SG:
+		case PC_CLASS_SG2:
+			job = PC_JOB_SG;
+			break;
+		case PC_CLASS_SL:
+			job = PC_JOB_SL;
+			break;
+		case PC_CLASS_GS:
+			job = PC_JOB_GS;
+			break;
+		case PC_CLASS_NJ:
+			job = PC_JOB_NJ;
+			break;
+		case PC_CLASS_MB:
+			job = PC_JOB_MB;
+			break;
+		case PC_CLASS_DK:
+			job = PC_JOB_DK;
+			break;
+		case PC_CLASS_DA:
+			job = PC_JOB_DA;
+			break;
+		case PC_CLASS_RK:
+		case PC_CLASS_RK2:
+		case PC_CLASS_RK3:
+		case PC_CLASS_RK4:
+		case PC_CLASS_RK5:
+		case PC_CLASS_RK6:
+		case PC_CLASS_RK_H:
+		case PC_CLASS_RK2_H:
+		case PC_CLASS_RK3_H:
+		case PC_CLASS_RK4_H:
+		case PC_CLASS_RK5_H:
+		case PC_CLASS_RK6_H:
+		case PC_CLASS_RK_B:
+		case PC_CLASS_RK2_B:
+			job = PC_JOB_RK;
+			break;
+		case PC_CLASS_WL:
+		case PC_CLASS_WL_H:
+		case PC_CLASS_WL_B:
+			job = PC_JOB_WL;
+			break;
+		case PC_CLASS_RA:
+		case PC_CLASS_RA2:
+		case PC_CLASS_RA_H:
+		case PC_CLASS_RA2_H:
+		case PC_CLASS_RA_B:
+		case PC_CLASS_RA2_B:
+			job = PC_JOB_RA;
+			break;
+		case PC_CLASS_AB:
+		case PC_CLASS_AB_H:
+		case PC_CLASS_AB_B:
+			job = PC_JOB_AB;
+			break;
+		case PC_CLASS_NC:
+		case PC_CLASS_NC2:
+		case PC_CLASS_NC_H:
+		case PC_CLASS_NC2_H:
+		case PC_CLASS_NC_B:
+		case PC_CLASS_NC2_B:
+			job = PC_JOB_NC;
+			break;
+		case PC_CLASS_GC:
+		case PC_CLASS_GC_H:
+		case PC_CLASS_GC_B:
+			job = PC_JOB_GC;
+			break;
+		case PC_CLASS_LG:
+		case PC_CLASS_LG2:
+		case PC_CLASS_LG_H:
+		case PC_CLASS_LG2_H:
+		case PC_CLASS_LG_B:
+		case PC_CLASS_LG2_B:
+			job = PC_JOB_LG;
+			break;
+		case PC_CLASS_SO:
+		case PC_CLASS_SO_H:
+		case PC_CLASS_SO_B:
+			job = PC_JOB_SO;
+			break;
+		case PC_CLASS_MI:
+		case PC_CLASS_MI_H:
+		case PC_CLASS_MI_B:
+			job = PC_JOB_MI;
+			break;
+		case PC_CLASS_WA:
+		case PC_CLASS_WA_H:
+		case PC_CLASS_WA_B:
+			job = PC_JOB_WA;
+			break;
+		case PC_CLASS_SR:
+		case PC_CLASS_SR_H:
+		case PC_CLASS_SR_B:
+			job = PC_JOB_SR;
+			break;
+		case PC_CLASS_GN:
+		case PC_CLASS_GN_H:
+		case PC_CLASS_GN_B:
+			job = PC_JOB_GN;
+			break;
+		case PC_CLASS_SC:
+		case PC_CLASS_SC_H:
+		case PC_CLASS_SC_B:
+			job = PC_JOB_SC;
+			break;
+		case PC_CLASS_KG:
+			job = PC_JOB_KG;
+			break;
+		case PC_CLASS_OB:
+			job = PC_JOB_OB;
+			break;
+	}
+
+	return job;
+}
+
+/*==========================================
  * Baseレベルアップ
  *------------------------------------------
  */

@@ -4088,6 +4088,7 @@ int buildin_mobuseskill(struct script_state *st);
 int buildin_areamobuseskill(struct script_state *st);
 int buildin_getequipcardid(struct script_state *st);
 int buildin_setpartyinmap(struct script_state *st);
+int buildin_getclassjob(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4388,6 +4389,7 @@ struct script_function buildin_func[] = {
 	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiii"},
 	{buildin_getequipcardid,"getequipcardid","ii"},
 	{buildin_setpartyinmap,"setpartyinmap","ii"},
+	{buildin_getclassjob,"getclassjob","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -7658,6 +7660,7 @@ int buildin_enablenpc(struct script_state *st)
 	npc_enable(nd->exname,1);
 	return 0;
 }
+
 /*==========================================
  * NPCの無効化
  *------------------------------------------
@@ -12472,6 +12475,7 @@ int buildin_getbaseclass(struct script_state *st)
 
 	return 0;
 }
+
 /*==========================================
  * クエストリスト追加
  *------------------------------------------
@@ -12765,6 +12769,7 @@ int buildin_mercsc_start(struct script_state *st)
 		status_change_start(&sd->mcd->bl,type,val1,0,0,0,tick,0);
 	return 0;
 }
+
 /*==========================================
  * メモリアルダンジョン作成
  *------------------------------------------
@@ -13199,6 +13204,23 @@ int buildin_setpartyinmap(struct script_state *st)
 			set_reg(st,sd,num,name,INT2PTR(val),st->stack->stack_data[st->start+2].ref);
 		}
 	}
+
+	return 0;
+}
+
+/*==========================================
+ * ClassからJob変換
+ *------------------------------------------
+ */
+int buildin_getclassjob(struct script_state *st)
+{
+	int class_, job = 0;
+
+	class_ = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	job = pc_calc_job_class(class_);
+
+	push_val(st->stack,C_INT,job);
 
 	return 0;
 }

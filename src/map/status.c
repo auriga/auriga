@@ -7076,6 +7076,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_ELEMENTUNDEAD:		// 不死
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTUNDEAD);
+			if(sc->data[SC_BLESSING].timer != -1)
+				status_change_end(bl,SC_BLESSING,-1);
+			if(sc->data[SC_INCREASEAGI].timer != -1)
+				status_change_end(bl,SC_INCREASEAGI,-1);
 			break;
 		case SC_RACEUNKNOWN:
 		case SC_RACEUNDEAD:

@@ -841,7 +841,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			/* 自動ウォーグストライク */
 			if( pc_iswolf(sd) &&
 			    (skill = pc_checkskill(sd,RA_WUGSTRIKE)) > 0 &&
-			    atn_rand()%10000 < sd->paramc[5]*30+100 )
+			    atn_rand()%10000 < sd->paramc[5]*30 )
 			{
 				skill_castend_damage_id(src,bl,RA_WUGSTRIKE,skill,tick,0xf00000);
 			}
@@ -2961,14 +2961,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case LK_SPIRALPIERCE:		/* スパイラルピアース */
 	case LK_HEADCRUSH:			/* ヘッドクラッシュ */
 	case LK_JOINTBEAT:			/* ジョイントビート */
-	case ASC_BREAKER:			/* ソウルブレーカー */
+	case ASC_BREAKER:			/* ソウルブレイカー */
 	case HW_MAGICCRASHER:		/* マジッククラッシャー */
 	case PA_SHIELDCHAIN:		/* シールドチェイン */
 	case WS_CARTTERMINATION:	/* カートターミネーション */
 	case CR_ACIDDEMONSTRATION:	/* アシッドデモンストレーション */
 	case ITM_TOMAHAWK:			/* トマホーク投げ */
 	case AS_VENOMKNIFE:			/* ベナムナイフ */
-	case HT_PHANTASMIC:			/* ファンタスミックアロー */
+	case HT_PHANTASMIC:			/* ファンタズミックアロー */
 	case CH_TIGERFIST:		/* 伏虎拳 */
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
 	case TK_DOWNKICK:	/* ネリョチャギ */
@@ -3429,7 +3429,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-	case MC_CARTREVOLUTION:	/* カートレヴォリューション */
+	case MC_CARTREVOLUTION:	/* カートレボリューション */
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id == skill_area_temp[1])
@@ -3804,7 +3804,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 
 	/* 魔法系範囲攻撃スキル */
 	case MG_NAPALMBEAT:			/* ナパームビート */
-	case MG_FIREBALL:			/* ファイヤーボール */
+	case MG_FIREBALL:			/* ファイアーボール */
 	case WZ_SIGHTRASHER:		/* サイトラッシャー */
 	case HW_NAPALMVULCAN:		/* ナパームバルカン */
 	case AB_JUDEX:				/* ジュデックス */
@@ -3816,7 +3816,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1]) {
 				int count;
 				if(skillid == MG_FIREBALL) {
-					/* ファイヤーボールなら中心からの距離を計算 */
+					/* ファイアーボールなら中心からの距離を計算 */
 					count = path_distance(bl->x,bl->y,skill_area_temp[2],skill_area_temp[3]);
 				} else {
 					count = skill_area_temp[0];
@@ -5400,7 +5400,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				pet_catch_process1(sd,dstmd->class_);
 		}
 		break;
-	case PF_SPIDERWEB:		/* スパイダーウェッブ */
+	case PF_SPIDERWEB:		/* スパイダーウェブ */
 		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
 		break;
 
@@ -5408,6 +5408,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case MER_INCAGI:
 	case AL_BLESSING:		/* ブレッシング */
 	case MER_BLESSING:
+		if(dstsd && dstsd->sc.data[SC_ELEMENTUNDEAD].timer != -1) {
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			break;
+		}
 	case PR_SLOWPOISON:
 	case PR_IMPOSITIO:		/* イムポシティオマヌス */
 	case PR_LEXAETERNA:		/* レックスエーテルナ */
@@ -5667,7 +5671,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case MO_EXPLOSIONSPIRITS:	/* 爆裂波動 */
 	case MO_STEELBODY:		/* 金剛 */
 	case WE_BABY:
-	case LK_AURABLADE:		/* オーラブレード */
+	case LK_AURABLADE:		/* オーラブレイド */
 	case WS_CARTBOOST:		/* カートブースト */
 	case SN_SIGHT:			/* トゥルーサイト */
 	case WS_MELTDOWN:		/* メルトダウン */
@@ -5768,7 +5772,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
-	case LK_CONCENTRATION:	/* コンセントレーション */
+	case LK_CONCENTRATION:	/* コンセントレイション */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		if(sd)
@@ -6133,7 +6137,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case BS_ADRENALINE:		/* アドレナリンラッシュ */
-	case BS_ADRENALINE2:		/* アドレナリンラッシュ */
+	case BS_ADRENALINE2:		/* フルアドレナリンラッシュ */
 	case BS_WEAPONPERFECT:		/* ウェポンパーフェクション */
 	case BS_OVERTHRUST:		/* オーバートラスト */
 		if((flag&1) || sd == NULL || sd->status.party_id == 0) {
@@ -7663,13 +7667,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		}
 		break;
-	case HAMI_CASTLE:		/* キャストリング */
+	case HAMI_CASTLE:		/* キャスリング */
 		if(hd && hd->msd && atn_rand()%100 < 20*skilllv)
 		{
 			int x, y;
 			struct map_session_data *msd = hd->msd;
 			if( path_search(NULL,hd->bl.m,hd->bl.x,hd->bl.y,msd->bl.x,msd->bl.y,0) != 0 ) {
-				// キャストリングを用いた壁越え禁止
+				// キャスリングを用いた壁越え禁止
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0,0);
 				break;
@@ -8001,9 +8005,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(flag&1 || sd->status.party_id == 0) {
 			int lv = 0;
 
-			if(dstsd && dstsd->special_state.no_magic_damage)
-				break;
-
 			switch(skillid) {
 				case AB_CLEMENTIA: lv = pc_checkskill(sd,AL_BLESSING); break;
 				case AB_CANTO:     lv = pc_checkskill(sd,AL_INCAGI);   break;
@@ -8027,6 +8028,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(&sd->bl,bl,skillid,heal,1);
 				battle_heal(&sd->bl,bl,heal,0,0);
 			} else {
+				if(dstsd && dstsd->special_state.no_magic_damage)
+					break;
+
 				clif_skill_nodamage(&sd->bl,bl,skillid,skilllv,1);
 				status_change_start(bl,GetSkillStatusChangeTable(skillid),lv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
@@ -8593,7 +8597,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			strip_fix = status_get_dex(src) - status_get_dex(bl);
 			if(strip_fix < 0)
 				strip_fix = 0;
-			if(atn_rand()%100 >= 12 + 2 * skilllv + (strip_fix)? strip_fix / 5: 0) {
+			if(atn_rand()%100 >= 12 + 2 * skilllv + ((strip_fix)? strip_fix / 5: 0)) {
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0,0);
 				break;
@@ -9732,7 +9736,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case MG_SAFETYWALL:			/* セイフティウォール */
-	case MG_FIREWALL:			/* ファイヤーウォール */
+	case MG_FIREWALL:			/* ファイアーウォール */
 	case MG_THUNDERSTORM:		/* サンダーストーム */
 	case AL_PNEUMA:				/* ニューマ */
 	case WZ_FIREPILLAR:			/* ファイアピラー */
@@ -9744,14 +9748,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case PR_MAGNUS:				/* マグヌスエクソシズム */
 	case CR_GRANDCROSS:			/* グランドクロス */
 	case NPC_GRANDDARKNESS:			/* グランドダークネス */
-	case AS_VENOMDUST:			/* ベノムダスト */
+	case AS_VENOMDUST:			/* ベナムダスト */
 	case AM_DEMONSTRATION:		/* デモンストレーション */
-	case PF_SPIDERWEB:			/* スパイダーウェッブ */
+	case PF_SPIDERWEB:			/* スパイダーウェブ */
 	case PF_FOGWALL:			/* ウォールオブフォグ */
 	case NJ_TATAMIGAESHI:		/* 畳返し */
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
 	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
-	case NPC_EVILLAND:			/* イビルランド */
+	case NPC_EVILLAND:			/* イービルランド */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
 	case SC_MANHOLE:			/* マンホール */
 	case SC_DIMENSIONDOOR:		/* ディメンションドア */
@@ -9923,7 +9927,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			clif_skill_warppoint(sd,sd->ud.skillid,sd->status.save_point.map, p[0], p[1], p[2]);
 		}
 		break;
-	case HW_GANBANTEIN:			/* ガバンテイン */
+	case HW_GANBANTEIN:			/* ガンバンテイン */
 		if(atn_rand()%100 < 80) {
 			map_foreachinarea(skill_delunit_by_ganbantein,src->m,x-1,y-1,x+1,y+1,BL_SKILL);
 		} else if(sd) {
@@ -10485,7 +10489,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		if(src->type == BL_MOB && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
 			range = 20;
 		break;
-	case MG_FIREWALL:			/* ファイヤーウォール */
+	case MG_FIREWALL:			/* ファイアーウォール */
 		val2 = 4+skilllv;
 		break;
 	case AL_WARP:				/* ワープポータル */
@@ -10620,7 +10624,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 				unit_id = drift_id[atn_rand()%5];
 		}
 		break;
-	case NPC_EVILLAND:		/* イビルランド */
+	case NPC_EVILLAND:		/* イービルランド */
 		val1 = (skilllv > 6)? 666: skilllv*100;
 		interval += 500;
 		break;
@@ -10715,7 +10719,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		limit = group->limit;
 
 		switch (skillid) {
-			case MG_FIREWALL:		/* ファイヤーウォール */
+			case MG_FIREWALL:		/* ファイアーウォール */
 				val2 = group->val2;
 				// ゲイル上なら時間倍
 				if(map_find_skill_unit_oncell(src,ux,uy,SA_VIOLENTGALE,NULL)!=NULL)
@@ -11333,7 +11337,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			src->val2++;
 		}
 		break;
-	case UNT_FIREWALL:	/* ファイヤーウォール */
+	case UNT_FIREWALL:	/* ファイアーウォール */
 		do {
 			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		} while((--src->val2) > 0 && !unit_isdead(bl) && bl->x == src->bl.x && bl->y == src->bl.y);
@@ -11435,7 +11439,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_SANDMAN:	/* サンドマン */
 	case UNT_FLASHER:	/* フラッシャー */
 	case UNT_FREEZINGTRAP:	/* フリージングトラップ */
-	case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
+	case UNT_CLAYMORETRAP:	/* クレイモアトラップ */
 	case UNT_MAGENTATRAP:		/* マゼンタトラップ */
 	case UNT_COBALTTRAP:		/* コバルトトラップ */
 	case UNT_MAIZETRAP:			/* メイズトラップ */
@@ -11487,7 +11491,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			src->range   = 0;
 		}
 		break;
-	case UNT_VENOMDUST:	/* ベノムダスト */
+	case UNT_VENOMDUST:	/* ベナムダスト */
 		{
 			int type = GetSkillStatusChangeTable(sg->skill_id);
 			if(type < 0)
@@ -11635,7 +11639,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			status_change_start(bl,type,sg->skill_lv,sg->val1,sg->val2,src->bl.id,sg->interval+100,0);
 		}
 		break;
-	case UNT_SPIDERWEB:	/* スパイダーウェッブ */
+	case UNT_SPIDERWEB:	/* スパイダーウェブ */
 		if((!sc || sc->data[SC_SPIDERWEB].timer == -1) && sg->val2 == 0) {
 			skill_additional_effect(ss,bl,sg->skill_id,sg->skill_lv,BF_MISC,tick);
 			unit_movepos(bl, src->bl.x, src->bl.y, 0);
@@ -11686,7 +11690,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		clif_changelook(&src->bl,LOOK_BASE,UNT_FIREPILLAR_ACTIVE);
 		sg->limit = DIFF_TICK(tick,sg->tick) + 1500;
 		break;
-	case UNT_EVILLAND:	/* イビルランド */
+	case UNT_EVILLAND:	/* イービルランド */
 		{
 			int race = status_get_race(bl);
 
@@ -13523,7 +13527,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		if(cnd->lv <= 5)	// no gems required at level 1-5
 			item_nocost = 1;
 		// fall through
-	case PF_SPIDERWEB:		/* スパイダーウェッブ */
+	case PF_SPIDERWEB:		/* スパイダーウェブ */
 	case MG_FIREWALL:		/* ファイアーウォール */
 	case GN_THORNS_TRAP:	/* ソーントラップ */
 	case GN_WALLOFTHORN:	/* ソーンウォール */
@@ -16048,7 +16052,7 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 				skill_additional_effect(ss,bl,sg->skill_id,sg->skill_lv,BF_MISC,tick);
 				break;
 			case UNT_BLASTMINE:	/* ブラストマイン */
-			case UNT_CLAYMORETRAP:	/* クレイモアートラップ */
+			case UNT_CLAYMORETRAP:	/* クレイモアトラップ */
 				if(battle_config.trap_splash_on) {
 					int i;
 					for(i = 0; i < splash_count; i++) {
@@ -16658,7 +16662,7 @@ static int skill_unit_timer_sub( struct block_list *bl, va_list ap )
 					break;
 				}
 				// fall through
-			case UNT_CLAYMORETRAP:		/* クレイモアートラップ */
+			case UNT_CLAYMORETRAP:		/* クレイモアトラップ */
 			case UNT_MAGENTATRAP:		/* マゼンタトラップ */
 			case UNT_COBALTTRAP:		/* コバルトトラップ */
 			case UNT_MAIZETRAP:			/* メイズトラップ */

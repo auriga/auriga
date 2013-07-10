@@ -1952,7 +1952,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			else
 				calc_flag.hitrate = 1000000;
 			break;
-		case AS_SONICBLOW:		// ソニックブロウ
+		case AS_SONICBLOW:		// ソニックブロー
 			if(src_sd && pc_checkskill(src_sd,AS_SONICACCEL) > 0)
 				calc_flag.hitrate = calc_flag.hitrate*150/100;
 			break;
@@ -2987,7 +2987,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
-		case HT_PHANTASMIC:	// ファンタスミックアロー
+		case HT_PHANTASMIC:	// ファンタズミックアロー
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
 				int arr = atn_rand()%(src_sd->arrow_atk+1);
 				DMG_ADD( arr );
@@ -3070,7 +3070,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100+40*skill_lv, 100 );
 			wd.blewcount = 0;
 			break;
-		case AS_SONICBLOW:	// ソニックブロウ
+		case AS_SONICBLOW:	// ソニックブロー
 			{
 #ifdef PRE_RENEWAL
 				int rate = 300+50*skill_lv;
@@ -5523,7 +5523,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( sd->matk_rate, 100 );
 	}
 
-	// ファイヤーピラー
+	// ファイアーピラー
 	if(skill_num == WZ_FIREPILLAR) {
 		if(bl->type == BL_MOB) {
 			MATK_FIX( 200+100*skill_lv, 100 );
@@ -5643,6 +5643,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			normalmagic_flag = 0;
 			break;
+		case AL_INCAGI:			/* 速度増加 */
+		case MER_INCAGI:
+		case AL_BLESSING:		/* ブレッシング */
+		case MER_BLESSING:
+			mgd.damage = 1;
+			normalmagic_flag = 0;
+			break;
 
 		case HW_NAPALMVULCAN:	// ナパームバルカン
 		case MG_NAPALMBEAT:	// ナパームビート（分散計算込み）
@@ -5729,7 +5736,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 #endif
 			break;
 #ifdef PRE_RENEWAL
-		case WZ_FIREPILLAR:	// ファイヤーピラー
+		case WZ_FIREPILLAR:	// ファイアーピラー
 			if(mdef1 < 1000000)
 				mdef1 = mdef2 = 0;	// MDEF無視
 			if(bl->type == BL_MOB) {
@@ -5760,7 +5767,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				mgd.blewcount = 14;
 			}
 			break;
-		case WZ_VERMILION:	// ロードオブバーミリオン
+		case WZ_VERMILION:	// ロードオブヴァーミリオン
 #ifdef PRE_RENEWAL
 			MATK_FIX( 80+20*skill_lv, 100 );
 #else
@@ -5892,7 +5899,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				int matk1 = status_get_atk(bl);
 				int matk2 = status_get_atk2(bl);
 
-				mgd.damage = matk2+atn_rand()%(matk1-matk2+1);
+				if(matk2 > matk1)
+					mgd.damage = matk1+atn_rand()%(matk2-matk1+1);
+				else
+					mgd.damage = matk1;
 				if(mdef1 < 1000000)
 					mdef1 = mdef2 = 0;	// MDEF無視
 				if(skill_lv <= sizeof(dmg)/sizeof(dmg[0])) {
@@ -5905,7 +5915,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				}
 			}
 			break;
-		case NPC_EVILLAND:	// イビルランド
+		case NPC_EVILLAND:	// イービルランド
 			mgd.damage = (skill_lv > 6)? 666: skill_lv*100;
 			normalmagic_flag = 0;
 			break;
@@ -6208,7 +6218,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 					// エンチャントブレイドは除算MDEFを減算処理させる
 					mgd.damage = mgd.damage - mdef1;
 				} else if(skill_num != MG_NAPALMBEAT && skill_num != WZ_FIREPILLAR && skill_num != HW_NAPALMVULCAN && skill_num != SO_VARETYR_SPEAR){
-					// ナパームビート,ナパームバルカン,ファイアピラー,ヴェラチュールスピアは除算MDEF貫通
+					// ナパームビート,ナパームバルカン,ファイアーピラー,ヴェラチュールスピアは除算MDEF貫通
 					mgd.damage = (mgd.damage*(1000+mdef1))/(1000+mdef1*10);
 				}
 #endif
@@ -6524,14 +6534,14 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case HT_BLASTMINE:	// ブラストマイン
 		mid.damage = skill_lv*(dex/2+50)*(100+int_)/100;
 		break;
-	case HT_CLAYMORETRAP:	// クレイモアートラップ
+	case HT_CLAYMORETRAP:	// クレイモアトラップ
 		mid.damage = skill_lv*(dex/2+75)*(100+int_)/100;
 		break;
 #else
 	case HT_LANDMINE:	// ランドマイン
 	case MA_LANDMINE:
 	case HT_BLASTMINE:	// ブラストマイン
-	case HT_CLAYMORETRAP:	// クレイモアートラップ
+	case HT_CLAYMORETRAP:	// クレイモアトラップ
 		mid.damage = (int)(dex * (3+status_get_lv(bl)/(float)100) * (1+int_/(float)35) * skill_lv);
 		mid.damage = (mid.damage * 80 / 100) + (rand()%(mid.damage * 20 / 100));
 		if(sd)
