@@ -3515,6 +3515,14 @@ AurigaNPCScript
 
 			指定した部位のアイテムの<pos>に刺さっているカードのIDを返します
 
+		getclassjob 関数
+			getclassjob(<class>)
+
+			<class>		数値
+
+			<class>で指定された職業値の該当JOBの値を返します。
+			指定された職業値が転生職・養子職の場合も通常職の値で返します。
+
 
 	＊csv アクセス命令 / 関数
 
