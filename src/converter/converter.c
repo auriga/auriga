@@ -214,7 +214,8 @@ static int config_read(const char *cfgName)
 
 int do_init(int argc,char **argv)
 {
-	int i, rc;
+	int i;
+	bool rc;
 
 	printf("Auriga Converter v%d.%d.%d version %04d\n",
 		AURIGA_MAJOR_VERSION, AURIGA_MINOR_VERSION, AURIGA_REVISION,
@@ -239,7 +240,7 @@ int do_init(int argc,char **argv)
 	rc = sqldbs_connect(&mysql_handle,
 		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive
 	);
-	if(rc) {
+	if(rc == false) {
 		printf("FATAL ERROR: sqldbs_connect() failed !!\n");
 		exit(1);
 	}

@@ -1,4 +1,10 @@
 ----------------------------------------
+//1089 [2013/07/12] by refis
+
+・txt-converterが動作するよう修正（char-converter.c, converter.c）
+	Thanks hikaru1112 さん
+
+----------------------------------------
 //1088 [2013/07/11] by refis
 
 ・スクリプト関数「getclassjob」を実装（doc/script_ref.txt, pc.*, script.c）
