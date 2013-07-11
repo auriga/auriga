@@ -1,4 +1,9 @@
 ----------------------------------------
+//1090 [2013/07/12] by refis
+
+・storage, gstorageにprivateテーブルは存在しないので削除（char-converter.c）
+
+----------------------------------------
 //1089 [2013/07/12] by refis
 
 ・txt-converterが動作するよう修正（char-converter.c, converter.c）

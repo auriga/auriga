@@ -620,12 +620,11 @@ static int storage_fromstr(char *str, struct storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
-			&tmp_int[12],&len);
-		if(set!=13)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -640,7 +639,6 @@ static int storage_fromstr(char *str, struct storage *p)
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
 			p->store_item[i].limit     = (unsigned int)tmp_int[11];
-			p->store_item[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -1134,12 +1132,11 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 		return 0;
 	next++;
 	for(i=0;str[next] && str[next]!='\t';i++){
-		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
+		set=sscanf(str+next,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],
-			&tmp_int[12],&len);
-		if(set!=13)
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+		if(set!=12)
 			return 1;
 		if(i < MAX_GUILD_STORAGE) {
 			p->store_item[i].id        = (unsigned int)tmp_int[0];
@@ -1154,7 +1151,6 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 			p->store_item[i].card[2]   = tmp_int[9];
 			p->store_item[i].card[3]   = tmp_int[10];
 			p->store_item[i].limit     = (unsigned int)tmp_int[11];
-			p->store_item[i].private   = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
