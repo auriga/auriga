@@ -1,4 +1,15 @@
 ----------------------------------------
+//1091 [2013/07/15] by refis
+
+・char-converterのsscanf関数フォーマットが一部誤っていたのを修正（char-converter.c）
+
+・PACKETVER「20120925」以降の倉庫パケット情報が誤っていたのを修正（conf/msg_auriga.conf, clif.c）
+
+・client_packet.txtを修正 (doc/client_packet.txt)
+
+・2013-07-03aRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+----------------------------------------
 //1090 [2013/07/12] by refis
 
 ・storage, gstorageにprivateテーブルは存在しないので削除（char-converter.c）

@@ -5800,7 +5800,7 @@ void clif_equiplist(struct map_session_data *sd)
  * 倉庫の消耗品&収集品リスト
  *------------------------------------------
  */
-static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, int max)
+static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, int max, const char *name)
 {
 	struct item_data *id;
 	int i, len = 4;
@@ -5923,6 +5923,8 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 	}
 #else
 	WFIFOW(fd,0)=0x995;
+	strncpy(WFIFOP(fd,4), name, strlen(name)+1);
+	len += 24;
 	for(i = idx; i < max; i++) {
 		if(item[i].nameid <= 0)
 			continue;
@@ -5957,7 +5959,7 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 		WFIFOSET(fd,len);
 		if(i < max) {
 			// 超過分はパケット分割
-			clif_storageitemlist_sub(fd, item, i, max);
+			clif_storageitemlist_sub(fd, item, i, max, name);
 		}
 	}
 
@@ -5968,7 +5970,7 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
  * 倉庫の装備リスト
  *------------------------------------------
  */
-static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, int max)
+static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, int max, const char *name)
 {
 	struct item_data *id;
 	int i, j, len = 4;
@@ -6250,6 +6252,8 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 	}
 #else
 	WFIFOW(fd,0)=0x996;
+	strncpy(WFIFOP(fd,4), name, strlen(name)+1);
+	len += 24;
 	for(i = idx; i < max; i++) {
 		if(item[i].nameid <= 0)
 			continue;
@@ -6309,7 +6313,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOSET(fd,len);
 		if(i < max) {
 			// 超過分はパケット分割
-			clif_storageequiplist_sub(fd, item, i, max);
+			clif_storageequiplist_sub(fd, item, i, max, name);
 		}
 	}
 
@@ -6325,7 +6329,7 @@ void clif_storageitemlist(struct map_session_data *sd, struct storage *stor)
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE);
+	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE, msg_txt(208));
 
 	return;
 }
@@ -6339,7 +6343,7 @@ void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE);
+	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_STORAGE, msg_txt(208));
 
 	return;
 }
@@ -6353,7 +6357,7 @@ void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE);
+	clif_storageitemlist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE, msg_txt(209));
 
 	return;
 }
@@ -6367,7 +6371,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 	nullpo_retv(sd);
 	nullpo_retv(stor);
 
-	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE);
+	clif_storageequiplist_sub(sd->fd, stor->store_item, 0, MAX_GUILD_STORAGE, msg_txt(209));
 
 	return;
 }

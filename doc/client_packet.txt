@@ -2795,7 +2795,7 @@ R 0977 <ID>.l <CurHP>.l <MaxHP>.l
 	モンスターのHP情報
 S 0978 <ID>.l
 	サーバー統合前情報要求
-R 0979 <worldname>.24B <charname>.18B
+R 0979 <worldname>.24B <charname>.24B
 	サーバー統合前情報
 R 097a
 	未調査
@@ -2832,10 +2832,10 @@ R 0993 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.
 	0x902の上位版
 R 0994 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	カート内装備リスト、0x903の上位版
-R 0995 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
+R 0995 <len>.w <name>.24B { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B*
 	カプラさんに預けてある消耗品&収集品リスト
 	0x904の上位版
-R 0996 <len>.w { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
+R 0996 <len>.w <name>.24B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	カプラさんに預けてある装備リスト、0x905の上位版
 R 0997 <len>.w <name>.24B <class>.w <hair>.w <head option bottom>.w <head option mid>.w <head option top>.w <robe>.w <hair color>.w <clothes_color>.w <sex>.B { <index>.w <item ID>.w <type>.B <equip type>.w <equip point>.w <refine>.B <card>.4w <time>.l <WearState>.w <look>.w <attribute>.B }.27B*
 	プレイヤー装備ウィンドウ情報
