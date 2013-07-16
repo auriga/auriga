@@ -1690,6 +1690,9 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			break;
 		}
 		break;
+	case KO_JYUMONJIKIRI:	/* 十文字斬り */
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
 	case KO_MAKIBISHI:		/* 撒菱 */
 		if(unit && unit->group)
 		{
@@ -3319,11 +3322,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			status_change_end(src, SC_HIDING, -1);	// ハイディング解除
 		}
 		break;
-	case KO_JYUMONJIKIRI:		/* 十文字斬り */
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-		break;
-
 	/* 武器系範囲攻撃スキル */
 	case AC_SHOWER:			/* アローシャワー */
 	case MA_SHOWER:
@@ -3669,36 +3667,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
-	case KO_HAPPOKUNAI:		/* 八方苦無 */
-		if(flag&1) {
-			/* 個別にダメージを与える */
-			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		} else {
-			int ar = (skilllv < 5)? 4 : 5;
-			if(sd) {
-				int cost = skill_get_arrow_cost(skillid,skilllv);
-				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
-					break;
-			}
-			/* スキルエフェクト表示 */
-			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-
-			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
-			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
-		}
-		break;
-	case KO_HUUMARANKA:			/* 風魔手裏剣乱華 */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
-		break;
-
 	/* 魔法系スキル */
 	case MG_SOULSTRIKE:			/* ソウルストライク */
 	case NPC_DARKSTRIKE:		/* ダークストライク */
@@ -3720,7 +3688,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case AB_DUPLELIGHT_MAGIC:	/* デュプレライト(魔法) */
 	case LG_RAYOFGENESIS:		/* レイオブジェネシス */
 	case WM_METALICSOUND:		/* メタリックサウンド */
-	case KO_KAIHOU:				/* 術式解放 */
 	case EL_FIRE_ARROW:			/* ファイアーアロー */
 	case EL_ICE_NEEDLE:			/* アイスニードル */
 		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
@@ -4100,29 +4067,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 		break;
-	case KO_MUCHANAGE:	/* 無茶投げ */
-		if(flag&1) {
-			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
-		} else {
-			skill_area_temp[0] = 0;
-			skill_area_temp[1] = bl->id;
-			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY,
-				skill_area_sub_count);
-			if( !battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(is_enemy ? 0 : 0x01000000)) )
-				break;
-			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
-			sd->zenynage_damage = 0;	// 撃ったらリセット
-		}
-		break;
-	case KO_MAKIBISHI:			/* 撒菱 */
-		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
-		break;
 
 	/* HP吸収/HP吸収魔法 */
 	case NPC_BLOODDRAIN:
@@ -4216,6 +4160,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GC_DARKILLUSION:	/* ダークイリュージョン */
 	case RA_WUGSTRIKE:		/* ウォーグストライク */
 	case LG_PINPOINTATTACK:	/* ピンポイントアタック */
+	case KO_JYUMONJIKIRI:	/* 十文字斬り */
 		{
 			int dist = unit_distance(src,bl);
 			if(sd && !map[sd->bl.m].flag.gvg && dist > 1 && (skillid != RA_WUGSTRIKE || pc_iswolfmount(sd))) {
@@ -4960,6 +4905,63 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
+		break;
+	case KO_HAPPOKUNAI:		/* 八方苦無 */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = (skilllv < 5)? 4 : 5;
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
+			/* スキルエフェクト表示 */
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case KO_MUCHANAGE:	/* 無茶投げ */
+		if(flag&1) {
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]);
+		} else {
+			skill_area_temp[0] = 0;
+			skill_area_temp[1] = bl->id;
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY,
+				skill_area_sub_count);
+			if( !battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,skill_area_temp[0]|(is_enemy ? 0 : 0x01000000)) )
+				break;
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			sd->zenynage_damage = 0;	// 撃ったらリセット
+		}
+		break;
+	case KO_HUUMARANKA:			/* 風魔手裏剣乱華 */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
+		break;
+	case KO_MAKIBISHI:			/* 撒菱 */
+		skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
+		break;
+	case KO_KAIHOU:				/* 術式解放 */
+		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+		if(sd && sd->elementball.num)
+			pc_delelementball(sd,sd->elementball.num,0);
 		break;
 	case EL_FIRE_BOMB:		/* ファイアーボム */
 	case EL_FIRE_WAVE:		/* ファイアーウェーブ */
@@ -5734,6 +5736,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case WM_GLOOMYDAY:			/* メランコリー */
 	case GN_CARTBOOST:			/* カートブースト */
 	case ALL_ODINS_POWER:		/* オーディンの力 */
+	case KO_MEIKYOUSISUI:		/* 明鏡止水 */
 	case MS_REFLECTSHIELD:
 	case MER_QUICKEN:			/* ウェポンクイッケン */
 	case MER_AUTOBERSERK:
@@ -9253,11 +9256,37 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
-	case KO_MEIKYOUSISUI:		/* 明鏡止水 */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+	case KO_ZANZOU:		/* 幻術‐残像 */
+		if(sd) {
+			int id = 0;
+			struct mob_data *tmpmd = NULL;
+
+			id = mob_once_spawn(sd, sd->bl.m, sd->bl.x, sd->bl.y, sd->status.name, 2308, 1, "");
+
+			if((tmpmd = map_id2md(id)) != NULL) {
+				tmpmd->master_id    = sd->bl.id;
+				tmpmd->hp           = 3000 + skilllv * 3000 + sd->status.max_sp;
+				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			sc = status_get_sc(src);
+			if(!sc || sc->data[SC_ANKLE].timer == -1) {
+				// バックステップ
+				int dir = 0, head_dir = 0;
+				int count = skill_get_blewcount(skillid,skilllv);
+
+				if(sd) {
+					dir = sd->dir;
+					head_dir = sd->head_dir;
+				}
+				unit_stop_walking(src,1);
+				skill_blown(src,bl,count|SAB_REVERSEBLOW|SAB_NODAMAGE|SAB_NOPATHSTOP|SAB_NOTKNOCK);
+				if(sd)
+					pc_setdir(sd, dir, head_dir);
+			}
+		}
 		break;
-	case KO_KYOUGAKU:		/* 驚愕 */
+	case KO_KYOUGAKU:		/* 幻術‐驚愕 */
 		// プレイヤー以外には使用不可
 		if(bl->type != BL_PC)
 			break;
@@ -9268,7 +9297,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(atn_rand() % 10000 < 1000 * skilllv)	// 確率暫定
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skilllv*5 + atn_rand() % (skilllv*5),0,0,skill_get_time(skillid,skilllv),0);
 		break;
-	case KO_JYUSATSU:		/* 呪殺 */
+	case KO_JYUSATSU:		/* 幻術‐呪殺 */
 		// プレイヤー以外には使用不可
 		if(bl->type != BL_PC)
 			break;
@@ -9289,16 +9318,22 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		}
 		break;
-	case KO_KAHU_ENTEN:	/* 火符 -炎天- */
-	case KO_HYOUHU_HUBUKI:	/* 氷符 -吹雪- */
-	case KO_KAZEHU_SEIRAN:	/* 風符 -青藍- */
-	case KO_DOHU_KOUKAI:	/* 土符 -剛塊- */
+	case KO_KAHU_ENTEN:	/* 火符‐炎天 */
+	case KO_HYOUHU_HUBUKI:	/* 氷符‐吹雪 */
+	case KO_KAZEHU_SEIRAN:	/* 風符‐青嵐 */
+	case KO_DOHU_KOUKAI:	/* 土符‐剛塊 */
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			// 他属性を召喚している場合は削除
+			if(sd->elementball.num) {
+				if(sd->elementball.ele != skill_get_pl(skillid)) {
+					pc_delelementball(sd,sd->elementball.num,0);
+				}
+			}
 			pc_addelementball(sd,skill_get_time(skillid,skilllv),MAX_ELEMENTBALL,skill_get_pl(skillid));
 		}
 		break;
-	case KO_GENWAKU:		/* 幻惑 */
+	case KO_GENWAKU:		/* 幻術‐幻惑 */
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		if(atn_rand() % 10000 < 1000 * skilllv) {	// 確率暫定
 			int x = bl->x;
@@ -9354,6 +9389,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case KG_KAGEMUSYA:	/* 影武者 */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
@@ -9369,10 +9405,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			break;
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-		break;
-	case KO_ZENKAI:		/* 術式全開 */
-		skill_clear_element_field(src);	// 既に自分が発動している属性場をクリア
-		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
 		break;
 	case ECL_SNOWFLIP:
 		status_change_end(bl, SC_SLEEP, -1);
@@ -9777,12 +9809,12 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case GN_THORNS_TRAP:		/* ソーントラップ */
 	case GN_DEMONIC_FIRE:		/* デモニックファイアー */
 	case GN_HELLS_PLANT:		/* ヘルズプラント */
+	case KO_HUUMARANKA:			/* 風魔手裏剣乱華 */
+	case KO_MAKIBISHI:			/* 撒菱 */
 	case MA_SKIDTRAP:
 	case MA_LANDMINE:
 	case MA_SANDMAN:
 	case MA_FREEZINGTRAP:
-	case KO_HUUMARANKA:			/* 風魔手裏剣乱華 */
-	case KO_MAKIBISHI:			/* 撒菱 */
 		skill_unitsetting(src,skillid,skilllv,x,y,0);
 		break;
 	case HT_SKIDTRAP:			/* スキッドトラップ */
@@ -10333,6 +10365,10 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				skill_castend_damage_id);
 		}
 		break;
+	case KO_ZENKAI:		/* 術式全開 */
+		skill_unitsetting(src,skillid,skilllv,x,y,0);
+		if(sd && sd->elementball.num)
+			pc_delelementball(sd,sd->elementball.num,0);
 	}
 	return 0;
 }
@@ -10671,7 +10707,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 					break;
 			}
 			// 召喚中の球体の数に応じてlimitが延びる
-			limit += (sd->elementball.num - 1) * 6000;
+			limit *= sd->elementball.num;
 		} else {
 			val1 = ELE_FIRE;	// val1は属性値
 		}
@@ -13982,16 +14018,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
-	case KO_KAHU_ENTEN:	/* 火符 -炎天- */
-	case KO_HYOUHU_HUBUKI:	/* 氷符 -吹雪- */
-	case KO_KAZEHU_SEIRAN:	/* 風符 -青藍- */
-	case KO_DOHU_KOUKAI:	/* 土符 -剛塊- */
+	case KO_KAHU_ENTEN:	/* 火符‐炎天 */
+	case KO_HYOUHU_HUBUKI:	/* 氷符‐吹雪 */
+	case KO_KAZEHU_SEIRAN:	/* 風符‐青嵐 */
+	case KO_DOHU_KOUKAI:	/* 土符‐剛塊 */
 		if(sd->elementball.num >= MAX_ELEMENTBALL) {
-			clif_skill_fail(sd,cnd->id,0,0,0);
-			return 0;
-		}
-		if(sd->elementball.num) {
-			if(sd->elementball.ele != skill_get_pl(cnd->id)) {
+			if(sd->elementball.ele == skill_get_pl(cnd->id)) {
 				clif_skill_fail(sd,cnd->id,0,0,0);
 				return 0;
 			}
@@ -19318,12 +19350,12 @@ static int skill_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
-	char *filename2;
 #ifdef PRE_RENEWAL
 	const char *filename[] = {
 		"db/skill_db.txt",         "db/pre/skill_db_pre.txt",         "db/addon/skill_db_add.txt",
 		"db/skill_require_db.txt", "db/pre/skill_require_db_pre.txt", "db/addon/skill_require_db_add.txt",
 		"db/skill_cast_db.txt",    "db/pre/skill_cast_db_pre.txt",    "db/addon/skill_cast_db_add.txt",
+		"db/skill_unit_db.txt",    "db/pre/skill_unit_db_pre.txt",    "db/addon/skill_unit_db_add.txt",
 		"db/produce_db.txt",       "db/pre/produce_db_pre.txt",       "db/addon/produce_db_add.txt"
 	};
 	const int max = 3;
@@ -19332,6 +19364,7 @@ static int skill_readdb(void)
 		"db/skill_db.txt",         "db/addon/skill_db_add.txt",
 		"db/skill_require_db.txt", "db/addon/skill_require_db_add.txt",
 		"db/skill_cast_db.txt",    "db/addon/skill_cast_db_add.txt",
+		"db/skill_unit_db.txt",    "db/addon/skill_unit_db_add.txt",
 		"db/produce_db.txt",       "db/addon/produce_db_add.txt"
 	};
 	const int max = 2;
@@ -19589,52 +19622,51 @@ static int skill_readdb(void)
 	}
 
 	/* スキルユニットデータベース */
-#ifdef PRE_RENEWAL
-	filename2 = "db/pre/skill_unit_db_pre.txt";
-#else
-	filename2 = "db/skill_unit_db.txt";
-#endif
-	fp = fopen(filename2,"r");
-	if (fp==NULL) {
-		printf("can't read %s\n",filename2);
-		return 1;
-	}
-	k = 0;
-	while (fgets(line,1020,fp)) {
-		char *split[50];
-		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-			continue;
-		if (line[0]=='/' && line[1]=='/')
-			continue;
-		j = skill_split_str(line,split,8);
-		if (split[7]==NULL || j<8)
-			continue;
+	for(m=max*3; m<max*4; m++){
+		fp=fopen(filename[m],"r");
+		if(fp==NULL){
+			if(m>max*3)
+				continue;
+			printf("can't read %s\n",filename[m]);
+			return 1;
+		}
+		k = 0;
+		while (fgets(line,1020,fp)) {
+			char *split[50];
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+				continue;
+			if (line[0]=='/' && line[1]=='/')
+				continue;
+			j = skill_split_str(line,split,8);
+			if (split[7]==NULL || j<8)
+				continue;
 
-		i = skill_get_skilldb_id(atoi(split[0]));
-		if(i == 0)
-			continue;
+			i = skill_get_skilldb_id(atoi(split[0]));
+			if(i == 0)
+				continue;
 
-		skill_db[i].unit_id[0] = strtol(split[1],NULL,16);
-		skill_db[i].unit_id[1] = strtol(split[2],NULL,16);
-		skill_split_atoi(split[3],skill_db[i].unit_layout_type,MAX_SKILL_LEVEL);
-		skill_split_atoi(split[4],skill_db[i].unit_range,MAX_SKILL_LEVEL);
-		skill_db[i].unit_interval = atoi(split[5]);
-		skill_db[i].unit_target   = strtol(split[6],NULL,16);
-		skill_split_strtol(split[7],skill_db[i].unit_flag,MAX_SKILL_LEVEL,16);
-		k++;
+			skill_db[i].unit_id[0] = strtol(split[1],NULL,16);
+			skill_db[i].unit_id[1] = strtol(split[2],NULL,16);
+			skill_split_atoi(split[3],skill_db[i].unit_layout_type,MAX_SKILL_LEVEL);
+			skill_split_atoi(split[4],skill_db[i].unit_range,MAX_SKILL_LEVEL);
+			skill_db[i].unit_interval = atoi(split[5]);
+			skill_db[i].unit_target   = strtol(split[6],NULL,16);
+			skill_split_strtol(split[7],skill_db[i].unit_flag,MAX_SKILL_LEVEL,16);
+			k++;
+		}
+		fclose(fp);
+		printf("read %s done (count=%d)\n",filename[m],k);
 	}
-	fclose(fp);
-	printf("read %s done (count=%d)\n",filename2,k);
 	skill_init_unit_layout();
 
 	/* 製造系スキルデータベース */
 	memset(skill_produce_db,0,sizeof(skill_produce_db));
 
-	for(m=max*3; m<max*4; m++){
+	for(m=max*4; m<max*5; m++){
 		int count=0;
 		fp=fopen(filename[m],"r");
 		if(fp==NULL){
-			if(m>max*3)
+			if(m>max*4)
 				continue;
 			printf("can't read %s\n",filename[m]);
 			return 1;

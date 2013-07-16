@@ -1,0 +1,2 @@
+//skill_unit_db.txtへオーバーライド
+// ID,Unit1,Unit2,Layout,Range,Interval,Target,Flag

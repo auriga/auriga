@@ -1827,7 +1827,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			// 影武者
 			if(sc && sc->data[SC_KAGEMUSYA].timer != -1) {
-				if((skill = sc->data[SC_KAGEMUSYA].val1) > 0 && src_sd->weapontype1 == WT_DAGGER && atn_rand()%100 < skill*5) {
+				if((skill = sc->data[SC_KAGEMUSYA].val1) > 0 && atn_rand()%100 < skill*5) {
 					calc_flag.da = 1;
 					calc_flag.hitrate = calc_flag.hitrate*(100+skill)/100;
 				}
@@ -4004,23 +4004,33 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case KO_JYUMONJIKIRI:	// 十文字斬り
 			{
-				int rate = 150 * skill_lv;
+				int rate = 150 * skill_lv * status_get_lv(src) / 120;
 
-				if( sc && sc->data[SC_KO_JYUMONJIKIRI].timer != -1 )
-					rate += 75 * skill_lv;
-				DMG_FIX( rate , 100 );
+				if( t_sc && t_sc->data[SC_KO_JYUMONJIKIRI].timer != -1 )
+					rate += status_get_lv(src) * skill_lv;
+				DMG_FIX( rate, 100 );
 			}
 			break;
 		case KO_SETSUDAN:		// 霊魂絶断
-			DMG_FIX( 100 * skill_lv, 100 );
-			status_change_soulclear(target);
+			{
+				int rate = 150 * skill_lv;
+
+				if(t_sc) {
+					int soul;
+
+					for(soul = SC_ALCHEMIST; soul <= SC_GUNNER; soul++) {
+						if(t_sc->data[soul].timer != -1) {
+							rate += rate;
+						}
+					}
+				}
+
+				DMG_FIX( rate * status_get_lv(src) / 100, 100 );
+				status_change_soulclear(target);
+			}
 			break;
 		case KO_BAKURETSU:		// 爆裂苦無
-			{
-				int rate = (src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU) : 1;
-				rate *= 50 * skill_lv;
-				DMG_FIX( rate, 100 );
-			}
+			DMG_FIX( ((skill_lv * (50 + status_get_dex(src) / 4)) * ((src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU): 0) * 4 / 10 * status_get_lv(src) / 120) + ((src_sd)? src_sd->status.job_level: 0) * 10, 100);
 			break;
 		case KO_HAPPOKUNAI:		// 八方苦無
 			{
@@ -4052,11 +4062,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case KO_HUUMARANKA:	// 風魔手裏剣乱華
-			{
-				int rate = (src_sd)? pc_checkskill(src_sd, NJ_HUUMA) : 1;
-				rate *= status_get_agi(src) + status_get_dex(src) + 150 * skill_lv;
-				DMG_FIX( rate, 100 );
-			}
+			DMG_FIX( 150 * skill_lv + status_get_agi(src) + status_get_dex(src) + ((src_sd)? pc_checkskill(src_sd, NJ_HUUMA): 0) * 100, 100 );
 			break;
 		case EL_CIRCLE_OF_FIRE:	// サークルオブファイア
 			DMG_FIX( 300, 100 );
@@ -6125,14 +6131,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			MATK_FIX( 400 + 100 * skill_lv, 100 );
 			break;
 		case KO_KAIHOU:	/* 術式解放 */
+			MATK_FIX( 200 * status_get_lv(bl) / 100, 100 );
 			if(sd) {
 				// 召喚中の球体の属性を適用する
 				ele = sd->elementball.ele;
 				// 召喚中の球体の数に応じてHITが変化する
-				MATK_FIX( 200 , 100 );
 				mgd.div_ = sd->elementball.num;
 			} else {
-				MATK_FIX( 200 * 10, 100 );
 				mgd.div_ = 10;
 			}
 			break;

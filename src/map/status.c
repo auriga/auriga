@@ -5738,7 +5738,7 @@ int status_get_attack_element(struct block_list *bl)
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num)
+		if(((struct map_session_data *)bl)->elementball.num >= 10)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 		else
 			ret = ((struct map_session_data *)bl)->atk_ele;
@@ -5790,7 +5790,7 @@ int status_get_attack_element2(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		int ret;
 		struct status_change *sc = status_get_sc(bl);
-		if(((struct map_session_data *)bl)->elementball.num)
+		if(((struct map_session_data *)bl)->elementball.num >= 10)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 		else
 			ret = ((struct map_session_data *)bl)->atk_ele_;
@@ -5836,7 +5836,7 @@ int status_get_attack_element_nw(struct block_list *bl)
 	sc = status_get_sc(bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num)
+		if(((struct map_session_data *)bl)->elementball.num >= 10)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
