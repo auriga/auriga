@@ -1,4 +1,16 @@
 ----------------------------------------
+//1093 [2013/07/19] by refis
+
+・NPC会話がタイムアウトした際に不必要なスクリプトスタック情報を破棄させるよう修正 (npc.c)
+
+・UnknownPacketダンプのログ抑制のためにpacket_dbの更新 (db/packet_db.txt, clif.c)
+	-> ついでにパケット長を追記
+
+・client_packet.txtの更新 (doc/client_packet.txt)
+
+・テーブル定義更新 (skill.h status.h)
+
+----------------------------------------
 //1092 [2013/07/17] by Blaze
 
 ・「db/pre/skill_unit_db_pre.txt」の仕様を切り替え式ではなくaddon式に変更（skill.c, db/pre/skill_unit_db_pre.txt）

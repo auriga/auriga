@@ -2812,6 +2812,24 @@ R 0984 <ID>.l <type>.w <maxtick>.l <tick>.l <val1>.l <val2>.l <val3>.l
 R 0985 <len>.w { <skillid>.w <maxtick>.l <tick>.l }.10B*
 	0x43eの上位版
 	スキル固有ディレイリスト？
+R 0988 <NumConnect>.w <NumTotal>.w
+	クラン接続人数情報
+	NumTotalは無視されてるっぽい
+R 0989
+	クラン画面の初期化
+R 098a <len>.w <clantype>.l <guild name>.24B <guild master>.24B <agit>.16B <allyclan num>.B <hostileclan num>.B (<guild name>.24B).<allyclan num> (<guild name>.24B).<hostileclan num>
+	クラン基本情報
+	<clantype>
+	1 SWORD CLAN
+	2 ARCHWAND CLAN
+	3 GOLDENMACE CLAN
+	4 CROSSBOW CLAN
+	5~8 ???
+	9~ crash
+S 098d <len>.w <str>.?B
+	クランチャット送信
+R 098e <len>.w <charname>.24B <str>.?B
+	クランチャット受信
 R 0990 <index>.w <amount>.w <item ID>.w <identify flag>.B <attribute?>.B <refine>.B <card>.4w <equip type>.l <type>.B <fail>.B <time>.l <flag?>.w
 	アイテム獲得、0x2d4の上位版
 R 0991 <len>.w { <index>.w <item ID>.w <type>.B <amount>.w <WearState>.w <card>.4w <time>.l <attribute>.B }.22B

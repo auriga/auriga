@@ -493,6 +493,14 @@ static int npc_timeout_timer(int tid,unsigned int tick,int id,void *data)
 		clif_scriptclose(sd,sd->npc_id);
 		sd->npc_id         =  0;
 		sd->npc_idle_timer = -1;
+		if(sd->stack) {
+			// 元のスタック情報を破棄
+			script_free_stack(sd->stack);
+			sd->stack = NULL;
+		}
+		// menu, select, inputの返答待機解除（ギルド倉庫は応答を待つ）
+		if(sd->state.menu_or_input == 1 && sd->state.gstorage_lockreq == 0)
+			sd->state.menu_or_input = 0;
 	} else {
 		sd->npc_idle_timer = add_timer(gettick()+1000,npc_timeout_timer,sd->bl.id,0);
 	}

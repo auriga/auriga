@@ -20356,6 +20356,46 @@ static void clif_parse_BlockingPlayCancel(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
+ * クランチャット送信要求
+ * 詳細不明なため未実装
+ *------------------------------------------
+ */
+static void clif_parse_ClanMessage(int fd,struct map_session_data *sd, int cmd)
+{
+	char *message;
+	int message_size;
+
+	nullpo_retv(sd);
+
+	message = (char *)RFIFOP(fd, GETPACKETPOS(cmd,1));
+	message_size = RFIFOW(fd, GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,1); // including NULL
+
+	if (message_size < 8)	// name (mini:4) + " : " (3) + NULL (1) (void mesages are possible for skills)
+		return;
+	if (message_size > 255)	// too long
+		return;
+
+	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+
+	if (is_atcommand(fd, sd, message) != AtCommand_None)
+		return;
+
+	// バーサーク、チャット禁止状態なら会話不可
+	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
+		return;
+
+/*
+	WFIFOW(fd, 0)=0x98e;
+	WFIFOW(fd, 2)=message_size+28;
+	memcpy(WFIFOP(fd, 4),sd->status.name,24);
+	memcpy(WFIFOP(fd,28),message,message_size);
+	WFIFOSET(fd,WFIFOW(fd,2));
+*/
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -20686,6 +20726,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingSummonMember,  "bookingsummonmember"       },
 		{ clif_parse_PartyBookingJoinPartyCancel,"bookingjoinpartycancel"   },
 		{ clif_parse_BlockingPlayCancel,        "blockplaycancel"           },
+		{ clif_parse_ClanMessage,               "clanmessage"               },
 		{ NULL,                                 NULL                        },
 	};
 
