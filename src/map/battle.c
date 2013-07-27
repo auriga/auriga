@@ -2857,8 +2857,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage += mgd.damage;
 				wd.damage = wd.damage * rate / 100;
 				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
-				if(skill_num == AM_ACIDTERROR && (t_mode&MD_BOSS))
+				if(skill_num == AM_DEMONSTRATION) {
+					int def_elem = status_get_element(target);
+					int def_type = def_elem%20;
+					int def_lv   = def_elem/20;
+
+					if(def_type >= 0 && def_type < ELE_MAX && def_lv > 0 && def_lv <= MAX_ELE_LEVEL) {
+						int rate = attr_fix_table[def_lv-1][ELE_FIRE][def_type];
+						wd.damage -= wd.damage * (100 - rate) / 100;
+					}
+				} else if(t_mode&MD_BOSS) {
 					wd.damage = wd.damage / 2;
+				}
 			}
 			break;
 		case ASC_BREAKER:	// ソウルブレイカー
@@ -5196,9 +5206,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.damage = battle_attr_fix(wd.damage + 15*skill_lv, s_ele, status_get_element(target) );
 		break;
 #else
-	case AM_DEMONSTRATION:
-		wd.damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target) );
-		break;
 	case GS_MAGICALBULLET:
 		wd.damage = battle_attr_fix(wd.damage, ELE_GHOST, status_get_element(target) );
 		break;
@@ -5845,6 +5852,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case ASC_BREAKER:	// ソウルブレイカー
 		case CR_ACIDDEMONSTRATION:	// アシッドデモンストレーション
 		case GN_FIRE_EXPANSION_ACID:	// ファイアーエクスパンション(塩酸)
+			ele = ELE_NONE;
 			normalmagic_flag = 0;
 			break;
 #endif

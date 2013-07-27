@@ -5757,7 +5757,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid,skill_get_time(skillid,skilllv),0);
 		break;
 	case HP_ASSUMPTIO:		/* アスムプティオ */
-		status_change_start(bl,SC_ASSUMPTIO,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		if( !(dstsd && dstsd->special_state.no_magic_damage) ) {
+			status_change_start(bl,SC_ASSUMPTIO,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);	// アイコンパケット送信後に送る
 		break;
 	case CASH_ASSUMPTIO:	/* パーティーアスムプティオ */
@@ -6427,7 +6429,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			mob_unlocktarget(dstmd,tick);
 			dstmd->attacked_id = 0;
 			dstmd->attacked_players = 0;
-
 		}
 		break;
 
@@ -8031,9 +8032,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(&sd->bl,bl,skillid,heal,1);
 				battle_heal(&sd->bl,bl,heal,0,0);
 			} else {
-				if(dstsd && dstsd->special_state.no_magic_damage)
-					break;
-
 				clif_skill_nodamage(&sd->bl,bl,skillid,skilllv,1);
 				status_change_start(bl,GetSkillStatusChangeTable(skillid),lv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
@@ -8939,6 +8937,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(atn_rand() % 10000 >= 8800 + 200 * skilllv)
 				break;
 			if(dstsd->sc.data[SC_HELLPOWER].timer != -1)		// ヘルパワー状態は蘇生不可
+				break;
+			if(dstsd->special_state.no_magic_damage)
 				break;
 
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);

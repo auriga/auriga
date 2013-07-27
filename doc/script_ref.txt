@@ -74,8 +74,8 @@ AurigaNPCScript
 		displayname		出現するモンスターの表示名です。
 		npcid			mob_db.txtを参照してください。出現させるモンスターのidを指定します。
 		number			そのMAP及び出現範囲での最大出現数です。
-		spawn_delay1		出現してから指定されたミリ秒待って再出現します。
-		spawn_delay2		死亡してから指定されたミリ秒待って再出現します。
+		spawn_delay1		死亡してから指定されたミリ秒待って再出現します。
+		spawn_delay2		spawn_delay1に加えて指定されたミリ秒までのランダム時間待って再出現します。
 		event			指定したイベントを発生させます。省略可。
 					数字1文字だけの場合は指定無しと同じ扱いになります。
 		guild_id		指定したギルドのエンブレムを表示します。省略可。
@@ -3514,14 +3514,6 @@ AurigaNPCScript
 			<pos>	0-3までの整数を指定します。
 
 			指定した部位のアイテムの<pos>に刺さっているカードのIDを返します
-
-		getclassjob 関数
-			getclassjob(<class>)
-
-			<class>		数値
-
-			<class>で指定された職業値の該当JOBの値を返します。
-			指定された職業値が転生職・養子職の場合も通常職の値で返します。
 
 
 	＊csv アクセス命令 / 関数

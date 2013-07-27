@@ -2412,18 +2412,15 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			}
 			map_freeblock(md);	// freeのかわり
 		} else {
-			unsigned int spawntime1,spawntime2,spawntime3;
+			unsigned int spawntime;
 			unsigned int tick = gettick();
-			spawntime1 = md->last_spawntime + md->spawndelay1;
-			spawntime2 = tick + md->spawndelay2;
-			spawntime3 = tick + 1000;
-			if(DIFF_TICK(spawntime1,spawntime2) > 0) {
-				md->last_spawntime = spawntime1;
-			} else {
-				md->last_spawntime = spawntime2;
+			spawntime = tick + 1000;
+			md->last_spawntime = tick + md->spawndelay1;
+			if(md->spawndelay2 > 0) {
+				md->last_spawntime += atn_rand()%md->spawndelay2;
 			}
-			if(DIFF_TICK(spawntime3,md->last_spawntime) > 0) {
-				md->last_spawntime = spawntime3;
+			if(DIFF_TICK(spawntime,md->last_spawntime) > 0) {
+				md->last_spawntime = spawntime;
 			}
 			add_timer(md->last_spawntime,mob_delayspawn,bl->id,NULL);
 		}
