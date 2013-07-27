@@ -57,7 +57,9 @@ struct item_data {
 		unsigned value_notdc : 1;
 		unsigned value_notoc : 1;
 		unsigned dropable : 1;
+		unsigned sellable : 1;
 		unsigned storageable : 1;
+		unsigned guildstorageable : 1;
 		unsigned cartable : 1;
 		unsigned pet_egg : 1;
 		unsigned pet_acce : 1;
@@ -120,7 +122,9 @@ int itemdb_isweapon(int nameid);
 int itemdb_isarmor(int nameid);
 int itemdb_iscartable(int nameid);
 int itemdb_isstorageable(int nameid);
+int itemdb_isguildstorageable(int nameid);
 int itemdb_isdropable(int nameid);
+int itemdb_issellable(int nameid);
 int itemdb_isbuyingable(int nameid);
 int itemdb_isnonconsume(int nameid);
 

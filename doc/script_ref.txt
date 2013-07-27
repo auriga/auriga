@@ -81,6 +81,9 @@ AurigaNPCScript
 		guild_id		指定したギルドのエンブレムを表示します。省略可。
 
 		注意事項１：
+		spawn_delay1とspawn_delay2は、結果としてどちらを基準にした方が最も遅く再出現するかを判断し、優先します。
+
+		注意事項２：
 		イベント不要でギルドIDだけが必要な場合はイベント指定無しにしてください。
 		以下の例ではギルドIDが10001として設定されます。
 			prontera.gat,0,0,0,0	monster	--ja--	1002,1,0,0,,10001
@@ -3345,6 +3348,10 @@ AurigaNPCScript
 			num=27		Group
 			num=28		ArrowType
 			num=29		CardIllustName
+			num=30		Buyingable
+			num=31		Nonconsume
+			num=32		Sellable
+			num=33		GuildStorageable
 
 		getonlinepartymember 関数
 			getonlinepartymember([<party_id>])
@@ -3511,14 +3518,6 @@ AurigaNPCScript
 			<pos>	0-3までの整数を指定します。
 
 			指定した部位のアイテムの<pos>に刺さっているカードのIDを返します
-
-		getclassjob 関数
-			getclassjob(<class>)
-
-			<class>		数値
-
-			<class>で指定された職業値の該当JOBの値を返します。
-			指定された職業値が転生職・養子職の場合も通常職の値で返します。
 
 
 	＊csv アクセス命令 / 関数

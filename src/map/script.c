@@ -11734,6 +11734,10 @@ int buildin_getiteminfo(struct script_state *st)
 			case 27: val = item->group;            break;
 			case 28: val = item->arrow_type;       break;
 			case 29: str = item->cardillustname;   break;
+			case 30: val = item->flag.buyingable;  break;
+			case 31: val = item->flag.nonconsume;  break;
+			case 32: val = item->flag.sellable;    break;
+			case 33: val = item->flag.guildstorageable; break;
 		}
 	}
 	if(str)

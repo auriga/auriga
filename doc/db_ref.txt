@@ -428,7 +428,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK:MATK,DEF:MDEF,Range,Slot,Job,Gender,Loc
 ==========================================================================
 10. db/item_db2.txt
 --------------------------------------------------------------------------
-ID,Upper,Zone,Dropable,Storageable,Cartable,Dalay,Buyingable,Nonconsume
+ID,Upper,Zone,Dropable,Sellable,Storageable,GuildStorageable,Cartable,Dalay,Buyingable,Nonconsume
 
 ID          = アイテムID
 Upper       = 転生による使用・装備制限
@@ -448,18 +448,22 @@ Zone        = 場所による使用・装備制限
                 +128 : 枝禁止区域         (nobranch)
                 +256 : ペナルティ無し区域 (nopenalty)
                 +512 : ペナルティ有り区域
-Dropable    = 捨てるのが可能かどうか
+Dropable         = 捨てるのが可能かどうか
                    0 : 可（デフォルト） 1 : 不可
-Storageable = 倉庫に入れるのが可能かどうか
+Sellable         = 売却するのが可能かどうか
                    0 : 可（デフォルト） 1 : 不可
-Cartable    = 倉庫からカートに出すのが可能かどうか
+Storageable      = 倉庫に入れるのが可能かどうか
                    0 : 可（デフォルト） 1 : 不可
-Delay       = 使用後に指定した時間ディレイを付ける、単位はms
-              ただしどのアイテムも使えなくなるので注意
-Buyingable  = 購買露店で買い取り可能かどうか
-              0 : 不可（デフォルト） 1 : 可
-Nonconsume  = 使用時アイテム数を消費しない
-              0 : 消費する（デフォルト） 1 : 消費しない
+GuildStorageable = ギルド倉庫に入れるのが可能かどうか
+                   0 : 可（デフォルト） 1 : 不可
+Cartable         = 倉庫からカートに出すのが可能かどうか
+                   0 : 可（デフォルト） 1 : 不可
+Delay            = 使用後に指定した時間ディレイを付ける、単位はms
+                   ただしどのアイテムも使えなくなるので注意
+Buyingable       = 買取露店で買い取り可能かどうか
+                   0 : 不可（デフォルト） 1 : 可
+Nonconsume       = 使用時アイテム数を消費しない
+                   0 : 消費する（デフォルト） 1 : 消費しない
 
 
 ==========================================================================

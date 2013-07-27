@@ -1,4 +1,15 @@
 ----------------------------------------
+//1096 [2013/07/28] by refis
+
+・item_db2.txtにSellableフラグ、GuildStorageableフラグを追加
+ (db/item_db2.txt, doc/db_ref.txt, itemdb.*, storage.c)
+
+・売却不能フラグをDropableからSellableに変更 (npc.c)
+　※従来のアイテム売値での制御も可能です
+
+・スクリプト関数「getiteminfo」を新しいフラグが読み取れるように変更 (doc/script_ref.txt, script.c)
+
+----------------------------------------
 //1095 [2013/07/28] by refis
 
 ・script_ref.txtの一部訂正と巻き戻ってしまった箇所を修正 (doc/script_ref.txt)

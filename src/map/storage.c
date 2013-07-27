@@ -700,7 +700,7 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 		return;
 	if(idx < 0 || idx >= MAX_INVENTORY)
 		return;
-	if(itemdb_isstorageable(sd->status.inventory[idx].nameid) == 0)
+	if(itemdb_isguildstorageable(sd->status.inventory[idx].nameid) == 0)
 		return;
 	if(amount < 1 || amount > sd->status.inventory[idx].amount)
 		return;
@@ -755,7 +755,7 @@ void storage_guild_storageaddfromcart(struct map_session_data *sd, int idx, int 
 		return;
 	if(idx < 0 || idx >= MAX_CART)
 		return;
-	if(itemdb_isstorageable(sd->status.cart[idx].nameid) == 0)
+	if(itemdb_isguildstorageable(sd->status.cart[idx].nameid) == 0)
 		return;
 	if(amount < 1 || amount > sd->status.cart[idx].amount)
 		return;

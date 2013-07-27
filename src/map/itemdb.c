@@ -314,6 +314,20 @@ int itemdb_isstorageable(int nameid)
 }
 
 /*==========================================
+ * ギルド倉庫に入れられるアイテムは1、そうでないアイテムは0
+ *------------------------------------------
+ */
+int itemdb_isguildstorageable(int nameid)
+{
+	struct item_data *id = itemdb_exists(nameid);
+
+	if(id && !id->flag.guildstorageable)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
  * 倉庫からカートに出せるアイテムは1、そうでないアイテムは0
  *------------------------------------------
  */
@@ -342,7 +356,21 @@ int itemdb_isdropable(int nameid)
 }
 
 /*==========================================
- * 購買露店に出せるアイテムは1、そうでないアイテムは0
+ * 売れるアイテムは1、そうでないアイテムは0
+ *------------------------------------------
+ */
+int itemdb_issellable(int nameid)
+{
+	struct item_data *id = itemdb_exists(nameid);
+
+	if(id && !id->flag.sellable)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
+ * 買取露店に出せるアイテムは1、そうでないアイテムは0
  *------------------------------------------
  */
 int itemdb_isbuyingable(int nameid)
@@ -565,7 +593,7 @@ static int itemdb_read_itemdb(void)
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
-		for(j=0,np=p=line;j<9 && p;j++){
+		for(j=0,np=p=line;j<11 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
@@ -581,11 +609,13 @@ static int itemdb_read_itemdb(void)
 		id->upper            = atoi(str[1]);
 		id->zone             = atoi(str[2]);
 		id->flag.dropable    = (atoi(str[3]) == 0)? 0: 1;
-		id->flag.storageable = (atoi(str[4]) == 0)? 0: 1;
-		id->flag.cartable    = (atoi(str[5]) == 0)? 0: 1;
-		id->delay            = atoi(str[6]);
-		id->flag.buyingable  = (atoi(str[7]) == 0)? 0: 1;
-		id->flag.nonconsume  = (atoi(str[8]) == 0)? 0: 1;
+		id->flag.sellable    = (atoi(str[4]) == 0)? 0: 1;
+		id->flag.storageable = (atoi(str[5]) == 0)? 0: 1;
+		id->flag.guildstorageable = (atoi(str[6]) == 0)? 0: 1;
+		id->flag.cartable    = (atoi(str[7]) == 0)? 0: 1;
+		id->delay            = atoi(str[8]);
+		id->flag.buyingable  = (atoi(str[9]) == 0)? 0: 1;
+		id->flag.nonconsume  = (atoi(str[10]) == 0)? 0: 1;
 	}
 	fclose(fp);
 	printf("read db/item_db2.txt done (count=%d)\n",ln);
