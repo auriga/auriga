@@ -849,6 +849,18 @@ int pc_makesavestatus(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 座る
+ *------------------------------------------
+ */
+void pc_setsit(struct map_session_data *sd)
+{
+	nullpo_retv(sd);
+
+	sd->state.dead_sit = 2;
+	clif_status_load_id(sd,SI_SIT,1);
+}
+
+/*==========================================
  * 立ち上がる
  *------------------------------------------
  */
@@ -860,6 +872,7 @@ void pc_setstand(struct map_session_data *sd)
 		status_change_end(&sd->bl,SC_TENSIONRELAX,-1);
 
 	sd->state.dead_sit = 0;
+	clif_status_load_id(sd,SI_SIT,0);
 }
 
 /*==========================================

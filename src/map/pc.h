@@ -28,7 +28,6 @@
 #define MAX_SKILL_TREE 100
 
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)
-#define pc_setsit(sd) ((sd)->state.dead_sit = 2)
 #define pc_issit(sd) ((sd)->state.dead_sit == 2)
 #define pc_setdir(sd,b,h) ((sd)->dir = (char)(b) ,(sd)->head_dir = (char)(h) )
 
@@ -188,6 +187,7 @@ int pc_break_equip2(struct map_session_data *sd, int where);
 
 int pc_candrop(struct map_session_data *sd,int item_id);
 
+void pc_setsit(struct map_session_data *sd);
 void pc_setstand(struct map_session_data *sd);
 int pc_calc_skilltree(struct map_session_data *sd);
 int pc_check_guild_skill_effective_range(struct map_session_data *sd);

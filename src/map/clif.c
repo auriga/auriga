@@ -7109,7 +7109,7 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 	WFIFOW(fd,0)=0xaa;
 	WFIFOW(fd,2)=n+2;
 	WFIFOW(fd,4)=pos;
-	if(ok && sd->inventory_data[n]->equip&LOC_HEAD_TMB)
+	if(ok && sd->inventory_data[n]->equip&(LOC_HEAD_TMB|LOC_COSTUME_HEAD_TMB))
 		WFIFOW(fd,6)=sd->inventory_data[n]->look;
 	else
 		WFIFOW(fd,6)=0;
@@ -7119,7 +7119,7 @@ void clif_equipitemack(struct map_session_data *sd, int n, int pos, unsigned cha
 	WFIFOW(fd,0)=0x999;
 	WFIFOW(fd,2)=n+2;
 	WFIFOL(fd,4)=pos;
-	if(ok && sd->inventory_data[n]->equip&LOC_HEAD_TMB)
+	if(ok && sd->inventory_data[n]->equip&(LOC_HEAD_TMB|LOC_COSTUME_HEAD_TMB))
 		WFIFOW(fd,8)=sd->inventory_data[n]->look;
 	else
 		WFIFOW(fd,8)=0;
