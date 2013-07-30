@@ -4,6 +4,7 @@ R クライアントから見て受信
 B バイト
 w ワード=2B
 l ロングワード=4B
+q クワッドワード=8B
 * 0個以上くりかえし
 
 S 0064 <version>.l <account name>.24B <password>.24B <version2>.B
@@ -2872,3 +2873,15 @@ R 099b <len>.w <type>.w <mapInfoTable>.?B
 R 099f <dst ID>.l <src ID>.l <X>.w <Y>.w <type>.l <RadiusRange>.B <isVisible>.B
 	スキルユニット生成
 	0x8c7の上位版
+R 09a6 <deposit>.q <result>.w
+	プレイヤー銀行情報応答
+S 09a7 <src ID>.l <zeny>.l
+	銀行へ預け入れ要求
+R 09a8 <result>.w <deposit>.q <zeny>.l
+	銀行へ預け入れ要求応答
+S 09a9 <src ID>.l <zeny>.l
+	銀行から引き出し要求
+R 09aa <result>.w <deposit>.q <zeny>.l
+	銀行から引き出し要求応答
+S 09ab <src ID>.l
+	プレイヤー銀行情報

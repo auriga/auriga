@@ -410,6 +410,10 @@ void clif_memorial_changewait(struct map_session_data *sd, int num, int flag);
 void clif_memorial_status(struct map_session_data *sd, const char *name, unsigned int limit1, unsigned int limit2, int flag);
 void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned int limit, int flag);
 
+// bank
+void clif_bank_deposit(struct map_session_data *sd, int flag);
+void clif_bank_withdraw(struct map_session_data *sd, int flag);
+
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 

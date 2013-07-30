@@ -265,6 +265,10 @@ SOURCE=..\..\src\map\msg.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\bank.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -458,6 +462,10 @@ SOURCE=..\..\src\map\memorial.h
 # Begin Source File
 
 SOURCE=..\..\src\map\msg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\bank.h
 # End Source File
 # Begin Source File
 

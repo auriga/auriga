@@ -1716,8 +1716,8 @@ static void read_constdb(void)
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		type = 0;
-		if(sscanf(line, "%[A-Za-z0-9_],%[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
-		   sscanf(line, "%[A-Za-z0-9_] %[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
+		if(sscanf(line, "%[A-Za-z0-9_#],%[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
+		   sscanf(line, "%[A-Za-z0-9_#] %[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
 		{
 			n = add_str(name);
 			str_data[n].type  = (type == 0)? C_INT: C_PARAM;

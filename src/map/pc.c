@@ -838,6 +838,9 @@ int pc_makesavestatus(struct map_session_data *sd)
 	// ショップポイント保存
 	pc_setglobalreg(sd,"PC_SHOP_POINT",sd->shop_point);
 
+	// 預金保存
+	pc_setaccountreg(sd,"#PC_DEPOSIT",sd->deposit);
+
 	// マナーポイントがプラスだった場合0に
 	if(sd->status.manner > 0)
 		sd->status.manner = 0;
@@ -1404,6 +1407,8 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->npc_idle_tick = tick;
 
 	sd->trade.partner = 0;
+
+	sd->deposit = 0;
 
 	memset(&sd->regen,0,sizeof(sd->regen));
 
@@ -7527,6 +7532,10 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_REPRODUCE_LV:
 		val = sd->skill_reproduce.lv;
 		break;
+	// アカウント変数保存タイプ
+	case SP_DEPOSIT:
+		val = sd->deposit;
+		break;
 	}
 
 	return val;
@@ -7717,6 +7726,11 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		sd->skill_reproduce.lv = val;
 		pc_setglobalreg(sd,"PC_REPRODUCE_LV",val);
 		clif_skillinfoblock(sd);
+		return 0;
+	// アカウント変数保存タイプ
+	case SP_DEPOSIT:
+		sd->deposit = val;
+		pc_setaccountreg(sd,"#PC_DEPOSIT",val);
 		return 0;
 	}
 

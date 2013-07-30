@@ -71,9 +71,10 @@
 #include "booking.h"
 #include "buyingstore.h"
 #include "elem.h"
+#include "bank.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0x9A0
+#define MAX_PACKET_DB 0x9C0
 
 struct packet_db {
 	short len;
@@ -15844,6 +15845,46 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 }
 
 /*==========================================
+ * 銀行預け入れ通知
+ *------------------------------------------
+ */
+void clif_bank_deposit(struct map_session_data *sd, int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x9a8;
+	WFIFOW(fd, 2)=flag;
+	WFIFOQ(fd, 4)=sd->deposit;
+	WFIFOL(fd,12)=sd->status.zeny;
+	WFIFOSET(fd,packet_db[0x9a8].len);
+
+	return;
+}
+
+/*==========================================
+ * 銀行引き出し通知
+ *------------------------------------------
+ */
+void clif_bank_withdraw(struct map_session_data *sd, int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x9aa;
+	WFIFOW(fd, 2)=flag;
+	WFIFOQ(fd, 4)=sd->deposit;
+	WFIFOL(fd,12)=sd->status.zeny;
+	WFIFOSET(fd,packet_db[0x9aa].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -20396,6 +20437,65 @@ static void clif_parse_ClanMessage(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 銀行預け入れ要求
+ *------------------------------------------
+ */
+static void clif_parse_BankingDepositReq(int fd,struct map_session_data *sd, int cmd)
+{
+	int account_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	int zeny       = RFIFOL(fd,GETPACKETPOS(cmd,1));
+
+	nullpo_retv(sd);
+
+	bank_deposit(sd, account_id, zeny);
+
+	return;
+}
+
+/*==========================================
+ * 銀行引き出し要求
+ *------------------------------------------
+ */
+static void clif_parse_BankingWithdrawReq(int fd,struct map_session_data *sd, int cmd)
+{
+	int account_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	int zeny       = RFIFOL(fd,GETPACKETPOS(cmd,1));
+
+	nullpo_retv(sd);
+
+	bank_withdraw(sd, account_id, zeny);
+
+	return;
+}
+
+/*==========================================
+ * 銀行情報要求
+ *------------------------------------------
+ */
+static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cmd)
+{
+	int result = 0;
+	int account_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	struct map_session_data *tmpsd;
+
+	nullpo_retv(sd);
+
+	tmpsd = map_id2sd(account_id);
+	if(!tmpsd || sd != tmpsd)
+		result = 1;
+	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
+	    sd->state.mail_appending || sd->chatID != 0 )
+		result = 1;
+
+	WFIFOW(fd, 0)=0x9a6;
+	WFIFOQ(fd, 2)=sd->deposit;
+	WFIFOW(fd,10)=result;
+	WFIFOSET(fd,packet_db[0x9a6].len);
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -20727,6 +20827,9 @@ static void packetdb_readdb(void)
 		{ clif_parse_PartyBookingJoinPartyCancel,"bookingjoinpartycancel"   },
 		{ clif_parse_BlockingPlayCancel,        "blockplaycancel"           },
 		{ clif_parse_ClanMessage,               "clanmessage"               },
+		{ clif_parse_BankingDepositReq,         "bankdepositreq"            },
+		{ clif_parse_BankingWithdrawReq,        "bankwithdrawreq"           },
+		{ clif_parse_BankingInfoReq,            "bankinforeq"               },
 		{ NULL,                                 NULL                        },
 	};
 

@@ -1410,6 +1410,9 @@ static int intif_parse_AccountReg(int fd)
 	}
 	sd->save_reg.account_num = j;
 
+	// 預金情報を格納
+	sd->deposit = pc_readaccountreg(sd,"#PC_DEPOSIT");
+
 	return 0;
 }
 

@@ -1,4 +1,15 @@
 ----------------------------------------
+//1098 [2013/07/31] by refis
+
+・atn_bignumber用に新たに「RFIFOQ」、「WFIFOQ」、「RBUFQ」、「WBUFQ」を実装 (common/socket.h)
+
+・2013-07-24eRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+・銀行システムを実装 (bank.*, clif.*, intif.c, map.h, map.dsp, map_sql.dsp, pc.c)
+	-> 預金額情報の格納には「#PC_DEPOSIT」が扱われ、スクリプトから操作が可能です
+	-> 上記実装のためconst.txt内で「#」文字が扱えるように拡張 (db/const.txt, script.c)
+
+----------------------------------------
 //1097 [2013/07/29] by refis
 
 ・PACKETVERによって、コスチューム装着時に装備ウィンドウ上に表示されないのを修正 (clif.c)
