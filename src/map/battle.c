@@ -1928,6 +1928,32 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 
+		// ここから距離による判定
+		switch(skill_get_range_type(skill_num)) {
+			case 0:	// 近距離
+				if(skill_num != 0)
+					wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+				break;
+			case 1:	// 通常遠距離
+				if(battle_config.calc_dist_flag&1 && (src->type != BL_PC || target->type != BL_PC)) {	// PC vs PCは強制無視
+					int target_dist = unit_distance(src,target);	// 距離を取得
+					if(target_dist < battle_config.allow_sw_dist) {	// 設定した距離より小さい＝近距離からの攻撃
+						if(src->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+							break;
+						} else if(src->type == BL_MOB && battle_config.sw_def_type & 2) {	// モンスターからのを判定するか +2でする
+							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
+							break;
+						}
+					}
+				}
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
+				break;
+			case 2:	// 強制遠距離
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
+				break;
+		}
+
 		switch( skill_num ) {
 		case SM_BASH:			// バッシュ
 		case MS_BASH:
@@ -2109,6 +2135,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(wd.div_ == 5)
 				s_ele = ELE_HOLY;
 			break;
+		case SR_GATEOFHELL:	// 羅刹破凰撃
+			if(skill_lv >= 5)
+				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
+			break;
 		case MC_CARTREVOLUTION:		// カートレボリューション
 #ifndef PRE_RENEWAL
 			calc_flag.hitrate = 1000000;
@@ -2118,32 +2148,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd && (skill = pc_checkskill(src_sd,GN_REMODELING_CART)) > 0)
 				calc_flag.hitrate = calc_flag.hitrate+skill*4;
 			break;
-		}
-
-		// ここから距離による判定
-		switch(skill_get_range_type(skill_num)) {
-			case 0:	// 近距離
-				if(skill_num != 0)
-					wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
-				break;
-			case 1:	// 通常遠距離
-				if(battle_config.calc_dist_flag&1 && (src->type != BL_PC || target->type != BL_PC)) {	// PC vs PCは強制無視
-					int target_dist = unit_distance(src,target);	// 距離を取得
-					if(target_dist < battle_config.allow_sw_dist) {	// 設定した距離より小さい＝近距離からの攻撃
-						if(src->type == BL_PC && battle_config.sw_def_type & 1) {	// 人間からのを判定するか +1でする
-							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
-							break;
-						} else if(src->type == BL_MOB && battle_config.sw_def_type & 2) {	// モンスターからのを判定するか +2でする
-							wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
-							break;
-						}
-					}
-				}
-				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
-				break;
-			case 2:	// 強制遠距離
-				wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;
-				break;
 		}
 	}
 

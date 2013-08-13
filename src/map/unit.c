@@ -2494,6 +2494,7 @@ int unit_free(struct block_list *bl, int clrtype)
 		party_send_logout(sd);					// パーティのログアウトメッセージ送信
 		guild_send_memberinfoshort(sd,0);		// ギルドのログアウトメッセージ送信
 		intif_save_scdata(sd);				// ステータス異常データの保存
+		intif_save_quest(sd);				// クエストリストデータの保存
 		status_change_clear(&sd->bl,1);			// ステータス異常を解除する
 		pc_cleareventtimer(sd);					// イベントタイマを破棄する
 		pc_delspiritball(sd,sd->spiritball.num,1);	// 気功削除
