@@ -462,6 +462,7 @@ struct map_session_data {
 	} range;
 
 	unsigned int skillstatictimer[MAX_SKILL_DB];
+	unsigned int skillcooldown[MAX_SKILL_DB];		// クールタイム
 
 	struct {
 		short id;
@@ -836,7 +837,6 @@ struct map_session_data {
 	unsigned int npc_idle_timer;		// NPCのタイムアウト用
 	unsigned int npc_idle_tick;
 
-	unsigned int skillcooldown[MAX_THIRDSKILL];		// クールタイム（暫定的に3次職スキルのみ）
 	int freeze_sp_slot;
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
 	int overheat;			// 魔導ギア加熱度（暫定）

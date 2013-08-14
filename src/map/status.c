@@ -206,7 +206,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 610- */
 	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM,
 	/* 620- */
-	SI_BLANK,SI_BLANK,SI_BLANK
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU
 };
 
 /*==========================================
@@ -1393,7 +1393,7 @@ L_RECALC:
 			sd->paramb[4] = sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[5] = sd->sc.data[SC_HARMONIZE].val2;
 		}
-		if(sd->sc.data[SC_KYOUGAKU].timer != -1) {	// 驚愕
+		if(sd->sc.data[SC_KYOUGAKU].timer != -1) {	// 幻術 -驚愕-
 			sd->paramb[0] -= sd->sc.data[SC_KYOUGAKU].val2;
 			sd->paramb[1] -= sd->sc.data[SC_KYOUGAKU].val2;
 			sd->paramb[2] -= sd->sc.data[SC_KYOUGAKU].val2;
@@ -1943,11 +1943,6 @@ L_RECALC:
 			sd->matk1 += 25;
 			sd->matk2 += 25;
 		}
-		// 十六夜
-		if(sd->sc.data[SC_IZAYOI].timer != -1) {
-			sd->matk1 += sd->sc.data[SC_IZAYOI].val2;
-			sd->matk2 += sd->sc.data[SC_IZAYOI].val2;
-		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
 		}
@@ -2401,6 +2396,17 @@ L_RECALC:
 		if(sd->sc.data[SC_UPHEAVAL].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_UPHEAVAL].val2 / 100;
 		}
+		// 十六夜
+		if(sd->sc.data[SC_IZAYOI].timer != -1) {
+			sd->matk1 += sd->sc.data[SC_IZAYOI].val2;
+			sd->matk2 += sd->sc.data[SC_IZAYOI].val2;
+		}
+		// 幻術 -残月-
+		if(sd->sc.data[SC_ZANGETSU].timer != -1) {
+			sd->base_atk += sd->sc.data[SC_ZANGETSU].val2;
+			sd->matk1 += sd->sc.data[SC_ZANGETSU].val3;
+			sd->matk2 += sd->sc.data[SC_ZANGETSU].val3;
+		}
 	}
 
 	// テコンランカーボーナス
@@ -2410,10 +2416,10 @@ L_RECALC:
 		sd->status.max_sp *= 3;
 	}
 
-	// 影狼・朧の球体(暫定)
+	// 土符：剛塊
 	if(sd->elementball.num && sd->elementball.ele == ELE_EARTH) {
-		sd->base_atk += sd->elementball.num * 3;
-		sd->def      += sd->elementball.num;
+		sd->watk += sd->watk * sd->elementball.num * 10 / 100;
+		sd->def  += sd->def * sd->elementball.num * 10 / 100;
 	}
 
 	// MATK乗算処理(杖補正)
@@ -5738,7 +5744,7 @@ int status_get_attack_element(struct block_list *bl)
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num >= 10)
+		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 		else
 			ret = ((struct map_session_data *)bl)->atk_ele;
@@ -5790,7 +5796,7 @@ int status_get_attack_element2(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		int ret;
 		struct status_change *sc = status_get_sc(bl);
-		if(((struct map_session_data *)bl)->elementball.num >= 10)
+		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 		else
 			ret = ((struct map_session_data *)bl)->atk_ele_;
@@ -5836,7 +5842,7 @@ int status_get_attack_element_nw(struct block_list *bl)
 	sc = status_get_sc(bl);
 
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num >= 10)
+		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
@@ -6730,10 +6736,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_VACUUM_EXTREME:		/* バキュームエクストリーム */
 		case SC_THORNS_TRAP:		/* ソーントラップ */
 		case SC_SPORE_EXPLOSION:	/* スポアエクスプロージョン */
-		case SC_KG_KAGEHUMI:		/* 影踏み */
-		case SC_KYOMU:				/* 虚無の影 */
-		case SC_AKAITSUKI:			/* 紅月 */
-		case SC_KO_ZENKAI:			/* 術式全開 */
+		case SC_KG_KAGEHUMI:		/* 幻術 -影踏み- */
+		case SC_KYOMU:				/* 幻術 -虚無の影- */
+		case SC_AKAITSUKI:			/* 幻術 -紅月- */
+		case SC_KO_ZENKAI:			/* 術式 -展開- */
 		case SC_KO_JYUMONJIKIRI:	/* 十文字斬り */
 		case SC_CIRCLE_OF_FIRE:		/* サークルオブファイア */
 		case SC_TIDAL_WEAPON:		/* タイダルウェポン */
@@ -6888,8 +6894,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_KYOUGAKU:			/* 驚愕 */
-			icon_val1 = 1002;	// 暫定でポリン
+		case SC_KYOUGAKU:			/* 幻術 -驚愕- */
+			icon_val1 = 1002;
 			calc_flag = 1;
 			break;
 		case SC_HAT_EFFECT:			/* 頭装備エフェクト */
@@ -8088,14 +8094,33 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_IZAYOI:				/* 十六夜 */
+		case SC_IZAYOI:			/* 十六夜 */
+			if(sd) {
+				val2 = sd->status.job_level/2 * val1;
+			} else {
+				val2 = 50 * val1;
+			}
 			val3 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_KAGEMUSYA:		/* 影武者 */
+		case SC_KAGEMUSYA:		/* 幻術 -分身- */
 			tick = 1000;
 			calc_flag = 1;
+			break;
+		case SC_ZANGETSU:		/* 幻術 -残月- */
+			if(status_get_hp(bl)%2 == 0)
+				val2 += status_get_lv(bl) / 3 + val1 * 20; 	// HPが偶数の場合
+			else
+				val2 -= status_get_lv(bl) / 3 + val1 * 30; 	// HPが奇数の場合
+			if(status_get_sp(bl)%2 == 0)
+				val3 += status_get_lv(bl) / 3 + val1 * 20; 	// SPが偶数の場合
+			else
+				val3 -= status_get_lv(bl) / 3 + val1 * 30; 	// SPが奇数の場合
+			calc_flag = 1;
+			break;
+		case SC_GENSOU:		/* 幻術 -朧幻想- */
+			val2 = val1 * 10; 	// ダメージ反射率
 			break;
 		case SC_MER_FLEE:		/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:		/* 傭兵ボーナス(ATK) */
@@ -8796,12 +8821,15 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_DROCERA_HERB_STEAMED:	/* ドロセラのハーブ煮 */
 		case SC_PUTTI_TAILS_NOODLES:	/* プティットのしっぽ麺 */
 		case SC_STOMACHACHE:		/* 腹痛 */
+		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
 		case SC_MEIKYOUSISUI:		/* 明鏡止水 */
 		case SC_IZAYOI:				/* 十六夜 */
-		case SC_KG_KAGEHUMI:		/* 影踏み */
-		case SC_KYOMU:				/* 虚無の影 */
-		case SC_KAGEMUSYA:			/* 影武者 */
-		case SC_AKAITSUKI:			/* 紅月 */
+		case SC_KG_KAGEHUMI:		/* 幻術 -影踏み- */
+		case SC_KYOMU:				/* 幻術 -虚無の影- */
+		case SC_KAGEMUSYA:			/* 幻術 -分身- */
+		case SC_ZANGETSU:			/* 幻術 -残月- */
+		case SC_AKAITSUKI:			/* 幻術 -紅月- */
+		case SC_KYOUGAKU:			/* 幻術 -驚愕- */
 		case SC_ODINS_POWER:		/* オーディンの力 */
 		case SC_MER_FLEE:			/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:			/* 傭兵ボーナス(ATK) */
@@ -9184,12 +9212,6 @@ int status_change_end(struct block_list* bl, int type, int tid)
 					skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
 				}
 			}
-			break;
-		case SC_MONSTER_TRANSFORM:	/* モンスター変身 */
-			calc_flag = 1;
-			break;
-		case SC_KYOUGAKU:	/* 驚愕 */
-			calc_flag = 1;
 			break;
 		case SC_SUMMON_ELEM:	/* サモンエレメンタル */
 			if(sd && sd->eld)

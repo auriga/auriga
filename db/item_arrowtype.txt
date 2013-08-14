@@ -78,4 +78,4 @@
 13288,Unknown_Item,投擲用ドロセラのハーブ煮,1024
 13289,Unknown_Item,投擲用プティットのしっぽ麺,1024
 13290,Unknown_Item,投擲用黒い物体,1024
-13294,Unknown_Item,爆発苦無,2304
+13294,Unknown_Item,爆発苦無,256

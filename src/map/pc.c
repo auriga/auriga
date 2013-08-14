@@ -605,10 +605,6 @@ int pc_delelementball(struct map_session_data *sd, int count, int type)
 
 	sd->elementball.num -= count;
 
-	// 属性値クリア
-	if(sd->elementball.num < 1)
-		sd->elementball.ele = ELE_NEUTRAL;
-
 	if(count > MAX_ELEMENTBALL)
 		count = MAX_ELEMENTBALL;
 
@@ -626,6 +622,14 @@ int pc_delelementball(struct map_session_data *sd, int count, int type)
 		sd->elementball.timer[i-count] = sd->elementball.timer[i];
 		sd->elementball.timer[i] = -1;
 	}
+
+	// 土属性ならdefとatkが変動するためステータスを計算させる
+	if(sd->elementball.ele == ELE_EARTH)
+		status_calc_pc(sd,0);
+
+	// 属性値クリア
+	if(sd->elementball.num < 1)
+		sd->elementball.ele = ELE_NEUTRAL;
 
 	if(!type)
 		clif_elementball(sd);
@@ -1433,11 +1437,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->activeitem_id2[i] = 0;
 	}
 
-	for(i=0; i<MAX_SKILL_DB; i++)
+	for(i=0; i<MAX_SKILL_DB; i++) {
 		sd->skillstatictimer[i] = tick;
-
-	for(i=0; i<MAX_THIRDSKILL; i++)
 		sd->skillcooldown[i] = tick;
+	}
 
 	sd->state.autoloot = (battle_config.item_auto_get)? 1: 0;
 
@@ -3253,8 +3256,6 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_addcast.count++;
 		break;
 	case SP_ADD_COOL_DOWN:
-		if(type2 < THIRD_SKILLID || type2 >= MAX_THIRD_SKILLID)	// クールタイムは3次職スキルのみ
-			break;
 		// update
 		for(i=0; i<sd->skill_cooldown.count; i++)
 		{

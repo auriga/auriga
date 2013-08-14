@@ -767,6 +767,8 @@ enum {
 	SC_INVINCIBLE			= 620,
 	SC_INVINCIBLEOFF		= 621,
 	SC_RAID					= 622,
+	SC_ZANGETSU				= 623,
+	SC_GENSOU				= 624,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -1425,9 +1427,9 @@ enum {
 	SI_KG_KAGEHUMI	= 654,
 	SI_KYOMU	= 655,
 	SI_KAGEMUSYA	= 656,
-	//SI_ZANGETSU	= 657,
+	SI_ZANGETSU	= 657,
 	//SI_PHI_DEMON	= 658,
-	//SI_GENSOU	= 659,
+	SI_GENSOU	= 659,
 	SI_AKAITSUKI	= 660,
 	//SI_TETANY	= 661,
 	//SI_GM_BATTLE	= 662,

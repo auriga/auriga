@@ -1,4 +1,40 @@
 ----------------------------------------
+//1100 [2013/08/15] by Blaze
+
+・スキル使用のクールタイムを3次職スキル以外の全スキルに対応（map.h, pc.c, skill.c）
+
+・朧スキル「幻術 -残月-」「幻術 -朧幻想-」を実装（skill.c, battle.c, status.c, db/scdata_db.txt）
+
+・影狼朧スキル「幻術 -驚愕-」「幻術 -呪殺-」「幻術 -朧幻想-」「幻術 -紅月-」の使用不可時、
+　失敗メッセージを出力するように修正（skill.c）
+
+・影狼朧スキル「十六夜」の詠唱半減効果を忍者スキルのみから全てのスキルを対象に修正（battle.c）
+
+・影狼朧の召喚符による忍術威力増加効果を修正（battle.c）
+
+・土符：剛塊の効果が切れたとき、ATKとMATKの再計算がされてなかったのを修正（pc.c）
+
+・影狼朧スキル「無茶投げ」の効果を修正（skill.c, db/skill_db.txt）
+	-> 地面指定スキルに修正
+	-> 消費金額はランダムでなく一定金額を消費するように修正
+
+・影狼朧スキル「撒菱」の効果を修正（skill.c, db/skill_unit_db.txt）
+	-> ユニット配置する数をランダムに修正
+	-> ユニットの攻撃範囲を修正
+	-> スタン確率を修正
+
+・影狼朧スキル「爆裂苦無」で爆裂苦無を装備していなくても使用化に修正（db/skill_require_db.txt, db/skill_require_db2.txt）
+
+・影狼朧スキル「黄泉返し」の効果が重複していた不具合修正（battle.c）
+
+・影狼朧スキルの詠唱時間を修正（db/skill_cast_db.txt）
+
+・影狼朧スキルの名称をFix（db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_unit_db.txt）
+
+・影狼朧の基本HP、ASPDを修正（db/job_hp_db.txt, db/job_db1.txt, db/pre/job_db1_pre.txt）
+
+・その他細かいFix（skill.c, status.c, battle.c）
+----------------------------------------
 //1099 [2013/08/14] by refis
 
 ・ログアウト時にクエストリスト討伐達成数を保存するよう修正 (unit.c)

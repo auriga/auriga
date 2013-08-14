@@ -502,37 +502,12 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage += damage * src_sc->data[SC_JP_EVENT01].val1 / 100;
 		if(src_sc->data[SC_JP_EVENT02].timer != -1 && damage > 0 && flag&BF_MAGIC && status_get_race(bl) == RCT_FISH)
 			damage += damage * src_sc->data[SC_JP_EVENT02].val1 / 100;
-		// 術式全開の属性ダメージ増加
+		// 術式 -展開-の属性ダメージ増加
 		if(src_sc->data[SC_KO_ZENKAI].timer != -1 && damage > 0) {
 			// val3に属性値が入ってるので一致すればダメージ増加
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) == src_sc->data[SC_KO_ZENKAI].val3) ||
 				(!(flag&BF_SKILL) && status_get_attack_element(src) == src_sc->data[SC_KO_ZENKAI].val3) )
 					damage += damage * src_sc->data[SC_KO_ZENKAI].val4 / 100;
-		}
-	}
-
-	if(src_sd && damage > 0) {
-		// 影狼・朧の球体による忍法ダメージ増加
-		if(src_sd->elementball.num) {
-			switch(skill_num) {
-				case NJ_KOUENKA:
-				case NJ_KAENSIN:
-				case NJ_BAKUENRYU:
-					if(src_sd->elementball.ele == ELE_FIRE)
-						damage += damage * src_sd->elementball.num * 5 / 100;
-					break;
-				case NJ_HYOUSENSOU:
-				case NJ_HYOUSYOURAKU:
-					if(src_sd->elementball.ele == ELE_WATER)
-						damage += damage * src_sd->elementball.num * 5 / 100;
-					break;
-				case NJ_HUUJIN:
-				case NJ_RAIGEKISAI:
-				case NJ_KAMAITACHI:
-					if(src_sd->elementball.ele == ELE_WIND)
-						damage += damage * src_sd->elementball.num * 5 / 100;
-					break;
-			}
 		}
 	}
 
@@ -2113,6 +2088,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				s_ele = src_sd->arrow_ele;
 			break;
 		case NC_ARMSCANNON:
+		case KO_HAPPOKUNAI:		// 八方苦無
 			calc_flag.hitrate = 1000000;
 			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
@@ -2589,7 +2565,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			int hit_bonus  = (src_sd->spiritball.old>0? src_sd->spiritball.old * 3: src_sd->spiritball.num * 3) + src_sd->coin.num * 3 + src_sd->bonus_damage;
 			int hit_damage = hit_bonus + src_sd->star + src_sd->ranker_weapon_bonus;
 
-			if(skill_num == NJ_KUNAI) {	// 苦無投げ
+			if(skill_num == NJ_KUNAI || skill_num == KO_HAPPOKUNAI) {	// 苦無投げ、八方苦無
 				if(src_sd->arrow_atk) {
 					hit_damage += src_sd->arrow_atk;
 				}
@@ -4025,7 +4001,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( rate, 100 );
 			}
 			break;
-		case KO_SETSUDAN:		// 霊魂絶断
+		case KO_SETSUDAN:		// 黄泉返し
 			{
 				int rate = 150 * skill_lv;
 
@@ -4047,13 +4023,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ((skill_lv * (50 + status_get_dex(src) / 4)) * ((src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU): 0) * 4 / 10 * status_get_lv(src) / 120) + ((src_sd)? src_sd->status.job_level: 0) * 10, 100);
 			break;
 		case KO_HAPPOKUNAI:		// 八方苦無
-			{
-				int rate = 50 + skill_lv * 10;
-				if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
-					rate *= src_sd->arrow_atk;
-				}
-				DMG_FIX( rate, 100 );
-			}
+			DMG_FIX( 300 + 60 * skill_lv, 100 );
+			wd.damage = wd.damage - (t_def1 + t_def2);
 			break;
 		case KO_MUCHANAGE:	// 無茶投げ
 			{
@@ -4075,7 +4046,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				calc_flag.nocardfix = 1;
 			}
 			break;
-		case KO_HUUMARANKA:	// 風魔手裏剣乱華
+		case KO_HUUMARANKA:	// 風魔手裏剣 -乱華-
 			DMG_FIX( 150 * skill_lv + status_get_agi(src) + status_get_dex(src) + ((src_sd)? pc_checkskill(src_sd, NJ_HUUMA): 0) * 100, 100 );
 			break;
 		case EL_CIRCLE_OF_FIRE:	// サークルオブファイア
@@ -4900,50 +4871,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #endif
 		if(t_sc->data[SC_DEEP_SLEEP].timer != -1)		// 安息の子守唄
 			cardfix += 50;
-		if(skill_num == KO_SETSUDAN) {	// KO_SETSUDANの魂ボーナス
-			int soul_lv = 0;
-			if(t_sc->data[SC_ALCHEMIST].timer != -1)
-				soul_lv = t_sc->data[SC_ALCHEMIST].val1;
-			else if(t_sc->data[SC_MONK].timer != -1)
-				soul_lv = t_sc->data[SC_MONK].val1;
-			else if(t_sc->data[SC_STAR].timer != -1)
-				soul_lv = t_sc->data[SC_STAR].val1;
-			else if(t_sc->data[SC_SAGE].timer != -1)
-				soul_lv = t_sc->data[SC_SAGE].val1;
-			else if(t_sc->data[SC_CRUSADER].timer != -1)
-				soul_lv = t_sc->data[SC_CRUSADER].val1;
-			else if(t_sc->data[SC_SUPERNOVICE].timer != -1)
-				soul_lv = t_sc->data[SC_SUPERNOVICE].val1;
-			else if(t_sc->data[SC_KNIGHT].timer != -1)
-				soul_lv = t_sc->data[SC_KNIGHT].val1;
-			else if(t_sc->data[SC_WIZARD].timer != -1)
-				soul_lv = t_sc->data[SC_WIZARD].val1;
-			else if(t_sc->data[SC_PRIEST].timer != -1)
-				soul_lv = t_sc->data[SC_PRIEST].val1;
-			else if(t_sc->data[SC_BARDDANCER].timer != -1)
-				soul_lv = t_sc->data[SC_BARDDANCER].val1;
-			else if(t_sc->data[SC_ROGUE].timer != -1)
-				soul_lv = t_sc->data[SC_ROGUE].val1;
-			else if(t_sc->data[SC_ASSASIN].timer != -1)
-				soul_lv = t_sc->data[SC_ASSASIN].val1;
-			else if(t_sc->data[SC_BLACKSMITH].timer != -1)
-				soul_lv = t_sc->data[SC_BLACKSMITH].val1;
-			else if(t_sc->data[SC_HUNTER].timer != -1)
-				soul_lv = t_sc->data[SC_HUNTER].val1;
-			else if(t_sc->data[SC_SOULLINKER].timer != -1)
-				soul_lv = t_sc->data[SC_SOULLINKER].val1;
-			else if(t_sc->data[SC_HIGH].timer != -1)
-				soul_lv = t_sc->data[SC_HIGH].val1;
-			else if(t_sc->data[SC_DEATHKINGHT].timer != -1)
-				soul_lv = t_sc->data[SC_DEATHKINGHT].val1;
-			else if(t_sc->data[SC_COLLECTOR].timer != -1)
-				soul_lv = t_sc->data[SC_COLLECTOR].val1;
-			else if(t_sc->data[SC_NINJA].timer != -1)
-				soul_lv = t_sc->data[SC_NINJA].val1;
-			else if(t_sc->data[SC_GUNNER].timer != -1)
-				soul_lv = t_sc->data[SC_GUNNER].val1;
-			cardfix += 10 * soul_lv;
-		}
 		if(cardfix != 100) {
 			DMG_FIX( cardfix, 100 );	// ステータス異常補正によるダメージ減少
 		}
@@ -5882,34 +5809,74 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				status_change_end(bl,SC_SMA,-1);
 			break;
 		case NJ_KOUENKA:	// 紅炎華
-			MATK_FIX( 90, 100 );
+			{
+				int rate = 90;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_FIRE)
+					rate += sd->elementball.num * 20;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_KAENSIN:	// 火炎陣
-			MATK_FIX( 50, 100 );
+			{
+				int rate = 50;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_FIRE)
+					rate += sd->elementball.num * 10;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_HUUJIN:		// 風刃
-#ifndef PRE_RENEWAL
-			MATK_FIX( 150, 100 );
+			{
+#ifdef PRE_RENEWAL
+				int rate = 100;
+#else
+				int rate = 150;
 #endif
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WIND)
+					rate += sd->elementball.num * 20;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_HYOUSENSOU:	// 氷閃槍
-			if(t_sc && t_sc->data[SC_SUITON].timer != -1) {
-				MATK_FIX( 70+2*t_sc->data[SC_SUITON].val1, 100 );
-			} else {
-				MATK_FIX( 70, 100 );
+			{
+				int rate = 70;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WATER)
+					rate += sd->elementball.num * 5;
+				if(t_sc && t_sc->data[SC_SUITON].timer != -1)
+					rate += 2 * t_sc->data[SC_SUITON].val1;
+				MATK_FIX( rate, 100 );
 			}
 			break;
 		case NJ_BAKUENRYU:	// 龍炎陣
-			MATK_FIX( 150+150*skill_lv, 100 );
+			{
+				int rate = 150 + 150 * skill_lv;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_FIRE)
+					rate += sd->elementball.num * 15;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_HYOUSYOURAKU:	// 氷柱落し
-			MATK_FIX( 100+50*skill_lv, 100 );
+			{
+				int rate = 100 + 50 * skill_lv;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WATER)
+					rate += sd->elementball.num * 25;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_RAIGEKISAI:	// 雷撃砕
-			MATK_FIX( 160+40*skill_lv, 100 );
+			{
+				int rate = 160 + 40 * skill_lv;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WIND)
+					rate += sd->elementball.num * 15;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NJ_KAMAITACHI:	// 朔風
-			MATK_FIX( 100+100*skill_lv,100 );
+			{
+				int rate = 100 + 100 * skill_lv;
+				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WIND)
+					rate += sd->elementball.num * 10;
+				MATK_FIX( rate, 100 );
+			}
 			break;
 		case NPC_EARTHQUAKE:	// アースクエイク
 			{
@@ -6142,7 +6109,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case GN_SPORE_EXPLOSION: /* スポアエクスプロージョン */
 			MATK_FIX( 400 + 100 * skill_lv, 100 );
 			break;
-		case KO_KAIHOU:	/* 術式解放 */
+		case KO_KAIHOU:	/* 術式 -解放- */
 			MATK_FIX( 200 * status_get_lv(bl) / 100, 100 );
 			if(sd) {
 				// 召喚中の球体の属性を適用する
@@ -6446,7 +6413,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			case NJ_HYOUSENSOU:
 			case NJ_HUUJIN:
 			case LG_RAYOFGENESIS:
-			case KO_KAIHOU:	/* 術式解放 */
+			case KO_KAIHOU:	/* 術式 -解放- */
 				if(t_mode&MD_PLANT) // 草・きのこ等
 					mgd.damage = mgd.div_;
 				else
@@ -7662,6 +7629,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				rdamage += damage;
 				damage = -1;	// ダメージ0だがmissを出さない
 			}
+		}
+		// 幻術 -朧幻想-
+		if(damage > 0 && sc && sc->data[SC_GENSOU].timer != -1) {
+			int odamage = damage * sc->data[SC_GENSOU].val2 / 100;
+
+			map_foreachinarea(battle_damage_area,bl->m,
+				bl->x-3,bl->y-3,bl->x+3,bl->y+3,BL_CHAR,
+				bl,odamage,LG_REFLECTDAMAGE,sc->data[SC_GENSOU].val1,flag|BCT_ENEMY|1,tick);
 		}
 		if(rdamage > 0) {
 			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, ((src == dsrc)? lv: -1), type);

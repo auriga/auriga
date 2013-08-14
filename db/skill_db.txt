@@ -1039,34 +1039,34 @@
 //2544,0,0,0,0,0,9,0,no,0,0,0,none,0	//MC_CARTDECORATE#デコレーションカート#
 
 3001,0,6,4,0,1,1,1,yes,0,0,0,none,0	//KO_YAMIKUMO#闇雲#
-3002,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_RIGHT#右手修練#
-3003,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_LEFT#左手修練#
+3002,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_RIGHT#右手鍛錬#
+3003,0,0,0,0,0,5,0,yes,0,0,0,none,0	//KO_LEFT#左手鍛錬#
 3004,3:4:5:6:7,8,1,0,0,5,2,yes,0,0,0,weapon,0	//KO_JYUMONJIKIRI#十文字斬り#
-3005,2,6,1,0,0,5,1,yes,0,0,0,weapon,0	//KO_SETSUDAN#霊魂絶断#
+3005,2,6,1,0,0,5,1,yes,0,0,0,weapon,0	//KO_SETSUDAN#黄泉返し#
 3006,7:8:9:10:11,6,2,0,0,5,1,yes,0,0,0,weapon,0	//KO_BAKURETSU#爆裂苦無#
 3007,0,6,4,0,2,5,1,yes,0,0,0,weapon,0	//KO_HAPPOKUNAI#八方苦無#
-3008,11,8,1,0,0,10,10,yes,0,0,0,misc,0	//KO_MUCHANAGE#無茶投げ#
-3009,9:10:11:12:13,8,1,0,0,5,5,yes,0,0,0,weapon,0	//KO_HUUMARANKA#風魔手裏剣乱華#
+3008,11,8,2,0,0,10,10,yes,0,0,0,misc,0	//KO_MUCHANAGE#無茶投げ#
+3009,9:10:11:12:13,8,2,0,0,5,5,yes,0,0,0,weapon,0	//KO_HUUMARANKA#風魔手裏剣 -乱華-#
 3010,7,6,4,0,0,5,1,yes,0,0,0,none,0	//KO_MAKIBISHI#撒菱#
 3011,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KO_MEIKYOUSISUI#明鏡止水#
-3012,0,6,4,0,1,5,1,yes,0,0,0,none,3:4:5:6:7	//KO_ZANZOU#幻術‐残像#
-3013,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_KYOUGAKU#幻術‐驚愕#
-3014,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_JYUSATSU#幻術‐呪殺#
-3015,0,6,4,3,1,1,1,yes,0,0,0,none,0	//KO_KAHU_ENTEN#火符‐炎天#
-3016,0,6,4,1,1,1,1,yes,0,0,0,none,0	//KO_HYOUHU_HUBUKI#氷符‐吹雪#
-3017,0,6,4,4,1,1,1,yes,0,0,0,none,0	//KO_KAZEHU_SEIRAN#風符‐青藍#
-3018,0,6,4,2,1,1,1,yes,0,0,0,none,0	//KO_DOHU_KOUKAI#土符‐剛塊#
-3019,11,8,1,0,0,1,1,yes,0,0,0,magic,0	//KO_KAIHOU#術式解放#
-3020,7,6,2,0,1,1,1,yes,0,0,0,none,0	//KO_ZENKAI#術式全開#
-3021,5:6:7:8:9,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_GENWAKU#幻惑#
+3012,0,6,4,0,1,5,1,yes,0,0,0,none,3:4:5:6:7	//KO_ZANZOU#幻術 -影武者-#
+3013,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_KYOUGAKU#幻術 -驚愕-#
+3014,5,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_JYUSATSU#幻術 -呪殺-#
+3015,0,6,4,3,1,1,1,yes,0,0,0,none,0	//KO_KAHU_ENTEN#火符：炎天#
+3016,0,6,4,1,1,1,1,yes,0,0,0,none,0	//KO_HYOUHU_HUBUKI#氷符：吹雪#
+3017,0,6,4,4,1,1,1,yes,0,0,0,none,0	//KO_KAZEHU_SEIRAN#風符：青嵐#
+3018,0,6,4,2,1,1,1,yes,0,0,0,none,0	//KO_DOHU_KOUKAI#土符：剛塊#
+3019,11,8,1,0,0,1,1,yes,0,0,0,magic,0	//KO_KAIHOU#術式 -解放-#
+3020,7,6,2,0,1,1,1,yes,0,0,0,none,0	//KO_ZENKAI#術式 -展開-#
+3021,5:6:7:8:9,6,1,0,1,5,1,yes,0,0,0,none,0	//KO_GENWAKU#幻術 -幻惑-#
 3022,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KO_IZAYOI#十六夜#
-3023,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KG_KAGEHUMI#影踏み#
-3024,0,6,1,0,1,5,1,yes,0,0,0,none,0	//KG_KYOMU#虚無の影#
-3025,1,6,16,0,1,5,1,yes,0,0,0,none,0	//KG_KAGEMUSYA#影武者#
-3026,7,6,1,0,1,5,1,yes,0,0,0,none,0	//OB_ZANGETSU#残月#
-3027,7,6,1,0,1,5,1,yes,0,0,0,none,0	//OB_OBOROGENSOU#朧幻想#
-3028,1,6,4,0,0,5,1,yes,0,0,0,none,0	//OB_OBOROGENSOU_TRANSITION_ATK#朧幻想(攻撃)#
-3029,7,6,1,0,1,5,1,yes,0,0,0,none,0	//OB_AKAITSUKI#紅月#
+3023,0,6,4,0,1,5,1,yes,0,0,0,none,0	//KG_KAGEHUMI#幻術 -影踏み-#
+3024,0,6,1,0,1,5,1,yes,0,0,0,none,0	//KG_KYOMU#幻術 -虚無の影-#
+3025,1,6,16,0,1,5,1,yes,0,0,0,none,0	//KG_KAGEMUSYA#幻術 -分身-#
+3026,7,6,4,0,1,5,1,yes,0,0,0,none,0	//OB_ZANGETSU#幻術 -残月-#
+3027,7,6,16,0,1,5,1,yes,0,0,0,none,0	//OB_OBOROGENSOU#幻術 -朧幻想-#
+3028,1,6,4,0,0,5,1,yes,0,0,0,none,0	//OB_OBOROGENSOU_TRANSITION_ATK#幻術 -朧幻想-(攻撃)#
+3029,7,6,1,0,1,5,1,yes,0,0,0,none,0	//OB_AKAITSUKI#幻術 -紅月-#
 
 3031,7,6,16,0,1,1,1,no,0,0,0,none,0	//ECL_SNOWFLIP#スノーフリップ#
 3032,7,6,16,0,1,1,1,no,0,0,0,none,0	//ECL_PEONYMAMY#ピオニーマミー#

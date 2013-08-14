@@ -514,13 +514,13 @@
 542,SC_STOMACHACHE,0,1,0,0		// 腹痛
 543,SC_MONSTER_TRANSFORM,1,1,0,0		// モンスター変身
 544,SC_IZAYOI,1,75,0,0		// 十六夜
-545,SC_KG_KAGEHUMI,0,0,0,0		// 影踏み
-546,SC_KYOMU,0,0,0,0		// 虚無の影
-547,SC_KAGEMUSYA,0,0,0,0		// 影武者
-548,SC_AKAITSUKI,0,0,0,0		// 紅月
+545,SC_KG_KAGEHUMI,0,0,0,0		// 幻術 -影踏み-
+546,SC_KYOMU,0,0,0,0		// 幻術 -虚無の影-
+547,SC_KAGEMUSYA,0,0,0,0		// 幻術 -分身-
+548,SC_AKAITSUKI,0,0,0,0		// 幻術 -紅月-
 549,SC_ALL_RIDING,1,1,0,0		// 搭乗システム
 550,SC_MEIKYOUSISUI,0,0,0,0		// 明鏡止水
-551,SC_KYOUGAKU,0,0,0,0		// 驚愕
+551,SC_KYOUGAKU,0,0,0,0		// 幻術 -驚愕-
 552,SC_ODINS_POWER,0,1,0,0		// オーディンの力
 553,SC_JOB_COMBATHAN,1,0,0,0			// Job教範
 554,SC_MER_FLEE,1,0,0,0			// 傭兵ボーナス(FLEE)
@@ -529,7 +529,7 @@
 557,SC_MER_SP,1,0,0,0		// 傭兵ボーナス(HP)
 558,SC_MER_HIT,1,0,0,0		// 傭兵ボーナス(SP)
 559,SC_ON_PUSH_CART,1,0,0,0		// カート
-560,SC_KO_ZENKAI,0,0,0,0		// 術式全開
+560,SC_KO_ZENKAI,0,0,0,0		// 術式 -展開-
 561,SC_KO_JYUMONJIKIRI,0,0,0,0		// 十文字斬り
 562,SC_SUMMON_ELEM,1,1,0,0		// サモンエレメンタル
 563,SC_CIRCLE_OF_FIRE,0,1,0,0		// サークルオブファイア
@@ -592,6 +592,8 @@
 620,SC_INVINCIBLE,0,0,0,0		// インビンシブル
 621,SC_INVINCIBLEOFF,0,0,0,0		// インビンシブルオフ
 622,SC_RAID,0,7,0,0			// サプライズアタック
+623,SC_ZANGETSU,0,0,0,0		// 幻術 -残月-
+624,SC_GENSOU,0,0,0,0		// 幻術 -朧幻想-
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
