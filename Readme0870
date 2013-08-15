@@ -1,4 +1,19 @@
 ----------------------------------------
+//1103 [2013/08/16] by refis
+
+・状態異常「SC_ASSUMPTIO2」を実装 (db/const.txt, scdata.txt, map/battle.c, status.*)
+	Thanks ARIA さん
+
+・関数「getmapmobs」、「getareamobs」にて特定イベントのmobのみ抽出できるよう拡張 (script_ref.txt, script.c)
+	-> エンドレスタワースクリプトを改修 (npc_memorial_tower.txt)
+		Thanks Akayumi さん
+
+・接続切断時の処理を修正
+	-> 接続切断通知はセーブ時ではなく切断完了時に送信させる (char/char.c, map/clif.c)
+	-> Auriga-1068以降不要だったセーブ後の切断処理を修正 (chrif.c)
+		Thanks うに〜く さん
+
+----------------------------------------
 //1102 [2013/08/16] by Blaze
 
 ・Auriga-1101の漏れを修正（clif.c）

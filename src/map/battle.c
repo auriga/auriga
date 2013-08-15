@@ -512,15 +512,17 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	}
 
 	if(sc && sc->count > 0 && skill_num != PA_PRESSURE && skill_num != HW_GRAVITATION) {
-#ifdef PRE_RENEWAL
 		// アスムプティオ
-		if(sc->data[SC_ASSUMPTIO].timer != -1 && damage > 0) {
+		if( (
+#ifdef PRE_RENEWAL
+			sc->data[SC_ASSUMPTIO].timer != -1 ||
+#endif
+			sc->data[SC_ASSUMPTIO2].timer != -1) && damage > 0) {
 			if(map[bl->m].flag.pvp || map[bl->m].flag.gvg)
 				damage = damage * 2 / 3;
 			else
 				damage = damage / 2;
 		}
-#endif
 
 		// ゴスペルの特殊状態異常
 		if(sc->data[SC_INCDAMAGE].timer != -1 && damage > 0)

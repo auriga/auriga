@@ -769,6 +769,7 @@ enum {
 	SC_RAID					= 622,
 	SC_ZANGETSU				= 623,
 	SC_GENSOU				= 624,
+	SC_ASSUMPTIO2			= 625,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -1254,7 +1255,7 @@ enum {
 	SI_MANDRAGORA		= 470,
 	//SI_ACTIVATE		= 471,
 	SI_SACRAMENT		= 472,
-	//SI_ASSUMPTIO2		= 473,
+	SI_ASSUMPTIO2		= 473,
 	//SI_TK_SEVENWIND	= 474,
 	//SI_LIMIT_ODINS_RECALL	= 475,
 	SI_STOMACHACHE		= 476,

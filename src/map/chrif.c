@@ -360,10 +360,7 @@ static int chrif_saveack(int fd)
 
 	if(sd) {
 		if(type == 1) {		// 切断
-			close(sd->fd);
-			map_deliddb(&sd->bl);
-			if(sd->bl.prev)
-				map_delblock(&sd->bl);
+			;
 		} else if(type == 2) {	// キャラクターセレクト
 			chrif_charselectreq(sd);
 		} else if(type == 3) {	// 別マップサーバーへ移動

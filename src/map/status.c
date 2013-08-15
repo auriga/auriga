@@ -206,7 +206,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 610- */
 	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM,
 	/* 620- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU,SI_ASSUMPTIO2
 };
 
 /*==========================================
@@ -7110,6 +7110,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			// アスムが掛かっていたら解除して
 			if(sc->data[SC_ASSUMPTIO].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
+			if(sc->data[SC_ASSUMPTIO2].timer != -1)
+				status_change_end(bl,SC_ASSUMPTIO2,-1);
 			// キリエを掛ける
 			if(val4 == AB_PRAEFATIO) {		// プラエファティオの場合
 				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 16) / 100);	// 耐久度
@@ -7567,6 +7569,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
+		case SC_ASSUMPTIO2:		/* キャッシュアスムプティオ */
 			// キリエが掛かっていたら解除
 			if(sc->data[SC_KYRIE].timer != -1)
 				status_change_end(bl,SC_KYRIE,-1);
@@ -7646,6 +7649,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			// アスムが掛かっていたら解除して
 			if(sc->data[SC_ASSUMPTIO].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
+			if(sc->data[SC_ASSUMPTIO2].timer != -1)
+				status_change_end(bl,SC_ASSUMPTIO2,-1);
 			// 反射回数
 			val2 = val1 / 5 + 1;
 			break;
@@ -8429,6 +8434,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
+		case SC_ASSUMPTIO2:		/* キャッシュアスムプティオ */
 			sc->opt3 |= OPT3_ASSUMPTIO;
 			clif_misceffect2(bl,375);
 			opt_flag = 2;
@@ -9339,6 +9345,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 2;
 			break;
 		case SC_ASSUMPTIO:		/* アスムプティオ */
+		case SC_ASSUMPTIO2:		/* キャッシュアスムプティオ */
 			sc->opt3 &= ~OPT3_ASSUMPTIO;
 			opt_flag = 2;
 			break;

@@ -707,13 +707,11 @@ L_MobCall:
 	disablenpc getmdnpcname("TowerGate" +'lv);
 	set '@idx,'lv-1;
 	set '@max,getarraysize('mob['@idx][0])/2;
-	for(set '@i,0; '@i < '@max; set '@i,'@i+1) {
+	for(set '@i,0; '@i < '@max; set '@i,'@i+1)
 		areamonster getmdmapname("1@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl1")+ "::OnKilled";
-		set 'count,'count + 'mob['@idx]['@i*2+1];
-	}
 	end;
 OnKilled:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("1@tower.gat"),getmdnpcname("TowerControl1")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
 		enablenpc getmdnpcname("TowerGate"+'lv);
@@ -942,13 +940,11 @@ L_MobCall:
 	disablenpc getmdnpcname("TowerGate" +'lv);
 	set '@idx,'lv-26;
 	set '@max,getarraysize('mob['@idx][0])/2;
-	for(set '@i,0; '@i < '@max; set '@i,'@i+1) {
+	for(set '@i,0; '@i < '@max; set '@i,'@i+1)
 		areamonster getmdmapname("2@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl2")+ "::OnKilled";
-		set 'count,'count + 'mob['@idx]['@i*2+1];
-	}
 	end;
 OnKilled:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("2@tower.gat"),getmdnpcname("TowerControl2")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
 		enablenpc getmdnpcname("TowerGate"+'lv);
@@ -1189,13 +1185,11 @@ L_MobCall:
 	disablenpc getmdnpcname("TowerGate" +'lv);
 	set '@idx,'lv-51;
 	set '@max,getarraysize('mob['@idx][0])/2;
-	for(set '@i,0; '@i < '@max; set '@i,'@i+1) {
+	for(set '@i,0; '@i < '@max; set '@i,'@i+1)
 		areamonster getmdmapname("3@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl3")+ "::OnKilled";
-		set 'count,'count + 'mob['@idx]['@i*2+1];
-	}
 	end;
 OnKilled:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("3@tower.gat"),getmdnpcname("TowerControl3")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
 		enablenpc getmdnpcname("TowerGate"+'lv);
@@ -1433,18 +1427,15 @@ L_MobCall:
 		for(set '@i,0; '@i < 7; set '@i,'@i+1) {
 			set '@r,rand('@max);
 			areamonster getmdmapname("4@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@r*2],'mob['@idx]['@r*2+1],getmdnpcname("TowerControl4")+ "::OnKilled";
-			set 'count,'count + 'mob['@idx]['@r*2+1];
 		}
 	}
 	else {
-		for(set '@i,0; '@i < '@max; set '@i,'@i+1) {
+		for(set '@i,0; '@i < '@max; set '@i,'@i+1)
 			areamonster getmdmapname("4@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl4")+ "::OnKilled";
-			set 'count,'count + 'mob['@idx]['@i*2+1];
-		}
 	}
 	end;
 OnKilled:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("4@tower.gat"),getmdnpcname("TowerControl4")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
 		enablenpc getmdnpcname("TowerGate"+'lv);
@@ -1546,6 +1537,8 @@ OnKilled:
 	announce "正体不明の声 : 誰だ？　勝手に私のテリトリーに入った者は……",0x9,0xFFFF00;
 	hideoffnpc getmdnpcname("水晶#Tower");
 	end;
+OnKilled2:
+	end;
 }
 
 5@tower.gat,106,109,0	script	水晶#Tower	111,{
@@ -1602,10 +1595,9 @@ OnStart:
 		end;
 	set 'lv,102;
 	areamonster getmdmapname("6@tower.gat"),154,73,156,75,"監視者ウィレス",1627,10,getmdnpcname("TowerControl6")+ "::OnKilled";
-	set 'count,10;
 	end;
 OnKilled:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("6@tower.gat"),getmdnpcname("TowerControl6")+ "::OnKilled");
 	if('count > 0)
 		end;
 	sleep 500;
@@ -1620,10 +1612,9 @@ OnKilled:
 	announce "正体不明の声 : さあ、この私をどこまで楽しませてくれるかな？",0x9,0x00FFCC;
 	areamonster getmdmapname("6@tower.gat"),152,66,152,106,"骨の守護兵",1152,50,getmdnpcname("TowerControl6")+ "::OnKilled2";
 	areamonster getmdmapname("6@tower.gat"),159,66,159,106,"骨の守護兵",1152,50,getmdnpcname("TowerControl6")+ "::OnKilled2";
-	set 'count,100;
 	end;
 OnKilled2:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("6@tower.gat"),getmdnpcname("TowerControl6")+ "::OnKilled2");
 	if('count > 0) {
 		announce "残り[" +'count+ "]匹",0x9,0x00FF99;
 		end;
@@ -1636,10 +1627,9 @@ OnKilled2:
 	announce "正体不明の声 : さあ、次はどうかな？",0x9,0x00FFCC;
 	areamonster getmdmapname("6@tower.gat"),152,66,152,106,"風の守護兵",1263,30,getmdnpcname("TowerControl6")+ "::OnKilled3";
 	areamonster getmdmapname("6@tower.gat"),159,66,159,106,"風の守護兵",1263,30,getmdnpcname("TowerControl6")+ "::OnKilled3";
-	set 'count,60;
 	end;
 OnKilled3:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("6@tower.gat"),getmdnpcname("TowerControl6")+ "::OnKilled3");
 	if('count > 0) {
 		announce "残り[" +'count+ "]匹",0x9,0x00FF99;
 		end;
@@ -1652,10 +1642,9 @@ OnKilled3:
 	announce "正体不明の声 : ……せっかくだ、残りの守護兵でも楽しんでくれ。",0x9,0x00FFCC;
 	areamonster getmdmapname("6@tower.gat"),152,66,152,106,"刃の守護兵",1132,20,getmdnpcname("TowerControl6")+ "::OnKilled4";
 	areamonster getmdmapname("6@tower.gat"),159,66,159,106,"刃の守護兵",1132,20,getmdnpcname("TowerControl6")+ "::OnKilled4";
-	set 'count,40;
 	end;
 OnKilled4:
-	set 'count,'count-1;
+	set 'count,getmapmobs(getmdmapname("6@tower.gat"),getmdnpcname("TowerControl6")+ "::OnKilled4");
 	if('count > 0) {
 		announce "残り[" +'count+ "]匹",0x9,0x00FF99;
 		end;

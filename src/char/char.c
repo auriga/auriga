@@ -1904,17 +1904,6 @@ int parse_frommap(int fd)
 				chardb_save((struct mmo_charstatus *)RFIFOP(fd,13));
 			}
 			if(RFIFOB(fd,12)) {
-				if(RFIFOB(fd,12)==1) {	// 切断を他のMAP鯖に通達する
-					struct char_online *c = (struct char_online *)numdb_erase(char_online_db,((struct mmo_charstatus*)RFIFOP(fd,13))->account_id);
-					if(c) {
-						unsigned char buf[8];
-						chardb_set_offline( c->char_id );
-						aFree(c);
-						WBUFW(buf,0) = 0x2b17;
-						WBUFL(buf,2) = RFIFOL(fd,8);
-						mapif_sendallwos(fd,buf,6);
-					}
-				}
 				WFIFOW(fd,0) = 0x2b07;
 				WFIFOL(fd,2) = RFIFOL(fd,4);
 				WFIFOB(fd,6) = RFIFOB(fd,12);

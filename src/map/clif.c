@@ -4437,6 +4437,7 @@ void clif_move(struct block_list *bl)
 static void clif_quitsave(struct map_session_data *sd)
 {
 	map_quit(sd);
+	chrif_chardisconnect(sd);
 
 	return;
 }
@@ -20515,7 +20516,6 @@ static int clif_disconnect(int fd)
 		if(sd->bl.prev)
 			map_delblock(&sd->bl);
 	}
-
 
 	return 0;
 }

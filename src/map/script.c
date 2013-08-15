@@ -4281,8 +4281,8 @@ struct script_function buildin_func[] = {
 	{buildin_jump_zero,"jump_zero","ii"},
 	{buildin_select,"select","*"},
 	{buildin_globalmes,"globalmes","s*"},
-	{buildin_getmapmobs,"getmapmobs","s"},
-	{buildin_getareamobs,"getareamobs","siiii"},
+	{buildin_getmapmobs,"getmapmobs","s*"},
+	{buildin_getareamobs,"getareamobs","siiii*"},
 	{buildin_getguildrelation,"getguildrelation","i*"},
 	{buildin_unequip,"unequip","*"},
 	{buildin_allowuseitem,"allowuseitem","*"},
@@ -9905,22 +9905,28 @@ int buildin_select(struct script_state *st)
  */
 static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 {
-	return 1;
+	char *event = va_arg(ap,char *);
+
+	if(!event || strcmp(event,((struct mob_data *)bl)->npc_event) == 0)
+		return 1;
+	return 0;
 }
 
 int buildin_getmapmobs(struct script_state *st)
 {
-	char *str;
+	char *str, *event = NULL;
 	int m,count=0;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		event = conv_str(st,& (st->stack->stack_data[st->start+3]));
 
 	m = script_mapname2mapid(st,str);
 	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	count = map_foreachinarea(buildin_getmapmobs_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB);
+	count = map_foreachinarea(buildin_getmapmobs_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB,event);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }
@@ -9931,7 +9937,7 @@ int buildin_getmapmobs(struct script_state *st)
  */
 int buildin_getareamobs(struct script_state *st)
 {
-	char *str;
+	char *str, *event = NULL;
 	int m,x0,y0,x1,y1,count=0;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
@@ -9939,13 +9945,15 @@ int buildin_getareamobs(struct script_state *st)
 	y0=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	x1=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1=conv_num(st,& (st->stack->stack_data[st->start+6]));
+	if(st->end > st->start+7)
+		event = conv_str(st,& (st->stack->stack_data[st->start+7]));
 
 	m = script_mapname2mapid(st,str);
 	if(m < 0) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	count = map_foreachinarea(buildin_getmapmobs_sub,m,x0,y0,x1,y1,BL_MOB);
+	count = map_foreachinarea(buildin_getmapmobs_sub,m,x0,y0,x1,y1,BL_MOB,event);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }
