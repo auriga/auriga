@@ -10548,10 +10548,17 @@ void pc_read_gm_account(void)
  */
 int pc_readdb(void)
 {
-	int i,j,k;
+	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
 	char *filename;
+#ifdef PRE_RENEWAL
+	const char *filename2[] = { "db/skill_tree.txt", "db/pre/skill_tree_pre.txt", "db/addon/skill_tree_add.txt" };
+	const int max = 3;
+#else
+	const char *filename2[] = { "db/skill_tree.txt", "db/addon/skill_tree_add.txt" };
+	const int max = 2;
+#endif
 
 	// 必要経験値読み込み
 	memset(exp_table, 0, sizeof(exp_table));
@@ -10598,84 +10605,86 @@ int pc_readdb(void)
 
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
-#ifdef PRE_RENEWAL
-	filename = "db/pre/skill_tree_pre.txt";
-#else
-	filename = "db/skill_tree.txt";
-#endif
-	fp = fopen(filename,"r");
-	if(fp == NULL) {
-		printf("can't read %s\n",filename);
-		return 1;
-	}
-	while(fgets(line,1020,fp)) {
-		char *split[17];
-		int upper = 0,skillid;
-		struct skill_tree_entry *st;
-
-		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-			continue;
-		if(line[0]=='/' && line[1]=='/')
-			continue;
-		for(j=0,p=line;j<17 && p;j++) {
-			split[j]=p;
-			p=strchr(p,',');
-			if(p) *p++=0;
+	for(m=0; m<max; m++){
+		fp = fopen(filename2[m],"r");
+		if(fp == NULL) {
+			printf("can't read %s\n",filename2[m]);
+			break;
 		}
-		if(j<17)
-			continue;
-		upper = atoi(split[0]);
-		if(upper > 0 && battle_config.enable_upper_class == 0)	// confで無効になっていたら
-			continue;
-		if(upper < 0 || upper > 2)
-			continue;
+		while(fgets(line,1020,fp)) {
+			char *split[17];
+			int upper = 0,skillid;
+			struct skill_tree_entry *st;
 
-		i = atoi(split[1]);
-		if(i < 0 || i >= PC_JOB_MAX)
-			continue;
-
-		skillid = atoi(split[2]);
-		if(skillid < 0 || skillid >= MAX_PCSKILL)
-			continue;
-
-		st = skill_tree[upper][i];
-		for(j=0; st[j].id && st[j].id != skillid; j++);
-
-		if(j >= MAX_SKILL_TREE-1) {
-			// 末尾はアンカーとして0にしておく必要がある
-			printf("pc_readdb: skill ID %d is over max tree %d!!\n", skillid, MAX_SKILL_TREE);
-			continue;
-		}
-		if(j > 0 && skillid < st[j-1].id) {
-			// スキルIDの昇順に並んでない場合
-			int max = j;
-			while(j > 0 && skillid < st[j-1].id) {
-				j--;
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+				continue;
+			if(line[0]=='/' && line[1]=='/')
+				continue;
+			for(j=0,p=line;j<17 && p;j++) {
+				split[j]=p;
+				p=strchr(p,',');
+				if(p) *p++=0;
 			}
-			memmove(&st[j+1], &st[j], (max-j)*sizeof(st[0]));
+			upper = atoi(split[0]);
+			if(upper == PC_UPPER_HIGH && battle_config.enable_upper_class == 0)	// confで無効になっていたら
+				continue;
+			if(upper < 0 || upper >= PC_UPPER_MAX)
+				continue;
+
+			i = atoi(split[1]);
+			if(i < 0 || i >= PC_JOB_MAX)
+				continue;
+
+			if( strcmp(split[2],"clear") == 0 ) {
+				memset(skill_tree[upper][i],0,sizeof(skill_tree[0][0]));
+				continue;
+			}
+
+			if(j<17)
+				continue;
+
+			skillid = atoi(split[2]);
+			if(skillid < 0 || skillid >= MAX_PCSKILL)
+				continue;
+
+			st = skill_tree[upper][i];
+			for(j=0; st[j].id && st[j].id != skillid; j++);
+
+			if(j >= MAX_SKILL_TREE-1) {
+				// 末尾はアンカーとして0にしておく必要がある
+				printf("pc_readdb: skill ID %d is over max tree %d!!\n", skillid, MAX_SKILL_TREE);
+				continue;
+			}
+			if(j > 0 && skillid < st[j-1].id) {
+				// スキルIDの昇順に並んでない場合
+				int max = j;
+				while(j > 0 && skillid < st[j-1].id) {
+					j--;
+				}
+				memmove(&st[j+1], &st[j], (max-j)*sizeof(st[0]));
+			}
+
+			st[j].id  = skillid;
+			st[j].max = atoi(split[3]);
+
+			if(st[j].max > skill_get_max(skillid))
+				st[j].max = skill_get_max(skillid);
+
+			for(k=0; k<5; k++) {
+				st[j].need[k].id = atoi(split[k*2+4]);
+				st[j].need[k].lv = atoi(split[k*2+5]);
+			}
+			st[j].base_level  = atoi(split[14]);
+			st[j].job_level   = atoi(split[15]);
+			st[j].class_level = atoi(split[16]);
 		}
-
-		st[j].id  = skillid;
-		st[j].max = atoi(split[3]);
-
-		if(st[j].max > skill_get_max(skillid))
-			st[j].max = skill_get_max(skillid);
-
-		for(k=0; k<5; k++) {
-			st[j].need[k].id = atoi(split[k*2+4]);
-			st[j].need[k].lv = atoi(split[k*2+5]);
-		}
-		st[j].base_level  = atoi(split[14]);
-		st[j].job_level   = atoi(split[15]);
-		st[j].class_level = atoi(split[16]);
+		fclose(fp);
+		printf("read %s done\n",filename2[m]);
 	}
-	fclose(fp);
-
 	if(battle_config.baby_copy_skilltree) {
 		// 養子のスキルツリーを通常職と同一にする場合
 		memcpy(&skill_tree[PC_UPPER_BABY], &skill_tree[PC_UPPER_NORMAL], sizeof(skill_tree[PC_UPPER_NORMAL]));
 	}
-	printf("read %s done\n",filename);
 
 	// 属性修正テーブル
 	for(i=0; i<MAX_ELE_LEVEL; i++) {

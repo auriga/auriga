@@ -17734,10 +17734,10 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
-	if(skillnum >= THIRD_SKILLID && skillnum < MAX_THIRD_SKILLID) {
-		// 3次職スキル
-		if(DIFF_TICK(tick, sd->skillcooldown[skillnum - THIRD_SKILLID]) < 0)
-			return;
+	// cooldownの判定
+	if(DIFF_TICK(tick, sd->skillcooldown[skilldb_id]) < 0) {
+		clif_skill_fail(sd,skillnum,4,0,0);
+		return;
 	}
 
 	if(GETPACKETPOS(cmd,4)) {
