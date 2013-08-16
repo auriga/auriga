@@ -63,3 +63,14 @@
 6@tower.gat	mapflag	monster_noteleport	dummy
 6@tower.gat	mapflag	noicewall	dummy
 6@tower.gat	mapflag	noabra		dummy
+
+//============================================================
+// 暴窟王の洞窟 - 1@cash.gat
+//------------------------------------------------------------
+1@cash.gat	mapflag	nosave			SavePoint
+1@cash.gat	mapflag	nomemo			dummy
+1@cash.gat	mapflag	noteleport		dummy
+1@cash.gat	mapflag	nobranch		dummy
+1@cash.gat	mapflag	monster_noteleport	dummy
+1@cash.gat	mapflag	noicewall	dummy
+1@cash.gat	mapflag	noabra		dummy

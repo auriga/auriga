@@ -9905,9 +9905,10 @@ int buildin_select(struct script_state *st)
  */
 static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 {
+	struct mob_data *md = (struct mob_data *)bl;
 	char *event = va_arg(ap,char *);
 
-	if(!event || strcmp(event,((struct mob_data *)bl)->npc_event) == 0)
+	if(md->hp > 0 && (!event || strcmp(event,md->npc_event) == 0))
 		return 1;
 	return 0;
 }

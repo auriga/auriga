@@ -1,4 +1,15 @@
 ----------------------------------------
+//1104 [2013/08/17] by refis
+
+・関数「getmapmobs」、「getareamobs」をキルイベント内で使用した際に倒した敵も数に含まれてしまうのを修正 (script.c)
+
+・暴窟王の洞窟NPC実装 (conf/map_auriga.conf, db/quest_db.txt, script/npc/memorial/npc_memorial_oct.txt)
+
+・暴窟王の洞窟関連マップのマップフラグ追加 (script/mapflag/mapflag_memorial.txt)
+
+・メモリアルダンジョンデータ追加 (db/memorial_db.txt)
+
+----------------------------------------
 //1103 [2013/08/16] by refis
 
 ・状態異常「SC_ASSUMPTIO2」を実装 (db/const.txt, scdata.txt, map/battle.c, status.*)
