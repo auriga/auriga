@@ -301,6 +301,7 @@ iz_dun01.gat	mapflag	nomemo	dummy
 iz_dun02.gat	mapflag	nomemo	dummy
 iz_dun03.gat	mapflag	nomemo	dummy
 iz_dun04.gat	mapflag	nomemo	dummy
+iz_dun05.gat	mapflag	nomemo	dummy
 izlu2dun.gat	mapflag	nomemo	dummy
 izlude.gat	mapflag	town	dummy
 izlude.gat	mapflag	nopenalty	dummy

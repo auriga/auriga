@@ -250,6 +250,18 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 	if(m < 0)
 		return 0;
 
+	// エリアの大小比較
+	if(x0 > x1) {
+		x0 ^= x1;
+		x1 ^= x0;
+		x0 ^= x1;
+	}
+	if(y0 > y1) {
+		y0 ^= y1;
+		y1 ^= y0;
+		y0 ^= y1;
+	}
+
 	max = (y1-y0+1)*(x1-x0+1)*3;
 	if(x0 <= 0 && y0 <= 0)
 		max = 50;	// mob_spawnに倣って50
