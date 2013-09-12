@@ -1,4 +1,17 @@
 ----------------------------------------
+//1107 [2013/09/13] by refis
+
+・一部取り巻きモンスターのステータス・スキルを修正 (mob_db.txt, mob_skill_db.txt, mob_skill_db_pre.txt)
+
+・item_db.txtの更新 (item_db.txt, item_db_pre.txt)
+	-> バグfix
+	-> スロットエンチャント装備の効果修正
+		Thanks bunta さん、うに〜く さん、Akayumi さん
+
+・ゲフェンのテイミング商人エラーを修正 (npc_town_geffen.txt)
+	Thanks Schwarzwald さん
+
+----------------------------------------
 //1106 [2013/09/05] by refis
 
 ・暴窟王の洞窟生成NPCの処理を更新 (npc_memorial_oct.txt)
