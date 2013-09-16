@@ -571,7 +571,7 @@ sword_1-1.gat,26,168,0		duplicate(SM_3rdfall)	#swordwarp6303_d	139,0,2
 sword_1-1.gat,36,169,0		duplicate(SM_3rdfall)	#swordwarp6304_a	139,0,0
 sword_1-1.gat,37,169,0		duplicate(SM_3rdfall)	#swordwarp6304_b	139,0,0
 sword_1-1.gat,37,168,0		duplicate(SM_3rdfall)	#swordwarp6304_c	139,0,0
-sword_1-1.gat,36,168,0		duplicate(SM_3rdfall)	#swordwarp6304_c	139,0,0
+sword_1-1.gat,36,168,0		duplicate(SM_3rdfall)	#swordwarp6304_d	139,0,0
 sword_1-1.gat,40,175,0		duplicate(SM_3rdfall)	#swordwarp6305_a	139,0,1
 sword_1-1.gat,41,175,0		duplicate(SM_3rdfall)	#swordwarp6305_b	139,0,1
 sword_1-1.gat,41,171,0		duplicate(SM_3rdfall)	#swordwarp6306_a	139,1,0

@@ -4367,6 +4367,7 @@ struct script_function buildin_func[] = {
 	{buildin_setquest,"setquest","i"},
 	{buildin_chgquest,"chgquest","ii"},
 	{buildin_delquest,"delquest","i"},
+	{buildin_compquest,"compquest","i"},
 	{buildin_checkquest,"checkquest","i"},
 	{buildin_getquestlimit,"getquestlimit","i"},
 	{buildin_getquestcount,"getquestcount","i*"},
@@ -12548,6 +12549,24 @@ int buildin_delquest(struct script_state *st)
 }
 
 /*==========================================
+ * クエストリスト達成
+ *------------------------------------------
+ */
+int buildin_compquest(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int quest_id;
+
+	nullpo_retr(0, sd);
+
+	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	quest_update_status(sd, quest_id, 2);
+
+	return 0;
+}
+
+/*==========================================
  * クエストリスト情報取得
  *------------------------------------------
  */
@@ -12561,14 +12580,19 @@ int buildin_checkquest(struct script_state *st)
 
 	qd = quest_get_data(sd, quest_id);
 	if(qd) {
-		ret |= 0x05;	// クエスト受注済み+討伐数クリア
-		if(qd->limit < (unsigned int)time(NULL))
-			ret |= 0x02;	// 時間制限クリア
+		if(qd->state == 2) {
+			ret |= 0x08;	// クエスト達成済み
+		}
+		else {
+			ret |= 0x05;	// クエスト受注済み+討伐数クリア
+			if(qd->limit < (unsigned int)time(NULL))
+				ret |= 0x02;	// 時間制限クリア
 
-		for(i = 0; i < 3; i++) {
-			if(qd->mob[i].count < qd->mob[i].max) {
-				ret &= ~0x04;	// 討伐数未クリア
-				break;
+			for(i = 0; i < 3; i++) {
+				if(qd->mob[i].count < qd->mob[i].max) {
+					ret &= ~0x04;	// 討伐数未クリア
+					break;
+				}
 			}
 		}
 	}

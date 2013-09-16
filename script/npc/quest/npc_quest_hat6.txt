@@ -57,14 +57,155 @@ morocc_in.gat,137,102,5	script	研修生	82,{
 	mes "自信があるんですよ。";
 	mes "ですから、ご遠慮なく！";
 	next;
+	if(countitem(2250) < 1 && countitem(5441) < 1 && countitem(5440) < 1 &&
+		countitem(5439) < 1 && countitem(5438) < 1) {
+		mes "[エルゴ]";
+		mes "あなたはリボンのヘアバンドを";
+		mes "お持ちではないようですね。";
+		next;
+		mes "[エルゴ]";
+		mes "もし、リボンのヘアバンドの";
+		mes "染色をしたくなったら";
+		mes "是非、お声をかけて下さいね！";
+		close;
+	}
 	mes "[エルゴ]";
-	mes "あなたはリボンのヘアバンドを";
-	mes "お持ちではないようですね。";
+	mes "リボンのヘアバンドの";
+	mes "染色をしますか？";
+	next;
+	if(select("染色する","やめる") == 2) {
+		mes "[エルゴ]";
+		mes "おやめになるのですか？";
+		mes "まぁ、仕方ありませんね。";
+		mes "また来てくださいね。";
+		close;
+	}
+	mes "[エルゴ]";
+	mes "ではどのヘアバンドを";
+	mes "染色しますか？";
+	mes "教えてください。";
+	next;
+	switch(select(
+		"^ff6600リボンのヘアバンド^000000","ホワイトヘアバンド",
+		"^0000ffブルーヘアバンド^000000","^FF0000レッドヘアバンド^000000",
+		"^006633グリーンヘアバンド^000000","やめる"
+	)) {
+	case 1:
+		set '@need,2250;
+		break;
+	case 2:
+		set '@need,5441;
+		break;
+	case 3:
+		set '@need,5440;
+		break;
+	case 4:
+		set '@need,5439;
+		break;
+	case 5:
+		set '@need,5438;
+		break;
+	case 6:
+		mes "[エルゴ]";
+		mes "おやめになるのですか？";
+		mes "まぁ、仕方ありませんね。";
+		mes "また来てくださいね。";
+		close;
+	}
+	if(countitem('@need) < 1) {
+		mes "[エルゴ]";
+		mes getitemname('@need)+ "は";
+		mes "お持ちではないようですよ？";
+		close;
+	}
+	mes "[エルゴ]";
+	mes "はい、かしこまりました。";
+	mes "ではその" +getitemname('@need)+ "を";
+	mes "何色に染めたいですか？";
+	next;
+	setarray '@color$,"^ff9933黄^000000","白","^0000ff青^000000","^FF0000赤^000000","^006633緑^000000";
+	set '@color$[@menu-1],"";
+	switch(select(printarray('@color$))) {
+	case 1:
+		set '@dye,976;
+		set '@gain,2250;
+		if(countitem('@dye) < 1) {
+			mes "[エルゴ]";
+			mes "黄色に染めるには、";
+			mes "^ff9933黄色の染料1個^000000が必要です。";
+			close;
+		}
+		mes "[エルゴ]";
+		mes "^ff9933黄色^000000！";
+		mes "幸せを運んでくれる色ですね！";
+		break;
+	case 2:
+		set '@dye,982;
+		set '@gain,5441;
+		if(countitem('@dye) < 1) {
+			mes "[エルゴ]";
+			mes "白く染めるには、";
+			mes "^0000FF白色の染料1個^000000が必要です。";
+			close;
+		}
+		mes "[エルゴ]";
+		mes "純白の白！";
+		mes "素敵ですね！";
+		break;
+	case 3:
+		set '@dye,978;
+		set '@gain,5440;
+		if(countitem('@dye) < 1) {
+			mes "[エルゴ]";
+			mes "青く染めるには、";
+			mes "^0000FF青色の染料1個^000000が必要です。";
+			close;
+		}
+		mes "[エルゴ]";
+		mes "^0000ff青^000000！";
+		mes "海を思い出しますね！";
+		break;
+	case 4:
+		set '@dye,975;
+		set '@gain,5439;
+		if(countitem('@dye) < 1) {
+			mes "[エルゴ]";
+			mes "赤く染めるには、";
+			mes "^FF0000赤色の染料1個^000000が必要です。";
+			close;
+		}
+		mes "[エルゴ]";
+		mes "^FF0000赤^000000！";
+		mes "ほとばしる情熱を感じます！";
+		break;
+	case 5:
+		set '@dye,979;
+		set '@gain,5438;
+		if(countitem('@dye) < 1) {
+			mes "[エルゴ]";
+			mes "緑に染めるには、";
+			mes "^006633緑色の染料1個^000000が必要です。";
+			close;
+		}
+		mes "[エルゴ]";
+		mes "^006633緑^000000！";
+		mes "緑はまさに命の源の色！";
+		break;
+	}
+	mes "ではすぐに作業に入ります！";
+	next;
+	mes "‐エルゴは素早く染料を水に溶かし、";
+	mes "　ヘアバンド全体に手際よく";
+	mes "　色を付けていった‐";
 	next;
 	mes "[エルゴ]";
-	mes "もし、リボンのヘアバンドの";
-	mes "染色をしたくなったら";
-	mes "是非、お声をかけて下さいね！";
+	mes "ふむ……";
+	mes "ちょうどいい具合に染まりましたね。";
+	mes "どうですか？";
+	mes "すごいでしょう？";
+	delitem '@need,1;
+	delitem '@dye,1;
+	getitem '@gain,1;
 	close;
 }
 

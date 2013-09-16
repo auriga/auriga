@@ -1,4 +1,20 @@
 ----------------------------------------
+//1108 [2013/09/17] by refis
+
+・クエストリストシステムを修正
+	-> スクリプト命令「compquest」を追加 (clif.c, quest.*, script.c, doc/script_ref.txt)
+		-> 受注済みクエストを達成済み状態にし、状態を閲覧できなくします
+	-> スクリプト関数「checkquest」において達成済みになったクエストへ0x8の値を返すよう追加 (script.c, doc/script_ref.txt)
+	-> 活性化以外の状態のクエストでは討伐更新されないよう変更 (quest.c)
+
+・王位継承クエスト実装 (npc_town_prontera.txt)
+
+・リボンのヘアバンドのリカラーNPCの交換処理実装 (npc_quest_hat6.txt)
+
+・ソードマン転職関連NPCの名称を修正 (npc_job_01swordman.txt)
+	Thanks Schwarzwald さん
+
+----------------------------------------
 //1107 [2013/09/13] by refis
 
 ・一部取り巻きモンスターのステータス・スキルを修正 (mob_db.txt, mob_skill_db.txt, mob_skill_db_pre.txt)

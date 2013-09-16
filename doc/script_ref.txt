@@ -2235,6 +2235,14 @@ AurigaNPCScript
 
 			<id>で指定したクエストをクエストリストから削除します。
 
+		compquest命令
+			compquest <id>;
+
+			id		数値
+
+			<id>で指定したクエストを達成済みにし、状態を閲覧できなくします。
+			delquest命令との違いはデータ上は受注済みのままである点です。
+
 		openbuyingstore命令
 			openbuyingstoret <count>;
 
@@ -3432,6 +3440,7 @@ AurigaNPCScript
 			クエストが受注済みであれば戻り値に+1
 			クエストの制限時間を超えていれば戻り値に+2
 			クエストの討伐対象を討伐済みであれば戻り値に+4
+			クエストが達成済みであれば戻り値に8を返します。
 			クエストが未受注であれば戻り値に0を返します。
 
 		getquestlimit 関数

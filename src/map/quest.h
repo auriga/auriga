@@ -40,6 +40,7 @@ int quest_search_mobid(int mob_id);
 int quest_addlist(struct map_session_data *sd, int quest_id);
 int quest_updatelist(struct map_session_data *sd, int old_id, int new_id);
 int quest_dellist(struct map_session_data *sd, int quest_id);
+int quest_update_status(struct map_session_data *sd, int quest_id, char state);
 int quest_killcount_sub(struct block_list *tbl, va_list ap);
 int quest_killcount(struct map_session_data *sd, int mob_id);
 

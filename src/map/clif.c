@@ -14327,7 +14327,7 @@ void clif_questlist(struct map_session_data *sd)
 	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
 		struct quest_data *qd = &sd->quest[i];
-		if(qd->nameid != 0) {
+		if(qd->nameid != 0 && qd->state < 2) {
 			WFIFOL(fd,len)   = qd->nameid;
 			WFIFOB(fd,len+4) = qd->state;
 			len += 5;
@@ -14354,7 +14354,7 @@ void clif_questlist_info(struct map_session_data *sd)
 	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
 		struct quest_data *qd = &sd->quest[i];
-		if(qd->nameid != 0) {
+		if(qd->nameid != 0 && qd->state < 2) {
 			WFIFOL(fd,len)   = qd->nameid;
 			WFIFOL(fd,len+4) = 1;
 			WFIFOL(fd,len+8) = qd->limit;
@@ -20188,19 +20188,20 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 {
-	int idx;
+	int nameid;
+	bool result;
 
 	nullpo_retv(sd);
 
-	idx = quest_search_index(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
-	if(idx < 0 || idx > sd->questlist)
+	nameid = RFIFOL(fd,GETPACKETPOS(cmd,0));
+
+	result = quest_update_status(sd, nameid, ( RFIFOL(fd,GETPACKETPOS(cmd,1)) )? 1 : 0);
+	if(result < 0)
 		return;
 
-	sd->quest[idx].state = ( RFIFOL(fd,GETPACKETPOS(cmd,1)) )? 1 : 0;
-
 	WFIFOW(fd,0) = 0x2b7;
-	WFIFOL(fd,2) = sd->quest[idx].nameid;
-	WFIFOL(fd,6) = sd->quest[idx].state;
+	WFIFOL(fd,2) = nameid;
+	WFIFOL(fd,6) = result;
 	WFIFOSET(fd,packet_db[0x2b7].len);
 
 	return;

@@ -243,6 +243,31 @@ int quest_dellist(struct map_session_data *sd, int quest_id)
 	return 0;
 }
 
+/*==========================================
+ * クエストリスト状態変更
+ *------------------------------------------
+ */
+int quest_update_status(struct map_session_data *sd, int quest_id, char state)
+{
+	int idx;
+
+	nullpo_retr(1, sd);
+
+	idx = quest_search_index(sd, quest_id);
+	if(idx < 0 || idx > sd->questlist)
+		return -1;
+
+	sd->quest[idx].state = state;
+
+	if(state < 2)
+		return state;
+
+	clif_del_questlist(sd, quest_id);
+	intif_save_quest(sd);
+
+	return 0;
+}
+
 int quest_killcount_sub(struct block_list *tbl, va_list ap)
 {
 	struct map_session_data *sd;
@@ -277,6 +302,8 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 
 	for(i = 0; i < sd->questlist; i++) {
 		qd = &sd->quest[i];
+		if(qd->state != 1)
+			return 0;
 		if(qd->nameid > 0) {
 			for(j = 0; j < sizeof(qd->mob)/sizeof(qd->mob[0]); j++) {
 				if(qd->mob[j].id == mob_id && qd->mob[j].count < qd->mob[j].max) {
