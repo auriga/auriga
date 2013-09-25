@@ -581,13 +581,11 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	}
 
 	// 買い取り品数チェック
-	for( i = 0; i < ssd->buyingstore.count; i++ )
+	for( i = 0; (i < ssd->buyingstore.count) && (ssd->buyingstore.item[i].amount <= 0); i++ );
+	if( i == ssd->buyingstore.count )
 	{
-		if( ssd->buyingstore.item[i].amount <= 0 )
-		{
-			clif_failed_trybuyingstore(ssd, CLOSE_NOITEM);
-			buyingstore_close(ssd);
-		}
+		clif_failed_trybuyingstore(ssd, CLOSE_NOITEM);
+		buyingstore_close(ssd);
 	}
 
 	// limit_zenyのチェック

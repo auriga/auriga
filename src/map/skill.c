@@ -12778,6 +12778,12 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 
 	// スキルごとの特殊判定
 	switch( cnd->id ) {
+	case PR_TURNUNDEAD:			/* ターンアンデッド */
+		if(!target)
+			return 0;
+		if(!battle_check_undead(status_get_race(target),status_get_elem_type(target)))
+			return 0;
+		break;
 	case AM_POTIONPITCHER:		/* ポーションピッチャー */
 		if(target) {
 			if(bl == target)	// 対象が自分ならOK

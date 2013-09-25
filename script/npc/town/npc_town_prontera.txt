@@ -5707,15 +5707,7 @@ prt_castle.gat,364,375,4	script	王子#peter	987,{
 }
 
 prt_castle.gat,132,184,3	script	少女#prince	96,{
-	if(checkquest(10013)) {
-		mes "‐水辺のほとりで少女が";
-		mes "のんびりと、紙にペンを";
-		mes "はしらせている‐";
-		next;
-		mes "[少女]";
-		mes "こんにちは。";
-		mes "風が気持ちいいですね。";
-		close;
+	if(checkquest(10013) && countitem(744) > 0) {
 		mes "‐水辺のほとりで少女が";
 		mes "のんびりと、紙にペンを";
 		mes "はしらせている‐";
@@ -5753,9 +5745,8 @@ prt_castle.gat,132,184,3	script	少女#prince	96,{
 		mes "ラ〜ラ〜ラ〜。";
 		next;
 		mes "‐少女は歌いながら、微笑んでいた‐";
-		delitem 0,1;
-		delquest 10013;
-		setquest 10014;
+		delitem 744,1;
+		chgquest 10013,10014;
 		close;
 	}
 	mes "‐水辺のほとりで少女が";
