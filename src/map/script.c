@@ -11506,7 +11506,7 @@ int buildin_sqlquery(struct script_state *st)
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	is_success = sqldbs_query(&mysql_handle_script, query);
+	is_success = sqldbs_simplequery(&mysql_handle_script, query);
 	if(is_success == false) {
 		push_val(st->stack,C_INT,-1);
 		return 0;

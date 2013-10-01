@@ -406,6 +406,10 @@ bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const cha
 	}
 	printf("connect success!\n");
 
+	if(charset && *charset) {
+		sqldbs_query(handle, "SET NAMES %s", charset);
+	}
+
 	printf("MySQL Server version %s\n", mysql_get_server_info(handle));
 
 	if(keepalive > 0) {

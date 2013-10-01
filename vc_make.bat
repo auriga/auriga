@@ -88,6 +88,11 @@ rem set LIB=C:\Program Files\Microsoft Visual Studio 9.0\VC\lib;C:\Program Files
 rem set __VCVER__=9
 rem ---- VC++ 2008 Express Edition の設定ここまで
 
+rem ---- VC++ 2008 (Express以外) の設定 / 必要ならコメントアウトをはずす
+rem call "C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\VCVARS32.BAT"
+rem set __VCVER__=9
+rem ---- VC++ 2008 (Express以外) の設定ここまで
+
 rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include;%INCLUDE%
@@ -102,6 +107,11 @@ rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 10.0\VC\include;C:\Prog
 rem set LIB=C:\Program Files\Microsoft Visual Studio 10.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
 rem set __VCVER__=10
 rem ---- VC++ 2010 Express Edition の設定ここまで
+
+rem ---- VC++ 2010 (Express以外) の設定 / 必要ならコメントアウトをはずす
+rem call "C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\VCVARS32.BAT"
+rem set __VCVER__=10
+rem ---- VC++ 2010 (Express以外) の設定ここまで
 
 rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%

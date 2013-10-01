@@ -1,4 +1,23 @@
 ----------------------------------------
+//1110 [2013/10/02] by Rayce
+
+・scriptの sqlquery 関数において、LIKEで % を検索するとき % が消えてしまい部分検索が
+  出来ない問題を修正（script.c）
+
+	-> SQL文を一旦 vsprintf に流し込むため、% がフォーマット識別子として認識されているのが原因
+		例）sqlquery("SELECT * FROM `db` WHERE `user` LIKE '%test%'");
+				↓
+		    sqlquery("SELECT * FROM `db` WHERE `user` LIKE 'test'")
+
+    -> sqldbs_query() ではなく sqldbs_simplequery() を実行するように変更
+
+・MySQL接続後、SET NAMES で文字コードを送るようにした（sqldbs.c）
+	-> mysql_options(MYSQL_SET_CHARSET_NAME) は SET NAMES と組み合わせて使うもの
+	   http://d.hatena.ne.jp/shibason/20090912/1252753970
+
+・VCCのコンパイルパスにVC2008とVC2010のExpressEdition以外の情報を追加（vc_make.bat）
+
+----------------------------------------
 //1109 [2013/09/26] by refis
 
 ・王位継承クエストの一部イベントが進行しない不具合を修正 (npc_town_prontera.txt)
