@@ -711,6 +711,10 @@ L_MobCall:
 		areamonster getmdmapname("1@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl1")+ "::OnKilled";
 	end;
 OnKilled:
+	initnpctimer;
+	end;
+OnTimer1000:
+	stopnpctimer;
 	set 'count,getmapmobs(getmdmapname("1@tower.gat"),getmdnpcname("TowerControl1")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
@@ -944,6 +948,10 @@ L_MobCall:
 		areamonster getmdmapname("2@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl2")+ "::OnKilled";
 	end;
 OnKilled:
+	initnpctimer;
+	end;
+OnTimer1000:
+	stopnpctimer;
 	set 'count,getmapmobs(getmdmapname("2@tower.gat"),getmdnpcname("TowerControl2")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
@@ -1189,6 +1197,10 @@ L_MobCall:
 		areamonster getmdmapname("3@tower.gat"),'x['@idx%5],'y['@idx/5],'x['@idx%5]+10,'y['@idx/5]+36,"--ja--",'mob['@idx]['@i*2],'mob['@idx]['@i*2+1],getmdnpcname("TowerControl3")+ "::OnKilled";
 	end;
 OnKilled:
+	initnpctimer;
+	end;
+OnTimer1000:
+	stopnpctimer;
 	set 'count,getmapmobs(getmdmapname("3@tower.gat"),getmdnpcname("TowerControl3")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;
@@ -1435,6 +1447,10 @@ L_MobCall:
 	}
 	end;
 OnKilled:
+	initnpctimer;
+	end;
+OnTimer1000:
+	stopnpctimer;
 	set 'count,getmapmobs(getmdmapname("4@tower.gat"),getmdnpcname("TowerControl4")+ "::OnKilled");
 	if('count <= 0) {
 		announce 'lv+ "階のすべてのモンスターを倒しました",0x9,0xFFFF00;

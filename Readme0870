@@ -1,4 +1,11 @@
 ----------------------------------------
+//1111 [2013/10/19] by refis
+
+・封印された神殿NPC実装 (conf/map_auriga.conf, npc_memorial_baphomet.txt)
+
+・エンドレスタワー通常階での討伐処理を修正 (npc_memorial_tower.txt)
+
+----------------------------------------
 //1110 [2013/10/02] by Rayce
 
 ・scriptの sqlquery 関数において、LIKEで % を検索するとき % が消えてしまい部分検索が
