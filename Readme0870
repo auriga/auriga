@@ -1,4 +1,21 @@
 ----------------------------------------
+//1112 [2013/10/26] by refis
+
+・スクリプトからシャドウ装備を参照できるよう拡張 (doc/script_ref.txt, script.c)
+
+・グローバルメッセージ関係の修正
+	-> clif_GlobalMessage系でエリア指定ができるよう引数を拡張 (atcommand.c, clif.*, npc.c, skill.c)
+		-> 関連enumをヘッダに移動しました
+	-> clif_parse_GlobalMessageからメッセージ送信処理をclif_disp_overheadとして分離する (clif.*)
+	-> モンスターメッセージの有効範囲をAREA_CHAT_WOCからAREAに変更 (mob.c)
+	-> スクリプト命令「unittalk」を実装 (doc/script_ref.txt, script.c)
+		-> マップ配置済みNPC、もしくは指定IDのユニットに発言させます
+		-> globalmesとの違いは自動で発言者名が付加されないこと、前者に比べて有効範囲が広いことです
+
+・スクリプト命令「delequip」を実装 (doc/script_ref.txt, script.c)
+	-> 指定箇所の装着済み装備品を失います
+
+----------------------------------------
 //1111 [2013/10/19] by refis
 
 ・封印された神殿NPC実装 (conf/map_auriga.conf, npc_memorial_baphomet.txt)

@@ -6290,7 +6290,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				snprintf(output, sizeof(output), msg_txt(181), md->name); // %s : 寒いジョーク !!
 			else
 				snprintf(output, sizeof(output), msg_txt(182), md->name); // %s : スクリーム !!
-			clif_GlobalMessage(&md->bl, output);
+			clif_GlobalMessage(&md->bl, output, AREA_CHAT_WOC);
 		}
 		break;
 

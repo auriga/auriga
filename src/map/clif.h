@@ -24,6 +24,28 @@
 
 #include "map.h"
 
+enum {
+	ALL_CLIENT,
+	ALL_SAMEMAP,
+	AREA,
+	AREA_WOS,
+	AREA_WOC,
+	AREA_WOSC,
+	AREA_CHAT_WOC,
+	CHAT,
+	CHAT_WOS,
+	PARTY,
+	PARTY_WOS,
+	PARTY_SAMEMAP,
+	PARTY_SAMEMAP_WOS,
+	PARTY_AREA,
+	PARTY_AREA_WOS,
+	GUILD,
+	GUILD_WOS,
+	GUILD_SAMEMAP_WOS,
+	SELF
+};
+
 void clif_sethost(const char*);
 void clif_setip(void);
 void clif_setport(unsigned short);
@@ -90,8 +112,9 @@ void clif_misceffect3(int fd, int id, int type);
 void clif_changeoption(struct block_list *bl);
 void clif_changeoption2(struct block_list *bl);
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);
-void clif_GlobalMessage(struct block_list *bl,const char *message);
-void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len);
+void clif_GlobalMessage(struct block_list *bl,const char *message, int area);
+void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int area);
+void clif_disp_overhead(struct map_session_data *sd, const char* mes);
 void clif_createchat(struct map_session_data *sd, unsigned char fail);
 void clif_dispchat(struct chat_data *cd, int fd);
 void clif_joinchatfail(struct map_session_data *sd, unsigned char fail);

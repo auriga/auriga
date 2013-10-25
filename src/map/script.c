@@ -3847,6 +3847,7 @@ int buildin_getequipisidentify(struct script_state *st);
 int buildin_getequiprefinerycnt(struct script_state *st);
 int buildin_getequipweaponlv(struct script_state *st);
 int buildin_getequippercentrefinery(struct script_state *st);
+int buildin_delequip(struct script_state *st);
 int buildin_successrefitem(struct script_state *st);
 int buildin_failedrefitem(struct script_state *st);
 int buildin_cutin(struct script_state *st);
@@ -4089,6 +4090,7 @@ int buildin_areamobuseskill(struct script_state *st);
 int buildin_getequipcardid(struct script_state *st);
 int buildin_setpartyinmap(struct script_state *st);
 int buildin_getclassjob(struct script_state *st);
+int buildin_unittalk(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4151,6 +4153,7 @@ struct script_function buildin_func[] = {
 	{buildin_getequiprefinerycnt,"getequiprefinerycnt","*"},
 	{buildin_getequipweaponlv,"getequipweaponlv","i"},
 	{buildin_getequippercentrefinery,"getequippercentrefinery","i"},
+	{buildin_delequip,"delequip","*"},
 	{buildin_successrefitem,"successrefitem","i"},
 	{buildin_failedrefitem,"failedrefitem","i"},
 	{buildin_statusup,"statusup","i"},
@@ -4391,6 +4394,7 @@ struct script_function buildin_func[] = {
 	{buildin_getequipcardid,"getequipcardid","ii"},
 	{buildin_setpartyinmap,"setpartyinmap","ii"},
 	{buildin_getclassjob,"getclassjob","i"},
+	{buildin_unittalk,"unittalk","*"},
 	{NULL,NULL,NULL}
 };
 
@@ -6220,7 +6224,7 @@ int buildin_strcharinfo(struct script_state *st)
 
 // pc.cのequip_posと順番が異なることに注意
 static const unsigned int equip_pos[EQUIP_INDEX_MAX]=
-{LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW,LOC_COSTUME_HEAD2,LOC_COSTUME_HEAD3,LOC_COSTUME_HEAD,LOC_COSTUME_ROBE,LOC_COSTUME_FLOOR};
+{LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW,LOC_COSTUME_HEAD2,LOC_COSTUME_HEAD3,LOC_COSTUME_HEAD,LOC_COSTUME_ROBE,LOC_COSTUME_FLOOR,LOC_ARMOR_SHADOW,LOC_WEAPON_SHADOW,LOC_SHIELD_SHADOW,LOC_SHOES_SHADOW,LOC_RACCESSORY_SHADOW,LOC_LACCESSORY_SHADOW};
 
 /*==========================================
  * 指定位置の装備品のIDを取得
@@ -6402,6 +6406,33 @@ int buildin_getequippercentrefinery(struct script_state *st)
 	else
 		push_val(st->stack,C_INT,0);
 
+	return 0;
+}
+
+/*==========================================
+ * 装備品を削除する
+ *------------------------------------------
+ */
+int buildin_delequip(struct script_state *st)
+{
+	struct map_session_data *sd=script_rid2sd(st);
+	int i,num = -1;
+
+	nullpo_retr(0, sd);
+
+	if(st->end>st->start+2)
+		num = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(num > 0 && num <= EQUIP_INDEX_MAX) {
+		i = pc_checkequip(sd,equip_pos[num-1]);
+		if(i >= 0)
+			pc_delitem(sd,i,1,0,0);
+	} else {
+		for(i=0;i<EQUIP_INDEX_MAX;i++) {
+			if(sd->equip_index[i] >= 0)
+				pc_delitem(sd,i,1,0,0);
+		}
+	}
 	return 0;
 }
 
@@ -13261,6 +13292,42 @@ int buildin_getclassjob(struct script_state *st)
 	job = pc_calc_job_class(class_);
 
 	push_val(st->stack,C_INT,job);
+
+	return 0;
+}
+
+/*==========================================
+ * 発言表示
+ *------------------------------------------
+ */
+int buildin_unittalk(struct script_state *st)
+{
+	struct block_list *bl;
+	struct script_data *data;
+	char *mes;
+
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		bl = map_id2bl(st->oid);
+		mes = conv_str(st,data);
+	} else {
+		bl = map_id2bl(conv_num(st,data));
+
+		data = &(st->stack->stack_data[st->start+3]);
+		get_val(st,data);
+		if( isstr(data) ) {
+			mes = conv_str(st,data);
+		}
+	}
+
+	if(bl == NULL || mes == NULL)
+		return 0;
+
+	if(bl->type == BL_PC)	// グローバルメッセージ送信
+		clif_disp_overhead((struct map_session_data *)bl, mes);
+	else if(bl->m >= 0)
+		clif_GlobalMessage(bl, mes, AREA);
 
 	return 0;
 }

@@ -85,28 +85,6 @@ struct packet_db {
 static struct packet_db packet_db[MAX_PACKET_DB];
 
 // local define
-enum {
-	ALL_CLIENT,
-	ALL_SAMEMAP,
-	AREA,
-	AREA_WOS,
-	AREA_WOC,
-	AREA_WOSC,
-	AREA_CHAT_WOC,
-	CHAT,
-	CHAT_WOS,
-	PARTY,
-	PARTY_WOS,
-	PARTY_SAMEMAP,
-	PARTY_SAMEMAP_WOS,
-	PARTY_AREA,
-	PARTY_AREA_WOS,
-	GUILD,
-	GUILD_WOS,
-	GUILD_SAMEMAP_WOS,
-	SELF
-};
-
 #define WBUFPOS(p,pos,x,y,dir) \
 	{ \
 		unsigned char *__p = (p); \
@@ -9810,9 +9788,9 @@ void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag
  * グローバルメッセージ
  *------------------------------------------
  */
-void clif_GlobalMessage(struct block_list *bl,const char *message)
+void clif_GlobalMessage(struct block_list *bl, const char *message, int area)
 {
-	unsigned char buf[128];
+	unsigned char buf[256];
 	size_t len;
 
 	nullpo_retv(bl);
@@ -9820,15 +9798,15 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
 	if(message == NULL)
 		return;
 
-	len=strlen(message)+1;
+	len = strlen(message)+1;
 	if(len > sizeof(buf) - 8)
 		len = sizeof(buf) - 8;
 
-	WBUFW(buf,0)=0x8d;
-	WBUFW(buf,2)=(unsigned short)(len+8);
-	WBUFL(buf,4)=bl->id;
-	strncpy(WBUFP(buf,8),message,len);
-	clif_send(buf,WBUFW(buf,2),bl,AREA_CHAT_WOC);
+	WBUFW(buf,0) = 0x8d;
+	WBUFW(buf,2) = (unsigned short)(len+8);
+	WBUFL(buf,4) = bl->id;
+	strncpy(WBUFP(buf,8), message, len);
+	clif_send(buf, WBUFW(buf,2), bl, area);
 
 	return;
 }
@@ -9837,7 +9815,7 @@ void clif_GlobalMessage(struct block_list *bl,const char *message)
  * グローバルメッセージ（マルチカラー）
  *------------------------------------------
  */
-void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len)
+void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int area)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+12);
 
@@ -9850,9 +9828,41 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 	WBUFL(buf,4) = bl->id;
 	WBUFL(buf,8) = color;
 	memcpy(WBUFP(buf,12), mes, len);
-	clif_send(buf, WBUFW(buf,2), bl, AREA_CHAT_WOC);
+	clif_send(buf, WBUFW(buf,2), bl, area);
 
 	aFree(buf);
+
+	return;
+}
+
+/*==========================================
+ * グローバルメッセージ（プレイヤー）
+ *------------------------------------------
+ */
+void clif_disp_overhead(struct map_session_data *sd, const char* mes)
+{
+	unsigned char buf[256];
+	int len;
+
+	nullpo_retv(sd);
+
+	if(mes == NULL)
+		return;
+
+	len = strlen(mes)+1;
+	if(len > sizeof(buf) - 8)
+		len = sizeof(buf) - 8;
+
+	WBUFW(buf,0) = 0x8d;
+	WBUFW(buf,2) = len + 8;
+	WBUFL(buf,4) = sd->bl.id;
+	memcpy(WBUFP(buf,8), mes, len);
+	clif_send(WBUFP(buf,0), WBUFW(buf,2), &sd->bl, sd->chatID ? CHAT_WOS : AREA_CHAT_WOC);
+
+	WBUFW(buf,0) = 0x8e;
+	WBUFW(buf,2) = len + 4;
+	memcpy(WBUFP(buf,4), mes, len);
+	clif_send(buf, WBUFW(buf,2), &sd->bl, SELF);
 
 	return;
 }
@@ -16423,15 +16433,7 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
-	WFIFOW(fd,0) = 0x8d;
-	WFIFOW(fd,2) = message_size + 8;
-	WFIFOL(fd,4) = sd->bl.id;
-	memcpy(WFIFOP(fd,8), message, message_size);
-	clif_send(WFIFOP(fd,0), WFIFOW(fd,2), &sd->bl, sd->chatID ? CHAT_WOS : AREA_CHAT_WOC);
-
-	memcpy(WFIFOP(fd,0), RFIFOP(fd,0), len);
-	WFIFOW(fd,0) = 0x8e;
-	WFIFOSET(fd,WFIFOW(fd,2));
+	clif_disp_overhead(sd, message);
 
 	return;
 }

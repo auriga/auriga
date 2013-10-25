@@ -4305,7 +4305,7 @@ int atcommand_pettalk(const int fd, struct map_session_data* sd, AtCommandType c
 		return -1;
 
 	sprintf(output, "%s : %s", sd->pet.name, mes);
-	clif_GlobalMessage(&sd->pd->bl, output);
+	clif_GlobalMessage(&sd->pd->bl, output, AREA_CHAT_WOC);
 
 	return 0;
 }
@@ -4328,7 +4328,7 @@ int atcommand_homtalk(const int fd, struct map_session_data* sd, AtCommandType c
 		return -1;
 
 	sprintf(output, "%s : %s", sd->hd->status.name, mes);
-	clif_GlobalMessage(&sd->hd->bl, output);
+	clif_GlobalMessage(&sd->hd->bl, output, AREA_CHAT_WOC);
 
 	return 0;
 }

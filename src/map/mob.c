@@ -3767,7 +3767,7 @@ int mob_talk(struct mob_data *md, int msg_id)
 	if(msg_id <= 0 || mob_talk_db[msg_id-1].msg == NULL)
 		return 0;
 	snprintf(output, sizeof output, "%s : %s", md->name, mob_talk_db[msg_id-1].msg);
-	clif_GlobalMessage2(&md->bl, mob_talk_db[msg_id-1].color, output, strlen(output)+1);
+	clif_GlobalMessage2(&md->bl, mob_talk_db[msg_id-1].color, output, strlen(output)+1, AREA);
 
 	return 1;
 }

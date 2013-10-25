@@ -758,7 +758,7 @@ int npc_globalmessage(const char *name,char *mes)
 
 	len = strlen(temp);
 	snprintf(temp+len, sizeof(temp)-len, " : %s", mes);
-	clif_GlobalMessage(&nd->bl,temp);
+	clif_GlobalMessage(&nd->bl,temp,AREA_CHAT_WOC);
 
 	return 0;
 }
