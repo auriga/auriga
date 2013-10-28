@@ -2261,6 +2261,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 
+		// （RE）土符：剛塊
+		if(src_sd && src_sd->elementball.num && src_sd->elementball.ele == ELE_EARTH) {
+			wd.damage += (wd.damage * src_sd->elementball.num * 10) / 100;
+			if(calc_flag.lh)
+				wd.damage2 += (wd.damage2 * src_sd->elementball.num * 10) / 100;
+		}
+
 		/* （RE）防御無視判定および錐効果ダメージ計算 */
 		switch (skill_num) {
 		case MC_CARTREVOLUTION:
@@ -4290,6 +4297,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					// 実際には除算DEF増加だが、暫定で減算DEF
 					t_def2 += t_def2 * t_sc->data[SC_ECHOSONG].val4 / 100;
 				}
+				// 土符：剛塊
+				if(src_sd && src_sd->elementball.num && src_sd->elementball.ele == ELE_EARTH) {
+					// 実際には除算DEF増加だが、暫定で減算DEF
+					t_def2 += t_def2 * src_sd->elementball.num * 10 / 100;
+				}
 #else
 				if(t_sc) {
 					short reduce = 100;
@@ -4309,8 +4321,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						reduce += t_sc->data[SC_ECHOSONG].val4;
 					}
 					// カモフラージュ
-					if(t_sc->data[SC_CAMOUFLAGE].timer != -1 && t_sc->data[SC_CAMOUFLAGE].val3 >= 0)
+					if(t_sc->data[SC_CAMOUFLAGE].timer != -1 && t_sc->data[SC_CAMOUFLAGE].val3 >= 0) {
 						reduce -= (10 - t_sc->data[SC_CAMOUFLAGE].val3) * 5;
+					}
+					// 土符：剛塊
+					if(src_sd && src_sd->elementball.num && src_sd->elementball.ele == ELE_EARTH) {
+						reduce += src_sd->elementball.num * 10;
+					}
 					t_def1 = t_def1 * reduce / 100;
 				}
 #endif

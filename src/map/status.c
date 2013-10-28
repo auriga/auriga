@@ -2398,14 +2398,23 @@ L_RECALC:
 		}
 		// 十六夜
 		if(sd->sc.data[SC_IZAYOI].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->matk1 += sd->sc.data[SC_IZAYOI].val2;
 			sd->matk2 += sd->sc.data[SC_IZAYOI].val2;
+#else
+			sd->plus_matk += sd->sc.data[SC_IZAYOI].val2;
+#endif
 		}
 		// 幻術 -残月-
 		if(sd->sc.data[SC_ZANGETSU].timer != -1) {
+#ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_ZANGETSU].val2;
 			sd->matk1 += sd->sc.data[SC_ZANGETSU].val3;
 			sd->matk2 += sd->sc.data[SC_ZANGETSU].val3;
+#else
+			sd->plus_atk += sd->sc.data[SC_ZANGETSU].val2;
+			sd->plus_matk += sd->sc.data[SC_ZANGETSU].val3;
+#endif
 		}
 	}
 
@@ -2416,11 +2425,12 @@ L_RECALC:
 		sd->status.max_sp *= 3;
 	}
 
+#ifdef PRE_RENEWAL
 	// 土符：剛塊
 	if(sd->elementball.num && sd->elementball.ele == ELE_EARTH) {
 		sd->watk += sd->watk * sd->elementball.num * 10 / 100;
-		sd->def  += sd->def * sd->elementball.num * 10 / 100;
 	}
+#endif
 
 	// MATK乗算処理(杖補正)
 	if(sd->matk2_rate != 100) {

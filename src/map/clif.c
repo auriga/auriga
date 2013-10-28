@@ -9788,7 +9788,7 @@ void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag
  * グローバルメッセージ
  *------------------------------------------
  */
-void clif_GlobalMessage(struct block_list *bl, const char *message, int area)
+void clif_GlobalMessage(struct block_list *bl, const char *message, int target)
 {
 	unsigned char buf[256];
 	size_t len;
@@ -9806,7 +9806,7 @@ void clif_GlobalMessage(struct block_list *bl, const char *message, int area)
 	WBUFW(buf,2) = (unsigned short)(len+8);
 	WBUFL(buf,4) = bl->id;
 	strncpy(WBUFP(buf,8), message, len);
-	clif_send(buf, WBUFW(buf,2), bl, area);
+	clif_send(buf, WBUFW(buf,2), bl, target);
 
 	return;
 }
@@ -9815,7 +9815,7 @@ void clif_GlobalMessage(struct block_list *bl, const char *message, int area)
  * グローバルメッセージ（マルチカラー）
  *------------------------------------------
  */
-void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int area)
+void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int target)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+12);
 
@@ -9828,7 +9828,7 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 	WBUFL(buf,4) = bl->id;
 	WBUFL(buf,8) = color;
 	memcpy(WBUFP(buf,12), mes, len);
-	clif_send(buf, WBUFW(buf,2), bl, area);
+	clif_send(buf, WBUFW(buf,2), bl, target);
 
 	aFree(buf);
 

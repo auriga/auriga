@@ -527,6 +527,12 @@ static int pc_elementball_timer(int tid, unsigned int tick, int id, void *data)
 	if(!sd->elementball.num)
 		sd->elementball.ele = ELE_NEUTRAL;
 
+#ifdef PRE_RENEWAL
+	// 土属性ならatkが減少するためステータスを計算させる
+	if(sd->elementball.ele == ELE_EARTH)
+		status_calc_pc(sd,0);
+#endif
+
 	// パケット送信
 	clif_elementball(sd);
 
@@ -571,9 +577,11 @@ int pc_addelementball(struct map_session_data *sd, int interval, int max, short 
 		sd->elementball.ele = ele;
 	}
 
-	// 土属性ならdefとatkが向上するためステータスを計算させる
+#ifdef PRE_RENEWAL
+	// 土属性ならatkが向上するためステータスを計算させる
 	if(ele == ELE_EARTH)
 		status_calc_pc(sd,0);
+#endif
 
 	// パケット送信
 	clif_elementball(sd);
