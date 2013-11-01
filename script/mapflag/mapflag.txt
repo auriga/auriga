@@ -1,4 +1,4 @@
-//mapflag.txt＠Athena 2006/09/11 22:28:39 (JST)
+//mapflag.txt＠Auriga 2013/11/02 02:22:54 (JST)
 abyss_01.gat	mapflag	nomemo	dummy
 abyss_02.gat	mapflag	nomemo	dummy
 abyss_03.gat	mapflag	nomemo	dummy
@@ -651,6 +651,11 @@ nif_in.gat	mapflag	nobranch	dummy
 nif_in.gat	mapflag	nopenalty	dummy
 nif_in.gat	mapflag	noicewall	dummy
 niflheim.gat	mapflag	nomemo	dummy
+nyd_dun_jp.gat	mapflag	nomemo	dummy
+nyd_dun_jp.gat	mapflag	noteleport	dummy
+nyd_dun_jp.gat	mapflag	nosave	SavePoint
+nyd_dun_jp.gat	mapflag	nobranch	dummy
+nyd_dun_jp.gat	mapflag	noskill	dummy
 nyd_dun01.gat	mapflag	nomemo	dummy
 nyd_dun02.gat	mapflag	nomemo	dummy
 odin_tem01.gat	mapflag	nomemo	dummy
