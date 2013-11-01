@@ -14573,15 +14573,15 @@ mid_campin.gat,90,121,5	script	司令官アジフ	459,{
 		mes "　アジフに呼び止められた‐";
 		next;
 		if(ASH_6QUE == 4) {
-			cutin "ep13_captin_edq.bmp", 2;
+			cutin "ep13_captin_edq",2;
 			mes "[アジフ]";
 			mes "おまえ、襲われた時";
 			mes "報告書を渡そうとしたらしいな。";
 			next;
-			cutin "ep13_captin_edq.bmp", 255;
+			cutin "ep13_captin_edq",255;
 			mes "‐あなたは頷いた‐";
 			next;
-			cutin "ep13_captin_edq.bmp", 2;
+			cutin "ep13_captin_edq",2;
 			mes "[アジフ]";
 			mes "ははは、賢明な奴だな。";
 			mes "紙切れなんかより";
@@ -14593,11 +14593,11 @@ mid_campin.gat,90,121,5	script	司令官アジフ	459,{
 			mes "[アジフ]";
 			mes "……";
 			next;
-			cutin "ep13_captin_edq.bmp", 255;
+			cutin "ep13_captin_edq",255;
 			mes "‐アジフは、";
 			mes "　あなたの顔をみつめた‐";
 			next;
-			cutin "ep13_captin_edq.bmp", 2;
+			cutin "ep13_captin_edq",2;
 			mes "[アジフ]";
 			mes "一つ言っておく。";
 			next;
@@ -17387,6 +17387,58 @@ OnTouch:
 // 木の巨人クエスト
 //------------------------------------------------------------
 spl_fild02.gat,34,223,5	script	小さな妖精	442,{
+	if(YGG_1QUE == 2) {
+		if(checkquest(70360)) {
+			emotion 6;
+			mes "[小さな妖精]";
+			mes "RLGHLRXLA　TKANTLFDMS";
+			mes "WJACK　TNAHRDNJSDMFH";
+			mes "WLSGHKWND!!";
+			next;
+			mes "["+strcharinfo(0)+"]";
+			mes "（今聞いた妖精の言葉を";
+			mes "ディクショナリーに教えよう）";
+			close;
+		}
+		mes "‐森の中、浮遊している物体が";
+		mes "　見える。";
+		mes "　小さな体躯。";
+		mes "　その背には羽がはえていた……";
+		mes "　";
+		mes "　妖精だ!!‐";
+		next;
+		mes "[小さな妖精]";
+		mes "RLGHLRXLA　TKANTLFDMS";
+		mes "WJACK　TNAHRDNJSDMFH";
+		mes "WLSGHKWND!!";
+		emotion 6;
+		next;
+		mes "‐妖精はあなたに姿を見られて";
+		mes "　慌てているようだ。";
+		mes "　しかし、妖精の言葉は";
+		mes "　あなたにはわからない‐";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "（今聞いた妖精の言葉を";
+		mes "ディクショナリーに教えよう）";
+		if(checkquest(2158) || checkquest(200850)) {
+			setquest 70360;
+			close;
+		}
+		next;
+		mes "‐ディクショナリーは、";
+		mes "　妖精を見つけたら";
+		mes "　駐屯地警備隊の隊長に";
+		mes "　報告した方がよい、と";
+		mes "　あなたに言っていた‐";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "（駐屯地警備隊の隊長に";
+		mes "妖精を見つけたことを報告しよう）";
+		setquest 70360;
+		chgquest 69080,2158;
+		close;
+	}
 	if(BaseLevel < 70 || checkquest(2158) || checkquest(200850)) {
 		emotion 6;
 		mes "[小さな妖精]";
@@ -17430,7 +17482,117 @@ spl_fild02.gat,34,223,5	script	小さな妖精	442,{
 	close;
 }
 
-man_fild03.gat,236,105,3	script	木の巨人	454,{
+man_fild02.gat,307,369,3	script	木の巨人	454,{
+	if(YGG_1QUE == 2) {
+		if(checkquest(70355)) {
+			emotion 9;
+			mes "[木の巨人]";
+			mes "∵∝∝ ∩ ∽∮⊇ ∈ ";
+			mes "?∋⊃ ∮ ∪⊃⊆ ∀ ";
+			mes "¬∠⊃ ∫ ?⊃∠ ∬ ∋";
+			mes "∬∽∬ ⊆ ⊃⊃⊃";
+			next;
+			mes "‐もう一度よく聞いてみる‐";
+			next;
+			mes "[木の巨人]";
+			mes "TJDTMFJDNS　CJFDI";
+			mes "TKADLFDMF　QKATOS";
+			mes "EKDTLSDML　DLFMADMS";
+			close;
+		}
+		mes "‐乾いた木の幹と幹の間に";
+		mes "　他の木とは違う灰色が見える。";
+		mes "　枯れ木……ではない。";
+		mes "　それは四肢を持っている‐";
+		next;
+		mes "‐そして、灰色は身じろぎをした。";
+		mes "　木でありながら人間の形象を持つ……";
+		mes "　木の巨人がそこにいた‐";
+		next;
+		emotion 9;
+		mes "[木の巨人]";
+		mes "∵∝∝ ∩ ∽∮⊇ ∈ ";
+		mes "?∋⊃ ∮ ∪⊃⊆ ∀ ";
+		mes "¬∠⊃ ∫ ?⊃∠ ∬ ∋";
+		mes "∬∽∬ ⊆ ⊃⊃⊃";
+		next;
+		mes "‐木の巨人はあなたに姿を見られて";
+		mes "　慌てているようだ。";
+		mes "　しかし、木の巨人の言葉は";
+		mes "　あなたにはわからない‐";
+		next;
+		mes "‐あなたはその言葉を";
+		mes "　書きとめようとしたが、";
+		mes "　発音がミッドガルド大陸の言葉とは";
+		mes "　全く違うので聞き取れない‐";
+		next;
+		menu "聞き耳を立ててもう一度聞く",-;
+		mes "‐あなたは聞き耳を立てて";
+		mes "　もう一度巨人の言葉を聞こうとした‐";
+		next;
+		mes "[木の巨人]";
+		mes "∀∠⊃？";
+		mes "　";
+		mes "‐木の巨人は";
+		mes "　不思議そうな顔をした‐";
+		emotion 2;
+		next;
+		mes "‐あなたは、";
+		mes "　もう一度話して欲しい、";
+		mes "　ということを伝えようと";
+		mes "　必死にジェスチャーをした‐";
+		next;
+		mes "[木の巨人]";
+		mes "……";
+		next;
+		mes "[木の巨人]";
+		mes "……！";
+		emotion 2;
+		next;
+		mes "‐巨人は察してくれたようだ‐";
+		next;
+		mes "[木の巨人]";
+		mes "∵∝∝ ∩ ∽∮⊇ ∈ ";
+		mes "?∋⊃ ∮ ∪⊃⊆ ∀ ";
+		mes "¬∠⊃ ∫ ?⊃∠ ∬ ∋";
+		mes "∬∽∬ ⊆ ⊃⊃⊃";
+		next;
+		mes "‐あなたは、";
+		mes "　もう一度ゆっくりお願いします、";
+		mes "　と自分なりにジェスチャーした‐";
+		next;
+		mes "‐木の巨人は頷き、";
+		mes "　ゆっくりと話しだした‐";
+		next;
+		mes "[木の巨人]";
+		mes "TJDTMFJDNS　CJFDI";
+		mes "TKADLFDMF　QKATOS";
+		mes "EKDTLSDML　DLFMADMS";
+		next;
+		mes "‐今度は聞き取ることができた！‐";
+		emotion 0,"";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "（今聞いた巨人の言葉を";
+		mes "ディクショナリーに教えよう）";
+		if(checkquest(2159) || checkquest(200855)) {
+			setquest 70355;
+			close;
+		}
+		next;
+		mes "‐また、ディクショナリーは、";
+		mes "　巨人を見つけたら";
+		mes "　駐屯地警備隊の隊長に";
+		mes "　報告した方がよい、と";
+		mes "　あなたに言っていた‐";
+		next;
+		mes "["+strcharinfo(0)+"]";
+		mes "（駐屯地警備隊の隊長に";
+		mes "巨人を見つけたことを報告しよう）";
+		setquest 70355;
+		chgquest 69085,2159;
+		close;
+	}
 	if(BaseLevel < 70 || checkquest(2159) || checkquest(200855)) {
 		emotion 9;
 		mes "[木の巨人]";
@@ -18771,7 +18933,7 @@ spl_fild02.gat,326,171,0	duplicate(魚の群れ#Ash)	魚の群れ	844
 
 -	script	不思議な岩#Ash	844,{
 	if(checkquest(12062)) {
-		if(getquestlimit(12062) > gettimetick(0)) {
+		if(getquestlimit(12062) > gettimetick(2)) {
 			mes "[" +strcharinfo(0)+ "]";
 			mes "（今は、";
 			mes "鉱石担当の猫の手職人に言われた";
@@ -18787,7 +18949,7 @@ spl_fild02.gat,326,171,0	duplicate(魚の群れ#Ash)	魚の群れ	844
 		mes "鉱石採掘の許可をもらおう）";
 		close;
 	}
-	if(countitem(6048) >= 20) {
+	if(countitem(6048) >= 3) {
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（不思議な岩から";
 		mes "何故か採掘できない……";
@@ -18845,3 +19007,27 @@ man_fild03.gat,98,226,0		duplicate(不思議な岩#Ash)	不思議な岩#Ash15	84
 man_fild03.gat,104,248,0	duplicate(不思議な岩#Ash)	不思議な岩#Ash16	844
 man_fild03.gat,91,272,0		duplicate(不思議な岩#Ash)	不思議な岩#Ash17	844
 man_fild03.gat,95,301,0		duplicate(不思議な岩#Ash)	不思議な岩#Ash18	844
+
+mid_camp.gat,48,149,4	script	案内員#midcamp	852,{
+	mes "[案内員]";
+	mes "こんにちは。";
+	mes "よろしければ、東側の出入り口まで";
+	mes "ご案内しましょうか？";
+	next;
+	if(select("案内してもらう","やめる") == 2) {
+		mes "[案内員]";
+		mes "ご入用の際は";
+		mes "いつでもお申し付けください。";
+		close;
+	}
+	mes "[案内員]";
+	mes "かしこまりました。";
+	mes "それではご案内します。";
+	mes "こちらへどうぞ。";
+	close2;
+	warp "mid_camp.gat",332,166;
+	end;
+OnInit:
+	waitingroom "東側への転送",0;
+	end;
+}
