@@ -1,5 +1,5 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Nydhogg Nest Monster Spawn Script　　Ep 13.3
+// Ragnarok Online Nydhogg Nest Monster Spawn Script　　Ep 13.2
 //==============================================================================
 
 //============================================================
