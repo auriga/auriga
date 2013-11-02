@@ -8852,7 +8852,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SR_GENTLETOUCH_CHANGE:		/* 点穴 -反- */
 		{
 			int val1 = (status_get_str(src) / 2 + status_get_dex(src) / 4) * skilllv / 5;
-			int val2 = (200 / status_get_int(src)) * skilllv;
+			int val2 = (200 / (status_get_int(src)>1? status_get_int(src): 1) ) * skilllv;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,val1,val2>0? val2: 0,0,skill_get_time(skillid,skilllv),0);
 		}
@@ -9410,7 +9410,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 
 			// HPの割合算出
-			hp_per = 100 / (status_get_max_hp(bl) / status_get_hp(bl));
+			hp_per = 100 * status_get_hp(bl) / status_get_max_hp(bl);
 			if(hp_per > 75)      hp_lv = 5;
 			else if(hp_per > 50) hp_lv = 4;
 			else if(hp_per > 30) hp_lv = 3;
@@ -9423,7 +9423,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				hp -= status_get_max_hp(bl) * (hp_lv * 4 + skilllv) / 100;
 
 			// SPの割合算出
-			sp_per = 100 / (status_get_max_sp(bl) / status_get_sp(bl));
+			sp_per = 100 * status_get_sp(bl) / status_get_max_sp(bl);
 			if(sp_per > 75)      sp_lv = 5;
 			else if(sp_per > 50) sp_lv = 4;
 			else if(sp_per > 30) sp_lv = 3;
