@@ -6546,7 +6546,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case HT_BLASTMINE:	// ブラストマイン
 	case HT_CLAYMORETRAP:	// クレイモアトラップ
 		mid.damage = (int)(dex * (3+status_get_lv(bl)/(float)100) * (1+int_/(float)35) * skill_lv);
-		mid.damage = (mid.damage * 80 / 100) + (rand()%(mid.damage * 20 / 100));
+		mid.damage = (mid.damage * 90 / 100) + (mid.damage * (atn_rand()%20 + 1) / 100);
 		if(sd)
 			mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
 		break;
