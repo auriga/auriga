@@ -2221,7 +2221,7 @@ mid_campin.gat,94,141,0		warp	midcampwarp1011		1,1,mid_campin.gat,117,181
 mid_campin.gat,117,178,0	warp	midcampwarp1012		1,1,mid_campin.gat,94,138
 mid_campin.gat,111,128,0	warp	midcampwarp1013		1,1,mid_campin.gat,165,170
 mid_campin.gat,162,170,0	warp	midcampwarp1014		1,1,mid_campin.gat,108,128
-mid_campin.gat,113,120,0	warp	midcampwarp1015		1,1,mid_campin.gat,165,126
+//mid_campin.gat,113,120,0	warp	midcampwarp1015		1,1,mid_campin.gat,165,126
 mid_campin.gat,162,126,0	warp	midcampwarp1016		1,1,mid_campin.gat,110,120
 mid_campin.gat,113,114,0	warp	midcampwarp1017		1,1,mid_campin.gat,165,82
 mid_campin.gat,162,82,0		warp	midcampwarp1018		1,1,mid_campin.gat,110,114

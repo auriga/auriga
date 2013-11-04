@@ -1205,9 +1205,6 @@ bra_dun02.gat,261,265,0	warp	brasiliswarp4002	1,1,bra_dun01.gat,199,37
 // dic_dun02.gat	スカラバホール
 // dic_dun03.gat	スカラバガーデン
 //==============================================================
-//カミダルトンネル⇔カミダル山麓 01
-dic_dun01.gat,371,44,0		warp	dicasteswarp0501	1,1,dic_fild01.gat,28,79
-
 //カミダルトンネル
 dic_dun01.gat,87,212,0		warp	dicasteswarp4001	1,1,dic_dun01.gat,169,227
 dic_dun01.gat,165,227,0		warp	dicasteswarp4002	1,1,dic_dun01.gat,83,212

@@ -1,4 +1,22 @@
 ----------------------------------------
+//1119 [2013/11/05] by refis
+
+・エルディカスティスNPC実装 (npc_town_dicastes.txt, npc_warp_dun.txt, npc_warp_town.txt)
+	-> エルディカスティスクエスト実装
+	-> 猫耳と尻尾の男クエスト実装
+	-> 友達のためにクエスト実装
+	-> ディエルの依頼クエスト実装
+	-> 文書クエスト実装
+
+・エルディカスティス関連マップのmob追加 (npc_monster_dicdun.txt, npc_monster_dicfild.txt)
+
+・エルディカスティス関連モンスターのskill追加 (db/mob_skill_db.txt)
+
+・quest_db.txt更新 (db/quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1118 [2013/11/03] by refis
 
 ・[RE]:ハンタースキル「ランドマイン」、「ブラストマイン」、「クレイモアトラップ」ダメージ計算式を修正 (battle.c)
