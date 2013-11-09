@@ -1,4 +1,16 @@
 ----------------------------------------
+//1120 [2013/11/10] by Rayce
+
+・「幻術 -朧幻想-」で0除算が発生する可能性を修正（skill.c）
+
+・RFIFOQ, WFIFOQ, RBUFQ, WBUFQ は atn_bignumber型でキャストすると処理系によってはdouble型で
+  扱われるため、uint64型でキャストするように変更（socket.h）
+
+・読み込みに使用した zlib.dll のファイルパスを表示するように拡張（grfio.c）
+
+・細かいリファクタリング（skill.c, itemdb.c, mob.c）
+
+----------------------------------------
 //1119 [2013/11/05] by refis
 
 ・エルディカスティスNPC実装 (npc_town_dicastes.txt, npc_warp_dun.txt, npc_warp_town.txt)

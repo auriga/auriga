@@ -7621,7 +7621,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case ECLAGE_RECALL:		/* エクラージュへの帰還 */
 		if(sd) {
 			int x, y;
-			char mapname[24];
+			const char *mapname;
 
 			if(battle_config.noportal_flag) {
 				if(map[sd->bl.m].flag.noportal)		// noportalで禁止
@@ -7630,15 +7630,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(skillid == RETURN_TO_ELDICASTES) {
 				x = 198;
 				y = 187;
-				strncpy(mapname,"dicastes01.gat",24);
+				mapname = "dicastes01.gat";
 			} else if(skillid == ALL_GUARDIAN_RECALL) {
 				x = 44;
 				y = 151;
-				strncpy(mapname,"mora.gat",24);
+				mapname = "mora.gat";
 			} else {
 				x = 47;
 				y = 31;
-				strncpy(mapname,"ecl_in01.gat",24);
+				mapname = "ecl_in01.gat";
 			}
 
 			if(pc_setpos(sd,mapname,x,y,0)) {
@@ -8432,20 +8432,22 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SC_SHADOWFORM:			/* シャドウフォーム */
-		if(sd && dstsd && dstsd->shadowform_id == 0) {
-			if(sd->bl.id == dstsd->bl.id ||
-			   ((!map[src->m].flag.pvp && !map[src->m].flag.gvg) &&
-			    (sd->status.party_id <= 0 || dstsd->status.party_id <= 0 ||
-			    sd->status.party_id != dstsd->status.party_id)))
-			{
+		if(sd) {
+			if(dstsd && dstsd->shadowform_id == 0) {
+				if(sd->bl.id == dstsd->bl.id ||
+				   ((!map[src->m].flag.pvp && !map[src->m].flag.gvg) &&
+				    (sd->status.party_id <= 0 || dstsd->status.party_id <= 0 ||
+				    sd->status.party_id != dstsd->status.party_id)))
+				{
+					clif_skill_fail(sd,skillid,0,0,0);
+					break;
+				}
+				clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,skilllv,1);
+				status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,dstsd->bl.id,0,0,skill_get_time(skillid,skilllv),0 );
+				dstsd->shadowform_id = sd->bl.id;
+			} else {
 				clif_skill_fail(sd,skillid,0,0,0);
-				break;
 			}
-			clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,skilllv,1);
-			status_change_start(&sd->bl,GetSkillStatusChangeTable(skillid),skilllv,dstsd->bl.id,0,0,skill_get_time(skillid,skilllv),0 );
-			dstsd->shadowform_id = sd->bl.id;
-		} else if(sd) {
-			clif_skill_fail(sd,skillid,0,0,0);
 		}
 		break;
 	case SC_BODYPAINT:	/* ボディペインティング */
@@ -9397,8 +9399,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case OB_OBOROGENSOU:	/* 幻術 -朧幻想- */
 		{
-			int hp = 0, hp_per, hp_lv;
-			int sp = 0, sp_per, sp_lv;
+			int hp = 0, hp_val, hp_max, hp_per = 0, hp_lv;
+			int sp = 0, sp_val, sp_max, sp_per = 0, sp_lv;
 
 			// プレイヤー以外には無効
 			if(bl->type != BL_PC) {
@@ -9410,30 +9412,40 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 
 			// HPの割合算出
-			hp_per = 100 * status_get_hp(bl) / status_get_max_hp(bl);
+			hp_val = status_get_hp(bl);
+			hp_max = status_get_max_hp(bl);
+
+			if(hp_max != 0) {
+				hp_per = 100 * hp_val / hp_max;
+			}
 			if(hp_per > 75)      hp_lv = 5;
 			else if(hp_per > 50) hp_lv = 4;
 			else if(hp_per > 30) hp_lv = 3;
 			else if(hp_per > 15) hp_lv = 2;
 			else                 hp_lv = 1;
 
-			if(status_get_hp(bl)%2 == 0)
-				hp = status_get_max_hp(bl) * ((6 - hp_lv) * 4 + skilllv) / 100;
+			if(hp_val % 2 == 0)
+				hp = hp_max * ((6 - hp_lv) * 4 + skilllv) / 100;
 			else
-				hp -= status_get_max_hp(bl) * (hp_lv * 4 + skilllv) / 100;
+				hp -= hp_max * (hp_lv * 4 + skilllv) / 100;
 
 			// SPの割合算出
-			sp_per = 100 * status_get_sp(bl) / status_get_max_sp(bl);
+			sp_val = status_get_sp(bl);
+			sp_max = status_get_max_sp(bl);
+
+			if(sp_max != 0) {
+				sp_per = 100 * sp_val / sp_max;
+			}
 			if(sp_per > 75)      sp_lv = 5;
 			else if(sp_per > 50) sp_lv = 4;
 			else if(sp_per > 30) sp_lv = 3;
 			else if(sp_per > 15) sp_lv = 2;
 			else                 sp_lv = 1;
 
-			if(status_get_sp(bl)%2 == 0)
-				sp = status_get_max_sp(bl) * ((6 - sp_lv) * 3 + skilllv) / 100;
+			if(sp_val % 2 == 0)
+				sp = sp_max * ((6 - sp_lv) * 3 + skilllv) / 100;
 			else
-				sp -= status_get_max_sp(bl) * (sp_lv * 3 + skilllv) / 100;
+				sp -= sp_max * (sp_lv * 3 + skilllv) / 100;
 
 			unit_heal(bl,hp,sp);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -10315,8 +10327,8 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case LG_RAYOFGENESIS:	/* レイオブジェネシス */
 		skill_area_temp[1] = src->id;
-			skill_area_temp[2] = x;
-			skill_area_temp[3] = y;
+		skill_area_temp[2] = x;
+		skill_area_temp[3] = y;
 		map_foreachinarea(skill_area_sub,
 			src->m,x-5,y-5,x+5,y+5,(BL_CHAR|BL_SKILL),
 			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,

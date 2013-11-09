@@ -1004,8 +1004,11 @@ void grfio_load_zlib(void)
 #endif
 
 	if(!initialized) {
+		char filepath[MAX_PATH];
+		GetModuleFileName(zlib_dll, filepath, MAX_PATH);
+
 		initialized = 1;
-		printf("Loaded zlib version: %s\n", zlib_ver());
+		printf("Loaded zlib version: %s - \"%s\"\n", zlib_ver(), filepath);
 	}
 
 	return;

@@ -49,7 +49,7 @@
 #define RFIFOB(fd,pos) (*(unsigned char*)RFIFOP(fd,pos))
 #define RFIFOW(fd,pos) (*(unsigned short*)RFIFOP(fd,pos))
 #define RFIFOL(fd,pos) (*(unsigned int*)RFIFOP(fd,pos))
-#define RFIFOQ(fd,pos) (*(atn_bignumber*)RFIFOP(fd,pos))
+#define RFIFOQ(fd,pos) (*(uint64*)RFIFOP(fd,pos))
 #define RFIFOREST(fd)  (session[fd]->rdata_size - session[fd]->rdata_pos)
 #define RFIFOSKIP(fd,len) (session[fd]->rdata_pos += (len))
 
@@ -58,7 +58,7 @@
 #define WFIFOB(fd,pos) (*(unsigned char*)WFIFOP(fd,pos))
 #define WFIFOW(fd,pos) (*(unsigned short*)WFIFOP(fd,pos))
 #define WFIFOL(fd,pos) (*(unsigned int*)WFIFOP(fd,pos))
-#define WFIFOQ(fd,pos) (*(atn_bignumber*)WFIFOP(fd,pos))
+#define WFIFOQ(fd,pos) (*(uint64*)WFIFOP(fd,pos))
 #define WFIFOREST(fd)  (session[fd]->wdata_size - session[fd]->wdata_pos)
 
 // use function instead of macro.
@@ -68,12 +68,12 @@
 #define RBUFB(p,pos) (*(unsigned char*)RBUFP(p,pos))
 #define RBUFW(p,pos) (*(unsigned short*)RBUFP(p,pos))
 #define RBUFL(p,pos) (*(unsigned int*)RBUFP(p,pos))
-#define RBUFQ(p,pos) (*(atn_bignumber*)RBUFP(p,pos))
+#define RBUFQ(p,pos) (*(uint64*)RBUFP(p,pos))
 #define WBUFP(p,pos) (((unsigned char*)(p)) + (pos))
 #define WBUFB(p,pos) (*(unsigned char*)WBUFP(p,pos))
 #define WBUFW(p,pos) (*(unsigned short*)WBUFP(p,pos))
 #define WBUFL(p,pos) (*(unsigned int*)WBUFP(p,pos))
-#define WBUFQ(p,pos) (*(atn_bignumber*)WBUFP(p,pos))
+#define WBUFQ(p,pos) (*(uint64*)WBUFP(p,pos))
 
 #ifdef __INTERIX
 #define FD_SETSIZE 4096

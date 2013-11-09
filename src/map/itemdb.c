@@ -469,15 +469,15 @@ static int itemdb_read_itemdb(void)
 	struct item_data *id;
 	struct script_code *script = NULL;
 	int i=0;
+	const char *filename[] = {
+		"db/item_db.txt",
 #ifdef PRE_RENEWAL
-	const char *filename[] = { "db/item_db.txt","db/pre/item_db_pre.txt","db/addon/item_db_add.txt" };
-	static const int max = 3;
-#else
-	const char *filename[] = { "db/item_db.txt","db/addon/item_db_add.txt" };
-	static const int max = 2;
+		"db/pre/item_db_pre.txt",
 #endif
+		"db/addon/item_db_add.txt"
+	};
 
-	for(i=0;i<max;i++){
+	for(i=0;i<sizeof(filename)/sizeof(filename[0]);i++){
 		fp=fopen(filename[i],"r");
 		if(fp==NULL){
 			if(i>0)
