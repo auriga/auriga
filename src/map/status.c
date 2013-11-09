@@ -11400,7 +11400,7 @@ int status_readdb(void) {
 	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
-	char *filename;
+	const char *filename;
 
 	memset(&job_db, 0, sizeof(job_db));
 
@@ -11579,6 +11579,7 @@ int status_readdb(void) {
 		for(j=0; j<MAX_REFINE; j++)
 			refine_db[i].per[j] = 0;
 	}
+
 #ifdef PRE_RENEWAL
 	filename = "db/pre/refine_db_pre.txt";
 #else

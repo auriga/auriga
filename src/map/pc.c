@@ -10559,14 +10559,14 @@ int pc_readdb(void)
 	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
-	char *filename;
+	const char *filename;
+	const char *filename2[] = {
+		"db/skill_tree.txt",
 #ifdef PRE_RENEWAL
-	const char *filename2[] = { "db/skill_tree.txt", "db/pre/skill_tree_pre.txt", "db/addon/skill_tree_add.txt" };
-	const int max = 3;
-#else
-	const char *filename2[] = { "db/skill_tree.txt", "db/addon/skill_tree_add.txt" };
-	const int max = 2;
+		"db/pre/skill_tree_pre.txt",
 #endif
+		"db/addon/skill_tree_add.txt"
+	};
 
 	// 必要経験値読み込み
 	memset(exp_table, 0, sizeof(exp_table));
@@ -10613,7 +10613,7 @@ int pc_readdb(void)
 
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
-	for(m=0; m<max; m++){
+	for(m=0; m<sizeof(filename2)/sizeof(filename2[0]); m++){
 		fp = fopen(filename2[m],"r");
 		if(fp == NULL) {
 			printf("can't read %s\n",filename2[m]);
@@ -10701,6 +10701,7 @@ int pc_readdb(void)
 				attr_fix_table[i][j][k] = 100;
 		}
 	}
+
 #ifdef PRE_RENEWAL
 	filename = "db/pre/attr_fix_pre.txt";
 #else

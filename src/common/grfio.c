@@ -985,6 +985,8 @@ static void grfio_final(void)
  */
 void grfio_load_zlib(void)
 {
+	char filepath[256] = "";
+
 #if defined(WINDOWS) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
 		zlib_dll = LoadLibrary("zlib.dll");
@@ -1000,15 +1002,18 @@ void grfio_load_zlib(void)
 		zlib_deflate      = (API_ZFUNC)  GetProcAddress(zlib_dll,"deflate");
 		zlib_deflateEnd   = (API_ZEND)   GetProcAddress(zlib_dll,"deflateEnd");
 		zlib_crc32        = (API_ZCRC)   GetProcAddress(zlib_dll,"crc32");
+
+		GetModuleFileName(zlib_dll, filepath, sizeof(filepath)/sizeof(filepath[0]));
 	}
 #endif
 
 	if(!initialized) {
-		char filepath[MAX_PATH];
-		GetModuleFileName(zlib_dll, filepath, MAX_PATH);
-
 		initialized = 1;
-		printf("Loaded zlib version: %s - \"%s\"\n", zlib_ver(), filepath);
+		printf("Loaded zlib version: %s", zlib_ver());
+		if(filepath[0]) {
+			printf(" - \"%s\"", filepath);
+		}
+		printf("\n");
 	}
 
 	return;

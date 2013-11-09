@@ -137,11 +137,13 @@ void party_created(int account_id, unsigned char fail, int party_id, const char 
 	if(sd == NULL)
 		return;
 
+	sd->state.party_creating = 0;
+
 	if(fail==0){
 		struct party *p;
 		if (party_search(party_id) != NULL) {
 			printf("party: id already exists!\n");
-			exit(1);
+			return;
 		}
 		sd->status.party_id=party_id;
 		p=(struct party *)aCalloc(1,sizeof(struct party));
@@ -152,7 +154,6 @@ void party_created(int account_id, unsigned char fail, int party_id, const char 
 	}else{
 		clif_party_created(sd,1);
 	}
-	sd->state.party_creating = 0;
 
 	return;
 }

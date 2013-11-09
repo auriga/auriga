@@ -483,7 +483,7 @@ static int itemdb_read_itemdb(void)
 			if(i>0)
 				continue;
 			printf("can't read %s\n",filename[i]);
-			exit(1);
+			continue;
 		}
 		lines=ln=0;
 		while(fgets(line,sizeof(line),fp)){
