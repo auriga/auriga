@@ -87,6 +87,28 @@
 2@cata.gat	mapflag	noabra		dummy
 
 //============================================================
+// ニーズヘッグの巣 - 1@nyd.gat
+//------------------------------------------------------------
+1@nyd.gat	mapflag	nosave			SavePoint
+1@nyd.gat	mapflag	nomemo			dummy
+1@nyd.gat	mapflag	noteleport		dummy
+1@nyd.gat	mapflag	nobranch		dummy
+1@nyd.gat	mapflag	monster_noteleport	dummy
+1@nyd.gat	mapflag	noicewall	dummy
+1@nyd.gat	mapflag	noabra		dummy
+
+//============================================================
+// ニーズヘッグの巣 - 2@nyd.gat
+//------------------------------------------------------------
+2@nyd.gat	mapflag	nosave			SavePoint
+2@nyd.gat	mapflag	nomemo			dummy
+2@nyd.gat	mapflag	noteleport		dummy
+2@nyd.gat	mapflag	nobranch		dummy
+2@nyd.gat	mapflag	monster_noteleport	dummy
+2@nyd.gat	mapflag	noicewall	dummy
+2@nyd.gat	mapflag	noabra		dummy
+
+//============================================================
 // 暴窟王の洞窟 - 1@cash.gat
 //------------------------------------------------------------
 1@cash.gat	mapflag	nosave			SavePoint

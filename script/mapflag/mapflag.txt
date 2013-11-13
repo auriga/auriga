@@ -658,6 +658,7 @@ nyd_dun_jp.gat	mapflag	nobranch	dummy
 nyd_dun_jp.gat	mapflag	noskill	dummy
 nyd_dun01.gat	mapflag	nomemo	dummy
 nyd_dun02.gat	mapflag	nomemo	dummy
+nyd_dun02.gat	mapflag	noteleport	dummy
 odin_tem01.gat	mapflag	nomemo	dummy
 odin_tem02.gat	mapflag	nomemo	dummy
 odin_tem03.gat	mapflag	nomemo	dummy

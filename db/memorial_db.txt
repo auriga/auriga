@@ -3,7 +3,7 @@
 1,Endless Tower,14400,1@tower.gat,50,355,1@tower.gat,2@tower.gat,3@tower.gat,4@tower.gat,5@tower.gat,6@tower.gat,,
 2,Sealed Shrine,7200,1@cata.gat,100,224,1@cata.gat,2@cata.gat,,,,,,
 3,Orc's Memory,3600,1@orcs.gat,179,15,1@orcs.gat,2@orcs.gat,,,,,,
-4,the Nest of Nidhog,14400,1@nyd.gat,32,40,1@nyd.gat,2@nyd.gat,,,,,,
+4,the Nest of Nidhog,14400,1@nyd.gat,32,36,1@nyd.gat,2@nyd.gat,,,,,,
 5,mistwood,7200,1@mist.gat,89,29,1@mist.gat,,,,,,,
 6,Culvert,3600,1@pump.gat,84,105,1@pump.gat,2@pump.gat,,,,,,
 7,Octopus Cave,3600,1@cash.gat,199,99,1@cash.gat,,,,,,,

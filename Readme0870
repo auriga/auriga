@@ -1,4 +1,12 @@
 ----------------------------------------
+//1122 [2013/11/14] by refis
+
+・イグドラシルNPC更新 (mapflag.txt, npc_quest_ashvacuum.txt, npc_quest_yggdrasil.txt)
+	-> 守護者クエストを実装
+
+・ニーズヘッグの巣NPC実装 (conf/map_auriga.conf, db/memorial_db.txt, mapflag_memorial.txt, npc_memorial_nydhogg.txt)
+
+----------------------------------------
 //1121 [2013/11/10] by Rayce
 
 ・Auriga-1120において、LOCALZLIBを有効にするとコンパイルエラーが発生するのを修正（grfio.c）
