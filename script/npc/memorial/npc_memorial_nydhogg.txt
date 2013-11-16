@@ -218,6 +218,8 @@ nyd_dun02.gat,100,201,3	script	守護者の門	111,8,8,{
 			delquest 70898;
 		}
 		close;
+	case 121:
+	case 122:
 	case 131:
 	case 132:
 	case 200:
@@ -546,7 +548,7 @@ OnStart:
 		mes "[イグドラシルリアド]";
 		mes "先に私はニーズヘッグの巣で";
 		mes "待っている！";
-		hideonnpc strnpcinfo(0);
+		hideonnpc;
 		close;
 	default:
 		warp "mid_camp.gat",100,100;

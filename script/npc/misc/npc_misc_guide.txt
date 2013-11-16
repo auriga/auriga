@@ -2063,7 +2063,7 @@ lighthalzen.gat,207,310,5	script	案内要員#West_Lhz1	852,{
 			set '@flag,1;	//どちらを選んでもフラグオン。ミニMAP上の位置表示を消すを選ぶまで消えません。
 			while(1) {
 				next;
-				if('@code$ == "W") {
+				if('@code$ == "West") {
 					switch (select("^FF0000レッケンベル^000000","駅","警察署","銀行","ホテル","空港","商人組合","宝石店","武器屋","デパート","取り消し")) {
 					case 1:
 						mes "[リヒタルゼン案内要員]";
@@ -2152,7 +2152,7 @@ lighthalzen.gat,207,310,5	script	案内要員#West_Lhz1	852,{
 						break;
 					}
 				}
-				if('@code$ == "E") {
+				if('@code$ == "East") {
 					switch (select("道具屋","精錬所","酒場","取り消し")) {
 					case 1:
 						mes "[リヒタルゼン案内要員]";

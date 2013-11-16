@@ -128,7 +128,7 @@ function	script	AgitBreak	{
 		else
 			setcastledata '@map$,'@i,0;
 	}
-	announce "エンペリウムが破壊されました",0x9,0x00ff00;
+	announce "エンペリウムが破壊されました",0x9,0x00ff00,0x2bc,10,0,40;
 	sleep 7000;
 	announce "砦 [" +getcastlename('@map$,0)+ "] の " +getcastlename('@map$,1)+ " を [" +getguildname(getcastledata('@map$,1))+ "] ギルドが占領しました",0x20;
 	donpcevent "::OnFlagEmb_"+getarg(0);	//フラッグエンブレムの変更

@@ -1,4 +1,17 @@
 ----------------------------------------
+//1123 [2013/11/17] by refis
+
+・ニーズヘッグの巣が正常進行されない不具合を修正 (npc_memorial_nydhogg.txt)
+	Thanks mayura さん
+
+・リヒタルゼンガイドNPCが正常動作していなかったのを修正 (npc_misc_guide.txt)
+	Thanks mayura さん
+
+・攻城戦でエンペリウム破壊時のアナウンス情報を修正 (npc_gvg_global.txt)
+
+・スーパーノービス限界突破クエスト実装 (map_auriga.conf, quest_db.txt, npc_job_46supernovice2.txt)
+
+----------------------------------------
 //1122 [2013/11/14] by refis
 
 ・イグドラシルNPC更新 (mapflag.txt, npc_quest_ashvacuum.txt, npc_quest_yggdrasil.txt)
