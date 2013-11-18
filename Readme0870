@@ -1,4 +1,26 @@
 ----------------------------------------
+//1124 [2013/11/19] by refis
+
+・スーパーノービス限界突破クエストのエラーを修正 (npc_job_46supernovice2.txt)
+	Thanks NP3228 さん
+
+・スクリプト命令「downrefitem」を実装 (doc/script_ref.txt, script.c)
+	-> 指定箇所の装着済み装備品の精錬数値を下降させます
+
+・影狼・朧転職実装
+	-> 転職クエストを実装 (map_auriga.conf, quest_db.txt, npc_job_47kaboro.txt)
+	-> 関連アイテム販売の追加 (npc_job_29ninja.txt)
+	-> 関連アイテムのスロットエンチャント追加 (npc_quest_slotenchant.txt)
+
+・影狼・朧のジョブ補正を修正 (job_db2.txt, job_db2-2.txt)
+	Thanks SOLDIER_POPORING さん
+
+・MAX_QUEST_DBを1000から1500に拡張 (common/mmo.h)
+
+・item_db更新 (item_db.txt, item_db2.txt)
+	Thanks luin さん、sango さん
+
+----------------------------------------
 //1123 [2013/11/17] by refis
 
 ・ニーズヘッグの巣が正常進行されない不具合を修正 (npc_memorial_nydhogg.txt)

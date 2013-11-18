@@ -3850,6 +3850,7 @@ int buildin_getequippercentrefinery(struct script_state *st);
 int buildin_delequip(struct script_state *st);
 int buildin_successrefitem(struct script_state *st);
 int buildin_failedrefitem(struct script_state *st);
+int buildin_downrefitem(struct script_state *st);
 int buildin_cutin(struct script_state *st);
 int buildin_cutincard(struct script_state *st);
 int buildin_statusup(struct script_state *st);
@@ -4156,6 +4157,7 @@ struct script_function buildin_func[] = {
 	{buildin_delequip,"delequip","*"},
 	{buildin_successrefitem,"successrefitem","i"},
 	{buildin_failedrefitem,"failedrefitem","i"},
+	{buildin_downrefitem,"downrefitem","i*"},
 	{buildin_statusup,"statusup","i"},
 	{buildin_statusup2,"statusup2","ii"},
 	{buildin_bonus,"bonus","ii"},
@@ -6476,6 +6478,39 @@ int buildin_failedrefitem(struct script_state *st)
 		i=pc_checkequip(sd,equip_pos[num-1]);
 	if(i >= 0)
 		skill_fail_weaponrefine(sd,i);
+
+	return 0;
+}
+
+/*==========================================
+ * 精錬失敗
+ *------------------------------------------
+ */
+int buildin_downrefitem(struct script_state *st)
+{
+	int num, cnt = 1, i = -1;
+	struct map_session_data *sd;
+
+	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		cnt=conv_num(st,& (st->stack->stack_data[st->start+3]));
+	sd=script_rid2sd(st);
+
+	if(num > 0 && num <= EQUIP_INDEX_MAX)
+		i=pc_checkequip(sd,equip_pos[num-1]);
+	if(i >= 0) {
+		int ep=sd->status.inventory[i].equip;
+		pc_unequipitem(sd,i,1);
+		sd->status.inventory[i].refine -= cnt;
+		if(sd->status.inventory[i].refine > MAX_REFINE)
+			sd->status.inventory[i].refine = MAX_REFINE;
+		if(sd->status.inventory[i].refine < 0)
+			sd->status.inventory[i].refine = 0;
+
+		clif_refine(sd->fd,2,i,sd->status.inventory[i].refine);
+		clif_misceffect(&sd->bl,2);
+		pc_equipitem(sd,i,ep);
+	}
 
 	return 0;
 }

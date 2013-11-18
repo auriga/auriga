@@ -494,10 +494,10 @@ comodo.gat,200,75,4	script	釣り中のノービス#sp2	567,{
 		mes "　倒して、ノードルに報告しよう‐";
 		close;
 	case 3:
-		var '@poring_hunt,checkquest(5094);
-		var '@lunatic_hunt,checkquest(5095);
-		var '@fabre_hunt,checkquest(5096);
-		var '@picky_hunt,checkquest(5097);
+		set '@poring_hunt,checkquest(5094);
+		set '@lunatic_hunt,checkquest(5095);
+		set '@fabre_hunt,checkquest(5096);
+		set '@picky_hunt,checkquest(5097);
 		mes "["+strcharinfo(0)+"]";
 		mes "お〜いノードル。";
 		next;
@@ -561,7 +561,7 @@ comodo.gat,200,75,4	script	釣り中のノービス#sp2	567,{
 				mes "指示してないぞ！";
 				close;
 			}
-			break
+			break;
 		case 3:
 			if('@fabre_hunt&0x4) {
 				set '@quest,5096;

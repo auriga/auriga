@@ -1233,7 +1233,7 @@ lhz_in02.gat,269,33,4	duplicate(青年#slot)	青年	97
 			}
 		}
 		else {
-			switch(select("海賊の頭巾","黒革のブーツ")) {
+			switch(select("海賊の頭巾","黒革のブーツ","特殊忍者スーツ")) {
 			case 1: //海賊の頭巾
 				set '@delid,2287;
 				set '@getid,5350;
@@ -1244,6 +1244,13 @@ lhz_in02.gat,269,33,4	duplicate(青年#slot)	青年	97
 			case 2: //黒革のブーツ
 				set '@delid,2425;
 				set '@getid,2434;
+				set '@need,985;
+				set '@amount,1;
+				set '@zeny,500000;
+				break;
+			case 3: //特殊忍者スーツ
+				set '@delid,15053;
+				set '@getid,15056;
 				set '@need,985;
 				set '@amount,1;
 				set '@zeny,500000;
