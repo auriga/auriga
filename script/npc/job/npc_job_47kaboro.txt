@@ -4505,45 +4505,48 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 		mes "[ギヨ]";
 		mes "狼紋様の手甲[1]か。";
 		mes "野性的なものを選んだな。";
-		next;
-		switch(select("材料を見る","性能を見る","作成する","やめる")) {
-		case 1:
-			mes "[ギヨ]";
-			mes "^ff0000狼紋様の手甲[1]は";
-			mes "キツネ紋様の手甲[1]1個";
-			mes "狼の血10個^000000";
-			mes "が必要だ。";
-			mes "感じられるだろ？";
-			mes "熱く燃え上がっている狼の血が。";
-			continue;
-		case 2:
-			mes "[狼紋様の手甲[1]]";
-			mes "物理攻撃命中時、一定確率で";
-			mes "5秒間、Atk + 100";
-			mes "Flee - 50";
+		while(1) {
 			next;
-			mes "[狼紋様の手甲[1]]";
-			mes "[円鱗の鎧]";
-			mes "と共に装備時、追加で";
-			mes "Str + 2";
-			mes "物理攻撃で与えるダメージ + 10%";
-			next;
-			mes "[狼紋様の手甲[1]]";
-			mes "系列 : 盾";
-			mes "防御 : 70";
-			mes "重量 : 25";
-			mes "要求レベル : 100";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,2172;
-			setarray '@need,2171,6252;
-			setarray '@amount,1,10;
+			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			case 1:
+				mes "[ギヨ]";
+				mes "^ff0000狼紋様の手甲[1]は";
+				mes "キツネ紋様の手甲[1]1個";
+				mes "狼の血10個^000000";
+				mes "が必要だ。";
+				mes "感じられるだろ？";
+				mes "熱く燃え上がっている狼の血が。";
+				continue;
+			case 2:
+				mes "[狼紋様の手甲[1]]";
+				mes "物理攻撃命中時、一定確率で";
+				mes "5秒間、Atk + 100";
+				mes "Flee - 50";
+				next;
+				mes "[狼紋様の手甲[1]]";
+				mes "[円鱗の鎧]";
+				mes "と共に装備時、追加で";
+				mes "Str + 2";
+				mes "物理攻撃で与えるダメージ + 10%";
+				next;
+				mes "[狼紋様の手甲[1]]";
+				mes "系列 : 盾";
+				mes "防御 : 70";
+				mes "重量 : 25";
+				mes "要求レベル : 100";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,2172;
+				setarray '@need,2171,6252;
+				setarray '@amount,1,10;
+				break;
+			case 4:
+				mes "[ギヨ]";
+				mes "よく、考えるといい。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[ギヨ]";
-			mes "よく、考えるといい。";
-			close;
 		}
 		break;
 	case 2:
@@ -4551,42 +4554,45 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 		mes "三日月紋様の手甲[1]か。";
 		mes "美しさ、強さどちらも備えた";
 		mes "上等な一品だ。";
-		next;
-		switch(select("材料を見る","性能を見る","作成する","やめる")) {
-		case 1:
-			mes "[ギヨ]";
-			mes "^ff0000三日月紋様の手甲[1]は";
-			mes "キツネ紋様の手甲[1]1個";
-			mes "水晶のかけら100個^000000";
-			mes "が必要になる。";
-			mes "これにより、水晶のように透明で";
-			mes "美しい三日月を刻むことになる。";
-			continue;
-		case 2:
-			mes "[三日月紋様の手甲[1]]";
-			mes "精錬値が1上がる度に、";
-			mes "スキルディレイ - 2%";
-			mes "[霧中闇影]";
-			mes "と共に装備時、追加で";
-			mes "Flee + 10";
-			mes "完全回避 + 10";
+		while(1) {
 			next;
-			mes "[三日月紋様の手甲[1]]";
-			mes "系列 : 盾";
-			mes "防御 : 45";
-			mes "重量 : 25";
-			mes "要求レベル : 100";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,2173;
-			setarray '@need,2171,7321;
-			setarray '@amount,1,100;
+			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			case 1:
+				mes "[ギヨ]";
+				mes "^ff0000三日月紋様の手甲[1]は";
+				mes "キツネ紋様の手甲[1]1個";
+				mes "水晶のかけら100個^000000";
+				mes "が必要になる。";
+				mes "これにより、水晶のように透明で";
+				mes "美しい三日月を刻むことになる。";
+				continue;
+			case 2:
+				mes "[三日月紋様の手甲[1]]";
+				mes "精錬値が1上がる度に、";
+				mes "スキルディレイ - 2%";
+				mes "[霧中闇影]";
+				mes "と共に装備時、追加で";
+				mes "Flee + 10";
+				mes "完全回避 + 10";
+				next;
+				mes "[三日月紋様の手甲[1]]";
+				mes "系列 : 盾";
+				mes "防御 : 45";
+				mes "重量 : 25";
+				mes "要求レベル : 100";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,2173;
+				setarray '@need,2171,7321;
+				setarray '@amount,1,100;
+				break;
+			case 4:
+				mes "[ギヨ]";
+				mes "よく、考えるといい。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[ギヨ]";
-			mes "よく、考えるといい。";
-			close;
 		}
 		break;
 	case 3:
@@ -4594,43 +4600,46 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 		mes "円鱗の鎧[1]か。";
 		mes "これはかつて伝説となっていた";
 		mes "忍者が身に着けていたものらしい。";
-		next;
-		switch(select("材料を見る","性能を見る","作成する","やめる")) {
-		case 1:
-			mes "[ギヨ]";
-			mes "^ff0000円鱗の鎧[1]は";
-			mes "火竜の鱗30個、";
-			mes "氷の鱗30個、";
-			mes "鮮血の鱗30個^000000";
-			mes "が必要になる。";
-			continue;
-		case 2:
-			mes "[円鱗の鱗[1]]";
-			mes "MaxHP + 15%";
-			mes "MaxSP - 30%";
+		while(1) {
 			next;
-			mes "[円鱗の鱗[1]]";
-			mes "[狼模様の手甲]";
-			mes "と共に装備時、追加で";
-			mes "Str + 2";
-			mes "物理攻撃で与えるダメージ + 10%";
-			next;
-			mes "[円鱗の鱗[1]]";
-			mes "系列 : 鎧";
-			mes "防御 : 90";
-			mes "重量 : 180";
-			mes "要求レベル : 100";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,15054;
-			setarray '@need,7451,7562,6091;
-			setarray '@amount,30,30,30;
+			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			case 1:
+				mes "[ギヨ]";
+				mes "^ff0000円鱗の鎧[1]は";
+				mes "火竜の鱗30個、";
+				mes "氷の鱗30個、";
+				mes "鮮血の鱗30個^000000";
+				mes "が必要になる。";
+				continue;
+			case 2:
+				mes "[円鱗の鱗[1]]";
+				mes "MaxHP + 15%";
+				mes "MaxSP - 30%";
+				next;
+				mes "[円鱗の鱗[1]]";
+				mes "[狼模様の手甲]";
+				mes "と共に装備時、追加で";
+				mes "Str + 2";
+				mes "物理攻撃で与えるダメージ + 10%";
+				next;
+				mes "[円鱗の鱗[1]]";
+				mes "系列 : 鎧";
+				mes "防御 : 90";
+				mes "重量 : 180";
+				mes "要求レベル : 100";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,15054;
+				setarray '@need,7451,7562,6091;
+				setarray '@amount,30,30,30;
+				break;
+			case 4:
+				mes "[ギヨ]";
+				mes "よく、考えるといい。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[ギヨ]";
-			mes "よく、考えるといい。";
-			close;
 		}
 		break;
 	case 4:
@@ -4638,44 +4647,47 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 		mes "霧中闇影[1]か……。";
 		mes "これは霧に隠れ闇に紛れ、";
 		mes "身を守る為に作られた物だ。";
-		next;
-		switch(select("材料を見る","性能を見る","作成する","やめる")) {
-		case 1:
-			mes "[ギヨ]";
-			mes "^ff0000霧中闇影[1]には";
-			mes "特殊忍者スーツ[1]";
-			mes "暗闇の破片10個^000000";
-			mes "が必要になる。";
-			continue;
-		case 2:
-			mes "[霧中闇影[1]]";
-			mes "Agi + 1";
-			mes "物理攻撃を受けた時、";
-			mes "一定確率で自分にオートスペル";
-			mes "[幻術-影武者-]Lv1発動";
+		while(1) {
 			next;
-			mes "[霧中闇影[1]]";
-			mes "[三日月模様の手甲]";
-			mes "と共に装備時、追加で";
-			mes "完全回避 + 10";
-			mes "Flee + 10";
-			next;
-			mes "[霧中闇影[1]]";
-			mes "系列 : 鎧";
-			mes "防御 : 60";
-			mes "重量 : 150";
-			mes "要求レベル : 100";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,15055;
-			setarray '@need,15056,6089;
-			setarray '@amount,1,10;
+			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			case 1:
+				mes "[ギヨ]";
+				mes "^ff0000霧中闇影[1]には";
+				mes "特殊忍者スーツ[1]";
+				mes "暗闇の破片10個^000000";
+				mes "が必要になる。";
+				continue;
+			case 2:
+				mes "[霧中闇影[1]]";
+				mes "Agi + 1";
+				mes "物理攻撃を受けた時、";
+				mes "一定確率で自分にオートスペル";
+				mes "[幻術-影武者-]Lv1発動";
+				next;
+				mes "[霧中闇影[1]]";
+				mes "[三日月模様の手甲]";
+				mes "と共に装備時、追加で";
+				mes "完全回避 + 10";
+				mes "Flee + 10";
+				next;
+				mes "[霧中闇影[1]]";
+				mes "系列 : 鎧";
+				mes "防御 : 60";
+				mes "重量 : 150";
+				mes "要求レベル : 100";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,15055;
+				setarray '@need,15056,6089;
+				setarray '@amount,1,10;
+				break;
+			case 4:
+				mes "[ギヨ]";
+				mes "よく、考えるといい。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[ギヨ]";
-			mes "よく、考えるといい。";
-			close;
 		}
 		break;
 	}
@@ -4774,38 +4786,41 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 		mes "羅刹剣[1]は";
 		mes "ある程度修練を積んだ者しか";
 		mes "扱えない難しい武器だ。";
-		next;
-		switch(select("材料をみる","性能をみる","作成する","やめる")) {
-		case 1:
-			mes "[キー]";
-			mes "^ff0000羅刹剣は村雨[2]1個";
-			mes "ガーネット1個^000000";
-			mes "が必要になる。";
-			mes "ガーネットが羅刹剣特有の美しい色を";
-			mes "演出してくれる。";
-			continue;
-		case 2:
-			mes "[羅刹剣[1]]";
-			mes "Int + 3";
-			mes "Matk + 100";
+		while(1) {
 			next;
-			mes "[羅刹剣[1]]";
-			mes "系列 : 短剣";
-			mes "攻撃 : 120";
-			mes "重量 : 60";
-			mes "武器レベル : 3";
-			mes "要求レベル : 110";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,13076;
-			setarray '@need,13013,718;
-			setarray '@amount,1,1;
+			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			case 1:
+				mes "[キー]";
+				mes "^ff0000羅刹剣は村雨[2]1個";
+				mes "ガーネット1個^000000";
+				mes "が必要になる。";
+				mes "ガーネットが羅刹剣特有の美しい色を";
+				mes "演出してくれる。";
+				continue;
+			case 2:
+				mes "[羅刹剣[1]]";
+				mes "Int + 3";
+				mes "Matk + 100";
+				next;
+				mes "[羅刹剣[1]]";
+				mes "系列 : 短剣";
+				mes "攻撃 : 120";
+				mes "重量 : 60";
+				mes "武器レベル : 3";
+				mes "要求レベル : 110";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,13076;
+				setarray '@need,13013,718;
+				setarray '@amount,1,1;
+				break;
+			case 4:
+				mes "[キー]";
+				mes "よく、考えてみる事だ。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[キー]";
-			mes "よく、考えてみる事だ。";
-			close;
 		}
 		break;
 	case 2:
@@ -4814,41 +4829,44 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 		mes "三日月のように曲がる美しい曲線。";
 		mes "この仕上がりを出せる者は";
 		mes "滅多にいない一品だ。";
-		next;
-		switch(select("材料をみる","性能をみる","作成する","やめる")) {
-		case 1:
-			mes "[キー]";
-			mes "^ff0000三日月[1]は白刃[1]1個";
-			mes "オパール1個^000000";
-			mes "が必要になる。";
-			mes "オパールが三日月の光を";
-			mes "さらに輝かせる。";
-			continue;
-		case 2:
-			mes "[三日月[1]]";
-			mes "Matk + 120、";
-			mes "スキル使用時";
-			mes "消費SP - 5%";
-			mes "スキル使用時";
-			mes "詠唱時間 - 5%";
+		while(1) {
 			next;
-			mes "[三日月[1]]";
-			mes "系列 : 短剣";
-			mes "攻撃 : 50";
-			mes "重量 : 60";
-			mes "武器レベル : 4";
-			mes "要求レベル : 100";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,13078;
-			setarray '@need,13015,727;
-			setarray '@amount,1,1;
+			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			case 1:
+				mes "[キー]";
+				mes "^ff0000三日月[1]は白刃[1]1個";
+				mes "オパール1個^000000";
+				mes "が必要になる。";
+				mes "オパールが三日月の光を";
+				mes "さらに輝かせる。";
+				continue;
+			case 2:
+				mes "[三日月[1]]";
+				mes "Matk + 120、";
+				mes "スキル使用時";
+				mes "消費SP - 5%";
+				mes "スキル使用時";
+				mes "詠唱時間 - 5%";
+				next;
+				mes "[三日月[1]]";
+				mes "系列 : 短剣";
+				mes "攻撃 : 50";
+				mes "重量 : 60";
+				mes "武器レベル : 4";
+				mes "要求レベル : 100";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,13078;
+				setarray '@need,13015,727;
+				setarray '@amount,1,1;
+				break;
+			case 4:
+				mes "[キー]";
+				mes "よく、考えてみる事だ。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[キー]";
-			mes "よく、考えてみる事だ。";
-			close;
 		}
 		break;
 	case 3:
@@ -4857,39 +4875,42 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 		mes "これも本当に美しい。";
 		mes "君は花びらが舞う姿を";
 		mes "見たことがあるか？";
-		next;
-		switch(select("材料をみる","性能をみる","作成する","やめる")) {
-		case 1:
-			mes "[キー]";
-			mes "^ff0000風魔手裏剣・乱華[2]は";
-			mes "風魔手裏剣・明浄[2]1個";
-			mes "壊れた手裏剣100個^000000";
-			mes "が必要になる。";
-			mes "手裏剣が少し多めに必要だが、";
-			mes "美しく舞うためだ。";
-			continue;
-		case 2:
-			mes "[風魔手裏剣・乱華[2]]";
-			mes "Matk + 50";
-			mes "スキル [風魔手裏剣-乱華-]";
-			mes "で与えるダメージ + 20%";
+		while(1) {
 			next;
-			mes "系列 : 風魔手裏剣";
-			mes "攻撃 : 150";
-			mes "重量 : 150";
-			mes "武器レベル : 3";
-			mes "要求レベル : 110";
-			mes "装備 : 影狼 朧";
-			continue;
-		case 3:
-			set '@gain,13313;
-			setarray '@need,13304,7156;
-			setarray '@amount,1,100;
+			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			case 1:
+				mes "[キー]";
+				mes "^ff0000風魔手裏剣・乱華[2]は";
+				mes "風魔手裏剣・明浄[2]1個";
+				mes "壊れた手裏剣100個^000000";
+				mes "が必要になる。";
+				mes "手裏剣が少し多めに必要だが、";
+				mes "美しく舞うためだ。";
+				continue;
+			case 2:
+				mes "[風魔手裏剣・乱華[2]]";
+				mes "Matk + 50";
+				mes "スキル [風魔手裏剣-乱華-]";
+				mes "で与えるダメージ + 20%";
+				next;
+				mes "系列 : 風魔手裏剣";
+				mes "攻撃 : 150";
+				mes "重量 : 150";
+				mes "武器レベル : 3";
+				mes "要求レベル : 110";
+				mes "装備 : 影狼 朧";
+				continue;
+			case 3:
+				set '@gain,13313;
+				setarray '@need,13304,7156;
+				setarray '@amount,1,100;
+				break;
+			case 4:
+				mes "[キー]";
+				mes "よく、考えてみる事だ。";
+				close;
+			}
 			break;
-		case 4:
-			mes "[キー]";
-			mes "よく、考えてみる事だ。";
-			close;
 		}
 		break;
 	case 4:

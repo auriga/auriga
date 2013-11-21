@@ -1505,3 +1505,35 @@ dew_fild01.gat,48,65,0		warp	dewatawarp0401	1,1,dew_dun02.gat,302,30
 //==============================================================
 //ビフロストフィールド 01⇒前線基地 スプレンディッド
 bif_fild01.gat,318,48,0		warp	bifrostwarp0101	1,1,splendide.gat,270,378
+
+
+
+//---ポートマラヤ追加マップ
+
+
+//==============================================================
+// -----  ポートマラヤ -----
+// ma_fild01.gat	バリオ・マヒワガ
+// ma_fild02.gat	バリオ・フォレスト
+// -----
+// malaya.gat		ポートマラヤ
+// ma_in01.gat		ポートマラヤ 室内
+// ma_in01_jp.gat	ポートマラヤ 室内
+// ma_scene01.gat	バコナワ湖
+// ma_c_jp.gat		ブワヤの洞窟
+//==============================================================
+//バリオ・マヒワガ⇒ポートマラヤ
+ma_fild01.gat,37,272,0		warp	malayawarp0101	1,1,malaya.gat,367,277
+//バリオ・マヒワガ⇒ポートマラヤ 室内
+ma_fild01.gat,251,190,0		warp	malayawarp0102	1,1,ma_in01.gat,108,160
+ma_fild01.gat,160,219,0		warp	malayawarp0103	1,1,ma_in01_jp.gat,83,17
+ma_fild01.gat,262,212,0		warp	malayawarp0104	1,1,ma_in01_jp.gat,36,152
+
+//バリオ・マヒワガ⇒バコナワ湖
+ma_fild01.gat,288,52,0		warp	malayawarp0401	1,1,ma_scene01.gat,142,78
+//バリオ・フォレスト⇒ブワヤの洞窟
+ma_fild02.gat,315,323,0		warp	malayawarp0402	1,1,ma_c_jp.gat,31,56
+
+//バリオ・マヒワガ⇔バリオ・フォレスト
+ma_fild01.gat,266,359,0		warp	malayawarp5001	1,1,ma_fild02.gat,248,36
+ma_fild02.gat,248,33,0		warp	malayawarp5002	1,1,ma_fild01.gat,266,356

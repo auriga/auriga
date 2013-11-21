@@ -1246,3 +1246,33 @@ dew_dun02.gat,305,30,0		warp	dewatawarp0501	1,1,dew_fild01.gat,50,65
 //==============================================================
 //星明りの珊瑚礁⇒マラン島
 mal_dun01.gat,30,230,0		warp	malangdowarp0101	1,1,malangdo.gat,75,236
+
+
+
+//---ポートマラヤ追加マップ
+
+
+//==============================================================
+// -----  ポートマラヤ -----
+// ma_scene01.gat	バコナワ湖
+// ma_c_jp.gat		ブワヤの洞窟
+// ma_dun01.gat		ビョンウンゴ病院1階
+// ma_dun01_jp.gat	ビョンウンゴ病院2階
+// -----
+// ma_fild01.gat	バリオ・マヒワガ
+// ma_fild02.gat	バリオ・フォレスト
+//==============================================================
+//バコナワ湖⇒バリオ・マヒワガ
+ma_scene01.gat,140,80,0		warp	malayawarp0505	1,1,ma_fild01.gat,288,55
+//ブワヤの洞窟⇒バリオ・フォレスト
+ma_c_jp.gat,28,56,0			warp	malayawarp0506	1,1,ma_fild02.gat,315,319
+
+//ビョンウンゴ病院2階⇒ビョンウンゴ病院1階
+ma_dun01_jp.gat,33,156,0	warp	malayawarp4001	1,1,ma_dun01.gat,150,8
+//ビョンウンゴ病院2階
+ma_dun01_jp.gat,107,157,0	warp	malayawarp4002	1,1,ma_dun01_jp.gat,113,157
+ma_dun01_jp.gat,110,157,0	warp	malayawarp4003	1,1,ma_dun01_jp.gat,104,157
+ma_dun01_jp.gat,107,63,0	warp	malayawarp4004	1,1,ma_dun01_jp.gat,113,63
+ma_dun01_jp.gat,110,63,0	warp	malayawarp4005	1,1,ma_dun01_jp.gat,104,63
+ma_dun01_jp.gat,111,176,0	warp	malayawarp4006	1,1,ma_dun01_jp.gat,113,49
+ma_dun01_jp.gat,111,49,0	warp	malayawarp4007	1,1,ma_dun01_jp.gat,113,176

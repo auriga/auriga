@@ -2550,3 +2550,36 @@ malangdo.gat,240,150,0	warp	malangdowarp1033	1,1,mal_in01.gat,11,17
 mal_in01.gat,9,16,0		warp	malangdowarp1034	1,1,malangdo.gat,238,149
 mal_in01.gat,20,15,0	warp	malangdowarp1035	1,1,mal_in01.gat,65,11
 mal_in01.gat,67,12,0	warp	malangdowarp1036	1,1,mal_in01.gat,20,13
+
+
+
+//---ポートマラヤ追加マップ
+
+
+//==============================================================
+// -----  ポートマラヤ -----
+// malaya.gat		ポートマラヤ
+// ma_in01.gat		ポートマラヤ 室内
+// ma_in01_jp.gat	ポートマラヤ 室内
+// -----
+// ma_fild01.gat	バリオ・マヒワガ
+//==============================================================
+//ポートマラヤ⇒バリオ・マヒワガ
+malaya.gat,370,277,0	warp	malayawarp0501	1,1,ma_fild01.gat,40,272
+//ポートマラヤ 室内⇒バリオ・マヒワガ
+ma_in01.gat,105,160,0	warp	malayawarp0502	1,1,ma_fild01.gat,248,190
+ma_in01_jp.gat,86,17,0	warp	malayawarp0503	1,1,ma_fild01.gat,162,221
+ma_in01_jp.gat,33,152,0	warp	malayawarp0504	1,1,ma_fild01.gat,257,212
+
+//旅館
+ma_in01.gat,24,77,0		warp	malayawarp1001	1,1,malaya.gat,178,208
+//武器屋
+ma_in01.gat,86,16,0		warp	malayawarp1002	1,1,malaya.gat,115,212
+//道具屋
+ma_in01.gat,9,24,0		warp	malayawarp1003	1,1,malaya.gat,296,167
+//商家
+ma_in01.gat,126,17,0	warp	malayawarp1004	1,1,malaya.gat,261,237
+//民家
+ma_in01.gat,33,152,0	warp	malayawarp1005	1,1,malaya.gat,296,210
+//ペリー号
+ma_in01.gat,105,92,0	warp	malayawarp1006	1,1,malaya.gat,310,67

@@ -1,4 +1,41 @@
 ----------------------------------------
+//1126 [2013/11/22] by refis
+
+・ポートマラヤNPC実装 (npc_town_portmalaya.txt)
+	-> 警戒する街クエスト実装
+	-> 街の救済者クエスト実装
+	-> 街を思う少女クエスト実装
+	-> ペリー号のゴーストクエスト実装
+	-> 新任看護師と病院クエスト実装
+	-> 森の中の秘密クエスト実装
+	-> バコナワの伝説クエスト実装
+	-> 消えた住民とバコナワクエスト実装
+	-> 鉄鍋クエスト実装
+	-> ジェジェリンの落し物クエスト実装
+	-> パンドイのシルバーブレイドクエスト実装
+	-> 警備犬バンタイクエスト実装
+	-> マリスの子供探しクエスト実装
+	-> 旅人の友達カプレクエスト実装
+		※メモリアルダンジョンは未実装です
+
+・ポートマラヤ関連NPC追加 (npc_misc_guide.txt, npc_misc_kafra.txt)
+
+・ポートマラヤ追加マップのwarp更新 (npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt)
+
+・ポートマラヤ追加マップのmapflag更新 (mapflag.txt)
+
+・ポートマラヤ追加マップのmonster出現定義追加 (npc_monster_mafild.txt, npc_monster_malaya.txt)
+
+・mob_skill_db.txt更新 (db/mob_skill_db.txt)
+
+・quest_db.txt更新 (db/quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・影狼・朧関連交換NPCの文法誤りを修正 (npc_job_47kaboro.txt)
+	Thanks Gee さん
+
+----------------------------------------
 //1125 [2013/11/19] by refis
 
 ・影狼・朧エンチャントが必ずキャンセルされるミスを修正 (npc_job_47kaboro.txt)

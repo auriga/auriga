@@ -2966,3 +2966,96 @@ dewata.gat,226,82,4	script	デワタ案内要員#dew1	537,{
 	}
 }
 dewata.gat,197,184,4	duplicate(デワタ案内要員#dew1)	デワタ案内要員#dew2	537
+
+//----------------------------------------------------------------------
+//[案内要員 - ポートマラヤ]
+
+malaya.gat,71,72,4	script	ポートマラヤガイド#01	579,{
+	mes "[ポートマラヤガイド]";
+	mes "多様な文化と伝説が生きる町";
+	mes "^8B4513ポートマラヤ^000000にようこそ。";
+	mes "私は町案内をしているので";
+	mes "知りたいことがあれば";
+	mes "なんでも聞いて下さい。";
+	while(1) {
+		next;
+		switch(select("カプラ職員","旅館","武器商人","道具商人","病院","公園","港","ミニマップ上の位置表示を消す","やめる")) {
+		case 1:
+			mes "[ポートマラヤガイド]";
+			mes "^0000FFカプラ職員^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,71,79,0,0x0A82FF;
+			viewpoint 1,234,204,1,0x0A82FF;
+			continue;
+		case 2:
+			mes "[ポートマラヤガイド]";
+			mes "^006400旅館^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,178,208,2,0xAAFF00;
+			continue;
+		case 3:
+			mes "[ポートマラヤガイド]";
+			mes "^008080武器商人^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,114,212,3,0x008080;
+			continue;
+		case 4:
+			mes "[ポートマラヤガイド]";
+			mes "^FF1493道具商人^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,297,167,4,0xFF1493;
+			continue;
+		case 5:
+			mes "[ポートマラヤガイド]";
+			mes "^FF4500病院^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,50,75,5,0xFF4500;
+			continue;
+		case 6:
+			mes "[ポートマラヤガイド]";
+			mes "^FF8C00公園^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,280,360,6,0xFF8C00;
+			continue;
+		case 7:
+			mes "[ポートマラヤガイド]";
+			mes "^8A2BE2港^000000の";
+			mes "位置をミニマップに";
+			mes "表示します。";
+			mes "他に案内が必要ですか？";
+			viewpoint 1,276,55,7,0x8A2BE2;
+			continue;
+		case 8:
+			mes "[ポートマラヤガイド]";
+			mes "ミニマップ上の位置表示を消去します。";
+			mes "他に何か必要ですか？";
+			viewpoint 2,1,1,0,0xFFFFFF;
+			viewpoint 2,1,1,1,0xFFFFFF;
+			viewpoint 2,1,1,2,0xFFFFFF;
+			viewpoint 2,1,1,3,0xFFFFFF;
+			viewpoint 2,1,1,4,0xFFFFFF;
+			viewpoint 2,1,1,5,0xFFFFFF;
+			viewpoint 2,1,1,6,0xFFFFFF;
+			viewpoint 2,1,1,7,0xFFFFFF;
+			continue;
+		case 9:
+			mes "[ポートマラヤガイド]";
+			mes "楽しんで行って下さいね。";
+			close;
+		}
+	}
+}
+malaya.gat,250,83,6		duplicate(ポートマラヤガイド#01)	ポートマラヤガイド#02	579
+malaya.gat,224,204,6	duplicate(ポートマラヤガイド#01)	ポートマラヤガイド#03	579
