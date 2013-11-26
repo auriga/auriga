@@ -1,12 +1,12 @@
 //= Auriga Script ==============================================================
 // Ragnarok Online Portmalaya Town Script	by refis
 //= Registry ===================================================================
-// $MalayaName01$ -> ポートマラヤの噂
-// $MalayaName02$ -> バリオ・マヒワガの噂
-// $MalayaName03$ -> カプレの味方の噂
-// $MalayaName04$ -> ma_fild01謎の生物の噂
-// $MalayaName05$ -> ma_fild02謎の生物の噂
-// $MalayaName06$ -> ma_scene01謎の生物の噂
+// $MalayaName$[0] -> ポートマラヤの噂
+// $MalayaName$[1] -> バリオ・マヒワガの噂
+// $MalayaName$[2] -> カプレの味方の噂
+// $MalayaName$[3] -> ma_fild01謎の生物の噂
+// $MalayaName$[4] -> ma_fild02謎の生物の噂
+// $MalayaName$[5] -> ma_scene01謎の生物の噂
 //==============================================================================
 
 //============================================================
@@ -1078,12 +1078,12 @@ OnTouch:
 		mes "‐謎の生物はあなたを見て";
 		mes "　逃げだした‐";
 	}
-	else if($MalayaName04$ == strcharinfo(0) || $MalayaName06$ == strcharinfo(0)) {
+	else if($MalayaName$[3] == strcharinfo(0) || $MalayaName$[5] == strcharinfo(0)) {
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見た後に顔を赤くして消えた‐";
 	}
 	else if(rand(3) == 1) {
-		set $MalayaName04$,strcharinfo(0);
+		set $MalayaName$[3],strcharinfo(0);
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見てから消えた‐";
 	}
@@ -1135,12 +1135,12 @@ OnTouch:
 		mes "‐謎の生物はあなたを見て";
 		mes "　逃げだした‐";
 	}
-	else if($MalayaName04$ == strcharinfo(0) || $MalayaName06$ == strcharinfo(0)) {
+	else if($MalayaName$[3] == strcharinfo(0) || $MalayaName$[5] == strcharinfo(0)) {
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見た後に顔を赤くして消えた‐";
 	}
 	else if(rand(3) == 1) {
-		set $MalayaName04$,strcharinfo(0);
+		set $MalayaName$[3],strcharinfo(0);
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見てから消えた‐";
 	}
@@ -1179,12 +1179,12 @@ OnTouch:
 		mes "‐謎の生物はあなたを見て";
 		mes "　逃げだした‐";
 	}
-	else if($MalayaName04$ == strcharinfo(0) || $MalayaName06$ == strcharinfo(0)) {
+	else if($MalayaName$[3] == strcharinfo(0) || $MalayaName$[5] == strcharinfo(0)) {
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見た後に顔を赤くして消えた‐";
 	}
 	else if(rand(3) == 1) {
-		set $MalayaName05$,strcharinfo(0);
+		set $MalayaName$[4],strcharinfo(0);
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見てから消えた‐";
 	}
@@ -1222,16 +1222,16 @@ OnTouch:
 		mes "‐謎の生物はあなたを見て";
 		mes "　逃げだした‐";
 	}
-	else if($MalayaName04$ == strcharinfo(0) || $MalayaName06$ == strcharinfo(0)) {
+	else if($MalayaName$[3] == strcharinfo(0) || $MalayaName$[5] == strcharinfo(0)) {
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見た後に顔を赤くして消えた‐";
 	}
-//	else if($MalayaName03$ == strcharinfo(0)) {
+//	else if($MalayaName$[2] == strcharinfo(0)) {
 //		mes "‐謎の生物はあなたをちらっと";
 //		mes "　見てから消えた‐";
 //	}
 	else if(rand(3) == 1) {
-		set $MalayaName06$,strcharinfo(0);
+		set $MalayaName$[5],strcharinfo(0);
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見てから消えた‐";
 	}
@@ -1283,16 +1283,16 @@ OnTouch:
 		mes "‐謎の生物はあなたを見て";
 		mes "　逃げだした‐";
 	}
-	else if($MalayaName04$ == strcharinfo(0) || $MalayaName06$ == strcharinfo(0)) {
+	else if($MalayaName$[3] == strcharinfo(0) || $MalayaName$[5] == strcharinfo(0)) {
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見た後に顔を赤くして消えた‐";
 	}
-//	else if($MalayaName03$ == strcharinfo(0)) {
+//	else if($MalayaName$[2] == strcharinfo(0)) {
 //		mes "‐謎の生物はあなたをちらっと";
 //		mes "　見てから消えた‐";
 //	}
 	else if(rand(3) == 1) {
-		set $MalayaName06$,strcharinfo(0);
+		set $MalayaName$[5],strcharinfo(0);
 		mes "‐謎の生物はあなたをちらっと";
 		mes "　見てから消えた‐";
 	}
@@ -2029,25 +2029,25 @@ malaya.gat,266,76,3	script	警備隊員ロデル	570,7,7,{
 			getexp 500000,0;
 			getexp 0,200000;
 			delquest 7404;
-			set $MalayaName02$,strcharinfo(0);
+			set $MalayaName$[1],strcharinfo(0);
 			close;
 		}
 		switch(rand(1,4)){
 		case 1:
-			if($MalayaName01$ != "" || $MalayaName04$ != "" || $MalayaName06$ != "") {
+			if($MalayaName$[0] != "" || $MalayaName$[3] != "" || $MalayaName$[5] != "") {
 				mes "[警備隊員ロデル]";
 				mes "最近、勇敢な戦士として、";
-				mes $MalayaName01$;
-				mes $MalayaName04$;
-				mes $MalayaName06$;
+				mes $MalayaName$[0];
+				mes $MalayaName$[3];
+				mes $MalayaName$[5];
 				mes "の話題で町は持ちきりさ。";
 				break;
 			}
 		case 2:
-			if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+			if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 				mes "[警備隊員ロデル]";
 				mes "最近、友達になった人がいるんだ。";
-				mes $MalayaName03$;
+				mes $MalayaName$[2];
 				mes "という人だけど知っているか？";
 				mes "あ、もちろん君もいい友達だよ。";
 				break;
@@ -2604,27 +2604,27 @@ malaya.gat,185,358,3	script	指導者ムンバキ・ポン	580,{
 	case 6:
 		switch(rand(1,4)) {
 		case 1:
-			if($MalayaName01$ != "" && $MalayaName01$ != strcharinfo(0)) {
+			if($MalayaName$[0] != "" && $MalayaName$[0] != strcharinfo(0)) {
 				mes "[ムンバキ・ポン]";
 				mes "君のように勇敢な冒険者がいたよ。";
-				mes $MalayaName01$;
+				mes $MalayaName$[0];
 				mes "という名前らしいが、";
 				mes "知り合いかね？";
 				break;
 			}
 		case 2:
-			if($MalayaName01$ != "" && $MalayaName01$ != strcharinfo(0)) {
+			if($MalayaName$[0] != "" && $MalayaName$[0] != strcharinfo(0)) {
 				mes "[ムンバキ・ポン]";
 				mes "最近町で人気の冒険者がいる。";
-				mes $MalayaName01$;
+				mes $MalayaName$[0];
 				mes "という名前らしいが、";
 				mes "血気盛んな冒険者のようだね。";
 				break;
 			}
 		case 3:
-			if($MalayaName02$ != "" && $MalayaName02$ != strcharinfo(0)) {
+			if($MalayaName$[1] != "" && $MalayaName$[1] != strcharinfo(0)) {
 				mes "[ムンバキ・ポン]";
-				mes $MalayaName02$;
+				mes $MalayaName$[1];
 				mes "という冒険者はこの町だけでなく";
 				mes "バリオ・マヒワガでも";
 				mes "人々を助けているらしい。";
@@ -3291,7 +3291,7 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 			getitem 6497,1;
 			getexp 500000,0;
 			getexp 0,200000;
-			set $MalayaName01$,strcharinfo(0);
+			set $MalayaName$[0],strcharinfo(0);
 			close;
 		}
 		if(checkquest(7380)) {
@@ -3340,7 +3340,7 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 			getitem 6497,1;
 			getexp 500000,0;
 			getexp 0,200000;
-			set $MalayaName01$,strcharinfo(0);
+			set $MalayaName$[0],strcharinfo(0);
 			close;
 		}
 		if(checkquest(72170)) {
@@ -3717,7 +3717,7 @@ malaya.gat,181,353,5	script	老人ナルド	574,{
 			getitem 6497,1;
 			getexp 500000,0;
 			getexp 0,200000;
-			set $MalayaName02$,strcharinfo(0);
+			set $MalayaName$[1],strcharinfo(0);
 			close;
 		}
 		mes "[老人ナルド]";
@@ -3736,28 +3736,28 @@ malaya.gat,181,353,5	script	老人ナルド	574,{
 			if(select("話をする","鉄で作った鍋について") == 1) {
 				switch(rand(1,4)) {
 				case 1:
-					if($MalayaName01$ != "" && $MalayaName01$ != strcharinfo(0)) {
+					if($MalayaName$[0] != "" && $MalayaName$[0] != strcharinfo(0)) {
 						mes "[老人ナルド]";
 						mes "商人たちと話していると、";
-						mes $MalayaName01$+ "という";
+						mes $MalayaName$[0]+ "という";
 						mes "名前をよく耳にする。";
 						mes "その人は商才があるようだね。";
 						close;
 					}
 				case 2:
-					if($MalayaName02$ != "" && $MalayaName02$ != strcharinfo(0)) {
+					if($MalayaName$[1] != "" && $MalayaName$[1] != strcharinfo(0)) {
 						mes "[老人ナルド]";
 						mes "最近バリオ・マヒワガで";
-						mes $MalayaName02$+ "という";
+						mes $MalayaName$[1]+ "という";
 						mes "冒険者の名前を耳にする。";
 						mes "君も名を知らしめてみたらどうだね。";
 						close;
 					}
 				case 3:
-					if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+					if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 						mes "[老人ナルド]";
 						mes "カプレを知っているかね。";
-						mes $MalayaName03$;
+						mes $MalayaName$[2];
 						mes "という冒険者が、";
 						mes "カプレを手伝っているらしい。";
 						close;
@@ -3780,28 +3780,28 @@ malaya.gat,181,353,5	script	老人ナルド	574,{
 		if(select("話をする","何か手伝いましょうか") == 1) {
 			switch(rand(1,4)) {
 			case 1:
-				if($MalayaName01$ != "" && $MalayaName01$ != strcharinfo(0)) {
+				if($MalayaName$[0] != "" && $MalayaName$[0] != strcharinfo(0)) {
 					mes "[老人ナルド]";
 					mes "商人たちと話していると、";
-					mes $MalayaName01$+ "という";
+					mes $MalayaName$[0]+ "という";
 					mes "名前をよく耳にする。";
 					mes "その人は商才があるようだね。";
 					close;
 				}
 			case 2:
-				if($MalayaName02$ != "" && $MalayaName02$ != strcharinfo(0)) {
+				if($MalayaName$[1] != "" && $MalayaName$[1] != strcharinfo(0)) {
 					mes "[老人ナルド]";
 					mes "最近バリオ・マヒワガで";
-					mes $MalayaName02$+ "という";
+					mes $MalayaName$[1]+ "という";
 					mes "冒険者の名前を耳にする。";
 					mes "君も名を知らしめてみたらどうだね。";
 					close;
 				}
 			case 3:
-				if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+				if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 					mes "[老人ナルド]";
 					mes "カプレを知っているかね。";
-					mes $MalayaName03$;
+					mes $MalayaName$[2];
 					mes "という冒険者が、";
 					mes "カプレを手伝っているらしい。";
 					close;
@@ -4144,30 +4144,30 @@ malaya.gat,228,267,3	script	ローメル	573,{
 		}
 		switch(rand(1,4)) {
 		case 1:
-			if($MalayaName01$ != "" && $MalayaName01$ != strcharinfo(0)) {
+			if($MalayaName$[0] != "" && $MalayaName$[0] != strcharinfo(0)) {
 				mes "[ローメル]";
 				mes "最近ウォアンさんが酒の席で";
-				mes "俺たちの" +$MalayaName01$;
-				mes "俺たちの" +$MalayaName01$;
+				mes "俺たちの" +$MalayaName$[0];
+				mes "俺たちの" +$MalayaName$[0];
 				mes "と酔っぱらいながら叫んでいました。";
 				mes "いったいふたりの間に";
 				mes "何があったんでしょうかね。";
 				close;
 			}
 		case 2:
-			if($MalayaName02$ != "" && $MalayaName02$ != strcharinfo(0)) {
+			if($MalayaName$[1] != "" && $MalayaName$[1] != strcharinfo(0)) {
 				mes "[ローメル]";
-				mes $MalayaName02$+ "さんは、";
+				mes $MalayaName$[1]+ "さんは、";
 				mes "この町で一番の人気者です。";
 				mes "隣町のバリオ・マヒワガでも";
 				mes "有名なんですよ。";
 				close;
 			}
 		case 3:
-			if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+			if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 				mes "[ローメル]";
 				mes "私の妻が時折寝言で";
-				mes $MalayaName03$;
+				mes $MalayaName$[2];
 				mes "という名前を呼んでいるんですが、";
 				mes "誰なんでしょう……。";
 				close;
@@ -4730,7 +4730,7 @@ malaya.gat,295,171,3	script	収集品商人ウォアン	582,{
 				getitem 6497,1;
 				getexp 500000,0;
 				getexp 0,200000;
-				set $MalayaName02$,strcharinfo(0);
+				set $MalayaName$[1],strcharinfo(0);
 				close;
 			}
 		}
@@ -5093,33 +5093,33 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 			getitem 6497,1;
 			getexp 500000,0;
 			getexp 0,200000;
-			set $MalayaName02$,strcharinfo(0);
+			set $MalayaName$[1],strcharinfo(0);
 			close;
 		}
 		switch(rand(1,4)) {
 		case 1:
-			if($MalayaName06$ != "" && $MalayaName06$ != strcharinfo(0)) {
+			if($MalayaName$[5] != "" && $MalayaName$[5] != strcharinfo(0)) {
 				mes "[パンドイ]";
-				mes $MalayaName06$+ "先生が";
+				mes $MalayaName$[5]+ "先生が";
 				mes "とてもとても大きな発見を";
 				mes "したらしいですよ。";
 				mes "なんでも龍がどうとか……";
 				break;
 			}
 		case 2:
-			if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+			if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 				mes "[パンドイ]";
 				mes "お会いした先生の中で、";
-				mes $MalayaName03$+ "先生以上の";
+				mes $MalayaName$[2]+ "先生以上の";
 				mes "働き者は見たことがありません。";
 				mes "あの方は労働の神様です！";
 				break;
 			}
 		case 3:
-			if($MalayaName03$ != "" && $MalayaName03$ != strcharinfo(0)) {
+			if($MalayaName$[2] != "" && $MalayaName$[2] != strcharinfo(0)) {
 				mes "[パンドイ]";
 				mes "町の近くで";
-				mes $MalayaName03$+ "先生が";
+				mes $MalayaName$[2]+ "先生が";
 				mes "ジェジェリンを退治する姿を";
 				mes "見たことがあるんですが、";
 				mes "あの迫力は……";
@@ -5940,7 +5940,7 @@ malaya.gat,326,68,2	script	船員ペドロ	100,{
 			getexp 5000000,0;
 			getexp 5000000,0;
 			getexp 0,3000000;
-			set $MalayaName01$,strcharinfo(0);
+			set $MalayaName$[0],strcharinfo(0);
 			next;
 			mes "[ペドロ]";
 			mes "私は航海の準備をします。";
@@ -6034,7 +6034,7 @@ malaya.gat,326,68,2	script	船員ペドロ	100,{
 				getitem 6497,1;
 				getexp 500000,0;
 				getexp 0,200000;
-				set $MalayaName01$,strcharinfo(0);
+				set $MalayaName$[0],strcharinfo(0);
 				close;
 			}
 			mes "[ペドロ]";
@@ -6541,7 +6541,7 @@ ma_in01.gat,122,158,0	script	警備隊員ドン	570,{
 		getitem 6497,1;
 		getexp 500000,0;
 		getexp 0,200000;
-		set $MalayaName03$,strcharinfo(0);
+		set $MalayaName$[2],strcharinfo(0);
 		close;
 	}
 	mes "[警備隊員ドン]";
@@ -6837,7 +6837,7 @@ ma_in01_jp.gat,42,155,7	script	マリス	579,{
 		getitem 6497,1;
 		getexp 500000,0;
 		getexp 0,200000;
-		set $MalayaName02$,strcharinfo(0);
+		set $MalayaName$[1],strcharinfo(0);
 		close;
 	}
 	if(checkquest(7390)) {
@@ -7127,7 +7127,7 @@ ma_fild02.gat,241,39,5	script	カプレ・ブディディ	572,{
 		getitem 6497,1;
 		getexp 500000,0;
 		getexp 0,200000;
-		set $MalayaName03$,strcharinfo(0);
+		set $MalayaName$[2],strcharinfo(0);
 		close;
 	}
 	mes "[ブディディ]";

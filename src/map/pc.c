@@ -10348,11 +10348,7 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		    sd->sc.data[SC__REPRODUCE].timer == -1 &&	// リプロデュース状態はSPが回復しない
 		    sd->sc.data[SC__SHADOWFORM].timer == -1 &&	// シャドウフォーム状態はSPが回復しない
 		    sd->sc.data[SC__INVISIBILITY].timer == -1 &&	// インビジビリティ状態はSPが回復しない
-		    sd->sc.data[SC_REFLECTDAMAGE].timer == -1 &&	// リフレクトダメージ状態はSPが回復しない
-		    sd->sc.data[SC_FORCEOFVANGUARD].timer == -1 &&	// フォースオブバンガード状態はSPが回復しない
-		    sd->sc.data[SC_BANDING].timer == -1 &&	// バンディング状態はSPが回復しない
 		    sd->sc.data[SC_SIRCLEOFNATURE].timer == -1 &&	// 循環する自然の音状態はSPが回復しない
-		    sd->sc.data[SC_STRIKING].timer == -1 &&	// ストライキング状態はSPが回復しない
 		    sd->sc.data[SC_SUMMON_ELEM].timer == -1 &&	// サモンエレメンタル状態はSPが回復しない
 #ifndef PRE_RENEWAL
 		    sd->sc.data[SC_FUSION].timer == -1 &&	// 太陽と月と星の融合状態はSPが回復しない

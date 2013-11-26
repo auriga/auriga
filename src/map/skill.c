@@ -4505,8 +4505,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					clif_skill_fail(sd,skillid,0,0,0);
 					break;
 				}
-				/* 魔導ギアを解除 */
-				pc_setoption(sd, (sd->sc.option & ~OPTION_MADOGEAR));
 			}
 
 			/* スキルエフェクト表示 */
@@ -4520,6 +4518,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 			if(sd) {
+				/* 魔導ギアを解除 */
+				pc_setoption(sd, (sd->sc.option & ~OPTION_MADOGEAR));
 				sd->status.sp = 0;
 				clif_updatestatus(sd,SP_SP);
 			}

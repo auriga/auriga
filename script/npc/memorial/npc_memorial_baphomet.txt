@@ -989,7 +989,7 @@ OnTouch:
 			viewpoint 1,85,182,13,0x00FF00;
 			set BAPHO_1QUE,3;
 			initnpctimer;
-			donpcevent getmdnpcname("BaphometControl2")+"::OnStart";
+			donpcevent getmdnpcname("BaphometControl1-2")+"::OnStart";
 		} else {
 			mes "[先代英雄の魂]";
 			mes "君はバフォメットの使徒を倒し、";

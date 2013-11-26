@@ -2276,8 +2276,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
-		WBUFL(buf,22)=g->emblem_id;
 		WBUFL(buf,26)=g->guild_id;
+		WBUFL(buf,36)=g->guild_id;
+		WBUFW(buf,40)=g->emblem_id;
 	}
 	WBUFPOS(buf,46,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFB(buf,49)=5;
@@ -2297,8 +2298,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
-		WBUFL(buf,23)=g->emblem_id;
-		WBUFL(buf,27)=g->guild_id;
+		WBUFL(buf,26)=g->guild_id;
+		WBUFL(buf,37)=g->guild_id;
+		WBUFW(buf,41)=g->emblem_id;
 	}
 	WBUFPOS(buf,47,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFB(buf,50)=5;
@@ -2319,8 +2321,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
-		WBUFW(buf,27)=g->emblem_id;
 		WBUFL(buf,31)=g->guild_id;
+		WBUFL(buf,39)=g->guild_id;
+		WBUFW(buf,43)=g->emblem_id;
 	}
 	WBUFPOS(buf,53,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFW(buf,59)=1;
@@ -2341,8 +2344,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
-		WBUFW(buf,29)=g->emblem_id;
-		WBUFL(buf,33)=g->guild_id;
+		WBUFL(buf,31)=g->guild_id;
+		WBUFL(buf,41)=g->guild_id;
+		WBUFW(buf,45)=g->emblem_id;
 	}
 	WBUFPOS(buf,55,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFW(buf,61)=1;
@@ -2363,8 +2367,9 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	    nd->u.scr.guild_id > 0 &&
 	    (g = guild_search(nd->u.scr.guild_id)) )
 	{
-		WBUFW(buf,29)=g->emblem_id;
-		WBUFL(buf,33)=g->guild_id;
+		WBUFL(buf,31)=g->guild_id;
+		WBUFL(buf,41)=g->guild_id;
+		WBUFW(buf,45)=g->emblem_id;
 	}
 	WBUFPOS(buf,55,nd->bl.x,nd->bl.y,nd->dir);
 	WBUFW(buf,61)=1;
@@ -9842,7 +9847,7 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 void clif_disp_overhead(struct map_session_data *sd, const char* mes)
 {
 	unsigned char buf[256];
-	int len;
+	size_t len;
 
 	nullpo_retv(sd);
 
