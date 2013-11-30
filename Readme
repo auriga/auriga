@@ -1,4 +1,3274 @@
 ----------------------------------------
+//1128 [2013/12/01] by Rayce
+
+・スクリプトのunittalk命令でgccの警告が発生するのを修正（script.c）
+
+・ファイル名の配列サイズを256まで拡張（malloc.c）
+
+・堅牢性向上のためchar型ポインタの引数にconstを付与する
+
+・DYNAMIC_SCDATAをデフォルトで有効にしてみる（vc_make.bat, bcc32_make.bat, Makefile, *.dsp）
+
+----------------------------------------
+//1127 [2013/11/27] by refis
+
+・ポートマラヤNPCのマップサーバー変数構造を変更 (npc_town_portmalaya.txt)
+	Thanks NP3228 さん
+
+・メモリアル「封印された神殿」で、1Fパートが進行しないミスを修正 (npc_memorial_baphomet.txt)
+	Thanks さいこ さん
+
+・フラッグNPCにエンブレム情報が反映されない不具合を修正 (clif.c)
+
+・clif_disp_overhead関数で型変換エラーが発生していたのを修正 (clif.c)
+	Thanks NP3228 さん
+
+・ロイヤルガードスキル「ムーンスラッシャー」を槍専用スキルに修正 (skill_require_db.txt)
+	Thanks ねぴぴ さん
+
+・リフレクトダメージ、フォースオブバンガード、バンディング、ストライキング状態においてSP自然回復するよう修正 (pc.c)
+	Thanks ねぴぴ さん
+
+・メカニックスキル「セルフディストラクション」に魔導ギアライセンス効果が乗るように魔導ギア解除タイミングを変更 (skill.c)
+
+----------------------------------------
+//1126 [2013/11/22] by refis
+
+・ポートマラヤNPC実装 (npc_town_portmalaya.txt)
+	-> 警戒する街クエスト実装
+	-> 街の救済者クエスト実装
+	-> 街を思う少女クエスト実装
+	-> ペリー号のゴーストクエスト実装
+	-> 新任看護師と病院クエスト実装
+	-> 森の中の秘密クエスト実装
+	-> バコナワの伝説クエスト実装
+	-> 消えた住民とバコナワクエスト実装
+	-> 鉄鍋クエスト実装
+	-> ジェジェリンの落し物クエスト実装
+	-> パンドイのシルバーブレイドクエスト実装
+	-> 警備犬バンタイクエスト実装
+	-> マリスの子供探しクエスト実装
+	-> 旅人の友達カプレクエスト実装
+		※メモリアルダンジョンは未実装です
+
+・ポートマラヤ関連NPC追加 (npc_misc_guide.txt, npc_misc_kafra.txt)
+
+・ポートマラヤ追加マップのwarp更新 (npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt)
+
+・ポートマラヤ追加マップのmapflag更新 (mapflag.txt)
+
+・ポートマラヤ追加マップのmonster出現定義追加 (npc_monster_mafild.txt, npc_monster_malaya.txt)
+
+・mob_skill_db.txt更新 (db/mob_skill_db.txt)
+
+・quest_db.txt更新 (db/quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・影狼・朧関連交換NPCの文法誤りを修正 (npc_job_47kaboro.txt)
+	Thanks Gee さん
+
+----------------------------------------
+//1125 [2013/11/19] by refis
+
+・影狼・朧エンチャントが必ずキャンセルされるミスを修正 (npc_job_47kaboro.txt)
+
+----------------------------------------
+//1124 [2013/11/19] by refis
+
+・スーパーノービス限界突破クエストのエラーを修正 (npc_job_46supernovice2.txt)
+	Thanks NP3228 さん
+
+・スクリプト命令「downrefitem」を実装 (doc/script_ref.txt, script.c)
+	-> 指定箇所の装着済み装備品の精錬数値を下降させます
+
+・影狼・朧転職実装
+	-> 転職クエストを実装 (map_auriga.conf, quest_db.txt, npc_job_47kaboro.txt)
+	-> 関連アイテム販売の追加 (npc_job_29ninja.txt)
+	-> 関連アイテムのスロットエンチャント追加 (npc_quest_slotenchant.txt)
+
+・影狼・朧のジョブ補正を修正 (job_db2.txt, job_db2-2.txt)
+	Thanks SOLDIER_POPORING さん
+
+・MAX_QUEST_DBを1000から1500に拡張 (common/mmo.h)
+
+・item_db更新 (item_db.txt, item_db2.txt)
+	Thanks luin さん、sango さん
+
+----------------------------------------
+//1123 [2013/11/17] by refis
+
+・ニーズヘッグの巣が正常進行されない不具合を修正 (npc_memorial_nydhogg.txt)
+	Thanks mayura さん
+
+・リヒタルゼンガイドNPCが正常動作していなかったのを修正 (npc_misc_guide.txt)
+	Thanks mayura さん
+
+・攻城戦でエンペリウム破壊時のアナウンス情報を修正 (npc_gvg_global.txt)
+
+・スーパーノービス限界突破クエスト実装 (map_auriga.conf, quest_db.txt, npc_job_46supernovice2.txt)
+
+----------------------------------------
+//1122 [2013/11/14] by refis
+
+・イグドラシルNPC更新 (mapflag.txt, npc_quest_ashvacuum.txt, npc_quest_yggdrasil.txt)
+	-> 守護者クエストを実装
+
+・ニーズヘッグの巣NPC実装 (conf/map_auriga.conf, db/memorial_db.txt, mapflag_memorial.txt, npc_memorial_nydhogg.txt)
+
+----------------------------------------
+//1121 [2013/11/10] by Rayce
+
+・Auriga-1120において、LOCALZLIBを有効にするとコンパイルエラーが発生するのを修正（grfio.c）
+・不用意に exit(1) でサーバを停止しないように修正（itemdb.c, party.c）
+
+・細かいリファクタリング（pc.c, status.c）
+
+----------------------------------------
+//1120 [2013/11/10] by Rayce
+
+・「幻術 -朧幻想-」で0除算が発生する可能性を修正（skill.c）
+
+・RFIFOQ, WFIFOQ, RBUFQ, WBUFQ は atn_bignumber型でキャストすると処理系によってはdouble型で
+  扱われるため、uint64型でキャストするように変更（socket.h）
+
+・読み込みに使用した zlib.dll のファイルパスを表示するように拡張（grfio.c）
+
+・細かいリファクタリング（skill.c, itemdb.c, mob.c）
+
+----------------------------------------
+//1119 [2013/11/05] by refis
+
+・エルディカスティスNPC実装 (npc_town_dicastes.txt, npc_warp_dun.txt, npc_warp_town.txt)
+	-> エルディカスティスクエスト実装
+	-> 猫耳と尻尾の男クエスト実装
+	-> 友達のためにクエスト実装
+	-> ディエルの依頼クエスト実装
+	-> 文書クエスト実装
+
+・エルディカスティス関連マップのmob追加 (npc_monster_dicdun.txt, npc_monster_dicfild.txt)
+
+・エルディカスティス関連モンスターのskill追加 (db/mob_skill_db.txt)
+
+・quest_db.txt更新 (db/quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
+//1118 [2013/11/03] by refis
+
+・[RE]:ハンタースキル「ランドマイン」、「ブラストマイン」、「クレイモアトラップ」ダメージ計算式を修正 (battle.c)
+	Thanks hikaru1112 さん
+
+----------------------------------------
+//1117 [2013/11/03] by refis
+
+・修羅スキル「点穴 -反-」、朧スキル「幻術 -朧幻想-」でサーバークラッシュする問題を修正 (skill.c)
+	Thanks hikaru1112 さん
+
+----------------------------------------
+//1116 [2013/11/02] by refis
+
+・アッシュ・バキュームNPC更新 (npc_quest_ashvacuum.txt)
+	-> 知恵の王の指輪クエスト関連メッセージの追加
+	-> 駐屯地東側への転送NPC実装
+	-> 不思議な岩の不具合を修正
+		Thanks Akayumi さん
+
+----------------------------------------
+//1115 [2013/11/02] by refis
+
+・quest_db.txt更新 (db/quest_db.txt)
+
+・エピソードナンバリングの誤りを修正 (npc_monster_nyddun.txt)
+
+----------------------------------------
+//1114 [2013/11/02] by refis
+
+・封印された神殿のマップフラグが追加されていなかったのを修正 (mapflag_memorial.txt)
+
+・ユグドラシルNPC実装 (npc_quest_yggdrasil.txt, npc_town_manuk.txt, npc_town_splendide.txt)
+	-> 知恵の王の指輪クエスト実装
+	-> 二つの種族クエスト実装
+	-> 異種族の調査クエスト実装
+	-> リーンの依頼クエスト実装
+	-> ドラコの卵クエスト実装
+	-> ラフィネ族のヤイクエスト実装
+	-> アールブヘイムの香水クエスト実装
+	-> マヌクのモンスター討伐クエスト実装
+	-> ブラディウムクエスト実装
+	-> ミッドガルド大陸の鉱石クエスト実装
+	-> 猫の手サービスクエスト追加NPC実装
+　※アルベルタの少年クエスト、守護者クエストは未実装
+
+・ユグドラシル関連マップのmob追加 (npc_monster_nyddun.txt)
+
+・ユグドラシル関連マップのmapflag追加 (mapflag.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
+//1113 [2013/10/29] by refis
+
+・海底都市モンスターの使用スキルを追加、ポートマラヤモンスターの使用スキルの誤りを修正 (mob_skill_db.txt)
+
+・「守護者の記憶の破片」モンスターのセリフ順序の誤りを修正 (mob_talk_db.txt)
+
+・1112での引数拡張が変数名とenumで重複していたので変数名を変更 (clif.*)
+
+・影狼朧スキル「十六夜」、「土符：剛塊」、朧スキル「幻術 -残月-」の計算処理をPREとRENEWALで分ける (battle.c, pc.c, status.c)
+	-> 「十六夜」、「幻術 -残月-」は本来ステータス窓に反映されませんが計算量の少なくなるstatus.c側で据え置き
+	-> PRE環境において、「土符：剛塊」のAtk上昇効果が不明のため据え置き、Def上昇効果が大きすぎるため減算Def上昇に置き換え
+
+----------------------------------------
+//1112 [2013/10/26] by refis
+
+・スクリプトからシャドウ装備を参照できるよう拡張 (doc/script_ref.txt, script.c)
+
+・グローバルメッセージ関係の修正
+	-> clif_GlobalMessage系でエリア指定ができるよう引数を拡張 (atcommand.c, clif.*, npc.c, skill.c)
+		-> 関連enumをヘッダに移動しました
+	-> clif_parse_GlobalMessageからメッセージ送信処理をclif_disp_overheadとして分離する (clif.*)
+	-> モンスターメッセージの有効範囲をAREA_CHAT_WOCからAREAに変更 (mob.c)
+	-> スクリプト命令「unittalk」を実装 (doc/script_ref.txt, script.c)
+		-> マップ配置済みNPC、もしくは指定IDのユニットに発言させます
+		-> globalmesとの違いは自動で発言者名が付加されないこと、前者に比べて有効範囲が広いことです
+
+・スクリプト命令「delequip」を実装 (doc/script_ref.txt, script.c)
+	-> 指定箇所の装着済み装備品を失います
+
+----------------------------------------
+//1111 [2013/10/19] by refis
+
+・封印された神殿NPC実装 (conf/map_auriga.conf, npc_memorial_baphomet.txt)
+
+・エンドレスタワー通常階での討伐処理を修正 (npc_memorial_tower.txt)
+
+----------------------------------------
+//1110 [2013/10/02] by Rayce
+
+・scriptの sqlquery 関数において、LIKEで % を検索するとき % が消えてしまい部分検索が
+  出来ない問題を修正（script.c）
+
+	-> SQL文を一旦 vsprintf に流し込むため、% がフォーマット識別子として認識されているのが原因
+		例）sqlquery("SELECT * FROM `db` WHERE `user` LIKE '%test%'");
+				↓
+		    sqlquery("SELECT * FROM `db` WHERE `user` LIKE 'test'")
+
+    -> sqldbs_query() ではなく sqldbs_simplequery() を実行するように変更
+
+・MySQL接続後、SET NAMES で文字コードを送るようにした（sqldbs.c）
+	-> mysql_options(MYSQL_SET_CHARSET_NAME) は SET NAMES と組み合わせて使うもの
+	   http://d.hatena.ne.jp/shibason/20090912/1252753970
+
+・VCCのコンパイルパスにVC2008とVC2010のExpressEdition以外の情報を追加（vc_make.bat）
+
+----------------------------------------
+//1109 [2013/09/26] by refis
+
+・王位継承クエストの一部イベントが進行しない不具合を修正 (npc_town_prontera.txt)
+
+・買取露店に売却の際、買取個数を超過すると露店が終了する不具合を修正 (buyingstore.c)
+	Thanks Akayumi さん
+
+・プリーストスキル「ターンアンデット」の条件判定を修正 (skill.c)
+	-> 不死以外のモンスターに使用時、ディレイを発生させないようにする
+
+・モンスター移動完了時、次回動作判定までに必ず遅延が発生していたのを修正 (unit.c)
+
+----------------------------------------
+//1108 [2013/09/17] by refis
+
+・クエストリストシステムを修正
+	-> スクリプト命令「compquest」を追加 (clif.c, quest.*, script.c, doc/script_ref.txt)
+		-> 受注済みクエストを達成済み状態にし、状態を閲覧できなくします
+	-> スクリプト関数「checkquest」において達成済みになったクエストへ0x8の値を返すよう追加 (script.c, doc/script_ref.txt)
+	-> 活性化以外の状態のクエストでは討伐更新されないよう変更 (quest.c)
+
+・王位継承クエスト実装 (npc_town_prontera.txt)
+
+・リボンのヘアバンドのリカラーNPCの交換処理実装 (npc_quest_hat6.txt)
+
+・ソードマン転職関連NPCの名称を修正 (npc_job_01swordman.txt)
+	Thanks Schwarzwald さん
+
+----------------------------------------
+//1107 [2013/09/13] by refis
+
+・一部取り巻きモンスターのステータス・スキルを修正 (mob_db.txt, mob_skill_db.txt, mob_skill_db_pre.txt)
+
+・item_db.txtの更新 (item_db.txt, item_db_pre.txt)
+	-> バグfix
+	-> スロットエンチャント装備の効果修正
+		Thanks bunta さん、うに〜く さん、Akayumi さん
+
+・ゲフェンのテイミング商人エラーを修正 (npc_town_geffen.txt)
+	Thanks Schwarzwald さん
+
+----------------------------------------
+//1106 [2013/09/05] by refis
+
+・暴窟王の洞窟生成NPCの処理を更新 (npc_memorial_oct.txt)
+
+・マラン島NPCを修正 (npc_town_malangdo.txt)
+	-> マラン島転送NPCのチェック抜けを修正
+	-> 投資相談ニャンコで猫の手サービス会員登録出来る選択肢を追加
+
+----------------------------------------
+//1105 [2013/08/18] by refis
+
+・Auriga-1104の関数修正でNULLチェックがなかったのを修正 (script.c)
+	Thanks うに〜く さん
+
+・エリア指定のモンスター出現の際、エリア指定が終点＜始点となる場合にエラーとなるのを修正 (mob.c)
+	Thanks 716 さん
+
+・イズルード海底都市NPCを実装 (map_auriga.conf, npc_quest_deepsea.txt)
+	※クエストは未実装です
+
+・イズルード海底都市関連マップのマップフラグ追加 (script/mapflag/mapflag.txt)
+
+・イズルード海底神殿、イズルード海底都市のモンスター配置を修正 (npc_monster_izdun.txt)
+
+・イズルード海底都市関連モンスターデータ修正 (mob_db.txt, mob_skill_db.txt)
+
+----------------------------------------
+//1104 [2013/08/17] by refis
+
+・関数「getmapmobs」、「getareamobs」をキルイベント内で使用した際に倒した敵も数に含まれてしまうのを修正 (script.c)
+
+・暴窟王の洞窟NPC実装 (conf/map_auriga.conf, db/quest_db.txt, script/npc/memorial/npc_memorial_oct.txt)
+
+・暴窟王の洞窟関連マップのマップフラグ追加 (script/mapflag/mapflag_memorial.txt)
+
+・メモリアルダンジョンデータ追加 (db/memorial_db.txt)
+
+----------------------------------------
+//1103 [2013/08/16] by refis
+
+・状態異常「SC_ASSUMPTIO2」を実装 (db/const.txt, scdata.txt, map/battle.c, status.*)
+	Thanks ARIA さん
+
+・関数「getmapmobs」、「getareamobs」にて特定イベントのmobのみ抽出できるよう拡張 (script_ref.txt, script.c)
+	-> エンドレスタワースクリプトを改修 (npc_memorial_tower.txt)
+		Thanks Akayumi さん
+
+・接続切断時の処理を修正
+	-> 接続切断通知はセーブ時ではなく切断完了時に送信させる (char/char.c, map/clif.c)
+	-> Auriga-1068以降不要だったセーブ後の切断処理を修正 (chrif.c)
+		Thanks うに〜く さん
+
+----------------------------------------
+//1102 [2013/08/16] by Blaze
+
+・Auriga-1101の漏れを修正（clif.c）
+
+・スキルツリーDB「db/pre/skill_tree.txt」を切り替え式ではなく、上書き式に変更（pc.c, db/pre/skill_tree_pre.txt）
+
+・スキルツリーDBのアドオンDBを新規追加（pc.c, db/addon/skill_tree_add.txt）
+
+・スキルツリーDBにclear指定ができるように変更（pc.c, doc/db_ref.txt）
+	-> スキルIDに"clear"を定義することにより、それまで読み込んでいる職業のスキルツリーを破棄します。
+
+・影狼朧の以下スキルのスキルツリー前提を修正。（db/skill_tree.txt）
+　「風魔手裏剣 -乱華-」「幻術 -驚愕-」「幻術 -呪殺-」「幻術 -紅月-」「幻術 -朧幻想-」「幻術 -残月-」
+
+----------------------------------------
+//1101 [2013/08/15] by Blaze
+
+・Auriga-1101のクールタイムが正常に動作しなかった不具合修正（clif.c）
+
+----------------------------------------
+//1100 [2013/08/15] by Blaze
+
+・スキル使用のクールタイムを3次職スキル以外の全スキルに対応（map.h, pc.c, skill.c）
+
+・朧スキル「幻術 -残月-」「幻術 -朧幻想-」を実装（skill.c, battle.c, status.c, db/scdata_db.txt）
+
+・影狼朧スキル「幻術 -驚愕-」「幻術 -呪殺-」「幻術 -朧幻想-」「幻術 -紅月-」の使用不可時、
+　失敗メッセージを出力するように修正（skill.c）
+
+・影狼朧スキル「十六夜」の詠唱半減効果を忍者スキルのみから全てのスキルを対象に修正（battle.c）
+
+・影狼朧の召喚符による忍術威力増加効果を修正（battle.c）
+
+・土符：剛塊の効果が切れたとき、ATKとMATKの再計算がされてなかったのを修正（pc.c）
+
+・影狼朧スキル「無茶投げ」の効果を修正（skill.c, db/skill_db.txt）
+	-> 地面指定スキルに修正
+	-> 消費金額はランダムでなく一定金額を消費するように修正
+
+・影狼朧スキル「撒菱」の効果を修正（skill.c, db/skill_unit_db.txt）
+	-> ユニット配置する数をランダムに修正
+	-> ユニットの攻撃範囲を修正
+	-> スタン確率を修正
+
+・影狼朧スキル「爆裂苦無」で爆裂苦無を装備していなくても使用化に修正（db/skill_require_db.txt, db/skill_require_db2.txt）
+
+・影狼朧スキル「黄泉返し」の効果が重複していた不具合修正（battle.c）
+
+・影狼朧スキルの詠唱時間を修正（db/skill_cast_db.txt）
+
+・影狼朧スキルの名称をFix（db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_unit_db.txt）
+
+・影狼朧の基本HP、ASPDを修正（db/job_hp_db.txt, db/job_db1.txt, db/pre/job_db1_pre.txt）
+
+・その他細かいFix（skill.c, status.c, battle.c）
+----------------------------------------
+//1099 [2013/08/14] by refis
+
+・ログアウト時にクエストリスト討伐達成数を保存するよう修正 (unit.c)
+	Thanks Akayumi さん
+
+・物理攻撃スキルの距離判定順序を入れ替えてスキル毎の特殊処理を優先するよう修正 (battle.c)
+	-> PRE_RENEWAL無効時、忍者スキル「畳返し」の距離判定処理が無効だったのを修正
+	-> 修羅スキル「羅刹破凰撃」のLv5以上は遠距離判定になるよう修正
+		Thanks hikaru1112 さん
+
+----------------------------------------
+//1098 [2013/07/31] by refis
+
+・atn_bignumber用に新たに「RFIFOQ」、「WFIFOQ」、「RBUFQ」、「WBUFQ」を実装 (common/socket.h)
+
+・2013-07-24eRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+・銀行システムを実装 (bank.*, clif.*, intif.c, map.h, map.dsp, map_sql.dsp, pc.c)
+	-> 預金額情報の格納には「#PC_DEPOSIT」が扱われ、スクリプトから操作が可能です
+	-> 上記実装のためconst.txt内で「#」文字が扱えるように拡張 (db/const.txt, script.c)
+
+----------------------------------------
+//1097 [2013/07/29] by refis
+
+・PACKETVERによって、コスチューム装着時に装備ウィンドウ上に表示されないのを修正 (clif.c)
+
+・座ったときに専用アイコンを表示するよう修正 (pc.*, status.h)
+
+・doc/db_ref.txtのマージミスを修正 (doc/db_ref.txt)
+
+----------------------------------------
+//1096 [2013/07/28] by refis
+
+・item_db2.txtにSellableフラグ、GuildStorageableフラグを追加
+ (db/item_db2.txt, doc/db_ref.txt, itemdb.*, storage.c)
+
+・売却不能フラグをDropableからSellableに変更 (npc.c)
+　※従来のアイテム売値での制御も可能です
+
+・スクリプト関数「getiteminfo」を新しいフラグが読み取れるように変更 (doc/script_ref.txt, script.c)
+
+----------------------------------------
+//1095 [2013/07/28] by refis
+
+・script_ref.txtの一部訂正と巻き戻ってしまった箇所を修正 (doc/script_ref.txt)
+
+----------------------------------------
+//1094 [2013/07/28] by refis
+
+・[RE]:アルケミストスキル「デモンストレーション」ダメージ計算式を修正 (battle.c)
+
+・[RE]:「デモンストレーション」、「アシッドテラー」、「ソウルブレイカー」、
+　「アシッドデモンストレーション」、「ファイアーエクスパンション(塩酸)」の魔法ダメージ部分は属性計算しないよう修正 (battle.c)
+
+・「アスムプティオ」、「クレメンティア」、「カントキャンディダス」、「生死の境で」の
+　各スキルを黄金蟲カード装着者へ使用時の挙動を修正 (skill.c)
+
+・モンスターの再出現計算方式を変更 (doc/script_ref.txt, unit.c)
+	-> 旧：spawndelay1とspawndelay2のうち、長い値を採用する方式
+	-> 新：spawndelay1にspawndelay2までのランダム値を加算する方式
+
+----------------------------------------
+//1093 [2013/07/19] by refis
+
+・NPC会話がタイムアウトした際に不必要なスクリプトスタック情報を破棄させるよう修正 (npc.c)
+
+・UnknownPacketダンプのログ抑制のためにpacket_dbの更新 (db/packet_db.txt, clif.c)
+	-> ついでにパケット長を追記
+
+・client_packet.txtの更新 (doc/client_packet.txt)
+
+・テーブル定義更新 (skill.h, status.h)
+
+----------------------------------------
+//1092 [2013/07/17] by Blaze
+
+・「db/pre/skill_unit_db_pre.txt」の仕様を切り替え式ではなくaddon式に変更（skill.c, db/pre/skill_unit_db_pre.txt）
+	-> 「PRE_RENEWAL」有効時に1086の「術式全開」ユニット修正が効かなかったのを修正
+
+・「db/addon/skill_unit_db_add.txt」を新規追加。（skill.c, db/addon/skill_unit_db_add.txt）
+	-> skill_unit_db.txt読み込み後に追加でオーバーライドします。
+
+・影狼朧スキル全般の詠唱時間を修正 (db/skill_cast_db.txt)
+
+・影狼朧スキル「十文字斬り」の効果を修正 (skill.c, battle.c)
+	-> 使用者に状態異常が掛かっていたのを攻撃対象に付与するように修正
+	-> 使用時、攻撃対象の隣のセルまで接近移動するように修正
+	-> ダメージ計算を修正
+
+・影狼朧スキル「召喚符」の効果を修正 (skill.c, status.c)
+	-> 異なる属性の召喚符を使用時にこれまで召喚していた符をリセットするように修正
+	-> 属性付与効果は召喚符の数が10個以上の場合だけに付与するよう修正（9個以下は属性付与しないように）
+
+・影狼朧スキル「術式解放」使用時に召喚符を消費するように修正 (skill.c)
+
+・影狼朧スキル「術式全開」を地面指定型に修正（skill.c, db/skill_db.txt）
+
+・影狼朧スキル「霊魂絶断」「爆裂苦無」「風魔手裏剣乱華」「術式解放」のダメージ計算を修正（battle.c）
+
+・影狼朧スキル「影武者」の効果を短剣以外でも発動するように修正（battle.c）
+
+・影狼朧スキル「幻術‐残像」の分身召喚とバックステップ効果を実装（skill.c）
+　※分身の身代わり効果は未実装です
+
+----------------------------------------
+//1091 [2013/07/15] by refis
+
+・char-converterのsscanf関数フォーマットが一部誤っていたのを修正（char-converter.c）
+
+・PACKETVER「20120925」以降の倉庫パケット情報が誤っていたのを修正（conf/msg_auriga.conf, clif.c）
+
+・client_packet.txtを修正 (doc/client_packet.txt)
+
+・2013-07-03aRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+----------------------------------------
+//1090 [2013/07/12] by refis
+
+・storage, gstorageにprivateテーブルは存在しないので削除（char-converter.c）
+
+----------------------------------------
+//1089 [2013/07/12] by refis
+
+・txt-converterが動作するよう修正（char-converter.c, converter.c）
+	Thanks hikaru1112 さん
+
+----------------------------------------
+//1088 [2013/07/11] by refis
+
+・スクリプト関数「getclassjob」を実装（doc/script_ref.txt, pc.*, script.c）
+　※1087にコードが混入したままコミットしてしまい申し訳ありません
+	-> CLASS値をJOB値に変換して返します
+	例：{ changebase getclassjob(getbaseclass(Class,2)),1; }
+
+----------------------------------------
+//1087 [2013/07/11] by refis
+
+・NPCスキル「アースクエイク」使用時にサーバークラッシュする可能性を修正（battle.c）
+	Thanks Blaze さん
+
+・不死属性付与を受けたプレイヤーにブレッシング、速度増加を使用時
+　固定1ダメージの攻撃が発生するよう修正（battle.c, skill.c）
+
+・不死属性付与を受けた際、ブレッシング、速度増加状態が解除されるよう修正（status.c）
+
+・自動ウォーグストライクの発生確率を修正（skill.c）
+
+・ストリップアクセサリーの成功確率を修正（skill.c）
+	Thanks Akayumi さん
+
+・スキル名コメントをランダムfix（battle.c, skill.c）
+
+----------------------------------------
+//1086 [2013/07/10] by refis
+
+・txt-converterのcharサーバーデータテーブルを更新（char-converter.c）
+	Thanks hikaru1112 さん
+
+・影狼、朧スキル「術式全開」のユニット配置を修正（skill_unit_db.txt）
+	Thanks Akayumi さん
+
+----------------------------------------
+//1085 [2013/07/10] by refis
+
+・メモリアルダンジョン複製NPCの命名規則を変更（npc.c, script.c）
+	旧：表示名と識別子に付加されていた文字列「# + 3桁整数」を、
+	新：識別子のみに文字列「_ + 3桁整数」を付加するように変更
+		-> strnpcinfo関数の引数に「0」を渡すと複製元NPC名称が返るようになります。
+
+・モーラ関連モンスターデータベースを修正（mob_skill_db.txt, mob_talk_db.txt）
+
+・カート装着状態情報の取得処理をPACKETVERで切り替えるように変更（pc.*）
+	Thanks ねぴぴ さん
+
+・PACKETVER「20120307」以降の新規キャラクター作成時のパラメータ情報を訂正（chardb_sql.c, chardb_txt.c）
+
+----------------------------------------
+//1084 [2013/07/02] by refis
+
+・エンドレスタワーでモンスター重複Popするbugfix（npc_memorial_tower.txt）
+	Thanks うに〜く さん
+
+・魔導ギア搭乗時、サンクチュアリ効果が発揮されていなかったのを修正（skill.c）
+	Thanks ねぴぴ さん
+
+----------------------------------------
+//1083 [2013/06/30] by refis
+
+・mob_skill_db.txtのエモーション項で0未満の値を指定した場合
+　反転した値のIDのメッセージを出すよう仕様を変更（doc/db_ref.txt mob.* skill.c）
+　　例：エモーション項に「-1」を指定した場合、スキル使用時mob_talk_db.txtのID1番のメッセージを発言します
+
+・mob_skill_db.txtの更新（db/mob_skill_db.txt）
+
+・「サプライズアタック」状態の処理が抜けていた箇所を修正（status.c）
+
+----------------------------------------
+//1082 [2013/06/30] by refis
+
+・「npcskillsupport」命令で発動元に存在しないNPCを指定しても実行NPCが指定される誤りを修正（script.c）
+	Thanks Gee さん
+
+・itembonus「bAddSkillHealRate」、「bAddSkillSubHealRate」の有効上限を7に修正（doc/item_bonus.txt map.h）
+
+----------------------------------------
+//1081 [2013/06/30] by refis
+
+・2012-06-18aRagexeREのpacket_dbを一部修正 (db/packet_db.txt)
+	Thanks Gee さん
+
+・アサシンスキル「ベナムスプラッシャー」を分散スプラッシュ計算に修正（battle.c skill.c）
+	Thanks Akayumi さん
+
+・レンジャースキル「カモフラージュ」の挙動修正、Atk増加効果、Cri増加効果、Def減少効果を追加（battle.c skill.c status.c unit.c）
+	Thanks Akayumi さん
+
+・チャンピオンスキル「伏虎拳」、「連柱崩撃」のコンボ条件式を修正（skill.c）
+	Thanks Akayumi さん
+
+・エモーションが付帯しているMOBスキルが範囲攻撃の時、ターゲット分エモーションが実行されるのを修正（skill.c）
+
+----------------------------------------
+//1080 [2013/06/21] by refis
+
+・[RE]:「EDP」状態中のスキル「ソウルブレイカー」ダメージ計算式を修正（battle.c）
+
+・NPCスキル「セリフアナウンス」がmob_skillテーブル先頭にあると動作しない誤りを修正（skill.c）
+	Thanks dallen さん
+
+・モンクスキル「残影」の実処理と移動パケットの順序を入れ替える（skill.c）
+	Thanks Akayumi さん、dallen さん
+
+・ジェネティックスキル「スペシャルファーマシー」Lv1の作成数を1個に修正（skill.c）
+
+----------------------------------------
+//1079 [2013/06/18] by refis
+
+・スロットエンチャント3rd, 4th用NPCを追加（npc_quest_slotenchant.txt）
+	Thanks Gee さん
+
+----------------------------------------
+//1078 [2013/06/12] by refis
+
+・スペル保存状態中でもSP自然回復するように変更（pc.c）
+
+・演奏、踊り状態中でもレッスンスキルのSP自然回復が有効なように変更（pc.c）
+
+・[RE]:アサシンクロススキル「ソウルブレイカー」を必中攻撃に修正（battle.c）
+
+----------------------------------------
+//1077 [2013/06/05] by refis
+
+・パケット0x825「シングルサインオンログイン要求」を実装（login.c）
+
+----------------------------------------
+//1076 [2013/06/04] by refis
+
+・1075がコンパイルエラーになるミスを修正（battle.c）
+
+・[RE]:アコライトスキル「エンジェラス」の減算Def上昇効果を修正（status.c）
+
+・[RE]:ウィザードスキル「ファイアーピラー」、「フロストノヴァ」の効果範囲を修正（skill.c）
+
+・[RE]:イドゥンの林檎の回復効果を5秒毎発生させるように修正（skill.c）
+
+・[RE]:子守唄の睡眠状態異常効果を4秒毎発生させるように修正（status.c）
+
+----------------------------------------
+//1075 [2013/06/03] by refis
+
+・メカニックスキル「アームズキャノン」、影狼・朧スキル「八方苦無」で矢の消費量が誤っていたのを修正（battle.c, skill.c）
+	Thanks Akayumi さん
+
+・[RE]:スパイダーウェブ状態と属性補正の計算位置を修正（battle.c）
+
+・[RE]:モンクスキル「阿修羅覇鳳拳」、忍者スキル「一閃」を以下のように修正（battle.c）
+	-> 武器属性の影響を受け、属性適用及び属性補正の影響を受けない最終無属性攻撃
+
+・[RE]:1071の「リフレクトシールド」スキル修正内容に欠落があったため補足修正（battle.c）
+
+----------------------------------------
+//1074 [2013/06/03] by refis
+
+・[RE]:ストーンスキン、アンチマジックのpre仕様が一部残留していた箇所を修正（status.c）
+
+・[RE]:状態異常リニューアルの実装（status.c）
+	-> 状態異常の耐性計算にレベル偏差の実装
+	-> 状態異常の耐性ステータスを変更
+	-> 状態異常の耐性装備が状態異常持続時間に影響を及ぼすよう変更
+		状態異常持続時間に対するレベル偏差は未実装です
+		各状態異常の固定持続時間は暫定です
+
+・アークビショプスキル「クリアランス」修正、ドキュメントの更新（db/scdata_db.txt, doc/db_ref.txt, skill.c）
+
+----------------------------------------
+//1073 [2013/06/02] by refis
+
+・[RE]:1071のハンタートラップスキル修正をロールバック（battle.c, skill.c）
+	Thanks rapis さん
+
+・[RE]:1071以降、スーパーノービス以外でSP自然回復しなくなっていたのを修正（pc.c）
+	Thanks user5577 さん
+
+----------------------------------------
+//1072 [2013/06/02] by refis
+
+・高級武器の箱リストから未実装アイテムをコメントアウトしておく（db/item_random.txt）
+
+・mob_random.txt更新（db/mob_random.txt）
+
+・三ヶ国への報告書クエストの一部Limit値を修正（db/quest_db.txt）
+
+・アークビショップスキル「エクスピアティオ」のアイコン情報の誤りを修正（status.h）
+
+・ロイヤルガードスキル「シールドスペル」の範囲攻撃のダメージ倍率を修正（battle.c）
+
+----------------------------------------
+//1071 [2013/06/02] by refis
+
+・アサシンスキル「ベナムスプラッシャー」をpreとREで分割（battle.c, skill.c）
+
+・[RE]:ローグスキル「クローズコンファイン」の持続時間を修正（skill_cast_db.txt, pre/skill_cast_db_pre.txt）
+
+・[RE]:ガンスリンガースキル「ダスト」、忍者スキル「畳返し」のノックバック距離を修正（skill_db.txt, pre/skill_db_pre.txt）
+
+・[RE]:忍者スキル「雷撃砕」を地面対象スキルに修正（skill_db.txt, pre/skill_db_pre.txt）
+
+・[RE]:忍者スキル「風魔手裏剣投げ」を詠唱妨害不可に修正（skill_db.txt）
+
+・[RE]:ハンタースキル「ブラストマイン」、「クレイモアトラップ」を分散スプラッシュ攻撃に修正（battle.c, skill.c）
+
+・[RE]:セージの属性場系列スキルの支援効果が一部適用されていなかったのを修正（battle.c, status.c）
+
+・[RE]:クルセイダースキル「リフレクトシールド」を自身の最大HPまで反射可能なように修正（battle.c）
+
+・[RE]:爆裂波動状態でも通常の50%の速度でSP自然回復するよう修正（pc.c）
+
+----------------------------------------
+//1070 [2013/05/31] by refis
+
+・NPCスキル「ワイドサイト」修正（skill.c, status.c）
+	効果範囲 11*11セル -> 29*29セル
+
+・NPCスキル「クリティカルスラッシュ」のダメージ倍率をSkillLv*100%に変更（battle.c）
+
+・[RE]:スピアクイッケン状態でのクリティカル上昇が一桁少なかったのを修正（status.c）
+
+・[RE]:騎乗修練スキルの効果が反転していた不具合を修正（status.c）
+
+----------------------------------------
+//1069 [2013/05/29] by refis
+
+・メモリアルダンジョン複製NPC削除時のタイマーイベント停止をスクリプト型NPCに限定させる（map.c）
+
+----------------------------------------
+//1068 [2013/05/28] by refis
+
+・[RE]:グラビテーションフィールドのダメージ計算を修正（battle.c）
+
+・データ不整合が起きる可能性があるので
+　0966のクライアントのデストラクタ処理を巻き戻し（clif.c）
+	Thanks Akayumi さん
+
+・マップ読み込み時にデータが初期化されない場合があるので初期化を明示させておく（map.c）
+
+・memorial_data構造体はexternさせて利用させるよう修正（memorial.*）
+
+・メカニックスキル「マジックデコイ」の最大設置数制限が機能していなかったのを修正（skill.c）
+	Thanks Akayumi さん
+
+----------------------------------------
+//1067 [2013/05/20] by refis
+
+・マラン島NPC実装（npc_town_malangdo.txt）
+	-> 猫達の定期集会クエスト実装
+	-> ニャンキー団クエスト実装
+		Thanks Pneuma さん
+
+・マラン島関連マップのwarp追加（npc_warp_dun.txt, npc_warp_town.txt）
+
+・マラン島関連マップのmob追加（npc_monster_malangdo.txt）
+
+・mapflag.txtの更新（mapflag.txt）
+
+・quest_db.txtの更新（quest_db.txt）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+・モンスター「ブラディウムゴーレム」使用スキルの誤りを修正（mob_skill_db.txt）
+
+----------------------------------------
+//1066 [2013/05/20] by refis
+
+・モンスター「ダンデリオンのメンバー」のステータス修正（mob_db.txt, pre/mob_db_pre.txt）
+
+・アイテム「足鎖」のセット効果を修正（item_db.txt, mob_group_db.txt）
+
+・item_db.txtの更新（const.txt, item_db.txt, item_random.txt）
+
+・item_db2.txtの更新（item_db2.txt）
+
+・mob_db.txtの更新（mob_db.txt）
+
+・mob_skill_db.txtの更新（mob_skill_db.txt）
+
+----------------------------------------
+//1065 [2013/05/19] by refis
+
+・[RE]:攻撃を回避出来なかった場合、追加状態異常判定するよう修正（battle.c）
+
+・[RE]:全てのターゲット指定スキルに詠唱反応するよう修正（unit.c）
+
+・一部3次職業スキルの使用時挙動を修正（skill.c）
+
+----------------------------------------
+//1064 [2013/05/18] by refis
+
+・戦闘設定「npc_timeout_time」を追加（battle_auriga.conf battle.* map.h npc.* pc.c script.c）
+	-> NPCの会話が自動で終了する入力待機猶予時間を設定します
+
+----------------------------------------
+//1063 [2013/05/18] by refis
+
+・プレイヤー出現時に状態異常エフェクトが表示されないのを修正（clif.*）
+	Thanks Akayumi さん
+
+・NPCスキル「エモーション」で非アクティブ移行時、ターゲット解除されない場合があるのを修正（skill.c）
+
+・[RE]:プロフェッサースキル「ソウルチェンジ」の仕様を相互SP折半に修正（skill.c）
+
+----------------------------------------
+//1062 [2013/05/14] by refis
+
+・1061のファイル構造抜けを修正（pre/refine_db_pre.txt）
+
+----------------------------------------
+//1061 [2013/05/14] by refis
+
+・refine_dbで各精錬毎にボーナス値を設定できるようDBテーブルを拡張（status.c）
+	-> 「精錬成功率:総ボーナス値」の形式で各Lv毎に設定ができます。
+	-> 省略した場合、精錬ボーナス値*精錬値の値が適用されます。
+
+・refine_dbのR化前/後のDB対応の為、pre/refine_db_pre.txtを追加（status.c）
+	-> 「PRE_RENEWAL」有効時、refine_db.txtの代わりにpre/refine_db_pre.txtを読み込みます。
+
+・refine_db.txtをR化後データに合わせて修正（refine_db.txt）
+
+----------------------------------------
+//1060 [2013/05/14] by refis
+
+・1059でskill_treeデータが読み込めないミスを修正（pc.c）
+	Thanks rusya7234 さん
+
+----------------------------------------
+//1059 [2013/05/13] by refis
+
+・attr_fix, skill_tree, skill_unit_dbのR化前/後のDB対応の為以下のDBを追加（pc.c, skill.c）
+	-> 「PRE_RENEWAL」有効時、通常DBの代わりに以下のDBを読み込みます。
+	　・attr_fix_pre.txt
+	　・skill_tree_pre.txt
+	　・skill_unit_db_pre.txt
+
+・attr_fix.txt, skill_tree.txt, skill_unit_db.txtをR化後データに合わせて修正（attr_fix.txt, skill_tree.txt, skill_unit_db.txt）
+
+----------------------------------------
+//1058 [2013/05/12] by refis
+
+・[RE]:アルケミストスキル「斧修練」が片手剣にも影響するよう修正 (battle.c)
+	Thanks ARIA さん
+
+・「pc_itemlimit_timer」が正常に削除されていなかったのを修正 (pc.c)
+	Thanks mayura さん
+
+----------------------------------------
+//1057 [2013/05/12] by refis
+
+・[RE]:ヒール系スキルのみにMATK分の回復量が加算されるよう修正 (skill.c)
+
+・魔導ギア解除時にカート優先で解除される現象を修正 (pc.c)
+	Thanks ねぴぴ さん
+
+・魔導ギア装着中に死亡時、魔導ギアを解除するよう修正 (pc.c)
+
+・3次新毒スキルが重複適用されないよう修正 (status.c)
+	Thanks Akayumi さん
+
+・シャドウチェイサースキル「デッドリーインフェクト」に伝染失敗確率を実装 (status.c)
+	Thanks Akayumi さん
+
+----------------------------------------
+//1056 [2013/05/09] by refis
+
+・0x99bの下位版、0x2e7を追加 (db/packet_db.txt, clif.*, map.*)
+
+・マップフラグ「town」を追加 (const.txt, script_ref.txt, mapflag.txt, atcommand.c, map.h, npc.c, script.c, skill.c)
+	-> マップフラグ「nopenalty」有効時のスキル使用不可処理を移譲
+	-> 街MAPに「town」フラグを追加
+
+・室内MAPにマップフラグ「noicewall」を追加 (mapflag.txt)
+
+・一部クエストMAPにマップフラグ「noskill」を追加 (mapflag.txt)
+
+----------------------------------------
+//1055 [2013/05/08] by refis
+
+・2012-06-18aRagexeREのpacket_dbを修正 (db/packet_db.txt)
+	Thanks Akayumi さん
+
+・[RE]:ロイヤルガードスキル「シールドスペル」Lv1の効果異常を修正 (skill.c)
+	Thanks shisuka さん
+
+・[RE]:ホムンクルスのステータス計算を修正 (homun.c, status.c)
+
+・パケット0x99b「マッププロパティ通知」を実装 (db/packet_db.txt, clif.*)
+	-> UnknownPacketダンプのログ抑制のためにpacket_db.txtの更新
+	-> カートウィンドウ開閉のための暫定処理です
+
+----------------------------------------
+//1054 [2013/05/08] by refis
+
+・パケット0x82dを実装（char.c）
+
+・MOBAI「スキル無効」実装 (db/mob_db.txt doc/db_ref.txt battle.c skill.c status.h)
+
+・状態異常「ジャイアントグロース」の発動確率と計算位置を修正 (battle.c)
+
+----------------------------------------
+//1053 [2013/05/07] by refis
+
+・PACKETVER「20120404」を追加 (vc_make.bat bcc32_make.bat Makefile clif.* mob.c)
+	-> パケット0x977「モンスターHPバー更新」を実装
+
+・PACKETVER「20120618」を追加 (vc_make.bat bcc32_make.bat Makefile clif.c)
+	-> 状態異常アイコン表示に0x8ffではなく0x983を利用するようにする
+
+・アイテム情報の装着箇所情報を修正
+ (common/mmo.h, char/sql/chardb_sql.c, char/sql/maildb_sql.c, char/txt/chardb_txt.c, char/txt/maildb_txt.c,
+　char/txt/storagedb_txt.c, converter/char-converter.c, converter/inter-converter.c)
+
+・TXT:AURIGA_JOURNALを17に引き上げ (common/journal.c.)
+
+・SQL:インベントリテーブルの装着箇所情報を修正（sql-files/main.sql, sql-files/Auriga1053_changetable.sql）
+
+・テーブル定義更新 (db/packet_db.txt clif.c skill.h status.h)
+
+・client_packet.txtを少し追記と修正 (doc/client_packet.txt)
+
+----------------------------------------
+//1052 [2013/05/07] by refis
+
+・map_sql.dspの誤り修正（map_sql.dsp）
+
+----------------------------------------
+//1051 [2013/05/07] by refis
+
+・dspファイルにmsg.*が抜けているので修正（map.dsp, map_sql.dsp）
+
+・2013-03-20eRagexeのpacket_dbを追加 (db/packet_db.txt)
+
+・暫定的にPACKETVER「20120925」を追加 (vc_make.bat bcc32_make.bat Makefile *.dsp clif.c)
+	-> 0xaa、0xac、0x2d4、0x8c7、0x900、0x901、0x902、0x903、0x904、0x905、0x906の上位版、
+	   0x990、0x991、0x992、0x993、0x994、0x995、0x996、0x997、0x999、0x99a、0x99fを追加
+
+・シャドウ装備用に処理を拡張 (doc/db_ref.txt clif.c itemdb.h map.h pc.c)
+
+----------------------------------------
+//1050 [2013/05/03] by refis
+
+・頭装備作成NPCのミスを修正（map_auriga.conf npc_quest_hat6.txt）
+
+・モンスターのATK, MATKを修正
+	-> mob_db.txtのATK1, ATK2項目を暫定値で更新（db/mob_db.txt）
+	-> 戦闘設定「monster_atk2_to_matk」を追加（battle_auriga.conf battle.* status.c）
+		「PRE_RENEWAL」無効時にyesの場合、mob_db.txtのATK2項目をMATKとして扱い、RENEWAL用計算されます
+		それ以外の場合、今まで同様の計算処理になります
+
+----------------------------------------
+//1049 [2013/05/01] by refis
+
+・skill_cast_dbをリニューアルデータに更新（skill_cast_db.txt, skill_cast_db_pre.txt）
+
+・1048で忍者関連NPCがduplicateエラーを起こしていたのを修正（npc_job_29ninja.txt）
+	Thanks うに〜く さん
+
+----------------------------------------
+//1048 [2013/04/29] by refis
+
+・カプラ転送拡張、ウンバラ属性石分解NPC調整を取り込み（npc_town_umbala.txt npc_misc_kafra.txt）
+	Thanks boitata さん
+
+・MAP定義を更新（conf/map_auriga.conf）
+
+・ガンスリンガー、忍者、メカニック関連NPCを追加（npc_job_28gunslinger.txt npc_job_29ninja.txt npc_job_thirdclass.txt）
+
+・頭装備作成NPCを追加（db/quest_db.txt npc_quest_hat6.txt）
+
+・次元の狭間01のワープポイント実装（npc_warp_fild.txt）
+
+・次元の狭間01のコンチネンタルガードが接触反応するので修正（npc_town_morocc.txt）
+
+----------------------------------------
+//1047 [2013/04/25] by refis
+
+・ELEM, HOM, MERC, PET呼び出し時、unit_datasetより先にunit_calc_posが呼ばれるため
+　nullpoエラーが発生するのでunit_calc_posの第一引数をblock_listに変更して回避させる
+（elem.c homun.c merc.c pet.c unit.*）
+
+----------------------------------------
+//1046 [2013/04/23] by refis
+
+・太陽と月と星の融合、カイト、バードとダンサーの魂、
+　ウィザードの魂、アサシンの魂状態をpreとREで分割（battle.c pc.c skill.c）
+
+・warp定義を追加更新（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+----------------------------------------
+//1045 [2013/04/17] by refis
+
+・Aspd向上効果の計算処理が誤っていたのを修正（status.c）
+	Thanks nekoko さん
+
+----------------------------------------
+//1044 [2013/04/15] by refis
+
+・ASPD計算式をpreとREで分割（db/job_db1_pre.txt db/pre/job_db1_pre.txt status.c）
+	-> 盾装備時のASPDペナルティの対応
+	-> DB対応の為、pre/job_db1_pre.txtを追加
+		「PRE_RENEWAL」有効時、job_db1.txtの代わりにpre/job_db1_pre.txtを読み込みます。
+
+・拡張スーパーノービスの経験値、JOB補正テーブルを修正（db/job_db2.txt db/job_db2-2.txt pc.c）
+
+・typo修正（npc_memorial_tower.txt）
+
+----------------------------------------
+//1043 [2013/04/15] by refis
+
+・状態異常「SC_EXEEDBREAK」のtypo修正（status.c）
+	Thanks うに〜く さん
+
+・mob_db_pre.txtが正常に読み込まれない問題を修正（mob.c）
+	Thanks ねぴぴ さん
+
+----------------------------------------
+//1042 [2013/04/07] by refis
+
+・db_ref.txtの一部修正（doc/db_ref.txt）
+	Thanks ねぴぴ さん
+
+・金剛状態をpreとREで分割（battle.c status.c）
+
+----------------------------------------
+//1041 [2013/03/26] by refis
+
+・spl_fild03にコルヌスではなくクブリンが出現するミスを修正（npc_quest_ashvacuum.txt）
+	Thanks うに〜く さん
+
+・メモリアルダンジョンのNPCがタイマーイベントを発行中に削除された場合
+	npc_timerevent errorが発生するのを修正（map.c）
+
+----------------------------------------
+//1040 [2013/03/25] by refis
+
+・不要なmob_dbの更新箇所を巻き戻し（mob_db.txt）
+
+----------------------------------------
+//1039 [2013/03/25] by refis
+
+・mob_db, mob_skill_dbをリニューアルデータに更新（mob_db.txt, mob_skill_db.txt, pre/mob_skill_db_pre.txt）
+	ATK1, ATK2項目以外のステータス、ドロップ、使用スキルをR化データへ修正（非RRデータ）
+
+・pre/mob_dbの異世界モンスターの一部にステータスが設定されていない箇所があったので修正（pre/mob_db_pre.txt）
+
+----------------------------------------
+//1038 [2013/03/25] by Rayce
+
+・msg_auriga.conf の管理をatcommand.*から切り離し、msg.* を新設
+
+  ※msg_txt() を使いたい場合、atcommand.h ではなく msg.h をincludeしてください。
+    これにより atcommand.* との依存度を減らすことができます。
+
+・ハードコーディングされているメッセージを msg_auriga.conf に移植（status.c）
+
+----------------------------------------
+//1037 [2013/03/25] by Rayce
+
+・mob.h でexternしている manuk_mob 配列と splendide_mob 配列を battle_calc_damage関数内に
+  移動し依存性を減らす（battle.c, mob.*）
+
+・安全性のため、ranking_title 配列と ranking_reg 配列のサイズにMAX_RANKINGを明示する（ranking.c）
+
+・一部の配列を可変にして柔軟性を上げる（atcommand.c, status.c）
+
+・呼び出し回数が少ないconstからstaticを撤廃（skill.c）
+
+----------------------------------------
+//1036 [2013/03/24] by Rayce
+
+・grfio.cで拡張子を検索するルーチンを汎用化（grfio.c）
+
+・[SQL] utils系のSQLスクリプトに一部のテーブルが記載されてなかったので整理（sql-files/utils/*.sql）
+
+----------------------------------------
+//1035 [2013/03/24] by refis
+
+・（RE）暖かい風の付与効果がステータスATKにも影響するよう修正（battle.c skill.c status.c）
+	-> 識別のため暖かい風Lv7もSC_SEVENWINDで対応させる
+
+・アイテムボーナスリファレンスを取り込み（doc/item_bonus.txt）
+	Thanks alsion0609 さん
+
+----------------------------------------
+//1034 [2013/03/24] by Rayce
+
+・スクリプトのmddelete命令で、引数にパーティIDを指定しても自分のPTが参照されていたのを修正（script.c）
+
+・チャット参加時におけるバッファオーバーフロー対策（chat.c）
+
+・char型の引数にconstを付与する（chat.*, clif.c）
+
+・unit_distance を path.cに移動
+  関数名も path_distance に改名し、unit_distance2 を unit_distance に改名する（unit.*, path.*）
+
+----------------------------------------
+//1033 [2013/03/24] by Rayce
+
+・map.hに定義されているpath系の関数をpath.hに移動（map.h, path.h）
+
+・map_check_dir と map_calc_dir をpath.cに移動
+  関数名も path_check_dir および path_calc_dir に改名（map.*, path.*）
+
+----------------------------------------
+//1032 [2013/03/24] by Rayce
+
+・gccでの警告修正（login_httpd.c, battle.c, clif.c）
+
+・Linux環境で gettimeofday() の代わりに精度の高い clock_getime() を使えるように拡張（timer.c）
+
+・タイマー削除時のエラーメッセージの内容を変更（timer.c）
+
+・サーバ起動に失敗したときはメッセージを表示するように変更（login.c, char.c, converter.c）
+
+・JOURNAL有効時、サーバ起動に失敗すると「delete_timer error : function dismatch」が発生する
+  問題を修正（journal.c）
+
+----------------------------------------
+//1031 [2013/03/24] by Rayce
+
+・gccでの警告修正（char.c, atcommand.c, clif.c, map.c, memorial.c, script.c, skill.c）
+
+・@giveitem をALL指定で実行時、未認証のキャラクターにもアイテムが付与される可能性を修正（atcommand.c）
+
+----------------------------------------
+//1030 [2013/03/22] by refis
+
+・手裏剣投げ、苦無投げ、風魔手裏剣投げ、銭投げ、畳返し、一閃、風刃のダメージ計算式をpreとREで分割（db/skill_db.txt pre/skill_db_pre.txt battle.c）
+
+・マジカルバレット、ピアーシングショットのダメージ計算式をpreとREで分割（battle.c）
+
+・口笛、ハミング状態をpreとREで分割（skill.c status.c）
+
+・（RE）風魔手裏剣投げを対象指定から地面指定に修正（db/skill_db.txt pre/skill_db_pre.txt skill.c）
+
+・（RE）インベナムの固定ダメージ加算位置を修正（battle.c）
+
+・（RE）スプレッドアタック、霞斬り、影斬りの使用条件を修正（skill_require_db.txt, pre/skill_require_db_pre.txt）
+	Thanks alsion0609 さん
+
+・ヴェラチュールスピアのDEF計算位置を修正して処理をスリムにする（battle.c）
+
+・点穴 -反-でMdefが減少するよう修正（skill.c status.c）
+
+・ファイティングスピリットのAspd増加率を修正（skill.c status.c）
+
+・シールドスペルのDEF増加にBaseLv補正を追加（skill.c）
+
+・シールドスペルが装備Mdefの代わりにDefを利用していた箇所を修正（skill.c）
+
+----------------------------------------
+//1029 [2013/03/22] by refis
+
+・モンク、アルケミスト系列職業スキルのダメージ計算式をpreとREで分割（db/skill_db2.txt battle.c skill.c）
+
+・（RE）猛龍拳, 伏虎拳, 連柱崩撃は消費する気弾分のダメージも計上するように変更（battle.c skill.c）
+
+・（RE）グランドクロス, グランドダークネスの物理部分に属性付与効果が計上されるように修正（battle.c）
+
+・（RE）ソウルブレイカーの魔法ダメージに物理スキル倍率加算効果が乗っていたのを修正（battle.c）
+
+・NPCスキル「不死属性変化」のデータ欠落を補完（db/skill_db2.txt）
+
+----------------------------------------
+//1028 [2013/03/22] by refis
+
+・バード、ダンサー系列職業スキルのダメージ計算式をpreとREで分割（battle.c status.c）
+
+・（RE）戦太鼓の響き、ニーベルングの指輪状態をpreとREで分割（battle.c status.c）
+
+・（RE）オーバートラスト系のカートレボリューション除外チェックは無駄なので判定を減らす（battle.c）
+
+・（RE）ソウルブレイカーの魔法ダメージに物理スキル倍率加算効果が乗っていたのを修正（battle.c）
+
+・ヘスペルスリットに倍化処理が抜けていたのを修正（battle.c）
+
+----------------------------------------
+//1027 [2013/03/21] by refis
+
+・ローグ系列職業スキルのダメージ計算式をpreとREで分割（battle.c skill.c）
+
+・（RE）「SC_RAID」を実装（db/scdata_db.txt db/skill_cast_db.txt battle.c skill.c status.*）
+
+・（RE）サプライズアタック、アローシャワーの効果範囲拡張に対応（skill.c）
+
+・（RE）ストームガストの凍結処理変更に対応（skill.c）
+
+・1026のDEF無視スキルの設定に抜けがあったので補完修正（battle.c）
+
+・キリエエレイソン、セイフティウォール、ストーンスキン、アンチマジック状態をpreとREで分割（battle.c skill.c）
+
+・（RE）戦闘設定「no_casting_int」を追加、詠唱計算式変更に対応（conf/battle_auriga.conf battle.* skill.c）
+	-> 戦闘設定「no_casting_int」は戦闘設定「no_casting_dex」と併用して利用します
+	-> 例：no_casting_dex150、no_casting_int115の場合、DEX+INT/2の合計が265以上で詠唱無しになります
+	-> 例：no_casting_dex265、no_casting_int0の場合、DEXが265以上で詠唱無しになります
+
+----------------------------------------
+//1026 [2013/03/21] by refis
+
+・クルセイダー系列職業スキルのダメージ計算式をpreとREで分割（battle.c）
+
+・（RE）上記に伴ってスキル「ファイト」、「メランコリー」の計算位置を変更（battle.c）
+
+・（RE）ファイアーピラー、スピアクイッケン、スパイラルピアースの使用条件を修正（skill_require_db.txt, pre/skill_require_db_pre.txt）
+
+・（RE）ゴスペルATK2倍、スピアクイッケン、ファイティングスピリット、シールドスペル、プレスティージ、
+　バンディング、インスピレーション、イクシードブレイク、オーディンの力状態をpreとREで分割（battle.c status.c）
+
+・バルカンアーム、アックストルネード、ヘスペルスリットのHit数を修正（skill_db.txt）
+
+・メカニックスキル「セルフディストラクション」はDEF減少効果の影響を受けないよう変更（battle.c）
+
+・ストライキングのATK上昇がモンスターに対して2回かかっているのを修正（status.c）
+
+・NPC爆裂波動（ラッシュアタック）とソウルリンカースキル「エスク」のATK倍率は加算するよう修正（status.c）
+	Thanks かんなぎ さん
+
+----------------------------------------
+//1025 [2013/03/20] by refis
+
+・アサシン系列職業スキルのダメージ計算式をpreとREで分割（battle.c）
+
+・エイムドボルトにHit数倍化が抜けていた不具合を修正（battle.c）
+
+・（RE）クリティカルダメージ向上効果がスキルに適用されない不具合を修正（battle.c）
+
+・メモリアルダンジョンで中身の無いNPCをコピーするとサーバークラッシュする不具合を修正（npc.c）
+
+・メモリアルダンジョン進行中にサーバーを落とすとメモリリークが発生する不具合を修正（map.c memorial.c）
+	-> 通常のNPCとfree方法が異なるためdo_final_npc()より先にdo_final_memorial()を実行する
+	-> do_final_memorial()内でmemorial_delete()を実行する
+
+----------------------------------------
+//1024 [2013/03/20] by Rayce
+
+・名前からメモリアルダンジョンを探す際、存在しない名前を指定するとnullpoエラー
+  扱いになるのを修正（memorial.c）
+
+・意味のないNULLチェックを削除（memorial.c）
+
+・party_searchname と guild_searchname の引数にconstを付ける（party.*, guild.*）
+
+・ペット, ホム, 傭兵, 精霊の位置移動計算処理をunit.cに集約
+  （pet.c, homun.c, merc.c, elem.c, unit.*）
+
+----------------------------------------
+//1023 [2013/03/19] by refis
+
+・ハンター、ブラックスミス系列職業スキルのダメージ計算式をpreとREで分割（battle.c skill.c status.c）
+
+・preコンパイルの際、「カートブースト」効果がなくなっていたミスを修正（battle.c）
+
+----------------------------------------
+//1022 [2013/03/19] by refis
+
+・ウィザード、プリースト、セージ系列職業スキルのダメージ計算式をpreとREで分割（battle.c status.c）
+
+・上記修正に伴い、処理位置が同一の「ベナムインプレス」「カートブースト」「フォースオブバンガード」
+　「エコーの歌」「恋人たちの為のシンフォニー」のダメージ計算位置を修正（battle.c）
+
+・（RE）物理攻撃計算に特定スキル増幅処理が抜けていたのを修正（battle.c）
+
+・魔法攻撃計算に対象にステータス異常がある場合の補正処理を追加してナンバリングを調節（battle.c）
+
+----------------------------------------
+//1021 [2013/03/19] by refis
+
+・一部スキルの近距離、遠距離判定を修正（skill_db2.txt）
+
+・1019の起爆後ユニット残留時間の処理を見やすく直す（skill.c）
+
+・スキル倍率に直接Hit数がかかっているスキルから倍化処理をDef計算以降に分離する（battle.c）
+
+・モンスター情報のDEF、MDEF表示をpreとREで分割（clif.c）
+
+・ナイト系列職業スキルのダメージ計算式をpreとREで分割（battle.c status.c）
+
+・（RE）マグナムブレイクとEDPの属性ダメージ追加処理を分離（battle.c skill.c）
+
+・（RE）呪いのAtk減少効果をスキル倍率から減算させるよう修正（battle.c）
+
+----------------------------------------
+//1020 [2013/03/19] by Blaze
+
+・アッシュ・バキュームNPC追加（npc_quest_ashvacuum.txt）
+	-> 魔王モロク追跡クエスト実装
+	-> 三ヶ国への報告書クエスト実装
+		Thanks to refis さん
+
+・子供失踪クエストの旧NPCをnpc_quest_ashvacuum.txtへ移動のため削除（npc_town_morocc.txt）
+
+・1019のビルドエラーを修正（battle.c）
+
+----------------------------------------
+//1019 [2013/03/18] by refis
+
+・（RE）防御無視効果、錐効果の処理をpreとREで分割（battle.c）
+
+・（RE）NPC_CRITICALSLASHは最大Atkで攻撃を行わせる（battle.c）
+
+・（RE）矢のAtkがサイズ補正を受けないように処理順序を下げさせる（battle.c）
+
+・（RE）修練系効果を種族耐性で軽減できるように処理順序を上げさせる（battle.c）
+
+・ホバーリング状態でもマグネティックフィールドにかかってしまうのを修正（skill.c）
+	Thanks Akayumi さん
+
+・ファイアリングトラップとクラスターボムの起爆後ユニット残留時間を修正（skill.c）
+	Thanks nekokoさん、Akayumi さん
+
+・status_get_hit()の戻り値が1以下になる可能性があったのを修正（status.c）
+
+----------------------------------------
+//1018 [2013/03/18] by refis
+
+・0995以降、TXT形式でキャラクターのロードが正常に行えなかったのを修正（char/txt/chardb_txt.c）
+
+・（RE）クリティカルダメージ上昇効果が左手にかかるミスを修正（battle.c）
+
+・（RE）NPC_CRITICALSLASHはクリティカルダメージ補正を行わない（battle.c）
+
+・（RE）魔法ダメージ基礎計算の過剰精錬ボーナスのミスを修正（battle.c）
+
+----------------------------------------
+//1017 [2013/03/18] by Rayce
+
+・1011以降、clif_GlobalMessage2() でメモリリークが発生していたのを修正（clif.c）
+	reported by ChowZenkiさん, thx a lot!
+
+・露店開設および買取露店開設の関数の汎用性を上げるために、タイトルの \0 補正を
+  clif.cに移動する（clif.c, buyingstore.*, vending.*）
+
+・GetSkillStatusChangeTable の呼び出しのまとめ（skill.c）
+
+----------------------------------------
+//1016 [2013/03/18] by refis
+
+・物理、魔法ダメージの基礎計算をpreとREで分割（battle.c）
+
+・通常物理攻撃、魔法攻撃の計算順序をpreとREで分割（battle.c status.c）
+
+・ヒール計算式をpreとREで分割（battle.c skill.*）
+
+----------------------------------------
+//1015 [2013/03/17] by Rayce
+
+・スクリプトのswitch構文の直後は } と case と default のみを許可するように強化（script.c）
+
+  以下のコードは今後エラーになります。
+
+	-	script	Tester	-1,{
+	OnInit:
+		switch (rand(3)) {
+			debugmes "insert";
+			case 0:
+				debugmes "0";
+				break;
+			default:
+				debugmes "etc";
+				break;
+		}
+	}
+
+----------------------------------------
+//1014 [2013/03/17] by Rayce
+
+・battle_calc_base_magic_damage でnullpo判定が正しく出来るように呼び出し順を修正（battle.c）
+
+・battle_skill_attack 以下のスキルにおいて、評価順を入れ替えて処理速度を向上する（battle.c）
+	-> リプロデュース
+	-> クローンスキル
+	-> サークルオブファイア
+
+・以下のスキルにおいて、ステータスの再計算が多重に行われないように status_calc_pc_stop_begin,
+  status_calc_pc_stop_end で保護するように修正（skill.c, status.c）
+	-> デッドリーインフェクト
+	-> アンチドート
+	-> 点穴 -快-
+
+・コード整理（battle.c, skill.c）
+
+----------------------------------------
+//1013 [2013/03/17] by refis
+
+・リコグナイズドスペル使用時に最低MATKで固定されるミスを修正（battle.c）
+
+・プレイヤーのAtk、Matk、Hit、Flee、Def、Mdef、CriticalをR前と後で分割（clif.c, status.c）
+	RE環境において以下の変更があります
+		「bMatk1」ボーナスは武器Matk上昇ボーナス扱いになります
+		「bMatk2」ボーナスはステータスMatk上昇ボーナス扱いになります
+
+・プレイヤー以外のHit、Flee、Def、MdefをR前と後で分割（status.c）
+
+・上記に伴う命中率計算式の分割（battle.c）
+
+・（RE）アイテムボーナス「bBaseAtk」, 「bMatk」をステータスに直接加算しないようにする
+	（battle.c clif.c map.h pc.c status.c）
+	RE環境において以下の変更があります
+		「bBaseAtk」ボーナスはアンドレ型Atk扱いになります
+		「bMatk」ボーナスは固定Matk上昇ボーナス扱いになります
+
+----------------------------------------
+//1012 [2013/03/17] by refis
+
+・ダブルアタック未修得で二刀、カタール使用時に左手ダメージが1に補正されてしまう問題を修正（battle.c）
+
+・呼び出しを容易にするため、battle_calc_magic_attackから基礎魔法ダメージ計算をbattle_calc_base_magic_damageとして分離させる（battle.*）
+
+・ジェネティックスキル「ヘルズプラント」に無属性補正がなかったのを修正
+	Thanks Akayumi さん
+
+----------------------------------------
+//1011 [2013/03/17] by Rayce
+
+・脆弱性強化（clif.c, memorial.c, script.c）
+
+・mob_talk() の引数をunsigned shortからintに変更（mob.*）
+
+----------------------------------------
+//1010 [2013/03/17] by Rayce
+
+・getmdmapname関数およびgetmdnpcname関数をマップ未所属のNPCから実行すると
+  サーバクラッシュする問題を修正（script.c）
+
+・getmdnpcname関数の引数に長い文字を指定するとバッファオーバーフローが
+  発生するのを修正（script.c）
+
+・PCがアタッチされてない状態でmdenter関数を使用すると、リターン値がスクリプト
+  スタックに戻らない問題を修正（script.c）
+
+・メモリアルダンジョンのマップとNPCを複製する際、バッファオーバーフロー対策として
+  元のマップ名やNPC名が長すぎる場合は失敗扱いにする（npc.c, map.c, memorial.c）
+
+・MAPサーバ起動時、マップ情報が読み込めなくてもexitせずに続行するように変更
+  grfファイル無しでもスクリプトのデバッグを可能にするため（map.c）
+
+----------------------------------------
+//1009 [2013/03/16] by refis
+
+・一部スキルの近距離、遠距離判定を修正（skill_db2.txt）
+
+・エルフの矢と狩人の矢が使用できないミスを修正（item_arrowtype.txt）
+
+・メカニックスキル「魔導ギアライセンス」の修練加重値を修正（battle.c）
+
+・メカニックスキル「斧修練」が鈍器にも影響を及ぼすよう修正（battle.c status.c）
+
+・ナイトスキル「ブランディッシュスピア」のダメージ計算式の異常を修正（battle.c）
+
+・ソードマンスキル「マグナムブレイク」のダメージ増加効果はスキル使用後に発現するよう修正（skill.c）
+
+・ソーサラースキル「ヴェラチュールスピア」に物理ダメージが加算されるよう修正（battle.c）
+
+・スクリプト関数「getequiprefinerycnt」で位置指定を省略した際の参照不具合を修正（script.c）
+
+・item_dbを更新（item_db.txt）
+	-> ヒール効果増加の統括function「ItemdbAlmightyHeal」の追加（item_db.txt, script/function/function_itemdb.txt）
+	-> アイテムドロップ、オートスペル、オートアクティブのLv、確率を修正
+	-> bAtk, bAtkRate, bAddShortWeaponDamageを使用しているアイテムの効果を適切なものに修正
+	-> Matk関係がR化していない一部武器を修正
+
+----------------------------------------
+//1008 [2013/03/10] by refis
+
+・1006,1007のコメントに誤りがあったのを修正（db/skill_unit_db.txt doc/script_ref.txt）
+
+----------------------------------------
+//1007 [2013/03/10] by refis
+
+・モンスター操作用のスクリプト命令、関数を追加（doc/script_ref.txt map/mob.* map/script.c）
+	-> callmonster 関数：モンスターを召喚し、オブジェクトIDを返します
+	-> removemonster 関数：オブジェクトIDのモンスターの殺害を要求し、処理結果を返します
+	-> mobuseskill 命令：オブジェクトIDのモンスターにスキルを使用させます
+	-> areamobuseskill 命令：指定範囲のモンスターにスキルを使用させます
+
+・スクリプト命令「setpartyinmap」を実装（doc/script_ref.txt script.c）
+
+・スクリプト関数「getequipcardid」を実装（doc/script_ref.txt script.c）
+
+----------------------------------------
+//1006 [2013/03/10] by refis
+
+・MAX_MOBSKILLを49に拡張（map/map.h）
+
+・mob_talk_dbを追加（db/mob_talk_db.txt doc/db_ref.txt map/clif.* mob.*）
+
+・以下のスキルを実装
+	-> NPCスキル「セリフアナウンス」、「インビンシブル」、「インビンシブルオフ」
+		（db/mob_skill_db.txt scdata_db.txt skill_cast_db.txt skill_db.txt skill_db2.txt src/battle.c skill.c status.*）
+	-> NPCスキル「不死属性変化」、「不協和音」、「自分勝手なダンス」
+		（db/skill_cast_db.txt skill_db.txt skill_db2.txt skill_unit_db.txt common/mmo.h map/battle.c skill.c status.c unit.c）
+	-> 「スノーフリップ」、「ピオニーマミー」、「ぴしゃりハーブ」、「世界樹のほこり」、「エクラージュへの帰還」
+		（db/skill_cast_db.txt skill_db.txt skill_db2.txt skill_require_db.txt common/mmo.h skill.c）
+
+・無詠唱でも詠唱パケットを投げるよう修正（unit.c）
+	-> ブレッシング等の無詠唱スキルがバトルチャットに表示されない問題のため
+
+・スキル「エルディカスティスへの帰還」、「モーラへの帰還」をテレポート不可MAPでも使用できるよう修正（skill.c）
+
+----------------------------------------
+//1005 [2013/03/06] by refis
+
+・httpdをデフォルトで無効にする補足 (login.dsp, login_sql.dsp)
+
+・モンスターがunit_heal関数でHP0以下となっても死亡しないのを修正 (mob.c)
+
+・addeff関連の処理を少し修正 (battle.c, skill.c, status.c)
+
+----------------------------------------
+//1004 [2013/03/04] by refis
+
+・1001以降、通常カード効果が発揮されなかった不具合を修正 (status.c)
+	Thanks うに〜く さん
+
+----------------------------------------
+//1003 [2013/03/02] by refis
+
+・MOBAI「ハイパーアクティブ」の修正 (mob.c)
+	-> 最も近い敵をターゲットする処理を実装
+	-> 攻撃を受けた後で待機状態に移行した場合、angry/followスイッチが復帰するよう修正
+
+----------------------------------------
+//1002 [2013/02/27] by refis
+
+・typo修正（map/map.c script/npc/quest/npc_quest_hiddenenchant.txt）
+	Thanks rapis さん
+
+・闇販売員の修正、及びポイント商人の追加（script/npc/job/npc_job_thirdclass.txt）
+
+----------------------------------------
+//1001 [2013/02/26] by refis
+
+・vc_make.batでコンパイラオプション「PRE_RENEWAL」が付加されない誤りを修正（vc_make.bat）
+
+・ヒドゥンエンチャントシステムを実装
+	-> カードの種類を設定するitem_cardtype.txtを追加（db/item_cardtype.txt doc/db_ref.txt map/itemdb.*）
+	-> スロット外のカードも読み込むように処理を更新（pc.c script.c status.c）
+	-> ヒドゥンエンチャントNPCを追加（conf/map_auriga.conf script/npc/quest/npc_quest_hiddenenchant.txt）
+		Thanks Base on tomo さん
+
+----------------------------------------
+//1000 [2013/02/25] by Blaze
+
+・コンパイラオプション「PRE_RENEWAL」を追加（Makefile, bcc32_make.bat, vc_make.bat）
+	-> システムをR化前/後で切り替えます。
+　	※R化システム実装完了までは"有効"推奨です。
+
+・R化前/後のDB住み分け第1弾（itemdb.c, mob.c, skill.c）
+	-> 「PRE_RENEWAL」有効時、通常DB読み込み後に以下のDBをアドオンします。
+	　・item_db_pre.txt
+	　・mob_db_pre.txt
+	　・mob_skill_db_pre.txt
+	　・skill_db_pre.txt
+	　・skill_cast_db_pre.txt
+	　・skill_require_db_pre.txt
+	※Auriga-1000以降、db直下の各DBはR化後データをサポート、
+	　R化前データは「db/pre」配下のDBでサポートとなります。
+
+・item_db.txtのATK項でMATKを指定できるように拡張（itemdb.*, statuc.c, doc/db_ref.txt）
+	-> 「DEF:MDEF」と同じ書式で「ATK:MATK」と記載することで、MATKを定義できます。
+
+・item_db.txtをR化後データに合わせて修正（db/item_db.txt）
+
+----------------------------------------
+//0999 [2013/02/25] by refis
+
+・0998のitem_db更新をフォローアップ（db/item_db.txt）
+	-> 不要な改行が含まれていたミスを修正
+	-> アクティブモンスター変身関連装備のミスを修正
+	-> 英字定義名称を本家に合わせて修正
+	-> その他追加修正
+
+----------------------------------------
+//0998 [2013/02/23] by refis
+
+・0975以降タワー生成NPCから帰還できなくなっていたミスの修正と会話の補完（npc_memorial_tower.txt）
+
+・スキル関連定義を更新（skill.h）
+
+・スクリプト関数「getequiprefinerycnt」で位置指定を省略できるよう仕様変更（script.c doc/script_ref.txt）
+
+・スクリプト関数「strstr」を実装（script.c doc/script_ref.txt）
+
+・スクリプト命令「active_montransform」を実装
+（db/scdata_db.txt doc/script_ref.txt clif.c pc.c script.c status.*）
+
+・item_dbを更新（db/item_db.txt）
+	-> アクティブモンスター変身関連のアイテム実装
+	-> アイテムドロップ、オートスペル系装備の暫定確率であった一部装備を正しい値に修正
+
+----------------------------------------
+//0997 [2013/02/23] by Blaze
+
+・メモリアルダンジョン複製NPCがタイマーイベントを発行するとき、delete_timer errorが出ていた不具合修正（map/npc.c）
+
+----------------------------------------
+//0996 [2013/02/23] by Blaze
+
+・メモリアルダンジョン実装（map.*, memorial.*, clif.*, npc.*, pc.c, party.c, script.c, unit.c）
+	-> MAP複製処理追加（map.*）
+	-> NPC複製・消去処理追加（npc.*）
+	-> 指定MAPのNPCイベント実行処理を追加（npc.*）
+	-> メモリアルダンジョン情報通知パケット実装（clif.*）
+	-> メモリアルダンジョン関連のスクリプト命令・関数実装（script.c, doc/script_ref.txt）
+
+・パーティー情報構造体にメモリアルダンジョンID追加（common/mmo.h, char/int_party.c）
+
+・メモリアルダンジョンDBの仕様変更（memorial.c, db/memorial_db.txt）
+	-> 制限時間を分指定から秒指定に変更
+	-> 分割MAP数を10から8に削減
+
+・スクリプト命令「mddelete」のパラメータから、名称指定は不要に変更（script.c, doc/script_ref.txt）
+
+・エンドレスタワーNPCの読み込み設定追加（conf/map_auriga.conf）
+
+----------------------------------------
+//0995 [2012/02/23] by Blaze
+
+・アイテムウィンドウの個人タブ実装 (map/clif.*)
+
+・アイテム情報に個人タブ有効フラグを追加 (common/mmo.h, char/sql/chardb_sql.c, char/txt/chardb_txt.c)
+
+・TXT:AURIGA_JOURNALを16に引き上げ (common/journal.c.)
+
+・SQL:インベントリテーブルに個人タブ情報を追加（sql-files/main.sql, sql-files/Auriga995_changetable.sql）
+
+----------------------------------------
+//0994 [2012/02/21] by refis
+
+・ギルド倉庫デッドロックのチェック部分を修正 (char/int_storage.c)
+
+・キャラクターセーブ応答の不具合を修正 (map/chrif.c)
+
+----------------------------------------
+//0993 [2012/02/20] by refis
+
+・オートシャドウスペルのパケットを一部追加 (clif.c)
+
+・状態異常「SC_KYOUGAKU」の値がおかしかったのを修正 (clif.c)
+	Thanks Akayumi さん
+
+・ポイントショップがオーバーフローを考慮していなかった点を修正（map/npc.c）
+	Thanks おじさま さん
+
+----------------------------------------
+//0992 [2012/11/20] by refis
+
+・モンスターの挙動を修正
+	-> 戦闘設定に「slave_inherit_mode」を追加（conf/battle_auriga.conf map/battle.* map/mob.c）
+	-> ハイディング中の通常攻撃とスキル使用を許可する（map/skill.c map/unit.c）
+	-> ハイディング中に攻撃対象が射程外へ出るとターゲット解除させる（map/mob.c）
+	-> ワープ時のターゲット解除は視界外消失判定に任せる（map/mob.c）
+
+・特定距離攻撃時の状態異常付与が0983の拡張に対応してなかった不具合を修正（map/battle.c）
+
+----------------------------------------
+//0991 [2012/11/16] by refis
+
+・0990でのコミット漏れを修正（map/pc.c）
+
+・魔導ギア搭乗時に「魔導ギアライセンス」スキルが必要なように修正（map/pc.c）
+
+----------------------------------------
+//0990 [2012/11/16] by refis
+
+・拡張スーパーノービスで無死亡ボーナスが得られないのを修正（map/status.c）
+	Thanks alsion0609 さん
+
+・拡張スーパーノービスで死亡カウンターリセット時エフェクトが出ないのを修正（map/status.c）
+	Thanks alsion0609 さん
+
+・カートと魔導ギアを併用した際の処理を修正（map/pc.c）
+	Thanks Akayumi さん
+
+----------------------------------------
+//0989 [2012/10/14] by refis
+
+・モンスターグループ「スカラバ」種のリストを修正（db/mob_group_db.txt）
+
+・ルーンナイトスキル「ドラゴントレーニング」MaxLv習得時の「槍修練」ダメージを修正（map/battle.c）
+
+・ジェネティックスキル「カート改造」取得時はカート情報を更新させる（map/pc.c）
+
+・ウォーロックスキル「テトラボルテックス」の処理を修正（map/battle.c map/skill.c）
+	Thanks pneuma さん
+
+----------------------------------------
+//0988 [2012/09/09] by refis
+
+・アイテム使用時、及び装着時の制限レベルに関する不具合の修正（map/pc.c）
+
+・アイテムボーナスコーマが非ボス属性に対して発動しない不具合の修正（map/battle.c）
+	Thanks yucco さん
+
+----------------------------------------
+//0987 [2012/09/02] by Cocoa
+
+・ウォーマーが敵も対象になっていない不具合の修正
+
+----------------------------------------
+//0986 [2012/09/02] by Cocoa
+
+・スキル大纏崩捶使用後に発生するコンボ時間の条件が間違っているので修正（map/battle.c）
+
+----------------------------------------
+//0985 [2012/09/01] by Cocoa
+
+・点穴 -球-が物理スキル攻撃で効果を発揮しない不具合の修正（map/battle.c）
+
+----------------------------------------
+//0984 [2012/09/01] by Cocoa
+
+・エピクレシス前提条件からハイネスヒールは抜けていた不具合の修正（db/skill_tree.txt）
+
+・ボディペインティングがアイテム消費なしで使用できる不具合の修正（db/skill_require_db.txt）
+
+・魔力の書第1巻が未転生職でも装備できるように修正（db/item_db2.txt）
+
+・ルーンプレートの制限を追記（db/item_db2.txt）
+
+----------------------------------------
+//0983 [2012/08/30] by refis
+
+・状態異常関連アイテムボーナスに「恐怖」「発火」「深い睡眠」「氷結」「冷凍」「魅惑」を指定できるよう拡張
+ (db/const.txt doc/item_bonus.txt common/mmo.h battle.c map.h pc.c skill.* status.*)
+	Thanks Apache さん
+
+・上記に伴うスキル定義を追加 (db/skill_cast_db.txt db/skill_db2.txt db/skill_db.txt)
+
+----------------------------------------
+//0982 [2012/08/28] by refis
+
+・ギルド倉庫デッドロックチェックにlast_fdを利用しないよう変更 (char/int_storage.c)
+
+----------------------------------------
+//0981 [2012/08/26] by refis
+
+・ログイン時にパーティ加入要請可否設定を出力するよう変更 (clif.*)
+	Thanks NP3228 さん
+
+・item_dbのずれの修正とついでに少し更新 (db/item_db.txt)
+	Thanks dent さん
+
+・状態異常「SC_BANDING」中のキャラが視界に入ったときにアイコン情報を送信させる (clif.c)
+
+・状態異常「SC_JP_EVENT01」「SC_JP_EVENT02」「SC_JP_EVENT03」「SC_JP_EVENT04」を実装
+ (db/const.txt db/item_db.txt db/scdata_db.txt battle.c pc.c status.*)
+	Thanks alsion0609 さん
+
+・アイテムボーナス「bonus2 bAddEleWeaponDamageRate」「bonus2 bAddEleMagicDamageRate」追加
+ (db/const.txt db/item_db.txt doc/item_bonus.txt battle.c map.h pc.c skill.c status.c)
+	Thanks unsyu さん
+　bonus2 bAddEleWeaponDamageRate,n,x;
+　n属性の物理スキルダメージをx%増加。
+　ex)　bonus2 bAddEleWeaponDamageRate,3,10;	// 火属性物理スキルのダメージが10%増加
+
+　bonus2 bAddEleMagicDamageRate,n,x;
+　n属性の魔法スキルダメージをx%増加。
+　ex)　bonus2 bAddEleMagicDamageRate,1,10;	// 水属性魔法スキルのダメージが10%増加
+
+----------------------------------------
+//0980 [2012/08/20] by refis
+
+・itemの名称に半角スペースが混じっているミスを修正 (item_db.txt)
+
+・スクリプト命令「getexp」の表示色を変えられるよう拡張 (doc/script_ref.txt script.c)
+
+・アイテム使用時のレベル制限チェックでエラーメッセージを出力するよう変更 (pc.c)
+
+・状態異常「SC_HAT_EFFECT」を実装 (const.txt item_db.txt scdata_db.txt clif.c status.*)
+
+----------------------------------------
+//0979 [2012/08/20] by refis
+
+・別種同一名モンスターの名称変更の欠損分を補完 (npc_monster_abyss.txt)
+
+・itemデータの更新 (item_db.txt item_db2.txt)
+
+・mobデータの更新 (mob_db.txt mob_skill_db.txt)
+
+----------------------------------------
+//0978 [2012/08/11] by refis
+
+・0977での関数のスペルミスを修正 (npc_misc_refine.txt)
+	Thanks NP3228 さん、うに〜く さん
+
+----------------------------------------
+//0977 [2012/08/09] by refis
+
+・モンスターの詠唱時間は状態異常の影響を受けないよう修正 (src/map/mob.c)
+
+・「checkitemblank」関数はインベントリの空き数を返すよう仕様変更 (doc/script_ref.txt src/map/script.c)
+
+・精錬石関連NPCを修正 (npc_misc_refine.txt)
+	-> 精錬石販売NPCにアイテム所持種チェックを追加
+	-> 精錬石交換NPCを複数鉱石交換に対応
+
+・ステータスが正常に表示されない場合がある不具合を修正 (src/map/status.c)
+	Thanks テディ さん
+
+・NPCスキル「ドラゴンフィアー」の呪いを混乱に修正 (src/map/skill.c)
+	Thanks rapis さん
+
+・別種同一名モンスターの名称を修正
+	-> dungeonの修正 (npc_monster_juperos.txt npc_monster_magdun.txt npc_monster_odintem.txt npc_monster_thanatos.txt npc_monster_xmasdun.txt)
+	-> fieldの修正 (npc_monster_geffild.txt npc_monster_hufild.txt npc_monster_mjolnir.txt npc_monster_mocfild.txt npc_monster_prtfild.txt npc_monster_yunofild.txt)
+		Thanks pneuma さん
+
+----------------------------------------
+//0976 [2012/07/16] by refis
+
+・0975のミスを修正 (npc_job_18alchemist.txt npc_job_28gunslinger.txt)
+
+----------------------------------------
+//0975 [2012/07/16] by refis
+
+・幻想の花を利用したアルケミスト転職の会話を補完 (npc_job_18alchemist.txt)
+
+・イズルードの街のNPC配置を更新 (npc_job_28gunslinger.txt npc_town_izlude.txt)
+
+・0967の内容を少し修正 (doc/script_ref.txt mapflag_memorial.txt npc_memorial_tower.txt)
+
+・PK設定のとき、マーダラーポイントが0でもボーナスが付与されるミスを修正 (src/map/pc.c)
+	Thanks kroe さん
+
+----------------------------------------
+//0974 [2012/07/11] by refis
+
+・タナトスタワーNPCの会話を補完 (npc_quest_noghalt.txt)
+
+・ミルク交換NPCの会話を補完 (npc_quest_potion.txt)
+
+・quest_dbを更新 (db/quest_db.txt)
+
+----------------------------------------
+//0973 [2012/07/10] by refis
+
+・3次職関連NPCを追加
+	-> 3次転職NPCと関連販売NPCを追加 (conf/map_auriga.conf npc_job_thirdclass.txt)
+	-> アルケミスト材料商人を修正 (npc_town_aldebaran.txt)
+	-> 影工房へのwarpを追加 (npc_warp_town.txt)
+
+・item_dbを更新 (db/item_db.txt)
+
+・2012-06-18aRagexeREのpacket_dbを一部修正 (db/packet_db.txt)
+	Thanks Eco さん
+
+・影狼、朧スキル「撒菱」の持続時間の誤りを修正 (db/skill_cast_db.txt)
+	Thanks かんなぎ さん
+
+・モンスターにはスキルディレイを適用しないよう修正 (src/map/skill.c)
+　※mob_skill_db上のMOB専用スキルクールのみ影響する
+	Thanks Apache さん
+
+----------------------------------------
+//0972 [2012/06/22] by popori
+
+・0971のコミット漏れコードを追加 (src/map/clif.c)
+
+----------------------------------------
+//0971 [2012/06/22] by popori
+
+・PACKETVER「20111102」を追加 (vc_make.bat bcc32_make.bat Makefile src/map/clif.c)
+  → 0x43fの上位版0x8ffを追加
+
+・暫定的にPACKETVER「20120328」を追加 (vc_make.bat bcc32_make.bat Makefile *.dsp src/map/clif.c)
+  → 0x856、0x857、0x858の上位版0x90f、0x914、0x915を追加
+  ※ モンスターのHP表示条件(PC・パーティーメンバ・ホム・傭兵・精霊がダメージを与える/受ける)に関しては未実装
+     エンペリウム、BOSS、特定状態異常時以外は全て表示するようになっています
+
+----------------------------------------
+//0970 [2012/06/20] by popori
+
+・2012-06-18aRagexeREのpacket_dbを追加 (db/packet_db.txt)
+
+・docを少し修正 (doc/client_packet.txt doc/client_packet.txt)
+
+----------------------------------------
+//0969 [2012/06/20] by popori
+
+・wis送信パケットをパケット仕様に合わせて変更 (src/char/inter.c src/map/clif.* src/map/inter.c doc/inter_server_packet.txt doc/client_packet.txt)
+
+・少しリファクタ (src/common/mmo.h src/map/clif.c)
+
+・新仕様のパーティーブッキングはパーティーリーダーでないと登録が出来ないよう修正 (src/map/booking.c)
+
+・パケットの解析結果を記載と修正 (doc/client_packet.txt)
+
+・キャラ作成時のパラメータの型を一部変更 (src/char/char.c src/char/txt/chardb_txt.* src/char/sql/chardb_sql.*)
+
+・2012-06-18aRagexeREまでのパケット長の追記と一部クリーンアップと修正 (db/packet_db.txt)
+
+----------------------------------------
+//0968 [2012/06/19] by refis
+
+・討伐クエストNPCのセリフとクエスト開始可能レベルを更新 (npc_quest_hunting.txt)
+
+・エルディカスティスへの帰還、モーラへの帰還の処理を少し修正 (src/map/skill.c)
+
+・マップサーバー間移動要求の不具合を修正 (src/char/char.c)
+	Thanks うに〜く さん
+
+----------------------------------------
+//0967 [2012/06/17] by Blaze
+
+・メモリアルダンジョン実装準備
+	-> メモリアルダンジョン用ソース追加（memorial.*, map.c, map.dsp, map_sql.dsp）
+	-> スクリプト命令・関数のIFのみ追加（script.c, doc/script_ref.txt）
+	　※処理内容は未実装です
+		mdcreate命令:メモリアルダンジョンの生成を要求します
+		mddelete命令:メモリアルダンジョンの削除を要求します
+		mdenter関数:メモリアルダンジョンへの入場を要求し、処理結果を返します
+		getmdmapname関数:複製されたMAP名称を返します
+		getmdnpcname関数:複製されたNPC名称を返します
+	-> メモリアルダンジョン用DB追加（db/memorial_db.txt, doc/db_ref.txt）
+
+・エンドレスタワーNPC実装（script/npc/memorial/npc_memorial_tower.txt）
+　※システム実装まではNPC読み込み対象外にしています。
+
+・エンドレスタワー関連マップのマップフラグ追加（script/mapflag/mapflag.txt, script/mapflag/mapflag_memorial.txt, conf/map_auriga.conf）
+
+・エンドレスタワー関連MOBのデータ一部修正（db/mob_db.txt, db/mob_skill_db.txt）
+
+・パケット0x2c2「引数付きmsgstringtable表示」を実装（clif.*）
+
+・announceが表示されない不具合対策で使用パケットを0x40cから0x1c3に暫定変更（clif.c）
+	Thanks Akayumi さん
+
+----------------------------------------
+//0966 [2012/06/03] by refis
+
+・キャラクターのデータセーブは応答を返すよう変更
+	-> ログアウト時のデータ削除は応答を待ってから処理する (doc/serverlink_packet.txt src/char/char.c src/map/chrif.c src/map/clif.c)
+	-> キャラクターセレクト、サーバ移動時はデータセーブの応答を待つ (src/map/chrif.c src/map/clif.c src/map/pc.c)
+
+----------------------------------------
+//0965 [2012/05/23] by refis
+
+・一部のNPCの動作を修正
+	-> 位置、判定文、台詞を修正(npc_job_11hunter.txt npc_job_14crusader.txt npc_misc_guide.txt npc_misc_kafra.txt npc_quest_potion.txt npc_quest_skillget3.txt npc_quest_smilegirl.txt)
+	-> テイミング商人の品揃えを更新 (npc_town_geffen.txt npc_town_izlude.txt npc_town_lighthalzen.txt npc_town_morocc.txt npc_town_payon.txt npc_town_prontera.txt npc_town_yuno.txt)
+
+・魔法書販売のクエストNPCを追加 (conf/map_auriga.conf npc_quest_magicbook.txt)
+
+・状態異常「驚愕」にかかった相手が視界に入ったときの不具合を修正 (src/map/clif.c)
+
+・スキル「マスカレード：グルーミー」のペットとホムに対する処理のチェックを強化 (src/map/skill.c)
+	Thanks Akayumi さん
+
+----------------------------------------
+//0964 [2012/05/20] by refis
+
+・clif_status_load、clif_status_change_idの処理を変更
+	-> 既存のclif_status_loadをclif_status_load_idに名称変更し、新たに広範囲用のclif_status_loadを追加
+　　　(src/map/atcommand.c src/map/clif.* src/map/pc.c src/map/status.c)
+	-> 統一的にclif_status_change_idの第1引数にmap_session_dataを用いるよう変更 (src/map/clif.*)
+
+・状態異常の解除にclif_status_loadを利用するように変更 (src/map/status.c)
+
+・状態異常「深い睡眠」はステータスで耐性を得られないよう修正 (src/map/status.c)
+
+・status_change_pretimerはスキルユニットに対しても呼ばれる可能性があるのでユニットチェックを変更 (src/map/status.c)
+
+----------------------------------------
+//0963 [2012/05/19] by Blaze
+
+・精霊システム実装
+	-> 攻撃モードによる自動攻撃AI実装（elem.c）
+	-> 自動攻撃中にスキル使用するように（unit.c）
+	-> 精霊の自動スキル使用確率を戦闘設定に追加（battle.*, conf/battle_auriga.conf）
+	-> 精霊の移動処理を改善、ワープ処理を廃止（elem.*）
+	-> 精霊ベントスの攻撃射程を修正（db/elem_db.txt）
+	-> ソーサラースキル「サモン＊＊＊」の定義を追加（db/skill_db.txt）
+
+・0898以降、ジェネティックスキル「チェンジマテリアル」が失敗する不具合修正（db/packet_db.txt）
+
+・ソーサラースキル「エレメンタルアナライシス」実装（clif.*, skill.*）
+
+----------------------------------------
+//0962 [2012/05/17] by refis
+
+・討伐クエストNPCを読み込むとエラーが出るので修正 (npc_quest_hunting.txt)
+
+・カートの処理が上手く動いていないので修正 (src/map/clif.c src/map/pc.c src/map/status.c)
+
+・AI「強敵に非アクティブ」の敵が非反撃になるミスを修正 (src/map/mob.c)
+	Thanks rain さん
+
+・討伐データベース登録時に0を除外するように修正 (src/map/quest.c)
+	Thanks East さん、pneuma さん
+
+----------------------------------------
+//0961 [2012/05/12] by refis
+
+・0960のミスを修正 (src/map/clif.c)
+
+・本家にあわせて髪型最大値を拡張 (src/common/mmo.h)
+
+・ついでにhelpを更新 (conf/help.txt)
+
+----------------------------------------
+//0960 [2012/05/12] by refis
+
+・カートのアイテムリストは装着したときのみ送りつけるよう変更 (src/map/pc.c src/map/status.c)
+
+・カートの処理を少し修正 (src/map/clif.c src/map/pc.h)
+
+----------------------------------------
+//0959 [2012/05/11] by refis
+
+・PACKETVER「20111025」以降の所持品パケットを追加 (src/map/clif.c)
+
+・ホムンクルスメニューパケットの区切りを一部修正 (db/packet_db.txt)
+	Thanks shirasumi さん
+
+・client_packet.txtを少し修正 (doc/client_packet.txt)
+
+----------------------------------------
+//0958 [2012/05/05] by Blaze
+
+・0954以降、プレイヤー名に2バイト文字を含むとキャラ作成に失敗していた不具合を修正（char.c, chardb_txt.*, chardb_sql.*）
+
+----------------------------------------
+//0957 [2012/05/05] by Blaze
+
+・精霊システム仮実装その２
+	-> ソーサラースキル「エレメンタルコントロール」による精霊のモードチェンジ実装（elem.*, skill.c）
+　　　※攻撃モードの自動攻撃AIは未実装です。
+	-> 精霊がスキルを使用できるように（elem.*, skill.h, clif.c）
+　　　※ソーサラースキル「エレメンタルコントロール」Lv2,3、「エレメンタルアクション」使用時に精霊がスキル発動します。
+	-> 精霊スキルと状態異常を一部実装（db/skill_db.txt, db/skill_cast_db.txt, db/skill_unit_db.txt, db/scdata_db.txt, skill.*, status.*, battle.c, pc.c）
+	-> 待機モード中のみ自然回復するように変更（elem.c）
+※精霊の処理が安定化するまで、skill_dbから精霊召喚スキルの定義を無効にしています。
+
+・ソーサラースキル「サモン＊＊＊」の精霊召喚時間が長かったのを修正（skill.c）
+
+・ソーサラースキル「エレメンタルシンパシー」による精霊のMaxSP増加値が多かったのを修正（elem.c）
+
+・ソーサラースキル「エレメンタルシンパシー」の効果を召喚直後にも反映するように修正（elem.c）
+
+・ソーサラーのスキルツリーで「エレメンタルコントロール」のMaxLvを3→4に修正（db/skill_tree.txt）
+
+・NPC終了処理にBL_ELEMに対する処理が漏れていたのを追加（npc.c）
+
+・状態異常の最大登録数「MAX_STATUSCHANGE」を600→650に引き上げ（common/mmo.h）
+
+----------------------------------------
+//0956 [2012/05/01] by popori
+
+・0955のパケット修正 (db/packet_db.txt src/map/booking.* src/map/clif.c)
+
+・2012-03-28aRagexeRE用のパケットDB追加 (db/packet_db.txt)
+
+・クライアントの解析結果を追記 (doc/client_packet.txt)
+
+・状態異常「驚愕」にかかった際、画面外からの再表示するとモンスターの姿とならないのを修正 (src/map/clif.c)
+　※表示の優先順位を以下にします
+　　驚愕 > モンスター変身 > 搭乗システム
+
+・以下のスキルを実装
+ (db/skill_cast_db.txt db/skill_db.txt db/skill_unit_db.txt db/scdata_db.txt src/map/battle.c src/map/clif.* src/map/map.h src/map/pc.* src/map/skill.* src/map/status.* src/map/unit.c)
+　
+　KO_JYUMONJIKIRI
+　KO_KAHU_ENTEN
+　KO_HYOUHU_HUBUKI
+　KO_KAZEHU_SEIRAN
+　KO_DOHU_KOUKAI
+　KO_KAIHOU
+　KO_ZENKAI
+
+----------------------------------------
+//0955 [2012/04/29] by popori
+
+・PACKETVER「20120222」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.* src/map/booking.* src/map/map.h db/packet_db.txt doc/client_packet.txt)
+　->新仕様のパーティーブッキング対応
+
+・2012-04-10aRagexeRE用のpacket_db.txtの追加 (db/packet_db.txt)
+
+----------------------------------------
+//0954 [2012/04/29] by popori
+
+・PACKETVER「20120201」の追加 (vc_make.bat Makefile bcc32_make.bat src/map/clif.c src/map/pc.* src/map/skill.c src/map/status.* db/scdata_db.txt)
+　->カートの処理方式を状態異常管理に変更
+　->新規追加されたカート9種類に対応
+
+・PACKETCER「20120307」の追加 (src/char/char.c src/char/txt/chardb_txt* src/char/sql/chardb_sql* *.dsp vc_make.bat Makefile bcc32_make.bat)
+　->キャラ作成パケット0x970に対応
+
+----------------------------------------
+//0953 [2012/04/29] by refis
+
+・0952で接触反応が動作しない不具合の修正とコメントの訂正 (src/map/mob.c)
+
+・TXTモードでデータが一致しない不具合を修正（src/char/txt/chardb_txt.c）
+
+----------------------------------------
+//0952 [2012/04/29] by refis
+
+・MOBAI「攻撃中ターゲットチェンジ許可」、「追跡中ターゲットチェンジ許可」を実装 (src/map/mob.c src/map/status.h)
+	-> この実装により「アクティブAIの場合、25%確率で攻撃者にターゲットチェンジする」項目を廃止
+
+・MOBAI「ハイパーアクティブ（通称火山AI）」を実装 (doc/db_ref.txt src/map/map.h src/map/mob.* src/map/skill.c src/map/status.h src/map/unit.c)
+	-> 1度攻撃を受けるまでは、attackの代わりにangryのスキルが呼び出されます。
+	-> 1度攻撃を受けるまでは、chaseの代わりにfollowのスキルが呼び出されます。
+	-> 1度攻撃を受けるとその攻撃者をターゲットし、以降は通常アクティブと同じ挙動になります。
+		※follow追跡中、最も近い敵をターゲットする効果は、ターゲットの再選定で仮実装しています。
+
+・モンスターのAIを更新 (db/mob_db.txt)
+
+・ハイパーアクティブAI用のスキルを追加更新 (db/mob_skill_db.txt)
+
+・拡張スーパーノービスの「グロリア」スキルツリーの誤りを修正 (db/skill_tree.txt)
+	Thanks shirasumi さん、rapis さん
+
+----------------------------------------
+//0951 [2012/04/28] by Blaze
+
+・精霊システム仮実装
+	-> 精霊の作成、削除、召喚者追従まで実装（map/elem.*, map/battle.c, map/mob.c, map/pc.c, map/skill.c, map/status.c, map/unit.c, map/map.dsp, map/map_sql.dsp）
+	-> interサーバの精霊データ送受信処理を実装（map/intif.*, char/inter.c, char/int_elem.*, char/char.dsp, char/char_sql.dsp, doc/inter_server_packet.txt）
+	-> charサーバの精霊データ保存処理を実装（char/char.c, char/sql/elemdb_sql.*, char/txt/elemdb_txt.*, char/char.dsp, char/char_sql.dsp）
+	-> プレイヤーの精霊情報を保存するように変更（char/sql/chardb_sql.c, char/txt/chardb_txt.c, sql-files/main.sql, Auriga951_changetable.sql）
+	-> SQL:新規テーブル「elemental」追加（common/sqldbs.h, sql-files/main.sql, Auriga951_changetable.sql）
+	-> TXT:JOURNAL_IDENTIFIERを14->15に引き上げ (common/journal.c)
+	-> 精霊保存データに"mode"と"limit"を追加 (common/mmo.h)
+	-> 精霊データ定義にAIタイマー追加、不要な定義を削除（map/map.h）
+	-> 精霊の初期化、破棄、block_list取得処理を追加（map/map.c）
+	-> 戦闘設定に「elem_max_aspd」を追加（map/battle.*, conf/battle_auriga.conf）
+※精霊の処理が安定化するまで、skill_dbからソーサラーの精霊スキル定義を無効にしています。
+
+・TXT:Auriga-0888およびAuriga-0902にて、旧形式のデータとindexがずれているために一部データが破壊される不具合を修正（char/txt/chardb_txt.c）
+
+----------------------------------------
+//0950 [2012/04/28] by popori
+
+・2012-4-24aRagexeREの解析結果を記載 (doc/client_packet.txt)
+
+・2012-4-24aRagexeREまでのパケット長を記載 (db/packet_db.txt)
+　※パケット長の追記を行っただけなので、2012-4-24aRagexeREまでのクライアントが使用出来るわけではありません
+
+----------------------------------------
+//0949 [2012/04/26] by refis
+
+・PACKETVERによって、ログイン時に頭装備が装備ウィンドウ上に表示されないのを修正 (src/map/clif.c)
+
+・買取露店関連の初期化処理の誤りを修正 (src/map/buyingstore.c)
+
+・client_packet.txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
+//0948 [2012/04/25] by refis
+
+・0947がコンパイルエラーをなるミスを修正 (src/map/clif.c)
+
+----------------------------------------
+//0947 [2012/04/25] by refis
+
+・搭乗システム、モンスター変身の無駄なパケットを抑制させる (src/map/clif.*)
+
+・武器修理、装備閲覧のリストが正常に取得できない現象を修正 (src/map/clif.c)
+	Thanks unsyu さん
+
+・傭兵スキル「バーサーク」のミスを修正 (db/skill_cast_db.txt)
+
+----------------------------------------
+//0946 [2012/04/24] by Blaze
+
+・ソーサラーの精霊スキル実装準備
+	-> mmo.hに精霊の情報定義を追加（common/mmo.h）
+	-> block_typeにBL_ELEMを新規追加（map.h）
+	-> 精霊の基本情報構造体を新規追加（map.h）
+	-> 精霊の表示系パケット（0x78,0x7b,0x7c,0x28,0x95）を新規追加（clif.*）
+	-> 精霊のステータス更新パケット（0x81d,0x81e）を新規追加（clif.*）
+	-> 精霊のスキル定義追加（skill.h, db/skill_db.txt, db/skill_db2.txt db/skill_require_db.txt）
+	-> 精霊の基本情報DBとスキルDBを新規追加（db/elem_db.txt, db/elem_skill_tree.txt）
+
+
+----------------------------------------
+//0945 [2012/04/24] by Blaze
+
+・傭兵データ構造の見直し（common/mmo.h, map.h, merc.*, clif.c, status.c, skill.c）
+	-> BaseLvや各種ステータス、スキル情報などはsaveデータに保存しない様に変更。
+
+・傭兵をSQLモードに対応 (char/sql/mercdb_sql.c, sql-files/main.sql, sql-files/Auriga945_changetable.sql)
+	-> 既存のプレイヤーが持つ傭兵雇用情報は「mercenary」から「mercenary_employ」にテーブル名を変更
+	-> 傭兵自身のデータを「mercenary」テーブルに保存するように。
+
+・モンスター傭兵実装（common/mmo.h, merc.*, db/merc_db.txt, merc_skill_tree.txt）
+	-> 傭兵IDを定められたID（6017〜6046）しか登録できなかったのを任意のIDで登録できるように変更。
+
+・傭兵DBの構造を変更（merc.*, db/merc_db.txt, db/addon/merc_db_add.txt, doc/db_ref.txt）
+	-> 傭兵のクラスIDを任意に定義できる様にした為、ViewClassを廃止
+	-> 傭兵の種類は内部で処理させるようにした為、ClassTypeを廃止
+
+・傭兵のキルカウントボーナス実装（merc.c, status.*, db/scdata_db.txt）
+
+・傭兵専用スキル「キリエエレイソン」「ブレッシング」「速度増加」を追加（skill.*, db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt）
+
+・傭兵の自然回復が短かったのを修正（merc.h）
+	-> HPの自然回復：2000ms → 8000ms、SPの自然回復：4000ms → 6000ms
+
+・傭兵に処理させるスクリプトを追加（script.c, doc/script_ref.txt）
+	-> mercheal命令：連れている傭兵のHP/SPを回復させます。
+	-> mercsc_start命令：連れている傭兵を状態変化させます。
+
+・傭兵関係のアイテム実装（db/item_db.txt）
+
+----------------------------------------
+//0944 [2012/04/21] by refis
+
+・ギルド追放メンバリストのミスを修正 (src/map/clif.c)
+	Thanks ryokucha さん
+
+・clif_bodyrelocation()のnullチェック忘れを修正 (src/map/clif.c)
+
+・NPCスキル「不死属性付与」は属性レベル2以上にならないよう修正 (src/map/skill.c)
+	Thanks Akayumi さん
+
+・3次職のBaseLv90〜98迄のHP・SPデータを追加 (db/job_hp_db.txt db/job_sp_db.txt)
+
+----------------------------------------
+//0943 [2012/04/20] by refis
+
+・モンスター変身でサーバーがクラッシュしてしまうミスを修正 (src/map/clif.c)
+
+・モンクスキル「残影」のパケットをスイッチさせるように修正 (src/map/clif.* src/map/skill.c)
+
+----------------------------------------
+//0942 [2012/04/20] by refis
+
+・搭乗システム、モンスター変身中キャラが画面に入ったとき、正常に表示されなかったのを修正 (src/map/clif.c src/map/status.c)
+	-> 相互の干渉関係が不明なため、搭乗システムが優先される暫定処置です
+		Thanks うに〜く さん、ryokucha さん
+
+・アサシンスキル「クローキング」で壁沿い移動時の無効な判定を修正 (src/map/status.c)
+	Thanks Akayumi さん
+
+・ハイプリーストスキル「バジリカ」の解除時はユニット判定しないよう修正 (src/map/skill.c)
+	Thanks Akayumi さん
+
+・ギルド追放関連のパケットを更新 (src/map/clif.c)
+	Thanks Akayumi さん
+
+・服色変更パケットは服色変更時のみ発行されるため、clif_send_clothcolor()は使用しないよう修正
+ (src/map/atcommand.c src/map/clif.* src/map/pc.c src/map/script.c src/map/status.c)
+
+----------------------------------------
+//0941 [2012/04/19] by refis
+
+・ジェネティックスキル「カート改造」、「剣修練」、「スリングアイテム」の最大Lvを修正 (db/skill_db.txt)
+	Thanks rain さん、rapis さん
+
+・アイテムボーナス「bMatkRate」が二重計算されていたのを修正 (src/map/battle.c)
+	Thanks unsyu さん
+
+----------------------------------------
+//0940 [2012/04/17] by refis
+
+・0939の内容が不足している部分を修正 (db/item_db.txt doc/script_ref.txt)
+	-> item_db.txtのDEF項で「:」を使ってMDEFも指定できるよう拡張
+		Thanks rapis さん
+
+・MDEFのない装備品を装着時の不具合を修正 (src/map/itemdb.c)
+	Thanks unsyu さん
+
+----------------------------------------
+//0939 [2012/04/16] by refis
+
+・item_dbにMDEFを指定できるように拡張 (db/item_db.txt src/map/itemdb.* src/map/status.c)
+
+・「シールドスペル」でMDEFの代わりに暫定でDEFを利用していた箇所を修正 (src/map/battle.c)
+
+----------------------------------------
+//0938 [2012/04/16] by refis
+
+・「checkitemblank」関数を追加 (doc/script_ref.txt src/map/script.c)
+
+・インベントリの不要なループを抑制させるよう処理を修正 (src/map/chrif.c src/map/clif.c src/map/map.h src/map/pc.c src/map/skill.c)
+
+----------------------------------------
+//0937 [2012/04/16] by Blaze
+
+・スクリプト命令「progressbar」を実装（script.c, clif.*, pc.c, unit.c, map.h, db/packet_db.txt, doc/script_ref.txt）
+　※移動による中断状態のキャンセルは未実装です
+
+・アッシュ・バキュームNPC実装（npc_quest_ashvacuum.txt）
+	-> 異世界クエスト実装
+	-> 駐屯地の人々クエスト実装
+	-> 会議のおともクエスト実装
+	-> 生態研究クエスト実装
+	-> 飼育場のお手伝いクエスト実装
+	-> 小さな妖精クエスト実装
+	-> 木の巨人クエスト実装
+	-> 猫の手サービスクエスト実装
+		Thanks to Xia
+　※魔王モロク追跡クエストと三ヶ国への報告書クエストは未実装
+
+・アッシュ・バキューム関連マップのwarp追加（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・アッシュ・バキューム関連マップのmob追加（npc_monster_manfild.txt, npc_monster_splfild.txt）
+
+・アッシュ・バキューム関連マップのmapflag追加（mapflag.txt）
+
+・map_auriga.conf更新（map_auriga.conf）
+
+・0936の「callshop」の説明を微修正（doc/script_ref.txt）
+
+----------------------------------------
+//0936 [2012/04/15] by refis
+
+・「callshop」関数を追加 (doc/script_ref.txt src/map/script.c)
+
+・デワタの一部NPCにチャットバルーンを追加 (script/npc/town/npc_town_dewata.txt)
+
+----------------------------------------
+//0935 [2012/04/15] by Blaze
+
+・「@go」コマンドの行き先を外部ファイルで設定できるように変更（atcommand.*, map.c）
+
+・「@go」コマンドの行き先を設定するDBを追加（db/atcommand_go_db.txt, doc/db_ref.txt）
+
+・戦闘設定「atcommand_go_significant_values」を廃止 (battle.*, conf/battle_auriga.conf)
+
+----------------------------------------
+//0934 [2012/04/14] by refis
+
+・討伐データベースのソート処理を修正 (src/map/quest.c)
+	Thanks 716 さん
+
+・「ルーン製造」、「新毒製造」の材料リストを修正 (db/produce_db.txt)
+	Thanks shisuka さん
+
+----------------------------------------
+//0933 [2012/04/07] by refis
+
+・レンジャースキル「ウォーグダッシュ」使用時に移動不可セルを判定するよう修正 (src/map/skill.c)
+	Thanks Akayumi さん
+
+・ハイプリーストスキル「バジリカ」のユニット処理を修正 (db/skill_unit_db.txt src/map/skill.c)
+	Thanks Akayumi さん、rapis さん
+
+・クエストスキル「ベナムナイフ」習得NPCの台詞を修正 (script/npc/quest/npc_quest_skillget2.txt)
+
+----------------------------------------
+//0932 [2012/04/05] by refis
+
+・MODEのマジックナンバーをenumで回避する
+ (src/map/atcommand.c src/map/battle.c src/map/mob.c src/map/npc.c src/map/pc.c src/map/pet.c src/map/script.c src/map/skill.c src/map/status.* src/map/unit.c)
+
+・接触反応AI、低レベルターゲッティングAIを実装 (doc/db_ref.txt src/map/mob.c)
+
+・mob_db.txtを更新 (db/mob_db.txt)
+
+----------------------------------------
+//0931 [2012/04/05] by refis
+
+・討伐データベースの初期化忘れを修正 (src/map/quest.c)
+
+・MAX_PACKET_DBの拡張 (src/map/clif.c)
+
+・grfの初期位置を本家にあわせて変更 (conf/grf-files.txt)
+
+・@reproduce、@reproduce2を追加 (conf/atcommand_auriga.conf conf/help.txt src/map/atcommand.*)
+
+・リプロデュースをスクリプトから操作できるよう定数を追加 (db/const.txt src/map/map.h src/map/pc.c)
+
+----------------------------------------
+//0930 [2012/04/05] by refis
+
+・レンジャースキル「エイムドボルト」の矢消費量を修正 (db/skill_require_db2.txt src/map/battle.c src/map/skill.c)
+	Thanks unsyu さん
+
+・アイテムボーナス「bonus bMdef2」でMdefが上昇する不具合を修正 (src/map/pc.c)
+
+・クエストシステムの討伐カウントがパーティーメンバーにも反映されるよう修正 (src/map/mob.c src/map/quest.*)
+
+・敵が討伐対象かどうか事前に調べるよう変更 (src/map/mob.c src/map/quest.*)
+
+----------------------------------------
+//0929 [2012/04/01] by refis
+
+・スーパーノービスの台詞コマンドが使えなくなっていたのを修正 (src/map/clif.c)
+	Thanks unsyu さん
+
+・シャドウチェイサースキル「オートシャドウスペル」の持続時間設定の誤りを修正 (src/map/skill.c)
+	Thanks rain さん、unsyu さん
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+・client_packet.txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
+//0928 [2012/03/28] by refis
+
+・アイテムボーナス「bonus2 bFixCastrate」の判定式を修正 (src/map/pc.c)
+	Thanks Akayumi さん
+
+・ウォーロックスキル「ソウルエクスパンション」のダメージ計算式を修正 (src/map/battle.c)
+	Thanks かんなぎ さん
+
+・レンジャースキル「エイムドボルト」の拘束時のダメージ計算式を修正 (src/map/battle.c)
+	Thanks velvet0001 さん
+
+・命令文「npcskillsupport」で発動元と対象を指定できるように変更 (doc/script_ref.txt src/map/script.c)
+
+----------------------------------------
+//0927 [2012/03/14] by refis
+
+・0926のミスを修正 (db/scdata.txt src/map/pc.c)
+
+----------------------------------------
+//0926 [2012/03/14] by refis
+
+・騎乗システムを一部修正 (db/scdata.txt src/map/clif.c src/map/skill.c src/map/status.c)
+
+・身代わりの護符を実装 (db/item.txt src/map/pc.c)
+
+・Job教範の効果を実装 (db/const.txt db/scdata.txt src/map/pc.c src/map/status.*)
+
+・戦闘教範の仕様を変更 (src/map/pc.c)
+
+・関連アイテムのデータを修正 (db/item.txt)
+
+・amotionの設定がずれているミスを修正 (db/job_db1.txt)
+	Thanks kuroneko_daten さん、かんなぎ さん
+
+----------------------------------------
+//0925 [2012/03/04] by refis
+
+・スキル「買取露店開設」が習得できなかった点を修正 (script/npc/quest/npc_quest_skillget3.txt)
+	Thanks Akayumi さん
+
+・ジェネティックスキル「カートブースト」の追加ダメージ計算の位置を修正 (script/npc/quest/npc_quest_skillget3.txt)
+
+・スキル「点穴 -反-」、「ストライキング」の武器ATK上昇計算の位置を修正 (src/map/battle.c src/map/status.c)
+ ※本来はサイズ補正前に計算
+
+・スキル「フォースオブバンガード」、「点穴 -活-」、「エコーの歌」、「恋人たちの為のシンフォニー」のDEF/MDEF上昇計算の位置を修正
+ (src/map/battle.c src/map/status.c)
+
+・スキル「シールドプレス」、「大纏崩捶」、「號砲」、「羅刹破凰撃」を最終無属性に修正 (src/map/battle.c)
+
+----------------------------------------
+//0924 [2012/02/26] by refis
+
+・mob_group_db拡張に伴うボーナス最大値の修正 (src/map/map.h)
+
+・傭兵召喚時のエラーを修正 (src/map/merc.c)
+
+・status_get_aspdは存在していないので消去 (src/map/status.h)
+
+----------------------------------------
+//0923 [2012/02/22] by refis
+
+・変動詠唱と固定詠唱の計算式を修正 (src/map/skill.c)
+
+・アイテムボーナス「bonus2 bFixCastrate」のリファクタリング (src/map/pc.c src/map/skill.c src/map/status.c)
+
+・スキル「フロストミスティ」、「ジャックフロスト」、「コメット」に斜線チェックを追加 (src/map/skill.c)
+
+・スキル「フロストミスティ」の状態異常付与はダメージと斜線チェックなしで判定させる (src/map/skill.c)
+
+・アイテムデータの更新 (db/item_db.txt)
+	Thanks lowl さん、rapis さん
+
+・モンスターデータの更新 (db/mob_db.txt db/mob_group_db.txt db/mob_skill_db.txt)
+　※一部R化後のデータは暫定です
+
+----------------------------------------
+//0922 [2012/02/20] by refis
+
+・CLASS定義の補完と修正 (db/const.txt src/common/mmo.h)
+
+・スキル「スーパーノービスの魂」の判定が誤っていた個所を修正 (src/map/skill.c)
+	Thanks かんなぎ さん
+
+----------------------------------------
+//0921 [2012/02/13] by refis
+
+・買取担当組合員をプロンテラ道具屋に追加とミスの修正 (script/npc/quest/npc_quest_skillget3.txt)
+
+・スキル「イグニッションブレイク」、「キャノンスピア」のBaseLv補正を修正 (src/map/battle.c)
+	Thanks velvet0001 さん
+
+・スキル「アックスブーメラン」のダメージ計算式を修正 (src/map/battle.c)
+	Thanks かんなぎ さん、ARIA さん
+
+・MAP移動時にスキルメニューフラグを削除するよう仮修正 (src/map/unit.c)
+	Thanks unsyu さん、かんなぎ さん
+
+----------------------------------------
+//0920 [2012/02/09] by refis
+
+・スキル「オーディンの力」の効果時間が消えているミスを修正 (db/skill_cast_db.txt)
+
+・買取担当組合員、闇商人の入力値判定のミスを修正 (script/npc/quest/npc_quest_skillget3.txt)
+
+----------------------------------------
+//0919 [2012/02/09] by refis
+
+・0918のミスを修正 (script/npc/quest/npc_quest_skillget3.txt)
+
+----------------------------------------
+//0918 [2012/02/09] by refis
+
+・買取露店開設関連を本家仕様に修正
+ (db/item_db.txt db/item_db2.txt db/skill_db.txt db/skill_require_db.txt db/skill_tree.txt src/map/buyingstore.c src/map/clif.c src/map/skill.c)
+
+・買取露店関連NPCを追加 (conf/map_auriga.conf script/npc/quest/npc_quest_skillget3.txt)
+
+・ついでにMAP定義を追加 (conf/map_auriga.conf)
+
+・スキル「ホーリーナイト」、「エルディカスティスへの帰還」、「モーラへの帰還」実装
+ (db/skill_db.txt db/skill_db2.txt db/skill_cast_db.txt db/skill_require_db.txt src/map/skill.*)
+
+・ALL_DREAM_SUMMERNIGHTの定義が異なっているのを修正 (src/map/skill.h)
+
+----------------------------------------
+//0917 [2012/02/06] by refis
+
+・買取露店でアイテム販売時にZENYチェックを追加 (src/map/buyingstore.c)
+	Thanks Akayumi さん
+
+・メールシステムの不具合を修正 (src/map/mail.c)
+	Thanks dragontail789 さん
+
+・0916を若干修正 (src/map/map.h)
+
+----------------------------------------
+//0916 [2012/02/06] by refis
+
+・スキル「オーディンの力」実装
+ (db/scdata_db.txt db/skill_db.txt db/skill_db2.txt db/skill_cast_db.txt db/skill_require_db.txt src/common/mmo.h src/map/skill.* src/map/status.*)
+
+・アイテムボーナス「bonus2 bAddSkillCastTime」「bonus2 bFixCastrate」「bonus2 bAddSkillSubHealRate」「bonus2 bAddSkillCoolDown」追加
+ (db/const.txt doc/item_bonus.txt src/map/map.h src/map/skill.c src/map/pc.c src/map/status.c)
+　bonus2 bAddSkillCastTime,n,x;
+　指定スキルnの詠唱時間をxミリ秒増加させます。
+　ex)　bonus2 bAddSkillCastTime,19,1000;	// スキルファイアーボルトの詠唱時間を1000ms(1秒)増加
+
+　bonus2 bFixCastrate,n,x;
+　固定詠唱時間をn%増加させます(xが0の場合、値の低い物が適用。xが0以外の場合、nは+される)
+　ex)　bonus2 bFixCastrate,-20,0;	// これ以上値の低い効果を受けていない場合固定詠唱時間を20%減少
+　ex)　bonus2 bFixCastrate,-5,1;	// 固定詠唱時間を5%減少(上記ボーナスと共に設定すると25%減少)
+
+　bonus2 bAddSkillSubHealRate,n,x;
+　指定スキルnを受けたときの回復量をx%増加させます。
+　ex)　bonus2 bAddSkillSubHealRate,28,10;	// スキルヒールを受けたときの回復量を10%増加
+
+　bonus2 bAddSkillCoolDown,n,x;
+　指定スキルnのクールタイムをxミリ秒増加させます(3次職スキル以外は無視されます)
+　ex)　bonus2 bAddSkillCoolDown,2051,-3000;	// スキルハイネスヒールのクールタイムを3000ms(3秒)減少
+
+・mob_group_dbを更新 (db/mob_group_db.txt)
+
+・NPC商店はNOTOCフラグとNOTDCフラグを確認してDUPE警告を表示するよう変更してみる (src/map/npc.c)
+
+・ドキュメントファイルの細かい修正 (doc/db_ref.txt doc/item_bonus.txt)
+	Thanks Akayumi さん、hyper_001 さん
+
+----------------------------------------
+//0915 [2012/02/05] by refis
+
+・存在しないアイテムボーナスの説明の削除とその他細かい修正 (doc/item_bonus.txt)
+	Thanks ARIA さん
+
+・エンペリウムに状態異常を適用しないよう修正 (src/map/status.c)
+	Thanks raisaba10 さん、pneuma さん
+
+・影狼、朧スキル「十六夜」の詠唱時間計算を修正 (src/map/skill.c)
+
+----------------------------------------
+//0914 [2012/02/05] by refis
+
+・ロイヤルガードスキル「トランプル」がハンターのトラップに効果が出ない不具合を修正 (db/skill_db.txt)
+	Thanks Akayumi さん
+
+・スキル倍率加算効果はスキル倍率計算後に使用しないよう修正 (src/map/battle.c)
+	Thanks Akayumi さん
+
+・アークビショップスキル「ハイネスヒール」はアコライトスキル「ヒール」Lv10を基準に算出させる (src/map/skill.c)
+	Thanks めろでぃ さん
+
+・スナイパースキル「ウインドウォーク」のFlee増加量を修正 (src/map/status.c)
+	Thanks めろでぃ さん
+
+----------------------------------------
+//0913 [2012/02/03] by refis
+
+・影狼、朧スキル「明鏡止水」のSP回復不具合を修正 (src/map/status.c)
+	Thanks かんなぎ さん
+
+・拡張スーパーノービス、影狼、朧の秒間最大攻撃回数が固定になる不具合を修正 (src/map/status.c)
+	Thanks barusu2 さん、rapis さん
+
+・二刀流時の右手・左手修練のダメージ計算式を修正 (src/map/battle.c)
+	Thanks dragontail789 さん
+
+・add_damage_class_count、add_damage_class_count_、add_magic_damage_class_countはintである必要がないのでshortに変更
+ (src/map/map.h)
+
+----------------------------------------
+//0912 [2012/01/22] by popori
+
+・スキル「明鏡止水」「幻術 - 驚愕」「幻術 - 呪殺」「幻術 - 幻惑」の実装
+ (db/scdata_db.txt db/skill_db.txt db/skill_cast_db.txt src/map/battle.c src/map/clif.c src/map/skill.c src/map/status.* src/map/unit.c)
+
+・スキル「フォースオブバンガード」の状態異常タイマーがおかしいのを修正 (src/map/status.c)
+　rapisさんに感謝
+
+・気付いた範囲でpacket_db.txtのcleanup (db/packet_db.txt)
+
+----------------------------------------
+//0911 [2012/01/22] by popori
+
+・コスチュームシステムを本家仕様に修正 (src/map/clif.c src/map/pc.c)
+
+・アイテムフラグを少し修正 (db/item_db2.txt)
+
+・アルデバランのカプラ職員からスーパーノービスと拡張スーパーノービスがカートをレンタル出来なくなっていたのを修正
+ (script/npc/job/npc_job_23supernovice.txt)
+　716さんに感謝
+
+----------------------------------------
+//0910 [2012/01/22] by popori
+
+・0886のバグ修正とマジックナンバー削減 (src/map/buyingstore.c src/map/clif.c src/map/pc.* src/map/vending.c)
+　うに〜くさん、Akayumiさんに感謝
+
+----------------------------------------
+//0909 [2012/01/22] by popori
+
+・メールの最大保存数を超えるメールを受信しようとした場合は、一番古いメールを削除して受信するように変更 (src/char/int_mail.c)
+
+・zeny、添付アイテムが存在するメールも削除可能なよう変更 (src/char/sql/maildb_sql.c src/char/txt/maildb_txt.c)
+
+・メールの添付データの取得に失敗した時でも添付情報を削除していたので、添付データのロストが起こりうる可能性があったのを修正
+ (src/char/inter.c src/char/int_main.c src/map/intif.* src/map/mail.* doc/inter_server_packet.txt)
+
+・mail_dataテーブルを少し変更 (sql-files/main.sql sql-files/Auriga909_changetable.sql src/char/sql/maildb_sql.c)
+
+----------------------------------------
+//0908 [2012/01/12] by popori
+
+・フォントアイテムの実装
+ (db/item_db.txt db/item_db2.txt doc/script_ref.txt sql-files/Auriga908_changetable.sql sql-files/main.sql
+　src/char/sql/chardb_sql.c src/char/txt/chardb_txt.c src/common/mmo.h src/map/clif.* src/map/pc.c src/map/script.c)
+
+・clif.cの修正 (src/map/clif.c)
+　かんなぎさんに感謝
+
+----------------------------------------
+//0907 [2012/01/12] by popori
+
+・item_db2.txtのフラグ値修正 (db/item_db.txt)
+
+・SC_ALL_RIDING中、攻撃とスキル使用は出来ないように変更 (src/map/clif.c)
+
+・スキル「KO_BAKURETSU」の計算式を変更 (src/map/battle.c)
+
+----------------------------------------
+//0906 [2012/01/12] by popori
+
+・矢の判定が誤っていた個所を修正 (src/map/battle.c)
+　kuroneko_datenさんに感謝
+
+・搭乗システムの実装
+ (db/const.txt db/item_db.txt db/item_db2.txt db/scdata_db.txt doc/db_ref.txt src/map/itemdb.* src/map/pc.c src/map/status.*)
+
+・item_db2.txtにNonconsumeフラグの追加
+　詳細はdb_ref.txt参照のこと
+
+----------------------------------------
+//0905 [2012/01/11] by popori
+
+・コスチュームシステムでグラフィクが反映されない場合のがあるのを修正 (src/map/clif.c src/map/pc.c)
+
+----------------------------------------
+//0904 [2012/01/11] by popori
+
+・コスチューム装備のカード読み込みの修正 (src/map/status.c)
+
+・battle_auriga.confのclif_fix_levelに拡張スーパーノービス、影狼、朧を対応 (src/map/clif.c)
+
+・コスチューム装備の装備中viewidのセーブデータは保存しないよう変更する
+ (src/char/txt/chardb_txt.c src/char/sql/chardb_sql/.c common/mmo.h src/map/pc.c sql-files/Auriga904_changetable.sql sql-files/main.sql)
+
+・UnknownPacketダンプのログ抑制のためにpacket_db.txtの更新 (db/packet_db.txt)
+
+・ついでにclient_packet.txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
+//0903 [2012/01/10] by popori
+
+・TXTのキャラデータ読み込み修正 (src/char/chardb_txt.c)
+　lamunesさんに感謝
+
+・SC_AKAITSUKIの判定式を修正 (src/map/skill.c)
+
+・client_packet,txtの更新 (doc/client_packet.txt)
+
+----------------------------------------
+//0902 [2012/01/09] by popori
+
+・コスチュームシステムの実装
+ (db/item_db.txt sql-files/Auriga902_changetable.sql sql-files/main.sql src/char/sql/chardb_sql.c src/char/txt/chardb_txt.c
+　src/common/mmo.h src/map/battle.c src/map/clif.c src/map/itemdb.* src/map/map.h src/map/pc.* src/map/script.c src/map/status.c
+　doc/script_ref.txt doc/db_ref.txt)
+
+・分かりづらいequip_indexのマジックナンバーをenumを使って回避する
+ (src/map/battle.c src/map/clif.c src/map/itemdb.* src/map/map.h src/map/pc.* src/map/script.c src/map/status.c)
+
+・battle_auriga.confの設定項目「disable_transform_when_gvg」が正常に動作しないのを修正 (src/map/pc.c)
+　disable_transform_when_gvgを無効にしたい場合、item_db2.txtのzoneのフラグも修正すること
+
+・battle_auriga.confに設定項目「disable_costume_when_gvg」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+　GvGでコスチュームアイテムを無効にするか
+　デフォルト有効
+　disable_costume_when_gvgを無効にしたい場合、item_db2.txtのzoneのフラグも修正すること
+
+----------------------------------------
+//0901 [2012/01/08] by popori
+
+・2012-01-04bRagexeの解析結果と、更新を行っていなかった解析済みのパケットをclient_packetへ追記 (doc/client_packet.txt)
+
+・スキル「KG_KYOMU」に魔法反射無効も付けてみる (src/map/battle.c)
+
+・battle_auriga.confに以下の設定項目を追加 (conf/battle_auriga.conf src/map/atcommand.c src/map/battle.* src/map/pc.c src/map/status.c)
+　// 拡張スーパーノービスのステータス限界
+　esnv_status_max: 120
+
+　// 養子拡張スーパーノービスのステータス限界
+　esnv_baby_status_max: 108
+
+　// 拡張スーパーノービスの秒間最大攻撃回数を設定。
+　// 単位はms(デフォルトは140で秒間7.1回の攻撃回数)
+　esnv_max_aspd: 140
+
+　// 影狼、朧のステータス限界
+　ko_status_max: 120
+
+　// 影狼、朧の秒間最大攻撃回数を設定。
+　// 単位はms(デフォルトは140で秒間7.1回の攻撃回数)
+　ko_max_aspd: 140
+
+----------------------------------------
+//0900 [2012/01/08] by popori
+
+・スキル「KG_KYOMU」の反射無効の条件式を間違えていたので修正 (src/map/battle.c)
+
+・vc_mae.batのMySQLのパスを5.5基準に書き換え (vc_make.bat)
+
+----------------------------------------
+//0899 [2012/01/08] by popori
+
+・影狼、朧の実装
+ (src/common/mmo.h src/char/char.c src/map/battle.c src/map/pc.* src/map/script.c src/map/skill.* src/map/status.*
+　src/map/unit.c db/const.txt db/job_db*.txt script/sample/npc_custom_jobchange.txt db/skill_db.txt db/skill_db2.txt
+　db/skill_cast_db.txt db/skill_require_db.txt db/skill_require_db2.txt db/skill_tree.txt db/scdata_db.txt db/item_arrowtype.txt
+　db/item_db.txt db/skill_unit_db.txt)
+
+　※JobボーナスとHP,SPは現行Aurigaの忍者と同一で暫定
+　　基本ASPDはリニューアル後の忍者と同一で暫定
+
+・packet_db.txtの修正 (db/packet_db.txt)
+　うに〜くさんに感謝
+
+・mob_avail.txtの読み込み修正 (db/mob_avail.txt)
+　うに〜くさんに感謝
+
+----------------------------------------
+//0898 [2012/01/04] by popori
+
+・char.cのPACKETVERの不整合を修正 (src/char/char.c)
+　soldoutさんに感謝
+
+・SQLモード時、キャラデータロードに不正が生じるのを修正 (src/char/sql/chardb_sql.c)
+　soldoutさんに感謝
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+----------------------------------------
+//0897 [2011/12/31] by popori
+
+・0896変更点の「dropableフラグが真の時はNPCで売却を不可とするよう変更」の条件式が間違えていたので修正 (src/map/npc.c)
+　soldoutさんに感謝
+
+・モンスター変身アイテムのフラグ追記 (db/item_db2.txt)
+
+----------------------------------------
+//0896 [2011/12/29] by popori
+
+・キャラ作成パラメータバインド時のタイプを修正 (src/char/sql/chardb_sql.c)
+　soldoutさん、yooske61さんに感謝
+
+・2011-12-28aRagexeREまでのパケット長追記 (db/packet_db.txt)
+
+・dropableフラグが真の時はNPCで売却を不可とするよう変更 (src/map/npc.c)
+
+・モンスター変身アイテムと2Dレイヤー装備に関するフラグを追加 (db/item_db2.txt)
+
+・httpdをデフォルトで無効にする (Makefile bcc32_make.bat vc_make.bat src/login/login_httpd.c)
+
+・GCC4以上の時は-fno-strict-aliasingを指定するように変更 (Makefile)
+
+----------------------------------------
+//0895 [2011/12/29] by popori
+
+・モンスター変身アイテムの実装 (src/map/status.* src/map/battle.c db/scdata_db.txt db/item_db.txt db/const.txt)
+　※ゴーレムは被弾時のインデュア発動確率が分からなかったので効果未実装
+
+・battle_auriga.cofに「disable_transform_when_gvg」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+　デフォルトはyes
+
+・2Dレイヤー装備アイテムを追加 (db/item_db.txt)
+
+----------------------------------------
+//0894 [2011/12/29] by popori
+
+・0x8b9の送信タイミングを0x6b前にするよう変更と追加 (src/char/char.c)
+
+・PACKETVER20100615の追加 (vc_make.bat bcc32_make.bat Makefile src/login/login.c)
+
+・UnknownPacketが出力されないようにとりあえず定義だけ追加 (db/packet_db.txt src/map/clif.c)
+
+----------------------------------------
+//0893 [2011/12/29] by popori
+
+・gcc環境下でのwarning修正 (src/map/skill.c)
+
+・SC_DEEP_SLEEPをpretimerで発動させるように変更 (src/map/skill.c)
+
+・dspファイルの更新 (src/*/*.dsp)
+
+・packet_db.txtの修正と追加 (db/packet_db.txt)
+
+----------------------------------------
+//0892 [2011/12/29] by popori
+
+・拡張ノービスの実装
+ (src/common/mmo.h src/char/char.c src/map/clif.c src/map/pc.* src/map/script.c src/map/skill.c src/map/status.c
+　db/const.txt db/job_db1.txt db/job_db2.txt db/job2_2.txt db/job_hp_db.txt db/job_sp_db.txt db/skill_tree.txt
+　script/npc/job/npc_job_23supernovice.txt script/warp/npc_warp_dun.txt script/sample/npc_custom_jobchange.txt)
+
+----------------------------------------
+//0891 [2011/12/29] by popori
+
+・PACKETVER20100803からキャッシュショップの複数個購入に対応 (db/packet_db.txt src/map/clif.c src/map/npc.*)
+
+・MAX_PACKET_DBを0x950まで拡張 (src/map/clif.c)
+
+----------------------------------------
+//0890 [2011/12/29] by popori
+
+・PACKETVER20110111より0x2d7の上位パケット0x859に対応 (src/map/clif.c)
+
+・LOC_***の定義更新 (src/map/itemdb.h)
+
+・packet_db.txtの更新 (db/packet_db.txt)
+
+・PACKETVER20110719の追加 (vc_make.bat bcc32_make.bat Makefile)
+
+・0x1c9の上位パケット0x8c7の実装 (src/map/clif.c)
+
+・0x2e1の上位パケット0x8c8の実装 (src/map/battle.c src/map/clif.* src/map/skill.c src/map/status.c src/map/unit.*)
+
+----------------------------------------
+//0889 [2011/12/29] by popori
+
+・PACKETVER20110309の追加 (char.c)
+
+・PACKETVER20110928の追加 (char.c)
+
+・PACKETVER20111025の追加 (char.c vc_make.bat bcc32_make.bat Makefile src/*/*.dsp)
+
+----------------------------------------
+//0888 [2011/12/29] by popori
+
+・ストレージエンジンをMyISAMからInnoDBに変更する (sql-files/main.sql sql-files/Auriga888_changetable.sql)
+　そもそもMyISAMはAurigaに不向きかと
+
+・肩装備、パーティー勧誘拒否フラグ、装備公開をセーブデータとして保存するように
+ (sql-files/main.sql sql-files/Auriga888_changetable.sql src/common/mmo.h src/char/txt/chardb_txt.c src/char/sql/chardb_sql.c
+　src/map/clif.c src/map/map.h src/map/party.c)
+
+・0x9eの上位パケット0x84b用にPACKETVER20101020を追加 (vc_make.bat bcc32_make.bat Makefile src/map/clif.c)
+
+・packet_dbに無駄な重複があったのでcleanup (db/packet_db.txt)
+
+・2010-11-24aRagexeRE以降のpacket長追加 (db/packet_db.txt)
+
+・PACKETVER20110111を追加 (vc_make.bat bcc32_make.bat Makefile src/*/*.dsp)
+
+・PACKETVER20110111から肩装備の表示に対応させるため上位パケットを実装 (src/char/char.c src/map/map.h src/map/clif.c src/map/pc.c)
+
+・上記の変更に伴いmob_avail.txtに肩装備を表示出来るように拡張 (db/mob_avail.txt src/map/mob.* src/map/clif.c)
+
+----------------------------------------
+//0887 [2011/12/29] by popori
+
+・PACKETVERのリナンバリング based on eathena
+ (vc_make.bat Makefile bcc32_make.bat src/char/char.c src/char/char.dsp src/char/char_sql.dsp src/common/mmo.h
+　src/converter/converter.dsp src/login/login.dsp src/login/login_sql.dsp src/map/atcommand.c src/map/chrif.c
+　src/map/clif.c src/map/map.dsp src/map/map_sql.dsp src/map/party.c src/map/pc.c src/map/script.c src/map/skill.c)
+　分かりづらいPACKETVERの連番方式、PACKETERの途中挿入が非常に面倒なのでeAベースでYYYYMMDD形式に変更します。
+
+・ビルドオプション「NEW_006b」を削除してPACKETVER20061023として定義し、「NEW_006b_RE」を「NEW_006b」として定義する
+ (vc_make.bat Makefile bcc32_make.bat src/char/char.c src/char/char.dsp src/char/char_sql.dsp src/map/map.dsp src/map/map_sql.dsp
+　src/converter/converter.dsp src/login/login.dsp src/login/login_sql.dsp)
+
+・ついでにリファクタリング (src/char/char.c src/map/clif.c)
+
+----------------------------------------
+//0886 [2011/12/29] by popori
+
+・露店と購買露店中の判定をリファクタリング
+ (src/map/buyingstore.c src/map/chat.c src/map/clif.c src/map/map.h
+　src/map/pc.c src/map/trade.c src/map/unit.c src/map/vending.c)
+
+・VC2008以上でのマルチプロセスビルドのサポート (vc_make.bat)
+　※マルチプロセッサ、マルチコアでVC2008環境下であればビルド速度が向上します。
+
+----------------------------------------
+//0885 [2011/10/29] by Blaze
+
+・全ての3次職スキルの詠唱時間、射程距離、消費SPなどを本鯖仕様に更新 (db/skill_db.txt, db/skill_cast_db.txt, db/skill_require_db.txt)
+
+・状態異常「冷凍」実装 (status.*, battle.c, pc.c, clif.c, unit.c, db/scdata_db.txt)
+
+・状態異常「ファイティングスピリット」実装（status.c, skill.c）
+
+・状態異常「リプロデュース」中、持続的にSPを消費するように修正（status.c, pc.c）
+
+・ソーサラースキル「ファイアーウォーク」「エレクトリックウォーク」の持続時間を修正（skill.c, db/skill_cast_db.txt）
+
+・ソーサラースキル「アースグレイヴ」に出血付与効果を実装（skill.c）
+
+・ソーサラースキル「ポイズンバスター」の効果範囲を修正（skill.c）
+
+・ウォーロックスキル「アースストレイン」のエフェクト開始位置を修正（skill.c）
+	Thanks to dream さん、refis さん
+
+・ウォーロックスキル「アースストレイン」の攻撃判定間隔を調整（db/skill_unit_db.txt）
+	Thanks to Akayumi さん
+
+・アークビショップスキル「ラウダアグヌス」「ラウダラムス」を確率で治癒成功判定をするように修正（skill.c）
+	Thanks to ARIA さん
+
+・状態異常「マスカレード ： エナーベーション」の攻撃力減少効果が武器の攻撃力のみ減少していたのを修正（status.c）
+	Thanks to Akayumi さん
+
+----------------------------------------
+//0884 [2011/10/29] by Blaze
+
+・討伐クエストNPC実装 (npc_quest_hunting.txt)
+
+・confにスクリプト定義を追加 (conf/map_auriga.conf)
+　※デフォルトは読み込み無効状態です。
+
+・クエストDB更新（db/quest_db.txt）
+
+・0883のファイル構成ミスを再アップ（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+	Thanks to muchey さん
+
+----------------------------------------
+//0883 [2011/10/23] by Blaze
+
+・デワタNPC実装 (npc_town_dewata.txt)
+	-> ジャティ族の王冠クエスト実装
+	-> 古の短剣クエスト実装
+	-> デワタの伝統酒クエスト実装
+		Thanks to Xia
+
+・デワタ関連NPC追加 (npc_misc_guide.txt, npc_misc_kafra.txt)
+
+・デワタ追加マップのwarp更新（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・デワタ追加マップのmapflag更新（mapflag.txt）
+
+・デワタ追加マップのmonster出現定義追加（npc_monster_dewfild.txt, npc_monster_dewdun.txt）
+
+・db更新（item_db.txt, item_db2.txt, mob_db.txt, mob_skill_db.txt）
+　※Mobデータは暫定です
+
+・conf更新 (map_auriga.conf)
+
+----------------------------------------
+//0882 [2011/10/15] by Blaze
+
+・ブラジリスNPC実装 (npc_town_brasilis.txt)
+	-> ガラナクエスト実装
+	-> 幸運の睡蓮クエスト実装
+	-> トイレのオバケクエスト実装
+	-> イアラクエスト実装
+	-> 変なヒドラクエスト実装
+	-> ブラジリスの子犬クエスト実装
+		Thanks to Xia
+
+・ブラジリス関連NPC追加 (npc_misc_guide.txt, npc_misc_inn.txt, npc_misc_kafra.txt, npc_quest_ice.txt)
+
+・ブラジリス追加マップのwarp更新（npc_warp_dun.txt, npc_warp_fild.txt, npc_warp_town.txt）
+
+・ブラジリス追加マップのmapflag更新（mapflag.txt）
+
+・ブラジリス追加マップのmonster出現定義追加（npc_monster_brasilis.txt, npc_monster_brafild.txt, npc_monster_bradun.txt）
+
+・db更新（item_db.txt, mob_db.txt, mob_skill_db.txt, quest_db.txt）
+
+・conf更新 (map_auriga.conf)
+
+----------------------------------------
+//0881 [2011/09/25] by popori
+
+・ARIAさんのitem_db.txtの修正をマージ (db/item_db.txt)
+  ARIAさんに感謝
+
+・0878のマージ漏れを補完 (src/map/clif.c src/map/vending.c)
+
+----------------------------------------
+//0880 [2011/09/25] by popori
+
+・battle_auriga.confに「allow_same_activeitem」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/pc.c)
+  同じカードのアクティブアイテムを許可するか切り替える
+  デフォルトはno
+
+・アクティブアイテム発動中に再度同アイテムの効果が発動しても発動時間が上書きされないのを修正 (src/map/pc.c)
+  kroeさんに感謝
+
+・クエストリストの追加、討伐数の更新が正常に適用されない問題を修正 (src/map/clif.c)
+  716さんに感謝
+
+----------------------------------------
+//0879 [2011/09/25] by popori
+
+・購買露店システムの実装 (conf/battle_auriga.conf db/packet_db.txt src/map/battle.* src/map/buyingstore.* src/map/chat.c
+						  src/map/clif.* src/map/map.h src/map/pc.c src/map/trade.c src/map/unit.c src/map/vending.c
+						  src/map/map.dsp src/map/map_sql.dsp)
+
+・スキル「購買露店開設」の実装 (db/skill_db.txt db/skill_require_db.txt db/skill_tree.txt src/common/mmo.h src/map/skill.*)
+
+・スクリプト命令「openbuyingstore」の追加 (doc/script_ref.txt db/item_db.txt src/map/script.c)
+
+・item_db2.txtにフラグ「buyingable」を追加 (doc/db_ref.txt src/map/itemdb.* db/item_db2.txt)
+
+----------------------------------------
+//0878 [2011/09/25] by popori
+
+・露店処理をパケット0x801を基に変更 (src/map/clif.c src/map/map.h src/map/vending.*)
+
+・ついでに露店処理をリファクタリング (src/map/clif.c src/map/vending.*)
+
+・露店開設中かどうかの判断をvender_idで確認するのではなく、state.vendingで確認するように処理を変更 (src/map/chat.c src/map/clif.c src/map/pc.c src/map/trade.c src/map/vending.c src/map/unit.c)
+
+・パケット0x801の情報を変更 (doc/client_packet.txt)
+
+・PC型MOBのoptが変更された際、恐らくshiftクリックでないと攻撃が出来なくなりそうな個所があったので修正 (src/map/clif.c)
+
+----------------------------------------
+//0877 [2011/08/30] by popori
+
+・vc_make.batにVC++ 2010 64bitコンパイルを追加 (vc_make.bat)
+　※Windows SDK最新版を基にパスを追記しています。適宜パスを修正して利用して下さい。
+
+・char.cの0x65のリクエストが飛んできた時の判定文が間違っていたので修正 (src/char/char.c)
+
+・0874の無駄を削除 (src/map/pc.c)
+
+・モンク・チャンピオンの両手杖基本ASPDを修正 (db/job_db1.txt)
+
+・3次職の基本ASPDを修正 (db/job_db1.txt)
+
+・3次職のHP・SPを修正 (db/job_hp_db.txt db/job_sp_db.txt db/job_db1.txt)
+
+・battle_auriga.confに「homun_max_aspd」「merc_max_aspd」を追加 (conf/battle_auriga.conf src/map/battle.* src/map/status.c)
+　デフォルト値は共に200
+
+----------------------------------------
+//0876 [2011/06/24] by Blaze
+
+・メカニックスキル「火と大地の研究」の効果を実装（battle.c）
+	Thanks ARIA さん
+
+・メカニックスキル「パワースイング」の以下の効果を実装（skill.c, db/skill_cast_db.txt）
+	-> スキル「アックスブーメラン」の追撃発動を実装
+	-> 状態異常スタン付与効果を実装
+	Thanks ARIA さん
+
+・ジェネティックスキル「剣修練」のHit上昇効果を実装（status.c）
+	Thanks ARIA さん
+
+・ロイヤルガードスキル「シールドプレス」のダメージ計算式を修正（battle.c）
+	Thanks めろでぃ さん
+
+・ロイヤルガードスキル「アースドライブ」を以下のように修正（battle.c, skill.c）
+	-> ダメージ計算式を修正
+	-> スキル使用時、一定確率で装備中の盾が壊れるように修正
+	Thanks めろでぃ さん
+
+・ソーサラースキル「スペルフィスト」のダメージ計算位置を変更（battle.c）
+	Thanks めろでぃ さん
+
+・シャドウチェイサースキル「インビジビリティ」の以下のように修正（skill.c, status.c）
+	-> サイトやルアフなどの見破るスキルで解除されるように修正
+	-> クリティカル上昇効果がなかったのを修正
+	-> Aspd減少効果がなかったのを修正
+	Thanks Akayumi さん
+
+・状態異常「ウォーグバイト」中、ハイディング状態とクローキング状態を無効にするよう修正（status.c）
+	Thanks Akayumi さん
+
+・メカニックスキル「パワースイング」「アックスブーメラン」「アックストルネード」を
+  片手斧と両手斧装備時にのみ使用できるように修正（db/skill_require_db.txt）
+
+・メカニックスキル「アックスブーメラン」にノックバック効果を追加（db/skill_db.txt）
+
+・メカニックスキル「アックストルネード」に以下の効果を追加（battle.c）
+	-> 攻撃範囲の外周だと威力が下がるようにダメージ計算式を修正
+	-> 風属性の武器を装備時、威力が上昇するようにダメージ計算式を修正
+
+・ウォーロックスキル「ホワイトインプリズン」を使用者自身に使用できるように修正（skill.c, db/skill_db.txt）
+
+・修羅スキル「大纏崩捶」「號砲」「羅刹破凰撃」の必中ダメージ計算位置を変更（battle.c）
+
+・0874のpc_addspiritball()にて、変数の初期化後に定数を入れ直す必要はないため、巻き戻し（pc.c）
+
+・0874のスペルフィスト解除前に状態異常情報のメンバ値を書き換えている箇所を削除（unit.c）
+
+
+----------------------------------------
+//0875 [2011/06/12] by Cocoa
+
+・アイテムボーナス「bAddFixCastRate」「bAddCastRate」が名前と効果が矛盾してるので修正
+	item_bonus.txt, skill.c
+
+・それに伴いitem_db.txtの修正
+
+----------------------------------------
+//0874 [2011/06/08] by Cocoa
+
+・点穴 -快-が睡眠以外の行動不能状態で使用できない不具合修正（skill.c, unit.c）
+
+・スペルフィスト状態が通常攻撃で必中になっていない不具合修正（battle.c）
+
+・スペルフィスト状態が他のスキルを使用しても解除されない不具合修正（unit.c）
+
+・pc_addspiritball関数でモンク系職業以外もチェックするように修正（pc.c）
+
+・天下大将軍カードの効果発動率上昇職業がアコライト系でなく、アーチャー系になってる不具合修正（item_db.txt）
+
+・虹色のカードキーのDropable,Storageable,Cartableフラグを削除（item_db2.txt）
+
+・WarlockのJobLv12のInt補正値が抜けている不具合修正（job_db2-2.txt）
+
+・イグニッションブレイクが詠唱中断可能になっている不具合修正（skill_db.txt）
+
+・ドラゴンブレスが詠唱中断可能になっている不具合修正（skill_db.txt）
+
+・フルアドレナリンラッシュが一部の武器で使用できない不具合修正（skill_require_db.txt）
+
+・デスペラードの攻撃範囲が広くなっている不具合修正（skill_unit_db.txt）
+
+・エウカリスティカの最大取得レベルが5になっている不具合修正（skill_tree.txt）
+	reported by shirasumiさん
+
+----------------------------------------
+//0873 [2011/06/02] by Cocoa
+
+・ファントムスラストの使用者と対象が同セルの場合は
+	対象を術者の北１セルに移動させるように修正（skill.c）
+
+・バキュームエクストリームの吸い寄せ判定を修正（skill.c）
+	BOSS属性は吸い寄せられないで移動先まで滑る
+	設置セルとX座標かY座標が同じ場合は吸い寄せられない
+
+・ウォーグダッシュの挙動を修正（skill.c）
+	進行方向に敵がいない場合のみウォーグダッシュ発動
+
+----------------------------------------
+//0872 [2011/05/24] by Rayce
+
+・気球およびコインタイマーセット時、バッファアンダーフローにより
+  サーバクラッシュする問題を修正（pc.c）
+		reported by Akayumiさん、pneumaさん
+
+  ※発生条件としては、職業がモンク/チャンピオン/修羅で気功の習得レベルが
+    0のとき、オートスペル経由で気球を作るとき等。
+
+----------------------------------------
+//0871 [2011/05/23] by Rayce
+
+・床アイテムなどの一時objectのID管理方法を変更（map.c）
+  常にIDの小さい方から使い回すのではなく、リングバッファでローテーションする
+		based on eA, thx!!
+
+	-> 「mob_ai_sub_hard target type error」が発生する可能性の対処。
+	   恐らくMOBがルートアイテムと認識していたIDがすぐにSKILLとして
+	   使い回していたのが原因。
+			reported by Cocoaさん
+
+	-> スキルユニット関連でサーバクラッシュする可能性の対処。
+			reported by crisp.さん
+
+・床アイテムなどの一時objectのIDが再利用されるまでの期間を
+  延命するため、MAX_FLOORITEM を 1999999 まで引き上げ（mmo.h）
+・IDの有効範囲を広げるため START_NPC_NUM を 5000001 に引き下げ（mmo.h）
+
+----------------------------------------
+//0870 [2011/05/22] by Rayce
+
+・サーバースナップショット（version.h）
+
+・*db_txt.c, *db_txt.h をそれぞれ login/txt, char/txt フォルダに分離
+・*db_sql.c, *db_sql.h をそれぞれ login/sql, char/sql フォルダに分離
+
+・移動や分離に伴って不要となった *.c, *.h ファイルを削除
+
+・sql-filesフォルダの内、通常使用しないSQLスクリプトはutilsフォルダに
+  まとめて置く
+	-> convert_engine_innodb.sql
+	-> convert_engine_myisam.sql
+	-> db_maintenance.sql
+	-> drop_table.sql
+
+・sql-filesフォルダの内、パッチに付随するSQLスクリプトは使用される
+  ことはないので削除
+
+----------------------------------------
 //0869 [2011/05/17] by Cocoa
 
 ・転生、1次、2次判定マクロの条件式が間違っている点を修正（pc.h）
