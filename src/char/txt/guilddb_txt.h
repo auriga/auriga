@@ -33,7 +33,7 @@ bool guilddb_txt_save(struct guild* g2);
 int guilddb_txt_sync(void);
 void guilddb_txt_final(void);
 const struct guild* guilddb_txt_load_num(int guild_id);
-const struct guild* guilddb_txt_load_str(char *str);
+const struct guild* guilddb_txt_load_str(const char *str);
 void guilddb_txt_delete(int guild_id);
 int guilddb_txt_config_read_sub(const char* w1,const char *w2);
 

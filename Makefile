@@ -124,7 +124,7 @@ CFLAGS += -DPRE_RENEWAL
 #CFLAGS += -DCLASS_MB
 
 # enable dynamic memory allocation of status change data
-#CFLAGS += -DDYNAMIC_SC_DATA
+CFLAGS += -DDYNAMIC_SC_DATA
 
 # enable journal system (text mode only)
 #CFLAGS += -DTXT_ONLY -DTXT_JOURNAL

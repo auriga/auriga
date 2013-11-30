@@ -353,7 +353,7 @@ int mapif_guild_broken(int guild_id,int flag)
 }
 
 // ギルド内発言
-int mapif_guild_message(int guild_id,int account_id,char *mes,int len)
+int mapif_guild_message(int guild_id,int account_id,const char *mes,int len)
 {
 	unsigned char buf[512];
 
@@ -521,7 +521,7 @@ int mapif_guild_skillmax_load(int fd)
 
 
 // ギルド作成要求
-int mapif_parse_CreateGuild(int fd,int account_id,char *name,struct guild_member *master)
+int mapif_parse_CreateGuild(int fd,int account_id,const char *name,struct guild_member *master)
 {
 	struct guild g;
 	int i;
@@ -720,7 +720,7 @@ int mapif_parse_BreakGuild(int fd,int guild_id)
 }
 
 // ギルドメッセージ送信
-int mapif_parse_GuildMessage(int fd,int guild_id,int account_id,char *mes,int len)
+int mapif_parse_GuildMessage(int fd,int guild_id,int account_id,const char *mes,int len)
 {
 	return mapif_guild_message(guild_id,account_id,mes,len);
 }

@@ -2595,8 +2595,8 @@ int parse_char(int fd)
 				return 0;
 			{
 				// キャラ作成パラメータの取得
+				unsigned char *name = RFIFOP(fd,2);
 #if PACKETVER < 20120307
-				unsigned char *name  = RFIFOP(fd,2);
 				short str   = RFIFOB(fd,26);
 				short agi   = RFIFOB(fd,27);
 				short vit   = RFIFOB(fd,28);
@@ -2607,7 +2607,6 @@ int parse_char(int fd)
 				short hair_color = RFIFOW(fd,33);
 				short hair = RFIFOW(fd,35);
 #else
-				unsigned char *name  = RFIFOP(fd,2);
 				short str   = 5;
 				short agi   = 5;
 				short vit   = 5;
@@ -2620,9 +2619,12 @@ int parse_char(int fd)
 #endif
 				int flag=0x04;
 				int i = 0;
-				const struct mmo_chardata *cd = chardb_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
+				const struct mmo_chardata *cd;
 				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
+
+				name[23] = '\0';	// force \0 terminal
+				cd = chardb_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
 
 				if(cd == NULL){
 					WFIFOW(fd,0)=0x6e;

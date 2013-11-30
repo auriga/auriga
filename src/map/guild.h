@@ -57,7 +57,7 @@ int guild_getposition(struct map_session_data *sd,struct guild *g);
 atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp);
 
 
-void guild_create(struct map_session_data *sd,char *name);
+void guild_create(struct map_session_data *sd,const char *name);
 void guild_created(int account_id, int guild_id);
 void guild_request_info(int guild_id);
 void guild_npc_request_info(int guild_id,const char *ev);
@@ -91,11 +91,11 @@ void guild_change_notice(int guild_id, const char *mes1, const char *mes2);
 void guild_notice_changed(int guild_id, const char *mes1, const char *mes2);
 void guild_change_emblem(int guild_id, unsigned int len, const char *data);
 void guild_emblem_changed(int len, int guild_id, int emblem_id, const char *data);
-void guild_send_message(struct map_session_data *sd, char *mes, int len);
-void guild_recv_message(int guild_id, int account_id, char *mes, int len);
+void guild_send_message(struct map_session_data *sd, const char *mes, int len);
+void guild_recv_message(int guild_id, int account_id, const char *mes, int len);
 void guild_skillupack(int guild_id, int skill_num, int account_id,int flag);
 void guild_broken(int guild_id, unsigned char flag);
-void guild_break(struct map_session_data *sd, char *name);
+void guild_break(struct map_session_data *sd, const char *name);
 
 void guild_castledataload(int castle_id, int idx);
 void guild_addcastleinfoevent(int castle_id, int idx, const char *name);

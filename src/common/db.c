@@ -98,7 +98,7 @@ void exit_dbn(void)
 	return;
 }
 
-static int strdb_cmp(struct dbt* table,void* a,void* b)
+static int strdb_cmp(struct dbt* table,const void* a,const void* b)
 {
 	const char *p1 = (const char *)a;
 	const char *p2 = (const char *)b;
@@ -138,7 +138,7 @@ struct dbt* strdb_init_(int maxlen,const char *file,int line)
 	return table;
 }
 
-static int numdb_cmp(struct dbt* table,void* a,void* b)
+static int numdb_cmp(struct dbt* table,const void* a,const void* b)
 {
 	uintptr ia = (uintptr)a;
 	uintptr ib = (uintptr)b;

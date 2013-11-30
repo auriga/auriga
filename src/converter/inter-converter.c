@@ -261,7 +261,7 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 }
 
 // 個人メールBOXを書き込み
-static int mailbox_tosql(struct mail_data *md,char *body_data)
+static int mailbox_tosql(struct mail_data *md,const char *body_data)
 {
 	char buf[3][256];
 

@@ -5022,7 +5022,7 @@ int atcommand_mailbox(const int fd, struct map_session_data* sd, AtCommandType c
  * スクリプト変数の操作
  *------------------------------------------
  */
-static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,char *name,char *str)
+static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,const char *name,const char *str)
 {
 	struct map_session_data *pl_sd = NULL;
 	struct linkdb_node **ref = NULL;

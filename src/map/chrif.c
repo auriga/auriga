@@ -66,7 +66,7 @@ static int chrif_state;
  * ユーザー ID セット
  *------------------------------------------
  */
-void chrif_setuserid(char *id)
+void chrif_setuserid(const char *id)
 {
 	memcpy(userid,id,24);
 	userid[23] = '\0';	// force \0 terminal
@@ -76,7 +76,7 @@ void chrif_setuserid(char *id)
  * パスワードセット
  *------------------------------------------
  */
-void chrif_setpasswd(char *pwd)
+void chrif_setpasswd(const char *pwd)
 {
 	memcpy(passwd,pwd,24);
 	passwd[23] = '\0';	// force \0 terminal
@@ -869,7 +869,7 @@ int chrif_req_break_adoption(int char_id, const char *name)
  * 養子情報同期受付
  *------------------------------------------
  */
-static int chrif_breakadoption(int char_id, unsigned char *name)
+static int chrif_breakadoption(int char_id, const char *name)
 {
 	struct map_session_data *sd = NULL;
 	char output[100];

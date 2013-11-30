@@ -847,7 +847,7 @@ void chardb_txt_final(void)
 #endif
 }
 
-const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
+const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
 {
 	int n, idx;
 	int status_point = 0;
@@ -856,7 +856,11 @@ const struct mmo_chardata *chardb_txt_make(int account_id, unsigned char *name, 
 		if(name[n] < 0x20 || name[n] == 0x7f)
 			return NULL;
 	}
-	name[23] = '\0';	// force \0 terminal
+
+	if(n >= 24) {
+		// character name is invalid.
+		return NULL;
+	}
 
 	if(slot >= max_char_slot) {
 		*flag = 0x03;

@@ -568,7 +568,7 @@ static void block_free(struct block* p)
 	hash_unfill[0] = p;
 }
 
-static char memmer_logfile[128];
+static char memmer_logfile[256];
 
 static void memmgr_warning(const char* format,...)
 {

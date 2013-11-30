@@ -45,7 +45,7 @@ int partydb_sql_sync(void)
 	return 0;
 }
 
-const struct party* partydb_sql_load_str(char *str)
+const struct party* partydb_sql_load_str(const char *str)
 {
 	int  id_num = -1;
 	char buf[256];

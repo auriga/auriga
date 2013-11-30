@@ -130,7 +130,7 @@ static int mail_checkappend(struct map_session_data *sd, struct mail_data *md)
  * 送信前チェック
  *------------------------------------------
  */
-int mail_checkmail(struct map_session_data *sd, char *name, char *title, char *body, int len)
+int mail_checkmail(struct map_session_data *sd, const char *name, const char *title, const char *body, int len)
 {
 	struct map_session_data *rd = map_nick2sd(name);
 	struct mail_data md;

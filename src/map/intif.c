@@ -316,7 +316,7 @@ void intif_delete_elemdata(int account_id, int char_id, int elem_id)
 }
 
 // GMメッセージを送信
-void intif_GMmessage(char* mes, size_t len, int flag)
+void intif_GMmessage(const char* mes, size_t len, int flag)
 {
 	int lp = (flag&0x30)? 4: 0;
 
@@ -345,7 +345,7 @@ void intif_GMmessage(char* mes, size_t len, int flag)
 }
 
 // GMメッセージ（マルチカラー）を送信
-int intif_announce(char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
+int intif_announce(const char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -364,7 +364,7 @@ int intif_announce(char* mes,size_t len,unsigned int color,int type,int size,int
 }
 
 // Wisの送信
-void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int mes_len)
+void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, int mes_len)
 {
 	nullpo_retv(sd);
 
@@ -536,7 +536,7 @@ int intif_deadlock_guild_storage(int guild_id)
 }
 
 // パーティ作成要求
-void intif_create_party(struct map_session_data *sd, char *name, int item, int item2)
+void intif_create_party(struct map_session_data *sd, const char *name, int item, int item2)
 {
 	nullpo_retv(sd);
 
@@ -656,7 +656,7 @@ int intif_break_party(int party_id)
 }
 
 // パーティ会話送信
-int intif_party_message(int party_id,int account_id,char *mes,int len)
+int intif_party_message(int party_id,int account_id,const char *mes,int len)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -796,7 +796,7 @@ int intif_guild_break(int guild_id)
 }
 
 // ギルド会話送信
-int intif_guild_message(int guild_id,int account_id,char *mes,int len)
+int intif_guild_message(int guild_id,int account_id,const char *mes,int len)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -977,7 +977,7 @@ int intif_guild_castle_datasave(int castle_id, int idx, int value)
  * 指定した名前のキャラの場所要求
  *------------------------------------------
  */
-static int intif_charposreq(int account_id,char *name,int flag)
+static int intif_charposreq(int account_id,const char *name,int flag)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -996,7 +996,7 @@ static int intif_charposreq(int account_id,char *name,int flag)
  * @jumpto
  *------------------------------------------
  */
-int intif_jumpto(int account_id,char *name)
+int intif_jumpto(int account_id,const char *name)
 {
 	intif_charposreq(account_id,name,1);
 
@@ -1008,7 +1008,7 @@ int intif_jumpto(int account_id,char *name)
  * @where
  *------------------------------------------
  */
-int intif_where(int account_id,char *name)
+int intif_where(int account_id,const char *name)
 {
 	intif_charposreq(account_id,name,0);
 
@@ -1021,7 +1021,7 @@ int intif_where(int account_id,char *name)
  * flag=1 @recall
  *------------------------------------------
  */
-int intif_charmovereq(struct map_session_data *sd,char *name,int flag)
+int intif_charmovereq(struct map_session_data *sd,const char *name,int flag)
 {
 	nullpo_retr(0,sd);
 
@@ -1050,7 +1050,7 @@ int intif_charmovereq(struct map_session_data *sd,char *name,int flag)
  * flag=2 養子系呼び出しスキル
  *------------------------------------------
  */
-int intif_charmovereq2(struct map_session_data *sd,char *name,char *mapname,short x, short y,int flag)
+int intif_charmovereq2(struct map_session_data *sd,const char *name,const char *mapname,short x, short y,int flag)
 {
 	nullpo_retr(0,sd);
 

@@ -336,7 +336,7 @@ void booking_register(struct map_session_data *sd, int lv, int map, int *job)
  * @param memo 募集時のメッセージ
  *------------------------------------------
  */
-void booking_register2(struct map_session_data *sd, int lv, char *memo)
+void booking_register2(struct map_session_data *sd, int lv, const char *memo)
 {
 	struct booking_data *bd;
 	struct party *party;
@@ -432,7 +432,7 @@ void booking_update(struct map_session_data *sd, int *job)
  * @param memo 募集時のメッセージ
  *------------------------------------------
  */
-void booking_update2(struct map_session_data *sd, char *memo)
+void booking_update2(struct map_session_data *sd, const char *memo)
 {
 	struct booking_data *bd;
 

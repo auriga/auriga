@@ -22,8 +22,8 @@
 #ifndef _CHRIF_H_
 #define _CHRIF_H_
 
-void chrif_setuserid(char*);
-void chrif_setpasswd(char*);
+void chrif_setuserid(const char*);
+void chrif_setpasswd(const char*);
 void chrif_sethost(const char*);
 void chrif_setip(void);
 void chrif_setport(unsigned short);

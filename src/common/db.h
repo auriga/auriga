@@ -43,7 +43,7 @@ struct db_free {
 };
 
 struct dbt {
-	int (*cmp)(struct dbt*,void*,void*);
+	int (*cmp)(struct dbt*,const void*,const void*);
 	unsigned int (*hash)(struct dbt*,void*);
 	int maxlen;
 	struct dbn *ht[HASH_SIZE];

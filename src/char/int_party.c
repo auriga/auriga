@@ -213,7 +213,7 @@ int mapif_party_broken(int party_id,int flag)
 }
 
 // パーティ内発言
-int mapif_party_message(int party_id,int account_id,char *mes,int len)
+int mapif_party_message(int party_id,int account_id,const char *mes,int len)
 {
 	unsigned char buf[512];
 
@@ -244,8 +244,8 @@ int mapif_party_leader_changed(int party_id,int old_account_id,int account_id)
 
 
 // パーティ
-int mapif_parse_CreateParty(int fd, int account_id, int char_id, char *name,
-	unsigned char item, unsigned char item2, char *nick, char *map, unsigned short lv)
+int mapif_parse_CreateParty(int fd, int account_id, int char_id, const char *name,
+	unsigned char item, unsigned char item2, const char *nick, const char *map, unsigned short lv)
 {
 	struct party *p;
 	int i;
@@ -271,6 +271,7 @@ int mapif_parse_CreateParty(int fd, int account_id, int char_id, char *name,
 	p->member[0].account_id = account_id;
 	p->member[0].char_id    = char_id;
 	memcpy(p->member[0].name,nick,24);
+	p->member[0].name[23] = '\0';	// force \0 terminal
 	memcpy(p->member[0].map,map,16);
 	p->member[0].map[15] = '\0';	// force \0 terminal
 	p->member[0].leader = 1;
@@ -302,7 +303,7 @@ int mapif_parse_PartyInfo(int fd,int party_id)
 }
 
 // パーティ追加要求
-int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,char *nick,char *map,int lv)
+int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,const char *nick,const char *map,int lv)
 {
 	const struct party *p1 = partydb_load_num(party_id);
 	struct party p2;
@@ -321,6 +322,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,ch
 			p2.member[i].account_id = account_id;
 			p2.member[i].char_id    = char_id;
 			memcpy(p2.member[i].name,nick,24);
+			p2.member[i].name[23] = '\0';	// force \0 terminal
 			memcpy(p2.member[i].map,map,16);
 			p2.member[i].map[15] = '\0';	// force \0 terminal
 			p2.member[i].leader  = 0;
@@ -416,7 +418,7 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, int char_id)
 }
 
 // パーティマップ更新要求
-static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int char_id, char *map, unsigned char online, unsigned short lv)
+static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int char_id, const char *map, unsigned char online, unsigned short lv)
 {
 	const struct party *p1 = partydb_load_num(party_id);
 	struct party p2;
@@ -460,7 +462,7 @@ int mapif_parse_BreakParty(int fd,int party_id)
 }
 
 // パーティメッセージ送信
-int mapif_parse_PartyMessage(int fd,int party_id,int account_id,char *mes,int len)
+int mapif_parse_PartyMessage(int fd,int party_id,int account_id,const char *mes,int len)
 {
 	return mapif_party_message(party_id,account_id,mes,len);
 }

@@ -84,7 +84,7 @@ set __PRE_RENEWAL__=-DPRE_RENEWAL
 :set __EXCLASS__=-DCLASS_MB
 
 @rem 動的にMOBのsc_dataを確保したい人はコメントアウトをはずす
-:set __DYNAMIC_STATUS_CHANGE__=-DDYNAMIC_SC_DATA
+set __DYNAMIC_STATUS_CHANGE__=-DDYNAMIC_SC_DATA
 
 @rem キャラの削除にメールアドレスを使う場合はコメントアウトをはずす
 :set __AC_MAIL__=-DAC_MAIL

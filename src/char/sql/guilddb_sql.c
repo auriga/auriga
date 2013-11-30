@@ -360,7 +360,7 @@ const struct guild *guilddb_sql_load_num(int guild_id)
 	return g;
 }
 
-const struct guild* guilddb_sql_load_str(char *str)
+const struct guild* guilddb_sql_load_str(const char *str)
 {
 	int  id_num = -1;
 	char buf[256];

@@ -158,7 +158,7 @@ int pc_get_skilltree_max(struct pc_base_job *bj,int skillid)
  * GM関連
  *------------------------------------------
  */
-void pc_set_gm_account_fname(char *str)
+void pc_set_gm_account_fname(const char *str)
 {
 	strncpy(GM_account_filename,str,sizeof(GM_account_filename)-1);
 }

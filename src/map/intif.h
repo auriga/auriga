@@ -27,9 +27,9 @@
 int intif_parse(int fd);
 
 // メッセージ送信関連
-void intif_GMmessage(char* mes, size_t len, int flag);
-int intif_announce(char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y);
-void intif_wis_message(struct map_session_data *sd, char *nick, char *mes, int mes_len);
+void intif_GMmessage(const char* mes, size_t len, int flag);
+int intif_announce(const char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y);
+void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, int mes_len);
 
 // アカウント変数関連
 int intif_saveaccountreg(struct map_session_data *sd);
@@ -45,14 +45,14 @@ int intif_unlock_guild_storage(int guild_id);
 int intif_deadlock_guild_storage(int guild_id);
 
 // パーティー関連
-void intif_create_party(struct map_session_data *sd, char *name, int item, int item2);
+void intif_create_party(struct map_session_data *sd, const char *name, int item, int item2);
 int intif_request_partyinfo(int party_id);
 void intif_party_addmember(struct map_session_data *sd);
 void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp, int item);
 void intif_party_leave(int party_id, int account_id, int char_id);
 void intif_party_changemap(struct map_session_data *sd, unsigned char online);
 int intif_break_party(int party_id);
-int intif_party_message(int party_id,int account_id,char *mes,int len);
+int intif_party_message(int party_id,int account_id,const char *mes,int len);
 int intif_party_checkconflict(int party_id,int account_id,int char_id);
 int intif_party_leaderchange(int party_id,int account_id,int char_id);
 
@@ -63,7 +63,7 @@ int intif_guild_addmember(int guild_id,struct guild_member *m);
 int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const char *mes);
 void intif_guild_memberinfoshort(int guild_id, int account_id, int char_id, unsigned char online, int lv, int class_);
 int intif_guild_break(int guild_id);
-int intif_guild_message(int guild_id,int account_id,char *mes,int len);
+int intif_guild_message(int guild_id,int account_id,const char *mes,int len);
 int intif_guild_checkconflict(int guild_id,int account_id,int char_id);
 int intif_guild_change_basicinfo(int guild_id,int type,const void *data,int len);
 int intif_guild_change_memberinfo(int guild_id,int account_id,int char_id,int type,const void *data,int len);
@@ -118,10 +118,10 @@ int intif_request_quest(int account_id,int char_id);
 int intif_save_quest(struct map_session_data *sd);
 
 // その他
-int intif_jumpto(int account_id,char *name);
-int intif_where(int account_id,char *name);
-int intif_charmovereq(struct map_session_data *sd,char *name,int flag);
-int intif_charmovereq2(struct map_session_data *sd,char *name,char *mapname,short x, short y,int flag);
+int intif_jumpto(int account_id,const char *name);
+int intif_where(int account_id,const char *name);
+int intif_charmovereq(struct map_session_data *sd,const char *name,int flag);
+int intif_charmovereq2(struct map_session_data *sd,const char *name,const char *mapname,short x, short y,int flag);
 int intif_displaymessage(int account_id, char* mes);
 int intif_char_connect_limit(int limit);
 

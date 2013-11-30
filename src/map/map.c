@@ -1332,7 +1332,7 @@ struct charid2nick *char_search(int char_id)
  * charid_dbへ追加(返信待ちがあれば返信)
  *------------------------------------------
  */
-void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, unsigned short port)
+void map_addchariddb(int charid, const char *name, int account_id, unsigned long ip, unsigned short port)
 {
 	struct charid2nick *p;
 	struct linkdb_node *head;
@@ -1709,7 +1709,7 @@ struct map_session_data * map_charid2sd(int id)
  * 名前がnickのPCを探す。居なければNULL
  *------------------------------------------
  */
-struct map_session_data * map_nick2sd(char *nick)
+struct map_session_data * map_nick2sd(const char *nick)
 {
 	if(nick == NULL)
 		return NULL;
@@ -2081,7 +2081,7 @@ int map_random_freecell(int m,int *x,int *y)
  * 他鯖管理のマップをdbに追加
  *------------------------------------------
  */
-int map_setipport(char *name,unsigned long ip,unsigned short port)
+int map_setipport(const char *name,unsigned long ip,unsigned short port)
 {
 	struct map_data *md;
 	struct map_data_other_server *mdos;
@@ -2159,7 +2159,7 @@ void map_eraseallipport(void)
  * 他鯖管理のマップをdbから削除
  *------------------------------------------
  */
-int map_eraseipport(char *name,unsigned long ip,unsigned short port)
+int map_eraseipport(const char *name,unsigned long ip,unsigned short port)
 {
 	struct map_data *md;
 	struct map_data_other_server *mdos;

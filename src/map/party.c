@@ -693,7 +693,7 @@ void party_optionchanged(int party_id, int account_id, unsigned char exp, unsign
  * パーティメンバの移動通知
  *------------------------------------------
  */
-void party_recv_movemap(int party_id, int account_id, int char_id, char *mapname, unsigned char online, unsigned short lv)
+void party_recv_movemap(int party_id, int account_id, int char_id, const char *mapname, unsigned char online, unsigned short lv)
 {
 	struct map_session_data *sd;
 	struct party *p;
@@ -803,7 +803,7 @@ void party_send_logout(struct map_session_data *sd)
  * パーティメッセージ送信
  *------------------------------------------
  */
-void party_send_message(struct map_session_data *sd, char *mes, int len)
+void party_send_message(struct map_session_data *sd, const char *mes, int len)
 {
 	if(sd->status.party_id==0)
 		return;
@@ -817,7 +817,7 @@ void party_send_message(struct map_session_data *sd, char *mes, int len)
  * パーティメッセージ受信
  *------------------------------------------
  */
-void party_recv_message(int party_id, int account_id, char *mes, int len)
+void party_recv_message(int party_id, int account_id, const char *mes, int len)
 {
 	struct party *p;
 

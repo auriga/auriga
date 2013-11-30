@@ -28,7 +28,7 @@
 // プロトタイプ宣言
 bool partydb_sql_init(void);
 int partydb_sql_sync(void);
-const struct party* partydb_sql_load_str(char *str);
+const struct party* partydb_sql_load_str(const char *str);
 const struct party* partydb_sql_load_num(int party_id);
 bool partydb_sql_save(struct party* p2);
 bool partydb_sql_delete(int party_id);

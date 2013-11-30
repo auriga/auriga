@@ -453,7 +453,7 @@ void guild_getexp(struct map_session_data *sd, int exp)
  * 作成要求
  *------------------------------------------
  */
-void guild_create(struct map_session_data *sd, char *name)
+void guild_create(struct map_session_data *sd, const char *name)
 {
 	nullpo_retv(sd);
 
@@ -465,9 +465,7 @@ void guild_create(struct map_session_data *sd, char *name)
 				clif_guild_created(sd, 2); // 0x167 <flag>.b: 0: Guild has been created., 1: You are already in a guild., 2: That Guild Name already exists., 3: You need the necessary item to create a Guild.
 				return;
 			}
-			// force NULL in guild name (hacker or incorrect at command)
-			// normal client doesn't send more than 23 char, and it always sends NULL
-			name[23] = '\0';
+
 			// check guild name with " -> use a " in a guild name disables /breakguild command (it doesn't work)
 			if (strchr(name, '\"') != NULL) {
 				clif_guild_created(sd, 2); // 0x167 <flag>.b: 0: Guild has been created., 1: You are already in a guild., 2: That Guild Name already exists., 3: You need the necessary item to create a Guild.
@@ -1178,7 +1176,7 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
  * ギルド会話送信
  *------------------------------------------
  */
-void guild_send_message(struct map_session_data *sd, char *mes, int len)
+void guild_send_message(struct map_session_data *sd, const char *mes, int len)
 {
 	nullpo_retv(sd);
 
@@ -1193,7 +1191,7 @@ void guild_send_message(struct map_session_data *sd, char *mes, int len)
  * ギルド会話受信
  *------------------------------------------
  */
-void guild_recv_message(int guild_id, int account_id, char *mes, int len)
+void guild_recv_message(int guild_id, int account_id, const char *mes, int len)
 {
 	struct guild *g = guild_search(guild_id);
 
@@ -1960,7 +1958,7 @@ void guild_broken(int guild_id, unsigned char flag)
  * ギルド解散
  *------------------------------------------
  */
-void guild_break(struct map_session_data *sd, char *name)
+void guild_break(struct map_session_data *sd, const char *name)
 {
 	struct guild *g;
 	int i;

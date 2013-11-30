@@ -1406,7 +1406,7 @@ void map_clear_delayitem_que(void);
 
 // キャラid＝＞キャラ名 変換関連
 struct charid2nick *char_search(int char_id);
-void map_addchariddb(int charid, char *name, int account_id, unsigned long ip, unsigned short port);
+void map_addchariddb(int charid, const char *name, int account_id, unsigned long ip, unsigned short port);
 void map_delchariddb(int charid);
 int map_reqchariddb(struct map_session_data *sd, int charid, int type);
 char * map_charid2nick(int);
@@ -1425,14 +1425,14 @@ struct block_list * map_id2bl(int);
 
 int map_mapname2mapid(const char*);
 int map_mapname2ipport(const char*,unsigned long*,unsigned short*);
-int map_setipport(char *name,unsigned long ip,unsigned short port);
-int map_eraseipport(char *name,unsigned long ip,unsigned short port);
+int map_setipport(const char *name,unsigned long ip,unsigned short port);
+int map_eraseipport(const char *name,unsigned long ip,unsigned short port);
 void map_eraseallipport(void);
 void map_addiddb(struct block_list *);
 void map_deliddb(struct block_list *bl);
 int map_foreachiddb(int (*)(void*,void*,va_list),...);
 void map_addnickdb(struct map_session_data *);
-struct map_session_data * map_nick2sd(char*);
+struct map_session_data * map_nick2sd(const char*);
 int map_field_setting(void);
 int map_getmaptype(int m);
 

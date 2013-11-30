@@ -468,10 +468,10 @@ int guilddb_txt_sync(void)
 static int guilddb_txt_load_str_sub(void *key,void *data,va_list ap)
 {
 	struct guild *g, **dst;
-	char *str;
+	const char *str;
 
 	g   = (struct guild *)data;
-	str = va_arg(ap,char *);
+	str = va_arg(ap,const char *);
 	dst = va_arg(ap,struct guild **);
 
 	if(*dst == NULL) {
@@ -482,7 +482,7 @@ static int guilddb_txt_load_str_sub(void *key,void *data,va_list ap)
 }
 
 // ギルド名検索
-const struct guild* guilddb_txt_load_str(char *str)
+const struct guild* guilddb_txt_load_str(const char *str)
 {
 	struct guild *g=NULL;
 

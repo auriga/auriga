@@ -742,7 +742,7 @@ static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
  * NPCのオープンチャット発言
  *------------------------------------------
  */
-int npc_globalmessage(const char *name,char *mes)
+int npc_globalmessage(const char *name,const char *mes)
 {
 	struct npc_data *nd = npc_name2id(name);
 	char temp[100], *p;
@@ -1564,7 +1564,7 @@ static char *npc_skip_line(unsigned char *p, int *comment_flag)
  * warp行解析
  *------------------------------------------
  */
-static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
+static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const char *w4,int lines)
 {
 	int m, x, y, dir = 0, xs, ys, to_x, to_y;
 	int i, j, n;
@@ -1654,7 +1654,7 @@ static int npc_parse_warp(char *w1,char *w2,char *w3,char *w4,int lines)
  * shop行解析
  *------------------------------------------
  */
-static int npc_parse_shop(char *w1,char *w2,char *w3,char *w4,int lines)
+static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const char *w4,int lines)
 {
 	char *p;
 	int m, x, y, dir = 0;
@@ -2002,7 +2002,7 @@ static int npc_parse_script_line(const unsigned char *p,int *curly_count,int lin
 	return 0;
 }
 
-static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line,FILE *fp,int *lines,const char* file)
+static int npc_parse_script(const char *w1,const char *w2,const char *w3,const char *w4,const char *first_line,FILE *fp,int *lines,const char* file)
 {
 	int x, y, m, xs, ys;
 	int dir = 0, class_ = 0, label_dupnum = 0, src_id = 0, fail = 0;
@@ -2250,7 +2250,7 @@ static int npc_parse_script(char *w1,char *w2,char *w3,char *w4,char *first_line
  * function行解析
  *------------------------------------------
  */
-static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_line,FILE *fp,int *lines,const char* file)
+static int npc_parse_function(const char *w1,const char *w2,const char *w3,const char *w4,const char *first_line,FILE *fp,int *lines,const char* file)
 {
 	size_t len, srclen;
 	size_t srcsize = 32768;
@@ -2334,7 +2334,7 @@ static int npc_parse_function(char *w1,char *w2,char *w3,char *w4,char *first_li
  * mob行解析
  *------------------------------------------
  */
-static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
+static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char *w4,int lines)
 {
 	int m, x, y, xs, ys, class_, num, delay1, delay2;
 	int i, n, guild_id = 0;
@@ -2491,7 +2491,7 @@ static int npc_parse_mob(char *w1,char *w2,char *w3,char *w4,int lines)
  * マップフラグ行の解析
  *------------------------------------------
  */
-static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4,int lines)
+static int npc_parse_mapflag(const char *w1,const char *w2,const char *w3,const char *w4,int lines)
 {
 	int m;
 	char mapname[4096];
@@ -2516,7 +2516,7 @@ static int npc_parse_mapflag(char *w1,char *w2,char *w3,char *w4,int lines)
  * マップフラグの設定
  *------------------------------------------
  */
-int npc_set_mapflag(int m,char *w3,char *w4)
+int npc_set_mapflag(int m,const char *w3,const char *w4)
 {
 	if(m < 0 || m >= map_num)
 		return 0;
@@ -2635,7 +2635,7 @@ int npc_set_mapflag(int m,char *w3,char *w4)
  * ナイトメアモードの設定
  *------------------------------------------
  */
-int npc_set_mapflag_sub(int m,char *str,short flag)
+int npc_set_mapflag_sub(int m,const char *str,short flag)
 {
 	char drop_arg1[4096], drop_arg2[4096];
 	int drop_id = 0, drop_type = 0, drop_per = 0;

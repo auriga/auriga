@@ -198,7 +198,7 @@ int inter_mapif_init(int fd)
 //--------------------------------------------------------
 
 // GMメッセージ送信
-int mapif_GMmessage(char *mes,int len,unsigned int color,int type,int size,int align,int pos_y)
+int mapif_GMmessage(const char *mes,int len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	unsigned char *buf = (unsigned char*)aMalloc(len);
 
@@ -247,7 +247,7 @@ int mapif_wis_end(struct WisData *wd,int flag)
 }
 
 // アカウント変数送信
-int mapif_account_reg(int fd,unsigned char *src)
+int mapif_account_reg(int fd,const unsigned char *src)
 {
 	int len = WBUFW(src,2);
 	unsigned char *buf = (unsigned char *)aMalloc(len);

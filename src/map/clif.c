@@ -4453,7 +4453,7 @@ void clif_setwaitclose(int fd)
  *
  *------------------------------------------
  */
-void clif_changemap(struct map_session_data *sd,char *mapname,int x,int y)
+void clif_changemap(struct map_session_data *sd,const char *mapname,int x,int y)
 {
 	int fd;
 
@@ -4473,7 +4473,7 @@ void clif_changemap(struct map_session_data *sd,char *mapname,int x,int y)
  *
  *------------------------------------------
  */
-void clif_changemapserver(struct map_session_data *sd, char *mapname, int x, int y, unsigned long ip, unsigned short port)
+void clif_changemapserver(struct map_session_data *sd, const char *mapname, int x, int y, unsigned long ip, unsigned short port)
 {
 	int fd;
 
@@ -4809,7 +4809,7 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
  *
  *------------------------------------------
  */
-void clif_scriptmes(struct map_session_data *sd, int npcid, char *mes)
+void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes)
 {
 	int fd;
 
@@ -4865,7 +4865,7 @@ void clif_scriptclose(struct map_session_data *sd, int npcid)
  *
  *------------------------------------------
  */
-void clif_scriptmenu(struct map_session_data *sd, int npcid, char *mes)
+void clif_scriptmenu(struct map_session_data *sd, int npcid, const char *mes)
 {
 	int fd;
 
@@ -4944,7 +4944,7 @@ void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, in
  *
  *------------------------------------------
  */
-void clif_cutin(struct map_session_data *sd, char *image, int type)
+void clif_cutin(struct map_session_data *sd, const char *image, int type)
 {
 	int fd;
 
@@ -7513,7 +7513,7 @@ void clif_leavechat(struct chat_data* cd, struct map_session_data *sd, unsigned 
  * 取り引き要請受け
  *------------------------------------------
  */
-void clif_traderequest(struct map_session_data *sd, char *name)
+void clif_traderequest(struct map_session_data *sd, const char *name)
 {
 	int fd;
 	struct map_session_data *target_sd = NULL;
@@ -10070,7 +10070,7 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
  * Wisを送信する
  *------------------------------------------
  */
-void clif_wis_message(int fd, char *nick, char *mes, int mes_len, int gmlevel)
+void clif_wis_message(int fd, const char *nick, const char *mes, int mes_len, int gmlevel)
 {
 	WFIFOW(fd,0)=0x97;
 
@@ -11530,7 +11530,7 @@ void clif_party_info(struct party *p, int fd)
  * パーティ勧誘
  *------------------------------------------
  */
-void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd, char *name)
+void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd, const char *name)
 {
 	int fd;
 
@@ -11650,7 +11650,7 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
  * パーティ脱退（脱退前に呼ぶこと）
  *------------------------------------------
  */
-void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, char *name, int flag)
+void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, const char *name, int flag)
 {
 	unsigned char buf[32];
 	int i;
@@ -11681,7 +11681,7 @@ void clif_party_leaved(struct party *p, struct map_session_data *sd, int account
  * パーティメッセージ送信
  *------------------------------------------
  */
-void clif_party_message(struct party *p, int account_id, char *mes, int len)
+void clif_party_message(struct party *p, int account_id, const char *mes, int len)
 {
 	unsigned char buf[1024];
 	struct map_session_data *sd = NULL;
@@ -18542,7 +18542,13 @@ static void clif_parse_OpenVending(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CreateGuild(int fd,struct map_session_data *sd, int cmd)
 {
-	guild_create(sd,RFIFOP(fd,GETPACKETPOS(cmd,0)));
+	char *name = RFIFOP(fd,GETPACKETPOS(cmd,0));
+
+	// force NULL in guild name (hacker or incorrect at command)
+	// normal client doesn't send more than 23 char, and it always sends NULL
+	name[23] = '\0';
+
+	guild_create(sd, name);
 
 	return;
 }

@@ -55,7 +55,7 @@ extern int max_job_table[PC_UPPER_MAX][PC_JOB_MAX];
 
 int pc_get_skilltree_max(struct pc_base_job *bj,int skillid);
 
-void pc_set_gm_account_fname(char *str);
+void pc_set_gm_account_fname(const char *str);
 int pc_isGM(struct map_session_data *sd);
 int pc_numisGM(int account_id);
 int pc_get_gm_account_dummy(void);

@@ -50,15 +50,15 @@ void party_member_leaved(int party_id, int account_id, int char_id);
 void party_broken(int party_id);
 void party_changeoption(struct map_session_data *sd, int exp, int item);
 void party_optionchanged(int party_id, int account_id, unsigned char exp, unsigned char item, int flag);
-void party_recv_movemap(int party_id, int account_id, int char_id, char *mapname, unsigned char online, unsigned short lv);
+void party_recv_movemap(int party_id, int account_id, int char_id, const char *mapname, unsigned char online, unsigned short lv);
 
 void party_send_movemap(struct map_session_data *sd);
 void party_send_logout(struct map_session_data *sd);
 
 int party_check_same_map_member_count(struct map_session_data *sd);
 
-void party_send_message(struct map_session_data *sd, char *mes, int len);
-void party_recv_message(int party_id, int account_id, char *mes, int len);
+void party_send_message(struct map_session_data *sd, const char *mes, int len);
+void party_recv_message(int party_id, int account_id, const char *mes, int len);
 
 int party_send_hp_check(struct block_list *bl,va_list ap);
 

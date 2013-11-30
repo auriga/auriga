@@ -196,7 +196,7 @@ rem MB を使う場合はコメントアウトをはずす
 rem set __EXCLASS__=/D "CLASS_MB"
 
 rem 動的にMOBの sc_data を確保する場合はコメントアウトをはずす
-rem set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
+set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
 
 rem キャラの削除にメールアドレスを使う場合はコメントアウトをはずす
 rem set __AC_MAIL__=/D "AC_MAIL"

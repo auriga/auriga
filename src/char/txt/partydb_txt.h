@@ -28,7 +28,7 @@
 // プロトタイプ宣言
 bool partydb_txt_init(void);
 int partydb_txt_sync(void);
-const struct party* partydb_txt_load_str(char *str);
+const struct party* partydb_txt_load_str(const char *str);
 const struct party* partydb_txt_load_num(int party_id);
 bool partydb_txt_save(struct party* p2);
 bool partydb_txt_delete(int party_id);

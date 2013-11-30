@@ -70,8 +70,8 @@ void clif_spawnmob(struct mob_data *md);
 void clif_spawnpet(struct pet_data *pd);
 void clif_walkok(struct map_session_data *sd);
 void clif_move(struct block_list *bl);
-void clif_changemap(struct map_session_data *sd,char *mapname,int x,int y);
-void clif_changemapserver(struct map_session_data *sd, char *mapname, int x, int y, unsigned long ip, unsigned short port);
+void clif_changemap(struct map_session_data *sd,const char *mapname,int x,int y);
+void clif_changemapserver(struct map_session_data *sd, const char *mapname, int x, int y, unsigned long ip, unsigned short port);
 int clif_fixpos(struct block_list *bl);
 int clif_fixpos2(struct block_list *bl, int x[4], int y[4]);
 void clif_blown(struct block_list *bl, int x, int y);
@@ -80,14 +80,14 @@ void clif_npcbuysell(struct map_session_data* sd, int id);
 void clif_buylist(struct map_session_data *sd, struct npc_data *nd);
 void clif_selllist(struct map_session_data *sd);
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd);
-void clif_scriptmes(struct map_session_data *sd, int npcid, char *mes);
+void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes);
 void clif_scriptnext(struct map_session_data *sd, int npcid);
 void clif_scriptclose(struct map_session_data *sd, int npcid);
-void clif_scriptmenu(struct map_session_data *sd, int npcid, char *mes);
+void clif_scriptmenu(struct map_session_data *sd, int npcid, const char *mes);
 void clif_scriptinput(struct map_session_data *sd, int npcid);
 void clif_scriptinputstr(struct map_session_data *sd, int npcid);
 void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, int y, int id, int color);
-void clif_cutin(struct map_session_data *sd, char *image, int type);
+void clif_cutin(struct map_session_data *sd, const char *image, int type);
 void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char fail);
 void clif_delitem(struct map_session_data *sd, short type, int n, int amount);
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid);
@@ -139,7 +139,7 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 void clif_bodyrelocation(struct block_list *bl, int x, int y);
 
 // trade
-void clif_traderequest(struct map_session_data *sd, char *name);
+void clif_traderequest(struct map_session_data *sd, const char *name);
 void clif_tradestart(struct map_session_data *sd, unsigned char type);
 void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd, int idx, int amount);
 void clif_tradeitemok(struct map_session_data *sd, unsigned short idx, unsigned char fail);
@@ -223,7 +223,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3);
 
-void clif_wis_message(int fd,char *nick,char *mes, int mes_len, int gmlevel);
+void clif_wis_message(int fd,const char *nick,const char *mes, int mes_len, int gmlevel);
 void clif_wis_end(int fd, unsigned short flag);
 
 void clif_solved_charname(struct map_session_data *sd, int char_id);
@@ -294,11 +294,11 @@ void clif_movetoattack(struct map_session_data *sd, struct block_list *bl);
 void clif_party_created(struct map_session_data *sd, unsigned char flag);
 void clif_party_main_info(struct party *p, int fd);
 void clif_party_info(struct party *p, int fd);
-void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd, char *name);
+void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd, const char *name);
 void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigned char flag);
 void clif_party_option(struct party *p, struct map_session_data *sd, int flag);
-void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, char *name, int flag);
-void clif_party_message(struct party *p, int account_id, char *mes, int len);
+void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, const char *name, int flag);
+void clif_party_message(struct party *p, int account_id, const char *mes, int len);
 void clif_party_xy(struct map_session_data *sd);
 void clif_party_hp(struct map_session_data *sd);
 //void clif_party_move(struct party *p, struct map_session_data *sd, unsigned char online);

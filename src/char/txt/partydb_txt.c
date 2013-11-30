@@ -256,10 +256,10 @@ int partydb_txt_sync(void)
 static int party_txt_load_name_sub(void *key,void *data,va_list ap)
 {
 	struct party *p, **dst;
-	char *str;
+	const char *str;
 
 	p   = (struct party *)data;
-	str = va_arg(ap,char *);
+	str = va_arg(ap,const char *);
 	dst = va_arg(ap,struct party **);
 
 	if(*dst == NULL) {
@@ -270,7 +270,7 @@ static int party_txt_load_name_sub(void *key,void *data,va_list ap)
 }
 
 // パーティ名検索
-const struct party* partydb_txt_load_str(char *str)
+const struct party* partydb_txt_load_str(const char *str)
 {
 	struct party *p=NULL;
 
