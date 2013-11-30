@@ -57,8 +57,8 @@ void party_send_logout(struct map_session_data *sd);
 
 int party_check_same_map_member_count(struct map_session_data *sd);
 
-void party_send_message(struct map_session_data *sd, const char *mes, int len);
-void party_recv_message(int party_id, int account_id, const char *mes, int len);
+void party_send_message(struct map_session_data *sd, const char *mes, size_t len);
+void party_recv_message(int party_id, int account_id, const char *mes, size_t len);
 
 int party_send_hp_check(struct block_list *bl,va_list ap);
 

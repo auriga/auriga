@@ -1,4 +1,18 @@
 ----------------------------------------
+//1130 [2013/12/01] by Rayce
+
+・getequipname関数で引数に12以上で且つその部位の装備がない場合にバッファオーバーフローが
+  発生するバグを修正（script.c, conf/script_auriga.conf）
+
+・clif_disp_overhead() における型変換の警告を修正（clif.c）
+	reported by NP3228さん
+
+・メッセージ長を格納する変数は size_t型 に統一する
+  （int_guild.c, int_party.c, inter.c, clif.*, guild.*, intif.*, party.*）
+
+・1128のconst付与の抜け漏れ追加修正
+
+----------------------------------------
 //1129 [2013/12/01] by Rayce
 
 ・サーバースナップショット（version.h）

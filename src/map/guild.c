@@ -1176,7 +1176,7 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
  * ギルド会話送信
  *------------------------------------------
  */
-void guild_send_message(struct map_session_data *sd, const char *mes, int len)
+void guild_send_message(struct map_session_data *sd, const char *mes, size_t len)
 {
 	nullpo_retv(sd);
 
@@ -1191,7 +1191,7 @@ void guild_send_message(struct map_session_data *sd, const char *mes, int len)
  * ギルド会話受信
  *------------------------------------------
  */
-void guild_recv_message(int guild_id, int account_id, const char *mes, int len)
+void guild_recv_message(int guild_id, int account_id, const char *mes, size_t len)
 {
 	struct guild *g = guild_search(guild_id);
 

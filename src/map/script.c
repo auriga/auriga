@@ -111,7 +111,12 @@ static int mapreg_dirty = 0;
 struct linkdb_node *scriptlabel_db = NULL;
 static struct dbt *userfunc_db = NULL;
 
-static char refine_posword[11][32] = { "頭","体","左手","右手","ローブ","靴","アクセサリー1","アクセサリー2","頭2","頭3","装着していない" };
+static char refine_posword[EQUIP_INDEX_MAX + 1][32] = {
+	"頭", "体", "左手", "右手", "ローブ", "靴", "アクセサリー1", "アクセサリー2", "頭2", "頭3",	"矢",
+	"コスチューム上段", "コスチューム中段", "コスチューム下段", "コスチューム肩", "コスチュームFloor",
+	"アーマーシャドウ", "ウェポンシャドウ", "シールドシャドウ", "シューズシャドウ", "アクセサリ右シャドウ", "アクセサリ左シャドウ",
+	"装着していない"
+};
 
 static char error_marker_start[16] = "";
 static char error_marker_end[16]   = "";
@@ -3402,17 +3407,22 @@ static int script_autosave_mapreg(int tid,unsigned int tick,int id,void *data)
  * poswordの設定
  *------------------------------------------
  */
-static void set_posword(char *p)
+static void set_posword(const char *p)
 {
-	char *np;
+	const char *np;
 	int i;
+	size_t len, max = sizeof(refine_posword[0])/sizeof(refine_posword[0][0]);
 
-	for(i = 0; i < 11; i++) {
+	for(i = 0; i < EQUIP_INDEX_MAX + 1; i++) {
 		if((np = strchr(p,',')) != NULL) {
-			*np = 0;
+			len = np - p;
+			if(len >= max)
+				len = max - 1;
+		} else {
+			len = strlen(p);
 		}
-		strncpy(refine_posword[i], p, 32);
-		refine_posword[i][31] = '\0';	// force \0 terminal
+		strncpy(refine_posword[i], p, len);
+		refine_posword[i][len] = '\0';	// force \0 terminal
 
 		if(np == NULL)
 			break;
@@ -6225,8 +6235,30 @@ int buildin_strcharinfo(struct script_state *st)
 }
 
 // pc.cのequip_posと順番が異なることに注意
-static const unsigned int equip_pos[EQUIP_INDEX_MAX]=
-{LOC_HEAD2,LOC_BODY,LOC_LARM,LOC_RARM,LOC_ROBE,LOC_SHOES,LOC_RACCESSORY,LOC_LACCESSORY,LOC_HEAD3,LOC_HEAD,LOC_ARROW,LOC_COSTUME_HEAD2,LOC_COSTUME_HEAD3,LOC_COSTUME_HEAD,LOC_COSTUME_ROBE,LOC_COSTUME_FLOOR,LOC_ARMOR_SHADOW,LOC_WEAPON_SHADOW,LOC_SHIELD_SHADOW,LOC_SHOES_SHADOW,LOC_RACCESSORY_SHADOW,LOC_LACCESSORY_SHADOW};
+static const unsigned int equip_pos[EQUIP_INDEX_MAX] = {
+	LOC_HEAD2,
+	LOC_BODY,
+	LOC_LARM,
+	LOC_RARM,
+	LOC_ROBE,
+	LOC_SHOES,
+	LOC_RACCESSORY,
+	LOC_LACCESSORY,
+	LOC_HEAD3,
+	LOC_HEAD,
+	LOC_ARROW,
+	LOC_COSTUME_HEAD2,
+	LOC_COSTUME_HEAD3,
+	LOC_COSTUME_HEAD,
+	LOC_COSTUME_ROBE,
+	LOC_COSTUME_FLOOR,
+	LOC_ARMOR_SHADOW,
+	LOC_WEAPON_SHADOW,
+	LOC_SHIELD_SHADOW,
+	LOC_SHOES_SHADOW,
+	LOC_RACCESSORY_SHADOW,
+	LOC_LACCESSORY_SHADOW
+};
 
 /*==========================================
  * 指定位置の装備品のIDを取得
@@ -6267,8 +6299,9 @@ int buildin_getequipname(struct script_state *st)
 		if(i >= 0 && sd->inventory_data[i]) {
 			buf = (char *)aStrdup(sd->inventory_data[i]->jname);
 		} else {
+			int last = sizeof(refine_posword) / sizeof(refine_posword[0]);
 			buf = (char *)aMalloc(sizeof(refine_posword[0]) * 2 + 4);
-			sprintf(buf,"%s-[%s]",refine_posword[num-1],refine_posword[10]);
+			sprintf(buf,"%s-[%s]",refine_posword[num-1],refine_posword[last-1]);
 		}
 		push_str(st->stack,C_STR,buf);
 	} else {

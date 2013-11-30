@@ -198,12 +198,12 @@ int inter_mapif_init(int fd)
 //--------------------------------------------------------
 
 // GMメッセージ送信
-int mapif_GMmessage(const char *mes,int len,unsigned int color,int type,int size,int align,int pos_y)
+int mapif_GMmessage(const char *mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	unsigned char *buf = (unsigned char*)aMalloc(len);
 
 	WBUFW(buf,0) = 0x3800;
-	WBUFW(buf,2) = len;
+	WBUFW(buf,2) = (unsigned short)len;
 	WBUFL(buf,4) = color;
 	WBUFW(buf,8) = type;
 	WBUFW(buf,10) = size;

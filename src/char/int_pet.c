@@ -92,7 +92,7 @@ int mapif_delete_pet_ack(int fd,int flag)
 }
 
 int mapif_create_pet(int fd,int account_id,int char_id,short pet_class,unsigned short pet_lv,short pet_egg_id,
-	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,char *pet_name)
+	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,const char *pet_name)
 {
 	struct s_pet *p;
 

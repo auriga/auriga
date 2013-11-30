@@ -74,7 +74,7 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id);
 int pc_checkequip(struct map_session_data *sd,int pos);
 
 int pc_setpos(struct map_session_data*,const char*,int,int,int);
-int pc_setsavepoint(struct map_session_data*,char*,int,int);
+int pc_setsavepoint(struct map_session_data*,const char*,int,int);
 int pc_randomwarp(struct map_session_data *sd,int type);
 void pc_memo(struct map_session_data *sd, int i);
 

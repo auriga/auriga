@@ -3260,7 +3260,7 @@ static void httpd_config_read_add_ip( unsigned long **list, int *count, int *max
 // ==========================================
 // 設定ファイルを読み込む
 // ------------------------------------------
-int httpd_config_read(char *cfgName)
+int httpd_config_read(const char *cfgName)
 {
 	char line[1024],w1[1024],w2[1024];
 	FILE *fp;

@@ -209,7 +209,7 @@ void httpd_set_max_persist_requests( int count );
 void httpd_set_logfile( const char *str );
 
 // 設定ファイル読み込み
-int httpd_config_read(char *cfgName);
+int httpd_config_read(const char *cfgName);
 
 
 // メタ文字( < , > , & , " ) をエスケープした文字列を返す。

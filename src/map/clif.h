@@ -126,7 +126,7 @@ void clif_leavechat(struct chat_data* cd, struct map_session_data *sd, unsigned 
 void clif_changechatstatus(struct chat_data*);
 void clif_changedir( struct block_list *bl, int headdir, int dir );
 void clif_emotion(struct block_list *bl,int type);
-void clif_talkiebox(struct block_list *bl,char* talkie);
+void clif_talkiebox(struct block_list *bl,const char* talkie);
 void clif_wedding_effect(struct block_list *bl);
 void clif_callpartner(struct map_session_data *sd);
 void clif_divorced(struct map_session_data *sd, const char *name);
@@ -223,7 +223,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3);
 
-void clif_wis_message(int fd,const char *nick,const char *mes, int mes_len, int gmlevel);
+void clif_wis_message(int fd,const char *nick,const char *mes, size_t mes_len, int gmlevel);
 void clif_wis_end(int fd, unsigned short flag);
 
 void clif_solved_charname(struct map_session_data *sd, int char_id);
@@ -298,7 +298,7 @@ void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd
 void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigned char flag);
 void clif_party_option(struct party *p, struct map_session_data *sd, int flag);
 void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, const char *name, int flag);
-void clif_party_message(struct party *p, int account_id, const char *mes, int len);
+void clif_party_message(struct party *p, int account_id, const char *mes, size_t len);
 void clif_party_xy(struct map_session_data *sd);
 void clif_party_hp(struct map_session_data *sd);
 //void clif_party_move(struct party *p, struct map_session_data *sd, unsigned char online);
@@ -320,7 +320,7 @@ void clif_guild_invite(struct map_session_data *sd, struct guild *g);
 void clif_guild_inviteack(struct map_session_data *sd, unsigned char flag);
 void clif_guild_leave(struct map_session_data *sd, const char *name, const char *mes);
 void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes);
-void clif_guild_message(struct guild *g, const char *mes, int len);
+void clif_guild_message(struct guild *g, const char *mes, size_t len);
 void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int flag);
 void clif_guild_reqalliance(struct map_session_data *sd, int account_id, const char *name);
 void clif_guild_allianceack(struct map_session_data *sd, unsigned int flag);

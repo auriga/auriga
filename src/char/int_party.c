@@ -213,12 +213,12 @@ int mapif_party_broken(int party_id,int flag)
 }
 
 // パーティ内発言
-int mapif_party_message(int party_id,int account_id,const char *mes,int len)
+int mapif_party_message(int party_id,int account_id,const char *mes,size_t len)
 {
 	unsigned char buf[512];
 
 	WBUFW(buf,0)=0x3827;
-	WBUFW(buf,2)=len+12;
+	WBUFW(buf,2)=(unsigned short)(len+12);
 	WBUFL(buf,4)=party_id;
 	WBUFL(buf,8)=account_id;
 	memcpy(WBUFP(buf,12),mes,len);
@@ -462,7 +462,7 @@ int mapif_parse_BreakParty(int fd,int party_id)
 }
 
 // パーティメッセージ送信
-int mapif_parse_PartyMessage(int fd,int party_id,int account_id,const char *mes,int len)
+int mapif_parse_PartyMessage(int fd,int party_id,int account_id,const char *mes,size_t len)
 {
 	return mapif_party_message(party_id,account_id,mes,len);
 }

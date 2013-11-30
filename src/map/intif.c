@@ -79,7 +79,7 @@ extern int char_fd;		// inter serverのfdはchar_fdを使う
 
 // ペット
 void intif_create_pet(int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
-	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,char *pet_name)
+	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,const char *pet_name)
 {
 	if (inter_fd < 0)
 		return;
@@ -364,7 +364,7 @@ int intif_announce(const char* mes,size_t len,unsigned int color,int type,int si
 }
 
 // Wisの送信
-void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, int mes_len)
+void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, size_t mes_len)
 {
 	nullpo_retv(sd);
 
@@ -372,7 +372,7 @@ void intif_wis_message(struct map_session_data *sd, const char *nick, const char
 		return;
 
 	WFIFOW(inter_fd,0) = 0x3001;
-	WFIFOW(inter_fd,2) = mes_len+56;
+	WFIFOW(inter_fd,2) = (unsigned short)(mes_len+56);
 	WFIFOL(inter_fd,4) = pc_isGM(sd);
 	memcpy(WFIFOP(inter_fd,8),sd->status.name,24);
 	memcpy(WFIFOP(inter_fd,32),nick,24);
@@ -656,13 +656,13 @@ int intif_break_party(int party_id)
 }
 
 // パーティ会話送信
-int intif_party_message(int party_id,int account_id,const char *mes,int len)
+int intif_party_message(int party_id,int account_id,const char *mes,size_t len)
 {
 	if (inter_fd < 0)
 		return -1;
 
 	WFIFOW(inter_fd,0)=0x3027;
-	WFIFOW(inter_fd,2)=len+12;
+	WFIFOW(inter_fd,2)=(unsigned short)(len+12);
 	WFIFOL(inter_fd,4)=party_id;
 	WFIFOL(inter_fd,8)=account_id;
 	memcpy(WFIFOP(inter_fd,12),mes,len);
@@ -796,13 +796,13 @@ int intif_guild_break(int guild_id)
 }
 
 // ギルド会話送信
-int intif_guild_message(int guild_id,int account_id,const char *mes,int len)
+int intif_guild_message(int guild_id,int account_id,const char *mes,size_t len)
 {
 	if (inter_fd < 0)
 		return -1;
 
 	WFIFOW(inter_fd,0)=0x3037;
-	WFIFOW(inter_fd,2)=len+12;
+	WFIFOW(inter_fd,2)=(unsigned short)(len+12);
 	WFIFOL(inter_fd,4)=guild_id;
 	WFIFOL(inter_fd,8)=account_id;
 	memcpy(WFIFOP(inter_fd,12),mes,len);
@@ -1076,7 +1076,7 @@ int intif_charmovereq2(struct map_session_data *sd,const char *name,const char *
  * 対象IDにメッセージを送信
  *------------------------------------------
  */
-int intif_displaymessage(int account_id, char* mes)
+int intif_displaymessage(int account_id, const char* mes)
 {
 	size_t len;
 

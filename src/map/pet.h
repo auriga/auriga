@@ -67,7 +67,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id);
 int pet_get_egg(int account_id,int pet_id,int flag);
 int pet_return_egg(struct map_session_data *sd);
 int pet_menu(struct map_session_data *sd,int menunum);
-int pet_change_name(struct map_session_data *sd,char *name);
+int pet_change_name(struct map_session_data *sd,const char *name);
 void pet_equipitem(struct map_session_data *sd, int idx);
 int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd);
 int pet_lootitem_free(struct pet_data *pd);

@@ -803,7 +803,7 @@ void party_send_logout(struct map_session_data *sd)
  * パーティメッセージ送信
  *------------------------------------------
  */
-void party_send_message(struct map_session_data *sd, const char *mes, int len)
+void party_send_message(struct map_session_data *sd, const char *mes, size_t len)
 {
 	if(sd->status.party_id==0)
 		return;
@@ -817,7 +817,7 @@ void party_send_message(struct map_session_data *sd, const char *mes, int len)
  * パーティメッセージ受信
  *------------------------------------------
  */
-void party_recv_message(int party_id, int account_id, const char *mes, int len)
+void party_recv_message(int party_id, int account_id, const char *mes, size_t len)
 {
 	struct party *p;
 

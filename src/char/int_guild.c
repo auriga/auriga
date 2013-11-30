@@ -353,12 +353,12 @@ int mapif_guild_broken(int guild_id,int flag)
 }
 
 // ギルド内発言
-int mapif_guild_message(int guild_id,int account_id,const char *mes,int len)
+int mapif_guild_message(int guild_id,int account_id,const char *mes,size_t len)
 {
 	unsigned char buf[512];
 
 	WBUFW(buf,0)=0x3837;
-	WBUFW(buf,2)=len+12;
+	WBUFW(buf,2)=(unsigned short)(len+12);
 	WBUFL(buf,4)=guild_id;
 	WBUFL(buf,8)=account_id;
 	memcpy(WBUFP(buf,12),mes,len);
@@ -720,7 +720,7 @@ int mapif_parse_BreakGuild(int fd,int guild_id)
 }
 
 // ギルドメッセージ送信
-int mapif_parse_GuildMessage(int fd,int guild_id,int account_id,const char *mes,int len)
+int mapif_parse_GuildMessage(int fd,int guild_id,int account_id,const char *mes,size_t len)
 {
 	return mapif_guild_message(guild_id,account_id,mes,len);
 }

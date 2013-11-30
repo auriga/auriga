@@ -1871,7 +1871,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
 
 	for(i = 0; i < nd->u.scr.label_list_num; i++) {
 		struct event_data *ev;
-		char *lname = nd->u.scr.label_list[i].name;
+		const char *lname = nd->u.scr.label_list[i].name;
 		int pos = nd->u.scr.label_list[i].pos;
 
 		// エクスポートされる

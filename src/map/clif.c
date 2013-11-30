@@ -9859,13 +9859,13 @@ void clif_disp_overhead(struct map_session_data *sd, const char* mes)
 		len = sizeof(buf) - 8;
 
 	WBUFW(buf,0) = 0x8d;
-	WBUFW(buf,2) = len + 8;
+	WBUFW(buf,2) = (unsigned short)(len + 8);
 	WBUFL(buf,4) = sd->bl.id;
 	memcpy(WBUFP(buf,8), mes, len);
 	clif_send(WBUFP(buf,0), WBUFW(buf,2), &sd->bl, sd->chatID ? CHAT_WOS : AREA_CHAT_WOC);
 
 	WBUFW(buf,0) = 0x8e;
-	WBUFW(buf,2) = len + 4;
+	WBUFW(buf,2) = (unsigned short)(len + 4);
 	memcpy(WBUFP(buf,4), mes, len);
 	clif_send(buf, WBUFW(buf,2), &sd->bl, SELF);
 
@@ -10070,17 +10070,17 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
  * Wisを送信する
  *------------------------------------------
  */
-void clif_wis_message(int fd, const char *nick, const char *mes, int mes_len, int gmlevel)
+void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len, int gmlevel)
 {
 	WFIFOW(fd,0)=0x97;
 
 #if PACKETVER <  20091104
-	WFIFOW(fd,2)=mes_len + 28;
+	WFIFOW(fd,2)=(unsigned short)(mes_len + 28);
 	memcpy(WFIFOP(fd,4),nick,24);
 	memcpy(WFIFOP(fd,28),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 #else
-	WFIFOW(fd,2)=mes_len + 32;
+	WFIFOW(fd,2)=(unsigned short)(mes_len + 32);
 	memcpy(WFIFOP(fd,4),nick,24);
 	WFIFOL(fd,28)=gmlevel;
 	memcpy(WFIFOP(fd,32),mes,mes_len);
@@ -11681,7 +11681,7 @@ void clif_party_leaved(struct party *p, struct map_session_data *sd, int account
  * パーティメッセージ送信
  *------------------------------------------
  */
-void clif_party_message(struct party *p, int account_id, const char *mes, int len)
+void clif_party_message(struct party *p, int account_id, const char *mes, size_t len)
 {
 	unsigned char buf[1024];
 	struct map_session_data *sd = NULL;
@@ -11700,7 +11700,7 @@ void clif_party_message(struct party *p, int account_id, const char *mes, int le
 		len = sizeof(buf) - 8;
 
 	WBUFW(buf,0)=0x109;
-	WBUFW(buf,2)=len+8;
+	WBUFW(buf,2)=(unsigned short)(len+8);
 	WBUFL(buf,4)=account_id;
 	memcpy(WBUFP(buf,8),mes,len);
 	clif_send(buf,len+8,&sd->bl,PARTY);
@@ -12841,7 +12841,7 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
  * ギルド会話
  *------------------------------------------
  */
-void clif_guild_message(struct guild *g, const char *mes, int len)
+void clif_guild_message(struct guild *g, const char *mes, size_t len)
 {
 	struct map_session_data *sd;
 	unsigned char *buf;
@@ -12853,7 +12853,7 @@ void clif_guild_message(struct guild *g, const char *mes, int len)
 
 	buf = (unsigned char *)aMalloc(len+4);
 	WBUFW(buf, 0)=0x17f;
-	WBUFW(buf, 2)=len+4;
+	WBUFW(buf, 2)=(unsigned short)(len+4);
 	memcpy(WBUFP(buf,4),mes,len);
 	clif_send(buf,WBUFW(buf,2),&sd->bl,GUILD);
 
@@ -13052,7 +13052,7 @@ void clif_emotion(struct block_list *bl,int type)
  * トーキーボックス
  *------------------------------------------
  */
-void clif_talkiebox(struct block_list *bl,char* talkie)
+void clif_talkiebox(struct block_list *bl,const char* talkie)
 {
 	unsigned char buf[86];
 

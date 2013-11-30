@@ -40,7 +40,7 @@ static struct dbt * online_db = NULL;
  * 友達リスト追加要請
  *------------------------------------------
  */
-int friend_add_request( struct map_session_data *sd, char* name )
+int friend_add_request( struct map_session_data *sd, const char* name )
 {
 	struct map_session_data *tsd = map_nick2sd( name );
 
