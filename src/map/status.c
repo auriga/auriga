@@ -4250,7 +4250,9 @@ int status_get_baseatk(struct block_list *bl)
 		if(sd) {
 			batk = sd->base_atk;	// 設定されているbase_atk
 #ifdef PRE_RENEWAL
-			batk += sd->weapon_atk[sd->status.weapon];
+			if(sd->status.weapon < WT_MAX) {
+				batk += sd->weapon_atk[sd->status.weapon];
+			}
 #endif
 		}
 	} else if(bl->type == BL_HOM && ((struct homun_data *)bl)) {

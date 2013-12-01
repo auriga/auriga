@@ -1506,8 +1506,10 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
 			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
 				trans_bonus = 25;
-			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0)
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
+			if(weapon < WT_MAX) {
+				if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0)
+					damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
+			}
 
 			// クリティカル時ダメージ増加
 			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1002)
@@ -1542,8 +1544,10 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			weapon = (lh == 0)? sd->weapontype1: sd->weapontype2;
 			if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
 				trans_bonus = 25;
-			if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0) {
-				damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
+			if(weapon < WT_MAX) {
+				if(sd->atk_rate != 100 || sd->weapon_atk_rate[weapon] != 0) {
+					damage = (damage * (sd->atk_rate + sd->weapon_atk_rate[weapon] + trans_bonus)) / 100;
+				}
 			}
 		}
 #endif
@@ -2357,10 +2361,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 			if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1276 || src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1884))
 				trans_bonus += 25;
-			if(src_sd->atk_rate != 100 || src_sd->weapon_atk_rate[src_sd->weapontype1] != 0 || src_sd->weapon_atk_rate[src_sd->weapontype2] != 0 || trans_bonus) {
-				wd.damage = (wd.damage * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype1] + trans_bonus)) / 100;
-				if(calc_flag.lh)
-					wd.damage2 = (wd.damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype2] + trans_bonus)) / 100;
+			if(src_sd->weapontype1 < WT_MAX && src_sd->weapontype2 < WT_MAX) {
+				if(src_sd->atk_rate != 100 || src_sd->weapon_atk_rate[src_sd->weapontype1] != 0 || src_sd->weapon_atk_rate[src_sd->weapontype2] != 0 || trans_bonus) {
+					wd.damage = (wd.damage * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype1] + trans_bonus)) / 100;
+					if(calc_flag.lh)
+						wd.damage2 = (wd.damage2 * (src_sd->atk_rate + src_sd->weapon_atk_rate[src_sd->weapontype2] + trans_bonus)) / 100;
+				}
 			}
 		}
 		if(skill_num == TF_POISON)

@@ -53,6 +53,8 @@
 #define MAX_SKILL_ADDCOOLDOWN	10 	//スキルのクールタイムを減らせる数
 #define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
 #define MAX_SKILL_ADDSPCOST	10 	//スキルの消費SPを増やせる数
+#define MAX_BONUS_CLASS	10	// アイテムボーナスのクラスの容量
+#define MAX_BONUS_ADDDROP	10	// アイテムボーナスのドロップの容量
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
 #define MAX_DEAL_ITEMS 10
@@ -113,6 +115,9 @@ enum {
 	RCT_NONBOSS,
 	RCT_MAX,
 };
+
+// 全種族用
+#define RCT_ALL	10
 
 // 属性
 enum {
@@ -560,14 +565,14 @@ struct map_session_data {
 	int def_ratio_atk_ele,def_ratio_atk_race,def_ratio_atk_enemy;
 	int def_ratio_atk_ele_,def_ratio_atk_race_,def_ratio_atk_enemy_;
 	short add_damage_class_count,add_damage_class_count_,add_magic_damage_class_count;
-	short add_damage_classid[10],add_damage_classid_[10],add_magic_damage_classid[10];
-	int add_damage_classrate[10],add_damage_classrate_[10],add_magic_damage_classrate[10];
+	short add_damage_classid[MAX_BONUS_CLASS],add_damage_classid_[MAX_BONUS_CLASS],add_magic_damage_classid[MAX_BONUS_CLASS];
+	int add_damage_classrate[MAX_BONUS_CLASS],add_damage_classrate_[MAX_BONUS_CLASS],add_magic_damage_classrate[MAX_BONUS_CLASS];
 	short add_def_class_count,add_mdef_class_count;
-	short add_def_classid[10],add_mdef_classid[10];
-	int add_def_classrate[10],add_mdef_classrate[10];
+	short add_def_classid[MAX_BONUS_CLASS],add_mdef_classid[MAX_BONUS_CLASS];
+	int add_def_classrate[MAX_BONUS_CLASS],add_mdef_classrate[MAX_BONUS_CLASS];
 	short monster_drop_item_count;
-	short monster_drop_itemid[10];
-	int monster_drop_race[10],monster_drop_itemrate[10];
+	short monster_drop_itemid[MAX_BONUS_ADDDROP];
+	int monster_drop_race[MAX_BONUS_ADDDROP],monster_drop_itemrate[MAX_BONUS_ADDDROP];
 	int double_add_rate,speed_add_rate,aspd_add_rate,perfect_hit_add, get_zeny_add_num,get_zeny_add_num2;
 	short splash_range,splash_add_range;
 #ifndef PRE_RENEWAL
@@ -591,12 +596,12 @@ struct map_session_data {
 	short sp_recov_stop;
 	int addreveff[MAX_EFF_TYPE];
 	int addreveff_flag;
-	int critical_race[10];
 	short sp_gain_value, hp_gain_value;
-	int critical_race_rate[10];
-	int exp_rate[10],job_rate[10];
-	short hp_drain_rate_race[10],sp_drain_rate_race[10];
-	short hp_drain_value_race[10],sp_drain_value_race[10];
+	int critical_race[RCT_ALL];
+	int critical_race_rate[RCT_ALL];
+	int exp_rate[RCT_ALL],job_rate[RCT_ALL];
+	short hp_drain_rate_race[RCT_ALL],sp_drain_rate_race[RCT_ALL];
+	short hp_drain_value_race[RCT_ALL],sp_drain_value_race[RCT_ALL];
 	short addgroup[MAX_MOBGROUP];
 	short addgroup_[MAX_MOBGROUP];
 	short arrow_addgroup[MAX_MOBGROUP];

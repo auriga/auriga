@@ -2890,6 +2890,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->subele[type2] += val;
 		break;
 	case SP_SUBRACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->subrace[type2] += val;
 		break;
@@ -2936,6 +2938,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->magic_addele[type2] += val;
 		break;
 	case SP_MAGIC_ADDRACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->magic_addrace[type2] += val;
 		break;
@@ -2952,6 +2956,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->magic_addeff[type2] += val;
 		break;
 	case SP_MAGIC_SUBRACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->magic_subrace[type2] += val;
 		break;
@@ -2963,7 +2969,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 					break;
 				}
 			}
-			if(i >= sd->add_damage_class_count && sd->add_damage_class_count < 10) {
+			if(i >= sd->add_damage_class_count && sd->add_damage_class_count < MAX_BONUS_CLASS) {
 				sd->add_damage_classid[sd->add_damage_class_count] = type2;
 				sd->add_damage_classrate[sd->add_damage_class_count] += val;
 				sd->add_damage_class_count++;
@@ -2976,7 +2982,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 					break;
 				}
 			}
-			if(i >= sd->add_damage_class_count_ && sd->add_damage_class_count_ < 10) {
+			if(i >= sd->add_damage_class_count_ && sd->add_damage_class_count_ < MAX_BONUS_CLASS) {
 				sd->add_damage_classid_[sd->add_damage_class_count_] = type2;
 				sd->add_damage_classrate_[sd->add_damage_class_count_] += val;
 				sd->add_damage_class_count_++;
@@ -2991,7 +2997,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 					break;
 				}
 			}
-			if(i >= sd->add_magic_damage_class_count && sd->add_magic_damage_class_count < 10) {
+			if(i >= sd->add_magic_damage_class_count && sd->add_magic_damage_class_count < MAX_BONUS_CLASS) {
 				sd->add_magic_damage_classid[sd->add_magic_damage_class_count] = type2;
 				sd->add_magic_damage_classrate[sd->add_magic_damage_class_count] += val;
 				sd->add_magic_damage_class_count++;
@@ -3006,7 +3012,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 					break;
 				}
 			}
-			if(i >= sd->add_def_class_count && sd->add_def_class_count < 10) {
+			if(i >= sd->add_def_class_count && sd->add_def_class_count < MAX_BONUS_CLASS) {
 				sd->add_def_classid[sd->add_def_class_count] = type2;
 				sd->add_def_classrate[sd->add_def_class_count] += val;
 				sd->add_def_class_count++;
@@ -3021,7 +3027,7 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 					break;
 				}
 			}
-			if(i >= sd->add_mdef_class_count && sd->add_mdef_class_count < 10) {
+			if(i >= sd->add_mdef_class_count && sd->add_mdef_class_count < MAX_BONUS_CLASS) {
 				sd->add_mdef_classid[sd->add_mdef_class_count] = type2;
 				sd->add_mdef_classrate[sd->add_mdef_class_count] += val;
 				sd->add_mdef_class_count++;
@@ -3075,6 +3081,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->weapon_coma_ele[type2] += val;
 		break;
 	case SP_WEAPON_COMA_RACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_race[type2] += val;
 		break;
@@ -3085,32 +3093,38 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->weapon_coma_ele2[type2] += val;
 		break;
 	case SP_WEAPON_COMA_RACE2:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_race2[type2] += val;
 		break;
 	case SP_WEAPON_ATK:
+		if(type2 < 0 || type2 >= WT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_atk[type2] += val;
 		break;
 	case SP_WEAPON_ATK_RATE:
+		if(type2 < 0 || type2 >= WT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->weapon_atk_rate[type2] += val;
 		break;
 	case SP_CRITICALRACE:
-		if(type2 == 10) {
-			for(i=0; i<10; i++) {
+		if(type2 == RCT_ALL) {
+			for(i=0; i<RCT_ALL; i++) {
 				sd->critical_race[i] += val*10;
 			}
-		} else if(type2 >= 0 && type2 < 10) {
+		} else if(type2 >= 0 && type2 < RCT_ALL) {
 			sd->critical_race[type2] += val*10;
 		}
 		break;
 	case SP_CRITICALRACERATE:
-		if(type2 == 10) {
-			for(i=0; i<10; i++) {
+		if(type2 == RCT_ALL) {
+			for(i=0; i<RCT_ALL; i++) {
 				sd->critical_race_rate[i] += val*10;
 			}
-		} else if(type2 >= 0 && type2 < 10) {
+		} else if(type2 >= 0 && type2 < RCT_ALL) {
 			sd->critical_race_rate[type2] += val*10;
 		}
 		break;
@@ -3129,20 +3143,20 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->magic_subsize[type2] += val;
 		break;
 	case SP_EXP_RATE:
-		if(type2 == 10) {
-			for(i=0; i<10; i++) {
+		if(type2 == RCT_ALL) {
+			for(i=0; i<RCT_ALL; i++) {
 				sd->exp_rate[i] += val;
 			}
-		} else if(type2 >= 0 && type2 < 10) {
+		} else if(type2 >= 0 && type2 < RCT_ALL) {
 			sd->exp_rate[type2] += val;
 		}
 		break;
 	case SP_JOB_RATE:
-		if(type2 == 10) {
-			for(i=0; i<10; i++) {
+		if(type2 == RCT_ALL) {
+			for(i=0; i<RCT_ALL; i++) {
 				sd->job_rate[i] += val;
 			}
-		} else if(type2 >= 0 && type2 < 10) {
+		} else if(type2 >= 0 && type2 < RCT_ALL) {
 				sd->job_rate[type2] += val;
 		}
 		break;
@@ -3376,6 +3390,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_def_ele_[type2] += val;
 		break;
 	case SP_IGNORE_DEF_RACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->ignore_def_race[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -3396,6 +3412,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_mdef_ele[type2] += val;
 		break;
 	case SP_IGNORE_MDEF_RACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_race[type2] += val;
 		break;
@@ -3457,7 +3475,7 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 					break;
 				}
 			}
-			if(i >= sd->monster_drop_item_count && sd->monster_drop_item_count < 10) {
+			if(i >= sd->monster_drop_item_count && sd->monster_drop_item_count < MAX_BONUS_ADDDROP) {
 				sd->monster_drop_itemid[sd->monster_drop_item_count] = type2;
 				sd->monster_drop_race[sd->monster_drop_item_count] |= 1<<type3;
 				sd->monster_drop_itemrate[sd->monster_drop_item_count] = val;
@@ -3467,12 +3485,12 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 		break;
 	case SP_DEF_HP_DRAIN_VALUE:
 		if(sd->state.lr_flag != 2) {;
-			if(type2 == 10) {
-				for(i=0; i<10; i++) {
+			if(type2 == RCT_ALL) {
+				for(i=0; i<RCT_ALL; i++) {
 					sd->hp_drain_rate_race[i]  += type3;
 					sd->hp_drain_value_race[i] += val;
 				}
-			} else if(type2 >= 0 && type2 < 10) {
+			} else if(type2 >= 0 && type2 < RCT_ALL) {
 				sd->hp_drain_rate_race[type2]  += type3;
 				sd->hp_drain_value_race[type2] += val;
 			}
@@ -3480,12 +3498,12 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 		break;
 	case SP_DEF_SP_DRAIN_VALUE:
 		if(sd->state.lr_flag != 2) {
-			if(type2 == 10) {
-				for(i=0; i<10; i++) {
+			if(type2 == RCT_ALL) {
+				for(i=0; i<RCT_ALL; i++) {
 					sd->sp_drain_rate_race[i]  += type3;
 					sd->sp_drain_value_race[i] += val;
 				}
-			} else if(type2 >= 0 && type2 < 10) {
+			} else if(type2 >= 0 && type2 < RCT_ALL) {
 				sd->sp_drain_rate_race[type2]  += type3;
 				sd->sp_drain_value_race[type2] += val;
 

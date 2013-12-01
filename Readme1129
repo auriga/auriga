@@ -1,4 +1,20 @@
 ----------------------------------------
+//1133 [2013/12/02] by Rayce
+
+・アイテムボーナス用の配列サイズのハードコーディングを避けるため定数を定義（map.h, pc.c）
+	-> MAX_BONUS_CLASS: アイテムボーナスのクラスの容量
+	-> MAX_BONUS_ADDDROP: アイテムボーナスのドロップの容量
+	-> RCT_ALL: 全種族用
+
+・bWeaponAtk と bWeaponAtkRate の配列は WT_MAX が最大なので、引数に指定できる数値を23までに制限する
+  （doc/item_bonus.txt, battle.c, pc.c, status.c）
+
+・item_db.txt について、Auriga-1131で const.txt に新しく定義した定数を使うように変更
+  （db/item_db.txt, db/pre/item_db_pre.txt）
+
+・item_db.txt の「サムライマスク」と「幸福の帽子」の bonus2命令の引数の使い方が間違っていたので修正（db/item_db.txt）
+
+----------------------------------------
 //1132 [2013/12/02] by Rayce
 
 ・Auriga-1130で更に size_t の型変換警告が出るのを修正（login.c, char.*, clif.c）
