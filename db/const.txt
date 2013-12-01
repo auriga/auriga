@@ -301,6 +301,7 @@ UPPER_NORMAL	0
 UPPER_HIGH	1
 UPPER_BABY	2
 
+//マップフラグ
 mf_nosave		0
 mf_nomemo		1
 mf_noteleport		2
@@ -345,6 +346,7 @@ mf_nocommand		40
 mf_nojump		41
 mf_town			42
 
+//PCステータス
 StatusPoint	9	1
 BaseLevel	11	1
 SkillPoint	12	1
@@ -368,6 +370,7 @@ PartnerId	57	1
 Cart		58	1
 DieCounter	59	1
 
+//PCグローバル変数
 PC_CLONESKILL_ID	500	1
 PC_CLONESKILL_LV	501	1
 PC_BLACKSMITH_POINT	502	1
@@ -387,6 +390,7 @@ PC_REPRODUCE_ID		515	1
 PC_REPRODUCE_LV		516	1
 #PC_DEPOSIT		517	1
 
+//bonus系命令用
 bMaxHP		6
 bMaxSP		8
 bStr		13
@@ -600,6 +604,7 @@ bItemNoUse	2008
 bFixDamage	2009
 bNoKnockback	2010
 
+//bonus系命令の状態異常
 Eff_Stone	0
 Eff_Freeze	1
 Eff_Stun	2
@@ -617,6 +622,41 @@ Eff_Frostmisty	13
 Eff_Cold	14
 Eff_Siren	15
 
+//種族
+Rct_Formless	0
+Rct_Undead	1
+Rct_Brute	2
+Rct_Plant	3
+Rct_Insect	4
+Rct_Fish	5
+Rct_Demon	6
+Rct_Human	7
+Rct_Angel	8
+Rct_Dragon	9
+Rct_Boss	10
+Rct_NonBoss	11
+
+//属性
+Ele_Neutral	0
+Ele_Water	1
+Ele_Earth	2
+Ele_Fire	3
+Ele_Wind	4
+Ele_Poison	5
+Ele_Holy	6
+Ele_Dark	7
+Ele_Ghost	8
+Ele_Undead	9
+Ele_Random	10
+
+//敵タイプ
+Emy_Etc	0
+Emy_Pc	1
+Emy_Mob	2
+Emy_Hom	3
+Emy_Merc	4
+
+//sc_start, sc_end系用の状態異常
 SC_Stone	128
 SC_Freeze	129
 SC_Stun		130
@@ -757,6 +797,7 @@ SC_RaceClear	1002
 SC_Soul		1003
 SC_SoulClear	1004
 
+//bonus系命令の発動条件
 EAS_SHORT	0x00001
 EAS_LONG	0x00002
 EAS_WEAPON	0x00003
@@ -778,6 +819,7 @@ EAS_REVENGE	0x20000
 EAS_NORMAL	0x40000
 EAS_SKILL	0x80000
 
+//ランダム系アイテムのID（item_random.txt）
 RAND_BLUE_BOX	-1
 RAND_VIOLET_BOX	-2
 RAND_CARD_ALBUM	-3
@@ -794,6 +836,7 @@ RAND_FOOD	-13
 RAND_COOKIE	-14
 RAND_HIGH_WEAPON	-15
 
+//ランダム召喚系のID（mob_random.txt）
 RAND_BRANCH	-1
 RAND_BLOODY_BRANCH	-2
 RAND_PORING_BOX	-3

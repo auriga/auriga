@@ -2854,6 +2854,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->arrow_addele[type2] += val;
 		break;
 	case SP_ADDRACE:
+		if(type2 < 0 || type2 >= RCT_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->addrace[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -2862,6 +2864,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->arrow_addrace[type2] += val;
 		break;
 	case SP_ADDENEMY:
+		if(type2 < 0 || type2 >= EMY_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->addenemy[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -2870,6 +2874,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->arrow_addenemy[type2] += val;
 		break;
 	case SP_ADDSIZE:
+		if(type2 < 0 || type2 >= MAX_SIZE_FIX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->addsize[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -2888,12 +2894,16 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->subrace[type2] += val;
 		break;
 	case SP_SUBENEMY:
+		if(type2 < 0 || type2 >= EMY_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->subenemy[type2] += val;
 		break;
 	case SP_ADDEFF:
 	case SP_ADDEFFSHORT:
 	case SP_ADDEFFLONG:
+		if(type2 < 0 || type2 >= MAX_EFF_TYPE)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->addeff[type2] += val;
 		else
@@ -2906,12 +2916,16 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->addeff_range_flag[type2] = 2;
 		break;
 	case SP_ADDEFF2:
+		if(type2 < 0 || type2 >= MAX_EFF_TYPE)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->addeff2[type2] += val;
 		else
 			sd->arrow_addeff2[type2] += val;
 		break;
 	case SP_RESEFF:
+		if(type2 < 0 || type2 >= MAX_EFF_TYPE)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->reseff[type2] += val;
 		break;
@@ -2926,10 +2940,14 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->magic_addrace[type2] += val;
 		break;
 	case SP_MAGIC_ADDENEMY:
+		if(type2 < 0 || type2 >= EMY_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->magic_addenemy[type2] += val;
 		break;
 	case SP_ADDEFFMAGIC:
+		if(type2 < 0 || type2 >= MAX_EFF_TYPE)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->magic_addeff[type2] += val;
 		break;
@@ -3097,17 +3115,17 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_ADDREVEFF:
-		if(type2 >= 0 || type2 < 16) {
+		if(type2 >= 0 || type2 < MAX_EFF_TYPE) {
 			sd->addreveff[type2] += val;
 			sd->addreveff_flag = 1;
 		}
 		break;
 	case SP_SUB_SIZE:
-		if(type2 >= 0 && type2 < 3)
+		if(type2 >= 0 && type2 < MAX_SIZE_FIX)
 			sd->subsize[type2] += val;
 		break;
 	case SP_MAGIC_SUB_SIZE:
-		if(type2 >= 0 && type2 < 3)
+		if(type2 >= 0 && type2 < MAX_SIZE_FIX)
 			sd->magic_subsize[type2] += val;
 		break;
 	case SP_EXP_RATE:
@@ -3206,14 +3224,6 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->autoraise.sp_per = 0;
 		sd->autoraise.rate   = type2;
 		sd->autoraise.flag   = 0;
-		break;
-	case SP_BREAK_MYEQUIP_WHEN_ATTACK:
-		sd->break_myequip_rate_when_attack[type2] += val;
-		sd->loss_equip_flag |= 0x0100;
-		break;
-	case SP_BREAK_MYEQUIP_WHEN_HIT:
-		sd->break_myequip_rate_when_hit[type2] += val;
-		sd->loss_equip_flag |= 0x1000;
 		break;
 	case SP_ETERNAL_STATUS_CHANGE:
 		if(type2 >= 0 && type2 < MAX_STATUSCHANGE)
@@ -3358,6 +3368,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_addspcost.count++;
 		break;
 	case SP_IGNORE_DEF_ELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->ignore_def_ele[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -3370,12 +3382,16 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_def_race_[type2] += val;
 		break;
 	case SP_IGNORE_DEF_ENEMY:
+		if(type2 < 0 || type2 >= EMY_MAX)
+			break;
 		if(!sd->state.lr_flag)
 			sd->ignore_def_enemy[type2] += val;
 		else if(sd->state.lr_flag == 1)
 			sd->ignore_def_enemy_[type2] += val;
 		break;
 	case SP_IGNORE_MDEF_ELE:
+		if(type2 < 0 || type2 >= ELE_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_ele[type2] += val;
 		break;
@@ -3384,6 +3400,8 @@ int pc_bonus2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_mdef_race[type2] += val;
 		break;
 	case SP_IGNORE_MDEF_ENEMY:
+		if(type2 < 0 || type2 >= EMY_MAX)
+			break;
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_enemy[type2] += val;
 		break;
@@ -3529,6 +3547,8 @@ int pc_bonus3(struct map_session_data *sd,int type,int type2,int type3,int val)
 		sd->autoraise.flag   = 1;
 		break;
 	case SP_ADDEFFSKILL:
+		if(type3 < 0 || type3 >= MAX_EFF_TYPE)
+			break;
 		if(sd->state.lr_flag != 2) {
 			// update
 			for(i=0; i<sd->skill_addeff.count; i++)
@@ -7005,7 +7025,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 
 	// 敵の攻撃を受けると一定確率で装備が壊れる
 	if(sd->loss_equip_flag&0x1000 && damage > 0) {	// 魔法でも壊れる
-		for(i=0; i<11; i++) {
+		for(i=0; i<EQUIP_INDEX_MAX; i++) {
 			if(atn_rand()%10000 < sd->break_myequip_rate_when_hit[i])
 				pc_break_equip2(sd,i);
 		}
@@ -7013,7 +7033,7 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 
 	// 敵の攻撃を受けると一定確率で装備が消滅
 	if(sd->loss_equip_flag&0x0020 && damage > 0) {
-		for(i=0; i<11; i++) {
+		for(i=0; i<EQUIP_INDEX_MAX; i++) {
 			if(atn_rand()%10000 < sd->loss_equip_rate_when_hit[i])
 				pc_lossequipitem(sd,i,0);
 		}
@@ -7098,7 +7118,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 
 	// アイテム消滅
 	if(sd->loss_equip_flag&0x0001) {
-		for(i=0; i<11; i++) {
+		for(i=0; i<EQUIP_INDEX_MAX; i++) {
 			if(atn_rand()%10000 < sd->loss_equip_rate_when_die[i])
 				pc_lossequipitem(sd,i,0);
 		}

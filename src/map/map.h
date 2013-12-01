@@ -43,6 +43,7 @@
 #define MAX_WIS_REFUSAL 14
 #define MAX_MOBGROUP	13
 #define MAX_ITEMGROUP	12
+#define MAX_EFF_TYPE	16	// アイテムボーナスの状態異常の数
 #define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
 #define MAX_SKILL_HEAL_UP	7	// スキルの回復量を強化できる数
@@ -50,7 +51,7 @@
 #define MAX_SKILL_ADDCASTRATE	10 	//スキルの詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTTIME	10 	//スキルの詠唱時間を減らせる数
 #define MAX_SKILL_ADDCOOLDOWN	10 	//スキルのクールタイムを減らせる数
-#define MAX_SKILL_ADDEFF	16	// スキルで追加状態異常化できる数
+#define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
 #define MAX_SKILL_ADDSPCOST	10 	//スキルの消費SPを増やせる数
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
@@ -96,6 +97,7 @@ enum {
 	SCRIPT,
 };
 
+// 種族
 enum {
 	RCT_FORMLESS = 0,
 	RCT_UNDEAD,
@@ -112,6 +114,7 @@ enum {
 	RCT_MAX,
 };
 
+// 属性
 enum {
 	ELE_NONE = -1,
 	ELE_NEUTRAL = 0,
@@ -125,6 +128,16 @@ enum {
 	ELE_GHOST,
 	ELE_UNDEAD,
 	ELE_MAX,
+};
+
+// 敵タイプ
+enum {
+	EMY_ETC = 0,
+	EMY_PC,
+	EMY_MOB,
+	EMY_HOM,
+	EMY_MERC,
+	EMY_MAX
 };
 
 // status.weaponおよびweapontype1, weapontype2用の武器タイプ定義
@@ -523,24 +536,24 @@ struct map_session_data {
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int atk_ele,def_ele,star,overrefine;
 	int castrate,fixcastrate,fixcastrate_,hprate,sprate,dsprate;
-	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[4],addsize[MAX_SIZE_FIX];
+	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[EMY_MAX],addsize[MAX_SIZE_FIX];
 	int skill_eleweapon_dmgup[ELE_MAX],skill_elemagic_dmgup[ELE_MAX];
-	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[4],subsize[MAX_SIZE_FIX];
+	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[EMY_MAX],subsize[MAX_SIZE_FIX];
 	int def_eleenemy[ELE_MAX];
-	int addeff[16],addeff2[16],reseff[16],addeff_range_flag[16];
-	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[4],addsize_[MAX_SIZE_FIX];	// 二刀流のために追加
+	int addeff[MAX_EFF_TYPE],addeff2[MAX_EFF_TYPE],reseff[MAX_EFF_TYPE],addeff_range_flag[MAX_EFF_TYPE];
+	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[EMY_MAX],addsize_[MAX_SIZE_FIX];	// 二刀流のために追加
 	int atk_ele_,star_,overrefine_;				// 二刀流のために追加
 	int base_atk,atk_rate;
 	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// 指貫
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
-	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[4],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[16],arrow_addeff2[16];
+	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[EMY_MAX],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[MAX_EFF_TYPE],arrow_addeff2[MAX_EFF_TYPE];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
 	int aspd_add,aspd_rate,speed_rate,hprecov_rate,sprecov_rate,critical_def,double_rate;
 	int near_attack_def_rate,long_attack_def_rate,magic_def_rate,misc_def_rate,matk_rate,matk2_rate;
-	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[4];
-	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[4];
-	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[4];
-	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[4],magic_addeff[16];
+	int ignore_def_ele[ELE_MAX],ignore_def_race[RCT_MAX],ignore_def_enemy[EMY_MAX];
+	int ignore_def_ele_[ELE_MAX],ignore_def_race_[RCT_MAX],ignore_def_enemy_[EMY_MAX];
+	int ignore_mdef_ele[ELE_MAX],ignore_mdef_race[RCT_MAX],ignore_mdef_enemy[EMY_MAX];
+	int magic_addele[ELE_MAX],magic_addrace[RCT_MAX],magic_addenemy[EMY_MAX],magic_addeff[MAX_EFF_TYPE];
 	int magic_subrace[RCT_MAX],magic_subsize[MAX_SIZE_FIX];
 	int perfect_hit,get_zeny_num,get_zeny_num2;
 	int critical_rate,hit_rate,flee_rate,flee2_rate,def_rate,def2_rate,mdef_rate,mdef2_rate;
@@ -576,7 +589,7 @@ struct map_session_data {
 	int critical_damage;
 	short hp_recov_stop;
 	short sp_recov_stop;
-	int addreveff[16];
+	int addreveff[MAX_EFF_TYPE];
 	int addreveff_flag;
 	int critical_race[10];
 	short sp_gain_value, hp_gain_value;
@@ -595,18 +608,18 @@ struct map_session_data {
 	short hp_penalty_value;
 	short sp_penalty_value;
 	// 装備解除時のHP/SPペナルティ
-	short hp_penalty_unrig_value[11];
-	short sp_penalty_unrig_value[11];
-	short hp_rate_penalty_unrig[11];
-	short sp_rate_penalty_unrig[11];
+	short hp_penalty_unrig_value[EQUIP_INDEX_MAX];
+	short sp_penalty_unrig_value[EQUIP_INDEX_MAX];
+	short hp_rate_penalty_unrig[EQUIP_INDEX_MAX];
+	short sp_rate_penalty_unrig[EQUIP_INDEX_MAX];
 	short mob_class_change_rate;	// mobを変化させる確率
 	short curse_by_muramasa;
 
-	short loss_equip_rate_when_die[11];
-	short loss_equip_rate_when_attack[11];
-	short loss_equip_rate_when_hit[11];
-	short break_myequip_rate_when_attack[11];
-	short break_myequip_rate_when_hit[11];
+	short loss_equip_rate_when_die[EQUIP_INDEX_MAX];
+	short loss_equip_rate_when_attack[EQUIP_INDEX_MAX];
+	short loss_equip_rate_when_hit[EQUIP_INDEX_MAX];
+	short break_myequip_rate_when_attack[EQUIP_INDEX_MAX];
+	short break_myequip_rate_when_hit[EQUIP_INDEX_MAX];
 	short loss_equip_flag;
 
 	struct {
@@ -630,7 +643,7 @@ struct map_session_data {
 
 	struct {
 		short id[MAX_SKILL_ADDEFF];
-		short addeff[MAX_SKILL_ADDEFF][16];
+		short addeff[MAX_SKILL_ADDEFF][MAX_EFF_TYPE];
 		short count;
 	} skill_addeff;
 

@@ -3988,7 +3988,7 @@ static int mob_readdb(void)
 		return 0;	// 無くても成功 group_id = 0 未分類のため
 
 	while(fgets(line,1020,fp)){
-		int class_,i;
+		int class_, group_id, i;
 		char *str[3],*p,*np;
 
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -4010,7 +4010,12 @@ static int mob_readdb(void)
 		if(!mobdb_checkid(class_))
 			continue;
 
-		mob_db[class_].group_id = atoi(str[2]);
+		group_id = atoi(str[2]);
+		if(group_id >= MAX_MOBGROUP) {
+			printf("mob_group: invalid group id(%d) class %d\n", group_id, class_);
+			continue;
+		}
+		mob_db[class_].group_id = group_id;
 	}
 	fclose(fp);
 

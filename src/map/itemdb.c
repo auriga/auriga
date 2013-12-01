@@ -681,7 +681,9 @@ static int itemdb_read_itemdb(void)
 		printf("can't read db/item_group_db.txt\n");
 		return 0;
 	}
-	while(fgets(line,sizeof(line),fp)){
+	while(fgets(line,sizeof(line),fp)) {
+		int group_id;
+
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
@@ -698,8 +700,14 @@ static int itemdb_read_itemdb(void)
 		nameid = atoi(str[0]);
 		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
 			continue;
+
 		//ID,Name,Jname,Group
-		id->group = atoi(str[3]);
+		group_id = atoi(str[3]);
+		if(group_id >= MAX_ITEMGROUP) {
+			printf("item_group: invalid group id(%d) ID %d\n", group_id, nameid);
+			continue;
+		}
+		id->group = group_id;
 	}
 	fclose(fp);
 	printf("read db/item_group_db.txt done\n");

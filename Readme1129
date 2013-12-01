@@ -1,4 +1,35 @@
 ----------------------------------------
+//1131 [2013/12/02] by Rayce
+
+・db/mob_group_db.txtのグループIDが MAX_MOBGROUP を越えるときは警告を表示し、スキップするように修正（mob.c）
+	-> status_get_group() は補正せずに db/mob_group_db.txt のグループIDを返す。
+       そのため敵グループ系のアイテムボーナス利用時に配列がバッファオーバーフローするため
+
+・db/item_group_db.txtのグループIDが MAX_ITEMGROUP を越えるときは警告を表示し、スキップするように修正（itemdb.c）
+	-> itemdb_group() は補正せずに db/item_group_db.txt のグループIDを返す。
+       そのため bItemHealRate のアイテムボーナス利用時に配列がバッファオーバーフローするため
+
+・装備関連のアイテムボーナス用の配列サイズが小さいので 11⇒EQUIP_INDEX_MAX まで拡張する（map.h）
+	-> current_equip_item_index を使用するケースが該当する
+
+・AddEff系アイテムボーナス用の配列サイズを MAX_SKILL_ADDEFF 定数で固定して整合性を取る（map.h, pc.c）
+
+・MAX_SKILL_ADDEFF が状態異常の配列数なのか bAddEffSkill で登録できる容量なのか曖昧なので再定義（map.h, battle.c, pc.c, skill.c）
+	-> MAX_EFF_TYPE: アイテムボーナスの状態異常の数
+	-> MAX_SKILL_ADDEFF: bAddEffSkillで登録できる容量
+
+・bBreakMyEquipWhenAttack と bBreakMyEquipWhenHit が bonus2 でも使えるように重複定義されていたので削除（pc.c）
+
+・bLossEquipWhenHit の説明が無かったので追記（doc/item_bonus.txt）
+
+・bonus系のパラメータチェックを強化（pc.c）
+
+・db/const.txt に以下の定数を追加（db/const.txt）
+	-> Rct系: 種族
+	-> Ele系: 属性
+	-> Emy系: 敵タイプ
+
+----------------------------------------
 //1130 [2013/12/01] by Rayce
 
 ・getequipname関数で引数に12以上で且つその部位の装備がない場合にバッファオーバーフローが

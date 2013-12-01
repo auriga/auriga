@@ -1769,7 +1769,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		for(i = 0; i < sd->skill_addeff.count; i++) {
 			if(sd->skill_addeff.id[i] == skillid) {
 				int j, rate;
-				for(j = 0; j < MAX_SKILL_ADDEFF; j++) {
+				for(j = 0; j < MAX_EFF_TYPE; j++) {
 					rate = sd->skill_addeff.addeff[i][j];
 					status_change_addeff_start(src,bl,j,rate,1,tick);
 				}
@@ -1787,7 +1787,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(sd) {
 			int i, rate;
 
-			for(i = 0; i < MAX_SKILL_ADDEFF; i++) {
+			for(i = 0; i < MAX_EFF_TYPE; i++) {
 				if(!dstmd || dstmd->class_ != 1288) {
 					if(sd->addeff_range_flag[i] > 2) {
 						sd->addeff_range_flag[i] -= 2;	// レンジフラグがあれば元に戻す
@@ -1820,7 +1820,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(sd && sd->loss_equip_flag&0x0010)
 		{
 			int i;
-			for(i = 0; i < 11; i++)
+			for(i = 0; i < EQUIP_INDEX_MAX; i++)
 			{
 				if(atn_rand()%10000 < sd->loss_equip_rate_when_attack[i])
 				{
@@ -1833,7 +1833,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(sd && sd->loss_equip_flag&0x0100)
 		{
 			int i;
-			for(i = 0; i < 11; i++)
+			for(i = 0; i < EQUIP_INDEX_MAX; i++)
 			{
 				if(atn_rand()%10000 < sd->break_myequip_rate_when_attack[i])
 				{
@@ -1857,7 +1857,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	} else if(attack_type&BF_MAGIC) {
 		if(sd) {
 			int i, rate;
-			for(i = 0; i < MAX_SKILL_ADDEFF; i++) {
+			for(i = 0; i < MAX_EFF_TYPE; i++) {
 				rate = sd->magic_addeff[i];
 				status_change_addeff_start(src,bl,i,rate,4,tick);
 			}

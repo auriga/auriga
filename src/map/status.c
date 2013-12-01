@@ -6080,18 +6080,18 @@ int status_get_mexp(struct block_list *bl)
  */
 int status_get_enemy_type(struct block_list *bl)
 {
-	nullpo_retr(0, bl);
+	nullpo_retr(EMY_ETC, bl);
 
 	if( bl->type == BL_PC )
-		return 1;
+		return EMY_PC;
 	else if( bl->type == BL_MOB && !(status_get_mode(bl)&MD_BOSS) )
-		return 2;
+		return EMY_MOB;
 	else if( bl->type == BL_HOM )
-		return 3;
+		return EMY_HOM;
 	else if( bl->type == BL_MERC )
-		return 4;
+		return EMY_MERC;
 
-	return 0;
+	return EMY_ETC;
 }
 
 /*==========================================
