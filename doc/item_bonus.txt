@@ -621,7 +621,7 @@
 	bonus bNoSizeFix,n;                 モンスターのサイズによる攻撃補正を受けない (nは無意味)
 	bonus bMobClassChange,n;            攻撃時n%でMOBを別のMOBに変える             (nは万分率)
 	bonus bInfiniteEndure,n;            無限インデュア                             (nは無意味)
-	bonus bTigereye,n;                  隠れているPC,MOBを見つけることが出来る
+	bonus bTigereye,n;                  隠れているPC,MOBを見つけることが出来る     (nは無意味)
 	bonus bItemNoUse,n;                 アイテムが使えない                         (nは無意味)
 	bonus bNoKnockback,n;               ノックバックしなくなる                     (nは無意味)
 -------------------------------------------------------------------------------------------------------------------------------------------
@@ -632,12 +632,12 @@
 	bonus bAutoStatusCalcPc,n;          ステータス異常nが終了する度に強制的にstatu_calc_pcを呼び出す
                                             例:
                                             装備している間アスムプティオ状態
-                                            ,{},{ bonus bAutoStatusCalcPc,110; sc_start 110,1000,0; }
+                                            ,{},{ bonus bAutoStatusCalcPc,SC_ASSUMPTIO; sc_start SC_ASSUMPTIO,1000,0; }
 -------------------------------------------------------------------------------------------------------------------------------------------
 	bonus2 bEternalStatusChange,n,x;    ステータス異常nが終了する度にステータス異常をxミリ秒追加する
                                             例:
                                             装備している間アスムプティオ状態
-                                            ,{},{ bonus2 bEternalStatusChange,110,1000; sc_start 110,1000,0; }
+                                            ,{},{ bonus2 bEternalStatusChange,SC_ASSUMPTIO,1000; sc_start SC_ASSUMPTIO,1000,0; }
 -------------------------------------------------------------------------------------------------------------------------------------------
 ※bAutoStatusCalcPcとbEternalStatusChangeの違い※
 	　bEternalStatusChangeはbAutoStatusCalcPcより高速に永続化を実現します。
