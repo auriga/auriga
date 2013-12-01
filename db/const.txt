@@ -414,10 +414,10 @@ bAspd		53
 bAtkRange	1000
 bAtkEle		1001
 bDefEle		1002
-bCastrate	1003
-bMaxHPrate	1004
-bMaxSPrate	1005
-bUseSPrate	1006
+bCastRate	1003
+bMaxHPRate	1004
+bMaxSPRate	1005
+bUseSPRate	1006
 bAddEle		1007
 bAddRace	1008
 bAddSize	1009
@@ -585,7 +585,7 @@ bAddCastRate		1170
 bAddEffMagic		1171
 bDefEleEnemy		1172
 bAddSpCost		1173
-bFixCastrate		1174
+bFixCastRate		1174
 bAddSkillSubHealRate	1175
 bAddSkillCastTime		1176
 bAddSkillCoolDown		1177

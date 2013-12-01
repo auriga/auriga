@@ -627,7 +627,7 @@
 1277,Katar_Of_Raging_Blaze_,爆炎のカタール,9,45000,,1200,105,,1,3,4096,2,34,3,55,16,1,{},{ bonus bAtkEle,Ele_Fire; bonus2 bAddEff,Eff_Silence,500; }
 1278,Katar_Of_Piercing_Wind_,疾風のカタール,9,45000,,1200,105,,1,3,4096,2,34,3,55,16,1,{},{ bonus bAtkEle,Ele_Wind; bonus2 bAddEff,Eff_Sleep,500; }
 1279,BF_Katar1,虐殺のカタール(勇猛),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,Rct_Human,70; bonus bUnbreakableWeapon,0; }
-1280,BF_Katar2,虐殺のカタール(特攻),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,Rct_Human,70; bonus bCritAtkRate,20; bonus bAspdAddRate,5; bonus bUnbreakableWeapon,0; }
+1280,BF_Katar2,虐殺のカタール(特攻),9,20,,0,130,,1,0,4096,2,34,3,80,16,1,{},{ bonus bStr,1; bonus bDex,1; bonus bLuk,1; bonus2 bAddRace,Rct_Human,70; bonus bAddCriticalDamage,20; bonus bAspdAddRate,5; bonus bUnbreakableWeapon,0; }
 1281,Krieger_Katar1,グロリアスブラッディロア,9,,,0,140,,1,0,4096,2,34,4,80,16,1,{},{ bonus2 bAddRace,Rct_Human,70; bonus2 bIgnoreDefRace,Rct_Human,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,Rct_Human,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1281,700,3000; if(checkactiveitem()) { misceffect 9,""; bonus bAspdAddRate,100; } /*発動率等暫定（eathenaより）*/}
 1282,Krieger_Katar2,グロリアスジャマダハル,9,,,0,140,,1,0,4096,2,34,4,80,16,1,{},{ bonus2 bAddRace,Rct_Human,70; bonus2 bIgnoreDefRace,Rct_Human,20; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,Rct_Human,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1282,700,3000; if(checkactiveitem()) { misceffect 9,""; bonus bAspdAddRate,100; } /*発動率等暫定（eathenaより）*/}
 1283,Katar_Of_Speed,素早いカタール,9,,,0,175,,1,0,4096,2,34,4,,16,,{},{}
@@ -643,7 +643,7 @@
 1295,Blood_Tears_,ブラッディティアーズ,9,20,,1700,120,,1,3,4096,2,34,4,55,16,1,{},{ if(getequiprefinerycnt(3)>=9) bonus3 bAutoSelfSpell,665,2,300; else bonus3 bAutoSelfSpell,665,1,300; }
 
 1297,Inverse_Scale_,インバーススケイル,9,20,,1500,140,,1,2,4096,2,34,4,55,16,1,{},{ bonus bAtkEle,Ele_Holy; bonus3 bAutoSelfSpell,659,1,300; }
-1298,Unknown_Item,戦慄のカタール,9,,,2700,110,,1,2,4096,2,34,4,105,16,1,{},{ bonus bCritical,getequiprefinerycnt(3); if(equippeditem(4317)) { bonus bCritAtkRate,5; } if(equippeditem(4521)) { bonus bCritAtkRate,5; } }
+1298,Unknown_Item,戦慄のカタール,9,,,2700,110,,1,2,4096,2,34,4,105,16,1,{},{ bonus bCritical,getequiprefinerycnt(3); if(equippeditem(4317)) { bonus bAddCriticalDamage,5; } if(equippeditem(4521)) { bonus bAddCriticalDamage,5; } }
 
 1301,Axe,アックス,5,500,,800,38,,1,3,8672419,2,2,1,3,6,1,{},{}
 1302,Axe_,アックス,5,500,,800,38,,1,4,8672419,2,2,1,3,6,1,{},{}
@@ -704,7 +704,7 @@
 1389,E_Tomahawk_C,トマホークR,9,,,10,105,,1,3,8388609,,34,4,5,7,1,{},{}
 1390,E_Right_Epsilon_C,ライトイプシロンR,9,,,10,,,,,,2,34,,,,1,{},{}
 1391,P_Two_Handed_Axe,P.ツーハンドアックスR,9,,,,,,,,,2,34,,,7,,{},{}
-1392,Ignus_Steel,イグニスステイル,9,20,,1900,250,,1,1,279714,2,34,4,95,7,1,{},{ bonus bAtkEle,Ele_Fire; bonus2 bAddEff,Eff_Burnning,200; bonus2 bAddEff,Eff_Burnning,100; }
+1392,Ignus_Steel,イグニスステイル,9,20,,1900,250,,1,1,279714,2,34,4,95,7,1,{},{ bonus bAtkEle,Ele_Fire; bonus2 bAddEff,Eff_Burning,200; bonus2 bAddEff,Eff_Burning,100; }
 1393,End_Sectora,エンドセクション,9,20,,1900,250,,1,1,279714,2,34,4,95,7,1,{},{ bonus bAtkEle,Ele_Water; bonus2 bAddEff,Eff_Cold,200; bonus2 bAddEff,Eff_Cold,100; }
 
 1397,Bradium_Stonehammer,ブラディウムハンマー,9,20,,2700,210,,1,2,1024,2,34,4,75,7,1,{},{}
@@ -766,8 +766,8 @@
 1469,Longinus's_Spear,ロンギヌスの槍,9,20,,2500,180,,3,0,16514,2,34,4,48,5,1,{},{ bonus bAtkEle,Ele_Dark; bonus2 bAddRace,Rct_Human,10; bonus2 bAddRace,Rct_Angel,10; }
 1470,Brionac,ブリューナク,9,20,,3000,190,,3,0,16514,2,34,4,48,5,1,{},{ bonus bAtkEle,Ele_Holy; skill 28,5; bonus3 bAutoSpell,13,3,1000; }
 1471,Hell_Fire,ヘルファイア,9,20,,3500,200,,3,0,16514,2,34,4,48,5,1,{},{ bonus bStr,3; bonus bAtkEle,Ele_Fire; bonus3 bAutoSpell,17,3,1000; }
-1472,Staff_Of_Soul,スタッフオブソウル,9,20,,1400,25:200,,1,0,134283780,2,34,3,73,23,1,{},{ bonus bInt,5; bonus bAgi,2; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
-1473,Wizardy_Staff,ウィザードスタッフ,9,20,,2400,120:200,,1,0,134283780,2,34,4,90,23,1,{},{ bonus bInt,6; bonus bDex,2; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } }
+1472,Staff_Of_Soul,スタッフオブソウル,9,20,,1400,25:200,,1,0,134283780,2,34,3,73,23,1,{},{ bonus bInt,5; bonus bAgi,2; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastRate,-getequiprefinerycnt(4); } }
+1473,Wizardy_Staff,ウィザードスタッフ,9,20,,2400,120:200,,1,0,134283780,2,34,4,90,23,1,{},{ bonus bInt,6; bonus bDex,2; if(equippeditem(2677)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastRate,-getequiprefinerycnt(4); } }
 1474,Gae_Bolg,ゲイボルグ,9,20,,2000,160,,3,0,16514,2,34,4,60,5,1,{},{ bonus2 bIgnoreDefRace,Rct_Dragon,100; bonus2 bAddRace,Rct_Boss,10; }
 1475,Horseback_Lance,馬上槍,9,,,,,,3,0,16514,2,34,4,1,5,1,{},{}
 1476,Crescent_Scythe_,クレセントサイダー,9,20,,2500,180,,3,1,16514,2,34,4,48,5,1,{},{ bonus bCritical,30; bonus bHit,10; }
@@ -864,7 +864,7 @@
 1574,BF_Book1,孫子兵法(勇猛),5,20,,0,90:125,,1,0,33620224,2,2,3,80,15,1,{},{ bonus bStr,1; bonus bInt,2; bonus2 bAddRace,Rct_Human,75; bonus2 bIgnoreDefRace,Rct_Human,20; bonus bUnbreakableWeapon,0; }
 1575,BF_Book2,孫子兵法(特攻),5,20,,0,90:125,,1,0,33620224,2,2,3,80,15,1,{},{ bonus bStr,1; bonus bInt,2; bonus2 bAddRace,Rct_Human,75; bonus2 bIgnoreMdefRace,Rct_Human,25; bonus bUnbreakableWeapon,0; }
 1576,Krieger_Book1,グロリアスタブレット,5,,,0,90:115,,1,0,33620224,2,2,4,80,15,1,{},{ bonus2 bAddRace,Rct_Human,80; bonus2 bIgnoreDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,Rct_Human,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,200; } /*発動率等暫定（eathenaより）*/}
-1577,Krieger_Book2,グロリアス黙示録,5,,,0,90:115,,1,0,33620224,2,2,4,80,15,1,{},{ bonus2 bMagicAddRace,Rct_Human,80; bonus2 bIgnoreMDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
+1577,Krieger_Book2,グロリアス黙示録,5,,,0,90:115,,1,0,33620224,2,2,4,80,15,1,{},{ bonus2 bMagicAddRace,Rct_Human,80; bonus2 bIgnoreMDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastRate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
 1578,Book_Of_Prayer,祈る者の書,5,,,0,140,,1,0,33620224,2,2,3,,15,,{},{}
 1579,Death_Note_M,死神の名簿,5,,,1000,137,,1,2,33620224,2,2,4,85,15,1,{},{ bonus bMatkRate,15; bonus bStr,3; bonus bInt,3; bonus bLuk,-20; bonus2 bWeaponComaRace2,Rct_Human,100; bonus bAspdAddRate,getequiprefinerycnt(4); if(getbaseclass(Class,2) == CLASS_SA) bonus3 bAutoSelfSpell,662,5,200; }
 1580,Encyclopedia_C,大百科事典R,5,,,0,145:100,,1,0,33620224,2,2,,1,15,,{},{ bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
@@ -895,7 +895,7 @@
 1613,Mighty_Staff,マイトスタッフ,5,20,,700,130:100,,1,0,134316820,2,2,3,24,10,1,{},{ bonus bStr,10; bonus2 bSPDrainValue,100,-2; }
 1614,Blessed_Wand,神官の杖,5,20,,700,75:105,,1,0,134316820,2,2,3,24,10,1,{},{ bonus bInt,3; }
 1615,Bone_Wand,骸骨の杖,5,20,,700,40:110,,1,0,134316820,2,2,3,24,10,1,{},{ bonus bInt,4; bonus bAtkEle,Ele_Undead; }
-1616,Staff_Of_Wing,スタッフオブウィング,5,20,,500,60:115,,1,0,134283780,2,2,4,40,10,1,{},{ bonus bAtkEle,Ele_Wind; bonus bCastrate,-5; }
+1616,Staff_Of_Wing,スタッフオブウィング,5,20,,500,60:115,,1,0,134283780,2,2,4,40,10,1,{},{ bonus bAtkEle,Ele_Wind; bonus bCastRate,-5; }
 1617,Survival_Rod,サバイバルロッド,5,85000,,1000,50:120,,1,0,134316820,2,2,3,24,10,1,{},{ bonus bDex,2; bonus bMaxHP,300; }
 1618,Survival_Rod_,サバイバルロッド,5,85000,,1000,50:120,,1,1,134316820,2,2,3,24,10,1,{},{ bonus bDex,3; bonus bMaxHP,400; }
 1619,Survival_Rod2,サバイバルロッド,5,85000,,1000,50:120,,1,0,134316820,2,2,3,24,10,1,{},{ bonus bInt,2; bonus bMaxHP,300; }
@@ -919,7 +919,7 @@
 1637,Eraser,イレイサー,5,20,,500,80:170,,1,0,99092,2,2,4,70,10,1,{},{ bonus bInt,3; bonus bDex,2; bonus bSPrecovRate,8; }
 1638,Healing_Staff_C,治癒の杖R,5,,,0,10:125,,1,0,33040,2,2,3,1,10,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,15; }
 1639,N_Rod,初心者用ロッド,5,,,0,15:32,,1,0,142705429,2,2,1,,10,,{},{}
-1640,Krieger_Onehand_Staff1,グロリアスアークワンド,5,,,0,70:135,,1,0,134316820,2,2,4,80,10,1,{},{ bonus2 bMagicAddRace,Rct_Human,15; bonus2 bIgnoreMDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; }
+1640,Krieger_Onehand_Staff1,グロリアスアークワンド,5,,,0,70:135,,1,0,134316820,2,2,4,80,10,1,{},{ bonus2 bMagicAddRace,Rct_Human,15; bonus2 bIgnoreMDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastRate,-5; bonus bSkillDelayRate,-5; }
 1641,Krieger_Onehand_Staff2,グロリアス治癒の杖,5,,,0,70:135,,1,0,134316820,2,2,4,80,10,1,{},{ bonus2 bMagicAddRace,Rct_Human,15; bonus bUnbreakableWeapon,1; bonus bSkillDelayRate,-10; if(getequiprefinerycnt(4)<6){ callfunc "ItemdbAlmightyHeal",0x7F,14; } else { if(getequiprefinerycnt(4)<10) { callfunc "ItemdbAlmightyHeal",0x7F,19; } else { callfunc "ItemdbAlmightyHeal",0x7F,29; } } if(getequiprefinerycnt(4)>=9) { bonus4 bSkillAutoSelfSpell2,8,28,10,1000; } }
 1642,Staff_Of_Darkness,暗い者達の杖,5,20,,0,100:120,,1,0,134316820,2,2,2,,10,,{},{}
 1643,Dead_Tree_Cane,古代樹の杖,5,20,,100,100:155,,1,1,134316820,2,2,4,70,10,1,{},{ bonus bInt,4; if(getequiprefinerycnt(4)<6) end; bonus bInt,getequiprefinerycnt(4)-5; bonus bMaxHP,-((getequiprefinerycnt(4)-5)*200); bonus bMaxSP,-((getequiprefinerycnt(4)-5)*100); }
@@ -928,7 +928,7 @@
 1646,La'cryma_Stick,ラクリマスティック,5,20,,500,30:180,,1,2,66052,2,2,3,50,10,1,{},{ bonus bInt,4; bonus bMdef,getequiprefinerycnt(4); bonus2 bAddSkillDamageRate,89,getequiprefinerycnt(4); if(getequiprefinerycnt(4)<10) end; bonus2 bAddCastRate,89,-8; }
 1647,Croce_Staff,クローチェスタッフ,5,20,,500,30:175,,1,1,33040,2,2,3,50,10,1,{},{ bonus bInt,4; bonus bAtkEle,Ele_Holy; bonus4 bSkillAutoSelfSpell2,28,34,1,200; }
 1648,Staff_Of_Bordeaux,スタッフオブオルド,5,20,,500,30:170,,1,0,66052,2,2,4,50,10,1,{},{ bonus bInt,2; bonus bDex,1; if(getskilllv(284)<10) end; bonus bUseSPrate,-15; bonus bInt,3; }
-1649,Rafini_Staff,ラフィネスタッフ,5,20,,500,30:180,,1,0,99072,2,2,3,100,10,1,{},{ bonus2 bFixCastrate,-getequiprefinerycnt(4),0; }
+1649,Rafini_Staff,ラフィネスタッフ,5,20,,500,30:180,,1,0,99072,2,2,3,100,10,1,{},{ bonus2 bFixCastRate,-getequiprefinerycnt(4),0; }
 1650,P_Staff1,P.スタッフⅠ,5,,,0,60:125,,1,0,99092,2,2,2,26,10,,{},{ bonus bInt,2; }
 1651,P_Staff2,P.スタッフⅡ,5,,,0,60:150,,1,0,99092,2,2,2,40,10,,{},{ bonus bInt,3; }
 1652,Tourist_Staff,旅行者の杖,5,20,,500,35,,1,0,142705429,2,2,1,1,10,1,{},{ bonus bMatkRate,15; bonus bInt,2; bonus bAgi,1; }
@@ -1038,10 +1038,10 @@
 1815,Claw_Of_Garm,ガルムの爪,5,20,,550,152,,1,1,33024,2,2,4,70,12,1,{},{ bonus bMaxHPrate,-2; bonus2 bAddEff,Eff_Bleed,200; bonus bAtkEle,Ele_Dark; }
 1816,Berserk_,ベルセルク,5,20,,500,120,,1,1,33024,2,2,4,36,12,1,{},{ bonus bAspdAddRate,12; }
 1817,Kaiser_Knuckle_C,カイザーナックルR,5,,-1,0,159,,1,0,16810240,2,2,4,1,12,,{},{ bonus2 bAddEle,Ele_Water,10; bonus2 bAddEle,Ele_Earth,10; bonus2 bAddEle,Ele_Fire,10; bonus2 bAddEle,Ele_Wind,10; bonus2 bAddRace,Rct_Undead,5; bonus bAspdAddRate,5; }
-1818,Magma_Fist,マグマフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,280,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
-1819,Icicle_Fist,アイシクルフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,281,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
-1820,Electric_Fist,エレクトリックフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,282,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
-1821,Seismic_Fist,サイズミックフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,283,5,100,EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; }
+1818,Magma_Fist,マグマフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,280,5,100,EAS_SELF|EAS_NOSP; }
+1819,Icicle_Fist,アイシクルフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,281,5,100,EAS_SELF|EAS_NOSP; }
+1820,Electric_Fist,エレクトリックフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,282,5,100,EAS_SELF|EAS_NOSP; }
+1821,Seismic_Fist,サイズミックフィスト,5,20,,650,80,,1,3,33024,2,2,3,75,12,1,{},{ bonus4 bAutoSpell,283,5,100,EAS_SELF|EAS_NOSP; }
 1822,Combo_Battle_Glove,連撃の爪,5,20,,500,30,,1,4,33024,2,2,3,60,12,1,{},{ bonus2 bAddSkillDamageRate,263,15; bonus2 bAddSkillDamageRate,272,15; bonus2 bAddSkillDamageRate,273,20; }
 1823,BF_Knuckle1,闘士のバトルフィスト(特攻),5,20,,0,30,,1,0,33024,2,2,3,80,12,1,{},{ bonus bStr,2; bonus bAgi,1; bonus2 bAddRace,Rct_Human,95; bonus2 bIgnoreDefRace,Rct_Human,20; bonus bUnbreakableWeapon,0; bonus3 bAutoSpell,401,1,5; }
 1824,BF_Knuckle2,闘士のバトルフィスト(勇猛),5,20,,0,30,,1,0,33024,2,2,3,80,12,1,{},{ bonus bStr,2; bonus bInt,1; bonus2 bAddRace,Rct_Human,95; bonus bUnbreakableWeapon,0; }
@@ -1164,7 +1164,7 @@
 2120,Improved_Arm_Guard_,手甲改,4,40000,,150,,45:5,,1,536870912,2,32,,50,,1,{},{}
 2121,Memorize_Book_,メモライズブック,4,20,,1000,,25:2,,1,134283780,2,32,,0,0,1,{},{ bonus bInt,1; }
 2122,Platinum_Shield,プラチナシールド,4,20,,1200,,95:5,,0,2088958,2,32,,68,3,1,{},{ bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus2 bSubRace,Rct_Undead,10; bonus2 bMagicSubRace,Rct_Undead,10; bonus4 bAutoSpell,671,2,1500,EAS_REVENGE|EAS_MAGIC|EAS_SELF; }
-2123,Orleans_Server,オルレアンサーバー,4,20,,1000,,75:2,,1,2088958,2,32,,55,2,1,{},{ bonus bMagicDamageReturn,5; if(getequipid(7)==2701 || getequipid(8)==2701) bonus bCastrate,-10; }
+2123,Orleans_Server,オルレアンサーバー,4,20,,1000,,75:2,,1,2088958,2,32,,55,2,1,{},{ bonus bMagicDamageReturn,5; if(getequipid(7)==2701 || getequipid(8)==2701) bonus bCastRate,-10; }
 2124,Thorny_Buckler,ソーンシールド,4,20,,1000,,85:2,,1,2088958,2,32,,55,2,1,{},{ if(getequipid(7)==2702 || getequipid(8)==2702) { bonus bAspdAddRate,10; bonus bShortWeaponDamageReturn,5; } }
 2125,Strong_Shield,ストロングシールド,4,20,,2500,,90,,1,414946,2,32,,75,3,1,{},{ bonus bNoKnockback,0; bonus2 bSubEle,Ele_Neutral,-20; bonus2 bSubEle,Ele_Water,-20; bonus2 bSubEle,Ele_Earth,-20; bonus2 bSubEle,Ele_Fire,-20; bonus2 bSubEle,Ele_Wind,-20; bonus2 bSubEle,Ele_Holy,-20; bonus2 bSubEle,Ele_Dark,-20; bonus2 bSubEle,Ele_Ghost,-20; }
 2126,Guyak_Shield,グヤクの盾,4,20,,700,,3:2,,0,991944702,2,32,,0,1,1,{},{ bonus bShortWeaponDamageReturn,5; bonus bLongWeaponDamageReturn,5; bonus bMagicDamageReturn,2; }
@@ -1366,7 +1366,7 @@
 2340,Novice_Breast,初心者用胸当て,4,89000,,500,,32,,1,8388609,2,16,,10,0,1,{},{}
 2341,Full_Plate_Armor,フルプレート,4,94000,,5500,,79,,0,16384,2,16,,70,0,1,{},{}
 2342,Full_Plate_Armor_,フルプレート,4,102500,,5500,,79,,1,16384,2,16,,70,0,1,{},{}
-2343,Robe_Of_Casting,キャスティングローブ,4,124800,,1100,,40:4,,0,134283776,2,16,,75,0,1,{},{ bonus bCastrate,-3; }
+2343,Robe_Of_Casting,キャスティングローブ,4,124800,,1100,,40:4,,0,134283776,2,16,,75,0,1,{},{ bonus bCastRate,-3; }
 2344,Flame_Sprits_Armor,ルシウス火山の激しさ,4,136000,,2200,,25,,0,279714,2,16,,45,0,1,{},{ bonus bDefEle,Ele_Fire; }
 2345,Flame_Sprits_Armor_,ルシウス火山の激しさ,4,136000,,2200,,25,,1,991944702,2,16,,45,0,1,{},{ bonus bDefEle,Ele_Fire; }
 2346,Water_Sprits_Armor,シャピニハ海の叫び,4,136000,,2200,,25,,0,279714,2,16,,45,0,1,{},{ bonus bDefEle,Ele_Water; }
@@ -1383,12 +1383,12 @@
 2357,Valkyrie_Armor,ヴァルキリーアーマー,4,20,,2800,,55,,1,2088958,2,16,,0,,1,{},{ bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus bUnbreakableArmor,0; if(getbaseclass(Class) == CLASS_SM || getbaseclass(Class) == CLASS_MC || getbaseclass(Class) == CLASS_TF) bonus2 bResEff,Eff_Stun,5000; else if(getbaseclass(Class) == CLASS_MG || getbaseclass(Class) == CLASS_AC || getbaseclass(Class) == CLASS_AL) bonus2 bResEff,Eff_Silence,5000; }
 2358,Dress_Of_Angel,天使のドレス,4,20,,1000,,5,,0,1000333311,2,16,,0,,,{},{ bonus bLuk,4; }
 2359,Ninja_Suit_,忍者スーツ,4,20,,1500,,58:3,,1,537006144,2,16,,50,0,1,{},{ bonus bAgi,1; }
-2360,Robe_Of_Casting_,キャスティングローブ,4,124800,,1100,,40:4,,1,134283776,2,16,,75,0,1,{},{ bonus bCastrate,-3; }
+2360,Robe_Of_Casting_,キャスティングローブ,4,124800,,1100,,40:4,,1,134283776,2,16,,75,0,1,{},{ bonus bCastRate,-3; }
 2361,Blue_Aodai,青いアオザイ,4,20,,500,,0:5,,0,991944702,2,16,,0,,1,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
 2362,Red_Aodai,赤いアオザイ,4,20,,500,,0:5,,0,991944702,2,16,,0,,1,{},{ bonus bStr,5; bonus bAgi,5; bonus bVit,5; bonus bInt,5; bonus bDex,5; bonus bLuk,5; }
 2363,White_Aodai,白いアオザイ,4,20,,500,,0:5,,0,8388609,2,16,,0,,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 2364,Meteo_Plate_Armor,メテオプレート,4,20,,3000,,85,,1,279714,2,16,,55,0,1,{},{ bonus2 bResEff,Eff_Stun,3000; bonus2 bResEff,Eff_Freeze,3000; }
-2365,Orleans_Gown,オルレアンの制服,4,20,,300,,15,,1,2088958,2,16,,55,0,1,{},{ bonus bCastrate,15; bonus bNoCastCancel,0; }
+2365,Orleans_Gown,オルレアンの制服,4,20,,300,,15,,1,2088958,2,16,,55,0,1,{},{ bonus bCastRate,15; bonus bNoCastCancel,0; }
 2366,Divine_Cloth,ディバインローブ,4,20,,1500,,50,,1,2088958,2,16,,55,0,1,{},{ bonus2 bResEff,Eff_Curse,500; bonus2 bResEff,Eff_Silence,500; bonus2 bResEff,Eff_Stun,500; bonus2 bResEff,Eff_Sleep,500; bonus2 bResEff,Eff_Stone,500; }
 2367,Sniping_Suit,スナイピングスーツ,4,20,,750,,42:5,,1,2048,2,16,,50,0,1,{},{ bonus bCritical,6+readparam(bLuk)/10; bonus bSkillDelayRate,-23; }
 2368,Golden_Armor,ゴールデンアーマー,4,20,,2000,,4:4,,0,1000333311,2,16,,0,,1,{},{}
@@ -1463,7 +1463,7 @@
 2437,Battle_Boots,戦闘用ブーツ,4,20,,0,,9:1,,1,268435456,2,64,,80,,1,{},{ bonus bMaxHP,100; bonus2 bSubRace,Rct_Human,1; bonus2 bMagicSubRace,Rct_Human,1; }
 2438,Paw_Of_Cat,猫の足,4,20,,300,,0,,0,1000333311,2,64,,0,,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; bonus bFlee,10; bonus bHit,10; }
 2439,Refresh_Shoes,リフレッシュシューズ,4,20,,0,,20,,0,1000333311,2,64,,,,,{},{ bonus bMaxHPrate,17; bonus bMaxSPrate,8; bonus2 bHPPenaltyTime,10000,-20; bonus2 bSPPenaltyTime,10000,-3; }
-2440,Sprint_Shoes,スプリントシューズ,4,20,,300,,10,,1,2088832,2,64,,,,1,{},{ bonus bAgi,1; bonus bSPrecovRate,5; if(equippeditem(2387)==0 || equippeditem(2744)==0) end; bonus bMaxHPrate,7; bonus bMaxSPrate,7; bonus bCastrate,-3; bonus bSkillDelayRate,-15; }
+2440,Sprint_Shoes,スプリントシューズ,4,20,,300,,10,,1,2088832,2,64,,,,1,{},{ bonus bAgi,1; bonus bSPrecovRate,5; if(equippeditem(2387)==0 || equippeditem(2744)==0) end; bonus bMaxHPrate,7; bonus bMaxSPrate,7; bonus bCastRate,-3; bonus bSkillDelayRate,-15; }
 2441,Beach_Sandal,ビーチサンダル,4,20,,200,,0,,0,1000333311,2,64,,,,1,{},{ bonus bStr,1; bonus bInt,1; bonus bAgi,1; if(equippeditem(2546)==0) end; bonus2 bSubEle,Ele_Fire,10; bonus bFlee,5; }
 2442,Boots_Perforated,穴が空いたブーツ,4,,,0,,18:1,,0,1000333311,2,64,,,,,{},{ bonus bLuk,2; bonus bHPrecovRate,10; bonus bSPrecovRate,10; bonus3 bRevAutoSelfSpell,92,3,300; }
 2443,Fish_Shoes,釣り用長靴,4,10,,250,,0,,0,1000333311,2,64,,,,1,{},{}
@@ -1471,7 +1471,7 @@
 2445,Krieger_Shoes2,グロリアス量産型シューズ,4,,,0,,5,,0,991944702,2,64,,61,,1,{},{ bonus bMaxHPrate,5; bonus bMaxSPrate,5; }
 2446,Krieger_Shoes3,グロリアス普及用シューズ,4,,,0,,10,,0,991944702,2,64,,,,1,{},{ bonus bMaxHPrate,2; }
 2447,Military_Boots,軍用ブーツ,4,,,1000,,5,,0,991944702,2,64,,,,1,{},{}
-2448,Air_Boss,エアーボス,4,,,500,,2,,0,1000333311,2,64,,,,1,{},{ bonus bAspdAddRate,3; bonus bCastrate,-3; bonus bAgi,1; }
+2448,Air_Boss,エアーボス,4,,,500,,2,,0,1000333311,2,64,,,,1,{},{ bonus bAspdAddRate,3; bonus bCastRate,-3; bonus bAgi,1; }
 2449,Variant_Shoes_M,バリアントシューズ,4,20,,500,,13,,0,2088958,2,64,,85,,1,{},{ bonus bMaxHPrate,20-getequiprefinerycnt(6); bonus bMaxSPrate,20-getequiprefinerycnt(6); bonus bDef,getequiprefinerycnt(6)/2; }
 2450,Vital_Tree_Shoes,セフィロトシューズ,4,20,,500,,16,,0,2088958,2,64,,60,,1,{},{ /* ModifyHeal */ }
 2451,Freyja_SSandal7,フレイヤの魂サンダル,4,,,400,,5,,0,1000333311,2,64,,20,,,{},{ bonus bMaxHPrate,8; bonus bMaxSPrate,8; }
@@ -1693,7 +1693,7 @@
 2676,Hunter_Earring,ハンターイヤリング,4,20,,300,,0,,0,1000333311,2,136,,0,,,{},{ bonus3 bAddMonsterDropItem,7618,Rct_NonBoss,1000; }
 2677,Spiritual_Ring,スピリチュアルリング,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bInt,2; bonus bDex,1; if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,70,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
 2678,Ring_Of_Flame_Lord,リングオブフレームロード,4,20,,100,,0,,0,2088832,2,136,,0,,,{},{ bonus bStr,2; bonus bVit,1; bonus bBaseAtk,15; bonus2 bSubEle,Ele_Fire,10; bonus3 bAutoSelfSpell,401,1,300; bonus3 bAutoSelfSpell,270,1,100; bonus3 bAutoSpell,367,2,300; bonus3 bAutoSpell,17,1,1500; bonus3 bAutoSpell,62,5,200; if(equippeditem(2679)==0) end; bonus3 bAutoSpell,271,1,30; bonus3 bAutoSpell,78,1,200; bonus3 bAutoSpell,136,5,500; bonus3 bAutoSpell,266,5,200; bonus3 bAutoSpell,406,2,500; }
-2679,Ring_Of_Resonance,リングオブレゾナンス,4,20,,100,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
+2679,Ring_Of_Resonance,リングオブレゾナンス,4,20,,100,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2680,Lesser_Elemental_Ring,下級精霊の指輪,4,20,,100,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus3 bAutoSpell,93,1,800; bonus3 bAutoSelfSpell,40,1,500; bonus3 bAutoSelfSpell,151,1,1000; bonus3 bAutoSelfSpell,1013,1,100; bonus3 bRevAutoSelfSpell,411,5,200; bonus3 bRevAutoSelfSpell,426,3,300; bonus3 bRevAutoSelfSpell,142,1,1000; bonus3 bRevAutoSelfSpell,150,1,500; }
 2681,Republic_Ring,共和国記念日指輪,4,20,,1000,,0,,0,1000333311,2,136,,0,,,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; }
 2682,Ring_Of_Water,水の指輪,4,20,,100,,1,,0,991944702,2,136,,20,,,{},{ bonus2 bDefEleEnemy,Ele_Water,5; }
@@ -1725,7 +1725,7 @@
 2708,Chinese_Handicraft,中国製の手芸品,4,20,,50,,0,,0,1000333311,2,136,,0,,,{},{ bonus3 bAutoSpell,19,5,500; }
 2709,5_Anniversary_Coin,ネットカフェ・プレミア記念コイン,4,20,,,,0,,0,1000333311,2,136,,0,,,{},{bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; bonus bMatkRate,5; }
 2710,Bloody_Iron_Ball_C,血塗られた鉄球R,4,,-1,0,,0,,0,991944702,2,136,,1,,,{},{ bonus bBaseAtk,30; }
-2711,Spiritual_Ring_C,スピリチュアルリングR,4,,-1,0,,0,,0,1000333311,2,136,,1,,,{},{ bonus bInt,2; bonus bDex,2; if(equippeditem(1472) || equippeditem(1473)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastrate,-getequiprefinerycnt(4); } if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
+2711,Spiritual_Ring_C,スピリチュアルリングR,4,,-1,0,,0,,0,1000333311,2,136,,1,,,{},{ bonus bInt,2; bonus bDex,2; if(equippeditem(1472) || equippeditem(1473)){ bonus bMatkRate,6; bonus bDex,2; bonus bCastRate,-getequiprefinerycnt(4); } if(equippeditem(2607) || equippeditem(2608) || equippeditem(2626)){ bonus2 bAddSkillDamageRate,28,50; bonus2 bAddSkillDamageRate,79,30; bonus bSPrecovRate,9; } }
 2712,Ragnarok_Limited_Ed,永久保存版ブック,4,20,,300,,0,,0,1000333311,2,136,,30,,,{},{ bonus bAgi,3; bonus bVit,3; bonus bLuk,3; }
 2713,Certificate_TW,遂行証明書,4,,,,,,,,,,,,,,,{},{}
 2714,Marvelous_Pandent,スモールブックペンダント,4,0,,100,,0,,1,1000333311,2,136,,0,,,{},{ bonus2 bSubRace,Rct_Undead,2; bonus2 bSubRace,Rct_Demon,2; bonus2 bSubRace,Rct_Human,1; bonus2 bSubRace,Rct_Fish,1; bonus2 bSubRace,Rct_Brute,1; bonus2 bMagicSubRace,Rct_Undead,2; bonus2 bMagicSubRace,Rct_Demon,2; bonus2 bMagicSubRace,Rct_Human,1; bonus2 bMagicSubRace,Rct_Fish,1; bonus2 bMagicSubRace,Rct_Brute,1; }
@@ -1745,7 +1745,7 @@
 2728,Cursed_Hand,呪われた手,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bHit,10; bonus bHPrecovRate,20; bonus3 bAutoSpell,673,1,300; }
 2729,Diabolus_Ring,ディアボロスリング,4,20,,50,,0,,1,2088832,2,136,,0,,,{},{ bonus bMaxHP,100; bonus bMaxSP,100; callfunc "ItemdbAlmightyHeal",0x7F,5; bonus2 bAddDamageClass,1916,10; bonus2 bAddDamageClass,1917,10; bonus2 bResEff,Eff_Freeze,1500; }
 2730,Morroc_Seal,コンチネンタルガードの印章,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxHP,50; bonus bAspdAddRate,3; }
-2731,Morroc_Charm_Stone,ルーン文字の呪文石,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxSP,50; bonus bCastrate,-1; }
+2731,Morroc_Charm_Stone,ルーン文字の呪文石,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bMaxSP,50; bonus bCastRate,-1; }
 2732,Morroc_Ring,死のブローチ,4,20,,50,,0,,1,991944702,2,136,,80,,,{},{ bonus bCritical,5; }
 2733,Medal_Gunner,保安官バッジ,4,20,,0,,1,,0,268435456,2,136,,80,,,{},{ bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; bonus bMatkRate,5; bonus bCritical,10; bonus bMaxHP,300; bonus bMaxSP,80; bonus2 bAddEffLong,Eff_Blind,500; }
 2734,Directive_A,任務命令書,4,,,0,,,,,,,,,,,,{},{}
@@ -1755,13 +1755,13 @@
 2738,Shiny_Coin,光る記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,Rct_Boss,6; bonus2 bAddRace,Rct_NonBoss,6; bonus bMatkRate,6; }
 2739,Ordinary_Coin,一般記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; bonus bMatkRate,5; }
 2740,Rusty_Coin,錆びた記念コイン,4,20,,0,,0,,0,1000333311,2,136,,0,,,{},{ bonus2 bAddRace,Rct_Boss,3; bonus2 bAddRace,Rct_NonBoss,3; bonus bMatkRate,3; }
-2741,All_In_One_Ring,オールインワンリング,4,20,,0,,0,,0,1000333311,2,136,,,,,{},{ skill 26,1; skill 28,1; bonus bNoCastCancel,0; bonus bCastrate,10; bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
+2741,All_In_One_Ring,オールインワンリング,4,20,,0,,0,,0,1000333311,2,136,,,,,{},{ skill 26,1; skill 28,1; bonus bNoCastCancel,0; bonus bCastRate,10; bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; }
 2742,Lucky_Clip,幸運のクリップ,4,,,0,,0,,0,1000333311,2,136,,,,,{},{}
 2743,Angelic_Ring,エンジェリックリング,4,20,,100,,0:2,,0,2088832,2,136,,70,,,{},{ bonus bInt,2; bonus bDex,1; bonus4 bAutoActiveSkill,28,2743,1000,3000; bonus4 bAutoActiveSkill,70,2743,1000,3000; bonus4 bAutoActiveSkill,231,2743,1000,3000; bonus4 bAutoActiveSkill,2043,2743,1000,3000; bonus4 bAutoActiveSkill,2051,2743,1000,3000; if(checkactiveitem()) { misceffect 348,""; callfunc "ItemdbAlmightyHeal",0x7F,20; } }
-2744,Sprint_Ring,スプリントリング,4,20,,100,,0,,0,2088832,2,136,,,,,{},{ bonus bCastrate,-10; bonus bSkillDelayRate,5; }
+2744,Sprint_Ring,スプリントリング,4,20,,100,,0,,0,2088832,2,136,,,,,{},{ bonus bCastRate,-10; bonus bSkillDelayRate,5; }
 2745,Pinguicula_Corsage,キュートな花飾り,4,20,,200,,0:2,,1,2088832,2,136,,,,,{},{ bonus bMaxSP,25; }
 2746,Cold_Heart,冷静な心,4,20,,100,,1,,0,4096,2,136,,80,,,{},{ bonus bAgi,3; if(equippeditem(2620)==0) end; bonus2 bAddSize,1,8; bonus bAspdAddRate,3; }
-2747,Black_Cat,ブラックキャット,4,20,,100,,1,,0,131072,2,136,,80,,,{},{ bonus bDex,3; if(equippeditem(2620)==0) end; bonus2 bAddSize,2,8; bonus bHit,3; bonus bCastrate,-3; }
+2747,Black_Cat,ブラックキャット,4,20,,100,,1,,0,131072,2,136,,80,,,{},{ bonus bDex,3; if(equippeditem(2620)==0) end; bonus2 bAddSize,2,8; bonus bHit,3; bonus bCastRate,-3; }
 2748,Cursed_Star,カーズドスター,4,20,,200,,0:3,,0,1574920,2,136,,84,,,{},{ bonus bDex,2; bonus bLuk,-1; bonus2 bHPPenaltyTime,10000,50; bonus bHPPenaltyUnrig,300; if(equippeditem(1741)) { bonus2 bAddEffLong,Eff_Curse,400; bonus bBaseAtk,25; } else bonus2 bAddEffLong,Eff_Curse,200; }
 2749,Linen_Glove,リネングローブ,4,20,,120,,1:1,,1,2088832,2,136,,90,,,{},{ bonus bAgi,2; bonus bDex,1; }
 2750,Summer_Night_Dream,真夏の夜の夢,4,20,,0,,0,,0,1000333311,2,136,,,,,{},{}
@@ -1786,7 +1786,7 @@
 2769,Archer_Figure,アーチャーフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bDex,1; if(getbaseclass(Class) == CLASS_AC) bonus bBaseAtk,10; }
 2770,Thief_Figure,シーフフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bAgi,1; if(getbaseclass(Class) == CLASS_TF) bonus bAspdAddRate,3; }
 2771,Merchant_Figure,マーチャントフィギュア,4,,,0,,0,,0,1000333311,2,136,,,,,{},{ bonus bStr,1; if(getbaseclass(Class) == CLASS_MC) bonus bCritical,5; }
-2772,Krieger_Ring1,グロリアスリング,4,,,0,,0,,0,991944702,2,136,,81,,,{},{ bonus2 bSubEle,Ele_Water,10; bonus2 bSubEle,Ele_Earth,10; bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Wind,10; bonus bMaxHP,300; bonus bCastrate,-3; callfunc "ItemdbAlmightyHeal",0x7F,5; if((getequipid(7)==2720) || (getequipid(8)==2720) || (getequipid(7)==2721) || (getequipid(8)==2721) || (getequipid(7)==2722) || (getequipid(8)==2722) || (getequipid(7)==2723) || (getequipid(8)==2723) || (getequipid(7)==2724) || (getequipid(8)==2724) || (getequipid(7)==2725) || (getequipid(8)==2725)){ bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; bonus2 bMagicAddRace,Rct_Boss,5; bonus2 bMagicAddRace,Rct_NonBoss,5; callfunc "ItemdbAlmightyHeal",0x7F,5; } }
+2772,Krieger_Ring1,グロリアスリング,4,,,0,,0,,0,991944702,2,136,,81,,,{},{ bonus2 bSubEle,Ele_Water,10; bonus2 bSubEle,Ele_Earth,10; bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Wind,10; bonus bMaxHP,300; bonus bCastRate,-3; callfunc "ItemdbAlmightyHeal",0x7F,5; if((getequipid(7)==2720) || (getequipid(8)==2720) || (getequipid(7)==2721) || (getequipid(8)==2721) || (getequipid(7)==2722) || (getequipid(8)==2722) || (getequipid(7)==2723) || (getequipid(8)==2723) || (getequipid(7)==2724) || (getequipid(8)==2724) || (getequipid(7)==2725) || (getequipid(8)==2725)){ bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; bonus2 bMagicAddRace,Rct_Boss,5; bonus2 bMagicAddRace,Rct_NonBoss,5; callfunc "ItemdbAlmightyHeal",0x7F,5; } }
 2773,Krieger_Ring2,グロリアス量産型リング,4,,,0,,0,,0,991944702,2,136,,61,,,{},{ bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bLuk,2; }
 2774,Krieger_Ring3,グロリアス普及用リング,4,,,0,,0,,0,991944702,2,136,,,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1;}
 2775,Lure,釣り餌,4,20,,100,,0,,0,1000333311,2,136,,,,,{},{}
@@ -1807,7 +1807,7 @@
 2790,Bradium_Brooch,ブラディウムブローチ,4,20,,200,,0,,1,2088958,2,136,,60,,,{},{ bonus bFlee,4; bonus bAgi,1; }
 2791,Just_Got_Fish,とれたての魚,4,,,0,,0,,1,1000333311,2,136,,,,,{},{ bonus bHit,3; /*旧正月イベント中： bonus bStr,2; bonus bAgi,2; bonus bVit,2; bonus bInt,2; bonus bDex,2; bonus bCritical,10; bonus bHit,10; ：＆スロット0*/ }
 2792,Ring_Of_Flame_Lord_I,リングオブフレームロード,4,,,0,,0,,0,2088832,2,136,,0,,,{},{ bonus bStr,2; bonus bVit,1; bonus bBaseAtk,15; bonus2 bSubEle,Ele_Fire,10; bonus3 bAutoSelfSpell,401,1,300; bonus3 bAutoSelfSpell,270,1,100; bonus3 bAutoSpell,367,2,300; bonus3 bAutoSpell,17,1,1500; bonus3 bAutoSpell,62,5,200; if(equippeditem(2793)==0) end; bonus3 bAutoSpell,271,1,30; bonus3 bAutoSpell,78,1,200; bonus3 bAutoSpell,136,5,500; bonus3 bAutoSpell,266,5,200; bonus3 bAutoSpell,406,2,500; }
-2793,Ring_Of_Resonance_I,リングオブレゾナンス,4,,,0,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
+2793,Ring_Of_Resonance_I,リングオブレゾナンス,4,,,0,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2794,Magic_Stone_Ring,魔力石の指輪,4,,,0,,0,,1,16514,2,136,,0,,,{},{ bonus bStr,2; }
 2795,Green_Apple_Ring,熟していないリンゴの指輪,4,,,0,,0,,0,991944702,2,136,,90,,,{},{ if(JobLevel<31){ bonus bAgi,6-(JobLevel-1)/5;bonus bVit,6-(JobLevel-1)/5;bonus bInt,6-(JobLevel-1)/5;bonus bStr,6-(JobLevel-1)/5;bonus bDex,6-(JobLevel-1)/5;bonus bLuk,6-(JobLevel-1)/5; } }
 2796,Magical_Stone,魔力を秘めた石（スプレンディッド）,4,,,200,,0,,0,66052,2,136,,99,,,{},{}
@@ -1912,7 +1912,7 @@
 
 2905,Unknown_Item,超強いオラオラ,4,,,1000,,0,,,1000333311,2,136,,1,,,{},{}
 2906,Unknown_Item,幸運のガントレット,4,,,1000,,3,,1,1000333311,2,136,,70,,,{},{}
-2907,Bawaya_Symbol_Tattoo,ブワヤの守護タトゥー,4,,,100,,0,,0,1000333311,2,136,,1,0,0,{},{ bonus bMatkRate,7; bonus bCastrate,-7; }
+2907,Bawaya_Symbol_Tattoo,ブワヤの守護タトゥー,4,,,100,,0,,0,1000333311,2,136,,1,0,0,{},{ bonus bMatkRate,7; bonus bCastRate,-7; }
 2908,Unknown_Item,光の指輪,4,,,100,,0,,1,1000333311,2,136,,1,,,{},{}
 2909,Unknown_Item,闇の指輪,4,,,100,,0,,1,1000333311,2,136,,1,,,{},{}
 2910,Bakunawa_Symbol_Tattoo,バコナワの守護タトゥー,4,,,100,,0,,0,1000333311,2,136,,1,0,0,{},{ bonus bAspdAddRate,10; bonus2 bAddRace,Rct_Boss,7; bonus2 bAddRace,Rct_NonBoss,7; }
@@ -2018,7 +2018,7 @@
 4074,BigFoot_Card,ビッグフットカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,Rct_Insect,30; bonus2 bMagicSubRace,Rct_Insect,30; }
 4075,Argos_Card,アルゴスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bResEff,Eff_Stone,2000; bonus bDef,1; }
 4076,Magnolia_Card,白蓮玉カード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Curse,500; bonus bBaseAtk,5; }
-4077,Phen_Card,フェンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bNoCastCancel,0; bonus bCastrate,25; }
+4077,Phen_Card,フェンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bNoCastCancel,0; bonus bCastRate,25; }
 4078,Savage_Card,サベージカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,3; }
 4079,Mantis_Card,マンティスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bStr,3; }
 4080,Flora_Card,フローラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,Rct_Fish,20; }
@@ -2086,7 +2086,7 @@
 4142,Doppelganger_Card,ドッペルゲンガーカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAspdAddRate,10; }
 4143,Orc_Hero_Card,オークヒーローカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bVit,3; bonus2 bResEff,Eff_Stun,10000; }
 4144,Osiris_Card,オシリスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bRestartFullRecover,0; }
-4145,Berzebub_Card,ヴェルゼブブカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bCastrate,-30; }
+4145,Berzebub_Card,ヴェルゼブブカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bCastRate,-30; }
 4146,Maya_Card,マヤーカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bMagicDamageReturn,50; }
 4147,Baphomet_Card,バフォメットカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,-10; bonus bSplashRange,1; }
 4148,Pharaoh_Card,ファラオカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bUseSPrate,-30; }
@@ -2109,8 +2109,8 @@
 4165,Gig_Card,ギグカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,Rct_Insect,100,5; bonus bSPPenaltyUnrig,5; }
 4166,Nightmare_Terror_Card,ナイトメアテラーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Curse,1000; if(equippeditem(4127)==0) end; bonus2 bAddRevEff,Eff_Curse,3000; }
 4167,Neraid_Card,ネレイドカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,Rct_Brute,100,5; bonus bSPPenaltyUnrig,5; }
-4168,Dark_Lord_Card,ダークロードカード,6,20,,10,,,,,,,64,,,,,{},{ bonus3 bRevAutoSpell,83,5,1000; if(equippeditem(4169)==0) end; bonus bMaxHPrate,20; bonus bMaxSPrate,20; bonus bCastrate,-10; }
-4169,Dark_Illusion_Card,ダークイリュージョンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMaxHPrate,-10; bonus bMaxSPrate,-10; bonus bCastrate,-10; }
+4168,Dark_Lord_Card,ダークロードカード,6,20,,10,,,,,,,64,,,,,{},{ bonus3 bRevAutoSpell,83,5,1000; if(equippeditem(4169)==0) end; bonus bMaxHPrate,20; bonus bMaxSPrate,20; bonus bCastRate,-10; }
+4169,Dark_Illusion_Card,ダークイリュージョンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMaxHPrate,-10; bonus bMaxSPrate,-10; bonus bCastRate,-10; }
 4170,Dark_Frame_Card,ダークフレームカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Stone,2000; }
 4171,Dark_Priest_Card,ダークプリーストカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bSPVanish,5,3; if(getbaseclass(Class,2) == CLASS_SA) bonus2 bSPDrainValue,100,1; }
 4172,The_Paper_Card,一反木綿カード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,20; bonus2 bSPDrainValue,100,-1; }
@@ -2132,7 +2132,7 @@
 4188,Leib_Olmai_Card,レイブオルマイカード,6,20,,10,,,,,,,769,,,,,{},{ bonus3 bAddMonsterDropItem,990,Rct_Brute,100; bonus2 bSubEle,Ele_Fire,10; }
 4189,Wraith_Dead_Card,デッドリーレイスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Curse,2000; }
 4190,Wraith_Card,レイスカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12027,Rct_Undead,100; }
-4191,Loli_Ruri_Card,ロリルリカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,28,3,500; if(equippeditem(4208)==0 || equippeditem(4258)==0 || equippeditem(4309)==0 || equippeditem(4325)==0 || equippeditem(4327)==0) end; bonus bMaxHP,500; bonus bDef,5; bonus bMdef,5; bonus2 bAddSkillDamageRate,14,10; bonus2 bAddSkillDamageRate,19,10; bonus2 bAddSkillDamageRate,20,10; if(getbaseclass(Class) == CLASS_MG) { bonus bMatkRate,3; bonus bCastrate,-15; } }
+4191,Loli_Ruri_Card,ロリルリカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,28,3,500; if(equippeditem(4208)==0 || equippeditem(4258)==0 || equippeditem(4309)==0 || equippeditem(4325)==0 || equippeditem(4327)==0) end; bonus bMaxHP,500; bonus bDef,5; bonus bMdef,5; bonus2 bAddSkillDamageRate,14,10; bonus2 bAddSkillDamageRate,19,10; bonus2 bAddSkillDamageRate,20,10; if(getbaseclass(Class) == CLASS_MG) { bonus bMatkRate,3; bonus bCastRate,-15; } }
 4192,Rotar_Zairo_Card,ロータージャイロカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bCriticalRace,Rct_Fish,7; bonus bAddCriticalDamage,10; }
 4193,Lude_Card,ルードカード,6,20,,10,,,,,,,136,,,,,{},{if(getbaseclass(Class) == CLASS_NV || getbaseclass(Class) == CLASS_SNV) bonus3 bRevAutoSelfSpell,8,1,2000; if(equippeditem(4294)==0) end; bonus bMaxHP,300; bonus bMaxSP,60;}
 4194,Rybio_Card,リビオカード,6,20,,10,,,,,,,16,,,,,{},{ if(readparam(bDex)<77){ bonus2 bAddRevEff,Eff_Stun,1000; }else{ bonus2 bAddRevEff,Eff_Stun,3000; }}
@@ -2170,7 +2170,7 @@
 4226,Sting_Card,スティングカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bDef,2; if(getequiprefinerycnt(3)>8) bonus bMdef,5; }
 4227,Spring_Rabbit_Card,スプリングラビットカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,517,Rct_Brute,200; bonus3 bAddMonsterDropItem,528,Rct_Brute,200; bonus2 bItemHealRate,5,50; bonus2 bItemHealRate,11,50; }
 4228,Sleeper_Card,スリーパーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12031,Rct_Fish,100; }
-4229,C_Tower_Manager_Card,時計塔管理者カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,1; bonus bCastrate,-5; }
+4229,C_Tower_Manager_Card,時計塔管理者カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,1; bonus bCastRate,-5; }
 4230,Shinobi_Card,カブキ忍者カード,6,20,,10,,,,,,,136,,,,,{},{ bonus bAgi,1; if(getskilllv(135)>0) bonus3 bRevAutoSelfSpell,135,5,1000; }
 4231,Increase_Soil_Card,土精カード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubGroup,5,50; }
 4232,Wild_Ginseng_Card,老人参カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,507,Rct_Plant,300; bonus3 bAddMonsterDropItem,508,Rct_Plant,200; bonus3 bAddMonsterDropItem,509,Rct_Plant,100; bonus2 bItemHealRate,2,50; }
@@ -2221,7 +2221,7 @@
 4277,Zherlthsh_Card,ジルタスカード,6,20,,10,,,,,,,32,,,,,{},{ bonus bLuk,2; bonus2 bAddSkillDamageRate,324,10; bonus2 bAddSkillDamageRate,316,10; if(equippeditem(4268)==0) end; bonus bBaseAtk,20; bonus bLuk,3; }
 4278,Gibbet_Card,ジビットカード,6,20,,10,,,,,,,769,,,,,{},{ if(getequiprefinerycnt(1)<=5) bonus bMdef,5; }
 4279,Deleter_Card,グラウンドデリーターカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bSPRecovStop,0; bonus3 bDefeatSPDrainValue,Rct_All,100,10; bonus bSPPenaltyUnrig,100; }
-4280,Geographer_Card,ジオグラファーカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(34)<10){ bonus3 bRevAutoSelfSpell,34,2,300; }else{ bonus3 bRevAutoSelfSpell,34,10,300; } if(equippeditem(4185)==0 || equippeditem(4217)==0 || equippeditem(4293)==0 || equippeditem(4312)==0) end; bonus bVit,10; bonus bCastrate,-10; bonus bUseSPrate,-10; if(getbaseclass(Class) == CLASS_AL) { bonus2 bSubRace,Rct_Undead,30; bonus2 bMagicSubRace,Rct_Undead,30; bonus2 bSubRace,Rct_Demon,30; bonus2 bMagicSubRace,Rct_Demon,30; bonus2 bExpRate,Rct_Undead,5; bonus2 bExpRate,Rct_Demon,5; bonus2 bJobRate,Rct_Undead,5; bonus2 bJobRate,Rct_Demon,5; } }
+4280,Geographer_Card,ジオグラファーカード,6,20,,10,,,,,,,16,,,,,{},{ if(getskilllv(34)<10){ bonus3 bRevAutoSelfSpell,34,2,300; }else{ bonus3 bRevAutoSelfSpell,34,10,300; } if(equippeditem(4185)==0 || equippeditem(4217)==0 || equippeditem(4293)==0 || equippeditem(4312)==0) end; bonus bVit,10; bonus bCastRate,-10; bonus bUseSPrate,-10; if(getbaseclass(Class) == CLASS_AL) { bonus2 bSubRace,Rct_Undead,30; bonus2 bMagicSubRace,Rct_Undead,30; bonus2 bSubRace,Rct_Demon,30; bonus2 bMagicSubRace,Rct_Demon,30; bonus2 bExpRate,Rct_Undead,5; bonus2 bExpRate,Rct_Demon,5; bonus2 bJobRate,Rct_Undead,5; bonus2 bJobRate,Rct_Demon,5; } }
 4281,Zipper_Bear_Card,チャッキーカード,6,20,,10,,,,,,,2,,,,,{},{bonus bBaseAtk,30; bonus2 bSPDrainValue,100,-1; if(getbaseclass(Class) == CLASS_MC) bonus bUnbreakableWeapon,0; }
 4282,Tengu_Card,酒天狗カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,522,Rct_NonBoss,5; bonus3 bAddMonsterDropItem,521,Rct_NonBoss,5; bonus3 bAddMonsterDropItem,520,Rct_NonBoss,10; bonus3 bAddMonsterDropItem,545,Rct_NonBoss,10; bonus3 bAddMonsterDropItem,508,Rct_NonBoss,20; bonus3 bAddMonsterDropItem,511,Rct_NonBoss,30; bonus3 bAddMonsterDropItem,507,Rct_NonBoss,30; bonus3 bAddMonsterDropItem,569,Rct_NonBoss,50; bonus3 bAddMonsterDropItem,549,Rct_NonBoss,50; bonus3 bAddMonsterDropItem,550,Rct_NonBoss,600; }
 4283,Greatest_General_Card,天下大将軍カード,6,20,,10,,,,,,,136,,,,,{},{ if(getbaseclass(Class) == CLASS_GS) bonus3 bAutoSpell,500,5,200; else if(getbaseclass(Class) == CLASS_AL) bonus3 bAutoSpell,261,5,200; else bonus3 bAutoSpell,261,5,20;}
@@ -2268,7 +2268,7 @@
 4324,Garm_Card,ハティーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Freeze,5000; }
 4325,Harpy_Card,ハーピーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bSubEle,Ele_Neutral,15; bonus2 bAddSkillDamageRate,11,5; }
 4326,See_Otter_Card,シーオッターカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,551,Rct_Fish,300; bonus3 bAddMonsterDropItem,544,Rct_Fish,300; bonus2 bItemHealRate,6,50; }
-4327,Blood_Butterfly_Card,パピヨンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bNoCastCancel,0; bonus bCastrate,30; bonus2 bAddSkillDamageRate,18,5; }
+4327,Blood_Butterfly_Card,パピヨンカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bNoCastCancel,0; bonus bCastRate,30; bonus2 bAddSkillDamageRate,18,5; }
 4328,Hyegun_Card,ヒェグンカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bFlee,15; bonus bCritical,1; }
 4329,Phendark_Card,フェンダークカード,6,20,,10,,,,,,,2,,,,,{},{ bonus3 bDefeatSPDrainValue,Rct_Human,100,5; bonus bSPPenaltyUnrig,5; }
 4330,Dark_Snake_Lord_Card,黒蛇王カード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,3; bonus2 bResEff,Eff_Blind,10000; bonus2 bResEff,Eff_Curse,10000; }
@@ -2306,13 +2306,13 @@
 4362,Harword_Card,ハワード=アルトアイゼンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,30; bonus bAspdAddRate,-5; }
 4363,B_Magaleta_Card,マーガレッタ=ソリン（MVP）カード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,361,1,500; }
 4364,Magaleta_Card,マーガレッタ=ソリンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,1; bonus4 bAutoSpell,76,5,1500,EAS_REVENGE|EAS_MAGIC; }
-4365,B_Katrinn_Card,カトリーヌ=ケイロン（MVP）カード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bIgnoreMDefRace,Rct_NonBoss,100; bonus bCastrate,100; bonus bSPrecovRate,-100; bonus bSPPenaltyUnrig,2000; }
-4366,Katrinn_Card,カトリーヌ=ケイロンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bCastrate,-1*getequiprefinerycnt(1); if(getequiprefinerycnt(1)>=9) bonus bMatkRate,2; }
+4365,B_Katrinn_Card,カトリーヌ=ケイロン（MVP）カード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bIgnoreMDefRace,Rct_NonBoss,100; bonus bCastRate,100; bonus bSPrecovRate,-100; bonus bSPPenaltyUnrig,2000; }
+4366,Katrinn_Card,カトリーヌ=ケイロンカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bCastRate,-1*getequiprefinerycnt(1); if(getequiprefinerycnt(1)>=9) bonus bMatkRate,2; }
 4367,B_Shecil_Card,セシル=ディモン（MVP）カード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bHPDrainRate,5,20; bonus bHPrecovRate,-100; }
 4368,Shecil_Card,セシル=ディモンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bHit,-30; bonus bAspdAddRate,5; }
 4369,Venatu_Card,ヴェナートカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bLuk,readparam(bAgi)/18; }
 4370,Dimik_Card,ディミックカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bVit,getequiprefinerycnt(2)-5; }
-4371,Archdam_Card,アークダムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,10; bonus bCastrate,20; if(equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,1; bonus bInt,1; bonus bDef,2; bonus bSPrecovRate,10; bonus2 bAddSkillDamageRate,368,10; bonus2 bAddSkillDamageRate,480,10; bonus bCastrate,-10; if(getbaseclass(Class,2) == CLASS_CR) bonus bDefEle,Ele_Holy; }
+4371,Archdam_Card,アークダムカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,10; bonus bCastRate,20; if(equippeditem(4311)==0 || equippeditem(4319)==0 || equippeditem(4331)==0) end; bonus bStr,1; bonus bInt,1; bonus bDef,2; bonus bSPrecovRate,10; bonus2 bAddSkillDamageRate,368,10; bonus2 bAddSkillDamageRate,480,10; bonus bCastRate,-10; if(getbaseclass(Class,2) == CLASS_CR) bonus bDefEle,Ele_Holy; }
 4372,Bacsojin_Card,ペクソジンカード,6,20,,10,,,,,,,769,,,,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,30; bonus bUseSPrate,15; }
 4373,Chung_E_Card,チュンイーカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bLuk,getequiprefinerycnt(5)-5; bonus bCritical,getequiprefinerycnt(5); }
 4374,Apocalips_H_Card,ヴェスパーカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bIgnoreMDefRace,Rct_Boss,30; bonus bDex,2; }
@@ -2323,7 +2323,7 @@
 4379,Acidus__Card,ブルーオシドスカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMaxSP,40; if(getequiprefinerycnt(1)>4)end; bonus bMaxSP,40; bonus bSPrecovRate,5; }
 4380,Ferus_Card,レッドペロスカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddSkillDamageRate,83,5; bonus2 bAddSkillDamageRate,80,5; bonus bSPPenaltyUnrig,50; }
 4381,Ferus__Card,グリーンペロスカード,6,20,,10,,,,,,,64,,,,,{},{ bonus bVit,1; bonus bMaxHPrate,10; if(equippeditem(4234)==0 || equippeditem(4178)==0 || equippeditem(4297)==0 || equippeditem(4252)==0) end; bonus bDex,5; bonus2 bAddSkillDamageRate,394,5; bonus2 bAddSkillDamageRate,316,10; bonus2 bAddSkillDamageRate,324,10; if(getbaseclass(Class,2) == CLASS_BA || getbaseclass(Class,2) == CLASS_DC) bonus3 bRevAutoSpell,489,2,500; }
-4382,Novus__Card,イエローノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMaxHP,500; bonus bHPrecovRate,10; if(equippeditem(4258)==0 || equippeditem(4325)==0 || equippeditem(4208)==0 || equippeditem(4327)==0) end; bonus bInt,3; bonus2 bAddSkillDamageRate,21,10; bonus2 bAddSkillDamageRate,91,10; if(getbaseclass(Class,2) == CLASS_SA) { bonus bMagicDamageReturn,20; bonus bCastrate,-20; bonus3 bAddMonsterDropItem,715,Rct_NonBoss,100; bonus3 bAddMonsterDropItem,716,Rct_NonBoss,100; } }
+4382,Novus__Card,イエローノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMaxHP,500; bonus bHPrecovRate,10; if(equippeditem(4258)==0 || equippeditem(4325)==0 || equippeditem(4208)==0 || equippeditem(4327)==0) end; bonus bInt,3; bonus2 bAddSkillDamageRate,21,10; bonus2 bAddSkillDamageRate,91,10; if(getbaseclass(Class,2) == CLASS_SA) { bonus bMagicDamageReturn,20; bonus bCastRate,-20; bonus3 bAddMonsterDropItem,715,Rct_NonBoss,100; bonus3 bAddMonsterDropItem,716,Rct_NonBoss,100; } }
 4383,Novus_Card,レッドノーバスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddRevEff,Eff_Confusion,3000; bonus2 bAddEff2,Eff_Confusion,3000; }
 4384,Hydro_Card,ハイドラランサーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAutoSpell,277,1,1000; }
 4385,Dragon_Egg_Card,ドラゴンの卵カード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,12048,Rct_Dragon,50; }
@@ -2353,7 +2353,7 @@
 4409,Agav_Card,アガヴカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bMatkRate,5; bonus bDef,-10; if(getbaseclass(Class) == CLASS_MG) bonus bMaxSP,100; }
 4410,Echio_Card,エキオカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bBaseAtk,15; if(getbaseclass(Class) == CLASS_SM) bonus bMaxHP,500; }
 4411,Vanberk_Card,ヴァンベルクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bStr,2; bonus3 bAutoActiveWeapon,4411,50,5000; if(checkactiveitem()) { misceffect 9,""; bonus bCritical,100; } }
-4412,Isilla_Card,アイシラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,2; bonus3 bAutoActiveMagic,4412,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastrate,-50; bonus bFlee,30; } }
+4412,Isilla_Card,アイシラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bInt,2; bonus3 bAutoActiveMagic,4412,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastRate,-50; bonus bFlee,30; } }
 4413,Hodremlin_Card,ホドレムリンカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubSize,0,15; bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus3 bRevAutoActiveWeapon,4413,30,10000; bonus3 bRevAutoActiveMagic,4413,30,10000; if(checkactiveitem()) { misceffect 224,""; bonus bFlee2,30; } }
 4414,Seeker_Card,シーカーカード,6,20,,10,,,,,,,32,,,,,{},{ skill 16,1; bonus2 bResEff,Eff_Stone,3000; bonus bMdef,10; }
 4415,Snowier_Card,スノウアーカード,6,20,,10,,,,,,,136,,,,,{},{ bonus3 bAddMonsterDropItem,536,Rct_NonBoss,1000; bonus2 bItemHealRate,7,100; }
@@ -2397,10 +2397,10 @@
 4453,Hilsrion_Card,ヒルスリオンカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bBaseAtk,25; }
 4454,Light_Up_Card1,ヴァルキリーカード1,6,20,,10,,,,,,,2,,,,,{},{}
 4455,Light_Up_Card2,ヴァルキリーカード2,6,20,,10,,,,,,,2,,,,,{},{}
-4456,Nidhogg_Shadow_Card,ニーズヘッグの影カード,6,20,,10,,,,,,,16,,,,,{},{ bonus bInt,5; if(Job == Job_Warlock) bonus2 bFixCastrate,-50,0; }
+4456,Nidhogg_Shadow_Card,ニーズヘッグの影カード,6,20,,10,,,,,,,16,,,,,{},{ bonus bInt,5; if(Job == Job_Warlock) bonus2 bFixCastRate,-50,0; }
 4457,Nahtzigger_Card,ナハトズィーガーカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bAddEleMagicDamageRate,Ele_Ghost,30; }
 4458,Duneyrr_Card,ドゥネイールカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bBaseAtk,10; bonus3 bAutoActiveWeapon,4458,100,4000; if(checkactiveitem()) { misceffect 9,""; bonus bFlee2,10; } }
-4459,Rata_Card,ラタトスクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMatk,10; bonus3 bAutoActiveMagic,4459,100,4000; if(checkactiveitem()) { misceffect 88,""; bonus2 bFixCastrate,-50,0; } }
+4459,Rata_Card,ラタトスクカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bMatk,10; bonus3 bAutoActiveMagic,4459,100,4000; if(checkactiveitem()) { misceffect 88,""; bonus2 bFixCastRate,-50,0; } }
 4460,Rhyncho_Card,リンコカード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bAddSpCost,28,15; bonus2 bAddSkillHealRate,28,4; bonus2 bAddSkillHealRate,70,4; bonus2 bAddSkillHealRate,231,4; bonus2 bAddSkillHealRate,2043,4; bonus2 bAddSkillHealRate,2051,4; }
 4461,Phylla_Card,フィラカード,6,20,,10,,,,,,,769,,,,,{},{ bonus bAgi,1; bonus bDex,1; bonus3 bAutoActiveWeapon,4461,40,4000; if(checkactiveitem()) { misceffect 9,""; bonus bCritical,20; } }
 4462,Hardrock_Mammoth_Card,ハードロックマンモスカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bDef,5; }
@@ -2433,7 +2433,7 @@
 4515,Alnoldi_Card,アーノルディカード,6,20,,10,,,,,,,32,,,,,{},{ bonus2 bSubRace,Rct_Plant,30; }
 4516,Comodo_Card,デワタドラゴンカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bFlee,-25; bonus bDef,50; }
 4517,Cendrawasih_Card,極楽鳥カード,6,20,,10,,,,,,,769,,,,,{},{ if(getbaseclass(Class) == CLASS_MG && getequiprefinerycnt(1) >= 3) bonus bInt,2+getequiprefinerycnt(1)/3; else bonus bInt,2; }
-4518,Banaspaty_Card,バナスパティカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Burnning,200; }
+4518,Banaspaty_Card,バナスパティカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddEff,Eff_Burning,200; }
 4519,Butoijo_Card,ブトイジョカード,6,20,,10,,,,,,,2,,,,,{},{ bonus2 bAddRace,Rct_Angel,20; }
 4520,Leak_Card,レヤックカード,6,20,,10,,,,,,,4,,,,,{},{ bonus bStr,3; bonus2 bAddRevEff,Eff_Confusion,1500; bonus2 bAddRevEff,Eff_Fear,500; }
 4521,Sedora_Card,セドラカード,6,20,,10,,,,,,,2,,,,,{},{ bonus bAddCriticalDamage,15; }
@@ -2508,8 +2508,8 @@
 4757,Luck8,Luk + 8,6,20,,10,,,,,,,65535,,,,,{},{ bonus bLuk,8; }
 4758,Luck9,Luk + 9,6,20,,10,,,,,,,65535,,,,,{},{ bonus bLuk,9; }
 4759,Luck10,Luk + 10,6,20,,10,,,,,,,65535,,,,,{},{ bonus bLuk,10; }
-4760,Matk1,Matk 1,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,1; bonus2 bFixCastrate,-1,0; }
-4761,Matk2,Matk 2,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,2; bonus2 bFixCastrate,-1,0; }
+4760,Matk1,Matk 1,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,1; bonus2 bFixCastRate,-1,0; }
+4761,Matk2,Matk 2,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,2; bonus2 bFixCastRate,-1,0; }
 4762,Evasion6,Flee + 6,6,,,,,,,,,,65535,,,,,{},{ bonus bFlee,6; }
 4763,Evasion12,Flee + 12,6,,,,,,,,,,65535,,,,,{},{ bonus bFlee,12; }
 4764,Critical5,Cri + 5,6,,,,,,,,,,65535,,,,,{},{ bonus bCritical,5; }
@@ -2554,16 +2554,16 @@
 4803,Highness_Heal_3sec,治癒1,6,,,,,,,,,,65535,,,,,{},{ bonus2 bAddSkillCoolDown,2051,-3000; }
 4804,Coluceo_Heal30,大聖堂1,6,,,,,,,,,,65535,,,,,{},{ bonus2 bAddSpCost,2043,-30; }
 4805,Heal_Amount2,大司教1,6,,,,,,,,,,65535,,,,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,3; }
-4806,Matk3,Matk 3,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,3; bonus2 bFixCastrate,-1,0; }
+4806,Matk3,Matk 3,6,,,,,,,,,,65535,,,,,{},{ bonus bMatkRate,3; bonus2 bFixCastRate,-1,0; }
 4807,Atk_Speed1,Aspd + 1,6,,,,,,,,,,65535,,,,,{},{ bonus bAspd,1; }
 4808,Fighting_Spirit4,闘志4,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,15; bonus bHit,5; }
 4809,Fighting_Spirit3,闘志3,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,12; bonus bHit,4; }
 4810,Fighting_Spirit2,闘志2,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,9; bonus bHit,3; }
 4811,Fighting_Spirit1,闘志1,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,6; bonus bHit,2; }
-4812,Spell4,魔力4,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,15; bonus bCastrate,-10; }
-4813,Spell3,魔力3,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,12; bonus bCastrate,-8; }
-4814,Spell2,魔力2,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,9; bonus bCastrate,-6; }
-4815,Spell1,魔力1,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,6; bonus bCastrate,-4; }
+4812,Spell4,魔力4,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,15; bonus bCastRate,-10; }
+4813,Spell3,魔力3,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,12; bonus bCastRate,-8; }
+4814,Spell2,魔力2,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,9; bonus bCastRate,-6; }
+4815,Spell1,魔力1,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,6; bonus bCastRate,-4; }
 4816,Sharp3,先鋭3,6,,,,,,,,,,65535,,,,,{},{ bonus bHit,4; bonus bCritical,12; }
 4817,Sharp2,先鋭2,6,,,,,,,,,,65535,,,,,{},{ bonus bHit,3; bonus bCritical,9; }
 4818,Sharp1,先鋭1,6,,,,,,,,,,65535,,,,,{},{ bonus bHit,2; bonus bCritical,6; }
@@ -2574,12 +2574,12 @@
 4823,Fighting_Spirit8,闘志8,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,27; bonus bHit,5; }
 4824,Fighting_Spirit9,闘志9,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,30; bonus bHit,5; }
 4825,Fighting_Spirit10,闘志10,6,,,,,,,,,,65535,,,,,{},{ bonus bBaseAtk,50; bonus bHit,15; }
-4826,Spell5,魔力5,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,18; bonus bCastrate,-10; }
-4827,Spell6,魔力6,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,21; bonus bCastrate,-10; }
-4828,Spell7,魔力7,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,24; bonus bCastrate,-10; }
-4829,Spell8,魔力8,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,27; bonus bCastrate,-10; }
-4830,Spell9,魔力9,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,30; bonus bCastrate,-10; }
-4831,Spell10,魔力10,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,50; bonus bCastrate,-20; }
+4826,Spell5,魔力5,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,18; bonus bCastRate,-10; }
+4827,Spell6,魔力6,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,21; bonus bCastRate,-10; }
+4828,Spell7,魔力7,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,24; bonus bCastRate,-10; }
+4829,Spell8,魔力8,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,27; bonus bCastRate,-10; }
+4830,Spell9,魔力9,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,30; bonus bCastRate,-10; }
+4831,Spell10,魔力10,6,,,,,,,,,,65535,,,,,{},{ bonus bMatk,50; bonus bCastRate,-20; }
 4832,Expert_Archer1,名弓1,6,,,,,,,,,,65535,,,,,{},{ bonus bAddLongWeaponDamage,2; }
 4833,Expert_Archer2,名弓2,6,,,,,,,,,,65535,,,,,{},{ bonus bAddLongWeaponDamage,4; }
 4834,Expert_Archer3,名弓3,6,,,,,,,,,,65535,,,,,{},{ bonus bAddLongWeaponDamage,6; }
@@ -2601,12 +2601,12 @@
 4850,Heal_Amount3,大司教2,6,,,,,,,,,,65535,,,,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,6; bonus bUseSPrate,5; }
 4851,Heal_Amount4,大司教3,6,,,,,,,,,,65535,,,,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,12; bonus bUseSPrate,10; }
 4852,Heal_Amount5,大司教4,6,,,,,,,,,,65535,,,,,{},{ callfunc "ItemdbAlmightyHeal",0x7F,20; bonus bUseSPrate,15; }
-4853,S_Str,Special Str,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bStr,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastrate,-7,0; } } else bonus bStr,1; }
+4853,S_Str,Special Str,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bStr,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastRate,-7,0; } } else bonus bStr,1; }
 4854,S_Agi,Special Agi,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bAgi,4; if(getequiprefinerycnt() >= 9) { bonus2 bAddRace,Rct_Boss,1; bonus2 bAddRace,Rct_NonBoss,1; } } else bonus bAgi,1; }
-4855,S_Vital,Special Vit,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bVit,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastrate,-7,0; } } else bonus bVit,1; }
-4856,S_Int,Special Int,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bInt,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastrate,-7,0; } } else bonus bInt,1; }
-4857,S_Dex,Special Dex,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bDex,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastrate,-7,0; } } else bonus bDex,1; }
-4858,S_Luck,Special Luk,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bLuk,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastrate,-7,0; } } else bonus bLuk,1; }
+4855,S_Vital,Special Vit,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bVit,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastRate,-7,0; } } else bonus bVit,1; }
+4856,S_Int,Special Int,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bInt,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastRate,-7,0; } } else bonus bInt,1; }
+4857,S_Dex,Special Dex,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bDex,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastRate,-7,0; } } else bonus bDex,1; }
+4858,S_Luck,Special Luk,6,,,,,,,,,,65535,,,,,{},{ if(getequiprefinerycnt() >= 8) { bonus bLuk,4; if(getequiprefinerycnt() >= 9) { bonus bAspd,1; bonus2 bFixCastRate,-7,0; } } else bonus bLuk,1; }
 4859,Evasion1,Flee + 1,6,,,,,,,,,,65535,,,,,{},{ bonus bFlee,1; }
 4860,Evasion3,Flee + 3,6,,,,,,,,,,65535,,,,,{},{ bonus bFlee,3; }
 4861,MHP1,MaxHP1,6,,,,,,,,,,65535,,,,,{},{ bonus bMaxHPrate,1; }
@@ -2756,7 +2756,7 @@
 5123,Ulle_Cap,ウルキャップ,4,30000,,500,,6,,1,991944702,2,256,,65,254,1,{},{ bonus bDex,2; bonus bAgi,1; if(equippeditem(2353)==1 && readparam(bDex)>=70) bonus bUseSPrate,-10; }
 5124,Fricca_Circlet,フリッグのサークレット,4,30000,,300,,6:10,,0,991944702,2,256,,65,251,1,{},{ bonus bInt,2; bonus bMaxSP,50; }
 5125,Kiss_Of_Angel,天使の口づけ,4,10000,,300,,6,,1,8388609,2,256,,50,255,1,{},{ bonus bSPrecovRate,3; }
-5126,Morpheus's_Hood,モルフェウスの頭巾,4,30000,,200,,3,,0,991944702,2,256,,33,256,1,{},{ bonus bInt,2; if(equippeditem(2518)==0 || (equippeditem(2648)==0 && equippeditem(2902)==0) || (equippeditem(2649)==0 && equippeditem(2903))) end; bonus bInt,5; bonus bMdef,11; bonus bMaxSPrate,20; bonus bNoCastCancel,0; bonus bCastrate,25; }
+5126,Morpheus's_Hood,モルフェウスの頭巾,4,30000,,200,,3,,0,991944702,2,256,,33,256,1,{},{ bonus bInt,2; if(equippeditem(2518)==0 || (equippeditem(2648)==0 && equippeditem(2902)==0) || (equippeditem(2649)==0 && equippeditem(2903))) end; bonus bInt,5; bonus bMdef,11; bonus bMaxSPrate,20; bonus bNoCastCancel,0; bonus bCastRate,25; }
 5127,Morrigane's_Helm,モリガンのヘルム,4,30000,,500,,8,,0,991944702,2,256,,61,257,1,{},{ bonus bLuk,2; bonus bBaseAtk,3; if(equippeditem(2519)==0 || (equippeditem(2650)==0 && equippeditem(2900)==0) || (equippeditem(2651)==0 && equippeditem(2901)==0)) end; bonus bStr,2; bonus bLuk,9; bonus bCritical,13; bonus bBaseAtk,18; bonus bFlee2,13; }
 5128,Goibne's_Helmet,ゴヴニュの兜,4,30000,,500,,10:3,,0,991944702,2,256,,54,258,1,{},{ bonus bVit,3; if(getequipid(2)==2354 && (getequipid(5)==2520 || getequipid(5)==2599) && (getequipid(6)==2419 || getequipid(6)==2493)) { bonus bVit,5; bonus bMaxHPrate,15; bonus bMaxSPrate,5; bonus bDef,5; bonus bMdef,15; bonus2 bSubEle,Ele_Water,10; bonus2 bSubEle,Ele_Earth,10; bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Wind,10; }
 5129,Bird_Nest,巣立ちを迎えた鳥の巣,4,20,,400,,2,,0,1000333311,2,256,,50,201,,{},{ bonus bAgi,2; bonus2 bSubRace,Rct_Brute,10; bonus2 bMagicSubRace,Rct_Brute,10; }
@@ -2768,7 +2768,7 @@
 5135,Cyclops_Visor,サイクロプスアイ,4,,,200,,,,,991944702,2,512,,75,207,,{},{ bonus bMaxSP,50; }
 5136,Santa's_Hat_,ルイーゼのサンタ帽,4,20,,100,,4:1,,0,1000333311,2,256,,0,20,1,{},{ bonus bLuk,1; }
 5137,Alice_Doll,たれ人形,4,,,500,,0,,1,1000333311,2,256,,30,208,,{},{ bonus bStr,1; bonus2 bAddRace,Rct_Human,10; }
-5138,Magic_Eyes,マジックアイズ,4,,,300,,3:5,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastrate,-10; }
+5138,Magic_Eyes,マジックアイズ,4,,,300,,3:5,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastRate,-10; }
 5139,Hibiscus,ハイビスカス,4,,,200,,0:5,,0,1000333311,2,256,,10,210,,{},{ bonus bDex,1; bonus bInt,1; }
 5140,Charming_Ribbon,かわいいリボン,4,,,400,,2,,1,1000333311,2,256,,10,211,1,{},{ bonus2 bSubRace,Rct_Undead,5; bonus2 bMagicSubRace,Rct_Undead,5; bonus2 bSubRace,Rct_Demon,5; bonus2 bMagicSubRace,Rct_Demon,5; }
 5141,Marionette_Doll,マリオネット人形,4,20,,400,,1,,1,991944702,2,256,,30,212,1,{},{ bonus bStr,1; }
@@ -2840,7 +2840,7 @@
 5207,Gold_Spirit_Chain,金の魂のリング,4,,,100,,0,,0,1000333311,2,256,,0,260,,{},{ bonus2 bSubEle,Ele_Holy,5; bonus bLuk,1; }
 5208,Rideword_Hat,ライドワード帽,4,20,,300,,3,,1,991944702,2,256,,40,262,1,{},{ bonus2 bHPDrainRate,5,8; bonus2 bSPDrainRate,1,4; bonus2 bHPPenaltyTime,5000,10; }
 5209,Yellow_Baseball_Cap,黄色い野球帽,4,20,,300,,2,,,991944702,2,256,,,263,1,{},{}
-5210,Flying_Angel,天使の忘れもの,4,20,,300,,3,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastrate,-3; bonus bAspdAddRate,3; }
+5210,Flying_Angel,天使の忘れもの,4,20,,300,,3,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastRate,-3; bonus bAspdAddRate,3; }
 5211,Dress_Hat,ドレスハット,4,20,,200,,3:7,,1,1000333311,2,256,,20,265,1,{},{}
 5212,Satellite_Hairband,サテライトヘアバンド,4,20,,1000,,6,,1,1000333311,2,256,,30,266,1,{},{ bonus bMaxHP,50; bonus bMaxSP,10; skill 24,1; }
 5213,Black_Bunny_Band,バニーヘアバンド,4,20,,200,,4:3,,0,1000333311,2,256,,,267,1,{},{ bonus bAgi,2; }
@@ -2856,7 +2856,7 @@
 5223,Big_Golden_Bell_,大きな金の鈴,11,20,,200,,2,,0,991944702,2,768,,35,175,1,{},{ bonus bAgi,2; }
 5224,Orc_Hero_Helm_TW,オークヒーローの兜,11,20,,900,,5,,0,991944702,2,768,,55,178,1,{},{ bonus bStr,2; bonus bVit,1; bonus bMaxHPrate,10; }
 5225,Marcher_Hat,聖なるマーチングハット,4,20,,200,,4:2,,1,1000333311,2,256,,10,269,1,{},{ bonus bStr,2; bonus3 bRevAutoSelfSpell,33,5,100; }
-5226,Mini_Propeller_,プロペラ,4,20,,200,,4,,0,1000333311,2,256,,0,270,1,{},{ bonus bAgi,2; bonus bDex,1; bonus bFlee,10; bonus bCastrate,-getequiprefinerycnt(1); }
+5226,Mini_Propeller_,プロペラ,4,20,,200,,4,,0,1000333311,2,256,,0,270,1,{},{ bonus bAgi,2; bonus bDex,1; bonus bFlee,10; bonus bCastRate,-getequiprefinerycnt(1); }
 5227,Red_Deviruchi_Cap,子悪魔帽（赤）,4,20,,800,,4,,0,991944702,2,256,,64,271,1,{},{ bonus bStr,1; bonus bInt,1; }
 5228,White_Deviruchi_Cap,子悪魔帽（白）,4,20,,800,,4,,0,991944702,2,256,,64,272,1,{},{ bonus bStr,1; bonus bInt,1; }
 5229,Gray_Deviruchi_Cap,子悪魔帽（灰）,4,20,,800,,4,,0,991944702,2,256,,64,273,1,{},{ bonus bStr,1; bonus bInt,1; }
@@ -2899,7 +2899,7 @@
 5266,Bunny_Band_C,ウサギのヘアバンドR,4,,-1,100,,10:5,,0,1000333311,2,256,,0,15,1,{},{ bonus2 bSubRace,Rct_Human,10; bonus2 bMagicSubRace,Rct_Human,10; }
 5267,Sahkkat_C,笠R,4,,-1,300,,14,,0,1000333311,2,256,,0,67,1,{},{ bonus bAgi,3; }
 5268,Lord_Circlet_C,フリーダムサークレット,4,,-1,0,,10:4,,0,991944702,2,256,,1,93,1,{},{ bonus bStr,3; bonus bInt,3; bonus bLuk,3; }
-5269,Flying_Angel_,翔ける天使,4,,,300,,3,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastrate,-3; bonus bAspdAddRate,3; }
+5269,Flying_Angel_,翔ける天使,4,,,300,,3,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bAgi,1; bonus bCastRate,-3; bonus bAspdAddRate,3; }
 5270,Fallen_Leaves_,落ち葉,4,,,100,,2,,1,1000333311,2,256,,,241,1,{},{ bonus bFlee2,5; }
 5271,Chinese_Crown_,鳳冠,11,,,500,,4:3,,1,1000333311,2,768,,,221,1,{},{ bonus2 bSubRace,Rct_Boss,getequiprefinerycnt(1); bonus2 bMagicSubRace,Rct_Boss,getequiprefinerycnt(1); }
 5272,Tongue_Mask_,あかんべー仮面,13,,,100,,2,,0,1000333311,2,513,,,253,,{},{ bonus3 bRevAutoSpell,6,5,500; }
@@ -2916,12 +2916,12 @@
 5283,Chick_Hat,ひよこちゃん,4,20,,100,,2,,0,1000333311,2,256,,10,311,,{},{ bonus bLuk,2; bonus bMaxHP,50; bonus bMaxSP,50; bonus2 bSubRace,Rct_Human,3; bonus2 bMagicSubRace,Rct_Human,3; bonus2 bSubRace,Rct_Brute,3; bonus2 bMagicSubRace,Rct_Brute,3; if(getskilllv(48)<3){ bonus bDoubleRate,10; end; } bonus bDoubleRate,getskilllv(48)*5; }
 5284,Water_Lily_Crown,睡蓮の冠,4,20,,200,,0,,1,1000333311,2,256,,30,312,,{},{ bonus bDex,1; bonus bAgi,1; bonus bHPrecovRate,5; bonus bSPrecovRate,3; }
 5285,Vane_Hairpin,風車のかんざし,4,20,,300,,4,,1,1000333311,2,256,,30,313,,{},{ bonus bAgi,2; }
-5286,Pecopeco_Hairband,ペコペコのヘアバンド,4,20,,100,,6,,0,1000333311,2,256,,70,314,1,{},{ bonus bSpeedRate,25; bonus bAspdAddRate,-10; bonus bCastrate,25; }
+5286,Pecopeco_Hairband,ペコペコのヘアバンド,4,20,,100,,6,,0,1000333311,2,256,,70,314,1,{},{ bonus bSpeedRate,25; bonus bAspdAddRate,-10; bonus bCastRate,25; }
 5287,Vacation_Hat,避暑地の帽子,4,20,,200,,2,,1,1000333311,2,256,,30,315,,{},{ bonus bVit,1; }
 5288,Red_Glasses,赤いメガネ,4,20,,100,,1:5,,0,1000333311,2,512,,10,316,,{},{}
 5289,Vanilmirth_Hat,バニルミルトの帽子,4,20,,1000,,0:5,,0,1000333311,2,256,,30,317,,{},{ bonus bUnbreakableHelm,1; bonus3 bAutoSpell,19,1,100; bonus3 bAutoSpell,14,1,100; bonus3 bAutoSpell,20,1,100; bonus3 bAutoSpell,90,1,100; }
 5290,Drooping_Bunny_,たれうさぎ,4,20,,100,,3,,0,1000333311,2,256,,0,249,1,{},{ bonus bDex,1; bonus bFlee,2; }
-5291,Kettle_Hat,魔法のやかん,4,20,,600,,8,,0,1000333311,2,256,,30,318,1,{},{ bonus4 bAutoSpell,286,2,300,EAS_ATTACK|EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bAutoSpell,86,3,300; }
+5291,Kettle_Hat,魔法のやかん,4,20,,600,,8,,0,1000333311,2,256,,30,318,1,{},{ bonus4 bAutoSpell,286,2,300,EAS_ATTACK|EAS_SELF|EAS_NOSP; bonus3 bAutoSpell,86,3,300; }
 5292,Dragon_Skull,龍の骸骨,4,20,,800,,10,,0,1000333311,2,256,,50,319,1,{},{ bonus2 bSubRace,Rct_Dragon,5; bonus2 bMagicSubRace,Rct_Dragon,5; }
 5293,Ramen_Hat,ラーメン,4,20,,500,,3,,0,1000333311,2,256,,30,320,,{},{ bonus bDex,4; bonus bInt,-1; }
 5294,Whisper_Mask,ウィスパーマスク,14,20,,100,,0,,0,1000333311,2,769,,10,321,,{},{ bonus bAgi,3; bonus2 bSubEle,Ele_Ghost,-10; }
@@ -2943,7 +2943,7 @@
 5310,Bulb_Hairband,輝く電球のヘアバンド,4,,,100,,5,,1,1000333311,2,256,,,332,1,{},{ bonus2 bSubEle,Ele_Dark,10; skill 10,1; }
 5311,Large_Hibiscus,大きなハイビスカス,4,,,100,,2:15,,1,1000333311,2,256,,,333,1,{},{}
 5312,Ayothaya_Hat,アユタヤ王の帽子,4,,,100,,5,,1,414946,2,256,,,334,1,{},{ bonus bStr,1; bonus2 bAddRace,Rct_Human,5; }
-5313,Diadem,ダイアデム,11,,,100,,3,,1,1000333311,2,768,,,335,1,{},{ bonus bInt,1; bonus bMatkRate,3; bonus bMaxSPrate,3; bonus bCastrate,-3; callfunc "ItemdbAlmightyHeal",0x7F,3; }
+5313,Diadem,ダイアデム,11,,,100,,3,,1,1000333311,2,768,,,335,1,{},{ bonus bInt,1; bonus bMatkRate,3; bonus bMaxSPrate,3; bonus bCastRate,-3; callfunc "ItemdbAlmightyHeal",0x7F,3; }
 5314,Hockey_Mask,ホッケーマスク（RJC）,13,,,100,,1,,0,1000333311,2,513,,50,336,,{},{ bonus2 bAddRace,Rct_Human,5; }
 5315,Observer,オブザーバ（RJC）,4,,,100,,1,,0,1000333311,2,512,,35,337,,{},{ skill 93,1; }
 5316,Umbrella_Hat,アンブレラハット,4,,,100,,2,,0,1000333311,2,256,,50,338,1,{},{ bonus2 bSubEle,Ele_Water,3; }
@@ -2984,8 +2984,8 @@
 5351,Sunflower_,装飾用ひまわり,4,20,,100,,2,,1,1000333311,2,256,,0,37,,{},{ bonus2 bSubRace,Rct_Insect,10; bonus2 bMagicSubRace,Rct_Insect,10; }
 5352,Poporing_Cap,ポポリン帽,4,20,,700,,4,,0,991944702,2,256,,38,361,,{},{}
 5353,Helm_Of_Sun_,太陽神の兜,11,20,,2400,,4,,1,169860992,2,768,,0,138,1,{},{ bonus bStr,3; bonus bInt,2; }
-5354,Muslim_Hat_M,ムスリム帽子,4,20,,100,,4,,0,1000333311,2,256,,0,362,,{},{ bonus bCastrate,-5; }
-5355,Muslim_Hat_F,ムスリム帽子,4,20,,100,,4,,0,1000333311,2,256,,0,363,,{},{ bonus bCastrate,-5; }
+5354,Muslim_Hat_M,ムスリム帽子,4,20,,100,,4,,0,1000333311,2,256,,0,362,,{},{ bonus bCastRate,-5; }
+5355,Muslim_Hat_F,ムスリム帽子,4,20,,100,,4,,0,1000333311,2,256,,0,363,,{},{ bonus bCastRate,-5; }
 5356,Pumpkin_Hat_H,パンプキンハット2007,4,20,,200,,3,,0,1000333311,2,256,,0,206,1,{},{ bonus bStr,3; bonus bAgi,3; bonus bVit,3; bonus bInt,3; bonus bDex,3; bonus bLuk,3; bonus2 bAddRace,Rct_Demon,5; bonus2 bMagicAddRace,Rct_Demon,5; }
 5357,Wings_Of_Victory,勝利の翼,11,20,,200,,10:10,,0,1000333311,2,768,,0,365,,{},{ bonus bUnbreakableHelm,0; }
 5358,Pecopeco_Wing_Ears,ペコペコの羽耳,4,20,,100,,2:2,,0,1000333311,2,512,,70,366,,{},{ bonus bAgi,1; }
@@ -3009,7 +3009,7 @@
 5376,Satanic_Chain_P,サタニックチェーン,4,20,,100,,6,,1,1000333311,2,256,,0,382,1,{},{ bonus bMaxSP,120; bonus2 bAddEff2,Eff_Curse,100; }
 5377,Antique_Pipe,アンティークキセル,4,20,,100,,0,,0,1000333311,2,1,,0,383,,{},{ bonus2 bSubRace,Rct_Human,2; bonus2 bMagicSubRace,Rct_Human,2; }
 5378,Rabbit_Ear_Hat,兎耳帽子,4,20,,300,,0,,0,1000333311,2,256,,0,384,1,{},{ bonus bAgi,3; bonus3 bRevAutoSelfSpell,29,5,300; }
-5379,Balloon_Hat,バルーンハット,4,20,,800,,5,,1,1000333311,2,256,,0,385,1,{},{ bonus bCastrate,-getequiprefinerycnt(1); }
+5379,Balloon_Hat,バルーンハット,4,20,,800,,5,,1,1000333311,2,256,,0,385,1,{},{ bonus bCastRate,-getequiprefinerycnt(1); }
 5380,Fish_Head_Hat,魚帽子,4,20,,400,,2,,0,1000333311,2,256,,0,386,1,{},{ bonus3 bAutoSelfSpell,281,1,300; }
 5381,Santa_Poring_Hat,サンタポリン帽,4,20,,100,,4:2,,1,1000333311,2,256,,0,387,,{},{ bonus2 bAddEle,Ele_Dark,3; bonus2 bMagicAddEle,Ele_Dark,3; bonus2 bSubEle,Ele_Dark,3; }
 5382,Bell_Ribbon,小さな鈴のリボン,4,20,,200,,5,,1,1000333311,2,256,,0,388,1,{},{ bonus bVit,1; skill 33,1; }
@@ -3017,7 +3017,7 @@
 5384,Santa_Hat_1,ツインポンポンサンタ帽,4,20,,100,,2,,0,1000333311,2,256,,0,390,1,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; skill 93,1; bonus3 bRevAutoSelfSpell,29,1,500; }
 5385,Yoyo_Hat,ヨーヨー帽,4,20,,300,,2,,0,1000333311,2,256,,20,391,1,{},{ skill 51,1; }
 5386,Ayam_,新年福帽子,4,20,,70,,7:7,,0,1000333311,2,256,,0,228,,{},{ bonus bFlee,7; bonus bShortWeaponDamageReturn,7; bonus3 bAddMonsterDropItem,12198,Rct_NonBoss,5; }
-5387,Neko_Mimi_Kafra,カプラの猫耳ヘアバンド,4,20,,200,,1:5,,1,1000333311,2,256,,30,392,1,{},{ bonus2 bAddEff2,Eff_Blind,10; bonus2 bAddEff2,Eff_Sleep,10; bonus2 bAddEff2,Eff_Poison,10; bonus2 bAddEff2,Eff_Freeze,10; bonus2 bAddEff2,Eff_Silenc,10; bonus2 bAddEff2,Eff_Stun,10; bonus2 bAddEff2,Eff_Curse,10; }
+5387,Neko_Mimi_Kafra,カプラの猫耳ヘアバンド,4,20,,200,,1:5,,1,1000333311,2,256,,30,392,1,{},{ bonus2 bAddEff2,Eff_Blind,10; bonus2 bAddEff2,Eff_Sleep,10; bonus2 bAddEff2,Eff_Poison,10; bonus2 bAddEff2,Eff_Freeze,10; bonus2 bAddEff2,Eff_Silence,10; bonus2 bAddEff2,Eff_Stun,10; bonus2 bAddEff2,Eff_Curse,10; }
 5388,Snake_Head,蛇頭帽子,4,20,,200,,2,,1,1000333311,2,256,,30,393,1,{},{ bonus bDoubleRate,25; }
 5389,Angel_Spirit,女神の仮面,4,20,,200,,0,,0,1000333311,2,512,,30,394,,{},{ bonus2 bAddRace,Rct_Boss,2; bonus2 bAddRace,Rct_NonBoss,2; bonus bMatkRate,2; }
 5390,Santa_Hat_2,青いツインポンポンサンタ帽,4,20,,100,,4,,0,1000333311,2,256,,0,395,1,{},{ bonus2 bResEff,Eff_Freeze,3000; }
@@ -3028,7 +3028,7 @@
 5395,Tiraya_Bonnet,ティラヤボネット,4,20,,500,,6,,0,1000333311,2,256,,,398,1,{},{ bonus bVit,2; }
 5396,Jasper_Crest,ジャスパークレスト,4,20,,700,,6,,1,1000333311,2,256,,0,399,1,{},{ bonus bDex,1; bonus2 bAddRace,Rct_Undead,5; bonus2 bAddEle,Ele_Undead,5; if(getequiprefinerycnt(1)<6){ bonus2 bAddEff2,Eff_Blind,20; } if(getequiprefinerycnt(1)>=9){ bonus bDex,2; } }
 5397,Scuba_Mask,スキューバーマスク,4,20,,100,,0,,0,1000333311,2,512,,1,400,,{},{ bonus2 bAddRace,Rct_Fish,2; bonus2 bMagicAddRace,Rct_Fish,2; bonus2 bSubEle,Ele_Water,3; }
-5398,Bone_Head,ボーンヘッド,4,20,,1200,,10:5,,1,279714,2,256,,85,401,1,{},{ bonus bStr,2; bonus2 bResEff,Eff_Stun,500; bonus2 bResEff,Eff_Bleed,500; bonus bUnbreakableHelm,n;}
+5398,Bone_Head,ボーンヘッド,4,20,,1200,,10:5,,1,279714,2,256,,85,401,1,{},{ bonus bStr,2; bonus2 bResEff,Eff_Stun,500; bonus2 bResEff,Eff_Bleed,500; bonus bUnbreakableHelm,0; }
 5399,Mandragora_Cap,マンドラゴラキャップ,4,20,,300,,5,,1,2088832,2,256,,85,402,,{},{ bonus bVit,3; bonus3 bRevAutoSpell,326,5,300; }
 5400,Fox_Hat,狐帽子,14,20,,200,,0,,0,1000333311,2,769,,0,403,1,{},{ bonus bLuk,1; }
 5401,Black_Glasses,黒縁メガネ,4,20,,200,,2:2,,0,1000333311,2,512,,70,404,,{},{ bonus bInt,1; }
@@ -3038,14 +3038,14 @@
 5405,Filir_Hat,頭乗りフィーリル,4,20,,200,,2,,0,1000333311,2,256,,80,408,,{},{ bonus bShortWeaponDamageReturn,1; }
 5406,Academy_Freshman_Hat,アカデミー新入生帽子,4,,,200,,5,,,1000333311,2,256,,,409,,{},{ bonus bMaxHP,80; bonus bMaxSP,10; }
 5407,Academy_Graduating_Cap,アカデミー第一修了帽子,4,,,200,,5,,1,1000333311,2,256,,,410,,{},{ bonus bMaxSP,30; }
-5408,Old_Bandanna,古い頭巾,4,,,0,,10,,0,1000333311,2,256,,,,,{},{ bonus bInt,2; bonus bMaxSP,50; bonus bCastrate,-10; }
+5408,Old_Bandanna,古い頭巾,4,,,0,,10,,0,1000333311,2,256,,,,,{},{ bonus bInt,2; bonus bMaxSP,50; bonus bCastRate,-10; }
 5409,New_Cowboy_Hat,紫色のカウボーイハット,4,20,,500,,8,,0,1000333311,2,256,,0,411,1,{},{ bonus bInt,2; bonus bVit,2; bonus bMaxSP,50; }
 5410,Bread_Bag2,パン袋,14,20,,200,,6,,0,1000333311,2,769,,0,412,,{},{ bonus2 bSubRace,Rct_Human,4; bonus2 bMagicSubRace,Rct_Human,4; bonus2 bResEff,Eff_Stun,400; bonus bMaxHP,100; }
 5411,White_Snake_Hat,白蛇のヘアバンド,4,20,,500,,4,,0,1000333311,2,256,,0,413,1,{},{ bonus bDex,2; }
 5412,Sweet_Candy,甘いキャンディ,4,,,100,,1,,0,1000333311,2,1,,,414,,{},{}
 5413,Popcorn_Hat,ポップコーン帽子,4,20,,300,,4,,0,1000333311,2,256,,0,415,1,{},{ bonus2 bSubEle,Ele_Wind,10; }
 5414,Campfire_Hat,キャンプファイアー帽子,4,20,,300,,4,,0,1000333311,2,256,,0,416,1,{},{ bonus2 bSubEle,Ele_Fire,10; bonus3 bAutoSpell,17,5,500; }
-5415,Poring_Cake_Cap,ポリンケーキ帽子,4,,,1000,,10:5,,0,1000333311,2,256,,40,417,1,{},{ bonus bCritical,5; bonus bFlee,5; bonus bFlee2,5; bonus bAspdAddRate,5; bonus bCastrate,-5; bonus bSkillDelayRate,-5; }
+5415,Poring_Cake_Cap,ポリンケーキ帽子,4,,,1000,,10:5,,0,1000333311,2,256,,40,417,1,{},{ bonus bCritical,5; bonus bFlee,5; bonus bFlee2,5; bonus bAspdAddRate,5; bonus bCastRate,-5; bonus bSkillDelayRate,-5; }
 5416,Beer_Cap,ビール帽子,4,,,600,,4,,0,991944702,2,256,,18,418,1,{},{}
 5417,Crown_Parrot,王冠オウム,4,,,200,,2,,1,1000333311,2,256,,,419,,{},{ bonus2 bResEff,Eff_Silence,10000; bonus bInt,1; bonus3 bRevAutoSpell,326,1,10; }
 5418,Soldier_Hat,クルーザー帽,4,,,400,,8,,1,1000333311,2,256,,,420,1,{},{ bonus2 bAddRace,Rct_Boss,3; bonus2 bAddRace,Rct_NonBoss,3; bonus bStr,1; bonus bUseSPrate,10; }
@@ -3072,7 +3072,7 @@
 5439,Fillet_Red,レッドヘアバンド,4,,,100,,1,,0,991944702,2,256,,,440,,{},{ bonus bMaxSP,20; }
 5440,Fillet_Blue,ブルーヘアバンド,4,,,100,,1,,0,991944702,2,256,,,441,,{},{ bonus bMaxSP,20; }
 5441,Fillet_White,ホワイトヘアバンド,4,,,100,,1,,0,991944702,2,256,,,442,,{},{ bonus bMaxSP,20; }
-5442,Necktie,ネクタイ,4,,,100,,6,,1,1000333311,2,256,,70,443,1,{},{ bonus bVit,1; if(getequipid(9)==5040) { bonus bAspdAddRate,3; bonus bCastrate,-3; bonus bHit,-5; bonus bUseSPrate,5; } }
+5442,Necktie,ネクタイ,4,,,100,,6,,1,1000333311,2,256,,70,443,1,{},{ bonus bVit,1; if(getequipid(9)==5040) { bonus bAspdAddRate,3; bonus bCastRate,-3; bonus bHit,-5; bonus bUseSPrate,5; } }
 5443,Status_Of_Baby_Angel,赤ちゃん天使像,4,,,600,,6:2,,1,1000333311,2,256,,70,444,1,{},{ bonus3 bRevAutoSelfSpell,72,1,300; }
 5444,Hair_Brush,頭櫛,4,,,100,,0,,0,1000333311,2,256,,,445,1,{},{ bonus bCritical,6; }
 5445,Candy_Cane_In_The_Mouth,甘いスティックキャンディ,4,,,100,,0,,0,1000333311,2,1,,,446,,{},{ bonus bMaxSP,5; }
@@ -3109,7 +3109,7 @@
 5476,Hairband_Of_Grandpeco,グランペコのヘアバンド,11,,,800,,5,,,1000333311,2,768,,30,473,1,{},{ bonus bStr,2; bonus bMaxHPrate,-10; bonus2 bAddGroup,2,15; }
 5477,Bro_Flag,ブラジル国旗,4,,,100,,2,,1,991944702,2,256,,30,474,1,{},{ skill 5,1; }
 5478,Classic_Hat,クラシックハット,4,,,500,,4,,0,1000333311,2,256,,,475,1,{},{bonus bStr,2; bonus bMaxHP,300; }
-5479,Shaman's_Hair_Ornament,シャーマンの髪飾り,4,,,300,,2:3,,0,1000333311,2,256,,30,476,1,{},{ bonus bMaxHP,50; bonus2 bSubEle,Ele_Neutral,5; if( ( (getequipid(7)==2777) || (getequipid(8)==2777) ) && ( (getequipid(7)==2778) || (getequipid(8)==2778) ) ) bonus bMaxHP,300; bonus bCastrate,15; bonus bMatkRate,5; bonus bNoCastCancel,0; }
+5479,Shaman's_Hair_Ornament,シャーマンの髪飾り,4,,,300,,2:3,,0,1000333311,2,256,,30,476,1,{},{ bonus bMaxHP,50; bonus2 bSubEle,Ele_Neutral,5; if( ( (getequipid(7)==2777) || (getequipid(8)==2777) ) && ( (getequipid(7)==2778) || (getequipid(8)==2778) ) ) bonus bMaxHP,300; bonus bCastRate,15; bonus bMatkRate,5; bonus bNoCastCancel,0; }
 5480,Bizofnil_Wing_Deco,ヴィゾフニルの羽飾り,4,,,1000,,6,,1,1000333311,2,256,,30,477,1,{},{ bonus3 bAutoSelfSpell,66,3,200; }
 5481,Hermose_Cap,ヘルモーズキャップ,4,,,1000,,2,,0,1000333311,2,256,,10,478,1,{},{ bonus bAspdAddRate,10; bonus bBaseAtk,-20; bonus bMatkRate,-10; }
 5482,Dark_Knight_Mask,ダークナイトマスク,14,,,3000,,5,,0,1000333311,2,769,,80,479,1,{},{ bonus bStr,3; if( ( (getequipid(7)==2779) || (getequipid(8)==2779) ) && ( (getequipid(7)==2780) || (getequipid(8)==2780) ) ) bonus bMatkRate,10; bonus bInt,5; bonus2 bSubRace,Rct_Angel,10; bonus2 bMagicSubRace,Rct_Angel,10; }
@@ -3192,9 +3192,9 @@
 5559,Piece_Of_White_Cloth_E,真白な布切れ,11,,,0,,5,,0,1000333311,2,768,,1,543,1,{},{}
 5560,Bullock_Helm_J,角兜,4,,,3000,,6,,0,1000333311,2,256,,75,322,1,{},{ bonus bMaxHP,100; bonus bNoKnockback,0; bonus2 bSubEle,Ele_Neutral,-30; bonus2 bSubEle,Ele_Water,-30; bonus2 bSubEle,Ele_Earth,-30; bonus2 bSubEle,Ele_Fire,-30; bonus2 bSubEle,Ele_Wind,-30; bonus2 bSubEle,Ele_Poison,-30; bonus2 bSubEle,Ele_Holy,-30; bonus2 bSubEle,Ele_Dark,-30; bonus2 bSubEle,Ele_Ghost,-30; bonus2 bSubEle,Ele_Undead,-30;}
 5561,Rabbit_Magic_Hat_J,ウサギの魔術帽子,4,,,800,,1,,0,1000333311,2,256,,0,497,1,{},{ bonus bInt,1; bonus bMaxSP,50; bonus3 bAutoSpell,19,1,30; bonus3 bAutoSpell,14,1,30; bonus3 bAutoSpell,20,1,30; bonus3 bAutoSpell,90,1,30; bonus3 bAutoSpell,19,2,30; bonus3 bAutoSpell,14,2,30; bonus3 bAutoSpell,20,2,30; bonus3 bAutoSpell,90,2,30; bonus3 bAutoSpell,19,3,30; bonus3 bAutoSpell,14,3,30; bonus3 bAutoSpell,20,3,30; bonus3 bAutoSpell,90,3,30; bonus3 bRevAutoSelfSpell,28,1,500; /* 発動率は暫定 */ }
-5562,Good_Wedding_Veil_J,真実の愛,11,,,100,,0:10,,1,1000333311,2,768,,45,489,1,{},{ bonus bCastrate,-10; bonus bUseSPrate,-5; }
+5562,Good_Wedding_Veil_J,真実の愛,11,,,100,,0:10,,1,1000333311,2,768,,45,489,1,{},{ bonus bCastRate,-10; bonus bUseSPrate,-5; }
 5563,Dolor_Hat,たれタナトスの苦悩,4,,,100,,3,,1,1000333311,2,256,,1,547,1,{},{ bonus bUnbreakableHelm,0; bonus3 bRevAutoSpell,78,1,300; /*発動率暫定*/ }
-5564,Crown_Of_Deceit,邪気の王冠,11,,,300,,3,,0,1000333311,2,768,,85,544,1,{},{ bonus bInt,4; bonus bCastrate,-10; }
+5564,Crown_Of_Deceit,邪気の王冠,11,,,300,,3,,0,1000333311,2,768,,85,544,1,{},{ bonus bInt,4; bonus bCastRate,-10; }
 5565,Dragon_Arhat_Mask,降龍羅漢の仮面,13,,,0,,5,,0,1000333311,2,513,,0,545,,{},{ bonus2 bAddRace,Rct_Human,10; }
 5566,Tiger_Arhat_Mask,伏虎羅漢の仮面,13,,,0,,1,,0,1000333311,2,513,,0,546,,{},{ bonus2 bAddRace,Rct_Human,2; }
 5567,Bright_Fury,光輝の怒り,4,20,,1000,,4,,0,1000333311,2,256,,0,548,1,{},{ bonus bStr,2; bonus bAspdAddRate,2; bonus2 bAddRace,Rct_Boss,2; bonus2 bAddRace,Rct_NonBoss,2; }
@@ -3243,7 +3243,7 @@
 5610,Ice_Wing_Ear,氷の羽耳,4,,,100,,0,,0,1000333311,2,512,,10,584,0,{},{ bonus bLuk,1; bonus3 bRevAutoSpell,14,5,300; }
 5611,Turtle_Hat,物憂げなカメ,4,0,0,300,,0,,0,1000333311,2,256,,10,585,1,{},{ bonus bAgi,1; bonus bUnbreakableHelm,0; bonus3 bAutoSpell,30,3,500;  }
 5612,F_Blue_Drooping_Kitty,たれ猫（青）,4,20,,500,,3,,0,991944702,2,256,,0,277,1,{},{ bonus2 bResEff,Eff_Curse,3000; bonus bMdef,15; }
-5613,F_Flying_Angel,天使の忘れものR,4,20,,300,,1,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bCastrate,-3; bonus bAspdAddRate,3; }
+5613,F_Flying_Angel,天使の忘れものR,4,20,,300,,1,,0,1000333311,2,256,,10,264,1,{},{ bonus bInt,1; bonus bCastRate,-3; bonus bAspdAddRate,3; }
 5614,F_Smoking_Pipe_,進化したパイプタバコ,4,,,100,,1,,0,991944702,2,1,,,55,,{},{ bonus bVit,1; }
 5615,F_Pair_Of_Red_Ribbon_,進化したツインリボン,4,,,100,,1,,0,1000333311,2,512,,45,169,,{},{ bonus bFlee,5; }
 5616,F_Fish_On_Head_,進化した青い魚,4,20,,500,,2,,0,1000333311,2,256,,50,149,1,{},{ bonus bAgi,1; bonus bDex,1; }
@@ -3252,24 +3252,24 @@
 5619,F_Bunny_Band_,進化したウサギのヘアバンド,4,20,,100,,2,,0,1000333311,2,256,,0,15,1,{},{ bonus bInt,2; }
 5620,F_Magestic_Goat_TW,進化したマジェスティックゴート,4,20,,800,,5,,0,50611362,2,256,,0,41,1,{},{ bonus bStr,2; }
 5621,F_Sheep_Hat,羊帽子,4,20,,150,,1,,0,33040,2,256,,,205,,{},{ bonus bShortWeaponDamageReturn,5; }
-5622,F_Mini_Propeller_,プロペラ,4,20,,200,,2,,0,1000333311,2,256,,0,270,1,{},{ bonus bAgi,2; bonus bDex,1; bonus bFlee,10; bonus bCastrate,-getequiprefinerycnt(1); }
+5622,F_Mini_Propeller_,プロペラ,4,20,,200,,2,,0,1000333311,2,256,,0,270,1,{},{ bonus bAgi,2; bonus bDex,1; bonus bFlee,10; bonus bCastRate,-getequiprefinerycnt(1); }
 5623,F_Alice_Doll,たれ人形,4,,,500,,0,,1,1000333311,2,256,,30,208,,{},{ bonus bStr,1; bonus2 bAddRace,Rct_Human,10; bonus2 bAddEff2,131,1; }
 5624,F_Red_Glasses,赤いめがね,4,20,,100,,1,,1,1000333311,2,512,,10,316,,{},{ bonus bMdef,5; }
 5625,F_Chick_Hat,ひよこちゃん,4,20,,100,,1,,0,1000333311,2,256,,10,311,,{},{ bonus bLuk,2; bonus bMaxHP,50; bonus bMaxSP,50; bonus2 bSubRace,Rct_Human,3; bonus2 bMagicSubRace,Rct_Human,3; bonus2 bSubRace,Rct_Brute,3; bonus2 bMagicSubRace,Rct_Brute,3; if(getskilllv(48)<3){ bonus bDoubleRate,10; end; } bonus bDoubleRate,getskilllv(48)*5; }
 5626,F_White_Deviruchi_Cap,子悪魔帽（灰）,4,20,,800,,2,,0,991944702,2,256,,64,273,1,{},{ bonus bStr,1; bonus bInt,1; }
 5627,F_Vane_Hairpin,風車のかんざし,4,20,,300,,2,,1,1000333311,2,256,,30,313,,{},{ bonus bAgi,2; }
-5628,F_Pecopeco_Hairband,ペコペコのヘアバンド,4,20,,100,,3,,0,1000333311,2,256,,70,314,1,{},{ bonus bSpeedRate,25; bonus bAspdAddRate,-10; bonus bCastrate,25; }
+5628,F_Pecopeco_Hairband,ペコペコのヘアバンド,4,20,,100,,3,,0,1000333311,2,256,,70,314,1,{},{ bonus bSpeedRate,25; bonus bAspdAddRate,-10; bonus bCastRate,25; }
 5629,F_Vacation_Hat,避暑地の帽子,4,20,,200,,1,,1,1000333311,2,256,,30,315,,{},{ bonus bVit,1; }
 5630,F_Charming_Ribbon,かわいいリボン,4,,,400,,0,,1,1000333311,2,256,,10,211,1,{},{ bonus2 bSubRace,Rct_Undead,5; bonus2 bMagicSubRace,Rct_Undead,5; bonus2 bSubRace,Rct_Demon,5; bonus2 bMagicSubRace,Rct_Demon,5; }
 5631,F_Water_Lily_Crown,睡蓮の冠,4,20,,200,,0,,1,1000333311,2,256,,30,312,,{},{ bonus bDex,1; bonus bAgi,1; bonus bHPrecovRate,5; bonus bSPrecovRate,3; }
 5632,F_Vanilmirth_Hat,バニルミルトの帽子,4,20,,1000,,0,,0,1000333311,2,256,,30,317,,{},{ bonus bUnbreakableHelm,1; bonus bMdef,5; bonus3 bAutoSpell,19,1,100; bonus3 bAutoSpell,14,1,100; bonus3 bAutoSpell,20,1,100; bonus3 bAutoSpell,90,1,100; }
 5633,F_Drooping_Bunny_,たれうさぎ,4,20,,100,,1,,0,1000333311,2,256,,0,249,1,{},{ bonus bDex,1; bonus bFlee,2; }
-5634,F_Kettle_Hat,魔法のやかん,4,20,,600,,4,,0,1000333311,2,256,,30,318,1,{},{ bonus4 bAutoSpell,286,2,300,EAS_ATTACK|EAS_SELF|EAS_NOSP|EAS_ITEMNOCOST; bonus3 bAutoSpell,86,3,300; }
+5634,F_Kettle_Hat,魔法のやかん,4,20,,600,,4,,0,1000333311,2,256,,30,318,1,{},{ bonus4 bAutoSpell,286,2,300,EAS_ATTACK|EAS_SELF|EAS_NOSP; bonus3 bAutoSpell,86,3,300; }
 5635,F_Dragon_Skull,龍の骸骨,4,20,,800,,5,,0,1000333311,2,256,,50,319,1,{},{ bonus2 bSubRace,Rct_Dragon,5; bonus2 bMagicSubRace,Rct_Dragon,5; }
 5636,F_Ramen_Hat,ラーメン,4,20,,500,,1,,0,1000333311,2,256,,30,320,,{},{ bonus3 bRevAutoSpell,30,1,100; }
 5637,F_Pink_Fur_Hat,毛糸の帽子（桃）,4,20,,350,,2,,0,1000333311,2,256,,0,281,1,{},{ bonus bLuk,1; }
 5638,F_Puppy_Hat,お座りイヌ,4,,,500,,2,,0,1000333311,2,256,,30,234,,{},{ bonus bAgi,1; if(readparam(bAgi)<77){ bonus3 bAutoSelfSpell,75,1,100; } else{ bonus3 bAutoSelfSpell,75,3,100; } }
-5639,F_Magic_Eyes,マジックアイズ,4,,,300,,1,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastrate,-10; bonus bMdef,5; bonus bUseSPrate,20; }
+5639,F_Magic_Eyes,マジックアイズ,4,,,300,,1,,0,1000333311,2,256,,30,209,1,{},{ bonus bCastRate,-10; bonus bMdef,5; bonus bUseSPrate,20; }
 5640,F_Jumping_Poring,飛び跳ねポリン,4,20,,300,,2,,0,1000333311,2,256,,0,349,,{},{ bonus bLuk,1; bonus bUnbreakableHelm,0; }
 5641,F_Robo_Eye,ロボアイ,4,,,200,,1,,0,1000333311,2,512,,10,345,,{},{ bonus bAtkRate,2; bonus bMatkRate,2; bonus bDex,1; }
 5642,F_Yellow_Wizardry_Hat,とんがり帽子（黄）,4,20,,300,,1,,0,1000333311,2,256,,0,286,1,{},{ bonus bInt,2; bonus bMaxSP,150; }
@@ -3285,13 +3285,13 @@
 5652,F_Magestic_Goat_C,マジェスティックゴートR,4,,-1,0,,5,,0,991944702,2,256,,,41,,{},{ bonus2 bAddRace,Rct_Human,12; bonus2 bMagicAddRace,Rct_Human,12; bonus bBaseAtk,(JobLevel/4); }
 5653,Darkness_Helm_J,ダークネスヘルム,4,,,500,,3,,1,1000333311,2,256,,70,379,1,{},{ if(equippeditem(5074)==1){ bonus bStr,1; bonus bAspdAddRate,2; }; if(equippeditem(5068)==1){ bonus bStr,1; bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; }; if(equippeditem(5358)==1){ bonus bAgi,1; bonus bFlee,3; }; if(equippeditem(5401)==1){ bonus bInt,1; bonus bMatkRate,2; }; if(equippeditem(5470)==1){ bonus bDex,1; bonus bAddLongWeaponDamage,3; }; }
 5654,Holy_Marching_Hat_J,真っ赤なマーチングハット,4,,,200,,2,,1,1000333311,2,256,,10,587,1,{},{ bonus bStr,2; bonus3 bAutoSelfSpell,68,2,200; /*本来はオートアクティブ利用*/ }
-5655,Dark_Snake_Lord_Hat_J,黒蛇王の帽子,4,,,500,,2,,,1000333311,2,256,,60,372,1,{},{ bonus bInt,2; bonus bAgi,2; bonus bDex,-2; bonus3 bAutoActiveMagic,5655,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastrate,-50; bonus bFlee,30; } }
+5655,Dark_Snake_Lord_Hat_J,黒蛇王の帽子,4,,,500,,2,,,1000333311,2,256,,60,372,1,{},{ bonus bInt,2; bonus bAgi,2; bonus bDex,-2; bonus3 bAutoActiveMagic,5655,500,5000; if(checkactiveitem()) { misceffect 88,""; bonus bCastRate,-50; bonus bFlee,30; } }
 5656,Scooter_Hat_J,スクーターヘルメット,4,,,1000,,7,,1,1000333311,2,256,,50,588,1,{},{ bonus bUnbreakableHelm,1; }
 5657,Antique_Pipe_J,船長のパイプ,4,,,100,,0,,,1000333311,2,1,,30,383,0,{},{ if(equippeditem(5359)==1){ bonus bAddLongWeaponDamage,getequiprefinerycnt(1); }; }
 5658,Imp_Hat,インプ帽子,4,,,400,,1,,,1000333311,2,256,,,589,1,{},{ bonus3 bAutoSelfSpell2,280,1,50; }
 5659,Sleepr_Hat,スリーパー帽子,4,,,400,,1,,,1000333311,2,256,,,590,1,{},{ bonus3 bAutoSelfSpell2,283,1,50; }
 5660,Gryphon_Hat,グリフォン帽子,4,,,400,,1,,,1000333311,2,256,,,591,1,{},{ bonus3 bAutoSelfSpell2,282,1,50; }
-5661,Red_Pirate_Bandana,赤い海賊の頭巾,4,20,,100,,3,,0,991944702,2,256,,0,592,1,{},{ bonus bStr,1; bonus bDex,1; bonus bAspdAddRate,2; bonus bCastrate,2; bonus3 bAutoSpell,271,1,100; bonus bSpeedRate,25; }
+5661,Red_Pirate_Bandana,赤い海賊の頭巾,4,20,,100,,3,,0,991944702,2,256,,0,592,1,{},{ bonus bStr,1; bonus bDex,1; bonus bAspdAddRate,2; bonus bCastRate,2; bonus3 bAutoSpell,271,1,100; bonus bSpeedRate,25; }
 5662,Libra_Crown,天秤宮の王冠,4,0,0,300,,6,,1,1000333311,2,256,,1,593,1,{},{ bonus bDex,3; bonus2 bSubEle,Ele_Wind,7; if(getequiprefinerycnt(1)>=7){ bonus bMatkRate,3+2*(getequiprefinerycnt(1)>=9); } if(getequiprefinerycnt(1)>=9){ bonus3 bRevAutoSpell,88,5,300; } }
 5663,Libra_Diadem,天秤宮の宝冠,4,0,0,300,,6,,1,1000333311,2,256,,1,594,1,{},{ bonus bBaseAtk,7; if(getequiprefinerycnt(1)>=7){ bonus3 bAutoSpell,425,2,300; } if(getequiprefinerycnt(1)>=9){ bonus bFlee,5; bonus2 bAddRace,Rct_Boss,3; bonus2 bAddRace,Rct_NonBoss,3; } }
 5664,Filir_Wing,フィーリルの羽耳,4,,,100,,1,,0,1000333311,2,512,,70,595,,{},{ bonus bAspdAddRate,2; }
@@ -3303,7 +3303,7 @@
 5670,Aniv_Star_Hat,怪盗アニバーサリー帽,4,,,300,,3,,,1000333311,2,256,,,599,1,{},{ bonus bAgi,1; if(getequipid(9) == 2239) { bonus3 bAutoSpell,50,1,1000; } else { bonus3 bAutoSpell,50,1,100; }; /* 暫定 */ }
 5671,Drooping_Morocc_Minion,たれモロクの現身（人間型）,4,,,300,,,,1,1000333311,2,256,,70,600,1,{},{ bonus bSPGainValue,2; bonus3 bRevAutoSpell,673,2,20; }
 5672,Southern_Cross,サザンクロス,4,,,600,,3,,1,1000333311,2,256,,50,601,1,{},{ bonus bInt,1; if (getequiprefinerycnt(4) < 6){ bonus2 bIgnoreMDefRace,Rct_Boss,5; } else { bonus2 bIgnoreMDefRace,Rct_Boss,getequiprefinerycnt(4); } }
-5673,Home_Cherry_Blossom,憂郷のサクラ,4,,,100,,2,,1,1000333311,2,256,,30,602,1,{},{ bonus bNoCastCancel,0; bonus bCastrate,35; }
+5673,Home_Cherry_Blossom,憂郷のサクラ,4,,,100,,2,,1,1000333311,2,256,,30,602,1,{},{ bonus bNoCastCancel,0; bonus bCastRate,35; }
 5674,Pig_Moneybox,ぶたさん貯金箱,4,,,1000,,3,,0,1000333311,2,256,,10,603,1,{},{ bonus bAddGetZenyNum,5; bonus bSkillDelayRate,10; /* 暫定 */ }
 5675,Poring_Letter,ポリンの手紙,4,,,100,,,,0,1000333311,2,1,,10,604,,{},{ bonus2 bAddRace,Rct_Plant,5; bonus2 bMagicAddRace,Rct_Plant,5; bonus3 bAddMonsterDropItem,619,Rct_NonBoss,10; /* 暫定 */ }
 5676,Scorpio_Crown,天蝎宮の王冠,4,0,0,300,,6,,1,1000333311,2,256,,1,605,1,{},{ bonus bBaseAtk,5+5*(getequiprefinerycnt(1)==10); bonus bAspdAddRate,3+2*(getequiprefinerycnt(1)>=8)+2*(getequiprefinerycnt(1)==10); bonus2 bSubEle,Ele_Water,5; if(getequiprefinerycnt(1)>=7){ bonus3 bAutoSpell,425,3,300; } if(getequiprefinerycnt(1)>=9){ bonus3 bRevAutoSpell,88,5,300; } }
@@ -3329,7 +3329,7 @@
 5737,Cactus_Hat,サボテン帽子,4,,,300,,1,,,1000333311,2,256,,,615,,{},{ bonus3 bAddMonsterDropItem,952,Rct_Plant,300; /*暫定発動率3%*/ }
 5738,Snowman_Hat,雪だるま帽子,4,,,300,,4,,1,1000333311,2,256,,1,616,1,{},{ bonus bStr,1; bonus bInt,1; bonus bMdef,3; bonus2 bSubEle,Ele_Water,7; bonus3 bAddMonsterDropItem,530,Rct_NonBoss,300; bonus3 bAddMonsterDropItem,12354,Rct_NonBoss,100; if(getequiprefinerycnt(1) >= 8) { bonus4 bAutoSpell,318,5,200,EAS_REVENGE|EAS_WEAPON|EAS_MAGIC|EAS_SELF; } else { bonus4 bAutoSpell,318,1,100,EAS_REVENGE|EAS_WEAPON|EAS_MAGIC|EAS_SELF; } }
 5739,Sagittarius_Crown,人馬宮の王冠,4,0,0,300,,6,,0,1000333311,2,256,,1,617,1,{},{ bonus bDex,2; bonus2 bSubEle,Ele_Fire,7; if(getequiprefinerycnt(1)>=7){ bonus bAspdAddRate,2; } if(getequiprefinerycnt(1)>=8) { bonus bAgi,2; } if(getequiprefinerycnt(1)>=9) { bonus bAddLongWeaponDamage,2; } if(getequiprefinerycnt(1)==10) { bonus3 bAutoActiveWeapon,5739,300,10000; if(checkactiveitem(5739)) { bonus bDex,10; bonus bAgi,10; } } }
-5740,Sagittarius_Diadem,人馬宮の宝冠,4,0,0,300,,6,,0,1000333311,2,256,,1,618,1,{},{ bonus bDex,2; bonus bMdef,3; bonus2 bSubEle,Ele_Fire,7; if(getequiprefinerycnt(1)>=7){ bonus bCastrate,-3-2*(getequiprefinerycnt(1)>=9); } if(getequiprefinerycnt(1)>=8){ bonus4 bAutoSpell,81,1,300,EAS_MAGIC; } if(getequiprefinerycnt(1)==10) { bonus bMatkRate,4; } }
+5740,Sagittarius_Diadem,人馬宮の宝冠,4,0,0,300,,6,,0,1000333311,2,256,,1,618,1,{},{ bonus bDex,2; bonus bMdef,3; bonus2 bSubEle,Ele_Fire,7; if(getequiprefinerycnt(1)>=7){ bonus bCastRate,-3-2*(getequiprefinerycnt(1)>=9); } if(getequiprefinerycnt(1)>=8){ bonus4 bAutoSpell,81,1,300,EAS_MAGIC; } if(getequiprefinerycnt(1)==10) { bonus bMatkRate,4; } }
 5741,Im_Egg_Shell_Hat,永生卵の皮帽子,4,20,,0,,1,,0,1000333311,2,256,,10,101,0,{},{ bonus2 bItemHealRate,1,10;  bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; bonus2 bAddSkillDamageRate,28,5; bonus2 bAddSkillDamageRate,70,5; bonus2 bAddSkillDamageRate,231,5; bonus2 bAddSkillHealRate,2043,5; bonus2 bAddSkillHealRate,2051,5; bonus2 bAddSkillDamageRate,2043,5; bonus2 bAddSkillDamageRate,2051,5; }
 5742,Rudolf_Santa_Hat,ルドルフのサンタ帽,4,,,400,,1,,0,1000333311,2,256,,10,619,1,{},{}
 5743,Orange_Stem_Hat,だいだい帽,4,,,100,,,,,1000333311,2,256,,,620,,{},{ bonus bLuk,3; bonus bUnbreakableHelm,1; bonus3 bAddMonsterDropItem,582,Rct_NonBoss,500; /* ドロップ率暫定 */ }
@@ -3342,7 +3342,7 @@
 5750,Shadow_Handicraft,シャドウクラウン,4,,,100,,12:5,,1,131072,2,256,,100,627,1,{},{ bonus bAgi,1; bonus bInt,1; if(readparam(bAgi) >= 120) { bonus bBaseAtk,10; bonus bFlee,3; } }
 5751,Minstrel_Song_Hat,ミンストレルソングの帽子,4,,,100,,12:5,,1,524288,1,256,,100,628,1,{},{ bonus bInt,1; bonus bLuk,1; bonus bAddLongWeaponDamage,5; bonus2 bAddSpCost,2381,-10;  bonus2 bAddSpCost,2382,-10; }
 5752,Midas_Whisper,ミダスのささやき,4,,,100,,12:5,,1,262144,2,256,,100,629,1,{},{ bonus bStr,1; bonus bDex,1; if(readparam(bStr) >= 120) { bonus bBaseAtk,5; bonus bAspd,1; } }
-5753,Magic_Stone_Hat,魔力石の帽子,4,,,100,,12:5,,1,512,2,256,,100,630,1,{},{ bonus bInt,1; bonus bDex,1; if(readparam(bDex) >= 120) { bonus bMatk,10; bonus bCastrate,-2; } }
+5753,Magic_Stone_Hat,魔力石の帽子,4,,,100,,12:5,,1,512,2,256,,100,630,1,{},{ bonus bInt,1; bonus bDex,1; if(readparam(bDex) >= 120) { bonus bMatk,10; bonus bCastRate,-2; } }
 5754,Blazing_Soul,ブレイジングソウル,4,,,100,,12:5,,1,32768,2,256,,100,631,1,{},{ bonus bStr,1; bonus bVit,1; if(readparam(bStr) >= 120) { bonus bBaseAtk,10; bonus bHit,3; } }
 5755,Silent_Executer,沈黙の執行者,13,,,100,,6:5,,1,4096,2,513,,100,632,,{},{ bonus bAgi,1; if(readparam(bAgi) >= 120) { bonus bBaseAtk,10; bonus bFlee2,5; } }
 5756,Wind_Whisper,風のささやき,4,,,100,,12:5,,1,65536,2,256,,100,633,1,{},{ bonus bInt,1; bonus bDex,1; callfunc "ItemdbAlmightyHeal",0x7F,5; if(readparam(bInt) >= 120) { bonus bMatk,10; bonus bFlee,3; } }
@@ -3356,7 +3356,7 @@
 5764,Love_Rabbit_Hood,ラブラビットフード,14,,,300,,1,,1,1000333311,2,769,,10,549,,{},{ bonus3 bAutoSelfSpell,75,3,500+500*(readparam(bAgi)>=80); }
 5765,Black_Tail_Ribbon,漆黒のリボン,4,,,100,,0,,1,1000333311,2,256,,10,642,1,{},{ bonus bMdef,5; bonus2 bSubEle,Ele_Neutral,5; bonus bLongAtkDef,5; }
 5766,Amistr_Cap,アミストルキャップ,4,,,100,,0,,0,1000333311,2,256,,10,643,1,{},{ bonus bVit,5; bonus4 bAutoActiveItem,5766,1000,2000,EAS_REVENGE; if(checkactiveitem(5766)){ misceffect 112,""; bonus2 bSubRace,Rct_Boss,20; bonus2 bSubRace,Rct_NonBoss,20; bonus bMdefRate,-20; } }
-5767,Samurai_Mask,サムライマスク,4,,,300,,0,,,1000333311,2,1,,50,644,,{},{ bonus2 bAddRace,Rct_Boss,1; bonus2 bAddRace,Rct_NonBss,1; }
+5767,Samurai_Mask,サムライマスク,4,,,300,,0,,,1000333311,2,1,,50,644,,{},{ bonus2 bAddRace,Rct_Boss,1; bonus2 bAddRace,Rct_NonBoss,1; }
 5768,Sakura_Coronet,桜花冠,4,,,800,,1,,1,1000333311,2,256,,,645,1,{},{ bonus bMaxHP,25; bonus bMdef,3; if(equippeditem(2269) || equippeditem(2687)){ bonus bInt,1; if(getequiprefinerycnt(1)>=7){ bonus bMaxSP,(getequiprefinerycnt(1)-6); } } if(equippeditem(5206) || equippeditem(5648) || equippeditem(27033)){ bonus bDex,1; if(getequiprefinerycnt(1)>=5){ bonus bSkillDelayRate,-(getequiprefinerycnt(1)-4); } } if(equippeditem(2270) || equippeditem(5419)){ bonus bStr,1; if(getequiprefinerycnt(1)>=3){ bonus bUseSPrate,(getequiprefinerycnt(1)-2); } } }
 5769,Gold_Angel_Sculpture,金色の小さな天使像,4,,,100,,2,,,1000333311,2,256,,10,646,1,{},{ skill 220,1; }
 5770,Splash_Hat,飛び跳ねプーリン,4,,,100,,3,,1,1000333311,2,256,,10,649,1,{},{ bonus bAgi,3; bonus3 bAutoSelfSpell2,282,5,100; }
@@ -3377,13 +3377,13 @@
 5785,Green_Bunny_Hairband,緑のウサギのヘアバンド,4,,,200,,0,,1,1000333311,2,256,,,664,1,{},{ bonus bStr,1; bonus bInt,1; bonus bDex,2; if(getequiprefinerycnt(1)>=9){ bonus2 bAddRace,Rct_Boss,2*(getequiprefinerycnt(1)-8); bonus2 bAddRace,Rct_NonBoss,2*(getequiprefinerycnt(1)-8); bonus bMatkRate,2*(getequiprefinerycnt(1)-8); } }
 5786,Ancient_Elven_Ear,古代妖精の耳,4,,,200,,1,,,1000333311,2,512,,1,665,,{},{ bonus bLuk,1; bonus bMaxHP,100; bonus bMaxSP,30; if(equippeditem(2270)){ bonus2 bAddRace,Rct_Boss,1; bonus2 bAddRace,Rct_NonBoss,1; } if(equippeditem(2269)){ bonus bMatkRate,1; } }
 
-5788,3D_Glasses,3Dメガネ,4,,,100,,1,,,1000333311,2,512,,1,661,,{},{ if(callfunc("JobGroup",Grp_Swordman)||callfunc("JobGroup",Grp_Merchant)||callfunc("JobGroup",Grp_Archer)||Class==Job_Gunslinger){ bonus bAtkRate,3; }if(callfunc("JobGroup",Grp_Magician)||callfunc("JobGroup",Grp_Acolyte)||Class==Job_Ninja||Class==Job_SoulLinker){ bonus bMatkRate,3; }if(callfunc("JobGroup",Grp_Thief)){ bonus bFleeRate,2; }if(callfunc("JobGroup",Grp_Novice)||Class==Job_TaeKwon||Class==Job_StarGladiator){ bonus bMaxHPRate,5; bonus bMaxSPRate,3; } }
+5788,3D_Glasses,3Dメガネ,4,,,100,,1,,,1000333311,2,512,,1,661,,{},{ bonus2 bSubEle,Ele_Neutral,5; bonus2 bMagicAddRace,Rct_Formless,4; }
 5789,Thanatos_Mal_Mask,タナトスの憎悪仮面,13,,,100,,3,,,1000333311,2,513,,30,667,0,{},{ bonus bVit,1; }
 5790,Holy_Mom_Love,聖母の慈愛,11,,,500,,0,,1,1000333311,2,768,,45,610,1,{},{ bonus2 bSubRace,Rct_Undead,-5; bonus2 bSubRace,Rct_Demon,-5; bonus2 bMagicSubRace,Rct_Undead,-5; bonus2 bMagicSubRace,Rct_Demon,-5; bonus3 bAutoSpell,34,1,500; }
 5791,Tenkaippin_Ramen,天下一品ラーメン,4,,,500,,1,,,1000333311,2,256,,30,668,,{},{ bonus bDex,4; bonus bInt,1; }
 5792,Fish_Pin,フィッシュヘアピン,4,20,,100,,3,,,1000333311,2,256,,1,669,1,{},{ bonus2 bSubRace,Rct_Fish,1; bonus2 bMagicSubRace,Rct_Fish,1; }
 5793,Life_Ribbon,生命のリボンR,4,,,10,,2,,,1000333311,2,512,,,575,,{},{ bonus bInt,1; bonus bMdef,2; /* ModifyHeal */ }
-5794,3D_Glasses_,3DメガネR,4,,,,,1,,,1000333311,2,512,,,661,,{},{ if(callfunc("JobGroup",Grp_Swordman)||callfunc("JobGroup",Grp_Merchant)||callfunc("JobGroup",Grp_Archer)||Class==Job_Gunslinger){ bonus bAtkRate,3; }if(callfunc("JobGroup",Grp_Magician)||callfunc("JobGroup",Grp_Acolyte)||Class==Job_Ninja||Class==Job_SoulLinker){ bonus bMatkRate,3; }if(callfunc("JobGroup",Grp_Thief)){ bonus bFleeRate,2; }if(callfunc("JobGroup",Grp_Novice)||Class==Job_TaeKwon||Class==Job_StarGladiator){ bonus bMaxHPRate,5; bonus bMaxSPRate,3; } }
+5794,3D_Glasses_,3DメガネR,4,,,,,1,,,1000333311,2,512,,,661,,{},{ bonus2 bSubEle,Ele_Neutral,5; bonus2 bMagicAddRace,Rct_Formless,4; }
 5795,Red_Dress_Hat,真っ赤なドレスハット,4,,,200,,2,,1,1000333311,2,256,,20,670,1,{},{ bonus bMdef,7+getequiprefinerycnt(1)/2; }
 5796,Cheer_Scarf,応援スカーフR,4,,,,,,,,1000333311,2,1,,,369,,{},{ bonus2 bExpRate,Rct_All,10; bonus2 bJobRate,Rct_All,10; }
 5797,Cheer_Scarf2,応援スカーフⅡR,4,,,,,,,,1000333311,2,1,,,369,,{},{ bonus2 bExpRate,Rct_All,20; bonus2 bJobRate,Rct_All,20; }
@@ -3415,7 +3415,7 @@
 5823,Love_Arrow,愛の矢,4,,,100,,1,,0,1000333311,2,136,,,397,,{},{ bonus bDex,5; bonus bAgi,5; }
 5824,Fools_Day_Hat,エイプリルフール帽子,4,,,300,,3,,0,1000333311,2,256,,30,265,1,{},{}
 5825,Badge_Of_Order_Grace,騎士団の栄誉バッジ,4,,,0,,1:1,,0,1000333311,2,136,,,,,{},{ bonus2 bAddRace,Rct_Boss,10; bonus2 bAddRace,Rct_NonBoss,10; bonus bMatkRate,10; bonus bMaxHP,1500; }
-5826,Valkyrie_Helmet,ヴァルキリーの兜,4,,,0,,5:5,,0,1000333311,2,256,,,225,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bAspdAddRate,3; bonus bCastrate,-3; }
+5826,Valkyrie_Helmet,ヴァルキリーの兜,4,,,0,,5:5,,0,1000333311,2,256,,,225,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bAspdAddRate,3; bonus bCastRate,-3; }
 5827,Book_File_Hat,冊子ファイル帽子,4,,,0,,1,,0,1000333311,2,256,,,,1,{},{}
 5828,Honor_Gold_Ring,名誉の金の指輪,4,,,0,,1,,0,1000333311,2,256,,,,1,{},{}
 5829,Ordinary_Armor,普通の鎧,4,,,0,,1,,0,1000333311,2,256,,,,1,{},{}
@@ -5384,7 +5384,7 @@
 12287,Love_Angel,ラブエンジェルマジックパウダー,2,10,,0,,,,,1000333311,2,,,,,,{ setfont 1; },{}
 12288,Squirrel,スクイールマジックパウダー,2,10,,0,,,,,1000333311,2,,,,,,{ setfont 2; },{}
 12289,Gogo,考古マジックパウダー,2,10,,0,,,,,1000333311,2,,,,,,{ setfont 3; },{}
-12290,Mysterious_Can,神妙な缶詰,2,,,100,,,,,1000333311,2,,,,,,{ percentheal 5,0; sc_end SC_SC_BLESSING; sc_start SC_BLESSING,140000,5; npcskillsupport 34,5; },{}
+12290,Mysterious_Can,神妙な缶詰,2,,,100,,,,,1000333311,2,,,,,,{ percentheal 5,0; sc_end SC_BLESSING; sc_start SC_BLESSING,140000,5; npcskillsupport 34,5; },{}
 12291,Mysterious_PET_Bottle,神妙なペットボトル,2,,,100,,,,,1000333311,2,,,,,,{ percentheal 0,5; sc_end SC_INCREASEAGI; sc_start SC_INCREASEAGI,140000,5; npcskillsupport 29,5; },{}
 12292,Unripe_Fruit,まだ熟してないイグドラシルの実,2,,,200,,,,,1000333311,2,,,,,,{ percentheal 20,0; },{}
 12293,Dried_Yggdrasilberry,水気のないイグドラシルの実,2,,,200,,,,,1000333311,2,,,,,,{ percentheal 0,20; },{}
@@ -5568,7 +5568,7 @@
 12472,F_Convex_Mirror,凸面鏡,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12473,RWC_Parti_Box,RWC参加受付記念箱,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12474,RWC_Final_Comp_Box,RWC決勝戦参加記念箱,2,,,10,,,,,1000333311,2,,,,,,{},{}
-12475,Cure_Free,キュアーフリー,2,20,,50,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Bleed; sc_end SC_Curse; sc_end SC_REVERSEORCISH; sc_end SC_ELEMENTUNDEAD; },{}
+12475,Cure_Free,キュアーフリー,2,20,,50,,,,,1000333311,2,,,,,,{ sc_end SC_Poison; sc_end SC_Silence; sc_end SC_Bleed; sc_end SC_Curse; sc_end SC_REVERSEORCISH; sc_end SC_UndeadArmor; },{}
 12476,PCBang_Coupon_Box3,ネットカフェクーポンの箱Ⅲ,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12477,Gift_Bundle,贈り物の包み,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12478,Chance_Box,機会の箱,2,,,10,,,,,1000333311,2,,,,,,{},{}
@@ -5954,7 +5954,7 @@
 13074,Ninja_Sword_Prototype,忍者刀の試作品,5,0,,0,0,,1,0,536870912,2,2,4,99,1,1,{},{}
 13075,Kurenai,紅,5,5000,,700,130,,1,1,536870912,2,2,3,99,1,1,{},{ bonus bInt,3; }
 13076,Nachal_Sword,羅刹剣,5,40000,,600,120:100,,1,1,536870912,2,2,3,110,1,1,{},{ bonus bInt,3; }
-13078,Mikacheuki,三日月,5,40000,,600,50:120,,1,1,536870912,2,2,4,100,1,1,{},{ bonus bUseSPrate,-5; bonus bCastrate,-5; }
+13078,Mikacheuki,三日月,5,40000,,600,50:120,,1,1,536870912,2,2,4,100,1,1,{},{ bonus bUseSPrate,-5; bonus bCastRate,-5; }
 
 13080,Unknown_Item,ラグズナイフ,5,,,0,80,,1,0,673144558,2,2,4,60,1,1,{},{}
 13081,Unknown_Item,蛸引包丁,5,,,0,140,,1,3,2055918,2,2,4,105,1,1,{},{}
@@ -7237,7 +7237,7 @@
 15009,Para_Team_Uniform1,楽園団の制服Ⅰ,4,,,0,,35,,0,1000333311,2,16,,12,,,{},{ bonus bMaxHP,100; bonus bMaxSP,10; }
 15010,Para_Team_Uniform2,楽園団の制服Ⅱ,4,,,0,,46,,0,1000333311,2,16,,26,,,{},{ bonus bMaxHP,200; bonus bMaxSP,20; }
 15011,Para_Team_Uniform3,楽園団の制服Ⅲ,4,,,0,,58,,0,1000333311,2,16,,40,,,{},{ bonus bMaxHP,300; bonus bMaxSP,30; }
-15012,Puente_Robe,プエンテローブ,4,12000,,400,,42,,1,1000333311,2,16,,22,0,1,{},{ bonus2 bFixCastrate,-3,0; callfunc "ItemdbAlmightyHeal",0x7F,5; }
+15012,Puente_Robe,プエンテローブ,4,12000,,400,,42,,1,1000333311,2,16,,22,0,1,{},{ bonus2 bFixCastRate,-3,0; callfunc "ItemdbAlmightyHeal",0x7F,5; }
 15013,Claire_Suits,クレールスーツ,4,28000,,2800,,58,,1,991944702,2,16,,22,0,1,{},{}
 15014,Ebone_Armor,漆黒の鎧,4,40000,,4500,,93,,1,16512,2,16,,100,0,1,{},{}
 15015,Upg_Adv_Suit,強化アドベンチャースーツ,4,,,150,,25,,1,1000333311,2,16,,,,1,{},{ bonus bMaxHPrate,3; }
@@ -7880,7 +7880,7 @@
 18523,Thunderstorm_Cloud,スーパーセル,4,20,,500,,0,,0,1000333311,2,256,,30,688,,{},{ bonus3 bAutoSpell2,20,5,1000; bonus3 bAutoSpell2,21,5,1000; }
 18524,Unknown_Item,鬼神の仮面,13,,,700,,1,,0,1000333311,2,513,,50,689,0,{},{ bonus2 bAddRace,Rct_Angel,5; bonus2 bMagicAddRace,Rct_Angel,5; bonus2 bAddEff2,Eff_Silence,5; }
 18525,Watermelon_Hat,スイカ帽子,4,,,100,,4,,1,991944702,2,256,,30,690,1,{},{ bonus bMdef,4;bonus bVit,1;bonus bLuk,1;if(equippeditem(2295)) bonus bBaseAtk,30;if(equippeditem(5104)) bonus bMatk,30;if(1/*ネットカフェ接続*/) bonus2 bExpRate,Rct_All,3; }
-18526,Candy_Cane_In_Mouth,おいしいロリポップR,4,,,100,,,,0,1000333311,2,1,,0,414,,{},{ bonus bBaseAtk,5; bonus bMatk,5; bonus bAspd,1; bonus bAddFixCastRateAll,20; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; bonus2 bAddSkillHealRate,478,5; bonus2 bAddSkillHealRate,2043,5; bonus2 bAddSkillHealRate,2051,5; bonus2 bAddSkillDamageRate,28,5; bonus2 bAddSkillDamageRate,70,5; bonus2 bAddSkillDamageRate,2043,5; bonus2 bAddSkillDamageRate,2051,5; }
+18526,Candy_Cane_In_Mouth,おいしいロリポップR,4,,,100,,,,0,1000333311,2,1,,0,414,,{},{ bonus bBaseAtk,5; bonus bMatk,5; bonus bAspd,1; bonus2 bFixCastRate,-20,0; bonus2 bAddSkillHealRate,28,5; bonus2 bAddSkillHealRate,70,5; bonus2 bAddSkillHealRate,231,5; bonus2 bAddSkillHealRate,478,5; bonus2 bAddSkillHealRate,2043,5; bonus2 bAddSkillHealRate,2051,5; bonus2 bAddSkillDamageRate,28,5; bonus2 bAddSkillDamageRate,70,5; bonus2 bAddSkillDamageRate,2043,5; bonus2 bAddSkillDamageRate,2051,5; }
 18527,Gloomy_Pumpkin_Hat,陰気なカボチャ帽子,4,,,500,,5,,,991944702,,256,,45,691,1,{},{ bonus bStr,2; bonus bAgi,2; bonus bInt,2; bonus bDex,2; bonus bVit,2; bonus bLuk,2; bonus bMdef,5; bonus2 bItemHealRate,13,300+200*(getequipid(9)==5203); bonus3 bAddMonsterDropItem,12192,Rct_NonBoss,100+2900*(getequipid(9)==2278); switch(getequipid(9)){ case 2281: bonus bFlee,20; break; case 5755: bonus bAspd,1; break; case 5005: bonus2 bAddEle,Ele_Poison,10; bonus2 bMagicAddEle,Ele_Poison,10; break; case 5086: bonus2 bAddRace,Rct_Formless,10; bonus2 bMagicAddRace,Rct_Formless,10; break; case 5483: bonus2 bAddRace,Rct_Human,10; bonus2 bMagicAddRace,Rct_Human,10; break; case 5475: bonus2 bAddRace,Rct_Demon,10; bonus2 bMagicAddRace,Rct_Demon,10; break; case 5088: bonus2 bAddRace,Rct_Brute,10; bonus2 bMagicAddRace,Rct_Brute,10; break; case 5176: bonus4 bAutoSpell,EAS_REVENGE+EAS_MAGIC+EAS_SHORT+EAS_TARGET_RAND+EAS_NOSP,662,1,500; bonus2 bAddEff2,Eff_Blind,100; break; } }
 18528,Unknown_Item,たれ猫クルー,4,,,100,,0,,,1000333311,2,256,,50,692,,{},{ bonus bMatk,5; bonus2 bAddEle,Ele_Dark,10; bonus2 bAddRace,Rct_Demon,10; bonus2 bSubEle,Ele_Dark,-10; bonus2 bSubRace,Rct_Demon,-10; }
 18529,Drooping_Wild_Rose,たれワイルドローズ,11,,,500,,5,,1,1000333311,2,768,,30,541,1,{},{ bonus bMaxHPrate,-10; bonus bAspdRate,3; if(equippeditem(5403)!=0) { bonus3 bAutoSpell,1013,1,100; }  }
@@ -7897,7 +7897,7 @@
 18540,Evil_Mask,悪鬼の仮面,13,20,,1000,,3,,0,1000333311,2,513,,10,714,,{},{  if(equippeditem(5066) || equippeditem(5072)){bonus bAspd,1;bonus bAspdRate,10;bonus2 bSPPenaltyTime,2000,4;}else {bonus bAspdRate,1;bonus2 bSPPenaltyTime,2000,1;} }
 18541,Little_Feather_Hat,リトルフェザーハット,4,20,,500,,1,,1,1000333311,2,256,,10,715,1,{},{ bonus bDex,2;bonus bAddCriticalDamage,10+5*(equippeditem(1764))+5*(getequiprefinerycnt(1)>=7); }
 18542,Love_Guard,博愛の守護,11,20,,500,,10,,1,1000333311,2,768,,10,716,1,{},{ callfunc "ItemdbAlmightyHeal",0x7F,2+3*(getequiprefinerycnt(1)>=7); /* ModifyHeal */ }
-18543,Witchs_Hat,魔女の帽子,4,20,,400,,7,,1,1000333311,2,256,,60,717,1,{},{ bonus bMdef,5; bonus bCastrate,-5-5*(getequiprefinerycnt(1)>=7); }
+18543,Witchs_Hat,魔女の帽子,4,20,,400,,7,,1,1000333311,2,256,,60,717,1,{},{ bonus bMdef,5; bonus bCastRate,-5-5*(getequiprefinerycnt(1)>=7); }
 18544,Black_rabbit_Band,黒ウサギのヘアバンド,4,,,0,,,,,,,,,,718,,{},{}
 18545,White_rabbit_Band,白ウサギのヘアバンド,4,,,0,,,,,,,,,,719,,{},{}
 18546,Unknown_Item,お口の恋人ガム,4,20,,100,,0,,0,1000333311,2,1,,0,720,1,{},{ bonus3 bAddMonsterDropItem,529,Rct_Boss,5; bonus3 bAddMonsterDropItem,530,Rct_Boss,5; bonus3 bAddMonsterDropItem,11535,Rct_Boss,5; bonus3 bAddMonsterDropItem,529,Rct_NonBoss,5; bonus3 bAddMonsterDropItem,530,Rct_NonBoss,5; bonus3 bAddMonsterDropItem,11535,Rct_NonBoss,5; bonus2 bItemHealRate,3,50; }
@@ -7918,7 +7918,7 @@
 18561,B_Feather_Beret,ブルーフェザーベレー,4,,,0,,,,,,,,,,731,,{},{}
 18562,Unknown_Item,骸骨のコサージュ,4,,,200,,3,,1,1000333311,2,256,,10,732,1,{},{ bonus bMdef,3; bonus2 bAddRace,Rct_Human,5; bonus2 bMagicAddRace,Rct_Human,5; bonus2 bSubRace,Rct_Human,5; bonus3 bAddMonsterDropItem,929,Rct_Human,500; /* 暫定 */ }
 18563,Heart_Wing_Hairband,ハートウイングヘアバンド,11,,,300,,0,,1,1000333311,2,768,,50,733,,{},{ bonus bSkillDelayRate,-5; bonus bUseSPrate,-5; }
-18564,Unknown_Item,愛しさの欠片,4,,,200,,0,,,1000333311,2,1,,50,734,,{},{ bonus bNoCastCancel,1; bonus bUseSPrate,15; if(equippeditem(18563)) bonus2 bFixCastrate,-10,0; }
+18564,Unknown_Item,愛しさの欠片,4,,,200,,0,,,1000333311,2,1,,50,734,,{},{ bonus bNoCastCancel,1; bonus bUseSPrate,15; if(equippeditem(18563)) bonus2 bFixCastRate,-10,0; }
 18565,Leprechaun_Hat,聖パトリックの帽子,4,,,0,,,,,,,,,,735,,{},{}
 18566,NUT_DONUT_MOUTH,OTPドーナッツ,4,,,0,,,,,,,,,,736,,{},{}
 18567,STRETCHED_NOSE,伸びる鼻,4,,,0,,,,,,,,,,737,,{},{}
@@ -7947,7 +7947,7 @@
 18590,Unknown_Item,駆魔のヘアバンド,4,,,200,,3,,1,1000333311,2,256,,10,564,1,{},{ bonus bMdef,3; bonus2 bAddRace,Rct_Demon,5; bonus2 bMagicAddRace,Rct_Demon,5; bonus2 bSubRace,Rct_Demon,5; bonus3 bAddMonsterDropItem,7442,Rct_Demon,500; }
 18591,Mini_Glasses_,ミニグラス,4,28000,,100,,1,,1,991944702,2,512,,0,47,,{},{}
 18592,NESTEA_HAT,レモンティー帽子,4,,,0,,,,,,2,,,,756,,{},{}
-18593,Fancy_Mini_Crown,豪華なミニクラウン,4,,,100,,2,,1,1000333311,2,256,,30,707,1,{},{ bonus bInt,1; bonus bMdef,5; bonus bMatkRate,3+(getequiprefinerycnt(1)>=5)+2*(getequiprefinerycnt(1)>=7); bonus2 bFixCastrate,-3,0; bonus bUseSPrate,-3; callfunc "ItemdbAlmightyHeal",0x7F,3; }
+18593,Fancy_Mini_Crown,豪華なミニクラウン,4,,,100,,2,,1,1000333311,2,256,,30,707,1,{},{ bonus bInt,1; bonus bMdef,5; bonus bMatkRate,3+(getequiprefinerycnt(1)>=5)+2*(getequiprefinerycnt(1)>=7); bonus2 bFixCastRate,-3,0; bonus bUseSPrate,-3; callfunc "ItemdbAlmightyHeal",0x7F,3; }
 18594,Magni_Cap_,マグニキャップ,4,,,1000,,9,,1,991944702,2,256,,65,250,1,{},{ bonus bStr,2; }
 18595,Horn_Of_Ancient,古代人の角,4,,,0,,,,,,2,,,,757,,{},{}
 18596,Sprout_Hat,新芽の帽子,4,,,0,,,,,,,,,,758,,{},{}
@@ -7970,7 +7970,7 @@
 18613,Black_Musang_Hat,黒い無常帽,4,,,0,,,,,,2,,,,771,,{},{}
 18614,Grim_Reaper_Hat,死神の帽子,4,,,0,,,,,,,,,,732,,{},{}
 18615,Injured_Eyepatch,怪我人の眼帯,4,,,0,,,,,,2,512,,,772,,{},{}
-18616,Long_Tongue,長い舌,4,20,,100,,0,,,1000333311,2,1,,80,773,,{},{ bonus bMatkRate,2; bonus bCastrate,-3; }
+18616,Long_Tongue,長い舌,4,20,,100,,0,,,1000333311,2,1,,80,773,,{},{ bonus bMatkRate,2; bonus bCastRate,-3; }
 18617,Onigiri_In_Mouth,おにぎり,4,,,0,,,,,,2,1,,,774,,{},{}
 18618,Airplane_Hat,リーゼント,4,,,0,,,,,,2,,,,775,,{},{}
 18619,Thief_Bandana,盗賊の頭巾,4,,,0,,,,,,2,,,,776,,{},{}
@@ -8013,7 +8013,7 @@
 18717,Unknown_Item,スカルフード,14,20,,500,,10:2,,1,1000333311,,769,,70,,,{},{}
 
 18719,Unknown_Item,エンジェルステアーズ,4,20,,500,,0,,,1000333311,2,256,,30,,0,{ /* sc_start SC_HAT_EFFECT,9999,1; */ },{ bonus3 bAutoSpell2,19,5,1000; bonus3 bAutoSpell2,17,5,1000; }
-18720,Magical_Booster,マジカルブースター,4,,20,300,,0,,,1000333311,2,512,,30,873,0,{},{ bonus bMatkRate,3;if(equippeditem(5672)){if(getequiprefinerycnt(1)>=5){bonus2 bMagicAddRace,Rct_Boss,3+4*(getequiprefinerycnt(1)>=7);bonus2 bSubRace,Rct_NonBoss,-5;}else{bonus2 bMagicAddRace,Rct_Boss,2;}}if(equippeditem(1626)||equippeditem(1665)){if(getequiprefinerycnt(4)<10){bonus bMatk,15*getequiprefinerycnt(4);}else{bonus bMatk,200;bonus bCastrate,-10;}}if(equippeditem(1621)||equippeditem(1622)){if(getequiprefinerycnt(4)<10){bonus bMatk,20*getequiprefinerycnt(4);}else{bonus bMatk,250;bonus bSkillDelayRate,-10;}} }
+18720,Magical_Booster,マジカルブースター,4,,20,300,,0,,,1000333311,2,512,,30,873,0,{},{ bonus bMatkRate,3;if(equippeditem(5672)){if(getequiprefinerycnt(1)>=5){bonus2 bMagicAddRace,Rct_Boss,3+4*(getequiprefinerycnt(1)>=7);bonus2 bSubRace,Rct_NonBoss,-5;}else{bonus2 bMagicAddRace,Rct_Boss,2;}}if(equippeditem(1626)||equippeditem(1665)){if(getequiprefinerycnt(4)<10){bonus bMatk,15*getequiprefinerycnt(4);}else{bonus bMatk,200;bonus bCastRate,-10;}}if(equippeditem(1621)||equippeditem(1622)){if(getequiprefinerycnt(4)<10){bonus bMatk,20*getequiprefinerycnt(4);}else{bonus bMatk,250;bonus bSkillDelayRate,-10;}} }
 18721,Sweet_Valentine_Hat,スウィートバレンタイン帽,4,,,0,,1,,,1000333311,2,256,,1,865,1,{},{}
 18722,Unknown_Item,イドゥンの羽耳,4,,,0,,1,,,1000333311,2,512,,80,724,,{},{}
 18723,Auraquartz_Crown,オーラクォーツの冠,4,,,0,,3,,1,1000333311,2,256,,30,866,1,{},{}

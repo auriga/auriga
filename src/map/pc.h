@@ -219,6 +219,7 @@ int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 struct pc_base_job pc_calc_base_job(int b_class);
 int pc_calc_class_job(int job,int upper);
 int pc_calc_job_class(int class_);
+int pc_get_base_class(int class_, int type);
 
 void pc_read_gm_account(void);
 int pc_setinvincibletimer(struct map_session_data *sd,int);

@@ -1,4 +1,51 @@
 ----------------------------------------
+//1135 [2013/12/02] by Rayce
+
+・getbaseclass関数をscript.cからpc.cに移動（pc.*, script.c）
+
+・以下のアイテムのオートスペル設定で、存在しない定数 EAS_ITEMNOCOST が記載されていたので削除
+  （db/item_db.txt, db/pre/item_db_pre.txt）
+	-> リングオブレゾナンス
+	-> マグマフィスト
+	-> アイシクルフィスト
+	-> エレクトリックフィスト
+	-> サイズミックフィスト
+	-> 魔法のやかん
+
+・以下のアイテムのボーナス設定で、存在しない定数 bAddFixCastRateAll が記載されていたので修正
+  修正情報不明につきrAthenaから適当に移植（db/item_db.txt）
+	-> おいしいロリポップR
+
+・以下のアイテムのボーナス設定で、存在しない定数 bCritAtkRate が記載されていたので
+  bAddCriticalDamage を使うように修正（db/item_db.txt）
+	-> 虐殺のカタール(特攻)
+	-> 戦慄のカタール
+
+・以下のアイテムのボーナス設定で「Eff_Burning」のスペルミスを修正（db/item_db.txt）
+	-> イグニスステイル
+	-> バナスパティカード
+
+・以下のアイテムのボーナス設定で「Eff_Silence」のスペルミスを修正（db/item_db.txt）
+	-> カプラの猫耳ヘアバンド
+
+・以下のアイテムのボーナス設定で「Rct_NonBoss」のスペルミスを修正（db/item_db.txt）
+	-> サムライマスク
+
+・以下のアイテムの状態異常設定で「SC_BLESSING」のスペルミスを修正（db/item_db.txt）
+	-> 神妙な缶詰
+
+・以下のアイテムで、非推奨の function_jobgroup.txt の関数を呼び出しているので修正
+  修正情報不明につきrAthenaから適当に移植（db/item_db.txt）
+	-> 3Dメガネ
+	-> 3DメガネR
+
+・以下のアイテムで、存在しない状態異常 SC_ELEMENTUNDEAD を SC_UndeadArmor に修正（db/item_db.txt）
+	-> キュアーフリー
+
+・以下のアイテムで不要な変数 n gが記載されていたので削除（db/item_db.txt, db/pre/item_db_pre.txt）
+	-> ボーンヘッド
+
+----------------------------------------
 //1134 [2013/12/02] by Rayce
 
 ・pet_db.txt についても Auriga-1131 で const.txt に新しく定義した定数を使うように変更（db/pet_db.txt）
