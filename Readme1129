@@ -1,4 +1,15 @@
 ----------------------------------------
+//1134 [2013/12/02] by Rayce
+
+・pet_db.txt についても Auriga-1131 で const.txt に新しく定義した定数を使うように変更（db/pet_db.txt）
+
+・アイテムボーナスの bRace のパラメータチェックの強化（pc.c, doc/item_bonus.txt）
+
+・script_auriga.conf の refine_posword に余計な文字が混入していたのを修正（conf/script_auriga.conf）
+
+・タイマーのtick変数には出来る限り unsigned を付与する（clif.*, map.h, pc.h, pet.c, skill.c）
+
+----------------------------------------
 //1133 [2013/12/02] by Rayce
 
 ・アイテムボーナス用の配列サイズのハードコーディングを避けるため定数を定義（map.h, pc.c）

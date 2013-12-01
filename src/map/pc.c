@@ -2133,7 +2133,7 @@ static int pc_bonus_autospell(struct map_session_data* sd,int skillid,int skilli
  * アクティブアイテム登録
  *------------------------------------------
  */
-int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned int flag)
+int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag)
 {
 	nullpo_retr(0, sd);
 
@@ -2762,7 +2762,9 @@ int pc_bonus(struct map_session_data *sd,int type,int val)
 			sd->long_weapon_damege_rate += val;
 		break;
 	case SP_RACE:
-		sd->race = val;
+		if(val >= 0 && val < RCT_ALL) {
+			sd->race = val;
+		}
 		break;
 	case SP_TIGEREYE:
 		sd->special_state.infinite_tigereye = 1;

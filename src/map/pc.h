@@ -101,7 +101,7 @@ int pc_dropitem(struct map_session_data*, int, int);
 
 int pc_checkweighticon(struct map_session_data *sd);
 
-int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,int tick,unsigned int flag);
+int pc_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag);
 int pc_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned int tick);
 int pc_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned int tick);
 

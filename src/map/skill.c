@@ -16130,7 +16130,7 @@ static int skill_count_target(struct block_list *bl, va_list ap )
  */
 static int skill_trap_splash(struct block_list *bl, va_list ap )
 {
-	int tick;
+	unsigned int tick;
 	int splash_count;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
@@ -16142,7 +16142,7 @@ static int skill_trap_splash(struct block_list *bl, va_list ap )
 	nullpo_retr(0, sg = unit->group);
 	nullpo_retr(0, ss = map_id2bl(sg->src_id));
 
-	tick = va_arg(ap,int);
+	tick = va_arg(ap,unsigned int);
 	splash_count = va_arg(ap,int);
 
 	if(battle_check_target(&unit->bl,bl,BCT_ENEMY) > 0){

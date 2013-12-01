@@ -9236,7 +9236,7 @@ void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill
  * 場所スキルエフェクト
  *------------------------------------------
  */
-void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,int tick)
+void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,unsigned int tick)
 {
 	unsigned char buf[24];
 

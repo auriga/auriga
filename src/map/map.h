@@ -665,7 +665,7 @@ struct map_session_data {
 	struct {
 		int id[MAX_ACTIVEITEM];
 		short rate[MAX_ACTIVEITEM];
-		int tick[MAX_ACTIVEITEM];
+		unsigned int tick[MAX_ACTIVEITEM];
 		unsigned int flag[MAX_ACTIVEITEM];
 		short skill[MAX_ACTIVEITEM];	// スキルで発動するアクティブアイテム用
 		short count;
