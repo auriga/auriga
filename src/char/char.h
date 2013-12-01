@@ -50,9 +50,9 @@ struct char_session_data {
 };
 
 int compare_ranking_data(const void *a,const void *b);
-int mapif_sendall(unsigned char *buf, unsigned int len);
-int mapif_sendallwos(int fd, unsigned char *buf, unsigned int len);
-int mapif_send(int fd, unsigned char *buf, unsigned int len);
+int mapif_sendall(unsigned char *buf, size_t len);
+int mapif_sendallwos(int fd, unsigned char *buf, size_t len);
+int mapif_send(int fd, unsigned char *buf, size_t len);
 void mapif_parse_CharConnectLimit(int fd);
 int char_log(const char *fmt, ...);
 int parse_char(int fd);

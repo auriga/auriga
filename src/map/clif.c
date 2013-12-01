@@ -278,7 +278,7 @@ static int clif_send_sub(struct block_list *bl,va_list ap)
  *
  *------------------------------------------
  */
-static void clif_send(unsigned char *buf, int len, struct block_list *bl, int type)
+static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int type)
 {
 	int i;
 	struct map_session_data *sd = NULL;

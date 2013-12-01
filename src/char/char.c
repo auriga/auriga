@@ -3287,7 +3287,7 @@ int parse_char(int fd)
 }
 
 // 全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
-int mapif_sendall(unsigned char *buf,unsigned int len)
+int mapif_sendall(unsigned char *buf,size_t len)
 {
 	int i, c = 0;
 
@@ -3304,7 +3304,7 @@ int mapif_sendall(unsigned char *buf,unsigned int len)
 }
 
 // 自分以外の全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
-int mapif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
+int mapif_sendallwos(int sfd,unsigned char *buf,size_t len)
 {
 	int i, c = 0;
 
@@ -3321,7 +3321,7 @@ int mapif_sendallwos(int sfd,unsigned char *buf,unsigned int len)
 }
 
 // MAPサーバーにデータ送信（map鯖生存確認有り）
-int mapif_send(int fd,unsigned char *buf,unsigned int len)
+int mapif_send(int fd,unsigned char *buf,size_t len)
 {
 	int i;
 

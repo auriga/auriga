@@ -193,7 +193,7 @@ static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, un
 }
 
 // 自分以外の全てのcharサーバーにデータ送信（送信したchar鯖の数を返す）
-static int charif_sendallwos(int sfd, unsigned char *buf, unsigned int len)
+static int charif_sendallwos(int sfd, unsigned char *buf, size_t len)
 {
 	int i,c;
 
