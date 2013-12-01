@@ -1,4 +1,9 @@
 ----------------------------------------
+//1137 [2013/12/02] by Rayce
+
+・Message Of The Day の処理を pc.c から msg.c に移管（atcommand.c, map.c, msg.*, pc.*）
+
+----------------------------------------
 //1136 [2013/12/02] by Rayce
 
 ・item_db.txtで使用するステータス異常の定数をconst.txtに追加（const.txt, db/item_db.txt）

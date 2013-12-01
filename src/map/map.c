@@ -3129,7 +3129,7 @@ void do_final(void)
 		numdb_final(id_db, NULL);
 
 	// メッセージの解放は一番最後
-	do_final_msg_config();
+	do_final_msg();
 
 	exit_dbn();
 	do_final_timer();
@@ -3212,6 +3212,7 @@ int do_init(int argc,char *argv[])
 	add_timer_func_list(map_clearflooritem_timer);
 	add_timer_interval(gettick()+1000,map_freeblock_timer,0,NULL,600*1000);
 
+	do_init_msg();
 	do_init_atcommand();
 	do_init_battle();
 	do_init_chrif();

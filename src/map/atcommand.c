@@ -4507,7 +4507,7 @@ int atcommand_reloadstatusdb(const int fd, struct map_session_data* sd, AtComman
  */
 int atcommand_reloadmotd(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	pc_read_motd();
+	msg_read_motd();
 	clif_displaymessage(fd, msg_txt(186));
 
 	return 0;

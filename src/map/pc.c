@@ -119,7 +119,6 @@ static struct skill_tree_entry {
 } skill_tree[PC_UPPER_MAX][PC_JOB_MAX][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
-static char *motd = NULL;
 
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
@@ -1365,26 +1364,6 @@ static int pc_isequip(struct map_session_data *sd,int n)
 }
 
 /*==========================================
- * Message of the Dayの送信
- *------------------------------------------
- */
-static void pc_send_motd(struct map_session_data *sd)
-{
-	char *p = motd;
-
-	nullpo_retv(sd);
-
-	if(p) {
-		do {
-			clif_displaymessage(sd->fd, p);
-			p += strlen(p) + 1;
-		} while(*p);
-	}
-
-	return;
-}
-
-/*==========================================
  * session idに問題無し
  * char鯖から送られてきたステータスを設定
  *------------------------------------------
@@ -1678,7 +1657,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->hotkey_set = 0;
 
 	// Message of the Dayの送信
-	pc_send_motd(sd);
+	msg_send_motd(sd);
 
 	return 0;
 }
@@ -11117,54 +11096,6 @@ int pc_readdb(void)
 }
 
 /*==========================================
- * Message of the Dayの読み込み
- *------------------------------------------
- */
-int pc_read_motd(void)
-{
-	int i;
-	size_t len, size = 0, pos = 0;
-	char buf[256];
-	FILE *fp;
-
-	if(motd) {
-		aFree(motd);
-		motd = NULL;
-	}
-
-	if((fp = fopen(motd_txt, "r")) != NULL) {
-		while(fgets(buf, sizeof(buf)-1, fp) != NULL) {
-			for(i = 0; buf[i]; i++) {
-				if(buf[i] == '\r' || buf[i] == '\n') {
-					if(i == 0) {
-						buf[i++] = ' ';
-					}
-					buf[i] = '\0';
-					break;
-				}
-			}
-
-			len = strlen(buf) + 1;
-			if(pos + len >= size) {
-				size += sizeof(buf);
-				motd = (char *)aRealloc(motd, size);
-			}
-			memcpy(motd + pos, buf, len);
-			pos += len;
-		}
-
-		if(size > 0) {
-			motd = (char *)aRealloc(motd, pos + 1);	// 縮小処理
-			motd[pos] = '\0';	// 末尾に \0 を2つ続ける
-		}
-
-		fclose(fp);
-	}
-
-	return 0;
-}
-
-/*==========================================
  * extra system
  *------------------------------------------
  */
@@ -11430,11 +11361,6 @@ int do_final_pc(void)
 		extra_num = 0;
 	}
 
-	if (motd) {
-		aFree(motd);
-		motd = NULL;
-	}
-
 	return 0;
 }
 
@@ -11447,7 +11373,6 @@ int do_init_pc(void)
 	printf("PC_JOB_MAX:%d\n",PC_JOB_MAX);
 
 	pc_readdb();
-	pc_read_motd();
 	pc_read_gm_account();
 
 	add_timer_func_list(pc_natural_heal);
