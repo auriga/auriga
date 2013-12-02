@@ -1,4 +1,17 @@
 ----------------------------------------
+//1139 [2013/12/03] by Rayce
+
+・item 構造体と guild_member 構造体の並び順をpackに合わせて整理（mmo.h）
+・mmo_status構造体の refuse_partyinvite と show_equip メンバをchar型に圧縮（mmo.h）
+
+・merc_search_index() および elem_search_index() は -1 を返す可能性があるため、インデックスの
+  値の判定を追加するように強化（status.c）
+
+・0除算が発生する可能性を修正（bonus.c, pet.c, skill.c）
+
+・pet_hungry() を pet_hungry_timer() にリネーム（pet.c）
+
+----------------------------------------
 //1138 [2013/12/03] by Rayce
 
 ・オートスペル、アクティブアイテム、bonus系命令の処理を pc.c から分離し、bonus.c に集約

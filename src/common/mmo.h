@@ -442,21 +442,25 @@ struct item {
 	char identify;
 	char refine;
 	char attribute;
+	char private;
 	short card[4];
 	unsigned int limit;
-	char private;
 };
+
 struct point{
 	char map[24];
 	short x,y;
 };
+
 struct skill {
 	unsigned short id,lv,flag;
 };
+
 struct global_reg {
 	char str[32];
 	int value;
 };
+
 struct s_pet {
 	int account_id;
 	int char_id;
@@ -521,8 +525,8 @@ struct mmo_charstatus {
 	struct friend_data friend_data[MAX_FRIEND];
 	struct hotkey hotkey[MAX_HOTKEYS];
 	unsigned int delete_date;
-	short refuse_partyinvite;
-	short show_equip;
+	char refuse_partyinvite;
+	char show_equip;
 	short font;
 };
 
@@ -614,6 +618,7 @@ struct party_member {
 	unsigned short lv;
 	struct map_session_data *sd;
 };
+
 struct party {
 	int party_id;
 	char name[24];
@@ -626,31 +631,36 @@ struct party {
 struct guild_member {
 	int account_id, char_id;
 	short hair,hair_color,gender,class_;
-	unsigned short lv;
 	int exp,exp_payper;
 	unsigned char online;
+	unsigned short lv;
 	short position;
 	char name[24];
 	struct map_session_data *sd;
 };
+
 struct guild_position {
 	char name[24];
 	int mode;
 	int exp_mode;
 };
+
 struct guild_alliance {
 	int opposition;
 	int guild_id;
 	char name[24];
 };
+
 struct guild_explusion {
 	char name[24];
 	char mes[40];
 	int account_id;
 };
+
 struct guild_skill {
 	int id,lv;
 };
+
 struct guild {
 	int guild_id;
 	short guild_lv, connect_member, max_member;
@@ -666,6 +676,7 @@ struct guild {
 	struct guild_explusion explusion[MAX_GUILDEXPLUSION];
 	struct guild_skill skill[MAX_GUILDSKILL];
 };
+
 struct guild_castle {
 	int castle_id;
 	int m;
@@ -687,6 +698,7 @@ struct guild_castle {
 		int id;
 	} guardian[8];
 };
+
 struct square {
 	int val1[5];
 	int val2[5];
@@ -727,6 +739,7 @@ struct mail {
 	unsigned int rates;	// 総件数
 	int store;		// 保有件数
 };
+
 struct mail_data {
 	unsigned int mail_num;
 	int char_id;

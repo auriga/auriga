@@ -142,7 +142,7 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
  * 腹減り
  *------------------------------------------
  */
-static int pet_hungry(int tid,unsigned int tick,int id,void *data)
+static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int interval, t;
@@ -186,7 +186,7 @@ static int pet_hungry(int tid,unsigned int tick,int id,void *data)
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	sd->pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,NULL);
+	sd->pd->hungry_timer = add_timer(tick+interval,pet_hungry_timer,sd->bl.id,NULL);
 
 	return 0;
 }
@@ -200,7 +200,7 @@ int pet_hungry_timer_delete(struct pet_data *pd)
 	nullpo_retr(0, pd);
 
 	if(pd->hungry_timer != -1) {
-		delete_timer(pd->hungry_timer,pet_hungry);
+		delete_timer(pd->hungry_timer,pet_hungry_timer);
 		pd->hungry_timer = -1;
 	}
 
@@ -306,7 +306,7 @@ static int pet_data_init(struct map_session_data *sd)
 		interval = sd->petDB->hungry_delay;
 	if(interval <= 0)
 		interval = 1;
-	pd->hungry_timer = add_timer(tick+interval,pet_hungry,sd->bl.id,NULL);
+	pd->hungry_timer = add_timer(tick+interval,pet_hungry_timer,sd->bl.id,NULL);
 	pd->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 	pd->loottype = (!battle_config.pet_lootitem)? 0: battle_config.petowneditem;
 	pd->lootitem_count  = 0;
@@ -578,13 +578,18 @@ static int pet_food(struct map_session_data *sd)
 static int pet_performance(struct map_session_data *sd)
 {
 	struct pet_data *pd;
+	int perform = 0;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, pd = sd->pd);
 
 	unit_stop_walking(&pd->bl,1);
 	pd->ud.canmove_tick = gettick() + 2000;
-	clif_pet_performance(&pd->bl, atn_rand()%pet_performance_val(sd)+1);
+
+	perform = pet_performance_val(sd);
+	if(perform > 0) {
+		clif_pet_performance(&pd->bl, atn_rand() % perform + 1);
+	}
 
 	// ルートしたItemを落とさせる
 	pet_lootitem_drop(pd,NULL);
@@ -1398,7 +1403,7 @@ int do_init_pet(void)
 
 	read_petdb();
 
-	add_timer_func_list(pet_hungry);
+	add_timer_func_list(pet_hungry_timer);
 	add_timer_func_list(pet_ai_hard);
 	add_timer_func_list(pet_delay_item_drop2);
 	add_timer_func_list(pet_skill_support_timer);

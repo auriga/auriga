@@ -5725,18 +5725,30 @@ int status_get_element(struct block_list *bl)
 			return ret;
 	}
 
-	if(bl->type == BL_MOB && (struct mob_data *)bl)	// 10の位＝Lv*2、１の位＝属性
+	if(bl->type == BL_MOB && (struct mob_data *)bl) {
+		// 10の位＝Lv*2、１の位＝属性
 		ret = ((struct mob_data *)bl)->def_ele;
-	else if(bl->type == BL_PC && (struct map_session_data *)bl)
-		ret = 20+((struct map_session_data *)bl)->def_ele;	// 防御属性Lv1
-	else if(bl->type == BL_PET && (struct pet_data *)bl)
+	}
+	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
+		// 防御属性Lv1
+		ret = 20+((struct map_session_data *)bl)->def_ele;
+	}
+	else if(bl->type == BL_PET && (struct pet_data *)bl) {
 		ret = mob_db[((struct pet_data *)bl)->class_].element;
-	else if(bl->type == BL_HOM && (struct homun_data *)bl)
+	}
+	else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		ret = homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].element;
-	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		ret = merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].element;
-	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
-		ret = elem_db[elem_search_index(((struct elem_data *)bl)->status.class_)].element;
+	}
+	else if(bl->type == BL_MERC && (struct merc_data *)bl) {
+		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
+		if(idx >= 0)
+			ret = merc_db[idx].element;
+	}
+	else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
+		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
+		if(idx >= 0)
+			ret = elem_db[idx].element;
+	}
 
 	return ret;
 }
@@ -5970,20 +5982,31 @@ int status_get_race(struct block_list *bl)
 
 	nullpo_retr(RCT_FORMLESS, bl);
 
-	if(bl->type == BL_MOB && (struct mob_data *)bl)
+	if(bl->type == BL_MOB && (struct mob_data *)bl) {
 		race = mob_db[((struct mob_data *)bl)->class_].race;
-	else if(bl->type == BL_PC && (struct map_session_data *)bl)
+	}
+	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		race = ((struct map_session_data *)bl)->race;
-	else if(bl->type == BL_PET && (struct pet_data *)bl)
+	}
+	else if(bl->type == BL_PET && (struct pet_data *)bl) {
 		return mob_db[((struct pet_data *)bl)->class_].race;
-	else if(bl->type == BL_HOM && (struct homun_data *)bl)
+	}
+	else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].race;
-	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		return merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].race;
-	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
-		return elem_db[elem_search_index(((struct elem_data *)bl)->status.class_)].race;
-	else
+	}
+	else if(bl->type == BL_MERC && (struct merc_data *)bl) {
+		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
+		if(idx >= 0)
+			return merc_db[idx].race;
+	}
+	else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
+		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
+		if(idx >= 0)
+			return elem_db[idx].race;
+	}
+	else {
 		return RCT_FORMLESS;
+	}
 
 	sc = status_get_sc(bl);
 
@@ -6033,9 +6056,13 @@ int status_get_size(struct block_list *bl)
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].size;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		return merc_db[merc_search_index(((struct merc_data *)bl)->status.class_)].size;
+		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
+		if(idx >= 0)
+			return merc_db[idx].size;
 	} else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
-		return elem_db[elem_search_index(((struct elem_data *)bl)->status.class_)].size;
+		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
+		if(idx >= 0)
+			return elem_db[idx].size;
 	}
 
 	return 1;

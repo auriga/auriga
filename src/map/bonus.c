@@ -149,7 +149,7 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 		if (j >= 50) skilllv -= 2;
 		else if(j >= 15) skilllv--;
 		if(skilllv < 1) skilllv = 1;
-	} else if(asflag&EAS_RANDOM) {	// 1〜指定までのランダム
+	} else if(asflag&EAS_RANDOM && skilllv > 0) {	// 1〜指定までのランダム
 		skilllv = atn_rand()%skilllv+1;
 	}
 

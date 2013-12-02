@@ -7700,7 +7700,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					heal_target = &hd->bl;
 			}
 			if(heal_target) {
-				int heal = skill_fix_heal(&hd->bl, heal_target, skillid, skill_calc_heal(src, 1+atn_rand()%skilllv));
+				int val  = (skilllv > 0)? skill_calc_heal(src, 1+atn_rand()%skilllv) : 0;
+				int heal = skill_fix_heal(&hd->bl, heal_target, skillid, val);
 				// エフェクト出ないのでヒール
 				clif_skill_nodamage(src,heal_target,AL_HEAL,heal,1);
 				clif_skill_nodamage(src,heal_target,skillid,heal,1);
@@ -9280,8 +9281,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(rate < 500)
 				rate = 500;
 			if(atn_rand() % 10000 < rate) {
+				int param = (skilllv > 0)? skilllv*2 + atn_rand()%(skilllv*3) : 0;
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skilllv*2 + atn_rand()%(skilllv*3),0,0,skill_get_time(skillid,skilllv),0);
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,param,0,0,skill_get_time(skillid,skilllv),0);
 			} else {
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0,0);
@@ -13362,7 +13364,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 					zeny /= 2;
 					sd->zenynage_damage = zeny + atn_rand()%zeny;
 					zeny = sd->zenynage_damage;
-				} else {
+				} else if(cnd->lv > 0) {
 					// お金消費無しのデフォルトダメージ
 					sd->zenynage_damage = 500*cnd->lv + atn_rand()%(500*cnd->lv);
 				}
@@ -13371,7 +13373,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			}
 			break;
 		case KO_MUCHANAGE:
-			if(!(type&1)) {
+			if(!(type&1) && cnd->lv > 0) {
 				sd->zenynage_damage = 5000*cnd->lv + atn_rand()%(5000*cnd->lv);
 			}
 			break;
