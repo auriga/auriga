@@ -38,6 +38,7 @@
 #include "path.h"
 #include "clif.h"
 #include "pc.h"
+#include "bonus.h"
 #include "pet.h"
 #include "mob.h"
 #include "battle.h"
@@ -2764,8 +2765,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
 			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			skill_bonus_skillautospell(src,target,src_ud->skillid,tick,0);
-			pc_activeitemskill_start(src_sd,src_ud->skillid,tick);
+			bonus_skillautospell(src,target,src_ud->skillid,tick,0);
+			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
 
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
@@ -9681,8 +9682,8 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
 			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			skill_bonus_skillautospell(src,src,src_ud->skillid,tick,0);
-			pc_activeitemskill_start(src_sd,src_ud->skillid,tick);
+			bonus_skillautospell(src,src,src_ud->skillid,tick,0);
+			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
 
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
@@ -18140,228 +18141,6 @@ static int skill_get_spellslot(int skillid)
 	}
 
 	return slot;
-}
-
-/*==========================================
- * アイテムボーナスオートスペル
- *  mode : 攻撃時1 反撃2
- *------------------------------------------
- */
-static int skill_use_bonus_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned int asflag,unsigned int tick,int flag)
-{
-	struct block_list *target;
-	int f=0,sp=0;
-
-	nullpo_retr(0, sd);
-	nullpo_retr(0, bl);
-
-	// オートスペルが使えない状態異常中
-	// ロキ内で、ロキ内アイテム オートスペルが許可されていない
-	if(!battle_config.roki_item_autospell && sd->sc.data[SC_ROKISWEIL].timer != -1)
-		return 0;
-
-	// いつの間にか自分もしくは攻撃対象が死んでいた
-	if(unit_isdead(&sd->bl) || unit_isdead(bl))
-		return 0;
-
-	// 発動判定
-	if(skillid <= 0 || skilllv <= 0)
-		return 0;
-
-	// 遠距離物理半減
-	if(asflag&EAS_LONG) {
-		if(atn_rand()%10000 > (rate/2))
-			return 0;
-	} else {
-		if(atn_rand()%10000 > rate)
-			return 0;
-	}
-
-	// スペル対象
-	// 指定あるがいらないな
-	//if(asflag&EAS_TARGET)
-	//	target = bl;	// 相手
-	//else
-	if(asflag&EAS_SELF)
-		target = &sd->bl;	// 自分
-	else if(asflag&EAS_TARGET_RAND && atn_rand()%100 < 50)
-		target = &sd->bl;	// 自分
-	else
-		target = bl;		// 相手
-
-	// レベル調整
-	if(asflag & (EAS_USEMAX | EAS_USEBETTER)) {
-		int lv;
-		if(battle_config.allow_cloneskill_at_autospell)
-			lv = pc_checkskill(sd,skillid);
-		else
-			lv = pc_checkskill2(sd,skillid);
-
-		if(asflag&EAS_USEMAX && lv && lv == pc_get_skilltree_max(&sd->s_class,skillid)) {
-			// Maxがある場合のみ
-			skilllv = lv;
-		} else if(asflag&EAS_USEBETTER && lv > skilllv) {
-			// 現状以上のレベルがある場合のみ
-			skilllv = lv;
-		}
-	}
-
-	// レベルの変動
-	if(asflag&EAS_FLUCT) {	// レベル変動 武器ＡＳ用
-		int j = atn_rand()%100;
-		if (j >= 50) skilllv -= 2;
-		else if(j >= 15) skilllv--;
-		if(skilllv < 1) skilllv = 1;
-	} else if(asflag&EAS_RANDOM) {	// 1〜指定までのランダム
-		skilllv = atn_rand()%skilllv+1;
-	}
-
-	// SP消費
-	sp = skill_get_sp(skillid,skilllv);
-	if(asflag&EAS_NOSP)
-		sp = 0;
-	else if(asflag&EAS_SPCOST1)
-		sp = sp*2/3;
-	else if(asflag&EAS_SPCOST2)
-		sp = sp/2;
-	else if(asflag&EAS_SPCOST3)
-		sp = sp*3/2;
-
-	// SPが足りない！
-	if(sd->status.sp < sp)
-		return 0;
-
-	if(battle_config.bonus_autospell_delay_enable) {
-		int delay = skill_delayfix(&sd->bl, skillid, skilllv);
-		sd->ud.canact_tick = tick + delay;
-	}
-
-	// 実行
-	if(skillid == AL_TELEPORT && skilllv == 1) {	// Lv1テレポはダイアログ表示なしで即座に飛ばす
-		f = pc_randomwarp(sd,3);
-	} else if(skill_get_inf(skillid) & INF_TOGROUND) {	// 場所
-		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
-	} else {
-		switch( skill_get_nk(skillid)&3 ) {
-			case 0:	// 通常
-			case 2:	// 吹き飛ばし
-				f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
-				break;
-			case 1:	// 支援系
-				if( (skillid == AL_HEAL || (skillid == ALL_RESURRECTION && target->type != BL_PC)) &&
-				    battle_check_undead(status_get_race(target),status_get_element(target)) )
-					f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
-				else
-					f = skill_castend_nodamage_id(&sd->bl,target,skillid,skilllv,tick,flag);
-				break;
-		}
-	}
-	if(!f)
-		pc_heal(sd,0,-sp);
-
-	/* スキル使用で発動するオートスペル,アクティブアイテム */
-	skill_bonus_skillautospell(&sd->bl,target,skillid,tick,0);
-	pc_activeitemskill_start(sd,skillid,tick);
-
-	return 1;	// 成功
-}
-
-int skill_bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag)
-{
-	int i;
-	static int lock = 0;
-	struct map_session_data *sd = NULL;
-
-	nullpo_retr(0, src);
-	nullpo_retr(0, bl);
-
-	if(src->type != BL_PC || lock++)
-		return 0;
-
-	nullpo_retr(0, sd = (struct map_session_data *)src);
-
-	for(i=0;i<sd->autospell.count;i++)
-	{
-		// スキル使用時に発動するオートスペルは弾く
-		if(sd->autospell.skill[i] != 0)
-			continue;
-
-		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
-			mode += EAS_SHORT|EAS_LONG;
-		if(!(sd->autospell.flag[i]&EAS_SHORT) && !(sd->autospell.flag[i]&EAS_LONG) &&
-		   !(sd->autospell.flag[i]&EAS_MAGIC) && !(sd->autospell.flag[i]&EAS_MISC))
-			sd->autospell.flag[i] += EAS_SHORT|EAS_LONG;
-		if(mode&EAS_SHORT && !(sd->autospell.flag[i]&EAS_SHORT))
-			continue;
-		if(mode&EAS_LONG && !(sd->autospell.flag[i]&EAS_LONG))
-			continue;
-		if(mode&EAS_MAGIC && !(sd->autospell.flag[i]&EAS_MAGIC))
-			continue;
-		if(mode&EAS_MISC && !(sd->autospell.flag[i]&EAS_MISC))
-			continue;
-
-		if(!(mode&EAS_ATTACK) && !(mode&EAS_REVENGE))
-			mode += EAS_ATTACK;
-		if(!(sd->autospell.flag[i]&EAS_ATTACK) && !(sd->autospell.flag[i]&EAS_REVENGE))
-			sd->autospell.flag[i] += EAS_ATTACK;
-		if(mode&EAS_REVENGE && !(sd->autospell.flag[i]&EAS_REVENGE))
-			continue;
-		if(mode&EAS_ATTACK && sd->autospell.flag[i]&EAS_REVENGE)
-			continue;
-
-		if(!(mode&EAS_NORMAL) && !(mode&EAS_SKILL))
-			mode += EAS_NORMAL;
-		if(!(sd->autospell.flag[i]&EAS_NORMAL) && !(sd->autospell.flag[i]&EAS_SKILL))
-			sd->autospell.flag[i] += EAS_NORMAL;
-		if(mode&EAS_NORMAL && !(sd->autospell.flag[i]&EAS_NORMAL))
-			continue;
-		if(mode&EAS_SKILL && !(sd->autospell.flag[i]&EAS_SKILL))
-			continue;
-
-		if(skill_use_bonus_autospell(
-			sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
-			sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) )
-		{
-			// オートスペルはどれか一度しか発動しない
-			if(battle_config.once_autospell)
-				break;
-		}
-	}
-	lock = 0;
-
-	return 1;
-}
-
-int skill_bonus_skillautospell(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag)
-{
-	int i;
-	struct map_session_data *sd = NULL;
-
-	nullpo_retr(0, src);
-	nullpo_retr(0, bl);
-
-	if(src->type != BL_PC)
-		return 0;
-
-	nullpo_retr(0, sd = (struct map_session_data *)src);
-
-	for(i=0;i<sd->autospell.count;i++)
-	{
-		// スキルで発動するオートスペルのチェック
-		if(sd->autospell.skill[i] != skillid)
-			continue;
-
-		if(skill_use_bonus_autospell(
-			sd,bl,sd->autospell.id[i],sd->autospell.lv[i],
-			sd->autospell.rate[i],sd->autospell.flag[i],tick,flag) )
-		{
-			// オートスペルはどれか一度しか発動しない
-			if(battle_config.once_autospell)
-				break;
-		}
-	}
-
-	return 1;
 }
 
 /*==========================================

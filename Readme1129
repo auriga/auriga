@@ -1,4 +1,12 @@
 ----------------------------------------
+//1138 [2013/12/03] by Rayce
+
+・オートスペル、アクティブアイテム、bonus系命令の処理を pc.c から分離し、bonus.c に集約
+  （bonus.*, battle.c, map.*, pc.*, script.c, skill.*）
+
+・extraシステムを pc.c から分離し、extra.c に集約（extra.*, map.c, pc.c）
+
+----------------------------------------
 //1137 [2013/12/02] by Rayce
 
 ・Message Of The Day の処理を pc.c から msg.c に移管（atcommand.c, map.c, msg.*, pc.*）

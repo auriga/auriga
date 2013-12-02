@@ -269,6 +269,14 @@ SOURCE=..\..\src\map\bank.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\bonus.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\extra.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -466,6 +474,14 @@ SOURCE=..\..\src\map\msg.h
 # Begin Source File
 
 SOURCE=..\..\src\map\bank.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\bonus.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\extra.h
 # End Source File
 # Begin Source File
 

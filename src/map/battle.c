@@ -34,6 +34,7 @@
 #include "map.h"
 #include "path.h"
 #include "pc.h"
+#include "bonus.h"
 #include "skill.h"
 #include "mob.h"
 #include "homun.h"
@@ -1052,8 +1053,8 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			else
 				asflag += EAS_MISC;
 		}
-		skill_bonus_autospell(&tsd->bl,src,asflag,tick,0);
-		pc_activeitem_start(tsd,asflag,tick);
+		bonus_autospell(&tsd->bl,src,asflag,tick,0);
+		bonus_activeitem_start(tsd,asflag,tick);
 	}
 
 	// PCの状態異常反撃
@@ -5261,7 +5262,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		// アクティブアイテムは物理攻撃スキルでも発動する
-		pc_activeitem_start(src_sd,asflag+EAS_NORMAL,tick);
+		bonus_activeitem_start(src_sd,asflag+EAS_NORMAL,tick);
 
 		// weapon_attack_autospell無効時でも、融合状態であればオートスペルが発動する
 		if(battle_config.weapon_attack_autospell || (sc && sc->data[SC_FUSION].timer != -1))
@@ -5269,7 +5270,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		else
 			asflag += EAS_SKILL;
 
-		skill_bonus_autospell(&src_sd->bl,target,asflag,tick,0);
+		bonus_autospell(&src_sd->bl,target,asflag,tick,0);
 	}
 
 	/* 37．太陽と月と星の融合 HP2%消費 */
@@ -6470,8 +6471,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		else
 			asflag += EAS_MAGIC;
 
-		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
-		pc_activeitem_start(sd,EAS_MAGIC,tick);
+		bonus_autospell(&sd->bl,target,asflag,tick,0);
+		bonus_activeitem_start(sd,EAS_MAGIC,tick);
 	}
 
 	/* 15．魔法でもHP/SP回復(月光剣など) */
@@ -6747,8 +6748,8 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		else
 			asflag += EAS_MISC;
 
-		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
-		pc_activeitem_start(sd,asflag,tick);
+		bonus_autospell(&sd->bl,target,asflag,tick,0);
+		bonus_activeitem_start(sd,asflag,tick);
 	}
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
@@ -7128,8 +7129,8 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		else
 			asflag += EAS_SHORT;
 
-		skill_bonus_autospell(&sd->bl,target,asflag,tick,0);
-		pc_activeitem_start(sd,asflag,tick);
+		bonus_autospell(&sd->bl,target,asflag,tick,0);
+		bonus_activeitem_start(sd,asflag,tick);
 	}
 
 	if(sd && target != &sd->bl && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))
@@ -7153,28 +7154,28 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 
 		// スキルの反射ダメージのオートスペル
 		if(battle_config.weapon_reflect_autospell && target->type == BL_PC && atn_rand()%2)
-			skill_bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
+			bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
 
 		if(battle_config.weapon_reflect_drain && src != target)
 			battle_attack_drain(target,rsdamage,0,battle_config.weapon_reflect_drain_enable_type);
 
 		// スキルの反射ダメージのアクティブアイテム
 		if(battle_config.weapon_reflect_autospell && tsd)
-			pc_activeitem_start(tsd,EAS_ATTACK,gettick());
+			bonus_activeitem_start(tsd,EAS_ATTACK,gettick());
 	}
 	if(ridamage > 0) {
 		battle_delay_damage(tick+wd.amotion,target,src,ridamage,0,0,0);
 
 		// アイテムの反射ダメージのオートスペル
 		if(battle_config.weapon_reflect_autospell && target->type == BL_PC && atn_rand()%2)
-			skill_bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
+			bonus_autospell(target,src,EAS_ATTACK,gettick(),0);
 
 		if(battle_config.weapon_reflect_drain && src != target)
 			battle_attack_drain(target,ridamage,0,battle_config.weapon_reflect_drain_enable_type);
 
 		// アイテムの反射ダメージのアクティブアイテム
 		if(battle_config.weapon_reflect_autospell && tsd)
-			pc_activeitem_start(tsd,EAS_ATTACK,gettick());
+			bonus_activeitem_start(tsd,EAS_ATTACK,gettick());
 	}
 
 	// 対象にステータス異常がある場合
@@ -7831,7 +7832,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.weapon_reflect_autospell) {
-					skill_bonus_autospell(bl,src,asflag,gettick(),0);
+					bonus_autospell(bl,src,asflag,gettick(),0);
 				}
 				if(battle_config.weapon_reflect_drain && src != bl)
 					battle_attack_drain(bl,rdamage,0,battle_config.weapon_reflect_drain_enable_type);
@@ -7839,14 +7840,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(tsd) {
 				// 反射ダメージのアクティブアイテム
 				if(battle_config.weapon_reflect_autospell)
-					pc_activeitem_start(tsd,asflag,gettick());
+					bonus_activeitem_start(tsd,asflag,gettick());
 			}
 		} else {
 			battle_damage(src,src,rdamage,skillid,skilllv,0);
 			if(sd) {
 				// 反射ダメージのオートスペル
 				if(battle_config.magic_reflect_autospell) {
-					skill_bonus_autospell(bl,src,asflag,gettick(),0);
+					bonus_autospell(bl,src,asflag,gettick(),0);
 				}
 				if(battle_config.magic_reflect_drain && src != bl)
 					battle_attack_drain(bl,rdamage,0,battle_config.magic_reflect_drain_enable_type);
@@ -7854,7 +7855,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(tsd) {
 				// 反射ダメージのアクティブアイテム
 				if(battle_config.magic_reflect_autospell)
-					pc_activeitem_start(tsd,asflag,gettick());
+					bonus_activeitem_start(tsd,asflag,gettick());
 			}
 		}
 	}

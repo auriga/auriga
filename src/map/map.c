@@ -47,6 +47,7 @@
 #include "intif.h"
 #include "npc.h"
 #include "pc.h"
+#include "bonus.h"
 #include "mob.h"
 #include "chat.h"
 #include "itemdb.h"
@@ -69,6 +70,7 @@
 #include "booking.h"
 #include "elem.h"
 #include "memorial.h"
+#include "extra.h"
 
 // 極力 staticでローカルに収める
 static struct dbt *id_db        = NULL;
@@ -3059,6 +3061,7 @@ void do_final(void)
 	clif_foreachclient(chrif_disconnect_sub);	// ここで先にキャラを全て切断しておく
 	chrif_flush_fifo();				// パケット送信
 
+	do_final_extra();
 	do_final_battle();
 	do_final_memorial();
 	do_final_npc();
@@ -3068,6 +3071,7 @@ void do_final(void)
 	do_final_guild();
 	do_final_clif();
 	do_final_pc();
+	do_final_bonus();
 	do_final_party();
 	do_final_booking();
 	do_final_pet();
@@ -3225,6 +3229,7 @@ int do_init(int argc,char *argv[])
 	do_init_npc();
 	do_init_memorial();
 	do_init_pc();
+	do_init_bonus();
 	do_init_party();
 	do_init_booking();
 	do_init_guild();
@@ -3237,6 +3242,7 @@ int do_init(int argc,char *argv[])
 	do_init_friend();
 	do_init_ranking();
 	do_init_unit();
+	do_init_extra();
 
 	map_pk_server(map_pk_server_flag);
 	map_pk_nightmaredrop(map_pk_nightmaredrop_flag);

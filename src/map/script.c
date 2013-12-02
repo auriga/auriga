@@ -57,6 +57,7 @@
 #include "chrif.h"
 #include "itemdb.h"
 #include "pc.h"
+#include "bonus.h"
 #include "script.h"
 #include "storage.h"
 #include "mob.h"
@@ -6588,7 +6589,7 @@ int buildin_bonus(struct script_state *st)
 	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	val  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	pc_bonus(script_rid2sd(st),type,val);
+	bonus_param1(script_rid2sd(st),type,val);
 	return 0;
 }
 
@@ -6604,7 +6605,7 @@ int buildin_bonus2(struct script_state *st)
 	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	val   = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
-	pc_bonus2(script_rid2sd(st),type,type2,val);
+	bonus_param2(script_rid2sd(st),type,type2,val);
 	return 0;
 }
 
@@ -6621,7 +6622,7 @@ int buildin_bonus3(struct script_state *st)
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	val   = conv_num(st,& (st->stack->stack_data[st->start+5]));
 
-	pc_bonus3(script_rid2sd(st),type,type2,type3,val);
+	bonus_param3(script_rid2sd(st),type,type2,type3,val);
 	return 0;
 }
 
@@ -6640,7 +6641,7 @@ int buildin_bonus4(struct script_state *st)
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	val   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+6]));
 
-	pc_bonus4(script_rid2sd(st),type,type2,type3,type4,val);
+	bonus_param4(script_rid2sd(st),type,type2,type3,type4,val);
 	return 0;
 }
 
