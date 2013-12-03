@@ -551,30 +551,34 @@ static int itemdb_read_itemdb(void)
 			id->name[47]  = '\0';
 			id->jname[47] = '\0';
 
-			if((p = strchr(np,'{')) == NULL)
+			if((p = strchr(np, '{')) == NULL)
 				continue;
 
-			if(id->use_script)
-				script_free_code(id->use_script);
-			script = parse_script(p,filename[i],lines);
+			np = parse_script_line_end(p, filename[i], lines);
+			if(!np)
+				continue;
 
+			if(id->use_script) {
+				script_free_code(id->use_script);
+			}
+			script = parse_script(p, filename[i], lines);
 			id->use_script = (script != &error_code)? script: NULL;
 
-			p++;
-			while((p = strchr(p,'}')) != NULL) {
-				p++;
-				while(isspace((unsigned char)*p))
-					p++;
-				if(*p == ',')
-					break;
-			}
-			if(p == NULL)
+			np++;
+			if(*np != ',')
 				continue;
 
-			if(id->equip_script)
-				script_free_code(id->equip_script);
-			script = parse_script(p + 1,filename[i],lines);
+			if((p = strchr(np + 1, '{')) == NULL)
+				continue;
 
+			np = parse_script_line_end(p, filename[i], lines);
+			if(!np)
+				continue;
+
+			if(id->equip_script) {
+				script_free_code(id->equip_script);
+			}
+			script = parse_script(p, filename[i], lines);
 			id->equip_script = (script != &error_code)? script: NULL;
 		}
 		fclose(fp);

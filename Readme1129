@@ -1,4 +1,24 @@
 ----------------------------------------
+//1140 [2013/12/04] by Rayce
+
+・スクリプトの } 閉じの解析チェックを強化（script.*, elem.c, homun.c, itemdb.c, merc.c, npc.c, pet.c）
+	-> npc_parse_script_line() を parse_script_line_curly() として script.c に共通化
+	-> parse_script_line_curly() で curly_count が0になった時点でループを抜けるように改修
+	-> parse_script() でも } で終わってない場合にエラー扱いにするように改修
+	-> アイテム・ホム・傭兵・妖精のスクリプトの } 閉じチェックを共通化した
+       parse_script_line_end() を新しく追加
+
+・1行しかないスクリプトでエラーが発生したとき（missing right curlyなど）、表示されるエラー発生行が
+  ズレる問題を修正（script.c）
+
+・pet_db.txt および homun_db.txt の読込時、スクリプトエラーが発生すると読み込みカウントが増えない
+  問題を修正（pet.c, homun.c）
+
+・「missing right curly」が発生するアイテムスクリプトを修正（db/item_db.txt, db/item_db_pre.txt）
+
+・スクリプト依存変数（'）を関数依存変数（'@）に変更（npc_town_hugel.txt）
+
+----------------------------------------
 //1139 [2013/12/03] by Rayce
 
 ・item 構造体と guild_member 構造体の並び順をpackに合わせて整理（mmo.h）

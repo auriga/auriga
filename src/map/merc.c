@@ -1056,13 +1056,16 @@ static int read_merc_db(void)
 				merc_count++;
 			count++;
 
-			if((np = strchr(p,'{')) == NULL)
+			if((np = strchr(p, '{')) == NULL)
 				continue;
 
-			if(merc_db[j].script)
-				script_free_code(merc_db[j].script);
-			script = parse_script(np,filename[i],lines);
+			if(!parse_script_line_end(np, filename[i], lines))
+				continue;
 
+			if(merc_db[j].script) {
+				script_free_code(merc_db[j].script);
+			}
+			script = parse_script(np, filename[i], lines);
 			merc_db[j].script = (script != &error_code)? script: NULL;
 		}
 		fclose(fp);

@@ -1366,15 +1366,6 @@ int read_petdb(void)
 			pet_db[j].name[23]  = '\0';
 			pet_db[j].jname[23] = '\0';
 
-			if((np = strchr(p,'{')) == NULL)
-				continue;
-
-			if(pet_db[j].script)
-				script_free_code(pet_db[j].script);
-			script = parse_script(np,filename[i],lines);
-
-			pet_db[j].script = (script != &error_code)? script: NULL;
-
 			// ペットの卵のアイテムIDにpet_eggフラグをセットする
 			itemdb_search(pet_db[j].EggID)->flag.pet_egg = 1;
 
@@ -1384,6 +1375,18 @@ int read_petdb(void)
 			if(k < 0)
 				pet_count++;
 			count++;
+
+			if((np = strchr(p,'{')) == NULL)
+				continue;
+
+			if(!parse_script_line_end(np, filename[i], lines))
+				continue;
+
+			if(pet_db[j].script) {
+				script_free_code(pet_db[j].script);
+			}
+			script = parse_script(np, filename[i], lines);
+			pet_db[j].script = (script != &error_code)? script: NULL;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);

@@ -1946,62 +1946,6 @@ static int npc_exportlabel_data(struct npc_data *nd)
  * script行解析
  *------------------------------------------
  */
-static int npc_parse_script_line(const unsigned char *p,int *curly_count,int line)
-{
-	size_t i, len;
-	int string_flag = 0;
-	static int comment_flag = 0;
-
-	if(p == NULL) {	// フラグを戻して終了
-		comment_flag = 0;
-		return 0;
-	}
-
-	len = strlen(p);
-	for(i = 0; i < len ; i++) {
-		if(comment_flag) {
-			if(p[i] == '*' && p[i+1] == '/') {
-				// マルチラインコメント終了
-				i++;
-				(*curly_count)--;
-				comment_flag = 0;
-			}
-		} else if(string_flag) {
-			if(p[i] == '"') {
-				string_flag = 0;
-			} else if(p[i] == '\\' && p[i-1] <= 0x7e) {
-				// エスケープ
-				i++;
-			}
-		} else {
-			if(p[i] == '"') {
-				string_flag = 1;
-			} else if(p[i] == '}') {
-				if(*curly_count == 0) {
-					break;
-				} else {
-					(*curly_count)--;
-				}
-			} else if(p[i] == '{') {
-				(*curly_count)++;
-			} else if(p[i] == '/' && p[i+1] == '/') {
-				// コメント
-				break;
-			} else if(p[i] == '/' && p[i+1] == '*') {
-				// マルチラインコメント
-				i++;
-				(*curly_count)++;
-				comment_flag = 1;
-			}
-		}
-	}
-	if(string_flag) {
-		printf("Missing '\"' at line %d\a\n",line);
-		return 1;
-	}
-	return 0;
-}
-
 static int npc_parse_script(const char *w1,const char *w2,const char *w3,const char *w4,const char *first_line,FILE *fp,int *lines,const char* file)
 {
 	int x, y, m, xs, ys;
@@ -2044,7 +1988,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 			strcpy(srcbuf, p);
 			startline = *lines;
 		}
-		if( npc_parse_script_line(srcbuf, &curly_count, *lines) ) {
+		if( !parse_script_line_curly(srcbuf, &curly_count, *lines) ) {
 			aFree(srcbuf);
 			return 1;
 		}
@@ -2055,7 +1999,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 			if(!fgets(line, sizeof(line), fp))
 				break;
 			(*lines)++;
-			if( npc_parse_script_line(line, &curly_count, *lines) ) {
+			if( !parse_script_line_curly(line, &curly_count, *lines) ) {
 				aFree(srcbuf);
 				return 1;
 			}
@@ -2267,7 +2211,7 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		strcpy(srcbuf, p);
 		startline = *lines;
 	}
-	if( npc_parse_script_line(srcbuf, &curly_count, *lines) ) {
+	if( !parse_script_line_curly(srcbuf, &curly_count, *lines) ) {
 		aFree(srcbuf);
 		return 1;
 	}
@@ -2277,7 +2221,7 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		if(!fgets(line,sizeof(line),fp))
 			break;
 		(*lines)++;
-		if( npc_parse_script_line(line, &curly_count, *lines) ) {
+		if( !parse_script_line_curly(line, &curly_count, *lines) ) {
 			aFree(srcbuf);
 			return 1;
 		}
@@ -2791,7 +2735,7 @@ static int npc_parse_srcfile(const char *filepath)
 	} else {
 		printf("\r");
 	}
-	npc_parse_script_line(NULL,0,0);	// scriptブロック内部のcomment_flagを初期化
+	parse_script_line_curly(NULL, 0, 0);	// scriptブロック内部のcomment_flagを初期化
 
 	return 1;
 }

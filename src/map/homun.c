@@ -1547,15 +1547,19 @@ static int read_homundb(void)
 			homun_db[j].name[23]  = '\0';
 			homun_db[j].jname[23] = '\0';
 
-			if((np = strchr(p,'{')) == NULL)
+			count++;
+
+			if((np = strchr(p, '{')) == NULL)
 				continue;
 
-			if(homun_db[j].script)
-				script_free_code(homun_db[j].script);
-			script = parse_script(np,filename[i],lines);
+			if(!parse_script_line_end(np, filename[i], lines))
+				continue;
 
+			if(homun_db[j].script) {
+				script_free_code(homun_db[j].script);
+			}
+			script = parse_script(np, filename[i], lines);
 			homun_db[j].script = (script != &error_code)? script: NULL;
-			count++;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);

@@ -1777,7 +1777,7 @@ void script_error(const char *src, const char *file, int start_line, const char 
 	// エラーが発生した行を求める
 	for(p = src; p && *p; line++) {
 		const char *lineend = strchr(p, '\n');
-		if(lineend == NULL || pos < lineend) {
+		if(lineend == NULL || pos <= lineend || *(lineend + 1) == '\0') {
 			break;
 		}
 		for(j = 0; j < 4; j++) {
@@ -1798,6 +1798,85 @@ void script_error(const char *src, const char *file, int start_line, const char 
 	for(j = 0; j < 5; j++) {
 		p = script_print_line(p, NULL, line + j + 1);
 	}
+}
+
+/*==========================================
+ * スクリプト行の閉じの解析
+ *------------------------------------------
+ */
+char* parse_script_line_curly(unsigned char *p,int *curly_count,int line)
+{
+	size_t i = 0, len;
+	int string_flag = 0;
+	static int comment_flag = 0;
+
+	if(p == NULL) {	// フラグを戻して終了
+		comment_flag = 0;
+		return NULL;
+	}
+
+	len = strlen(p);
+	for(i = 0; i < len ; i++) {
+		if(comment_flag) {
+			if(p[i] == '*' && p[i+1] == '/') {
+				// マルチラインコメント終了
+				i++;
+				(*curly_count)--;
+				comment_flag = 0;
+			}
+		} else if(string_flag) {
+			if(p[i] == '"') {
+				string_flag = 0;
+			} else if(p[i] == '\\' && p[i-1] <= 0x7e) {
+				// エスケープ
+				i++;
+			}
+		} else {
+			if(p[i] == '"') {
+				string_flag = 1;
+			} else if(p[i] == '}') {
+				(*curly_count)--;
+				if(*curly_count == 0)
+					break;
+			} else if(p[i] == '{') {
+				(*curly_count)++;
+			} else if(p[i] == '/' && p[i+1] == '/') {
+				// コメント
+				i = len;
+				break;
+			} else if(p[i] == '/' && p[i+1] == '*') {
+				// マルチラインコメント
+				i++;
+				(*curly_count)++;
+				comment_flag = 1;
+			}
+		}
+	}
+	if(string_flag) {
+		printf("Missing '\"' at line %d\a\n",line);
+		return NULL;
+	}
+
+	return p + i;
+}
+
+/*==========================================
+ * スクリプト行の終端の解析
+ *------------------------------------------
+ */
+char* parse_script_line_end(unsigned char *src, const char *file, int line)
+{
+	int curly_count = 0;
+	char *p;
+
+	p = parse_script_line_curly(src, &curly_count, line);
+	if(p && curly_count > 0) {
+		script_error( src, file, line, "missing right curly", p );
+		p = NULL;
+	}
+	parse_script_line_curly(NULL, 0, 0);
+
+	return p;
 }
 
 /*==========================================
@@ -1918,6 +1997,9 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 		str_data[LABEL_NEXTLINE].type=C_NOP;
 		str_data[LABEL_NEXTLINE].backpatch=-1;
 		str_data[LABEL_NEXTLINE].label=-1;
+	}
+	if(!p || !*p) {
+		disp_error_message("missing right curly",p);
 	}
 
 	add_scriptc(C_NOP);

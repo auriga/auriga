@@ -2758,7 +2758,7 @@
 5125,Kiss_Of_Angel,天使の口づけ,4,10000,,300,,6,,1,8388609,2,256,,50,255,1,{},{ bonus bSPrecovRate,3; }
 5126,Morpheus's_Hood,モルフェウスの頭巾,4,30000,,200,,3,,0,991944702,2,256,,33,256,1,{},{ bonus bInt,2; if(equippeditem(2518)==0 || (equippeditem(2648)==0 && equippeditem(2902)==0) || (equippeditem(2649)==0 && equippeditem(2903))) end; bonus bInt,5; bonus bMdef,11; bonus bMaxSPrate,20; bonus bNoCastCancel,0; bonus bCastRate,25; }
 5127,Morrigane's_Helm,モリガンのヘルム,4,30000,,500,,8,,0,991944702,2,256,,61,257,1,{},{ bonus bLuk,2; bonus bBaseAtk,3; if(equippeditem(2519)==0 || (equippeditem(2650)==0 && equippeditem(2900)==0) || (equippeditem(2651)==0 && equippeditem(2901)==0)) end; bonus bStr,2; bonus bLuk,9; bonus bCritical,13; bonus bBaseAtk,18; bonus bFlee2,13; }
-5128,Goibne's_Helmet,ゴヴニュの兜,4,30000,,500,,10:3,,0,991944702,2,256,,54,258,1,{},{ bonus bVit,3; if(getequipid(2)==2354 && (getequipid(5)==2520 || getequipid(5)==2599) && (getequipid(6)==2419 || getequipid(6)==2493)) { bonus bVit,5; bonus bMaxHPrate,15; bonus bMaxSPrate,5; bonus bDef,5; bonus bMdef,15; bonus2 bSubEle,Ele_Water,10; bonus2 bSubEle,Ele_Earth,10; bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Wind,10; }
+5128,Goibne's_Helmet,ゴヴニュの兜,4,30000,,500,,10:3,,0,991944702,2,256,,54,258,1,{},{ bonus bVit,3; if(getequipid(2)==2354 && (getequipid(5)==2520 || getequipid(5)==2599) && (getequipid(6)==2419 || getequipid(6)==2493)) { bonus bVit,5; bonus bMaxHPrate,15; bonus bMaxSPrate,5; bonus bDef,5; bonus bMdef,15; bonus2 bSubEle,Ele_Water,10; bonus2 bSubEle,Ele_Earth,10; bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Wind,10; } }
 5129,Bird_Nest,巣立ちを迎えた鳥の巣,4,20,,400,,2,,0,1000333311,2,256,,50,201,,{},{ bonus bAgi,2; bonus2 bSubRace,Rct_Brute,10; bonus2 bMagicSubRace,Rct_Brute,10; }
 5130,Lion_Mask,獅子王の兜,11,20,,300,,8:5,,1,1000333311,2,768,,50,202,1,{},{ bonus bStr,4; skill 155,1; bonus2 bSubRace,Rct_Brute,5; bonus2 bMagicSubRace,Rct_Brute,5; if(getequiprefinerycnt(1)>=7){ bonus2 bSubRace,Rct_Brute,5; bonus2 bMagicSubRace,Rct_Brute,5; } }
 5131,Close_Helmet,クローズヘルメット,14,20,,1200,,8,,0,16514,2,769,,75,203,1,{},{ bonus bVit,3; bonus bMaxHPrate,3; }
@@ -5642,7 +5642,7 @@
 12546,Suspicious_Dish,Suspicious_Dish,2,,,10,,,,,,,,,,,,{},{}
 12547,Chalcenodny_Box,玉手箱,2,,,10,,,,,1000333311,2,,,,,,{},{}
 12548,Buy_Market_Permit2,偽造買取露店ライセンス,2,20,,10,,,,,1000333311,2,,,,,,{ openbuyingstore 2; },{}
-12549,White_Slim_Pot_Box2,White_Slim_Pot_Box2,2,,,10,,,,,,,,,,,,{},{
+12549,White_Slim_Pot_Box2,White_Slim_Pot_Box2,2,,,10,,,,,,,,,,,,{},{}
 12550,Poison_Bottle_Box2,毒薬の瓶の箱,2,,,10,,,,,,,,,,,,{},{}
 12551,MVP_Tele_Scroll,MVP_Tele_Scroll,2,,,10,,,,,,,,,,,,{},{}
 12552,Quest_Tele_Scroll,Quest_Tele_Scroll,2,,,10,,,,,,,,,,,,{},{}
@@ -8037,7 +8037,7 @@
 18751,Unknown_Item,ラッキークローバー,4,20,,100,,0,,,1000333311,2,1,,1,,,{},{ bonus bFlee2,2; }
 18752,Unknown_Item,呪われた本,4,,,300,,3,,1,991944702,2,256,,99,262,1,{},{}
 
-18756,Unknown_Item,柴犬帽(黒),4,20,,400,,6,,1,1000333311,2,256,,50,894,1,{},{ bonus2 bAddRace,Rct_Brute,10; if(equippeditem(2959)){ bonus3 bAutoActiveWeapon,18756,50+getequiprefinerycnt(1)*10,5000; bonus3 bRevAutoActiveWeapon,18756,50+getequiprefinerycnt(1)*10,5000; if(checkactiveitem()) { misceffect 220,""; active_montransform 1785; bonus bBaseAtk,30+getequiprefinerycnt(1)*30; bonus2 bSPPenaltyTime,1000,5; } }
+18756,Unknown_Item,柴犬帽(黒),4,20,,400,,6,,1,1000333311,2,256,,50,894,1,{},{ bonus2 bAddRace,Rct_Brute,10; if(equippeditem(2959)){ bonus3 bAutoActiveWeapon,18756,50+getequiprefinerycnt(1)*10,5000; bonus3 bRevAutoActiveWeapon,18756,50+getequiprefinerycnt(1)*10,5000; if(checkactiveitem()) { misceffect 220,""; active_montransform 1785; bonus bBaseAtk,30+getequiprefinerycnt(1)*30; bonus2 bSPPenaltyTime,1000,5; } } }
 
 18759,Unknown_Item,ウッドゴブリンの鼻,4,20,,200,,0,,,1000333311,2,512,,50,,,{},{}
 
@@ -8047,7 +8047,7 @@
 
 18786,Unknown_Item,アネモスの仮面,4,20,,200,,0,,,1000333311,2,512,,10,906,,{},{ bonus2 bAddEleMagicDamageRate,Ele_Wind,4; }
 
-18827,Unknown_Item,ヴァルキリーサークレット,4,20,,300,,10,,1,1000333311,2,256,,50,940,1,{},{ bonus bStr,1; bonus bMdef,3; bonus2 bAddEle,Ele_Dark,10; bonus2 bAddRace,Rct_Demon,10; if(equippeditem(5074)){ bonus3 bAutoActiveWeapon,18827,50+getequiprefinerycnt(1)*10,5000; if(checkactiveitem()) { misceffect 220,""; active_montransform 1751; bonus bHit,-10; bonus bSplashRange,1; bonus2 bHPPenaltyTime,1000,30; } }
+18827,Unknown_Item,ヴァルキリーサークレット,4,20,,300,,10,,1,1000333311,2,256,,50,940,1,{},{ bonus bStr,1; bonus bMdef,3; bonus2 bAddEle,Ele_Dark,10; bonus2 bAddRace,Rct_Demon,10; if(equippeditem(5074)){ bonus3 bAutoActiveWeapon,18827,50+getequiprefinerycnt(1)*10,5000; if(checkactiveitem()) { misceffect 220,""; active_montransform 1751; bonus bHit,-10; bonus bSplashRange,1; bonus2 bHPPenaltyTime,1000,30; } } }
 
 19500,T_Mr_Smile,衣装スマイルマスク,4,10,,0,,0,,0,1000333311,2,6144,,1,65,0,{},{}
 19501,T_Spinx_Helm,衣装スフィンクス帽,4,10,,0,,0,,0,1000333311,2,5120,,1,137,0,{},{}

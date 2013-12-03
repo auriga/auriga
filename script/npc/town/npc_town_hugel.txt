@@ -6521,12 +6521,12 @@ hu_in01.gat,155,108,0	script	hu_warp4	45,1,1,{
 odin_tem03.gat,0,0,0	script	OdinTimer	-1,{
 OnInit:
 OnTimer300000:
-	set 'num,rand(1,5);
+	set '@num,rand(1,5);
 	for(set '@i,1; '@i <= 5; set '@i,'@i+1) {
-		if('@i != 'num)
+		if('@i != '@num)
 			hideonnpc "odin_in#" +'@i;
 	}
-	hideoffnpc "odin_in#" +'num;
+	hideoffnpc "odin_in#" +'@num;
 	initnpctimer;
 	end;
 }
