@@ -66,6 +66,7 @@ static void sig_proc(int sn)
 	switch(sn){
 	case SIGINT:
 	case SIGTERM:
+	case SIGQUIT:
 		auriga_is_running = 0;
 		break;
 	}
@@ -339,6 +340,7 @@ int main(int argc,char **argv)
 #else
 	signal(SIGTERM,sig_proc);
 	signal(SIGINT,sig_proc);
+	signal(SIGQUIT,sig_proc);
 
 	srand((unsigned int)time(NULL) ^ (getpid() << 8));
 	atn_srand((unsigned int)time(NULL) ^ (getpid() << 8));

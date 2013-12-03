@@ -5977,7 +5977,7 @@ int status_get_guild_id(struct block_list *bl)
  */
 int status_get_race(struct block_list *bl)
 {
-	int race;
+	int race = RCT_FORMLESS;
 	struct status_change *sc;
 
 	nullpo_retr(RCT_FORMLESS, bl);

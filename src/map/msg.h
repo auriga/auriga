@@ -22,6 +22,8 @@
 #ifndef _MSG_H_
 #define _MSG_H_
 
+#include "map.h"
+
 const char * msg_txt(int msg_number);
 void msg_output(const int fd, const char *format, ...);
 

@@ -1,4 +1,17 @@
 ----------------------------------------
+//1142 [2013/12/04] by Rayce
+
+・gccでコンパイル時、msg.hでエラーが発生するのを修正（msg.h）
+
+・gccでコンパイル時、「No sush file or directory」という警告が発生するのを修正（Makefile）
+
+・status_get_race() で変数が未初期化の警告を修正（status.c）
+
+・Linux環境で、SIGQUITを送る場合（CTRL+\）も終了処理できるように追加（core.c）
+
+・[SQL] converterで配列のサイズが小さいためバッファオーバーフローが発生する問題を修正（char-converter.c）
+
+----------------------------------------
 //1141 [2013/12/04] by Rayce
 
 ・const.txt にサイズ系定数（Size_Small, Size_Medium, Size_Big）を追加（const.txt）

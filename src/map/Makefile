@@ -7,11 +7,11 @@ COMMON_SRC += $(shell ls ../common/zlib/*.c)
 endif
 
 MAP_SRC = $(shell ls *.c)
-ifdef SQLFLAG
-	MAP_SRC += $(shell ls sql/*.c)
-else
-	MAP_SRC += $(shell ls txt/*.c)
-endif
+#ifdef SQLFLAG
+#	MAP_SRC += $(shell ls sql/*.c)
+#else
+#	MAP_SRC += $(shell ls txt/*.c)
+#endif
 
 map-server: $(MAP_SRC:.c=.o) $(COMMON_SRC:.c=.o)
 	$(CC) -o ../../$@ $> $(LIBS)

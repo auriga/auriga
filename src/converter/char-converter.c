@@ -102,7 +102,7 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 {
 	char tmp_str[3][256];
-	int tmp_int[46];
+	int tmp_int[52];
 	int set,next,len,i,n;
 
 	set=sscanf(str,"%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
@@ -1163,7 +1163,7 @@ static int gstorage_fromstr(char *str,struct guild_storage *p)
 static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 {
 	int i,s,next,set,len;
-	int tmp_int[23];
+	int tmp_int[29];
 	char tmp_str[256], buf[64];;
 
 	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
