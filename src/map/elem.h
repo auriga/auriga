@@ -54,9 +54,8 @@ struct elem_db {
 	int speed,adelay,amotion,dmotion;
 	struct script_code *script;
 };
-extern struct elem_db elem_db[MAX_ELEM_DB];
 
-int elem_search_index(int nameid);
+struct elem_db* elem_search_data(int nameid);
 int elem_get_skilltree_max(int class_,int skillid);
 
 int elem_create_data(struct map_session_data *sd, int class_, unsigned int limit);

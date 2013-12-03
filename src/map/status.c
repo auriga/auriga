@@ -5740,14 +5740,14 @@ int status_get_element(struct block_list *bl)
 		ret = homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].element;
 	}
 	else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
-		if(idx >= 0)
-			ret = merc_db[idx].element;
+		struct merc_db *db = merc_search_data(((struct merc_data *)bl)->status.class_);
+		if(db)
+			ret = db->element;
 	}
 	else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
-		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
-		if(idx >= 0)
-			ret = elem_db[idx].element;
+		struct elem_db *db = elem_search_data(((struct elem_data *)bl)->status.class_);
+		if(db)
+			ret = db->element;
 	}
 
 	return ret;
@@ -5995,14 +5995,14 @@ int status_get_race(struct block_list *bl)
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].race;
 	}
 	else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
-		if(idx >= 0)
-			return merc_db[idx].race;
+		struct merc_db *db = merc_search_data(((struct merc_data *)bl)->status.class_);
+		if(db)
+			return db->race;
 	}
 	else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
-		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
-		if(idx >= 0)
-			return elem_db[idx].race;
+		struct elem_db *db = elem_search_data(((struct elem_data *)bl)->status.class_);
+		if(db)
+			return db->race;
 	}
 	else {
 		return RCT_FORMLESS;
@@ -6056,13 +6056,13 @@ int status_get_size(struct block_list *bl)
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].size;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
-		int idx = merc_search_index(((struct merc_data *)bl)->status.class_);
-		if(idx >= 0)
-			return merc_db[idx].size;
+		struct merc_db *db = merc_search_data(((struct merc_data *)bl)->status.class_);
+		if(db)
+			return db->size;
 	} else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
-		int idx = elem_search_index(((struct elem_data *)bl)->status.class_);
-		if(idx >= 0)
-			return elem_db[idx].size;
+		struct elem_db *db = elem_search_data(((struct elem_data *)bl)->status.class_);
+		if(db)
+			return db->size;
 	}
 
 	return 1;

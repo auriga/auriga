@@ -53,6 +53,59 @@ struct pet_db pet_db[MAX_PET_DB];
 static int pet_count;
 
 /*==========================================
+ * ペットDBの検索
+ *------------------------------------------
+ */
+static int pet_search_index(int key, int type)
+{
+	int i;
+
+	for(i=0; i<pet_count; i++) {
+		if(pet_db[i].class_ <= 0)
+			continue;
+		switch(type) {
+			case PET_CLASS:
+				if(pet_db[i].class_ == key)
+					return i;
+				break;
+			case PET_CATCH:
+				if(pet_db[i].itemID == key)
+					return i;
+				break;
+			case PET_EGG:
+				if(pet_db[i].EggID == key)
+					return i;
+				break;
+			case PET_EQUIP:
+				if(pet_db[i].AcceID == key)
+					return i;
+				break;
+			case PET_FOOD:
+				if(pet_db[i].FoodID == key)
+					return i;
+				break;
+			default:
+				return -1;
+		}
+	}
+	return -1;
+}
+
+/*==========================================
+ * ペットDBを返す
+ *------------------------------------------
+ */
+struct pet_db* pet_search_data(int key, int type)
+{
+	int idx = pet_search_index(key, type);
+
+	if(idx >= 0)
+		return &pet_db[idx];
+
+	return NULL;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -208,52 +261,14 @@ int pet_hungry_timer_delete(struct pet_data *pd)
 }
 
 /*==========================================
- * DBの検索
- *------------------------------------------
- */
-int search_petDB_index(int key,int type)
-{
-	int i;
-
-	for(i=0; i<pet_count; i++) {
-		if(pet_db[i].class_ <= 0)
-			continue;
-		switch(type) {
-			case PET_CLASS:
-				if(pet_db[i].class_ == key)
-					return i;
-				break;
-			case PET_CATCH:
-				if(pet_db[i].itemID == key)
-					return i;
-				break;
-			case PET_EGG:
-				if(pet_db[i].EggID == key)
-					return i;
-				break;
-			case PET_EQUIP:
-				if(pet_db[i].AcceID == key)
-					return i;
-				break;
-			case PET_FOOD:
-				if(pet_db[i].FoodID == key)
-					return i;
-				break;
-			default:
-				return -1;
-		}
-	}
-	return -1;
-}
-
-/*==========================================
  *
  *------------------------------------------
  */
 static int pet_data_init(struct map_session_data *sd)
 {
 	struct pet_data *pd;
-	int i, interval;
+	struct pet_db *db;
+	int interval;
 	unsigned int tick = gettick();
 
 	nullpo_retr(1, sd);
@@ -266,12 +281,12 @@ static int pet_data_init(struct map_session_data *sd)
 		return 1;
 	}
 
-	i = search_petDB_index(sd->pet.class_,PET_CLASS);
-	if(i < 0) {
+	db = pet_search_data(sd->pet.class_, PET_CLASS);
+	if(db == NULL) {
 		sd->status.pet_id = 0;
 		return 1;
 	}
-	sd->petDB = &pet_db[i];
+	sd->petDB = db;
 	sd->pd = pd = (struct pet_data *)aCalloc(1,sizeof(struct pet_data));
 
 	pd->bl.m    = sd->bl.m;
@@ -439,7 +454,8 @@ int pet_catch_process1(struct map_session_data *sd,int target_class)
 int pet_catch_process2(struct map_session_data *sd,int target_id)
 {
 	struct mob_data *md;
-	int i, pet_catch_rate;
+	struct pet_db *db;
+	int pet_catch_rate;
 
 	nullpo_retr(1, sd);
 
@@ -450,13 +466,13 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 	}
 
 	// target_idによる敵→卵判定
-	i = search_petDB_index(md->class_,PET_CLASS);
-	if(i < 0 || sd->catch_target_class != md->class_) {
+	db = pet_search_data(md->class_,PET_CLASS);
+	if(db == NULL || sd->catch_target_class != md->class_) {
 		clif_pet_rulet(sd,0);
 		return 1;
 	}
 
-	pet_catch_rate = (pet_db[i].capture + (sd->status.base_level - mob_db[md->class_].lv) * 30 + sd->paramc[5] * 20) * (200 - md->hp * 100 / mob_db[md->class_].max_hp) / 100;
+	pet_catch_rate = (db->capture + (sd->status.base_level - mob_db[md->class_].lv) * 30 + sd->paramc[5] * 20) * (200 - md->hp * 100 / mob_db[md->class_].max_hp) / 100;
 	if(pet_catch_rate < 1)
 		pet_catch_rate = 1;
 	if(battle_config.pet_catch_rate != 100)
@@ -466,8 +482,10 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		// 成功
 		unit_remove_map(&md->bl,0,0);
 		clif_pet_rulet(sd,1);
-		intif_create_pet(sd->status.account_id,sd->status.char_id,pet_db[i].class_,mob_db[pet_db[i].class_].lv,
-			pet_db[i].EggID,0,pet_db[i].intimate,100,0,1,md->name);
+		intif_create_pet(
+			sd->status.account_id,sd->status.char_id,db->class_,mob_db[db->class_].lv,
+			db->EggID,0,db->intimate,100,0,1,md->name
+		);
 	} else {
 		// 失敗
 		clif_pet_rulet(sd,0);
@@ -483,7 +501,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 int pet_get_egg(int account_id,int pet_id,int flag)
 {
 	struct map_session_data *sd;
-	int i, ret;
+	struct pet_db *db;
 
 	if(flag)
 		return 0;
@@ -492,11 +510,13 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 	if(sd == NULL)
 		return 1;
 
-	i = search_petDB_index(sd->catch_target_class,PET_CLASS);
-	if(i >= 0) {
+	db = pet_search_data(sd->catch_target_class,PET_CLASS);
+	if(db) {
 		struct item tmp_item;
+		int ret;
+
 		memset(&tmp_item,0,sizeof(tmp_item));
-		tmp_item.nameid   = pet_db[i].EggID;
+		tmp_item.nameid   = db->EggID;
 		tmp_item.identify = 1;
 		tmp_item.card[0]  = (short)0xff00;
 		*((int *)(&tmp_item.card[1])) = pet_id;
@@ -1336,7 +1356,7 @@ int read_petdb(void)
 			if(nameid <= 0 || nameid >= MOB_ID_MAX)
 				continue;
 
-			k = search_petDB_index(nameid, PET_CLASS);
+			k = pet_search_index(nameid, PET_CLASS);
 			j = (k >= 0)? k: pet_count;
 
 			pet_db[j].class_       = nameid;
@@ -1386,7 +1406,7 @@ int read_petdb(void)
 				script_free_code(pet_db[j].script);
 			}
 			script = parse_script(np, filename[i], lines);
-			pet_db[j].script = (script != &error_code)? script: NULL;
+			pet_db[j].script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);

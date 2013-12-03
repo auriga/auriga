@@ -43,9 +43,8 @@ struct merc_db {
 	int speed,adelay,amotion,dmotion;
 	struct script_code *script;
 };
-extern struct merc_db merc_db[MAX_MERC_DB];
 
-int merc_search_index(int nameid);
+struct merc_db* merc_search_data(int nameid);
 int merc_get_skilltree_max(int class_,int skillid);
 
 int merc_callmerc(struct map_session_data *sd, int class_, unsigned int limit);

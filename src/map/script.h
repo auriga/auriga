@@ -63,6 +63,7 @@ struct script_state {
 char* parse_script_line_curly(unsigned char *p,int *curly_count,int line);
 char* parse_script_line_end(unsigned char *src, const char *file, int line);
 struct script_code* parse_script(unsigned char *,const char*,int);
+int script_is_error(struct script_code *code);
 void run_script(struct script_code*,int,int,int);
 void script_error(const char *src, const char *file, int start_line, const char *msg, const char *pos);
 
@@ -75,7 +76,6 @@ int script_config_read(const char *cfgName);
 int do_init_script(void);
 int do_final_script(void);
 
-extern struct script_code error_code;
 extern struct linkdb_node *scriptlabel_db;
 
 // @readvars, @writevars

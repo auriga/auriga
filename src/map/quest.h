@@ -31,7 +31,6 @@ struct quest_db {
 		short count;
 	} mob[3];
 };
-extern struct quest_db quest_db[MAX_QUEST_DB];
 
 int quest_search_db(int quest_id);
 int quest_search_index(struct map_session_data *sd, int quest_id);

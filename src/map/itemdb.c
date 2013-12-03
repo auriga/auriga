@@ -562,7 +562,7 @@ static int itemdb_read_itemdb(void)
 				script_free_code(id->use_script);
 			}
 			script = parse_script(p, filename[i], lines);
-			id->use_script = (script != &error_code)? script: NULL;
+			id->use_script = (script_is_error(script))? NULL: script;
 
 			np++;
 			if(*np != ',')
@@ -579,7 +579,7 @@ static int itemdb_read_itemdb(void)
 				script_free_code(id->equip_script);
 			}
 			script = parse_script(p, filename[i], lines);
-			id->equip_script = (script != &error_code)? script: NULL;
+			id->equip_script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],ln);

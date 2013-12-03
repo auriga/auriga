@@ -1559,7 +1559,7 @@ static int read_homundb(void)
 				script_free_code(homun_db[j].script);
 			}
 			script = parse_script(np, filename[i], lines);
-			homun_db[j].script = (script != &error_code)? script: NULL;
+			homun_db[j].script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);

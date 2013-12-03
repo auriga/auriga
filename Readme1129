@@ -1,4 +1,18 @@
 ----------------------------------------
+//1143 [2013/12/04] by Rayce
+
+・出来る限りexternを止める
+	-> ペット/傭兵/精霊のデータベースはインデックスではなくデータベースそのものを検索して
+       返すように変更（atcommand.c, pet.*, merc.*, elem.*, npc.c, skill.c, status.c）
+
+	-> quest_dbはそもそも公開していないのでexternを除去（quest.h）
+	-> memorial_dataはそもそも公開していないのでexternを除去（memorial.h）
+
+	-> スクリプトエラー判定用のコードをstaticに収める
+       代わりに判定用の関数 script_is_error() を定義
+       （elem.c, homun.c, itemdb.c, merc.c, npc.c, pet.c, script.*）
+
+----------------------------------------
 //1142 [2013/12/04] by Rayce
 
 ・gccでコンパイル時、msg.hでエラーが発生するのを修正（msg.h）

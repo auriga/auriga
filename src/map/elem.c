@@ -61,7 +61,7 @@ static int elem_count;
  * 精霊DBの検索
  *------------------------------------------
  */
-int elem_search_index(int nameid)
+static int elem_search_index(int nameid)
 {
 	int i;
 
@@ -72,6 +72,20 @@ int elem_search_index(int nameid)
 			return i;
 	}
 	return -1;
+}
+
+/*==========================================
+ * 精霊DBを返す
+ *------------------------------------------
+ */
+struct elem_db* elem_search_data(int nameid)
+{
+	int idx = elem_search_index(nameid);
+
+	if(idx >= 0)
+		return &elem_db[idx];
+
+	return NULL;
 }
 
 /*==========================================
@@ -88,6 +102,7 @@ static struct elem_skill_tree_entry* elem_search_skilltree(int class_, int skill
 	i = elem_search_index(class_);
 	if(i < 0)
 		return NULL;
+
 	st = elem_skill_tree[i];
 
 	// binary search
@@ -434,40 +449,40 @@ static int elem_ai_timer(int tid,unsigned int tick,int id,void *data)
  */
 int elem_calc_status(struct elem_data *eld)
 {
-	int class_;
+	struct elem_db *db;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
 
 	nullpo_retr(1, eld);
 
-	class_ = elem_search_index(eld->status.class_);
-	if(class_ < 0)
+	db = elem_search_data(eld->status.class_);
+	if(db == NULL)
 		return 1;
 
-	eld->atk1     = elem_db[class_].atk1;
-	eld->atk2     = elem_db[class_].atk2;
+	eld->atk1     = db->atk1;
+	eld->atk2     = db->atk2;
 	eld->matk1    = 0;
 	eld->matk2    = 0;
 	eld->hit      = 0;
 	eld->flee     = 0;
-	eld->def      = elem_db[class_].def;
-	eld->mdef     = elem_db[class_].mdef;
+	eld->def      = db->def;
+	eld->mdef     = db->mdef;
 	eld->critical = 0;
-	eld->max_hp   = elem_db[class_].max_hp;
-	eld->max_sp   = elem_db[class_].max_sp;
-	eld->str      = elem_db[class_].str;
-	eld->agi      = elem_db[class_].agi;
-	eld->vit      = elem_db[class_].vit;
-	eld->dex      = elem_db[class_].dex;
-	eld->int_     = elem_db[class_].int_;
-	eld->luk      = elem_db[class_].luk;
+	eld->max_hp   = db->max_hp;
+	eld->max_sp   = db->max_sp;
+	eld->str      = db->str;
+	eld->agi      = db->agi;
+	eld->vit      = db->vit;
+	eld->dex      = db->dex;
+	eld->int_     = db->int_;
+	eld->luk      = db->luk;
 	if(eld->msd)
-		eld->speed    = status_get_speed(&eld->msd->bl);
+		eld->speed = status_get_speed(&eld->msd->bl);
 	else
-		eld->speed    = elem_db[class_].speed;
-	eld->adelay   = elem_db[class_].adelay;
-	eld->amotion  = elem_db[class_].amotion;
-	eld->dmotion  = elem_db[class_].dmotion;
+		eld->speed = db->speed;
+	eld->adelay   = db->adelay;
+	eld->amotion  = db->amotion;
+	eld->dmotion  = db->dmotion;
 	eld->nhealhp  = 0;
 	eld->nhealsp  = 0;
 	eld->hprecov_rate = 100;
@@ -613,7 +628,8 @@ int elem_calc_status(struct elem_data *eld)
 int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 {
 	struct mmo_elemstatus st;
-	int i, skill;
+	struct elem_db *db;
+	int skill;
 
 	nullpo_retr(1, sd);
 
@@ -622,8 +638,8 @@ int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 	if(sd->state.elem_creating)
 		return 1;
 
-	i = elem_search_index(class_);
-	if(i < 0)
+	db = elem_search_data(class_);
+	if(db == NULL)
 		return 1;
 
 	skill = pc_checkskill(sd,SO_EL_SYMPATHY);
@@ -634,8 +650,8 @@ int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 	st.account_id = sd->status.account_id;
 	st.char_id    = sd->status.char_id;
 	st.mode  = ELMODE_WAIT;
-	st.hp    = elem_db[i].max_hp + 500 * skill;
-	st.sp    = elem_db[i].max_sp + 50 * skill;
+	st.hp    = db->max_hp + 500 * skill;
+	st.sp    = db->max_sp + 50 * skill;
 	st.limit = limit + (unsigned int)time(NULL);
 
 	sd->state.elem_creating = 1;
@@ -879,6 +895,7 @@ int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode)
 	idx = elem_search_index(eld->status.class_);
 	if(idx < 0)
 		return 1;
+
 	st = elem_skill_tree[idx];
 
 	for(i = 0; i < MAX_ELEMSKILL_TREE; i++) {
@@ -1213,7 +1230,7 @@ static int read_elem_db(void)
 				script_free_code(elem_db[j].script);
 			}
 			script = parse_script(np, filename[i], lines);
-			elem_db[j].script = (script != &error_code)? script: NULL;
+			elem_db[j].script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],count);

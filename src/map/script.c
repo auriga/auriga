@@ -138,7 +138,7 @@ static int parse_cmd;
 static jmp_buf error_jump;
 static char*   error_msg;
 static char*   error_pos;
-struct script_code error_code;	// エラー時のダミーデータ
+static struct script_code error_code;	// エラー時のダミーデータ
 
 // if , switch の実装
 enum {
@@ -174,7 +174,7 @@ struct vars_info {
 	int   line;
 };
 
-extern struct script_function {
+struct script_function {
 	int (*func)(struct script_state *st);
 	const char *name;
 	const char *arg;
@@ -2110,6 +2110,15 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 	aFree(script_buf);
 
 	return code;
+}
+
+/*==========================================
+ * エラー判定
+ *------------------------------------------
+ */
+int script_is_error(struct script_code *code)
+{
+	return (code == &error_code)? 1: 0;
 }
 
 //
@@ -5903,7 +5912,7 @@ int buildin_delitem(struct script_state *st)
 			   sd->inventory_data[i]->flag.pet_egg &&
 			   sd->status.inventory[i].amount > 0 &&
 			   sd->status.inventory[i].card[0] == (short)0xff00 &&
-			   search_petDB_index(nameid, PET_EGG) >= 0)
+			   pet_search_data(nameid, PET_EGG) != NULL)
 			{
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			}
@@ -5957,7 +5966,7 @@ int buildin_delcartitem(struct script_state *st)
 			   itemdb_search(nameid)->flag.pet_egg &&
 			   sd->status.cart[i].amount > 0 &&
 			   sd->status.cart[i].card[0] == (short)0xff00 &&
-			   search_petDB_index(nameid, PET_EGG) >= 0)
+			   pet_search_data(nameid, PET_EGG) != NULL)
 			{
 				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			}
@@ -6000,7 +6009,7 @@ int buildin_delitem2(struct script_state *st)
 	   sd->inventory_data[idx]->flag.pet_egg &&
 	   sd->status.inventory[idx].amount > 0 &&
 	   sd->status.inventory[idx].card[0] == (short)0xff00 &&
-	   search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+	   pet_search_data(sd->status.inventory[idx].nameid, PET_EGG) != NULL)
 	{
 		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
@@ -6038,7 +6047,7 @@ int buildin_delcartitem2(struct script_state *st)
 	   itemdb_search(sd->status.cart[idx].nameid)->flag.pet_egg &&
 	   sd->status.cart[idx].amount > 0 &&
 	   sd->status.cart[idx].card[0] == (short)0xff00 &&
-	   search_petDB_index(sd->status.cart[idx].nameid, PET_EGG) >= 0)
+	   pet_search_data(sd->status.cart[idx].nameid, PET_EGG) != NULL)
 	{
 		intif_delete_petdata(*((int *)(&sd->status.cart[idx].card[1])));
 	}
@@ -7141,21 +7150,20 @@ int buildin_produce(struct script_state *st)
 int buildin_makepet(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	int id,pet_id;
+	struct pet_db *db;
+	int id;
 
 	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	pet_id = search_petDB_index(id, PET_CLASS);
+	db = pet_search_data(id, PET_CLASS);
 
-	if(pet_id < 0)
-		pet_id = search_petDB_index(id, PET_EGG);
-	if(pet_id >= 0 && sd) {
-		sd->catch_target_class = pet_db[pet_id].class_;
+	if(!db)
+		db = pet_search_data(id, PET_EGG);
+	if(db && sd) {
+		sd->catch_target_class = db->class_;
 		intif_create_pet(
-			sd->status.account_id, sd->status.char_id,
-			pet_db[pet_id].class_, mob_db[pet_db[pet_id].class_].lv,
-			pet_db[pet_id].EggID, 0, pet_db[pet_id].intimate,
-			100, 0, 1, pet_db[pet_id].jname
+			sd->status.account_id, sd->status.char_id, db->class_, mob_db[db->class_].lv,
+			db->EggID, 0, db->intimate, 100, 0, 1, db->jname
 		);
 	}
 

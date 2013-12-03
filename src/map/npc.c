@@ -1038,8 +1038,10 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 		if (sd->inventory_data[idx] != NULL &&
 		    sd->inventory_data[idx]->flag.pet_egg &&
 		    sd->status.inventory[idx].card[0] == (short)0xff00 &&
-		    search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+		    pet_search_data(sd->status.inventory[idx].nameid, PET_EGG) != NULL)
+		{
 			intif_delete_petdata((*(int *)(&sd->status.inventory[idx].card[1])));
+		}
 		pc_delitem(sd, idx, item_list[i * 2 + 1], 0, 6);
 	}
 	pc_getzeny(sd, (int)z);
@@ -2031,7 +2033,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		}
 
 		script = parse_script(srcbuf, file, startline);
-		if(script == &error_code) {
+		if(script_is_error(script)) {
 			// script parse error
 			aFree(srcbuf);
 			return 0;
@@ -2252,7 +2254,7 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 	// もう使わないのでバッファ解放
 	aFree(srcbuf);
 
-	if(script == &error_code) {
+	if(script_is_error(script)) {
 		// script parse error
 		return 0;
 	}

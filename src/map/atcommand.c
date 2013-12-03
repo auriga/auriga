@@ -2454,7 +2454,8 @@ int atcommand_guildskillpoint(const int fd, struct map_session_data* sd, AtComma
  */
 int atcommand_makepet(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int id = 0, pet_id = 0;
+	struct pet_db *db;
+	int id = 0;
 
 	nullpo_retr(-1, sd);
 
@@ -2463,15 +2464,15 @@ int atcommand_makepet(const int fd, struct map_session_data* sd, AtCommandType c
 
 	if ((id = atoi(message)) == 0)
 		 id = mobdb_searchname(message);
-	pet_id = search_petDB_index(id, PET_CLASS);
-	if (pet_id < 0)
-		pet_id = search_petDB_index(id, PET_EGG);
-	if (pet_id >= 0) {
-		sd->catch_target_class = pet_db[pet_id].class_;
-		intif_create_pet(sd->status.account_id, sd->status.char_id,
-		                 pet_db[pet_id].class_, mob_db[pet_db[pet_id].class_].lv,
-		                 pet_db[pet_id].EggID, 0, pet_db[pet_id].intimate,
-		                 100, 0, 1, pet_db[pet_id].jname);
+	db = pet_search_data(id, PET_CLASS);
+	if (!db)
+		db = pet_search_data(id, PET_EGG);
+	if (db) {
+		sd->catch_target_class = db->class_;
+		intif_create_pet(
+			sd->status.account_id, sd->status.char_id, db->class_, mob_db[db->class_].lv,
+		    db->EggID, 0, db->intimate, 100, 0, 1, db->jname
+		);
 	}
 
 	return 0;
