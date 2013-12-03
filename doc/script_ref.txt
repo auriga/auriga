@@ -2014,10 +2014,10 @@ AurigaNPCScript
 		changeviewsize命令
 			changeviewsize <type>,<size>;
 
-			type	1=PC, 2=PET, 3=HOM
+			type	1=PC, 2=PET, 3=HOM, 4=NPC
 			size	-1=小, 1=大
 
-			プレイヤー、ペット、ホムンクルスのサイズを変更します。
+			プレイヤー、ペット、ホムンクルス、NPCのサイズを変更します。
 
 		npcskillattack命令
 			npcskillattack <skillid>,<skilllv>,<val>;

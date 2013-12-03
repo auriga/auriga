@@ -657,6 +657,11 @@ Emy_Mob	2
 Emy_Hom	3
 Emy_Merc	4
 
+//サイズ
+Size_Small	0
+Size_Medium	1
+Size_Big	2
+
 //sc_start, sc_end系用の状態異常
 SC_Stone	128
 SC_Freeze	129

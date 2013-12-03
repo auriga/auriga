@@ -1,4 +1,19 @@
 ----------------------------------------
+//1141 [2013/12/04] by Rayce
+
+・const.txt にサイズ系定数（Size_Small, Size_Medium, Size_Big）を追加（const.txt）
+
+・item_db.txt のサイズ系ボーナスを定数に変更（db/item_db.txt, db/item_db_pre.txt）
+
+・「グロリアススピア」のEquipScriptが動作していなかったのを修正（item_db.txt）
+	reported by LunarPhantomさん
+
+・item_db.txtの記述ミスを修正（item_db.txt）
+	reported by LunarPhantomさん
+
+・doc修正（item_bonus.txt, script_ref.txt）
+
+----------------------------------------
 //1140 [2013/12/04] by Rayce
 
 ・スクリプトの } 閉じの解析チェックを強化（script.*, elem.c, homun.c, itemdb.c, merc.c, npc.c, pet.c）

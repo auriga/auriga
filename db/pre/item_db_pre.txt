@@ -23,7 +23,7 @@
 1575,BF_Book2,孫子兵法(特攻),5,20,,0,90,,1,0,33620224,2,2,3,80,15,1,{},{ bonus bStr,1; bonus bInt,2; bonus bMatkRate,15; bonus2 bAddRace,Rct_Human,75; bonus2 bIgnoreMdefRace,Rct_Human,25; bonus bUnbreakableWeapon,0; }
 1576,Krieger_Book1,グロリアスタブレット,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bAddRace,Rct_Human,80; bonus2 bIgnoreDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bAddRace,Rct_Human,(getequiprefinerycnt(4)-4)*(getequiprefinerycnt(4)-4); bonus2 bIgnoreDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus3 bAutoActiveWeapon,1576,3000,3000; if(checkactiveitem()) { misceffect 9,""; bonus bBaseAtk,200; } /*発動率等暫定（eathenaより）*/}
 1577,Krieger_Book2,グロリアス黙示録,5,,,0,90,,1,0,33620224,2,2,4,80,15,1,{},{ bonus bMatk2Rate,15; bonus2 bMagicAddRace,Rct_Human,80; bonus2 bIgnoreMDefRace,Rct_Human,25; if(getequiprefinerycnt(4)<6) end; bonus2 bIgnoreMDefRace,Rct_Human,5; if(getequiprefinerycnt(4)<9) end; bonus bMatkRate,5; bonus bCastRate,-5; bonus bSkillDelayRate,-5; /*発動率等暫定（eathenaより）*/}
-1580,Encyclopedia_C,大百科事典R,5,,,0,145,,1,0,33620224,2,2,,1,15,,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; bonus2 bAddSize,0,40; bonus2 bAddSize,1,40; bonus2 bAddSize,2,40; }
+1580,Encyclopedia_C,大百科事典R,5,,,0,145,,1,0,33620224,2,2,,1,15,,{},{ bonus bMatkRate,15; bonus bInt,3; bonus bDex,2; bonus bCritical,20+readparam(bLuk)/5; bonus2 bAddSize,Size_Small,40; bonus2 bAddSize,Size_Medium,40; bonus2 bAddSize,Size_Big,40; }
 
 1601,Rod,ロッド,5,50,,400,15,,1,3,142705429,2,2,1,0,10,1,{},{ bonus bMatk2Rate,15; }
 1602,Rod_,ロッド,5,50,,400,15,,1,4,142705429,2,2,1,0,10,1,{},{ bonus bMatk2Rate,15; }
@@ -103,7 +103,7 @@
 2111,Herald_Of_GOD,神の使者,4,128000,,1600,,6:3,,0,16384,2,32,,83,3,1,{},{ bonus bVit,3; bonus bInt,2; bonus bUnbreakableShield,0; }
 2112,Novice_Guard,初心者用ガード,4,,,1,,3,,0,8388609,2,32,,0,1,,{},{}
 2113,Novice_Shield,ノービスシールド,4,5000,,1000,,3,,1,8388609,2,32,,40,3,1,{},{ bonus2 bSubEle,Ele_Water,20; bonus2 bSubEle,Ele_Earth,20; bonus2 bSubEle,Ele_Fire,20; bonus2 bSubEle,Ele_Wind,20; bonus2 bSubEle,Ele_Poison,20; bonus2 bSubEle,Ele_Holy,20; bonus2 bSubEle,Ele_Dark,20; bonus2 bSubEle,Ele_Ghost,20; bonus2 bSubEle,Ele_Undead,20; }
-2114,Stone_Buckler,ストーンバックラー,4,30000,,1500,,3,,1,991944702,2,32,,65,2,1,{},{ bonus2 bSubSize,2,5; if((getequipid(2)==2353 && (getequipid(1)==5122 || getequipid(1)==18594))==0) end; bonus bStr,2; bonus bDef,5; bonus bMdef,5; if(getbaseclass(Class) == CLASS_SM) bonus bDef,6; }
+2114,Stone_Buckler,ストーンバックラー,4,30000,,1500,,3,,1,991944702,2,32,,65,2,1,{},{ bonus2 bSubSize,Size_Big,5; if((getequipid(2)==2353 && (getequipid(1)==5122 || getequipid(1)==18594))==0) end; bonus bStr,2; bonus bDef,5; bonus bMdef,5; if(getbaseclass(Class) == CLASS_SM) bonus bDef,6; }
 2115,Valkyrja's_Shield,ヴァルキリーシールド,4,30000,,500,,3:5,,1,991944702,2,32,,65,3,1,{},{ bonus2 bSubEle,Ele_Water,20; bonus2 bSubEle,Ele_Fire,20; bonus2 bSubEle,Ele_Dark,20; bonus2 bSubEle,Ele_Undead,20; if(equippeditem(2353)==0 || equippeditem(5124)==0) end; bonus bDef,2; bonus bMdef,5; bonus bMdef,getequiprefinerycnt(1)+getequiprefinerycnt(3); }
 2116,Angel's_Safeguard,天使の守護,4,10000,,400,,3,,1,8388609,2,32,,20,2,1,{},{ bonus2 bSubRace,Rct_Demon,5; bonus2 bMagicSubRace,Rct_Demon,5; }
 2117,Arm_Guard,手甲,4,10000,,150,,5,,0,536870912,2,32,,20,,1,{},{}
@@ -111,7 +111,7 @@
 2119,Improved_Arm_Guard,手甲改,4,40000,,150,,4:5,,0,536870912,2,32,,50,,1,{},{}
 2120,Improved_Arm_Guard_,手甲改,4,40000,,150,,4:5,,1,536870912,2,32,,50,,1,{},{}
 2121,Memorize_Book_,メモライズブック,4,20,,1000,,3:2,,1,134283780,2,32,,0,0,1,{},{ bonus bInt,1; }
-2122,Platinum_Shield,プラチナシールド,4,20,,1200,,5:5,,0,2088958,2,32,,68,3,1,{},{ bonus2 bSubSize,1,15; bonus2 bSubSize,2,15; bonus2 bSubRace,Rct_Undead,10; bonus2 bMagicSubRace,Rct_Undead,10; bonus4 bAutoSpell,671,2,1000,EAS_REVENGE|EAS_MAGIC|EAS_SELF; }
+2122,Platinum_Shield,プラチナシールド,4,20,,1200,,5:5,,0,2088958,2,32,,68,3,1,{},{ bonus2 bSubSize,Size_Medium,15; bonus2 bSubSize,Size_Big,15; bonus2 bSubRace,Rct_Undead,10; bonus2 bMagicSubRace,Rct_Undead,10; bonus4 bAutoSpell,671,2,1000,EAS_REVENGE|EAS_MAGIC|EAS_SELF; }
 2123,Orleans_Server,オルレアンサーバー,4,20,,1000,,5:2,,1,2088958,2,32,,55,2,1,{},{ bonus bMagicDamageReturn,5; if(getequipid(7)==2701 || getequipid(8)==2701) bonus bCastRate,-10; }
 2124,Thorny_Buckler,ソーンシールド,4,20,,1000,,5:2,,1,2088958,2,32,,55,2,1,{},{ if(getequipid(7)==2702 || getequipid(8)==2702) { bonus bAspdAddRate,10; bonus bShortWeaponDamageReturn,5; } }
 2125,Strong_Shield,ストロングシールド,4,20,,2500,,4,,1,414946,2,32,,75,3,1,{},{ bonus bNoKnockback,0; bonus2 bSubEle,Ele_Neutral,-20; bonus2 bSubEle,Ele_Water,-20; bonus2 bSubEle,Ele_Earth,-20; bonus2 bSubEle,Ele_Fire,-20; bonus2 bSubEle,Ele_Wind,-20; bonus2 bSubEle,Ele_Holy,-20; bonus2 bSubEle,Ele_Dark,-20; bonus2 bSubEle,Ele_Ghost,-20; }
