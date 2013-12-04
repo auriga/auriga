@@ -39,6 +39,7 @@
 	#include <sys/time.h>
 #endif
 #include <time.h>
+#include <math.h>
 #include <setjmp.h>
 
 #include "db.h"
@@ -218,6 +219,7 @@ enum {
 	C_MUL,
 	C_DIV,
 	C_MOD,
+	C_POW,
 	C_NEG,
 	C_LNOT,
 	C_NOT,
@@ -692,7 +694,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	if(op == C_NOP) {
 		p = parse_simpleexpr(p);
 	} else {
-		p = parse_subexpr(p+1, 10);
+		p = parse_subexpr(p+1, 11);
 		add_scriptc(op);
 	}
 	p = skip_space(p);
@@ -700,14 +702,20 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	while(1) {
 		int priority = 0, len = 0;
 		switch(*p) {
-			case '(': op = C_FUNC; priority = 11; len = 1; break;
-			case '*': op = C_MUL;  priority =  9; len = 1; break;
+			case '(': op = C_FUNC; priority = 12; len = 1; break;
 			case '/': op = C_DIV;  priority =  9; len = 1; break;
 			case '%': op = C_MOD;  priority =  9; len = 1; break;
 			case '+': op = C_ADD;  priority =  8; len = 1; break;
 			case '-': op = C_SUB;  priority =  8; len = 1; break;
 			case '^': op = C_XOR;  priority =  4; len = 1; break;
 			case '?': op = C_OP3;  priority =  0; len = 1; break;
+			case '*':
+				if(p[1] == '*') {
+					op = C_POW;  priority = 10; len = 2; break;
+				} else {
+					op = C_MUL;  priority =  9; len = 1; break;
+				}
+				break;
 			case '&':
 				if(p[1] == '&') {
 					op = C_LAND; priority = 2; len = 2;
@@ -2072,6 +2080,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 		case C_MUL:     printf("C_MUL");     break;
 		case C_DIV:     printf("C_DIV");     break;
 		case C_MOD:     printf("C_MOD");     break;
+		case C_POW:     printf("C_POW");     break;
 		case C_EQ:      printf("C_EQ");      break;
 		case C_NE:      printf("C_NE");      break;
 		case C_GT:      printf("C_GT");      break;
@@ -2825,6 +2834,16 @@ static void op_2num(struct script_state *st,int op,int i1,int i2)
 				ret_bignum = (atn_bignumber)i1 / (atn_bignumber)i2;
 			}
 			break;
+		case C_POW:
+			if(i1 == 0 && i2 < 0) {
+				printf("script::op_2num pow by zero and minus.\n");
+				ret = 0;
+				ret_bignum = 0;	// オーバーフロー対策を飛ばす
+			} else {
+				ret = (int)pow((double)i1, (double)i2);
+				ret_bignum = (atn_bignumber)pow((double)i1, (double)i2);
+			}
+			break;
 		}
 		if(ret_bignum > 0x7FFFFFFF || ret_bignum < -1 * 0x7FFFFFFF) {
 			printf("script::op_2num overflow detected op:%d rid:%d\n",op,st->rid);
@@ -3175,6 +3194,7 @@ static void run_script_main(struct script_state *st)
 		case C_MUL:
 		case C_DIV:
 		case C_MOD:
+		case C_POW:
 		case C_EQ:
 		case C_NE:
 		case C_GT:
