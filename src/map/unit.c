@@ -1995,7 +1995,7 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 	}
 
 
-	if(skill_get_inf(skillid) & INF_TOGROUND)
+	if(skill_get_inf(skillid) & INF_GROUND)
 		ret = delete_timer(ud->skilltimer, skill_castend_pos);
 	else
 		ret = delete_timer(ud->skilltimer, skill_castend_id);

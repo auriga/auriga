@@ -3178,7 +3178,7 @@ int atcommand_questskill(const int fd, struct map_session_data* sd, AtCommandTyp
 		return -1;
 
 	skill_id = atoi(message);
-	if (skill_get_inf2(skill_id) & 0x01) {
+	if (skill_get_inf2(skill_id) & INF2_QUEST) {
 		pc_skill(sd, skill_id, 1, 0);
 		clif_displaymessage(fd, msg_txt(70));
 	}
@@ -3202,7 +3202,7 @@ int atcommand_charquestskill(const int fd, struct map_session_data* sd, AtComman
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(pl_sd, skill_id) == 0) {
+		if (skill_get_inf2(skill_id) & INF2_QUEST && pc_checkskill2(pl_sd, skill_id) == 0) {
 			pc_skill(pl_sd, skill_id, 1, 0);
 			msg_output(fd, msg_txt(110), pl_sd->status.name);
 		}
@@ -3227,7 +3227,7 @@ int atcommand_lostskill(const int fd, struct map_session_data* sd, AtCommandType
 		return -1;
 
 	skill_id = atoi(message);
-	if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(sd, skill_id) > 0) {
+	if (skill_get_inf2(skill_id) & INF2_QUEST && pc_checkskill2(sd, skill_id) > 0) {
 		sd->status.skill[skill_id].lv   = 0;
 		sd->status.skill[skill_id].flag = 0;
 		clif_skillinfoblock(sd);
@@ -3253,7 +3253,7 @@ int atcommand_charlostskill(const int fd, struct map_session_data* sd, AtCommand
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		if (skill_get_inf2(skill_id) & 0x01 && pc_checkskill2(pl_sd, skill_id) > 0) {
+		if (skill_get_inf2(skill_id) & INF2_QUEST && pc_checkskill2(pl_sd, skill_id) > 0) {
 			pl_sd->status.skill[skill_id].lv   = 0;
 			pl_sd->status.skill[skill_id].flag = 0;
 			clif_skillinfoblock(pl_sd);

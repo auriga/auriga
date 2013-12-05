@@ -27,6 +27,22 @@
 
 #define MAX_SKILL_TREE 100
 
+enum {
+	LOOK_BASE = 0,
+	LOOK_HAIR,
+	LOOK_WEAPON,
+	LOOK_HEAD_BOTTOM,
+	LOOK_HEAD_TOP,
+	LOOK_HEAD_MID,
+	LOOK_HAIR_COLOR,
+	LOOK_CLOTHES_COLOR,
+	LOOK_SHIELD,
+	LOOK_SHOES,
+	LOOK_BODY,
+	LOOK_FLOOR,
+	LOOK_ROBE,
+};
+
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)
 #define pc_issit(sd) ((sd)->state.dead_sit == 2)
 #define pc_setdir(sd,b,h) ((sd)->dir = (char)(b) ,(sd)->head_dir = (char)(h) )

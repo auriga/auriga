@@ -1,4 +1,26 @@
 ----------------------------------------
+//1148 [2013/12/06] by Rayce
+
+・関数名と意味を一致させるため pc_isquitable() の判定結果を反転（pc.c, clif.c）
+
+・クライアントの切断パケット 0x18b を送る処理を clif_disconnect_ack() としてまとめる（clif.*）
+
+・クライアントの終了判定で、エンジェラスの有無の判定方法をビット演算に変更（pc.c）
+
+・INF系定数の名称を変更（battle.c, bonus.c, clif.c, mob.c, pet.c, script.c, skill.*, status.c, unit.c）
+
+・INF2系定数を新たに設置（atcommand.c, battle.c, clif.c, pc.c, skill.*）
+
+・LOOK系定数をmap.hからpc.hに移動（map.h, pc.h）
+
+・出来る限りenum型を使うように変更（char.c, battle.c, mob.c, pc.c, status.c）
+
+・status_change構造体で使用するopt1はビットフラグではないので、OPT1系のenum定数を16進数から
+  10進数に変更する（status.h）
+
+・clif_GMmessage() と clif_announce() のflag引数をunsigned int型に変更（clif.*）
+
+----------------------------------------
 //1147 [2013/12/06] by Rayce
 
 ・2進数対応の strtol, strtoul として strbtol, strbtoul を実装（utils.*）

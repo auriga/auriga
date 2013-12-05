@@ -291,7 +291,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	if(sd && tmd && unit_isdead(&tmd->bl) && flag&BF_MAGIC)
 	{
 		int level = pc_checkskill(sd,HW_SOULDRAIN);
-		if(level > 0 && skill_get_inf(skillid) & INF_TOCHARACTER && sd->ud.skilltarget == target->id) {
+		if(level > 0 && (skill_get_inf(skillid) & INF_ATTACK) && sd->ud.skilltarget == target->id) {
 			int sp = 0;
 			clif_skill_nodamage(bl,target,HW_SOULDRAIN,level,1);
 			sp = (status_get_lv(target))*(95+15*level)/100;
@@ -778,7 +778,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		}
 
 		// 閃電歩
-		if(sc->data[SC_LIGHTNINGWALK].timer != -1 && damage > 0 && flag&(BF_LONG|BF_MAGIC) && skill_get_inf(skill_num)&INF_TOCHARACTER) {
+		if(sc->data[SC_LIGHTNINGWALK].timer != -1 && damage > 0 && flag&(BF_LONG|BF_MAGIC) && skill_get_inf(skill_num)&INF_ATTACK) {
 			if(atn_rand()%100 < 88 + sc->data[SC_LIGHTNINGWALK].val1 * 2) {
 				damage = 0;
 				clif_skill_poseffect(bl,SR_LIGHTNINGWALK,sc->data[SC_LIGHTNINGWALK].val1,src->x,src->y,tick);
@@ -2319,7 +2319,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 
 				if(skill_num != AM_ACIDTERROR) {
-					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<10): (1<<11) );
+					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<RCT_BOSS): (1<<RCT_NONBOSS) );
 					int def_fix  = (ignored_rate  > 0)? (t_def1 * ignored_rate  / 100): 0;
 					int def_fix_ = (ignored_rate_ > 0)? (t_def1 * ignored_rate_ / 100): 0;
 
@@ -4152,7 +4152,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 
 				if(skill_num != CR_GRANDCROSS && skill_num != AM_ACIDTERROR && skill_num != LG_RAYOFGENESIS) {
-					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<10): (1<<11) );
+					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<RCT_BOSS): (1<<RCT_NONBOSS) );
 
 					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
 					if( !calc_flag.idef && ignored_rate == 100 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
@@ -5591,7 +5591,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 #endif
 			normalmagic_flag = 0;
-			mgd.blewcount |= 0x10000;
+			mgd.blewcount |= SAB_REVERSEBLOW;
 			break;
 		case PA_GOSPEL:		// ゴスペル(ランダムダメージ判定の場合)
 			mgd.damage = 1000+atn_rand()%9000;
@@ -5668,7 +5668,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
 				mgd.blewcount = 0;
 			else
-				mgd.blewcount |= 0x10000;
+				mgd.blewcount |= SAB_REVERSEBLOW;
 			if(sc && sc->data[SC_PYROTECHNIC].timer != -1) {
 				MATK_FIX( 50+sc->data[SC_PYROTECHNIC].val3, 100 );
 			} else {
@@ -5753,7 +5753,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 #else
 			MATK_FIX( 70+50*skill_lv, 100 );
 #endif
-			//mgd.blewcount |= 0x10000;
+			//mgd.blewcount |= SAB_REVERSEBLOW;
 			break;
 		case WZ_EARTHSPIKE:	// アーススパイク
 			if(sc && sc->data[SC_PETROLOGY].timer != -1) {
@@ -6150,7 +6150,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
 				mgd.blewcount = 0;
 			else
-				mgd.blewcount |= 0x10000;
+				mgd.blewcount |= SAB_REVERSEBLOW;
 			MATK_FIX( 1000, 100 );
 			break;
 		case EL_FIRE_ARROW:		/* ファイアーアロー */
@@ -7027,7 +7027,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 						ud->canact_tick = tick + delay;
 					}
 				}
-				if(skill_get_inf(spellid) & INF_TOGROUND) {
+				if(skill_get_inf(spellid) & INF_GROUND) {
 					fail = skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 				} else {
 					switch(skill_get_nk(spellid) & 3) {
@@ -7064,7 +7064,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			int spellid = sc->data[SC__AUTOSHADOWSPELL].val2;
 			int spelllv = sc->data[SC__AUTOSHADOWSPELL].val3;
 
-			if(skill_get_inf(spellid) & INF_TOGROUND) {
+			if(skill_get_inf(spellid) & INF_GROUND) {
 				skill_castend_pos2(src,target->x,target->y,spellid,spelllv,tick,flag);
 			} else {
 				switch(skill_get_nk(spellid) & 3) {
@@ -8033,17 +8033,17 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		if(ss->prev == NULL)
 			return -1;
 		if( target->type != BL_PC || !pc_isinvisible((struct map_session_data *)target) ) {
-			if(inf2&0x2000 && map[src->m].flag.pk)
+			if(inf2&INF2_DMG_PK && map[src->m].flag.pk)
 				return 0;
-			if(inf2&0x1000 && map[src->m].flag.gvg)
+			if(inf2&INF2_DMG_GVG && map[src->m].flag.gvg)
 				return 0;
-			if(inf2&0x80   && map[src->m].flag.pvp)
+			if(inf2&INF2_PVP_DMG   && map[src->m].flag.pvp)
 				return 0;
 		}
 		if(ss == target) {
-			if(inf2&0x100)
+			if(inf2&INF2_DMG_SELF)
 				return 0;
-			if(inf2&0x200)
+			if(inf2&INF2_NO_SELF)
 				return -1;
 		}
 	}
@@ -8186,9 +8186,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			// battle_config.no_pk_level以下　1次は味方　転生は駄目
 			if(ssd->sc.data[SC_PK_PENALTY].timer != -1)
 				return 1;
-			if(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= PC_JOB_MC || ssd->s_class.job == PC_JOB_TK) && ssd->s_class.upper != 1)
+			if(ssd->status.base_level <= battle_config.no_pk_level && (ssd->s_class.job <= PC_JOB_MC || ssd->s_class.job == PC_JOB_TK) && ssd->s_class.upper != PC_UPPER_HIGH)
 				return 1;
-			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= PC_JOB_MC || tsd->s_class.job == PC_JOB_TK) && tsd->s_class.upper != 1)
+			if(tsd->status.base_level <= battle_config.no_pk_level && (tsd->s_class.job <= PC_JOB_MC || tsd->s_class.job == PC_JOB_TK) && tsd->s_class.upper != PC_UPPER_HIGH)
 				return 1;
 			if(su && su->group && su->group->target_flag == BCT_NOENEMY)
 				return 1;

@@ -12990,7 +12990,7 @@ int buildin_mobuseskill(struct script_state *st)
 	if(md->ud.skilltimer != -1)
 		unit_skillcastcancel(&md->bl,0);
 
-	if(skill_get_inf(skillid) & INF_TOGROUND)
+	if(skill_get_inf(skillid) & INF_GROUND)
 		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
@@ -13039,7 +13039,7 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 	if(md->ud.skilltimer != -1)
 		unit_skillcastcancel(bl,0);
 
-	if(skill_get_inf(skillid) & INF_TOGROUND)
+	if(skill_get_inf(skillid) & INF_GROUND)
 		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);

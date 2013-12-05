@@ -3646,7 +3646,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		if(tbl == NULL)
 			continue;
 
-		if( skill_get_inf(ms[i].skill_id)&INF_TOGROUND ) {
+		if( skill_get_inf(ms[i].skill_id)&INF_GROUND ) {
 			// 場所指定
 			int x = tbl->x;
 			int y = tbl->y;
@@ -3968,7 +3968,7 @@ static int mob_readdb(void)
 
 			mob_db[class_].maxskill      = 0;
 			mob_db[class_].view_size     = 0;
-			mob_db[class_].sex           = 0;
+			mob_db[class_].sex           = SEX_FEMALE;
 			mob_db[class_].hair          = 0;
 			mob_db[class_].hair_color    = 0;
 			mob_db[class_].clothes_color = 0;

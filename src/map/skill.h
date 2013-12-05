@@ -330,13 +330,31 @@ void skill_reload(void);
 
 // スキルターゲットテーブル
 enum {
-	INF_PASSIVE		= 0x0,
-	INF_TOCHARACTER	= 0x1,
-	INF_TOGROUND	= 0x2,
-	INF_TOME		= 0x4,
-	INF_TOITEM		= 0x8,
-	INF_TOALL		= 0x10,
-	INF_TOSKILL		= 0x20,
+	INF_PASSIVE  = 0x00,
+	INF_ATTACK   = 0x01,
+	INF_GROUND = 0x02,
+	INF_SELF     = 0x04,
+	// 0x08 not assigned
+	INF_SUPPORT  = 0x10,
+	INF_TRAP     = 0x20,
+};
+
+// スキルターゲットテーブル2
+enum {
+	INF2_QUEST      = 0x00001,
+	INF2_NPC        = 0x00002,
+	INF2_ATTACK     = 0x00004,
+	INF2_GROUND     = 0x00008,
+	INF2_SELF       = 0x00010,
+	INF2_SUPPORT    = 0x00020,
+	INF2_TRAP       = 0x00040,
+	INF2_PVP_DMG    = 0x00080,
+	INF2_DMG_SELF   = 0x00100,
+	INF2_NO_SELF    = 0x00200,
+	INF2_PARTY_ONLY = 0x00400,
+	INF2_GUILD_ONLY = 0x00800,
+	INF2_DMG_GVG    = 0x01000,
+	INF2_DMG_PK     = 0x02000,
 };
 
 enum {

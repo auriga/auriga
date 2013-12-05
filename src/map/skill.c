@@ -2695,7 +2695,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		}
 
 		inf2 = skill_get_inf2(src_ud->skillid);
-		if(inf2 & 0x04 || skill_get_inf(src_ud->skillid) & INF_TOCHARACTER) {
+		if(inf2 & INF2_ATTACK || skill_get_inf(src_ud->skillid) & INF_ATTACK) {
 			int fail_flag = 1;
 			switch(src_ud->skillid) {	// 敵以外をターゲットにしても良いスキル
 				case AS_GRIMTOOTH:
@@ -2726,11 +2726,11 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 					break;
 			}
 		}
-		if(inf2 & 0xC00 && src->id != target->id) {
+		if(inf2 & (INF2_PARTY_ONLY | INF2_GUILD_ONLY) && src->id != target->id) {
 			int fail_flag = 1;
-			if(inf2 & 0x400 && battle_check_target(src,target,BCT_PARTY) > 0)
+			if(inf2 & INF2_PARTY_ONLY && battle_check_target(src,target,BCT_PARTY) > 0)
 				fail_flag = 0;
-			else if(src_sd && inf2 & 0x800 && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
+			else if(src_sd && inf2 & INF2_GUILD_ONLY && src_sd->status.guild_id > 0 && src_sd->status.guild_id == status_get_guild_id(target))
 				fail_flag = 0;
 			if(fail_flag) {
 				break;
@@ -2906,7 +2906,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		case SR_TIGERCANNON:
 		case SR_GATEOFHELL:
 			// skill_castend_idで許可したスキルはここで敵チェック
-			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & INF_TOCHARACTER) {
+			if(skill_get_inf2(skillid) & INF2_ATTACK || skill_get_inf(skillid) & INF_ATTACK) {
 				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
 					is_enemy = 0;
 			}
@@ -5077,7 +5077,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		case KN_BRANDISHSPEAR:
 		case ML_BRANDISH:
 			// skill_castend_idで許可したスキルはここで敵チェック
-			if(skill_get_inf2(skillid) & 0x04 || skill_get_inf(skillid) & INF_TOCHARACTER) {
+			if(skill_get_inf2(skillid) & INF2_ATTACK || skill_get_inf(skillid) & INF_ATTACK) {
 				if(battle_check_target(src,bl,BCT_ENEMY) <= 0)
 					is_enemy = 0;
 			}
@@ -8203,7 +8203,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int freeze_skilliv = pc_checkskill(sd,freeze_skillid);
 
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-				if(skill_get_inf(freeze_skillid)&INF_TOGROUND) {	// 場所指定のスキル
+				if(skill_get_inf(freeze_skillid)&INF_GROUND) {	// 場所指定のスキル
 					skill_castend_pos2(src,bl->x,bl->y,freeze_skillid,freeze_skilliv,tick,0);
 				} else if(skill_get_nk(freeze_skillid)&1){
 					skill_castend_nodamage_id(src,bl,freeze_skillid,freeze_skilliv,tick,0);
@@ -18480,7 +18480,7 @@ static int skill_trample( struct block_list *bl, va_list ap )
 	if(atn_rand()%100 >= 25 + skilllv * 25)
 		return 0;
 
-	if(!(skill_get_inf2(sg->skill_id)&0x40))
+	if(!(skill_get_inf2(sg->skill_id)&INF2_TRAP))
 		return 0;
 
 	switch(sg->unit_id)
@@ -19277,7 +19277,7 @@ static int skill_readdb(void)
 			else
 				skill_db[i].castcancel = 0;
 			skill_db[i].cast_def_rate = atoi(split[9]);
-			skill_db[i].inf2          = atoi(split[10]);
+			skill_db[i].inf2          = (int)strtol(split[10], NULL, 0);
 			skill_split_atoi(split[11],skill_db[i].maxcount,MAX_SKILL_LEVEL);
 			if(strcmpi(split[12],"weapon") == 0)
 				skill_db[i].skill_type = BF_WEAPON;

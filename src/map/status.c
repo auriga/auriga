@@ -2598,7 +2598,7 @@ L_RECALC:
 		int type;
 		for(i=0; i<MAX_PCSKILL; i++) {
 			// カードスキルをロストしたとき即時発動型なら状態異常を解除
-			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & INF_TOME) {
+			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & INF_SELF) {
 				type = GetSkillStatusChangeTable(i);
 				if(type >= 0 && sd->sc.data[type].timer != -1)
 					status_change_end(&sd->bl, type, -1);
@@ -3142,7 +3142,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 					slow_val = penalty;
 			// 踊り/演奏
 			} else if(sd->sc.data[SC_DANCING].timer != -1) {
-				int penalty = 500 - (40 + 10 * (sd->sc.data[SC_BARDDANCER].timer != -1)) * pc_checkskill(sd,(sd->sex?BA_MUSICALLESSON:DC_DANCINGLESSON));
+				int penalty = 500 - (40 + 10 * (sd->sc.data[SC_BARDDANCER].timer != -1)) * pc_checkskill(sd,((sd->sex == SEX_MALE)? BA_MUSICALLESSON: DC_DANCINGLESSON));
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}

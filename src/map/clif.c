@@ -488,6 +488,19 @@ void clif_charselectok(int id)
  *
  *------------------------------------------
  */
+void clif_disconnect_ack(int fd, int fail)
+{
+	WFIFOW(fd,0) = 0x18b;
+	WFIFOW(fd,2) = fail;	// fail= 0: success, 1: failure (please wait 15 sec...)
+	WFIFOSET(fd,packet_db[0x18b].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 void clif_dropflooritem(struct flooritem_data *fitem)
 {
 	int view;
@@ -8941,7 +8954,7 @@ static void clif_skillinfo(struct map_session_data *sd, int skillid, int type, i
 	else
 		WFIFOW(fd,12)= range;
 	memset(WFIFOP(fd,14),0,24);
-	if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
+	if(!(skill_get_inf2(id)&INF2_QUEST) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
 		WFIFOB(fd,38) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && skillid!=sd->skill_clone.id && sd->status.skill[skillid].flag == 0)? 1: 0;
 	else
 		WFIFOB(fd,38) = 0;
@@ -8985,7 +8998,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 			WBUFW(buf,len+8) = skill_get_sp(id,skill_lv);
 			WBUFW(buf,len+10)= skill_get_fixed_range(&sd->bl,id,skill_lv);
 			memset(WBUFP(buf,len+12),0,24);
-			if(!(skill_get_inf2(id)&0x01) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
+			if(!(skill_get_inf2(id)&INF2_QUEST) || battle_config.quest_skill_learn == 1 || (battle_config.gm_allskill > 0 && pc_isGM(sd) >= battle_config.gm_allskill) )
 				WBUFB(buf,len+36) = (skill_lv < pc_get_skilltree_max(&sd->s_class,id) && i!=sd->skill_clone.id && i!=sd->skill_reproduce.id && sd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WBUFB(buf,len+36) = 0;
@@ -9762,7 +9775,7 @@ void clif_disp_onlyself(const int fd, const char *mes)
  * 天の声を送信する
  *------------------------------------------
  */
-void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag)
+void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, unsigned int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 	int lp = (flag&0x30)? 8: 4;
@@ -9876,7 +9889,7 @@ void clif_disp_overhead(struct map_session_data *sd, const char* mes)
  * 天の声（マルチカラー）を送信
  *------------------------------------------
  */
-void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, int flag)
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, unsigned int flag)
 {
 	unsigned char *buf = (unsigned char *)aMalloc(len+16);
 
@@ -13218,10 +13231,7 @@ void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int
 		clif_GM_kickack(sd,tsd->status.account_id);
 
 	fd = tsd->fd;
-	WFIFOW(fd,0)=0x18b;
-	WFIFOW(fd,2)=0;
-	WFIFOSET(fd,packet_db[0x18b].len);
-
+	clif_disconnect_ack(fd, 0);
 	clif_setwaitclose(fd);
 
 	return;
@@ -13796,7 +13806,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+8)  = skill_get_sp(id,skill_lv);
 			WFIFOW(fd,len+10) = skill_get_fixed_range(&hd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
-			if(!(skill_get_inf2(id)&0x01))
+			if(!(skill_get_inf2(id)&INF2_QUEST))
 				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
@@ -14227,7 +14237,7 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+8)  = skill_get_sp(id,skill_lv);
 			WFIFOW(fd,len+10) = skill_get_fixed_range(&mcd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
-			if(!(skill_get_inf2(id)&0x01))
+			if(!(skill_get_inf2(id)&INF2_QUEST))
 				WFIFOB(fd,len+36) = (skill_lv < merc_get_skilltree_max(mcd->status.class_,id) && mcd->skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
@@ -16270,16 +16280,14 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_QuitGame(int fd,struct map_session_data *sd, int cmd)
 {
+	int fail = 0;
+
 	nullpo_retv(sd);
 
-	WFIFOW(fd,0)=0x18b;
-	if(pc_isquitable(sd)){
-		WFIFOW(fd,2)=1; // flag= 0: success, 1: failure (please wait 15 sec...)
-		WFIFOSET(fd,packet_db[0x18b].len);
-		return;
-	}
-	WFIFOW(fd,2)=0;
-	WFIFOSET(fd,packet_db[0x18b].len);
+	if(!pc_isquitable(sd))
+		fail = 1;
+
+	clif_disconnect_ack(fd, fail);
 	clif_setwaitclose(fd);
 
 	return;
@@ -16633,10 +16641,8 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 	case 0x01: // 1: request character select
 		if(unit_isdead(&sd->bl))
 			pc_setrestartvalue(sd,3);
-		if(pc_isquitable(sd)){
-			WFIFOW(fd,0)=0x18b;
-			WFIFOW(fd,2)=1;
-			WFIFOSET(fd,packet_db[0x18b].len);
+		if(!pc_isquitable(sd)) {
+			clif_disconnect_ack(fd, 1);
 			return;
 		}
 		if(sd->pd) {
@@ -17474,7 +17480,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 
 	inf = skill_get_inf(skillnum);
-	if(inf == INF_PASSIVE || inf & INF_TOGROUND) {
+	if(inf == INF_PASSIVE || inf & INF_GROUND) {
 		// anti hacker
 		return;
 	}
@@ -17492,7 +17498,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_TOME)	// 自分が対象
+			if(inf & INF_SELF)	// 自分が対象
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
@@ -17512,7 +17518,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_TOME)	// 自分が対象
+			if(inf & INF_SELF)	// 自分が対象
 				unit_skilluse_id(&mcd->bl,mcd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&mcd->bl,target_id,skillnum,skilllv);
@@ -17532,7 +17538,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, eld->skillstatictimer[skillnum-ELEM_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_TOME)	// 自分が対象
+			if(inf & INF_SELF)	// 自分が対象
 				unit_skilluse_id(&eld->bl,eld->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&eld->bl,target_id,skillnum,skilllv);
@@ -17550,18 +17556,26 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 
 	// infの「即時発動」が「敵」に変わる場合
-	if(skillnum == MO_EXTREMITYFIST) {
-		if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH))
-			change_inf = INF_TOCHARACTER;
-	} else if(skillnum == TK_JUMPKICK) {
-		if(sd->sc.data[SC_DODGE_DELAY].timer == -1)
-			change_inf = INF_TOCHARACTER;
-	} else if(skillnum == SR_TIGERCANNON || skillnum == SR_GATEOFHELL) {
-		if(sd->sc.data[SC_COMBO].timer == -1 || sd->sc.data[SC_COMBO].val1 != SR_FALLENEMPIRE)
-			change_inf = INF_TOCHARACTER;
+	switch(skillnum) {
+		case MO_EXTREMITYFIST:
+			if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH)) {
+				change_inf = 1;
+			}
+			break;
+		case TK_JUMPKICK:
+			if(sd->sc.data[SC_DODGE_DELAY].timer == -1) {
+				change_inf = 1;
+			}
+			break;
+		case SR_TIGERCANNON:
+		case SR_GATEOFHELL:
+			if(sd->sc.data[SC_COMBO].timer == -1 || sd->sc.data[SC_COMBO].val1 != SR_FALLENEMPIRE) {
+				change_inf = 1;
+			}
+			break;
 	}
 
-	if(inf & INF_TOME && !change_inf) {
+	if((inf & INF_SELF) && !change_inf) {
 		// 即時発動ならターゲットを自分自身にする
 		target_id = sd->bl.id;
 	}
@@ -17595,7 +17609,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc.data[SC_SANTA].timer != -1 ||
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
 	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
-		(sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_TOME)))
+		(sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_SELF)))
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -17670,7 +17684,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	x        = RFIFOW(fd,GETPACKETPOS(cmd,2));
 	y        = RFIFOW(fd,GETPACKETPOS(cmd,3));
 
-	if(!(skill_get_inf(skillnum) & INF_TOGROUND)) {
+	if(!(skill_get_inf(skillnum) & INF_GROUND)) {
 		// anti hacker
 		return;
 	}

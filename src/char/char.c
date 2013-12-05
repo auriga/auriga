@@ -1431,24 +1431,42 @@ int parse_tologin(int fd)
 				struct mmo_charstatus    st;
 				int found_char = chardb_load_all(&csd,RFIFOL(fd,2));
 				for(i=0;i<found_char;i++){
-					int flag = 0;
+					int flag = 1;
 					memcpy(&st,&csd.found_char[i]->st,sizeof(struct mmo_charstatus));
 					// 雷鳥、影狼、朧は職も変更
-					if(st.class_ == PC_CLASS_BA || st.class_ == PC_CLASS_DC) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_BA : PC_CLASS_DC);
-					} else if(st.class_ == PC_CLASS_BA_H || st.class_ == PC_CLASS_DC_H) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_BA_H : PC_CLASS_DC_H);
-					} else if(st.class_ == PC_CLASS_BA_B || st.class_ == PC_CLASS_DC_B) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_BA_B : PC_CLASS_DC_B);
-					} else if(st.class_ == PC_CLASS_MI || st.class_ == PC_CLASS_WA) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_MI : PC_CLASS_WA);
-					} else if(st.class_ == PC_CLASS_MI_H || st.class_ == PC_CLASS_WA_H) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_MI_H : PC_CLASS_WA_H);
-					} else if(st.class_ == PC_CLASS_MI_B || st.class_ == PC_CLASS_WA_B) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_MI_B : PC_CLASS_WA_B);
-					} else if(st.class_ == PC_CLASS_KG || st.class_ == PC_CLASS_OB) {
-						flag = 1; st.class_ = (sex ? PC_CLASS_KG : PC_CLASS_OB);
+					switch(st.class_ ) {
+						case PC_CLASS_BA:
+						case PC_CLASS_DC:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_BA : PC_CLASS_DC);
+							break;
+						case PC_CLASS_BA_H:
+						case PC_CLASS_DC_H:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_BA_H : PC_CLASS_DC_H);
+							break;
+						case PC_CLASS_BA_B:
+						case PC_CLASS_DC_B:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_BA_B : PC_CLASS_DC_B);
+							break;
+						case PC_CLASS_MI:
+						case PC_CLASS_WA:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_MI : PC_CLASS_WA);
+							break;
+						case PC_CLASS_MI_H:
+						case PC_CLASS_WA_H:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_MI_H : PC_CLASS_WA_H);
+							break;
+						case PC_CLASS_MI_B:
+						case PC_CLASS_WA_B:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_MI_B : PC_CLASS_WA_B);
+							break;
+						case PC_CLASS_KG:
+						case PC_CLASS_OB:
+							st.class_ = (sex == SEX_MALE ? PC_CLASS_KG : PC_CLASS_OB);
+							break;
+						default:
+							flag = 0;
 					}
+
 					if(flag) {
 						// 雷鳥、影狼、朧装備外し
 						int j;

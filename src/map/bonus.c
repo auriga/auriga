@@ -176,7 +176,7 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 	// 実行
 	if(skillid == AL_TELEPORT && skilllv == 1) {	// Lv1テレポはダイアログ表示なしで即座に飛ばす
 		f = pc_randomwarp(sd,3);
-	} else if(skill_get_inf(skillid) & INF_TOGROUND) {	// 場所
+	} else if(skill_get_inf(skillid) & INF_GROUND) {	// 場所
 		f = skill_castend_pos2(&sd->bl,target->x,target->y,skillid,skilllv,tick,flag);
 	} else {
 		switch( skill_get_nk(skillid)&3 ) {

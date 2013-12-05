@@ -217,27 +217,27 @@ int pc_isquitable(struct map_session_data *sd)
 {
 	unsigned int tick = gettick();
 
-	nullpo_retr(0, sd);
+	nullpo_retr(1, sd);
 
-	if(!unit_isdead(&sd->bl) && (sd->sc.opt1 || (sd->sc.opt2 && sd->sc.opt2 != OPT2_ANGELUS)))
-		return 1;
+	if(!unit_isdead(&sd->bl) && (sd->sc.opt1 || (sd->sc.opt2 & ~OPT2_ANGELUS)))
+		return 0;
 	if(sd->ud.skilltimer != -1)
-		return 1;
+		return 0;
 	if(DIFF_TICK(tick, sd->ud.canact_tick) < 0)
-		return 1;
+		return 0;
 	if(unit_counttargeted(&sd->bl,0) > 0)
-		return 1;
+		return 0;
 	if(unit_isrunning(&sd->bl))
-		return 1;
+		return 0;
 	if(sd->sc.data[SC_MARIONETTE].timer != -1)
-		return 1;
+		return 0;
 	if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_DANCING].val4) {
 		struct skill_unit_group *sg = map_id2sg(sd->sc.data[SC_DANCING].val2);
 		if(sg && sg->src_id == sd->bl.id)
-			return 1;
+			return 0;
 	}
 
-	return 0;
+	return 1;
 }
 
 /*==========================================
@@ -961,10 +961,10 @@ int pc_equippoint(struct map_session_data *sd,int n)
 	if(sd->inventory_data[n]) {
 		int look = sd->inventory_data[n]->look;
 		ep = sd->inventory_data[n]->equip;
-		if(look == 1 || look == 2 || look == 6) {
+		if(look == WT_DAGGER || look == WT_1HSWORD || look == WT_1HAXE) {
 			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC || 
 				pc_checkskill(sd,KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB))
-				return 34;
+				return LOC_RARM | LOC_LARM;
 		}
 	}
 
@@ -1695,7 +1695,7 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
 
 	for(i=1; i<MAX_PCSKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
-			if(!(skill_get_inf2(i)&0x01) || battle_config.quest_skill_learn) {
+			if(!(skill_get_inf2(i)&INF2_QUEST) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag)
 					skill_point += skill;
 				else if(sd->status.skill[i].flag > 2) {
@@ -5595,7 +5595,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 		// 全てのスキル
 		for(i = 1; i <= MAX_PCSKILL; i++) {
 			// NPCスキルは除外
-			if(skill_get_inf2(i)&0x02)
+			if(skill_get_inf2(i)&INF2_NPC)
 				continue;
 			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
 			if(i == SG_DEVIL)
@@ -5610,7 +5610,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			if(id == SG_DEVIL)	// ここで除外処理
 				continue;
 			// flagがあるならクエストスキルも取得する
-			if(skill_get_inf2(id)&0x01 && !flag && !battle_config.quest_skill_learn)
+			if(skill_get_inf2(id)&INF2_QUEST && !flag && !battle_config.quest_skill_learn)
 				continue;
 			sd->status.skill[id].id = id;
 			sd->status.skill[id].lv = skill_tree[sd->s_class.upper][sd->s_class.job][i].max;
@@ -5700,7 +5700,7 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 
 	for(i=1; i<MAX_PCSKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
-			if(!(skill_get_inf2(i)&0x01) || battle_config.quest_skill_learn) {
+			if(!(skill_get_inf2(i)&INF2_QUEST) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag) {
 					sd->status.skill_point += skill;
 				} else if(sd->status.skill[i].flag > 2) {
@@ -7590,7 +7590,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 		return;
 	}
 	if(pos == LOC_RLACCESSORY) {	// アクセサリ用例外処理
-		int epor = 0;
+		int epor = LOC_NOTHING;
 		if(sd->equip_index[EQUIP_INDEX_LACCESSORY] >= 0)
 			epor |= sd->status.inventory[sd->equip_index[EQUIP_INDEX_LACCESSORY]].equip;
 		if(sd->equip_index[EQUIP_INDEX_RACCESSORY] >= 0)
@@ -8302,7 +8302,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 		return 0;
 
 	// 養子チェック
-	if(dstsd->s_class.upper != 0 || (dstsd->s_class.job >= PC_JOB_TK && dstsd->s_class.job <= PC_JOB_DA))
+	if(dstsd->s_class.upper != PC_UPPER_NORMAL || (dstsd->s_class.job >= PC_JOB_TK && dstsd->s_class.job <= PC_JOB_DA))
 		return 0;
 	// パーティー同じマップに３人
 	if(party_check_same_map_member_count(dstsd) != 2)

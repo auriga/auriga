@@ -59,6 +59,7 @@ int clif_parse(int fd);
 void clif_authok(struct map_session_data *sd);
 void clif_authfail_fd(int fd, unsigned int type);
 void clif_charselectok(int id);
+void clif_disconnect_ack(int fd, int fail);
 void clif_dropflooritem(struct flooritem_data *fitem);
 void clif_clearflooritem(struct flooritem_data *fitem, int fd);
 void clif_clearchar(struct block_list *bl, int type);
@@ -332,8 +333,8 @@ void clif_guild_xy(struct map_session_data *sd);
 // atcommand
 void clif_displaymessage(const int fd, const char* mes);
 void clif_disp_onlyself(const int fd, const char *mes);
-void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, int flag);
-void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, int flag);
+void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, unsigned int flag);
+void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, unsigned int flag);
 void clif_onlymessage(const char *mes, size_t len);
 void clif_heal(int fd, int type, int val);
 void clif_resurrection(struct block_list *bl, unsigned short type);
