@@ -288,6 +288,9 @@ typedef int32  intptr;
 // =====================
 // utils.c
 // ---------------------
+unsigned long strtobxul(const char *s, char **endptr, int base);
+#define strtobxl(s, endptr, base) (long)strtobxul((s), (endptr), (base))
+
 void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 #endif	// _UTILS_H_

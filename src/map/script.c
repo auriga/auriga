@@ -575,21 +575,8 @@ static unsigned char* parse_simpleexpr(unsigned char *p)
 			disp_error_message("unmatch ')'",p-1);
 		}
 	} else if(isdigit(*p) || ((*p=='-' || *p=='+') && isdigit(p[1]))){
-		unsigned char *p2;
 		char *np;
-		int i;
-		p2 = p;
-		if(*p2 == '-' || *p2 == '+')
-			p2++;
-		if(*p2 == '0' && p2[1] == 'b') {
-			// 2進数表記
-			p2++;
-			*p2 = '0';
-			i = strtoul(p,&np,2);
-			*p2 = 'b';
-		} else {
-			i = strtoul(p,&np,0);
-		}
+		int i = strtobxl(p,&np,0);
 		add_scripti(i);
 		p=np;
 	} else if(*p=='"'){
@@ -1129,7 +1116,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			p2 = p;
 
 			// caseラベルが数値型定数であるかチェック
-			v = strtol(p,&np,0);
+			v = strtobxl(p,&np,0);
 			if((*p == '-' || *p == '+') && isdigit(p[1]))	// '-' はskip_word出来ないのであらかじめskipしておく
 				p++;
 			p = skip_word(p);
@@ -1739,7 +1726,7 @@ static void read_constdb(void)
 		{
 			n = add_str(name);
 			str_data[n].type  = (type == 0)? C_INT: C_PARAM;
-			str_data[n].u.val = (int)strtol(val,NULL,0);
+			str_data[n].u.val = (int)strtobxl(val,NULL,0);
 		} else {
 			if(sscanf(line, "%[A-Za-z0-9_]$,%[^\r\n]", name, val) == 2 ||
 			   sscanf(line, "%[A-Za-z0-9_]$ %[^\r\n]", name, val) == 2)
@@ -2428,7 +2415,7 @@ static int conv_num(struct script_state *st,struct script_data *data)
 	get_val(st,data);
 	if(data->type == C_STR || data->type == C_CONSTSTR) {
 		char *p = data->u.str;
-		data->u.num = atoi(p);
+		data->u.num = (int)strtobxl(p, NULL, 0);
 		if(data->type == C_STR) {
 			aFree(p);
 		}
@@ -7568,14 +7555,14 @@ int buildin_announce(struct script_state *st)
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	int flag  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	size_t len;
-	char *color = NULL;
+	int color = 0;
 	int type = 400;
 	int size = 12;
 	int align = 0;
 	int pos_y = 0;
 
 	if(st->end > st->start+4)
-		color = conv_str(st,& (st->stack->stack_data[st->start+4]));
+		color = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	if(st->end > st->start+5)
 		type = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	if(st->end > st->start+6)
@@ -7600,12 +7587,12 @@ int buildin_announce(struct script_state *st)
 			return 0;
 
 		if(color)
-			clif_announce(bl,str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y,flag);
+			clif_announce(bl,str,len,(unsigned int)color,type,size,align,pos_y,flag);
 		else
 			clif_GMmessage(bl,str,len,flag);
 	} else {
 		if(color)
-			intif_announce(str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y);
+			intif_announce(str,len,(unsigned int)color,type,size,align,pos_y);
 		else
 			intif_GMmessage(str,len,flag);
 	}
@@ -7618,8 +7605,9 @@ int buildin_announce(struct script_state *st)
  */
 static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 {
-	char *str,*color;
+	char *str;
 	size_t len;
+	int color;
 	int flag;
 	int type,size,align,pos_y;
 
@@ -7628,14 +7616,14 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 	str   = va_arg(ap,char *);
 	len   = va_arg(ap,size_t);
 	flag  = va_arg(ap,int);
-	color = va_arg(ap,char *);
+	color = va_arg(ap,int);
 	type  = va_arg(ap,int);
 	size  = va_arg(ap,int);
 	align = va_arg(ap,int);
 	pos_y = va_arg(ap,int);
 
 	if(color)
-		clif_announce(bl,str,len,(unsigned int)strtoul(color,NULL,0),type,size,align,pos_y,flag|3);
+		clif_announce(bl,str,len,(unsigned int)color,type,size,align,pos_y,flag|3);
 	else
 		clif_GMmessage(bl,str,len,flag|3);
 	return 0;
@@ -7643,7 +7631,8 @@ static int buildin_mapannounce_sub(struct block_list *bl,va_list ap)
 
 int buildin_mapannounce(struct script_state *st)
 {
-	char *mapname,*str,*color=NULL;
+	char *mapname,*str;
+	int color = 0;
 	int flag,m;
 	int type = 400;
 	int size = 12;
@@ -7654,7 +7643,7 @@ int buildin_mapannounce(struct script_state *st)
 	str=conv_str(st,& (st->stack->stack_data[st->start+3]));
 	flag=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	if (st->end>st->start+5)
-		color=conv_str(st,& (st->stack->stack_data[st->start+5]));
+		color=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	if (st->end>st->start+6)
 		type=conv_num(st,& (st->stack->stack_data[st->start+6]));
 	if (st->end>st->start+7)
@@ -7676,9 +7665,10 @@ int buildin_mapannounce(struct script_state *st)
  */
 int buildin_areaannounce(struct script_state *st)
 {
-	char *mapname,*str,*color = NULL;
+	char *mapname,*str;
 	int flag,m;
 	int x0,y0,x1,y1;
+	int color = 0;
 	int type = 400;
 	int size = 12;
 	int align = 0;
@@ -7692,7 +7682,7 @@ int buildin_areaannounce(struct script_state *st)
 	str     = conv_str(st,& (st->stack->stack_data[st->start+7]));
 	flag    = conv_num(st,& (st->stack->stack_data[st->start+8]));
 	if (st->end>st->start+9)
-		color = conv_str(st,& (st->stack->stack_data[st->start+9]));
+		color = conv_num(st,& (st->stack->stack_data[st->start+9]));
 	if (st->end>st->start+10)
 		type = conv_num(st,& (st->stack->stack_data[st->start+10]));
 	if (st->end>st->start+11)

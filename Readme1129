@@ -1,4 +1,18 @@
 ----------------------------------------
+//1147 [2013/12/06] by Rayce
+
+・2進数対応の strtol, strtoul として strbtol, strbtoul を実装（utils.*）
+
+・文字列を数値に変換するとき、2進数/8進数/16進数での変換をサポート（script.c, db/script_ref.txt）
+	-> これまでは conv_num() が10進数固定だったのを基数を可変に変更。
+	-> 例えば以下のような変換が可能。
+		set '@val, "0b11" ⇒ 3
+		set '@val, "077" ⇒ 63
+		set '@val, "0xff" ⇒ 255
+
+・@writevars や const.txt で2進数が扱えるように拡張（atcommand.c, script.c）
+
+----------------------------------------
 //1146 [2013/12/06] by Rayce
 
 ・べき乗演算子 ** を右結合に変更（script.c, doc/script_ref.txt）

@@ -21,10 +21,43 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "utils.h"
 #include "malloc.h"
 
+
+/*==========================================
+ * 0b -> 2進数変換対応型strtoul
+ *------------------------------------------
+ */
+unsigned long strtobxul(const char *s, char **endptr, int base)
+{
+	unsigned long ret;
+	int i = 0;
+
+	while(isspace(s[i])) {
+		i++;
+	}
+
+	if(s[i] == '-' || s[i] == '+') {
+		i++;
+	}
+	if(s[i] == '0' && (s[i+1] == 'b' || s[i+1] == 'B')) {
+		// 2進数処理
+		char *buf = (char *)aStrdup(s);
+		buf[i+1] = '0';	// 0b を 00 にする
+		ret = strtoul(buf, endptr, 2);
+		if(endptr) {
+			*endptr = (char *)&s[*endptr - buf];
+		}
+		aFree(buf);
+	} else {
+		ret = strtoul(s, endptr, base);
+	}
+
+	return ret;
+}
 
 /*==========================================
  * Hex Dump
