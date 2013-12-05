@@ -1,4 +1,21 @@
 ----------------------------------------
+//1146 [2013/12/06] by Rayce
+
+・べき乗演算子 ** を右結合に変更（script.c, doc/script_ref.txt）
+
+  ※PerlやPythonと同じ仕様です。
+    例えば、4 ** 3 ** 2 = 4096 ではなく 4 ** 3 ** 2 = 262144 となります。
+    つまり、4 ** (3 ** 2) と等価になります。
+
+・battle_configの etc_log と error_log について、スクリプトに関連する部分を
+  script_configとして別途定義する（script.c）
+
+  ※battle_config.etc_log   => script_config.debug_mode_log
+    battle_config.error_log => script_config.error_log
+
+・スクリプトのDEBUG用のメッセージを変更（script.c）
+
+----------------------------------------
 //1145 [2013/12/05] by refis
 
 ・装備ウィンドウの表示方法をデフォルトで誰でも利用可能にする（battle_auriga.conf）

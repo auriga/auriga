@@ -131,6 +131,8 @@ static struct Script_Config {
 	int check_cmdcount;
 	int check_gotocount;
 	int debug_vars;
+	int debug_mode_log;
+	int error_log;
 } script_config;
 
 static int parse_cmd;
@@ -560,8 +562,8 @@ static unsigned char* parse_simpleexpr(unsigned char *p)
 	p=skip_space(p);
 
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_simpleexpr %s\n",p);
+	if(script_config.debug_mode_log)
+		printf("parse_simpleexpr:start %s\n",p);
 #endif
 	if(*p==';' || *p==','){
 		disp_error_message("unexpected expr end",p);
@@ -657,8 +659,8 @@ static unsigned char* parse_simpleexpr(unsigned char *p)
 	}
 
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_simpleexpr end %s\n",p);
+	if(script_config.debug_mode_log)
+		printf("parse_simpleexpr:end %s\n",p);
 #endif
 	return p;
 }
@@ -672,8 +674,8 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	int op;
 
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_subexpr %s\n", p);
+	if(script_config.debug_mode_log)
+		printf("parse_subexpr:start(%d) %s\n", limit, p);
 #endif
 	p = skip_space(p);
 
@@ -694,7 +696,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	if(op == C_NOP) {
 		p = parse_simpleexpr(p);
 	} else {
-		p = parse_subexpr(p+1, 11);
+		p = parse_subexpr(p+1, 10);
 		add_scriptc(op);
 	}
 	p = skip_space(p);
@@ -702,7 +704,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 	while(1) {
 		int priority = 0, len = 0;
 		switch(*p) {
-			case '(': op = C_FUNC; priority = 12; len = 1; break;
+			case '(': op = C_FUNC; priority = 13; len = 1; break;
 			case '/': op = C_DIV;  priority =  9; len = 1; break;
 			case '%': op = C_MOD;  priority =  9; len = 1; break;
 			case '+': op = C_ADD;  priority =  8; len = 1; break;
@@ -711,7 +713,7 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 			case '?': op = C_OP3;  priority =  0; len = 1; break;
 			case '*':
 				if(p[1] == '*') {
-					op = C_POW;  priority = 10; len = 2; break;
+					op = C_POW;  priority = 12; len = 2; break;
 				} else {
 					op = C_MUL;  priority =  9; len = 1; break;
 				}
@@ -826,6 +828,8 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 				disp_error_message("need ':'", p-1);
 			}
 			p = parse_subexpr(p,-1);
+		} else if(op == C_POW) {
+			p = parse_subexpr(p, 11);	// 右結合のため順位を1つ下げる
 		} else {
 			p = parse_subexpr(p, priority);
 		}
@@ -833,8 +837,8 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 		p = skip_space(p);
 	}
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_subexpr end %s\n",p);
+	if(script_config.debug_mode_log)
+		printf("parse_subexpr:end(%d) %s\n", limit, p);
 #endif
 	return p;
 }
@@ -846,8 +850,8 @@ static unsigned char* parse_subexpr(unsigned char *p,int limit)
 static unsigned char* parse_expr(unsigned char *p)
 {
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_expr %s\n",p);
+	if(script_config.debug_mode_log)
+		printf("parse_expr:start %s\n",p);
 #endif
 	switch(*p) {
 		case ')':
@@ -860,8 +864,8 @@ static unsigned char* parse_expr(unsigned char *p)
 	}
 	p=parse_subexpr(p,-1);
 #ifdef DEBUG_FUNCIN
-	if(battle_config.etc_log)
-		printf("parse_expr end %s\n",p);
+	if(script_config.debug_mode_log)
+		printf("parse_expr:end %s\n",p);
 #endif
 	return p;
 }
@@ -2055,6 +2059,7 @@ struct script_code* parse_script(unsigned char *src,const char *file,int line)
 #endif
 
 #ifdef DEBUG_DISASM
+	printf("#DEBUG_DISASM: %s line %d\n", file, line);
 	printf("------------------------------\n");
 	i = 0;
 	while(i < script_pos) {
@@ -2631,7 +2636,7 @@ static int get_com(unsigned char *script,int *pos)
 static void unget_com(int c)
 {
 	if(unget_com_data!=-1){
-		if(battle_config.error_log)
+		if(script_config.error_log)
 			printf("unget_com can back only 1 data\n");
 	}
 	unget_com_data=c;
@@ -2921,7 +2926,7 @@ static int run_func(struct script_state *st)
 	end_sp=st->stack->sp;
 
 #ifdef DEBUG_RUN
-	if(battle_config.etc_log) {
+	if(script_config.debug_mode_log) {
 		printf("stack dump :");
 		for(i=0;i<end_sp;i++){
 			switch(st->stack->stack_data[i].type){
@@ -2956,7 +2961,7 @@ static int run_func(struct script_state *st)
 #endif
 	for(i=end_sp-1;i>=0 && st->stack->stack_data[i].type!=C_ARG;i--);
 	if(i<=0) {
-		if(battle_config.error_log)
+		if(script_config.error_log)
 			printf("function not found\n");
 		st->state=END;
 		return 0;
@@ -2979,7 +2984,7 @@ static int run_func(struct script_state *st)
 	if(str_data[func].func) {
 		str_data[func].func(st);
 	} else {
-		if(battle_config.error_log)
+		if(script_config.error_log)
 			printf("run_func : %s? (%d(%d))\n",str_buf+str_data[func].str,func,str_data[func].type);
 		push_val(st->stack,C_INT,0);
 	}
@@ -3157,7 +3162,7 @@ static void run_script_main(struct script_state *st)
 		switch(c = get_com(st->script->script_buf,&st->pos)) {
 		case C_EOL:
 			if(st->stack->sp != st->stack->defsp) {
-				if(battle_config.error_log)
+				if(script_config.error_log)
 					printf("stack.sp(%d) != default(%d)\n",st->stack->sp,st->stack->defsp);
 				pop_stack(st->stack, st->stack->defsp, st->stack->sp);
 			}
@@ -3222,7 +3227,7 @@ static void run_script_main(struct script_state *st)
 			st->state = END;
 			break;
 		default:
-			if(battle_config.error_log)
+			if(script_config.error_log)
 				printf("unknown command : %d @ 0x%06x\n",c,st->pos);
 			st->state = END;
 			break;
@@ -3560,6 +3565,8 @@ int script_config_read(const char *cfgName)
 		script_config.warn_cmd_mismatch_paramnum  = 1;
 		script_config.check_cmdcount  = 65536;
 		script_config.check_gotocount = 16384;
+		script_config.debug_mode_log = 1;
+		script_config.error_log = 1;
 	}
 
 	fp = fopen(cfgName,"r");
@@ -3594,6 +3601,12 @@ int script_config_read(const char *cfgName)
 		else if(strcmpi(w1, "error_marker_end") == 0) {
 			strncpy(error_marker_end, w2, 16);
 			error_marker_end[15] = '\0';
+		}
+		else if(strcmpi(w1, "debug_mode_log") == 0) {
+			script_config.debug_mode_log = atoi(w2);
+		}
+		else if(strcmpi(w1, "error_log") == 0) {
+			script_config.error_log = atoi(w2);
 		}
 		else if(strcmpi(w1,"import") == 0) {
 			script_config_read(w2);
