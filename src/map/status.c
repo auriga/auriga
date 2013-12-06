@@ -6545,11 +6545,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	eld = BL_DOWNCAST( BL_ELEM, bl );
 
 	if( sd ) {
+		int weapon = sd->status.weapon;
+		if(weapon >= WT_MAX)
+			weapon -= WT_DOUBLE_DD + WT_MAX;
+
 		// アドレナリンラッシュの武器判定
-		if( type == SC_ADRENALINE && !(skill_get_weapontype(BS_ADRENALINE)&(1<<sd->status.weapon)) )
+		if( type == SC_ADRENALINE && !(skill_get_weapontype(BS_ADRENALINE)&(1<<weapon)) )
 			return 0;
 		// フルアドレナリンラッシュの武器判定
-		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<sd->status.weapon)) )
+		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<weapon)) )
 			return 0;
 		if( !(flag&8) && SC_STONE <= type && type <= SC_BLEED ) {	/* カードによる耐性 */
 			int scdef = sd->reseff[type-SC_STONE];

@@ -1,4 +1,25 @@
 ----------------------------------------
+//1150 [2013/12/07] by Rayce
+
+・Auriga-0822以降、waitingroom命令の引数 job が正しく動作しなくなっていたのを修正（chat.c, pc.*, script.c）
+	-> pc_check_useclass() を整理し、職業値のビットを返す関数 pc_get_job_bit() に変更。
+	-> チャットの職業制限のビットは pc_get_job_bit() を参照するように変更。
+
+・Auriga-0805以降、skill_require_db.txtの list_weapon 項目について、二刀流（93~98）の設定が
+  無効になっていたのを修正（pc.c, skill.*, status.c）
+
+・item_db.txtのSLOTの値が0~4以外の値の場合、バッファオーバー/アンダーフローが発生しないように
+  読み込み時にチェックを入れる（itemdb.c）
+
+・@optionの引数を16進数でも指定できるように拡張（atcommand.c）
+
+・スクリプトにおいてクラスの番号指定をconst.txtの定数に変更（quest/npc_quest_arena.txt）
+
+・helpおよびdb_refのメンテナンス（itemdb.c, conf/help.txt, doc/db_ref.txt）
+
+・DBのヘッダ行のコメントの内容を正しく更新（db/size_fix.txt, db/skill_db2.txt）
+
+----------------------------------------
 //1149 [2013/12/07] by Rayce
 
 ・mob_talk() 実行するとき、最大値の判定を行うように強化（mob.c）

@@ -1,6 +1,6 @@
 //skill_require_db2,txt＠AthenaDB計画 2005/04/14 00:00:00 +0900 (JST)
 //id,cloable,misfire,zone,damage_rate,range_type,amotion_delay,reserve1,reserve2
-//スキルID,クローン(+1:転生前 +2:転生後 +4:養子 +8:3次職),不発スキル,
+//スキルID,クローン(+1:転生前 +2:転生後 +4:養子 +8:リプロデュースなら可能),不発スキル,
 //	場所によるスキル制限(+1:通常フィールド +2:PVP +4:GVG +8:PK +16:ターボトラック),
 //	ダメージ補正(Normal:PVP:GVG:PK->100:100:60:100),
 //	攻撃スキルの距離タイプ(0:近距離 1:遠距離 2:強制遠距離),

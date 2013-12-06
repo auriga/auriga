@@ -3089,7 +3089,7 @@ arena_room.gat,136,138,4	script	聖職者控室#arena	124,{
 	end;
 OnInit:
 	//ここでは他職排除しないが念のため
-	waitingroom "個人戦-聖職者専用",20,"聖職者控室#arena::OnStart",1,1000,0,255,(1<<4)|(1<<8)|(1<<15),0;
+	waitingroom "個人戦-聖職者専用",20,"聖職者控室#arena::OnStart",1,1000,0,255,(1<<CLASS_AL)|(1<<CLASS_PR)|(1<<CLASS_MO),0;
 	end;
 OnStart:
 	disablewaitingroomevent;

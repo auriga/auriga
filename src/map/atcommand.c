@@ -1023,23 +1023,23 @@ int atcommand_guildstorage(const int fd, struct map_session_data* sd, AtCommandT
  */
 int atcommand_option(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	unsigned short opt1, opt2 = 0;
-	unsigned int opt3 = 0, option = 0;
+	unsigned short opt1 = OPT1_NORMAL;
+	char opt2[100] = "", opt3[100] = "", option[100] = "";
 
 	nullpo_retr(-1, sd);
 
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "%hu %hu %u %u", &opt1, &opt2, &option, &opt3) < 1)
+	if (sscanf(message, "%hu %99s %99s %99s", &opt1, opt2, option, opt3) < 1)
 		return -1;
 
 	sd->sc.opt1 = opt1;
-	sd->sc.opt2 = opt2;
-	sd->sc.opt3 = opt3;
+	sd->sc.opt2 = (unsigned short)strtoul(opt2, NULL, 0);
+	sd->sc.opt3 = strtoul(opt3, NULL, 0);
 
 	clif_changeoption2(&sd->bl);
-	pc_setoption(sd, option);
+	pc_setoption(sd, strtoul(option, NULL, 0));
 
 	clif_displaymessage(fd, msg_txt(9));
 

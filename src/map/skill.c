@@ -591,7 +591,7 @@ int skill_get_castdef(int id)
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].cast_def_rate;
 }
-int skill_get_weapontype(int id)
+unsigned int skill_get_weapontype(int id)
 {
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].weapon;
@@ -12429,23 +12429,28 @@ static int skill_check_condition_char_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:		/* 不死身のジークフリード */
 	case BD_RAGNAROK:		/* 神々の黄昏 */
 	case CG_MOONLIT:		/* 月明りの下で */
-		if( (*c) < 1 &&
-		    (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)) ||
-		    ((ssd->s_class.job == PC_JOB_DC || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
-		    sd->status.party_id > 0 &&
-		    ssd->status.party_id > 0 &&
-		    sd->status.party_id == ssd->status.party_id &&
-		    !unit_isdead(&sd->bl) &&
-		    !pc_issit(sd) &&
-		    sd->sc.data[SC_DANCING].timer == -1 &&
-		    (skill_get_weapontype(cnd->id) & (1<<sd->status.weapon)) &&
-		    sd->status.sp >= sp &&
-		    sd->sc.data[SC_STONE].timer == -1 &&
-		    sd->sc.data[SC_FREEZE].timer == -1 &&
-		    sd->sc.data[SC_SILENCE].timer == -1 &&
-		    sd->sc.data[SC_SLEEP].timer == -1 &&
-		    sd->sc.data[SC_STUN].timer == -1 )
-			(*c) = pc_checkskill(sd,cnd->id);
+		if( (*c) < 1 ) {
+			int weapon = sd->status.weapon;
+			if(weapon >= WT_MAX)
+					weapon -= WT_DOUBLE_DD + WT_MAX;
+
+		    if( (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)) ||
+			    ((ssd->s_class.job == PC_JOB_DC || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
+			    sd->status.party_id > 0 &&
+			    ssd->status.party_id > 0 &&
+			    sd->status.party_id == ssd->status.party_id &&
+			    !unit_isdead(&sd->bl) &&
+			    !pc_issit(sd) &&
+			    sd->sc.data[SC_DANCING].timer == -1 &&
+			    (skill_get_weapontype(cnd->id) & (1<<weapon)) &&
+			    sd->status.sp >= sp &&
+			    sd->sc.data[SC_STONE].timer == -1 &&
+			    sd->sc.data[SC_FREEZE].timer == -1 &&
+			    sd->sc.data[SC_SILENCE].timer == -1 &&
+			    sd->sc.data[SC_SLEEP].timer == -1 &&
+			    sd->sc.data[SC_STUN].timer == -1 )
+				(*c) = pc_checkskill(sd,cnd->id);
+		}
 		break;
 	case WM_GREAT_ECHO:					/* グレートエコー */
 	case WM_SONG_OF_MANA:				/* マナの歌 */
@@ -12528,34 +12533,39 @@ static int skill_check_condition_use_sub(struct block_list *bl,va_list ap)
 	case BD_SIEGFRIED:		/* 不死身のジークフリード */
 	case BD_RAGNAROK:		/* 神々の黄昏 */
 	case CG_MOONLIT:		/* 月明りの下で */
-		if( (*c) < 1 &&
-		    (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)) ||
-		    ((ssd->s_class.job == PC_JOB_DC || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
-		    pc_checkskill(sd,skillid) > 0 &&
-		    sd->status.party_id > 0 &&
-		    ssd->status.party_id > 0 &&
-		    sd->status.party_id == ssd->status.party_id &&
-		    !unit_isdead(&sd->bl) &&
-		    !pc_issit(sd) &&
-		    sd->sc.data[SC_DANCING].timer == -1 &&
-		    (skill_get_weapontype(skillid) & (1<<sd->status.weapon)) &&
-		    sd->status.sp >= sp &&
-		    sd->sc.data[SC_STONE].timer == -1 &&
-		    sd->sc.data[SC_FREEZE].timer == -1 &&
-		    sd->sc.data[SC_SILENCE].timer == -1 &&
-		    sd->sc.data[SC_SLEEP].timer == -1 &&
-		    sd->sc.data[SC_STUN].timer == -1 )
-		{
-			sd->status.sp -= sp;
-			clif_updatestatus(sd,SP_SP);
-			ssd->sc.data[SC_DANCING].val4 = bl->id;
-			clif_skill_nodamage(bl,&ssd->bl,skillid,skilllv,1);
-			status_change_start(bl,SC_DANCING,skillid,ssd->sc.data[SC_DANCING].val2,0,ssd->bl.id,skill_get_time(skillid,skilllv)+1000,0);
-			sd->skill_dance.id = sd->ud.skillid = skillid;
-			sd->skill_dance.lv = sd->ud.skilllv = skilllv;
-			ssd->dance.x = sd->bl.x;
-			ssd->dance.y = sd->bl.y;
-			(*c)++;
+		if( (*c) < 1 ) {
+			int weapon = sd->status.weapon;
+			if(weapon >= WT_MAX)
+				weapon -= WT_DOUBLE_DD + WT_MAX;
+
+		    if( (((ssd->s_class.job == PC_JOB_BA || ssd->s_class.job == PC_JOB_MI) && (sd->s_class.job == PC_JOB_DC || sd->s_class.job == PC_JOB_WA)) ||
+			    ((ssd->s_class.job == PC_JOB_DC || ssd->s_class.job == PC_JOB_WA) && (sd->s_class.job == PC_JOB_BA || sd->s_class.job == PC_JOB_MI))) &&
+			    pc_checkskill(sd,skillid) > 0 &&
+			    sd->status.party_id > 0 &&
+			    ssd->status.party_id > 0 &&
+			    sd->status.party_id == ssd->status.party_id &&
+			    !unit_isdead(&sd->bl) &&
+			    !pc_issit(sd) &&
+			    sd->sc.data[SC_DANCING].timer == -1 &&
+			    (skill_get_weapontype(skillid) & (1<<weapon)) &&
+			    sd->status.sp >= sp &&
+			    sd->sc.data[SC_STONE].timer == -1 &&
+			    sd->sc.data[SC_FREEZE].timer == -1 &&
+			    sd->sc.data[SC_SILENCE].timer == -1 &&
+			    sd->sc.data[SC_SLEEP].timer == -1 &&
+			    sd->sc.data[SC_STUN].timer == -1 )
+			{
+				sd->status.sp -= sp;
+				clif_updatestatus(sd,SP_SP);
+				ssd->sc.data[SC_DANCING].val4 = bl->id;
+				clif_skill_nodamage(bl,&ssd->bl,skillid,skilllv,1);
+				status_change_start(bl,SC_DANCING,skillid,ssd->sc.data[SC_DANCING].val2,0,ssd->bl.id,skill_get_time(skillid,skilllv)+1000,0);
+				sd->skill_dance.id = sd->ud.skillid = skillid;
+				sd->skill_dance.lv = sd->ud.skilllv = skilllv;
+				ssd->dance.x = sd->bl.x;
+				ssd->dance.y = sd->bl.y;
+				(*c)++;
+			}
 		}
 		break;
 	case WM_GREAT_ECHO:					/* グレートエコー */
@@ -14149,6 +14159,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	}
 
 	if(!(type&2)) {
+		int w;
+
 		if(!sd->skill_item.flag) {		// アイテムスキル由来ならSPチェックは不要
 			if(sp > 0 && sd->status.sp < sp) {		/* SPチェック */
 				clif_skill_fail(sd,cnd->id,1,0,0);
@@ -14164,7 +14176,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			clif_skill_fail(sd,cnd->id,5,0,0);
 			return 0;
 		}
-		if(!(weapon & (1<<sd->status.weapon))) {
+
+		w = sd->status.weapon;
+		if(w >= WT_MAX)
+			w -= WT_DOUBLE_DD + WT_MAX;
+
+		if(!(weapon & (1<<w))) {
 			clif_skill_fail(sd,cnd->id,6,0,0);
 			return 0;
 		}
@@ -19360,10 +19377,13 @@ static int skill_readdb(void)
 			p = split[6];
 			for(j=0;j<32;j++){
 				n = atoi(p);
-				if(n == 99) {
+				if(n == WT_DOUBLE_MAX) {
 					skill_db[i].weapon = 0xffffffff;
 					break;
 				} else {
+					if(n >= WT_MAX) {
+						n -= WT_DOUBLE_DD + WT_MAX;
+					}
 					skill_db[i].weapon |= 1<<n;
 				}
 				p=strchr(p,':');

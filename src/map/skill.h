@@ -189,7 +189,7 @@ int skill_get_cooldown(int id,int lv);
 int skill_get_time(int id ,int lv);
 int skill_get_time2(int id,int lv);
 int skill_get_castdef(int id);
-int skill_get_weapontype(int id);
+unsigned int skill_get_weapontype(int id);
 int skill_get_inf2(int id);
 int skill_get_maxcount(int id,int lv);
 int skill_get_skill_type(int id);

@@ -1007,174 +1007,115 @@ static int pc_calcweapontype(struct map_session_data *sd)
 }
 
 /*==========================================
- * 職業によって使用可能なアイテムかどうか
+ * クラスIDから職業値のビットを返す
  *------------------------------------------
  */
-static int pc_check_useclass(struct map_session_data *sd, unsigned int class_)
+unsigned int pc_get_job_bit(int job)
 {
-	unsigned int job_bit = 0;
+	unsigned int bit = 0;
 
-	nullpo_retr(0, sd);
-
-	//職業値をdbの職業値に合わせて設定
-	switch(sd->s_class.job) {
+	// 職業値をdbの職業値に合わせて設定
+	switch(job) {
 		case PC_JOB_NV:		// ノービス
-			job_bit = 0x00000001;
+			bit = 0x00000001;
 			break;
 		case PC_JOB_SM:		// ソードマン
-			job_bit = 0x00000002;
+			bit = 0x00000002;
 			break;
 		case PC_JOB_MG:		// マジシャン
-			job_bit = 0x00000004;
+			bit = 0x00000004;
 			break;
 		case PC_JOB_AC:		// アーチャー
-			job_bit = 0x00000008;
+			bit = 0x00000008;
 			break;
 		case PC_JOB_AL:		// アコライト
-			job_bit = 0x00000010;
+		case PC_JOB_MB:		// キョンシー（暫定）
+			bit = 0x00000010;
 			break;
 		case PC_JOB_MC:		// マーチャント
-			job_bit = 0x00000020;
+			bit = 0x00000020;
 			break;
 		case PC_JOB_TF:		// シーフ
-			job_bit = 0x00000040;
+			bit = 0x00000040;
 			break;
 		case PC_JOB_KN:		// ナイト
-			job_bit = 0x00000080;
+		case PC_JOB_DK:		// デスナイト（暫定）
+		case PC_JOB_RK:		// ルーンナイト（暫定）
+			bit = 0x00000080;
 			break;
 		case PC_JOB_PR:		// プリースト
-			job_bit = 0x00000100;
+		case PC_JOB_AB:		// アークビショップ（暫定）
+			bit = 0x00000100;
 			break;
 		case PC_JOB_WZ:		// ウィザード
-			job_bit = 0x00000200;
+		case PC_JOB_WL:		// ウォーロック（暫定）
+			bit = 0x00000200;
 			break;
 		case PC_JOB_BS:		// ブラックスミス
-			job_bit = 0x00000400;
+		case PC_JOB_NC:		// メカニック（暫定）
+			bit = 0x00000400;
 			break;
 		case PC_JOB_HT:		// ハンター
-			job_bit = 0x00000800;
+		case PC_JOB_RA:		// レンジャー（暫定）
+			bit = 0x00000800;
 			break;
 		case PC_JOB_AS:		// アサシン
-			job_bit = 0x00001000;
+		case PC_JOB_GC:		// ギロチンクロス（暫定）
+			bit = 0x00001000;
 			break;
 		case PC_JOB_CR:		// クルセイダー
-			job_bit = 0x00004000;
+		case PC_JOB_LG:		// ロイヤルガード（暫定）
+			bit = 0x00004000;
 			break;
 		case PC_JOB_MO:		// モンク
-			job_bit = 0x00008000;
+		case PC_JOB_SR:		// 修羅（暫定）
+			bit = 0x00008000;
 			break;
 		case PC_JOB_SA:		// セージ
-			job_bit = 0x00010000;
+		case PC_JOB_SO:		// ソーサラー（暫定）
+			bit = 0x00010000;
 			break;
 		case PC_JOB_RG:		// ローグ
-			job_bit = 0x00020000;
+		case PC_JOB_SC:		// シャドウチェイサー（暫定）
+			bit = 0x00020000;
 			break;
 		case PC_JOB_AM:		// アルケミスト
-			job_bit = 0x00040000;
+		case PC_JOB_DA:		// ダークコレクター（暫定）
+		case PC_JOB_GN:		// ジェネティック（暫定）
+			bit = 0x00040000;
 			break;
 		case PC_JOB_BA:		// バード
-			job_bit = 0x00080000;
+		case PC_JOB_MI:		// ミンストレル（暫定）
+			bit = 0x00080000;
 			break;
 		case PC_JOB_DC:		// ダンサー
-			job_bit = 0x00100000;
+		case PC_JOB_WA:		// ワンダラー（暫定）
+			bit = 0x00100000;
 			break;
 		case PC_JOB_SNV:	// スーパーノービス
 		case PC_JOB_ESNV:	// 拡張スーパーノービス
-			job_bit = 0x00800000;
+			bit = 0x00800000;
 			break;
 		case PC_JOB_TK:		// テコンキッド
-			job_bit = 0x01000000;
+			bit = 0x01000000;
 			break;
 		case PC_JOB_SG:		// 拳聖
-			job_bit = 0x02000000;
+			bit = 0x02000000;
 			break;
 		case PC_JOB_SL:		// ソウルリンカー
-			job_bit = 0x08000000;
+			bit = 0x08000000;
 			break;
 		case PC_JOB_GS:		// ガンスリンガー
-			job_bit = 0x10000000;
+			bit = 0x10000000;
 			break;
 		case PC_JOB_NJ:		// 忍者
-			job_bit = 0x20000000;
+		case PC_JOB_KG:		// 影狼（暫定）
+		case PC_JOB_OB:		// 朧（暫定）
+			bit = 0x20000000;
 			break;
-		case PC_JOB_MB:		// キョンシー
-			// 暫定アコライトと同等
-			job_bit = 0x00000010;
-			break;
-		case PC_JOB_DK:		// デスナイト
-			// 暫定ナイトと同等
-			job_bit = 0x00000080;
-			break;
-		case PC_JOB_DA:		// ダークコレクター
-			// 暫定アルケミストと同等
-			job_bit = 0x00040000;
-			break;
-		case PC_JOB_RK:		// ルーンナイト
-			// 暫定ナイトと同等
-			job_bit = 0x00000080;
-			break;
-		case PC_JOB_WL:		// ウォーロック
-			// 暫定ウィザードと同等
-			job_bit = 0x00000200;
-			break;
-		case PC_JOB_RA:		// レンジャー
-			// 暫定ハンターと同等
-			job_bit = 0x00000800;
-			break;
-		case PC_JOB_AB:		// アークビショップ
-			// 暫定プリーストと同等
-			job_bit = 0x00000100;
-			break;
-		case PC_JOB_NC:		// メカニック
-			// 暫定ブラックスミスと同等
-			job_bit = 0x00000400;
-			break;
-		case PC_JOB_GC:		// ギロチンクロス
-			// 暫定アサシンと同等
-			job_bit = 0x00001000;
-			break;
-		case PC_JOB_LG:		// ロイヤルガード
-			// 暫定クルセイダーと同等
-			job_bit = 0x00004000;
-			break;
-		case PC_JOB_SO:		// ソーサラー
-			// 暫定セージと同等
-			job_bit = 0x00010000;
-			break;
-		case PC_JOB_MI:		// ミンストレル
-			// 暫定バードと同等
-			job_bit = 0x00080000;
-			break;
-		case PC_JOB_WA:		// ワンダラー
-			// 暫定ダンサーと同等
-			job_bit = 0x00100000;
-			break;
-		case PC_JOB_SR:		// 修羅
-			// 暫定モンクと同等
-			job_bit = 0x00008000;
-			break;
-		case PC_JOB_GN:		// ジェネティック
-			// 暫定アルケミストと同等
-			job_bit = 0x00040000;
-			break;
-		case PC_JOB_SC:		// シャドウチェイサー
-			// 暫定ローグと同等
-			job_bit = 0x00020000;
-			break;
-		case PC_JOB_KG:		// 影狼
-		case PC_JOB_OB:		// 朧
-			// 暫定忍者と同等
-			job_bit = 0x20000000;
-			break;
-		default:
-			return 0;
 	}
 
-	// 職業判定
-	if((job_bit & class_) == 0)
-		return 0;
-
-	return 1;
+	return bit;
 }
 
 /*==========================================
@@ -1292,7 +1233,8 @@ static int pc_isequip(struct map_session_data *sd,int n)
 	}
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return -1;
-	if(pc_check_useclass(sd,item->class_) == 0)
+
+	if((pc_get_job_bit(sd->s_class.job) & item->class_) == 0)
 		return 0;
 
 	if(item->upper) {
@@ -2703,7 +2645,8 @@ static int pc_isUseitem(struct map_session_data *sd,int n)
 		return 0;
 	if(item->elv > 0 && sd->status.base_level < item->elv)
 		return -1;
-	if(pc_check_useclass(sd,item->class_) == 0)
+
+	if((pc_get_job_bit(sd->s_class.job) & item->class_) == 0)
 		return 0;
 
 	if(item->upper) {
@@ -3652,7 +3595,8 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id)
  */
 static int pc_checkallowskill(struct map_session_data *sd)
 {
-	int i, mask;
+	int i, weapon;
+	unsigned mask = 0;
 	const int skill_list[] = {
 		KN_TWOHANDQUICKEN,
 		KN_ONEHAND,
@@ -3674,7 +3618,11 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	if( sd->sc.count <= 0 )
 		return 0;
 
-	mask = 1 << sd->status.weapon;
+	weapon = sd->status.weapon;
+	if(sd->status.weapon >= WT_MAX)
+		weapon -= WT_DOUBLE_DD + WT_MAX;
+
+	mask = 1 << weapon;
 
 	// 武器が合わないならステータス異常を解除
 	for(i=0; i < sizeof(skill_list)/sizeof(skill_list[0]); i++) {
@@ -6776,7 +6724,7 @@ int pc_percentheal(struct map_session_data *sd,int hp,int sp)
 
 /*==========================================
  * 職変更
- * 引数	job 職業 0〜23
+ * 引数	job 職業 PC_JOB_NV <= job < PC_JOB_MAX
  *      upper 通常 0, 転生 1, 養子 2, そのまま -1
  *------------------------------------------
  */

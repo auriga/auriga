@@ -33,6 +33,7 @@
 #include "clif.h"
 #include "chat.h"
 #include "npc.h"
+#include "pc.h"
 
 /*==========================================
  * 規定人数以上でイベントが定義されてるなら実行
@@ -142,7 +143,7 @@ void chat_joinchat(struct map_session_data *sd, int chatid, const char* pass)
 		clif_joinchatfail(sd,6);
 		return;
 	}
-	if(((1<<sd->s_class.job)&cd->job) == 0) {
+	if((pc_get_job_bit(sd->s_class.job) & cd->job) == 0) {
 		clif_joinchatfail(sd,7);
 		return;
 	}

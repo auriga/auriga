@@ -523,7 +523,10 @@ static int itemdb_read_itemdb(void)
 			itemdb_split_atoi(str[7],&id->atk,&id->matk);
 			itemdb_split_atoi(str[8],&id->def,&id->mdef);
 			id->range  = atoi(str[9]);
-			id->slot   = atoi(str[10]);
+			id->slot = atoi(str[10]);
+			if(id->slot < 0 || id->slot > 4) {
+				id->slot = 0;
+			}
 			id->class_ = (unsigned int)strtoul(str[11],NULL,0);
 			id->sex    = atoi(str[12]);
 			if(id->equip != atoi(str[13])) {
