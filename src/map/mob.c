@@ -3764,7 +3764,7 @@ int mob_talk(struct mob_data *md, int msg_id)
 
 	nullpo_retr(0, md);
 
-	if(msg_id <= 0 || mob_talk_db[msg_id-1].msg == NULL)
+	if(msg_id <= 0 || msg_id >= MAX_MOB_TALK || mob_talk_db[msg_id-1].msg == NULL)
 		return 0;
 	snprintf(output, sizeof output, "%s : %s", md->name, mob_talk_db[msg_id-1].msg);
 	clif_GlobalMessage2(&md->bl, mob_talk_db[msg_id-1].color, output, strlen(output)+1, AREA);
@@ -3972,7 +3972,7 @@ static int mob_readdb(void)
 			mob_db[class_].hair          = 0;
 			mob_db[class_].hair_color    = 0;
 			mob_db[class_].clothes_color = 0;
-			mob_db[class_].weapon        = 0;
+			mob_db[class_].weapon        = WT_FIST;
 			mob_db[class_].shield        = 0;
 			mob_db[class_].head_top      = 0;
 			mob_db[class_].head_mid      = 0;

@@ -1,4 +1,24 @@
 ----------------------------------------
+//1149 [2013/12/07] by Rayce
+
+・mob_talk() 実行するとき、最大値の判定を行うように強化（mob.c）
+
+・pc_break_equip() の引数 where をunsinged short型からint型に拡張し、全てのLOC定数を受け入れることが
+  可能にしておく（pc.*）
+
+・map_session_data構造体の unbreakable_equip メンバをunsigned short型からunsinged int型に拡張し、
+  全てのLOC定数でビット演算が可能にしておく（map.h）
+
+・clif.cのリファクタリング、武器の見た目を取得する処理を clif_get_weapon_view() としてまとめる（clif.c）
+
+・PACKETVERが3以下のとき、clif_changelook() でコンパイルエラーが発生する問題を修正（clif.c）
+
+・装備箇所を示すLOC系定数をitemdb.hからmmo.hに移動し、char.cでも利用可能にする（mmo.h, itemdb.h）
+
+・出来る限りenum型を使うように変更
+  （chardb_txt.c, char.c, clif.c, extra.c, mob.c, pc.c, script.c, skill.c, status.c）
+
+----------------------------------------
 //1148 [2013/12/06] by Rayce
 
 ・関数名と意味を一致させるため pc_isquitable() の判定結果を反転（pc.c, clif.c）

@@ -207,7 +207,7 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 				int j;
 				if (quantity < 0) { // remove items
 					for (j = 0; j < MAX_INVENTORY; j++) {
-						if (pl_sd->status.inventory[j].nameid == item_id && pl_sd->status.inventory[j].equip == 0) {
+						if (pl_sd->status.inventory[j].nameid == item_id && pl_sd->status.inventory[j].equip == LOC_NOTHING) {
 							if (pl_sd->status.inventory[j].amount < -quantity)
 								quantity = -pl_sd->status.inventory[j].amount;
 							if (quantity < 0) {

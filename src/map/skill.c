@@ -6552,8 +6552,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				int i;
 				if(equip == LOC_LARM) {
 					// ストリップシールドは弓以外の両手武器には失敗
-					if( dstsd->equip_index[8] >= 0 &&
-					    itemdb_isweapon(dstsd->inventory_data[dstsd->equip_index[8]]->nameid) &&
+					if( dstsd->equip_index[EQUIP_INDEX_LARM] >= 0 &&
+					    itemdb_isweapon(dstsd->inventory_data[dstsd->equip_index[EQUIP_INDEX_LARM]]->nameid) &&
 					    dstsd->status.weapon != WT_BOW )
 						break;
 				}
@@ -6607,8 +6607,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					}
 					if( dstsd->status.inventory[i].equip & LOC_LARM ) {
 						// ストリップシールドは弓以外の両手武器には失敗
-						if( dstsd->equip_index[8] >= 0 &&
-						    itemdb_isweapon(dstsd->inventory_data[dstsd->equip_index[8]]->nameid) &&
+						if( dstsd->equip_index[EQUIP_INDEX_LARM] >= 0 &&
+						    itemdb_isweapon(dstsd->inventory_data[dstsd->equip_index[EQUIP_INDEX_LARM]]->nameid) &&
 						    dstsd->status.weapon != WT_BOW ) {
 							;
 						}
@@ -7483,7 +7483,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SG_HATE:
-		if(sd) {
+		if(sd && skilllv > 0 && skilllv <= 3) {
 			// 既に登録済み
 			if(sd->hate_mob[skilllv-1] != -1) {
 				clif_hate_info(sd,skilllv,sd->hate_mob[skilllv-1]);
@@ -8627,7 +8627,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(src))) {
 				int time = 20000;
 				if(sd) {
-					int idx = sd->equip_index[8];
+					int idx = sd->equip_index[EQUIP_INDEX_LARM];
 					if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
 						time = time * sd->inventory_data[idx]->mdef;
 					}
@@ -8636,7 +8636,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		}
 		else if(sd) {
-			int idx = sd->equip_index[8];
+			int idx = sd->equip_index[EQUIP_INDEX_LARM];
 			if(idx >= 0 && sd->inventory_data[idx] && itemdb_isarmor(sd->inventory_data[idx]->nameid)) {
 				int rate,val;
 				switch(skilllv) {
@@ -9174,7 +9174,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case GN_SLINGITEM:		/* スリングアイテム */
 		if(sd) {
-			int idx = sd->equip_index[10];
+			int idx = sd->equip_index[EQUIP_INDEX_ARROW];
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
@@ -9936,7 +9936,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case GS_GROUNDDRIFT:			/* グラウンドドリフト */
 		if(sd) {
-			int idx = sd->equip_index[10];
+			int idx = sd->equip_index[EQUIP_INDEX_ARROW];
 			if(idx >= 0 && sd->inventory_data[idx]) {
 				int nameid = sd->inventory_data[idx]->nameid;
 				int cost = skill_get_arrow_cost(skillid,skilllv);
@@ -14177,7 +14177,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		if(arrow > 0) {						// 矢不足
-			int idx = sd->equip_index[10];
+			int idx = sd->equip_index[EQUIP_INDEX_ARROW];
 			if( idx == -1 ||
 			    !(sd->inventory_data[idx]->arrow_type & skill_get_arrow_type(cnd->id)) ||
 			    sd->status.inventory[idx].amount < arrow )

@@ -190,7 +190,7 @@ int pc_check_adopt_condition(struct map_session_data *dstsd, struct map_session_
 void pc_adopt_reply(struct map_session_data *sd,int src_id,int p_id,short flag);
 int pc_break_adoption(struct map_session_data *sd);
 
-int pc_break_equip(struct map_session_data *sd, unsigned short where);
+int pc_break_equip(struct map_session_data *sd, int where);
 int pc_break_equip2(struct map_session_data *sd, int where);
 
 int pc_candrop(struct map_session_data *sd,int item_id);

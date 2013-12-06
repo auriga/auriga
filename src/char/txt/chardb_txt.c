@@ -970,7 +970,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 		char_dat[n].st.inventory[idx].id       = 1;
 		char_dat[n].st.inventory[idx].nameid   = start_weapon;
 		char_dat[n].st.inventory[idx].amount   = 1;
-		char_dat[n].st.inventory[idx].equip    = 0x02;
+		char_dat[n].st.inventory[idx].equip    = LOC_RARM;
 		char_dat[n].st.inventory[idx].identify = 1;
 		char_dat[n].st.weapon = 1;
 		idx++;
@@ -979,7 +979,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 		char_dat[n].st.inventory[idx].id       = 2;
 		char_dat[n].st.inventory[idx].nameid   = start_armor;
 		char_dat[n].st.inventory[idx].amount   = 1;
-		char_dat[n].st.inventory[idx].equip    = 0x10;
+		char_dat[n].st.inventory[idx].equip    = LOC_BODY;
 		char_dat[n].st.inventory[idx].identify = 1;
 	}
 	char_dat[n].st.shield      = 0;

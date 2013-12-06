@@ -418,7 +418,7 @@ struct map_session_data {
 	unsigned int inventory_sortkey;
 	unsigned int cart_sortkey;
 	short equip_index[EQUIP_INDEX_MAX];
-	unsigned short unbreakable_equip;
+	unsigned int unbreakable_equip;
 	int weight,max_weight;
 	int cart_weight,cart_max_weight,cart_num,cart_max_num;
 	char mapname[24];
@@ -508,7 +508,7 @@ struct map_session_data {
 	short view_class;
 	struct pc_base_job s_class;
 
-	short weapontype1,weapontype2;
+	short weapontype1,weapontype2;	// 〜WT_MAX
 	int paramb[6],paramc[6],parame[6],paramcard[6];
 	int hit,flee,flee2,aspd,amotion,dmotion;
 	int watk,watk2,atkmods[MAX_SIZE_FIX];

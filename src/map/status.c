@@ -593,7 +593,7 @@ L_RECALC:
 	sd->short_weapon_damage_return = sd->long_weapon_damage_return = sd->magic_damage_return = 0;
 	sd->break_weapon_rate = sd->break_armor_rate = 0;
 	sd->add_steal_rate    = 0;
-	sd->unbreakable_equip = 0;
+	sd->unbreakable_equip = LOC_NOTHING;
 	sd->critical_damage   = 0;
 	sd->hp_recov_stop = sd->sp_recov_stop = 0;
 	memset(sd->critical_race,0,sizeof(sd->critical_race));
@@ -1499,9 +1499,9 @@ L_RECALC:
 #ifdef PRE_RENEWAL
 	if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// 戦太鼓の響き
 		sd->base_atk += sd->sc.data[SC_DRUMBATTLE].val2;
-		//idx = sd->equip_index[8];
+		//idx = sd->equip_index[EQUIP_INDEX_LARM];
 		// 左手には適用しない
-		//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
+		//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 		//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 	}
 #endif
@@ -1816,8 +1816,8 @@ L_RECALC:
 		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// イムポシティオマヌス
 			sd->watk += sd->sc.data[SC_IMPOSITIO].val1*5;
 			// 左手には適用しない
-			//idx = sd->equip_index[8];
-			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
+			//idx = sd->equip_index[EQUIP_INDEX_LARM];
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
 #endif
@@ -1828,8 +1828,8 @@ L_RECALC:
 			sd->watk = sd->watk*(100 + 32) / 100;
 #endif
 			// 左手には適用しない
-			//idx = sd->equip_index[8];
-			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
+			//idx = sd->equip_index[EQUIP_INDEX_LARM];
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ = sd->watk_*(100+32)/100;
 		}
 		else if(sd->sc.data[SC_PROVOKE].timer != -1) {	// プロボック
@@ -1839,8 +1839,8 @@ L_RECALC:
 			sd->watk = sd->watk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
 #endif
 			// 左手には適用しない
-			//idx = sd->equip_index[8];
-			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == 4)
+			//idx = sd->equip_index[EQUIP_INDEX_LARM];
+			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ = sd->watk_*(100+2+3*sd->sc.data[SC_PROVOKE].val1)/100;
 		}
 		if(sd->sc.data[SC_POISON].timer != -1)	// 毒状態
@@ -1897,7 +1897,7 @@ L_RECALC:
 			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 				sd->watk += sd->sc.data[SC_NIBELUNGEN].val2;
 			// 左手には適用しない
-			//idx = sd->equip_index[8];
+			//idx = sd->equip_index[EQUIP_INDEX_LARM];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
 		}
@@ -11483,7 +11483,7 @@ int status_readdb(void) {
 			}
 		}
 
-		for(j=0; j<WT_MAX+1 && split[j+4]; j++) {
+		for(j=0; j<=WT_MAX && split[j+4]; j++) {
 			job_db[i].aspd_base[j] = atoi(split[j+4]);
 		}
 		if(++i >= PC_JOB_MAX)

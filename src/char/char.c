@@ -1471,7 +1471,8 @@ int parse_tologin(int fd)
 						// 雷鳥、影狼、朧装備外し
 						int j;
 						for(j=0;j<MAX_INVENTORY;j++) {
-							if(st.inventory[j].equip) st.inventory[j].equip=0;
+							if(st.inventory[j].equip)
+								st.inventory[j].equip = LOC_NOTHING;
 						}
 						// 雷鳥、影狼、朧スキルリセット
 						for(j=0;j<MAX_PCSKILL;j++) {

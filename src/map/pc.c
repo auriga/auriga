@@ -954,9 +954,9 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
  */
 int pc_equippoint(struct map_session_data *sd,int n)
 {
-	int ep = 0;
+	int ep = LOC_NOTHING;
 
-	nullpo_retr(0, sd);
+	nullpo_retr(LOC_NOTHING, sd);
 
 	if(sd->inventory_data[n]) {
 		int look = sd->inventory_data[n]->look;
@@ -1402,7 +1402,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// 基本的な初期化
 	sd->state.connect_new = 1;
 	sd->bl.prev = sd->bl.next = NULL;
-	sd->weapontype1 = sd->weapontype2 = 0;
+	sd->weapontype1 = sd->weapontype2 = WT_FIST;
 	sd->view_class = sd->status.class_;
 	sd->s_class = pc_calc_base_job(sd->status.class_);
 
@@ -7876,7 +7876,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 		clif_unequipitemack(sd,n,sd->status.inventory[n].equip,1);
 		sd->state.inventory_dirty = 1;
 		sd->status.inventory[n].id = ++sd->inventory_sortkey;	// インベントリに新規登録
-		sd->status.inventory[n].equip = 0;
+		sd->status.inventory[n].equip = LOC_NOTHING;
 		if(!type)
 			pc_checkallowskill(sd);
 		if(sd->weapontype1 == WT_FIST && sd->weapontype2 == WT_FIST)
@@ -8003,13 +8003,13 @@ static int pc_setequipindex(struct map_session_data *sd)
 			if(sd->inventory_data[i])
 				sd->weapontype1 = sd->inventory_data[i]->look;
 			else
-				sd->weapontype1 = 0;
+				sd->weapontype1 = WT_FIST;
 		}
 		if(sd->status.inventory[i].equip & LOC_LARM) {
 			if(sd->inventory_data[i] && itemdb_isweapon(sd->inventory_data[i]->nameid) && sd->status.inventory[i].equip == LOC_LARM)
 				sd->weapontype2 = sd->inventory_data[i]->look;
 			else
-				sd->weapontype2 = 0;
+				sd->weapontype2 = WT_FIST;
 		}
 	}
 	pc_calcweapontype(sd);
@@ -8125,14 +8125,14 @@ int pc_checkitem(struct map_session_data *sd)
 		if(sd->status.inventory[i].nameid == 0)
 			continue;
 		if(sd->status.inventory[i].equip & ~pc_equippoint(sd,i)) {
-			sd->status.inventory[i].equip = 0;
+			sd->status.inventory[i].equip = LOC_NOTHING;
 			calc_flag = 1;
 		}
 		// 装備制限チェック
 		nullpo_retr(0, sd->inventory_data[i]);
 		if(sd->status.inventory[i].equip) {
 			if(pc_isequip(sd, i) <= 0) {
-				sd->status.inventory[i].equip = 0;
+				sd->status.inventory[i].equip = LOC_NOTHING;
 				calc_flag = 1;
 			}
 		}
@@ -8491,7 +8491,7 @@ struct map_session_data *pc_get_partner(struct map_session_data *sd)
  * 装備破壊
  *------------------------------------------
  */
-int pc_break_equip(struct map_session_data *sd, unsigned short where)
+int pc_break_equip(struct map_session_data *sd, int where)
 {
 	int i;
 
