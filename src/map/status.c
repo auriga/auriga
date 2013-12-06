@@ -397,8 +397,8 @@ L_RECALC:
 	// 本来の計算開始(元のパラメータを更新しないのは、計算中に計算処理が呼ばれたときの
 	// 反映分も新たに送信するため)。
 
-	pele      = 0;
-	pdef_ele  = 0;
+	pele      = ELE_NEUTRAL;
+	pdef_ele  = ELE_NEUTRAL;
 	refinedef = 0;
 	sd->view_class = sd->status.class_;
 	sd->race = RCT_HUMAN;
@@ -479,8 +479,8 @@ L_RECALC:
 	sd->status.max_sp       = 0;
 	sd->range.attackrange   = 0;
 	sd->range.attackrange_  = 0;
-	sd->atk_ele             = 0;
-	sd->def_ele             = 0;
+	sd->atk_ele             = ELE_NEUTRAL;
+	sd->def_ele             = ELE_NEUTRAL;
 	sd->star                = 0;
 	sd->overrefine          = 0;
 	sd->matk1               = 0;
@@ -498,7 +498,7 @@ L_RECALC:
 	sd->plus_matk           = 0;
 #endif
 	sd->arrow_atk           = 0;
-	sd->arrow_ele           = 0;
+	sd->arrow_ele           = ELE_NEUTRAL;
 	sd->arrow_hit           = 0;
 	sd->arrow_range         = 0;
 	sd->nhealhp = sd->nhealsp = sd->nshealhp = sd->nshealsp = sd->nsshealhp = sd->nsshealsp = 0;
@@ -529,7 +529,7 @@ L_RECALC:
 
 	sd->watk_       = 0;	// 二刀流用
 	sd->watk_2      = 0;
-	sd->atk_ele_    = 0;
+	sd->atk_ele_    = ELE_NEUTRAL;
 	sd->star_       = 0;
 	sd->overrefine_ = 0;
 
@@ -718,7 +718,7 @@ L_RECALC:
 		}
 		pele        = sd->atk_ele;
 		pdef_ele    = sd->def_ele;
-		sd->atk_ele = sd->def_ele = 0;
+		sd->atk_ele = sd->def_ele = ELE_NEUTRAL;
 	}
 	memcpy(sd->paramcard,sd->parame,sizeof(sd->paramcard));
 
@@ -833,16 +833,16 @@ L_RECALC:
 		sd->range.attackrange = sd->range.attackrange_;
 	if(sd->status.weapon == WT_BOW)
 		sd->range.attackrange += sd->arrow_range;
-	if(wele > 0)
+	if(wele > ELE_NEUTRAL)
 		sd->atk_ele = wele;
-	if(wele_ > 0)
+	if(wele_ > ELE_NEUTRAL)
 		sd->atk_ele_ = wele_;
-	if(def_ele > 0)
+	if(def_ele > ELE_NEUTRAL)
 		sd->def_ele = def_ele;
 	if(battle_config.pet_status_support) {
-		if(pele > 0 && !sd->atk_ele)
+		if(pele > ELE_NEUTRAL && !sd->atk_ele)
 			sd->atk_ele = pele;
-		if(pdef_ele > 0 && !sd->def_ele)
+		if(pdef_ele > ELE_NEUTRAL && !sd->def_ele)
 			sd->def_ele = pdef_ele;
 	}
 	sd->double_rate += sd->double_add_rate;
@@ -2070,12 +2070,12 @@ L_RECALC:
 
 		// 耐性
 		if(sd->sc.data[SC_RESISTALL].timer != -1) {
-			for(i=1; i<ELE_MAX; i++)
+			for(i=ELE_WATER; i<ELE_MAX; i++)
 				sd->subele[i] += sd->sc.data[SC_RESISTALL].val1;	// 全てに耐性増加
 		}
 		// 不死身のジークフリード
 		if(sd->sc.data[SC_SIEGFRIED].timer != -1) {
-			for(i=1; i<ELE_MAX; i++)
+			for(i=ELE_WATER; i<ELE_MAX; i++)
 				sd->subele[i] += sd->sc.data[SC_SIEGFRIED].val2;	// 全てに耐性増加
 		}
 		// プロヴィデンス

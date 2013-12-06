@@ -659,7 +659,7 @@ static void clif_get_weapon_view(struct map_session_data* sd, int *rhand, int *l
 			else
 				*rhand = id->nameid;
 		} else {
-			*rhand = WT_FIST;
+			*rhand = 0;
 		}
 	}
 
@@ -673,7 +673,7 @@ static void clif_get_weapon_view(struct map_session_data* sd, int *rhand, int *l
 			else
 				*lhand = id->nameid;
 		} else {
-			*lhand = WT_FIST;
+			*lhand = 0;
 		}
 	}
 #endif
@@ -687,7 +687,7 @@ static void clif_get_weapon_view(struct map_session_data* sd, int *rhand, int *l
  */
 static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 {
-	int rhand = WT_FIST, lhand = WT_FIST;
+	int rhand = 0, lhand = 0;
 
 	nullpo_retr(0, sd);
 
@@ -928,7 +928,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
  */
 static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 {
-	int rhand = WT_FIST, lhand = WT_FIST;
+	int rhand = 0, lhand = 0;
 
 	nullpo_retr(0, sd);
 
@@ -6501,7 +6501,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
 		WBUFW(buf,9)=shield;
 	} else {
 		WBUFB(buf,6)=type;
-		WBUFW(buf,7)=val;
+		WBUFL(buf,7)=val;
 	}
 	clif_send(buf,packet_db[0x1d7].len,bl,AREA);
 #endif

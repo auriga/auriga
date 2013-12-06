@@ -357,8 +357,8 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
 	if( atk_elem == ELE_MAX )
 		atk_elem = atn_rand()%ELE_MAX;	// 武器属性ランダムで付加
 
-	if( atk_elem < 0 || atk_elem >= ELE_MAX ||
-	    def_type < 0 || def_type >= ELE_MAX ||
+	if( atk_elem < ELE_NEUTRAL || atk_elem >= ELE_MAX ||
+	    def_type < ELE_NEUTRAL || def_type >= ELE_MAX ||
 	    def_lv <= 0 || def_lv > MAX_ELE_LEVEL )
 	{
 		// 属性値がおかしいのでとりあえずそのまま返す
@@ -423,18 +423,20 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	if(tmd && tmd->mode&MD_SKILLIMMUNITY && skill_num > 0)
 		damage = 0;
 
-	if(sc && sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
-		if(skill_num == PR_SANCTUARY)
-			damage = 1;
-		else
-			damage = 0;
-	}
+	if(sc && sc->count > 0) {
+		if(sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
+			if(skill_num == PR_SANCTUARY)
+				damage = 1;
+			else
+				damage = 0;
+		}
 
-	if(sc && sc->data[SC_WHITEIMPRISON].timer != -1) {
-		// ホワイトインプリズン状態は念属性以外はダメージを受けない
-		if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
-			(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
-		damage = 0;
+		if(sc->data[SC_WHITEIMPRISON].timer != -1) {
+			// ホワイトインプリズン状態は念属性以外はダメージを受けない
+			if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
+				(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
+			damage = 0;
+		}
 	}
 
 	if(src_sc && src_sc->count > 0) {
@@ -461,42 +463,42 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				damage += damage * src_sc->data[SC_DELUGE].val4 / 100;
 		}
 #endif
-		if(src_sc->data[SC_MANU_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON && tmd) {	// マヌクフィールドMOB物理ダメージ増加
+		if(tmd) {
 			int i;
-			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
-				if(manuk_mob[i] == tmd->class_) {
-					damage = damage * src_sc->data[SC_MANU_ATK].val1 / 100;
-					break;
+			if(src_sc->data[SC_MANU_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON) {	// マヌクフィールドMOB物理ダメージ増加
+				for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+					if(manuk_mob[i] == tmd->class_) {
+						damage = damage * src_sc->data[SC_MANU_ATK].val1 / 100;
+						break;
+					}
+				}
+			}
+			if(src_sc->data[SC_SPL_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON) {	// スプレンティッドフィールドMOB物理ダメージ増加
+				for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+					if(splendide_mob[i] == tmd->class_) {
+						damage = damage * src_sc->data[SC_SPL_ATK].val1 / 100;
+						break;
+					}
+				}
+			}
+			if(src_sc->data[SC_MANU_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC) {	// マヌクフィールドMOB魔法ダメージ増加
+				for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+					if(manuk_mob[i] == tmd->class_) {
+						damage = damage * src_sc->data[SC_MANU_MATK].val1 / 100;
+						break;
+					}
+				}
+			}
+			if(src_sc->data[SC_SPL_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC) {	// スプレンティッドフィールドMOB魔法ダメージ増加
+				for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+					if(splendide_mob[i] == tmd->class_) {
+						damage = damage * src_sc->data[SC_SPL_MATK].val1 / 100;
+						break;
+					}
 				}
 			}
 		}
-		if(src_sc->data[SC_SPL_ATK].timer != -1 && damage > 0 && flag&BF_WEAPON && tmd) {	// スプレンティッドフィールドMOB物理ダメージ増加
-			int i;
-			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
-				if(splendide_mob[i] == tmd->class_) {
-					damage = damage * src_sc->data[SC_SPL_ATK].val1 / 100;
-					break;
-				}
-			}
-		}
-		if(src_sc->data[SC_MANU_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC && tmd) {	// マヌクフィールドMOB魔法ダメージ増加
-			int i;
-			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
-				if(manuk_mob[i] == tmd->class_) {
-					damage = damage * src_sc->data[SC_MANU_MATK].val1 / 100;
-					break;
-				}
-			}
-		}
-		if(src_sc->data[SC_SPL_MATK].timer != -1 && damage > 0 && flag&BF_MAGIC && tmd) {	// スプレンティッドフィールドMOB魔法ダメージ増加
-			int i;
-			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
-				if(splendide_mob[i] == tmd->class_) {
-					damage = damage * src_sc->data[SC_SPL_MATK].val1 / 100;
-					break;
-				}
-			}
-		}
+
 		if(src_sc->data[SC_INVINCIBLE].timer != -1 && src_sc->data[SC_INVINCIBLEOFF].timer == -1)
 			damage += damage * 75 / 100;
 		if(src_sc->data[SC_JP_EVENT01].timer != -1 && damage > 0 && flag&BF_WEAPON && status_get_race(bl) == RCT_FISH)
@@ -694,7 +696,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 
 		// リジェクトソード
 		if(sc->data[SC_REJECTSWORD].timer != -1 && damage > 0 && flag&BF_WEAPON && atn_rand()%100 < 15*sc->data[SC_REJECTSWORD].val1) {
-			short weapon = -1;
+			short weapon = WT_FIST;
 			if(src->type == BL_PC)
 				weapon = ((struct map_session_data *)src)->status.weapon;
 			if(src->type == BL_MOB || weapon == WT_DAGGER || weapon == WT_1HSWORD || weapon == WT_2HSWORD) {
@@ -847,27 +849,24 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 #endif
-
-		// マヌクフィールドMOBダメージ減少
-		if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
+		if(src->type == BL_MOB) {
 			int i;
-			struct mob_data *md = (struct mob_data *)src;
-			for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
-				if(manuk_mob[i] == md->class_) {
-					damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
-					break;
+			if(sc->data[SC_MANU_DEF].timer != -1 && damage > 0) {	// マヌクフィールドMOBダメージ減少
+				struct mob_data *md = (struct mob_data *)src;
+				for(i = 0; i < (sizeof(manuk_mob) / sizeof(manuk_mob[0])); i++) {
+					if(manuk_mob[i] == md->class_) {
+						damage = damage * sc->data[SC_MANU_DEF].val1 / 100;
+						break;
+					}
 				}
 			}
-		}
-
-		// スプレンティッドフィールドMOBダメージ減少
-		if(sc->data[SC_SPL_DEF].timer != -1 && damage > 0 && src->type == BL_MOB) {
-			int i;
-			struct mob_data *md = (struct mob_data *)src;
-			for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
-				if(splendide_mob[i] == md->class_) {
-					damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
-					break;
+			if(sc->data[SC_SPL_DEF].timer != -1 && damage > 0) {	// スプレンティッドフィールドMOBダメージ減少
+				struct mob_data *md = (struct mob_data *)src;
+				for(i = 0; i < (sizeof(splendide_mob) / sizeof(splendide_mob[0])); i++) {
+					if(splendide_mob[i] == md->class_) {
+						damage = damage * sc->data[SC_SPL_DEF].val1 / 100;
+						break;
+					}
 				}
 			}
 		}
@@ -1773,7 +1772,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	if(src_sd) {
 		if(src_sd->status.weapon == WT_BOW || (src_sd->status.weapon >= WT_HANDGUN && src_sd->status.weapon <= WT_GRENADE)) {	// 武器が弓矢の場合
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離攻撃フラグを有効
-			if(src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+			if(src_sd->arrow_ele > ELE_NEUTRAL)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			src_sd->state.arrow_atk = 1;	// 有効化
 		} else {
@@ -2035,7 +2034,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case AS_VENOMKNIFE:		// ベナムナイフ
 			if(src_sd && !src_sd->state.arrow_atk && src_sd->arrow_atk > 0) {
-				if(src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+				if(src_sd->arrow_ele > ELE_NEUTRAL)	// 属性矢なら属性を矢の属性に変更
 					s_ele = src_sd->arrow_ele;
 			}
 			break;
@@ -2069,7 +2068,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #ifndef PRE_RENEWAL
 			calc_flag.hitrate = 1000000;
 #endif
-			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+			if(src_sd && src_sd->arrow_ele > ELE_NEUTRAL)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
 #ifndef PRE_RENEWAL
@@ -2091,13 +2090,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RA_WUGDASH:		// ウォーグダッシュ
 		case RA_WUGSTRIKE:		// ウォーグストライク
 		case RA_WUGBITE:		// ウォーグバイト
-			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+			if(src_sd && src_sd->arrow_ele > ELE_NEUTRAL)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
 		case NC_ARMSCANNON:
 		case KO_HAPPOKUNAI:		// 八方苦無
 			calc_flag.hitrate = 1000000;
-			if(src_sd && src_sd->arrow_ele > 0)	// 属性矢なら属性を矢の属性に変更
+			if(src_sd && src_sd->arrow_ele > ELE_NEUTRAL)	// 属性矢なら属性を矢の属性に変更
 				s_ele = src_sd->arrow_ele;
 			break;
 		case SC_FATALMENACE:	// フェイタルメナス
@@ -6619,7 +6618,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				int e;
 				if((e = status_get_attack_element_nw(&sd->bl)) != ELE_NEUTRAL)	// 属性付与
 					ele = e;
-				else if(sd->arrow_ele > 0)	// 矢の属性
+				else if(sd->arrow_ele > ELE_NEUTRAL)	// 矢の属性
 					ele = sd->arrow_ele;
 				else if((e = status_get_attack_element(&sd->bl)) != ELE_NEUTRAL) // 武器属性
 					ele = e;
