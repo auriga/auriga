@@ -12083,16 +12083,19 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_VENOMFOG:	/* ベナムフォグ */
-		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
-			int damage = battle_attr_fix(2000, ELE_POISON, status_get_element(bl));
-			clif_damage(&src->bl,bl,tick,0,0,damage,0,9,0,0);
-			battle_damage(NULL,bl,damage,0,0,0);
-		} else if(battle_check_target(&src->bl,bl,BCT_NOENEMY) > 0) {
-			int heal = sg->val1;
-			if(status_get_hp(bl) >= status_get_max_hp(bl))
-				break;
-			clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
-			battle_heal(NULL,bl,heal,0,0);
+		{
+			int hp = 2000;
+
+			if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
+				hp = battle_attr_fix(hp, ELE_POISON, status_get_element(bl));
+				clif_damage(&src->bl,bl,tick,0,0,hp,0,9,0,0);
+				battle_damage(NULL,bl,hp,0,0,0);
+			} else if(battle_check_target(&src->bl,bl,BCT_NOENEMY) > 0) {
+				if(status_get_hp(bl) >= status_get_max_hp(bl))
+					break;
+				clif_skill_nodamage(&src->bl,bl,AL_HEAL,hp,1);
+				battle_heal(NULL,bl,hp,0,0);
+			}
 		}
 		break;
 	}
