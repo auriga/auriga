@@ -2527,7 +2527,7 @@ S 08c5 <account_id>.l
 R 08c6 <result>.w
 	使用可能セカンドパスワード
 	キャラ鯖用
-R 08c7 <dst ID>.l <src ID>.l <X>.w <Y>.w <type>.B <RadiusRange>.B <isVisible>.B
+R 08c7 <len>.w <dst ID>.l <src ID>.l <X>.w <Y>.w <type>.B <RadiusRange>.B <isVisible>.B
 	スキルユニット生成
 	0x1c9の上位版
 R 08c8 <src ID>.l <dst ID>.l <server tick>.l <src speed>.l <dst speed>.l <param1>.l <IsSPDamage>.B <param2>.w <type>.B <param3>.l

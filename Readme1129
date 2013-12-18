@@ -1,4 +1,13 @@
 ----------------------------------------
+//1152 [2013/12/19] by refis
+
+・NPCスキル「ベナムフォグ」実装（skill_cast_db.txt, skill_db2.txt, skill_db.txt, skill_unit_db.txt, skill.c）
+
+・client_packet.txtの一部訂正（client_packet.txt）
+
+・パケット0x8c7, 0x99fでウォーロックスキル「ラディウス」を参照していた箇所をユニット範囲に変更（clif.c）
+
+----------------------------------------
 //1151 [2013/12/07] by Rayce
 
 ・Auriga-1149で、clif_changelook() のパケット送出位置が間違っていたのを修正（clif.c）

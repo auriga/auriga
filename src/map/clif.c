@@ -8225,13 +8225,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			WFIFOB(fd,16)=UNT_ATTACK_SKILLS;
 		else
 			WFIFOB(fd,16)=unit->group->unit_id;
-		if(src && src->type == BL_PC) {
-			struct map_session_data *src_sd = (struct map_session_data *)src;
-
-			WFIFOB(fd,17)= pc_checkskill(src_sd,WL_RADIUS);
-		} else {
-			WFIFOB(fd,17)=0;
-		}
+		WFIFOB(fd,17)=skill_get_unit_range(unit->group->skill_id,unit->group->skill_lv);
 		WFIFOB(fd,18)=1;
 		WFIFOSET(fd,WFIFOW(fd,2));
 
@@ -8263,13 +8257,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			WFIFOL(fd,16)=UNT_ATTACK_SKILLS;
 		else
 			WFIFOL(fd,16)=unit->group->unit_id;
-		if(src && src->type == BL_PC) {
-			struct map_session_data *src_sd = (struct map_session_data *)src;
-
-			WFIFOB(fd,20)= pc_checkskill(src_sd,WL_RADIUS);
-		} else {
-			WFIFOB(fd,20)=0;
-		}
+		WFIFOB(fd,20)=skill_get_unit_range(unit->group->skill_id,unit->group->skill_lv);
 		WFIFOB(fd,21)=1;
 		WFIFOSET(fd,WFIFOW(fd,2));
 

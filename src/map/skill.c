@@ -9849,6 +9849,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NJ_BAKUENRYU:			/* 龍炎陣 */
 	case NJ_HYOUSYOURAKU:		/* 氷柱落し */
 	case NPC_EVILLAND:			/* イービルランド */
+	case NPC_VENOMFOG:			/* ベナムフォグ */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
 	case SC_MANHOLE:			/* マンホール */
 	case SC_DIMENSIONDOOR:		/* ディメンションドア */
@@ -10914,6 +10915,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			case DC_SERVICEFORYOU:	/* サービスフォーユー */
 			case CG_HERMODE:		/* ヘルモードの杖 */
 			case NPC_EVILLAND:		/* イービルランド */
+			case NPC_VENOMFOG:		/* ベナムフォグ */
 			case MA_SKIDTRAP:		/* スキッドトラップ */
 			case MA_LANDMINE:		/* ランドマイン */
 			case MA_SANDMAN:		/* サンドマン */
@@ -12078,6 +12080,19 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 					}
 					break;
 			}
+		}
+		break;
+	case UNT_VENOMFOG:	/* ベナムフォグ */
+		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
+			int damage = battle_attr_fix(2000, ELE_POISON, status_get_element(bl));
+			clif_damage(&src->bl,bl,tick,0,0,damage,0,9,0,0);
+			battle_damage(NULL,bl,damage,0,0,0);
+		} else if(battle_check_target(&src->bl,bl,BCT_NOENEMY) > 0) {
+			int heal = sg->val1;
+			if(status_get_hp(bl) >= status_get_max_hp(bl))
+				break;
+			clif_skill_nodamage(&src->bl,bl,AL_HEAL,heal,1);
+			battle_heal(NULL,bl,heal,0,0);
 		}
 		break;
 	}
@@ -15881,6 +15896,7 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 		case DC_SERVICEFORYOU:	// サービスフォーユー
 		case CG_HERMODE:	// ヘルモードの杖
 		case NPC_EVILLAND:	// イービルランド
+		case NPC_VENOMFOG:	// ベナムフォグ
 		case NPC_DISSONANCE:
 		case NPC_UGLYDANCE:
 			break;
