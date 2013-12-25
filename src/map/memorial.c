@@ -175,8 +175,10 @@ static int memorial_addmap(int memorial_id)
 	// パーティーに進捗通知
 	if((pt = party_search(md->party_id)) != NULL) {
 		for(i = 0; i < MAX_PARTY; i++) {
-			clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
-			break;
+			if(pt->member[i].sd) {
+				clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
+				break;
+			}
 		}
 	}
 

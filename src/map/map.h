@@ -663,18 +663,18 @@ struct map_session_data {
 	struct {
 		short num;
 		short old;
-		unsigned int timer[MAX_SPIRITBALL];
+		int timer[MAX_SPIRITBALL];
 	} spiritball;
 
 	struct {
 		short num;
-		unsigned int timer[MAX_SPIRITBALL];
+		int timer[MAX_SPIRITBALL];
 	} coin;
 
 	struct {
 		short num;
 		short ele;
-		unsigned int timer[MAX_ELEMENTBALL];
+		int timer[MAX_ELEMENTBALL];
 	} elementball;
 
 	int reg_num;
@@ -827,7 +827,7 @@ struct map_session_data {
 	short hotkey_set;
 	int shop_point;
 
-	unsigned int npc_idle_timer;		// NPCのタイムアウト用
+	int npc_idle_timer;		// NPCのタイムアウト用
 	unsigned int npc_idle_tick;
 
 	int freeze_sp_slot;

@@ -1984,7 +1984,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
  */
 int pc_checkweighticon(struct map_session_data *sd)
 {
-	int flag;
+	unsigned int flag;
 
 	nullpo_retr(0, sd);
 

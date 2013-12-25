@@ -656,7 +656,7 @@ void realloc_fifo(int fd, size_t new_rfifo_size, size_t new_wfifo_size)
 
 	s = session[fd];
 	if (new_rfifo_size > 0 &&
-	    s->max_rdata - s->rdata != new_rfifo_size &&
+	    (size_t)(s->max_rdata  - s->rdata) != new_rfifo_size &&
 	    (size_t)(s->rdata_size - s->rdata) < new_rfifo_size)
 	{
 		unsigned char * p = s->rdata;
@@ -666,7 +666,7 @@ void realloc_fifo(int fd, size_t new_rfifo_size, size_t new_wfifo_size)
 		s->max_rdata  = s->rdata + new_rfifo_size;
 	}
 	if (new_wfifo_size > 0 &&
-	    s->max_wdata  - s->wdata != new_wfifo_size &&
+	    (size_t)(s->max_wdata  - s->wdata) != new_wfifo_size &&
 	    (size_t)(s->wdata_size - s->wdata) < new_wfifo_size)
 	{
 		unsigned char * p = s->wdata;

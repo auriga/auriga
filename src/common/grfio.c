@@ -537,6 +537,7 @@ void* grfio_reads(const char *fname, int *size)
 	if (entry==NULL || entry->gentry<=0) {	// LocalFileCheck
 		char lfname[256],*p;
 		FILELIST lentry;
+		struct stat st;
 
 		strncpy(lfname,fname,255);
 		lfname[sizeof(lfname)-1]= '\0';
@@ -545,15 +546,16 @@ void* grfio_reads(const char *fname, int *size)
 				*p = '/';
 		}
 
+		if(stat(lfname, &st) == 0)
+			lentry.declen = st.st_size;
+		else
+			lentry.declen = 0;
+
 		in = fopen(lfname,"rb");
 		if(in!=NULL) {
 			if (entry!=NULL && entry->gentry==0) {
 				lentry.declen=entry->declen;
-			} else {
-				fseek(in,0,2);	// SEEK_END
-				lentry.declen = ftell(in);
 			}
-			fseek(in,0,0);	// SEEK_SET
 			buf2 = (unsigned char *)aCalloc(lentry.declen + 1024, sizeof(char));
 			fread(buf2,1,lentry.declen,in);
 			fclose(in);
@@ -583,7 +585,7 @@ void* grfio_reads(const char *fname, int *size)
 		fclose(in);
 		buf2 = (unsigned char *)aCalloc(entry->declen + 1024, sizeof(char));
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
-			unsigned long len;
+			int len;
 			if (entry->cycle>=0) {
 				decode_des_etc((uint8 *)buf, entry->srclen_aligned, entry->cycle == 0, entry->cycle);
 			}
@@ -655,7 +657,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	    uint32 version;                    // 42 (0x2a)
 	};*/
 	FILE *fp;
-	long grf_size,list_size;
+	long grf_size = 0, list_size;
 	unsigned char grf_header[0x2e];
 	int entry,entrys;
 	unsigned int grf_version;
@@ -663,6 +665,10 @@ static int grfio_entryread(const char *gfname,int gentry)
 	unsigned char *fname;
 	unsigned char *grf_filelist;
 	int count=0;
+	struct stat st;
+
+	if(stat(gfname, &st) == 0)
+		grf_size = st.st_size;
 
 	fp = fopen(gfname,"rb");
 	if(fp==NULL) {
@@ -670,9 +676,6 @@ static int grfio_entryread(const char *gfname,int gentry)
 		return 2;	// 2:not found error
 	}
 
-	fseek(fp,0,2);	// SEEK_END
-	grf_size = ftell(fp);
-	fseek(fp,0,0);	// SEEK_SET
 	fread(grf_header, 1, sizeof(grf_header), fp);
 	if (strcmp((char*)grf_header, GRF_HEADER) || fseek(fp, getlong(grf_header + 0x1e), 1)) { // SEEK_CUR
 		fclose(fp);

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #include "core.h"
 #include "timer.h"
@@ -1869,9 +1870,15 @@ static int map_mdmap_clean(struct block_list *bl, va_list ap)
 		skill_delunit((struct skill_unit *)bl);
 		break;
 	case BL_NPC:
-		if(((struct npc_data *)bl)->subtype == SCRIPT)
-			npc_timerevent_stop((struct npc_data *)bl);
-		npc_free((struct npc_data *)bl);
+		{
+			struct npc_data *nd = (struct npc_data *)bl;
+			if(nd) {
+				if(nd->subtype == SCRIPT) {
+					npc_timerevent_stop(nd);
+				}
+				npc_free(nd);
+			}
+		}
 		break;
 	}
 
@@ -2337,18 +2344,24 @@ static void map_cache_close(void)
 
 static int map_cache_open(const char *fn)
 {
+	struct stat st;
+	int size = 0;
+
 	atexit(map_cache_close);
+
+	if(stat(fn, &st) == 0)
+		size = st.st_size;
+
 	if(map_cache.fp) {
 		map_cache_close();
 	}
 	map_cache.fp = fopen(fn,"r+b");
 	if(map_cache.fp) {
 		fread(&map_cache.head,1,sizeof(struct map_cache_head),map_cache.fp);
-		fseek(map_cache.fp,0,SEEK_END);
 		if(
 			map_cache.head.sizeof_header == sizeof(struct map_cache_head) &&
 			map_cache.head.sizeof_map    == sizeof(struct map_cache_info) &&
-			map_cache.head.filesize      == ftell(map_cache.fp)
+			map_cache.head.filesize      == size
 		) {
 			// キャッシュ読み込み成功
 			map_cache.map = (struct map_cache_info *)aMalloc(sizeof(struct map_cache_info) * map_cache.head.nmaps);
@@ -2390,7 +2403,7 @@ static int map_cache_read(struct map_data *m)
 			}
 			if(map_cache.map[i].compressed == 0) {
 				// 非圧縮ファイル
-				int size = map_cache.map[i].xs * map_cache.map[i].ys;
+				size_t size = map_cache.map[i].xs * map_cache.map[i].ys;
 				m->xs = map_cache.map[i].xs;
 				m->ys = map_cache.map[i].ys;
 				m->gat = (unsigned char *)aCalloc(m->xs * m->ys,sizeof(unsigned char));

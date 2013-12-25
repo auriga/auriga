@@ -1322,15 +1322,19 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	}
 
 	if(casttime > 0) {
-		int skill;
+		int speed_rate = 0;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_id, src->id, NULL);
-		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
+		if(src_sd) {
+			int lv;
+			if((lv = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
+				speed_rate = 175 - 5 * lv;
+			} else if(skill_num == LG_EXEEDBREAK) {
+				speed_rate = 160 - 10 * skill_lv;
+			}
+		}
+		if(src_sd && speed_rate > 0) {
 			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = src_sd->speed * (175 - 5 * pc_checkskill(src_sd,SA_FREECAST)) / 100;
-			clif_updatestatus(src_sd,SP_SPEED);
-		} else if(src_sd && skill_num == LG_EXEEDBREAK) {
-			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = src_sd->speed * (150 - skill * 10) / 100;
+			src_sd->speed = src_sd->speed * speed_rate / 100;
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);

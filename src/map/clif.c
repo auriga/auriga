@@ -8213,8 +8213,6 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 		memcpy(WFIFOP(fd,17),unit->group->valstr,80);
 		WFIFOSET(fd,packet_db[0x1c9].len);
 	} else {
-		struct block_list *src = map_id2bl(unit->group->src_id);
-
 		WFIFOW(fd, 0)=0x8c7;
 		WFIFOW(fd, 2)=19;
 		WFIFOL(fd, 4)=unit->bl.id;
@@ -8245,8 +8243,6 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 		memcpy(WFIFOP(fd,17),unit->group->valstr,80);
 		WFIFOSET(fd,packet_db[0x1c9].len);
 	} else {
-		struct block_list *src = map_id2bl(unit->group->src_id);
-
 		WFIFOW(fd, 0)=0x99f;
 		WFIFOW(fd, 2)=22;
 		WFIFOL(fd, 4)=unit->bl.id;

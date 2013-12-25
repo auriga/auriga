@@ -1320,7 +1320,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(unit && unit->group)
 		{
 			int type = 0;
-			int timeid;
+			int timeid = 0;
 			switch(unit->group->unit_id) {
 				case UNT_GROUNDDRIFT_WIND:
 					type = SC_STUN;

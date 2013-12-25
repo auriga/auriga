@@ -34,7 +34,7 @@
 #define MIN_MOBTHINKTIME 100
 
 struct mob_skill {
-	short state;
+	unsigned short state;
 	short skill_id,skill_lv;
 	short permillage;
 	int casttime,delay;

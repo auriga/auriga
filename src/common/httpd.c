@@ -1686,13 +1686,8 @@ const char* httpd_complement_file( const char* url, char* buf )
 
 	// ディレクトリだったらデフォルトを追加
 	{
-#if defined(WINDOWS) && defined(_MSC_VER)
-		struct _stat st;
-		if( _stat( file_buf, &st ) == 0 )
-#else
 		struct stat st;
 		if( stat( file_buf, &st ) == 0 )
-#endif
 		{
 			if( st.st_mode & S_IFDIR )
 			{
@@ -1712,7 +1707,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 void httpd_send_file(struct httpd_session_data* sd,const char* url)
 {
 	FILE *fp;
-	int  file_size;
+	int  file_size = 0;
 	char file_buf[8192];
 	char url_buf[1536];
 
@@ -1748,17 +1743,15 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 	// レジューム可能(Accept-Ranges の通知)
 	sd->reshead_flag |= HTTPD_RESHEAD_ACCRANGE;
 
-	// 日付確認
+	// 日付・ファイルサイズ確認
 	{
 		time_t date = 0;
-#if defined(WINDOWS) && defined(_MSC_VER)
-		struct _stat st;
-		if( _stat( file_buf, &st ) == 0 )
-#else
 		struct stat st;
-		if( stat( file_buf, &st ) == 0 )
-#endif
-			date = st.st_mtime;
+
+		if( stat( file_buf, &st ) == 0 ) {
+			date      = st.st_mtime;
+			file_size = st.st_size;
+		}
 
 		if( date!=0 && sd->precond == HTTPD_PRECOND_IFMOD   && date == sd->date )	// If-Modified-Since の処理
 		{
@@ -1791,9 +1784,6 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 		httpd_send_error(sd, sd->date ? 403 : 404 );
 	} else {
 		int status = 200;
-		fseek(fp,0,SEEK_END);
-		file_size = ftell(fp);
-
 		if( sd->range_start!=0 )	// Range の開始位置チェック
 		{
 			if( sd->range_start<0 ) sd->range_start += file_size;
@@ -1876,13 +1866,8 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 	if( sd->date )
 	{
 		time_t date = 0;
-#if defined(WINDOWS) && defined(_MSC_VER)
-		struct _stat st;
-		if( _stat( file_buf, &st ) == 0 )
-#else
 		struct stat st;
 		if( stat( file_buf, &st ) == 0 )
-#endif
 			date = st.st_mtime;
 
 		if( date != sd->date )	// 転送中にファイルが更新されたので切断
