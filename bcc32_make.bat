@@ -175,7 +175,7 @@ bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% 
 
 @echo マップサーバーコンパイル
 cd ..\map
-bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% *.c %__common__% %__sqllib__%
+bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
 
 @rem 必要なら txt-converter をコンパイル
 if NOT "%__base__%"=="" goto NOCONVERTER1

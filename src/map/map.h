@@ -1316,7 +1316,6 @@ extern int map_num;
 extern int autosave_interval;
 extern int autosave_gvg_rate;
 extern int agit_flag;
-extern int sql_script_enable;
 
 extern char map_server_tag[];
 extern char motd_txt[];

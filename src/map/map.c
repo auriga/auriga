@@ -102,7 +102,6 @@ int agit_flag = 0;
 static int map_pk_server_flag = 0;
 static int map_pk_nightmaredrop_flag = 0;
 static int map_pk_noteleport_flag = 0;
-int sql_script_enable = 0;
 
 extern int packet_parse_time;
 
@@ -124,134 +123,6 @@ char extra_add_file_txt[256] = "map_extra_add.txt"; // to add items from externa
 static char map_cache_file[256]   = "map.info";	// マップキャッシュファイル名
 static char grf_path_txt[256]     = "conf/grf-files.txt";
 static char water_height_txt[256] = "conf/water_height.txt";
-
-#ifdef TXT_ONLY
-
-static int do_txt_init_map(void)
-{
-	// nothing to do
-	return 0;
-}
-
-static int do_txt_final_map(void)
-{
-	// nothing to do
-	return 0;
-}
-
-static int map_txt_config_read_sub(const char *w1,const char *w2)
-{
-	if(strcmpi(w1,"mapreg_txt") == 0) {
-		strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
-		mapreg_txt[sizeof(mapreg_txt) - 1] = '\0';
-	}
-
-	return 0;
-}
-
-#define do_init_map         do_txt_init_map
-#define do_final_map        do_txt_final_map
-#define map_config_read_sub map_txt_config_read_sub
-
-#else /* TXT_ONLY */
-
-static unsigned short map_server_port = 3306;
-static char map_server_ip[32]      = "127.0.0.1";
-static char map_server_id[32]      = "ragnarok";
-static char map_server_pw[32]      = "ragnarok";
-static char map_server_db[32]      = "ragnarok";
-static char map_server_charset[32] = "";
-static int  map_server_keepalive   = 0;
-
-static unsigned short script_server_port = 3306;
-static char script_server_ip[32]      = "127.0.0.1";
-static char script_server_id[32]      = "ragnarok";
-static char script_server_pw[32]      = "ragnarok";
-static char script_server_db[32]      = "ragnarok";
-static char script_server_charset[32] = "";
-static int  script_server_keepalive   = 0;
-
-static bool do_sql_init_map(void)
-{
-	// DB connection initialized
-	bool is_connect;
-
-	is_connect = sqldbs_connect(&mysql_handle,map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset, map_server_keepalive);
-	if( is_connect == false )
-		exit(1);
-
-	if( sql_script_enable )
-	{
-		is_connect = sqldbs_connect(&mysql_handle_script,script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive);
-		if( is_connect == false )
-			exit(1);
-	}
-
-	return true;
-}
-
-static int do_sql_final_map(void)
-{
-	sqldbs_close(&mysql_handle);
-	sqldbs_close(&mysql_handle_script);
-
-	return 0;
-}
-
-static int map_sql_config_read_sub(const char* w1,const char* w2)
-{
-	if(strcmpi(w1,"map_server_ip") == 0) {
-		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
-	}
-	else if(strcmpi(w1,"map_server_port") == 0) {
-		map_server_port = (unsigned short)atoi(w2);
-	}
-	else if(strcmpi(w1,"map_server_id") == 0) {
-		strncpy(map_server_id, w2, sizeof(map_server_id) - 1);
-	}
-	else if(strcmpi(w1,"map_server_pw") == 0) {
-		strncpy(map_server_pw, w2, sizeof(map_server_pw) - 1);
-	}
-	else if(strcmpi(w1,"map_server_db") == 0) {
-		strncpy(map_server_db, w2, sizeof(map_server_db) - 1);
-	}
-	else if(strcmpi(w1,"map_server_charset") == 0) {
-		strncpy(map_server_charset, w2, sizeof(map_server_charset) - 1);
-	}
-	else if(strcmpi(w1,"map_server_keepalive") == 0) {
-		map_server_keepalive = atoi(w2);
-	}
-	else if(strcmpi(w1,"script_server_ip") == 0) {
-		strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
-	}
-	else if(strcmpi(w1,"script_server_port") == 0) {
-		script_server_port = (unsigned short)atoi(w2);
-	}
-	else if(strcmpi(w1,"script_server_id") == 0) {
-		strncpy(script_server_id, w2, sizeof(script_server_id) - 1);
-	}
-	else if(strcmpi(w1,"script_server_pw") == 0) {
-		strncpy(script_server_pw, w2, sizeof(script_server_pw) - 1);
-	}
-	else if(strcmpi(w1,"script_server_db") == 0) {
-		strncpy(script_server_db, w2, sizeof(script_server_db) - 1);
-	}
-	else if(strcmpi(w1,"script_server_charset") == 0) {
-		strncpy(script_server_charset, w2, sizeof(script_server_charset) - 1);
-	}
-	else if(strcmpi(w1,"script_server_keepalive") == 0) {
-		script_server_keepalive = atoi(w2);
-	}
-
-	return 0;
-}
-
-#define do_init_map         do_sql_init_map
-#define do_final_map        do_sql_final_map
-#define map_config_read_sub map_sql_config_read_sub
-
-#endif /* TXT_ONLY */
-
 
 /*==========================================
  * 全map鯖総計での接続数設定
@@ -2972,12 +2843,8 @@ static int map_config_read(const char *cfgName)
 			map_pk_nightmaredrop_flag = atoi(w2);
 		} else if (strcmpi(w1, "map_pk_noteleport") == 0) {
 			map_pk_noteleport_flag = atoi(w2);
-		} else if (strcmpi(w1, "sql_script_enable") == 0) {
-			sql_script_enable = atoi(w2);
 		} else if (strcmpi(w1, "import") == 0) {
 			map_config_read(w2);
-		} else {
-			map_config_read_sub(w1, w2);
 		}
 	}
 	fclose(fp);
@@ -3095,7 +2962,6 @@ void do_final(void)
 	do_final_unit();
 	do_final_mob();
 	do_final_atcommand();
-	do_final_map();
 
 	for(i = 0; i < MAX_FLOORITEM; i++) {
 		if(object[i] == NULL)
@@ -3219,8 +3085,6 @@ int do_init(int argc,char *argv[])
 	nick_db      = strdb_init(24);
 	charid_db    = numdb_init();
 	freeblock_db = numdb_init();
-
-	do_init_map();
 
 	grfio_init(grf_path_txt);
 	map_readallmap();

@@ -277,6 +277,10 @@ SOURCE=..\..\src\map\extra.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\map\txt\mapreg_txt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\common\version.c
 # End Source File
 # Begin Source File
@@ -478,6 +482,10 @@ SOURCE=..\..\src\map\bonus.h
 # Begin Source File
 
 SOURCE=..\..\src\map\extra.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\map\txt\mapreg_txt.h
 # End Source File
 # Begin Source File
 

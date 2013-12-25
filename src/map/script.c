@@ -47,7 +47,6 @@
 #include "timer.h"
 #include "malloc.h"
 #include "mmo.h"
-#include "lock.h"
 #include "nullpo.h"
 #include "utils.h"
 #include "sqldbs.h"
@@ -105,9 +104,6 @@ static int str_num = LABEL_START, str_data_size;
 #define SCRIPT_HASH_SIZE 1021
 int str_hash[SCRIPT_HASH_SIZE];
 
-static struct dbt *mapreg_db    = NULL;
-static struct dbt *mapregstr_db = NULL;
-static int mapreg_dirty = 0;
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
 
 struct linkdb_node *scriptlabel_db = NULL;
@@ -123,6 +119,20 @@ static char refine_posword[EQUIP_INDEX_MAX + 1][32] = {
 static char error_marker_start[16] = "";
 static char error_marker_end[16]   = "";
 
+#ifndef TXT_ONLY
+
+MYSQL mysql_handle_script;
+
+static unsigned short script_server_port = 3306;
+static char script_server_ip[32]      = "127.0.0.1";
+static char script_server_id[32]      = "ragnarok";
+static char script_server_pw[32]      = "ragnarok";
+static char script_server_db[32]      = "ragnarok";
+static char script_server_charset[32] = "";
+static int  script_server_keepalive   = 0;
+
+#endif /* TXT_ONLY */
+
 static struct Script_Config {
 	int warn_func_no_comma;
 	int warn_cmd_no_comma;
@@ -133,6 +143,7 @@ static struct Script_Config {
 	int debug_vars;
 	int debug_mode_log;
 	int error_log;
+	int sql_script_enable;
 } script_config;
 
 static int parse_cmd;
@@ -242,9 +253,6 @@ static unsigned char* parse_subexpr(unsigned char *,int);
 static int get_com(unsigned char *script,int *pos);
 static int get_num(unsigned char *script,int *pos);
 
-static int mapreg_setreg(int num,int val,int eternal);
-static int mapreg_setregstr(int num,const char *str,int eternal);
-
 #ifndef NO_CSVDB_SCRIPT
 static int script_csvinit( void );
 static int script_csvfinal( void );
@@ -312,7 +320,7 @@ static int search_str(const unsigned char *p)
  * 既存のであれば番号、無ければ登録して新規番号
  *------------------------------------------
  */
-static int add_str(const unsigned char *p)
+int add_str(const unsigned char *p)
 {
 	static size_t str_pos=0,str_size=0;
 	size_t len;
@@ -354,6 +362,15 @@ static int add_str(const unsigned char *p)
 	str_pos += len;
 
 	return str_num++;
+}
+
+/*==========================================
+ * str_dataから名前を取得
+ *------------------------------------------
+ */
+char* get_str(int num)
+{
+	return str_buf+str_data[num&0x00ffffff].str;
 }
 
 /*==========================================
@@ -2181,7 +2198,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 				}
 				break;
 			case '$':
-				data->u.str = (char *)numdb_search(mapregstr_db,data->u.num);
+				data->u.str = mapreg_getregstr(data->u.num);
 				break;
 			case '\'':
 				{
@@ -2228,7 +2245,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 				}
 				break;
 			case '$':
-				data->u.num = PTR2INT(numdb_search(mapreg_db,data->u.num));
+				data->u.num = mapreg_getreg(data->u.num);
 				break;
 			case '#':
 				if((sd = script_rid2sd(st)) == NULL) {
@@ -3267,243 +3284,13 @@ static void run_script_main(struct script_state *st)
 }
 
 /*==========================================
- * マップ変数の変更
- *------------------------------------------
- */
-static int mapreg_setreg(int num,int val,int eternal)
-{
-	if(val != 0)
-		numdb_insert(mapreg_db,num,INT2PTR(val));
-	else
-		numdb_erase(mapreg_db,num);
-
-	if(eternal)
-		mapreg_dirty = 1;
-
-	return 0;
-}
-
-/*==========================================
- * 文字列型マップ変数の変更
- *------------------------------------------
- */
-static int mapreg_setregstr(int num,const char *str,int eternal)
-{
-	char *old_str;
-
-	if(str && *str)
-		old_str = (char *)numdb_insert(mapregstr_db,num,aStrdup(str));
-	else
-		old_str = (char *)numdb_erase(mapregstr_db,num);
-
-	if(old_str)
-		aFree(old_str);
-
-	if(eternal)
-		mapreg_dirty = 1;
-
-	return 0;
-}
-
-#ifdef TXT_ONLY
-
-char mapreg_txt[256] = "save/mapreg.txt";
-
-/*==========================================
- * 永続的マップ変数の読み込み(TXT)
- *------------------------------------------
- */
-static int script_txt_load_mapreg(void)
-{
-	FILE *fp;
-	char line[2048];
-
-	if( (fp=fopen(mapreg_txt,"rt"))==NULL )
-		return -1;
-
-	while(fgets(line,sizeof(line),fp)){
-		char buf[256];
-		int n,v,s,i;
-		if( sscanf(line,"%255[^,],%d\t%n",buf,&i,&n)!=2 &&
-		    (i=0,sscanf(line,"%255[^\t]\t%n",buf,&n)!=1) )
-			continue;
-		if(i < 0 || i >= 128) {
-			printf("%s: %s broken data !\n",mapreg_txt,buf);
-			continue;
-		}
-		if( buf[strlen(buf)-1]=='$' ){
-			char buf2[2048];
-			if( sscanf(line+n,"%[^\n\r]",buf2)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf);
-				continue;
-			}
-			s=add_str(buf);
-			numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(buf2));
-		}else{
-			if( sscanf(line+n,"%d",&v)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf);
-				continue;
-			}
-			s=add_str(buf);
-			numdb_insert(mapreg_db,(i<<24)|s,INT2PTR(v));
-		}
-	}
-	fclose(fp);
-	return 0;
-}
-
-/*==========================================
- * 永続的マップ変数の書き込み(TXT)
- *------------------------------------------
- */
-static int script_txt_save_mapreg_intsub(void *key,void *data,va_list ap)
-{
-	FILE *fp=va_arg(ap,FILE*);
-	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
-	char *name=str_buf+str_data[num].str;
-
-	if( name[1]!='@' ){
-		if(i==0)
-			fprintf(fp,"%s\t%d" RETCODE, name, PTR2INT(data));
-		else
-			fprintf(fp,"%s,%d\t%d" RETCODE, name, i, PTR2INT(data));
-	}
-	return 0;
-}
-
-static int script_txt_save_mapreg_strsub(void *key,void *data,va_list ap)
-{
-	FILE *fp=va_arg(ap,FILE*);
-	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
-	char *name=str_buf+str_data[num].str;
-
-	if( name[1]!='@' ){
-		if(i==0)
-			fprintf(fp,"%s\t%s" RETCODE, name, (char *)data);
-		else
-			fprintf(fp,"%s,%d\t%s" RETCODE, name, i, (char *)data);
-	}
-	return 0;
-}
-
-static int script_txt_save_mapreg(void)
-{
-	FILE *fp;
-	int lock;
-
-	if( (fp=lock_fopen(mapreg_txt,&lock))==NULL )
-		return -1;
-	numdb_foreach(mapreg_db,script_txt_save_mapreg_intsub,fp);
-	numdb_foreach(mapregstr_db,script_txt_save_mapreg_strsub,fp);
-	lock_fclose(fp,mapreg_txt,&lock);
-	mapreg_dirty=0;
-	return 0;
-}
-
-#define script_load_mapreg script_txt_load_mapreg
-#define script_save_mapreg script_txt_save_mapreg
-
-#else /* TXT_ONLY */
-
-MYSQL mysql_handle_script;
-
-/*==========================================
- * 永続的マップ変数の読み込み(SQL)
- *------------------------------------------
- */
-static int script_sql_load_mapreg(void)
-{
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	char buf[64];
-
-	sqldbs_query(&mysql_handle, "SELECT `reg`,`index`,`value` FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if(sql_res) {
-		int i,s;
-		char name[256];
-		while((sql_row = sqldbs_fetch(sql_res)) != NULL) {
-			i = atoi(sql_row[1]);
-			if(i < 0 || i >= 128)
-				continue;
-			strncpy(name, sql_row[0], 256);
-			name[255] = '\0';	// force \0 terminal
-			s = add_str(name);
-
-			if(name[strlen(name)-1] == '$') {
-				numdb_insert(mapregstr_db,(i<<24)|s,aStrdup(sql_row[2]));
-			} else {
-				numdb_insert(mapreg_db,(i<<24)|s,INT2PTR(atoi(sql_row[2])));
-			}
-		}
-		sqldbs_free_result(sql_res);
-	}
-	return 0;
-}
-
-/*==========================================
- * 永続的マップ変数の書き込み(SQL)
- *------------------------------------------
- */
-static int script_sql_save_mapreg_intsub(void *key,void *data,va_list ap)
-{
-	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
-	char *name=str_buf+str_data[num].str;
-
-	if( name[1]!='@' ){
-		char buf1[64], buf2[1024];
-		sqldbs_query(
-			&mysql_handle,
-			"INSERT INTO `" MAPREG_TABLE "` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
-			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, PTR2INT(data)
-		);
-	}
-	return 0;
-}
-
-static int script_sql_save_mapreg_strsub(void *key,void *data,va_list ap)
-{
-	int num=PTR2INT(key)&0x00ffffff, i=PTR2INT(key)>>24;
-	char *name=str_buf+str_data[num].str;
-
-	if( name[1]!='@' ){
-		char buf1[64], buf2[1024], buf3[4096];
-		sqldbs_query(
-			&mysql_handle,
-			"INSERT INTO `" MAPREG_TABLE"` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%s')",
-			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, strecpy(buf3,(char*)data)
-		);
-	}
-	return 0;
-}
-
-static int script_sql_save_mapreg(void)
-{
-	char buf[64];
-
-	sqldbs_query(&mysql_handle, "DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
-
-	numdb_foreach(mapreg_db,script_sql_save_mapreg_intsub);
-	numdb_foreach(mapregstr_db,script_sql_save_mapreg_strsub);
-	mapreg_dirty=0;
-	return 0;
-}
-
-#define script_load_mapreg script_sql_load_mapreg
-#define script_save_mapreg script_sql_save_mapreg
-
-#endif /* TXT_ONLY */
-
-/*==========================================
  * 永続的マップ変数の自動セーブ
  *------------------------------------------
  */
 static int script_autosave_mapreg(int tid,unsigned int tick,int id,void *data)
 {
-	if(mapreg_dirty)
-		script_save_mapreg();
+	mapreg_autosave();
+
 	return 0;
 }
 
@@ -3554,6 +3341,7 @@ int script_config_read(const char *cfgName)
 		script_config.check_gotocount = 16384;
 		script_config.debug_mode_log = 1;
 		script_config.error_log = 1;
+		script_config.sql_script_enable = 0;
 	}
 
 	fp = fopen(cfgName,"r");
@@ -3595,8 +3383,37 @@ int script_config_read(const char *cfgName)
 		else if(strcmpi(w1, "error_log") == 0) {
 			script_config.error_log = atoi(w2);
 		}
+		if (strcmpi(w1, "sql_script_enable") == 0) {
+			script_config.sql_script_enable = atoi(w2);
+		}
+#ifndef TXT_ONLY
+		else if(strcmpi(w1,"script_server_ip") == 0) {
+			strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
+		}
+		else if(strcmpi(w1,"script_server_port") == 0) {
+			script_server_port = (unsigned short)atoi(w2);
+		}
+		else if(strcmpi(w1,"script_server_id") == 0) {
+			strncpy(script_server_id, w2, sizeof(script_server_id) - 1);
+		}
+		else if(strcmpi(w1,"script_server_pw") == 0) {
+			strncpy(script_server_pw, w2, sizeof(script_server_pw) - 1);
+		}
+		else if(strcmpi(w1,"script_server_db") == 0) {
+			strncpy(script_server_db, w2, sizeof(script_server_db) - 1);
+		}
+		else if(strcmpi(w1,"script_server_charset") == 0) {
+			strncpy(script_server_charset, w2, sizeof(script_server_charset) - 1);
+		}
+		else if(strcmpi(w1,"script_server_keepalive") == 0) {
+			script_server_keepalive = atoi(w2);
+		}
+#endif
 		else if(strcmpi(w1,"import") == 0) {
 			script_config_read(w2);
+		}
+		else {
+			mapreg_config_read_sub(w1, w2);
 		}
 	}
 	fclose(fp);
@@ -3823,12 +3640,6 @@ static int debug_hash_output(void)
  * 終了
  *------------------------------------------
  */
-static int mapregstr_db_final(void *key,void *data,va_list ap)
-{
-	aFree(data);
-	return 0;
-}
-
 static int userfunc_db_final(void *key,void *data,va_list ap)
 {
 	aFree(key);
@@ -3840,13 +3651,6 @@ int do_final_script(void)
 {
 	int i;
 
-	if(mapreg_dirty)
-		script_save_mapreg();
-
-	if(mapreg_db)
-		numdb_final(mapreg_db,NULL);
-	if(mapregstr_db)
-		strdb_final(mapregstr_db,mapregstr_db_final);
 	if(userfunc_db)
 		strdb_final(userfunc_db,userfunc_db_final);
 	if(scriptlabel_db)
@@ -3878,6 +3682,10 @@ int do_final_script(void)
 	aFree(str_buf);
 	aFree(str_data);
 
+#ifndef TXT_ONLY
+	sqldbs_close(&mysql_handle_script);
+#endif
+
 	return 0;
 }
 
@@ -3887,9 +3695,17 @@ int do_final_script(void)
  */
 int do_init_script(void)
 {
-	mapreg_db=numdb_init();
-	mapregstr_db=numdb_init();
-	script_load_mapreg();
+#ifndef TXT_ONLY
+	// DB connection initialized
+	if( script_config.sql_script_enable )
+	{
+		bool is_connect;
+
+		is_connect = sqldbs_connect(&mysql_handle_script,script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive);
+		if( is_connect == false )
+			exit(1);
+	}
+#endif
 
 	add_timer_func_list(run_script_timer);
 	add_timer_func_list(script_autosave_mapreg);
@@ -11717,7 +11533,7 @@ int buildin_sqlquery(struct script_state *st)
 	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
 	// SQLクエリ利用不可、もしくはクエリが長すぎるならエラー
-	if(!sql_script_enable || strlen(query) >= sizeof(tmp_sql)) {
+	if(!script_config.sql_script_enable || strlen(query) >= sizeof(tmp_sql)) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}

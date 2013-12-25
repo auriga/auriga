@@ -1,4 +1,19 @@
 ----------------------------------------
+//1155 [2013/12/26] by Rayce
+
+・マップ変数のセーブ処理をTXTモードとSQLモードとでソースファイルを分離
+  （map.c, script.*, mapreg_txt.*, mapreg_sql.*）
+
+・conf/map_auriga.conf のうち、スクリプト専用のMySQLの設定項目を conf/script_auriga.conf に移動
+  （map.*, script.c）
+
+・MySQLへの接続は map.c ではなく mapreg_sql.c で行うように変更
+  スクリプト専用のMySQLへの接続は script.c で行うように変更
+
+・mapreg_txt.* および mapreg_sql.* をコンパイル対象に含める
+  （Makefile, bcc32_make.bat, vc_make.bat, map.dsp, map_sql.dsp）
+
+----------------------------------------
 //1154 [2013/12/26] by Rayce
 
 ・コンパイルオプション /W4 有効時の警告修正

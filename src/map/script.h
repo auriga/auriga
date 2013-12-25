@@ -23,7 +23,6 @@
 #define _SCRIPT_H_
 
 #include "map.h"
-#include "sqldbs.h"
 
 struct script_data {
 	int type;
@@ -77,6 +76,12 @@ int script_config_read(const char *cfgName);
 int do_init_script(void);
 int do_final_script(void);
 
+int add_str(const unsigned char *p);
+char* get_str(int num);
+
+#define script_add_str add_str
+#define script_get_str get_str
+
 extern struct linkdb_node *scriptlabel_db;
 
 // @readvars, @writevars
@@ -85,9 +90,9 @@ void* script_read_vars(struct map_session_data *sd,const char *var,int elem,stru
 void script_write_vars(struct map_session_data *sd,const char *var,int elem,void *v,struct linkdb_node **ref);
 
 #ifdef TXT_ONLY
-extern char mapreg_txt[256];
+	#include "txt/mapreg_txt.h"
 #else
-extern MYSQL mysql_handle_script;
-#endif /* TXT_ONLY */
+	#include "sql/mapreg_sql.h"
+#endif
 
 #endif

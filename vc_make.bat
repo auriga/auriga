@@ -311,7 +311,7 @@ link %__opt2__% /out:"../../char-server.exe"
 
 echo マップサーバーコンパイル
 cd ..\map
-cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../map-server.exe"
 
 rem 必要なら txt-converter をビルド
