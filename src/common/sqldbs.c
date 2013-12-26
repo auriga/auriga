@@ -393,12 +393,12 @@ bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const cha
 		return false;
 	}
 
-	printf("Connecting Database Server");
+	printf("Connecting Database Server -> %s@%s:%d/%s", user, host, port, db);
 	if(charset && *charset) {
 		mysql_options(handle, MYSQL_SET_CHARSET_NAME, charset);
 		printf(" (charset: %s)", charset);
 	}
-	printf("...\n");
+	printf("\n  ... ");
 
 	if(!mysql_real_connect(handle, host, user, passwd, db, port, NULL, 0)) {
 		printf("%s\n", mysql_error(handle));

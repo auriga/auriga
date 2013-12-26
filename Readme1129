@@ -1,4 +1,15 @@
 ----------------------------------------
+//1156 [2013/12/27] by Rayce
+
+・Auriga-1155以降、config設定が読み込まれず mapreg_init() および mapreg_final() が
+  呼び出されていない問題を修正（map.c, script.c）
+	-> reported by LunarPhantomさん
+
+・[SQL] MySQL接続時のcharsetのデフォルトを cp932 に変更
+
+・[SQL] MySQLサーバ接続時にIP, Port, User, DB名の情報を表示するように変更（sqldbs.c）
+
+----------------------------------------
 //1155 [2013/12/26] by Rayce
 
 ・マップ変数のセーブ処理をTXTモードとSQLモードとでソースファイルを分離

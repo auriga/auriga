@@ -119,7 +119,7 @@ Windows 64bit-CPU+OS なら
 		
 ２．次にデータベースの大元の器を設定。下記のコマンドを実行する。
 	[v5.0-]
-		CREATE DATABASE `ragnarok` DEFAULT CHARACTER SET sjis;
+		CREATE DATABASE `ragnarok` DEFAULT CHARACTER SET cp932;
 
 		（ここでは　ragnarok がデータベース名。任意に変更可能）
 

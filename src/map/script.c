@@ -3412,9 +3412,6 @@ int script_config_read(const char *cfgName)
 		else if(strcmpi(w1,"import") == 0) {
 			script_config_read(w2);
 		}
-		else {
-			mapreg_config_read_sub(w1, w2);
-		}
 	}
 	fclose(fp);
 
@@ -3686,6 +3683,8 @@ int do_final_script(void)
 	sqldbs_close(&mysql_handle_script);
 #endif
 
+	mapreg_final();
+
 	return 0;
 }
 
@@ -3719,6 +3718,8 @@ int do_init_script(void)
 
 	if(script_config.debug_vars)
 		vars_db = numdb_init();
+
+	mapreg_init();
 
 	return 0;
 }

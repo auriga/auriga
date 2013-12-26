@@ -2845,6 +2845,8 @@ static int map_config_read(const char *cfgName)
 			map_pk_noteleport_flag = atoi(w2);
 		} else if (strcmpi(w1, "import") == 0) {
 			map_config_read(w2);
+		} else {
+			mapreg_config_read_sub(w1, w2);
 		}
 	}
 	fclose(fp);
