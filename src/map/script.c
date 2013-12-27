@@ -259,15 +259,29 @@ static int script_csvfinal( void );
 #endif
 
 /*==========================================
- *
+ * ユーザー定義関数の取得
  *------------------------------------------
  */
-struct dbt* script_get_userfunc_db(void)
+struct script_code* script_get_userfunc(const char *name)
+{
+	if(!userfunc_db) {
+		userfunc_db = strdb_init(50);
+		return NULL;
+	}
+
+	return (struct script_code *)strdb_search(userfunc_db, name);
+}
+
+/*==========================================
+ * ユーザー定義関数の登録
+ *------------------------------------------
+ */
+struct script_code* script_set_userfunc(const char *name, struct script_code *code)
 {
 	if(!userfunc_db)
 		userfunc_db = strdb_init(50);
 
-	return userfunc_db;
+	return (struct script_code *)strdb_insert(userfunc_db, name, code);
 }
 
 /*==========================================
@@ -3648,6 +3662,8 @@ int do_final_script(void)
 {
 	int i;
 
+	mapreg_final();
+
 	if(userfunc_db)
 		strdb_final(userfunc_db,userfunc_db_final);
 	if(scriptlabel_db)
@@ -3682,8 +3698,6 @@ int do_final_script(void)
 #ifndef TXT_ONLY
 	sqldbs_close(&mysql_handle_script);
 #endif
-
-	mapreg_final();
 
 	return 0;
 }
@@ -4379,7 +4393,7 @@ int buildin_callfunc(struct script_state *st)
 	struct script_code *scr, *oldscr;
 	char *str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	if( (scr = (struct script_code *)strdb_search(script_get_userfunc_db(),str)) ){
+	if( (scr = script_get_userfunc(str)) ){
 		int i,j;
 		struct linkdb_node **oldval = st->stack->var_function;
 

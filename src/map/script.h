@@ -70,7 +70,8 @@ void script_error(const char *src, const char *file, int start_line, const char 
 void script_free_stack(struct script_stack *stack);
 void script_free_code(struct script_code* code);
 
-struct dbt* script_get_userfunc_db(void);
+struct script_code* script_get_userfunc(const char *name);
+struct script_code* script_set_userfunc(const char *name, struct script_code *code);
 
 int script_config_read(const char *cfgName);
 int do_init_script(void);

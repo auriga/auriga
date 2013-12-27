@@ -1,4 +1,13 @@
 ----------------------------------------
+//1157 [2013/12/28] by Rayce
+
+・mapreg_final() 時、解放済みの str_buf と str_data を参照してサーバクラッシュする
+  問題を修正（script.c）
+	reported by LunarPhantomさん
+
+・userfunc_db を外部に公開せず、getter/setter を用意する（npc.c, script.*）
+
+----------------------------------------
 //1156 [2013/12/27] by Rayce
 
 ・Auriga-1155以降、config設定が読み込まれず mapreg_init() および mapreg_final() が

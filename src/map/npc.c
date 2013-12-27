@@ -2263,7 +2263,7 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		printf("npc_parse_function : nothing function %s\a\n",w3);
 		return 0;
 	}
-	if(strdb_search(script_get_userfunc_db(),w3) != NULL) {
+	if(script_get_userfunc(w3) != NULL) {
 		printf("npc_parse_function : dup function name %s\a\n",w3);
 		script_free_code(script);
 		return 0;
@@ -2271,7 +2271,7 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 
 	p = (char *)aCalloc(50,sizeof(char));
 	strncpy(p,w3,49);
-	strdb_insert(script_get_userfunc_db(),p,script);
+	script_set_userfunc(p, script);
 
 	return 0;
 }
