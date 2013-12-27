@@ -27,8 +27,6 @@ int mapreg_sql_getreg(int num);
 int mapreg_sql_setreg(int num,int val,int eternal);
 char* mapreg_sql_getregstr(int num);
 int mapreg_sql_setregstr(int num,const char *str,int eternal);
-int mapreg_sql_load(void);
-int mapreg_sql_save(void);
 int mapreg_sql_autosave(void);
 int mapreg_sql_init(void);
 int mapreg_sql_final(void);
@@ -39,8 +37,6 @@ int mapreg_sql_config_read_sub(const char *w1,const char *w2);
 #define mapreg_setreg          mapreg_sql_setreg
 #define mapreg_getregstr       mapreg_sql_getregstr
 #define mapreg_setregstr       mapreg_sql_setregstr
-#define mapreg_load            mapreg_sql_load
-#define mapreg_save            mapreg_sql_save
 #define mapreg_autosave        mapreg_sql_autosave
 #define mapreg_init            mapreg_sql_init
 #define mapreg_final           mapreg_sql_final

@@ -113,7 +113,7 @@ void account_sql_final(void)
 	sqldbs_query(&mysql_handle, "INSERT %s INTO `" LOGINLOG_TABLE "` (`time`,`log`) VALUES (NOW(), 'lserver 100 login server shutdown')", delayed);
 
 	// close Connection
-	sqldbs_close(&mysql_handle);
+	sqldbs_close(&mysql_handle, "[Login]");
 
 	// free account_db
 	numdb_final(account_db,account_db_final);

@@ -131,7 +131,7 @@ MYSQL_RES* sqldbs_stmt_result_metadata(MYSQL_STMT *stmt);
 bool sqldbs_stmt_store_result(MYSQL_STMT *stmt);
 bool sqldbs_stmt_fetch(MYSQL_STMT *stmt);
 void sqldbs_stmt_close(MYSQL_STMT *stmt);
-void sqldbs_close(MYSQL *handle);
+void sqldbs_close(MYSQL *handle, const char *msg);
 bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
 	const char *db, unsigned short port, const char *charset, int keepalive);
 

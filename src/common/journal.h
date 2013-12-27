@@ -39,6 +39,13 @@ enum JOURNAL_FLAG
 	JOURNAL_FLAG_DELETE=1,
 };
 
+struct journal_header {
+	unsigned long crc32;
+	unsigned int tick;
+	time_t timestamp;
+	int key, flag;
+};
+
 struct journal_data
 {
 	int idx, flag;
@@ -76,7 +83,8 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 // 既存のジャーナルをロールフォワード専用の読み込みモードで開く
 //   このデータに対する操作は journal_rollforward, journal_final のみ許可される
 //   ロールフォワードが終わったら final して開放する必要がある。
-int journal_load( struct journal* j, size_t datasize, const char* filename );
+int journal_load_with_convert( struct journal* j, size_t datasize, const char* filename, void(*func)( struct journal_header *jhd, void *buf ) );
+#define journal_load(j, datasize, filename) journal_load_with_convert(j, datasize, filename, NULL)
 
 
 // データの書き込み ( journal_create 後のみ )

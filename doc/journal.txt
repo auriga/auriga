@@ -87,7 +87,7 @@
 ・ジャーナルの設定
 --------------------------------------------------------------------------
 
-login_auriga.conf, char_auriga.conf, inter_auriga.conf
+login_auriga.conf, char_auriga.conf, inter_auriga.conf, map_auriga.conf
 
 	各種の txt のジャーナリングに関する設定があります。
 

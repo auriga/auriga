@@ -131,6 +131,8 @@ static char script_server_db[32]      = "ragnarok";
 static char script_server_charset[32] = "";
 static int  script_server_keepalive   = 0;
 
+static bool sql_is_connect = false;
+
 #endif /* TXT_ONLY */
 
 static struct Script_Config {
@@ -3696,7 +3698,8 @@ int do_final_script(void)
 	aFree(str_data);
 
 #ifndef TXT_ONLY
-	sqldbs_close(&mysql_handle_script);
+	if(sql_is_connect)
+		sqldbs_close(&mysql_handle_script, "[Script]");
 #endif
 
 	return 0;
@@ -3712,10 +3715,8 @@ int do_init_script(void)
 	// DB connection initialized
 	if( script_config.sql_script_enable )
 	{
-		bool is_connect;
-
-		is_connect = sqldbs_connect(&mysql_handle_script,script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive);
-		if( is_connect == false )
+		sql_is_connect = sqldbs_connect(&mysql_handle_script,script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive);
+		if( sql_is_connect == false )
 			exit(1);
 	}
 #endif

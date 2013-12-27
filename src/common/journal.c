@@ -42,13 +42,6 @@
 
 #define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL17"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
 
-struct journal_header {
-	unsigned long crc32;
-	unsigned int tick;
-	time_t timestamp;
-	int key, flag;
-};
-
 static int journal_first = 1;
 
 static int journal_flush_timer( int tid, unsigned int tick, int id, void *data );
@@ -394,7 +387,7 @@ const char* journal_get( struct journal* j, int key, int* flag )
 // ==========================================
 // ジャーナルの全キャッシュをファイルから読み込む
 // ------------------------------------------
-int journal_load( struct journal* j, size_t datasize, const char* filename )
+int journal_load_with_convert( struct journal* j, size_t datasize, const char* filename, void(*func)( struct journal_header *jhd, void *buf ) )
 {
 	struct journal_header jhd;
 	int c,i;
@@ -436,6 +429,10 @@ int journal_load( struct journal* j, size_t datasize, const char* filename )
 			aFree( buf );
 			continue;	// このデータが壊れてても他のデータは生きてると思われる
 		}
+
+		// 変換処理
+		if( func )
+			func( &jhd, buf );
 
 		// 登録処理
 		dat = (struct journal_data*)numdb_search( j->db, jhd.key );

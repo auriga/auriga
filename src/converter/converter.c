@@ -270,7 +270,7 @@ void do_pre_final(void)
 
 void do_final(void)
 {
-	sqldbs_close(&mysql_handle);
+	sqldbs_close(&mysql_handle, "[Converter]");
 
 	exit_dbn();
 	do_final_timer();

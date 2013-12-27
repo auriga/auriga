@@ -27,8 +27,6 @@ int mapreg_txt_getreg(int num);
 int mapreg_txt_setreg(int num,int val,int eternal);
 char* mapreg_txt_getregstr(int num);
 int mapreg_txt_setregstr(int num,const char *str,int eternal);
-int mapreg_txt_load(void);
-int mapreg_txt_save(void);
 int mapreg_txt_autosave(void);
 int mapreg_txt_init(void);
 int mapreg_txt_final(void);
@@ -39,8 +37,6 @@ int mapreg_txt_config_read_sub(const char *w1,const char *w2);
 #define mapreg_setreg          mapreg_txt_setreg
 #define mapreg_getregstr       mapreg_txt_getregstr
 #define mapreg_setregstr       mapreg_txt_setregstr
-#define mapreg_load            mapreg_txt_load
-#define mapreg_save            mapreg_txt_save
 #define mapreg_autosave        mapreg_txt_autosave
 #define mapreg_init            mapreg_txt_init
 #define mapreg_final           mapreg_txt_final

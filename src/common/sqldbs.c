@@ -372,10 +372,11 @@ static int sqldbs_keepalive_timer(int tid, unsigned int tick, int id, void *data
  * 切断
  *------------------------------------------
  */
-void sqldbs_close(MYSQL *handle)
+void sqldbs_close(MYSQL *handle, const char *msg)
 {
+	printf("Closing DabaseServer %s ... ", (msg)? msg: "");
 	mysql_close(handle);
-	printf("close DB connect....\n");
+	printf(" OK\n");
 }
 
 /*==========================================

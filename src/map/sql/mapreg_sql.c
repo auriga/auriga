@@ -33,7 +33,6 @@
 
 static struct dbt *mapreg_db;
 static struct dbt *mapregstr_db;
-int mapreg_dirty = 0;
 
 static unsigned short map_server_port = 3306;
 static char map_server_ip[32]      = "127.0.0.1";
@@ -97,8 +96,26 @@ int mapreg_sql_setreg(int num, int val, int eternal)
 	else
 		numdb_erase(mapreg_db, num);
 
-	if(eternal)
-		mapreg_dirty = 1;
+	if(eternal) {
+		const char *name = script_get_str(num);
+		int idx = num >> 24;
+		char buf1[64], buf2[1024];
+
+		if(val != 0) {
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" MAPREG_TABLE "` (`server_tag`, `reg`, `index`, `value`) VALUES ('%s', '%s', '%d', '%d')"
+				"ON DUPLICATE KEY UPDATE `value` = '%d'",
+				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx, val, val
+			);
+		} else {
+			sqldbs_query(
+				&mysql_handle,
+				"DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s' AND `reg` = '%s' AND `index` = '%d'",
+				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx
+			);
+		}
+	}
 
 	return 0;
 }
@@ -128,8 +145,27 @@ int mapreg_sql_setregstr(int num, const char *str, int eternal)
 	if(old_str)
 		aFree(old_str);
 
-	if(eternal)
-		mapreg_dirty = 1;
+	if(eternal) {
+		const char *name = script_get_str(num);
+		int idx = num >> 24;
+		char buf1[64], buf2[1024], buf3[4096];
+
+		if(str && *str) {
+			strecpy(buf3, str);
+			sqldbs_query(
+				&mysql_handle,
+				"INSERT INTO `" MAPREG_TABLE "` (`server_tag`, `reg`, `index`, `value`) VALUES ('%s', '%s', '%d', '%s')"
+				"ON DUPLICATE KEY UPDATE `value` = '%s'",
+				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx, buf3, buf3
+			);
+		} else {
+			sqldbs_query(
+				&mysql_handle,
+				"DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s' AND `reg` = '%s' AND `index` = '%d'",
+				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx
+			);
+		}
+	}
 
 	return 0;
 }
@@ -138,7 +174,7 @@ int mapreg_sql_setregstr(int num, const char *str, int eternal)
  * 永続的マップ変数の読み込み
  *------------------------------------------
  */
-int mapreg_sql_load(void)
+static int mapreg_sql_load(void)
 {
 	MYSQL_RES* sql_res;
 	MYSQL_ROW  sql_row = NULL;
@@ -160,7 +196,7 @@ int mapreg_sql_load(void)
 			s = script_add_str(name);
 
 			if(name[strlen(name)-1] == '$') {
-				mapreg_setregstr((i<<24)|s, aStrdup(sql_row[2]), 0);
+				mapreg_setregstr((i<<24)|s, sql_row[2], 0);
 			} else {
 				mapreg_setreg((i<<24)|s, atoi(sql_row[2]), 0);
 			}
@@ -171,63 +207,12 @@ int mapreg_sql_load(void)
 }
 
 /*==========================================
- * 永続的マップ変数の書き込み
- *------------------------------------------
- */
-static int mapreg_sql_save_intsub(void *key, void *data, va_list ap)
-{
-	int num = PTR2INT(key)&0x00ffffff, i = PTR2INT(key)>>24;
-	const char *name = script_get_str(num);
-
-	if(name[0] && name[1] != '@') {
-		char buf1[64], buf2[1024];
-		sqldbs_query(
-			&mysql_handle,
-			"INSERT INTO `" MAPREG_TABLE "` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%d')",
-			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, PTR2INT(data)
-		);
-	}
-	return 0;
-}
-
-static int mapreg_sql_save_strsub(void *key, void *data, va_list ap)
-{
-	int num = PTR2INT(key)&0x00ffffff, i = PTR2INT(key)>>24;
-	char *name = script_get_str(num);
-
-	if(name[0] && name[1] != '@') {
-		char buf1[64], buf2[1024], buf3[4096];
-		sqldbs_query(
-			&mysql_handle,
-			"INSERT INTO `" MAPREG_TABLE"` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d','%s')",
-			strecpy(buf1,map_server_tag), strecpy(buf2,name), i, strecpy(buf3,(char*)data)
-		);
-	}
-	return 0;
-}
-
-static int mapreg_sql_save(void)
-{
-	char buf[64];
-
-	sqldbs_query(&mysql_handle, "DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
-
-	numdb_foreach(mapreg_db, mapreg_sql_save_intsub);
-	numdb_foreach(mapregstr_db, mapreg_sql_save_strsub);
-
-	mapreg_dirty = 0;
-
-	return 0;
-}
-
-/*==========================================
  * 永続的マップ変数の自動セーブ
  *------------------------------------------
  */
 int mapreg_sql_autosave(void)
 {
-	if(mapreg_dirty)
-		mapreg_sql_save();
+	// nothing to do
 
 	return 0;
 }
@@ -245,15 +230,12 @@ static int mapreg_sql_strdb_final(void *key, void *data, va_list ap)
 
 int mapreg_sql_final(void)
 {
-	if(mapreg_dirty)
-		mapreg_sql_save();
-
 	if(mapreg_db)
-		numdb_final(mapreg_db,NULL);
+		numdb_final(mapreg_db, NULL);
 	if(mapregstr_db)
-		strdb_final(mapregstr_db,mapreg_sql_strdb_final);
+		numdb_final(mapregstr_db, mapreg_sql_strdb_final);
 
-	sqldbs_close(&mysql_handle);
+	sqldbs_close(&mysql_handle, "[Map]");
 
 	return 0;
 }
@@ -273,7 +255,7 @@ int mapreg_sql_init(void)
 
 	mapreg_db    = numdb_init();
 	mapregstr_db = numdb_init();
-	mapreg_load();
+	mapreg_sql_load();
 
 	return 1;
 }

@@ -1032,7 +1032,7 @@ static int char_db_final(void *key,void *data,va_list ap)
 
 void chardb_sql_final(void)
 {
-	sqldbs_close(&mysql_handle);
+	sqldbs_close(&mysql_handle, "[Char]");
 	numdb_final(char_db_,char_db_final);
 
 	return;
