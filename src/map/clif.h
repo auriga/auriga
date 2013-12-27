@@ -440,6 +440,8 @@ void clif_bank_withdraw(struct map_session_data *sd, int flag);
 
 void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
+void clif_manner_message(struct map_session_data* sd, int type);
+void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, int type);
 
 int clif_foreachclient(int (*)(struct map_session_data*,va_list),...);
 

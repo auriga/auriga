@@ -4629,13 +4629,23 @@ int atcommand_mannerpoint(const int fd, struct map_session_data* sd, AtCommandTy
 	if (sscanf(message, "%d %99[^\n]", &manner, character) < 2)
 		return -1;
 
-	if ((pl_sd = map_nick2sd(character)) != NULL) {
+	if ((pl_sd = map_nick2sd(character)) == NULL) {
+		clif_displaymessage(fd, msg_txt(3));
+		return -1;
+	}
+
+	clif_manner_message(sd, 0);
+	clif_manner_message(pl_sd, 5);
+
+	if(pl_sd->status.manner < manner) {
 		pl_sd->status.manner -= manner;
 		status_change_start(&pl_sd->bl,SC_NOCHAT,0,0,0,0,0,0);
-		clif_displaymessage(fd, msg_txt(155));
 	} else {
-		clif_displaymessage(fd, msg_txt(3));
+		pl_sd->status.manner = 0;
+		status_change_end(&pl_sd->bl,SC_NOCHAT,-1);
 	}
+
+	clif_GM_silence(sd, pl_sd, ((manner > 0)? 1: 0));
 
 	return 0;
 }

@@ -1,4 +1,17 @@
 ----------------------------------------
+//1159 [2013/12/28] by Rayce
+
+・@mannerpointの仕様をrAthena仕様に合わせる（clif.*, atcommand.c）
+	-> msg_auriga.conf を使わずパケット 0x14a, 0x14b を利用する
+	-> ポイントを0にすると SC_NOCHAT 状態を解除できる
+
+・GMコマンド /rc が @mannerpoint として動作するように実装（clif.c）
+
+・GMコマンド /remove は /shift と同じ動作として実装（clif.c）
+
+・GMコマンド /check は clif_initialstatus() と同等の動作として実装（clif.c）
+
+----------------------------------------
 //1158 [2013/12/28] by Rayce
 
 ・[TXT] 永続マップ変数の保存のジャーナリング対応（mapreg_txt.*, journal.*）

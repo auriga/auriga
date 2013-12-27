@@ -6553,17 +6553,17 @@ static void clif_initialstatus(struct map_session_data *sd)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0xbd;
 	WFIFOW(fd,2)=sd->status.status_point;
-	WFIFOB(fd,4)=(sd->status.str > 255)? 255:sd->status.str;
+	WFIFOB(fd,4)=(sd->status.str > 255)? 255: sd->status.str;
 	WFIFOB(fd,5)=pc_need_status_point(sd,SP_STR);
-	WFIFOB(fd,6)=(sd->status.agi > 255)? 255:sd->status.agi;
+	WFIFOB(fd,6)=(sd->status.agi > 255)? 255: sd->status.agi;
 	WFIFOB(fd,7)=pc_need_status_point(sd,SP_AGI);
-	WFIFOB(fd,8)=(sd->status.vit > 255)? 255:sd->status.vit;
+	WFIFOB(fd,8)=(sd->status.vit > 255)? 255: sd->status.vit;
 	WFIFOB(fd,9)=pc_need_status_point(sd,SP_VIT);
-	WFIFOB(fd,10)=(sd->status.int_ > 255)? 255:sd->status.int_;
+	WFIFOB(fd,10)=(sd->status.int_ > 255)? 255: sd->status.int_;
 	WFIFOB(fd,11)=pc_need_status_point(sd,SP_INT);
-	WFIFOB(fd,12)=(sd->status.dex > 255)? 255:sd->status.dex;
+	WFIFOB(fd,12)=(sd->status.dex > 255)? 255: sd->status.dex;
 	WFIFOB(fd,13)=pc_need_status_point(sd,SP_DEX);
-	WFIFOB(fd,14)=(sd->status.luk > 255)? 255:sd->status.luk;
+	WFIFOB(fd,14)=(sd->status.luk > 255)? 255: sd->status.luk;
 	WFIFOB(fd,15)=pc_need_status_point(sd,SP_LUK);
 
 #ifdef PRE_RENEWAL
@@ -12966,6 +12966,40 @@ void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int
 }
 
 /*==========================================
+ * マナーポイント付与メッセージ
+ *------------------------------------------
+ */
+void clif_manner_message(struct map_session_data* sd, int type)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x14a;
+	WFIFOL(fd,2) = type;
+	WFIFOSET(fd, packet_db[0x14a].len);
+}
+
+/*==========================================
+ * マナーポイントの受領
+ *------------------------------------------
+ */
+void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, int type)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	nullpo_retv(tsd);
+
+	fd = tsd->fd;
+	WFIFOW(fd,0) = 0x14b;
+	WFIFOB(fd,2) = type;
+	memcpy(WFIFOP(fd,3), sd->status.name, 24);
+	WFIFOSET(fd, packet_db[0x14b].len);
+}
+
+/*==========================================
  * Wis拒否許可応答
  *------------------------------------------
  */
@@ -12999,6 +13033,64 @@ static void clif_wisall(struct map_session_data *sd, int type, unsigned char fla
 	WFIFOB(fd,2)=type;
 	WFIFOB(fd,3)=flag;
 	WFIFOSET(fd,packet_db[0xd2].len);
+
+	return;
+}
+
+/*==========================================
+ * ステータス取得
+ *------------------------------------------
+ */
+static void clif_check(int fd, struct map_session_data *sd)
+{
+	nullpo_retv(sd);
+
+	WFIFOW(fd,0)  = 0x214;
+	WFIFOB(fd,2)  = (sd->status.str > 255)? 255: sd->status.str;
+	WFIFOB(fd,3)  = pc_need_status_point(sd, SP_STR);
+	WFIFOB(fd,4)  = (sd->status.agi > 255)? 255: sd->status.agi;
+	WFIFOB(fd,5)  = pc_need_status_point(sd, SP_AGI);
+	WFIFOB(fd,6)  = (sd->status.vit > 255)? 255: sd->status.agi;
+	WFIFOB(fd,7)  = pc_need_status_point(sd, SP_VIT);
+	WFIFOB(fd,8)  = (sd->status.int_ > 255)? 255: sd->status.int_;
+	WFIFOB(fd,9)  = pc_need_status_point(sd, SP_INT);
+	WFIFOB(fd,10) = (sd->status.dex > 255)? 255: sd->status.dex;
+	WFIFOB(fd,11) = pc_need_status_point(sd, SP_DEX);
+	WFIFOB(fd,12) = (sd->status.luk > 255)? 255: sd->status.luk;
+	WFIFOB(fd,13) = pc_need_status_point(sd, SP_LUK);
+
+#ifdef PRE_RENEWAL
+	WFIFOW(fd,16) = sd->base_atk + sd->watk + sd->watk_;
+	WFIFOW(fd,18) = sd->watk2 + sd->watk_2;	// atk bonus
+	WFIFOW(fd,20) = sd->matk1;
+	WFIFOW(fd,22) = sd->matk2;
+	WFIFOW(fd,24) = sd->def;	// def
+	WFIFOW(fd,26) = sd->def2;
+	WFIFOW(fd,28) = sd->mdef;	// mdef
+	WFIFOW(fd,30) = sd->mdef2;
+	WFIFOW(fd,32) = sd->hit;
+	WFIFOW(fd,34) = sd->flee;
+	WFIFOW(fd,36) = sd->flee2/10;
+	WFIFOW(fd,38) = sd->critical/10;
+	WFIFOW(fd,40) = sd->amotion;
+	WFIFOW(fd,42) = 0;
+#else
+	WFIFOW(fd,16) = sd->base_atk;
+	WFIFOW(fd,18) = sd->watk + sd->watk_ + sd->watk2 + sd->watk_2 + sd->plus_atk;	// atk
+	WFIFOW(fd,20) = sd->matk1 + sd->plus_matk;
+	WFIFOW(fd,22) = sd->matk2;
+	WFIFOW(fd,24) = sd->def2;
+	WFIFOW(fd,26) = sd->def;	// def
+	WFIFOW(fd,28) = sd->mdef2;
+	WFIFOW(fd,30) = sd->mdef;	// mdef
+	WFIFOW(fd,32) = sd->hit;
+	WFIFOW(fd,34) = sd->flee;
+	WFIFOW(fd,36) = sd->flee2/10;
+	WFIFOW(fd,38) = sd->critical/10;
+	WFIFOW(fd,40) = sd->amotion;
+	WFIFOW(fd,42) = 0;
+#endif
+	WFIFOSET(fd,packet_db[0x214].len);
 
 	return;
 }
@@ -19045,16 +19137,6 @@ static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMコマンド /remove
- *------------------------------------------
- */
-static void clif_parse_GMremove(int fd,struct map_session_data *sd, int cmd)
-{
-	// 効果不明
-	return;
-}
-
-/*==========================================
  * GMコマンド /changemaptype
  *------------------------------------------
  */
@@ -19081,7 +19163,15 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_GMrc(int fd,struct map_session_data *sd, int cmd)
 {
-	// 効果不明
+	char str[64];
+	char *name;
+
+	name = (char *)RFIFOP(fd, GETPACKETPOS(cmd,0));
+	name[23] = '\0';	// force \0 terminal
+
+	sprintf(str, "%cmannerpoint %d %s", GM_Symbol(), 60, name);
+	is_atcommand_sub(fd, sd, str, 0);
+
 	return;
 }
 
@@ -19091,7 +19181,16 @@ static void clif_parse_GMrc(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMcheck(int fd,struct map_session_data *sd, int cmd)
 {
-	// 効果不明
+	char *name;
+	struct map_session_data *pl_sd;
+
+	name = (char *)RFIFOP(fd, GETPACKETPOS(cmd,0));
+	name[23] = '\0';	// force \0 terminal
+
+	pl_sd = map_nick2sd(name);
+	if(pl_sd)
+		clif_check(fd, pl_sd);
+
 	return;
 }
 
@@ -19816,7 +19915,6 @@ static void clif_parse_PartyBookingSearchReq2(int fd,struct map_session_data *sd
 	return;
 }
 
-
 /*==========================================
  * パーティーブッキング削除要求
  *------------------------------------------
@@ -20517,7 +20615,7 @@ static void packetdb_readdb(void)
 		{ clif_parse_GMitemmonster,             "itemmonster"               },
 		{ clif_parse_GMshift,                   "shift"                     },
 		{ clif_parse_GMrecall,                  "recall"                    },
-		{ clif_parse_GMremove,                  "gmremove"                  },
+		{ clif_parse_GMshift,                   "gmremove"                  },
 		{ clif_parse_GMchangemaptype,           "changemaptype"             },
 		{ clif_parse_GMrc,                      "gmrc"                      },
 		{ clif_parse_GMcheck,                   "gmcheck"                   },
