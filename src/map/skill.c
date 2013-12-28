@@ -6598,6 +6598,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			sc = status_get_sc(bl);
 			if(dstsd) {
 				int i;
+
+				status_calc_pc_stop_begin(&dstsd->bl);
 				for(i=0; i<=MAX_INVENTORY; i++) {
 					if( dstsd->status.inventory[i].equip & LOC_RARM &&
 					    (!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1)) ) {
@@ -6631,6 +6633,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						fail = 0;
 					}
 				}
+				status_calc_pc_stop_end(&dstsd->bl);
 			} else {
 				if(!sc || (sc->data[SC_CP_WEAPON].timer == -1 && sc->data[SC_STRIPWEAPON].timer == -1)) {
 					status_change_start(bl,SC_STRIPWEAPON,skilllv,0,0,0,strip_time,0);

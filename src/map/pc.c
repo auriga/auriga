@@ -6786,10 +6786,12 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	clif_updatestatus(sd,SP_JOBEXP);
 	clif_updatestatus(sd,SP_NEXTJOBEXP);
 
+	status_calc_pc_stop_begin(&sd->bl);
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(sd->equip_index[i] >= 0 && pc_isequip(sd,sd->equip_index[i]) <= 0)
 			pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
 	}
+	status_calc_pc_stop_end(&sd->bl);
 
 	clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
 

@@ -585,14 +585,14 @@ void* grfio_reads(const char *fname, int *size)
 		fclose(in);
 		buf2 = (unsigned char *)aCalloc(entry->declen + 1024, sizeof(char));
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
-			int len;
+			unsigned long len;
 			if (entry->cycle>=0) {
 				decode_des_etc((uint8 *)buf, entry->srclen_aligned, entry->cycle == 0, entry->cycle);
 			}
-			len=entry->declen;
+			len=(unsigned long)entry->declen;
 			decode_zip(buf2,&len,buf,entry->srclen);
-			if(len!=entry->declen) {
-				printf("decode_zip size miss match err: %d != %d\n",(int)len,entry->declen);
+			if(len!=(unsigned long)entry->declen) {
+				printf("decode_zip size miss match err: %lu != %d\n",len,entry->declen);
 				goto errret;
 			}
 		} else {

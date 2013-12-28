@@ -19058,12 +19058,12 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
 {
-	char str[40];
+	char command[40];
 
 	nullpo_retv(sd);
 
-	sprintf(str, "%ckickall", GM_Symbol());
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%ckickall", GM_Symbol());
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19074,13 +19074,13 @@ static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
 {
-	char str[64];
+	char command[64];
 
 	nullpo_retv(sd);
 
-	sprintf(str, "%csummon ", GM_Symbol());
-	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%csummon ", GM_Symbol());
+	strncat(command, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19091,13 +19091,13 @@ static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int cmd )
 {
-	char str[64];
+	char command[64];
 
 	nullpo_retv(sd);
 
-	sprintf(str, "%cim ", GM_Symbol());
-	strncat(str, RFIFOP(fd, GETPACKETPOS(cmd, 0)), 24);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%cim ", GM_Symbol());
+	strncat(command, RFIFOP(fd, GETPACKETPOS(cmd, 0)), 24);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19108,13 +19108,13 @@ static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int c
  */
 static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
 {
-	char str[64];
+	char command[64];
 
 	nullpo_retv(sd);
 
-	sprintf(str, "%cjumpto ", GM_Symbol());
-	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%cjumpto ", GM_Symbol());
+	strncat(command, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19125,13 +19125,13 @@ static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
 {
-	char str[64];
+	char command[64];
 
 	nullpo_retv(sd);
 
-	sprintf(str, "%crecall ", GM_Symbol());
-	strncat(str, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%crecall ", GM_Symbol());
+	strncat(command, RFIFOP(fd,GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19143,7 +19143,7 @@ static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int cmd)
 {
 	int x,y,type;
-	char str[64];
+	char command[64];
 
 	nullpo_retv(sd);
 
@@ -19151,8 +19151,8 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
 	y    = RFIFOW(fd, GETPACKETPOS(cmd,1));
 	type = RFIFOW(fd, GETPACKETPOS(cmd,2));	// 0か1のみ
 
-	sprintf(str, "%cchangemaptype %d %d %d", GM_Symbol(), x, y, type&1);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%cchangemaptype %d %d %d", GM_Symbol(), x, y, type&1);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19163,14 +19163,11 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
  */
 static void clif_parse_GMrc(int fd,struct map_session_data *sd, int cmd)
 {
-	char str[64];
-	char *name;
+	char command[64];
 
-	name = (char *)RFIFOP(fd, GETPACKETPOS(cmd,0));
-	name[23] = '\0';	// force \0 terminal
-
-	sprintf(str, "%cmannerpoint %d %s", GM_Symbol(), 60, name);
-	is_atcommand_sub(fd, sd, str, 0);
+	sprintf(command, "%cmannerpoint %d ", GM_Symbol(), 60);
+	strncat(command, RFIFOP(fd, GETPACKETPOS(cmd,0)), 24);
+	is_atcommand_sub(fd, sd, command, 0);
 
 	return;
 }
@@ -19824,6 +19821,8 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 	if(lv <= 0 || lv < pc_isGM(tsd))
 		return;
 
+	status_calc_pc_stop_begin(&tsd->bl);
+
 	for(i=0; i<MAX_INVENTORY; i++) {
 		if(tsd->status.inventory[i].equip) {
 			pc_unequipitem(tsd,i,0);
@@ -19836,6 +19835,8 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 	status_change_start(&tsd->bl,SC_STRIPARMOR,1,0,0,0,60000,0);
 	status_change_start(&tsd->bl,SC_STRIPHELM,1,0,0,0,60000,0);
 	status_change_start(&tsd->bl,SC__STRIPACCESSARY,1,0,0,0,60000,0);
+
+	status_calc_pc_stop_end(&tsd->bl);
 
 	return;
 }
@@ -20144,7 +20145,18 @@ static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, in
  */
 static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int account_id;
+	struct map_session_data *pl_sd;
+
+	account_id = RFIFOL(fd, GETPACKETPOS(cmd,0));
+
+	if((pl_sd = map_id2sd(account_id)) != NULL) {
+		char command[64];
+		sprintf(command, "%crecall ", GM_Symbol());
+		strncpy(command, pl_sd->status.name, 24);
+		is_atcommand_sub(fd, sd, command, 0);
+	}
+
 	return;
 }
 
@@ -20154,7 +20166,18 @@ static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int account_id;
+	struct map_session_data *pl_sd;
+
+	account_id = RFIFOL(fd, GETPACKETPOS(cmd,0));
+
+	if((pl_sd = map_id2sd(account_id)) != NULL) {
+		char command[64];
+		sprintf(command, "%cjumpto ", GM_Symbol());
+		strncpy(command, pl_sd->status.name, 24);
+		is_atcommand_sub(fd, sd, command, 0);
+	}
+
 	return;
 }
 
