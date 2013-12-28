@@ -30,6 +30,8 @@
 #pragma pack(4)
 
 #define AUTH_FIFO_SIZE 256
+#define MAPSERVER_TAGNAME 16
+
 #define MAX_INVENTORY 100
 #define MAX_AMOUNT 30000
 #define MAX_ZENY 2147483647

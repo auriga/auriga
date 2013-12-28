@@ -1657,7 +1657,7 @@ static int search_mapserver_char(const char *map, struct mmo_charstatus *cd)
 				continue;
 			if (server[i].map_num > 0) {
 				memcpy(cd->last_point.map, server[i].map, 16);
-				printf("search_mapserver %s : another map %s -> %d\n", map, server[i].map, i);
+				printf("search_mapserver %s : another map %s -> id = %d, tag = %s\n", map, server[i].map, i, server[i].tag);
 				return i;
 			}
 		}
@@ -1685,7 +1685,7 @@ int char_erasemap(int fd, int id)
 			WFIFOSET(dfd, WFIFOW(dfd,2));
 		}
 	}
-	printf("char: map erase: %d (%d maps)\n", id, server[id].map_num);
+	printf("char: map erase: id = %d, tag = %s (%d maps)\n", id, server[id].tag, server[id].map_num);
 
 	aFree(server[id].map);
 	server[id].map = NULL;
@@ -1790,7 +1790,7 @@ int parse_frommap(int fd)
 
 			{
 				unsigned char *p = (unsigned char *)&server[id].ip;
-				printf("set map %d from %d.%d.%d.%d:%d (%d maps)\n", id, p[0], p[1], p[2], p[3], server[id].port, j);
+				printf("set map id = %d, tag = %s from %d.%d.%d.%d:%d (%d maps)\n", id, server[id].tag, p[0], p[1], p[2], p[3], server[id].port, j);
 			}
 
 			RFIFOSKIP(fd,RFIFOW(fd,2));
@@ -2088,7 +2088,7 @@ int parse_frommap(int fd)
 			if(RFIFOREST(fd)<3)
 				return 0;
 			server[id].active=RFIFOB(fd,2);
-			printf("char: map %s: %d\n",(server[id].active)? "active": "inactive",id);
+			printf("char: map %s: id = %d, tag = %s\n",(server[id].active)? "active": "inactive", id, server[id].tag);
 			RFIFOSKIP(fd,3);
 			break;
 
@@ -2286,7 +2286,29 @@ static int char_mapif_init(int fd)
 	return inter_mapif_init(fd);
 }
 
-int parse_char_disconnect(int fd)
+// MAPサーバのタグ名の重複チェック
+static int char_mapif_check_tag(int fd, int id, const char *tag)
+{
+	int i, fail = 0;
+
+	for(i = 0; i < MAX_MAP_SERVERS; i++) {
+		if(server_fd[i] >= 0 && i != id) {
+			if(strcmp(tag, server[i].tag) == 0) {
+				// タグ名が重複している
+				fail = 1;
+				break;
+			}
+		}
+	}
+
+	WFIFOW(fd,0) = 0x2b31;
+	WFIFOB(fd,2) = fail;
+	WFIFOSET(fd,3);
+
+	return fail;
+}
+
+static int parse_char_disconnect(int fd)
 {
 	if (fd == login_fd)
 		login_fd = -1;
@@ -3041,7 +3063,7 @@ int parse_char(int fd)
 		case 0x68:	// 削除
 			if(RFIFOREST(fd)<46)
 				return 0;
-			if (login_fd >= 0) {
+			if (login_fd >= 0 && session[login_fd]) {
 				WFIFOW(login_fd,0)=0x2715;
 				WFIFOL(login_fd,2)=sd->account_id;
 				WFIFOL(login_fd,6)=RFIFOL(fd,2);
@@ -3078,12 +3100,12 @@ int parse_char(int fd)
 		{
 			int authok=0;
 			struct cram_session_data *csd=(struct cram_session_data *)(session[fd]->session_data);
-			if (RFIFOREST(fd) < 60)
+			if (RFIFOREST(fd) < 60 + MAPSERVER_TAGNAME )
 				return 0;
 			if (char_sport != 0 && char_port != char_sport && session[fd]->server_port != char_sport) {
 				printf("server login failed: connected port %d\n", session[fd]->server_port);
 				session[fd]->eof = 1;
-				RFIFOSKIP(fd,60);
+				RFIFOSKIP(fd,60 + MAPSERVER_TAGNAME);
 				return 0;
 			}
 			// search an available place
@@ -3115,7 +3137,7 @@ int parse_char(int fd)
 				WFIFOW(fd,0)=0x2af9;
 				WFIFOB(fd,2)=3;
 				WFIFOSET(fd,3);
-				RFIFOSKIP(fd,60);
+				RFIFOSKIP(fd,60 + MAPSERVER_TAGNAME);
 			} else {
 				WFIFOW(fd,0)=0x2af9;
 				WFIFOB(fd,2)=0;
@@ -3124,6 +3146,7 @@ int parse_char(int fd)
 				server_fd[i] = fd;
 				server[i].ip = RFIFOL(fd,54);
 				server[i].port = RFIFOW(fd,58);
+				memcpy(server[i].tag, RFIFOP(fd,60), MAPSERVER_TAGNAME);
 				server[i].users = 0;
 				server[i].map_num = 0;
 				if (server[i].map != NULL) {
@@ -3132,11 +3155,11 @@ int parse_char(int fd)
 				}
 				WFIFOSET(fd,3);
 				numdb_foreach(char_online_db,parse_char_sendonline,fd);
-				RFIFOSKIP(fd,60);
+				RFIFOSKIP(fd,60 + MAPSERVER_TAGNAME);
 				session[fd]->auth = -1; // 認証終了を socket.c に伝える
 				realloc_fifo(fd, RFIFOSIZE_SERVERLINK, WFIFOSIZE_SERVERLINK);
 				char_mapif_init(fd);
-				return 0;
+				char_mapif_check_tag(fd, i, server[i].tag);
 			}
 			break;
 		}

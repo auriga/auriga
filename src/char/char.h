@@ -32,6 +32,7 @@
 struct mmo_map_server {
 	unsigned long ip;
 	unsigned short port;
+	char tag[MAPSERVER_TAGNAME];
 	int users;
 	char *map;
 	short map_num;

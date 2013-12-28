@@ -52,7 +52,7 @@ static const int packet_len_table[]={
 	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
 	 6, 0, 0, 0,18,18,-1,-1,		// 2b20-2b27
 	30,30, 2,-1,60,-1, 2,-1,		// 2b28-2b2f
-	-1,					// 2b30
+	-1,	3				// 2b31
 };
 
 int char_fd = -1;
@@ -207,7 +207,8 @@ static int chrif_connect(int fd)
 	//WFIFOL(fd,50)=0;
 	//WFIFOL(fd,54)=clif_getip();
 	//WFIFOW(fd,58)=clif_getport();
-	//WFIFOSET(fd,60);
+	//memcpy(WFIFOP(fd,60), map_server_tag, MAPSERVER_TAGNAME);
+	//WFIFOSET(fd,60 + MAPSERVER_TAGNAME);
 
 	return 0;
 }
@@ -226,7 +227,8 @@ static int chrif_cram_connect(int fd)
 	WFIFOL(fd,50)=0;
 	WFIFOL(fd,54)=clif_getip();
 	WFIFOW(fd,58)=clif_getport();
-	WFIFOSET(fd,60);
+	memcpy(WFIFOP(fd,60), map_server_tag, MAPSERVER_TAGNAME);
+	WFIFOSET(fd,60 + MAPSERVER_TAGNAME);
 
 	return 0;
 }
@@ -944,6 +946,18 @@ static int chrif_ranking_recv(int fd)
 }
 
 /*==========================================
+ * MAPサーバタグ名登録応答
+ *------------------------------------------
+ */
+static int chrif_mapservertag_ack(int fail)
+{
+	if(fail)
+		printf("Map Server Tag: tag name is duplicated!\a\n");
+
+	return 0;
+}
+
+/*==========================================
  * クライアントを切断する
  *------------------------------------------
  */
@@ -1031,6 +1045,7 @@ int chrif_parse(int fd)
 		case 0x2b29: chrif_breakadoption(RFIFOL(fd,2),RFIFOP(fd,6)); break;
 		case 0x2b2b: chrif_cram_connect(fd); break;
 		case 0x2b30: chrif_ranking_recv(fd); break;
+		case 0x2b31: chrif_mapservertag_ack(RFIFOB(fd,2)); break;
 
 		default:
 			if(battle_config.error_log)

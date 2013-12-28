@@ -115,7 +115,7 @@ char atcommand_conf_filename[256] = "conf/atcommand_auriga.conf";
 char script_conf_filename[256]    = "conf/script_auriga.conf";
 char msg_conf_filename[256]       = "conf/msg_auriga.conf";
 
-char map_server_tag[16]      = "map01";	// マップサーバタグ名
+char map_server_tag[MAPSERVER_TAGNAME] = "map01";	// マップサーバタグ名
 char motd_txt[256]           = "conf/motd.txt";
 char help_txt[256]           = "conf/help.txt";
 char extra_add_file_txt[256] = "map_extra_add.txt"; // to add items from external software (use append to add a line)

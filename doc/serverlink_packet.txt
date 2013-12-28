@@ -51,7 +51,8 @@ S 272e <len>.w <challenge>.?B
 S 272f <username>.24B <response>.16B <0>.4B <algorithm>.l <0>.l <char_ip>.l <char_port>.w <servername>.20B <maintenance>.w <new>.w
 	暗号化ログイン＆charサーバ情報をloginに通知
 	algorithm= 1:MD5タイプ1   2:MD5タイプ2  3:MD5タイプ1,2どちらか  4:HMAC-MD5(既定値)
-	
+R 2730 <account_id>.l
+	全charサーバへ同一アカウントの切断要求
 
 
 ==========================================================================
@@ -59,19 +60,19 @@ S 272f <username>.24B <response>.16B <0>.4B <algorithm>.l <0>.l <char_ip>.l <cha
 --------------------------------------------------------------------------
 
 パケット長リスト
-	60, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
+	76, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
 	 6,-1,19, 7,-1,41,40, 7,		// 2b00-2b07
 	 6,40,-1,10, 9, 7, 0, 0,		// 2b08-2b0f
 	-1,-1, 6, 3, 3, 3,-1, 6,		// 2b10-2b17
 	10, 6, 6, 0, 0, 0, 0, 0,		// 2b18-2b1f
 	 6, 0, 0, 0,18,18,-1,-1,		// 2b20-2b27
-	30,30, 2,-1,60,-1, 2,-1,		// 2b28-2b2f
-	-1,					// 2b30
+	30,30, 2,-1,76,-1, 2,-1,		// 2b28-2b2f
+	-1, 3				// 2b31
 
 R char->map
 S map->char
 
-S 2af8 <userid>.24B <passwd>.24B <0>.l <mapip>.l  <mapport>.w
+S 2af8 <userid>.24B <passwd>.24B <0>.l <mapip>.l  <mapport>.w <map_server_tag>.16B
 	接続要求
 R 2af9 <err>.B
 	接続可否 err=0で成功
@@ -155,7 +156,7 @@ S 2b2a
 	暗号化ログインのチャレンジ要求
 R 2b2b <len>.w <challenge>.?B
 	暗号化ログインのチャレンジ返答
-S 2b2c <userid>.24B <passwd>.16B <dummy>.4B <algorithm>.l <0>.l <mapip>.l  <mapport>.w
+S 2b2c <userid>.24B <passwd>.16B <dummy>.4B <algorithm>.l <0>.l <mapip>.l  <mapport>.w <map_server_tag>.16B
 	暗号化ログイン要求
 	algorithm= 4:HMAC-MD5
 S 2b2d <len>.w <char_id>.l { <name>.32B <value>.l }.36B*
@@ -166,6 +167,8 @@ S 2b2f <len>.w <ranking_id>.l <rank>.l <struct Ranking_Data>
 	ランキングデータ更新
 R 2b30 <len>.w <ranking_id>.l <struct Ranking_Data>
 	ランキングデータ受信
+S 2b31 <fail>.B
+	MAPサーバタグ名登録応答
 
 ==========================================================================
 		char<->inter
