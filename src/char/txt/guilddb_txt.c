@@ -33,7 +33,7 @@
 #include "storagedb_txt.h"
 #include "guilddb_txt.h"
 
-static int guildcastle_txt_init(void);
+static bool guildcastle_txt_init(void);
 static int guildcastle_txt_sync(void);
 
 static int guild_newid=10000;
@@ -359,33 +359,36 @@ int guild_journal_rollforward( int key, void* buf, int flag )
 // ギルドデータの読み込み
 bool guilddb_txt_init(void)
 {
-	char line[16384];
-	struct guild *g;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
 	guild_readdb();
 
-	guild_db=numdb_init();
+	guild_db = numdb_init();
 
-	if( (fp=fopen(guild_txt,"r"))==NULL )
-		return false;
-	while(fgets(line,sizeof(line),fp)){
-		g=(struct guild *)aCalloc(1,sizeof(struct guild));
-		if(guild_fromstr(line,g)==0 && g->guild_id>0){
-			if(g->guild_id >= guild_newid)
-				guild_newid=g->guild_id+1;
-			numdb_insert(guild_db,g->guild_id,g);
-			guild_calc_skilltree(g);
-			guild_calcinfo(g);
-		}else{
-			printf("int_guild: broken data [%s] line %d\n",guild_txt,c);
-			aFree(g);
+	if((fp = fopen(guild_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[16384];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct guild *g = (struct guild *)aCalloc(1, sizeof(struct guild));
+			if(guild_fromstr(line, g) == 0 && g->guild_id > 0) {
+				if(g->guild_id >= guild_newid)
+					guild_newid = g->guild_id + 1;
+				numdb_insert(guild_db, g->guild_id, g);
+				guild_calc_skilltree(g);
+				guild_calcinfo(g);
+			} else {
+				printf("int_guild: broken data [%s] line %d\n", guild_txt, count);
+				aFree(g);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
+		//printf("int_guild: %s read done (%d guilds)\n",guild_txt,c);
 	}
-	fclose(fp);
-	//printf("int_guild: %s read done (%d guilds)\n",guild_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( guild_journal_enable )
@@ -409,8 +412,7 @@ bool guilddb_txt_init(void)
 	}
 #endif
 
-	guildcastle_txt_init();
-	return true;
+	return (guildcastle_txt_init() && ret)? true: false;
 }
 
 const struct guild *guilddb_txt_load_num(int guild_id)
@@ -701,34 +703,37 @@ int guildcastle_journal_rollforward( int key, void* buf, int flag )
 }
 #endif
 
-static int guildcastle_txt_init(void)
+static bool guildcastle_txt_init(void)
 {
-	char line[1024];
-	struct guild_castle gc;
 	FILE *fp;
-	int i,c=0;
+	int i;
+	bool ret = true;
 
 	// デフォルトデータを作成
-	memset(castle_db,0,sizeof(castle_db));
-	for(i=0; i<MAX_GUILDCASTLE; i++) {
+	memset(castle_db, 0, sizeof(castle_db));
+	for(i = 0; i < MAX_GUILDCASTLE; i++) {
 		castle_db[i].castle_id = i;
 		castle_db[i].economy   = 1;
 		castle_db[i].defense   = 1;
 	}
 
-	if( (fp=fopen(castle_txt,"r"))==NULL ){
-		return 1;
-	}
+	if((fp = fopen(castle_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		struct guild_castle gc;
+		int count = 0;
+		char line[1024];
 
-	while(fgets(line,sizeof(line),fp)){
-		if(guildcastle_fromstr(line,&gc)==0 && gc.castle_id >= 0 && gc.castle_id < MAX_GUILDCASTLE) {
-			memcpy(&castle_db[gc.castle_id], &gc, sizeof(gc));
-		} else {
-			printf("int_guild: broken data [%s] line %d\n",castle_txt,c);
+		while(fgets(line, sizeof(line), fp)) {
+			if(guildcastle_fromstr(line, &gc) == 0 && gc.castle_id >= 0 && gc.castle_id < MAX_GUILDCASTLE) {
+				memcpy(&castle_db[gc.castle_id], &gc, sizeof(gc));
+			} else {
+				printf("int_guild: broken data [%s] line %d\n", castle_txt, count);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( guildcastle_journal_enable )
@@ -751,7 +756,7 @@ static int guildcastle_txt_init(void)
 		}
 	}
 #endif
-	return 0;
+	return ret;
 }
 
 // ギルド城データのセーブ用

@@ -139,27 +139,30 @@ int statusdb_txt_sync(void);
 
 bool statusdb_txt_init(void)
 {
-	char line[8192];
-	struct scdata *sc;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
 	scdata_db = numdb_init();
 
-	if( (fp=fopen(scdata_txt,"r")) == NULL )
-		return 1;
-	while(fgets(line,sizeof(line),fp)) {
-		sc = (struct scdata *)aCalloc(1,sizeof(struct scdata));
-		if(status_fromstr(line,sc) == 0) {
-			numdb_insert(scdata_db,sc->char_id,sc);
-		} else {
-			printf("int_status: broken data [%s] line %d\n",scdata_txt,c);
-			aFree(sc);
+	if((fp = fopen(scdata_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct scdata *sc = (struct scdata *)aCalloc(1, sizeof(struct scdata));
+			if(status_fromstr(line, sc) == 0) {
+				numdb_insert(scdata_db, sc->char_id, sc);
+			} else {
+				printf("int_status: broken data [%s] line %d\n", scdata_txt, count);
+				aFree(sc);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
+		//printf("int_status: %s read done (%d status)\n",scdata_txt,c);
 	}
-	fclose(fp);
-	//printf("int_status: %s read done (%d status)\n",scdata_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -183,7 +186,7 @@ bool statusdb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 static int statusdb_txt_sync_sub(void *key, void *data, va_list ap)

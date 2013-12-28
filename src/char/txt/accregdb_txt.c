@@ -125,26 +125,30 @@ int accregdb_txt_sync(void);
 // アカウント変数の読み込み
 bool accregdb_txt_init(void)
 {
-	char line[8192];
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
 	accreg_db = numdb_init();
 
-	if( (fp=fopen(accreg_txt,"r"))==NULL )
-		return false;
-	while(fgets(line,sizeof(line),fp)) {
-		struct accreg *reg = (struct accreg *)aCalloc(1,sizeof(struct accreg));
+	if((fp = fopen(accreg_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
 
-		if(accregdb_fromstr(line,reg) == 0 && reg->account_id > 0) {
-			numdb_insert(accreg_db,reg->account_id,reg);
-		} else {
-			printf("inter: accreg: broken data [%s] line %d\n",accreg_txt,c);
-			aFree(reg);
+		while(fgets(line, sizeof(line), fp)) {
+			struct accreg *reg = (struct accreg *)aCalloc(1, sizeof(struct accreg));
+
+			if(accregdb_fromstr(line, reg) == 0 && reg->account_id > 0) {
+				numdb_insert(accreg_db, reg->account_id,reg);
+			} else {
+				printf("inter: accreg: broken data [%s] line %d\n", accreg_txt, count);
+				aFree(reg);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
@@ -168,7 +172,7 @@ bool accregdb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 // アカウント変数のセーブ用

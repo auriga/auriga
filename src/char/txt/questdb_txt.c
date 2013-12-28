@@ -158,30 +158,33 @@ int questdb_txt_sync(void);
 // ----------------------------------------------------------
 // クエストデータ読み込み
 // ----------------------------------------------------------
-int questdb_txt_init(void)
+bool questdb_txt_init(void)
 {
-	char line[8192];
-	struct quest *q;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
 	quest_db = numdb_init();
-	if((fp=fopen(quest_txt,"r")) == NULL) {
-		printf("cant't read : %s\n",quest_txt);
-		return 1;
-	}
-	while(fgets(line,sizeof(line),fp)) {
-		q = (struct quest *)aCalloc(1,sizeof(struct quest));
-		if(questdb_fromstr(line,q) == 0) {
-			numdb_insert(quest_db,q->char_id,q);
-		} else {
-			printf("int_quest: broken data [%s] line %d\n",quest_txt,c);
-			aFree(q);
+
+	if((fp = fopen(quest_txt,"r")) == NULL) {
+		printf("cant't read : %s\n", quest_txt);
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct quest *q = (struct quest *)aCalloc(1, sizeof(struct quest));
+			if(questdb_fromstr(line, q) == 0) {
+				numdb_insert(quest_db, q->char_id, q);
+			} else {
+				printf("int_quest: broken data [%s] line %d\n", quest_txt, count);
+				aFree(q);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
+		//printf("int_quest: %s read done (%d quest)\n",quest_txt,c);
 	}
-	fclose(fp);
-	//printf("int_quest: %s read done (%d quest)\n",quest_txt,c);
 
 #ifdef TXT_JOURNAL
 	if( quest_journal_enable )
@@ -205,7 +208,7 @@ int questdb_txt_init(void)
 	}
 #endif
 
-	return 0;
+	return ret;
 }
 
 // ----------------------------------------------------------

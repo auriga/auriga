@@ -115,130 +115,137 @@ static int login_journal_rollforward( int key, void* buf, int flag )
 void account_txt_sync(void);
 #endif
 
+// アカウントデータベースの読み込み
 bool account_txt_init(void)
 {
-	// アカウントデータベースの読み込み
 	FILE *fp;
-	int i,n,account_id,logincount,state;
-	char line[65536],*p,userid[256],pass[256],lastlogin[256],sex;
+	bool ret = true;
 
-	if((fp=fopen(account_filename,"r"))==NULL)
-		return 0;
-	auth_max = 256;
-	auth_dat = (struct mmo_account *)aCalloc(auth_max,sizeof(auth_dat[0]));
+	if((fp = fopen(account_filename, "r")) == NULL) {
+		ret = false;
+	} else {
+		int i, n, account_id, logincount, state;
+		char userid[256], pass[256], lastlogin[256], sex;
+		char line[65536];
 
-	while(fgets(line,65535,fp)!=NULL){
-		p=line;
-		n=-1;
+		auth_max = 256;
+		auth_dat = (struct mmo_account *)aCalloc(auth_max, sizeof(auth_dat[0]));
 
-		i=sscanf(line,"%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t%c\t%d\t%d\t%n",
-			&account_id,userid,pass,lastlogin,&sex,&logincount,&state,&n);
+		while(fgets(line, sizeof(line) - 1, fp) != NULL) {
+			char *p = line;
+			n = -1;
 
-		if(i < 5) {
-			i = -1;
-			if( sscanf(line,"%d\t%%newid%%%n",&account_id,&i) == 1 && i > 0 && (line[i] == '\n' || line[i] == '\r') ) {
-				if(account_id > END_ACCOUNT_NUM+1) {	// newidは+1まで許可
-					printf("reading %s error : invalid ID %d\n",account_filename,account_id);
-					continue;
+			i = sscanf(
+				line, "%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t%c\t%d\t%d\t%n",
+				&account_id, userid,pass, lastlogin, &sex, &logincount, &state, &n
+			);
+
+			if(i < 5) {
+				i = -1;
+				if(sscanf(line, "%d\t%%newid%%%n", &account_id, &i) == 1 && i > 0 && (line[i] == '\n' || line[i] == '\r')) {
+					if(account_id > END_ACCOUNT_NUM + 1) {	// newidは+1まで許可
+						printf("reading %s error : invalid ID %d\n", account_filename, account_id);
+						continue;
+					}
+					if(account_id > account_id_count)
+						account_id_count = account_id;
 				}
-				if(account_id > account_id_count)
-					account_id_count=account_id;
+				continue;
 			}
-			continue;
-		}
 
-		if(account_id > END_ACCOUNT_NUM) {
-			printf("reading %s error : invalid ID %d\n",account_filename,account_id);
-			continue;
-		}
-		if(auth_num>=auth_max){
-			auth_max += 256;
-			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
-			memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
-		}
-		auth_dat[auth_num].account_id=account_id;
-		strncpy(auth_dat[auth_num].userid,userid,24);
-		strncpy(auth_dat[auth_num].pass,pass,24);
-		strncpy(auth_dat[auth_num].lastlogin,lastlogin,24);
-		auth_dat[auth_num].sex = sex;
-		strncpy(auth_dat[auth_num].birth,"000000",7);
+			if(account_id > END_ACCOUNT_NUM) {
+				printf("reading %s error : invalid ID %d\n", account_filename, account_id);
+				continue;
+			}
+			if(auth_num >= auth_max) {
+				auth_max += 256;
+				auth_dat = (struct mmo_account *)aRealloc(auth_dat, sizeof(auth_dat[0]) * auth_max);
+				memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
+			}
+			auth_dat[auth_num].account_id = account_id;
+			strncpy(auth_dat[auth_num].userid, userid, 24);
+			strncpy(auth_dat[auth_num].pass, pass, 24);
+			strncpy(auth_dat[auth_num].lastlogin, lastlogin, 24);
+			auth_dat[auth_num].sex = sex;
+			strncpy(auth_dat[auth_num].birth, "000000", 7);
 
-		// force \0 terminal
-		auth_dat[auth_num].userid[23]    = '\0';
-		auth_dat[auth_num].pass[23]      = '\0';
-		auth_dat[auth_num].lastlogin[23] = '\0';
+			// force \0 terminal
+			auth_dat[auth_num].userid[23]    = '\0';
+			auth_dat[auth_num].pass[23]      = '\0';
+			auth_dat[auth_num].lastlogin[23] = '\0';
 
-		// データが足りないときの補完
-		auth_dat[auth_num].logincount = (i >= 6)? logincount: 1;
-		auth_dat[auth_num].state      = (i >= 7)? state: 0;
+			// データが足りないときの補完
+			auth_dat[auth_num].logincount = (i >= 6)? logincount: 1;
+			auth_dat[auth_num].state      = (i >= 7)? state: 0;
 
-		// メールアドレスがあれば読み込む
-		if(n > 0)
-		{
-			int n2=0;
-			char mail[256] = "";
-			if( sscanf( line + n, "%255[^\t]\t%n", mail, &n2 )==1 && strchr( mail, '@' ) )
+			// メールアドレスがあれば読み込む
+			if(n > 0)
 			{
-				if( strcmp( mail, "@" )==0 ) {
-					auth_dat[auth_num].mail[0] = '\0';
-				} else {
-					strncpy( auth_dat[auth_num].mail, mail, 40 );
-					auth_dat[auth_num].mail[39] = '\0';	// force \0 terminal
+				int n2 = 0;
+				char mail[256] = "";
+				if(sscanf(line + n, "%255[^\t]\t%n", mail, &n2) == 1 && strchr(mail, '@'))
+				{
+					if(strcmp(mail, "@") == 0) {
+						auth_dat[auth_num].mail[0] = '\0';
+					} else {
+						strncpy(auth_dat[auth_num].mail, mail, 40);
+						auth_dat[auth_num].mail[39] = '\0';	// force \0 terminal
+					}
+					n = (n2 > 0)? n + n2 : 0;
 				}
-				n = (n2>0)? n+n2 : 0;
 			}
-		}
 
-		// 誕生日があれば読み込む
-		if(n > 0)
-		{
-			int n2=0;
-			char birth[7] = "";
-			if( sscanf( line + n, "%6[^\t]\t%n", birth, &n2 )==1 && !strchr( birth, '#' ) )
+			// 誕生日があれば読み込む
+			if(n > 0)
 			{
-				strncpy( auth_dat[auth_num].birth, birth, 6 );
-				auth_dat[auth_num].birth[6] = '\0';	// force \0 terminal
-				n = (n2>0)? n+n2 : 0;
+				int n2 = 0;
+				char birth[7] = "";
+				if(sscanf(line + n, "%6[^\t]\t%n", birth, &n2) == 1 && !strchr(birth, '#'))
+				{
+					strncpy(auth_dat[auth_num].birth, birth, 6);
+					auth_dat[auth_num].birth[6] = '\0';	// force \0 terminal
+					n = (n2 > 0)? n + n2 : 0;
+				}
 			}
-		}
 
-		// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
-		if(n > 0) {
-			int j,v;
-			char str[256];
-			for(j=0;j<ACCOUNT_REG2_NUM;j++){
-				p+=n;
-				if(sscanf(p,"%255[^\t,],%d%n",str,&v,&n)!=2)
-					break;
-				strncpy(auth_dat[auth_num].account_reg2[j].str,str,32);
-				auth_dat[auth_num].account_reg2[j].str[31] = '\0';	// force \0 terminal
-				auth_dat[auth_num].account_reg2[j].value   = v;
-				if(p[n] != ' ')
-					break;
-				n++;
+			// 全ワールド共有アカウント変数 ( ## 変数 ) 読み込み
+			if(n > 0) {
+				int j, v;
+				char str[256];
+				for(j = 0; j < ACCOUNT_REG2_NUM; j++) {
+					p += n;
+					if(sscanf(p, "%255[^\t,],%d%n", str, &v, &n) != 2)
+						break;
+					strncpy(auth_dat[auth_num].account_reg2[j].str, str, 32);
+					auth_dat[auth_num].account_reg2[j].str[31] = '\0';	// force \0 terminal
+					auth_dat[auth_num].account_reg2[j].value   = v;
+					if(p[n] != ' ')
+						break;
+					n++;
+				}
+				auth_dat[auth_num].account_reg2_num = j;
+			} else {
+				auth_dat[auth_num].account_reg2_num = 0;
 			}
-			auth_dat[auth_num].account_reg2_num=j;
-		} else {
-			auth_dat[auth_num].account_reg2_num=0;
+
+			if(account_id >= account_id_count)
+				account_id_count = account_id + 1;
+
+			if(auth_num > 0 && account_id < auth_dat[auth_num-1].account_id) {
+				struct mmo_account tmp;
+				int k = auth_num;
+
+				// 何故かアカウントIDの昇順に並んでない場合は挿入ソートする
+				while(--k > 0 && account_id < auth_dat[k-1].account_id);
+
+				memcpy(&tmp, &auth_dat[auth_num], sizeof(auth_dat[0]));
+				memmove(&auth_dat[k+1], &auth_dat[k], (auth_num - k) * sizeof(auth_dat[0]));
+				memcpy(&auth_dat[k], &tmp, sizeof(auth_dat[0]));
+			}
+			auth_num++;
 		}
-
-		if(account_id>=account_id_count)
-			account_id_count=account_id+1;
-
-		if(auth_num > 0 && account_id < auth_dat[auth_num-1].account_id) {
-			struct mmo_account tmp;
-			int k = auth_num;
-
-			// 何故かアカウントIDの昇順に並んでない場合は挿入ソートする
-			while(--k > 0 && account_id < auth_dat[k-1].account_id);
-
-			memcpy(&tmp, &auth_dat[auth_num], sizeof(auth_dat[0]));
-			memmove(&auth_dat[k+1], &auth_dat[k], (auth_num-k)*sizeof(auth_dat[0]));
-			memcpy(&auth_dat[k], &tmp, sizeof(auth_dat[0]));
-		}
-		auth_num++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( login_journal_enable )
@@ -262,7 +269,7 @@ bool account_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 // アカウントデータベースの書き込み

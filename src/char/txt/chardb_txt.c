@@ -716,50 +716,56 @@ static int char_journal_rollforward( int key, void* buf, int flag )
 
 bool chardb_txt_init(void)
 {
-	char line[65536];
-	int ret, i, j;
 	FILE *fp;
+	int i, j;
+	bool ret = true;
 
-	fp=fopen(char_txt,"r");
-	char_dat=(struct mmo_chardata *)aCalloc(256,sizeof(char_dat[0]));
-	char_max=256;
-	if(fp==NULL)
-		return 0;
-	while(fgets(line,65535,fp)){
-		j = -1;
-		if( sscanf(line,"%d\t%%newid%%%n",&i,&j)==1 && j > 0 && (line[j]=='\n' || line[j]=='\r') ){
-			if(char_id_count<i)
-				char_id_count=i;
-			continue;
-		}
+	char_dat = (struct mmo_chardata *)aCalloc(256, sizeof(char_dat[0]));
+	char_max = 256;
 
-		if(char_num>=char_max){
-			char_max+=256;
-			char_dat=(struct mmo_chardata *)aRealloc(char_dat,sizeof(char_dat[0])*char_max);
-			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(char_dat[0]));
-		}
+	fp = fopen(char_txt, "r");
+	if(fp == NULL) {
+		ret = false;
+	} else {
+		int success;
+		char line[65536];
 
-		ret=mmo_char_fromstr(line,&char_dat[char_num]);
-		if(ret){
-			int char_id = char_dat[char_num].st.char_id;
-			if(char_id >= char_id_count)
-				char_id_count = char_id+1;
-
-			if(char_num > 0 && char_id < char_dat[char_num-1].st.char_id) {
-				struct mmo_chardata tmp;
-				int k = char_num;
-
-				// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
-				while(--k > 0 && char_id < char_dat[k-1].st.char_id);
-
-				memcpy(&tmp, &char_dat[char_num], sizeof(char_dat[0]));
-				memmove(&char_dat[k+1], &char_dat[k], (char_num-k)*sizeof(char_dat[0]));
-				memcpy(&char_dat[k], &tmp, sizeof(char_dat[0]));
+		while(fgets(line, sizeof(line) - 1, fp)) {
+			j = -1;
+			if(sscanf(line,"%d\t%%newid%%%n", &i, &j) == 1 && j > 0 && (line[j] == '\n' || line[j] == '\r')) {
+				if(char_id_count < i)
+					char_id_count = i;
+				continue;
 			}
-			char_num++;
+
+			if(char_num >= char_max) {
+				char_max += 256;
+				char_dat = (struct mmo_chardata *)aRealloc(char_dat, sizeof(char_dat[0]) * char_max);
+				memset(char_dat + (char_max - 256), '\0', 256 * sizeof(char_dat[0]));
+			}
+
+			success = mmo_char_fromstr(line, &char_dat[char_num]);
+			if(success) {
+				int char_id = char_dat[char_num].st.char_id;
+				if(char_id >= char_id_count)
+					char_id_count = char_id + 1;
+
+				if(char_num > 0 && char_id < char_dat[char_num-1].st.char_id) {
+					struct mmo_chardata tmp;
+					int k = char_num;
+
+					// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
+					while(--k > 0 && char_id < char_dat[k-1].st.char_id);
+
+					memcpy(&tmp, &char_dat[char_num], sizeof(char_dat[0]));
+					memmove(&char_dat[k+1], &char_dat[k], (char_num - k) * sizeof(char_dat[0]));
+					memcpy(&char_dat[k], &tmp, sizeof(char_dat[0]));
+				}
+				char_num++;
+			}
 		}
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( char_journal_enable )
@@ -784,17 +790,17 @@ bool chardb_txt_init(void)
 #endif
 
 	// 友達リストの名前を解決
-	for( i=0; i<char_num; i++ )
+	for(i = 0; i < char_num; i++)
 	{
-		for( j=0; j<char_dat[i].st.friend_num; j++ )
+		for(j = 0; j < char_dat[i].st.friend_num; j++)
 		{
 			struct friend_data* frd = char_dat[i].st.friend_data;
 			const struct mmo_chardata* p = chardb_txt_load(frd[j].char_id);
-			if( p ) {
-				memcpy( frd[j].name, p->st.name, 24 );
+			if(p) {
+				memcpy(frd[j].name, p->st.name, 24);
 			} else {
 				char_dat[i].st.friend_num--;
-				memmove( &frd[j], &frd[j+1], sizeof(frd[0])*( char_dat[i].st.friend_num - j ) );
+				memmove(&frd[j], &frd[j + 1], sizeof(frd[0]) * (char_dat[i].st.friend_num - j));
 				j--;
 			}
 		}

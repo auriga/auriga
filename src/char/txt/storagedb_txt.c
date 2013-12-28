@@ -524,33 +524,35 @@ int gstoragedb_txt_sync(void);
 // 倉庫データを読み込む
 bool storagedb_txt_init(void)
 {
-	char line[65536];
-	int c=0,tmp_int;
-	struct storage *s;
-	struct guild_storage *gs;
 	FILE *fp;
+	bool ret = true;
 
 	storage_db = numdb_init();
 
-	fp=fopen(storage_txt,"r");
-	if(fp==NULL){
-		printf("cant't read : %s\n",storage_txt);
-		return false;
-	}
-	while(fgets(line,65535,fp)){
-		if(sscanf(line,"%d",&tmp_int) < 1)
-			continue;
-		s = (struct storage *)aCalloc(1,sizeof(struct storage));
-		s->account_id = tmp_int;
-		if(s->account_id > 0 && storage_fromstr(line,s) == 0) {
-			numdb_insert(storage_db,s->account_id,s);
-		} else {
-			printf("int_storage: broken data [%s] line %d\n",storage_txt,c);
-			aFree(s);
+	fp = fopen(storage_txt, "r");
+	if(fp == NULL) {
+		printf("cant't read : %s\n", storage_txt);
+		ret = false;
+	} else {
+		int count = 0, tmp_int;
+		char line[65536];
+
+		while(fgets(line, sizeof(line) - 1, fp)) {
+			struct storage *s;
+			if(sscanf(line, "%d", &tmp_int) < 1)
+				continue;
+			s = (struct storage *)aCalloc(1, sizeof(struct storage));
+			s->account_id = tmp_int;
+			if(s->account_id > 0 && storage_fromstr(line, s) == 0) {
+				numdb_insert(storage_db, s->account_id, s);
+			} else {
+				printf("int_storage: broken data [%s] line %d\n", storage_txt, count);
+				aFree(s);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( storage_journal_enable )
@@ -574,29 +576,33 @@ bool storagedb_txt_init(void)
 	}
 #endif
 
-	c = 0;
 	gstorage_db = numdb_init();
 
-	fp=fopen(guild_storage_txt,"r");
-	if(fp==NULL){
-		printf("cant't read : %s\n",guild_storage_txt);
-		return false;
-	}
-	while(fgets(line,65535,fp)){
-		if(sscanf(line,"%d",&tmp_int) < 1)
-			continue;
-		gs = (struct guild_storage *)aCalloc(1,sizeof(struct guild_storage));
-		gs->guild_id = tmp_int;
-		gs->last_fd  = -1;
-		if(gs->guild_id > 0 && gstorage_fromstr(line,gs) == 0) {
-			numdb_insert(gstorage_db,gs->guild_id,gs);
-		} else {
-			printf("int_storage: broken data [%s] line %d\n",guild_storage_txt,c);
-			aFree(gs);
+	fp = fopen(guild_storage_txt, "r");
+	if(fp == NULL) {
+		printf("cant't read : %s\n", guild_storage_txt);
+		ret = false;
+	} else {
+		int count = 0, tmp_int;
+		char line[65536];
+
+		while(fgets(line, sizeof(line) - 1, fp)) {
+			struct guild_storage *gs;
+			if(sscanf(line, "%d", &tmp_int) < 1)
+				continue;
+			gs = (struct guild_storage *)aCalloc(1, sizeof(struct guild_storage));
+			gs->guild_id = tmp_int;
+			gs->last_fd  = -1;
+			if(gs->guild_id > 0 && gstorage_fromstr(line, gs) == 0) {
+				numdb_insert(gstorage_db, gs->guild_id, gs);
+			} else {
+				printf("int_storage: broken data [%s] line %d\n", guild_storage_txt, count);
+				aFree(gs);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( guild_storage_journal_enable )
@@ -621,7 +627,7 @@ bool storagedb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 int storagedb_txt_config_read_sub(const char* w1,const char* w2)

@@ -171,28 +171,31 @@ int mercdb_txt_sync(void);
 
 bool mercdb_txt_init(void)
 {
-	char line[8192];
-	struct mmo_mercstatus *m;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
-	merc_db=numdb_init();
+	merc_db = numdb_init();
 
-	if( (fp=fopen(merc_txt,"r"))==NULL )
-		return 1;
-	while(fgets(line,sizeof(line),fp)){
-		m=(struct mmo_mercstatus *)aCalloc(1,sizeof(struct mmo_mercstatus));
-		if(merc_fromstr(line,m)==0 && m->merc_id>0){
-			if( m->merc_id >= merc_newid)
-				merc_newid=m->merc_id+1;
-			numdb_insert(merc_db,m->merc_id,m);
-		}else{
-			printf("int_merc: broken data [%s] line %d\n",merc_txt,c);
-			aFree(m);
+	if((fp = fopen(merc_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct mmo_mercstatus *m = (struct mmo_mercstatus *)aCalloc(1, sizeof(struct mmo_mercstatus));
+			if(merc_fromstr(line, m) == 0 && m->merc_id > 0) {
+				if(m->merc_id >= merc_newid)
+					merc_newid = m->merc_id + 1;
+				numdb_insert(merc_db, m->merc_id, m);
+			} else {
+				printf("int_merc: broken data [%s] line %d\n", merc_txt, count);
+				aFree(m);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -216,7 +219,7 @@ bool mercdb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 static int mercdb_txt_sync_sub(void *key,void *data,va_list ap)

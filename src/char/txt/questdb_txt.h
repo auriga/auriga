@@ -25,7 +25,7 @@
 #include "../int_quest.h"
 
 // プロトタイプ宣言
-int  questdb_txt_init(void);
+bool questdb_txt_init(void);
 int  questdb_txt_sync(void);
 int  questdb_txt_delete(int char_id);
 const struct quest *questdb_txt_load(int char_id);

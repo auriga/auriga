@@ -258,28 +258,31 @@ int homundb_txt_sync(void);
 
 bool homundb_txt_init(void)
 {
-	char line[8192];
-	struct mmo_homunstatus *h;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
-	homun_db=numdb_init();
+	homun_db = numdb_init();
 
-	if( (fp=fopen(homun_txt,"r"))==NULL )
-		return 1;
-	while(fgets(line,sizeof(line),fp)){
-		h=(struct mmo_homunstatus *)aCalloc(1,sizeof(struct mmo_homunstatus));
-		if(homun_fromstr(line,h)==0 && h->homun_id>0){
-			if( h->homun_id >= homun_newid)
-				homun_newid=h->homun_id+1;
-			numdb_insert(homun_db,h->homun_id,h);
-		}else{
-			printf("int_homun: broken data [%s] line %d\n",homun_txt,c);
-			aFree(h);
+	if((fp = fopen(homun_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct mmo_homunstatus *h = (struct mmo_homunstatus *)aCalloc(1, sizeof(struct mmo_homunstatus));
+			if(homun_fromstr(line, h) == 0 && h->homun_id > 0) {
+				if(h->homun_id >= homun_newid)
+					homun_newid = h->homun_id + 1;
+				numdb_insert(homun_db, h->homun_id, h);
+			} else {
+				printf("int_homun: broken data [%s] line %d\n", homun_txt, count);
+				aFree(h);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -303,7 +306,7 @@ bool homundb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 static int homundb_txt_sync_sub(void *key,void *data,va_list ap)

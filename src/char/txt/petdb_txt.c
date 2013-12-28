@@ -170,28 +170,31 @@ int pet_journal_rollforward( int key, void* buf, int flag )
 
 bool petdb_txt_init(void)
 {
-	char line[8192];
-	struct s_pet *p;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
-	pet_db=numdb_init();
+	pet_db = numdb_init();
 
-	if( (fp=fopen(pet_txt,"r"))==NULL )
-		return false;
-	while(fgets(line,sizeof(line),fp)){
-		p=(struct s_pet *)aCalloc(1,sizeof(struct s_pet));
-		if(pet_fromstr(line,p)==0 && p->pet_id>0){
-			if( p->pet_id >= pet_newid)
-				pet_newid=p->pet_id+1;
-			numdb_insert(pet_db,p->pet_id,p);
-		}else{
-			printf("int_pet: broken data [%s] line %d\n",pet_txt,c);
-			aFree(p);
+	if((fp = fopen(pet_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct s_pet *p = (struct s_pet *)aCalloc(1, sizeof(struct s_pet));
+			if(pet_fromstr(line, p) == 0 && p->pet_id > 0) {
+				if(p->pet_id >= pet_newid)
+					pet_newid = p->pet_id + 1;
+				numdb_insert(pet_db, p->pet_id, p);
+			} else {
+				printf("int_pet: broken data [%s] line %d\n", pet_txt, count);
+				aFree(p);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
@@ -215,7 +218,7 @@ bool petdb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 static int petdb_txt_sync_sub(void *key,void *data,va_list ap)

@@ -157,28 +157,31 @@ int elemdb_txt_sync(void);
 
 bool elemdb_txt_init(void)
 {
-	char line[8192];
-	struct mmo_elemstatus *e;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
-	elem_db=numdb_init();
+	elem_db = numdb_init();
 
-	if( (fp=fopen(elem_txt,"r"))==NULL )
-		return 1;
-	while(fgets(line,sizeof(line),fp)){
-		e=(struct mmo_elemstatus *)aCalloc(1,sizeof(struct mmo_elemstatus));
-		if(elem_fromstr(line,e)==0 && e->elem_id>0){
-			if( e->elem_id >= elem_newid)
-				elem_newid=e->elem_id+1;
-			numdb_insert(elem_db,e->elem_id,e);
-		}else{
-			printf("int_elem: broken data [%s] line %d\n",elem_txt,c);
-			aFree(e);
+	if((fp = fopen(elem_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct mmo_elemstatus *e = (struct mmo_elemstatus *)aCalloc(1, sizeof(struct mmo_elemstatus));
+			if(elem_fromstr(line, e) == 0 && e->elem_id > 0) {
+				if(e->elem_id >= elem_newid)
+					elem_newid = e->elem_id + 1;
+				numdb_insert(elem_db, e->elem_id, e);
+			} else {
+				printf("int_elem: broken data [%s] line %d\n", elem_txt, count);
+				aFree(e);
+			}
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
@@ -202,7 +205,7 @@ bool elemdb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 static int elemdb_txt_sync_sub(void *key,void *data,va_list ap)

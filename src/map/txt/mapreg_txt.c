@@ -236,7 +236,6 @@ static void mapreg_journal_convert( struct journal_header *jhd, void *buf )
 
 	if(data) {
 		int num = (data->idx << 24) | script_add_str(data->name);
-		printf("### %d : %d (%s)\n", jhd->key, num, data->name);
 		jhd->key = num;
 	}
 	return;
@@ -249,42 +248,47 @@ int mapreg_txt_sync(void);
  * 永続的マップ変数の読み込み
  *------------------------------------------
  */
-static int mapreg_txt_load(void)
+static bool mapreg_txt_load(void)
 {
 	FILE *fp;
-	char line[2048];
+	bool ret = true;
 
-	if( (fp=fopen(mapreg_txt,"rt"))==NULL )
-		return -1;
+	if((fp = fopen(mapreg_txt, "rt")) == NULL) {
+		ret = false;
+	} else {
+		char line[2048];
 
-	while(fgets(line,sizeof(line),fp)){
-		char buf[256];
-		int n,v,s,i;
-		if( sscanf(line,"%255[^,],%d\t%n",buf,&i,&n)!=2 &&
-		    (i=0,sscanf(line,"%255[^\t]\t%n",buf,&n)!=1) )
-			continue;
-		if(i < 0 || i >= 128) {
-			printf("%s: %s broken data !\n",mapreg_txt,buf);
-			continue;
-		}
-		if( buf[strlen(buf)-1]=='$' ){
-			char buf2[2048];
-			if( sscanf(line+n,"%[^\n\r]",buf2)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf);
+		while(fgets(line, sizeof(line), fp)) {
+			char buf[256];
+			int n, v, s, i;
+
+			if(sscanf(line, "%255[^,],%d\t%n", buf, &i, &n) != 2 &&
+			   (i = 0, sscanf(line, "%255[^\t]\t%n", buf, &n) != 1))
+				continue;
+
+			if(i < 0 || i >= 128) {
+				printf("%s: %s broken data !\n", mapreg_txt, buf);
 				continue;
 			}
-			s=script_add_str(buf);
-			mapreg_setregstr((i<<24)|s, buf2, 0);
-		}else{
-			if( sscanf(line+n,"%d",&v)!=1 ){
-				printf("%s: %s broken data !\n",mapreg_txt,buf);
-				continue;
+			if(buf[strlen(buf) - 1] == '$') {
+				char buf2[2048];
+				if(sscanf(line + n, "%[^\n\r]", buf2) != 1) {
+					printf("%s: %s broken data !\n", mapreg_txt, buf);
+					continue;
+				}
+				s = script_add_str(buf);
+				mapreg_setregstr((i << 24) | s, buf2, 0);
+			} else {
+				if(sscanf(line + n, "%d", &v) != 1) {
+					printf("%s: %s broken data !\n", mapreg_txt, buf);
+					continue;
+				}
+				s = script_add_str(buf);
+				mapreg_setreg((i << 24) | s, v, 0);
 			}
-			s=script_add_str(buf);
-			mapreg_setreg((i<<24)|s, v, 0);
 		}
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( mapreg_journal_enable )
@@ -308,7 +312,7 @@ static int mapreg_txt_load(void)
 	}
 #endif
 
-	return 0;
+	return ret;
 }
 
 /*==========================================

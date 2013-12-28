@@ -160,33 +160,36 @@ int partydb_txt_sync(void);
 // パーティデータのロード
 bool partydb_txt_init(void)
 {
-	char line[8192];
-	struct party *p;
 	FILE *fp;
-	int c=0;
+	bool ret = true;
 
-	party_db=numdb_init();
+	party_db = numdb_init();
 
-	if( (fp=fopen(party_txt,"r"))==NULL )
-		return false;
-	while(fgets(line,sizeof(line),fp)){
-		p=(struct party *)aCalloc(1,sizeof(struct party));
-		if(party_fromstr(line,p)==0 && p->party_id>0){
-			if( p->party_id >= party_newid)
-				party_newid=p->party_id+1;
-			if(party_check_empty(p)) {
-				// 空パーティ
-				aFree(p);
+	if((fp = fopen(party_txt, "r")) == NULL) {
+		ret = false;
+	} else {
+		int count = 0;
+		char line[8192];
+
+		while(fgets(line, sizeof(line), fp)) {
+			struct party *p = (struct party *)aCalloc(1, sizeof(struct party));
+			if(party_fromstr(line, p) == 0 && p->party_id > 0) {
+				if(p->party_id >= party_newid)
+					party_newid = p->party_id + 1;
+				if(party_check_empty(p)) {
+					// 空パーティ
+					aFree(p);
+				} else {
+					numdb_insert(party_db, p->party_id, p);
+				}
 			} else {
-				numdb_insert(party_db,p->party_id,p);
+				printf("int_party: broken data [%s] line %d\n", party_txt, count + 1);
+				aFree(p);
 			}
-		} else{
-			printf("int_party: broken data [%s] line %d\n",party_txt,c+1);
-			aFree(p);
+			count++;
 		}
-		c++;
+		fclose(fp);
 	}
-	fclose(fp);
 
 #ifdef TXT_JOURNAL
 	if( party_journal_enable )
@@ -210,7 +213,7 @@ bool partydb_txt_init(void)
 	}
 #endif
 
-	return true;
+	return ret;
 }
 
 // パーティーデータのセーブ用
