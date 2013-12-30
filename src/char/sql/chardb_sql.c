@@ -1133,7 +1133,7 @@ bool chardb_sql_set_online(int char_id, bool is_online)
  */
 bool chardb_sql_build_ranking(void)
 {
-	int i, j, max;
+	int i, j;
 	char buf[128];
 	char **sql_row;
 	bool result = true;
@@ -1141,41 +1141,34 @@ bool chardb_sql_build_ranking(void)
 	memset(&ranking_data, 0, sizeof(ranking_data));
 
 	for(i = 0; i < MAX_RANKING; i++) {
-		max = 0;
-		result = sqldbs_query(
-			&mysql_handle,
-			"SELECT `value`,`char_id` FROM `" GLOBALREG_TABLE "` WHERE `reg` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
+		result = sqldbs_query(&mysql_handle,
+			"SELECT t1.`char_id`, t1.`value`, t2.`name`  FROM `" GLOBALREG_TABLE "` t1 LEFT JOIN `" CHAR_TABLE "` t2 "
+			"ON t1.`char_id` = t2.`char_id` WHERE t1.`reg` = '%s' AND t1.`value` > 0 "
+			"ORDER BY t1.`value` DESC LIMIT 0,%d",
 			strecpy(buf, ranking_reg[i]), MAX_RANKER
 		);
 		if(result == false)
 			break;
 
 		for(j = 0; j < MAX_RANKER && (sql_row = sqldbs_fetch(&mysql_handle)); j++) {
-			ranking_data[i][j].point   = atoi(sql_row[0]);
-			ranking_data[i][j].char_id = atoi(sql_row[1]);
-		}
-		sqldbs_free_result(&mysql_handle);
-		max = j;
-
-		// キャラ名の補完
-		for(j = 0; j < max; j++) {
-			result = sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", ranking_data[i][j].char_id);
-			if(result == false)
-				break;
-
-			if((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
-				strncpy(ranking_data[i][j].name, sql_row[0], 24);
-				ranking_data[i][j].name[23] = '\0';	// force \0 terminal
+			struct Ranking_Data *r = &ranking_data[i][j];
+			r->char_id = atoi(sql_row[0]);
+			r->point   = atoi(sql_row[1]);
+			if(sql_row[2]) {
+				strncpy(r->name, sql_row[2], 24);
+				r->name[23] = '\0';	// force \0 terminal
 			} else {
-				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j + 1);
+				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], r->char_id, j + 1);
 				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
 			}
-			sqldbs_free_result(&mysql_handle);
 		}
+		sqldbs_free_result(&mysql_handle);
 	}
 
-	if(result == false)
+	if(result == false) {
 		printf("char_build_ranking: can't build ranking !!\n");
+		memset(&ranking_data, 0, sizeof(ranking_data));
+	}
 
 	return result;
 }

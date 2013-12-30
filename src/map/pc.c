@@ -7141,13 +7141,13 @@ int pc_setreg(struct map_session_data *sd,int reg,int val)
  * script用文字列変数の値を読む
  *------------------------------------------
  */
-char *pc_readregstr(struct map_session_data *sd,int reg)
+char *pc_readregstr(struct map_session_data *sd, int reg)
 {
 	int i;
 
 	nullpo_retr(0, sd);
 
-	for(i=0; i<sd->regstr_num; i++) {
+	for(i = 0; i < sd->regstr_num; i++) {
 		if(sd->regstr[i].index == reg)
 			return sd->regstr[i].data;
 	}
@@ -7158,21 +7158,22 @@ char *pc_readregstr(struct map_session_data *sd,int reg)
  * script用文字列変数の値を設定
  *------------------------------------------
  */
-int pc_setregstr(struct map_session_data *sd,int reg,const char *str)
+int pc_setregstr(struct map_session_data *sd, int reg, const char *str)
 {
 	int i;
+	size_t size = sizeof(sd->regstr[0].data);
 	struct script_regstr *p;
 
 	nullpo_retr(0, sd);
 
-	if(strlen(str)+1 >= sizeof(sd->regstr[0].data)) {
-		printf("pc_setregstr: string too long !\n");
+	if(strlen(str) >= size - 1) {
+		printf("pc_setregstr: string too long! %z >= %z\n", strlen(str), size - 1);
 		return 0;
 	}
 
-	for(i=0; i<sd->regstr_num; i++) {
+	for(i = 0; i < sd->regstr_num; i++) {
 		if(sd->regstr[i].index == reg) {
-			strncpy(sd->regstr[i].data,str,256);
+			strncpy(sd->regstr[i].data, str, size);
 			return 0;
 		}
 	}
@@ -7182,7 +7183,7 @@ int pc_setregstr(struct map_session_data *sd,int reg,const char *str)
 	p = (struct script_regstr *)aMalloc(sizeof(sd->regstr[0]) * (sd->regstr_num + 1));
 	memcpy(p, sd->regstr, sizeof(sd->regstr[0]) * sd->regstr_num);
 	p[i].index = reg;
-	strncpy(p[i].data, str, 256);
+	strncpy(p[i].data, str, size);
 	sd->regstr_num++;
 
 	aFree(sd->regstr);
@@ -7195,16 +7196,50 @@ int pc_setregstr(struct map_session_data *sd,int reg,const char *str)
  * script用グローバル変数の値を読む
  *------------------------------------------
  */
-int pc_readglobalreg(struct map_session_data *sd,const char *reg)
+int pc_readregistry(struct map_session_data *sd, const char *reg, int type)
 {
-	int i;
+	int i, num = 0;
+	struct global_reg *gr = NULL;
 
 	nullpo_retr(0, sd);
 
-	for(i=0; i<sd->save_reg.global_num; i++) {
-		if(strcmp(sd->save_reg.global[i].str,reg) == 0)
-			return sd->save_reg.global[i].value;
+	switch(type) {
+		case 3:
+			// グローバル変数
+			gr  = sd->save_reg.global;
+			num = sd->save_reg.global_num;
+			break;
+		case 2:
+			// #変数
+			gr  = sd->save_reg.account;
+			num = sd->save_reg.account_num;
+			break;
+		case 1:
+			// ##変数
+			gr  = sd->save_reg.account2;
+			num = sd->save_reg.account2_num;
+			break;
+		default:
+			return 0;
 	}
+
+	for(i = 0; i < num; i++) {
+		if(strcmpi(gr[i].str, reg) == 0)
+			return gr[i].value;
+	}
+	return 0;
+}
+
+/*==========================================
+ * グローバル変数をdirty状態にする
+ *------------------------------------------
+ */
+static int pc_setreg_dirty(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	sd->state.reg_dirty = 1;
+
 	return 0;
 }
 
@@ -7212,160 +7247,74 @@ int pc_readglobalreg(struct map_session_data *sd,const char *reg)
  * script用グローバル変数の値を設定
  *------------------------------------------
  */
-int pc_setglobalreg(struct map_session_data *sd,const char *reg,int val)
+int pc_setregistry(struct map_session_data *sd, const char *reg, int val, int type)
 {
-	int i;
+	int i, max = 0;
+	int *num = NULL;
+	int (*func)(struct map_session_data *) = NULL;
+	struct global_reg *gr = NULL;
 
 	nullpo_retr(0, sd);
 
+	switch(type) {
+		case 3:
+			// グローバル変数
+			gr   = sd->save_reg.global;
+			num  = &sd->save_reg.global_num;
+			max  = GLOBAL_REG_NUM;
+			func = pc_setreg_dirty;
+			break;
+		case 2:
+			// #変数
+			gr   = sd->save_reg.account;
+			num  = &sd->save_reg.account_num;
+			max  = ACCOUNT_REG_NUM;
+			func = intif_saveaccountreg;
+			break;
+		case 1:
+			// ##変数
+			gr   = sd->save_reg.account2;
+			num  = &sd->save_reg.account2_num;
+			max  = ACCOUNT_REG2_NUM;
+			func = chrif_saveaccountreg2;
+			break;
+		default:
+			return 0;
+	}
+
 	if(val == 0) {
-		for(i=0; i<sd->save_reg.global_num; i++) {
-			if(strcmp(sd->save_reg.global[i].str,reg) == 0) {
-				sd->save_reg.global[i] = sd->save_reg.global[sd->save_reg.global_num-1];
-				sd->save_reg.global_num--;
-				sd->state.reg_dirty = 1;
+		// delete registry
+		for(i = 0; i < *num; i++) {
+			if(strcmpi(gr[i].str, reg) == 0) {
+				gr[i] = gr[max - 1];
+				(*num)--;
+				func(sd);
 				break;
 			}
 		}
 		return 0;
 	}
-	for(i=0; i<sd->save_reg.global_num; i++) {
-		if(strcmp(sd->save_reg.global[i].str,reg) == 0) {
-			if(sd->save_reg.global[i].value != val) {
-				sd->save_reg.global[i].value = val;
-				sd->state.reg_dirty = 1;
+	for(i = 0; i < *num; i++) {
+		if(strcmpi(gr[i].str, reg) == 0) {
+			// replace registry
+			if(gr[i].value != val) {
+				gr[i].value = val;
+				func(sd);
 			}
 			return 0;
 		}
 	}
-	if(sd->save_reg.global_num < GLOBAL_REG_NUM) {
-		strncpy(sd->save_reg.global[i].str,reg,32);
-		sd->save_reg.global[i].str[31] = '\0';	// force \0 terminal
-		sd->save_reg.global[i].value = val;
-		sd->save_reg.global_num++;
-		sd->state.reg_dirty = 1;
+	if(*num < max) {
+		// add registry
+		strncpy(gr[i].str, reg, sizeof(gr[i].str));
+		gr[i].str[sizeof(gr[i].str) - 1] = '\0';	// force \0 terminal
+		gr[i].value = val;
+		(*num)++;
+		func(sd);
 		return 0;
 	}
 	if(battle_config.error_log)
-		printf("pc_setglobalreg : couldn't set %s (GLOBAL_REG_NUM = %d)\n", reg, GLOBAL_REG_NUM);
-
-	return 1;
-}
-
-/*==========================================
- * script用アカウント変数の値を読む
- *------------------------------------------
- */
-int pc_readaccountreg(struct map_session_data *sd,const char *reg)
-{
-	int i;
-
-	nullpo_retr(0, sd);
-
-	for(i=0; i<sd->save_reg.account_num; i++) {
-		if(strcmp(sd->save_reg.account[i].str,reg) == 0)
-			return sd->save_reg.account[i].value;
-	}
-	return 0;
-}
-
-/*==========================================
- * script用アカウント変数の値を設定
- *------------------------------------------
- */
-int pc_setaccountreg(struct map_session_data *sd,const char *reg,int val)
-{
-	int i;
-
-	nullpo_retr(0, sd);
-
-	if(val == 0) {
-		for(i=0; i<sd->save_reg.account_num; i++) {
-			if(strcmp(sd->save_reg.account[i].str,reg) == 0) {
-				sd->save_reg.account[i] = sd->save_reg.account[sd->save_reg.account_num-1];
-				sd->save_reg.account_num--;
-				break;
-			}
-		}
-		intif_saveaccountreg(sd);
-		return 0;
-	}
-	for(i=0; i<sd->save_reg.account_num; i++) {
-		if(strcmp(sd->save_reg.account[i].str,reg) == 0) {
-			sd->save_reg.account[i].value = val;
-			intif_saveaccountreg(sd);
-			return 0;
-		}
-	}
-	if(sd->save_reg.account_num < ACCOUNT_REG_NUM) {
-		strncpy(sd->save_reg.account[i].str,reg,32);
-		sd->save_reg.account[i].str[31] = '\0';	// force \0 terminal
-		sd->save_reg.account[i].value = val;
-		sd->save_reg.account_num++;
-		intif_saveaccountreg(sd);
-		return 0;
-	}
-	if(battle_config.error_log)
-		printf("pc_setaccountreg : couldn't set %s (ACCOUNT_REG_NUM = %d)\n", reg, ACCOUNT_REG_NUM);
-
-	return 1;
-}
-
-/*==========================================
- * script用アカウント変数2の値を読む
- *------------------------------------------
- */
-int pc_readaccountreg2(struct map_session_data *sd,const char *reg)
-{
-	int i;
-
-	nullpo_retr(0, sd);
-
-	for(i=0; i<sd->save_reg.account2_num; i++) {
-		if(strcmp(sd->save_reg.account2[i].str,reg) == 0)
-			return sd->save_reg.account2[i].value;
-	}
-	return 0;
-}
-
-/*==========================================
- * script用アカウント変数2の値を設定
- *------------------------------------------
- */
-int pc_setaccountreg2(struct map_session_data *sd,const char *reg,int val)
-{
-	int i;
-
-	nullpo_retr(1, sd);
-
-	if(val == 0) {
-		for(i=0; i<sd->save_reg.account2_num; i++) {
-			if(strcmp(sd->save_reg.account2[i].str,reg) == 0) {
-				sd->save_reg.account2[i] = sd->save_reg.account2[sd->save_reg.account2_num-1];
-				sd->save_reg.account2_num--;
-				break;
-			}
-		}
-		chrif_saveaccountreg2(sd);
-		return 0;
-	}
-	for(i=0; i<sd->save_reg.account2_num; i++) {
-		if(strcmp(sd->save_reg.account2[i].str,reg) == 0) {
-			sd->save_reg.account2[i].value = val;
-			chrif_saveaccountreg2(sd);
-			return 0;
-		}
-	}
-	if(sd->save_reg.account2_num < ACCOUNT_REG2_NUM) {
-		strncpy(sd->save_reg.account2[i].str,reg,32);
-		sd->save_reg.account2[i].str[31] = '\0';	// force \0 terminal
-		sd->save_reg.account2[i].value = val;
-		sd->save_reg.account2_num++;
-		chrif_saveaccountreg2(sd);
-		return 0;
-	}
-	if(battle_config.error_log)
-		printf("pc_setaccountreg2 : couldn't set %s (ACCOUNT_REG2_NUM = %d)\n", reg, ACCOUNT_REG2_NUM);
+		printf("pc_setregistry : couldn't set %s to char_id %d (MAX = %d)\n", reg, sd->status.char_id, max);
 
 	return 1;
 }
