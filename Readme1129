@@ -1,4 +1,18 @@
 ----------------------------------------
+//1165 [2013/12/31] by Rayce
+
+・PRE_RENEWAL が定義されていないとき、コンパイル時に「warning: unused variable」の
+  警告が発生するのを修正（battle.c）
+
+・ジャーナル有効時、mapreg_txt_sync がstatic無しで再定義されているためにコンパイル
+  エラーが発生する問題を修正（mapreg_txt.c）
+
+・Auriga-1164以降、gccコンパイル時に「unknown conversion type character」の警告が
+  発生するのを修正（pc.c）
+
+・[SQL] gccコンパイル時に「unused variable」の警告が発生するのを修正（account_sql.c）
+
+----------------------------------------
 //1164 [2013/12/31] by Rayce
 
 ・グローバル変数は大文字/小文字を区別しないように変更（pc.c）

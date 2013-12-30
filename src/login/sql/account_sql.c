@@ -478,8 +478,7 @@ void account_sql_final(void)
  */
 bool account_sql_init(void)
 {
-	bool is_connect, result = false;
-	const char *delayed = "";
+	bool is_connect;
 
 	// DB connection start
 	is_connect = sqldbs_connect(&mysql_handle, config.login_server_ip, config.login_server_id, config.login_server_pw, config.login_server_db, config.login_server_port, config.login_server_charset, config.login_server_keepalive, "LOGIN");

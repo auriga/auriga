@@ -7167,7 +7167,7 @@ int pc_setregstr(struct map_session_data *sd, int reg, const char *str)
 	nullpo_retr(0, sd);
 
 	if(strlen(str) >= size - 1) {
-		printf("pc_setregstr: string too long! %z >= %z\n", strlen(str), size - 1);
+		printf("pc_setregstr: string too long! %zd >= %zd\n", strlen(str), size - 1);
 		return 0;
 	}
 

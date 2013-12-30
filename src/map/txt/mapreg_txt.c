@@ -241,7 +241,7 @@ static void mapreg_journal_convert( struct journal_header *jhd, void *buf )
 	return;
 }
 
-int mapreg_txt_sync(void);
+static int mapreg_txt_sync(void);
 #endif
 
 /*==========================================

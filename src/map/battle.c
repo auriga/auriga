@@ -2205,7 +2205,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	else {
 		int damage_ot = 0, damage_ot2 = 0;
+#ifdef PRE_RENEWAL
 		int tk_power_damage = 0, tk_power_damage2 = 0;
+#endif
 
 		// 回避できなかったときのみstep9〜18のダメージ計算を行う
 		wd.dmg_lv = ATK_DEF;
