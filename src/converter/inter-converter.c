@@ -77,21 +77,14 @@ static int accreg_tosql(struct accreg *reg)
 	int j;
 	char temp_str[128];
 
-	sprintf(tmp_sql,"DELETE FROM `accountreg` WHERE `account_id`='%d'",reg->account_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `accountreg`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `accountreg` WHERE `account_id`='%d'", reg->account_id);
 
 	for(j=0; j<reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
-			sprintf(
-				tmp_sql,
+			sqldbs_query(&mysql_handle,
 				"INSERT INTO `accountreg` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
 				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
 			);
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `accountreg`)- %s\n", mysql_error(&mysql_handle) );
-			}
 		}
 	}
 
@@ -141,22 +134,15 @@ static int status_tosql(struct scdata *sc)
 {
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `status_change` WHERE `char_id`='%d'",sc->char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `status_change`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `status_change` WHERE `char_id`='%d'", sc->char_id);
 
 	for(i=0; i<sc->count; i++) {
-		sprintf(
-			tmp_sql,
+		sqldbs_query(&mysql_handle,
 			"INSERT INTO `status_change` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`) "
 			"VALUES ('%d','%d','%d','%d','%d','%d','%d','%d')",
 			sc->char_id, sc->account_id, sc->data[i].type,
 			sc->data[i].val1, sc->data[i].val2, sc->data[i].val3, sc->data[i].val4, sc->data[i].tick
 		);
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `status_change`)- %s\n", mysql_error(&mysql_handle));
-		}
 	}
 
 	return 0;
@@ -184,10 +170,8 @@ static int mail_fromstr(char *str,struct mail *m)
 // メールデータの削除
 static int mail_delete_fromsql(int char_id)
 {
-	sprintf(tmp_sql, "DELETE FROM `mail` WHERE `char_id` = '%d'", char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `mail`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `mail` WHERE `char_id` = '%d'", char_id);
+
 	return 0;
 }
 
@@ -197,13 +181,10 @@ static int mail_tosql(struct mail* m)
 	mail_delete_fromsql(m->char_id);
 
 	// `mail` (`char_id`, `account_id`, `rates`, `store`)
-	sprintf(
-		tmp_sql, "INSERT INTO `mail` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
+	sqldbs_query(&mysql_handle,
+		"INSERT INTO `mail` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
 		m->char_id, m->account_id, m->rates, m->store
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `mail`)- %s\n", mysql_error(&mysql_handle));
-	}
 
 	return 0;
 }
@@ -265,13 +246,9 @@ static int mailbox_tosql(struct mail_data *md,const char *body_data)
 {
 	char buf[3][256];
 
-	sprintf(tmp_sql, "DELETE FROM `mail_data` WHERE `char_id` = '%d' AND `number` = '%d'", md->char_id, md->mail_num);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `mail_data`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `mail_data` WHERE `char_id` = '%d' AND `number` = '%d'", md->char_id, md->mail_num);
 
-	sprintf(
-		tmp_sql,
+	sqldbs_query(&mysql_handle,
 		"INSERT INTO `mail_data` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
 		"`times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
@@ -282,9 +259,6 @@ static int mailbox_tosql(struct mail_data *md,const char *body_data)
 		md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
 		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
 	);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `mail_data`)- %s\n", mysql_error(&mysql_handle));
-	}
 
 	return 0;
 }

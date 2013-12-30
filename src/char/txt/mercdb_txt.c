@@ -28,21 +28,26 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "mercdb_txt.h"
 
 static struct dbt *merc_db = NULL;
 
-static char merc_txt[1024]="save/mercenary.txt";
+static char merc_txt[1024] = "save/mercenary.txt";
 static int merc_newid = 100;
 
 #ifdef TXT_JOURNAL
 static int merc_journal_enable = 1;
 static struct journal merc_journal;
-static char merc_journal_file[1024]="./save/mercenary.journal";
+static char merc_journal_file[1024] = "./save/mercenary.journal";
 static int merc_journal_cache = 1000;
 #endif
 
+/*==========================================
+ * 設定ファイルの読込
+ *------------------------------------------
+ */
 int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"merc_txt")==0){
@@ -66,62 +71,69 @@ int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 	return 1;
 }
 
-static int merc_tostr(char *str,struct mmo_mercstatus *m)
+/*==========================================
+ * 傭兵データを文字列へ変換
+ *------------------------------------------
+ */
+static int merc_tostr(char *str, struct mmo_mercstatus *m)
 {
 	char *str_p = str;
 
-	if(!m) return 0;
+	nullpo_retr(1, m);
 
-	str_p += sprintf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
-		m->merc_id,m->class_,
-		m->account_id,m->char_id,
-		m->hp,m->sp,m->kill_count,m->limit);
+	str_p += sprintf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
+		m->merc_id, m->class_, m->account_id, m->char_id,
+		m->hp, m->sp, m->kill_count, m->limit);
 
-	*(str_p++)='\t';
+	*(str_p++) = '\t';
 
-	*str_p='\0';
+	*str_p = '\0';
 	return 0;
 }
 
-static int merc_fromstr(char *str,struct mmo_mercstatus *m)
+/*==========================================
+ * 傭兵データを文字列から変換
+ *------------------------------------------
+ */
+static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 {
 	int set, dummy;
 	int tmp_int[8];
 	char tmp_str[256];
 
-	if(!m) return 0;
+	nullpo_retr(1, m);
 
-	memset(m,0,sizeof(struct mmo_mercstatus));
+	memset(m, 0, sizeof(struct mmo_mercstatus));
 
 	// Auriga-0945以降の形式
-	set=sscanf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
+	set = sscanf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
 		&tmp_int[0],&tmp_int[1],
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7]);
 
-	if(set!=8)
+	if(set != 8)
 	{
 		// Auriga-0597以降の形式
-		set=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
+		set = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
 			&tmp_int[0],&tmp_int[1],tmp_str,
 			&tmp_int[2],&tmp_int[3],
 			&dummy,&dummy,&tmp_int[4],&dummy,&tmp_int[5],
 			&dummy,&dummy,&dummy,&dummy,&dummy,&dummy,
 			&tmp_int[6],&tmp_int[7]);
-		if(set!=18)
+		if(set != 18)
 		{
 			return 1;
 		}
 	}
 
-	m->merc_id      = tmp_int[0];
-	m->class_       = tmp_int[1];
-	m->account_id   = tmp_int[2];
-	m->char_id      = tmp_int[3];
-	m->hp           = tmp_int[4];
-	m->sp           = tmp_int[5];
-	m->kill_count   = tmp_int[6];
-	m->limit        = (unsigned int)tmp_int[7];
+	m->merc_id    = tmp_int[0];
+	m->class_     = tmp_int[1];
+	m->account_id = tmp_int[2];
+	m->char_id    = tmp_int[3];
+	m->hp         = tmp_int[4];
+	m->sp         = tmp_int[5];
+	m->kill_count = tmp_int[6];
+	m->limit      = (unsigned int)tmp_int[7];
 
 	return 0;
 }
@@ -169,7 +181,11 @@ int merc_journal_rollforward( int key, void* buf, int flag )
 int mercdb_txt_sync(void);
 #endif
 
-bool mercdb_txt_init(void)
+/*==========================================
+ * 傭兵データファイルの読み込み
+ *------------------------------------------
+ */
+static bool mercdb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -222,14 +238,19 @@ bool mercdb_txt_init(void)
 	return ret;
 }
 
-static int mercdb_txt_sync_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
+static int mercdb_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
 	FILE *fp;
 
-	merc_tostr(line,(struct mmo_mercstatus *)data);
-	fp=va_arg(ap,FILE *);
-	fprintf(fp,"%s" RETCODE,line);
+	merc_tostr(line, (struct mmo_mercstatus *)data);
+	fp = va_arg(ap, FILE *);
+	fprintf(fp, "%s" RETCODE, line);
+
 	return 0;
 }
 
@@ -241,12 +262,12 @@ int mercdb_txt_sync(void)
 	if( !merc_db )
 		return 1;
 
-	if( (fp=lock_fopen(merc_txt,&lock))==NULL ){
-		printf("int_merc: cant write [%s] !!! data is lost !!!\n",merc_txt);
+	if( (fp = lock_fopen(merc_txt, &lock)) == NULL ) {
+		printf("int_merc: cant write [%s] !!! data is lost !!!\n", merc_txt);
 		return 1;
 	}
-	numdb_foreach(merc_db,mercdb_txt_sync_sub,fp);
-	lock_fclose(fp,merc_txt,&lock);
+	numdb_foreach(merc_db, mercdb_txt_sync_sub, fp);
+	lock_fclose(fp, merc_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -260,16 +281,20 @@ int mercdb_txt_sync(void)
 	return 0;
 }
 
+/*==========================================
+ * 傭兵削除
+ *------------------------------------------
+ */
 bool mercdb_txt_delete(int merc_id)
 {
-	struct mmo_mercstatus *p = (struct mmo_mercstatus *)numdb_search(merc_db,merc_id);
+	struct mmo_mercstatus *p = (struct mmo_mercstatus *)numdb_search(merc_db, merc_id);
 
 	if(p == NULL)
 		return false;
 
-	numdb_erase(merc_db,merc_id);
+	numdb_erase(merc_db, merc_id);
 	aFree(p);
-	printf("merc_id: %d deleted\n",merc_id);
+	printf("merc_id: %d deleted\n", merc_id);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -279,20 +304,31 @@ bool mercdb_txt_delete(int merc_id)
 	return true;
 }
 
+/*==========================================
+ * 傭兵IDから傭兵データのロード
+ *------------------------------------------
+ */
 const struct mmo_mercstatus* mercdb_txt_load(int merc_id)
 {
-	return (const struct mmo_mercstatus *)numdb_search(merc_db,merc_id);
+	return (const struct mmo_mercstatus *)numdb_search(merc_db, merc_id);
 }
 
-bool mercdb_txt_save(struct mmo_mercstatus* p2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool mercdb_txt_save(struct mmo_mercstatus *p2)
 {
-	struct mmo_mercstatus* p1 = (struct mmo_mercstatus *)numdb_search(merc_db,p2->merc_id);
+	struct mmo_mercstatus *p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_mercstatus *)numdb_search(merc_db, p2->merc_id);
 	if(p1 == NULL) {
 		p1 = (struct mmo_mercstatus *)aMalloc(sizeof(struct mmo_mercstatus));
-		numdb_insert(merc_db,p2->merc_id,p1);
+		numdb_insert(merc_db, p2->merc_id, p1);
 	}
-	memcpy(p1,p2,sizeof(struct mmo_mercstatus));
+	memcpy(p1, p2, sizeof(struct mmo_mercstatus));
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -301,16 +337,29 @@ bool mercdb_txt_save(struct mmo_mercstatus* p2)
 	return true;
 }
 
+/*==========================================
+ * 傭兵作成
+ *------------------------------------------
+ */
 bool mercdb_txt_new(struct mmo_mercstatus *p2)
 {
-	struct mmo_mercstatus *p1 = (struct mmo_mercstatus *)aMalloc(sizeof(struct mmo_mercstatus));
+	struct mmo_mercstatus *p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_mercstatus *)aMalloc(sizeof(struct mmo_mercstatus));
 	p2->merc_id = merc_newid++;
-	memcpy(p1,p2,sizeof(struct mmo_mercstatus));
-	numdb_insert(merc_db,p2->merc_id,p1);
+
+	memcpy(p1, p2, sizeof(struct mmo_mercstatus));
+	numdb_insert(merc_db, p2->merc_id, p1);
+
 	return true;
 }
 
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int mercdb_txt_final_sub(void *key,void *data,va_list ap)
 {
 	struct mmo_mercstatus *p = (struct mmo_mercstatus *)data;
@@ -323,7 +372,7 @@ static int mercdb_txt_final_sub(void *key,void *data,va_list ap)
 void mercdb_txt_final(void)
 {
 	if(merc_db)
-		numdb_final(merc_db,mercdb_txt_final_sub);
+		numdb_final(merc_db, mercdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
@@ -331,4 +380,13 @@ void mercdb_txt_final(void)
 		journal_final( &merc_journal );
 	}
 #endif
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool mercdb_txt_init(void)
+{
+	return mercdb_txt_read();
 }

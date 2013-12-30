@@ -28,53 +28,65 @@
 #include "malloc.h"
 #include "sqldbs.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "partydb_sql.h"
 
 static struct dbt *party_db = NULL;
 
-bool partydb_sql_init(void)
+/*==========================================
+ * 設定ファイルの読込
+ *------------------------------------------
+ */
+int partydb_sql_config_read_sub(const char *w1,const char *w2)
 {
-	party_db = numdb_init();
-	return true;
+	return 0;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 int partydb_sql_sync(void)
 {
 	// nothing to do
 	return 0;
 }
 
+/*==========================================
+ * パーティ名からパーティデータをロード
+ *------------------------------------------
+ */
 const struct party* partydb_sql_load_str(const char *str)
 {
-	int  id_num = -1;
 	char buf[256];
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
 
-	sqldbs_query(&mysql_handle, "SELECT `party_id` FROM `" PARTY_TABLE "` WHERE `name` = '%s'", strecpy(buf,str));
+	if(sqldbs_query(&mysql_handle, "SELECT `party_id` FROM `" PARTY_TABLE "` WHERE `name` = '%s'", strecpy(buf, str)))
+	{
+		int id_num = -1;
+		char **sql_row = sqldbs_fetch(&mysql_handle);
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		sql_row = sqldbs_fetch(sql_res);
 		if(sql_row) {
 			id_num = atoi(sql_row[0]);
 		}
-		sqldbs_free_result(sql_res);
-	}
-	if(id_num >= 0) {
-		return partydb_sql_load_num(id_num);
+		sqldbs_free_result(&mysql_handle);
+
+		if(id_num >= 0)
+			return partydb_sql_load_num(id_num);
 	}
 	return NULL;
 }
 
+/*==========================================
+ * パーティIDからパーティデータをロード
+ *------------------------------------------
+ */
 const struct party* partydb_sql_load_num(int party_id)
 {
-	int leader_id=0;
-	bool is_success;
-	struct party *p = (struct party *)numdb_search(party_db,party_id);
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
+	int i, leader_id = 0;
+	bool result = false;
+	char **sql_row;
+	struct party *p = (struct party *)numdb_search(party_db, party_id);
 
 	if(p && p->party_id == party_id) {
 		return p;
@@ -85,15 +97,13 @@ const struct party* partydb_sql_load_num(int party_id)
 	}
 	memset(p, 0, sizeof(struct party));
 
-	is_success = sqldbs_query(&mysql_handle, "SELECT `name`,`exp`,`item`,`leader_id` FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id);
-	if(!is_success) {
+	result = sqldbs_query(&mysql_handle, "SELECT `name`,`exp`,`item`,`leader_id` FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id);
+	if(result == false) {
 		p->party_id = -1;
 		return NULL;
 	}
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
-		sql_row     = sqldbs_fetch(sql_res);
+	if((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 		p->party_id = party_id;
 		strncpy(p->name, sql_row[0], 24);
 		p->name[23] = '\0';	// force \0 terminal
@@ -101,85 +111,94 @@ const struct party* partydb_sql_load_num(int party_id)
 		p->item     = atoi(sql_row[2]);
 		leader_id   = atoi(sql_row[3]);
 	} else {
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 		p->party_id = -1;
 		return NULL;
 	}
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle);
 
 	// Load members
-	is_success = sqldbs_query(&mysql_handle, "SELECT `account_id`,`char_id`,`name` FROM `" CHAR_TABLE "` WHERE `party_id`='%d'", party_id);
-	if(!is_success) {
+	result = sqldbs_query(&mysql_handle, "SELECT `account_id`,`char_id`,`name` FROM `" CHAR_TABLE "` WHERE `party_id`='%d'", party_id);
+	if(result == false) {
 		p->party_id = -1;
 		return NULL;
 	}
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		int i;
-		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
-			struct party_member *m = &p->member[i];
-			m->account_id = atoi(sql_row[0]);
-			m->char_id    = atoi(sql_row[1]);
-			m->leader     = (m->account_id == leader_id) ? 1 : 0;
-			strncpy(m->name,sql_row[2],24);
-			m->name[23] = '\0';	// force \0 terminal
-		}
+
+	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)); i++) {
+		struct party_member *m = &p->member[i];
+		m->account_id = atoi(sql_row[0]);
+		m->char_id    = atoi(sql_row[1]);
+		m->leader     = (m->account_id == leader_id) ? 1 : 0;
+		strncpy(m->name, sql_row[2], 24);
+		m->name[23] = '\0';	// force \0 terminal
 	}
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle);
 
 	return p;
 }
 
-bool partydb_sql_save(struct party* p2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool partydb_sql_save(struct party *p2)
 {
-	const struct party *p1 = partydb_sql_load_num(p2->party_id);
+	const struct party *p1;
 	char t_name[64];
+	bool result = true;
 
-	if(p1 == NULL) return 0;
+	nullpo_retr(false, p2);
 
-	if(strcmp(p1->name,p2->name) || p1->exp != p2->exp || p1->item != p2->item) {
-		sqldbs_query(
-			&mysql_handle,
+	p1 = partydb_sql_load_num(p2->party_id);
+	if(p1 == NULL)
+		return false;
+
+	if(strcmp(p1->name, p2->name) || p1->exp != p2->exp || p1->item != p2->item) {
+		result = sqldbs_query(&mysql_handle,
 			"UPDATE `" PARTY_TABLE "` SET `name`='%s', `exp`='%d', `item`='%d' WHERE `party_id`='%d'",
-			strecpy(t_name,p2->name),p2->exp,p2->item,p2->party_id
+			strecpy(t_name, p2->name), p2->exp, p2->item, p2->party_id
 		);
+		if(result == false)
+			return false;
 	}
 
 	{
-		struct party *p3 = (struct party *)numdb_search(party_db,p2->party_id);
+		// cache copy
+		struct party *p3 = (struct party *)numdb_search(party_db, p2->party_id);
 		if(p3)
-			memcpy(p3,p2,sizeof(struct party));
+			memcpy(p3, p2, sizeof(struct party));
 	}
-	return true;
+	return result;
 }
 
+/*==========================================
+ * パーティ削除
+ *------------------------------------------
+ */
 bool partydb_sql_delete(int party_id)
 {
-	struct party *p = (struct party *)numdb_search(party_db,party_id);
+	struct party *p;
 
+	if( sqldbs_query(&mysql_handle, "DELETE FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id) == false )
+		return false;
+
+	p = (struct party *)numdb_erase(party_db, party_id);
 	if(p) {
-		numdb_erase(party_db,p->party_id);
 		aFree(p);
 	}
-
-	sqldbs_query(&mysql_handle, "DELETE FROM `" PARTY_TABLE "` WHERE `party_id`='%d'", party_id);
-
 	return true;
 }
 
-int partydb_sql_config_read_sub(const char *w1,const char *w2)
-{
-	return 0;
-}
-
+/*==========================================
+ * パーティ作成
+ *------------------------------------------
+ */
 bool partydb_sql_new(struct party *p)
 {
-	int i = 0;
-	bool is_success;
-	int leader_id = -1;
+	int i, leader_id = -1;
+	bool result = false;
 	char t_name[64];
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
+	char **sql_row;
 
 	for(i = 0; i < MAX_PARTY; i++) {
 		if(p->member[i].account_id > 0 && p->member[i].leader) {
@@ -187,37 +206,39 @@ bool partydb_sql_new(struct party *p)
 			break;
 		}
 	}
-	if ( leader_id == -1 ) { return 0; }
-	// パーティIDを読み出す
-	is_success = sqldbs_query(&mysql_handle, "SELECT MAX(`party_id`) FROM `" PARTY_TABLE "`");
-	if(!is_success)
+	if(leader_id < 0)
 		return false;
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if(!sql_res)
+	result = sqldbs_query(&mysql_handle, "SELECT MAX(`party_id`) FROM `" PARTY_TABLE "`");
+	if(result == false)
 		return false;
 
-	sql_row = sqldbs_fetch(sql_res);
+	sql_row = sqldbs_fetch(&mysql_handle);
 	if(sql_row[0]) {
 		p->party_id = atoi(sql_row[0]) + 1;
 	} else {
 		p->party_id = 100;
 	}
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle);
 
 	// DBに挿入
-	sqldbs_query(
-		&mysql_handle,
+	result = sqldbs_query(&mysql_handle,
 		"INSERT INTO `" PARTY_TABLE "` (`party_id`, `name`, `exp`, `item`, `leader_id`) "
 		"VALUES ('%d','%s', '%d', '%d', '%d')",
-		p->party_id, strecpy(t_name,p->name), p->exp, p->item,leader_id
+		p->party_id, strecpy(t_name, p->name), p->exp, p->item,leader_id
 	);
+	if(result == false)
+		return false;
 
-	numdb_insert(party_db,p->party_id,p);
+	numdb_insert(party_db, p->party_id, p);
 	return true;
 }
 
-static int partydb_sql_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int partydb_sql_final_sub(void *key, void *data, va_list ap)
 {
 	struct party *p = (struct party *)data;
 
@@ -228,5 +249,15 @@ static int partydb_sql_final_sub(void *key,void *data,va_list ap)
 
 void partydb_sql_final(void)
 {
-	numdb_final(party_db,partydb_sql_final_sub);
+	numdb_final(party_db, partydb_sql_final_sub);
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool partydb_sql_init(void)
+{
+	party_db = numdb_init();
+	return true;
 }

@@ -54,8 +54,8 @@ bool chardb_txt_set_online(int char_id, bool is_online);
 #define chardb_nick2chardata   chardb_txt_nick2chardata
 #define chardb_build_ranking   chardb_txt_build_ranking
 #define chardb_config_read_sub chardb_txt_config_read_sub
-#define chardb_set_online(id)  chardb_txt_set_online(id,true)
-#define chardb_set_offline(id) chardb_txt_set_online(id,false)
+#define chardb_set_online(id)  chardb_txt_set_online((id),true)
+#define chardb_set_offline(id) chardb_txt_set_online((id),false)
 #define chardb_build_ranking   chardb_txt_build_ranking
 
 #endif /* _CHARDB_TXT_H_ */

@@ -41,7 +41,7 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 	int i;
 	const char *tablename;
 	const char *selectoption;
-	char *p;
+	char *p, tmp_sql[65536 * 2];
 	char sep = ' ';
 
 	switch (tableswitch) {
@@ -67,10 +67,7 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 	}
 
 	// delete
-	sprintf(tmp_sql,"DELETE FROM `%s` WHERE `%s`='%d'",tablename,selectoption,id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id);
 
 	p  = tmp_sql;
 	p += sprintf(
@@ -90,9 +87,7 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `%s`)- %s\n", tablename, mysql_error(&mysql_handle));
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	return 0;
@@ -361,15 +356,12 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 {
 	char sep = ' ';
 	char buf[256];
-	char *p;
+	char *p, tmp_sql[65536];
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `char_data` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `char_data`)- %s\n",mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `char_data` WHERE `char_id`='%d'", char_id);
 
-	sprintf(tmp_sql,
+	sqldbs_query(&mysql_handle,
 		"INSERT INTO `char_data` SET `char_id` = '%d', `account_id` = '%d', `char_num` = '%d', `name` = '%s', `class` = '%d', `base_level` = '%d', `job_level` = '%d',"
 		"`base_exp` = '%d', `job_exp` = '%d', `zeny` = '%d',"
 		"`max_hp` = '%d', `hp` = '%d', `max_sp` = '%d', `sp` = '%d', `status_point` = '%d', `skill_point` = '%d',"
@@ -390,38 +382,27 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 		st->partner_id, st->parent_id[0], st->parent_id[1], st->baby_id,
 		st->delete_date, st->refuse_partyinvite, st->show_equip, st->font
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `char_data`)- %s\n", mysql_error(&mysql_handle) );
-	}
 
 	// memo
-	sprintf(tmp_sql,"DELETE FROM `memo` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `memo`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `memo` WHERE `char_id`='%d'", char_id);
 
 	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(st->memo_point[i].map[0]) {
-			sprintf(
-				tmp_sql,"INSERT INTO `memo`(`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `memo`(`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
 				char_id, i, strecpy(buf,st->memo_point[i].map), st->memo_point[i].x, st->memo_point[i].y
 			);
-			if(mysql_query(&mysql_handle, tmp_sql))
-				printf("DB server Error (insert `memo`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
 	// inventory
-	char_sql_saveitem(st->inventory,MAX_INVENTORY,st->char_id,TABLE_INVENTORY);
+	char_sql_saveitem(st->inventory, MAX_INVENTORY, st->char_id, TABLE_INVENTORY);
 
 	// cart
-	char_sql_saveitem(st->cart,MAX_CART,st->char_id,TABLE_CART);
+	char_sql_saveitem(st->cart, MAX_CART, st->char_id, TABLE_CART);
 
 	// skill
-	sprintf(tmp_sql,"DELETE FROM `skill` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `skill`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `skill` WHERE `char_id`='%d'", char_id);
 
 	p  = tmp_sql;
 	p += sprintf(p,"INSERT INTO `skill` (`char_id`, `id`, `lv`) VALUES");
@@ -434,59 +415,42 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `skill`)- %s\n", mysql_error(&mysql_handle));
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	// feel_info
-	sprintf(tmp_sql,"DELETE FROM `feel_info` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `feel_info`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `feel_info` WHERE `char_id`='%d'", char_id);
 
 	for(i = 0; i < 3; i++) {
 		if(st->feel_map[i][0]) {
-			sprintf(
-				tmp_sql,"INSERT INTO `feel_info`(`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `feel_info`(`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
 				char_id, strecpy(buf,st->feel_map[i]), i
 			);
-			if(mysql_query(&mysql_handle, tmp_sql))
-				printf("DB server Error (insert `feel_info`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
 	// hotkey
-	sprintf(tmp_sql,"DELETE FROM `hotkey` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `hotkey`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `hotkey` WHERE `char_id`='%d'", char_id);
 
 	for(i = 0; i < MAX_HOTKEYS; i++) {
 		if(st->hotkey[i].id > 0) {
-			sprintf(
-				tmp_sql,"INSERT INTO `hotkey`(`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `hotkey`(`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
 				char_id, i, st->hotkey[i].type, st->hotkey[i].id, st->hotkey[i].lv
 			);
-			if(mysql_query(&mysql_handle, tmp_sql))
-				printf("DB server Error (insert `hotkey`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
 	// mercenary
-	sprintf(tmp_sql,"DELETE FROM `mercenary` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `mercenary`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `mercenary` WHERE `char_id`='%d'", char_id);
 
 	for(i = 0; i < MAX_MERC_TYPE; i++) {
 		if(st->merc_fame[i] > 0 || st->merc_call[i] > 0) {
-			sprintf(
-				tmp_sql,"INSERT INTO `mercenary`(`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `mercenary`(`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
 				char_id, i, st->merc_fame[i], st->merc_call[i]
 			);
-			if(mysql_query(&mysql_handle, tmp_sql))
-				printf("DB server Error (insert `mercenary`)- %s\n", mysql_error(&mysql_handle));
 		}
 	}
 
@@ -499,20 +463,14 @@ static int mmo_char_reg_tosql(int char_id, int num, struct global_reg *reg)
 	char buf[256];
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `globalreg` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (delete `globalreg`)- %s\n", mysql_error(&mysql_handle));
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `globalreg` WHERE `char_id`='%d'", char_id);
 
 	for(i=0;i<num;i++){
 		if(reg[i].str[0] && reg[i].value != 0) {
-			sprintf(
-				tmp_sql,"INSERT INTO `globalreg` (`char_id`, `reg`, `value`) VALUES ('%d', '%s', '%d')",
+			sqldbs_query(&mysql_handle,
+				"INSERT INTO `globalreg` (`char_id`, `reg`, `value`) VALUES ('%d', '%s', '%d')",
 				char_id, strecpy(buf,reg[i].str), reg[i].value
 			);
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (insert `globalreg`)- %s\n", mysql_error(&mysql_handle));
-			}
 		}
 	}
 
@@ -525,17 +483,13 @@ static int mmo_friend_tosql(int char_id, struct mmo_charstatus *st)
 	char buf[256];
 	int i;
 
-	sprintf(tmp_sql,"DELETE FROM `friend` WHERE `char_id`='%d'",char_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `friend`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `friend` WHERE `char_id`='%d'", char_id);
 
 	for(i=0; i < st->friend_num; i++) {
-		sprintf(tmp_sql,"INSERT INTO `friend` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
-			st->char_id, st->friend_data[i].account_id, st->friend_data[i].char_id, strecpy(buf,st->friend_data[i].name) );
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (insert `friend`)- %s\n", mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle,
+			"INSERT INTO `friend` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
+			st->char_id, st->friend_data[i].account_id, st->friend_data[i].char_id, strecpy(buf,st->friend_data[i].name)
+		);
 	}
 
 	return 0;
@@ -586,21 +540,14 @@ static int pet_tosql(int pet_id, struct s_pet *p)
 {
 	char t_name[64];
 
-	sprintf(tmp_sql, "DELETE FROM `pet` WHERE `pet_id` = '%d'", pet_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `pet`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `pet` WHERE `pet_id` = '%d'", pet_id);
 
-	sprintf(
-		tmp_sql,
+	sqldbs_query(&mysql_handle,
 		"INSERT INTO `pet` (`pet_id`, `class`, `name`, `account_id`, `char_id`, `level`, `egg_id`, `equip`, `intimate`, `hungry`, `rename_flag`, `incubate`) "
 		"VALUES ('%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
 		p->pet_id, p->class_, strecpy(t_name,p->name), p->account_id, p->char_id, p->level, p->egg_id,
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `pet`)- %s\n", mysql_error(&mysql_handle) );
-	}
 
 	return 0;
 }
@@ -702,20 +649,13 @@ static int party_tosql(struct party *p)
 		}
 	}
 
-	sprintf(tmp_sql,"DELETE FROM `party` WHERE `party_id`='%d'",p->party_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `party`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `party` WHERE `party_id`='%d'", p->party_id);
 
-	sprintf(
-		tmp_sql,
+	sqldbs_query(&mysql_handle,
 		"INSERT INTO `party`  (`party_id`, `name`, `exp`, `item`, `leader_id`) "
 		"VALUES ('%d','%s', '%d', '%d', '%d')",
-		p->party_id,strecpy(t_name,p->name), p->exp, p->item,leader_id
+		p->party_id,strecpy(t_name,p->name), p->exp, p->item, leader_id
 	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (inset `party`)- %s\n", mysql_error(&mysql_handle) );
-	}
 
 	return 0;
 }
@@ -887,16 +827,13 @@ static int guild_tosql(struct guild* g)
 {
 	int  i;
 	char buf[256],buf2[256],buf3[256],buf4[256];
+	char tmp_sql[65536];
+	char *p = tmp_sql;
 	char sep;
-	char *p;
 
 	// 基本データ
-	sprintf(tmp_sql, "DELETE FROM `guild` WHERE `guild_id`='%d'", g->guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild` WHERE `guild_id`='%d'", g->guild_id);
 
-	p = tmp_sql;
 	p += sprintf(
 		tmp_sql,"INSERT INTO `guild` "
 		"(`guild_id`, `name`, `master`, `guild_lv`, `connect_member`, `max_member`, `average_lv`, `exp`,"
@@ -911,15 +848,10 @@ static int guild_tosql(struct guild* g)
 	}
 	p += sprintf(p,"')");
 
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `guild`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_simplequery(&mysql_handle, tmp_sql);
 
 	// メンバー
-	sprintf(tmp_sql, "DELETE FROM `guild_member` WHERE `guild_id`='%d'", g->guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_member`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_member` WHERE `guild_id`='%d'", g->guild_id);
 
 	p  = tmp_sql;
 	p += sprintf(
@@ -942,16 +874,11 @@ static int guild_tosql(struct guild* g)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle,tmp_sql)) {
-			printf("DB server Error (insert `guild_member`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	// 役職
-	sprintf(tmp_sql, "DELETE FROM `guild_position` WHERE `guild_id`='%d'", g->guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_position`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_position` WHERE `guild_id`='%d'", g->guild_id);
 
 	p  = tmp_sql;
 	p += sprintf(
@@ -968,19 +895,11 @@ static int guild_tosql(struct guild* g)
 		sep = ',';
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `guild_position`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	// 同盟リスト
-	sprintf(
-		tmp_sql,
-		"DELETE FROM `guild_alliance` WHERE `guild_id`='%d'",g->guild_id
-	);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_alliance` WHERE `guild_id`='%d'", g->guild_id);
 
 	p  = tmp_sql;
 	p += sprintf(
@@ -1000,16 +919,12 @@ static int guild_tosql(struct guild* g)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `guild_alliance`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	// 追放リスト
-	sprintf(tmp_sql, "DELETE FROM `guild_expulsion` WHERE `guild_id`='%d'", g->guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_expulsion` WHERE `guild_id`='%d'", g->guild_id);
+
 	p  = tmp_sql;
 	p += sprintf(
 		tmp_sql,
@@ -1027,16 +942,12 @@ static int guild_tosql(struct guild* g)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `guild_expulsion`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	// ギルドスキル
-	sprintf(tmp_sql,"DELETE FROM `guild_skill` WHERE `guild_id`='%d'",g->guild_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_skill` WHERE `guild_id`='%d'", g->guild_id);
+
 	p  = tmp_sql;
 	p += sprintf(
 		tmp_sql,
@@ -1053,9 +964,7 @@ static int guild_tosql(struct guild* g)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `guild_skill`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	return 0;
@@ -1096,23 +1005,15 @@ static int guildcastle_fromstr(char *str,struct guild_castle *gc)
 // ギルド城データを書き込み
 static int guildcastle_tosql(struct guild_castle *gc)
 {
-	sprintf(tmp_sql, "DELETE FROM `guild_castle` WHERE `castle_id` = '%d'", gc->castle_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `guild_castle`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `guild_castle` WHERE `castle_id` = '%d'", gc->castle_id);
 
-	sprintf(
-		tmp_sql,
+	sqldbs_query(&mysql_handle,
 		"INSERT INTO `guild_castle` (`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, "
 		"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`) "
 		"VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
 		gc->castle_id, gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime, gc->payTime, gc->createTime,
 		gc->visibleC, gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible, gc->guardian[4].visible, gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible
 	);
-
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `guild_castle`)- %s\n", mysql_error(&mysql_handle) );
-	}
 
 	return 0;
 }
@@ -1264,13 +1165,12 @@ static int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 {
 	int i;
 	char sep, *p, buf[64];
+	char tmp_sql[65536];
 
-	sprintf(tmp_sql,"DELETE FROM `homunculus` WHERE `homun_id`='%d'",homun_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `homunculus`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `homunculus` WHERE `homun_id`='%d'", homun_id);
 
-	sprintf(tmp_sql ,"INSERT INTO `homunculus` SET `homun_id` = '%d', `class` = '%d', `name` = '%s', `account_id` = '%d', `char_id` = '%d', `base_level` = '%d', `base_exp` = '%d',"
+	sqldbs_query(&mysql_handle,
+		"INSERT INTO `homunculus` SET `homun_id` = '%d', `class` = '%d', `name` = '%s', `account_id` = '%d', `char_id` = '%d', `base_level` = '%d', `base_exp` = '%d',"
 		"`max_hp` = '%d', `hp` = '%d', `max_sp` = '%d', `sp` = '%d', `str` = '%d', `agi` = '%d',`vit` = '%d',`int` = '%d',`dex` = '%d',`luk` = '%d',"
 		"`f_str` = '%d', `f_agi` = '%d',`f_vit` = '%d',`f_int` = '%d',`f_dex` = '%d',`f_luk` = '%d',"
 		"`status_point` = '%d', `skill_point` = '%d', `equip` = '%d', `intimate` = '%d', `hungry` = '%d', `rename_flag` = '%d', `incubate` = '%d'",
@@ -1280,14 +1180,8 @@ static int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 		h->status_point, h->skill_point, h->equip, h->intimate, h->hungry, h->rename_flag, h->incubate
 	);
 
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (insert `homunculus`)- %s\n", mysql_error(&mysql_handle) );
-	}
+	sqldbs_query(&mysql_handle, "DELETE FROM `homunculus_skill` WHERE `homun_id`='%d'", homun_id);
 
-	sprintf(tmp_sql,"DELETE FROM `homunculus_skill` WHERE `homun_id`='%d'",homun_id);
-	if(mysql_query(&mysql_handle, tmp_sql) ) {
-		printf("DB server Error (delete `homunculus_skill`)- %s\n", mysql_error(&mysql_handle) );
-	}
 	p  = tmp_sql;
 	p += sprintf(tmp_sql, "INSERT INTO `homunculus_skill` (`homun_id`,`id`,`lv`) VALUES");
 	sep = ' ';
@@ -1299,9 +1193,7 @@ static int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 		}
 	}
 	if(sep == ',') {
-		if(mysql_query(&mysql_handle, tmp_sql) ) {
-			printf("DB server Error (insert `homunculus_skill`)- %s\n", mysql_error(&mysql_handle) );
-		}
+		sqldbs_simplequery(&mysql_handle, tmp_sql);
 	}
 
 	return 0;

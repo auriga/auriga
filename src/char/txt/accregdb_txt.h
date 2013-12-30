@@ -26,7 +26,7 @@
 
 // プロトタイプ宣言
 const struct accreg* accregdb_txt_load(int account_id);
-void accregdb_txt_save(struct accreg* reg2);
+bool accregdb_txt_save(struct accreg* reg2);
 bool accregdb_txt_init(void);
 int accregdb_txt_sync(void);
 void accregdb_txt_final(void);

@@ -28,6 +28,7 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "../login.h"
 #include "account_txt.h"
@@ -44,7 +45,50 @@ static int  auth_num=0,auth_max=0;
 static int  account_id_count = START_ACCOUNT_NUM;
 static struct mmo_account *auth_dat = NULL;
 
-// アカウントIDからauth_datのインデックスを返す
+/*==========================================
+ * 設定ファイルのデフォルト設定
+ *------------------------------------------
+ */
+void account_txt_set_default_configvalue(void)
+{
+	// nothing to do
+}
+
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
+int account_txt_config_read_sub(const char* w1,const char* w2)
+{
+	if( strcmpi(w1, "account_filename") == 0 )
+		strncpy(account_filename, w2, sizeof(account_filename) - 1);
+#ifdef TXT_JOURNAL
+	else if( strcmpi(w1, "account_journal_enable") == 0 )
+		login_journal_enable = atoi(w2);
+	else if( strcmpi(w1, "account_journal_file") == 0 )
+		strncpy( login_journal_file, w2, sizeof(login_journal_file) - 1 );
+	else if( strcmpi(w1, "account_journal_cache_interval") == 0 )
+		login_journal_cache = atoi(w2);
+#endif
+	else
+		return 0;
+
+	return 1;
+}
+
+/*==========================================
+ * 設定ファイルの警告
+ *------------------------------------------
+ */
+void display_conf_warnings_txt(void)
+{
+	// nothing to do
+}
+
+/*==========================================
+ * アカウントIDからauth_datのIndexを返す
+ *------------------------------------------
+ */
 static int login_id2idx(int account_id)
 {
 	int min = -1;
@@ -97,14 +141,14 @@ static int login_journal_rollforward( int key, void* buf, int flag )
 		if(auth_num>=auth_max)
 		{
 			// メモリが足りないなら拡張
-			auth_max+=256;
-			auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+			auth_max += 256;
+			auth_dat = (struct mmo_account *)aRealloc(auth_dat, sizeof(auth_dat[0]) * auth_max);
 			memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
 		}
 
 		memcpy( &auth_dat[auth_num], buf, sizeof(struct mmo_account) );
-		if(auth_dat[auth_num].account_id>=account_id_count)
-			account_id_count=auth_dat[auth_num].account_id+1;
+		if(auth_dat[auth_num].account_id >= account_id_count)
+			account_id_count = auth_dat[auth_num].account_id + 1;
 		auth_num++;
 		return 1;
 	}
@@ -115,8 +159,11 @@ static int login_journal_rollforward( int key, void* buf, int flag )
 void account_txt_sync(void);
 #endif
 
-// アカウントデータベースの読み込み
-bool account_txt_init(void)
+/*==========================================
+ * アカウントデータファイルの読み込み
+ *------------------------------------------
+ */
+static bool account_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -272,41 +319,42 @@ bool account_txt_init(void)
 	return ret;
 }
 
-// アカウントデータベースの書き込み
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 void account_txt_sync(void)
 {
 	FILE *fp;
-	int i,j,lock;
+	int i, j, lock;
 
 	if( !auth_dat )
 		return;
 
-	fp=lock_fopen(account_filename,&lock);
-	if(fp==NULL)
+	fp = lock_fopen(account_filename, &lock);
+	if(fp == NULL)
 		return;
-	for(i=0;i<auth_num;i++){
-		if(auth_dat[i].account_id<0)
+
+	for(i = 0; i < auth_num; i++) {
+		if(auth_dat[i].account_id < 0)
 			continue;
 		if(!auth_dat[i].userid[0]) {
 			// 削除されている
 			continue;
 		}
 
-		fprintf(fp,"%d\t%s\t%s\t%s\t%c\t%d\t%d\t%s\t%s\t",auth_dat[i].account_id,
-			auth_dat[i].userid,auth_dat[i].pass,auth_dat[i].lastlogin,
-			auth_dat[i].sex,
-			auth_dat[i].logincount,auth_dat[i].state, (auth_dat[i].mail[0])? auth_dat[i].mail: "@", auth_dat[i].birth);
+		fprintf(fp, "%d\t%s\t%s\t%s\t%c\t%d\t%d\t%s\t%s\t", auth_dat[i].account_id,
+			auth_dat[i].userid, auth_dat[i].pass, auth_dat[i].lastlogin, auth_dat[i].sex,
+			auth_dat[i].logincount, auth_dat[i].state, ((auth_dat[i].mail[0])? auth_dat[i].mail: "@"), auth_dat[i].birth);
 
-		for(j=0;j<auth_dat[i].account_reg2_num;j++){
-			fprintf(fp,"%s,%d ",
-				auth_dat[i].account_reg2[j].str,
-				auth_dat[i].account_reg2[j].value);
+		for(j = 0; j < auth_dat[i].account_reg2_num; j++) {
+			fprintf(fp, "%s,%d ", auth_dat[i].account_reg2[j].str, auth_dat[i].account_reg2[j].value);
 		}
-		fprintf(fp,RETCODE);
+		fprintf(fp, RETCODE);
 	}
-	fprintf(fp,"%d\t%%newid%%" RETCODE,account_id_count);
+	fprintf(fp, "%d\t%%newid%%" RETCODE, account_id_count);
 
-	lock_fclose(fp,account_filename,&lock);
+	lock_fclose(fp, account_filename, &lock);
 
 #ifdef TXT_JOURNAL
 	if( login_journal_enable )
@@ -319,6 +367,10 @@ void account_txt_sync(void)
 
 }
 
+/*==========================================
+ * アカウントIDからアカウント情報をロード
+ *------------------------------------------
+ */
 const struct mmo_account* account_txt_account_load_num(int account_id)
 {
 	int idx = login_id2idx(account_id);
@@ -326,31 +378,47 @@ const struct mmo_account* account_txt_account_load_num(int account_id)
 	return (idx >= 0) ? &auth_dat[idx] : NULL;
 }
 
+/*==========================================
+ * アカウント名からアカウント情報をロード
+ *------------------------------------------
+ */
 const struct mmo_account* account_txt_account_load_str(const char *account_id)
 {
 	int x;
 
-	if( !account_id[0] )
+	if(!account_id[0])
 		return NULL;
-	for(x=0;x<auth_num;x++){
-		if(auth_dat[x].userid[0] && !strncmp(auth_dat[x].userid,account_id,24)) {
+
+	for(x = 0; x < auth_num; x++) {
+		if(auth_dat[x].userid[0] && !strncmp(auth_dat[x].userid, account_id, 24)) {
 			return &auth_dat[x];
 		}
 	}
 	return NULL;
 }
 
+/*==========================================
+ * アカウントIndexからアカウント情報をロード
+ *------------------------------------------
+ */
 const struct mmo_account* account_txt_account_load_idx(int idx)
 {
 	return (idx >= 0 && idx < auth_num) ? &auth_dat[idx] : NULL;
 }
 
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
 bool account_txt_account_save(struct mmo_account *account)
 {
-	int idx = login_id2idx(account->account_id);
+	int idx = -1;
 
+	nullpo_retr(false, account);
+
+	idx = login_id2idx(account->account_id);
 	if(idx >= 0) {
-		memcpy(&auth_dat[idx],account,sizeof(struct mmo_account));
+		memcpy(&auth_dat[idx], account, sizeof(struct mmo_account));
 #ifdef TXT_JOURNAL
 		if( login_journal_enable )
 			journal_write( &login_journal, account->account_id, account );
@@ -360,13 +428,16 @@ bool account_txt_account_save(struct mmo_account *account)
 	return true;
 }
 
-// アカウント削除
+/*==========================================
+ * アカウント削除
+ *------------------------------------------
+ */
 bool account_txt_account_delete(int account_id)
 {
 	int idx = login_id2idx(account_id);
 
 	if(idx >= 0) {
-		memset(&auth_dat[idx],0,sizeof(struct mmo_account));
+		memset(&auth_dat[idx], 0, sizeof(struct mmo_account));
 		auth_dat[idx].account_id = account_id;	// アカウントIDは維持
 #ifdef TXT_JOURNAL
 		if( login_journal_enable )
@@ -377,19 +448,24 @@ bool account_txt_account_delete(int account_id)
 	return true;
 }
 
-// アカウント作成
-bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
+/*==========================================
+ * アカウント作成
+ *------------------------------------------
+ */
+bool account_txt_account_new(struct mmo_account *account, const char *tmpstr)
 {
-	int j,i=auth_num,c;
+	int i = auth_num, j, c;
 
-	loginlog_log("auth new %s %s %s",tmpstr,account->userid,account->pass);
+	nullpo_retr(false, account);
+
+	loginlog_log("auth new %s %s %s", tmpstr, account->userid, account->pass);
 
 	if(!account->userid[0]) {
 		// 空文字は弾く
 		return false;
 	}
-	for(j=0;j<24 && (c=account->userid[j]);j++){
-		if(c<0x20 || c==0x7f)
+	for(j = 0; j < 24 && (c = account->userid[j]); j++) {
+		if(c < 0x20 || c == 0x7f)
 			return false;
 	}
 
@@ -403,9 +479,9 @@ bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
 		// 同じアカウントが既に存在
 		return false;
 	}
-	if(auth_num>=auth_max){
+	if(auth_num >= auth_max) {
 		auth_max += 256;
-		auth_dat = (struct mmo_account *)aRealloc(auth_dat,sizeof(auth_dat[0])*auth_max);
+		auth_dat = (struct mmo_account *)aRealloc(auth_dat, sizeof(auth_dat[0]) * auth_max);
 		memset(auth_dat + (auth_max - 256), '\0', 256 * sizeof(auth_dat[0]));
 	}
 	while(isGM(account_id_count) > 0) {
@@ -413,18 +489,18 @@ bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
 	}
 	if(account_id_count > END_ACCOUNT_NUM) {
 		// 利用可能なID上限を超えた
-		printf("account_new : ID is over END_ACCOUNT_NUM %d\n",END_ACCOUNT_NUM);
+		printf("account_new : ID is over END_ACCOUNT_NUM %d\n", END_ACCOUNT_NUM);
 		return false;
 	}
 	auth_dat[i].account_id = account_id_count++;
 	auth_dat[i].sex        = account->sex;
 	auth_dat[i].logincount = 0;
 	auth_dat[i].state      = 0;
-	strncpy(auth_dat[i].userid,account->userid,24);
-	strncpy(auth_dat[i].pass  ,account->pass  ,24);
-	strncpy(auth_dat[i].mail  ,account->mail  ,40);
-	strncpy(auth_dat[i].birth ,account->birth  ,7);
-	strcpy(auth_dat[i].lastlogin,"-");
+	strncpy(auth_dat[i].userid, account->userid, 24);
+	strncpy(auth_dat[i].pass,   account->pass,   24);
+	strncpy(auth_dat[i].mail,   account->mail,   40);
+	strncpy(auth_dat[i].birth,  account->birth,   7);
+	strcpy(auth_dat[i].lastlogin, "-");
 	auth_dat[i].account_reg2_num = 0;
 	auth_num++;
 #ifdef TXT_JOURNAL
@@ -434,6 +510,10 @@ bool account_txt_account_new(struct mmo_account* account,const char *tmpstr)
 	return true;
 }
 
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 void account_txt_final(void)
 {
 	if(auth_dat)
@@ -447,30 +527,11 @@ void account_txt_final(void)
 #endif
 }
 
-void account_txt_set_default_configvalue(void)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool account_txt_init(void)
 {
-	// nothing to do
-}
-
-int account_txt_config_read_sub(const char* w1,const char* w2)
-{
-	if( strcmpi(w1, "account_filename") == 0 )
-		strncpy(account_filename, w2, sizeof(account_filename) - 1);
-#ifdef TXT_JOURNAL
-	else if( strcmpi(w1, "account_journal_enable") == 0 )
-		login_journal_enable = atoi(w2);
-	else if( strcmpi(w1, "account_journal_file") == 0 )
-		strncpy( login_journal_file, w2, sizeof(login_journal_file) - 1 );
-	else if( strcmpi(w1, "account_journal_cache_interval") == 0 )
-		login_journal_cache = atoi(w2);
-#endif
-	else
-		return 0;
-
-	return 1;
-}
-
-void display_conf_warnings_txt(void)
-{
-	// nothing to do
+	return account_txt_read();
 }

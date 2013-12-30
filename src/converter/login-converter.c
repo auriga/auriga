@@ -204,33 +204,23 @@ int login_convert(void)
 			if(strcmp(lastlogin,"-") == 0)
 				strcpy(lastlogin,"0000-00-00 00:00:00");
 
-			sprintf(tmp_sql, "DELETE FROM `%s` WHERE `%s` = '%d'", login_db, login_db_account_id, account_id);
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (delete `%s`)- %s\n", login_db, mysql_error(&mysql_handle) );
-			}
-			sprintf(tmp_sql,
+			sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s` = '%d'", login_db, login_db_account_id, account_id);
+
+			sqldbs_query(&mysql_handle,
 				"INSERT INTO `%s` (`%s`, `%s`, `%s`, `lastlogin`, `sex`, `logincount`, `email`, `%s`)"
 				" VALUES ('%d', '%s', '%s', '%s', '%c', '%d', '%s', '%d');",
 				login_db, login_db_account_id, login_db_userid, login_db_user_pass, login_db_level,
 				account_id , strecpy(buf[0],userid), strecpy(buf[1],pass), strecpy(buf[2],lastlogin), sex, logincount, strecpy(buf[3],email), user_level
 			);
-			if(mysql_query(&mysql_handle, tmp_sql) ) {
-				printf("DB server Error (insert `%s`)- %s\n", login_db, mysql_error(&mysql_handle) );
-			}
 
-			sprintf(tmp_sql,"DELETE FROM `worldreg` WHERE `account_id`='%d'",account_id);
-			if(mysql_query(&mysql_handle, tmp_sql)) {
-				printf("DB server Error (delete `worldreg`)- %s\n", mysql_error(&mysql_handle));
-			}
+			sqldbs_query(&mysql_handle, "DELETE FROM `worldreg` WHERE `account_id`='%d'", account_id);
+
 			for(i = 0; i < dat.reg_num; i++) {
-				sprintf(tmp_sql,
+				sqldbs_query(&mysql_handle,
 					"INSERT INTO `worldreg` (`account_id`, `reg`, `value`) "
 					"VALUES ('%d' , '%s' , '%d')",
 					account_id, strecpy(buf[0],dat.reg[i].str), dat.reg[i].value
 				);
-				if(mysql_query(&mysql_handle, tmp_sql)) {
-					printf("DB server Error (insert `worldreg`)- %s\n", mysql_error(&mysql_handle));
-				}
 			}
 		}
 		numdb_final(gm_account_db,gm_account_db_final);

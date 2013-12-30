@@ -33,7 +33,7 @@ int guilddb_sql_sync(void);
 void guilddb_sql_final(void);
 const struct guild *guilddb_sql_load_num(int guild_id);
 const struct guild* guilddb_sql_load_str(const char *str);
-void guilddb_sql_delete(int guild_id);
+bool guilddb_sql_delete(int guild_id);
 int guilddb_sql_config_read_sub(const char* w1,const char *w2);
 
 // エイリアス

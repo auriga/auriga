@@ -92,7 +92,7 @@ int mapreg_txt_getreg(int num)
  * マップ変数の変更
  *------------------------------------------
  */
-int mapreg_txt_setreg(int num, int val, int eternal)
+bool mapreg_txt_setreg(int num, int val, int eternal)
 {
 	if(val != 0)
 		numdb_insert(mapreg_db, num, INT2PTR(val));
@@ -120,7 +120,7 @@ int mapreg_txt_setreg(int num, int val, int eternal)
 #endif
 	}
 
-	return 0;
+	return true;
 }
 
 /*==========================================
@@ -136,7 +136,7 @@ char* mapreg_txt_getregstr(int num)
  * 文字列型マップ変数の変更
  *------------------------------------------
  */
-int mapreg_txt_setregstr(int num, const char *str, int eternal)
+bool mapreg_txt_setregstr(int num, const char *str, int eternal)
 {
 	char *old_str = NULL;
 
@@ -170,7 +170,7 @@ int mapreg_txt_setregstr(int num, const char *str, int eternal)
 #endif
 	}
 
-	return 0;
+	return true;
 }
 
 #ifdef TXT_JOURNAL
@@ -420,11 +420,11 @@ int mapreg_txt_final(void)
  * 初期化
  *------------------------------------------
  */
-int mapreg_txt_init(void)
+bool mapreg_txt_init(void)
 {
 	mapreg_db    = numdb_init();
 	mapregstr_db = numdb_init();
 	mapreg_txt_load();
 
-	return 1;
+	return true;
 }

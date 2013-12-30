@@ -121,7 +121,8 @@ static char error_marker_end[16]   = "";
 
 #ifndef TXT_ONLY
 
-MYSQL mysql_handle_script;
+struct sqldbs_handle mysql_handle_script;
+static bool sql_is_connect = false;
 
 static unsigned short script_server_port = 3306;
 static char script_server_ip[32]      = "127.0.0.1";
@@ -130,8 +131,6 @@ static char script_server_pw[32]      = "ragnarok";
 static char script_server_db[32]      = "ragnarok";
 static char script_server_charset[32] = "";
 static int  script_server_keepalive   = 0;
-
-static bool sql_is_connect = false;
 
 #endif /* TXT_ONLY */
 
@@ -3699,7 +3698,7 @@ int do_final_script(void)
 
 #ifndef TXT_ONLY
 	if(sql_is_connect)
-		sqldbs_close(&mysql_handle_script, "[Script]");
+		sqldbs_close(&mysql_handle_script);
 #endif
 
 	return 0;
@@ -3715,17 +3714,18 @@ int do_init_script(void)
 	// DB connection initialized
 	if( script_config.sql_script_enable )
 	{
-		sql_is_connect = sqldbs_connect(&mysql_handle_script,script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive);
-		if( sql_is_connect == false )
+		sql_is_connect = sqldbs_connect(&mysql_handle_script, script_server_ip, script_server_id, script_server_pw, script_server_db, script_server_port, script_server_charset, script_server_keepalive, "SCRIPT");
+		if( sql_is_connect == false ) {
+			printf("FATAL ERROR: do_init_script() failed !!\n");
 			exit(1);
+		}
 	}
 #endif
 
 	add_timer_func_list(run_script_timer);
 	add_timer_func_list(script_autosave_mapreg);
 
-	add_timer_interval(gettick()+MAPREG_AUTOSAVE_INTERVAL,
-		script_autosave_mapreg,0,NULL,MAPREG_AUTOSAVE_INTERVAL);
+	add_timer_interval(gettick() + MAPREG_AUTOSAVE_INTERVAL, script_autosave_mapreg, 0, NULL,MAPREG_AUTOSAVE_INTERVAL);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
@@ -3734,7 +3734,10 @@ int do_init_script(void)
 	if(script_config.debug_vars)
 		vars_db = numdb_init();
 
-	mapreg_init();
+	if( mapreg_init() == false ) {
+		printf("FATAL ERROR: mapreg_init() failed !!\n");
+		exit(1);
+	}
 
 	return 0;
 }
@@ -11544,25 +11547,21 @@ int buildin_sqlquery(struct script_state *st)
 {
 #ifndef TXT_ONLY
 	int count = -1;
-	bool is_success;
-	MYSQL_RES* sql_res;
 	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
-	// SQLクエリ利用不可、もしくはクエリが長すぎるならエラー
-	if(!script_config.sql_script_enable || strlen(query) >= sizeof(tmp_sql)) {
+	// SQLクエリ利用不可ならエラー
+	if(!script_config.sql_script_enable) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	is_success = sqldbs_simplequery(&mysql_handle_script, query);
-	if(is_success == false) {
+	if(sqldbs_simplequery(&mysql_handle_script, query) == false) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	sql_res = sqldbs_store_result(&mysql_handle_script);
 
-	// SELECT以外はここで完了
-	if(sql_res == NULL) {
-		count = (int)sqldbs_affected_rows(&mysql_handle_script);
+	if(sqldbs_has_result(&mysql_handle_script) == false) {
+		// SELECT以外はここで完了
+		count = sqldbs_affected_rows(&mysql_handle_script);
 		push_val(st->stack,C_INT,count);
 		return 0;
 	}
@@ -11572,7 +11571,7 @@ int buildin_sqlquery(struct script_state *st)
 		char *name, *var, *p;
 		char prefix, postfix;
 		struct map_session_data *sd = NULL;
-		MYSQL_ROW sql_row = NULL;
+		char **sql_row;
 
 		if(st->end <= st->start+3 || st->stack->stack_data[st->start+3].type != C_NAME) {
 			printf("buildin_sqlquery: param not name\n");
@@ -11593,8 +11592,8 @@ int buildin_sqlquery(struct script_state *st)
 				break;
 		}
 
-		var = (char *)aCalloc(strlen(name)+6,sizeof(char));	// [xxx] + \0 = 6文字
-		strcpy(var,name);
+		var = (char *)aCalloc(strlen(name) + 6, sizeof(char));	// [xxx] + \0 = 6文字
+		strcpy(var, name);
 
 		if((p = strrchr(var,'[')) != NULL) {
 			elem = atoi(p+1);	// 配列の二次元目の要素を取得
@@ -11606,30 +11605,30 @@ int buildin_sqlquery(struct script_state *st)
 				len--;
 		}
 
-		max = sqldbs_num_fields(sql_res);
+		max = sqldbs_num_fields(&mysql_handle_script);
 		if(max + (num >> 24) > 128) {
 			max = 128 - (num>>24);
 		}
 
-		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(sql_res)); count++) {
-			int i,tmp_num;
+		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(&mysql_handle)); count++) {
+			int i, tmp_num;
 
 			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
-				sprintf(var+len, "[%d]%s", elem, (postfix == '$')? "$": "");
+				sprintf(var + len, "[%d]%s", elem, (postfix == '$')? "$": "");
 				tmp_num = add_str(var) + (num&0xff000000);
 			} else {
 				tmp_num = num;
 			}
-			for(i=0; i<max; i++) {
+			for(i = 0; i < max; i++) {
 				void *v = (postfix == '$')? sql_row[i]: INT2PTR(atoi(sql_row[i]));
-				set_reg(st,sd,tmp_num+(i<<24),var,v,st->stack->stack_data[st->start+3].ref);
+				set_reg(st, sd, tmp_num + (i<<24), var, v, st->stack->stack_data[st->start+3].ref);
 			}
 			elem++;
 		}
 		aFree(var);
 	} while(0);
 
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle_script);
 	push_val(st->stack,C_INT,count);
 #else
 	// TXTは何もしない

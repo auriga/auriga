@@ -22,13 +22,15 @@
 #ifndef _MAPREG_TXT_H_
 #define _MAPREG_TXT_H_
 
+#include "utils.h"
+
 // プロトタイプ宣言
 int mapreg_txt_getreg(int num);
-int mapreg_txt_setreg(int num,int val,int eternal);
+bool mapreg_txt_setreg(int num,int val,int eternal);
 char* mapreg_txt_getregstr(int num);
-int mapreg_txt_setregstr(int num,const char *str,int eternal);
+bool mapreg_txt_setregstr(int num,const char *str,int eternal);
 int mapreg_txt_autosave(void);
-int mapreg_txt_init(void);
+bool mapreg_txt_init(void);
 int mapreg_txt_final(void);
 int mapreg_txt_config_read_sub(const char *w1,const char *w2);
 

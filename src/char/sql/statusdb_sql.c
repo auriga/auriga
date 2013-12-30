@@ -27,43 +27,60 @@
 #include "malloc.h"
 #include "sqldbs.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "statusdb_sql.h"
 
 static struct dbt *scdata_db = NULL;
 
-bool statusdb_sql_init(void)
+/*==========================================
+ * 設定ファイルの読み込み
+ *------------------------------------------
+ */
+int statusdb_sql_config_read_sub(const char *w1, const char *w2)
 {
-	scdata_db = numdb_init();
-	return true;
+	return 0;
 }
+
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 int statusdb_sql_sync(void)
 {
 	// nothing to do
 	return 0;
 }
 
+/*==========================================
+ * ステータスデータ削除
+ *------------------------------------------
+ */
 bool statusdb_sql_delete(int char_id)
 {
-	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
+	struct scdata *sc;
 
-	if(sc && sc->char_id == char_id)
-	{
-		numdb_erase(scdata_db,char_id);
+	if( sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", char_id) == false )
+		return false;
+
+	sc = (struct scdata *)numdb_search(scdata_db, char_id);
+
+	if(sc && sc->char_id == char_id) {
+		numdb_erase(scdata_db, char_id);
 		aFree(sc);
 	}
-
-	return sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", char_id);
+	return true;
 }
 
-/* 負荷軽減を優先してconstを付けない */
+/*==========================================
+ * キャラIDからステータスデータをロード
+ * 負荷軽減を優先してconstを付けない
+ *------------------------------------------
+ */
 struct scdata *statusdb_sql_load(int char_id)
 {
-	int i=0;
-	bool is_success;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
+	bool result;
+	struct scdata *sc = (struct scdata *)numdb_search(scdata_db, char_id);
 
 	if(sc && sc->char_id == char_id) {
 		// 既にキャッシュが存在する
@@ -71,26 +88,26 @@ struct scdata *statusdb_sql_load(int char_id)
 	}
 	if(sc == NULL) {
 		sc = (struct scdata *)aMalloc(sizeof(struct scdata));
-		numdb_insert(scdata_db,char_id,sc);
+		numdb_insert(scdata_db, char_id, sc);
 	}
 	memset(sc, 0, sizeof(struct scdata));
 
 	sc->char_id = char_id;
 
-	is_success = sqldbs_query(
-		&mysql_handle,
+	result = sqldbs_query(&mysql_handle,
 		"SELECT `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick` "
-		"FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'",
-		char_id
+		"FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", char_id
 	);
-	if(!is_success) {
+	if(result == false) {
 		sc->char_id = -1;
 		return NULL;
 	}
-	sql_res = sqldbs_store_result(&mysql_handle);
 
-	if(sql_res && sqldbs_num_rows(sql_res) > 0) {
-		for(i=0; (sql_row = sqldbs_fetch(sql_res)) && i<MAX_STATUSCHANGE; i++) {
+	if(sqldbs_num_rows(&mysql_handle) > 0) {
+		int i;
+		char **sql_row;
+
+		for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < MAX_STATUSCHANGE; i++) {
 			if(sc->account_id == 0) {
 				sc->account_id = atoi(sql_row[0]);
 			}
@@ -102,48 +119,76 @@ struct scdata *statusdb_sql_load(int char_id)
 			sc->data[i].tick = atoi(sql_row[6]);
 		}
 		sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
-
-		sqldbs_free_result(sql_res);
 	} else {
 		// 見つからなくても正常
-		if(sql_res)
-			sqldbs_free_result(sql_res);
-		return NULL;
+		sc = NULL;
 	}
+	sqldbs_free_result(&mysql_handle);
 
 	return sc;
 }
 
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
 bool statusdb_sql_save(struct scdata *sc2)
 {
-	struct scdata *sc1 = statusdb_sql_load(sc2->char_id);
-	int i;
+	struct scdata *sc1;
+	bool result = false;
 
-	if(sc1 != NULL && sc1->count <= 0) {
-		if(sc2->count <= 0)	// データが共に0個なので何もしない
-			return true;
-	} else {
-		// データサーバ側にデータがあるときだけ削除クエリを発行
-		sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", sc2->char_id);
+	nullpo_retr(false, sc2);
+
+	sc1 = statusdb_sql_load(sc2->char_id);
+
+	if(sc1 && sc1->count <= 0 && sc2->count <= 0) {
+		// データが共に0個なので何もしない
+		return true;
 	}
 
-	for(i=0; i<sc2->count; i++) {
-		sqldbs_query(
-			&mysql_handle,
-			"INSERT INTO `" SCDATA_TABLE "` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`) "
-			"VALUES ('%d','%d','%d','%d','%d','%d','%d','%d')",
-			sc2->char_id, sc2->account_id, sc2->data[i].type,
-			sc2->data[i].val1, sc2->data[i].val2, sc2->data[i].val3, sc2->data[i].val4, sc2->data[i].tick
-		);
-	}
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
-	if(sc1) {
-		memcpy(sc1,sc2,sizeof(struct scdata));
-	}
+	// try
+	do {
+		int i;
 
-	return true;
+		if(sc1 == NULL || sc1->count > 0) {
+			// データサーバ側にデータがあるときだけ削除クエリを発行
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", sc2->char_id) == false )
+				break;
+		}
+
+		for(i = 0; i < sc2->count; i++) {
+			if( sqldbs_query(&mysql_handle,
+				"INSERT INTO `" SCDATA_TABLE "` (`char_id`, `account_id`, `type`, `val1`, `val2`, `val3`, `val4`, `tick`) "
+				"VALUES ('%d','%d','%d','%d','%d','%d','%d','%d')",
+				sc2->char_id, sc2->account_id, sc2->data[i].type,
+				sc2->data[i].val1, sc2->data[i].val2, sc2->data[i].val3, sc2->data[i].val4, sc2->data[i].tick
+			) == false )
+				break;
+		}
+		if(i != sc2->count)
+			break;
+
+		// success
+		result = true;
+
+		if(sc1) {
+			// cache copy
+			memcpy(sc1, sc2, sizeof(struct scdata));
+		}
+	} while(0);
+
+	sqldbs_transaction_end(&mysql_handle, result);
+
+	return result;
 }
 
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int statusdb_sql_final_sub(void *key, void *data, va_list ap)
 {
 	struct scdata *sc = (struct scdata *)data;
@@ -156,10 +201,15 @@ static int statusdb_sql_final_sub(void *key, void *data, va_list ap)
 void statusdb_sql_final(void)
 {
 	if(scdata_db)
-		numdb_final(scdata_db,statusdb_sql_final_sub);
+		numdb_final(scdata_db, statusdb_sql_final_sub);
 }
 
-int statusdb_sql_config_read_sub(const char *w1, const char *w2)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool statusdb_sql_init(void)
 {
-	return 0;
+	scdata_db = numdb_init();
+	return true;
 }

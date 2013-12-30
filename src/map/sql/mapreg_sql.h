@@ -22,13 +22,15 @@
 #ifndef _MAPREG_SQL_H_
 #define _MAPREG_SQL_H_
 
+#include "utils.h"
+
 // プロトタイプ宣言
 int mapreg_sql_getreg(int num);
-int mapreg_sql_setreg(int num,int val,int eternal);
+bool mapreg_sql_setreg(int num,int val,int eternal);
 char* mapreg_sql_getregstr(int num);
-int mapreg_sql_setregstr(int num,const char *str,int eternal);
+bool mapreg_sql_setregstr(int num,const char *str,int eternal);
 int mapreg_sql_autosave(void);
-int mapreg_sql_init(void);
+bool mapreg_sql_init(void);
 int mapreg_sql_final(void);
 int mapreg_sql_config_read_sub(const char *w1,const char *w2);
 

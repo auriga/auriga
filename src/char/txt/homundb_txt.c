@@ -28,21 +28,26 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "homundb_txt.h"
 
 static struct dbt *homun_db = NULL;
 
-static char homun_txt[1024]="save/homun.txt";
+static char homun_txt[1024] = "save/homun.txt";
 static int homun_newid = 100;
 
 #ifdef TXT_JOURNAL
 static int homun_journal_enable = 1;
 static struct journal homun_journal;
-static char homun_journal_file[1024]="./save/homun.journal";
+static char homun_journal_file[1024] = "./save/homun.journal";
 static int homun_journal_cache = 1000;
 #endif
 
+/*==========================================
+ * 設定ファイルの読込
+ *------------------------------------------
+ */
 int homundb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"homun_txt")==0){
@@ -66,13 +71,17 @@ int homundb_txt_config_read_sub(const char* w1,const char *w2)
 	return 1;
 }
 
-static int homun_tostr(char *str,struct mmo_homunstatus *h)
+/*==========================================
+ * ホムデータを文字列へ変換
+ *------------------------------------------
+ */
+static int homun_tostr(char *str, struct mmo_homunstatus *h)
 {
 	int i;
 	char *str_p = str;
 	unsigned short sk_lv;
 
-	if(!h) return 0;
+	nullpo_retr(1, h);
 
 	if(h->hungry < 0)
 		h->hungry = 0;
@@ -83,7 +92,7 @@ static int homun_tostr(char *str,struct mmo_homunstatus *h)
 	else if(h->intimate > 100000)
 		h->intimate = 100000;
 
-	str_p += sprintf(str,"%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
+	str_p += sprintf(str, "%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
 		h->homun_id,h->class_,h->name,
 		h->account_id,h->char_id,
 		h->base_level,h->base_exp,h->max_hp,h->hp,h->max_sp,h->sp,
@@ -92,32 +101,36 @@ static int homun_tostr(char *str,struct mmo_homunstatus *h)
 		h->status_point,h->skill_point,
 		h->equip,h->intimate,h->hungry,h->rename_flag,h->incubate);
 
-	*(str_p++)='\t';
+	*(str_p++) = '\t';
 
-	for(i=0;i<MAX_HOMSKILL;i++) {
-		if(h->skill[i].id && h->skill[i].flag!=1){
-			sk_lv = (h->skill[i].flag==0)? h->skill[i].lv: h->skill[i].flag-2;
-			str_p += sprintf(str_p,"%d,%d ",h->skill[i].id,sk_lv);
+	for( i= 0; i < MAX_HOMSKILL; i++) {
+		if(h->skill[i].id && h->skill[i].flag != 1) {
+			sk_lv = (h->skill[i].flag == 0)? h->skill[i].lv: h->skill[i].flag - 2;
+			str_p += sprintf(str_p, "%d,%d ", h->skill[i].id, sk_lv);
 		}
 	}
-	*(str_p++)='\t';
+	*(str_p++) = '\t';
 
-	*str_p='\0';
+	*str_p = '\0';
 	return 0;
 }
 
-static int homun_fromstr(char *str,struct mmo_homunstatus *h)
+/*==========================================
+ * ホムデータを文字列から変換
+ *------------------------------------------
+ */
+static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 {
-	int i,s,next,set,len;
+	int i, s, next, set, len;
 	int tmp_int[29];
 	char tmp_str[256];
 
-	if(!h) return 0;
+	nullpo_retr(1, h);
 
-	memset(h,0,sizeof(struct mmo_homunstatus));
+	memset(h, 0, sizeof(struct mmo_homunstatus));
 
 	// Auriga-0594以降の形式
-	s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+	s = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
@@ -127,14 +140,14 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 		&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next
 	);
 
-	if(s!=30) {
+	if(s != 30) {
 		tmp_int[16] = 0;	// f_str
 		tmp_int[17] = 0;	// f_agi
 		tmp_int[18] = 0;	// f_vit
 		tmp_int[19] = 0;	// f_int
 		tmp_int[20] = 0;	// f_dex
 		tmp_int[21] = 0;	// f_luk
-		s=sscanf(str,"%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
+		s = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 			&tmp_int[0],&tmp_int[1],tmp_str,
 			&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],
@@ -143,13 +156,13 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 			&tmp_int[24],&tmp_int[25],&tmp_int[26],&tmp_int[27],&tmp_int[28],&next
 		);
 
-		if(s!=24)
+		if(s != 24)
 			return 1;
 	}
 
 	h->homun_id     = tmp_int[0];
 	h->class_       = tmp_int[1];
-	strncpy(h->name,tmp_str,24);
+	strncpy(h->name, tmp_str, 24);
 	h->name[23] = '\0';	// force \0 terminal
 	h->account_id   = tmp_int[2];
 	h->char_id      = tmp_int[3];
@@ -189,25 +202,25 @@ static int homun_fromstr(char *str,struct mmo_homunstatus *h)
 	else if(h->intimate > 100000)
 		h->intimate = 100000;
 
-	if(str[next]=='\n' || str[next]=='\r')
+	if(str[next] == '\n' || str[next] == '\r')
 		return 1;	// スキル情報なし
 
 	next++;
-	for(i=0;str[next] && str[next]!='\t';i++){
+	for(i = 0; str[next] && str[next] != '\t'; i++) {
 		int n;
-		set=sscanf(str+next,"%d,%d%n",
-			&tmp_int[0],&tmp_int[1],&len);
-		if(set!=2)
+		set = sscanf(str + next, "%d,%d%n", &tmp_int[0], &tmp_int[1], &len);
+		if(set != 2)
 			return 0;
-		n = tmp_int[0]-HOM_SKILLID;
+
+		n = tmp_int[0] - HOM_SKILLID;
 		if(n >= 0 && n < MAX_HOMSKILL) {
 			h->skill[n].id = tmp_int[0];
 			h->skill[n].lv = tmp_int[1];
 		} else {
 			printf("homun_fromstr: invaild skill id: %d\n", tmp_int[0]);
 		}
-		next+=len;
-		if(str[next]==' ')
+		next += len;
+		if(str[next] == ' ')
 			next++;
 	}
 	return 0;
@@ -256,7 +269,11 @@ int homun_journal_rollforward( int key, void* buf, int flag )
 int homundb_txt_sync(void);
 #endif
 
-bool homundb_txt_init(void)
+/*==========================================
+ * ホムデータファイルの読み込み
+ *------------------------------------------
+ */
+static bool homundb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -309,14 +326,19 @@ bool homundb_txt_init(void)
 	return ret;
 }
 
-static int homundb_txt_sync_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
+static int homundb_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
 	FILE *fp;
 
-	homun_tostr(line,(struct mmo_homunstatus *)data);
-	fp=va_arg(ap,FILE *);
-	fprintf(fp,"%s" RETCODE,line);
+	homun_tostr(line, (struct mmo_homunstatus *)data);
+	fp = va_arg(ap, FILE *);
+	fprintf(fp, "%s" RETCODE, line);
+
 	return 0;
 }
 
@@ -328,12 +350,12 @@ int homundb_txt_sync(void)
 	if( !homun_db )
 		return 1;
 
-	if( (fp=lock_fopen(homun_txt,&lock))==NULL ){
-		printf("int_homun: cant write [%s] !!! data is lost !!!\n",homun_txt);
+	if( (fp = lock_fopen(homun_txt, &lock)) == NULL ) {
+		printf("int_homun: cant write [%s] !!! data is lost !!!\n", homun_txt);
 		return 1;
 	}
-	numdb_foreach(homun_db,homundb_txt_sync_sub,fp);
-	lock_fclose(fp,homun_txt,&lock);
+	numdb_foreach(homun_db, homundb_txt_sync_sub, fp);
+	lock_fclose(fp, homun_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -347,16 +369,20 @@ int homundb_txt_sync(void)
 	return 0;
 }
 
+/*==========================================
+ * ホム削除
+ *------------------------------------------
+ */
 bool homundb_txt_delete(int homun_id)
 {
-	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db, homun_id);
 
 	if(p == NULL)
 		return false;
 
-	numdb_erase(homun_db,homun_id);
+	numdb_erase(homun_db, homun_id);
 	aFree(p);
-	printf("homun_id: %d deleted\n",homun_id);
+	printf("homun_id: %d deleted\n", homun_id);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -366,20 +392,31 @@ bool homundb_txt_delete(int homun_id)
 	return true;
 }
 
+/*==========================================
+ * ホムIDからホムデータをロード
+ *------------------------------------------
+ */
 const struct mmo_homunstatus* homundb_txt_load(int homun_id)
 {
-	return (const struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
+	return (const struct mmo_homunstatus *)numdb_search(homun_db, homun_id);
 }
 
-bool homundb_txt_save(struct mmo_homunstatus* p2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool homundb_txt_save(struct mmo_homunstatus *p2)
 {
-	struct mmo_homunstatus* p1 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
+	struct mmo_homunstatus* p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
 	if(p1 == NULL) {
 		p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
-		numdb_insert(homun_db,p2->homun_id,p1);
+		numdb_insert(homun_db, p2->homun_id, p1);
 	}
-	memcpy(p1,p2,sizeof(struct mmo_homunstatus));
+	memcpy(p1, p2, sizeof(struct mmo_homunstatus));
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -388,17 +425,30 @@ bool homundb_txt_save(struct mmo_homunstatus* p2)
 	return true;
 }
 
+/*==========================================
+ * ホム作成
+ *------------------------------------------
+ */
 bool homundb_txt_new(struct mmo_homunstatus *p2)
 {
-	struct mmo_homunstatus *p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
+	struct mmo_homunstatus *p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
 	p2->homun_id = homun_newid++;
-	memcpy(p1,p2,sizeof(struct mmo_homunstatus));
-	numdb_insert(homun_db,p2->homun_id,p1);
+
+	memcpy(p1, p2, sizeof(struct mmo_homunstatus));
+	numdb_insert(homun_db, p2->homun_id, p1);
+
 	return true;
 }
 
-static int homundb_txt_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int homundb_txt_final_sub(void *key, void *data, va_list ap)
 {
 	struct mmo_homunstatus *p = (struct mmo_homunstatus *)data;
 
@@ -410,7 +460,7 @@ static int homundb_txt_final_sub(void *key,void *data,va_list ap)
 void homundb_txt_final(void)
 {
 	if(homun_db)
-		numdb_final(homun_db,homundb_txt_final_sub);
+		numdb_final(homun_db, homundb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
@@ -418,4 +468,13 @@ void homundb_txt_final(void)
 		journal_final( &homun_journal );
 	}
 #endif
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool homundb_txt_init(void)
+{
+	return homundb_txt_read();
 }

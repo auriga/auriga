@@ -29,42 +29,82 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "statusdb_txt.h"
 
-static char scdata_txt[1024]="save/scdata.txt";
+static char scdata_txt[1024] = "save/scdata.txt";
 static struct dbt *scdata_db = NULL;
 
 #ifdef TXT_JOURNAL
 static int status_journal_enable = 1;
 static struct journal status_journal;
-static char status_journal_file[1024]="./save/scdata.journal";
+static char status_journal_file[1024] = "./save/scdata.journal";
 static int status_journal_cache = 1000;
 #endif
 
+/*==========================================
+ * 設定ファイルの読み込み
+ *------------------------------------------
+ */
+int statusdb_txt_config_read_sub(const char *w1, const char *w2)
+{
+	if(strcmpi(w1,"status_txt")==0) {
+		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
+	}
+#ifdef TXT_JOURNAL
+	else if(strcmpi(w1,"status_journal_enable")==0) {
+		status_journal_enable = atoi(w2);
+	}
+	else if(strcmpi(w1,"status_journal_file")==0) {
+		strncpy(status_journal_file, w2, sizeof(status_journal_file) - 1);
+	}
+	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
+		status_journal_cache = atoi(w2);
+	}
+#endif
+	else {
+		return 0;
+	}
+
+	return 1;
+}
+
+/*==========================================
+ * ステータスデータを文字列へ変換
+ *------------------------------------------
+ */
 static int status_tostr(char *str, struct scdata *sc)
 {
 	int i;
 	char *str_p = str;
 
-	str_p += sprintf(str,"%d,%d\t",sc->char_id,sc->account_id);
+	nullpo_retr(1, sc);
 
-	for(i=0; i<sc->count; i++) {
-		str_p += sprintf(str_p,"%d,%d,%d,%d,%d,%d ",
-			sc->data[i].type,sc->data[i].val1,sc->data[i].val2,sc->data[i].val3,sc->data[i].val4,sc->data[i].tick);
+	str_p += sprintf(str,"%d,%d\t",sc->char_id, sc->account_id);
+
+	for(i = 0; i < sc->count; i++) {
+		str_p += sprintf(str_p, "%d,%d,%d,%d,%d,%d ",
+			sc->data[i].type, sc->data[i].val1, sc->data[i].val2, sc->data[i].val3, sc->data[i].val4, sc->data[i].tick);
 	}
 	*(str_p++) = '\t';
 
-	*str_p='\0';
+	*str_p = '\0';
 	return 0;
 }
 
+/*==========================================
+ * ステータスデータを文字列から変換
+ *------------------------------------------
+ */
 static int status_fromstr(char *str, struct scdata *sc)
 {
-	int i,next,set,len;
+	int i, next, set, len;
 	int tmp_int[6];
 
-	if(sscanf(str,"%d,%d%n",&sc->char_id,&sc->account_id,&next) != 2)
+	nullpo_retr(1, sc);
+
+	if(sscanf(str, "%d,%d%n", &sc->char_id, &sc->account_id, &next) != 2)
 		return 1;
 
 	if(sc->account_id <= 0 || sc->char_id <= 0)
@@ -74,8 +114,8 @@ static int status_fromstr(char *str, struct scdata *sc)
 		return 1;	// account_idとchar_idだけの行は有り得ない
 	next++;
 
-	for(i=0; str[next] && str[next] != '\t'; i++) {
-		set = sscanf(str+next,"%d,%d,%d,%d,%d,%d%n",
+	for(i = 0; str[next] && str[next] != '\t'; i++) {
+		set = sscanf(str + next, "%d,%d,%d,%d,%d,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],&tmp_int[4],&tmp_int[5],&len);
 		if(set != 6)
 			return 1;
@@ -87,7 +127,7 @@ static int status_fromstr(char *str, struct scdata *sc)
 			sc->data[i].val4 = tmp_int[4];
 			sc->data[i].tick = tmp_int[5];
 		}
-		next+=len;
+		next += len;
 		if(str[next] == ' ')
 			next++;
 	}
@@ -137,7 +177,11 @@ int status_journal_rollforward( int key, void* buf, int flag )
 int statusdb_txt_sync(void);
 #endif
 
-bool statusdb_txt_init(void)
+/*==========================================
+ * ステータスデータファイルの読み込み
+ *------------------------------------------
+ */
+static bool statusdb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -189,6 +233,10 @@ bool statusdb_txt_init(void)
 	return ret;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 static int statusdb_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
@@ -196,10 +244,10 @@ static int statusdb_txt_sync_sub(void *key, void *data, va_list ap)
 	struct scdata *sc = (struct scdata *)data;
 
 	// countが0のときは書き込みしない
-	if(sc->count > 0) {
-		status_tostr(line,sc);
-		fp = va_arg(ap,FILE *);
-		fprintf(fp,"%s" RETCODE,line);
+	if(sc && sc->count > 0) {
+		status_tostr(line, sc);
+		fp = va_arg(ap, FILE *);
+		fprintf(fp, "%s" RETCODE, line);
 	}
 	return 0;
 }
@@ -212,12 +260,12 @@ int statusdb_txt_sync(void)
 	if( !scdata_db )
 		return 1;
 
-	if( (fp=lock_fopen(scdata_txt,&lock)) == NULL ) {
-		printf("int_status: cant write [%s] !!! data is lost !!!\n",scdata_txt);
+	if( (fp = lock_fopen(scdata_txt, &lock)) == NULL ) {
+		printf("int_status: cant write [%s] !!! data is lost !!!\n", scdata_txt);
 		return 1;
 	}
-	numdb_foreach(scdata_db,statusdb_txt_sync_sub,fp);
-	lock_fclose(fp,scdata_txt,&lock);
+	numdb_foreach(scdata_db, statusdb_txt_sync_sub, fp);
+	lock_fclose(fp, scdata_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -231,14 +279,18 @@ int statusdb_txt_sync(void)
 	return 0;
 }
 
+/*==========================================
+ * ステータスデータ削除
+ *------------------------------------------
+ */
 bool statusdb_txt_delete(int char_id)
 {
-	struct scdata *sc = (struct scdata *)numdb_search(scdata_db,char_id);
+	struct scdata *sc = (struct scdata *)numdb_search(scdata_db, char_id);
 
 	if(sc == NULL)
 		return false;
 
-	numdb_erase(scdata_db,char_id);
+	numdb_erase(scdata_db, char_id);
 	aFree(sc);
 
 #ifdef TXT_JOURNAL
@@ -249,26 +301,37 @@ bool statusdb_txt_delete(int char_id)
 	return true;
 }
 
-/* 負荷軽減を優先してconstを付けない */
+/*==========================================
+ * キャラIDからステータスデータをロード
+ * 負荷軽減を優先してconstを付けない
+ *------------------------------------------
+ */
 struct scdata *statusdb_txt_load(int char_id)
 {
-	return (struct scdata *)numdb_search(scdata_db,char_id);
+	return (struct scdata *)numdb_search(scdata_db, char_id);
 }
 
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
 bool statusdb_txt_save(struct scdata *sc2)
 {
-	struct scdata *sc1 = (struct scdata *)numdb_search(scdata_db,sc2->char_id);
+	struct scdata *sc1;
 
+	nullpo_retr(false, sc2);
+
+	sc1 = (struct scdata *)numdb_search(scdata_db,sc2->char_id);
 	if(sc1 == NULL) {
-		sc1 = (struct scdata *)aCalloc(1,sizeof(struct scdata));
-		numdb_insert(scdata_db,sc2->char_id,sc1);
+		sc1 = (struct scdata *)aCalloc(1, sizeof(struct scdata));
+		numdb_insert(scdata_db, sc2->char_id, sc1);
 		sc1->account_id = sc2->account_id;
 		sc1->char_id    = sc2->char_id;
 	}
 
 	// データが共に0個ならコピーしない
 	if(sc1->count > 0 || sc2->count > 0)
-		memcpy(sc1,sc2,sizeof(struct scdata));
+		memcpy(sc1, sc2, sizeof(struct scdata));
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -277,6 +340,10 @@ bool statusdb_txt_save(struct scdata *sc2)
 	return true;
 }
 
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int statusdb_txt_final_sub(void *key, void *data, va_list ap)
 {
 	struct scdata *sc = (struct scdata *)data;
@@ -289,7 +356,7 @@ static int statusdb_txt_final_sub(void *key, void *data, va_list ap)
 void statusdb_txt_final(void)
 {
 	if(scdata_db)
-		numdb_final(scdata_db,statusdb_txt_final_sub);
+		numdb_final(scdata_db, statusdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( status_journal_enable )
@@ -299,25 +366,11 @@ void statusdb_txt_final(void)
 #endif
 }
 
-int statusdb_txt_config_read_sub(const char *w1, const char *w2)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool statusdb_txt_init(void)
 {
-	if(strcmpi(w1,"status_txt")==0) {
-		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
-	}
-#ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"status_journal_enable")==0) {
-		status_journal_enable = atoi(w2);
-	}
-	else if(strcmpi(w1,"status_journal_file")==0) {
-		strncpy(status_journal_file, w2, sizeof(status_journal_file) - 1);
-	}
-	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
-		status_journal_cache = atoi(w2);
-	}
-#endif
-	else {
-		return 0;
-	}
-
-	return 1;
+	return statusdb_txt_read();
 }

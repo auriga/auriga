@@ -27,30 +27,40 @@
 #include "malloc.h"
 #include "sqldbs.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "homundb_sql.h"
 
 static struct dbt *homun_db = NULL;
 
-bool homundb_sql_init(void)
+/*==========================================
+ * 設定ファイルの読込
+ *------------------------------------------
+ */
+int homundb_sql_config_read_sub(const char* w1,const char *w2)
 {
-	homun_db = numdb_init();
-	return true;
+	return 0;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 int homundb_sql_sync(void)
 {
 	// nothing to do
 	return 0;
 }
 
+/*==========================================
+ * ホム削除
+ *------------------------------------------
+ */
 bool homundb_sql_delete(int homun_id)
 {
-	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
 	bool result = false;
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
+	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return result;
 
 	// try
@@ -67,38 +77,41 @@ bool homundb_sql_delete(int homun_id)
 		// success
 		result = true;
 
-		// cache delete
-		if( p )
 		{
-			numdb_erase(homun_db,p->homun_id);
-			aFree(p);
+			// cache delete
+			struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_erase(homun_db, homun_id);
+			if(p) {
+				aFree(p);
+			}
 		}
-	}while(0);
+	} while(0);
 
-	// end transaction
-	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return result;
 }
 
+/*==========================================
+ * ホムIDからホムデータのロード
+ *------------------------------------------
+ */
 const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 {
-	bool is_success;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db,homun_id);
+	int i;
+	char **sql_row;
+	bool result = false;
+	struct mmo_homunstatus *p = (struct mmo_homunstatus *)numdb_search(homun_db, homun_id);
 
 	if(p && p->homun_id == homun_id) {
 		return p;
 	}
 	if(p == NULL) {
 		p = (struct mmo_homunstatus *)aMalloc(sizeof(struct mmo_homunstatus));
-		numdb_insert(homun_db,homun_id,p);
+		numdb_insert(homun_db, homun_id, p);
 	}
 	memset(p, 0, sizeof(struct mmo_homunstatus));
 
-	is_success = sqldbs_query(
-		&mysql_handle,
+	result = sqldbs_query(&mysql_handle,
 		"SELECT `class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
 		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
 		"`f_str`,`f_agi`,`f_vit`,`f_int`,`f_dex`,`f_luk`,"
@@ -106,18 +119,15 @@ const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 		"FROM `" HOMUN_TABLE "` WHERE `homun_id`='%d'",
 		homun_id
 	);
-	if(!is_success) {
+	if(result == false) {
 		p->homun_id = -1;
 		return NULL;
 	}
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
-		sql_row = sqldbs_fetch(sql_res);
-
+	if((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 		p->homun_id     = homun_id;
 		p->class_       = atoi(sql_row[0]);
-		strncpy(p->name,sql_row[1],24);
+		strncpy(p->name, sql_row[1], 24);
 		p->name[23] = '\0';	// force \0 terminal
 		p->account_id   = atoi(sql_row[2]);
 		p->char_id      = atoi(sql_row[3]);
@@ -148,31 +158,28 @@ const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 		p->incubate     = atoi(sql_row[28]);
 	} else {
 		p->homun_id = -1;
-		if( sql_res ) sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 		return NULL;
 	}
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle);
 
-	is_success = sqldbs_query(&mysql_handle, "SELECT `id`,`lv` FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", homun_id);
-	if(!is_success) {
+	result = sqldbs_query(&mysql_handle, "SELECT `id`,`lv` FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", homun_id);
+	if(result == false) {
 		p->homun_id = -1;
 		return NULL;
 	}
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res!=NULL && sqldbs_num_rows(sql_res)>0) {
-		int i;
-		for(i=0;((sql_row = sqldbs_fetch(sql_res))&&i<MAX_HOMSKILL);i++){
-			int id = atoi(sql_row[0]);
-			if( id < HOM_SKILLID || id >= MAX_HOM_SKILLID ) {
-				// DB操作して変なスキルを覚えさせられる可能性があるのでチェック
-				printf("homundb_sql_load: invaild skill id: %d\n", id);
-			} else {
-				p->skill[id-HOM_SKILLID].id = id;
-				p->skill[id-HOM_SKILLID].lv = atoi(sql_row[1]);
-			}
+
+	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < MAX_HOMSKILL; i++) {
+		int id = atoi(sql_row[0]);
+		if(id < HOM_SKILLID || id >= MAX_HOM_SKILLID) {
+			// DB操作して変なスキルを覚えさせられる可能性があるのでチェック
+			printf("homundb_sql_load: invaild skill id: %d\n", id);
+		} else {
+			p->skill[id-HOM_SKILLID].id = id;
+			p->skill[id-HOM_SKILLID].lv = atoi(sql_row[1]);
 		}
 	}
-	sqldbs_free_result(sql_res);
+	sqldbs_free_result(&mysql_handle);
 
 	p->option = 0;
 	if(p->hungry < 0)
@@ -196,16 +203,24 @@ const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,p2->val)); sep = ',';\
 	}
 
-bool homundb_sql_save(struct mmo_homunstatus* p2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool homundb_sql_save(struct mmo_homunstatus *p2)
 {
-	int  i;
-	char sep, *p, buf[64];
-	const struct mmo_homunstatus *p1 = homundb_sql_load(p2->homun_id);
+	const struct mmo_homunstatus *p1;
+	char buf[64], tmp_sql[65536];
+	char sep = ' ';
+	char *p = tmp_sql;
+	bool result = false;
 
-	if(p1 == NULL) return 0;
+	nullpo_retr(false, p2);
 
-	sep = ' ';
-	p = tmp_sql;
+	p1 = homundb_sql_load(p2->homun_id);
+	if(p1 == NULL)
+		return 0;
+
 	strcpy(p, "UPDATE `" HOMUN_TABLE "` SET");
 	p += strlen(p);
 
@@ -239,85 +254,126 @@ bool homundb_sql_save(struct mmo_homunstatus* p2)
 	UPDATE_NUM(rename_flag ,"rename_flag");
 	UPDATE_NUM(incubate    ,"incubate");
 
-	if(sep == ',') {
-		sprintf(p," WHERE `homun_id` = '%d'",p2->homun_id);
-		sqldbs_query(&mysql_handle, tmp_sql);
-	}
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
-	if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
-		sqldbs_query(&mysql_handle, "DELETE FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", p2->homun_id);
+	// try
+	do {
+		int i;
 
-		for(i=0;i<MAX_HOMSKILL;i++) {
-			if(p2->skill[i].id && p2->skill[i].flag!=1){
-				int lv = (p2->skill[i].flag==0)? p2->skill[i].lv: p2->skill[i].flag-2;
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" HOMUN_SKILL_TABLE "` (`homun_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
-					p2->homun_id, p2->skill[i].id, lv
-				);
-			}
+		if(sep == ',') {
+			sprintf(p, " WHERE `homun_id` = '%d'", p2->homun_id);
+			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
+				break;
 		}
-	}
 
-	{
-		struct mmo_homunstatus *p3 = (struct mmo_homunstatus *)numdb_search(homun_db,p2->homun_id);
-		if(p3)
-			memcpy(p3,p2,sizeof(struct mmo_homunstatus));
-	}
-	return true;
+		if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", p2->homun_id) == false )
+				break;
+
+			for(i = 0; i < MAX_HOMSKILL; i++) {
+				if(p2->skill[i].id && p2->skill[i].flag != 1) {
+					int lv = (p2->skill[i].flag == 0)? p2->skill[i].lv: p2->skill[i].flag - 2;
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" HOMUN_SKILL_TABLE "` (`homun_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
+						p2->homun_id, p2->skill[i].id, lv
+					) == false )
+						break;
+				}
+			}
+			if(i != MAX_HOMSKILL)
+				break;
+		}
+
+		// success
+		result = true;
+
+		{
+			// cache copy
+			struct mmo_homunstatus *p3 = (struct mmo_homunstatus *)numdb_search(homun_db, p2->homun_id);
+			if(p3)
+				memcpy(p3, p2, sizeof(struct mmo_homunstatus));
+		}
+	} while(0);
+
+	sqldbs_transaction_end(&mysql_handle, result);
+
+	return result;
 }
 
+/*==========================================
+ * ホム作成
+ *------------------------------------------
+ */
 bool homundb_sql_new(struct mmo_homunstatus *p)
 {
-	// ホムIDを読み出す
-	int i;
-	bool is_success;
-	char t_name[64];
-	struct mmo_homunstatus *p2;
+	bool result = false;
 
-	is_success = sqldbs_query(
-		&mysql_handle,
-		"INSERT INTO `" HOMUN_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
-		"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
-		"`f_str`,`f_agi`,`f_vit`,`f_int`,`f_dex`,`f_luk`,"
-		"`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) "
-		"VALUES ('%d', '%s', '%d', '%d',"
-		"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d',"
-		"'%d', '%d', '%d', '%d', '%d', '%d',"
-		"'%d', '%d', '%d', '%d', '%d', '%d', '%d')",
-		p->class_, strecpy(t_name, p->name), p->account_id, p->char_id, p->base_level,
-		p->base_exp, p->max_hp, p->hp, p->max_sp, p->sp, p->str, p->agi, p->vit, p->int_, p->dex, p->luk,
-		p->f_str, p->f_agi, p->f_vit, p->f_int, p->f_dex, p->f_luk,
-		p->status_point, p->skill_point, p->equip, p->intimate,
-		p->hungry, p->rename_flag, p->incubate
-	);
-	if(!is_success)
-	{
-		p->homun_id = -1;
+	nullpo_retr(false, p);
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;
-	}
 
-	p->homun_id = (int)sqldbs_insert_id(&mysql_handle);
+	// try
+	do {
+		int i;
+		char t_name[64];
 
-	for(i=0;i<MAX_HOMSKILL;i++) {
-		if(p->skill[i].id && p->skill[i].flag!=1){
-			int lv = (p->skill[i].flag==0)? p->skill[i].lv: p->skill[i].flag-2;
-			sqldbs_query(
-				&mysql_handle,
-				"INSERT INTO `" HOMUN_SKILL_TABLE "` (`homun_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
-				p->homun_id, p->skill[i].id, lv
-			);
+		if( sqldbs_query(&mysql_handle,
+			"INSERT INTO `" HOMUN_TABLE "` (`class`,`name`,`account_id`,`char_id`,`base_level`,`base_exp`,"
+			"`max_hp`,`hp`,`max_sp`,`sp`,`str`,`agi`,`vit`,`int`,`dex`,`luk`,"
+			"`f_str`,`f_agi`,`f_vit`,`f_int`,`f_dex`,`f_luk`,"
+			"`status_point`,`skill_point`,`equip`,`intimate`,`hungry`,`rename_flag`,`incubate`) "
+			"VALUES ('%d', '%s', '%d', '%d',"
+			"'%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d',"
+			"'%d', '%d', '%d', '%d', '%d', '%d',"
+			"'%d', '%d', '%d', '%d', '%d', '%d', '%d')",
+			p->class_, strecpy(t_name, p->name), p->account_id, p->char_id, p->base_level,
+			p->base_exp, p->max_hp, p->hp, p->max_sp, p->sp, p->str, p->agi, p->vit, p->int_, p->dex, p->luk,
+			p->f_str, p->f_agi, p->f_vit, p->f_int, p->f_dex, p->f_luk,
+			p->status_point, p->skill_point, p->equip, p->intimate,
+			p->hungry, p->rename_flag, p->incubate
+		) == false ) {
+			p->homun_id = -1;
+			break;
 		}
-	}
 
-	p2 = (struct mmo_homunstatus*)aMalloc( sizeof( struct mmo_homunstatus ) );
-	memcpy( p2, p, sizeof( struct mmo_homunstatus ) );
-	numdb_insert(homun_db,p->homun_id,p2);
+		p->homun_id = (int)sqldbs_insert_id(&mysql_handle);
+
+		for(i = 0; i < MAX_HOMSKILL; i++) {
+			if(p->skill[i].id && p->skill[i].flag != 1) {
+				int lv = (p->skill[i].flag == 0)? p->skill[i].lv: p->skill[i].flag - 2;
+				if( sqldbs_query(&mysql_handle,
+					"INSERT INTO `" HOMUN_SKILL_TABLE "` (`homun_id`,`id`,`lv`) VALUES ('%d','%d','%d')",
+					p->homun_id, p->skill[i].id, lv
+				) == false )
+					break;
+			}
+		}
+		if(i != MAX_HOMSKILL)
+			break;
+
+		// success
+		result = true;
+
+		{
+			// cache copy
+			struct mmo_homunstatus *p2 = (struct mmo_homunstatus*)aMalloc(sizeof(struct mmo_homunstatus));
+			memcpy(p2, p, sizeof(struct mmo_homunstatus));
+			numdb_insert(homun_db, p->homun_id, p2);
+		}
+	} while(0);
+
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return true;
 }
 
-static int homundb_sql_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int homundb_sql_final_sub(void *key, void *data, va_list ap)
 {
 	struct mmo_homunstatus *p = (struct mmo_homunstatus *)data;
 
@@ -329,10 +385,15 @@ static int homundb_sql_final_sub(void *key,void *data,va_list ap)
 void homundb_sql_final(void)
 {
 	if(homun_db)
-		numdb_final(homun_db,homundb_sql_final_sub);
+		numdb_final(homun_db, homundb_sql_final_sub);
 }
 
-int homundb_sql_config_read_sub(const char* w1,const char *w2)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool homundb_sql_init(void)
 {
-	return 0;
+	homun_db = numdb_init();
+	return true;
 }

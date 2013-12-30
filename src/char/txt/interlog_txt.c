@@ -29,6 +29,10 @@
 
 static char inter_log_filename[1024] = "log/inter.log";
 
+/*==========================================
+ * ログ記録
+ *------------------------------------------
+ */
 int interlog_log_txt(const char *fmt, ...)
 {
 	FILE *logfp;
@@ -47,6 +51,10 @@ int interlog_log_txt(const char *fmt, ...)
 	return 0;
 }
 
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
 int interlog_config_read_txt(const char *w1, const char *w2)
 {
 	if( strcmpi(w1, "inter_log_filename") == 0 ) {

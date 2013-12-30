@@ -28,31 +28,62 @@
 #include "lock.h"
 #include "malloc.h"
 #include "journal.h"
+#include "nullpo.h"
 
 #include "questdb_txt.h"
 
-static char quest_txt[1024]="save/quest.txt";
+static char quest_txt[1024] = "save/quest.txt";
 static struct dbt *quest_db = NULL;
 
 #ifdef TXT_JOURNAL
 static int quest_journal_enable = 1;
 static struct journal quest_journal;
-static char quest_journal_file[1024]="./save/quest.journal";
+static char quest_journal_file[1024] = "./save/quest.journal";
 static int quest_journal_cache = 1000;
 #endif
 
-// ----------------------------------------------------------
-// クエストデータを文字列に変換
-// ----------------------------------------------------------
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
+int questdb_txt_config_read_sub(const char *w1, const char *w2)
+{
+	if(strcmpi(w1,"quest_txt")==0) {
+		strncpy(quest_txt, w2, sizeof(quest_txt) - 1);
+	}
+#ifdef TXT_JOURNAL
+	else if(strcmpi(w1,"quest_journal_enable")==0) {
+		quest_journal_enable = atoi(w2);
+	}
+	else if(strcmpi(w1,"quest_journal_file")==0) {
+		strncpy(quest_journal_file, w2, sizeof(quest_journal_file) - 1);
+	}
+	else if(strcmpi(w1,"quest_journal_cache_interval")==0) {
+		quest_journal_cache = atoi(w2);
+	}
+#endif
+	else {
+		return 0;
+	}
+
+	return 1;
+}
+
+/*==========================================
+ * クエストデータを文字列へ変換
+ *------------------------------------------
+ */
 static int questdb_tostr(char *str, struct quest *q)
 {
 	int i;
 	char *str_p = str;
 
-	str_p += sprintf(str,"%d,%d\t",q->char_id,q->account_id);
+	nullpo_retr(1, q);
 
-	for(i=0; i<q->count; i++) {
-		str_p += sprintf(str_p,"%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+	str_p += sprintf(str, "%d,%d\t", q->char_id, q->account_id);
+
+	for(i = 0; i < q->count; i++) {
+		str_p += sprintf(str_p, "%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			q->data[i].nameid,q->data[i].state,q->data[i].limit,
 			q->data[i].mob[0].id,q->data[i].mob[0].max,q->data[i].mob[0].cnt,
 			q->data[i].mob[1].id,q->data[i].mob[1].max,q->data[i].mob[1].cnt,
@@ -60,19 +91,20 @@ static int questdb_tostr(char *str, struct quest *q)
 	}
 	*(str_p++) = '\t';
 
-	*str_p='\0';
+	*str_p = '\0';
 	return 0;
 }
 
-// ----------------------------------------------------------
-// 文字列をクエストデータに変換
-// ----------------------------------------------------------
+/*==========================================
+ * クエストデータを文字列から変換
+ *------------------------------------------
+ */
 static int questdb_fromstr(char *str, struct quest *q)
 {
-	int i,next,set,len;
+	int i, next, set, len;
 	int tmp_int[12];
 
-	if(sscanf(str,"%d,%d%n",&q->char_id,&q->account_id,&next) != 2)
+	if(sscanf(str, "%d,%d%n", &q->char_id, &q->account_id, &next) != 2)
 		return 1;
 
 	if(q->account_id <= 0 || q->char_id <= 0)
@@ -82,13 +114,13 @@ static int questdb_fromstr(char *str, struct quest *q)
 		return 1;	// account_idとchar_idだけの行は有り得ない
 	next++;
 
-	for(i=0; str[next] && str[next] != '\t'; i++) {
-		set = sscanf(str+next,"%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+	for(i = 0; str[next] && str[next] != '\t'; i++) {
+		set = sscanf(str + next, "%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],
 			&tmp_int[3],&tmp_int[4],&tmp_int[5],
 			&tmp_int[6],&tmp_int[7],&tmp_int[8],
-			&tmp_int[9],&tmp_int[10],&tmp_int[11],
-			&len);
+			&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
+
 		if(set != 12)
 			return 1;
 		if(i < MAX_QUESTLIST) {
@@ -105,7 +137,7 @@ static int questdb_fromstr(char *str, struct quest *q)
 			q->data[i].mob[2].max = (short)tmp_int[10];
 			q->data[i].mob[2].cnt = (short)tmp_int[11];
 		}
-		next+=len;
+		next += len;
 		if(str[next] == ' ')
 			next++;
 	}
@@ -155,17 +187,18 @@ int quest_journal_rollforward( int key, void* buf, int flag )
 int questdb_txt_sync(void);
 #endif
 
-// ----------------------------------------------------------
-// クエストデータ読み込み
-// ----------------------------------------------------------
-bool questdb_txt_init(void)
+/*==========================================
+ * クエストデータファイルの読み込み
+ *------------------------------------------
+ */
+static bool questdb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
 
 	quest_db = numdb_init();
 
-	if((fp = fopen(quest_txt,"r")) == NULL) {
+	if((fp = fopen(quest_txt, "r")) == NULL) {
 		printf("cant't read : %s\n", quest_txt);
 		ret = false;
 	} else {
@@ -211,9 +244,10 @@ bool questdb_txt_init(void)
 	return ret;
 }
 
-// ----------------------------------------------------------
-// クエストデータ書き込み
-// ----------------------------------------------------------
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 static int questdb_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
@@ -221,10 +255,10 @@ static int questdb_txt_sync_sub(void *key, void *data, va_list ap)
 	struct quest *q = (struct quest *)data;
 
 	// countが0のときは書き込みしない
-	if(q->count > 0) {
-		questdb_tostr(line,q);
-		fp = va_arg(ap,FILE *);
-		fprintf(fp,"%s" RETCODE,line);
+	if(q && q->count > 0) {
+		questdb_tostr(line, q);
+		fp = va_arg(ap, FILE *);
+		fprintf(fp, "%s" RETCODE, line);
 	}
 	return 0;
 }
@@ -237,12 +271,12 @@ int questdb_txt_sync(void)
 	if( !quest_db )
 		return 1;
 
-	if( (fp=lock_fopen(quest_txt,&lock)) == NULL ) {
-		printf("int_quest: cant write [%s] !!! data is lost !!!\n",quest_txt);
+	if( (fp = lock_fopen(quest_txt, &lock)) == NULL ) {
+		printf("int_quest: cant write [%s] !!! data is lost !!!\n", quest_txt);
 		return 1;
 	}
-	numdb_foreach(quest_db,questdb_txt_sync_sub,fp);
-	lock_fclose(fp,quest_txt,&lock);
+	numdb_foreach(quest_db, questdb_txt_sync_sub, fp);
+	lock_fclose(fp, quest_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( quest_journal_enable )
@@ -256,17 +290,18 @@ int questdb_txt_sync(void)
 	return 0;
 }
 
-// ----------------------------------------------------------
-// クエストデータ削除
-// ----------------------------------------------------------
-int questdb_txt_delete(int char_id)
+/*==========================================
+ * クエストデータ削除
+ *------------------------------------------
+ */
+bool questdb_txt_delete(int char_id)
 {
-	struct quest *q = (struct quest *)numdb_search(quest_db,char_id);
+	struct quest *q = (struct quest *)numdb_search(quest_db, char_id);
 
 	if(q == NULL)
-		return 1;
+		return false;
 
-	numdb_erase(quest_db,char_id);
+	numdb_erase(quest_db, char_id);
 	aFree(q);
 
 #ifdef TXT_JOURNAL
@@ -274,45 +309,51 @@ int questdb_txt_delete(int char_id)
 		journal_write( &quest_journal, char_id, NULL );
 #endif
 
-	return 0;
+	return true;
 }
 
-// ----------------------------------------------------------
-// キャラIDからクエストデータのインデックス取得
-// ----------------------------------------------------------
+/*==========================================
+ * キャラIDからクエストデータを取得
+ *------------------------------------------
+ */
 const struct quest *questdb_txt_load(int char_id)
 {
-	return (struct quest *)numdb_search(quest_db,char_id);
+	return (struct quest *)numdb_search(quest_db, char_id);
 }
 
-// ----------------------------------------------------------
-// クエストデータ保存
-// ----------------------------------------------------------
-int questdb_txt_save(struct quest *q2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool questdb_txt_save(struct quest *q2)
 {
-	struct quest *q1 = (struct quest *)numdb_search(quest_db,q2->char_id);
+	struct quest *q1;
 
+	nullpo_retr(false, q2);
+
+	q1 = (struct quest *)numdb_search(quest_db, q2->char_id);
 	if(q1 == NULL) {
 		q1 = (struct quest *)aCalloc(1,sizeof(struct quest));
-		numdb_insert(quest_db,q2->char_id,q1);
+		numdb_insert(quest_db, q2->char_id, q1);
 		q1->account_id = q2->account_id;
 		q1->char_id    = q2->char_id;
 	}
 
 	// データが共に0個ならコピーしない
 	if(q1->count > 0 || q2->count > 0)
-		memcpy(q1,q2,sizeof(struct quest));
+		memcpy(q1, q2, sizeof(struct quest));
 
 #ifdef TXT_JOURNAL
 	if( quest_journal_enable )
 		journal_write( &quest_journal, q1->char_id, q1 );
 #endif
-	return 1;
+	return true;
 }
 
-// ----------------------------------------------------------
-// クエストデータ最終処理
-// ----------------------------------------------------------
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int questdb_txt_final_sub(void *key, void *data, va_list ap)
 {
 	struct quest *q = (struct quest *)data;
@@ -325,7 +366,7 @@ static int questdb_txt_final_sub(void *key, void *data, va_list ap)
 void questdb_txt_final(void)
 {
 	if(quest_db)
-		numdb_final(quest_db,questdb_txt_final_sub);
+		numdb_final(quest_db, questdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( quest_journal_enable )
@@ -335,28 +376,11 @@ void questdb_txt_final(void)
 #endif
 }
 
-// ----------------------------------------------------------
-// クエストデータ設定読み込み
-// ----------------------------------------------------------
-int questdb_txt_config_read_sub(const char *w1, const char *w2)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool questdb_txt_init(void)
 {
-	if(strcmpi(w1,"quest_txt")==0) {
-		strncpy(quest_txt, w2, sizeof(quest_txt) - 1);
-	}
-#ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"quest_journal_enable")==0) {
-		quest_journal_enable = atoi(w2);
-	}
-	else if(strcmpi(w1,"quest_journal_file")==0) {
-		strncpy(quest_journal_file, w2, sizeof(quest_journal_file) - 1);
-	}
-	else if(strcmpi(w1,"quest_journal_cache_interval")==0) {
-		quest_journal_cache = atoi(w2);
-	}
-#endif
-	else {
-		return 0;
-	}
-
-	return 1;
+	return questdb_txt_read();
 }

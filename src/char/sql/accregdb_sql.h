@@ -26,7 +26,7 @@
 
 // プロトタイプ宣言
 const struct accreg* accregdb_sql_load(int account_id);
-void accregdb_sql_save(struct accreg *reg);
+bool accregdb_sql_save(struct accreg *reg);
 bool accregdb_sql_init(void);
 int accregdb_sql_sync(void);
 void accregdb_sql_final(void);

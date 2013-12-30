@@ -38,8 +38,25 @@
 #pragma comment(lib,"libmysql.lib")
 #endif
 
-extern MYSQL mysql_handle;
-extern char tmp_sql[65535];
+struct sqldbs_handle {
+	MYSQL handle;
+	MYSQL_RES *result;
+	int transaction_count;
+	char *tag;
+};
+
+struct sqldbs_stmt {
+	MYSQL_STMT *stmt;
+	MYSQL_BIND *params;
+	MYSQL_BIND *columns;
+	size_t max_params;
+	size_t max_columns;
+	bool bind_params;
+	bool bind_columns;
+	char *query;
+};
+
+extern struct sqldbs_handle mysql_handle;
 
 // login
 #define LOGIN_TABLE    "login"
@@ -111,29 +128,46 @@ enum {
 	SQL_DATA_TYPE_ENUM
 };
 
+void sqldbs_set_default_handle(struct sqldbs_handle *hd);
 char* strecpy(char* pt, const char* spt);
-char* strecpy_(MYSQL *handle, char* pt, const char* spt);
+char* strecpy_(struct sqldbs_handle *hd, char* pt, const char* spt);
 
-bool sqldbs_query(MYSQL *handle, const char *query, ...);
-bool sqldbs_simplequery(MYSQL *handle, const char *query);
-MYSQL_RES* sqldbs_store_result(MYSQL *handle);
-MYSQL_ROW sqldbs_fetch(MYSQL_RES *res);
-int sqldbs_num_rows(MYSQL_RES *res);
-int sqldbs_num_fields(MYSQL_RES *res);
-void sqldbs_free_result(MYSQL_RES *res);
-int sqldbs_insert_id(MYSQL *handle);
-int sqldbs_affected_rows(MYSQL *handle);
-MYSQL_STMT* sqldbs_stmt_init(MYSQL *handle);
-bool sqldbs_stmt_prepare(MYSQL_STMT *stmt, const char *query, ...);
-void sqldbs_stmt_bind_param(MYSQL_BIND *bind, int buffer_type, void *buffer, size_t buffer_length, unsigned long *length, char *is_null);
-bool sqldbs_stmt_execute(MYSQL_STMT *stmt, MYSQL_BIND *bind);
-MYSQL_RES* sqldbs_stmt_result_metadata(MYSQL_STMT *stmt);
-bool sqldbs_stmt_store_result(MYSQL_STMT *stmt);
-bool sqldbs_stmt_fetch(MYSQL_STMT *stmt);
-void sqldbs_stmt_close(MYSQL_STMT *stmt);
-void sqldbs_close(MYSQL *handle, const char *msg);
-bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
-	const char *db, unsigned short port, const char *charset, int keepalive);
+bool sqldbs_query(struct sqldbs_handle *hd, const char *query, ...);
+bool sqldbs_simplequery(struct sqldbs_handle *hd, const char *query);
+bool sqldbs_transaction_start(struct sqldbs_handle *hd);
+bool sqldbs_commit(struct sqldbs_handle *hd);
+bool sqldbs_rollback(struct sqldbs_handle *hd);
+bool sqldbs_transaction_end(struct sqldbs_handle *hd, bool result);
+
+char** sqldbs_fetch(struct sqldbs_handle *hd);
+bool sqldbs_has_result(struct sqldbs_handle *hd);
+int sqldbs_num_rows(struct sqldbs_handle *hd);
+int sqldbs_num_fields(struct sqldbs_handle *hd);
+void sqldbs_free_result(struct sqldbs_handle *hd);
+int sqldbs_insert_id(struct sqldbs_handle *hd);
+int sqldbs_affected_rows(struct sqldbs_handle *hd);
+
+// prepared statement
+struct sqldbs_stmt* sqldbs_stmt_init(struct sqldbs_handle *hd);
+bool sqldbs_stmt_prepare(struct sqldbs_stmt *st, const char *query, ...);
+bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query);
+size_t sqldbs_stmt_param_count(struct sqldbs_stmt *st);
+bool sqldbs_stmt_bind_param(struct sqldbs_stmt *st, size_t idx, int buffer_type, void *buffer, size_t buffer_length);
+bool sqldbs_stmt_execute(struct sqldbs_stmt *st);
+bool sqldbs_stmt_bind_column(struct sqldbs_stmt *st, size_t idx, int buffer_type, void *buffer, size_t buffer_length);
+bool sqldbs_stmt_bind_result(struct sqldbs_stmt *st);
+bool sqldbs_stmt_fetch(struct sqldbs_stmt *st);
+int sqldbs_stmt_num_rows(struct sqldbs_stmt *st);
+int sqldbs_stmt_field_count(struct sqldbs_stmt *st);
+int sqldbs_stmt_insert_id(struct sqldbs_stmt *st);
+int sqldbs_stmt_affected_rows(struct sqldbs_stmt *st);
+void sqldbs_stmt_free_result(struct sqldbs_stmt *st);
+void sqldbs_stmt_close(struct sqldbs_stmt *st);
+
+// 接続
+void sqldbs_close(struct sqldbs_handle *hd);
+bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user, const char *passwd,
+	const char *db, unsigned short port, const char *charset, int keepalive, const char *tag);
 
 #endif	// if TXT
 

@@ -27,9 +27,9 @@
 // プロトタイプ宣言
 bool questdb_sql_init(void);
 int  questdb_sql_sync(void);
-int  questdb_sql_delete(int char_id);
+bool  questdb_sql_delete(int char_id);
 const struct quest *questdb_sql_load(int char_id);
-int  questdb_sql_save(struct quest *q2);
+bool  questdb_sql_save(struct quest *q2);
 void questdb_sql_final(void);
 int questdb_sql_config_read_sub(const char *w1,const char *w2);
 

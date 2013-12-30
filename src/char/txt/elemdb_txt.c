@@ -28,21 +28,26 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "elemdb_txt.h"
 
 static struct dbt *elem_db = NULL;
 
-static char elem_txt[1024]="save/elemental.txt";
+static char elem_txt[1024] = "save/elemental.txt";
 static int elem_newid = 100;
 
 #ifdef TXT_JOURNAL
 static int elem_journal_enable = 1;
 static struct journal elem_journal;
-static char elem_journal_file[1024]="./save/elemental.journal";
+static char elem_journal_file[1024] = "./save/elemental.journal";
 static int elem_journal_cache = 1000;
 #endif
 
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
 int elemdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"elem_txt")==0){
@@ -66,48 +71,54 @@ int elemdb_txt_config_read_sub(const char* w1,const char *w2)
 	return 1;
 }
 
-static int elem_tostr(char *str,struct mmo_elemstatus *e)
+/*==========================================
+ * 精霊データを文字列へ変換
+ *------------------------------------------
+ */
+static int elem_tostr(char *str, struct mmo_elemstatus *e)
 {
 	char *str_p = str;
 
-	if(!e) return 0;
+	nullpo_retr(1, e);
 
-	str_p += sprintf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
-		e->elem_id,e->class_,
-		e->account_id,e->char_id,
-		e->mode,e->hp,e->sp,e->limit);
+	str_p += sprintf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
+		e->elem_id, e->class_, e->account_id, e->char_id, e->mode, e->hp,e->sp, e->limit);
 
-	*(str_p++)='\t';
+	*(str_p++) = '\t';
 
-	*str_p='\0';
+	*str_p = '\0';
 	return 0;
 }
 
-static int elem_fromstr(char *str,struct mmo_elemstatus *e)
+/*==========================================
+ * 精霊データを文字列から変換
+ *------------------------------------------
+ */
+static int elem_fromstr(char *str, struct mmo_elemstatus *e)
 {
 	int set;
 	int tmp_int[8];
 
-	if(!e) return 0;
+	nullpo_retr(1, e);
 
-	memset(e,0,sizeof(struct mmo_elemstatus));
+	memset(e, 0, sizeof(struct mmo_elemstatus));
 
-	set=sscanf(str,"%d,%d\t%d,%d\t%d,%d,%d,%u",
+	set = sscanf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
 		&tmp_int[0],&tmp_int[1],
 		&tmp_int[2],&tmp_int[3],
 		&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7]);
 
-	if(set!=8)
+	if(set != 8)
 		return 1;
 
-	e->elem_id      = tmp_int[0];
-	e->class_       = tmp_int[1];
-	e->account_id   = tmp_int[2];
-	e->char_id      = tmp_int[3];
-	e->mode         = tmp_int[4];
-	e->hp           = tmp_int[5];
-	e->sp           = tmp_int[6];
-	e->limit        = (unsigned int)tmp_int[7];
+	e->elem_id    = tmp_int[0];
+	e->class_     = tmp_int[1];
+	e->account_id = tmp_int[2];
+	e->char_id    = tmp_int[3];
+	e->mode       = tmp_int[4];
+	e->hp         = tmp_int[5];
+	e->sp         = tmp_int[6];
+	e->limit      = (unsigned int)tmp_int[7];
 
 	return 0;
 }
@@ -146,7 +157,7 @@ int elem_journal_rollforward( int key, void* buf, int flag )
 		memcpy( e, buf, sizeof(struct mmo_elemstatus) );
 		numdb_insert( elem_db, key, e );
 		if( e->elem_id >= elem_newid)
-			elem_newid=e->elem_id+1;
+			elem_newid = e->elem_id + 1;
 		return 1;
 	}
 
@@ -155,7 +166,11 @@ int elem_journal_rollforward( int key, void* buf, int flag )
 int elemdb_txt_sync(void);
 #endif
 
-bool elemdb_txt_init(void)
+/*==========================================
+ * 精霊データファイルの読み込み
+ *------------------------------------------
+ */
+static bool elemdb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -208,14 +223,18 @@ bool elemdb_txt_init(void)
 	return ret;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 static int elemdb_txt_sync_sub(void *key,void *data,va_list ap)
 {
 	char line[8192];
 	FILE *fp;
 
-	elem_tostr(line,(struct mmo_elemstatus *)data);
-	fp=va_arg(ap,FILE *);
-	fprintf(fp,"%s" RETCODE,line);
+	elem_tostr(line, (struct mmo_elemstatus *)data);
+	fp = va_arg(ap, FILE *);
+	fprintf(fp, "%s" RETCODE, line);
 	return 0;
 }
 
@@ -227,12 +246,12 @@ int elemdb_txt_sync(void)
 	if( !elem_db )
 		return 1;
 
-	if( (fp=lock_fopen(elem_txt,&lock))==NULL ){
-		printf("int_elem: cant write [%s] !!! data is lost !!!\n",elem_txt);
+	if( (fp = lock_fopen(elem_txt, &lock)) == NULL ) {
+		printf("int_elem: cant write [%s] !!! data is lost !!!\n", elem_txt);
 		return 1;
 	}
-	numdb_foreach(elem_db,elemdb_txt_sync_sub,fp);
-	lock_fclose(fp,elem_txt,&lock);
+	numdb_foreach(elem_db, elemdb_txt_sync_sub, fp);
+	lock_fclose(fp, elem_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
@@ -246,16 +265,20 @@ int elemdb_txt_sync(void)
 	return 0;
 }
 
+/*==========================================
+ * 精霊削除
+ *------------------------------------------
+ */
 bool elemdb_txt_delete(int elem_id)
 {
-	struct mmo_elemstatus *p = (struct mmo_elemstatus *)numdb_search(elem_db,elem_id);
+	struct mmo_elemstatus *p = (struct mmo_elemstatus *)numdb_search(elem_db, elem_id);
 
 	if(p == NULL)
 		return false;
 
-	numdb_erase(elem_db,elem_id);
+	numdb_erase(elem_db, elem_id);
 	aFree(p);
-	printf("elem_id: %d deleted\n",elem_id);
+	printf("elem_id: %d deleted\n", elem_id);
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
@@ -265,20 +288,31 @@ bool elemdb_txt_delete(int elem_id)
 	return true;
 }
 
+/*==========================================
+ * 精霊IDから精霊データをロード
+ *------------------------------------------
+ */
 const struct mmo_elemstatus* elemdb_txt_load(int elem_id)
 {
-	return (const struct mmo_elemstatus *)numdb_search(elem_db,elem_id);
+	return (const struct mmo_elemstatus *)numdb_search(elem_db, elem_id);
 }
 
-bool elemdb_txt_save(struct mmo_elemstatus* p2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool elemdb_txt_save(struct mmo_elemstatus *p2)
 {
-	struct mmo_elemstatus* p1 = (struct mmo_elemstatus *)numdb_search(elem_db,p2->elem_id);
+	struct mmo_elemstatus *p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_elemstatus *)numdb_search(elem_db, p2->elem_id);
 	if(p1 == NULL) {
 		p1 = (struct mmo_elemstatus *)aMalloc(sizeof(struct mmo_elemstatus));
-		numdb_insert(elem_db,p2->elem_id,p1);
+		numdb_insert(elem_db, p2->elem_id, p1);
 	}
-	memcpy(p1,p2,sizeof(struct mmo_elemstatus));
+	memcpy(p1, p2, sizeof(struct mmo_elemstatus));
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
@@ -287,17 +321,29 @@ bool elemdb_txt_save(struct mmo_elemstatus* p2)
 	return true;
 }
 
+/*==========================================
+ * 精霊作成
+ *------------------------------------------
+ */
 bool elemdb_txt_new(struct mmo_elemstatus *p2)
 {
-	struct mmo_elemstatus *p1 = (struct mmo_elemstatus *)aMalloc(sizeof(struct mmo_elemstatus));
+	struct mmo_elemstatus *p1;
 
+	nullpo_retr(false, p2);
+
+	p1 = (struct mmo_elemstatus *)aMalloc(sizeof(struct mmo_elemstatus));
 	p2->elem_id = elem_newid++;
-	memcpy(p1,p2,sizeof(struct mmo_elemstatus));
-	numdb_insert(elem_db,p2->elem_id,p1);
+
+	memcpy(p1, p2, sizeof(struct mmo_elemstatus));
+	numdb_insert(elem_db, p2->elem_id, p1);
 	return true;
 }
 
-static int elemdb_txt_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int elemdb_txt_final_sub(void *key, void *data, va_list ap)
 {
 	struct mmo_elemstatus *p = (struct mmo_elemstatus *)data;
 
@@ -309,7 +355,7 @@ static int elemdb_txt_final_sub(void *key,void *data,va_list ap)
 void elemdb_txt_final(void)
 {
 	if(elem_db)
-		numdb_final(elem_db,elemdb_txt_final_sub);
+		numdb_final(elem_db, elemdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
@@ -317,4 +363,13 @@ void elemdb_txt_final(void)
 		journal_final( &elem_journal );
 	}
 #endif
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool elemdb_txt_init(void)
+{
+	return elemdb_txt_read();
 }

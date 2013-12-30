@@ -89,8 +89,10 @@ int mapreg_sql_getreg(int num)
  * マップ変数の変更
  *------------------------------------------
  */
-int mapreg_sql_setreg(int num, int val, int eternal)
+bool mapreg_sql_setreg(int num, int val, int eternal)
 {
+	bool result = true;
+
 	if(val != 0)
 		numdb_insert(mapreg_db, num, INT2PTR(val));
 	else
@@ -102,22 +104,20 @@ int mapreg_sql_setreg(int num, int val, int eternal)
 		char buf1[64], buf2[1024];
 
 		if(val != 0) {
-			sqldbs_query(
-				&mysql_handle,
+			result = sqldbs_query(&mysql_handle,
 				"INSERT INTO `" MAPREG_TABLE "` (`server_tag`, `reg`, `index`, `value`) VALUES ('%s', '%s', '%d', '%d')"
 				"ON DUPLICATE KEY UPDATE `value` = '%d'",
 				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx, val, val
 			);
 		} else {
-			sqldbs_query(
-				&mysql_handle,
+			result = sqldbs_query(&mysql_handle,
 				"DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s' AND `reg` = '%s' AND `index` = '%d'",
 				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx
 			);
 		}
 	}
 
-	return 0;
+	return result;
 }
 
 /*==========================================
@@ -133,9 +133,10 @@ char* mapreg_sql_getregstr(int num)
  * 文字列型マップ変数の変更
  *------------------------------------------
  */
-int mapreg_sql_setregstr(int num, const char *str, int eternal)
+bool mapreg_sql_setregstr(int num, const char *str, int eternal)
 {
 	char *old_str = NULL;
+	bool result = true;
 
 	if(str && *str)
 		old_str = (char *)numdb_insert(mapregstr_db, num, aStrdup(str));
@@ -152,22 +153,20 @@ int mapreg_sql_setregstr(int num, const char *str, int eternal)
 
 		if(str && *str) {
 			strecpy(buf3, str);
-			sqldbs_query(
-				&mysql_handle,
+			result = sqldbs_query(&mysql_handle,
 				"INSERT INTO `" MAPREG_TABLE "` (`server_tag`, `reg`, `index`, `value`) VALUES ('%s', '%s', '%d', '%s')"
 				"ON DUPLICATE KEY UPDATE `value` = '%s'",
 				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx, buf3, buf3
 			);
 		} else {
-			sqldbs_query(
-				&mysql_handle,
+			result = sqldbs_query(&mysql_handle,
 				"DELETE FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s' AND `reg` = '%s' AND `index` = '%d'",
 				strecpy(buf1, map_server_tag), strecpy(buf2, name), idx
 			);
 		}
 	}
 
-	return 0;
+	return result;
 }
 
 /*==========================================
@@ -176,18 +175,16 @@ int mapreg_sql_setregstr(int num, const char *str, int eternal)
  */
 static int mapreg_sql_load(void)
 {
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
 	char buf[64];
+	bool result = false;
 
-	sqldbs_query(&mysql_handle, "SELECT `reg`,`index`,`value` FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if(sql_res) {
-		int i,s;
+	result = sqldbs_query(&mysql_handle, "SELECT `reg`,`index`,`value` FROM `" MAPREG_TABLE "` WHERE `server_tag` = '%s'", strecpy(buf, map_server_tag));
+	if(result) {
+		int i, s;
 		char name[256];
-		while((sql_row = sqldbs_fetch(sql_res)) != NULL) {
+		char **sql_row;
+
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			i = atoi(sql_row[1]);
 			if(i < 0 || i >= 128)
 				continue;
@@ -195,13 +192,13 @@ static int mapreg_sql_load(void)
 			name[255] = '\0';	// force \0 terminal
 			s = script_add_str(name);
 
-			if(name[strlen(name)-1] == '$') {
-				mapreg_setregstr((i<<24)|s, sql_row[2], 0);
+			if(name[strlen(name) - 1] == '$') {
+				mapreg_setregstr((i << 24) | s, sql_row[2], 0);
 			} else {
-				mapreg_setreg((i<<24)|s, atoi(sql_row[2]), 0);
+				mapreg_setreg((i << 24) | s, atoi(sql_row[2]), 0);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 	return 0;
 }
@@ -235,7 +232,7 @@ int mapreg_sql_final(void)
 	if(mapregstr_db)
 		numdb_final(mapregstr_db, mapreg_sql_strdb_final);
 
-	sqldbs_close(&mysql_handle, "[Map]");
+	sqldbs_close(&mysql_handle);
 
 	return 0;
 }
@@ -244,18 +241,18 @@ int mapreg_sql_final(void)
  * 初期化
  *------------------------------------------
  */
-int mapreg_sql_init(void)
+bool mapreg_sql_init(void)
 {
 	// DB connection initialized
 	int is_connect;
 
-	is_connect = sqldbs_connect(&mysql_handle,map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset, map_server_keepalive);
+	is_connect = sqldbs_connect(&mysql_handle, map_server_ip, map_server_id, map_server_pw, map_server_db, map_server_port, map_server_charset, map_server_keepalive, "MAP");
 	if( is_connect == false )
-		exit(1);
+		return false;
 
 	mapreg_db    = numdb_init();
 	mapregstr_db = numdb_init();
 	mapreg_sql_load();
 
-	return 1;
+	return true;
 }

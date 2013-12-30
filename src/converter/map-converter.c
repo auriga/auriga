@@ -70,6 +70,7 @@ static int mapreg_fromstr(const char *line,struct script_mapreg *reg)
 static int mapreg_tosql(struct script_mapreg *reg)
 {
 	char buf1[64], buf2[1024];
+	char tmp_sql[65536];
 	char *p = tmp_sql;
 
 	p += sprintf(p, "INSERT INTO `mapreg` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d',",
@@ -82,9 +83,8 @@ static int mapreg_tosql(struct script_mapreg *reg)
 	} else {
 		sprintf(p, "'%d')", reg->u.value);
 	}
-	if(mysql_query(&mysql_handle, tmp_sql)) {
-		printf("DB server Error (insert `mapreg`)- %s\n", mysql_error(&mysql_handle));
-	}
+
+	sqldbs_simplequery(&mysql_handle, tmp_sql);
 
 	return 0;
 }
@@ -106,10 +106,8 @@ int map_convert(void)
 			printf("cant't read : %s\n",mapreg_txt);
 			return 1;
 		}
-		sprintf(tmp_sql, "DELETE FROM `mapreg` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
-		if(mysql_query(&mysql_handle, tmp_sql)) {
-			printf("DB server Error (delete `mapreg`)- %s\n", mysql_error(&mysql_handle));
-		}
+		sqldbs_query(&mysql_handle, "DELETE FROM `mapreg` WHERE `server_tag` = '%s'", strecpy(buf,map_server_tag));
+
 		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			memset(&reg, 0, sizeof(reg));

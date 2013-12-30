@@ -238,7 +238,7 @@ int do_init(int argc,char **argv)
 
 	// DB connection initialized
 	rc = sqldbs_connect(&mysql_handle,
-		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive
+		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive, "CONVERTER"
 	);
 	if(rc == false) {
 		printf("FATAL ERROR: sqldbs_connect() failed !!\n");
@@ -270,7 +270,7 @@ void do_pre_final(void)
 
 void do_final(void)
 {
-	sqldbs_close(&mysql_handle, "[Converter]");
+	sqldbs_close(&mysql_handle);
 
 	exit_dbn();
 	do_final_timer();

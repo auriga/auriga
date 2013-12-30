@@ -122,6 +122,28 @@ int guild_readdb(void)
 	return 0;
 }
 
+// エンブレムデータのデコード
+char* guild_decode_emblem(char *dst, const char *src, int len)
+{
+	int i;
+	const char *p = src;
+
+	for(i = 0; i < len; i++, p += 2) {
+		int c1 = p[0], c2 = p[1], x1 = 0, x2 = 0;
+
+		if(c1 >= '0' && c1 <= '9') x1 = c1 - '0';
+		if(c1 >= 'a' && c1 <= 'f') x1 = c1 - 'a' + 10;
+		if(c1 >= 'A' && c1 <= 'F') x1 = c1 - 'A' + 10;
+		if(c2 >= '0' && c2 <= '9') x2 = c2 - '0';
+		if(c2 >= 'a' && c2 <= 'f') x2 = c2 - 'a' + 10;
+		if(c2 >= 'A' && c2 <= 'F') x2 = c2 - 'A' + 10;
+
+		dst[i] = (x1 << 4) | x2;
+	}
+
+	return dst;
+}
+
 // ギルドが空かどうかチェック
 static int guild_check_empty(const struct guild *g)
 {

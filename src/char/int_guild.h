@@ -28,6 +28,8 @@ extern int guild_exp[MAX_GUILDLEVEL];
 extern struct dbt *guild_db;
 extern struct guild_castle castle_db[MAX_GUILDCASTLE];
 
+char* guild_decode_emblem(char *dst, const char *src, int len);
+
 int guild_readdb(void);
 int guild_config_read(const char *w1,const char* w2);
 void guild_calc_skilltree(struct guild *g);

@@ -29,6 +29,10 @@
 
 static char char_log_filename[1024] = "log/char.log";
 
+/*==========================================
+ * ログ記録
+ *------------------------------------------
+ */
 int charlog_log_txt(const char *fmt, ...)
 {
 	FILE *logfp;
@@ -47,6 +51,10 @@ int charlog_log_txt(const char *fmt, ...)
 	return 0;
 }
 
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
 int charlog_config_read_txt(const char *w1, const char *w2)
 {
 	if( strcmpi(w1, "char_log_filename") == 0 ) {

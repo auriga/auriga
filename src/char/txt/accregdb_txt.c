@@ -28,6 +28,7 @@
 #include "malloc.h"
 #include "journal.h"
 #include "utils.h"
+#include "nullpo.h"
 
 #include "../inter.h"
 #include "accregdb_txt.h"
@@ -43,34 +44,71 @@ static char accreg_journal_file[1024] = "./save/accreg.journal";
 static int accreg_journal_cache = 1000;
 #endif
 
-// アカウント変数を文字列へ変換
-static int accregdb_tostr(char *str,struct accreg *reg)
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
+int accregdb_txt_config_read_sub(const char *w1,const char *w2)
+{
+	if(strcmpi(w1,"accreg_txt")==0){
+		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
+	}
+#ifdef TXT_JOURNAL
+	else if(strcmpi(w1,"accreg_journal_enable")==0){
+		accreg_journal_enable = atoi( w2 );
+	}
+	else if(strcmpi(w1,"accreg_journal_file")==0){
+		strncpy( accreg_journal_file, w2, sizeof(accreg_journal_file) - 1 );
+	}
+	else if(strcmpi(w1,"accreg_journal_cache_interval")==0){
+		accreg_journal_cache = atoi( w2 );
+	}
+#endif
+	else {
+		return 0;
+	}
+
+	return 1;
+}
+
+/*==========================================
+ * アカウント変数を文字列へ変換
+ *------------------------------------------
+ */
+static int accregdb_tostr(char *str, struct accreg *reg)
 {
 	int j;
 	char *p = str;
 
+	nullpo_retr(1, reg);
+
 	p += sprintf(p, "%d\t", reg->account_id);
-	for(j=0; j<reg->reg_num; j++) {
+	for(j = 0; j < reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0)
 			p += sprintf(p, "%s,%d ", reg->reg[j].str, reg->reg[j].value);
 	}
 	return 0;
 }
 
-// アカウント変数を文字列から変換
-static int accregdb_fromstr(const char *str,struct accreg *reg)
+/*==========================================
+ * アカウント変数を文字列から変換
+ *------------------------------------------
+ */
+static int accregdb_fromstr(const char *str, struct accreg *reg)
 {
-	int j,v,n;
+	int j, v, n;
 	char buf[256];
 	const char *p = str;
 
-	if( sscanf(p,"%d\t%n",&reg->account_id,&n) != 1 || reg->account_id <= 0 )
+	nullpo_retr(1, reg);
+
+	if( sscanf(p, "%d\t%n", &reg->account_id, &n) != 1 || reg->account_id <= 0 )
 		return 1;
 
-	for(j=0,p+=n; j<ACCOUNT_REG_NUM; j++,p+=n) {
+	for(j = 0, p += n; j < ACCOUNT_REG_NUM; j++, p += n) {
 		if( sscanf(p,"%255[^,],%d%n",buf,&v,&n) != 2 )
 			break;
-		strncpy(reg->reg[j].str,buf,32);
+		strncpy(reg->reg[j].str, buf, 32);
 		reg->reg[j].str[31] = '\0';	// force \0 terminal
 		reg->reg[j].value   = v;
 		if(p[n] != ' ')
@@ -122,8 +160,11 @@ int accregdb_journal_rollforward( int key, void* buf, int flag )
 int accregdb_txt_sync(void);
 #endif
 
-// アカウント変数の読み込み
-bool accregdb_txt_init(void)
+/*==========================================
+ * アカウント変数の読み込み
+ *------------------------------------------
+ */
+static bool accregdb_txt_read(void)
 {
 	FILE *fp;
 	bool ret = true;
@@ -140,7 +181,7 @@ bool accregdb_txt_init(void)
 			struct accreg *reg = (struct accreg *)aCalloc(1, sizeof(struct accreg));
 
 			if(accregdb_fromstr(line, reg) == 0 && reg->account_id > 0) {
-				numdb_insert(accreg_db, reg->account_id,reg);
+				numdb_insert(accreg_db, reg->account_id, reg);
 			} else {
 				printf("inter: accreg: broken data [%s] line %d\n", accreg_txt, count);
 				aFree(reg);
@@ -175,36 +216,38 @@ bool accregdb_txt_init(void)
 	return ret;
 }
 
-// アカウント変数のセーブ用
-static int accregdb_txt_sync_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
+static int accregdb_txt_sync_sub(void *key, void *data, va_list ap)
 {
 	char line[8192];
 	FILE *fp;
 	struct accreg *reg = (struct accreg *)data;
 
 	if(reg->reg_num > 0) {
-		accregdb_tostr(line,reg);
-		fp=va_arg(ap,FILE *);
-		fprintf(fp,"%s" RETCODE,line);
+		accregdb_tostr(line, reg);
+		fp = va_arg(ap, FILE *);
+		fprintf(fp, "%s" RETCODE, line);
 	}
 	return 0;
 }
 
-// アカウント変数のセーブ
 int accregdb_txt_sync(void)
 {
 	FILE *fp;
-	int  lock;
+	int lock;
 
 	if( !accreg_db )
 		return 1;
 
-	if( (fp = lock_fopen(accreg_txt,&lock)) == NULL ) {
-		printf("int_accreg: cant write [%s] !!! data is lost !!!\n",accreg_txt);
+	if( (fp = lock_fopen(accreg_txt, &lock)) == NULL ) {
+		printf("int_accreg: cant write [%s] !!! data is lost !!!\n", accreg_txt);
 		return 1;
 	}
-	numdb_foreach(accreg_db,accregdb_txt_sync_sub,fp);
-	lock_fclose(fp,accreg_txt,&lock);
+	numdb_foreach(accreg_db, accregdb_txt_sync_sub, fp);
+	lock_fclose(fp, accreg_txt, &lock);
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
@@ -218,51 +261,45 @@ int accregdb_txt_sync(void)
 	return 0;
 }
 
-int accregdb_txt_config_read_sub(const char *w1,const char *w2)
-{
-	if(strcmpi(w1,"accreg_txt")==0){
-		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
-	}
-#ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"accreg_journal_enable")==0){
-		accreg_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"accreg_journal_file")==0){
-		strncpy( accreg_journal_file, w2, sizeof(accreg_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"accreg_journal_cache_interval")==0){
-		accreg_journal_cache = atoi( w2 );
-	}
-#endif
-	else {
-		return 0;
-	}
-
-	return 1;
-}
-
+/*==========================================
+ * アカウント変数のロード
+ *------------------------------------------
+ */
 const struct accreg* accregdb_txt_load(int account_id)
 {
-	return (const struct accreg* )numdb_search(accreg_db,account_id);
+	return (const struct accreg *)numdb_search(accreg_db, account_id);
 }
 
-void accregdb_txt_save(struct accreg* reg2)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool accregdb_txt_save(struct accreg *reg2)
 {
-	struct accreg* reg1 = (struct accreg *)numdb_search(accreg_db,reg2->account_id);
+	struct accreg* reg1;
 
+	nullpo_retr(false, reg2);
+
+	reg1 = (struct accreg *)numdb_search(accreg_db, reg2->account_id);
 	if(reg1 == NULL) {
 		reg1 = (struct accreg *)aMalloc(sizeof(struct accreg));
-		numdb_insert(accreg_db,reg2->account_id,reg1);
+		numdb_insert(accreg_db, reg2->account_id, reg1);
 	}
-	memcpy(reg1,reg2,sizeof(struct accreg));
+	memcpy(reg1, reg2, sizeof(struct accreg));
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
 		journal_write( &accreg_journal, reg2->account_id, reg2 );
 #endif
+
+	return true;
 }
 
-static int accregdb_txt_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int accregdb_txt_final_sub(void *key, void *data, va_list ap)
 {
 	struct accreg *reg = (struct accreg *)data;
 
@@ -274,10 +311,19 @@ static int accregdb_txt_final_sub(void *key,void *data,va_list ap)
 void accregdb_txt_final(void)
 {
 	if(accreg_db)
-		numdb_final(accreg_db,accregdb_txt_final_sub);
+		numdb_final(accreg_db, accregdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
 		journal_final( &accreg_journal );
 #endif
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool accregdb_txt_init(void)
+{
+	return accregdb_txt_read();
 }

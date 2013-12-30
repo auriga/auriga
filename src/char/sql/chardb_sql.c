@@ -27,6 +27,7 @@
 #include "malloc.h"
 #include "utils.h"
 #include "sqldbs.h"
+#include "nullpo.h"
 
 #include "../char.h"
 #include "chardb_sql.h"
@@ -40,15 +41,47 @@ static char char_server_db[32]      = "ragnarok";
 static char char_server_charset[32] = "";
 static int  char_server_keepalive   = 0;
 
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
+int chardb_sql_config_read_sub(const char* w1,const char* w2)
+{
+	if( strcmpi(w1,"char_server_ip") == 0 )
+		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
+	else if( strcmpi(w1,"char_server_port") == 0 )
+		char_server_port = (unsigned short)atoi(w2);
+	else if( strcmpi(w1,"char_server_id") == 0 )
+		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
+	else if( strcmpi(w1,"char_server_pw") == 0 )
+		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
+	else if( strcmpi(w1,"char_server_db") == 0 )
+		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
+	else if( strcmpi(w1,"char_server_charset") == 0 )
+		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
+	else if( strcmpi(w1,"char_server_keepalive") ==0 )
+		char_server_keepalive = atoi(w2);
+	else
+		return 0;
+
+	return 1;
+}
+
+/*==========================================
+ * アイテムのロードの共通関数
+ *------------------------------------------
+ */
 int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 {
 	int i = 0;
 	const char *tablename;
 	const char *selectoption;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
+	char **sql_row;
+	bool result = false;
 
-	memset(item,0,sizeof(struct item) * max);
+	nullpo_retr(-1, item);
+
+	memset(item, 0, sizeof(struct item) * max);
 
 	switch (tableswitch) {
 	case TABLE_NUM_INVENTORY:
@@ -69,47 +102,50 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 		break;
 	default:
 		printf("Invalid table name!\n");
-		return 1;
+		return -1;
 	}
 
-	sprintf(
-		tmp_sql,"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`, `private` FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id
+	result = sqldbs_query(&mysql_handle,
+		"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
+		"`card0`, `card1`, `card2`, `card3`, `limit`, `private` FROM `%s` WHERE `%s`='%d'",
+		tablename, selectoption, id
 	);
+	if(result == false)
+		return -1;
 
-	sqldbs_query(&mysql_handle, tmp_sql);
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		for(i=0;(sql_row = sqldbs_fetch(sql_res)) && i < max;i++){
-			item[i].id        = (unsigned int)atoi(sql_row[0]);
-			item[i].nameid    = atoi(sql_row[1]);
-			item[i].amount    = atoi(sql_row[2]);
-			item[i].equip     = (unsigned int)atoi(sql_row[3]);
-			item[i].identify  = atoi(sql_row[4]);
-			item[i].refine    = atoi(sql_row[5]);
-			item[i].attribute = atoi(sql_row[6]);
-			item[i].card[0]   = atoi(sql_row[7]);
-			item[i].card[1]   = atoi(sql_row[8]);
-			item[i].card[2]   = atoi(sql_row[9]);
-			item[i].card[3]   = atoi(sql_row[10]);
-			item[i].limit     = (unsigned int)atoi(sql_row[11]);
-			item[i].private   = atoi(sql_row[12]);
-		}
-		sqldbs_free_result(sql_res);
+	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < max; i++) {
+		item[i].id        = (unsigned int)atoi(sql_row[0]);
+		item[i].nameid    = atoi(sql_row[1]);
+		item[i].amount    = atoi(sql_row[2]);
+		item[i].equip     = (unsigned int)atoi(sql_row[3]);
+		item[i].identify  = atoi(sql_row[4]);
+		item[i].refine    = atoi(sql_row[5]);
+		item[i].attribute = atoi(sql_row[6]);
+		item[i].card[0]   = atoi(sql_row[7]);
+		item[i].card[1]   = atoi(sql_row[8]);
+		item[i].card[2]   = atoi(sql_row[9]);
+		item[i].card[3]   = atoi(sql_row[10]);
+		item[i].limit     = (unsigned int)atoi(sql_row[11]);
+		item[i].private   = atoi(sql_row[12]);
 	}
+	sqldbs_free_result(&mysql_handle);
 
 	return i;
 }
 
+/*==========================================
+ * アイテムのセーブの共通関数
+ *------------------------------------------
+ */
 bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 {
-	int i;
 	const char *tablename;
 	const char *selectoption;
-	char *p;
+	char *p, tmp_sql[65536 * 2];
 	char sep = ' ';
 	bool result = false;
+
+	nullpo_retr(false, item);
 
 	switch (tableswitch) {
 	case TABLE_NUM_INVENTORY:
@@ -130,16 +166,17 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 		break;
 	default:
 		printf("Invalid table name!\n");
-		return result;
+		return false;
 	}
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle,"START TRANSACTION") == false )
-		return result;
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// try
 	do
 	{
+		int i;
+
 		// delete
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id) == false)
 			break;
@@ -150,10 +187,8 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 			"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`, `private`) VALUES",tablename,selectoption
 		);
 
-		for( i = 0 ; i < max ; i++ )
-		{
-			if(item[i].nameid)
-			{
+		for(i = 0; i < max; i++) {
+			if(item[i].nameid) {
 				p += sprintf(
 					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
 					sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
@@ -164,9 +199,8 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 			}
 		}
 
-		if(sep == ',')
-		{
-			if( sqldbs_query(&mysql_handle, tmp_sql) == false )
+		if(sep == ',') {
+			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
 				break;
 		}
 
@@ -174,141 +208,180 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 		result = true;
 	} while(0);
 
-	// end transaction
-	sqldbs_simplequery(&mysql_handle,( result == true )? "COMMIT" : "ROLLBACK");
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return result;
 }
 
-bool chardb_sql_init(void)
-{
-	// DB connection initialized
-	bool is_connect;
-
-	is_connect = sqldbs_connect(&mysql_handle,char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset, char_server_keepalive);
-	if(is_connect == false)
-		return false;
-
-	char_db_ = numdb_init();
-
-	return true;
-}
-
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 void chardb_sql_sync(void)
 {
 	// nothing to do
 }
 
+/*==========================================
+ * 友達リストのチェックと訂正
+ *------------------------------------------
+ */
+static bool chardb_validate_friend(struct mmo_chardata *p)
+{
+	bool result = false;
+
+	nullpo_retr(false, p);
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
+
+	// try
+	do {
+		int i;
+
+		for(i = 0; i < p->st.friend_num; i++)
+		{
+			int rows = 0;
+			if( sqldbs_query(&mysql_handle, "SELECT 1 FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.friend_data[i].char_id, p->st.char_id) == false )
+				break;
+
+			rows = sqldbs_num_rows(&mysql_handle);
+			sqldbs_free_result(&mysql_handle);
+
+			if(rows <= 0) {
+				// 相手に存在しないので、友達リストから削除する
+				if( sqldbs_query(&mysql_handle,	"DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.char_id, p->st.friend_data[i].char_id) == false ) {
+					// 続行
+					continue;
+				}
+				p->st.friend_num--;
+				memmove(&p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0]) * (p->st.friend_num - i));
+				i--;
+				printf("*friend_data_correct*\n");
+			}
+		}
+		if(i != p->st.friend_num)
+			break;
+
+		// success
+		result = true;
+	} while(0);
+
+	sqldbs_transaction_end(&mysql_handle, result);
+
+	return result;
+}
+
+/*==========================================
+ * キャラIDからキャラデータのロード
+ *------------------------------------------
+ */
 const struct mmo_chardata* chardb_sql_load(int char_id)
 {
 	int i, n;
 	struct mmo_chardata *p;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
+	char **sql_row;
+	bool result = false;
 
-	p = (struct mmo_chardata*)numdb_search(char_db_,char_id);
+	p = (struct mmo_chardata*)numdb_search(char_db_, char_id);
 	if (p && p->st.char_id == char_id) {
 		// 既にキャッシュが存在する
 		return p;
 	}
 
-	sqldbs_query(&mysql_handle, "SELECT "
-		"`account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
+	result = sqldbs_query(&mysql_handle,
+		"SELECT `account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
 		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`,"
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`, `elem_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
 		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`"
-		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id);
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if (sql_res) {
-		sql_row = sqldbs_fetch(sql_res);
-		if(sql_row == NULL) {
-			// 見つからなくても正常
-			sqldbs_free_result(sql_res);
-			return NULL;
-		}
-		if(p == NULL) {
-			p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
-			numdb_insert(char_db_,char_id,p);
-		}
-		memset(p,0,sizeof(struct mmo_chardata));
-
-		p->st.char_id             = char_id;
-		p->st.account_id          = atoi(sql_row[0]);
-		p->st.char_num            = atoi(sql_row[1]);
-		strncpy(p->st.name, sql_row[2], 24);
-		p->st.class_              = atoi(sql_row[3]);
-		p->st.base_level          = atoi(sql_row[4]);
-		p->st.job_level           = atoi(sql_row[5]);
-		p->st.base_exp            = atoi(sql_row[6]);
-		p->st.job_exp             = atoi(sql_row[7]);
-		p->st.zeny                = atoi(sql_row[8]);
-		p->st.str                 = atoi(sql_row[9]);
-		p->st.agi                 = atoi(sql_row[10]);
-		p->st.vit                 = atoi(sql_row[11]);
-		p->st.int_                = atoi(sql_row[12]);
-		p->st.dex                 = atoi(sql_row[13]);
-		p->st.luk                 = atoi(sql_row[14]);
-		p->st.max_hp              = atoi(sql_row[15]);
-		p->st.hp                  = atoi(sql_row[16]);
-		p->st.max_sp              = atoi(sql_row[17]);
-		p->st.sp                  = atoi(sql_row[18]);
-		p->st.status_point        = atoi(sql_row[19]);
-		p->st.skill_point         = atoi(sql_row[20]);
-		p->st.option              = (unsigned int)atoi(sql_row[21]);
-		p->st.karma               = atoi(sql_row[22]);
-		p->st.manner              = atoi(sql_row[23]);
-		p->st.die_counter         = atoi(sql_row[24]);
-		p->st.party_id            = atoi(sql_row[25]);
-		p->st.guild_id            = atoi(sql_row[26]);
-		p->st.pet_id              = atoi(sql_row[27]);
-		p->st.homun_id            = atoi(sql_row[28]);
-		p->st.merc_id             = atoi(sql_row[29]);
-		p->st.elem_id             = atoi(sql_row[30]);
-		p->st.hair                = atoi(sql_row[31]);
-		p->st.hair_color          = atoi(sql_row[32]);
-		p->st.clothes_color       = atoi(sql_row[33]);
-		p->st.weapon              = atoi(sql_row[34]);
-		p->st.shield              = atoi(sql_row[35]);
-		p->st.robe                = atoi(sql_row[36]);
-		p->st.head_top            = atoi(sql_row[37]);
-		p->st.head_mid            = atoi(sql_row[38]);
-		p->st.head_bottom         = atoi(sql_row[39]);
-		strncpy(p->st.last_point.map,sql_row[40],24);
-		p->st.last_point.x        = atoi(sql_row[41]);
-		p->st.last_point.y        = atoi(sql_row[42]);
-		strncpy(p->st.save_point.map,sql_row[43],24);
-		p->st.save_point.x        = atoi(sql_row[44]);
-		p->st.save_point.y        = atoi(sql_row[45]);
-		p->st.partner_id          = atoi(sql_row[46]);
-		p->st.parent_id[0]        = atoi(sql_row[47]);
-		p->st.parent_id[1]        = atoi(sql_row[48]);
-		p->st.baby_id             = atoi(sql_row[49]);
-		p->st.delete_date         = atoi(sql_row[50]);
-		p->st.refuse_partyinvite  = atoi(sql_row[51]);
-		p->st.show_equip          = atoi(sql_row[52]);
-		p->st.font                = atoi(sql_row[53]);
-
-		// force \0 terminal
-		p->st.name[23]           = '\0';
-		p->st.last_point.map[23] = '\0';
-		p->st.save_point.map[23] = '\0';
-
-		sqldbs_free_result(sql_res);
-	} else {
+		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id
+	);
+	if(result == false) {
 		printf("char - failed\n");
 		return NULL;
 	}
 
-	// read memo data
-	sqldbs_query(&mysql_handle, "SELECT `index`,`map`,`x`,`y` FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result(&mysql_handle);
+	sql_row = sqldbs_fetch(&mysql_handle);
+	if(sql_row == NULL) {
+		// 見つからなくても正常
+		sqldbs_free_result(&mysql_handle);
+		return NULL;
+	}
+	if(p == NULL) {
+		p = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata));
+		numdb_insert(char_db_, char_id, p);
+	}
+	memset(p, 0, sizeof(struct mmo_chardata));
 
-	if (sql_res) {
-		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
+	p->st.char_id             = char_id;
+	p->st.account_id          = atoi(sql_row[0]);
+	p->st.char_num            = atoi(sql_row[1]);
+	strncpy(p->st.name, sql_row[2], 24);
+	p->st.class_              = atoi(sql_row[3]);
+	p->st.base_level          = atoi(sql_row[4]);
+	p->st.job_level           = atoi(sql_row[5]);
+	p->st.base_exp            = atoi(sql_row[6]);
+	p->st.job_exp             = atoi(sql_row[7]);
+	p->st.zeny                = atoi(sql_row[8]);
+	p->st.str                 = atoi(sql_row[9]);
+	p->st.agi                 = atoi(sql_row[10]);
+	p->st.vit                 = atoi(sql_row[11]);
+	p->st.int_                = atoi(sql_row[12]);
+	p->st.dex                 = atoi(sql_row[13]);
+	p->st.luk                 = atoi(sql_row[14]);
+	p->st.max_hp              = atoi(sql_row[15]);
+	p->st.hp                  = atoi(sql_row[16]);
+	p->st.max_sp              = atoi(sql_row[17]);
+	p->st.sp                  = atoi(sql_row[18]);
+	p->st.status_point        = atoi(sql_row[19]);
+	p->st.skill_point         = atoi(sql_row[20]);
+	p->st.option              = (unsigned int)atoi(sql_row[21]);
+	p->st.karma               = atoi(sql_row[22]);
+	p->st.manner              = atoi(sql_row[23]);
+	p->st.die_counter         = atoi(sql_row[24]);
+	p->st.party_id            = atoi(sql_row[25]);
+	p->st.guild_id            = atoi(sql_row[26]);
+	p->st.pet_id              = atoi(sql_row[27]);
+	p->st.homun_id            = atoi(sql_row[28]);
+	p->st.merc_id             = atoi(sql_row[29]);
+	p->st.elem_id             = atoi(sql_row[30]);
+	p->st.hair                = atoi(sql_row[31]);
+	p->st.hair_color          = atoi(sql_row[32]);
+	p->st.clothes_color       = atoi(sql_row[33]);
+	p->st.weapon              = atoi(sql_row[34]);
+	p->st.shield              = atoi(sql_row[35]);
+	p->st.robe                = atoi(sql_row[36]);
+	p->st.head_top            = atoi(sql_row[37]);
+	p->st.head_mid            = atoi(sql_row[38]);
+	p->st.head_bottom         = atoi(sql_row[39]);
+	strncpy(p->st.last_point.map, sql_row[40], 24);
+	p->st.last_point.x        = atoi(sql_row[41]);
+	p->st.last_point.y        = atoi(sql_row[42]);
+	strncpy(p->st.save_point.map, sql_row[43], 24);
+	p->st.save_point.x        = atoi(sql_row[44]);
+	p->st.save_point.y        = atoi(sql_row[45]);
+	p->st.partner_id          = atoi(sql_row[46]);
+	p->st.parent_id[0]        = atoi(sql_row[47]);
+	p->st.parent_id[1]        = atoi(sql_row[48]);
+	p->st.baby_id             = atoi(sql_row[49]);
+	p->st.delete_date         = atoi(sql_row[50]);
+	p->st.refuse_partyinvite  = atoi(sql_row[51]);
+	p->st.show_equip          = atoi(sql_row[52]);
+	p->st.font                = atoi(sql_row[53]);
+
+	// force \0 terminal
+	p->st.name[23]           = '\0';
+	p->st.last_point.map[23] = '\0';
+	p->st.save_point.map[23] = '\0';
+
+	sqldbs_free_result(&mysql_handle);
+
+	// read memo data
+	if(sqldbs_query(&mysql_handle, "SELECT `index`,`map`,`x`,`y` FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_PORTAL_MEMO) {
 				strncpy(p->st.memo_point[n].map, sql_row[1], 24);
@@ -317,35 +390,33 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 				p->st.memo_point[n].y       = atoi(sql_row[3]);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 
 	// read inventory
-	chardb_sql_loaditem(p->st.inventory,MAX_INVENTORY,p->st.char_id,TABLE_NUM_INVENTORY);
+	chardb_sql_loaditem(p->st.inventory, MAX_INVENTORY, p->st.char_id, TABLE_NUM_INVENTORY);
 
 	// read cart
-	chardb_sql_loaditem(p->st.cart,MAX_CART,p->st.char_id,TABLE_NUM_CART);
+	chardb_sql_loaditem(p->st.cart, MAX_CART, p->st.char_id, TABLE_NUM_CART);
 
 	// read skill
-	sqldbs_query(&mysql_handle, "SELECT `id`, `lv` FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		for(i=0;(sql_row = sqldbs_fetch(sql_res));i++){
+	if(sqldbs_query(&mysql_handle, "SELECT `id`, `lv` FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_PCSKILL) {
 				p->st.skill[n].id = n;
 				p->st.skill[n].lv = atoi(sql_row[1]);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 
 	// global_reg
-	sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id);
 	i = 0;
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		for(i=0; (sql_row = sqldbs_fetch(sql_res));i++){
+	if(sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)); i++) {
 			if(i < GLOBAL_REG_NUM) {
 				strncpy(p->reg.global[i].str, sql_row[0], 32);
 				p->reg.global[i].str[31] = '\0';	// force \0 terminal
@@ -354,65 +425,41 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 				printf("char_load %d: couldn't load %s (GLOBAL_REG_NUM = %d)\a\n", p->st.char_id, sql_row[0], GLOBAL_REG_NUM);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 	p->reg.global_num = (i < GLOBAL_REG_NUM)? i: GLOBAL_REG_NUM;
 
 	// friend list
 	p->st.friend_num = 0;
-	sqldbs_query(&mysql_handle, "SELECT `friend_account`, `friend_id`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result( &mysql_handle );
-	if( sql_res )
+	if(sqldbs_query(&mysql_handle, "SELECT `friend_account`, `friend_id`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id))
 	{
-		for( i=0; i < MAX_FRIEND && (sql_row = sqldbs_fetch(sql_res)); i++ )
-		{
-			p->st.friend_data[i].account_id = atoi( sql_row[0] );
-			p->st.friend_data[i].char_id = atoi( sql_row[1] );
-			strncpy( p->st.friend_data[i].name, sql_row[2], 24 );
+		for(i = 0; i < MAX_FRIEND && (sql_row = sqldbs_fetch(&mysql_handle)); i++) {
+			p->st.friend_data[i].account_id = atoi(sql_row[0]);
+			p->st.friend_data[i].char_id    = atoi(sql_row[1]);
+			strncpy(p->st.friend_data[i].name, sql_row[2], 24);
 			p->st.friend_data[i].name[23] = '\0';	// force \0 terminal
 		}
-		sqldbs_free_result( sql_res );
+		sqldbs_free_result(&mysql_handle);
 		p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
 	}
 
-	// friend list のチェックと訂正
-	for(i=0; i<p->st.friend_num; i++ )
-	{
-		sqldbs_query(&mysql_handle, "SELECT `friend_account`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.friend_data[i].char_id, p->st.char_id);
-		sql_res = sqldbs_store_result( &mysql_handle );
-		if( !sql_res ) {
-			// 相手に存在しないので、友達リストから削除する
-			sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d' AND `friend_id`='%d'", p->st.char_id, p->st.friend_data[i].char_id);
-			p->st.friend_num--;
-			memmove( &p->st.friend_data[i], &p->st.friend_data[i+1], sizeof(p->st.friend_data[0])* (p->st.friend_num - i ) );
-			i--;
-			printf("*friend_data_correct*\n");
-		} else {
-			sqldbs_free_result( sql_res );
-		}
-	}
-
 	// feel_info
-	sqldbs_query(&mysql_handle, "SELECT `map`,`lv` FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if (sql_res) {
-		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
+	if(sqldbs_query(&mysql_handle, "SELECT `map`,`lv` FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			n = atoi(sql_row[1]);
 			if(n >= 0 && n < 3) {
 				strncpy(p->st.feel_map[n], sql_row[0], 24);
 				p->st.feel_map[n][23] = '\0';	// force \0 terminal
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 
 	// hotkey
-	sqldbs_query(&mysql_handle, "SELECT `key`, `type`, `id`, `lv` FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if (sql_res) {
-		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
+	if(sqldbs_query(&mysql_handle, "SELECT `key`, `type`, `id`, `lv` FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_HOTKEYS) {
 				p->st.hotkey[n].type = (char)atoi(sql_row[1]);
@@ -420,100 +467,91 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 				p->st.hotkey[n].lv   = (unsigned short)atoi(sql_row[3]);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
 
 	// mercenary_employ
-	sqldbs_query(&mysql_handle, "SELECT `type`, `fame`, `call` FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", char_id);
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if (sql_res) {
-		for(i = 0; (sql_row = sqldbs_fetch(sql_res)); i++) {
+	if(sqldbs_query(&mysql_handle, "SELECT `type`, `fame`, `call` FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", char_id))
+	{
+		while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
 			n = atoi(sql_row[0]);
 			if(n >= 0 && n < MAX_MERC_TYPE) {
 				p->st.merc_fame[n] = atoi(sql_row[1]);
 				p->st.merc_call[n] = atoi(sql_row[2]);
 			}
 		}
-		sqldbs_free_result(sql_res);
+		sqldbs_free_result(&mysql_handle);
 	}
+
+	// validate friend list
+	chardb_validate_friend(p);
 
 	return p;
 }
 
-bool chardb_sql_save_reg(int account_id,int char_id,int num,struct global_reg *reg)
+/*==========================================
+ * キャラ変数のセーブ
+ *------------------------------------------
+ */
+bool chardb_sql_save_reg(int account_id, int char_id, int num, struct global_reg *reg)
 {
-	const struct mmo_chardata *cd = chardb_sql_load(char_id);
+	const struct mmo_chardata *cd;
 	bool result = false;
-	MYSQL_STMT *stmt;
-	int i = 0;
+	struct sqldbs_stmt *st;
 
+	nullpo_retr(false, reg);
+
+	cd = chardb_sql_load(char_id);
 	if( cd == NULL || cd->st.account_id != account_id )
-		return result;
+		return false;
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
-		return result;
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// init
-	stmt = sqldbs_stmt_init(&mysql_handle);
+	st = sqldbs_stmt_init(&mysql_handle);
 
 	// try
 	do
 	{
+		int i = 0;
+
 		// delete globalreg
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `" GLOBALREG_TABLE "` WHERE `char_id`='%d'", char_id) == false )
 			break;
 
 		// prepare
-		if( sqldbs_stmt_prepare(stmt, "INSERT INTO `" GLOBALREG_TABLE "` (`char_id`, `reg`, `value`) VALUES ('%d', ? , ?)", char_id) == false )
+		if( sqldbs_stmt_prepare(st, "INSERT INTO `" GLOBALREG_TABLE "` (`char_id`, `reg`, `value`) VALUES ('%d', ? , ?)", char_id) == false )
 			break;
 
 		// insert val
-		for( i = 0; i < num; i++ )
-		{
+		for(i = 0; i < num; i++) {
 			if(reg[i].str[0] && reg[i].value != 0)
 			{
-				MYSQL_BIND bind[2];
-				sqldbs_stmt_bind_param(&bind[0],SQL_DATA_TYPE_VAR_STRING,(void *)reg[i].str,strlen(reg[i].str),0,0);
-				sqldbs_stmt_bind_param(&bind[1],SQL_DATA_TYPE_INT,INT2PTR(&reg[i].value),0,0,0);
-				if( sqldbs_stmt_execute(stmt,bind) == false )
+				sqldbs_stmt_bind_param(st, 0, SQL_DATA_TYPE_VAR_STRING, reg[i].str, strlen(reg[i].str));
+				sqldbs_stmt_bind_param(st, 1, SQL_DATA_TYPE_INT, &reg[i].value, 0);
+				if( sqldbs_stmt_execute(st) == false )
 					break;
 			}
 		}
-
-		// success
-		if( i == 0 )
-		{
-			result = true;
-			break;
-		}
-
-		// fail
-		if( i < num )
+		if(i != num)
 			break;
 
 		// success
 		result = true;
 
+		{
+			// cache copy
+			struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_, char_id);
+			if(cd2) {
+				memcpy(&cd2->reg.global, reg,sizeof(cd2->reg.global));
+				cd2->reg.global_num = num;
+			}
+		}
 	} while(0);
 
-	// cache copy
-	if( result == true )
-	{
-		struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_,char_id);
-		if(cd2)
-		{
-			memcpy(&cd2->reg.global,reg,sizeof(cd2->reg.global));
-			cd2->reg.global_num = num;
-		}
-	}
-
-	// free
-	sqldbs_stmt_close(stmt);
-
-	// end transaction
-	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
+	sqldbs_stmt_close(st);
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return result;
 }
@@ -531,15 +569,22 @@ bool chardb_sql_save_reg(int account_id,int char_id,int num,struct global_reg *r
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,st2->val)); sep = ',';\
 	}
 
+/*==========================================
+ * キャラデータのセーブ
+ *------------------------------------------
+ */
 bool chardb_sql_save(struct mmo_charstatus *st2)
 {
-	const struct mmo_chardata *cd = chardb_sql_load(st2->char_id);
+	const struct mmo_chardata *cd;
 	const struct mmo_charstatus *st1;
 	char sep = ' ';
-	char buf[256];
+	char buf[256], tmp_sql[65536];
 	char *p = tmp_sql;
-	int  i;
+	bool result = false;
 
+	nullpo_retr(false, st2);
+
+	cd = chardb_sql_load(st2->char_id);
 	if(cd == NULL)
 		return false;
 	st1 = &cd->st;
@@ -603,133 +648,171 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_UNUM(show_equip        ,"show_equip");
 	UPDATE_UNUM(font              ,"font");
 
-	if(sep == ',') {
-		sprintf(p," WHERE `char_id` = '%d'",st2->char_id);
-		sqldbs_query(&mysql_handle, tmp_sql);
-	}
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
-	// memo
-	if (memcmp(st1->memo_point,st2->memo_point,sizeof(st1->memo_point))) {
-		sqldbs_query(&mysql_handle, "DELETE FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+	// try
+	do {
+		int i;
 
-		for(i = 0; i < MAX_PORTAL_MEMO; i++) {
-			if(st2->memo_point[i].map[0]) {
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" MEMO_TABLE "` (`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
-					st2->char_id, i, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
-				);
-			}
+		if(sep == ',') {
+			sprintf(p, " WHERE `char_id` = '%d'", st2->char_id);
+			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
+				break;
 		}
-	}
 
-	// inventory
-	if (memcmp(st1->inventory, st2->inventory, sizeof(st1->inventory))) {
-		chardb_sql_saveitem(st2->inventory,MAX_INVENTORY,st2->char_id,TABLE_NUM_INVENTORY);
-	}
+		// memo
+		if (memcmp(st1->memo_point, st2->memo_point, sizeof(st1->memo_point))) {
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" MEMO_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
 
-	// cart
-	if (memcmp(st1->cart, st2->cart, sizeof(st1->cart))) {
-		chardb_sql_saveitem(st2->cart,MAX_CART,st2->char_id,TABLE_NUM_CART);
-	}
-
-	// skill
-	if(memcmp(st1->skill,st2->skill,sizeof(st1->skill))) {
-		unsigned short sk_lv;
-
-		sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
-
-		for(i=0;i<MAX_PCSKILL;i++){
-			sk_lv = (st2->skill[i].flag==0)? st2->skill[i].lv: st2->skill[i].flag-2;
-			if(st2->skill[i].id && st2->skill[i].flag!=1){
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" SKILL_TABLE "` (`char_id`, `id`, `lv`) VALUES ('%d','%d','%d')",
-					st2->char_id, st2->skill[i].id, sk_lv
-				);
+			for(i = 0; i < MAX_PORTAL_MEMO; i++) {
+				if(st2->memo_point[i].map[0]) {
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" MEMO_TABLE "` (`char_id`,`index`,`map`,`x`,`y`) VALUES ('%d', '%d', '%s', '%d', '%d')",
+						st2->char_id, i, strecpy(buf,st2->memo_point[i].map), st2->memo_point[i].x, st2->memo_point[i].y
+					) == false )
+						break;
+				}
 			}
+			if(i != MAX_PORTAL_MEMO)
+				break;
 		}
-	}
 
-	// friend
-	if( st1->friend_num != st2->friend_num ||
-	    memcmp(st1->friend_data, st2->friend_data, sizeof(st1->friend_data)) != 0 )
-	{
-		sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+		// inventory
+		if (memcmp(st1->inventory, st2->inventory, sizeof(st1->inventory))) {
+			if( chardb_sql_saveitem(st2->inventory,MAX_INVENTORY,st2->char_id,TABLE_NUM_INVENTORY) == false )
+				break;
+		}
 
-		for( i=0; i<st2->friend_num; i++ )
+		// cart
+		if (memcmp(st1->cart, st2->cart, sizeof(st1->cart))) {
+			if( chardb_sql_saveitem(st2->cart, MAX_CART, st2->char_id, TABLE_NUM_CART) == false )
+				break;
+		}
+
+		// skill
+		if(memcmp(st1->skill, st2->skill, sizeof(st1->skill))) {
+			unsigned short sk_lv;
+
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" SKILL_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
+
+			for(i = 0; i < MAX_PCSKILL; i++) {
+				sk_lv = (st2->skill[i].flag == 0)? st2->skill[i].lv: st2->skill[i].flag - 2;
+				if(st2->skill[i].id && st2->skill[i].flag != 1) {
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" SKILL_TABLE "` (`char_id`, `id`, `lv`) VALUES ('%d','%d','%d')",
+						st2->char_id, st2->skill[i].id, sk_lv
+					) == false )
+						break;
+				}
+			}
+			if(i != MAX_PCSKILL)
+				break;
+		}
+
+		// friend
+		if( st1->friend_num != st2->friend_num ||
+		    memcmp(st1->friend_data, st2->friend_data, sizeof(st1->friend_data)) != 0 )
 		{
-			sqldbs_query(
-				&mysql_handle,
-				"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
-				st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id, strecpy(buf, st2->friend_data[i].name)
-			);
-		}
-	}
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
 
-	// feel_info
-	if (memcmp(st1->feel_map,st2->feel_map,sizeof(st1->feel_map))) {
-		sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", st2->char_id);
-
-		for(i = 0; i < 3; i++) {
-			if(st2->feel_map[i][0]) {
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" FEEL_TABLE "` (`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
-					st2->char_id, strecpy(buf,st2->feel_map[i]), i
-				);
+			for(i = 0; i < st2->friend_num; i++)
+			{
+				if( sqldbs_query(&mysql_handle,
+					"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
+					st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id, strecpy(buf, st2->friend_data[i].name)
+				) == false )
+					break;
 			}
+			if(i != st2->friend_num)
+				break;
 		}
-	}
 
-	// hotkey
-	if (memcmp(st1->hotkey,st2->hotkey,sizeof(st1->hotkey))) {
-		sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+		// feel_info
+		if (memcmp(st1->feel_map, st2->feel_map, sizeof(st1->feel_map))) {
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" FEEL_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
 
-		for(i = 0; i < MAX_HOTKEYS; i++) {
-			if(st2->hotkey[i].id > 0) {
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" HOTKEY_TABLE "` (`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
-					st2->char_id, i, st2->hotkey[i].type, st2->hotkey[i].id, st2->hotkey[i].lv
-				);
+			for(i = 0; i < 3; i++) {
+				if(st2->feel_map[i][0]) {
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" FEEL_TABLE "` (`char_id`,`map`,`lv`) VALUES ('%d', '%s', '%d')",
+						st2->char_id, strecpy(buf,st2->feel_map[i]), i
+					) == false )
+						break;
+				}
 			}
+			if(i != 3)
+				break;
 		}
-	}
 
-	// mercenary
-	if (memcmp(st1->merc_fame,st2->merc_fame,sizeof(st1->merc_fame)) ||
-	    memcmp(st1->merc_call,st2->merc_call,sizeof(st1->merc_call)))
-	{
-		sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", st2->char_id);
+		// hotkey
+		if (memcmp(st1->hotkey, st2->hotkey, sizeof(st1->hotkey))) {
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" HOTKEY_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
 
-		for(i = 0; i < MAX_MERC_TYPE; i++) {
-			if(st2->merc_fame[i] > 0 || st2->merc_call[i] > 0) {
-				sqldbs_query(
-					&mysql_handle,
-					"INSERT INTO `" MERC_EMPLOY_TABLE "` (`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
-					st2->char_id, i, st2->merc_fame[i], st2->merc_call[i]
-				);
+			for(i = 0; i < MAX_HOTKEYS; i++) {
+				if(st2->hotkey[i].id > 0) {
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" HOTKEY_TABLE "` (`char_id`,`key`,`type`,`id`,`lv`) VALUES ('%d', '%d', '%d', '%d', '%d')",
+						st2->char_id, i, st2->hotkey[i].type, st2->hotkey[i].id, st2->hotkey[i].lv
+					) == false )
+						break;
+				}
 			}
+			if(i != MAX_HOTKEYS)
+				break;
 		}
-	}
 
-	{
-		struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_,st2->char_id);
-		if(cd2)
-			memcpy(&cd2->st,st2,sizeof(struct mmo_charstatus));
-	}
+		// mercenary
+		if (memcmp(st1->merc_fame, st2->merc_fame, sizeof(st1->merc_fame)) ||
+		    memcmp(st1->merc_call, st2->merc_call, sizeof(st1->merc_call)))
+		{
+			if( sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", st2->char_id) == false )
+				break;
 
-	return true;
+			for(i = 0; i < MAX_MERC_TYPE; i++) {
+				if(st2->merc_fame[i] > 0 || st2->merc_call[i] > 0) {
+					if( sqldbs_query(&mysql_handle,
+						"INSERT INTO `" MERC_EMPLOY_TABLE "` (`char_id`,`type`,`fame`,`call`) VALUES ('%d', '%d', '%d', '%d')",
+						st2->char_id, i, st2->merc_fame[i], st2->merc_call[i]
+					) == false )
+						break;
+				}
+			}
+			if(i != MAX_MERC_TYPE)
+				break;
+		}
+
+		// success
+		result = true;
+
+		{
+			// cache copy
+			struct mmo_chardata *cd2 = (struct mmo_chardata *)numdb_search(char_db_, st2->char_id);
+			if(cd2)
+				memcpy(&cd2->st, st2, sizeof(struct mmo_charstatus));
+		}
+	} while(0);
+
+	sqldbs_transaction_end(&mysql_handle, result);
+
+	return result;
 }
 
+/*==========================================
+ * キャラ作成
+ *------------------------------------------
+ */
 const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
 {
 	int i, char_id = 0;
 	char buf[256];
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	MYSQL_STMT *stmt;
+	char **sql_row;
+	struct sqldbs_stmt *st;
 	bool result = false;
 
 	for(i = 0; i < 24 && name[i]; i++) {
@@ -778,50 +861,35 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		return NULL;
 	}
 
-	// 同一アカウントID、同一キャラスロットチェック
-	if( sqldbs_query(&mysql_handle,"SELECT COUNT(*) FROM `" CHAR_TABLE "` WHERE `account_id` = '%d' AND `char_num` = '%d'",account_id, slot) == false )
+	// 同一アカウントID、同一キャラスロット、同名チェック
+	if( sqldbs_query(&mysql_handle,
+			"SELECT 1 FROM `" CHAR_TABLE "` WHERE `account_id` = '%d' AND `char_num` = '%d' "
+			"UNION ALL "
+			"SELECT 2 FROM `" CHAR_TABLE "` WHERE `name` = '%s'",
+			account_id, slot, strecpy(buf, name)
+		) == false )
 		return NULL;
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if(!sql_res)
-		return NULL;
-
-	sql_row = sqldbs_fetch(sql_res);
-	i = atoi(sql_row[0]);
-	sqldbs_free_result(sql_res);
-	if(i)
-		return NULL;
-
-	// 同名チェック
-	if( sqldbs_query(&mysql_handle, "SELECT COUNT(*) FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,name)) == false )
-		return NULL;
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if(!sql_res)
-		return NULL;
-
-	sql_row = sqldbs_fetch(sql_res);
-	i = atoi(sql_row[0]);
-	sqldbs_free_result(sql_res);
-	if(i)
-	{
-		*flag = 0x00;
+	while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
+		int num = atoi(sql_row[0]);
+		if(num == 2) {
+			// 同名重複
+			*flag = 0x00;
+		}
 		return NULL;
 	}
 
 	charlog_log("make new char %d %s", slot, name);
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
+	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return NULL;
 
 	// init
-	stmt = sqldbs_stmt_init(&mysql_handle);
+	st = sqldbs_stmt_init(&mysql_handle);
 
 	// try
 	do
 	{
-		MYSQL_BIND bind[22];
 		int max_hp = 40 * (100 + vit) / 100;
 		int hp = 40 * (100 + vit) / 100;
 		int max_sp = 11 * (100 + int_) / 100;
@@ -834,41 +902,40 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 #endif
 
 		// prepare
-		if( sqldbs_stmt_prepare(stmt,
+		if( sqldbs_stmt_prepare(st,
 			"INSERT INTO `" CHAR_TABLE "` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
 			"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`status_point`,`hair`,`hair_color`,`last_map`,`last_x`,"
-			"`last_y`,`save_map`,`save_x`,`save_y`) VALUES (?,?,?,?,?,?,?,"
-			"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-			) == false )
+			"`last_y`,`save_map`,`save_x`,`save_y`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+		) == false )
 			break;
 
 		// bind
-		sqldbs_stmt_bind_param(&bind[0],SQL_DATA_TYPE_INT,INT2PTR(&account_id),0,0,0);
-		sqldbs_stmt_bind_param(&bind[1],SQL_DATA_TYPE_UCHAR,UINT2PTR(&slot),0,0,0);
-		sqldbs_stmt_bind_param(&bind[2],SQL_DATA_TYPE_VAR_STRING,(void *)name,strlen(name),0,0);
-		sqldbs_stmt_bind_param(&bind[3],SQL_DATA_TYPE_INT,INT2PTR(&start_zeny),0,0,0);
-		sqldbs_stmt_bind_param(&bind[4],SQL_DATA_TYPE_SHORT,INT2PTR(&str),0,0,0);
-		sqldbs_stmt_bind_param(&bind[5],SQL_DATA_TYPE_SHORT,INT2PTR(&agi),0,0,0);
-		sqldbs_stmt_bind_param(&bind[6],SQL_DATA_TYPE_SHORT,INT2PTR(&vit),0,0,0);
-		sqldbs_stmt_bind_param(&bind[7],SQL_DATA_TYPE_SHORT,INT2PTR(&int_),0,0,0);
-		sqldbs_stmt_bind_param(&bind[8],SQL_DATA_TYPE_SHORT,INT2PTR(&dex),0,0,0);
-		sqldbs_stmt_bind_param(&bind[9],SQL_DATA_TYPE_SHORT,INT2PTR(&luk),0,0,0);
-		sqldbs_stmt_bind_param(&bind[10],SQL_DATA_TYPE_INT,INT2PTR(&max_hp),0,0,0);
-		sqldbs_stmt_bind_param(&bind[11],SQL_DATA_TYPE_INT,INT2PTR(&hp),0,0,0);
-		sqldbs_stmt_bind_param(&bind[12],SQL_DATA_TYPE_INT,INT2PTR(&max_sp),0,0,0);
-		sqldbs_stmt_bind_param(&bind[13],SQL_DATA_TYPE_INT,INT2PTR(&sp),0,0,0);
-		sqldbs_stmt_bind_param(&bind[14],SQL_DATA_TYPE_SHORT,INT2PTR(&status_point),0,0,0);
-		sqldbs_stmt_bind_param(&bind[15],SQL_DATA_TYPE_SHORT,INT2PTR(&hair),0,0,0);
-		sqldbs_stmt_bind_param(&bind[16],SQL_DATA_TYPE_SHORT,INT2PTR(&hair_color),0,0,0);
-		sqldbs_stmt_bind_param(&bind[17],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
-		sqldbs_stmt_bind_param(&bind[18],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
-		sqldbs_stmt_bind_param(&bind[19],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
-		sqldbs_stmt_bind_param(&bind[20],SQL_DATA_TYPE_VAR_STRING,(void *)start_point.map,strlen(start_point.map),0,0);
-		sqldbs_stmt_bind_param(&bind[21],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.x),0,0,0);
-		sqldbs_stmt_bind_param(&bind[22],SQL_DATA_TYPE_SHORT,INT2PTR(&start_point.y),0,0,0);
+		sqldbs_stmt_bind_param(st,  0, SQL_DATA_TYPE_INT,        &account_id,     0                      );
+		sqldbs_stmt_bind_param(st,  1, SQL_DATA_TYPE_UCHAR,      &slot,           0                      );
+		sqldbs_stmt_bind_param(st,  2, SQL_DATA_TYPE_VAR_STRING, (void *)name,    strlen(name)           );
+		sqldbs_stmt_bind_param(st,  3, SQL_DATA_TYPE_INT,        &start_zeny,     0                      );
+		sqldbs_stmt_bind_param(st,  4, SQL_DATA_TYPE_SHORT,      &str,            0                      );
+		sqldbs_stmt_bind_param(st,  5, SQL_DATA_TYPE_SHORT,      &agi,            0                      );
+		sqldbs_stmt_bind_param(st,  6, SQL_DATA_TYPE_SHORT,      &vit,            0                      );
+		sqldbs_stmt_bind_param(st,  7, SQL_DATA_TYPE_SHORT,      &int_,           0                      );
+		sqldbs_stmt_bind_param(st,  8, SQL_DATA_TYPE_SHORT,      &dex,            0                      );
+		sqldbs_stmt_bind_param(st,  9, SQL_DATA_TYPE_SHORT,      &luk,            0                      );
+		sqldbs_stmt_bind_param(st, 10, SQL_DATA_TYPE_INT,        &max_hp,         0                      );
+		sqldbs_stmt_bind_param(st, 11, SQL_DATA_TYPE_INT,        &hp,             0                      );
+		sqldbs_stmt_bind_param(st, 12, SQL_DATA_TYPE_INT,        &max_sp,         0                      );
+		sqldbs_stmt_bind_param(st, 13, SQL_DATA_TYPE_INT,        &sp,             0                      );
+		sqldbs_stmt_bind_param(st, 14, SQL_DATA_TYPE_SHORT,      &status_point,   0                      );
+		sqldbs_stmt_bind_param(st, 15, SQL_DATA_TYPE_SHORT,      &hair,           0                      );
+		sqldbs_stmt_bind_param(st, 16, SQL_DATA_TYPE_SHORT,      &hair_color,     0                      );
+		sqldbs_stmt_bind_param(st, 17, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
+		sqldbs_stmt_bind_param(st, 18, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
+		sqldbs_stmt_bind_param(st, 19, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
+		sqldbs_stmt_bind_param(st, 20, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
+		sqldbs_stmt_bind_param(st, 21, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
+		sqldbs_stmt_bind_param(st, 22, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
 
 		// execute
-		if( sqldbs_stmt_execute(stmt,bind) == false )
+		if( sqldbs_stmt_execute(st) == false )
 			break;
 
 		// キャラIDの取得
@@ -878,11 +945,10 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		if(start_weapon > 0)
 		{
 			// ナイフ
-			if( sqldbs_query(
-				&mysql_handle,
+			if( sqldbs_query(&mysql_handle,
 				"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 				"VALUES (1, '%d', '%d', '%d', '%d', '%d')",
-				char_id, start_weapon, 1, 0x02, 1
+				char_id, start_weapon, 1, LOC_RARM, 1
 			) == false )
 				break;
 		}
@@ -891,11 +957,10 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		if(start_armor > 0)
 		{
 			// コットンシャツ
-			if( sqldbs_query(
-				&mysql_handle,
+			if( sqldbs_query(&mysql_handle,
 				"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 				"VALUES (2, '%d', '%d', '%d', '%d', '%d')",
-				char_id, start_armor, 1, 0x10, 1
+				char_id, start_armor, 1, LOC_BODY, 1
 			) == false )
 				break;
 		}
@@ -903,45 +968,42 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		// success
 		result = true;
 		printf("success, aid: %d, cid: %d, slot: %d, name: %s\n", account_id, char_id, slot, name);
-	}while(0);
+	} while(0);
 
-	// free
-	sqldbs_stmt_close(stmt);
-
-	// end transaction
-	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
+	sqldbs_stmt_close(st);
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return ( result == true )? chardb_sql_load(char_id) : NULL;
 }
 
-int chardb_sql_load_all(struct char_session_data* sd,int account_id)
+/*==========================================
+ * アカウントIDの全キャラデータをロード
+ *------------------------------------------
+ */
+int chardb_sql_load_all(struct char_session_data* sd, int account_id)
 {
-	int i,j;
-	bool is_success;
+	int i, j, found_num = 0;
 	int found_id[MAX_CHAR_SLOT];
-	int found_num = 0;
+	char **sql_row;
 	const struct mmo_chardata *cd;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
 
-	memset(&found_id,0,sizeof(found_id));
+	nullpo_retr(-1, sd);
+
+	memset(found_id, 0, sizeof(found_id));
 
 	// search char.
-	is_success = sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `account_id` = '%d'", account_id);
-	if(!is_success)
-		return 0;
+	if( sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `account_id` = '%d'", account_id) == false )
+		return -1;
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if (sql_res) {
-		while((sql_row = sqldbs_fetch(sql_res))) {
-			found_id[found_num++] = atoi(sql_row[0]);
-			if(found_num == sizeof(found_id)/sizeof(found_id[0]))
-				break;
-		}
-		sqldbs_free_result(sql_res);
+	while((sql_row = sqldbs_fetch(&mysql_handle))) {
+		found_id[found_num++] = atoi(sql_row[0]);
+		if(found_num == sizeof(found_id)/sizeof(found_id[0]))
+			break;
 	}
+	sqldbs_free_result(&mysql_handle);
+
 	j = 0;
-	for(i = 0;i < found_num ; i++) {
+	for(i = 0; i < found_num ; i++) {
 		cd = chardb_sql_load(found_id[i]);
 		if(cd && cd->st.char_num < max_char_slot) {
 			sd->found_char[j++] = cd;
@@ -956,14 +1018,16 @@ int chardb_sql_load_all(struct char_session_data* sd,int account_id)
 	return j;
 }
 
+/*==========================================
+ * キャラ削除
+ *------------------------------------------
+ */
 bool chardb_sql_delete_sub(int char_id)
 {
 	bool result = false;
-	struct mmo_chardata *p;
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
-		return result;
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// try
 	do
@@ -1010,18 +1074,117 @@ bool chardb_sql_delete_sub(int char_id)
 		// success
 		result = true;
 
-		// cache delete
-		if( (p = (struct mmo_chardata *)numdb_erase(char_db_,char_id)) != NULL )
-			aFree(p);
-	}while(0);
+		{
+			// cache delete
+			struct mmo_chardata *p = (struct mmo_chardata *)numdb_erase(char_db_, char_id);
+			if(p) {
+				aFree(p);
+			}
+		}
+	} while(0);
 
-	// end transaction
-	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
+	sqldbs_transaction_end(&mysql_handle, result);
 
 	return result;
 }
 
-static int char_db_final(void *key,void *data,va_list ap)
+/*==========================================
+ * キャラ名からキャラデータを取得
+ *------------------------------------------
+ */
+const struct mmo_chardata* chardb_sql_nick2chardata(const char *char_name)
+{
+	const struct mmo_chardata *cd = NULL;
+	char buf[64];
+	char **sql_row;
+
+	if( sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf, char_name)) == false )
+		return NULL;
+
+	sql_row = sqldbs_fetch(&mysql_handle);
+	if(sql_row) {
+		cd = chardb_sql_load(atoi(sql_row[0]));
+	}
+	sqldbs_free_result(&mysql_handle);
+
+	return cd;
+}
+
+/*==========================================
+ * オンライン
+ *------------------------------------------
+ */
+bool chardb_sql_set_online(int char_id, bool is_online)
+{
+	int flag = (is_online)? 1: 0;
+	bool result = false;
+
+	if(char_id > 0)
+		result = sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `char_id` = '%d'", flag, char_id);
+	else
+		result = sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `online` = '%d'", flag, flag);
+
+	return result;
+}
+
+/*==========================================
+ * ランキングの構築
+ *------------------------------------------
+ */
+bool chardb_sql_build_ranking(void)
+{
+	int i, j, max;
+	char buf[128];
+	char **sql_row;
+	bool result = true;
+
+	memset(&ranking_data, 0, sizeof(ranking_data));
+
+	for(i = 0; i < MAX_RANKING; i++) {
+		max = 0;
+		result = sqldbs_query(
+			&mysql_handle,
+			"SELECT `value`,`char_id` FROM `" GLOBALREG_TABLE "` WHERE `reg` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
+			strecpy(buf, ranking_reg[i]), MAX_RANKER
+		);
+		if(result == false)
+			break;
+
+		for(j = 0; j < MAX_RANKER && (sql_row = sqldbs_fetch(&mysql_handle)); j++) {
+			ranking_data[i][j].point   = atoi(sql_row[0]);
+			ranking_data[i][j].char_id = atoi(sql_row[1]);
+		}
+		sqldbs_free_result(&mysql_handle);
+		max = j;
+
+		// キャラ名の補完
+		for(j = 0; j < max; j++) {
+			result = sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", ranking_data[i][j].char_id);
+			if(result == false)
+				break;
+
+			if((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
+				strncpy(ranking_data[i][j].name, sql_row[0], 24);
+				ranking_data[i][j].name[23] = '\0';	// force \0 terminal
+			} else {
+				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j + 1);
+				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
+			}
+			sqldbs_free_result(&mysql_handle);
+		}
+	}
+
+	if(result == false)
+		printf("char_build_ranking: can't build ranking !!\n");
+
+	return result;
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int char_db_final(void *key, void *data, va_list ap)
 {
 	struct mmo_chardata *p = (struct mmo_chardata *)data;
 
@@ -1032,111 +1195,26 @@ static int char_db_final(void *key,void *data,va_list ap)
 
 void chardb_sql_final(void)
 {
-	sqldbs_close(&mysql_handle, "[Char]");
 	numdb_final(char_db_,char_db_final);
+	sqldbs_close(&mysql_handle);
 
 	return;
 }
 
-int chardb_sql_config_read_sub(const char* w1,const char* w2)
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool chardb_sql_init(void)
 {
-	if( strcmpi(w1,"char_server_ip") == 0 )
-		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
-	else if( strcmpi(w1,"char_server_port") == 0 )
-		char_server_port = (unsigned short)atoi(w2);
-	else if( strcmpi(w1,"char_server_id") == 0 )
-		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
-	else if( strcmpi(w1,"char_server_pw") == 0 )
-		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
-	else if( strcmpi(w1,"char_server_db") == 0 )
-		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
-	else if( strcmpi(w1,"char_server_charset") == 0 )
-		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
-	else if( strcmpi(w1,"char_server_keepalive") ==0 )
-		char_server_keepalive = atoi(w2);
-	else
-		return 0;
+	// DB connection initialized
+	bool is_connect;
 
-	return 1;
-}
+	is_connect = sqldbs_connect(&mysql_handle, char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset, char_server_keepalive, "CHAR");
+	if(is_connect == false)
+		return false;
 
-const struct mmo_chardata* chardb_sql_nick2chardata(const char *char_name)
-{
-	const struct mmo_chardata *cd = NULL;
-	char buf[64];
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-
-	sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" CHAR_TABLE "` WHERE `name` = '%s'", strecpy(buf,char_name));
-
-	sql_res = sqldbs_store_result(&mysql_handle);
-	if(sql_res) {
-		sql_row = sqldbs_fetch(sql_res);
-		if(sql_row) {
-			cd = chardb_sql_load(atoi(sql_row[0]));
-		}
-		sqldbs_free_result(sql_res);
-	}
-
-	return cd;
-}
-
-bool chardb_sql_set_online(int char_id, bool is_online)
-{
-	if(char_id > 0)
-		sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `char_id` = '%d'", is_online, char_id);
-	else
-		sqldbs_query(&mysql_handle, "UPDATE `" CHAR_TABLE "` SET `online` = '%d' WHERE `online` = '%d'", is_online, is_online);
-
-	return true;
-}
-
-bool chardb_sql_build_ranking(void)
-{
-	int i,j,max;
-	char buf[128];
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-
-	memset(&ranking_data, 0, sizeof(ranking_data));
-
-	for(i=0; i<MAX_RANKING; i++) {
-		max = 0;
-		sqldbs_query(
-			&mysql_handle,
-			"SELECT `value`,`char_id` FROM `" GLOBALREG_TABLE "` WHERE `reg` = '%s' AND `value` > 0 ORDER BY `value` DESC LIMIT 0,%d",
-			strecpy(buf,ranking_reg[i]), MAX_RANKER
-		);
-
-		sql_res = sqldbs_store_result(&mysql_handle);
-
-		if(sql_res) {
-			for(j=0; j<MAX_RANKER && (sql_row = sqldbs_fetch(sql_res)); j++) {
-				ranking_data[i][j].point   = atoi(sql_row[0]);
-				ranking_data[i][j].char_id = atoi(sql_row[1]);
-			}
-			sqldbs_free_result(sql_res);
-			max = j;
-		}
-
-		// キャラ名の補完
-		for(j=0; j<max; j++) {
-			sqldbs_query(&mysql_handle, "SELECT `name` FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", ranking_data[i][j].char_id);
-
-			sql_res = sqldbs_store_result(&mysql_handle);
-
-			if(sql_res && (sql_row = sqldbs_fetch(sql_res))) {
-				strncpy(ranking_data[i][j].name, sql_row[0], 24);
-				ranking_data[i][j].name[23] = '\0';	// force \0 terminal
-				sqldbs_free_result(sql_res);
-			} else {
-				printf("char_build_ranking: char_name not found in %s (ID = %d, Rank = %d)\n", ranking_reg[i], ranking_data[i][j].char_id, j+1);
-				memcpy(ranking_data[i][j].name, unknown_char_name, 24);
-				if(sql_res)
-					sqldbs_free_result(sql_res);
-			}
-		}
-	}
+	char_db_ = numdb_init();
 
 	return true;
 }

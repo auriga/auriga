@@ -28,9 +28,20 @@
 #include "utils.h"
 #include "timer.h"
 #include "sqldbs.h"
+#include "malloc.h"
+#include "nullpo.h"
 
-MYSQL mysql_handle;
-char tmp_sql[65535];
+struct sqldbs_handle mysql_handle;
+static struct sqldbs_handle *default_handle = &mysql_handle;
+
+/*==========================================
+ * デフォルトのハンドラを設定
+ *------------------------------------------
+ */
+void sqldbs_set_default_handle(struct sqldbs_handle *hd)
+{
+	default_handle = hd;
+}
 
 /*==========================================
  * 特殊文字のエスケープ
@@ -38,14 +49,16 @@ char tmp_sql[65535];
  */
 char* strecpy(char* pt, const char* spt)
 {
-	mysql_real_escape_string(&mysql_handle, pt, spt, (unsigned long)strlen(spt));
+	mysql_real_escape_string(&default_handle->handle, pt, spt, (unsigned long)strlen(spt));
 
 	return pt;
 }
 
-char* strecpy_(MYSQL *handle, char* pt, const char* spt)
+char* strecpy_(struct sqldbs_handle *hd, char* pt, const char* spt)
 {
-	mysql_real_escape_string(handle, pt, spt, (unsigned long)strlen(spt));
+	nullpo_retr(pt, hd);
+
+	mysql_real_escape_string(&hd->handle, pt, spt, (unsigned long)strlen(spt));
 
 	return pt;
 }
@@ -54,36 +67,48 @@ char* strecpy_(MYSQL *handle, char* pt, const char* spt)
  * クエリ発行
  *------------------------------------------
  */
-bool sqldbs_query(MYSQL *handle, const char *query, ...)
+bool sqldbs_query(struct sqldbs_handle *hd, const char *query, ...)
 {
-	char sql[65535];
+	char sql[65536];
+	int n;
 	va_list ap;
 
+	nullpo_retr(false, hd);
+
 	va_start(ap, query);
-	vsprintf(sql, query, ap);
+	n = vsnprintf(sql, sizeof(sql) - 1, query, ap);
 	va_end(ap);
 
-	if( mysql_query(handle, sql) )
-	{
-		char command[64] = "";
-		sscanf(sql, "%63[A-Za-z_]", command);
-		printf("DB server Error (%s)- %s\n", command, mysql_error(handle));
+	if(n < 0 && n >= sizeof(sql) - 1) {
+		printf("sqldbs_query: too long query!");
 		return false;
 	}
-	return true;
+
+	return sqldbs_simplequery(hd, sql);
 }
 
 /*==========================================
  * 単純なクエリ発行
  *------------------------------------------
  */
-bool sqldbs_simplequery(MYSQL *handle, const char *query)
+bool sqldbs_simplequery(struct sqldbs_handle *hd, const char *query)
 {
-	if( mysql_query(handle, query) )
+	nullpo_retr(false, hd);
+
+	if( mysql_query(&hd->handle, query) )
 	{
-		char command[64] = "";
-		sscanf( query, "%63[A-Za-z_]", command );
-		printf( "DB server Error (%s)- %s\n", command, mysql_error(handle) );
+		printf("DB server Error - %s\n  %s\n\n", mysql_error(&hd->handle), query);
+		return false;
+	}
+
+	if(hd->result) {
+		sqldbs_free_result(hd);
+	}
+	hd->result = mysql_store_result(&hd->handle);
+
+	if( mysql_errno(&hd->handle) != 0 )
+	{
+		printf("DB server Error - %s\n  %s\n\n", mysql_error(&hd->handle), query);
 		return false;
 	}
 
@@ -91,103 +116,220 @@ bool sqldbs_simplequery(MYSQL *handle, const char *query)
 }
 
 /*==========================================
- * 結果セット取得
+ * トランザクションの開始
  *------------------------------------------
  */
-MYSQL_RES* sqldbs_store_result(MYSQL *handle)
+bool sqldbs_transaction_start(struct sqldbs_handle *hd)
 {
-	return mysql_store_result(handle);
+	nullpo_retr(false, hd);
+
+	if(hd->transaction_count < 0) {
+		hd->transaction_count = 0;
+	}
+	if(hd->transaction_count++ > 0) {
+		// transaction is nested
+		return true;
+	}
+
+	return sqldbs_simplequery(hd, "START TRANSACTION");
+}
+
+/*==========================================
+ * コミット
+ *------------------------------------------
+ */
+bool sqldbs_commit(struct sqldbs_handle *hd)
+{
+	nullpo_retr(false, hd);
+
+	if(--hd->transaction_count > 0) {
+		// transaction is nested
+		return true;
+	}
+	if(hd->transaction_count < 0) {
+		hd->transaction_count = 0;
+	}
+
+	return sqldbs_simplequery(hd, "COMMIT");
+}
+
+/*==========================================
+ * ロールバック
+ *------------------------------------------
+ */
+bool sqldbs_rollback(struct sqldbs_handle *hd)
+{
+	nullpo_retr(false, hd);
+
+	if(--hd->transaction_count > 0) {
+		// transaction is nested
+		return true;
+	}
+
+	return sqldbs_simplequery(hd, "ROLLBACK");
+}
+
+/*==========================================
+ * トランザクションの終了
+ * COMMIT or ROLLBACK
+ *------------------------------------------
+ */
+bool sqldbs_transaction_end(struct sqldbs_handle *hd, bool result)
+{
+	if(result)
+		return sqldbs_commit(hd);
+
+	return sqldbs_rollback(hd);
+}
+
+/*==========================================
+ * 結果セットがあるかどうか
+ *------------------------------------------
+ */
+bool sqldbs_has_result(struct sqldbs_handle *hd)
+{
+	nullpo_retr(false, hd);
+
+	return (hd->result)? true: false;
 }
 
 /*==========================================
  * 結果セットの次レコードを取得
  *------------------------------------------
  */
-MYSQL_ROW sqldbs_fetch(MYSQL_RES *res)
+char** sqldbs_fetch(struct sqldbs_handle *hd)
 {
-	return (res)? mysql_fetch_row(res): NULL;
+	nullpo_retr(false, hd);
+
+	// defined as typedef char **MYSQL_ROW in mysql.h
+	return (hd->result)? (char **)mysql_fetch_row(hd->result): NULL;
 }
 
 /*==========================================
  * 結果セットの行数を返す
  *------------------------------------------
  */
-int sqldbs_num_rows(MYSQL_RES *res)
+int sqldbs_num_rows(struct sqldbs_handle *hd)
 {
-	return (res)? (int)mysql_num_rows(res): -1;
+	nullpo_retr(-1, hd);
+
+	return (hd->result)? (int)mysql_num_rows(hd->result): -1;
 }
 
 /*==========================================
  * 結果セットの列数を返す
  *------------------------------------------
  */
-int sqldbs_num_fields(MYSQL_RES *res)
+int sqldbs_num_fields(struct sqldbs_handle *hd)
 {
-	return (res)? (int)mysql_num_fields(res): -1;
-}
+	nullpo_retr(-1, hd);
 
-/*==========================================
- * 結果セット解放
- *------------------------------------------
- */
-void sqldbs_free_result(MYSQL_RES *res)
-{
-	if(res)
-		mysql_free_result(res);
+	return (hd->result)? (int)mysql_num_fields(hd->result): -1;
 }
 
 /*==========================================
  * AUTO_INCREMENTの生成値を返す
  *------------------------------------------
  */
-int sqldbs_insert_id(MYSQL *handle)
+int sqldbs_insert_id(struct sqldbs_handle *hd)
 {
-	return (int)mysql_insert_id(handle);
+	nullpo_retr(-1, hd);
+
+	return (int)mysql_insert_id(&hd->handle);
 }
 
 /*==========================================
  * 変更された行数を返す
  *------------------------------------------
  */
-int sqldbs_affected_rows(MYSQL *handle)
+int sqldbs_affected_rows(struct sqldbs_handle *hd)
 {
-	return (int)mysql_affected_rows(handle);
+	nullpo_retr(-1, hd);
+
+	return (int)mysql_affected_rows(&hd->handle);
+}
+
+/*==========================================
+ * 結果セット解放
+ *------------------------------------------
+ */
+void sqldbs_free_result(struct sqldbs_handle *hd)
+{
+	nullpo_retv(hd);
+
+	if(hd->result) {
+		mysql_free_result(hd->result);
+		hd->result = NULL;
+	}
 }
 
 /*==========================================
  * MYSQL_STMTのinit
  *------------------------------------------
  */
-MYSQL_STMT* sqldbs_stmt_init(MYSQL *handle)
+struct sqldbs_stmt* sqldbs_stmt_init(struct sqldbs_handle *hd)
 {
-	MYSQL_STMT *stmt;
+	struct sqldbs_stmt *st;
 
-	if( (stmt = mysql_stmt_init(&mysql_handle)) == NULL )
-		printf("DB error - %s\n", mysql_error(&mysql_handle));
+	nullpo_retr(NULL, hd);
 
-	return stmt;
+	st = (struct sqldbs_stmt *)aCalloc(1, sizeof(struct sqldbs_stmt));
+
+	st->bind_params  = false;
+	st->bind_columns = false;
+
+	if( (st->stmt = mysql_stmt_init(&hd->handle)) == NULL )
+		printf("DB server Error - %s\n", mysql_error(&hd->handle));
+
+	return st;
 }
 
 /*==========================================
  * プリペアドステートメントのクエリ準備
  *------------------------------------------
  */
-bool sqldbs_stmt_prepare(MYSQL_STMT *stmt, const char *query, ...)
+bool sqldbs_stmt_prepare(struct sqldbs_stmt *st, const char *query, ...)
 {
-	char sql[65535];
+	char sql[65536];
+	int n;
 	va_list ap;
 
+	nullpo_retr(false, st);
+
 	va_start(ap, query);
-	vsprintf(sql, query, ap);
+	n = vsnprintf(sql, sizeof(sql) - 1, query, ap);
 	va_end(ap);
 
-	if( mysql_stmt_prepare(stmt,sql,strlen(sql)) )
-	{
-		char command[64] = "";
-		sscanf(sql, "%63[A-Za-z_]", command);
-		printf("DB server Error (%s)- %s\n", command, mysql_stmt_error(stmt));
+	if(n < 0 && n >= sizeof(sql) - 1) {
+		printf("sqldbs_query: too long query!");
 		return false;
 	}
+
+	return sqldbs_stmt_simpleprepare(st, sql);
+}
+
+/*==========================================
+ * 単純なプリペアドステートメントのクエリ準備
+ *------------------------------------------
+ */
+bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
+{
+	nullpo_retr(false, st);
+
+	if( mysql_stmt_prepare(st->stmt, query, strlen(query)) )
+	{
+		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), query);
+		return false;
+	}
+
+	// 初期化
+	st->bind_params  = false;
+	st->bind_columns = false;
+
+	if(st->query) {
+		aFree(st->query);
+	}
+	st->query = (char *)aStrdup(query);
 
 	return true;
 }
@@ -200,13 +342,13 @@ static int sqldbs_num2datatype(size_t size)
 {
 	switch(size)
 	{
-	case 4:
-		return MYSQL_TYPE_LONG;
-	case 8:
-		return MYSQL_TYPE_LONGLONG;
-	default:
-		printf("Unsupported integer size %zd\n",size);
-		return MYSQL_TYPE_NULL;
+		case 4:
+			return MYSQL_TYPE_LONG;
+		case 8:
+			return MYSQL_TYPE_LONGLONG;
+		default:
+			printf("sqldbs_num2datatype: Unsupported integer size %zd\n",size);
+			return MYSQL_TYPE_NULL;
 	}
 }
 
@@ -214,8 +356,10 @@ static int sqldbs_num2datatype(size_t size)
  * MYSQL_BINDにパラメータをセット
  *------------------------------------------
  */
-void sqldbs_stmt_bind_param(MYSQL_BIND *bind, int buffer_type, void *buffer, size_t buffer_length, unsigned long *length, char *is_null)
+static void sqldbs_stmt_bind_datatype(MYSQL_BIND *bind, int buffer_type, void *buffer, size_t buffer_length, unsigned long *length, char *is_null)
 {
+	nullpo_retv(bind);
+
 	memset(bind, 0, sizeof(MYSQL_BIND));
 
 	switch(buffer_type)
@@ -298,14 +442,65 @@ void sqldbs_stmt_bind_param(MYSQL_BIND *bind, int buffer_type, void *buffer, siz
 }
 
 /*==========================================
+ * ステートメントのパラメータ数を取得
+ *------------------------------------------
+ */
+size_t sqldbs_stmt_param_count(struct sqldbs_stmt *st)
+{
+	nullpo_retr(0, st);
+
+	return (size_t)mysql_stmt_param_count(st->stmt);
+}
+
+/*==========================================
+ * MYSQL_BINDにパラメータをセット
+ *------------------------------------------
+ */
+bool sqldbs_stmt_bind_param(struct sqldbs_stmt *st, size_t idx, int buffer_type, void *buffer, size_t buffer_length)
+{
+	nullpo_retr(false, st);
+
+	if(st->bind_params == false) {
+		size_t i, count;
+
+		// MYSQL_BINDの用意
+		count = sqldbs_stmt_param_count(st);
+		if(st->max_params < count) {
+			st->max_params = count;
+			st->params = (MYSQL_BIND *)aRealloc(st->params, sizeof(MYSQL_BIND) * count);
+		}
+		memset(st->params, 0, count * sizeof(MYSQL_BIND));
+		for(i = 0; i < count; i++) {
+			st->params[i].buffer_type = MYSQL_TYPE_NULL;
+		}
+	}
+
+	if(idx >= st->max_params)
+		return false;
+
+	sqldbs_stmt_bind_datatype(st->params + idx, buffer_type, buffer, buffer_length, NULL, NULL);
+	st->bind_params = true;
+
+	return true;
+}
+
+/*==========================================
  * プリペアドステートメントの実行
  *------------------------------------------
  */
-bool sqldbs_stmt_execute(MYSQL_STMT *stmt, MYSQL_BIND *bind)
+bool sqldbs_stmt_execute(struct sqldbs_stmt *st)
 {
-	if( mysql_stmt_bind_param(stmt,bind) || mysql_stmt_execute(stmt) )
+	nullpo_retr(false, st);
+
+	if( (st->bind_params && mysql_stmt_bind_param(st->stmt, st->params)) || mysql_stmt_execute(st->stmt) )
 	{
-		printf("DB server Error %s\n", mysql_stmt_error(stmt));
+		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), st->query);
+		return false;
+	}
+
+	if( mysql_stmt_store_result(st->stmt) )
+	{
+		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), st->query);
 		return false;
 	}
 
@@ -313,23 +508,48 @@ bool sqldbs_stmt_execute(MYSQL_STMT *stmt, MYSQL_BIND *bind)
 }
 
 /*==========================================
- * ステートメントMYSQL_RESの取得
+ * MYSQL_BINDにステートメント結果をセット
  *------------------------------------------
  */
-MYSQL_RES* sqldbs_stmt_result_metadata(MYSQL_STMT *stmt)
+bool sqldbs_stmt_bind_column(struct sqldbs_stmt *st, size_t idx, int buffer_type, void *buffer, size_t buffer_length)
 {
-	return mysql_stmt_result_metadata(stmt);
+	nullpo_retr(false, st);
+
+	if(st->bind_columns == false) {
+		size_t i, cols;
+
+		// MYSQL_BINDの用意
+		cols = sqldbs_stmt_field_count(st);
+		if(st->max_columns < cols) {
+			st->max_columns = cols;
+			st->columns = (MYSQL_BIND *)aRealloc(st->columns, sizeof(MYSQL_BIND) * cols);
+		}
+		memset(st->columns, 0, cols * sizeof(MYSQL_BIND));
+		for(i = 0; i < cols; i++) {
+			st->columns[i].buffer_type = MYSQL_TYPE_NULL;
+		}
+	}
+
+	if(idx >= st->max_columns)
+		return false;
+
+	sqldbs_stmt_bind_datatype(st->columns + idx, buffer_type, buffer, buffer_length, NULL, NULL);
+	st->bind_columns = true;
+
+	return true;
 }
 
 /*==========================================
- * ステートメント結果セット取得
+ * ステートメント結果セットのバインド
  *------------------------------------------
  */
-bool sqldbs_stmt_store_result(MYSQL_STMT *stmt)
+bool sqldbs_stmt_bind_result(struct sqldbs_stmt *st)
 {
-	if( mysql_stmt_store_result(stmt) )
+	nullpo_retr(false, st);
+
+	if( st->bind_columns && mysql_stmt_bind_result(st->stmt, st->columns) )
 	{
-		printf("DB server Error %s\n", mysql_stmt_error(stmt));
+		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), st->query);
 		return false;
 	}
 
@@ -340,18 +560,110 @@ bool sqldbs_stmt_store_result(MYSQL_STMT *stmt)
  * ステートメント結果セットの次レコードを取得
  *------------------------------------------
  */
-bool sqldbs_stmt_fetch(MYSQL_STMT *stmt)
+bool sqldbs_stmt_fetch(struct sqldbs_stmt *st)
 {
-	return mysql_stmt_fetch(stmt);
+	int ret = 0;
+	const char *msg = NULL;
+
+	nullpo_retr(false, st);
+
+	ret = mysql_stmt_fetch(st->stmt);
+
+	switch(ret) {
+		case 0:
+			return true;
+		case MYSQL_NO_DATA:
+			return false;
+		case MYSQL_DATA_TRUNCATED:
+			msg = "data truncated";
+			break;
+		default:
+			msg = mysql_stmt_error(st->stmt);
+			break;
+	}
+	if(msg) {
+		printf("DB server Error - %s\n  %s\n\n", msg, st->query);
+	}
+
+	return false;
+}
+
+/*==========================================
+ * ステートメント結果セットの行数を返す
+ *------------------------------------------
+ */
+int sqldbs_stmt_num_rows(struct sqldbs_stmt *st)
+{
+	nullpo_retr(-1, st);
+
+	return (int)mysql_stmt_num_rows(st->stmt);
+}
+
+/*==========================================
+ * ステートメント結果の列数を返す
+ *------------------------------------------
+ */
+int sqldbs_stmt_field_count(struct sqldbs_stmt *st)
+{
+	nullpo_retr(-1, st);
+
+	return (int)mysql_stmt_field_count(st->stmt);
+}
+
+/*==========================================
+ * ステートメントのAUTO_INCREMENTの生成値を返す
+ *------------------------------------------
+ */
+int sqldbs_stmt_insert_id(struct sqldbs_stmt *st)
+{
+	nullpo_retr(-1, st);
+
+	return (int)mysql_stmt_insert_id(st->stmt);
+}
+
+/*==========================================
+ * ステートメント変更された行数を返す
+ *------------------------------------------
+ */
+int sqldbs_stmt_affected_rows(struct sqldbs_stmt *st)
+{
+	nullpo_retr(-1, st);
+
+	return (int)mysql_stmt_affected_rows(st->stmt);
+}
+
+/*==========================================
+ * ステートメント結果セット解放
+ *------------------------------------------
+ */
+void sqldbs_stmt_free_result(struct sqldbs_stmt *st)
+{
+	nullpo_retv(st);
+
+	mysql_stmt_free_result(st->stmt);
 }
 
 /*==========================================
  * ステートメントのclose
  *------------------------------------------
  */
-void sqldbs_stmt_close(MYSQL_STMT *stmt)
+void sqldbs_stmt_close(struct sqldbs_stmt *st)
 {
-	mysql_stmt_close(stmt);
+	nullpo_retv(st);
+
+	sqldbs_stmt_free_result(st);
+	mysql_stmt_close(st->stmt);
+
+	if(st->params) {
+		aFree(st->params);
+	}
+	if(st->columns) {
+		aFree(st->columns);
+	}
+	if(st->query) {
+		aFree(st->query);
+	}
+	aFree(st);
 
 	return;
 }
@@ -363,7 +675,10 @@ void sqldbs_stmt_close(MYSQL_STMT *stmt)
  */
 static int sqldbs_keepalive_timer(int tid, unsigned int tick, int id, void *data)
 {
-	mysql_ping((MYSQL *)data);
+	struct sqldbs_handle *hd = (struct sqldbs_handle *)data;
+
+	if(hd)
+		mysql_ping(&hd->handle);
 
 	return 0;
 }
@@ -372,52 +687,71 @@ static int sqldbs_keepalive_timer(int tid, unsigned int tick, int id, void *data
  * 切断
  *------------------------------------------
  */
-void sqldbs_close(MYSQL *handle, const char *msg)
+void sqldbs_close(struct sqldbs_handle *hd)
 {
-	printf("Closing DabaseServer %s ... ", (msg)? msg: "");
-	mysql_close(handle);
+	nullpo_retv(hd);
+
+	printf("Closing DabaseServer ");
+	if(hd->tag) {
+		printf("[%s] ", hd->tag);
+	}
+	printf("... ");
+
+	mysql_close(&hd->handle);
 	printf(" OK\n");
+
+	if(hd->tag) {
+		aFree(hd->tag);
+		hd->tag = NULL;
+	}
 }
 
 /*==========================================
  * 接続
  *------------------------------------------
  */
-bool sqldbs_connect(MYSQL *handle, const char *host, const char *user, const char *passwd,
-	const char *db, unsigned short port, const char *charset, int keepalive)
+bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user, const char *passwd,
+	const char *db, unsigned short port, const char *charset, int keepalive, const char *tag)
 {
-	if(handle == NULL)
+	if(hd == NULL)
 		return false;
 
-	if(mysql_init(handle) == NULL) {
+	hd->result = NULL;
+	hd->transaction_count = 0;
+	hd->tag = NULL;
+
+	if(mysql_init(&hd->handle) == NULL) {
 		printf("Database Server Out of Memory\n");
 		return false;
 	}
 
 	printf("Connecting Database Server -> %s@%s:%d/%s", user, host, port, db);
 	if(charset && *charset) {
-		mysql_options(handle, MYSQL_SET_CHARSET_NAME, charset);
+		mysql_options(&hd->handle, MYSQL_SET_CHARSET_NAME, charset);
 		printf(" (charset: %s)", charset);
 	}
 	printf("\n  ... ");
 
-	if(!mysql_real_connect(handle, host, user, passwd, db, port, NULL, 0)) {
-		printf("%s\n", mysql_error(handle));
+	if(!mysql_real_connect(&hd->handle, host, user, passwd, db, port, NULL, 0)) {
+		printf("%s\n", mysql_error(&hd->handle));
 		return false;
 	}
 	printf("connect success!\n");
 
 	if(charset && *charset) {
-		sqldbs_query(handle, "SET NAMES %s", charset);
+		sqldbs_query(hd, "SET NAMES %s", charset);
 	}
 
-	printf("MySQL Server version %s\n", mysql_get_server_info(handle));
+	printf("MySQL Server version %s\n", mysql_get_server_info(&hd->handle));
 
 	if(keepalive > 0) {
 		add_timer_func_list(sqldbs_keepalive_timer);
-		add_timer_interval(gettick() + keepalive * 1000, sqldbs_keepalive_timer, 0, handle, keepalive * 1000);
+		add_timer_interval(gettick() + keepalive * 1000, sqldbs_keepalive_timer, 0, hd, keepalive * 1000);
 		printf("MySQL keepalive timer set: interval = %d (sec)\n", keepalive);
 	}
+
+	if(tag)
+		hd->tag = (char *)aStrdup(tag);
 
 	return true;
 }

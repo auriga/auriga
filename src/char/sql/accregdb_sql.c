@@ -27,125 +27,124 @@
 #include "malloc.h"
 #include "utils.h"
 #include "sqldbs.h"
+#include "nullpo.h"
 
 #include "../inter.h"
 #include "accregdb_sql.h"
 
 static struct dbt *accreg_db = NULL;
 
-bool accregdb_sql_init(void)
+/*==========================================
+ * 設定ファイル読込
+ *------------------------------------------
+ */
+int accregdb_sql_config_read_sub(const char *w1,const char *w2)
 {
-	accreg_db = numdb_init();
-	return true;
+	return 0;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 int accregdb_sql_sync(void)
 {
 	// nothing to do
 	return 0;
 }
 
-int accregdb_sql_config_read_sub(const char *w1,const char *w2)
-{
-	return 0;
-}
-
-void accregdb_sql_save(struct accreg *reg)
+/*==========================================
+ * セーブ
+ *------------------------------------------
+ */
+bool accregdb_sql_save(struct accreg *reg)
 {
 	bool result = false;
-	MYSQL_STMT *stmt;
-	int j = 0;
+	struct sqldbs_stmt *st;
 
-	// start transaction
-	if( sqldbs_simplequery(&mysql_handle, "START TRANSACTION") == false )
-		return;
+	nullpo_retr(false, reg);
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// init
-	stmt = sqldbs_stmt_init(&mysql_handle);
+	st = sqldbs_stmt_init(&mysql_handle);
 
 	// try
 	do
 	{
+		int j;
+
 		// delete reg
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id) == false )
 			break;
 
 		// prepare
-		if( sqldbs_stmt_prepare(stmt,"INSERT INTO `" ACCOUNTREG_TABLE "` (`account_id`, `reg`, `value`) VALUES ('%d' , ? , ?)",reg->account_id) == false )
+		if( sqldbs_stmt_prepare(st, "INSERT INTO `" ACCOUNTREG_TABLE "` (`account_id`, `reg`, `value`) VALUES ('%d' , ? , ?)", reg->account_id) == false )
 			break;
 
 		// insert val
-		for( j = 0; j < reg->reg_num; j++ )
-		{
+		for(j = 0; j < reg->reg_num; j++) {
 			if(reg->reg[j].str[0] && reg->reg[j].value != 0)
 			{
-				MYSQL_BIND bind[2];
-				sqldbs_stmt_bind_param(&bind[0],SQL_DATA_TYPE_VAR_STRING,(void *)reg->reg[j].str,strlen(reg->reg[j].str),0,0);
-				sqldbs_stmt_bind_param(&bind[1],SQL_DATA_TYPE_INT,INT2PTR(&reg->reg[j].value),0,0,0);
-				if( sqldbs_stmt_execute(stmt,bind) == false )
+				sqldbs_stmt_bind_param(st, 0, SQL_DATA_TYPE_VAR_STRING, reg->reg[j].str, strlen(reg->reg[j].str));
+				sqldbs_stmt_bind_param(st, 1, SQL_DATA_TYPE_INT, &reg->reg[j].value, 0);
+
+				if( sqldbs_stmt_execute(st) == false )
 					break;
 			}
 		}
-
-		// success
-		if( j == 0 )
-		{
-			result = true;
-			break;
-		}
-
-		// fail
-		if( j < reg->reg_num )
+		if(j != reg->reg_num)
 			break;
 
 		// success
 		result = true;
 	} while(0);
 
-	// free
-	sqldbs_stmt_close(stmt);
+	sqldbs_transaction_end(&mysql_handle, result);
+	sqldbs_stmt_close(st);
 
-	// end transaction
-	sqldbs_simplequery(&mysql_handle, ( result == true )? "COMMIT" : "ROLLBACK");
-
-	return;
+	return result;
 }
 
+/*==========================================
+ * アカウント変数のロード
+ *------------------------------------------
+ */
 const struct accreg* accregdb_sql_load(int account_id)
 {
-	int j=0;
-	MYSQL_RES* sql_res;
-	MYSQL_ROW  sql_row = NULL;
-	struct accreg *reg = (struct accreg *)numdb_search(accreg_db,account_id);
+	int j = 0;
+	char **sql_row;
+	struct accreg *reg = (struct accreg *)numdb_search(accreg_db, account_id);
 
-	if( reg == NULL )
-	{
+	if(reg == NULL) {
 		reg = (struct accreg *)aMalloc(sizeof(struct accreg));
-		numdb_insert(accreg_db,account_id,reg);
+		numdb_insert(accreg_db, account_id,reg);
 	}
 	memset(reg, 0, sizeof(struct accreg));
 	reg->account_id = account_id;
 
-	sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id);
+	if( sqldbs_query(&mysql_handle, "SELECT `reg`, `value` FROM `" ACCOUNTREG_TABLE "` WHERE `account_id`='%d'", reg->account_id) == false )
+		return NULL;
 
-	sql_res = sqldbs_store_result(&mysql_handle);
-
-	if( sql_res )
+	for(j = 0; (sql_row = sqldbs_fetch(&mysql_handle)); j++)
 	{
-		for( j = 0; (sql_row = sqldbs_fetch(sql_res)); j++ )
-		{
-			strncpy(reg->reg[j].str, sql_row[0],32);
-			reg->reg[j].str[31] = '\0';	// force \0 terminal
-			reg->reg[j].value   = atoi(sql_row[1]);
-		}
-		sqldbs_free_result(sql_res);
+		strncpy(reg->reg[j].str, sql_row[0], 32);
+		reg->reg[j].str[31] = '\0';	// force \0 terminal
+		reg->reg[j].value   = atoi(sql_row[1]);
 	}
+	sqldbs_free_result(&mysql_handle);
+
 	reg->reg_num = j;
 
 	return reg;
 }
 
-static int accregdb_sql_final_sub(void *key,void *data,va_list ap)
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int accregdb_sql_final_sub(void *key, void *data, va_list ap)
 {
 	struct accreg *reg = (struct accreg *)data;
 
@@ -157,5 +156,15 @@ static int accregdb_sql_final_sub(void *key,void *data,va_list ap)
 void accregdb_sql_final(void)
 {
 	if(accreg_db)
-		numdb_final(accreg_db,accregdb_sql_final_sub);
+		numdb_final(accreg_db, accregdb_sql_final_sub);
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+bool accregdb_sql_init(void)
+{
+	accreg_db = numdb_init();
+	return true;
 }
