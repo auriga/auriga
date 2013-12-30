@@ -5152,7 +5152,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*22+17)=sd->status.inventory[i].card[2];
 		WFIFOW(fd,n*22+19)=sd->status.inventory[i].card[3];
 		WFIFOL(fd,n*22+21)=sd->status.inventory[i].limit;
-		WFIFOB(fd,n*22+25)=sd->status.inventory[i].identify+(sd->status.inventory[i].private?2:0);
+		WFIFOB(fd,n*22+25)=sd->status.inventory[i].identify+(sd->status.inventory[i].private_?2:0);
 		n++;
 	}
 	if(n){
@@ -5185,7 +5185,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*24+19)=sd->status.inventory[i].card[2];
 		WFIFOW(fd,n*24+21)=sd->status.inventory[i].card[3];
 		WFIFOL(fd,n*24+23)=sd->status.inventory[i].limit;
-		WFIFOB(fd,n*24+27)=sd->status.inventory[i].identify+(sd->status.inventory[i].private?2:0);
+		WFIFOB(fd,n*24+27)=sd->status.inventory[i].identify+(sd->status.inventory[i].private_?2:0);
 		n++;
 	}
 	if(n){
@@ -5482,7 +5482,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOL(fd,n*27+22)=sd->status.inventory[i].limit;
 		WFIFOW(fd,n*27+26)=0;
 		WFIFOW(fd,n*27+28)=sd->inventory_data[i]->look;
-		WFIFOB(fd,n*27+30)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private?4:0);
+		WFIFOB(fd,n*27+30)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private_?4:0);
 		n++;
 	}
 	if(n){
@@ -5538,7 +5538,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOL(fd,n*31+26)=sd->status.inventory[i].limit;
 		WFIFOW(fd,n*31+30)=0;
 		WFIFOW(fd,n*31+32)=sd->inventory_data[i]->look;
-		WFIFOB(fd,n*31+34)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private?4:0);
+		WFIFOB(fd,n*31+34)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private_?4:0);
 		n++;
 	}
 	if(n){
@@ -20043,7 +20043,7 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 {
 	int nameid;
-	bool result;
+	int result;
 
 	nullpo_retv(sd);
 
@@ -20208,10 +20208,10 @@ static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
 
 	flag = RFIFOB(fd,GETPACKETPOS(cmd,1));
 
-	if(sd->status.inventory[idx].private && flag == 1 )
-		sd->status.inventory[idx].private = 0;
+	if(sd->status.inventory[idx].private_ && flag == 1 )
+		sd->status.inventory[idx].private_ = 0;
 	else if(flag == 0)
-		sd->status.inventory[idx].private = 1;
+		sd->status.inventory[idx].private_ = 1;
 	else
 		return;
 

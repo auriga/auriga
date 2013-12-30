@@ -81,7 +81,7 @@ static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch
 				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u','%d')",
 				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-				item[i].card[2],item[i].card[3],item[i].limit,item[i].private
+				item[i].card[2],item[i].card[3],item[i].limit,item[i].private_
 			);
 			sep = ',';
 		}
@@ -223,7 +223,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
 			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
-			p->st.inventory[i].private   = tmp_int[12];
+			p->st.inventory[i].private_  = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -251,7 +251,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
 			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
-			p->st.cart[i].private   = tmp_int[12];
+			p->st.cart[i].private_  = tmp_int[12];
 		}
 		next+=len;
 		if(str[next]==' ')
@@ -477,18 +477,17 @@ static int mmo_char_reg_tosql(int char_id, int num, struct global_reg *reg)
 	return 0;
 }
 
-// 友達登録は名前解決が必要なので別処理
+// 友達登録
 static int mmo_friend_tosql(int char_id, struct mmo_charstatus *st)
 {
-	char buf[256];
 	int i;
 
 	sqldbs_query(&mysql_handle, "DELETE FROM `friend` WHERE `char_id`='%d'", char_id);
 
 	for(i=0; i < st->friend_num; i++) {
 		sqldbs_query(&mysql_handle,
-			"INSERT INTO `friend` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
-			st->char_id, st->friend_data[i].account_id, st->friend_data[i].char_id, strecpy(buf,st->friend_data[i].name)
+			"INSERT INTO `friend` (`char_id`, `friend_account`, `friend_id`) VALUES ('%d', '%d', '%d')",
+			st->char_id, st->friend_data[i].account_id, st->friend_data[i].char_id
 		);
 	}
 
@@ -1199,28 +1198,6 @@ static int homun_tosql(int homun_id, struct mmo_homunstatus *h)
 	return 0;
 }
 
-// キャラIDからキャラ名を取得
-static const char *char_id2name(struct mmo_chardata *cd, int char_id, int max)
-{
-	int min = -1;
-
-	if(cd == NULL)
-		return NULL;
-
-	// binary search
-	while(max - min > 1) {
-		int mid = (min + max) / 2;
-		if(cd[mid].st.char_id == char_id)
-			return cd[mid].st.name;
-
-		if(cd[mid].st.char_id > char_id)
-			max = mid;
-		else
-			min = mid;
-	}
-	return NULL;
-}
-
 int char_convert(void)
 {
 	char input, line[65536];
@@ -1231,9 +1208,8 @@ int char_convert(void)
 	printf("\nDo you wish to convert your Character Database to SQL? (y/n) : ");
 	input = getchar();
 	if(input == 'y' || input == 'Y') {
-		int char_max, char_num = 0;
-		int i,j;
-		struct mmo_chardata *cd;
+		int i, j;
+		struct mmo_chardata cd;
 
 		printf("\nConverting Character Database...\n");
 		fp = fopen(char_txt,"r");
@@ -1242,53 +1218,22 @@ int char_convert(void)
 			return 1;
 		}
 
-		cd = (struct mmo_chardata *)aCalloc(256, sizeof(struct mmo_chardata));
-		char_max = 256;
 		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			j = -1;
 			if(sscanf(line,"%d\t%%newid%%%n",&i,&j) == 1 && j > 0 && (line[j] == '\n' || line[j] == '\r'))
 				continue;
-			if(char_num >= char_max) {
-				char_max += 256;
-				cd = (struct mmo_chardata *)aRealloc(cd, sizeof(struct mmo_chardata)*char_max);
-				memset(cd + (char_max - 256), 0, 256 * sizeof(struct mmo_chardata));
-			}
-			if(mmo_char_fromstr(line, &cd[char_num]) == 0) {
-				int char_id = cd[char_num].st.char_id;
-				mmo_char_tosql(char_id , &cd[char_num].st);
-				mmo_char_reg_tosql(char_id, cd[char_num].reg.global_num, cd[char_num].reg.global);
 
-				if(char_num > 0 && char_id < cd[char_num-1].st.char_id) {
-					struct mmo_chardata tmp;
-					int k = char_num;
-
-					// 何故かキャラIDの昇順に並んでない場合は挿入ソートする
-					while(--k > 0 && cd[char_num].st.char_id < cd[k-1].st.char_id);
-
-					memcpy(&tmp, &cd[char_num], sizeof(cd[0]));
-					memmove(&cd[k+1], &cd[k], (char_num-k)*sizeof(cd[0]));
-					memcpy(&cd[k], &tmp, sizeof(cd[0]));
-				}
-				char_num++;
+			memset(&cd, 0, sizeof(cd));
+			if(mmo_char_fromstr(line, &cd) == 0) {
+				int char_id = cd.st.char_id;
+				mmo_char_tosql(char_id , &cd.st);
+				mmo_char_reg_tosql(char_id, cd.reg.global_num, cd.reg.global);
+				mmo_friend_tosql(char_id, &cd.st);
 			} else {
 				printf("mmo_char: broken data [%s] line %d\n", char_txt, c);
 			}
 		}
-
-		// 友達リストの名前を解決
-		for(i=0; i<char_num; i++) {
-			for(j=0; j<cd[i].st.friend_num; j++) {
-				struct friend_data *frd = &cd[i].st.friend_data[j];
-				const char *name = char_id2name(cd, frd->char_id, char_num);
-				if(name)
-					strncpy(frd->name, name, 24);
-				else
-					strncpy(frd->name, "", 24);
-				mmo_friend_tosql(cd[i].st.char_id, &cd[i].st);
-			}
-		}
-		aFree(cd);
 		fclose(fp);
 	}
 	while(getchar() != '\n');

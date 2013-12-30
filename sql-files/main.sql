@@ -413,7 +413,6 @@ CREATE TABLE `friend` (
   `char_id` int(11) NOT NULL default '0',
   `friend_account` int(11) NOT NULL default '0',
   `friend_id` int(11) NOT NULL default '0',
-  `name` varchar(24) NOT NULL default '',
   PRIMARY KEY (`char_id`, `friend_id`)
 ) ENGINE = InnoDB;
 

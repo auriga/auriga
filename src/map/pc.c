@@ -2171,7 +2171,7 @@ int pc_checkadditem(struct map_session_data *sd,int nameid,int amount)
 {
 	int i;
 
-	nullpo_retr(0, sd);
+	nullpo_retr(ADDITEM_OVERAMOUNT, sd);
 
 	if(itemdb_isequip(nameid))
 		return ADDITEM_NEW;

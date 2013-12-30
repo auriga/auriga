@@ -481,7 +481,7 @@ struct item {
 	char identify;
 	char refine;
 	char attribute;
-	char private;
+	char private_;
 	short card[4];
 	unsigned int limit;
 };

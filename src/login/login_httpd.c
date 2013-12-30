@@ -188,7 +188,7 @@ int login_httpd_config_read(const char *w1, const char *w2)
 	else if ( strcmpi(w1, "httpd_document_root") == 0 )
 		httpd_set_document_root(w3);
 	else if ( strcmpi(w1, "httpd_new_account") == 0 )
-		httpd_new_account_flag = atoi(w3);
+		httpd_new_account_flag = (atoi(w3) ? true : false);
 	else if (strcmpi(w1, "httpd_log_filename") == 0 )
 		httpd_set_logfile(w3);
 	else if (strcmpi(w1, "httpd_config") == 0 )

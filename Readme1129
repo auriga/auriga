@@ -1,4 +1,20 @@
 ----------------------------------------
+//1166 [2013/12/31] by Rayce
+
+・VC++コンパイルオプション /TP 有効時のエラーおよび警告について一部修正
+	-> item構造体の private 変数名を private_ に変更（mmo.h, chardb_*.c, char-converter.c, clif.c）
+
+	-> clif_parse_QuestState(), mail_getappend() でint型の戻り値をbool型で受け取っていた問題を修正
+	   （clif.c, mail.c）
+
+	-> bool型変数へint値を設定していた問題を修正（login_httpd.c）
+
+	-> sqldbs_num2datatype() の戻り値の型を enum enum_field_types に変更（sqldbs.c）
+
+・[SQL] friend テーブルから name カラムを削除、キャラ名は char_data テーブルから参照する
+        （chardb_sql.c, char-converter.c, main.sql）
+
+----------------------------------------
 //1165 [2013/12/31] by Rayce
 
 ・PRE_RENEWAL が定義されていないとき、コンパイル時に「warning: unused variable」の

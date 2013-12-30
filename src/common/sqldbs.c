@@ -338,7 +338,7 @@ bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
  * 数値型のサイズからMYSQL_TYPEを返す
  *------------------------------------------
  */
-static int sqldbs_num2datatype(size_t size)
+static enum enum_field_types sqldbs_num2datatype(size_t size)
 {
 	switch(size)
 	{
@@ -346,10 +346,10 @@ static int sqldbs_num2datatype(size_t size)
 			return MYSQL_TYPE_LONG;
 		case 8:
 			return MYSQL_TYPE_LONGLONG;
-		default:
-			printf("sqldbs_num2datatype: Unsupported integer size %zd\n",size);
-			return MYSQL_TYPE_NULL;
 	}
+
+	printf("sqldbs_num2datatype: Unsupported integer size %zd\n",size);
+	return MYSQL_TYPE_NULL;
 }
 
 /*==========================================

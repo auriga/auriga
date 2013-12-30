@@ -205,13 +205,12 @@ void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 		// アイテムチェック
 		if( item->nameid > 0 && item->amount > 0 )
 		{
-			result = pc_checkadditem(sd,item->nameid,item->amount);
-			switch( result )
+			switch(pc_checkadditem(sd,item->nameid,item->amount))
 			{
-				case 0:
+				case ADDITEM_EXIST:
 					clif_mail_getappend(sd->fd,0);
 					break;
-				case 2:
+				case ADDITEM_OVERAMOUNT:
 					clif_mail_getappend(sd->fd,2);
 					result = false;
 					break;

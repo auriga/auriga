@@ -126,7 +126,7 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 		item[i].card[2]   = atoi(sql_row[9]);
 		item[i].card[3]   = atoi(sql_row[10]);
 		item[i].limit     = (unsigned int)atoi(sql_row[11]);
-		item[i].private   = atoi(sql_row[12]);
+		item[i].private_  = atoi(sql_row[12]);
 	}
 	sqldbs_free_result(&mysql_handle);
 
@@ -193,7 +193,7 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
 					sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
 					item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-					item[i].card[2],item[i].card[3],item[i].limit,item[i].private
+					item[i].card[2],item[i].card[3],item[i].limit,item[i].private_
 				);
 				sep = ',';
 			}
@@ -431,13 +431,20 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 
 	// friend list
 	p->st.friend_num = 0;
-	if(sqldbs_query(&mysql_handle, "SELECT `friend_account`, `friend_id`, `name` FROM `" FRIEND_TABLE "` WHERE `char_id`='%d'", char_id))
+
+	if(sqldbs_query(&mysql_handle,
+		"SELECT t1.`friend_account`, t1.`friend_id`, t2.`name` FROM `" FRIEND_TABLE "` t1 LEFT JOIN `" CHAR_TABLE "` t2 "
+		"ON t1.`friend_account` = t2.`account_id` AND t1.`friend_id` = t2.`char_id` WHERE t1.`char_id` = '%d'", char_id))
 	{
 		for(i = 0; i < MAX_FRIEND && (sql_row = sqldbs_fetch(&mysql_handle)); i++) {
 			p->st.friend_data[i].account_id = atoi(sql_row[0]);
 			p->st.friend_data[i].char_id    = atoi(sql_row[1]);
-			strncpy(p->st.friend_data[i].name, sql_row[2], 24);
-			p->st.friend_data[i].name[23] = '\0';	// force \0 terminal
+			if(sql_row[2]) {
+				strncpy(p->st.friend_data[i].name, sql_row[2], 24);
+				p->st.friend_data[i].name[23] = '\0';	// force \0 terminal
+			} else {
+				strncpy(p->st.friend_data[i].name, unknown_char_name, 24);
+			}
 		}
 		sqldbs_free_result(&mysql_handle);
 		p->st.friend_num = (i < MAX_FRIEND)? i: MAX_FRIEND;
@@ -722,8 +729,8 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 			for(i = 0; i < st2->friend_num; i++)
 			{
 				if( sqldbs_query(&mysql_handle,
-					"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `friend_account`, `friend_id`, `name`) VALUES ('%d', '%d', '%d', '%s')",
-					st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id, strecpy(buf, st2->friend_data[i].name)
+					"INSERT INTO `" FRIEND_TABLE "` (`char_id`, `friend_account`, `friend_id`) VALUES ('%d', '%d', '%d')",
+					st2->char_id, st2->friend_data[i].account_id, st2->friend_data[i].char_id
 				) == false )
 					break;
 			}

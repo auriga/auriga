@@ -148,7 +148,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
 			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3],
-			p->st.cart[i].limit,p->st.cart[i].private);
+			p->st.cart[i].limit,p->st.cart[i].private_);
 		}
 	}
 	*(str_p++) = '\t';
@@ -550,7 +550,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].card[2]   = tmp_int[9];
 			p->st.inventory[i].card[3]   = tmp_int[10];
 			p->st.inventory[i].limit     = (unsigned int)tmp_int[11];
-			p->st.inventory[i].private   = tmp_int[12];
+			p->st.inventory[i].private_  = tmp_int[12];
 		}
 		next += len;
 		if(str[next] == ' ')
@@ -594,7 +594,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			p->st.cart[i].card[2]   = tmp_int[9];
 			p->st.cart[i].card[3]   = tmp_int[10];
 			p->st.cart[i].limit     = (unsigned int)tmp_int[11];
-			p->st.cart[i].private   = tmp_int[12];
+			p->st.cart[i].private_  = tmp_int[12];
 		}
 		next += len;
 		if(str[next] == ' ')
