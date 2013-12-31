@@ -1466,20 +1466,21 @@ static int read_homundb(void)
 	char *str[33],*p,*np;
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
+	const char *filename2;
 
 	// DB情報の初期化
 	for(i=0; i<MAX_HOMUN_DB; i++) {
 		if(homun_db[i].script)
 			script_free_code(homun_db[i].script);
 	}
-	memset(homun_db,0,sizeof(homun_db));
+	memset(homun_db, 0, sizeof(homun_db));
 
-	for(i=0;i<2;i++){
-		fp=fopen(filename[i],"r");
-		if(fp==NULL){
-			if(i>0)
+	for(i = 0; i < 2; i++) {
+		fp = fopen(filename[i], "r");
+		if(fp == NULL) {
+			if(i > 0)
 				continue;
-			printf("can't read %s\n",filename[i]);
+			printf("read_homundb: open [%s] failed !\n", filename[i]);
 			return -1;
 		}
 		lines=count=0;
@@ -1562,12 +1563,13 @@ static int read_homundb(void)
 			homun_db[j].script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[i],count);
+		printf("read %s done (count=%d)\n", filename[i], count);
 	}
 
-	fp=fopen("db/homun_db2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/homun_db2.txt\n");
+	filename2 = "db/homun_db2.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("read_homundb: open [%s] failed !\n", filename2);
 		return -1;
 	}
 	lines=count=0;
@@ -1632,7 +1634,7 @@ static int read_homundb(void)
 		count++;
 	}
 	fclose(fp);
-	printf("read db/homun_db2.txt done (count=%d)\n",count);
+	printf("read %s done (count=%d)\n", filename2, count);
 
 	return 0;
 }
@@ -1648,12 +1650,14 @@ static int homun_readdb(void)
 	int i,j,k,class_=0;
 	FILE *fp;
 	char line[1024],*p;
+	const char *filename;
 
 	// 必要経験値読み込み
 	memset(homun_exp_table, 0, sizeof(homun_exp_table));
-	fp=fopen("db/exp_homun.txt","r");
-	if(fp==NULL){
-		printf("can't read db/exp_homun.txt\n");
+	filename = "db/exp_homun.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("homun_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -1676,13 +1680,14 @@ static int homun_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/exp_homun.txt done\n");
+	printf("read %s done\n", filename);
 
 	// スキルツリー
 	memset(homun_skill_tree,0,sizeof(homun_skill_tree));
-	fp=fopen("db/homun_skill_tree.txt","r");
-	if(fp==NULL){
-		printf("can't read db/homun_skill_tree.txt\n");
+	filename = "db/homun_skill_tree.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("homun_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
@@ -1741,7 +1746,7 @@ static int homun_readdb(void)
 		st[j].intimate   = atoi(split[14]);
 	}
 	fclose(fp);
-	printf("read db/homun_skill_tree.txt done\n");
+	printf("read %s done\n", filename);
 
 	return 0;
 }
@@ -1757,13 +1762,14 @@ static int homun_read_embryodb(void)
 	int ln=0,count=0;
 	int homunid,j;
 	char *str[10],*p;
+	const char *filename = "db/embryo_db.txt";
 
 	// 読み込む度、初期化
 	embryo_default = 6001;
 	memset(embryo_data, 0, sizeof(embryo_data));
 
-	if( (fp=fopen("db/embryo_db.txt","r"))==NULL ){
-		printf("can't read db/embryo_db.txt\n");
+	if( (fp = fopen(filename, "r")) == NULL ) {
+		printf("homun_read_embryodb: open [%s] failed !\n", filename);
 		return 1;
 	}
 
@@ -1798,7 +1804,7 @@ static int homun_read_embryodb(void)
 		}
 	}
 	fclose(fp);
-	printf("read db/embryo_db.txt done (count=%d)\n",count);
+	printf("read %s done (count=%d)\n", filename, count);
 
 	return 0;
 }

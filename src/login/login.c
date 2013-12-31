@@ -101,7 +101,7 @@ static void read_gm_account(void)
 	gm_account_db = numdb_init();
 
 	if ((fp = fopen(config.GM_account_filename, "r")) == NULL) {
-		printf("File not found: %s.\n", config.GM_account_filename);
+		printf("read_gm_account: open [%s] failed !\n", config.GM_account_filename);
 		return;
 	}
 
@@ -1389,7 +1389,7 @@ static void login_config_read(const char *cfgName)
 	fp = fopen(cfgName, "r");
 	if(fp == NULL)
 	{
-		printf("file not found: %s\n", cfgName);
+		printf("login_config_read: open [%s] failed !\n", cfgName);
 		return;
 	}
 
@@ -1577,11 +1577,6 @@ int do_init(int argc,char **argv)
 		{
 			strncpy(config.login_conf_filename, argv[i+1], sizeof(config.login_conf_filename));
 			config.login_conf_filename[sizeof(config.login_conf_filename)-1] = '\0';
-		}
-		else
-		{
-			printf("illegal command line argument %s !!\n", argv[i]);
-			exit(1);
 		}
 	}
 

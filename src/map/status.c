@@ -11429,7 +11429,8 @@ static void status_split_atoi(char *str, int *num1, int *num2)
  * データベース読み込み
  *------------------------------------------
  */
-int status_readdb(void) {
+int status_readdb(void)
+{
 	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
@@ -11443,9 +11444,9 @@ int status_readdb(void) {
 #else
 	filename = "db/job_db1.txt";
 #endif
-	fp=fopen(filename,"r");
-	if(fp==NULL){
-		printf("can't read %s\n",filename);
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11494,12 +11495,13 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n",filename);
+	printf("read %s done\n", filename);
 
 	// 基本HP個別設定
-	fp=fopen("db/job_hp_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/job_hp_db.txt\n");
+	filename = "db/job_hp_db.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11522,12 +11524,13 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read db/job_hp_db.txt done\n");
+	printf("read %s done\n", filename);
 
 	// 基本SP個別設定
-	fp=fopen("db/job_sp_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/job_sp_db.txt\n");
+	filename = "db/job_sp_db.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11550,12 +11553,13 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read db/job_sp_db.txt done\n");
+	printf("read %s done\n", filename);
 
 	// JOBボーナス
-	fp=fopen("db/job_db2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/job_db2.txt\n");
+	filename = "db/job_db2.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11576,12 +11580,13 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read db/job_db2.txt done\n");
+	printf("read %s done\n", filename);
 
 	// JOBボーナス2 転生職用
-	fp=fopen("db/job_db2-2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/job_db2-2.txt\n");
+	filename = "db/job_db2-2.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11601,7 +11606,7 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read db/job_db2-2.txt done\n");
+	printf("read %s done\n", filename);
 
 	// 精錬データテーブル
 	for(i=0; i<MAX_WEAPON_LEVEL+1; i++) {
@@ -11618,9 +11623,9 @@ int status_readdb(void) {
 #else
 	filename = "db/refine_db.txt";
 #endif
-	fp=fopen(filename,"r");
-	if(fp==NULL){
-		printf("can't read %s\n",filename);
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11650,16 +11655,18 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n",filename);
+	printf("read %s done\n", filename);
 
 	// サイズ補正テーブル
 	for(i=0; i<MAX_SIZE_FIX; i++) {
 		for(j=0; j<WT_MAX; j++)
 			atkmods[i][j] = 100;
 	}
-	fp=fopen("db/size_fix.txt","r");
-	if(fp==NULL){
-		printf("can't read db/size_fix.txt\n");
+
+	filename = "db/size_fix.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11684,13 +11691,14 @@ int status_readdb(void) {
 			break;
 	}
 	fclose(fp);
-	printf("read db/size_fix.txt done\n");
+	printf("read %s done\n", filename);
 
 	// ステータス異常テーブル
 	memset(&scdata_db, 0, sizeof(scdata_db));
-	fp=fopen("db/scdata_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/scdata_db.txt\n");
+	filename = "db/scdata_db.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -11716,7 +11724,7 @@ int status_readdb(void) {
 		i++;
 	}
 	fclose(fp);
-	printf("read db/scdata_db.txt done (count=%d)\n",i);
+	printf("read %s done (count=%d)\n", filename, i);
 
 #ifdef DYNAMIC_SC_DATA
 	for(i=0; i<MAX_STATUSCHANGE; i++) {

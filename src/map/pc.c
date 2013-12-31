@@ -9180,7 +9180,7 @@ void pc_read_gm_account(void)
 		gm_account_db = numdb_init();
 
 	if ((fp = fopen(GM_account_filename, "r")) == NULL) {
-		printf("File not found: %s.\n", GM_account_filename);
+		printf("pc_read_gm_account: open [%s] failed !\n", GM_account_filename);
 		return;
 	}
 
@@ -9256,10 +9256,11 @@ int pc_readdb(void)
 	};
 
 	// 必要経験値読み込み
+	filename = "db/exp.txt";
 	memset(exp_table, 0, sizeof(exp_table));
-	fp = fopen("db/exp.txt","r");
+	fp = fopen(filename, "r");
 	if(fp == NULL) {
-		printf("can't read db/exp.txt\n");
+		printf("pc_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i = 0;
@@ -9296,14 +9297,14 @@ int pc_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/exp.txt done\n");
+	printf("read %s done\n", filename);
 
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
-	for(m=0; m<sizeof(filename2)/sizeof(filename2[0]); m++){
-		fp = fopen(filename2[m],"r");
+	for(m = 0; m < sizeof(filename2)/sizeof(filename2[0]); m++) {
+		fp = fopen(filename2[m], "r");
 		if(fp == NULL) {
-			printf("can't read %s\n",filename2[m]);
+			printf("pc_readdb: open [%s] failed !\n", filename2[m]);
 			break;
 		}
 		while(fgets(line,1020,fp)) {
@@ -9394,9 +9395,9 @@ int pc_readdb(void)
 #else
 	filename = "db/attr_fix.txt";
 #endif
-	fp = fopen(filename,"r");
+	fp = fopen(filename, "r");
 	if(fp == NULL) {
-		printf("can't read %s\n",filename);
+		printf("pc_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)) {

@@ -193,6 +193,7 @@ static bool mercdb_txt_read(void)
 	merc_db = numdb_init();
 
 	if((fp = fopen(merc_txt, "r")) == NULL) {
+		printf("mercdb_txt_read: open [%s] failed !\n", merc_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -263,7 +264,7 @@ int mercdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(merc_txt, &lock)) == NULL ) {
-		printf("int_merc: cant write [%s] !!! data is lost !!!\n", merc_txt);
+		printf("mercdb_txt_sync: can't write [%s] !!! data is lost !!!\n", merc_txt);
 		return 1;
 	}
 	numdb_foreach(merc_db, mercdb_txt_sync_sub, fp);

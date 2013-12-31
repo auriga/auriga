@@ -197,6 +197,7 @@ static bool petdb_txt_read(void)
 	pet_db = numdb_init();
 
 	if((fp = fopen(pet_txt, "r")) == NULL) {
+		printf("petdb_txt_read: open [%s] failed !\n", pet_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -267,7 +268,7 @@ int petdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(pet_txt, &lock)) == NULL ) {
-		printf("int_pet: cant write [%s] !!! data is lost !!!\n", pet_txt);
+		printf("petdb_txt_sync: can't write [%s] !!! data is lost !!!\n", pet_txt);
 		return 1;
 	}
 	numdb_foreach(pet_db, petdb_txt_sync_sub, fp);

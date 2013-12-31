@@ -245,7 +245,7 @@ int storagedb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(storage_txt, &lock)) == NULL ) {
-		printf("int_storage: cant write [%s] !!! data is lost !!!\n", storage_txt);
+		printf("storagedb_txt_sync: can't write [%s] !!! data is lost !!!\n", storage_txt);
 		return 1;
 	}
 	numdb_foreach(storage_db, storagedb_txt_sync_sub, fp);
@@ -447,7 +447,7 @@ int gstoragedb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(guild_storage_txt, &lock)) == NULL ) {
-		printf("int_storage: cant write [%s] !!! data is lost !!!\n", guild_storage_txt);
+		printf("gstoragedb_txt_sync: can't write [%s] !!! data is lost !!!\n", guild_storage_txt);
 		return 1;
 	}
 	numdb_foreach(gstorage_db, gstoragedb_txt_sync_sub, fp);
@@ -583,7 +583,7 @@ static bool storagedb_txt_read(void)
 
 	fp = fopen(storage_txt, "r");
 	if(fp == NULL) {
-		printf("cant't read : %s\n", storage_txt);
+		printf("storagedb_txt_read: open [%s] failed !\n", storage_txt);
 		ret = false;
 	} else {
 		int count = 0, tmp_int;
@@ -644,7 +644,7 @@ static bool gstoragedb_txt_read(void)
 
 	fp = fopen(guild_storage_txt, "r");
 	if(fp == NULL) {
-		printf("cant't read : %s\n", guild_storage_txt);
+		printf("gstoragedb_txt_read: open [%s] failed !\n", guild_storage_txt);
 		ret = false;
 	} else {
 		int count = 0, tmp_int;

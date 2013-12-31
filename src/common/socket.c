@@ -1331,7 +1331,7 @@ static void socket_config_read2(const char *filename)
 
 	fp = fopen(filename, "r");
 	if (fp == NULL) {
-		printf("file not found: %s\n", filename);
+		printf("socket_config_read2: open [%s] failed !\n", filename);
 		return;
 	}
 

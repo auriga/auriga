@@ -178,6 +178,7 @@ static bool elemdb_txt_read(void)
 	elem_db = numdb_init();
 
 	if((fp = fopen(elem_txt, "r")) == NULL) {
+		printf("elemdb_txt_read: open [%s] failed !\n", elem_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -247,7 +248,7 @@ int elemdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(elem_txt, &lock)) == NULL ) {
-		printf("int_elem: cant write [%s] !!! data is lost !!!\n", elem_txt);
+		printf("elemdb_txt_sync: can't write [%s] !!! data is lost !!!\n", elem_txt);
 		return 1;
 	}
 	numdb_foreach(elem_db, elemdb_txt_sync_sub, fp);

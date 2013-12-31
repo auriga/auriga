@@ -339,13 +339,14 @@ static int quest_readdb(void)
 	int i,j,k;
 	FILE *fp;
 	char line[1024],*p;
+	const char *filename = "db/quest_db.txt";
 
 	memset(&quest_db, 0, sizeof(quest_db));
 	memset(&quest_killdb, 0, sizeof(quest_killdb));
 
-	fp=fopen("db/quest_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/quest_db.txt\n");
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("quest_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -385,7 +386,7 @@ static int quest_readdb(void)
 	qsort(quest_killdb, MAX_QUEST_DB, sizeof(int), quest_sort_id);
 
 	fclose(fp);
-	printf("read db/quest_db.txt done (count=%d)\n",i);
+	printf("read %s done (count=%d)\n", filename, i);
 
 	return 0;
 }

@@ -74,7 +74,7 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 	fp = fopen(filename, "a");
 	if(fp == NULL)
 	{
-		printf("int_mail: can't write [%s] !!! data is lost !!!\n", filename);
+		printf("maildb_txt_store_mail: can't write [%s] !!! data is lost !!!\n", filename);
 		return false;
 	}
 
@@ -112,7 +112,7 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 	fp = lock_fopen(filename, &lock);
 	if(fp == NULL)
 	{
-		printf("int_mail: can't write [%s] !!! data is lost !!!\n", filename);
+		printf("maildb_txt_save_mail: can't write [%s] !!! data is lost !!!\n", filename);
 		return false;
 	}
 
@@ -142,16 +142,22 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
  */
 bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md[MAIL_STORE_MAX])
 {
-	int s, i = 0, lines = 0;
-	int tmp_int[17];
-	char tmp_str[4][1024];
-	char line[65536], filename[1056];
+	char filename[1056];
 	FILE *fp;
+	bool ret = true;
 
 	nullpo_retr(false, md);
 
 	sprintf(filename, "%s%d.txt", mail_dir, char_id);
-	if((fp = fopen(filename,"r")) != NULL) {
+	if((fp = fopen(filename, "r")) == NULL) {
+		printf("maildb_txt_read_mail: open [%s] failed !\n", filename);
+		ret = false;
+	} else {
+		int s, i = 0, lines = 0;
+		int tmp_int[17];
+		char tmp_str[4][1024];
+		char line[65536];
+
 		while(fgets(line,sizeof(line),fp) && i < MAIL_STORE_MAX) {
 			unsigned int n;
 			char *p;
@@ -212,20 +218,20 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 			i++;
 		}
 		fclose(fp);
-	}
 
-	if(i != m->store) {	// 数に相違あり？
-		struct mail m2;
-		printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
-		memcpy(&m2,m,sizeof(struct mail));
-		if(i > 0 && m2.rates < md[i-1].mail_num) {
-			m2.rates = md[i-1].mail_num;
+		if(i != m->store) {	// 数に相違あり？
+			struct mail m2;
+			printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
+			memcpy(&m2,m,sizeof(struct mail));
+			if(i > 0 && m2.rates < md[i-1].mail_num) {
+				m2.rates = md[i-1].mail_num;
+			}
+			m2.store = i;
+			maildb_txt_save(&m2);
 		}
-		m2.store = i;
-		maildb_txt_save(&m2);
 	}
 
-	return true;
+	return ret;
 }
 
 /*==========================================
@@ -310,32 +316,34 @@ static bool maildb_txt_read(void)
 	struct mail *m;
 	FILE *fp;
 	int c = 0;
+	bool ret = true;
 
 	mail_db = numdb_init();
 
 	if((fp = fopen(mail_txt, "r")) == NULL) {
-		printf("cant't read : %s\n", mail_txt);
-		return false;
-	}
-	while(fgets(line, sizeof(line), fp)) {
-		m = (struct mail *)aCalloc(1, sizeof(struct mail));
-		if(mail_fromstr(line, m) == 0 && m->char_id > 0) {
-			numdb_insert(mail_db, m->char_id, m);
-			if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// 値が異常なので補正する
-				struct mail_data md[MAIL_STORE_MAX];
-				memset(md, 0, sizeof(md));
-				maildb_txt_read_mail(m->char_id, m, md);
+		printf("maildb_txt_read: open [%s] failed !\n", mail_txt);
+		ret = false;
+	} else {
+		while(fgets(line, sizeof(line), fp)) {
+			m = (struct mail *)aCalloc(1, sizeof(struct mail));
+			if(mail_fromstr(line, m) == 0 && m->char_id > 0) {
+				numdb_insert(mail_db, m->char_id, m);
+				if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// 値が異常なので補正する
+					struct mail_data md[MAIL_STORE_MAX];
+					memset(md, 0, sizeof(md));
+					maildb_txt_read_mail(m->char_id, m, md);
+				}
+			} else {
+				printf("maildb_txt_read: broken data [%s] line %d\n", mail_txt, c);
+				aFree(m);
 			}
-		} else {
-			printf("int_mail: broken data [%s] line %d\n", mail_txt, c);
-			aFree(m);
+			c++;
 		}
-		c++;
+		fclose(fp);
+		printf("%s init %d\n", mail_txt, c);
 	}
-	fclose(fp);
-	printf("%s init %d\n", mail_txt, c);
 
-	return true;
+	return ret;
 }
 
 /*==========================================
@@ -360,7 +368,7 @@ int maildb_txt_sync(void)
 	int lock;
 
 	if( (fp = lock_fopen(mail_txt, &lock) ) == NULL ) {
-		printf("int_mail: cant write [%s] !!! data is lost !!!\n", mail_txt);
+		printf("maildb_txt_sync: can't write [%s] !!! data is lost !!!\n", mail_txt);
 		return 1;
 	}
 	numdb_foreach(mail_db, maildb_txt_sync_sub, fp);

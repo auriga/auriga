@@ -107,7 +107,7 @@ int msg_config_read(const char *cfgName)
 
 	fp = fopen(cfgName, "r");
 	if (fp == NULL) {
-		printf("File not found: %s.\n", cfgName);
+		printf("msg_config_read: open [%s] failed !\n", cfgName);
 		return 1;
 	}
 

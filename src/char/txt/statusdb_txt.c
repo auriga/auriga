@@ -189,6 +189,7 @@ static bool statusdb_txt_read(void)
 	scdata_db = numdb_init();
 
 	if((fp = fopen(scdata_txt, "r")) == NULL) {
+		printf("statusdb_txt_read: open [%s] failed !\n", scdata_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -261,7 +262,7 @@ int statusdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(scdata_txt, &lock)) == NULL ) {
-		printf("int_status: cant write [%s] !!! data is lost !!!\n", scdata_txt);
+		printf("statusdb_txt_sync: can't write [%s] !!! data is lost !!!\n", scdata_txt);
 		return 1;
 	}
 	numdb_foreach(scdata_db, statusdb_txt_sync_sub, fp);

@@ -1741,10 +1741,11 @@ static void read_constdb(void)
 	FILE *fp;
 	char line[1024], name[1024], val[1024];
 	int n, type;
+	const char *filename = "db/const.txt";
 
-	fp = fopen("db/const.txt","r");
+	fp = fopen(filename, "r");
 	if(fp == NULL) {
-		printf("can't read db/const.txt\n");
+		printf("read_constdb: open [%s] failed !\n", filename);
 		return;
 	}
 	while(fgets(line,1020,fp)) {
@@ -3361,7 +3362,7 @@ int script_config_read(const char *cfgName)
 
 	fp = fopen(cfgName,"r");
 	if(fp == NULL) {
-		printf("file not found: %s\n", cfgName);
+		printf("script_config_read: open [%s] failed !\n", cfgName);
 		return 1;
 	}
 	while(fgets(line, 1020, fp)) {

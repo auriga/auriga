@@ -661,7 +661,7 @@ int atcommand_config_read(const char *cfgName)
 
 	fp = fopen(cfgName, "r");
 	if (fp == NULL) {
-		printf("file not found: %s\n", cfgName);
+		printf("atcommand_config_read: open [%s] failed !\n", cfgName);
 		return 1;
 	}
 	counter++;
@@ -5690,15 +5690,16 @@ int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType 
  */
 static int atcommand_readdb(void)
 {
-	int i,j,k;
+	int i, j, k;
 	FILE *fp;
-	char line[1024],*p;
+	char line[1024], *p;
+	const char *filename = "db/atcommand_go_db.txt";
 
 	memset(&atcommand_go_db, 0, sizeof(atcommand_go_db));
 
-	fp=fopen("db/atcommand_go_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/atcommand_go_db.txt\n");
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("atcommand_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -5739,7 +5740,7 @@ static int atcommand_readdb(void)
 	}
 
 	fclose(fp);
-	printf("read db/atcommand_go_db.txt done (count=%d)\n",i);
+	printf("read %s done (count=%d)\n", filename, i);
 
 	return 0;
 }

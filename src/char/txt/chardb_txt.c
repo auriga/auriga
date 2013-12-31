@@ -137,7 +137,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
 			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3],
-			p->st.inventory[i].limit,p->st.inventory[i].private);
+			p->st.inventory[i].limit,p->st.inventory[i].private_);
 		}
 	}
 	*(str_p++) = '\t';
@@ -763,6 +763,7 @@ static bool chardb_txt_read(void)
 
 	fp = fopen(char_txt, "r");
 	if(fp == NULL) {
+		printf("chardb_txt_read: open [%s] failed !\n", char_txt);
 		ret = false;
 	} else {
 		int success;
@@ -861,8 +862,11 @@ void chardb_txt_sync(void)
 		return;
 
 	fp = lock_fopen(char_txt, &lock);
-	if(fp == NULL)
+	if(fp == NULL) {
+		printf("chardb_txt_sync: cant write [%s] !!! data is lost !!!\n", char_txt);
 		return;
+	}
+
 	for(i = 0; i < char_num; i++) {
 		if(char_dat[i].st.char_id > 0 && char_dat[i].st.account_id > 0) {
 			mmo_char_tostr(line, &char_dat[i]);

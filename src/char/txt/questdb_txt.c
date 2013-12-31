@@ -199,7 +199,7 @@ static bool questdb_txt_read(void)
 	quest_db = numdb_init();
 
 	if((fp = fopen(quest_txt, "r")) == NULL) {
-		printf("cant't read : %s\n", quest_txt);
+		printf("questdb_txt_read: open [%s] failed !\n", quest_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -272,7 +272,7 @@ int questdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(quest_txt, &lock)) == NULL ) {
-		printf("int_quest: cant write [%s] !!! data is lost !!!\n", quest_txt);
+		printf("questdb_txt_sync: can't write [%s] !!! data is lost !!!\n", quest_txt);
 		return 1;
 	}
 	numdb_foreach(quest_db, questdb_txt_sync_sub, fp);

@@ -2737,7 +2737,7 @@ static int map_config_read(const char *cfgName)
 
 	fp = fopen(cfgName,"r");
 	if (fp == NULL) {
-		printf("file not found: %s\n", cfgName);
+		printf("map_config_read: open [%s] failed !\n", cfgName);
 		return 1;
 	}
 
@@ -3058,10 +3058,6 @@ int do_init(int argc,char *argv[])
 		else if(strcmp(argv[i], "--msg_config") == 0 || strcmp(argv[i], "--msg-config") == 0) {
 			strncpy(msg_conf_filename, argv[i+1], sizeof(msg_conf_filename));
 			msg_conf_filename[sizeof(msg_conf_filename)-1] = '\0';
-		}
-		else {
-			printf("illegal command line argument %s !!\n", argv[i]);
-			exit(1);
 		}
 	}
 

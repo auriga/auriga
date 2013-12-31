@@ -102,7 +102,7 @@ int inter_config_read(const char *cfgName)
 
 	fp = fopen(cfgName,"r");
 	if(fp == NULL) {
-		printf("file not found: %s\n",cfgName);
+		printf("inter_config_read: open [%s] failed !\n", cfgName);
 		return 1;
 	}
 	while(fgets(line,1020,fp)) {

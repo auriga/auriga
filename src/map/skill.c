@@ -19271,16 +19271,17 @@ static int skill_readdb(void)
 	};
 	const int max = 2;
 #endif
+	const char *filename2;
 
 	memset(skill_db,0,sizeof(skill_db));
 
 	/* スキルデータベース */
-	for(m=0; m<max; m++){
-		fp=fopen(filename[m],"r");
-		if(fp==NULL){
-			if(m>0)
+	for(m = 0; m < max; m++) {
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > 0)
 				continue;
-			printf("can't read %s\n",filename[m]);
+			printf("skill_readdb: open [%s] failed !\n", filename[m]);
 			return 1;
 		}
 		k = 0;
@@ -19330,13 +19331,14 @@ static int skill_readdb(void)
 			k++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[m],k);
+		printf("read %s done (count=%d)\n", filename[m], k);
 	}
 
 	/* スキルデータベース2 */
-	fp=fopen("db/skill_db2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/skill_db2.txt\n");
+	filename2 = "db/skill_db2.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k = 0;
@@ -19363,16 +19365,16 @@ static int skill_readdb(void)
 		k++;
 	}
 	fclose(fp);
-	printf("read db/skill_db2.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n", filename2, k);
 
 	/* スキル要求データベース */
-	for(m=max; m<max*2; m++){
+	for(m= max; m < max * 2; m++) {
 		int n;
-		fp=fopen(filename[m],"r");
-		if(fp==NULL){
-			if(m>max)
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > max)
 				continue;
-			printf("can't read %s\n",filename[m]);
+			printf("skill_readdb: open [%s] failed !\n", filename[m]);
 			return 1;
 		}
 		k = 0;
@@ -19458,13 +19460,14 @@ static int skill_readdb(void)
 			k++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[m],k);
+		printf("read %s done (count=%d)\n", filename[m], k);
 	}
 
 	/* スキル要求データベース2 */
-	fp=fopen("db/skill_require_db2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/skill_require_db2.txt\n");
+	filename2 = "db/skill_require_db2.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k = 0;
@@ -19488,15 +19491,15 @@ static int skill_readdb(void)
 		k++;
 	}
 	fclose(fp);
-	printf("read db/skill_require_db2.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n", filename2, k);
 
 	/* キャスティングデータベース */
-	for(m=max*2; m<max*3; m++){
-		fp=fopen(filename[m],"r");
-		if(fp==NULL){
-			if(m>max*2)
+	for(m = max * 2; m < max * 3; m++) {
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > max * 2)
 				continue;
-			printf("can't read %s\n",filename[m]);
+			printf("skill_readdb: open [%s] failed !\n", filename[m]);
 			return 1;
 		}
 		k = 0;
@@ -19523,16 +19526,16 @@ static int skill_readdb(void)
 			k++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[m],k);
+		printf("read %s done (count=%d)\n", filename[m], k);
 	}
 
 	/* スキルユニットデータベース */
-	for(m=max*3; m<max*4; m++){
-		fp=fopen(filename[m],"r");
-		if(fp==NULL){
-			if(m>max*3)
+	for(m = max * 3; m < max * 4; m++) {
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > max * 3)
 				continue;
-			printf("can't read %s\n",filename[m]);
+			printf("skill_readdb: open [%s] failed !\n", filename[m]);
 			return 1;
 		}
 		k = 0;
@@ -19560,20 +19563,20 @@ static int skill_readdb(void)
 			k++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[m],k);
+		printf("read %s done (count=%d)\n", filename[m], k);
 	}
 	skill_init_unit_layout();
 
 	/* 製造系スキルデータベース */
-	memset(skill_produce_db,0,sizeof(skill_produce_db));
+	memset(skill_produce_db, 0, sizeof(skill_produce_db));
 
-	for(m=max*4; m<max*5; m++){
-		int count=0;
-		fp=fopen(filename[m],"r");
-		if(fp==NULL){
-			if(m>max*4)
+	for(m = max * 4; m < max * 5; m++) {
+		int count = 0;
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > max * 4)
 				continue;
-			printf("can't read %s\n",filename[m]);
+			printf("skill_readdb: open [%s] failed !\n", filename[m]);
 			return 1;
 		}
 		while(fgets(line,1020,fp)){
@@ -19615,14 +19618,15 @@ static int skill_readdb(void)
 			count++;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[m],count);
+		printf("read %s done (count=%d)\n", filename[m], count);
 	}
 
 	/* 矢作成データベース */
-	memset(skill_arrow_db,0,sizeof(skill_arrow_db));
-	fp=fopen("db/create_arrow_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/create_arrow_db.txt\n");
+	memset(skill_arrow_db, 0, sizeof(skill_arrow_db));
+	filename2 = "db/create_arrow_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k=0;
@@ -19656,13 +19660,14 @@ static int skill_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/create_arrow_db.txt done (count=%d)\n",k);
+	printf("read %sdone (count=%d)\n", filename2, k);
 
 	/* アブラカタブラデータベース */
-	memset(skill_abra_db,0,sizeof(skill_abra_db));
-	fp=fopen("db/abra_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/abra_db.txt\n");
+	memset(skill_abra_db, 0, sizeof(skill_abra_db));
+	filename2 = "db/abra_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k=0;
@@ -19696,13 +19701,14 @@ static int skill_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/abra_db.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n", filename2, k);
 
 	/* ランダム発動スキルデータベース */
-	memset(skill_rand_db,0,sizeof(skill_rand_db));
-	fp=fopen("db/skill_random.txt","r");
-	if(fp==NULL){
-		printf("can't read db/skill_random.txt\n");
+	memset(skill_rand_db, 0, sizeof(skill_rand_db));
+	filename2 = "db/skill_random.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k=0;
@@ -19747,13 +19753,14 @@ static int skill_readdb(void)
 		k++;
 	}
 	fclose(fp);
-	printf("read db/skill_random.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n", filename2, k);
 
 	/* チェンジマテリアルデータベース */
 	memset(skill_material_db,0,sizeof(skill_material_db));
-	fp=fopen("db/changematerial_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/changematerial_db.txt\n");
+	filename2 = "db/changematerial_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("skill_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	k=0;
@@ -19789,7 +19796,7 @@ static int skill_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/changematerial_db.txt done (count=%d)\n",k);
+	printf("read %s done (count=%d)\n", filename2, k);
 
 	return 0;
 }

@@ -1144,14 +1144,14 @@ static int read_elem_db(void)
 		if(elem_db[i].script)
 			script_free_code(elem_db[i].script);
 	}
-	memset(elem_db,0,sizeof(elem_db));
+	memset(elem_db, 0, sizeof(elem_db));
 
-	for(i=0;i<2;i++){
-		fp=fopen(filename[i],"r");
-		if(fp==NULL){
-			if(i>0)
+	for(i = 0; i < 2; i++ ){
+		fp = fopen(filename[i], "r");
+		if(fp == NULL) {
+			if(i > 0)
 				continue;
-			printf("can't read %s\n",filename[i]);
+			printf("read_elem_db: open [%s] failed !\n", filename[i]);
 			return -1;
 		}
 		lines=count=0;
@@ -1244,15 +1244,16 @@ static int read_elem_db(void)
  */
 static int read_elem_skilldb(void)
 {
-	int i,j,class_=0;
+	int i, j, class_ = 0;
 	FILE *fp;
-	char line[1024],*p;
+	char line[1024], *p;
+	const char *filename = "db/elem_skill_tree.txt";
 
 	// スキルツリー
-	memset(elem_skill_tree,0,sizeof(elem_skill_tree));
-	fp=fopen("db/elem_skill_tree.txt","r");
-	if(fp==NULL){
-		printf("can't read db/elem_skill_tree.txt\n");
+	memset(elem_skill_tree, 0, sizeof(elem_skill_tree));
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("read_elem_skilldb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
@@ -1310,7 +1311,7 @@ static int read_elem_skilldb(void)
 			st[j].max = skill_get_max(skillid);
 	}
 	fclose(fp);
-	printf("read db/elem_skill_tree.txt done\n");
+	printf("read %s done\n", filename);
 
 	return 0;
 }

@@ -254,6 +254,7 @@ static bool mapreg_txt_load(void)
 	bool ret = true;
 
 	if((fp = fopen(mapreg_txt, "rt")) == NULL) {
+		printf("mapreg_txt_load: open [%s] failed !\n", mapreg_txt);
 		ret = false;
 	} else {
 		char line[2048];
@@ -354,8 +355,10 @@ static int mapreg_txt_sync(void)
 	FILE *fp;
 	int lock;
 
-	if( (fp = lock_fopen(mapreg_txt, &lock)) == NULL )
+	if( (fp = lock_fopen(mapreg_txt, &lock)) == NULL ) {
+		printf("mapreg_txt_sync: can't write [%s] !!! data is lost !!!\n", mapreg_txt);
 		return -1;
+	}
 
 	numdb_foreach(mapreg_db, mapreg_txt_sync_intsub, fp);
 	numdb_foreach(mapregstr_db, mapreg_txt_sync_strsub, fp);

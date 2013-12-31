@@ -1319,12 +1319,12 @@ int read_petdb(void)
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
 
-	for(i=0;i<2;i++){
-		fp=fopen(filename[i],"r");
-		if(fp==NULL){
-			if(i>0)
+	for(i = 0; i < 2; i++) {
+		fp = fopen(filename[i], "r");
+		if(fp == NULL) {
+			if(i > 0)
 				continue;
-			printf("can't read %s\n",filename[i]);
+			printf("read_petdb: open [%s] failed !\n", filename[i]);
 			return -1;
 		}
 		lines=count=0;
@@ -1409,7 +1409,7 @@ int read_petdb(void)
 			pet_db[j].script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
-		printf("read %s done (count=%d)\n",filename[i],count);
+		printf("read %s done (count=%d)\n", filename[i], count);
 	}
 	return 0;
 }

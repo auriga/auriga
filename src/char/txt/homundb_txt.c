@@ -281,6 +281,7 @@ static bool homundb_txt_read(void)
 	homun_db = numdb_init();
 
 	if((fp = fopen(homun_txt, "r")) == NULL) {
+		printf("homundb_txt_read: open [%s] failed !\n", homun_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -351,7 +352,7 @@ int homundb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(homun_txt, &lock)) == NULL ) {
-		printf("int_homun: cant write [%s] !!! data is lost !!!\n", homun_txt);
+		printf("homundb_txt_sync: can't write [%s] !!! data is lost !!!\n", homun_txt);
 		return 1;
 	}
 	numdb_foreach(homun_db, homundb_txt_sync_sub, fp);

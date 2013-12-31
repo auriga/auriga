@@ -2296,6 +2296,7 @@ static void guild_read_castledb(void)
 	char line[1024];
 	int j,ln=0;
 	char *str[5],*p;
+	const char *filename = "db/castle_db.txt";
 
 	// デフォルトデータを作成
 	memset(castle_db,0,sizeof(castle_db));
@@ -2304,8 +2305,8 @@ static void guild_read_castledb(void)
 		castle_db[j].m         = -1;
 	}
 
-	if ((fp=fopen("db/castle_db.txt","r"))==NULL){
-		printf("can't read db/castle_db.txt\n");
+	if ((fp = fopen(filename, "r")) == NULL) {
+		printf("guild_read_castledb: open [%s] failed !\n", filename);
 		return;
 	}
 
@@ -2346,7 +2347,7 @@ static void guild_read_castledb(void)
 		ln++;
 	}
 	fclose(fp);
-	printf("read db/castle_db.txt done (count=%d)\n",ln);
+	printf("read %s done (count=%d)\n", filename, ln);
 
 	return;
 }
@@ -2357,10 +2358,10 @@ static void guild_read_castledb(void)
  */
 void do_init_guild(void)
 {
-	guild_db=numdb_init();
-	guild_expcache_db=numdb_init();
-	guild_infoevent_db=numdb_init();
-	guild_castleinfoevent_db=numdb_init();
+	guild_db = numdb_init();
+	guild_expcache_db = numdb_init();
+	guild_infoevent_db = numdb_init();
+	guild_castleinfoevent_db = numdb_init();
 
 	guild_read_castledb();
 

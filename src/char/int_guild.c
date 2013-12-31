@@ -58,12 +58,14 @@ int guild_readdb(void)
 {
 	int i;
 	FILE *fp;
-	char line[1024],*p;
+	char line[1024], *p;
+	const char *filename;
 
 	// ギルド経験値
-	fp=fopen("db/exp_guild.txt","r");
-	if(fp==NULL){
-		printf("can't read db/exp_guild.txt\n");
+	filename = "db/exp_guild.txt";
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("guild_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 	i=0;
@@ -78,14 +80,15 @@ int guild_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/exp_guild.txt done.\n");
+	printf("read %s done.\n", filename);
 
 	// ギルドスキルツリー
 	memset(guild_skill_tree,0,sizeof(guild_skill_tree));
 
-	fp=fopen("db/guild_skill_tree.txt","r");
-	if(fp==NULL){
-		printf("can't read db/guild_skill_tree.txt\n");
+	filename = "db/guild_skill_tree.txt" ;
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("guild_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
 
@@ -117,7 +120,7 @@ int guild_readdb(void)
 		}
 	}
 	fclose(fp);
-	printf("read db/guild_skill_tree.txt done\n");
+	printf("read %s done.\n", filename);
 
 	return 0;
 }

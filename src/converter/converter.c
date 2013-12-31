@@ -227,10 +227,6 @@ int do_init(int argc,char **argv)
 			strncpy(converter_conf_filename, argv[i+1], sizeof(converter_conf_filename));
 			converter_conf_filename[sizeof(converter_conf_filename)-1] = '\0';
 		}
-		else {
-			printf("illegal command line argument %s !!\n", argv[i]);
-			exit(1);
-		}
 	}
 
 	// read config

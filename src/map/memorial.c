@@ -697,12 +697,13 @@ static int read_memorial_db(void)
 	int i = 0, j, k;
 	FILE *fp;
 	char line[1024],*p;
+	const char *filename = "db/memorial_db.txt";
 
 	memset(&memorial_db, 0, sizeof(memorial_db));
 
-	fp=fopen("db/memorial_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/memorial_db.txt\n");
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("read_memorial_db: open [%s] failed !\n", filename);
 		return 1;
 	}
 	while(fgets(line,1020,fp)){
@@ -740,7 +741,7 @@ static int read_memorial_db(void)
 			break;
 	}
 	fclose(fp);
-	printf("read db/memorial_db.txt done (count=%d)\n",i);
+	printf("read %s done (count=%d)\n", filename, i);
 
 	return 0;
 }

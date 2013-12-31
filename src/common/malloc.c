@@ -664,7 +664,9 @@ static void memmer_exit(void)
 		printf("memmgr: no memory leaks found.\n");
 	} else {
 		printf("memmgr: memory leaks found.\n");
-		fclose(fp);
+		if(fp != stdout) {
+			fclose(fp);
+		}
 	}
 }
 
@@ -675,7 +677,7 @@ int do_init_memmgr(const char* file)
 	strcat(memmer_logfile, ".log");
 
 	atexit(memmer_exit);
-	printf("memmgr: initialised: %s\n",memmer_logfile);
+	printf("memmgr: initialized: %s\n", memmer_logfile);
 	return 0;
 }
 

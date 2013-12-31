@@ -476,13 +476,14 @@ static int itemdb_read_itemdb(void)
 #endif
 		"db/addon/item_db_add.txt"
 	};
+	const char *filename2;
 
-	for(i=0;i<sizeof(filename)/sizeof(filename[0]);i++){
-		fp=fopen(filename[i],"r");
-		if(fp==NULL){
-			if(i>0)
+	for(i = 0; i < sizeof(filename)/sizeof(filename[0]); i++) {
+		fp = fopen(filename[i], "r");
+		if(fp == NULL) {
+			if(i > 0)
 				continue;
-			printf("can't read %s\n",filename[i]);
+			printf("itemdb_read_itemdb: open [%s] failed !\n", filename[i]);
 			continue;
 		}
 		lines=ln=0;
@@ -588,9 +589,10 @@ static int itemdb_read_itemdb(void)
 		printf("read %s done (count=%d)\n",filename[i],ln);
 	}
 
-	fp=fopen("db/item_db2.txt","r");
-	if(fp==NULL){
-		printf("can't read db/item_db2.txt\n");
+	filename2 = "db/item_db2.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
 		return 0;
 	}
 	ln=0;
@@ -625,11 +627,12 @@ static int itemdb_read_itemdb(void)
 		id->flag.nonconsume  = (atoi(str[10]) == 0)? 0: 1;
 	}
 	fclose(fp);
-	printf("read db/item_db2.txt done (count=%d)\n",ln);
+	printf("read %s (count=%d)\n", filename2, ln);
 
-	fp=fopen("db/item_arrowtype.txt","r");
-	if(fp==NULL){
-		printf("can't read db/item_arrowtype.txt\n");
+	filename2 = "db/item_arrowtype.txt",
+	fp = fopen(filename2, "r");
+	if(fp == NULL){
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
 		return 0;
 	}
 	while(fgets(line,sizeof(line),fp)){
@@ -653,11 +656,12 @@ static int itemdb_read_itemdb(void)
 		id->arrow_type = atoi(str[3]);
 	}
 	fclose(fp);
-	printf("read db/item_arrowtype.txt done\n");
+	printf("read %s done\n", filename2);
 
-	fp=fopen("db/item_cardtype.txt","r");
-	if(fp==NULL){
-		printf("can't read db/item_cardtype.txt\n");
+	filename2 = "db/item_cardtype.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
 		return 0;
 	}
 	while(fgets(line,sizeof(line),fp)){
@@ -681,11 +685,12 @@ static int itemdb_read_itemdb(void)
 		id->card_type = atoi(str[3]);
 	}
 	fclose(fp);
-	printf("read db/item_cardtype.txt done\n");
+	printf("read %s done\n", filename2);
 
-	fp=fopen("db/item_group_db.txt","r");
-	if(fp==NULL){
-		printf("can't read db/item_group_db.txt\n");
+	filename2 = "db/item_group_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
 		return 0;
 	}
 	while(fgets(line,sizeof(line),fp)) {
@@ -717,7 +722,7 @@ static int itemdb_read_itemdb(void)
 		id->group = group_id;
 	}
 	fclose(fp);
-	printf("read db/item_group_db.txt done\n");
+	printf("read %s done\n", filename2);
 	return 0;
 }
 
@@ -733,9 +738,10 @@ static int itemdb_read_itemvaluedb(void)
 	int nameid,j;
 	char *str[7],*p;
 	struct item_data *id;
+	const char *filename = "db/item_value_db.txt";
 
-	if( (fp=fopen("db/item_value_db.txt","r"))==NULL){
-		printf("can't read db/item_value_db.txt\n");
+	if( (fp = fopen(filename, "r")) == NULL) {
+		printf("itemdb_read_itemvaluedb: open [%s] failed !\n", filename);
 		return -1;
 	}
 
@@ -773,7 +779,7 @@ static int itemdb_read_itemvaluedb(void)
 		}
 	}
 	fclose(fp);
-	printf("read db/item_value_db.txt done (count=%d)\n",ln);
+	printf("read %s done (count=%d)\n", filename, ln);
 	return 0;
 }
 
@@ -787,12 +793,13 @@ static int itemdb_read_randomitem(void)
 	char line[1024];
 	int randomid,nameid,range,i,c;
 	char *str[3],*p;
+	const char *filename = "db/item_random.txt";
 
 	// 読み込む度、初期化
 	memset(&random_item, 0, sizeof(random_item));
 
-	if((fp = fopen("db/item_random.txt","r")) == NULL) {
-		printf("can't read db/item_random.txt\n");
+	if((fp = fopen(filename, "r")) == NULL) {
+		printf("itemdb_read_randomitem: open [%s] failed !\n", filename);
 		return 0;
 	}
 
@@ -834,7 +841,7 @@ static int itemdb_read_randomitem(void)
 		random_item[randomid].entry++;
 	}
 	fclose(fp);
-	printf("read db/item_random.txt done\n");
+	printf("read %s done\n", filename);
 
 	return 0;
 }
@@ -850,9 +857,10 @@ static int itemdb_read_itemavail(void)
 	int ln=0;
 	int nameid,j,k;
 	char *str[2],*p;
+	const char *filename = "db/item_avail.txt";
 
-	if( (fp=fopen("db/item_avail.txt","r"))==NULL ){
-		printf("can't read db/item_avail.txt\n");
+	if( (fp = fopen(filename, "r")) == NULL ) {
+		printf("itemdb_read_itemavail: open [%s] failed !\n", filename);
 		return -1;
 	}
 
@@ -884,7 +892,7 @@ static int itemdb_read_itemavail(void)
 		ln++;
 	}
 	fclose(fp);
-	printf("read db/item_avail.txt done (count=%d)\n",ln);
+	printf("read %s done (count=%d)\n", filename, ln);
 	return 0;
 }
 

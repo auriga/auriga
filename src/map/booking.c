@@ -491,12 +491,14 @@ static int read_booking_db(void)
 	char line[1024];
 	char *str=NULL;
 	int count = 0;
+	const char *filename;
 
 	memset(booking_mapid, -1, sizeof(booking_mapid));
 
-	fp=fopen("db/booking_map_db.txt","r");
-	if(fp==NULL) {
-		printf("can't read db/booking_map_db.txt\n");
+	filename = "db/booking_map_db.txt";
+	fp = fopen(filename,"r");
+	if(fp == NULL) {
+		printf("read_booking_db: open [%s] failed !\n", filename);
 		return -1;
 	}
 
@@ -533,14 +535,15 @@ static int read_booking_db(void)
 	}
 
 	fclose(fp);
-	printf("read db/booking_map_db.txt done (count=%d)\n", count);
+	printf("read %s done (count=%d)\n", filename, count);
 
 	count = 0;
 	memset(booking_jobid, 0, sizeof(booking_jobid));
 
-	fp=fopen("db/booking_job_db.txt","r");
+	filename = "db/booking_job_db.txt";
+	fp = fopen(filename, "r");
 	if(fp==NULL) {
-		printf("can't read db/booking_job_db.txt\n");
+		printf("read_booking_db: open [%s] failed !\n", filename);
 		return -1;
 	}
 
@@ -577,7 +580,7 @@ static int read_booking_db(void)
 	}
 
 	fclose(fp);
-	printf("read db/booking_job_db.txt done (count=%d)\n", count);
+	printf("read %s done (count=%d)\n", filename, count);
 
 	return 0;
 }
@@ -615,7 +618,7 @@ void do_final_booking(void)
  */
 void do_init_booking(void)
 {
-	booking_db=numdb_init();
+	booking_db = numdb_init();
 	read_booking_db();
 
 	return;

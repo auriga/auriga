@@ -202,6 +202,7 @@ static bool partydb_txt_read(void)
 	party_db = numdb_init();
 
 	if((fp = fopen(party_txt, "r")) == NULL) {
+		printf("partydb_txt_read: open [%s] failed !\n", party_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -277,7 +278,7 @@ int partydb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(party_txt, &lock)) == NULL ) {
-		printf("int_party: cant write [%s] !!! data is lost !!!\n", party_txt);
+		printf("partydb_txt_sync: can't write [%s] !!! data is lost !!!\n", party_txt);
 		return 1;
 	}
 	numdb_foreach(party_db, partydb_txt_sync_sub, fp);

@@ -413,6 +413,7 @@ static bool guilddb_txt_read(void)
 	guild_db = numdb_init();
 
 	if((fp = fopen(guild_txt, "r")) == NULL) {
+		printf("guilddb_txt_read: open [%s] failed !\n", guild_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -499,7 +500,7 @@ int guilddb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(guild_txt, &lock)) == NULL ) {
-		printf("int_guild: cant write [%s] !!! data is lost !!!\n", guild_txt);
+		printf("guilddb_txt_sync: can't write [%s] !!! data is lost !!!\n", guild_txt);
 		return 1;
 	}
 	numdb_foreach(guild_db, guilddb_txt_sync_sub, fp);
@@ -745,6 +746,7 @@ static bool guildcastle_txt_read(void)
 	}
 
 	if((fp = fopen(castle_txt, "r")) == NULL) {
+		printf("guildcastle_txt_read: open [%s] failed !\n", castle_txt);
 		ret = false;
 	} else {
 		struct guild_castle gc;
@@ -797,7 +799,7 @@ static int guildcastle_txt_sync(void)
 	char line[1024];
 
 	if( (fp = lock_fopen(castle_txt, &lock)) == NULL ) {
-		printf("int_guild: cant write [%s] !!! data is lost !!!\n", castle_txt);
+		printf("guildcastle_txt_sync: can't write [%s] !!! data is lost !!!\n", castle_txt);
 		return 1;
 	}
 

@@ -3866,14 +3866,16 @@ static int mob_readdb(void)
 #endif
 		"db/addon/mob_db_add.txt"
 	};
+	const char *filename2;
 
 	memset(mob_db_real,0,sizeof(mob_db_real));
 
-	for(n=0;n<sizeof(filename)/sizeof(filename[0]);n++){
-		fp=fopen(filename[n],"r");
-		if(fp==NULL){
-			if(n>0)
+	for(n = 0; n < sizeof(filename)/sizeof(filename[0]); n++) {
+		fp = fopen(filename[n], "r");
+		if(fp == NULL) {
+			if(n > 0)
 				continue;
+			printf("mob_readdb: open [%s] failed !\n", filename[n]);
 			return -1;
 		}
 		while(fgets(line,1020,fp)){
@@ -3983,8 +3985,9 @@ static int mob_readdb(void)
 	}
 
 	// group_db
-	fp=fopen("db/mob_group_db.txt","r");
-	if(fp==NULL)
+	filename2 = "db/mob_group_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL)
 		return 0;	// 無くても成功 group_id = 0 未分類のため
 
 	while(fgets(line,1020,fp)){
@@ -4019,7 +4022,7 @@ static int mob_readdb(void)
 	}
 	fclose(fp);
 
-	printf("read db/mob_group_db.txt done\n");
+	printf("read %s done\n", filename2);
 
 	return 0;
 }
@@ -4035,9 +4038,10 @@ static int mob_readdb_mobavail(void)
 	int ln = 0;
 	int class_,j,k;
 	char *str[15],*p,*np;
+	const char *filename = "db/mob_avail.txt";
 
-	if( (fp=fopen("db/mob_avail.txt","r"))==NULL ){
-		printf("can't read db/mob_avail.txt\n");
+	if( (fp = fopen(filename, "r")) == NULL ) {
+		printf("mob_readdb_mobavail: open [%s] failed !\n", filename);
 		return -1;
 	}
 
@@ -4092,7 +4096,7 @@ static int mob_readdb_mobavail(void)
 		ln++;
 	}
 	fclose(fp);
-	printf("read db/mob_avail.txt done (count=%d)\n",ln);
+	printf("read %s done (count=%d)\n", filename, ln);
 	return 0;
 }
 
@@ -4122,11 +4126,12 @@ static int mob_read_randommonster(void)
 	char *str[3],*p;
 	int randomid,class_,range,i,c;
 	int max_range = 0;
+	const char *filename = "db/mob_random.txt";
 
 	memset(&random_mob, 0, sizeof(random_mob));
 
-	if((fp = fopen("db/mob_random.txt","r")) == NULL) {
-		printf("can't read db/mob_random.txt\n");
+	if((fp = fopen(filename, "r")) == NULL) {
+		printf("mob_read_randommonster: open [%s] failed !\n", filename);
 		return 0;
 	}
 
@@ -4180,7 +4185,7 @@ static int mob_read_randommonster(void)
 		}
 	}
 	fclose(fp);
-	printf("read db/mob_random.txt done\n");
+	printf("read %s done\n", filename);
 
 	return 0;
 }
@@ -4193,13 +4198,14 @@ static int mob_readtalkdb(void)
 {
 	FILE *fp;
 	char line[1024];
-	char *str[3],*p;
-	int msgid,i;
+	char *str[3], *p;
+	int msgid, i;
+	const char *filename = "db/mob_talk_db.txt";
 
 	memset(&mob_talk_db, 0, sizeof(mob_talk_db));
 
-	if((fp = fopen("db/mob_talk_db.txt","r")) == NULL) {
-		printf("can't read db/mob_talk_db.txt\n");
+	if((fp = fopen(filename, "r")) == NULL) {
+		printf("mob_readtalkdb: open [%s] failed !\n", filename);
 		return 0;
 	}
 
@@ -4226,7 +4232,7 @@ static int mob_readtalkdb(void)
 		mob_talk_db[msgid].msg[199] = '\0';		// force \0 terminal
 	}
 	fclose(fp);
-	printf("read db/mob_talk_db.txt done\n");
+	printf("read %s done\n", filename);
 
 	return 0;
 }
@@ -4341,11 +4347,11 @@ static int mob_readskilldb(void)
 		"db/addon/mob_skill_db_add.txt"
 	};
 
-	for(x=0;x<sizeof(filename)/sizeof(filename[0]);x++){
-		fp=fopen(filename[x],"r");
-		if(fp==NULL){
-			if(x==0)
-				printf("can't read %s\n",filename[x]);
+	for(x = 0; x < sizeof(filename)/sizeof(filename[0]); x++) {
+		fp = fopen(filename[x], "r");
+		if(fp == NULL){
+			if(x == 0)
+				printf("mob_readskilldb: open [%s] failed !\n", filename[x]);
 			continue;
 		}
 		lineno = 0;

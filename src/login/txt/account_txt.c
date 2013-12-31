@@ -169,6 +169,7 @@ static bool account_txt_read(void)
 	bool ret = true;
 
 	if((fp = fopen(account_filename, "r")) == NULL) {
+		printf("account_txt_read: open [%s] failed !\n", account_filename);
 		ret = false;
 	} else {
 		int i, n, account_id, logincount, state;
@@ -332,8 +333,10 @@ void account_txt_sync(void)
 		return;
 
 	fp = lock_fopen(account_filename, &lock);
-	if(fp == NULL)
+	if(fp == NULL) {
+		printf("account_txt_sync: can't write [%s] !!! data is lost !!!\n", account_filename);
 		return;
+	}
 
 	for(i = 0; i < auth_num; i++) {
 		if(auth_dat[i].account_id < 0)

@@ -20507,6 +20507,7 @@ static void packetdb_readdb(void)
 	int ln=0;
 	int cmd,j;
 	char *str[32],*p,*str2[32],*p2;
+	const char *filename = "db/packet_db.txt";
 	struct {
 		void (*func)(int fd,struct map_session_data *sd, int cmd);
 		const char *name;
@@ -20712,8 +20713,8 @@ static void packetdb_readdb(void)
 
 	memset(packet_db,0,sizeof(packet_db));
 
-	if( (fp=fopen("db/packet_db.txt","r"))==NULL ){
-		printf("can't read db/packet_db.txt\n");
+	if( (fp = fopen(filename, "r")) == NULL ) {
+		printf("packetdb_readdb: open [%s] failed !\n", filename);
 		exit(1);
 	}
 	while(fgets(line,1020,fp)){
@@ -20775,7 +20776,7 @@ static void packetdb_readdb(void)
 		//	printf("packet_db:? %d 0x%x %d %s %p\n",ln,cmd,packet_db[cmd].len,str[2],packet_db[cmd].func);
 	}
 	fclose(fp);
-	printf("read db/packet_db.txt done (count=%d)\n",ln);
+	printf("read %s done (count=%d)\n", filename, ln);
 
 	return;
 }

@@ -172,6 +172,7 @@ static bool accregdb_txt_read(void)
 	accreg_db = numdb_init();
 
 	if((fp = fopen(accreg_txt, "r")) == NULL) {
+		printf("accregdb_txt_read: open [%s] failed !\n", accreg_txt);
 		ret = false;
 	} else {
 		int count = 0;
@@ -243,7 +244,7 @@ int accregdb_txt_sync(void)
 		return 1;
 
 	if( (fp = lock_fopen(accreg_txt, &lock)) == NULL ) {
-		printf("int_accreg: cant write [%s] !!! data is lost !!!\n", accreg_txt);
+		printf("accregdb_txt_sync: can't write [%s] !!! data is lost !!!\n", accreg_txt);
 		return 1;
 	}
 	numdb_foreach(accreg_db, accregdb_txt_sync_sub, fp);
