@@ -1,37 +1,34 @@
 @echo off
-@echo →Aurigaをサービスから抹消します
+rem Windowsサービスから削除を行うバッチファイル
 
-set reskit=
-set svname=
-if "%svname%"=="" goto error3
-if "%reskit%"=="" goto error2
-if not exist %reskit%sc.exe goto error1
+rem ----------------------------------------------------------------
+rem サービス名設定
+set __LOGIN_SVC__=AurigaLoginServer
+set __CHAR_SVC__=AurigaCharServer
+set __MAP_SVC__=AurigaMapServer
+rem ----------------------------------------------------------------
 
-%reskit%sc.exe %svname% Delete AurigaLogin
-%reskit%sc.exe %svname% Delete AurigaChar
-%reskit%sc.exe %svname% Delete AurigaMap
+echo ■Aurigaをサービスから削除します■
 
-@echo ★Login.Char.MapサーバをWindowsのサービスからの解除を試みました。
-@echo ★エラーが発生している場合は、あらかじめサービスを停止してから再度実行してください。
-goto end
+if "%__LOGIN_SVC__%"=="" goto SKIP1
+echo UnInstalling Service "%__LOGIN_SVC__%" ...
+sc.exe delete %__LOGIN_SVC__%
+echo.
+:SKIP1
 
-:error3
-@echo ●サーバ名が未設定です、Windowsの場合はコンピューター名がサーバー名になります
-@echo コントロールパネル内システムのネットワークIDに表示されるコンピュータ名を
-@echo 環境変数設定例 set svname="\\myserver"のように設定してください、\\は必須です。
-goto end
+if "%__CHAR_SVC__%"=="" goto SKIP2
+echo UnInstalling Service "%__CHAR_SVC__%" ...
+sc.exe delete %__CHAR_SVC__%
+echo.
+:SKIP2
 
-:error2
-@echo ●エラーが発生しました。リソースキットのパスが設定されていません
-@echo 環境変数設定例 set reskit="C:\Program Files\Resource Kit\"
-goto end
+if "%__MAP_SVC__%"=="" goto SKIP3
+echo UnInstalling Service "%__MAP_SVC__%" ...
+sc.exe delete %__MAP_SVC__%
+echo.
+:SKIP3
 
-:error1
-@echo ●エラーが発生しました。リソースキッド非導入による「SC.EXE」の欠損あるいは
-@echo リソースキットにパスが通っていない可能性があります。
-@echo リソースキット設定の確認もしくはリソースキットを導入してください
-goto end
+echo ★Login, Char, MapサーバをWindowsのサービスから解除を試みました。
+echo ★エラーが発生している場合は、あらかじめサービスを停止してから再度実行してください。
 
-:error
-:end
 pause

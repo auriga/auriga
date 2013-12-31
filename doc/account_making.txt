@@ -23,7 +23,8 @@
      クライアントのログイン画面からのアカウント作成
 
  * アカウントデータの直接編集	[推奨されない]
-     テキストエディタでの編集
+     テキストエディタでの編集（TXTモード）
+     SQLによるデータベースの編集（SQLモード）
 
 
 --------------------------------------------------------------------------
@@ -94,6 +95,7 @@
   推奨されない。というか、できればやめてほしい。
   編集間違えたらデータが消える可能性もあるので注意。
 
+  [TXTモード]
   login-server.exeを起動しているなら終了させる。
   account.txtをテキストエディタで開く。
   account.txtはタブ区切りファイルで、
@@ -111,3 +113,19 @@
 
   上記に当てはまる１行を追加し、保存してlogin-server.exeを起動すれば
   ログインできるはず。できなかったらあきらめてください。
+
+  [SQLモード]
+  login-server.exeを起動しているなら終了させる。
+  MySQLに接続し、以下のようなクエリを発行する。
+
+  INSERT INTO `login` (`userid`,`user_pass`,`lastlogin`,`sex`,`logincount`,`level`,`state`,`email`,`birthdate`)
+  VALUES(:userid, :user_pass, NOW(), :sex, 0, 0, 0 , :email, :birthdate)
+
+    :userid     ユーザID
+    :user_pass  パスワード
+    :sex        性別
+    :email      Eメール
+    :birthdate  誕生日
+
+  アカウントIDはAUTO_INCREMENTで自動採番されるので指定は不要。
+  型および文字列長については sql-files/main.sql を参照すること。

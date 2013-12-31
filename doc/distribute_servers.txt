@@ -246,24 +246,7 @@ conf ファイルを切り替えるだけでできます。
 
 コマンドラインパラメータを使って、読み込む conf ファイルを変更することができます。
 複数のコマンドを繋げることもできます。
-各サーバーで使えるコマンドは以下の通りです。
-
-login-server
-　　--login-config <filename>
-
-char-server
-　　--char-config <filename>
-　　--inter-config <filename>
-
-map-server
-　　--map-config <filename>
-　　--battle-config <filename>
-　　--atcommand-config <filename>
-　　--script-config <filename>
-　　--msg-config <filename>
-
-converter
-　　--converter-config <filename>
+コメントの説明については doc/commandline_parameter.txt を参照してください。
 
 例）char_auriga2.conf から char config を読み込む
 　　　　[WIN]  > char-server.exe --char-config conf/char_auriga2.conf

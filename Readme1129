@@ -1,4 +1,45 @@
 ----------------------------------------
+//1168 [2014/01/01] by Rayce
+
+・Athena-2265をベースにWindowsサービス化に対応（core.*, winservice.*）
+	-> Windowsでのみ有効、Linuxの場合は何もしない。
+	   コンパイルオプションは必要なし。
+
+	-> サービスへの登録および削除はOS標準の sc.exe コマンドを使用。
+	   詳細は doc/instasv.txt を参照。
+
+	-> core.cの構造を変更。
+	   起動パラメータ --service-name を直接起動とサービス起動の判定に利用。
+	   大まかな処理の流れは以下。
+	     * 直接起動時（これまでと同じ）
+	         1. main() からエントリ
+	         2. 起動パラメータを取得
+	         3. --service_name が指定されてないことを確認
+	         4. main_sub() を実行
+
+	     * サービス起動時
+	         1. main() からエントリ
+	         2. 起動パラメータを取得
+	         3. --service-name からサービス名を読み取る
+	         4. 起動パラメータをコピーしてSCMに登録
+	         5. SCMより winservice_main() が実行
+	         6. SCMへ準備開始を通知後、main_sub() を実行
+
+	-> 起動パラメータに --stdout, --stderr を追加。
+	   標準出力および標準エラー出力をログファイルへリダイレクトできるように拡張。
+
+・サーバ起動時およびサービス起動時にメッセージを出力するように拡張
+  ログファイルから起動と終了を追跡できるようにする（core.c, winservice.c）
+
+・出力のバッファリングを無効にする（core.c）
+	Suggest by mapleさん、thanks a lot!!
+
+・doc/account_making.txt にSQLモードでの直接編集方法を追記（doc/account_making.txt）
+
+・サーバ起動時に指定可能な引数についての仕様を別ドキュメントとして分離
+  （doc/commandline_parameter.txt, doc/distribute_servers.txt）
+
+----------------------------------------
 //1167 [2014/01/01] by Rayce
 
 ・[TXT] Auriga-1166の private_ 変数名の変更漏れ修正（chardb_txt.c）

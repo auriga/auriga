@@ -19,17 +19,29 @@
  *
  */
 
-// original : core.h 2003/03/14 11:55:25 Rev 1.4
+#ifndef _WINSERVICE_H_
+#define _WINSERVICE_H_
 
-#ifndef	_CORE_H_
-#define	_CORE_H_
+#ifdef WINDOWS
 
-int do_init(int,char**);
-void do_final(void);
-void do_pre_final(void);
-void do_stop(void);
-double uptime(void);
+#include "utils.h"
 
-int main_sub(int argc, char **argv);
+bool winservice_change_current_dir(void);
+bool winservice_init(int argc, char **argv);
+bool winservice_notify_start(void);
+bool winservice_notify_ready(void);
+bool winservice_notify_stop(void);
+bool winservice_notify_finish(void);
 
-#endif	// _CORE_H_
+#else
+
+#define winservice_change_current_dir() (1 == 1)
+#define winservice_init(c,v)            (1 == 0)
+#define winservice_notify_start()       (1 == 1)
+#define winservice_notify_ready()       (1 == 1)
+#define winservice_notify_stop()        (1 == 1)
+#define winservice_notify_finish()      (1 == 1)
+
+#endif
+
+#endif /* _WINSERVICE_H_ */

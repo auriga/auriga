@@ -39,46 +39,20 @@
 #include "malloc.h"
 #include "utils.h"
 #include "lock.h"
+#include "winservice.h"
 
 // for VC.NET 2005
 #if _MSC_VER >= 1400
 #pragma comment(lib, "user32.lib")
 #endif
 
+static volatile int auriga_is_running = 1;
 int packet_parse_time = 0;
 
-/*======================================
- *	CORE : Signal Sub Function
- *--------------------------------------
- */
-
-static volatile int auriga_is_running = 1;
-
-#ifdef WINDOWS
-static BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
-{
-	auriga_is_running = 0;
-	return TRUE;
-}
-#else
-static void sig_proc(int sn)
-{
-	switch(sn){
-	case SIGINT:
-	case SIGTERM:
-	case SIGQUIT:
-		auriga_is_running = 0;
-		break;
-	}
-}
-#endif
-
-/*======================================
- *	CORE : MAINROUTINE
- *--------------------------------------
- */
-
 static char pid_file[256];
+
+static FILE *stdout_fp = NULL;
+static FILE *stderr_fp = NULL;
 
 static void pid_delete(void)
 {
@@ -128,6 +102,34 @@ double uptime(void)
 
 	return (now - boot) / 86400.0;
 }
+
+/*======================================
+ *	CORE : Signal Sub Function
+ *--------------------------------------
+ */
+void do_stop(void)
+{
+	auriga_is_running = 0;
+}
+
+#ifdef WINDOWS
+static BOOL WINAPI core_CtrlHandlerRoutine( DWORD dwCtrlType )
+{
+	do_stop();
+	return TRUE;
+}
+#else
+static void sig_proc(int sn)
+{
+	switch(sn) {
+		case SIGINT:
+		case SIGTERM:
+		case SIGQUIT:
+			do_stop();
+			break;
+	}
+}
+#endif
 
 #ifdef WINDOWS
 
@@ -317,14 +319,90 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 
 #endif
 
-int main(int argc,char **argv)
+/*======================================
+ *	CORE : MAINROUTINE
+ *--------------------------------------
+ */
+static void output_log_header(void)
 {
-	int next;
+	char timestr[256];
+	time_t time_;
+
+	time(&time_);
+	strftime(timestr, sizeof(timestr), "%Y/%m/%d-%H:%M:%S %Z", localtime(&time_));
+
+	printf("--> Auriga Startup ... %s\n", timestr);
+
+	return;
+}
+
+static void do_close(void)
+{
+	printf("<-- Auriga Shutdown ...\n\n");
+
+	if(stdout_fp) {
+		fclose(stdout_fp);
+		stdout_fp = NULL;
+	}
+	if(stderr_fp) {
+		fclose(stderr_fp);
+		stderr_fp = NULL;
+	}
+
+	return;
+}
+
+int main(int argc, char **argv)
+{
+	int i;
 
 	if(sizeof(int8) != 1 || sizeof(int16) != 2 || sizeof(int32) != 4 || sizeof(int64) != 8 || sizeof(intptr) != sizeof(void*)) {
 		printf("exact-width integer types does not compatible with this machine\n");
 		exit(1);
 	}
+
+	if(!winservice_change_current_dir())
+		return 0;
+
+	atexit(do_close);
+
+	// 出力をバッファ無しにする
+	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
+
+	// 起動引数
+	for(i = 1; i < argc - 1; i += 2) {
+		if(strcmp(argv[i], "--stdout") == 0) {
+			if(stdout_fp == NULL) {
+				if((stdout_fp = freopen(argv[i+1], "a", stdout)) != NULL)
+					setvbuf(stdout_fp, NULL, _IONBF, 0);
+			}
+		}
+		if(strcmp(argv[i], "--stderr") == 0) {
+			if(stderr_fp == NULL) {
+				if((stderr_fp = freopen(argv[i+1], "a", stderr)) != NULL)
+					setvbuf(stderr_fp, NULL, _IONBF, 0);
+			}
+		}
+	}
+
+	output_log_header();
+
+	// Windowsサービスの処理を実行
+	if(winservice_init(argc, argv))
+		return 0;
+
+	// メイン処理続行
+	return main_sub(argc, argv);
+}
+
+/*======================================
+ *	CORE : MAIN SUBROUTINE
+ *--------------------------------------
+ */
+int main_sub(int argc, char **argv)
+{
+	int next;
 
 	pid_create(argv[0]);
 	do_init_memmgr(argv[0]); // 一番最初に実行する必要がある
@@ -350,10 +428,13 @@ int main(int argc,char **argv)
 #endif
 
 	atexit(do_final);
-	do_init(argc,argv);
+	do_init(argc, argv);
+
+	winservice_notify_ready();
+
 	if (packet_parse_time > 0) {
 		add_timer_func_list(parsepacket_timer);
-		add_timer_interval(gettick()+packet_parse_time,parsepacket_timer,0,NULL,packet_parse_time);
+		add_timer_interval(gettick() + packet_parse_time, parsepacket_timer, 0, NULL, packet_parse_time);
 
 		while(auriga_is_running) {
 			next = do_timer(gettick_nocache());
@@ -367,6 +448,8 @@ int main(int argc,char **argv)
 		}
 	}
 	do_pre_final();
+
+	winservice_notify_stop();
 
 	exit(0);
 	return 0;
