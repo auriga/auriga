@@ -105,6 +105,7 @@ static int str_num = LABEL_START, str_data_size;
 int str_hash[SCRIPT_HASH_SIZE];
 
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
+static int mapreg_autosave_interval = MAPREG_AUTOSAVE_INTERVAL;
 
 struct linkdb_node *scriptlabel_db = NULL;
 static struct dbt *userfunc_db = NULL;
@@ -3399,6 +3400,13 @@ int script_config_read(const char *cfgName)
 		else if(strcmpi(w1, "error_log") == 0) {
 			script_config.error_log = atoi(w2);
 		}
+		else if (strcmpi(w1, "mapreg_autosave_time") == 0) {
+			mapreg_autosave_interval = atoi(w2) * 1000;
+			if (mapreg_autosave_interval <= 0) {
+				printf("script_config_read: Invalid autosave_time value: %d. Set to %d (default).\n", mapreg_autosave_interval, (int)(MAPREG_AUTOSAVE_INTERVAL / 1000));
+				mapreg_autosave_interval = MAPREG_AUTOSAVE_INTERVAL;
+			}
+		}
 		if (strcmpi(w1, "sql_script_enable") == 0) {
 			script_config.sql_script_enable = atoi(w2);
 		}
@@ -3726,7 +3734,7 @@ int do_init_script(void)
 	add_timer_func_list(run_script_timer);
 	add_timer_func_list(script_autosave_mapreg);
 
-	add_timer_interval(gettick() + MAPREG_AUTOSAVE_INTERVAL, script_autosave_mapreg, 0, NULL,MAPREG_AUTOSAVE_INTERVAL);
+	add_timer_interval(gettick() + mapreg_autosave_interval, script_autosave_mapreg, 0, NULL, mapreg_autosave_interval);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
@@ -11548,19 +11556,22 @@ int buildin_sqlquery(struct script_state *st)
 {
 #ifndef TXT_ONLY
 	int count = -1;
-	char *query = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	char *query;
+	struct sqldbs_handle *handle = &mysql_handle_script;
+
+	query = conv_str(st,& (st->stack->stack_data[st->start+2]));
 
 	// SQLクエリ利用不可ならエラー
 	if(!script_config.sql_script_enable) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	if(sqldbs_simplequery(&mysql_handle_script, query) == false) {
+	if(sqldbs_simplequery(handle, query) == false) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
 
-	if(sqldbs_has_result(&mysql_handle_script) == false) {
+	if(sqldbs_has_result(handle) == false) {
 		// SELECT以外はここで完了
 		count = sqldbs_affected_rows(&mysql_handle_script);
 		push_val(st->stack,C_INT,count);
@@ -11606,12 +11617,12 @@ int buildin_sqlquery(struct script_state *st)
 				len--;
 		}
 
-		max = sqldbs_num_fields(&mysql_handle_script);
+		max = sqldbs_num_fields(handle);
 		if(max + (num >> 24) > 128) {
 			max = 128 - (num>>24);
 		}
 
-		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(&mysql_handle)); count++) {
+		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(handle)); count++) {
 			int i, tmp_num;
 
 			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
@@ -11629,7 +11640,7 @@ int buildin_sqlquery(struct script_state *st)
 		aFree(var);
 	} while(0);
 
-	sqldbs_free_result(&mysql_handle_script);
+	sqldbs_free_result(handle);
 	push_val(st->stack,C_INT,count);
 #else
 	// TXTは何もしない

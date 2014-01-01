@@ -1,4 +1,13 @@
 ----------------------------------------
+//1169 [2014/01/02] by Rayce
+
+・[SQL] Auriga-1163以降、sqlquery関数でSELECTしたときに結果が取得できないバグを修正（script.c）
+          reported by LunarPhantomさん
+
+・[TXT] マップ永続変数を保存する時間間隔を conf/script_auriga.conf で指定できるように拡張（script.c）
+        これまでと同様デフォルトは300秒
+
+----------------------------------------
 //1168 [2014/01/01] by Rayce
 
 ・Athena-2265をベースにWindowsサービス化に対応（core.*, winservice.*）
