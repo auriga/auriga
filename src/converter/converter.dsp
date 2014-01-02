@@ -147,6 +147,10 @@ SOURCE=..\common\utils.c
 
 SOURCE=..\common\sqldbs.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\common\winservice.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -210,6 +214,10 @@ SOURCE="..\common\utils.h"
 # Begin Source File
 
 SOURCE="..\common\sqldbs.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\common\winservice.h"
 # End Source File
 # End Group
 # End Target

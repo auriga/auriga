@@ -1,4 +1,27 @@
 ----------------------------------------
+//1171 [2014/01/03] by Rayce
+
+・クエスト関係の処理見直し
+	-> quest_search_index() をstaticにし、代わりに quest_get_data() を使う（clif.c, quest.*）
+
+	-> 討伐データベースの最大数が MAX_QUEST_DB で制限されているのを撤廃
+	   リストを動的に確保し、同一のMobIDが存在しないようにする（quest.*, map.c）
+
+	-> 討伐データベースの検索でMobIDが0のときもヒットしていた問題を修正
+	   独自のbinary searchではなく標準の bsearch() を使うように簡素化（quest.c）
+
+	-> MAX_QUEST_DBの定義はquest.c内でしか参照されないので、mmo.hからquest.hに移動（mmo.h, quest.h）
+
+・printfのフォーマット %z は処理系によって動作しないため、unsigned long型にキャストする（sqldbs.c, pc.c）
+
+・サーバクラッシュ時に生成される crashdump.log にAurigaのバージョンを記録する（core.c）
+
+・aMalloc, aCalloc, aReallocによって48KBを超えるデータがアロケートされ、その後メモリリークが
+  発生した場合、ログに記載されるサイズが常に0になっていたのを修正（mallo.c）
+
+・Auriga-1168で追加した winservice.c, winservice.h がdspに記載されてなかったので追記（*.dsp）
+
+----------------------------------------
 //1170 [2014/01/03] by Rayce
 
 ・map_auriga.confでextraシステムのチェック時間を設定できるように追加（map.*, extra.c, conf/map_auriga.conf）

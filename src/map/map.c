@@ -2983,6 +2983,7 @@ void do_final(void)
 	do_final_bonus();
 	do_final_party();
 	do_final_booking();
+	do_final_quest();
 	do_final_pet();
 	do_final_homun();
 	do_final_merc();

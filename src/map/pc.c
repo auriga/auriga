@@ -7167,7 +7167,7 @@ int pc_setregstr(struct map_session_data *sd, int reg, const char *str)
 	nullpo_retr(0, sd);
 
 	if(strlen(str) >= size - 1) {
-		printf("pc_setregstr: string too long! %zd >= %zd\n", strlen(str), size - 1);
+		printf("pc_setregstr: string too long! %lu >= %lu\n", (unsigned long)strlen(str), (unsigned long)(size - 1));
 		return 0;
 	}
 
@@ -9375,7 +9375,7 @@ int pc_readdb(void)
 			st[j].class_level = atoi(split[16]);
 		}
 		fclose(fp);
-		printf("read %s done\n",filename2[m]);
+		printf("read %s done\n", filename2[m]);
 	}
 	if(battle_config.baby_copy_skilltree) {
 		// 養子のスキルツリーを通常職と同一にする場合

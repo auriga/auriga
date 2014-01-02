@@ -348,7 +348,7 @@ static enum enum_field_types sqldbs_num2datatype(size_t size)
 			return MYSQL_TYPE_LONGLONG;
 	}
 
-	printf("sqldbs_num2datatype: Unsupported integer size %zd\n",size);
+	printf("sqldbs_num2datatype: Unsupported integer size %lu\n", (unsigned long)size);
 	return MYSQL_TYPE_NULL;
 }
 

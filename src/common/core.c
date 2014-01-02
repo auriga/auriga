@@ -38,6 +38,7 @@
 #include "timer.h"
 #include "malloc.h"
 #include "utils.h"
+#include "version.h"
 #include "lock.h"
 #include "winservice.h"
 
@@ -208,6 +209,15 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 	len = wsprintf(
 		buf, "%04u/%02u/%02u %02u:%02u:%02u crashed by %s.\r\n",
 		t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, ErrType
+	);
+	WriteFile( hFile, buf, len, &temp, NULL );
+
+	len = wsprintf(buf, "\tAuriga-%04d [%s]\r\n", get_current_version(),
+#ifdef TXT_ONLY
+		"TXT"
+#else
+		"SQL"
+#endif
 	);
 	WriteFile( hFile, buf, len, &temp, NULL );
 

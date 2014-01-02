@@ -14231,16 +14231,15 @@ void clif_questlist_info(struct map_session_data *sd)
  */
 void clif_add_questlist(struct map_session_data *sd, int quest_id)
 {
-	int fd, idx, i, n, id;
+	int fd, i, n, id;
 	struct quest_data *qd;
 
 	nullpo_retv(sd);
 
-	idx = quest_search_index(sd,quest_id);
-	if(idx < 0 || idx > MAX_QUESTLIST)
+	qd = quest_get_data(sd, quest_id);
+	if(qd == NULL)
 		return;
 
-	qd = &sd->quest[idx];
 	fd = sd->fd;
 	n = 0;
 
@@ -14291,16 +14290,15 @@ void clif_del_questlist(struct map_session_data *sd, int quest_id)
  */
 void clif_update_questcount(struct map_session_data *sd, int quest_id)
 {
-	int fd, idx, i, n, id, len=6;
+	int fd, i, n, id, len=6;
 	struct quest_data *qd;
 
 	nullpo_retv(sd);
 
-	idx = quest_search_index(sd,quest_id);
-	if(idx < 0 || idx > MAX_QUESTLIST)
+	qd = quest_get_data(sd, quest_id);
+	if(qd == NULL)
 		return;
 
-	qd = &sd->quest[idx];
 	fd = sd->fd;
 	n = 0;
 

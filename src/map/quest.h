@@ -22,6 +22,8 @@
 #ifndef _QUEST_H_
 #define _QUEST_H_
 
+#define MAX_QUEST_DB 1500
+
 // クエストデータベース
 struct quest_db {
 	int nameid;
@@ -32,8 +34,6 @@ struct quest_db {
 	} mob[3];
 };
 
-int quest_search_db(int quest_id);
-int quest_search_index(struct map_session_data *sd, int quest_id);
 struct quest_data *quest_get_data(struct map_session_data *sd, int quest_id);
 int quest_search_mobid(int mob_id);
 int quest_addlist(struct map_session_data *sd, int quest_id);
@@ -44,6 +44,7 @@ int quest_killcount_sub(struct block_list *tbl, va_list ap);
 int quest_killcount(struct map_session_data *sd, int mob_id);
 
 void quest_reload(void);
+int do_final_quest(void);
 int do_init_quest(void);
 
 #endif	// _QUEST_H_

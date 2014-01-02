@@ -25,6 +25,7 @@
 #include <time.h>
 
 #include "nullpo.h"
+#include "malloc.h"
 
 #include "map.h"
 #include "quest.h"
@@ -33,20 +34,24 @@
 #include "intif.h"
 #include "pc.h"
 
+#define QUEST_KILLDB_SIZE 64
+
 /* クエストデータベース */
-struct quest_db quest_db[MAX_QUEST_DB];
+static struct quest_db quest_db[MAX_QUEST_DB];
+
 /* 討伐対象データベース */
-int quest_killdb[MAX_QUEST_DB];
+static int *quest_killdb = NULL;
+static int max_killdb_count = 0;
 
 /*==========================================
  * クエストDBのデータを検索
  *------------------------------------------
  */
-int quest_search_db(int quest_id)
+static int quest_search_db(int quest_id)
 {
 	int i;
 
-	for(i=0; i < MAX_QUEST_DB; i++) {
+	for(i = 0; i < MAX_QUEST_DB; i++) {
 		if(quest_db[i].nameid == quest_id)
 			return i;
 	}
@@ -58,13 +63,13 @@ int quest_search_db(int quest_id)
  * クエストIDからインデックスを返す
  *------------------------------------------
  */
-int quest_search_index(struct map_session_data *sd, int quest_id)
+static int quest_search_index(struct map_session_data *sd, int quest_id)
 {
 	int i;
 
 	nullpo_retr(-1, sd);
 
-	for(i=0; i < sd->questlist; i++) {
+	for(i = 0; i < sd->questlist; i++) {
 		if(sd->quest[i].nameid == quest_id)
 			return i;
 	}
@@ -90,23 +95,24 @@ struct quest_data *quest_get_data(struct map_session_data *sd, int quest_id)
  * 討伐対象かチェック
  *------------------------------------------
  */
+static int quest_search_mobid_sub(const void *a, const void *b)
+{
+	int key   = *(int *)a;
+	int value = *(int *)b;
+
+	return (key > value)? 1: (key < value)? -1: 0;
+}
+
 int quest_search_mobid(int mob_id)
 {
-	int min = -1;
-	int max = MAX_QUEST_DB;
+	int *ret;
 
-	// binary search
-	while(max - min > 1) {
-		int mid = (min + max) / 2;
-		if(quest_killdb[mid] == mob_id)
-			return 1;
+	if(quest_killdb == NULL)
+		return 0;
 
-		if(quest_killdb[mid] > mob_id)
-			max = mid;
-		else
-			min = mid;
-	}
-	return 0;
+	ret = bsearch(&mob_id, quest_killdb, max_killdb_count, sizeof(int), quest_search_mobid_sub);
+
+	return (ret)? 1: 0;
 }
 
 /*==========================================
@@ -336,21 +342,26 @@ static int quest_sort_id(const void *_i1, const void *_i2)
  */
 static int quest_readdb(void)
 {
-	int i,j,k;
+	int i, j, size = 0;
 	FILE *fp;
 	char line[1024],*p;
 	const char *filename = "db/quest_db.txt";
 
 	memset(&quest_db, 0, sizeof(quest_db));
-	memset(&quest_killdb, 0, sizeof(quest_killdb));
+
+	if(quest_killdb) {
+		aFree(quest_killdb);
+		quest_killdb = NULL;
+		max_killdb_count = 0;
+	}
 
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
 		printf("quest_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
+
 	i=0;
-	k=-1;
 	while(fgets(line,1020,fp)){
 		char *split[9];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -371,19 +382,39 @@ static int quest_readdb(void)
 		quest_db[i].nameid = atoi(split[0]);
 		quest_db[i].limit  = atoi(split[2]);
 		for(j = 0; j < sizeof(quest_db[0].mob)/sizeof(quest_db[0].mob[0]); j++) {
-			quest_db[i].mob[j].id    = (short)atoi(split[3+j*2]);
+			int mob_id = atoi(split[3+j*2]);
+			quest_db[i].mob[j].id    = (short)mob_id;
 			quest_db[i].mob[j].count = (short)atoi(split[4+j*2]);
 
-			if(!quest_db[i].mob[j].id || ++k >= MAX_QUEST_DB)
-				continue;
-			quest_killdb[k]          = quest_db[i].mob[j].id;
+			if(mob_id> 0) {
+				int n;
+				for(n = 0; n < max_killdb_count; n++) {
+					if(quest_killdb[n] == mob_id)
+						break;
+				}
+				if(n != max_killdb_count)
+					continue;
+
+				// 新しく出現したMobIDなので討伐データベースに追加
+				if(n >= size) {
+					size += QUEST_KILLDB_SIZE;
+					quest_killdb = (int *)aRealloc(quest_killdb, sizeof(int) * size);
+					memset(quest_killdb + (size - QUEST_KILLDB_SIZE), 0, sizeof(int) * QUEST_KILLDB_SIZE);
+				}
+				quest_killdb[n] = mob_id;
+				max_killdb_count++;
+			}
 		}
 
 		if(++i >= MAX_QUEST_DB)
 			break;
 	}
+
+	// 討伐データベースのリサイズ
+	quest_killdb = (int *)aRealloc(quest_killdb, sizeof(int) * max_killdb_count);
+
 	// 討伐データベースのソート
-	qsort(quest_killdb, MAX_QUEST_DB, sizeof(int), quest_sort_id);
+	qsort(quest_killdb, max_killdb_count, sizeof(int), quest_sort_id);
 
 	fclose(fp);
 	printf("read %s done (count=%d)\n", filename, i);
@@ -398,6 +429,22 @@ static int quest_readdb(void)
 void quest_reload(void)
 {
 	quest_readdb();
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+int do_final_quest(void)
+{
+	if(quest_killdb) {
+		aFree(quest_killdb);
+		quest_killdb = NULL;
+		max_killdb_count = 0;
+	}
+
+	return 0
+;
 }
 
 /*==========================================

@@ -646,16 +646,16 @@ static void memmer_exit(void)
 			char buf[24];
 			strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&large->unit_head.time_stamp));
 			fprintf(
-				fp,"%04d [%s] : %s line %d size %d" RETCODE,++count,buf,
+				fp,"%04d [%s] : %s line %d large size %d" RETCODE,++count,buf,
 				large->unit_head.file,
-				large->unit_head.line,large->unit_head.size
+				large->unit_head.line,large->size
 			);
 		}
 #else
 		fprintf(
-			fp,"%04d : %s line %d size %d" RETCODE,++count,
+			fp,"%04d : %s line %d large size %d" RETCODE,++count,
 			large->unit_head.file,
-			large->unit_head.line,large->unit_head.size
+			large->unit_head.line,large->size
 		);
 #endif
 		large = large->next;
