@@ -807,7 +807,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	if(skilllv < 0) return 0;
 
 	// PC,MOB,PET,MERC,ELEM以外は追加効果の対象外
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_PET && bl->type != BL_MERC && bl->type != BL_ELEM)
+	if(!(bl->type & (BL_PC | BL_MOB | BL_PET | BL_MERC | BL_ELEM)))
 		return 0;
 
 	// グラウンドドリフトのときはsrcを設置者に置換
@@ -6338,11 +6338,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			// 成功なのでLv6以上はジェム消費処理
 			if(skilllv >= 6) {
 				int i, val;
-				struct map_session_data *msd = NULL;
-				if(sd)       msd = sd;
-				else if(hd)  msd = hd->msd;
-				else if(mcd) msd = mcd->msd;
-				else if(eld) msd = eld->msd;
+				struct map_session_data *msd = map_bl2msd(src);
 
 				if(msd == NULL)
 					break;
@@ -12109,7 +12105,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		int target = md->target_id;
 		if(battle_config.mob_changetarget_byskill == 1 || target == 0)
 		{
-			if(ss->type == BL_PC || ss->type == BL_HOM || ss->type == BL_MERC || ss->type == BL_ELEM)
+			if(ss->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM))
 				md->target_id = ss->id;
 		}
 		mobskill_use(md,tick,MSC_SKILLUSED|(sg->skill_id<<16));
@@ -14832,15 +14828,7 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 	nullpo_retr(0, bl);
 	nullpo_retr(0, cnd);
 
-	if(bl->type == BL_PC)
-		sd = (struct map_session_data *)bl;
-	else if(bl->type == BL_HOM)
-		sd = ((struct homun_data *)bl)->msd;
-	else if(bl->type == BL_MERC)
-		sd = ((struct merc_data *)bl)->msd;
-	else if(bl->type == BL_ELEM)
-		sd = ((struct elem_data *)bl)->msd;
-
+	sd = map_bl2msd(bl);
 	if(sd == NULL)
 		return 0;
 
@@ -16957,7 +16945,7 @@ int skill_unit_move(struct block_list *bl,unsigned int tick,int flag)
 	if(bl->prev == NULL)
 		return 0;
 
-	if(bl->type != BL_PC && bl->type != BL_MOB && bl->type != BL_MERC && bl->type != BL_ELEM)
+	if(!(bl->type & (BL_PC | BL_MOB | BL_MERC | BL_ELEM)))
 		return 0;
 
 	map_foreachinarea(skill_unit_move_sub,bl->m,bl->x,bl->y,bl->x,bl->y,BL_SKILL,bl,tick,flag);

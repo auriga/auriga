@@ -1,4 +1,18 @@
 ----------------------------------------
+//1170 [2014/01/03] by Rayce
+
+・map_auriga.confでextraシステムのチェック時間を設定できるように追加（map.*, extra.c, conf/map_auriga.conf）
+  extraチェックのタイマーを作動させたくない場合は 0 を指定してください
+
+・ログイン中のパーティメンバーを取得する処理を party_getvaliablesd() としてまとめる（party.*, memorial.c）
+
+・マスターのsdを返す処理を map_bl2msd() としてまとめる（map.*, battle.c, mob.c, skill.c）
+
+・BL_XXX の判定を出来るだけビット演算に変更するよう最適化（battle.c, mob.c, npc.c, skill.c, unit.c）
+
+・使用頻度の低い変数からstaticを取り除く（socket.c）
+
+----------------------------------------
 //1169 [2014/01/02] by Rayce
 
 ・[SQL] Auriga-1163以降、sqlquery関数でSELECTしたときに結果が取得できないバグを修正（script.c）

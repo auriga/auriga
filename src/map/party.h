@@ -70,4 +70,6 @@ void party_leaderchanged(int party_id, int old_accont_id, int account_id);
 
 int party_foreachsamemap(int (*func)(struct block_list *,va_list),struct map_session_data *sd,int range,...);
 
+struct map_session_data *party_getavailablesd(struct party *p);
+
 #endif

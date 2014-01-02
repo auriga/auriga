@@ -1283,7 +1283,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			int id = target_md->target_id;
 			if(battle_config.mob_changetarget_byskill || id == 0)
 			{
-				if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM)
+				if(src->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM))
 					target_md->target_id = src->id;
 			}
 			mobskill_use(target_md,tick,MSC_CASTTARGETED);

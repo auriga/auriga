@@ -311,9 +311,12 @@ int do_final_extra(void)
  */
 int do_init_extra(void)
 {
-	add_timer_func_list(extra_timer);
+	if(extra_check_interval > 0) {
+		add_timer_func_list(extra_timer);
+		add_timer_interval(gettick() + 10000, extra_timer, 0, NULL, extra_check_interval);
 
-	add_timer_interval(gettick()+10000,extra_timer,0,NULL,60000);
+		printf("enable extra system, cheking file [%s] and [%s].\n", extra_file_txt, extra_add_file_txt);
+	}
 
 	return 0;
 }

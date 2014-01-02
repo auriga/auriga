@@ -5794,7 +5794,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				mgd.damage = (mgd.damage + wd.damage) / 2 * (100 + 40*skill_lv)/100;
 				mgd.damage = mgd.damage - (mdef1 + mdef2 + status_get_def(target) + status_get_def2(target));
 				if(bl == target) {
-					if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC || bl->type == BL_ELEM)
+					if(bl->type & (BL_MOB | BL_HOM | BL_MERC | BL_ELEM))
 						mgd.damage = 0;		// MOB,HOM,MERC,ELEMが使う場合は反動無し
 				} else {
 //					if(battle_config.gx_dupele)
@@ -6380,7 +6380,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(battle_config.gx_dupele)
 			mgd.damage = battle_attr_fix(mgd.damage, ele, status_get_element(target));	// 属性2回かかる
 		if(bl == target) {
-			if(bl->type == BL_MOB || bl->type == BL_HOM || bl->type == BL_MERC || bl->type == BL_ELEM)
+			if(bl->type & (BL_MOB | BL_HOM | BL_MERC | BL_ELEM))
 				mgd.damage = 0;		// MOB,HOM,MERC,ELEMが使う場合は反動無し
 			else
 				mgd.damage /= 2;	// 反動は半分
@@ -7807,7 +7807,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				int target = md->target_id;
 				if(battle_config.mob_changetarget_byskill == 1 || target == 0)
 				{
-					if(src->type == BL_PC || src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM)
+					if(src->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM))
 						md->target_id = src->id;
 				}
 				mobskill_use(md,tick,MSC_SKILLUSED|(skillid<<16));
@@ -8066,7 +8066,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 						else
 							return 1;
 					}
-				} else if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM) {
+				} else if(target->type & (BL_HOM | BL_MERC | BL_ELEM)) {
 					// special_mob_aiで対象がホム、傭兵、精霊ならエラーで返す
 					return -1;
 				}
@@ -8271,36 +8271,26 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	}
 
 	// 同PTとか同盟Guildとかは後回し（＝＝
-	if(ss->type == BL_HOM || ss->type == BL_MERC || ss->type == BL_ELEM) {
+	if(ss->type & (BL_HOM | BL_MERC | BL_ELEM)) {
 		if(map[ss->m].flag.pvp) {	// PVP
-			if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)
+			if(target->type & (BL_HOM | BL_MERC | BL_ELEM))
 				return 0;
 			if(target->type == BL_PC) {
-				struct map_session_data *msd = NULL;
-				if(ss->type == BL_HOM)
-					msd = ((struct homun_data*)ss)->msd;
-				else if(ss->type == BL_MERC)
-					msd = ((struct merc_data*)ss)->msd;
-				else if(ss->type == BL_ELEM)
-					msd = ((struct elem_data*)ss)->msd;
+				struct map_session_data *msd = map_bl2msd(ss);
+
 				if(msd == NULL || target != &msd->bl)
 					return 0;
 			}
 		}
 		if(map[ss->m].flag.gvg) {	// GVG
-			if(target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)
+			if(target->type & (BL_HOM | BL_MERC | BL_ELEM))
 				return 0;
 		}
 	}
-	if(ss->type == BL_PC && (target->type == BL_HOM || target->type == BL_MERC || target->type == BL_ELEM)) {
+	if(ss->type == BL_PC && (target->type & (BL_HOM | BL_MERC | BL_ELEM))) {
 		if(map[ss->m].flag.pvp) {	// PVP
-			struct map_session_data *msd = NULL;
-			if(target->type == BL_HOM)
-				msd = ((struct homun_data*)target)->msd;
-			else if(target->type == BL_MERC)
-				msd = ((struct merc_data*)target)->msd;
-			else if(target->type == BL_ELEM)
-				msd = ((struct elem_data*)target)->msd;
+			struct map_session_data *msd = map_bl2msd(target);
+
 			if(msd == NULL || ss != &msd->bl)
 				return 0;
 		}

@@ -1163,6 +1163,25 @@ int party_check_same_map_member_count(struct map_session_data *sd)
 }
 
 /*==========================================
+ * ログイン中のパーティメンバーの１人のsdを返す
+ *------------------------------------------
+ */
+struct map_session_data *party_getavailablesd(struct party *p)
+{
+	int i;
+
+	nullpo_retr(NULL, p);
+
+	for(i = 0; i < MAX_PARTY; i++) {
+		if(p->member[i].sd) {
+			return p->member[i].sd;
+		}
+	}
+
+	return NULL;
+}
+
+/*==========================================
  * 終了
  *------------------------------------------
  */

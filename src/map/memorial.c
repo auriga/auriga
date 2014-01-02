@@ -45,7 +45,7 @@
 
 struct memorial_data memorial_data[MAX_MEMORIAL_DATA];
 
-static struct memorial_db{
+static struct memorial_db {
 	short type;
 	char name[61];
 	int limit;
@@ -86,7 +86,7 @@ static struct memorial_db *memorial_searchname_db(const char *memorial_name)
 {
 	int i;
 
-	for(i=0; i < MAX_MEMORIAL_DB; i++) {
+	for(i = 0; i < MAX_MEMORIAL_DB; i++) {
 		if(strcmp(memorial_db[i].name, memorial_name) == 0)
 			return &memorial_db[i];
 	}
@@ -111,7 +111,7 @@ static int memorial_delete_timer(int tid, unsigned int tick, int id, void *data)
  */
 static int memorial_addnpc(struct block_list *bl, va_list ap)
 {
-	struct npc_data* nd;
+	struct npc_data *nd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -147,7 +147,7 @@ static int memorial_addmap(int memorial_id)
 	// メモリアルダンジョン情報設定
 	md->state = MDSTATE_BUSY;
 	md->idle_limit = (unsigned int)time(NULL) + MEMORIAL_LIMIT;
-	md->idle_timer = add_timer(gettick()+MEMORIAL_LIMIT*1000, memorial_delete_timer, memorial_id, NULL);
+	md->idle_timer = add_timer(gettick() + MEMORIAL_LIMIT * 1000, memorial_delete_timer, memorial_id, NULL);
 
 	// マップ追加
 	for(i = 0; i < MAX_MEMORIAL_SEGMAP; i++) {
@@ -174,15 +174,12 @@ static int memorial_addmap(int memorial_id)
 
 	// パーティーに進捗通知
 	if((pt = party_search(md->party_id)) != NULL) {
-		for(i = 0; i < MAX_PARTY; i++) {
-			if(pt->member[i].sd) {
-				clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
-				break;
-			}
-		}
+		struct map_session_data *sd = party_getavailablesd(pt);
+		if(sd)
+			clif_memorial_status(sd, db->name, md->keep_limit, md->idle_limit, 1);
 	}
 
-	printf("memorial_addmap:[%s] memorial_id=%03d map_count=%d npc_count=%d\n",db->name, memorial_id, cnt_map, cnt_npc);
+	printf("memorial_addmap:[%s] memorial_id=%03d map_count=%d npc_count=%d\n", db->name, memorial_id, cnt_map, cnt_npc);
 
 	return 1;
 }
@@ -193,9 +190,10 @@ static int memorial_addmap(int memorial_id)
  */
 static int memorial_subscription_timer(int tid, unsigned int tick, int id, void *data)
 {
-	int i, j, ret;
+	int i, ret;
 	int memorial_id = memorial_wait.id[0];	// 先頭の予約IDのみ処理
 	struct party *pt;
+	struct map_session_data *sd;
 
 	// 予約なし
 	if(memorial_wait.count == 0)
@@ -209,37 +207,31 @@ static int memorial_subscription_timer(int tid, unsigned int tick, int id, void 
 	// 失敗時のパーティー予約取り消し通知
 	if(ret == 0) {
 		if((pt = party_search(memorial_data[memorial_id - 1].party_id)) != NULL) {
-			for(i = 0; i < MAX_PARTY; i++) {
-				if(pt->member[i].sd) {
-					clif_memorial_changewait(pt->member[i].sd, 0xffff, 1);
-					break;
-				}
-			}
+			sd = party_getavailablesd(pt);
+			if(sd)
+				clif_memorial_changewait(sd, 0xffff, 1);
 		}
 	}
 
 	// 予約順序変更
 	memorial_wait.count--;
-	memmove(&memorial_wait.id[0],&memorial_wait.id[1],sizeof(memorial_wait.id[0])*memorial_wait.count);
+	memmove(&memorial_wait.id[0], &memorial_wait.id[1], sizeof(memorial_wait.id[0]) * memorial_wait.count);
 	memset(&memorial_wait.id[memorial_wait.count], 0, sizeof(memorial_wait.id[0]));
 
 	// 予約順序通知
 	for(i = 0; i < memorial_wait.count; i++) {
 		if(memorial_data[memorial_wait.id[i]-1].state == MDSTATE_IDLE) {
 			if((pt = party_search(memorial_data[memorial_wait.id[i]-1].party_id)) != NULL) {
-				for(j = 0; j < MAX_PARTY; j++) {
-					if(pt->member[j].sd) {
-						clif_memorial_changewait(pt->member[j].sd, i+1, 1);
-						break;
-					}
-				}
+				sd = party_getavailablesd(pt);
+				if(sd)
+					clif_memorial_changewait(sd, i+1, 1);
 			}
 		}
 	}
 
 	// 予約タイマー再開・停止
 	if(memorial_wait.count)
-		memorial_wait.timer = add_timer(gettick()+MEMORIAL_INVERVAL, memorial_subscription_timer, 0, NULL);
+		memorial_wait.timer = add_timer(gettick() + MEMORIAL_INVERVAL, memorial_subscription_timer, 0, NULL);
 	else
 		memorial_wait.timer = -1;
 
@@ -254,7 +246,6 @@ static int memorial_startkeeptimer(struct memorial_data *md, int memorial_id)
 {
 	struct memorial_db *db;
 	struct party *pt;
-	int i;
 
 	nullpo_retr(0, md);
 
@@ -267,16 +258,13 @@ static int memorial_startkeeptimer(struct memorial_data *md, int memorial_id)
 
 	// タイマー開始
 	md->keep_limit = (unsigned int)time(NULL) + db->limit;
-	md->keep_timer = add_timer(gettick()+db->limit*1000, memorial_delete_timer, memorial_id, NULL);
+	md->keep_timer = add_timer(gettick() + db->limit * 1000, memorial_delete_timer, memorial_id, NULL);
 
 	// パーティーに情報通知
 	if((pt = party_search(md->party_id)) != NULL) {
-		for(i = 0; i < MAX_PARTY; i++) {
-			if(pt->member[i].sd) {
-				clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
-				break;
-			}
-		}
+		struct map_session_data *sd = party_getavailablesd(pt);
+		if(sd)
+			clif_memorial_status(sd, db->name, md->keep_limit, md->idle_limit, 1);
 	}
 
 	return 0;
@@ -290,7 +278,6 @@ static int memorial_startidletimer(struct memorial_data *md, int memorial_id)
 {
 	struct memorial_db *db;
 	struct party *pt;
-	int i;
 
 	nullpo_retr(1, md);
 
@@ -304,12 +291,9 @@ static int memorial_startidletimer(struct memorial_data *md, int memorial_id)
 
 	// パーティーに情報通知
 	if((pt = party_search(md->party_id)) && (db = memorial_searchtype_db(md->type))) {
-		for(i = 0; i < MAX_PARTY; i++) {
-			if(pt->member[i].sd) {
-				clif_memorial_status(pt->member[i].sd, db->name, md->keep_limit, md->idle_limit, 1);
-				break;
-			}
-		}
+		struct map_session_data *sd = party_getavailablesd(pt);
+		if(sd)
+			clif_memorial_status(sd, db->name, md->keep_limit, md->idle_limit, 1);
 	}
 
 	return 0;
@@ -322,7 +306,6 @@ static int memorial_startidletimer(struct memorial_data *md, int memorial_id)
 static int memorial_stopidletimer(struct memorial_data *md)
 {
 	struct party *pt;
-	int i;
 
 	nullpo_retr(0, md);
 
@@ -337,12 +320,9 @@ static int memorial_stopidletimer(struct memorial_data *md)
 
 	// パーティーに情報通知
 	if((pt = party_search(md->party_id)) != NULL) {
-		for(i = 0; i < MAX_PARTY; i++) {
-			if(pt->member[i].sd) {
-				clif_memorial_changestatus(pt->member[i].sd, 0, md->idle_limit, 1);
-				break;
-			}
-		}
+		struct map_session_data *sd = party_getavailablesd(pt);
+		if(sd)
+			clif_memorial_changestatus(sd, 0, md->idle_limit, 1);
 	}
 
 	return 0;
@@ -354,9 +334,10 @@ static int memorial_stopidletimer(struct memorial_data *md)
  */
 int memorial_create(const char *memorial_name, int party_id)
 {
-	int i;
 	struct memorial_db *db = memorial_searchname_db(memorial_name);
 	struct party *pt = party_search(party_id);
+	struct map_session_data *sd;
+	int i;
 
 	if(db == NULL)
 		return MDCREATE_ERROR;
@@ -405,12 +386,9 @@ int memorial_create(const char *memorial_name, int party_id)
 		memorial_wait.timer = add_timer(gettick()+MEMORIAL_INVERVAL, memorial_subscription_timer, 0, NULL);
 
 	// パーティーに情報通知
-	for(i = 0; i < MAX_PARTY; i++) {
-		if(pt->member[i].sd) {
-			clif_memorial_create(pt->member[i].sd, memorial_name, memorial_wait.count, 1);
-			break;
-		}
-	}
+	sd = party_getavailablesd(pt);
+	if(sd)
+		clif_memorial_create(sd, memorial_name, memorial_wait.count, 1);
 
 	return MDCREATE_NOERROR;
 }
@@ -423,8 +401,9 @@ int memorial_delete(int memorial_id)
 {
 	struct memorial_data *md;
 	struct party *pt;
-	int i, j, type = 0, count = 0;
+	int i, type = 0, count = 0;
 	unsigned int now = (unsigned int)time(NULL);
+	struct map_session_data *sd;
 
 	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
 		return 1;
@@ -449,19 +428,16 @@ int memorial_delete(int memorial_id)
 				for(i = 0; i < memorial_wait.count; i++) {
 					if(memorial_data[memorial_wait.id[i]-1].state == MDSTATE_IDLE) {
 						if((pt = party_search(memorial_data[memorial_wait.id[i]-1].party_id)) != NULL) {
-							for(j = 0; j < MAX_PARTY; j++) {
-								if(pt->member[j].sd) {
-									clif_memorial_changewait(pt->member[j].sd, i+1, 1);
-									break;
-								}
-							}
+							sd = party_getavailablesd(pt);
+							if(sd)
+								clif_memorial_changewait(sd, i+1, 1);
 						}
 					}
 				}
 
 				// 予約タイマー再開・停止
 				if(memorial_wait.count)
-					memorial_wait.timer = add_timer(gettick()+MEMORIAL_INVERVAL, memorial_subscription_timer, 0, NULL);
+					memorial_wait.timer = add_timer(gettick() + MEMORIAL_INVERVAL, memorial_subscription_timer, 0, NULL);
 				else
 					memorial_wait.timer = -1;
 				type = 0;	// メモリアルダンジョン予約が取り消されました。
@@ -497,14 +473,13 @@ int memorial_delete(int memorial_id)
 	pt = party_search(md->party_id);
 	if(pt) {
 		pt->memorial_id = 0;
-		for(j = 0; j < MAX_PARTY; j++) {
-			if(pt->member[j].sd) {
-				if(type)
-					clif_memorial_changestatus(pt->member[j].sd, type, 0, 1);
-				else
-					clif_memorial_changewait(pt->member[j].sd, 0xffff, 1);
-				break;
-			}
+
+		sd = party_getavailablesd(pt);
+		if(sd) {
+			if(type)
+				clif_memorial_changestatus(sd, type, 0, 1);
+			else
+				clif_memorial_changewait(sd, 0xffff, 1);
 		}
 	}
 
@@ -517,7 +492,7 @@ int memorial_delete(int memorial_id)
 	md->users = 0;
 	memset(memorial_data[i].map, 0, sizeof(memorial_data[i].map));
 
-	printf("memorial_delete: memorial_id=%03d count=%d\n",memorial_id, count);
+	printf("memorial_delete: memorial_id=%03d count=%d\n", memorial_id, count);
 
 	return 0;
 }

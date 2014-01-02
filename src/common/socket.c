@@ -1322,12 +1322,27 @@ static int access_ipmask(const char *str,struct _access_control* acc)
 	return 1;
 }
 
-
 static void socket_config_read2(const char *filename)
 {
 	int i;
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
+	const struct {
+		const char *name;
+		int *ptr;
+	} list[] = {
+		{ "debug",                      &access_debug               },
+		{ "socket_ctrl_panel",          &socket_ctrl_panel_httpd    },
+		{ "ddos_interval",              &ddos_interval              },
+		{ "ddos_count",                 &ddos_count                 },
+		{ "ddos_autoreset",             &ddos_autoreset             },
+		{ "recv_limit_rate_enable",     &recv_limit_rate_enable     },
+		{ "recv_limit_rate_period",     &recv_limit_rate_period     },
+		{ "recv_limit_rate_bytes",      &recv_limit_rate_bytes      },
+		{ "recv_limit_rate_wait_max",   &recv_limit_rate_wait_max   },
+		{ "recv_limit_rate_disconnect", &recv_limit_rate_disconnect },
+		{ "send_limit_buffer_size",     &send_limit_buffer_size     },
+	};
 
 	fp = fopen(filename, "r");
 	if (fp == NULL) {
@@ -1385,23 +1400,6 @@ static void socket_config_read2(const char *filename)
 			socket_config_read2(w2);
 
 		} else {
-			static const struct {
-				char name[64];
-				int* ptr;
-			} list[] = {
-				{ "debug",                      &access_debug               },
-				{ "socket_ctrl_panel",          &socket_ctrl_panel_httpd    },
-				{ "ddos_interval",              &ddos_interval              },
-				{ "ddos_count",                 &ddos_count                 },
-				{ "ddos_autoreset",             &ddos_autoreset             },
-				{ "recv_limit_rate_enable",     &recv_limit_rate_enable     },
-				{ "recv_limit_rate_period",     &recv_limit_rate_period     },
-				{ "recv_limit_rate_bytes",      &recv_limit_rate_bytes      },
-				{ "recv_limit_rate_wait_max",   &recv_limit_rate_wait_max   },
-				{ "recv_limit_rate_disconnect", &recv_limit_rate_disconnect },
-				{ "send_limit_buffer_size",     &send_limit_buffer_size     },
-			};
-
 			for(i = 0; i < sizeof(list) / sizeof(list[0]); i++) {
 				if (strcmpi(w1, list[i].name) == 0) {
 					*list[i].ptr = atoi(w2);
@@ -1738,8 +1736,8 @@ void socket_httpd_page(struct httpd_session_data* sd, const char* url)
 	int i, len;
 	char *p;
 
-	static struct {
-		char mode[32];
+	static const struct {
+		const char *mode;
 		void (*func)(struct httpd_session_data*, const char*);
 	} pages[] = {
 		{ "dosattack",  socket_httpd_page_dos_attack      },

@@ -1699,7 +1699,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 					id = src_md->master_id;
 				}
 			}
-		} else if(src->type == BL_HOM || src->type == BL_MERC || src->type == BL_ELEM) {
+		} else if(src->type & (BL_HOM | BL_MERC | BL_ELEM)) {
 			// ホム・傭兵・精霊の場合はIDを負に反転する
 			damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
 			linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
@@ -1737,17 +1737,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
 	} else {
-		struct map_session_data *sd = NULL;
-
-		if(src->type == BL_PC) {
-			sd = (struct map_session_data *)src;
-		} else if(src->type == BL_HOM) {
-			sd = ((struct homun_data *)src)->msd;
-		} else if(src->type == BL_MERC) {
-			sd = ((struct merc_data *)src)->msd;
-		} else if(src->type == BL_ELEM) {
-			sd = ((struct elem_data *)src)->msd;
-		}
+		struct map_session_data *sd = map_bl2msd(src);
 		if(sd)
 			clif_monster_hpinfo(sd, md);
 	}
@@ -1881,7 +1871,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		} else {
 			tmpbl[i] = map_id2bl(-id);	// ホム・傭兵・精霊の場合はIDが負に反転されている
 		}
-		if( !tmpbl[i] || (tmpbl[i]->type != BL_PC && tmpbl[i]->type != BL_HOM && tmpbl[i]->type != BL_MERC && tmpbl[i]->type != BL_ELEM) ) {
+		if( !tmpbl[i] || !(tmpbl[i]->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM)) ) {
 			tmpbl[i] = NULL;
 			continue;
 		}
@@ -2155,17 +2145,9 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 	// mvp処理
 	if(mvp[0].bl && mob_db[md->class_].mexp > 0 && !md->state.nomvp) {
-		struct map_session_data *mvpsd = NULL;
+		struct map_session_data *mvpsd = map_bl2msd(mvp[0].bl);
 
-		if(mvp[0].bl->type == BL_PC) {
-			mvpsd = (struct map_session_data *)mvp[0].bl;
-		} else if(mvp[0].bl->type == BL_HOM) {
-			mvpsd = ((struct homun_data *)mvp[0].bl)->msd;	// ホムが取ったMVPは、主人へ
-		} else if(mvp[0].bl->type == BL_MERC) {
-			mvpsd = ((struct merc_data *)mvp[0].bl)->msd;	// 傭兵が取ったMVPは、主人へ
-		} else if(mvp[0].bl->type == BL_ELEM) {
-			mvpsd = ((struct elem_data *)mvp[0].bl)->msd;	// 精霊が取ったMVPは、主人へ
-		}
+		// ホム・傭兵・精霊が取ったMVPは主人へ
 		if( mvpsd ) {
 			int j,ret;
 			struct item item;
@@ -2251,17 +2233,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 		// SCRIPT実行
 		if(md->npc_event[0]) {
-			struct map_session_data *ssd = NULL;
-			if(sd)
-				ssd = sd;
-			else if(src && src->type == BL_PET)
-				ssd = ((struct pet_data *)src)->msd;
-			else if(src && src->type == BL_HOM)
-				ssd = ((struct homun_data *)src)->msd;
-			else if(src && src->type == BL_MERC)
-				ssd = ((struct merc_data *)src)->msd;
-			else if(src && src->type == BL_ELEM)
-				ssd = ((struct elem_data *)src)->msd;
+			struct map_session_data *ssd = map_bl2msd(src);
 
 			if(ssd == NULL) {
 				if(mvp[0].bl != NULL && mvp[0].bl->type == BL_PC) {
@@ -3981,7 +3953,7 @@ static int mob_readdb(void)
 			mob_db[class_].head_bottom   = 0;
 		}
 		fclose(fp);
-		printf("read %s done\n",filename[n]);
+		printf("read %s done\n", filename[n]);
 	}
 
 	// group_db
@@ -4248,7 +4220,7 @@ static int mob_readskilldb(void)
 	int i;
 
 	const struct {
-		char str[32];
+		const char *str;
 		int id;
 	} cond1[] = {
 		{ "always",            MSC_ALWAYS            },
@@ -4529,7 +4501,7 @@ static int mob_readskilldb(void)
 			mob_db[mob_id].maxskill = i+1;
 		}
 		fclose(fp);
-		printf("read %s done\n",filename[x]);
+		printf("read %s done\n", filename[x]);
 	}
 	return 0;
 }

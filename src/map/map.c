@@ -98,6 +98,7 @@ static int map_mdmap_start = 0;
 
 int autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
 int autosave_gvg_rate = 100;
+int extra_check_interval = 60;
 int agit_flag = 0;
 static int map_pk_server_flag = 0;
 static int map_pk_nightmaredrop_flag = 0;
@@ -1592,6 +1593,30 @@ struct map_session_data * map_nick2sd(const char *nick)
 }
 
 /*==========================================
+ * マスターのsdを探す。居なければNULL
+ *------------------------------------------
+ */
+struct map_session_data * map_bl2msd(struct block_list *bl)
+{
+	if(bl) {
+		switch(bl->type) {
+			case BL_PC:
+				return (struct map_session_data *)bl;
+			case BL_PET:
+				return ((struct pet_data *)bl)->msd;
+			case BL_HOM:
+				return ((struct homun_data *)bl)->msd;
+			case BL_MERC:
+				return ((struct merc_data *)bl)->msd;
+			case BL_ELEM:
+				return ((struct elem_data *)bl)->msd;
+		}
+	}
+
+	return NULL;
+}
+
+/*==========================================
  * id_db内の全てにfuncを実行
  *------------------------------------------
  */
@@ -2815,6 +2840,8 @@ static int map_config_read(const char *cfgName)
 				printf("map_config_read: Invalid autosave_gvg_rate value: %d. Set to 100 (minimum).\n", autosave_gvg_rate);
 				autosave_gvg_rate = 100;
 			}
+		} else if (strcmpi(w1, "extra_check_interval") == 0) {
+			extra_check_interval = atoi(w2);
 		} else if (strcmpi(w1, "motd_txt") == 0) {
 			strncpy(motd_txt, w2, sizeof(motd_txt) - 1);
 			motd_txt[sizeof(motd_txt) - 1] = '\0';

@@ -1315,6 +1315,7 @@ extern struct map_data *map;
 extern int map_num;
 extern int autosave_interval;
 extern int autosave_gvg_rate;
+extern int extra_check_interval;
 extern int agit_flag;
 
 extern char map_server_tag[];
@@ -1404,11 +1405,12 @@ int map_mapname2ipport(const char*,unsigned long*,unsigned short*);
 int map_setipport(const char *name,unsigned long ip,unsigned short port);
 int map_eraseipport(const char *name,unsigned long ip,unsigned short port);
 void map_eraseallipport(void);
-void map_addiddb(struct block_list *);
+void map_addiddb(struct block_list *bl);
 void map_deliddb(struct block_list *bl);
 int map_foreachiddb(int (*)(void*,void*,va_list),...);
 void map_addnickdb(struct map_session_data *);
 struct map_session_data * map_nick2sd(const char*);
+struct map_session_data * map_bl2msd(struct block_list *bl);
 int map_field_setting(void);
 int map_getmaptype(int m);
 
