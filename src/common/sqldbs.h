@@ -33,6 +33,7 @@
 
 #include <mysql.h>
 #include "utils.h"
+#include "db.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib,"libmysql.lib")
@@ -41,11 +42,13 @@
 struct sqldbs_handle {
 	MYSQL handle;
 	MYSQL_RES *result;
+	struct linkdb_node *stmt_list;
 	int transaction_count;
 	char *tag;
 };
 
 struct sqldbs_stmt {
+	struct sqldbs_handle *handle;
 	MYSQL_STMT *stmt;
 	MYSQL_BIND *params;
 	MYSQL_BIND *columns;
@@ -151,6 +154,7 @@ int sqldbs_affected_rows(struct sqldbs_handle *hd);
 struct sqldbs_stmt* sqldbs_stmt_init(struct sqldbs_handle *hd);
 bool sqldbs_stmt_prepare(struct sqldbs_stmt *st, const char *query, ...);
 bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query);
+struct sqldbs_stmt* sqldbs_stmt_search(struct sqldbs_handle *hd, const char *query);
 size_t sqldbs_stmt_param_count(struct sqldbs_stmt *st);
 bool sqldbs_stmt_bind_param(struct sqldbs_stmt *st, size_t idx, int buffer_type, void *buffer, size_t buffer_length);
 bool sqldbs_stmt_execute(struct sqldbs_stmt *st);

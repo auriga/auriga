@@ -212,7 +212,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 			for(n = 0, p = tmp_str[3]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
 				int c = 0;
 				sscanf(p, "%2x", &c);
-				WBUFB(md[i].body, n) = c;
+				md[i].body[n] = c;
 			}
 			md[i].body_size = n;
 			i++;

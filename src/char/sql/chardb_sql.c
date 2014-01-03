@@ -512,11 +512,13 @@ bool chardb_sql_save_reg(int account_id, int char_id, int num, struct global_reg
 	if( cd == NULL || cd->st.account_id != account_id )
 		return false;
 
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return false;
-
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
+	if(st == NULL)
+		return false;
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// try
 	do
@@ -888,11 +890,13 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 
 	charlog_log("make new char %d %s", slot, name);
 
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return NULL;
-
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
+	if(st == NULL)
+		return NULL;
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return NULL;
 
 	// try
 	do

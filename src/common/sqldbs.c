@@ -26,6 +26,7 @@
 #include <stdarg.h>
 
 #include "utils.h"
+#include "db.h"
 #include "timer.h"
 #include "sqldbs.h"
 #include "malloc.h"
@@ -275,11 +276,18 @@ struct sqldbs_stmt* sqldbs_stmt_init(struct sqldbs_handle *hd)
 
 	st = (struct sqldbs_stmt *)aCalloc(1, sizeof(struct sqldbs_stmt));
 
+	if( (st->stmt = mysql_stmt_init(&hd->handle)) == NULL ) {
+		printf("DB server Error - %s\n", mysql_error(&hd->handle));
+		aFree(st);
+		return NULL;
+	}
+
+	st->handle = hd;
 	st->bind_params  = false;
 	st->bind_columns = false;
 
-	if( (st->stmt = mysql_stmt_init(&hd->handle)) == NULL )
-		printf("DB server Error - %s\n", mysql_error(&hd->handle));
+	// stmtをリストとして保存しておく
+	linkdb_insert(&hd->stmt_list, st, st);
 
 	return st;
 }
@@ -332,6 +340,29 @@ bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
 	st->query = (char *)aStrdup(query);
 
 	return true;
+}
+
+/*==========================================
+ * クエリから作成済みのstmtを検索する
+ *------------------------------------------
+ */
+struct sqldbs_stmt* sqldbs_stmt_search(struct sqldbs_handle *hd, const char *query)
+{
+	nullpo_retr(NULL, hd);
+
+	if(hd->stmt_list) {
+		struct linkdb_node *node = hd->stmt_list;
+		while(node) {
+			struct sqldbs_stmt *st = (struct sqldbs_stmt *)node->key;
+
+			if(st->query && strcmp(st->query, query) == 0) {
+				return st;
+			}
+			node = node->next;
+		}
+	}
+
+	return NULL;
 }
 
 /*==========================================
@@ -654,6 +685,9 @@ void sqldbs_stmt_close(struct sqldbs_stmt *st)
 	sqldbs_stmt_free_result(st);
 	mysql_stmt_close(st->stmt);
 
+	if(st->handle)
+		linkdb_erase(&st->handle->stmt_list, st);
+
 	if(st->params) {
 		aFree(st->params);
 	}
@@ -696,6 +730,21 @@ void sqldbs_close(struct sqldbs_handle *hd)
 		printf("[%s] ", hd->tag);
 	}
 	printf("... ");
+
+	if(hd->stmt_list) {
+		struct linkdb_node *node = hd->stmt_list;
+
+		while(node) {
+			struct sqldbs_stmt *st = (struct sqldbs_stmt *)node->key;
+
+			// sqldbs_stmt_close() 内で linkdb_erase() されないためにNULLにしておく
+			st->handle = NULL;
+
+			sqldbs_stmt_close(st);
+			node = node->next;
+		}
+		linkdb_final(&hd->stmt_list);
+	}
 
 	mysql_close(&hd->handle);
 	printf(" OK\n");

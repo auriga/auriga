@@ -64,11 +64,13 @@ bool accregdb_sql_save(struct accreg *reg)
 
 	nullpo_retr(false, reg);
 
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return false;
-
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
+	if(st == NULL)
+		return false;
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// try
 	do

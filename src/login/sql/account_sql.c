@@ -294,13 +294,15 @@ bool account_sql_account_save(struct mmo_account *ac2)
 
 	// アカウントの存在確認
 	if( (ac1 = account_sql_account_load_num(ac2->account_id)) == NULL )
-		return result;
-
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return result;
+		return false;
 
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
+	if(st == NULL)
+		return false;
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	// try
 	do
@@ -384,11 +386,13 @@ bool account_sql_account_new(struct mmo_account *account, const char *tmpstr)
 	if( account_sql_account_load_str(account->userid) )	// 同じアカウントが既に存在
 		return false;
 
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return false;
-
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
+	if(st == NULL)
+		return false;
+
+	if( sqldbs_transaction_start(&mysql_handle) == false )
+		return false;
 
 	do {
 		// ステートメントの準備

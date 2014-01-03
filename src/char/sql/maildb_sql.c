@@ -147,7 +147,7 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 		for(n = 0, p = sql_row[7]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
 			int c = 0;
 			sscanf(p, "%02x", &c);
-			WBUFB(md[i].body, n) = c;
+			md[i].body[n] = c;
 		}
 		md[i].body_size = n;
 

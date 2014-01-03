@@ -106,7 +106,62 @@ static bool guildcastle_sql_read(void)
  */
 static bool guild_guildcastle_save(void)
 {
+	static struct sqldbs_stmt *st = NULL;
+	static struct guild_castle tmp_gc;
 	bool result = false;
+
+	if(st == NULL) {
+		int i;
+
+		st = sqldbs_stmt_init(&mysql_handle);
+		if(st == NULL)
+			return false;
+
+		if( sqldbs_stmt_simpleprepare(st,
+			"INSERT INTO `" GUILD_CASTLE_TABLE "` "
+			"(`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, "
+			"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`) "
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
+			"ON DUPLICATE KEY UPDATE "
+			"`guild_id` = ?, `economy` = ?, `defense` = ?, `triggerE` = ?, `triggerD` = ?, `nextTime` = ?, "
+			"`payTime` = ?, `createTime` = ?, `visibleC` = ?, "
+			"`visibleG0` = ?, `visibleG1` = ?, `visibleG2` = ?, `visibleG3` = ?, "
+			"`visibleG4` = ?, `visibleG5` = ?, `visibleG6` = ?, `visibleG7` = ?"
+		) == false ) {
+			sqldbs_stmt_close(st);
+			st = NULL;
+			return false;
+		}
+
+		sqldbs_stmt_bind_param(st, 0, SQL_DATA_TYPE_INT, &tmp_gc.castle_id,  0);
+		sqldbs_stmt_bind_param(st, 1, SQL_DATA_TYPE_INT, &tmp_gc.guild_id,   0);
+		sqldbs_stmt_bind_param(st, 2, SQL_DATA_TYPE_INT, &tmp_gc.economy,    0);
+		sqldbs_stmt_bind_param(st, 3, SQL_DATA_TYPE_INT, &tmp_gc.defense,    0);
+		sqldbs_stmt_bind_param(st, 4, SQL_DATA_TYPE_INT, &tmp_gc.triggerE,   0);
+		sqldbs_stmt_bind_param(st, 5, SQL_DATA_TYPE_INT, &tmp_gc.triggerD,   0);
+		sqldbs_stmt_bind_param(st, 6, SQL_DATA_TYPE_INT, &tmp_gc.nextTime,   0);
+		sqldbs_stmt_bind_param(st, 7, SQL_DATA_TYPE_INT, &tmp_gc.payTime,    0);
+		sqldbs_stmt_bind_param(st, 8, SQL_DATA_TYPE_INT, &tmp_gc.createTime, 0);
+		sqldbs_stmt_bind_param(st, 9, SQL_DATA_TYPE_INT, &tmp_gc.visibleC,   0);
+
+		for(i = 0; i < 8; i++) {
+			sqldbs_stmt_bind_param(st, i + 10, SQL_DATA_TYPE_INT, &tmp_gc.guardian[i].visible, 0);
+		}
+
+		sqldbs_stmt_bind_param(st, 18, SQL_DATA_TYPE_INT, &tmp_gc.guild_id,   0);
+		sqldbs_stmt_bind_param(st, 19, SQL_DATA_TYPE_INT, &tmp_gc.economy,    0);
+		sqldbs_stmt_bind_param(st, 20, SQL_DATA_TYPE_INT, &tmp_gc.defense,    0);
+		sqldbs_stmt_bind_param(st, 21, SQL_DATA_TYPE_INT, &tmp_gc.triggerE,   0);
+		sqldbs_stmt_bind_param(st, 22, SQL_DATA_TYPE_INT, &tmp_gc.triggerD,   0);
+		sqldbs_stmt_bind_param(st, 23, SQL_DATA_TYPE_INT, &tmp_gc.nextTime,   0);
+		sqldbs_stmt_bind_param(st, 24, SQL_DATA_TYPE_INT, &tmp_gc.payTime,    0);
+		sqldbs_stmt_bind_param(st, 25, SQL_DATA_TYPE_INT, &tmp_gc.createTime, 0);
+		sqldbs_stmt_bind_param(st, 26, SQL_DATA_TYPE_INT, &tmp_gc.visibleC,   0);
+
+		for(i = 0; i < 8; i++) {
+			sqldbs_stmt_bind_param(st, i + 27, SQL_DATA_TYPE_INT, &tmp_gc.guardian[i].visible, 0);
+		}
+	}
 
 	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;
@@ -116,28 +171,9 @@ static bool guild_guildcastle_save(void)
 		int i;
 
 		for(i = 0; i < MAX_GUILDCASTLE; i++) {
-			struct guild_castle *gc = &castle_db[i];
+			memcpy(&tmp_gc, &castle_db[i], sizeof(tmp_gc));
 
-			if( sqldbs_query(&mysql_handle,
-				"INSERT INTO `" GUILD_CASTLE_TABLE "` "
-				"(`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, "
-				"`visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, "
-				"`visibleG5`, `visibleG6`, `visibleG7`) VALUES "
-				"('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', "
-				"'%d', '%d', '%d', '%d', '%d', '%d', "
-				"'%d', '%d', '%d') ON DUPLICATE KEY UPDATE "
-				"`guild_id` = '%d', `economy` = '%d', `defense` = '%d', `triggerE` = '%d', `triggerD` = '%d', `nextTime` = '%d', "
-				"`payTime` = '%d', `createTime` = '%d', `visibleC` = '%d', "
-				"`visibleG0` = '%d', `visibleG1` = '%d', `visibleG2` = '%d', `visibleG3` = '%d', "
-				"`visibleG4` = '%d', `visibleG5` = '%d', `visibleG6` = '%d', `visibleG7` = '%d' ",
-				gc->castle_id, gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime, gc->payTime, gc->createTime,
-				gc->visibleC, gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible, gc->guardian[4].visible,
-				gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible,
-				gc->guild_id, gc->economy, gc->defense, gc->triggerE, gc->triggerD, gc->nextTime,
-				gc->payTime, gc->createTime, gc->visibleC,
-				gc->guardian[0].visible, gc->guardian[1].visible, gc->guardian[2].visible, gc->guardian[3].visible,
-				gc->guardian[4].visible, gc->guardian[5].visible, gc->guardian[6].visible, gc->guardian[7].visible
-			) == false )
+			if( sqldbs_stmt_execute(st) == false )
 				break;
 		}
 		if(i != MAX_GUILDCASTLE)
