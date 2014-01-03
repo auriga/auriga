@@ -1560,6 +1560,7 @@ void do_final(void)
 int do_init(int argc,char **argv)
 {
 	int i;
+	unsigned int tick = gettick();
 
 	printf("Auriga Login Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
@@ -1608,7 +1609,7 @@ int do_init(int argc,char **argv)
 	set_sock_destruct(parse_login_disconnect);
 
 	add_timer_func_list(login_sync_timer);
-	add_timer_interval(gettick()+10*1000,login_sync_timer,0,NULL,config.login_autosave_time*1000);
+	add_timer_interval(tick+10*1000,login_sync_timer,0,NULL,config.login_autosave_time*1000);
 
 	// for httpd support
 	login_httpd_init();

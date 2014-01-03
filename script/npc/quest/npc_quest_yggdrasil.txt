@@ -13344,7 +13344,7 @@ spl_fild01.gat,170,74,0		duplicate(魚の群れ#Ygg)	魚の群れ#2	844
 		close;
 	}
 	misceffect 101,"";
-	progressbar 10000;
+	progressbar 10;
 	set '@rand,rand(1,20);
 	if('@rand < 13)		getitem 7049,1;		//石
 	else if('@rand == 13)	getitem 990,1;		//レッドブラッド

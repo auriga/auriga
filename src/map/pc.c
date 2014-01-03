@@ -350,6 +350,7 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 
 	if(max > 0) {
 		int i, j;
+		unsigned int tick = gettick();
 		for(i = num; i > 0; i--) {
 			if(sd->spiritball.num >= max) {
 				if(sd->spiritball.timer[0] != -1) {
@@ -363,7 +364,7 @@ int pc_addspiritball(struct map_session_data *sd,int interval,int num)
 			} else {
 				sd->spiritball.num++;
 			}
-			sd->spiritball.timer[sd->spiritball.num-1] = add_timer(gettick()+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
+			sd->spiritball.timer[sd->spiritball.num-1] = add_timer(tick+interval+sd->spiritball.num,pc_spiritball_timer,sd->bl.id,NULL);
 		}
 	}
 	clif_spiritball(sd);
@@ -453,6 +454,7 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 		sd->coin.num = 0;
 
 	if(max > 0) {
+		unsigned int tick = gettick();
 		if(sd->coin.num >= max) {
 			int i;
 			if(sd->coin.timer[0] != -1) {
@@ -466,7 +468,7 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 		} else {
 			sd->coin.num++;
 		}
-		sd->coin.timer[sd->coin.num-1] = add_timer(gettick()+interval+sd->coin.num,pc_coin_timer,sd->bl.id,NULL);
+		sd->coin.timer[sd->coin.num-1] = add_timer(tick+interval+sd->coin.num,pc_coin_timer,sd->bl.id,NULL);
 	}
 	clif_coin(sd);
 
@@ -578,8 +580,8 @@ int pc_addelementball(struct map_session_data *sd, int interval, int max, short 
 
 	if( max > 0 )
 	{
-		if( sd->elementball.num >= max )
-		{
+		unsigned int tick = gettick();
+		if( sd->elementball.num >= max ) {
 			int i;
 			if( sd->elementball.timer[0] != -1 )
 			{
@@ -591,10 +593,10 @@ int pc_addelementball(struct map_session_data *sd, int interval, int max, short 
 				sd->elementball.timer[i-1] = sd->elementball.timer[i];
 				sd->elementball.timer[i] = -1;
 			}
-		}
-		else
+		} else {
 			sd->elementball.num++;
-		sd->elementball.timer[sd->elementball.num-1] = add_timer(gettick()+interval+sd->elementball.num,pc_elementball_timer,sd->bl.id,NULL);
+		}
+		sd->elementball.timer[sd->elementball.num-1] = add_timer(tick+interval+sd->elementball.num,pc_elementball_timer,sd->bl.id,NULL);
 		sd->elementball.ele = ele;
 	}
 
@@ -9464,6 +9466,8 @@ int do_final_pc(void)
  */
 int do_init_pc(void)
 {
+	unsigned int tick = gettick();
+
 	printf("PC_JOB_MAX:%d\n",PC_JOB_MAX);
 
 	pc_readdb();
@@ -9478,10 +9482,10 @@ int do_init_pc(void)
 	add_timer_func_list(pc_coin_timer);
 	add_timer_func_list(pc_itemlimit_timer);
 
-	natural_heal_prev_tick = gettick() + NATURAL_HEAL_INTERVAL;
+	natural_heal_prev_tick = tick + NATURAL_HEAL_INTERVAL;
 	add_timer_interval(natural_heal_prev_tick,pc_natural_heal,0,NULL,NATURAL_HEAL_INTERVAL);
 
-	add_timer(gettick()+autosave_interval,pc_autosave,0,NULL);
+	add_timer(tick+autosave_interval,pc_autosave,0,NULL);
 
 	return 0;
 }

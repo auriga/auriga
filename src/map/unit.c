@@ -1582,6 +1582,7 @@ int unit_attack(struct block_list *src,int target_id,int type)
 	struct block_list *target;
 	struct unit_data  *src_ud;
 	int d;
+	unsigned int tick;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, src_ud = unit_bl2ud(src));
@@ -1595,13 +1596,14 @@ int unit_attack(struct block_list *src,int target_id,int type)
 	src_ud->attacktarget          = target_id;
 	src_ud->state.attack_continue = type;
 
-	d = DIFF_TICK(src_ud->attackabletime,gettick());
+	tick = gettick();
+	d = DIFF_TICK(src_ud->attackabletime,tick);
 	if(d > 0) {
 		// 攻撃delay中
 		src_ud->attacktimer = add_timer(src_ud->attackabletime,unit_attack_timer,src->id,NULL);
 	} else {
 		// 本来timer関数なので引数を合わせる
-		unit_attack_timer(-1,gettick(),src->id,NULL);
+		unit_attack_timer(-1,tick,src->id,NULL);
 	}
 
 	return 0;

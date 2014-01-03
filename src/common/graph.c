@@ -403,6 +403,7 @@ static int graph_timer(int tid,unsigned int tick,int id,void *data)
 void graph_add_sensor(const char* string, int interval, double (*callback_func)(void))
 {
 	struct graph *g = graph_create(GRP_WIDTH+48,GRP_HEIGHT+20);
+	unsigned int tick = gettick();
 
 	if (g == NULL) {
 		printf("graph_add_sensor: Unable to add sensor for graph '%s'.\n", string);
@@ -416,7 +417,7 @@ void graph_add_sensor(const char* string, int interval, double (*callback_func)(
 	sensor[sensor_max].graph    = g;
 	sensor[sensor_max].str      = (char *)aStrdup(string);
 	sensor[sensor_max].func     = callback_func;
-	sensor[sensor_max].tid      = add_timer_interval(gettick(),graph_timer,sensor_max,NULL,interval);
+	sensor[sensor_max].tid      = add_timer_interval(tick,graph_timer,sensor_max,NULL,interval);
 	sensor[sensor_max].interval = interval;
 	sensor_max++;
 

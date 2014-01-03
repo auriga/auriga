@@ -294,6 +294,7 @@ int mapif_parse_WisRequest(int fd)
 {
 	struct WisData* wd;
 	static int wisid = 0;
+	unsigned int tick = gettick();
 
 	if(RFIFOW(fd,2) - 56 >= sizeof(wd->msg)) {
 		printf("inter: Wis message size too long.\n");
@@ -310,7 +311,7 @@ int mapif_parse_WisRequest(int fd)
 	memcpy(wd->src, RFIFOP(fd, 8), 24);
 	memcpy(wd->dst, RFIFOP(fd,32), 24);
 	memcpy(wd->msg, RFIFOP(fd,56), wd->len);
-	wd->tick = gettick();
+	wd->tick = tick;
 	numdb_insert(wis_db, wd->id, wd);
 	mapif_wis_message(wd);
 

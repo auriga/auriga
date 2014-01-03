@@ -3679,6 +3679,7 @@ void do_final(void)
 int do_init(int argc,char **argv)
 {
 	int i;
+	unsigned int tick = gettick();
 
 	printf("Auriga Char Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
@@ -3735,9 +3736,9 @@ int do_init(int argc,char **argv)
 	add_timer_func_list(send_users_tologin);
 	add_timer_func_list(mmo_char_sync_timer);
 
-	add_timer_interval(gettick()+1000,check_connect_login_server,0,NULL,10*1000);
-	add_timer_interval(gettick()+1000,send_users_tologin,0,NULL,5*1000);
-	add_timer_interval(gettick()+autosave_interval,mmo_char_sync_timer,0,NULL,autosave_interval);
+	add_timer_interval(tick+1000,check_connect_login_server,0,NULL,10*1000);
+	add_timer_interval(tick+1000,send_users_tologin,0,NULL,5*1000);
+	add_timer_interval(tick+autosave_interval,mmo_char_sync_timer,0,NULL,autosave_interval);
 
 	// for httpd support
 	do_init_httpd();

@@ -3277,6 +3277,8 @@ static void run_script_main(struct script_state *st)
 			// 元のスタック情報を破棄
 			script_free_stack(sd->stack);
 			sd->state.menu_or_input = 0;
+			sd->progressbar.npc_id = 0;
+			sd->progressbar.tick = 0;
 		}
 		// 再開するためにスタック情報を保存
 		sd->npc_script      = st->script;
@@ -3719,6 +3721,8 @@ int do_final_script(void)
  */
 int do_init_script(void)
 {
+	unsigned int tick = gettick();
+
 #ifndef TXT_ONLY
 	// DB connection initialized
 	if( script_config.sql_script_enable )
@@ -3734,7 +3738,7 @@ int do_init_script(void)
 	add_timer_func_list(run_script_timer);
 	add_timer_func_list(script_autosave_mapreg);
 
-	add_timer_interval(gettick() + mapreg_autosave_interval, script_autosave_mapreg, 0, NULL, mapreg_autosave_interval);
+	add_timer_interval(tick + mapreg_autosave_interval, script_autosave_mapreg, 0, NULL, mapreg_autosave_interval);
 
 #ifndef NO_CSVDB_SCRIPT
 	script_csvinit();
@@ -4346,7 +4350,7 @@ struct script_function buildin_func[] = {
 	{buildin_openbuyingstore,"openbuyingstore","i"},
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
-	{buildin_progressbar,"progressbar","i"},
+	{buildin_progressbar,"progressbar","i*"},
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},
 	{buildin_mdcreate,"mdcreate","s*"},
@@ -8660,6 +8664,7 @@ int buildin_pvpon(struct script_state *st)
 	if(m >= 0 && !map[m].flag.pvp) {
 		int i;
 		struct map_session_data *pl_sd;
+		unsigned int tick = gettick();
 
 		map[m].flag.pvp = 1;
 		clif_send0199(m,1);
@@ -8667,7 +8672,7 @@ int buildin_pvpon(struct script_state *st)
 		for(i=0; i<fd_max; i++) {	// 人数分ループ
 			if(session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if(m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
-					pl_sd->pvp_timer = add_timer(gettick()+200,pc_calc_pvprank_timer,pl_sd->bl.id,NULL);
+					pl_sd->pvp_timer = add_timer(tick+200,pc_calc_pvprank_timer,pl_sd->bl.id,NULL);
 					pl_sd->pvp_rank = 0;
 					pl_sd->pvp_lastusers = 0;
 					pl_sd->pvp_point = 5;
@@ -10995,17 +11000,21 @@ int buildin_csvflush(struct script_state *st)
  */
 int buildin_sleep(struct script_state *st)
 {
-	int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	struct map_session_data *sd = map_id2sd(st->rid);
 
 	if(sd && sd->npc_id == st->oid) {
 		sd->npc_id = 0;
 	}
 	st->rid = 0;
-	if(tick <= 0) {
-		// 何もしない
-	} else if( !st->sleep.tick ) {
+
+	if(st->sleep.tick == 0) {
 		// 初回実行
+		int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+		if(tick <= 0) {
+			// 何もしない
+			return 0;
+		}
 		st->state = RERUNLINE;
 		st->sleep.tick = tick;
 	} else {
@@ -11021,17 +11030,20 @@ int buildin_sleep(struct script_state *st)
  */
 int buildin_sleep2(struct script_state *st)
 {
-	int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
-
-	if( tick <= 0 ) {
-		// 0ms の待機時間を指定された
-		push_val(st->stack,C_INT,map_id2sd(st->rid) != NULL);
-	} else if( !st->sleep.tick ) {
+	if(st->sleep.tick == 0) {
 		// 初回実行時
+		int tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+		if(tick <= 0) {
+			// 0ms の待機時間を指定された
+			push_val(st->stack,C_INT,(map_id2sd(st->rid) != NULL)? 1: 0);
+			return 0;
+		}
 		st->state = RERUNLINE;
 		st->sleep.tick = tick;
 	} else {
-		push_val(st->stack,C_INT,map_id2sd(st->rid) != NULL);
+		// 続行
+		push_val(st->stack,C_INT,(map_id2sd(st->rid) != NULL)? 1: 0);
 		st->sleep.tick = 0;
 	}
 	return 0;
@@ -12516,21 +12528,36 @@ int buildin_callshop(struct script_state *st)
  */
 int buildin_progressbar(struct script_state *st)
 {
-	struct map_session_data *sd = map_id2sd(st->rid);
-	unsigned int tick;
+	struct map_session_data *sd = script_rid2sd(st);
+	unsigned int tick = gettick();
 
-	nullpo_retr(0, sd);
+	if(sd == NULL) {
+		st->state = END;
+		return 0;
+	}
 
-	tick = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(sd->progressbar.tick == 0) {
+		unsigned int second, color = 0;
 
-	if(tick) {
-		if(sd->npc_id == st->oid) {
-			sd->npc_id = 0;
+		second = conv_num(st,& (st->stack->stack_data[st->start+2]));
+		if(st->end>st->start+3)
+			color = (unsigned int)conv_num(st,&(st->stack->stack_data[st->start+3]));
+
+		if(second > 0) {
+			st->state = RERUNLINE;
+			sd->progressbar.npc_id = st->oid;
+			sd->progressbar.tick = tick + second * 1000;
+			clif_progressbar(sd, color, second);
 		}
-		st->state = STOP;
-		sd->progressbar.npc_id = st->oid;
-		sd->progressbar.tick = gettick() + tick;
-		clif_progressbar(sd, sd->progressbar.npc_id, tick/1000);
+	} else {
+		if(tick < sd->progressbar.tick) {
+			// 経過時間が不正
+			st->state = END;
+		}
+
+		// 続行
+		sd->progressbar.npc_id = 0;
+		sd->progressbar.tick   = 0;
 	}
 
 	return 0;

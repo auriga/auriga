@@ -2225,6 +2225,7 @@ void guild_agit_break(struct mob_data *md)
 {
 	size_t len;
 	char *evname;
+	unsigned int tick = gettick();
 
 	nullpo_retv(md);
 
@@ -2236,7 +2237,7 @@ void guild_agit_break(struct mob_data *md)
 	memcpy(evname, md->npc_event, len - 5);
 	strcat(evname, "Eliminate");
 
-	add_timer2(gettick()+battle_config.gvg_eliminate_time,guild_gvg_eliminate_timer,md->bl.m,evname);
+	add_timer2(tick+battle_config.gvg_eliminate_time,guild_gvg_eliminate_timer,md->bl.m,evname);
 
 	return;
 }
@@ -2358,6 +2359,8 @@ static void guild_read_castledb(void)
  */
 void do_init_guild(void)
 {
+	unsigned int tick = gettick();
+
 	guild_db = numdb_init();
 	guild_expcache_db = numdb_init();
 	guild_infoevent_db = numdb_init();
@@ -2368,8 +2371,8 @@ void do_init_guild(void)
 	add_timer_func_list(guild_gvg_eliminate_timer);
 	add_timer_func_list(guild_payexp_timer);
 	add_timer_func_list(guild_send_xy_timer);
-	add_timer_interval(gettick()+GUILD_PAYEXP_INVERVAL,guild_payexp_timer,0,NULL,GUILD_PAYEXP_INVERVAL);
-	add_timer_interval(gettick()+GUILD_SEND_XY_INVERVAL,guild_send_xy_timer,0,NULL,GUILD_SEND_XY_INVERVAL);
+	add_timer_interval(tick+GUILD_PAYEXP_INVERVAL,guild_payexp_timer,0,NULL,GUILD_PAYEXP_INVERVAL);
+	add_timer_interval(tick+GUILD_SEND_XY_INVERVAL,guild_send_xy_timer,0,NULL,GUILD_SEND_XY_INVERVAL);
 
 	return;
 }

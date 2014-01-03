@@ -1083,7 +1083,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			// 攻撃射程範囲内
 			if(md->ud.walktimer != -1)
 				unit_stop_walking(&md->bl,1);	// 歩行中なら停止
-			if(md->ud.attacktimer != -1 || md->ud.canact_tick > gettick())
+			if(md->ud.attacktimer != -1 || md->ud.canact_tick > tick)
 				return search_flag; // 既に攻撃中
 			if(battle_config.mob_attack_fixwalkpos)	// 強制位置補正
 				clif_fixwalkpos(&md->bl);
@@ -3561,7 +3561,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 					case MCT_GROUP:
 						{
 							int casttime = skill_castfix(&md->bl, ms[i].skill_id, ms[i].casttime, 0);
-							md->skilldelay[i] = gettick() + casttime;
+							md->skilldelay[i] = tick + casttime;
 							md->skillidx = i;
 							unit_skilluse_id2(&md->bl,md->bl.id, ms[i].skill_id,
 								ms[i].skill_lv,casttime, ms[i].cancel);
@@ -3581,7 +3581,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 							BL_MOB,md->bl.id,ms[i].skill_id,ms[i].val[0],ms[i].val[2],ms[i].val[3],&once_flag);
 						break;
 				}
-				md->skilldelay[i] = gettick() + ms[i].delay;
+				md->skilldelay[i] = tick + ms[i].delay;
 				return 1;
 			}
 			case MST_MODECHANGE:
@@ -3608,12 +3608,12 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 							BL_MOB,md->bl.id,ms[i].val[0],ms[i].val[2],&once_flag);
 						break;
 				}
-				md->skilldelay[i] = gettick() + ms[i].delay;
+				md->skilldelay[i] = tick + ms[i].delay;
 				return 1;
 			}
 			case MST_TARGETCHANGE:
 				// 未定義？
-				md->skilldelay[i] = gettick() + ms[i].delay;
+				md->skilldelay[i] = tick + ms[i].delay;
 				return 1;
 		}
 		if(tbl == NULL)
@@ -4526,6 +4526,8 @@ void mob_reload(void)
  */
 int do_init_mob(void)
 {
+	unsigned int tick = gettick();
+
 	mob_readdb();
 	mob_readdb_mobavail();
 	mob_read_randommonster();
@@ -4538,8 +4540,8 @@ int do_init_mob(void)
 	add_timer_func_list(mob_ai_hard);
 	add_timer_func_list(mob_ai_lazy);
 	add_timer_func_list(mob_timer_delete);
-	add_timer_interval(gettick()+MIN_MOBTHINKTIME,mob_ai_hard,0,NULL,MIN_MOBTHINKTIME);
-	add_timer_interval(gettick()+MIN_MOBTHINKTIME*20,mob_ai_lazy,0,NULL,MIN_MOBTHINKTIME*20);
+	add_timer_interval(tick+MIN_MOBTHINKTIME,mob_ai_hard,0,NULL,MIN_MOBTHINKTIME);
+	add_timer_interval(tick+MIN_MOBTHINKTIME*20,mob_ai_lazy,0,NULL,MIN_MOBTHINKTIME*20);
 
 	return 0;
 }

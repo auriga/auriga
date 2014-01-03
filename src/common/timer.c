@@ -90,34 +90,54 @@ const char* search_timer_func_list(int (*func)(int,unsigned int,int,void*))
  * 	Get tick time
  *----------------------------*/
 
+static unsigned int gettick_real(void)
+{
+#ifdef WINDOWS
+	return GetTickCount();
+#elif defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+	struct timespec tp;
+	clock_gettime(CLOCK_MONOTONIC, &tp);
+	return tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
+#else
+	struct timeval tval;
+	gettimeofday(&tval, NULL);
+	return tval.tv_sec * 1000 + tval.tv_usec / 1000;
+#endif
+}
+
+#if defined(TIMER_CACHE) && TIMER_CACHE > 1
+
 static unsigned int gettick_cache;
 static int gettick_count;
 
 unsigned int gettick_nocache(void)
 {
-#ifdef WINDOWS
-	gettick_count = 256;
-	return gettick_cache = GetTickCount();
-#elif defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
-	struct timespec tp;
-	clock_gettime(CLOCK_MONOTONIC, &tp);
-	gettick_count = 256;
-	return gettick_cache = tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
-#else
-	struct timeval tval;
-	gettimeofday(&tval, NULL);
-	gettick_count = 256;
-	return gettick_cache = tval.tv_sec * 1000 + tval.tv_usec / 1000;
-#endif
+	gettick_count = TIMER_CACHE;
+	gettick_cache = gettick_real();
+	return gettick_cache;
 }
 
 unsigned int gettick(void)
 {
 	gettick_count--;
-	if (gettick_count<0)
+	if (gettick_count < 0)
 		return gettick_nocache();
 	return gettick_cache;
 }
+
+#else
+
+unsigned int gettick_nocache(void)
+{
+	return gettick_real();
+}
+
+unsigned int gettick(void)
+{
+	return gettick_real();
+}
+
+#endif
 
 /*======================================
  * 	CORE : Timer Heap

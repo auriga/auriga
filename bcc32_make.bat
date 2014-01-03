@@ -95,6 +95,9 @@ set __DYNAMIC_STATUS_CHANGE__=-DDYNAMIC_SC_DATA
 @rem ステータス異常データの保存を無効にする場合コメントアウトをはずす
 :set __NO_SCDATA_SAVING__=-DNO_SCDATA_SAVING
 
+@rem タイマーをキャッシュするならコメントアウトをはずす
+:set __TIMER_CACHE__=-DTIMER_CACHE=256
+
 @rem CPU最適化スイッチ 以下の例を参考にCPU名を記入してください。
 set _model_=Pentium4
 
@@ -137,7 +140,7 @@ if "%_model_%"=="AMD32" set __cpu__=-5 -Oc -Ov -f -ff
 if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
-set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__PRE_RENEWAL__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__%
+set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__PRE_RENEWAL__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__% %__TIMER_CACHE__%
 set __include__=-I../common/ -I../common/zlib/ %__sqlinclude__%
 
 if "%__ZLIB__%"=="" goto NOZLIB

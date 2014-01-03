@@ -6395,6 +6395,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct status_change    *sc  = NULL;
 	struct unit_data        *ud  = NULL;
 	int icon_tick = tick, icon_val1 = 0, icon_val2 = 0, icon_val3 = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
+	unsigned int current_tick = gettick();
 
 	nullpo_retr(0, bl);
 
@@ -8333,7 +8334,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		struct mob_data *mmd = map[bl->m].mvpboss;
 		if(sd && mmd) {
 			if(mmd->bl.prev == NULL) {	// 再沸き待ち中
-				int diff = DIFF_TICK(mmd->last_spawntime, gettick());
+				int diff = DIFF_TICK(mmd->last_spawntime, current_tick);
 				if(diff < 0)
 					diff = 0;
 				clif_bossmapinfo(sd, mmd->name, 0, 0, diff, 3);
@@ -8378,7 +8379,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				sc->opt1 = type - SC_STONE + 1;
 
 			if(md) {
-				mob_unlocktarget(md,gettick());
+				mob_unlocktarget(md, current_tick);
 				md->attacked_id = 0;
 				md->attacked_players = 0;
 			}
@@ -8602,7 +8603,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	sc->data[type].val3 = val3;
 	sc->data[type].val4 = val4;
 	/* タイマー設定 */
-	sc->data[type].timer = add_timer(gettick() + tick, status_change_timer, bl->id, INT2PTR(type));
+	sc->data[type].timer = add_timer(current_tick + tick, status_change_timer, bl->id, INT2PTR(type));
 
 	if(calc_flag) {
 		// ステータス再計算

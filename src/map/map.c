@@ -3055,6 +3055,7 @@ void do_final(void)
 int do_init(int argc,char *argv[])
 {
 	int i;
+	unsigned int tick = gettick();
 
 	printf("Auriga Map Server [%s] v%d.%d.%d version %04d\n",
 #ifdef TXT_ONLY
@@ -3117,7 +3118,7 @@ int do_init(int argc,char *argv[])
 
 	add_timer_func_list(map_freeblock_timer);
 	add_timer_func_list(map_clearflooritem_timer);
-	add_timer_interval(gettick()+1000,map_freeblock_timer,0,NULL,600*1000);
+	add_timer_interval(tick+1000,map_freeblock_timer,0,NULL,600*1000);
 
 	do_init_msg();
 	do_init_atcommand();

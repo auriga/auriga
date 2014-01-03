@@ -411,7 +411,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 				// 攻撃射程範囲内
 				if(eld->ud.walktimer != -1)
 					unit_stop_walking(&eld->bl,1);	// 歩行中なら停止
-				if(eld->ud.attacktimer != -1 || eld->ud.canact_tick > gettick())
+				if(eld->ud.attacktimer != -1 || eld->ud.canact_tick > tick)
 					return 0; // 既に攻撃中
 				unit_attack(&eld->bl, eld->target_id, 1);
 			}
@@ -840,8 +840,6 @@ int elem_checkskill(struct elem_data *eld,int skill_id)
  */
 int elem_change_mode(struct elem_data *eld, int mode)
 {
-	unsigned int tick;
-
 	nullpo_retr(1, eld);
 
 	if(mode < ELMODE_WAIT || mode > ELMODE_OFFENSIVE)
@@ -862,7 +860,7 @@ int elem_change_mode(struct elem_data *eld, int mode)
 
 	// 待機モードに変更するときは自然回復タイマー開始
 	if(eld->status.mode == ELMODE_WAIT) {
-		tick = gettick();
+		unsigned tick = gettick();
 
 		if(eld->natural_heal_hp == -1)
 			eld->natural_heal_hp = add_timer(tick+ELEM_NATURAL_HEAL_HP_INTERVAL,elem_natural_heal_hp,eld->bl.id,NULL);
@@ -1332,6 +1330,8 @@ void elem_reload(void)
  */
 int do_init_elem(void)
 {
+	unsigned int tick = gettick();
+
 	elem_count = 0;
 	read_elem_db();
 	read_elem_skilldb();
@@ -1341,7 +1341,7 @@ int do_init_elem(void)
 	add_timer_func_list(elem_summon_timer);
 	add_timer_func_list(elem_ai_timer);
 
-	add_timer_interval(gettick()+MIN_ELEMTHINKTIME,elem_ai_timer,0,NULL,MIN_ELEMTHINKTIME);
+	add_timer_interval(tick+MIN_ELEMTHINKTIME,elem_ai_timer,0,NULL,MIN_ELEMTHINKTIME);
 
 	return 0;
 }

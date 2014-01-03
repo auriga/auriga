@@ -1206,10 +1206,12 @@ void do_final_party(void)
  */
 void do_init_party(void)
 {
-	party_db=numdb_init();
+	unsigned int tick = gettick();
+
+	party_db = numdb_init();
 
 	add_timer_func_list(party_send_xyhp_timer);
-	add_timer_interval(gettick()+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,NULL,PARTY_SEND_XYHP_INVERVAL);
+	add_timer_interval(tick+PARTY_SEND_XYHP_INVERVAL,party_send_xyhp_timer,0,NULL,PARTY_SEND_XYHP_INVERVAL);
 
 	return;
 }

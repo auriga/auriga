@@ -138,6 +138,9 @@ CFLAGS += -DDYNAMIC_SC_DATA
 # disable save of status change data
 #CFLAGS += -DNO_SCDATA_SAVING
 
+# enable timer cache
+#CFLAGS += -DTIMER_CACHE=256
+
 #-----------------CPU MARCH-------------------
 #GCC 3.2.x~
 

@@ -245,6 +245,7 @@ static int connect_client(int listen_fd)
 {
 	int len, yes, pos;
 	struct sockaddr_in client_address;
+	unsigned int tick;
 #ifdef WINDOWS
 	SOCKET fd;
 #else
@@ -331,6 +332,8 @@ static int connect_client(int listen_fd)
 	pos = fd;
 #endif
 
+	tick = gettick();
+
 	session[pos] = (struct socket_data *)aCalloc(1, sizeof(*session[pos]));
 	session[pos]->func_recv   = recv_to_fifo;
 	session[pos]->func_send   = send_from_fifo;
@@ -339,9 +342,9 @@ static int connect_client(int listen_fd)
 #ifdef WINDOWS
 	session[pos]->socket      = fd;
 #endif
-	session[pos]->tick        = gettick();
+	session[pos]->tick        = tick;
 	session[pos]->auth        = 0;
-	session[pos]->rlr_tick    = gettick();
+	session[pos]->rlr_tick    = tick;
 	session[pos]->rlr_bytes   = 0;
 	session[pos]->rlr_disc    = 0;
 	session[pos]->server_port = session[listen_fd]->server_port;
@@ -484,6 +487,7 @@ int make_connection(unsigned long ip, unsigned short port)
 	struct sockaddr_in server_address;
 	int yes, pos;
 	unsigned long result;
+	unsigned int tick;
 #ifdef WINDOWS
 	SOCKET fd;
 #else
@@ -592,6 +596,8 @@ int make_connection(unsigned long ip, unsigned short port)
 	pos = fd;
 #endif
 
+	tick = gettick();
+
 	session[pos] = (struct socket_data *)aCalloc(1, sizeof(*session[pos]));
 	session[pos]->func_recv     = recv_to_fifo;
 	session[pos]->func_send     = send_from_fifo;
@@ -600,9 +606,9 @@ int make_connection(unsigned long ip, unsigned short port)
 	session[pos]->socket        = fd;
 #endif
 	session[pos]->func_destruct = default_func_destruct;
-	session[pos]->tick          = gettick();
+	session[pos]->tick          = tick;
 	session[pos]->auth          = 0;
-	session[pos]->rlr_tick      = gettick();
+	session[pos]->rlr_tick      = tick;
 	session[pos]->rlr_bytes     = 0;
 	session[pos]->rlr_disc      = 0;
 	realloc_fifo(pos, RFIFO_SIZE, WFIFO_SIZE);
@@ -1159,6 +1165,7 @@ static int connect_check_(unsigned long ip)
 	struct _connect_history *hist = connect_history[ip & 0xFFFF];
 	struct _connect_history *hist_new;
 	int i, is_allowip = 0, is_denyip = 0, connect_ok = 0;
+	unsigned int tick = gettick();
 
 	// allow , deny リストに入っているか確認
 	for(i = 0; i < access_allownum; i++) {
@@ -1217,9 +1224,9 @@ static int connect_check_(unsigned long ip)
 			if (hist->status) {
 				// ban フラグが立ってる
 				return ((connect_ok == 2) ? 1 : 0);
-			} else if (DIFF_TICK(gettick(),hist->tick) < ddos_interval) {
+			} else if (DIFF_TICK(tick,hist->tick) < ddos_interval) {
 				// ddos_interval秒以内にリクエスト有り
-				hist->tick = gettick();
+				hist->tick = tick;
 				if (hist->count++ >= ddos_count) {
 					// ddos 攻撃を検出
 					unsigned char *p = (unsigned char *)&ip;
@@ -1230,7 +1237,7 @@ static int connect_check_(unsigned long ip)
 					return connect_ok;
 			} else {
 				// ddos_interval秒以内にリクエスト無いのでタイマークリア
-				hist->tick  = gettick();
+				hist->tick  = tick;
 				hist->count = 0;
 				return connect_ok;
 			}
@@ -1240,7 +1247,7 @@ static int connect_check_(unsigned long ip)
 	// IPリストに無いので新規作成
 	hist_new = (struct _connect_history *)aCalloc(1, sizeof(struct _connect_history));
 	hist_new->ip   = ip;
-	hist_new->tick = gettick();
+	hist_new->tick = tick;
 	if (connect_history[ip & 0xFFFF] != NULL) {
 		hist = connect_history[ip & 0xFFFF];
 		hist->prev = hist_new;
@@ -1453,6 +1460,8 @@ static void do_final_socket(void)
 
 void do_socket(void)
 {
+	unsigned int tick = gettick();
+
 	FD_ZERO(&readfds);
 
 #ifdef WINDOWS
@@ -1481,7 +1490,7 @@ void do_socket(void)
 
 	// とりあえず５分ごとに不要なデータを削除する
 	add_timer_func_list(connect_check_clear);
-	add_timer_interval(gettick() + 1000, connect_check_clear, 0, NULL, 300 * 1000);
+	add_timer_interval(tick + 1000, connect_check_clear, 0, NULL, 300 * 1000);
 
 	return;
 }

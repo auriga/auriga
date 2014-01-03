@@ -1780,6 +1780,7 @@ int atcommand_pvpoff(const int fd, struct map_session_data* sd, AtCommandType co
 int atcommand_pvpon(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	struct map_session_data *pl_sd;
+	unsigned int tick = gettick();
 	int i;
 
 	nullpo_retr(-1, sd);
@@ -1790,7 +1791,7 @@ int atcommand_pvpon(const int fd, struct map_session_data* sd, AtCommandType com
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth) {
 				if (sd->bl.m == pl_sd->bl.m && pl_sd->pvp_timer == -1) {
-					pl_sd->pvp_timer = add_timer(gettick() + 200,pc_calc_pvprank_timer, pl_sd->bl.id, NULL);
+					pl_sd->pvp_timer = add_timer(tick + 200,pc_calc_pvprank_timer, pl_sd->bl.id, NULL);
 					pl_sd->pvp_rank = 0;
 					pl_sd->pvp_lastusers = 0;
 					pl_sd->pvp_point = 5;

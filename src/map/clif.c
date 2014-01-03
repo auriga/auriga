@@ -424,6 +424,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 void clif_authok(struct map_session_data *sd)
 {
 	int fd;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
@@ -431,14 +432,14 @@ void clif_authok(struct map_session_data *sd)
 
 #if PACKETVER < 20080102
 	WFIFOW(fd,0)=0x73;
-	WFIFOL(fd,2)=gettick();
+	WFIFOL(fd,2)=tick;
 	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
 	WFIFOSET(fd,packet_db[0x73].len);
 #else
 	WFIFOW(fd,0)=0x2eb;
-	WFIFOL(fd,2)=gettick();
+	WFIFOL(fd,2)=tick;
 	WFIFOPOS(fd,6,sd->bl.x,sd->bl.y,sd->dir);
 	WFIFOB(fd,9)=5;
 	WFIFOB(fd,10)=5;
@@ -929,6 +930,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 {
 	int rhand = 0, lhand = 0;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, sd);
 
@@ -945,7 +947,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,16)=sd->status.hair;
 	WBUFW(buf,18)=rhand;
 	WBUFW(buf,20)=sd->status.head_bottom;
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	WBUFW(buf,26)=lhand;
 	WBUFW(buf,28)=sd->status.head_top;
 	WBUFW(buf,30)=sd->status.head_mid;
@@ -975,7 +977,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,18)=rhand;
 	WBUFW(buf,20)=lhand;
 	WBUFW(buf,22)=sd->status.head_bottom;
-	WBUFL(buf,24)=gettick();
+	WBUFL(buf,24)=tick;
 	WBUFW(buf,28)=sd->status.head_top;
 	WBUFW(buf,30)=sd->status.head_mid;
 	WBUFW(buf,32)=sd->status.hair_color;
@@ -1005,7 +1007,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,20)=rhand;
 	WBUFW(buf,22)=lhand;
 	WBUFW(buf,24)=sd->status.head_bottom;
-	WBUFL(buf,26)=gettick();
+	WBUFL(buf,26)=tick;
 	WBUFW(buf,30)=sd->status.head_top;
 	WBUFW(buf,32)=sd->status.head_mid;
 	WBUFW(buf,34)=sd->status.hair_color;
@@ -1036,7 +1038,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,21)=rhand;
 	WBUFW(buf,23)=lhand;
 	WBUFW(buf,25)=sd->status.head_bottom;
-	WBUFL(buf,27)=gettick();
+	WBUFL(buf,27)=tick;
 	WBUFW(buf,31)=sd->status.head_top;
 	WBUFW(buf,33)=sd->status.head_mid;
 	WBUFW(buf,35)=sd->status.hair_color;
@@ -1067,7 +1069,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,21)=rhand;
 	WBUFW(buf,23)=lhand;
 	WBUFW(buf,25)=sd->status.head_bottom;
-	WBUFL(buf,27)=gettick();
+	WBUFL(buf,27)=tick;
 	WBUFW(buf,31)=sd->status.head_top;
 	WBUFW(buf,33)=sd->status.head_mid;
 	WBUFW(buf,35)=sd->status.hair_color;
@@ -1100,7 +1102,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,23)=rhand;
 	WBUFW(buf,25)=lhand;
 	WBUFW(buf,27)=sd->status.head_bottom;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFW(buf,33)=sd->status.head_top;
 	WBUFW(buf,35)=sd->status.head_mid;
 	WBUFW(buf,37)=sd->status.hair_color;
@@ -1134,7 +1136,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,23)=rhand;
 	WBUFW(buf,25)=lhand;
 	WBUFW(buf,27)=sd->status.head_bottom;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFW(buf,33)=sd->status.head_top;
 	WBUFW(buf,35)=sd->status.head_mid;
 	WBUFW(buf,37)=sd->status.hair_color;
@@ -1169,7 +1171,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,23)=rhand;
 	WBUFW(buf,25)=lhand;
 	WBUFW(buf,27)=sd->status.head_bottom;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFW(buf,33)=sd->status.head_top;
 	WBUFW(buf,35)=sd->status.head_mid;
 	WBUFW(buf,37)=sd->status.hair_color;
@@ -1613,6 +1615,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 {
 	int len;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, md);
 
@@ -1631,7 +1634,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,16)=mob_get_hair(md->class_);
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
 		WBUFW(buf,20)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,22)=gettick();
+		WBUFL(buf,22)=tick;
 		WBUFW(buf,26)=mob_get_shield(md->class_);
 		WBUFW(buf,28)=mob_get_head_top(md->class_);
 		WBUFW(buf,30)=mob_get_head_mid(md->class_);
@@ -1665,7 +1668,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,18)=mob_get_weapon(md->class_);
 		WBUFW(buf,20)=mob_get_shield(md->class_);
 		WBUFW(buf,22)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,24)=gettick();
+		WBUFL(buf,24)=tick;
 		WBUFW(buf,28)=mob_get_head_top(md->class_);
 		WBUFW(buf,30)=mob_get_head_mid(md->class_);
 		WBUFW(buf,32)=mob_get_hair_color(md->class_);
@@ -1698,7 +1701,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,20)=mob_get_weapon(md->class_);
 		WBUFW(buf,22)=mob_get_shield(md->class_);
 		WBUFW(buf,24)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,26)=gettick();
+		WBUFL(buf,26)=tick;
 		WBUFW(buf,30)=mob_get_head_top(md->class_);
 		WBUFW(buf,32)=mob_get_head_mid(md->class_);
 		WBUFW(buf,34)=mob_get_hair_color(md->class_);
@@ -1732,7 +1735,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,21)=mob_get_weapon(md->class_);
 		WBUFW(buf,23)=mob_get_shield(md->class_);
 		WBUFW(buf,25)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,27)=gettick();
+		WBUFL(buf,27)=tick;
 		WBUFW(buf,31)=mob_get_head_top(md->class_);
 		WBUFW(buf,33)=mob_get_head_mid(md->class_);
 		WBUFW(buf,35)=mob_get_hair_color(md->class_);
@@ -1766,7 +1769,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,21)=mob_get_weapon(md->class_);
 		WBUFW(buf,23)=mob_get_shield(md->class_);
 		WBUFW(buf,25)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,27)=gettick();
+		WBUFL(buf,27)=tick;
 		WBUFW(buf,31)=mob_get_head_top(md->class_);
 		WBUFW(buf,33)=mob_get_head_mid(md->class_);
 		WBUFW(buf,35)=mob_get_hair_color(md->class_);
@@ -1802,7 +1805,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(md->class_);
 		WBUFW(buf,25)=mob_get_shield(md->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(md->class_);
 		WBUFW(buf,35)=mob_get_head_mid(md->class_);
 		WBUFW(buf,37)=mob_get_hair_color(md->class_);
@@ -1838,7 +1841,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(md->class_);
 		WBUFW(buf,25)=mob_get_shield(md->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(md->class_);
 		WBUFW(buf,35)=mob_get_head_mid(md->class_);
 		WBUFW(buf,37)=mob_get_hair_color(md->class_);
@@ -1875,7 +1878,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(md->class_);
 		WBUFW(buf,25)=mob_get_shield(md->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(md->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(md->class_);
 		WBUFW(buf,35)=mob_get_head_mid(md->class_);
 		WBUFW(buf,37)=mob_get_hair_color(md->class_);
@@ -1921,7 +1924,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,10)=md->sc.opt2;
 	WBUFW(buf,12)=md->sc.option;
 	WBUFW(buf,14)=mob_get_viewclass(md->class_);
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	if((md->class_ == 1285 || md->class_ == 1286 || md->class_ == 1287) && md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
@@ -1946,7 +1949,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,13)=md->sc.opt2;
 	WBUFL(buf,15)=md->sc.option;
 	WBUFW(buf,19)=mob_get_viewclass(md->class_);
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	if(md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
@@ -1970,7 +1973,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,13)=md->sc.opt2;
 	WBUFL(buf,15)=md->sc.option;
 	WBUFW(buf,19)=mob_get_viewclass(md->class_);
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	if(md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
@@ -1994,7 +1997,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFW(buf,13)=md->sc.opt2;
 	WBUFL(buf,15)=md->sc.option;
 	WBUFW(buf,19)=mob_get_viewclass(md->class_);
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	if(md->guild_id){
 		struct guild *g=guild_search(md->guild_id);
 		if(g)
@@ -2433,6 +2436,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 {
 	int len, view;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, pd);
 
@@ -2449,7 +2453,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
 		WBUFW(buf,20)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,22)=gettick();
+		WBUFL(buf,22)=tick;
 		WBUFW(buf,26)=mob_get_shield(pd->class_);
 		WBUFW(buf,28)=mob_get_head_top(pd->class_);
 		WBUFW(buf,30)=mob_get_head_mid(pd->class_);
@@ -2473,7 +2477,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
 		WBUFW(buf,20)=mob_get_shield(pd->class_);
 		WBUFW(buf,22)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,24)=gettick();
+		WBUFL(buf,24)=tick;
 		WBUFW(buf,28)=mob_get_head_top(pd->class_);
 		WBUFW(buf,30)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,32)=mob_get_hair_color(pd->class_);
@@ -2496,7 +2500,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
 		WBUFW(buf,22)=mob_get_shield(pd->class_);
 		WBUFW(buf,24)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,26)=gettick();
+		WBUFL(buf,26)=tick;
 		WBUFW(buf,30)=mob_get_head_top(pd->class_);
 		WBUFW(buf,32)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,34)=mob_get_hair_color(pd->class_);
@@ -2520,7 +2524,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,21)=mob_get_weapon(pd->class_);
 		WBUFW(buf,23)=mob_get_shield(pd->class_);
 		WBUFW(buf,25)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,27)=gettick();
+		WBUFL(buf,27)=tick;
 		WBUFW(buf,31)=mob_get_head_top(pd->class_);
 		WBUFW(buf,33)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,35)=mob_get_hair_color(pd->class_);
@@ -2544,7 +2548,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,21)=mob_get_weapon(pd->class_);
 		WBUFW(buf,23)=mob_get_shield(pd->class_);
 		WBUFW(buf,25)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,27)=gettick();
+		WBUFL(buf,27)=tick;
 		WBUFW(buf,31)=mob_get_head_top(pd->class_);
 		WBUFW(buf,33)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,35)=mob_get_hair_color(pd->class_);
@@ -2570,7 +2574,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
 		WBUFW(buf,25)=mob_get_shield(pd->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(pd->class_);
 		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
@@ -2596,7 +2600,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
 		WBUFW(buf,25)=mob_get_shield(pd->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(pd->class_);
 		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
@@ -2623,7 +2627,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
 		WBUFW(buf,25)=mob_get_shield(pd->class_);
 		WBUFW(buf,27)=mob_get_head_bottom(pd->class_);
-		WBUFL(buf,29)=gettick();
+		WBUFL(buf,29)=tick;
 		WBUFW(buf,33)=mob_get_head_top(pd->class_);
 		WBUFW(buf,35)=mob_get_head_mid(pd->class_);
 		WBUFW(buf,37)=mob_get_hair_color(pd->class_);
@@ -2653,7 +2657,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,20)=view;
 	else
 		WBUFW(buf,20)=pd->equip;
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	WBUFPOS2(buf,50,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
 	WBUFB(buf,57)=0;
@@ -2673,7 +2677,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,27)=view;
 	else
 		WBUFW(buf,27)=pd->equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFPOS2(buf,57,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFLV(buf,65,status_get_lv(&pd->bl),mob_get_viewclass(pd->class_));
 	strncpy(WBUFP(buf,69),pd->name,24);
@@ -2692,7 +2696,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,27)=view;
 	else
 		WBUFW(buf,27)=pd->equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFPOS2(buf,59,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&pd->bl),mob_get_viewclass(pd->class_));
 	strncpy(WBUFP(buf,71),pd->name,24);
@@ -2711,7 +2715,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,27)=view;
 	else
 		WBUFW(buf,27)=pd->equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFPOS2(buf,59,pd->bl.x,pd->bl.y,pd->ud.to_x,pd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&pd->bl),mob_get_viewclass(pd->class_));
 	WBUFL(buf,71) = 0xffffffff;
@@ -2835,6 +2839,7 @@ static int clif_hom0078(struct homun_data *hd,unsigned char *buf)
 static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 {
 	int len, view;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, hd);
 
@@ -2854,7 +2859,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 		WBUFW(buf,20)=view;
 	else
 		WBUFW(buf,20)=hd->status.equip;
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	WBUFW(buf,46)=hd->sc.opt3;
 	WBUFPOS2(buf,50,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
@@ -2878,7 +2883,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 		WBUFW(buf,23)=view;
 	else
 		WBUFW(buf,23)=hd->status.equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,51)=hd->sc.opt3;
 	WBUFPOS2(buf,57,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFLV(buf,65,status_get_lv(&hd->bl),hd->view_class);
@@ -2901,7 +2906,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 		WBUFW(buf,23)=view;
 	else
 		WBUFW(buf,23)=hd->status.equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=hd->sc.opt3;
 	WBUFPOS2(buf,59,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&hd->bl),hd->view_class);
@@ -2924,7 +2929,7 @@ static int clif_hom007b(struct homun_data *hd,unsigned char *buf)
 		WBUFW(buf,23)=view;
 	else
 		WBUFW(buf,23)=hd->status.equip;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=hd->sc.opt3;
 	WBUFPOS2(buf,59,hd->bl.x,hd->bl.y,hd->ud.to_x,hd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&hd->bl),hd->view_class);
@@ -3049,6 +3054,7 @@ static int clif_merc0078(struct merc_data *mcd,unsigned char *buf)
 static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 {
 	int len;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, mcd);
 
@@ -3064,7 +3070,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFW(buf,12)=mcd->sc.option;
 	WBUFW(buf,14)=mcd->view_class;
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	WBUFW(buf,46)=mcd->sc.opt3;
 	WBUFPOS2(buf,50,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
@@ -3084,7 +3090,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,15)=mcd->sc.option;
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,51)=mcd->sc.opt3;
 	WBUFPOS2(buf,57,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFLV(buf,65,status_get_lv(&mcd->bl),mcd->view_class);
@@ -3103,7 +3109,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,15)=mcd->sc.option;
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=mcd->sc.opt3;
 	WBUFPOS2(buf,59,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&mcd->bl),mcd->view_class);
@@ -3122,7 +3128,7 @@ static int clif_merc007b(struct merc_data *mcd,unsigned char *buf)
 	WBUFL(buf,15)=mcd->sc.option;
 	WBUFW(buf,19)=mcd->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=mcd->sc.opt3;
 	WBUFPOS2(buf,59,mcd->bl.x,mcd->bl.y,mcd->ud.to_x,mcd->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&mcd->bl),mcd->view_class);
@@ -3247,6 +3253,7 @@ static int clif_elem0078(struct elem_data *eld,unsigned char *buf)
 static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 {
 	int len;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, eld);
 
@@ -3262,7 +3269,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 	WBUFW(buf,12)=eld->sc.option;
 	WBUFW(buf,14)=eld->view_class;
 	WBUFW(buf,16)=battle_config.pet0078_hair_id;
-	WBUFL(buf,22)=gettick();
+	WBUFL(buf,22)=tick;
 	WBUFW(buf,46)=eld->sc.opt3;
 	WBUFPOS2(buf,50,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
 	WBUFB(buf,56)=0;
@@ -3282,7 +3289,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 	WBUFL(buf,15)=eld->sc.option;
 	WBUFW(buf,19)=eld->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,51)=eld->sc.opt3;
 	WBUFPOS2(buf,57,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
 	WBUFLV(buf,65,status_get_lv(&eld->bl),eld->view_class);
@@ -3301,7 +3308,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 	WBUFL(buf,15)=eld->sc.option;
 	WBUFW(buf,19)=eld->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=eld->sc.opt3;
 	WBUFPOS2(buf,59,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&eld->bl),eld->view_class);
@@ -3320,7 +3327,7 @@ static int clif_elem007b(struct elem_data *eld,unsigned char *buf)
 	WBUFL(buf,15)=eld->sc.option;
 	WBUFW(buf,19)=eld->view_class;
 	WBUFW(buf,21)=100;
-	WBUFL(buf,29)=gettick();
+	WBUFL(buf,29)=tick;
 	WBUFL(buf,53)=eld->sc.opt3;
 	WBUFPOS2(buf,59,eld->bl.x,eld->bl.y,eld->ud.to_x,eld->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&eld->bl),eld->view_class);
@@ -4051,12 +4058,13 @@ void clif_spawnelem(struct elem_data *eld)
 static void clif_servertick(struct map_session_data *sd)
 {
 	int fd;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x7f;
-	WFIFOL(fd,2)=gettick();
+	WFIFOL(fd,2)=tick;
 	WFIFOSET(fd,packet_db[0x7f].len);
 
 	return;
@@ -4069,12 +4077,13 @@ static void clif_servertick(struct map_session_data *sd)
 void clif_walkok(struct map_session_data *sd)
 {
 	int fd;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x87;
-	WFIFOL(fd,2)=gettick();
+	WFIFOL(fd,2)=tick;
 	WFIFOPOS2(fd,6,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
 	WFIFOSET(fd,packet_db[0x87].len);
 
@@ -4161,6 +4170,7 @@ void clif_move(struct block_list *bl)
 	{
 		struct unit_data *ud = unit_bl2ud(bl);
 		if(ud) {
+			unsigned int tick = gettick();
 			unsigned char buf[16];
 
 			if(ud->state.change_speed) {
@@ -4172,7 +4182,7 @@ void clif_move(struct block_list *bl)
 			WBUFW(buf,0)=0x86;
 			WBUFL(buf,2)=bl->id;
 			WBUFPOS2(buf,6,bl->x,bl->y,ud->to_x,ud->to_y,8,8);
-			WBUFL(buf,12)=gettick();
+			WBUFL(buf,12)=tick;
 			clif_send(buf, packet_db[0x86].len, bl, AREA_WOS);
 		}
 	}
@@ -14902,7 +14912,7 @@ void clif_setfont(struct map_session_data *sd)
  * 詠唱バー表示
  *------------------------------------------
  */
-void clif_progressbar(struct map_session_data *sd, int npcid, unsigned int tick)
+void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second)
 {
 	int fd;
 
@@ -14910,8 +14920,8 @@ void clif_progressbar(struct map_session_data *sd, int npcid, unsigned int tick)
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x02f0;
-	WFIFOL(fd,2) = npcid;
-	WFIFOL(fd,6) = tick;
+	WFIFOL(fd,2) = color;
+	WFIFOL(fd,6) = second;
 	WFIFOSET(fd,packet_db[0x2f0].len);
 
 	return;
@@ -16663,6 +16673,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 {
 	int idx;
+	unsigned int tick = gettick();
 
 	nullpo_retv(sd);
 
@@ -16679,7 +16690,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->special_state.item_no_use != 0 || sd->state.store || sd->state.deal_mode != 0 ||
 		(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_STONECURSE_ING && sd->sc.opt1 != OPT1_BURNNING) ||
 	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
-	    DIFF_TICK(gettick(), sd->item_delay_tick) < 0 || 	// アイテムディレイ
+	    DIFF_TICK(tick, sd->item_delay_tick) < 0 || 	// アイテムディレイ
 	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
 	    sd->sc.data[SC_BERSERK].timer != -1 ||	// バーサーク
@@ -20067,12 +20078,7 @@ static void clif_parse_ProgressBar(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	//スクリプト実行
-	if(gettick() < sd->progressbar.tick)
-		sd->npc_scriptstate = 2;	//END
 	npc_scriptcont(sd, sd->progressbar.npc_id);
-
-	memset(&sd->progressbar,0,sizeof(sd->progressbar));
 
 	return;
 }

@@ -4417,7 +4417,7 @@ malaya.gat,62,274,0	script	砂くぼみ#mal01	557,{
 		mes "　種類数を減らしてから拾おう‐";
 		close;
 	}
-	progressbar 5000;
+	progressbar 5;
 	initnpctimer;
 	hideonnpc strnpcinfo(0);
 	getitem 6501,1;
@@ -4454,7 +4454,7 @@ ma_fild01.gat,178,206,0	script	黒い竹#mal01	844,8,8,{
 		mes "　種類数を減らしてから拾おう‐";
 		close;
 	}
-	progressbar 3000;
+	progressbar 3;
 	initnpctimer;
 	hideonnpc strnpcinfo(0);
 	getitem 6500,1;
@@ -5420,7 +5420,7 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 				mes "銀の十字架" +'@num+ "個ですね。";
 				mes "わかりました！　少し待って下さい。";
 				next;
-				progressbar 15000;
+				progressbar 15;
 				delitem 6508,'@num*2;
 				getitem 6502,'@num;
 				mes "[パンドイ]";
@@ -5443,7 +5443,7 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 				close;
 			}
 			next;
-			progressbar 5000;
+			progressbar 5;
 			delitem 6508,'@num*2;
 			getitem 6502,'@num;
 			mes "[パンドイ]";

@@ -198,10 +198,13 @@ int npc_event_dequeue(struct map_session_data *sd)
 	sd->npc_pos = -1;
 	sd->npc_id = 0;
 	sd->state.menu_or_input = 0;
+	sd->progressbar.npc_id = 0;
+	sd->progressbar.tick = 0;
 
 	if(sd->eventqueue[0][0]) {	// キューのイベント処理
 		char *name = (char *)aCalloc(50,sizeof(char));
 		int i;
+		unsigned int tick = gettick();
 
 		// copy the first event
 		memcpy(name,sd->eventqueue[0],50);
@@ -214,7 +217,7 @@ int npc_event_dequeue(struct map_session_data *sd)
 		sd->eventqueue[MAX_EVENTQUEUE-1][0] = 0;
 
 		// add the timer
-		add_timer2(gettick()+100,npc_event_timer,sd->bl.id,name);
+		add_timer2(tick+100,npc_event_timer,sd->bl.id,name);
 	}
 	return 0;
 }
@@ -355,10 +358,11 @@ static int npc_event_do_clock(int tid,unsigned int tick,int id,void *data)
  */
 int npc_event_do_oninit(void)
 {
+	unsigned int tick = gettick();
 	int c = npc_event_doall("OnInit");
 
 	printf("npc: OnInit Event done. (%d npc)\n",c);
-	add_timer_interval(gettick()+100,npc_event_do_clock,0,NULL,1000);
+	add_timer_interval(tick+100,npc_event_do_clock,0,NULL,1000);
 
 	return 0;
 }
@@ -398,6 +402,7 @@ static int npc_timerevent(int tid,unsigned int tick,int id,void *data)
 int npc_timerevent_start(struct npc_data *nd)
 {
 	int j, n, next;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, nd);
 
@@ -410,13 +415,13 @@ int npc_timerevent_start(struct npc_data *nd)
 			break;
 	}
 	nd->u.scr.nexttimer = j;
-	nd->u.scr.timertick = gettick();
+	nd->u.scr.timertick = tick;
 
 	if(j >= n)
 		return 0;
 
 	next = nd->u.scr.timer_event[j].timer - nd->u.scr.timer;
-	nd->u.scr.timerid = add_timer(gettick()+next,npc_timerevent,nd->bl.id,INT2PTR(next));
+	nd->u.scr.timerid = add_timer(tick+next,npc_timerevent,nd->bl.id,INT2PTR(next));
 	return 0;
 }
 
@@ -501,6 +506,12 @@ static int npc_timeout_timer(int tid,unsigned int tick,int id,void *data)
 		// menu, select, inputの返答待機解除（ギルド倉庫は応答を待つ）
 		if(sd->state.menu_or_input == 1 && sd->state.gstorage_lockreq == 0)
 			sd->state.menu_or_input = 0;
+
+		// プログレスバーの応答待機解除
+		if(sd->progressbar.tick) {
+			sd->progressbar.npc_id = 0;
+			sd->progressbar.tick   = 0;
+		}
 	} else {
 		sd->npc_idle_timer = add_timer(gettick()+1000,npc_timeout_timer,sd->bl.id,0);
 	}
@@ -514,11 +525,13 @@ static int npc_timeout_timer(int tid,unsigned int tick,int id,void *data)
  */
 int npc_timeout_start(struct map_session_data *sd)
 {
+	unsigned int tick = gettick();
+
 	nullpo_retr(0, sd);
 
 	if( sd->npc_idle_timer == -1 )
-		sd->npc_idle_timer = add_timer(gettick()+1000,npc_timeout_timer,sd->bl.id,0);
-	sd->npc_idle_tick = gettick();
+		sd->npc_idle_timer = add_timer(tick+1000,npc_timeout_timer,sd->bl.id,0);
+	sd->npc_idle_tick = tick;
 
 	return 0;
 }

@@ -19424,7 +19424,7 @@ spl_fild02.gat,326,171,0	duplicate(魚の群れ#Ash)	魚の群れ	844
 		close;
 	}
 	misceffect 101,"";
-	progressbar 10000;
+	progressbar 10;
 	set '@rand,rand(1,20);
 	if('@rand < 13)		getitem 7049,1;		//石
 	else if('@rand == 13)	getitem 990,1;		//レッドブラッド

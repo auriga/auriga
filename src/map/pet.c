@@ -599,12 +599,13 @@ static int pet_performance(struct map_session_data *sd)
 {
 	struct pet_data *pd;
 	int perform = 0;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, pd = sd->pd);
 
 	unit_stop_walking(&pd->bl,1);
-	pd->ud.canmove_tick = gettick() + 2000;
+	pd->ud.canmove_tick = tick + 2000;
 
 	perform = pet_performance_val(sd);
 	if(perform > 0) {
@@ -1420,6 +1421,8 @@ int read_petdb(void)
  */
 int do_init_pet(void)
 {
+	unsigned int tick = gettick();
+
 	// 初回のみでリロード時はデータベースをクリアしない
 	memset(pet_db,0,sizeof(pet_db));
 	pet_count = 0;
@@ -1431,7 +1434,7 @@ int do_init_pet(void)
 	add_timer_func_list(pet_delay_item_drop2);
 	add_timer_func_list(pet_skill_support_timer);
 
-	add_timer_interval(gettick()+MIN_PETTHINKTIME,pet_ai_hard,0,NULL,MIN_PETTHINKTIME);
+	add_timer_interval(tick+MIN_PETTHINKTIME,pet_ai_hard,0,NULL,MIN_PETTHINKTIME);
 
 	return 0;
 }

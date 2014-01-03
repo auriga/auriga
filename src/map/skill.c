@@ -393,7 +393,7 @@ static int skill_frostjoke_scream(struct block_list *bl,va_list ap);
 static int skill_abra_dataset(struct map_session_data *sd, int skilllv);
 static int skill_clear_element_field(struct block_list *bl);
 static int skill_landprotector(struct block_list *bl, va_list ap );
-static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int wheel);
+static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int wheel);
 static int skill_trap_splash(struct block_list *bl, va_list ap );
 static int skill_count_target(struct block_list *bl, va_list ap );
 static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsigned int tick);
@@ -3715,7 +3715,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				clif_skill_fail(sd,skillid,0,0,0);
 			break;
 		}
-		skill_tarot_card_of_fate(src,bl,skillid,skilllv,0);
+		skill_tarot_card_of_fate(src,bl,skillid,skilllv,tick,0);
 		break;
 	case MG_FROSTDIVER:		/* フロストダイバー */
 		{
@@ -9056,7 +9056,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SO_ARRULLO:	/* アルージョ */
 		if(flag&1) {
 			if(atn_rand() % 10000 < status_change_rate(bl,GetSkillStatusChangeTable(skillid),skilllv*500+4500,status_get_lv(src))) {
-				status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
+				status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 			}
 		} else {
 			int ar = (skilllv + 1) / 2;
@@ -9247,7 +9247,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if((tmpmd = map_id2md(id)) != NULL) {
 				tmpmd->master_id    = sd->bl.id;
 				tmpmd->hp           = 3000 + skilllv * 3000 + sd->status.max_sp;
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+				tmpmd->deletetimer  = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			sc = status_get_sc(src);
@@ -9346,14 +9346,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(atn_rand() % 10000 < rate) {
 				int x = src->x;
 				int y = src->y;
+				struct block_list *t_bl = src;
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				unit_movepos(src,bl->x,bl->y,0);
 				if(!(status_get_mode(bl)&MD_BOSS))	// ボス属性以外
 					unit_movepos(bl,x,y,0);
-				if(atn_rand() % 10000 < 7500)
-					status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
-				else
-					status_change_pretimer(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,gettick()+status_get_amotion(src));
+				if(atn_rand() % 10000 < 7500) {
+					t_bl = bl;
+				}
+				status_change_pretimer(t_bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 			} else {
 				if(sd)
 					clif_skill_fail(sd,skillid,0,0,0);
@@ -10060,7 +10061,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				// 非移動でアクティブで反撃する[0x0:非移動 0x1:移動 0x4:ACT 0x8:非ACT 0x40:反撃無 0x80:反撃有]
 				tmpmd->mode = MD_AGGRESSIVE + MD_CANATTACK;
 
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+				tmpmd->deletetimer  = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
 				tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
@@ -10091,7 +10092,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			id = mob_once_spawn(sd, sd->bl.m, x, y, "--ja--", summons[n][atn_rand()%6], 1, "");
 
 			if((tmpmd = map_id2md(id)) != NULL)
-				tmpmd->deletetimer = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+				tmpmd->deletetimer = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
 		break;
@@ -10106,7 +10107,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->master_id    = sd->bl.id;
 				tmpmd->hp           = 2000 + skilllv * 400;
 				tmpmd->def_ele      = 40 + ELE_WATER;
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+				tmpmd->deletetimer  = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.spheremine_no_drop;
 				tmpmd->state.noexp  = battle_config.spheremine_no_exp;
 				tmpmd->state.nomvp  = battle_config.spheremine_no_mvp;
@@ -10303,7 +10304,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			if((tmpmd = map_id2md(id)) != NULL) {
 				tmpmd->master_id    = sd->bl.id;
 				tmpmd->guild_id     = status_get_guild_id(src);
-				tmpmd->deletetimer  = add_timer(gettick()+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+				tmpmd->deletetimer  = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
 				tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
@@ -10577,6 +10578,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 	int target,interval,range,unit_flag,unit_id;
 	struct skill_unit_layout *layout;
 	struct map_session_data *sd = NULL;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, src);
 
@@ -10725,9 +10727,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			{
 				// レベルの低いものを使った場合持続時間減少？
 				// 属性場の残り時間算出
-				limit = sd->sc.data[SC_ELEMENTFIELD].val2 - DIFF_TICK(gettick(), (unsigned int)sd->sc.data[SC_ELEMENTFIELD].val3);
+				limit = sd->sc.data[SC_ELEMENTFIELD].val2 - DIFF_TICK(tick, (unsigned int)sd->sc.data[SC_ELEMENTFIELD].val3);
 			} else {
-				status_change_start(src,SC_ELEMENTFIELD,1,skill_get_time(skillid,skilllv),gettick(),0,0,0);
+				status_change_start(src,SC_ELEMENTFIELD,1,skill_get_time(skillid,skilllv),tick,0,0,0);
 			}
 		}
 		break;
@@ -10804,7 +10806,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		break;
 	}
 
-	nullpo_retr( NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id,gettick()) );
+	nullpo_retr( NULL, group = skill_initunitgroup(src,layout->count,skillid,skilllv,unit_id,tick) );
 	group->limit       = limit;
 	group->val1        = val1;
 	group->val2        = val2;
@@ -10974,7 +10976,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		if(unit->alive && unit->range == 0) {
 			map_foreachinarea(skill_unit_effect,unit->bl.m,
 				unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,
-				(BL_PC|BL_MOB|BL_MERC|BL_ELEM),&unit->bl,gettick(),1);
+				(BL_PC|BL_MOB|BL_MERC|BL_ELEM),&unit->bl,tick,1);
 		}
 	}
 
@@ -11960,7 +11962,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				}
 				if(hp > 0) {
 					if(sc && sc->data[SC_AKAITSUKI].timer != -1) {
-						unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),hp,0,0,0,0);
+						unit_fixdamage(ss,bl,tick,0,status_get_dmotion(bl),hp,0,0,0,0);
 					} else {
 						sd->status.hp += hp;
 						clif_heal(sd->fd,SP_HP,hp);
@@ -12023,7 +12025,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			skill_delunit(src);
 		break;
 	case UNT_MAKIBISHI:	/* 撒菱 */
-		unit_fixdamage(ss,bl,gettick(),0,status_get_dmotion(bl),20*sg->skill_lv,0,0,0,0);
+		unit_fixdamage(ss,bl,tick,0,status_get_dmotion(bl),20*sg->skill_lv,0,0,0,0);
 		skill_delunit(src);
 		break;
 	case UNT_ZENKAI_WATER:	/* 術式全開(水属性) */
@@ -15955,7 +15957,7 @@ static int skill_idun_heal(struct block_list *bl, va_list ap )
  * 運命のタロットカード
  *------------------------------------------
  */
-static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,int wheel)
+static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *target,int skillid,int skilllv,unsigned int tick,int wheel)
 {
 	struct map_session_data* tsd=NULL;
 	struct mob_data* tmd=NULL;
@@ -16062,10 +16064,10 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 6:
 			/* 運命の輪(Wheel of Fortune) - ランダムに他のタロットカード二枚の効果を同時に与える */
 			if(wheel > 0 && wheel < 50) {	// もう1度実行（50回で打ち切り）
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,wheel+1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,wheel+1);
 			} else {			// ２つ実行
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,1);
-				skill_tarot_card_of_fate(src,target,skillid,skilllv,1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,1);
+				skill_tarot_card_of_fate(src,target,skillid,skilllv,tick,1);
 			}
 			break;
 		case 7:
@@ -16076,15 +16078,15 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 				{
 					case 0:	// 睡眠
 						if(atn_rand() % 10000 < status_change_rate(target,SC_SLEEP,10000,status_get_lv(src)))
-							status_change_pretimer(target,SC_SLEEP,7,0,0,0,skill_get_time2(NPC_SLEEPATTACK,7),0,gettick()+status_get_amotion(src));
+							status_change_pretimer(target,SC_SLEEP,7,0,0,0,skill_get_time2(NPC_SLEEPATTACK,7),0,tick+status_get_amotion(src));
 						break;
 					case 1:	// 凍結
 						if(atn_rand() % 10000 < status_change_rate(target,SC_FREEZE,10000,status_get_lv(src)))
-							status_change_pretimer(target,SC_FREEZE,7,0,0,0,skill_get_time2(MG_FROSTDIVER,7),0,gettick()+status_get_amotion(src));
+							status_change_pretimer(target,SC_FREEZE,7,0,0,0,skill_get_time2(MG_FROSTDIVER,7),0,tick+status_get_amotion(src));
 						break;
 					case 2:	// 石化
 						if(atn_rand() % 10000 < status_change_rate(target,SC_STONE,10000,status_get_lv(src)))
-							status_change_pretimer(target,SC_STONE,7,0,0,0,skill_get_time2(MG_STONECURSE,7),0,gettick()+status_get_amotion(src));
+							status_change_pretimer(target,SC_STONE,7,0,0,0,skill_get_time2(MG_STONECURSE,7),0,tick+status_get_amotion(src));
 						break;
 				}
 			}
@@ -16092,9 +16094,9 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 8:
 			/* 死神(Death) - 呪い + コーマ + 毒にかかる */
 			if(atn_rand() % 10000 < status_change_rate(target,SC_CURSE,10000,status_get_lv(src)))
-				status_change_pretimer(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0,gettick()+status_get_amotion(src));
+				status_change_pretimer(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0,tick+status_get_amotion(src));
 			if(atn_rand() % 10000 < status_change_rate(target,SC_POISON,10000,status_get_lv(src)))
-				status_change_pretimer(target,SC_POISON,7,0,0,0,skill_get_time2(TF_POISON,7),0,gettick()+status_get_amotion(src));
+				status_change_pretimer(target,SC_POISON,7,0,0,0,skill_get_time2(TF_POISON,7),0,tick+status_get_amotion(src));
 			// コーマ
 			if(tsd) {
 				tsd->status.hp = 1;
@@ -16107,12 +16109,12 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 			/* 節制(Temperance) - 30秒間混乱にかかる */
 			if(!(status_get_mode(target)&MD_BOSS))	// ボス属性以外
 				if(atn_rand() % 10000 < status_change_rate(target,SC_CONFUSION,10000,status_get_lv(src)))
-					status_change_pretimer(target,SC_CONFUSION,7,0,0,0,30000,0,gettick()+status_get_amotion(src));
+					status_change_pretimer(target,SC_CONFUSION,7,0,0,0,30000,0,tick+status_get_amotion(src));
 			break;
 		case 10:
 			/* 悪魔(The Devil) - 防御力無視6666ダメージ + 30秒間ATK半分、MATK半分、呪い */
 			if(atn_rand() % 10000 < status_change_rate(target,SC_CURSE,10000,status_get_lv(src)))
-				status_change_pretimer(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0,gettick()+status_get_amotion(src));
+				status_change_pretimer(target,SC_CURSE,7,0,0,0,skill_get_time2(NPC_CURSEATTACK,7),0,tick+status_get_amotion(src));
 			if(!(status_get_mode(target)&MD_BOSS))	// ボス属性以外
 				status_change_start(target,SC_THE_DEVIL,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			unit_fixdamage(src,target,0, 0, 0,6666,1, 4, 0, 0);
@@ -16124,7 +16126,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 		case 12:
 			/* 星(The Star) - 星が回る すなわち、5秒間スタンにかかる */
 			if(atn_rand() % 10000 < status_change_rate(target,SC_STUN,10000,status_get_lv(src)))
-				status_change_pretimer(target,SC_STUN,7,0,0,0,5000,0,gettick()+status_get_amotion(src));
+				status_change_pretimer(target,SC_STUN,7,0,0,0,5000,0,tick+status_get_amotion(src));
 			break;
 		case 13:
 			/* 太陽(The Sun) - 30秒間ATK、MATK、回避、命中、防御力が全て20%ずつ下落する */
@@ -16510,6 +16512,7 @@ static struct skill_unit *skill_initunit(struct skill_unit_group *group,int idx,
 int skill_delunit(struct skill_unit *unit)
 {
 	struct skill_unit_group *group;
+	unsigned int tick = gettick();
 
 	nullpo_retr(0, unit);
 	nullpo_retr(0, group = unit->group);
@@ -16518,13 +16521,13 @@ int skill_delunit(struct skill_unit *unit)
 		return 0;
 
 	/* onlimitイベント呼び出し */
-	skill_unit_onlimit(unit,gettick());
+	skill_unit_onlimit(unit,tick);
 
 	/* onoutイベント呼び出し */
 	if(!unit->range) {
 		map_foreachinarea(skill_unit_effect,unit->bl.m,
 			unit->bl.x,unit->bl.y,unit->bl.x,unit->bl.y,(BL_PC|BL_MOB|BL_MERC|BL_ELEM),
-			&unit->bl,gettick(),0);
+			&unit->bl,tick,0);
 	}
 
 	if(group->skill_id == HP_BASILICA)
@@ -18567,8 +18570,6 @@ static int skill_trample( struct block_list *bl, va_list ap )
  */
 static int skill_dominion_impulse( struct block_list *bl, va_list ap )
 {
-	int splash_count;
-	unsigned int tick;
 	struct skill_unit *unit;
 	struct skill_unit_group *sg;
 
@@ -18577,8 +18578,8 @@ static int skill_dominion_impulse( struct block_list *bl, va_list ap )
 	nullpo_retr(0, sg = unit->group);
 
 	if(sg->unit_id == UNT_REVERBERATION) {
-		tick = gettick();
-		splash_count = map_foreachinarea(skill_count_target,bl->m,
+		unsigned int tick = gettick();
+		int splash_count = map_foreachinarea(skill_count_target,bl->m,
 			bl->x-2,bl->y-2,bl->x+2,bl->y+2,
 			(BL_CHAR|BL_SKILL),bl);
 		map_foreachinarea(skill_trap_splash,
@@ -19800,6 +19801,8 @@ void skill_reload(void)
  */
 int do_init_skill(void)
 {
+	unsigned int tick = gettick();
+
 	skill_readdb();
 
 	add_timer_func_list(skill_unit_timer);
@@ -19808,7 +19811,7 @@ int do_init_skill(void)
 	add_timer_func_list(skill_timerskill_timer);
 	add_timer_func_list(skill_castend_delay_sub);
 
-	add_timer_interval(gettick()+SKILLUNITTIMER_INVERVAL,skill_unit_timer,0,NULL,SKILLUNITTIMER_INVERVAL);
+	add_timer_interval(tick+SKILLUNITTIMER_INVERVAL,skill_unit_timer,0,NULL,SKILLUNITTIMER_INVERVAL);
 
 	return 0;
 }
