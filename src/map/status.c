@@ -6414,7 +6414,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			return 0;
 	}
 
-	if(status_get_class(bl) == 1288 && type != SC_SAFETYWALL && type != SC_PNEUMA)
+	if(status_get_class(bl) == MOBID_EMPERIUM && type != SC_SAFETYWALL && type != SC_PNEUMA)
 		return 0;
 
 	race = status_get_race(bl);

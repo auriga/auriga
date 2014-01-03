@@ -209,6 +209,12 @@ enum e_equip_index
 	EQUIP_INDEX_MAX					= 22,
 };
 
+// 特殊Mob
+enum {
+    MOBID_PORING = 1002,
+    MOBID_EMPERIUM = 1288,
+};
+
 struct block_list {
 	struct block_list *next,*prev;
 	int id;

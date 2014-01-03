@@ -255,7 +255,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 	else if(teld) elem_damage(bl,teld,damage);
 
 	// カード効果のコーマ・即死
-	if(sd && target && target->prev && !unit_isdead(target) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != 1288)
+	if(sd && target && target->prev && !unit_isdead(target) && flag&(BF_WEAPON|BF_NORMAL) && status_get_class(target) != MOBID_EMPERIUM)
 	{
 		int race = status_get_race(target);
 		int ele  = status_get_elem_type(target);
@@ -886,7 +886,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		int noflag = 0;
 
 		if(tmd && tmd->guild_id) {
-			if(tmd->class_ == 1288) {
+			if(tmd->class_ == MOBID_EMPERIUM) {
 				// エンペリウム
 				if(flag&BF_SKILL && skill_num != HW_GRAVITATION)
 					return 0;
@@ -2134,7 +2134,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	// サクリファイス
-	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != 1288) {
+	if(sc && sc->data[SC_SACRIFICE].timer != -1 && !skill_num && t_class != MOBID_EMPERIUM) {
 		calc_flag.hitrate = 1000000;
 		s_ele = s_ele_ = ELE_NEUTRAL;
 	}
@@ -2143,7 +2143,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		calc_flag.hitrate = 1000000;
 	}
 	// スペルフィスト
-	if(sc && sc->data[SC_SPELLFIST].timer != -1 && !skill_num && t_class != 1288) {
+	if(sc && sc->data[SC_SPELLFIST].timer != -1 && !skill_num && t_class != MOBID_EMPERIUM) {
 		calc_flag.hitrate = 1000000;
 	}
 	// カード効果による必中ボーナス
@@ -4446,7 +4446,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #endif
 			// サクリファイス
 			if(sc->data[SC_SACRIFICE].timer != -1 && !skill_num) {
-				if(t_class != 1288) {
+				if(t_class != MOBID_EMPERIUM) {
 					int dmg = status_get_max_hp(src) * 9 / 100;
 					battle_heal(NULL, src, -dmg, 0, 0);
 					wd.damage  = dmg * (90 + sc->data[SC_SACRIFICE].val1 * 10) / 100;
@@ -7970,30 +7970,31 @@ int battle_check_undead(int race,int element)
 }
 
 /*==========================================
- * 敵味方判定(1=肯定,0=否定,-1=エラー)
- * flag&0xf0000 = 0x00000:敵じゃないか判定（ret:1＝敵ではない）
- *              = 0x10000:パーティー判定（ret:1=パーティーメンバ)
- *              = 0x20000:全て(ret:1=敵味方両方)
- *              = 0x40000:敵か判定(ret:1=敵)
- *              = 0x50000:パーティーじゃないか判定(ret:1=パーティでない)
+ * 敵味方判定(1=肯定, 0=否定, -1=エラー)
+ * flag&0xf0000
+ *   0x00000 BCT_NOENEMY: 敵じゃないか判定（ret:1＝敵ではない）
+ *   0x10000 BCT_PARTY:   パーティー判定（ret:1=パーティーメンバ)
+ *   0x20000 BCT_ALL:     全て(ret:1=敵味方両方)
+ *   0x40000 BCT_ENEMY:   敵か判定(ret:1=敵)
+ *   0x50000 BCT_NOPARTY: パーティーじゃないか判定(ret:1=パーティでない)
  *------------------------------------------
  */
-int battle_check_target( struct block_list *src, struct block_list *target,int flag)
+int battle_check_target( struct block_list *src, struct block_list *target, int flag)
 {
-	int s_p,s_g,t_p,t_g;
+	int s_p, s_g, t_p, t_g;
 	struct block_list *ss = src;
 
 	nullpo_retr(-1, src);
 	nullpo_retr(-1, target);
 
-	if( flag&0x40000 ) {	// 反転フラグ
-		int ret = battle_check_target(src,target,flag&0x30000);
+	if( flag & BCT_ENEMY ) {	// 反転フラグ
+		int ret = battle_check_target(src, target, flag & (BCT_PARTY | BCT_ALL));
 		if(ret != -1)
 			return !ret;
 		return -1;
 	}
 
-	if( flag&0x20000 ) {
+	if( flag & BCT_ALL ) {
 		if( target->type == BL_MOB || (target->type == BL_PC && !pc_isinvisible((struct map_session_data *)target)) )
 			return 1;
 		if( target->type == BL_HOM && src->type != BL_SKILL )	// ホムはスキルユニットの影響を受けない
@@ -8002,25 +8003,27 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 			return -1;
 	}
 
-	if(src->type == BL_SKILL && target->type == BL_SKILL)	// 対象がスキルユニットなら無条件肯定
-		return -1;
+	switch(target->type) {
+		case BL_PC:
+			if(((struct map_session_data *)target)->invincible_timer != -1)
+				return -1;
+			break;
+		case BL_PET:
+			return -1;
+		case BL_SKILL:
+			if(src->type == BL_SKILL)
+				return -1;	// スキルユニット同士なら無条件肯定
 
-	if(target->type == BL_PC && ((struct map_session_data *)target)->invincible_timer != -1)
-		return -1;
-
-	if(target->type == BL_SKILL) {
-		switch(((struct skill_unit *)target)->group->unit_id) {
-			case UNT_ICEWALL:
-			case UNT_BLASTMINE:
-			case UNT_CLAYMORETRAP:
-			case UNT_REVERBERATION:
-			case UNT_WALLOFTHORN:
-				return 0;
-		}
+			switch(((struct skill_unit *)target)->group->unit_id) {
+				case UNT_ICEWALL:
+				case UNT_BLASTMINE:
+				case UNT_CLAYMORETRAP:
+				case UNT_REVERBERATION:
+				case UNT_WALLOFTHORN:
+					return 0;
+			}
+			break;
 	}
-
-	if(target->type == BL_PET)
-		return -1;
 
 	// スキルユニットの場合、親を求める
 	if( src->type == BL_SKILL) {
@@ -8087,15 +8090,16 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 
 	// PCからMOB
 	if(ss->type == BL_PC && target->type == BL_MOB) {
-		int i, guardian = 0;
-		struct mob_data *md         = (struct mob_data*)target;
-		struct map_session_data *sd = (struct map_session_data*)ss;
+		int guardian = 0;
+		struct mob_data *md         = (struct mob_data *)target;
+		struct map_session_data *sd = (struct map_session_data *)ss;
 		struct guild_castle *gc = NULL;
 
 		// 砦のガーディアンかどうか
 		if(md->guild_id > 0) {
 			gc = guild_mapid2gc(md->bl.m);
 			if(gc) {
+				int i;
 				for(i = 0; i < sizeof(gc->guardian) / sizeof(gc->guardian[0]); i++) {
 					if(gc->guardian[i].id == md->bl.id) {
 						guardian = 1;
@@ -8108,7 +8112,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		// GvG時間外
 		if(!map[ss->m].flag.gvg) {
 			// ガーディアンと念のためエンペは味方
-			if(md->class_ == 1288 || guardian)
+			if(md->class_ == MOBID_EMPERIUM || guardian)
 				return 1;
 			// それ以外は敵
 			return 0;
@@ -8132,7 +8136,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 
 			if(g->guild_id == gc->guild_id || guild_check_alliance(md->guild_id, sd->status.guild_id, 0)) {
 				// エンペとガーディアンは味方
-				if(md->class_ == 1288 || guardian)
+				if(md->class_ == MOBID_EMPERIUM || guardian)
 					return 1;
 				// それ以外のバイオプラント、スフィアマインなどは敵（攻撃可能）
 				return 0;
@@ -8164,7 +8168,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	t_p = status_get_party_id(target);
 	t_g = status_get_guild_id(target);
 
-	if(flag&0x10000) {
+	if(flag & BCT_PARTY) {
 		if(s_p && t_p && s_p == t_p)
 			return 1;	// 同じパーティなら肯定（味方）
 		else
@@ -8244,30 +8248,18 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		}
 	}
 
-	if( (ss->type == BL_HOM && target->type == BL_MOB) ||
-	    (ss->type == BL_MOB && target->type == BL_HOM) )
-		return 0;	// HOMvsMOBなら敵
+	if(ss->type == BL_MOB && (target->type & (BL_HOM | BL_MERC | BL_ELEM)))
+		return 0;	// MOB vs HOM, MERC, ELEM なら敵
 
-	if( (ss->type == BL_MERC && target->type == BL_MOB) ||
-	    (ss->type == BL_MOB && target->type == BL_MERC) )
-		return 0;	// MERCvsMOBなら敵
-
-	if( (ss->type == BL_ELEM && target->type == BL_MOB) ||
-	    (ss->type == BL_MOB && target->type == BL_ELEM) )
-		return 0;	// ELEMvsMOBなら敵
+	if((ss->type & (BL_HOM | BL_MERC | BL_ELEM)) && target->type == BL_MOB)
+		return 0;	// HOM, MERC, ELEM vs MOB なら敵
 
 	if(!(map[ss->m].flag.pvp || map[ss->m].flag.gvg)) {
-		if( (ss->type == BL_PC && target->type == BL_HOM) ||
-		    (ss->type == BL_HOM && target->type == BL_PC) )
-			return 1;	// PvでもGvでもないなら、PCvsHOMは味方
+		if(ss->type == BL_PC && (target->type & (BL_HOM | BL_MERC | BL_ELEM)))
+			return 1;	// PvでもGvでもないなら、PC vs HOM, MERC, ELEM は味方
 
-		if( (ss->type == BL_PC && target->type == BL_MERC) ||
-		    (ss->type == BL_MERC && target->type == BL_PC) )
-			return 1;	// PvでもGvでもないなら、PCvsMERCは味方
-
-		if( (ss->type == BL_PC && target->type == BL_ELEM) ||
-		    (ss->type == BL_ELEM && target->type == BL_PC) )
-			return 1;	// PvでもGvでもないなら、PCvsELEMは味方
+		if((ss->type & (BL_HOM | BL_MERC | BL_ELEM)) && target->type == BL_PC)
+			return 1;	// PvでもGvでもないなら、HOM, MERC, ELEM vs PC は味方
 	}
 
 	// 同PTとか同盟Guildとかは後回し（＝＝

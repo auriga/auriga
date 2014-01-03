@@ -2400,10 +2400,11 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 		if(mob_spawn(md->bl.id)) {
 			// 出現失敗、座標が指定されているなら周囲のセルをチェック
 			if(md->x0 != 0 && md->y0 != 0) {
-				int x0 = md->x0 - md->xs/2;
-				int y0 = md->y0 - md->ys/2;
-				int x1 = md->x0 + md->xs - md->xs/2;
-				int y1 = md->y0 + md->ys - md->ys/2;
+				int x0 = md->x0 - md->xs;
+				int y0 = md->y0 - md->ys;
+				int x1 = md->x0 + md->xs;
+				int y1 = md->y0 + md->ys;
+
 				if(map_searchfreecell(NULL, md->m, x0, y0, x1, y1) <= 0) {
 					// 侵入可能セルが全くないので削除する
 					printf("npc_monster spawn stacked (%d,%d) - (%d,%d) line %d\a\n", x0, y0, x1, y1, lines);

@@ -1789,7 +1789,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			int i, rate;
 
 			for(i = 0; i < MAX_EFF_TYPE; i++) {
-				if(!dstmd || dstmd->class_ != 1288) {
+				if(!dstmd || dstmd->class_ != MOBID_EMPERIUM) {
 					if(sd->addeff_range_flag[i] > 2) {
 						sd->addeff_range_flag[i] -= 2;	// レンジフラグがあれば元に戻す
 						continue;
@@ -1845,7 +1845,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 		// 殴ってmob変化
 		if(sd && dstmd && mob_db[dstmd->class_].race != RCT_HUMAN && !map[dstmd->bl.m].flag.nobranch &&
-		   !(mob_db[dstmd->class_].mode&MD_BOSS) && dstmd->class_ != 1288 && dstmd->state.special_mob_ai != 1)
+		   !(mob_db[dstmd->class_].mode&MD_BOSS) && dstmd->class_ != MOBID_EMPERIUM && dstmd->state.special_mob_ai != 1)
 		{
 			if(atn_rand()%10000 < sd->mob_class_change_rate)
 			{
@@ -5053,7 +5053,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		return 1;
 	if(unit_isdead(bl) && skillid != ALL_RESURRECTION && skillid != PR_REDEMPTIO && skillid != WM_DEADHILLHERE)
 		return 1;
-	if(status_get_class(bl) == 1288)
+	if(status_get_class(bl) == MOBID_EMPERIUM)
 		return 1;
 
 	sd  = BL_DOWNCAST( BL_PC,   src );
@@ -5353,7 +5353,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(dstmd) {
 			// チェンジポリン用モンスターID
-			static const int poringclass[] = { 1002,1002 };
+			static const int poringclass[] = { MOBID_PORING, MOBID_PORING };
 			mob_class_change(dstmd,poringclass,sizeof(poringclass)/sizeof(poringclass[0]));
 		}
 		break;
@@ -13693,7 +13693,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		break;
 	case PA_PRESSURE:		/* プレッシャー */
-		if(status_get_class(target) == 1288) {	// エンペは使用不可
+		if(status_get_class(target) == MOBID_EMPERIUM) {	// エンペは使用不可
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}
@@ -13803,7 +13803,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case SG_HATE:
-		if(status_get_class(target) == 1288) {	// エンペは登録不可
+		if(status_get_class(target) == MOBID_EMPERIUM) {	// エンペは登録不可
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}
@@ -15966,7 +15966,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 
 	if(target->type != BL_PC && target->type != BL_MOB)
 		return 0;
-	if(status_get_class(target) == 1288)
+	if(status_get_class(target) == MOBID_EMPERIUM)
 		return 0;
 
 	// 運命の輪だと100%成功

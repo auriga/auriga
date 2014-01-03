@@ -1465,7 +1465,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,65) = 0xffffffff;
 			WBUFL(buf,69) = 0xffffffff;
@@ -1593,7 +1593,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 	{
 		WBUFL(buf,65) = 0xffffffff;
 		WBUFL(buf,69) = 0xffffffff;
@@ -1897,7 +1897,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,71) = 0xffffffff;
 			WBUFL(buf,75) = 0xffffffff;
@@ -2007,7 +2007,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 	{
 		WBUFL(buf,71) = 0xffffffff;
 		WBUFL(buf,75) = 0xffffffff;
@@ -3441,7 +3441,7 @@ void clif_spawnpc(struct map_session_data *sd)
 	// 完全なインビジブルモードなら送信しない
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
 		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
-			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,1002,0,0);
+			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,MOBID_PORING,0,0);
 		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
 			clif_seteffect_enter(&sd->bl,SI_MONSTER_TRANSFORM,0,sd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
 		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
@@ -3675,7 +3675,7 @@ void clif_spawnmob(struct mob_data *md)
 
 		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 		{
 			WBUFL(buf,64)=0xffffffff;
 			WBUFL(buf,68)=0xffffffff;
@@ -7908,7 +7908,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		}
 
 		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
-			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,1002,0,0);
+			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,MOBID_PORING,0,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
 			clif_status_change_id(sd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
 		else if(dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
@@ -15669,7 +15669,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 	WBUFL(buf,2) = md->bl.id;
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
 	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	md->class_ == 1288 || status_get_mode(&md->bl)&MD_BOSS)
+	md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
 	{
 		WBUFL(buf,6) = 0xffffffff;
 		WBUFL(buf,10) = 0xffffffff;

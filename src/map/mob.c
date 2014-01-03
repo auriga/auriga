@@ -315,6 +315,7 @@ int mob_delayspawn(int tid,unsigned int tick,int id,void *data)
 int mob_spawn(int id)
 {
 	int x = 0, y = 0, i = 0;
+	const int retry = 50;
 	unsigned int c, tick = gettick();
 	struct mob_data *md;
 
@@ -352,9 +353,9 @@ int mob_spawn(int id)
 			x = md->x0+atn_rand()%(md->xs*2+1)-md->xs;
 			y = md->y0+atn_rand()%(md->ys*2+1)-md->ys;
 		}
-	} while(map_getcell(md->bl.m,x,y,CELL_CHKNOPASS) && (++i) < 50);
+	} while(map_getcell(md->bl.m,x,y,CELL_CHKNOPASS) && (++i) < retry);
 
-	if(i >= 50) {
+	if(i >= retry) {
 		if(md->spawndelay1 == -1 && md->spawndelay2 == -1) {
 			// 一度しか沸かないのは壁でない限りスタック位置でも出す
 			if(!map_getcell(md->bl.m,x,y,CELL_CHKGROUND))
@@ -3691,14 +3692,14 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 	{
 		struct guild *g = guild_search(sd->status.guild_id);
 
-		if(g == NULL && md->class_ == 1288)
+		if(g == NULL && md->class_ == MOBID_EMPERIUM)
 			return 0;	// ギルド未加入ならダメージ無し
 		if(guild_mapid2gc(sd->bl.m) != NULL && !map[sd->bl.m].flag.gvg)
 			return 0;	// 砦内でGvじゃないときはダメージなし
 		if(g) {
 			if(g->guild_id == md->guild_id)
 				return 0;	// 自占領ギルドのエンペならダメージ無し
-			if(guild_checkskill(g, GD_APPROVAL) <= 0 && md->class_ == 1288)
+			if(guild_checkskill(g, GD_APPROVAL) <= 0 && md->class_ == MOBID_EMPERIUM)
 				return 0;	// 正規ギルド承認がないとダメージ無し
 			if(guild_check_alliance(md->guild_id, g->guild_id, 0) == 1)
 				return 0;	// 同盟ならダメージ無し
