@@ -115,8 +115,8 @@ int msg_config_read(const char *cfgName)
 	while (fgets(line, sizeof(line)-1, fp)) {
 		if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 			continue;
-		if (sscanf(line,"%d: %[^\r\n]",&msg_number,w2) != 2) {
-			if (sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)
+		if (sscanf(line,"%d: %1023[^\r\n]",&msg_number,w2) != 2) {
+			if (sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 				continue;
 			if (strcmpi(w1,"import") == 0) {
 				msg_config_read(w2);
@@ -154,34 +154,37 @@ int msg_read_motd(void)
 		motd = NULL;
 	}
 
-	if((fp = fopen(motd_txt, "r")) != NULL) {
-		while(fgets(buf, sizeof(buf)-1, fp) != NULL) {
-			for(i = 0; buf[i]; i++) {
-				if(buf[i] == '\r' || buf[i] == '\n') {
-					if(i == 0) {
-						buf[i++] = ' ';
-					}
-					buf[i] = '\0';
-					break;
-				}
-			}
-
-			len = strlen(buf) + 1;
-			if(pos + len >= size) {
-				size += sizeof(buf);
-				motd = (char *)aRealloc(motd, size);
-			}
-			memcpy(motd + pos, buf, len);
-			pos += len;
-		}
-
-		if(size > 0) {
-			motd = (char *)aRealloc(motd, pos + 1);	// 縮小処理
-			motd[pos] = '\0';	// 末尾に \0 を2つ続ける
-		}
-
-		fclose(fp);
+	if((fp = fopen(motd_txt, "r")) == NULL) {
+		// not error
+		return 0;
 	}
+
+	while(fgets(buf, sizeof(buf)-1, fp) != NULL) {
+		for(i = 0; buf[i]; i++) {
+			if(buf[i] == '\r' || buf[i] == '\n') {
+				if(i == 0) {
+					buf[i++] = ' ';
+				}
+				buf[i] = '\0';
+				break;
+			}
+		}
+
+		len = strlen(buf) + 1;
+		if(pos + len >= size) {
+			size += sizeof(buf);
+			motd = (char *)aRealloc(motd, size);
+		}
+		memcpy(motd + pos, buf, len);
+		pos += len;
+	}
+
+	if(size > 0) {
+		motd = (char *)aRealloc(motd, pos + 1);	// 縮小処理
+		motd[pos] = '\0';	// 末尾に \0 を2つ続ける
+	}
+
+	fclose(fp);
 
 	return 0;
 }

@@ -76,8 +76,8 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 				if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 					continue;
 				// if line is valid
-				if ((sscanf(line, "%d,%d,%[^\r\n]", &item_id, &quantity, name) == 3 ||
-				    sscanf(line, "%d\t%d\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
+				if ((sscanf(line, "%d,%d,%1023[^\r\n]", &item_id, &quantity, name) == 3 ||
+				    sscanf(line, "%d\t%d\t%1023[^\r\n]", &item_id, &quantity, name) == 3) &&
 				    (item_id == -1 || (itemdb_exists(item_id) && (!battle_config.item_check || itemdb_available(item_id)))) && // zeny or valid items
 				    quantity != 0 && // quantity
 				    strlen(name) >= 4 && strlen(name) < 24) { // name
@@ -131,8 +131,8 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 			if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 				continue;
 			// if line is valid
-			if ((sscanf(line, "%d,%d,%[^\r\n]", &item_id, &quantity, name) == 3 ||
-			    sscanf(line, "%d\t%d\t%[^\r\n]", &item_id, &quantity, name) == 3) &&
+			if ((sscanf(line, "%d,%d,%1023[^\r\n]", &item_id, &quantity, name) == 3 ||
+			    sscanf(line, "%d\t%d\t%1023[^\r\n]", &item_id, &quantity, name) == 3) &&
 			    (item_id == -1 || (itemdb_exists(item_id) && (!battle_config.item_check || itemdb_available(item_id)))) && // zeny or valid items
 			    quantity != 0 && // quantity
 			    strlen(name) >= 4 && strlen(name) < 24) { // name

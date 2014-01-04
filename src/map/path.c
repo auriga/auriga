@@ -459,8 +459,8 @@ int path_search_real(struct walkpath_data *wpd,int m,int x0,int y0,int x1,int y1
 				return -1;
 		}
 
-		for(len = 0, i = rp; len < 100 && i != calc_index(x0,y0); i = tp[i].before, len++);
-		if(len >= 100 || len >= MAX_WALKPATH)
+		for(len = 0, i = rp; len < MAX_WALKPATH && i != calc_index(x0,y0); i = tp[i].before, len++);
+		if(len >= MAX_WALKPATH)
 			return -1;
 
 		if(wpd == NULL)

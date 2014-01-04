@@ -1141,7 +1141,7 @@ int csvdb_flush(struct csvdb_data *csv)
 				fprintf(fp, "%s,", line->data_p[j]);
 			}
 		}
-		fprintf(fp, RETCODE);
+		fprintf(fp, NEWLINE);
 	}
 	lock_fclose(fp, csv->file, &lock);
 	csv->dirty = 0;

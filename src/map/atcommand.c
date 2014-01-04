@@ -670,7 +670,7 @@ int atcommand_config_read(const char *cfgName)
 		if ((line[0] == '/' && line[1] == '/') || line[0] == '\0' || line[0] == '\n' || line[0] == '\r')
 			continue;
 
-		if (sscanf(line, "%[^=]= %[^\r\n]", w1, w2) == 2) { // synonym
+		if (sscanf(line, "%1023[^=]= %1023[^\r\n]", w1, w2) == 2) { // synonym
 			char *c = NULL;
 
 			/* searching if synonym is not a gm command */
@@ -720,7 +720,7 @@ int atcommand_config_read(const char *cfgName)
 			} else {
 				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
 			}
-		} else if (sscanf(line, "%[^:]:%s", w1, w2) == 2) {
+		} else if (sscanf(line, "%1024[^:]:%1023s", w1, w2) == 2) {
 			if (strcmpi(w1, "import") == 0) {
 				atcommand_config_read(w2);
 			} else if (strcmpi(w1, "command_symbol") == 0) {
@@ -766,7 +766,7 @@ int atcommand_rurap(const int fd, struct map_session_data* sd, AtCommandType com
 {
 	char map_name[100];
 	char character[100];
-	int x, y, m;
+	int x, y;
 	struct map_session_data *pl_sd;
 
 	nullpo_retr(-1, sd);
@@ -785,6 +785,8 @@ int atcommand_rurap(const int fd, struct map_session_data* sd, AtCommandType com
 	}
 
 	if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
+		int m;
+
 		if (strstr(map_name, ".gat") == NULL && strlen(map_name) < 13)
 			strcat(map_name, ".gat");
 		m = map_mapname2mapid(map_name);
@@ -1515,7 +1517,6 @@ int atcommand_itemreset(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int i;
 	char character[100];
 	struct map_session_data *pl_sd;
 
@@ -1527,6 +1528,7 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
+		int i;
 		for (i = 0; i < MAX_INVENTORY; i++) {
 			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
 				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
@@ -1747,12 +1749,12 @@ int atcommand_gm(const int fd, struct map_session_data* sd, AtCommandType comman
  */
 int atcommand_pvpoff(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	struct map_session_data *pl_sd;
-	int i;
-
 	nullpo_retr(-1, sd);
 
 	if (map[sd->bl.m].flag.pvp) {
+		struct map_session_data *pl_sd;
+		int i;
+
 		map[sd->bl.m].flag.pvp = 0;
 		clif_send0199(sd->bl.m, 0);
 		for (i = 0; i < fd_max; i++) {	// 人数分ループ
@@ -1779,13 +1781,14 @@ int atcommand_pvpoff(const int fd, struct map_session_data* sd, AtCommandType co
  */
 int atcommand_pvpon(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	struct map_session_data *pl_sd;
 	unsigned int tick = gettick();
-	int i;
 
 	nullpo_retr(-1, sd);
 
 	if (!map[sd->bl.m].flag.pvp) {
+		struct map_session_data *pl_sd;
+		int i;
+
 		map[sd->bl.m].flag.pvp = 1;
 		clif_send0199(sd->bl.m, 1);
 		for (i = 0; i < fd_max; i++) {
@@ -2662,7 +2665,6 @@ int atcommand_recallall(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int i;
 	char guild_name[100];
 	struct map_session_data *pl_sd;
 	struct guild *g;
@@ -2675,6 +2677,7 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((g = guild_searchname(guild_name)) != NULL || (g = guild_search(atoi(message))) != NULL) {
+		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 			    sd->status.account_id != pl_sd->status.account_id &&
@@ -2695,7 +2698,6 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
  */
 int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
-	int i;
 	char party_name[100];
 	struct map_session_data *pl_sd;
 	struct party *p;
@@ -2708,6 +2710,7 @@ int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((p = party_searchname(party_name)) != NULL || (p = party_search(atoi(message))) != NULL) {
+		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
 			    sd->status.account_id != pl_sd->status.account_id &&
@@ -2868,7 +2871,7 @@ int atcommand_character_save(const int fd, struct map_session_data* sd, AtComman
 	char map_name[100];
 	char character[100];
 	struct map_session_data* pl_sd;
-	int x, y, m;
+	int x, y;
 
 	nullpo_retr(-1, sd);
 
@@ -2879,6 +2882,8 @@ int atcommand_character_save(const int fd, struct map_session_data* sd, AtComman
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
+			int m;
+
 			if (strstr(map_name, ".gat") == NULL && strlen(map_name) < 13) {
 				strcat(map_name, ".gat");
 			}
@@ -3676,7 +3681,6 @@ int atcommand_charstpoint(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	int new_status_point;
 	int point = 0;
 
 	if (!message || !*message)
@@ -3685,7 +3689,8 @@ int atcommand_charstpoint(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		new_status_point = (int)pl_sd->status.status_point + point;
+		int new_status_point = (int)pl_sd->status.status_point + point;
+
 		if (point > 0 && (point > 0x7FFF || new_status_point > 0x7FFF)) // fix positiv overflow
 			new_status_point = 0x7FFF;
 		else if (point < 0 && (point < -0x7FFF || new_status_point < 0)) // fix negativ overflow
@@ -3710,7 +3715,6 @@ int atcommand_charskpoint(const int fd, struct map_session_data* sd, AtCommandTy
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	int new_skill_point;
 	int point = 0;
 
 	if (!message || !*message)
@@ -3719,7 +3723,8 @@ int atcommand_charskpoint(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		new_skill_point = (int)pl_sd->status.skill_point + point;
+		int new_skill_point = (int)pl_sd->status.skill_point + point;
+
 		if (point > 0 && (point > 0x7FFF || new_skill_point > 0x7FFF)) // fix positiv overflow
 			new_skill_point = 0x7FFF;
 		else if (point < 0 && (point < -0x7FFF || new_skill_point < 0)) // fix negativ overflow
@@ -3744,7 +3749,7 @@ int atcommand_charzeny(const int fd, struct map_session_data* sd, AtCommandType 
 {
 	struct map_session_data *pl_sd;
 	char character[100];
-	int zeny = 0, new_zeny;
+	int zeny = 0;
 
 	if (!message || !*message)
 		return -1;
@@ -3752,7 +3757,8 @@ int atcommand_charzeny(const int fd, struct map_session_data* sd, AtCommandType 
 		return -1;
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
-		new_zeny = pl_sd->status.zeny + zeny;
+		int new_zeny = pl_sd->status.zeny + zeny;
+
 		if (zeny > 0 && (zeny > MAX_ZENY || new_zeny > MAX_ZENY)) // fix positiv overflow
 			new_zeny = MAX_ZENY;
 		else if (zeny < 0 && (zeny < -MAX_ZENY || new_zeny < 0)) // fix negativ overflow
@@ -3781,7 +3787,6 @@ int atcommand_charzeny(const int fd, struct map_session_data* sd, AtCommandType 
 int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	struct map_session_data *pl_sd;
-	struct npc_data *nd = NULL;
 	struct chat_data *cd = NULL;
 	char map_name[100] = "";
 	int m_id, i, chat_num, list = 0;
@@ -3856,7 +3861,8 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 			clif_displaymessage(fd, "----- NPCs in Map -----");
 			for (i = 0; i < map[m_id].npc_num; i++) {	// map[].npcには接触型のNPCしか保存されていない（手抜き）
 				const char *direction;
-				nd = map[m_id].npc[i];
+				struct npc_data *nd = map[m_id].npc[i];
+
 				switch (nd->dir) {
 					case 0:  direction = "North";      break;
 					case 1:  direction = "North West"; break;

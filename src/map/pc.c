@@ -2340,8 +2340,8 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 			status_change_end(&sd->bl,SC_ALL_RIDING,-1);
 
 		// フォントアイテムの削除時はフォントを初期化する
-		if((data->nameid >= 12287 || data->nameid <= 12289) ||
-		   (data->nameid >= 12304 || data->nameid <= 12309))
+		if((data->nameid >= 12287 && data->nameid <= 12289) ||
+		   (data->nameid >= 12304 && data->nameid <= 12309))
 			sd->status.font = 0;
 	}
 
@@ -2959,7 +2959,7 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
  */
 int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 {
-	int i,skill,rate,itemid,flag;
+	int skill,rate,itemid,flag;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
@@ -2973,6 +2973,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 
 	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 4;
 	if(skill > 0) {
+		int i;
 		for(i=0; i<ITEM_DROP_COUNT-1; i++) {
 			itemid = mob_db[md->class_].dropitem[i].nameid;
 			if(itemid > 0 && itemdb_type(itemid) != ITEMTYPE_CARD) {
@@ -5530,7 +5531,7 @@ void pc_skillup(struct map_session_data *sd, int skill_num)
  */
 int pc_allskillup(struct map_session_data *sd,int flag)
 {
-	int i,id;
+	int i;
 
 	for(i=0; i<MAX_PCSKILL; i++) {
 		sd->status.skill[i].id = 0;
@@ -5555,6 +5556,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			sd->status.skill[i].lv = skill_get_max(i);
 		}
 	} else {
+		int id;
 		for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
 			if(id == SG_DEVIL)	// ここで除外処理
 				continue;

@@ -1244,8 +1244,7 @@ int intif_request_scdata(int account_id,int char_id)
 int intif_save_scdata(struct map_session_data *sd)
 {
 #ifndef NO_SCDATA_SAVING
-	struct TimerData *td = NULL;
-	int i,p;
+	int p = 12;
 	unsigned int tick = gettick();
 
 	if (inter_fd < 0)
@@ -1255,8 +1254,10 @@ int intif_save_scdata(struct map_session_data *sd)
 	WFIFOL(inter_fd,4) = sd->status.account_id;
 	WFIFOL(inter_fd,8) = sd->status.char_id;
 
-	p=12;
 	if(sd->sc.count > 0) {
+		struct TimerData *td = NULL;
+		int i;
+
 		for(i=0; i<MAX_STATUSCHANGE; i++) {
 			if(sd->sc.data[i].timer != -1 && status_can_save(i))
 			{
@@ -1301,7 +1302,7 @@ int intif_request_quest(int account_id,int char_id)
  */
 int intif_save_quest(struct map_session_data *sd)
 {
-	int i,p;
+	int p = 12;
 
 	if (inter_fd < 0)
 		return -1;
@@ -1310,8 +1311,8 @@ int intif_save_quest(struct map_session_data *sd)
 	WFIFOL(inter_fd,4) = sd->status.account_id;
 	WFIFOL(inter_fd,8) = sd->status.char_id;
 
-	p=12;
 	if(sd->questlist > 0) {
+		int i;
 		for(i=0; i<sd->questlist; i++) {
 			if(sd->quest[i].nameid > 0) {
 				WFIFOL(inter_fd,p)    = sd->quest[i].nameid;
@@ -1361,9 +1362,10 @@ static int intif_parse_WisMessage(int fd)
 	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,36));
 	int id = RFIFOL(fd,4);
 	int gmlevel = RFIFOL(fd,8);
-	int i, j = 0;
 
 	if(sd) {
+		int i, j = 0;
+
 		for(i=0; i<MAX_WIS_REFUSAL; i++) {	//拒否リストに名前があるかどうか判定してあれば拒否
 			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,12)) == 0) {
 				j++;
@@ -2174,8 +2176,8 @@ static int intif_parse_CharMoveReq(int fd)
 			}
 		}
 		else if(flag==1){
-			char output[200];
 			if(pc_numisGM(account_id) > pc_isGM(sd)){	// @recallかつ呼び出し元GMレベルが大きい
+				char output[200];
 				pc_setpos(sd,RFIFOP(fd,31),RFIFOW(fd,47),RFIFOW(fd,49),2);
 				snprintf(output, sizeof output, msg_txt(46), RFIFOP(fd,6));
 				intif_displaymessage(account_id,output);

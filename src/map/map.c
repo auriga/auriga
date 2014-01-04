@@ -2164,7 +2164,7 @@ static void map_readwater(void)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if((count = sscanf(line, "%s%d", w1, &wh)) < 1) {
+		if((count = sscanf(line, "%1023s%d", w1, &wh)) < 1) {
 			continue;
 		}
 
@@ -2772,7 +2772,7 @@ static int map_config_read(const char *cfgName)
 		if (line[0] == '/' && line[1] == '/')
 			continue;
 
-		if (sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
+		if (sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if (strcmpi(w1, "userid") == 0) {

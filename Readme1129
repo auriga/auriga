@@ -1,4 +1,36 @@
 ----------------------------------------
+//1177 [2014/01/05] by Rayce
+
+・Auriga-1176のファイル同梱漏れ（common/*.c）
+
+・cppcheckを使った静的チェックを一部修正
+  http://cppcheck.sourceforge.net
+	-> /recall2, /remove2 コマンドが動作しなかったのを修正（clif.c）
+
+	-> 子守唄状態でスキルユニットが見つからなかったときにサーバクラッシュする可能性を修正（status.c）
+
+	-> フォントアイテムでないものの使用期限が切れたとき、フォントが初期化される問題を修正（pc.c）
+
+	-> bAddRevEffの引数の最大値-最小値チェックの間違いを修正（bonus.c）
+
+	-> 歩行パスの最大値 MAX_WALKPATH でループを打ち切る（path.c）
+
+	-> sscanf で文字列を読み込む場合は長さを指定するようにセキュリティの強化
+	   （atcommand.c, extra.c, map.c, msg.c, npc.c, script.c, mapreg_txt.c）
+
+	-> unsigned型に対してマイナスチェックは不要なので削除（buyingstore.c, npc.c）
+
+	-> 使用されない変数を削除（guild.c, homun.c, script.c, skill.c, unit.c）
+
+	-> 意味のない初期化を削除（mob.c, skill.c）
+
+	-> 冗長なNULLチェックを削除（skill.c, status.c）
+
+	-> 括弧の囲みミスを修正（battle.c, clif.c）
+
+	-> 変数のスコープを局所化
+
+----------------------------------------
 //1176 [2014/01/05] by Rayce
 
 ・改行コードの定義を RETCODE から NEWLINE に変更

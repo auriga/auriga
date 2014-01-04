@@ -1175,9 +1175,6 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 		const unsigned short nameid = item_list[i*2+1];
 		const unsigned short amount = item_list[i*2+0];
 
-		if(nameid <= 0 || amount <= 0)
-			return 5;
-
 		for(j = 0; nd->u.shop_item[j].nameid; j++) {
 			int view_id = itemdb_viewid(nd->u.shop_item[j].nameid);
 			if(view_id > 0) {
@@ -1589,9 +1586,9 @@ static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const cha
 
 	// 引数の個数チェック
 	// dirはあってもなくても良い
-	if(sscanf(w1,"%[^,],%d,%d%n",mapname,&x,&y,&n) != 3 ||
+	if(sscanf(w1,"%4095[^,],%d,%d%n",mapname,&x,&y,&n) != 3 ||
 	   (w1[n] != 0 && (sscanf(w1+n,",%d%n",&dir,&i) != 1 || w1[n+i] != 0)) ||
-	   sscanf(w4,"%d,%d,%[^,],%d,%d%n",&xs,&ys,to_mapname,&to_x,&to_y,&n) != 5 || w4[n] != 0)
+	   sscanf(w4,"%d,%d,%4095[^,],%d,%d%n",&xs,&ys,to_mapname,&to_x,&to_y,&n) != 5 || w4[n] != 0)
 	{
 		printf("bad warp declaration : %s line %d\a\n",w3,lines);
 		return 0;
@@ -1675,7 +1672,6 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 	int m, x, y, dir = 0;
 	int n, pos = 0;
 	unsigned char subtype;
-	char mapname[4096];
 	struct npc_data *nd;
 
 	if(strcmp(w2,"shop") == 0)
@@ -1690,8 +1686,10 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		y = 0;
 		m = -1;
 	} else {
+		char mapname[4096];
+
 		// 引数の個数チェック
-		if(sscanf(w1, "%[^,],%d,%d,%d%n", mapname, &x, &y, &dir, &n) != 4 || w1[n] != 0 ||
+		if(sscanf(w1, "%4095[^,],%d,%d,%d%n", mapname, &x, &y, &dir, &n) != 4 || w1[n] != 0 ||
 		   (subtype != 0 && strchr(w4,',') == NULL))
 		{
 			printf("bad shop declaration : %s line %d\a\n", w3, lines);
@@ -1760,7 +1758,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		char srcname[4096];
 		struct npc_data *nd2;
 
-		if(sscanf(w2,"substore(%[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
+		if(sscanf(w2,"substore(%4095[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
 			printf("bad substore name! : %s line %d\a\n",w2,lines);
 			return 0;
 		}
@@ -1979,7 +1977,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		char mapname[4096];
 		int n;
 
-		if(sscanf(w1,"%[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
+		if(sscanf(w1,"%4095[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
 		   (strcmp(w2,"script") == 0 && strchr(w4,',') == NULL))
 		{
 			printf("bad script declaration : %s line %d\a\n",w3,*lines);
@@ -2057,7 +2055,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		struct npc_data *nd2;
 		int n;
 
-		if(sscanf(w2,"duplicate(%[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
+		if(sscanf(w2,"duplicate(%4095[^)])%n",srcname,&n) != 1 || w2[n] != 0) {
 			printf("bad duplicate name! : %s line %d\a\n",w2,*lines);
 			return 0;
 		}
@@ -2088,12 +2086,11 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		// スクリプトコピー用のダミーNPC
 	} else if(sscanf(w4,"%d,%d,%d",&class_,&xs,&ys) == 3) {
 		// 接触型NPC
-		int i, j;
-
 		if(xs >= 0) xs = xs * 2 + 1;
 		if(ys >= 0) ys = ys * 2 + 1;
 
 		if(class_ >= 0) {
+			int i, j;
 			for(i=0; i<ys; i++) {
 				for(j=0; j<xs; j++) {
 					if(map_getcell(m,x-xs/2+j,y-ys/2+i,CELL_CHKNOPASS))
@@ -2303,8 +2300,8 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 	struct mob_data *md;
 
 	// 引数の個数チェック
-	if(sscanf(w1,"%[^,],%d,%d,%d,%d%n",mapname,&x,&y,&xs,&ys,&n) != 5 || w1[n] != 0 ||
-	   sscanf(w4,"%d,%d,%d,%d,%[^\n]",&class_,&num,&delay1,&delay2,eventtemp) < 4)
+	if(sscanf(w1,"%23[^,],%d,%d,%d,%d%n",mapname,&x,&y,&xs,&ys,&n) != 5 || w1[n] != 0 ||
+	   sscanf(w4,"%d,%d,%d,%d,%4095[^\n]",&class_,&num,&delay1,&delay2,eventtemp) < 4)
 	{
 		printf("bad monster declaration : %s line %d\a\n",w3,lines);
 		return 0;
@@ -2457,7 +2454,7 @@ static int npc_parse_mapflag(const char *w1,const char *w2,const char *w3,const 
 	char mapname[4096];
 
 	// 引数の個数チェック
-	if(sscanf(w1,"%[^,]",mapname) != 1 || strlen(w1) != strlen(mapname)) {
+	if(sscanf(w1,"%4095[^,]",mapname) != 1 || strlen(w1) != strlen(mapname)) {
 		printf("bad mapflag declaration : %s line %d\a\n",w3,lines);
 		return 0;
 	}
@@ -2489,7 +2486,7 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 			map[m].save.x = -1;
 			map[m].save.y = -1;
 			map[m].flag.nosave = 1;
-		} else if (sscanf(w4,"%[^,],%d,%d",savemap,&savex,&savey) == 3) {
+		} else if (sscanf(w4,"%4095[^,],%d,%d",savemap,&savex,&savey) == 3) {
 			memcpy(map[m].save.map,savemap,16);
 			map[m].save.map[15] = '\0';	// force \0 terminal
 			map[m].save.x = savex;
@@ -2600,7 +2597,7 @@ int npc_set_mapflag_sub(int m,const char *str,short flag)
 	char drop_arg1[4096], drop_arg2[4096];
 	int drop_id = 0, drop_type = 0, drop_per = 0;
 
-	if(sscanf(str, "%[^,],%[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
+	if(sscanf(str, "%4095[^,],%4095[^,],%d", drop_arg1, drop_arg2, &drop_per) != 3)
 		return 0;
 
 	if(strcmp(drop_arg1,"random") == 0) {
@@ -2696,8 +2693,8 @@ static int npc_parse_srcfile(const char *filepath)
 			continue;
 
 		// 最初はタブ区切りでチェックしてみて、ダメならスペース区切りで確認
-		if((count = sscanf(lp,"%[^\t]\t%[^\t]\t%[^\t\r\n]\t%n%[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
-		   (count = sscanf(lp,"%s%s%s%n%s",w1,w2,w3,&w4pos,w4)) < 3)
+		if((count = sscanf(lp,"%4095[^\t]\t%4095[^\t]\t%4095[^\t\r\n]\t%n%4095[^\t\r\n]",w1,w2,w3,&w4pos,w4)) < 3 &&
+		   (count = sscanf(lp,"%4095s%4095s%4095s%n%4095s",w1,w2,w3,&w4pos,w4)) < 3)
 		{
 			script_error(lp, filepath, lines, "npc file syntax error", lp+w4pos);
 			break;
@@ -2708,7 +2705,7 @@ static int npc_parse_srcfile(const char *filepath)
 		if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
 			size_t len;
 			char mapname[4096] = "";
-			sscanf(w1,"%[^,]",mapname);
+			sscanf(w1,"%4095[^,]",mapname);
 			len = strlen(mapname);
 			if(len <= 4 || len > 24 || strcmp(mapname+len-4,".gat") != 0) {
 				script_error(lp, filepath, lines, "npc file syntax error", lp);

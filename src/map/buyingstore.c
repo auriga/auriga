@@ -84,7 +84,7 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
 	}
 
 	// countの範囲チェック
-	if( count <= 0 || count > MAX_BUYINGSTORE_COUNT )
+	if( count > MAX_BUYINGSTORE_COUNT )
 	{
 		return false;
 	}

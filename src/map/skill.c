@@ -929,7 +929,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case SM_BASH:			/* バッシュ（急所攻撃） */
-		if( sd && (skill = pc_checkskill(sd,SM_FATALBLOW)) > 0 ) {
+		if( sd && pc_checkskill(sd,SM_FATALBLOW) > 0 ) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,500*(skilllv-5)+(sd->status.base_level/3),sd->status.base_level))
 				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(SM_FATALBLOW,skilllv),0,tick+status_get_amotion(src));
 		}
@@ -2603,7 +2603,6 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 	struct unit_data        *src_ud   = NULL;
 	struct status_change    *tsc      = NULL;
 	struct status_change    *sc       = NULL;
-	int inf2;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, src_ud = unit_bl2ud(src));
@@ -2637,6 +2636,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 
 	// スキル条件確認
 	do {
+		int inf2;
+
 		if(!target || target->prev == NULL)
 			break;
 		if(src->m != target->m || unit_isdead(src))
@@ -8785,13 +8786,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SR_ASSIMILATEPOWER:	/* 吸気功 */
 		if(flag&1) {
-			int val = 0, sp = 0;
+			int val = 0;
 			if(dstsd && dstsd->spiritball.num > 0) {
 				val += dstsd->spiritball.num;
 				pc_delspiritball(dstsd,dstsd->spiritball.num,0);
 			}
 			if(sd) {
-				sp = sd->status.max_sp * val / 100;
+				int sp = sd->status.max_sp * val / 100;
 				if(sd->status.sp + sp > sd->status.max_sp)
 					sp = sd->status.max_sp - sd->status.sp;
 				if(sp > 0) {
@@ -9565,7 +9566,6 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
 	struct status_change    *sc      = NULL;
-	int range;
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, src_ud = unit_bl2ud(src));
@@ -9590,6 +9590,8 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 	src_ud->skilltimer = -1;
 
 	do {
+		int range;
+
 		if(unit_isdead(src))
 			break;
 
@@ -9767,9 +9769,10 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case AC_SHOWER:				/* アローシャワー */
 	case MA_SHOWER:
 		{
-			int ar = 1;
 #ifndef PRE_RENEWAL
-			ar = (skilllv>5? 2: 1);
+			int ar = (skilllv>5? 2: 1);
+#else
+			int ar = 1;
 #endif
 			if(sd) {
 				int cost = skill_get_arrow_cost(skillid,skilllv);
@@ -10498,7 +10501,7 @@ void skill_castend_map( struct map_session_data *sd,int skill_num, const char *m
 		{
 			int alive = 1;
 			map_foreachinarea(skill_landprotector,sd->bl.m,sd->bl.x,sd->bl.y,sd->bl.x,sd->bl.y,BL_SKILL,AL_TELEPORT,&alive);
-			if(sd && alive) {
+			if(alive) {
 				if(strcmp(mapname,"Random") == 0)
 					pc_randomwarp(sd,3);
 				else
@@ -13614,11 +13617,11 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case AM_CANNIBALIZE:		/* バイオプラント */
 	case AM_SPHEREMINE:		/* スフィアーマイン */
 		if(type&1){
-			int c,n=0;
 			const int summons[5] = { 1589, 1579, 1575, 1555, 1590 };
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
 
 			if(battle_config.pc_land_skill_limit && maxcount>0) {
+				int c,n=0;
 				do{
 					c = map_foreachinarea(
 						skill_check_condition_mob_master_sub, bl->m, 0, 0, map[bl->m].xs,
@@ -13931,11 +13934,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		break;
 	case NC_SILVERSNIPER:		/* FAW シルバースナイパー */
 		if(type&1){
-			int c;
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
 
 			if(battle_config.pc_land_skill_limit && maxcount > 0) {
-				c = map_foreachinarea(
+				int c = map_foreachinarea(
 					skill_check_condition_mob_master_sub, bl->m, 0, 0, map[bl->m].xs,
 					map[bl->m].ys, BL_MOB, bl->id, 2042
 				);
@@ -13951,10 +13953,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			const int mob_id[4] = {
 				2043, 2044, 2046, 2045
 			};
-			int c=0;
 			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
 
 			if(battle_config.pc_land_skill_limit && maxcount > 0) {
+				int c = 0;
 				for(i = 0; i < 4; i++) {
 					c += map_foreachinarea(
 						skill_check_condition_mob_master_sub, bl->m, 0, 0, map[bl->m].xs,
@@ -16579,7 +16581,6 @@ int skill_delunitgroup(struct skill_unit_group *group)
 {
 	struct block_list *src;
 	struct unit_data  *ud = NULL;
-	int i;
 
 	nullpo_retr(0, group);
 
@@ -16637,6 +16638,7 @@ int skill_delunitgroup(struct skill_unit_group *group)
 
 	group->alive_count = 0;
 	if(group->unit != NULL) {
+		int i;
 		for(i=0; i<group->unit_count; i++) {
 			if(group->unit[i].alive)
 				skill_delunit(&group->unit[i]);
@@ -17852,7 +17854,7 @@ void skill_reading_sb(struct map_session_data *sd, int nameid)
 		WL_COMET, WL_TETRAVORTEX, MG_THUNDERSTORM, WZ_JUPITEL, WZ_WATERBALL, WZ_HEAVENDRIVE,
 		WZ_EARTHSPIKE, WL_EARTHSTRAIN, WL_CHAINLIGHTNING, WL_CRIMSONROCK, WL_DRAINLIFE
 	};
-	int i,j,lv,slot;
+	int i,j,slot;
 
 	nullpo_retv(sd);
 
@@ -17861,7 +17863,7 @@ void skill_reading_sb(struct map_session_data *sd, int nameid)
 			if(book[i] == nameid) {
 				if(pc_search_inventory(sd, nameid) >= 0) {
 					/* スキルの習得チェック */
-					if((lv = pc_checkskill(sd,spell[i])) == 0) {
+					if(pc_checkskill(sd,spell[i]) <= 0) {
 						clif_skill_fail(sd,WL_READING_SB,0x34,0,0);
 						break;
 					}

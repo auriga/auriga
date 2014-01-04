@@ -273,7 +273,7 @@ static bool mapreg_txt_load(void)
 			}
 			if(buf[strlen(buf) - 1] == '$') {
 				char buf2[2048];
-				if(sscanf(line + n, "%[^\n\r]", buf2) != 1) {
+				if(sscanf(line + n, "%2047[^\n\r]", buf2) != 1) {
 					printf("%s: %s broken data !\n", mapreg_txt, buf);
 					continue;
 				}

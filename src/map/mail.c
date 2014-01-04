@@ -200,50 +200,50 @@ void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
 	nullpo_retv(item);
 
 	sd = map_id2sd(account_id);
-	if( sd )
-	{
-		// アイテムチェック
-		if( item->nameid > 0 && item->amount > 0 )
-		{
-			switch(pc_checkadditem(sd,item->nameid,item->amount))
-			{
-				case ADDITEM_EXIST:
-					clif_mail_getappend(sd->fd,0);
-					break;
-				case ADDITEM_OVERAMOUNT:
-					clif_mail_getappend(sd->fd,2);
-					result = false;
-					break;
-				default:
-					clif_mail_getappend(sd->fd,1);
-					result = false;
-			}
-		}
+	if(sd == NULL)
+		return;
 
-		// Zenyチェック
-		if( zeny > 0 )
+	// アイテムチェック
+	if( item->nameid > 0 && item->amount > 0 )
+	{
+		switch(pc_checkadditem(sd,item->nameid,item->amount))
 		{
-			if( sd->status.zeny > MAX_ZENY - zeny )
+			case ADDITEM_EXIST:
+				clif_mail_getappend(sd->fd,0);
+				break;
+			case ADDITEM_OVERAMOUNT:
+				clif_mail_getappend(sd->fd,2);
+				result = false;
+				break;
+			default:
+				clif_mail_getappend(sd->fd,1);
 				result = false;
 		}
+	}
 
-		// アイテムの取得に成功した場合、添付ファイルの削除をキャラ鯖に要求する
-		if( result == true )
+	// Zenyチェック
+	if( zeny > 0 )
+	{
+		if( sd->status.zeny > MAX_ZENY - zeny )
+			result = false;
+	}
+
+	// アイテムの取得に成功した場合、添付ファイルの削除をキャラ鯖に要求する
+	if( result == true )
+	{
+		// アイテムの取得
+		if( item->nameid > 0 && item->amount > 0 )
 		{
-			// アイテムの取得
-			if( item->nameid > 0 && item->amount > 0 )
-			{
-				pc_additem(sd, item, item->amount);
-			}
-
-			// Zenyの取得
-			if( zeny > 0 )
-			{
-				sd->status.zeny += zeny;
-				clif_updatestatus(sd,SP_ZENY);
-			}
-			intif_mail_deleteappend(sd->status.char_id,mail_num);
+			pc_additem(sd, item, item->amount);
 		}
+
+		// Zenyの取得
+		if( zeny > 0 )
+		{
+			sd->status.zeny += zeny;
+			clif_updatestatus(sd,SP_ZENY);
+		}
+		intif_mail_deleteappend(sd->status.char_id,mail_num);
 	}
 
 	return;

@@ -1303,7 +1303,7 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_ADDREVEFF:
-		if(type2 >= 0 || type2 < MAX_EFF_TYPE) {
+		if(type2 >= 0 && type2 < MAX_EFF_TYPE) {
 			sd->addreveff[type2] += val;
 			sd->addreveff_flag = 1;
 		}

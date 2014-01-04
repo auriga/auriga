@@ -4327,13 +4327,14 @@ static int clif_fixpos2_sub(struct block_list *bl, va_list ap)
 
 int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 {
-	int len;
 	unsigned char buf[128];
 
 	nullpo_retr(0, bl);
 
 	if(battle_config.clif_fixpos_type)
 	{
+		int len;
+
 		// self position is changed
 		// 自キャラの吹き飛ばしパケ送信（協力者募集）
 		// やっぱりJTのエフェクトが残っている内にパケ送信しても
@@ -6414,7 +6415,6 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 
 void clif_changestatus(struct block_list *bl, int type, int val)
 {
-	unsigned char buf[12];
 	struct map_session_data *sd = NULL;
 
 	nullpo_retv(bl);
@@ -6426,6 +6426,8 @@ void clif_changestatus(struct block_list *bl, int type, int val)
 		sd = (struct map_session_data *)bl;
 
 	if(sd){
+		unsigned char buf[12];
+
 		WBUFW(buf,0)=0x1ab;
 		WBUFL(buf,2)=bl->id;
 		WBUFW(buf,6)=type;
@@ -6710,7 +6712,7 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 			(idx = pc_search_inventory(sd, poison_list[i])) >= 0 &&
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
-			if((view = itemdb_viewid(poison_list[i]) > 0))
+			if((view = itemdb_viewid(poison_list[i])) > 0)
 				WFIFOW(fd,c*2+4) = view;
 			else
 				WFIFOW(fd,c*2+4) = poison_list[i];
@@ -6755,7 +6757,7 @@ void clif_reading_sb_list(struct map_session_data *sd)
 			(idx = pc_search_inventory(sd, sb_list[i])) >= 0 &&
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
-			if((view = itemdb_viewid(sb_list[i]) > 0))
+			if((view = itemdb_viewid(sb_list[i])) > 0)
 				WFIFOW(fd,c*2+4) = view;
 			else
 				WFIFOW(fd,c*2+4) = sb_list[i];
@@ -6798,7 +6800,7 @@ void clif_magicdecoy_list(struct map_session_data *sd, short lv, short x, short 
 			(idx = pc_search_inventory(sd, ele_list[i])) >= 0 &&
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
-			if((view = itemdb_viewid(ele_list[i]) > 0))
+			if((view = itemdb_viewid(ele_list[i])) > 0)
 				WFIFOW(fd,c*2+4) = view;
 			else
 				WFIFOW(fd,c*2+4) = ele_list[i];
@@ -11428,7 +11430,6 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, const char *name, int flag)
 {
 	unsigned char buf[32];
-	int i;
 
 	nullpo_retv(p);
 
@@ -11438,10 +11439,13 @@ void clif_party_leaved(struct party *p, struct map_session_data *sd, int account
 	WBUFB(buf,30)=flag&0x0f;
 
 	if((flag&0xf0)==0){
-		if(sd==NULL)
-			for(i=0;i<MAX_PARTY;i++)
+		if(sd==NULL) {
+			int i;
+			for(i=0;i<MAX_PARTY;i++) {
 				if((sd=p->member[i].sd)!=NULL)
 					break;
+			}
+		}
 		if(sd!=NULL)
 			clif_send(buf,packet_db[0x105].len,&sd->bl,PARTY);
 	}else if(sd!=NULL){
@@ -11646,13 +11650,14 @@ void clif_pet_rulet(struct map_session_data *sd, unsigned char data)
  */
 void clif_sendegg(struct map_session_data *sd)
 {
-	int i,j,n=0,fd;
+	int n=0,fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1a6;
 	if(sd->status.pet_id <= 0) {
+		int i, j;
 		for(i=j=0;i<MAX_INVENTORY && j<sd->inventory_num;i++) {
 			if(sd->status.inventory[i].nameid <= 0 || sd->inventory_data[i] == NULL)
 				continue;
@@ -20180,8 +20185,7 @@ static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
 
 	if((pl_sd = map_id2sd(account_id)) != NULL) {
 		char command[64];
-		sprintf(command, "%crecall ", GM_Symbol());
-		strncpy(command, pl_sd->status.name, 24);
+		sprintf(command, "%crecall %s", GM_Symbol(), pl_sd->status.name);
 		is_atcommand_sub(fd, sd, command, 0);
 	}
 
@@ -20201,8 +20205,7 @@ static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
 
 	if((pl_sd = map_id2sd(account_id)) != NULL) {
 		char command[64];
-		sprintf(command, "%cjumpto ", GM_Symbol());
-		strncpy(command, pl_sd->status.name, 24);
+		sprintf(command, "%cjumpto %s", GM_Symbol(), pl_sd->status.name);
 		is_atcommand_sub(fd, sd, command, 0);
 	}
 

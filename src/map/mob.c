@@ -2513,7 +2513,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
  */
 int mob_class_change_randam(struct mob_data *md,unsigned short lv)
 {
-	int class_ = 1002;
+	int class_;
 
 	nullpo_retr(0, md);
 

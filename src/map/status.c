@@ -933,11 +933,11 @@ L_RECALC:
 		// ギルド有 && マスター接続 && 自分!=マスター && 同じマップ
 		if(g && gmsd && (battle_config.allow_me_guild_skill == 1 || gmsd != sd) && sd->bl.m == gmsd->bl.m)
 		{
-			int dx,dy,range;
-
 			if(battle_config.guild_skill_check_range) {	// 距離判定を行う
-				dx = abs(sd->bl.x - gmsd->bl.x);
-				dy = abs(sd->bl.y - gmsd->bl.y);
+				int dx = abs(sd->bl.x - gmsd->bl.x);
+				int dy = abs(sd->bl.y - gmsd->bl.y);
+				int range;
+
 				if(battle_config.guild_skill_effective_range > 0) {	// 同一距離で計算
 					range = battle_config.guild_skill_effective_range;
 					if(dx <= range && dy <= range) {
@@ -1544,19 +1544,17 @@ L_RECALC:
 	}
 
 	// 太陽と月と星の融合
-	if(sd && sd->sc.data[SC_FUSION].timer != -1)
+	if(sd->sc.data[SC_FUSION].timer != -1)
 	{
 		sd->perfect_hit += 100;
 	}
 
-	if(sd) {
-		if(sd->sc.data[SC_WEDDING].timer != -1)
-			b_class = PC_CLASS_WE;
-		else if(sd->sc.data[SC_SANTA].timer != -1)
-			b_class = PC_CLASS_ST;
-		else if(sd->sc.data[SC_SUMMER].timer != -1)
-			b_class = PC_CLASS_SU;
-	}
+	if(sd->sc.data[SC_WEDDING].timer != -1)
+		b_class = PC_CLASS_WE;
+	else if(sd->sc.data[SC_SANTA].timer != -1)
+		b_class = PC_CLASS_ST;
+	else if(sd->sc.data[SC_SUMMER].timer != -1)
+		b_class = PC_CLASS_SU;
 
 	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ワシの目
 		sd->hit += skill;
@@ -9836,13 +9834,15 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_LULLABY:	/* 子守唄 */
 		if((--sc->data[type].val2) > 0) {
 			struct skill_unit *unit = map_id2su(sc->data[type].val4);
-#ifdef PRE_RENEWAL
-			int interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/10;
-#else
-			int interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/15;
-#endif
+			int interval;
+
 			if(!unit || !unit->group || unit->group->src_id == bl->id)
 				break;
+#ifdef PRE_RENEWAL
+			interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/10;
+#else
+			interval = skill_get_time(unit->group->skill_id,unit->group->skill_lv)/15;
+#endif
 			skill_additional_effect(bl,bl,unit->group->skill_id,sc->data[type].val1,BF_LONG|BF_SKILL|BF_MISC,tick);
 			timer = add_timer(interval+tick, status_change_timer, bl->id, data);
 		}
@@ -9966,12 +9966,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_DANCING:
 		if(sd) {	// ダンススキルの時間SP消費
-			int s = 0, cost = 1;
+			int cost = 1;
 			if(sc->data[type].val1 == CG_HERMODE)
 				cost = 5;
 			if(sd->status.sp < cost) {
 				skill_stop_dancing(&sd->bl,0);
 			} else if(--sc->data[type].val3 > 0) {
+				int s = 0;
+
 				switch(sc->data[type].val1) {
 				case BD_RICHMANKIM:			/* ニヨルドの宴 3秒にSP1 */
 				case BD_DRUMBATTLEFIELD:		/* 戦太鼓の響き 3秒にSP1 */

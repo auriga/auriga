@@ -1246,11 +1246,10 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
  */
 int pet_lootitem_free(struct pet_data *pd)
 {
-	int i;
-
 	nullpo_retr(0, pd);
 
 	if(pd->lootitem) {
+		int i;
 		for(i=0; i<pd->lootitem_count; i++) {
 			if(pd->lootitem[i].card[0] == (short)0xff00)
 				intif_delete_petdata(*((int *)(&pd->lootitem[i].card[1])));

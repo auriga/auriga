@@ -890,7 +890,7 @@ int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance)
 	struct merc_data *mcd = NULL;
 	struct elem_data *eld = NULL;
 	struct unit_data  *ud = NULL;
-	int x,y,dx,dy;
+	int x,y;
 	int i,j=0,k;
 
 	nullpo_retr(0, bl);
@@ -910,8 +910,8 @@ int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance)
 	ud->to_y = ty;
 
 	if(dir >= 0 && dir < 8) {
-		dx = -dirx[dir] * distance;
-		dy = -diry[dir] * distance;
+		int dx = -dirx[dir] * distance;
+		int dy = -diry[dir] * distance;
 		x = tx + dx;
 		y = ty + dy;
 		if(!(j=unit_can_reach(ud->bl,x,y))) {
@@ -1372,7 +1372,6 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	struct unit_data        *src_ud  = NULL;
 	int zone;
 	unsigned int tick = gettick();
-	int range;
 	struct status_change *sc;
 
 	nullpo_retr(0, src);
@@ -1457,6 +1456,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	/* 射程と障害物チェック */
 	{
 		struct block_list bl;
+		int range;
 
 		memset(&bl, 0, sizeof(bl));
 		bl.type = BL_NUL;
@@ -1519,7 +1519,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
-			src_sd->speed = src_sd->speed * (175 - 5 * pc_checkskill(src_sd,SA_FREECAST)) / 100;
+			src_sd->speed = src_sd->speed * (175 - 5 * skill) / 100;
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);

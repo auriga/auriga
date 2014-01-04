@@ -149,9 +149,11 @@ bool mapreg_sql_setregstr(int num, const char *str, int eternal)
 	if(eternal) {
 		const char *name = script_get_str(num);
 		int idx = num >> 24;
-		char buf1[64], buf2[1024], buf3[4096];
+		char buf1[64], buf2[1024];
 
 		if(str && *str) {
+			char buf3[4096];
+
 			strecpy(buf3, str);
 			result = sqldbs_query(&mysql_handle,
 				"INSERT INTO `" MAPREG_TABLE "` (`server_tag`, `reg`, `index`, `value`) VALUES ('%s', '%s', '%d', '%s')"

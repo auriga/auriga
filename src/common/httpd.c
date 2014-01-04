@@ -269,7 +269,7 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	if( httpd_log_format )
 	{
 		// combined log
-		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s \"%s\" \"%s\"" RETCODE,
+		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s \"%s\" \"%s\"" NEWLINE,
 			ip[0],ip[1],ip[2],ip[3], ((*sd->user)? (char*)sd->user: "-") ,
 			timestr, sd->request_line, status, lenstr,
 			(( sd->referer && *sd->referer )? (char*)sd->referer: "-"),
@@ -278,7 +278,7 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	else
 	{
 		// common log
-		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s" RETCODE,
+		fprintf( logfp,"%d.%d.%d.%d - %s [%s] \"%s\" %d %s" NEWLINE,
 			ip[0],ip[1],ip[2],ip[3], ((*sd->user)? (char*)sd->user: "-") ,
 			timestr, sd->request_line, status, lenstr );
 	}
@@ -3046,7 +3046,7 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 
 	ip = sd ? (unsigned char*) &session[sd->fd]->client_addr.sin_addr : 0;
 
-	fprintf( cgi_logfp, "%%%% [%s] %s\n%%%% %d %s" RETCODE, timestr, sd->request_line, status, sd->url );
+	fprintf( cgi_logfp, "%%%% [%s] %s\n%%%% %d %s" NEWLINE, timestr, sd->request_line, status, sd->url );
 
 	fflush( cgi_logfp );
 }

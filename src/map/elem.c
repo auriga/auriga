@@ -342,9 +342,9 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 
 	if(eld->status.mode == ELMODE_OFFENSIVE) {
 		struct block_list *tbl = NULL;
-		int count = 0;
 
 		if(eld->target_id == 0) {
+			int count = 0;
 			map_foreachinarea(elem_ai_sub_timer_search,eld->bl.m,
 							  msd->bl.x-AREA_SIZE,msd->bl.y-AREA_SIZE,
 							  msd->bl.x+AREA_SIZE,msd->bl.y+AREA_SIZE,

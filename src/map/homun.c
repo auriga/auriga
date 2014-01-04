@@ -253,7 +253,7 @@ int homun_upstatus(struct mmo_homunstatus *hd)
  */
 int homun_calc_status(struct homun_data *hd)
 {
-	int dstr,blv,aspd_k,lv;
+	int blv,aspd_k,lv;
 	double aspd;
 	int aspd_rate=100,speed_rate=100,atk_rate=100,matk_rate=100,hp_rate=100,sp_rate=100;
 	int flee_rate=100,def_rate=100,mdef_rate=100,critical_rate=100,hit_rate=100;
@@ -370,12 +370,11 @@ int homun_calc_status(struct homun_data *hd)
 		}
 	}
 
-	dstr   = hd->str / 10;
 	blv    = hd->status.base_level;
 	aspd_k = homun_db[hd->status.class_-HOM_ID].aspd_k;
 
 #ifdef PRE_RENEWAL
-	hd->atk      += hd->str * 2 + blv + dstr * dstr;
+	hd->atk      += hd->str * 2 + blv + (hd->str / 10) * (hd->str / 10);
 	hd->matk     += hd->int_+(hd->int_/ 5) * (hd->int_/ 5);
 	hd->hit      += hd->dex + blv;
 	hd->flee     += hd->agi + blv;

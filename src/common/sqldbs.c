@@ -96,16 +96,14 @@ bool sqldbs_simplequery(struct sqldbs_handle *hd, const char *query)
 {
 	nullpo_retr(false, hd);
 
+	sqldbs_free_result(hd);
+	hd->result = mysql_store_result(&hd->handle);
+
 	if( mysql_query(&hd->handle, query) )
 	{
 		printf("DB server Error - %s\n  %s\n\n", mysql_error(&hd->handle), query);
 		return false;
 	}
-
-	if(hd->result) {
-		sqldbs_free_result(hd);
-	}
-	hd->result = mysql_store_result(&hd->handle);
 
 	if( mysql_errno(&hd->handle) != 0 )
 	{
@@ -165,6 +163,9 @@ bool sqldbs_rollback(struct sqldbs_handle *hd)
 	if(--hd->transaction_count > 0) {
 		// transaction is nested
 		return true;
+	}
+	if(hd->transaction_count < 0) {
+		hd->transaction_count = 0;
 	}
 
 	return sqldbs_simplequery(hd, "ROLLBACK");
@@ -324,12 +325,6 @@ bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
 {
 	nullpo_retr(false, st);
 
-	if( mysql_stmt_prepare(st->stmt, query, strlen(query)) )
-	{
-		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), query);
-		return false;
-	}
-
 	// 初期化
 	st->bind_params  = false;
 	st->bind_columns = false;
@@ -338,6 +333,12 @@ bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
 		aFree(st->query);
 	}
 	st->query = (char *)aStrdup(query);
+
+	if( mysql_stmt_prepare(st->stmt, query, strlen(query)) )
+	{
+		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), query);
+		return false;
+	}
 
 	return true;
 }

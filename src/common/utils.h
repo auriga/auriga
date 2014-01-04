@@ -92,9 +92,9 @@ typedef int32  intptr;
 // 改行コード
 // ---------------------
 #ifdef CYGWIN
-#	define RETCODE "\r\n"	// (CR/LF：Windows系)
+#	define NEWLINE "\r\n"	// (CR/LF：Windows系)
 #else
-#	define RETCODE "\n"	// (LF：Unix系）
+#	define NEWLINE "\n"	// (LF：Unix系）
 #endif
 
 

@@ -1755,15 +1755,15 @@ static void read_constdb(void)
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 		type = 0;
-		if(sscanf(line, "%[A-Za-z0-9_#],%[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
-		   sscanf(line, "%[A-Za-z0-9_#] %[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
+		if(sscanf(line, "%1023[A-Za-z0-9_#],%1023[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
+		   sscanf(line, "%1023[A-Za-z0-9_#] %1024[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
 		{
 			n = add_str(name);
 			str_data[n].type  = (type == 0)? C_INT: C_PARAM;
 			str_data[n].u.val = (int)strtobxl(val,NULL,0);
 		} else {
-			if(sscanf(line, "%[A-Za-z0-9_]$,%[^\r\n]", name, val) == 2 ||
-			   sscanf(line, "%[A-Za-z0-9_]$ %[^\r\n]", name, val) == 2)
+			if(sscanf(line, "%1023[A-Za-z0-9_]$,%1023[^\r\n]", name, val) == 2 ||
+			   sscanf(line, "%1023[A-Za-z0-9_]$ %1023[^\r\n]", name, val) == 2)
 			{
 				n = add_str(strcat(name, "$"));
 				str_data[n].type  = C_STR;
@@ -3373,7 +3373,7 @@ int script_config_read(const char *cfgName)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
+		if(sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if(strcmpi(w1, "debug_vars") == 0) {
@@ -5484,7 +5484,7 @@ int buildin_viewpoint(struct script_state *st)
  */
 int buildin_countitem(struct script_state *st)
 {
-	int nameid=0, count=0, i;
+	int nameid = 0, count = 0;
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
 
@@ -5500,6 +5500,7 @@ int buildin_countitem(struct script_state *st)
 	}
 
 	if(sd && nameid > 0) {
+		int i;
 		for(i=0; i<MAX_INVENTORY; i++) {
 			if(sd->status.inventory[i].nameid == nameid)
 				count += sd->status.inventory[i].amount;
@@ -5516,7 +5517,7 @@ int buildin_countitem(struct script_state *st)
  */
 int buildin_countcartitem(struct script_state *st)
 {
-	int nameid=0, count=0, i;
+	int nameid = 0, count = 0;
 	struct map_session_data *sd = script_rid2sd(st);
 	struct script_data *data;
 
@@ -5532,6 +5533,7 @@ int buildin_countcartitem(struct script_state *st)
 	}
 
 	if(sd && nameid > 0) {
+		int i;
 		for(i=0; i<MAX_CART; i++) {
 			if(sd->status.cart[i].nameid == nameid)
 				count += sd->status.cart[i].amount;
@@ -9495,9 +9497,10 @@ int buildin_getrepairableitemcount(struct script_state *st)
 int buildin_repairitem(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
-	int i,c=0;
 
 	if(sd){
+		int i,c=0;
+
 		for(i=0;i<MAX_INVENTORY;i++){
 			if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0 && sd->status.inventory[i].attribute){
 				sd->status.inventory[i].attribute = 0;
@@ -9845,11 +9848,12 @@ int buildin_gethomuninfo(struct script_state *st)
 int buildin_checkequipedcard(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
-	int n,i,c;
+	int c;
 
 	c=conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	if(sd){
+		int n,i;
 		for(i=0;i<MAX_INVENTORY;i++){
 			if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount){
 				if(itemdb_isspecial(sd->status.inventory[i].card[0]))
@@ -10031,11 +10035,10 @@ int buildin_getareamobs(struct script_state *st)
 int buildin_getguildrelation(struct script_state *st)
 {
 	int gld1, gld2, result = 0;
-	struct guild *g = NULL;
 
 	gld1 = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(gld1 <= 0 || (g = guild_search(gld1)) == NULL) {
+	if(gld1 <= 0 || guild_search(gld1) == NULL) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
@@ -10051,7 +10054,7 @@ int buildin_getguildrelation(struct script_state *st)
 		gld2 = sd->status.guild_id;
 	}
 
-	if(gld2 <= 0 || (g = guild_search(gld2)) == NULL) {
+	if(gld2 <= 0 || guild_search(gld2) == NULL) {
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
@@ -12348,7 +12351,7 @@ int buildin_checkquest(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
 	struct quest_data *qd;
-	int quest_id, i, ret = 0;
+	int quest_id, ret = 0;
 
 	quest_id = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
@@ -12356,8 +12359,9 @@ int buildin_checkquest(struct script_state *st)
 	if(qd) {
 		if(qd->state == 2) {
 			ret |= 0x08;	// クエスト達成済み
-		}
-		else {
+		} else {
+			int i;
+
 			ret |= 0x05;	// クエスト受注済み+討伐数クリア
 			if(qd->limit < (unsigned int)time(NULL))
 				ret |= 0x02;	// 時間制限クリア

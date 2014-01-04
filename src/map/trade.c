@@ -132,9 +132,6 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 {
 	struct map_session_data *target_sd;
 
-	int trade_i;
-	int trade_weight=0;
-
 	nullpo_retv(sd);
 
 	target_sd = map_id2sd(sd->trade.partner);
@@ -152,6 +149,9 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 				}
 			}
 		} else if (amount <= sd->status.inventory[idx-2].amount && amount > 0 && itemdb_isdropable(sd->status.inventory[idx-2].nameid)) {
+			int trade_i;
+			int trade_weight = 0;
+
 			for(trade_i = 0; trade_i < MAX_DEAL_ITEMS; trade_i++) {
 				if(sd->trade.item_amount[trade_i] == 0){
 					trade_weight += sd->inventory_data[idx-2]->weight * amount;
@@ -373,7 +373,6 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 void trade_tradecommit(struct map_session_data *sd)
 {
 	struct map_session_data *target_sd;
-	int trade_i, idx, flag;
 
 	nullpo_retv(sd);
 
@@ -383,6 +382,8 @@ void trade_tradecommit(struct map_session_data *sd)
 			if (sd->state.deal_locked < 2) // set locked to 2
 				sd->state.deal_locked = 2;
 			if(target_sd->state.deal_locked == 2) { // the other one pressed 'trade' too
+				int trade_i, idx, flag;
+
 				// checks quantity of items
 				if (!trade_check(sd, target_sd)) { // this function do like the real trade, but with virtual inventories
 					trade_tradecancel(sd);

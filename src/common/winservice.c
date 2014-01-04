@@ -31,7 +31,7 @@
 #include "winservice.h"
 #include "core.h"
 
-static SERVICE_STATUS_HANDLE service_handle = NULL;
+static SERVICE_STATUS_HANDLE service_handle = 0;
 static SERVICE_STATUS        service_status;
 
 static char service_name[128] = "";
@@ -103,7 +103,7 @@ static void WINAPI winservice_main(DWORD argc, LPSTR *argv)
 	// ハンドラ登録
 	service_handle = RegisterServiceCtrlHandlerEx(service_name, winservice_ctrl_handler, NULL);
 
-	if(service_handle == NULL)
+	if(service_handle == 0)
 		return;
 
 	atexit(winservice_final);
@@ -135,7 +135,7 @@ static void WINAPI winservice_main(DWORD argc, LPSTR *argv)
  */
 bool winservice_notify_start()
 {
-	if(service_handle == NULL)
+	if(service_handle == 0)
 		return true;
 
 	service_status.dwCurrentState = SERVICE_START_PENDING;
@@ -151,7 +151,7 @@ bool winservice_notify_start()
  */
 bool winservice_notify_ready(void)
 {
-	if(service_handle == NULL)
+	if(service_handle == 0)
 		return true;
 
 	checkpoint = 0;
@@ -168,7 +168,7 @@ bool winservice_notify_ready(void)
  */
 bool winservice_notify_stop(void)
 {
-	if(service_handle == NULL)
+	if(service_handle == 0)
 		return true;
 
 	service_status.dwCurrentState = SERVICE_STOP_PENDING;
@@ -184,7 +184,7 @@ bool winservice_notify_stop(void)
  */
 bool winservice_notify_finish(void)
 {
-	if(service_handle == NULL)
+	if(service_handle == 0)
 		return true;
 
 	checkpoint = 0;

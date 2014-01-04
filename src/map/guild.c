@@ -427,20 +427,19 @@ atn_bignumber guild_payexp(struct map_session_data *sd,atn_bignumber exp)
  */
 void guild_getexp(struct map_session_data *sd, int exp)
 {
-	struct guild *g;
 	struct guild_expcache *c;
 	atn_bignumber tmp;
 
 	nullpo_retv(sd);
 
-	if (sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
+	if (sd->status.guild_id == 0 || guild_search(sd->status.guild_id) == NULL)
 		return;
 
 	if ((c = (struct guild_expcache *)numdb_search(guild_expcache_db,sd->status.char_id)) == NULL) {
 		c = (struct guild_expcache *)aCalloc(1,sizeof(struct guild_expcache));
-		c->guild_id = sd->status.guild_id;
+		c->guild_id   = sd->status.guild_id;
 		c->account_id = sd->status.account_id;
-		c->char_id = sd->status.char_id;
+		c->char_id    = sd->status.char_id;
 		numdb_insert(guild_expcache_db,c->char_id,c);
 	}
 	tmp = (atn_bignumber)c->exp + exp;
@@ -821,9 +820,8 @@ void guild_reply_invite(struct map_session_data *sd, int guild_id, unsigned char
 void guild_member_added(int guild_id, int account_id, int char_id, unsigned char flag)
 {
 	struct map_session_data *sd, *sd2;
-	struct guild *g;
 
-	if((g = guild_search(guild_id)) == NULL)
+	if(guild_search(guild_id) == NULL)
 		return;
 
 	sd = map_id2sd(account_id);
@@ -1530,7 +1528,6 @@ void guild_skillupack(int guild_id, int skill_num, int account_id, int flag)
 {
 	struct map_session_data *sd=map_id2sd(account_id);
 	struct guild *g=guild_search(guild_id);
-	int i;
 
 	if(g==NULL)
 		return;
@@ -1539,6 +1536,8 @@ void guild_skillupack(int guild_id, int skill_num, int account_id, int flag)
 		clif_guild_skillup(sd,skill_num,g->skill[skill_num-GUILD_SKILLID].lv,flag);
 
 	if(flag) {
+		int i;
+
 		// 全員に通知
 		for(i=0;i<g->max_member;i++) {
 			if((sd=g->member[i].sd)!=NULL)

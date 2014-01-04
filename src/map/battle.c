@@ -2373,7 +2373,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 #ifdef PRE_RENEWAL
 		/* 10．ファイティング計算 */
-		if(src_sd && (skill = pc_checkskill(src_sd,TK_POWER) > 0) && src_sd->status.party_id > 0)
+		if(src_sd && (skill = pc_checkskill(src_sd,TK_POWER)) > 0 && src_sd->status.party_id > 0)
 		{
 			int member_num = party_check_same_map_member_count(src_sd);
 			if(member_num > 0)
@@ -8927,7 +8927,7 @@ int battle_config_read(const char *cfgName)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%[^:]:%s",w1,w2) != 2)
+		if(sscanf(line,"%1023[^:]:%1023s",w1,w2) != 2)
 			continue;
 
 		if(strcmpi(w1,"import") == 0) {

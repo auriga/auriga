@@ -595,7 +595,7 @@ static FILE* memmgr_log(void)
 	if(!fp) {
 		fp = stdout;
 	}
-	fprintf(fp,"memmgr: memory leaks found" RETCODE);
+	fprintf(fp,"memmgr: memory leaks found" NEWLINE);
 
 	return fp;
 }
@@ -621,13 +621,13 @@ static void memmer_exit(void)
 						char buf[24];
 						strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&head->time_stamp));
 						fprintf(
-							fp,"%04d [%s] : %s line %d size %d" RETCODE,++count,buf,
+							fp,"%04d [%s] : %s line %d size %d" NEWLINE, ++count, buf,
 							head->file,head->line,head->size
 						);
 					}
 #else
 					fprintf(
-						fp,"%04d : %s line %d size %d" RETCODE,++count,
+						fp,"%04d : %s line %d size %d" NEWLINE, ++count,
 						head->file,head->line,head->size
 					);
 #endif
@@ -646,14 +646,14 @@ static void memmer_exit(void)
 			char buf[24];
 			strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&large->unit_head.time_stamp));
 			fprintf(
-				fp,"%04d [%s] : %s line %d large size %d" RETCODE,++count,buf,
+				fp,"%04d [%s] : %s line %d large size %d" NEWLINE, ++count, buf,
 				large->unit_head.file,
 				large->unit_head.line,large->size
 			);
 		}
 #else
 		fprintf(
-			fp,"%04d : %s line %d large size %d" RETCODE,++count,
+			fp,"%04d : %s line %d large size %d" NEWLINE, ++count,
 			large->unit_head.file,
 			large->unit_head.line,large->size
 		);

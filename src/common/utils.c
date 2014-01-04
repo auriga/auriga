@@ -72,12 +72,12 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 
 	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1行あたり96文字として計算
 
-	strcat(output, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" RETCODE);
+	strcat(output, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" NEWLINE);
 	strcat(output, "----  -----------------------------------------------   ----------------");
 
 	p = output + strlen(output);
 	for(i = 0; i < len; i += 16) {
-		p += sprintf(p, RETCODE "%04lX  ", (unsigned long)i);
+		p += sprintf(p, NEWLINE "%04lX  ", (unsigned long)i);
 		for(j = i; j < i + 16; j++) {
 			if(j < len) {
 				p += sprintf(p, "%02x ", buf[j]);
@@ -96,7 +96,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 				*p++ = ' ';
 		}
 	}
-	strcat(p, RETCODE);
+	strcat(p, NEWLINE);
 
 	fprintf(fp, output);
 	fflush(fp);

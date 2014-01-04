@@ -554,7 +554,6 @@ int memorial_reqinfo(struct map_session_data *sd, int memorial_id)
 {
 	struct memorial_data *md;
 	struct memorial_db *db;
-	int i;
 
 	nullpo_retr(1, sd);
 
@@ -568,6 +567,7 @@ int memorial_reqinfo(struct map_session_data *sd, int memorial_id)
 
 	// 予約状態
 	if(md->state == MDSTATE_IDLE) {
+		int i;
 		for(i = 0; i < memorial_wait.count; i++) {
 			if(memorial_wait.id[i] == memorial_id) {
 				clif_memorial_create(sd, db->name, i+1, 0);

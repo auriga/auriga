@@ -92,12 +92,12 @@ struct party* party_searchname(const char *str)
  */
 void party_create(struct map_session_data *sd, const char *name, int item, int item2)
 {
-	int i;
-	char party_name[24]; // 23 + NULL
-
 	nullpo_retv(sd);
 
 	if (sd->status.party_id == 0 && sd->state.party_creating == 0) {
+		int i;
+		char party_name[24]; // 23 + NULL
+
 		strncpy(party_name, name, 23);
 		// force '\0' at end (against hacker: normal player can not create a party with a name longer than 23 characters)
 		party_name[23] = '\0';
