@@ -5,7 +5,7 @@
 -	pointshop	SpecialItemShopper	-1,12913:1000,12914:1000,12918:1000,12917:1000,12916:1500,12927:1500,12910:500,12903:3000,12904:3000,12908:3000,12905:3000,12906:3000,12907:3000,12900:7500,12922:7500,12901:7000,12911:15000,12921:7000,12920:10000,13500:12000,13501:2500
 
 payon.gat,153,96,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
-alberta.gat,90,56,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+alberta.gat,90,56,6		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 prontera.gat,123,68,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 geffen.gat,114,104,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 morocc.gat,169,80,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73

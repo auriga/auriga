@@ -13,7 +13,8 @@ brasilis.gat,201,309,3	shop	テイミング商人	476,537,643
 //============================================================
 // アルベルタ⇔ブラジリス転送NPC
 //------------------------------------------------------------
-alberta.gat,247,115,3	script	ブリト号船員	100,{
+//alberta.gat,247,115,3	script	ブリト号船員	100,{
+alberta.gat,246,82,3	script	ブリト号船員	100,{
 	mes "[ブリト号船員]";
 	mes "そこのあなた！";
 	mes "^0000FFブラジリス^000000というところを";
@@ -46,6 +47,9 @@ alberta.gat,247,115,3	script	ブリト号船員	100,{
 	close2;
 	warp "brasilis.gat",314,60;
 	end;
+OnInit:
+	waitingroom "ブラジリス行き",0;
+	end;
 }
 
 brasilis.gat,316,57,3	script	ブリト号船員	100,{
@@ -63,7 +67,8 @@ brasilis.gat,316,57,3	script	ブリト号船員	100,{
 	mes "了解です！";
 	mes "やっぱり我が家が最高ですよね！";
 	close2;
-	warp "alberta.gat",244,115;
+	//warp "alberta.gat",244,115;
+	warp "alberta.gat",241,87;
 	end;
 }
 

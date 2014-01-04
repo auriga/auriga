@@ -13,7 +13,8 @@ dewata.gat,145,267,6	shop	果物商人	535,512,513,515,516,535
 //============================================================
 // アルベルタ⇔デワタ転送NPC
 //------------------------------------------------------------
-alberta.gat,240,47,4	script	デワタ行船員	536,{
+//alberta.gat,240,47,4	script	デワタ行船員	536,{
+alberta.gat,212,202,4	script	デワタ行船員	536,{
 	mes "[デワタ行船員]";
 	mes "きらめく波が心を潤してくれる";
 	mes "^0000FFデワタ^000000に行きませんか？";
@@ -60,6 +61,9 @@ alberta.gat,240,47,4	script	デワタ行船員	536,{
 	set Zeny,Zeny-'@zeny;
 	warp "dewata.gat",232,53;
 	end;
+OnInit:
+	waitingroom "デワタ行き",0;
+	end;
 }
 
 dewata.gat,229,49,6	script	アルベルタ行船員	536,{
@@ -78,7 +82,8 @@ dewata.gat,229,49,6	script	アルベルタ行船員	536,{
 	mes "それでは、アルベルタまで";
 	mes "お送りしましょう。";
 	close2;
-	warp "alberta.gat",235,44;
+	//warp "alberta.gat",235,44;
+	warp "alberta.gat",192,215;
 	end;
 }
 

@@ -1699,7 +1699,8 @@ alberta.gat,119,221,6	script	シャイロン	107,{
 //-----------------------------------------------
 //==== カートレボリューション Cart Revolution ===
 //-----------------------------------------------
-alberta.gat,232,106,6	script	コサンス	57,{
+//alberta.gat,232,106,6	script	コサンス	57,{
+alberta.gat,232,103,6	script	コサンス	57,{
 	if(getbaseclass(Class) != CLASS_MC) {
 		mes "[コサンス]";
 		mes "なるようにしかならない。";

@@ -175,7 +175,8 @@ alberta_in.gat,18,102,0	script	手紙	111,{
 	close;
 }
 
-alberta.gat,248,89,4	script	タートルアイランド学者	121,{
+//alberta.gat,248,89,4	script	タートルアイランド学者	121,{
+alberta.gat,246,114,4	script	タートルアイランド学者	121,{
 	mes "[ゾナダンニリリヤ]";
 	mes "あの空の下だと言っても";
 	mes "そこまでの遠さは決して";
@@ -847,7 +848,8 @@ alberta_in.gat,23,104,4	script	亀爺さん	120,{
 	}
 }
 
-alberta.gat,247,122,4	script	船乗り	709,{
+//alberta.gat,247,122,4	script	船乗り	709,{
+alberta.gat,244,118,4	script	船乗り	709,{
 	if(TUR_1QUE == 0) {
 		mes "[ゴテンブル]";
 		mes "仲間とか友達とかには";
@@ -1129,6 +1131,9 @@ alberta.gat,247,122,4	script	船乗り	709,{
 		mes "……。";
 		close;
 	}
+OnInit:
+	waitingroom "タートルアイランド行き",0;
+	end;
 }
 
 tur_dun01.gat,165,29,4	script	船乗り	709,{
@@ -1147,11 +1152,13 @@ tur_dun01.gat,165,29,4	script	船乗り	709,{
 	next;
 	mes "^3131FF- ドッドッドッド…… -^000000";
 	close2;
-	warp "alberta.gat",241,115;
+	//warp "alberta.gat",241,115;
+	warp "alberta.gat",241,87;
 	end;
 }
 
-alberta.gat,248,93,0	script	航海日誌	111,{
+//alberta.gat,248,93,0	script	航海日誌	111,{
+alberta.gat,246,118,0	script	航海日誌	111,{
 	if(TUR_1QUE == 1) {
 		switch(rand(6)) {	//正確な確率は不明
 		case 0:		//骸骨の鍵

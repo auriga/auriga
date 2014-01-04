@@ -404,7 +404,7 @@ alberta_in.gat,55,142,7	script	ヘアーデザイナー	91,{
 	close;
 }
 
-alberta.gat,33,141,0	script	放浪美容師	87,{
+alberta.gat,33,141,7	script	放浪美容師	87,{
 	mes "[チャーリー　ビシェム]";
 	mes "ヘイ！";
 	mes "こんなところまでお前もモノ好きね！";
