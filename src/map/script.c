@@ -3591,7 +3591,7 @@ static int varsdb_output(void)
 				struct vars_info *v = (struct vars_info *)numdb_search( vars_db, INT2PTR(vlist[i]) );
 				if( strncmp(name, "$@__", 4) != 0 ) {
 					// switch の内部変数は除外
-					fprintf(fp, "%-20s % 4d %s line %d" RETCODE, name, v->use_count, v->file, v->line);
+					fprintf(fp, "%-20s % 4d %s line %d" NEWLINE, name, v->use_count, v->file, v->line);
 				}
 			}
 			aFree( vlist );
@@ -3620,36 +3620,36 @@ static int debug_hash_output(void)
 		printf("do_final_script: dumping script str hash information\n");
 		memset(count, 0, sizeof(count));
 
-		fprintf(fp, "#1 dump all data" RETCODE);
-		fprintf(fp, "-------+--------+----------------------" RETCODE);
-		fprintf(fp, "  num  |  hash  | data_name"             RETCODE);
-		fprintf(fp, "-------+--------+----------------------" RETCODE);
+		fprintf(fp, "#1 dump all data" NEWLINE);
+		fprintf(fp, "-------+--------+----------------------" NEWLINE);
+		fprintf(fp, "  num  |  hash  | data_name"             NEWLINE);
+		fprintf(fp, "-------+--------+----------------------" NEWLINE);
 		for(i=LABEL_START; i<str_num; i++) {
 			unsigned int h = calc_hash(str_buf+str_data[i].str);
-			fprintf(fp, " %05d | %6u | %s" RETCODE, i, h, str_buf+str_data[i].str);
+			fprintf(fp, " %05d | %6u | %s" NEWLINE, i, h, str_buf+str_data[i].str);
 			if(++count[h] > max)
 				max = count[h];
 		}
-		fprintf(fp, "-------+--------+----------------------" RETCODE RETCODE);
+		fprintf(fp, "-------+--------+----------------------" NEWLINE RETCODE);
 
 		buckets = (int *)aCalloc((max+1),sizeof(int));
 
-		fprintf(fp, "#2 how many data is there in one hash" RETCODE);
-		fprintf(fp, "--------+-------" RETCODE);
-		fprintf(fp, "  hash  | count"  RETCODE);
-		fprintf(fp, "--------+-------" RETCODE);
+		fprintf(fp, "#2 how many data is there in one hash" NEWLINE);
+		fprintf(fp, "--------+-------" NEWLINE);
+		fprintf(fp, "  hash  | count"  NEWLINE);
+		fprintf(fp, "--------+-------" NEWLINE);
 		for(i=0; i<SCRIPT_HASH_SIZE; i++) {
-			fprintf(fp, " %6d | %5d" RETCODE, i, count[i]);
+			fprintf(fp, " %6d | %5d" NEWLINE, i, count[i]);
 			buckets[count[i]]++;
 		}
-		fprintf(fp, "--------+-------" RETCODE RETCODE);
+		fprintf(fp, "--------+-------" NEWLINE RETCODE);
 
-		fprintf(fp, "#3 distribution of hashed data" RETCODE);
-		fprintf(fp, "-------+---------+---------" RETCODE);
-		fprintf(fp, " items | buckets | percent"  RETCODE);
-		fprintf(fp, "-------+---------+---------" RETCODE);
+		fprintf(fp, "#3 distribution of hashed data" NEWLINE);
+		fprintf(fp, "-------+---------+---------" NEWLINE);
+		fprintf(fp, " items | buckets | percent"  NEWLINE);
+		fprintf(fp, "-------+---------+---------" NEWLINE);
 		for(i=0; i<=max; i++) {
-			fprintf(fp, " %5d | %7d | %6.2lf%%" RETCODE, i, buckets[i], (double)buckets[i]/SCRIPT_HASH_SIZE*100.);
+			fprintf(fp, " %5d | %7d | %6.2lf%%" NEWLINE, i, buckets[i], (double)buckets[i]/SCRIPT_HASH_SIZE*100.);
 		}
 		aFree(buckets);
 		fclose(fp);
@@ -5245,7 +5245,6 @@ int buildin_deletearray(struct script_state *st)
  */
 int buildin_printarray(struct script_state *st)
 {
-	struct map_session_data *sd = NULL;
 	int num;
 	char *name;
 	char prefix, postfix;
@@ -5268,8 +5267,6 @@ int buildin_printarray(struct script_state *st)
 		printf("buildin_printarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix != '$' && prefix != '\'' )
-		sd = script_rid2sd(st);
 
 	if(st->end > st->start+3)
 		delimiter = conv_str(st,& (st->stack->stack_data[st->start+3]));

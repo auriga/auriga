@@ -1,4 +1,30 @@
 ----------------------------------------
+//1176 [2014/01/05] by Rayce
+
+・改行コードの定義を RETCODE から NEWLINE に変更
+  RETCODE は <sqlext.h> 等で既に定義されており重複する可能性があるため
+
+・武器精錬可能アイテムリスト送信処理（0x221）に与える引数をrAthenaベースで補完（clif.c）
+
+・gcc4.8.1での警告修正
+	-> WindowsHandlerの初期値をNULLではなく 0 にする（winservice.c）
+	   RegisterServiceCtrlHandlerEx() は失敗時に 0 を返すため、INVALID_HANDLE_VALUE は使えない
+
+	-> chardb_txt_read() が常にtrueを返していたのを修正（chardb_txt.c）
+
+	-> Mobの特殊AIでスキルを使用させるとき、定義されてない命令対象が指定されていた場合はその
+	   命令を実行したMobのBlockIDが表示されるようにメッセージを変更（mob.c）
+
+	-> db/attr_fix.txt 読み込み時、各テーブルのヘッダのLvと最大値が読み込めなかった場合は
+	   そのテーブルの読み込みをスキップするように強化（pc.c）
+
+	-> 未使用の変数を削除（atcommand.c, battle.c, clif.c, script.c, skill.c, unit.c）
+
+・[SQL] SQLクエリ実行してエラーが発生した後、前回のSQLクエリの結果が参照できてしまうのを修正（sqldbs.c）
+
+・[SQL] ROLLBACKを複数実行したときのトランザクションカウンタの補正漏れを修正（sqldbs.c）
+
+----------------------------------------
 //1175 [2014/01/05] by refis
 
 ・スクリプト関数「checkactiveitem」で前方一致したフラグ値しか得られないミスを修正（script.c）

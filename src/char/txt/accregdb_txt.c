@@ -230,7 +230,7 @@ static int accregdb_txt_sync_sub(void *key, void *data, va_list ap)
 	if(reg->reg_num > 0) {
 		accregdb_tostr(line, reg);
 		fp = va_arg(ap, FILE *);
-		fprintf(fp, "%s" RETCODE, line);
+		fprintf(fp, "%s" NEWLINE, line);
 	}
 	return 0;
 }

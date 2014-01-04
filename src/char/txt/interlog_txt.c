@@ -43,7 +43,7 @@ int interlog_log_txt(const char *fmt, ...)
 	logfp = fopen(inter_log_filename, "a");
 	if(logfp) {
 		vfprintf(logfp, fmt, ap);
-		fprintf(logfp, RETCODE);
+		fprintf(logfp, NEWLINE);
 		fclose(logfp);
 	}
 	va_end(ap);

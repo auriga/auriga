@@ -1428,7 +1428,7 @@ R 021f <winpoint>.l <losepoint>.l <kill_nick>.24B <killed_nick>.24B <time>.l <ti
 R 0220 <target_id>.l <flag>.l
 	マーダラーとしてキャラ名を赤文字にするかのON/OFF
 	flag=0でOFF、1でON
-R 0221 <len>.l { <?1>.w <RefineItemID>.w <?2>.9B }.13B*
+R 0221 <len>.l { <?1>.w <RefineItemID>.w <refine>.B <card>.4w }.13B*
 	精錬選択ウィンドウ
 S 0222 <index>.l
 	精錬アイテム選択

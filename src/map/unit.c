@@ -988,15 +988,12 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	struct block_list       *target;
 	struct map_session_data *target_sd  = NULL;
 	struct mob_data         *target_md  = NULL;
-	struct homun_data       *target_hd  = NULL;
-	struct merc_data        *target_mcd = NULL;
-	struct elem_data        *target_eld = NULL;
 	int forcecast = 0, zone = 0, nomemorize = 0;
 	struct status_change *sc;
 
 	nullpo_retr(0, src);
 
-	if( (src_sd = BL_DOWNCAST( BL_PC,  src ) ) ) {
+	if( (src_sd = BL_DOWNCAST( BL_PC, src ) ) ) {
 		src_ud = &src_sd->ud;
 	} else if( (src_md = BL_DOWNCAST( BL_MOB, src ) ) ) {
 		src_ud = &src_md->ud;
@@ -1115,11 +1112,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if(src->m != target->m)         return 0; // 同じマップかどうか
 	if(!src->prev || !target->prev) return 0; // map 上に存在するか
 
-	target_sd  = BL_DOWNCAST( BL_PC,   target );
-	target_md  = BL_DOWNCAST( BL_MOB,  target );
-	target_hd  = BL_DOWNCAST( BL_HOM,  target );
-	target_mcd = BL_DOWNCAST( BL_MERC, target );
-	target_eld = BL_DOWNCAST( BL_ELEM, target );
+	target_sd  = BL_DOWNCAST( BL_PC,  target );
+	target_md  = BL_DOWNCAST( BL_MOB, target );
 
 	// 直前のスキル状況の記録
 	if(src_sd) {
@@ -1752,10 +1746,10 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	struct unit_data *src_ud;
 	struct map_session_data *src_sd  = NULL, *target_sd  = NULL;
 	struct pet_data         *src_pd  = NULL;
-	struct mob_data         *src_md  = NULL, *target_md  = NULL;
-	struct homun_data       *src_hd  = NULL, *target_hd  = NULL;
-	struct merc_data        *src_mcd = NULL, *target_mcd = NULL;
-	struct elem_data        *src_eld = NULL, *target_eld = NULL;
+	struct mob_data         *src_md  = NULL;
+	struct homun_data       *src_hd  = NULL;
+	struct merc_data        *src_mcd = NULL;
+	struct elem_data        *src_eld = NULL;
 
 	if((src = map_id2bl(id)) == NULL)
 		return 0;
@@ -1809,11 +1803,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	src_mcd = BL_DOWNCAST( BL_MERC, src );
 	src_eld = BL_DOWNCAST( BL_ELEM, src );
 
-	target_sd  = BL_DOWNCAST( BL_PC ,  target );
-	target_md  = BL_DOWNCAST( BL_MOB,  target );
-	target_hd  = BL_DOWNCAST( BL_HOM,  target );
-	target_mcd = BL_DOWNCAST( BL_MERC, target );
-	target_eld = BL_DOWNCAST( BL_ELEM, target );
+	target_sd  = BL_DOWNCAST( BL_PC, target );
 
 	if( src_sd ) {
 		// 異常などで攻撃できない

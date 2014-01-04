@@ -44,7 +44,7 @@ int loginlog_log_txt(const char *fmt, ...)
 	if(logfp)
 	{
 		vfprintf(logfp, fmt, ap);
-		fprintf(logfp, RETCODE);
+		fprintf(logfp, NEWLINE);
 		fclose(logfp);
 	}
 

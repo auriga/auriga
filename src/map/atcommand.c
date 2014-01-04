@@ -5691,7 +5691,7 @@ int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType 
  */
 static int atcommand_readdb(void)
 {
-	int i, j, k;
+	int i = 0, j;
 	FILE *fp;
 	char line[1024], *p;
 	const char *filename = "db/atcommand_go_db.txt";
@@ -5703,8 +5703,7 @@ static int atcommand_readdb(void)
 		printf("atcommand_readdb: open [%s] failed !\n", filename);
 		return 1;
 	}
-	i=0;
-	k=-1;
+
 	while(fgets(line,1020,fp)){
 		char *split[5];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')

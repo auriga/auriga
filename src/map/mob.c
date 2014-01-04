@@ -2876,7 +2876,7 @@ static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
 			target_id = bl->id;
 			break;
 		default:
-			printf("mobskill_command_use_id_sub: target_type error\n");
+			printf("mobskill_command_use_id_sub: target_type error (commander: %d)\n", commander_id);
 			return 0;
 	}
 

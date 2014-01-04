@@ -982,7 +982,7 @@ static int itemdb_debug_sub(void *key,void *data,va_list ap)
 	struct item_data *id = (struct item_data *)data;
 	FILE *fp = va_arg(ap,FILE *);
 
-	fprintf(fp,"%6d : %s" RETCODE,(int)key,id->jname);
+	fprintf(fp,"%6d : %s" NEWLINE,(int)key,id->jname);
 	return 0;
 }
 

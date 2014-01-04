@@ -385,9 +385,8 @@ int battle_attr_fix(int damage,int atk_elem,int def_elem)
  */
 static int battle_calc_damage(struct block_list *src, struct block_list *bl, int damage, int div_, int skill_num, int skill_lv, int flag)
 {
-	struct map_session_data *tsd    = NULL;
-	struct map_session_data *src_sd = NULL;
-	struct mob_data         *tmd    = NULL;
+	struct map_session_data *tsd = NULL;
+	struct mob_data         *tmd = NULL;
 	struct unit_data *ud;
 	struct status_change *sc, *src_sc;
 	unsigned int tick = gettick();
@@ -399,7 +398,6 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 	nullpo_retr(0, bl);
 
 	tsd    = BL_DOWNCAST( BL_PC,  bl );
-	src_sd = BL_DOWNCAST( BL_PC,  src);
 	tmd    = BL_DOWNCAST( BL_MOB, bl );
 
 	ud = unit_bl2ud(bl);
@@ -1613,9 +1611,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	struct map_session_data *src_sd  = NULL, *target_sd  = NULL;
 	struct mob_data         *src_md  = NULL, *target_md  = NULL;
 	struct pet_data         *src_pd  = NULL;
-	struct homun_data       *src_hd  = NULL, *target_hd  = NULL;
-	struct merc_data        *src_mcd = NULL, *target_mcd = NULL;
-	struct elem_data        *src_eld = NULL, *target_eld = NULL;
+	struct homun_data       *src_hd  = NULL;
+	struct merc_data        *src_mcd = NULL;
+	struct elem_data        *src_eld = NULL;
 	struct status_change    *sc      = NULL, *t_sc       = NULL;
 	int s_ele, s_ele_, s_str;
 	int t_vit, t_race, t_ele, t_enemy, t_size, t_mode, t_group, t_class;
@@ -1652,9 +1650,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	target_sd  = BL_DOWNCAST( BL_PC,   target );
 	target_md  = BL_DOWNCAST( BL_MOB,  target );
-	target_hd  = BL_DOWNCAST( BL_HOM,  target );
-	target_mcd = BL_DOWNCAST( BL_MERC, target );
-	target_eld = BL_DOWNCAST( BL_ELEM, target );
 
 	// アタッカー
 	s_ele  = status_get_attack_element(src);	// 属性
@@ -5407,12 +5402,8 @@ int battle_calc_base_magic_damage(struct block_list *src)
 static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag)
 {
 	struct Damage mgd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	struct map_session_data *sd   = NULL, *tsd = NULL;
-	struct mob_data         *tmd  = NULL;
-	struct homun_data       *thd  = NULL;
-	struct merc_data        *tmcd = NULL;
-	struct elem_data        *teld = NULL;
-	struct status_change    *sc   = NULL, *t_sc = NULL;
+	struct map_session_data *sd = NULL, *tsd = NULL;
+	struct status_change    *sc = NULL, *t_sc = NULL;
 	int ele, race;
 	int mdef1, mdef2, t_ele, t_race, t_enemy, t_mode;
 	int t_class, cardfix, i;
@@ -5428,18 +5419,13 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		return mgd;
 	}
 
-	sd = BL_DOWNCAST( BL_PC, bl );
-
-	tsd  = BL_DOWNCAST( BL_PC,   target );
-	tmd  = BL_DOWNCAST( BL_MOB,  target );
-	thd  = BL_DOWNCAST( BL_HOM,  target );
-	tmcd = BL_DOWNCAST( BL_MERC, target );
-	teld = BL_DOWNCAST( BL_ELEM, target );
+	sd   = BL_DOWNCAST( BL_PC, bl );
+	tsd  = BL_DOWNCAST( BL_PC, target );
 
 	// アタッカー
-	ele   = skill_get_pl(skill_num);
-	race  = status_get_race(bl);
-	sc    = status_get_sc(bl);
+	ele  = skill_get_pl(skill_num);
+	race = status_get_race(bl);
+	sc   = status_get_sc(bl);
 
 	// ターゲット
 	mdef1   = status_get_mdef(target);

@@ -353,9 +353,9 @@ void account_txt_sync(void)
 		for(j = 0; j < auth_dat[i].account_reg2_num; j++) {
 			fprintf(fp, "%s,%d ", auth_dat[i].account_reg2[j].str, auth_dat[i].account_reg2[j].value);
 		}
-		fprintf(fp, RETCODE);
+		fprintf(fp, NEWLINE);
 	}
-	fprintf(fp, "%d\t%%newid%%" RETCODE, account_id_count);
+	fprintf(fp, "%d\t%%newid%%" NEWLINE, account_id_count);
 
 	lock_fclose(fp, account_filename, &lock);
 

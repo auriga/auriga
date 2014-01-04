@@ -328,9 +328,9 @@ static int mapreg_txt_sync_intsub(void *key, void *data, va_list ap)
 
 	if(name[0] && name[1] != '@') {
 		if(idx == 0)
-			fprintf(fp,"%s\t%d" RETCODE, name, PTR2INT(data));
+			fprintf(fp,"%s\t%d" NEWLINE, name, PTR2INT(data));
 		else
-			fprintf(fp,"%s,%d\t%d" RETCODE, name, idx, PTR2INT(data));
+			fprintf(fp,"%s,%d\t%d" NEWLINE, name, idx, PTR2INT(data));
 	}
 	return 0;
 }
@@ -343,9 +343,9 @@ static int mapreg_txt_sync_strsub(void *key, void *data, va_list ap)
 
 	if(name[0] && name[1] != '@') {
 		if(idx == 0)
-			fprintf(fp,"%s\t%s" RETCODE, name, (char *)data);
+			fprintf(fp,"%s\t%s" NEWLINE, name, (char *)data);
 		else
-			fprintf(fp,"%s,%d\t%s" RETCODE, name, idx, (char *)data);
+			fprintf(fp,"%s,%d\t%s" NEWLINE, name, idx, (char *)data);
 	}
 	return 0;
 }

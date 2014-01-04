@@ -487,7 +487,7 @@ static int guilddb_txt_sync_sub(void *key, void *data, va_list ap)
 
 	guild_tostr(line, (struct guild *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 	return 0;
 }
 
@@ -805,7 +805,7 @@ static int guildcastle_txt_sync(void)
 
 	for(i = 0; i < MAX_GUILDCASTLE; i++) {
 		guildcastle_tostr(line, &castle_db[i]);
-		fprintf(fp, "%s" RETCODE, line);
+		fprintf(fp, "%s" NEWLINE, line);
 	}
 	lock_fclose(fp, castle_txt, &lock);
 

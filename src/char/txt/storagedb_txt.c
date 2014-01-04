@@ -231,7 +231,7 @@ static int storagedb_txt_sync_sub(void *key, void *data, va_list ap)
 	storage_tostr(line, (struct storage *)data);
 	fp = va_arg(ap, FILE *);
 	if(*line)
-		fprintf(fp, "%s" RETCODE, line);
+		fprintf(fp, "%s" NEWLINE, line);
 
 	return 0;
 }
@@ -433,7 +433,7 @@ static int gstoragedb_txt_sync_sub(void *key, void *data, va_list ap)
 		gstorage_tostr(line, gs);
 		fp = va_arg(ap, FILE *);
 		if(*line)
-			fprintf(fp, "%s" RETCODE, line);
+			fprintf(fp, "%s" NEWLINE, line);
 	}
 	return 0;
 }

@@ -88,7 +88,7 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 	for(i = 0; i < md->body_size; i++) {
 		fprintf(fp, "%02X", (unsigned char)(md->body[i]));
 	}
-	fprintf(fp, RETCODE);
+	fprintf(fp, NEWLINE);
 	fclose(fp);
 
 	return true;
@@ -128,7 +128,7 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 		for(j = 0; j < md[n].body_size; j++) {
 			fprintf(fp, "%02X", (unsigned char)(md[n].body[j]));
 		}
-		fprintf(fp, RETCODE);
+		fprintf(fp, NEWLINE);
 		n++;
 	}
 	lock_fclose(fp, filename, &lock);
@@ -357,7 +357,7 @@ static int maildb_txt_sync_sub(void *key, void *data, va_list ap)
 
 	mail_tostr(line, (struct mail *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 
 	return 0;
 }

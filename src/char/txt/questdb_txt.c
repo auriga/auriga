@@ -258,7 +258,7 @@ static int questdb_txt_sync_sub(void *key, void *data, va_list ap)
 	if(q && q->count > 0) {
 		questdb_tostr(line, q);
 		fp = va_arg(ap, FILE *);
-		fprintf(fp, "%s" RETCODE, line);
+		fprintf(fp, "%s" NEWLINE, line);
 	}
 	return 0;
 }

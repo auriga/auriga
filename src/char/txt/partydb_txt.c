@@ -264,7 +264,7 @@ static int partydb_txt_sync_sub(void *key,void *data,va_list ap)
 
 	party_tostr(line, (struct party *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 
 	return 0;
 }

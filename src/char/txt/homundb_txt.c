@@ -338,7 +338,7 @@ static int homundb_txt_sync_sub(void *key, void *data, va_list ap)
 
 	homun_tostr(line, (struct mmo_homunstatus *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 
 	return 0;
 }

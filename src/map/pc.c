@@ -5311,7 +5311,7 @@ int pc_need_status_point(struct map_session_data *sd,int type)
  */
 void pc_statusup(struct map_session_data *sd, unsigned short type)
 {
-	int need, is_baby;
+	int need;
 	int val = 0, max = 0;
 	short *param = NULL;
 
@@ -5322,7 +5322,6 @@ void pc_statusup(struct map_session_data *sd, unsigned short type)
 		clif_statusupack(sd,type,0,0);
 		return;
 	}
-	is_baby = pc_isbaby(sd);
 
 	switch(type) {
 		case SP_STR:
@@ -9409,11 +9408,13 @@ int pc_readdb(void)
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
-		for(j=0,p=line;j<3 && p;j++) {
+		for(j=0,p=line;j<2 && p;j++) {
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
+		if(j < 2)
+			continue;
 		lv = atoi(split[0]);
 		n  = atoi(split[1]);
 

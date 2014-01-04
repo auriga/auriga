@@ -845,7 +845,7 @@ static bool chardb_txt_read(void)
 		}
 	}
 
-	return true;
+	return ret;
 }
 
 /*==========================================
@@ -870,10 +870,10 @@ void chardb_txt_sync(void)
 	for(i = 0; i < char_num; i++) {
 		if(char_dat[i].st.char_id > 0 && char_dat[i].st.account_id > 0) {
 			mmo_char_tostr(line, &char_dat[i]);
-			fprintf(fp, "%s" RETCODE, line);
+			fprintf(fp, "%s" NEWLINE, line);
 		}
 	}
-	fprintf(fp, "%d\t%%newid%%" RETCODE, char_id_count);
+	fprintf(fp, "%d\t%%newid%%" NEWLINE, char_id_count);
 	lock_fclose(fp, char_txt, &lock);
 
 #ifdef TXT_JOURNAL

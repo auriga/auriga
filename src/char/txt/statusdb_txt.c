@@ -248,7 +248,7 @@ static int statusdb_txt_sync_sub(void *key, void *data, va_list ap)
 	if(sc && sc->count > 0) {
 		status_tostr(line, sc);
 		fp = va_arg(ap, FILE *);
-		fprintf(fp, "%s" RETCODE, line);
+		fprintf(fp, "%s" NEWLINE, line);
 	}
 	return 0;
 }

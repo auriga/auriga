@@ -277,12 +277,12 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		// write file
 		if ((fp = lock_fopen(extra_file_txt, &lock)) != NULL) {
-			fprintf(fp, "// このファイルの内容は変更しないでください！" RETCODE
-			            "// MAPサーバによって自動的に管理されています" RETCODE
-			            "// 追加したい場合は「%s」を利用してください" RETCODE
-			            "//" RETCODE, extra_add_file_txt);
+			fprintf(fp, "// このファイルの内容は変更しないでください！" NEWLINE
+			            "// MAPサーバによって自動的に管理されています" NEWLINE
+			            "// 追加したい場合は「%s」を利用してください" NEWLINE
+			            "//" NEWLINE, extra_add_file_txt);
 			for (i = 0; i < extra_num; i++)
-				fprintf(fp,"%d,%d,%s" RETCODE, extra_dat[i].item_id, extra_dat[i].quantity, extra_dat[i].name);
+				fprintf(fp,"%d,%d,%s" NEWLINE, extra_dat[i].item_id, extra_dat[i].quantity, extra_dat[i].name);
 			lock_fclose(fp, extra_file_txt, &lock);
 		}
 	}

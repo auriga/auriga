@@ -796,7 +796,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	};
 
 	struct map_session_data *sd = NULL, *dstsd = NULL;
-	struct mob_data         *md = NULL, *dstmd = NULL;
+	struct mob_data         *dstmd = NULL;
 	struct skill_unit       *unit = NULL;
 	struct status_change    *tsc = NULL;
 	int skill;
@@ -821,7 +821,6 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	}
 
 	sd    = BL_DOWNCAST( BL_PC,  src );
-	md    = BL_DOWNCAST( BL_MOB, src );
 	dstsd = BL_DOWNCAST( BL_PC,  bl );
 	dstmd = BL_DOWNCAST( BL_MOB, bl );
 
@@ -2869,7 +2868,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	struct map_session_data *sd  = NULL;
 	struct mob_data         *md  = NULL;
 	struct homun_data       *hd  = NULL;
-	struct merc_data        *mcd = NULL;
 	struct elem_data        *eld = NULL;
 	struct status_change    *sc  = NULL;
 	int is_enemy = 1;
@@ -2885,7 +2883,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	sd  = BL_DOWNCAST( BL_PC,   src );
 	md  = BL_DOWNCAST( BL_MOB,  src );
 	hd  = BL_DOWNCAST( BL_HOM,  src );
-	mcd = BL_DOWNCAST( BL_MERC, src );
 	eld = BL_DOWNCAST( BL_ELEM, src );
 
 	switch(skillid) {
@@ -5040,9 +5037,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 {
 	struct map_session_data *sd  = NULL, *dstsd  = NULL;
 	struct mob_data         *md  = NULL, *dstmd  = NULL;
-	struct homun_data       *hd  = NULL, *dsthd  = NULL;
-	struct merc_data        *mcd = NULL, *dstmcd = NULL;
-	struct elem_data        *eld = NULL, *dsteld = NULL;
+	struct homun_data       *hd  = NULL;
+	struct merc_data        *mcd = NULL;
+	struct elem_data        *eld = NULL;
 	struct status_change    *sc  = NULL;
 	int is_enemy = 1;
 
@@ -5064,9 +5061,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 	dstsd  = BL_DOWNCAST( BL_PC,   bl );
 	dstmd  = BL_DOWNCAST( BL_MOB,  bl );
-	dsthd  = BL_DOWNCAST( BL_HOM,  bl );
-	dstmcd = BL_DOWNCAST( BL_MERC, bl );
-	dsteld = BL_DOWNCAST( BL_ELEM, bl );
 
 	if(sd && unit_isdead(&sd->bl))
 		return 1;
@@ -9749,12 +9743,10 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skilllv,unsigned int tick,int flag)
 {
 	struct map_session_data *sd = NULL;
-	struct mob_data *md = NULL;
 
 	nullpo_retr(0, src);
 
-	sd = BL_DOWNCAST( BL_PC,  src );
-	md = BL_DOWNCAST( BL_MOB, src );
+	sd = BL_DOWNCAST( BL_PC, src );
 
 	switch(skillid) {
 	case WZ_METEOR:
@@ -10927,7 +10919,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			default:
 				map_foreachinarea(skill_landprotector,src->m,ux,uy,ux,uy,BL_SKILL,skillid,&alive);
 				if(alive)
-					map_foreachinarea(skill_maelstrom,src->m,ux-2,uy-2,ux+2,uy+2,BL_SKILL,skillid,skilllv,&alive,&mael_flag);
+					map_foreachinarea(skill_maelstrom,src->m,ux-2,uy-2,ux+2,uy+2,BL_SKILL,skilllv,&alive,&mael_flag);
 				break;
 		}
 
@@ -18450,7 +18442,7 @@ static int skill_detonator( struct block_list *bl, va_list ap )
  */
 static int skill_maelstrom( struct block_list *bl, va_list ap )
 {
-	int skillid, skilllv;
+	int skilllv;
 	int *alive, *flag;
 	struct skill_unit *unit;
 	struct block_list *src;
@@ -18459,7 +18451,6 @@ static int skill_maelstrom( struct block_list *bl, va_list ap )
 	nullpo_retr(0, bl);
 	nullpo_retr(0, unit = (struct skill_unit *)bl);
 
-	skillid = va_arg(ap,int);
 	skilllv = va_arg(ap,int);
 	alive   = va_arg(ap,int *);
 	flag    = va_arg(ap,int *);

@@ -254,7 +254,7 @@ static int petdb_txt_sync_sub(void *key, void *data, va_list ap)
 
 	pet_tostr(line, (struct s_pet *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 
 	return 0;
 }

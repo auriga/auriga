@@ -235,7 +235,7 @@ static int elemdb_txt_sync_sub(void *key,void *data,va_list ap)
 
 	elem_tostr(line, (struct mmo_elemstatus *)data);
 	fp = va_arg(ap, FILE *);
-	fprintf(fp, "%s" RETCODE, line);
+	fprintf(fp, "%s" NEWLINE, line);
 	return 0;
 }
 

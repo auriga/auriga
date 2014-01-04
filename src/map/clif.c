@@ -10129,11 +10129,8 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
 void clif_weapon_refine_list(struct map_session_data *sd)
 {
 	int i,j,c=0,fd;
-	int skilllv;
 
 	nullpo_retv(sd);
-
-	skilllv = pc_checkskill(sd,WS_WEAPONREFINE);
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x221;
@@ -10148,9 +10145,36 @@ void clif_weapon_refine_list(struct map_session_data *sd)
 		{
 			WFIFOW(fd,c*13+ 4)=i+2;
 			WFIFOW(fd,c*13+ 6)=sd->status.inventory[i].nameid;
-			WFIFOW(fd,c*13+ 8)=0;
-			WFIFOW(fd,c*13+10)=0;
-			WFIFOB(fd,c*13+12)=c;
+			WFIFOB(fd,c*13+ 8)=sd->status.inventory[i].refine;
+			if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
+				if(sd->inventory_data[i]->flag.pet_egg) {
+					WFIFOW(fd,9) = 0;
+					WFIFOW(fd,11) = 0;
+					WFIFOW(fd,13) = 0;
+				} else {
+					WFIFOW(fd,9) = sd->status.inventory[i].card[0];
+					WFIFOW(fd,11) = sd->status.inventory[i].card[1];
+					WFIFOW(fd,13) = sd->status.inventory[i].card[2];
+				}
+				WFIFOW(fd,15) = sd->status.inventory[i].card[3];
+			} else {
+				if(sd->status.inventory[i].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[0])) > 0)
+					WFIFOW(fd,9)=j;
+				else
+					WFIFOW(fd,9)=sd->status.inventory[i].card[0];
+				if(sd->status.inventory[i].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[1])) > 0)
+					WFIFOW(fd,11)=j;
+				else
+					WFIFOW(fd,11)=sd->status.inventory[i].card[1];
+				if(sd->status.inventory[i].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[2])) > 0)
+					WFIFOW(fd,13)=j;
+				else
+					WFIFOW(fd,13)=sd->status.inventory[i].card[2];
+				if(sd->status.inventory[i].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[3])) > 0)
+					WFIFOW(fd,15)=j;
+				else
+					WFIFOW(fd,15)=sd->status.inventory[i].card[3];
+			}
 			c++;
 		}
 	}
