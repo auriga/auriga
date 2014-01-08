@@ -1,4 +1,13 @@
 ----------------------------------------
+//1178 [2014/01/09] by Rayce
+
+・callshop命令でPointShopからアイテムが取得できるように修正（script.c）
+	reported by rusya7234さん
+
+・[SQL] Auriga-1174以降、mysql_query() 実行後に結果セットの保存処理が無くなっていたバグを修正（sqldbs.c）
+	reported by rusya7234さん
+
+----------------------------------------
 //1177 [2014/01/05] by Rayce
 
 ・Auriga-1176のファイル同梱漏れ（common/*.c）

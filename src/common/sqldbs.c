@@ -97,13 +97,13 @@ bool sqldbs_simplequery(struct sqldbs_handle *hd, const char *query)
 	nullpo_retr(false, hd);
 
 	sqldbs_free_result(hd);
-	hd->result = mysql_store_result(&hd->handle);
 
 	if( mysql_query(&hd->handle, query) )
 	{
 		printf("DB server Error - %s\n  %s\n\n", mysql_error(&hd->handle), query);
 		return false;
 	}
+	hd->result = mysql_store_result(&hd->handle);
 
 	if( mysql_errno(&hd->handle) != 0 )
 	{

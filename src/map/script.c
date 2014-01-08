@@ -12516,6 +12516,7 @@ int buildin_callshop(struct script_state *st)
 			default: clif_npcbuysell(sd,nd->bl.id); break;	//メニューを開く
 		}
 	} else {
+		sd->npc_shopid = nd->bl.id;
 		clif_pointshop_list(sd, nd);
 	}
 
