@@ -909,8 +909,8 @@ int csvdb_get_num(struct csvdb_data *csv, int row, int col)
 {
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
 		return -1;
-	else
-		return csv->data[csv->index[row]].data_v[col];
+
+	return csv->data[csv->index[row]].data_v[col];
 }
 
 // 指定した行、列のデータへのポインタを返す
@@ -918,8 +918,8 @@ const char* csvdb_get_str(struct csvdb_data *csv, int row, int col)
 {
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
 		return NULL;
-	else
-		return csv->data[csv->index[row]].data_p[col];
+
+	return csv->data[csv->index[row]].data_p[col];
 }
 
 // 先頭の行にある数字がvalue と一致する行を返す
@@ -927,7 +927,9 @@ int csvdb_find_num(struct csvdb_data *csv, int col, int value)
 {
 	int i;
 
-	if( csv == NULL || col < 0 || col >= MAX_CSVCOL) return -1;
+	if( csv == NULL || col < 0 || col >= MAX_CSVCOL)
+		return -1;
+
 	for(i = 0; i < csv->row_notempty; i++) {
 		struct csvdb_line *line = &csv->data[csv->index[i]];
 		if( line->num > col && line->data_v[col] == value ) {
@@ -942,7 +944,9 @@ int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
 {
 	int i;
 
-	if( csv == NULL || col < 0 || col >= MAX_CSVCOL) return -1;
+	if( csv == NULL || col < 0 || col >= MAX_CSVCOL)
+		return -1;
+
 	for(i = 0; i < csv->row_notempty; i++) {
 		struct csvdb_line *line = &csv->data[csv->index[i]];
 		if( line->num > col && !strcmp(line->data_p[col], value) ) {
@@ -955,11 +959,13 @@ int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
 // csv のリサイズ(ただし、列数は無視される)
 static int csvdb_resize(struct csvdb_data *csv, int row, int col)
 {
-	int i;
+	if( csv == NULL || col < 0 || row < 0 || col >= MAX_CSVCOL)
+		return 0;
 
-	if( csv == NULL || col < 0 || row < 0 || col >= MAX_CSVCOL) return 0;
 	// 行の拡張
 	if( csv->row_count < row ) {
+		int i;
+
 		while( csv->row_max <= row ) {
 			csv->row_max += 32;
 			csv->data = (struct csvdb_line*)aRealloc(
@@ -994,9 +1000,12 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str)
 	int i;
 	struct csvdb_line *line;
 
-	if( csv == NULL || col < 0 || col >= MAX_CSVCOL || row < 0) return 0;
+	if( csv == NULL || col < 0 || col >= MAX_CSVCOL || row < 0)
+		return 0;
+
 	if( csv->row_notempty <= row ) {
-		if(!csvdb_resize(csv, row + 1, col + 1)) return 0;
+		if(!csvdb_resize(csv, row + 1, col + 1))
+			return 0;
 		csv->row_notempty = row + 1;
 	}
 	line = &csv->data[ csv->index[row] ];
@@ -1026,7 +1035,9 @@ int csvdb_clear_row(struct csvdb_data *csv, int row)
 	int i;
 	struct csvdb_line *line;
 
-	if( csv == NULL || row < 0 || csv->row_notempty <= row ) return 0;
+	if( csv == NULL || row < 0 || csv->row_notempty <= row )
+		return 0;
+
 	line = &csv->data[ csv->index[ row ] ];
 	if( line->buf == NULL ) {
 		for(i = 0; i < line->num; i++) {
@@ -1067,7 +1078,9 @@ static int csvdb_sort_desc(const void *a, const void *b)
 
 int csvdb_sort(struct csvdb_data *csv, int key, int order)
 {
-	if(csv == NULL || key < 0) return 0;
+	if(csv == NULL || key < 0)
+		return 0;
+
 	csvdb_sort_key  = key;
 	csvdb_sort_data = csv->data;
 	if( order != -1 ) {
@@ -1086,7 +1099,9 @@ int csvdb_delete_row(struct csvdb_data *csv, int row)
 {
 	int i;
 
-	if(csv == NULL || row < 0 || csv->row_notempty <= row) return 0;
+	if(csv == NULL || row < 0 || csv->row_notempty <= row)
+		return 0;
+
 	csvdb_clear_row(csv,row);
 	i = csv->index[row];
 	memmove(&csv->index[row], &csv->index[row+1], sizeof(int)*(csv->row_count-row-1));
@@ -1101,7 +1116,9 @@ int csvdb_insert_row(struct csvdb_data *csv, int row)
 {
 	int i;
 
-	if( csv == NULL || row < 0 || csv->row_notempty <= row) return 0;
+	if( csv == NULL || row < 0 || csv->row_notempty <= row)
+		return 0;
+
 	csvdb_resize(csv, csv->row_notempty + 1, 0);
 	i = csv->index[csv->row_count-1];
 	memmove(&csv->index[row+1],&csv->index[row],sizeof(int)*(csv->row_count-row));
@@ -1117,11 +1134,15 @@ int csvdb_flush(struct csvdb_data *csv)
 	int  i, j, lock;
 	FILE *fp;
 
-	if( csv == NULL ) return 0;
-	if( !csv->dirty ) return 1; // 更新されてなければ何もしない
+	if( csv == NULL )
+		return 0;
+
+	if( !csv->dirty )
+		return 1; // 更新されてなければ何もしない
 
 	fp = lock_fopen( csv->file, &lock );
-	if( !fp ) return 0;
+	if( !fp )
+		return 0;
 
 	for(i = 0; i < csv->row_notempty; i++) {
 		struct csvdb_line *line = &csv->data[csv->index[i]];
@@ -1154,7 +1175,8 @@ void csvdb_close(struct csvdb_data *csv)
 {
 	int i, j;
 
-	if( csv == NULL ) return;
+	if( csv == NULL )
+		return;
 
 	if( csv->dirty ) {
 		csvdb_flush( csv );
@@ -1182,7 +1204,8 @@ void csvdb_dump(struct csvdb_data* csv)
 	int i, j;
 	struct csvdb_line *line;
 
-	if( csv == NULL ) return;
+	if( csv == NULL )
+		return;
 
 	printf("csvdb_dump: index\n");
 	for(i = 0; i < csv->row_notempty; i++) {

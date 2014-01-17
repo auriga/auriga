@@ -80,7 +80,7 @@ bool sqldbs_query(struct sqldbs_handle *hd, const char *query, ...)
 	n = vsnprintf(sql, sizeof(sql) - 1, query, ap);
 	va_end(ap);
 
-	if(n < 0 && n >= sizeof(sql) - 1) {
+	if(n < 0 || n >= sizeof(sql) - 1) {
 		printf("sqldbs_query: too long query!");
 		return false;
 	}
@@ -309,7 +309,7 @@ bool sqldbs_stmt_prepare(struct sqldbs_stmt *st, const char *query, ...)
 	n = vsnprintf(sql, sizeof(sql) - 1, query, ap);
 	va_end(ap);
 
-	if(n < 0 && n >= sizeof(sql) - 1) {
+	if(n < 0 || n >= sizeof(sql) - 1) {
 		printf("sqldbs_query: too long query!");
 		return false;
 	}

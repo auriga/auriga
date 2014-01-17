@@ -996,6 +996,7 @@ static int read_merc_db(void)
 			script_free_code(merc_db[i].script);
 	}
 	memset(merc_db, 0, sizeof(merc_db));
+	merc_count = 0;
 
 	for(i = 0; i < 2; i++) {
 		fp = fopen(filename[i], "r");
@@ -1177,7 +1178,6 @@ void merc_reload(void)
  */
 int do_init_merc(void)
 {
-	merc_count = 0;
 	read_merc_db();
 	read_merc_skilldb();
 

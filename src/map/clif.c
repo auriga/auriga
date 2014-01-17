@@ -8056,17 +8056,19 @@ static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data*
 	nullpo_retv(sd);
 	nullpo_retv(hd);
 
-	if(hd->ud.walktimer != -1){
+#if 0
+	if(hd->ud.walktimer != -1) {
 		len = clif_hom007b(hd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
 	} else {
 		// 0x78だと座標ズレを起こす
-		//len = clif_hom0078(hd,WFIFOP(sd->fd,0));
-		//WFIFOSET(sd->fd,len);
-		len = clif_hom007b(hd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+		len = clif_hom0078(hd,WFIFOP(sd->fd,0));
 	}
-	if(hd->view_size!=0)
+#endif
+
+	len = clif_hom007b(hd,WFIFOP(sd->fd,0));
+	WFIFOSET(sd->fd,len);
+
+	if(hd->view_size != 0)
 		clif_misceffect2(&hd->bl,422+hd->view_size);
 
 	return;
@@ -8083,17 +8085,19 @@ static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data*
 	nullpo_retv(sd);
 	nullpo_retv(mcd);
 
-	if(mcd->ud.walktimer != -1){
+#if 0
+	if(mcd->ud.walktimer != -1) {
 		len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
 	} else {
 		// 0x78だと座標ズレを起こす
-		//len = clif_merc0078(mcd,WFIFOP(sd->fd,0));
-		//WFIFOSET(sd->fd,len);
-		len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+		len = clif_merc0078(mcd,WFIFOP(sd->fd,0));
 	}
-	if(mcd->view_size!=0)
+#endif
+
+	len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
+	WFIFOSET(sd->fd,len);
+
+	if(mcd->view_size != 0)
 		clif_misceffect2(&mcd->bl,422+mcd->view_size);
 
 	return;
@@ -8110,17 +8114,19 @@ static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data*
 	nullpo_retv(sd);
 	nullpo_retv(eld);
 
-	if(eld->ud.walktimer != -1){
+#if 0
+	if(eld->ud.walktimer != -1) {
 		len = clif_elem007b(eld,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
 	} else {
 		// 0x78だと座標ズレを起こす
-		//len = clif_elem0078(eld,WFIFOP(sd->fd,0));
-		//WFIFOSET(sd->fd,len);
-		len = clif_elem007b(eld,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+		len = clif_elem0078(eld,WFIFOP(sd->fd,0));
 	}
-	if(eld->view_size!=0)
+#endif
+
+	len = clif_elem007b(eld,WFIFOP(sd->fd,0));
+	WFIFOSET(sd->fd,len);
+
+	if(eld->view_size != 0)
 		clif_misceffect2(&eld->bl,422+eld->view_size);
 
 	return;
@@ -18821,13 +18827,12 @@ static void clif_parse_ChangePetName(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_GMKick(int fd,struct map_session_data *sd, int cmd)
 {
-	struct block_list *target;
 	int tid = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
 	nullpo_retv(sd);
 
 	if(pc_isGM(sd) >= get_atcommand_level(AtCommand_Kick)) {
-		target = map_id2bl(tid);
+		struct block_list *target = map_id2bl(tid);
 		if(target) {
 			if(target->type == BL_PC) {
 				struct map_session_data *tsd = (struct map_session_data *)target;

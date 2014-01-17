@@ -351,7 +351,7 @@ static int guild_fromstr(char *str, struct guild *g)
 	for(i = 0; i < MAX_GUILDSKILL; i++)
 		g->skill[i].id = 0;
 
-	str = strchr(str + 1, '\t');
+	//str = strchr(str + 1, '\t');
 	//printf("GuildSkillInfo OK\n");
 
 	return 0;
@@ -857,9 +857,7 @@ void guilddb_txt_final(void)
  */
 bool guilddb_txt_init(void)
 {
-	bool ret = false;
-
-	ret = guilddb_txt_read();
+	bool ret = guilddb_txt_read();
 
 	return (guildcastle_txt_read() && ret)? true: false;
 }

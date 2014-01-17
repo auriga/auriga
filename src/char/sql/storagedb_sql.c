@@ -110,9 +110,8 @@ bool storagedb_sql_delete(int account_id)
 	// try
 	do
 	{
-		int i;
-
 		if(s) {
+			int i;
 			for(i = 0; i < s->storage_amount; i++) {
 				// ペット削除
 				if(s->store_item[i].card[0] == (short)0xff00) {
@@ -232,9 +231,8 @@ bool gstoragedb_sql_delete(int guild_id)
 	// try
 	do
 	{
-		int i;
-
 		if(s) {
+			int i;
 			for(i = 0; i < s->storage_amount; i++) {
 				// ペット削除
 				if( s->store_item[i].card[0] == (short)0xff00) {

@@ -770,7 +770,7 @@ static int SessionFindSocket(const SOCKET elem, size_t *retpos)
 	// do a binary search with smallest first
 	// make some initial stuff
 	int ret = 0;
-	size_t a = 0, b = sessioncount - 1, c;
+	size_t a = 0, b = sessioncount - 1;
 	size_t pos = 0;
 
 	// just to be sure we have to do something
@@ -793,6 +793,8 @@ static int SessionFindSocket(const SOCKET elem, size_t *retpos)
 		pos = b;
 		ret = 1;
 	} else {
+		size_t c;
+
 		// binary search
 		// search between first and last
 		do {
@@ -1362,7 +1364,7 @@ static void socket_config_read2(const char *filename)
 			continue;
 		if (line[0] == '/' && line[1] == '/')
 			continue;
-		if (sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
+		if (sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if (strcmpi(w1, "order") == 0) {

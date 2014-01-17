@@ -54,7 +54,7 @@ bool winservice_change_current_dir(void)
 	if(!GetModuleFileName(NULL, path, MAX_PATH))
 		return false;
 
-	for(i = strlen(path) - 1; i >= 0; i--) {
+	for(i = strlen(path) - 1; i != 0; i--) {
 		if(path[i] == '/' || path[i] == '\\') {
 			path[i] = '\0';
 			break;

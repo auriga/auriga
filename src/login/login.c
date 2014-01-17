@@ -217,7 +217,6 @@ static int mmo_auth(struct login_session_data *sd)
 	char tmpstr[32];
 	size_t len;
 	bool newaccount  = false;
-	bool encpasswdok = false;
 	const struct mmo_account *ac;
 
 	if( sd == NULL )
@@ -283,8 +282,9 @@ static int mmo_auth(struct login_session_data *sd)
 	// パスワードチェック(MD5)
 	if( sd->passwdenc > 0 )
 	{
+		bool encpasswdok = false;
 		int enc = sd->passwdenc;
-		char md5str[192],md5bin[32];
+		char md5bin[32];
 
 		if( !sd->md5keylen )
 		{
@@ -300,6 +300,7 @@ static int mmo_auth(struct login_session_data *sd)
 
 		else if( enc <= 3 )
 		{
+			char md5str[192];
 			if( enc > 2 )
 				enc = 1;
 			do
@@ -515,12 +516,13 @@ int parse_fromchar(int fd)
 				}
 				if( i <= AUTH_FIFO_SIZE )
 				{
-					int p,j;
 					const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
 
 					// account_reg送信
 					if(ac)
 					{
+						int p,j;
+
 						WFIFOW(fd,0) = 0x2729;
 						WFIFOL(fd,4) = ac->account_id;
 						for( p = 8, j = 0; j < ac->account_reg2_num; p += 36, j++ )
@@ -630,11 +632,11 @@ int parse_fromchar(int fd)
 				return 0;
 
 			{
-				int p,j;
 				const struct mmo_account *ac = account_load_num(RFIFOL(fd,4));
 
 				if(ac)
 				{
+					int p,j;
 					unsigned char buf[ACCOUNT_REG2_NUM*36+16];
 					struct mmo_account ac2;
 					memcpy(&ac2,ac,sizeof(struct mmo_account));
@@ -1399,7 +1401,7 @@ static void login_config_read(const char *cfgName)
 			continue;
 		if( line[0] == '/' && line[1] == '/' )
 			continue;
-		if( sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2 )
+		if( sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2 )
 			continue;
 
 		if( strcmpi(w1, "admin_pass") == 0 )

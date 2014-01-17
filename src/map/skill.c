@@ -17945,7 +17945,7 @@ void skill_magicdecoy(struct map_session_data *sd, int nameid)
  */
 void skill_autoshadowspell(struct map_session_data *sd, int skillid)
 {
-	int skilllv, shadowlv;
+	int skilllv;
 
 	nullpo_retv(sd);
 
@@ -17954,9 +17954,9 @@ void skill_autoshadowspell(struct map_session_data *sd, int skillid)
 
 	if((skilllv = pc_checkskill(sd,skillid)) > 0) {
 		/* シャドウオートスペルの使用時レベルでオートスペルのレベルが決定 */
-		shadowlv = (sd->skill_menu.lv + 1) / 2;
-		skilllv = (skilllv > shadowlv)? shadowlv: skilllv;
+		int shadowlv = (sd->skill_menu.lv + 1) / 2;
 
+		skilllv = (skilllv > shadowlv)? shadowlv: skilllv;
 		status_change_start(&sd->bl,SC__AUTOSHADOWSPELL,sd->skill_menu.lv,skillid,skilllv,0,skill_get_time(SC_AUTOSHADOWSPELL,sd->skill_menu.lv),0);
 	}
 

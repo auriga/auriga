@@ -426,7 +426,6 @@ bool account_sql_account_new(struct mmo_account *account, const char *tmpstr)
  */
 static bool account_sql_log(bool is_start)
 {
-	bool is_delayed = false;
 	bool result = false;
 
 	// support DELAYED ?
@@ -436,6 +435,8 @@ static bool account_sql_log(bool is_start)
 	);
 
 	if(result) {
+		bool is_delayed = false;
+
 		if(sqldbs_num_rows(&mysql_handle) > 0) {
 			is_delayed = true;
 		}

@@ -57,6 +57,7 @@
 #include "homun.h"
 #include "unit.h"
 #include "merc.h"
+#include "elem.h"
 
 static char command_symbol = '@'; /* first char of the commands */
 
@@ -191,6 +192,7 @@ ATCOMMAND_FUNC(reloadgmaccount);
 ATCOMMAND_FUNC(reloadhomundb);
 ATCOMMAND_FUNC(reloaditemdb);
 ATCOMMAND_FUNC(reloadmercdb);
+ATCOMMAND_FUNC(reloadelemdb);
 ATCOMMAND_FUNC(reloadmobdb);
 ATCOMMAND_FUNC(reloadpcdb);
 ATCOMMAND_FUNC(reloadskilldb);
@@ -364,6 +366,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ReloadHomunDB,      "@reloadhomundb",    0, atcommand_reloadhomundb,       NULL },
 	{ AtCommand_ReloadItemDB,       "@reloaditemdb",     0, atcommand_reloaditemdb,        NULL },
 	{ AtCommand_ReloadMercDB,       "@reloadmercdb",     0, atcommand_reloadmercdb,        NULL },
+	{ AtCommand_ReloadElemDB,       "@reloadelemdb",     0, atcommand_reloadelemdb,        NULL },
 	{ AtCommand_ReloadMobDB,        "@reloadmobdb",      0, atcommand_reloadmobdb,         NULL },
 	{ AtCommand_ReloadPcDB,         "@reloadpcdb",       0, atcommand_reloadpcdb,          NULL },
 	{ AtCommand_ReloadSkillDB,      "@reloadskilldb",    0, atcommand_reloadskilldb,       NULL },
@@ -4456,6 +4459,19 @@ int atcommand_reloadmercdb(const int fd, struct map_session_data* sd, AtCommandT
 }
 
 /*==========================================
+ * @reloadelemdb
+ *   精霊関連DBのリロード
+ *------------------------------------------
+ */
+int atcommand_reloadelemdb(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	elem_reload();
+	clif_displaymessage(fd, msg_txt(210));
+
+	return 0;
+}
+
+/*==========================================
  * MOBDBのリロード
  *------------------------------------------
  */
@@ -5678,7 +5694,7 @@ int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType 
 
 	nullpo_retr(-1, sd);
 
-	if (!message && !*message)
+	if (!message || !*message)
 		return -1;
 	if ((retr = sscanf(message, "%d %u", &class_, &limit)) < 1)
 		return -1;

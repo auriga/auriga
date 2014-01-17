@@ -1175,6 +1175,9 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 		const unsigned short nameid = item_list[i*2+1];
 		const unsigned short amount = item_list[i*2+0];
 
+		if(nameid == 0 || amount == 0)
+			return 5;
+
 		for(j = 0; nd->u.shop_item[j].nameid; j++) {
 			int view_id = itemdb_viewid(nd->u.shop_item[j].nameid);
 			if(view_id > 0) {

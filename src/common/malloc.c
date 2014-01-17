@@ -494,7 +494,6 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 /* ブロックを確保する */
 static struct block* block_malloc(unsigned short hash)
 {
-	int i;
 	struct block *p;
 
 	if(hash_unfill[0] != NULL) {
@@ -502,6 +501,8 @@ static struct block* block_malloc(unsigned short hash)
 		p = hash_unfill[0];
 		hash_unfill[0] = hash_unfill[0]->unfill_next;
 	} else {
+		int i;
+
 		/* ブロック用の領域を新たに確保する */
 		p = (struct block *)malloc(sizeof(struct block) * BLOCK_ALLOC);
 
@@ -646,16 +647,16 @@ static void memmer_exit(void)
 			char buf[24];
 			strftime(buf, sizeof(buf), "%Y/%m/%d %H:%M:%S", localtime(&large->unit_head.time_stamp));
 			fprintf(
-				fp,"%04d [%s] : %s line %d large size %d" NEWLINE, ++count, buf,
+				fp,"%04d [%s] : %s line %d large size %lu" NEWLINE, ++count, buf,
 				large->unit_head.file,
-				large->unit_head.line,large->size
+				large->unit_head.line, (unsigned int)large->size
 			);
 		}
 #else
 		fprintf(
-			fp,"%04d : %s line %d large size %d" NEWLINE, ++count,
+			fp,"%04d : %s line %d large size %lu" NEWLINE, ++count,
 			large->unit_head.file,
-			large->unit_head.line,large->size
+			large->unit_head.line, (unsigned int)large->size
 		);
 #endif
 		large = large->next;

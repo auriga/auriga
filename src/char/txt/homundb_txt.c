@@ -121,7 +121,7 @@ static int homun_tostr(char *str, struct mmo_homunstatus *h)
  */
 static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 {
-	int i, s, next, set, len;
+	int i, s, next, len;
 	int tmp_int[29];
 	char tmp_str[256];
 
@@ -208,8 +208,7 @@ static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
 		int n;
-		set = sscanf(str + next, "%d,%d%n", &tmp_int[0], &tmp_int[1], &len);
-		if(set != 2)
+		if(sscanf(str + next, "%d,%d%n", &tmp_int[0], &tmp_int[1], &len) != 2)
 			return 0;
 
 		n = tmp_int[0] - HOM_SKILLID;

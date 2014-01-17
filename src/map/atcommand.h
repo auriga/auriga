@@ -155,6 +155,7 @@ typedef enum {
 	AtCommand_ReloadHomunDB,
 	AtCommand_ReloadItemDB,
 	AtCommand_ReloadMercDB,
+	AtCommand_ReloadElemDB,
 	AtCommand_ReloadMobDB,
 	AtCommand_ReloadPcDB,
 	AtCommand_ReloadSkillDB,

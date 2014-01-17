@@ -99,7 +99,6 @@ static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 {
 	int set, dummy;
 	int tmp_int[8];
-	char tmp_str[256];
 
 	nullpo_retr(1, m);
 
@@ -113,6 +112,8 @@ static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 
 	if(set != 8)
 	{
+		char tmp_str[256];
+
 		// Auriga-0597以降の形式
 		set = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
 			&tmp_int[0],&tmp_int[1],tmp_str,

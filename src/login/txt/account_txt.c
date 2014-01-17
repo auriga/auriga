@@ -415,7 +415,7 @@ const struct mmo_account* account_txt_account_load_idx(int idx)
  */
 bool account_txt_account_save(struct mmo_account *account)
 {
-	int idx = -1;
+	int idx;
 
 	nullpo_retr(false, account);
 

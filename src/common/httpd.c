@@ -966,7 +966,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 	{
 		if( strncasecmp( sd->auth+i, "username=\"", 10 )==0 )		// ユーザー名
 		{
-			if( sscanf(sd->auth+i+10,"%[^\"]%n", buf, &n )==1 )
+			if( sscanf(sd->auth+i+10,"%1023[^\"]%n", buf, &n )==1 )
 			{
 				if( n>=sizeof(username) )
 					return 0;
@@ -978,7 +978,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "realm=\"", 7 )==0 )		// 領域名
 		{
-			if( sscanf(sd->auth+i+7,"%[^\"]%n", buf, &n )==1 )
+			if( sscanf(sd->auth+i+7,"%1023[^\"]%n", buf, &n )==1 )
 			{
 				if( n>=sizeof(realm) || strcmp(buf,a->realm)!=0 )
 					return 0;
@@ -990,7 +990,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "nonce=\"", 7 )==0 )		// nonce
 		{
-			if( sscanf(sd->auth+i+7,"%[^\"]%n", buf, &n )==1 )
+			if( sscanf(sd->auth+i+7,"%1023[^\"]%n", buf, &n )==1 )
 			{
 				if( n>=sizeof(nonce) || n<40  )
 					return 0;
@@ -1002,7 +1002,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "uri=\"", 5)==0 )		// URI
 		{
-			if( sscanf(sd->auth+i+5,"%[^\"]%n", uri, &n )==1 )
+			if( sscanf(sd->auth+i+5,"%1023[^\"]%n", uri, &n )==1 )
 			{
 				i += 6 + n;
 			}
@@ -1029,7 +1029,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "cnonce=\"", 8 )==0 )	// cnonce
 		{
-			if( sscanf(sd->auth+i+8,"%[^\"]%n", buf, &n )==1 )
+			if( sscanf(sd->auth+i+8,"%1023[^\"]%n", buf, &n )==1 )
 			{
 				if( n>=sizeof(cnonce))
 					return 0;
@@ -1041,7 +1041,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "nc=", 3 )==0 )			// nonce count
 		{
-			if( sscanf(sd->auth+i+3,"%[^, ]%n", buf, &n)==1 )
+			if( sscanf(sd->auth+i+3,"%1023[^, ]%n", buf, &n)==1 )
 			{
 				if( n!=8 )
 					return 0;
@@ -1053,7 +1053,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		}
 		if( strncasecmp( sd->auth+i, "response=\"", 10 )==0 )	// response
 		{
-			if( sscanf(sd->auth+i+10,"%[^\"]%n", buf, &n)==1 )
+			if( sscanf(sd->auth+i+10,"%1023[^\"]%n", buf, &n)==1 )
 			{
 				if( n!=32 )
 					return 0;
@@ -1153,7 +1153,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		if( sscanf(nc,"%08x",&nci )!=1 )	// nc がない
 			return 0;
 
-		if( nci<=0 )
+		if( nci == 0 )
 			return 0;
 
 		for( i=0; i<NONCE_LOG_SIZE; i++ )
@@ -1219,15 +1219,16 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_data *sd )
 {
 	// ユーザーチェック
-	char buf[1024], name[1024], passwd[1024], passwd2[33];
-	int i;
+	char buf[1024], name[1024], passwd[1024];
 
 	if( !sd->auth || strncasecmp( sd->auth, "Basic ", 6 )!=0 )
 		return 0;
 
-	if( httpd_decode_base64( buf, sd->auth+6 ) && sscanf(buf,"%[^:]:%[^\r]",name,passwd) == 2 )
+	if( httpd_decode_base64( buf, sd->auth+6 ) && sscanf(buf,"%1023[^:]:%1023[^\r]",name,passwd) == 2 )
 	{
 		const char *apass[4];
+		char passwd2[33];
+		int i;
 
 		// 登録された認証関数があればそれを使って比較する
 		if( auth_func[a->auth_func_id] && auth_func[a->auth_func_id]( a, sd, name, passwd2 ) && strcmp(passwd, passwd2)==0 )
@@ -1790,6 +1791,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 			if( sd->range_start<0 )	// 開始地点が負
 			{
 				httpd_send_error( sd,416 );
+				fclose(fp);
 				return;
 			}
 			status = 206;
@@ -1809,6 +1811,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 		if( file_size<0 )	// サイズが負
 		{
 			httpd_send_error( sd,416 );
+			fclose(fp);
 			return;
 		}
 
@@ -2871,7 +2874,7 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 			; x++ )
 	{
 		char w1[1024], w2[1024];
-		if( sscanf( sd->req_head[x], "%[^:]: %[^\r\n]", w1, w2 ) == 2 )
+		if( sscanf( sd->req_head[x], "%1023[^:]: %1023[^\r\n]", w1, w2 ) == 2 )
 		{
 			if( strcmpi( w1, "Content-Type"   )!=0 &&
 				strcmpi( w1, "Content-Length" )!=0 )
@@ -3261,7 +3264,7 @@ int httpd_config_read(const char *cfgName)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%[^:]: %[^\r\n]",w1,w2) != 2)
+		if(sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 			continue;
 
 		if(strcmpi(w1,"enable")==0)
@@ -3460,7 +3463,7 @@ int httpd_config_read(const char *cfgName)
 		{
 			char u[1024], p[1024];
 			CHECK_ACCES_TARGET("authuser");
-			if( sscanf(w2,"%[^:]:%s",u,p) == 2 )
+			if( sscanf(w2,"%1023[^:]:%1023s",u,p) == 2 )
 			{
 				httpd_config_read_add_authuser( a, u, p );
 			}

@@ -96,7 +96,6 @@ static int check_ttl_wisdata(void)
  */
 int inter_config_read(const char *cfgName)
 {
-	int i;
 	char line[1024],w1[1024],w2[1024];
 	FILE *fp;
 
@@ -106,8 +105,7 @@ int inter_config_read(const char *cfgName)
 		return 1;
 	}
 	while(fgets(line,1020,fp)) {
-		i = sscanf(line,"%[^:]: %[^\r\n]",w1,w2);
-		if(i != 2)
+		if(sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 			continue;
 
 		if(strcmpi(w1,"import") == 0) {

@@ -1341,13 +1341,14 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 		// リミッター無し
 		int i;
 		int max = mob_ai_hard_createlist();
+
 		for(i = 0; i < max; i++) {
 			mob_ai_sub_hard(mob_ai_hard_buf[i], tick);
 		}
 		mob_ai_hard_graph1++; // 処理済み数
 	} else if( gettick() - tick <= limit ) { // 処理時間に余裕があるか判定
 		// リミッター有り
-		int i, j = 0;
+		int j = 0;
 
 		// 前回のやり残しの処理
 		while( mob_ai_hard_next_count > 0 ) {
@@ -1357,18 +1358,22 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 			j += mob_ai_sub_hard( md, tick ) + 5;
 			if( j > 10000 ) {
 				j -= 10000;
-				if( gettick_nocache() - tick > limit ) break;
+				if( gettick_nocache() - tick > limit )
+					break;
 			}
 		}
 		// やり残しの処理を終えたので、処理用リストを補填する
 		if( mob_ai_hard_next_count == 0 ) {
+			int i;
 			int max = mob_ai_hard_createlist();
+
 			mob_ai_hard_graph1++; // 処理済み数
 			for(i = 0; i < max; i++) {
 				j += mob_ai_sub_hard(mob_ai_hard_buf[i], tick) + 5;
 				if( j > 10000 ) {
 					j -= 10000;
-					if( gettick_nocache() - tick > limit ) break;
+					if( gettick_nocache() - tick > limit )
+						break;
 				}
 			}
 			if( i != max ) {
@@ -3170,7 +3175,7 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 	struct block_list **fr;
 	struct mob_data *mmd = NULL;
 	struct status_change *sc;
-	int flag = 0;
+	int *c;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -3186,9 +3191,12 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 	cond1 = va_arg(ap,int);
 	cond2 = va_arg(ap,int);
 	fr    = va_arg(ap,struct block_list **);
+	c     = va_arg(ap,int *);
 
 	sc = status_get_sc(bl);
 	if(sc) {
+		int flag = 0;
+
 		if(cond2 == -1) {
 			int j;
 			for(j=SC_STONE; j<=SC_BLIND && !flag; j++) {
@@ -3198,9 +3206,8 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 			flag = (sc->data[cond2].timer != -1);
 		}
 		if( flag^(cond1 == MSC_FRIENDSTATUSOFF) ) {
-			int *c = va_arg(ap,int *);
 			if( atn_rand()%1000 < 1000/(++(*c)) )	// 範囲内で等確率にする
-				(*fr) = bl;
+				*fr = bl;
 		}
 	}
 	return 0;

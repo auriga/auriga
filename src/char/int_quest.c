@@ -35,12 +35,14 @@
 int mapif_load_quest(int fd,int account_id,int char_id)
 {
 	const struct quest *q = questdb_load(char_id);
-	int i,p = 8;
+	int p = 8;
 
 	WFIFOW(fd,0)=0x3860;
 	WFIFOL(fd,4)=account_id;
 
 	if(q) {
+		int i;
+
 		for(i=0; i<q->count; i++,p+=27) {
 			WFIFOL(fd,p)    = q->data[i].nameid;
 			WFIFOB(fd,p+4)  = q->data[i].state;

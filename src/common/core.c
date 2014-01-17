@@ -69,7 +69,7 @@ static void pid_create(const char* file)
 	strncpy(pid_file, file, sizeof(pid_file) - 5);
 	pid_file[sizeof(pid_file)-5] = '\0';
 
-	for(i = strlen(pid_file); i >= 0; i--) {
+	for(i = strlen(pid_file); i != 0; i--) {
 		if(pid_file[i] == '/' || pid_file[i] == '\\')
 			break;
 		if(pid_file[i] == '.') {

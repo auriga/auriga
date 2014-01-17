@@ -583,6 +583,7 @@ void* grfio_reads(const char *fname, int *size)
 		fseek(in,entry->srcpos,0);
 		fread(buf,1,entry->srclen_aligned,in);
 		fclose(in);
+		in = NULL;
 		buf2 = (unsigned char *)aCalloc(entry->declen + 1024, sizeof(char));
 		if(entry->type==1 || entry->type==3 || entry->type==5) {
 			unsigned long len;
@@ -890,7 +891,7 @@ static void grfio_resourcecheck(const char *data_dir)
 	buf[size] = 0;
 
 	for(ptr=buf;ptr-buf<size;) {
-		if(sscanf(ptr,"%[^#]#%[^#]#",w1,w2)==2){
+		if(sscanf(ptr,"%255[^#]#%255[^#]#",w1,w2)==2){
 			char *ext_ptr;
 			w2[sizeof(w2)-1] = 0;
 
@@ -988,7 +989,7 @@ static void grfio_final(void)
  */
 void grfio_load_zlib(void)
 {
-	char filepath[256] = "";
+	char filepath[1024] = "";
 
 #if defined(WINDOWS) && !defined(LOCALZLIB)
 	if(!zlib_dll) {
@@ -1030,7 +1031,6 @@ unsigned long grfio_crc32(const unsigned char *buf, unsigned int len)
 void grfio_init(const char *fname)
 {
 	FILE *data_conf;
-	char line[1024],w1[1024],w2[1024];
 	char data_dir[1024] = "";
 	int result = 0;
 
@@ -1044,12 +1044,14 @@ void grfio_init(const char *fname)
 	// grf-files.txt があるなら読み込む
 	data_conf = fopen(fname, "r");
 	if(data_conf) {
+		char line[1024], w1[1024], w2[1024];
+
 		while(fgets(line,sizeof(line)-1,data_conf)) {
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0] == '/' && line[1] == '/')
 				continue;
-			if(sscanf(line,"%[^:]: %[^\r\n]", w1, w2) == 2) {
+			if(sscanf(line,"%1023[^:]: %1023[^\r\n]", w1, w2) == 2) {
 				if(strcmp(w1,"grf") == 0)
 					result |= grfio_add(w2);
 				else if(strcmp(w1,"datadir") == 0)

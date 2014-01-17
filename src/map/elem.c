@@ -1143,6 +1143,7 @@ static int read_elem_db(void)
 			script_free_code(elem_db[i].script);
 	}
 	memset(elem_db, 0, sizeof(elem_db));
+	elem_count = 0;
 
 	for(i = 0; i < 2; i++ ){
 		fp = fopen(filename[i], "r");
@@ -1332,7 +1333,6 @@ int do_init_elem(void)
 {
 	unsigned int tick = gettick();
 
-	elem_count = 0;
 	read_elem_db();
 	read_elem_skilldb();
 

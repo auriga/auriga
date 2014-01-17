@@ -1,10 +1,47 @@
 ----------------------------------------
+//1179 [2014/01/18] by Rayce
+
+・cppcheckを使った静的チェック修正の続き
+	-> @callmerc のメッセージのNULL判定が間違っていたのを修正（atcommand.c）
+
+	-> 精霊関連DBを再読み込みする @reloadelemdb を追加（atcommand.*）
+
+	-> sscanf で文字列を読み込む場合は長さを指定するようにセキュリティの強化
+	   （char.c, inter.c, grfio.c, login.c, httpd.c, socket.c）
+
+	-> ファイルハンドラのクローズされておらずリソースリークが発生するのを修正（httpd.c）
+
+	-> ファイルハンドラが2回クローズされる可能性を修正（grfio.c）
+
+	-> SQLクエリ発行時の文字列長チェックが動作していなかった問題を修正（sqldbs.c）
+
+	-> 意味のないコードをコメントアウト（guilddb_txt.c, clif.c）
+
+	-> size_t型を printf() するときは %lu を使うように修正（malloc.c）
+
+	-> unsigned型に対してマイナスチェックは不要なので変更（httpd.c, core.c, winservice.c）
+
+	-> 未使用且つ不要な関数 do_final_chat() を削除（chat.*）
+
+	-> 変数のスコープを局所化
+
+・キャラ新規作成時の応答パケット処理を mmo_char_send006d() としてまとめる（char.c）
+
+・キャラ新規作成に失敗したときのパケットスキップ位置が間違っているのを修正（char.c）
+
+・@reloadmercdb を実行しても再読込が正常に動作していなかったのを修正（merc.c）
+
+・elem_db_add.txt がデフォルトで用意されてなかったのでファイルを追加（db/addon/elem_db_add.txt）
+
+・db_ref.txt にelem_db.txtの解説がなかったので追加（doc/db_ref.txt）
+
+----------------------------------------
 //1178 [2014/01/09] by Rayce
 
 ・callshop命令でPointShopからアイテムが取得できるように修正（script.c）
 	reported by rusya7234さん
 
-・[SQL] Auriga-1174以降、mysql_query() 実行後に結果セットの保存処理が無くなっていたバグを修正（sqldbs.c）
+・[SQL] Auriga-1176以降、mysql_query() 実行後に結果セットの保存処理が無くなっていたバグを修正（sqldbs.c）
 	reported by rusya7234さん
 
 ----------------------------------------

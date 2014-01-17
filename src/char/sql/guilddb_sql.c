@@ -469,8 +469,6 @@ bool guilddb_sql_save(struct guild *g2)
 
 	// try
 	do {
-		char buf2[256];
-
 		if(sep == ',') {
 			sprintf(p, " WHERE `guild_id` = '%d'", g2->guild_id);
 			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
@@ -539,6 +537,8 @@ bool guilddb_sql_save(struct guild *g2)
 
 		// 追放リスト
 		if(memcmp(g1->explusion, g2->explusion, sizeof(g1->explusion))) {
+			char buf2[256];
+
 			if( sqldbs_query(&mysql_handle, "DELETE FROM `" GUILD_EXPULSION_TABLE "` WHERE `guild_id`='%d'", g2->guild_id) == false )
 				break;
 

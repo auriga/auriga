@@ -1083,7 +1083,7 @@ const struct mmo_chardata* chardb_txt_load(int char_id)
  */
 bool chardb_txt_save_reg(int account_id, int char_id, int num, struct global_reg *reg)
 {
-	int idx = -1;
+	int idx;
 
 	nullpo_retr(false, reg);
 
@@ -1108,7 +1108,7 @@ bool chardb_txt_save_reg(int account_id, int char_id, int num, struct global_reg
  */
 bool chardb_txt_save(struct mmo_charstatus *st)
 {
-	int idx = -1;
+	int idx;
 
 	nullpo_retr(false, st);
 

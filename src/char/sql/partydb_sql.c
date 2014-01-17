@@ -144,7 +144,6 @@ const struct party* partydb_sql_load_num(int party_id)
 bool partydb_sql_save(struct party *p2)
 {
 	const struct party *p1;
-	char t_name[64];
 	bool result = true;
 
 	nullpo_retr(false, p2);
@@ -154,6 +153,8 @@ bool partydb_sql_save(struct party *p2)
 		return false;
 
 	if(strcmp(p1->name, p2->name) || p1->exp != p2->exp || p1->item != p2->item) {
+		char t_name[64];
+
 		result = sqldbs_query(&mysql_handle,
 			"UPDATE `" PARTY_TABLE "` SET `name`='%s', `exp`='%d', `item`='%d' WHERE `party_id`='%d'",
 			strecpy(t_name, p2->name), p2->exp, p2->item, p2->party_id

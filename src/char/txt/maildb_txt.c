@@ -312,10 +312,7 @@ static int mail_fromstr(char *str, struct mail *m)
  */
 static bool maildb_txt_read(void)
 {
-	char line[8192];
-	struct mail *m;
 	FILE *fp;
-	int c = 0;
 	bool ret = true;
 
 	mail_db = numdb_init();
@@ -324,6 +321,10 @@ static bool maildb_txt_read(void)
 		printf("maildb_txt_read: open [%s] failed !\n", mail_txt);
 		ret = false;
 	} else {
+		char line[8192];
+		struct mail *m;
+		int c = 0;
+
 		while(fgets(line, sizeof(line), fp)) {
 			m = (struct mail *)aCalloc(1, sizeof(struct mail));
 			if(mail_fromstr(line, m) == 0 && m->char_id > 0) {

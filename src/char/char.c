@@ -221,9 +221,10 @@ static int mmo_char_sync_timer(int tid,unsigned int tick,int id,void *data)
 
 static int count_users(void)
 {
-	int i, users = 0;
+	int users = 0;
 
 	if (login_fd >= 0 && session[login_fd]) {
+		int i;
 		for(i = 0; i < MAX_MAP_SERVERS; i++) {
 			if (server_fd[i] >= 0)
 				users += server[i].users;
@@ -233,11 +234,13 @@ static int count_users(void)
 	return users;
 }
 
-static int mmo_char_send006b(int fd,struct char_session_data *sd)
+static int mmo_char_send006b(int fd, struct char_session_data *sd)
 {
 	int i;
 	int found_num;
 	const struct mmo_charstatus *st;
+
+	nullpo_retr(0, sd);
 
 	session[fd]->auth = 1; // 認証終了を socket.c に伝える
 	sd->state = CHAR_STATE_AUTHOK;
@@ -880,6 +883,378 @@ static int mmo_char_send006b(int fd,struct char_session_data *sd)
 	return 0;
 }
 
+static void mmo_char_send006d(int fd, const struct mmo_charstatus *st)
+{
+	nullpo_retv(st);
+
+#if PACKETVER < 20070212
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOW(fd,44) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
+	WFIFOW(fd,46) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
+	WFIFOW(fd,48) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,50) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,52) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,54) = st->class_;
+	WFIFOW(fd,56) = st->hair;
+	WFIFOW(fd,58) = st->weapon;
+	WFIFOW(fd,60) = st->base_level;
+	WFIFOW(fd,62) = st->skill_point;
+	WFIFOW(fd,64) = st->head_bottom;
+	WFIFOW(fd,66) = st->shield;
+	WFIFOW(fd,68) = st->head_top;
+	WFIFOW(fd,70) = st->head_mid;
+	WFIFOW(fd,72) = st->hair_color;
+	WFIFOW(fd,74) = st->clothes_color;
+	memcpy( WFIFOP(fd,76), st->name, 24 );
+	WFIFOB(fd,100) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,101) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,102) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,103) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,104) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,105) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,106) = st->char_num;
+	WFIFOSET(fd,108);
+#elif PACKETVER < 20100223 && defined(NEW_006b)
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	WFIFOSET(fd,114);
+#elif PACKETVER < 20100223
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOW(fd,44) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
+	WFIFOW(fd,46) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
+	WFIFOW(fd,48) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,50) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,52) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,54) = st->class_;
+	WFIFOW(fd,56) = st->hair;
+	WFIFOW(fd,58) = st->weapon;
+	WFIFOW(fd,60) = st->base_level;
+	WFIFOW(fd,62) = st->skill_point;
+	WFIFOW(fd,64) = st->head_bottom;
+	WFIFOW(fd,66) = st->shield;
+	WFIFOW(fd,68) = st->head_top;
+	WFIFOW(fd,70) = st->head_mid;
+	WFIFOW(fd,72) = st->hair_color;
+	WFIFOW(fd,74) = st->clothes_color;
+	memcpy( WFIFOP(fd,76), st->name, 24 );
+	WFIFOB(fd,100) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,101) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,102) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,103) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,104) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,105) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,106) = st->char_num;
+	WFIFOW(fd,108) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	WFIFOSET(fd,110);
+#elif PACKETVER < 20100728
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOSET(fd,130);
+#elif PACKETVER < 20100803
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	WFIFOSET(fd,114);
+#elif PACKETVER < 20110111
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
+	WFIFOSET(fd,134);
+#elif PACKETVER < 20110928
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
+	WFIFOL(fd,134) = st->robe;	// 肩装備
+	WFIFOSET(fd,138);
+#elif PACKETVER < 20111025
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
+	WFIFOL(fd,134) = st->robe;	// 肩装備
+	WFIFOL(fd,138) = 0;	// TODO: スロット変更が可能な状態かどうか
+	WFIFOSET(fd,142);
+#else
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,10) = st->zeny;
+	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,18) = st->job_level;
+	WFIFOL(fd,22) = 0;	// bodystate
+	WFIFOL(fd,26) = 0;	// healthstate
+	WFIFOL(fd,30) = st->option;
+	WFIFOL(fd,34) = st->karma;
+	WFIFOL(fd,38) = st->manner;
+	WFIFOW(fd,42) = st->status_point;
+	WFIFOL(fd,44) = st->hp;
+	WFIFOL(fd,48) = st->max_hp;
+	WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,58) = st->class_;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->weapon;
+	WFIFOW(fd,64) = st->base_level;
+	WFIFOW(fd,66) = st->skill_point;
+	WFIFOW(fd,68) = st->head_bottom;
+	WFIFOW(fd,70) = st->shield;
+	WFIFOW(fd,72) = st->head_top;
+	WFIFOW(fd,74) = st->head_mid;
+	WFIFOW(fd,76) = st->hair_color;
+	WFIFOW(fd,78) = st->clothes_color;
+	memcpy( WFIFOP(fd,80), st->name, 24 );
+	WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,110) = st->char_num;
+	WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
+	WFIFOL(fd,134) = st->robe;	// 肩装備
+	WFIFOL(fd,138) = 0;	// TODO: スロット変更が可能な状態かどうか
+	WFIFOL(fd,142) = 0;	// TODO: Add-Ons
+	WFIFOSET(fd,146);
+#endif
+}
+
 // ##変数の保存
 static int set_account_reg2(int acc,int num,struct global_reg *reg)
 {
@@ -1293,11 +1668,14 @@ int parse_tologin(int fd)
 		case 0x2716:
 			if(RFIFOREST(fd)<11)
 				return 0;
+
 			{
-				int ch;
+				int account_id = RFIFOL(fd,2);
+				int char_id    = RFIFOL(fd,6);
+
 				for(i=0;i<fd_max;i++){
 					if(session[i] && (sd = (struct char_session_data *)session[i]->session_data)){
-						if(sd->account_id==RFIFOL(fd,2))
+						if(sd->account_id == account_id)
 							break;
 					}
 				}
@@ -1311,9 +1689,10 @@ int parse_tologin(int fd)
 					WFIFOB(fdc,2)=1;
 					WFIFOSET(fdc,3);
 				}else{
+					int ch;
 					for(i=0;i<max_char_slot;i++){
 						const struct mmo_chardata *cd = sd->found_char[i];
-						if(cd && cd->st.char_id == RFIFOL(fd,6)){
+						if(cd && cd->st.char_id == char_id){
 							char_delete(cd);
 							for(ch=i;ch<max_char_slot-1;ch++)
 								sd->found_char[ch]=sd->found_char[ch+1];
@@ -1333,14 +1712,15 @@ int parse_tologin(int fd)
 				RFIFOSKIP(fd,11);
 			}
 			break;
+
 		// キャラ削除(誕生日確認後)
 		case 0x2718:
 			if( RFIFOREST(fd) < 11 )
 				return 0;
 			{
-				int ch;
 				int account_id = RFIFOL(fd,2);
-				int char_id = RFIFOL(fd,6);
+				int char_id    = RFIFOL(fd,6);
+
 				for( i = 0 ; i < fd_max; i++ )
 				{
 					if(session[i] && (sd = (struct char_session_data *)session[i]->session_data))
@@ -1365,6 +1745,7 @@ int parse_tologin(int fd)
 				}
 				else
 				{
+					int ch;
 					for( i = 0; i < max_char_slot; i++ )
 					{
 						const struct mmo_chardata *cd = sd->found_char[i];
@@ -1700,9 +2081,10 @@ static int parse_map_disconnect_sub(void *key,void *data,va_list ap)
 	unsigned long ip    = (unsigned long)va_arg(ap,int);
 	unsigned short port = (unsigned short)va_arg(ap,int);
 	struct char_online *c = (struct char_online*)data;
-	unsigned char buf[8];
 
 	if(c->ip == ip && c->port == port) {
+		unsigned char buf[8];
+
 		// printf("char: mapdisconnect %s %08x:%d\n",c->name,ip,port);
 		WBUFW(buf,0) = 0x2b17;
 		WBUFL(buf,2) = c->char_id;
@@ -2335,7 +2717,7 @@ static int parse_char_sendonline(void *key,void *data,va_list ap)
 
 int parse_char(int fd)
 {
-	int i,ch;
+	int i;
 	unsigned short cmd;
 	struct char_session_data *sd;
 
@@ -2541,6 +2923,7 @@ int parse_char(int fd)
 			if( RFIFOREST(fd) < 3 )
 				return 0;
 			{
+				int ch;
 				struct char_online *c;
 				struct mmo_charstatus st;
 
@@ -2661,404 +3044,37 @@ int parse_char(int fd)
 				int flag=0x04;
 				int i = 0;
 				const struct mmo_chardata *cd;
-				const struct mmo_charstatus *st;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 
 				name[23] = '\0';	// force \0 terminal
 				cd = chardb_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
 
-				if(cd == NULL){
+				if(cd == NULL) {
 					WFIFOW(fd,0)=0x6e;
 					WFIFOB(fd,2)=flag;
 					WFIFOSET(fd,3);
-					RFIFOSKIP(fd,37);
-					break;
-				}
+				} else {
+					int ch;
+					mmo_char_send006d(fd, &cd->st);
 
-				st = &cd->st;
-#if PACKETVER < 20070212
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOW(fd,44) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
-				WFIFOW(fd,46) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
-				WFIFOW(fd,48) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,50) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,52) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,54) = st->class_;
-				WFIFOW(fd,56) = st->hair;
-				WFIFOW(fd,58) = st->weapon;
-				WFIFOW(fd,60) = st->base_level;
-				WFIFOW(fd,62) = st->skill_point;
-				WFIFOW(fd,64) = st->head_bottom;
-				WFIFOW(fd,66) = st->shield;
-				WFIFOW(fd,68) = st->head_top;
-				WFIFOW(fd,70) = st->head_mid;
-				WFIFOW(fd,72) = st->hair_color;
-				WFIFOW(fd,74) = st->clothes_color;
-				memcpy( WFIFOP(fd,76), st->name, 24 );
-				WFIFOB(fd,100) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,101) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,102) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,103) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,104) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,105) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,106) = st->char_num;
-				WFIFOSET(fd,108);
-#elif PACKETVER < 20100223 && defined(NEW_006b)
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				WFIFOSET(fd,114);
-#elif PACKETVER < 20100223
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOW(fd,44) = (st->hp     > 0x7fff) ? 0x7fff : st->hp;
-				WFIFOW(fd,46) = (st->max_hp > 0x7fff) ? 0x7fff : st->max_hp;
-				WFIFOW(fd,48) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,50) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,52) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,54) = st->class_;
-				WFIFOW(fd,56) = st->hair;
-				WFIFOW(fd,58) = st->weapon;
-				WFIFOW(fd,60) = st->base_level;
-				WFIFOW(fd,62) = st->skill_point;
-				WFIFOW(fd,64) = st->head_bottom;
-				WFIFOW(fd,66) = st->shield;
-				WFIFOW(fd,68) = st->head_top;
-				WFIFOW(fd,70) = st->head_mid;
-				WFIFOW(fd,72) = st->hair_color;
-				WFIFOW(fd,74) = st->clothes_color;
-				memcpy( WFIFOP(fd,76), st->name, 24 );
-				WFIFOB(fd,100) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,101) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,102) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,103) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,104) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,105) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,106) = st->char_num;
-				WFIFOW(fd,108) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				WFIFOSET(fd,110);
-#elif PACKETVER < 20100728
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
-				WFIFOSET(fd,130);
-#elif PACKETVER < 20100803
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				WFIFOSET(fd,114);
-#elif PACKETVER < 20110111
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
-				WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
-				WFIFOSET(fd,134);
-#elif PACKETVER < 20110928
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
-				WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
-				WFIFOL(fd,134) = st->robe;	// 肩装備
-				WFIFOSET(fd,138);
-#elif PACKETVER < 20111025
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
-				WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
-				WFIFOL(fd,134) = st->robe;	// 肩装備
-				WFIFOL(fd,138) = 0;	// TODO: スロット変更が可能な状態かどうか
-				WFIFOSET(fd,142);
-#else
-				WFIFOW(fd,0) = 0x6d;
-				WFIFOL(fd,2) = st->char_id;
-				WFIFOL(fd,6) = st->base_exp;
-				WFIFOL(fd,10) = st->zeny;
-				WFIFOL(fd,14) = st->job_exp;
-				WFIFOL(fd,18) = st->job_level;
-				WFIFOL(fd,22) = 0;	// bodystate
-				WFIFOL(fd,26) = 0;	// healthstate
-				WFIFOL(fd,30) = st->option;
-				WFIFOL(fd,34) = st->karma;
-				WFIFOL(fd,38) = st->manner;
-				WFIFOW(fd,42) = st->status_point;
-				WFIFOL(fd,44) = st->hp;
-				WFIFOL(fd,48) = st->max_hp;
-				WFIFOW(fd,52) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
-				WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
-				WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
-				WFIFOW(fd,58) = st->class_;
-				WFIFOW(fd,60) = st->hair;
-				WFIFOW(fd,62) = st->weapon;
-				WFIFOW(fd,64) = st->base_level;
-				WFIFOW(fd,66) = st->skill_point;
-				WFIFOW(fd,68) = st->head_bottom;
-				WFIFOW(fd,70) = st->shield;
-				WFIFOW(fd,72) = st->head_top;
-				WFIFOW(fd,74) = st->head_mid;
-				WFIFOW(fd,76) = st->hair_color;
-				WFIFOW(fd,78) = st->clothes_color;
-				memcpy( WFIFOP(fd,80), st->name, 24 );
-				WFIFOB(fd,104) = (st->str  > 255) ? 255 : st->str;
-				WFIFOB(fd,105) = (st->agi  > 255) ? 255 : st->agi;
-				WFIFOB(fd,106) = (st->vit  > 255) ? 255 : st->vit;
-				WFIFOB(fd,107) = (st->int_ > 255) ? 255 : st->int_;
-				WFIFOB(fd,108) = (st->dex  > 255) ? 255 : st->dex;
-				WFIFOB(fd,109) = (st->luk  > 255) ? 255 : st->luk;
-				WFIFOW(fd,110) = st->char_num;
-				WFIFOW(fd,112) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
-				memcpy(WFIFOP(fd,114),st->last_point.map,16);	// 最後に在籍していたMAP名
-				WFIFOL(fd,130) = st->delete_date;	// 削除待機時間
-				WFIFOL(fd,134) = st->robe;	// 肩装備
-				WFIFOL(fd,138) = 0;	// TODO: スロット変更が可能な状態かどうか
-				WFIFOL(fd,142) = 0;	// TODO: Add-Ons
-				WFIFOSET(fd,146);
-#endif
+					for(ch=0;ch<max_char_slot;ch++) {
+						if(sd->found_char[ch] == NULL) {
+							sd->found_char[ch] = cd;
+							break;
+						}
+					}
+					// ##変数を再設定する
+					i = get_account_reg2(sd,reg);
+					if(i > 0)
+						set_account_reg2(sd->account_id,i,reg);
+				}
 #if PACKETVER < 20120307
 				RFIFOSKIP(fd,37);
 #else
 				RFIFOSKIP(fd,31);
 #endif
-
-				for(ch=0;ch<max_char_slot;ch++) {
-					if(sd->found_char[ch] == NULL) {
-						sd->found_char[ch] = cd;
-						break;
-					}
-				}
-				// ##変数を再設定する
-				i = get_account_reg2(sd,reg);
-				if(i > 0)
-					set_account_reg2(sd->account_id,i,reg);
 			}
+			break;
 
 		case 0x68:	// 削除
 			if(RFIFOREST(fd)<46)
@@ -3199,6 +3215,7 @@ int parse_char(int fd)
 			{
 				struct mmo_charstatus st;
 				int char_id = RFIFOL(fd,2);
+				int ch;
 
 				for( ch = 0; ch < max_char_slot; ch++ )
 				{
@@ -3268,6 +3285,7 @@ int parse_char(int fd)
 			{
 				struct mmo_charstatus st;
 				int char_id = RFIFOL(fd,2);
+				int ch;
 
 				for( ch = 0; ch < max_char_slot; ch++ )
 				{
@@ -3466,7 +3484,7 @@ static void char_config_read(const char *cfgName)
 			continue;
 		if (line[0] == '/' && line[1] == '/')
 			continue;
-		if (sscanf(line,"%[^:]: %[^\r\n]", w1, w2) != 2)
+		if (sscanf(line,"%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if (strcmpi(w1, "userid") == 0) {
@@ -3536,7 +3554,7 @@ static void char_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "start_point") == 0) {
 			char map[1024];
 			int x, y;
-			if (sscanf(w2, "%[^,],%d,%d", map, &x, &y) < 3)
+			if (sscanf(w2, "%1023[^,],%d,%d", map, &x, &y) < 3)
 				continue;
 			memcpy(start_point.map, map, 16);
 			start_point.map[15] = '\0';
