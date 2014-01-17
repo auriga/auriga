@@ -19329,13 +19329,13 @@ mid_camp.gat,88,100,7	script	鉱石担当の猫の手職員	876,{
 		mes "　減らしてから挑戦しよう‐";
 		close;
 	}
-	set '@time,15000;
-	if(equippeditem(2550)) set '@time,'@time - 2000;	// 釣り人のマフラー
-	if(equippeditem(2443)) set '@time,'@time - 2000;	// 釣り用長靴
-	if(equippeditem(2764)) set '@time,'@time - 3000;	// 小さな釣り竿
-	if(equippeditem(2775)) set '@time,'@time - 1000;	// 釣り餌
-	if(equippeditem(1599)) set '@time,'@time - 3000;	// アーリマン(デバッグ用)
-	if(equippeditem(2199)) set '@time,'@time - 4000;	// アフラマズダー(デバッグ用)
+	set '@time,15;
+	if(equippeditem(2550)) set '@time,'@time - 2;	// 釣り人のマフラー
+	if(equippeditem(2443)) set '@time,'@time - 2;	// 釣り用長靴
+	if(equippeditem(2764)) set '@time,'@time - 3;	// 小さな釣り竿
+	if(equippeditem(2775)) set '@time,'@time - 1;	// 釣り餌
+	if(equippeditem(1599)) set '@time,'@time - 3;	// アーリマン(デバッグ用)
+	if(equippeditem(2199)) set '@time,'@time - 4;	// アフラマズダー(デバッグ用)
 	misceffect 109,"";
 	misceffect 65,"";
 	progressbar '@time;

@@ -19,6 +19,8 @@
  *
  */
 
+#ifndef NO_SCDATA_SAVING
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -213,3 +215,5 @@ bool statusdb_sql_init(void)
 	scdata_db = numdb_init();
 	return true;
 }
+
+#endif

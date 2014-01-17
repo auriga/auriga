@@ -649,14 +649,14 @@ static void memmer_exit(void)
 			fprintf(
 				fp,"%04d [%s] : %s line %d large size %lu" NEWLINE, ++count, buf,
 				large->unit_head.file,
-				large->unit_head.line, (unsigned int)large->size
+				large->unit_head.line, (unsigned long)large->size
 			);
 		}
 #else
 		fprintf(
 			fp,"%04d : %s line %d large size %lu" NEWLINE, ++count,
 			large->unit_head.file,
-			large->unit_head.line, (unsigned int)large->size
+			large->unit_head.line, (unsigned long)large->size
 		);
 #endif
 		large = large->next;

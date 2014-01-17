@@ -1,4 +1,27 @@
 ----------------------------------------
+//1180 [2014/01/18] by Rayce
+
+・PACKETVER が 20120925 以上のとき、アイテムの追加処理に失敗したときのパケット位置が
+  間違っているのを修正（clif.c）
+	reported by LunarPhantomさん
+
+・Auriga-1173以降、progressbar命令の指定時間がミリ秒単位になっているスクリプトを修正
+  （npc_quest_ashvacuum.txt, npc_quest_yggdrasil.txt）
+	reported by rusya7234さん
+
+・ロック付きファイルの保存処理において、何かしらの原因で古いファイルの削除に失敗したときは
+  リネームせずに保管しておくようにする（lock.c）
+
+  ※TXTモードでsaveフォルダ内に .tmp ファイルが残っていた場合は、サーバ起動前に
+    古いファイルを手動で削除して .tmp ファイルをリネームすることで最新のデータを
+    復旧することが出来ます。
+
+・コンパイルオプション NO_SCDATA_SAVING が有効のとき、コンパイルできない問題を修正
+  （int_status.c, statusdb_txt.*, statusdb_sql.*）
+
+・Auriga-1179の size_t に対する型変換のミスを修正（malloc.c）
+
+----------------------------------------
 //1179 [2014/01/18] by Rayce
 
 ・cppcheckを使った静的チェック修正の続き

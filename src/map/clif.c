@@ -4929,7 +4929,7 @@ void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char 
 		WFIFOW(fd,0)=0x990;
 		WFIFOW(fd,2)=n+2;
 		WFIFOW(fd,4)=amount;
-		WFIFOB(fd,22)=fail;
+		WFIFOB(fd,24)=fail;
 	} else {
 		if(n<0 || n>=MAX_INVENTORY || sd->status.inventory[n].nameid <=0 || sd->inventory_data[n] == NULL)
 			return;

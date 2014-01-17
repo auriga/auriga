@@ -33,7 +33,7 @@
 #ifdef NO_SCDATA_SAVING
 
 bool status_dummy_init(void) { return true; }
-bool status_dummy_sync(void) { return true; }
+int status_dummy_sync(void) { return true; }
 bool status_dummy_delete(int char_id) { return true; }
 struct scdata *status_dummy_load(int char_id) { return NULL; }
 bool status_dummy_save(struct scdata *sc2) { return true; }

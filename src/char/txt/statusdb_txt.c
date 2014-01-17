@@ -19,6 +19,8 @@
  *
  */
 
+#ifndef NO_SCDATA_SAVING
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -375,3 +377,5 @@ bool statusdb_txt_init(void)
 {
 	return statusdb_txt_read();
 }
+
+#endif

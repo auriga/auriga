@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
 
 #include "lock.h"
 #include "utils.h"
@@ -55,9 +56,10 @@ int lock_fclose(FILE *fp,const char* filename,int *info)
 	if(fp != NULL) {
 		ret = fclose(fp);
 		snprintf(newfile, sizeof(newfile), "%s_%04d.tmp", filename, *info);
-		remove(filename);
-		// このタイミングで落ちると最悪。
-		rename(newfile,filename);
+		if(remove(filename) == 0 || errno == ENOENT) {
+			// このタイミングで落ちると最悪。
+			rename(newfile,filename);
+		}
 		return ret;
 	}
 	return 1;

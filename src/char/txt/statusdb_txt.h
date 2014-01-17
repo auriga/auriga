@@ -22,8 +22,9 @@
 #ifndef _STATUSDB_TXT_H_
 #define _STATUSDB_TXT_H_
 
-#include "utils.h"
+#ifndef NO_SCDATA_SAVING
 
+#include "utils.h"
 #include "../int_status.h"
 
 // プロトタイプ宣言
@@ -43,5 +44,7 @@ int statusdb_txt_config_read_sub(const char *w1, const char *w2);
 #define statusdb_save   statusdb_txt_save
 #define statusdb_final  statusdb_txt_final
 #define statusdb_config_read_sub statusdb_txt_config_read_sub
+
+#endif
 
 #endif /* _STATUSDB_TXT_H_ */
