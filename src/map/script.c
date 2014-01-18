@@ -6163,12 +6163,13 @@ int buildin_strcharinfo(struct script_state *st)
 {
 	struct map_session_data *sd;
 	int num;
-	char *buf;
 
-	sd=script_rid2sd(st);
-	num=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	sd  = script_rid2sd(st);
+	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	if(sd) {
+		char *buf;
+
 		switch (num) {
 		case 0:
 			push_str(st->stack,C_STR,(unsigned char *)aStrdup(sd->status.name));
@@ -9476,11 +9477,12 @@ int buildin_clearcartitem(struct script_state *st)
  */
 int buildin_getrepairableitemcount(struct script_state *st)
 {
-	struct map_session_data *sd=script_rid2sd(st);
-	int i,c=0;
+	struct map_session_data *sd = script_rid2sd(st);
+	int c = 0;
 
-	if(sd){
-		for(i=0;i<MAX_INVENTORY;i++){
+	if(sd) {
+		int i;
+		for(i=0;i<MAX_INVENTORY;i++) {
 			if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0 && sd->status.inventory[i].attribute){
 				c++;
 			}
@@ -9498,10 +9500,10 @@ int buildin_repairitem(struct script_state *st)
 {
 	struct map_session_data *sd=script_rid2sd(st);
 
-	if(sd){
-		int i,c=0;
+	if(sd) {
+		int i, c = 0;
 
-		for(i=0;i<MAX_INVENTORY;i++){
+		for(i=0;i<MAX_INVENTORY;i++) {
 			if(sd->status.inventory[i].nameid > 0 && sd->status.inventory[i].amount > 0 && sd->status.inventory[i].attribute){
 				sd->status.inventory[i].attribute = 0;
 				c++;

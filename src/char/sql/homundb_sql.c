@@ -259,8 +259,6 @@ bool homundb_sql_save(struct mmo_homunstatus *p2)
 
 	// try
 	do {
-		int i;
-
 		if(sep == ',') {
 			sprintf(p, " WHERE `homun_id` = '%d'", p2->homun_id);
 			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
@@ -268,6 +266,8 @@ bool homundb_sql_save(struct mmo_homunstatus *p2)
 		}
 
 		if(memcmp(p1->skill, p2->skill, sizeof(p1->skill)) ) {
+			int i;
+
 			if( sqldbs_query(&mysql_handle, "DELETE FROM `" HOMUN_SKILL_TABLE "` WHERE `homun_id`='%d'", p2->homun_id) == false )
 				break;
 

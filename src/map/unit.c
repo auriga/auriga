@@ -890,8 +890,8 @@ int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance)
 	struct merc_data *mcd = NULL;
 	struct elem_data *eld = NULL;
 	struct unit_data  *ud = NULL;
-	int x,y;
-	int i,j=0,k;
+	int x, y, dx, dy;
+	int j = 0;
 
 	nullpo_retr(0, bl);
 
@@ -909,48 +909,52 @@ int unit_calc_pos(struct block_list *bl,int tx,int ty,int dir,int distance)
 	ud->to_x = tx;
 	ud->to_y = ty;
 
-	if(dir >= 0 && dir < 8) {
-		int dx = -dirx[dir] * distance;
-		int dy = -diry[dir] * distance;
-		x = tx + dx;
-		y = ty + dy;
-		if(!(j=unit_can_reach(ud->bl,x,y))) {
-			if(dx > 0) x--;
-			else if(dx < 0) x++;
-			if(dy > 0) y--;
-			else if(dy < 0) y++;
-			if(!(j=unit_can_reach(ud->bl,x,y))) {
-				for(i=0;i<12;i++) {
-					k = atn_rand()%8;
-					dx = -dirx[k] * distance;
-					dy = -diry[k] * distance;
-					x = tx + dx;
-					y = ty + dy;
-					if((j=unit_can_reach(ud->bl,x,y)))
-						break;
-					else {
-						if(dx > 0) x--;
-						else if(dx < 0) x++;
-						if(dy > 0) y--;
-						else if(dy < 0) y++;
-						if((j=unit_can_reach(ud->bl,x,y)))
-							break;
-					}
-				}
-				if(!j) {
-					x = tx;
-					y = ty;
-					if(!unit_can_reach(ud->bl,x,y))
-						return 1;
-				}
+	if(dir < 0 || dir >= 8)
+		return 1;
+
+	dx = -dirx[dir] * distance;
+	dy = -diry[dir] * distance;
+	x  = tx + dx;
+	y  = ty + dy;
+
+	if(!(j = unit_can_reach(ud->bl, x, y))) {
+		if(dx > 0) x--;
+		else if(dx < 0) x++;
+		if(dy > 0) y--;
+		else if(dy < 0) y++;
+
+		if(!(j = unit_can_reach(ud->bl, x, y))) {
+			int i;
+			for(i = 0; i < 12; i++) {
+				int k = atn_rand()%8;
+
+				dx = -dirx[k] * distance;
+				dy = -diry[k] * distance;
+				x  = tx + dx;
+				y  = ty + dy;
+
+				if((j = unit_can_reach(ud->bl, x, y)))
+					break;
+
+				if(dx > 0) x--;
+				else if(dx < 0) x++;
+				if(dy > 0) y--;
+				else if(dy < 0) y++;
+
+				if((j = unit_can_reach(ud->bl, x, y)))
+					break;
+			}
+			if(!j) {
+				x = tx;
+				y = ty;
+				if(!unit_can_reach(ud->bl, x, y))
+					return 1;
 			}
 		}
 	}
-	else
-		return 1;
-
 	ud->to_x = x;
 	ud->to_y = y;
+
 	return 0;
 }
 

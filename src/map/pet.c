@@ -539,7 +539,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
  */
 static int pet_food(struct map_session_data *sd)
 {
-	int i, k, t;
+	int i, t;
 
 	nullpo_retr(1, sd);
 	nullpo_retr(1, sd->pd);
@@ -557,6 +557,8 @@ static int pet_food(struct map_session_data *sd)
 	if(sd->pet.hungry > 90) {
 		sd->pet.intimate -= sd->petDB->r_full;
 	} else {
+		int k;
+
 		if(battle_config.pet_friendly_rate != 100)
 			k = sd->petDB->r_hungry * battle_config.pet_friendly_rate / 100;
 		else
@@ -809,15 +811,16 @@ static int pet_randomwalk(struct pet_data *pd,unsigned int tick)
 	speed = status_get_speed(&pd->bl);
 
 	if(DIFF_TICK(pd->next_walktime,tick) < 0) {
-		int i, x, y, c;
+		int i, c = 0;
 		int d = 12 - pd->move_fail_count;
 
 		if(d < 5) d = 5;
 
 		for(i=0; i<retrycount; i++) {
 			int r = atn_rand();
-			x = pd->bl.x + r%(d*2+1) - d;
-			y = pd->bl.y + r/(d*2+1)%(d*2+1) - d;
+			int x = pd->bl.x + r%(d*2+1) - d;
+			int y = pd->bl.y + r/(d*2+1)%(d*2+1) - d;
+
 			if(map_getcell(pd->bl.m,x,y,CELL_CHKPASS) && unit_walktoxy(&pd->bl,x,y)) {
 				pd->move_fail_count = 0;
 				break;
@@ -833,7 +836,7 @@ static int pet_randomwalk(struct pet_data *pd,unsigned int tick)
 				}
 			}
 		}
-		for(i=c=0; i<pd->ud.walkpath.path_len; i++) {
+		for(i=0; i<pd->ud.walkpath.path_len; i++) {
 			if(pd->ud.walkpath.path[i] & 1)
 				c += speed*14/10;
 			else

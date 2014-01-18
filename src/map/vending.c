@@ -115,7 +115,6 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 	int weight = 0;
 	int new_ = 0;
 	double zeny = 0.;
-	short amount, idx;
 	struct map_session_data *vsd;
 	struct vending vending[MAX_VENDING]; // against duplicate packets/items
 
@@ -232,8 +231,8 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 	// vending items
 	for( i = 0; i < count; i++ )
 	{
-		amount = *(short *)(data + 4*i + 0);
-		idx    = *(short *)(data + 4*i + 2) - 2;
+		short amount = *(short *)(data + 4*i + 0);
+		short idx    = *(short *)(data + 4*i + 2) - 2;
 
 		pc_additem(sd, &vsd->status.cart[idx], amount);
 		vsd->vending[vend_list[i]].amount -= amount;

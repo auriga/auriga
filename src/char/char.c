@@ -3042,7 +3042,6 @@ int parse_char(int fd)
 				short hair = RFIFOW(fd,29);
 #endif
 				int flag=0x04;
-				int i = 0;
 				const struct mmo_chardata *cd;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 
@@ -3054,7 +3053,7 @@ int parse_char(int fd)
 					WFIFOB(fd,2)=flag;
 					WFIFOSET(fd,3);
 				} else {
-					int ch;
+					int i, ch;
 					mmo_char_send006d(fd, &cd->st);
 
 					for(ch=0;ch<max_char_slot;ch++) {

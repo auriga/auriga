@@ -12914,13 +12914,19 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			{
 				struct party *pt = party_search(sd->status.party_id);
 				if(pt) {
-					struct map_session_data* psd;
 					int i;
 					for(i=0; i<MAX_PARTY; i++) {
-						psd = pt->member[i].sd;
-						if(psd && (psd->status.class_ == PC_CLASS_SNV || psd->status.class_ == PC_CLASS_SNV_B || psd->status.class_ == PC_CLASS_ESNV || psd->status.class_ == PC_CLASS_ESNV_B)) {
-							f = 1;
-							break;
+						if(pt->member[i].sd) {
+							switch(pt->member[i].sd->status.class_) {
+								case PC_CLASS_SNV:
+								case PC_CLASS_SNV_B:
+								case PC_CLASS_ESNV:
+								case PC_CLASS_ESNV_B:
+									f = 1;
+									break;
+							}
+							if(f)
+								break;
 						}
 					}
 				}
@@ -12940,11 +12946,9 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			{
 				struct party *pt = party_search(sd->status.party_id);
 				if(pt) {
-					struct map_session_data* psd;
 					int i;
 					for(i=0; i<MAX_PARTY; i++) {
-						psd = pt->member[i].sd;
-						if(psd && psd->status.class_ == PC_CLASS_TK) {
+						if(pt->member[i].sd && pt->member[i].sd->status.class_ == PC_CLASS_TK) {
 							f = 1;
 							break;
 						}
@@ -17408,7 +17412,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 
 	/* 材料消費 */
 	for(i=0; i<MAX_PRODUCE_RESOURCE; i++) {
-		int j, amount;
+		int amount;
 		int id = skill_produce_db[idx].mat_id[i];
 
 		if(id <= 0)	// これ以上は材料要らない
@@ -17417,7 +17421,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 		if((sd->skill_menu.id == GN_MIX_COOKING || sd->skill_menu.id == GN_MAKEBOMB) && sd->skill_menu.lv > 1)
 			amount = amount * 10;
 		do {	/* ２つ以上のインデックスにまたがっているかもしれない */
-			int c = 0;
+			int j, c = 0;
 
 			j = pc_search_inventory(sd,id);
 			if(j >= 0) {
@@ -17817,14 +17821,15 @@ void skill_poisoning_weapon(struct map_session_data *sd, int nameid)
 	static const int type[] = {
 		SC_PARALIZE, SC_LEECHEND, SC_OBLIVIONCURSE, SC_DEATHHURT, SC_TOXIN, SC_PYREXIA, SC_MAGICMUSHROOM, SC_VENOMBLEED
 	};
-	int i,j;
 
 	nullpo_retv(sd);
 
 	if(nameid > 0) {
+		int i;
 		for(i = 0; i < sizeof(poison)/sizeof(poison[0]); i++) {
 			if(poison[i] == nameid) {
-				if ((j = pc_search_inventory(sd, nameid)) >= 0) {
+				int j = pc_search_inventory(sd, nameid);
+				if (j >= 0) {
 					pc_delitem(sd,j,1,0,1);
 					if(sd->sc.data[SC_POISONINGWEAPON].timer != -1)
 						status_change_end(&sd->bl,SC_POISONINGWEAPON,-1);
@@ -17854,14 +17859,16 @@ void skill_reading_sb(struct map_session_data *sd, int nameid)
 		WL_COMET, WL_TETRAVORTEX, MG_THUNDERSTORM, WZ_JUPITEL, WZ_WATERBALL, WZ_HEAVENDRIVE,
 		WZ_EARTHSPIKE, WL_EARTHSTRAIN, WL_CHAINLIGHTNING, WL_CRIMSONROCK, WL_DRAINLIFE
 	};
-	int i,j,slot;
 
 	nullpo_retv(sd);
 
 	if(nameid > 0) {
+		int i;
 		for(i = 0; i < sizeof(book)/sizeof(book[0]); i++) {
 			if(book[i] == nameid) {
 				if(pc_search_inventory(sd, nameid) >= 0) {
+					int j, slot;
+
 					/* スキルの習得チェック */
 					if(pc_checkskill(sd,spell[i]) <= 0) {
 						clif_skill_fail(sd,WL_READING_SB,0x34,0,0);
@@ -17906,19 +17913,21 @@ void skill_magicdecoy(struct map_session_data *sd, int nameid)
 	static const int mob_id[] = {
 		2043, 2044, 2046, 2045,
 	};
-	struct mob_data *md = NULL;
-	int id, x, y, i, j;
 
 	nullpo_retv(sd);
 
 	if(nameid > 0) {
+		int i;
 		for(i = 0; i < sizeof(element)/sizeof(element[0]); i++) {
 			if(element[i] == nameid) {
-				if ((j = pc_search_inventory(sd, nameid)) >= 0) {
-					pc_delitem(sd,j,1,0,1);
-					x = sd->skill_menu.val>>16;		// X座標は上位バイト
-					y = sd->skill_menu.val&0xffff;	// Y座標は下位バイト
+				int j = pc_search_inventory(sd, nameid);
+				if (j >= 0) {
+					int x = sd->skill_menu.val>>16;		// X座標は上位バイト
+					int y = sd->skill_menu.val&0xffff;	// Y座標は下位バイト
+					int id;
+					struct mob_data *md = NULL;
 
+					pc_delitem(sd,j,1,0,1);
 					id = mob_once_spawn(sd, sd->bl.m, x, y, sd->status.name, mob_id[i], 1, "");
 
 					if((md = map_id2md(id)) != NULL) {
@@ -17969,10 +17978,9 @@ void skill_autoshadowspell(struct map_session_data *sd, int skillid)
  */
 void skill_changematerial(struct map_session_data *sd, int num, unsigned short *item_list)
 {
-	int i, j, k, c, m;
+	int i, j, k;
 	int nameid, amount, flag;
 	struct item tmp_item;
-	struct skill_material_db *mdb;
 
 	nullpo_retv(sd);
 	nullpo_retv(item_list);
@@ -17981,9 +17989,9 @@ void skill_changematerial(struct map_session_data *sd, int num, unsigned short *
 		return;
 
 	for(i = 0; i < MAX_SKILL_PRODUCE_DB; i++) {
-		mdb = &skill_material_db[i];
-		c = 0;
-		m = 0;
+		struct skill_material_db *mdb = &skill_material_db[i];
+		int c = 0;
+		int m = 0;
 
 		if(mdb->nameid == 0)
 			break;

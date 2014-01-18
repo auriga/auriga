@@ -322,11 +322,10 @@ static bool maildb_txt_read(void)
 		ret = false;
 	} else {
 		char line[8192];
-		struct mail *m;
 		int c = 0;
 
 		while(fgets(line, sizeof(line), fp)) {
-			m = (struct mail *)aCalloc(1, sizeof(struct mail));
+			struct mail *m = (struct mail *)aCalloc(1, sizeof(struct mail));
 			if(mail_fromstr(line, m) == 0 && m->char_id > 0) {
 				numdb_insert(mail_db, m->char_id, m);
 				if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// 値が異常なので補正する
