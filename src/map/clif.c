@@ -20531,10 +20531,10 @@ int clif_parse(int fd)
  * パケットデータベース読み込み
  *------------------------------------------
  */
-static void packetdb_readdb_sub(char *line, int ln)
+static int packetdb_readdb_sub(char *line, int ln)
 {
 	int cmd, j;
-	char *str[32], *p, *str2[32], *p2;
+	char *str[4], *p;
 	static struct {
 		void (*func)(int fd,struct map_session_data *sd, int cmd);
 		const char *name;
@@ -20738,57 +20738,64 @@ static void packetdb_readdb_sub(char *line, int ln)
 		{ NULL,                                   NULL                        },
 	};
 
-	memset(str,0,sizeof(str));
+	memset(str, 0, sizeof(str));
 
-	for(j=0,p=line;j<4 && p;j++){
-		str[j]=p;
-		p=strchr(p,',');
-		if(p) *p++=0;
+	for(j = 0, p = line; j < 4 && p; j++) {
+		str[j] = p;
+		p = strchr(p, ',');
+		if(p) *p++ = 0;
 	}
-	if(str[0]==NULL)
-		return;
-	cmd=strtol(str[0],(char **)NULL,0);
-	if(cmd<=0 || cmd>=MAX_PACKET_DB)
-		return;
+	if(str[0] == NULL)
+		return 0;
 
-	if(str[1]==NULL){
-		printf("packet_db: 0x%x packet len error (line %d)\n", cmd, ln);
-		exit(1);
+	cmd = strtol(str[0], (char **)NULL, 0);
+	if(cmd <= 0 || cmd >= MAX_PACKET_DB)
+		return 0;
+
+	if(str[1] == NULL) {
+		printf("packet_db: 0x%04x packet len error (line %d)\n", cmd, ln);
+		return 1;
 	}
 	packet_db[cmd].len = atoi(str[1]);
 
-	if(str[2]==NULL){
-		return;
+	if(str[2] == NULL) {
+		return 0;
 	}
-	for(j=0;j<sizeof(clif_parse_func)/sizeof(clif_parse_func[0]);j++){
-		if(clif_parse_func[j].name == NULL){
-			printf("packet_db: 0x%x no func %s (line %d)\n", cmd, str[2], ln);
-			exit(1);
+	p = strchr(str[2], '\n');
+	if(p)
+		*p = '\0';
+
+	for(j = 0; j <sizeof(clif_parse_func)/sizeof(clif_parse_func[0]); j++) {
+		if(clif_parse_func[j].name == NULL) {
+			printf("packet_db: 0x%04x no func %s (line %d)\n", cmd, str[2], ln);
+			return 1;
 		}
-		if(strcmp(str[2],clif_parse_func[j].name) == 0){
-			packet_db[cmd].func=clif_parse_func[j].func;
+		if(strcmp(str[2], clif_parse_func[j].name) == 0) {
+			packet_db[cmd].func = clif_parse_func[j].func;
 			break;
 		}
 	}
-	if(str[3]==NULL){
-		printf("packet_db: 0x%x packet error (line %d)\n", cmd, ln);
-		exit(1);
+	if(str[3] == NULL) {
+		printf("packet_db: 0x%04x packet error (line %d)\n", cmd, ln);
+		return 1;
 	}
-	for(j=0,p2=str[3];p2;j++){
+	for(j = 0, p = str[3]; p; j++) {
+		char *p2 = p;
+
 		if(j >= sizeof(packet_db[0].pos)/sizeof(packet_db[0].pos[0])) {
-			printf("packet_db: 0x%x pos overflow (line %d)\n", cmd, ln);
-			exit(1);
+			printf("packet_db: 0x%04x pos overflow (line %d)\n", cmd, ln);
+			return 1;
 		}
-		str2[j]=p2;
-		p2=strchr(p2,':');
-		if(p2) *p2++=0;
-		packet_db[cmd].pos[j]=atoi(str2[j]);
+		p = strchr(p, ':');
+		if(p) *p++ = 0;
+
+		packet_db[cmd].pos[j] = atoi(p2);
 	}
 
 	//if(packet_db[cmd].len > 2 && packet_db[cmd].pos[0] == 0)
-	//	printf("packet_db:? %d 0x%x %d %s %p\n",ln,cmd,packet_db[cmd].len,str[2],packet_db[cmd].func);
+	//	printf("packet_db:? %d 0x%04x %d %s %p\n", ln, cmd, packet_db[cmd].len, str[2], packet_db[cmd].func);
 
-	return;
+	return 0;
 }
 
 static void packetdb_readdb(void)
@@ -20851,7 +20858,10 @@ static void packetdb_readdb(void)
 			stock.count++;
 		} else {
 			// そのまま読み込む
-			packetdb_readdb_sub(line, ln);
+			if(packetdb_readdb_sub(line, ln)) {
+				aFree(stock.data);
+				exit(1);
+			}
 			count++;
 		}
 	}
@@ -20861,7 +20871,10 @@ static void packetdb_readdb(void)
 	if(stock.version > 0) {
 		int i;
 		for(i = 0; i < stock.count; i++) {
-			packetdb_readdb_sub(stock.data[i].line, stock.data[i].ln);
+			if(packetdb_readdb_sub(stock.data[i].line, stock.data[i].ln)) {
+				aFree(stock.data);
+				exit(1);
+			}
 		}
 		count += stock.count;
 	}

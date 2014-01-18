@@ -87,7 +87,7 @@ static int bonus_add_autospell(struct map_session_data* sd,int skillid,int skill
 static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl,int skillid,int skilllv,int rate,unsigned int asflag,unsigned int tick,int flag)
 {
 	struct block_list *target;
-	int f=0,sp=0;
+	int f = 0, sp = 0;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, bl);
@@ -205,9 +205,17 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 
 int bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag)
 {
-	int i;
+	int i, j;
 	static int lock = 0;
 	struct map_session_data *sd = NULL;
+	static struct {
+		unsigned int mask;
+		unsigned int supply;
+	} check[] = {
+		{ EAS_SHORT | EAS_LONG | EAS_MAGIC | EAS_MISC, EAS_SHORT | EAS_LONG },
+		{ EAS_ATTACK | EAS_REVENGE,                    EAS_ATTACK           },
+		{ EAS_NORMAL | EAS_SKILL,                      EAS_NORMAL           },
+	};
 
 	nullpo_retr(0, src);
 	nullpo_retr(0, bl);
@@ -217,42 +225,24 @@ int bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mo
 
 	nullpo_retr(0, sd = (struct map_session_data *)src);
 
-	for(i=0;i<sd->autospell.count;i++)
+	for(i = 0; i < sd->autospell.count; i++)
 	{
 		// スキル使用時に発動するオートスペルは弾く
 		if(sd->autospell.skill[i] != 0)
 			continue;
 
-		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
-			mode += EAS_SHORT|EAS_LONG;
-		if(!(sd->autospell.flag[i]&EAS_SHORT) && !(sd->autospell.flag[i]&EAS_LONG) &&
-		   !(sd->autospell.flag[i]&EAS_MAGIC) && !(sd->autospell.flag[i]&EAS_MISC))
-			sd->autospell.flag[i] += EAS_SHORT|EAS_LONG;
-		if(mode&EAS_SHORT && !(sd->autospell.flag[i]&EAS_SHORT))
-			continue;
-		if(mode&EAS_LONG && !(sd->autospell.flag[i]&EAS_LONG))
-			continue;
-		if(mode&EAS_MAGIC && !(sd->autospell.flag[i]&EAS_MAGIC))
-			continue;
-		if(mode&EAS_MISC && !(sd->autospell.flag[i]&EAS_MISC))
-			continue;
+		for(j = 0; j < sizeof(check)/sizeof(check[0]); j++) {
+			if(!(mode & check[j].mask))
+				mode |= check[j].supply;
+			if(!(sd->autospell.flag[i] & check[j].mask))
+				sd->autospell.flag[i] |= check[j].supply;
 
-		if(!(mode&EAS_ATTACK) && !(mode&EAS_REVENGE))
-			mode += EAS_ATTACK;
-		if(!(sd->autospell.flag[i]&EAS_ATTACK) && !(sd->autospell.flag[i]&EAS_REVENGE))
-			sd->autospell.flag[i] += EAS_ATTACK;
-		if(mode&EAS_REVENGE && !(sd->autospell.flag[i]&EAS_REVENGE))
-			continue;
-		if(mode&EAS_ATTACK && sd->autospell.flag[i]&EAS_REVENGE)
-			continue;
-
-		if(!(mode&EAS_NORMAL) && !(mode&EAS_SKILL))
-			mode += EAS_NORMAL;
-		if(!(sd->autospell.flag[i]&EAS_NORMAL) && !(sd->autospell.flag[i]&EAS_SKILL))
-			sd->autospell.flag[i] += EAS_NORMAL;
-		if(mode&EAS_NORMAL && !(sd->autospell.flag[i]&EAS_NORMAL))
-			continue;
-		if(mode&EAS_SKILL && !(sd->autospell.flag[i]&EAS_SKILL))
+			if((mode & check[j].mask & sd->autospell.flag[i]) != (mode & check[j].mask)) {
+				// modeが持っているフラグをautospellが持っていないなら弾く
+				break;
+			}
+		}
+		if(j != sizeof(check)/sizeof(check[0]))
 			continue;
 
 		if(bonus_use_autospell(
@@ -282,7 +272,7 @@ int bonus_skillautospell(struct block_list *src,struct block_list *bl,int skilli
 
 	nullpo_retr(0, sd = (struct map_session_data *)src);
 
-	for(i=0;i<sd->autospell.count;i++)
+	for(i = 0; i < sd->autospell.count; i++)
 	{
 		// スキルで発動するオートスペルのチェック
 		if(sd->autospell.skill[i] != skillid)
@@ -366,64 +356,54 @@ static int bonus_activeitem_timer(int tid,unsigned int tick,int id,void *data)
  */
 int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned int tick)
 {
-	int i, flag = 0;
+	int i, j, flag = 0;
 	static int lock = 0;
+	static struct {
+		unsigned int mask;
+		unsigned int supply;
+	} check[] = {
+		{ EAS_SHORT | EAS_LONG | EAS_MAGIC | EAS_MISC, EAS_SHORT | EAS_LONG },
+		{ EAS_ATTACK | EAS_REVENGE,                    EAS_ATTACK           },
+		{ EAS_NORMAL | EAS_SKILL,                      EAS_NORMAL           },
+	};
 
 	nullpo_retr(0, sd);
 
 	if(lock++)
 		return 0;
 
-	for(i=0;i<sd->activeitem.count;i++)
+	for(i = 0; i < sd->activeitem.count; i++)
 	{
 		// スキル使用時に発動するアクティブアイテムは弾く
 		if(sd->activeitem.skill[i] != 0)
 			continue;
 
-		if(!(mode&EAS_SHORT) && !(mode&EAS_LONG) && !(mode&EAS_MAGIC) && !(mode&EAS_MISC))
-			mode |= EAS_SHORT|EAS_LONG;
-		if(!(sd->activeitem.flag[i]&EAS_SHORT) && !(sd->activeitem.flag[i]&EAS_LONG) &&
-		   !(sd->activeitem.flag[i]&EAS_MAGIC) && !(sd->activeitem.flag[i]&EAS_MISC))
-			sd->activeitem.flag[i] |= EAS_SHORT|EAS_LONG;
-		if(mode&EAS_SHORT && !(sd->activeitem.flag[i]&EAS_SHORT))
-			continue;
-		if(mode&EAS_LONG && !(sd->activeitem.flag[i]&EAS_LONG))
-			continue;
-		if(mode&EAS_MAGIC && !(sd->activeitem.flag[i]&EAS_MAGIC))
-			continue;
-		if(mode&EAS_MISC && !(sd->activeitem.flag[i]&EAS_MISC))
-			continue;
+		for(j = 0; j < sizeof(check)/sizeof(check[0]); j++) {
+			if(!(mode & check[j].mask))
+				mode |= check[j].suplly;
+			if(!(sd->activeitem.flag[i] & check[j].mask))
+				sd->activeitem.flag[i] |= check[j].supply;
 
-		if(!(mode&EAS_ATTACK) && !(mode&EAS_REVENGE))
-			mode |= EAS_ATTACK;
-		if(!(sd->activeitem.flag[i]&EAS_ATTACK) && !(sd->activeitem.flag[i]&EAS_REVENGE))
-			sd->activeitem.flag[i] |= EAS_ATTACK;
-		if(mode&EAS_REVENGE && !(sd->activeitem.flag[i]&EAS_REVENGE))
-			continue;
-		if(mode&EAS_ATTACK && sd->activeitem.flag[i]&EAS_REVENGE)
-			continue;
-
-		if(!(mode&EAS_NORMAL) && !(mode&EAS_SKILL))
-			mode |= EAS_NORMAL;
-		if(!(sd->activeitem.flag[i]&EAS_NORMAL) && !(sd->activeitem.flag[i]&EAS_SKILL))
-			sd->activeitem.flag[i] |= EAS_NORMAL;
-		if(mode&EAS_NORMAL && !(sd->activeitem.flag[i]&EAS_NORMAL))
-			continue;
-		if(mode&EAS_SKILL && !(sd->activeitem.flag[i]&EAS_SKILL))
+			if((mode & check[j].mask & sd->activeitem.flag[i]) != (mode & check[j].mask)) {
+				// modeが持っているフラグをactiveitemが持っていないなら弾く
+				break;
+			}
+		}
+		if(j != sizeof(check)/sizeof(check[0]))
 			continue;
 
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
 			continue;
 
-		// 既に発動中の場合は時間を上書き
 		if(sd->activeitem_timer[i] != -1) {
-			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
-		// 発動
+			// 既に発動中の場合はタイマーを初期化
+			delete_timer(sd->activeitem_timer[i], bonus_activeitem_timer);
 		} else {
-			sd->activeitem_id2[i]   = sd->activeitem.id[i];
-			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
+			// 発動
+			sd->activeitem_id2[i] = sd->activeitem.id[i];
 			flag = 1;
 		}
+		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
 	}
 	if(flag)
 		status_calc_pc(sd,0);
@@ -446,7 +426,7 @@ int bonus_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned
 	if(lock++)
 		return 0;
 
-	for(i=0;i<sd->activeitem.count;i++)
+	for(i = 0; i < sd->activeitem.count; i++)
 	{
 		// スキルで発動するオートスペルのチェック
 		if(sd->activeitem.skill[i] != skillid)
@@ -455,15 +435,15 @@ int bonus_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned
 		if(atn_rand()%10000 > sd->activeitem.rate[i])
 			continue;
 
-		// 既に発動中の場合は時間を上書き
 		if(sd->activeitem_timer[i] != -1) {
-			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
-		// 発動
+			// 既に発動中の場合はタイマーを初期化
+			delete_timer(sd->activeitem_timer[i], bonus_activeitem_timer);
 		} else {
-			sd->activeitem_id2[i]   = sd->activeitem.id[i];
-			sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
+			// 発動
+			sd->activeitem_id2[i] = sd->activeitem.id[i];
 			flag = 1;
 		}
+		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
 	}
 	if(flag)
 		status_calc_pc(sd,0);
