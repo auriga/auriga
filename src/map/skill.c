@@ -10911,7 +10911,6 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			case DC_SERVICEFORYOU:	/* サービスフォーユー */
 			case CG_HERMODE:		/* ヘルモードの杖 */
 			case NPC_EVILLAND:		/* イービルランド */
-			case NPC_VENOMFOG:		/* ベナムフォグ */
 			case MA_SKIDTRAP:		/* スキッドトラップ */
 			case MA_LANDMINE:		/* ランドマイン */
 			case MA_SANDMAN:		/* サンドマン */
@@ -12083,7 +12082,9 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			int hp = 2000;
 
 			if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
-				hp = battle_attr_fix(hp, ELE_POISON, status_get_element(bl));
+				if(status_get_elem_type(bl) == ELE_POISON)
+					break;
+				hp = battle_attr_fix(hp, ELE_NEUTRAL, status_get_element(bl));
 				clif_damage(&src->bl,bl,tick,0,0,hp,0,9,0,0);
 				battle_damage(NULL,bl,hp,0,0,0);
 			} else if(battle_check_target(&src->bl,bl,BCT_NOENEMY) > 0) {
@@ -15890,7 +15891,6 @@ static int skill_landprotector(struct block_list *bl, va_list ap )
 		case DC_SERVICEFORYOU:	// サービスフォーユー
 		case CG_HERMODE:	// ヘルモードの杖
 		case NPC_EVILLAND:	// イービルランド
-		case NPC_VENOMFOG:	// ベナムフォグ
 		case NPC_DISSONANCE:
 		case NPC_UGLYDANCE:
 			break;

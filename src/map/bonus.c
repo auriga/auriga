@@ -380,7 +380,7 @@ int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigne
 
 		for(j = 0; j < sizeof(check)/sizeof(check[0]); j++) {
 			if(!(mode & check[j].mask))
-				mode |= check[j].suplly;
+				mode |= check[j].supply;
 			if(!(sd->activeitem.flag[i] & check[j].mask))
 				sd->activeitem.flag[i] |= check[j].supply;
 
