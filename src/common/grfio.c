@@ -658,14 +658,14 @@ static int grfio_entryread(const char *gfname,int gentry)
 	    uint32 version;                    // 42 (0x2a)
 	};*/
 	FILE *fp;
-	long grf_size = 0, list_size;
+	long grf_size = 0;
 	unsigned char grf_header[0x2e];
-	int entry,entrys;
+	int entry, entrys;
 	unsigned int grf_version;
-	size_t ofs,ofs2;
+	size_t ofs, ofs2;
 	unsigned char *fname;
 	unsigned char *grf_filelist;
-	int count=0;
+	int count = 0;
 	struct stat st;
 
 	if(stat(gfname, &st) == 0)
@@ -693,21 +693,24 @@ static int grfio_entryread(const char *gfname,int gentry)
 
 	switch (grf_version & 0xFF00) {
 	case 0x0100: //****** Grf version 01xx ******
-		list_size = grf_size-ftell(fp);
-		grf_filelist = (char *)aCalloc(1,list_size);
-		fread(grf_filelist,1,list_size,fp);
-		fclose(fp);
+		{
+			long list_size = grf_size - ftell(fp);
+			grf_filelist = (char *)aCalloc(1, list_size);
+			fread(grf_filelist, 1, list_size, fp);
+			fclose(fp);
+		}
 
 		// Get an entry
 		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17){
-			int srclen,srccount;
 			char type;
-			unsigned char *ext_ptr;
 			FILELIST aentry;
 
 			ofs2 = ofs+getlong(grf_filelist+ofs)+4;
 			type = grf_filelist[ofs2+12];
-			if( type!=0 ){	// Directory Index ... skip
+			if( type!=0 ) {	// Directory Index ... skip
+				int srclen, srccount;
+				unsigned char *ext_ptr;
+
 				fname = decode_filename(grf_filelist+ofs+6,grf_filelist[ofs]-6);
 				if(strlen(fname)>sizeof(aentry.fn)-1){
 					printf("\nFile name too long : %s.\n",fname);
@@ -753,35 +756,35 @@ static int grfio_entryread(const char *gfname,int gentry)
 		break;
 
 	case 0x0200: //****** Grf version 02xx ******
-	  {
-		unsigned char eheader[8];
-		unsigned char *rBuf;
-		unsigned int rSize;
-		unsigned long eSize;
+		{
+			unsigned char eheader[8];
+			unsigned char *rBuf;
+			unsigned int rSize;
+			unsigned long eSize;
 
-		/* Size: 8 + compressedLength
-		struct GRF2_FileTableHeader {              // Offset
-		    uint32 compressedLength;               // 0
-		    uint32 uncompressedLength;             // 4
-		    unsigned char body[compressedLength];  // 8
-		};*/
-		fread(eheader,1,sizeof(eheader),fp);
-		rSize = getlong(eheader);	// Read Size
-		eSize = getlong(eheader+4);	// Extend Size
+			/* Size: 8 + compressedLength
+			struct GRF2_FileTableHeader {              // Offset
+			    uint32 compressedLength;               // 0
+			    uint32 uncompressedLength;             // 4
+			    unsigned char body[compressedLength];  // 8
+			};*/
+			fread(eheader, 1, sizeof(eheader), fp);
+			rSize = getlong(eheader);	// Read Size
+			eSize = getlong(eheader + 4);	// Extend Size
 
-		if ((long)rSize > grf_size-ftell(fp)) {
+			if ((long)rSize > grf_size - ftell(fp)) {
+				fclose(fp);
+				printf("\nIllegal data format : grf compress entry size.\n");
+				return 8;	// 8:compress format error
+			}
+
+			rBuf = (unsigned char *)aCalloc(1, rSize);	// Get a Read Size
+			grf_filelist = (unsigned char *)aCalloc(1, eSize);	// Get a Extend Size
+			fread(rBuf, 1, rSize, fp);
 			fclose(fp);
-			printf("\nIllegal data format : grf compress entry size.\n");
-			return 8;	// 8:compress format error
+			decode_zip(grf_filelist, &eSize, rBuf, rSize);	// Decode function
+			aFree(rBuf);
 		}
-
-		rBuf = (unsigned char *)aCalloc(1,rSize);	// Get a Read Size
-		grf_filelist = (unsigned char *)aCalloc(1,eSize);	// Get a Extend Size
-		fread(rBuf,1,rSize,fp);
-		fclose(fp);
-		decode_zip(grf_filelist,&eSize,rBuf,rSize);	// Decode function
-		list_size = eSize;
-		aFree(rBuf);
 
 		// Get an entry
 		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17){
@@ -800,7 +803,6 @@ static int grfio_entryread(const char *gfname,int gentry)
 			    0x02 (MIXCRYPT) - Indicates that the file uses mixed crypto.
 			    0x04 (DES) - Indicates that only the first 0x14 blocks are encrypted.
 			*/
-			int srclen,srccount;
 			char type;
 			unsigned char *ext_ptr;
 			FILELIST aentry;
@@ -823,7 +825,9 @@ static int grfio_entryread(const char *gfname,int gentry)
 
 			type = grf_filelist[ofs2+12];
 			if ((type & 0x01) == 0x01) { // type 1, 2 or 3
-				srclen=getlong(grf_filelist+ofs2);
+				int srclen = getlong(grf_filelist + ofs2);
+				int srccount;
+
 				switch (type) {
 				case 3:
 					{
@@ -858,8 +862,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 		}
 		printf(" Entered files: %d.\n",count);
 		aFree(grf_filelist);
-	  }
-	  break;
+		break;
 
 	default: //****** Grf Other version ******
 		fclose(fp);

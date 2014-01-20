@@ -1032,7 +1032,6 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str)
 // 指定した行、列のデータをクリアする
 int csvdb_clear_row(struct csvdb_data *csv, int row)
 {
-	int i;
 	struct csvdb_line *line;
 
 	if( csv == NULL || row < 0 || csv->row_notempty <= row )
@@ -1040,6 +1039,7 @@ int csvdb_clear_row(struct csvdb_data *csv, int row)
 
 	line = &csv->data[ csv->index[ row ] ];
 	if( line->buf == NULL ) {
+		int i;
 		for(i = 0; i < line->num; i++) {
 			aFree( line->data_p[i] );
 		}
@@ -1201,13 +1201,13 @@ void csvdb_close(struct csvdb_data *csv)
 // デバッグ用
 void csvdb_dump(struct csvdb_data* csv)
 {
-	int i, j;
-	struct csvdb_line *line;
+	int i;
 
 	if( csv == NULL )
 		return;
 
 	printf("csvdb_dump: index\n");
+
 	for(i = 0; i < csv->row_notempty; i++) {
 		printf("% 3d", csv->index[i]);
 	}
@@ -1218,8 +1218,10 @@ void csvdb_dump(struct csvdb_data* csv)
 	printf("]\n");
 
 	for(i = 0; i < csv->row_count; i++) {
+		int j;
+		struct csvdb_line *line = &csv->data[csv->index[i]];
+
 		printf("line% 4d : ", i);
-		line = &csv->data[csv->index[i]];
 		for( j = 0; j < line->num; j++) {
 			printf("[%s],", line->data_p[j]);
 		}

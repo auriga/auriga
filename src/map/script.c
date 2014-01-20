@@ -101,7 +101,7 @@ static struct script_str_data {
 static char *str_buf;
 static int str_num = LABEL_START, str_data_size;
 
-#define SCRIPT_HASH_SIZE 1021
+#define SCRIPT_HASH_SIZE 1571
 int str_hash[SCRIPT_HASH_SIZE];
 
 #define MAPREG_AUTOSAVE_INTERVAL	(300*1000)
@@ -3280,6 +3280,10 @@ static void run_script_main(struct script_state *st)
 			sd->progressbar.npc_id = 0;
 			sd->progressbar.tick = 0;
 		}
+		if(sd->progressbar.tick > 0) {
+			npc_timeout_stop(sd);
+		}
+
 		// 再開するためにスタック情報を保存
 		sd->npc_script      = st->script;
 		sd->npc_scriptroot  = st->scriptroot;
@@ -3630,7 +3634,7 @@ static int debug_hash_output(void)
 			if(++count[h] > max)
 				max = count[h];
 		}
-		fprintf(fp, "-------+--------+----------------------" NEWLINE RETCODE);
+		fprintf(fp, "-------+--------+----------------------" NEWLINE);
 
 		buckets = (int *)aCalloc((max+1),sizeof(int));
 
@@ -3642,7 +3646,7 @@ static int debug_hash_output(void)
 			fprintf(fp, " %6d | %5d" NEWLINE, i, count[i]);
 			buckets[count[i]]++;
 		}
-		fprintf(fp, "--------+-------" NEWLINE RETCODE);
+		fprintf(fp, "--------+-------" NEWLINE);
 
 		fprintf(fp, "#3 distribution of hashed data" NEWLINE);
 		fprintf(fp, "-------+---------+---------" NEWLINE);
@@ -12561,6 +12565,7 @@ int buildin_progressbar(struct script_state *st)
 		// 続行
 		sd->progressbar.npc_id = 0;
 		sd->progressbar.tick   = 0;
+		npc_timeout_start(sd);
 	}
 
 	return 0;
