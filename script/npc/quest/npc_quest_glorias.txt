@@ -232,11 +232,11 @@ yuno.gat,335,38,2	script	グロリアス#yuno	813,{
 				mes "　再度話しかけてください‐";
 				close;
 			}
-			delitem 6364,'@gvg;
-			delitem 6365,'@arena;
-			delitem 6366,'@tarbo;
-			delitem 6367,'@kafra;
-			delitem 6368,'@endless;
+			delitem 6364,100;
+			delitem 6365,200;
+			delitem 6366,200;
+			delitem 6367,150;
+			delitem 6368,50;
 			break;
 		case 2:
 			if(countitem(6798) < 1) {
