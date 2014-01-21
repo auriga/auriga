@@ -1087,184 +1087,74 @@ aldebaran.gat,58,225,3	script	カプラ職員	116,{
 	close;
 }
 
-aldeba_in.gat,79,161,6	script	カプラ職員	115,{
+aldeba_in.gat,79,161,7	script	カプラ職員	115,{
 	mes "[カプラ職員]";
 	mes "いらっしゃいませ" +strcharinfo(0)+ "様。";
 	mes "当カプラサービスをご利用いただき";
-	mes "獲得されたポイントと、景品を交換";
-	mes "しております。";
+	mes "獲得されたポイントと、";
+	mes "カプラコインを交換しております。";
 	next;
 	mes "[カプラ職員]";
-	mes "私はカプラポイント";
-	mes "^660066100p から 3000p まで^000000";
-	mes "を賞品と交換致します。";
+	mes "カプラポイント";
+	mes "^7D0781500p ^000000でカプラコインと交換か、";
+	mes "^7D07813000p ^000000でチャンスにチャレンジすることが";
+	mes "できます。";
 	next;
-	if(MaxWeight-Weight < 11000) {
-		mes "[カプラ職員]";
-		mes "お客様、少々荷物を持ちすぎて";
-		mes "おりませんか？";
-		mes "その状態では賞品を交換しても";
-		mes "お持ちになれません。";
-		next;
-		mes "[カプラ職員]";
-		mes "お手数ですが、カプラサービスを";
-		mes "ご利用になり、残り重量が";
-		mes "^0000AA1100^000000 程になるよう荷物を";
-		mes "減らすようお願い致します。";
-		close;
-	}
 	mes "[カプラ職員]";
 	mes "お客様の獲得ポイントは";
 	mes "^FF0000" +KAFRA_PIT+ "^000000 です。";
 	mes "次の中からご希望の品物を";
 	mes "お選びください。";
 	next;
-	switch(select("100p = いも 7 個","200p = いも 15 個","300p = いも 25 個","400p = いも 35 個","500p = いも 50 個",
-			"600p = いも 60 個","700p = いも 75 個","800p = いも 85 個","900p = いも 100 個","1000p = チャンス1","次項目","取り消し")) {
+	switch(select("500p = カプラコイン 1 枚","3000p = チャンス","取り消し")) {
 	case 1:
-		set '@point,100;
-		set '@amount,7;
-		set '@gain,516;
-		break;
-	case 2:
-		set '@point,200;
-		set '@amount,15;
-		set '@gain,516;
-		break;
-	case 3:
-		set '@point,300;
-		set '@amount,25;
-		set '@gain,516;
-		break;
-	case 4:
-		set '@point,400;
-		set '@amount,35;
-		set '@gain,516;
-		break;
-	case 5:
-		set '@point,500;
-		set '@amount,50;
-		set '@gain,516;
-		break;
-	case 6:
-		set '@point,600;
-		set '@amount,60;
-		set '@gain,516;
-		break;
-	case 7:
-		set '@point,700;
-		set '@amount,75;
-		set '@gain,516;
-		break;
-	case 8:
-		set '@point,800;
-		set '@amount,85;
-		set '@gain,516;
-		break;
-	case 9:
-		set '@point,900;
-		set '@amount,100;
-		set '@gain,516;
-		break;
-	case 10:
-		set '@point,1100;
-		set '@flag,1;
-		break;
-	case 11:
-		switch(select("1100p = 赤ポーション 20 個","1300p = 赤ポーション 25 個","1500p = 赤ポーション 33 個",
-				"1700p = 赤ポーション 40 個","1900p = 赤ポーション 50 個","2100p = 赤ポーション 60 個",
-				"2300p = 赤ポーション 70 個","2500p = 赤ポーション 84 個","2700p = 赤ポーション 100 個","3000p = チャンス2","取り消し")) {
-			case 1:
-				set '@point,1100;
-				set '@amount,20;
-				set '@gain,501;
-				break;
-			case 2:
-				set '@point,1300;
-				set '@amount,25;
-				set '@gain,501;
-				break;
-			case 3:
-				set '@point,1500;
-				set '@amount,33;
-				set '@gain,501;
-				break;
-			case 4:
-				set '@point,1700;
-				set '@amount,40;
-				set '@gain,501;
-				break;
-			case 5:
-				set '@point,1900;
-				set '@amount,50;
-				set '@gain,501;
-				break;
-			case 6:
-				set '@point,2100;
-				set '@amount,60;
-				set '@gain,501;
-				break;
-			case 7:
-				set '@point,2300;
-				set '@amount,70;
-				set '@gain,501;
-				break;
-			case 8:
-				set '@point,2500;
-				set '@amount,84;
-				set '@gain,501;
-				break;
-			case 9:
-				set '@point,2700;
-				set '@amount,100;
-				set '@gain,501;
-				break;
-			case 10:
-				set '@point,2700;
-				set '@flag,2;
-				break;
-			case 11:
-				break;
+		mes "[カプラ職員]";
+		mes "一度に交換できるのは";
+		mes "10枚までとなります。";
+		mes "もし取り消す場合は、";
+		mes "「0」とおっしゃってください。";
+		mes "カプラコイン何枚と";
+		mes "交換しますか？";
+		next;
+		input '@num;
+		if('@num == 0) {
+			mes "[カプラ職員]";
+			mes "取り消しました。";
+			close;
+		} else if('@num < 0 || '@num > 10) {
+			mes "[カプラ職員]";
+			mes "数が正しくないようです。";
+			close;
 		}
-		if(@menu != 11)
-			break;
-		//11ならfall through
-	case 12:
+		if(KAFRA_PIT < 500*'@num) {
+			mes "[カプラ職員]";
+			mes "カプラポイントが足りません。";
+			mes "お手持ちのポイント数を";
+			mes "確認なさってからお越しください。";
+			close;
+		}
+		if(checkitemblank() == 0) {
+			mes "‐所持アイテムの種類数が多い為";
+			mes "　危険です。";
+			mes "　所持アイテムを減らしてから、";
+			mes "　再度話しかけてください‐";
+			close;
+		}
+		set KAFRA_PIT,KAFRA_PIT-500*'@num;
+		getitem 6367,'@num;
 		mes "[カプラ職員]";
-		mes "また多くのポイントを集め";
-		mes "られるよう願っております。";
-		mes "いつも (株)カプラサービスを";
-		mes "ご利用いただきありがとう";
-		mes "ございます。";
+		mes "ご利用ありがとうございました。";
 		close;
-	}
-	if(KAFRA_PIT < '@point) {
+	case 2:
+		if(KAFRA_PIT < 3000) {
+			mes "[カプラ職員]";
+			mes "カプラポイントが足りません。";
+			mes "お手持ちのポイント数を";
+			mes "確認なさってからお越しください。";
+			close;
+		}
 		mes "[カプラ職員]";
-		mes "申し訳ありませんが、";
-		mes "お客様が選択した賞品は";
-		mes "^0000FF" +('@point-KAFRA_PIT)+ "^000000 点";
-		mes "ポイントが不足しておりますので";
-		mes "交換することができかねます。";
-		mes "もう一度ご確認の上選択してください。";
-		close;
-	}
-	mes "[カプラ職員]";
-	mes "賞品と交換した場合、";
-	mes "^AA0000" +(KAFRA_PIT-'@point)+ "^000000 点が残ります。";
-	mes "交換しますか？";
-	next;
-	if(select("交換する","取り消し")==2) {
-		mes "[カプラ職員]";
-		mes "かしこまりました。";
-		mes "今後ともカプラサービスをよろしく";
-		mes "お願い致します。";
-		close;
-	}
-	set KAFRA_PIT,KAFRA_PIT-'@point;
-	getitem '@gain,'@amount;
-	if('@flag) {
-		mes "[カプラ職員]";
-		mes "^0000AAチャンス" +'@flag+ "！^000000";
+		mes "^0000FFチャンス！^000000";
 		next;
 		mes "[カプラ職員]";
 		mes "それでは、お客様の運だめしと";
@@ -1272,26 +1162,13 @@ aldeba_in.gat,79,161,6	script	カプラ職員	115,{
 		mes "準備はよろしいですか？";
 		next;
 		mes "[カプラ職員]";
-		mes "こちらの抽選機ですが、";
-		mes "5回まで回せます。";
-		mes "何回回しますか？";
-		while(1) {	//回す回数に意味があるのか不明
-			next;
-			input '@round;
-			if('@round<1 || '@round>5) {
-				mes "[カプラ職員]";
-				mes "……";
-				mes "1〜5回の間でお願いします。";
-				continue;
-			}
-			break;
-		}
-		for(set '@i,0; '@i<'@round; set '@i,'@i+1) {	//数回検証した結果ランダムと判定
-			switch(rand(3)) {
-				case 0: mes "ジャラジャラ……"; break;
-				case 1: mes "ガラガラガラ……"; break;
-				case 2: mes "ポロッ カツッ カツン……"; break;
-			}
+		mes "こちらの抽選機を";
+		mes "回してください。";
+		next;
+		switch(rand(3)) {
+		case 0: mes "ジャラジャラ……"; break;
+		case 1: mes "ガラガラガラ……"; break;
+		case 2: mes "ポロッ カツッ カツン……"; break;
 		}
 		next;
 		mes "[カプラ職員]";
@@ -1301,109 +1178,106 @@ aldeba_in.gat,79,161,6	script	カプラ職員	115,{
 		mes "[カプラ職員]";
 		mes "^FF0000おっ……これは^000000";
 		next;
+		if(checkitemblank() == 0) {
+			mes "[カプラ職員]";
+			mes "お客様、少々荷物を持ちすぎて";
+			mes "おりませんか？";
+			mes "その状態では賞品を交換しても";
+			mes "お持ちになれません。";
+			next;
+			mes "[カプラ職員]";
+			mes "お手数ですが、カプラサービスを";
+			mes "ご利用になり、種類数を";
+			mes "減らすようお願い致します。";
+			close;
+		}
+		if(MaxWeight-Weight < 1000) {
+			mes "[カプラ職員]";
+			mes "お客様、少々荷物を持ちすぎて";
+			mes "おりませんか？";
+			mes "その状態では賞品を交換しても";
+			mes "お持ちになれません。";
+			next;
+			mes "[カプラ職員]";
+			mes "お手数ですが、カプラサービスを";
+			mes "ご利用になり、残り重量が";
+			mes "^0000FF1100^000000 程になるよう荷物を";
+			mes "減らすようお願い致します。";
+			close;
+		}
+		set KAFRA_PIT,KAFRA_PIT-3000;
+		set '@prize,rand(1,100);
+		if('@prize == 100) {
+			mes "[カプラ職員]";
+			mes "1等〜";
+			mes "1等賞です〜";
+			mes "賞品は ^00FF00カプラヘアバンド 1個！^000000";
+			getitem 12399,1;
+			break;
+		} else if('@prize >= 98 && '@prize < 100) {
+			mes "[カプラ職員]";
+			mes "2等〜";
+			mes "2等賞です〜";
+			mes "賞品は ^00FF00豪華な宝箱 1個！^000000";
+			getitem 12399,1;
+			break;
+		} else if('@prize >= 95 && '@prize < 98) {
+			mes "[カプラ職員]";
+			mes "3等〜";
+			mes "3等賞です〜";
+			mes "賞品は ^00FF00カプラコイン 10枚！^000000";
+			getitem 6367,10;
+			break;
+		} else if('@prize >= 89 && '@prize < 95) {
+			mes "[カプラ職員]";
+			mes "4等〜";
+			mes "4等賞です〜";
+			mes "賞品は ^00FF00カプラコイン 6枚！^000000";
+			getitem 6367,6;
+			break;
+		} else if('@prize >= 63 && '@prize < 89) {
+			mes "[カプラ職員]";
+			mes "5等〜";
+			mes "5等賞です〜";
+			mes "賞品は ^00FF00カプラコイン 3枚！^000000";
+			getitem 6367,3;
+			break;
+		} else if('@prize >= 37 && '@prize < 63) {
+			mes "[カプラ職員]";
+			mes "6等〜";
+			mes "6等賞です〜";
+			mes "賞品は ^00FF00カプラコイン 2枚！^000000";
+			getitem 6367,2;
+			break;
+		} else {
+			mes "[カプラ職員]";
+			mes "残念〜";
+			mes "残念賞です〜";
+			mes "賞品は ^00FF00カプラコイン 1枚！^000000";
+			getitem 6367,1;
+			break;
+		}
+		next;
 		mes "[カプラ職員]";
-		if('@flag==1) {
-			switch(rand(12)) {	//確率不明につき適当
-			case 0:		//1位、ウドゥンメイル
-				getitem 2328,1;
-				mes "1等〜";
-				mes "1等賞です〜";
-				mes "賞品は ^00DD00ウドゥンメイル 1 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "未調査";
-				break;
-			case 1:		//2位、シューズ
-			case 2:
-				getitem 2403,1;
-				mes "2等〜";
-				mes "2等賞です〜";
-				mes "賞品は ^00DD00シューズ 1 足！";
-				next;
-				mes "[カプラ職員]";
-				mes "カッコイイデザインと丈夫な素材！";
-				mes "当カプラ職員は遠いところに";
-				mes "出かけるときはいつもコレを履いて";
-				mes "いくんですよ。";
-				break;
-			case 3:		//3位、蝶の羽*4
-			case 4:
-			case 5:
-				getitem 602,4;
-				mes "3等〜";
-				mes "3等賞です〜";
-				mes "賞品は ^00DD00蝶の羽 4 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "危ない時はコレ！";
-				break;
-			default:	//残念賞、いも*100
-				getitem 516,100;
-				mes "残念〜";
-				mes "残念賞です〜";
-				mes "賞品は ^00DD00いも 100 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "寒い冬に恋人と仲良く";
-				mes "召し上がれ〜。";
-				break;
-			}
-		}
-		else {
-			switch(rand(12)) {	//確率不明につき適当
-			case 0:		//1位、青ポーション*3
-				getitem 505,3;
-				mes "1等〜";
-				mes "1等賞です〜";
-				mes "賞品は ^00DD00青ポーション 3 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "未調査";
-				break;
-			case 1:		//2位、キャップ
-			case 2:
-				getitem 2226,1;
-				mes "2等〜";
-				mes "2等賞です〜";
-				mes "賞品は ^00DD00キャップ 1 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "う〜ん……普通の帽子です。";
-				mes "でも機能性はバッチリですよ！";
-				break;
-			case 3:		//3位、サングラス
-			case 4:
-			case 5:
-				getitem 2201,1;
-				mes "3等〜";
-				mes "3等賞です〜";
-				mes "賞品は ^00DD00サングラス 1 個！";
-				next;
-				mes "[カプラ職員]";
-				mes "私が浮気調査によく使う物ですね。";
-				mes "皆さんはそんなことに使われないよう";
-				mes "願っております……";
-				break;
-			default:	//残念賞、赤ポーション*100
-				getitem 501,100;
-				mes "残念でした〜";
-				mes "お友達に配っても良いですね……";
-				next;
-				mes "[カプラ職員]";
-				mes "未調査";
-				break;
-			}
-		}
+		mes "おめでとうございます〜";
+		mes "ご利用ありがとうございました！";
+		next;
+		mes "[カプラ職員]";
+		mes "また多くのポイントを集め";
+		mes "られるよう願っております。";
+		mes "いつも (株)カプラサービスを";
+		mes "ご利用いただきありがとう";
+		mes "ございます。";
+		close;
+	case 3:
+		mes "[カプラ職員]";
+		mes "また多くのポイントを集め";
+		mes "られるよう願っております。";
+		mes "いつも (株)カプラサービスを";
+		mes "ご利用いただきありがとう";
+		mes "ございます。";
+		close;
 	}
-	mes "ご利用ありがとうございました！";
-	next;
-	mes "[カプラ職員]";
-	mes "また多くのポイントを集め";
-	mes "られるよう願っております。";
-	mes "いつも (株)カプラサービスを";
-	mes "ご利用いただきありがとう";
-	mes "ございます。";
-	close;
 }
 
 aldeba_in.gat,84,166,4	script	カプラサービス	117,{

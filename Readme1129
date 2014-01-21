@@ -1,4 +1,13 @@
 ----------------------------------------
+//1185 [2014/01/22] by refis
+
+・グロリアス交換NPC実装（conf/map_auriga.conf, npc_quest_glorias.txt）
+
+・グロリアス関連交換NPCを修正（npc_quest_arena.txt, npc_quest_turbo.txt, npc_town_aldebaran.txt）
+
+・item_dbの更新（item_db.txt, item_db_pre.txt）
+
+----------------------------------------
 //1184 [2014/01/21] by Rayce
 
 ・Auriga-1176以降、RETCODEがまだ残っていた部分を修正（script.c）

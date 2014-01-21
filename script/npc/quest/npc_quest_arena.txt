@@ -172,7 +172,7 @@ prt_are_in.gat,98,14,3	script	ギブ#arena	728,{
 		mes "どの景品と交換しますか？";
 		next;
 		switch (select("ハチ蜜","ローヤルゼリー","マステラの実","ホワイトスリムポーション","アンティペインメント",
-						"イグドラシルの種","イグドラシルの実","古く青い箱","古い紫色の箱","古いカード帖")) {
+						"イグドラシルの種","イグドラシルの実","アリーナコイン","古く青い箱","古い紫色の箱","古いカード帖")) {
 			case 1:
 				set '@point,20;
 				set '@amount,5;
@@ -209,16 +209,21 @@ prt_are_in.gat,98,14,3	script	ギブ#arena	728,{
 				set '@itemid,607;
 				break;;
 			case 8:
+				set '@point,60;
+				set '@amount,1;
+				set '@itemid,6365;
+				break;;
+			case 9:
 				set '@point,100;
 				set '@amount,1;
 				set '@itemid,603;
 				break;;
-			case 9:
+			case 10:
 				set '@point,300;
 				set '@amount,1;
 				set '@itemid,617;
 				break;;
-			case 10:
+			case 11:
 				set '@point,1000;
 				set '@amount,1;
 				set '@itemid,616;
