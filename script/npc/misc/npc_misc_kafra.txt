@@ -207,6 +207,7 @@ function	script	KafraMain	{
 			return;
 		}
 		set Zeny,Zeny-getarg(9);
+		set KAFRA_PIT,KAFRA_PIT+(getarg(9)/10);
 		setcart;
 		return;
 	}
@@ -296,6 +297,7 @@ function	script	KafraStorage	{
 	}
 	else {
 		set Zeny,Zeny-getarg(0);
+		set KAFRA_PIT,KAFRA_PIT+(getarg(0)/10);
 		openstorage;
 		cutin "kafra_01",255;
 		close;

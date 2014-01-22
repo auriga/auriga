@@ -1,4 +1,17 @@
 ----------------------------------------
+//1187 [2014/01/23] by refis
+
+・ターボトラックの入場制限を修正（npc_quest_turbo.txt）
+	Thanks さいこ さん
+
+・カプラ倉庫、カプラカートレンタル時にカプラポイントが付与されないのを修正（npc_misc_kafra.txt, npc_job_23supernovice.txt）
+	Thanks さいこ さん
+
+・アルベルタの少年クエスト実装（npc_quest_yggdrasil.txt, npc_town_alberta.txt）
+
+・quest_db.txtの更新（quest_db.txt）
+
+----------------------------------------
 //1186 [2014/01/22] by refis
 
 ・グロリアス武器交換時の誤りを修正（npc_quest_glorias.txt）

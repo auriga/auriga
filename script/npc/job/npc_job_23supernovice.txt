@@ -335,6 +335,7 @@ aldebaran.gat,54,238,5	script	カプラ職員	117,{
 				close;
 			}
 			set Zeny,Zeny-1900;
+			set KAFRA_PIT,KAFRA_PIT+190;
 			setcart;
 			mes "[カプラ職員]";
 			mes "ご利用ありがとうございます。";

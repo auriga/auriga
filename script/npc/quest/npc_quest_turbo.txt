@@ -94,14 +94,6 @@ alde_gld.gat,181,199,5	script	ペコペコ管理係	845,{
 }
 
 alde_gld.gat,183,204,0	script	turbowarp1001	45,1,1,{
-	if(checkitemblank() == 0) {
-		mes "‐所持アイテムの種類数が";
-		mes "多いため、アイテムを受けとる";
-		mes "ことができません。";
-		mes "所持アイテムを減らしてから";
-		mes "再度お越しください。‐";
-		close;
-	}
 	if(checkriding()) {
 		mes "[入場係]";
 		mes "申し訳ありませんが、ペコペコを";
@@ -112,13 +104,6 @@ alde_gld.gat,183,204,0	script	turbowarp1001	45,1,1,{
 		close2;
 		setoption 0x0000;
 		getitem 7310,1;
-	}
-	if(sc_ison(SC_ALL_RIDING)) {
-		mes "[入場係]";
-		mes "申し訳ありませんが、";
-		mes "騎乗生物に乗って入場することは";
-		mes "禁止させていただいております。";
-		close;
 	}
 	warp "turbo_room.gat",100,65;
 	end;
@@ -444,14 +429,6 @@ turbo_room.gat,99,120,3	script	ターボトラックガイド	124,{
 }
 
 turbo_room.gat,93,117,5	script	景品交換員	125,{
-	if(checkitemblank() == 0) {
-		mes "‐所持アイテムの種類数が";
-		mes "多いため、アイテムを受けとる";
-		mes "ことができません。";
-		mes "所持アイテムを減らしてから";
-		mes "再度話しかけてください。‐";
-		close;
-	}
 	if(TURBO_POINT >= 10) {
 		mes "[景品交換員]";
 		mes "こんにちは。";
@@ -483,7 +460,7 @@ turbo_room.gat,93,117,5	script	景品交換員	125,{
 		mes "考慮された上で、景品を";
 		mes "お選びください。";
 		next;
-		switch(select("空間移動無料利用券","Lv5スクロール","経験値","ターボトラックコイン","速度変化ポーション","古く青い箱","古い紫色の箱","古いカード帖","やっぱり、やめておく")) {
+		switch(select("空間移動無料利用券","Lv5スクロール","経験値","ダイヤモンド３カラット","プレゼントボックス","速度変化ポーション","やっぱり、やめておく")) {
 		case 1:
 			set '@point,10;
 			set '@max,50;
@@ -533,94 +510,21 @@ turbo_room.gat,93,117,5	script	景品交換員	125,{
 			mes "経験値に交換しました。";
 			close;
 		case 4:
-			mes "[景品交換員]";
-			mes "ターボトラックコインですね。";
-			mes "ターボトラックコイン 1枚につき";
-			mes "^3131FF60点^000000必要です。";
-			next;
-			mes "[景品交換員]";
-			mes "もし取り消す場合は、";
-			mes "「0」とおっしゃってください。";
-			mes "ターボトラックコイン何枚と";
-			mes "交換しますか？";
-			next;
-			input '@num;
-			if('@num == 0) {
-				mes "[景品交換員]";
-				mes "取り消しました。";
-				close;
-			}
-			if('@num < 0) {
-				mes "[景品交換員]";
-				mes "数が正しくないようです。";
-				close;
-			}
-			if(TURBO_POINT < '@num*'@point) {
-				mes "[景品交換員]";
-				mes "ターボトラックポイントが足りません。";
-				mes "お手持ちのポイント数を";
-				mes "確認なさってからお越しください。";
-				close;
-			}
-			set TURBO_POINT,TURBO_POINT-'@num*60;
-			getitem 6366,'@num;
-			mes "[景品交換員]";
-			mes "ご利用ありがとうございました。";
-			close;
+			set '@point,150;
+			set '@max,10;
+			set '@itemid,732;
+			break;
 		case 5:
-			set '@point,100;
+			set '@point,300;
+			set '@max,10;
+			set '@itemid,644;
+			break;
+		case 6:
+			set '@point,400;
 			set '@max,10;
 			set '@itemid,12016;
 			break;
-		case 6:
-			set '@point,100;
-			set '@max,10;
-			set '@itemid,603;
-			break;
 		case 7:
-			set '@point,300;
-			set '@max,10;
-			set '@itemid,617;
-			break;
-		case 8:
-			mes "[景品交換員]";
-			mes "古いカード帖ですね。";
-			mes "古いカード帖 1冊につき";
-			mes "^3131FF1000点^000000必要です。";
-			next;
-			mes "[景品交換員]";
-			mes "一度に交換できるのは、";
-			mes "10個までとなります。";
-			mes "もし取り消す場合は、";
-			mes "「0」とおっしゃってください。";
-			mes "古いカード帖何冊と";
-			mes "交換しますか？";
-			next;
-			input '@num;
-			if('@num == 0) {
-				mes "[景品交換員]";
-				mes "取り消しました。";
-				close;
-			}
-			if('@num < 0 || '@num > '@max) {
-				mes "[景品交換員]";
-				mes "交換可能個数を超えています。一度に";
-				mes "交換できるのは10個までとなります。";
-				close;
-			}
-			if(TURBO_POINT < '@num*1000) {
-				mes "[景品交換員]";
-				mes "ターボトラックポイントが足りません。";
-				mes "お手持ちのポイント数を";
-				mes "確認なさってからお越しください。";
-				close;
-			}
-			set TURBO_POINT,TURBO_POINT-'@num*1000;
-			getitem 616,'@num;
-			mes "[景品交換員]";
-			mes "ご利用ありがとうございました。";
-			close;
-		case 9:
 			mes "[景品交換員]";
 			mes "ポイントの景品交換は";
 			mes "いつでも可能です。";
@@ -705,11 +609,17 @@ turbo_room.gat,93,117,5	script	景品交換員	125,{
 	mes " 10 点：空間移動無料利用券";
 	mes " 12 点：Lv5スクロール";
 	mes " 40 点：経験値";
-	mes " 60 点：ターボトラックコイン";
-	mes "100 点：速度変化ポーション";
-	mes "100 点：古く青い箱";
-	mes "300 点：古い紫色の箱";
-	mes "1000 点：古いカード帖";
+	mes "150 点：ダイヤモンド３カラット";
+	mes "300 点：プレゼントボックス";
+	mes "400 点：速度変化ポーション";
+	next;
+	mes "[景品交換員]";
+	mes "また、ターボトラックポイントを";
+	mes "アリーナポイントへ交換することが";
+	mes "できます。アリーナポイントへの";
+	mes "交換は、アリーナにいる";
+	mes "「ポイント管理人」の案内を";
+	mes "受けてください。";
 	close;
 }
 
@@ -1505,7 +1415,7 @@ OnStart:
 turbo_room.gat,72,132,3	script	1人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "1人モード",20,1,"1人モード#turbo::OnStart",1000,10,99;
+	waitingroom "1人モード",20,"1人モード#turbo::OnStart",1,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -1869,7 +1779,7 @@ turbo_n_1.gat,384,167,1	duplicate(進行要員#turbo)	進行要員#turbo_n_1	47
 turbo_room.gat,77,135,3	script	一般・4人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "一般・4人モード",20,4,"一般・4人モード#turbo::OnStart",1000,10,99;
+	waitingroom "一般・4人モード",20,"一般・4人モード#turbo::OnStart",4,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -2199,7 +2109,7 @@ turbo_n_4.gat,384,167,1	duplicate(進行要員#turbo)	優勝者ガイド#turbo_n
 turbo_room.gat,84,135,3	script	一般・8人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "一般・8人モード",20,8,"一般・8人モード#turbo::OnStart",1000,10,99;
+	waitingroom "一般・8人モード",20,"一般・8人モード#turbo::OnStart",8,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -2543,7 +2453,7 @@ turbo_n_8.gat,384,167,1	duplicate(進行要員#turbo)	優勝者ガイド#turbo_n
 turbo_room.gat,91,135,3	script	一般・16人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "一般・16人モード",20,16,"一般・16人モード#turbo::OnStart",1000,10,99;
+	waitingroom "一般・16人モード",20,"一般・16人モード#turbo::OnStart",16,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -2923,7 +2833,7 @@ turbo_n_16.gat,384,167,1	duplicate(進行要員#turbo)	優勝者ガイド#turbo_
 turbo_room.gat,110,135,3	script	熟練・4人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "熟練・4人モード",20,4,"熟練・4人モード#turbo::OnStart",1000,10,99;
+	waitingroom "熟練・4人モード",20,"熟練・4人モード#turbo::OnStart",4,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -3253,7 +3163,7 @@ turbo_e_4.gat,384,167,1	duplicate(進行要員#turbo)	優勝者ガイド#turbo_e
 turbo_room.gat,117,135,3	script	熟練・8人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "熟練・8人モード",20,8,"熟練・8人モード#turbo::OnStart",1000,10,99;
+	waitingroom "熟練・8人モード",20,"熟練・8人モード#turbo::OnStart",8,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -3597,7 +3507,7 @@ turbo_e_8.gat,384,167,1	duplicate(進行要員#turbo)	優勝者ガイド#turbo_e
 turbo_room.gat,124,135,3	script	熟練・16人モード#turbo	124,{
 	end;
 OnInit:
-	waitingroom "熟練・16人モード",20,16,"熟練・16人モード#turbo::OnStart",1000,10,99;
+	waitingroom "熟練・16人モード",20,"熟練・16人モード#turbo::OnStart",16,1000,10,150;
 	end;
 OnStart:
 	disablewaitingroomevent;
