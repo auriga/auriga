@@ -555,7 +555,7 @@ turbo_room.gat,93,117,5	script	景品交換員	125,{
 				mes "数が正しくないようです。";
 				close;
 			}
-			if(TURBO_POINT < '@num*'@point) {
+			if(TURBO_POINT < '@num*60) {
 				mes "[景品交換員]";
 				mes "ターボトラックポイントが足りません。";
 				mes "お手持ちのポイント数を";

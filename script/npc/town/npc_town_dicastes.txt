@@ -264,7 +264,7 @@ dic_in01.gat,46,285,0	script	エレベーター#ent	45,1,1,{
 		warp "dic_in01.gat",117,279;
 		end;
 	case 4:
-		warp "dic_in01.gat",380,272;
+		warp "dic_in01.gat",121,197;
 		end;
 	case 5:
 		mes "‐今はやめておこう‐";
@@ -7882,7 +7882,7 @@ dic_in01.gat,165,104,0	script	フレード	454,{
 		set '@score4,checkquest(11162);
 		set '@score5,checkquest(11163);
 		set '@score6,checkquest(11164);
-		if(('@score1 + '@score2 + '@score3 + '@score4 + '@score5 + '@score6) == 6) {
+		if(('@score1 + '@score2 + '@score3 + '@score4 + '@score5 + '@score6) == 42) {
 			mes "‐あなたの報告を聞いた";
 			mes "　フレードは頭をかかえた‐";
 			next;
@@ -7987,7 +7987,7 @@ dic_in01.gat,165,104,0	script	フレード	454,{
 		set '@score4,checkquest(11168);
 		set '@score5,checkquest(11169);
 		set '@score6,checkquest(11170);
-		if(('@score1 + '@score2 + '@score3 + '@score4 + '@score5 + '@score6) == 6) {
+		if(('@score1 + '@score2 + '@score3 + '@score4 + '@score5 + '@score6) == 42) {
 			mes "[フレード]";
 			mes strcharinfo(0)+ "さん";
 			mes "仲間たちを助けてくれて";
@@ -12195,14 +12195,14 @@ dic_in01.gat,40,193,1	script	パピス	453,{
 		mes "　80以上になったらまた来よう‐";
 		close;
 	}
-	if(countitem(6304) >= 3) {
+	if(countitem(6308) >= 3) {
 		mes "[パピス]";
 		mes "おや、それは……";
 		mes "アレク教授の文書に";
 		mes "載っていた物質ですね!!";
 		mes "本当に見つけてくるとは……";
 		next;
-		if(countitem(6304) >= 30) {
+		if(countitem(6308) >= 30) {
 			mes "[パピス]";
 			mes "それにしてもすごいです！";
 			mes "30個以上ありますね！";
@@ -12556,7 +12556,7 @@ dic_in01.gat,25,192,0	duplicate(文書の束#dicas01)	文書の束#dicas03	844
 dic_in01.gat,25,187,0	duplicate(文書の束#dicas01)	文書の束#dicas04	844
 
 -	script	Dicastes_Trace	-1,{
-	set '@trace,strnpcinfo(2);
+	set '@trace,strnpcinfo(5);
 	switch('@trace) {
 	case 1: set '@gain,902; set '@max,42; break;
 	case 2: set '@gain,903; set '@max,4; break;
@@ -12623,7 +12623,7 @@ dic_in01.gat,25,187,0	duplicate(文書の束#dicas01)	文書の束#dicas04	844
 		mes "　もう一度調べよう‐";
 		close;
 	}
-	if(checkquest(12211)) {
+	if(checkquest(12165+'@trace)) {
 		misceffect 310,"";
 		misceffect 12,"";
 		progressbar 4;
@@ -12674,7 +12674,7 @@ gef_fild03.gat,251,109,0	duplicate(Dicastes_Trace)	朽ち果てたオークの�
 c_tower2.gat,170,9,0		duplicate(Dicastes_Trace)	朽ち果てた悪魔の角::dicas_trace#22	844
 gef_fild05.gat,111,96,0		duplicate(Dicastes_Trace)	朽ち果てた蝶の鱗粉::dicas_trace#23	844
 moc_fild11.gat,237,273,0	duplicate(Dicastes_Trace)	朽ち果てた鳥のくちばし::dicas_trace#24	844
-pay_fild03.gat,306,233,0	duplicate(Dicastes_Trace)	朽ち果てた蛇の鱗::dicas_trace#25	844
+pay_fild06.gat,306,233,0	duplicate(Dicastes_Trace)	朽ち果てた蛇の鱗::dicas_trace#25	844
 pay_fild07.gat,126,49,0		duplicate(Dicastes_Trace)	朽ち果てた虫の觸角::dicas_trace#26	844
 iz_dun02.gat,112,96,0		duplicate(Dicastes_Trace)	朽ち果てた心臓::dicas_trace#27	844
 moc_pryd02.gat,134,112,0	duplicate(Dicastes_Trace)	朽ち果てた包帯::dicas_trace#28	844

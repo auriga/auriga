@@ -12117,7 +12117,7 @@ mid_camp.gat,256,272,3	script	デパリア	897,{
 		mes "少し休憩が欲しくなってきた。";
 		set ASH_5QUE,17;
 		getitem 14595,1;
-		chgquest 7024,7025;
+		chgquest 7025,7026;
 		close;
 	case 17:
 		mes "[デパリア]";
