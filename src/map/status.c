@@ -4104,7 +4104,7 @@ int status_get_hit(struct block_list *bl)
 	nullpo_retr(1, bl);
 
 #ifndef PRE_RENEWAL
-	if(bl->type != BL_PC && bl->type != BL_HOM)
+	if(!(bl->type & (BL_PC | BL_HOM)))
 		hit = 150;
 #endif
 	if(bl->type == BL_PC) {
@@ -4541,7 +4541,7 @@ int status_get_matk1(struct block_list *bl)
 		matk1 = ((struct merc_data *)bl)->matk1;
 	} else if (bl->type == BL_ELEM) {
 		matk1 = ((struct elem_data *)bl)->matk1;
-	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
+	} else if (!(bl->type & (BL_PET | BL_MOB))) {
 		matk1 = 0;
 	} else {
 		struct status_change *sc = status_get_sc(bl);
@@ -4605,7 +4605,7 @@ int status_get_matk2(struct block_list *bl)
 		matk2 = ((struct merc_data *)bl)->matk2;
 	} else if (bl->type == BL_ELEM) {
 		matk2 = ((struct elem_data *)bl)->matk2;
-	} else if (bl->type != BL_PET && bl->type != BL_MOB) {
+	} else if (!(bl->type & (BL_PET | BL_MOB))) {
 		matk2 = 0;
 	} else {
 		struct status_change *sc = status_get_sc(bl);
@@ -6133,7 +6133,7 @@ short status_get_clothes_color(struct block_list *bl)
 
 	if(bl->type == BL_PC) {
 		color = ((struct map_session_data *)bl)->status.clothes_color;
-	} else if(bl->type == BL_MOB || bl->type == BL_PET) {
+	} else if(bl->type & (BL_MOB | BL_PET)) {
 		int id = status_get_class(bl);
 		if(id >= 0 && mob_is_pcview(id))
 			color = mob_get_clothes_color(id);

@@ -43,7 +43,7 @@
 #include "unit.h"
 
 /*==========================================
- * オートスペル
+ * オートスペル登録
  *------------------------------------------
  */
 static int bonus_add_autospell(struct map_session_data* sd,int skillid,int skillid2,int skilllv,int rate, unsigned int flag)
@@ -80,7 +80,7 @@ static int bonus_add_autospell(struct map_session_data* sd,int skillid,int skill
 }
 
 /*==========================================
- * アイテムボーナスオートスペル
+ * オートスペル実行
  *  mode : 攻撃時1 反撃2
  *------------------------------------------
  */
@@ -197,20 +197,24 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 		pc_heal(sd,0,-sp);
 
 	/* スキル使用で発動するオートスペル,アクティブアイテム */
-	bonus_skillautospell(&sd->bl,target,skillid,tick,0);
+	bonus_autospellskill_start(&sd->bl,target,skillid,tick,0);
 	bonus_activeitemskill_start(sd,skillid,tick);
 
 	return 1;	// 成功
 }
 
-int bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag)
+/*==========================================
+ * オートスペル開始
+ *------------------------------------------
+ */
+int bonus_autospell_start(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag)
 {
 	int i, j;
 	static int lock = 0;
 	struct map_session_data *sd = NULL;
 	static struct {
-		unsigned int mask;
-		unsigned int supply;
+		const unsigned int mask;
+		const unsigned int supply;
 	} check[] = {
 		{ EAS_SHORT | EAS_LONG | EAS_MAGIC | EAS_MISC, EAS_SHORT | EAS_LONG },
 		{ EAS_ATTACK | EAS_REVENGE,                    EAS_ATTACK           },
@@ -259,7 +263,11 @@ int bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mo
 	return 1;
 }
 
-int bonus_skillautospell(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag)
+/*==========================================
+ * スキル使用で発動するオートスペル開始
+ *------------------------------------------
+ */
+int bonus_autospellskill_start(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag)
 {
 	int i;
 	struct map_session_data *sd = NULL;
@@ -295,7 +303,7 @@ int bonus_skillautospell(struct block_list *src,struct block_list *bl,int skilli
  * アクティブアイテム登録
  *------------------------------------------
  */
-int bonus_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag)
+static int bonus_add_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag)
 {
 	nullpo_retr(0, sd);
 
@@ -359,8 +367,8 @@ int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigne
 	int i, j, flag = 0;
 	static int lock = 0;
 	static struct {
-		unsigned int mask;
-		unsigned int supply;
+		const unsigned int mask;
+		const unsigned int supply;
 	} check[] = {
 		{ EAS_SHORT | EAS_LONG | EAS_MAGIC | EAS_MISC, EAS_SHORT | EAS_LONG },
 		{ EAS_ATTACK | EAS_REVENGE,                    EAS_ATTACK           },
@@ -413,7 +421,7 @@ int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigne
 }
 
 /*==========================================
- * スキル使用で発動するアクティブアイテムの開始
+ * スキル使用で発動するアクティブアイテム開始
  *------------------------------------------
  */
 int bonus_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned int tick)
@@ -1398,7 +1406,8 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		{
 			if(val > 0 && val <= 30000)
 				sd->eternal_status_change[type2] = val;
-			else sd->eternal_status_change[type2] = 1000;
+			else
+				sd->eternal_status_change[type2] = 1000;
 		}
 		break;
 	case SP_FIXCASTRATE:
@@ -1697,19 +1706,19 @@ int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int va
 		break;
 	case SP_AUTOACTIVE_WEAPON:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_ATTACK);
+			bonus_add_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_ATTACK);
 		break;
 	case SP_AUTOACTIVE_MAGIC:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,0,type2,type3,val,EAS_MAGIC);
+			bonus_add_activeitem(sd,0,type2,type3,val,EAS_MAGIC);
 		break;
 	case SP_REVAUTOACTIVE_WEAPON:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_REVENGE);
+			bonus_add_activeitem(sd,0,type2,type3,val,EAS_SHORT|EAS_LONG|EAS_REVENGE);
 		break;
 	case SP_REVAUTOACTIVE_MAGIC:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,0,type2,type3,val,EAS_MAGIC|EAS_REVENGE);
+			bonus_add_activeitem(sd,0,type2,type3,val,EAS_MAGIC|EAS_REVENGE);
 		break;
 	case SP_RAISE:
 		sd->autoraise.hp_per = type3;
@@ -1763,7 +1772,7 @@ int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int ty
 		break;
 	case SP_AUTOACTIVE_ITEM:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,0,type2,type3,type4,val);
+			bonus_add_activeitem(sd,0,type2,type3,type4,val);
 		break;
 	case SP_SKILLAUTOSPELL:
 		if(sd->state.lr_flag != 2)
@@ -1783,7 +1792,7 @@ int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int ty
 		break;
 	case SP_AUTOACTIVE_SKILL:
 		if(sd->state.lr_flag != 2)
-			bonus_activeitem(sd,type2,type3,type4,val,EAS_SKILL|EAS_ATTACK);
+			bonus_add_activeitem(sd,type2,type3,type4,val,EAS_SKILL|EAS_ATTACK);
 		break;
 	default:
 		if(battle_config.error_log)

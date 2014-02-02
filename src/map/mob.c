@@ -476,7 +476,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 		}
 	} else if(md->master_id > 0 && md->state.special_mob_ai && map[bl->m].flag.gvg) {
 		// GvG時バイオプラントMobは同一ギルドか同盟ギルド所属のPC・MOBには攻撃しない
-		if(bl->type == BL_PC || bl->type == BL_MOB) {
+		if(bl->type & (BL_PC | BL_MOB)) {
 			int gid = status_get_guild_id(bl);
 
 			if(md->guild_id == gid || guild_check_alliance(md->guild_id, gid, 0))
@@ -3124,7 +3124,7 @@ static int mob_getfriendhpmaxrate_sub(struct block_list *bl,va_list ap)
 	nullpo_retr(0, ap);
 	nullpo_retr(0, mmd = va_arg(ap,struct mob_data *));
 
-	if(bl->type != BL_PC && bl->type != BL_MOB)
+	if(!(bl->type & (BL_PC | BL_MOB)))
 		return 0;
 	if(mmd->bl.id == bl->id)
 		return 0;
@@ -3181,7 +3181,7 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 	nullpo_retr(0, ap);
 	nullpo_retr(0, mmd = va_arg(ap,struct mob_data *));
 
-	if(bl->type != BL_PC && bl->type != BL_MOB)
+	if(!(bl->type & (BL_PC | BL_MOB)))
 		return 0;
 	if(mmd->bl.id == bl->id)
 		return 0;
@@ -3366,7 +3366,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		target = NULL;
 
 	master = map_id2bl(md->master_id);
-	if(master && master->type != BL_PC && master->type != BL_MOB)
+	if(master && !(master->type & (BL_PC | BL_MOB)))
 		master = NULL;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++)

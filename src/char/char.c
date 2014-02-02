@@ -139,6 +139,10 @@ struct point start_point = { "new_1-1.gat", 53, 111 };
 
 static struct dbt *gm_account_db;
 
+/*==========================================
+ * GMかどうか
+ *------------------------------------------
+ */
 int isGM(int account_id)
 {
 	struct gm_account *p = (struct gm_account *)numdb_search(gm_account_db,account_id);
@@ -149,6 +153,10 @@ int isGM(int account_id)
 	return p->level;
 }
 
+/*==========================================
+ * GMアカウント読み込み
+ *------------------------------------------
+ */
 static void read_gm_account(void)
 {
 	char line[8192];
@@ -211,6 +219,10 @@ static void read_gm_account(void)
 	return;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 static int mmo_char_sync_timer(int tid,unsigned int tick,int id,void *data)
 {
 	chardb_sync();
@@ -219,6 +231,10 @@ static int mmo_char_sync_timer(int tid,unsigned int tick,int id,void *data)
 	return 0;
 }
 
+/*==========================================
+ * ワールドのユーザ数取得
+ *------------------------------------------
+ */
 static int count_users(void)
 {
 	int users = 0;
@@ -234,6 +250,10 @@ static int count_users(void)
 	return users;
 }
 
+/*==========================================
+ * キャラクターサーバ接続成功情報送信
+ *------------------------------------------
+ */
 static int mmo_char_send006b(int fd, struct char_session_data *sd)
 {
 	int i;
@@ -883,6 +903,10 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 	return 0;
 }
 
+/*==========================================
+ * キャラク作成成功情報送信
+ *------------------------------------------
+ */
 static void mmo_char_send006d(int fd, const struct mmo_charstatus *st)
 {
 	nullpo_retv(st);
@@ -1255,7 +1279,10 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st)
 #endif
 }
 
-// ##変数の保存
+/*==========================================
+ * ##変数の保存
+ *------------------------------------------
+ */
 static int set_account_reg2(int acc,int num,struct global_reg *reg)
 {
 	int i;
@@ -1275,7 +1302,10 @@ static int set_account_reg2(int acc,int num,struct global_reg *reg)
 	return max;
 }
 
-// ##変数の取得
+/*==========================================
+ * ##変数の取得
+ *------------------------------------------
+ */
 static int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
 {
 	int i;
@@ -1295,7 +1325,10 @@ static int get_account_reg2(struct char_session_data *sd,struct global_reg *reg)
 	return 0;
 }
 
-// 離婚
+/*==========================================
+ * 離婚
+ *------------------------------------------
+ */
 static int char_divorce(const struct mmo_charstatus *st)
 {
 	if(st == NULL)
@@ -1322,7 +1355,10 @@ static int char_divorce(const struct mmo_charstatus *st)
 	return 0;
 }
 
-// 養子解体
+/*==========================================
+ * 養子解体
+ *------------------------------------------
+ */
 static int char_break_adoption(const struct mmo_charstatus *st)
 {
 	if(st == NULL)
@@ -1356,7 +1392,10 @@ static int char_break_adoption(const struct mmo_charstatus *st)
 	return 0;
 }
 
-// ランキングデータ送信セット
+/*==========================================
+ * ランキングデータ送信セット
+ *------------------------------------------
+ */
 static int char_set_ranking_send(int ranking_id,unsigned char *buf)
 {
 	WBUFW(buf,0) = 0x2b30;
@@ -1367,7 +1406,10 @@ static int char_set_ranking_send(int ranking_id,unsigned char *buf)
 	return (int)WBUFW(buf,2);
 }
 
-// ランキングデータ更新
+/*==========================================
+ * ランキングデータ比較
+ *------------------------------------------
+ */
 int compare_ranking_data(const void *a,const void *b)
 {
 	struct Ranking_Data *p1 = (struct Ranking_Data *)a;
@@ -1381,6 +1423,10 @@ int compare_ranking_data(const void *a,const void *b)
 	return 0;
 }
 
+/*==========================================
+ * ランキングデータ更新
+ *------------------------------------------
+ */
 static int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
 {
 	if(rd == NULL)
@@ -1435,7 +1481,10 @@ static int char_ranking_update(int ranking_id,int rank,struct Ranking_Data *rd)
 	return 0;
 }
 
-// ランキングデータ削除
+/*==========================================
+ * ランキングデータ削除
+ *------------------------------------------
+ */
 static int char_ranking_delete(int char_id)
 {
 	int i,j;
@@ -1462,7 +1511,68 @@ static int char_ranking_delete(int char_id)
 	return 0;
 }
 
-// キャラ削除に伴うデータ削除
+/*==========================================
+ * キャラ作成
+ *------------------------------------------
+ */
+static const struct mmo_chardata* char_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
+{
+	int n;
+	int status_point = 0;
+
+	for(n = 0; n < 24 && name[n]; n++) {
+		if(name[n] < 0x20 || name[n] == 0x7f)
+			return NULL;
+	}
+
+	if(n >= 24) {
+		// character name is invalid.
+		return NULL;
+	}
+
+	if(slot >= max_char_slot) {
+		*flag = 0x03;
+		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
+		return NULL;
+	}
+
+	if(str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9)
+		return NULL;
+
+	// ステータスポリゴンのチェック
+	switch(check_status_polygon) {
+		case 1:
+			if(str + agi + vit + int_ + dex + luk > 5 * 6) {
+				charlog_log(
+					"make new char error: status point over %d %s %d,%d,%d,%d,%d,%d",
+					slot, name, str, agi, vit, int_, dex, luk
+				);
+				return NULL;
+			}
+			break;
+		case 2:
+			if(str + int_ != 10 || agi + luk != 10 || vit + dex != 10) {
+				charlog_log(
+					"make new char error: invalid status point %d %s %d,%d,%d,%d,%d,%d",
+					slot, name, str, agi, vit, int_, dex, luk
+				);
+				return NULL;
+			}
+			break;
+	}
+
+	if(hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR) {
+		charlog_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);
+		return NULL;
+	}
+
+	return chardb_make(account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, flag);
+}
+
+/*==========================================
+ * キャラ削除に伴うデータ削除
+ *------------------------------------------
+ */
 static int char_delete(const struct mmo_chardata *cd)
 {
 	int j;
@@ -1536,7 +1646,10 @@ static int char_delete(const struct mmo_chardata *cd)
 	return 0;
 }
 
-// authfifoの比較
+/*==========================================
+ * authfifoの比較
+ *------------------------------------------
+ */
 static bool cmp_authfifo(int i,int account_id,int login_id1,int login_id2,unsigned long ip)
 {
 	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
@@ -1554,7 +1667,10 @@ static bool cmp_authfifo(int i,int account_id,int login_id1,int login_id2,unsign
 	return false;
 }
 
-// ソケットのデストラクタ
+/*==========================================
+ * ログインサーバとのソケットデストラクタ
+ *------------------------------------------
+ */
 int parse_login_disconnect(int fd)
 {
 	if (fd == login_fd)
@@ -1563,6 +1679,10 @@ int parse_login_disconnect(int fd)
 	return 0;
 }
 
+/*==========================================
+ * ログインサーバのパケット解析
+ *------------------------------------------
+ */
 int parse_tologin(int fd)
 {
 	int i,fdc;
@@ -2022,6 +2142,10 @@ static int search_mapserver(const char *map)
 	return -1;
 }
 
+/*==========================================
+ * マップのあるMAPサーバインデックスを検索する
+ *------------------------------------------
+ */
 static int search_mapserver_char(const char *map, struct mmo_charstatus *cd)
 {
 	int i;
@@ -2049,6 +2173,10 @@ static int search_mapserver_char(const char *map, struct mmo_charstatus *cd)
 	return -1;
 }
 
+/*==========================================
+ * マップサーバ削除
+ *------------------------------------------
+ */
 int char_erasemap(int fd, int id)
 {
 	int i;
@@ -2075,6 +2203,10 @@ int char_erasemap(int fd, int id)
 	return 0;
 }
 
+/*==========================================
+ * マップサーバのソケットデストラクタ
+ *------------------------------------------
+ */
 static int parse_map_disconnect_sub(void *key,void *data,va_list ap)
 {
 	int fd = va_arg(ap,int);
@@ -2114,7 +2246,11 @@ int parse_map_disconnect(int fd)
 	return 0;
 }
 
-int parse_frommap(int fd)
+/*==========================================
+ * マップサーバからのパケット解析
+ *------------------------------------------
+ */
+static int parse_frommap(int fd)
 {
 	int i, j;
 	int id;
@@ -2662,13 +2798,19 @@ int parse_frommap(int fd)
 	return 0;
 }
 
-// char_mapifの初期化処理（現在はinter_mapif初期化のみ）
+/*==========================================
+ * char_mapifの初期化処理（現在はinter_mapif初期化のみ）
+ *------------------------------------------
+ */
 static int char_mapif_init(int fd)
 {
 	return inter_mapif_init(fd);
 }
 
-// MAPサーバのタグ名の重複チェック
+/*==========================================
+ * MAPサーバのタグ名の重複チェック
+ *------------------------------------------
+ */
 static int char_mapif_check_tag(int fd, int id, const char *tag)
 {
 	int i, fail = 0;
@@ -2690,6 +2832,10 @@ static int char_mapif_check_tag(int fd, int id, const char *tag)
 	return fail;
 }
 
+/*==========================================
+ * キャラクタサーバのソケットデストラクタ
+ *------------------------------------------
+ */
 static int parse_char_disconnect(int fd)
 {
 	if (fd == login_fd)
@@ -2698,7 +2844,10 @@ static int parse_char_disconnect(int fd)
 	return 0;
 }
 
-// 他マップにログインしているキャラクター情報を送信する
+/*==========================================
+ * 他マップにログインしているキャラクター情報を送信する
+ *------------------------------------------
+ */
 static int parse_char_sendonline(void *key,void *data,va_list ap)
 {
 	int fd = va_arg(ap,int);
@@ -2715,6 +2864,10 @@ static int parse_char_sendonline(void *key,void *data,va_list ap)
 	return 0;
 }
 
+/*==========================================
+ * キャラクタサーバのパケット解析
+ *------------------------------------------
+ */
 int parse_char(int fd)
 {
 	int i;
@@ -3046,7 +3199,7 @@ int parse_char(int fd)
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 
 				name[23] = '\0';	// force \0 terminal
-				cd = chardb_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
+				cd = char_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
 
 				if(cd == NULL) {
 					WFIFOW(fd,0)=0x6e;
@@ -3345,7 +3498,11 @@ int parse_char(int fd)
 	return 0;
 }
 
-// 全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
+/*==========================================
+ * 全てのMAPサーバーにデータ送信
+ * （送信したmap鯖の数を返す）
+ *------------------------------------------
+ */
 int mapif_sendall(unsigned char *buf,size_t len)
 {
 	int i, c = 0;
@@ -3362,7 +3519,11 @@ int mapif_sendall(unsigned char *buf,size_t len)
 	return c;
 }
 
-// 自分以外の全てのMAPサーバーにデータ送信（送信したmap鯖の数を返す）
+/*==========================================
+ * 自分以外の全てのMAPサーバーにデータ送信
+ * （送信したmap鯖の数を返す）
+ *------------------------------------------
+ */
 int mapif_sendallwos(int sfd,unsigned char *buf,size_t len)
 {
 	int i, c = 0;
@@ -3379,7 +3540,10 @@ int mapif_sendallwos(int sfd,unsigned char *buf,size_t len)
 	return c;
 }
 
-// MAPサーバーにデータ送信（map鯖生存確認有り）
+/*==========================================
+ * MAPサーバーにデータ送信（map鯖生存確認有り）
+ *------------------------------------------
+ */
 int mapif_send(int fd,unsigned char *buf,size_t len)
 {
 	int i;
@@ -3395,6 +3559,10 @@ int mapif_send(int fd,unsigned char *buf,size_t len)
 	return 0;
 }
 
+/*==========================================
+ * 接続人数制限値をセット
+ *------------------------------------------
+ */
 void mapif_parse_CharConnectLimit(int fd)
 {
 	int limit = RFIFOL(fd,2);
@@ -3407,6 +3575,10 @@ void mapif_parse_CharConnectLimit(int fd)
 	return;
 }
 
+/*==========================================
+ * ログインサーバへ接続人数を送信
+ *------------------------------------------
+ */
 int send_users_tologin(int tid,unsigned int tick,int id,void *data)
 {
 	if (login_fd >= 0 && session[login_fd] && session[login_fd]->auth) {
@@ -3434,6 +3606,10 @@ int send_users_tologin(int tid,unsigned int tick,int id,void *data)
 	return 0;
 }
 
+/*==========================================
+ * ログインサーバへの接続の定期チェック
+ *------------------------------------------
+ */
 static int check_connect_login_server(int tid,unsigned int tick,int id,void *data)
 {
 	if (login_fd < 0 || session[login_fd] == NULL) {
@@ -3467,6 +3643,10 @@ static int check_connect_login_server(int tid,unsigned int tick,int id,void *dat
 	return 0;
 }
 
+/*==========================================
+ * 設定ファイルの読み込み
+ *------------------------------------------
+ */
 static void char_config_read(const char *cfgName)
 {
 	char line[1024], w1[1024], w2[1024];
@@ -3609,6 +3789,10 @@ static void char_config_read(const char *cfgName)
 	return;
 }
 
+/*==========================================
+ * HTTPコントロールパネル関数
+ *------------------------------------------
+ */
 static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* status)
 {
 	struct socket_data *sd = session[fd];
@@ -3631,6 +3815,20 @@ static void char_socket_ctrl_panel_func(int fd,char* usage,char* user,char* stat
 	return;
 }
 
+/*==========================================
+ * 終了直前処理
+ *------------------------------------------
+ */
+void do_pre_final(void)
+{
+	// nothing to do
+	return;
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int gm_account_db_final(void *key,void *data,va_list ap)
 {
 	struct gm_account *p = (struct gm_account *)data;
@@ -3647,12 +3845,6 @@ static int char_online_db_final(void *key,void *data,va_list ap)
 	aFree(p);
 
 	return 0;
-}
-
-void do_pre_final(void)
-{
-	// nothing to do
-	return;
 }
 
 void do_final(void)
@@ -3675,8 +3867,10 @@ void do_final(void)
 	maildb_final();
 	statusdb_final();
 	questdb_final();
-	if(gm_account_db)
-		numdb_final(gm_account_db,gm_account_db_final);
+	if(gm_account_db) {
+		numdb_final(gm_account_db, gm_account_db_final);
+		gm_account_db = NULL;
+	}
 	delete_session(login_fd);
 	delete_session(char_fd);
 	if(char_sport != 0 && char_port != char_sport)
@@ -3693,6 +3887,10 @@ void do_final(void)
 	return;
 }
 
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
 int do_init(int argc,char **argv)
 {
 	int i;

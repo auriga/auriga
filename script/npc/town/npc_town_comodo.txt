@@ -1462,7 +1462,7 @@ comodo.gat,163,280,4	script	酔っ払い客	55,{
 		mes "「マンジ」…マンジというヤツな。";
 		mes "よく覚えとけ！";
 		mes "ほら、走っていけ！";
-		close;;
+		close;
 	default:
 		mes "[マガツ]";
 		mes "ああ、あれのことか！";

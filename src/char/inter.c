@@ -66,8 +66,10 @@ struct WisData {
 };
 static struct dbt * wis_db = NULL;
 
-
-// WISデータの生存チェック
+/*==========================================
+ * WISデータの生存チェック
+ *------------------------------------------
+ */
 static int check_ttl_wisdata_sub(void *key,void *data,va_list ap)
 {
 	unsigned int tick;
@@ -145,7 +147,10 @@ int inter_config_read(const char *cfgName)
 
 //--------------------------------------------------------
 
-// セーブ
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 int inter_sync(void)
 {
 	statusdb_sync();
@@ -164,29 +169,10 @@ int inter_sync(void)
 	return 0;
 }
 
-// 初期化
-int inter_init(const char *file)
-{
-	inter_config_read(file);
-
-	wis_db = numdb_init();
-
-	statusdb_init();
-	questdb_init();
-	petdb_init();
-	homundb_init();
-	mercdb_init();
-	elemdb_init();
-	partydb_init();
-	guilddb_init();
-	accregdb_init();
-	storagedb_init();
-	maildb_init();
-
-	return 0;
-}
-
-// マップサーバー接続
+/*==========================================
+ * マップサーバー接続
+ *------------------------------------------
+ */
 int inter_mapif_init(int fd)
 {
 	inter_guild_mapif_init(fd);
@@ -195,7 +181,10 @@ int inter_mapif_init(int fd)
 
 //--------------------------------------------------------
 
-// GMメッセージ送信
+/*==========================================
+ * GMメッセージ送信
+ *------------------------------------------
+ */
 int mapif_GMmessage(const char *mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	unsigned char *buf = (unsigned char*)aMalloc(len);
@@ -214,7 +203,10 @@ int mapif_GMmessage(const char *mes,size_t len,unsigned int color,int type,int s
 	return 0;
 }
 
-// Wis送信
+/*==========================================
+ * Wis送信
+ *------------------------------------------
+ */
 int mapif_wis_message(struct WisData *wd)
 {
 	unsigned char buf[1024];
@@ -231,7 +223,10 @@ int mapif_wis_message(struct WisData *wd)
 	return 0;
 }
 
-// Wis送信結果
+/*==========================================
+ * Wis送信結果
+ *------------------------------------------
+ */
 int mapif_wis_end(struct WisData *wd,int flag)
 {
 	unsigned char buf[32];
@@ -244,7 +239,10 @@ int mapif_wis_end(struct WisData *wd,int flag)
 	return 0;
 }
 
-// アカウント変数送信
+/*==========================================
+ * アカウント変数送信
+ *------------------------------------------
+ */
 int mapif_account_reg(int fd,const unsigned char *src)
 {
 	int len = WBUFW(src,2);
@@ -257,7 +255,10 @@ int mapif_account_reg(int fd,const unsigned char *src)
 	return 0;
 }
 
-// アカウント変数要求返信
+/*==========================================
+ * アカウント変数要求返信
+ *------------------------------------------
+ */
 int mapif_account_reg_reply(int fd,int account_id)
 {
 	const struct accreg *reg = accregdb_load(account_id);
@@ -280,14 +281,20 @@ int mapif_account_reg_reply(int fd,int account_id)
 
 //--------------------------------------------------------
 
-// GMメッセージ送信
+/*==========================================
+ * GMメッセージ送信
+ *------------------------------------------
+ */
 int mapif_parse_GMmessage(int fd)
 {
 	mapif_GMmessage(RFIFOP(fd,16), RFIFOW(fd,2), RFIFOL(fd,4), RFIFOW(fd,8), RFIFOW(fd,10), RFIFOW(fd,12), RFIFOW(fd,14));
 	return 0;
 }
 
-// Wis送信要求
+/*==========================================
+ * Wis送信要求
+ *------------------------------------------
+ */
 int mapif_parse_WisRequest(int fd)
 {
 	struct WisData* wd;
@@ -316,7 +323,10 @@ int mapif_parse_WisRequest(int fd)
 	return 0;
 }
 
-// Wis送信結果
+/*==========================================
+ * Wis送信結果
+ *------------------------------------------
+ */
 int mapif_parse_WisReply(int fd)
 {
 	int id   = RFIFOL(fd,2);
@@ -334,7 +344,10 @@ int mapif_parse_WisReply(int fd)
 	return 0;
 }
 
-// アカウント変数保存要求
+/*==========================================
+ * アカウント変数保存要求
+ *------------------------------------------
+ */
 int mapif_parse_AccReg(int fd)
 {
 	int j,p;
@@ -355,7 +368,10 @@ int mapif_parse_AccReg(int fd)
 	return 0;
 }
 
-// アカウント変数送信要求
+/*==========================================
+ * アカウント変数送信要求
+ *------------------------------------------
+ */
 int mapif_parse_AccRegRequest(int fd)
 {
 	//printf("mapif: accreg request\n");
@@ -425,8 +441,11 @@ int mapif_parse_DisplayMessage(int fd)
 
 //--------------------------------------------------------
 
-// RFIFOのパケット長確認
-// 必要パケット長があればパケット長、まだ足りなければ0
+/*==========================================
+ * RFIFOのパケット長確認
+ * 必要パケット長があればパケット長、まだ足りなければ0
+ *------------------------------------------
+ */
 static int inter_check_length(int fd,int length)
 {
 	if(length == -1) {	// 可変パケット長
@@ -441,9 +460,12 @@ static int inter_check_length(int fd,int length)
 	return length;
 }
 
-// map server からの通信（１パケットのみ解析すること）
-// エラーなら0(false)、処理できたなら1、
-// パケット長が足りなければ2をかえさなければならない
+/*==========================================
+ * map server からの通信（１パケットのみ解析すること）
+ * エラーなら0(false)、処理できたなら1、
+ * パケット長が足りなければ2を返さなければならない
+ *------------------------------------------
+ */
 int inter_parse_frommap(int fd)
 {
 	int cmd = RFIFOW(fd,0);
@@ -495,6 +517,10 @@ int inter_parse_frommap(int fd)
 	return 1;
 }
 
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
 static int wis_db_final(void *key,void *data,va_list ap)
 {
 	struct WisData *wd = (struct WisData *)data;
@@ -506,8 +532,35 @@ static int wis_db_final(void *key,void *data,va_list ap)
 
 void do_final_inter(void)
 {
-	if(wis_db)
-		numdb_final(wis_db,wis_db_final);
+	if(wis_db) {
+		numdb_final(wis_db, wis_db_final);
+		wis_db = NULL;
+	}
 
 	accregdb_final();
+}
+
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
+int inter_init(const char *file)
+{
+	inter_config_read(file);
+
+	wis_db = numdb_init();
+
+	statusdb_init();
+	questdb_init();
+	petdb_init();
+	homundb_init();
+	mercdb_init();
+	elemdb_init();
+	partydb_init();
+	guilddb_init();
+	accregdb_init();
+	storagedb_init();
+	maildb_init();
+
+	return 0;
 }

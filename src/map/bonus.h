@@ -50,10 +50,9 @@ enum {
 };
 
 // カード効果のオートスペル
-int bonus_autospell(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag);
-int bonus_skillautospell(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag);
+int bonus_autospell_start(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag);
+int bonus_autospellskill_start(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag);
 
-int bonus_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag);
 int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigned int tick);
 int bonus_activeitemskill_start(struct map_session_data* sd,int skillid,unsigned int tick);
 

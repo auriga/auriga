@@ -1916,7 +1916,7 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 			return 0;
 		if(battle_config.boss_no_knockbacking==2 && mob_db[md->class_].mexp > 0)
 			return 0;
-	} else if(target->type == BL_PET || target->type == BL_SKILL) {
+	} else if(target->type & (BL_PET | BL_SKILL)) {
 		;	// 何もしない
 	} else {
 		return 0;
@@ -2765,7 +2765,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
 			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			bonus_skillautospell(src,target,src_ud->skillid,tick,0);
+			bonus_autospellskill_start(src,target,src_ud->skillid,tick,0);
 			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
 
 			if(src_sd->skill_cooldown.count > 0) {
@@ -9680,7 +9680,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
 			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			bonus_skillautospell(src,src,src_ud->skillid,tick,0);
+			bonus_autospellskill_start(src,src,src_ud->skillid,tick,0);
 			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
 
 			if(src_sd->skill_cooldown.count > 0) {
@@ -11770,7 +11770,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		}
 		break;
 	case UNT_MOONLIT: 	/* 月明りの下で */
-		if(bl->type != BL_MOB && bl->type != BL_PC)
+		if(!(bl->type & (BL_MOB | BL_PC)))
 			break;
 		if (sg->src_id == bl->id)
 			break;
@@ -15933,7 +15933,7 @@ static int skill_idun_heal(struct block_list *bl, va_list ap )
 	if(bl->id == sg->src_id)
 		return 0;
 
-	if(bl->type != BL_PC && bl->type != BL_MOB)
+	if(!(bl->type & (BL_PC | BL_MOB)))
 		return 0;
 
 	sc = status_get_sc(bl);
@@ -15964,7 +15964,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 	nullpo_retr(0, src);
 	nullpo_retr(0, target);
 
-	if(target->type != BL_PC && target->type != BL_MOB)
+	if(!(target->type & (BL_PC | BL_MOB)))
 		return 0;
 	if(status_get_class(target) == MOBID_EMPERIUM)
 		return 0;

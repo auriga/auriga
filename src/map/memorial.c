@@ -335,7 +335,7 @@ static int memorial_stopidletimer(struct memorial_data *md)
 int memorial_create(const char *memorial_name, int party_id)
 {
 	struct memorial_db *db = memorial_searchname_db(memorial_name);
-	struct party *pt = party_search(party_id);
+	struct party *pt;
 	struct map_session_data *sd;
 	int i;
 
@@ -343,7 +343,7 @@ int memorial_create(const char *memorial_name, int party_id)
 		return MDCREATE_ERROR;
 
 	// パーティー未所属
-	if(pt == NULL)
+	if((pt = party_search(party_id)) == NULL)
 		return MDCREATE_PERMISSION;
 
 	// 既に生成済み

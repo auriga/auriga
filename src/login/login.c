@@ -89,6 +89,10 @@ static struct dbt *gm_account_db = NULL;
 
 static int gm_account_db_final(void *key, void *data, va_list ap);
 
+/*==========================================
+ * GMアカウント読み込み
+ *------------------------------------------
+ */
 static void read_gm_account(void)
 {
 	char line[8192];
@@ -150,6 +154,10 @@ static void read_gm_account(void)
 	return;
 }
 
+/*==========================================
+ * GMかどうか
+ *------------------------------------------
+ */
 int isGM(int account_id)
 {
 	struct gm_account *p;
@@ -164,16 +172,10 @@ int isGM(int account_id)
 	return p->level;
 }
 
-static int gm_account_db_final(void *key, void *data, va_list ap)
-{
-	struct gm_account *p = (struct gm_account *)data;
-
-	aFree(p);
-
-	return 0;
-}
-
-// authfifoの比較
+/*==========================================
+ * authfifoの比較
+ *------------------------------------------
+ */
 static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, unsigned long ip)
 {
 	if( auth_fifo[i].account_id == account_id && auth_fifo[i].login_id1 == login_id1 )
@@ -192,7 +194,11 @@ static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, un
 	return false;
 }
 
-// 自分以外の全てのcharサーバーにデータ送信（送信したchar鯖の数を返す）
+/*==========================================
+ * 自分以外の全てのcharサーバーにデータ送信
+ * （送信したchar鯖の数を返す）
+ *------------------------------------------
+ */
 static int charif_sendallwos(int sfd, unsigned char *buf, size_t len)
 {
 	int i,c;
@@ -211,7 +217,10 @@ static int charif_sendallwos(int sfd, unsigned char *buf, size_t len)
 	return c;
 }
 
-// 認証
+/*==========================================
+ * 認証
+ *------------------------------------------
+ */
 static int mmo_auth(struct login_session_data *sd)
 {
 	char tmpstr[32];
@@ -374,7 +383,10 @@ static int mmo_auth(struct login_session_data *sd)
 	return -1;	// 認証OK
 }
 
-// 認証後の設定
+/*==========================================
+ * 認証後の設定
+ *------------------------------------------
+ */
 static void login_authok(struct login_session_data *sd, int fd)
 {
 	int server_num = 0;
@@ -460,6 +472,10 @@ static void login_authok(struct login_session_data *sd, int fd)
 	return;
 }
 
+/*==========================================
+ * キャラクタサーバのソケットデストラクタ
+ *------------------------------------------
+ */
 static int parse_char_disconnect(int fd)
 {
 	int i;
@@ -476,6 +492,10 @@ static int parse_char_disconnect(int fd)
 	return 0;
 }
 
+/*==========================================
+ * キャラクタサーバからのパケット解析
+ *------------------------------------------
+ */
 int parse_fromchar(int fd)
 {
 	int id;
@@ -684,6 +704,10 @@ int parse_fromchar(int fd)
 	return 0;
 }
 
+/*==========================================
+ * アドミンのソケットデストラクタ
+ *------------------------------------------
+ */
 static int parse_admin_disconnect(int fd)
 {
 	int i;
@@ -699,6 +723,10 @@ static int parse_admin_disconnect(int fd)
 	return 0;
 }
 
+/*==========================================
+ * アドミンのパケット解析
+ *------------------------------------------
+ */
 int parse_admin(int fd)
 {
 	int i;
@@ -993,6 +1021,10 @@ int parse_admin(int fd)
 	return 0;
 }
 
+/*==========================================
+ * ログインサーバのソケットデストラクタ
+ *------------------------------------------
+ */
 static int parse_login_disconnect(int fd)
 {
 	int i;
@@ -1008,6 +1040,10 @@ static int parse_login_disconnect(int fd)
 	return 0;
 }
 
+/*==========================================
+ * ログインサーバのパケット解析
+ *------------------------------------------
+ */
 int parse_login(int fd)
 {
 	struct login_session_data *sd;
@@ -1363,6 +1399,10 @@ int parse_login(int fd)
 	return 0;
 }
 
+/*==========================================
+ * 設定ファイルのデフォルトセット
+ *------------------------------------------
+ */
 static void login_config_set_defaultvalue(void)
 {
 	config.new_account_flag = false;
@@ -1383,6 +1423,10 @@ static void login_config_set_defaultvalue(void)
 	return;
 }
 
+/*==========================================
+ * 設定ファイルの読み込み
+ *------------------------------------------
+ */
 static void login_config_read(const char *cfgName)
 {
 	char line[1024], w1[1024], w2[1024];
@@ -1483,8 +1527,10 @@ static void login_config_read(const char *cfgName)
 	return;
 }
 
-// === DISPLAY CONFIGURATION WARNINGS ===
-// ======================================
+/*==========================================
+ * 設定ファイルの警告表示
+ *------------------------------------------
+ */
 static void display_conf_warnings(void)
 {
 	if( config.login_autosave_time < 10 )
@@ -1521,6 +1567,10 @@ static void display_conf_warnings(void)
 	return;
 }
 
+/*==========================================
+ * 同期
+ *------------------------------------------
+ */
 static int login_sync_timer(int tid, unsigned int tick, int id, void *data)
 {
 	login_sync();
@@ -1528,10 +1578,27 @@ static int login_sync_timer(int tid, unsigned int tick, int id, void *data)
 	return 0;
 }
 
+/*==========================================
+ * 終了直前処理
+ *------------------------------------------
+ */
 void do_pre_final(void)
 {
 	// nothing to do
 	return;
+}
+
+/*==========================================
+ * 終了
+ *------------------------------------------
+ */
+static int gm_account_db_final(void *key, void *data, va_list ap)
+{
+	struct gm_account *p = (struct gm_account *)data;
+
+	aFree(p);
+
+	return 0;
 }
 
 void do_final(void)
@@ -1541,8 +1608,10 @@ void do_final(void)
 	login_sync();
 	login_final();
 
-	if(gm_account_db)
-		numdb_final(gm_account_db,gm_account_db_final);
+	if(gm_account_db) {
+		numdb_final(gm_account_db, gm_account_db_final);
+		gm_account_db = NULL;
+	}
 	exit_dbn();
 
 	for( i = 0; i < MAX_CHAR_SERVERS; i++ )
@@ -1559,6 +1628,10 @@ void do_final(void)
 	return;
 }
 
+/*==========================================
+ * 初期化
+ *------------------------------------------
+ */
 int do_init(int argc,char **argv)
 {
 	int i;

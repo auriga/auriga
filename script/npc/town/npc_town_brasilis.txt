@@ -3284,7 +3284,7 @@ bra_in01.gat,151,180,0	script	鏡	844,{
 	}
 	if(countitem(11516) >= 10) {	//アサイーの実10個所持してる場合は必ず勝つ
 		set '@dice1,rand(5);
-		set '@dice2,rand('@dice1+1,5);;
+		set '@dice2,rand('@dice1+1,5);
 	}
 	else {
 		set '@dice1,rand(6);

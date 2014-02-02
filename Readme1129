@@ -1,4 +1,23 @@
 ----------------------------------------
+//1190 [2014/02/03] by Rayce
+
+・オートスペルとアクティブアイテムの関数名の命名規則を統一（bonus.*, battle.c, skill.c）
+	bonus_autospell()      → bonus_autospell_start()
+	bonus_skillautospell() → bonus_autospellskill_start()
+	bonus_activeitem()     → bonus_add_activeitem()
+
+・オートスペルとアクティブアイテムのビットマスクにconstを付与（bonus.c）
+
+・キャラ作成処理の一部をTXTモードとSQLモードで共通の関数にまとめる（char.c, char_txt.c, char_sql.c）
+
+・BL_XXX 系に対する演算を出来る限りビット演算に変更して高速化（battle.c, mob.c, skill.c, status.c）
+
+・細かい最適化（char.c, inter.c, memorial.c）
+
+・NPCスクリプトから不要な ; を削除
+  （npc_quest_area.txt, npc_town_ayothaya.txt, npc_town_brasilis.txt, npc_town_comodo.txt）
+
+----------------------------------------
 //1189 [2014/02/02] by refis
 
 ・エルディカスティス関連クエストの一部が進行しないミスを修正（npc_town_dicastes.txt）

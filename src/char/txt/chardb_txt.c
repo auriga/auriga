@@ -895,46 +895,6 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 	int n, idx;
 	int status_point = 0;
 
-	for(n = 0; n < 24 && name[n]; n++) {
-		if(name[n] < 0x20 || name[n] == 0x7f)
-			return NULL;
-	}
-
-	if(n >= 24) {
-		// character name is invalid.
-		return NULL;
-	}
-
-	if(slot >= max_char_slot) {
-		*flag = 0x03;
-		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
-		return NULL;
-	}
-
-	if(str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9)
-		return NULL;
-
-	// ステータスポリゴンのチェック
-	if(check_status_polygon == 1 && str + agi + vit + int_ + dex + luk > 5 * 6) {
-		charlog_log(
-			"make new char error: status point over %d %s %d,%d,%d,%d,%d,%d",
-			slot, name, str, agi, vit, int_, dex, luk
-		);
-		return NULL;
-	}
-	if(check_status_polygon == 2 && (str + int_ != 10 || agi + luk != 10 || vit + dex != 10)) {
-		charlog_log(
-			"make new char error: invalid status point %d %s %d,%d,%d,%d,%d,%d",
-			slot, name, str, agi, vit, int_, dex, luk
-		);
-		return NULL;
-	}
-
-	if(hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR) {
-		charlog_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);
-		return NULL;
-	}
-
 	for(n = 0; n < char_num; n++) {
 		if(strcmp(char_dat[n].st.name, name) == 0) {
 			*flag = 0x00;
@@ -944,7 +904,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 			return NULL;
 	}
 
-	charlog_log("make new char %d %s", slot, name);
+	charlog_log("make new char %d %d %s", account_id, slot, name);
 
 	if(char_num >= char_max) {
 		// realloc() するとchar_datの位置が変わるので、session のデータを見て

@@ -818,57 +818,11 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
  */
 const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
 {
-	int i, char_id = 0;
+	int char_id = 0;
 	char buf[256];
 	char **sql_row;
 	struct sqldbs_stmt *st;
 	bool result = false;
-
-	for(i = 0; i < 24 && name[i]; i++) {
-		if(name[i] < 0x20 || name[i] == 0x7f)
-		// MySQLのバグをAuriga側で抑制
-		//if(name[i]<0x20 || name[i]==0x7f || name[i]>=0xfd)
-			return NULL;
-	}
-
-	if(i >= 24) {
-		// character name is invalid.
-		return NULL;
-	}
-
-	if( slot >= max_char_slot )
-	{
-		*flag = 0x03;
-		printf("make new char over slot!! %s (%d / %d)\n", name, slot + 1, max_char_slot);
-		return NULL;
-	}
-
-	if( str > 9 || agi > 9 || vit > 9 || int_ > 9 || dex > 9 || luk > 9 )
-		return NULL;
-
-	// ステータスポリゴンのチェック
-	if( check_status_polygon == 1 && str + agi + vit + int_ + dex + luk > 5 * 6 )
-	{
-		charlog_log(
-			"make new char error: status point over %d %s %d,%d,%d,%d,%d,%d",
-			slot, name, str, agi, vit, int_, dex, luk
-		);
-		return NULL;
-	}
-	if( check_status_polygon == 2 && (str + int_ != 10 || agi + luk != 10 || vit + dex != 10) )
-	{
-		charlog_log(
-			"make new char error: invalid status point %d %s %d,%d,%d,%d,%d,%d",
-			slot, name, str, agi, vit, int_, dex, luk
-		);
-		return NULL;
-	}
-
-	if( hair == 0 || hair >= MAX_HAIR_STYLE || hair_color >= MAX_HAIR_COLOR )
-	{
-		charlog_log("make new char error: invalid hair %d %s %d,%d", slot, name, hair, hair_color);
-		return NULL;
-	}
 
 	// 同一アカウントID、同一キャラスロット、同名チェック
 	if( sqldbs_query(&mysql_handle,
@@ -888,7 +842,7 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		return NULL;
 	}
 
-	charlog_log("make new char %d %s", slot, name);
+	charlog_log("make new char %d %d %s", account_id, slot, name);
 
 	// init
 	st = sqldbs_stmt_init(&mysql_handle);
