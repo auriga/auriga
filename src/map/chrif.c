@@ -44,6 +44,8 @@
 #include "status.h"
 #include "storage.h"
 
+#define DUMP_UNKNOWN_PACKET 1
+
 static const int packet_len_table[]={
 	60, 3,-1, 3,23,-1, 7, 6,		// 2af8-2aff
 	 6,-1,19, 7,-1,41,40, 7,		// 2b00-2b07
@@ -1007,7 +1009,13 @@ int chrif_parse(int fd)
 			if( r==1 )	continue;	// intifで処理した
 			if( r==2 )	return 0;	// intifで処理したが、データが足りない
 
-			close(fd);	// intifで処理できなかった
+			// intifで処理できなかった
+			printf("chrif_parse: unknown packet 0x%04x disconnect session #%d\n", cmd, fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
+#endif
+			close(fd);
 			session[fd]->eof = 1;
 			return 0;
 		}
@@ -1048,8 +1056,11 @@ int chrif_parse(int fd)
 		case 0x2b31: chrif_mapservertag_ack(RFIFOB(fd,2)); break;
 
 		default:
-			if(battle_config.error_log)
-				printf("chrif_parse : unknown packet %d 0x%x\n",fd,cmd);
+			printf("chrif_parse: unknown packet 0x%04x disconnect session #%d\n", cmd, fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), packet_len);
+			printf("\n");
+#endif
 			close(fd);
 			session[fd]->eof=1;
 			return 0;

@@ -20405,6 +20405,26 @@ static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
+ * クライアントのタイムスタンプ
+ * 利用機会がないのでコメントアウト
+ *------------------------------------------
+ */
+static void clif_parse_ClientTimeStamp(int fd,struct map_session_data *sd, int cmd)
+{
+	/*
+	time_t t;
+	char tmpstr[32];
+
+	t = (time_t)RFIFOL(fd,GETPACKETPOS(cmd,0));
+	strftime(tmpstr, sizeof(tmpstr), "%Y-%m-%d %H:%M:%S", localtime(&t));
+
+	printf("client session #%d %s\n", fd, tmpstr);
+	*/
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -20466,7 +20486,16 @@ int clif_parse(int fd)
 				break;
 			case 0x7532:	// 接続の切断
 				close(fd);
-				session[fd]->eof=1;
+				session[fd]->eof = 1;
+				break;
+			default:
+				printf("clif_parse: unknown admin packet 0x%04x disconnect session #%d\n", cmd, fd);
+#ifdef DUMP_UNKNOWN_PACKET
+				hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+				printf("\n");
+#endif
+				close(fd);
+				session[fd]->eof = 1;
 				break;
 			}
 			return 0;
@@ -20474,7 +20503,11 @@ int clif_parse(int fd)
 
 		// ゲーム用以外のパケットなので切断
 		if(cmd >= MAX_PACKET_DB || packet_db[cmd].len == 0) {
-			printf("clif_parse: unsupported packet 0x%04x disconnect %d\n", cmd, fd);
+			printf("clif_parse: unsupported packet 0x%04x disconnect session #%d\n", cmd, fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
+#endif
 			close(fd);
 			session[fd]->eof = 1;
 			return 0;
@@ -20494,7 +20527,11 @@ int clif_parse(int fd)
 				return 0;	// 可変長パケットで長さの所までデータが来てない
 			packet_len = RFIFOW(fd,2);
 			if(packet_len < 4 || packet_len > 0x8000) {
-				printf("clif_parse: invalid packet 0x%04x length %d disconnect %d\n", cmd, packet_len, fd);
+				printf("clif_parse: invalid packet 0x%04x length %d disconnect session #%d\n", cmd, packet_len, fd);
+#ifdef DUMP_UNKNOWN_PACKET
+				hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+				printf("\n");
+#endif
 				close(fd);
 				session[fd]->eof = 1;
 				return 0;
@@ -20505,21 +20542,19 @@ int clif_parse(int fd)
 
 		if(sd && sd->state.auth == 1 && sd->state.waitingdisconnect) {
 			;	// 切断待ちの場合パケットを処理しない
-		} else if(sd && sd->bl.prev == NULL && packet_db[cmd].func != clif_parse_LoadEndAck) {
-			;	// ブロックに繋がっていないときに007d以外が来たら処理しない
+		} else if(sd && sd->bl.prev == NULL && packet_db[cmd].func != clif_parse_LoadEndAck && packet_db[cmd].func != clif_parse_ClientTimeStamp) {
+			;	// ブロックに繋がっていないときに007dと044a以外が来たら処理しない
 		} else if(packet_db[cmd].func) {
 			g_packet_len = packet_len;	// GETPACKETPOS 用に保存
 			// パケット処理
 			packet_db[cmd].func(fd,sd,cmd);
 		} else {
 			// 不明なパケット
-			if(battle_config.error_log) {
-				printf("clif_parse: unknown packet 0x%04x %d\n", cmd, fd);
+			printf("clif_parse: unknown packet 0x%04x session #%d\n", cmd, fd);
 #ifdef DUMP_UNKNOWN_PACKET
-				hex_dump(stdout, RFIFOP(fd,0), packet_len);
-				printf("\n");
+			hex_dump(stdout, RFIFOP(fd,0), packet_len);
+			printf("\n");
 #endif
-			}
 		}
 		RFIFOSKIP(fd,packet_len);
 	}
@@ -20735,6 +20770,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_BankingDepositReq,           "bankdepositreq"            },
 		{ clif_parse_BankingWithdrawReq,          "bankwithdrawreq"           },
 		{ clif_parse_BankingInfoReq,              "bankinforeq"               },
+		{ clif_parse_ClientTimeStamp,             "clienttimestamp"           },
 		{ NULL,                                   NULL                        },
 	};
 

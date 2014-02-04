@@ -224,7 +224,7 @@ static int send_from_fifo(int fd)
 
 static int null_parse(int fd)
 {
-	printf("null_parse : %d\n", fd);
+	printf("null_parse : session #%d\n", fd);
 	RFIFOSKIP(fd,RFIFOREST(fd));
 
 	return 0;
@@ -694,7 +694,7 @@ void WFIFORESERVE(int fd, size_t len)
 
 		// 送信バッファの制限サイズ超過チェック
 		if (s->auth >= 0 && new_size > (size_t)send_limit_buffer_size) {
-			printf("socket: %d wdata (%lu) exceed limited size.\n", fd, (unsigned long)new_size);
+			printf("socket: session #%d wdata (%lu) exceed limited size.\n", fd, (unsigned long)new_size);
 			s->wdata_pos  = s->wdata;	// データを消してとりあえず空きを作る
 			s->wdata_size = s->wdata;
 			// 空きスペースが足りないかもしれないので、再確保
@@ -704,7 +704,7 @@ void WFIFORESERVE(int fd, size_t len)
 		}
 
 		realloc_fifo(fd, 0, new_size);
-		printf("socket: %d wdata expanded to %lu bytes.\n", fd, (unsigned long)(s->max_wdata - s->wdata));
+		printf("socket: session #%d wdata expanded to %lu bytes.\n", fd, (unsigned long)(s->max_wdata - s->wdata));
 	}
 
 	return;

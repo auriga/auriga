@@ -2303,8 +2303,6 @@ int intif_parse(int fd)
 	case 0x3892: intif_parse_CharMoveReq(fd); break;
 	case 0x3893: intif_parse_DisplayMessage(fd); break;
 	default:
-		if(battle_config.error_log)
-			printf("intif_parse : unknown packet %d %x\n",fd,RFIFOW(fd,0));
 		return 0;
 	}
 	// パケット読み飛ばし

@@ -2113,6 +2113,11 @@ int parse_tologin(int fd)
 			break;
 
 		default:
+			printf("parse_tologin: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
+#endif
 			close(fd);
 			session[fd]->eof=1;
 			return 0;
@@ -2788,7 +2793,11 @@ static int parse_frommap(int fd)
 			}
 
 			// inter server処理でもない場合は切断
-			printf("char: unknown packet %x! (from map)\n",RFIFOW(fd,0));
+			printf("parse_from: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
+#endif
 			close(fd);
 			session[fd]->eof=1;
 			return 0;
@@ -3485,6 +3494,7 @@ int parse_char(int fd)
 			return 0;
 
 		default:
+			printf("parse_char: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
 #ifdef DUMP_UNKNOWN_PACKET
 			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
 			printf("\n");

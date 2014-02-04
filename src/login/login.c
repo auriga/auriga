@@ -336,7 +336,7 @@ static int mmo_auth(struct login_session_data *sd)
 			p += sprintf(p, "] calc[");
 			for( j = 0; j < 16; j++ )
 				p += sprintf(p, "%02x", ((unsigned char *)md5bin)[j]);
-			p += sprintf(p, "] keylen=%d %d", sd->md5keylen, newaccount);
+			p += sprintf(p, "] keylen=%d newaccount=%d", sd->md5keylen, newaccount);
 			loginlog_log(logbuf);
 
 			return 1;
@@ -694,7 +694,11 @@ int parse_fromchar(int fd)
 			break;
 
 		default:
-			printf("login: unknown packet %x! (from char).\n",RFIFOW(fd,0));
+			printf("parse_fromchar: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
+#ifdef DUMP_UNKNOWN_PACKET
+			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+			printf("\n");
+#endif
 			close(fd);
 			session[fd]->eof=1;
 			return 0;
@@ -1012,6 +1016,11 @@ int parse_admin(int fd)
 				break;
 
 			default:
+				printf("parse_admin: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
+#ifdef DUMP_UNKNOWN_PACKET
+				hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
+				printf("\n");
+#endif
 				close(fd);
 				session[fd]->eof=1;
 				return 0;
@@ -1063,14 +1072,14 @@ int parse_login(int fd)
 			case 0x027c:
 			case 0x0277:
 			case 0x02b0:
-				printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
+				printf("parse_login : session #%d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
 				break;
 			case 0x0825:
-				printf("parse_login : %d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,9));
+				printf("parse_login : session #%d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,9));
 				break;
 			default:
 				if( cmd < 0x7530 )
-					printf("parse_login : %d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
+					printf("parse_login : session #%d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
 				break;
 		}
 
@@ -1386,6 +1395,7 @@ int parse_login(int fd)
 			break;
 
 		default:
+			printf("parse_login: unknown packet 0x%04x disconnect session #%d\n", RFIFOW(fd,0), fd);
 #ifdef DUMP_UNKNOWN_PACKET
 			hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
 			printf("\n");

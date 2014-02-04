@@ -1,4 +1,17 @@
 ----------------------------------------
+//1191 [2014/02/05] by Rayce
+
+・2012-04-10aRagexeRE のPACKETVERをコンパイラの定義に追加（vc_make.bat, bcc32_make.bat, Makefile）
+	reported by うに〜く さん
+
+・クライアントのタイムスタンプのパケット受信（0x044a）対応（clif.c, packet_db.txt）
+  ※利用機会がないのでコメントアウトしている
+
+・unknownパケットは全てダンプするように強化（char.c, login.c, chrif.c, clif.c）
+
+・セッション番号のprintf出力メッセージを変更（socket.c, char.c, login.c, chrif.c, clif.c, intif.c）
+
+----------------------------------------
 //1190 [2014/02/03] by Rayce
 
 ・オートスペルとアクティブアイテムの関数名の命名規則を統一（bonus.*, battle.c, skill.c）
