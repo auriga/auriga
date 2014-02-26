@@ -74,7 +74,7 @@
 #include "bank.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0x9C0
+#define MAX_PACKET_DB 0x9E0
 
 struct packet_db {
 	short len;
@@ -8977,6 +8977,7 @@ void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill
 	nullpo_retv(src);
 	nullpo_retv(dst);
 
+#if PACKETVER < 20130731
 	if(heal > 0x7fff && skill_id != NPC_SELFDESTRUCTION && skill_id != NPC_SELFDESTRUCTION2)
 		heal=0x7fff;
 
@@ -8987,6 +8988,15 @@ void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill
 	WBUFL(buf,10)=src->id;
 	WBUFB(buf,14)=fail;
 	clif_send(buf,packet_db[0x11a].len,src,AREA);
+#else
+	WBUFW(buf,0)=0x9cb;
+	WBUFW(buf,2)=skill_id;
+	WBUFL(buf,4)=heal;
+	WBUFL(buf,8)=dst->id;
+	WBUFL(buf,12)=src->id;
+	WBUFB(buf,16)=fail;
+	clif_send(buf,packet_db[0x9cb].len,src,AREA);
+#endif
 
 	return;
 }

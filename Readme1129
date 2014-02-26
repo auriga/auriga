@@ -1,4 +1,13 @@
 ----------------------------------------
+//1192 [2014/02/27] by refis
+
+・2013-12-23cRagexeのpacket_dbを追加（packet_db.txt）
+
+・PACKETVER「20130731」を追加（bcc32_make.bat Makefile vc_make.bat *.dsp）
+
+・「0x11a」の上位互換「0x9cb」を追加（clif.c）
+
+----------------------------------------
 //1191 [2014/02/05] by Rayce
 
 ・2012-04-10aRagexeRE のPACKETVERをコンパイラの定義に追加（vc_make.bat, bcc32_make.bat, Makefile）
