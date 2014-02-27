@@ -1,4 +1,9 @@
 ----------------------------------------
+//1195 [2014/02/28] by refis
+
+・バコナワの棲み処NPCの不要なコメントが残っていたので消去（npc_memorial_bakonawa.txt）
+
+----------------------------------------
 //1194 [2014/02/28] by refis
 
 ・バコナワの棲み処NPC実装（conf/map_auriga.conf, mapflag_memorial.txt, npc_memorial_bakonawa.txt）

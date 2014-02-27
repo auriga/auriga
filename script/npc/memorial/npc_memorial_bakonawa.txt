@@ -218,7 +218,7 @@ OnAnnounce:
 	end;
 }
 
-1@ma_b.gat,78,81,0	script	#手下召喚n1	139,4,5,{/* 62850 (hide)*/
+1@ma_b.gat,78,81,0	script	#手下召喚n1	139,4,5,{
 OnStart:
 	hideoffnpc getmdnpcname("#手下召喚n1");
 	initnpctimer;
@@ -248,7 +248,7 @@ OnKilled:
 	end;
 }
 
-1@ma_b.gat,1,5,4	script	#バコナワ討伐n1	844,{/* 62851 (hide)*/
+1@ma_b.gat,1,5,4	script	#バコナワ討伐n1	844,{
 	end;
 OnStart:
 	initnpctimer;
@@ -269,7 +269,7 @@ OnTimer15000:
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#バコナワn2	844,{/* 62852 (hide)*/
+1@ma_b.gat,36,111,4	script	#バコナワn2	844,{
 	end;
 OnStart:
 	set '@label$, getmdnpcname("#バコナワn2")+"::OnKilled";
@@ -315,7 +315,7 @@ OnAnnounce:
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#バコナワn2-1	844,{/* 62854 (hide)*/
+1@ma_b.gat,36,111,4	script	#バコナワn2-1	844,{
 	end;
 OnInstanceInit:
 	disablenpc getmdnpcname("#バコナワn2-1");
@@ -344,7 +344,7 @@ OnKilled:
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#バコナワn3	844,{/* 62855 (hide)*/
+1@ma_b.gat,36,111,4	script	#バコナワn3	844,{
 	end;
 OnStart:
 	initnpctimer;
@@ -391,7 +391,7 @@ OnAnnounce:
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#バコナワn3-1	844,{/* 62857 (hide)*/
+1@ma_b.gat,36,111,4	script	#バコナワn3-1	844,{
 	end;
 OnStart:
 	initnpctimer;
