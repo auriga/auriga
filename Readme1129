@@ -1,4 +1,15 @@
 ----------------------------------------
+//1194 [2014/02/28] by refis
+
+・バコナワの棲み処NPC実装（conf/map_auriga.conf, mapflag_memorial.txt, npc_memorial_bakonawa.txt）
+
+・バコナワの棲み処関連モンスターの修正（mob_db.txt, mob_skill_db.txt）
+
+・memorial_db.txtの更新、及びDB最大登録数を20に拡張（memorial_db.txt, memorial.c）
+
+・モンスターIDの最大値を2501から3001に拡張（mob.h）
+
+----------------------------------------
 //1193 [2014/02/28] by refis
 
 ・2014-01-15eRagexeのpacket_dbを追加（packet_db.txt）
