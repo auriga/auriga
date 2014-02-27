@@ -1,4 +1,13 @@
 ----------------------------------------
+//1193 [2014/02/28] by refis
+
+・2014-01-15eRagexeのpacket_dbを追加（packet_db.txt）
+
+・PACKETVER「20131223」を追加（bcc32_make.bat Makefile vc_make.bat *.dsp）
+
+・「0x90f」「0x914」「0x915」の上位互換「0x9dc」「0x9db」「0x9dd」を追加（clif.c）
+
+----------------------------------------
 //1192 [2014/02/27] by refis
 
 ・2013-12-23cRagexeのpacket_dbを追加（packet_db.txt）
