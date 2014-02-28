@@ -190,7 +190,7 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "新たな生を得ることになります。";
 	mes "戦士達に光あれ！";
 	next;
-	if(Weight || Zeny || SkillPoint || checkcart() || checkfalcon() || checkriding()) {
+	if(Weight || SkillPoint || checkcart() || checkfalcon() || checkriding() || sc_ison(SC_ALL_RIDING)) {
 		mes "[ヴァルキリー]";
 		mes "あなたは準備しなければ";
 		mes "ならないことがあります。";

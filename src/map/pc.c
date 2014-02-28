@@ -7289,7 +7289,7 @@ int pc_setregistry(struct map_session_data *sd, const char *reg, int val, int ty
 		// delete registry
 		for(i = 0; i < *num; i++) {
 			if(strcmpi(gr[i].str, reg) == 0) {
-				gr[i] = gr[max - 1];
+				gr[i] = gr[(*num) - 1];
 				(*num)--;
 				func(sd);
 				break;
