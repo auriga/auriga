@@ -8982,6 +8982,28 @@ static int pc_bleeding(struct map_session_data *sd)
 		}
 	}
 
+	if (sd->hp_rate_penalty_value != 0) {
+		sd->hp_rate_penalty_tick += natural_heal_diff_tick;
+		if (sd->hp_rate_penalty_tick >= sd->hp_rate_penalty_time) {
+			do {
+				hp += sd->status.max_hp * sd->hp_rate_penalty_value / 100;
+				sd->hp_rate_penalty_tick -= sd->hp_rate_penalty_time;
+			} while (sd->hp_rate_penalty_tick >= sd->hp_rate_penalty_time);
+			sd->hp_rate_penalty_tick = 0;
+		}
+	}
+
+	if (sd->sp_rate_penalty_value != 0) {
+		sd->sp_rate_penalty_tick += natural_heal_diff_tick;
+		if (sd->sp_rate_penalty_tick >= sd->sp_rate_penalty_time) {
+			do {
+				sp += sd->status.max_sp * sd->sp_rate_penalty_value / 100;
+				sd->sp_rate_penalty_tick -= sd->sp_rate_penalty_time;
+			} while (sd->sp_rate_penalty_tick >= sd->sp_rate_penalty_time);
+			sd->sp_rate_penalty_tick = 0;
+		}
+	}
+
 	if(hp) {
 		if(sd->status.hp > hp) {
 			pc_heal(sd,-hp,0);
@@ -9073,10 +9095,10 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 	else
 		sd->regen.restsptick = 0;
 
-	if (sd->hp_penalty_value != 0 || sd->sp_penalty_value != 0)
+	if (sd->hp_penalty_value != 0 || sd->sp_penalty_value != 0 || sd->hp_rate_penalty_value != 0 || sd->sp_rate_penalty_value != 0)
 		pc_bleeding(sd);
 	else
-		sd->hp_penalty_tick = sd->sp_penalty_tick = 0;
+		sd->hp_penalty_tick = sd->sp_penalty_tick = sd->hp_rate_penalty_tick = sd->sp_rate_penalty_tick = 0;
 
 	return 0;
 }

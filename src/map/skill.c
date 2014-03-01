@@ -2764,10 +2764,6 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(src_sd) {
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
-			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			bonus_autospellskill_start(src,target,src_ud->skillid,tick,0);
-			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
-
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
 				for(i=0; i<src_sd->skill_cooldown.count; i++) {
@@ -2837,7 +2833,14 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 			}
 			break;
 		}
-		if( src_md )
+
+		// スキル使用で発動するオートスペル,アクティブアイテム
+		if(src_sd) {
+			bonus_autospellskill_start(src,target,src_ud->skillid,tick,0);
+			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
+		}
+
+		if(src_md)
 			src_md->skillidx = -1;
 
 		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && src_ud->skillid != RA_CAMOUFLAGE) {
@@ -9679,10 +9682,6 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 		if(src_sd) {
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
 
-			/* スキル使用で発動するオートスペル,アクティブアイテム */
-			bonus_autospellskill_start(src,src,src_ud->skillid,tick,0);
-			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
-
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
 				for(i=0; i<src_sd->skill_cooldown.count; i++) {
@@ -9713,6 +9712,12 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 				mob_talk(src_md,msg_id);
 		}
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
+
+		// スキル使用で発動するオートスペル,アクティブアイテム
+		if(src_sd) {
+			bonus_autospellskill_start(src,src,src_ud->skillid,tick,0);
+			bonus_activeitemskill_start(src_sd,src_ud->skillid,tick);
+		}
 
 		if(src_md)
 			src_md->skillidx = -1;

@@ -593,6 +593,12 @@ struct map_session_data {
 	int sp_penalty_tick;
 	short hp_penalty_value;
 	short sp_penalty_value;
+	int hp_rate_penalty_time;
+	int sp_rate_penalty_time;
+	int hp_rate_penalty_tick;
+	int sp_rate_penalty_tick;
+	short hp_rate_penalty_value;
+	short sp_rate_penalty_value;
 	// 装備解除時のHP/SPペナルティ
 	short hp_penalty_unrig_value[EQUIP_INDEX_MAX];
 	short sp_penalty_unrig_value[EQUIP_INDEX_MAX];
@@ -1240,6 +1246,7 @@ enum {
 	SP_SKILLAUTOSPELL2,SP_SKILLAUTOSELFSPELL,SP_SKILLAUTOSELFSPELL2,SP_AUTOACTIVE_SKILL,SP_ADD_CAST_RATE,	// 1166-1170
 	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,SP_ADD_SP_COST,SP_FIXCASTRATE,SP_ADD_SKILL_SUBHEAL_RATE,   // 1171-1175
 	SP_ADD_CAST_TIME,SP_ADD_COOL_DOWN,SP_ADD_ELEWEAPONDAMAGE_RATE,SP_ADD_ELEMAGICDAMAGE_RATE,   // 1176-1179
+	SP_HP_RATE_PENALTY_TIME,SP_SP_RATE_PENALTY_TIME,	// 1180-1181
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

@@ -1,4 +1,23 @@
 ----------------------------------------
+//1197 [2014/03/02] by refis
+
+・itembonus「bHPRatePenaltyTime」「bSPRatePenaltyTime」実装
+（const.txt, doc/item_bonus.txt, bonus.c, map.h, pc.c, status.c）
+	Thanks ARIA さん
+
+・auth_fifoの領域をこえてアクセスする箇所を修正（login.c）
+	Thanks ほむ山 さん
+
+・[RE]:左手に錐を持ったときの条件式誤りを修正（battle.c）
+	Thanks ねぴぴ さん
+
+・「0x9cb」のバッファ拡張忘れを修正（clif.c）
+	Thanks rapis さん
+
+・スキル使用で発動するオートスペル,アクティブアイテムについて、
+　スキル使用前ではなくスキル使用後に発動されるよう変更（skill.c）
+
+----------------------------------------
 //1196 [2014/03/01] by refis
 
 ・グローバル変数を削除する際、別の変数を同時に消してしまう場合があるのを修正（pc.c）

@@ -988,7 +988,7 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus: unknown type %d %d !\n",type,val);
+			printf("bonus_param1: unknown type %d %d !\n",type,val);
 		break;
 	}
 	return 0;
@@ -1604,9 +1604,17 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		if(sd->state.lr_flag != 2)
 			sd->skill_elemagic_dmgup[type2] += val;
 		break;
+	case SP_HP_RATE_PENALTY_TIME:
+		sd->hp_rate_penalty_time = type2;
+		sd->hp_rate_penalty_value = val;
+		break;
+	case SP_SP_RATE_PENALTY_TIME:
+		sd->sp_rate_penalty_time = type2;
+		sd->sp_rate_penalty_value = val;
+		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus2: unknown type %d %d %d!\n",type,type2,val);
+			printf("bonus_param2: unknown type %d %d %d!\n",type,type2,val);
 		break;
 	}
 
@@ -1750,7 +1758,7 @@ int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int va
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus3: unknown type %d %d %d %d!\n",type,type2,type3,val);
+			printf("bonus_param3: unknown type %d %d %d %d!\n",type,type2,type3,val);
 		break;
 	}
 
@@ -1796,7 +1804,7 @@ int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int ty
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("pc_bonus4: unknown type %d %d %d %d %u!\n",type,type2,type3,type4,val);
+			printf("bonus_param4: unknown type %d %d %d %d %u!\n",type,type2,type3,type4,val);
 		break;
 	}
 

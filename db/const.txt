@@ -591,6 +591,8 @@ bAddSkillCastTime		1176
 bAddSkillCoolDown		1177
 bAddEleWeaponDamageRate	1178
 bAddEleMagicDamageRate	1179
+bHPRatePenaltyTime	1180
+bSPRatePenaltyTime	1181
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

@@ -9624,7 +9624,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
  */
 void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail)
 {
-	unsigned char buf[16];
+	unsigned char buf[18];
 
 	nullpo_retv(src);
 	nullpo_retv(dst);

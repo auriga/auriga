@@ -2329,13 +2329,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					}
 					if( calc_flag.lh ) {
 						if( !calc_flag.idef_ && def_fix_ > 0 && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
+							wd.damage2 += def_fix_ / 2;
+							calc_flag.idef_ = 1;
 							if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
-								wd.damage2 += def_fix_ / 2;
-								calc_flag.idef_ = 1;
-								if(!calc_flag.idef && battle_config.left_cardfix_to_right) {
-									wd.damage += def_fix / 2;
-									calc_flag.idef = 1;
-								}
+								wd.damage += def_fix / 2;
+								calc_flag.idef = 1;
 							}
 						}
 					}

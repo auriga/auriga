@@ -534,7 +534,7 @@ int parse_fromchar(int fd)
 						break;
 					}
 				}
-				if( i <= AUTH_FIFO_SIZE )
+				if( i < AUTH_FIFO_SIZE )
 				{
 					const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
 

@@ -653,6 +653,10 @@ L_RECALC:
 	memset(&sd->skill_cooldown,0,sizeof(sd->skill_cooldown));
 	memset(&sd->skill_eleweapon_dmgup,0,sizeof(sd->skill_eleweapon_dmgup));
 	memset(&sd->skill_elemagic_dmgup,0,sizeof(sd->skill_elemagic_dmgup));
+	sd->hp_rate_penalty_time  = 0;
+	sd->hp_rate_penalty_value = 0;
+	sd->sp_rate_penalty_time  = 0;
+	sd->sp_rate_penalty_value = 0;
 
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(i == EQUIP_INDEX_ARROW)
