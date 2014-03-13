@@ -1470,19 +1470,26 @@ function	script	AgitLinkFlagB	{
 //	callfunc "AgitDungeonSE","WarpMap",WarpX,WarpY;
 //------------------------------------------------------------
 function	script	AgitDungeonSE	{
-	mes "-随分大きな、";
+	if(!getcharid(2))
+		return;
+	mes "‐随分大きな、";
 	mes "　不思議なヒマワリだ……";
 	mes "　ほんの僅かではあるが";
-	mes "　魔力が感じられる-";
+	mes "　魔力が感じられる‐";
 	next;
-	if(select("^0000FF触れてみる^000000","やめる") == 2)
+	if(select("^0000FF触れてみる^000000","やめる") == 2) {
+		mes "‐未知の世界に";
+		mes "　吸い込まれてしまいそうな";
+		mes "　気がする……";
+		mes "　やめておこう‐";
 		return;
+	}
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$以外はダミー
 	set '@gid,getcastledata('@map$,1);
 	if('@gid && '@gid == getcharid(2)) {
 		warp getarg(0),getarg(1),getarg(2);
 		return;
 	}
-	mes "-しかし何も起こらなかった-";
+	mes "‐しかし何も起こらなかった‐";
 	return;
 }

@@ -1250,7 +1250,7 @@ mal_in02.gat,22,62,3	script	トーマス#mal	556,{
 			mes "^0000FF食堂^000000で開催されるはずだ。";
 			mes "それじゃあ、すまないが頼んだよ。";
 			set MAL_1QUE,3;
-			setquest 11209;
+			chgquest 71800,11209;
 			close2;
 			cutin "ma_tomas01",255;
 			end;
@@ -1295,7 +1295,7 @@ mal_in02.gat,22,62,3	script	トーマス#mal	556,{
 			mes "この部屋とは反対側の廊下の端にある";
 			mes "^0000FF食堂^000000で開催されているからね。";
 			set MAL_1QUE,3;
-			setquest 11209;
+			chgquest 71800,11209;
 			close2;
 			cutin "ma_tomas01",255;
 			end;
@@ -4021,6 +4021,7 @@ mal_dun01.gat,120,129,0	script	固い皮膚#mal	111,{
 		delitem 6432,1;
 		getitem 6431,1;
 		set MAL_1QUE,33;
+		chgquest 11234,11235;
 		if(rand(10) > 0) {
 			mes "‐固かった皮膚が";
 			mes "　うるおった。";
@@ -4195,7 +4196,7 @@ malangdo.gat,175,206,3	script	ゴーボン#mal	561,{
 		mes "そこに行けば手がかりが";
 		mes "つかめるだろう……";
 		next;
-		setquest 1145;
+		chgquest 71820,1145;
 		set MAL_2QUE,1;
 		mes "[ゴーボン]";
 		mes "た、頼むぞ……！";

@@ -1,4 +1,15 @@
 ----------------------------------------
+//1198 [2014/03/14] by refis
+
+・マラン島関連のクエストログ更新漏れを修正（npc_town_malangdo.txt）
+	Thanks ayu さん
+
+・ポートマラヤ関連のクエストが進行しないミスを修正（npc_town_portmalaya.txt）
+	Thanks さいこ さん
+
+・SEアジトダンジョン関連NPC、モンスター実装（map_auriga.conf, npc_monster_glddunSE.txt, npc_gvg_arug*.txt, npc_gvg_schg*.txt, npc_gvg_global.txt）
+
+----------------------------------------
 //1197 [2014/03/02] by refis
 
 ・itembonus「bHPRatePenaltyTime」「bSPRatePenaltyTime」実装

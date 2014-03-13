@@ -3143,17 +3143,17 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 		mes "リストと地図を見ればわかるわ。";
 		mes "みんな不安だと思うから、";
 		mes "できるだけ早く配ってきてね。";
-		if(checkquest(7383)&8 == 0)
+		if(checkquest(7383) == 0)
 			viewpoint 1,181,353,0,0xFFFFFF;
-		if(checkquest(7387)&8 == 0)
+		if(checkquest(7387) == 0)
 			viewpoint 1,228,267,1,0xFFFF00;
-		if(checkquest(7385)&8 == 0)
+		if(checkquest(7385) == 0)
 			viewpoint 1,295,171,2,0x0000FF;
-		if(checkquest(7384)&8 == 0)
+		if(checkquest(7384) == 0)
 			viewpoint 1,119,217,3,0xCCCCCC;
-		if(checkquest(7382)&8 == 0)
+		if(checkquest(7382) == 0)
 			viewpoint 1,326,68,4,0x00FF00;
-		if(checkquest(7386)&8 == 0)
+		if(checkquest(7386) == 0)
 			viewpoint 1,223,267,5,0xFF0000;
 		close;
 	case 4:
@@ -3350,17 +3350,17 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 			mes "届け先はリストと地図を";
 			mes "見ればわかるわ。";
 			mes "それじゃあ、よろしくね！";
-			if(checkquest(7383)&8 == 0)
+			if(checkquest(7383) == 0)
 				viewpoint 1,181,353,0,0xFFFFFF;
-			if(checkquest(7387)&8 == 0)
+			if(checkquest(7387) == 0)
 				viewpoint 1,228,267,1,0xFFFF00;
-			if(checkquest(7385)&8 == 0)
+			if(checkquest(7385) == 0)
 				viewpoint 1,295,171,2,0x0000FF;
-			if(checkquest(7384)&8 == 0)
+			if(checkquest(7384) == 0)
 				viewpoint 1,119,217,3,0xCCCCCC;
-			if(checkquest(7382)&8 == 0)
+			if(checkquest(7382) == 0)
 				viewpoint 1,326,68,4,0x00FF00;
-			if(checkquest(7386)&8 == 0)
+			if(checkquest(7386) == 0)
 				viewpoint 1,223,267,5,0xFF0000;
 			close;
 		}
@@ -3666,9 +3666,9 @@ malaya.gat,181,353,5	script	老人ナルド	574,{
 			setquest 7383;
 			viewpoint 2,1,1,0,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -4117,9 +4117,9 @@ malaya.gat,228,267,3	script	ローメル	573,{
 			setquest 7387;
 			viewpoint 2,1,1,1,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -4361,9 +4361,9 @@ malaya.gat,223,267,5	script	タルラー	941,{
 			setquest 7386;
 			viewpoint 2,1,1,5,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -4682,9 +4682,9 @@ malaya.gat,295,171,3	script	収集品商人ウォアン	582,{
 			setquest 7385;
 			viewpoint 2,1,1,2,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -5034,9 +5034,9 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 			setquest 7384;
 			viewpoint 2,1,1,3,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -5671,9 +5671,9 @@ malaya.gat,326,68,2	script	船員ペドロ	100,{
 			setquest 7382;
 			viewpoint 2,1,1,4,0xFFFFFF;
 			if( (
-				checkquest(7382) + checkquest(7383) +
-				checkquest(7384) + checkquest(7385) +
-				checkquest(7386) + checkquest(7387)
+				(checkquest(7382)&1) + (checkquest(7383)&1) +
+				(checkquest(7384)&1) + (checkquest(7385)&1) +
+				(checkquest(7386)&1) + (checkquest(7387)&1)
 			) == 6) {
 				setquest 7379;
 				delquest 7382;
@@ -12292,7 +12292,7 @@ malaya.gat,283,265,4	script	町長	580,{
 		set MALAYA_7QUE,6;
 		delquest 1184;
 		setquest 1185;
-		getitem 12700, 5;
+		getitem 12700,5;
 		close;
 	case 6:
 		mes "[町長]";
@@ -12429,7 +12429,7 @@ malaya.gat,283,265,4	script	町長	580,{
 		getexp 5000000,0;
 		getexp 0,5000000;
 		getexp 0,5000000;
-		getitem 6497, 5;
+		getitem 6497,5;
 		close;
 	case 15:
 		if(MALAYA_6QUE < 7) {
@@ -12621,7 +12621,7 @@ malaya.gat,265,274,5	script	失踪した少女の友達	577,{
 			mes "　バリオ・マヒワガで";
 			mes "　^FF0000失踪者の所持品^000000を見つけ出し、";
 			mes "　^0000FF失踪した男性の息子^000000に渡そう‐";
-			delitem 6520, 1;
+			delitem 6520,1;
 			set MALAYA_7QUE,3;
 			delquest 72230;
 			delquest 1181;
@@ -12678,7 +12678,7 @@ malaya.gat,270,278,4	script	失踪した男性の息子	578,{
 			mes "　バリオ・マヒワガで";
 			mes "　^FF0000失踪者の所持品^000000を見つけ出し、";
 			mes "　^0000FF失踪した少年の母親^000000に渡そう‐";
-			delitem 6520, 1;
+			delitem 6520,1;
 			set MALAYA_7QUE,4;
 			delquest 72235;
 			delquest 1182;
@@ -12742,7 +12742,7 @@ malaya.gat,265,284,4	script	失踪した少年の母親	579,{
 			next;
 			mes "‐失踪者の所持品探しを終えたので";
 			mes "　町長に報告しよう‐";
-			delitem 6520, 1;
+			delitem 6520,1;
 			set MALAYA_7QUE,5;
 			delquest 72240;
 			delquest 1183;
@@ -12842,7 +12842,7 @@ malaya.gat,289,364,4	script	若い占い師	583,{
 			set MALAYA_7QUE,8;
 			delquest 1186;
 			setquest 1187;
-			getitem 12699, 5;
+			getitem 12699,5;
 			close;
 		}
 		mes "[若い占い師]";
@@ -13279,7 +13279,7 @@ ma_scene01.gat,175,170,5	script	感激している作業員	578,{
 	close;
 }
 ma_scene01.gat,171,174,0	script	#bako6	139,2,2,{
-	if(MALAYA_7QUE == 12) {
+	if(MALAYA_7QUE == 13) {
 		if(checkquest(72220) & 0x8) {
 			mes "‐ここら辺に落とし穴を";
 			mes "　設置するのが良さそうだ‐";
