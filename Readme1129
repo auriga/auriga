@@ -1,4 +1,22 @@
 ----------------------------------------
+//1199 [2014/03/28] by refis
+
+・2014-03-05bRagexeのpacket_dbを追加（packet_db.txt）
+
+・2014-01-15eRagexeのpacket_dbのミスを修正（packet_db.txt）
+	Thanks SOLDIER_POPORING さん
+
+・client_packet.txtに少し追記（client_packet.txt）
+
+・[RE]:左手のみ錐を持ったとき、右手にも効果が発揮されるよう修正（battle.c）
+	Thanks ねぴぴ さん
+
+・エリア情報パケットの設定ミスを修正（clif.c）
+	Thanks muchey さん、dallen さん
+
+・モンスターHPバー表示システムを更新（clif.c）
+
+----------------------------------------
 //1198 [2014/03/14] by refis
 
 ・マラン島関連のクエストログ更新漏れを修正（npc_town_malangdo.txt）

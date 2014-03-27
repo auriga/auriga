@@ -1542,17 +1542,8 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,58)=5;
 		WBUFB(buf,59)=5;
 		WBUFLV(buf,61,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,65) = 0xffffffff;
-			WBUFL(buf,69) = 0xffffffff;
-		} else {
-			WBUFL(buf,65) = status_get_max_hp(&md->bl);
-			WBUFL(buf,69) = status_get_hp(&md->bl);
-		}
+		WBUFL(buf,65) = 0xffffffff;
+		WBUFL(buf,69) = 0xffffffff;
 		WBUFB(buf,73) = 0;
 #else
 		len = 78 + (int)strlen(md->name);
@@ -1590,17 +1581,8 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,62)=5;
 		WBUFB(buf,63)=5;
 		WBUFLV(buf,65,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,69) = 0xffffffff;
-			WBUFL(buf,73) = 0xffffffff;
-		} else {
-			WBUFL(buf,69) = status_get_max_hp(&md->bl);
-			WBUFL(buf,73) = status_get_hp(&md->bl);
-		}
+		WBUFL(buf,69) = 0xffffffff;
+		WBUFL(buf,73) = 0xffffffff;
 		WBUFB(buf,77) = 0;
 #endif
 		return len;
@@ -1718,17 +1700,8 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,49)=md->sc.opt3;
 	WBUFPOS(buf,55,md->bl.x,md->bl.y,md->dir);
 	WBUFLV(buf,61,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-	{
-		WBUFL(buf,65) = 0xffffffff;
-		WBUFL(buf,69) = 0xffffffff;
-	} else {
-		WBUFL(buf,65) = status_get_max_hp(&md->bl);
-		WBUFL(buf,69) = status_get_hp(&md->bl);
-	}
+	WBUFL(buf,65) = 0xffffffff;
+	WBUFL(buf,69) = 0xffffffff;
 	WBUFB(buf,73) = 0;
 #else
 	len = 78 + (int)strlen(md->name);
@@ -1753,17 +1726,8 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,53)=md->sc.opt3;
 	WBUFPOS(buf,59,md->bl.x,md->bl.y,md->dir);
 	WBUFLV(buf,65,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-	{
-		WBUFL(buf,69) = 0xffffffff;
-		WBUFL(buf,73) = 0xffffffff;
-	} else {
-		WBUFL(buf,69) = status_get_max_hp(&md->bl);
-		WBUFL(buf,73) = status_get_hp(&md->bl);
-	}
+	WBUFL(buf,69) = 0xffffffff;
+	WBUFL(buf,73) = 0xffffffff;
 	WBUFB(buf,77) = 0;
 	strncpy(WBUFP(buf,78),md->name,24);
 #endif
@@ -2059,17 +2023,8 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,65)=5;
 		WBUFB(buf,66)=5;
 		WBUFLV(buf,67,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,71) = 0xffffffff;
-			WBUFL(buf,75) = 0xffffffff;
-		} else {
-			WBUFL(buf,71) = status_get_max_hp(&md->bl);
-			WBUFL(buf,75) = status_get_hp(&md->bl);
-		}
+		WBUFL(buf,71) = 0xffffffff;
+		WBUFL(buf,75) = 0xffffffff;
 		WBUFB(buf,79) = 0;
 #else
 		len = 84 + (int)strlen(md->name);
@@ -2108,17 +2063,8 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,69)=5;
 		WBUFB(buf,70)=5;
 		WBUFLV(buf,71,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,75) = 0xffffffff;
-			WBUFL(buf,79) = 0xffffffff;
-		} else {
-			WBUFL(buf,75) = status_get_max_hp(&md->bl);
-			WBUFL(buf,79) = status_get_hp(&md->bl);
-		}
+		WBUFL(buf,75) = 0xffffffff;
+		WBUFL(buf,79) = 0xffffffff;
 		WBUFB(buf,83) = 0;
 		strncpy(WBUFP(buf,84),md->name,24);
 #endif
@@ -2219,17 +2165,8 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,53)=md->sc.opt3;
 	WBUFPOS2(buf,59,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 	WBUFLV(buf,67,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-	{
-		WBUFL(buf,71) = 0xffffffff;
-		WBUFL(buf,75) = 0xffffffff;
-	} else {
-		WBUFL(buf,71) = status_get_max_hp(&md->bl);
-		WBUFL(buf,75) = status_get_hp(&md->bl);
-	}
+	WBUFL(buf,71) = 0xffffffff;
+	WBUFL(buf,75) = 0xffffffff;
 	WBUFB(buf,79) = 0;
 #else
 	len = 84 + (int)strlen(md->name);
@@ -2255,17 +2192,8 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 	WBUFL(buf,57)=md->sc.opt3;
 	WBUFPOS2(buf,63,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
 	WBUFLV(buf,71,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-	{
-		WBUFL(buf,75) = 0xffffffff;
-		WBUFL(buf,79) = 0xffffffff;
-	} else {
-		WBUFL(buf,75) = status_get_max_hp(&md->bl);
-		WBUFL(buf,79) = status_get_hp(&md->bl);
-	}
+	WBUFL(buf,75) = 0xffffffff;
+	WBUFL(buf,79) = 0xffffffff;
 	WBUFB(buf,83) = 0;
 	strncpy(WBUFP(buf,84),md->name,24);
 #endif
@@ -4213,7 +4141,7 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFPOS(buf,55,md->bl.x,md->bl.y,md->dir);
 		WBUFLV(buf,60,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
 		strncpy(WBUFP(buf,64),md->name,24);
-#elif PACKETVER < 201312223
+#elif PACKETVER < 20131223
 		len = 73;
 		memset(buf,0,len);
 
@@ -4229,17 +4157,8 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,33)=5;
 		WBUFPOS(buf,55,md->bl.x,md->bl.y,md->dir);
 		WBUFLV(buf,60,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,64)=0xffffffff;
-			WBUFL(buf,68)=0xffffffff;
-		} else {
-			WBUFL(buf,64)=status_get_max_hp(&md->bl);
-			WBUFL(buf,68)=status_get_hp(&md->bl);
-		}
+		WBUFL(buf,64)=0xffffffff;
+		WBUFL(buf,68)=0xffffffff;
 		WBUFB(buf,72)=0;
 #else
 		len = 77 + (int)strlen(md->name);
@@ -4258,17 +4177,8 @@ void clif_spawnmob(struct mob_data *md)
 		WBUFW(buf,37)=5;
 		WBUFPOS(buf,59,md->bl.x,md->bl.y,md->dir);
 		WBUFLV(buf,64,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
-
-		// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-		if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-		   md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
-		{
-			WBUFL(buf,68)=0xffffffff;
-			WBUFL(buf,72)=0xffffffff;
-		} else {
-			WBUFL(buf,68)=status_get_max_hp(&md->bl);
-			WBUFL(buf,72)=status_get_hp(&md->bl);
-		}
+		WBUFL(buf,68)=0xffffffff;
+		WBUFL(buf,72)=0xffffffff;
 		WBUFB(buf,76)=0;
 		strncpy(WBUFP(buf,77),md->name,24);
 #endif
@@ -4726,6 +4636,43 @@ static void clif_servertick(struct map_session_data *sd)
  *
  *------------------------------------------
  */
+static int clif_set_mobhpinfo(struct block_list *bl, va_list ap)
+{
+	int len;
+	unsigned short offset = 0;
+	struct map_session_data *sd;
+	struct mob_data *md;
+
+	nullpo_retr(0,bl);
+	nullpo_retr(0,ap);
+	nullpo_retr(0,sd=(struct map_session_data *)bl);
+	nullpo_retr(0,md=va_arg(ap,struct mob_data *));
+
+	len = clif_mob007b(md,WFIFOP(sd->fd,0));
+#if PACKETVER >= 20131223
+	offset = 10;
+#elif PACKETVER >= 20120328
+	offset = 6;
+#endif
+
+	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
+	if(mob_check_hpinfo(sd,md))
+	{
+		WFIFOL(sd->fd,65+offset)=0xffffffff;
+		WFIFOL(sd->fd,69+offset)=0xffffffff;
+	} else {
+		WFIFOL(sd->fd,65+offset)=status_get_max_hp(&md->bl);
+		WFIFOL(sd->fd,69+offset)=status_get_hp(&md->bl);
+	}
+	WFIFOSET(sd->fd,len);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 void clif_walkok(struct map_session_data *sd)
 {
 	int fd;
@@ -4762,10 +4709,14 @@ static void clif_move_sub(struct block_list *bl)
 		}
 		case BL_MOB:
 		{
-			unsigned char buf[128];
 			struct mob_data *md = (struct mob_data *)bl;
+#if PACKETVER < 20120328
+			unsigned char buf[128];
 			len = clif_mob007b(md,buf);
 			clif_send(buf,len,&md->bl,AREA_WOS);
+#else
+			map_foreachinarea(clif_set_mobhpinfo,md->bl.m,md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,BL_PC,md);
+#endif
 			break;
 		}
 		case BL_PET:
@@ -8654,17 +8605,36 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* md)
 {
 	int len;
+	unsigned short offset = 0;
 
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
 	if(md->ud.walktimer != -1){
 		len = clif_mob007b(md,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+#if PACKETVER >= 20131223
+		offset = 10;
+#elif PACKETVER >= 20120328
+		offset = 6;
+#endif
 	} else {
 		len = clif_mob0078(md,WFIFOP(sd->fd,0));
-		WFIFOSET(sd->fd,len);
+#if PACKETVER >= 20131223
+		offset = 4;
+#elif PACKETVER >= 20120328
+		offset = 0;
+#endif
 	}
+	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
+	if(mob_check_hpinfo(sd,md))
+	{
+		WFIFOL(sd->fd,65+offset)=0xffffffff;
+		WFIFOL(sd->fd,69+offset)=0xffffffff;
+	} else {
+		WFIFOL(sd->fd,65+offset)=status_get_max_hp(&md->bl);
+		WFIFOL(sd->fd,69+offset)=status_get_hp(&md->bl);
+	}
+	WFIFOSET(sd->fd,len);
 
 	if(md->view_size!=0)
 		clif_misceffect2(&md->bl,422+md->view_size);
@@ -10431,7 +10401,7 @@ void clif_mapproperty(struct map_session_data *sd)
 #else
 	WFIFOW(fd,0) = 0x99b;
 	WFIFOW(fd,2) = map_getmaptype(sd->bl.m);
-	WFIFOB(fd,4) = 0xb | ((map[sd->bl.m].flag.gvg)?0x4:0) | ((map[sd->bl.m].flag.pvp)?0x20:0);
+	WFIFOB(fd,4) = 0 | ((map[sd->bl.m].flag.gvg)?0x1c:0) | ((map[sd->bl.m].flag.pvp)?0x20:0);
 	WFIFOB(fd,5) = 0x6;
 	WFIFOW(fd,6) = 0;
 	WFIFOSET(fd,packet_db[0x99b].len);
@@ -16364,29 +16334,24 @@ void clif_privateitem(struct map_session_data *sd, short idx, char flag)
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 {
 #if PACKETVER >= 20120404
-	unsigned char buf[16];
+	int fd;
 
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
-	WBUFW(buf,0) = 0x977;
-	WBUFL(buf,2) = md->bl.id;
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x977;
+	WFIFOL(fd,2) = md->bl.id;
 	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
-	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
-	md->class_ == MOBID_EMPERIUM || status_get_mode(&md->bl)&MD_BOSS)
+	if(mob_check_hpinfo(sd,md))
 	{
-		WBUFL(buf,6) = 0xffffffff;
-		WBUFL(buf,10) = 0xffffffff;
+		WFIFOL(fd, 6) = 0xffffffff;
+		WFIFOL(fd,10) = 0xffffffff;
 	} else {
-		WBUFL(buf,6) = status_get_hp(&md->bl);
-		WBUFL(buf,10) = status_get_max_hp(&md->bl);
+		WFIFOL(fd, 6) = status_get_hp(&md->bl);
+		WFIFOL(fd,10) = status_get_max_hp(&md->bl);
 	}
-	if(sd->status.party_id>0) {
-		clif_send(buf,packet_db[0x977].len,&sd->bl,PARTY_AREA);
-	} else {
-		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x977].len);
-		WFIFOSET(sd->fd,packet_db[0x977].len);
-	}
+	WFIFOSET(fd,packet_db[0x977].len);
 #endif
 
 	return;

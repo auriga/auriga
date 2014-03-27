@@ -228,6 +228,7 @@ int mob_unlocktarget(struct mob_data *md,unsigned int tick);
 int mob_droprate_fix(struct block_list *bl,int item,int drop);
 struct block_list * mob_selecttarget(struct mob_data *md, int range);
 int mob_talk(struct mob_data *md, int msg_id);
+int mob_check_hpinfo(struct map_session_data *sd, struct mob_data *md);
 
 int mob_ai_sub_hard(struct mob_data *md,unsigned int tick);
 int mob_ai_hard_add(struct mob_data *md);

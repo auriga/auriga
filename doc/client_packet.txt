@@ -2885,3 +2885,46 @@ R 09aa <result>.w <deposit>.q <zeny>.l
 	銀行から引き出し要求応答
 S 09ab <src ID>.l
 	プレイヤー銀行情報
+R 09cb <skill ID>.w <val>.l <dst ID>.l <src ID>.l <fail>.B
+	非ダメージ系スキル表示。ヒールの場合valは回復量
+	0x11aの上位バージョン
+	fail=00の場合失敗ぽいが、スチール以外では見た事無し
+R 09db <len>.w <type>.B <ID>.l <CCADE>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <server tick>.l <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y_X_Y>.5B <0固定?>.2B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B <name>.24B
+	表示範囲内キャラ移動情報(0x914の上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
+R 09dc <len>.w <type>.B <ID>.l <CCADE>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B <name>.24B
+	テレポ等の表示範囲内沸きキャラ用、向き付き無しキャラ情報(0x90fの上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)
+R 09dd <len>.w <type>.B <ID>.l <CCADE>.l <speed>.w <opt1>.w <opt2>.w <option>.l <class>.w <hair>.w <item id1>.w <item id2>.w <head option bottom>.w <head option top>.w <head option mid>.w <hair color>.w <clothes_color>.w <head dir>.w <robe>.w <guild>.l <emblem>.w <manner>.w <opt3>.l <karma>.B <sex>.B <X_Y>.2B <dir>.B <5固定>.2B <sit>.B <Lv>.w <font>.w <MaxHP>.l <CurHP>.l <visibleHP>.B <name>.24B
+	マップロード時&移動時用、向き付き用キャラ情報(0x915の上位バージョン)
+	type=0 PC
+	type=1 ?
+	type=2 ITEM
+	type=3 SKILL
+	type=4 CHAT
+	type=5 MOB
+	type=6 NPC
+	type=7 PET
+	type=8 HOM
+	type=9 MER
+	type=10 ELEM(ソーサラーの妖精)

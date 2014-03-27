@@ -1627,6 +1627,60 @@ int mob_deleteslave(struct mob_data *md)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+int mob_check_hpinfo(struct map_session_data *sd, struct mob_data *md)
+{
+	int flag = 0;
+
+	nullpo_retr(1, sd);
+	nullpo_retr(1, md);
+
+	flag = linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) );
+	if(!flag && sd->hd)
+		flag = linkdb_exists( &md->dmglog, INT2PTR(-sd->hd->bl.id) );
+	if(!flag && sd->mcd)
+		flag = linkdb_exists( &md->dmglog, INT2PTR(-sd->mcd->bl.id) );
+	if(!flag && sd->eld)
+		flag = linkdb_exists( &md->dmglog, INT2PTR(-sd->eld->bl.id) );
+	if(md->sc.data[SC_HIDING].timer != -1 || md->sc.data[SC_CLOAKING].timer != -1 || md->sc.data[SC_CLOAKINGEXCEED].timer != -1 || md->sc.data[SC_INVISIBLE].timer != -1 || md->sc.data[SC_CAMOUFLAGE].timer != -1 ||
+	   md->class_ == MOBID_EMPERIUM || mob_db[md->class_].mexp > 0 || !flag)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int mob_hpinfo(struct block_list *bl, va_list ap)
+{
+	struct mob_data* md = NULL;
+	struct map_session_data *sd = NULL;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, md = va_arg(ap,struct mob_data *));
+
+	sd = map_bl2msd(bl);
+	if(sd == NULL)
+		return 0;
+
+	if(linkdb_exists( &md->dmglog, INT2PTR(-bl->id) )) {	// 攻撃したホム・傭兵・精霊
+		if(!linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// 主人が非共闘なら代わりにHP情報を更新
+			clif_monster_hpinfo(sd, md);
+		}
+	}
+	else if(linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// 攻撃したプレイヤー、ホム・傭兵・精霊の主人
+		clif_monster_hpinfo(sd, md);
+	}
+
+	return 1;
+}
+
+/*==========================================
  * mdにdamageのダメージ
  *------------------------------------------
  */
@@ -1743,9 +1797,10 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
 	} else {
-		struct map_session_data *sd = map_bl2msd(src);
-		if(sd)
-			clif_monster_hpinfo(sd, md);
+		map_foreachinarea(mob_hpinfo, md->bl.m,
+						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
+						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
+						  (BL_PC | BL_HOM | BL_MERC | BL_ELEM),md);
 	}
 	return 0;
 }
@@ -2565,6 +2620,12 @@ int mob_heal(struct mob_data *md,int heal)
 	} else
 	if( max_hp < md->hp )
 		md->hp = max_hp;
+
+	map_foreachinarea(mob_hpinfo, md->bl.m,
+					  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
+					  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
+					  (BL_PC | BL_HOM | BL_MERC | BL_ELEM),md);
+
 	return 0;
 }
 
