@@ -1003,21 +1003,32 @@ tha_t06.gat,119,120,0		script	thanatoswarp4011	45,1,1,{
 	end;
 }
 thana_step.gat,173,372,0	warp	thanatoswarp4012	1,1,tha_t07.gat,30,166
-//タナトスタワー7F⇒タナトスタワー8F
-tha_t07.gat,114,166,0		warp	thanatoswarp4013	1,1,thana_step.gat,69,287
-thana_step.gat,174,288,0	warp	thanatoswarp4014	1,1,tha_t08.gat,28,43
-//タナトスタワー8F⇒タナトスタワー9F
-tha_t08.gat,114,43,0		warp	thanatoswarp4015	1,1,thana_step.gat,30,223
-thana_step.gat,32,166,0		warp	thanatoswarp4016	1,1,tha_t09.gat,20,96
-//タナトスタワー9F⇒タナトスタワー10F
-tha_t09.gat,92,146,0		warp	thanatoswarp4017	1,1,thana_step.gat,180,223
-thana_step.gat,182,166,0	warp	thanatoswarp4018	1,1,tha_t10.gat,155,100
-//タナトスタワー10F⇒タナトスタワー11F
-tha_t10.gat,170,138,0		warp	thanatoswarp4019	1,1,thana_step.gat,14,73
-thana_step.gat,15,15,0		warp	thanatoswarp4020	1,1,tha_t11.gat,50,17
-//タナトスタワー11F⇒タナトスタワー12F
-tha_t11.gat,92,36,0		warp	thanatoswarp4021	1,1,thana_step.gat,180,73
-thana_step.gat,181,15,0		warp	thanatoswarp4022	1,1,tha_t12.gat,115,16
+tha_t07.gat,26,166,0		warp	thanatoswarp4013	1,1,thana_step.gat,168,372
+//タナトスタワー7F⇔タナトスタワー8F
+tha_t07.gat,114,166,0		warp	thanatoswarp4014	1,1,thana_step.gat,73,287
+thana_step.gat,69,287,0		warp	thanatoswarp4015	1,1,tha_t07.gat,110,166
+thana_step.gat,174,288,0	warp	thanatoswarp4016	1,1,tha_t08.gat,28,43
+tha_t08.gat,25,44,0			warp	thanatoswarp4017	1,1,thana_step.gat,170,288
+//タナトスタワー8F⇔タナトスタワー9F
+tha_t08.gat,114,43,0		warp	thanatoswarp4018	1,1,thana_step.gat,34,223
+thana_step.gat,30,223,0		warp	thanatoswarp4019	1,1,tha_t08.gat,110,43
+thana_step.gat,32,166,0		warp	thanatoswarp4020	1,1,tha_t09.gat,20,96
+tha_t09.gat,16,94,0			warp	thanatoswarp4021	1,1,thana_step.gat,36,166
+//タナトスタワー9F⇔タナトスタワー10F
+tha_t09.gat,92,146,0		warp	thanatoswarp4022	1,1,thana_step.gat,183,223
+thana_step.gat,179,223,0	warp	thanatoswarp4023	1,1,tha_t09.gat,88,146
+thana_step.gat,182,166,0	warp	thanatoswarp4024	1,1,tha_t10.gat,155,100
+tha_t10.gat,163,94,0		warp	thanatoswarp4025	1,1,thana_step.gat,186,166
+//タナトスタワー10F⇔タナトスタワー11F
+tha_t10.gat,170,138,0		warp	thanatoswarp4026	1,1,thana_step.gat,17,73
+thana_step.gat,13,73,0		warp	thanatoswarp4027	1,1,tha_t10.gat,166,138
+thana_step.gat,15,15,0		warp	thanatoswarp4028	1,1,tha_t11.gat,47,17
+tha_t11.gat,51,17,0			warp	thanatoswarp4029	1,1,thana_step.gat,19,15
+//タナトスタワー11F⇔タナトスタワー12F
+tha_t11.gat,92,36,0		warp	thanatoswarp4030	1,1,thana_step.gat,183,73
+thana_step.gat,179,73,0		warp	thanatoswarp4031	1,1,tha_t11.gat,88,36
+thana_step.gat,181,15,0		warp	thanatoswarp4032	1,1,tha_t12.gat,115,16
+tha_t12.gat,121,17,0		warp	thanatoswarp4033	1,1,thana_step.gat,185,15
 
 //アビスレイク地下洞窟1層⇒アビスレイク
 abyss_01.gat,265,274,0		warp	abysswarp0501	1,1,hu_fild05.gat,177,211
