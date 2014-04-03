@@ -700,6 +700,11 @@ AurigaNPCScript
 			スクリプトを終了するためにはend命令と併用してください。
 			closeボタンが押された後の処理を実行することが出来ます。
 
+		clear命令
+			clear;
+
+			メッセージウィンドウの文字列を消去します。
+
 		menu命令
 			menu <string1>,<label1>[,<stringN>,<labelN>...];
 

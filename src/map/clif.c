@@ -74,7 +74,7 @@
 #include "bank.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0x9E0
+#define MAX_PACKET_DB 0xA90
 
 struct packet_db {
 	short len;
@@ -5248,6 +5248,24 @@ void clif_scriptclose(struct map_session_data *sd, int npcid)
  *
  *------------------------------------------
  */
+void clif_scriptclear(struct map_session_data *sd, int npcid)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0x8d6;
+	WFIFOL(fd,2)=npcid;
+	WFIFOSET(fd,packet_db[0x8d6].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 void clif_scriptmenu(struct map_session_data *sd, int npcid, const char *mes)
 {
 	int fd;
@@ -8870,7 +8888,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 		if(unit->group->skill_id == WZ_ICEWALL)
 			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 	}
-#else
+#elif PACKETVER < 20130731
 	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
@@ -8895,6 +8913,37 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			WFIFOL(fd,16)=unit->group->unit_id;
 		WFIFOB(fd,20)=skill_get_unit_range(unit->group->skill_id,unit->group->skill_lv);
 		WFIFOB(fd,21)=1;
+		WFIFOSET(fd,WFIFOW(fd,2));
+
+		if(unit->group->skill_id == WZ_ICEWALL)
+			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
+	}
+#else
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
+		WFIFOW(fd, 0)=0x1c9;
+		WFIFOL(fd, 2)=unit->bl.id;
+		WFIFOL(fd, 6)=unit->group->src_id;
+		WFIFOW(fd,10)=unit->bl.x;
+		WFIFOW(fd,12)=unit->bl.y;
+		WFIFOB(fd,14)=unit->group->unit_id;
+		WFIFOB(fd,15)=1;
+		WFIFOB(fd,16)=1;
+		memcpy(WFIFOP(fd,17),unit->group->valstr,80);
+		WFIFOSET(fd,packet_db[0x1c9].len);
+	} else {
+		WFIFOW(fd, 0)=0x9ca;
+		WFIFOW(fd, 2)=23;
+		WFIFOL(fd, 4)=unit->bl.id;
+		WFIFOL(fd, 8)=unit->group->src_id;
+		WFIFOW(fd,12)=unit->bl.x;
+		WFIFOW(fd,14)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WFIFOL(fd,16)=UNT_ATTACK_SKILLS;
+		else
+			WFIFOL(fd,16)=unit->group->unit_id;
+		WFIFOB(fd,20)=skill_get_unit_range(unit->group->skill_id,unit->group->skill_lv);
+		WFIFOB(fd,21)=1;
+		WFIFOB(fd,22)=(unsigned char)unit->group->skill_lv;
 		WFIFOSET(fd,WFIFOW(fd,2));
 
 		if(unit->group->skill_id == WZ_ICEWALL)

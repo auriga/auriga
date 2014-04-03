@@ -47,8 +47,18 @@ void bank_deposit(struct map_session_data *sd, int target_id, int zeny)
 		return;
 
 	// Zenyチェック
-	if(zeny > sd->status.zeny || zeny <= 0 || sd->deposit > MAX_ZENY - zeny)
+	if(zeny <= 0) {
+		clif_bank_deposit(sd, 1);
 		return;
+	}
+	if(sd->deposit > MAX_ZENY - zeny) {
+		clif_bank_deposit(sd, 3);
+		return;
+	}
+	if(zeny > sd->status.zeny) {
+		clif_bank_deposit(sd, 2);
+		return;
+	}
 
 	// Zenyの支払い
 	pc_payzeny(sd, zeny);
@@ -83,7 +93,15 @@ void bank_withdraw(struct map_session_data *sd, int target_id, int zeny)
 		return;
 
 	// Zenyチェック
-	if(zeny > sd->deposit || zeny <= 0 || sd->status.zeny > MAX_ZENY - zeny)
+	if(zeny <= 0) {
+		clif_bank_withdraw(sd, 2);
+		return;
+	}
+	if(zeny > sd->deposit) {
+		clif_bank_withdraw(sd, 1);
+		return;
+	}
+	if(sd->status.zeny > MAX_ZENY - zeny)
 		return;
 
 	// Zenyの支払い

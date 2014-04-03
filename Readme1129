@@ -1,4 +1,27 @@
 ----------------------------------------
+//1201 [2014/04/04] by refis
+
+・2014-03-05bRagexeまでのパケ長を追記（packet_db.txt）
+
+・「0x99f」の上位互換「0x9ca」を追加（clif.c）
+
+・銀行システムで出入金に失敗したとき、エラーメッセージが表示されるように修正（bank.c）
+
+・タナトスタワークエストの一部処理を修正（npc_quest_thanatos.txt）
+
+・スクリプト命令「clear」実装（clif.*, script.c, doc/script_ref.txt）
+	-> メッセージウィンドウの文字列を消去します
+
+example:
+	prontera.gat,164,190,4	script	clear test	105,{
+		mes "test";
+		set '@dummy,sleep2(2000);
+		clear;
+		mes "huge";
+		close;
+	}
+
+----------------------------------------
 //1200 [2014/03/31] by refis
 
 ・タナトスタワークエスト実装（map_auriga.conf, npc_quest_thanatos.txt）

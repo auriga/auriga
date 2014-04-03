@@ -3773,6 +3773,7 @@ int buildin_getargcount(struct script_state *st);
 int buildin_next(struct script_state *st);
 int buildin_close(struct script_state *st);
 int buildin_close2(struct script_state *st);
+int buildin_clear(struct script_state *st);
 int buildin_menu(struct script_state *st);
 int buildin_rand(struct script_state *st);
 int buildin_warp(struct script_state *st);
@@ -4072,6 +4073,7 @@ struct script_function buildin_func[] = {
 	{buildin_next,"next",""},
 	{buildin_close,"close",""},
 	{buildin_close2,"close2",""},
+	{buildin_clear,"clear",""},
 	{buildin_menu,"menu","*"},
 	{buildin_goto,"goto","l"},
 	{buildin_callsub,"callsub","i*"},
@@ -4609,6 +4611,16 @@ int buildin_close2(struct script_state *st)
 {
 	st->state=STOP;
 	clif_scriptclose(script_rid2sd(st),st->oid);
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int buildin_clear(struct script_state *st)
+{
+	clif_scriptclear(script_rid2sd(st),st->oid);
 	return 0;
 }
 
