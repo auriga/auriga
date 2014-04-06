@@ -847,6 +847,7 @@ struct map_session_data {
 	int overheat;			// 魔導ギア加熱度（暫定）
 	int shadowform_id;		// シャドウフォーム
 	int deposit;			// 預金額
+	unsigned int cryptKey;
 };
 
 struct npc_timerevent_list {

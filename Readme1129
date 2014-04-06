@@ -1,4 +1,14 @@
 ----------------------------------------
+//1202 [2014/04/07] by refis
+
+・パケット難読化処理に対応（battle.*, clif.*, map.h）
+	-> 戦闘設定に項目を追加（battle_auriga.conf）
+	-> packet_db.txt に「#packet_key: key1,key2,key3」を追加。（db/packet_db.txt）
+		Thanks Base on Hercules
+
+・パケット長の誤っている箇所を修正（packet_db.txt）
+
+----------------------------------------
 //1201 [2014/04/04] by refis
 
 ・2014-03-05bRagexeまでのパケ長を追記（packet_db.txt）

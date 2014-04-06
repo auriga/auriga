@@ -130,6 +130,8 @@ static int map_fd;
 static int g_packet_len = 0;
 #define GETPACKETPOS(cmd,idx)  ( packet_db[cmd].pos[idx] + ( ( packet_db[cmd].pos[idx] < 0 )? g_packet_len : 0 ) )
 
+static unsigned int cryptKey[3];
+
 
 /*==========================================
  * map鯖のホスト設定
@@ -16545,6 +16547,8 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 	session[fd]->session_data = aCalloc(1,sizeof(struct map_session_data));
 	sd = (struct map_session_data *)session[fd]->session_data;
 	sd->fd = fd;
+	sd->cryptKey = (( ((( cryptKey[0] * cryptKey[1] ) + cryptKey[2]) & 0xFFFFFFFF)
+						* cryptKey[1] ) + cryptKey[2]) & 0xFFFFFFFF;
 
 	pc_setnewpc(sd, account_id, char_id, login_id1, client_tick, sex);
 	if((old_sd = map_id2sd(account_id)) != NULL) {
@@ -21159,12 +21163,16 @@ int clif_parse(int fd)
 				WFIFOW(fd,9)=get_current_version();
 				WFIFOSET(fd,11);
 				RFIFOSKIP(fd,2);
-				break;
+				return 0;
 			case 0x7532:	// 接続の切断
 				close(fd);
 				session[fd]->eof = 1;
-				break;
+				return 0;
 			default:
+				if(battle_config.use_packet_obfuscation) {
+					// パケット難読化の可能性があるので次の処理に渡す
+					break;
+				}
 				printf("clif_parse: unknown admin packet 0x%04x disconnect session #%d\n", cmd, fd);
 #ifdef DUMP_UNKNOWN_PACKET
 				hex_dump(stdout, RFIFOP(fd,0), RFIFOREST(fd));
@@ -21172,9 +21180,18 @@ int clif_parse(int fd)
 #endif
 				close(fd);
 				session[fd]->eof = 1;
-				break;
+				return 0;
 			}
-			return 0;
+		}
+
+		if(battle_config.use_packet_obfuscation) {
+			if(sd) {
+				cmd = (cmd ^ ((sd->cryptKey >> 16) & 0x7FFF));
+			}
+			else {
+				cmd = (cmd ^ (((( cryptKey[0] * cryptKey[1] ) + cryptKey[2]) >> 16) & 0x7FFF));
+			}
+			break;
 		}
 
 		// ゲーム用以外のパケットなので切断
@@ -21215,6 +21232,13 @@ int clif_parse(int fd)
 		}
 		if(RFIFOREST(fd) < packet_len)
 			return 0;	// まだ1パケット分データが揃ってない
+
+		if(battle_config.use_packet_obfuscation || cmd != RFIFOW(fd, 0)) {
+			RFIFOW(fd, 0) = cmd;
+			if(sd) {
+				sd->cryptKey = (( sd->cryptKey * cryptKey[1] ) + cryptKey[2]) & 0xFFFFFFFF;
+			}
+		}
 
 		if(sd && sd->state.auth == 1 && sd->state.waitingdisconnect) {
 			;	// 切断待ちの場合パケットを処理しない
@@ -21519,6 +21543,7 @@ static void packetdb_readdb(void)
 	struct {
 		int version, skip;
 		int count, size;
+		unsigned int crypt[3];
 		struct stock_line {
 			char line[1024];
 			int ln;
@@ -21527,6 +21552,7 @@ static void packetdb_readdb(void)
 
 	memset(packet_db, 0, sizeof(packet_db));
 	memset(&stock, 0, sizeof(stock));
+	memset(cryptKey, 0, sizeof(cryptKey));
 
 	if( (fp = fopen(filename, "r")) == NULL ) {
 		printf("packetdb_readdb: open [%s] failed !\n", filename);
@@ -21546,11 +21572,33 @@ static void packetdb_readdb(void)
 				if(ver <= PACKETVER && ver >= stock.version) {
 					// PACKETVERに最も近い日付が見つかったので古い情報を破棄する
 					memset(stock.data, 0, sizeof(struct stock_line) * stock.size);
+					memset(stock.crypt, 0, sizeof(stock.crypt));
 					stock.count   = 0;
 					stock.version = ver;
 					stock.skip    = 0;
 				} else {
 					stock.skip = 1;
+				}
+				continue;
+			}
+			if(strcmpi(w1, "#packet_key") == 0) {
+				int i;
+				char *str[3], *p;
+				for(i = 0, p = w2; i < 3 && p; i++) {
+					str[i] = p;
+					p = strchr(p, ',');
+					if(p) *p++ = 0;
+				}
+				if(str[0] == NULL || str[1] == NULL || str[2] == NULL)
+					continue;
+				if(stock.version > 0) {
+					stock.crypt[0] = strtol(str[0], (char **)NULL, 0);
+					stock.crypt[1] = strtol(str[1], (char **)NULL, 0);
+					stock.crypt[2] = strtol(str[2], (char **)NULL, 0);
+				} else {
+					cryptKey[0] = strtol(str[0], (char **)NULL, 0);
+					cryptKey[1] = strtol(str[1], (char **)NULL, 0);
+					cryptKey[2] = strtol(str[2], (char **)NULL, 0);
 				}
 				continue;
 			}
@@ -21588,12 +21636,14 @@ static void packetdb_readdb(void)
 				exit(1);
 			}
 		}
+		memcpy(cryptKey,stock.crypt,sizeof(cryptKey));
 		count += stock.count;
 	}
 
 	printf("read %s done (count=%d)\n", filename, count);
 	if(stock.version > 0) {
 		printf("use packet_ver: %d\n", stock.version);
+		printf("use packet_key: 0x%08x,0x%08x,0x%08x\n", stock.crypt[0], stock.crypt[1], stock.crypt[2]);
 	}
 	aFree(stock.data);
 

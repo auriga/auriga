@@ -2866,6 +2866,7 @@
 
 //2011-10-05aRagexeRE
 #packet_ver: 20111005
+#packet_key: 0x291e6762,0x77cd391a,0x60ac2f16
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -2896,6 +2897,7 @@
 
 // 2011-11-02aRagexe
 #packet_ver: 20111102
+#packet_key: 0x5324329d,0x5d545d52,0x06137269
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -2935,6 +2937,7 @@
 
 //2011-11-22aRagexeRE
 #packet_ver: 20111122
+#packet_key: 0x3b550f07,0x1f666c7c,0x60304ef5
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -2974,6 +2977,7 @@
 
 //2011-12-20bRagexeRE
 #packet_ver: 20111220
+#packet_key: 0x05d53871,0x7d0027b4,0x29975333
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3013,6 +3017,7 @@
 
 //2012-02-14bRagexeRE
 #packet_ver: 20120214
+#packet_key: 0x7a255efa,0x30977276,0x2d4a0448
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3052,6 +3057,7 @@
 
 //2012-03-28aRagexeRE
 #packet_ver: 20120328
+#packet_key: 0x75b8553b,0x37f20b12,0x385c2b40
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3090,6 +3096,7 @@
 
 //2012-04-10aRagexeRE
 #packet_ver: 20120410
+#packet_key: 0x01581359,0x452d6ffa,0x6afb6e2e
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3128,6 +3135,7 @@
 
 //2012-06-18aRagexeRE
 #packet_ver: 20120618
+#packet_key: 0x261f261f,0x261f261f,0x261f261f
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3166,6 +3174,7 @@
 
 //2013-03-20eRagexe
 #packet_ver: 20130320
+#packet_key: 0x3f094c49,0x55f86c1e,0x58aa359a
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3195,7 +3204,7 @@
 0x0898,6,getcharnamerequest,2
 0x089b,10,useskilltoid,2:4:6
 0x08ac,8,movetokafra,2:4
-0x08c9,4
+0x08c9,2
 0x0922,-1,sellbuyingstorereq,2:4:8:12
 0x0933,6,takeitem,2
 0x0938,-1,openbuyingstorereq,2:4:8:9:89
@@ -3205,6 +3214,7 @@
 
 //2013-07-03aRagexe
 #packet_ver: 20130703
+#packet_key: 0x4ff90e23,0x0f1432f2,0x4cfa1eda
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3238,7 +3248,7 @@
 0x0817,2,closebuyingstorereq,0
 0x0815,-1,openbuyingstorereq,2:4:8:9:89
 0x083c,10,useskilltoid,2:4:6
-0x08c9,4
+0x08c9,2
 0x08e5,2
 0x0930,5,changedir,2:4
 0x094a,5,hommenu,4
@@ -3246,6 +3256,7 @@
 
 //2013-07-24eRagexe
 #packet_ver: 20130724
+#packet_key: 0x3c243bf5,0x42cc4e2f,0x02106ec6
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3270,7 +3281,7 @@
 0x0891,6,dropitem,2:4
 0x0893,19,wanttoconnection,2:6:10:14:18
 0x089c,10,useskilltopos,2:4:6:8
-0x08c9,4
+0x08c9,2
 0x08e5,2
 0x0921,90,useskilltopos,2:4:6:8:10
 0x0924,6,clickbuyingstorereq,2
@@ -3289,6 +3300,7 @@
 
 //2013-12-23cRagexe
 #packet_ver: 20131223
+#packet_key: 0x631c511c,0x111c111c,0x111c111c
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3324,7 +3336,7 @@
 0x0815,-1,openbuyingstorereq,2:4:8:9:89
 0x0817,2,closebuyingstorereq,0
 0x083c,10,useskilltoid,2:4:6
-0x08c9,4
+0x08c9,2
 0x08e5,2
 0x096a,6,getcharnamerequest,2
 0x09a8,16
@@ -3332,6 +3344,7 @@
 
 //2014-01-15eRagexe
 #packet_ver: 20140115
+#packet_key: 0x63224335,0x0f3a1f27,0x6d217b24
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3363,7 +3376,7 @@
 0x088e,8,movetokafra,2:4
 0x089b,26,friendaddrequest,2
 0x08a7,5,changedir,2:4
-0x08c9,4
+0x08c9,2
 0x08e5,2
 0x092d,5,hommenu,4
 0x0940,6,takeitem,2
@@ -3377,6 +3390,7 @@
 
 //2014-03-05bRagexe
 #packet_ver: 20140305
+#packet_key: 0x116763f2,0x41117dac,0x7fd13c45
 0x0078,55
 0x007c,44
 0x00aa,9
@@ -3412,7 +3426,7 @@
 0x0817,2,closebuyingstorereq,0
 0x083c,10,useskilltoid,2:4:6
 0x084a,2
-0x08c9,4
+0x08c9,2
 0x08e5,2
 0x0934,5,hommenu,4
 0x096a,6,getcharnamerequest,2

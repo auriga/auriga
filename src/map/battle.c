@@ -8906,6 +8906,7 @@ int battle_config_read(const char *cfgName)
 		{ "no_casting_int",                     &battle_config.no_cast_int,                        115      },
 		{ "monster_atk2_to_matk",               &battle_config.monster_atk2_to_matk,               1        },
 		{ "npc_timeout_time",                   &battle_config.npc_timeout_time,                   60       },
+		{ "use_packet_obfuscation",             &battle_config.use_packet_obfuscation,             1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

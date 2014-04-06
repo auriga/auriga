@@ -603,6 +603,7 @@ extern struct Battle_Config {
 	int no_cast_int;
 	int monster_atk2_to_matk;
 	int npc_timeout_time;
+	int use_packet_obfuscation;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
