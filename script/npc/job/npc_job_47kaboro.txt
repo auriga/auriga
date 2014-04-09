@@ -1628,6 +1628,8 @@ function	script	jobchenge_ko_func	{
 	mes "　" +'@rand+ "マス進みます‐";
 	close2;
 	set CHANGE_KO_LP,CHANGE_KO_LP - '@cost + '@heal;
+	if(CHANGE_KO_LP > 100)
+		set CHANGE_KO_LP,100;
 	set CHANGE_KO_NOW,CHANGE_KO_NOW + '@rand;
 	warp "job_ko.gat",'@to_x[CHANGE_KO_NOW],'@to_y[CHANGE_KO_NOW];
 	end;
