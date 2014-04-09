@@ -1,4 +1,16 @@
 ----------------------------------------
+//1203 [2014/04/10] by refis
+
+・影狼・朧の転職試験のうち生存の試練で正常に進行しない箇所を修正（npc_job_47kaboro.txt）
+	Thanks SOLDIER_POPORING さん
+
+・無効化状態のNPCが有効化された際にOnTouchイベントが実行されなかったのを修正（npc.c）
+
+・虚像のオーコルニル実装（map_auriga.conf, item_db2.txt, mapflag.txt, npc_quest_okolnir.txt）
+
+・ヴァルキリーの贈り物召喚儀式実装（map_auriga.conf, npc_quest_godsefestival.txt）
+
+----------------------------------------
 //1202 [2014/04/07] by refis
 
 ・パケット難読化処理に対応（battle.*, clif.*, map.h）

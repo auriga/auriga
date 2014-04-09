@@ -2023,6 +2023,7 @@ OnTouch:
 		mes "　発動しました！";
 		mes "　スタートに戻ります‐";
 		close2;
+		set 'trap,0;
 		warp "job_ko.gat",63,16;
 		end;
 	}
@@ -2278,6 +2279,7 @@ OnTouch:
 			// 未調査
 			mes "　同じ目が出なかったため";
 			mes "　再度サイコロを振ります‐";
+			continue;
 		}
 	}
 }
@@ -2469,7 +2471,7 @@ OnTouch:
 	if(select("LPを全て寄付する","寄付しない") == 1) {
 		mes "‐残りの^FD0260LP^000000を全て寄付しました。";
 		mes "　スタート地点に戻ります‐";
-		close;
+		close2;
 		set 'trap,1;
 		warp "job_ko.gat",63,16;
 		end;
@@ -2524,7 +2526,7 @@ OnTouch:
 	mes "　8以下ならば19番に戻る‐";
 	next;
 	mes "‐位置：24番マス";
-	mes "　保有LP：91";
+	mes "　保有LP：" +CHANGE_KO_LP;
 	mes "　サイコロを振ると2^FD0260LP^000000を消費します‐";
 	next;
 	menu "1個目のサイコロを振る",-;
@@ -2691,6 +2693,7 @@ OnTouch:
 		mes "　発動しました！";
 		mes "　スタートに戻ります‐";
 		close2;
+		set 'trap,0;
 		warp "job_ko.gat",63,16;
 		end;
 	}
@@ -2856,7 +2859,7 @@ OnTouch:
 	mes "　33〜38の進みたいマスを";
 	mes "　選んでください‐";
 	next;
-	switch(select("33番へ","34番へ","2735へ","36番へ","37番へ","38番へ")) {
+	switch(select("33番へ","34番へ","35番へ","36番へ","37番へ","38番へ")) {
 	case 1: set CHANGE_KO_NOW,33; warp "job_ko.gat",54,48; break;
 	case 2: set CHANGE_KO_NOW,34; warp "job_ko.gat",54,40; break;
 	case 3: set CHANGE_KO_NOW,35; warp "job_ko.gat",54,31; break;
@@ -3029,7 +3032,7 @@ OnTouch:
 	mes "　スタート地点に戻る‐";
 	next;
 	mes "‐位置：37マス";
-	mes "　保有LP：76";
+	mes "　保有LP：" +CHANGE_KO_LP;
 	mes "　サイコロを振ると1^FD0260LP^000000を消費します‐";
 	next;
 	menu "サイコロを振る",-;
@@ -3113,7 +3116,7 @@ OnTouch:
 	mes "　3が出たら3番に戻ってもらう‐";
 	next;
 	mes "‐位置：39番マス";
-	mes "　保有LP：1";
+	mes "　保有LP：" +CHANGE_KO_LP;
 	mes "　サイコロを振ると1^FD0260LP^000000を消費します‐";
 	next;
 	menu "サイコロを振る",-;
