@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\login\sql\account_sql.c">
+      <Filter>login_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\login\sql\loginlog_sql.c">
+      <Filter>login_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\login\login.c">
+      <Filter>login_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\login\login_httpd.c">
+      <Filter>login_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\core.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\db.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\graph.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\grfio.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\httpd.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\lock.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\malloc.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\md5calc.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\nullpo.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\sqldbs.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\socket.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\timer.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\utils.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\version.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\winservice.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\compress.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\deflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\trees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\login\sql\account_sql.h">
+      <Filter>login_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\login\sql\loginlog_sql.h">
+      <Filter>login_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\login\login.h">
+      <Filter>login_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\login\login_httpd.h">
+      <Filter>login_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\core.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\db.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\graph.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\grfio.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\httpd.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\lock.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\malloc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\md5calc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\mmo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\nullpo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\sqldbs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\socket.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\timer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\version.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\winservice.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zutil.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\crc32.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inffast.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inffixed.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inftrees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\trees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{b50ee803-e71d-4d41-8f7d-2dad5839df50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{b50ee803-e71d-4d41-8f7d-ffb0be95170c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="login_sql">
+      <UniqueIdentifier>{8eea96ed-d379-4694-ae2e-ffb0be95170c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

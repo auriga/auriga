@@ -1657,6 +1657,8 @@ int do_init(int argc,char **argv)
 		get_current_version()
 	);
 
+	login_config_set_defaultvalue();
+	login_config_set_defaultvalue_sub();
 	for( i = 1; i < argc - 1; i += 2 )
 	{
 		if(strcmp(argv[i], "--login_config") == 0 || strcmp(argv[i], "--login-config") == 0)
@@ -1666,8 +1668,6 @@ int do_init(int argc,char **argv)
 		}
 	}
 
-	login_config_set_defaultvalue();
-	login_config_set_defaultvalue_sub();
 	login_config_read(config.login_conf_filename);
 	display_conf_warnings();
 	display_conf_warnings2();

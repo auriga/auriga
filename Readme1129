@@ -1,4 +1,17 @@
 ----------------------------------------
+//1205 [2014/04/21] by popori
+
+・ログインサーバにおいて、コマンドライン引数を受け取っても初期値にセットしてしまうバグを修正 (src/login/login.c)
+
+・VisualStudio2012のビルド設定を追加 (vc_make.bat)
+	※WindowsKits8.0のインストールが必須です。
+	　http://msdn.microsoft.com/ja-jp/windows/desktop/hh852363
+
+・開発者向けにVisualStudion2012のソリューションファイルを追加(Auriga.sln, vcproj-11/*)
+	※MySQL5.5、x64向けビルド前提です。
+	　既存のdspファイルからコンバートが出来なくなったので追加。
+
+----------------------------------------
 //1204 [2014/04/10] by refis
 
 ・影狼・朧の転職試験の生存の試練で100LPを超過するミスを修正（npc_job_47kaboro.txt）

@@ -124,6 +124,14 @@ rem set __VCVER__=10
 rem set __BITTYPE__=x64
 rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定ここまで
 
+rem ---- VC++ 2012 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
+rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin;C:\Program Files\Windows Kits\8.0\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE;%PATH%
+rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;%INCLUDE%
+rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\SDK\v2.0\lib\amd64;%LIB%
+rem set __VCVER__=11
+rem set __BITTYPE__=x64
+rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定ここまで
+
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
 rem ---- VC++ .NET 2003 の設定ここまで

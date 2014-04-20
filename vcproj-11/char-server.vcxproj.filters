@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\char\char.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\inter.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_elem.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_guild.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_homun.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_mail.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_merc.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_party.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_pet.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_quest.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_status.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\int_storage.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\storagedb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\accregdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\chardb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\charlog_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\elemdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\guilddb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\homundb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\interlog_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\maildb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\mercdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\partydb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\petdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\questdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\statusdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\core.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\db.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\graph.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\grfio.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\httpd.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\lock.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\malloc.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\md5calc.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\nullpo.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\sqldbs.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\socket.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\timer.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\utils.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\version.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\winservice.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\compress.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\deflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\zlib\trees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\char\char.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\inter.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_elem.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_guild.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_homun.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_mail.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_merc.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_party.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_pet.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_quest.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_status.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\int_storage.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\storagedb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\accregdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\chardb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\charlog_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\elemdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\guilddb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\homundb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\interlog_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\maildb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\mercdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\partydb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\petdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\questdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\statusdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\core.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\db.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\graph.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\grfio.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\httpd.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\lock.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\malloc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\md5calc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\mmo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\nullpo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\sqldbs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\socket.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\timer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\version.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\winservice.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zutil.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\crc32.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inffast.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inffixed.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\inftrees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\trees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{34vlp4tq-s87w-8njr-f5bt-bc2tdmc0dciu}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{8jnoimxq-tf6w-9rt2-dna6-4a720g19oqyg}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="char_sql">
+      <UniqueIdentifier>{ox2qpefv-m5cy-686b-l8yq-w54lyq6c9czs}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
