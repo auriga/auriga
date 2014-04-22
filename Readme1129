@@ -1,4 +1,17 @@
 ----------------------------------------
+//1206 [2014/04/23] by refis
+
+・OnTouchラベルを指定していない範囲NPCの場合
+　NPC有効化の際にOnTouchイベントが自動実行されない不具合を修正（npc.c）
+
+・虚像のオーコルニルでブリュンヒルデが作成できないミスを修正（npc_quest_okolnir.txt）
+
+・養子3次職への転職に対応（npc_job_thirdclass.txt）
+
+・闇のビョンウンゴ病院2階実装（map_auriga.conf, mapflag_memorial.txt, npc_memorial_bangungot.txt）
+	-> メモリアル生成NPCをポートマラヤファイルから移設（npc_town_portmalaya.txt）
+
+----------------------------------------
 //1205 [2014/04/21] by popori
 
 ・ログインサーバにおいて、コマンドライン引数を受け取っても初期値にセットしてしまうバグを修正 (src/login/login.c)

@@ -1967,12 +1967,12 @@ que_qsch05.gat,1,5,0	duplicate(ウィッシュメイデン#boss)	ウィッシュ
 		if('@name$ == "aru") {
 			setarray '@need,7835,7836,7837,7838,2513,7291,7293,7063,757;
 			setarray '@amount,1,1,1,1,1,10,10,100,20;
-			setarray '@n, 7835,1,7836,1,7837,1,7838,1,2513,1,7291,10,7293,10,7063,100,757,20;
-			set '@gain, 2541; //Asprika
+			set '@gain, 2541; //アスプリカ
 		}
 		else if('@name$ == "sch") {
-			setarray '@n, 7830,1,7831,1,7832,1,7833,1,7834,1,2357,1,7510,100,969,10,757,20;
-			set '@gain, 2383; //Brynhild
+			setarray '@need,7830,7831,7832,7833,7834,2357,7510,969,757;
+			setarray '@amount,1,1,1,1,1,1,100,10,20;
+			set '@gain, 2383; //ブリュンヒルデ
 		}
 		for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1) {
 			if(countitem('@need['@i]) >= '@amount['@i])

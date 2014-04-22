@@ -47,7 +47,9 @@ function	script	jobchenge3rd_func	{
 		mes "もう転職は完了していますよ。";
 		close;
 	}
-	if(Job != getarg(1) || Upper != UPPER_HIGH || BaseLevel < 90) {
+	if(Job != getarg(1) || Upper == UPPER_NORMAL
+	  (Upper == UPPER_HIGH && BaseLevel < 90) ||
+	  (Upper == UPPER_BABY && (BaseLevel < 99 || JobLevel < 50)) ) {
 		mes "[転職代行係]";
 		mes "こんにちは。";
 		mes "貴方の周りに、";
@@ -69,7 +71,8 @@ function	script	jobchenge3rd_func	{
 	}
 	mes "[転職代行係]";
 	mes "こんにちは。";
-	mes "貴方は"+ job_name(Job) +"ですね。";
+	if(Upper == UPPER_HIGH)
+		mes "貴方は"+ job_name(Job) +"ですね。";
 	mes '@3rdName$ +"への転職を";
 	mes "望みますか？";
 	next;
@@ -84,7 +87,7 @@ function	script	jobchenge3rd_func	{
 		mes "それもひとつの道でしょう。";
 		close;
 	}
-	if(Weight || checkriding() || checkcart() || checkfalcon()) {
+	if(Weight || checkriding() || checkcart() || checkfalcon() || sc_ison(SC_ALL_RIDING)) {
 		mes "[転職代行係]";
 		mes "あなたは準備しなければ";
 		mes "ならないことがありますね。";

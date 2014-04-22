@@ -7324,7 +7324,7 @@ OnInit:
 //============================================================
 // 新任看護師と病院クエストNPC
 //- Registry -------------------------------------------------
-// MALAYA_4QUE -> 0〜28
+// MALAYA_4QUE -> 0〜29
 //------------------------------------------------------------
 malaya.gat,55,72,4	script	看護師	569,{
 	if(MALAYA_1QUE < 6) {
@@ -8310,18 +8310,27 @@ malaya.gat,55,72,4	script	看護師	569,{
 		cutin "malaya_nurseB",255;
 		end;
 	case 28:
-		mes "[看護師マエン]";
-		mes "病院を浄化する";
-		mes "つもりだったけど……";
-		mes "彼女が戻ってしまった以上、";
-		mes "簡単にはいかないでしょうね。";
-		cutin "malaya_nurseB",2;
-		next;
-		mes "[看護師マエン]";
-		mes "あなたにも";
-		mes "彼女を案内してしまった";
-		mes "責任を取ってもらうわよ。";
-		mes "もちろん、協力してくれるよね？";
+	case 29:
+		if(MALAYA_4QUE == 28) {
+			mes "[看護師マエン]";
+			mes "病院を浄化する";
+			mes "つもりだったけど……";
+			mes "彼女が戻ってしまった以上、";
+			mes "簡単にはいかないでしょうね。";
+			cutin "malaya_nurseB",2;
+			next;
+			mes "[看護師マエン]";
+			mes "あなたにも";
+			mes "彼女を案内してしまった";
+			mes "責任を取ってもらうわよ。";
+			mes "もちろん、協力してくれるよね？";
+		}
+		else {
+			mes "[看護師マエン]";
+			mes "ビョンウンゴの力は予想以上ね。";
+			mes "いまだに彼女の気が感じられるわ。";
+			cutin "malaya_nurseB",2;
+		}
 		next;
 		mes "[看護師マエン]";
 		mes "ビョンウンゴは悪夢の力で";
@@ -8590,18 +8599,27 @@ ma_dun01.gat,35,108,4	script	看護師	569,{
 		warp "malaya.gat",58,76;
 		end;
 	case 28:
-		mes "[看護師マエン]";
-		mes "病院を浄化する";
-		mes "つもりだったけど……";
-		mes "彼女が戻ってしまった以上、";
-		mes "簡単にはいかないでしょうね。";
-		cutin "malaya_nurseB",2;
-		next;
-		mes "[看護師マエン]";
-		mes "あなたにも";
-		mes "彼女を案内してしまった";
-		mes "責任を取ってもらうわよ。";
-		mes "もちろん、協力してくれるよね？";
+	case 29:
+		if(MALAYA_4QUE == 28) {
+			mes "[看護師マエン]";
+			mes "病院を浄化する";
+			mes "つもりだったけど……";
+			mes "彼女が戻ってしまった以上、";
+			mes "簡単にはいかないでしょうね。";
+			cutin "malaya_nurseB",2;
+			next;
+			mes "[看護師マエン]";
+			mes "あなたにも";
+			mes "彼女を案内してしまった";
+			mes "責任を取ってもらうわよ。";
+			mes "もちろん、協力してくれるよね？";
+		}
+		else {
+			mes "[看護師マエン]";
+			mes "まだビョンウンゴの気配が";
+			mes "完全に消えてはいないようね。";
+			cutin "malaya_nurseB",2;
+		}
 		next;
 		mes "[看護師マエン]";
 		mes "ビョンウンゴは悪夢の力で";
@@ -8774,98 +8792,6 @@ ma_dun01.gat,152,23,4	script	怪しい木の棒	858,{
 		mes "‐お守りからは";
 		mes "　何の気配も感じられない‐";
 		close;
-	}
-}
-
-ma_dun01.gat,147,10,5	script	看護師	569,{
-	switch(MALAYA_4QUE) {
-	case 19:
-	case 20:
-		cutin "malaya_nurseB",2;
-		mes "[看護師]";
-		mes "…………。";
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
-	case 21:
-		cutin "malaya_nurseB",2;
-		mes "‐病院の扉は";
-		mes "　閉まっていたはずなのに";
-		mes "　この看護師はいつ";
-		mes "　入って来たのだろう？";
-		mes "　後ろから呼んでみたが";
-		mes "　反応しない‐";
-		next;
-		mes "‐いったん、病院の入り口まで戻って";
-		mes "　看護師ラズに階段の様子を";
-		mes "　伝えよう‐";
-		delquest 11302;
-		setquest 11303;
-		set MALAYA_4QUE,22;
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
-	case 22:
-		cutin "malaya_nurseB",2;
-		mes "‐病院の扉は";
-		mes "　閉まっていたはずなのに";
-		mes "　この看護師はいつ";
-		mes "　入って来たのだろう？";
-		mes "　後ろから呼んでみたが";
-		mes "　反応しない‐";
-		next;
-		mes "‐いったん、病院の入り口まで戻って";
-		mes "　看護師ラズに階段の様子を";
-		mes "　伝えよう‐";
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
-	case 23:
-	case 24:
-	case 25:
-		//未調査
-		cutin "malaya_nurseB",2;
-		mes "‐病院の扉は";
-		mes "　閉まっていたはずなのに";
-		mes "　この看護師はいつ";
-		mes "　入って来たのだろう？";
-		mes "　後ろから呼んでみたが";
-		mes "　反応しない‐";
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
-	case 26:
-		cutin "malaya_nurseB",2;
-		mes "[看護師]";
-		mes "いい調子だわ。";
-		mes "もうすぐね……";
-		next;
-		mes "‐何かに集中しているようだ‐";
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
-	case 27:
-		cutin "malaya_nurseB",2;
-		mes "[看護師]";
-		mes "ここは私に任せて";
-		mes "あなたは病院の外に逃げなさい。";
-		mes "さあ、早く！";
-		close2;
-		cutin "malaya_nurseB",255;
-		warp "malaya.gat",58,76;
-		end;
-	case 28:
-	default:
-		cutin "malaya_nurseB",2;
-		mes "‐病院の扉は";
-		mes "　閉まっていたはずなのに";
-		mes "　この看護師はいつ";
-		mes "　入って来たのだろう？";
-		mes "　後ろから呼んでみたが";
-		mes "　反応しない‐";
-		close2;
-		cutin "malaya_nurseB",255;
-		end;
 	}
 }
 
