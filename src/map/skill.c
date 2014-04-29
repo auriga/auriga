@@ -14850,7 +14850,9 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 		if(cnd->id != HW_GANBANTEIN && cnd->id != RG_GRAFFITI) {
 			if(itemid[i] >= 715 && itemid[i] <= 717) {
 				if(sd->special_state.no_gemstone || (sc && (sc->data[SC_WIZARD].timer != -1 || sc->data[SC_INTOABYSS].timer != -1))) {
-					if(--amount[i] <= 0)
+					if(cnd->id == SA_ABRACADABRA && --amount[i] <= 0)
+						continue;
+					else if(cnd->id != SA_ABRACADABRA)
 						continue;
 				}
 			}

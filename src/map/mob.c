@@ -2455,7 +2455,10 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 			case ITEMTYPE_ARMORTB:
 			case ITEMTYPE_ARMORMB:
 			case ITEMTYPE_ARMORTMB:
-				drop_fix = drop * battle_config.equip_drop_rate / 100;
+				if(itemdb_search(item)->flag.pet_acce)	// ペット用装備品
+					drop_fix = drop * battle_config.petequip_drop_rate / 100;
+				else
+					drop_fix = drop * battle_config.equip_drop_rate / 100;
 				break;
 			case ITEMTYPE_WEAPON:
 			case ITEMTYPE_BOW:
@@ -2470,10 +2473,7 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 				drop_fix = drop * battle_config.arrow_drop_rate / 100;
 				break;
 			default:
-				if(itemdb_search(item)->flag.pet_acce)	// ペット用装備品
-					drop_fix = drop * battle_config.petequip_drop_rate / 100;
-				else
-					drop_fix = drop * battle_config.other_drop_rate / 100;
+				drop_fix = drop * battle_config.other_drop_rate / 100;
 				break;
 		}
 	}

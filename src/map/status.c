@@ -6651,7 +6651,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND &&
 			type != SC_SHAPESHIFT && type != SC_ON_PUSH_CART)
 			return 0;
-		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING)
+		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING || type == SC_ORATIO)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
 		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT || type == SC__AUTOSHADOWSPELL || type == SC_PROPERTYWALK) {
 			// 異常中にもう一度状態異常になった時に解除してから再度かかる

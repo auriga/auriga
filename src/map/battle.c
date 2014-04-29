@@ -2557,6 +2557,41 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( cardfix, 100 );
 		}
 
+		// エンチャントデッドリーポイズン
+		if(sc && sc->data[SC_EDP].timer != -1) {
+			int edp_rate;
+
+			switch(skill_num) {
+			case 0:
+			case SM_BASH:
+			case SM_MAGNUM:
+			case MS_MAGNUM:
+			case TF_POISON:
+			case AS_SONICBLOW:
+			case ASC_BREAKER:
+			case GC_CROSSIMPACT:
+			case GC_DARKILLUSION:
+			case GC_VENOMPRESSURE:
+			case GC_COUNTERSLASH:
+			case GC_PHANTOMMENACE:
+			case GC_ROLLINGCUTTER:
+			case GC_CROSSRIPPERSLASHER:
+				if(map[src->m].flag.pk && target->type == BL_PC) {
+					edp_rate = (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 100;
+				} else if(map[src->m].flag.gvg) {
+					edp_rate = (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 100;
+				} else if(map[src->m].flag.pvp) {
+					edp_rate = (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 100;
+				} else {
+					edp_rate = 150 + sc->data[SC_EDP].val1 * 50;
+				}
+				wd.damage = wd.damage * edp_rate / 100;
+				if(calc_flag.lh)
+					wd.damage2 = wd.damage2 * edp_rate / 100;
+				break;
+			}
+		}
+
 		// （RE）ステータスAtkを加算
 		if(src_sd || (!src_sd && battle_config.enemy_str)) {
 			int s_ele__ = ELE_NEUTRAL;		// 基本無属性
@@ -2723,34 +2758,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// 呪い
 			if(sc->data[SC_CURSE].timer != -1)
 				add_rate -= 25;
-			// 暫定エンチャントデッドリーポイズン
-			if(sc->data[SC_EDP].timer != -1) {
-				switch(skill_num) {
-				case 0:
-				case SM_BASH:
-				case SM_MAGNUM:
-				case MS_MAGNUM:
-				case TF_POISON:
-				case AS_SONICBLOW:
-				case GC_CROSSIMPACT:
-				case GC_DARKILLUSION:
-				case GC_VENOMPRESSURE:
-				case GC_COUNTERSLASH:
-				case GC_PHANTOMMENACE:
-				case GC_ROLLINGCUTTER:
-				case GC_CROSSRIPPERSLASHER:
-					if(map[src->m].flag.pk && target->type == BL_PC) {
-						add_rate += (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 100;
-					} else if(map[src->m].flag.gvg) {
-						add_rate += (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 100;
-					} else if(map[src->m].flag.pvp) {
-						add_rate += (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 100;
-					} else {
-						add_rate += 150 + sc->data[SC_EDP].val1 * 50;
-					}
-					break;
-				}
-			}
 #endif
 			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
 				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
@@ -2868,21 +2875,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int rate = 300+50*skill_lv;
 
 				if(sc && sc->data[SC_EDP].timer != -1)
-					rate = rate/2;
+					rate >>= 1;
 				sbr = battle_calc_attack(BF_MAGIC,src,target,skill_num,skill_lv,wd.flag);
 				wd.damage = wd.damage * (rate+add_rate) / 100;
 				wd.damage += sbr.damage * rate / 100;
-				if(sc && sc->data[SC_EDP].timer != -1) {
-					if(map[src->m].flag.pk && target->type == BL_PC) {
-						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pk_edp_down_rate / 100) / 100;
-					} else if(map[src->m].flag.gvg) {
-						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.gvg_edp_down_rate / 100) / 100;
-					} else if(map[src->m].flag.pvp) {
-						wd.damage = wd.damage * ( (150 + sc->data[SC_EDP].val1 * 50) * battle_config.pvp_edp_down_rate / 100) / 100;
-					} else {
-						wd.damage = wd.damage * (150 + sc->data[SC_EDP].val1 * 50) / 100;
-					}
-				}
 				wd.damage = wd.damage - (t_def1 + t_def2 + status_get_mdef(target) + status_get_mdef2(target));
 			}
 			break;
@@ -3080,7 +3076,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #else
 				int rate = 400+40*skill_lv;
 				if(sc && sc->data[SC_EDP].timer != -1)
-					rate = rate/2;
+					rate >>= 1;
 #endif
 				if(sc && sc->data[SC_ASSASIN].timer != -1)
 				{
@@ -3662,7 +3658,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(src_sd) {
 				int rate = 300 + 100 * skill_lv + status_get_agi(src) * 2 + src_sd->status.job_level * 4;
 				if(sc && sc->data[SC_EDP].timer != -1)
-					rate = rate / 2;
+					rate >>= 1;
 				DMG_FIX( rate, 100 );
 			} else {
 				DMG_FIX( 300 + 100 * skill_lv + status_get_agi(src) * 2, 100 );
