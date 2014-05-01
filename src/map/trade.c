@@ -50,6 +50,10 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 
 	target_sd = map_id2sd(target_id);
 	if(target_sd && target_sd->bl.prev && sd != target_sd) { // check same player to avoid hack
+		if(target_sd->state.storage_flag) {
+			clif_tradestart(sd, 5);
+			return;
+		}
 		if(target_sd->state.store || target_sd->state.mail_appending) {
 			clif_tradestart(sd, 4);
 			return;
@@ -103,6 +107,11 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
 		if(sd->bl.m != target_sd->bl.m || unit_distance(&sd->bl, &target_sd->bl) > 2) {
+			trade_tradecancel(sd);
+			return;
+		}
+		if(sd->state.storage_flag || target_sd->state.storage_flag) {
+			trade_tradecancel(target_sd);
 			trade_tradecancel(sd);
 			return;
 		}

@@ -608,7 +608,7 @@ int unit_forcewalktodir(struct block_list *bl,int distance)
  * 位置移動
  *   flag -> 0xXY
  *	X : 経路検索方法、0,1,2
- *	Y : パケットの種類、0,1
+ *	Y : パケットの種類、0,1,2
  *------------------------------------------
  */
 int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
@@ -731,6 +731,8 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 
 	if( flag&1 )		// 吹き飛ばし用パケット送信
 		clif_blown(bl,dst_x,dst_y);
+	else if( flag&2 )		// 残影用パケット送信
+		clif_bodyrelocation(bl,dst_x,dst_y);
 	else			// 位置変更情報送信
 		clif_fixpos2(bl,x,y);
 

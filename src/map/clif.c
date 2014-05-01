@@ -16794,7 +16794,7 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID != 0 )
+	if( sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID != 0 )
 		return;
 	if( sd->state.storage_flag )
 		return;
@@ -17449,6 +17449,12 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
 		return;
 
+	// 取引要請中
+	if (sd->trade.partner != 0) {
+		clif_equipitemack(sd, idx, 0, 0);	// fail
+		return;
+	}
+
 	// 未鑑定もしくは破壊されている
 	if (sd->status.inventory[idx].identify != 1 || sd->status.inventory[idx].attribute != 0) {
 		clif_equipitemack(sd, idx, 0, 0);	// fail
@@ -17498,6 +17504,12 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
 
+	// 取引要請中
+	if (sd->trade.partner != 0) {
+		clif_unequipitemack(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2, 0, 0);	// fail
+		return;
+	}
+
 	pc_unequipitem(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2, 0);
 
 	return;
@@ -17516,7 +17528,7 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_click(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
@@ -17536,7 +17548,7 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_buysellsel(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
 
@@ -17566,6 +17578,8 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 		return;
 
 	fail = npc_buylist(sd, n, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,1))); // item_list
+
+	sd->npc_shopid = 0;
 
 	WFIFOW(fd,0)=0xca;
 	WFIFOB(fd,2)=fail; // 0: The deal has successfully completed., 1: You dont have enough zeny., 2: you are overcharged!, 3: You are over your weight limit.
@@ -17598,6 +17612,8 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 
 	fail = npc_selllist(sd, n, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,1))); // item_list
 
+	sd->npc_shopid = 0;
+
 	WFIFOW(fd,0)=0xcb;
 	WFIFOB(fd,2)=fail;
 	WFIFOSET(fd,packet_db[0xcb].len);
@@ -17621,7 +17637,9 @@ static void clif_parse_NpcPointShopOpen(int fd,struct map_session_data *sd, int 
  */
 static void clif_parse_NpcPointShopClose(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	nullpo_retv(sd);
+
+	sd->npc_shopid = 0;
 	return;
 }
 
@@ -17993,7 +18011,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 	if(pc_issit(sd))
 		return;
@@ -18215,7 +18233,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	skilllv  = RFIFOW(fd,GETPACKETPOS(cmd,0));
@@ -18361,7 +18379,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->npc_shopid != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	if(sd->sc.data[SC_TRICKDEAD].timer != -1 ||

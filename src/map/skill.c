@@ -2763,6 +2763,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 
 		if(src_sd) {
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
+			int delay    = skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv);
 
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
@@ -2779,7 +2780,8 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 				}
 			}
 #if PACKETVER > 20081126
-			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
+			if(delay > 0)
+				clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, delay, 0, 0, 0);
 #endif
 		}
 
@@ -5888,14 +5890,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case MO_CALLSPIRITS:	/* 気功 */
 		if(sd) {
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			pc_addspiritball(sd,skill_get_time(skillid,skilllv),1);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case CH_SOULCOLLECT:	/* 練気功 */
 		if(sd) {
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			pc_addspiritball(sd,skill_get_time(skillid,skilllv),MAX_SPIRITBALL);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		}
 		break;
 	case MO_BLADESTOP:	/* 白刃取り */
@@ -9681,6 +9683,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 
 		if(src_sd) {
 			int cooldown = skill_get_cooldown(src_ud->skillid, src_ud->skilllv);
+			int delay    = skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv);
 
 			if(src_sd->skill_cooldown.count > 0) {
 				int i;
@@ -9697,7 +9700,8 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 				}
 			}
 #if PACKETVER > 20081126
-			clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, skill_delayfix(&src_sd->bl, src_ud->skillid, src_ud->skilllv), 0, 0, 0);
+			if(delay > 0)
+				clif_status_change(&src_sd->bl, SI_ACTIONDELAY, 1, delay, 0, 0, 0);
 #endif
 		}
 
@@ -9758,6 +9762,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	switch(skillid) {
 	case WZ_METEOR:
 	case WZ_ICEWALL:
+	case MO_BODYRELOCATION:
 	case AM_CANNIBALIZE:
 	case AM_SPHEREMINE:
 	case CR_CULTIVATION:
@@ -10036,11 +10041,10 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				}
 #if PACKETVER < 20111025
 				clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
-#else
-				clif_skill_nodamage(src,src,skillid,skilllv,1);
-				clif_bodyrelocation(src,src->x,src->y);
-#endif
 				unit_movepos(src,x,y,1);
+#else
+				unit_movepos(src,x,y,2);
+#endif
 			}
 		}
 		break;
