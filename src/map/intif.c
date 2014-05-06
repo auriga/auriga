@@ -59,7 +59,7 @@
 #include "elem.h"
 
 static const int packet_len_table[]={
-	-1,-1,27, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
+	-1,-1,51, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
 	35,-1,39,13, 38,33, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
@@ -1360,6 +1360,7 @@ int intif_char_connect_limit(int limit)
 static int intif_parse_WisMessage(int fd)
 {
 	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,36));
+	struct map_session_data* ssd = map_nick2sd(RFIFOP(fd,12));
 	int id = RFIFOL(fd,4);
 	int gmlevel = RFIFOL(fd,8);
 
@@ -1377,7 +1378,7 @@ static int intif_parse_WisMessage(int fd)
 		} else if(j > 0) {
 			intif_wis_replay(id,2);	// 受信拒否
 		} else {
-			clif_wis_message(sd->fd,RFIFOP(fd,12),RFIFOP(fd,60),RFIFOW(fd,2)-60,gmlevel);
+			clif_wis_message(sd->fd,RFIFOP(fd,12),RFIFOP(fd,60),RFIFOW(fd,2)-60,gmlevel,ssd->char_id);
 			intif_wis_replay(id,0);	// 送信成功
 		}
 	} else {
@@ -1390,9 +1391,10 @@ static int intif_parse_WisMessage(int fd)
 static int intif_parse_WisEnd(int fd)
 {
 	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,2));
+	struct map_session_data* ssd = map_nick2sd(RFIFOP(fd,26));
 
 	if(sd)
-		clif_wis_end(sd->fd,RFIFOB(fd,26));
+		clif_wis_end(sd->fd,RFIFOB(fd,50),ssd->char_id);
 	return 0;
 }
 

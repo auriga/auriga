@@ -229,12 +229,13 @@ int mapif_wis_message(struct WisData *wd)
  */
 int mapif_wis_end(struct WisData *wd,int flag)
 {
-	unsigned char buf[32];
+	unsigned char buf[52];
 
 	WBUFW(buf, 0)=0x3802;
 	memcpy(WBUFP(buf, 2),wd->src,24);
-	WBUFB(buf,26)=flag;
-	mapif_send(wd->fd,buf,27);
+	memcpy(WBUFP(buf,26),wd->dst,24);
+	WBUFB(buf,50)=flag;
+	mapif_send(wd->fd,buf,51);
 
 	return 0;
 }

@@ -225,8 +225,8 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3);
 void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3);
 
-void clif_wis_message(int fd,const char *nick,const char *mes, size_t mes_len, int gmlevel);
-void clif_wis_end(int fd, unsigned short flag);
+void clif_wis_message(int fd,const char *nick,const char *mes, size_t mes_len, int gmlevel, int ccade);
+void clif_wis_end(int fd, unsigned char flag, int ccade);
 
 void clif_solved_charname(struct map_session_data *sd, int char_id);
 

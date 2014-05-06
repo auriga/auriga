@@ -927,7 +927,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,2)=(unsigned short)(78 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
 	WBUFL(buf,5)=sd->bl.id;
-	WBUFL(buf,9)=sd->bl.id;		// CCADE
+	WBUFL(buf,9)=sd->char_id;
 	WBUFW(buf,13)=sd->speed;
 	WBUFW(buf,15)=sd->sc.opt1;
 	WBUFW(buf,17)=sd->sc.opt2;
@@ -1240,7 +1240,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFW(buf,2)=(unsigned short)(84 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
 	WBUFL(buf,5)=sd->bl.id;
-	WBUFL(buf,9)=sd->bl.id;		//CCADE
+	WBUFL(buf,9)=sd->char_id;
 	WBUFW(buf,13)=sd->speed;
 	WBUFW(buf,15)=sd->sc.opt1;
 	WBUFW(buf,17)=sd->sc.opt2;
@@ -10512,20 +10512,28 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
  * Wisを送信する
  *------------------------------------------
  */
-void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len, int gmlevel)
+void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len, int gmlevel, int ccade)
 {
-	WFIFOW(fd,0)=0x97;
-
 #if PACKETVER <  20091104
+	WFIFOW(fd,0)=0x97;
 	WFIFOW(fd,2)=(unsigned short)(mes_len + 28);
 	memcpy(WFIFOP(fd,4),nick,24);
 	memcpy(WFIFOP(fd,28),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
-#else
+#elif PACKETVER < 20131223
+	WFIFOW(fd,0)=0x97;
 	WFIFOW(fd,2)=(unsigned short)(mes_len + 32);
 	memcpy(WFIFOP(fd,4),nick,24);
 	WFIFOL(fd,28)=gmlevel;
 	memcpy(WFIFOP(fd,32),mes,mes_len);
+	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	WFIFOW(fd,0)=0x9de;
+	WFIFOW(fd,2)=(unsigned short)(mes_len + 33);
+	WFIFOL(fd,4)=ccade;
+	memcpy(WFIFOP(fd,8),nick,24);
+	WFIFOB(fd,32)=(unsigned char)gmlevel;
+	memcpy(WFIFOP(fd,33),mes,mes_len);
 	WFIFOSET(fd,WFIFOW(fd,2));
 #endif
 
@@ -10536,11 +10544,18 @@ void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len,
  * Wisの送信結果を送信する
  *------------------------------------------
  */
-void clif_wis_end(int fd, unsigned short flag)
+void clif_wis_end(int fd, unsigned char flag, int ccade)
 {
+#if PACKETVER < 20131223
 	WFIFOW(fd,0)=0x98;
-	WFIFOW(fd,2)=flag;
+	WFIFOB(fd,2)=flag;
 	WFIFOSET(fd,packet_db[0x98].len);
+#else
+	WFIFOW(fd,0)=0x9df;
+	WFIFOB(fd,2)=flag;
+	WFIFOL(fd,3)=ccade;
+	WFIFOSET(fd,packet_db[0x9df].len);
+#endif
 
 	return;
 }
