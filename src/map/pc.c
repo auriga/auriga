@@ -1981,6 +1981,40 @@ int pc_calc_skilltree(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 重量が50%を越えているか
+ *------------------------------------------
+ */
+int pc_is50overweight(struct map_session_data *sd)
+{
+	int rate = 50;
+
+	nullpo_retr(0, sd);
+
+	// 自然回復しなくなる重量設定に合わせる
+	if(rate != battle_config.natural_heal_weight_rate)
+		rate = battle_config.natural_heal_weight_rate;
+
+	return (sd->weight * 100 / sd->max_weight >= rate);
+}
+
+/*==========================================
+ * 重量が90%を越えているか
+ *------------------------------------------
+ */
+int pc_is90overweight(struct map_session_data *sd)
+{
+	int rate = 90;
+
+	nullpo_retr(0, sd);
+
+	// 自然回復しなくなる重量設定が90%以上ならそれに合わせる
+	if(rate < battle_config.natural_heal_weight_rate)
+		rate = battle_config.natural_heal_weight_rate;
+
+	return (sd->weight * 100 / sd->max_weight >= rate);
+}
+
+/*==========================================
  * 重量アイコンの確認
  *------------------------------------------
  */

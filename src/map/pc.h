@@ -47,7 +47,7 @@ enum {
 #define pc_issit(sd) ((sd)->state.dead_sit == 2)
 #define pc_setdir(sd,b,h) ((sd)->dir = (char)(b) ,(sd)->head_dir = (char)(h) )
 
-#define pc_ishiding(sd) ((sd)->sc.option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT))
+#define pc_ishiding(sd) (((sd)->sc.option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || (sd)->sc.data[SC_CAMOUFLAGE].timer != -1)
 #define pc_iscloaking(sd)   (!((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 #define pc_ischasewalk(sd)  (((sd)->sc.option&OPTION_FOOTPRINT) && ((sd)->sc.option&OPTION_CLOAKING))
 
@@ -63,8 +63,9 @@ enum {
 #define pc_iswolf(sd) ((sd)->sc.option&OPTION_WUG)
 #define pc_iswolfmount(sd) ((sd)->sc.option&OPTION_WUGRIDER)
 #define pc_isgear(sd) ((sd)->sc.option&OPTION_MADOGEAR)
-#define pc_is50overweight(sd) ((sd)->weight*2 >= (sd)->max_weight)
-#define pc_is90overweight(sd) ((sd)->weight*10 >= (sd)->max_weight*9)
+
+int pc_is50overweight(struct map_session_data *sd);
+int pc_is90overweight(struct map_session_data *sd);
 
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 extern int max_job_table[PC_UPPER_MAX][PC_JOB_MAX];

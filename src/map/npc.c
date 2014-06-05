@@ -117,11 +117,21 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 	sd->areanpc_id = nd->bl.id;
 	sprintf(name, "%s::OnTouch", nd->exname);
 
-	if(npc_event(sd,name)) {
-		if(sd->npc_id != 0)
-			return 0;
-
-		npc_click(sd,nd->bl.id);
+	switch(nd->subtype) {
+	case WARP:
+		// 隠れているとワープできない
+		if(pc_ishiding(sd))
+			break;
+		skill_stop_dancing(&sd->bl,0);
+		pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
+		break;
+	case SCRIPT:
+		if(npc_event(sd,name)) {
+			if(sd->npc_id != 0)
+				return 0;
+			npc_click(sd,nd->bl.id);
+		}
+		break;
 	}
 
 	return 0;
@@ -130,6 +140,7 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 int npc_enable(const char *name,int flag)
 {
 	struct npc_data *nd = (struct npc_data *)strdb_search(npcname_db,name);
+	int xs = 0, ys = 0;
 
 	if (nd == NULL)
 		return 0;
@@ -149,7 +160,17 @@ int npc_enable(const char *name,int flag)
 		nd->flag |= 1;
 		clif_clearchar(&nd->bl,0);
 	}
-	if (nd->u.scr.xs > 0 || nd->u.scr.ys > 0) {
+	switch(nd->subtype) {
+	case WARP:
+		xs = nd->u.warp.xs;
+		ys = nd->u.warp.ys;
+		break;
+	case SCRIPT:
+		xs = nd->u.scr.xs;
+		ys = nd->u.scr.ys;
+		break;
+	}
+	if (xs > 0 || ys > 0) {
 		map_foreachinarea(npc_enable_sub,
 			nd->bl.m,nd->bl.x-nd->u.scr.xs,nd->bl.y-nd->u.scr.ys,nd->bl.x+nd->u.scr.xs,nd->bl.y+nd->u.scr.ys,
 			BL_PC,nd);
@@ -665,7 +686,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 	case WARP:
 		// 隠れているとワープできない
 		if(pc_ishiding(sd))
-		 	break;
+			break;
 		skill_stop_dancing(&sd->bl,0);
 		pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
 		break;
