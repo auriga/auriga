@@ -10,6 +10,27 @@ prt_church.gat,94,100,4	script	結婚コンパニオン	71,{
 	mes "こんにちは。";
 	mes "結婚コンパニオンの";
 	mes "ハッピーマリーです。";
+	if(Upper == UPPER_BABY) {
+		mes "あら、どうされました？";
+		next;
+		if(select("結婚したいです！","いや、何でもないです") == 2) {
+			mes "[ハッピーマリー]";
+			mes "はい、わかりました。";
+			mes "では、お気をつけて。";
+			close2;
+			cutin "wedding_marry02",255;
+			end;
+		}
+		mes "[ハッピーマリー]";
+		mes "申し訳ありません。";
+		mes "養子になられた方には、結婚を";
+		mes "ご遠慮して頂いております。";
+		mes "ご両親に親孝行しながら幸せに";
+		mes "なさってくださいね。";
+		close2;
+		cutin "wedding_marry02",255;
+		end;
+	}
 	next;
 	mes "[ハッピーマリー]";
 	mes "幸せを夢見るカップルなら";
@@ -246,12 +267,6 @@ prt_church.gat,94,100,4	script	結婚コンパニオン	71,{
 			cutin "wedding_marry02",255;
 			end;
 		}
-		if(Upper == UPPER_BABY) {
-			//養子のときは？未調査
-			close2;
-			cutin "wedding_marry02",255;
-			end;
-		}
 		if(@event_marry) {
 			mes "[ハッピーマリー]";
 			mes "あら？";
@@ -438,6 +453,17 @@ prt_church.gat,100,128,4	script	主教	60,{
 		cutin "wedding_bomars03",255;
 		end;
 	}
+	if(Upper == UPPER_BABY) {
+		mes "[ボマルス]";
+		mes "結婚に憧れるのは、良い事だ。";
+		mes "夢を持つ事も大事だが、";
+		mes "そなたの両親のように良人を";
+		mes "見つける事も大事だぞ。";
+		mes "大人になってから、また来なさい。";
+		close2;
+		cutin "wedding_bomars03",255;
+		end;
+	}
 	if(@event_marry==0) {
 		mes "[ボマルス]";
 		mes "結婚を望むなら、結婚式を挙げる二人で";
@@ -455,12 +481,6 @@ prt_church.gat,100,128,4	script	主教	60,{
 		mes "[ボマルス]";
 		mes "結婚を望むなら、結婚式を挙げる二人で";
 		mes "パーティーを結成しなさい。";
-		close2;
-		cutin "wedding_bomars03",255;
-		end;
-	}
-	if(readparam(Upper,'@another$) == UPPER_BABY) {
-		//相手が養子なら？未調査
 		close2;
 		cutin "wedding_bomars03",255;
 		end;

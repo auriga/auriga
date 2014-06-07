@@ -190,7 +190,7 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "新たな生を得ることになります。";
 	mes "戦士達に光あれ！";
 	next;
-	if(Weight || SkillPoint || checkcart() || checkfalcon() || checkriding() || sc_ison(SC_ALL_RIDING)) {
+	if(Weight || checkcart() || checkfalcon() || checkriding() || sc_ison(SC_ALL_RIDING)) {
 		mes "[ヴァルキリー]";
 		mes "あなたは準備しなければ";
 		mes "ならないことがあります。";
@@ -216,6 +216,15 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "無心になった今、あなたの";
 	mes "名誉がよく表れております。";
 	next;
+	if(SkillPoint) {
+		mes "[ヴァルキリー]";
+		mes "……未練があるようですね。";
+		mes "地上へ戻り、その未練を全て";
+		mes "お捨てになってからお越しください。";
+		close2;
+		warp "yuno_in02.gat",93,205;
+		end;
+	}
 	mes "[ヴァルキリー]";
 	mes "お眠りなさい……";
 	mes "あなたに刻まれている";
@@ -276,31 +285,30 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	switch(OLD_CLASS) {
 		case Job_Knight:
 		case Job_Crusader:
-			savepoint "izlude.gat",94,103;
+			warp "izlude.gat",94,103;
 			break;
 		case Job_Priest:
 		case Job_Monk:
-			savepoint "prontera.gat",273,354;
+			warp "prontera.gat",273,354;
 			break;
 		case Job_Wizard:
 		case Job_Sage:
-			savepoint "geffen.gat",120,100;
+			warp "geffen.gat",120,100;
 			break;
 		case Job_Blacksmith:
 		case Job_Alchemist:
-			savepoint "alberta.gat",116,57;
+			warp "alberta.gat",116,57;
 			break;
 		case Job_Hunter:
 		case Job_Bard:
 		case Job_Dancer:
-			savepoint "payon.gat",160,58;
+			warp "payon.gat",160,58;
 			break;
 		case Job_Assassin:
 		case Job_Rogue:
-			savepoint "morocc.gat",160,94;
+			warp "morocc.gat",160,94;
 			break;
 	}
-	warp "SavePoint",0,0;
 	end;
 }
 

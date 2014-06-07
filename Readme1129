@@ -1,4 +1,22 @@
 ----------------------------------------
+//1212 [2014/06/08] by refis
+
+・ナイト転職NPCのメッセージを微修正（npc_job_07knight.txt）
+
+・転生NPCのメッセージの修正、セーブポイントを変更しないよう修正（npc_job_transmigration.txt）
+	Thanks pneuma さん
+
+・1次転職NPC群の転職クエスト簡略化に対応（npc_job_01swordman.txt, npc_job_02magician.txt, npc_job_03archer.txt, npc_job_04acolyte.txt, npc_job_05merchant.txt, npc_job_06thief.txt）
+
+・上記に伴う特殊1次職群の転職NPC修正（npc_job_23supernovice.txt, npc_job_24taekwonkid.txt, npc_job_28gunslinger.txt, npc_job_29ninja.txt）
+
+・結婚NPCに養子で話しかけた時の会話を補完（npc_quest_marriage.txt）
+
+・神器クエストを実装（npc_quest_artifacts.txt）
+
+・Auriga-1211のマージ漏れを修正（npc.c）
+
+----------------------------------------
 //1211 [2014/06/06] by refis
 
 ・アサシン転職NPCにアコライト系で話したときの条件誤りを修正（npc_job_12assassin.txt）
