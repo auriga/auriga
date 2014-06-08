@@ -288,7 +288,7 @@ void clif_closevendingboard(struct block_list* bl, int fd);
 void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd);
 void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned char fail);
 int clif_openvending(struct map_session_data *sd);
-void clif_vendingreport(struct map_session_data *sd, int idx, int amount);
+void clif_vendingreport(struct map_session_data *sd, int idx, int amount, int account_id, int char_id, int value);
 
 void clif_movetoattack(struct map_session_data *sd, struct block_list *bl);
 
@@ -372,6 +372,8 @@ void clif_blacksmith_ranking(const int fd,const char *charname[10],const int poi
 void clif_alchemist_ranking(const int fd,const char *charname[10],const int point[10]);
 void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[10]);
 void clif_pk_ranking(const int fd,const char *charname[10],const int point[10]);
+void clif_updata_ranking_point(const int fd,const int total,const int point,int ranking_id);
+void clif_rankinglist(const int fd,const char *charname[10],const int point[10],int ranking_id,int mypoint);
 
 // mail
 void clif_openmailbox(const int fd);
@@ -424,7 +426,7 @@ void clif_showmylist_buyingstore(struct map_session_data *sd);
 void clif_show_buyingstore(struct block_list* bl, const char *shop_title, int fd);
 void clif_close_buyingstore(struct block_list *bl, int fd);
 void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_data *ssd);
-void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount);
+void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount, int value, int account_id, int char_id);
 void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amount, int value);
 void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid);
 void clif_failed_trybuyingstore(struct map_session_data *sd, short result);

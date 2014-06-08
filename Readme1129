@@ -1,4 +1,14 @@
 ----------------------------------------
+//1213 [2014/06/09] by refis
+
+・@rankingでクライアントがクラッシュする場合があるのを修正（msg_auriga.conf）
+
+・0x97c,0x97d,0x97e「一括ランキング参照」を実装（packet_db.txt, clif.*, ranking.c）
+	Thanks SOLDIER_POPORING さん、麓丸禄 さん
+
+・「0x137」,「0x81b」の上位互換「0x9e5」,「0x9e6」を追加（buyingstore.c, clif.*, vending.c）
+
+----------------------------------------
 //1212 [2014/06/08] by refis
 
 ・ナイト転職NPCのメッセージを微修正（npc_job_07knight.txt）

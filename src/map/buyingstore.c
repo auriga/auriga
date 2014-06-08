@@ -577,7 +577,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 
 		// クライアントへ送信
 		clif_delete_buyingstore(sd, idx, amount, ssd->buyingstore.item[listidx].value);
-		clif_update_buyingstore(ssd, nameid, amount);
+		clif_update_buyingstore(ssd, nameid, amount, ssd->buyingstore.item[listidx].value * amount, sd->bl.id, sd->char_id);
 	}
 
 	// 買い取り品数チェック

@@ -237,7 +237,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		pc_additem(sd, &vsd->status.cart[idx], amount);
 		vsd->vending[vend_list[i]].amount -= amount;
 		pc_cart_delitem(vsd, idx, amount, 0);
-		clif_vendingreport(vsd, idx, amount);
+		clif_vendingreport(vsd, idx, amount, sd->bl.id, sd->char_id, vsd->vending[vend_list[i]].value * amount);
 		if( battle_config.buyer_name )
 		{
 			char output[128];

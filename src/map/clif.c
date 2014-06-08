@@ -11890,17 +11890,27 @@ int clif_openvending(struct map_session_data *sd)
  * 露店アイテム販売報告
  *------------------------------------------
  */
-void clif_vendingreport(struct map_session_data *sd, int idx, int amount)
+void clif_vendingreport(struct map_session_data *sd, int idx, int amount, int account_id, int char_id, int value)
 {
 	int fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+#if PACKETVER < 20140129
 	WFIFOW(fd,0)=0x137;
 	WFIFOW(fd,2)=idx+2;
 	WFIFOW(fd,4)=amount;
 	WFIFOSET(fd,packet_db[0x137].len);
+#else
+	WFIFOW(fd, 0)=0x9e5;
+	WFIFOW(fd, 2)=idx+2;
+	WFIFOW(fd, 4)=amount;
+	WFIFOL(fd, 6)=char_id;
+	WFIFOL(fd,10)=account_id;
+	WFIFOL(fd,14)=value;
+	WFIFOSET(fd,packet_db[0x9e5].len);
+#endif
 
 	return;
 }
@@ -14096,6 +14106,41 @@ void clif_pk_ranking(const int fd,const char *charname[10],const int point[10])
 }
 
 /*==========================================
+ * 一括ランキングポイント
+ *------------------------------------------
+ */
+void clif_updata_ranking_point(const int fd,const int total,const int point,int ranking_id)
+{
+	WFIFOW(fd,0) = 0x97e;
+	WFIFOW(fd,2) = ranking_id;
+	WFIFOL(fd,4) = point;
+	WFIFOL(fd,8) = total;
+	WFIFOSET(fd,packet_db[0x97e].len);
+
+	return;
+}
+
+/*==========================================
+ * 一括ランキング
+ *------------------------------------------
+ */
+void clif_rankinglist(const int fd,const char *charname[10],const int point[10],int ranking_id,int mypoint)
+{
+	int i;
+
+	WFIFOW(fd,0) = 0x97d;
+	WFIFOW(fd,2) = ranking_id;
+	for(i=0;i<10;i++){
+		strncpy(WFIFOP(fd,i*24+4), charname[i], 24);
+		WFIFOL(fd,i*4+244) = point[i];
+	}
+	WFIFOL(fd,284) = mypoint;
+	WFIFOSET(fd,packet_db[0x97d].len);
+
+	return;
+}
+
+/*==========================================
  * メールBOXを表示させる
  *------------------------------------------
  */
@@ -16241,18 +16286,29 @@ void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
  * 買取露店アイテム更新
  *------------------------------------------
  */
-void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount)
+void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount, int value, int account_id, int char_id)
 {
 	int fd;
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
+#if PACKETVER < 20140129
 	WFIFOW(fd,0) = 0x81b;
 	WFIFOW(fd,2) = nameid;
 	WFIFOW(fd,4) = amount;
 	WFIFOL(fd,6) = sd->buyingstore.limit_zeny;
 	WFIFOSET(fd,packet_db[0x81b].len);
+#else
+	WFIFOW(fd, 0) = 0x9e6;
+	WFIFOW(fd, 2) = nameid;
+	WFIFOW(fd, 4) = amount;
+	WFIFOL(fd, 6) = value;
+	WFIFOL(fd,10) = sd->buyingstore.limit_zeny;
+	WFIFOL(fd,14) = char_id;
+	WFIFOL(fd,18) = account_id;
+	WFIFOSET(fd,packet_db[0x9e6].len);
+#endif
 
 	return;
 }
@@ -20010,6 +20066,8 @@ static void clif_parse_PvPInfo(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_RankingBlacksmith(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	ranking_clif_display(sd,RK_BLACKSMITH);
 	return;
 }
@@ -20020,6 +20078,8 @@ static void clif_parse_RankingBlacksmith(int fd,struct map_session_data *sd, int
  */
 static void clif_parse_RankingAlchemist(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	ranking_clif_display(sd,RK_ALCHEMIST);
 	return;
 }
@@ -20030,6 +20090,8 @@ static void clif_parse_RankingAlchemist(int fd,struct map_session_data *sd, int 
  */
 static void clif_parse_RankingTaekwon(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	ranking_clif_display(sd,RK_TAEKWON);
 	return;
 }
@@ -20040,7 +20102,25 @@ static void clif_parse_RankingTaekwon(int fd,struct map_session_data *sd, int cm
  */
 static void clif_parse_RankingPk(int fd,struct map_session_data *sd, int cmd)
 {
+	nullpo_retv(sd);
+
 	ranking_clif_display(sd,RK_PK);
+	return;
+}
+
+/*==========================================
+ * ランキング
+ *------------------------------------------
+ */
+static void clif_parse_Ranking(int fd,struct map_session_data *sd, int cmd)
+{
+	int ranking_id;
+
+	nullpo_retv(sd);
+
+	ranking_id = RFIFOW(fd,GETPACKETPOS(cmd,0));
+
+	ranking_clif_display(sd,ranking_id);
 	return;
 }
 
@@ -21450,6 +21530,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_RankingAlchemist,            "rankingalchemist"          },
 		{ clif_parse_RankingTaekwon,              "rankingtaekwon"            },
 		{ clif_parse_RankingPk,                   "rankingpk"                 },
+		{ clif_parse_Ranking,                     "ranking"                   },
 		{ clif_parse_HomMenu,                     "hommenu"                   },
 		{ clif_parse_HomMercWalkMaster,           "hommercwalkmaster"         },
 		{ clif_parse_HomMercWalkToXY,             "hommercwalktoxy"           },

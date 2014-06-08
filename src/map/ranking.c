@@ -144,6 +144,7 @@ int ranking_gain_point(struct map_session_data * sd,int ranking_id,int point)
 
 	sd->ranking_point[ranking_id] += point;
 
+#if PACKETVER < 20130710
 	switch(ranking_id){
 	case RK_BLACKSMITH:
 		clif_blacksmith_point(sd->fd,sd->ranking_point[ranking_id],point);
@@ -162,6 +163,10 @@ int ranking_gain_point(struct map_session_data * sd,int ranking_id,int point)
 	default:
 		break;
 	}
+#else
+	clif_updata_ranking_point(sd->fd,sd->ranking_point[ranking_id],point,ranking_id);
+#endif
+
 	return 1;
 }
 
@@ -302,6 +307,7 @@ int ranking_clif_display(struct map_session_data * sd,int ranking_id)
 		point[i] = 0;
 	}
 
+#if PACKETVER < 20130710
 	switch(ranking_id) {
 	case RK_BLACKSMITH:
 		clif_blacksmith_ranking(sd->fd,charname,point);
@@ -318,6 +324,10 @@ int ranking_clif_display(struct map_session_data * sd,int ranking_id)
 	default:
 		break;
 	}
+#else
+	clif_rankinglist(sd->fd,charname,point,ranking_id,sd->ranking_point[ranking_id]);
+#endif
+
 	return 1;
 }
 
