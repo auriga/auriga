@@ -3369,7 +3369,7 @@
 0x07d9,268
 0x0802,6,getcharnamerequest,2
 0x0815,-1,openbuyingstorereq,2:4:8:9:89
-0x0817,2,closebuyingstorereq,0
+0x0817,6,closebuyingstorereq,0
 0x083c,10,useskilltoid,2:4:6
 0x084a,2
 0x0887,-1,sellbuyingstorereq,2:4:8:12

@@ -493,7 +493,7 @@ OnTimer1000:
 	stopnpctimer;
 	set '@count,getmapmobs(getmdmapname("1@ma_h.gat"),getmdnpcname("BangungotControl8-1")+"::OnKilled");
 	if('@count < 1) {
-		//
+		announce "ビョンウンゴ：ふふふ……その程度の力では無駄だ、私には勝てないぞ……。",0x9,0xff82ff;
 	}
 	end;
 OnEnable:
@@ -821,13 +821,10 @@ OnTimer31000:
 	killmonster "this",getmdnpcname("BangungotControl9-1")+ "::OnKilled";
 	end;
 OnTimer36000:
+	stopnpctimer;
 	donpcevent getmdnpcname("BangungotControl8-1")+ "::OnEnable";
 	donpcevent getmdnpcname("BangungotControl8-1")+ "::OnStart";
 	monster getmdmapname("1@ma_h.gat"),143,158,"ビョンウンゴ",2317,1,getmdnpcname("BangungotBoss")+ "::OnKilled";
-	end;
-OnTimer40000:
-	stopnpctimer;
-	announce "ビョンウンゴ：ふふふ……その程度の力では無駄だ、私には勝てないぞ……。",0x9,0xff82ff;
 	end;
 OnStopTimer:
 	stopnpctimer;

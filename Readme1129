@@ -1,4 +1,18 @@
 ----------------------------------------
+//1214 [2014/06/16] by refis
+
+・2014-01-15eRagexeのpacket_dbのミスを修正（packet_db.txt）
+	Thanks SOLDIER_POPORING さん
+
+・mob_skill_db.txtのミスを修正（mob_skill_db.txt）
+	Thanks SOLDIER_POPORING さん
+
+・NPCを有効化、無効化する際に接触範囲を超えてプレイヤーにアタッチしていたのを修正（npc.c）
+
+・応急処置習得NPC、ポートマラヤNPC、闇のビョンウンゴ病院2階の会話メッセージを補完
+　（npc_quest_skillget1.txt, npc_town_portmalaya.txt, npc_memorial_bangungot.txt）
+
+----------------------------------------
 //1213 [2014/06/09] by refis
 
 ・@rankingでクライアントがクラッシュする場合があるのを修正（msg_auriga.conf）

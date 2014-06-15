@@ -172,7 +172,7 @@ int npc_enable(const char *name,int flag)
 	}
 	if (xs > 0 || ys > 0) {
 		map_foreachinarea(npc_enable_sub,
-			nd->bl.m,nd->bl.x-xs,nd->bl.y-ys,nd->bl.x+xs,nd->bl.y+ys,
+			nd->bl.m,nd->bl.x-xs/2,nd->bl.y-ys/2,nd->bl.x+xs/2,nd->bl.y+ys/2,
 			BL_PC,nd);
 	}
 

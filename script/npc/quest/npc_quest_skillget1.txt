@@ -10,6 +10,40 @@
 //==== 応急処置 - NV_FIRSTAID
 //-----------------------------------------------
 prt_in.gat,234,133,4	script	ナミ	66,{
+	if(Upper == UPPER_HIGH) {
+		mes "[ナミ]";
+		mes "あ、ちょうどいい所へ！";
+		mes "私は看護教師志望の実習生、";
+		mes "ナミといいます。";
+		mes "よろしければ、実習の機会を";
+		mes "いただけませんか？";
+		next;
+		if(select("うなづく","断る") == 2) {
+			mes "[ナミ]";
+			mes "あらあら。";
+			mes "それは残念です……";
+			close;
+		}
+		mes "[ナミ]";
+		mes "ありがとうございます！";
+		mes "それじゃあさっそく……";
+		mes "チョチョイのチョイ！";
+		mes "はい、これが応急手当です！";
+		skill 142,1,0;
+		next;
+		mes "[ナミ]";
+		mes "どうです？";
+		mes "応急手当の仕方を";
+		mes "思い出しましたか？";
+		mes "ふふ、でもあなた程の人なら";
+		mes "応急手当ぐらい";
+		mes "お茶のこさいさいですね。";
+		next;
+		mes "[ナミ]";
+		mes "それでは、";
+		mes "ご協力ありがとうございました！";
+		close;
+	}
 	if(getskilllv(142)) {
 		mes "[ナミ]";
 		mes "最近看護教師資格を取ろうと";
@@ -26,7 +60,7 @@ prt_in.gat,234,133,4	script	ナミ	66,{
 		mes "ふふふ…";
 		close;
 	}
-	if(Job == Job_Novice && JobLevel < 3) {
+	if(Job == Job_Novice && (JobLevel < 4 && BaseLevel < 12)) {
 		mes "[ナミ]";
 		mes "… z ｚ Z";
 		mes "間違えました！先生！";
