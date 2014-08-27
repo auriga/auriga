@@ -1,4 +1,13 @@
 ----------------------------------------
+//1215 [2014/08/28] by refis
+
+・スクリプト命令「setnpcdisplay」実装（script.c, doc/script_ref.txt）
+	-> NPCの見た目を変更します
+
+・スクリプト命令「pcblockmove」実装（clif.c, script.c, map.h, doc/script_ref.txt）
+	-> プレイヤーの移動、攻撃などを制限します
+
+----------------------------------------
 //1214 [2014/06/16] by refis
 
 ・2014-01-15eRagexeのpacket_dbのミスを修正（packet_db.txt）

@@ -3942,6 +3942,7 @@ int buildin_clearcartitem(struct script_state *st);
 int buildin_getrepairableitemcount(struct script_state *st);
 int buildin_repairitem(struct script_state *st);
 int buildin_classchange(struct script_state *st);
+int buildin_setnpcdisplay(struct script_state *st);
 int buildin_misceffect(struct script_state *st);
 int buildin_areamisceffect(struct script_state *st);
 int buildin_soundeffect(struct script_state *st);
@@ -4067,6 +4068,7 @@ int buildin_getequipcardid(struct script_state *st);
 int buildin_setpartyinmap(struct script_state *st);
 int buildin_getclassjob(struct script_state *st);
 int buildin_unittalk(struct script_state *st);
+int buildin_pcblockmove(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4248,6 +4250,7 @@ struct script_function buildin_func[] = {
 	{buildin_getrepairableitemcount,"getrepairableitemcount",""},
 	{buildin_repairitem,"repairitem",""},
 	{buildin_classchange,"classchange","ii"},
+	{buildin_setnpcdisplay,"setnpcdisplay","si"},
 	{buildin_misceffect,"misceffect","i*"},
 	{buildin_areamisceffect,"areamisceffect","siiiii"},
 	{buildin_soundeffect,"soundeffect","si*"},
@@ -4373,6 +4376,7 @@ struct script_function buildin_func[] = {
 	{buildin_setpartyinmap,"setpartyinmap","ii"},
 	{buildin_getclassjob,"getclassjob","i"},
 	{buildin_unittalk,"unittalk","*"},
+	{buildin_pcblockmove,"pcblockmove","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -9552,6 +9556,29 @@ int buildin_classchange(struct script_state *st)
 }
 
 /*==========================================
+ * NPC見た目変更
+ *------------------------------------------
+ */
+int buildin_setnpcdisplay(struct script_state *st)
+{
+	struct npc_data *nd;
+	int class_ = -1;
+
+	nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
+	if(nd == NULL)
+		return 0;
+
+	class_ = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(class_ != -1 && nd->class_ != class_) {
+		nd->class_ = class_;
+		clif_class_change(&nd->bl,class_,0);
+	}
+
+	return 0;
+}
+
+/*==========================================
  * NPCから発生するエフェクト
  *------------------------------------------
  */
@@ -13110,6 +13137,25 @@ int buildin_unittalk(struct script_state *st)
 		clif_disp_overhead((struct map_session_data *)bl, mes);
 	else if(bl->m >= 0)
 		clif_GlobalMessage(bl, mes, AREA);
+
+	return 0;
+}
+
+/*==========================================
+ * プレイヤーの行動制限オンオフ
+ *------------------------------------------
+ */
+int buildin_pcblockmove(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int flag;
+
+	nullpo_retr(0, sd);
+
+	flag = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	unit_stop_walking(&sd->bl,1);
+	sd->state.blockedmove = flag > 0;
 
 	return 0;
 }

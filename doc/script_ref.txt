@@ -1463,6 +1463,14 @@ AurigaNPCScript
 			<class>で指定したClassにクラスチェンジします。
 			<type>はmobのときは1で他は0?（詳細不明）
 
+		setnpcdisplay命令
+			setnpcdisplay <name>,<npcid>;
+
+			name		文字列
+			npcid	数値
+
+			<name>で指定したNPCの見た目を<npcid>で指定したスプライトIDに変更します。
+
 		misceffect命令
 			misceffect <type>[,<name>];
 
@@ -2434,6 +2442,14 @@ AurigaNPCScript
 
 			<object_id>で指定したユニットにオープンチャットで発言させます。
 			<object_id>を省略した場合、発動させたNPCが発言します。
+
+		pcblockmove命令
+			pcblockmove <flag>;
+
+			flag	数値
+
+			<flag>が1の場合、プレイヤーの移動、攻撃を制限させます。
+			<flag>が0の場合、制限を解除します。
 
 
 	＊関数
