@@ -932,9 +932,11 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			if(tmd && tmd->guild_id) {
 				if(gc == NULL && !noflag)	// エンペリウム、その他のGv関連のMOBの項で既に検索してNULLなら再度検索しない
 					gc = guild_mapid2gc(tmd->bl.m);
-				if(gc) {
-					// defenseがあればダメージが減るらしい？
-					damage -= damage * gc->defense / 100 * battle_config.castle_defense_rate / 100;
+				if(gc) {	// defenseがあればダメージが減るらしい？
+#ifndef PRE_RENEWAL
+					if(tmd->class_ != MOBID_EMPERIUM)
+#endif
+						damage -= damage * gc->defense / 100 * battle_config.castle_defense_rate / 100;
 				}
 			}
 			if(skill_num != NPC_SELFDESTRUCTION && skill_num != NPC_SELFDESTRUCTION2) {

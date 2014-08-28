@@ -236,7 +236,7 @@ unsigned int pc_get_job_bit(int job);
 
 void pc_read_gm_account(void);
 int pc_setinvincibletimer(struct map_session_data *sd,int);
-int pc_delinvincibletimer(struct map_session_data *sd);
+int pc_delinvincibletimer(struct map_session_data *sd,int);
 int pc_addspiritball(struct map_session_data *sd,int,int);
 int pc_delspiritball(struct map_session_data *sd,int,int);
 int pc_addcoin(struct map_session_data *sd,int,int);

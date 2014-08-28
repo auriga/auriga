@@ -16869,8 +16869,6 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 		return;
 	if( sd->state.storage_flag )
 		return;
-	if( sd->state.blockedmove )
-		return;
 	if( pc_issit(sd) )
 		return;
 
@@ -16881,7 +16879,7 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 		if( unit_walktoxy(&sd->bl,x,y) ) {
 			unit_stopattack(&sd->bl);
 			if(sd->invincible_timer != -1)
-				pc_delinvincibletimer(sd);
+				pc_delinvincibletimer(sd,1);
 		}
 	}
 	return;
@@ -17195,7 +17193,6 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	case 0x00:	// once attack
 	case 0x07:	// continuous attack
 		if(sd->state.store) return;
-		if(sd->state.blockedmove) return;
 
 		if(!battle_config.sdelay_attack_enable && pc_checkskill(sd,SA_FREECAST) <= 0 ) {
 			if(DIFF_TICK(tick , sd->ud.canact_tick) < 0) {
@@ -17212,7 +17209,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		   sd->sc.data[SC_ALL_RIDING].timer != -1)
 			return;
 		if(sd->invincible_timer != -1)
-			pc_delinvincibletimer(sd);
+			pc_delinvincibletimer(sd,1);
 		unit_attack(&sd->bl,target_id,action_type!=0);
 		break;
 	case 0x02:	// sitdown
@@ -18085,7 +18082,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 	if(pc_issit(sd))
 		return;
@@ -18256,7 +18253,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 
 	if(sd->invincible_timer != -1)
-		pc_delinvincibletimer(sd);
+		pc_delinvincibletimer(sd,1);
 
 	if(sd->skill_item.id >= 0 && sd->skill_item.id == skillnum) {
 		if(skilllv != sd->skill_item.lv)
@@ -18307,7 +18304,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	skilllv  = RFIFOW(fd,GETPACKETPOS(cmd,0));
@@ -18419,7 +18416,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 
 	if(sd->invincible_timer != -1)
-		pc_delinvincibletimer(sd);
+		pc_delinvincibletimer(sd,1);
 
 	if(sd->skill_item.id >= 0 && sd->skill_item.id == skillnum) {
 		if(skilllv != sd->skill_item.lv)
@@ -18453,7 +18450,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending)
 		return;
 
 	if(sd->sc.data[SC_TRICKDEAD].timer != -1 ||
@@ -18469,7 +18466,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 		return;
 
 	if(sd->invincible_timer != -1)
-		pc_delinvincibletimer(sd);
+		pc_delinvincibletimer(sd,1);
 
 	RFIFOB(fd,GETPACKETPOS(cmd,1)+15) = '\0'; // be sure to have NULL
 	skill_castend_map(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)),RFIFOP(fd,GETPACKETPOS(cmd,1)));

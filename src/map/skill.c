@@ -4004,7 +4004,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					bl->m,bl->x-5,bl->y-5,bl->x+5,bl->y+5,(BL_CHAR|BL_SKILL),
 					src,skillid,skilllv,tick, flag|BCT_ALL|1,
 					skill_castend_damage_id);
-				mob_damage(NULL,md,md->hp,0);
+				mob_damage(NULL,md,md->hp,1);
 			}
 		}
 		break;
@@ -7054,7 +7054,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			md->state.noexp  = 1;
 			md->state.nodrop = 1;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			mob_damage(NULL,md,md->hp,0);
+			mob_damage(NULL,md,md->hp,3);
 		}
 		break;
 
@@ -9912,7 +9912,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 					idx = pc_search_inventory(sd,nameid);
 				}
 
-				if(idx > 0 && sd->status.inventory[idx].amount >= amount) {
+				if(idx >= 0 && sd->status.inventory[idx].amount >= amount) {
 					pc_delitem(sd,idx,amount,0,1);
 					// 消費したのがトラップ系アイテムの場合
 					if(nameid == 1065 || nameid == 7940)
@@ -11425,6 +11425,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		{
 			int race = status_get_race(bl);
 
+#ifndef PRE_RENEWAL
+			if(bl->type == BL_MOB && ((struct mob_data *)bl)->class_ == MOBID_EMPERIUM)
+				break;
+#endif
 			if (battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON || (sc && sc->data[SC_AKAITSUKI].timer != -1)) {
 				if (bl->type == BL_PC) {
 					if(!map[bl->m].flag.pvp && !map[bl->m].flag.gvg)

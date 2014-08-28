@@ -281,14 +281,15 @@ int pc_setinvincibletimer(struct map_session_data *sd,int val)
  * 無敵時間タイマー削除
  *------------------------------------------
  */
-int pc_delinvincibletimer(struct map_session_data *sd)
+int pc_delinvincibletimer(struct map_session_data *sd, int flag)
 {
 	nullpo_retr(0, sd);
 
 	if(sd->invincible_timer != -1) {
 		delete_timer(sd->invincible_timer,pc_invincible_timer);
 		sd->invincible_timer = -1;
-		skill_unit_move(&sd->bl,gettick(),1);
+		if(flag)
+			skill_unit_move(&sd->bl,gettick(),1);
 	}
 
 	return 0;
