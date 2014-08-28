@@ -7782,7 +7782,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HAGALAZ:			/* ストーンハードスキン */
 			{
 				int hp = status_get_hp(bl);
-				val3 = status_get_max_hp(bl) * 25 / 100;
+				val3 = (int)((atn_bignumber)status_get_max_hp(bl) * 25 / 100);
 				if(val3 >= hp)
 					val3 = hp - 1;
 				unit_heal(bl, -val3, 0);
@@ -10159,7 +10159,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_TOXIN:		/* トキシン */
 		if((--sc->data[type].val2) > 0) {
-			int damage = status_get_max_sp(bl) * 3 / 100;
+			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
 				unit_heal(bl, 0, -damage);
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
@@ -10249,7 +10249,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_ELECTRICSHOCKER:	/* エレクトリックショッカー */
 		if((--sc->data[type].val2) > 0) {
-			int damage = status_get_max_sp(bl) * sc->data[type].val1 / 100;
+			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * sc->data[type].val1 / 100);
 			if(damage)
 				unit_heal(bl, 0, -damage);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
@@ -10291,7 +10291,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_STEALTHFIELD_USER:	/* ステルスフィールド(使用者) */
 		if((--sc->data[type].val2) > 0) {
-			int damage = status_get_max_sp(bl) * 3 / 100;
+			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
 				unit_heal(bl, 0, -damage);
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);

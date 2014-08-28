@@ -12237,8 +12237,16 @@ int buildin_showevent(struct script_state *st)
 	if(st->end>st->start+3)
 		type = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	if(state < 0 || state > 2)
-		return 0;
+#if PACKETVER >= 20120410
+	if(state < 0 || (state > 8 && state != 9999) || state == 7)
+		state = 9999;
+#else
+	if(state < 0 || state > 7)
+		state = 0;
+	else
+		state = state + 1;
+#endif
+
 	if(type < 0 || type > 3)
 		return 0;
 

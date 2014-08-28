@@ -3196,7 +3196,7 @@ static int mob_getfriendhpmaxrate_sub(struct block_list *bl,va_list ap)
 	rate = va_arg(ap,int);
 	fr   = va_arg(ap,struct block_list **);
 
-	diff = status_get_hp(bl) - status_get_max_hp(bl)*rate/100;
+	diff = (int)(status_get_hp(bl) - (atn_bignumber)status_get_max_hp(bl)*rate/100);
 	if( (diff < 0 && cond == MSC_FRIENDHPLTMAXRATE) ||
 	    (diff > 0 && cond == MSC_FRIENDHPGTMAXRATE) )
 	{
@@ -3461,10 +3461,10 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			flag = 1;
 			break;
 		case MSC_MYHPLTMAXRATE:		// HP < maxhp%
-			flag = ( md->hp < status_get_max_hp(&md->bl)*c2/100 );
+			flag = ( md->hp < (atn_bignumber)status_get_max_hp(&md->bl)*c2/100 );
 			break;
 		case MSC_MYHPGTMAXRATE:		// HP > maxhp%
-			flag = ( md->hp > status_get_max_hp(&md->bl)*c2/100 );
+			flag = ( md->hp > (atn_bignumber)status_get_max_hp(&md->bl)*c2/100 );
 			break;
 		case MSC_MYSTATUSON:		// status[num] on
 		case MSC_MYSTATUSOFF:		// status[num] off
@@ -3505,10 +3505,10 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			flag = ( mob_countslave_area(md,(c2>>8)) <= (c2&0xff) );
 			break;
 		case MSC_TARGETHPGTMAXRATE:	// target HP < maxhp%
-			flag = ( target && status_get_hp(target) > status_get_max_hp(target)*c2/100 );
+			flag = ( target && status_get_hp(target) > (atn_bignumber)status_get_max_hp(target)*c2/100 );
 			break;
 		case MSC_TARGETHPLTMAXRATE:	// target HP < maxhp%
-			flag = ( target && status_get_hp(target) < status_get_max_hp(target)*c2/100 );
+			flag = ( target && status_get_hp(target) < (atn_bignumber)status_get_max_hp(target)*c2/100 );
 			break;
 		case MSC_TARGETHPGT:	// target HP < maxhp%
 			flag = ( target && status_get_hp(target) > c2 );
@@ -3536,10 +3536,10 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			}
 			break;
 		case MSC_MASTERHPGTMAXRATE:	// master HP < maxhp%
-			flag = ( master && status_get_hp(master) > status_get_max_hp(master)*c2/100 );
+			flag = ( master && status_get_hp(master) > (atn_bignumber)status_get_max_hp(master)*c2/100 );
 			break;
 		case MSC_MASTERHPLTMAXRATE:	// master HP < maxhp%
-			flag = ( master && status_get_hp(master) < status_get_max_hp(master)*c2/100 );
+			flag = ( master && status_get_hp(master) < (atn_bignumber)status_get_max_hp(master)*c2/100 );
 			break;
 		case MSC_MASTERSTATUSON:	// master status[num] on
 		case MSC_MASTERSTATUSOFF:	// master status[num] off

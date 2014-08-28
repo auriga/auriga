@@ -6680,7 +6680,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				pc_delitem(sd,i,skill_db[skillid].amount[x],0,1);
 				sd->state.potionpitcher_flag = 0;
 				if(sd->potion.hp_per > 0 || sd->potion.sp_per > 0) {
-					hp = status_get_max_hp(bl) * sd->potion.hp_per / 100;
+					hp = (int)((atn_bignumber)status_get_max_hp(bl) * sd->potion.hp_per / 100);
 					hp = hp * (100 + pc_checkskill(sd,AM_POTIONPITCHER)*10 + pc_checkskill(sd,AM_LEARNINGPOTION)*5)/100;
 					if(dstsd) {
 						sp = dstsd->status.max_sp * sd->potion.sp_per / 100;
@@ -7880,7 +7880,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case RK_REFRESH:			/* リフレッシュ */
 		{
-			int heal = status_get_max_hp(bl) * 25 / 100;
+			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 25 / 100);
 			battle_heal(NULL,bl,heal,0,0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_release(bl,0x08);		// 暫定でゴスペル全状態異常無効と同効果
@@ -8824,7 +8824,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SR_GENTLETOUCH_CURE:	/* 点穴 -快- */
 		{
-			int heal = skilllv * 120 + status_get_max_hp(bl) * (2 + skilllv) / 100;
+			int heal = (int)(skilllv * 120 + (atn_bignumber)status_get_max_hp(bl) * (2 + skilllv) / 100);
 			battle_heal(NULL,bl,heal,0,0);
 			if(atn_rand()%100 < skilllv * 5 + status_get_dex(src) / 2) {
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9303,7 +9303,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(rate < 500)
 				rate = 500;
 			if(atn_rand() % 10000 < rate) {
-				int damage = status_get_max_hp(bl) * skilllv * 5 / 100;
+				int damage = (int)((atn_bignumber)status_get_max_hp(bl) * skilllv * 5 / 100);
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				battle_damage(src,bl,damage,0,0,0);
 				if(status_get_lv(src) >= status_get_lv(bl)) {

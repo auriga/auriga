@@ -1,4 +1,13 @@
 ----------------------------------------
+//1218 [2014/08/29] by refis
+
+・スクリプト命令「showevent」のデータが古いため更新拡張する（script_ref.txt, script.c）
+
+・MaxHP,MaxSPを計算で利用する際、オーバーフロウ対策として
+　一度atn_bignumberにキャストする（battle.c, mob.c, skill.c, status.c）
+	Thanks akayumi さん、hyknt さん
+
+----------------------------------------
 //1217 [2014/08/29] by refis
 
 ・[RE]:エンペリウムのHPを修正、ダメージを1固定にする（mob_db.txt, battle.c）

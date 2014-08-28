@@ -3869,8 +3869,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case SR_TIGERCANNON:	// 號砲
 			if(src_sd) {
-				int hp = status_get_max_hp(src) * (10 + skill_lv * 2) / 100;
-				int sp = status_get_max_sp(src) * (5 + skill_lv) / 100 - 1;
+				int hp = (int)((atn_bignumber)status_get_max_hp(src) * (10 + skill_lv * 2) / 100);
+				int sp = (int)((atn_bignumber)status_get_max_sp(src) * (5 + skill_lv) / 100 - 1);
 				if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
 					DMG_FIX( (hp + sp + 1) / 4 * 2 * status_get_lv(src) / 100 , 100 );		// コンボ発動時
 				} else {
@@ -4439,7 +4439,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// サクリファイス
 			if(sc->data[SC_SACRIFICE].timer != -1 && !skill_num) {
 				if(t_class != MOBID_EMPERIUM) {
-					int dmg = status_get_max_hp(src) * 9 / 100;
+					int dmg = (int)((atn_bignumber)status_get_max_hp(src) * 9 / 100);
 					battle_heal(NULL, src, -dmg, 0, 0);
 					wd.damage  = dmg * (90 + sc->data[SC_SACRIFICE].val1 * 10) / 100;
 					wd.damage2 = 0;
@@ -5028,11 +5028,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			int sp = 0;
 			if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
 				// コンボ発動時
-				sp = status_get_max_sp(src) * skill_lv / 100;
+				sp = (int)((atn_bignumber)status_get_max_sp(src) * skill_lv / 100);
 				DMG_ADD( status_get_max_sp(src) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 20 + status_get_max_hp(src) - status_get_hp(src) );
 			} else {
 				// 通常時
-				sp = status_get_max_sp(src) * (10 + skill_lv) / 100;
+				sp = (int)((atn_bignumber)status_get_max_sp(src) * (10 + skill_lv) / 100);
 				DMG_ADD( ( status_get_sp(src) - sp ) * ( 100 + 20 * skill_lv ) / 100 + status_get_lv(src) * 10 + status_get_max_hp(src) - status_get_hp(src) );
 			}
 			// SP消費
@@ -6881,7 +6881,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if((damage = wd.damage + wd.damage2) > 0 && src != target && (t_sc && t_sc->data[SC_KYOMU].timer == -1)) {
 		if(t_sc && t_sc->data[SC_REFLECTDAMAGE].timer != -1) {	// リフレクトダメージ反射
 			int maxdamage, rddamage;
-			maxdamage = status_get_max_hp(target) * status_get_lv(target) / 100;
+			maxdamage = (int)((atn_bignumber)status_get_max_hp(target) * status_get_lv(target) / 100);
 			rddamage = damage * t_sc->data[SC_REFLECTDAMAGE].val3 / 100;
 			rddamage = (rddamage > maxdamage) ? maxdamage: rddamage;
 
