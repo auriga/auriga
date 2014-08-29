@@ -5752,7 +5752,7 @@
 12752,Prayer_Scroll,Prayer_Scroll,2,,,10,,,,,,,,,,,,{},{}
 12753,Soul_Scroll,Soul_Scroll,2,,,10,,,,,,,,,,,,{},{}
 12754,New_Year_Bun,New_Year_Bun,2,,,10,,,,,,,,,,,,{},{}
-12755,Traditional_Firecrack,古代精霊のお守り,2,20,,600,,,,,1000333311,2,,,,,,{ /* misceffect 248,""; sc_start SC_PHI_DEMON,1200000,1; */ },{}
+12755,Traditional_Firecrack,古代精霊のお守り,2,20,,600,,,,,1000333311,2,,,,,,{ misceffect 248,""; sc_start SC_PHI_DEMON,1200000,1; },{}
 12756,New_Gift_Envelope,New_Gift_Envelope,2,,,10,,,,,,,,,,,,{},{}
 12757,Loyal_Ring1_Box,Loyal_Ring1_Box,2,,,10,,,,,,,,,,,,{},{}
 12758,Loyal_Ring2_Box,Loyal_Ring2_Box,2,,,10,,,,,,,,,,,,{},{}

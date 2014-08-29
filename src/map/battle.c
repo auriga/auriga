@@ -504,6 +504,9 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage += damage * src_sc->data[SC_JP_EVENT01].val1 / 100;
 		if(src_sc->data[SC_JP_EVENT02].timer != -1 && damage > 0 && flag&BF_MAGIC && status_get_race(bl) == RCT_FISH)
 			damage += damage * src_sc->data[SC_JP_EVENT02].val1 / 100;
+		// 古代精霊のお守り
+		if(src_sc->data[SC_PHI_DEMON].timer != -1 && damage > 0 && flag&(BF_WEAPON|BF_MAGIC) && status_get_race(bl) == RCT_DEMON)
+			damage += damage * 10 / 100;
 		// 術式 -展開-の属性ダメージ増加
 		if(src_sc->data[SC_KO_ZENKAI].timer != -1 && damage > 0) {
 			// val3に属性値が入ってるので一致すればダメージ増加

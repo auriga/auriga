@@ -142,6 +142,17 @@
 1@ma_h.gat	mapflag	noabra		dummy
 
 //============================================================
+// ブワヤの巣 - 1@ma_c.gat
+//------------------------------------------------------------
+1@ma_c.gat	mapflag	nosave			SavePoint
+1@ma_c.gat	mapflag	nomemo			dummy
+1@ma_c.gat	mapflag	noteleport		dummy
+1@ma_c.gat	mapflag	nobranch		dummy
+1@ma_c.gat	mapflag	monster_noteleport	dummy
+1@ma_c.gat	mapflag	noicewall	dummy
+1@ma_c.gat	mapflag	noabra		dummy
+
+//============================================================
 // バコナワの棲み処 - 1@ma_b.gat
 //------------------------------------------------------------
 1@ma_b.gat	mapflag	nosave			SavePoint

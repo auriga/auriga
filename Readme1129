@@ -1,4 +1,13 @@
 ----------------------------------------
+//1220 [2014/08/30] by refis
+
+・古代精霊のお守りの効果実装（const.txt, item_db.txt, scdata_db.txt, battle.c, status.*）
+
+・状態異常「SC_ATKPOTION」「SC_MATKPOTION」実装（const.txt, scdata_db.txt, status.*）
+
+・ブワヤの巣NPC実装（conf/map_auriga.conf, mapflag_memorial.txt, npc_memorial_buwaya.txt）
+
+----------------------------------------
 //1219 [2014/08/30] by refis
 
 ・Auriga-1217以降、スクリプト命令「pcblockmove」が正常動作していなかったのを修正（clif.c）

@@ -595,6 +595,9 @@
 623,SC_ZANGETSU,0,0,0,0		// 幻術 -残月-
 624,SC_GENSOU,0,0,0,0		// 幻術 -朧幻想-
 625,SC_ASSUMPTIO2,1,615,0,0		// キャッシュアスムプティオ
+626,SC_PHI_DEMON,0,1,0,0			// 古代精霊のお守り
+627,SC_ATKPOTION,0,1,0,0			// ATK上昇
+628,SC_MATKPOTION,0,1,0,0			// MATK上昇
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
