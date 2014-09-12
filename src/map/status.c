@@ -1930,14 +1930,23 @@ L_RECALC:
 			sd->watk += sd->sc.data[SC_INCATK].val1;
 		}
 		if(sd->sc.data[SC_ATKPOTION].timer != -1) {	// ATK上昇
+#ifdef PRE_RENEWAL
+			sd->watk += sd->sc.data[SC_ATKPOTION].val1;
+#else
 			sd->plus_atk += sd->sc.data[SC_ATKPOTION].val1;
+#endif
 		}
 		if(sd->sc.data[SC_INCMATK].timer != -1) {	// MATK上昇 (神秘の草用)
 			sd->matk1 += sd->sc.data[SC_INCMATK].val1;
 			sd->matk2 += sd->sc.data[SC_INCMATK].val1;
 		}
 		if(sd->sc.data[SC_MATKPOTION].timer != -1) {	// MATK上昇
+#ifdef PRE_RENEWAL
+			sd->matk1 += sd->sc.data[SC_MATKPOTION].val1;
+			sd->matk2 += sd->sc.data[SC_MATKPOTION].val1;
+#else
 			sd->plus_matk += sd->sc.data[SC_MATKPOTION].val1;
+#endif
 		}
 		if(sd->sc.data[SC_MINDBREAKER].timer != -1) {
 #ifdef PRE_RENEWAL

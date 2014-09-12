@@ -1,4 +1,11 @@
 ----------------------------------------
+//1221 [2014/09/13] by refis
+
+・Auriga-1220のコンパイルエラーを修正（status.c）
+
+・アルベルタ、ジュノーの道具商人販売リストを修正（npc_town_alberta.txt, npc_town_yuno.txt）
+
+----------------------------------------
 //1220 [2014/08/30] by refis
 
 ・古代精霊のお守りの効果実装（const.txt, item_db.txt, scdata_db.txt, battle.c, status.*）
