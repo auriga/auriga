@@ -1966,16 +1966,11 @@ int pc_calc_skilltree(struct map_session_data *sd)
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
 	{
 		for(i = 411; i <= 426; i++) {
-			sd->status.skill[i].id = i;
-			sd->status.skill[i].lv = skill_get_max(i);
-			sd->status.skill[i].flag = 1;
+			pc_skill(sd,i,skill_get_max(i),1);
 		}
 
 		// テコンミッションも追加する
-		sd->status.skill[i].id = TK_MISSION;
-		sd->status.skill[i].lv = skill_get_max(TK_MISSION);
-		sd->status.skill[i].flag = 1;
-
+		pc_skill(sd,TK_MISSION,skill_get_max(TK_MISSION),1);
 	}
 
 	return 0;
@@ -2352,6 +2347,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
 	if(first) {
+		sd->status.inventory[idx].limit = 0;
 		pc_delitem(sd, idx, sd->status.inventory[idx].amount, 3, 0);
 	} else {
 		char output[256];
@@ -2924,7 +2920,9 @@ void pc_getitemfromcart(struct map_session_data *sd, int idx, int amount)
 		pc_cart_delitem(sd, idx, amount, 0);
 		return;
 	}
+	clif_cart_delitem(sd,idx,amount);
 	clif_additem(sd,0,0,flag);
+	clif_cart_additem(sd,idx,amount);
 
 	return;
 }

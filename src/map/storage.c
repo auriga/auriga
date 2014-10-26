@@ -377,10 +377,13 @@ void storage_storageget(struct map_session_data *sd, int idx, int amount)
 	if(amount < 1 || amount > stor->store_item[idx].amount)
 		return;
 
-	if((flag = pc_additem(sd, &stor->store_item[idx], amount)) == 0)
+	if((flag = pc_additem(sd, &stor->store_item[idx], amount)) == 0) {
 		storage_delitem(sd, stor, idx, amount);
-	else
-		clif_additem(sd,0,0,flag);
+		return;
+	}
+	clif_storageitemremoved(sd,idx,amount);
+	clif_additem(sd,0,0,flag);
+	clif_storageitemadded(sd,stor,idx,amount);
 
 	return;
 }

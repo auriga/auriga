@@ -3153,11 +3153,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 #ifdef PRE_RENEWAL
 		case CR_SHIELDBOOMERANG:	// シールドブーメラン
-			{
-				int rate = 100+30*skill_lv;
-				if(sc && sc->data[SC_CRUSADER].timer != -1)
-					rate *= 2;
-				DMG_FIX( rate, 100 );
+			if(src_sd && src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
+				int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
+				if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
+					wd.damage += src_sd->inventory_data[idx]->weight/10;
+					wd.damage += src_sd->status.inventory[idx].refine * status_get_overrefine_bonus(0);
+				}
 			}
 			break;
 #endif
@@ -4504,15 +4505,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 			switch (skill_num) {
-			case CR_SHIELDBOOMERANG:	// シールドブーメラン
-				if(src_sd->equip_index[EQUIP_INDEX_LARM] >= 0) {
-					int idx = src_sd->equip_index[EQUIP_INDEX_LARM];
-					if(src_sd->inventory_data[idx] && itemdb_isarmor(src_sd->inventory_data[idx]->nameid)) {
-						wd.damage += src_sd->inventory_data[idx]->weight/10;
-						wd.damage += src_sd->status.inventory[idx].refine * status_get_overrefine_bonus(0);
-					}
-				}
-				break;
 			case LK_SPIRALPIERCE:		// スパイラルピアース
 				if(src_sd->equip_index[EQUIP_INDEX_RARM] >= 0) {	// {((STR/10)^2 ＋ 武器重量×スキル倍率×0.8) × サイズ補正 ＋ 精錬}×カード倍率×属性倍率×5の模様
 					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
@@ -4535,6 +4527,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				break;
 			}
+		}
+		if(skill_num == CR_SHIELDBOOMERANG) {	// シールドブーメラン
+			int rate = 100+30*skill_lv;
+			if(sc && sc->data[SC_CRUSADER].timer != -1)
+				rate *= 2;
+			DMG_FIX( rate, 100 );
 		}
 
 		if(sc) {

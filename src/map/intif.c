@@ -2093,8 +2093,12 @@ static int intif_parse_LoadQuestList(int fd)
 	sd->questlist = i;
 
 	if(i) {
+		int j;
 		clif_questlist(sd);
 		clif_questlist_info(sd);
+		for(j=0; j<i; j++) {
+			clif_update_questcount(sd, sd->quest[j].nameid);
+		}
 	}
 
 	return 0;

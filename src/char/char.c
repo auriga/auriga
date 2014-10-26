@@ -1893,6 +1893,62 @@ int parse_tologin(int fd)
 								for( ch = i; ch < max_char_slot - 1 ; ch++ )
 									sd->found_char[ch] = sd->found_char[ch + 1];
 								sd->found_char[max_char_slot - 1] = NULL;
+#if PACKETVER >= 20130320
+								{
+									int found_num = chardb_load_all(sd,sd->account_id);
+									int j;
+									const struct mmo_charstatus *st;
+									WFIFOW(fdc,0)=0x99d;
+									for( j = 0; j < max_char_slot ; j++ ) {
+										if(sd->found_char[j] == NULL)
+											continue;
+										st = &sd->found_char[j]->st;
+										WFIFOL(fdc,4+j*144) = st->char_id;
+										WFIFOL(fdc,8+j*144) = st->base_exp;
+										WFIFOL(fdc,12+j*144) = st->zeny;
+										WFIFOL(fdc,16+j*144) = st->job_exp;
+										WFIFOL(fdc,20+j*144) = st->job_level;
+										WFIFOL(fdc,24+j*144) = 0;
+										WFIFOL(fdc,28+j*144) = 0;
+										WFIFOL(fdc,32+j*144) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+										WFIFOL(fdc,36+j*144) = st->karma;
+										WFIFOL(fdc,40+j*144) = st->manner;
+										WFIFOW(fdc,44+j*144) = st->status_point;
+										WFIFOL(fdc,46+j*144) = st->hp;
+										WFIFOL(fdc,50+j*144) = st->max_hp;
+										WFIFOW(fdc,54+j*144) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+										WFIFOW(fdc,56+j*144) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+										WFIFOW(fdc,58+j*144) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+										WFIFOW(fdc,60+j*144) = st->class_;
+										WFIFOW(fdc,62+j*144) = st->hair;
+										WFIFOW(fdc,64+j*144) = st->weapon;
+										WFIFOW(fdc,66+j*144) = st->base_level;
+										WFIFOW(fdc,68+j*144) = st->skill_point;
+										WFIFOW(fdc,70+j*144) = st->head_bottom;
+										WFIFOW(fdc,72+j*144) = st->shield;
+										WFIFOW(fdc,74+j*144) = st->head_top;
+										WFIFOW(fdc,76+j*144) = st->head_mid;
+										WFIFOW(fdc,78+j*144) = st->hair_color;
+										WFIFOW(fdc,80+j*144) = st->clothes_color;
+										memcpy(WFIFOP(fdc,82+j*144), st->name, 24);
+										WFIFOB(fdc,106+j*144) = (st->str > 255)  ? 255: st->str;
+										WFIFOB(fdc,107+j*144) = (st->agi > 255)  ? 255: st->agi;
+										WFIFOB(fdc,108+j*144) = (st->vit > 255)  ? 255: st->vit;
+										WFIFOB(fdc,109+j*144) = (st->int_ > 255) ? 255: st->int_;
+										WFIFOB(fdc,110+j*144) = (st->dex > 255)  ? 255: st->dex;
+										WFIFOB(fdc,111+j*144) = (st->luk > 255)  ? 255: st->luk;
+										WFIFOW(fdc,112+j*144) = st->char_num;
+										WFIFOW(fdc,114+j*144) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+										memcpy(WFIFOP(fdc,116+j*144),st->last_point.map,16);	// 最後に在籍していたMAP名
+										WFIFOL(fdc,132+j*144) = st->delete_date;	// 削除待機時間
+										WFIFOL(fdc,136+j*144) = st->robe;	// 肩装備
+										WFIFOL(fdc,140+j*144) = 0;	// スロット変更が可能な状態かどうか
+										WFIFOL(fdc,144+j*144) = 0;	// TODO: Add-Ons
+									}
+									WFIFOW(fdc,2)=found_num*144+4;
+									WFIFOSET(fdc,WFIFOW(fdc,2));
+								}
+#endif
 								WFIFOW(fdc,0) = 0x82a;
 								WFIFOL(fdc,2) = char_id;
 								WFIFOL(fdc,6) = 1;
@@ -2375,7 +2431,7 @@ static int parse_frommap(int fd)
 						break;
 					}
 				}
-				if( cd != NULL && i <= AUTH_FIFO_SIZE && auth_fifo[i].sex == sex )
+				if( cd != NULL && i < AUTH_FIFO_SIZE && auth_fifo[i].sex == sex )
 				{
 					unsigned char buf[48];
 					struct char_online *c;
@@ -3412,7 +3468,11 @@ int parse_char(int fd)
 				WFIFOW(fd,0) = 0x828;
 				WFIFOL(fd,2) = char_id;
 				WFIFOL(fd,6) = 1;
+#if PACKETVER >= 20130320
+				WFIFOL(fd,10) = delete_delay_time;
+#else
 				WFIFOL(fd,10) = st.delete_date&0xffffffff;
+#endif
 				WFIFOSET(fd,14);
 				RFIFOSKIP(fd,6);
 				break;
