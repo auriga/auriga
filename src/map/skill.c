@@ -3288,7 +3288,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_KIRIKAGE:		/* 影斬り */
 		{
 			int dist = unit_distance(src,bl);
-			if(sd && pc_checkskill(sd,NJ_SHADOWJUMP) + 4 >= dist) {
+			if(sd && pc_checkskill(sd,NJ_SHADOWJUMP) * 2 + 5 >= dist) {
 				int dx = bl->x - sd->bl.x;
 				int dy = bl->y - sd->bl.y;
 
@@ -3305,8 +3305,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						break;
 					}
 				}
-				clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 				if(!map[src->m].flag.gvg) {
 					sd->ud.to_x = sd->bl.x + dx;
 					sd->ud.to_y = sd->bl.y + dy;
@@ -3319,6 +3317,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						sd->ud.canact_tick = sd->ud.canmove_tick;
 					unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
 				}
+				else {
+					if(status_get_range(src) < dist) {
+						status_change_end(src, SC_HIDING, -1);	// ハイディング解除
+						break;
+					}
+				}
+				clif_skill_poseffect(&sd->bl,skillid,skilllv,sd->bl.x,sd->bl.y,tick);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 			} else {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
 			}
@@ -3933,6 +3939,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NPC_GRANDDARKNESS:			/* グランドダークネス */
 		{
 			struct unit_data *ud = unit_bl2ud(src);
+			if(status_check_no_magic_damage(src))
+				break;
+			status_change_start(src,SC_STRIPSHIELD,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			/* スキルユニット配置 */
 			skill_castend_pos2(src,bl->x,bl->y,skillid,skilllv,tick,0);
 			if(ud)

@@ -9162,7 +9162,7 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 {
 	nullpo_retr(0, sd);
 
-	if(save_flag == 0 && sd->fd > last_save_fd && !sd->state.waitingdisconnect) {
+	if(save_flag == 0 && sd->fd > last_save_fd && sd->state.auth && !sd->state.connect_new && !sd->state.waitingdisconnect) {
 		intif_save_scdata(sd);
 
 		if(sd->questlist)
