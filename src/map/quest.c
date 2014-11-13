@@ -310,8 +310,6 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 
 	for(i = 0; i < sd->questlist; i++) {
 		qd = &sd->quest[i];
-		if(qd->state != 1)
-			return 0;
 		if(qd->nameid > 0) {
 			for(j = 0; j < sizeof(qd->mob)/sizeof(qd->mob[0]); j++) {
 				if(qd->mob[j].id == mob_id && qd->mob[j].count < qd->mob[j].max) {

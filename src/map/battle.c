@@ -2317,28 +2317,36 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(battle_config.left_cardfix_to_right) {
 					// 左手カード補正設定あり
 					ignored_rate -= 100 - ignored_rate_;
-					ignored_rate_ = 100;
+					ignored_rate_ = ignored_rate;
 				}
 
-				if(skill_num != AM_ACIDTERROR) {
+				// bDefRatioATK系判定
+				if(skill_num != AM_ACIDTERROR && ignored_rate > 0) {
+					int def_ratio = 0;
 					int mask = (1<<t_race) | ( (t_mode&MD_BOSS)? (1<<RCT_BOSS): (1<<RCT_NONBOSS) );
-					int def_fix  = (ignored_rate  > 0)? (t_def1 * ignored_rate  / 100): 0;
-					int def_fix_ = (ignored_rate_ > 0)? (t_def1 * ignored_rate_ / 100): 0;
+					int def_fix = t_def1 * ignored_rate / 100;
 
-					// bDefRatioATK系、bIgnoreDef系が無いときのみ効果有り
-					if( !calc_flag.idef && def_fix > 0 && (src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy)) ) {
+					if(src_sd->def_ratio_atk_ele & (1<<t_ele) || src_sd->def_ratio_atk_race & mask || src_sd->def_ratio_atk_enemy & (1<<t_enemy) ||
+					   src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)
+					)
+						def_ratio = 1;
+
+					// bIgnoreDef系分を加味して計算
+					if(!calc_flag.idef && def_fix > 0 && def_ratio) {
 						if(!calc_flag.idef_) {
-							wd.damage += def_fix / 2;
-							calc_flag.idef = 1;
+							wd.damage  += def_fix / 2;
+							wd.damage2 += def_fix / 2;
+							calc_flag.idef  = 1;
+							calc_flag.idef_ = 1;
 						}
 					}
-					if( calc_flag.lh ) {
-						if( !calc_flag.idef_ && def_fix_ > 0 && (src_sd->def_ratio_atk_ele_ & (1<<t_ele) || src_sd->def_ratio_atk_race_ & mask || src_sd->def_ratio_atk_enemy_ & (1<<t_enemy)) ) {
-							wd.damage2 += def_fix_ / 2;
-							calc_flag.idef_ = 1;
-							if(!calc_flag.idef /*&& battle_config.left_cardfix_to_right*/) {
-								wd.damage += def_fix / 2;
-								calc_flag.idef = 1;
+					if(calc_flag.lh) {
+						if(!calc_flag.idef_ && def_fix > 0 && def_ratio) {
+							if(!calc_flag.idef) {
+								wd.damage  += def_fix / 2;
+								wd.damage2 += def_fix / 2;
+								calc_flag.idef  = 1;
+								calc_flag.idef_ = 1;
 							}
 						}
 					}

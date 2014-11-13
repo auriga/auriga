@@ -20877,7 +20877,7 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 {
 	int nameid;
-	int result;
+	char result;
 
 	nullpo_retv(sd);
 
@@ -20889,7 +20889,7 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 
 	WFIFOW(fd,0) = 0x2b7;
 	WFIFOL(fd,2) = nameid;
-	WFIFOL(fd,6) = result;
+	WFIFOB(fd,6) = result;
 	WFIFOSET(fd,packet_db[0x2b7].len);
 
 	return;

@@ -2347,6 +2347,13 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(sd->skill_menu.id > 0)
 			memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 
+		// アイテムスキルを取り消し
+		if(sd->skill_menu.id >= 0) {
+			sd->skill_item.id   = -1;
+			sd->skill_item.lv   = -1;
+			sd->skill_item.flag = 0;
+		}
+
 		pc_delinvincibletimer(sd,0);		// 無敵タイマー削除
 
 		// PVP タイマー削除
