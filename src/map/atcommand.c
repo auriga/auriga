@@ -1951,7 +1951,10 @@ int atcommand_monster(const int fd, struct map_session_data* sd, AtCommandType c
 	if (!message || !*message)
 		return -1;
 
-	if (sscanf(message, "\"%99[^\"]\" %99s %d %d %d", name, monster, &number, &x, &y) < 2 &&
+	name[0] = '\0';
+
+	if (sscanf(message, "%99s %d %d %d", monster, &number, &x, &y) < 1 &&
+	    sscanf(message, "\"%99[^\"]\" %99s %d %d %d", name, monster, &number, &x, &y) < 2 &&
 	    sscanf(message, "%99s \"%99[^\"]\" %d %d %d", monster, name, &number, &x, &y) < 2 &&
 	    sscanf(message, "%99s %99s %d %d %d", name, monster, &number, &x, &y) < 2)
 		return -1;
@@ -1960,6 +1963,8 @@ int atcommand_monster(const int fd, struct map_session_data* sd, AtCommandType c
 		mob_id = mobdb_searchname(monster);
 	if (number <= 0)
 		number = 1;
+	if (!name[0])
+		strcpy(name, "--ja--");
 	// check for command @monster/@monstermap
 	if (command == AtCommand_MonsterMap)
 		on_map = 1;
