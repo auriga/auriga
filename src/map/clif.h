@@ -139,6 +139,8 @@ void clif_skill_message(struct map_session_data *sd, int skillid, int type);
 void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest);
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval);
 void clif_bodyrelocation(struct block_list *bl, int x, int y);
+void clif_showscript(struct block_list *bl, char *mes);
+void clif_showdigit(struct map_session_data* sd, unsigned char type, int value);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, const char *name);
@@ -280,6 +282,7 @@ void clif_privateitem(struct map_session_data *sd, short idx, char flag);
 void clif_send_partyconfig(struct map_session_data *sd);
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
 void clif_mapproperty(struct map_session_data *sd);
+void clif_send_personalinfo(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

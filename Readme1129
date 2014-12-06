@@ -1,4 +1,15 @@
 ----------------------------------------
+//1226 [2014/12/07] by refis
+
+・スクリプト命令「showdigit」「showmessage」実装（doc/script_ref.txt, clif.*, script.c）
+
+・スクリプト命令「setmobhp」実装（doc/script_ref.txt, script.c）
+
+・スクリプト関数「getmobhp」「sc_onparam」実装（doc/script_ref.txt, script.c）
+
+・0x97b「サーバー情報通知」を実装（clif.*）
+
+----------------------------------------
 //1225 [2014/11/14] by refis
 
 ・アイテムスキル情報リセットの条件式をミスしていたのを修正（unit.c）

@@ -16520,6 +16520,114 @@ void clif_bank_withdraw(struct map_session_data *sd, int flag)
 }
 
 /*==========================================
+ * 頭上にメッセージ表示
+ *------------------------------------------
+ */
+void clif_showscript(struct block_list *bl, char *mes)
+{
+	unsigned char buf[256];
+	size_t len;
+
+	nullpo_retv(bl);
+
+	if(mes == NULL)
+		return;
+
+	len = strlen(mes)+1;
+	if(len > sizeof(buf) - 8)
+		len = sizeof(buf) - 8;
+
+	WBUFW(buf,0) = 0x8b3;
+	WBUFW(buf,2) = (unsigned short)(len + 8);
+	WBUFL(buf,4) = bl->id;
+	memcpy(WBUFP(buf,8), mes, len);
+	clif_send(WBUFP(buf,0), WBUFW(buf,2), bl, AREA);
+
+	return;
+}
+
+/*==========================================
+ * サーバー情報通知
+ *------------------------------------------
+ */
+void clif_send_personalinfo(struct map_session_data *sd)
+{
+#if PACKETVER >= 20130320
+	int fd;
+	int exp=0, penalty=0, drop=0;
+
+	nullpo_retv(sd);
+
+	// base exp rate
+	if(map[sd->bl.m].flag.base_exp_rate)
+		exp = map[sd->bl.m].flag.base_exp_rate;
+	else
+		exp = battle_config.base_exp_rate;
+	if(exp >= 100)
+		exp = exp - 100;
+	else
+		exp = 0 - (100 - exp);
+
+	// death penalty rate
+	if(battle_config.death_penalty_base >= 100)
+		penalty = battle_config.death_penalty_base - 100;
+	else
+		penalty = 0 - (100 - battle_config.death_penalty_base);
+
+	// item drop rate
+	if(battle_config.item_rate >= 100)
+		drop = battle_config.item_rate - 100;
+	else
+		drop = 0 - (100 - battle_config.item_rate);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0x97b;
+	WFIFOW(fd, 2)=68;
+	WFIFOL(fd, 4)=(100 + exp) * 1000;
+	WFIFOL(fd, 8)=(100 + penalty) * 1000;
+	WFIFOL(fd,12)=(100 + drop) * 1000;
+	WFIFOB(fd,16)=0;
+	WFIFOL(fd,17)=0;	// pccafe exp
+	WFIFOL(fd,21)=0;	// pccafe penalty
+	WFIFOL(fd,25)=0;	// pccafe drop
+	WFIFOB(fd,29)=3;
+	WFIFOL(fd,30)=exp * 1000;	// world exp
+	WFIFOL(fd,34)=penalty * 1000;	// world penalty
+	WFIFOL(fd,38)=drop * 1000;	// world drop
+	WFIFOB(fd,42)=1;
+	WFIFOL(fd,43)=0;	// premium exp
+	WFIFOL(fd,47)=0;	// premium penalty
+	WFIFOL(fd,51)=0;	// premium drop
+	WFIFOB(fd,52)=2;
+	WFIFOL(fd,56)=0;
+	WFIFOL(fd,60)=0;
+	WFIFOL(fd,64)=0;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
+
+	return;
+}
+
+/*==========================================
+ * デジタルタイマー表示
+ *------------------------------------------
+ */
+void clif_showdigit(struct map_session_data* sd, unsigned char type, int value)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0x1b1;
+	WFIFOB(fd,2) = type;
+	WFIFOL(fd,3) = value;
+	WFIFOSET(fd,packet_db[0x1b1].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -16775,6 +16883,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_updatestatus(sd,SP_NEXTJOBEXP);
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		clif_initialstatus(sd);
+		clif_send_personalinfo(sd);
 
 		// キラー情報送信
 		if(battle_config.save_pckiller_type)

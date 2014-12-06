@@ -2459,6 +2459,38 @@ AurigaNPCScript
 			<flag>が1の場合、プレイヤーの移動、攻撃を制限させます。
 			<flag>が0の場合、制限を解除します。
 
+		showmessage命令
+			showmessage <message>[,<name>];
+
+			message	文字列
+			name		文字列、省略可
+
+			<name>で指定したNPCの頭上に<message>を表示します。
+			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setmobhp命令
+			setmobhp <object_id>,<hp>;
+
+			object_id,hp	数値
+
+			<object_id>で指定したモンスターの現在HP量を<hp>に設定します。
+			<hp>がモンスターの最大HP量を超える場合、最大HPに補正されます。
+			<hp>が0以下の場合、1に補正されます。
+
+		showdigit命令
+			showdigit <value>[,<type>];
+
+			value	数値
+			type	数値、省略可
+
+			アタッチ中のプレイヤーの画面上にデジタルタイマーを表示させます。
+
+			type=0	<value>のタイマーを5秒間表示します。
+			type=1	負の<value>から始まるカウントアップタイマーを表示します。
+			type=2	負の<value>から始まるカウントダウンタイマーを表示します。
+			type=3	<value>から始まるカウントダウンタイマーを表示し、0になると消去します。
+
 
 	＊関数
 		rand関数
@@ -3595,7 +3627,7 @@ AurigaNPCScript
 			複製されていない場合、指定したNPC名称をそのまま返します。
 
 		callmonster 関数
-			callmonster(<gatname>,<x>,<y>,<mobname>,<mobid>[,<event>]);
+			callmonster(<gatname>,<x>,<y>,<mobname>,<mobid>[,<event>])
 
 			gatname,mobname	文字列
 			x,y,mobid	数値
@@ -3610,7 +3642,7 @@ AurigaNPCScript
 			そのモンスターを倒したとき<event>を開始します。
 
 		removemonster 関数
-			removemonster(<object_id>);
+			removemonster(<object_id>)
 
 			object_id	数値
 
@@ -3618,7 +3650,7 @@ AurigaNPCScript
 			成功した場合は1を、そうでなければ0を返します。
 
 		getequipcardid 関数
-			getequipcardid(<num>,<pos>);
+			getequipcardid(<num>,<pos>)
 
 			<num>	1-22までの整数を指定します。詳しくはgetequipidを参照のこと。
 			<pos>	0-3までの整数を指定します。
@@ -3632,6 +3664,30 @@ AurigaNPCScript
 
 			<class>で指定された職業値の該当JOBの値を返します。
 			指定された職業値が転生職・養子職の場合も通常職の値で返します。
+
+		getmobhp 関数
+			getmobhp(<object_id>)
+
+			object_id	数値
+
+			<object_id>のモンスターの現在HP量を返します。
+			<object_id>がモンスター以外の場合や対象が死亡している場合は-1を返します。
+
+		sc_onparam 関数
+			sc_onparam(<type>,<num>)
+
+			type	状態異常
+			num		数値
+
+			アタッチされたキャラクターが指定した状態異常になっていれば、
+			<num>に応じた値を返します。
+			それ以外（失敗を含む）の場合は0 を返します。
+
+			num=0		持続時間
+			num=1		val1の値
+			num=2		val2の値
+			num=3		val3の値
+			num=4		val4の値
 
 
 	＊csv アクセス命令 / 関数

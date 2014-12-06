@@ -4069,6 +4069,11 @@ int buildin_setpartyinmap(struct script_state *st);
 int buildin_getclassjob(struct script_state *st);
 int buildin_unittalk(struct script_state *st);
 int buildin_pcblockmove(struct script_state *st);
+int buildin_showmessage(struct script_state *st);
+int buildin_getmobhp(struct script_state *st);
+int buildin_setmobhp(struct script_state *st);
+int buildin_sc_onparam(struct script_state *st);
+int buildin_showdigit(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4377,6 +4382,11 @@ struct script_function buildin_func[] = {
 	{buildin_getclassjob,"getclassjob","i"},
 	{buildin_unittalk,"unittalk","*"},
 	{buildin_pcblockmove,"pcblockmove","i"},
+	{buildin_showmessage,"showmessage","s*"},
+	{buildin_getmobhp,"getmobhp","i"},
+	{buildin_setmobhp,"setmobhp","ii"},
+	{buildin_sc_onparam,"sc_onparam","ii"},
+	{buildin_showdigit,"showdigit","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -13165,5 +13175,170 @@ int buildin_pcblockmove(struct script_state *st)
 	unit_stop_walking(&sd->bl,1);
 	sd->state.blockedmove = flag > 0;
 
+	return 0;
+}
+
+/*==========================================
+ * 頭上にメッセージ表示
+ *------------------------------------------
+ */
+int buildin_showmessage(struct script_state *st)
+{
+	struct npc_data *nd;
+	char *mes;
+
+	mes  = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 )
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	else
+		nd = map_id2nd(st->oid);
+
+	if(nd) {
+		clif_showscript(&nd->bl,mes);
+	} else {
+		struct block_list *bl = map_id2bl(st->rid);
+		if(bl)
+			clif_showscript(bl,mes);
+	}
+	return 0;
+}
+
+/*==========================================
+ * モンスターのHP取得
+ *------------------------------------------
+ */
+int buildin_getmobhp(struct script_state *st)
+{
+	struct mob_data *md;
+	int id, hp;
+
+	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if((md = map_id2md(id)) == NULL) {
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+	// 死亡中
+	if(md->bl.prev == NULL) {
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+
+	hp = md->hp;
+	if(md->hp < 0)
+		hp = 0;
+
+	push_val(st->stack,C_INT,hp);
+	return 0;
+}
+
+/*==========================================
+ * モンスターのHP設定
+ *------------------------------------------
+ */
+int buildin_setmobhp(struct script_state *st)
+{
+	struct mob_data *md;
+	int id, max_hp, hp;
+
+	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	hp = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if((md = map_id2md(id)) == NULL)
+		return 0;
+	// 死亡中
+	if(md->bl.prev == NULL || md->hp <= 0)
+		return 0;
+
+	max_hp = status_get_max_hp(&md->bl);
+
+	// 最大HPを越えて設定できない
+	if(hp > max_hp)
+		hp = max_hp;
+	// 殺害することはできない
+	if(hp <= 0)
+		hp = 1;
+	md->hp = hp;
+
+	return 0;
+}
+
+/*==========================================
+ * 状態異常中のパラメーターを返す
+ *------------------------------------------
+ */
+int buildin_sc_onparam(struct script_state *st)
+{
+	struct block_list *bl = map_id2bl(st->rid);
+	int type,num;
+
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	num  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(type < 0 || type >= MAX_STATUSCHANGE) {
+		printf("buildin_sc_ison: invaild type %d\n", type);
+		push_val(st->stack,C_INT,0);
+		return 0;
+	}
+
+	if(bl && bl->type == BL_PC) {
+		struct map_session_data *sd = (struct map_session_data *)bl;
+		if(sd && sd->state.potionpitcher_flag)
+			bl = map_id2bl(sd->ud.skilltarget);
+	}
+	if(bl) {
+		struct status_change *sc = status_get_sc(bl);
+		if(sc && sc->data[type].timer != -1) {
+			switch(num) {
+			case 1:
+				push_val(st->stack,C_INT,sc->data[type].val1);
+				break;
+			case 2:
+				push_val(st->stack,C_INT,sc->data[type].val2);
+				break;
+			case 3:
+				push_val(st->stack,C_INT,sc->data[type].val3);
+				break;
+			case 4:
+				push_val(st->stack,C_INT,sc->data[type].val4);
+				break;
+			default:
+				{
+					struct TimerData *td = get_timer(sc->data[type].timer);
+
+					if(td == NULL || td->func != status_change_timer || DIFF_TICK(td->tick,gettick()) < 0)
+						push_val(st->stack,C_INT,0);
+					else
+						push_val(st->stack,C_INT,DIFF_TICK(td->tick,gettick()));
+				}
+				break;
+			}
+			return 0;
+		}
+	}
+	push_val(st->stack,C_INT,0);
+	return 0;
+}
+
+/*==========================================
+ * デジタルタイマー表示
+ *------------------------------------------
+ */
+int buildin_showdigit(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	unsigned char type = 0;
+	int value;
+
+	nullpo_retr(0, sd);
+
+	value = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 )
+		type = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(type < 0 || type > 3)
+		return 0;
+
+	clif_showdigit(sd, type, value);
 	return 0;
 }
