@@ -9592,7 +9592,7 @@ OnTimer542000:
 	areawarp "que_god02.gat",15,125,185,131,"geffen.gat",120,100;
 	end;
 OnTimer550000:
-	donpcevent " #召喚::OnReset";
+	donpcevent "#brising召喚::OnReset";
 	end;
 OnTimer550500:
 	stopnpctimer;
@@ -9812,11 +9812,11 @@ que_god02.gat,21,127,3	script	ローウェン・エリナ#2	745,{
 	mes "私が一緒に戦う！";
 	mes "さあ、行こう!!";
 	close2;
-	donpcevent "#召喚::OnSummon";
+	donpcevent "#brising召喚::OnSummon";
 	end;
 }
 
-que_god02.gat,17,127,0	script	 #召喚	139,{
+que_god02.gat,17,127,0	script	#brising召喚	139,{
 OnInit:
 	hideonnpc " #ドッペルゲンガー1";
 	hideonnpc " #ドッペルゲンガー2";
@@ -9829,19 +9829,19 @@ OnInit:
 	end;
 OnSummon:
 	hideonnpc "ローウェン・エリナ#2";
-	hideoffnpc " #召喚";
-	monster "que_god02.gat",34,128," ",1015,1," #召喚::OnKilled";
-	monster "que_god02.gat",34,127," ",1015,1," #召喚::OnKilled";
-	monster "que_god02.gat",80,127," ",1015,1," #召喚::OnKilled";
-	monster "que_god02.gat",102,128," ",1036,1," #召喚::OnKilled";
-	monster "que_god02.gat",130,128," ",1036,1," #召喚::OnKilled";
-	monster "que_god02.gat",62,128," ",1041,1," #召喚::OnKilled";
-	monster "que_god02.gat",64,127," ",1041,1," #召喚::OnKilled";
-	monster "que_god02.gat",150,127," ",1041,1," #召喚::OnKilled";
-	monster "que_god02.gat",176,127," ",1041,1," #召喚::OnKilled";
+	hideoffnpc "#brising召喚";
+	monster "que_god02.gat",34,128," ",1015,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",34,127," ",1015,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",80,127," ",1015,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",102,128," ",1036,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",130,128," ",1036,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",62,128," ",1041,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",64,127," ",1041,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",150,127," ",1041,1,"#brising召喚::OnKilled";
+	monster "que_god02.gat",176,127," ",1041,1,"#brising召喚::OnKilled";
 	end;
 OnKilled:
-	set '@count,getmapmobs("que_god02.gat"," #召喚::OnKilled");
+	set '@count,getmapmobs("que_god02.gat","#brising召喚::OnKilled");
 	if('@count == 0) {
 		set GOD_3QUE,31;
 		hideoffnpc "ヴァルキリー#1";
@@ -9859,7 +9859,7 @@ OnReset:
 	hideoffnpc " #エールミット";
 	hideoffnpc "ローウェン・エリナ#2";
 	hideonnpc "ヴァルキリー#1";
-	killmonster "que_god02.gat"," #召喚::OnKilled";
+	killmonster "que_god02.gat","#brising召喚::OnKilled";
 	end;
 }
 

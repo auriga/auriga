@@ -2094,9 +2094,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	if(!(type&1) && !map[md->bl.m].flag.nodrop && !md->state.rebirth) {
 		if(!md->state.nodrop) {
 			for(i=0; i<ITEM_DROP_COUNT; i++) {
+				int itemid;
 				struct delay_item_drop *ditem;
 
-				if(mob_db[md->class_].dropitem[i].nameid <= 0)
+				if(mob_db[md->class_].dropitem[i].nameid < 0) {
+					itemid = itemdb_searchrandomid(-mob_db[md->class_].dropitem[i].nameid);
+				} else {
+					itemid = mob_db[md->class_].dropitem[i].nameid;
+				}
+				if(itemid <= 0)
 					continue;
 				drop_rate = mob_droprate_fix( src, mob_db[md->class_].dropitem[i].nameid, mob_db[md->class_].dropitem[i].p );
 				if(drop_rate <= 0 && battle_config.drop_rate0item)
@@ -2105,7 +2111,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					continue;
 
 				ditem = (struct delay_item_drop *)aCalloc(1,sizeof(struct delay_item_drop));
-				ditem->nameid    = mob_db[md->class_].dropitem[i].nameid;
+				ditem->nameid    = itemid;
 				ditem->amount    = 1;
 				ditem->m         = md->bl.m;
 				ditem->x         = md->bl.x;
@@ -3987,7 +3993,7 @@ static int mob_readdb(void)
 			// アイテムドロップの設定
 			for(i=0; i<ITEM_DROP_COUNT; i++,num+=2) {
 				int nameid;
-				if(!cov || strlen(str[num]) > 0)
+				if(!cov || strlen(str[num]) != 0)
 					nameid = atoi(str[num]);
 				else
 					nameid = mob_db[class_].dropitem[i].nameid;
