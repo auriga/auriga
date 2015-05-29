@@ -3911,10 +3911,10 @@ void clif_spawnpc(struct map_session_data *sd)
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
 		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
 			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,MOBID_PORING,0,0);
-		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
-			clif_seteffect_enter(&sd->bl,SI_MONSTER_TRANSFORM,0,sd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
-		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
-			clif_seteffect_enter(&sd->bl,SI_ACTIVE_MONSTER_TRANSFORM,0,sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
+//		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
+//			clif_seteffect_enter(&sd->bl,SI_MONSTER_TRANSFORM,0,sd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
+//		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// アクティブモンスター変身
+//			clif_seteffect_enter(&sd->bl,SI_ACTIVE_MONSTER_TRANSFORM,0,sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
 		else if(sd->sc.data[SC_ALL_RIDING].timer != -1)	// 搭乗システム
 			clif_seteffect_enter(&sd->bl,SI_ALL_RIDING,9999,1,25,0);
 		if(sd->sc.data[SC_ON_PUSH_CART].timer != -1)	// カート

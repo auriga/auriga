@@ -128,6 +128,19 @@ int battle_damage_area(struct block_list *bl,va_list ap)
 	if(battle_check_target(src,bl,flag) > 0) {
 		clif_damage(bl,bl,tick,status_get_amotion(bl),status_get_dmotion(bl),damage,0,9,0,0);
 		battle_damage(src,bl,damage,skillid,skilllv,flag);
+
+		if(skillid == LG_REFLECTDAMAGE) {
+			// スキルの反射ダメージのオートスペル
+			if(battle_config.weapon_reflect_autospell && src->type == BL_PC && atn_rand()%2)
+				bonus_autospell_start(src,bl,EAS_ATTACK,tick,0);
+
+			if(battle_config.weapon_reflect_drain && src != bl)
+				battle_attack_drain(src,damage,0,battle_config.weapon_reflect_drain_enable_type);
+
+			// スキルの反射ダメージのアクティブアイテム
+			if(battle_config.weapon_reflect_autospell && src->type == BL_PC)
+				bonus_activeitem_start((struct map_session_data *)src,EAS_ATTACK,tick);
+		}
 	}
 
 	return 0;
@@ -3769,6 +3782,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( dmg * status_get_lv(src) / 100, 100 );
 			}
 			break;
+#ifdef PRE_RENEWAL
+		case NC_ARMSCANNON:	// アームズキャノン
+			if(src_sd && src_sd->arrow_atk) {
+				DMG_ADD( src_sd->arrow_atk );
+			}
+			DMG_FIX( (200 + (500 - 100 * t_size) * skill_lv) * status_get_lv(src) / 150, 100 );
+			break;
+#endif
 		case SC_FATALMENACE:	// フェイタルメナス
 			DMG_FIX( 100 + 100 * skill_lv, 100 );
 			break;
@@ -6897,6 +6918,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			map_foreachinarea(battle_damage_area,target->m,
 				target->x-3,target->y-3,target->x+3,target->y+3,BL_CHAR,
 				target,rddamage,LG_REFLECTDAMAGE,t_sc->data[SC_REFLECTDAMAGE].val1,flag|BCT_ENEMY|1,tick);
+
+			if(wd.flag&BF_SHORT && tsd && tsd->short_weapon_damage_return > 0) {
+				ridamage += damage * tsd->short_weapon_damage_return / 100;
+			}
 		} else if(wd.flag&BF_SHORT) {
 			if(tsd && tsd->short_weapon_damage_return > 0) {
 				ridamage += damage * tsd->short_weapon_damage_return / 100;
@@ -7655,7 +7680,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 			map_foreachinarea(battle_damage_area,bl->m,
 				bl->x-3,bl->y-3,bl->x+3,bl->y+3,BL_CHAR,
-				bl,odamage,LG_REFLECTDAMAGE,sc->data[SC_GENSOU].val1,flag|BCT_ENEMY|1,tick);
+				bl,odamage,OB_OBOROGENSOU,sc->data[SC_GENSOU].val1,flag|BCT_ENEMY|1,tick);
 		}
 		if(rdamage > 0) {
 			clif_skill_damage(src, src, tick, dmg.amotion, dmg.dmotion, rdamage, dmg.div_, skillid, ((src == dsrc)? lv: -1), type);

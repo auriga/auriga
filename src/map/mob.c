@@ -2243,8 +2243,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				pc_gainexp(mvpsd,NULL,mexp,0,0);
 			}
 			for(j=0; j<3; j++) {
+				int itemid;
+
 				i = atn_rand() % 3;
-				if(mob_db[md->class_].mvpitem[i].nameid <= 0)
+				if(mob_db[md->class_].mvpitem[i].nameid < 0) {
+					itemid = itemdb_searchrandomid(-mob_db[md->class_].mvpitem[i].nameid);
+				} else {
+					itemid = mob_db[md->class_].mvpitem[i].nameid;
+				}
+				if(itemid <= 0)
 					continue;
 				drop_rate = mob_db[md->class_].mvpitem[i].p;
 				if(drop_rate <= 0 && battle_config.drop_rate0item)
@@ -2252,7 +2259,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				if(drop_rate <= atn_rand()%10000)
 					continue;
 				memset(&item,0,sizeof(item));
-				item.nameid   = mob_db[md->class_].mvpitem[i].nameid;
+				item.nameid   = itemid;
 				item.identify = !itemdb_isequip3(item.nameid);
 				if(battle_config.itemidentify)
 					item.identify = 1;

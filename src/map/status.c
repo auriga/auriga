@@ -7963,7 +7963,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			break;
 		case SC__AUTOSHADOWSPELL:	/* シャドウオートスペル */
-			val4 = 30 - val1*2;		// 発動確率
+			val4 = 32 - val1*2;		// 発動確率
 			val4 = (val4 < 1)? 1: val4;
 			break;
 		case SC__SHADOWFORM:		/* シャドウフォーム */
