@@ -217,8 +217,8 @@ yuno.gat,335,38,2	script	グロリアス#yuno	813,{
 		next;
 		switch(select("コインで交換","チケットで交換","交換しない")) {
 		case 1:
-			if(countitem(6364) < 100 || countitem(6364) < 200 || countitem(6364) < 200 ||
-				countitem(6364) < 150 || countitem(6364) < 50) {
+			if(countitem(6364) < 100 || countitem(6365) < 200 || countitem(6366) < 200 ||
+				countitem(6367) < 150 || countitem(6368) < 50) {
 				mes "[グロリアス]";
 				mes "ん？";
 				mes "必要なコインが足りないようだな。";

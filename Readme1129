@@ -1,4 +1,15 @@
 ----------------------------------------
+//1229 [2015/06/01] by refis
+
+・グロリアス武器交換NPCのアイテムチェック不具合を修正（npc_quest_glorias.txt）
+	Thanks rusya7234 さん
+
+・Auriga-1228のgccコンパイルエラーを修正（battle.c）
+	Thanks LunarPhantom さん
+
+・ギロチンクロス転職時に宝石箱がもらえるように修正（npc_job_thirdclass.txt）
+
+----------------------------------------
 //1228 [2015/05/30] by refis
 
 ・mob_avail.txtの説明文を更新（mob_avail.txt）

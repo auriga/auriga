@@ -265,6 +265,7 @@ function	script	jobchenge3rd_func	{
 	case Job_Guillotine:
 		setquest 201200;
 		getitem 5755,1;	//沈黙の執行者
+		getitem 12106,1;	//宝石箱
 		break;
 	case Job_RoyalGuard:
 		setquest 201210;

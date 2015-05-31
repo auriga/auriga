@@ -61,6 +61,7 @@ struct battle_delay_damage_ {
 	int dist;
 };
 
+static int battle_attack_drain(struct block_list *bl,int damage,int damage2,int flag);
 static struct Damage battle_calc_attack(int attack_type,struct block_list *bl,struct block_list *target,int skill_num,int skill_lv,int flag);
 
 /*==========================================
