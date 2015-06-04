@@ -11889,7 +11889,7 @@ mid_camp.gat,199,311,7	script	キド	884,{
 	close2;
 	cutin "mocseal_kid01",255;
 	end;
-};
+}
 
 mid_camp.gat,205,312,0	script	#moc2_talk	139,1,1,{
 	if(ASH_5QUE != 11)

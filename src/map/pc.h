@@ -134,7 +134,7 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 int pc_nextbaseexp(struct map_session_data *);
 int pc_nextjobexp(struct map_session_data *);
 int pc_need_status_point(struct map_session_data *,int);
-void pc_statusup(struct map_session_data *sd, unsigned short type);
+void pc_statusup(struct map_session_data *sd, unsigned short type,int num);
 int pc_statusup2(struct map_session_data*,int,int);
 void pc_skillup(struct map_session_data *sd, int skill_num);
 int pc_allskillup(struct map_session_data* sd,int flag);

@@ -6547,7 +6547,7 @@ int buildin_statusup(struct script_state *st)
 	unsigned short type;
 
 	type = (unsigned short)conv_num(st, &(st->stack->stack_data[st->start+2]));
-	pc_statusup(script_rid2sd(st),type);
+	pc_statusup(script_rid2sd(st),type,1);
 
 	return 0;
 }

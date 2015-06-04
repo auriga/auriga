@@ -5691,7 +5691,7 @@ umbala.gat,163,256,3	script	原住民	781,{
 	close;
 }
 
-um_in.gat,27,23,3	script	気難しそうな男	121,{
+um_in.gat,152,125,5	script	気難しそうな男	121,{
 	if(SIGN_QUE < 74) {
 		emotion 29;
 		mes "[サイオン]";
@@ -5705,7 +5705,7 @@ um_in.gat,27,23,3	script	気難しそうな男	121,{
 		mes "どうやってここに入ってきた。";
 		mes "すぐ出てけ。";
 		close2;
-		warp "um_dun01.gat",129,90;
+		warp "umbala.gat",125,151;
 		end;
 	}
 	switch(SIGN_QUE) {
@@ -5808,7 +5808,7 @@ um_in.gat,27,23,3	script	気難しそうな男	121,{
 			misceffect 17,"";
 			percentheal -30,0;
 			next;
-			warp "um_dun01.gat",129,90;
+			warp "umbala.gat",125,151;
 			end;
 		}
 		mes "[サイオン]";

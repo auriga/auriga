@@ -5343,16 +5343,21 @@ int pc_need_status_point(struct map_session_data *sd,int type)
  * 能力値成長
  *------------------------------------------
  */
-void pc_statusup(struct map_session_data *sd, unsigned short type)
+void pc_statusup(struct map_session_data *sd, unsigned short type, int num)
 {
-	int need;
+	int need, status_point;
 	int val = 0, max = 0;
 	short *param = NULL;
 
 	nullpo_retv(sd);
 
+	if(type < SP_STR || type > SP_LUK || num <= 0) {
+		clif_statusupack(sd,type,0,0);
+		return;
+	}
+
 	need = pc_need_status_point(sd,type);
-	if(type < SP_STR || type > SP_LUK || need < 0 || need > sd->status.status_point) {
+	if(need < 0 || need > sd->status.status_point) {
 		clif_statusupack(sd,type,0,0);
 		return;
 	}
@@ -5400,9 +5405,29 @@ void pc_statusup(struct map_session_data *sd, unsigned short type)
 		clif_statusupack(sd,type,0,0);
 		return;
 	}
-	val = ++(*param);
 
-	sd->status.status_point -= need;
+	val = (*param);
+	if(max > val + num)
+		max = val + num;
+
+	status_point = sd->status.status_point;
+
+	while(max > val && status_point > 0) {
+		int point;
+		if(val < 100)
+			point = (val + 9) / 10 + 1;
+		else if(battle_config.new_statusup_calc)
+			point = 16 + (val / 5 - 20) * 4;
+		else
+			point = (val + 9) / 10 + 1;
+		if(status_point < point)
+			break;
+		val++;
+		status_point -= point;
+	}
+
+	(*param) = val;
+	sd->status.status_point = status_point;
 	if(need != pc_need_status_point(sd,type)) {
 		clif_updatestatus(sd,type-SP_STR+SP_USTR);
 	}

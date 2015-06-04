@@ -18156,7 +18156,7 @@ static void clif_parse_ChangeCart(int fd,struct map_session_data *sd, int cmd)
 static void clif_parse_StatusUp(int fd,struct map_session_data *sd, int cmd)
 {
 	// Is amount RFIFOB(fd,GETPACKETPOS(cmd,1)) always 1?
-	pc_statusup(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)));
+	pc_statusup(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)), RFIFOB(fd,GETPACKETPOS(cmd,1)));
 
 	return;
 }
