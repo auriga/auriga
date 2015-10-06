@@ -10026,11 +10026,19 @@ int buildin_select(struct script_state *st)
  */
 static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 {
+	struct mob_data *md;
 	char *event = va_arg(ap,char *);
 	int mob_id = va_arg(ap,int);
 
+	nullpo_retr(0, bl);
+	nullpo_retr(0, md = (struct mob_data *)bl);
+
+	// 倒されてる
+	if (md->hp <= 0)
+		return 0;
+
 	// イベントなし、MobIDの指定なし
-	if ((!event || strcmp(event, ((struct mob_data *)bl)->npc_event) == 0) && mob_id == 0)
+	if (!event && !mob_id)
 		return 1;
 
 	// 対象イベント
@@ -10040,6 +10048,7 @@ static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 	// 対象MobID
 	if (mob_id >= MOB_ID_MIN && mob_id <= MOB_ID_MAX && mob_id == ((struct mob_data*)bl)->class_)
 		return 1;
+
 	return 0;
 }
 
