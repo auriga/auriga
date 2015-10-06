@@ -10026,13 +10026,19 @@ int buildin_select(struct script_state *st)
  */
 static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 {
-	struct mob_data *md;
 	char *event = va_arg(ap,char *);
+	int mob_id = va_arg(ap,int);
 
-	nullpo_retr(0, bl);
-	nullpo_retr(0, md = (struct mob_data *)bl);
+	// イベントなし、MobIDの指定なし
+	if ((!event || strcmp(event, ((struct mob_data *)bl)->npc_event) == 0) && mob_id == 0)
+		return 1;
 
-	if(md->hp > 0 && (!event || strcmp(event,md->npc_event) == 0))
+	// 対象イベント
+	if(event && strcmp(event,((struct mob_data *)bl)->npc_event))
+		return 1;
+
+	// 対象MobID
+	if (mob_id >= MOB_ID_MIN && mob_id <= MOB_ID_MAX && mob_id == ((struct mob_data*)bl)->class_)
 		return 1;
 	return 0;
 }
@@ -10040,18 +10046,28 @@ static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 int buildin_getmapmobs(struct script_state *st)
 {
 	char *str, *event = NULL;
-	int m,count=0;
+	int m, count = 0, mob_id = 0;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	if(st->end > st->start+3)
-		event = conv_str(st,& (st->stack->stack_data[st->start+3]));
+	{
+		struct script_data *data;
+		data = &(st->stack->stack_data[st->start+3]);
+		get_val(st,data);
+
+		if( isstr(data) )
+			event = conv_str(st,data);
+		else
+			mob_id = conv_num(st,data);
+	}
 
 	m = script_mapname2mapid(st,str);
-	if(m < 0) {
+	if(m < 0)
+	{
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	count = map_foreachinarea(buildin_getmapmobs_sub,m,0,0,map[m].xs,map[m].ys,BL_MOB,event);
+	count = map_foreachinarea(buildin_getmapmobs_sub, m, 0, 0, map[m].xs, map[m].ys, BL_MOB, event, mob_id);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }
@@ -10063,22 +10079,32 @@ int buildin_getmapmobs(struct script_state *st)
 int buildin_getareamobs(struct script_state *st)
 {
 	char *str, *event = NULL;
-	int m,x0,y0,x1,y1,count=0;
+	int m, x0, y0, x1, y1, count = 0, mob_id = 0;
 
 	str=conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x0=conv_num(st,& (st->stack->stack_data[st->start+3]));
 	y0=conv_num(st,& (st->stack->stack_data[st->start+4]));
 	x1=conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1=conv_num(st,& (st->stack->stack_data[st->start+6]));
-	if(st->end > st->start+7)
-		event = conv_str(st,& (st->stack->stack_data[st->start+7]));
+	if (st->end > st->start + 7)
+	{
+		struct script_data *data;
+		data = &(st->stack->stack_data[st->start + 7]);
+		get_val(st, data);
+
+		if (isstr(data))
+			event = conv_str(st, data);
+		else
+			mob_id = conv_num(st, data);
+	}
 
 	m = script_mapname2mapid(st,str);
-	if(m < 0) {
+	if (m < 0)
+	{
 		push_val(st->stack,C_INT,-1);
 		return 0;
 	}
-	count = map_foreachinarea(buildin_getmapmobs_sub,m,x0,y0,x1,y1,BL_MOB,event);
+	count = map_foreachinarea(buildin_getmapmobs_sub, m, x0, y0, x1, y1, BL_MOB, event, mob_id);
 	push_val(st->stack,C_INT,count);
 	return 0;
 }
