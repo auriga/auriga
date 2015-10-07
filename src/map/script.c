@@ -10042,7 +10042,7 @@ static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 		return 1;
 
 	// 対象イベント
-	if(event && strcmp(event,((struct mob_data *)bl)->npc_event))
+	if(event && strcmp(event,((struct mob_data *)bl)->npc_event) == 0)
 		return 1;
 
 	// 対象MobID
