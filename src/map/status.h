@@ -1631,6 +1631,12 @@ enum {
 	MD_SKILLIMMUNITY		= 0x2000,
 };
 
+// ModeOptテーブル
+enum {
+	MDOPT_DOUBLE = 0x001,
+	MDOPT_NOATTACK = 0x002,
+};
+
 // カートテーブル
 enum {
 	CART_TYPE_NOTHING	= 0x0,

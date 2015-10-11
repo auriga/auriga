@@ -1840,6 +1840,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				break;
 			}
 		} while(0);
+	} else if (src_md && skill_num == 0) {
+		do {
+			// ダブルアタック
+			if (src_md->mode_opt & MDOPT_DOUBLE && atn_rand() % 100 < 50) {
+				calc_flag.da = 1;
+				calc_flag.hitrate = calc_flag.hitrate * 110 / 100;
+				break;
+			}
+		} while (0);
 	}
 
 	/* ６．クリティカル計算 */

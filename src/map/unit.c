@@ -1912,6 +1912,12 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 			map_freeblock_lock();
 			unit_stop_walking(src,1);
 
+			// 通常攻撃はしない
+			if (src_md && src_md->mode_opt & MDOPT_NOATTACK) {
+				map_freeblock_unlock();
+				return 1;
+			}
+
 			src_ud->attacktarget_lv = battle_weapon_attack(src,target,tick,0);
 
 			if(src_md && !(battle_config.monster_cloak_check_type&2) && sc && sc->data[SC_CLOAKING].timer != -1)
