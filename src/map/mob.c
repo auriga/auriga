@@ -327,6 +327,7 @@ int mob_spawn(int id)
 
 	md->last_spawntime = tick;
 	md->mode = mob_db[md->base_class].mode;
+	md->mode_opt = mob_db[md->base_class].mode_opt;
 
 	if( md->bl.prev != NULL ) {
 //		clif_clearchar_area(&md->bl,3);
@@ -4588,6 +4589,61 @@ static int mob_readskilldb(void)
 	return 0;
 }
 
+
+/*==========================================
+* mob_mode_db.txt読み込み
+*------------------------------------------
+*/
+static int mob_readmobmodedb(void)
+{
+	FILE *fp;
+	char line[1024];
+	int ln = 0;
+	int class_, j, k;
+	char *str[15], *p, *np;
+
+	if ((fp = fopen("db/mob_mode_db.txt", "r")) == NULL){
+		printf("can't read db/mob_mode_db.txt\n");
+		return -1;
+	}
+
+	while (fgets(line, 1020, fp)){
+		if (line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if (line[0] == '/' && line[1] == '/')
+			continue;
+		memset(str, 0, sizeof(str));
+
+		for (j = 0, p = line; j<2; j++){
+			if ((np = strchr(p, ',')) != NULL){
+				str[j] = p;
+				*np = 0;
+				p = np + 1;
+			}
+			else {
+				str[j] = p;
+			}
+		}
+
+		if (str[0] == NULL)
+			continue;
+
+		class_ = atoi(str[0]);
+
+		if (!mobdb_checkid(class_))	// 値が異常なら処理しない。
+			continue;
+
+		k = atoi(str[1]);
+		if (k >= 0) {
+			mob_db[class_].mode_opt = k;
+		}
+		ln++;
+	}
+	fclose(fp);
+	printf("read db/mob_mode_db.txt done (count=%d)\n", ln);
+	return 0;
+}
+
 /*==========================================
  * リロード
  *------------------------------------------
@@ -4599,6 +4655,7 @@ void mob_reload(void)
 	mob_read_randommonster();
 	mob_readtalkdb();
 	mob_readskilldb();
+	mob_readmobmodedb();
 }
 
 /*==========================================
@@ -4614,6 +4671,7 @@ int do_init_mob(void)
 	mob_read_randommonster();
 	mob_readtalkdb();
 	mob_readskilldb();
+	mob_readmobmodedb();
 
 	add_timer_func_list(mob_delayspawn);
 	add_timer_func_list(mob_delay_item_drop);

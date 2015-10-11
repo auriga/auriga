@@ -56,7 +56,7 @@ struct mob_db {
 	int str,agi,vit,int_,dex,luk;
 	int range,range2,range3;
 	short size,race;
-	int element,mode;
+	int element,mode,mode_opt;
 	int speed,adelay,amotion,dmotion;
 	int mexp,mexpper;
 	struct {
