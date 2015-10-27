@@ -2971,29 +2971,25 @@ AurigaNPCScript
 			結婚している相手のIDを返します。
 
 		getmapmobs関数
-			getmapmobs(<gatname>[,<event>|<mobid>])
+			getmapmobs(<gatname>[,<event>])
 
 			gatname		文字列
 			event		文字列
-			mobid		数値
 
 			指定マップ内に居るmobの数を返します。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
-			イベントの代わりにmobidを措定すると、そのmobidのmobのみ計上します。
 
 		getareamobs関数
-			getareamobs(<gatname>,<x0>,<y0>,<y0>,<y1>[,<event>|<mobid>])
+			getareamobs(<gatname>,<x0>,<y0>,<y0>,<y1>[,<event>])
 
 			gatname		文字列
 			x0,y0,x1,y1	数値
 			event		文字列
-			mobid		数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内にいるmobの数を返します。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
-			イベントの代わりにmobidを措定すると、そのmobidのmobのみ計上します。
 
 		getguildrelation関数
 			getguildrelation(<gld1>[,<gld2>])
@@ -3896,6 +3892,9 @@ AurigaNPCScript
 			範囲NPCの有効範囲にNPCが入った場合に実行されます。（現在はMobのみ）
 			OnTouchNPCを設定するNPCの名前はサーバー内でユニークな物にしなければなりません。
 
+		OnMDDeleteラベル
+			メモリアルダンジョンが削除された場合に実行されます。
+
 	＊OnPCイベントラベル
 
 		以下の定数ラベルはプレイヤーのある特定の行動をトリガーとして実行されます。
@@ -3929,6 +3928,9 @@ AurigaNPCScript
 			別にMAPサーバが担当するMAPへの移動が確定したときに実行されます。
 			ここで言うログアウトとは、キャラクターセレクトに戻る、ゲームを終了する、
 			強制終了するなどあらゆる場合を指します。
+
+		OnPCMapInラベル
+			プレイヤーのマップへの進入が確定した際に実行されます。
 
 	＊注意事項
 		文字列と説明されている引数は""で囲ってください。

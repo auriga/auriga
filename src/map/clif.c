@@ -16939,6 +16939,8 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 			npc_event_doall_id("OnPCLogin",sd->bl.id,sd->bl.m);
 	}
 
+	npc_event_doall_id("OnPCMapIn",sd->bl.id,sd->bl.m);
+
 	if(map_getcell(sd->bl.m,sd->bl.x,sd->bl.y,CELL_CHKNPC))
 		npc_touch_areanpc(sd,sd->bl.m,sd->bl.x,sd->bl.y);
 	else

@@ -455,8 +455,11 @@ int memorial_delete(int memorial_id)
 			type = 3;	// メモリアルダンジョンが消滅しました。
 
 		// マップ削除
-		for(i = 0; i < MAX_MEMORIAL_SEGMAP; i++)
+		for (i = 0; i < MAX_MEMORIAL_SEGMAP; i++)
+		{
+			npc_event_doall_map("OnMDDelete", md->map[i].m);
 			count += map_delmdmap(md->map[i].m);
+		}
 	}
 
 	// タイマー停止

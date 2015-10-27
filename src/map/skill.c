@@ -11986,6 +11986,9 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				}
 			}
 		}
+		status_change_end(bl,SC_DIAMONDDUST,-1);// 冷凍
+		status_change_end(bl,SC_FREEZE,-1);		// 凍結
+		status_change_end(bl,SC_FROSTMISTY,-1);	// 氷結
 		break;
 	case UNT_VACUUM_EXTREME:	/* バキュームエクストリーム */
 		{
