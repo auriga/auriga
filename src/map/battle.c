@@ -6777,8 +6777,15 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	}
 
 	/* 11．miscでもHP/SP回復(月光剣など) */
-	if(battle_config.misc_attack_drain && bl != target)
-		battle_attack_drain(bl,mid.damage,0,battle_config.misc_attack_drain_enable_type);
+	if(bl != target)
+	{
+		// ファイアリングトラップとアイスバウンドトラップは回復する
+		if(skill_num == RA_FIRINGTRAP || skill_num == RA_ICEBOUNDTRAP)
+			battle_attack_drain(bl,mid.damage,0,3);
+		// その他は設定次第
+		else if(battle_config.misc_attack_drain)
+			battle_attack_drain(bl,mid.damage,0,battle_config.misc_attack_drain_enable_type);
+	}
 
 	/* 12．計算結果の最終補正 */
 	mid.amotion = status_get_amotion(bl);

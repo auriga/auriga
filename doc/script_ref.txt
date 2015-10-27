@@ -2971,25 +2971,28 @@ AurigaNPCScript
 			結婚している相手のIDを返します。
 
 		getmapmobs関数
-			getmapmobs(<gatname>[,<event>])
+			getmapmobs(<gatname>[,<event>|<mobid>])
 
 			gatname		文字列
 			event		文字列
+			mobid		数値
 
 			指定マップ内に居るmobの数を返します。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
 
 		getareamobs関数
-			getareamobs(<gatname>,<x0>,<y0>,<y0>,<y1>[,<event>])
+			getareamobs(<gatname>,<x0>,<y0>,<y0>,<y1>[,<event>|<mobid>])
 
 			gatname		文字列
 			x0,y0,x1,y1	数値
 			event		文字列
+			mobid		数値
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内にいるmobの数を返します。
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
+			イベントの代わりにmobidを措定すると、そのmobidのmobのみ計上します。
 
 		getguildrelation関数
 			getguildrelation(<gld1>[,<gld2>])
