@@ -155,6 +155,7 @@ rem VC8以上 で指定できないオプションの回避処理
 if "%__VCVER__%"=="8" goto SKIPVC8
 if "%__VCVER__%"=="9" goto SKIPVC8
 if "%__VCVER__%"=="10" goto SKIPVC8
+if "%__VCVER__%"=="11" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 

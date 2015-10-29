@@ -3237,6 +3237,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		clif_changemap(sd,map[m].name,x,y);
 	}
 
+	// OnPCMapOutイベント
+	if(move_flag && battle_config.pc_mapout_script)
+		npc_event_doall_id("OnPCMapOut",sd->bl.id,sd->bl.m);
+
 	strncpy(sd->mapname,mapname,24);
 	sd->bl.m = m;
 	sd->bl.x = x;

@@ -512,6 +512,9 @@ extern struct Battle_Config {
 	int pc_movemap_script;
 	int pc_login_script;
 	int pc_logout_script;
+	int pc_mapin_script;
+	int pc_mapout_script;
+	int md_delete_script;
 	int save_pckiller_type;
 
 	int def_ratio_atk_to_shieldchain;

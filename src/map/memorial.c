@@ -38,6 +38,7 @@
 #include "clif.h"
 #include "party.h"
 #include "pc.h"
+#include "battle.h"
 
 #define MAX_MEMORIAL_DB		20		// メモリアルダンジョン最大DB数
 #define MEMORIAL_INVERVAL	60000	// メモリアルダンジョン予約処理間隔(ms)
@@ -457,7 +458,8 @@ int memorial_delete(int memorial_id)
 		// マップ削除
 		for (i = 0; i < MAX_MEMORIAL_SEGMAP; i++)
 		{
-			npc_event_doall_map("OnMDDelete", md->map[i].m);
+			if (battle_config.md_delete_script)
+				npc_event_doall_map("OnMDDelete", md->map[i].m);
 			count += map_delmdmap(md->map[i].m);
 		}
 	}

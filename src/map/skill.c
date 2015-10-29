@@ -7386,7 +7386,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case BS_GREED:			/* 貪欲 */
-		if( sd && !map[src->m].flag.town && !map[src->m].flag.pvp && !map[src->m].flag.gvg ) {	// 街・PvP・GvGでは使用不可
+		if (sd && (battle_config.greed_use_town || !map[src->m].flag.town) && !map[src->m].flag.pvp && !map[src->m].flag.gvg) {	// 街・PvP・GvGでは使用不可
 			struct party *p = NULL;
 			if(sd->status.party_id > 0)
 				p = party_search(sd->status.party_id);
