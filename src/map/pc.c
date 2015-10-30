@@ -1601,6 +1601,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// ホットキーセット
 	sd->hotkey_set = 0;
 
+	// 同盟チャットのon
+	sd->state.alliance_message = 0;
+
 	// Message of the Dayの送信
 	msg_send_motd(sd);
 

@@ -608,6 +608,7 @@ extern struct Battle_Config {
 	int npc_timeout_time;
 	int use_packet_obfuscation;
 	int greed_use_town;
+	int alliance_message;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

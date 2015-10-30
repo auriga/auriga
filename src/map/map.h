@@ -403,6 +403,7 @@ struct map_session_data {
 		unsigned tk_doridori_sp : 1;
 		unsigned store : 2;	// 0:何も開いていない, 1:露店を開いている, 2:購買露店を開いている
 		unsigned blockedmove : 1;
+		unsigned alliance_message : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

@@ -1176,11 +1176,24 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
  */
 void guild_send_message(struct map_session_data *sd, const char *mes, size_t len)
 {
+	struct guild *g;
+	int i;
+
 	nullpo_retv(sd);
 
-	if(sd->status.guild_id==0)
+	if(sd->status.guild_id == 0 || (g = guild_search(sd->status.guild_id)) == NULL)
 		return;
+
 	intif_guild_message(sd->status.guild_id,sd->status.account_id,mes,len);
+
+	if(battle_config.alliance_message && sd->state.alliance_message)
+	{
+		for(i = 0; i < MAX_GUILDALLIANCE; ++i)
+		{
+			if(g->alliance[i].guild_id && g->alliance[i].opposition==0)
+				intif_guild_message(g->alliance[i].guild_id,sd->status.account_id,mes,len);
+		}
+	}
 
 	return;
 }

@@ -1,4 +1,12 @@
 ----------------------------------------
+//1242 [2015/10/31] by Cocoa
+
+・1241で追加したOnMDDeleteのエラーを修正（battle_auriga.conf）
+
+・同盟チャットの実装（conf/atcommand_auriga.conf, conf/battle_config.auriga, conf/msg_auriga.conf,
+				src/map/atcommand.*, src/map/battle.*, src/map/guild.c, src/map/map.h, msrc/map/pc.c）
+
+----------------------------------------
 //1241 [2015/10/30] by Cocoa
 
 ・1239の同梱漏れ（src/map/skill.c）

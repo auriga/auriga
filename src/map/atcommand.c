@@ -235,6 +235,7 @@ ATCOMMAND_FUNC(autoloot);
 ATCOMMAND_FUNC(changemaptype);
 ATCOMMAND_FUNC(hotkeyset);
 ATCOMMAND_FUNC(callmerc);
+ATCOMMAND_FUNC(alliance);
 
 /*==========================================
  * AtCommandInfo atcommand_info[]構造体の定義
@@ -409,6 +410,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ChangeMapType,      "@changemaptype",    0, atcommand_changemaptype,       NULL },
 	{ AtCommand_HotkeySet,          "@hotkeyset",        0, atcommand_hotkeyset,           NULL },
 	{ AtCommand_CallMerc,           "@callmerc",         0, atcommand_callmerc,            NULL },
+	{ AtCommand_Alliance,           "@alliance",         0, atcommand_alliance,            NULL },
 		// add here
 	{ AtCommand_MapMove,            "@mapmove",          0, NULL,                          NULL },
 	{ AtCommand_Broadcast,          "@broadcast",        0, NULL,                          NULL },
@@ -5768,6 +5770,28 @@ static int atcommand_readdb(void)
 
 	fclose(fp);
 	printf("read %s done (count=%d)\n", filename, i);
+
+	return 0;
+}
+
+/*==========================================
+ * 同盟チャットの切り替え
+ *------------------------------------------
+ */
+int atcommand_alliance(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	nullpo_retr(-1, sd);
+
+	if (!battle_config.alliance_message)
+		return 0;
+
+	if (sd->state.alliance_message) {
+		sd->state.alliance_message = 0;
+		clif_displaymessage(fd, msg_txt(211));
+	} else {
+		sd->state.alliance_message = 1;
+		clif_displaymessage(fd, msg_txt(212));
+	}
 
 	return 0;
 }

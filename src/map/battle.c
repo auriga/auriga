@@ -8960,6 +8960,7 @@ int battle_config_read(const char *cfgName)
 		{ "npc_timeout_time",                   &battle_config.npc_timeout_time,                   60       },
 		{ "use_packet_obfuscation",             &battle_config.use_packet_obfuscation,             1        },
 		{ "greed_use_town",                     &battle_config.greed_use_town,                     0        },
+		{ "alliance_message",                   &battle_config.alliance_message,                   0        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 
