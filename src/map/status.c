@@ -773,7 +773,7 @@ L_RECALC:
 						wele_= sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
-							sd->ranker_weapon_bonus_ = 10;
+							sd->ranker_weapon_bonus_ = battle_config.ranker_weapon_bonus;
 					}
 					sd->range.attackrange_ += sd->inventory_data[idx]->range;
 					sd->state.lr_flag = 1;
@@ -800,7 +800,7 @@ L_RECALC:
 						wele = sd->status.inventory[idx].card[1] & 0x0f;	// 属 性
 						// ランキングボーナス
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
-							sd->ranker_weapon_bonus = 10;
+							sd->ranker_weapon_bonus = battle_config.ranker_weapon_bonus;
 					}
 					sd->range.attackrange += sd->inventory_data[idx]->range;
 					if(calclimit == 2)

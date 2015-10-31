@@ -905,7 +905,7 @@ struct mob_data {
 	struct unit_data  ud;
 	struct status_change sc;
 	short n;
-	short base_class,class_,dir,mode,mode_opt;
+	short base_class,class_,dir,mode;
 	short m,x0,y0,xs,ys;
 	short idlecount;
 	char name[24];

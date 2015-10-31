@@ -1843,7 +1843,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	} else if (src_md && skill_num == 0) {
 		do {
 			// ダブルアタック
-			if (src_md->mode_opt & MDOPT_DOUBLE && atn_rand() % 100 < 50) {
+			if (mob_db[src_md->class_].mode_opt[MDOPT_DOUBLE] && atn_rand() % 100 < mob_db[src_md->class_].mode_opt[MDOPT_DOUBLE]*5)
+			{
 				calc_flag.da = 1;
 				calc_flag.hitrate = calc_flag.hitrate * 110 / 100;
 				break;
@@ -8961,6 +8962,9 @@ int battle_config_read(const char *cfgName)
 		{ "use_packet_obfuscation",             &battle_config.use_packet_obfuscation,             1        },
 		{ "greed_use_town",                     &battle_config.greed_use_town,                     0        },
 		{ "alliance_message",                   &battle_config.alliance_message,                   0        },
+		{ "ranker_potion_bonus",                &battle_config.ranker_potion_bonus,                150      },
+		{ "ranker_potion_bonus_rogue",          &battle_config.ranker_potion_bonus_rogue,          200      },
+		{ "ranker_weapon_bonus",                &battle_config.ranker_weapon_bonus,                10       },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

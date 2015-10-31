@@ -796,7 +796,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	};
 
 	struct map_session_data *sd = NULL, *dstsd = NULL;
-	struct mob_data         *dstmd = NULL;
+	struct mob_data         *md = NULL, *dstmd = NULL;
 	struct skill_unit       *unit = NULL;
 	struct status_change    *tsc = NULL;
 	int skill;
@@ -931,6 +931,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case SM_BASH:			/* バッシュ（急所攻撃） */
 		if( sd && pc_checkskill(sd,SM_FATALBLOW) > 0 ) {
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,500*(skilllv-5)+(sd->status.base_level/3),sd->status.base_level))
+				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(SM_FATALBLOW,skilllv),0,tick+status_get_amotion(src));
+		}
+		else if (md && mob_db[md->class_].mode_opt[MDOPT_FATALBLOW] > 0) {
+			if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,500*(skilllv-5)+(status_get_lv(src)/3),mob_db[md->class_].lv))
 				status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(SM_FATALBLOW,skilllv),0,tick+status_get_amotion(src));
 		}
 		break;

@@ -1913,7 +1913,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 			unit_stop_walking(src,1);
 
 			// 通常攻撃はしない
-			if (src_md && src_md->mode_opt & MDOPT_NOATTACK) {
+			if (src_md && mob_db[src_md->class_].mode_opt[MDOPT_NOATTACK])
+			{
 				map_freeblock_unlock();
 				return 1;
 			}

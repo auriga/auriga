@@ -327,7 +327,6 @@ int mob_spawn(int id)
 
 	md->last_spawntime = tick;
 	md->mode = mob_db[md->base_class].mode;
-	md->mode_opt = mob_db[md->base_class].mode_opt;
 
 	if( md->bl.prev != NULL ) {
 //		clif_clearchar_area(&md->bl,3);
@@ -4599,7 +4598,7 @@ static int mob_readmobmodedb(void)
 	FILE *fp;
 	char line[1024];
 	int ln = 0;
-	int class_, j, k;
+	int class_, j, k, val;
 	char *str[15], *p, *np;
 
 	if ((fp = fopen("db/mob_mode_db.txt", "r")) == NULL){
@@ -4614,7 +4613,7 @@ static int mob_readmobmodedb(void)
 			continue;
 		memset(str, 0, sizeof(str));
 
-		for (j = 0, p = line; j<2; j++){
+		for (j = 0, p = line; j<3; j++){
 			if ((np = strchr(p, ',')) != NULL){
 				str[j] = p;
 				*np = 0;
@@ -4634,8 +4633,9 @@ static int mob_readmobmodedb(void)
 			continue;
 
 		k = atoi(str[1]);
-		if (k >= 0) {
-			mob_db[class_].mode_opt = k;
+		val = atoi(str[2]);
+		if (k > 0 && val >= 0) {
+			mob_db[class_].mode_opt[k] = val;
 		}
 		ln++;
 	}

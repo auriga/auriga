@@ -30,6 +30,7 @@
 #define MAX_RAND_MOB_AMOUNT	10000
 #define ITEM_DROP_COUNT 10
 #define MAX_MOB_TALK 100
+#define MAX_MODE_OPT 3
 
 #define MIN_MOBTHINKTIME 100
 
@@ -56,7 +57,7 @@ struct mob_db {
 	int str,agi,vit,int_,dex,luk;
 	int range,range2,range3;
 	short size,race;
-	int element,mode,mode_opt;
+	int element,mode,mode_opt[MAX_MODE_OPT];
 	int speed,adelay,amotion,dmotion;
 	int mexp,mexpper;
 	struct {

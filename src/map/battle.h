@@ -609,6 +609,9 @@ extern struct Battle_Config {
 	int use_packet_obfuscation;
 	int greed_use_town;
 	int alliance_message;
+	int ranker_potion_bonus;
+	int ranker_potion_bonus_rogue;
+	int ranker_weapon_bonus;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

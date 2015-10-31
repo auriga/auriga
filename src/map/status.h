@@ -1633,8 +1633,9 @@ enum {
 
 // ModeOptテーブル
 enum {
-	MDOPT_DOUBLE = 0x001,
-	MDOPT_NOATTACK = 0x002,
+	MDOPT_DOUBLE    = 1, // ダブルアタック
+	MDOPT_NOATTACK  = 2, // 通常攻撃なし
+	MDOPT_FATALBLOW = 3, // 急所攻撃
 };
 
 // カートテーブル

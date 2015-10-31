@@ -6673,10 +6673,10 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			hp = hp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
 		{
-			if(sd->sc.data[SC_ROGUE].timer != -1)
-				hp = hp * 2;
+			if (sd->sc.data[SC_ROGUE].timer != -1)
+				hp = hp * battle_config.ranker_potion_bonus_rogue / 100;
 			else
-				hp = hp * 150 / 100;
+				hp = hp * battle_config.ranker_potion_bonus / 100;
 		}
 		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
 			hp = hp * 150 / 100;
@@ -6702,10 +6702,10 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			sp  = sp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
 		{
-			if(sd->sc.data[SC_ROGUE].timer != -1)
-				sp = sp * 2;
+			if (sd->sc.data[SC_ROGUE].timer != -1)
+				hp = hp * battle_config.ranker_potion_bonus_rogue / 100;
 			else
-				sp = sp * 150 / 100;
+				hp = hp * battle_config.ranker_potion_bonus / 100;
 		}
 		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
 			sp = sp * 15 / 100;
