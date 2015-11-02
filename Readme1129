@@ -1,4 +1,14 @@
 ----------------------------------------
+//1244 [2015/11/03] by Cocoa
+
+・MobオプションAIの初期化を行う（src/map/mob.c）
+
+・MobオプションAIにクリティカル攻撃、完全回避、スチールクロウを追加（db/mob_mode_db.txt, src/map/battle.c, src/map/mob.h, src/map/status.h）
+	-> 特定のMobだけクリティカル攻撃出来るようになる
+	-> 特定のMobだけ完全回避出来るようになる
+	-> ファルコンアサルトでスチールクロウを考慮した計算式になる
+
+----------------------------------------
 //1243 [2015/11/01] by Cocoa
 
 ・MobオプションAIを拡張とそれに伴う修正（src/map/battle.c, src/map/map.h, src/map/mob.*, src/map/status.h, src/map/unit.c）

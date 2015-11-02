@@ -4033,6 +4033,7 @@ static int mob_readdb(void)
 			mob_db[class_].head_top      = 0;
 			mob_db[class_].head_mid      = 0;
 			mob_db[class_].head_bottom   = 0;
+			memset(mob_db[class_].mode_opt, 0, sizeof(mob_db[class_].mode_opt));
 		}
 		fclose(fp);
 		printf("read %s done\n", filename[n]);
@@ -4634,9 +4635,8 @@ static int mob_readmobmodedb(void)
 
 		k = atoi(str[1]);
 		val = atoi(str[2]);
-		if (k > 0 && val >= 0) {
+		if (k > 0 && val > 0)
 			mob_db[class_].mode_opt[k] = val;
-		}
 		ln++;
 	}
 	fclose(fp);

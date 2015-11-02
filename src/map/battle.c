@@ -1855,7 +1855,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ６．クリティカル計算 */
 	if( calc_flag.da == 0 &&
 	    (skill_num == 0 || skill_num == KN_AUTOCOUNTER || skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING || skill_num == LG_PINPOINTATTACK) &&
-	    (!src_md || battle_config.enemy_critical) &&
+	    (!src_md || battle_config.enemy_critical || mob_db[src_md->class_].mode_opt[MDOPT_CRITICAL]) &&
 	    skill_lv >= 0 )
 	{
 		// 連撃が発動してなくて、通常攻撃・オートカウンター・シャープシューティング・影斬りならば
@@ -5229,8 +5229,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.dmg_lv  = ATK_LUCKY;
 	}
 
-	if(battle_config.enemy_perfect_flee) {	// 対象が完全回避をする設定がONなら
-		if(skill_num == 0 && skill_lv >= 0 && target_md != NULL && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) ) {
+	if (target_md != NULL && (battle_config.enemy_perfect_flee || mob_db[target_md->class_].mode_opt[MDOPT_PERFECT_FREE]))	// 対象が完全回避をする設定がONなら
+	{
+		if(skill_num == 0 && skill_lv >= 0 && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) )
+		{
 			wd.damage  = 0;
 			wd.damage2 = 0;
 			wd.type    = 0x0b;
@@ -6635,6 +6637,8 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
+		if (md && mob_db[md->class_].mode_opt[MDOPT_STEELCROW])
+			skill = mob_db[md->class_].mode_opt[MDOPT_STEELCROW];
 		mid.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
 		if(sd) {
 			if(battle_config.allow_falconassault_elemet) {
