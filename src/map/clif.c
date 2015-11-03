@@ -14345,7 +14345,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x22e;
 	memcpy(WFIFOP(fd,2),hd->status.name,24);
-	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2:hd->status.rename_flag;	// 名前付けたフラグ 1で変更不可 2は死亡状態
+	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // 名前付けたフラグ 1で変更不可 2は死亡状態
 	WFIFOW(fd,27)=hd->status.base_level;	// Lv
 	WFIFOW(fd,29)=hd->status.hungry;		// 満腹度
 	WFIFOW(fd,31)=hd->intimate/100;	// 新密度
