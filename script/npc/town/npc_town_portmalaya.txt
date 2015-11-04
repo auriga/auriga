@@ -7,6 +7,10 @@
 // $MalayaName$[3] -> ma_fild01謎の生物の噂
 // $MalayaName$[4] -> ma_fild02謎の生物の噂
 // $MalayaName$[5] -> ma_scene01謎の生物の噂
+// $MalayaFes -> ピンタドスフェスティバル開催期間
+// $MalayaFes01 -> 小さなお守り 納品数
+// $MalayaFes02 -> 銀の十字架 納品数
+// $MalayaFes03 -> 染料 納品数
 //==============================================================================
 
 //============================================================
@@ -13302,5 +13306,556 @@ ma_scene01.gat,171,174,0	script	#bako6	139,2,2,{
 		mes "きっと楽しいですよね！";
 		close;
 	}
+	end;
+}
+
+//============================================================
+// ピンタドスフェスティバルNPC
+//------------------------------------------------------------
+ma_in01_jp.gat,45,148,1	script	イスコ#pin	577,{
+	if($MalayaFes01 >= 100 && $MalayaFes02 >= 100 && $MalayaFes03 >= 30) {
+		mes "[イスコ]";
+		mes "準備も整ったし、";
+		mes "いつでもピンタドスフェスティバルを";
+		mes "始められますよ。";
+		mes "開催してもいいですか？";
+		next;
+		if(select("ピンタドスフェスティバルを開催する","ちょっと待って") == 2) {
+			// 未調査
+			close;
+		}
+		emotion 3;	//はーと
+		donpcevent "イスコ#pin::OnStart";
+		mes "[イスコ]";
+		mes "冒険者のお兄さん、お姉さんたちが";
+		mes "手伝ってくれたおかげで、";
+		mes "フェスティバルに必要な品物を";
+		mes "揃えることができました。";
+		next;
+		emotion 3;	//♪
+		mes "[イスコ]";
+		mes "エヘヘ……。";
+		mes "これで^7A96E0ピンタドスフェスティバル^000000を";
+		mes "開催することができます。";
+		close;
+	}
+	emotion 53;
+	mes "[イスコ]";
+	mes "あああ、どうしよう……。";
+	mes "フェスティバルまで開催まで";
+	mes "もう時間がないのに……。";
+	next;
+	switch(select("どうしたの？","どのくらい集まったの？","材料を持ってきたよ")) {
+	case 1:
+		mes "[イスコ]";
+		mes "バリオ・マヒワガには";
+		mes "古くから伝えられている";
+		mes "^7A96E0ピンタドスフェスティバル^000000という";
+		mes "お祭があるんです。";
+		mes "僕はその準備をしていたんですが、";
+		next;
+		emotion 57;
+		mes "[イスコ]";
+		mes "ポートマラヤまでお遣いに行った帰り、";
+		mes "いきなり目の前に現れた";
+		mes "^FF8440ブギスギス^000000たちに";
+		mes "材料を奪われてしまったんです……。";
+		next;
+		mes "[イスコ]";
+		mes "ムンバキ・キコに相談しようと";
+		mes "ここまで来たのですが、";
+		mes "せっかく任せてくれたお仕事を";
+		mes "失敗したなんて言い出せなくて……。";
+		next;
+		mes "[イスコ]";
+		mes "材料を買いなおすお金は無いし";
+		mes "僕一人では材料を集められません。";
+		mes "ああ、どうしよう……。";
+		mes "このままじゃ、次のフェスティバルが";
+		mes "開催できません……。";
+		next;
+		menu "材料の内容は？",-;
+		mes "[イスコ]";
+		mes "奪われた材料は、";
+		mes "小さなお守り100個";
+		mes "銀の十字架100個";
+		mes "染料30個です。";
+		next;
+		menu "怪我はなかった？",-;
+		emotion 54;
+		mes "[イスコ]";
+		mes "怪我はしませんでしたが、材料がないと";
+		mes "^7A96E0ピンタドスフェスティバル^000000が……";
+		mes "どうしよう……。";
+		close;
+	case 2:
+		mes "[イスコ]";
+		mes "冒険者のお兄さん、お姉さんたちが";
+		mes "材料を集めてきてくれているけど、";
+		next;
+		mes "[イスコ]";
+		mes "まだ";
+		mes "小さなお守り" +$MalayaFes01+ "個";
+		mes "銀の十字架" +$MalayaFes02+ "個";
+		mes "染料" +$MalayaFes03+ "個";
+		mes "しか集まっていないんです。";
+		next;
+		emotion 54;
+		mes "[イスコ]";
+		mes "はああ……まだ足りません。";
+		mes "^7A96E0ピンタドスフェスティバル^000000を";
+		mes "開催できるかな……。";
+		close;
+	case 3:
+		emotion 3;
+		mes "[イスコ]";
+		mes "え？　本当？";
+		mes "わ〜！　ありがとう!!";
+		mes strcharinfo(0)+(Sex? "お兄": "お姉")+ "さん!!";
+		mes "何を持って来てくれたんですか？";
+		next;
+		switch(select("小さなお守り(^FF0000" +(100-$MalayaFes01)+ "個不足^000000)","銀の十字架(^FF0000" +(100-$MalayaFes02)+ "個不足^000000)","染料(^FF0000" +(30-$MalayaFes03)+ "個不足^000000)")) {
+		case 1:
+			set '@itemid,6497;
+			set '@itemname$,getitemname('@itemid);
+			set '@temp,100-$MalayaFes01;
+			mes "[イスコ]";
+			mes getitemname('@itemid)+ "を持って来て";
+			mes "くれたんですね？";
+			next;
+			mes "[イスコ]";
+			mes "ちょっと待って下さいね。";
+			mes "ええと……。";
+			next;
+			if($MalayaFes01 >= 100) {
+				// 適当
+				mes "[イスコ]";
+				mes getitemname('@itemid)+ "は";
+				mes "必要な数が集まりました。やった〜！";
+				close;
+			}
+			mes "[イスコ]";
+			mes getitemname('@itemid)+ "は今";
+			mes '@temp+ "個足りません。";
+			mes "いくつ持って来てくれたんですか？";
+			break;
+		case 2:
+			set '@itemid,6502;
+			set '@itemname$,getitemname('@itemid);
+			set '@temp,100-$MalayaFes02;
+			mes "[イスコ]";
+			mes getitemname('@itemid)+ "を持って来て";
+			mes "くれたんですね？";
+			next;
+			mes "[イスコ]";
+			mes "ちょっと待って下さいね。";
+			mes "ええと……。";
+			next;
+			if($MalayaFes02 >= 100) {
+				// 適当
+				mes "[イスコ]";
+				mes getitemname('@itemid)+ "は";
+				mes "必要な数が集まりました。やった〜！";
+				close;
+			}
+			mes "[イスコ]";
+			mes getitemname('@itemid)+ "は今";
+			mes '@temp+ "個足りません。";
+			mes "いくつ持って来てくれたんですか？";
+			break;
+		case 3:
+			set '@itemname$,"染料";
+			set '@temp,30-$MalayaFes03;
+			mes "[イスコ]";
+			mes "染料を持って来てくれたんですね？";
+			next;
+			mes "[イスコ]";
+			mes "ちょっと待って下さいね。";
+			mes "ええと……。";
+			next;
+			if($MalayaFes03 >= 30) {
+				// 適当
+				mes "[イスコ]";
+				mes getitemname('@itemid)+ "は";
+				mes "必要な数が集まりました。やった〜！";
+				close;
+			}
+			mes "[イスコ]";
+			mes "染料は今" +'@temp+ "個足りません。";
+			mes "どの染料を持って来てくれましたか？";
+			next;
+			switch(
+				select(	"赤色の染料(^FF0000" +countitem(975)+ "^000000)",
+						"黄色の染料(^FF0000" +countitem(976)+ "^000000)",
+						"青色の染料(^FF0000" +countitem(978)+ "^000000)",
+						"緑色の染料(^FF0000" +countitem(979)+ "^000000)",
+						"紅色の染料(^FF0000" +countitem(980)+ "^000000)",
+						"紫色の染料(^FF0000" +countitem(981)+ "^000000)",
+						"白色の染料(^FF0000" +countitem(982)+ "^000000)",
+						"黒色の染料(^FF0000" +countitem(983)+ "^000000)"
+				)
+			) {
+			case 1: set '@itemid,975; break;
+			case 2: set '@itemid,976; break;
+			case 3: set '@itemid,978; break;
+			case 4: set '@itemid,979; break;
+			case 5: set '@itemid,980; break;
+			case 6: set '@itemid,981; break;
+			case 7: set '@itemid,982; break;
+			case 8: set '@itemid,983; break;
+			}
+			if(countitem('@itemid) < 1) {
+				mes "[イスコ]";
+				mes "あれ、" +getitemname('@itemid)+ "は";
+				mes "持っていないようですが。";
+				close;
+			}
+			mes "[イスコ]";
+			mes (Sex? "お兄": "お姉")+ "さんが持っている" +getitemname('@itemid)+ "は";
+			mes countitem('@itemid)+ "個ですね。";
+			mes "いくつくれるんですか？";
+			break;
+		}
+		break;
+	}
+	next;
+	if(select("1個","数量を指定する") == 1) {
+		if('@itemid == 6497) {
+			mes "[イスコ]";
+			mes "へへへ……。";
+			mes "ひとつ持って来てくれたんですね。";
+		} else {
+			mes "[イスコ]";
+			mes "へへへ……。";
+			mes "ひとつ持って来たんですね。";
+		}
+		next;
+		set '@num,1;
+	} else {
+		mes "[イスコ]";
+		mes "へへへ……。";
+		mes "まだ足し算があまりできなくて、";
+		//mes "一度に30個までしか";
+		mes "一度に50個までしか";
+		mes "計算ができないんです。";
+		mes "いくつ持って来てくれたんですか？";
+		next;
+		input '@num;
+		if('@num <= 0 || '@num > 50) {
+			if('@itemid == 6497) {
+				mes "[イスコ]";
+				mes "意地悪……数字がおかしいと";
+				mes "足し算ができませんよ……。";
+				close;
+			} else {
+				mes "[イスコ]";
+				mes "意地悪〜。";
+				mes "数字がおかしいと足し算が";
+				mes "できませんよ……。";
+				close;
+			}
+		}
+	}
+	if(countitem('@itemid) < '@num) {
+		mes "[イスコ]";
+		mes "あれ？　" +(Sex? "お兄": "お姉")+ "さん！";
+		mes getitemname('@itemid)+ "はどこにあるんですか？";
+		close;
+	}
+	delitem '@itemid,'@num;
+	if('@itemid == 6497) {
+		set $MalayaFes01,$MalayaFes01+'@num;
+	} else if('@itemid == 6402) {
+		set $MalayaFes02,$MalayaFes02+'@num;
+	} else {
+		set $MalayaFes03,$MalayaFes03+'@num;
+	}
+	set '@temp,'@temp-'@num;
+	mes "[イスコ]";
+	mes "へへへ……。";
+	mes "ありがとうございます。" +(Sex? "お兄": "お姉")+ "さん!";
+	if('@temp > 0) {
+		mes "これで必要な" +'@itemname$+ "は、";
+		mes "あと" +'@temp+ "個になりました。";
+	}
+	else {
+		mes "これで" +'@itemname$+ "は";
+		mes "必要な数が集まりました。やった〜！";
+	}
+	close;
+OnStart:
+	initnpctimer;
+	set $MalayaFes,1;
+	hideoffnpc "観光客#pin1";
+	hideoffnpc "観光客#pin2";
+	hideoffnpc "観光客#pin3";
+	hideoffnpc "観光客#pin4";
+	hideoffnpc "若いタトゥーイスト#pin";
+	hideoffnpc "太鼓を叩く青年#pin1";
+	hideoffnpc "太鼓を叩く青年#pin2";
+	hideoffnpc "太鼓を叩く青年#pin3";
+	hideoffnpc "拍子を合わせる少年#pin1";
+	hideoffnpc "拍子を合わせる少年#pin2";
+	hideoffnpc "拍子を合わせる少年#pin3";
+	announce "ただ今から一週間、バリオ・マヒワガでピンタドスフェスティバルが開催されます。",0;
+	end;
+OnReset:
+	set $MalayaFes,0;
+	set $MalayaFes01,0;
+	set $MalayaFes02,0;
+	set $MalayaFes03,0;
+	hideonnpc "観光客#pin1";
+	hideonnpc "観光客#pin2";
+	hideonnpc "観光客#pin3";
+	hideonnpc "観光客#pin4";
+	hideonnpc "若いタトゥーイスト#pin";
+	hideonnpc "太鼓を叩く青年#pin1";
+	hideonnpc "太鼓を叩く青年#pin2";
+	hideonnpc "太鼓を叩く青年#pin3";
+	hideonnpc "拍子を合わせる少年#pin1";
+	hideonnpc "拍子を合わせる少年#pin2";
+	hideonnpc "拍子を合わせる少年#pin3";
+	announce "ピンタドスフェスティバルは盛況の末、終了しました。",0;
+	stopnpctimer;
+	end;
+OnTimer3600000:
+	if($MalayaFes < 169) {
+		set $MalayaFes,$MalayaFes+1;
+		initnpctimer;
+	}
+	else if($MalayaFes == 169) {
+		donpcevent "イスコ#pin::OnReset";
+	}
+	end;
+OnInit:
+	waitingroom "ピンタドスフェスティバル",0;
+	if($MalayaFes >= 1)
+		initnpctimer;
+	end;
+}
+
+ma_fild01.gat,192,200,8	script	観光客#pin1	58,{
+	mes "[観光客]";
+	mes "ここでピンタドスフェスティバルを";
+	mes "やるというからすべて投げ出して";
+	mes "遊びに来たんだ。";
+	next;
+	mes "[観光客]";
+	mes "遊びに来たのは後悔してないけど……。";
+	next;
+	mes "[観光客]";
+	mes "思い切って入れたタトゥーが";
+	mes "イマイチ気にいらないんだ。";
+	next;
+	mes "[観光客]";
+	mes "背中に入れて貰ったタトゥーを";
+	mes "水面に映して見てるけど……。";
+	mes "どうもタトゥーイストが";
+	mes "失敗したようなんだ。";
+	next;
+	mes "[観光客]";
+	mes "楽しみだったのに……。";
+	next;
+	mes "[観光客]";
+	mes "あ〜あ……。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "観光客#pin1";
+	end;
+}
+
+ma_fild01.gat,211,200,6	script	観光客#pin2	775,{
+	mes "[観光客]";
+	mes "ピンタドスフェスティバルを";
+	mes "開催するといわれてコンロンから";
+	mes "遊びに来たんだ。";
+	next;
+	mes "[観光客]";
+	mes "誤解しているかもしれないから";
+	mes "先に言っておくけど、";
+	mes "私の顔はタトゥーを入れたのではなく";
+	mes "仮面だからな……。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "観光客#pin2";
+	end;
+}
+
+ma_fild01.gat,251,205,2	script	観光客#pin3	824,{
+	mes "[観光客]";
+	mes "これは私が求めていた";
+	mes "タトゥーじゃないぞ!!";
+	next;
+	mes "[観光客]";
+	mes "私はスタイリッシュなタトゥーに";
+	mes "してくれと頼んだのに……。";
+	mes "ビョンウンゴがこんなに";
+	mes "ふとましい格好だったとは!!";
+	mes "イメージと大違いだ！";
+	mes "やり直してくれ！";
+	next;
+	mes "[若いタトゥーイスト]";
+	mes "あの……お客さん、";
+	mes "ビョンウンゴはそういうものだと";
+	mes "説明したじゃないですか。";
+	mes "も〜、だから思いつきでいれるのは";
+	mes "やめた方がいいと言ったのに……。";
+	next;
+	mes "[観光客]";
+	mes "いやいや。いやいやいや!!";
+	mes "これじゃ駄目だ！違う！";
+	mes "頼むからやり直してくれ！";
+	next;
+	mes "[若いタトゥーイスト]";
+	mes "あー、もう！";
+	mes "困ったな……。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "観光客#pin3";
+	end;
+}
+
+ma_fild01.gat,162,235,6	script	観光客#pin4	815,{
+	mes "[観光客]";
+	mes "ピンタドスフェスティバルは";
+	mes "一週間だけ開催されるらしいですね。";
+	next;
+	mes "[観光客]";
+	mes "私は遠くの龍之城から遊びに来てたけど、";
+	mes "ちょうどピンタドスフェスティバルの";
+	mes "開催期間中だったとは……。";
+	mes "運が良かったようです。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "観光客#pin4";
+	end;
+}
+
+ma_fild01.gat,249,206,6	script	若いタトゥーイスト#pin	582,{
+	mes "[若いタトゥーイスト]";
+	mes "無計画な人がお客様だと";
+	mes "本当に困ります。";
+	next;
+	mes "[若いタトゥーイスト]";
+	mes "最近は気軽に入れる方が多いですが";
+	mes "やはりタトゥーは覚悟や信念を";
+	mes "刻むものだと思っています。";
+	mes "気に入らないから";
+	mes "やり直してくれと言われても……";
+	mes "困ったものです。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "若いタトゥーイスト#pin";
+	end;
+}
+
+ma_fild01.gat,164,234,6	script	太鼓を叩く青年#pin1	578,{
+	mes "‐ドドドドーン‐";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "やはりピンタドスフェスティバルの";
+	mes "期間中は、太鼓を叩きながら";
+	mes "楽しむのが一番だな。";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "君も楽しんだらどうだ？";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "太鼓を叩く青年#pin1";
+	end;
+}
+
+ma_fild01.gat,170,231,4	script	太鼓を叩く青年#pin2	578,{
+	mes "‐ドドドドーン‐";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "ピンタドスフェスティバルの";
+	mes "ピンタドスは、私達の言葉で";
+	mes "塗られているという意味です。";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "だから、この期間の間だけ";
+	mes "特別なタトゥーを入れてくれる方も";
+	mes "いるんですよ。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "太鼓を叩く青年#pin2";
+	end;
+}
+
+ma_fild01.gat,164,228,6	script	太鼓を叩く青年#pin3	578,{
+	mes "‐ドドドドーン‐";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "よく覚えてないが、";
+	next;
+	mes "[太鼓を叩く青年]";
+	mes "俺が子供の頃の";
+	mes "ピンタドスフェスティバルは";
+	mes "今ほどタトゥーを前面に";
+	mes "押し出した祭ではなく、";
+	mes "豊かな収穫を喜ぶ祭だったらしい。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "太鼓を叩く青年#pin3";
+	end;
+}
+
+ma_fild01.gat,170,234,4	script	拍子を合わせる少年#pin1	577,{
+	mes "‐タタタタン‐";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "太鼓の音と棒で拍子を合わせる音は";
+	mes "いつ聞いても盛り上がりますね。";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "タタタターンタタタターン";
+	mes "楽しいな〜。";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "拍子を合わせる少年#pin1";
+	end;
+}
+
+ma_fild01.gat,164,231,6	script	拍子を合わせる少年#pin2	577,{
+	mes "‐タタタタン‐";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "今は棒を使って";
+	mes "拍子を合わせてるけど";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "いつかは僕も太鼓を叩く日が";
+	mes "くるのかな？";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "拍子を合わせる少年#pin2";
+	end;
+}
+
+ma_fild01.gat,170,228,4	script	拍子を合わせる少年#pin3	577,{
+	mes "‐タタタタン‐";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "今は棒を使って";
+	mes "拍子を合わせてるけど";
+	next;
+	mes "[拍子を合わせる少年]";
+	mes "いつかは僕も太鼓を叩く日が";
+	mes "くるのかな？";
+	close;
+OnInit:
+	if($MalayaFes == 0)
+		hideonnpc "拍子を合わせる少年#pin3";
 	end;
 }
