@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D356871D-58E1-450B-967A-E6E9646175AF}</ProjectGuid>
+    <RootNamespace>map-server</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">map-server</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">map-server</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>$(VCInstallDir)bin\x86_amd64;$(VCInstallDir)bin;$(WindowsSDK_ExecutablePath_x86);$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(MSBuildToolsPath32);$(FxCopDir);$(PATH);</ExecutablePath>
+    <ReferencePath>$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;</ReferencePath>
+    <LibraryPath>$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+    <ExcludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;</ExcludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20131223;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4100;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>../src/common/;../src/common/zlib/;C:/Program Files/MySQL/MySQL Server 5.5/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalLibraryDirectories>C:/Program Files/MySQL/MySQL Server 5.5/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20131223;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4100;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\map\sql\mapreg_sql.h" />
+    <ClInclude Include="..\src\map\atcommand.h" />
+    <ClInclude Include="..\src\map\bank.h" />
+    <ClInclude Include="..\src\map\battle.h" />
+    <ClInclude Include="..\src\map\bonus.h" />
+    <ClInclude Include="..\src\map\booking.h" />
+    <ClInclude Include="..\src\map\buyingstore.h" />
+    <ClInclude Include="..\src\map\chat.h" />
+    <ClInclude Include="..\src\map\chrif.h" />
+    <ClInclude Include="..\src\map\clif.h" />
+    <ClInclude Include="..\src\map\date.h" />
+    <ClInclude Include="..\src\map\elem.h" />
+    <ClInclude Include="..\src\map\extra.h" />
+    <ClInclude Include="..\src\map\friend.h" />
+    <ClInclude Include="..\src\map\guild.h" />
+    <ClInclude Include="..\src\map\homun.h" />
+    <ClInclude Include="..\src\map\intif.h" />
+    <ClInclude Include="..\src\map\itemdb.h" />
+    <ClInclude Include="..\src\map\mail.h" />
+    <ClInclude Include="..\src\map\map.h" />
+    <ClInclude Include="..\src\map\memorial.h" />
+    <ClInclude Include="..\src\map\merc.h" />
+    <ClInclude Include="..\src\map\mob.h" />
+    <ClInclude Include="..\src\map\msg.h" />
+    <ClInclude Include="..\src\map\npc.h" />
+    <ClInclude Include="..\src\map\party.h" />
+    <ClInclude Include="..\src\map\path.h" />
+    <ClInclude Include="..\src\map\pc.h" />
+    <ClInclude Include="..\src\map\pet.h" />
+    <ClInclude Include="..\src\map\quest.h" />
+    <ClInclude Include="..\src\map\ranking.h" />
+    <ClInclude Include="..\src\map\script.h" />
+    <ClInclude Include="..\src\map\skill.h" />
+    <ClInclude Include="..\src\map\status.h" />
+    <ClInclude Include="..\src\map\storage.h" />
+    <ClInclude Include="..\src\map\trade.h" />
+    <ClInclude Include="..\src\map\unit.h" />
+    <ClInclude Include="..\src\map\vending.h" />
+    <ClInclude Include="..\src\common\core.h" />
+    <ClInclude Include="..\src\common\db.h" />
+    <ClInclude Include="..\src\common\graph.h" />
+    <ClInclude Include="..\src\common\grfio.h" />
+    <ClInclude Include="..\src\common\httpd.h" />
+    <ClInclude Include="..\src\common\lock.h" />
+    <ClInclude Include="..\src\common\malloc.h" />
+    <ClInclude Include="..\src\common\md5calc.h" />
+    <ClInclude Include="..\src\common\mmo.h" />
+    <ClInclude Include="..\src\common\nullpo.h" />
+    <ClInclude Include="..\src\common\sqldbs.h" />
+    <ClInclude Include="..\src\common\socket.h" />
+    <ClInclude Include="..\src\common\timer.h" />
+    <ClInclude Include="..\src\common\utils.h" />
+    <ClInclude Include="..\src\common\version.h" />
+    <ClInclude Include="..\src\common\winservice.h" />
+    <ClInclude Include="..\src\common\zlib\zutil.h" />
+    <ClInclude Include="..\src\common\zlib\crc32.h" />
+    <ClInclude Include="..\src\common\zlib\deflate.h" />
+    <ClInclude Include="..\src\common\zlib\inffast.h" />
+    <ClInclude Include="..\src\common\zlib\inffixed.h" />
+    <ClInclude Include="..\src\common\zlib\inflate.h" />
+    <ClInclude Include="..\src\common\zlib\inftrees.h" />
+    <ClInclude Include="..\src\common\zlib\trees.h" />
+    <ClInclude Include="..\src\common\zlib\zconf.h" />
+    <ClInclude Include="..\src\common\zlib\zlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\map\sql\mapreg_sql.c" />
+    <ClCompile Include="..\src\map\atcommand.c" />
+    <ClCompile Include="..\src\map\bank.c" />
+    <ClCompile Include="..\src\map\battle.c" />
+    <ClCompile Include="..\src\map\bonus.c" />
+    <ClCompile Include="..\src\map\booking.c" />
+    <ClCompile Include="..\src\map\buyingstore.c" />
+    <ClCompile Include="..\src\map\chat.c" />
+    <ClCompile Include="..\src\map\chrif.c" />
+    <ClCompile Include="..\src\map\clif.c" />
+    <ClCompile Include="..\src\map\date.c" />
+    <ClCompile Include="..\src\map\elem.c" />
+    <ClCompile Include="..\src\map\extra.c" />
+    <ClCompile Include="..\src\map\friend.c" />
+    <ClCompile Include="..\src\map\guild.c" />
+    <ClCompile Include="..\src\map\homun.c" />
+    <ClCompile Include="..\src\map\intif.c" />
+    <ClCompile Include="..\src\map\itemdb.c" />
+    <ClCompile Include="..\src\map\mail.c" />
+    <ClCompile Include="..\src\map\map.c" />
+    <ClCompile Include="..\src\map\memorial.c" />
+    <ClCompile Include="..\src\map\merc.c" />
+    <ClCompile Include="..\src\map\mob.c" />
+    <ClCompile Include="..\src\map\msg.c" />
+    <ClCompile Include="..\src\map\npc.c" />
+    <ClCompile Include="..\src\map\party.c" />
+    <ClCompile Include="..\src\map\path.c" />
+    <ClCompile Include="..\src\map\pc.c" />
+    <ClCompile Include="..\src\map\pet.c" />
+    <ClCompile Include="..\src\map\quest.c" />
+    <ClCompile Include="..\src\map\ranking.c" />
+    <ClCompile Include="..\src\map\script.c" />
+    <ClCompile Include="..\src\map\skill.c" />
+    <ClCompile Include="..\src\map\status.c" />
+    <ClCompile Include="..\src\map\storage.c" />
+    <ClCompile Include="..\src\map\trade.c" />
+    <ClCompile Include="..\src\map\unit.c" />
+    <ClCompile Include="..\src\map\vending.c" />
+    <ClCompile Include="..\src\common\core.c" />
+    <ClCompile Include="..\src\common\db.c" />
+    <ClCompile Include="..\src\common\graph.c" />
+    <ClCompile Include="..\src\common\grfio.c" />
+    <ClCompile Include="..\src\common\httpd.c" />
+    <ClCompile Include="..\src\common\lock.c" />
+    <ClCompile Include="..\src\common\malloc.c" />
+    <ClCompile Include="..\src\common\md5calc.c" />
+    <ClCompile Include="..\src\common\nullpo.c" />
+    <ClCompile Include="..\src\common\sqldbs.c" />
+    <ClCompile Include="..\src\common\socket.c" />
+    <ClCompile Include="..\src\common\timer.c" />
+    <ClCompile Include="..\src\common\utils.c" />
+    <ClCompile Include="..\src\common\version.c" />
+    <ClCompile Include="..\src\common\winservice.c" />
+    <ClCompile Include="..\src\common\zlib\adler32.c" />
+    <ClCompile Include="..\src\common\zlib\compress.c" />
+    <ClCompile Include="..\src\common\zlib\zutil.c" />
+    <ClCompile Include="..\src\common\zlib\crc32.c" />
+    <ClCompile Include="..\src\common\zlib\deflate.c" />
+    <ClCompile Include="..\src\common\zlib\inffast.c" />
+    <ClCompile Include="..\src\common\zlib\inflate.c" />
+    <ClCompile Include="..\src\common\zlib\inftrees.c" />
+    <ClCompile Include="..\src\common\zlib\trees.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

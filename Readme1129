@@ -1,4 +1,15 @@
 ----------------------------------------
+//1246 [2015/11/06] by Cocoa
+
+・Auriga-1244で出ていたエラーの修正
+	Thanks LunarPhantom さん
+
+・VisualStudio2013/2015のビルド設定を試験的に追加 (vc_make.bat)
+
+・開発者向けにVisualStudion2015のソリューションファイルを追加(Auriga.sln, vcproj-11/*)
+	Thanks refis さん
+
+----------------------------------------
 //1245 [2015/11/04] by Cocoa
 
 ・homun_renameがyesでもリネーム出来ない不具合の修正（src/map/clif.c）
@@ -30,6 +41,7 @@
 //1242 [2015/10/31] by Cocoa
 
 ・1241で追加したOnMDDeleteのエラーを修正（battle_auriga.conf）
+	Thanks rapis さん
 
 ・同盟チャットの実装（conf/atcommand_auriga.conf, conf/battle_config.auriga, conf/msg_auriga.conf,
 				src/map/atcommand.*, src/map/battle.*, src/map/guild.c, src/map/map.h, msrc/map/pc.c）

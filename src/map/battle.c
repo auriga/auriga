@@ -6523,6 +6523,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 {
 	struct Damage mid = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *sd = NULL, *tsd = NULL;
+	struct mob_data *md = NULL;
 	struct skill_unit       *unit = NULL;
 	int int_, dex, race, ele;
 	int skill;
@@ -6543,6 +6544,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 
 	sd  = BL_DOWNCAST( BL_PC, bl );
 	tsd = BL_DOWNCAST( BL_PC, target );
+	md  = BL_DOWNCAST( BL_MOB, bl );
 
 	// アタッカー
 	int_ = status_get_int(bl);

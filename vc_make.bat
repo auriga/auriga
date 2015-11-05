@@ -130,7 +130,23 @@ rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include;C
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\SDK\v2.0\lib\amd64;%LIB%
 rem set __VCVER__=11
 rem set __BITTYPE__=x64
-rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定ここまで
+rem ---- VC++ 2012 64bitコンパイル (Express以外) の設定ここまで
+
+rem ---- VC++ 2013 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
+rem sset PATH=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;C:\Program Files (x86)\Windows Kits\8.1\bin\x64;C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
+rem sset INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;%INCLUDE%
+rem sset LIB=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib\amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;%LIB%
+rem sset __VCVER__=12
+rem sset __BITTYPE__=x64
+rem ---- VC++ 2013 64bitコンパイル の設定ここまで
+
+rem ---- VC++ 2015 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
+rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
+rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
+rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
+rem set __VCVER__=14
+rem set __BITTYPE__=x64
+rem ---- VC++ 2015 64bitコンパイル の設定ここまで
 
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
@@ -156,6 +172,8 @@ if "%__VCVER__%"=="8" goto SKIPVC8
 if "%__VCVER__%"=="9" goto SKIPVC8
 if "%__VCVER__%"=="10" goto SKIPVC8
 if "%__VCVER__%"=="11" goto SKIPVC8
+if "%__VCVER__%"=="12" goto SKIPVC8
+if "%__VCVER__%"=="14" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 
