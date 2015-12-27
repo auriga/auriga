@@ -4387,6 +4387,7 @@ struct script_function buildin_func[] = {
 	{buildin_setmobhp,"setmobhp","ii"},
 	{buildin_sc_onparam,"sc_onparam","ii"},
 	{buildin_showdigit,"showdigit","ii"},
+	{buildin_checkre,"checkre",""},
 	{NULL,NULL,NULL}
 };
 
@@ -13375,5 +13376,19 @@ int buildin_showdigit(struct script_state *st)
 		return 0;
 
 	clif_showdigit(sd, type, value);
+	return 0;
+}
+
+/*==========================================
+ * リニューアルかどうか
+ *------------------------------------------
+ */
+int buildin_checkre(struct script_state *st)
+{
+#ifdef PRE_RENEWAL
+	push_val(st->stack,C_INT,0);
+#else
+	push_val(st->stack,C_INT,1);
+#endif
 	return 0;
 }

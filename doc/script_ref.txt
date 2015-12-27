@@ -3692,6 +3692,11 @@ AurigaNPCScript
 			num=3		val3の値
 			num=4		val4の値
 
+		checkre 関数
+			checkre()
+
+			コンパイルオプション[PRE_RENEWAL]が無効なら 1を、有効なら 0を返します。
+
 
 	＊csv アクセス命令 / 関数
 
