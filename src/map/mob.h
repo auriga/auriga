@@ -42,7 +42,7 @@ struct mob_skill {
 	short cancel;
 	short cond1,cond2;
 	short target;
-	int val[5];
+	int val[6];
 	short emotion;
 	short msg_id;
 };

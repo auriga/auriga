@@ -4074,6 +4074,7 @@ int buildin_getmobhp(struct script_state *st);
 int buildin_setmobhp(struct script_state *st);
 int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
+int buildin_checkre(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},

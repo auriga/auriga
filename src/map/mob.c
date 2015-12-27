@@ -4411,10 +4411,11 @@ static int mob_readskilldb(void)
 		}
 		lineno = 0;
 		while(fgets(line,1020,fp)){
-			char *sp[18],*p;
+			char *sp[19],*p;
 			int mob_id;
 			struct mob_skill *ms = NULL;
 			int j=0;
+			int diff=0;
 
 			lineno++;
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
@@ -4423,7 +4424,7 @@ static int mob_readskilldb(void)
 				continue;
 
 			memset(sp,0,sizeof(sp));
-			for(i=0,p=line;i<18 && p;i++){
+			for(i=0,p=line;i<19 && p;i++){
 				sp[i]=p;
 				if((p=strchr(p,','))!=NULL) {
 					*p++=0;
@@ -4445,8 +4446,11 @@ static int mob_readskilldb(void)
 			}
 
 			if( i != 17 ) {
-				printf("mob_skill: invalid param count(%d) line %d\n", i, lineno);
-				continue;
+				if( i != 18 ) {
+					printf("mob_skill: invalid param count(%d) line %d\n", i, lineno);
+					continue;
+				}
+				diff = 1;
 			}
 
 			for(i=0; i<MAX_MOBSKILL; i++) {
@@ -4573,13 +4577,15 @@ static int mob_readskilldb(void)
 
 			ms->val[3] = atoi(sp[15]);
 			ms->val[4] = atoi(sp[16]);
+			if(diff)
+				ms->val[5] = atoi(sp[17]);
 			ms->emotion = -1;
 			ms->msg_id  = 0;
-			if(strlen(sp[17]) > 1) {
-				if(atoi(sp[17]) >= 0)
-					ms->emotion = atoi(sp[17]);
+			if(strlen(sp[17+diff]) > 1) {
+				if(atoi(sp[17+diff]) >= 0)
+					ms->emotion = atoi(sp[17+diff]);
 				else
-					ms->msg_id  = -1 * atoi(sp[17]);
+					ms->msg_id  = -1 * atoi(sp[17+diff]);
 			}
 			mob_db[mob_id].maxskill = i+1;
 		}

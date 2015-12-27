@@ -5314,7 +5314,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_FULLRECOVERY:
 	case NPC_ALLHEAL:		/* ライフストリーム */
 		{
-			int heal = status_get_max_hp(bl);
+			int heal;
+			if(skillid == NPC_ALLHEAL)
+				heal = status_get_max_hp(bl) - status_get_hp(bl);
+			else
+				heal = status_get_max_hp(bl);
 			clif_skill_nodamage(src,bl,AL_HEAL,heal,1);
 			if( dstsd ) {
 				if( dstsd->special_state.no_magic_damage )
@@ -5322,7 +5326,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				pc_heal(dstsd,heal,dstsd->status.max_sp);
 			}
 			else if(dstmd) {
-				dstmd->hp = heal;
+				dstmd->hp = status_get_max_hp(bl);
 			}
 		}
 		break;
