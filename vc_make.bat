@@ -19,8 +19,11 @@ set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
 rem パケット定義
-rem 2013-12-23cRagexeRE: 20131223
-rem 2013-07-31aRagexeRE: 20130731
+rem 2014-10-22bRagexe: 20141022
+rem 2014-03-05bRagexe: 20140305
+rem 2014-01-15eRagexe: 20140115
+rem 2013-12-23cRagexe: 20131223
+rem 2013-07-31aRagexe: 20130731
 rem 2012-09-25aRagexeRE: 20120925
 rem 2012-06-18aRagexeRE: 20120618
 rem 2012-04-10aRagexeRE: 20120410

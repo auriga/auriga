@@ -10348,10 +10348,17 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
  */
 void clif_heal(int fd, int type, int val)
 {
+#if PACKETVER < 20141022
 	WFIFOW(fd,0)=0x13d;
 	WFIFOW(fd,2)=type;
 	WFIFOW(fd,4)=val;
 	WFIFOSET(fd,packet_db[0x13d].len);
+#else
+	WFIFOW(fd,0)=0xa27;
+	WFIFOW(fd,2)=type;
+	WFIFOL(fd,4)=val;
+	WFIFOSET(fd,packet_db[0xa27].len);
+#endif
 
 	return;
 }
