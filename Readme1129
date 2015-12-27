@@ -1,4 +1,15 @@
 ----------------------------------------
+//1249 [2015/12/28] by refis
+
+・生体工学研究所拡張アップデートに対応
+	-> 研究所進入クエスト、呪われた魂クエストをクエストリストに対応 (quest_db.txt, npc_town_lighthalzen.txt)
+		※クエストフラグに若干の拡張があります
+	-> レッケンベル社の噂クエスト関連NPCを追加 (quest_db.txt, npc_town_lighthalzen.txt)
+	-> 禁忌の研究室NPC実装 (map_auriga.conf, npc_memorial_worsef.txt)
+	-> モンスター出現情報を追加変更 (npc_monster_lhzdun.txt)
+	-> item_db, monster_dbの更新 (item_db.txt, mob_db.txt, mob_skill_db.txt)
+
+----------------------------------------
 //1248 [2015/11/22] by refis
 
 ・モーラエンチャント関連NPCを追加 (npc_town_mora.txt)
