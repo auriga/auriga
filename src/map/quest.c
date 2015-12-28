@@ -156,7 +156,6 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 	clif_add_questlist(sd, quest_id);
 	clif_questlist(sd);
 	clif_questlist_info(sd);
-	clif_update_questcount(sd, quest_id);
 	intif_save_quest(sd);
 
 	return 0;
@@ -219,7 +218,6 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 	clif_add_questlist(sd, new_id);
 	clif_questlist(sd);
 	clif_questlist_info(sd);
-	clif_update_questcount(sd, new_id);
 	intif_save_quest(sd);
 
 	return 0;

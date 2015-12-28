@@ -14350,6 +14350,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	nullpo_retv((hd=sd->hd));
 
 	fd=sd->fd;
+#if PACKETVER < 20141223
 	WFIFOW(fd,0)=0x22e;
 	memcpy(WFIFOP(fd,2),hd->status.name,24);
 	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // 名前付けたフラグ 1で変更不可 2は死亡状態
@@ -14374,6 +14375,32 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
 	WFIFOW(fd,69)=hd->attackable;			// 攻撃可否フラグ 0:不可/1:許可
 	WFIFOSET(fd,packet_db[0x22e].len);
+#else
+	WFIFOW(fd,0)=0x9f7;
+	memcpy(WFIFOP(fd,2),hd->status.name,24);
+	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // 名前付けたフラグ 1で変更不可 2は死亡状態
+	WFIFOW(fd,27)=hd->status.base_level;	// Lv
+	WFIFOW(fd,29)=hd->status.hungry;		// 満腹度
+	WFIFOW(fd,31)=hd->intimate/100;	// 新密度
+	WFIFOW(fd,33)=hd->status.equip;			// equip id
+	WFIFOW(fd,35)=hd->atk;					// Atk
+	WFIFOW(fd,37)=hd->matk;					// MAtk
+	WFIFOW(fd,39)=hd->hit;					// Hit
+	WFIFOW(fd,41)=hd->critical;				// Cri
+	WFIFOW(fd,43)=hd->def;					// Def
+	WFIFOW(fd,45)=hd->mdef;					// Mdef
+	WFIFOW(fd,47)=hd->flee;					// Flee
+	WFIFOW(fd,49)=(flag)?0:status_get_amotion(&hd->bl);	// Aspd
+	WFIFOL(fd,51)=hd->status.hp;			// HP
+	WFIFOL(fd,55)=hd->max_hp;		// MHp
+	WFIFOW(fd,59)=hd->status.sp;			// SP
+	WFIFOW(fd,61)=hd->max_sp;		// MSP
+	WFIFOL(fd,63)=hd->status.base_exp;		// Exp
+	WFIFOL(fd,67)=homun_nextbaseexp(hd);	// NextExp
+	WFIFOW(fd,71)=hd->status.skill_point;	// skill point
+	WFIFOW(fd,73)=hd->attackable;			// 攻撃可否フラグ 0:不可/1:許可
+	WFIFOSET(fd,packet_db[0x9f7].len);
+#endif
 
 	return;
 }
@@ -14963,6 +14990,7 @@ void clif_questlist(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	fd = sd->fd;
+#if PACKETVER < 20141022
 	WFIFOW(fd,0) = 0x2b1;
 	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
@@ -14973,6 +15001,35 @@ void clif_questlist(struct map_session_data *sd)
 			len += 5;
 		}
 	}
+#else
+	WFIFOW(fd,0) = 0x97a;
+	WFIFOL(fd,4) = sd->questlist;
+	for(i = 0; i < sd->questlist; i++) {
+		int id, j, n;
+		struct quest_data *qd = &sd->quest[i];
+		if(qd->nameid != 0 && qd->state < 2) {
+			WFIFOL(fd,len)   = qd->nameid;
+			WFIFOB(fd,len+4) = qd->state;
+			WFIFOL(fd,len+5) = qd->limit/* - quest_db[quest_search_db(qd->nameid)].limit*/;
+			WFIFOL(fd,len+9) = qd->limit;
+			for(j = 0, n = 0; j < 3; j++) {
+				if((id = (int)qd->mob[j].id) != 0) {
+					WFIFOL(fd,len+15+n*32) = id;
+					WFIFOW(fd,len+19+n*32) = qd->mob[j].count;
+					WFIFOW(fd,len+21+n*32) = qd->mob[j].max;
+					if(mobdb_checkid(id) > 0) {
+						strncpy(WFIFOP(fd,len+23+n*32),mob_db[id].jname,24);
+					} else {
+						memset(WFIFOP(fd,len+23+n*32), 0, 24);
+					}
+					n++;
+				}
+			}
+			WFIFOW(fd,len+13) = n;
+			len += 15+n*32;
+		}
+	}
+#endif
 	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,len);
 
