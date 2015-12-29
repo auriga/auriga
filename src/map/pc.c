@@ -6944,6 +6944,9 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
 	case LOOK_ROBE:
 		sd->status.robe = val;
 		break;
+	case LOOK_BODY2:
+		sd->status.style = val;
+		break;
 	}
 	clif_changelook(&sd->bl,type,val);
 

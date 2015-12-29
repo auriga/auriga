@@ -482,6 +482,10 @@ struct item {
 	char attribute;
 	char private_;
 	short card[4];
+	struct {
+		short id;
+		short val;
+	} opt[5];
 	unsigned int limit;
 };
 
@@ -567,6 +571,7 @@ struct mmo_charstatus {
 	char refuse_partyinvite;
 	char show_equip;
 	short font;
+	short style;
 };
 
 struct registry {

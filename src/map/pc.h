@@ -41,6 +41,7 @@ enum {
 	LOOK_BODY,
 	LOOK_FLOOR,
 	LOOK_ROBE,
+	LOOK_BODY2,
 };
 
 #define pc_setdead(sd) ((sd)->state.dead_sit = 1)

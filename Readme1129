@@ -1,4 +1,21 @@
 ----------------------------------------
+//1254 [2015/12/30] by refis
+
+・2015-05-13aRagexeのpacket_dbを追加（clif.*, packet_db.txt, bcc32_make.bat, vc_make.bat）
+
+・セカンドコスチュームシステム実装（doc/script_ref.txt, mmo.h, chardb_sql.c, chardb_txt.c, clif.*, pc.*, Auriga1254_changetable.sql, main.sql）
+
+・ランダムオプションシステムの実装準備（mmo.h, chardb_sql.c, chardb_txt.c, clif.*, Auriga1254_changetable.sql, main.sql）
+
+・ドレスルーム表示「0xa02」を追加（clif.c）
+
+・ワンクリック鑑定「0xa35」を追加（packet_db.txt, clif.c）
+
+・新パケットのエラー対策でダミー関数を用意する（clif.c, packet_db.txt）
+
+・ジャーナルの更新（journal.c）
+
+----------------------------------------
 //1253 [2015/12/29] by refis
 
 ・「0x22e」の上位互換「0x9f7」を追加（clif.c）

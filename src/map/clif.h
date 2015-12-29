@@ -141,6 +141,7 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 void clif_bodyrelocation(struct block_list *bl, int x, int y);
 void clif_showscript(struct block_list *bl, char *mes);
 void clif_showdigit(struct map_session_data* sd, unsigned char type, int value);
+void clif_dressing_room(struct map_session_data *sd, int view);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, const char *name);
@@ -290,6 +291,7 @@ void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd
 void clif_closevendingboard(struct block_list* bl, int fd);
 void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd);
 void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned char fail);
+void clif_openvending_ack(struct map_session_data *sd);
 int clif_openvending(struct map_session_data *sd);
 void clif_vendingreport(struct map_session_data *sd, int idx, int amount, int account_id, int char_id, int value);
 

@@ -107,26 +107,37 @@ int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 
 	result = sqldbs_query(&mysql_handle,
 		"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`, `private` FROM `%s` WHERE `%s`='%d'",
+		"`card0`, `card1`, `card2`, `card3`, `opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
+		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`, `private` FROM `%s` WHERE `%s`='%d'",
 		tablename, selectoption, id
 	);
 	if(result == false)
 		return -1;
 
 	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < max; i++) {
-		item[i].id        = (unsigned int)atoi(sql_row[0]);
-		item[i].nameid    = atoi(sql_row[1]);
-		item[i].amount    = atoi(sql_row[2]);
-		item[i].equip     = (unsigned int)atoi(sql_row[3]);
-		item[i].identify  = atoi(sql_row[4]);
-		item[i].refine    = atoi(sql_row[5]);
-		item[i].attribute = atoi(sql_row[6]);
-		item[i].card[0]   = atoi(sql_row[7]);
-		item[i].card[1]   = atoi(sql_row[8]);
-		item[i].card[2]   = atoi(sql_row[9]);
-		item[i].card[3]   = atoi(sql_row[10]);
-		item[i].limit     = (unsigned int)atoi(sql_row[11]);
-		item[i].private_  = atoi(sql_row[12]);
+		item[i].id         = (unsigned int)atoi(sql_row[0]);
+		item[i].nameid     = atoi(sql_row[1]);
+		item[i].amount     = atoi(sql_row[2]);
+		item[i].equip      = (unsigned int)atoi(sql_row[3]);
+		item[i].identify   = atoi(sql_row[4]);
+		item[i].refine     = atoi(sql_row[5]);
+		item[i].attribute  = atoi(sql_row[6]);
+		item[i].card[0]    = atoi(sql_row[7]);
+		item[i].card[1]    = atoi(sql_row[8]);
+		item[i].card[2]    = atoi(sql_row[9]);
+		item[i].card[3]    = atoi(sql_row[10]);
+		item[i].opt[0].id  = atoi(sql_row[11]);
+		item[i].opt[0].val = atoi(sql_row[12]);
+		item[i].opt[1].id  = atoi(sql_row[13]);
+		item[i].opt[1].val = atoi(sql_row[14]);
+		item[i].opt[2].id  = atoi(sql_row[15]);
+		item[i].opt[2].val = atoi(sql_row[16]);
+		item[i].opt[3].id  = atoi(sql_row[17]);
+		item[i].opt[3].val = atoi(sql_row[18]);
+		item[i].opt[4].id  = atoi(sql_row[19]);
+		item[i].opt[4].val = atoi(sql_row[20]);
+		item[i].limit      = (unsigned int)atoi(sql_row[21]);
+		item[i].private_   = atoi(sql_row[22]);
 	}
 	sqldbs_free_result(&mysql_handle);
 
@@ -184,16 +195,18 @@ bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 		p  = tmp_sql;
 		p += sprintf(
 			p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-			"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`, `private`) VALUES",tablename,selectoption
+			"`attribute`, `card0`, `card1`, `card2`, `card3`, `opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
+			"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`, `private`) VALUES",tablename,selectoption
 		);
 
 		for(i = 0; i < max; i++) {
 			if(item[i].nameid) {
 				p += sprintf(
-					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
+					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
 					sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
-					item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-					item[i].card[2],item[i].card[3],item[i].limit,item[i].private_
+					item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],item[i].card[2],item[i].card[3],
+					item[i].opt[0].id,item[i].opt[0].val,item[i].opt[1].id,item[i].opt[1].val,item[i].opt[2].id,item[i].opt[2].val,
+					item[i].opt[3].id,item[i].opt[3].val,item[i].opt[4].id,item[i].opt[4].val,item[i].limit,item[i].private_
 				);
 				sep = ',';
 			}
@@ -295,7 +308,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`, `elem_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
-		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`"
+		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`, `style`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id
 	);
 	if(result == false) {
@@ -370,6 +383,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.refuse_partyinvite  = atoi(sql_row[51]);
 	p->st.show_equip          = atoi(sql_row[52]);
 	p->st.font                = atoi(sql_row[53]);
+	p->st.style               = atoi(sql_row[54]);
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';
@@ -656,6 +670,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_UNUM(refuse_partyinvite,"refuse_partyinvite");
 	UPDATE_UNUM(show_equip        ,"show_equip");
 	UPDATE_UNUM(font              ,"font");
+	UPDATE_NUM(style              ,"style");
 
 	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;

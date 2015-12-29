@@ -922,7 +922,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,73) = 0;
 
 	return WBUFW(buf,2);
-#else
+#elif PACKETVER < 20150513
 	WBUFW(buf,0)=0x9dd;
 	WBUFW(buf,2)=(unsigned short)(78 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
@@ -959,6 +959,46 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,73) = 0xffffffff;
 	WBUFB(buf,77) = 0;
 	strncpy(WBUFP(buf,78),sd->status.name,24);
+
+	return WBUFW(buf,2);
+#else
+	WBUFW(buf,0)=0x9ff;
+	WBUFW(buf,2)=(unsigned short)(80 + strlen(sd->status.name));
+	WBUFB(buf,4)=0;
+	WBUFL(buf,5)=sd->bl.id;
+	WBUFL(buf,9)=sd->char_id;
+	WBUFW(buf,13)=sd->speed;
+	WBUFW(buf,15)=sd->sc.opt1;
+	WBUFW(buf,17)=sd->sc.opt2;
+	WBUFL(buf,19)=sd->sc.option;
+	WBUFW(buf,23)=sd->view_class;
+	WBUFW(buf,25)=sd->status.hair;
+	WBUFW(buf,27)=rhand;
+	WBUFW(buf,29)=lhand;
+	WBUFW(buf,31)=sd->status.head_bottom;
+	WBUFW(buf,33)=sd->status.head_top;
+	WBUFW(buf,35)=sd->status.head_mid;
+	WBUFW(buf,37)=sd->status.hair_color;
+	WBUFW(buf,39)=sd->status.clothes_color;
+	WBUFW(buf,41)=sd->head_dir;
+	WBUFW(buf,43)=sd->status.robe;
+	WBUFL(buf,45)=sd->status.guild_id;
+	WBUFW(buf,49)=sd->guild_emblem_id;
+	WBUFW(buf,51)=sd->status.manner;
+	WBUFL(buf,53)=sd->sc.opt3;
+	WBUFB(buf,57)=(unsigned char)sd->status.karma;
+	WBUFB(buf,58)=sd->sex;
+	WBUFPOS(buf,59,sd->bl.x,sd->bl.y,sd->dir);
+	WBUFB(buf,62)=5;
+	WBUFB(buf,63)=5;
+	WBUFB(buf,64)=sd->state.dead_sit;
+	WBUFLV(buf,65,sd->status.base_level,sd->status.class_);
+	WBUFW(buf,67)=sd->status.font;
+	WBUFL(buf,69) = 0xffffffff;
+	WBUFL(buf,73) = 0xffffffff;
+	WBUFB(buf,77) = 0;
+	WBUFW(buf,78) = sd->status.style;
+	strncpy(WBUFP(buf,80),sd->status.name,24);
 
 	return WBUFW(buf,2);
 #endif
@@ -1235,7 +1275,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,79)=0;
 
 	return WBUFW(buf,2);
-#else
+#elif PACKETVER < 20150513
 	WBUFW(buf,0)=0x9db;
 	WBUFW(buf,2)=(unsigned short)(84 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
@@ -1272,6 +1312,46 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFL(buf,79)=0xffffffff;
 	WBUFB(buf,83)=0;
 	strncpy(WBUFP(buf,84),sd->status.name,24);
+
+	return WBUFW(buf,2);
+#else
+	WBUFW(buf,0)=0x9fd;
+	WBUFW(buf,2)=(unsigned short)(86 + strlen(sd->status.name));
+	WBUFB(buf,4)=0;
+	WBUFL(buf,5)=sd->bl.id;
+	WBUFL(buf,9)=sd->char_id;
+	WBUFW(buf,13)=sd->speed;
+	WBUFW(buf,15)=sd->sc.opt1;
+	WBUFW(buf,17)=sd->sc.opt2;
+	WBUFL(buf,19)=sd->sc.option;
+	WBUFW(buf,23)=sd->view_class;
+	WBUFW(buf,25)=sd->status.hair;
+	WBUFW(buf,27)=rhand;
+	WBUFW(buf,29)=lhand;
+	WBUFW(buf,31)=sd->status.head_bottom;
+	WBUFL(buf,33)=tick;
+	WBUFW(buf,37)=sd->status.head_top;
+	WBUFW(buf,39)=sd->status.head_mid;
+	WBUFW(buf,41)=sd->status.hair_color;
+	WBUFW(buf,43)=sd->status.clothes_color;
+	WBUFW(buf,45)=sd->head_dir;
+	WBUFW(buf,47)=sd->status.robe;
+	WBUFL(buf,49)=sd->status.guild_id;
+	WBUFW(buf,53)=sd->guild_emblem_id;
+	WBUFW(buf,55)=sd->status.manner;
+	WBUFL(buf,57)=sd->sc.opt3;
+	WBUFB(buf,61)=(unsigned char)sd->status.karma;
+	WBUFB(buf,62)=sd->sex;
+	WBUFPOS2(buf,63,sd->bl.x,sd->bl.y,sd->ud.to_x,sd->ud.to_y,8,8);
+	WBUFB(buf,69)=5;
+	WBUFB(buf,70)=5;
+	WBUFLV(buf,71,sd->status.base_level,sd->status.class_);
+	WBUFW(buf,73)=sd->status.font;
+	WBUFL(buf,75)=0xffffffff;
+	WBUFL(buf,79)=0xffffffff;
+	WBUFB(buf,83)=0;
+	WBUFW(buf,84)=sd->status.style;
+	strncpy(WBUFP(buf,86),sd->status.name,24);
 
 	return WBUFW(buf,2);
 #endif
@@ -3893,7 +3973,7 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOL(sd->fd,64)=0xffffffff;
 	WFIFOL(sd->fd,68)=0xffffffff;
 	WFIFOB(sd->fd,72)=0;
-#else
+#elif PACKETVER < 20150513
 	len = 77 + (int)strlen(sd->status.name);
 	WFIFOW(sd->fd,0)=0x9dc;
 	WFIFOW(sd->fd,2)=(unsigned short)len;
@@ -3904,6 +3984,18 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOL(sd->fd,72)=0xffffffff;
 	WFIFOB(sd->fd,76)=0;
 	strncpy(WFIFOP(sd->fd,77),sd->status.name,24);
+#else
+	len = 79 + (int)strlen(sd->status.name);
+	WFIFOW(sd->fd,0)=0x9fe;
+	WFIFOW(sd->fd,2)=(unsigned short)len;
+	WFIFOB(sd->fd,4)=0;
+	WFIFOLV(sd->fd,64,sd->status.base_level,sd->status.class_);
+	WFIFOW(sd->fd,66)=sd->status.font;
+	WFIFOL(sd->fd,68)=0xffffffff;
+	WFIFOL(sd->fd,72)=0xffffffff;
+	WFIFOB(sd->fd,76)=0;
+	WFIFOW(sd->fd,77)=sd->status.style;
+	strncpy(WFIFOP(sd->fd,79),sd->status.name,24);
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
 
@@ -5545,7 +5637,7 @@ void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char 
 		WFIFOW(fd,27)=0;
 	}
 	WFIFOSET(fd,packet_db[0x2d4].len);
-#else
+#elif PACKETVER < 20150513
 	if(fail) {
 		memset(WFIFOP(fd,0), 0, packet_db[0x990].len);
 
@@ -5603,6 +5695,79 @@ void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char 
 		WFIFOW(fd,29)=0;
 	}
 	WFIFOSET(fd,packet_db[0x990].len);
+#else
+	if(fail) {
+		memset(WFIFOP(fd,0), 0, packet_db[0xa0c].len);
+
+		WFIFOW(fd,0)=0xa0c;
+		WFIFOW(fd,2)=n+2;
+		WFIFOW(fd,4)=amount;
+		WFIFOB(fd,24)=fail;
+	} else {
+		if(n<0 || n>=MAX_INVENTORY || sd->status.inventory[n].nameid <=0 || sd->inventory_data[n] == NULL)
+			return;
+
+		WFIFOW(fd,0)=0xa0c;
+		WFIFOW(fd,2)=n+2;
+		WFIFOW(fd,4)=amount;
+		if(sd->inventory_data[n]->view_id > 0)
+			WFIFOW(fd,6)=sd->inventory_data[n]->view_id;
+		else
+			WFIFOW(fd,6)=sd->status.inventory[n].nameid;
+		WFIFOB(fd,8)=sd->status.inventory[n].identify;
+		WFIFOB(fd,9)=sd->status.inventory[n].attribute;
+		WFIFOB(fd,10)=sd->status.inventory[n].refine;
+		if(itemdb_isspecial(sd->status.inventory[n].card[0])) {
+			if(sd->inventory_data[n]->flag.pet_egg) {
+				WFIFOW(fd,11) = 0;
+				WFIFOW(fd,13) = 0;
+				WFIFOW(fd,15) = 0;
+			} else {
+				WFIFOW(fd,11) = sd->status.inventory[n].card[0];
+				WFIFOW(fd,13) = sd->status.inventory[n].card[1];
+				WFIFOW(fd,15) = sd->status.inventory[n].card[2];
+			}
+			WFIFOW(fd,17) = sd->status.inventory[n].card[3];
+		} else {
+			if(sd->status.inventory[n].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[n].card[0])) > 0)
+				WFIFOW(fd,11)=j;
+			else
+				WFIFOW(fd,11)=sd->status.inventory[n].card[0];
+			if(sd->status.inventory[n].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[n].card[1])) > 0)
+				WFIFOW(fd,13)=j;
+			else
+				WFIFOW(fd,13)=sd->status.inventory[n].card[1];
+			if(sd->status.inventory[n].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[n].card[2])) > 0)
+				WFIFOW(fd,15)=j;
+			else
+				WFIFOW(fd,15)=sd->status.inventory[n].card[2];
+			if(sd->status.inventory[n].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[n].card[3])) > 0)
+				WFIFOW(fd,17)=j;
+			else
+				WFIFOW(fd,17)=sd->status.inventory[n].card[3];
+		}
+		WFIFOL(fd,19)=pc_equippoint(sd,n);
+		WFIFOB(fd,23)=sd->inventory_data[n]->type;
+		WFIFOB(fd,24)=fail;
+		WFIFOL(fd,25)=sd->status.inventory[n].limit;
+		WFIFOW(fd,29)=0;
+		WFIFOW(fd,31)=sd->status.inventory[n].opt[0].id;
+		WFIFOW(fd,33)=sd->status.inventory[n].opt[0].val;
+		WFIFOB(fd,35)=0;
+		WFIFOW(fd,36)=sd->status.inventory[n].opt[1].id;
+		WFIFOW(fd,38)=sd->status.inventory[n].opt[1].val;
+		WFIFOB(fd,40)=0;
+		WFIFOW(fd,41)=sd->status.inventory[n].opt[2].id;
+		WFIFOW(fd,43)=sd->status.inventory[n].opt[2].val;
+		WFIFOB(fd,45)=0;
+		WFIFOW(fd,46)=sd->status.inventory[n].opt[3].id;
+		WFIFOW(fd,48)=sd->status.inventory[n].opt[3].val;
+		WFIFOB(fd,50)=0;
+		WFIFOW(fd,51)=sd->status.inventory[n].opt[4].id;
+		WFIFOW(fd,53)=sd->status.inventory[n].opt[4].val;
+		WFIFOB(fd,55)=0;
+	}
+	WFIFOSET(fd,packet_db[0xa0c].len);
 #endif
 
 	return;
@@ -6123,7 +6288,7 @@ void clif_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,2)=4+n*27;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x992;
 	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
 		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
@@ -6177,6 +6342,78 @@ void clif_equiplist(struct map_session_data *sd)
 	}
 	if(n){
 		WFIFOW(fd,2)=4+n*31;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#else
+	WFIFOW(fd,0)=0xa0d;
+	for(i=0,k=0;i<MAX_INVENTORY && k<sd->inventory_num;i++){
+		if(sd->status.inventory[i].nameid<=0 || sd->inventory_data[i] == NULL)
+			continue;
+		k++;
+		if(!itemdb_isequip2(sd->inventory_data[i]))
+			continue;
+		WFIFOW(fd,n*57+4)=i+2;
+		if(sd->inventory_data[i]->view_id > 0)
+			WFIFOW(fd,n*57+6)=sd->inventory_data[i]->view_id;
+		else
+			WFIFOW(fd,n*57+6)=sd->status.inventory[i].nameid;
+		WFIFOB(fd,n*57+8)=sd->inventory_data[i]->type;
+		WFIFOL(fd,n*57+9)=pc_equippoint(sd,i);
+		WFIFOL(fd,n*57+13)=sd->status.inventory[i].equip;
+		WFIFOB(fd,n*57+17)=sd->status.inventory[i].refine;
+		if(itemdb_isspecial(sd->status.inventory[i].card[0])) {
+			if(sd->inventory_data[i]->flag.pet_egg) {
+				WFIFOW(fd,n*57+18) = 0;
+				WFIFOW(fd,n*57+20) = 0;
+				WFIFOW(fd,n*57+22) = 0;
+			} else {
+				WFIFOW(fd,n*57+18) = sd->status.inventory[i].card[0];
+				WFIFOW(fd,n*57+20) = sd->status.inventory[i].card[1];
+				WFIFOW(fd,n*57+22) = sd->status.inventory[i].card[2];
+			}
+			WFIFOW(fd,n*57+24) = sd->status.inventory[i].card[3];
+		} else {
+			if(sd->status.inventory[i].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[0])) > 0)
+				WFIFOW(fd,n*57+18)=j;
+			else
+				WFIFOW(fd,n*57+18)=sd->status.inventory[i].card[0];
+			if(sd->status.inventory[i].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[1])) > 0)
+				WFIFOW(fd,n*57+20)=j;
+			else
+				WFIFOW(fd,n*57+20)=sd->status.inventory[i].card[1];
+			if(sd->status.inventory[i].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[2])) > 0)
+				WFIFOW(fd,n*57+22)=j;
+			else
+				WFIFOW(fd,n*57+22)=sd->status.inventory[i].card[2];
+			if(sd->status.inventory[i].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[i].card[3])) > 0)
+				WFIFOW(fd,n*57+24)=j;
+			else
+				WFIFOW(fd,n*57+24)=sd->status.inventory[i].card[3];
+		}
+		WFIFOL(fd,n*57+26)=sd->status.inventory[i].limit;
+		WFIFOW(fd,n*57+30)=0;
+		WFIFOW(fd,n*57+32)=sd->inventory_data[i]->look;
+		WFIFOB(fd,n*57+34)=0;
+		WFIFOW(fd,n*57+35)=sd->status.inventory[i].opt[0].id;
+		WFIFOW(fd,n*57+37)=sd->status.inventory[i].opt[0].val;
+		WFIFOB(fd,n*57+39)=0;
+		WFIFOW(fd,n*57+40)=sd->status.inventory[i].opt[1].id;
+		WFIFOW(fd,n*57+42)=sd->status.inventory[i].opt[1].val;
+		WFIFOB(fd,n*57+44)=0;
+		WFIFOW(fd,n*57+45)=sd->status.inventory[i].opt[2].id;
+		WFIFOW(fd,n*57+47)=sd->status.inventory[i].opt[2].val;
+		WFIFOB(fd,n*57+49)=0;
+		WFIFOW(fd,n*57+50)=sd->status.inventory[i].opt[3].id;
+		WFIFOW(fd,n*57+52)=sd->status.inventory[i].opt[3].val;
+		WFIFOB(fd,n*57+54)=0;
+		WFIFOW(fd,n*57+55)=sd->status.inventory[i].opt[4].id;
+		WFIFOW(fd,n*57+57)=sd->status.inventory[i].opt[4].val;
+		WFIFOB(fd,n*57+59)=0;
+		WFIFOB(fd,n*57+60)=sd->status.inventory[i].identify+(sd->status.inventory[i].attribute?2:0)+(sd->status.inventory[i].private_?4:0);
+		n++;
+	}
+	if(n){
+		WFIFOW(fd,2)=4+n*57;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
@@ -6638,7 +6875,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOB(fd,len+26)=item[i].identify+(item[i].attribute?2:0);
 		len += 27;
 	}
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x996;
 	strncpy(WFIFOP(fd,4), name, strlen(name)+1);
 	len += 24;
@@ -6694,6 +6931,79 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOW(fd,len+28)=id->look;
 		WFIFOB(fd,len+30)=item[i].identify+(item[i].attribute?2:0);
 		len += 31;
+	}
+#else
+	WFIFOW(fd,0)=0xa10;
+	strncpy(WFIFOP(fd,4), name, strlen(name)+1);
+	len += 24;
+	for(i = idx; i < max; i++) {
+		if(item[i].nameid <= 0)
+			continue;
+		nullpo_retv(id = itemdb_search(item[i].nameid));
+		if(!itemdb_isequip2(id))
+			continue;
+		if(len + 57 > SOCKET_EMPTY_SIZE)
+			break;
+
+		WFIFOW(fd,len)=i+1;
+		if(id->view_id > 0)
+			WFIFOW(fd,len+2)=id->view_id;
+		else
+			WFIFOW(fd,len+2)=item[i].nameid;
+		WFIFOB(fd,len+4)=id->type;
+		WFIFOL(fd,len+5)=id->equip;
+		WFIFOL(fd,len+9)=item[i].equip;
+		WFIFOB(fd,len+13)=item[i].refine;
+		if(itemdb_isspecial(item[i].card[0])) {
+			if(id->flag.pet_egg) {
+				WFIFOW(fd,len+14) = 0;
+				WFIFOW(fd,len+16) = 0;
+				WFIFOW(fd,len+18) = 0;
+			} else {
+				WFIFOW(fd,len+14) = item[i].card[0];
+				WFIFOW(fd,len+16) = item[i].card[1];
+				WFIFOW(fd,len+18) = item[i].card[2];
+			}
+			WFIFOW(fd,len+20) = item[i].card[3];
+		} else {
+			if(item[i].card[0] > 0 && (j=itemdb_viewid(item[i].card[0])) > 0)
+				WFIFOW(fd,len+14)=j;
+			else
+				WFIFOW(fd,len+14)=item[i].card[0];
+			if(item[i].card[1] > 0 && (j=itemdb_viewid(item[i].card[1])) > 0)
+				WFIFOW(fd,len+16)=j;
+			else
+				WFIFOW(fd,len+16)=item[i].card[1];
+			if(item[i].card[2] > 0 && (j=itemdb_viewid(item[i].card[2])) > 0)
+				WFIFOW(fd,len+18)=j;
+			else
+				WFIFOW(fd,len+18)=item[i].card[2];
+			if(item[i].card[3] > 0 && (j=itemdb_viewid(item[i].card[3])) > 0)
+				WFIFOW(fd,len+20)=j;
+			else
+				WFIFOW(fd,len+20)=item[i].card[3];
+		}
+		WFIFOL(fd,len+22)=item[i].limit;
+		WFIFOW(fd,len+26)=0;
+		WFIFOW(fd,len+28)=id->look;
+		WFIFOB(fd,len+30)=0;
+		WFIFOW(fd,len+31)=item[i].opt[0].id;
+		WFIFOW(fd,len+33)=item[i].opt[0].val;
+		WFIFOB(fd,len+35)=0;
+		WFIFOW(fd,len+36)=item[i].opt[1].id;
+		WFIFOW(fd,len+38)=item[i].opt[1].val;
+		WFIFOB(fd,len+40)=0;
+		WFIFOW(fd,len+41)=item[i].opt[2].id;
+		WFIFOW(fd,len+43)=item[i].opt[2].val;
+		WFIFOB(fd,len+45)=0;
+		WFIFOW(fd,len+46)=item[i].opt[3].id;
+		WFIFOW(fd,len+48)=item[i].opt[3].val;
+		WFIFOB(fd,len+50)=0;
+		WFIFOW(fd,len+51)=item[i].opt[4].id;
+		WFIFOW(fd,len+53)=item[i].opt[4].val;
+		WFIFOB(fd,len+55)=0;
+		WFIFOB(fd,len+56)=item[i].identify+(item[i].attribute?2:0);
+		len += 57;
 	}
 #endif
 	if(len > 4) {
@@ -7601,8 +7911,10 @@ void clif_changeoption(struct block_list* bl)
 
 	if(bl->type == BL_PC)
 		sd = (struct map_session_data *)bl;
-	if(sd)
+	if(sd) {
 		clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
+		clif_changelook(&sd->bl,LOOK_BODY2,sd->status.style);
+	}
 
 #if PACKETVER < 7
 	WBUFW(buf, 0) = 0x119;
@@ -8021,7 +8333,7 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 		}
 	}
 	WFIFOSET(fd,packet_db[0xe9].len);
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x80f;
 	if(idx==0){
 		WFIFOW(fd,2) = 0; // type id
@@ -8076,6 +8388,91 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 		}
 	}
 	WFIFOSET(fd,packet_db[0x80f].len);
+#else
+	WFIFOW(fd,0)=0xa09;
+	if(idx==0){
+		WFIFOW(fd,2) = 0; // type id
+		WFIFOB(fd,4) = 0;	// type
+		WFIFOL(fd,5) = amount;	// amount
+		WFIFOB(fd,9) = 0; // identify flag
+		WFIFOB(fd,10)= 0; // attribute
+		WFIFOB(fd,11)= 0; // refine
+		WFIFOW(fd,12)= 0; // card (4w)
+		WFIFOW(fd,14)= 0; // card (4w)
+		WFIFOW(fd,16)= 0; // card (4w)
+		WFIFOW(fd,18)= 0; // card (4w)
+		WFIFOW(fd,20)= 0;
+		WFIFOW(fd,22)= 0;
+		WFIFOB(fd,24)= 0;
+		WFIFOW(fd,25)= 0;
+		WFIFOW(fd,27)= 0;
+		WFIFOB(fd,29)= 0;
+		WFIFOW(fd,30)= 0;
+		WFIFOW(fd,32)= 0;
+		WFIFOB(fd,34)= 0;
+		WFIFOW(fd,35)= 0;
+		WFIFOW(fd,37)= 0;
+		WFIFOB(fd,39)= 0;
+		WFIFOW(fd,40)= 0;
+		WFIFOW(fd,42)= 0;
+		WFIFOB(fd,44)= 0;
+	} else {
+		idx -= 2;
+		if(sd->inventory_data[idx] && sd->inventory_data[idx]->view_id > 0)
+			WFIFOW(fd,2) = sd->inventory_data[idx]->view_id;
+		else
+			WFIFOW(fd,2) = sd->status.inventory[idx].nameid;
+		WFIFOB(fd,4) = itemdb_type(sd->status.inventory[idx].nameid);
+		WFIFOL(fd,5) = amount;
+		WFIFOB(fd,9) = sd->status.inventory[idx].identify;
+		WFIFOB(fd,10)= sd->status.inventory[idx].attribute;
+		WFIFOB(fd,11)= sd->status.inventory[idx].refine;
+		if(itemdb_isspecial(sd->status.inventory[idx].card[0])) {
+			if(sd->inventory_data[idx]->flag.pet_egg) {
+				WFIFOW(fd,12) = 0;
+				WFIFOW(fd,14) = 0;
+				WFIFOW(fd,16) = 0;
+			} else {
+				WFIFOW(fd,12) = sd->status.inventory[idx].card[0];
+				WFIFOW(fd,14) = sd->status.inventory[idx].card[1];
+				WFIFOW(fd,16) = sd->status.inventory[idx].card[2];
+			}
+			WFIFOW(fd,18) = sd->status.inventory[idx].card[3];
+		} else {
+			if(sd->status.inventory[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[0])) > 0)
+				WFIFOW(fd,12)= j;
+			else
+				WFIFOW(fd,12)= sd->status.inventory[idx].card[0];
+			if(sd->status.inventory[idx].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[1])) > 0)
+				WFIFOW(fd,14)= j;
+			else
+				WFIFOW(fd,14)= sd->status.inventory[idx].card[1];
+			if(sd->status.inventory[idx].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[2])) > 0)
+				WFIFOW(fd,16)= j;
+			else
+				WFIFOW(fd,16)= sd->status.inventory[idx].card[2];
+			if(sd->status.inventory[idx].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[3])) > 0)
+				WFIFOW(fd,18)= j;
+			else
+				WFIFOW(fd,18)= sd->status.inventory[idx].card[3];
+		}
+		WFIFOW(fd,20)=sd->status.inventory[idx].opt[0].id;
+		WFIFOW(fd,22)=sd->status.inventory[idx].opt[0].val;
+		WFIFOB(fd,24)=0;
+		WFIFOW(fd,25)=sd->status.inventory[idx].opt[1].id;
+		WFIFOW(fd,27)=sd->status.inventory[idx].opt[1].val;
+		WFIFOB(fd,29)=0;
+		WFIFOW(fd,30)=sd->status.inventory[idx].opt[2].id;
+		WFIFOW(fd,32)=sd->status.inventory[idx].opt[2].val;
+		WFIFOB(fd,34)=0;
+		WFIFOW(fd,35)=sd->status.inventory[idx].opt[3].id;
+		WFIFOW(fd,37)=sd->status.inventory[idx].opt[3].val;
+		WFIFOB(fd,39)=0;
+		WFIFOW(fd,40)=sd->status.inventory[idx].opt[4].id;
+		WFIFOW(fd,42)=sd->status.inventory[idx].opt[4].val;
+		WFIFOB(fd,44)=0;
+	}
+	WFIFOSET(fd,packet_db[0xa09].len);
 #endif
 
 	return;
@@ -8229,7 +8626,7 @@ void clif_storageitemadded(struct map_session_data *sd, struct storage *stor, in
 			WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0xf4].len);
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0) = 0x1c4;
 	WFIFOW(fd,2) = idx+1;
 	WFIFOL(fd,4) = amount;
@@ -8271,6 +8668,63 @@ void clif_storageitemadded(struct map_session_data *sd, struct storage *stor, in
 			WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x1c4].len);
+#else
+	WFIFOW(fd,0) = 0xa0a;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
+	if(id->view_id > 0)
+		WFIFOW(fd,8) = id->view_id;
+	else
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = id->type;
+	WFIFOB(fd,11) = stor->store_item[idx].identify;
+	WFIFOB(fd,12) = stor->store_item[idx].attribute;
+	WFIFOB(fd,13) = stor->store_item[idx].refine;
+	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
+		if(id->flag.pet_egg) {
+			WFIFOW(fd,14) = 0;
+			WFIFOW(fd,16) = 0;
+			WFIFOW(fd,18) = 0;
+		} else {
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+			WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		}
+		WFIFOW(fd,20) = stor->store_item[idx].card[3];
+	} else {
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,14) = j;
+		else
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,16) = j;
+		else
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,18) = j;
+		else
+			WFIFOW(fd,18)= stor->store_item[idx].card[2];
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,20) = j;
+		else
+			WFIFOW(fd,20) = stor->store_item[idx].card[3];
+	}
+	WFIFOW(fd,22) = stor->store_item[idx].opt[0].id;
+	WFIFOW(fd,24) = stor->store_item[idx].opt[0].val;
+	WFIFOB(fd,26) = 0;
+	WFIFOW(fd,27) = stor->store_item[idx].opt[1].id;
+	WFIFOW(fd,29) = stor->store_item[idx].opt[1].val;
+	WFIFOB(fd,31) = 0;
+	WFIFOW(fd,32) = stor->store_item[idx].opt[2].id;
+	WFIFOW(fd,34) = stor->store_item[idx].opt[2].val;
+	WFIFOB(fd,36) = 0;
+	WFIFOW(fd,37) = stor->store_item[idx].opt[3].id;
+	WFIFOW(fd,39) = stor->store_item[idx].opt[3].val;
+	WFIFOB(fd,41) = 0;
+	WFIFOW(fd,42) = stor->store_item[idx].opt[4].id;
+	WFIFOW(fd,44) = stor->store_item[idx].opt[4].val;
+	WFIFOB(fd,46) = 0;
+	WFIFOSET(fd,packet_db[0xa0a].len);
 #endif
 
 	return;
@@ -8352,7 +8806,7 @@ void clif_guildstorageitemadded(struct map_session_data *sd, struct guild_storag
 			WFIFOW(fd,19) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0xf4].len);
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0) = 0x1c4;
 	WFIFOW(fd,2) = idx+1;
 	WFIFOL(fd,4) = amount;
@@ -8394,6 +8848,63 @@ void clif_guildstorageitemadded(struct map_session_data *sd, struct guild_storag
 			WFIFOW(fd,20) = stor->store_item[idx].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x1c4].len);
+#else
+	WFIFOW(fd,0) = 0xa0a;
+	WFIFOW(fd,2) = idx+1;
+	WFIFOL(fd,4) = amount;
+	if(id->view_id > 0)
+		WFIFOW(fd,8) = id->view_id;
+	else
+		WFIFOW(fd,8) = stor->store_item[idx].nameid;
+	WFIFOB(fd,10) = id->type;
+	WFIFOB(fd,11) = stor->store_item[idx].identify;
+	WFIFOB(fd,12) = stor->store_item[idx].attribute;
+	WFIFOB(fd,13) = stor->store_item[idx].refine;
+	if(itemdb_isspecial(stor->store_item[idx].card[0])) {
+		if(id->flag.pet_egg) {
+			WFIFOW(fd,14) = 0;
+			WFIFOW(fd,16) = 0;
+			WFIFOW(fd,18) = 0;
+		} else {
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+			WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		}
+		WFIFOW(fd,20) = stor->store_item[idx].card[3];
+	} else {
+		if(stor->store_item[idx].card[0] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[0])) > 0)
+			WFIFOW(fd,14) = j;
+		else
+			WFIFOW(fd,14) = stor->store_item[idx].card[0];
+		if(stor->store_item[idx].card[1] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[1])) > 0)
+			WFIFOW(fd,16) = j;
+		else
+			WFIFOW(fd,16) = stor->store_item[idx].card[1];
+		if(stor->store_item[idx].card[2] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[2])) > 0)
+			WFIFOW(fd,18) = j;
+		else
+			WFIFOW(fd,18) = stor->store_item[idx].card[2];
+		if(stor->store_item[idx].card[3] > 0 && (j = itemdb_viewid(stor->store_item[idx].card[3])) > 0)
+			WFIFOW(fd,20) = j;
+		else
+			WFIFOW(fd,20) = stor->store_item[idx].card[3];
+	}
+	WFIFOW(fd,22) = stor->store_item[idx].opt[0].id;
+	WFIFOW(fd,24) = stor->store_item[idx].opt[0].val;
+	WFIFOB(fd,26) = 0;
+	WFIFOW(fd,27) = stor->store_item[idx].opt[1].id;
+	WFIFOW(fd,29) = stor->store_item[idx].opt[1].val;
+	WFIFOB(fd,31) = 0;
+	WFIFOW(fd,32) = stor->store_item[idx].opt[2].id;
+	WFIFOW(fd,34) = stor->store_item[idx].opt[2].val;
+	WFIFOB(fd,36) = 0;
+	WFIFOW(fd,37) = stor->store_item[idx].opt[3].id;
+	WFIFOW(fd,39) = stor->store_item[idx].opt[3].val;
+	WFIFOB(fd,41) = 0;
+	WFIFOW(fd,42) = stor->store_item[idx].opt[4].id;
+	WFIFOW(fd,44) = stor->store_item[idx].opt[4].val;
+	WFIFOB(fd,46) = 0;
+	WFIFOSET(fd,packet_db[0xa0a].len);
 #endif
 
 	return;
@@ -11004,7 +11515,7 @@ void clif_cart_additem(struct map_session_data *sd, int n, int amount)
 			WFIFOW(fd,19)= sd->status.cart[n].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x124].len);
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x1c5;
 	WFIFOW(fd,2)=n+2;
 	WFIFOL(fd,4)=amount;
@@ -11046,6 +11557,63 @@ void clif_cart_additem(struct map_session_data *sd, int n, int amount)
 			WFIFOW(fd,20)= sd->status.cart[n].card[3];
 	}
 	WFIFOSET(fd,packet_db[0x1c5].len);
+#else
+	WFIFOW(fd,0)=0xa0b;
+	WFIFOW(fd,2)=n+2;
+	WFIFOL(fd,4)=amount;
+	if(id->view_id > 0)
+		WFIFOW(fd,8)=id->view_id;
+	else
+		WFIFOW(fd,8)=sd->status.cart[n].nameid;
+	WFIFOB(fd,10)=id->type;
+	WFIFOB(fd,11)=sd->status.cart[n].identify;
+	WFIFOB(fd,12)=sd->status.cart[n].attribute;
+	WFIFOB(fd,13)=sd->status.cart[n].refine;
+	if(itemdb_isspecial(sd->status.cart[n].card[0])) {
+		if(id->flag.pet_egg) {
+			WFIFOW(fd,14) = 0;
+			WFIFOW(fd,16) = 0;
+			WFIFOW(fd,18) = 0;
+		} else {
+			WFIFOW(fd,14) = sd->status.cart[n].card[0];
+			WFIFOW(fd,16) = sd->status.cart[n].card[1];
+			WFIFOW(fd,18) = sd->status.cart[n].card[2];
+		}
+		WFIFOW(fd,20) = sd->status.cart[n].card[3];
+	} else {
+		if(sd->status.cart[n].card[0] > 0 && (j=itemdb_viewid(sd->status.cart[n].card[0])) > 0)
+			WFIFOW(fd,14)= j;
+		else
+			WFIFOW(fd,14)= sd->status.cart[n].card[0];
+		if(sd->status.cart[n].card[1] > 0 && (j=itemdb_viewid(sd->status.cart[n].card[1])) > 0)
+			WFIFOW(fd,16)= j;
+		else
+			WFIFOW(fd,16)= sd->status.cart[n].card[1];
+		if(sd->status.cart[n].card[2] > 0 && (j=itemdb_viewid(sd->status.cart[n].card[2])) > 0)
+			WFIFOW(fd,18)= j;
+		else
+			WFIFOW(fd,18)= sd->status.cart[n].card[2];
+		if(sd->status.cart[n].card[3] > 0 && (j=itemdb_viewid(sd->status.cart[n].card[3])) > 0)
+			WFIFOW(fd,20)= j;
+		else
+			WFIFOW(fd,20)= sd->status.cart[n].card[3];
+	}
+	WFIFOW(fd,22) = sd->status.cart[n].opt[0].id;
+	WFIFOW(fd,24) = sd->status.cart[n].opt[0].val;
+	WFIFOB(fd,26) = 0;
+	WFIFOW(fd,27) = sd->status.cart[n].opt[1].id;
+	WFIFOW(fd,29) = sd->status.cart[n].opt[1].val;
+	WFIFOB(fd,31) = 0;
+	WFIFOW(fd,32) = sd->status.cart[n].opt[2].id;
+	WFIFOW(fd,34) = sd->status.cart[n].opt[2].val;
+	WFIFOB(fd,36) = 0;
+	WFIFOW(fd,37) = sd->status.cart[n].opt[3].id;
+	WFIFOW(fd,39) = sd->status.cart[n].opt[3].val;
+	WFIFOB(fd,41) = 0;
+	WFIFOW(fd,42) = sd->status.cart[n].opt[4].id;
+	WFIFOW(fd,44) = sd->status.cart[n].opt[4].val;
+	WFIFOB(fd,46) = 0;
+	WFIFOSET(fd,packet_db[0xa0b].len);
 #endif
 
 	return;
@@ -11528,7 +12096,7 @@ void clif_cart_equiplist(struct map_session_data *sd)
 		WFIFOW(fd,2)=4+n*27;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x994;
 	for(i=0,n=0;i<MAX_CART;i++){
 		if(sd->status.cart[i].nameid<=0)
@@ -11582,6 +12150,78 @@ void clif_cart_equiplist(struct map_session_data *sd)
 	}
 	if(n){
 		WFIFOW(fd,2)=4+n*31;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
+#else
+	WFIFOW(fd,0)=0xa0f;
+	for(i=0,n=0;i<MAX_CART;i++){
+		if(sd->status.cart[i].nameid<=0)
+			continue;
+		id = itemdb_search(sd->status.cart[i].nameid);
+		if(!itemdb_isequip2(id))
+			continue;
+		WFIFOW(fd,n*57+4)=i+2;
+		if(id->view_id > 0)
+			WFIFOW(fd,n*57+6)=id->view_id;
+		else
+			WFIFOW(fd,n*57+6)=sd->status.cart[i].nameid;
+		WFIFOB(fd,n*57+8)=id->type;
+		WFIFOL(fd,n*57+9)=id->equip;
+		WFIFOL(fd,n*57+13)=sd->status.cart[i].equip;
+		WFIFOB(fd,n*57+17)=sd->status.cart[i].refine;
+		if(itemdb_isspecial(sd->status.cart[i].card[0])) {
+			if(id->flag.pet_egg) {
+				WFIFOW(fd,n*57+18) = 0;
+				WFIFOW(fd,n*57+20) = 0;
+				WFIFOW(fd,n*57+22) = 0;
+			} else {
+				WFIFOW(fd,n*57+18) = sd->status.cart[i].card[0];
+				WFIFOW(fd,n*57+20) = sd->status.cart[i].card[1];
+				WFIFOW(fd,n*57+22) = sd->status.cart[i].card[2];
+			}
+			WFIFOW(fd,n*57+24) = sd->status.cart[i].card[3];
+		} else {
+			if(sd->status.cart[i].card[0] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[0])) > 0)
+				WFIFOW(fd,n*57+18)= j;
+			else
+				WFIFOW(fd,n*57+18)= sd->status.cart[i].card[0];
+			if(sd->status.cart[i].card[1] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[1])) > 0)
+				WFIFOW(fd,n*57+20)= j;
+			else
+				WFIFOW(fd,n*57+20)= sd->status.cart[i].card[1];
+			if(sd->status.cart[i].card[2] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[2])) > 0)
+				WFIFOW(fd,n*57+22)= j;
+			else
+				WFIFOW(fd,n*57+22)= sd->status.cart[i].card[2];
+			if(sd->status.cart[i].card[3] > 0 && (j=itemdb_viewid(sd->status.cart[i].card[3])) > 0)
+				WFIFOW(fd,n*57+24)= j;
+			else
+				WFIFOW(fd,n*57+24)= sd->status.cart[i].card[3];
+		}
+		WFIFOL(fd,n*57+26)=sd->status.cart[i].limit;
+		WFIFOW(fd,n*57+30)=0;
+		WFIFOW(fd,n*57+32)=id->look;
+		WFIFOB(fd,n*57+34)=0;
+		WFIFOW(fd,n*57+35)=sd->status.cart[i].opt[0].id;
+		WFIFOW(fd,n*57+37)=sd->status.cart[i].opt[0].val;
+		WFIFOB(fd,n*57+39)=0;
+		WFIFOW(fd,n*57+40)=sd->status.cart[i].opt[1].id;
+		WFIFOW(fd,n*57+42)=sd->status.cart[i].opt[1].val;
+		WFIFOB(fd,n*57+44)=0;
+		WFIFOW(fd,n*57+45)=sd->status.cart[i].opt[2].id;
+		WFIFOW(fd,n*57+47)=sd->status.cart[i].opt[2].val;
+		WFIFOB(fd,n*57+49)=0;
+		WFIFOW(fd,n*57+50)=sd->status.cart[i].opt[3].id;
+		WFIFOW(fd,n*57+52)=sd->status.cart[i].opt[3].val;
+		WFIFOB(fd,n*57+54)=0;
+		WFIFOW(fd,n*57+55)=sd->status.cart[i].opt[4].id;
+		WFIFOW(fd,n*57+57)=sd->status.cart[i].opt[4].val;
+		WFIFOB(fd,n*57+59)=0;
+		WFIFOB(fd,n*57+60)=sd->status.cart[i].identify+(sd->status.cart[i].attribute?2:0);
+		n++;
+	}
+	if(n){
+		WFIFOW(fd,2)=4+n*57;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
@@ -11740,7 +12380,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 		WFIFOW(fd,2)=8+n*22;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0)=0x800;
 	WFIFOL(fd,4)=vsd->status.account_id;
 	WFIFOL(fd,8)=vsd->vender_id;
@@ -11797,6 +12437,78 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 		WFIFOW(fd,2)=12+n*22;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
+#else
+	WFIFOW(fd,0)=0x800;
+	WFIFOL(fd,4)=vsd->status.account_id;
+	WFIFOL(fd,8)=vsd->vender_id;
+	n = 0;
+	for(i = 0; i < vsd->vend_num; i++) {
+		if(vending[i].amount<=0)
+			continue;
+		WFIFOL(fd,12+n*47)=vending[i].value;
+		WFIFOW(fd,16+n*47)=vending[i].amount;
+		WFIFOW(fd,18+n*47)=(idx = vending[i].index) + 2;
+		if(vsd->status.cart[idx].nameid <= 0 || vsd->status.cart[idx].amount <= 0)
+			continue;
+		data = itemdb_search(vsd->status.cart[idx].nameid);
+		WFIFOB(fd,20+n*47)=data->type;
+		if(data->view_id > 0)
+			WFIFOW(fd,21+n*47)=data->view_id;
+		else
+			WFIFOW(fd,21+n*47)=vsd->status.cart[idx].nameid;
+		WFIFOB(fd,23+n*47)=vsd->status.cart[idx].identify;
+		WFIFOB(fd,24+n*47)=vsd->status.cart[idx].attribute;
+		WFIFOB(fd,25+n*47)=vsd->status.cart[idx].refine;
+		if(itemdb_isspecial(vsd->status.cart[idx].card[0])) {
+			if(data->flag.pet_egg) {
+				WFIFOW(fd,26+n*47) = 0;
+				WFIFOW(fd,28+n*47) = 0;
+				WFIFOW(fd,30+n*47) = 0;
+			} else {
+				WFIFOW(fd,26+n*47) = vsd->status.cart[idx].card[0];
+				WFIFOW(fd,28+n*47) = vsd->status.cart[idx].card[1];
+				WFIFOW(fd,30+n*47) = vsd->status.cart[idx].card[2];
+			}
+			WFIFOW(fd,32+n*47) = vsd->status.cart[idx].card[3];
+		} else {
+			if(vsd->status.cart[idx].card[0] > 0 && (j=itemdb_viewid(vsd->status.cart[idx].card[0])) > 0)
+				WFIFOW(fd,26+n*47)= j;
+			else
+				WFIFOW(fd,26+n*47)= vsd->status.cart[idx].card[0];
+			if(vsd->status.cart[idx].card[1] > 0 && (j=itemdb_viewid(vsd->status.cart[idx].card[1])) > 0)
+				WFIFOW(fd,28+n*47)= j;
+			else
+				WFIFOW(fd,28+n*47)= vsd->status.cart[idx].card[1];
+			if(vsd->status.cart[idx].card[2] > 0 && (j=itemdb_viewid(vsd->status.cart[idx].card[2])) > 0)
+				WFIFOW(fd,30+n*47)= j;
+			else
+				WFIFOW(fd,30+n*47)= vsd->status.cart[idx].card[2];
+			if(vsd->status.cart[idx].card[3] > 0 && (j=itemdb_viewid(vsd->status.cart[idx].card[3])) > 0)
+				WFIFOW(fd,32+n*47)= j;
+			else
+				WFIFOW(fd,32+n*47)= vsd->status.cart[idx].card[3];
+		}
+		WFIFOW(fd,n*47+34) = vsd->status.cart[idx].opt[0].id;
+		WFIFOW(fd,n*47+36) = vsd->status.cart[idx].opt[0].val;
+		WFIFOB(fd,n*47+38) = 0;
+		WFIFOW(fd,n*47+39) = vsd->status.cart[idx].opt[1].id;
+		WFIFOW(fd,n*47+41) = vsd->status.cart[idx].opt[1].val;
+		WFIFOB(fd,n*47+43) = 0;
+		WFIFOW(fd,n*47+44) = vsd->status.cart[idx].opt[2].id;
+		WFIFOW(fd,n*47+46) = vsd->status.cart[idx].opt[2].val;
+		WFIFOB(fd,n*47+48) = 0;
+		WFIFOW(fd,n*47+49) = vsd->status.cart[idx].opt[3].id;
+		WFIFOW(fd,n*47+51) = vsd->status.cart[idx].opt[3].val;
+		WFIFOB(fd,n*47+53) = 0;
+		WFIFOW(fd,n*47+54) = vsd->status.cart[idx].opt[4].id;
+		WFIFOW(fd,n*47+56) = vsd->status.cart[idx].opt[4].val;
+		WFIFOB(fd,n*47+58) = 0;
+		n++;
+	}
+	if(n > 0){
+		WFIFOW(fd,2)=12+n*47;
+		WFIFOSET(fd,WFIFOW(fd,2));
+	}
 #endif
 
 	return;
@@ -11823,6 +12535,22 @@ void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned 
 }
 
 /*==========================================
+ * 露店開設成功通知
+ *------------------------------------------
+ */
+void clif_openvending_ack(struct map_session_data *sd)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xa28;
+	WFIFOB(fd,2)=0;
+	WFIFOSET(fd,packet_db[0xa28].len);
+}
+
+/*==========================================
  * 露店開設成功
  *------------------------------------------
  */
@@ -11831,6 +12559,11 @@ int clif_openvending(struct map_session_data *sd)
 	struct item_data *data;
 	int i, j, n, idx, fd;
 	struct vending *vending;
+#if PACKETVER >= 20150513
+	int len = 47;
+#else
+	int len = 22;
+#endif
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, vending = sd->vending);
@@ -11840,55 +12573,76 @@ int clif_openvending(struct map_session_data *sd)
 	WFIFOL(fd,4)=sd->bl.id;
 	n = 0;
 	for(i = 0; i < sd->vend_num; i++) {
-		WFIFOL(fd, 8+n*22)=vending[i].value;
-		WFIFOW(fd,12+n*22)=(idx = vending[i].index) + 2;
-		WFIFOW(fd,14+n*22)=vending[i].amount;
+		WFIFOL(fd, 8+n*len)=vending[i].value;
+		WFIFOW(fd,12+n*len)=(idx = vending[i].index) + 2;
+		WFIFOW(fd,14+n*len)=vending[i].amount;
 		if(sd->status.cart[idx].nameid <= 0 || sd->status.cart[idx].amount <= 0)
 			continue;
 		data = itemdb_search(sd->status.cart[idx].nameid);
-		WFIFOB(fd,16+n*22)=data->type;
+		WFIFOB(fd,16+n*len)=data->type;
 		if(data->view_id > 0)
-			WFIFOW(fd,17+n*22)=data->view_id;
+			WFIFOW(fd,17+n*len)=data->view_id;
 		else
-			WFIFOW(fd,17+n*22)=sd->status.cart[idx].nameid;
-		WFIFOB(fd,19+n*22)=sd->status.cart[idx].identify;
-		WFIFOB(fd,20+n*22)=sd->status.cart[idx].attribute;
-		WFIFOB(fd,21+n*22)=sd->status.cart[idx].refine;
+			WFIFOW(fd,17+n*len)=sd->status.cart[idx].nameid;
+		WFIFOB(fd,19+n*len)=sd->status.cart[idx].identify;
+		WFIFOB(fd,20+n*len)=sd->status.cart[idx].attribute;
+		WFIFOB(fd,21+n*len)=sd->status.cart[idx].refine;
 		if(itemdb_isspecial(sd->status.cart[idx].card[0])) {
 			if(data->flag.pet_egg) {
-				WFIFOW(fd,22+n*22)=0;
-				WFIFOW(fd,24+n*22)=0;
-				WFIFOW(fd,26+n*22)=0;
+				WFIFOW(fd,22+n*len)=0;
+				WFIFOW(fd,24+n*len)=0;
+				WFIFOW(fd,26+n*len)=0;
 			} else {
-				WFIFOW(fd,22+n*22)=sd->status.cart[idx].card[0];
-				WFIFOW(fd,24+n*22)=sd->status.cart[idx].card[1];
-				WFIFOW(fd,26+n*22)=sd->status.cart[idx].card[2];
+				WFIFOW(fd,22+n*len)=sd->status.cart[idx].card[0];
+				WFIFOW(fd,24+n*len)=sd->status.cart[idx].card[1];
+				WFIFOW(fd,26+n*len)=sd->status.cart[idx].card[2];
 			}
-			WFIFOW(fd,28+n*22)=sd->status.cart[idx].card[3];
+			WFIFOW(fd,28+n*len)=sd->status.cart[idx].card[3];
 		} else {
 			if(sd->status.cart[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.cart[idx].card[0])) > 0)
-				WFIFOW(fd,22+n*22)= j;
+				WFIFOW(fd,22+n*len)= j;
 			else
-				WFIFOW(fd,22+n*22)= sd->status.cart[idx].card[0];
+				WFIFOW(fd,22+n*len)= sd->status.cart[idx].card[0];
 			if(sd->status.cart[idx].card[1] > 0 && (j=itemdb_viewid(sd->status.cart[idx].card[1])) > 0)
-				WFIFOW(fd,24+n*22)= j;
+				WFIFOW(fd,24+n*len)= j;
 			else
-				WFIFOW(fd,24+n*22)= sd->status.cart[idx].card[1];
+				WFIFOW(fd,24+n*len)= sd->status.cart[idx].card[1];
 			if(sd->status.cart[idx].card[2] > 0 && (j=itemdb_viewid(sd->status.cart[idx].card[2])) > 0)
-				WFIFOW(fd,26+n*22)= j;
+				WFIFOW(fd,26+n*len)= j;
 			else
-				WFIFOW(fd,26+n*22)= sd->status.cart[idx].card[2];
+				WFIFOW(fd,26+n*len)= sd->status.cart[idx].card[2];
 			if(sd->status.cart[idx].card[3] > 0 && (j=itemdb_viewid(sd->status.cart[idx].card[3])) > 0)
-				WFIFOW(fd,28+n*22)= j;
+				WFIFOW(fd,28+n*len)= j;
 			else
-				WFIFOW(fd,28+n*22)= sd->status.cart[idx].card[3];
+				WFIFOW(fd,28+n*len)= sd->status.cart[idx].card[3];
 		}
+#if PACKETVER >= 20150513
+		WFIFOW(fd,n*47+30) = sd->status.cart[idx].opt[0].id;
+		WFIFOW(fd,n*47+32) = sd->status.cart[idx].opt[0].val;
+		WFIFOB(fd,n*47+34) = 0;
+		WFIFOW(fd,n*47+35) = sd->status.cart[idx].opt[1].id;
+		WFIFOW(fd,n*47+37) = sd->status.cart[idx].opt[1].val;
+		WFIFOB(fd,n*47+39) = 0;
+		WFIFOW(fd,n*47+40) = sd->status.cart[idx].opt[2].id;
+		WFIFOW(fd,n*47+42) = sd->status.cart[idx].opt[2].val;
+		WFIFOB(fd,n*47+44) = 0;
+		WFIFOW(fd,n*47+45) = sd->status.cart[idx].opt[3].id;
+		WFIFOW(fd,n*47+47) = sd->status.cart[idx].opt[3].val;
+		WFIFOB(fd,n*47+49) = 0;
+		WFIFOW(fd,n*47+50) = sd->status.cart[idx].opt[4].id;
+		WFIFOW(fd,n*47+52) = sd->status.cart[idx].opt[4].val;
+		WFIFOB(fd,n*47+54) = 0;
+#endif
 		n++;
 	}
 	if(n > 0){
-		WFIFOW(fd,2)=8+n*22;
+		WFIFOW(fd,2)=8+n*len;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
+
+#if PACKETVER >= 20150513
+	clif_openvending_ack(sd);
+#endif
 
 	return n;
 }
@@ -16692,6 +17446,23 @@ void clif_showdigit(struct map_session_data* sd, unsigned char type, int value)
 }
 
 /*==========================================
+ * ドレスルーム表示
+ *------------------------------------------
+ */
+void clif_dressing_room(struct map_session_data *sd, int view)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xa02;
+	WFIFOW(fd,2)=view;
+	WFIFOSET(fd,packet_db[0xa02].len);
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -21398,6 +22169,160 @@ static void clif_parse_ClientTimeStamp(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_OpenRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_CloseRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_ReadRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_WriteRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_NextListRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_RefreshRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_ZenyfromRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_ItemfromRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_DeleteRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_CancelWriteRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_AdditemRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_DelitemRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_OpenWriteRoDEX(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * ワンクリック鑑定
+ *------------------------------------------
+ */
+static void clif_parse_OneClickItemidentify(int fd,struct map_session_data *sd, int cmd)
+{
+	int idx = RFIFOW(fd,GETPACKETPOS(cmd,0))-2;
+	int i;
+
+	if(idx < 0 || idx >= MAX_INVENTORY)
+		return;
+
+	if(sd->status.inventory[idx].nameid <= 0 || sd->status.inventory[idx].identify == 1)
+		return;
+
+	if((i = pc_search_inventory(sd, 611)) == -1)
+		return;
+
+	pc_delitem(sd,i,1,0,1);
+	pc_item_identify(sd,idx);
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -21765,6 +22690,20 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_BankingWithdrawReq,          "bankwithdrawreq"           },
 		{ clif_parse_BankingInfoReq,              "bankinforeq"               },
 		{ clif_parse_ClientTimeStamp,             "clienttimestamp"           },
+		{ clif_parse_OpenRoDEX,                   "openrodex"                 },
+		{ clif_parse_CloseRoDEX,                  "closerodex"                },
+		{ clif_parse_ReadRoDEX,                   "readrodex"                 },
+		{ clif_parse_WriteRoDEX,                  "writerodex"                },
+		{ clif_parse_NextListRoDEX,               "nextlistrodex"             },
+		{ clif_parse_RefreshRoDEX,                "refreshrodex"              },
+		{ clif_parse_ZenyfromRoDEX,               "zenyfromrodex"             },
+		{ clif_parse_ItemfromRoDEX,               "itemfromrodex"             },
+		{ clif_parse_DeleteRoDEX,                 "deleterodex"               },
+		{ clif_parse_CancelWriteRoDEX,            "cancelwriterodex"          },
+		{ clif_parse_AdditemRoDEX,                "additemrodex"              },
+		{ clif_parse_DelitemRoDEX,                "delitemrodex"              },
+		{ clif_parse_OpenWriteRoDEX,              "openwriterodex"            },
+		{ clif_parse_OneClickItemidentify,        "oneclickitemidentify"      },
 		{ NULL,                                   NULL                        },
 	};
 
