@@ -773,6 +773,7 @@ enum {
 	SC_PHI_DEMON			= 626,
 	SC_ATKPOTION			= 627,
 	SC_MATKPOTION			= 628,
+	SC_ALMIGHTY				= 629,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,
@@ -1459,7 +1460,7 @@ enum {
 	//SI_GLASTHEIM_ITEMDEF = 682,
 	//SI_GLASTHEIM_HPSP = 683,
 	//SI_HOMUN_SKILL_POSTDELAY = 684,
-	//SI_ALMIGHTY = 685,
+	SI_ALMIGHTY = 685,
 	//SI_GVG_GIANT = 686,
 	//SI_GVG_GOLEM = 687,
 	//SI_GVG_STUN = 688,

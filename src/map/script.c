@@ -4075,6 +4075,7 @@ int buildin_setmobhp(struct script_state *st);
 int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
+int buildin_opendressroom(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4389,6 +4390,7 @@ struct script_function buildin_func[] = {
 	{buildin_sc_onparam,"sc_onparam","ii"},
 	{buildin_showdigit,"showdigit","ii"},
 	{buildin_checkre,"checkre",""},
+	{buildin_opendressroom,"opendressroom",""},
 	{NULL,NULL,NULL}
 };
 
@@ -5419,7 +5421,7 @@ int buildin_setlook(struct script_state *st)
 
 /*==========================================
  * 見た目のパラメータを返す
- *   n：1,髪型、2,武器、3,頭上段、4,頭中段、5,頭下段、6,髪色、7,服色、8,盾
+ *   n：1,髪型、2,武器、3,頭上段、4,頭中段、5,頭下段、6,髪色、7,服色、8,盾、13,服装
  *------------------------------------------
  */
 int buildin_getlook(struct script_state *st)
@@ -5458,6 +5460,9 @@ int buildin_getlook(struct script_state *st)
 			val=sd->status.shield;
 			break;
 		case LOOK_SHOES:
+			break;
+		case LOOK_BODY2:
+			val=sd->status.style;
 			break;
 	}
 	push_val(st->stack,C_INT,val);
@@ -13391,5 +13396,19 @@ int buildin_checkre(struct script_state *st)
 #else
 	push_val(st->stack,C_INT,1);
 #endif
+	return 0;
+}
+
+/*==========================================
+ * ドレスルームを開く
+ *------------------------------------------
+ */
+int buildin_opendressroom(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	clif_dressing_room(sd, 0);
 	return 0;
 }

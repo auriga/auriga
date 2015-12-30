@@ -929,7 +929,8 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 		WFIFOW(fd,79+i*147) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 		WFIFOW(fd,81+i*147) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
 		WFIFOW(fd,83+i*147) = st->class_;
-		WFIFOL(fd,85+i*147) = st->hair;
+		WFIFOW(fd,85+i*147) = st->hair;
+		WFIFOW(fd,87+i*147) = st->style;
 		WFIFOW(fd,89+i*147) = st->weapon;
 		WFIFOW(fd,91+i*147) = st->base_level;
 		WFIFOW(fd,93+i*147) = st->skill_point;
@@ -1354,7 +1355,8 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOW(fd,54) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 	WFIFOW(fd,56) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
 	WFIFOW(fd,58) = st->class_;
-	WFIFOL(fd,60) = st->hair;
+	WFIFOW(fd,60) = st->hair;
+	WFIFOW(fd,62) = st->style;
 	WFIFOW(fd,64) = st->weapon;
 	WFIFOW(fd,66) = st->base_level;
 	WFIFOW(fd,68) = st->skill_point;
@@ -2069,7 +2071,8 @@ int parse_tologin(int fd)
 										WFIFOW(fdc,56+j*147) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
 										WFIFOW(fdc,58+j*147) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
 										WFIFOW(fdc,60+j*147) = st->class_;
-										WFIFOL(fdc,62+j*147) = st->hair;
+										WFIFOW(fdc,62+j*147) = st->hair;
+										WFIFOW(fdc,64+j*147) = st->style;
 										WFIFOW(fdc,66+j*147) = st->weapon;
 										WFIFOW(fdc,68+j*147) = st->base_level;
 										WFIFOW(fdc,70+j*147) = st->skill_point;

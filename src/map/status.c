@@ -206,7 +206,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 610- */
 	SI_FIRE_INSIGNIA,SI_WATER_INSIGNIA,SI_WIND_INSIGNIA,SI_EARTH_INSIGNIA,SI_HAT_EFFECT,SI_JP_EVENT01,SI_JP_EVENT02,SI_JP_EVENT03,SI_JP_EVENT04,SI_ACTIVE_MONSTER_TRANSFORM,
 	/* 620- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU,SI_ASSUMPTIO2,SI_PHI_DEMON,SI_PLUSATTACKPOWER,SI_PLUSMAGICPOWER
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU,SI_ASSUMPTIO2,SI_PHI_DEMON,SI_PLUSATTACKPOWER,SI_PLUSMAGICPOWER,SI_ALMIGHTY
 };
 
 /*==========================================
@@ -1936,6 +1936,13 @@ L_RECALC:
 			sd->plus_atk += sd->sc.data[SC_ATKPOTION].val1;
 #endif
 		}
+		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// ATK上昇 (食事用)
+#ifdef PRE_RENEWAL
+			sd->watk += sd->sc.data[SC_ALMIGHTY].val1;
+#else
+			sd->plus_atk += sd->sc.data[SC_ALMIGHTY].val1;
+#endif
+		}
 		if(sd->sc.data[SC_INCMATK].timer != -1) {	// MATK上昇 (神秘の草用)
 			sd->matk1 += sd->sc.data[SC_INCMATK].val1;
 			sd->matk2 += sd->sc.data[SC_INCMATK].val1;
@@ -1946,6 +1953,14 @@ L_RECALC:
 			sd->matk2 += sd->sc.data[SC_MATKPOTION].val1;
 #else
 			sd->plus_matk += sd->sc.data[SC_MATKPOTION].val1;
+#endif
+		}
+		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// MATK上昇 (食事用)
+#ifdef PRE_RENEWAL
+			sd->matk1 += sd->sc.data[SC_ALMIGHTY].val2;
+			sd->matk2 += sd->sc.data[SC_ALMIGHTY].val2;
+#else
+			sd->plus_matk += sd->sc.data[SC_ALMIGHTY].val2;
 #endif
 		}
 		if(sd->sc.data[SC_MINDBREAKER].timer != -1) {
@@ -6940,6 +6955,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_INVINCIBLEOFF:		/* インビンシブルオフ */
 		case SC_ATKPOTION:
 		case SC_MATKPOTION:
+		case SC_ALMIGHTY:
 			calc_flag = 1;
 			break;
 
@@ -8928,6 +8944,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_INVINCIBLEOFF:		/* インビンシブルオフ */
 		case SC_ATKPOTION:
 		case SC_MATKPOTION:
+		case SC_ALMIGHTY:
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
