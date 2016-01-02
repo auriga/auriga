@@ -15495,7 +15495,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
 	WFIFOSET(fd,packet_db[0x7d9].len);
-#else
+#elif PACKETVER < 20141022
 	memset(WFIFOP(fd,0), 0, packet_db[0x7d9].len);
 
 	WFIFOW(fd,0) = 0x7d9;
@@ -15505,6 +15505,17 @@ void clif_send_hotkey(struct map_session_data *sd)
 		WFIFOW(fd,7*i+7) = sd->status.hotkey[j].lv;
 	}
 	WFIFOSET(fd,packet_db[0x7d9].len);
+#else
+	memset(WFIFOP(fd,0), 0, packet_db[0xa00].len);
+
+	WFIFOW(fd,0) = 0xa00;
+	WFIFOB(fd,2) = sd->hotkey_rotate;
+	for(i = 0, j = sd->hotkey_set * 38; i < 38 && j < MAX_HOTKEYS; i++, j++) {
+		WFIFOB(fd,7*i+3) = sd->status.hotkey[j].type;
+		WFIFOL(fd,7*i+4) = sd->status.hotkey[j].id;
+		WFIFOW(fd,7*i+8) = sd->status.hotkey[j].lv;
+	}
+	WFIFOSET(fd,packet_db[0xa00].len);
 #endif
 
 	return;
@@ -22299,6 +22310,51 @@ static void clif_parse_OpenWriteRoDEX(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
+ * ホットキーのテーブル回転
+ *------------------------------------------
+ */
+static void clif_parse_HotkeyRotate(int fd,struct map_session_data *sd, int cmd)
+{
+	int id = RFIFOB(fd,GETPACKETPOS(cmd,0));
+
+	nullpo_retv(sd);
+
+	sd->hotkey_rotate = id;
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_OpenRoulette(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_CloseRoulette(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * ワンクリック鑑定
  *------------------------------------------
  */
@@ -22306,6 +22362,8 @@ static void clif_parse_OneClickItemidentify(int fd,struct map_session_data *sd, 
 {
 	int idx = RFIFOW(fd,GETPACKETPOS(cmd,0))-2;
 	int i;
+
+	nullpo_retv(sd);
 
 	if(idx < 0 || idx >= MAX_INVENTORY)
 		return;
@@ -22703,6 +22761,10 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_AdditemRoDEX,                "additemrodex"              },
 		{ clif_parse_DelitemRoDEX,                "delitemrodex"              },
 		{ clif_parse_OpenWriteRoDEX,              "openwriterodex"            },
+		{ clif_parse_HotkeyRotate,                "hotkeyrotate"              },
+		{ clif_parse_OpenRoulette,                "openroulette"              },
+		{ clif_parse_CloseRoulette,               "closeroulette"             },
+		{ clif_parse_ChangeTitleReq,              "changetitlereq"            },
 		{ clif_parse_OneClickItemidentify,        "oneclickitemidentify"      },
 		{ NULL,                                   NULL                        },
 	};

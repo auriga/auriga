@@ -4,16 +4,19 @@
 
 -	pointshop	SpecialItemShopper	-1,17634:5000,17290:9000,17289:5000,12913:1000,12914:1000,12918:1000,12917:1000,12927:1500,12910:500,12903:3000,12904:3000,12908:3000,12905:3000,12906:3000,12907:3000,12900:7500,16653:10000,13990:5000,12922:7500,16674:7500,12901:7000,13500:12000,12911:15000,12921:7000,12920:10000,14289:5000,14290:5000,16682:12000
 
-payon.gat,153,96,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+payon.gat,153,96,4		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 alberta.gat,90,56,6		substore(SpecialItemShopper)	スペシャルアイテム販売	73
-prontera.gat,123,68,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
-geffen.gat,114,104,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
-morocc.gat,169,80,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
-aldebaran.gat,135,123,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+prontera.gat,123,68,2		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+geffen.gat,114,104,4		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+morocc.gat,169,80,2		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+aldebaran.gat,135,123,4		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 yuno.gat,167,187,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 einbroch.gat,242,255,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 lighthalzen.gat,187,304,3	substore(SpecialItemShopper)	スペシャルアイテム販売	73
 hugel.gat,83,150,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
+comodo.gat,198,149,4	substore(SpecialItemShopper)	スペシャルアイテム販売	73
+rachel.gat,132,144,2	substore(SpecialItemShopper)	スペシャルアイテム販売	73
+mid_camp.gat,59,130,4	substore(SpecialItemShopper)	スペシャルアイテム販売	73
 
 //============================================================
 // 騎乗用手綱

@@ -839,6 +839,7 @@ struct map_session_data {
 	} progressbar;
 
 	short hotkey_set;
+	char hotkey_rotate;
 	int shop_point;
 
 	int npc_idle_timer;		// NPCのタイムアウト用
