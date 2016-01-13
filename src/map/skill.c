@@ -19423,6 +19423,7 @@ static int skill_readdb(void)
 			skill_split_atoi(split[4],skill_db[i].sp_rate,MAX_SKILL_LEVEL);
 			skill_split_atoi(split[5],skill_db[i].zeny,MAX_SKILL_LEVEL);
 
+			skill_db[i].weapon = 0;
 			p = split[6];
 			for(j=0;j<32;j++){
 				n = atoi(p);

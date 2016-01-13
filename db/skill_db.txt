@@ -276,7 +276,7 @@
 274,0,0,0,0,0,10,0,no,0,0,0,weapon,0	//SA_ADVANCEDBOOK#アドバンスドブック#
 275,0,6,4,0,1,5,1,no,0,0,0,magic,0	//SA_CASTCANCEL#キャストキャンセル#
 276,0,6,4,0,1,5,1,yes,0,0,0,magic,0	//SA_MAGICROD#マジックロッド#
-277,9,6,1,0,1,5,1,yes,0,0,0,maigc,0	//SA_SPELLBREAKER#スペルブレイカー#
+277,9,6,1,0,1,5,1,yes,0,0,0,magic,0	//SA_SPELLBREAKER#スペルブレイカー#
 278,0,0,0,0,0,10,0,no,0,0,0,magic,0	//SA_FREECAST#フリーキャスト#
 279,0,6,4,0,1,10,1,yes,0,0,0,magic,0	//SA_AUTOSPELL#オートスペル#
 280,9,6,16,0,1,5,1,yes,0,3072,0,magic,0	//SA_FLAMELAUNCHER#フレイムランチャー#

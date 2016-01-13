@@ -1,4 +1,18 @@
 ----------------------------------------
+//1260 [2016/01/14] by refis
+
+・typo修正（skill_cast_db.txt, skill_db.txt, skill_require_db.txt, skill_require_db2.txt）
+	Thanks siong さん
+
+・森の中の秘密クエストが進行できない不具合を修正（npc_town_portmalaya.txt）
+	Thanks rinaserver さん
+
+・skill_require_dbの使用可能武器種別が上書きできない不具合を修正（skill.c）
+	Thanks ねぴぴ さん
+
+・モンスターID最大値の定数を3601に更新（mob.h）
+
+----------------------------------------
 //1259 [2016/01/14] by refis
 
 ・モンスターデータを暫定で更新（mob_db.txt, mob_skill_db.txt）
