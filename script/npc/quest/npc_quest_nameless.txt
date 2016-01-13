@@ -1071,7 +1071,10 @@ nameless_n.gat,259,218,3	script	ラルヒス	97,{
 		mes "報告する。";
 		set NAME_1QUE,24;
 		delitem 7726,1;
-		getexp 1000000,0;
+		if(checkre())
+			getexp 100000,0;
+		else
+			getexp 1000000,0;
 		close;
 	}
 	mes "[ラルヒス]";
@@ -1774,7 +1777,10 @@ ra_temple.gat,165,57,5	script	ニルエン大神官	915,{
 			mes "とにかく、調査ご苦労様でした。";
 			set NAME_1QUE,25;
 			delitem 7755,1;
-			getexp 500000,0;
+			if(checkre())
+				getexp 50000,0;
+			else
+				getexp 500000,0;
 			break;
 		case 25:
 			mes "[ニルエン大神官]";
@@ -2294,7 +2300,10 @@ ra_temple.gat,165,57,5	script	ニルエン大神官	915,{
 		mes "　教皇とジェド大神官が知っている";
 		mes "　彼女本来の表情なのだろう-";
 		set NAME_2QUE,23;
-		getexp 1000000,0;
+		if(checkre())
+			getexp 100000,0;
+		else
+			getexp 1000000,0;
 		break;
 	case 23:
 	case 24:
@@ -4611,7 +4620,10 @@ prontera.gat,148,326,3	script	治安維持団長	734,{
 		mes "頑張ってくれたまえ！";
 		delitem 7724,1;
 		set NAME_4QUE,19;
-		getexp 1000000,0;
+		if(checkre())
+			getexp 100000,0;
+		else
+			getexp 1000000,0;
 		close;
 	}
 	mes "[王国治安維持団長]";

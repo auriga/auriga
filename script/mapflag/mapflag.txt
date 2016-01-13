@@ -73,7 +73,7 @@ amatsu.gat	mapflag	town	dummy
 amatsu.gat	mapflag	nopenalty	dummy
 anthell01.gat	mapflag	nomemo	dummy
 anthell02.gat	mapflag	nomemo	dummy
-anthell02.gat	mapflag	noteleport	dummy
+//anthell02.gat	mapflag	noteleport	dummy
 ayo_dun01.gat	mapflag	nomemo	dummy
 ayo_dun02.gat	mapflag	nomemo	dummy
 ayo_fild02.gat	mapflag	nomemo	dummy
@@ -1049,7 +1049,7 @@ tur_dun01.gat	mapflag	nomemo	dummy
 tur_dun02.gat	mapflag	nomemo	dummy
 tur_dun03.gat	mapflag	nomemo	dummy
 tur_dun04.gat	mapflag	nomemo	dummy
-tur_dun04.gat	mapflag	noteleport	dummy
+//tur_dun04.gat	mapflag	noteleport	dummy
 um_dun01.gat	mapflag	nomemo	dummy
 um_dun02.gat	mapflag	nomemo	dummy
 um_in.gat	mapflag	nomemo	dummy

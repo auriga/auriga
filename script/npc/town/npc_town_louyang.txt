@@ -1257,7 +1257,10 @@ lou_in02.gat,265,69,5	script	とても医者らしい医者	814,{
 			mes "どうぞ旅にお役立てください。";
 			delitem 7252,1;
 			getitem 679,2;
-			getexp 10000,0;
+			if(checkre())
+				getexp 1000,0;
+			else
+				getexp 10000,0;
 			set LOU_2QUE,10;
 			next;
 			mes "[タファ]";
@@ -1329,7 +1332,10 @@ lou_in02.gat,265,69,5	script	とても医者らしい医者	814,{
 		delitem 7193,10;
 		delitem 7121,5;
 		getitem 679,5;
-		getexp 30000,0;
+		if(checkre())
+			getexp 3000,0;
+		else
+			getexp 30000,0;
 		set LOU_2QUE,18;
 		next;
 		mes "[タファ]";
@@ -2300,15 +2306,28 @@ lou_in02.gat,123,39,4	script	毒薬王	824,{
 		mes "- 呼ばれるものが満たされて -";
 		mes "- いくのを感じた -";
 		next;
-		if(BaseLevel > 90) 				getexp 406786,0;
-		else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 182052,0;
-		else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 150340,0;
-		else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 130246,0;
-		else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 70757,0;
-		else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 27411,0;
-		else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 18684,0;
-		else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 10500,0;
-		else						getexp 9000,0;
+		if(checkre()) {
+			if(BaseLevel > 90) 				getexp 40678,0;
+			else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 18205,0;
+			else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 15034,0;
+			else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 13024,0;
+			else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 7075,0;
+			else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 2741,0;
+			else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 1868,0;
+			else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 1050,0;
+			else						getexp 900,0;
+		}
+		else {
+			if(BaseLevel > 90) 				getexp 406786,0;
+			else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 182052,0;
+			else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 150340,0;
+			else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 130246,0;
+			else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 70757,0;
+			else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 27411,0;
+			else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 18684,0;
+			else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 10500,0;
+			else						getexp 9000,0;
+		}
 		set LOU_3QUE,20;
 		mes "- そして、あなたは気を失った -";
 		close2;
@@ -3432,15 +3451,28 @@ lou_in02.gat,253,45,0	script	従業員	822,{
 		mes "- 感覚を覚えた…… -";
 		mes "- そしてそのまま気を失った -";
 		close2;
-		if(BaseLevel > 90) 				getexp 366786,0;
-		else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 152052,0;
-		else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 142340,0;
-		else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 128246,0;
-		else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 68757,0;
-		else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 27411,0;
-		else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 17684,0;
-		else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 10213,0;
-		else						getexp 8909,0;
+		if(checkre()) {
+			if(BaseLevel > 90) 				getexp 36678,0;
+			else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 15205,0;
+			else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 14234,0;
+			else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 12824,0;
+			else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 6875,0;
+			else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 2741,0;
+			else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 1768,0;
+			else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 1021,0;
+			else						getexp 890,0;
+		}
+		else {
+			if(BaseLevel > 90) 				getexp 366786,0;
+			else if(BaseLevel > 85 && BaseLevel <= 90) 	getexp 152052,0;
+			else if(BaseLevel > 80 && BaseLevel <= 85) 	getexp 142340,0;
+			else if(BaseLevel > 75 && BaseLevel <= 80) 	getexp 128246,0;
+			else if(BaseLevel > 70 && BaseLevel <= 75) 	getexp 68757,0;
+			else if(BaseLevel > 65 && BaseLevel <= 70) 	getexp 27411,0;
+			else if(BaseLevel > 60 && BaseLevel <= 65) 	getexp 17684,0;
+			else if(BaseLevel > 55 && BaseLevel <= 60) 	getexp 10213,0;
+			else						getexp 8909,0;
+		}
 		warp "louyang.gat",270,136;
 		end;
 	case 14:	//BadEnd

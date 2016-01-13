@@ -5141,24 +5141,46 @@ aldebaran.gat,66,213,0	script	お嬢さん	69,{
 			mes "お受け取りください……";
 			set GOD_2QUE,28;
 			getitem 603,1;
-			if(BaseLevel < 56)
-				getexp 2700,0;
-			else if((BaseLevel > 55) && (BaseLevel < 61))
-				getexp 3000,0;
-			else if((BaseLevel > 60) && (BaseLevel < 66))
-				getexp 5605,0;
-			else if((BaseLevel > 65) && (BaseLevel < 71))
-				getexp 8223,0;
-			else if((BaseLevel > 70) && (BaseLevel < 76))
-				getexp 21227,0;
-			else if((BaseLevel > 75) && (BaseLevel < 81))
-				getexp 39073,0;
-			else if((BaseLevel > 80) && (BaseLevel < 86))
-				getexp 45102,0;
-			else if((BaseLevel > 85) && (BaseLevel < 91))
-				getexp 54615,0;
-			else if(BaseLevel > 90)
-				getexp 122035,0;
+			if(checkre()) {
+				if(BaseLevel < 56)
+					getexp 2700,0;
+				else if((BaseLevel > 55) && (BaseLevel < 61))
+					getexp 3000,0;
+				else if((BaseLevel > 60) && (BaseLevel < 66))
+					getexp 5605,0;
+				else if((BaseLevel > 65) && (BaseLevel < 71))
+					getexp 8223,0;
+				else if((BaseLevel > 70) && (BaseLevel < 76))
+					getexp 21227,0;
+				else if((BaseLevel > 75) && (BaseLevel < 81))
+					getexp 39073,0;
+				else if((BaseLevel > 80) && (BaseLevel < 86))
+					getexp 45102,0;
+				else if((BaseLevel > 85) && (BaseLevel < 91))
+					getexp 54615,0;
+				else if(BaseLevel > 90)
+					getexp 122035,0;
+			}
+			else {
+				if(BaseLevel < 56)
+					getexp 27000,0;
+				else if((BaseLevel > 55) && (BaseLevel < 61))
+					getexp 30000,0;
+				else if((BaseLevel > 60) && (BaseLevel < 66))
+					getexp 56052,0;
+				else if((BaseLevel > 65) && (BaseLevel < 71))
+					getexp 82233,0;
+				else if((BaseLevel > 70) && (BaseLevel < 76))
+					getexp 212271,0;
+				else if((BaseLevel > 75) && (BaseLevel < 81))
+					getexp 390738,0;
+				else if((BaseLevel > 80) && (BaseLevel < 86))
+					getexp 451020,0;
+				else if((BaseLevel > 85) && (BaseLevel < 91))
+					getexp 546156,0;
+				else if(BaseLevel > 90)
+					getexp 1220358,0;
+			}
 			close;
 		}
 		else if(GOD_2QUE == 28) {
@@ -5786,24 +5808,46 @@ niflheim.gat,109,254,7	script	イグニゼム	796,{
 			mes "私には、これくらいしか";
 			mes "出来ないから……";
 			set GOD_2QUE,27;
-			if(BaseLevel < 56)
-				getexp 2700,0;
-			else if((BaseLevel > 55) && (BaseLevel < 61))
-				getexp 3000,0;
-			else if((BaseLevel > 60) && (BaseLevel < 66))
-				getexp 5605,0;
-			else if((BaseLevel > 65) && (BaseLevel < 71))
-				getexp 8223,0;
-			else if((BaseLevel > 70) && (BaseLevel < 76))
-				getexp 21227,0;
-			else if((BaseLevel > 75) && (BaseLevel < 81))
-				getexp 39073,0;
-			else if((BaseLevel > 80) && (BaseLevel < 86))
-				getexp 45102,0;
-			else if((BaseLevel > 85) && (BaseLevel < 91))
-				getexp 54615,0;
-			else if(BaseLevel > 90)
-				getexp 122035,0;
+			if(checkre()) {
+				if(BaseLevel < 56)
+					getexp 27000,0;
+				else if((BaseLevel > 55) && (BaseLevel < 61))
+					getexp 30000,0;
+				else if((BaseLevel > 60) && (BaseLevel < 66))
+					getexp 56052,0;
+				else if((BaseLevel > 65) && (BaseLevel < 71))
+					getexp 82233,0;
+				else if((BaseLevel > 70) && (BaseLevel < 76))
+					getexp 212271,0;
+				else if((BaseLevel > 75) && (BaseLevel < 81))
+					getexp 390738,0;
+				else if((BaseLevel > 80) && (BaseLevel < 86))
+					getexp 451020,0;
+				else if((BaseLevel > 85) && (BaseLevel < 91))
+					getexp 546156,0;
+				else if(BaseLevel > 90)
+					getexp 1220358,0;
+			}
+			else {
+				if(BaseLevel < 56)
+					getexp 2700,0;
+				else if((BaseLevel > 55) && (BaseLevel < 61))
+					getexp 3000,0;
+				else if((BaseLevel > 60) && (BaseLevel < 66))
+					getexp 5605,0;
+				else if((BaseLevel > 65) && (BaseLevel < 71))
+					getexp 8223,0;
+				else if((BaseLevel > 70) && (BaseLevel < 76))
+					getexp 21227,0;
+				else if((BaseLevel > 75) && (BaseLevel < 81))
+					getexp 39073,0;
+				else if((BaseLevel > 80) && (BaseLevel < 86))
+					getexp 45102,0;
+				else if((BaseLevel > 85) && (BaseLevel < 91))
+					getexp 54615,0;
+				else if(BaseLevel > 90)
+					getexp 122035,0;
+			}
 			close;
 		}
 		else if(GOD_2QUE >= 27) {

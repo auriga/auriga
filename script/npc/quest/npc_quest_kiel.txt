@@ -2857,7 +2857,10 @@ kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
 		delitem 7493,1;
 		delitem 7494,1;
 		getitem 12105,1;
-		getexp 700000,0;
+		if(checkre())
+			getexp 70000,0;
+		else
+			getexp 700000,0;
 		set KH_QUE,26;
 		break;
 	case 26:
@@ -3556,7 +3559,10 @@ kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
 		delitem 7508,1;
 		getitem 7509,1;
 		getitem 616,1;
-		getexp 1300000,0;
+		if(checkre())
+			getexp 100000,0;
+		else
+			getexp 1300000,0;
 		set KH_QUE,55;
 		break;
 	}

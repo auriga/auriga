@@ -1146,7 +1146,10 @@ ve_fild05.gat,257,130,4	script	腰を叩いている老人	945,{
 		mes "欲しがっているそうだ。";
 		mes "これをお礼として貰ってくれ。";
 		set VE_1QUE,8;
-		getexp 300000,0;
+		if(checkre())
+			getexp 30000,0;
+		else
+			getexp 300000,0;
 		getitem 985,3;
 		close;
 	case 8:
@@ -1888,7 +1891,10 @@ prt_church.gat,89,108,6	script	バード	741,{
 		mes "本当にありがとうございました。";
 		set VE_2QUE,26;
 		getitem 12106,1;
-		getexp 600000,0;
+		if(checkre())
+			getexp 60000,0;
+		else
+			getexp 600000,0;
 		close;
 	case 26:
 		mes "[ラスダール]";
@@ -3665,7 +3671,10 @@ veins.gat,327,185,3	script	子供	944,{
 		mes "それじゃ、またね!!";
 		misceffect 253,"";
 		set VE_3QUE,25;
-		getexp 1000000,700000;
+		if(checkre())
+			getexp 100000,70000;
+		else
+			getexp 1000000,700000;
 		close;
 	case 25:
 		if(NAME_1QUE < 15) {
@@ -6352,7 +6361,10 @@ ve_in.gat,281,214,0	script	本棚	111,{
 			case 8: getitem 661,1; break;
 			default: getitem 12027,5; break;
 		}
-		getexp 800000,0;
+		if(checkre())
+			getexp 80000,0;
+		else
+			getexp 800000,0;
 		mes "[" +strcharinfo(0)+ "]";
 		mes "（ここで得られる情報は";
 		mes "　もう無いかな……";

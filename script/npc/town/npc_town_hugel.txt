@@ -275,7 +275,10 @@ hu_in01.gat,15,372,3	script	ジレット・レビト	74,{
 		mes "これは感謝の印よ。";
 		mes "よかったら食べてちょうだい。";
 		set HU_1QUE,0;
-		getexp 1000,0;
+		if(checkre())
+			getexp 100,0;
+		else
+			getexp 1000,0;
 		getitem 584,3;
 		next;
 		mes "[ジレット]";
@@ -692,7 +695,10 @@ hugel.gat,56,104,3	script	クルペ	709,3,3,{
 		misceffect 71,"";
 		set HU_2QUE,10;
 		getitem 12063,3;
-		getexp 100000,0;
+		if(checkre())
+			getexp 10000,0;
+		else
+			getexp 100000,0;
 		next;
 		mes "[クルペ]";
 		mes "私たちはいつも忙しいから、";
@@ -2169,7 +2175,10 @@ hugel.gat,196,164,3	script	エルシャングト	50,{
 		mes "カナイン……";
 		misceffect 71,"";
 		set HU_4QUE,12;
-		getexp 50000,0;
+		if(checkre())
+			getexp 5000,0;
+		else
+			getexp 50000,0;
 		getitem 603,1;
 		close;
 	case 12:
@@ -2756,7 +2765,10 @@ OnTouch:
 		close2;
 		misceffect 71,"";
 		set HU_5QUE,13;
-		getexp 50000,0;
+		if(checkre())
+			getexp 5000,0;
+		else
+			getexp 50000,0;
 		getitem 603,1;
 		end;
 	}
@@ -3483,7 +3495,10 @@ ein_in01.gat,16,36,3	script	モリペン	86,{
 		mes "心配しないで。";
 		mes "じゃ、また来てくれよ。";
 		set HU_6QUE,9;
-		getexp 700000,0;
+		if(checkre())
+			getexp 70000,0;
+		else
+			getexp 700000,0;
 		close;
 	case 9:
 		mes "[モリペン]";
@@ -3712,7 +3727,10 @@ hu_in01.gat,326,307,3	script	シリア	90,{
 		mes "何かありましたら";
 		mes "お手伝いさせてください。";
 		set HU_6QUE,8;
-		getexp 500000,0;
+		if(checkre())
+			getexp 50000,0;
+		else
+			getexp 500000,0;
 		close;
 	case 8:
 		mes "[シリア]";
@@ -4518,7 +4536,10 @@ yuno.gat,111,156,3	script	ユスラン	90,{
 		close2;
 		misceffect 253,"";
 		set HU_7QUE,12;
-		getexp 900000,600000;
+		if(checkre())
+			getexp 90000,60000;
+		else
+			getexp 900000,600000;
 		end;
 	case 12:
 		mes "-彼女の容体は";
@@ -7076,7 +7097,10 @@ moc_fild12.gat,160,365,0	script	秘密の羽	139,4,4,{
 	mes "君はよくやってくれた。";
 	mes "礼を言おう。";
 	set HU_8QUE,21;
-	getexp 700000,0;
+	if(checkre())
+		getexp 70000,0;
+	else
+		getexp 700000,0;
 	close;
 }
 moc_fild12.gat,160,372,0	script	Hit#hu	139,{}

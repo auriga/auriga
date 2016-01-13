@@ -469,11 +469,17 @@ tha_t01.gat,140,78,4	script	ガイド	831,{
 		}
 		set '@num,countitem('@itemid);
 		set '@zeny,1000*'@num;
-		set '@exp,2000*'@num;
+		if(checkre())
+			set '@exp,200*'@num;
+		else
+			set '@exp,2000*'@num;
 		mes "[リエ]";
 		mes "「" +getitemname('@itemid)+ "」一個当たりの報酬は、";
 		mes "お金：1,000Zeny";
-		mes "追加報酬：2,000exp";
+		if(checkre())
+			mes "追加報酬：200exp";
+		else
+			mes "追加報酬：2,000exp";
 		mes "になりますね〜。";
 		next;
 		mes "[リエ]";

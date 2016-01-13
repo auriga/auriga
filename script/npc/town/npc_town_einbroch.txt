@@ -1906,9 +1906,16 @@ ein_in01.gat,31,137,3	script	カーラ	90,{
 		next;
 		percentheal 100,100;
 		set EIN_1QUE,15;
-		if(BaseLevel > 80)	getexp 200000,0;
-		else if(BaseLevel > 60)	getexp 30000,0;
-		else			getexp 6000,0;
+		if(checkre()) {
+			if(BaseLevel > 80)	getexp 20000,0;
+			else if(BaseLevel > 60)	getexp 3000,0;
+			else			getexp 600,0;
+		}
+		else {
+			if(BaseLevel > 80)	getexp 200000,0;
+			else if(BaseLevel > 60)	getexp 30000,0;
+			else			getexp 6000,0;
+		}
 		mes "-元気になった！";
 		mes "……気がする-";
 		next;
@@ -2026,9 +2033,16 @@ ein_in01.gat,200,101,5	script	クルト	854,{
 			delitem 1901,1;
 			percentheal 100,100;
 			set EIN_1QUE,5;
-			if(BaseLevel > 80)	getexp 200000,0;
-			else if(BaseLevel > 60)	getexp 30000,0;
-			else			getexp 6000,0;
+			if(checkre()) {
+				if(BaseLevel > 80)	getexp 20000,0;
+				else if(BaseLevel > 60)	getexp 3000,0;
+				else			getexp 600,0;
+			}
+			else {
+				if(BaseLevel > 80)	getexp 200000,0;
+				else if(BaseLevel > 60)	getexp 30000,0;
+				else			getexp 6000,0;
+			}
 			mes "-元気になった！";
 			mes "……気がする-";
 			next;
@@ -4212,12 +4226,22 @@ einbech.gat,165,105,6	script	ビンデハイム	847,{
 		set EIN_3QUE,11;
 		if(LHZ_4QUE == 23)	//大統領クエスト進行中
 			set LHZ_4QUE,25;
-		if(BaseLevel >= 90)		getexp 700000,500000;
-		else if(BaseLevel >= 80)	getexp 500000,300000;
-		else if(BaseLevel >= 70)	getexp 300000,100000;
-		else if(BaseLevel >= 60)	getexp 100000,50000;
-		else if(BaseLevel >= 50)	getexp 50000,20000;
-		else				getexp 20000,5000;
+		if(checkre()) {
+			if(BaseLevel >= 90)		getexp 70000,50000;
+			else if(BaseLevel >= 80)	getexp 50000,30000;
+			else if(BaseLevel >= 70)	getexp 30000,10000;
+			else if(BaseLevel >= 60)	getexp 10000,5000;
+			else if(BaseLevel >= 50)	getexp 5000,2000;
+			else				getexp 2000,500;
+		}
+		else {
+			if(BaseLevel >= 90)		getexp 700000,500000;
+			else if(BaseLevel >= 80)	getexp 500000,300000;
+			else if(BaseLevel >= 70)	getexp 300000,100000;
+			else if(BaseLevel >= 60)	getexp 100000,50000;
+			else if(BaseLevel >= 50)	getexp 50000,20000;
+			else				getexp 20000,5000;
+		}
 		break;
 	}
 	close2;
@@ -5508,13 +5532,24 @@ ein_in01.gat,67,241,3	script	ゼルメト	851,{
 		delitem 7319,10;
 		set EIN_4QUE,16;
 		set $EinFactory,$EinFactory+1;
-		if(BaseLevel > 90) 				getexp 290675,0;
-		else if(BaseLevel > 80 && BaseLevel <= 90) 	getexp 76026,0;
-		else if(BaseLevel > 70 && BaseLevel <= 80) 	getexp 32062,0;
-		else if(BaseLevel > 60 && BaseLevel <= 70) 	getexp 18508,0;
-		else if(BaseLevel > 50 && BaseLevel <= 60) 	getexp 6604,0;
-		else if(BaseLevel > 40 && BaseLevel <= 50) 	getexp 3075,0;
-		else						getexp 615,0;
+		if(checkre()) {
+			if(BaseLevel > 90) 				getexp 29067,0;
+			else if(BaseLevel > 80 && BaseLevel <= 90) 	getexp 7602,0;
+			else if(BaseLevel > 70 && BaseLevel <= 80) 	getexp 3206,0;
+			else if(BaseLevel > 60 && BaseLevel <= 70) 	getexp 1850,0;
+			else if(BaseLevel > 50 && BaseLevel <= 60) 	getexp 660,0;
+			else if(BaseLevel > 40 && BaseLevel <= 50) 	getexp 307,0;
+			else						getexp 61,0;
+		}
+		else {
+			if(BaseLevel > 90) 				getexp 290675,0;
+			else if(BaseLevel > 80 && BaseLevel <= 90) 	getexp 76026,0;
+			else if(BaseLevel > 70 && BaseLevel <= 80) 	getexp 32062,0;
+			else if(BaseLevel > 60 && BaseLevel <= 70) 	getexp 18508,0;
+			else if(BaseLevel > 50 && BaseLevel <= 60) 	getexp 6604,0;
+			else if(BaseLevel > 40 && BaseLevel <= 50) 	getexp 3075,0;
+			else						getexp 615,0;
+		}
 		next;
 		mes "[ゼルメト]";
 		mes "ありがとうございます。";

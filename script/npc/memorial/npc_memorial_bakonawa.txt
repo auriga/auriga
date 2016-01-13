@@ -38,9 +38,20 @@ ma_scene01.gat,174,179,4	script	タホー	541,{
 		mes "もしかしたら、あなたたちの";
 		mes "役に立つかもしれませんね。";
 		getitem 6499,5;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 0,5000000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,300000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,5000000;
+		}
 		delquest 12279;
 		close;
 	}

@@ -498,7 +498,10 @@ prt_in.gat,227,45,0	script	考古学者	804,{
 		mes "ありがとう。";
 		mes "そして、お疲れさまでした。";
 		set SIGN_QUE,142;
-		getexp 2000000,0;
+		if(checkre())
+			getexp 200000,0;
+		else
+			getexp 2000000,0;
 		break;
 	case 201:
 		mes "[メッツ]";
@@ -522,7 +525,10 @@ prt_in.gat,227,45,0	script	考古学者	804,{
 		mes "いただきますよ。";
 		delitem 7178,1;
 		set SIGN_QUE,202;
-		getexp 100000,0;
+		if(checkre())
+			getexp 10000,0;
+		else
+			getexp 100000,0;
 		getitem 617,1;
 		break;
 	default:
@@ -1022,11 +1028,19 @@ morocc_in.gat,115,154,5	script	ローグ	810,{
 		mes "…………";
 		mes "いいか……";
 		mes "フェイヨンのダイウに会いに行け。";
-		if(BaseLevel >= 90) getexp 18000,0;
-		else if(BaseLevel >= 80) getexp 13000,0;
-		else if(BaseLevel >= 70) getexp 10000,0;
-		else if(BaseLevel >= 60) getexp 7500,0;
-		else getexp 3000,0;
+		if(checkre()) {
+			if(BaseLevel >= 90) getexp 1800,0;
+			else if(BaseLevel >= 80) getexp 1300,0;
+			else if(BaseLevel >= 70) getexp 1000,0;
+			else if(BaseLevel >= 60) getexp 750,0;
+			else getexp 300,0;
+		} else {
+			if(BaseLevel >= 90) getexp 18000,0;
+			else if(BaseLevel >= 80) getexp 13000,0;
+			else if(BaseLevel >= 70) getexp 10000,0;
+			else if(BaseLevel >= 60) getexp 7500,0;
+			else getexp 3000,0;
+		}
 		getitem 7177,1;
 		set SIGN_QUE,14;
 		close;
@@ -1299,7 +1313,10 @@ payon_in03.gat,11,31,4	script	ダイウ	808,{
 		mes "下手に知ったかぶりするより、";
 		mes "知らないなら知らないと言う奴のほうが";
 		mes "素直でいいわい！";
-		getexp 5,0;
+		if(checkre())
+			getexp 0,0;
+		else
+			getexp 5,0;
 		set '@point,'@point+5;
 		break;
 	}
@@ -1716,11 +1733,20 @@ payon_in03.gat,11,31,4	script	ダイウ	808,{
 	}
 	set SIGN_QUE,15;
 	getitem 7177,1;
-	if(BaseLevel >= 90) getexp 18000,0;
-	else if(BaseLevel >= 80) getexp 13000,0;
-	else if(BaseLevel >= 70) getexp 10000,0;
-	else if(BaseLevel >= 60) getexp 7000,0;
-	else getexp 3000,0;
+	if(checkre()) {
+		if(BaseLevel >= 90) getexp 1800,0;
+		else if(BaseLevel >= 80) getexp 1300,0;
+		else if(BaseLevel >= 70) getexp 1000,0;
+		else if(BaseLevel >= 60) getexp 700,0;
+		else getexp 300,0;
+	}
+	else {
+		if(BaseLevel >= 90) getexp 18000,0;
+		else if(BaseLevel >= 80) getexp 13000,0;
+		else if(BaseLevel >= 70) getexp 10000,0;
+		else if(BaseLevel >= 60) getexp 7000,0;
+		else getexp 3000,0;
+	}
 	if('@point < 30) {
 		mes "[ダイウ]";
 		mes "ふむ、まぁ悪くはないか。";
@@ -3462,11 +3488,20 @@ cmd_in02.gat,88,51,4	script	変な男	806,{
 		delitem 750,1;
 		delitem 751,1;
 		set SIGN_QUE,30;
-		if(BaseLevel >= 90) getexp 13000,0;
-		else if(BaseLevel >= 80) getexp 10000,0;
-		else if(BaseLevel >= 70) getexp 8000,0;
-		else if(BaseLevel >= 60) getexp 5000,0;
-		else getexp 3000,0;
+		if(checkre()) {
+			if(BaseLevel >= 90) getexp 1300,0;
+			else if(BaseLevel >= 80) getexp 1000,0;
+			else if(BaseLevel >= 70) getexp 800,0;
+			else if(BaseLevel >= 60) getexp 500,0;
+			else getexp 300,0;
+		}
+		else {
+			if(BaseLevel >= 90) getexp 13000,0;
+			else if(BaseLevel >= 80) getexp 10000,0;
+			else if(BaseLevel >= 70) getexp 8000,0;
+			else if(BaseLevel >= 60) getexp 5000,0;
+			else getexp 3000,0;
+		}
 		close2;
 		warp "cmd_in01.gat",33,29;
 		end;
@@ -3511,11 +3546,20 @@ cmd_in02.gat,88,51,4	script	変な男	806,{
 		mes "訪ねろ。";
 		set SIGN_QUE,35;
 		getitem 7177,1;
-		if(BaseLevel >= 90) getexp 17000,0;
-		else if(BaseLevel >= 80) getexp 12000,0;
-		else if(BaseLevel >= 70) getexp 9000,0;
-		else if(BaseLevel >= 60) getexp 7000,0;
-		else getexp 3000,0;
+		if(checkre()) {
+			if(BaseLevel >= 90) getexp 1700,0;
+			else if(BaseLevel >= 80) getexp 1200,0;
+			else if(BaseLevel >= 70) getexp 900,0;
+			else if(BaseLevel >= 60) getexp 700,0;
+			else getexp 300,0;
+		}
+		else {
+			if(BaseLevel >= 90) getexp 17000,0;
+			else if(BaseLevel >= 80) getexp 12000,0;
+			else if(BaseLevel >= 70) getexp 9000,0;
+			else if(BaseLevel >= 60) getexp 7000,0;
+			else getexp 3000,0;
+		}
 		next;
 		mes "[ディアリース]";
 		mes "俺の役はここまでだ。";
@@ -3533,11 +3577,20 @@ cmd_in02.gat,88,51,4	script	変な男	806,{
 		set SIGN_QUE,35;
 		getitem 7177,1;
 		set Zeny,Zeny+20000;
-		if(BaseLevel >= 90) getexp 19000,0;
-		else if(BaseLevel >= 80) getexp 14000,0;
-		else if(BaseLevel >= 70) getexp 10000,0;
-		else if(BaseLevel >= 60) getexp 7000,0;
-		else getexp 3000,0;
+		if(checkre()) {
+			if(BaseLevel >= 90) getexp 1900,0;
+			else if(BaseLevel >= 80) getexp 1400,0;
+			else if(BaseLevel >= 70) getexp 1000,0;
+			else if(BaseLevel >= 60) getexp 700,0;
+			else getexp 300,0;
+		}
+		else {
+			if(BaseLevel >= 90) getexp 19000,0;
+			else if(BaseLevel >= 80) getexp 14000,0;
+			else if(BaseLevel >= 70) getexp 10000,0;
+			else if(BaseLevel >= 60) getexp 7000,0;
+			else getexp 3000,0;
+		}
 		next;
 		mes "[ディアリース]";
 		mes "これは、貴様が最初に持ってきた金で";
@@ -3970,11 +4023,20 @@ alberta_in.gat,125,101,5	script	太っちょな商人	807,{
 		mes "メッツ爺さんと君次第かな。";
 		set SIGN_QUE,53;
 		getitem 7177,1;
-		if(BaseLevel >= 90) getexp 20000,0;
-		else if(BaseLevel >= 80) getexp 15000,0;
-		else if(BaseLevel >= 70) getexp 11000,0;
-		else if(BaseLevel >= 60) getexp 8000,0;
-		else getexp 5000,0;
+		if(checkre()) {
+			if(BaseLevel >= 90) getexp 2000,0;
+			else if(BaseLevel >= 80) getexp 1500,0;
+			else if(BaseLevel >= 70) getexp 1100,0;
+			else if(BaseLevel >= 60) getexp 800,0;
+			else getexp 500,0;
+		}
+		else {
+			if(BaseLevel >= 90) getexp 20000,0;
+			else if(BaseLevel >= 80) getexp 15000,0;
+			else if(BaseLevel >= 70) getexp 11000,0;
+			else if(BaseLevel >= 60) getexp 8000,0;
+			else getexp 5000,0;
+		}
 		close;
 	default:
 		mes "[ベーカー]";
@@ -4179,11 +4241,20 @@ yuno.gat,330,100,4	script	騎士	734,{
 			delitem 7049,1;
 			set SIGN_QUE,39;
 			getitem 7181,1;
-			if(BaseLevel >= 90) getexp 11000,0;
-			else if(BaseLevel >= 80) getexp 7000,0;
-			else if(BaseLevel >= 70) getexp 4000,0;
-			else if(BaseLevel >= 60) getexp 2000,0;
-			else getexp 1000,0;
+			if(checkre()) {
+				if(BaseLevel >= 90) getexp 1100,0;
+				else if(BaseLevel >= 80) getexp 700,0;
+				else if(BaseLevel >= 70) getexp 400,0;
+				else if(BaseLevel >= 60) getexp 200,0;
+				else getexp 100,0;
+			}
+			else {
+				if(BaseLevel >= 90) getexp 11000,0;
+				else if(BaseLevel >= 80) getexp 7000,0;
+				else if(BaseLevel >= 70) getexp 4000,0;
+				else if(BaseLevel >= 60) getexp 2000,0;
+				else getexp 1000,0;
+			}
 			close;
 		}
 		mes "[リービッヒ]";
@@ -6084,15 +6155,28 @@ himinn.gat,48,86,5	script	ヴァルキリー	811,{
 		mes "貴方自身です。";
 		set SIGN_QUE,82;
 		percentheal 100,100;
-		if(BaseLevel > 90) getexp 350000,0;
-		else if(BaseLevel > 85) getexp 210000,0;
-		else if(BaseLevel > 80) getexp 160000,0;
-		else if(BaseLevel > 75) getexp 120000,0;
-		else if(BaseLevel > 70) getexp 70000,0;
-		else if(BaseLevel > 65) getexp 35000,0;
-		else if(BaseLevel > 60) getexp 20000,0;
-		else if(BaseLevel > 55) getexp 12000,0;
-		else getexp 9000,0;
+		if(checkre()) {
+			if(BaseLevel > 90) getexp 35000,0;
+			else if(BaseLevel > 85) getexp 21000,0;
+			else if(BaseLevel > 80) getexp 16000,0;
+			else if(BaseLevel > 75) getexp 12000,0;
+			else if(BaseLevel > 70) getexp 7000,0;
+			else if(BaseLevel > 65) getexp 3500,0;
+			else if(BaseLevel > 60) getexp 2000,0;
+			else if(BaseLevel > 55) getexp 1200,0;
+			else getexp 900,0;
+		}
+		else {
+			if(BaseLevel > 90) getexp 350000,0;
+			else if(BaseLevel > 85) getexp 210000,0;
+			else if(BaseLevel > 80) getexp 160000,0;
+			else if(BaseLevel > 75) getexp 120000,0;
+			else if(BaseLevel > 70) getexp 70000,0;
+			else if(BaseLevel > 65) getexp 35000,0;
+			else if(BaseLevel > 60) getexp 20000,0;
+			else if(BaseLevel > 55) getexp 12000,0;
+			else getexp 9000,0;
+		}
 		close2;
 		warp "geffen.gat",120,100;
 		end;
@@ -6669,7 +6753,10 @@ niflheim.gat,313,70,4	script	物静かな女性	90,{
 		mes "あなたとの思い出が";
 		mes "手に輝く指輪と一緒にある限り……";
 		delitem 2643,1;
-		getexp 500000,0;
+		if(checkre())
+			getexp 50000,0;
+		else
+			getexp 500000,0;
 		close;
 	case 130:
 		emotion 28;
@@ -8091,11 +8178,17 @@ que_sign01.gat,122,141,4	script	魔女	792,{
 		delitem 7313,5;
 		if(countitem(2643)) {
 			set SIGN_QUE,129;
-			getexp 500000,0;
+			if(checkre())
+				getexp 50000,0;
+			else
+				getexp 500000,0;
 		}
 		else {
 			set SIGN_QUE,130;
-			getexp 300000,0;
+			if(checkre())
+				getexp 30000,0;
+			else
+				getexp 300000,0;
 		}
 		close;
 	case 131:
@@ -8142,7 +8235,10 @@ que_sign01.gat,122,141,4	script	魔女	792,{
 			set SIGN_QUE,129;
 		else
 			set SIGN_QUE,130;
-		getexp 300000,0;
+		if(checkre())
+			getexp 30000,0;
+		else
+			getexp 300000,0;
 		close;
 	case 200:
 		mes "[キルケラ]";
@@ -8179,7 +8275,10 @@ que_sign01.gat,122,141,4	script	魔女	792,{
 		delitem 7308,countitem(7308);
 		delitem 2642,countitem(2642);
 		set SIGN_QUE,201;
-		getexp 200000,0;
+		if(checkre())
+			getexp 20000,0;
+		else
+			getexp 200000,0;
 		close;
 	default:
 		if(SIGN_QUE < 118) {
@@ -8828,7 +8927,10 @@ que_sign01.gat,197,195,4	script	セリン#witch	90,{
 		mes "[セリン]";
 		mes "ありがとう……";
 		set SIGN_QUE,200;
-		getexp 200000,0;
+		if(checkre())
+			getexp 20000,0;
+		else
+			getexp 200000,0;
 		stopnpctimer "SignTimer#witch";
 		close2;
 		warp "umbala.gat",132,203;
@@ -9159,7 +9261,10 @@ que_sign01.gat,196,39,4	script	セリン#serin	90,{
 				mes "[セリン]";
 				mes "ありがとう……";
 				set SIGN_QUE,200;
-				getexp 200000,0;
+				if(checkre())
+					getexp 20000,0;
+				else
+					getexp 200000,0;
 				stopnpctimer "SignTimer#serin";
 				close2;
 				warp "umbala.gat",132,203;

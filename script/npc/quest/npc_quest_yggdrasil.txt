@@ -457,8 +457,10 @@ mid_camp.gat,197,237,3	script	機械工学者	869,{
 		}
 		set YGG_1QUE,100;
 		chgquest 8253,200885;
-		getexp 2000000,0;
-		getexp 0,600000;
+		if(checkre())
+			getexp 200000,60000;
+		else
+			getexp 2000000,600000;
 		getitem 2782,1;
 		if(YGG_2QUE == 0)
 			setquest 70365;
@@ -4144,8 +4146,10 @@ spl_in02.gat,239,93,3	script	テラ	441,{
 			mes "また話しかけてくれ。";
 			close;
 		}
-		getexp 2400000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 240000,20000;
+		else
+			getexp 2400000,200000;
 		set YGG_2QUE,27;
 		getitem 6081,50;
 		getitem 6080,35;
@@ -4427,8 +4431,10 @@ spl_in02.gat,236,92,5	script	アーク	447,{
 			mes "また話しかけてくれ。";
 			close;
 		}
-		getexp 2400000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 240000,20000;
+		else
+			getexp 2400000,200000;
 		set YGG_2QUE,27;
 		getitem 6081,50;
 		getitem 6080,35;
@@ -5986,8 +5992,10 @@ mid_camp.gat,146,306,3	script	ファインデル	982,{
 			//setquest 70800;
 			//compquest 70800;
 			set YGG_5QUE,2;
-			getexp 40000,0;
-			getexp 0,40000;
+			if(checkre())
+				getexp 4000,4000;
+			else
+				getexp 40000,40000;
 			getitem 6081,1;
 			getitem 6080,1;
 			next;
@@ -6326,8 +6334,10 @@ spl_in01.gat,97,313,3	script	ヤイ職人	446,{
 		chgquest 7081,7082;
 		//setquest 70750;
 		//delquest 70750;
-		getexp 30000,0;
-		getexp 0,30000;
+		if(checkre())
+			getexp 3000,3000;
+		else
+			getexp 30000,30000;
 		getitem 6081,3;
 		next;
 		mes "[ヤイ職人]";
@@ -8355,8 +8365,10 @@ manuk.gat,252,116,3	script	ストルム	450,{
 			delquest 7075;
 			set YGG_8QUE,2;
 			getitem 6080,50;
-			getexp 1000000,0;
-			getexp 0,600000;
+			if(checkre())
+				getexp 100000,60000;
+			else
+				getexp 1000000,600000;
 			setquest 200895;
 			close;
 		}
@@ -8538,8 +8550,10 @@ man_in01.gat,378,276,3	script	工学者	453,{
 		delitem 6090, 20;
 		set YGG_9QUE,2;
 		chgquest 7079,7080;
-		getexp 40000,0;
-		getexp 0,40000;
+		if(checkre())
+			getexp 4000,4000;
+		else
+			getexp 40000,40000;
 		getitem 6080,3;
 		next;
 		mes "[工学者]";
@@ -10993,8 +11007,10 @@ spl_in01.gat,104,56,5	script	アリオス	437,{
 			mes "また話しかけてください。";
 			close;
 		}
-		getexp 3000000,0;
-		getexp 0,700000;
+		if(checkre())
+			getexp 300000,70000;
+		else
+			getexp 3000000,700000;
 		getitem 6081,100;
 		set NYD_1QUE,131;
 		setquest 200920;
@@ -11323,8 +11339,10 @@ man_in01.gat,311,57,3	script	エトル	453,{
 			mes "また話しかけてください。";
 			close;
 		}
-		getexp 3000000,0;
-		getexp 0,700000;
+		if(checkre())
+			getexp 300000,70000;
+		else
+			getexp 3000000,700000;
 		getitem 6080,100;
 		set NYD_1QUE,122;
 		setquest 200920;

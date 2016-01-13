@@ -2183,7 +2183,10 @@ airplane_01.gat,238,154,2	script	飛行船船長#Air	873,{
 		mes "ちょっと疲れたからな。";
 		misceffect 231,"";
 		set AIR_1QUE,7;
-		getexp 200000,10000;
+		if(checkre())
+			getexp 20000,1000;
+		else
+			getexp 200000,10000;
 		break;
 	case 7:
 		mes "[ペルロック]";
@@ -2621,7 +2624,10 @@ airplane.gat,236,163,2	script	飛行船船長	873,{
 		close2;
 		cutin "fly_trock",255;
 		set AIR_2QUE,13;
-		getexp 700000,400000;
+		if(checkre())
+			getexp 70000,40000;
+		else
+			getexp 700000,400000;
 		misceffect 253,"";
 		close2;
 		cutin "fly_trock",255;

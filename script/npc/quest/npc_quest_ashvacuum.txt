@@ -252,7 +252,10 @@ prt_castle.gat,83,67,5	script	調査隊の募集担当官	109,{
 		mes "三ヶ国同盟の志願手続きをしよう）";
 		chgquest 10064,10065;
 		set ASH_1QUE,9;
-		getexp 660000,210000;
+		if(checkre())
+			getexp 66000,21000;
+		else
+			getexp 660000,210000;
 		close;
 	case 12:
 		mes "[募集担当官]";
@@ -3164,7 +3167,10 @@ moc_fild22b.gat,230,197,5	script	同盟長　ムーンケンロ	967,{
 		mes "アッシュ・バキュームに送ろう。";
 		chgquest 10078,200840;
 		set ASH_1QUE,100;
-		getexp 1980000,630000;
+		if(checkre())
+			getexp 198000,63000;
+		else
+			getexp 1980000,630000;
 		if(ASH_2QUE == 0)
 			setquest 69050;
 		if(ASH_3QUE == 0)
@@ -4085,7 +4091,10 @@ mid_camp.gat,261,284,4	script	教官	405,{
 		set ASH_2QUE,100;
 		getitem 617,1;
 		getitem 12322,5;
-		getexp 2000000,200000;
+		if(checkre())
+			getexp 200000,20000;
+		else
+			getexp 2000000,200000;
 		chgquest 70180,200865;
 		next;
 		emotion 40,"";
@@ -6358,7 +6367,10 @@ mid_campin.gat,376,120,0	script	連合軍事務官#Ash	754,{
 		misceffect 253,"";
 		set ASH_3QUE,100;
 		getitem 12110,1;
-		getexp 600000,200000;
+		if(checkre())
+			getexp 60000,20000;
+		else
+			getexp 600000,200000;
 		chgquest 8210,200860;
 		mes "[セルザン]";
 		mes "さてと、";
@@ -9560,7 +9572,10 @@ mid_camp.gat,188,254,3	script	モンスター学者	883,{
 		mes "持ってこよう）";
 		set ASH_4QUE,15;
 		chgquest 2157,69295;
-		getexp 1500000,0;
+		if(checkre())
+			getexp 150000,0;
+		else
+			getexp 1500000,0;
 		close;
 	case 15:
 		if(countitem(6033) < 1) {
@@ -9638,7 +9653,10 @@ mid_camp.gat,188,254,3	script	モンスター学者	883,{
 		set ASH_4QUE,100;
 		delitem 6033,1;
 		chgquest 69295,200845;
-		getexp 3500000,0;
+		if(checkre())
+			getexp 350000,0;
+		else
+			getexp 3500000,0;
 		next;
 		mes "[ルミス＝ブラック]";
 		mes "ありがとうございますっ";
@@ -10850,7 +10868,10 @@ mid_campin.gat,68,185,3	script	モロク追跡担当官	803,{
 		mes "引き続き遠征隊の為に";
 		mes "力を貸してください。";
 		set ASH_5QUE,100;
-		getexp 1200000,200000;
+		if(checkre())
+			getexp 120000,20000;
+		else
+			getexp 1200000,200000;
 		getitem 617,1;
 		chgquest 7036,69570;
 		close;
@@ -11343,7 +11364,10 @@ mid_camp.gat,199,311,7	script	キド	884,{
 		delitem 6027,1;
 		delitem 6029,1;
 		set ASH_5QUE,10;
-		getexp 200000,10000;
+		if(checkre())
+			getexp 20000,1000;
+		else
+			getexp 200000,10000;
 		chgquest 7018,7019;
 		break;
 	case 10:
@@ -12340,7 +12364,10 @@ mid_camp.gat,256,272,3	script	デパリア	897,{
 		mes "[デパリア]";
 		mes "今まで、色々とご苦労だったな。";
 		set ASH_5QUE,108;
-		getexp 1400000,210000;
+		if(checkre())
+			getexp 140000,21000;
+		else
+			getexp 1400000,210000;
 		getitem 633,5;
 		chgquest 7041,200870;
 		close;
@@ -15157,7 +15184,10 @@ mid_campin.gat,90,121,5	script	司令官アジフ	459,{
 			close;
 		}
 		getitem 617,1;
-		getexp 5000000,0;
+		if(checkre())
+			getexp 500000,0;
+		else
+			getexp 5000000,0;
 		getitem 12110,3;
 		set ASH_6QUE,14;
 		chgquest 3094,200875;
@@ -17568,15 +17598,24 @@ mid_camp.gat,143,306,5	script	飼育士タブ#Ash	946,{
 		delitem 579,50;
 		set ASH_7QUE,6;
 		chgquest 7042,7047;
-		getexp 80000,30000;
+		if(checkre())
+			getexp 8000,3000;
+		else
+			getexp 80000,30000;
 		getitem 6039,10;
 		next;
 		mes "[タブ]";
 		mes "アルバイトの報酬は";
 		mes "こちらになります。";
 		mes " ";
-		mes "‐^3131FFBaseExpを80,000";
-		mes "　JobExpを30,000";
+		if(checkre()) {
+			mes "‐^3131FFBaseExpを8,000";
+			mes "　JobExpを3,000";
+		}
+		else {
+			mes "‐^3131FFBaseExpを80,000";
+			mes "　JobExpを30,000";
+		}
 		mes "　魚のはしくれを10個獲得した^000000‐";
 		next;
 		mes "[タブ]";
@@ -17601,15 +17640,24 @@ mid_camp.gat,143,306,5	script	飼育士タブ#Ash	946,{
 		delitem 7188,30;
 		set ASH_7QUE,6;
 		chgquest 7043,7047;
-		getexp 90000,40000;
+		if(checkre())
+			getexp 9000,4000;
+		else
+			getexp 90000,40000;
 		getitem 6039,10;
 		next;
 		mes "[タブ]";
 		mes "アルバイトの報酬は";
 		mes "こちらになります。";
 		mes " ";
-		mes "‐^3131FFBaseExpを90,000";
-		mes "　JobExpを40,000";
+		if(checkre()) {
+			mes "‐^3131FFBaseExpを9,000";
+			mes "　JobExpを4,000";
+		}
+		else {
+			mes "‐^3131FFBaseExpを90,000";
+			mes "　JobExpを40,000";
+		}
 		mes "　魚のはしくれを10個獲得した^000000‐";
 		next;
 		mes "[タブ]";
@@ -17635,15 +17683,24 @@ mid_camp.gat,143,306,5	script	飼育士タブ#Ash	946,{
 		delitem 537,30;
 		set ASH_7QUE,6;
 		chgquest 7044,7047;
-		getexp 80000,30000;
+		if(checkre())
+			getexp 8000,3000;
+		else
+			getexp 80000,30000;
 		getitem 6039,10;
 		next;
 		mes "[タブ]";
 		mes "あ、アルバイトの報酬は";
 		mes "こちらになります。";
 		mes " ";
-		mes "‐^3131FFBaseExpを80,000";
-		mes "　JobExpを30,000";
+		if(checkre()) {
+			mes "‐^3131FFBaseExpを8,000";
+			mes "　JobExpを3,000";
+		}
+		else {
+			mes "‐^3131FFBaseExpを80,000";
+			mes "　JobExpを30,000";
+		}
 		mes "　魚のはしくれを10個獲得した^000000‐";
 		next;
 		mes "[タブ]";
@@ -17669,15 +17726,24 @@ mid_camp.gat,143,306,5	script	飼育士タブ#Ash	946,{
 		delitem 537,30;
 		set ASH_7QUE,6;
 		chgquest 7045,7047;
-		getexp 80000,30000;
+		if(checkre())
+			getexp 8000,3000;
+		else
+			getexp 80000,30000;
 		getitem 6039,10;
 		next;
 		mes "[タブ]";
 		mes "あ、アルバイトの報酬は";
 		mes "こちらになります。";
 		mes " ";
-		mes "‐^3131FFBaseExpを80,000";
-		mes "　JobExpを30,000";
+		if(checkre()) {
+			mes "‐^3131FFBaseExpを8,000";
+			mes "　JobExpを3,000";
+		}
+		else {
+			mes "‐^3131FFBaseExpを80,000";
+			mes "　JobExpを30,000";
+		}
 		mes "　魚のはしくれを10個獲得した^000000‐";
 		next;
 		mes "[タブ]";
@@ -17702,15 +17768,24 @@ mid_camp.gat,143,306,5	script	飼育士タブ#Ash	946,{
 		delitem 6020,30;
 		set ASH_7QUE,6;
 		chgquest 7046,7047;
-		getexp 80000,30000;
+		if(checkre())
+			getexp 8000,3000;
+		else
+			getexp 80000,30000;
 		getitem 6039,10;
 		next;
 		mes "[タブ]";
-		mes "アルバイトの報酬は";
+		mes "あ、アルバイトの報酬は";
 		mes "こちらになります。";
 		mes " ";
-		mes "‐^3131FFBaseExpを80,000";
-		mes "　JobExpを30,000";
+		if(checkre()) {
+			mes "‐^3131FFBaseExpを8,000";
+			mes "　JobExpを3,000";
+		}
+		else {
+			mes "‐^3131FFBaseExpを80,000";
+			mes "　JobExpを30,000";
+		}
 		mes "　魚のはしくれを10個獲得した^000000‐";
 		next;
 		mes "[タブ]";
@@ -18125,7 +18200,10 @@ mid_camp.gat,212,237,5	script	駐屯地警備隊の隊長	852,{
 		mes "[隊長]";
 		mes "情報提供、心より感謝いたします。";
 		chgquest 2158,200850;
-		getexp 700000,0;
+		if(checkre())
+			getexp 70000,0;
+		else
+			getexp 700000,0;
 		close;
 	}
 	if(checkquest(2159)) {
@@ -18155,7 +18233,10 @@ mid_camp.gat,212,237,5	script	駐屯地警備隊の隊長	852,{
 		mes "[隊長]";
 		mes "情報提供、心より感謝いたします。";
 		chgquest 2159,200855;
-		getexp 700000,0;
+		if(checkre())
+			getexp 70000,0;
+		else
+			getexp 700000,0;
 		close;
 	}
 	mes "[" +strcharinfo(0)+ "]";
@@ -18918,7 +18999,10 @@ mid_camp.gat,69,144,0	script	ガルル	421,{
 		delitem 6039,10;
 		setquest 12060;
 		set CATHAND_POINT,CATHAND_POINT+5;
-		getexp 30000,0;
+		if(checkre())
+			getexp 3000,0;
+		else
+			getexp 30000,0;
 		next;
 		mes "[ガルル]";
 		mes "持ってきてくれたのは";
@@ -18931,7 +19015,10 @@ mid_camp.gat,69,144,0	script	ガルル	421,{
 		mes "‐猫の手信用ポイントが";
 		mes "　5ポイント増えて";
 		mes "　^0000FF" +CATHAND_POINT+ "ポイント^000000になった。";
-		mes "　^0000FFBaseExpを30000獲得した^000000‐";
+		if(checkre())
+			mes "　^0000FFBaseExpを3000獲得した^000000‐";
+		else
+			mes "　^0000FFBaseExpを30000獲得した^000000‐";
 		close;
 	default:
 		if(countitem(6039) < 10) {
@@ -18963,12 +19050,18 @@ mid_camp.gat,69,144,0	script	ガルル	421,{
 		delitem 6039,10;
 		setquest 12060;
 		set CATHAND_POINT,CATHAND_POINT+1;
-		getexp 15000,0;
+		if(checkre())
+			getexp 1500,0;
+		else
+			getexp 15000,0;
 		next;
 		mes "‐猫の手信用ポイントが";
 		mes "　1ポイント増えて";
 		mes "　^0000FF" +CATHAND_POINT+ "ポイント^000000になった。";
-		mes "　^0000FFBaseExpを15000獲得した^000000‐";
+		if(checkre())
+			mes "　^0000FFBaseExpを1500獲得した^000000‐";
+		else
+			mes "　^0000FFBaseExpを15000獲得した^000000‐";
 		close;
 	}
 }
@@ -19277,7 +19370,10 @@ mid_camp.gat,88,100,7	script	鉱石担当の猫の手職員	876,{
 	delitem 6048,3;
 	setquest 12062;
 	set CATHAND_POINT,CATHAND_POINT+1;
-	getexp 30000,0;
+	if(checkre())
+		getexp 3000,0;
+	else
+		getexp 30000,0;
 	next;
 	mes "[鉱石担当の猫の手職員]";
 	mes "ゴロゴロ……";

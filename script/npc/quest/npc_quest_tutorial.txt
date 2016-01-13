@@ -70,7 +70,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		mes "バッシュを学ぶようお奨めしよう。";
 		next;
 		set QUE_SWORDMAN,1;
-		getexp 490,0;
+		if(checkre())
+			getexp 49,0;
+		else
+			getexp 490,0;
 		mes "[シューレン]";
 		mes "しかし、まだ基本が成っていない";
 		mes "状態では、修練も大変だろう。";
@@ -106,7 +109,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		callsub L_Bash;
 		next;
 		set QUE_SWORDMAN,2;
-		getexp 585,0;
+		if(checkre())
+			getexp 58,0;
+		else
+			getexp 585,0;
 		mes "[シューレン]";
 		mes "私から見れば、まだまだだが、";
 		mes "ここまでの努力は評価しよう。";
@@ -158,7 +164,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		callsub L_Bash;
 		next;
 		set QUE_SWORDMAN,3;
-		getexp 830,0;
+		if(checkre())
+			getexp 83,0;
+		else
+			getexp 830,0;
 		mes "[シューレン]";
 		mes "あと一歩ではあるが、ここまでの";
 		mes "努力は評価しよう。";
@@ -195,7 +204,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 		mes "始まるのだ。";
 		next;
 		set QUE_SWORDMAN,4;
-		getexp 970,0;
+		if(checkre())
+			getexp 97,0;
+		else
+			getexp 970,0;
 		getitem 2503,1;
 		mes "[シューレン]";
 		mes "しかし、良くここまで頑張った。";
@@ -274,7 +286,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "ソードマンとしての基本は完璧だと";
 			mes "見ていいだろう。これは褒美だ。";
 			set QUE_SWORDMAN,5;
-			getexp 1120,0;
+			if(checkre())
+				getexp 112,0;
+			else
+				getexp 1120,0;
 		}
 		next;
 		mes "[シューレン]";
@@ -432,7 +447,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "あえてマスターする必要はないだろう。";
 			mes "そうだ、これを贈るとしようか。";
 			set QUE_SWORDMAN,10;
-			getexp 1120,0;
+			if(checkre())
+				getexp 112,0;
+			else
+				getexp 1120,0;
 		}
 		else {
 			mes "[シューレン]";
@@ -442,7 +460,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "だったろう。";
 			mes "その努力を評して、これをあげよう。";
 			set QUE_SWORDMAN,10;
-			getexp 1260,0;
+			if(checkre())
+				getexp 126,0;
+			else
+				getexp 1260,0;
 		}
 		next;
 		mes "[シューレン]";
@@ -496,7 +517,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "頑張るとは凄いじゃないか。";
 			mes "その努力を評して、これをあげよう。";
 			set QUE_SWORDMAN,12;
-			getexp 1260,0;
+			if(checkre())
+				getexp 126,0;
+			else
+				getexp 1260,0;
 		}
 		next;
 		mes "[シューレン]";
@@ -562,7 +586,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "褒美だ。";
 			mes "あまり有頂天にならないように。";
 			set QUE_SWORDMAN,21;
-			getexp 1860,0;
+			if(checkre())
+				getexp 186,0;
+			else
+				getexp 1860,0;
 			next;
 		}
 		mes "[シューレン]";
@@ -612,7 +639,10 @@ izlude_in.gat,82,163,3	script	シューレン	733,{
 			mes "褒美を与えよう。";
 			mes "ゴホン、あまりはしゃぐんじゃないぞ。";
 			set QUE_SWORDMAN,22;
-			getexp 1860,0;
+			if(checkre())
+				getexp 186,0;
+			else
+				getexp 1860,0;
 			getitem 1113,1;
 			next;
 		}
@@ -888,7 +918,10 @@ geffen.gat,154,143,3	script	ディキュイ	734,{
 		mes "ここまで来るのは大変だったろう。";
 		mes "これを受け取るがいい。";
 		set QUE_SWORDMAN,7;
-		getexp 1120,0;
+		if(checkre())
+			getexp 112,0;
+		else
+			getexp 1120,0;
 		next;
 		mes "[ディキュイ]";
 		mes "それじゃ、生真面目なシューレンの";
@@ -1117,7 +1150,10 @@ geffen.gat,154,143,3	script	ディキュイ	734,{
 		mes "バングルを見張れ！";
 		mes "いいな、早くだ！";
 		set QUE_SWORDMAN,18;
-		getexp 1620,0;
+		if(checkre())
+			getexp 162,0;
+		else
+			getexp 1620,0;
 		close2;
 		warp "moc_fild07.gat",359,201;
 		end;
@@ -1637,7 +1673,10 @@ prt_monk.gat,230,106,3	script	アステ	79,{
 		heal 9999,0;
 		set QUE_ACOLYTE,3;
 		if(getskilllv(28) == 0) {
-			getexp 0,100;
+			if(checkre())
+				getexp 0,10;
+			else
+				getexp 0,100;
 			misceffect 71,"";
 		}
 		close;
@@ -1732,10 +1771,18 @@ prt_monk.gat,230,106,3	script	アステ	79,{
 		}
 		set QUE_ACOLYTE,5;
 		delitem 1504,1;
-		if(Job == Job_Acolyte && Upper == UPPER_HIGH)
-			getexp 2000,1000;
-		else
-			getexp 1000,500;
+		if(Job == Job_Acolyte && Upper == UPPER_HIGH) {
+			if(checkre())
+				getexp 200,100;
+			else
+				getexp 2000,1000;
+		}
+		else {
+			if(checkre())
+				getexp 100,50;
+			else
+				getexp 1000,500;
+		}
 		misceffect 71,"";
 		close;
 	case 5:
@@ -2258,7 +2305,10 @@ prt_monk.gat,230,106,3	script	アステ	79,{
 		mes "ありますように。";
 		mes "ごきげんよう。";
 		set QUE_ACOLYTE,25;
-		getexp 5000,3000;
+		if(checkre())
+			getexp 500,300;
+		else
+			getexp 5000,3000;
 		misceffect 71,"";
 		close;
 	default:
@@ -2317,7 +2367,10 @@ monk_in.gat,18,38,6	script	ガイ神父	110,{
 			mes "ありますよう。";
 			set QUE_ACOLYTE,9;
 			percentheal 100,100;
-			getexp 2000,2000;
+			if(checkre())
+				getexp 200,200;
+			else
+				getexp 2000,2000;
 			misceffect 71,"";
 			close;
 		}
@@ -2576,7 +2629,10 @@ prt_monk.gat,226,257,6	script	苦しんでいる少年	93,{
 		mes "-スキルの使い方が以前より";
 		mes "上手くなった気がする-";
 		set QUE_ACOLYTE,13;
-		getexp 0,1000;
+		if(checkre())
+			getexp 0,100;
+		else
+			getexp 0,1000;
 		misceffect 71,"";
 		next;
 		mes "[少年]";
@@ -3452,7 +3508,10 @@ payon_in02.gat,54,13,2	script	マスター・カバック	55,{
 			mes "ありがとう。私は彼を信じ、";
 			mes "このまま見守り続けるとしよう。";
 			set QUE_2ARCHER,10;
-			getexp 2000,1000;
+			if(checkre())
+				getexp 200,100;
+			else
+				getexp 2000,1000;
 			close;
 		default:
 			mes "[マスター・カバック]";
@@ -3804,7 +3863,10 @@ pay_arche.gat,103,165,5	script	レイデン・カルス	832,{
 			mes "何だ、説明はいらないってか？";
 			mes "ええい、じゃあ次の段階へGOだ！";
 			set QUE_1ARCHER,7;
-			getexp 500,0;
+			if(checkre())
+				getexp 50,0;
+			else
+				getexp 500,0;
 			close;
 		}
 		mes "[レイデン・カルス]";
@@ -3864,7 +3926,10 @@ pay_arche.gat,103,165,5	script	レイデン・カルス	832,{
 		mes "よし、マスターからご褒美だ！";
 		misceffect 224;
 		set QUE_1ARCHER,7;
-		getexp 500,0;
+		if(checkre())
+			getexp 50,0;
+		else
+			getexp 500,0;
 		next;
 		emotion 32;
 		mes "[レイデン・カルス]";
@@ -4070,7 +4135,10 @@ pay_arche.gat,103,165,5	script	レイデン・カルス	832,{
 		if(getskilllv(46) == 0) {
 			misceffect 224;
 			set QUE_1ARCHER,10;
-			getexp 0,500;
+			if(checkre())
+				getexp 0,50;
+			else
+				getexp 0,500;
 		}
 		next;
 		mes "[レイデン・カルス]";
@@ -4145,7 +4213,10 @@ pay_arche.gat,103,165,5	script	レイデン・カルス	832,{
 		mes "忘れるなよ。いいな！";
 		misceffect 224;
 		set QUE_1ARCHER,12;
-		getexp 1000,1000;
+		if(checkre())
+			getexp 100,100;
+		else
+			getexp 1000,1000;
 		getitem 1707,1;
 		close;
 	case 12:
@@ -4285,7 +4356,10 @@ pay_arche.gat,103,165,5	script	レイデン・カルス	832,{
 		mes "よし、これは合格祝いだ！";
 		misceffect 224;
 		set QUE_1ARCHER,16;
-		getexp 3000,3000;
+		if(checkre())
+			getexp 300,300;
+		else
+			getexp 3000,3000;
 		getitem 1770,500;
 		next;
 		emotion 18;
@@ -4378,10 +4452,18 @@ pay_arche.gat,84,139,3	script	シズノ	727,{
 		mes "あなたにも風の加護がありますように。";
 		misceffect 224;
 		set QUE_1ARCHER,3;
-		if(JobLevel > 20) getexp 0,500;
-		else if(JobLevel > 10) getexp 0,250;
-		else if(JobLevel > 1) getexp 0,100;
-		else getexp 0,30;
+		if(checkre()) {
+			if(JobLevel > 20) getexp 0,50;
+			else if(JobLevel > 10) getexp 0,25;
+			else if(JobLevel > 1) getexp 0,10;
+			else getexp 0,3;
+		}
+		else {
+			if(JobLevel > 20) getexp 0,500;
+			else if(JobLevel > 10) getexp 0,250;
+			else if(JobLevel > 1) getexp 0,100;
+			else getexp 0,30;
+		}
 		close;
 	}
 	mes "-カバックの手紙をシズノに渡した-";
@@ -5291,7 +5373,10 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 		mes "私もまだ慣れないせいか、";
 		mes "少々疲れました。";
 		set QUE_MAGICIAN,1;
-		getexp BaseLevel*30,BaseLevel*15;
+		if(checkre())
+			getexp BaseLevel*30/10,BaseLevel*15/10;
+		else
+			getexp BaseLevel*30,BaseLevel*15;
 		misceffect 4,"";
 		close;
 	case 1:
@@ -5534,8 +5619,12 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 				mes "わかりました。";
 				set QUE_MAGICIAN,2;
 				for(set '@i,1; '@i <= 16; set '@i,'@i<<1) {
-					if('@result&'@i)
-						getexp 150,70;
+					if('@result&'@i) {
+						if(checkre())
+							getexp 15,7;
+						else
+							getexp 150,70;
+					}
 				}
 				misceffect 4,"";
 				close;
@@ -5630,7 +5719,10 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 		mes "蝶に羽化しますから、";
 		mes "気をつけてください。";
 		set QUE_MAGICIAN,3;
-		getexp 400,200;
+		if(checkre())
+			getexp 40,20;
+		else
+			getexp 400,200;
 		misceffect 4,"";
 		close;
 	case 3:
@@ -5665,7 +5757,10 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 		mes "そうしたら、また魔法について";
 		mes "説明するとします。";
 		set QUE_MAGICIAN,5;
-		getexp 400,200;
+		if(checkre())
+			getexp 40,20;
+		else
+			getexp 400,200;
 		misceffect 4,"";
 		close;
 	case 5:
@@ -5835,8 +5930,12 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 				set QUE_MAGICIAN,6;
 				getitem 1604,1;
 				for(set '@i,1; '@i <= 64; set '@i,'@i<<1) {
-					if('@result&'@i)
-						getexp 300,100;
+					if('@result&'@i) {
+						if(checkre())
+							getexp 30,10;
+						else
+							getexp 300,100;
+					}
 				}
 				misceffect 4,"";
 				close;
@@ -5924,7 +6023,10 @@ geffen.gat,67,180,4	script	初級マジシャン担当官	102,{
 		set QUE_MAGICIAN,28;
 		getitem 2321,1;
 		set Zeny,Zeny+3000;
-		getexp 3000,1000;
+		if(checkre())
+			getexp 300,100;
+		else
+			getexp 3000,1000;
 		close;
 	case 28:
 		mes "[マナ]";
@@ -6066,7 +6168,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 			mes "それじゃあな、元気でな。";
 			set QUE_MAGICIAN,27;
 			set Zeny,Zeny+5000;
-			getexp 5000,2000;
+			if(checkre())
+				getexp 500,200;
+			else
+				getexp 5000,2000;
 			close;
 		case 27:
 		case 28:
@@ -6149,7 +6254,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 			mes "攻撃力に影響するが、それはSTRに";
 			mes "比べたら微々たるもんだ。";
 			set QUE_THIEF,1;
-			getexp 400,200;
+			if(checkre())
+				getexp 40,20;
+			else
+				getexp 400,200;
 			misceffect 4,"";
 			close;
 		case 3:
@@ -6188,7 +6296,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		mes "自分の強さくらい、";
 		mes "自分で決めなくて、どうする？";
 		set QUE_THIEF,1;
-		getexp 200,100;
+		if(checkre())
+			getexp 20,10;
+		else
+			getexp 200,100;
 		misceffect 4,"";
 		close;
 	case 1:
@@ -6322,7 +6433,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		mes "[イルヒ]";
 		mes "他のスキルも説明してやろう。";
 		set QUE_THIEF,3;
-		getexp BaseLevel*30,BaseLevel*15;
+		if(checkre())
+			getexp BaseLevel*30/10,BaseLevel*15/10;
+		else
+			getexp BaseLevel*30,BaseLevel*15;
 		misceffect 4,"";
 		close;
 	case 3:
@@ -6419,8 +6533,12 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 				set QUE_THIEF,4;
 				misceffect 4,"";
 				for(set '@i,1; '@i <= 32; set '@i,'@i<<1) {
-					if('@result&'@i)
-						getexp 300,100;
+					if('@result&'@i) {
+						if(checkre())
+							getexp 30,10;
+						else
+							getexp 300,100;
+					}
 				}
 				close;
 			}
@@ -6450,7 +6568,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		set QUE_THIEF,5;
 		savepoint "moc_ruins.gat",80,164;
 		getitem 602,1;
-		getexp 100,50;
+		if(checkre())
+			getexp 10,5;
+		else
+			getexp 100,50;
 		misceffect 4,"";
 		close2;
 		warp "moc_fild12.gat",158,373;
@@ -6509,7 +6630,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 			mes "だが、毒には近付き過ぎるなよ。";
 			set QUE_THIEF,8;
 			getitem 1207,1;
-			getexp 1000,500;
+			if(checkre())
+				getexp 100,50;
+			else
+				getexp 1000,500;
 			misceffect 4,"";
 			close;
 		case 2:
@@ -6533,7 +6657,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		mes "頑張れよ。";
 		set QUE_THIEF,7;
 		getitem 1207,1;
-		getexp 500,200;
+		if(checkre())
+			getexp 50,20;
+		else
+			getexp 500,200;
 		misceffect 4,"";
 		close;
 	case 7:
@@ -6570,7 +6697,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		mes "レッドジェムストーンは毒系スキルの";
 		mes "触媒として使われることがあるからな。";
 		set QUE_THIEF,8;
-		getexp 200,100;
+		if(checkre())
+			getexp 20,10;
+		else
+			getexp 200,100;
 		misceffect 4,"";
 		close;
 	case 8:
@@ -6654,7 +6784,10 @@ moc_ruins.gat,66,164,4	script	新米シーフ担当官	84,{
 		set QUE_THIEF,27;
 		getitem 2307,1;
 		set Zeny,Zeny+5000;
-		getexp 8000,3000;
+		if(checkre())
+			getexp 800,300;
+		else
+			getexp 8000,3000;
 		next;
 		mes "[イルヒ]";
 		mes "それじゃあな、元気でな。";
@@ -7660,7 +7793,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "少しだが、プレゼントをやろう。";
 			mes "受け取れ！";
 			set QUE_MERCHANT,3;
-			getexp 700,58;
+			if(checkre())
+				getexp 70,5;
+			else
+				getexp 700,58;
 			next;
 		}
 		mes "[ガーニン]";
@@ -7714,13 +7850,19 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "もうLv10じゃないか！";
 			mes "うんうん、すごい！";
 			mes "プレゼントをあげよう！";
-			getexp 970,180;
+			if(checkre())
+				getexp 97,18;
+			else
+				getexp 970,180;
 		}
 		else {
 			mes "もうLv4以上になってるんだな。";
 			mes "うん、立派立派！";
 			mes "プレゼントをあげよう！";
-			getexp 830,116;
+			if(checkre())
+				getexp 83,11;
+			else
+				getexp 830,116;
 		}
 		set QUE_MERCHANT,5;
 		next;
@@ -7751,7 +7893,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "Lv10までマスターしてくるとはな！";
 			mes "ベリグー!!　ナイスナイス!!";
 			mes "ナイスな奴には、これをやろう！";
-			getexp 970,180;
+			if(checkre())
+				getexp 97,18;
+			else
+				getexp 970,180;
 		}
 		else {
 			mes "[ガーニン]";
@@ -7759,7 +7904,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "Lv4以上覚えてきたな。";
 			mes "上等上等。";
 			mes "これを受け取れ！";
-			getexp 830,116;
+			if(checkre())
+				getexp 83,11;
+			else
+				getexp 830,116;
 		}
 		set QUE_MERCHANT,5;
 		next;
@@ -7829,7 +7977,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		mes "あっぱれ！";
 		mes "これを受け取れ！";
 		set QUE_MERCHANT,11;
-		getexp 1120,220;
+		if(checkre())
+			getexp 112,22;
+		else
+			getexp 1120,220;
 		next;
 		mes "[ガーニン]";
 		mes "次は、ディスカウントの反対効果をもつ";
@@ -7881,12 +8032,18 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		if(getskilllv(38) >= 10) {
 			mes "しかもLv10だし！　準備がいいな、";
 			mes "このやろう。よし、これを受け取れ！";
-			getexp 1420,336;
+			if(checkre())
+				getexp 142,33;
+			else
+				getexp 1420,336;
 		}
 		else {
 			mes "準備がいいな、このやろう。";
 			mes "よし、これを受け取れ！";
-			getexp 1260,272;
+			if(checkre())
+				getexp 126,27;
+			else
+				getexp 1260,272;
 		}
 		set QUE_MERCHANT,13;
 		next;
@@ -7920,7 +8077,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "よーしよしよしよし、";
 			mes "マスターして損はないスキルだ。";
 			mes "よし、これを受け取れ！";
-			getexp 1420,336;
+			if(checkre())
+				getexp 142,33;
+			else
+				getexp 1420,336;
 		}
 		else {
 			mes "[ガーニン]";
@@ -7928,7 +8088,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "オーバーチャージを";
 			mes "Lv4以上にしてきたな。";
 			mes "よくやった！　これを受け取れ！";
-			getexp 1260,272;
+			if(checkre())
+				getexp 126,27;
+			else
+				getexp 1260,272;
 		}
 		set QUE_MERCHANT,13;
 		next;
@@ -7991,7 +8154,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "もう何も言うことないな。";
 			mes "Lv10までマスターしてるじゃないか！";
 			mes "よし、これを受け取れ！";
-			getexp 1860,602;
+			if(checkre())
+				getexp 186,60;
+			else
+				getexp 1860,602;
 		}
 		else {
 			mes "[ガーニン]";
@@ -8001,7 +8167,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "不満があるだろうが、";
 			mes "まあ何とかなるだろう。";
 			mes "よし、これを受け取れ！";
-			getexp 1620,520;
+			if(checkre())
+				getexp 162,52;
+			else
+				getexp 1620,520;
 		}
 		set QUE_MERCHANT,15;
 		next;
@@ -8031,14 +8200,20 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "くぅ〜〜〜！";
 			mes "感無量とはこのことだね!!";
 			mes "上等上等！";
-			getexp 1420,336;
+			if(checkre())
+				getexp 142,33;
+			else
+				getexp 1420,336;
 		}
 		else {
 			mes "[ガーニン]";
 			mes "よしよし、よくやった。";
 			mes "飲み込みも実行も早いのはいいことだ。";
 			mes "これを受け取れ！";
-			getexp 1260,272;
+			if(checkre())
+				getexp 126,27;
+			else
+				getexp 1260,272;
 		}
 		set QUE_MERCHANT,15;
 		next;
@@ -8130,14 +8305,20 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "完璧にマスターしてるじゃないか！";
 			mes "感心、感心、感心！　ワハハッ!!";
 			mes "これを受け取れ！";
-			getexp 1990,699;
+			if(checkre())
+				getexp 199,69;
+			else
+				getexp 1990,699;
 		}
 		else {
 			mes "お前、もう露店開設をけっこう";
 			mes "習得してるじゃないか。";
 			mes "感心、感心！";
 			mes "これを受け取れ！";
-			getexp 1860,604;
+			if(checkre())
+				getexp 186,60;
+			else
+				getexp 1860,604;
 		}
 		set QUE_MERCHANT,17;
 		next;
@@ -8186,12 +8367,18 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 			mes "文句のつけようがないじゃないか。";
 			mes "ここまで、よくやった。";
 			mes "これは、約束のもんだ。";
-			getexp 1990,699;
+			if(checkre())
+				getexp 199,69;
+			else
+				getexp 1990,699;
 		}
 		else {
 			mes "ここまで、よくやった。";
 			mes "これは、最後のプレゼントだ。";
-			getexp 1860,604;
+			if(checkre())
+				getexp 186,60;
+			else
+				getexp 1860,604;
 		}
 		set QUE_MERCHANT,17;
 		next;
@@ -8268,7 +8455,10 @@ alberta_in.gat,70,51,5	script	ガーニン	98,{
 		mes "せっかくだからプレゼントだ。";
 		mes "受け取れ！";
 		set QUE_MERCHANT,2;
-		getexp 585,43;
+		if(checkre())
+			getexp 58,4;
+		else
+			getexp 585,43;
 		getitem 1351,1;
 		next;
 	}

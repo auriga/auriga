@@ -2083,7 +2083,10 @@ alberta_in.gat,131,95,5	script	イローム	706,{
 		delitem 501,1;
 		set ALBE_1QUE,7;
 		chgquest 10083,10084;
-		getexp 37500,0;
+		if(checkre())
+			getexp 3750,0;
+		else
+			getexp 37500,0;
 		mes "[イローム]";
 		mes "外に行けば、きっと";
 		mes "あの猫にひっかかれる……";
@@ -2124,7 +2127,10 @@ alberta_in.gat,131,95,5	script	イローム	706,{
 		next;
 		set ALBE_1QUE,8;
 		chgquest 10084,10085;
-		getexp 47000,0;
+		if(checkre())
+			getexp 4700,0;
+		else
+			getexp 47000,0;
 		mes "‐イロームが動揺している。";
 		mes "　落ち着かせるためにも";
 		mes "　少し時間をおいてからまた来よう‐";
@@ -2343,7 +2349,10 @@ alberta_in.gat,131,95,5	script	イローム	706,{
 		set ALBE_1QUE,10;
 		chgquest 10086,10087;
 		chgquest 70305,10087;
-		getexp 57000,0;
+		if(checkre())
+			getexp 5700,0;
+		else
+			getexp 57000,0;
 		close;
 	case 10:
 		if(checkquest(10087)&2 == 0) {
@@ -2410,7 +2419,10 @@ alberta_in.gat,131,95,5	script	イローム	706,{
 			set ALBE_1QUE,11;
 			chgquest 10087,70310;
 		}
-		getexp 67000,0;
+		if(checkre())
+			getexp 6700,0;
+		else
+			getexp 67000,0;
 		next;
 		mes "[イローム]";
 		mes "僕だって本当は友達と会って";
@@ -2564,7 +2576,10 @@ alberta_in.gat,131,95,5	script	イローム	706,{
 		mes "だってまた一緒に遊びたいんだもん！";
 		set ALBE_1QUE,13;
 		chgquest 10089,200880;
-		getexp 80000,0;
+		if(checkre())
+			getexp 8000,0;
+		else
+			getexp 80000,0;
 		close;
 	case 13:
 		mes "[イローム]";

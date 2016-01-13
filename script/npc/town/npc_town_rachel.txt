@@ -975,7 +975,10 @@ ra_temple.gat,116,174,3	script	ネマ#ra	920,{
 		mes "あらん事を……";
 		set RA_1QUE,16;
 		delitem 12018,20;
-		getexp 200000,0;
+		if(checkre())
+			getexp 20000,0;
+		else
+			getexp 200000,0;
 		next;
 		mes "-ネマ神官の祝福を聞くと";
 		mes "　心が安らぐ気がした-";
@@ -2077,7 +2080,10 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		cutin "ra_gman",255;
 		misceffect 253,"";
 		set RA_4QUE,13;
-		getexp 900000,0;
+		if(checkre())
+			getexp 90000,0;
+		else
+			getexp 900000,0;
 		end;
 	case 13:
 		if(RA_1QUE == 16)
@@ -2500,7 +2506,10 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		cutin "ra_gman",255;
 		misceffect 253,"";
 		set RA_2QUE,10;
-		getexp 900000,600000;
+		if(checkre())
+			getexp 90000,60000;
+		else
+			getexp 900000,600000;
 		end;
 	case 10:
 		if(VE_3QUE == 25)
@@ -3171,7 +3180,10 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		mes "我等を見続けてくれ。";
 		mes "本当にご苦労様だった。";
 		set VE_4QUE,27;
-		getexp 200000,0;
+		if(checkre())
+			getexp 20000,0;
+		else
+			getexp 200000,0;
 		close2;
 		cutin "ra_gman",255;
 		end;
@@ -3668,7 +3680,10 @@ ra_temin.gat,277,159,3	script	ジェド大神官	932,{
 		mes "代表して、君に感謝の意を表そう！";
 		mes "真のヴァルハラの勇者よ！";
 		set NAME_2QUE,24;
-		getexp 1500000,0;
+		if(checkre())
+			getexp 150000,0;
+		else
+			getexp 1500000,0;
 		close2;
 		cutin "ra_gman",255;
 		end;
@@ -5856,9 +5871,16 @@ OnTouch:
 		mes "全てを消したがっていた……";
 		mes "ただの弱い人間だった。";
 		set RA_3QUE,24;
-		if(BaseLevel > 90) getexp 1300000,0;
-		else if(BaseLevel > 75) getexp 850000,0;
-		else getexp 450000,0;
+		if(checkre()) {
+			if(BaseLevel > 90) getexp 130000,0;
+			else if(BaseLevel > 75) getexp 85000,0;
+			else getexp 45000,0;
+		}
+		else {
+			if(BaseLevel > 90) getexp 1300000,0;
+			else if(BaseLevel > 75) getexp 850000,0;
+			else getexp 450000,0;
+		}
 		close;
 	}
 }
@@ -7567,7 +7589,10 @@ rachel.gat,157,183,3	script	信徒ウスティアラー	916,{
 		mes "あらん事を……";
 		set RA_5QUE,6;
 		delitem 7573,1;
-		getexp 700000,0;
+		if(checkre())
+			getexp 70000,0;
+		else
+			getexp 700000,0;
 		break;
 	case 6:
 	case 7:

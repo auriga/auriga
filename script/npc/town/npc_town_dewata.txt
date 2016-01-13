@@ -1513,7 +1513,18 @@ dew_in01.gat,22,48,2	script	賢者カシアファ#dew	541,{
 		set DEW_1QUE,8;
 		chgquest 9157,71025;
 		getitem 6406,1;
-		getexp 750000,250000;
+		if(checkre()) {
+			for(set '@i,0;'@i<15;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<5;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<15;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<5;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		mes "[賢者カシアファ]";
 		mes "これはジャティ族に伝わる聖なる羽だ。";
 		mes "君への信頼の証として渡そう。";
@@ -2489,7 +2500,18 @@ dew_in01.gat,15,49,4	script	部族長パイコ	540,{
 		chgquest 9165,201285;
 		getitem 18520,1;
 		getitem 11533,2;
-		getexp 750000,250000;
+		if(checkre()) {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		next;
 	case 17:
 		mes "[部族長パイコ]";
@@ -4327,6 +4349,18 @@ dewata.gat,109,262,4	script	メモー	534,{
 		chgquest 5043,201290;
 		setquest 5044;
 		getitem 617,1;
+		if(checkre()) {
+			for(set '@i,0;'@i<30;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<30;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		next;
 		mes "[メモー]";
 		mes strcharinfo(0)+ "さんの";

@@ -2642,6 +2642,18 @@ mosk_in.gat,131,92,3	script	チャール・アレクセイ3世	965,7,7,{
 		mes "楽しんでいくがいい！";
 		set MOSK_3QUE,21;
 		getitem 603,1;
+		if(checkre()) {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	default:
 		break;
@@ -2895,7 +2907,18 @@ mosk_in.gat,131,92,3	script	チャール・アレクセイ3世	965,7,7,{
 			mes "心より君に感謝する。";
 			set MOSK_1QUE,41;
 			getitem 617,1;
-			getexp 1200000,0;
+			if(checkre()) {
+				for(set '@i,0;'@i<30;set '@i,'@i+1)
+					getexp 5000,0;
+				for(set '@i,0;'@i<10;set '@i,'@i+1)
+					getexp 0,5000;
+			}
+			else {
+				for(set '@i,0;'@i<30;set '@i,'@i+1)
+					getexp 50000,0;
+				for(set '@i,0;'@i<10;set '@i,'@i+1)
+					getexp 0,50000;
+			}
 			close;
 		}
 		if(select("演奏できる","演奏できない") == 2) {
@@ -2928,7 +2951,18 @@ mosk_in.gat,131,92,3	script	チャール・アレクセイ3世	965,7,7,{
 			mes "下がってよいぞ。";
 			set MOSK_1QUE,40;
 			getitem 603,1;
-			getexp 700000,0;
+			if(checkre()) {
+				for(set '@i,0;'@i<20;set '@i,'@i+1)
+					getexp 5000,0;
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 0,5000;
+			}
+			else {
+				for(set '@i,0;'@i<20;set '@i,'@i+1)
+					getexp 50000,0;
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 0,50000;
+			}
 			close;
 		}
 		mes "[チャール・アレクセイ3世]";
@@ -2988,7 +3022,18 @@ mosk_in.gat,131,92,3	script	チャール・アレクセイ3世	965,7,7,{
 		mes "下がるがいい。";
 		set MOSK_1QUE,39;
 		getitem 603,1;
-		getexp 500000,0;
+		if(checkre()) {
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	case 39:
 		mes "[チャール・アレクセイ3世]";
@@ -3810,7 +3855,18 @@ mosk_in.gat,144,279,5	script	カリーナ	959,{
 		mes "やみつき間違いなしですよ。";
 		mes "うふふ。";
 		set MOSK_2QUE,100;
-		getexp 1000000,0;
+		if(checkre()) {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	default:
 		if(MOSK_2QUE < 25) {

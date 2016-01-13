@@ -2790,7 +2790,10 @@ prt_church.gat,185,106,3	script	バムプ神父	60,{
 		mes "^3333FF" +strcharinfo(0)+ "^000000様の未来に";
 		mes "いつも神のご加護を……";
 		set PRT_2QUE,PRT_2QUE+1;
-		getexp 1600000,0;
+		if(checkre())
+			getexp 160000,0;
+		else
+			getexp 1600000,0;
 		close;
 	case 44:
 	case 45:
@@ -3079,7 +3082,10 @@ prt_church.gat,184,110,3	script	ビスカス神父#prt	60,{
 		mes "[ビスカス神父]";
 		mes "これまで、本当にご苦労だった。";
 		set PRT_2QUE,36;
-		getexp 1600000,0;
+		if(checkre())
+			getexp 160000,0;
+		else
+			getexp 1600000,0;
 		close;
 	case 36:
 		mes "[ビスカス神父]";
@@ -4343,18 +4349,22 @@ prt_castle.gat,117,163,5	script	審査官	755,{
 		mes "全て極秘事項になりますので";
 		mes "口には気を付けてください。";
 		mes "よろしくお願いいたします。";
-		if(BaseLevel > 80 && BaseLevel < 86)
-			getexp 40000,0;
-		else if(BaseLevel > 85 && BaseLevel < 91)
-			getexp 45000,0;
-		else if(BaseLevel > 90 && BaseLevel < 96)
-			getexp 50000,0;
-		else if(BaseLevel > 95 && BaseLevel < 99)
-			getexp 55000,0;
-		else if(BaseLevel > 98)
-			getexp 110000,0;
-		else
-			getexp 30000,0;
+		if(checkre()) {
+			if(BaseLevel > 80 && BaseLevel < 86)		getexp 40000,0;
+			else if(BaseLevel > 85 && BaseLevel < 91)	getexp 45000,0;
+			else if(BaseLevel > 90 && BaseLevel < 96)	getexp 50000,0;
+			else if(BaseLevel > 95 && BaseLevel < 99)	getexp 55000,0;
+			else if(BaseLevel > 98)				getexp 110000,0;
+			else						getexp 30000,0;
+		}
+		else {
+			if(BaseLevel > 80 && BaseLevel < 86)		getexp 400000,0;
+			else if(BaseLevel > 85 && BaseLevel < 91)	getexp 450000,0;
+			else if(BaseLevel > 90 && BaseLevel < 96)	getexp 500000,0;
+			else if(BaseLevel > 95 && BaseLevel < 99)	getexp 550000,0;
+			else if(BaseLevel > 98)				getexp 1100000,0;
+			else						getexp 300000,0;
+		}
 		set PRT_3QUE,8;
 		delquest 10025;
 		setquest 59400;

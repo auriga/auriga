@@ -6608,10 +6608,18 @@ lighthalzen.gat,319,321,0	script	#声	139,3,3,{
 		mes "(^3131FFレッケンベル社^000000に行ってみるか)";
 		set LHZ_2QUE,17;
 		chgquest 61455,61460;
-		if(BaseLevel >= 90) 			getexp 2000000,1000000;
-		if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 1500000,800000;
-		if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 1000000,500000;
-		if(BaseLevel < 70) 			getexp 800000,300000;
+		if(checkre()) {
+			if(BaseLevel >= 90) 			getexp 200000,100000;
+			if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 150000,80000;
+			if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 100000,50000;
+			if(BaseLevel < 70) 			getexp 80000,30000;
+		}
+		else {
+			if(BaseLevel >= 90) 			getexp 2000000,1000000;
+			if(BaseLevel >= 80 && BaseLevel < 90) 	getexp 1500000,800000;
+			if(BaseLevel >= 70 && BaseLevel < 80) 	getexp 1000000,500000;
+			if(BaseLevel < 70) 			getexp 800000,300000;
+		}
 		close;
 	}
 	end;
@@ -7480,9 +7488,16 @@ lighthalzen.gat,337,232,3	script	マク	870,{
 		mes "もういいから、話が終わったなら帰れ！";
 		delitem 7351,1;
 		set LHZ_3QUE,14;
-		if(BaseLevel > 90)	getexp 700000,0;
-		else if(BaseLevel > 75)	getexp 400000,0;
-		else			getexp 200000,0;
+		if(checkre()) {
+			if(BaseLevel > 90)	getexp 70000,0;
+			else if(BaseLevel > 75)	getexp 40000,0;
+			else			getexp 20000,0;
+		}
+		else {
+			if(BaseLevel > 90)	getexp 700000,0;
+			else if(BaseLevel > 75)	getexp 400000,0;
+			else			getexp 200000,0;
+		}
 		break;
 	case 14:
 		cutin "lhz_macu05",2;
@@ -8386,9 +8401,16 @@ yuno_in04.gat,96,106,4	script	熱血学生	754,{
 		mes "親切な旅人の方！";
 		getitem 7350,1;
 		set LHZ_3QUE,16;
-		if(BaseLevel > 90)	getexp 700000,0;
-		else if(BaseLevel > 75)	getexp 400000,0;
-		else			getexp 200000,0;
+		if(checkre()) {
+			if(BaseLevel > 90)	getexp 70000,0;
+			else if(BaseLevel > 75)	getexp 40000,0;
+			else			getexp 20000,0;
+		}
+		else {
+			if(BaseLevel > 90)	getexp 700000,0;
+			else if(BaseLevel > 75)	getexp 400000,0;
+			else			getexp 200000,0;
+		}
 		break;
 	}
 	close2;
@@ -8944,7 +8966,10 @@ lighthalzen.gat,179,170,4	script	平凡そうな男	98,{
 		mes "これで仕事は終了です。";
 		next;
 		set LHZ_4QUE,39;
-		getexp 1800000,0;
+		if(checkre())
+			getexp 180000,0;
+		else
+			getexp 1800000,0;
 		getitem 617,1;
 		close;
 	case 39:
@@ -9583,7 +9608,10 @@ yuno_pre.gat,69,79,4	script	大統領	872,{
 		set HU_9QUE,36;
 		delitem 7342,1;
 		getitem 617,1;
-		getexp 2000000,0;
+		if(checkre())
+			getexp 200000,0;
+		else
+			getexp 2000000,0;
 		close2;
 		cutin "lhz_karl",255;
 		end;
@@ -12155,7 +12183,10 @@ lhz_in01.gat,174,258,3	script	青年	868,{
 		mes "リョジエンに迷惑をかけないように。";
 		mes "それじゃがんばって。";
 		set LHZ_5QUE,12;
-		getexp 400000,0;
+		if(checkre())
+			getexp 40000,0;
+		else
+			getexp 400000,0;
 		break;
 	case 12:
 	case 13:
@@ -12267,7 +12298,10 @@ lhz_in01.gat,174,258,3	script	青年	868,{
 		mes "リョジエンに迷惑がかかるんだ。";
 		mes "はやく行け！";
 		set LHZ_5QUE,17;
-		getexp 450000,0;
+		if(checkre())
+			getexp 45000,0;
+		else
+			getexp 450000,0;
 		break;
 	case 17:
 	case 18:
@@ -12501,7 +12535,10 @@ lhz_in01.gat,174,258,3	script	青年	868,{
 		mes "ふん……貴様はクビだ。";
 		mes "二度と俺の前に来るな！";
 		set LHZ_5QUE,22;
-		getexp 550000,0;
+		if(checkre())
+			getexp 55000,0;
+		else
+			getexp 550000,0;
 		break;
 	default:
 		cutin "lhz_kaz10",2;

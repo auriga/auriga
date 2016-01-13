@@ -1429,7 +1429,18 @@ mal_in02.gat,22,62,3	script	トーマス#mal	556,{
 		setquest 71720;
 		set MAL_1QUE,36; //完了
 		getitem 12636,230;
-		getexp 800000,400000;
+		if(checkre()) {
+			for(set '@i,0;'@i<14;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<14;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		misceffect 1,"";
 		next;
 	case 36:
@@ -1908,8 +1919,18 @@ mal_in02.gat,174,64,5	script	言語学者デボレ#mal	549,{
 		chgquest 11236,11237;
 		set MAL_1QUE,35;
 		getitem 12636,30;
-		getexp 800000,0;
-		getexp 0,400000;
+		if(checkre()) {
+			for(set '@i,0;'@i<12;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<5;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<12;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<5;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	default:
 		if(MAL_1QUE >= 24) {
@@ -2147,7 +2168,18 @@ mal_in02.gat,179,57,1	script	地質学者マルリ#mal	559,{
 		chgquest 11224,11225;
 		set MAL_1QUE,20;
 		getitem 12636,20;
-		getexp 400000,200000;
+		if(checkre()) {
+			for(set '@i,0;'@i<8;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<8;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	default:
 		if(MAL_1QUE < 20) {
@@ -2201,7 +2233,16 @@ mal_in02.gat,179,57,1	script	地質学者マルリ#mal	559,{
 			delitem 6434,1;
 			chgquest 11242,11243;
 			getitem 12636,30;
-			getexp 50000,50000;
+			if(checkre()) {
+				for(set '@i,0;'@i<2;set '@i,'@i+1)
+					getexp 5000,0;
+				getexp 0,4000;
+			}
+			else {
+				for(set '@i,0;'@i<2;set '@i,'@i+1)
+					getexp 50000,0;
+				getexp 0,40000;
+			}
 			close;
 		}
 		mes "[地質学者マルリ]";
@@ -2909,7 +2950,18 @@ mal_in01.gat,114,169,5	script	リカン#mal	547,{
 		getitem 12636,20;
 		chgquest 11219,11220;
 		set MAL_1QUE,14;
-		getexp 400000,200000;
+		if(checkre()) {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	case 14:
 		mes "[リカン]";
@@ -2994,7 +3046,16 @@ mal_in01.gat,114,169,5	script	リカン#mal	547,{
 		delitem 6435,3;
 		chgquest 11238,11239;
 		getitem 12636,30;
-		getexp 50000,50000;
+		if(checkre()) {
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 5000,0;
+			getexp 0,4000;
+		}
+		else {
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 50000,0;
+			getexp 0,40000;
+		}
 		close;
 	}
 }
@@ -3508,7 +3569,18 @@ mal_dun01.gat,136,122,3	script	ガンパン#mal	551,{
 		chgquest 11235,11236;
 		set MAL_1QUE,34;
 		getitem 12636,120;
-		getexp 600000,300000;
+		if(checkre()) {
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<4;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<10;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<4;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		next;
 		mes "[ガンパン]";
 		mes "……まあ、お前が";
@@ -3588,7 +3660,16 @@ mal_dun01.gat,136,122,3	script	ガンパン#mal	551,{
 		delitem 12624,30;
 		chgquest 11244,11245;
 		getitem 12636,30;
-		getexp 50000,50000;
+		if(checkre()) {
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 5000,0;
+			getexp 0,4000;
+		}
+		else {
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 50000,0;
+			getexp 0,40000;
+		}
 		next;
 		mes "[ガンパン]";
 		mes "スターキャンディ様";
@@ -4455,13 +4536,32 @@ malangdo.gat,175,206,3	script	ゴーボン#mal	561,{
 			setquest 201435;
 			set MAL_2QUE,12;
 			getitem 12636,200;
-			getexp 750000,0;
-			getexp 750000,0;
-			getexp 0,350000;
-			getexp 0,350000;
+			if(checkre()) {
+				for(set '@i,0;'@i<30;set '@i,'@i+1)
+					getexp 5000,0;
+				for(set '@i,0;'@i<10;set '@i,'@i+1)
+					getexp 0,5000;
+			}
+			else {
+				for(set '@i,0;'@i<30;set '@i,'@i+1)
+					getexp 50000,0;
+				for(set '@i,0;'@i<10;set '@i,'@i+1)
+					getexp 0,50000;
+			}
 		}
-		else
+		else {
 			getitem 12636,30;
+			if(checkre()) {
+				for(set '@i,0;'@i<2;set '@i,'@i+1)
+					getexp 5000,0;
+				getexp 0,4000;
+			}
+			else {
+				for(set '@i,0;'@i<2;set '@i,'@i+1)
+					getexp 50000,0;
+				getexp 0,40000;
+			}
+		}
 		close;
 	default:
 		mes "[ゴーボン]";

@@ -585,14 +585,26 @@ izlude_in.gat,171,164,5	script	ビュート教授#iz	804,{
 		next;
 		mes "‐^FF0000セドラを30匹^000000倒して、";
 		mes "　ビュート教授に報告しよう‐";
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 0,500000;
-		getexp 0,500000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,500000;
+			getexp 0,500000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,5000000;
+			getexp 0,5000000;
+		}
 		set IZ_1QUE,4;
 		chgquest 100780,100785;
 		close;
@@ -656,14 +668,26 @@ izlude_in.gat,171,164,5	script	ビュート教授#iz	804,{
 		next;
 		mes "‐^FF0000スロフォを30匹^000000倒して、";
 		mes "　ビュート教授に報告しよう‐";
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 0,500000;
-		getexp 0,500000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,500000;
+			getexp 0,500000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,5000000;
+			getexp 0,5000000;
+		}
 		set IZ_1QUE,5;
 		chgquest 100785,100790;
 		close;
@@ -712,14 +736,26 @@ izlude_in.gat,171,164,5	script	ビュート教授#iz	804,{
 		next;
 		mes "‐^FF0000キングドラモを30匹^000000倒して、";
 		mes "　ビュート教授に報告しよう‐";
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 0,500000;
-		getexp 0,500000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,500000;
+			getexp 0,500000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,5000000;
+			getexp 0,5000000;
+		}
 		set IZ_1QUE,6;
 		chgquest 100790,100795;
 		close;
@@ -750,14 +786,26 @@ izlude_in.gat,171,164,5	script	ビュート教授#iz	804,{
 		next;
 		mes "‐サンプル収集は完了したようだ。";
 		mes "　ビュート教授から研究結果を聞こう‐";
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 0,500000;
-		getexp 0,500000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,500000;
+			getexp 0,500000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,5000000;
+			getexp 0,5000000;
+		}
 		set IZ_1QUE,7;
 		chgquest 100795,71856;
 		close;
@@ -1003,14 +1051,26 @@ izlude_in.gat,171,164,5	script	ビュート教授#iz	804,{
 				mes "私に話しかけてちょうだい。";
 				set IZ_1QUE,15;
 				chgquest 71970,201470;
-				getexp 5000000,0;
-				getexp 5000000,0;
-				getexp 5000000,0;
-				getexp 5000000,0;
-				getexp 5000000,0;
-				getexp 5000000,0;
-				getexp 0,5000000;
-				getexp 0,5000000;
+				if(checkre()) {
+					getexp 500000,0;
+					getexp 500000,0;
+					getexp 500000,0;
+					getexp 500000,0;
+					getexp 500000,0;
+					getexp 500000,0;
+					getexp 0,500000;
+					getexp 0,500000;
+				}
+				else {
+					getexp 5000000,0;
+					getexp 5000000,0;
+					getexp 5000000,0;
+					getexp 5000000,0;
+					getexp 5000000,0;
+					getexp 5000000,0;
+					getexp 0,5000000;
+					getexp 0,5000000;
+				}
 				close;
 			}
 		}
@@ -1669,16 +1729,30 @@ izlude_in.gat,171,168,4	script	アーチ調査団員#iz	702,{
 		mes "‐セドラ帽を受け取った‐";
 		set IZ_2QUE,4;
 		chgquest 71905,201465;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
-		getexp 100000,0;
+		if(checkre()) {
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+			getexp 10000,0;
+		}
+		else {
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+			getexp 100000,0;
+		}
 		next;
 		mes "[アーチ調査団員]";
 		mes "これをかぶって";

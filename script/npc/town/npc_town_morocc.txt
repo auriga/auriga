@@ -2096,7 +2096,10 @@ morocc.gat,159,113,3	script	バーロック隊長	752,{
 		delitem 7820,1;
 		set MOC_2QUE,6;
 		chgquest 3055,3056;
-		getexp 2000000,0;
+		if(checkre())
+			getexp 200000,0;
+		else
+			getexp 2000000,0;
 		mes "[バーロック隊長]";
 		mes "あと、君に渡す報酬を";
 		mes "何個か用意させてもらった。";
@@ -3112,7 +3115,10 @@ moc_ruins.gat,137,70,3	script	本を持った男	48,{
 		delitem 7796,1;
 		set MOC_3QUE,16;
 		chgquest 59455,59460;
-		getexp 900000,900000;
+		if(checkre())
+			getexp 90000,90000;
+		else
+			getexp 900000,900000;
 		close;
 	default:
 		mes "[ベンジャミン]";

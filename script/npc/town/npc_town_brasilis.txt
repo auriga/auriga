@@ -283,7 +283,18 @@ brasilis.gat,187,162,5	script	キャンディー業者	476,{
 		chgquest 2200,200935;
 		delitem 6237,1;
 		getitem 12414,1;
-		getexp 70000,10000;
+		if(checkre()) {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		next;
 		mes "[キャンディー業者]";
 		mes "ああ……やっぱり";
@@ -1392,7 +1403,18 @@ brasilis.gat,203,286,3	script	植物学者カルメン	893,{
 		mes "やはり、睡蓮は幸福の花ですね！";
 		set BRA_2QUE,10;
 		chgquest 2207,200940;
-		getexp 50000,10000;
+		if(checkre()) {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<20;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		close;
 	default:
 		mes "[カルメン]";
@@ -3353,7 +3375,18 @@ bra_in01.gat,206,188,0	script	格子蓋	844,{
 		mes "^0000FFあなたに幸福を……^000000";
 		set BRA_3QUE,8;
 		chgquest 2208,200945;
-		getexp 90000,0;
+		if(checkre()) {
+			for(set '@i,0;'@i<40;set '@i,'@i+1)
+				getexp 5000,0;
+			for(set '@i,0;'@i<12;set '@i,'@i+1)
+				getexp 0,5000;
+		}
+		else {
+			for(set '@i,0;'@i<40;set '@i,'@i+1)
+				getexp 50000,0;
+			for(set '@i,0;'@i<12;set '@i,'@i+1)
+				getexp 0,50000;
+		}
 		hideonnpc "オバケ#bra_end";
 		close;
 	}
@@ -3982,7 +4015,16 @@ brasilis.gat,297,307,5	script	アンジェロ	50,{
 		mes "……役に立つかはわからねえが";
 		mes "礼をさせてくれ！";
 		chgquest 9031,9032;
-		getexp 50000,0;
+		if(checkre()) {
+			getexp 5000,0;
+			getexp 5000,0;
+			getexp 0,4000;
+		}
+		else {
+			getexp 50000,0;
+			getexp 50000,0;
+			getexp 0,40000;
+		}
 		misceffect 375,"";
 		percentheal 100,100;
 		set '@rand,rand(10);

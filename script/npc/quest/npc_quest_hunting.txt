@@ -160,20 +160,40 @@ prontera.gat,122,53,3	script	討伐隊　隊長#Hunt_Prt	951,{
 				mes "貴君は、どちらにするんだ？";
 				next;
 				if(select("Base経験値をもらう","Job経験値をもらう") == 1) {
-					if(Upper != UPPER_HIGH && Class < CLASS_RK)
-						getexp 5000000,0;
-					else if(Class < CLASS_RK)
-						getexp 10000000,0;
-					else
-						getexp 30000000,0;
+					if(checkre()) {
+						if(Upper != UPPER_HIGH && Class < CLASS_RK)
+							getexp 500000,0;
+						else if(Class < CLASS_RK)
+							getexp 1000000,0;
+						else
+							getexp 3000000,0;
+					}
+					else {
+						if(Upper != UPPER_HIGH && Class < CLASS_RK)
+							getexp 5000000,0;
+						else if(Class < CLASS_RK)
+							getexp 10000000,0;
+						else
+							getexp 30000000,0;
+					}
 				}
 				else {
-					if(Upper != UPPER_HIGH && Class < CLASS_RK)
-						getexp 0,2500000;
-					else if(Class < CLASS_RK)
-						getexp 0,5000000;
-					else
-						getexp 0,15000000;
+					if(checkre()) {
+						if(Upper != UPPER_HIGH && Class < CLASS_RK)
+							getexp 0,250000;
+						else if(Class < CLASS_RK)
+							getexp 0,500000;
+						else
+							getexp 0,1500000;
+					}
+					else {
+						if(Upper != UPPER_HIGH && Class < CLASS_RK)
+							getexp 0,2500000;
+						else if(Class < CLASS_RK)
+							getexp 0,5000000;
+						else
+							getexp 0,15000000;
+					}
 				}
 				delquest '@queid;
 				mes "[クリス]";

@@ -2870,8 +2870,10 @@ mid_campin.gat,168,170,3	script	監察官ドハ	59,{
 		delitem 6305,1;
 		delitem 6307,1;
 		getitem 2553,1;
-		getexp 300000,0;
-		getexp 0,100000;
+		if(checkre())
+			getexp 300000,100000;
+		else
+			getexp 3000000,1000000;
 		set DIC_2QUE,23;
 		delquest 7202;
 		delquest 7203;
@@ -6204,8 +6206,10 @@ dic_in01.gat,294,276,5	script	秘密補佐官	498,{
 			delitem 6305,10;
 			delitem 6307,10;
 			getitem 6304,1;
-			getexp 7000,0;
-			getexp 0,3000;
+			if(checkre())
+				getexp 7000,3000;
+			else
+				getexp 70000,30000;
 			chgquest 7201,7200;
 			mes "[チェシャー]";
 			mes "明日も頼むぞ。";
@@ -8019,8 +8023,10 @@ dic_in01.gat,165,104,0	script	フレード	454,{
 			set DIC_3QUE,9;
 			chgquest 11176,201250;
 			getitem 2788,1;
-			getexp 2500000,0;
-			getexp 0,600000;
+			if(checkre())
+				getexp 250000,60000;
+			else
+				getexp 2500000,600000;
 			delquest 11165;
 			delquest 11166;
 			delquest 11167;
@@ -9660,6 +9666,8 @@ dic_in01.gat,48,263,5	script	狩猟1課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12159) & 0x2) {
 		mes "[狩猟1課担当者]";
 		mes "ようこそいらっしゃいました。";
@@ -10063,6 +10071,8 @@ dic_in01.gat,51,266,6	script	狩猟2課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12160) & 0x2) {
 		mes "[狩猟2課担当者]";
 		mes "ようこそいらっしゃいました。";
@@ -10564,6 +10574,8 @@ dic_in01.gat,51,270,7	script	補給1課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12161) & 0x2) {
 		mes "[補給1課担当者]";
 		mes "ようこそいらっしゃいました。";
@@ -11055,6 +11067,8 @@ dic_in01.gat,48,273,8	script	補給2課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12162) & 0x2) {
 		mes "[補給2課担当者]";
 		mes "ようこそいらっしゃいました。";
@@ -11571,6 +11585,8 @@ dic_in01.gat,43,273,1	script	運送1課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12163) & 0x2) {
 		mes "[運送1課担当者]";
 		mes "ようこそいらっしゃいました。";
@@ -12075,6 +12091,8 @@ dic_in01.gat,40,270,2	script	運送2課担当者	449,{
 		mes "お訪ねください。";
 		close;
 	}
+	if(checkre())
+		set '@exp,'@exp / 10;
 	if(checkquest(12164) & 0x2) {
 		mes "[運送2課担当者]";
 		mes "ようこそいらっしゃいました。";

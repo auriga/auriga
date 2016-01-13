@@ -1,4 +1,17 @@
 ----------------------------------------
+//1258 [2016/01/14] by refis
+
+・経験値テーブル変更に対応（exp.txt, exp_guild.txt, exp_homun.txt）
+	-> 経験値獲得アイテムデータ更新 (item_db.txt)
+	-> クエスト獲得経験値を分割対応 (script/npc/*)
+
+・一部職業の基礎攻撃速度変更に対応（job_db1.txt）
+
+・一部テレポート不可MAPのmapflag更新（mapflag.txt）
+
+・pet_dbの更新（pet_db.txt）
+
+----------------------------------------
 //1257 [2016/01/03] by refis
 
 ・新パケットのエラー抑制（clif.c, map.h, packet_db.txt）

@@ -1717,8 +1717,10 @@ mid_camp.gat,148,222,4	script	テオレ#mora	865,3,3,{
 			mes "　再度調べてください‐";
 			close;
 		}
-		getexp 5000000,0;
-		getexp 0,2500000;
+		if(checkre())
+			getexp 500000,250000;
+		else
+			getexp 5000000,2500000;
 		getitem 6380,5;
 		if(BIF_1QUE == 171)
 			set BIF_1QUE,181;
@@ -3427,8 +3429,10 @@ splendide.gat,118,261,4	script	ダプレル	435,{
 			set BIF_1QUE,173;
 		setquest 71146;
 		delquest 11208;
-		getexp 5000000,0;
-		getexp 0,2500000;
+		if(checkre())
+			getexp 500000,250000;
+		else
+			getexp 5000000,2500000;
 		getitem 6380,5;
 		next;
 		mes "[ダプレル]";
@@ -4528,26 +4532,32 @@ mora.gat,48,152,3	script	鋭い目つきの青年#ep14_1	512,{
 		if(BIF_2QUE_SUB == 3) {
 			setquest 201410;
 			set BIF_2QUE_SUB,4;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 0,2500000;
-			getexp 0,2500000;
-			getexp 0,2500000;
+			if(checkre()) {
+				for(set '@i,0;'@i<3;set '@i,'@i+1)
+					getexp 500000,0;
+				for(set '@i,0;'@i<3;set '@i,'@i+1)
+					getexp 0,250000;
+			}
+			else {
+				for(set '@i,0;'@i<3;set '@i,'@i+1)
+					getexp 5000000,0;
+				for(set '@i,0;'@i<3;set '@i,'@i+1)
+					getexp 0,2500000;
+			}
 		} else {
 			setquest 201370;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 0,2500000;
-			getexp 0,2500000;
-			getexp 0,2500000;
-			getexp 0,2500000;
-			getexp 0,2500000;
-			getexp 0,2500000;
+			if(checkre()) {
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 500000,0;
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 0,250000;
+			}
+			else {
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 5000000,0;
+				for(set '@i,0;'@i<6;set '@i,'@i+1)
+					getexp 0,2500000;
+			}
 		}
 		close;
 	case 99:
@@ -5597,10 +5607,14 @@ mora.gat,115,68,3	script	ユリディの友達#mora	520,{
 		delquest 1117;
 		setquest 201365;
 		set BIF_3QUE,11;
-		getexp 500000,0;
-		getexp 0,250000;
-		getexp 500000,0;
-		getexp 0,250000;
+		if(checkre()) {
+			getexp 500000,250000;
+			getexp 500000,250000;
+		}
+		else {
+			getexp 5000000,2500000;
+			getexp 5000000,2500000;
+		}
 		getitem 6380,10;
 		next;
 		mes "[ユリディの友達]";
@@ -6941,10 +6955,14 @@ mora.gat,31,138,6	script	レシア研究員#mora	522,{
 			close;
 		}
 		chgquest 5028,201360;
-		getexp 5000000,0;
-		getexp 0,2500000;
-		getexp 5000000,0;
-		getexp 0,2500000;
+		if(checkre()) {
+			getexp 500000,250000;
+			getexp 500000,250000;
+		}
+		else {
+			getexp 5000000,2500000;
+			getexp 5000000,2500000;
+		}
 		getitem 6380,30;
 		set BIF_4QUE,13;
 		setquest 71305;
@@ -8813,8 +8831,10 @@ bif_fild01.gat,335,168,3	script	チェシャー	497,{
 		set BIF_5QUE,3;
 		chgquest 7207,7208;
 		getitem 6304,1;
-		getexp 50000,0;
-		getexp 0,40000;
+		if(checkre())
+			getexp 5000,4000;
+		else
+			getexp 50000,40000;
 		close2;
 		cutin "ep13_cheshire",255;
 		end;
@@ -8932,8 +8952,10 @@ bif_fild01.gat,335,168,3	script	チェシャー	497,{
 		chgquest 7210,7208;
 		delitem 6392,1;
 		getitem 6304,1;
-		getexp 50000,0;
-		getexp 0,40000;
+		if(checkre())
+			getexp 5000,4000;
+		else
+			getexp 50000,40000;
 		close2;
 		cutin "ep13_cheshire",255;
 		end;
@@ -9411,9 +9433,9 @@ mora.gat,115,98,8	script	ハッチャ	509,{
 	delquest '@quest;
 	misceffect 18,"";
 	if(BaseLevel < 100) {
-		getexp 0,100*JobLevel*JobLevel;
+		getexp 0,1*JobLevel*JobLevel;
 	} else {
-		getexp 0,50*JobLevel*JobLevel;
+		getexp 0,5*JobLevel*JobLevel;
 	}
 	getitem 6380,3;
 	close;
@@ -9661,9 +9683,9 @@ mora.gat,116,105,4	script	雑貨業者	516,{
 	delquest '@quest;
 	misceffect 18,"";
 	if(BaseLevel < 100) {
-		getexp 0,100*JobLevel*JobLevel;
+		getexp 0,1*JobLevel*JobLevel;
 	} else {
-		getexp 0,50*JobLevel*JobLevel;
+		getexp 0,5*JobLevel*JobLevel;
 	}
 	getitem 6380,1;
 	close;
@@ -9911,9 +9933,9 @@ mora.gat,114,92,4	script	生活用品業者	518,{
 	delquest '@quest;
 	misceffect 18,"";
 	if(BaseLevel < 100) {
-		getexp 0,100*JobLevel*JobLevel;
+		getexp 0,1*JobLevel*JobLevel;
 	} else {
-		getexp 0,50*JobLevel*JobLevel;
+		getexp 0,5*JobLevel*JobLevel;
 	}
 	getitem 6380,1;
 	close;
@@ -10414,8 +10436,10 @@ mora.gat,116,165,5	script	地元騎士団の親分#mora	524,{
 		chgquest 71250,1119;
 		delitem 12561,200;
 		getitem 6380,1;
-		getexp 50000,0;
-		getexp 0,40000;
+		if(checkre())
+			getexp 5000,4000;
+		else
+			getexp 50000,40000;
 		close;
 	}
 	mes "[地元騎士団の親分]";
@@ -10535,8 +10559,10 @@ mora.gat,114,163,5	script	地元騎士団の団長	522,{
 		chgquest 1118,201355;
 		delitem 6383,30;
 		getitem 6380,2;
-		getexp 2000000,0;
-		getexp 0,1000000;
+		if(checkre())
+			getexp 200000,100000;
+		else
+			getexp 2000000,1000000;
 		close;
 	}
 	mes "[地元騎士団の団長]";
