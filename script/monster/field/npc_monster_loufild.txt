@@ -1,5 +1,5 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Louyang Field Monster Spawn Script　　Ep 10.4
+// Ragnarok Online Louyang Field Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
@@ -11,12 +11,12 @@ lou_fild01.gat,273,128,75,50	monster	ビッグフット	1060,4,0,0,0
 lou_fild01.gat,224,315,100,50	monster	キャラメル	1103,7,0,0,0
 lou_fild01.gat,203,225,110,35	monster	キャラメル	1103,7,0,0,0
 lou_fild01.gat,273,128,75,50	monster	キャラメル	1103,7,0,0,0
-lou_fild01.gat,224,315,100,50	monster	マンティス	1139,10,0,0,0
-lou_fild01.gat,203,225,110,35	monster	マンティス	1139,10,0,0,0
-lou_fild01.gat,273,128,75,50	monster	マンティス	1139,10,0,0,0
-lou_fild01.gat,224,315,100,50	monster	土精		1516,8,0,0,0
-lou_fild01.gat,203,225,110,35	monster	土精		1516,15,60000,30000,1
-lou_fild01.gat,273,128,75,50	monster	土精		1516,7,0,0,0
+lou_fild01.gat,224,315,100,50	monster	マンティス	1139,10,15000,0,0
+lou_fild01.gat,203,225,110,35	monster	マンティス	1139,10,15000,0,0
+lou_fild01.gat,273,128,75,50	monster	マンティス	1139,10,15000,0,0
+lou_fild01.gat,224,315,100,50	monster	土精		1516,26,5000,0,0
+lou_fild01.gat,203,225,110,35	monster	土精		1516,30,60000,30000,1
+lou_fild01.gat,273,128,75,50	monster	土精		1516,24,5000,0,0
 lou_fild01.gat,224,315,100,50	monster	アナコンダク	1030,2,0,0,0
 lou_fild01.gat,203,225,110,35	monster	アナコンダク	1030,1,0,0,0
 lou_fild01.gat,273,128,75,50	monster	アナコンダク	1030,2,0,0,0

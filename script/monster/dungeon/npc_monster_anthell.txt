@@ -1,16 +1,15 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Anthell Monster Spawn Script　　Ep 11.2
+// Ragnarok Online Anthell Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
 // 蟻地獄ダンジョン B1F - anthell01.gat
 //------------------------------------------------------------
-anthell01.gat,0,0,0,0		monster	ファミリアー	1005,20,0,0,0
-anthell01.gat,0,0,0,0		monster	アンドレ	1095,15,0,0,0
-anthell01.gat,0,0,0,0		monster	ピエール	1160,50,0,0,0
-anthell01.gat,0,0,0,0		monster	デニーロ	1105,40,0,0,0
-anthell01.gat,0,0,0,0		monster	ビタタ		1176,10,0,0,0
-anthell01.gat,0,0,0,0		monster	ガイアス	1121,1,0,0,0
+anthell01.gat,0,0,0,0		monster	ファミリアー	1005,20,5000,0,0
+anthell01.gat,0,0,0,0		monster	アンドレ	1095,55,5000,0,0
+anthell01.gat,0,0,0,0		monster	ピエール	1160,50,5000,0,0
+anthell01.gat,0,0,0,0		monster	デニーロ	1105,40,5000,0,0
+anthell01.gat,0,0,0,0		monster	ビタタ		1176,30,5000,0,0
 anthell01.gat,0,0,0,0		monster	マヤパープル	1289,1,7200000,3600000,1
 anthell01.gat,28,266,0,0	monster	蟻の卵		1097,1,60000,30000,0
 anthell01.gat,29,266,0,0	monster	蟻の卵		1097,1,60000,30000,0
@@ -103,11 +102,13 @@ anthell01.gat,105,124,0,0	monster	蟻の卵		1097,1,60000,30000,0
 //============================================================
 // 蟻地獄ダンジョン B2F - anthell02.gat
 //------------------------------------------------------------
-anthell02.gat,0,0,0,0	monster	蟻の卵		1097,15,0,0,0
-anthell02.gat,0,0,0,0	monster	ファミリアー	1005,20,0,0,0
-anthell02.gat,0,0,0,0	monster	アンドレ	1095,50,0,0,0
-anthell02.gat,0,0,0,0	monster	ピエール	1160,15,0,0,0
-anthell02.gat,0,0,0,0	monster	デニーロ	1105,15,0,0,0
-anthell02.gat,0,0,0,0	monster	ビタタ		1176,30,0,0,0
-anthell02.gat,0,0,0,0	monster	ガイアス	1121,3,0,0,0
-anthell02.gat,0,0,0,0	monster	マヤー		1147,1,7200000,3600000,1
+anthell02.gat,0,0,0,0	monster	蟻の卵			1097,15,5000,0,0
+anthell02.gat,0,0,0,0	monster	蟻の卵			1236,15,5000,0,0
+anthell02.gat,0,0,0,0	monster	ファミリアー		1005,20,15000,0,0
+anthell02.gat,0,0,0,0	monster	女王直属ピエール	1238,80,15000,0,0
+anthell02.gat,0,0,0,0	monster	女王直属アンドレ	1237,80,15000,0,0
+anthell02.gat,0,0,0,0	monster	女王直属デニーロ	1239,80,15000,0,0
+anthell02.gat,0,0,0,0	monster	ビタタ			1176,50,15000,0,0
+anthell02.gat,0,0,0,0	monster	アクラウス		1194,10,5000,0,0
+anthell02.gat,0,0,0,0	monster	マヤパープル		1289,1,7200000,3600000,1
+anthell02.gat,0,0,0,0	monster	マヤー			1147,1,7200000,3600000,1

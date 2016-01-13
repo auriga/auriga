@@ -1,44 +1,43 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Prontera Sewers Monster Spawn Script　　Ep 11.2
+// Ragnarok Online Prontera Sewers Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
 // プロンテラ地下水路 B1F - prt_sewb1.gat
 //------------------------------------------------------------
-prt_sewb1.gat,0,0,0,0	monster	盗蟲の卵	1048,80,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	盗蟲		1051,30,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	ファミリアー	1005,10,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	タロウ		1175,10,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	盗蟲の卵	1048,80,10000,0,0
+prt_sewb1.gat,0,0,0,0	monster	盗蟲		1051,100,5000,0,0
+prt_sewb1.gat,0,0,0,0	monster	ファミリアー	1005,10,5000,0,0
+prt_sewb1.gat,0,0,0,0	monster	タロウ		1175,5,5000,0,0
 
 //============================================================
 // プロンテラ地下水路 B2F - prt_sewb2.gat
 //------------------------------------------------------------
-prt_sewb2.gat,0,0,0,0	monster	盗蟲の卵	1048,20,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	盗蟲		1051,70,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	ファミリアー	1005,10,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	スポア		1014,20,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	プランクトン	1161,30,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	盗蟲		1053,10,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	タロウ		1175,60,0,0,0
+prt_sewb2.gat,0,0,0,0	monster	盗蟲の卵	1048,10,10000,0,0
+prt_sewb2.gat,0,0,0,0	monster	盗蟲		1051,100,5000,0,0
+prt_sewb2.gat,0,0,0,0	monster	ファミリアー	1005,10,5000,0,0
+prt_sewb2.gat,0,0,0,0	monster	スポア		1014,20,5000,0,0
+prt_sewb2.gat,0,0,0,0	monster	プランクトン	1161,30,5000,0,0
+prt_sewb2.gat,0,0,0,0	monster	盗蟲		1053,10,5000,0,0
+prt_sewb2.gat,0,0,0,0	monster	タロウ		1175,10,5000,0,0
 
 //============================================================
 // プロンテラ地下水路 B3F - prt_sewb3.gat
 //------------------------------------------------------------
-prt_sewb3.gat,0,0,0,0	monster	盗蟲の卵	1048,10,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	盗蟲		1051,20,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	盗蟲		1053,65,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	盗蟲		1054,65,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	タロウ		1175,15,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	ポイズンスポア	1077,15,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	ファミリアー	1005,20,0,0,0
+prt_sewb3.gat,0,0,0,0	monster	盗蟲の卵	1048,10,5000,0,0
+prt_sewb3.gat,0,0,0,0	monster	盗蟲		1051,30,5000,0,0
+prt_sewb3.gat,0,0,0,0	monster	盗蟲		1053,90,5000,0,0
+prt_sewb3.gat,0,0,0,0	monster	タロウ		1175,15,5000,0,0
+prt_sewb3.gat,0,0,0,0	monster	ポイズンスポア	1077,15,5000,0,0
+prt_sewb3.gat,0,0,0,0	monster	ヒドラ		1068,20,5000,0,0
 
 //============================================================
 // プロンテラ地下水路 B4F - prt_sewb4.gat
 //------------------------------------------------------------
-prt_sewb4.gat,0,0,0,0	monster	盗蟲の卵	1048,10,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	盗蟲		1051,20,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	盗蟲		1053,20,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	盗蟲		1054,70,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	ドレインリアー	1111,20,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	クランプ	1209,5,0,0,0
+prt_sewb4.gat,0,0,0,0	monster	盗蟲の卵	1048,10,5000,0,0
+prt_sewb4.gat,0,0,0,0	monster	盗蟲		1051,30,5000,0,0
+prt_sewb4.gat,0,0,0,0	monster	盗蟲		1053,20,5000,0,0
+prt_sewb4.gat,0,0,0,0	monster	盗蟲		1054,70,5000,0,0
+prt_sewb4.gat,0,0,0,0	monster	ドレインリアー	1111,10,5000,0,0
+prt_sewb4.gat,0,0,0,0	monster	クランプ	1209,3,5000,0,0
 prt_sewb4.gat,0,0,0,0	monster	黄金蟲		1086,1,3600000,1800000,1

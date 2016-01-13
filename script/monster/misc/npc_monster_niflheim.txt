@@ -1,15 +1,12 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Niflheim Monster Spawn Script　　Ep 10.4
+// Ragnarok Online Niflheim Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
 // 死者の街ニブルヘイム - niflheim.gat
 //------------------------------------------------------------
-niflheim.gat,0,0,0,0	monster	デュラハン		1504,5,1800000,1200000,0
-niflheim.gat,0,0,0,0	monster	ジビット		1503,10,1200000,600000,0
-niflheim.gat,0,0,0,0	monster	ハイローゾイスト	1510,10,1200000,600000,0
-niflheim.gat,0,0,0,0	monster	キューブ		1508,20,300000,150000,0
-niflheim.gat,0,0,0,0	monster	ルード			1509,20,300000,150000,0
+niflheim.gat,0,0,0,0	monster	キューブ	1508,75,5000,0,0
+niflheim.gat,0,0,0,0	monster	ルード	1509,75,5000,0,0
 
 niflheim.gat,0,0,0	script	#NifMVP	-1,{
 OnInit:

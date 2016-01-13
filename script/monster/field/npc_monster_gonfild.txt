@@ -1,14 +1,12 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Gonryun Field Monster Spawn Script　　Ep 10.4
+// Ragnarok Online Gonryun Field Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
 // コンロンフィールド 01 - gon_fild01.gat
 //------------------------------------------------------------
-gon_fild01.gat,0,0,0,0	monster	コウ		1415,40,600000,300000,0
-gon_fild01.gat,0,0,0,0	monster	チャッキー	1417,20,0,0,0
-gon_fild01.gat,0,0,0,0	monster	ポポリン	1031,20,0,0,0
-gon_fild01.gat,0,0,0,0	monster	団子童子	1409,30,0,0,0
-gon_fild01.gat,0,0,0,0	monster	老人参		1413,2,630000,330000,0
-gon_fild01.gat,0,0,0,0	monster	緑色草		1080,5,0,0,0
-gon_fild01.gat,0,0,0,0	monster	輝く草		1083,1,0,0,0
+gon_fild01.gat,0,0,0,0	monster	コウ		1415,70,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	チャッキー	1417,20,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	団子童子	1409,60,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	緑色草		1080,5,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	輝く草		1083,1,5000,0,0
