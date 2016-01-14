@@ -1,4 +1,9 @@
 ----------------------------------------
+//1261 [2016/01/15] by refis
+
+・Auriga-1259のモンスターデータを一部修正（mob_db.txt, mob_skill_db.txt）
+
+----------------------------------------
 //1260 [2016/01/14] by refis
 
 ・typo修正（skill_cast_db.txt, skill_db.txt, skill_require_db.txt, skill_require_db2.txt）
