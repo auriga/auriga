@@ -2030,8 +2030,10 @@ malaya.gat,266,76,3	script	警備隊員ロデル	570,7,7,{
 			mes "良ければ次も一緒に参加してくれ。";
 			setquest 7405;
 			getitem 6497,1;
-			getexp 500000,0;
-			getexp 0,200000;
+			if(checkre())
+				getexp 50000,20000;
+			else
+				getexp 500000,200000;
 			delquest 7404;
 			set $MalayaName$[1],strcharinfo(0);
 			close;
@@ -2602,8 +2604,10 @@ malaya.gat,185,358,3	script	指導者ムンバキ・ポン	580,{
 		setquest 72090;
 		setquest 72094;
 		set MALAYA_1QUE,6;
-		getexp 1000000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 100000,20000;
+		else
+			getexp 1000000,200000;
 		close;
 	case 6:
 		switch(rand(1,4)) {
@@ -3242,9 +3246,16 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 		setquest 201500;
 		set MALAYA_2QUE,5;
 		getitem 6497,1;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 0,3000000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,300000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,3000000;
+		}
 		next;
 		mes "[イメルダー]";
 		mes "あと、実はお守りは";
@@ -3293,8 +3304,10 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 			delquest 72170;
 			delquest 7379;
 			getitem 6497,1;
-			getexp 500000,0;
-			getexp 0,200000;
+			if(checkre())
+				getexp 50000,20000;
+			else
+				getexp 500000,200000;
 			set $MalayaName$[0],strcharinfo(0);
 			close;
 		}
@@ -3342,8 +3355,10 @@ malaya.gat,169,350,5	script	イメルダー	475,{
 			delquest 7380;
 			setquest 7381;
 			getitem 6497,1;
-			getexp 500000,0;
-			getexp 0,200000;
+			if(checkre())
+				getexp 50000,20000;
+			else
+				getexp 500000,200000;
 			set $MalayaName$[0],strcharinfo(0);
 			close;
 		}
@@ -3719,8 +3734,10 @@ malaya.gat,181,353,5	script	老人ナルド	574,{
 			setquest 7378;
 			delquest 7377;
 			getitem 6497,1;
-			getexp 500000,0;
-			getexp 0,200000;
+			if(checkre())
+				getexp 50000,20000;
+			else
+				getexp 500000,200000;
 			set $MalayaName$[1],strcharinfo(0);
 			close;
 		}
@@ -4732,8 +4749,10 @@ malaya.gat,295,171,3	script	収集品商人ウォアン	582,{
 				setquest 7392;
 				delquest 7391;
 				getitem 6497,1;
-				getexp 500000,0;
-				getexp 0,200000;
+				if(checkre())
+					getexp 50000,20000;
+				else
+					getexp 500000,200000;
 				set $MalayaName$[1],strcharinfo(0);
 				close;
 			}
@@ -5095,8 +5114,10 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 			setquest 7394;
 			delquest 7393;
 			getitem 6497,1;
-			getexp 500000,0;
-			getexp 0,200000;
+			if(checkre())
+				getexp 50000,20000;
+			else
+				getexp 500000,200000;
 			set $MalayaName$[1],strcharinfo(0);
 			close;
 		}
@@ -5212,8 +5233,10 @@ malaya.gat,119,217,3	script	研修鍛冶屋パンドイ	538,{
 				setquest 7394;
 				delquest 7393;
 				getitem 6497,1;
-				getexp 500000,0;
-				getexp 0,200000;
+				if(checkre())
+					getexp 50000,20000;
+				else
+					getexp 500000,200000;
 				close;
 			}
 			if(checkquest(7394)) {
@@ -5941,9 +5964,16 @@ malaya.gat,326,68,2	script	船員ペドロ	100,{
 			setquest 201505;
 			set MALAYA_3QUE,6;
 			getitem 6497,1;
-			getexp 5000000,0;
-			getexp 5000000,0;
-			getexp 0,3000000;
+			if(checkre()) {
+				getexp 500000,0;
+				getexp 500000,0;
+				getexp 0,300000;
+			}
+			else {
+				getexp 5000000,0;
+				getexp 5000000,0;
+				getexp 0,3000000;
+			}
 			set $MalayaName$[0],strcharinfo(0);
 			next;
 			mes "[ペドロ]";
@@ -6036,8 +6066,10 @@ malaya.gat,326,68,2	script	船員ペドロ	100,{
 				setquest 7401;
 				delquest 7403;
 				getitem 6497,1;
-				getexp 500000,0;
-				getexp 0,200000;
+				if(checkre())
+					getexp 50000,20000;
+				else
+					getexp 500000,200000;
 				set $MalayaName$[0],strcharinfo(0);
 				close;
 			}
@@ -6543,8 +6575,10 @@ ma_in01.gat,122,158,0	script	警備隊員ドン	570,{
 		setquest 7408;
 		delquest 7407;
 		getitem 6497,1;
-		getexp 500000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 50000,20000;
+		else
+			getexp 500000,200000;
 		set $MalayaName$[2],strcharinfo(0);
 		close;
 	}
@@ -6839,8 +6873,10 @@ ma_in01_jp.gat,42,155,7	script	マリス	579,{
 		setquest 7390;
 		delquest 7389;
 		getitem 6497,1;
-		getexp 500000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 50000,20000;
+		else
+			getexp 500000,200000;
 		set $MalayaName$[1],strcharinfo(0);
 		close;
 	}
@@ -7129,8 +7165,10 @@ ma_fild02.gat,241,39,5	script	カプレ・ブディディ	572,{
 		setquest 7410;
 		delquest 7409;
 		getitem 6497,1;
-		getexp 500000,0;
-		getexp 0,200000;
+		if(checkre())
+			getexp 50000,20000;
+		else
+			getexp 500000,200000;
 		set $MalayaName$[2],strcharinfo(0);
 		close;
 	}
@@ -8293,14 +8331,18 @@ malaya.gat,55,72,4	script	看護師	569,{
 		getitem 6499,3;
 		getitem 6497,5;
 		getitem 617,1;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 0,5000000;
-		getexp 0,5000000;
+		if(checkre()) {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 500000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,500000;
+		}
+		else {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 5000000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,5000000;
+		}
 		delquest 11308;
 		setquest 11309;
 		setquest 201515;
@@ -10666,9 +10708,16 @@ malaya.gat,290,340,3	script	警備隊長	571,{
 		mes "ブワヤ退治にも協力してくれるなら";
 		mes "いつでも来てくれ。";
 		mes "では、また会うことにしよう。";
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 0,3000000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,300000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,3000000;
+		}
 		delquest 2280;
 		setquest 201520;
 		set MALAYA_5QUE,15;
@@ -11464,9 +11513,16 @@ malaya.gat,285,332,4	script	伝説に詳しい老人	574,{
 		delquest 1179;
 		setquest 201525;
 		getitem 6499,3;
-		getexp 500000,0;
-		getexp 500000,0;
-		getexp 0,300000;
+		if(checkre()) {
+			getexp 500000,0;
+			getexp 500000,0;
+			getexp 0,300000;
+		}
+		else {
+			getexp 5000000,0;
+			getexp 5000000,0;
+			getexp 0,3000000;
+		}
 		next;
 		mes "[伝説に詳しい老人]";
 		mes "ただ……";
@@ -12369,14 +12425,18 @@ malaya.gat,283,265,4	script	町長	580,{
 		set MALAYA_7QUE,15;
 		delquest 1193;
 		setquest 201530;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 5000000,0;
-		getexp 0,5000000;
-		getexp 0,5000000;
+		if(checkre()) {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 500000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,500000;
+		}
+		else {
+			for(set '@i,0;'@i<6;set '@i,'@i+1)
+				getexp 5000000,0;
+			for(set '@i,0;'@i<2;set '@i,'@i+1)
+				getexp 0,5000000;
+		}
 		getitem 6497,5;
 		if(BaseLevel < 140) {
 			next;
