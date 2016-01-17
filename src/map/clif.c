@@ -922,7 +922,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,73) = 0;
 
 	return WBUFW(buf,2);
-#elif PACKETVER < 20150513
+#elif PACKETVER < 20141022
 	WBUFW(buf,0)=0x9dd;
 	WBUFW(buf,2)=(unsigned short)(78 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
@@ -1275,7 +1275,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	WBUFB(buf,79)=0;
 
 	return WBUFW(buf,2);
-#elif PACKETVER < 20150513
+#elif PACKETVER < 20141022
 	WBUFW(buf,0)=0x9db;
 	WBUFW(buf,2)=(unsigned short)(84 + strlen(sd->status.name));
 	WBUFB(buf,4)=0;
@@ -3973,7 +3973,7 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOL(sd->fd,64)=0xffffffff;
 	WFIFOL(sd->fd,68)=0xffffffff;
 	WFIFOB(sd->fd,72)=0;
-#elif PACKETVER < 20150513
+#elif PACKETVER < 20141022
 	len = 77 + (int)strlen(sd->status.name);
 	WFIFOW(sd->fd,0)=0x9dc;
 	WFIFOW(sd->fd,2)=(unsigned short)len;
