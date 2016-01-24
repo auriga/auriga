@@ -5966,7 +5966,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "ブラギの詩か。よし！";
 					mes "詩人の心を聴かせてあげよう。";
 					soundeffect "bragis_poem.wav",0,0;
-					close2;
 					break;
 				case 2:
 					cutin "god_nelluad02",2;
@@ -5978,7 +5977,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "それとも永遠と混沌が同じものなのか、";
 					mes "果たしてどっちの意味なんだろうね？";
 					soundeffect "chaos_of_eternity.wav",0,0;
-					close2;
 					break;
 				case 3:
 					cutin "god_nelluad02",2;
@@ -5989,7 +5987,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "哀愁漂う素晴らしい光景だ。";
 					mes "はははっ！";
 					soundeffect "assassin_of_sunset.wav",0,0;
-					close2;
 					break;
 				case 4:
 					cutin "god_nelluad02",2;
@@ -6043,7 +6040,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "[ネリュオッド]";
 					mes "結局、呪いを受けた弟は、";
 					mes "兄を殴り殺してしまった。^000000";
-					close2;
 					break;
 				}
 				break;
@@ -6075,7 +6071,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "秘密酒場。独身では絶対に行けない";
 					mes "と言われている「あそこ」にだ。";
 					mes "驚きだろ？";
-					close2;
 					break;
 				case 2:
 					mes "[ネリュオッド]";
@@ -6118,7 +6113,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "名前の会社が、金稼ぎイベントを";
 					mes "やってるそうだ。君も退屈しのぎに";
 					mes "モンスター退治に行ってはどうかな？";
-					close2;
 					break;
 				case 3:
 					mes "[ネリュオッド]";
@@ -6147,7 +6141,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					}
 					else
 						mes "君は行ったことがある？";
-					close2;
 					break;
 				case 4:
 					mes "[ネリュオッド]";
@@ -6192,7 +6185,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "ヴァルキリーに会ってみたいなら";
 					mes "その「ユミルの書」を必ず";
 					mes "読まなければならないよ。";
-					close2;
 					break;
 				}
 				break;
@@ -6200,7 +6192,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 				mes "[ネリュオッド]";
 				mes "そうか。じゃ、また今度話そう。";
 				mes "君にブラギの加護があるように〜。";
-				close2;
 				break;
 			}
 		}
@@ -6313,7 +6304,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 				mes "ちょっと疲れちゃったな……";
 				mes "またすごい冒険をしたら";
 				mes "話してあげるよ。";
-				close2;
 				break;
 			case 2:
 				cutin "god_nelluad02",2;
@@ -6341,7 +6331,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 				mes "うん？";
 				mes "感動したって？";
 				mes "はは。";
-				close2;
 				break;
 			}
 		}
@@ -6379,7 +6368,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "もうちょっと冒険を積んでから";
 					mes "聞いた方がよさそうだ。";
 					mes "またね〜";
-					close2;
 				}
 				else {
 					cutin "god_nelluad02",2;
@@ -6433,7 +6421,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 						mes "西の方にあるからね。";
 						mes "それじゃ、がんばって！";
 						set GOD_3QUE,1;
-						close2;
 						break;
 					case 2:
 						cutin "god_nelluad02",2;
@@ -6442,7 +6429,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 						mes "君程の人なら手伝ってくれるかと";
 						mes "思ったんだがね〜。";
 						mes "それじゃ、またね。";
-						close2;
 						break;
 					}
 				}
@@ -6555,7 +6541,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "ちょっと疲れちゃったな……";
 					mes "またすごい冒険をしたら";
 					mes "話してあげるよ。";
-					close2;
 					break;
 				case 2:
 					cutin "god_nelluad02",2;
@@ -6583,7 +6568,6 @@ prt_fild08.gat,175,374,3	script	吟遊詩人	51,{
 					mes "うん？";
 					mes "感動したって？";
 					mes "はは。";
-					close2;
 					break;
 				}
 				break;
