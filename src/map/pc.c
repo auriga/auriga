@@ -4880,6 +4880,10 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		}
 		if (next > 0 && battle_config.next_exp_limit > 0 && (base_exp * 100 / next) > per)
 			sd->status.base_exp = (int)(next * per / 100);
+#ifndef PRE_RENEWAL
+		else if (next == 0 && base_exp + sd->status.base_exp > 99999999)
+			sd->status.base_exp = 99999999;
+#endif
 		else if (base_exp + sd->status.base_exp > 0x7fffffff)
 			sd->status.base_exp = 0x7fffffff;
 		else
@@ -4918,6 +4922,10 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		}
 		if (next > 0 && battle_config.next_exp_limit > 0 && (job_exp * 100 / next) > per)
 			sd->status.job_exp = (int)(next * per / 100);
+#ifndef PRE_RENEWAL
+		else if (next == 0 && job_exp + sd->status.job_exp > 99999999)
+			sd->status.job_exp = 99999999;
+#endif
 		else if (job_exp + sd->status.job_exp > 0x7fffffff)
 			sd->status.job_exp = 0x7fffffff;
 		else
