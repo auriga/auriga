@@ -1110,8 +1110,13 @@ L_RECALC:
 		if(sd->sc.data[SC_QUAGMIRE].timer != -1) {	// クァグマイア
 			short subagi = 0;
 			short subdex = 0;
+#ifdef PRE_RENEWAL
+			subagi = sd->status.agi * sd->sc.data[SC_QUAGMIRE].val1*10 / 100;
+			subdex = sd->status.dex * sd->sc.data[SC_QUAGMIRE].val1*10 / 100;
+#else
 			subagi = (sd->status.agi/2 < sd->sc.data[SC_QUAGMIRE].val1*10) ? sd->status.agi/2 : sd->sc.data[SC_QUAGMIRE].val1*10;
 			subdex = (sd->status.dex/2 < sd->sc.data[SC_QUAGMIRE].val1*10) ? sd->status.dex/2 : sd->sc.data[SC_QUAGMIRE].val1*10;
+#endif
 			if(map[sd->bl.m].flag.pvp || map[sd->bl.m].flag.gvg) {
 				subagi /= 2;
 				subdex /= 2;
@@ -3847,7 +3852,11 @@ int status_get_agi(struct block_list *bl)
 		if(sc->data[SC_DECREASEAGI].timer != -1)	// 速度減少（オーバースキル仕様はAGI-50）
 			agi -= (sc->data[SC_DECREASEAGI].val2)? 50: 2+sc->data[SC_DECREASEAGI].val1;
 		if(sc->data[SC_QUAGMIRE].timer != -1)	// クァグマイア
-			agi >>= 1;
+#ifdef PRE_RENEWAL
+			agi -= agi * sc->data[SC_QUAGMIRE].val1*10 / 100;
+#else
+			agi -= (agi/2 < sc->data[SC_QUAGMIRE].val1*10) ? agi/2 : sc->data[SC_QUAGMIRE].val1*10;
+#endif
 		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// マーシュオブアビス
 			agi -= agi * sc->data[SC_MARSHOFABYSS].val3 / 100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
@@ -3979,7 +3988,11 @@ int status_get_dex(struct block_list *bl)
 				dex += sc->data[SC_BLESSING].val1;	// その他
 		}
 		if(sc->data[SC_QUAGMIRE].timer != -1)	// クァグマイア
-			dex >>= 1;
+#ifdef PRE_RENEWAL
+			dex -= dex * sc->data[SC_QUAGMIRE].val1*10 / 100;
+#else
+			dex -= (dex/2 < sc->data[SC_QUAGMIRE].val1*10) ? dex/2 : sc->data[SC_QUAGMIRE].val1*10;
+#endif
 		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// マーシュオブアビス
 			dex -= dex * sc->data[SC_MARSHOFABYSS].val3 / 100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
