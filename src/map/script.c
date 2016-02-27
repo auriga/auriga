@@ -12814,18 +12814,19 @@ int buildin_getmdmapname(struct script_state *st)
  */
 int buildin_getmdnpcname(struct script_state *st)
 {
-	unsigned char *name;
+	unsigned char name[24];
 	char *str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	struct npc_data *nd = npc_name2id(str);
 	int id = script_getmemorialid(st);
 
-	if(id > 0) {
-		name = (unsigned char *)aCalloc(strlen(str) + 5, sizeof(unsigned char));
-		sprintf(name, "%s_%03d", str, id);
+	if(id > 0 && nd) {
+		sprintf(name, "mdnpc_%03d_%d", id, nd->bl.id);
+		name[23] = '\0';
 	} else {
-		name = (unsigned char *)aStrdup(str);
+		strncpy(name, str, 24);
 	}
 
-	push_str(st->stack,C_STR,name);
+	push_str(st->stack,C_STR,(unsigned char *)aStrdup(name));
 
 	return 0;
 }

@@ -1281,21 +1281,23 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 int npc_addmdnpc(struct npc_data *src_nd, int m)
 {
 	struct npc_data *nd;
+	char newname[24];
 
 	nullpo_retr(0, src_nd);
 
 	if(m < 0)
 		return 0;
 
-	if(strlen(src_nd->exname) > 19) {
-		// against buffer overflow
-		printf("npc_addmdnpc: can't add long npc name \"%s\"\n", src_nd->exname);
+	snprintf(newname, sizeof(newname), "mdnpc_%03d_%d", map[m].memorial_id, src_nd->bl.id);
+	if(npc_name2id(newname) != NULL) {
+		printf("npc_addmdnpc: npc name \"%s\" is already, memorial_id: %d name: \"%s\"\n", newname, map[m].memorial_id, src_nd->exname);
 		return 0;
 	}
 
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
 	strcpy(nd->name, src_nd->name);
-	snprintf(nd->exname, sizeof(nd->exname), "%s_%03d", src_nd->exname, map[m].memorial_id);
+	strcpy(nd->exname, newname);
+	printf("npc_parse_script : dup event name %s\n",nd->exname);
 	nd->name[23] = '\0';
 	nd->exname[23] = '\0';
 

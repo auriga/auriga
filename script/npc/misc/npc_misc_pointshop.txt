@@ -33,90 +33,66 @@ prontera.gat,123,62,5	script	服装染色師	97,{
 		case Job_Merchant:	return "excolor_merchant.bmp";
 		case Job_Thief:		return "excolor_thief.bmp";
 		case Job_Knight:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_loadknight.bmp";
-			} else {
+			else
 				return "excolor_knight.bmp";
-			}
-			break;
 		case Job_Priest:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_highpriest.bmp";
-			} else {
+			else
 				return "excolor_priest.bmp";
-			}
-			break;
 		case Job_Wizard:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_highwizard.bmp";
-			} else {
+			else
 				return "excolor_wizard.bmp";
-			}
-			break;
 		case Job_Blacksmith:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_whitesmith.bmp";
-			} else {
+			else
 				return "excolor_blacksmith.bmp";
-			}
-			break;
 		case Job_Hunter:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_sniper.bmp";
-			} else {
+			else
 				return "excolor_hunter.bmp";
-			}
-			break;
 		case Job_Assassin:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_assassincross.bmp";
-			} else {
+			else
 				return "excolor_assassin.bmp";
-			}
-			break;
 		case Job_Crusader:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_paladin.bmp";
-			} else {
+			else
 				return "excolor_crusader.bmp";
-			}
-			break;
 		case Job_Monk:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_champion.bmp";
-			} else {
+			else
 				return "excolor_monk.bmp";
-			}
-			break;
 		case Job_Sage:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_professor.bmp";
-			} else {
+			else
 				return "excolor_sage.bmp";
-			}
-			break;
 		case Job_Rogue:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_chaser.bmp";
-			} else {
+			else
 				return "excolor_rogue.bmp";
-			}
-			break;
 		case Job_Alchemist:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_creator.bmp";
-			} else {
+			else
 				return "excolor_alchemist.bmp";
-			}
-			break;
 		case Job_Bard:
 		case Job_Dancer:
-			if(Upper == UPPER_HIGH) {
+			if(Upper == UPPER_HIGH)
 				return "excolor_clown_gypsy.bmp";
-			} else {
+			else
 				return "excolor_bard_dancer.bmp";
-			}
-			break;
 		case Job_SuperNovice:
 		case Job_ExpandedSuperNovice:	return "excolor_supernovice.bmp";
 		case Job_Taekwon:		return "excolor_taekwon.bmp";
@@ -128,14 +104,30 @@ prontera.gat,123,62,5	script	服装染色師	97,{
 		case Job_Warlock:		return "excolor_warlock.bmp";
 		case Job_Ranger:		return "excolor_ranger.bmp";
 		case Job_ArchBishop:	return "excolor_archbishop.bmp";
-		case Job_Mechanic:		return "excolor_mechanic.bmp";
-		case Job_Guillotine:	return "excolor_guillotinecross.bmp";
-		case Job_RoyalGuard:	return "excolor_royalguard.bmp";
+		case Job_Mechanic:
+			if(getlook(13) == 0)
+				return "excolor_mechanic.bmp";
+			else
+				return "excolor_mechanic2.bmp";
+		case Job_Guillotine:
+			if(getlook(13) == 0)
+				return "excolor_guillotinecross.bmp";
+			else
+				return "excolor_guillotinecross2.bmp";
+		case Job_RoyalGuard:
+			if(getlook(13) == 0)
+				return "excolor_royalguard.bmp";
+			else
+				return "excolor_royalguard2.bmp";
 		case Job_Sorcerer:		return "excolor_sorcerer.bmp";
 		case Job_Minstrel:
 		case Job_Wanderer:		return "excolor_minstrel_wanderer.bmp";
 		case Job_Shura:			return "excolor_sura.bmp";
-		case Job_Genetic:		return "excolor_genetic.bmp";
+		case Job_Genetic:
+			if(getlook(13) == 0)
+				return "excolor_genetic.bmp";
+			else
+				return "excolor_genetic2.bmp";
 		case Job_ShadowChaser:	return "excolor_shadowchaser.bmp";
 		case Job_Kagerou:
 		case Job_Oboro:			return "excolor_kagerou_oboro.bmp";
@@ -185,6 +177,7 @@ prontera.gat,123,62,5	script	服装染色師	97,{
 	case 2:
 		set '@num,getlook(7);
 		if('@num != 0) {
+			set '@num,'@num-1;
 			if('@num == 1)
 				set '@excolor,2;
 			else if('@num == 2)
@@ -222,7 +215,7 @@ prontera.gat,123,62,5	script	服装染色師	97,{
 			mes "早く皆に見せびらかしたくて";
 			mes "仕方ないんじゃないですか？";
 			delitem 6046,1;
-			setlook 7,'@excolor;
+			setlook 7,'@excolor+1;
 			close;
 		}
 		if(countitem(6046) < 1) {
@@ -286,7 +279,7 @@ prontera.gat,123,62,5	script	服装染色師	97,{
 			mes "早く皆に見せびらかしたくて";
 			mes "仕方ないんじゃないですか？";
 			delitem 6046,1;
-			setlook 7,'@excolor;
+			setlook 7,'@excolor+1;
 			close;
 		}
 	case 3:
@@ -383,89 +376,77 @@ prontera.gat,125,62,4	script	騎乗協会広報員	832,{
 	case Job_Merchant:	set '@name$,"riding_merchant.bmp"; break;
 	case Job_Thief:		set '@name$,"riding_thief.bmp"; break;
 	case Job_Knight:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_loadknight.bmp";
-		} else {
+		else
 			set '@name$,"riding_knight.bmp";
-		}
 		break;
 	case Job_Priest:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_highpriest.bmp";
-		} else {
+		else
 			set '@name$,"riding_priest.bmp";
-		}
 		break;
 	case Job_Wizard:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_highwizard.bmp";
-		} else {
+		else
 			set '@name$,"riding_wizard.bmp";
-		}
 		break;
 	case Job_Blacksmith:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_whitesmith.bmp";
-		} else {
+		else
 			set '@name$,"riding_blacksmith.bmp";
-		}
 		break;
 	case Job_Hunter:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_sniper.bmp";
-		} else {
+		else
 			set '@name$,"riding_hunter.bmp";
-		}
 		break;
 	case Job_Assassin:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_assassincross.bmp";
-		} else {
+		else
 			set '@name$,"riding_assassin.bmp";
-		}
 		break;
 	case Job_Crusader:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_paladin.bmp";
-		} else {
+		else
 			set '@name$,"riding_crusader.bmp";
-		}
 		break;
 	case Job_Monk:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_champion.bmp";
-		} else {
+		else
 			set '@name$,"riding_monk.bmp";
-		}
 		break;
 	case Job_Sage:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_professor.bmp";
-		} else {
+		else
 			set '@name$,"riding_sage.bmp";
-		}
 		break;
 	case Job_Rogue:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_chaser.bmp";
-		} else {
+		else
 			set '@name$,"riding_rogue.bmp";
-		}
 		break;
 	case Job_Alchemist:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_creator.bmp";
-		} else {
+		else
 			set '@name$,"riding_alchemist.bmp";
-		}
 		break;
 	case Job_Bard:
 	case Job_Dancer:
-		if(Upper == UPPER_HIGH) {
+		if(Upper == UPPER_HIGH)
 			set '@name$,"riding_clown_gypsy.bmp";
-		} else {
+		else
 			set '@name$,"riding_bard_dancer.bmp";
-		}
 		break;
 	case Job_SuperNovice:
 	case Job_ExpandedSuperNovice:	set '@name$,"riding_supernovice.bmp"; break;
@@ -511,7 +492,7 @@ prontera.gat,127,62,4	script	ファッションデザイナー	573,{
 	mes "同じ職業でも服そのものを変更する";
 	mes "試みに挑戦しているのだ。";
 	next;
-	if(Job != Job_Genetic && Job != Job_Guillotine && Job != Job_Mechanic) {
+	if(Job != Job_Genetic && Job != Job_Guillotine && Job != Job_Mechanic && Job != Job_RoyalGuard) {
 		mes "[ファッションデザイナー]";
 		mes "幾度となく試行錯誤を重ね、";
 		mes "新しい服……そう、";
@@ -543,7 +524,8 @@ prontera.gat,127,62,4	script	ファッションデザイナー	573,{
 			close;
 		}
 		mes "‐セカンドコスチューム提供済み職業‐";
-		mes "・メカニック^FF0000NEW!!^000000";
+		mes "・ロイヤルガード^FF0000NEW!!^000000";
+		mes "・メカニック";
 		mes "・ギロチンクロス";
 		mes "・ジェネティック";
 		mes "　";
