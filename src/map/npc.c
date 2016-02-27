@@ -1297,7 +1297,6 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
 	strcpy(nd->name, src_nd->name);
 	strcpy(nd->exname, newname);
-	printf("npc_parse_script : dup event name %s\n",nd->exname);
 	nd->name[23] = '\0';
 	nd->exname[23] = '\0';
 
