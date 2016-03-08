@@ -610,6 +610,7 @@ L_RECALC:
 	sd->addreveff_flag = 0;
 	memset(sd->addgroup,0,sizeof(sd->addgroup));
 	memset(sd->addgroup_,0,sizeof(sd->addgroup_));
+	memset(sd->magic_addgroup,0,sizeof(sd->magic_addgroup));
 	memset(sd->arrow_addgroup,0,sizeof(sd->arrow_addgroup));
 	memset(sd->subgroup,0,sizeof(sd->subgroup));
 	sd->hp_penalty_time  = 0;

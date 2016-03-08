@@ -593,6 +593,7 @@ bAddEleWeaponDamageRate	1178
 bAddEleMagicDamageRate	1179
 bHPRatePenaltyTime	1180
 bSPRatePenaltyTime	1181
+bMagicAddGroup	1182
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

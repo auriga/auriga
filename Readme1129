@@ -1,4 +1,14 @@
 ----------------------------------------
+//1269 [2016/03/09] by refis
+
+・2015-05-13aRagexeのpacket_dbに定義抜けがあったのを修正（packet_db.txt）
+	Thanks rinaserver さん、dallen さん
+
+・itembonus「bMagicAddGroup」実装
+（const.txt, doc/item_bonus.txt, battle.c, bonus.c, map.h, status.c）
+	Thanks siong さん
+
+----------------------------------------
 //1268 [2016/02/28] by refis
 
 ・Auriga-1267のバグfix（npc.c）

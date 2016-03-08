@@ -1350,6 +1350,12 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		else if(sd->state.lr_flag == 2)
 			sd->arrow_addgroup[type2] += val;
 		break;
+	case SP_MAGIC_ADD_GROUP:
+		if(type2 < 0 || type2 >= MAX_MOBGROUP)
+			break;
+		if(sd->state.lr_flag != 2)
+			sd->magic_addgroup[type2] += val;
+		break;
 	case SP_SUB_GROUP:
 		if(type2 < 0 || type2 >= MAX_MOBGROUP)
 			break;

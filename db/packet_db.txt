@@ -3508,6 +3508,7 @@
 0x01fd,15,repairitem,2
 0x022c,65
 0x022d,2,closebuyingstorereq,0
+0x0288,-1,npcpointshopbuy,2:4:8:10
 0x0289,12
 0x029b,80
 0x035f,6,ticksend,2
