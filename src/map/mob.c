@@ -2280,7 +2280,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		}
 	}
 
-	if(!md->state.rebirth) {
+	if(md->state.rebirth || (md->sc.data[SC_REBIRTH].timer == -1 && !md->state.rebirth)) {
 		// ガーディアンだったらアジト情報から削除
 		if(md->guild_id) {
 			struct guild_castle *gc = guild_mapid2gc(md->bl.m);
