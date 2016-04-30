@@ -1,5 +1,5 @@
-//packet_db.txt 同じ番号のパケットは後ので上書きされるので変更のあったパケットは一番下に追加すればよいです
-//古いパケットで使いたい場合は新しい定義を削除するかコメントアウトすればよいです
+//packet_db.txt �����ԍ��̃p�P�b�g�͌�̂ŏ㏑�������̂ŕύX�̂������p�P�b�g�͈�ԉ��ɒǉ�����΂悢�ł�
+//�Â��p�P�b�g�Ŏg�������ꍇ�͐V������`���폜���邩�R�����g�A�E�g����΂悢�ł�
 
 0x0064,55
 0x0065,17
@@ -1585,7 +1585,7 @@
 0x0a2e,6,changetitlereq,2
 0x0a35,4,oneclickitemidentify,2
 
-// 2005-04-12より古い jRO はここまで
+// 2005-04-12���Â� jRO �͂����܂�
 
 //2005-05-09eRagexe jRO by ID:7QLFJSM
 #packet_ver: 20050509
@@ -1731,7 +1731,7 @@
 0x0190,102,useskilltopos,5:9:12:20:22
 0x0193,15,solvecharname,11
 
-// 以下は kRO
+// �ȉ��� kRO
 
 //2004-07-06kRO
 #packet_ver: 20040706
@@ -2218,7 +2218,7 @@
 0x0438,10,useskilltoid,2:4:6
 0x0439,8,useitem,2:4
 
-// 以下は RagnarokRE
+// �ȉ��� RagnarokRE
 
 //2008-08-27aRagexeRE
 #packet_ver: 20080827

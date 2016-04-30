@@ -5,183 +5,183 @@
 //============================================================
 // Shop
 //------------------------------------------------------------
-nif_in.gat,37,93,1	shop	斧商人	801,1301,1351,1354,1357,1360
-nif_in.gat,37,84,1	shop	防具商人	801,2501,2501,2503,2503,2505,2505
-nif_in.gat,145,23,1	shop	道具商人	801,535,1062,902,7106,537,7154,1052,934
+nif_in.gat,37,93,1	shop	�����l	801,1301,1351,1354,1357,1360
+nif_in.gat,37,84,1	shop	�h��l	801,2501,2501,2503,2503,2505,2505
+nif_in.gat,145,23,1	shop	����l	801,535,1062,902,7106,537,7154,1052,934
 
 //============================================================
-// ニブルヘイムNPC
+// �j�u���w�C��NPC
 //------------------------------------------------------------
-niflheim.gat,52,147,3	script	キズ	796,{
-	mes "[キズ]";
-	mes "生きている者はこちらへ来ては";
-	mes "いけない!!生きている者の通行は";
-	mes "絶対に認めない!!";
+niflheim.gat,52,147,3	script	�L�Y	796,{
+	mes "[�L�Y]";
+	mes "�����Ă���҂͂�����֗��Ă�";
+	mes "�����Ȃ�!!�����Ă���҂̒ʍs��";
+	mes "��΂ɔF�߂Ȃ�!!";
 	close;
 }
 
-niflheim.gat,195,211,6	script	ギガンティア	796,3,3,{
+niflheim.gat,195,211,6	script	�M�K���e�B�A	796,3,3,{
 	if(getequipid(1)==2256 || getequipid(1)==2257 || getequipid(1)==2284) {
 		mes "["+strcharinfo(0)+"]";
-		mes "私に何か用でも？";
+		mes "���ɉ����p�ł��H";
 		next;
-		mes "[ギガンティア]";
-		mes "声をかけたのは俺だ。そして";
-		mes "その相手は君！間違いない。";
-		mes "ちょっとこっちに来てくれ。";
+		mes "[�M�K���e�B�A]";
+		mes "�����������͉̂����B������";
+		mes "���̑���͌N�I�ԈႢ�Ȃ��B";
+		mes "������Ƃ������ɗ��Ă���B";
 		next;
-		mes "[ギガンティア]";
-		mes "角を着けているんだな。角はいつでも";
-		mes "俺ら死者の王様がちゃんと見て";
-		mes "いらっしゃる。";
+		mes "[�M�K���e�B�A]";
+		mes "�p�𒅂��Ă���񂾂ȁB�p�͂��ł�";
+		mes "���玀�҂̉��l�������ƌ���";
+		mes "����������B";
 		close;
 	}
-	mes "[ギガンティア]";
-	mes "王様はいつでも、全てのモノを";
-	mes "見ていらっしゃる……";
+	mes "[�M�K���e�B�A]";
+	mes "���l�͂��ł��A�S�Ẵ��m��";
+	mes "���Ă���������c�c";
 	close;
 OnTouch:
 	if(getequipid(1)==2256 || getequipid(1)==2257 || getequipid(1)==2284) {
-		mes "[ギガンティア]";
-		mes "ちょっと待て！";
+		mes "[�M�K���e�B�A]";
+		mes "������Ƒ҂āI";
 		close;
 	}
 	end;
 }
 
 //============================================================
-// ニブルヘイム室内NPC
+// �j�u���w�C������NPC
 //------------------------------------------------------------
-nif_in.gat,16,27,1	script	死んだニワトリ	800,{
+nif_in.gat,16,27,1	script	���񂾃j���g��	800,{
 	percentheal -5,0;
-	mes "[モンチキン]";
-	mes "生きていた時、おいらは人間に";
-	mes "食われた。だから今度はおいらが";
-	mes "食う番。コケコッコー!!";
-	mes "でも死んだからこそ、こんな世界に";
-	mes "いるんだよな……コケ、コケ、";
-	mes "コケコッコー!!";
+	mes "[�����`�L��]";
+	mes "�����Ă������A������͐l�Ԃ�";
+	mes "�H��ꂽ�B�����獡�x�͂����炪";
+	mes "�H���ԁB�R�P�R�b�R�[!!";
+	mes "�ł����񂾂��炱���A����Ȑ��E��";
+	mes "����񂾂�ȁc�c�R�P�A�R�P�A";
+	mes "�R�P�R�b�R�[!!";
 	close;
 }
 
-nif_in.gat,16,30,4	script	死んだコウモリ	799,{
+nif_in.gat,16,30,4	script	���񂾃R�E����	799,{
 	percentheal -5,0;
-	mes "[バットミルリア]";
-	mes "生きてても死んでても";
-	mes "人間の血はトレビア〜ンです。";
-	mes "何です？君も我に血を";
-	mes "吸われたいのですか？";
+	mes "[�o�b�g�~�����A]";
+	mes "�����ĂĂ�����łĂ�";
+	mes "�l�Ԃ̌��̓g���r�A�`���ł��B";
+	mes "���ł��H�N����Ɍ���";
+	mes "�z��ꂽ���̂ł����H";
 	close;
 }
 
 //============================================================
-// 呪われた魂NPC
+// ���ꂽ��NPC
 //------------------------------------------------------------
-nif_in.gat,156,93,5	script	少女	793,{
-	mes "[鍵を握る少女]";
-	mes "ここはどこ……？";
-	mes "私、目が覚めたらここにいたの……";
-	mes "ママ……ねぇ、ママを見なかった？";
-	mes "……うわ〜ん。お家に帰りたいよ〜。";
+nif_in.gat,156,93,5	script	����	793,{
+	mes "[�������鏭��]";
+	mes "�����͂ǂ��c�c�H";
+	mes "���A�ڂ��o�߂��炱���ɂ����́c�c";
+	mes "�}�}�c�c�˂��A�}�}�����Ȃ������H";
+	mes "�c�c����`��B���ƂɋA�肽����`�B";
 	next;
-	switch(select("魔女って何？","呪いって何？","会話をやめる")) {
+	switch(select("�������ĉ��H","�􂢂��ĉ��H","��b����߂�")) {
 	case 1:
-		mes "[鍵を握る少女]";
-		mes "魔女……？魔女なんて知らないよ……";
-		mes "あ、でも絵本で見たことある。";
-		mes "魔女か……もし本当にいたらとても";
-		mes "怖いよね……";
+		mes "[�������鏭��]";
+		mes "�����c�c�H�����Ȃ�Ēm��Ȃ���c�c";
+		mes "���A�ł��G�{�Ō������Ƃ���B";
+		mes "�������c�c�����{���ɂ�����ƂĂ�";
+		mes "�|����ˁc�c";
 		next;
-		mes "[鍵を握る少女]";
-		mes "ねぇ、どうしてこんなに寒いの……？";
-		mes "お姉ちゃんは寒くないの？";
-		mes "……変なのー。ふぅ〜。";
-		mes "暖かいお家に帰りたいな。";
-		mes "私も一緒に連れてってくれない……？";
-		mes "ねぇ……？ねぇ……？";
+		mes "[�������鏭��]";
+		mes "�˂��A�ǂ����Ă���ȂɊ����́c�c�H";
+		mes "���o�����͊����Ȃ��́H";
+		mes "�c�c�ςȂ́[�B�ӂ��`�B";
+		mes "�g�������ƂɋA�肽���ȁB";
+		mes "�����ꏏ�ɘA��Ă��Ă���Ȃ��c�c�H";
+		mes "�˂��c�c�H�˂��c�c�H";
 		close;
 	case 2:
-		mes "[鍵を握る少女]";
-		mes "呪い……お婆ちゃんの話を思い出すな。";
-		mes "祝福でも解けない強い呪いを解く";
-		mes "呪文があるんだって。";
+		mes "[�������鏭��]";
+		mes "�􂢁c�c���k�����̘b���v���o���ȁB";
+		mes "�j���ł������Ȃ������􂢂�����";
+		mes "����������񂾂��āB";
 		next;
-		mes "[鍵を握る少女]";
-		mes "クルラト……ベラタ……";
-		mes "えっと……あれ？何だったけ……？";
-		mes "うーん……あと一つが思い出せない。";
+		mes "[�������鏭��]";
+		mes "�N�����g�c�c�x���^�c�c";
+		mes "�����Ɓc�c����H�����������c�c�H";
+		mes "���[��c�c���ƈ���v���o���Ȃ��B";
 		next;
-		mes "[鍵を握る少女]";
-		mes "……とにかく、その3つの呪文を";
-		mes "順番通りに唱えれば、呪われた";
-		mes "運命から逃げられるらしいの。";
-		mes "何のお話のことかは……うーん、";
-		mes "思い出せないな。";
+		mes "[�������鏭��]";
+		mes "�c�c�Ƃɂ����A����3�̎�����";
+		mes "���Ԓʂ�ɏ�����΁A���ꂽ";
+		mes "�^�����瓦������炵���́B";
+		mes "���̂��b�̂��Ƃ��́c�c���[��A";
+		mes "�v���o���Ȃ��ȁB";
 		close;
 	case 3:
-		mes "[鍵を握る少女]";
-		mes "寒い……寒いよ〜……";
-		mes "お家に帰りたいよぉ〜……";
-		mes "ねぇ、私も連れてって……";
-		mes "ここはとても怖い所なの。";
-		mes "お願い……助けて……";
+		mes "[�������鏭��]";
+		mes "�����c�c������`�c�c";
+		mes "���ƂɋA�肽���悧�`�c�c";
+		mes "�˂��A�����A��Ă��āc�c";
+		mes "�����͂ƂĂ��|�����Ȃ́B";
+		mes "���肢�c�c�����āc�c";
 		close;
 	}
 }
 
-niflheim.gat,350,258,1	script	呪われた魂::nif_soul	802,{
+niflheim.gat,350,258,1	script	���ꂽ��::nif_soul	802,{
 	killmonster "niflheim.gat","nif_soul::OnKilled";
-	mes "[アッシュブルース]";
-	mes "お主には強い呪いを感じる!!!!";
-	mes "わしはお主の存在を拒否する!!!!";
-	mes "もし退かぬのなら、死を与えよう!!";
-	mes "わしの大事な本たちに";
-	mes "触れるんじゃない!!!!";
+	mes "[�A�b�V���u���[�X]";
+	mes "����ɂ͋����􂢂�������!!!!";
+	mes "�킵�͂���̑��݂����ۂ���!!!!";
+	mes "�����ނ��ʂ̂Ȃ�A����^���悤!!";
+	mes "�킵�̑厖�Ȗ{������";
+	mes "�G���񂶂�Ȃ�!!!!";
 	next;
-	switch(select("1番目の本を取ってみる","2番目の本を取ってみる","3番目の本を取ってみる","おとなしく退く")) {
+	switch(select("1�Ԗڂ̖{������Ă݂�","2�Ԗڂ̖{������Ă݂�","3�Ԗڂ̖{������Ă݂�","���ƂȂ����ނ�")) {
 	case 1:
-		mes "[アッシュブルース]";
-		mes "ぐはははは!!";
-		mes "むやみにわしの本を触れるからだ!!";
-		mes "噛み切られ、引き裂かれるがよい!!";
-		mes "永遠の呪いに囚われるのだ!!";
+		mes "[�A�b�V���u���[�X]";
+		mes "���͂͂͂�!!";
+		mes "�ނ�݂ɂ킵�̖{��G��邩�炾!!";
+		mes "���ݐ؂��A�����􂩂�邪�悢!!";
+		mes "�i���̎􂢂Ɏ�����̂�!!";
 		monster "niflheim.gat",349,259,"--ja--",1478,1,"nif_soul::OnKilled";
 		close;
 	case 2:
-		mes "[アッシュブルース]";
-		mes "わしの本たちに触れるとは……";
-		mes "早々に消えろ!!わしの休息の";
-		mes "邪魔をするんじゃない!!";
+		mes "[�A�b�V���u���[�X]";
+		mes "�킵�̖{�����ɐG���Ƃ́c�c";
+		mes "���X�ɏ�����!!�킵�̋x����";
+		mes "�ז�������񂶂�Ȃ�!!";
 		close2;
 		warp "niflheim.gat",34,162;
 		end;
 	case 3:
-		mes "[アッシュブルース]";
-		mes "ぬうう……お主。";
-		mes "結構、度胸があるようだな。";
-		mes "…………!!!!";
-		mes "ならば……一度呪文を";
-		mes "唱えてみるがよい……!!";
+		mes "[�A�b�V���u���[�X]";
+		mes "�ʂ����c�c����B";
+		mes "���\�A�x��������悤���ȁB";
+		mes "�c�c�c�c!!!!";
+		mes "�Ȃ�΁c�c��x������";
+		mes "�����Ă݂邪�悢�c�c!!";
 		next;
-		if(select("クローバ","クルラト","クレイトス")==2)
+		if(select("�N���[�o","�N�����g","�N���C�g�X")==2)
 			set '@result,'@result+1;
-		if(select("ベリト","ベリタス","ベラタ")==3)
+		if(select("�x���g","�x���^�X","�x���^")==3)
 			set '@result,'@result+1;
-		if(select("ネクタイ","ネックレス","ネロ","^FFFFFFニックト^000000")==4)
+		if(select("�l�N�^�C","�l�b�N���X","�l��","^FFFFFF�j�b�N�g^000000")==4)
 			set '@result,'@result+1;
 		if('@result==3) {
-			mes "[アッシュブルース]";
-			mes "呪文は確かに正しい……だが、";
-			mes "お主の呪いは解けないのだ……";
-			mes "ぐはははは……!!!!";
-			//The Sign 3部クエストへ連結される模様
+			mes "[�A�b�V���u���[�X]";
+			mes "�����͊m���ɐ������c�c�����A";
+			mes "����̎􂢂͉����Ȃ��̂��c�c";
+			mes "���͂͂͂́c�c!!!!";
+			//The Sign 3���N�G�X�g�֘A�������͗l
 		}
 		else {
-			mes "[アッシュブルース]";
-			mes "ぐはははは!!!!";
-			mes "お主、呪文が間違っているぞ!!";
-			mes "お主に必要なのは死のようだな。";
-			mes "一生、呪われ続けるがよい……!!";
+			mes "[�A�b�V���u���[�X]";
+			mes "���͂͂͂�!!!!";
+			mes "����A�������Ԉ���Ă��邼!!";
+			mes "����ɕK�v�Ȃ͎̂��̂悤���ȁB";
+			mes "�ꐶ�A���ꑱ���邪�悢�c�c!!";
 			monster "niflheim.gat",345,259,"--ja--",1462,1,"nif_soul::OnKilled";
 			monster "niflheim.gat",347,261,"--ja--",1462,1,"nif_soul::OnKilled";
 			monster "niflheim.gat",344,253,"--ja--",1462,1,"nif_soul::OnKilled";
@@ -192,164 +192,164 @@ niflheim.gat,350,258,1	script	呪われた魂::nif_soul	802,{
 		}
 		close;
 	case 4:
-		mes "[アッシュブルース]";
-		mes "ぶははは!!";
-		mes "よく考えたようだな……";
-		mes "お主が無事に生きて帰れることを";
-		mes "わしも祈ってやろう。";
+		mes "[�A�b�V���u���[�X]";
+		mes "�Ԃ͂͂�!!";
+		mes "�悭�l�����悤���ȁc�c";
+		mes "���傪�����ɐ����ċA��邱�Ƃ�";
+		mes "�킵���F���Ă�낤�B";
 		close;
 	}
-OnKilled:	//ダミーイベント
+OnKilled:	//�_�~�[�C�x���g
 	end;
 }
 
 //============================================================
-// ピアノの鍵盤クエストNPC
+// �s�A�m�̌��ՃN�G�X�gNPC
 //- Registry -------------------------------------------------
-// NIF_1QUE -> 0〜&64
+// NIF_1QUE -> 0�`&64
 //------------------------------------------------------------
-niflheim.gat,224,243,3	script	アルレグ	795,{
-	mes "[アルレグ]";
-	mes "煮込みやすくて……うん、";
-	mes "お前……うまそうだ。";
+niflheim.gat,224,243,3	script	�A�����O	795,{
+	mes "[�A�����O]";
+	mes "�ύ��݂₷���āc�c����A";
+	mes "���O�c�c���܂������B";
 	next;
-	mes "[アルレグ]";
-	mes "……";
-	mes "お前を食べてやる!!";
+	mes "[�A�����O]";
+	mes "�c�c";
+	mes "���O��H�ׂĂ��!!";
 	next;
-	mes "-ガブッガブッ-";
+	mes "-�K�u�b�K�u�b-";
 	if(NIF_1QUE&1) {
 		percentheal -30,0;
 		close;
 	}
 	percentheal -80,0;
 	next;
-	mes "[アルレグ]";
-	mes "久々にうまい肉だった……";
-	mes "養殖の鳥並みにの良い肉だよ、お前は。";
-	mes "……良い餌を与えて上質のソースを";
-	mes "かければ、もっとうまくなりそうだ……";
+	mes "[�A�����O]";
+	mes "�v�X�ɂ��܂����������c�c";
+	mes "�{�B�̒����݂ɂ̗ǂ�������A���O�́B";
+	mes "�c�c�ǂ��a��^���ď㎿�̃\�[�X��";
+	mes "������΁A�����Ƃ��܂��Ȃ肻�����c�c";
 	next;
-	mes "[アルレグ]";
-	mes "お礼にこれをあげるよ。";
-	mes "この間、拾ったんだ。ほれっ！";
+	mes "[�A�����O]";
+	mes "����ɂ�����������B";
+	mes "���̊ԁA�E�����񂾁B�ق���I";
 	getitem 7184,1;
 	set NIF_1QUE,NIF_1QUE|1;
 	close;
 }
 
-nif_in.gat,105,81,3	script	クレユ	794,{
-	mes "[クレユ]";
-	mes "生ある者よ……いつからか、";
-	mes "誰からか……それすらも分からない程、";
-	mes "古くから伝わる詩を聴かせましょう……";
+nif_in.gat,105,81,3	script	�N����	794,{
+	mes "[�N����]";
+	mes "������҂�c�c�����炩�A";
+	mes "�N���炩�c�c���ꂷ���������Ȃ����A";
+	mes "�Â�����`��鎍�𒮂����܂��傤�c�c";
 	next;
-	mes "[クレユ]";
-	mes "^FF0000陽が傾いて西の山にかかりし時";
-	mes "^FF0000空が紫の夕暮れに染まる頃";
-	mes "^FF0000美しき旋律に身を委ねれば";
-	mes "^FF0000主なる者を助ける鍵を得ようぞ^000000";
+	mes "[�N����]";
+	mes "^FF0000�z���X���Đ��̎R�ɂ����肵��";
+	mes "^FF0000�󂪎��̗[���ɐ��܂鍠";
+	mes "^FF0000�����������ɐg���ς˂��";
+	mes "^FF0000��Ȃ�҂������錮�𓾂悤��^000000";
 	next;
-	mes "[クレユ]";
-	mes "どんな意味があるのでしょうか……？";
-	mes "私は奥深いものがあるような気が";
-	mes "します。この詩はもしかしたら、";
-	mes "何か秘密があるのかもしれませんね。";
+	mes "[�N����]";
+	mes "�ǂ�ȈӖ�������̂ł��傤���c�c�H";
+	mes "���͉��[�����̂�����悤�ȋC��";
+	mes "���܂��B���̎��͂�����������A";
+	mes "�����閧������̂�������܂���ˁB";
 	//if(!(NIF_1QUE&1) || NIF_1QUE&2)
 	if(NIF_1QUE&3 != 1)
 		close;
 	next;
 	switch(rand(4)) {
 	case 0:
-		set '@poem$,"陽が傾いて西の山にかかりし時";
-		set '@colm$,"最初の行";
+		set '@poem$,"�z���X���Đ��̎R�ɂ����肵��";
+		set '@colm$,"�ŏ��̍s";
 		break;
 	case 1:
-		set '@poem$,"空が紫の夕暮れに染まる頃";
-		set '@colm$,"二行目";
+		set '@poem$,"�󂪎��̗[���ɐ��܂鍠";
+		set '@colm$,"��s��";
 		break;
 	case 2:
-		set '@poem$,"美しき旋律に身を委ねれば";
-		set '@colm$,"三行目";
+		set '@poem$,"�����������ɐg���ς˂��";
+		set '@colm$,"�O�s��";
 		break;
 	case 3:
-		set '@poem$,"主なる者を助ける鍵を得ようぞ";
-		set '@colm$,"最後の行";
+		set '@poem$,"��Ȃ�҂������錮�𓾂悤��";
+		set '@colm$,"�Ō�̍s";
 		break;
 	}
-	mes "[クレユ]";
-	mes "それではここでテスト！";
-	mes "今、聴かせた詩の" +'@colm$+ "を";
-	mes "正確に再現してください！";
+	mes "[�N����]";
+	mes "����ł͂����Ńe�X�g�I";
+	mes "���A������������" +'@colm$+ "��";
+	mes "���m�ɍČ����Ă��������I";
 	next;
 	input '@word$;
 	if('@word$ != '@poem$) {
-		mes "[クレユ]";
-		mes "ううむ……。しっかり聴いていたら、";
-		mes "こんなの簡単に歌えるでしょう！";
-		mes "きちんと覚えてから再度、挑戦しに";
-		mes "来なさい！";
+		mes "[�N����]";
+		mes "�����ށc�c�B�������蒮���Ă�����A";
+		mes "����Ȃ̊ȒP�ɉ̂���ł��傤�I";
+		mes "������Ɗo���Ă���ēx�A���킵��";
+		mes "���Ȃ����I";
 		close;
 	}
-	mes "[クレユ]";
-	mes "おお……よく覚えていましたね！";
-	mes "私はクレユと申します。";
-	mes "吟遊詩人にとってあなたは";
-	mes "一番、好まれるお客です。";
-	mes "ご褒美にこれをさしあげましょう。";
+	mes "[�N����]";
+	mes "�����c�c�悭�o���Ă��܂����ˁI";
+	mes "���̓N�����Ɛ\���܂��B";
+	mes "��V���l�ɂƂ��Ă��Ȃ���";
+	mes "��ԁA�D�܂�邨�q�ł��B";
+	mes "���J���ɂ�������������܂��傤�B";
 	next;
 	set NIF_1QUE,NIF_1QUE|2;
 	getitem 7184,1;
-	mes "[クレユ]";
-	mes "是非、他の吟遊詩人達も";
-	mes "喜ばせてください。";
+	mes "[�N����]";
+	mes "����A���̋�V���l�B��";
+	mes "��΂��Ă��������B";
 	close;
 }
 
-nif_in.gat,31,20,3	script	ガラクタ屋	794,{
-	mes "[ガラクタ屋]";
-	mes "商売にいっくら精を出してもよ！";
-	mes "前世で出した店も今も、何故か商売が";
-	mes "うまくいかないんだよな……";
+nif_in.gat,31,20,3	script	�K���N�^��	794,{
+	mes "[�K���N�^��]";
+	mes "�����ɂ������琸���o���Ă���I";
+	mes "�O���ŏo�����X�������A���̂�������";
+	mes "���܂������Ȃ��񂾂�ȁc�c";
 	if(NIF_1QUE&5 != 1)
 		close;
 	next;
-	mes "[ガラクタ屋]";
-	mes "おい、あんた！";
-	mes "どうせ外へ行くんなら";
-	mes "これを捨ててきてくれ！";
+	mes "[�K���N�^��]";
+	mes "�����A���񂽁I";
+	mes "�ǂ����O�֍s����Ȃ�";
+	mes "������̂ĂĂ��Ă���I";
 	set NIF_1QUE,NIF_1QUE|4;
 	getitem 7184,1;
 	next;
-	mes "[ガラクタ屋]";
-	mes "全くどーして商売が";
-	mes "軌道に乗らないんだよ。";
-	mes "俺の何が悪いってんだよ。";
-	mes "ぶつぶつぶつ……";
+	mes "[�K���N�^��]";
+	mes "�S���ǁ[���ď�����";
+	mes "�O���ɏ��Ȃ��񂾂�B";
+	mes "���̉����������Ă񂾂�B";
+	mes "�ԂԂԂc�c";
 	close;
 }
 
-niflheim.gat,208,103,0	script	#墓1	111,1,1,{
+niflheim.gat,208,103,0	script	#��1	111,1,1,{
 	end;
 OnTouch:
 	if(NIF_1QUE&7 != 7 || NIF_1QUE&24 == 24)
 		end;
 	if(NIF_1QUE&8) {
-		mes "- 先ほど掘りだした所に、更に何かが -";
-		mes "- 埋まっているのを見つけた。また -";
-		mes "- 同じ物のようだ。やはり何かの -";
-		mes "- 部品かもしれない。 -";
+		mes "- ��قǌ@�肾�������ɁA�X�ɉ����� -";
+		mes "- ���܂��Ă���̂��������B�܂� -";
+		mes "- �������̂悤���B��͂艽���� -";
+		mes "- ���i��������Ȃ��B -";
 	}
 	else {
-		mes "- 墓石の周りに何かが埋められて -";
-		mes "- いるのを見つけた。細長い物だ。 -";
-		mes "- 何かの部品だろうか？ -";
-		mes "- ………… -";
+		mes "- ��΂̎���ɉ��������߂��� -";
+		mes "- ����̂��������B�ג��������B -";
+		mes "- �����̕��i���낤���H -";
+		mes "- �c�c�c�c -";
 	}
 	next;
-	mes "- 拾いますか？ -";
+	mes "- �E���܂����H -";
 	next;
-	if(select("はい","いいえ")==1) {
+	if(select("�͂�","������")==1) {
 		getitem 7184,1;
 		if(NIF_1QUE&8)
 			set NIF_1QUE,NIF_1QUE|16;
@@ -359,373 +359,373 @@ OnTouch:
 	close;
 }
 
-niflheim.gat,169,71,0	script	#墓2	111,1,1,{
+niflheim.gat,169,71,0	script	#��2	111,1,1,{
 	end;
 OnTouch:
 	if(NIF_1QUE&56 != 24)
 		end;
-	mes "- 墓石の周りに何かが埋められて -";
-	mes "- いるのを見つけた。細長い物だ。 -";
-	mes "- 何かの部品だろうか？ -";
-	mes "- ………… -";
+	mes "- ��΂̎���ɉ��������߂��� -";
+	mes "- ����̂��������B�ג��������B -";
+	mes "- �����̕��i���낤���H -";
+	mes "- �c�c�c�c -";
 	next;
-	mes "- 拾いますか？ -";
+	mes "- �E���܂����H -";
 	next;
-	if(select("はい","いいえ")==1) {
+	if(select("�͂�","������")==1) {
 		getitem 7184,1;
 		set NIF_1QUE,NIF_1QUE|32;
 	}
 	close;
 }
 
-nif_in.gat,115,181,0	script	#ピアノ	111,1,1,{
+nif_in.gat,115,181,0	script	#�s�A�m	111,1,1,{
 	end;
 OnTouch:
 	//if((NIF_1QUE&64) || !(NIF_1QUE&32)) close;
 	if(NIF_1QUE&96 == 32) {
-		mes "- ピアノの欠けた部分に鍵盤を -";
-		mes "- 一つずつはめてみた。だが、 -";
-		mes "- 一番左側の鍵盤が一つだけ  -";
-		mes "- 足りなかった。-";
+		mes "- �s�A�m�̌����������Ɍ��Ղ� -";
+		mes "- ����͂߂Ă݂��B�����A -";
+		mes "- ��ԍ����̌��Ղ������  -";
+		mes "- ����Ȃ������B-";
 		set NIF_1QUE,NIF_1QUE|64;
 		close;
 	}
 	end;
 }
 
-nif_in.gat,118,151,1	script	#ピアノ3	111,1,1,{
+nif_in.gat,118,151,1	script	#�s�A�m3	111,1,1,{
 	end;
 OnTouch:
 	if(NIF_1QUE&64) {
-		mes "- 自分の体から伸びた影が、 -";
-		mes "- 一つだけ欠けた鍵盤の上に -";
-		mes "- ちょうど重なった瞬間…… -";
+		mes "- �����̑̂���L�т��e���A -";
+		mes "- ��������������Ղ̏�� -";
+		mes "- ���傤�Ǐd�Ȃ����u�ԁc�c -";
 		next;
 		soundeffect "complete.wav",0;
-		mes "- 体が軽くなるような感じがして…… -";
-		mes "- 周囲が曇り始めた…… -";
+		mes "- �̂��y���Ȃ�悤�Ȋ��������āc�c -";
+		mes "- ���͂��܂�n�߂��c�c -";
 		close2;
 		warp "nif_in.gat",179,163;
 	}
 	end;
 }
 
-nif_in.gat,188,168,3	script	魔女	792,{
-	mes "[キルケラ]";
-	mes "うーん……？";
-	mes "あなた、生きてるじゃない!?";
-	mes "ここまで来るのは";
-	mes "大変だったでしょう……";
-	mes "理由はどうあれ、ここは";
-	mes "生きている者が来る所じゃないよ。";
+nif_in.gat,188,168,3	script	����	792,{
+	mes "[�L���P��]";
+	mes "���[��c�c�H";
+	mes "���Ȃ��A�����Ă邶��Ȃ�!?";
+	mes "�����܂ŗ���̂�";
+	mes "��ς������ł��傤�c�c";
+	mes "���R�͂ǂ�����A������";
+	mes "�����Ă���҂����鏊����Ȃ���B";
 	next;
-	mes "[キルケラ]";
-	mes "私の力で外へ出してあげるから、";
-	mes "もう二度と来ちゃ駄目だよ。";
+	mes "[�L���P��]";
+	mes "���̗͂ŊO�֏o���Ă����邩��A";
+	mes "������x�Ɨ�����ʖڂ���B";
 	close2;
 	warp "umbala.gat",138,208;
 	end;
 }
 
 //============================================================
-// 死者の伝言クエストNPC（未完成）
+// ���҂̓`���N�G�X�gNPC�i�������j
 //- Registry -------------------------------------------------
-// NIF_2QUE -> 0〜6
+// NIF_2QUE -> 0�`6
 //------------------------------------------------------------
-prt_in.gat,161,20,2	script	エリュス	92,{
+prt_in.gat,161,20,2	script	�G�����X	92,{
 	switch(NIF_2QUE) {
 	case 0:
 		emotion 28;
-		mes "[エリュス]";
-		mes "シクシクシク……";
-		mes "うううぅぅ〜……";
-		mes "エリー、どうして僕を残して";
-		mes "先にいなくなるんだ……？";
+		mes "[�G�����X]";
+		mes "�V�N�V�N�V�N�c�c";
+		mes "�����������`�c�c";
+		mes "�G���[�A�ǂ����Ėl���c����";
+		mes "��ɂ��Ȃ��Ȃ�񂾁c�c�H";
 		next;
-		if(select("慰める","放っておく")==2) {
-			mes "[エリュス]";
-			mes "シクシク、うぅ……うわーん!!";
-			mes "喧嘩してしまったあの時が、";
-			mes "エリーとの最後だったなんて……";
-			mes "ううううううう……";
+		if(select("�Ԃ߂�","�����Ă���")==2) {
+			mes "[�G�����X]";
+			mes "�V�N�V�N�A�����c�c����[��!!";
+			mes "���܂��Ă��܂������̎����A";
+			mes "�G���[�Ƃ̍Ōゾ�����Ȃ�āc�c";
+			mes "���������������c�c";
 			close;
 		}
-		mes "[エリュス]";
-		mes "あ、ありがとうございます。";
-		mes "シクシク……実は、旅から帰ってきたら";
-		mes "私の妻であるエリーが……な、";
-		mes "亡くなっていたんです!!うぅぅ〜。";
-		mes "最後の挨拶をできなかったのが";
-		mes "とても悔やまれて……胸が痛みます。";
+		mes "[�G�����X]";
+		mes "���A���肪�Ƃ��������܂��B";
+		mes "�V�N�V�N�c�c���́A������A���Ă�����";
+		mes "���̍Ȃł���G���[���c�c�ȁA";
+		mes "�S���Ȃ��Ă�����ł�!!�������`�B";
+		mes "�Ō�̈��A���ł��Ȃ������̂�";
+		mes "�ƂĂ�����܂�āc�c�����ɂ݂܂��B";
 		next;
-		mes "[エリュス]";
-		mes "彼女に、どうしても伝えたい";
-		mes "言葉があるんです!!僕はどうすれば";
-		mes "良いのでしょうか?!";
+		mes "[�G�����X]";
+		mes "�ޏ��ɁA�ǂ����Ă��`������";
+		mes "���t�������ł�!!�l�͂ǂ������";
+		mes "�ǂ��̂ł��傤��?!";
 		next;
-		mes "[エリュス]";
-		mes "旅の途中で聞いた話によると……";
-		mes "どこかに死者の街というものがある";
-		mes "らしいんです。そこへ行けば、";
-		mes "もしかしたら彼女に会えるかも";
-		mes "しれません。ですが、僕は子供達を";
-		mes "置いて行くわけにはいかないので……";
+		mes "[�G�����X]";
+		mes "���̓r���ŕ������b�ɂ��Ɓc�c";
+		mes "�ǂ����Ɏ��҂̊X�Ƃ������̂�����";
+		mes "�炵����ł��B�����֍s���΁A";
+		mes "������������ޏ��ɉ�邩��";
+		mes "����܂���B�ł����A�l�͎q���B��";
+		mes "�u���čs���킯�ɂ͂����Ȃ��̂Łc�c";
 		next;
-		if(select("私が伝えましょうか？","残念ですね")==2) {
-			mes "[エリュス]";
-			mes "ああ、何かいい方法がないでしょうか？";
-			mes "もしエリーに言葉を伝えられるのなら、";
-			mes "僕はどんなことでもするのに……";
+		if(select("�����`���܂��傤���H","�c�O�ł���")==2) {
+			mes "[�G�����X]";
+			mes "�����A�����������@���Ȃ��ł��傤���H";
+			mes "�����G���[�Ɍ��t��`������̂Ȃ�A";
+			mes "�l�͂ǂ�Ȃ��Ƃł�����̂Ɂc�c";
 			close;
 		}
-		mes "[エリュス]";
-		mes "ほ、本当によろしいのですか?!";
-		mes "はい。是非、お願いします!!";
-		mes "とても感謝します。このご恩は";
-		mes "一生、絶対に忘れません！";
+		mes "[�G�����X]";
+		mes "�فA�{���ɂ�낵���̂ł���?!";
+		mes "�͂��B����A���肢���܂�!!";
+		mes "�ƂĂ����ӂ��܂��B���̂�����";
+		mes "�ꐶ�A��΂ɖY��܂���I";
 		next;
-		mes "[エリュス]";
-		mes "ではエリーに会ったら……";
-		mes "「一ヶ月前のことは誤解だ。";
-		mes "本当にすまなかった。」";
-		mes "と伝えてください。";
-		mes "よろしくお願いします。";
+		mes "[�G�����X]";
+		mes "�ł̓G���[�ɉ������c�c";
+		mes "�u�ꃖ���O�̂��Ƃ͌�����B";
+		mes "�{���ɂ��܂Ȃ������B�v";
+		mes "�Ɠ`���Ă��������B";
+		mes "��낵�����肢���܂��B";
 		set NIF_2QUE,1;
 		close;
-	default:	//1〜4の場合
-		mes "[エリュス]";
-		mes "噂によると……死者の街では悲鳴が";
-		mes "絶えないそうです。死後に行く世界が";
-		mes "そんな感じだなんて……何とも言えない";
-		mes "ですね。では、よろしくお願いします。";
+	default:	//1�`4�̏ꍇ
+		mes "[�G�����X]";
+		mes "�\�ɂ��Ɓc�c���҂̊X�ł͔ߖ�";
+		mes "�₦�Ȃ������ł��B����ɍs�����E��";
+		mes "����Ȋ������Ȃ�āc�c���Ƃ������Ȃ�";
+		mes "�ł��ˁB�ł́A��낵�����肢���܂��B";
 		close;
 	case 5:
-		mes "[エリュス]";
-		mes "はっ！本当に行ってくれたんですね！";
-		mes "僕なんかの頼みの為に、わざわざあんな";
-		mes "遠くまで……本当に感謝します。";
-		mes "あの〜、エリーには会えましたか？";
+		mes "[�G�����X]";
+		mes "�͂��I�{���ɍs���Ă��ꂽ��ł��ˁI";
+		mes "�l�Ȃ񂩂̗��ׂ݂̈ɁA�킴�킴�����";
+		mes "�����܂Łc�c�{���Ɋ��ӂ��܂��B";
+		mes "���́`�A�G���[�ɂ͉�܂������H";
 		next;
-		if(select("はい。許すと言っていました。","会えませんでした")==1) {
-			mes "[エリュス]";
-			mes "何か勘違いしたのではないでしょうか？";
-			mes "このようなことで僕を欺こうとする";
-			mes "なんて悪い人ですね。";
+		if(select("�͂��B�����ƌ����Ă��܂����B","��܂���ł���")==1) {
+			mes "[�G�����X]";
+			mes "�������Ⴂ�����̂ł͂Ȃ��ł��傤���H";
+			mes "���̂悤�Ȃ��ƂŖl���\�����Ƃ���";
+			mes "�Ȃ�Ĉ����l�ł��ˁB";
 			close;
 		}
-		mes "[エリュス]";
-		mes "やはり……会えませんでしたよね……";
-		mes "僕がお願いしたことは、あまりにも";
-		mes "難しい事でしたしね。";
+		mes "[�G�����X]";
+		mes "��͂�c�c��܂���ł�����ˁc�c";
+		mes "�l�����肢�������Ƃ́A���܂�ɂ�";
+		mes "������ł������ˁB";
 		next;
-		mes "[エリュス]";
-		mes "それでも僕なんかの為に、わざわざ";
-		mes "気を使ってくださったから……";
-		mes "つまらない物ですが、お礼として";
-		mes "これを受け取ってください。";
+		mes "[�G�����X]";
+		mes "����ł��l�Ȃ񂩂ׂ̈ɁA�킴�킴";
+		mes "�C���g���Ă�������������c�c";
+		mes "�܂�Ȃ����ł����A����Ƃ���";
+		mes "������󂯎���Ă��������B";
 		next;
-		mes "[エリュス]";
-		mes "とにかくこんなに苦労してくださって";
-		mes "本当に感謝します。あなたの旅に";
-		mes "祝福がありますように……";
+		mes "[�G�����X]";
+		mes "�Ƃɂ�������Ȃɋ�J���Ă���������";
+		mes "�{���Ɋ��ӂ��܂��B���Ȃ��̗���";
+		mes "�j��������܂��悤�Ɂc�c";
 		getitem 610,10;
 		set NIF_2QUE,6;
 		close;
 	case 6:
-		mes "[エリュス]";
-		mes "あなたの旅に祝福がありますように……";
+		mes "[�G�����X]";
+		mes "���Ȃ��̗��ɏj��������܂��悤�Ɂc�c";
 		close;
 	}
 }
 
-umbala.gat,215,181,3	script	ビルリック	733,{
+umbala.gat,215,181,3	script	�r�����b�N	733,{
 	switch(NIF_2QUE) {
 	case 0:
-		mes "[ビルリック]";
-		mes "何だ？特に用がないんなら、";
-		mes "あっちに行きな！";
+		mes "[�r�����b�N]";
+		mes "�����H���ɗp���Ȃ���Ȃ�A";
+		mes "�������ɍs���ȁI";
 		close;
 	case 1:
-		mes "[ビルリック]";
-		mes "死者の街……";
-		mes "あそこはとても危ない所だから";
-		mes "行かない方がいいのに。";
-		mes "そこへどうして行こうと思うんだ？";
+		mes "[�r�����b�N]";
+		mes "���҂̊X�c�c";
+		mes "�������͂ƂĂ���Ȃ���������";
+		mes "�s���Ȃ����������̂ɁB";
+		mes "�����ւǂ����čs�����Ǝv���񂾁H";
 		next;
-		if(select("会わなければならない人がいます","冒険の一部ですから")==2) {
-			mes "[ビルリック]";
-			mes "ははは。君も冒険好きか。俺もだよ。";
-			mes "だがあそこは、熟練者にとっても危ない";
-			mes "所だから、気をつけて行きな。";
+		if(select("���Ȃ���΂Ȃ�Ȃ��l�����܂�","�`���̈ꕔ�ł�����")==2) {
+			mes "[�r�����b�N]";
+			mes "�͂͂́B�N���`���D�����B��������B";
+			mes "�����������́A�n���҂ɂƂ��Ă���Ȃ�";
+			mes "��������A�C�����čs���ȁB";
 			close;
 		}
-		mes "[ビルリック]";
-		mes "会わなければならない人……";
-		mes "あそこで会うってことは死んだ人か……";
-		mes "大変だな。";
+		mes "[�r�����b�N]";
+		mes "���Ȃ���΂Ȃ�Ȃ��l�c�c";
+		mes "�������ŉ���Ă��Ƃ͎��񂾐l���c�c";
+		mes "��ς��ȁB";
 		next;
-		mes "[ビルリック]";
-		mes "じゃ、あそこへ行ったらペイリンという";
-		mes "人に会ってみな。俺が紹介してくれたと";
-		mes "言って、話を聞いてみるといい。";
-		mes "ちなみにあいつはバラが好きだから、";
-		mes "バラの花を1輪、持っていくといいよ。";
+		mes "[�r�����b�N]";
+		mes "����A�������֍s������y�C�����Ƃ���";
+		mes "�l�ɉ���Ă݂ȁB�����Љ�Ă��ꂽ��";
+		mes "�����āA�b�𕷂��Ă݂�Ƃ����B";
+		mes "���Ȃ݂ɂ����̓o�����D��������A";
+		mes "�o���̉Ԃ�1�ցA�����Ă����Ƃ�����B";
 		next;
-		mes "[ビルリック]";
-		mes "死者の街はここから北の方へ行くと";
-		mes "あるよ。気をつけて行きな。";
-		mes "熟練者にとっても危ない所だから";
-		mes "用心した方がいい。";
+		mes "[�r�����b�N]";
+		mes "���҂̊X�͂�������k�̕��֍s����";
+		mes "�����B�C�����čs���ȁB";
+		mes "�n���҂ɂƂ��Ă���Ȃ���������";
+		mes "�p�S�������������B";
 		set NIF_2QUE,2;
 		close;
 	default:
 		emotion 21;
-		mes "[ビルリック]";
-		mes "おお、久しぶりだな。機会があれば、";
-		mes "今度は死者の街で会おう。ははは。";
+		mes "[�r�����b�N]";
+		mes "�����A�v���Ԃ肾�ȁB�@�����΁A";
+		mes "���x�͎��҂̊X�ŉ���B�͂͂́B";
 		close;
 	}
 }
 
-niflheim.gat,153,215,3	script	ペイリン	794,{
+niflheim.gat,153,215,3	script	�y�C����	794,{
 	switch(NIF_2QUE) {
-	default:	//0.1.5.6の場合
-		mes "[ペイリン]";
-		mes "こんなに危ない街にどうして";
-		mes "いらっしゃったのですか？";
-		mes "早く帰りなさい。";
+	default:	//0.1.5.6�̏ꍇ
+		mes "[�y�C����]";
+		mes "����ȂɊ�Ȃ��X�ɂǂ�����";
+		mes "�������������̂ł����H";
+		mes "�����A��Ȃ����B";
 		close;
 	case 2:
-		mes "[ペイリン]";
-		mes "こんなに若くして死ぬなんて……";
-		mes "あなたも本当に気の毒な方ですね。";
+		mes "[�y�C����]";
+		mes "����ȂɎႭ���Ď��ʂȂ�āc�c";
+		mes "���Ȃ����{���ɋC�̓łȕ��ł��ˁB";
 		next;
-		mes "[ペイリン]";
-		mes "…………？";
-		mes "あら、まだ死んではいないのですね？";
-		mes "生きている身で、ここまで来るなんて";
-		mes "本当にすごいですね。";
+		mes "[�y�C����]";
+		mes "�c�c�c�c�H";
+		mes "����A�܂�����ł͂��Ȃ��̂ł��ˁH";
+		mes "�����Ă���g�ŁA�����܂ŗ���Ȃ��";
+		mes "�{���ɂ������ł��ˁB";
 		next;
-		mes "[ペイリン]";
-		mes "誰かに会いに来たのですか？でなければ";
-		mes "他の目的で来たのですか？この前、";
-		mes "死んだ人に会いたいから来たという方が";
-		mes "いたんで……すみませんが、";
-		mes "ニブルヘイムの住民でそんな能力を";
-		mes "持った者はいません。";
+		mes "[�y�C����]";
+		mes "�N���ɉ�ɗ����̂ł����H�łȂ����";
+		mes "���̖ړI�ŗ����̂ł����H���̑O�A";
+		mes "���񂾐l�ɉ�������痈���Ƃ�������";
+		mes "������Łc�c���݂܂��񂪁A";
+		mes "�j�u���w�C���̏Z���ł���Ȕ\�͂�";
+		mes "�������҂͂��܂���B";
 		next;
-		mes "[ペイリン]";
-		mes "ここまで来た努力は察します。でも、";
-		mes "こんな所まで来ても、誰にも会うことは";
-		mes "できません。危険な目に遭う前に";
-		mes "お帰りなさい。";
+		mes "[�y�C����]";
+		mes "�����܂ŗ����w�͎͂@���܂��B�ł��A";
+		mes "����ȏ��܂ŗ��Ă��A�N�ɂ�����Ƃ�";
+		mes "�ł��܂���B�댯�Ȗڂɑ����O��";
+		mes "���A��Ȃ����B";
 		set NIF_2QUE,3;
 		close;
 	case 3:
 		emotion 6;
-		mes "[ペイリン]";
-		mes "帰りなさいと言ったのに、しつこい方";
-		mes "ですね。私に尋ねても、何も知りません";
-		mes "と言ったでしょ?!";
+		mes "[�y�C����]";
+		mes "�A��Ȃ����ƌ������̂ɁA��������";
+		mes "�ł��ˁB���ɐq�˂Ă��A�����m��܂���";
+		mes "�ƌ������ł���?!";
 		next;
-		if(select("そうですが……","申し訳ありません")==2) {
-			mes "[ペイリン]";
-			mes "気をつけて帰りなさい。";
-			mes "こんな所へ来ることは、";
-			mes "良いことではありませんから。";
+		if(select("�����ł����c�c","�\���󂠂�܂���")==2) {
+			mes "[�y�C����]";
+			mes "�C�����ċA��Ȃ����B";
+			mes "����ȏ��֗��邱�Ƃ́A";
+			mes "�ǂ����Ƃł͂���܂��񂩂�B";
 			close;
 		}
-		mes "[ペイリン]";
-		mes "こんなにしつこいってことは、";
-		mes "誰かが余計なことを言いましたね？";
-		mes "誰が何を言ったかは知りませんが、";
-		mes "それはしてはいけない事です。";
-		mes "お教えすることはできません。";
+		mes "[�y�C����]";
+		mes "����Ȃɂ��������Ă��Ƃ́A";
+		mes "�N�����]�v�Ȃ��Ƃ������܂����ˁH";
+		mes "�N���������������͒m��܂��񂪁A";
+		mes "����͂��Ă͂����Ȃ����ł��B";
+		mes "���������邱�Ƃ͂ł��܂���B";
 		set NIF_2QUE,4;
 		close;
 	case 4:
 		if(countitem(748)<1) {
-			mes "[ペイリン]";
-			mes "何度も尋ねられても、何もありません。";
-			mes "諦めて帰りなさい。";
+			mes "[�y�C����]";
+			mes "���x���q�˂��Ă��A��������܂���B";
+			mes "���߂ċA��Ȃ����B";
 			close;
 		}
-		mes "[ペイリン]";
-		mes "うーん……ビルリックに聞いた";
-		mes "のですか。その方には以前、お世話に";
-		mes "なったんですよね……";
+		mes "[�y�C����]";
+		mes "���[��c�c�r�����b�N�ɕ�����";
+		mes "�̂ł����B���̕��ɂ͈ȑO�A�����b��";
+		mes "�Ȃ�����ł���ˁc�c";
 		next;
-		mes "[ペイリン]";
-		mes "それではお教えする前に注意事項を";
-		mes "お話します。ご想像以上の代価を";
-		mes "要求することがあります。その代価を";
-		mes "受け入れる覚悟をなさったら";
-		mes "お知らせください。";
+		mes "[�y�C����]";
+		mes "����ł͂���������O�ɒ��ӎ�����";
+		mes "���b���܂��B���z���ȏ�̑㉿��";
+		mes "�v�����邱�Ƃ�����܂��B���̑㉿��";
+		mes "�󂯓����o����Ȃ�������";
+		mes "���m�点���������B";
 		next;
-		if(select("覚悟はできています","そんなことまではできません")==2) {
-			mes "[ペイリン]";
-			mes "よく考えたのですね。";
-			mes "あまりにも危険な魔術なので、";
-			mes "私も勧めたくはありません。";
+		if(select("�o��͂ł��Ă��܂�","����Ȃ��Ƃ܂ł͂ł��܂���")==2) {
+			mes "[�y�C����]";
+			mes "�悭�l�����̂ł��ˁB";
+			mes "���܂�ɂ��댯�Ȗ��p�Ȃ̂ŁA";
+			mes "�������߂����͂���܂���B";
 			close;
 		}
-		mes "[ペイリン]";
-		mes "そのようにまでおっしゃるのなら、";
-		mes "お教えしますが……禁止されている";
-		mes "魔術なので絶対、他言無用で";
-		mes "お願いします。";
+		mes "[�y�C����]";
+		mes "���̂悤�ɂ܂ł��������̂Ȃ�A";
+		mes "���������܂����c�c�֎~����Ă���";
+		mes "���p�Ȃ̂Ő�΁A�������p��";
+		mes "���肢���܂��B";
 		next;
-		mes "[ペイリン]";
-		mes "魔術には大きな犠牲を要します。";
-		mes "等価交換の法則により、死者に会う";
-		mes "試みの為には、それに相応する材料と";
-		mes "犠牲を要します。";
+		mes "[�y�C����]";
+		mes "���p�ɂ͑傫�ȋ]����v���܂��B";
+		mes "���������̖@���ɂ��A���҂ɉ";
+		mes "���ׂ݂̈ɂ́A����ɑ�������ޗ���";
+		mes "�]����v���܂��B";
 		next;
-		mes "[ペイリン]";
-		mes "時には失敗することもあります。";
-		mes "材料としてイグドラシルの葉を10枚";
-		mes "必要です。魔術を施す用意が";
-		mes "できましたか？";
+		mes "[�y�C����]";
+		mes "���ɂ͎��s���邱�Ƃ�����܂��B";
+		mes "�ޗ��Ƃ��ăC�O�h���V���̗t��10��";
+		mes "�K�v�ł��B���p���{���p�ӂ�";
+		mes "�ł��܂������H";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[ペイリン]";
-			mes "それでは、材料を集めてから";
-			mes "いらしてください。しかし、材料を";
-			mes "集めてきても成功するかどうかは、";
-			mes "判りませんが……";
+		if(select("�͂�","������")==2) {
+			mes "[�y�C����]";
+			mes "����ł́A�ޗ����W�߂Ă���";
+			mes "���炵�Ă��������B�������A�ޗ���";
+			mes "�W�߂Ă��Ă��������邩�ǂ����́A";
+			mes "����܂��񂪁c�c";
 			close;
 		}
 		if(countitem(610) < 10) {
-			mes "[ペイリン]";
-			mes "材料が足りないのなら仕方ないですね。";
-			mes "材料が揃いましたら、声をかけて";
-			mes "ください。";
+			mes "[�y�C����]";
+			mes "�ޗ�������Ȃ��̂Ȃ�d���Ȃ��ł��ˁB";
+			mes "�ޗ��������܂�����A����������";
+			mes "���������B";
 			close;
 		}
 		if(BaseLevel < 81) {
-			mes "[ペイリン]";
-			mes "申し訳ありませんが、まだあなたには";
-			mes "これに耐えられるだけの力がないみたい";
-			mes "ですね。今、これを行うとあなたは";
-			mes "死にます。だからできません。";
+			mes "[�y�C����]";
+			mes "�\���󂠂�܂��񂪁A�܂����Ȃ��ɂ�";
+			mes "����ɑς����邾���̗͂��Ȃ��݂���";
+			mes "�ł��ˁB���A������s���Ƃ��Ȃ���";
+			mes "���ɂ܂��B������ł��܂���B";
 			close;
 		}
-		mes "[ペイリン]";
-		mes "それでは始めます。";
-		mes "…………";
-		mes "ウムバソカサバハ";
-		mes "ウムバウムバフムババ！";
-		mes "イェエエイッ！";
+		mes "[�y�C����]";
+		mes "����ł͎n�߂܂��B";
+		mes "�c�c�c�c";
+		mes "�E���o�\�J�T�o�n";
+		mes "�E���o�E���o�t���o�o�I";
+		mes "�C�F�G�G�C�b�I";
 		next;
 		delitem 748,1;
 		delitem 610,10;
-		//確率で成否判定、成功ルート未実装
+		//�m���Ő��۔���A�������[�g������
 		emotion 23;
-		mes "[ペイリン]";
-		mes "あらら！申し訳ございません。";
-		mes "召喚に失敗しました。こんなに";
-		mes "ご苦労なさったのに……本当に";
-		mes "申し訳ございません。";
+		mes "[�y�C����]";
+		mes "�����I�\���󂲂����܂���B";
+		mes "�����Ɏ��s���܂����B����Ȃ�";
+		mes "����J�Ȃ������̂Ɂc�c�{����";
+		mes "�\���󂲂����܂���B";
 		heal -(Hp-1),0;
 		set NIF_2QUE,5;
 		close;

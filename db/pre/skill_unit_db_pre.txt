@@ -1,4 +1,4 @@
-//RåŒ–å‰skill_unit_db.txtï¼ Auriga
+//R‰»‘Oskill_unit_db.txt—Auriga
 // ID,Unit1,Unit2,Layout,Range,Interval,Target,Flag
-229,0xb1,    ,  0, 1,1000,0x40000,0x006,AM_DEMONSTRATION#ãƒ‡ãƒ¢ãƒ³ã‚¹ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³#
-484,0xb8,    ,  2, 0,1000,0x40000,0x008,HW_GRAVITATION#ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰#
+229,0xb1,    ,  0, 1,1000,0x40000,0x006,AM_DEMONSTRATION#ƒfƒ‚ƒ“ƒXƒgƒŒ[ƒVƒ‡ƒ“#
+484,0xb8,    ,  2, 0,1000,0x40000,0x008,HW_GRAVITATION#ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh#

@@ -1,5 +1,5 @@
 //============================================================
-// ã‚¿ãƒ¼ãƒœãƒˆãƒ©ãƒƒã‚¯æŽ§ãˆå®¤ - turbo_room.gat
+// ƒ^[ƒ{ƒgƒ‰ƒbƒNT‚¦Žº - turbo_room.gat
 //------------------------------------------------------------
 turbo_room.gat	mapflag	nomemo		dummy
 turbo_room.gat	mapflag	noteleport	dummy
@@ -7,7 +7,7 @@ turbo_room.gat	mapflag	nobranch	dummy
 turbo_room.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// ã‚¿ãƒ¼ãƒœãƒˆãƒ©ãƒƒã‚¯ç«¶æŠ€å ´ - turbo_n_*.gat
+// ƒ^[ƒ{ƒgƒ‰ƒbƒN‹£‹Zê - turbo_n_*.gat
 //------------------------------------------------------------
 turbo_n_1.gat	mapflag	nosave		SavePoint
 turbo_n_1.gat	mapflag	nomemo		dummy
@@ -42,7 +42,7 @@ turbo_n_16.gat	mapflag	norevive	dummy
 turbo_n_16.gat	mapflag	turbo		dummy
 
 //============================================================
-// ã‚¿ãƒ¼ãƒœãƒˆãƒ©ãƒƒã‚¯ç«¶æŠ€å ´ - turbo_e_*.gat
+// ƒ^[ƒ{ƒgƒ‰ƒbƒN‹£‹Zê - turbo_e_*.gat
 //------------------------------------------------------------
 turbo_e_4.gat	mapflag	nosave		SavePoint
 turbo_e_4.gat	mapflag	nomemo		dummy

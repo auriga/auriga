@@ -3,61 +3,61 @@
 //==============================================================================
 
 //==============================================================
-// アマツ無料転送
+// �A�}�c�����]��
 //==============================================================
-alberta.gat,210,53,5	script	アマツ貿易商	762,{
-	mes "[貿易商]";
-	mes "古木の露は……よし。";
-	mes "あと、ハリネズミの針はと……";
-	mes "うん、大丈夫。";
+alberta.gat,210,53,5	script	�A�}�c�f�Տ�	762,{
+	mes "[�f�Տ�]";
+	mes "�Ö؂̘I�́c�c�悵�B";
+	mes "���ƁA�n���l�Y�~�̐j�͂Ɓc�c";
+	mes "����A���v�B";
 	next;
-	mes "[実輝]";
-	mes "あ、失礼。申し遅れましたが、";
-	mes "私、アマツで貿易商をしている";
-	mes "「実輝」と申します。";
+	mes "[���P]";
+	mes "���A����B�\���x��܂������A";
+	mes "���A�A�}�c�Ŗf�Տ������Ă���";
+	mes "�u���P�v�Ɛ\���܂��B";
 	next;
-	mes "[実輝]";
-	mes "アマツは今、「お正月」の";
-	mes "お祝いでとても賑わってます。";
-	mes "おかげさまで私共も大忙しですよ。";
+	mes "[���P]";
+	mes "�A�}�c�͍��A�u�������v��";
+	mes "���j���łƂĂ�������Ă܂��B";
+	mes "���������܂Ŏ�������Z���ł���B";
 	next;
-	mes "[実輝]";
-	mes "そのため……お恥ずかしい話ですが";
-	mes "少々、品薄状態になってしまいまして。";
-	mes "そこで向こうのことは弟達に任せ、";
-	mes "私は正月用品の買出しのため";
-	mes "ここアルベルタへやって来ました。";
+	mes "[���P]";
+	mes "���̂��߁c�c���p���������b�ł���";
+	mes "���X�A�i����ԂɂȂ��Ă��܂��܂��āB";
+	mes "�����Ō������̂��Ƃ͒�B�ɔC���A";
+	mes "���͐����p�i�̔��o���̂���";
+	mes "�����A���x���^�ւ���ė��܂����B";
 	next;
-	mes "[実輝]";
-	mes "それで今から帰るところなのですが、";
-	mes "よろしければアマツへお送りしますよ。";
-	mes "あ、御代はけっこうです。";
-	mes "船旅ゆえかなりの危険を伴いますし……";
+	mes "[���P]";
+	mes "����ō�����A��Ƃ���Ȃ̂ł����A";
+	mes "��낵����΃A�}�c�ւ����肵�܂���B";
+	mes "���A���͂��������ł��B";
+	mes "�D���䂦���Ȃ�̊댯�𔺂��܂����c�c";
 	next;
-	mes "[実輝]";
-	mes "天候によっては見知らぬ地へ";
-	mes "流されてしまうかもしれません。";
-	mes "まぁ、人間万事塞翁が馬と言いますし。";
-	mes "……要は漕いでみなければ";
-	mes "わからないということです。";
-	mes "さて、いかがなさいますか？";
+	mes "[���P]";
+	mes "�V��ɂ���Ă͌��m��ʒn��";
+	mes "������Ă��܂���������܂���B";
+	mes "�܂��A�l�Ԗ����ǉ����n�ƌ����܂����B";
+	mes "�c�c�v�͑����ł݂Ȃ����";
+	mes "�킩��Ȃ��Ƃ������Ƃł��B";
+	mes "���āA�������Ȃ����܂����H";
 	next;
-	if(select("それでも構わないので、お願いします","え……じゃあ、遠慮します")==2) {
-		mes "[実輝]";
-		mes "わかりました。";
-		mes "また何かありましたら";
-		mes "お声をおかけください。";
-		mes "では、ご機嫌よう〜。";
+	if(select("����ł��\��Ȃ��̂ŁA���肢���܂�","���c�c���Ⴀ�A�������܂�")==2) {
+		mes "[���P]";
+		mes "�킩��܂����B";
+		mes "�܂���������܂�����";
+		mes "���������������������B";
+		mes "�ł́A���@���悤�`�B";
 		close;
 	}
-	mes "[実輝]";
-	mes "了解しました。";
-	mes "では、あちらの船にお乗りください。";
-	mes "少々、足場が悪いので";
-	mes "足元に気をつけてくださいね。";
+	mes "[���P]";
+	mes "�������܂����B";
+	mes "�ł́A������̑D�ɂ���肭�������B";
+	mes "���X�A���ꂪ�����̂�";
+	mes "�����ɋC�����Ă��������ˁB";
 	next;
-	mes "実輝が指す先にあった";
-	mes "頑丈そうな小ぶりの船に乗りこんだ。";
+	mes "���P���w����ɂ�����";
+	mes "��䂻���ȏ��Ԃ�̑D�ɏ�肱�񂾁B";
 	close2;
 	switch(rand(10)) {
 		case 0:
@@ -74,162 +74,162 @@ alberta.gat,210,53,5	script	アマツ貿易商	762,{
 }
 
 //==============================================================
-// イベント案内
+// �C�x���g�ē�
 //==============================================================
-amatsu.gat,123,96,3	script	旅行客	726,{
-	mes "[リン]";
-	mes "はふはふ……う〜ん!!";
-	mes "うっまぁ〜い!!";
-	mes "噂には聞いてたけど、";
-	mes "ホントお雑煮はおいしいわ〜！";
-	mes "特にこのお餅がグーッ!!";
+amatsu.gat,123,96,3	script	���s�q	726,{
+	mes "[����]";
+	mes "�͂ӂ͂Ӂc�c���`��!!";
+	mes "�����܂��`��!!";
+	mes "�\�ɂ͕����Ă����ǁA";
+	mes "�z���g���G�ς͂���������`�I";
+	mes "���ɂ��̂��݂��O�[�b!!";
 	next;
-	mes "[リン]";
-	mes "さぁて、破魔矢とおみくじを";
-	mes "買ってこなきゃ！";
+	mes "[����]";
+	mes "�����āA�j����Ƃ��݂�����";
+	mes "�����Ă��Ȃ���I";
 	next;
-	switch (select("お雑煮はどこで売ってます？","お餅はどこで売ってます？","破魔矢はどこで売ってます？","おみくじはどこで売ってます？","何か他の噂を知りません？")) {
+	switch (select("���G�ς͂ǂ��Ŕ����Ă܂��H","���݂͂ǂ��Ŕ����Ă܂��H","�j����͂ǂ��Ŕ����Ă܂��H","���݂����͂ǂ��Ŕ����Ă܂��H","�������̉\��m��܂���H")) {
 	case 1:
-		mes "[リン]";
-		mes "ああ、このお雑煮のこと？";
-		mes "これは、ここから東にある広場で";
-		mes "おばさんが売ってるわ。";
-		mes "でも、今、品薄らしいから、";
-		mes "買うには材料必須！みたいよ。";
+		mes "[����]";
+		mes "�����A���̂��G�ς̂��ƁH";
+		mes "����́A�������瓌�ɂ���L���";
+		mes "���΂��񂪔����Ă��B";
+		mes "�ł��A���A�i���炵������A";
+		mes "�����ɂ͍ޗ��K�{�I�݂�����B";
 		close;
 	case 2:
-		mes "[リン]";
-		mes "ああ、このお雑煮に入ってる";
-		mes "お餅のことね？";
-		mes "これなら、ここから東にある広場で";
-		mes "お兄さんが売ってるわよ。";
-		mes "もちもちっとしてて、おいしいよ〜。";
+		mes "[����]";
+		mes "�����A���̂��G�ςɓ����Ă�";
+		mes "���݂̂��ƂˁH";
+		mes "����Ȃ�A�������瓌�ɂ���L���";
+		mes "���Z���񂪔����Ă���B";
+		mes "�����������Ƃ��ĂāA����������`�B";
 		close;
 	case 3:
-		mes "[リン]";
-		mes "え？　破魔矢？";
-		mes "あら、奇遇ね〜。";
-		mes "私もちょうど買いに行くところなのよ。";
-		mes "ここから北西に行ったところで、";
-		mes "巫女さんが売っているらしいわ。";
+		mes "[����]";
+		mes "���H�@�j����H";
+		mes "����A����ˁ`�B";
+		mes "�������傤�ǔ����ɍs���Ƃ���Ȃ̂�B";
+		mes "��������k���ɍs�����Ƃ���ŁA";
+		mes "�ޏ����񂪔����Ă���炵����B";
 		close;
 	case 4:
-		mes "[リン]";
-		mes "え？　おみくじ？";
-		mes "あら、奇遇ね〜。";
-		mes "私もちょうど買いに行くところなのよ。";
-		mes "ここから西にある通りで、";
-		mes "巫女さんが売っているらしいわ。";
+		mes "[����]";
+		mes "���H�@���݂����H";
+		mes "����A����ˁ`�B";
+		mes "�������傤�ǔ����ɍs���Ƃ���Ȃ̂�B";
+		mes "�������琼�ɂ���ʂ�ŁA";
+		mes "�ޏ����񂪔����Ă���炵����B";
 		next;
-		mes "[リン]";
-		mes "聞いた話によると、";
-		mes "不思議な力が込められたものも";
-		mes "用意されているそうなの。";
-		mes "楽しみだわ〜！";
+		mes "[����]";
+		mes "�������b�ɂ��ƁA";
+		mes "�s�v�c�ȗ͂����߂�ꂽ���̂�";
+		mes "�p�ӂ���Ă��邻���Ȃ́B";
+		mes "�y���݂���`�I";
 		close;
 	case 5:
-		mes "[リン]";
-		mes "他の噂？";
-		mes "う〜ん……";
+		mes "[����]";
+		mes "���̉\�H";
+		mes "���`��c�c";
 		next;
-		mes "[リン]";
-		mes "そうそう、カプラサービスが";
-		mes "何かしてたと思うわ。";
-		mes "私はあんまりカプラサービスを";
-		mes "利用してないから、";
-		mes "何をしてるかは気にしなかったけど……";
-		mes "気になるならちょっと行ってみたら？";
+		mes "[����]";
+		mes "���������A�J�v���T�[�r�X��";
+		mes "�������Ă��Ǝv����B";
+		mes "���͂���܂�J�v���T�[�r�X��";
+		mes "���p���ĂȂ�����A";
+		mes "�������Ă邩�͋C�ɂ��Ȃ��������ǁc�c";
+		mes "�C�ɂȂ�Ȃ炿����ƍs���Ă݂���H";
 		next;
-		mes "[リン]";
-		mes "他は……";
-		mes "う〜ん……そうねぇ……";
+		mes "[����]";
+		mes "���́c�c";
+		mes "���`��c�c�����˂��c�c";
 		next;
-		mes "[リン]";
-		mes "あ！";
-		mes "そういえば最近、";
-		mes "ここら辺じゃいないはずの";
-		mes "モンスターがいるって聞いたわ。";
+		mes "[����]";
+		mes "���I";
+		mes "���������΍ŋ߁A";
+		mes "������ӂ��Ⴂ�Ȃ��͂���";
+		mes "�����X�^�[��������ĕ�������B";
 		next;
-		mes "[リン]";
-		mes "モンスターとなると……";
-		mes "河童がいる森かしら？";
-		mes "まぁ、あんまり関わらない方が";
-		mes "いいと思うんだけどね。";
+		mes "[����]";
+		mes "�����X�^�[�ƂȂ�Ɓc�c";
+		mes "�͓�������X������H";
+		mes "�܂��A����܂�ւ��Ȃ�����";
+		mes "�����Ǝv���񂾂��ǂˁB";
 		close;
 	}
 }
 
 //==============================================================
-// お年玉交換キャンペーン
+// ���N�ʌ����L�����y�[��
 //==============================================================
-amatsu.gat,102,146,5	script	カプラ職員	861,{
+amatsu.gat,102,146,5	script	�J�v���E��	861,{
 	cutin "kafra_09",2;
-	mes "[カプラ職員]";
-	mes "新年明けましておめでとうございます。";
-	mes "今年もカプラサービスを";
-	mes "よろしくお願いいたします。";
+	mes "[�J�v���E��]";
+	mes "�V�N�����܂��Ă��߂łƂ��������܂��B";
+	mes "���N���J�v���T�[�r�X��";
+	mes "��낵�����肢�������܂��B";
 	next;
-	mes "[カプラ職員]";
-	mes "さて、" +strcharinfo(0)+ "様。";
-	mes "当社では現在、カプラポイントの";
-	mes "お年玉交換キャンペーンを";
-	mes "行っているのをご存知でしょうか？";
+	mes "[�J�v���E��]";
+	mes "���āA" +strcharinfo(0)+ "�l�B";
+	mes "���Ђł͌��݁A�J�v���|�C���g��";
+	mes "���N�ʌ����L�����y�[����";
+	mes "�s���Ă���̂������m�ł��傤���H";
 	next;
-	mes "[カプラ職員]";
-	mes "カプラサービス本社では";
-	mes "24時間いつでもカプラポイントの";
-	mes "交換サービスを行っていますが、";
-	mes "今回、お正月記念として";
-	mes "期間限定お年玉交換キャンペーン";
-	mes "の実施を決定しました。";
+	mes "[�J�v���E��]";
+	mes "�J�v���T�[�r�X�{�Ђł�";
+	mes "24���Ԃ��ł��J�v���|�C���g��";
+	mes "�����T�[�r�X���s���Ă��܂����A";
+	mes "����A�������L�O�Ƃ���";
+	mes "���Ԍ��肨�N�ʌ����L�����y�[��";
+	mes "�̎��{�����肵�܂����B";
 	next;
-	mes "[カプラ職員]";
-	mes strcharinfo(0)+ "様の";
-	mes "現在のカプラポイントは……";
-	mes "…………";
-	mes KAFRA_PIT+ "点となっております。";
+	mes "[�J�v���E��]";
+	mes strcharinfo(0)+ "�l��";
+	mes "���݂̃J�v���|�C���g�́c�c";
+	mes "�c�c�c�c";
+	mes KAFRA_PIT+ "�_�ƂȂ��Ă���܂��B";
 	next;
-	mes "[カプラ職員]";
-	mes "カプラポイントは2500点ごとに";
-	mes "お年玉1個と交換しております。";
+	mes "[�J�v���E��]";
+	mes "�J�v���|�C���g��2500�_���Ƃ�";
+	mes "���N��1�ƌ������Ă���܂��B";
 	if(KAFRA_PIT < 2500) {
-		mes "カプラポイントが貯まりましたら";
-		mes "ぜひまたお越しください。";
+		mes "�J�v���|�C���g�����܂�܂�����";
+		mes "���Ђ܂����z�����������B";
 		next;
-		mes "[カプラ職員]";
-		mes "では……コホン。";
+		mes "[�J�v���E��]";
+		mes "�ł́c�c�R�z���B";
 		next;
-		mes "[カプラ職員]";
-		mes "カプラサービスは";
-		mes "いつも皆様のそばにいます。";
-		mes "今後ともカプラサービスをよろしく";
-		mes "お願い致します。";
+		mes "[�J�v���E��]";
+		mes "�J�v���T�[�r�X��";
+		mes "�����F�l�̂��΂ɂ��܂��B";
+		mes "����Ƃ��J�v���T�[�r�X����낵��";
+		mes "���肢�v���܂��B";
 		close2;
 		cutin "kafra_09",255;
 		end;
 	}
-	mes "また、お年玉は1袋につき";
-	mes "重量が2となっております。";
-	mes "交換いたしますか？";
+	mes "�܂��A���N�ʂ�1�܂ɂ�";
+	mes "�d�ʂ�2�ƂȂ��Ă���܂��B";
+	mes "�����������܂����H";
 	next;
-	if(select("はい","いいえ")==2) {
-		mes "[カプラ職員]";
-		mes "わかりました。";
-		mes "では……コホン。";
+	if(select("�͂�","������")==2) {
+		mes "[�J�v���E��]";
+		mes "�킩��܂����B";
+		mes "�ł́c�c�R�z���B";
 		next;
-		mes "[カプラ職員]";
-		mes "カプラサービスは";
-		mes "いつも皆様のそばにいます。";
-		mes "今後ともカプラサービスをよろしく";
-		mes "お願い致します。";
+		mes "[�J�v���E��]";
+		mes "�J�v���T�[�r�X��";
+		mes "�����F�l�̂��΂ɂ��܂��B";
+		mes "����Ƃ��J�v���T�[�r�X����낵��";
+		mes "���肢�v���܂��B";
 		close2;
 		cutin "kafra_09",255;
 		end;
 	}
-	mes "[カプラ職員]";
-	mes "いくつ交換いたしますか？";
+	mes "[�J�v���E��]";
+	mes "���������������܂����H";
 	next;
-	switch(select("1個","最大個数","個数を指定","やめる")) {
+	switch(select("1��","�ő��","�����w��","��߂�")) {
 	case 1:
 		set '@num,1;
 		break;
@@ -240,36 +240,36 @@ amatsu.gat,102,146,5	script	カプラ職員	861,{
 	case 3:
 		set '@max,KAFRA_PIT / 2500;
 		if('@max > 30) set '@max,30;
-		mes "[カプラ職員]";
-		mes strcharinfo(0)+ "様は";
-		mes "お年玉" +'@max+ "個まで交換できます。";
-		mes "交換したい個数を";
-		mes "こちらに記入してください。";
-		mes "0で交換を止める事ができます。";
+		mes "[�J�v���E��]";
+		mes strcharinfo(0)+ "�l��";
+		mes "���N��" +'@max+ "�܂Ō����ł��܂��B";
+		mes "��������������";
+		mes "������ɋL�����Ă��������B";
+		mes "0�Ō������~�߂鎖���ł��܂��B";
 		next;
 		while(1) {
 			input '@num;
 			if('@num < 0 || '@num > '@max) {
-				mes "[カプラ職員]";
-				mes "0〜" +'@max+ "を記入してください。";
-				mes "0で交換を止める事ができます。";
+				mes "[�J�v���E��]";
+				mes "0�`" +'@max+ "���L�����Ă��������B";
+				mes "0�Ō������~�߂鎖���ł��܂��B";
 				next;
 				continue;
 			}
 			if('@num == 0) {
-				mes "[カプラ職員]";
-				mes "交換を止めるのですね。";
-				mes "カプラポイントが貯まりましたら";
-				mes "ぜひまたお越しください。";
+				mes "[�J�v���E��]";
+				mes "�������~�߂�̂ł��ˁB";
+				mes "�J�v���|�C���g�����܂�܂�����";
+				mes "���Ђ܂����z�����������B";
 				next;
-				mes "[カプラ職員]";
-				mes "では……コホン。";
+				mes "[�J�v���E��]";
+				mes "�ł́c�c�R�z���B";
 				next;
-				mes "[カプラ職員]";
-				mes "カプラサービスは";
-				mes "いつも皆様のそばにいます。";
-				mes "今後ともカプラサービスをよろしく";
-				mes "お願い致します。";
+				mes "[�J�v���E��]";
+				mes "�J�v���T�[�r�X��";
+				mes "�����F�l�̂��΂ɂ��܂��B";
+				mes "����Ƃ��J�v���T�[�r�X����낵��";
+				mes "���肢�v���܂��B";
 				close2;
 				cutin "kafra_09",255;
 				end;
@@ -278,104 +278,104 @@ amatsu.gat,102,146,5	script	カプラ職員	861,{
 		}
 		break;
 	case 4:
-		mes "[カプラ職員]";
-		mes "わかりました。";
-		mes "では……コホン。";
+		mes "[�J�v���E��]";
+		mes "�킩��܂����B";
+		mes "�ł́c�c�R�z���B";
 		next;
-		mes "[カプラ職員]";
-		mes "カプラサービスは";
-		mes "いつも皆様のそばにいます。";
-		mes "今後ともカプラサービスをよろしく";
-		mes "お願い致します。";
+		mes "[�J�v���E��]";
+		mes "�J�v���T�[�r�X��";
+		mes "�����F�l�̂��΂ɂ��܂��B";
+		mes "����Ƃ��J�v���T�[�r�X����낵��";
+		mes "���肢�v���܂��B";
 		close2;
 		cutin "kafra_09",255;
 		end;
 	}
-	mes "[カプラ職員]";
-	mes strcharinfo(0)+ "様の";
+	mes "[�J�v���E��]";
+	mes strcharinfo(0)+ "�l��";
 	if(@menu != 1) {
-		mes "カプラポイントは" +(KAFRA_PIT - 2500 * '@num)+ "となり、";
-		mes "お年玉" +'@num+ "個をお贈りします。";
+		mes "�J�v���|�C���g��" +(KAFRA_PIT - 2500 * '@num)+ "�ƂȂ�A";
+		mes "���N��" +'@num+ "�������肵�܂��B";
 	}
 	else
-		mes "カプラポイントは" +(KAFRA_PIT - 2500 * '@num)+ "となりますが";
-	mes "よろしいでしょうか？";
+		mes "�J�v���|�C���g��" +(KAFRA_PIT - 2500 * '@num)+ "�ƂȂ�܂���";
+	mes "��낵���ł��傤���H";
 	next;
-	if(select("はい","いいえ")==2) {
-		mes "[カプラ職員]";
-		mes "わかりました。";
-		mes "では……コホン。";
+	if(select("�͂�","������")==2) {
+		mes "[�J�v���E��]";
+		mes "�킩��܂����B";
+		mes "�ł́c�c�R�z���B";
 		next;
-		mes "[カプラ職員]";
-		mes "カプラサービスは";
-		mes "いつも皆様のそばにいます。";
-		mes "今後ともカプラサービスをよろしく";
-		mes "お願い致します。";
+		mes "[�J�v���E��]";
+		mes "�J�v���T�[�r�X��";
+		mes "�����F�l�̂��΂ɂ��܂��B";
+		mes "����Ƃ��J�v���T�[�r�X����낵��";
+		mes "���肢�v���܂��B";
 		close2;
 		cutin "kafra_09",255;
 		end;
 	}
 	if(checkweight(668,'@num) == 0) {
-		mes "[カプラ職員]";
-		mes "申し訳ありませんが、";
-		mes "お客様の手荷物が多く、";
-		mes "お年玉を受け取れないようです。";
+		mes "[�J�v���E��]";
+		mes "�\���󂠂�܂��񂪁A";
+		mes "���q�l�̎�ו��������A";
+		mes "���N�ʂ��󂯎��Ȃ��悤�ł��B";
 		next;
-		mes "[カプラ職員]";
-		mes "お年玉は1袋につき";
-		mes "重量2となっています。";
-		mes "一度手荷物を整理してみては";
-		mes "いかがでしょうか？";
+		mes "[�J�v���E��]";
+		mes "���N�ʂ�1�܂ɂ�";
+		mes "�d��2�ƂȂ��Ă��܂��B";
+		mes "��x��ו��𐮗����Ă݂Ă�";
+		mes "�������ł��傤���H";
 		close2;
 		cutin "kafra_09",255;
 		end;
 	}
 	set KAFRA_PIT,KAFRA_PIT-2500*'@num;
 	getitem 668,'@num;
-	mes "[カプラ職員]";
-	mes "ご利用ありがとうございました。";
-	mes "カプラポイントが貯まりましたら";
-	mes "ぜひまたお越しください。";
+	mes "[�J�v���E��]";
+	mes "�����p���肪�Ƃ��������܂����B";
+	mes "�J�v���|�C���g�����܂�܂�����";
+	mes "���Ђ܂����z�����������B";
 	next;
-	mes "[カプラ職員]";
-	mes "では……コホン。";
+	mes "[�J�v���E��]";
+	mes "�ł́c�c�R�z���B";
 	next;
-	mes "[カプラ職員]";
-	mes "カプラサービスは";
-	mes "いつも皆様のそばにいます。";
-	mes "今後ともカプラサービスをよろしく";
-	mes "お願い致します。";
+	mes "[�J�v���E��]";
+	mes "�J�v���T�[�r�X��";
+	mes "�����F�l�̂��΂ɂ��܂��B";
+	mes "����Ƃ��J�v���T�[�r�X����낵��";
+	mes "���肢�v���܂��B";
 	close2;
 	cutin "kafra_09",255;
 	end;
 }
 
 //==============================================================
-// バースリーが欲しい物
+// �o�[�X���[���~������
 //==============================================================
-ama_in01.gat,181,128,3	script	バースリー	1102,1,1,{
+ama_in01.gat,181,128,3	script	�o�[�X���[	1102,1,1,{
 OnTouch:
-	mes "[バースリー]";
-	mes "はぁ…………";
-	mes "また呼ばれんかったか……";
+	mes "[�o�[�X���[]";
+	mes "�͂��c�c�c�c";
+	mes "�܂��Ă΂�񂩂������c�c";
 	next;
-	menu "どうしたのか聞く",-;
-	mes "[バースリー]";
-	mes "……知らんのか？";
-	mes "毎年クリスマスには";
-	mes "いろんなモンスターが";
-	mes "おしゃれを楽しんでおるんじゃ。";
+	menu "�ǂ������̂�����",-;
+	mes "[�o�[�X���[]";
+	mes "�c�c�m���̂��H";
+	mes "���N�N���X�}�X�ɂ�";
+	mes "�����ȃ����X�^�[��";
+	mes "���������y����ł���񂶂�B";
 	next;
-	mes "[バースリー]";
-	mes "今度こそ……";
-	mes "ワシがサンタの姿をして、";
-	mes "可愛いモンスターNo.1の座を";
-	mes "手にすると思ったんだがのぅ……";
+	mes "[�o�[�X���[]";
+	mes "���x�����c�c";
+	mes "���V���T���^�̎p�����āA";
+	mes "���������X�^�[No.1�̍���";
+	mes "��ɂ���Ǝv�����񂾂��̂��c�c";
 	next;
-	mes "[バースリー]";
-	mes "はぁ…………";
+	mes "[�o�[�X���[]";
+	mes "�͂��c�c�c�c";
 	next;
-	switch(select("サンタのぼうしをあげる","ルイーゼのサンタ帽をあげる","トナカイの鼻をあげる","真っ赤な袋をあげる","なぐさめる")) {
+	switch(select("�T���^�̂ڂ�����������","���C�[�[�̃T���^�X��������","�g�i�J�C�̕@��������","�^���Ԃȑ܂�������","�Ȃ����߂�")) {
 	case 1:
 		set '@itemid,2236;
 		break;
@@ -392,35 +392,35 @@ OnTouch:
 		set '@addid,31;
 		break;
 	case 5:
-		mes "[バースリー]";
-		mes "えぇい、バカにするでないわ！";
-		mes "さっさとあっちへ行け！";
+		mes "[�o�[�X���[]";
+		mes "�������A�o�J�ɂ���łȂ���I";
+		mes "�������Ƃ������֍s���I";
 		close;
 	}
 	if(countitem('@itemid) < 1) {
-		mes "-" +getitemname('@itemid)+ "を";
-		mes "所持していません-";
+		mes "-" +getitemname('@itemid)+ "��";
+		mes "�������Ă��܂���-";
 		close;
 	}
-	mes "[バースリー]";
-	mes "おぉ、本当かい？";
-	mes "本当にくれるなら、";
-	mes "ワシが作った料理と";
-	mes "交換してやるぞ？";
+	mes "[�o�[�X���[]";
+	mes "�����A�{�������H";
+	mes "�{���ɂ����Ȃ�A";
+	mes "���V�������������";
+	mes "�������Ă�邼�H";
 	next;
-	if(select("交換する","交換しない")==2) {
-		mes "[バースリー]";
-		mes "なんじゃお前……";
-		mes "ワシの料理の腕を知らんのか？";
-		mes "勿体無いやつじゃのぅ……";
+	if(select("��������","�������Ȃ�")==2) {
+		mes "[�o�[�X���[]";
+		mes "�Ȃ񂶂Ⴈ�O�c�c";
+		mes "���V�̗����̘r��m���̂��H";
+		mes "�ܑ̖��������̂��c�c";
 		close;
 	}
-	mes "[バースリー]";
-	mes "イッヒッヒッヒ。";
-	mes "どの料理がいい？";
-	mes "リクエストに答えてやるぞ？";
+	mes "[�o�[�X���[]";
+	mes "�C�b�q�b�q�b�q�B";
+	mes "�ǂ̗����������H";
+	mes "���N�G�X�g�ɓ����Ă�邼�H";
 	next;
-	switch(select("Strの料理","Agiの料理","Vitの料理","Intの料理","Dexの料理","Lukの料理","やっぱり断る")) {
+	switch(select("Str�̗���","Agi�̗���","Vit�̗���","Int�̗���","Dex�̗���","Luk�̗���","����ς�f��")) {
 	case 1:
 		set '@dishid,12043;
 		break;
@@ -440,196 +440,196 @@ OnTouch:
 		set '@dishid,12068;
 		break;
 	case 7:
-		mes "[バースリー]";
-		mes "なんじゃお前……";
-		mes "ワシの料理の腕を知らんのか？";
-		mes "勿体無いやつじゃのぅ……";
+		mes "[�o�[�X���[]";
+		mes "�Ȃ񂶂Ⴈ�O�c�c";
+		mes "���V�̗����̘r��m���̂��H";
+		mes "�ܑ̖��������̂��c�c";
 		close;
 	}
 	set '@dishid,'@dishid + '@addid;
-	mes "[バースリー]";
-	mes "イッヒッヒッヒッヒ。";
-	mes "混ぜれば混ぜる程";
-	mes "匂いが変わって……";
-	mes "こうやって盛り付けて……";
+	mes "[�o�[�X���[]";
+	mes "�C�b�q�b�q�b�q�b�q�B";
+	mes "������΍������";
+	mes "�������ς���āc�c";
+	mes "��������Đ���t���āc�c";
 	next;
 	soundeffect "levelup.wav",0;
-	mes "[バースリー]";
-	mes "うんまぁー！";
+	mes "[�o�[�X���[]";
+	mes "����܂��[�I";
 	next;
-	mes "[バースリー]";
-	mes "ワシの手料理を食べられるなんて、";
-	mes "お前は幸せ者じゃな。";
-	mes "イッヒッヒッヒ。";
+	mes "[�o�[�X���[]";
+	mes "���V�̎藿����H�ׂ���Ȃ�āA";
+	mes "���O�͍K���҂���ȁB";
+	mes "�C�b�q�b�q�b�q�B";
 	next;
-	mes "[バースリー]";
-	mes "さぁ、ワシの手料理と";
-	mes "お前の持っているのを交換じゃ。";
+	mes "[�o�[�X���[]";
+	mes "�����A���V�̎藿����";
+	mes "���O�̎����Ă���̂���������B";
 	next;
 	if(checkweight('@dishid,1) == 0) {
-		mes "[バースリー]";
-		mes "なんじゃお前……";
-		mes "よく見ると、荷物で一杯じゃないか。";
-		mes "一度整理してみたらどうだい？";
+		mes "[�o�[�X���[]";
+		mes "�Ȃ񂶂Ⴈ�O�c�c";
+		mes "�悭����ƁA�ו��ň�t����Ȃ����B";
+		mes "��x�������Ă݂���ǂ������H";
 		close;
 	}
 	delitem '@itemid,1;
 	getitem '@dishid,1;
-	mes "[バースリー]";
-	mes "イッヒッヒッヒ。";
-	mes "ありがとよ。";
-	mes "これでワシの未来はバラ色じゃ。";
+	mes "[�o�[�X���[]";
+	mes "�C�b�q�b�q�b�q�B";
+	mes "���肪�Ƃ�B";
+	mes "����Ń��V�̖����̓o���F����B";
 	next;
-	mes "[バースリー]";
-	mes "さぁ、もう行っとくれ。";
-	mes "お前みたいなやつから、";
-	mes "今度は茶のみ友達に配る分を";
-	mes "集めないといけないんじゃ。";
-	mes "イッヒッヒッヒ。";
+	mes "[�o�[�X���[]";
+	mes "�����A�����s���Ƃ���B";
+	mes "���O�݂����Ȃ����A";
+	mes "���x�͒��̂ݗF�B�ɔz�镪��";
+	mes "�W�߂Ȃ��Ƃ����Ȃ��񂶂�B";
+	mes "�C�b�q�b�q�b�q�B";
 	close;
 }
 
 //==============================================================
-// おもち販売
+// �������̔�
 //==============================================================
-amatsu.gat,170,114,4	script	餅つきオジサン	63,{
-	mes "[餅つきオジサン]";
-	mes "よう！新年あけましてめでたいな〜。";
-	mes "わっはっは。";
+amatsu.gat,170,114,4	script	�݂��I�W�T��	63,{
+	mes "[�݂��I�W�T��]";
+	mes "�悤�I�V�N�����܂��Ă߂ł����ȁ`�B";
+	mes "����͂��́B";
 	next;
-	mes "[餅つきオジサン]";
-	mes "って言いたい所なんだけどよ、";
-	mes "そうでもねぇんだ。";
-	mes "今年はモチ米が";
-	mes "全然出回ってなくてな……";
-	mes "ったく、しけてやがるぜ。";
+	mes "[�݂��I�W�T��]";
+	mes "���Č����������Ȃ񂾂��ǂ�A";
+	mes "�����ł��˂��񂾁B";
+	mes "���N�̓��`�Ă�";
+	mes "�S�R�o����ĂȂ��Ăȁc�c";
+	mes "�������A�����Ă₪�邺�B";
 	close;
 }
 
-amatsu.gat,210,86,3	script	ヴァレス	807,{
-	mes "[ヴァレス]";
-	mes "あけましておめでとうございます。";
-	mes "お正月は心機一転、";
-	mes "おもちを販売しています。";
-	mes "よろしければいかがでしょうか？";
+amatsu.gat,210,86,3	script	���@���X	807,{
+	mes "[���@���X]";
+	mes "�����܂��Ă��߂łƂ��������܂��B";
+	mes "�������͐S�@��]�A";
+	mes "��������̔����Ă��܂��B";
+	mes "��낵����΂������ł��傤���H";
 	next;
-	switch(select("くださいと言う","断る","どうしておもちを売っているか聞く")) {
+	switch(select("���������ƌ���","�f��","�ǂ����Ă������𔄂��Ă��邩����")) {
 	case 1:
-		mes "[ヴァレス]";
-		mes "では、こちらに購入する数を";
-		mes "書いてください。";
-		mes "一度に購入できるのは100個までです。";
-		mes "0で取引を中止します。";
+		mes "[���@���X]";
+		mes "�ł́A������ɍw�����鐔��";
+		mes "�����Ă��������B";
+		mes "��x�ɍw���ł���̂�100�܂łł��B";
+		mes "0�Ŏ���𒆎~���܂��B";
 		next;
 		input '@num;
 		if('@num < 0 || '@num > 100) {
-			mes "[ヴァレス]";
-			mes "一度に購入できるのは100個までです。";
-			mes "それ以上はちょっと……";
+			mes "[���@���X]";
+			mes "��x�ɍw���ł���̂�100�܂łł��B";
+			mes "����ȏ�͂�����Ɓc�c";
 			close;
 		}
 		if('@num == 0) {
-			mes "[ヴァレス]";
-			mes "必要になったら";
-			mes "また来てください。";
+			mes "[���@���X]";
+			mes "�K�v�ɂȂ�����";
+			mes "�܂����Ă��������B";
 			close;
 		}
 		if(Zeny < 1000 * '@num) {
-			mes "[ヴァレス]";
-			mes "お金が足りませんよ？";
-			mes "一度確認してみてください。";
+			mes "[���@���X]";
+			mes "����������܂����H";
+			mes "��x�m�F���Ă݂Ă��������B";
 			close;
 		}
 		if(checkweight(554,'@num) == 0) {
-			mes "[ヴァレス]";
-			mes "そんなに持てないと";
-			mes "思いますが……";
-			mes "一度荷物を整理してみたら";
-			mes "どうですか？";
+			mes "[���@���X]";
+			mes "����ȂɎ��ĂȂ���";
+			mes "�v���܂����c�c";
+			mes "��x�ו��𐮗����Ă݂���";
+			mes "�ǂ��ł����H";
 			close;
 		}
 		set Zeny,Zeny - 1000 * '@num;
 		getitem 554,'@num;
-		mes "[ヴァレス]";
-		mes "ありがとうございます。";
-		mes "もっと必要でしたら";
-		mes "遠慮無く来てください。";
+		mes "[���@���X]";
+		mes "���肪�Ƃ��������܂��B";
+		mes "�����ƕK�v�ł�����";
+		mes "�����������Ă��������B";
 		close;
 	case 2:
-		mes "[ヴァレス]";
-		mes "そうですか……";
-		mes "必要になったら";
-		mes "また来てください。";
+		mes "[���@���X]";
+		mes "�����ł����c�c";
+		mes "�K�v�ɂȂ�����";
+		mes "�܂����Ă��������B";
 		close;
 	case 3:
-		mes "[ヴァレス]";
-		mes "実は……";
-		mes "以前、実家に帰る途中に";
-		mes "立ち寄ったプロンテラで、";
-		mes "おもちが高額で取引されているのを";
-		mes "知ったんです。";
+		mes "[���@���X]";
+		mes "���́c�c";
+		mes "�ȑO�A���ƂɋA��r����";
+		mes "����������v�����e���ŁA";
+		mes "�����������z�Ŏ������Ă���̂�";
+		mes "�m������ł��B";
 		next;
-		mes "[ヴァレス]";
-		mes "私が出しているお店では";
-		mes "あまり稼ぎにならず、";
-		mes "ミーナにばかり負担を掛けています。";
-		mes "ミーナの為にもなんとかしようと思い、";
-		mes "今年はおもちを販売してみました。";
+		mes "[���@���X]";
+		mes "�����o���Ă��邨�X�ł�";
+		mes "���܂�҂��ɂȂ炸�A";
+		mes "�~�[�i�ɂ΂��蕉�S���|���Ă��܂��B";
+		mes "�~�[�i�ׂ̈ɂ��Ȃ�Ƃ����悤�Ǝv���A";
+		mes "���N�͂�������̔����Ă݂܂����B";
 		next;
-		mes "[ヴァレス]";
-		mes "良かったら一つ買っていってください。";
-		mes "モチ米を50Zenyで取り寄せ、";
-		mes "一流の職人と言われる……";
-		mes "えーっと……";
-		mes "ホルグ……さんだったかな？";
-		mes "その方におもちをついてもらいました。";
+		mes "[���@���X]";
+		mes "�ǂ������������Ă����Ă��������B";
+		mes "���`�Ă�50Zeny�Ŏ��񂹁A";
+		mes "�ꗬ�̐E�l�ƌ�����c�c";
+		mes "���[���Ɓc�c";
+		mes "�z���O�c�c���񂾂������ȁH";
+		mes "���̕��ɂ����������Ă��炢�܂����B";
 		next;
-		mes "[ヴァレス]";
-		mes "その方から聞いたのですが、";
-		mes "おもちをつくことを「精錬」";
-		mes "というのですね、知りませんでした。";
+		mes "[���@���X]";
+		mes "���̕����畷�����̂ł����A";
+		mes "�������������Ƃ��u���B�v";
+		mes "�Ƃ����̂ł��ˁA�m��܂���ł����B";
 		next;
-		mes "[ミーナ]";
-		mes "（お兄ちゃん、それ違うよ……）";
+		mes "[�~�[�i]";
+		mes "�i���Z�����A����Ⴄ��c�c�j";
 		next;
-		mes "[ヴァレス]";
-		mes "おもち一個につき精錬費が";
-		mes "合計700Zeny必要だったので、";
-		mes "手数料と合わせて一個1,000Zenyで";
-		mes "販売しています。";
-		mes "とっても美味しいですよ。";
+		mes "[���@���X]";
+		mes "��������ɂ����B�";
+		mes "���v700Zeny�K�v�������̂ŁA";
+		mes "�萔���ƍ��킹�Ĉ��1,000Zeny��";
+		mes "�̔����Ă��܂��B";
+		mes "�Ƃ��Ă����������ł���B";
 		close;
 	}
 }
 
-amatsu.gat,212,84,3	script	ミーナ	95,{
-	mes "[ミーナ]";
-	mes "はむ……はふはふ……";
+amatsu.gat,212,84,3	script	�~�[�i	95,{
+	mes "[�~�[�i]";
+	mes "�͂ށc�c�͂ӂ͂Ӂc�c";
 	next;
-	mes "[ヴァレス]";
-	mes "こらこら、ミーナ。";
-	mes "売り物をそんなに";
-	mes "食べちゃだめだよ。";
+	mes "[���@���X]";
+	mes "���炱��A�~�[�i�B";
+	mes "���蕨������Ȃ�";
+	mes "�H�ׂ��Ⴞ�߂���B";
 	next;
-	mes "[ミーナ]";
-	mes "だって美味しいんだもん。";
-	mes "はふ…………";
-	mes "…………ぁ！";
-	mes "もぐ、モグモグモグモグ……";
-	mes "い、いらっふぁいませ！";
+	mes "[�~�[�i]";
+	mes "�����Ĕ��������񂾂���B";
+	mes "�͂Ӂc�c�c�c";
+	mes "�c�c�c�c���I";
+	mes "�����A���O���O���O���O�c�c";
+	mes "���A������ӂ����܂��I";
 	if(countitem(554) < 1)
 		close;
 	next;
-	mes "[ミーナ]";
-	mes "……ごくん";
-	mes "……えーと……";
-	mes "お兄ちゃんのおもちを";
-	mes "買ってくれたんですか？";
-	mes "ありがとうございます！";
+	mes "[�~�[�i]";
+	mes "�c�c������";
+	mes "�c�c���[�Ɓc�c";
+	mes "���Z�����̂�������";
+	mes "�����Ă��ꂽ��ł����H";
+	mes "���肪�Ƃ��������܂��I";
 	next;
-	mes "[ミーナ]";
-	mes "はい、これは感謝の気持ちです！";
-	mes "また買いにきてくださいね。";
+	mes "[�~�[�i]";
+	mes "�͂��A����͊��ӂ̋C�����ł��I";
+	mes "�܂������ɂ��Ă��������ˁB";
 	misceffect 37,"";
 	sc_start 12,240000,10;
 	npcskillsupport 28,9999;
@@ -638,1069 +638,1069 @@ amatsu.gat,212,84,3	script	ミーナ	95,{
 }
 
 //==============================================================
-// 破魔矢販売NPC
+// �j����̔�NPC
 //==============================================================
-amatsu.gat,46,132,5	script	破魔矢巫女さん#arrow	769,{
-	mes "[巫女]";
-	mes "明けましておめでとうございます。";
-	mes "こちらでは、お正月の縁起物の";
-	mes "破魔矢を販売しております。";
-	mes "1本 ^3152FF300 Zeny^000000になりますが";
-	mes "いかがですか？";
+amatsu.gat,46,132,5	script	�j����ޏ�����#arrow	769,{
+	mes "[�ޏ�]";
+	mes "�����܂��Ă��߂łƂ��������܂��B";
+	mes "������ł́A�������̉��N����";
+	mes "�j�����̔����Ă���܂��B";
+	mes "1�{ ^3152FF300 Zeny^000000�ɂȂ�܂���";
+	mes "�������ł����H";
 	next;
-	switch (select("破魔矢をください！","破魔矢ってなんですか？","けっこうです")) {
+	switch (select("�j��������������I","�j������ĂȂ�ł����H","���������ł�")) {
 	case 1:
-		mes "[巫女]";
-		mes "ありがとうございます。";
-		mes "一度に1000本まで";
-		mes "お買い求めいただけます。";
+		mes "[�ޏ�]";
+		mes "���肪�Ƃ��������܂��B";
+		mes "��x��1000�{�܂�";
+		mes "���������߂��������܂��B";
 		next;
 		input '@num;
 		if('@num <= 0) {
-			mes "[巫女]";
-			mes "あら？";
-			mes "都合が悪いのですか？";
-			mes "また機会がありましたら";
-			mes "どうぞ。";
+			mes "[�ޏ�]";
+			mes "����H";
+			mes "�s���������̂ł����H";
+			mes "�܂��@�����܂�����";
+			mes "�ǂ����B";
 			close;
 		}
 		if('@num > 1000) {
-			mes "[巫女]";
-			mes "あら？";
-			mes "1000本より多いと";
-			mes "私も持てません。";
-			mes "1000本以内でお願いします。";
+			mes "[�ޏ�]";
+			mes "����H";
+			mes "1000�{��葽����";
+			mes "�������Ă܂���B";
+			mes "1000�{�ȓ��ł��肢���܂��B";
 			close;
 		}
 		if(Zeny < '@num*300) {
-			mes "[巫女]";
-			mes "あら？";
-			mes "その数だとお金が足りません。";
-			mes "1本 ^3152FF300 Zeny^000000になります。";
-			mes "所持金を確認してくださいね。";
+			mes "[�ޏ�]";
+			mes "����H";
+			mes "���̐����Ƃ���������܂���B";
+			mes "1�{ ^3152FF300 Zeny^000000�ɂȂ�܂��B";
+			mes "���������m�F���Ă��������ˁB";
 			close;
 		}
 		if(checkweight(1766,'@num)==0) {
-			mes "[巫女]";
-			mes "お客様、ちょっと荷物が";
-			mes "多いようですね。";
-			mes "荷物を減らしてくるか、";
-			mes "持てる分だけでどうぞ。";
+			mes "[�ޏ�]";
+			mes "���q�l�A������Ɖו���";
+			mes "�����悤�ł��ˁB";
+			mes "�ו������炵�Ă��邩�A";
+			mes "���Ă镪�����łǂ����B";
 			close;
 		}
 		set Zeny,Zeny-'@num*300;
 		getitem 1766,'@num;
-		mes "[巫女]";
-		mes "はい、" +'@num+ "本ですね。";
-		mes "ありがとうございました。";
-		mes "本年もよいお年になりますように。";
+		mes "[�ޏ�]";
+		mes "�͂��A" +'@num+ "�{�ł��ˁB";
+		mes "���肪�Ƃ��������܂����B";
+		mes "�{�N���悢���N�ɂȂ�܂��悤�ɁB";
 		close;
 	case 2:
-		mes "[巫女]";
-		mes "昔から、弓には魔を退ける力があると";
-		mes "信じられてきました。";
-		mes "そこから、様々な邪気から";
-		mes "身を守るもの「破魔弓」、そして";
-		mes "「破魔矢」となったのです。";
+		mes "[�ޏ�]";
+		mes "�̂���A�|�ɂ͖���ނ���͂������";
+		mes "�M�����Ă��܂����B";
+		mes "��������A�l�X�Ȏ׋C����";
+		mes "�g�������́u�j���|�v�A������";
+		mes "�u�j����v�ƂȂ����̂ł��B";
 		next;
-		mes "[巫女]";
-		mes "そして、年占いの際に行われた";
-		mes "弓射や正月の男の子の遊びと";
-		mes "されていたものが、江戸時代以降、";
-		mes "子供の成長の無事を祈る縁起物として、";
-		mes "弓と矢が男の子の初正月や初節句に";
-		mes "贈られるようになりました。";
+		mes "[�ޏ�]";
+		mes "�����āA�N�肢�̍ۂɍs��ꂽ";
+		mes "�|�˂␳���̒j�̎q�̗V�т�";
+		mes "����Ă������̂��A�]�ˎ���ȍ~�A";
+		mes "�q���̐����̖������F�鉏�N���Ƃ��āA";
+		mes "�|�Ɩ�j�̎q�̏������⏉�ߋ��";
+		mes "������悤�ɂȂ�܂����B";
 		next;
-		mes "[巫女]";
-		mes "その後、これが簡略化され矢だけが";
-		mes "魔除けとして正月に神社で";
-		mes "授けられるようになったのが";
-		mes "この「破魔矢」と考えられています。";
-		mes "新しい破魔矢を買いましたら、";
-		mes "ご帰宅後、神棚におまつりください。";
+		mes "[�ޏ�]";
+		mes "���̌�A���ꂪ�ȗ�����������";
+		mes "�������Ƃ��Đ����ɐ_�Ђ�";
+		mes "��������悤�ɂȂ����̂�";
+		mes "���́u�j����v�ƍl�����Ă��܂��B";
+		mes "�V�����j����𔃂��܂�����A";
+		mes "���A���A�_�I�ɂ��܂肭�������B";
 		close;
 	case 3:
-		mes "[巫女]";
-		mes "破魔矢は、縁起物なんですよ。";
-		mes "お守りとして1本";
-		mes "いかがですか？";
+		mes "[�ޏ�]";
+		mes "�j����́A���N���Ȃ�ł���B";
+		mes "�����Ƃ���1�{";
+		mes "�������ł����H";
 		close;
 	}
 }
 
-amatsu.gat,46,135,5	duplicate(破魔矢巫女さん#arrow)	破魔矢巫女さん	769
+amatsu.gat,46,135,5	duplicate(�j����ޏ�����#arrow)	�j����ޏ�����	769
 
 //==============================================================
-//おみくじNPC
+//���݂���NPC
 //==============================================================
-amatsu.gat,44,105,5	script	おみくじ巫女さん#chance	769,{
-	mes "[巫女]";
-	mes "明けましておめでとうございます。";
-	mes "せっかくアマツへ";
-	mes "初詣にいらしたのですから";
-	mes "おみくじを引いていかれませんか？";
+amatsu.gat,44,105,5	script	���݂����ޏ�����#chance	769,{
+	mes "[�ޏ�]";
+	mes "�����܂��Ă��߂łƂ��������܂��B";
+	mes "���������A�}�c��";
+	mes "���w�ɂ��炵���̂ł�����";
+	mes "���݂����������Ă�����܂��񂩁H";
 	next;
-	mes "[巫女]";
-	mes "今年は、一風変わったものも";
-	mes "用意してございます。";
-	mes "1回^3152FF100 zeny^000000です。";
+	mes "[�ޏ�]";
+	mes "���N�́A�ꕗ�ς�������̂�";
+	mes "�p�ӂ��Ă������܂��B";
+	mes "1��^3152FF100 zeny^000000�ł��B";
 	next;
-	switch (select("はい","いいえ","おみくじ？")) {
+	switch (select("�͂�","������","���݂����H")) {
 	case 1:
-		mes "[巫女]";
-		mes "どの運勢について知りたいですか？";
+		mes "[�ޏ�]";
+		mes "�ǂ̉^���ɂ��Ēm�肽���ł����H";
 		next;
-		set @menu,select("総合運","恋愛運","金運","勝負運","健康運","？");
+		set @menu,select("�����^","�����^","���^","�����^","���N�^","�H");
 		if(Zeny < 100) {
-			mes "[巫女]";
-			mes "あらら…お金が足りないようですよ。";
-			mes "おみくじは1回^3152FF100 zeny^000000です。";
+			mes "[�ޏ�]";
+			mes "�����c����������Ȃ��悤�ł���B";
+			mes "���݂�����1��^3152FF100 zeny^000000�ł��B";
 			close;
 		}
 		if(@menu<6) {
-			mes "[巫女]";
-			mes "はい、ではこちらから";
+			mes "[�ޏ�]";
+			mes "�͂��A�ł͂����炩��";
 		}
 		else {
-			mes "[巫女]";
-			mes "あ、これは……";
-			mes "ある冒険者さんから、";
-			mes "是非、お供え物代に利用して欲しい";
-			mes "ということで頂いたおみくじです。";
+			mes "[�ޏ�]";
+			mes "���A����́c�c";
+			mes "����`���҂��񂩂�A";
+			mes "����A����������ɗ��p���ė~����";
+			mes "�Ƃ������ƂŒ��������݂����ł��B";
 			next;
-			mes "[巫女]";
-			mes "何が書かれているかは、";
-			mes "私共にも分かりませぬが……";
-			mes "不思議な力が込められているようです。";
-			mes "ではこちらから。";
+			mes "[�ޏ�]";
+			mes "����������Ă��邩�́A";
+			mes "�����ɂ�������܂��ʂ��c�c";
+			mes "�s�v�c�ȗ͂����߂��Ă���悤�ł��B";
+			mes "�ł͂����炩��B";
 		}
-		mes "1枚引いてくださいませ。";
+		mes "1�������Ă��������܂��B";
 		next;
-		mes "^3152FF- ガサガサ -^000000";
+		mes "^3152FF- �K�T�K�T -^000000";
 		next;
-		mes "^3152FF- …… -^000000";
+		mes "^3152FF- �c�c -^000000";
 		next;
 		set Zeny,Zeny-100;
-		break;		//長いので続きは外に出す
+		break;		//�����̂ő����͊O�ɏo��
 	case 2:
-		mes "[巫女]";
-		mes "あら、そうですか……";
-		mes "せっかく初詣にいらしたのに残念です。";
-		mes "では、良いお年を〜。";
+		mes "[�ޏ�]";
+		mes "����A�����ł����c�c";
+		mes "�����������w�ɂ��炵���̂Ɏc�O�ł��B";
+		mes "�ł́A�ǂ����N���`�B";
 		close;
 	case 3:
-		mes "[巫女]";
-		mes "^FF5263おみくじ^000000とはアマツで年始に配られる";
-		mes "一年の運勢が書かれているお札です。";
-		mes "今、アマツでは神社近辺が危険なため";
-		mes "こうして私が出向いておりますが……";
+		mes "[�ޏ�]";
+		mes "^FF5263���݂���^000000�Ƃ̓A�}�c�ŔN�n�ɔz����";
+		mes "��N�̉^����������Ă��邨�D�ł��B";
+		mes "���A�A�}�c�ł͐_�Ћߕӂ��댯�Ȃ���";
+		mes "�������Ď����o�����Ă���܂����c�c";
 		next;
-		mes "[巫女]";
-		mes "おみくじは神前で「神の意思」を";
-		mes "確かめるために行われておりました。";
+		mes "[�ޏ�]";
+		mes "���݂����͐_�O�Łu�_�̈ӎv�v��";
+		mes "�m���߂邽�߂ɍs���Ă���܂����B";
 		next;
-		mes "[巫女]";
-		mes "^3152FF‘おみくじは三拝してから引くべし’^000000";
-		mes "とも言われておりまして、";
-		mes "これは‘真剣な態度で引きましょう’";
-		mes "と言う意味が込められています。";
-		mes "軽い気持ちや遊び半分ですと、神様";
-		mes "に失礼に当たりますから。";
+		mes "[�ޏ�]";
+		mes "^3152FF�e���݂����͎O�q���Ă�������ׂ��f^000000";
+		mes "�Ƃ������Ă���܂��āA";
+		mes "����́e�^���ȑԓx�ň����܂��傤�f";
+		mes "�ƌ����Ӗ������߂��Ă��܂��B";
+		mes "�y���C������V�є����ł��ƁA�_�l";
+		mes "�Ɏ���ɓ�����܂�����B";
 		next;
-		mes "[巫女]";
-		mes "しかし、同時におみくじや占いは";
-		mes "^3152FF‘吉、凶に転ずる’^000000とも言います。";
-		mes "おみくじに書いてあるから必ず叶う";
-		mes "という意味ではなく、おみくじを";
-		mes "きっかけに自分の方針を決め、努力する";
-		mes "ことが大事なのではないかと思います。";
+		mes "[�ޏ�]";
+		mes "�������A�����ɂ��݂�����肢��";
+		mes "^3152FF�e�g�A���ɓ]����f^000000�Ƃ������܂��B";
+		mes "���݂����ɏ����Ă��邩��K������";
+		mes "�Ƃ����Ӗ��ł͂Ȃ��A���݂�����";
+		mes "���������Ɏ����̕��j�����߁A�w�͂���";
+		mes "���Ƃ��厖�Ȃ̂ł͂Ȃ����Ǝv���܂��B";
 		close;
 	}
-	//おみくじ続き
+	//���݂�������
 	switch(@menu) {
 	case 1:
 		switch(rand(20)) {
 			case 0:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『終わり良ければ全て良し』";
+				mes "�w�I���ǂ���ΑS�ėǂ��x";
 				next;
-				mes "途中経過は山あり谷ありで不安かもしれ";
-				mes "まぜんが、最終的に願っていた以上の結";
-				mes "果が出そうです。";
+				mes "�r���o�߂͎R����J����ŕs����������";
+				mes "�܂��񂪁A�ŏI�I�Ɋ���Ă����ȏ�̌�";
+				mes "�ʂ��o�����ł��B";
 				break;
 			case 1:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『笑う門には福来る』";
+				mes "�w�΂���ɂ͕�����x";
 				next;
-				mes "正しい行いからは良い結果が生まれるも";
-				mes "のです。反対に邪心があると災難を招く";
-				mes "でしょう。";
+				mes "�������s������͗ǂ����ʂ����܂���";
+				mes "�̂ł��B���΂ɎאS������ƍГ������";
+				mes "�ł��傤�B";
 				break;
 			case 2:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『会った時は傘をぬげ』";
+				mes "�w��������͎P���ʂ��x";
 				next;
-				mes "挨拶は大事です。特に親しい人とあった";
-				mes "ら必ず挨拶するようにしましょう。";
-				mes "きっと縁が続きます。";
+				mes "���A�͑厖�ł��B���ɐe�����l�Ƃ�����";
+				mes "��K�����A����悤�ɂ��܂��傤�B";
+				mes "�����Ɖ��������܂��B";
 				break;
 			case 3:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『人のふり見て我がふり直せ』";
+				mes "�w�l�̂ӂ茩�ĉ䂪�ӂ蒼���x";
 				next;
-				mes "他人がやってるから自分もやっていい";
-				mes "ではありません。他人がやっていて悪";
-				mes "いと思ったことはやらないようにしま";
-				mes "しょう。";
+				mes "���l������Ă邩�玩��������Ă���";
+				mes "�ł͂���܂���B���l������Ă��Ĉ�";
+				mes "���Ǝv�������Ƃ͂��Ȃ��悤�ɂ���";
+				mes "���傤�B";
 				break;
 			case 4:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『言うは易く行うは難し』";
+				mes "�w�����͈Ղ��s���͓�x";
 				next;
-				mes "目標を持つことは大事ですが、その目標";
-				mes "に達するために何が必要か、しっかり考";
-				mes "えてみるといいでしょう。";
+				mes "�ڕW�������Ƃ͑厖�ł����A���̖ڕW";
+				mes "�ɒB���邽�߂ɉ����K�v���A��������l";
+				mes "���Ă݂�Ƃ����ł��傤�B";
 				break;
 			case 5:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『沈む瀬あれば浮かぶ瀬あり』";
+				mes "�w���ސ�����Ε����Ԑ�����x";
 				next;
-				mes "辛いこともあれば良いこともあります。";
-				mes "きっと努力は報われるので諦めずに進み";
-				mes "ましょう。";
+				mes "�h�����Ƃ�����Ηǂ����Ƃ�����܂��B";
+				mes "�����Ɠw�͕͂����̂Œ��߂��ɐi��";
+				mes "�܂��傤�B";
 				break;
 			case 6:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『一年の計は元旦にあり』";
+				mes "�w��N�̌v�͌��U�ɂ���x";
 				next;
-				mes "何事も最初に計画し、それから実行しま";
-				mes "しょう。行き当たりばったりでは、良い";
-				mes "結果は得られそうにありません。";
+				mes "�������ŏ��Ɍv�悵�A���ꂩ����s����";
+				mes "���傤�B�s��������΂�����ł́A�ǂ�";
+				mes "���ʂ͓���ꂻ���ɂ���܂���B";
 				break;
 			case 7:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『明日は明日の風が吹く』";
+				mes "�w�����͖����̕��������x";
 				next;
-				mes "辛今日は今日、明日は明日です。あまり";
-				mes "くよくよせずに、その日その日を過ご";
-				mes "してみましょう。";
+				mes "�h�����͍����A�����͖����ł��B���܂�";
+				mes "���悭�悹���ɁA���̓����̓����߂�";
+				mes "���Ă݂܂��傤�B";
 				break;
 			case 8:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『千里の道も一歩から』";
+				mes "�w�痢�̓����������x";
 				next;
-				mes "ただ待っているだけでは何も得られませ";
-				mes "ん。自分から勇気を出して一歩一歩踏み";
-				mes "出していけば、きっと良い結果を得られ";
-				mes "るでしょう。";
+				mes "�����҂��Ă��邾���ł͉��������܂�";
+				mes "��B��������E�C���o���Ĉ���������";
+				mes "�o���Ă����΁A�����Ɨǂ����ʂ𓾂��";
+				mes "��ł��傤�B";
 				break;
 			case 9:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『恒産なき者は恒心なし』";
+				mes "�w�P�Y�Ȃ��҂͍P�S�Ȃ��x";
 				next;
-				mes "欲張らず、安定を求めれば平穏に一年が";
-				mes "過ぎるでしょう。逆に功を焦ったり、だ";
-				mes "らけてしまうと、後々ストレスのもとと";
-				mes "なります。";
+				mes "�~���炸�A��������߂�Ε����Ɉ�N��";
+				mes "�߂���ł��傤�B�t�Ɍ����ł�����A��";
+				mes "�炯�Ă��܂��ƁA��X�X�g���X�̂��Ƃ�";
+				mes "�Ȃ�܂��B";
 				break;
 			case 10:
 			case 11:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『犬も歩けば棒に当たる』";
+				mes "�w���������Ζ_�ɓ�����x";
 				next;
-				mes "障害物を恐れてじっとしているよりは、";
-				mes "何かにぶつかる勢いで動いたほうが良い";
-				mes "こともあります。思いがけない幸運は";
-				mes "待っているだけでは訪れません。";
+				mes "��Q��������Ă����Ƃ��Ă�����́A";
+				mes "�����ɂԂ��鐨���œ������ق����ǂ�";
+				mes "���Ƃ�����܂��B�v�������Ȃ��K�^��";
+				mes "�҂��Ă��邾���ł͖K��܂���B";
 				break;
 			case 12:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『旅は道連れ、世は情け』";
+				mes "�w���͓��A��A���͏�x";
 				next;
-				mes "助け合えば、どんな困難も乗り越えられ";
-				mes "るでしょう。";
+				mes "���������΁A�ǂ�ȍ�������z�����";
+				mes "��ł��傤�B";
 				break;
 			case 13:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『棚から牡丹餅』";
+				mes "�w�I���牲�O�݁x";
 				next;
-				mes "予期せぬ時に思わぬ幸運が舞い込んでく";
-				mes "るでしょう。";
+				mes "�\�����ʎ��Ɏv��ʍK�^����������ł�";
+				mes "��ł��傤�B";
 				break;
 			case 14:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『雨垂れ石を穿つ』";
+				mes "�w�J����΂���x";
 				next;
-				mes "小さな力でも努力を忘れなければ、必ず";
-				mes "大きな成果を挙げられるでしょう。";
+				mes "�����ȗ͂ł��w�͂�Y��Ȃ���΁A�K��";
+				mes "�傫�Ȑ��ʂ���������ł��傤�B";
 				break;
 			case 15:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『恩を仇で返す』";
+				mes "�w�����w�ŕԂ��x";
 				next;
-				mes "恩人や友人を傷つけるような行為に注意";
-				mes "しましょう。親しい仲でも感謝の気持ち";
-				mes "を伝えることを忘れずに。";
+				mes "���l��F�l��������悤�ȍs�ׂɒ���";
+				mes "���܂��傤�B�e�������ł����ӂ̋C����";
+				mes "��`���邱�Ƃ�Y�ꂸ�ɁB";
 				break;
 			case 16:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『高慢は出世の行き止まり』";
+				mes "�w�����͏o���̍s���~�܂�x";
 				next;
-				mes "控えめに行きましょう。偉そうな言動は";
-				mes "人に嫌われるきっかけとなります。";
+				mes "�T���߂ɍs���܂��傤�B�̂����Ȍ�����";
+				mes "�l�Ɍ����邫�������ƂȂ�܂��B";
 				break;
 			case 17:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『前門の虎、後門の狼』";
+				mes "�w�O��̌ՁA���̘T�x";
 				next;
-				mes "一つ災難をやりすごしたとしても、油断";
-				mes "してしまっては次の災いを招きます。";
+				mes "��Г����肷�������Ƃ��Ă��A���f";
+				mes "���Ă��܂��Ă͎��̍Ђ��������܂��B";
 				break;
 			case 18:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『喉もと過ぎれば熱さ忘れる』";
+				mes "�w�A���Ɖ߂���ΔM���Y���x";
 				next;
-				mes "苦しい時に助けてくれたり支えてくれた";
-				mes "人への恩や礼を軽んじたり忘れてはいま";
-				mes "せんか？大事な人を失う結果になってし";
-				mes "まうかもしれません。";
+				mes "�ꂵ�����ɏ����Ă��ꂽ��x���Ă��ꂽ";
+				mes "�l�ւ̉������y�񂶂���Y��Ă͂���";
+				mes "���񂩁H�厖�Ȑl���������ʂɂȂ��Ă�";
+				mes "�܂���������܂���B";
 				break;
 			case 19:
-				mes "[御神籤][大凶]";
+				mes "[��_��][�勥]";
 				mes " ";
-				mes "『天知る地知る我知る人知る』";
+				mes "�w�V�m��n�m���m��l�m��x";
 				next;
-				mes "誰も見てない気がつかないと思ったら";
-				mes "大間違いです。悪事や嘘が災いを招く";
-				mes "でしょう。";
+				mes "�N�����ĂȂ��C�����Ȃ��Ǝv������";
+				mes "��ԈႢ�ł��B������R���Ђ�������";
+				mes "�ł��傤�B";
 				break;
 		}
 		break;
 	case 2:
 		switch(rand(20)) {
 			case 0:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『縁は異なもの味なもの』";
+				mes "�w���͈قȂ��̖��Ȃ��́x";
 				next;
-				mes "新しい展開がありそうです。人と人との";
-				mes "繋がりを大事にしましょう。";
+				mes "�V�����W�J�����肻���ł��B�l�Ɛl�Ƃ�";
+				mes "�q�����厖�ɂ��܂��傤�B";
 				break;
 			case 1:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『破鍋に綴じ蓋』";
+				mes "�w�j��ɒԂ��W�x";
 				next;
-				mes "良い出会いがあります。お互いを思い";
-				mes "やる心を忘れないようにすれば、長い";
-				mes "付き合いとなるでしょう。";
+				mes "�ǂ��o�������܂��B���݂����v��";
+				mes "���S��Y��Ȃ��悤�ɂ���΁A����";
+				mes "�t�������ƂȂ�ł��傤�B";
 				break;
 			case 2:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『暖簾に腕押し』";
+				mes "�w�g���ɘr�����x";
 				next;
-				mes "張り合いはないかも知れませんが、平穏";
-				mes "が一番です。";
+				mes "���荇���͂Ȃ������m��܂��񂪁A����";
+				mes "����Ԃł��B";
 				break;
 			case 3:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『言わぬことは聞こえぬ』";
+				mes "�w����ʂ��Ƃ͕������ʁx";
 				next;
-				mes "口に出して言葉にしないと、伝わらない";
-				mes "こともあります。言うべきことははっき";
-				mes "りと伝えてあげましょう。";
+				mes "���ɏo���Č��t�ɂ��Ȃ��ƁA�`���Ȃ�";
+				mes "���Ƃ�����܂��B�����ׂ����Ƃ͂͂���";
+				mes "��Ɠ`���Ă����܂��傤�B";
 				break;
 			case 4:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『傾蓋、旧の如し』";
+				mes "�w�X�W�A���̔@���x";
 				next;
-				mes "過去に訪れた場所に行ってみると思い";
-				mes "がけない出会いがあるでしょう。";
+				mes "�ߋ��ɖK�ꂽ�ꏊ�ɍs���Ă݂�Ǝv��";
+				mes "�����Ȃ��o�������ł��傤�B";
 				break;
 			case 5:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『薊の花も一盛り』";
+				mes "�w�H�̉Ԃ��ꐷ��x";
 				next;
-				mes "誰にでも魅力の出る時期は訪れるもので";
-				mes "す。自分を磨く気持ちを大切にしましょ";
-				mes "う。";
+				mes "�N�ɂł����͂̏o�鎞���͖K�����̂�";
+				mes "���B�����𖁂��C�������؂ɂ��܂���";
+				mes "���B";
 				break;
 			case 6:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『お医者様でもアマツの湯でも";
-				mes "　惚れた病は治りゃせぬ』";
+				mes "�w����җl�ł��A�}�c�̓��ł�";
+				mes "�@���ꂽ�a�͎���Ⴙ�ʁx";
 				next;
-				mes "周りが見えなくなる程のぼせあがるのを";
-				mes "気をつければ、願いは叶うでしょう。";
+				mes "���肪�����Ȃ��Ȃ���̂ڂ�������̂�";
+				mes "�C������΁A�肢�͊����ł��傤�B";
 				break;
 			case 7:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『切る手遅かれ』";
+				mes "�w�؂��x����x";
 				next;
-				mes "延期できるものは伸ばしたほうが良さそ";
-				mes "う。相手がいる人もいない人も焦りは禁";
-				mes "物です。";
+				mes "�����ł�����̂͐L�΂����ق����ǂ���";
+				mes "���B���肪����l�����Ȃ��l���ł�͋�";
+				mes "���ł��B";
 				break;
 			case 8:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『相手のない喧嘩は出来ぬ』";
+				mes "�w����̂Ȃ����܂͏o���ʁx";
 				next;
-				mes "一人で喧嘩は出来ないものです。周りに";
-				mes "やっかみを言われたとしても、あまり相";
-				mes "手にしないほうが吉でしょう。";
+				mes "��l�Ō��܂͏o���Ȃ����̂ł��B�����";
+				mes "������݂�����ꂽ�Ƃ��Ă��A���܂葊";
+				mes "��ɂ��Ȃ��ق����g�ł��傤�B";
 				break;
 			case 9:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『水中に火を求む』";
+				mes "�w�����ɉ΂����ށx";
 				next;
-				mes "高望みをしてしまうと、得られるものも";
-				mes "失ってしまいかねません。程ほどに。";
+				mes "���]�݂����Ă��܂��ƁA��������̂�";
+				mes "�����Ă��܂����˂܂���B���قǂɁB";
 				break;
 			case 10:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『惚れて通えば千里も一理』";
+				mes "�w����Ēʂ��ΐ痢���ꗝ�x";
 				next;
-				mes "大切な相手のための努力は苦にならない";
-				mes "もの。でも、やりすぎは逆に相手を心配";
-				mes "させてしまいそうです。";
+				mes "��؂ȑ���̂��߂̓w�͂͋�ɂȂ�Ȃ�";
+				mes "���́B�ł��A��肷���͋t�ɑ����S�z";
+				mes "�����Ă��܂������ł��B";
 				break;
 			case 11:
 			case 12:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『正直の頭に神宿る』";
+				mes "�w�����̓��ɐ_�h��x";
 				next;
-				mes "自分の気持ちに素直になってみると良い";
-				mes "でしょう。その気持ちを伝えることも忘";
-				mes "れずに。";
+				mes "�����̋C�����ɑf���ɂȂ��Ă݂�Ɨǂ�";
+				mes "�ł��傤�B���̋C������`���邱�Ƃ��Y";
+				mes "�ꂸ�ɁB";
 				break;
 			case 13:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『雨降って地固まる』";
+				mes "�w�J�~���Ēn�ł܂�x";
 				next;
-				mes "諍いやケンカもあるかも知れませんが、";
-				mes "お互いの理解を深めるきっかけになりそ";
-				mes "うです。";
+				mes "�y����P���J�����邩���m��܂��񂪁A";
+				mes "���݂��̗�����[�߂邫�������ɂȂ肻";
+				mes "���ł��B";
 				break;
 			case 14:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『果報は寝て待て』";
+				mes "�w�ʕ�͐Q�đ҂āx";
 				next;
-				mes "待ち人は遅くなりますが必ずやってきま";
-				mes "す。障害を乗り越えてこその愛です！";
+				mes "�҂��l�͒x���Ȃ�܂����K������Ă���";
+				mes "���B��Q�����z���Ă����̈��ł��I";
 				break;
 			case 15:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『好機逸すべからず』";
+				mes "�w�D�@�킷�ׂ��炸�x";
 				next;
-				mes "とても大きなチャンスがやってくるで";
-				mes "しょう。しかし、見逃してしまっては";
-				mes "元も子もありません。";
+				mes "�ƂĂ��傫�ȃ`�����X������Ă����";
+				mes "���傤�B�������A�������Ă��܂��Ă�";
+				mes "�����q������܂���B";
 				break;
 			case 16:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『男心と秋の空』";
+				mes "�w�j�S�ƏH�̋�x";
 				next;
-				mes "変化を求めず、現状を維持することに";
-				mes "集中するべき時期です。";
+				mes "�ω������߂��A������ێ����邱�Ƃ�";
+				mes "�W������ׂ������ł��B";
 				break;
 			case 17:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『口は禍のもと』";
+				mes "�w���͉Ђ̂��Ɓx";
 				next;
-				mes "不用意な一言が禍となります。相手どこ";
-				mes "ろか、自分の評判も落とす結果に。言葉";
-				mes "には気をつけましょう。";
+				mes "�s�p�ӂȈꌾ���ЂƂȂ�܂��B����ǂ�";
+				mes "�납�A�����̕]�������Ƃ����ʂɁB���t";
+				mes "�ɂ͋C�����܂��傤�B";
 				break;
 			case 18:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『思うに別れて思わぬに沿う』";
+				mes "�w�v���ɕʂ�Ďv��ʂɉ����x";
 				next;
-				mes "短気になったら負け。自分も傷つき、";
-				mes "大切な人も傷つけてしまうかもしれま";
-				mes "せん。";
+				mes "�Z�C�ɂȂ����畉���B�����������A";
+				mes "��؂Ȑl�������Ă��܂����������";
+				mes "����B";
 				break;
 			case 19:
-				mes "[御神籤][大凶]";
+				mes "[��_��][�勥]";
 				mes " ";
-				mes "『年貢の納め時』";
+				mes "�w�N�v�̔[�ߎ��x";
 				next;
-				mes "観念する時期が迫っています。潔く結末";
-				mes "を迎えるか、足掻いてみるかは貴方次第";
-				mes "です。";
+				mes "�ϔO���鎞���������Ă��܂��B��������";
+				mes "���}���邩�A���~���Ă݂邩�͋M������";
+				mes "�ł��B";
 				break;
 		}
 		break;
 	case 3:
 		switch(rand(20)) {
 			case 0:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『金的を射落とす』";
+				mes "�w���I���˗��Ƃ��x";
 				next;
-				mes "思いがけない大金が手に入りそうです。";
-				mes "ただし、無駄遣いにはくれぐれも注意。";
+				mes "�v�������Ȃ��������ɓ��肻���ł��B";
+				mes "�������A���ʌ����ɂ͂��ꂮ������ӁB";
 				break;
 			case 1:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『一攫千金』";
+				mes "�w�ꝺ����x";
 				next;
-				mes "ドカーンと一発当たりそうな雰囲気で";
-				mes "す。チャンスを逃さないよう気配りを";
-				mes "忘れずに。";
+				mes "�h�J�[���ƈꔭ�����肻���ȕ��͋C��";
+				mes "���B�`�����X�𓦂��Ȃ��悤�C�z���";
+				mes "�Y�ꂸ�ɁB";
 				break;
 			case 2:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『地獄の沙汰も金次第』";
+				mes "�w�n���̍�����������x";
 				next;
-				mes "自分のために使うお金なら程ほどに。";
-				mes "誰かのために使うお金なら躊躇わずに";
-				mes "使いましょう。";
+				mes "�����̂��߂Ɏg�������Ȃ���قǂɁB";
+				mes "�N���̂��߂Ɏg�������Ȃ��S�O�킸��";
+				mes "�g���܂��傤�B";
 				break;
 			case 3:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『食うた餅より心餅』";
+				mes "�w�H�����݂��S�݁x";
 				next;
-				mes "お金や物も大事ですが、それを与えてく";
-				mes "れた人への心も大事にしましょう。";
+				mes "�����╨���厖�ł����A�����^���Ă�";
+				mes "�ꂽ�l�ւ̐S���厖�ɂ��܂��傤�B";
 				break;
 			case 4:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『一銭を笑う者は一銭に泣く』";
+				mes "�w��K���΂��҂͈�K�ɋ����x";
 				next;
-				mes "1zenyでもお金はお金です。その価値を";
-				mes "大事にすれば出費も多いですが、それに";
-				mes "見合う収入がありそうです。";
+				mes "1zeny�ł������͂����ł��B���̉��l��";
+				mes "�厖�ɂ���Ώo��������ł����A�����";
+				mes "���������������肻���ł��B";
 				break;
 			case 5:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『口と財布は締めるが得』";
+				mes "�w���ƍ��z�͒��߂邪���x";
 				next;
-				mes "おしゃべりと無駄遣いが天敵な一年に";
-				mes "なりそうです。";
+				mes "������ׂ�Ɩ��ʌ������V�G�Ȉ�N��";
+				mes "�Ȃ肻���ł��B";
 				break;
 			case 6:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『長者の万灯より貧者の一灯』";
+				mes "�w���҂̖������n�҂̈ꓔ�x";
 				next;
-				mes "小さな金額だとしても、そこに達するま";
-				mes "での努力や労働、気持ちを忘れないよう";
-				mes "に。";
+				mes "�����ȋ��z���Ƃ��Ă��A�����ɒB�����";
+				mes "�ł̓w�͂�J���A�C������Y��Ȃ��悤";
+				mes "�ɁB";
 				break;
 			case 7:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『残り物に福がある』";
+				mes "�w�c�蕨�ɕ�������x";
 				next;
-				mes "マイペースでいきましょう。例え最後に";
-				mes "なったとしても、福は貴方を味方するで";
-				mes "しょう。";
+				mes "�}�C�y�[�X�ł����܂��傤�B�Ⴆ�Ō��";
+				mes "�Ȃ����Ƃ��Ă��A���͋M���𖡕������";
+				mes "���傤�B";
 				break;
 			case 8:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『鍬を担げた乞食は来ない』";
+				mes "�w�L��S������H�͗��Ȃ��x";
 				next;
-				mes "働いていれば貧乏になることはありませ";
-				mes "ん。収入が欲しいなら働くべきです。";
+				mes "�����Ă���Εn�R�ɂȂ邱�Ƃ͂���܂�";
+				mes "��B�������~�����Ȃ瓭���ׂ��ł��B";
 				break;
 			case 9:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『好きこそ物の上手なれ』";
+				mes "�w�D���������̏��Ȃ�x";
 				next;
-				mes "好きなことに打ち込んでみると、思わぬ";
-				mes "報酬が得られそうです。";
+				mes "�D���Ȃ��Ƃɑł�����ł݂�ƁA�v���";
+				mes "��V������ꂻ���ł��B";
 				break;
 			case 10:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『時は金なり』";
+				mes "�w���͋��Ȃ�x";
 				next;
-				mes "欲しいものがあるなら頑張って働き、";
-				mes "コツコツと貯金しましょう。";
+				mes "�~�������̂�����Ȃ�撣���ē����A";
+				mes "�R�c�R�c�ƒ������܂��傤�B";
 				break;
 			case 11:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『日計足らずして歳計余りあり』";
+				mes "�w���v���炸���čΌv�]�肠��x";
 				next;
-				mes "物事を長い目で見ると、意外な所で儲け";
-				mes "があるものです。広い視野を持ってみま";
-				mes "しょう。";
+				mes "�����𒷂��ڂŌ���ƁA�ӊO�ȏ��Ŗׂ�";
+				mes "��������̂ł��B�L������������Ă݂�";
+				mes "���傤�B";
 				break;
 			case 12:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『下手な鉄砲も数撃ちゃ当たる』";
+				mes "�w����ȓS�C���������ᓖ����x";
 				next;
-				mes "大きいチャンスはないかもしれませんが";
-				mes "そこそこの儲けが、ちょくちょくあるか";
-				mes "も。目を開いてチャンスを逃さないよう";
-				mes "に。";
+				mes "�傫���`�����X�͂Ȃ���������܂���";
+				mes "���������ׂ̖����A���傭���傭���邩";
+				mes "���B�ڂ��J���ă`�����X�𓦂��Ȃ��悤";
+				mes "�ɁB";
 				break;
 			case 13:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『窪い所に水溜まる』";
+				mes "�w�E�����ɐ����܂�x";
 				next;
-				mes "集まるべき時と場所に、物は自然にたま";
-				mes "ります。資金もまた然り。溜まった資金";
-				mes "の使い道次第で新たな福を呼び込めるで";
-				mes "しょう。";
+				mes "�W�܂�ׂ����Əꏊ�ɁA���͎��R�ɂ���";
+				mes "��܂��B�������܂��R��B���܂�������";
+				mes "�̎g��������ŐV���ȕ����Ăэ��߂��";
+				mes "���傤�B";
 				break;
 			case 14:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『為せば成る』";
+				mes "�w�ׂ��ΐ���x";
 				next;
-				mes "チャレンジ精神です。やろう！と言う";
-				mes "意気込みが幸運を招くでしょう。";
+				mes "�`�������W���_�ł��B��낤�I�ƌ���";
+				mes "�ӋC���݂��K�^�������ł��傤�B";
 				break;
 			case 15:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『ただより高いものはない』";
+				mes "�w������荂�����̂͂Ȃ��x";
 				next;
-				mes "付き合いやお祝い事等の出費が多い一年";
-				mes "になりそうです。しかし、ケチってしま";
-				mes "うと後々人間関係が気まずいことになる";
-				mes "ことも……";
+				mes "�t�������₨�j�������̏o�������N";
+				mes "�ɂȂ肻���ł��B�������A�P�`���Ă���";
+				mes "���ƌ�X�l�Ԋ֌W���C�܂������ƂɂȂ�";
+				mes "���Ƃ��c�c";
 				break;
 			case 16:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『夏歌うものは冬泣く』";
+				mes "�w�ĉ̂����͓̂~�����x";
 				next;
-				mes "怠けてはいけません。一番大事な時に";
-				mes "泣く羽目になります。";
+				mes "�ӂ��Ă͂����܂���B��ԑ厖�Ȏ���";
+				mes "�����H�ڂɂȂ�܂��B";
 				break;
 			case 17:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『捕らぬ狸の皮算用』";
+				mes "�w�߂�ʒK�̔�Z�p�x";
 				next;
-				mes "売買の計画は慎重に。手元に資金がない";
-				mes "内から将来の予定を組むことは避けたほ";
-				mes "うがいいでしょう。";
+				mes "�����̌v��͐T�d�ɁB�茳�Ɏ������Ȃ�";
+				mes "�����珫���̗\���g�ނ��Ƃ͔�������";
+				mes "���������ł��傤�B";
 				break;
 			case 18:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『貧乏暇なし』";
+				mes "�w�n�R�ɂȂ��x";
 				next;
-				mes "せっかく貯金しても無駄遣いしてしまい";
-				mes "そう。あまり大きな収入は期待せずに地";
-				mes "道に行きましょう。";
+				mes "���������������Ă����ʌ������Ă��܂�";
+				mes "�����B���܂�傫�Ȏ����͊��҂����ɒn";
+				mes "���ɍs���܂��傤�B";
 				break;
 			case 19:
-				mes "[御神籤][大凶]";
+				mes "[��_��][�勥]";
 				mes " ";
-				mes "『煮ても焼いても食えない』";
+				mes "�w�ςĂ��Ă��Ă��H���Ȃ��x";
 				next;
-				mes "軽はずみな借金や、物の貸し借りは止め";
-				mes "ましょう。手に負えない状態になりかね";
-				mes "ません。";
+				mes "�y�͂��݂Ȏ؋���A���݂̑��؂�͎~��";
+				mes "�܂��傤�B��ɕ����Ȃ���ԂɂȂ肩��";
+				mes "�܂���B";
 				break;
 		}
 		break;
 	case 4:
 		switch(rand(20)) {
 			case 0:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『先手必勝』";
+				mes "�w���K���x";
 				next;
-				mes "ここぞ！という時に良い結果が出来るで";
-				mes "しょう。負け知らずの年と言ってもいい";
-				mes "ですが、準備を怠れば痛い目に合うで";
-				mes "しょう。";
+				mes "�������I�Ƃ������ɗǂ����ʂ��o�����";
+				mes "���傤�B�����m�炸�̔N�ƌ����Ă�����";
+				mes "�ł����A������ӂ�Βɂ��ڂɍ�����";
+				mes "���傤�B";
 				break;
 			case 1:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『逃げるが勝ち』";
+				mes "�w�����邪�����x";
 				next;
-				mes "自分の実力が発揮できる年です。満足な";
-				mes "結果が得られるでしょう。ただし、時に";
-				mes "は逃げることも必要です。";
+				mes "�����̎��͂������ł���N�ł��B������";
+				mes "���ʂ�������ł��傤�B�������A����";
+				mes "�͓����邱�Ƃ��K�v�ł��B";
 				break;
 			case 2:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『備えあれば憂い無し』";
+				mes "�w��������ΗJ�������x";
 				next;
-				mes "戦いに赴く前は事前調査、情報の確認、";
-				mes "装備の確認などを忘れずに。備えをしっ";
-				mes "かりすれば負けることはないでしょう。";
+				mes "�킢�ɕ����O�͎��O�����A���̊m�F�A";
+				mes "�����̊m�F�Ȃǂ�Y�ꂸ�ɁB����������";
+				mes "���肷��Ε����邱�Ƃ͂Ȃ��ł��傤�B";
 				break;
 			case 3:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『命あっての物種』";
+				mes "�w�������Ă̕���x";
 				next;
-				mes "命があるからこそ出来ることがありま";
-				mes "す。無茶はやめて、危険なことは極力";
-				mes "避けましょう。";
+				mes "�������邩�炱���o���邱�Ƃ������";
+				mes "���B�����͂�߂āA�댯�Ȃ��Ƃ͋ɗ�";
+				mes "�����܂��傤�B";
 				break;
 			case 4:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『急がば回れ』";
+				mes "�w�}���Ή��x";
 				next;
-				mes "慌ててしまうと、結局出遅れてしまう";
-				mes "可能性も。落ち着いて行動してみま";
-				mes "しょう。";
+				mes "�Q�ĂĂ��܂��ƁA���Ǐo�x��Ă��܂�";
+				mes "�\�����B���������čs�����Ă݂�";
+				mes "���傤�B";
 				break;
 			case 5:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『小事は大事』";
+				mes "�w�����͑厖�x";
 				next;
-				mes "些細なことの積み重ねで大局を得られま";
-				mes "す。日々の積み重ねが大切です。";
+				mes "���ׂȂ��Ƃ̐ςݏd�˂ő�ǂ𓾂���";
+				mes "���B���X�̐ςݏd�˂���؂ł��B";
 				break;
 			case 6:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『餅は餅屋』";
+				mes "�w�݂͖݉��x";
 				next;
-				mes "自分の出来ること、相手の出来ること";
-				mes "皆で出来ることを考えて行動するのが";
-				mes "勝敗の鍵です。";
+				mes "�����̏o���邱�ƁA����̏o���邱��";
+				mes "�F�ŏo���邱�Ƃ��l���čs������̂�";
+				mes "���s�̌��ł��B";
 				break;
 			case 7:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『七転び八起き』";
+				mes "�w���]�є��N���x";
 				next;
-				mes "転んだままでは進展はありません。負け";
-				mes "続きだと感じても、起き上がり続けなけ";
-				mes "ば前へ進めません。";
+				mes "�]�񂾂܂܂ł͐i�W�͂���܂���B����";
+				mes "�������Ɗ����Ă��A�N���オ�葱���Ȃ�";
+				mes "�ΑO�֐i�߂܂���B";
 				break;
 			case 8:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『後悔先に立たず』";
+				mes "�w�����ɗ������x";
 				next;
-				mes "負けた後に、ああすれば良かった……と";
-				mes "思っても時は戻せません。後悔しない為";
-				mes "にやるべきことを考えてみると良いで";
-				mes "しょう。";
+				mes "��������ɁA��������Ηǂ������c�c��";
+				mes "�v���Ă����͖߂��܂���B������Ȃ���";
+				mes "�ɂ��ׂ����Ƃ��l���Ă݂�Ɨǂ���";
+				mes "���傤�B";
 				break;
 			case 9:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『腹が減っては戦が出来ぬ』";
+				mes "�w���������Ă͐킪�o���ʁx";
 				next;
-				mes "準備なしで戦いに挑むのはやめま";
-				mes "しょう。勝敗以前の問題です。";
+				mes "�����Ȃ��Ő킢�ɒ��ނ̂͂�߂�";
+				mes "���傤�B���s�ȑO�̖��ł��B";
 				break;
 			case 10:
 			case 11:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『下駄も阿弥陀も同じ木の切れ』";
+				mes "�w���ʂ�����ɂ������؂̐؂�x";
 				next;
-				mes "心構え一つの違いで雲泥の差が出てきま";
-				mes "す。志を高く持ちましょう。";
+				mes "�S�\����̈Ⴂ�ŉ_�D�̍����o�Ă���";
+				mes "���B�u�����������܂��傤�B";
 				break;
 			case 12:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『失敗は成功のもと』";
+				mes "�w���s�͐����̂��Ɓx";
 				next;
-				mes "失敗したとしても、そこから学び、同じ";
-				mes "ミスを繰り返さないよう心掛けるべし。";
-				mes "自分の実力を伸ばす機会に恵まれる年と";
-				mes "なるでしょう。";
+				mes "���s�����Ƃ��Ă��A��������w�сA����";
+				mes "�~�X���J��Ԃ��Ȃ��悤�S�|����ׂ��B";
+				mes "�����̎��͂�L�΂��@��Ɍb�܂��N��";
+				mes "�Ȃ�ł��傤�B";
 				break;
 			case 13:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『時は得難くして失い易し』";
+				mes "�w���͓�����Ď����Ղ��x";
 				next;
-				mes "油断しているとせっかくの勝機を逃して";
-				mes "しまいます。勝機を見逃さなければ大き";
-				mes "な成果を得られるでしょう。";
+				mes "���f���Ă���Ƃ��������̏��@�𓦂���";
+				mes "���܂��܂��B���@���������Ȃ���Α傫";
+				mes "�Ȑ��ʂ𓾂���ł��傤�B";
 				break;
 			case 14:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『研がずに鍛冶を怨むな』";
+				mes "�w�������ɒb������ނȁx";
 				next;
-				mes "自分の環境を見直し、努力を怠っていな";
-				mes "いか見つめなおしてみましょう。きっと";
-				mes "良い方向に答えが見えてくるはずです。";
+				mes "�����̊����������A�w�͂�ӂ��Ă���";
+				mes "�������߂Ȃ����Ă݂܂��傤�B������";
+				mes "�ǂ������ɓ����������Ă���͂��ł��B";
 				break;
 			case 15:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『得を取るより名を取れ』";
+				mes "�w��������薼�����x";
 				next;
-				mes "自分のことだけ考えて突進してしまうと";
-				mes "仲間と上手くいかなくなってしまう恐れ";
-				mes "があります。何が自分にとって大事か忘";
-				mes "れずに。";
+				mes "�����̂��Ƃ����l���ēːi���Ă��܂���";
+				mes "���ԂƏ�肭�����Ȃ��Ȃ��Ă��܂�����";
+				mes "������܂��B���������ɂƂ��đ厖���Y";
+				mes "�ꂸ�ɁB";
 				break;
 			case 16:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『火で火は消えぬ』";
+				mes "�w�΂ŉ΂͏����ʁx";
 				next;
-				mes "贅沢せずに、生存優先。欲張ってしまっ";
-				mes "たり、効率重視してしまうと、かえって";
-				mes "マイナスとなってしまいます。";
+				mes "�ґ򂹂��ɁA�����D��B�~�����Ă��܂�";
+				mes "����A�����d�����Ă��܂��ƁA��������";
+				mes "�}�C�i�X�ƂȂ��Ă��܂��܂��B";
 				break;
 			case 17:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『出る杭は打たれる』";
+				mes "�w�o��Y�͑ł����x";
 				next;
-				mes "焦ってしまうと天は貴方を見放すで";
-				mes "しょう。自分の実力を冷静に見直し";
-				mes "自分の出来ることに集中すると良い";
-				mes "でしょう。";
+				mes "�ł��Ă��܂��ƓV�͋M������������";
+				mes "���傤�B�����̎��͂��ÂɌ�����";
+				mes "�����̏o���邱�ƂɏW������Ɨǂ�";
+				mes "�ł��傤�B";
 				break;
 			case 18:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『生兵法は大怪我のもと』";
+				mes "�w�����@�͑����̂��Ɓx";
 				next;
-				mes "中途半端な知識で勝負しようとすると、";
-				mes "返って失敗してしまいます。見栄を張っ";
-				mes "たり、出た所勝負は止めましょう。";
+				mes "���r���[�Ȓm���ŏ������悤�Ƃ���ƁA";
+				mes "�Ԃ��Ď��s���Ă��܂��܂��B���h�𒣂�";
+				mes "����A�o���������͎~�߂܂��傤�B";
 				break;
 			case 19:
-				mes "[御神籤][大凶]";
+				mes "[��_��][�勥]";
 				mes " ";
-				mes "『万事休す』";
+				mes "�w�����x���x";
 				next;
-				mes "負ける時は負ける！どんなにコンディ";
-				mes "ションが良く感じても駄目なときは駄";
-				mes "目なものです。そう割り切ってしまう";
-				mes "ほうが良いときもあります。";
+				mes "�����鎞�͕�����I�ǂ�ȂɃR���f�B";
+				mes "�V�������ǂ������Ă��ʖڂȂƂ��͑�";
+				mes "�ڂȂ��̂ł��B��������؂��Ă��܂�";
+				mes "�ق����ǂ��Ƃ�������܂��B";
 				break;
 		}
 		break;
 	case 5:
 		switch(rand(20)) {
 			case 0:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『片山曇れば片山日照る』";
+				mes "�w�ЎR�܂�ΕЎR���Ƃ�x";
 				next;
-				mes "体力が満ち、すごく活発的な一年になる";
-				mes "でしょう。但し、他人が自分と同じとは";
-				mes "限りませんので、あまり無茶を強いるの";
-				mes "は止めましょう。";
+				mes "�̗͂������A�����������I�Ȉ�N�ɂȂ�";
+				mes "�ł��傤�B�A���A���l�������Ɠ����Ƃ�";
+				mes "����܂���̂ŁA���܂薳�����������";
+				mes "�͎~�߂܂��傤�B";
 				break;
 			case 1:
-				mes "[御神籤][大吉]";
+				mes "[��_��][��g]";
 				mes " ";
-				mes "『医者の薬も匙加減』";
+				mes "�w��҂̖���������x";
 				next;
-				mes "精神的に充実するでしょう。しかし、";
-				mes "無理をしすぎると息切れするので注意";
-				mes "しましょう。";
+				mes "���_�I�ɏ[������ł��傤�B�������A";
+				mes "��������������Ƒ��؂ꂷ��̂Œ���";
+				mes "���܂��傤�B";
 				break;
 			case 2:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『医者の不養生』";
+				mes "�w��҂̕s�{���x";
 				next;
-				mes "自分の生活態度を今一度見直してみま";
-				mes "しょう。他人には気をつけて〜と言っ";
-				mes "ていること等、自分で実践できていま";
-				mes "すか？";
+				mes "�����̐����ԓx������x�������Ă݂�";
+				mes "���傤�B���l�ɂ͋C�����ā`�ƌ���";
+				mes "�Ă��邱�Ɠ��A�����Ŏ��H�ł��Ă���";
+				mes "�����H";
 				break;
 			case 3:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『灯台下暗し』";
+				mes "�w���䉺�Â��x";
 				next;
-				mes "肉体的、精神的にも平穏に過ごせそうで";
-				mes "す。けれど、足元には注意しましょう。";
+				mes "���̓I�A���_�I�ɂ������ɉ߂���������";
+				mes "���B����ǁA�����ɂ͒��ӂ��܂��傤�B";
 				break;
 			case 4:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『垢で死んだ者はない』";
+				mes "�w�C�Ŏ��񂾎҂͂Ȃ��x";
 				next;
-				mes "……と言いますが、ある程度清潔感に気";
-				mes "を配るのも大事。暗いダンジョンばかり";
-				mes "でなく、日の光の差す場所に出て深呼吸";
-				mes "してみてはいかが？";
+				mes "�c�c�ƌ����܂����A������x�������ɋC";
+				mes "��z��̂��厖�B�Â��_���W�����΂���";
+				mes "�łȂ��A���̌��̍����ꏊ�ɏo�Đ[�ċz";
+				mes "���Ă݂Ă͂������H";
 				break;
 			case 5:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『一に看病、二に薬』";
+				mes "�w��Ɋŕa�A��ɖ�x";
 				next;
-				mes "病に効くのはまず心遣いであって、薬は";
-				mes "その次。でも、あまり不養生を重ねて周";
-				mes "りを心配させないように。";
+				mes "�a�Ɍ����̂͂܂��S�����ł����āA���";
+				mes "���̎��B�ł��A���܂�s�{�����d�˂Ď�";
+				mes "���S�z�����Ȃ��悤�ɁB";
 				break;
 			case 6:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『碁打ちに時無し』";
+				mes "�w��ł��Ɏ������x";
 				next;
-				mes "何かに熱中するのはいいのですが、少し";
-				mes "運動不足の様です。歩いて行動すること";
-				mes "を心がけましょう。";
+				mes "�����ɔM������̂͂����̂ł����A����";
+				mes "�^���s���̗l�ł��B�����čs�����邱��";
+				mes "��S�����܂��傤�B";
 				break;
 			case 7:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『注意一秒怪我一生』";
+				mes "�w���ӈ�b����ꐶ�x";
 				next;
-				mes "思わぬ怪我に注意しましょう。薬等を";
-				mes "常備しておくとよいでしょう。";
+				mes "�v��ʉ���ɒ��ӂ��܂��傤�B�򓙂�";
+				mes "������Ă����Ƃ悢�ł��傤�B";
 				break;
 			case 8:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『郷に入っては郷に従え』";
+				mes "�w���ɓ����Ă͋��ɏ]���x";
 				next;
-				mes "その地にはその地にあった生活や習慣が";
-				mes "あり、何かしら由来があるものです。少";
-				mes "し耳を傾けてみると、後々役に立つで";
-				mes "しょう。";
+				mes "���̒n�ɂ͂��̒n�ɂ�����������K����";
+				mes "����A��������R����������̂ł��B��";
+				mes "�������X���Ă݂�ƁA��X���ɗ���";
+				mes "���傤�B";
 				break;
 			case 9:
-				mes "[御神籤][吉]";
+				mes "[��_��][�g]";
 				mes " ";
-				mes "『蝋燭は身を減らして人を照らす』";
+				mes "�w�X�C�͐g�����炵�Đl���Ƃ炷�x";
 				next;
-				mes "自分を犠牲にして他人に尽くす心持ちで";
-				mes "いれば、自分が倒れた時に誰かが助けに";
-				mes "来てくれるでしょう。";
+				mes "�������]���ɂ��đ��l�ɐs�����S������";
+				mes "����΁A�������|�ꂽ���ɒN����������";
+				mes "���Ă����ł��傤�B";
 				break;
 			case 10:
 			case 11:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『闇雲野鶴』";
+				mes "�w�ŉ_��߁x";
 				next;
-				mes "一日一日を元気に悠々と過ごせるで";
-				mes "しょう。これを期に少し遠出をして";
-				mes "みるといいかもしれません。";
+				mes "�����������C�ɗI�X�Ɖ߂������";
+				mes "���傤�B��������ɏ������o������";
+				mes "�݂�Ƃ�����������܂���B";
 				break;
 			case 12:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『病は気から』";
+				mes "�w�a�͋C����x";
 				next;
-				mes "何事も気の持ちようです。あまりクヨク";
-				mes "ヨせずに、前向きでいれば病も吹き飛ぶ";
-				mes "でしょう。";
+				mes "�������C�̎����悤�ł��B���܂�N���N";
+				mes "�������ɁA�O�����ł���Εa���������";
+				mes "�ł��傤�B";
 				break;
 			case 13:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『一病息災』";
+				mes "�w��a���Ёx";
 				next;
-				mes "なにか病気をしそうですが、無茶をせず";
-				mes "気をつけるようにすれば、大事に至らず";
-				mes "一年を過ごせるでしょう。";
+				mes "�Ȃɂ��a�C���������ł����A����������";
+				mes "�C������悤�ɂ���΁A�厖�Ɏ��炸";
+				mes "��N���߂�����ł��傤�B";
 				break;
 			case 14:
-				mes "[御神籤][小吉]";
+				mes "[��_��][���g]";
 				mes " ";
-				mes "『医食同源』";
+				mes "�w��H�����x";
 				next;
-				mes "日々の食生活が健康と病気予防につなが";
-				mes "ります。規則正しい生活さえしていれば";
-				mes "大病とは縁がないでしょう。";
+				mes "���X�̐H���������N�ƕa�C�\�h�ɂȂ�";
+				mes "��܂��B�K�������������������Ă����";
+				mes "��a�Ƃ͉����Ȃ��ł��傤�B";
 				break;
 			case 15:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『薬も過ぎれば毒となる』";
+				mes "�w����߂���ΓłƂȂ�x";
 				next;
-				mes "少量では妙薬でも、同じものの多量摂取";
-				mes "は体に毒です。何事も、集中的な摂取は";
-				mes "控え、たまには散歩の一つもしてみま";
-				mes "しょう。";
+				mes "���ʂł͖���ł��A�������̂̑��ʐێ�";
+				mes "�͑̂ɓłł��B�������A�W���I�Ȑێ��";
+				mes "�T���A���܂ɂ͎U���̈�����Ă݂�";
+				mes "���傤�B";
 				break;
 			case 16:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『痛い上の針』";
+				mes "�w�ɂ���̐j�x";
 				next;
-				mes "怪我をした時は、きっちりと治してから";
-				mes "行動しましょう。怪我の上にまた怪我を";
-				mes "してしまっては悪化するばかりです。";
+				mes "������������́A��������Ǝ����Ă���";
+				mes "�s�����܂��傤�B����̏�ɂ܂������";
+				mes "���Ă��܂��Ă͈�������΂���ł��B";
 				break;
 			case 17:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『食うに倒れず病に倒れる』";
+				mes "�w�H���ɓ|�ꂸ�a�ɓ|���x";
 				next;
-				mes "無理は禁物です。余裕をもって行動しま";
-				mes "しょう。食うに困らないと驕っていては";
-				mes "病に倒れてしまった時に結局出費が";
-				mes "かかってしまいます。";
+				mes "�����͋֕��ł��B�]�T�������čs������";
+				mes "���傤�B�H���ɍ���Ȃ���遂��Ă��Ă�";
+				mes "�a�ɓ|��Ă��܂������Ɍ��Ǐo�";
+				mes "�������Ă��܂��܂��B";
 				break;
 			case 18:
-				mes "[御神籤][凶]";
+				mes "[��_��][��]";
 				mes " ";
-				mes "『鬼の霍乱』";
+				mes "�w�S��跗��x";
 				next;
-				mes "自分の健康を過信しすぎていると、何が";
-				mes "起こるかわかりません。無理をせず睡眠";
-				mes "休憩はしっかりとりましょう。";
+				mes "�����̌��N���ߐM�������Ă���ƁA����";
+				mes "�N���邩�킩��܂���B��������������";
+				mes "�x�e�͂�������Ƃ�܂��傤�B";
 				break;
 			case 19:
-				mes "[御神籤][大凶]";
+				mes "[��_��][�勥]";
 				mes " ";
-				mes "『生簀の鯉』";
+				mes "�w���ł̌�x";
 				next;
-				mes "一つのことに囚われすぎてはいません";
-				mes "か？";
-				mes "周囲が見えなくなってはいませんか？";
-				mes "たまには違う場所に目を向けて、";
-				mes "世間を見るのも大事です。";
+				mes "��̂��ƂɎ���ꂷ���Ă͂��܂���";
+				mes "���H";
+				mes "���͂������Ȃ��Ȃ��Ă͂��܂��񂩁H";
+				mes "���܂ɂ͈Ⴄ�ꏊ�ɖڂ������āA";
+				mes "���Ԃ�����̂��厖�ł��B";
 				break;
 		}
 		break;
@@ -1709,165 +1709,165 @@ amatsu.gat,44,105,5	script	おみくじ巫女さん#chance	769,{
 			case 0:
 				npcskillsupport 34,0;
 				sc_start 10,240000,10;	//SC_BLESSING
-				mes "[御神籤][大吉]";
-				mes "金運に恵まれています。";
-				mes "とても貴重なアイテムが";
-				mes "手に入るでしょう。";
+				mes "[��_��][��g]";
+				mes "���^�Ɍb�܂�Ă��܂��B";
+				mes "�ƂĂ��M�d�ȃA�C�e����";
+				mes "��ɓ���ł��傤�B";
 				break;
 			case 1:
 				npcskillsupport 29,0;
 				sc_start 12,240000,10;	//SC_INCREASEAGI
-				mes "[御神籤][中吉]";
-				mes "躍進の時です。";
-				mes "思い切った行動が、";
-				mes "幸運を呼び込むでしょう。";
+				mes "[��_��][���g]";
+				mes "���i�̎��ł��B";
+				mes "�v���؂����s�����A";
+				mes "�K�^���Ăэ��ނł��傤�B";
 				break;
 			case 2:
 				npcskillsupport 28,9999;
 				heal 9999,0;
-				mes "[御神籤][小吉]";
-				mes "無理は禁物です。";
-				mes "休息は適度にとりましょう。";
+				mes "[��_��][���g]";
+				mes "�����͋֕��ł��B";
+				mes "�x���͓K�x�ɂƂ�܂��傤�B";
 				break;
 			case 3:
 				misceffect 169,"";
-				mes "[御神籤][吉]";
-				mes "前進することも大事ですが、";
-				mes "時には立ち止まって";
-				mes "自らを振り返ることを";
-				mes "忘れてはいけません。";
+				mes "[��_��][�g]";
+				mes "�O�i���邱�Ƃ��厖�ł����A";
+				mes "���ɂ͗����~�܂���";
+				mes "�����U��Ԃ邱�Ƃ�";
+				mes "�Y��Ă͂����܂���B";
 				break;
 			case 4:
 				sc_start3 SC_STONE,0,0,0,0,10000,10;
-				mes "[御神籤][凶]";
-				mes "忍耐の時です。";
-				mes "焦らず、地道に修練を積めば、";
-				mes "いずれ転機が訪れるでしょう。";
+				mes "[��_��][��]";
+				mes "�E�ς̎��ł��B";
+				mes "�ł炸�A�n���ɏC����ς߂΁A";
+				mes "������]�@���K���ł��傤�B";
 				break;
 			case 5:
 				sc_start3 SC_CURSE,0,0,0,0,10000,10;
-				mes "[御神籤][大凶]";
-				mes "背後に気をつけましょう。";
-				mes "不意の攻撃に遭うかもしれません。";
+				mes "[��_��][�勥]";
+				mes "�w��ɋC�����܂��傤�B";
+				mes "�s�ӂ̍U���ɑ�����������܂���B";
 				break;
 		}
 		break;
 	}
 	next;
-	mes "[巫女]";
-	mes "いかがでしたか？";
-	mes "良い結果も悪い結果も日頃の";
-	mes "行いによってもたされるもの。";
-	mes "おごることなく精進する心を忘れずに。";
-	mes "では、良いお年を〜。";
+	mes "[�ޏ�]";
+	mes "�������ł������H";
+	mes "�ǂ����ʂ��������ʂ�������";
+	mes "�s���ɂ���Ă����������́B";
+	mes "�����邱�ƂȂ����i����S��Y�ꂸ�ɁB";
+	mes "�ł́A�ǂ����N���`�B";
 	close;
 }
 
-amatsu.gat,44,115,5	duplicate(おみくじ巫女さん#chance)	おみくじ巫女さん	769
+amatsu.gat,44,115,5	duplicate(���݂����ޏ�����#chance)	���݂����ޏ�����	769
 
 //==============================================================
-//お雑煮作成NPC
+//���G�ύ쐬NPC
 //==============================================================
-amatsu.gat,172,122,5	script	お雑煮屋	701,{
-	mes "[おばさん]";
-	mes "ああ〜忙しいわ〜。";
-	mes "お正月早々、嬉しいことだけどね。";
-	mes "ちょっと、そこのあんた";
-	mes "お正月の定番「お雑煮」はいかが？";
+amatsu.gat,172,122,5	script	���G�ω�	701,{
+	mes "[���΂���]";
+	mes "�����`�Z������`�B";
+	mes "���������X�A���������Ƃ����ǂˁB";
+	mes "������ƁA�����̂���";
+	mes "�������̒�ԁu���G�ρv�͂������H";
 	next;
-	if(select("おばちゃん、お雑煮1個ください！","それって食べ物なんですか？")==2) {
-		mes "[おばさん]";
-		mes "まぁ！";
-		mes "こんなにおいしい物を知らないのかい。";
-		mes "仕方がないわねぇ〜。";
+	if(select("���΂����A���G��1���������I","������ĐH�ו��Ȃ�ł����H")==2) {
+		mes "[���΂���]";
+		mes "�܂��I";
+		mes "����Ȃɂ�����������m��Ȃ��̂����B";
+		mes "�d�����Ȃ���˂��`�B";
 		next;
-		mes "[おばさん]";
-		mes "「お雑煮」っていうのはね、";
-		mes "お正月の定番料理のことよ。";
-		mes "お餅やお野菜などを一緒に、";
-		mes "こうやってじっくりじっくり";
-		mes "煮込んだ温かい汁物なの。";
+		mes "[���΂���]";
+		mes "�u���G�ρv���Ă����̂͂ˁA";
+		mes "�������̒�ԗ����̂��Ƃ�B";
+		mes "���݂₨��؂Ȃǂ��ꏏ�ɁA";
+		mes "��������Ă������肶������";
+		mes "�ύ��񂾉������`���Ȃ́B";
 		next;
-		mes "[おばさん]";
-		mes "ほら、いい匂いがするでしょう？";
-		mes "しかもおいしいし、体も温まるのよ。";
-		mes "もしよかったら、あんたも";
-		mes "一杯注文しなさいな";
+		mes "[���΂���]";
+		mes "�ق�A��������������ł��傤�H";
+		mes "�����������������A�̂����܂�̂�B";
+		mes "�����悩������A���񂽂�";
+		mes "��t�������Ȃ�����";
 		close;
 	}
-	mes "[おばさん]";
-	mes "はい、お雑煮1杯ね。";
-	mes "……あら、材料を切らしちゃってるわ。";
-	mes "ごめんね、今、ちょっと";
-	mes "品切れしちゃってるのよ。";
-	mes "そうだ、あんたちょいと";
-	mes "手伝ってくれないかい？";
+	mes "[���΂���]";
+	mes "�͂��A���G��1�t�ˁB";
+	mes "�c�c����A�ޗ���؂炵������Ă��B";
+	mes "���߂�ˁA���A�������";
+	mes "�i�؂ꂵ������Ă�̂�B";
+	mes "�������A���񂽂��傢��";
+	mes "��`���Ă���Ȃ������H";
 	next;
-	if(select("いいですよ","いや、急いでるので…")==2) {
-		mes "[おばさん]";
-		mes "それじゃ、仕方がないわねぇ。";
-		mes "あぁ〜、誰か手伝ってくれる";
-		mes "いい人はいないのかしら〜？";
+	if(select("�����ł���","����A�}���ł�̂Łc")==2) {
+		mes "[���΂���]";
+		mes "���ꂶ��A�d�����Ȃ���˂��B";
+		mes "�����`�A�N����`���Ă����";
+		mes "�����l�͂��Ȃ��̂�����`�H";
 		close;
 	}
-	mes "[おばさん]";
-	mes "まぁ、悪いわねぇ〜。";
-	mes "じゃあ、これから言う物を";
-	mes "集めてきてちょうだい。";
-	mes "いい？メモは大丈夫かい？";
+	mes "[���΂���]";
+	mes "�܂��A������˂��`�B";
+	mes "���Ⴀ�A���ꂩ�猾������";
+	mes "�W�߂Ă��Ă��傤�����B";
+	mes "�����H�����͑��v�����H";
 	next;
-	mes "[おばさん]";
-	mes "まず「おもち」が3個。";
-	mes "これは具の目玉だからね。";
-	mes "それと「緑ハーブ」が2個。";
-	mes "これは添え物として使うのよ。";
+	mes "[���΂���]";
+	mes "�܂��u�������v��3�B";
+	mes "����͋�̖ڋʂ�����ˁB";
+	mes "����Ɓu�΃n�[�u�v��2�B";
+	mes "����͓Y�����Ƃ��Ďg���̂�B";
 	next;
-	mes "[おばさん]";
-	mes "あとはお野菜の「ニンジン」を3個ね。";
-	mes "これを入れると甘みが出ていいのよ。";
-	mes "「にく」は……2個くらいでいいわ。";
-	mes "そうそう大事なダシの素「魚の尻尾」を";
-	mes "忘れちゃいけないわね。";
-	mes "これは5個でいいかしら。";
+	mes "[���΂���]";
+	mes "���Ƃ͂���؂́u�j���W���v��3�ˁB";
+	mes "���������ƊÂ݂��o�Ă����̂�B";
+	mes "�u�ɂ��v�́c�c2���炢�ł�����B";
+	mes "���������厖�ȃ_�V�̑f�u���̐K���v��";
+	mes "�Y�ꂿ�Ⴂ���Ȃ���ˁB";
+	mes "�����5�ł���������B";
 	next;
 	if(countitem(511)<2 || countitem(515)<3 || countitem(517)<2 || countitem(554)<3 || countitem(1023)<5) {
-		mes "[おばさん]";
-		mes "ちゃんとメモしたわね？";
-		mes "おもち3個";
-		mes "緑ハーブ2個";
-		mes "ニンジン3個";
-		mes "にく2個";
-		mes "魚の尻尾5個";
+		mes "[���΂���]";
+		mes "�����ƃ���������ˁH";
+		mes "������3��";
+		mes "�΃n�[�u2��";
+		mes "�j���W��3��";
+		mes "�ɂ�2��";
+		mes "���̐K��5��";
 		next;
-		mes "[おばさん]";
-		mes "あ、あもちはそこのオジサンに";
-		mes "頼んでも構わないわよ。";
-		mes "でも、他はアマツじゃ";
-		mes "なかなか手に入らないわねぇ。";
-		mes "ちょっと大変かもしれないけど、";
-		mes "お願いするわね。";
+		mes "[���΂���]";
+		mes "���A�������͂����̃I�W�T����";
+		mes "����ł��\��Ȃ����B";
+		mes "�ł��A���̓A�}�c����";
+		mes "�Ȃ��Ȃ���ɓ���Ȃ���˂��B";
+		mes "������Ƒ�ς�������Ȃ����ǁA";
+		mes "���肢�����ˁB";
 		close;
 	}
-	mes "[おばさん]";
-	mes "あらやだ、全部持ってるじゃないの。";
-	mes "あんた、お雑煮を1杯無料であげるから";
-	mes "その材料をおばさんにくれないかい？";
+	mes "[���΂���]";
+	mes "����₾�A�S�������Ă邶��Ȃ��́B";
+	mes "���񂽁A���G�ς�1�t�����ł����邩��";
+	mes "���̍ޗ������΂���ɂ���Ȃ������H";
 	next;
-	if(select("はい、どうぞ","これは自分で作る分なので……")==2) {
-		mes "[おばさん]";
-		mes "そうかい。残念だねぇ。";
-		mes "材料さえあれば、私が";
-		mes "温かくておいしい「お雑煮」を";
-		mes "ご馳走してあげられるのにねぇ。";
+	if(select("�͂��A�ǂ���","����͎����ō�镪�Ȃ̂Łc�c")==2) {
+		mes "[���΂���]";
+		mes "���������B�c�O���˂��B";
+		mes "�ޗ���������΁A����";
+		mes "�������Ă��������u���G�ρv��";
+		mes "���y�����Ă�������̂ɂ˂��B";
 		close;
 	}
-	mes "[おばさん]";
-	mes "ありがとう。助かるわ〜。";
-	mes "これでまたお雑煮が";
-	mes "たくさん作れるわね。";
-	mes "はい、お礼のお雑煮だよ。";
-	mes "まだ熱いから、火傷しないように";
-	mes "少し冷ましてから食べなさいね。";
+	mes "[���΂���]";
+	mes "���肪�Ƃ��B�������`�B";
+	mes "����ł܂����G�ς�";
+	mes "������������ˁB";
+	mes "�͂��A����̂��G�ς���B";
+	mes "�܂��M������A�Ώ����Ȃ��悤��";
+	mes "������܂��Ă���H�ׂȂ����ˁB";
 	next;
 	delitem 511,2;
 	delitem 515,3;

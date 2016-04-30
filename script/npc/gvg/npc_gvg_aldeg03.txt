@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 aldeg_cas03.gat,0,0,0	script	#AgitExe_L3	-1,{
 OnAgitStart:
@@ -43,7 +43,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 aldeg_cas03.gat,0,0,0	script	#AgitTreasure_L3	-1,{
 OnClock0000:
@@ -60,7 +60,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_L3a	{
 	callfunc "AgitEmblemFlag",1,"aldeg_cas03.gat",205,186;
@@ -70,9 +70,9 @@ OnFlagEmb_L3:
 	flagemblem getcastledata("aldeg_cas03.gat",1);
 	end;
 }
-alde_gld.gat,262,153,7	duplicate(#GldFlag_L3a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3a01	722
-alde_gld.gat,146,82,8	duplicate(#GldFlag_L3a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3a02	722
-alde_gld.gat,138,82,8	duplicate(#GldFlag_L3a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3a03	722
+alde_gld.gat,262,153,7	duplicate(#GldFlag_L3a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3a01	722
+alde_gld.gat,146,82,8	duplicate(#GldFlag_L3a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3a02	722
+alde_gld.gat,138,82,8	duplicate(#GldFlag_L3a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3a03	722
 
 -	script	#GldFlag_L3b	{
 	end;
@@ -81,28 +81,28 @@ OnFlagEmb_L3:
 	flagemblem getcastledata("aldeg_cas03.gat",1);
 	end;
 }
-//aldebaran.gat,134,97,4	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b01	722
-//aldeg_cas03.gat,176,175,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b02	722
-//aldeg_cas03.gat,77,115,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b03	722
-//aldeg_cas03.gat,77,215,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b04	722
-//aldeg_cas03.gat,112,107,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b05	722
-//aldeg_cas03.gat,112,117,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b06	722
-//aldeg_cas03.gat,69,71,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b07	722
-//aldeg_cas03.gat,91,69,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b08	722
-//aldeg_cas03.gat,108,60,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b09	722
-//aldeg_cas03.gat,121,73,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b10	722
-//aldeg_cas03.gat,75,102,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b11	722
-//aldeg_cas03.gat,199,169,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b12	722
-//aldeg_cas03.gat,181,179,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b13	722
-//aldeg_cas03.gat,192,44,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b14	722
-//aldeg_cas03.gat,208,145,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b15	722
-//aldeg_cas03.gat,207,75,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b16	722
-//aldeg_cas03.gat,96,62,2	duplicate(#GldFlag_L3b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3b17	722
+//aldebaran.gat,134,97,4	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b01	722
+//aldeg_cas03.gat,176,175,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b02	722
+//aldeg_cas03.gat,77,115,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b03	722
+//aldeg_cas03.gat,77,215,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b04	722
+//aldeg_cas03.gat,112,107,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b05	722
+//aldeg_cas03.gat,112,117,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b06	722
+//aldeg_cas03.gat,69,71,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b07	722
+//aldeg_cas03.gat,91,69,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b08	722
+//aldeg_cas03.gat,108,60,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b09	722
+//aldeg_cas03.gat,121,73,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b10	722
+//aldeg_cas03.gat,75,102,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b11	722
+//aldeg_cas03.gat,199,169,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b12	722
+//aldeg_cas03.gat,181,179,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b13	722
+//aldeg_cas03.gat,192,44,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b14	722
+//aldeg_cas03.gat,208,145,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b15	722
+//aldeg_cas03.gat,207,75,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b16	722
+//aldeg_cas03.gat,96,62,2	duplicate(#GldFlag_L3b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3b17	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-aldeg_cas03.gat,118,76,0	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L3	117,{
+aldeg_cas03.gat,118,76,0	script	ƒJƒvƒ‰Eˆõ::AgitKafra_L3	117,{
 	callfunc "AgitKafra",17;
 	close;
 OnAgitInit:
@@ -112,9 +112,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-aldeg_cas03.gat,110,118,0	script	ãƒŠã‚¶ãƒ—	55,{
+aldeg_cas03.gat,110,118,0	script	ƒiƒUƒv	55,{
 	callfunc "AgitSteward","L3",'guardian_id,'guardian_x,'guardian_y,229,267;
 	close;
 OnAgitInit:
@@ -129,7 +129,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 aldeg_cas03.gat,229,267,0	script	#AgitMaster_L3	111,{
 	callfunc "AgitMaster",110,119;
@@ -137,7 +137,7 @@ aldeg_cas03.gat,229,267,0	script	#AgitMaster_L3	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 aldeg_cas03.gat,200,177,0	script	#AgitDungeon_L3	111,{
 	callfunc "AgitDungeon","gld_dun02.gat",165,38;
@@ -145,7 +145,7 @@ aldeg_cas03.gat,200,177,0	script	#AgitDungeon_L3	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 aldeg_cas03.gat,225,269,0	script	#AgitBanWarp_L3	139,8,8,{
 	callfunc "AgitBanWarp","aldebaran.gat",143,112;

@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 aldeg_cas01.gat,0,0,0	script	#AgitExe_L1	-1,{
 OnAgitStart:
@@ -43,7 +43,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 aldeg_cas01.gat,0,0,0	script	#AgitTreasure_L1	-1,{
 OnClock0000:
@@ -60,7 +60,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_L1a	{
 	callfunc "AgitEmblemFlag",1,"aldeg_cas01.gat",218,170;
@@ -70,11 +70,11 @@ OnFlagEmb_L1:
 	flagemblem getcastledata("aldeg_cas01.gat",1);
 	end;
 }
-alde_gld.gat,257,153,7	duplicate(#GldFlag_L1a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1a01	722
-alde_gld.gat,61,87,6	duplicate(#GldFlag_L1a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1a02	722
-alde_gld.gat,61,79,6	duplicate(#GldFlag_L1a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1a03	722
-alde_gld.gat,45,87,8	duplicate(#GldFlag_L1a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1a04	722
-alde_gld.gat,51,87,8	duplicate(#GldFlag_L1a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1a05	722
+alde_gld.gat,257,153,7	duplicate(#GldFlag_L1a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1a01	722
+alde_gld.gat,61,87,6	duplicate(#GldFlag_L1a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1a02	722
+alde_gld.gat,61,79,6	duplicate(#GldFlag_L1a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1a03	722
+alde_gld.gat,45,87,8	duplicate(#GldFlag_L1a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1a04	722
+alde_gld.gat,51,87,8	duplicate(#GldFlag_L1a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1a05	722
 
 -	script	#GldFlag_L1b	{
 	end;
@@ -83,28 +83,28 @@ OnFlagEmb_L1:
 	flagemblem getcastledata("aldeg_cas01.gat",1);
 	end;
 }
-//aldebaran.gat,152,97,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b01	722
-//aldeg_cas01.gat,30,248,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b02	722
-//aldeg_cas01.gat,30,246,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b03	722
-//aldeg_cas01.gat,37,248,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b04	722
-//aldeg_cas01.gat,37,246,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b05	722
-//aldeg_cas01.gat,95,80,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b06	722
-//aldeg_cas01.gat,95,59,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b07	722
-//aldeg_cas01.gat,62,75,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b08	722
-//aldeg_cas01.gat,66,75,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b09	722
-//aldeg_cas01.gat,70,75,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b10	722
-//aldeg_cas01.gat,74,75,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b11	722
-//aldeg_cas01.gat,62,64,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b12	722
-//aldeg_cas01.gat,66,64,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b13	722
-//aldeg_cas01.gat,70,64,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b14	722
-//aldeg_cas01.gat,74,64,2	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b15	722
-//aldeg_cas01.gat,203,150,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b16	722
-//aldeg_cas01.gat,210,150,4	duplicate(#GldFlag_L1b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1b17	722
+//aldebaran.gat,152,97,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b01	722
+//aldeg_cas01.gat,30,248,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b02	722
+//aldeg_cas01.gat,30,246,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b03	722
+//aldeg_cas01.gat,37,248,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b04	722
+//aldeg_cas01.gat,37,246,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b05	722
+//aldeg_cas01.gat,95,80,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b06	722
+//aldeg_cas01.gat,95,59,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b07	722
+//aldeg_cas01.gat,62,75,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b08	722
+//aldeg_cas01.gat,66,75,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b09	722
+//aldeg_cas01.gat,70,75,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b10	722
+//aldeg_cas01.gat,74,75,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b11	722
+//aldeg_cas01.gat,62,64,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b12	722
+//aldeg_cas01.gat,66,64,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b13	722
+//aldeg_cas01.gat,70,64,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b14	722
+//aldeg_cas01.gat,74,64,2	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b15	722
+//aldeg_cas01.gat,203,150,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b16	722
+//aldeg_cas01.gat,210,150,4	duplicate(#GldFlag_L1b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1b17	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-aldeg_cas01.gat,218,170,0	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L1	117,{
+aldeg_cas01.gat,218,170,0	script	ƒJƒvƒ‰Eˆõ::AgitKafra_L1	117,{
 	callfunc "AgitKafra",17;
 	close;
 OnAgitInit:
@@ -114,9 +114,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-aldeg_cas01.gat,218,175,0	script	ã‚¢ãƒ«ãƒ—ãƒ¬ãƒ‰	55,{
+aldeg_cas01.gat,218,175,0	script	ƒAƒ‹ƒvƒŒƒh	55,{
 	callfunc "AgitSteward","L1",'guardian_id,'guardian_x,'guardian_y,113,223;
 	close;
 OnAgitInit:
@@ -131,7 +131,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 aldeg_cas01.gat,123,223,0	script	#AgitMaster_L1	111,{
 	callfunc "AgitMaster",218,176;
@@ -139,7 +139,7 @@ aldeg_cas01.gat,123,223,0	script	#AgitMaster_L1	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 aldeg_cas01.gat,211,181,0	script	#AgitDungeon_L1	111,{
 	callfunc "AgitDungeon","gld_dun02.gat",32,122;
@@ -147,7 +147,7 @@ aldeg_cas01.gat,211,181,0	script	#AgitDungeon_L1	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 aldeg_cas01.gat,118,223,0	script	#AgitBanWarp_L1	139,8,8,{
 	callfunc "AgitBanWarp","aldebaran.gat",143,112;

@@ -1,2 +1,2 @@
-//skill_cast_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//skill_cast_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //id,cast_list,fixed_cast_list,delay_list,cool_list,upkeep_time,upkeep_time2

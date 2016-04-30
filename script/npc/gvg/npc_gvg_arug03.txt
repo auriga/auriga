@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 arug_cas03.gat,0,0,0	script	#AgitExe_F3	-1,{
 OnAgitStart:
@@ -44,7 +44,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 arug_cas03.gat,0,0,0	script	#AgitTreasure_F3	-1,{
 OnClock0000:
@@ -61,9 +61,9 @@ OnKilled:
 }
 
 //============================================================
-// å®ˆå‚™æ‹…å½“
+// ç”õ’S“–
 //------------------------------------------------------------
-arug_cas03.gat,146,315,3	script	ã‚¨ã‚¹ã‚¹#F3	868,{
+arug_cas03.gat,146,315,3	script	ƒGƒXƒX#F3	868,{
 	if('guardian1_x[0] == 0) {
 		setarray 'guardian1_x,130,128,128,128,128,128,128,128,128,128,110, 66;
 		setarray 'guardian1_y, 60, 77, 77, 90, 77, 90,100, 77, 90,100, 96,157;
@@ -126,7 +126,7 @@ OnAgitEnd:
 }
 
 //============================================================
-// å®ˆè­·çŸ³
+// çŒìÎ
 //------------------------------------------------------------
 arug_cas03.gat,0,0,0	script	GuardianStone1#F3	111,{
 OnAgitStart:
@@ -139,8 +139,8 @@ OnKilled:
 	end;
 OnSet:
 OnTimer300000:
-	hideoffnpc "ç¬¬1å®ˆè­·çŸ³#F3";
-	misceffect 247,"ç¬¬1å®ˆè­·çŸ³#F3";
+	hideoffnpc "‘æ1çŒìÎ#F3";
+	misceffect 247,"‘æ1çŒìÎ#F3";
 	set 'status,2;
 	stopnpctimer;
 	end;
@@ -151,7 +151,7 @@ OnAgitEnd:
 	end;
 }
 
-arug_cas03.gat,65,171,0	script	ç¬¬1å®ˆè­·çŸ³#F3	844,{
+arug_cas03.gat,65,171,0	script	‘æ1çŒìÎ#F3	844,{
 	callfunc "AgitStone",1;
 	close;
 OnInit:
@@ -171,8 +171,8 @@ OnKilled:
 	end;
 OnSet:
 OnTimer300000:
-	hideoffnpc "ç¬¬2å®ˆè­·çŸ³#F3";
-	misceffect 247,"ç¬¬2å®ˆè­·çŸ³#F3";
+	hideoffnpc "‘æ2çŒìÎ#F3";
+	misceffect 247,"‘æ2çŒìÎ#F3";
 	set 'status,2;
 	stopnpctimer;
 	end;
@@ -183,7 +183,7 @@ OnAgitEnd:
 	end;
 }
 
-arug_cas03.gat,212,149,0	script	ç¬¬2å®ˆè­·çŸ³#F3	844,{
+arug_cas03.gat,212,149,0	script	‘æ2çŒìÎ#F3	844,{
 	callfunc "AgitStone",2;
 	close;
 OnInit:
@@ -193,7 +193,7 @@ OnAgitEnd:
 }
 
 //============================================================
-// ãƒãƒªã‚±ãƒ¼ãƒ‰
+// ƒoƒŠƒP[ƒh
 //------------------------------------------------------------
 arug_cas03.gat,0,0,0	script	Barricade#F3	111,{
 OnSet:
@@ -213,19 +213,19 @@ OnKilled:
 	end;
 }
 
-arug_cas03.gat,136,158,0	script	åˆ¶å¾¡è£…ç½®01#F3	111,{
+arug_cas03.gat,136,158,0	script	§Œä‘•’u01#F3	111,{
 	callfunc "AgitBarricade";
 	close;
 OnSet:
 OnAgitStart:
 	set 'status,0;
 	areasetcell "arug_cas03.gat",139,158,144,158,5;
-	callguardian "arug_cas03.gat",140,157," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
-	callguardian "arug_cas03.gat",142,157," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
-	callguardian "arug_cas03.gat",144,157," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
-	callguardian "arug_cas03.gat",139,156," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
-	callguardian "arug_cas03.gat",141,156," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
-	callguardian "arug_cas03.gat",143,156," ",1905,1,"åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
+	callguardian "arug_cas03.gat",140,157," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
+	callguardian "arug_cas03.gat",142,157," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
+	callguardian "arug_cas03.gat",144,157," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
+	callguardian "arug_cas03.gat",139,156," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
+	callguardian "arug_cas03.gat",141,156," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
+	callguardian "arug_cas03.gat",143,156," ",1905,1,"§Œä‘•’u01#F3::OnKilled";
 	set 'count,6;
 	end;
 OnKilled:
@@ -233,31 +233,31 @@ OnKilled:
 	if('count > 0)
 		end;
 	set 'status,1;
-	announce "ç¬¬1ãƒãƒªã‚±ãƒ¼ãƒ‰ãŒçªç ´ã•ã‚Œã¾ã—ãŸ!!",0x9,0xFF0000;
+	announce "‘æ1ƒoƒŠƒP[ƒh‚ª“Ë”j‚³‚ê‚Ü‚µ‚½!!",0x9,0xFF0000;
 	areasetcell "arug_cas03.gat",139,158,144,158,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u01#F3::OnKilled";
 	end;
 OnReset:
 OnAgitEnd:
 	areasetcell "arug_cas03.gat",139,158,144,158,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®01#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u01#F3::OnKilled";
 	set 'status,0;
 	end;
 }
 
-arug_cas03.gat,135,212,0	script	åˆ¶å¾¡è£…ç½®02#F3	111,{
+arug_cas03.gat,135,212,0	script	§Œä‘•’u02#F3	111,{
 	callfunc "AgitBarricade";
 	close;
 OnSet:
 OnAgitStart:
 	set 'status,0;
 	areasetcell "arug_cas03.gat",138,210,145,210,5;
-	callguardian "arug_cas03.gat",140,209," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
-	callguardian "arug_cas03.gat",142,209," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
-	callguardian "arug_cas03.gat",144,209," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
-	callguardian "arug_cas03.gat",139,208," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
-	callguardian "arug_cas03.gat",141,208," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
-	callguardian "arug_cas03.gat",143,208," ",1905,1,"åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
+	callguardian "arug_cas03.gat",140,209," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
+	callguardian "arug_cas03.gat",142,209," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
+	callguardian "arug_cas03.gat",144,209," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
+	callguardian "arug_cas03.gat",139,208," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
+	callguardian "arug_cas03.gat",141,208," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
+	callguardian "arug_cas03.gat",143,208," ",1905,1,"§Œä‘•’u02#F3::OnKilled";
 	set 'count,6;
 	end;
 OnKilled:
@@ -265,29 +265,29 @@ OnKilled:
 	if('count > 0)
 		end;
 	set 'status,1;
-	announce "ç¬¬2ãƒãƒªã‚±ãƒ¼ãƒ‰ãŒçªç ´ã•ã‚Œã¾ã—ãŸ!!",0x9,0xFF0000;
+	announce "‘æ2ƒoƒŠƒP[ƒh‚ª“Ë”j‚³‚ê‚Ü‚µ‚½!!",0x9,0xFF0000;
 	areasetcell "arug_cas03.gat",138,210,145,210,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u02#F3::OnKilled";
 	end;
 OnReset:
 OnAgitEnd:
 	areasetcell "arug_cas03.gat",138,210,145,210,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®02#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u02#F3::OnKilled";
 	set 'status,0;
 	end;
 }
 
-arug_cas03.gat,134,266,0	script	åˆ¶å¾¡è£…ç½®03#F3	111,{
+arug_cas03.gat,134,266,0	script	§Œä‘•’u03#F3	111,{
 	callfunc "AgitBarricade";
 	close;
 OnSet:
 OnAgitStart:
 	set 'status,0;
 	areasetcell "arug_cas03.gat",138,263,145,263,5;
-	callguardian "arug_cas03.gat",139,262," ",1905,1,"åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
-	callguardian "arug_cas03.gat",141,262," ",1905,1,"åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
-	callguardian "arug_cas03.gat",143,262," ",1905,1,"åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
-	callguardian "arug_cas03.gat",145,262," ",1905,1,"åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
+	callguardian "arug_cas03.gat",139,262," ",1905,1,"§Œä‘•’u03#F3::OnKilled";
+	callguardian "arug_cas03.gat",141,262," ",1905,1,"§Œä‘•’u03#F3::OnKilled";
+	callguardian "arug_cas03.gat",143,262," ",1905,1,"§Œä‘•’u03#F3::OnKilled";
+	callguardian "arug_cas03.gat",145,262," ",1905,1,"§Œä‘•’u03#F3::OnKilled";
 	set 'count,4;
 	end;
 OnKilled:
@@ -295,23 +295,23 @@ OnKilled:
 	if('count > 0)
 		end;
 	set 'status,1;
-	announce "ç¬¬3ãƒãƒªã‚±ãƒ¼ãƒ‰ãŒçªç ´ã•ã‚Œã¾ã—ãŸ!!",0x9,0xFF0000;
+	announce "‘æ3ƒoƒŠƒP[ƒh‚ª“Ë”j‚³‚ê‚Ü‚µ‚½!!",0x9,0xFF0000;
 	areasetcell "arug_cas03.gat",138,263,145,263,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u03#F3::OnKilled";
 	end;
 OnReset:
 OnAgitEnd:
 	areasetcell "arug_cas03.gat",138,263,145,263,0;
-	killmonster "arug_cas03.gat","åˆ¶å¾¡è£…ç½®03#F3::OnKilled";
+	killmonster "arug_cas03.gat","§Œä‘•’u03#F3::OnKilled";
 	set 'status,0;
 	end;
 }
 
 //============================================================
-// ãƒªãƒ³ã‚¯ãƒ•ãƒ©ãƒƒã‚°(A)
+// ƒŠƒ“ƒNƒtƒ‰ƒbƒO(A)
 //------------------------------------------------------------
 arug_cas03.gat,122,314,0	script	LF-01#F3	111,{
-	setarray '@code,1,2;	//"ç¬¬1æ‹ ç‚¹","ç¬¬2æ‹ ç‚¹"
+	setarray '@code,1,2;	//"‘æ1‹’“_","‘æ2‹’“_"
 	setarray '@x, 84,197;
 	setarray '@y,158,136;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -319,7 +319,7 @@ arug_cas03.gat,122,314,0	script	LF-01#F3	111,{
 }
 
 arug_cas03.gat,125,314,0	script	LF-02#F3	111,{
-	setarray '@code,11,12;	//"é˜²è¡›åœ°åŸŸ1-1","é˜²è¡›åœ°åŸŸ1-2"
+	setarray '@code,11,12;	//"–h‰q’nˆæ1-1","–h‰q’nˆæ1-2"
 	setarray '@x, 65,211;
 	setarray '@y, 94, 97;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -327,7 +327,7 @@ arug_cas03.gat,125,314,0	script	LF-02#F3	111,{
 }
 
 arug_cas03.gat,128,314,0	script	LF-03#F3	111,{
-	setarray '@code,13,14;	//"é˜²è¡›åœ°åŸŸ1-3","é˜²è¡›åœ°åŸŸ1-4"
+	setarray '@code,13,14;	//"–h‰q’nˆæ1-3","–h‰q’nˆæ1-4"
 	setarray '@x,112,171;
 	setarray '@y, 73, 73;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -335,7 +335,7 @@ arug_cas03.gat,128,314,0	script	LF-03#F3	111,{
 }
 
 arug_cas03.gat,131,314,0	script	LF-04#F3	111,{
-	setarray '@code,21,22;	//"é˜²è¡›åœ°åŸŸ2-1","é˜²è¡›åœ°åŸŸ2-2"
+	setarray '@code,21,22;	//"–h‰q’nˆæ2-1","–h‰q’nˆæ2-2"
 	setarray '@x,112,172;
 	setarray '@y,152,152;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -343,7 +343,7 @@ arug_cas03.gat,131,314,0	script	LF-04#F3	111,{
 }
 
 arug_cas03.gat,134,314,0	script	LF-05#F3	111,{
-	setarray '@code,23,24;	//"é˜²è¡›åœ°åŸŸ2-3","é˜²è¡›åœ°åŸŸ2-4"
+	setarray '@code,23,24;	//"–h‰q’nˆæ2-3","–h‰q’nˆæ2-4"
 	setarray '@x,120,162;
 	setarray '@y,186,186;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -351,7 +351,7 @@ arug_cas03.gat,134,314,0	script	LF-05#F3	111,{
 }
 
 arug_cas03.gat,149,314,0	script	LF-06#F3	111,{
-	setarray '@code,31,32;	//"é˜²è¡›åœ°åŸŸ3-1","é˜²è¡›åœ°åŸŸ3-2"
+	setarray '@code,31,32;	//"–h‰q’nˆæ3-1","–h‰q’nˆæ3-2"
 	setarray '@x,116,164;
 	setarray '@y,235,235;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -359,7 +359,7 @@ arug_cas03.gat,149,314,0	script	LF-06#F3	111,{
 }
 
 arug_cas03.gat,152,314,0	script	LF-07#F3	111,{
-	setarray '@code,11,21,31;	//"é˜²è¡›åœ°åŸŸ1-1","é˜²è¡›åœ°åŸŸ2-1","é˜²è¡›åœ°åŸŸ3-1"
+	setarray '@code,11,21,31;	//"–h‰q’nˆæ1-1","–h‰q’nˆæ2-1","–h‰q’nˆæ3-1"
 	setarray '@x, 65,112,116;
 	setarray '@y, 94,152,235;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -367,7 +367,7 @@ arug_cas03.gat,152,314,0	script	LF-07#F3	111,{
 }
 
 arug_cas03.gat,155,314,0	script	LF-08#F3	111,{
-	setarray '@code,11,21,31;	//"é˜²è¡›åœ°åŸŸ1-2","é˜²è¡›åœ°åŸŸ2-2","é˜²è¡›åœ°åŸŸ3-2"
+	setarray '@code,11,21,31;	//"–h‰q’nˆæ1-2","–h‰q’nˆæ2-2","–h‰q’nˆæ3-2"
 	setarray '@x,211,172,164;
 	setarray '@y, 97,152,235;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -375,7 +375,7 @@ arug_cas03.gat,155,314,0	script	LF-08#F3	111,{
 }
 
 arug_cas03.gat,158,314,0	script	LF-09#F3	111,{
-	setarray '@code,14,24;	//"é˜²è¡›åœ°åŸŸ1-4","é˜²è¡›åœ°åŸŸ2-4"
+	setarray '@code,14,24;	//"–h‰q’nˆæ1-4","–h‰q’nˆæ2-4"
 	setarray '@x,171,162;
 	setarray '@y, 73,186;
 	callfunc "AgitLinkFlagA",'@code,'@x,'@y;
@@ -388,36 +388,36 @@ arug_cas03.gat,161,314,0	script	LF-10#F3	111,{
 }
 
 //============================================================
-// ãƒªãƒ³ã‚¯ãƒ•ãƒ©ãƒƒã‚°(B)
+// ƒŠƒ“ƒNƒtƒ‰ƒbƒO(B)
 //------------------------------------------------------------
 -	script	#LinkFlag_F3	{
 	callfunc "AgitLinkFlagB",0,121,318;
 	close;
 OnAgitInit:
 OnFlagEmb_F3:
-	if(substr(strnpcinfo(2),0,1) == "B")	//ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°å‹ãªã‚‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ æ›´æ–°
+	if(substr(strnpcinfo(2),0,1) == "B")	//ƒMƒ‹ƒhƒtƒ‰ƒbƒOŒ^‚È‚çƒGƒ“ƒuƒŒƒ€XV
 		flagemblem getcastledata("arug_cas03.gat",1);
 	end;
 }
-arug_cas03.gat,45,158,0		duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A01	111
-arug_cas03.gat,226,156,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A02	111
-arug_cas03.gat,134,62,0		duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A03	111
-arug_cas03.gat,149,62,0		duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A04	111
-arug_cas03.gat,123,154,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A05	111
-arug_cas03.gat,160,154,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A06	111
-arug_cas03.gat,135,205,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A07	111
-arug_cas03.gat,148,205,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A08	111
-arug_cas03.gat,134,260,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A09	111
-arug_cas03.gat,149,260,0	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#A10	111
-arug_cas03.gat,148,103,4	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#B11	722
-arug_cas03.gat,135,103,4	duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#B12	722
-arug_cas03.gat,63,51,7		duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#B13	722
-arug_cas03.gat,214,51,1		duplicate(#LinkFlag_F3)	ãƒ›ãƒ«ãƒ³#B14	722
+arug_cas03.gat,45,158,0		duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A01	111
+arug_cas03.gat,226,156,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A02	111
+arug_cas03.gat,134,62,0		duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A03	111
+arug_cas03.gat,149,62,0		duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A04	111
+arug_cas03.gat,123,154,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A05	111
+arug_cas03.gat,160,154,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A06	111
+arug_cas03.gat,135,205,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A07	111
+arug_cas03.gat,148,205,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A08	111
+arug_cas03.gat,134,260,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A09	111
+arug_cas03.gat,149,260,0	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#A10	111
+arug_cas03.gat,148,103,4	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#B11	722
+arug_cas03.gat,135,103,4	duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#B12	722
+arug_cas03.gat,63,51,7		duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#B13	722
+arug_cas03.gat,214,51,1		duplicate(#LinkFlag_F3)	ƒzƒ‹ƒ“#B14	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-arug_cas03.gat,315,98,5	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_F3	117,{
+arug_cas03.gat,315,98,5	script	ƒJƒvƒ‰Eˆõ::AgitKafra_F3	117,{
 	callfunc "AgitKafra",18;
 	close;
 OnAgitInit:
@@ -427,15 +427,15 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-arug_cas03.gat,328,98,3	script	åŸ·äº‹	55,{
+arug_cas03.gat,328,98,3	script	·–	55,{
 	callfunc "AgitSteward","F3",0,0,0,292,266;
 	close;
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 arug_cas03.gat,299,277,0	script	#AgitMaster_F3	111,{
 	callfunc "AgitMaster",321,57;
@@ -443,7 +443,7 @@ arug_cas03.gat,299,277,0	script	#AgitMaster_F3	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_F3a	{
 	callfunc "AgitEmblemFlag",3,"arug_cas03.gat",121,318;
@@ -453,8 +453,8 @@ OnFlagEmb_F3:
 	flagemblem getcastledata("arug_cas03.gat",1);
 	end;
 }
-aru_gld.gat,60,174,0	duplicate(#GldFlag_F3a)	ãƒ›ãƒ«ãƒ³#a01	722
-aru_gld.gat,74,174,0	duplicate(#GldFlag_F3a)	ãƒ›ãƒ«ãƒ³#a02	722
+aru_gld.gat,60,174,0	duplicate(#GldFlag_F3a)	ƒzƒ‹ƒ“#a01	722
+aru_gld.gat,74,174,0	duplicate(#GldFlag_F3a)	ƒzƒ‹ƒ“#a02	722
 
 -	script	#GldFlag_F3b	{
 	end;
@@ -463,12 +463,12 @@ OnFlagEmb_F3:
 	flagemblem getcastledata("arug_cas03.gat",1);
 	end;
 }
-//rachel.gat,138,126,6	duplicate(#GldFlag_F3b)	ãƒ›ãƒ«ãƒ³#b01	722
+//rachel.gat,138,126,6	duplicate(#GldFlag_F3b)	ƒzƒ‹ƒ“#b01	722
 
 //============================================================
-// ä¸æ€è­°ãªãƒ’ãƒãƒ¯ãƒªï¼ˆã‚¢ã‚¸ãƒˆãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ï¼‰
+// •sv‹c‚Èƒqƒ}ƒƒŠiƒAƒWƒgƒ_ƒ“ƒWƒ‡ƒ“j
 //------------------------------------------------------------
-arug_cas03.gat,312,154,3	script	ä¸æ€è­°ãªãƒ’ãƒãƒ¯ãƒª#F3	977,{
+arug_cas03.gat,312,154,3	script	•sv‹c‚Èƒqƒ}ƒƒŠ#F3	977,{
 	callfunc "AgitDungeonSE","arug_dun01.gat",50,50;
 	close;
 }

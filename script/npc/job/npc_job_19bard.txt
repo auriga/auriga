@@ -1,486 +1,486 @@
 //===============================================================================================
 //Ragnarok Online Bard jobchange script
 //
-//　■ CHANGE_BA -> 0〜4
-//　　 LUTIE_1QUE -> スノウノウクエストフラグ
+//�@�� CHANGE_BA -> 0�`4
+//�@�@ LUTIE_1QUE -> �X�m�E�m�E�N�G�X�g�t���O
 //===============================================================================================
 
-comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
+comodo.gat,211,155,5 script �����炢�̋�V���l 741,{
 	cutin "job_bard_aiolo01",2;
 	if(Upper == UPPER_HIGH) {
-		mes "[アイオルデ]";
-		mes "英雄たる素質を持つ人間は";
-		mes "その時代に数えきれず生まれ";
-		mes "しかし可能性や運命を忘れ";
-		mes "平凡な暮らしをしてしまう……";
+		mes "[�A�C�I���f]";
+		mes "�p�Y����f�������l�Ԃ�";
+		mes "���̎���ɐ������ꂸ���܂�";
+		mes "�������\����^����Y��";
+		mes "���}�ȕ�炵�����Ă��܂��c�c";
 		next;
-		mes "[アイオルデ]";
-		mes "風よ、雲よ、皆に伝えてごらん";
-		mes "食べて飲んで歌う日々を送る皆に";
-		mes "あなたの人生はそうではないのだと";
-		mes "大事なことを忘れているよと……";
+		mes "[�A�C�I���f]";
+		mes "����A�_��A�F�ɓ`���Ă����";
+		mes "�H�ׂĈ���ŉ̂����X�𑗂�F��";
+		mes "���Ȃ��̐l���͂����ł͂Ȃ��̂���";
+		mes "�厖�Ȃ��Ƃ�Y��Ă����Ɓc�c";
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
 	if(Job == Job_Novice) {
-		mes "[アイオルデ]";
-		mes "胸の中に一つ一つ刻まれる痛みを";
-		mes "全て数える事はできないさ。";
-		mes "アイテムは簡単に出るけれど";
-		mes "それが旅の足しになるかって言うとね…";
-		mes "私もまだレアなんて見たことないさ。";
+		mes "[�A�C�I���f]";
+		mes "���̒��Ɉ����܂��ɂ݂�";
+		mes "�S�Đ����鎖�͂ł��Ȃ����B";
+		mes "�A�C�e���͊ȒP�ɏo�邯���";
+		mes "���ꂪ���̑����ɂȂ邩���Č����Ƃˁc";
+		mes "�����܂����A�Ȃ�Č������ƂȂ����B";
 		next;
-		mes "[アイオルデ]";
-		mes "私の歌が聞きたいかい？";
-		mes "ごめんよ。";
-		mes "新しい歌を作っているところなんだ。";
+		mes "[�A�C�I���f]";
+		mes "���̉̂��������������H";
+		mes "���߂��B";
+		mes "�V�����̂�����Ă���Ƃ���Ȃ񂾁B";
 		next;
-		mes "[アイオルデ]";
-		mes "ハハ……他の人に歌ってくれるよう";
-		mes "頼んでくれないかい？";
-		mes "私は今ちょっと手が離せなくてね。";
+		mes "[�A�C�I���f]";
+		mes "�n�n�c�c���̐l�ɉ̂��Ă����悤";
+		mes "����ł���Ȃ������H";
+		mes "���͍�������Ǝ肪�����Ȃ��ĂˁB";
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
 	if(Job == Job_Bard) {
-		mes "[アイオルデ]";
-		mes "やぁ、今日も元気に歌ってるかい？";
-		mes "たくさん歌えるようになったかい？";
+		mes "[�A�C�I���f]";
+		mes "�₟�A���������C�ɉ̂��Ă邩���H";
+		mes "��������̂���悤�ɂȂ��������H";
 		next;
-		mes "[アイオルデ]";
-		mes "歌は人々に楽しさと感動を";
-		mes "伝えるのだから、常に新しい歌を";
-		mes "覚えることを忘れてはいけないよ。";
+		mes "[�A�C�I���f]";
+		mes "�̂͐l�X�Ɋy�����Ɗ�����";
+		mes "�`����̂�����A��ɐV�����̂�";
+		mes "�o���邱�Ƃ�Y��Ă͂����Ȃ���B";
 		next;
-		mes "[アイオルデ]";
-		mes "楽しい心も忘れないように。";
-		mes "訪れる先々で歌ってあげることもね。";
+		mes "[�A�C�I���f]";
+		mes "�y�����S���Y��Ȃ��悤�ɁB";
+		mes "�K����X�ŉ̂��Ă����邱�Ƃ��ˁB";
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
 	if(Job != Job_Archer) {
-		mes "[アイオルデ]";
-		mes "ラララ〜、ラララ〜、美しいコモド〜";
-		mes "いつも楽しいことで一杯なの〜";
+		mes "[�A�C�I���f]";
+		mes "�������`�A�������`�A�������R���h�`";
+		mes "�����y�������Ƃň�t�Ȃ́`";
 		next;
-		mes "[アイオルデ]";
-		mes "君も今日はあらゆることを忘れて〜";
-		mes "思いっきり楽しんでおくれ〜";
-		mes "今日と言う日は二度は来ないから〜";
+		mes "[�A�C�I���f]";
+		mes "�N�������͂����邱�Ƃ�Y��ā`";
+		mes "�v��������y����ł�����`";
+		mes "�����ƌ������͓�x�͗��Ȃ�����`";
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	}
 	switch(CHANGE_BA) {
 	case 0:
-		mes "[アイオルデ]";
+		mes "[�A�C�I���f]";
 		if(Sex)
-			mes "こんにちは！愉快なアーチャーの友よ";
+			mes "����ɂ��́I�����ȃA�[�`���[�̗F��";
 		else {
-			mes "こんにちは！";
-			mes "素敵なアーチャーのお嬢さん";
+			mes "����ɂ��́I";
+			mes "�f�G�ȃA�[�`���[�̂��삳��";
 		}
-		mes "私のような流れ者に何の用だい？";
+		mes "���̂悤�ȗ���҂ɉ��̗p�����H";
 		next;
-		switch(select("良い声をしていますね。","歌を一曲聞かせてください。","特に用はない。")) {
+		switch(select("�ǂ��������Ă��܂��ˁB","�̂���ȕ������Ă��������B","���ɗp�͂Ȃ��B")) {
 			case 1:
-				mes "[アイオルデ]";
-				mes "ハハハ! 勿論だとも！";
-				mes "いつも楽しい気持ちで歌えば";
-				mes "自然とそうなるものさ！";
+				mes "[�A�C�I���f]";
+				mes "�n�n�n! �ܘ_���Ƃ��I";
+				mes "�����y�����C�����ŉ̂���";
+				mes "���R�Ƃ����Ȃ���̂��I";
 				next;
-				mes "[アイオルデ]";
-				mes "しかし、バードという職業は声が命だ。";
-				mes "たまには声がかれる時もあるから";
-				mes "気を付けなければならないよ。";
+				mes "[�A�C�I���f]";
+				mes "�������A�o�[�h�Ƃ����E�Ƃ͐��������B";
+				mes "���܂ɂ͐�������鎞�����邩��";
+				mes "�C��t���Ȃ���΂Ȃ�Ȃ���B";
 				break;
 			case 2:
-				mes "[アイオルデ]";
-				mes "歌かい? いいよ。";
-				mes "それでは、一曲歌ってみようか……";
+				mes "[�A�C�I���f]";
+				mes "�̂���? ������B";
+				mes "����ł́A��ȉ̂��Ă݂悤���c�c";
 				next;
-				mes "[アイオルデ]";
-				mes "戦場の歌を歌ってみようかな。";
-				mes "フムフム、ホッホッ";
-				mes "1、2、3、4〜";
+				mes "[�A�C�I���f]";
+				mes "���̉̂��̂��Ă݂悤���ȁB";
+				mes "�t���t���A�z�b�z�b";
+				mes "1�A2�A3�A4�`";
 				next;
-				mes "地平線から鳴り響く蹄の音";
-				mes "夕陽を覆うフェイヨンの土埃";
-				mes "夜空に幾千の目が開かれる瞬間";
-				mes "城郭の松明をしっかと燃やせ";
+				mes "�n��������苿�����̉�";
+				mes "�[�z�𕢂��t�F�C�����̓y��";
+				mes "���Ɋ���̖ڂ��J�����u��";
+				mes "��s�̏������������ƔR�₹";
 				next;
-				mes "聞こえる、心臓の鼓動";
-				mes "押し寄せる、血の脈動";
-				mes "伝わる、鎧の重さ";
-				mes "現わる、敵方の姿";
+				mes "��������A�S���̌ۓ�";
+				mes "�����񂹂�A���̖���";
+				mes "�`���A�Z�̏d��";
+				mes "�����A�G���̎p";
 				next;
-				mes "もっと大きく、もっと大きく、";
-				mes "もっと大きく鳴らすがいい！";
-				mes "進む兵等よ、力を込めよ！";
-				mes "もっと高く、もっと高く、";
-				mes "もっと高く叫ぶがいい！";
-				mes "今日と言う日は二度と来なかろう！";
+				mes "�����Ƒ傫���A�����Ƒ傫���A";
+				mes "�����Ƒ傫���炷�������I";
+				mes "�i�ޕ�����A�͂����߂�I";
+				mes "�����ƍ����A�����ƍ����A";
+				mes "�����ƍ������Ԃ������I";
+				mes "�����ƌ������͓�x�Ɨ��Ȃ��낤�I";
 				next;
-				mes "空を仰ぎ、大地を踏み締めろ！";
-				mes "裂けそうな心が駆け出すように！";
-				mes "ほら笛を城壁に轟かせよ！";
-				mes "今日と言う日は二度と来なかろう！";
+				mes "������A��n�𓥂ݒ��߂�I";
+				mes "�􂯂����ȐS���삯�o���悤�ɁI";
+				mes "�ق�J����ǂɍ�������I";
+				mes "�����ƌ������͓�x�Ɨ��Ȃ��낤�I";
 				next;
-				mes "[アイオルデ]";
-				mes "フムフム……いつ歌っても良い歌だ";
-				mes "君もそう思わないかい？";
+				mes "[�A�C�I���f]";
+				mes "�t���t���c�c���̂��Ă��ǂ��̂�";
+				mes "�N�������v��Ȃ������H";
 				next;
-				if(select("えぇ、良い歌ですね。","いいえ、別に……")==2) {
+				if(select("�����A�ǂ��̂ł��ˁB","�������A�ʂɁc�c")==2) {
 					cutin "job_bard_aiolo02",2;
-					mes "[アイオルデ]";
-					mes "おや……私の腕が落ちたか。";
-					mes "もっと努力しなくてはね。";
-					mes "とにかく、聞いてくれてありがとう。";
+					mes "[�A�C�I���f]";
+					mes "����c�c���̘r�����������B";
+					mes "�����Ɠw�͂��Ȃ��Ă͂ˁB";
+					mes "�Ƃɂ����A�����Ă���Ă��肪�Ƃ��B";
 					break;
 				}
-				mes "[アイオルデ]";
-				mes "ありがとう! 私の歌を";
-				mes "気に入ってくれるとは嬉しいよ。";
+				mes "[�A�C�I���f]";
+				mes "���肪�Ƃ�! ���̉̂�";
+				mes "�C�ɓ����Ă����Ƃ͊�������B";
 				next;
 				if(Sex == 1 && JobLevel >=40) {
-					mes "[アイオルデ]";
-					mes "もっとたくさんの人が";
-					mes "歌ってくれたら良いのに……";
-					mes "今のままでも、まぁ";
-					mes "いいんだがね……ハッハー。";
+					mes "[�A�C�I���f]";
+					mes "�����Ƃ�������̐l��";
+					mes "�̂��Ă��ꂽ��ǂ��̂Ɂc�c";
+					mes "���̂܂܂ł��A�܂�";
+					mes "�����񂾂��ˁc�c�n�b�n�[�B";
 					set CHANGE_BA,1;
 				}
 				else {
-					mes "[アイオルデ]";
-					mes "聞きたくなったら、またおいで。";
+					mes "[�A�C�I���f]";
+					mes "���������Ȃ�����A�܂������ŁB";
 				}
 				break;
 			case 3:
 				cutin "job_bard_aiolo02",2;
-				mes "[アイオルデ]";
-				mes "バードに歌を頼まないと言うかい？";
-				mes "……うーん、忙しいのかい？";
+				mes "[�A�C�I���f]";
+				mes "�o�[�h�ɉ̂𗊂܂Ȃ��ƌ��������H";
+				mes "�c�c���[��A�Z�����̂����H";
 				next;
-				mes "[アイオルデ]";
-				mes "狩りも良いが……";
-				mes "少しは心に余裕を持ってはどうだい。";
-				mes "今日という日は帰ってはこないものさ。";
+				mes "[�A�C�I���f]";
+				mes "�����ǂ����c�c";
+				mes "�����͐S�ɗ]�T�������Ă͂ǂ������B";
+				mes "�����Ƃ������͋A���Ă͂��Ȃ����̂��B";
 				break;
 		}
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	case 1:
-		mes "[アイオルデ]";
-		mes "こんにちは！愉快なアーチャーの友よ";
-		mes "私のような流れ者に何の用だい？";
+		mes "[�A�C�I���f]";
+		mes "����ɂ��́I�����ȃA�[�`���[�̗F��";
+		mes "���̂悤�ȗ���҂ɉ��̗p�����H";
 		next;
-		switch(select("良い声をしていますね。","歌を一曲聞かせてください。","特に用はない。")) {
+		switch(select("�ǂ��������Ă��܂��ˁB","�̂���ȕ������Ă��������B","���ɗp�͂Ȃ��B")) {
 			case 1:
-				mes "[アイオルデ]";
-				mes "ハッハー、君も";
-				mes "良い声をしてるじゃないか。";
-				mes "君も歌って見るつもりはないかい？";
+				mes "[�A�C�I���f]";
+				mes "�n�b�n�[�A�N��";
+				mes "�ǂ��������Ă邶��Ȃ����B";
+				mes "�N���̂��Č������͂Ȃ������H";
 				next;
-				if(select("勿論です！","私が歌うなんて……")==1) {
-					mes "[アイオルデ]";
-					mes "ハッハー、いいね。うんうん。";
-					mes "それでは、私がバードになる";
-					mes "手伝いをしてあげよう。";
+				if(select("�ܘ_�ł��I","�����̂��Ȃ�āc�c")==1) {
+					mes "[�A�C�I���f]";
+					mes "�n�b�n�[�A�����ˁB���񂤂�B";
+					mes "����ł́A�����o�[�h�ɂȂ�";
+					mes "��`�������Ă����悤�B";
 					next;
-					mes "[アイオルデ]";
-					mes "でもその前に……";
-					mes "花を一輪持って来てくれないかい？";
-					mes "花の香りを嗅げれば、";
-					mes "良い歌が教えられそうだ。";
+					mes "[�A�C�I���f]";
+					mes "�ł����̑O�Ɂc�c";
+					mes "�Ԃ���֎����ė��Ă���Ȃ������H";
+					mes "�Ԃ̍����k����΁A";
+					mes "�ǂ��̂�������ꂻ�����B";
 					next;
-					mes "[アイオルデ]";
-					mes "何の花でもいいんだが、";
-					mes "私が好きな花を持って来てくれないかい";
-					mes "出来れば売ってないような花がいいな。";
+					mes "[�A�C�I���f]";
+					mes "���̉Ԃł������񂾂��A";
+					mes "�����D���ȉԂ������ė��Ă���Ȃ�����";
+					mes "�o����Δ����ĂȂ��悤�ȉԂ������ȁB";
 					set CHANGE_BA,2;
 				}
 				else {
-					mes "[アイオルデ]";
-					mes "ハッハー、怖がることはないよ。";
-					mes "自分を過小評価しちゃいけないな。";
+					mes "[�A�C�I���f]";
+					mes "�n�b�n�[�A�|���邱�Ƃ͂Ȃ���B";
+					mes "�������ߏ��]�������Ⴂ���Ȃ��ȁB";
 					next;
-					mes "[アイオルデ]";
-					mes "君には十分才能があるんだから";
-					mes "気が変わったら、また尋ねておいで。";
+					mes "[�A�C�I���f]";
+					mes "�N�ɂ͏\���˔\������񂾂���";
+					mes "�C���ς������A�܂��q�˂Ă����ŁB";
 				}
 				break;
 			case 2:
-				mes "[アイオルデ]";
-				mes "歌の素質がありそうなのに残念だ。";
-				mes "歌は聞いてばかりじゃなくて、";
-				mes "他の人に聞かせることも楽しいよ。";
+				mes "[�A�C�I���f]";
+				mes "�̂̑f�������肻���Ȃ̂Ɏc�O���B";
+				mes "�͕̂����Ă΂��肶��Ȃ��āA";
+				mes "���̐l�ɕ������邱�Ƃ��y������B";
 				next;
-				mes "[アイオルデ]";
-				mes "村から村へ、歌って回るのも格別さ。";
-				mes "君もバードとして生きてみないかい？";
+				mes "[�A�C�I���f]";
+				mes "�����瑺�ցA�̂��ĉ��̂��i�ʂ��B";
+				mes "�N���o�[�h�Ƃ��Đ����Ă݂Ȃ������H";
 				break;
 			case 3:
-				mes "[アイオルデ]";
-				mes "うん……そうか。";
-				mes "それはちょっと残念だ。";
+				mes "[�A�C�I���f]";
+				mes "����c�c�������B";
+				mes "����͂�����Ǝc�O���B";
 				next;
-				mes "[アイオルデ]";
-				mes "それでは、またどこかで〜。";
+				mes "[�A�C�I���f]";
+				mes "����ł́A�܂��ǂ����Ł`�B";
 				break;
 		}
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	case 2:
-		mes "[アイオルデ]";
-		mes "早かったね、友よ！";
-		mes "花を持って来たかい？";
-		mes "見せてくれないかい？";
+		mes "[�A�C�I���f]";
+		mes "���������ˁA�F��I";
+		mes "�Ԃ������ė��������H";
+		mes "�����Ă���Ȃ������H";
 		next;
-		if(countitem(629)) { //歌う花
-			mes "[アイオルデ]";
-			mes "あ〜、これは歌う花じゃないか！";
-			mes "私の思い出の花だ……";
+		if(countitem(629)) { //�̂���
+			mes "[�A�C�I���f]";
+			mes "���`�A����͉̂��Ԃ���Ȃ����I";
+			mes "���̎v���o�̉Ԃ��c�c";
 			next;
-			mes "[アイオルデ]";
-			mes "私の友達だったジャイコフスキが";
-			mes "好きだった花さ。";
-			mes "今はどこで何をしているのだろう……";
+			mes "[�A�C�I���f]";
+			mes "���̗F�B�������W���C�R�t�X�L��";
+			mes "�D���������Ԃ��B";
+			mes "���͂ǂ��ŉ������Ă���̂��낤�c�c";
 			delitem 629,1;
 		}
-		else if(countitem(703)) { //ヒナレ
-			mes "[アイオルデ]";
-			mes "ああ……可愛いヒナレ…";
-			mes "香りはないが素朴で可愛い花だね。";
+		else if(countitem(703)) { //�q�i��
+			mes "[�A�C�I���f]";
+			mes "�����c�c�����q�i���c";
+			mes "����͂Ȃ����f�p�ŉ����Ԃ��ˁB";
 			next;
-			mes "[アイオルデ]";
-			mes "ヒナレの葉は私が倒れた時に力をくれた";
-			mes "本当に役立つ花だ。ありがとう。";
+			mes "[�A�C�I���f]";
+			mes "�q�i���̗t�͎����|�ꂽ���ɗ͂����ꂽ";
+			mes "�{���ɖ𗧂Ԃ��B���肪�Ƃ��B";
 			delitem 703,1;
 		}
-		else if(countitem(704)) { //アロエ
-			mes "[アイオルデ]";
-			mes "アロエか……これは珍しいね。";
-			mes "よく手に入れられたね！";
+		else if(countitem(704)) { //�A���G
+			mes "[�A�C�I���f]";
+			mes "�A���G���c�c����͒������ˁB";
+			mes "�悭��ɓ����ꂽ�ˁI";
 			next;
-			mes "[アイオルデ]";
-			mes "アロエの葉もおいしいが……";
-			mes "やはり花が一番いいね。";
+			mes "[�A�C�I���f]";
+			mes "�A���G�̗t�������������c�c";
+			mes "��͂�Ԃ���Ԃ����ˁB";
 			delitem 704,1;
 		}
-		else if(countitem(708)) { //メント
-			mes "[アイオルデ]";
-			mes "メント……";
-			mes "何か大切な事を思い出せる気がするよ…";
-			mes "久しぶりに見れて、本当によかった。";
+		else if(countitem(708)) { //�����g
+			mes "[�A�C�I���f]";
+			mes "�����g�c�c";
+			mes "������؂Ȏ����v���o����C�������c";
+			mes "�v���Ԃ�Ɍ���āA�{���ɂ悩�����B";
 			next;
-			mes "[アイオルデ]";
-			mes "アンティペイメントを作れるらしいが…";
-			mes "そうするには惜しいよね。ありがとう。";
+			mes "[�A�C�I���f]";
+			mes "�A���e�B�y�C�����g������炵�����c";
+			mes "��������ɂ͐ɂ�����ˁB���肪�Ƃ��B";
 			delitem 708,1;
 		}
-		else if(countitem(709)) { //イジドル
-			mes "[アイオルデ]";
-			mes "あー、これはイジドルだね。";
-			mes "危ないけれど、とても美しい花だ……";
+		else if(countitem(709)) { //�C�W�h��
+			mes "[�A�C�I���f]";
+			mes "���[�A����̓C�W�h�����ˁB";
+			mes "��Ȃ�����ǁA�ƂĂ��������Ԃ��c�c";
 			next;
-			mes "[アイオルデ]";
-			mes "濃い紫色に、人を恍惚とさせる香り……";
-			mes "気に入ったよ。ありがとう。";
+			mes "[�A�C�I���f]";
+			mes "�Z�����F�ɁA�l�𜒍��Ƃ����鍁��c�c";
+			mes "�C�ɓ�������B���肪�Ƃ��B";
 			delitem 709,1;
 		}
-		else if(countitem(710)) { //幻想の花
-			mes "[アイオルデ]";
-			mes "やや、これは幻想の花！";
-			mes "こんな貴重なものを持ってくるなんて！";
+		else if(countitem(710)) { //���z�̉�
+			mes "[�A�C�I���f]";
+			mes "���A����͌��z�̉ԁI";
+			mes "����ȋM�d�Ȃ��̂������Ă���Ȃ�āI";
 			next;
-			mes "[アイオルデ]";
-			mes "ああ……天国が目の前に見えるようだ。";
-			mes "素晴らしい！本当に嬉しいよ！";
+			mes "[�A�C�I���f]";
+			mes "�����c�c�V�����ڂ̑O�Ɍ�����悤���B";
+			mes "�f���炵���I�{���Ɋ�������I";
 			delitem 710,1;
 		}
-		else if(countitem(748)) { //しおれないバラ
-			mes "[アイオルデ]";
-			mes "しおれないバラ…萎むことのないバラ。";
-			mes "私ではなく恋人にあげればいいのに。";
+		else if(countitem(748)) { //������Ȃ��o��
+			mes "[�A�C�I���f]";
+			mes "������Ȃ��o���c�ނނ��Ƃ̂Ȃ��o���B";
+			mes "���ł͂Ȃ����l�ɂ�����΂����̂ɁB";
 			next;
-			mes "[アイオルデ]";
-			mes "私のような者が受け取っていいのかな。";
-			mes "ハッハー、ありがとう。";
+			mes "[�A�C�I���f]";
+			mes "���̂悤�Ȏ҂��󂯎���Ă����̂��ȁB";
+			mes "�n�b�n�[�A���肪�Ƃ��B";
 			delitem 748,1;
 		}
-		else if(countitem(749)) { //氷バラ
-			mes "[アイオルデ]";
-			mes "氷バラ……透明なバラよ。";
-			mes "花とは言えないかもしれないけど、";
-			mes "それでも美しいね……";
+		else if(countitem(749)) { //�X�o��
+			mes "[�A�C�I���f]";
+			mes "�X�o���c�c�����ȃo����B";
+			mes "�ԂƂ͌����Ȃ���������Ȃ����ǁA";
+			mes "����ł��������ˁc�c";
 			next;
-			mes "[アイオルデ]";
-			mes "そうだね、香りが漂わなくても";
-			mes "花なのかもしれないね。";
-			mes "それでは受けとらせて頂くよ。";
+			mes "[�A�C�I���f]";
+			mes "�������ˁA���肪�Y��Ȃ��Ă�";
+			mes "�ԂȂ̂�������Ȃ��ˁB";
+			mes "����ł͎󂯂Ƃ点�Ē�����B";
 			delitem 749,1;
 		}
-		else if(countitem(712)) { //花
+		else if(countitem(712)) { //��
 			cutin "job_bard_aiolo02",2;
-			mes "[アイオルデ]";
-			mes "何だい、この平凡な花は。";
-			mes "花は花だが…これでは駄目だね。";
+			mes "[�A�C�I���f]";
+			mes "�������A���̕��}�ȉԂ́B";
+			mes "�Ԃ͉Ԃ����c����ł͑ʖڂ��ˁB";
 			next;
-			mes "[アイオルデ]";
-			mes "プロンテラで少女が売ってるよね。";
-			mes "他の花を持ってきてくれないかい。";
+			mes "[�A�C�I���f]";
+			mes "�v�����e���ŏ����������Ă��ˁB";
+			mes "���̉Ԃ������Ă��Ă���Ȃ������B";
 			close2;
 			cutin "job_bard_aiolo02",255;
 			end;
 		}
-		else if(countitem(744)) { //花たば
-			mes "[アイオルデ]";
-			mes "ほうほう、花束を持って来たね。";
-			mes "これは私に持ってくる物ではないだろう";
+		else if(countitem(744)) { //�Ԃ���
+			mes "[�A�C�I���f]";
+			mes "�ق��ق��A�ԑ��������ė����ˁB";
+			mes "����͎��Ɏ����Ă��镨�ł͂Ȃ����낤";
 			next;
-			mes "[アイオルデ]";
-			mes "お祝い物だからね、";
-			mes "転職するノービス君にでも";
-			mes "あげたらどうだい？";
-			mes "僕には他の花を頼むよ。";
+			mes "[�A�C�I���f]";
+			mes "���j����������ˁA";
+			mes "�]�E����m�[�r�X�N�ɂł�";
+			mes "��������ǂ������H";
+			mes "�l�ɂ͑��̉Ԃ𗊂ނ�B";
 			close2;
 			cutin "job_bard_aiolo01",255;
 			end;
 		}
-		else if(countitem(745)) { //ブーケ
+		else if(countitem(745)) { //�u�[�P
 			cutin "job_bard_aiolo02",2;
-			mes "[アイオルデ]";
-			mes "おいおい……";
-			mes "結婚式でもあげるつもりかい？";
-			mes "男にブーケをあげてどうする。";
+			mes "[�A�C�I���f]";
+			mes "���������c�c";
+			mes "�������ł���������肩���H";
+			mes "�j�Ƀu�[�P�������Ăǂ�����B";
 			next;
-			mes "[アイオルデ]";
-			mes "お似合いのお嬢さんにでも";
-			mes "プレゼントしなよ。";
-			mes "僕には他の花を頼むよ。";
+			mes "[�A�C�I���f]";
+			mes "���������̂��삳��ɂł�";
+			mes "�v���[���g���Ȃ�B";
+			mes "�l�ɂ͑��̉Ԃ𗊂ނ�B";
 			close2;
 			cutin "job_bard_aiolo02",255;
 			end;
 		}
-		else if(countitem(1032)) { //食人植物の花
+		else if(countitem(1032)) { //�H�l�A���̉�
 			cutin "job_bard_aiolo02",2;
-			mes "[アイオルデ]";
-			mes "……どうしてこんな醜いものを";
-			mes "持って来たんだい？";
-			mes "もう少し考えてくれなくちゃ……";
+			mes "[�A�C�I���f]";
+			mes "�c�c�ǂ����Ă���ȏX�����̂�";
+			mes "�����ė����񂾂��H";
+			mes "���������l���Ă���Ȃ�����c�c";
 			next;
-			mes "[アイオルデ]";
-			mes "笑わせようとでもしたのかい？";
-			mes "もう少しまともな花を準備してくれよ。";
+			mes "[�A�C�I���f]";
+			mes "�΂킹�悤�Ƃł������̂����H";
+			mes "���������܂Ƃ��ȉԂ��������Ă����B";
 			close2;
 			cutin "job_bard_aiolo02",255;
 			end;
 		}
-		else if(countitem(2207)) { //装飾用花
-			mes "[アイオルデ]";
-			mes "うーん……これは装飾用花だね。";
-			mes "花は花だが…これでは駄目だね。";
+		else if(countitem(2207)) { //�����p��
+			mes "[�A�C�I���f]";
+			mes "���[��c�c����͑����p�Ԃ��ˁB";
+			mes "�Ԃ͉Ԃ����c����ł͑ʖڂ��ˁB";
 			next;
-			mes "[アイオルデ]";
-			mes "私は美しくて香しい花が好きなんだ。";
-			mes "飾るためだけの花は嫌いだよ。";
+			mes "[�A�C�I���f]";
+			mes "���͔������č������Ԃ��D���Ȃ񂾁B";
+			mes "���邽�߂����̉Ԃ͌�������B";
 			close2;
 			cutin "job_bard_aiolo01",255;
 			end;
 		}
 		else {
 			cutin "job_bard_aiolo02",2;
-			mes "[アイオルデ]";
-			mes "うん？何も持ってないじゃないか。";
-			mes "花を持って来てと言わなかったかな。";
+			mes "[�A�C�I���f]";
+			mes "����H���������ĂȂ�����Ȃ����B";
+			mes "�Ԃ������ė��Ăƌ���Ȃ��������ȁB";
 			next;
-			mes "[アイオルデ]";
-			mes "一人で学びたいなら、それでもいいさ。";
-			mes "歌うことは自由なんだから。";
+			mes "[�A�C�I���f]";
+			mes "��l�Ŋw�т����Ȃ�A����ł��������B";
+			mes "�̂����Ƃ͎��R�Ȃ񂾂���B";
 			close2;
 			cutin "job_bard_aiolo02",255;
 			end;
 		}
 		next;
-		mes "[アイオルデ]";
-		mes "それじゃあ約束どおり、";
-		mes "バードになる手伝いをしなくてはね。";
-		mes "しかし簡単ではないぞ。ハッハー！";
+		mes "[�A�C�I���f]";
+		mes "���ꂶ�Ⴀ�񑩂ǂ���A";
+		mes "�o�[�h�ɂȂ��`�������Ȃ��Ă͂ˁB";
+		mes "�������ȒP�ł͂Ȃ����B�n�b�n�[�I";
 		next;
-		mes "[アイオルデ]";
-		mes "歌を学ぶためには";
-		mes "多くの人と触れ合うことが大切だ。";
-		mes "あちこちの村のさまざまな事件も";
-		mes "見聞きしなければならないし……";
+		mes "[�A�C�I���f]";
+		mes "�̂��w�Ԃ��߂ɂ�";
+		mes "�����̐l�ƐG�ꍇ�����Ƃ���؂��B";
+		mes "���������̑��̂��܂��܂Ȏ�����";
+		mes "���������Ȃ���΂Ȃ�Ȃ����c�c";
 		next;
-		mes "[アイオルデ]";
-		mes "そうだ、ルティエという村に";
-		mes "喋る雪だるまがいるんだ。";
-		mes "その村へ行って、";
-		mes "贈り物をもらって来るように。いいね。";
+		mes "[�A�C�I���f]";
+		mes "�������A���e�B�G�Ƃ�������";
+		mes "����Ⴞ��܂�����񂾁B";
+		mes "���̑��֍s���āA";
+		mes "���蕨��������ė���悤�ɁB�����ˁB";
 		next;
-		mes "[アイオルデ]";
-		mes "スノウノウと友達になれば、";
-		mes "何か貰うことができるだろう。";
-		mes "村の人達とも、たくさん言葉を";
-		mes "交わしてきてみてくれないかい？";
+		mes "[�A�C�I���f]";
+		mes "�X�m�E�m�E�ƗF�B�ɂȂ�΁A";
+		mes "�����Ⴄ���Ƃ��ł��邾�낤�B";
+		mes "���̐l�B�Ƃ��A�������񌾗t��";
+		mes "���킵�Ă��Ă݂Ă���Ȃ������H";
 		set CHANGE_BA,3;
 		set LUTIE_1QUE,1;
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
 	case 3:
-		if(LUTIE_1QUE < 11) { //npc_town_lutie.txtにて発行
-			mes "[アイオルデ]";
-			mes "そうか、彼と友達になることは";
-			mes "出来なかったか。";
-			mes "言葉だけでは駄目なこともあるんだよ。";
+		if(LUTIE_1QUE < 11) { //npc_town_lutie.txt�ɂĔ��s
+			mes "[�A�C�I���f]";
+			mes "�������A�ނƗF�B�ɂȂ邱�Ƃ�";
+			mes "�o���Ȃ��������B";
+			mes "���t�����ł͑ʖڂȂ��Ƃ�����񂾂�B";
 			next;
-			mes "[アイオルデ]";
-			mes "スノウノウと友達になれば、";
-			mes "何か貰うことができるだろう。";
-			mes "村の人達とも、たくさん言葉を";
-			mes "交わしてきてみてくれないかい？";
+			mes "[�A�C�I���f]";
+			mes "�X�m�E�m�E�ƗF�B�ɂȂ�΁A";
+			mes "�����Ⴄ���Ƃ��ł��邾�낤�B";
+			mes "���̐l�B�Ƃ��A�������񌾗t��";
+			mes "���킵�Ă��Ă݂Ă���Ȃ������H";
 			close2;
 			cutin "job_bard_aiolo01",255;
 			end;
 		}
-		mes "[アイオルデ]";
-		mes "おかえり。";
-		mes "たくさん人に会って来たかい？";
-		mes "贈り物よりもっと大切なことが";
-		mes "あるってわかったね。";
+		mes "[�A�C�I���f]";
+		mes "��������B";
+		mes "��������l�ɉ���ė��������H";
+		mes "���蕨�������Ƒ�؂Ȃ��Ƃ�";
+		mes "������Ă킩�����ˁB";
 		next;
-		mes "[アイオルデ]";
-		mes "それでは、歌を歌って見るか……";
-		mes "私がお手本を歌ってみるから……";
-		mes "習って歌ってみてくれたまえ。";
+		mes "[�A�C�I���f]";
+		mes "����ł́A�̂��̂��Č��邩�c�c";
+		mes "��������{���̂��Ă݂邩��c�c";
+		mes "�K���ĉ̂��Ă݂Ă��ꂽ�܂��B";
 		next;
-		mes "[アイオルデ]";
-		mes "始めようか";
-		mes "フムフム、ホッホッ";
-		mes "1、2、3、4〜";
+		mes "[�A�C�I���f]";
+		mes "�n�߂悤��";
+		mes "�t���t���A�z�b�z�b";
+		mes "1�A2�A3�A4�`";
 		next;
 		switch(rand(5)) {
-		case 0: //ニヨルドの歌
-			setarray '@list$,"お金がなかった商人さん","装備もなかった商人さん","なんとか元手を作ったよ","服と刀を売ったのさ","最初は赤ポーションを","プロンテラで芋も売ったと言うよ";
+		case 0: //�j�����h�̉�
+			setarray '@list$,"�������Ȃ��������l����","�������Ȃ��������l����","�Ȃ�Ƃ�������������","���Ɠ��𔄂����̂�","�ŏ��͐ԃ|�[�V������","�v�����e���ň����������ƌ�����";
 			break;
-		case 1: //戦場の歌
-			setarray '@list$,"もっと大きく鳴らすがいい！","進む兵等よ、力を込めよ！","空を仰ぎ、大地を踏み締めろ！","裂けそうな心が駆け出すように！","ほら笛を城壁に轟かせよ！","今日と言う日は二度と来なかろう！";
+		case 1: //���̉�
+			setarray '@list$,"�����Ƒ傫���炷�������I","�i�ޕ�����A�͂����߂�I","������A��n�𓥂ݒ��߂�I","�􂯂����ȐS���삯�o���悤�ɁI","�ق�J����ǂɍ�������I","�����ƌ������͓�x�Ɨ��Ȃ��낤�I";
 			break;
-		case 2: //ジークフリードの歌
-			setarray '@list$,"不死身と呼ばれた","男がいた","その名を「ジークフリード」","英雄「ジークムント」の息子","邪悪な巨人「ファフニール」","竜に変わって彼を阻んだ";
+		case 2: //�W�[�N�t���[�h�̉�
+			setarray '@list$,"�s���g�ƌĂ΂ꂽ","�j������","���̖����u�W�[�N�t���[�h�v","�p�Y�u�W�[�N�����g�v�̑��q","�׈��ȋ��l�u�t�@�t�j�[���v","���ɕς���Ĕނ�j��";
 			break;
-		case 3: //ブラギの歌
-			setarray '@list$,"ブラギ、ブラギ","永遠の詩人の名を呼びなさい","我が歌は彼の息づかい","我が心は彼の意志","吟遊詩人は彼の化身","すべての歌は彼に帰るでしょう";
+		case 3: //�u���M�̉�
+			setarray '@list$,"�u���M�A�u���M","�i���̎��l�̖����ĂтȂ���","�䂪�͔̂ނ̑��Â���","�䂪�S�͔ނ̈ӎu","��V���l�͔ނ̉��g","���ׂẲ͔̂ނɋA��ł��傤";
 			break;
-		case 4: //イドゥンの歌
-			setarray '@list$,"美しき女神イドゥン","美しくて白い豊穣の女神よ","オーディンの息子ブラギの妻","彼女の籠いっぱい盛られた林檎","彼女の甘〜い林檎のおかげだろう","神々は永遠に老いることがない";
+		case 4: //�C�h�D���̉�
+			setarray '@list$,"���������_�C�h�D��","�������Ĕ����L���̏��_��","�I�[�f�B���̑��q�u���M�̍�","�ޏ����Ă����ς�����ꂽ�ь�","�ޏ��̊Á`���ь�̂��������낤","�_�X�͉i���ɘV���邱�Ƃ��Ȃ�";
 			break;
 		}
 		for(set '@i,0; '@i<6; set '@i,'@i+1) {
@@ -493,43 +493,43 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		}
 		if('@point<6) {
 			cutin "job_bard_aiolo02",2;
-			mes "[アイオルデ]";
-			mes "おやおや……歌詞が違うじゃないか。";
-			mes "きちんと歌ってくれなくてはね……";
+			mes "[�A�C�I���f]";
+			mes "���₨��c�c�̎����Ⴄ����Ȃ����B";
+			mes "������Ɖ̂��Ă���Ȃ��Ă͂ˁc�c";
 			next;
-			mes "[アイオルデ]";
-			mes "発音がまだまだのようだね。";
-			mes "次は、もっときちんと声を出すように。";
+			mes "[�A�C�I���f]";
+			mes "�������܂��܂��̂悤���ˁB";
+			mes "���́A�����Ƃ�����Ɛ����o���悤�ɁB";
 			close2;
 			cutin "job_bard_aiolo02",255;
 			end;
 		}
-		mes "……";
+		mes "�c�c";
 		next;
-		mes "[アイオルデ]";
-		mes "立派だ！凄いじゃないか！";
-		mes "これなら、良いバードになれるだろう！";
+		mes "[�A�C�I���f]";
+		mes "���h���I��������Ȃ����I";
+		mes "����Ȃ�A�ǂ��o�[�h�ɂȂ�邾�낤�I";
 		next;
-		mes "[アイオルデ]";
-		mes "それでは…";
-		mes "これからバードになるといい。";
-		mes "その前に記念になるものを上げたいな。";
+		mes "[�A�C�I���f]";
+		mes "����ł́c";
+		mes "���ꂩ��o�[�h�ɂȂ�Ƃ����B";
+		mes "���̑O�ɋL�O�ɂȂ���̂��グ�����ȁB";
 		next;
-		mes "[アイオルデ]";
-		mes "このまま転職するかい？";
-		mes "それとも何か欲しいかい？";
+		mes "[�A�C�I���f]";
+		mes "���̂܂ܓ]�E���邩���H";
+		mes "����Ƃ������~���������H";
 		next;
-		if(select("このまま転職します。","贈り物が欲しいです。")==2) {
-			mes "[アイオルデ]";
-			mes "うん…そうだね。";
-			mes "^3173FF木屑^000000を手に入れて来てくれないかい。";
-			mes "なんでも構わないから、";
-			mes "同じ種類で60個頼むよ。";
+		if(select("���̂܂ܓ]�E���܂��B","���蕨���~�����ł��B")==2) {
+			mes "[�A�C�I���f]";
+			mes "����c�������ˁB";
+			mes "^3173FF�؋�^000000����ɓ���ė��Ă���Ȃ������B";
+			mes "�Ȃ�ł��\��Ȃ�����A";
+			mes "������ނ�60���ނ�B";
 			next;
-			mes "[アイオルデ]";
-			mes "持って来てくれたら、";
-			mes "記念品を一つあげるよ。";
-			mes "じゃ、いってらっしゃい。";
+			mes "[�A�C�I���f]";
+			mes "�����ė��Ă��ꂽ��A";
+			mes "�L�O�i����������B";
+			mes "����A�����Ă�����Ⴂ�B";
 			set CHANGE_BA,4;
 			close2;
 			cutin "job_bard_aiolo01",255;
@@ -537,16 +537,16 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 		}
 	case 4:
 		if(SkillPoint) {
-			mes "[アイオルデ]";
-			mes "おや…まだスキルポイントが";
-			mes "残っているようだね。";
-			mes "全部使いきってから来てくれたまえ。";
+			mes "[�A�C�I���f]";
+			mes "����c�܂��X�L���|�C���g��";
+			mes "�c���Ă���悤���ˁB";
+			mes "�S���g�������Ă��痈�Ă��ꂽ�܂��B";
 			next;
-			mes "[アイオルデ]";
-			mes "では記念品を作りたいから、そうだね…";
-			mes "^3173FF木屑^000000を集めてきて貰えないかな。";
-			mes "なんでも構わないから、";
-			mes "同じ種類で60個頼むよ。";
+			mes "[�A�C�I���f]";
+			mes "�ł͋L�O�i����肽������A�������ˁc";
+			mes "^3173FF�؋�^000000���W�߂Ă��ĖႦ�Ȃ����ȁB";
+			mes "�Ȃ�ł��\��Ȃ�����A";
+			mes "������ނ�60���ނ�B";
 			set CHANGE_BA,4;
 			close2;
 			cutin "job_bard_aiolo01",255;
@@ -570,45 +570,45 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 			set '@itemid,1901;
 		}
 		else {
-			mes "[アイオルデ]";
-			mes "うーん、^3173FF木屑^000000を集めるつもりだったのに";
-			mes "このまま転職することにしたのかい？";
+			mes "[�A�C�I���f]";
+			mes "���[��A^3173FF�؋�^000000���W�߂���肾�����̂�";
+			mes "���̂܂ܓ]�E���邱�Ƃɂ����̂����H";
 			next;
-			if(select("このまま転職します。","いいえ、集めてきます。")==2) {
-				mes "[アイオルデ]";
-				mes "うん…そうだね。";
-				mes "^3173FF木屑^000000を手に入れて来てくれないかい。";
-				mes "なんでも構わないから、";
-				mes "同じ種類で60個頼むよ。";
+			if(select("���̂܂ܓ]�E���܂��B","�������A�W�߂Ă��܂��B")==2) {
+				mes "[�A�C�I���f]";
+				mes "����c�������ˁB";
+				mes "^3173FF�؋�^000000����ɓ���ė��Ă���Ȃ������B";
+				mes "�Ȃ�ł��\��Ȃ�����A";
+				mes "������ނ�60���ނ�B";
 				next;
-				mes "[アイオルデ]";
-				mes "持って来てくれたら、";
-				mes "記念品を一つあげるよ。";
-				mes "じゃ、いってらっしゃい。";
+				mes "[�A�C�I���f]";
+				mes "�����ė��Ă��ꂽ��A";
+				mes "�L�O�i����������B";
+				mes "����A�����Ă�����Ⴂ�B";
 				close2;
 				cutin "job_bard_aiolo01",255;
 				end;
 			}
 			break;
 		}
-		mes "[アイオルデ]";
-		mes "やぁ、お疲れ様。";
-		mes "早速、転職記念品を作ってあげるよ。";
-		mes "少しの間だけ待っててくれないかい。";
+		mes "[�A�C�I���f]";
+		mes "�₟�A�����l�B";
+		mes "�����A�]�E�L�O�i������Ă������B";
+		mes "�����̊Ԃ����҂��ĂĂ���Ȃ������B";
 		next;
-		mes "^3173FFギーギー、トンタン、トンタン";
-		mes "カンカン、キーコキーコ^000000";
+		mes "^3173FF�M�[�M�[�A�g���^���A�g���^��";
+		mes "�J���J���A�L�[�R�L�[�R^000000";
 		next;
 		delitem '@trunkid,60;
 		getitem '@itemid,1;
 		unequip;
 		jobchange Job_Bard;
 		set CHANGE_BA,0;
-		mes "[アイオルデ]";
-		mes "さあ、記念品だ。";
-		mes "歌う時に使ってくれないかい。";
-		mes "これで楽しく歌って欲しい。";
-		mes "じゃあ、また会おう！";
+		mes "[�A�C�I���f]";
+		mes "�����A�L�O�i���B";
+		mes "�̂����Ɏg���Ă���Ȃ������B";
+		mes "����Ŋy�����̂��ė~�����B";
+		mes "���Ⴀ�A�܂�����I";
 		close2;
 		cutin "job_bard_aiolo01",255;
 		end;
@@ -616,12 +616,12 @@ comodo.gat,211,155,5 script さすらいの吟遊詩人 741,{
 	unequip;
 	jobchange Job_Bard;
 	set CHANGE_BA,0;
-	mes "[アイオルデ]";
-	mes "そう！楽しく歌っていこうか。";
-	mes "風のように雲のようにね！";
+	mes "[�A�C�I���f]";
+	mes "�����I�y�����̂��Ă��������B";
+	mes "���̂悤�ɉ_�̂悤�ɂˁI";
 	next;
-	mes "[アイオルデ]";
-	mes "じゃあ、また会おう！";
+	mes "[�A�C�I���f]";
+	mes "���Ⴀ�A�܂�����I";
 	close2;
 	cutin "job_bard_aiolo01",255;
 	end;

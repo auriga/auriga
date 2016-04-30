@@ -1,13 +1,13 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Moscovia Field Monster Spawn Scriptã€€ã€€Ep 12.1
+// Ragnarok Online Moscovia Field Monster Spawn Script@@Ep 12.1
 //==============================================================================
 
 //============================================================
-// ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02 - mosk_fild02.gat
+// ƒ‚ƒXƒRƒrƒAƒtƒB[ƒ‹ƒh 02 - mosk_fild02.gat
 //------------------------------------------------------------
-mosk_fild02.gat,0,0,0,0		monster	ãƒ“ãƒƒã‚°ãƒ•ãƒƒãƒˆ	1060,40,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	ã‚­ãƒ£ãƒ©ãƒ¡ãƒ«	1103,20,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	ãƒãƒ³ãƒ†ã‚£ã‚¹	1139,30,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	ãƒãƒªãƒ³		1002,10,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	é»„è‰²è‰		1081,5,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	ç™½ã„è‰		1082,5,10000,0,0
+mosk_fild02.gat,0,0,0,0		monster	ƒrƒbƒOƒtƒbƒg	1060,40,0,0,0
+mosk_fild02.gat,0,0,0,0		monster	ƒLƒƒƒ‰ƒƒ‹	1103,20,0,0,0
+mosk_fild02.gat,0,0,0,0		monster	ƒ}ƒ“ƒeƒBƒX	1139,30,0,0,0
+mosk_fild02.gat,0,0,0,0		monster	ƒ|ƒŠƒ“		1002,10,0,0,0
+mosk_fild02.gat,0,0,0,0		monster	‰©F‘		1081,5,0,0,0
+mosk_fild02.gat,0,0,0,0		monster	”’‚¢‘		1082,5,10000,0,0

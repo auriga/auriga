@@ -1,61 +1,61 @@
 //====================================================================
 //Ragnarok Online - Kagerou Oboro Jobchange Script	by refis
 //
-//　■ CHANGE_KO -> 0〜11
+//�@�� CHANGE_KO -> 0�`11
 //====================================================================
 
-que_ng.gat,28,156,0	script	はじめ#ko	139,1,1,{
+que_ng.gat,28,156,0	script	�͂���#ko	139,1,1,{
 	if(Job == Job_Ninja && BaseLevel >= 99 && JobLevel >= 70 && CHANGE_KO == 0) {
-		mes "‐どこかで聞いたことのある";
-		mes "　声が聞こえてくる‐";
+		mes "�]�ǂ����ŕ��������Ƃ̂���";
+		mes "�@�����������Ă���]";
 		next;
-		mes "[謎の声A]";
-		mes "やあ、久しぶりですね。";
-		mes "私がここを離れてから";
-		mes "一族に加わった若者達の様子は";
-		mes "どうですか？";
+		mes "[��̐�A]";
+		mes "�₠�A�v���Ԃ�ł��ˁB";
+		mes "���������𗣂�Ă���";
+		mes "�ꑰ�ɉ��������ҒB�̗l�q��";
+		mes "�ǂ��ł����H";
 		next;
-		mes "[謎の声B]";
-		mes "うむ。なかなか根性のある奴らが";
-		mes "多く入ってくれた。";
-		mes "お前の人を見る目も";
-		mes "まだまだ捨てたものじゃないな……。";
+		mes "[��̐�B]";
+		mes "���ށB�Ȃ��Ȃ������̂���z�炪";
+		mes "���������Ă��ꂽ�B";
+		mes "���O�̐l������ڂ�";
+		mes "�܂��܂��̂Ă����̂���Ȃ��ȁc�c�B";
 		next;
-		mes "[謎の声A]";
-		mes "君にそう言ってもらえるとは";
-		mes "光栄ですね。";
-		mes "ただでさえ空気の悪い場所に飛ばされ";
-		mes "ここが恋しくなっていましたが……";
+		mes "[��̐�A]";
+		mes "�N�ɂ��������Ă��炦��Ƃ�";
+		mes "���h�ł��ˁB";
+		mes "�����ł�����C�̈����ꏊ�ɔ�΂���";
+		mes "�������������Ȃ��Ă��܂������c�c";
 		next;
-		mes "[謎の声A]";
-		mes "どうです、そろそろ交代しませんか？";
+		mes "[��̐�A]";
+		mes "�ǂ��ł��A���낻���サ�܂��񂩁H";
 		next;
-		mes "[謎の声B]";
-		mes "未練を捨てきれていないようだな。";
-		mes "あの方がお許しになると";
-		mes "思っているのか？";
+		mes "[��̐�B]";
+		mes "�������̂Ă���Ă��Ȃ��悤���ȁB";
+		mes "���̕����������ɂȂ��";
+		mes "�v���Ă���̂��H";
 		next;
-		mes "[謎の声A]";
-		mes "冗談ですよ。";
-		mes "ところで、新人達の中で";
-		mes "^BD0408あの場所^000000を";
-		mes "見つけた子はいるのですか？";
+		mes "[��̐�A]";
+		mes "��k�ł���B";
+		mes "�Ƃ���ŁA�V�l�B�̒���";
+		mes "^BD0408���̏ꏊ^000000��";
+		mes "�������q�͂���̂ł����H";
 		next;
-		mes "[謎の声B]";
-		mes "いや、隠された場所を探すのもまた";
-		mes "試練のひとつ……";
+		mes "[��̐�B]";
+		mes "����A�B���ꂽ�ꏊ��T���̂��܂�";
+		mes "�����̂ЂƂc�c";
 		next;
-		mes "[謎の声A]";
-		mes "相変わらず融通が効きませんね。";
-		mes "あんな場所、ただの壁……";
+		mes "[��̐�A]";
+		mes "���ς�炸�Z�ʂ������܂���ˁB";
+		mes "����ȏꏊ�A�����̕ǁc�c";
 		next;
-		mes "[謎の声B]";
-		mes "……まて、誰かに聞かれている！";
-		mes "お前は今すぐ任地に復帰しろ！";
+		mes "[��̐�B]";
+		mes "�c�c�܂āA�N���ɕ�����Ă���I";
+		mes "���O�͍������C�n�ɕ��A����I";
 		next;
-		mes "‐話し声が聞こえなくなった。";
-		mes "　隠された場所、壁、試練……";
-		mes "　いったい何の事だろうか？‐";
+		mes "�]�b�������������Ȃ��Ȃ����B";
+		mes "�@�B���ꂽ�ꏊ�A�ǁA�����c�c";
+		mes "�@�����������̎����낤���H�]";
 		setquest 5131;
 		set CHANGE_KO,1;
 		close;
@@ -63,505 +63,505 @@ que_ng.gat,28,156,0	script	はじめ#ko	139,1,1,{
 	end;
 }
 
-que_ng.gat,21,76,0	script	絵がかざってある壁#ko	844,{
+que_ng.gat,21,76,0	script	�G���������Ă����#ko	844,{
 	if(Job == Job_Kagerou || Job == Job_Oboro) {
-		mes "‐もうここには用はない‐";
+		mes "�]���������ɂ͗p�͂Ȃ��]";
 		close;
 	}
 	if(CHANGE_KO == 1) {
-		mes "‐隠された場所と";
-		mes "　思われるところを見つけた‐";
+		mes "�]�B���ꂽ�ꏊ��";
+		mes "�@�v����Ƃ�����������]";
 		next;
-		mes "‐以前この部屋に来た時に";
-		mes "　気づかなかったのは何故だろう‐";
+		mes "�]�ȑO���̕����ɗ�������";
+		mes "�@�C�Â��Ȃ������͉̂��̂��낤�]";
 		next;
-		mes "‐ともかく、中に入るためには……‐";
+		mes "�]�Ƃ������A���ɓ��邽�߂ɂ́c�c�]";
 		next;
-		if(select("絵を引きちぎる","絵に手をかざす") == 1) {
-			mes "‐他人のものを勝手に";
-			mes "　傷つけるわけにはいかない‐";
+		if(select("�G������������","�G�Ɏ��������") == 1) {
+			mes "�]���l�̂��̂������";
+			mes "�@������킯�ɂ͂����Ȃ��]";
 			close;
 		}
-		mes "‐絵の前に手をかざすと";
-		mes "　何かに強くひっぱられる感じがした‐";
+		mes "�]�G�̑O�Ɏ����������";
+		mes "�@�����ɋ����Ђ��ς��銴���������]";
 		close2;
 		warp "job_ko.gat",26,111;
 		end;
 	}
 	if(CHANGE_KO >= 2) {
-		mes "‐^25C18D忍者屋敷^000000の隠し部屋への入り口だ‐";
+		mes "�]^25C18D�E�҉��~^000000�̉B�������ւ̓�������]";
 		next;
-		if(select("入る","入らない") == 2) {
-			mes "‐あなたは壁から離れた‐";
+		if(select("����","����Ȃ�") == 2) {
+			mes "�]���Ȃ��͕ǂ��痣�ꂽ�]";
 			close;
 		}
-		mes "‐絵の前に手をかざすと";
-		mes "　何かに強くひっぱられる感じがした‐";
+		mes "�]�G�̑O�Ɏ����������";
+		mes "�@�����ɋ����Ђ��ς��銴���������]";
 		close2;
 		warp "job_ko.gat",26,111;
 		end;
 	}
-	mes "‐きれいな絵がかざってある壁だ‐";
+	mes "�]���ꂢ�ȊG���������Ă���ǂ��]";
 	close;
 }
 
-job_ko.gat,25,115,4	script	謎の老人#ko	588,{
+job_ko.gat,25,115,4	script	��̘V�l#ko	588,{
 	switch(CHANGE_KO) {
 	case 1:
 		cutin "job_ko03",2;
-		mes "‐^1A95E6老人が静かに瞑想をしている^000000‐";
+		mes "�]^1A95E6�V�l���Â����ґz�����Ă���^000000�]";
 		next;
-		if(select("無視する","話しかける") == 1) {
+		if(select("��������","�b��������") == 1) {
 			cutin "job_ko03",255;
-			mes "‐あなたは、そっとその場を離れた‐";
+			mes "�]���Ȃ��́A�����Ƃ��̏�𗣂ꂽ�]";
 			close;
 		}
-		mes "‐^1A95E6老人に話しかけたが反応がない……";
-		mes "　あなたは立ち去ろうとした^000000‐";
+		mes "�]^1A95E6�V�l�ɘb�����������������Ȃ��c�c";
+		mes "�@���Ȃ��͗������낤�Ƃ���^000000�]";
 		next;
-		mes "[謎の老人]";
-		mes "ついに辿りついた者が現れたか。";
-		mes "ふむ……生きた人間は";
-		mes "ひさかたぶりじゃ。";
+		mes "[��̘V�l]";
+		mes "���ɒH������҂����ꂽ���B";
+		mes "�ӂށc�c�������l�Ԃ�";
+		mes "�Ђ������Ԃ肶��B";
 		next;
-		menu "ここはいったい……？",-;
-		mes "‐^1A95E6老人はあなたのことを無視して";
-		mes "　話を続けた^000000‐";
+		menu "�����͂��������c�c�H",-;
+		mes "�]^1A95E6�V�l�͂��Ȃ��̂��Ƃ𖳎�����";
+		mes "�@�b�𑱂���^000000�]";
 		next;
-		mes "[謎の老人]";
-		mes "昔、アマツには密かに";
-		mes "歴史の影に生きる一族がいた……";
+		mes "[��̘V�l]";
+		mes "�́A�A�}�c�ɂ͖�����";
+		mes "���j�̉e�ɐ�����ꑰ�������c�c";
 		next;
-		mes "[謎の老人]";
-		mes "影の中に潜みながらも";
-		mes "ヒマワリのように……";
-		mes "そう、陽の光差す場所を望んだ一族……";
+		mes "[��̘V�l]";
+		mes "�e�̒��ɐ��݂Ȃ����";
+		mes "�q�}�����̂悤�Ɂc�c";
+		mes "�����A�z�̌������ꏊ��]�񂾈ꑰ�c�c";
 		next;
-		mes "[謎の老人]";
-		mes "ただ一人の主に忠誠を誓った一族……";
+		mes "[��̘V�l]";
+		mes "������l�̎�ɒ����𐾂����ꑰ�c�c";
 		next;
-		mes "[謎の老人]";
-		mes "頼もしく……";
+		mes "[��̘V�l]";
+		mes "���������c�c";
 		next;
-		mes "[謎の老人]";
-		mes "忠義にあふれ……";
+		mes "[��̘V�l]";
+		mes "���`�ɂ��ӂ�c�c";
 		next;
-		mes "[謎の老人]";
-		mes "そして強い……";
+		mes "[��̘V�l]";
+		mes "�����ċ����c�c";
 		next;
-		menu "その一族はどうなりましたか？ ",-;
-		mes "‐^1A95E6老人は寂しそうな目を";
-		mes "　あなたに向けた^000000‐";
+		menu "���̈ꑰ�͂ǂ��Ȃ�܂������H ",-;
+		mes "�]^1A95E6�V�l�͎₵�����Ȗڂ�";
+		mes "�@���Ȃ��Ɍ�����^000000�]";
 		next;
-		mes "[謎の老人]";
-		mes "主に捨てられ、";
-		mes "歴史からも捨てられた一族を ";
-		mes "何故、知りたがる？ ";
+		mes "[��̘V�l]";
+		mes "��Ɏ̂Ă��A";
+		mes "���j������̂Ă�ꂽ�ꑰ�� ";
+		mes "���́A�m�肽����H ";
 		next;
-		if(select("……忍者だからです","ただの好奇心") == 2) {
-			mes "[謎の老人]";
-			mes "……そうか。";
-			mes "すまんが、帰ってくれ。";
+		if(select("�c�c�E�҂�����ł�","�����̍D��S") == 2) {
+			mes "[��̘V�l]";
+			mes "�c�c�������B";
+			mes "���܂񂪁A�A���Ă���B";
 			close2;
 			warp "amatsu.gat",147,136;
 			end;
 		}
 		cutin "job_ko02",2;
-		mes "[謎の老人]";
-		mes "忍者！";
-		mes "たしかに、一族が忍者と";
-		mes "呼ばれた時期もあった……。";
+		mes "[��̘V�l]";
+		mes "�E�ҁI";
+		mes "�������ɁA�ꑰ���E�҂�";
+		mes "�Ă΂ꂽ�������������c�c�B";
 		next;
 		set CHANGE_KO,2;
 		chgquest 5131,5132;
-		mes "[謎の老人]";
-		mes "そなたに昔から伝わる話を話そう。";
-		mes "忘れられた一族の話を……。";
+		mes "[��̘V�l]";
+		mes "���Ȃ��ɐ̂���`���b��b�����B";
+		mes "�Y���ꂽ�ꑰ�̘b���c�c�B";
 		close2;
 		cutin "job_ko03",255;
 		end;
 	case 2:
 		cutin "job_ko01",2;
-		mes "‐^1A95E6謎の老人は孫に昔話を聞かせるような";
-		mes "　静かな声で語り始めた^000000‐";
+		mes "�]^1A95E6��̘V�l�͑��ɐ̘b�𕷂�����悤��";
+		mes "�@�Â��Ȑ��Ō��n�߂�^000000�]";
 		next;
-		mes "[謎の老人]";
-		mes "あまりにも長い間語られなかったため";
-		mes "今のアマツに住まうものは";
-		mes "誰も覚えていないじゃろう。";
+		mes "[��̘V�l]";
+		mes "���܂�ɂ������Ԍ���Ȃ���������";
+		mes "���̃A�}�c�ɏZ�܂����̂�";
+		mes "�N���o���Ă��Ȃ�����낤�B";
 		next;
-		mes "[謎の老人]";
-		mes "城主の影となって働き";
-		mes "城主のために生きることを選んだ";
-		mes "一族があったのじゃ。";
+		mes "[��̘V�l]";
+		mes "���̉e�ƂȂ��ē���";
+		mes "���̂��߂ɐ����邱�Ƃ�I��";
+		mes "�ꑰ���������̂���B";
 		next;
-		mes "[謎の老人]";
-		mes "主のためならば";
-		mes "どんな困難なことでもなしとげる";
-		mes "忠実なる一族……。";
+		mes "[��̘V�l]";
+		mes "��̂��߂Ȃ��";
+		mes "�ǂ�ȍ���Ȃ��Ƃł��Ȃ��Ƃ���";
+		mes "�����Ȃ�ꑰ�c�c�B";
 		next;
-		mes "[謎の老人]";
-		mes "忍者や闇の一族とも呼ばれていたが";
-		mes "決して一族が望んで";
-		mes "呼ばれていたわけではなかった。";
+		mes "[��̘V�l]";
+		mes "�E�҂�ł̈ꑰ�Ƃ��Ă΂�Ă�����";
+		mes "�����Ĉꑰ���]���";
+		mes "�Ă΂�Ă����킯�ł͂Ȃ������B";
 		next;
-		mes "[謎の老人]";
-		mes "彼らは城主の手足とも";
-		mes "いうべき存在だったが";
-		mes "その能力の高さ故に";
-		mes "問題が発生してしまった。";
+		mes "[��̘V�l]";
+		mes "�ނ�͏��̎葫�Ƃ�";
+		mes "�����ׂ����݂�������";
+		mes "���̔\�͂̍����̂�";
+		mes "��肪�������Ă��܂����B";
 		next;
-		menu "問題とは？",-;
-		mes "[謎の老人]";
-		mes "主たる城主でさえ全体像を掴めない";
-		mes "徹底した秘密組織。";
+		menu "���Ƃ́H",-;
+		mes "[��̘V�l]";
+		mes "�傽����ł����S�̑���͂߂Ȃ�";
+		mes "�O�ꂵ���閧�g�D�B";
 		next;
-		mes "[謎の老人]";
-		mes "一族の存在に気づいた者たちが";
-		mes "執拗に調べたが、";
-		mes "情報を得ることはできなかった。";
+		mes "[��̘V�l]";
+		mes "�ꑰ�̑��݂ɋC�Â����҂�����";
+		mes "���X�ɒ��ׂ����A";
+		mes "���𓾂邱�Ƃ͂ł��Ȃ������B";
 		next;
-		mes "[謎の老人]";
-		mes "やがて、主である城主にも";
-		mes "恐れられるようになり";
-		mes "しだいに遠ざけられてしまった……。";
+		mes "[��̘V�l]";
+		mes "�₪�āA��ł�����ɂ�";
+		mes "�������悤�ɂȂ�";
+		mes "�������ɉ��������Ă��܂����c�c�B";
 		next;
-		mes "[謎の老人]";
-		mes "城主の側を離れることになっても";
-		mes "一族は主を裏切ることはなかった……。";
+		mes "[��̘V�l]";
+		mes "���̑��𗣂�邱�ƂɂȂ��Ă�";
+		mes "�ꑰ�͎�𗠐؂邱�Ƃ͂Ȃ������c�c�B";
 		next;
-		menu "忠義に厚い一族だったのですね",-;
+		menu "���`�Ɍ����ꑰ�������̂ł���",-;
 		cutin "job_ko03",2;
-		mes "[謎の老人]";
-		mes "そう、忠義が厚過ぎる";
-		mes "くらいじゃった……。";
+		mes "[��̘V�l]";
+		mes "�����A���`�����߂���";
+		mes "���炢��������c�c�B";
 		next;
 		set CHANGE_KO,3;
 		chgquest 5132,5133;
-		mes "‐^1A95E6老人はいっそうさびしそうな";
-		mes "　表情になってしまった。^000000";
-		mes "　引き続き、話しかけよう‐";
+		mes "�]^1A95E6�V�l�͂����������т�������";
+		mes "�@�\��ɂȂ��Ă��܂����B^000000";
+		mes "�@���������A�b�������悤�]";
 		close2;
 		cutin "job_ko02",255;
 		end;
 	case 3:
 		cutin "job_ko03",2;
-		mes "[謎の老人]";
-		mes "一族はあまりにも長い時間";
-		mes "影に隠れてしまっていた。";
-		mes "今の城主は一族のことを";
-		mes "知りもしないじゃろう。";
+		mes "[��̘V�l]";
+		mes "�ꑰ�͂��܂�ɂ���������";
+		mes "�e�ɉB��Ă��܂��Ă����B";
+		mes "���̏��͈ꑰ�̂��Ƃ�";
+		mes "�m������Ȃ�����낤�B";
 		next;
-		menu "…………",-;
+		menu "�c�c�c�c",-;
 		cutin "job_ko01",2;
-		mes "[謎の老人]";
-		mes "わしは忍者、";
-		mes "または闇の一族と呼ばれた一族の";
-		mes "最後の導き手、ギオンというものじゃ。";
+		mes "[��̘V�l]";
+		mes "�킵�͔E�ҁA";
+		mes "�܂��͈ł̈ꑰ�ƌĂ΂ꂽ�ꑰ��";
+		mes "�Ō�̓�����A�M�I���Ƃ������̂���B";
 		next;
-		if(select("もう休みなさい","さらなる極みに達したいです") == 1) {
+		if(select("�����x�݂Ȃ���","����Ȃ�ɂ݂ɒB�������ł�") == 1) {
 			cutin "job_ko04",2;
-			mes "[導き手 ギオン]";
-			mes "……この老いぼれの命を欲する";
-			mes "暗殺者だったのか？";
+			mes "[������ �M�I��]";
+			mes "�c�c���̘V���ڂ�̖���~����";
+			mes "�ÎE�҂������̂��H";
 			next;
-			mes "[導き手 ギオン]";
-			mes "それで一族に関心を持ったのか……";
-			mes "じゃが、簡単にくれてやる訳には";
-			mes "いかぬな。";
+			mes "[������ �M�I��]";
+			mes "����ňꑰ�Ɋ֐S���������̂��c�c";
+			mes "���Ⴊ�A�ȒP�ɂ���Ă���ɂ�";
+			mes "�����ʂȁB";
 			next;
-			mes "[導き手 ギオン]";
-			mes "命まで取るつもりはないが……";
+			mes "[������ �M�I��]";
+			mes "���܂Ŏ�����͂Ȃ����c�c";
 			next;
-			mes "‐^1A95E6大きな衝撃を受け";
-			mes "　意識が遠のいてゆく……^000000‐";
+			mes "�]^1A95E6�傫�ȏՌ�����";
+			mes "�@�ӎ������̂��Ă䂭�c�c^000000�]";
 			close2;
 			percentheal -99,0;
 			warp "amatsu.gat",147,136;
 			end;
 		}
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "極み……か。";
-		mes "久しぶりに耳にした言葉じゃ。";
+		mes "[������ �M�I��]";
+		mes "�ɂ݁c�c���B";
+		mes "�v���Ԃ�Ɏ��ɂ������t����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "そなたがここに現れたのも";
-		mes "何かの導きかもしれぬ……。";
+		mes "[������ �M�I��]";
+		mes "���Ȃ��������Ɍ��ꂽ�̂�";
+		mes "�����̓�����������ʁc�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "じゃが、すまないことに";
-		mes "わしが教えられることは何もない。";
+		mes "[������ �M�I��]";
+		mes "���Ⴊ�A���܂Ȃ����Ƃ�";
+		mes "�킵���������邱�Ƃ͉����Ȃ��B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "しかしそなたが歩むべき";
-		mes "^33CC71" +(Sex? "影狼": "朧")+ "への道^000000に導くだけじゃ。";
+		mes "[������ �M�I��]";
+		mes "���������Ȃ������ނׂ�";
+		mes "^33CC71" +(Sex? "�e�T": "�O")+ "�ւ̓�^000000�ɓ�����������B";
 		next;
-		mes "‐^1A95E6意識が遠のき";
-		mes "　ギオンの声が遠くから聞こえてくる^000000‐";
+		mes "�]^1A95E6�ӎ������̂�";
+		mes "�@�M�I���̐����������畷�����Ă���^000000�]";
 		next;
 		set CHANGE_KO,4;
 		chgquest 5133,5134;
-		mes "[導き手 ギオン]";
-		mes "導き手であるわしと共に";
-		mes (Sex? "影狼": "朧")+ "への道を歩む準備ができたなら";
-		mes "また会いに来るがよい。";
+		mes "[������ �M�I��]";
+		mes "������ł���킵�Ƌ���";
+		mes (Sex? "�e�T": "�O")+ "�ւ̓�����ޏ������ł����Ȃ�";
+		mes "�܂���ɗ��邪�悢�B";
 		close2;
 		warp "amatsu.gat",147,136;
 		end;
 	case 4:
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "ふむ……少しじゃが";
-		mes "^33CC71" +(Sex? "影狼": "朧")+ "への道^000000に恐れをなし";
-		mes "来ないのではないかと思ったが……";
-		mes "いらぬ心配だったようじゃ。";
+		mes "[������ �M�I��]";
+		mes "�ӂށc�c�������Ⴊ";
+		mes "^33CC71" +(Sex? "�e�T": "�O")+ "�ւ̓�^000000�ɋ�����Ȃ�";
+		mes "���Ȃ��̂ł͂Ȃ����Ǝv�������c�c";
+		mes "����ʐS�z�������悤����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "さらなる極みに歩みだすためには";
-		mes "誘惑に負けない正しき心と";
-		mes "未知の世界にもうろたえない";
-		mes "強い精神が必要じゃ。";
+		mes "[������ �M�I��]";
+		mes "����Ȃ�ɂ݂ɕ��݂������߂ɂ�";
+		mes "�U�f�ɕ����Ȃ��������S��";
+		mes "���m�̐��E�ɂ����낽���Ȃ�";
+		mes "�������_���K�v����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "一族の先祖は4種の試練によって";
-		mes "その精神を手に入れた。";
+		mes "[������ �M�I��]";
+		mes "�ꑰ�̐�c��4��̎����ɂ����";
+		mes "���̐��_����ɓ��ꂽ�B";
 		next;
-		menu "4種の試練？",-;
+		menu "4��̎����H",-;
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "そうじゃ、";
-		mes "先祖は^087FF8知識、生存、武器、戦闘^000000と";
-		mes "4種の試練に挑み";
-		mes "正しい心と精神を養った。";
+		mes "[������ �M�I��]";
+		mes "��������A";
+		mes "��c��^087FF8�m���A�����A����A�퓬^000000��";
+		mes "4��̎����ɒ���";
+		mes "�������S�Ɛ��_��{�����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "試練がどんなものか";
-		mes "知りたいようじゃな。";
-		mes "説明してやってもよいぞ。";
+		mes "[������ �M�I��]";
+		mes "�������ǂ�Ȃ��̂�";
+		mes "�m�肽���悤����ȁB";
+		mes "�������Ă���Ă��悢���B";
 		while(1) {
 			next;
-			switch(select("知識の試練","生存の試練","武器の試練","戦闘の試練")) {
+			switch(select("�m���̎���","�����̎���","����̎���","�퓬�̎���")) {
 			case 1:
-				mes "[導き手 ギオン]";
-				mes "城主の補佐をつとめるためには";
-				mes "数多くの知識が必要じゃ。";
-				mes "そのための試練じゃ。";
+				mes "[������ �M�I��]";
+				mes "���̕⍲���Ƃ߂邽�߂ɂ�";
+				mes "�������̒m�����K�v����B";
+				mes "���̂��߂̎�������B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "10問の問題に答え";
-				mes "9問以上正解すれば";
-				mes "試練を乗り越えられるのじゃ。";
+				mes "[������ �M�I��]";
+				mes "10��̖��ɓ���";
+				mes "9��ȏ㐳�������";
+				mes "���������z������̂���B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "普段から知識を積み重ねた者なら";
-				mes "問題ないじゃろう。";
+				mes "[������ �M�I��]";
+				mes "���i����m����ςݏd�˂��҂Ȃ�";
+				mes "���Ȃ�����낤�B";
 				set '@flag,'@flag|1;
 				if('@flag == 15)
 					break;
-				mes "次はどの試練について話そうかのう？";
+				mes "���͂ǂ̎����ɂ��Ęb�������̂��H";
 				continue;
 			case 2:
-				mes "[導き手 ギオン]";
-				mes "任務が常に安全とは限らないのでな。";
-				mes "生存は重要なのじゃ。";
+				mes "[������ �M�I��]";
+				mes "�C������Ɉ��S�Ƃ͌���Ȃ��̂łȁB";
+				mes "�����͏d�v�Ȃ̂���B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "この試練を先祖は";
-				mes "スゴロクと呼んでおった。";
-				mes "サイコロで出た目の数だけ";
-				mes "進む試練じゃ。";
+				mes "[������ �M�I��]";
+				mes "���̎������c��";
+				mes "�X�S���N�ƌĂ�ł������B";
+				mes "�T�C�R���ŏo���ڂ̐�����";
+				mes "�i�ގ�������B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "まあ、スゴロクと言った時点で";
-				mes "すぐに想像がついたじゃろう。";
+				mes "[������ �M�I��]";
+				mes "�܂��A�X�S���N�ƌ��������_��";
+				mes "�����ɑz������������낤�B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "じゃが、試練と呼ばれるくらいじゃ。";
-				mes "単なる娯楽とはひと味違うぞ。";
+				mes "[������ �M�I��]";
+				mes "���Ⴊ�A�����ƌĂ΂�邭�炢����B";
+				mes "�P�Ȃ��y�Ƃ͂ЂƖ��Ⴄ���B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "そなたを助けるマスもあれば";
-				mes "邪魔をするマスもあるじゃろう。";
+				mes "[������ �M�I��]";
+				mes "���Ȃ���������}�X�������";
+				mes "�ז�������}�X�����邶��낤�B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "賢く対応すれば";
-				mes "乗り越えられるじゃろう。";
+				mes "[������ �M�I��]";
+				mes "�����Ή������";
+				mes "���z�����邶��낤�B";
 				set '@flag,'@flag|2;
 				if('@flag == 15)
 					break;
-				mes "次はどの試練について話そうかのう？";
+				mes "���͂ǂ̎����ɂ��Ęb�������̂��H";
 				continue;
 			case 3:
-				mes "[導き手 ギオン]";
-				mes "一族は独特の武器を使っていたのじゃ。";
-				mes "そのほとんどは自分たちで";
-				mes "作ったものじゃった。";
+				mes "[������ �M�I��]";
+				mes "�ꑰ�͓Ɠ��̕�����g���Ă����̂���B";
+				mes "���̂قƂ�ǂ͎���������";
+				mes "��������̂�������B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "自分だけの武器を作り出した者は";
-				mes "祝福されし者と呼ばれていたそうじゃ。";
+				mes "[������ �M�I��]";
+				mes "���������̕�������o�����҂�";
+				mes "�j�����ꂵ�҂ƌĂ΂�Ă�����������B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "自分が使う武器を作り";
-				mes "その武器を強化することが";
-				mes "この試練の目標じゃ。";
+				mes "[������ �M�I��]";
+				mes "�������g����������";
+				mes "���̕�����������邱�Ƃ�";
+				mes "���̎����̖ڕW����B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "そなたが祝福されし者と";
-				mes "呼ばれることを祈ろう。";
+				mes "[������ �M�I��]";
+				mes "���Ȃ����j�����ꂵ�҂�";
+				mes "�Ă΂�邱�Ƃ��F�낤�B";
 				set '@flag,'@flag|4;
 				if('@flag == 15)
 					break;
-				mes "次はどの試練について話そうかのう？";
+				mes "���͂ǂ̎����ɂ��Ęb�������̂��H";
 				continue;
 			case 4:
-				mes "[導き手 ギオン]";
-				mes "任務は一人だけに与えられるとは";
-				mes "限らない。";
-				mes "一つの任務を何人かで遂行することも";
-				mes "当たり前のようにある。";
+				mes "[������ �M�I��]";
+				mes "�C���͈�l�����ɗ^������Ƃ�";
+				mes "����Ȃ��B";
+				mes "��̔C�������l���Ő��s���邱�Ƃ�";
+				mes "������O�̂悤�ɂ���B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "戦闘の試練は知識、生存、武器の試練を";
-				mes "全て乗り越えた者だけが挑戦できる。";
-				mes "つまり最後の試練ということじゃ……。";
+				mes "[������ �M�I��]";
+				mes "�퓬�̎����͒m���A�����A����̎�����";
+				mes "�S�ď��z�����҂���������ł���B";
+				mes "�܂�Ō�̎����Ƃ������Ƃ���c�c�B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "他の試練とは違い";
-				mes "他人と競うことが要求される……。";
+				mes "[������ �M�I��]";
+				mes "���̎����Ƃ͈Ⴂ";
+				mes "���l�Ƌ������Ƃ��v�������c�c�B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "目標はただひとつ！";
-				mes "最も早く目標を倒した一人だけが";
-				mes "試練を乗り越えられるわけじゃ。";
+				mes "[������ �M�I��]";
+				mes "�ڕW�͂����ЂƂI";
+				mes "�ł������ڕW��|������l������";
+				mes "���������z������킯����B";
 				next;
-				mes "[導き手 ギオン]";
-				mes "まあ、そなたが試練を受ける時に";
-				mes "競う者がいなければ";
-				mes "それもまたそなたの運じゃ。";
+				mes "[������ �M�I��]";
+				mes "�܂��A���Ȃ����������󂯂鎞��";
+				mes "�����҂����Ȃ����";
+				mes "������܂����Ȃ��̉^����B";
 				set '@flag,'@flag|8;
 				if('@flag == 15)
 					break;
-				mes "次はどの試練について話そうかのう？";
+				mes "���͂ǂ̎����ɂ��Ęb�������̂��H";
 				continue;
 			}
 			break;
 		}
 		next;
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "百聞は一見にしかず、とも言うしな。";
-		mes "直接赴くのが一番効果的じゃろう。";
+		mes "[������ �M�I��]";
+		mes "�S���͈ꌩ�ɂ������A�Ƃ��������ȁB";
+		mes "���ڕ����̂���Ԍ��ʓI����낤�B";
 		next;
 		set CHANGE_KO,5;
 		chgquest 5134,5135;
-		mes "[導き手 ギオン]";
-		mes "試練を受ける準備ができたなら";
-		mes "もう一度声をかけるがよい。";
+		mes "[������ �M�I��]";
+		mes "�������󂯂鏀�����ł����Ȃ�";
+		mes "������x���������邪�悢�B";
 		close2;
 		cutin "job_ko02",255;
 		end;
 	case 5:
 		cutin "job_ko03",2;
-		mes "[導き手 ギオン]";
-		mes "本当に久しぶりじゃ……";
-		mes "このように心が躍るのは。";
+		mes "[������ �M�I��]";
+		mes "�{���ɋv���Ԃ肶��c�c";
+		mes "���̂悤�ɐS�����̂́B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "新しき道に進み行く若者のおかげか";
-		mes "年甲斐もなく興奮しておるわい。";
+		mes "[������ �M�I��]";
+		mes "�V�������ɐi�ݍs����҂̂�������";
+		mes "�N�b����Ȃ��������Ă���킢�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "試練については、すでに説明したな。";
-		mes "では、一族のことも少し教えよう。";
+		mes "[������ �M�I��]";
+		mes "�����ɂ��ẮA���łɐ��������ȁB";
+		mes "�ł́A�ꑰ�̂��Ƃ����������悤�B";
 		next;
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "一族は二人の戦士から";
-		mes "始まったのじゃ……。";
+		mes "[������ �M�I��]";
+		mes "�ꑰ�͓�l�̐�m����";
+		mes "�n�܂����̂���c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "太陽にたとえられし";
-		mes "影に潜む狼のごとき戦士";
-		mes "影狼……。";
+		mes "[������ �M�I��]";
+		mes "���z�ɂ��Ƃ���ꂵ";
+		mes "�e�ɐ��ޘT�̂��Ƃ���m";
+		mes "�e�T�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "月にたとえられし";
-		mes "淡き月光のごとき戦士";
-		mes "朧……。";
+		mes "[������ �M�I��]";
+		mes "���ɂ��Ƃ���ꂵ";
+		mes "�W�������̂��Ƃ���m";
+		mes "�O�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "太陽と月";
-		mes "どちらも世界を照らすものだが";
-		mes "二人の戦士は似て異なる存在じゃった。";
+		mes "[������ �M�I��]";
+		mes "���z�ƌ�";
+		mes "�ǂ�������E���Ƃ炷���̂���";
+		mes "��l�̐�m�͎��ĈقȂ鑶�݂�������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "互いに反目していた時期もあった。";
+		mes "[������ �M�I��]";
+		mes "�݂��ɔ��ڂ��Ă����������������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "だが同じ一族になるまでには";
-		mes "それほど長くの時間は";
-		mes "必要としていなかったのじゃ。";
+		mes "[������ �M�I��]";
+		mes "���������ꑰ�ɂȂ�܂łɂ�";
+		mes "����قǒ����̎��Ԃ�";
+		mes "�K�v�Ƃ��Ă��Ȃ������̂���B";
 		next;
-		menu "いったい何があったのですか？",-;
+		menu "�������������������̂ł����H",-;
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "ふぉふぉふぉ。";
-		mes "話し続けたせいか少し疲れたわい。";
-		mes "試練を乗り越えてきたら";
-		mes "続きを聞かせよう。";
+		mes "[������ �M�I��]";
+		mes "�ӂ��ӂ��ӂ��B";
+		mes "�b��������������������ꂽ�킢�B";
+		mes "���������z���Ă�����";
+		mes "�����𕷂����悤�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "始めに選ぶ試練はどれじゃ？";
+		mes "[������ �M�I��]";
+		mes "�n�߂ɑI�Ԏ����͂ǂꂶ��H";
 		next;
-		switch(select("知識の試練","生存の試練","武器の試練")) {
+		switch(select("�m���̎���","�����̎���","����̎���")) {
 		case 1:
-			mes "[導き手 ギオン]";
-			mes "^339CCC知識の試練^000000から始めるのか？";
-			mes "ふぉふぉふぉ。";
-			mes "そなたがこの道を選んだことを";
-			mes "あやつが知った時の顔が";
-			mes "楽しみじゃの。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�m���̎���^000000����n�߂�̂��H";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "���Ȃ������̓���I�񂾂��Ƃ�";
+			mes "������m�������̊炪";
+			mes "�y���݂���́B";
 			next;
-			menu "あやつ？",-;
+			menu "����H",-;
 			set CHANGE_KO,6;
 			setquest 5136;
-			mes "[導き手 ギオン]";
-			mes "ふぉふぉふぉ。";
-			mes "会ってからのお楽しみじゃ。";
-			mes "知識の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "����Ă���̂��y���݂���B";
+			mes "�m���̎����͂���������B";
 			close2;
 			warp "job_ko.gat",72,128;
 			end;
 		case 2:
-			mes "[導き手 ギオン]";
-			mes "^339CCC生存の試練^000000から始めるのか？";
-			mes "孤独な試練となるかも知れぬが……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�����̎���^000000����n�߂�̂��H";
+			mes "�ǓƂȎ����ƂȂ邩���m��ʂ��c�c�B";
 			next;
 			set CHANGE_KO,6;
 			setquest 5137;
-			mes "[導き手 ギオン]";
-			mes "そなたならいらぬ心配じゃろう。";
-			mes "生存の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���Ȃ��Ȃ炢��ʐS�z����낤�B";
+			mes "�����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",62,16;
 			end;
 		case 3:
-			mes "[導き手 ギオン]";
-			mes "^339CCC武器の試練^000000から始めるのか？";
-			mes "では試練の前に……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC����̎���^000000����n�߂�̂��H";
+			mes "�ł͎����̑O�Ɂc�c�B";
 			next;
 			set CHANGE_KO,6;
 			setquest 5138;
 			getitem 1002,5;
 			getitem 1010,1;
-			mes "‐鉄鉱石を5個";
-			mes "　プラコンを1個受け取りました‐";
+			mes "�]�S�z�΂�5��";
+			mes "�@�v���R����1�󂯎��܂����]";
 			next;
-			mes "[導き手 ギオン]";
-			mes "それが必要になるじゃろう。";
-			mes "武器の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���ꂪ�K�v�ɂȂ邶��낤�B";
+			mes "����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",121,129;
 			end;
@@ -571,21 +571,21 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 		set '@test2,checkquest(5137);
 		set '@test3,checkquest(5138);
 		if('@test1) {
-			set '@test$,"知識";
+			set '@test$,"�m��";
 			if('@test1 & 0x1) {
 				set '@x,72;
 				set '@y,128;
 			}
 		}
 		else if('@test2) {
-			set '@test$,"生存";
+			set '@test$,"����";
 			if('@test2 & 0x1) {
 				set '@x,62;
 				set '@y,16;
 			}
 		}
 		else if('@test3) {
-			set '@test$,"武器";
+			set '@test$,"����";
 			if('@test3 & 0x1) {
 				set '@x,121;
 				set '@y,129;
@@ -593,139 +593,139 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 		}
 		if('@x && '@y) {
 			cutin "job_ko04",2;
-			mes "[導き手 ギオン]";
-			mes "^339CCC" +'@test$+ "の試練^000000を受けているのか。";
-			mes "再び試練に向かうかね？";
+			mes "[������ �M�I��]";
+			mes "^339CCC" +'@test$+ "�̎���^000000���󂯂Ă���̂��B";
+			mes "�Ăю����Ɍ��������ˁH";
 			next;
-			switch(select("試練の場へ向かう","街に戻ります")) {
+			switch(select("�����̏�֌�����","�X�ɖ߂�܂�")) {
 			case 1:
-				mes "[導き手 ギオン]";
-				mes '@test$+ "の試練はこっちじゃ。";
+				mes "[������ �M�I��]";
+				mes '@test$+ "�̎����͂���������B";
 				close2;
 				warp "job_ko.gat",'@x,'@y;
 				end;
 			case 2:
-				mes "[導き手 ギオン]";
-				mes "街まで送ろう。";
+				mes "[������ �M�I��]";
+				mes "�X�܂ő��낤�B";
 				close2;
 				warp "amatsu.gat",147,136;
 				end;
 			}
 		}
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "^339CCC" +'@test$+ "の試練^000000を乗り越えて来たか。";
+		mes "[������ �M�I��]";
+		mes "^339CCC" +'@test$+ "�̎���^000000�����z���ė������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "2人とも満足できるような";
-		mes "結果が得られたかな？";
+		mes "[������ �M�I��]";
+		mes "2�l�Ƃ������ł���悤��";
+		mes "���ʂ�����ꂽ���ȁH";
 		next;
-		menu "話の続きを……",-;
+		menu "�b�̑������c�c",-;
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "そう急かさなくても覚えておる。";
-		mes "……どこまで話をしたかのう。";
-		mes "……ああ、そうじゃったな。";
+		mes "[������ �M�I��]";
+		mes "�����}�����Ȃ��Ă��o���Ă���B";
+		mes "�c�c�ǂ��܂Řb���������̂��B";
+		mes "�c�c�����A������������ȁB";
 		next;
-		mes "[導き手 ギオン]";
-		mes "太陽にたとえられし";
-		mes "影に潜む狼のごとき戦士";
-		mes "影狼……。";
+		mes "[������ �M�I��]";
+		mes "���z�ɂ��Ƃ���ꂵ";
+		mes "�e�ɐ��ޘT�̂��Ƃ���m";
+		mes "�e�T�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "月にたとえられし";
-		mes "淡き月光のごとき戦士";
-		mes "朧……。";
+		mes "[������ �M�I��]";
+		mes "���ɂ��Ƃ���ꂵ";
+		mes "�W�������̂��Ƃ���m";
+		mes "�O�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "もともと二人の仲は良くなかった。";
-		mes "性格も考え方も、すべてが";
-		mes "正反対じゃった……。";
+		mes "[������ �M�I��]";
+		mes "���Ƃ��Ɠ�l�̒��͗ǂ��Ȃ������B";
+		mes "���i���l�������A���ׂĂ�";
+		mes "�����΂�������c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "二人が最初に出会ったのは";
-		mes "戦場じゃった……。";
-		mes "それも敵同士として相まみえたのじゃ。";
+		mes "[������ �M�I��]";
+		mes "��l���ŏ��ɏo������̂�";
+		mes "��ꂶ������c�c�B";
+		mes "������G���m�Ƃ��đ��܂݂����̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "そのような状況では";
-		mes "互いに傷つけあい、";
-		mes "憎みあうしかなかったのじゃ……。";
+		mes "[������ �M�I��]";
+		mes "���̂悤�ȏ󋵂ł�";
+		mes "�݂��ɏ��������A";
+		mes "���݂��������Ȃ������̂���c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "じゃが、それが戦争というものじゃ。";
+		mes "[������ �M�I��]";
+		mes "���Ⴊ�A���ꂪ�푈�Ƃ������̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "昨日までは隣で笑っていた仲間が";
-		mes "今日はもういない……。";
-		mes "そういう場所じゃ。";
+		mes "[������ �M�I��]";
+		mes "����܂łׂ͗ŏ΂��Ă������Ԃ�";
+		mes "�����͂������Ȃ��c�c�B";
+		mes "���������ꏊ����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "ましてや敵同士。";
-		mes "仲間を奪ったものに対する憎悪は";
-		mes "増してゆくばかりじゃ……。";
+		mes "[������ �M�I��]";
+		mes "�܂��Ă�G���m�B";
+		mes "���Ԃ�D�������̂ɑ΂��鑞����";
+		mes "�����Ă䂭�΂��肶��c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "少し疲れた。";
-		mes "続きはもう一つ試練を";
-		mes "乗り越えた後にでも話そう。";
+		mes "[������ �M�I��]";
+		mes "������ꂽ�B";
+		mes "�����͂����������";
+		mes "���z������ɂł��b�����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "二つ目はどの試練かね？ ";
+		mes "[������ �M�I��]";
+		mes "��ڂ͂ǂ̎������ˁH ";
 		if(!'@test1)
-			set '@str1$,"知識の試練";
+			set '@str1$,"�m���̎���";
 		if(!'@test2)
-			set '@str2$,"生存の試練";
+			set '@str2$,"�����̎���";
 		if(!'@test3)
-			set '@str3$,"武器の試練";
+			set '@str3$,"����̎���";
 		next;
 		switch(select('@str1$,'@str2$,'@str3$)) {
 		case 1:
-			mes "[導き手 ギオン]";
-			mes "^339CCC知識の試練^000000か。";
-			mes "ふぉふぉふぉ。";
-			mes "そなたがこの道を選んだことを";
-			mes "あやつが知った時の顔が";
-			mes "楽しみじゃの。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�m���̎���^000000���B";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "���Ȃ������̓���I�񂾂��Ƃ�";
+			mes "������m�������̊炪";
+			mes "�y���݂���́B";
 			next;
-			menu "あやつ？",-;
+			menu "����H",-;
 			set CHANGE_KO,7;
 			setquest 5136;
-			mes "[導き手 ギオン]";
-			mes "ふぉふぉふぉ。";
-			mes "会ってからのお楽しみじゃ。";
-			mes "知識の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "����Ă���̂��y���݂���B";
+			mes "�m���̎����͂���������B";
 			close2;
 			warp "job_ko.gat",72,128;
 			end;
 		case 2:
-			mes "[導き手 ギオン]";
-			mes "^339CCC生存の試練^000000か。";
-			mes "孤独な試練となるかも知れぬが……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�����̎���^000000���B";
+			mes "�ǓƂȎ����ƂȂ邩���m��ʂ��c�c�B";
 			next;
 			set CHANGE_KO,7;
 			setquest 5137;
-			mes "[導き手 ギオン]";
-			mes "そなたならいらぬ心配じゃろう。";
-			mes "生存の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���Ȃ��Ȃ炢��ʐS�z����낤�B";
+			mes "�����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",62,16;
 			end;
 		case 3:
-			mes "[導き手 ギオン]";
-			mes "^339CCC武器の試練^000000か。";
-			mes "では試練の前に……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC����̎���^000000���B";
+			mes "�ł͎����̑O�Ɂc�c�B";
 			next;
 			set CHANGE_KO,7;
 			setquest 5138;
 			getitem 1002,5;
 			getitem 1010,1;
-			mes "‐鉄鉱石を5個";
-			mes "　プラコンを1個受け取りました‐";
+			mes "�]�S�z�΂�5��";
+			mes "�@�v���R����1�󂯎��܂����]";
 			next;
-			mes "[導き手 ギオン]";
-			mes "それが必要になるじゃろう。";
-			mes "武器の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���ꂪ�K�v�ɂȂ邶��낤�B";
+			mes "����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",121,129;
 			end;
@@ -735,36 +735,36 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 		set '@test2,checkquest(5137);
 		set '@test3,checkquest(5138);
 		if('@test1 & 0x1) {
-			set '@test$,"知識";
+			set '@test$,"�m��";
 			set '@x,72;
 			set '@y,128;
 		}
 		else if('@test2 & 0x1) {
-			set '@test$,"生存";
+			set '@test$,"����";
 			set '@x,62;
 			set '@y,16;
 		}
 		else if('@test3 & 0x1) {
-			set '@test$,"武器";
+			set '@test$,"����";
 			set '@x,121;
 			set '@y,129;
 		}
 		if('@x && '@y) {
 			cutin "job_ko04",2;
-			mes "[導き手 ギオン]";
-			mes "^339CCC" +'@test$+ "の試練^000000を受けているのか。";
-			mes "再び試練に向かうかね？";
+			mes "[������ �M�I��]";
+			mes "^339CCC" +'@test$+ "�̎���^000000���󂯂Ă���̂��B";
+			mes "�Ăю����Ɍ��������ˁH";
 			next;
-			switch(select("試練の場へ向かう","街に戻ります")) {
+			switch(select("�����̏�֌�����","�X�ɖ߂�܂�")) {
 			case 1:
-				mes "[導き手 ギオン]";
-				mes '@test$+ "の試練はこっちじゃ。";
+				mes "[������ �M�I��]";
+				mes '@test$+ "�̎����͂���������B";
 				close2;
 				warp "job_ko.gat",'@x,'@y;
 				end;
 			case 2:
-				mes "[導き手 ギオン]";
-				mes "街まで送ろう。";
+				mes "[������ �M�I��]";
+				mes "�X�܂ő��낤�B";
 				close2;
 				warp "amatsu.gat",147,136;
 				end;
@@ -772,124 +772,124 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 		}
 		if('@test1 & 0x8 && '@test2 & 0x8) {
 			set '@type,3;
-			set '@str$,"知識、生存の試練";
+			set '@str$,"�m���A�����̎���";
 		}
 		else if('@test1 & 0x8 && '@test3 & 0x8) {
 			set '@type,2;
-			set '@str$,"知識、武器の試練";
+			set '@str$,"�m���A����̎���";
 		}
 		else if('@test2 & 0x8 && '@test3 & 0x8) {
 			set '@type,1;
-			set '@str$,"生存、武器の試練";
+			set '@str$,"�����A����̎���";
 		}
 		cutin "job_ko04",2;
-		mes "[導き手 ギオン]";
-		mes "^339CCC" +'@str$+ "^000000を乗り越えたか。";
+		mes "[������ �M�I��]";
+		mes "^339CCC" +'@str$+ "^000000�����z�������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "これで二つ……。";
-		mes "何かしら得るものがあったかな？";
+		mes "[������ �M�I��]";
+		mes "����œ�c�c�B";
+		mes "�������瓾����̂����������ȁH";
 		next;
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "では、続きを話そう。";
+		mes "[������ �M�I��]";
+		mes "�ł́A������b�����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "太陽にたとえられし";
-		mes "影に潜む狼のごとき戦士";
-		mes "影狼……。";
+		mes "[������ �M�I��]";
+		mes "���z�ɂ��Ƃ���ꂵ";
+		mes "�e�ɐ��ޘT�̂��Ƃ���m";
+		mes "�e�T�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "月にたとえられし";
-		mes "淡き月光のごとき戦士";
-		mes "朧……。";
+		mes "[������ �M�I��]";
+		mes "���ɂ��Ƃ���ꂵ";
+		mes "�W�������̂��Ƃ���m";
+		mes "�O�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "二人の戦士が戦場で敵として";
-		mes "出会ったところまでは話したな。";
+		mes "[������ �M�I��]";
+		mes "��l�̐�m�����œG�Ƃ���";
+		mes "�o������Ƃ���܂ł͘b�����ȁB";
 		next;
-		mes "[導き手 ギオン]";
-		mes "長きに渡る戦争も、ついに終わる時が来た。";
-		mes "平和が訪れたわけじゃが";
-		mes "生き残った者たちも";
-		mes "傷つき疲れ果てていた……。";
+		mes "[������ �M�I��]";
+		mes "�����ɓn��푈���A���ɏI��鎞�������B";
+		mes "���a���K�ꂽ�킯���Ⴊ";
+		mes "�����c�����҂�����";
+		mes "�������ʂĂĂ����c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "二人の戦士もまた、戦いを止めた。";
-		mes "お互いに命を狙うこともなくなったが";
-		mes "この二人にも癒しの時間が必要だった。";
+		mes "[������ �M�I��]";
+		mes "��l�̐�m���܂��A�킢���~�߂��B";
+		mes "���݂��ɖ���_�����Ƃ��Ȃ��Ȃ�����";
+		mes "���̓�l�ɂ������̎��Ԃ��K�v�������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "そんな二人の前に一人の男が現れた。";
-		mes "詳しいことは伝えられていないが";
-		mes "二人の戦士の忠誠を得たのは";
-		mes "その男だったと言われておる。";
+		mes "[������ �M�I��]";
+		mes "����ȓ�l�̑O�Ɉ�l�̒j�����ꂽ�B";
+		mes "�ڂ������Ƃ͓`�����Ă��Ȃ���";
+		mes "��l�̐�m�̒����𓾂��̂�";
+		mes "���̒j�������ƌ����Ă���B";
 		next;
-		menu "その男とは？",-;
-		mes "[導き手 ギオン]";
-		mes "その男に関して伝わっていることは";
-		mes "ほとんどないのじゃ。";
-		mes "ただ二人の忠誠を得たとだけ";
-		mes "記録には残っている。";
+		menu "���̒j�Ƃ́H",-;
+		mes "[������ �M�I��]";
+		mes "���̒j�Ɋւ��ē`����Ă��邱�Ƃ�";
+		mes "�قƂ�ǂȂ��̂���B";
+		mes "������l�̒����𓾂��Ƃ���";
+		mes "�L�^�ɂ͎c���Ă���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "おそらく、今のアマツ城主の";
-		mes "先祖ではないかと";
-		mes "ワシは考えておる。";
+		mes "[������ �M�I��]";
+		mes "�����炭�A���̃A�}�c����";
+		mes "��c�ł͂Ȃ�����";
+		mes "���V�͍l���Ă���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "一族に関する話も";
-		mes "残り少なくなってきたのう。";
-		mes "三つ目の試練を乗り越えたなら";
-		mes "また続きを話そう。";
+		mes "[������ �M�I��]";
+		mes "�ꑰ�Ɋւ���b��";
+		mes "�c�菭�Ȃ��Ȃ��Ă����̂��B";
+		mes "�O�ڂ̎��������z�����Ȃ�";
+		mes "�܂�������b�����B";
 		next;
 		switch('@type) {
 		case 1:
-			mes "[導き手 ギオン]";
-			mes "^339CCC知識の試練^000000か。";
-			mes "ふぉふぉふぉ。";
-			mes "そなたがこの道を選んだことを";
-			mes "あやつが知った時の顔が";
-			mes "楽しみじゃの。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�m���̎���^000000���B";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "���Ȃ������̓���I�񂾂��Ƃ�";
+			mes "������m�������̊炪";
+			mes "�y���݂���́B";
 			next;
-			menu "あやつ？",-;
+			menu "����H",-;
 			set CHANGE_KO,8;
 			setquest 5136;
-			mes "[導き手 ギオン]";
-			mes "ふぉふぉふぉ。";
-			mes "会ってからのお楽しみじゃ。";
-			mes "知識の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "�ӂ��ӂ��ӂ��B";
+			mes "����Ă���̂��y���݂���B";
+			mes "�m���̎����͂���������B";
 			close2;
 			warp "job_ko.gat",72,128;
 			end;
 		case 2:
-			mes "[導き手 ギオン]";
-			mes "^339CCC生存の試練^000000か。";
-			mes "孤独な試練となるかも知れぬが……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC�����̎���^000000���B";
+			mes "�ǓƂȎ����ƂȂ邩���m��ʂ��c�c�B";
 			next;
 			set CHANGE_KO,8;
 			setquest 5137;
-			mes "[導き手 ギオン]";
-			mes "そなたならいらぬ心配じゃろう。";
-			mes "生存の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���Ȃ��Ȃ炢��ʐS�z����낤�B";
+			mes "�����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",62,16;
 			end;
 		case 3:
-			mes "[導き手 ギオン]";
-			mes "^339CCC武器の試練^000000か。";
-			mes "では試練の前に……。";
+			mes "[������ �M�I��]";
+			mes "^339CCC����̎���^000000���B";
+			mes "�ł͎����̑O�Ɂc�c�B";
 			next;
 			set CHANGE_KO,8;
 			setquest 5138;
 			getitem 1002,5;
 			getitem 1010,1;
-			mes "‐鉄鉱石を5個";
-			mes "　プラコンを1個受け取りました‐";
+			mes "�]�S�z�΂�5��";
+			mes "�@�v���R����1�󂯎��܂����]";
 			next;
-			mes "[導き手 ギオン]";
-			mes "それが必要になるじゃろう。";
-			mes "武器の試練はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "���ꂪ�K�v�ɂȂ邶��낤�B";
+			mes "����̎����͂���������B";
 			close2;
 			warp "job_ko.gat",121,129;
 			end;
@@ -899,174 +899,174 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 		set '@test2,checkquest(5137);
 		set '@test3,checkquest(5138);
 		if('@test1 & 0x1) {
-			set '@test$,"知識";
+			set '@test$,"�m��";
 			set '@x,72;
 			set '@y,128;
 		}
 		else if('@test2 & 0x1) {
-			set '@test$,"生存";
+			set '@test$,"����";
 			set '@x,62;
 			set '@y,16;
 		}
 		else if('@test3 & 0x1) {
-			set '@test$,"武器";
+			set '@test$,"����";
 			set '@x,121;
 			set '@y,129;
 		}
 		if('@x && '@y) {
 			cutin "job_ko04",2;
-			mes "[導き手 ギオン]";
-			mes "^339CCC" +'@test$+ "の試練^000000を受けているのか。";
-			mes "再び試練に向かうかね？";
+			mes "[������ �M�I��]";
+			mes "^339CCC" +'@test$+ "�̎���^000000���󂯂Ă���̂��B";
+			mes "�Ăю����Ɍ��������ˁH";
 			next;
-			switch(select("試練の場へ向かう","街に戻ります")) {
+			switch(select("�����̏�֌�����","�X�ɖ߂�܂�")) {
 			case 1:
-				mes "[導き手 ギオン]";
-				mes '@test$+ "の試練はこっちじゃ。";
+				mes "[������ �M�I��]";
+				mes '@test$+ "�̎����͂���������B";
 				close2;
 				warp "job_ko.gat",'@x,'@y;
 				end;
 			case 2:
-				mes "[導き手 ギオン]";
-				mes "街まで送ろう。";
+				mes "[������ �M�I��]";
+				mes "�X�܂ő��낤�B";
 				close2;
 				warp "amatsu.gat",147,136;
 				end;
 			}
 		}
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "残る試練もひとつだけとなったか。";
+		mes "[������ �M�I��]";
+		mes "�c�鎎�����ЂƂ����ƂȂ������B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "他の試練とは違い";
-		mes "他人と競うことが要求される……";
-		mes "そんな試練じゃ。";
+		mes "[������ �M�I��]";
+		mes "���̎����Ƃ͈Ⴂ";
+		mes "���l�Ƌ������Ƃ��v�������c�c";
+		mes "����Ȏ�������B";
 		next;
-		menu "あの……話の続きは？",-;
+		menu "���́c�c�b�̑����́H",-;
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "ふぉふぉふぉ、覚えていたか。";
-		mes "では続きを話そう。";
+		mes "[������ �M�I��]";
+		mes "�ӂ��ӂ��ӂ��A�o���Ă������B";
+		mes "�ł͑�����b�����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "太陽にたとえられし";
-		mes "影に潜む狼のごとき戦士";
-		mes "影狼……。";
+		mes "[������ �M�I��]";
+		mes "���z�ɂ��Ƃ���ꂵ";
+		mes "�e�ɐ��ޘT�̂��Ƃ���m";
+		mes "�e�T�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "月にたとえられし";
-		mes "淡き月光のごとき戦士";
-		mes "朧……。";
+		mes "[������ �M�I��]";
+		mes "���ɂ��Ƃ���ꂵ";
+		mes "�W�������̂��Ƃ���m";
+		mes "�O�c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "この二人の戦士の忠誠を得た男は";
-		mes "少し変わった性格だったと";
-		mes "伝えられておる。";
+		mes "[������ �M�I��]";
+		mes "���̓�l�̐�m�̒����𓾂��j��";
+		mes "�����ς�������i��������";
+		mes "�`�����Ă���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "争いよりは話し合いを優先し";
-		mes "冗談が大好きで";
-		mes "女好きだったと";
-		mes "伝えられておるのじゃ。";
+		mes "[������ �M�I��]";
+		mes "�������͘b��������D�悵";
+		mes "��k����D����";
+		mes "���D����������";
+		mes "�`�����Ă���̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "ふぉふぉ……";
-		mes "なぜこんな小さなことが";
-		mes "伝えられておるのかわからぬが……。";
+		mes "[������ �M�I��]";
+		mes "�ӂ��ӂ��c�c";
+		mes "�Ȃ�����ȏ����Ȃ��Ƃ�";
+		mes "�`�����Ă���̂��킩��ʂ��c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "男は二人の戦士の仲を取り持つことを";
-		mes "望んだようじゃ。";
-		mes "長い戦争で二人がそう簡単には";
-		mes "打ち解けられなかったせいかも知れぬ。";
+		mes "[������ �M�I��]";
+		mes "�j�͓�l�̐�m�̒�����莝���Ƃ�";
+		mes "�]�񂾂悤����B";
+		mes "�����푈�œ�l�������ȒP�ɂ�";
+		mes "�ł��������Ȃ��������������m��ʁB";
 		next;
-		mes "[導き手 ギオン]";
-		mes "二人の戦士を任務で組ませたり";
-		mes "密室に閉じ込めたりと";
-		mes "二人きりにさせたそうじゃ。";
+		mes "[������ �M�I��]";
+		mes "��l�̐�m��C���őg�܂�����";
+		mes "�����ɕ����߂����";
+		mes "��l����ɂ�������������B";
 		next;
-		menu "自分が楽しんだだけでは……",-;
-		mes "[導き手 ギオン]";
-		mes "ふぉふぉふぉ、そうかも知れんのう。";
-		mes "まあ、おかげで二人の戦士は";
-		mes "晴れて結ばれることとなった。";
+		menu "�������y���񂾂����ł́c�c",-;
+		mes "[������ �M�I��]";
+		mes "�ӂ��ӂ��ӂ��A���������m���̂��B";
+		mes "�܂��A�������œ�l�̐�m��";
+		mes "����Č��΂�邱�ƂƂȂ����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "一族の始まり、というわけじゃな。";
+		mes "[������ �M�I��]";
+		mes "�ꑰ�̎n�܂�A�Ƃ����킯����ȁB";
 		next;
-		menu "それからどうなりましたか？ ",-;
-		mes "[導き手 ギオン]";
-		mes "惜しいことにその後のことは";
-		mes "何者かによって意図的に";
-		mes "伝えられていないようなのじゃ。";
+		menu "���ꂩ��ǂ��Ȃ�܂������H ",-;
+		mes "[������ �M�I��]";
+		mes "�ɂ������Ƃɂ��̌�̂��Ƃ�";
+		mes "���҂��ɂ���ĈӐ}�I��";
+		mes "�`�����Ă��Ȃ��悤�Ȃ̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "過去にしばられることなく";
-		mes "未来へと進んで欲しかったから";
-		mes "と、わしは考えておる……。";
+		mes "[������ �M�I��]";
+		mes "�ߋ��ɂ��΂��邱�ƂȂ�";
+		mes "�����ւƐi��ŗ~������������";
+		mes "�ƁA�킵�͍l���Ă���c�c�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "さあ、そろそろ最後の試練を";
-		mes "始めようかの？";
+		mes "[������ �M�I��]";
+		mes "�����A���낻��Ō�̎�����";
+		mes "�n�߂悤���́H";
 		next;
 		set CHANGE_KO,9;
 		chgquest 5135,72900;
-		mes "[導き手 ギオン]";
-		mes "疲れているようなら";
-		mes "しばし休むのも良いかもしれん。";
-		mes "準備ができたら";
-		mes "声をかけるのじゃ。";
+		mes "[������ �M�I��]";
+		mes "���Ă���悤�Ȃ�";
+		mes "���΂��x�ނ̂��ǂ����������B";
+		mes "�������ł�����";
+		mes "����������̂���B";
 		close2;
 		cutin "job_ko01",255;
 		end;
 	case 9:
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "もう少し休んでいても";
-		mes "良かったのじゃよ。";
-		mes "それとも、急ぎの用でもあるのか？";
+		mes "[������ �M�I��]";
+		mes "���������x��ł��Ă�";
+		mes "�ǂ������̂����B";
+		mes "����Ƃ��A�}���̗p�ł�����̂��H";
 		next;
 		input '@str$;
 		cutin "job_ko03",2;
-		mes "[導き手 ギオン]";
-		mes "^B24E59" +'@str$+ "^000000か？";
+		mes "[������ �M�I��]";
+		mes "^B24E59" +'@str$+ "^000000���H";
 		next;
-		mes "[導き手 ギオン]";
-		mes "若者の心情は理解しづらいな。";
+		mes "[������ �M�I��]";
+		mes "��҂̐S��͗������Â炢�ȁB";
 		next;
-		mes "[導き手 ギオン]";
-		mes "まあ、ここまでやってきたそなたなら";
-		mes "最後の試練も乗り越えられるじゃろう。";
+		mes "[������ �M�I��]";
+		mes "�܂��A�����܂ł���Ă������Ȃ��Ȃ�";
+		mes "�Ō�̎��������z�����邶��낤�B";
 		next;
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "さて！";
-		mes "戦闘の試練について説明しよう。";
+		mes "[������ �M�I��]";
+		mes "���āI";
+		mes "�퓬�̎����ɂ��Đ������悤�B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "戦闘の試練の目標は";
-		mes "^FF0000一族の過去^000000と呼ばれるモンスターじゃ。";
+		mes "[������ �M�I��]";
+		mes "�퓬�̎����̖ڕW��";
+		mes "^FF0000�ꑰ�̉ߋ�^000000�ƌĂ΂�郂���X�^�[����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "試練の場には似ている姿、";
-		mes "似ている名前のモンスターがいる。";
-		mes "注意して戦うのじゃ。";
+		mes "[������ �M�I��]";
+		mes "�����̏�ɂ͎��Ă���p�A";
+		mes "���Ă��閼�O�̃����X�^�[������B";
+		mes "���ӂ��Đ키�̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "もしかしたら、同じ目標を狙う者が";
-		mes "いるかも知れん。";
-		mes "目標を倒した者のみが";
-		mes "試練を乗り越えられるのじゃ。";
+		mes "[������ �M�I��]";
+		mes "������������A�����ڕW��_���҂�";
+		mes "���邩���m���B";
+		mes "�ڕW��|�����҂݂̂�";
+		mes "���������z������̂���B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "そなたに" +(Sex? "影狼": "朧")+ "様の";
-		mes "ご加護があらんことを……。";
+		mes "[������ �M�I��]";
+		mes "���Ȃ���" +(Sex? "�e�T": "�O")+ "�l��";
+		mes "�����삪����񂱂Ƃ��c�c�B";
 		next;
 		set CHANGE_KO,10;
 		chgquest 72900,5146;
-		mes "[導き手 ギオン]";
-		mes "では戦闘の試練の場に向かうとしよう。";
+		mes "[������ �M�I��]";
+		mes "�ł͐퓬�̎����̏�Ɍ������Ƃ��悤�B";
 		close2;
 		switch(rand(3)){
 		case 0: warp "job_ko.gat",142,20; break;
@@ -1076,21 +1076,21 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 	case 10:
 	case 11:
 		cutin "job_ko03",2;
-		mes "[導き手 ギオン]";
-		mes "むむ?!";
-		mes "そなたは^339CCC戦闘の試練^000000を";
-		mes "受けていたはずでは？ ";
+		mes "[������ �M�I��]";
+		mes "�ނ�?!";
+		mes "���Ȃ���^339CCC�퓬�̎���^000000��";
+		mes "�󂯂Ă����͂��ł́H ";
 		next;
-		switch(select("試練の場に送ってもらう","街に戻ります")) {
+		switch(select("�����̏�ɑ����Ă��炤","�X�ɖ߂�܂�")) {
 		case 1:
-			mes "[導き手 ギオン]";
-			mes "試練の場はこっちじゃ。";
+			mes "[������ �M�I��]";
+			mes "�����̏�͂���������B";
 			close2;
 			warp "job_ko.gat",141,80;
 			end;
 		case 2:
-			mes "[導き手 ギオン]";
-			mes "街まで送ろう。";
+			mes "[������ �M�I��]";
+			mes "�X�܂ő��낤�B";
 			close2;
 			warp "amatsu.gat",147,136;
 			end;
@@ -1098,88 +1098,88 @@ job_ko.gat,25,115,4	script	謎の老人#ko	588,{
 	}
 }
 
-job_ko.gat,81,124,4	script	クウガ・カイ#ko	730,{
+job_ko.gat,81,124,4	script	�N�E�K�E�J�C#ko	730,{
 	if(checkquest(5136)) {
 		if(checkquest(5136) & 0x8) {
-			mes "[クウガ・カイ]";
-			mes "さあ、外に出してやろう。";
-			mes "ギオン様に結果を報告するように。";
+			mes "[�N�E�K�E�J�C]";
+			mes "�����A�O�ɏo���Ă�낤�B";
+			mes "�M�I���l�Ɍ��ʂ�񍐂���悤�ɁB";
 			close2;
 			warp "job_ko.gat",16,113;
 			end;
 		}
 		if(!checkquest(5139)) {
-			mes "[クウガ・カイ]";
-			mes "久しぶりだな！";
+			mes "[�N�E�K�E�J�C]";
+			mes "�v���Ԃ肾�ȁI";
 			next;
-			menu "あなたは……",-;
-			mes "[クウガ・カイ]";
-			mes "忍者への道を求めて";
-			mes "俺のところへやって来たのが";
-			mes "つい先日のことと思っていたが……。";
+			menu "���Ȃ��́c�c",-;
+			mes "[�N�E�K�E�J�C]";
+			mes "�E�҂ւ̓������߂�";
+			mes "���̂Ƃ���ւ���ė����̂�";
+			mes "������̂��ƂƎv���Ă������c�c�B";
 			next;
-			mes "[クウガ・カイ]";
-			mes "すでにここまで成長しているとは！";
+			mes "[�N�E�K�E�J�C]";
+			mes "���łɂ����܂Ő������Ă���Ƃ́I";
 			next;
-			mes "[クウガ・カイ]";
-			mes "ハッハッハッハッ！";
-			mes "見込んだ通り根性があるな。";
-			mes "気に入った！";
+			mes "[�N�E�K�E�J�C]";
+			mes "�n�b�n�b�n�b�n�b�I";
+			mes "�����񂾒ʂ荪��������ȁB";
+			mes "�C�ɓ������I";
 			next;
-			mes "[クウガ・カイ]";
-			mes "ここでは^339CCC知識の試練^000000を";
-			mes "受けることができるぞ。";
+			mes "[�N�E�K�E�J�C]";
+			mes "�����ł�^339CCC�m���̎���^000000��";
+			mes "�󂯂邱�Ƃ��ł��邼�B";
 			next;
-			mes "[クウガ・カイ]";
-			mes "ただ強くなっただけでなく";
-			mes "知識も身につけているだろうな？";
+			mes "[�N�E�K�E�J�C]";
+			mes "���������Ȃ��������łȂ�";
+			mes "�m�����g�ɂ��Ă��邾�낤�ȁH";
 			next;
-			if(select("もちろんです","いいえ……") == 2) {
+			if(select("�������ł�","�������c�c") == 2) {
 				setquest 5139;
-				mes "[クウガ・カイ]";
-				mes "根性だけでは乗り越えられぬぞ。";
-				mes "準備ができたら";
-				mes "また話しかけてくれ。";
+				mes "[�N�E�K�E�J�C]";
+				mes "���������ł͏��z�����ʂ��B";
+				mes "�������ł�����";
+				mes "�܂��b�������Ă���B";
 				close;
 			}
 			setquest 5139;
 		}
-		mes "[クウガ・カイ]";
-		mes "試練に挑む準備はいいか？";
+		mes "[�N�E�K�E�J�C]";
+		mes "�����ɒ��ޏ����͂������H";
 		next;
-		switch(select("はい","いいえ","外に出たい")) {
+		switch(select("�͂�","������","�O�ɏo����")) {
 		case 1:
 			break;
 		case 2:
-			mes "[クウガ・カイ]";
-			mes "仕方ないな。";
-			mes "もう少し待ってやろう。";
+			mes "[�N�E�K�E�J�C]";
+			mes "�d���Ȃ��ȁB";
+			mes "���������҂��Ă�낤�B";
 			close;
 		case 3:
-			mes "[クウガ・カイ]";
-			mes "なんだと？";
-			mes "試練を前にして引き返すなど";
-			mes "言語道断！";
+			mes "[�N�E�K�E�J�C]";
+			mes "�Ȃ񂾂ƁH";
+			mes "������O�ɂ��Ĉ����Ԃ��Ȃ�";
+			mes "���ꓹ�f�I";
 			next;
-			mes "[クウガ・カイ]";
-			mes "破門されても文句は言えぬところだが";
-			mes "……まあ、今回だけは許そう。";
-			mes "万全の準備をして、また来るがいい。";
+			mes "[�N�E�K�E�J�C]";
+			mes "�j�傳��Ă�����͌����ʂƂ��낾��";
+			mes "�c�c�܂��A���񂾂��͋������B";
+			mes "���S�̏��������āA�܂����邪�����B";
 			close2;
 			warp "job_ko.gat",16,113;
 			end;
 		}
-		mes "[クウガ・カイ]";
-		mes "知識の試練のやり方は聞いているか？";
+		mes "[�N�E�K�E�J�C]";
+		mes "�m���̎����̂����͕����Ă��邩�H";
 		next;
-		mes "[クウガ・カイ]";
-		mes "俺が出す問題を聞き";
-		mes "正解と思うものを選べばいい。";
-		mes "半端な正解数では";
-		mes "試練は突破できんぞ。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�����o�����𕷂�";
+		mes "�����Ǝv�����̂�I�ׂ΂����B";
+		mes "���[�Ȑ��𐔂ł�";
+		mes "�����͓˔j�ł��񂼁B";
 		next;
-		mes "[クウガ・カイ]";
-		mes "では試練をはじめるぞ！";
+		mes "[�N�E�K�E�J�C]";
+		mes "�ł͎������͂��߂邼�I";
 		next;
 		for(set '@i,0; '@i<=47; set '@i,'@i+1)
 			set '@list['@i],'@i;
@@ -1187,418 +1187,418 @@ job_ko.gat,81,124,4	script	クウガ・カイ#ko	730,{
 			set '@r,rand(getarraysize('@list));
 			set '@test,'@list['@r];
 			deletearray '@list['@r],1;
-			mes "[クウガ・カイ]";
+			mes "[�N�E�K�E�J�C]";
 			if('@i<10)
-				mes "第" +'@i+ "問";
+				mes "��" +'@i+ "��";
 			else
-				mes "最終問題";
+				mes "�ŏI���";
 			switch('@test) {
 			case 0:
-				mes "一閃スキルの攻撃力を高めるために";
-				mes "最も影響のあるステータスを答えよ。";
+				mes "��M�X�L���̍U���͂����߂邽�߂�";
+				mes "�ł��e���̂���X�e�[�^�X�𓚂���B";
 				next;
 				if(select("Vit","MaxHP","Int","MaxSP")==2)
 					set '@m,'@m+1;
 				break;
 			case 1:
-				mes "一閃スキルの攻撃力を高めるため";
-				mes "靴に挿すカードとして";
-				mes "次のうち最も効果的なカードを選べ。";
+				mes "��M�X�L���̍U���͂����߂邽��";
+				mes "�C�ɑ}���J�[�h�Ƃ���";
+				mes "���̂����ł����ʓI�ȃJ�[�h��I�ׁB";
 				next;
-				if(select("ゴールドオシドスカード","マーターカード","タナトスの憎悪カード","エドガカード")==2)
+				if(select("�S�[���h�I�V�h�X�J�[�h","�}�[�^�[�J�[�h","�^�i�g�X�̑����J�[�h","�G�h�K�J�[�h")==2)
 					set '@m,'@m+1;
 				break;
 			case 2:
-				mes "一閃を習得するために必要な";
-				mes "投擲修練のレベルはいくつか？";
+				mes "��M���K�����邽�߂ɕK�v��";
+				mes "�����C���̃��x���͂������H";
 				next;
 				if(select("5","7","6","8")==2)
 					set '@m,'@m+1;
 				break;
 			case 3:
-				mes "空蝉スキルの最大レベルを答えよ。";
+				mes "���X�L���̍ő僌�x���𓚂���B";
 				next;
 				if(select("5","3","1","4")==1)
 					set '@m,'@m+1;
 				break;
 			case 4:
-				mes "火炎陣スキルがレベル10のとき、";
-				mes "最大攻撃回数は？";
+				mes "�Ή��w�X�L�������x��10�̂Ƃ��A";
+				mes "�ő�U���񐔂́H";
 				next;
 				if(select("7","8","9","10")==3)
 					set '@m,'@m+1;
 				break;
 			case 5:
-				mes "火炎陣スキルを使用するために必要な";
-				mes "触媒を答えよ。";
+				mes "�Ή��w�X�L�����g�p���邽�߂ɕK�v��";
+				mes "�G�}�𓚂���B";
 				next;
-				if(select("氷閃石","烈火石","風鈴石","影宝珠")==2)
+				if(select("�X�M��","��ΐ�","�����","�e���")==2)
 					set '@m,'@m+1;
 				break;
 			case 6:
-				mes "影跳びLv5の最大移動距離は何歩分か？";
+				mes "�e����Lv5�̍ő�ړ������͉��������H";
 				next;
-				if(select("9歩","11歩","13歩","15歩")==1)
+				if(select("9��","11��","13��","15��")==1)
 					set '@m,'@m+1;
 				break;
 			case 7:
-				mes "影分身レベル10の回避回数と";
-				mes "持続時間が正しいものはどれだ？";
+				mes "�e���g���x��10�̉���񐔂�";
+				mes "�������Ԃ����������̂͂ǂꂾ�H";
 				next;
-				if(select("7回‐200秒","5回‐220秒","6回‐240秒","5回‐240秒")==4)
+				if(select("7��]200�b","5��]220�b","6��]240�b","5��]240�b")==4)
 					set '@m,'@m+1;
 				break;
 			case 8:
-				mes "霞斬りスキルがレベル4のときの";
-				mes "攻撃力を答えよ。";
+				mes "���a��X�L�������x��4�̂Ƃ���";
+				mes "�U���͂𓚂���B";
 				next;
 				if(select("140%","150%","160%","170%")==1)
 					set '@m,'@m+1;
 				break;
 			case 9:
-				mes "苦無投げ使用時";
-				mes "打撃回数を答えよ。";
+				mes "�ꖳ�����g�p��";
+				mes "�Ō��񐔂𓚂���B";
 				next;
 				if(select("2","3","4","5")==2)
 					set '@m,'@m+1;
 				break;
 			case 10:
-				mes "次の中から、朔風レベル4のとき";
-				mes "Matkおよび射程距離が";
-				mes "正しいものを選べ。";
+				mes "���̒�����A�񕗃��x��4�̂Ƃ�";
+				mes "Matk����ю˒�������";
+				mes "���������̂�I�ׁB";
 				next;
-				if(select("Matk400‐8歩","Matk500‐7歩","Matk500‐8歩","Matk400‐7歩")==3)
+				if(select("Matk400�]8��","Matk500�]7��","Matk500�]8��","Matk400�]7��")==3)
 					set '@m,'@m+1;
 				break;
 			case 11:
-				mes "手裏剣投げの基本攻撃距離は何歩分か？";
+				mes "�藠�������̊�{�U�������͉��������H";
 				next;
-				if(select("7歩","8歩","9歩","10歩")==3)
+				if(select("7��","8��","9��","10��")==3)
 					set '@m,'@m+1;
 				break;
 			case 12:
-				mes "水遁スキルがレベル7のときの";
-				mes "持続時間を答えよ。";
+				mes "���كX�L�������x��7�̂Ƃ���";
+				mes "�������Ԃ𓚂���B";
 				next;
-				if(select("40秒","45秒","50秒","55秒")==2)
+				if(select("40�b","45�b","50�b","55�b")==2)
 					set '@m,'@m+1;
 				break;
 			case 13:
-				mes "水遁スキルの効果でないものを";
-				mes "次の中から選べ。";
+				mes "���كX�L���̌��ʂłȂ����̂�";
+				mes "���̒�����I�ׁB";
 				next;
-				if(select("移動速度減少","ウォーターボール使用可能","アクアベネディクタ使用可能","Vit減少")==4)
+				if(select("�ړ����x����","�E�H�[�^�[�{�[���g�p�\","�A�N�A�x�l�f�B�N�^�g�p�\","Vit����")==4)
 					set '@m,'@m+1;
 				break;
 			case 14:
-				mes "銭投げスキルを習得するために必要な";
-				mes "投擲修練レベルを答えよ。";
+				mes "�K�����X�L�����K�����邽�߂ɕK�v��";
+				mes "�����C�����x���𓚂���B";
 				next;
 				if(select("4","6","8","10")==4)
 					set '@m,'@m+1;
 				break;
 			case 15:
-				mes "銭投げがレベル6のとき";
-				mes "スキル使用時に消費する金額を答えよ。";
+				mes "�K���������x��6�̂Ƃ�";
+				mes "�X�L���g�p���ɏ������z�𓚂���B";
 				next;
-				if(select("2000〜8000Zeny","1000〜6000Zeny","3000〜8000Zeny","3000〜6000Zeny")==4)
+				if(select("2000�`8000Zeny","1000�`6000Zeny","3000�`8000Zeny","3000�`6000Zeny")==4)
 					set '@m,'@m+1;
 				break;
 			case 16:
-				mes "銭投げスキルをマスターするために";
-				mes "必要な総スキルポイント数を答えよ。";
+				mes "�K�����X�L�����}�X�^�[���邽�߂�";
+				mes "�K�v�ȑ��X�L���|�C���g���𓚂���B";
 				next;
 				if(select("25","30","35","37")==3)
 					set '@m,'@m+1;
 				break;
 			case 17:
-				mes "畳返しスキルをマスターしたとき";
-				mes "何歩先まで攻撃できるか答えよ。";
+				mes "���Ԃ��X�L�����}�X�^�[�����Ƃ�";
+				mes "������܂ōU���ł��邩������B";
 				next;
 				if(select("5","7","3","1")==3)
 					set '@m,'@m+1;
 				break;
 			case 18:
-				mes "次のうち投擲修練スキルが";
-				mes "レベル7のとき";
-				mes "習得できないスキルを選べ。";
+				mes "���̂��������C���X�L����";
+				mes "���x��7�̂Ƃ�";
+				mes "�K���ł��Ȃ��X�L����I�ׁB";
 				next;
-				if(select("苦無投げ","風魔手裏剣投げ","一閃","銭投げ")==4)
+				if(select("�ꖳ����","�����藠������","��M","�K����")==4)
 					set '@m,'@m+1;
 				break;
 			case 19:
-				mes "投擲修練がレベル7のとき";
-				mes "手裏剣投げに追加される";
-				mes "攻撃力を答えよ。";
+				mes "�����C�������x��7�̂Ƃ�";
+				mes "�藠�������ɒǉ������";
+				mes "�U���͂𓚂���B";
 				next;
 				if(select("18","21","27","30")==2)
 					set '@m,'@m+1;
 				break;
 			case 20:
-				mes "念スキルレベル5を使用したとき";
-				mes "上昇するStrおよびIntの";
-				mes "数値を答えよ。";
+				mes "�O�X�L�����x��5���g�p�����Ƃ�";
+				mes "�㏸����Str�����Int��";
+				mes "���l�𓚂���B";
 				next;
 				if(select("4","5","6","7")==2)
 					set '@m,'@m+1;
 				break;
 			case 21:
-				mes "雷撃砕の属性で正しいものは？";
+				mes "�����ӂ̑����Ő��������̂́H";
 				next;
-				if(select("火","水","地","風")==4)
+				if(select("��","��","�n","��")==4)
 					set '@m,'@m+1;
 				break;
 			case 22:
-				mes "龍炎陣の攻撃範囲を答えよ。";
+				mes "�����w�̍U���͈͂𓚂���B";
 				next;
-				if(select("3ｘ3","4ｘ4","5ｘ5","6ｘ6")==3)
+				if(select("3��3","4��4","5��5","6��6")==3)
 					set '@m,'@m+1;
 				break;
 			case 23:
-				mes "龍炎陣を習得するために必要な";
-				mes "忍法修練のスキルレベルを答えよ。";
+				mes "�����w���K�����邽�߂ɕK�v��";
+				mes "�E�@�C���̃X�L�����x���𓚂���B";
 				next;
 				if(select("10","9","8","1")==1)
 					set '@m,'@m+1;
 				break;
 			case 24:
-				mes "次のうち触媒を必要としない";
-				mes "忍者スキルを答えよ。";
+				mes "���̂����G�}��K�v�Ƃ��Ȃ�";
+				mes "�E�҃X�L���𓚂���B";
 				next;
-				if(select("火炎陣","水遁","紅炎華","氷柱落し")==3)
+				if(select("�Ή��w","����","�g����","�X������")==3)
 					set '@m,'@m+1;
 				break;
 			case 25:
-				mes "次のうち地属性のモンスターに";
-				mes "もっとも効果的なスキルを選べ。";
+				mes "���̂����n�����̃����X�^�[��";
+				mes "�����Ƃ����ʓI�ȃX�L����I�ׁB";
 				next;
-				if(select("朔風","龍炎陣","氷柱落し","風刃")==2)
+				if(select("��","�����w","�X������","���n")==2)
 					set '@m,'@m+1;
 				break;
 			case 26:
-				mes "次のうち、スキルと属性の組み合わせで";
-				mes "正しくないものを選べ。";
+				mes "���̂����A�X�L���Ƒ����̑g�ݍ��킹��";
+				mes "�������Ȃ����̂�I�ׁB";
 				next;
-				if(select("紅炎華、火","氷柱落し、水","氷閃槍、地","雷撃砕、風")==3)
+				if(select("�g���؁A��","�X�������A��","�X�M���A�n","�����ӁA��")==3)
 					set '@m,'@m+1;
 				break;
 			case 27:
-				mes "モンスターポルセリオに対して";
-				mes "もっとも大きなダメージを与えられる";
-				mes "苦無を次の中から選べ。";
+				mes "�����X�^�[�|���Z���I�ɑ΂���";
+				mes "�����Ƃ��傫�ȃ_���[�W��^������";
+				mes "�ꖳ�����̒�����I�ׁB";
 				next;
-				if(select("烈火の苦無","氷柱の苦無","猛毒の苦無","狂風の苦無")==1)
+				if(select("��΂̋ꖳ","�X���̋ꖳ","�ғł̋ꖳ","�����̋ꖳ")==1)
 					set '@m,'@m+1;
 				break;
 			case 28:
-				mes "オークウォリアーと戦う際に";
-				mes "一番効果的な苦無を";
-				mes "次の中から選べ。";
+				mes "�I�[�N�E�H���A�[�Ɛ키�ۂ�";
+				mes "��Ԍ��ʓI�ȋꖳ��";
+				mes "���̒�����I�ׁB";
 				next;
-				if(select("烈火の苦無","氷柱の苦無","猛毒の苦無","狂風の苦無")==1)
+				if(select("��΂̋ꖳ","�X���̋ꖳ","�ғł̋ꖳ","�����̋ꖳ")==1)
 					set '@m,'@m+1;
 				break;
 			case 29:
-				mes "村雨に宿る力で正しいものは？ ";
+				mes "���J�ɏh��͂Ő��������̂́H ";
 				next;
-				if(select("人間形モンスターに攻撃力+10%","人間形モンスターにCri+10","悪魔形モンスターに攻撃力+10%","悪魔形モンスターにCri+10")==2)
+				if(select("�l�Ԍ`�����X�^�[�ɍU����+10%","�l�Ԍ`�����X�^�[��Cri+10","�����`�����X�^�[�ɍU����+10%","�����`�����X�^�[��Cri+10")==2)
 					set '@m,'@m+1;
 				break;
 			case 30:
-				mes "次のうち、風魔手裏剣・烈火に";
-				mes "宿る力を選べ。";
+				mes "���̂����A�����藠���E��΂�";
+				mes "�h��͂�I�ׁB";
 				next;
-				if(select("ファイアーボールLv5,Dex-2","ファイアーボールLv5,Dex-3","ファイアーボールLv3,Dex-2","ファイアーボールLv3,Dex-3")==1)
+				if(select("�t�@�C�A�[�{�[��Lv5,Dex-2","�t�@�C�A�[�{�[��Lv5,Dex-3","�t�@�C�A�[�{�[��Lv3,Dex-2","�t�@�C�A�[�{�[��Lv3,Dex-3")==1)
 					set '@m,'@m+1;
 				break;
 			case 31:
-				mes "氷柱の苦無10個を作るときに";
-				mes "必要な材料を答えよ。";
+				mes "�X���̋ꖳ10�����Ƃ���";
+				mes "�K�v�ȍޗ��𓚂���B";
 				next;
-				if(select("雨雲の手裏剣4個、氷閃石2個","雨雲の手裏剣8個、氷閃石2個","雨雲の手裏剣2個、氷閃石1個","雨雲の手裏剣1個、氷閃石2個")==2)
+				if(select("�J�_�̎藠��4�A�X�M��2��","�J�_�̎藠��8�A�X�M��2��","�J�_�̎藠��2�A�X�M��1��","�J�_�̎藠��1�A�X�M��2��")==2)
 					set '@m,'@m+1;
 				break;
 			case 32:
-				mes "次のうち、Strにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����AStr�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("近接攻撃力上昇","所持可能重量上昇","魔法攻撃力上昇","武器攻撃力上昇")==3)
+				if(select("�ߐڍU���͏㏸","�����\�d�ʏ㏸","���@�U���͏㏸","����U���͏㏸")==3)
 					set '@m,'@m+1;
 				break;
 			case 33:
-				mes "次のうち、Agiにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����AAgi�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("命中率の上昇","回避率の上昇","攻撃速度の上昇","攻撃後ディレイの減少")==1)
+				if(select("�������̏㏸","��𗦂̏㏸","�U�����x�̏㏸","�U����f�B���C�̌���")==1)
 					set '@m,'@m+1;
 				break;
 			case 34:
-				mes "次のうち、Vitにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����AVit�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("物理防御力の上昇","MaxHPの増加","魔法防御力の上昇","魔法攻撃力の上昇")==4)
+				if(select("�����h��͂̏㏸","MaxHP�̑���","���@�h��͂̏㏸","���@�U���͂̏㏸")==4)
 					set '@m,'@m+1;
 				break;
 			case 35:
-				mes "次のうち、Intにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����AInt�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("MaxSPの上昇","Matkの上昇","SP回復量の上昇","杖の攻撃力上昇")==4)
+				if(select("MaxSP�̏㏸","Matk�̏㏸","SP�񕜗ʂ̏㏸","��̍U���͏㏸")==4)
 					set '@m,'@m+1;
 				break;
 			case 36:
-				mes "次のうち、Dexにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����ADex�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("詠唱時間の減少","回避率の上昇","命中率の上昇","遠距離攻撃力上昇")==2)
+				if(select("�r�����Ԃ̌���","��𗦂̏㏸","�������̏㏸","�������U���͏㏸")==2)
 					set '@m,'@m+1;
 				break;
 			case 37:
-				mes "次のうち、Lukにポイントを";
-				mes "割り振ったとき";
-				mes "効果を得られないものを選べ。";
+				mes "���̂����ALuk�Ƀ|�C���g��";
+				mes "����U�����Ƃ�";
+				mes "���ʂ𓾂��Ȃ����̂�I�ׁB";
 				next;
-				if(select("命中率の上昇","完全回避率の上昇","魔法攻撃力の減少","クリティカル発生率の上昇")==1)
+				if(select("�������̏㏸","���S��𗦂̏㏸","���@�U���͂̌���","�N���e�B�J���������̏㏸")==1)
 					set '@m,'@m+1;
 				break;
 			case 38:
-				mes "次のうち、大型モンスターに対して";
-				mes "物理攻撃を行ったとき";
-				mes "もっとも効果的な武器用カードを選べ。";
+				mes "���̂����A��^�����X�^�[�ɑ΂���";
+				mes "�����U�����s�����Ƃ�";
+				mes "�����Ƃ����ʓI�ȕ���p�J�[�h��I�ׁB";
 				next;
-				if(select("ルナティックカード","ミノタウロスカード","スケルワーカーカード","デザートウルフカード")==2)
+				if(select("���i�e�B�b�N�J�[�h","�~�m�^�E���X�J�[�h","�X�P�����[�J�[�J�[�h","�f�U�[�g�E���t�J�[�h")==2)
 					set '@m,'@m+1;
 				break;
 			case 39:
-				mes "次のうち、中型モンスターに対して";
-				mes "物理攻撃を行ったとき";
-				mes "もっとも効果的な武器用カードを選べ。";
+				mes "���̂����A���^�����X�^�[�ɑ΂���";
+				mes "�����U�����s�����Ƃ�";
+				mes "�����Ƃ����ʓI�ȕ���p�J�[�h��I�ׁB";
 				next;
-				if(select("ルナティックカード","ミノタウロスカード","スケルワーカーカード","デザートウルフカード")==3)
+				if(select("���i�e�B�b�N�J�[�h","�~�m�^�E���X�J�[�h","�X�P�����[�J�[�J�[�h","�f�U�[�g�E���t�J�[�h")==3)
 					set '@m,'@m+1;
 				break;
 			case 40:
-				mes "次のうち、小型モンスターに対して";
-				mes "物理攻撃を行ったとき";
-				mes "もっとも効果的な武器用カードを選べ。";
+				mes "���̂����A���^�����X�^�[�ɑ΂���";
+				mes "�����U�����s�����Ƃ�";
+				mes "�����Ƃ����ʓI�ȕ���p�J�[�h��I�ׁB";
 				next;
-				if(select("ルナティックカード","ミノタウロスカード","スケルワーカーカード","デザートウルフカード")==4)
+				if(select("���i�e�B�b�N�J�[�h","�~�m�^�E���X�J�[�h","�X�P�����[�J�[�J�[�h","�f�U�[�g�E���t�J�[�h")==4)
 					set '@m,'@m+1;
 				break;
 			case 41:
-				mes "カイバラが作れない武器を";
-				mes "次の中から選べ。";
+				mes "�J�C�o�������Ȃ������";
+				mes "���̒�����I�ׁB";
 				next;
-				if(select("黒鱗","村雨","白刃","風魔手裏剣・風鳥")==4)
+				if(select("����","���J","���n","�����藠���E����")==4)
 					set '@m,'@m+1;
 				break;
 			case 42:
-				mes "次のうち、忍者専用のアイテムを";
-				mes "作ってくれる匠の名前ではない";
-				mes "ものを選べ。";
+				mes "���̂����A�E�Ґ�p�̃A�C�e����";
+				mes "����Ă���鏠�̖��O�ł͂Ȃ�";
+				mes "���̂�I�ׁB";
 				next;
-				if(select("カイバラ","アイクゥ","テツ","トシュ")==2)
+				if(select("�J�C�o��","�A�C�N�D","�e�c","�g�V��")==2)
 					set '@m,'@m+1;
 				break;
 			case 43:
-				mes "忍者の最大JobLvはいくつだ？";
+				mes "�E�҂̍ő�JobLv�͂������H";
 				next;
 				if(select("70","50","99","100")==1)
 					set '@m,'@m+1;
 				break;
 			case 44:
-				mes "忍者屋敷がある街の名前を答えよ。";
+				mes "�E�҉��~������X�̖��O�𓚂���B";
 				next;
-				if(select("ルティエ","アマツ","デワタ","コモド")==2)
+				if(select("���e�B�G","�A�}�c","�f���^","�R���h")==2)
 					set '@m,'@m+1;
 				break;
 			case 45:
-				mes "忍者転職のときに";
-				mes "俺が手紙を出した相手の";
-				mes "名前を答えよ。";
+				mes "�E�ғ]�E�̂Ƃ���";
+				mes "�����莆���o���������";
+				mes "���O�𓚂���B";
 				next;
-				if(select("野良犬","野良猫","野羊","山羊")==3)
+				if(select("��ǌ�","��ǔL","��r","�R�r")==3)
 					set '@m,'@m+1;
 				break;
 			case 46:
-				mes "初めて俺に会ったとき";
-				mes "俺の隣に置いてあったものを答えよ。";
+				mes "���߂ĉ��ɉ�����Ƃ�";
+				mes "���ׂ̗ɒu���Ă��������̂𓚂���B";
 				next;
-				if(select("座布団","掛け軸","植木鉢","火鉢")==4)
+				if(select("���z�c","�|����","�A�ؔ�","�Δ�")==4)
 					set '@m,'@m+1;
 				break;
 			case 47:
-				mes "忍者が転生をする時に";
-				mes "会う必要がある人物を";
-				mes "次の中から選べ。";
+				mes "�E�҂��]�������鎞��";
+				mes "��K�v������l����";
+				mes "���̒�����I�ׁB";
 				next;
-				if(select("ヴァルキリー","ランドグリス","無い","ヒョウ")==3)
+				if(select("���@���L���[","�����h�O���X","����","�q���E")==3)
 					set '@m,'@m+1;
 				break;
 			case 48:
-				mes "次のうち、転生を担当している";
-				mes "NPCの名前で正しいものを選べ。";
+				mes "���̂����A�]����S�����Ă���";
+				mes "NPC�̖��O�Ő��������̂�I�ׁB";
 				next;
-				if(select("ヴァルキリー","バルキリー","ハラキリー","クウガ・カイ")==1)
+				if(select("���@���L���[","�o���L���[","�n���L���[","�N�E�K�E�J�C")==1)
 					set '@m,'@m+1;
 				break;
 			case 49:
-				mes "忍者JobLv70の時に";
-				mes "加算されたDexとLukの合計値を答えよ。";
+				mes "�E��JobLv70�̎���";
+				mes "���Z���ꂽDex��Luk�̍��v�l�𓚂���B";
 				next;
 				if(select("8","10","12","14")==2)
 					set '@m,'@m+1;
 				break;
 			}
 		}
-		mes "[クウガ・カイ]";
-		mes "これで全問終了だ。";
-		mes "採点するのでしばし待て。";
+		mes "[�N�E�K�E�J�C]";
+		mes "����őS��I�����B";
+		mes "�̓_����̂ł��΂��҂āB";
 		next;
-		mes "[クウガ・カイ]";
-		mes "…………。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�c�c�c�c�B";
 		next;
 		if('@m < 9) {
-			mes "[クウガ・カイ]";
-			mes "ふむ……";
-			mes "期待していたほどではないな。";
+			mes "[�N�E�K�E�J�C]";
+			mes "�ӂށc�c";
+			mes "���҂��Ă����قǂł͂Ȃ��ȁB";
 			next;
-			mes "[クウガ・カイ]";
-			mes "さらなる極みに進むには";
-			mes "まだまだだということだ。";
+			mes "[�N�E�K�E�J�C]";
+			mes "����Ȃ�ɂ݂ɐi�ނɂ�";
+			mes "�܂��܂����Ƃ������Ƃ��B";
 			next;
-			mes "[クウガ・カイ]";
-			mes "もう一度機会を与えてやる！";
-			mes "出直してこい！";
+			mes "[�N�E�K�E�J�C]";
+			mes "������x�@���^���Ă��I";
+			mes "�o�����Ă����I";
 			close;
 		}
-		mes "[クウガ・カイ]";
-		mes '@m+ "0点か……。";
-		mes "力ばかりを身につけたわけではないか。";
-		mes "さすがだな。";
+		mes "[�N�E�K�E�J�C]";
+		mes '@m+ "0�_���c�c�B";
+		mes "�͂΂����g�ɂ����킯�ł͂Ȃ����B";
+		mes "���������ȁB";
 		next;
-		mes "[クウガ・カイ]";
-		mes "だが、この程度の試練を";
-		mes "乗り越えたくらいでうぬぼれるなよ。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�����A���̒��x�̎�����";
+		mes "���z�������炢�ł��ʂڂ��Ȃ�B";
 		next;
-		mes "[クウガ・カイ]";
-		mes "まだまだ貴様が乗り越えるべき";
-		mes "試練は残っているぞ。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�܂��܂��M�l�����z����ׂ�";
+		mes "�����͎c���Ă��邼�B";
 		next;
-		mes "[クウガ・カイ]";
-		mes "貴様の力で試練を乗り越えられるか";
-		mes "見守らせてもらう。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�M�l�̗͂Ŏ��������z�����邩";
+		mes "����点�Ă��炤�B";
 		next;
 		compquest 5136;
 		delquest 5139;
-		mes "[クウガ・カイ]";
-		mes "さあ、外に出してやろう。";
-		mes "ギオン様に結果を報告するように。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�����A�O�ɏo���Ă�낤�B";
+		mes "�M�I���l�Ɍ��ʂ�񍐂���悤�ɁB";
 		close2;
 		warp "job_ko.gat",16,113;
 		end;
@@ -1618,14 +1618,14 @@ function	script	jobchenge_ko_func	{
 				60,60,60,60,60,60,56,48,40,32,
 				23,23,23,23,23,28,35,43,52,52,
 				52,52,48,40,31,31,31,35,44,44;
-	mes "　保有LP：" +CHANGE_KO_LP;
-	mes "　サイコロを振ると" +'@cost+ "^FD0260LP^000000を消費します‐";
+	mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+	mes "�@�T�C�R����U���" +'@cost+ "^FD0260LP^000000������܂��]";
 	next;
-	menu "サイコロを振る",-;
+	menu "�T�C�R����U��",-;
 	set '@rand,rand(1,6);
 	emotion 57+'@rand,"";
-	mes "‐" +'@rand+ "が出ました。";
-	mes "　" +'@rand+ "マス進みます‐";
+	mes "�]" +'@rand+ "���o�܂����B";
+	mes "�@" +'@rand+ "�}�X�i�݂܂��]";
 	close2;
 	set CHANGE_KO_LP,CHANGE_KO_LP - '@cost + '@heal;
 	if(CHANGE_KO_LP > 100)
@@ -1635,731 +1635,731 @@ function	script	jobchenge_ko_func	{
 	end;
 }
 
-job_ko.gat,57,16,4	script	道標#ko_00	858,1,1,{
-	mes "‐スタート地点";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,57,16,4	script	���W#ko_00	858,1,1,{
+	mes "�]�X�^�[�g�n�_";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	set CHANGE_KO_LP,100;
 	set CHANGE_KO_NOW,0;
 	if(!checkquest(5140)) {
-		mes "‐小さく説明が書いてある‐";
+		mes "�]�����������������Ă���]";
 		while(1) {
 			next;
-			if(select("説明を読む","試練を始める") == 1) {
-				mes "‐生存の試練はスゴロク形式で";
-				mes "　進行します。";
-				mes "　開始時に100ポイントの";
-				mes "　^FD0260生存の試練ポイント(LP)^000000が与えられ";
-				mes "　1回サイコロを振るのに";
-				mes "　1LPを消費します‐";
+			if(select("������ǂ�","�������n�߂�") == 1) {
+				mes "�]�����̎����̓X�S���N�`����";
+				mes "�@�i�s���܂��B";
+				mes "�@�J�n����100�|�C���g��";
+				mes "�@^FD0260�����̎����|�C���g(LP)^000000���^�����";
+				mes "�@1��T�C�R����U��̂�";
+				mes "�@1LP������܂��]";
 				next;
-				mes "‐ゴールまで40マスあり";
-				mes "　途中のコマで^FD0260LP^000000が増減する";
-				mes "　イベントが発生します‐";
+				mes "�]�S�[���܂�40�}�X����";
+				mes "�@�r���̃R�}��^FD0260LP^000000����������";
+				mes "�@�C�x���g���������܂��]";
 				next;
-				mes "‐^FD0260LP^000000が0になるまでに";
-				mes "　ゴールに到達してください‐";
+				mes "�]^FD0260LP^000000��0�ɂȂ�܂ł�";
+				mes "�@�S�[���ɓ��B���Ă��������]";
 				next;
-				mes "‐なお、ゴール到着と同時に";
-				mes "　^FD0260LP^000000が0になった場合は";
-				mes "　ゴールを認めます‐";
+				mes "�]�Ȃ��A�S�[�������Ɠ�����";
+				mes "�@^FD0260LP^000000��0�ɂȂ����ꍇ��";
+				mes "�@�S�[����F�߂܂��]";
 				next;
-				mes "‐生存の試練の説明は以上です‐";
+				mes "�]�����̎����̐����͈ȏ�ł��]";
 				continue;
 			}
 			break;
 		}
 		setquest 5140;
-		mes "‐生存の試練ポイント(LP)を";
-		mes "　100獲得しました‐";
+		mes "�]�����̎����|�C���g(LP)��";
+		mes "�@100�l�����܂����]";
 		next;
-		mes "‐位置：スタート地点";
+		mes "�]�ʒu�F�X�^�[�g�n�_";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐スタート地点に戻ってきました。";
-	mes "　LPが回復しました‐";
+	mes "�]�X�^�[�g�n�_�ɖ߂��Ă��܂����B";
+	mes "�@LP���񕜂��܂����]";
 	while(1) {
 		next;
-		if(select("説明を読む","試練を始める") == 1) {
-			mes "‐生存の試練はスゴロク形式で";
-			mes "　進行します。";
-			mes "　開始時に100ポイントの";
-			mes "　^FD0260生存の試練ポイント(LP)^000000が与えられ";
-			mes "　1回サイコロを振るのに";
-			mes "　1LPを消費します‐";
+		if(select("������ǂ�","�������n�߂�") == 1) {
+			mes "�]�����̎����̓X�S���N�`����";
+			mes "�@�i�s���܂��B";
+			mes "�@�J�n����100�|�C���g��";
+			mes "�@^FD0260�����̎����|�C���g(LP)^000000���^�����";
+			mes "�@1��T�C�R����U��̂�";
+			mes "�@1LP������܂��]";
 			next;
-			mes "‐ゴールまで40マスあり";
-			mes "　途中のコマで^FD0260LP^000000が増減する";
-			mes "　イベントが発生します‐";
+			mes "�]�S�[���܂�40�}�X����";
+			mes "�@�r���̃R�}��^FD0260LP^000000����������";
+			mes "�@�C�x���g���������܂��]";
 			next;
-			mes "‐^FD0260LP^000000が0になるまでに";
-			mes "　ゴールに到達してください‐";
+			mes "�]^FD0260LP^000000��0�ɂȂ�܂ł�";
+			mes "�@�S�[���ɓ��B���Ă��������]";
 			next;
-			mes "‐なお、ゴール到着と同時に";
-			mes "　^FD0260LP^000000が0になった場合は";
-			mes "　ゴールを認めます‐";
+			mes "�]�Ȃ��A�S�[�������Ɠ�����";
+			mes "�@^FD0260LP^000000��0�ɂȂ����ꍇ��";
+			mes "�@�S�[����F�߂܂��]";
 			next;
-			mes "‐生存の試練の説明は以上です‐";
+			mes "�]�����̎����̐����͈ȏ�ł��]";
 			continue;
 		}
 		break;
 	}
-	mes "‐位置：スタート地点";
+	mes "�]�ʒu�F�X�^�[�g�n�_";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,49,16,4	script	道標#ko_01	858,1,1,{
-	mes "‐1番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,49,16,4	script	���W#ko_01	858,1,1,{
+	mes "�]1�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐最初から1が出るとは";
-	mes "　運がありませんね。";
-	mes "　ここでは10^FD0260LP^000000を支払うことで";
-	mes "　9番のマスに進むことができます‐";
+	mes "�]�ŏ�����1���o��Ƃ�";
+	mes "�@�^������܂���ˁB";
+	mes "�@�����ł�10^FD0260LP^000000���x�������Ƃ�";
+	mes "�@9�Ԃ̃}�X�ɐi�ނ��Ƃ��ł��܂��]";
 	next;
-	if(select("10LPを支払って9番に進む","支払わない")==1) {
-		mes "‐10LP支払いました。";
-		mes "　9番に進みます‐";
+	if(select("10LP���x������9�Ԃɐi��","�x����Ȃ�")==1) {
+		mes "�]10LP�x�����܂����B";
+		mes "�@9�Ԃɐi�݂܂��]";
 		close2;
 		set CHANGE_KO_LP,CHANGE_KO_LP - 10;
 		set CHANGE_KO_NOW,9;
 		warp "job_ko.gat",17,43;
 		end;
 	}
-	mes "‐位置：1番マス";
+	mes "�]�ʒu�F1�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,41,16,4	script	道標#ko_02	858,1,1,{
-	mes "‐2番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,41,16,4	script	���W#ko_02	858,1,1,{
+	mes "�]2�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが発動しました!!";
-	mes "　スタート地点に戻ります‐";
+	mes "�]�g���b�v���������܂���!!";
+	mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 	close2;
 	warp "job_ko.gat",63,16;
 	end;
 }
 
-job_ko.gat,33,16,4	script	道標#ko_03	858,1,1,{
-	mes "‐3番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,33,16,4	script	���W#ko_03	858,1,1,{
+	mes "�]3�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐先祖の呪いにかかった。";
-	mes "　5^FD0260LP^000000を支払って";
-	mes "　先祖の呪いをはらう必要があります‐";
+	mes "�]��c�̎􂢂ɂ��������B";
+	mes "�@5^FD0260LP^000000���x������";
+	mes "�@��c�̎􂢂��͂炤�K�v������܂��]";
 	next;
-	menu "5LPを支払う",-;
-	mes "‐5LP支払った";
-	mes "　サイコロを振ることができます‐";
+	menu "5LP���x����",-;
+	mes "�]5LP�x������";
+	mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 5;
 	next;
-	mes "‐位置：3番マス";
+	mes "�]�ʒu�F3�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,25,16,4	script	道標#ko_04	858,1,1,{
-	mes "‐4番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,25,16,4	script	���W#ko_04	858,1,1,{
+	mes "�]4�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さくラクガキが書いてある‐";
+	mes "�]���������N�K�L�������Ă���]";
 	next;
-	mes "‐^0000FF" +'name$+ "^000000";
-	mes "　生存の試練に挑む‐";
+	mes "�]^0000FF" +'name$+ "^000000";
+	mes "�@�����̎����ɒ��ށ]";
 	next;
-	mes "‐試練に挑む記念に";
-	mes "　名前を残しますか？‐";
+	mes "�]�����ɒ��ދL�O��";
+	mes "�@���O���c���܂����H�]";
 	next;
-	if(select("5LP支払って名前を残す","支払わない") == 1) {
-		mes "‐5LP支払った‐";
+	if(select("5LP�x�����Ė��O���c��","�x����Ȃ�") == 1) {
+		mes "�]5LP�x�������]";
 		set CHANGE_KO_LP,CHANGE_KO_LP - 5;
 		set 'name$,strcharinfo(0);
 		next;
-		mes "‐" +strcharinfo(0);
-		mes "　生存の試練に挑む。";
-		mes "　名前を残しました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]" +strcharinfo(0);
+		mes "�@�����̎����ɒ��ށB";
+		mes "�@���O���c���܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 	}
-	mes "‐位置：4番マス";
+	mes "�]�ʒu�F4�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,17,16,4	script	道標#ko_05	858,1,1,{
-	mes "‐5番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,16,4	script	���W#ko_05	858,1,1,{
+	mes "�]5�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if(checkquest(5141)) {
 		if(!(checkquest(5141) & 0x2)) {
-			mes "‐呪いのため、サイコロを";
-			mes "　振ることができません‐";
+			mes "�]�􂢂̂��߁A�T�C�R����";
+			mes "�@�U�邱�Ƃ��ł��܂���]";
 			close;
 		}
-		mes "‐2分が経過し、呪いが解けました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]2�����o�߂��A�􂢂������܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 		delquest 5141;
-		mes "‐位置：5番マス";
+		mes "�]�ʒu�F5�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐5^FD0260LP^000000を支払わなければ";
-	mes "　2分間サイコロを振ることができない";
-	mes "　呪いにかかります‐";
+	mes "�]5^FD0260LP^000000���x����Ȃ����";
+	mes "�@2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+	mes "�@�􂢂ɂ�����܂��]";
 	next;
-	if(select("5LP支払う","支払わない") == 2) {
+	if(select("5LP�x����","�x����Ȃ�") == 2) {
 		setquest 5141;
-		mes "‐2分間サイコロを振ることができない";
-		mes "　呪いにかかりました‐";
+		mes "�]2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+		mes "�@�􂢂ɂ�����܂����]";
 		close;
 	}
-	mes "‐5LP支払いました。";
-	mes "　サイコロを振ることができます‐";
+	mes "�]5LP�x�����܂����B";
+	mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 5;
 	next;
-	mes "‐位置：5番マス";
+	mes "�]�ʒu�F5�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,17,24,4	script	道標#ko_06	858,1,1,{
-	mes "‐6番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,24,4	script	���W#ko_06	858,1,1,{
+	mes "�]6�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ラッキー！";
-	mes "　次のマスに移動した時";
-	mes "　生存の試練ポイントが7^FD0260LP^000000回復。";
-	mes "　100^FD0260LP^000000を超えた分は回復しません‐";
+	mes "�]���b�L�[�I";
+	mes "�@���̃}�X�Ɉړ�������";
+	mes "�@�����̎����|�C���g��7^FD0260LP^000000�񕜁B";
+	mes "�@100^FD0260LP^000000�𒴂������͉񕜂��܂���]";
 	next;
-	mes "‐位置：6番マス";
+	mes "�]�ʒu�F6�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,7;
 	end;
 }
 
-job_ko.gat,17,32,4	script	道標#ko_07	858,1,1,{
-	mes "‐7番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,32,4	script	���W#ko_07	858,1,1,{
+	mes "�]7�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが発動しました!!";
-	mes "　5番に戻ります‐";
+	mes "�]�g���b�v���������܂���!!";
+	mes "�@5�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,5;
 	warp "job_ko.gat",22,16;
 	end;
 }
 
-job_ko.gat,17,40,4	script	道標#ko_08	858,1,1,{
-	mes "‐8番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,40,4	script	���W#ko_08	858,1,1,{
+	mes "�]8�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ジャンケンマシン";
-	mes "　あなたが勝てば14番へ移動します。";
-	mes "　引き分けたらサイコロを振ります。";
-	mes "　負ければスタート地点へ戻ります‐";
+	mes "�]�W�����P���}�V��";
+	mes "�@���Ȃ������Ă�14�Ԃֈړ����܂��B";
+	mes "�@������������T�C�R����U��܂��B";
+	mes "�@������΃X�^�[�g�n�_�֖߂�܂��]";
 	next;
-	mes "ジャン！　ケン！　ポン！ ";
+	mes "�W�����I�@�P���I�@�|���I ";
 	next;
-	set '@own,select("チョキを出す","グーを出す","パーを出す")-1;
+	set '@own,select("�`���L���o��","�O�[���o��","�p�[���o��")-1;
 	set '@enemy,rand(3);
-	mes "——結果表示——";
-	mes "マシン：" +(('@enemy==0)? "チョキ": (('@enemy==1)? "グー": "パー"));
-	mes "あなた：" +(('@own==0)? "チョキ": (('@own==1)? "グー": "パー"));
+	mes "�\�\���ʕ\���\�\";
+	mes "�}�V���F" +(('@enemy==0)? "�`���L": (('@enemy==1)? "�O�[": "�p�["));
+	mes "���Ȃ��F" +(('@own==0)? "�`���L": (('@own==1)? "�O�[": "�p�["));
 	next;
 	if('@own == '@enemy) {
-		mes "‐Draw";
-		mes "　引き分けです‐";
+		mes "�]Draw";
+		mes "�@���������ł��]";
 		next;
-		mes "‐位置：8番マス";
+		mes "�]�ʒu�F8�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
 	if('@own != ('@enemy+1)%3) {
-		mes "‐You Lose……";
-		mes "　スタート地点に戻ります‐";
+		mes "�]You Lose�c�c";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐You Win !";
-	mes "　14番に進みます‐";
+	mes "�]You Win !";
+	mes "�@14�Ԃɐi�݂܂��]";
 	close2;
 	set CHANGE_KO_NOW,14;
 	warp "job_ko.gat",41,60;
 	end;
 }
 
-job_ko.gat,17,48,4	script	道標#ko_09	858,1,1,{
-	mes "‐9番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,48,4	script	���W#ko_09	858,1,1,{
+	mes "�]9�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐さらに進んでください‐";
+	mes "�]����ɐi��ł��������]";
 	next;
-	mes "‐位置：9番マス";
+	mes "�]�ʒu�F9�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,17,56,4	script	道標#ko_10	858,1,1,{
-	mes "‐10番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,17,56,4	script	���W#ko_10	858,1,1,{
+	mes "�]10�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐やられる前にやれ‐";
+	mes "�]�����O�ɂ��]";
 	next;
 	if('trap) {
-		mes "‐設置されていたトラップが";
-		mes "　発動しました！";
-		mes "　スタートに戻ります‐";
+		mes "�]�ݒu����Ă����g���b�v��";
+		mes "�@�������܂����I";
+		mes "�@�X�^�[�g�ɖ߂�܂��]";
 		close2;
 		set 'trap,0;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐現在トラップは設置されていません‐";
+	mes "�]���݃g���b�v�͐ݒu����Ă��܂���]";
 	next;
-	mes "‐10^FD0260LP^000000支払うことで ";
-	mes "　スタートに戻る";
-	mes "　トラップを設置できます‐";
+	mes "�]10^FD0260LP^000000�x�������Ƃ� ";
+	mes "�@�X�^�[�g�ɖ߂�";
+	mes "�@�g���b�v��ݒu�ł��܂��]";
 	next;
-	if(select("トラップを設置する","設置せずサイコロを振る") == 1) {
-		mes "‐10LP支払いました。";
-		mes "　トラップを設置しました‐";
+	if(select("�g���b�v��ݒu����","�ݒu�����T�C�R����U��") == 1) {
+		mes "�]10LP�x�����܂����B";
+		mes "�@�g���b�v��ݒu���܂����]";
 		set 'trap,1;
 		set CHANGE_KO_LP,CHANGE_KO_LP - 10;
 		next;
 	}
-	mes "‐位置：10番マス";
+	mes "�]�ʒu�F10�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,22,60,4	script	道標#ko_11	858,1,1,{
-	mes "‐11番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,22,60,4	script	���W#ko_11	858,1,1,{
+	mes "�]11�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが設置されています！ ";
-	mes "　9番に戻ります‐";
+	mes "�]�g���b�v���ݒu����Ă��܂��I ";
+	mes "�@9�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,9;
 	warp "job_ko.gat",17,43;
 	end;
 }
 
-job_ko.gat,30,60,4	script	道標#ko_12	858,1,1,{
-	mes "‐12番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,30,60,4	script	���W#ko_12	858,1,1,{
+	mes "�]12�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ジャンケンマシン";
-	mes "　あなたが勝てば20番へ移動します。";
-	mes "　引き分けたらサイコロを振ります。";
-	mes "　負ければ9番へ戻ります‐";
+	mes "�]�W�����P���}�V��";
+	mes "�@���Ȃ������Ă�20�Ԃֈړ����܂��B";
+	mes "�@������������T�C�R����U��܂��B";
+	mes "�@�������9�Ԃ֖߂�܂��]";
 	next;
-	mes "ジャン！　ケン！　ポン！";
+	mes "�W�����I�@�P���I�@�|���I";
 	next;
-	set '@own,select("チョキを出す","グーを出す","パーを出す")-1;
+	set '@own,select("�`���L���o��","�O�[���o��","�p�[���o��")-1;
 	set '@enemy,rand(3);
-	mes "——結果表示——";
-	mes "マシン：" +(('@enemy==0)? "チョキ": (('@enemy==1)? "グー": "パー"));
-	mes "あなた：" +(('@own==0)? "チョキ": (('@own==1)? "グー": "パー"));
+	mes "�\�\���ʕ\���\�\";
+	mes "�}�V���F" +(('@enemy==0)? "�`���L": (('@enemy==1)? "�O�[": "�p�["));
+	mes "���Ȃ��F" +(('@own==0)? "�`���L": (('@own==1)? "�O�[": "�p�["));
 	next;
 	if('@own == '@enemy) {
-		mes "‐Draw";
-		mes "　引き分けです‐";
+		mes "�]Draw";
+		mes "�@���������ł��]";
 		next;
-		mes "‐位置：12番マス";
+		mes "�]�ʒu�F12�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
 	if('@own != ('@enemy+1)%3) {
-		mes "‐You Lose……";
-		mes "　9番に戻ります‐";
+		mes "�]You Lose�c�c";
+		mes "�@9�Ԃɖ߂�܂��]";
 		close2;
 		set CHANGE_KO_NOW,9;
 		warp "job_ko.gat",17,43;
 		end;
 	}
-	mes "‐You Win !";
-	mes "　20番に進みます‐";
+	mes "�]You Win !";
+	mes "�@20�Ԃɐi�݂܂��]";
 	close2;
 	set CHANGE_KO_NOW,20;
 	warp "job_ko.gat",62,32;
 	end;
 }
 
-job_ko.gat,38,60,4	script	道標#ko_13	858,1,1,{
-	mes "‐13番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,38,60,4	script	���W#ko_13	858,1,1,{
+	mes "�]13�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ラッキー！";
-	mes "　次のマスに移動した時";
-	mes "　生存の試練ポイントが7^FD0260LP^000000回復。";
-	mes "　100^FD0260LP^000000を超えた分は回復しません‐";
+	mes "�]���b�L�[�I";
+	mes "�@���̃}�X�Ɉړ�������";
+	mes "�@�����̎����|�C���g��7^FD0260LP^000000�񕜁B";
+	mes "�@100^FD0260LP^000000�𒴂������͉񕜂��܂���]";
 	next;
-	mes "‐位置：13番マス";
+	mes "�]�ʒu�F13�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,7;
 	end;
 }
 
-job_ko.gat,46,60,4	script	道標#ko_14	858,1,1,{
-	mes "‐14番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,46,60,4	script	���W#ko_14	858,1,1,{
+	mes "�]14�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if(checkquest(5141)) {
 		if(!(checkquest(5141) & 0x2)) {
-			mes "‐呪いのため、サイコロを";
-			mes "　振ることができません‐";
+			mes "�]�􂢂̂��߁A�T�C�R����";
+			mes "�@�U�邱�Ƃ��ł��܂���]";
 			close;
 		}
-		mes "‐2分が経過し、呪いが解けました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]2�����o�߂��A�􂢂������܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 		delquest 5141;
-		mes "‐位置：14番マス";
+		mes "�]�ʒu�F14�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐5^FD0260LP^000000を支払わなければ";
-	mes "　2分間サイコロを振ることができない";
-	mes "　呪いにかかります‐";
+	mes "�]5^FD0260LP^000000���x����Ȃ����";
+	mes "�@2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+	mes "�@�􂢂ɂ�����܂��]";
 	next;
-	if(select("5LP支払う","支払わない") == 2) {
+	if(select("5LP�x����","�x����Ȃ�") == 2) {
 		setquest 5141;
-		mes "‐2分間サイコロを振ることができない";
-		mes "　呪いにかかりました‐";
+		mes "�]2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+		mes "�@�􂢂ɂ�����܂����]";
 		close;
 	}
-	mes "‐5LP支払いました。";
-	mes "　サイコロを振ることができます‐";
+	mes "�]5LP�x�����܂����B";
+	mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 5;
 	next;
-	mes "‐位置：14番マス";
+	mes "�]�ʒu�F14�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,54,60,4	script	道標#ko_15	858,1,1,{
-	mes "‐15番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,54,60,4	script	���W#ko_15	858,1,1,{
+	mes "�]15�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if(checkquest(5141)) {
 		if(!(checkquest(5141) & 0x2)) {
-			mes "‐呪いのため進めません‐";
+			mes "�]�􂢂̂��ߐi�߂܂���]";
 			close;
 		}
-		mes "‐2分が経過し、呪いが解けました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]2�����o�߂��A�􂢂������܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 		delquest 5141;
-		mes "‐位置：15番マス";
+		mes "�]�ʒu�F15�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐強力な呪いにかかり";
-	mes "　2分間進めない状態に";
-	mes "　なりました‐";
+	mes "�]���͂Ȏ􂢂ɂ�����";
+	mes "�@2���Ԑi�߂Ȃ���Ԃ�";
+	mes "�@�Ȃ�܂����]";
 	setquest 5141;
 	close;
 }
 
-job_ko.gat,62,60,4	script	道標#ko_16	858,1,1,{
-	mes "‐16番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,62,60,4	script	���W#ko_16	858,1,1,{
+	mes "�]16�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐2^FD0260LP^000000を消費しサイコロを2回振れ‐";
+	mes "�]2^FD0260LP^000000������T�C�R����2��U��]";
 	next;
-	mes "‐同じ目が出たら19番へ進む。";
-	mes "　同じ目が出ない場合には、";
-	mes "　同じ目が出るまで2^FD0260LP^000000を消費し";
-	mes "　サイコロを2回振り続ける‐";
+	mes "�]�����ڂ��o����19�Ԃ֐i�ށB";
+	mes "�@�����ڂ��o�Ȃ��ꍇ�ɂ́A";
+	mes "�@�����ڂ��o��܂�2^FD0260LP^000000�����";
+	mes "�@�T�C�R����2��U�葱����]";
 	while(1) {
 		next;
-		mes "‐位置：16番マス";
-		mes "　保有LP：" +CHANGE_KO_LP;
-		mes "　サイコロを振ると2^FD0260LP^000000を消費します‐";
+		mes "�]�ʒu�F16�ԃ}�X";
+		mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+		mes "�@�T�C�R����U���2^FD0260LP^000000������܂��]";
 		next;
-		menu "1個目のサイコロを振る",-;
-		mes "‐2LPを消費した‐";
+		menu "1�ڂ̃T�C�R����U��",-;
+		mes "�]2LP��������]";
 		set CHANGE_KO_LP,CHANGE_KO_LP - 2;
 		next;
 		set '@dice1,rand(1,6);
 		emotion 57+'@dice1,"";
-		mes "‐" +'@dice1+ "が出ました。";
-		mes "　2個目のサイコロを振ってください‐";
+		mes "�]" +'@dice1+ "���o�܂����B";
+		mes "�@2�ڂ̃T�C�R����U���Ă��������]";
 		next;
-		menu "2個目のサイコロを振る",-;
+		menu "2�ڂ̃T�C�R����U��",-;
 		set '@dice2,rand(1,6);
 		emotion 57+'@dice2,"";
-		mes "‐" +'@dice2+ "が出ました。";
+		mes "�]" +'@dice2+ "���o�܂����B";
 		if('@dice1 == '@dice2) {
-			mes "　同じ目が出たため19番に進みます‐";
+			mes "�@�����ڂ��o������19�Ԃɐi�݂܂��]";
 			close2;
 			set CHANGE_KO_NOW,19;
 			warp "job_ko.gat",62,40;
 			end;
 		}
 		else {
-			// 未調査
-			mes "　同じ目が出なかったため";
-			mes "　再度サイコロを振ります‐";
+			// ������
+			mes "�@�����ڂ��o�Ȃ���������";
+			mes "�@�ēx�T�C�R����U��܂��]";
 			continue;
 		}
 	}
 }
 
-job_ko.gat,62,51,4	script	道標#ko_17	858,1,1,{
-	mes "‐17番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,62,51,4	script	���W#ko_17	858,1,1,{
+	mes "�]17�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐呪いにかかってなんだか体が重い。";
-	mes "　サイコロを振るために10^FD0260LP^000000消費します‐";
+	mes "�]�􂢂ɂ������ĂȂ񂾂��̂��d���B";
+	mes "�@�T�C�R����U�邽�߂�10^FD0260LP^000000����܂��]";
 	next;
-	mes "‐位置：17番マス";
+	mes "�]�ʒu�F17�ԃ}�X";
 	callfunc "jobchenge_ko_func",10,0;
 	end;
 }
 
-job_ko.gat,62,43,4	script	道標#ko_18	858,1,1,{
-	mes "‐18番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,62,43,4	script	���W#ko_18	858,1,1,{
+	mes "�]18�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐2^FD0260LP^000000を消費しサイコロを2回振れ‐";
+	mes "�]2^FD0260LP^000000������T�C�R����2��U��]";
 	next;
-	mes "‐2回の合計が5未満ならば24番へ進む。";
-	mes "　5以上ならば19番に進む‐";
+	mes "�]2��̍��v��5�����Ȃ��24�Ԃ֐i�ށB";
+	mes "�@5�ȏ�Ȃ��19�Ԃɐi�ށ]";
 	next;
-	mes "‐位置：18番マス";
-	mes "　保有LP：" +CHANGE_KO_LP;
-	mes "　サイコロを振ると2^FD0260LP^000000を消費します‐";
+	mes "�]�ʒu�F18�ԃ}�X";
+	mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+	mes "�@�T�C�R����U���2^FD0260LP^000000������܂��]";
 	next;
-	menu "1個目のサイコロを振る",-;
-	mes "‐2LPを消費した‐";
+	menu "1�ڂ̃T�C�R����U��",-;
+	mes "�]2LP��������]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 2;
 	next;
 	set '@dice1,rand(1,6);
 	emotion 57+'@dice1,"";
-	mes "‐" +'@dice1+ "が出ました。";
-	mes "　2個目のサイコロを振ってください‐";
+	mes "�]" +'@dice1+ "���o�܂����B";
+	mes "�@2�ڂ̃T�C�R����U���Ă��������]";
 	next;
-	menu "2個目のサイコロを振る",-;
+	menu "2�ڂ̃T�C�R����U��",-;
 	set '@dice2,rand(1,6);
 	emotion 57+'@dice2,"";
-	mes "‐" +'@dice2+ "が出ました。";
+	mes "�]" +'@dice2+ "���o�܂����B";
 	next;
 	if(('@dice1+'@dice2) >= 5) {
 		mes '@dice1+ " + " +'@dice2+ " = " +('@dice1+'@dice2);
-		mes "‐2個の合計が5以上でした。";
-		mes "　19番に進みます‐";
+		mes "�]2�̍��v��5�ȏ�ł����B";
+		mes "�@19�Ԃɐi�݂܂��]";
 		close2;
 		set CHANGE_KO_NOW,19;
 		warp "job_ko.gat",62,40;
 		end;
 	}
 	else {
-		// 未調査
-		mes "‐2個の合計が5未満でした。";
-		mes "　24番に進みます‐";
+		// ������
+		mes "�]2�̍��v��5�����ł����B";
+		mes "�@24�Ԃɐi�݂܂��]";
 		close2;
 		set CHANGE_KO_NOW,24;
 		warp "job_ko.gat",38,23;
@@ -2367,190 +2367,190 @@ OnTouch:
 	}
 }
 
-job_ko.gat,62,35,4	script	道標#ko_19	858,1,1,{
-	mes "‐19番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,62,35,4	script	���W#ko_19	858,1,1,{
+	mes "�]19�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐さらに進んでください‐";
+	mes "�]����ɐi��ł��������]";
 	next;
-	mes "‐位置：19番マス";
+	mes "�]�ʒu�F19�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,62,27,4	script	道標#ko_20	858,1,1,{
-	mes "‐20番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,62,27,4	script	���W#ko_20	858,1,1,{
+	mes "�]20�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ラッキー！";
-	mes "　次のマスに移動した時";
-	mes "　生存の試練ポイントが7^FD0260LP^000000回復。";
-	mes "　100^FD0260LP^000000を超えた分は回復しません‐";
+	mes "�]���b�L�[�I";
+	mes "�@���̃}�X�Ɉړ�������";
+	mes "�@�����̎����|�C���g��7^FD0260LP^000000�񕜁B";
+	mes "�@100^FD0260LP^000000�𒴂������͉񕜂��܂���]";
 	next;
-	mes "‐位置：20番マス";
+	mes "�]�ʒu�F20�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,7;
 	end;
 }
 
-job_ko.gat,57,23,4	script	道標#ko_21	858,1,1,{
-	mes "‐21番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,57,23,4	script	���W#ko_21	858,1,1,{
+	mes "�]21�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐呪いにかかってなんだか体が重い。";
-	mes "　サイコロを振るために10^FD0260LP^000000消費します‐";
+	mes "�]�􂢂ɂ������ĂȂ񂾂��̂��d���B";
+	mes "�@�T�C�R����U�邽�߂�10^FD0260LP^000000����܂��]";
 	next;
-	mes "‐位置：21番マス";
+	mes "�]�ʒu�F21�ԃ}�X";
 	callfunc "jobchenge_ko_func",10,0;
 	end;
 }
 
-job_ko.gat,49,23,4	script	道標#ko_22	858,1,1,{
-	mes "‐22番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,49,23,4	script	���W#ko_22	858,1,1,{
+	mes "�]22�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐残りの^FD0260LP^000000を全て寄付し";
-	mes "　スタート地点に戻れば";
-	mes "　次にここを踏む者は救われるだろう‐";
+	mes "�]�c���^FD0260LP^000000��S�Ċ�t��";
+	mes "�@�X�^�[�g�n�_�ɖ߂��";
+	mes "�@���ɂ����𓥂ގ҂͋~���邾�낤�]";
 	next;
 	if('trap) {
-		mes "‐親切な誰かが自分の^FD0260LP^000000を";
-		mes "　寄付していました。";
-		mes "　ゴール地点まで進みます‐";
+		mes "�]�e�؂ȒN����������^FD0260LP^000000��";
+		mes "�@��t���Ă��܂����B";
+		mes "�@�S�[���n�_�܂Ői�݂܂��]";
 		close2;
 		set 'trap,0;
 		warp "job_ko.gat",41,44;
 		end;
 	}
-	mes "‐^FD0260LP^000000を全て寄付すると";
-	mes "　次にここに止まった人は";
-	mes "　ゴール地点へ進めます。";
-	mes "　^FD0260LP^000000を全て寄付しますか？‐";
+	mes "�]^FD0260LP^000000��S�Ċ�t�����";
+	mes "�@���ɂ����Ɏ~�܂����l��";
+	mes "�@�S�[���n�_�֐i�߂܂��B";
+	mes "�@^FD0260LP^000000��S�Ċ�t���܂����H�]";
 	next;
-	if(select("LPを全て寄付する","寄付しない") == 1) {
-		mes "‐残りの^FD0260LP^000000を全て寄付しました。";
-		mes "　スタート地点に戻ります‐";
+	if(select("LP��S�Ċ�t����","��t���Ȃ�") == 1) {
+		mes "�]�c���^FD0260LP^000000��S�Ċ�t���܂����B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		set 'trap,1;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐位置：22番マス";
+	mes "�]�ʒu�F22�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,41,23,4	script	道標#ko_23	858,1,1,{
-	mes "‐23番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,41,23,4	script	���W#ko_23	858,1,1,{
+	mes "�]23�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが発動しました!!";
-	mes "　17番に戻ります‐";
+	mes "�]�g���b�v���������܂���!!";
+	mes "�@17�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,17;
 	warp "job_ko.gat",62,55;
 	end;
 }
 
-job_ko.gat,33,23,4	script	道標#ko_24	858,1,1,{
-	mes "‐24番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,33,23,4	script	���W#ko_24	858,1,1,{
+	mes "�]24�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐2^FD0260LP^000000を消費しサイコロを2回振れ‐";
+	mes "�]2^FD0260LP^000000������T�C�R����2��U��]";
 	next;
-	mes "‐2回の合計が9以上ならば";
-	mes "　25番〜30番の好きな場所に進む。";
-	mes "　8以下ならば19番に戻る‐";
+	mes "�]2��̍��v��9�ȏ�Ȃ��";
+	mes "�@25�ԁ`30�Ԃ̍D���ȏꏊ�ɐi�ށB";
+	mes "�@8�ȉ��Ȃ��19�Ԃɖ߂�]";
 	next;
-	mes "‐位置：24番マス";
-	mes "　保有LP：" +CHANGE_KO_LP;
-	mes "　サイコロを振ると2^FD0260LP^000000を消費します‐";
+	mes "�]�ʒu�F24�ԃ}�X";
+	mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+	mes "�@�T�C�R����U���2^FD0260LP^000000������܂��]";
 	next;
-	menu "1個目のサイコロを振る",-;
-	mes "‐2LPを消費した‐";
+	menu "1�ڂ̃T�C�R����U��",-;
+	mes "�]2LP��������]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 2;
 	next;
 	set '@dice1,rand(1,6);
 	emotion 57+'@dice1,"";
-	mes "‐" +'@dice1+ "が出ました。";
-	mes "　2個目のサイコロを振ってください‐";
+	mes "�]" +'@dice1+ "���o�܂����B";
+	mes "�@2�ڂ̃T�C�R����U���Ă��������]";
 	next;
-	menu "2個目のサイコロを振る",-;
+	menu "2�ڂ̃T�C�R����U��",-;
 	set '@dice2,rand(1,6);
 	emotion 57+'@dice2,"";
-	mes "‐" +'@dice2+ "が出ました。";
+	mes "�]" +'@dice2+ "���o�܂����B";
 	next;
 	if(('@dice1+'@dice2) >= 9) {
 		mes '@dice1+ " + " +'@dice2+ " = " +('@dice1+'@dice2);
-		mes "‐2個の合計が9以上でした。";
-		mes "　25番〜30番の好きな場所に進みます‐";
+		mes "�]2�̍��v��9�ȏ�ł����B";
+		mes "�@25�ԁ`30�Ԃ̍D���ȏꏊ�ɐi�݂܂��]";
 		next;
-		switch(select("25番へ","26番へ","27番へ","28番へ","29番へ","30番へ")) {
+		switch(select("25�Ԃ�","26�Ԃ�","27�Ԃ�","28�Ԃ�","29�Ԃ�","30�Ԃ�")) {
 		case 1: set CHANGE_KO_NOW,25; warp "job_ko.gat",30,23; break;
 		case 2: set CHANGE_KO_NOW,26; warp "job_ko.gat",25,28; break;
 		case 3: set CHANGE_KO_NOW,27; warp "job_ko.gat",25,35; break;
@@ -2561,8 +2561,8 @@ OnTouch:
 		end;
 	}
 	else {
-		mes "‐2個の合計が8以下でした。";
-		mes "　19番に戻ります‐";
+		mes "�]2�̍��v��8�ȉ��ł����B";
+		mes "�@19�Ԃɖ߂�܂��]";
 		close2;
 		set CHANGE_KO_NOW,19;
 		warp "job_ko.gat",62,40;
@@ -2570,298 +2570,298 @@ OnTouch:
 	}
 }
 
-job_ko.gat,25,23,4	script	道標#ko_25	858,1,1,{
-	mes "‐25番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,25,23,4	script	���W#ko_25	858,1,1,{
+	mes "�]25�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if(checkquest(5141)) {
 		if(!(checkquest(5141) & 0x2)) {
-			mes "‐呪いのため進めません‐";
+			mes "�]�􂢂̂��ߐi�߂܂���]";
 			close;
 		}
-		mes "‐2分が経過し、呪いが解けました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]2�����o�߂��A�􂢂������܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 		delquest 5141;
-		mes "‐位置：25番マス";
+		mes "�]�ʒu�F25�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ここでは寒……";
-	mes "　文字がかすれてよく見えない。";
-	mes "　どうしようか？‐";
+	mes "�]�����ł͊��c�c";
+	mes "�@������������Ă悭�����Ȃ��B";
+	mes "�@�ǂ����悤���H�]";
 	next;
-	if(select("何か芸をする","何もしない") == 1) {
-		// スキルではなく寒いジョークを発言するだけ
-		mes "‐プロンテラで流行している";
-		mes "　寒いジョークを放った！‐";
+	if(select("�����|������","�������Ȃ�") == 1) {
+		// �X�L���ł͂Ȃ������W���[�N�𔭌����邾��
+		mes "�]�v�����e���ŗ��s���Ă���";
+		mes "�@�����W���[�N��������I�]";
 		next;
 		setquest 5141;
-		mes "‐2分間進めない";
-		mes "　呪いにかかってしまった……‐";
+		mes "�]2���Ԑi�߂Ȃ�";
+		mes "�@�􂢂ɂ������Ă��܂����c�c�]";
 		close;
 	}
 	if(rand(6)) {
-		mes "‐何も起こらない……";
-		mes "　芸でもするべきだろうか？‐";
+		mes "�]�����N����Ȃ��c�c";
+		mes "�@�|�ł�����ׂ����낤���H�]";
 		close;
 	}
-	mes "‐何もしなかったのが";
-	mes "　正しい選択だったようだ‐";
+	mes "�]�������Ȃ������̂�";
+	mes "�@�������I���������悤���]";
 	next;
-	mes "‐位置：25番マス";
+	mes "�]�ʒu�F25�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,25,32,4	script	道標#ko_26	858,1,1,{
-	mes "‐26番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,25,32,4	script	���W#ko_26	858,1,1,{
+	mes "�]26�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが発動しました!!";
-	mes "　20番に戻ります‐";
+	mes "�]�g���b�v���������܂���!!";
+	mes "�@20�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,20;
 	warp "job_ko.gat",62,32;
 	end;
 }
 
-job_ko.gat,25,40,4	script	道標#ko_27	858,1,1,{
-	mes "‐27番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,25,40,4	script	���W#ko_27	858,1,1,{
+	mes "�]27�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ラッキー！";
-	mes "　次のマスに移動した時";
-	mes "　生存の試練ポイントが7^FD0260LP^000000回復。";
-	mes "　100^FD0260LP^000000を超えた分は回復しません‐";
+	mes "�]���b�L�[�I";
+	mes "�@���̃}�X�Ɉړ�������";
+	mes "�@�����̎����|�C���g��7^FD0260LP^000000�񕜁B";
+	mes "�@100^FD0260LP^000000�𒴂������͉񕜂��܂���]";
 	next;
-	mes "‐位置：27番マス";
+	mes "�]�ʒu�F27�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,7;
 	end;
 }
 
-job_ko.gat,25,48,4	script	道標#ko_28	858,1,1,{
-	mes "‐28番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,25,48,4	script	���W#ko_28	858,1,1,{
+	mes "�]28�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐やられる前にやれ‐";
+	mes "�]�����O�ɂ��]";
 	next;
 	if('trap) {
-		mes "‐設置されていたトラップが";
-		mes "　発動しました！";
-		mes "　スタートに戻ります‐";
+		mes "�]�ݒu����Ă����g���b�v��";
+		mes "�@�������܂����I";
+		mes "�@�X�^�[�g�ɖ߂�܂��]";
 		close2;
 		set 'trap,0;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐現在トラップは設置されていません‐";
+	mes "�]���݃g���b�v�͐ݒu����Ă��܂���]";
 	next;
-	mes "‐10^FD0260LP^000000支払うことで ";
-	mes "　スタートに戻る";
-	mes "　トラップを設置できます‐";
+	mes "�]10^FD0260LP^000000�x�������Ƃ� ";
+	mes "�@�X�^�[�g�ɖ߂�";
+	mes "�@�g���b�v��ݒu�ł��܂��]";
 	next;
-	if(select("トラップを設置する","設置せずサイコロを振る") == 1) {
-		mes "‐10LP支払いました。";
-		mes "　トラップを設置しました‐";
+	if(select("�g���b�v��ݒu����","�ݒu�����T�C�R����U��") == 1) {
+		mes "�]10LP�x�����܂����B";
+		mes "�@�g���b�v��ݒu���܂����]";
 		set 'trap,1;
 		set CHANGE_KO_LP,CHANGE_KO_LP - 10;
 		next;
 	}
-	mes "‐位置：28番マス";
+	mes "�]�ʒu�F28�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,30,52,4	script	道標#ko_29	858,1,1,{
-	mes "‐29番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,30,52,4	script	���W#ko_29	858,1,1,{
+	mes "�]29�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐残り11マス。";
-	mes "　前進せよ‐";
+	mes "�]�c��11�}�X�B";
+	mes "�@�O�i����]";
 	next;
-	mes "‐位置：29番マス";
+	mes "�]�ʒu�F29�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,38,52,4	script	道標#ko_30	858,1,1,{
-	mes "‐30番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,38,52,4	script	���W#ko_30	858,1,1,{
+	mes "�]30�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐トラップが発動しました!!";
-	mes "　9番に戻ります‐";
+	mes "�]�g���b�v���������܂���!!";
+	mes "�@9�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,9;
 	warp "job_ko.gat",17,43;
 	end;
 }
 
-job_ko.gat,46,52,4	script	道標#ko_31	858,1,1,{
-	mes "‐31番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,46,52,4	script	���W#ko_31	858,1,1,{
+	mes "�]31�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if(checkquest(5141)) {
 		if(!(checkquest(5141) & 0x2)) {
-			mes "‐呪いのため、サイコロを";
-			mes "　振ることができません‐";
+			mes "�]�􂢂̂��߁A�T�C�R����";
+			mes "�@�U�邱�Ƃ��ł��܂���]";
 			close;
 		}
-		mes "‐2分が経過し、呪いが解けました。";
-		mes "　サイコロを振ることができます‐";
+		mes "�]2�����o�߂��A�􂢂������܂����B";
+		mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 		next;
 		delquest 5141;
-		mes "‐位置：31番マス";
+		mes "�]�ʒu�F31�ԃ}�X";
 		callfunc "jobchenge_ko_func",1,0;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐5^FD0260LP^000000を支払わなければ";
-	mes "　2分間サイコロを振ることができない";
-	mes "　呪いにかかります‐";
+	mes "�]5^FD0260LP^000000���x����Ȃ����";
+	mes "�@2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+	mes "�@�􂢂ɂ�����܂��]";
 	next;
-	if(select("5LP支払う","支払わない") == 2) {
+	if(select("5LP�x����","�x����Ȃ�") == 2) {
 		setquest 5141;
-		mes "‐2分間サイコロを振ることができない";
-		mes "　呪いにかかりました‐";
+		mes "�]2���ԃT�C�R����U�邱�Ƃ��ł��Ȃ�";
+		mes "�@�􂢂ɂ�����܂����]";
 		close;
 	}
-	mes "‐5LP支払いました。";
-	mes "　サイコロを振ることができます‐";
+	mes "�]5LP�x�����܂����B";
+	mes "�@�T�C�R����U�邱�Ƃ��ł��܂��]";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 5;
 	next;
-	mes "‐位置：31番マス";
+	mes "�]�ʒu�F31�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,54,52,4	script	道標#ko_32	858,1,1,{
-	mes "‐32番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,54,52,4	script	���W#ko_32	858,1,1,{
+	mes "�]32�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ジャンケンマシン";
-	mes "　あなたが勝てば33番〜38番の";
-	mes "　好きな場所に進む。";
-	mes "　負けまたは引き分けの場合";
-	mes "　スタート地点へ戻ります‐";
+	mes "�]�W�����P���}�V��";
+	mes "�@���Ȃ������Ă�33�ԁ`38�Ԃ�";
+	mes "�@�D���ȏꏊ�ɐi�ށB";
+	mes "�@�����܂��͈��������̏ꍇ";
+	mes "�@�X�^�[�g�n�_�֖߂�܂��]";
 	next;
-	mes "ジャン！　ケン！　ポン！";
+	mes "�W�����I�@�P���I�@�|���I";
 	next;
-	set '@own,select("チョキを出す","グーを出す","パーを出す")-1;
+	set '@own,select("�`���L���o��","�O�[���o��","�p�[���o��")-1;
 	set '@enemy,rand(3);
-	mes "——結果表示——";
-	mes "マシン：" +(('@enemy==0)? "チョキ": (('@enemy==1)? "グー": "パー"));
-	mes "あなた：" +(('@own==0)? "チョキ": (('@own==1)? "グー": "パー"));
+	mes "�\�\���ʕ\���\�\";
+	mes "�}�V���F" +(('@enemy==0)? "�`���L": (('@enemy==1)? "�O�[": "�p�["));
+	mes "���Ȃ��F" +(('@own==0)? "�`���L": (('@own==1)? "�O�[": "�p�["));
 	next;
 	if('@own == '@enemy) {
-		// 未調査
-		mes "‐Draw";
-		mes "　引き分けです";
-		mes "　スタート地点に戻ります‐";
+		// ������
+		mes "�]Draw";
+		mes "�@���������ł�";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 	if('@own != ('@enemy+1)%3) {
-		// 未調査
-		mes "‐You Lose……";
-		mes "　スタート地点に戻ります‐";
+		// ������
+		mes "�]You Lose�c�c";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐You Win !";
-	mes "　33〜38の進みたいマスを";
-	mes "　選んでください‐";
+	mes "�]You Win !";
+	mes "�@33�`38�̐i�݂����}�X��";
+	mes "�@�I��ł��������]";
 	next;
-	switch(select("33番へ","34番へ","35番へ","36番へ","37番へ","38番へ")) {
+	switch(select("33�Ԃ�","34�Ԃ�","35�Ԃ�","36�Ԃ�","37�Ԃ�","38�Ԃ�")) {
 	case 1: set CHANGE_KO_NOW,33; warp "job_ko.gat",54,48; break;
 	case 2: set CHANGE_KO_NOW,34; warp "job_ko.gat",54,40; break;
 	case 3: set CHANGE_KO_NOW,35; warp "job_ko.gat",54,31; break;
@@ -2872,470 +2872,470 @@ OnTouch:
 	end;
 }
 
-job_ko.gat,54,43,4	script	道標#ko_33	858,1,1,{
-	mes "‐33番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,54,43,4	script	���W#ko_33	858,1,1,{
+	mes "�]33�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐最後のサイコロを振るための";
-	mes "　1^FD0260LP^000000を除くポイントを";
-	mes "　全て支払えば39番に進めます‐";
+	mes "�]�Ō�̃T�C�R����U�邽�߂�";
+	mes "�@1^FD0260LP^000000�������|�C���g��";
+	mes "�@�S�Ďx������39�Ԃɐi�߂܂��]";
 	next;
-	if(select("支払う","支払わない") == 1) {
-		mes "‐" +(CHANGE_KO_LP-1)+ "LP支払った";
-		mes "　39番に進みます‐";
+	if(select("�x����","�x����Ȃ�") == 1) {
+		mes "�]" +(CHANGE_KO_LP-1)+ "LP�x������";
+		mes "�@39�Ԃɐi�݂܂��]";
 		close2;
 		set CHANGE_KO_LP,1;
 		set CHANGE_KO_NOW,39;
 		warp "job_ko.gat",33,44;
 		end;
 	}
-	mes "‐サイコロを振ってください‐";
+	mes "�]�T�C�R����U���Ă��������]";
 	next;
-	mes "‐位置：33番マス";
+	mes "�]�ʒu�F33�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,54,35,4	script	道標#ko_34	858,1,1,{
-	mes "‐34番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,54,35,4	script	���W#ko_34	858,1,1,{
+	mes "�]34�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐ラッキー！";
-	mes "　次のマスに移動した時";
-	mes "　生存の試練ポイントが7^FD0260LP^000000回復。";
-	mes "　100^FD0260LP^000000を超えた分は回復しません‐";
+	mes "�]���b�L�[�I";
+	mes "�@���̃}�X�Ɉړ�������";
+	mes "�@�����̎����|�C���g��7^FD0260LP^000000�񕜁B";
+	mes "�@100^FD0260LP^000000�𒴂������͉񕜂��܂���]";
 	next;
-	mes "‐位置：34番マス";
+	mes "�]�ʒu�F34�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,7;
 	end;
 }
 
-job_ko.gat,49,31,4	script	道標#ko_35	858,1,1,{
-	mes "‐35番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,49,31,4	script	���W#ko_35	858,1,1,{
+	mes "�]35�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐設置されていたトラップが";
-	mes "　発動しました！";
-	mes "　29番に戻ります‐";
+	mes "�]�ݒu����Ă����g���b�v��";
+	mes "�@�������܂����I";
+	mes "�@29�Ԃɖ߂�܂��]";
 	close2;
 	set CHANGE_KO_NOW,29;
 	warp "job_ko.gat",25,52;
 	end;
 }
 
-job_ko.gat,41,31,4	script	道標#ko_36	858,1,1,{
-	mes "‐36番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,41,31,4	script	���W#ko_36	858,1,1,{
+	mes "�]36�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐残り4マス‐";
+	mes "�]�c��4�}�X�]";
 	next;
-	mes "‐4以上の目が出ればゴール地点に";
-	mes "　たどり着けるが";
-	mes "　もうひとつのルールを選んでもよい‐";
+	mes "�]4�ȏ�̖ڂ��o��΃S�[���n�_��";
+	mes "�@���ǂ蒅���邪";
+	mes "�@�����ЂƂ̃��[����I��ł��悢�]";
 	next;
-	mes "‐もうひとつのルールは";
-	mes "　1,2,3が出ればゴール地点に進み";
-	mes "　4,5,6が出れば29番に戻る。";
-	mes "　このルールを使用せず";
-	mes "　普通にサイコロを振ってもよい‐";
+	mes "�]�����ЂƂ̃��[����";
+	mes "�@1,2,3���o��΃S�[���n�_�ɐi��";
+	mes "�@4,5,6���o���29�Ԃɖ߂�B";
+	mes "�@���̃��[�����g�p����";
+	mes "�@���ʂɃT�C�R����U���Ă��悢�]";
 	next;
-	if(select("もうひとつのルールを使用する","普通にサイコロを振る") == 1) {
-		mes "‐位置：36番マス";
-		mes "　保有LP：" +CHANGE_KO_LP;
-		mes "　サイコロを振ると1^FD0260LP^000000を消費します‐";
+	if(select("�����ЂƂ̃��[�����g�p����","���ʂɃT�C�R����U��") == 1) {
+		mes "�]�ʒu�F36�ԃ}�X";
+		mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+		mes "�@�T�C�R����U���1^FD0260LP^000000������܂��]";
 		next;
-		menu "サイコロを振る",-;
+		menu "�T�C�R����U��",-;
 		set '@dice,rand(1,6);
 		emotion 57+'@dice,"";
 		set CHANGE_KO_LP,CHANGE_KO_LP - 1;
-		mes "‐" +'@dice+ "が出ました。";
+		mes "�]" +'@dice+ "���o�܂����B";
 		if('@dice <= 3) {
-			mes "　ゴール地点に進みます‐";
+			mes "�@�S�[���n�_�ɐi�݂܂��]";
 			close2;
 			warp "job_ko.gat",41,44;
 			end;
 		}
 		else {
-			mes "　29番に戻ります‐";
+			mes "�@29�Ԃɖ߂�܂��]";
 			close2;
 			set CHANGE_KO_NOW,29;
 			warp "job_ko.gat",25,52;
 			end;
 		}
 	}
-	mes "‐位置：36番マス";
+	mes "�]�ʒu�F36�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,33,31,4	script	道標#ko_37	858,1,1,{
-	mes "‐37番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,33,31,4	script	���W#ko_37	858,1,1,{
+	mes "�]37�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐残り3マス‐";
+	mes "�]�c��3�}�X�]";
 	next;
-	mes "‐奇数が出ればゴール地点に進む。";
-	mes "　しかし、偶数が出れば";
-	mes "　スタート地点に戻る‐";
+	mes "�]����o��΃S�[���n�_�ɐi�ށB";
+	mes "�@�������A�������o���";
+	mes "�@�X�^�[�g�n�_�ɖ߂�]";
 	next;
-	mes "‐位置：37マス";
-	mes "　保有LP：" +CHANGE_KO_LP;
-	mes "　サイコロを振ると1^FD0260LP^000000を消費します‐";
+	mes "�]�ʒu�F37�}�X";
+	mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+	mes "�@�T�C�R����U���1^FD0260LP^000000������܂��]";
 	next;
-	menu "サイコロを振る",-;
+	menu "�T�C�R����U��",-;
 	set '@dice,rand(1,6);
 	emotion 57+'@dice,"";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 1;
-	mes "‐" +'@dice+ "が出ました。";
+	mes "�]" +'@dice+ "���o�܂����B";
 	if('@dice%2) {
-		mes "　ゴール地点に進みます‐";
+		mes "�@�S�[���n�_�ɐi�݂܂��]";
 		close2;
 		warp "job_ko.gat",41,44;
 		end;
 	}
 	else {
-		mes "　スタート地点に戻ります‐";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
 }
 
-job_ko.gat,33,40,4	script	道標#ko_38	858,1,1,{
-	mes "‐38番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,33,40,4	script	���W#ko_38	858,1,1,{
+	mes "�]38�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐1^FD0260LP^000000を残し、全ての^FD0260LP^000000を支払うことで";
-	mes "　スタートに戻る";
-	mes "　トラップを設置できます‐";
+	mes "�]1^FD0260LP^000000���c���A�S�Ă�^FD0260LP^000000���x�������Ƃ�";
+	mes "�@�X�^�[�g�ɖ߂�";
+	mes "�@�g���b�v��ݒu�ł��܂��]";
 	next;
 	if('trap) {
-		mes "‐設置されていたトラップが";
-		mes "　発動しました！";
-		mes "　スタートに戻ります‐";
+		mes "�]�ݒu����Ă����g���b�v��";
+		mes "�@�������܂����I";
+		mes "�@�X�^�[�g�ɖ߂�܂��]";
 		close2;
 		set 'trap,0;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	if(select("トラップを設置する","設置せずサイコロを振る") == 1) {
-		mes "‐" +(CHANGE_KO_LP-1)+ "LP支払いました。";
-		mes "　トラップを設置しました‐";
+	if(select("�g���b�v��ݒu����","�ݒu�����T�C�R����U��") == 1) {
+		mes "�]" +(CHANGE_KO_LP-1)+ "LP�x�����܂����B";
+		mes "�@�g���b�v��ݒu���܂����]";
 		set 'trap,1;
 		set CHANGE_KO_LP,1;
 		next;
 	}
-	mes "‐位置：38番マス";
+	mes "�]�ʒu�F38�ԃ}�X";
 	callfunc "jobchenge_ko_func",1,0;
 	end;
 }
 
-job_ko.gat,38,44,4	script	道標#ko_39	858,1,1,{
-	mes "‐39番マス";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,38,44,4	script	���W#ko_39	858,1,1,{
+	mes "�]39�ԃ}�X";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
 	if(CHANGE_KO_LP <= 0) {
-		mes "‐^FD0260LP^000000が足りません。";
-		mes "　スタート地点に戻ります‐";
+		mes "�]^FD0260LP^000000������܂���B";
+		mes "�@�X�^�[�g�n�_�ɖ߂�܂��]";
 		close2;
 		warp "job_ko.gat",63,16;
 		end;
 	}
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐残り1マス。";
-	mes "　長い道のりだったことだろう‐";
+	mes "�]�c��1�}�X�B";
+	mes "�@�������̂肾�������Ƃ��낤�]";
 	next;
-	mes "‐だが簡単に通す訳にはいかない。";
-	mes "　3が出たら3番に戻ってもらう‐";
+	mes "�]�����ȒP�ɒʂ���ɂ͂����Ȃ��B";
+	mes "�@3���o����3�Ԃɖ߂��Ă��炤�]";
 	next;
-	mes "‐位置：39番マス";
-	mes "　保有LP：" +CHANGE_KO_LP;
-	mes "　サイコロを振ると1^FD0260LP^000000を消費します‐";
+	mes "�]�ʒu�F39�ԃ}�X";
+	mes "�@�ۗLLP�F" +CHANGE_KO_LP;
+	mes "�@�T�C�R����U���1^FD0260LP^000000������܂��]";
 	next;
-	menu "サイコロを振る",-;
+	menu "�T�C�R����U��",-;
 	set '@dice,rand(1,6);
 	emotion 57+'@dice,"";
 	set CHANGE_KO_LP,CHANGE_KO_LP - 1;
-	mes "‐" +'@dice+ "が出ました。";
+	mes "�]" +'@dice+ "���o�܂����B";
 	if('@dice == 3) {
-		mes "　3番に戻ります‐";
+		mes "�@3�Ԃɖ߂�܂��]";
 		close2;
 		set CHANGE_KO_NOW,3;
 		warp "job_ko.gat",38,16;
 		end;
 	}
 	else {
-		mes "　ゴール地点に進みます‐";
+		mes "�@�S�[���n�_�ɐi�݂܂��]";
 		close2;
 		warp "job_ko.gat",41,44;
 		end;
 	}
 }
 
-job_ko.gat,46,41,4	script	道標#ko_40	858,1,1,{
-	mes "‐ゴール";
-	mes "　^1A95E6他の文字は小さくて見えない。";
-	mes "　もっと近づいてみよう^000000‐";
+job_ko.gat,46,41,4	script	���W#ko_40	858,1,1,{
+	mes "�]�S�[��";
+	mes "�@^1A95E6���̕����͏������Č����Ȃ��B";
+	mes "�@�����Ƌ߂Â��Ă݂悤^000000�]";
 	close;
 OnTouch:
-	mes "‐小さく説明が書いてある‐";
+	mes "�]�����������������Ă���]";
 	next;
-	mes "‐さらなる極みへ歩むものへ";
-	mes "　勇気ある始まりの歩みを踏み出した";
-	mes "　汝らに祝福を！‐";
+	mes "�]����Ȃ�ɂ݂֕��ނ��̂�";
+	mes "�@�E�C����n�܂�̕��݂𓥂ݏo����";
+	mes "�@����ɏj�����I�]";
 	next;
 	compquest 5137;
 	delquest 5140;
-	mes "‐生存の試練を達成した‐";
+	mes "�]�����̎�����B�������]";
 	close2;
 	warp "job_ko.gat",35,113;
 	end;
 }
 
-job_ko.gat,127,125,4	script	ヒョウ#ko	730,{
+job_ko.gat,127,125,4	script	�q���E#ko	730,{
 	if(checkquest(5138)) {
 		if(checkquest(5138) & 0x8) {
-			mes "[ヒョウ]";
-			mes "そうそう";
-			mes "ギオン様に報告するのを";
-			mes "忘れないでくださいね。";
+			mes "[�q���E]";
+			mes "��������";
+			mes "�M�I���l�ɕ񍐂���̂�";
+			mes "�Y��Ȃ��ł��������ˁB";
 			close2;
 			warp "job_ko.gat",26,104;
 			end;
 		}
 		if(!checkquest(5142)) {
-			mes "[ヒョウ]";
-			mes "久しぶりですね。";
+			mes "[�q���E]";
+			mes "�v���Ԃ�ł��ˁB";
 			next;
-			menu "お久しぶりです",-;
-			mes "[ヒョウ]";
-			mes "すっかり忘れられたかと思いましたが";
-			mes "その様子では、";
-			mes "憶えていてくれたようですね。";
+			menu "���v���Ԃ�ł�",-;
+			mes "[�q���E]";
+			mes "��������Y���ꂽ���Ǝv���܂�����";
+			mes "���̗l�q�ł́A";
+			mes "�����Ă��Ă��ꂽ�悤�ł��ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "さて、積もる話もありますが……";
-			mes "今はそのような悠長なことを";
-			mes "話している場合では、";
-			mes "ありませんでしたね。";
+			mes "[�q���E]";
+			mes "���āA�ς���b������܂����c�c";
+			mes "���͂��̂悤�ȗI���Ȃ��Ƃ�";
+			mes "�b���Ă���ꍇ�ł́A";
+			mes "����܂���ł����ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "では、あらためて！";
+			mes "[�q���E]";
+			mes "�ł́A���炽�߂āI";
 			mes strcharinfo(0);
-			mes "一族の武器工房へようこそ！";
+			mes "�ꑰ�̕���H�[�ւ悤�����I";
 			next;
-			mes "[ヒョウ]";
-			mes "昔から私たちの一族は";
-			mes "隠密として任務を遂行するために";
-			mes "自分たち独自の武器を作ってきました。";
+			mes "[�q���E]";
+			mes "�̂��玄�����̈ꑰ��";
+			mes "�B���Ƃ��ĔC���𐋍s���邽�߂�";
+			mes "���������Ǝ��̕��������Ă��܂����B";
 			next;
-			menu "それでアインブロックに？",-;
-			mes "[ヒョウ]";
-			mes "……ほう、まだ憶えていましたか。";
+			menu "����ŃA�C���u���b�N�ɁH",-;
+			mes "[�q���E]";
+			mes "�c�c�ق��A�܂������Ă��܂������B";
 			next;
-			mes "[ヒョウ]";
-			mes "その通りです。";
-			mes "鋼鉄の都市アインブロックは";
-			mes "腕利きの匠が多いため";
-			mes "新しい技術も頻繁に生まれます。";
+			mes "[�q���E]";
+			mes "���̒ʂ�ł��B";
+			mes "�|�S�̓s�s�A�C���u���b�N��";
+			mes "�r�����̏�����������";
+			mes "�V�����Z�p���p�ɂɐ��܂�܂��B";
 			next;
-			mes "[ヒョウ]";
-			mes "私の任務は";
-			mes "そういった新しい技術を習得、分析して";
-			mes "一族に報告をすることでした。";
+			mes "[�q���E]";
+			mes "���̔C����";
+			mes "�����������V�����Z�p���K���A���͂���";
+			mes "�ꑰ�ɕ񍐂����邱�Ƃł����B";
 			next;
-			mes "[ヒョウ]";
-			mes "おっと……";
-			mes "少し口が滑りました。";
+			mes "[�q���E]";
+			mes "�����Ɓc�c";
+			mes "������������܂����B";
 			next;
-			mes "[ヒョウ]";
-			mes "それはさておき";
-			mes "^6848B7鉄鉱石、鉄、鋼鉄、プラコン、";
-			mes "エンベルタコン、オリデオコン原石、";
-			mes "エルニウム原石^000000は";
-			mes "十分持っていますか？";
+			mes "[�q���E]";
+			mes "����͂��Ă���";
+			mes "^6848B7�S�z�΁A�S�A�|�S�A�v���R���A";
+			mes "�G���x���^�R���A�I���f�I�R�����΁A";
+			mes "�G���j�E������^000000��";
+			mes "�\�������Ă��܂����H";
 			next;
-			mes "[ヒョウ]";
-			mes "さっそく新しい武器の";
-			mes "試作品を作ってみましょう。";
+			mes "[�q���E]";
+			mes "���������V���������";
+			mes "����i������Ă݂܂��傤�B";
 			next;
-			misceffect 191,"製作道具#ko_01";
-			mes "[ヒョウ]";
-			mes "製作道具はそこと……";
+			misceffect 191,"���쓹��#ko_01";
+			mes "[�q���E]";
+			mes "���쓹��͂����Ɓc�c";
 			next;
-			misceffect 191,"製作道具#ko_02";
-			mes "[ヒョウ]";
-			mes "ここ……";
+			misceffect 191,"���쓹��#ko_02";
+			mes "[�q���E]";
+			mes "�����c�c";
 			next;
-			misceffect 191,"製作道具#ko_03";
+			misceffect 191,"���쓹��#ko_03";
 			setquest 5142;
-			mes "[ヒョウ]";
-			mes "それから、向こうにあるものを";
-			mes "自由に使ってください。";
+			mes "[�q���E]";
+			mes "���ꂩ��A�������ɂ�����̂�";
+			mes "���R�Ɏg���Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "武器の作り方について";
-			mes "説明を聞きたい場合には";
-			mes "もう一度、私に話しかけてください。";
-			mes "それでは、始めてください。";
+			mes "[�q���E]";
+			mes "����̍����ɂ���";
+			mes "�����𕷂������ꍇ�ɂ�";
+			mes "������x�A���ɘb�������Ă��������B";
+			mes "����ł́A�n�߂Ă��������B";
 			close;
 		}
 		if(checkquest(5145)) {
-			mes "[ヒョウ]";
-			mes "満足できる成果は得られましたか？";
+			mes "[�q���E]";
+			mes "�����ł��鐬�ʂ͓����܂������H";
 			next;
-			switch(select("まだです","できました","壊れてしまった")) {
+			switch(select("�܂��ł�","�ł��܂���","���Ă��܂���")) {
 			case 1:
-				mes "[ヒョウ]";
-				mes "満足できる成果は";
-				mes "簡単には得られませんからね。";
+				mes "[�q���E]";
+				mes "�����ł��鐬�ʂ�";
+				mes "�ȒP�ɂ͓����܂��񂩂�ˁB";
 				close;
 			case 2:
-				mes "[ヒョウ]";
-				mes "いい結果が得られたみたいですね。";
+				mes "[�q���E]";
+				mes "�������ʂ�����ꂽ�݂����ł��ˁB";
 				next;
 				if(getequipid(4) != 13074 && getequipid(4) != 13312) {
-					mes "[ヒョウ]";
-					mes "おや……。";
+					mes "[�q���E]";
+					mes "����c�c�B";
 					next;
-					mes "[ヒョウ]";
-					mes "すみません。";
-					mes "あなたが鍛えた武器を";
-					mes "装備していただけますか。";
-					mes "確認しますので。";
+					mes "[�q���E]";
+					mes "���݂܂���B";
+					mes "���Ȃ����b���������";
+					mes "�������Ă��������܂����B";
+					mes "�m�F���܂��̂ŁB";
 					close;
 				}
-				mes "[ヒョウ]";
-				mes "では確認させてもらいましょう。";
+				mes "[�q���E]";
+				mes "�ł͊m�F�����Ă��炢�܂��傤�B";
 				next;
-				mes "‐ヒョウは武器を手に取って";
-				mes "　観察している‐";
+				mes "�]�q���E�͕������Ɏ����";
+				mes "�@�ώ@���Ă���]";
 				next;
 				set '@ref,getequiprefinerycnt(4);
 				if('@ref < 7) {
-					mes "[ヒョウ]";
-					mes "なるほど。";
-					mes "良い感じですが、";
-					mes "もう少し、鍛える必要がありますね。";
-					mes "がんばってください。";
+					mes "[�q���E]";
+					mes "�Ȃ�قǁB";
+					mes "�ǂ������ł����A";
+					mes "���������A�b����K�v������܂��ˁB";
+					mes "����΂��Ă��������B";
 					close;
 				}
 				else if('@ref < 9) {
-					mes "[ヒョウ]";
-					mes "なかなかやりますね。";
-					mes "これなら合格を出せそうです。";
-					mes "とはいえ、まだ強化可能ですが";
-					mes "これで完成でよいですか？";
+					mes "[�q���E]";
+					mes "�Ȃ��Ȃ����܂��ˁB";
+					mes "����Ȃ獇�i���o�������ł��B";
+					mes "�Ƃ͂����A�܂������\�ł���";
+					mes "����Ŋ����ł悢�ł����H";
 					next;
-					if(select("はい","いいえ") == 2) {
-						mes "[ヒョウ]";
-						mes "では、満足できる結果が得られたら";
-						mes "また来てください。";
+					if(select("�͂�","������") == 2) {
+						mes "[�q���E]";
+						mes "�ł́A�����ł��錋�ʂ�����ꂽ��";
+						mes "�܂����Ă��������B";
 						close;
 					}
 				}
 				else if('@ref == 9) {
-					mes "[ヒョウ]";
-					mes "素晴らしい……。";
-					mes "文句なしの合格ですよ。";
-					mes "ここまでの出来なら";
-					mes "最高峰を目指していただきたい";
-					mes "そんな欲が出てきた程です。";
+					mes "[�q���E]";
+					mes "�f���炵���c�c�B";
+					mes "����Ȃ��̍��i�ł���B";
+					mes "�����܂ł̏o���Ȃ�";
+					mes "�ō����ڎw���Ă�����������";
+					mes "����ȗ~���o�Ă������ł��B";
 					next;
-					mes "[ヒョウ]";
-					mes "どうでしょう？";
-					mes "あなたがよいのでしたら";
-					mes "是非、最高峰を目指して";
-					mes "がんばっていただきたいのですが。";
+					mes "[�q���E]";
+					mes "�ǂ��ł��傤�H";
+					mes "���Ȃ����悢�̂ł�����";
+					mes "����A�ō����ڎw����";
+					mes "����΂��Ă������������̂ł����B";
 					next;
-					if(select("これくらいにします","まだまだ満足できません") == 2) {
-						mes "[ヒョウ]";
-						mes "あなたの腕前に";
-						mes "期待させてもらいますよ。";
+					if(select("���ꂭ�炢�ɂ��܂�","�܂��܂������ł��܂���") == 2) {
+						mes "[�q���E]";
+						mes "���Ȃ��̘r�O��";
+						mes "���҂����Ă��炢�܂���B";
 						close;
 					}
 				}
 				else if('@ref >= 10) {
-					// 未調査
-					mes "[ヒョウ]";
-					mes "素晴らしい！";
-					mes "文句なしの合格です！";
+					// ������
+					mes "[�q���E]";
+					mes "�f���炵���I";
+					mes "����Ȃ��̍��i�ł��I";
 					next;
 				}
-				mes "[ヒョウ]";
-				mes "あなたの腕前に関しては十分";
-				mes "確認できました。";
-				mes "この武器の仕上げは私がやりましょう。";
-				mes "いったん預かりますよ。";
+				mes "[�q���E]";
+				mes "���Ȃ��̘r�O�Ɋւ��Ă͏\��";
+				mes "�m�F�ł��܂����B";
+				mes "���̕���̎d�グ�͎������܂��傤�B";
+				mes "��������a����܂���B";
 				next;
 				delequip 4;
 				delquest 5145;
@@ -3345,253 +3345,253 @@ job_ko.gat,127,125,4	script	ヒョウ#ko	730,{
 					compquest 5143;
 				if(checkquest(5144))
 					compquest 5144;
-				mes "[ヒョウ]";
-				mes strcharinfo(0)+ "の";
-				mes "武器の試練を終了します！";
+				mes "[�q���E]";
+				mes strcharinfo(0)+ "��";
+				mes "����̎������I�����܂��I";
 				close;
 			case 3:
-				mes "[ヒョウ]";
-				mes "忠告したはずですが……";
+				mes "[�q���E]";
+				mes "���������͂��ł����c�c";
 				next;
-				mes "[ヒョウ]";
-				mes "仕方がありませんね。";
-				mes "少し確認させてもらいますよ。";
+				mes "[�q���E]";
+				mes "�d��������܂���ˁB";
+				mes "�����m�F�����Ă��炢�܂���B";
 				next;
-				mes "‐装備が全て外れた！";
-				mes "　ヒョウが何かをしたのだろうか？‐";
+				mes "�]�������S�ĊO�ꂽ�I";
+				mes "�@�q���E�������������̂��낤���H�]";
 				next;
 				unequip;
 				if(countitem(13074) > 0 || countitem(13312) > 0) {
-					mes "[ヒョウ]";
-					mes "おや……？";
-					mes "試作品を持っているじゃありませんか。";
+					mes "[�q���E]";
+					mes "����c�c�H";
+					mes "����i�������Ă��邶�Ⴀ��܂��񂩁B";
 					close;
 				}
-				mes "[ヒョウ]";
-				mes "ふむ……";
-				mes "本当になくしてしまったようですね。";
+				mes "[�q���E]";
+				mes "�ӂށc�c";
+				mes "�{���ɂȂ����Ă��܂����悤�ł��ˁB";
 				next;
 				setquest 5142;
 				delquest 5143;
 				delquest 5144;
 				delquest 5145;
-				mes "[ヒョウ]";
-				mes "しかたありません。";
-				mes "もう一度、試作品から作ってください。";
+				mes "[�q���E]";
+				mes "����������܂���B";
+				mes "������x�A����i�������Ă��������B";
 				close;
 			}
 		}
-		mes "[ヒョウ]";
-		mes "新しい武器の試作品は";
-		mes "完成しましたか？";
+		mes "[�q���E]";
+		mes "�V��������̎���i��";
+		mes "�������܂������H";
 		if(checkquest(5143) || checkquest(5144))
-			set '@str$,"はい、完成しました";
+			set '@str$,"�͂��A�������܂���";
 		next;
-		switch(select("製作道具について聞く","材料が足りない","作り方を聞く",'@str$)) {
+		switch(select("���쓹��ɂ��ĕ���","�ޗ�������Ȃ�","�����𕷂�",'@str$)) {
 		case 1:
-			misceffect 191,"製作道具#ko_01";
-			mes "[ヒョウ]";
-			mes "これから示す場所に";
-			mes "製作道具があります。";
-			mes "まずはひとつ目。";
+			misceffect 191,"���쓹��#ko_01";
+			mes "[�q���E]";
+			mes "���ꂩ�玦���ꏊ��";
+			mes "���쓹�����܂��B";
+			mes "�܂��͂ЂƂځB";
 			next;
-			misceffect 191,"製作道具#ko_02";
-			mes "[ヒョウ]";
-			mes "ふたつ目。";
+			misceffect 191,"���쓹��#ko_02";
+			mes "[�q���E]";
+			mes "�ӂ��ځB";
 			next;
-			misceffect 191,"製作道具#ko_03";
-			mes "[ヒョウ]";
-			mes "最後にみっつ目。";
-			mes "好きなところを使ってください。";
+			misceffect 191,"���쓹��#ko_03";
+			mes "[�q���E]";
+			mes "�Ō�ɂ݂��ځB";
+			mes "�D���ȂƂ�����g���Ă��������B";
 			close;
 		case 2:
-			mes "[ヒョウ]";
-			mes "材料が足りないのですか？";
+			mes "[�q���E]";
+			mes "�ޗ�������Ȃ��̂ł����H";
 			next;
-			misceffect 191,"タンス#ko";
-			mes "[ヒョウ]";
-			mes "街に戻る必要があるみたいですね。";
-			mes "そこのタンスを調べてみてください。";
+			misceffect 191,"�^���X#ko";
+			mes "[�q���E]";
+			mes "�X�ɖ߂�K�v������݂����ł��ˁB";
+			mes "�����̃^���X�𒲂ׂĂ݂Ă��������B";
 			close;
 		case 3:
-			mes "[ヒョウ]";
-			mes "ふむ、やはり説明が必要ですかね？";
+			mes "[�q���E]";
+			mes "�ӂށA��͂�������K�v�ł����ˁH";
 			next;
-			mes "[ヒョウ]";
-			mes "まずは鉱石を溶かします。";
-			mes "純度が高い金属を作るためには";
-			mes "同じ種類の鉱石を使うといいでしょう。";
-			mes "途中で鉱石が足りなくなると";
-			mes "やり直しになってしまうので";
-			mes "十分な数の鉱石を用意してください。";
+			mes "[�q���E]";
+			mes "�܂��͍z�΂�n�����܂��B";
+			mes "���x��������������邽�߂ɂ�";
+			mes "������ނ̍z�΂��g���Ƃ����ł��傤�B";
+			mes "�r���ōz�΂�����Ȃ��Ȃ��";
+			mes "��蒼���ɂȂ��Ă��܂��̂�";
+			mes "�\���Ȑ��̍z�΂�p�ӂ��Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "また、希少性の高い鉱石ほど";
-			mes "少ない個数で純度の高い金属を";
-			mes "作ることができます。";
+			mes "[�q���E]";
+			mes "�܂��A�󏭐��̍����z�΂ق�";
+			mes "���Ȃ����ŏ��x�̍���������";
+			mes "��邱�Ƃ��ł��܂��B";
 			next;
-			mes "[ヒョウ]";
-			mes "そうですね……";
-			mes "同じ鉱石を溶かし続けた場合、";
-			mes "鉄鉱石やプラコンなら^FF000050^000000個";
-			mes "鉄やエンベルタコンなら^FF000025^000000個";
-			mes "鋼鉄やオリデオコン原石なら^FF000017^000000個";
-			mes "あれば十分でしょう。";
+			mes "[�q���E]";
+			mes "�����ł��ˁc�c";
+			mes "�����z�΂�n�����������ꍇ�A";
+			mes "�S�z�΂�v���R���Ȃ�^FF000050^000000��";
+			mes "�S��G���x���^�R���Ȃ�^FF000025^000000��";
+			mes "�|�S��I���f�I�R�����΂Ȃ�^FF000017^000000��";
+			mes "����Ώ\���ł��傤�B";
 			next;
-			mes "[ヒョウ]";
-			mes "ですが、これらの個数は";
-			mes "あくまで目安です。";
-			mes "溶かす鉱石の組み合わせ次第で";
-			mes "必要になる個数は変わりますから";
-			mes "注意してくださいね。";
+			mes "[�q���E]";
+			mes "�ł����A�����̌���";
+			mes "�����܂Ŗڈ��ł��B";
+			mes "�n�����z�΂̑g�ݍ��킹�����";
+			mes "�K�v�ɂȂ���͕ς��܂�����";
+			mes "���ӂ��Ă��������ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "また、鉱石の性質についても";
-			mes "注意してください。";
-			mes "たとえば鉄鉱石、鉄、鋼鉄は";
-			mes "性質が似ているため";
-			mes "混ぜ合わせて溶かしても";
-			mes "純度の高い金属ができるでしょう。";
+			mes "[�q���E]";
+			mes "�܂��A�z�΂̐����ɂ��Ă�";
+			mes "���ӂ��Ă��������B";
+			mes "���Ƃ��ΓS�z�΁A�S�A�|�S��";
+			mes "���������Ă��邽��";
+			mes "�������킹�ėn�����Ă�";
+			mes "���x�̍����������ł���ł��傤�B";
 			next;
-			mes "[ヒョウ]";
-			mes "プラコン、エンベルタコン";
-			mes "オリデオコン原石も";
-			mes "それぞれ性質が似ていますので";
-			mes "同じことが言えます。";
+			mes "[�q���E]";
+			mes "�v���R���A�G���x���^�R��";
+			mes "�I���f�I�R�����΂�";
+			mes "���ꂼ�ꐫ�������Ă��܂��̂�";
+			mes "�������Ƃ������܂��B";
 			next;
-			mes "[ヒョウ]";
-			mes "ただし！";
-			mes "これらの性質は相反するので";
-			mes "^FF0000異なる性質の鉱石を溶かすと";
-			mes "高めた純度が落ちてしまいます^000000。";
+			mes "[�q���E]";
+			mes "�������I";
+			mes "�����̐����͑�������̂�";
+			mes "^FF0000�قȂ鐫���̍z�΂�n������";
+			mes "���߂����x�������Ă��܂��܂�^000000�B";
 			next;
-			mes "[ヒョウ]";
-			mes "なお、エルニウム原石は";
-			mes "特殊な性質を持っていて";
-			mes "どちらの性質の金属に溶かしても";
-			mes "わずかながら純度を";
-			mes "高めることができます。";
+			mes "[�q���E]";
+			mes "�Ȃ��A�G���j�E�����΂�";
+			mes "����Ȑ����������Ă���";
+			mes "�ǂ���̐����̋����ɗn�����Ă�";
+			mes "�킸���Ȃ��珃�x��";
+			mes "���߂邱�Ƃ��ł��܂��B";
 			next;
-			mes "[ヒョウ]";
-			mes "純度の高い金属を用意できたら";
-			mes "鋳型に流しこんでください。";
+			mes "[�q���E]";
+			mes "���x�̍���������p�ӂł�����";
+			mes "���^�ɗ�������ł��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "そして、研磨と焼入れを";
-			mes "繰り返して金属を強化し";
-			mes "最後に仕上げをしてください。";
+			mes "[�q���E]";
+			mes "�����āA�����Əē����";
+			mes "�J��Ԃ��ċ�����������";
+			mes "�Ō�Ɏd�グ�����Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "強化が不十分だと";
-			mes "試作品が壊れやすくなります。";
-			mes "研磨と焼入れを十分に行ってから";
-			mes "仕上げに移ってください。";
+			mes "[�q���E]";
+			mes "�������s�\������";
+			mes "����i�����₷���Ȃ�܂��B";
+			mes "�����Əē�����\���ɍs���Ă���";
+			mes "�d�グ�Ɉڂ��Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "参考までに、研磨と焼入れを";
-			mes "交互に作業するのが";
-			mes "良い武器を作る最適な方法です。";
+			mes "[�q���E]";
+			mes "�Q�l�܂łɁA�����Əē����";
+			mes "���݂ɍ�Ƃ���̂�";
+			mes "�ǂ���������œK�ȕ��@�ł��B";
 			next;
-			mes "[ヒョウ]";
-			mes "ここまで説明すれば十分ですね？";
-			mes "さあ、試作品を作ってみましょう！";
+			mes "[�q���E]";
+			mes "�����܂Ő�������Ώ\���ł��ˁH";
+			mes "�����A����i������Ă݂܂��傤�I";
 			close;
 		case 4:
 			if(checkquest(5143)) {
-				mes "[ヒョウ]";
-				mes "ほう……";
-				mes "苦無をまねた短剣の類ですか？";
+				mes "[�q���E]";
+				mes "�ق��c�c";
+				mes "�ꖳ���܂˂��Z���̗ނł����H";
 				next;
-				mes "[ヒョウ]";
-				mes "面白い発想ですね。";
+				mes "[�q���E]";
+				mes "�ʔ������z�ł��ˁB";
 			}
 			else if(checkquest(5144)) {
-				mes "[ヒョウ]";
-				mes "これは風魔手裏剣……？";
-				mes "いやいや……";
+				mes "[�q���E]";
+				mes "����͕����藠���c�c�H";
+				mes "���₢��c�c";
 				next;
-				mes "[ヒョウ]";
-				mes "平凡な風魔手裏剣ではありませんね！";
+				mes "[�q���E]";
+				mes "���}�ȕ����藠���ł͂���܂���ˁI";
 			}
-			mes "少し鍛え直さないと";
-			mes "武器として使うのは厳しいですが";
-			mes "いい武器になる可能性を感じますね。";
+			mes "�����b�������Ȃ���";
+			mes "����Ƃ��Ďg���̂͌������ł���";
+			mes "��������ɂȂ�\���������܂��ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "よし、これなら合格点を出せますね。";
+			mes "[�q���E]";
+			mes "�悵�A����Ȃ獇�i�_���o���܂��ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "次に、武器の強化ですね。";
-			mes "私の下の方に精錬装置があります。";
-			mes "^0000FF精錬値が+7^000000になったら";
-			mes "持ってきてください。";
+			mes "[�q���E]";
+			mes "���ɁA����̋����ł��ˁB";
+			mes "���̉��̕��ɐ��B���u������܂��B";
+			mes "^0000FF���B�l��+7^000000�ɂȂ�����";
+			mes "�����Ă��Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "それ以上精錬しても構いませんが";
-			mes "^FF0000特別な報酬などはありません^000000から";
-			mes "注意してくださいね。";
+			mes "[�q���E]";
+			mes "����ȏ㐸�B���Ă��\���܂���";
+			mes "^FF0000���ʂȕ�V�Ȃǂ͂���܂���^000000����";
+			mes "���ӂ��Ă��������ˁB";
 			next;
-			mes "[ヒョウ]";
-			mes "そうそう、精錬は必ず";
-			mes "^FF0000この部屋の精錬装置で";
-			mes "行なって下さい。^000000";
+			mes "[�q���E]";
+			mes "���������A���B�͕K��";
+			mes "^FF0000���̕����̐��B���u��";
+			mes "�s�Ȃ��ĉ������B^000000";
 			next;
-			mes "[ヒョウ]";
-			mes "なお、ここにある精錬装置ですが";
-			mes "鋼鉄の都市アインブロックの";
-			mes "腕利きの匠により";
-			mes "製作された精錬装置ですので";
+			mes "[�q���E]";
+			mes "�Ȃ��A�����ɂ��鐸�B���u�ł���";
+			mes "�|�S�̓s�s�A�C���u���b�N��";
+			mes "�r�����̏��ɂ��";
+			mes "���삳�ꂽ���B���u�ł��̂�";
 			next;
-			mes "[ヒョウ]";
-			mes "他の場所で精錬した場合と";
-			mes "精錬の成功率が";
-			mes "異なっているようです。";
-			mes "注意してください。";
+			mes "[�q���E]";
+			mes "���̏ꏊ�Ő��B�����ꍇ��";
+			mes "���B�̐�������";
+			mes "�قȂ��Ă���悤�ł��B";
+			mes "���ӂ��Ă��������B";
 			next;
-			mes "[ヒョウ]";
-			mes "また、^0000FFこの部屋の精錬装置で";
-			mes "精錬に失敗しても";
-			mes "武器は壊れません^000000。";
+			mes "[�q���E]";
+			mes "�܂��A^0000FF���̕����̐��B���u��";
+			mes "���B�Ɏ��s���Ă�";
+			mes "����͉��܂���^000000�B";
 			next;
-			mes "[ヒョウ]";
-			mes "ですが、他の人に頼んだり";
-			mes "ここではない場所で精錬に失敗して";
-			mes "^FF0000試作品を壊すとやり直し^000000になるので";
-			mes "絶対壊さないようにね。";
+			mes "[�q���E]";
+			mes "�ł����A���̐l�ɗ��񂾂�";
+			mes "�����ł͂Ȃ��ꏊ�Ő��B�Ɏ��s����";
+			mes "^FF0000����i���󂷂Ƃ�蒼��^000000�ɂȂ�̂�";
+			mes "��Ή󂳂Ȃ��悤�ɂˁB";
 			setquest 5145;
 			close;
 		}
 	}
 }
 
-job_ko.gat,117,128,0	script	タンス#ko	844,{
-	mes "‐見たところ";
-	mes "　普通のタンスのようだが……‐";
+job_ko.gat,117,128,0	script	�^���X#ko	844,{
+	mes "�]�����Ƃ���";
+	mes "�@���ʂ̃^���X�̂悤�����c�c�]";
 	next;
-	if(select("そっとしておく","引き出しを開ける") == 1) {
-		mes "‐あなたは、その場を離れた‐";
+	if(select("�����Ƃ��Ă���","�����o�����J����") == 1) {
+		mes "�]���Ȃ��́A���̏�𗣂ꂽ�]";
 		close;
 	}
-	mes "‐どこかで機械が動く音がする……‐";
+	mes "�]�ǂ����ŋ@�B��������������c�c�]";
 	close2;
 	warp "amatsu.gat",147,136;
 	end;
 }
 
-job_ko.gat,131,124,0	script	製作道具#ko_01	844,{
+job_ko.gat,131,124,0	script	���쓹��#ko_01	844,{
 	if(!(checkquest(5142) & 0x1)) {
-		mes "‐製作道具だ。";
-		mes "　今は使う必要がない‐";
+		mes "�]���쓹��B";
+		mes "�@���͎g���K�v���Ȃ��]";
 		close;
 	}
-	mes "‐武器を製作するための道具だ‐";
+	mes "�]����𐻍삷�邽�߂̓���]";
 	next;
-	mes "‐まずは武器製作に使う金属を";
-	mes "　溶かす必要があるようだ‐";
+	mes "�]�܂��͕��퐻��Ɏg��������";
+	mes "�@�n�����K�v������悤���]";
 	setarray '@point,20,40,60,20,40,60,20;
 	while(1) {
 		next;
-		set '@sel,select("鉄鉱石を溶かす","鉄を溶かす","鋼鉄を溶かす","プラコンを溶かす","エンベルタコンを溶かす","オリデオコン原石を溶かす","エルニウム原石を溶かす","やめる") - 1;
+		set '@sel,select("�S�z�΂�n����","�S��n����","�|�S��n����","�v���R����n����","�G���x���^�R����n����","�I���f�I�R�����΂�n����","�G���j�E�����΂�n����","��߂�") - 1;
 		switch('@sel) {
 		case 0:	set '@itemid,1002;	break;
 		case 1:	set '@itemid,998;	break;
@@ -3601,124 +3601,124 @@ job_ko.gat,131,124,0	script	製作道具#ko_01	844,{
 		case 5:	set '@itemid,756;	break;
 		case 6:	set '@itemid,757;	break;
 		case 7:
-			mes "‐あなたは、その場を離れた‐";
+			mes "�]���Ȃ��́A���̏�𗣂ꂽ�]";
 			close;
 		}
 		if(countitem('@itemid) < '@iron['@sel]+1) {
-			mes "‐しかし" +getitemname('@itemid)+ "を持っていない‐";
+			mes "�]������" +getitemname('@itemid)+ "�������Ă��Ȃ��]";
 		}
 		else {
 			if('@cnt == 0)
 				misceffect 302;
-			mes "‐高熱を与え";
-			mes "　" +getitemname('@itemid)+ "を";
-			mes "　溶かした‐";
+			mes "�]���M��^��";
+			mes "�@" +getitemname('@itemid)+ "��";
+			mes "�@�n�������]";
 			set '@cnt,'@cnt + '@point['@sel];
 			set '@iron['@sel],'@iron['@sel] + 1;
 			next;
 			if('@cnt < 200) {
-				mes "‐まだまだ先は長そうだ‐";
+				mes "�]�܂��܂���͒��������]";
 			}
 			else if('@cnt < 400) {
-				mes "‐この調子で溶かしていこう‐";
+				mes "�]���̒��q�ŗn�����Ă������]";
 			}
 			else if('@cnt < 600) {
-				mes "‐そろそろ半分くらいだろうか‐";
+				mes "�]���낻�딼�����炢���낤���]";
 			}
 			else if('@cnt < 800) {
-				mes "‐だいぶ純度が高くなった気がする‐";
+				mes "�]�����ԏ��x�������Ȃ����C������]";
 			}
 			else if('@cnt < 1000) {
-				mes "‐もう少しで出来上がりそうだ‐";
+				mes "�]���������ŏo���オ�肻�����]";
 			}
 			else {
-				mes "‐武器を作るために十分な量の";
-				mes "　溶けた金属の用意ができた‐";
+				mes "�]�������邽�߂ɏ\���ȗʂ�";
+				mes "�@�n���������̗p�ӂ��ł����]";
 				break;
 			}
 		}
 		next;
-		mes "‐現在、溶かした鉱石の個数は";
-		mes "　以下の通りです‐";
+		mes "�]���݁A�n�������z�΂̌���";
+		mes "�@�ȉ��̒ʂ�ł��]";
 		next;
-		mes "‐鉄鉱石：^FF0000" +'@iron[0]+ "^000000個";
-		mes "　鉄：^FF0000" +'@iron[1]+ "^000000個";
-		mes "　鋼鉄：^FF0000" +'@iron[2]+ "^000000個";
-		mes "　プラコン：^FF0000" +'@iron[3]+ "^000000個";
-		mes "　エンベルタコン：^FF0000" +'@iron[4]+ "^000000個";
-		mes "　オリデオコン原石：^FF0000" +'@iron[5]+ "^000000個";
-		mes "　エルニウム原石：^FF0000" +'@iron[6]+ "^000000個‐";
+		mes "�]�S�z�΁F^FF0000" +'@iron[0]+ "^000000��";
+		mes "�@�S�F^FF0000" +'@iron[1]+ "^000000��";
+		mes "�@�|�S�F^FF0000" +'@iron[2]+ "^000000��";
+		mes "�@�v���R���F^FF0000" +'@iron[3]+ "^000000��";
+		mes "�@�G���x���^�R���F^FF0000" +'@iron[4]+ "^000000��";
+		mes "�@�I���f�I�R�����΁F^FF0000" +'@iron[5]+ "^000000��";
+		mes "�@�G���j�E�����΁F^FF0000" +'@iron[6]+ "^000000�]";
 		next;
-		mes "‐次はどの金属を溶かそうか？‐";
+		mes "�]���͂ǂ̋�����n���������H�]";
 		continue;
 	}
 	next;
-	mes "‐次は鋳型に溶けた金属を入れよう。";
-	mes "　どの鋳型を使おうか？‐";
+	mes "�]���͒��^�ɗn�������������悤�B";
+	mes "�@�ǂ̒��^���g�������H�]";
 	next;
-	switch(select("短剣用の鋳型","風魔手裏剣用の鋳型")) {
+	switch(select("�Z���p�̒��^","�����藠���p�̒��^")) {
 	case 1:
-		mes "‐短剣用の鋳型に";
-		mes "　溶けた金属を流し込んだ‐";
+		mes "�]�Z���p�̒��^��";
+		mes "�@�n���������𗬂����񂾁]";
 		set '@type,1;
 		break;
 	case 2:
-		mes "‐風魔手裏剣用の鋳型に";
-		mes "　溶けた金属を流し込んだ‐";
+		mes "�]�����藠���p�̒��^��";
+		mes "�@�n���������𗬂����񂾁]";
 		set '@type,2;
 		break;
 	}
 	next;
 	misceffect 101;
-	mes "‐ある程度形は整ったようだ。";
-	mes "　次はどんな作業をしようか？‐";
+	mes "�]������x�`�͐������悤���B";
+	mes "�@���͂ǂ�ȍ�Ƃ����悤���H�]";
 	next;
-	switch(select("研磨作業をする","焼入れ作業をする")) {
+	switch(select("������Ƃ�����","�ē����Ƃ�����")) {
 	case 1:
 		misceffect 21,"";
 		set '@cnt,1;
-		mes "‐研磨作業を行った‐";
+		mes "�]������Ƃ��s�����]";
 		next;
-		mes "‐まだまだ先は長そうだ。";
-		mes "　次は焼き入れ作業をしよう‐";
+		mes "�]�܂��܂���͒��������B";
+		mes "�@���͏Ă������Ƃ����悤�]";
 		break;
 	case 2:
 		misceffect 101,"";
 		set '@cnt,2;
-		mes "‐焼入れ作業を行った‐";
+		mes "�]�ē����Ƃ��s�����]";
 		next;
-		mes "‐まだまだ先は長そうだ。";
-		mes "　次は焼き入れ作業をしよう‐";
+		mes "�]�܂��܂���͒��������B";
+		mes "�@���͏Ă������Ƃ����悤�]";
 		break;
 	}
 	while(1) {
 		next;
-		mes "‐次はどんな作業をしようか？‐";
+		mes "�]���͂ǂ�ȍ�Ƃ����悤���H�]";
 		next;
-		switch(select("研磨作業をする","焼入れ作業をする","仕上げ作業をする")) {
+		switch(select("������Ƃ�����","�ē����Ƃ�����","�d�グ��Ƃ�����")) {
 		case 1:
 			misceffect 21,"";
 			if('@cnt == 2) {
 				set '@cnt2,'@cnt2 + 1;
 			}
 			set '@cnt,1;
-			mes "‐研磨作業を行った‐";
+			mes "�]������Ƃ��s�����]";
 			next;
 			if('@cnt2 < 3)
-				mes "‐まだまだ先は長そうだ。";
+				mes "�]�܂��܂���͒��������B";
 			else if('@cnt2 < 6)
-				mes "‐もっと鍛える必要がありそうだ。";
+				mes "�]�����ƒb����K�v�����肻�����B";
 			else if('@cnt2 < 9)
-				mes "‐この調子で鍛えていこう。";
+				mes "�]���̒��q�Œb���Ă������B";
 			else if('@cnt2 < 12)
-				mes "‐だいぶ鍛えられてきた。";
+				mes "�]�����Ԓb�����Ă����B";
 			else if('@cnt2 < 15)
-				mes "‐もう少しで出来上がりそうだ。";
+				mes "�]���������ŏo���オ�肻�����B";
 			else {
-				mes "‐そろそろ仕上げ作業をしよう‐";
+				mes "�]���낻��d�グ��Ƃ����悤�]";
 				continue;
 			}
-			mes "　次は焼き入れ作業をしよう‐";
+			mes "�@���͏Ă������Ƃ����悤�]";
 			continue;
 		case 2:
 			misceffect 101,"";
@@ -3726,27 +3726,27 @@ job_ko.gat,131,124,0	script	製作道具#ko_01	844,{
 				set '@cnt2,'@cnt2 + 1;
 			}
 			set '@cnt,2;
-			mes "‐焼入れ作業を行った‐";
+			mes "�]�ē����Ƃ��s�����]";
 			next;
 			if('@cnt2 < 3)
-				mes "‐まだまだ先は長そうだ。";
+				mes "�]�܂��܂���͒��������B";
 			else if('@cnt2 < 6)
-				mes "‐もっと鍛える必要がありそうだ。";
+				mes "�]�����ƒb����K�v�����肻�����B";
 			else if('@cnt2 < 9)
-				mes "‐この調子で鍛えていこう。";
+				mes "�]���̒��q�Œb���Ă������B";
 			else if('@cnt2 < 12)
-				mes "‐だいぶ鍛えられてきた。";
+				mes "�]�����Ԓb�����Ă����B";
 			else if('@cnt2 < 15)
-				mes "‐もう少しで出来上がりそうだ。";
+				mes "�]���������ŏo���オ�肻�����B";
 			else {
-				mes "‐そろそろ仕上げ作業をしよう‐";
+				mes "�]���낻��d�グ��Ƃ����悤�]";
 				continue;
 			}
-			mes "　次は研磨作業をしよう‐";
+			mes "�@���͌�����Ƃ����悤�]";
 			continue;
 		case 3:
-			mes "‐仕上げ作業として";
-			mes "　武器のつや消しを行った‐";
+			mes "�]�d�グ��ƂƂ���";
+			mes "�@����̂�������s�����]";
 			next;
 			misceffect 101;
 			delitem 1002,'@iron[0];
@@ -3758,12 +3758,12 @@ job_ko.gat,131,124,0	script	製作道具#ko_01	844,{
 			delitem 757,'@iron[6];
 			if('@cnt2 < 15) {
 				misceffect 183,"";
-				mes "‐仕上げ作業の途中で";
-				mes "　試作品が壊れてしまった‐";
+				mes "�]�d�グ��Ƃ̓r����";
+				mes "�@����i�����Ă��܂����]";
 				next;
-				mes "‐製作過程に問題が";
-				mes "　あったのかもしれない……。";
-				mes "　最初からやり直しだ‐";
+				mes "�]����ߒ��ɖ�肪";
+				mes "�@�������̂�������Ȃ��c�c�B";
+				mes "�@�ŏ������蒼�����]";
 				close;
 			}
 			misceffect 103,"";
@@ -3777,248 +3777,248 @@ job_ko.gat,131,124,0	script	製作道具#ko_01	844,{
 				setquest 5144;
 				getitem 13312,1;
 			}
-			mes "‐試作品が完成した‐";
+			mes "�]����i�����������]";
 			next;
-			mes "‐ヒョウに完成品を見せよう‐";
+			mes "�]�q���E�Ɋ����i�������悤�]";
 			close;
 		}
 	}
 }
 
-job_ko.gat,129,129,0	duplicate(製作道具#ko_01)	製作道具#ko_02	844
-job_ko.gat,116,124,0	duplicate(製作道具#ko_01)	製作道具#ko_03	844
+job_ko.gat,129,129,0	duplicate(���쓹��#ko_01)	���쓹��#ko_02	844
+job_ko.gat,116,124,0	duplicate(���쓹��#ko_01)	���쓹��#ko_03	844
 
-job_ko.gat,121,121,0	script	精錬装置#ko_01	844,{
+job_ko.gat,121,121,0	script	���B���u#ko_01	844,{
 	if(!checkquest(5143) && !checkquest(5144)) {
-		mes "‐精錬を自動で行ってくれる装置だ。";
-		mes "　しかし今は使う必要がないだろう‐";
+		mes "�]���B�������ōs���Ă���鑕�u���B";
+		mes "�@���������͎g���K�v���Ȃ����낤�]";
 		close;
 	}
-	mes "‐精錬装置に電源を入れた。";
-	mes "　静かな音とともに装置が動き出した‐";
+	mes "�]���B���u�ɓd������ꂽ�B";
+	mes "�@�Â��ȉ��ƂƂ��ɑ��u�������o�����]";
 	next;
-	mes "‐装置の横に";
-	mes "　オリデオコンが入った倉庫があり";
-	mes "　すぐに精錬ができそうだ‐";
+	mes "�]���u�̉���";
+	mes "�@�I���f�I�R�����������q�ɂ�����";
+	mes "�@�����ɐ��B���ł��������]";
 	next;
-	if(select("精錬する","精錬しない") == 2) {
-		mes "‐装置の電源を切った‐";
+	if(select("���B����","���B���Ȃ�") == 2) {
+		mes "�]���u�̓d����؂����]";
 		close;
 	}
 	if(getequipisequiped(4)==0) {
-		mes "‐ピーピーピー";
-		mes "　装置から警告音が聞こえる‐";
+		mes "�]�s�[�s�[�s�[";
+		mes "�@���u����x��������������]";
 		next;
-		mes "[ヒョウ]";
-		mes "精錬をしたいのなら";
-		mes "武器を装備してくださいね。";
+		mes "[�q���E]";
+		mes "���B���������̂Ȃ�";
+		mes "����𑕔����Ă��������ˁB";
 		close;
 	}
 	if(getequipid(4) != 13074 && getequipid(4) != 13312) {
-		mes "[ヒョウ]";
-		mes "おや？";
-		mes "ここで作った武器ではありませんね。";
+		mes "[�q���E]";
+		mes "����H";
+		mes "�����ō��������ł͂���܂���ˁB";
 		next;
-		mes "[ヒョウ]";
-		mes "それを強化したいのなら";
-		mes "街の鍛冶屋にでも頼んでください。";
+		mes "[�q���E]";
+		mes "����������������̂Ȃ�";
+		mes "�X�̒b�艮�ɂł�����ł��������B";
 		close;
 	}
-	mes "‐武器を分析しています‐";
+	mes "�]����𕪐͂��Ă��܂��]";
 	next;
 	if(getequiprefinerycnt(4) >= 10) {
-		// 未調査
-		mes "‐この武器はこれ以上精錬できません‐";
+		// ������
+		mes "�]���̕���͂���ȏ㐸�B�ł��܂���]";
 		close;
 	}
 	if(getequippercentrefinery(4) < 100) {
-		mes "‐この武器は何度か精錬されているため";
-		mes "　精錬に失敗すると";
-		mes "　精錬値がひとつ下がります‐";
+		mes "�]���̕���͉��x�����B����Ă��邽��";
+		mes "�@���B�Ɏ��s�����";
+		mes "�@���B�l���ЂƂ�����܂��]";
 		next;
-		if(select("精錬する","精錬しない") == 2) {
-			mes "‐装置の電源を切った‐";
+		if(select("���B����","���B���Ȃ�") == 2) {
+			mes "�]���u�̓d����؂����]";
 			close;
 		}
 	}
 	else {
-		mes "‐精錬を始めます‐";
+		mes "�]���B���n�߂܂��]";
 		next;
 	}
 	if(getequippercentrefinery(4) > rand(100)) {
 		successrefitem 4;
-		mes "‐精錬に成功しました‐";
+		mes "�]���B�ɐ������܂����]";
 		close;
 	}
 	else {
 		downrefitem 4;
-		mes "‐精錬に失敗しました。";
-		mes "　精錬値がひとつ下がりました‐";
+		mes "�]���B�Ɏ��s���܂����B";
+		mes "�@���B�l���ЂƂ�����܂����]";
 		close;
 	}
 }
 
-job_ko.gat,127,121,0	duplicate(精錬装置#ko_01)	精錬装置#ko_02	844
+job_ko.gat,127,121,0	duplicate(���B���u#ko_01)	���B���u#ko_02	844
 
-job_ko.gat,148,46,4	script	導き手 ギオン#ko	588,{
+job_ko.gat,148,46,4	script	������ �M�I��#ko	588,{
 	switch(CHANGE_KO) {
 	case 10:
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "まだ目標を倒していないようじゃな。";
+		mes "[������ �M�I��]";
+		mes "�܂��ڕW��|���Ă��Ȃ��悤����ȁB";
 		next;
-		mes "[導き手 ギオン]";
-		mes "目標の名は^FF0000一族の過去^000000じゃ。";
+		mes "[������ �M�I��]";
+		mes "�ڕW�̖���^FF0000�ꑰ�̉ߋ�^000000����B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "うまく仕留めたら";
-		mes "また話しかけてくれ。";
-		mes "それとも、外に出たいのか？";
+		mes "[������ �M�I��]";
+		mes "���܂��d���߂���";
+		mes "�܂��b�������Ă���B";
+		mes "����Ƃ��A�O�ɏo�����̂��H";
 		next;
-		if(select("出ない","外に出る") == 1) {
-			mes "[導き手 ギオン]";
-			mes "似たような名前の敵が多いが";
-			mes "そなたなら仕留められるじゃろう。";
+		if(select("�o�Ȃ�","�O�ɏo��") == 1) {
+			mes "[������ �M�I��]";
+			mes "�����悤�Ȗ��O�̓G��������";
+			mes "���Ȃ��Ȃ�d���߂��邶��낤�B";
 			close2;
 			cutin "job_ko01",255;
 			end;
 		}
-		mes "[導き手 ギオン]";
-		mes "本来なら試練の最中に";
-		mes "抜け出すなど許されぬ事じゃが……";
-		mes "今回だけじゃぞ。";
+		mes "[������ �M�I��]";
+		mes "�{���Ȃ玎���̍Œ���";
+		mes "�����o���Ȃǋ�����ʎ����Ⴊ�c�c";
+		mes "���񂾂����Ⴜ�B";
 		close2;
 		cutin "job_ko01",255;
 		warp "amatsu.gat",147,136;
 		end;
 	case 11:
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "うまく目標を仕留めたようじゃな。";
+		mes "[������ �M�I��]";
+		mes "���܂��ڕW���d���߂��悤����ȁB";
 		next;
 		if(Weight) {
-			mes "[導き手 ギオン]";
-			mes "新たな道の第一歩に";
-			mes "余計なものは不要じゃろう。";
-			mes "所持品を預かってやるから、";
-			mes "すべて預けてからまた話かけてくれ。";
+			mes "[������ �M�I��]";
+			mes "�V���ȓ��̑�����";
+			mes "�]�v�Ȃ��͕̂s�v����낤�B";
+			mes "�����i��a�����Ă�邩��A";
+			mes "���ׂėa���Ă���܂��b�����Ă���B";
 			next;
-			switch(select("^0000FF倉庫^000000を開く","やめる")) {
+			switch(select("^0000FF�q��^000000���J��","��߂�")) {
 			case 1:
-				mes "[導き手 ギオン]";
-				mes "倉庫を開くぞ。";
+				mes "[������ �M�I��]";
+				mes "�q�ɂ��J�����B";
 				close2;
 				openstorage;
 				cutin "job_ko02",255;
 				end;
 			case 2:
-				mes "[導き手 ギオン]";
-				mes "なんじゃ、まだなにかあるのか？";
+				mes "[������ �M�I��]";
+				mes "�Ȃ񂶂�A�܂��Ȃɂ�����̂��H";
 				close2;
 				cutin "job_ko02",255;
 				end;
 			}
 		}
 		cutin "job_ko04",2;
-		mapannounce "job_ko.gat","導き手 ギオン : 一族" +strcharinfo(0)+ "が" +(Sex? "影狼": "朧")+ "の道を進むこととなった。かの者に祝福あれ！",0;
-		mes "[導き手 ギオン]";
-		mes "一族" +strcharinfo(0)+ "が";
-		mes (Sex? "影狼": "朧")+ "の道を進むこととなった。";
-		mes "かの者に祝福あれ！";
+		mapannounce "job_ko.gat","������ �M�I�� : �ꑰ" +strcharinfo(0)+ "��" +(Sex? "�e�T": "�O")+ "�̓���i�ނ��ƂƂȂ����B���̎҂ɏj������I",0;
+		mes "[������ �M�I��]";
+		mes "�ꑰ" +strcharinfo(0)+ "��";
+		mes (Sex? "�e�T": "�O")+ "�̓���i�ނ��ƂƂȂ����B";
+		mes "���̎҂ɏj������I";
 		next;
 		cutin "job_ko02",2;
-		mes "[導き手 ギオン]";
-		mes "更なる極みを求める若者が";
-		mes "現れたことを歓迎しよう。";
+		mes "[������ �M�I��]";
+		mes "�X�Ȃ�ɂ݂����߂��҂�";
+		mes "���ꂽ���Ƃ����}���悤�B";
 		next;
-		mes "[クウガ・カイ]";
-		mes "ギオン様、しばしお待ちを。";
+		mes "[�N�E�K�E�J�C]";
+		mes "�M�I���l�A���΂����҂����B";
 		next;
 		cutin "job_ko04",2;
-		mes "[導き手 ギオン]";
-		mes "すまん、すまん。";
-		mes "そなたらのことを忘れておった。";
-		mes "何か" +strcharinfo(0)+ "に";
-		mes "伝えることでもあるかの？";
+		mes "[������ �M�I��]";
+		mes "���܂�A���܂�B";
+		mes "���Ȃ���̂��Ƃ�Y��Ă������B";
+		mes "����" +strcharinfo(0)+ "��";
+		mes "�`���邱�Ƃł����邩�́H";
 		next;
 		cutin "job_ko01",255;
-		mes "[クウガ・カイ]";
-		mes "それでは……";
+		mes "[�N�E�K�E�J�C]";
+		mes "����ł́c�c";
 		next;
-		mes "[クウガ・カイ]";
+		mes "[�N�E�K�E�J�C]";
 		mes strcharinfo(0);
-		mes "お前は誇るべき我等が一族の仲間だ。";
-		mes "いかなる時も堂々と胸を張って生きろ。";
+		mes "���O�͌ւ�ׂ��䓙���ꑰ�̒��Ԃ��B";
+		mes "�����Ȃ鎞�����X�Ƌ��𒣂��Đ�����B";
 		next;
-		mes "[クウガ・カイ]";
-		mes "……初めて会ったとき";
-		mes "いきなり攻撃して悪かった……";
+		mes "[�N�E�K�E�J�C]";
+		mes "�c�c���߂ĉ�����Ƃ�";
+		mes "�����Ȃ�U�����Ĉ��������c�c";
 		next;
-		mes "[ヒョウ]";
-		mes "ふふ……";
-		mes "カイのやつは言葉だけですか。";
-		mes "私は彼よりも";
-		mes "役立つものを贈りましょう。";
+		mes "[�q���E]";
+		mes "�ӂӁc�c";
+		mes "�J�C�̂�͌��t�����ł����B";
+		mes "���͔ނ���";
+		mes "�𗧂��̂𑡂�܂��傤�B";
 		next;
-		mes "[ヒョウ]";
-		mes "君が作った試作品の";
-		mes "手入れをしておきました。";
+		mes "[�q���E]";
+		mes "�N�����������i��";
+		mes "���������Ă����܂����B";
 		next;
-		mes "[ヒョウ]";
+		mes "[�q���E]";
 		if(checkquest(5143) & 0x8) {
-			// 未調査
-			mes "武器の名は「紅」。";
-			mes "手入れをしているうちに";
-			mes "鬼気が巻き込まれるような武器になりました。";
+			// ������
+			mes "����̖��́u�g�v�B";
+			mes "���������Ă��邤����";
+			mes "�S�C���������܂��悤�ȕ���ɂȂ�܂����B";
 			set '@gain,13075;
 		}
 		else if(checkquest(5144) & 0x8) {
-			mes "[ヒョウ]";
-			mes "武器の名は「影」。";
-			mes "手入れをしているうちに";
-			mes "暗闇に溶け込むような武器になりました。";
+			mes "[�q���E]";
+			mes "����̖��́u�e�v�B";
+			mes "���������Ă��邤����";
+			mes "�Èłɗn�����ނ悤�ȕ���ɂȂ�܂����B";
 			set '@gain,13311;
 		}
 		next;
-		mes "[ヒョウ]";
-		mes "きっと気に入ってもらえると";
-		mes "思いますよ。";
+		mes "[�q���E]";
+		mes "�����ƋC�ɓ����Ă��炦���";
+		mes "�v���܂���B";
 		next;
-		mes "[ヒョウ]";
-		mes "ではギオン様、続きを……";
+		mes "[�q���E]";
+		mes "�ł̓M�I���l�A�������c�c";
 		next;
 		cutin "job_ko01",2;
-		mes "[導き手 ギオン]";
-		mes "ふぉふぉふぉ……";
-		mes "二人に台詞を取られてしまったな。";
-		mes "わしから話すことは何もない。";
+		mes "[������ �M�I��]";
+		mes "�ӂ��ӂ��ӂ��c�c";
+		mes "��l�ɑ䎌������Ă��܂����ȁB";
+		mes "�킵����b�����Ƃ͉����Ȃ��B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "ただ、そなたのような若者に";
-		mes "もっと良い環境を";
-		mes "作ってやれなかったのが心残りじゃ。";
+		mes "[������ �M�I��]";
+		mes "�����A���Ȃ��̂悤�Ȏ�҂�";
+		mes "�����Ɨǂ�����";
+		mes "����Ă��Ȃ������̂��S�c�肶��B";
 		next;
-		mes "[導き手 ギオン]";
-		mes "これからも前向きに歩んでくれ。";
-		mes "そして……";
+		mes "[������ �M�I��]";
+		mes "���ꂩ����O�����ɕ���ł���B";
+		mes "�����āc�c";
 		next;
 		if(sc_ison(SC_ALL_RIDING)) {
-			// 未調査
-			mes "[導き手 ギオン]";
-			mes "む、新たな旅立ちの準備が";
-			mes "できていないようじゃな。";
-			mes "騎乗生物を";
-			mes "降りて来るのじゃ。";
+			// ������
+			mes "[������ �M�I��]";
+			mes "�ށA�V���ȗ������̏�����";
+			mes "�ł��Ă��Ȃ��悤����ȁB";
+			mes "�R�搶����";
+			mes "�~��ė���̂���B";
 			close2;
 			cutin "job_ko01",255;
 			end;
 		}
 		if(SkillPoint) {
-			mes "[導き手 ギオン]";
-			mes "む、新たな旅立ちの準備が";
-			mes "できていないようじゃな。";
-			mes "スキルポイントを";
-			mes "全て振って来るのじゃ。";
+			mes "[������ �M�I��]";
+			mes "�ށA�V���ȗ������̏�����";
+			mes "�ł��Ă��Ȃ��悤����ȁB";
+			mes "�X�L���|�C���g��";
+			mes "�S�ĐU���ė���̂���B";
 			close2;
 			cutin "job_ko01",255;
 			end;
@@ -4035,31 +4035,31 @@ job_ko.gat,148,46,4	script	導き手 ギオン#ko	588,{
 		delquest 72905;
 		setquest 201655;
 		getitem '@gain,1;
-		mes "[導き手 ギオン]";
-		mes "そなたの行く先に";
-		mes "影狼様と朧様の祝福があらんことを！";
+		mes "[������ �M�I��]";
+		mes "���Ȃ��̍s�����";
+		mes "�e�T�l�ƞO�l�̏j��������񂱂Ƃ��I";
 		close2;
 		warp "que_ng.gat",22,69;
 		end;
 	default:
-		mes "[導き手 ギオン]";
-		mes "そなたの行く先に";
-		mes "影狼様と朧様の祝福があらんことを！";
+		mes "[������ �M�I��]";
+		mes "���Ȃ��̍s�����";
+		mes "�e�T�l�ƞO�l�̏j��������񂱂Ƃ��I";
 		close2;
 		warp "que_ng.gat",22,69;
 		end;
 	}
 }
 
-job_ko.gat,151,47,4	script	クウガ・カイ#ko2	730,{
-	mes "[クウガ・カイ]";
-	mes "貴様もここまで来たか……";
+job_ko.gat,151,47,4	script	�N�E�K�E�J�C#ko2	730,{
+	mes "[�N�E�K�E�J�C]";
+	mes "�M�l�������܂ŗ������c�c";
 	close;
 }
 
-job_ko.gat,145,47,6	script	ヒョウ#ko2	730,{
-	mes "[ヒョウ]";
-	mes "やあ、いよいよですね。";
+job_ko.gat,145,47,6	script	�q���E#ko2	730,{
+	mes "[�q���E]";
+	mes "�₠�A���悢��ł��ˁB";
 	close;
 }
 
@@ -4067,19 +4067,19 @@ job_ko.gat,0,0,0	script	ko_test_mon	139,{
 OnTimer300000:
 	killmonster "job_ko.gat","ko_test_mon::OnKilled1";
 	set '@r,rand(getarraysize('mobid));
-	areamonster "job_ko.gat",128,26,168,66,"一族の過去",'mobid['@r],1,"ko_test_mon::OnKilled1";
+	areamonster "job_ko.gat",128,26,168,66,"�ꑰ�̉ߋ�",'mobid['@r],1,"ko_test_mon::OnKilled1";
 	end;
 OnInit:
 	setarray 'mobid,1002,1010,1031,1049,1050,1063,1113;
 	setarray 'mobname$,
-		"一族のハズレ","一族の影狼","一族の朧","一族の加古","一族の遺産",
-		"一族の加護","一族の過誤","一族の黒歴史","一族の始祖",
-		"影狼の記憶","影狼の過去","影狼の想い出","影狼の歴史",
-		"朧の記憶","朧の過去","朧の想い出","朧の歴史",
-		"過誤の一族","忍者の一族","城主のバカ","親族の遺産","親族の過去";
+		"�ꑰ�̃n�Y��","�ꑰ�̉e�T","�ꑰ�̞O","�ꑰ�̉���","�ꑰ�̈�Y",
+		"�ꑰ�̉���","�ꑰ�̉ߌ�","�ꑰ�̍����j","�ꑰ�̎n�c",
+		"�e�T�̋L��","�e�T�̉ߋ�","�e�T�̑z���o","�e�T�̗��j",
+		"�O�̋L��","�O�̉ߋ�","�O�̑z���o","�O�̗��j",
+		"�ߌ�̈ꑰ","�E�҂̈ꑰ","���̃o�J","�e���̈�Y","�e���̉ߋ�";
 
 	set '@r,rand(getarraysize('mobid));
-	areamonster "job_ko.gat",128,26,168,66,"一族の過去",'mobid['@r],1,"ko_test_mon::OnKilled1";
+	areamonster "job_ko.gat",128,26,168,66,"�ꑰ�̉ߋ�",'mobid['@r],1,"ko_test_mon::OnKilled1";
 
 	for(set '@i,110; '@i<=171; set '@i,'@i+1) {
 		set '@r1,rand(getarraysize('mobid));
@@ -4114,129 +4114,129 @@ OnKilled2:
 	end;
 }
 
-que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
-	mes "[鍛冶師 テーネ]";
-	mes "ご機嫌麗しゅうございます。";
-	mes "鍛冶師でもっとも礼儀正しいと";
-	mes "言われているテーネでございます。";
+que_ng.gat,75,23,3	script	�b��t �e�[�l#ko	762,{
+	mes "[�b��t �e�[�l]";
+	mes "���@���킵�イ�������܂��B";
+	mes "�b��t�ł����Ƃ���V��������";
+	mes "�����Ă���e�[�l�ł������܂��B";
 	next;
-	mes "[鍛冶師 テーネ]";
-	mes "今日はいかがいたしましょうか。";
+	mes "[�b��t �e�[�l]";
+	mes "�����͂������������܂��傤���B";
 	next;
-	switch(select("どんな仕事ができますか？","能力を追加してください","能力を削除してください")) {
+	switch(select("�ǂ�Ȏd�����ł��܂����H","�\�͂�ǉ����Ă�������","�\�͂��폜���Ă�������")) {
 	case 1:
-		mes "[鍛冶師 テーネ]";
-		mes "おっと！";
-		mes "私めの自己紹介に不足がありましたね。";
-		mes "申し訳ございません。";
+		mes "[�b��t �e�[�l]";
+		mes "�����ƁI";
+		mes "���߂̎��ȏЉ�ɕs��������܂����ˁB";
+		mes "�\���󂲂����܂���B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "私は一部の装備品に";
-		mes "能力を追加することができます。";
-		mes "その際には多少の手数料を";
-		mes "いただくことになっております。";
+		mes "[�b��t �e�[�l]";
+		mes "���͈ꕔ�̑����i��";
+		mes "�\�͂�ǉ����邱�Ƃ��ł��܂��B";
+		mes "���̍ۂɂ͑����̎萔����";
+		mes "�����������ƂɂȂ��Ă���܂��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "なお、装備品の精錬値によって、";
-		mes "付与される能力は変化いたします。";
-		mes "また、^FF0000能力の付与に";
-		mes "失敗することはありません。^000000";
+		mes "[�b��t �e�[�l]";
+		mes "�Ȃ��A�����i�̐��B�l�ɂ���āA";
+		mes "�t�^�����\�͕͂ω��������܂��B";
+		mes "�܂��A^FF0000�\�͂̕t�^��";
+		mes "���s���邱�Ƃ͂���܂���B^000000";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "取り扱っている装備品のリストも";
-		mes "ご覧になりますか？";
+		mes "[�b��t �e�[�l]";
+		mes "��舵���Ă��鑕���i�̃��X�g��";
+		mes "�����ɂȂ�܂����H";
 		next;
-		switch(select("武器のリストを見る","防具のリストを見る")) {
+		switch(select("����̃��X�g������","�h��̃��X�g������")) {
 		case 1:
-			mes "[鍛冶師 テーネ]";
-			mes "武器のリストはこちらです。";
+			mes "[�b��t �e�[�l]";
+			mes "����̃��X�g�͂�����ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "私が取り扱っている武器は^FD3302";
-			mes "羅刹剣";
-			mes "三日月";
-			mes "風魔手裏剣・乱華";
-			mes "風魔手裏剣・乱雪";
-			mes "風魔手裏剣・雷雨^000000です。";
+			mes "[�b��t �e�[�l]";
+			mes "������舵���Ă��镐���^FD3302";
+			mes "������";
+			mes "�O����";
+			mes "�����藠���E����";
+			mes "�����藠���E����";
+			mes "�����藠���E���J^000000�ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "以上です。";
-			mes "さらに多くの武具を取り扱うには";
-			mes "まだまだ私も修行を";
-			mes "重ねなくてはいけません。";
+			mes "[�b��t �e�[�l]";
+			mes "�ȏ�ł��B";
+			mes "����ɑ����̕������舵���ɂ�";
+			mes "�܂��܂������C�s��";
+			mes "�d�˂Ȃ��Ă͂����܂���B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "お望みであれば";
-			mes "3番と4番のスロットに";
-			mes "能力を追加いたします。";
+			mes "[�b��t �e�[�l]";
+			mes "���]�݂ł����";
+			mes "3�Ԃ�4�Ԃ̃X���b�g��";
+			mes "�\�͂�ǉ��������܂��B";
 			close;
 		case 2:
-			mes "[鍛冶師 テーネ]";
-			mes "防具のリストはこちらです。";
+			mes "[�b��t �e�[�l]";
+			mes "�h��̃��X�g�͂�����ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "私が取り扱っている防具は^FD3302";
-			mes "狼紋様の手甲";
-			mes "三日月紋様の手甲";
-			mes "円鱗の鎧";
-			mes "霧中闇影";
-			mes "特殊忍者スーツ[1]^000000です。";
+			mes "[�b��t �e�[�l]";
+			mes "������舵���Ă���h���^FD3302";
+			mes "�T��l�̎�b";
+			mes "�O������l�̎�b";
+			mes "�~�؂̊Z";
+			mes "�����ŉe";
+			mes "����E�҃X�[�c[1]^000000�ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "以上です。";
-			mes "さらに多くの武具を取り扱うには";
-			mes "まだまだ私も修行を";
-			mes "重ねなくてはいけません。";
+			mes "[�b��t �e�[�l]";
+			mes "�ȏ�ł��B";
+			mes "����ɑ����̕������舵���ɂ�";
+			mes "�܂��܂������C�s��";
+			mes "�d�˂Ȃ��Ă͂����܂���B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "お望みであれば";
-			mes "3番と4番のスロットに";
-			mes "能力を追加いたします。";
+			mes "[�b��t �e�[�l]";
+			mes "���]�݂ł����";
+			mes "3�Ԃ�4�Ԃ̃X���b�g��";
+			mes "�\�͂�ǉ��������܂��B";
 			close;
 		}
 	case 2:
-		mes "[鍛冶師 テーネ]";
-		mes "能力の追加でございますね。";
-		mes "装備なさっている武具の";
-		mes "4番スロット、3番スロットの順に";
-		mes "能力を付与いたします。";
+		mes "[�b��t �e�[�l]";
+		mes "�\�͂̒ǉ��ł������܂��ˁB";
+		mes "�����Ȃ����Ă��镐���";
+		mes "4�ԃX���b�g�A3�ԃX���b�g�̏���";
+		mes "�\�͂�t�^�������܂��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "私の独創的な技術により";
-		mes "^FF0000精錬値^000000やすでに挿してある^FF0000カード^000000が";
-		mes "失われることはございません。";
-		mes "また、^FF0000能力の付与に";
-		mes "失敗することもありません。^000000";
+		mes "[�b��t �e�[�l]";
+		mes "���̓Ƒn�I�ȋZ�p�ɂ��";
+		mes "^FF0000���B�l^000000�₷�łɑ}���Ă���^FF0000�J�[�h^000000��";
+		mes "�����邱�Ƃ͂������܂���B";
+		mes "�܂��A^FF0000�\�͂̕t�^��";
+		mes "���s���邱�Ƃ�����܂���B^000000";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "ただ材料の値段が張りますので";
-		mes "多少の^5565AA手数料^000000をいただいております。";
+		mes "[�b��t �e�[�l]";
+		mes "�����ޗ��̒l�i������܂��̂�";
+		mes "������^5565AA�萔��^000000�����������Ă���܂��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "おっと、説明が長くなってしまい";
-		mes "申し訳ございません。";
-		mes "どの装備に能力を付与しますか？";
+		mes "[�b��t �e�[�l]";
+		mes "�����ƁA�����������Ȃ��Ă��܂�";
+		mes "�\���󂲂����܂���B";
+		mes "�ǂ̑����ɔ\�͂�t�^���܂����H";
 		next;
-		switch(select("武器","防具")) {
+		switch(select("����","�h��")) {
 		case 1:
-			mes "[鍛冶師 テーネ]";
-			mes "武器への能力付与をお望みですね。";
-			mes "武器に能力を付与する^E14A1E手数料は";
-			mes "1回100,000Zeny^000000となっております。";
+			mes "[�b��t �e�[�l]";
+			mes "����ւ̔\�͕t�^�����]�݂ł��ˁB";
+			mes "����ɔ\�͂�t�^����^E14A1E�萔����";
+			mes "1��100,000Zeny^000000�ƂȂ��Ă���܂��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "それと、あらかじめ^FF0000片手武器は右手に";
-			mes "装備して^000000いただけますか。";
-			mes "ご協力をお願いいたします。";
+			mes "[�b��t �e�[�l]";
+			mes "����ƁA���炩����^FF0000�Ў蕐��͉E���";
+			mes "��������^000000���������܂����B";
+			mes "�����͂����肢�������܂��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "どの武器に能力を付与いたしますか？";
+			mes "[�b��t �e�[�l]";
+			mes "�ǂ̕���ɔ\�͂�t�^�������܂����H";
 			next;
-			switch(select("また今度","羅刹剣","三日月","風魔手裏剣・乱華","風魔手裏剣・乱雪","風魔手裏剣・雷雨")) {
+			switch(select("�܂����x","������","�O����","�����藠���E����","�����藠���E����","�����藠���E���J")) {
 			case 1:
-				mes "[鍛冶師 テーネ]";
-				mes "お考え直しの時間が必要でしょうか？";
-				mes "またいつでもいらしてください。";
+				mes "[�b��t �e�[�l]";
+				mes "���l�������̎��Ԃ��K�v�ł��傤���H";
+				mes "�܂����ł����炵�Ă��������B";
 				close;
 			case 2: set '@itemid,13076; set '@menu,4; break;
 			case 3: set '@itemid,13078; set '@menu,4; break;
@@ -4246,19 +4246,19 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 			}
 			break;
 		case 2:
-			mes "[鍛冶師 テーネ]";
-			mes "防具への能力付与をお望みですね。";
-			mes "防具に能力を付与する^E14A1E手数料は";
-			mes "1回100,000Zeny^000000となっております。";
+			mes "[�b��t �e�[�l]";
+			mes "�h��ւ̔\�͕t�^�����]�݂ł��ˁB";
+			mes "�h��ɔ\�͂�t�^����^E14A1E�萔����";
+			mes "1��100,000Zeny^000000�ƂȂ��Ă���܂��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "どの防具に能力を付与しますか？";
+			mes "[�b��t �e�[�l]";
+			mes "�ǂ̖h��ɔ\�͂�t�^���܂����H";
 			next;
-			switch(select("また今度","狼紋様の手甲","三日月紋様の手甲","円鱗の鎧","霧中闇影","特殊忍者スーツ[1]")) {
+			switch(select("�܂����x","�T��l�̎�b","�O������l�̎�b","�~�؂̊Z","�����ŉe","����E�҃X�[�c[1]")) {
 			case 1:
-				mes "[鍛冶師 テーネ]";
-				mes "お考え直しの時間が必要でしょうか？";
-				mes "またいつでもいらしてください。";
+				mes "[�b��t �e�[�l]";
+				mes "���l�������̎��Ԃ��K�v�ł��傤���H";
+				mes "�܂����ł����炵�Ă��������B";
 				close;
 			case 2: set '@itemid,2172; set '@menu,3; break;
 			case 3: set '@itemid,2173; set '@menu,3; break;
@@ -4270,27 +4270,27 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 		}
 		break;
 	case 3:
-		mes "[鍛冶師 テーネ]";
-		mes "すでに付与された能力の";
-		mes "削除をお望みですか？";
-		mes "付与された能力が";
-		mes "お気に召さなかったようですね。";
+		mes "[�b��t �e�[�l]";
+		mes "���łɕt�^���ꂽ�\�͂�";
+		mes "�폜�����]�݂ł����H";
+		mes "�t�^���ꂽ�\�͂�";
+		mes "���C�ɏ����Ȃ������悤�ł��ˁB";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "それでは、たびたび高い手数料を";
-		mes "いただくこととなり";
-		mes "申しわけありませんが……";
+		mes "[�b��t �e�[�l]";
+		mes "����ł́A���т��э����萔����";
+		mes "�����������ƂƂȂ�";
+		mes "�\���킯����܂��񂪁c�c";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "^E14A1E能力削除手数料は100,000Zeny^000000です。";
-		mes "どの装備の能力を削除しますか？ ";
+		mes "[�b��t �e�[�l]";
+		mes "^E14A1E�\�͍폜�萔����100,000Zeny^000000�ł��B";
+		mes "�ǂ̑����̔\�͂��폜���܂����H ";
 		next;
-		switch(select("また今度","羅刹剣","三日月","風魔手裏剣・乱華","風魔手裏剣・乱雪","風魔手裏剣・雷雨","狼紋様の手甲","三日月紋様の手甲","円鱗の鎧","霧中闇影","特殊忍者スーツ［1］")) {
+		switch(select("�܂����x","������","�O����","�����藠���E����","�����藠���E����","�����藠���E���J","�T��l�̎�b","�O������l�̎�b","�~�؂̊Z","�����ŉe","����E�҃X�[�c�m1�n")) {
 		case 1:
-			mes "[鍛冶師 テーネ]";
-			mes "やはり手数料負担が大きいのですね？";
-			mes "手数料をもう少し下げられるよう";
-			mes "もっと努力を重ねます。";
+			mes "[�b��t �e�[�l]";
+			mes "��͂�萔�����S���傫���̂ł��ˁH";
+			mes "�萔��������������������悤";
+			mes "�����Ɠw�͂��d�˂܂��B";
 			close;
 		case 2: set '@itemid,13076; set '@menu,4; break;
 		case 3: set '@itemid,13078; set '@menu,4; break;
@@ -4303,51 +4303,51 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 		case 10:set '@itemid,15055; set '@menu,2; break;
 		case 11:set '@itemid,15056; set '@menu,2; break;
 		}
-		mes "[鍛冶師 テーネ]";
-		mes "^44B7BC" +getitemname('@itemid)+ "^000000の";
-		mes "能力初期化をお望みですか？";
+		mes "[�b��t �e�[�l]";
+		mes "^44B7BC" +getitemname('@itemid)+ "^000000��";
+		mes "�\�͏����������]�݂ł����H";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "手数料はそのままで、4番スロットの";
-		mes "能力を残し、3番スロットの能力のみを";
-		mes "削除するサービスも行っております。";
-		mes "なお、4番スロットの能力のみを";
-		mes "削除することはできません。";
+		mes "[�b��t �e�[�l]";
+		mes "�萔���͂��̂܂܂ŁA4�ԃX���b�g��";
+		mes "�\�͂��c���A3�ԃX���b�g�̔\�݂͂̂�";
+		mes "�폜����T�[�r�X���s���Ă���܂��B";
+		mes "�Ȃ��A4�ԃX���b�g�̔\�݂͂̂�";
+		mes "�폜���邱�Ƃ͂ł��܂���B";
 		next;
-		switch(select("3番スロットのみ初期化する","両方初期化する")) {
+		switch(select("3�ԃX���b�g�̂ݏ���������","��������������")) {
 		case 1:
-			mes "[鍛冶師 テーネ]";
-			mes "承知いたしました。";
-			mes "3番スロットのみ初期化いたします。";
+			mes "[�b��t �e�[�l]";
+			mes "���m�������܂����B";
+			mes "3�ԃX���b�g�̂ݏ������������܂��B";
 			set '@type,1;
 			break;
 		case 2:
-			mes "[鍛冶師 テーネ]";
-			mes "承知いたしました。";
-			mes "両方のスロットを初期化いたします。";
+			mes "[�b��t �e�[�l]";
+			mes "���m�������܂����B";
+			mes "�����̃X���b�g���������������܂��B";
 			set '@type,2;
 			break;
 		}
 		next;
 		if(getequipid('@menu) != '@itemid) {
-			mes "[鍛冶師 テーネ]";
-			mes "作業ご希望の装備品を";
-			mes "装備されていないようです。";
+			mes "[�b��t �e�[�l]";
+			mes "��Ƃ���]�̑����i��";
+			mes "��������Ă��Ȃ��悤�ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "ご希望の装備品を装備した状態で";
-			mes "ご利用をお願いいたします。";
+			mes "[�b��t �e�[�l]";
+			mes "����]�̑����i�𑕔�������Ԃ�";
+			mes "�����p�����肢�������܂��B";
 			close;
 		}
 		if(Zeny < 100000) {
-			mes "[鍛冶師 テーネ]";
-			mes "大変申し訳ございませんが";
-			mes "手数料が足りないようです。";
+			mes "[�b��t �e�[�l]";
+			mes "��ϐ\���󂲂����܂���";
+			mes "�萔��������Ȃ��悤�ł��B";
 			next;
-			mes "[鍛冶師 テーネ]";
-			mes "原材料がとても高価なため";
-			mes "必要最低限の手数料を";
-			mes "いただくことになっております。";
+			mes "[�b��t �e�[�l]";
+			mes "���ޗ����ƂĂ������Ȃ���";
+			mes "�K�v�Œ���̎萔����";
+			mes "�����������ƂɂȂ��Ă���܂��B";
 			close;
 		}
 		set '@refine,getequiprefinerycnt('@menu);
@@ -4357,18 +4357,18 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 		set '@card4,getequipcardid('@menu,3);
 		if('@type == 1) {
 			if('@card3 == 0) {
-				mes "[鍛冶師 テーネ]";
-				mes "3番には能力がありません。";
-				mes "ご確認をお願いいたします。";
+				mes "[�b��t �e�[�l]";
+				mes "3�Ԃɂ͔\�͂�����܂���B";
+				mes "���m�F�����肢�������܂��B";
 				close;
 			}
 			set '@card3,0;
 		}
 		else if('@type == 2) {
 			if('@card3 == 0 && '@card4 == 0) {
-				mes "[鍛冶師 テーネ]";
-				mes "能力が付与されていない装備です。";
-				mes "ご確認をお願いいたします。";
+				mes "[�b��t �e�[�l]";
+				mes "�\�͂��t�^����Ă��Ȃ������ł��B";
+				mes "���m�F�����肢�������܂��B";
 				close;
 			}
 			set '@card3,0;
@@ -4377,30 +4377,30 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 		set Zeny,Zeny-100000;
 		delequip '@menu;
 		getitem2 '@itemid,1,1,'@refine,0,'@card1,'@card2,'@card3,'@card4;
-		mes "[鍛冶師 テーネ]";
-		mes "初期化が無事完了いたしました。";
+		mes "[�b��t �e�[�l]";
+		mes "�����������������������܂����B";
 		close;
 	}
-	// 能力付与続き
+	// �\�͕t�^����
 	if(getequipid('@menu) != '@itemid) {
-		mes "[鍛冶師 テーネ]";
-		mes "作業ご希望の装備品を";
-		mes "装備されていないようです。";
+		mes "[�b��t �e�[�l]";
+		mes "��Ƃ���]�̑����i��";
+		mes "��������Ă��Ȃ��悤�ł��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "ご希望の装備品を装備した状態で";
-		mes "ご利用をお願いいたします。";
+		mes "[�b��t �e�[�l]";
+		mes "����]�̑����i�𑕔�������Ԃ�";
+		mes "�����p�����肢�������܂��B";
 		close;
 	}
 	if(Zeny < 100000) {
-		mes "[鍛冶師 テーネ]";
-		mes "大変申し訳ございませんが";
-		mes "手数料が足りないようです。";
+		mes "[�b��t �e�[�l]";
+		mes "��ϐ\���󂲂����܂���";
+		mes "�萔��������Ȃ��悤�ł��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "原材料がとても高価なため";
-		mes "必要最低限の手数料を";
-		mes "いただくことになっております。";
+		mes "[�b��t �e�[�l]";
+		mes "���ޗ����ƂĂ������Ȃ���";
+		mes "�K�v�Œ���̎萔����";
+		mes "�����������ƂɂȂ��Ă���܂��B";
 		close;
 	}
 	set '@refine,getequiprefinerycnt('@menu);
@@ -4413,41 +4413,41 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 	set '@card4,getequipcardid('@menu,3);
 	set '@card[4],'@card4;
 	if('@card4 == 0) {
-		mes "[鍛冶師 テーネ]";
-		mes "能力が付与されてない装備です。";
-		mes "4番スロットに";
-		mes "能力を付与いたしますか？";
+		mes "[�b��t �e�[�l]";
+		mes "�\�͂��t�^����ĂȂ������ł��B";
+		mes "4�ԃX���b�g��";
+		mes "�\�͂�t�^�������܂����H";
 		set '@slot,4;
 	}
 	else if('@card3 == 0) {
-		mes "[鍛冶師 テーネ]";
-		mes "すでに4番スロットに";
-		mes "能力が付与された装備品です。";
-		mes "3番スロットにも";
-		mes "能力を付与いたしますか？";
+		mes "[�b��t �e�[�l]";
+		mes "���ł�4�ԃX���b�g��";
+		mes "�\�͂��t�^���ꂽ�����i�ł��B";
+		mes "3�ԃX���b�g�ɂ�";
+		mes "�\�͂�t�^�������܂����H";
 		set '@slot,3;
 	}
 	else {
-		mes "[鍛冶師 テーネ]";
-		mes "私の力ではこれ以上の";
-		mes "能力付与は難しいです。";
+		mes "[�b��t �e�[�l]";
+		mes "���̗͂ł͂���ȏ��";
+		mes "�\�͕t�^�͓���ł��B";
 		next;
-		mes "[鍛冶師 テーネ]";
-		mes "もし付与された能力が";
-		mes "お気に召さないのでしたら";
-		mes "初期化を行ってみてはいかがでしょう？";
+		mes "[�b��t �e�[�l]";
+		mes "�����t�^���ꂽ�\�͂�";
+		mes "���C�ɏ����Ȃ��̂ł�����";
+		mes "���������s���Ă݂Ă͂������ł��傤�H";
 		close;
 	}
 	next;
-	if(select("また今度にする","付与する") == 1) {
-		mes "[鍛冶師 テーネ]";
-		mes "承知いたしました。";
-		mes "またいらしてください。";
+	if(select("�܂����x�ɂ���","�t�^����") == 1) {
+		mes "[�b��t �e�[�l]";
+		mes "���m�������܂����B";
+		mes "�܂����炵�Ă��������B";
 		close;
 	}
-	mes "[鍛冶師 テーネ]";
-	mes "それでは、" +'@slot+ "番スロットへの";
-	mes "能力付与作業を行います。";
+	mes "[�b��t �e�[�l]";
+	mes "����ł́A" +'@slot+ "�ԃX���b�g�ւ�";
+	mes "�\�͕t�^��Ƃ��s���܂��B";
 	next;
 	misceffect 154;
 	set Zeny,Zeny-100000;
@@ -4479,67 +4479,67 @@ que_ng.gat,75,23,3	script	鍛冶師 テーネ#ko	762,{
 		}
 	}
 	getitem2 '@itemid,1,1,'@refine,0,'@card[1],'@card[2],'@card[3],'@card[4];
-	mes "[鍛冶師 テーネ]";
+	mes "[�b��t �e�[�l]";
 	mes "^44B7BC" +getitemname('@itemid)+ "^000000";
-	mes "に能力を付与いたしました。";
+	mes "�ɔ\�͂�t�^�������܂����B";
 	close;
 }
 
-que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
-	mes "[ギヨ]";
-	mes "勝利とは何だと考えている？";
-	mes "敵を倒す事……";
-	mes "確かにその通りだ。";
-	mes "だが、それより重要な事がある。";
-	mes "それは、";
-	mes "決して倒れないことだ！";
+que_ng.gat,21,72,6	script	�h��E�l �M��#kaboro	934,{
+	mes "[�M��]";
+	mes "�����Ƃ͉����ƍl���Ă���H";
+	mes "�G��|�����c�c";
+	mes "�m���ɂ��̒ʂ肾�B";
+	mes "�����A������d�v�Ȏ�������B";
+	mes "����́A";
+	mes "�����ē|��Ȃ����Ƃ��I";
 	next;
-	mes "[ギヨ]";
-	mes "その為には身を守る必要がある。";
-	mes "「自身」を守れない者に";
-	mes "「他人」を守る事などできない。";
+	mes "[�M��]";
+	mes "���ׂ̈ɂ͐g�����K�v������B";
+	mes "�u���g�v�����Ȃ��҂�";
+	mes "�u���l�v����鎖�Ȃǂł��Ȃ��B";
 	next;
-	if(select("防具を作成する","会話を終える") == 2) {
-		mes "[ギヨ]";
-		mes "慎重になることは";
-		mes "戦闘でとても重要な要素だ。";
+	if(select("�h����쐬����","��b���I����") == 2) {
+		mes "[�M��]";
+		mes "�T�d�ɂȂ邱�Ƃ�";
+		mes "�퓬�łƂĂ��d�v�ȗv�f���B";
 		close;
 	}
-	switch(select("狼紋様の手甲[1]","三日月紋様の手甲[1]","円鱗の鎧[1]","霧中闇影[1]","やめる")) {
+	switch(select("�T��l�̎�b[1]","�O������l�̎�b[1]","�~�؂̊Z[1]","�����ŉe[1]","��߂�")) {
 	case 1:
-		mes "[ギヨ]";
-		mes "狼紋様の手甲[1]か。";
-		mes "野性的なものを選んだな。";
+		mes "[�M��]";
+		mes "�T��l�̎�b[1]���B";
+		mes "�쐫�I�Ȃ��̂�I�񂾂ȁB";
 		while(1) {
 			next;
-			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			switch(select("�ޗ�������","���\������","�쐬����","��߂�")) {
 			case 1:
-				mes "[ギヨ]";
-				mes "^ff0000狼紋様の手甲[1]は";
-				mes "キツネ紋様の手甲[1]1個";
-				mes "狼の血10個^000000";
-				mes "が必要だ。";
-				mes "感じられるだろ？";
-				mes "熱く燃え上がっている狼の血が。";
+				mes "[�M��]";
+				mes "^ff0000�T��l�̎�b[1]��";
+				mes "�L�c�l��l�̎�b[1]1��";
+				mes "�T�̌�10��^000000";
+				mes "���K�v���B";
+				mes "�������邾��H";
+				mes "�M���R���オ���Ă���T�̌����B";
 				continue;
 			case 2:
-				mes "[狼紋様の手甲[1]]";
-				mes "物理攻撃命中時、一定確率で";
-				mes "5秒間、Atk + 100";
+				mes "[�T��l�̎�b[1]]";
+				mes "�����U���������A���m����";
+				mes "5�b�ԁAAtk + 100";
 				mes "Flee - 50";
 				next;
-				mes "[狼紋様の手甲[1]]";
-				mes "[円鱗の鎧]";
-				mes "と共に装備時、追加で";
+				mes "[�T��l�̎�b[1]]";
+				mes "[�~�؂̊Z]";
+				mes "�Ƌ��ɑ������A�ǉ���";
 				mes "Str + 2";
-				mes "物理攻撃で与えるダメージ + 10%";
+				mes "�����U���ŗ^����_���[�W + 10%";
 				next;
-				mes "[狼紋様の手甲[1]]";
-				mes "系列 : 盾";
-				mes "防御 : 70";
-				mes "重量 : 25";
-				mes "要求レベル : 100";
-				mes "装備 : 影狼 朧";
+				mes "[�T��l�̎�b[1]]";
+				mes "�n�� : ��";
+				mes "�h�� : 70";
+				mes "�d�� : 25";
+				mes "�v�����x�� : 100";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,2172;
@@ -4547,45 +4547,45 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 				setarray '@amount,1,10;
 				break;
 			case 4:
-				mes "[ギヨ]";
-				mes "よく、考えるといい。";
+				mes "[�M��]";
+				mes "�悭�A�l����Ƃ����B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 2:
-		mes "[ギヨ]";
-		mes "三日月紋様の手甲[1]か。";
-		mes "美しさ、強さどちらも備えた";
-		mes "上等な一品だ。";
+		mes "[�M��]";
+		mes "�O������l�̎�b[1]���B";
+		mes "�������A�����ǂ����������";
+		mes "�㓙�Ȉ�i���B";
 		while(1) {
 			next;
-			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			switch(select("�ޗ�������","���\������","�쐬����","��߂�")) {
 			case 1:
-				mes "[ギヨ]";
-				mes "^ff0000三日月紋様の手甲[1]は";
-				mes "キツネ紋様の手甲[1]1個";
-				mes "水晶のかけら100個^000000";
-				mes "が必要になる。";
-				mes "これにより、水晶のように透明で";
-				mes "美しい三日月を刻むことになる。";
+				mes "[�M��]";
+				mes "^ff0000�O������l�̎�b[1]��";
+				mes "�L�c�l��l�̎�b[1]1��";
+				mes "�����̂�����100��^000000";
+				mes "���K�v�ɂȂ�B";
+				mes "����ɂ��A�����̂悤�ɓ�����";
+				mes "�������O���������ނ��ƂɂȂ�B";
 				continue;
 			case 2:
-				mes "[三日月紋様の手甲[1]]";
-				mes "精錬値が1上がる度に、";
-				mes "スキルディレイ - 2%";
-				mes "[霧中闇影]";
-				mes "と共に装備時、追加で";
+				mes "[�O������l�̎�b[1]]";
+				mes "���B�l��1�オ��x�ɁA";
+				mes "�X�L���f�B���C - 2%";
+				mes "[�����ŉe]";
+				mes "�Ƌ��ɑ������A�ǉ���";
 				mes "Flee + 10";
-				mes "完全回避 + 10";
+				mes "���S��� + 10";
 				next;
-				mes "[三日月紋様の手甲[1]]";
-				mes "系列 : 盾";
-				mes "防御 : 45";
-				mes "重量 : 25";
-				mes "要求レベル : 100";
-				mes "装備 : 影狼 朧";
+				mes "[�O������l�̎�b[1]]";
+				mes "�n�� : ��";
+				mes "�h�� : 45";
+				mes "�d�� : 25";
+				mes "�v�����x�� : 100";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,2173;
@@ -4593,46 +4593,46 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 				setarray '@amount,1,100;
 				break;
 			case 4:
-				mes "[ギヨ]";
-				mes "よく、考えるといい。";
+				mes "[�M��]";
+				mes "�悭�A�l����Ƃ����B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 3:
-		mes "[ギヨ]";
-		mes "円鱗の鎧[1]か。";
-		mes "これはかつて伝説となっていた";
-		mes "忍者が身に着けていたものらしい。";
+		mes "[�M��]";
+		mes "�~�؂̊Z[1]���B";
+		mes "����͂��ē`���ƂȂ��Ă���";
+		mes "�E�҂��g�ɒ����Ă������̂炵���B";
 		while(1) {
 			next;
-			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			switch(select("�ޗ�������","���\������","�쐬����","��߂�")) {
 			case 1:
-				mes "[ギヨ]";
-				mes "^ff0000円鱗の鎧[1]は";
-				mes "火竜の鱗30個、";
-				mes "氷の鱗30個、";
-				mes "鮮血の鱗30個^000000";
-				mes "が必要になる。";
+				mes "[�M��]";
+				mes "^ff0000�~�؂̊Z[1]��";
+				mes "�Η��̗�30�A";
+				mes "�X�̗�30�A";
+				mes "�N���̗�30��^000000";
+				mes "���K�v�ɂȂ�B";
 				continue;
 			case 2:
-				mes "[円鱗の鱗[1]]";
+				mes "[�~�؂̗�[1]]";
 				mes "MaxHP + 15%";
 				mes "MaxSP - 30%";
 				next;
-				mes "[円鱗の鱗[1]]";
-				mes "[狼模様の手甲]";
-				mes "と共に装備時、追加で";
+				mes "[�~�؂̗�[1]]";
+				mes "[�T�͗l�̎�b]";
+				mes "�Ƌ��ɑ������A�ǉ���";
 				mes "Str + 2";
-				mes "物理攻撃で与えるダメージ + 10%";
+				mes "�����U���ŗ^����_���[�W + 10%";
 				next;
-				mes "[円鱗の鱗[1]]";
-				mes "系列 : 鎧";
-				mes "防御 : 90";
-				mes "重量 : 180";
-				mes "要求レベル : 100";
-				mes "装備 : 影狼 朧";
+				mes "[�~�؂̗�[1]]";
+				mes "�n�� : �Z";
+				mes "�h�� : 90";
+				mes "�d�� : 180";
+				mes "�v�����x�� : 100";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,15054;
@@ -4640,47 +4640,47 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 				setarray '@amount,30,30,30;
 				break;
 			case 4:
-				mes "[ギヨ]";
-				mes "よく、考えるといい。";
+				mes "[�M��]";
+				mes "�悭�A�l����Ƃ����B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 4:
-		mes "[ギヨ]";
-		mes "霧中闇影[1]か……。";
-		mes "これは霧に隠れ闇に紛れ、";
-		mes "身を守る為に作られた物だ。";
+		mes "[�M��]";
+		mes "�����ŉe[1]���c�c�B";
+		mes "����͖��ɉB��łɕ���A";
+		mes "�g�����ׂɍ��ꂽ�����B";
 		while(1) {
 			next;
-			switch(select("材料を見る","性能を見る","作成する","やめる")) {
+			switch(select("�ޗ�������","���\������","�쐬����","��߂�")) {
 			case 1:
-				mes "[ギヨ]";
-				mes "^ff0000霧中闇影[1]には";
-				mes "特殊忍者スーツ[1]";
-				mes "暗闇の破片10個^000000";
-				mes "が必要になる。";
+				mes "[�M��]";
+				mes "^ff0000�����ŉe[1]�ɂ�";
+				mes "����E�҃X�[�c[1]";
+				mes "�Èł̔j��10��^000000";
+				mes "���K�v�ɂȂ�B";
 				continue;
 			case 2:
-				mes "[霧中闇影[1]]";
+				mes "[�����ŉe[1]]";
 				mes "Agi + 1";
-				mes "物理攻撃を受けた時、";
-				mes "一定確率で自分にオートスペル";
-				mes "[幻術-影武者-]Lv1発動";
+				mes "�����U�����󂯂����A";
+				mes "���m���Ŏ����ɃI�[�g�X�y��";
+				mes "[���p-�e����-]Lv1����";
 				next;
-				mes "[霧中闇影[1]]";
-				mes "[三日月模様の手甲]";
-				mes "と共に装備時、追加で";
-				mes "完全回避 + 10";
+				mes "[�����ŉe[1]]";
+				mes "[�O�����͗l�̎�b]";
+				mes "�Ƌ��ɑ������A�ǉ���";
+				mes "���S��� + 10";
 				mes "Flee + 10";
 				next;
-				mes "[霧中闇影[1]]";
-				mes "系列 : 鎧";
-				mes "防御 : 60";
-				mes "重量 : 150";
-				mes "要求レベル : 100";
-				mes "装備 : 影狼 朧";
+				mes "[�����ŉe[1]]";
+				mes "�n�� : �Z";
+				mes "�h�� : 60";
+				mes "�d�� : 150";
+				mes "�v�����x�� : 100";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,15055;
@@ -4688,132 +4688,132 @@ que_ng.gat,21,72,6	script	防具職人 ギヨ#kaboro	934,{
 				setarray '@amount,1,10;
 				break;
 			case 4:
-				mes "[ギヨ]";
-				mes "よく、考えるといい。";
+				mes "[�M��]";
+				mes "�悭�A�l����Ƃ����B";
 				close;
 			}
 			break;
 		}
 		break;
 	}
-	mes "[ギヨ]";
-	mes "作成の際には注意点がある。";
-	mes "作成に使用する材料装備を";
-	mes "複数所持している場合、";
-	mes "^ff0000どれを材料にするかは指定できない。^000000";
-	mes "材料に使用するものだけ所持した状態で";
-	mes "来るように気を付けてくれ。";
+	mes "[�M��]";
+	mes "�쐬�̍ۂɂ͒��ӓ_������B";
+	mes "�쐬�Ɏg�p����ޗ�������";
+	mes "�����������Ă���ꍇ�A";
+	mes "^ff0000�ǂ���ޗ��ɂ��邩�͎w��ł��Ȃ��B^000000";
+	mes "�ޗ��Ɏg�p������̂�������������Ԃ�";
+	mes "����悤�ɋC��t���Ă���B";
 	next;
-	mes "[ギヨ]";
-	mes "後で後悔してもしらないからな。";
-	mes "では、作成するがいいか？";
+	mes "[�M��]";
+	mes "��Ō�����Ă�����Ȃ�����ȁB";
+	mes "�ł́A�쐬���邪�������H";
 	next;
-	if(select("作成する","やめる") == 2) {
-		mes "[ギヨ]";
-		mes "よく、考えるといい。";
+	if(select("�쐬����","��߂�") == 2) {
+		mes "[�M��]";
+		mes "�悭�A�l����Ƃ����B";
 		close;
 	}
 	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1) {
 		if(countitem('@need['@i]) < '@amount['@i]) {
-			mes "[ギヨ]";
-			mes "……。";
-			mes "材料が不足しているようだな。";
+			mes "[�M��]";
+			mes "�c�c�B";
+			mes "�ޗ����s�����Ă���悤���ȁB";
 			switch('@gain) {
 			case 2172:
-				mes "^ff0000狼紋様の手甲[1]は";
-				mes "キツネ紋様の手甲[1]1個";
-				mes "狼の血10個^000000";
+				mes "^ff0000�T��l�̎�b[1]��";
+				mes "�L�c�l��l�̎�b[1]1��";
+				mes "�T�̌�10��^000000";
 				break;
 			case 2173:
-				mes "^ff0000三日月紋様の手甲[1]は";
-				mes "キツネ紋様の手甲[1]1個";
-				mes "水晶のかけら100個^000000";
+				mes "^ff0000�O������l�̎�b[1]��";
+				mes "�L�c�l��l�̎�b[1]1��";
+				mes "�����̂�����100��^000000";
 				break;
 			case 15054:
-				mes "^ff0000円鱗の鎧[1]は";
-				mes "火竜の鱗30個、氷の鱗30個、";
-				mes "鮮血の鱗30個^000000";
+				mes "^ff0000�~�؂̊Z[1]��";
+				mes "�Η��̗�30�A�X�̗�30�A";
+				mes "�N���̗�30��^000000";
 				break;
 			case 15055:
-				mes "^ff0000霧中闇影[1]には";
-				mes "特殊忍者スーツ[1]";
-				mes "暗闇の破片10個^000000";
+				mes "^ff0000�����ŉe[1]�ɂ�";
+				mes "����E�҃X�[�c[1]";
+				mes "�Èł̔j��10��^000000";
 				break;
 			}
-			mes "が必要だ。";
-			mes "よく探して見てくれ。";
+			mes "���K�v���B";
+			mes "�悭�T���Č��Ă���B";
 			close;
 		}
 	}
 	if(checkitemblank() == 0) {
-		mes "[ギヨ]";
-		mes "荷物が多すぎるようだ。";
-		mes "荷を減らしてから";
-		mes "また来てくれ。";
+		mes "[�M��]";
+		mes "�ו�����������悤���B";
+		mes "�ׂ����炵�Ă���";
+		mes "�܂����Ă���B";
 		close;
 	}
 	if(checkweight('@gain,1) == 0) {
-		mes "[ギヨ]";
-		mes "荷物が重すぎるようだ。";
-		mes getitemid('@gain)+ "[1]は重量" +(getiteminfo('@gain,6)/10)+ "だ。";
-		mes "荷を軽くしてから";
-		mes "また来てくれ。";
+		mes "[�M��]";
+		mes "�ו����d������悤���B";
+		mes getitemid('@gain)+ "[1]�͏d��" +(getiteminfo('@gain,6)/10)+ "���B";
+		mes "�ׂ��y�����Ă���";
+		mes "�܂����Ă���B";
 		close;
 	}
 	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1)
 		delitem '@need['@i],'@amount['@i];
 	getitem '@gain,1;
-	mes "[ギヨ]";
-	mes "うむ。出来たぞ。";
-	mes "美しい……。";
+	mes "[�M��]";
+	mes "���ށB�o�������B";
+	mes "�������c�c�B";
 	close;
 }
 
-que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
-	mes "[キー]";
-	mes "攻撃は最大の防御";
-	mes "という言葉がある。";
-	mes "強力な武器こそ、";
-	mes "私を守ってくれる。";
+que_ng.gat,23,70,3	script	����E�l �L�[#kaboro	939,{
+	mes "[�L�[]";
+	mes "�U���͍ő�̖h��";
+	mes "�Ƃ������t������B";
+	mes "���͂ȕ��킱���A";
+	mes "��������Ă����B";
 	next;
-	mes "[キー]";
-	mes "必要な材料があれば、";
-	mes "特別な品を提供しよう。";
+	mes "[�L�[]";
+	mes "�K�v�ȍޗ�������΁A";
+	mes "���ʂȕi��񋟂��悤�B";
 	next;
-	if(select("武器を作成する","会話を終える") == 2) {
-		mes "[キー]";
-		mes "慎重過ぎるのも問題だ。";
+	if(select("������쐬����","��b���I����") == 2) {
+		mes "[�L�[]";
+		mes "�T�d�߂���̂���肾�B";
 		close;
 	}
-	switch(select("羅刹剣[1]","三日月[1]","風魔手裏剣・乱華[2]","やめる")) {
+	switch(select("������[1]","�O����[1]","�����藠���E����[2]","��߂�")) {
 	case 1:
-		mes "[キー]";
-		mes "羅刹剣[1]は";
-		mes "ある程度修練を積んだ者しか";
-		mes "扱えない難しい武器だ。";
+		mes "[�L�[]";
+		mes "������[1]��";
+		mes "������x�C����ς񂾎҂���";
+		mes "�����Ȃ�������킾�B";
 		while(1) {
 			next;
-			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			switch(select("�ޗ����݂�","���\���݂�","�쐬����","��߂�")) {
 			case 1:
-				mes "[キー]";
-				mes "^ff0000羅刹剣は村雨[2]1個";
-				mes "ガーネット1個^000000";
-				mes "が必要になる。";
-				mes "ガーネットが羅刹剣特有の美しい色を";
-				mes "演出してくれる。";
+				mes "[�L�[]";
+				mes "^ff0000�������͑��J[2]1��";
+				mes "�K�[�l�b�g1��^000000";
+				mes "���K�v�ɂȂ�B";
+				mes "�K�[�l�b�g�����������L�̔������F��";
+				mes "���o���Ă����B";
 				continue;
 			case 2:
-				mes "[羅刹剣[1]]";
+				mes "[������[1]]";
 				mes "Int + 3";
 				mes "Matk + 100";
 				next;
-				mes "[羅刹剣[1]]";
-				mes "系列 : 短剣";
-				mes "攻撃 : 120";
-				mes "重量 : 60";
-				mes "武器レベル : 3";
-				mes "要求レベル : 110";
-				mes "装備 : 影狼 朧";
+				mes "[������[1]]";
+				mes "�n�� : �Z��";
+				mes "�U�� : 120";
+				mes "�d�� : 60";
+				mes "���탌�x�� : 3";
+				mes "�v�����x�� : 110";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,13076;
@@ -4821,45 +4821,45 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 				setarray '@amount,1,1;
 				break;
 			case 4:
-				mes "[キー]";
-				mes "よく、考えてみる事だ。";
+				mes "[�L�[]";
+				mes "�悭�A�l���Ă݂鎖���B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 2:
-		mes "[キー]";
-		mes "三日月[1]か……。";
-		mes "三日月のように曲がる美しい曲線。";
-		mes "この仕上がりを出せる者は";
-		mes "滅多にいない一品だ。";
+		mes "[�L�[]";
+		mes "�O����[1]���c�c�B";
+		mes "�O�����̂悤�ɋȂ���������Ȑ��B";
+		mes "���̎d�オ����o����҂�";
+		mes "�ő��ɂ��Ȃ���i���B";
 		while(1) {
 			next;
-			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			switch(select("�ޗ����݂�","���\���݂�","�쐬����","��߂�")) {
 			case 1:
-				mes "[キー]";
-				mes "^ff0000三日月[1]は白刃[1]1個";
-				mes "オパール1個^000000";
-				mes "が必要になる。";
-				mes "オパールが三日月の光を";
-				mes "さらに輝かせる。";
+				mes "[�L�[]";
+				mes "^ff0000�O����[1]�͔��n[1]1��";
+				mes "�I�p�[��1��^000000";
+				mes "���K�v�ɂȂ�B";
+				mes "�I�p�[�����O�����̌���";
+				mes "����ɋP������B";
 				continue;
 			case 2:
-				mes "[三日月[1]]";
-				mes "Matk + 120、";
-				mes "スキル使用時";
-				mes "消費SP - 5%";
-				mes "スキル使用時";
-				mes "詠唱時間 - 5%";
+				mes "[�O����[1]]";
+				mes "Matk + 120�A";
+				mes "�X�L���g�p��";
+				mes "����SP - 5%";
+				mes "�X�L���g�p��";
+				mes "�r������ - 5%";
 				next;
-				mes "[三日月[1]]";
-				mes "系列 : 短剣";
-				mes "攻撃 : 50";
-				mes "重量 : 60";
-				mes "武器レベル : 4";
-				mes "要求レベル : 100";
-				mes "装備 : 影狼 朧";
+				mes "[�O����[1]]";
+				mes "�n�� : �Z��";
+				mes "�U�� : 50";
+				mes "�d�� : 60";
+				mes "���탌�x�� : 4";
+				mes "�v�����x�� : 100";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,13078;
@@ -4867,43 +4867,43 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 				setarray '@amount,1,1;
 				break;
 			case 4:
-				mes "[キー]";
-				mes "よく、考えてみる事だ。";
+				mes "[�L�[]";
+				mes "�悭�A�l���Ă݂鎖���B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 3:
-		mes "[キー]";
-		mes "風魔手裏剣・乱華[2]か。";
-		mes "これも本当に美しい。";
-		mes "君は花びらが舞う姿を";
-		mes "見たことがあるか？";
+		mes "[�L�[]";
+		mes "�����藠���E����[2]���B";
+		mes "������{���ɔ������B";
+		mes "�N�͉Ԃт炪�����p��";
+		mes "�������Ƃ����邩�H";
 		while(1) {
 			next;
-			switch(select("材料をみる","性能をみる","作成する","やめる")) {
+			switch(select("�ޗ����݂�","���\���݂�","�쐬����","��߂�")) {
 			case 1:
-				mes "[キー]";
-				mes "^ff0000風魔手裏剣・乱華[2]は";
-				mes "風魔手裏剣・明浄[2]1個";
-				mes "壊れた手裏剣100個^000000";
-				mes "が必要になる。";
-				mes "手裏剣が少し多めに必要だが、";
-				mes "美しく舞うためだ。";
+				mes "[�L�[]";
+				mes "^ff0000�����藠���E����[2]��";
+				mes "�����藠���E����[2]1��";
+				mes "��ꂽ�藠��100��^000000";
+				mes "���K�v�ɂȂ�B";
+				mes "�藠�����������߂ɕK�v�����A";
+				mes "�������������߂��B";
 				continue;
 			case 2:
-				mes "[風魔手裏剣・乱華[2]]";
+				mes "[�����藠���E����[2]]";
 				mes "Matk + 50";
-				mes "スキル [風魔手裏剣-乱華-]";
-				mes "で与えるダメージ + 20%";
+				mes "�X�L�� [�����藠��-����-]";
+				mes "�ŗ^����_���[�W + 20%";
 				next;
-				mes "系列 : 風魔手裏剣";
-				mes "攻撃 : 150";
-				mes "重量 : 150";
-				mes "武器レベル : 3";
-				mes "要求レベル : 110";
-				mes "装備 : 影狼 朧";
+				mes "�n�� : �����藠��";
+				mes "�U�� : 150";
+				mes "�d�� : 150";
+				mes "���탌�x�� : 3";
+				mes "�v�����x�� : 110";
+				mes "���� : �e�T �O";
 				continue;
 			case 3:
 				set '@gain,13313;
@@ -4911,81 +4911,81 @@ que_ng.gat,23,70,3	script	武器職人 キー#kaboro	939,{
 				setarray '@amount,1,100;
 				break;
 			case 4:
-				mes "[キー]";
-				mes "よく、考えてみる事だ。";
+				mes "[�L�[]";
+				mes "�悭�A�l���Ă݂鎖���B";
 				close;
 			}
 			break;
 		}
 		break;
 	case 4:
-		mes "[キー]";
-		mes "よく、考えてみる事だ。";
+		mes "[�L�[]";
+		mes "�悭�A�l���Ă݂鎖���B";
 		close;
 	}
-	mes "[キー]";
-	mes "作成の際には注意点がある。";
-	mes "作成に使用する材料装備を";
-	mes "複数所持している場合、";
-	mes "^ff0000どれを材料にするかは指定できない。^000000";
-	mes "材料に使用するものだけ所持した状態で";
-	mes "来るように気を付けてくれ。";
+	mes "[�L�[]";
+	mes "�쐬�̍ۂɂ͒��ӓ_������B";
+	mes "�쐬�Ɏg�p����ޗ�������";
+	mes "�����������Ă���ꍇ�A";
+	mes "^ff0000�ǂ���ޗ��ɂ��邩�͎w��ł��Ȃ��B^000000";
+	mes "�ޗ��Ɏg�p������̂�������������Ԃ�";
+	mes "����悤�ɋC��t���Ă���B";
 	next;
-	mes "[キー]";
-	mes "後で後悔してもしらないからな。";
-	mes "では、作成するがいいか？";
+	mes "[�L�[]";
+	mes "��Ō�����Ă�����Ȃ�����ȁB";
+	mes "�ł́A�쐬���邪�������H";
 	next;
-	if(select("作成する","やめる") == 2) {
-		mes "[キー]";
-		mes "よく、考えてみる事だ。";
+	if(select("�쐬����","��߂�") == 2) {
+		mes "[�L�[]";
+		mes "�悭�A�l���Ă݂鎖���B";
 		close;
 	}
 	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1) {
 		if(countitem('@need['@i]) < '@amount['@i]) {
-			mes "[キー]";
-			mes "駄目だ。材料が足りない。";
+			mes "[�L�[]";
+			mes "�ʖڂ��B�ޗ�������Ȃ��B";
 			switch('@gain) {
 			case 13076:
-				mes "羅刹剣[1]に必要な材料は";
-				mes "^ff0000羅刹剣は村雨[2]1個";
-				mes "ガーネット1個^000000";
+				mes "������[1]�ɕK�v�ȍޗ���";
+				mes "^ff0000�������͑��J[2]1��";
+				mes "�K�[�l�b�g1��^000000";
 				break;
 			case 13078:
-				mes "三日月[1]に必要な材料は";
-				mes "^ff0000白刃[1]1個";
-				mes "オパール1個^000000";
+				mes "�O����[1]�ɕK�v�ȍޗ���";
+				mes "^ff0000���n[1]1��";
+				mes "�I�p�[��1��^000000";
 				break;
 			case 13313:
-				mes "風魔手裏剣・乱華[2]に必要な材料は";
-				mes "^ff0000風魔手裏剣・明浄[2]1個";
-				mes "壊れた手裏剣100個^000000";
+				mes "�����藠���E����[2]�ɕK�v�ȍޗ���";
+				mes "^ff0000�����藠���E����[2]1��";
+				mes "��ꂽ�藠��100��^000000";
 				break;
 			}
-			mes "以上だ。";
-			mes "材料を装備していては駄目だぞ。";
+			mes "�ȏゾ�B";
+			mes "�ޗ��𑕔����Ă��Ă͑ʖڂ����B";
 			close;
 		}
 	}
 	if(checkitemblank() == 0) {
-		mes "[キー]";
-		mes "荷物が多すぎるようだ。";
-		mes "荷を減らしてから";
-		mes "また来てくれ。";
+		mes "[�L�[]";
+		mes "�ו�����������悤���B";
+		mes "�ׂ����炵�Ă���";
+		mes "�܂����Ă���B";
 		close;
 	}
 	if(checkweight('@gain,1) == 0) {
-		mes "[キー]";
-		mes "荷物が重すぎるようだ。";
-		mes getitemid('@gain)+ "[" +getiteminfo('@gain,10)+ "]は重量" +(getiteminfo('@gain,6)/10)+ "だ。";
-		mes "荷を軽くしてから";
-		mes "また来てくれ。";
+		mes "[�L�[]";
+		mes "�ו����d������悤���B";
+		mes getitemid('@gain)+ "[" +getiteminfo('@gain,10)+ "]�͏d��" +(getiteminfo('@gain,6)/10)+ "���B";
+		mes "�ׂ��y�����Ă���";
+		mes "�܂����Ă���B";
 		close;
 	}
 	for(set '@i,0; '@amount['@i]!=0; set '@i,'@i+1)
 		delitem '@need['@i],'@amount['@i];
 	getitem '@gain,1;
-	mes "[キー]";
-	mes "うむ。出来たぞ。";
-	mes "美しい……。";
+	mes "[�L�[]";
+	mes "���ށB�o�������B";
+	mes "�������c�c�B";
 	close;
 }

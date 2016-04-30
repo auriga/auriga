@@ -1,25 +1,25 @@
-//script: ç¨€æ(kohri.net) rev. 1.3 //
+//script: ‹H}(kohri.net) rev. 1.3 //
 
-prontera.gat,148,187,4	script	ç ¦ç®¡ç†å§”å“¡ä¼šå“¡	105,{
-	mes "[ç ¦ç®¡ç†å§”å“¡ä¼šå“¡]";
-	mes "ç§ãŸã¡ã¯ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰ã®ç ¦ã‚’";
-	mes "å¸¸ã«èª¿æŸ»ã—ã€æœ€æ–°ã®æƒ…å ±ã‚’ãŠä¼ãˆã—";
-	mes "ã¦ãŠã‚Šã¾ã™ã€‚ã©ã®åœ°åŸŸã®ç ¦ã«ã¤ã„ã§";
-	mes "ãŠèª¿ã¹ã§ã™ã‹ï¼Ÿ";
+prontera.gat,148,187,4	script	ÔŠÇ—ˆÏˆõ‰ïˆõ	105,{
+	mes "[ÔŠÇ—ˆÏˆõ‰ïˆõ]";
+	mes "„‚½‚¿‚Íƒ‹[ƒ“ƒ~ƒbƒhƒKƒ‹ƒh‚ÌÔ‚ğ";
+	mes "í‚É’²¸‚µAÅV‚Ìî•ñ‚ğ‚¨“`‚¦‚µ";
+	mes "‚Ä‚¨‚è‚Ü‚·B‚Ç‚Ì’nˆæ‚ÌÔ‚É‚Â‚¢‚Å";
+	mes "‚¨’²‚×‚Å‚·‚©H";
 	next;
-	switch(select("ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³","ã‚²ãƒ•ã‚§ãƒ³","ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³","ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©")) {
+	switch(select("ƒAƒ‹ƒfƒoƒ‰ƒ“","ƒQƒtƒFƒ“","ƒtƒFƒCƒˆƒ“","ƒvƒƒ“ƒeƒ‰")) {
 		case 1: setarray '@map$,"aldeg_cas01.gat","aldeg_cas02.gat","aldeg_cas03.gat","aldeg_cas04.gat","aldeg_cas05.gat"; break;
 		case 2: setarray '@map$,"gefg_cas01.gat","gefg_cas02.gat","gefg_cas03.gat","gefg_cas04.gat","gefg_cas05.gat";      break;
 		case 3: setarray '@map$,"payg_cas01.gat","payg_cas02.gat","payg_cas03.gat","payg_cas04.gat","payg_cas05.gat";      break;
 		case 4: setarray '@map$,"prtg_cas01.gat","prtg_cas02.gat","prtg_cas03.gat","prtg_cas04.gat","prtg_cas05.gat";      break;
 	}
-	mes "[ç ¦ç®¡ç†å§”å“¡ä¼šå“¡]";
-	mes "ç¾æ™‚ç‚¹ã§ã¯ã€";
+	mes "[ÔŠÇ—ˆÏˆõ‰ïˆõ]";
+	mes "Œ»“_‚Å‚ÍA";
 	for(set '@i,0; '@i < 4; set '@i,'@i+1) {
 		set '@gid,getcastledata('@map$['@i],1);
 		mes getcastlename('@map$['@i]);
-		mes "^CE2AEAæ‰€æœ‰ï¼š^000000" + (('@gid == 0)? "ãªã—": getguildname('@gid) +" ("+ getguildmaster('@gid) +")");
+		mes "^CE2AEAŠ—LF^000000" + (('@gid == 0)? "‚È‚µ": getguildname('@gid) +" ("+ getguildmaster('@gid) +")");
 	}
-	mes "ã¨ãªã£ã¦ãŠã‚Šã¾ã™ã€‚";
+	mes "‚Æ‚È‚Á‚Ä‚¨‚è‚Ü‚·B";
 	close;
 }

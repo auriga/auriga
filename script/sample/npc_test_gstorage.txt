@@ -1,36 +1,36 @@
-// カプラギルド倉庫サービス	テストスクリプト
-prontera.gat,165,188,4	script	ギルド倉庫カプラ	112,{
+// �J�v���M���h�q�ɃT�[�r�X	�e�X�g�X�N���v�g
+prontera.gat,165,188,4	script	�M���h�q�ɃJ�v��	112,{
 	cutin "kafra_06",2;
-	mes "[ギルド倉庫カプラ]";
-	mes "カプラギルド倉庫サービスです。";
-	mes "毎度ご利用ありがとうございます♪";
-	mes "テスト用なので金は貰いません。";
+	mes "[�M���h�q�ɃJ�v��]";
+	mes "�J�v���M���h�q�ɃT�[�r�X�ł��B";
+	mes "���x�����p���肪�Ƃ��������܂���";
+	mes "�e�X�g�p�Ȃ̂ŋ��͖Ⴂ�܂���B";
 	next;
-	if(select("ギルド倉庫を利用する","やっぱやめる") == 1) {
+	if(select("�M���h�q�ɂ𗘗p����","����ς�߂�") == 1) {
 		set '@flag,guildopenstorage();
 		switch('@flag) {
 		case 0:
-			break;	// 成功
+			break;	// ����
 		case 1:
-			mes "[ギルド倉庫カプラ]";
-			mes "ギルドメンバーが倉庫を使用中です。";
-			mes "しばらく待ってから利用してください。";
+			mes "[�M���h�q�ɃJ�v��]";
+			mes "�M���h�����o�[���q�ɂ��g�p���ł��B";
+			mes "���΂炭�҂��Ă��痘�p���Ă��������B";
 			break;
 		case 2:
-			mes "[ギルド倉庫カプラ]";
-			mes "ギルドに所属してない方は利用する";
-			mes "ことができません。";
+			mes "[�M���h�q�ɃJ�v��]";
+			mes "�M���h�ɏ������ĂȂ����͗��p����";
+			mes "���Ƃ��ł��܂���B";
 			break;
 		case 3:
-			mes "[ギルド倉庫カプラ]";
-			mes "お客様の倉庫を開く準備をしています。";
-			mes "しばらく待ってから利用してください。";
+			mes "[�M���h�q�ɃJ�v��]";
+			mes "���q�l�̑q�ɂ��J�����������Ă��܂��B";
+			mes "���΂炭�҂��Ă��痘�p���Ă��������B";
 			break;
 		}
 	}
 	else {
-		mes "[ギルド倉庫カプラ]";
-		mes "またのご利用をお待ちしています♪";
+		mes "[�M���h�q�ɃJ�v��]";
+		mes "�܂��̂����p�����҂����Ă��܂���";
 	}
 	close2;
 	cutin "kafra_06",255;

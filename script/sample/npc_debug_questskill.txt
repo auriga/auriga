@@ -1,17 +1,17 @@
-//ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«
-prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
-	mes "[ã‚¹ã‚­ãƒ«å±‹]";
-	mes "è·æ¥­ã‚’é¸ã‚“ã§ãã ã•ã„";
+//ƒNƒGƒXƒgƒXƒLƒ‹
+prontera.gat,152,187,4	script	ƒXƒLƒ‹‰®	779,{
+	mes "[ƒXƒLƒ‹‰®]";
+	mes "E‹Æ‚ð‘I‚ñ‚Å‚­‚¾‚³‚¢";
 	next;
-	set @menu,select("å‰£å£«ç³»","ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ç³»","ã‚¢ãƒ¼ãƒãƒ£ãƒ¼ç³»","ã‚¢ã‚³ãƒ©ã‚¤ãƒˆç³»","ã‚·ãƒ¼ãƒ•ç³»","å•†äººç³»","ã‚„ã‚ã‚‹");
+	set @menu,select("Œ•ŽmŒn","ƒEƒBƒU[ƒhŒn","ƒA[ƒ`ƒƒ[Œn","ƒAƒRƒ‰ƒCƒgŒn","ƒV[ƒtŒn","¤lŒn","‚â‚ß‚é");
 	if(@menu == 7) {
 		close;
 	}
-	mes "[ã‚¹ã‚­ãƒ«å±‹]";
-	mes "è¦šãˆã‚‹ã‚¹ã‚­ãƒ«ã‚’é¸ã‚“ã§ãã ã•ã„";
+	mes "[ƒXƒLƒ‹‰®]";
+	mes "Šo‚¦‚éƒXƒLƒ‹‚ð‘I‚ñ‚Å‚­‚¾‚³‚¢";
 	next;
 	if(@menu == 1) {
-		switch(select("ãƒãƒ£ãƒ¼ã‚¸ã‚¢ã‚¿ãƒƒã‚¯","ã‚·ãƒ¥ãƒªãƒ³ã‚¯")) {
+		switch(select("ƒ`ƒƒ[ƒWƒAƒ^ƒbƒN","ƒVƒ…ƒŠƒ“ƒN")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_KN)
 				skill 1001,1,0;
@@ -23,7 +23,7 @@ prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
 		}
 	}
 	else if(@menu == 2) {
-		switch(select("ã‚µã‚¤ãƒˆãƒ–ãƒ©ã‚¹ã‚¿ãƒ¼","ã‚³ãƒ³ãƒãƒ¼ã‚¿ãƒ¼è£½é€ ","æ°´å±žæ€§ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸","åœ°å±žæ€§ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸","ç«å±žæ€§ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸","é¢¨å±žæ€§ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸")) {
+		switch(select("ƒTƒCƒgƒuƒ‰ƒXƒ^[","ƒRƒ“ƒo[ƒ^[»‘¢","…‘®«ƒGƒŒƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW","’n‘®«ƒGƒŒƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW","‰Î‘®«ƒGƒŒƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW","•—‘®«ƒGƒŒƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_WZ)
 				skill 1006,1,0;
@@ -45,13 +45,13 @@ prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
 			set '@skillid,1019;
 			break;
 		}
-		// 3ã€œ6ã®ã¨ãç¶šã
+		// 3`6‚Ì‚Æ‚«‘±‚«
 		if(getbaseclass(Class,2) == CLASS_SA && getskilllv(1008) <= 0 && getskilllv(1017) <= 0 && getskilllv(1018) <= 0 && getskilllv(1019) <= 0)
 			skill '@skillid,1,0;
 		close;
 	}
 	else if(@menu == 3) {
-		switch(select("ãƒ•ã‚¡ãƒ³ã‚¿ã‚¹ãƒŸãƒƒã‚¯ã‚¢ãƒ­ãƒ¼","ãƒ‘ãƒ³ãƒœã‚¤ã‚¹","é­…æƒ‘ã®ã‚¦ã‚£ãƒ³ã‚¯")) {
+		switch(select("ƒtƒ@ƒ“ƒ^ƒXƒ~ƒbƒNƒAƒ[","ƒpƒ“ƒ{ƒCƒX","–£˜f‚ÌƒEƒBƒ“ƒN")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_HT)
 				skill 1009,1,0;
@@ -67,7 +67,7 @@ prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
 		}
 	}
 	else if(@menu == 4) {
-		switch(select("ãƒ¬ãƒ‡ãƒ ãƒ—ãƒ†ã‚£ã‚ª","æ°—æ³¨å…¥","æ°—çˆ†ç™º")) {
+		switch(select("ƒŒƒfƒ€ƒvƒeƒBƒI","‹C’“ü","‹C”š”­")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_PR)
 				skill 1014,1,0;
@@ -83,7 +83,7 @@ prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
 		}
 	}
 	else if(@menu == 5) {
-		switch(select("ã‚½ãƒ‹ãƒƒã‚¯ã‚¢ã‚¯ã‚»ãƒ©ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³","ãƒ™ãƒŠãƒ ãƒŠã‚¤ãƒ•","ã‚¯ãƒ­ãƒ¼ã‚ºã‚³ãƒ³ãƒ•ã‚¡ã‚¤ãƒ³")) {
+		switch(select("ƒ\ƒjƒbƒNƒAƒNƒZƒ‰ƒŒ[ƒVƒ‡ƒ“","ƒxƒiƒ€ƒiƒCƒt","ƒNƒ[ƒYƒRƒ“ƒtƒ@ƒCƒ“")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_AS)
 				skill 1003,1,0;
@@ -99,7 +99,7 @@ prontera.gat,152,187,4	script	ã‚¹ã‚­ãƒ«å±‹	779,{
 		}
 	}
 	else if(@menu == 6) {
-		switch(select("ã‚¢ãƒ³ãƒ•ã‚§ã‚¢ãƒªãƒ¼ãƒˆãƒªãƒƒã‚¯","è²ªæ¬²")) {
+		switch(select("ƒAƒ“ƒtƒFƒAƒŠ[ƒgƒŠƒbƒN","æÃ—~")) {
 		case 1:
 			if(getbaseclass(Class,2) == CLASS_BS)
 				skill 1012,1,0;

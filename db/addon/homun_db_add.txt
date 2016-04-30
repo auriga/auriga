@@ -1,2 +1,2 @@
-//homun_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//homun_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //Class,ViewClass,Name,JName,Lv,AcceID,FoodID,HP,SP,Str,Agi,Vit,Int,Dex,Luk,[Rate->]Base,HP_max,HP_min,SP_max,SP_min,Str,Agi,Vit,Int,Dex,Luk,aspd,Size,Race,Element,EvoClass,ExpTable{homun_script}

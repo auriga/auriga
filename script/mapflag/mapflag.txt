@@ -1,4 +1,4 @@
-//mapflag.txtï¼ Auriga 2013/11/02 02:22:54 (JST)
+//mapflag.txt—Auriga 2013/11/02 02:22:54 (JST)
 abyss_01.gat	mapflag	nomemo	dummy
 abyss_02.gat	mapflag	nomemo	dummy
 abyss_03.gat	mapflag	nomemo	dummy

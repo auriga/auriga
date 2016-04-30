@@ -1,5 +1,5 @@
 //============================================================
-// ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ  ç ¦ - prtg_cas*.gat
+// ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€ Ô - prtg_cas*.gat
 //------------------------------------------------------------
 prtg_cas01.gat	mapflag	nosave			SavePoint
 prtg_cas01.gat	mapflag	nomemo			dummy
@@ -37,7 +37,7 @@ prtg_cas05.gat	mapflag	monster_noteleport	dummy
 prtg_cas05.gat	mapflag	gvg_noparty		dummy
 
 //============================================================
-// ãƒ«ã‚¤ãƒ¼ãƒŠ ç ¦ - aldeg_cas*.gat
+// ƒ‹ƒC[ƒi Ô - aldeg_cas*.gat
 //------------------------------------------------------------
 aldeg_cas01.gat	mapflag	nosave			SavePoint
 aldeg_cas01.gat	mapflag	nomemo			dummy
@@ -75,7 +75,7 @@ aldeg_cas05.gat	mapflag	monster_noteleport	dummy
 aldeg_cas05.gat	mapflag	gvg_noparty		dummy
 
 //============================================================
-// ãƒãƒ¥ãƒ³ãƒªãƒ æ¹– ç ¦ - payg_cas*.gat
+// ƒ`ƒ…ƒ“ƒŠƒ€ŒÎ Ô - payg_cas*.gat
 //------------------------------------------------------------
 payg_cas01.gat	mapflag	nosave			SavePoint
 payg_cas01.gat	mapflag	nomemo			dummy
@@ -114,7 +114,7 @@ payg_cas05.gat	mapflag	gvg_noparty		dummy
 
 
 //============================================================
-// ãƒ–ãƒªãƒˆãƒ‹ã‚¢ ç ¦ - gefg_cas*.gat
+// ƒuƒŠƒgƒjƒA Ô - gefg_cas*.gat
 //------------------------------------------------------------
 gefg_cas01.gat	mapflag	nosave			SavePoint
 gefg_cas01.gat	mapflag	nomemo			dummy
@@ -153,7 +153,7 @@ gefg_cas05.gat	mapflag	gvg_noparty		dummy
 
 
 //============================================================
-// ãƒ‹ãƒ€ãƒ´ã‚§ãƒªãƒ¼ãƒ« ç ¦ - schg_cas*.gat
+// ƒjƒ_ƒ”ƒFƒŠ[ƒ‹ Ô - schg_cas*.gat
 //------------------------------------------------------------
 schg_cas01.gat	mapflag	nosave			SavePoint
 schg_cas01.gat	mapflag	nomemo			dummy
@@ -197,7 +197,7 @@ schg_cas05.gat	mapflag	nojump			dummy
 
 
 //============================================================
-// ãƒ´ã‚¡ãƒ«ãƒ•ãƒ¬ã‚¤ãƒ¤ ç ¦ - arug_cas*.gat
+// ƒ”ƒ@ƒ‹ƒtƒŒƒCƒ„ Ô - arug_cas*.gat
 //------------------------------------------------------------
 arug_cas01.gat	mapflag	nosave			SavePoint
 arug_cas01.gat	mapflag	nomemo			dummy

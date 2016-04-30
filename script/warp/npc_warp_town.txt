@@ -1,36 +1,36 @@
 //==============================================================================
-// Town Warp Point Script   2005-06-28(Î²3 mod by kia)
+// Town Warp Point Script   2005-06-28(ƒÀ3 mod by kia)
 //==============================================================================
 
 //-------------------------------------------
-// warp0xxx 	MAPã®åŒºåˆ‡ã‚Š  	
-// warp01xx 	è¡—ã¸         	(ä½¿ã‚ãªã„)
-// warp02xx 	GvGãƒ«ãƒ¼ãƒ ã¸  	(ä½¿ã‚ãªã„)
-// warp03xx 	ç ¦ã¸         	
-// warp04xx 	ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ 	
-// warp05xx 	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¸ 	
-// warp06xx 	JOBã‚¹ãƒ†ãƒ¼ã‚¸ã¸	(ä½¿ã‚ãªã„)
-// warp07xx 	PvPã‚¹ãƒ†ãƒ¼ã‚¸ã¸	
-// warp1xxx 	è¡—           	
-// warp2xxx 	GvGãƒ«ãƒ¼ãƒ     	
-// warp3xxx 	GvG ç ¦       	(ä½¿ã‚ãªã„)
-// warp31xx 	GvG ç ¦ï¼‘     	
-// warp32xx 	GvG ç ¦ï¼’     	
-// warp33xx 	GvG ç ¦ï¼“     	
-// warp34xx 	GvG ç ¦ï¼”     	
-// warp35xx 	GvG ç ¦ï¼•     	
-// warp4xxx 	ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³   	(ä½¿ã‚ãªã„)
-// warp5xxx 	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰   	(ä½¿ã‚ãªã„)
-// warp6xxx 	JOBã‚¹ãƒ†ãƒ¼ã‚¸  	
-// warp7xxx 	PvPã‚¹ãƒ†ãƒ¼ã‚¸  	(ä½¿ã‚ãªã„)
-// warp71xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼‘	
-// warp72xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼’	
-// warp73xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼“	
-// warp74xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼”	
-// warp75xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼•	
-// warp76xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼–	
-// warp77xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼—	
-// warp78xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼˜	
+// warp0xxx 	MAP‚Ì‹æØ‚è  	
+// warp01xx 	ŠX‚Ö         	(g‚í‚È‚¢)
+// warp02xx 	GvGƒ‹[ƒ€‚Ö  	(g‚í‚È‚¢)
+// warp03xx 	Ô‚Ö         	
+// warp04xx 	ƒ_ƒ“ƒWƒ‡ƒ“‚Ö 	
+// warp05xx 	ƒtƒB[ƒ‹ƒh‚Ö 	
+// warp06xx 	JOBƒXƒe[ƒW‚Ö	(g‚í‚È‚¢)
+// warp07xx 	PvPƒXƒe[ƒW‚Ö	
+// warp1xxx 	ŠX           	
+// warp2xxx 	GvGƒ‹[ƒ€    	
+// warp3xxx 	GvG Ô       	(g‚í‚È‚¢)
+// warp31xx 	GvG Ô‚P     	
+// warp32xx 	GvG Ô‚Q     	
+// warp33xx 	GvG Ô‚R     	
+// warp34xx 	GvG Ô‚S     	
+// warp35xx 	GvG Ô‚T     	
+// warp4xxx 	ƒ_ƒ“ƒWƒ‡ƒ“   	(g‚í‚È‚¢)
+// warp5xxx 	ƒtƒB[ƒ‹ƒh   	(g‚í‚È‚¢)
+// warp6xxx 	JOBƒXƒe[ƒW  	
+// warp7xxx 	PvPƒXƒe[ƒW  	(g‚í‚È‚¢)
+// warp71xxx	PvPƒXƒe[ƒW‚P	
+// warp72xxx	PvPƒXƒe[ƒW‚Q	
+// warp73xxx	PvPƒXƒe[ƒW‚R	
+// warp74xxx	PvPƒXƒe[ƒW‚S	
+// warp75xxx	PvPƒXƒe[ƒW‚T	
+// warp76xxx	PvPƒXƒe[ƒW‚U	
+// warp77xxx	PvPƒXƒe[ƒW‚V	
+// warp78xxx	PvPƒXƒe[ƒW‚W	
 //-------------------------------------------
 // #        	script warp	
 //-------------------------------------------
@@ -39,12 +39,12 @@
 
 
 //==============================================================
-// ----- Xmas ãƒ«ãƒ†ã‚£ã‚¨ -----
-// xmas.gat 		é›ªã®è¡—ãƒ«ãƒ†ã‚£ã‚¨
-// xmas_in.gat		ãƒ«ãƒ†ã‚£ã‚¨å®¤å†…
+// ----- Xmas ƒ‹ƒeƒBƒG -----
+// xmas.gat 		á‚ÌŠXƒ‹ƒeƒBƒG
+// xmas_in.gat		ƒ‹ƒeƒBƒGº“à
 // -----
-// mas_fild01.gat	ãƒ«ãƒ†ã‚£ã‚¨ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// xmas_dun01.gat	ãŠã‚‚ã¡ã‚ƒå·¥å ´å€‰åº«
+// mas_fild01.gat	ƒ‹ƒeƒBƒGƒtƒB[ƒ‹ƒh
+// xmas_dun01.gat	‚¨‚à‚¿‚áHê‘qŒÉ
 //==============================================================
 xmas.gat,143,314,0  		warp	xmaswarp0401		1,1,xmas_dun01.gat,205,16
 xmas.gat,149,41,0   		warp	xmaswarp0501		18,1,xmas_fild01.gat,80,248
@@ -75,13 +75,13 @@ xmas_in.gat,168,160,0		warp	xmaswarp1022		1,1,xmas.gat,189,275
 
 
 //==============================================================
-// ----- è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢ -----
-// prt_monk.gat		è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢
-// monk_in.gat		è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢å†…
-// job_monk.gat		è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢
-// monk_test.gat	è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢(test)
+// ----- ¹ƒJƒsƒg[ƒŠƒiC“¹‰@ -----
+// prt_monk.gat		¹ƒJƒsƒg[ƒŠƒiC“¹‰@
+// monk_in.gat		¹ƒJƒsƒg[ƒŠƒiC“¹‰@“à
+// job_monk.gat		¹ƒJƒsƒg[ƒŠƒiC“¹‰@
+// monk_test.gat	¹ƒJƒsƒg[ƒŠƒiC“¹‰@(test)
 // -----
-// prt_fild03.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// prt_fild03.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh
 //==============================================================
 prt_monk.gat,22,248,0		warp	monkwarp0501		2,2,prt_fild03.gat,368,256
 
@@ -110,12 +110,12 @@ monk_test.gat,298,127,0		warp	monkwarp6020		1,1,monk_test.gat,268,125
 
 
 //==============================================================
-// ----- ã‚ªãƒ¼ã‚¯æ‘ã®å®¤å†… -----
-// in_orcs01.gat	ã‚ªãƒ¼ã‚¯æ‘ã®å®¤å†…
+// ----- ƒI[ƒN‘º‚Ìº“à -----
+// in_orcs01.gat	ƒI[ƒN‘º‚Ìº“à
 // -----
-// orcsdun01.gat	ã‚ªãƒ¼ã‚¯åœ°ä¸‹æ´çªŸ
-// orcsdun02.gat	ã‚ªãƒ¼ã‚¯åœ°ä¸‹æ´çªŸ
-// gef_fild10.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// orcsdun01.gat	ƒI[ƒN’n‰º“´ŒA
+// orcsdun02.gat	ƒI[ƒN’n‰º“´ŒA
+// gef_fild10.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
 //==============================================================
 in_orcs01.gat,30,182,0		warp	orcswarp0401		2,1,orcsdun01.gat,32,170
 in_orcs01.gat,108,114,0		warp	orcswarp0402		2,1,orcsdun02.gat,180,17
@@ -129,23 +129,23 @@ in_orcs01.gat,30,154,0		warp	orcswarp0505		3,2,gef_fild10.gat,65,335
 
 
 //==============================================================
-// ----- Assassin ã‚¢ã‚µã‚·ãƒ³ã‚®ãƒ«ãƒ‰ -----
-// in_moc_16.gat	ã‚¢ã‚µã‚·ãƒ³ã‚®ãƒ«ãƒ‰
+// ----- Assassin ƒAƒTƒVƒ“ƒMƒ‹ƒh -----
+// in_moc_16.gat	ƒAƒTƒVƒ“ƒMƒ‹ƒh
 // -----
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
 //==============================================================
-// ã‚¢ã‚µã‚·ãƒ³ã‚®ãƒ«ãƒ‰
+// ƒAƒTƒVƒ“ƒMƒ‹ƒh
 in_moc_16.gat,18,8,0		warp	assassinwarp0501	1,1,moc_fild16.gat,205,291
 
 
 
 //==============================================================
-// ----- Novice åˆå¿ƒè€…ä¿®ç·´å ´ -----
-// new_1-1.gat		åˆå¿ƒè€…ä¿®ç·´å ´ 1 ã€œ 4
-// new_2-1.gat		åˆå¿ƒè€…ä¿®ç·´å ´ 1 ã€œ 4
-// new_3-1.gat		åˆå¿ƒè€…ä¿®ç·´å ´ 1 ã€œ 4
-// new_4-1.gat		åˆå¿ƒè€…ä¿®ç·´å ´ 1 ã€œ 4
-// new_5-1.gat		åˆå¿ƒè€…ä¿®ç·´å ´ 1 ã€œ 4
+// ----- Novice ‰SÒC—ûê -----
+// new_1-1.gat		‰SÒC—ûê 1 ` 4
+// new_2-1.gat		‰SÒC—ûê 1 ` 4
+// new_3-1.gat		‰SÒC—ûê 1 ` 4
+// new_4-1.gat		‰SÒC—ûê 1 ` 4
+// new_5-1.gat		‰SÒC—ûê 1 ` 4
 // -----
 //==============================================================
 new_1-1.gat,148,112,0		warp	newwarp6001		2,2,new_1-2.gat,100,9
@@ -158,12 +158,12 @@ new_1-2.gat,46,172,0		warp	newwarp6006		2,2,new_1-2.gat,78,106
 
 
 //==============================================================
-// ----- Thief ã‚·ãƒ¼ãƒ• -----
-// moc_prydb1.gat	ã‚·ãƒ¼ãƒ•ã‚®ãƒ«ãƒ‰
-// job_thief1.gat	ã‚·ãƒ–ã®ã‚­ãƒã‚³è¾²å ´
+// ----- Thief ƒV[ƒt -----
+// moc_prydb1.gat	ƒV[ƒtƒMƒ‹ƒh
+// job_thief1.gat	ƒVƒu‚ÌƒLƒmƒR”_ê
 // -----
-// moc_ruins.gat	ãƒ¢ãƒ­ã‚¯ - ãƒ”ãƒ©ãƒŸãƒƒãƒ‰å‘¨è¾º
-// moc_pryd05.gat	ãƒ”ãƒ©ãƒŸãƒƒãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ B2F
+// moc_ruins.gat	ƒ‚ƒƒN - ƒsƒ‰ƒ~ƒbƒhü•Ó
+// moc_pryd05.gat	ƒsƒ‰ƒ~ƒbƒhƒ_ƒ“ƒWƒ‡ƒ“ B2F
 //==============================================================
 job_thief1.gat,180,15,0		warp	thiefwarp0101		7,1,moc_ruins.gat,145,117
 moc_prydb1.gat,100,55,0		warp	thiefwarp0401		2,1,moc_pryd05.gat,94,96
@@ -178,46 +178,46 @@ moc_prydb1.gat,87,115,0		warp	thiefwarp6006		2,6,moc_prydb1.gat,56,115
 
 
 //==============================================================
-// ----- Hunter ãƒãƒ³ã‚¿ãƒ¼ã‚®ãƒ«ãƒ‰ -----
-// in_hunter.gat	ãƒãƒ³ã‚¿ãƒ¼ã‚®ãƒ«ãƒ‰
-// job_hunte.gat	ãƒãƒ³ã‚¿ãƒ¼è»¢è·è©¦é¨“å ´
-// hunter_1-1.gat	ãƒãƒ³ã‚¿ãƒ¼è»¢è·æ‰€
-// hunter_2-1.gat	ãƒãƒ³ã‚¿ãƒ¼è»¢è·æ‰€
-// hunter_3-1.gat	ãƒãƒ³ã‚¿ãƒ¼è»¢è·æ‰€
+// ----- Hunter ƒnƒ“ƒ^[ƒMƒ‹ƒh -----
+// in_hunter.gat	ƒnƒ“ƒ^[ƒMƒ‹ƒh
+// job_hunte.gat	ƒnƒ“ƒ^[“]EŒ±ê
+// hunter_1-1.gat	ƒnƒ“ƒ^[“]EŠ
+// hunter_2-1.gat	ƒnƒ“ƒ^[“]EŠ
+// hunter_3-1.gat	ƒnƒ“ƒ^[“]EŠ
 // -----
-// pay_fild01.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³è¿·ã„ã®æ£® 01 ã€œ 11
+// pay_fild01.gat	ƒtƒFƒCƒˆƒ“–À‚¢‚ÌX 01 ` 11
 //==============================================================
 in_hunter.gat,99,13,0		warp	hunterwarp0502		1,1,pay_fild10.gat,148,252
 
 
 
 //==============================================================
-// ----- Knight ãƒŠã‚¤ãƒˆ -----
-// knight_1-1.gat	ãƒŠã‚¤ãƒˆè»¢è·æ‰€
-// knight_2-1.gat	ãƒŠã‚¤ãƒˆè»¢è·æ‰€
-// knight_3-1.gat	ãƒŠã‚¤ãƒˆè»¢è·æ‰€
-// job_knt.gat		ãƒŠã‚¤ãƒˆè»¢è·è©¦é¨“å ´
+// ----- Knight ƒiƒCƒg -----
+// knight_1-1.gat	ƒiƒCƒg“]EŠ
+// knight_2-1.gat	ƒiƒCƒg“]EŠ
+// knight_3-1.gat	ƒiƒCƒg“]EŠ
+// job_knt.gat		ƒiƒCƒg“]EŒ±ê
 // -----
 //==============================================================
 
 
 
 //==============================================================
-// ----- Priest ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ -----
-// priest_1-1.gat	ãƒ—ãƒªãƒ¼ã‚¹ãƒˆè»¢è·æ‰€
-// priest_2-1.gat	ãƒ—ãƒªãƒ¼ã‚¹ãƒˆè»¢è·æ‰€
-// priest_3-1.gat	ãƒ—ãƒªãƒ¼ã‚¹ãƒˆè»¢è·æ‰€
-// job_prist.gat	ãƒ—ãƒªãƒ¼ã‚¹ãƒˆè»¢è·è©¦é¨“å ´
+// ----- Priest ƒvƒŠ[ƒXƒg -----
+// priest_1-1.gat	ƒvƒŠ[ƒXƒg“]EŠ
+// priest_2-1.gat	ƒvƒŠ[ƒXƒg“]EŠ
+// priest_3-1.gat	ƒvƒŠ[ƒXƒg“]EŠ
+// job_prist.gat	ƒvƒŠ[ƒXƒg“]EŒ±ê
 // -----
 //==============================================================
 
 
 
 //==============================================================
-// ----- Swordman å‰£å£« -----
-// sword_1-1.gat	å‰£å£«è»¢è·æ‰€
-// sword_2-1.gat	å‰£å£«è»¢è·æ‰€
-// sword_3-1.gat	å‰£å£«è»¢è·æ‰€
+// ----- Swordman Œ•m -----
+// sword_1-1.gat	Œ•m“]EŠ
+// sword_2-1.gat	Œ•m“]EŠ
+// sword_3-1.gat	Œ•m“]EŠ
 // -----
 //==============================================================
 sword_1-1.gat,65,117,0		warp	swordwarp6001		1,1,sword_1-1.gat,10,245
@@ -230,23 +230,23 @@ sword_1-1.gat,239,117,0		warp	swordwarp6006		1,1,sword_1-1.gat,11,169
 
 
 //==============================================================
-// ----- Wizerd ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ -----
-// wizard_1-1.gat	ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰è»¢è·æ‰€
-// wizard_2-1.gat	ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰è»¢è·æ‰€
-// wizard_3-1.gat	ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰è»¢è·æ‰€
-// job_wiz.gat		ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰è»¢è·è©¦é¨“å ´
+// ----- Wizerd ƒEƒBƒU[ƒh -----
+// wizard_1-1.gat	ƒEƒBƒU[ƒh“]EŠ
+// wizard_2-1.gat	ƒEƒBƒU[ƒh“]EŠ
+// wizard_3-1.gat	ƒEƒBƒU[ƒh“]EŠ
+// job_wiz.gat		ƒEƒBƒU[ƒh“]EŒ±ê
 // -----
 //==============================================================
 
 
 
 //==============================================================
-// ----- Alberta ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ -----
-// alberta.gat		æ¸¯ã®éƒ½å¸‚ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿
-// alberta_in		æ¸¯ã®éƒ½å¸‚ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ å®¤å†…#
-// alb_ship.gat		ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿èˆ¹èˆ¶ã®ä¸­
+// ----- Alberta ƒAƒ‹ƒxƒ‹ƒ^ -----
+// alberta.gat		`‚Ì“ssƒAƒ‹ƒxƒ‹ƒ^
+// alberta_in		`‚Ì“ssƒAƒ‹ƒxƒ‹ƒ^ º“à#
+// alb_ship.gat		ƒAƒ‹ƒxƒ‹ƒ^‘D”•‚Ì’†
 // -----
-// pay_fild01.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³è¿·ã„ã®æ£® 01 ã€œ 11
+// pay_fild01.gat	ƒtƒFƒCƒˆƒ“–À‚¢‚ÌX 01 ` 11
 //==============================================================
 alberta.gat,15,234,0		warp	albertawarp0501		2,5,pay_fild03.gat,388,63
 
@@ -295,16 +295,16 @@ alb_ship.gat,68,99,0		warp	albertawarp1040		1,3,alb_ship.gat,35,173
 
 
 //==============================================================
-// ----- Aldebarana ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³ -----
-// aldebaran.gat	å›½å¢ƒéƒ½å¸‚ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³
-// aldeba_in.gat	å›½å¢ƒéƒ½å¸‚ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³ å®¤å†…
-// alde_alche.gat	ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆã‚®ãƒ«ãƒ‰
-// alde_gld.gat		ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³è¡›æ˜Ÿéƒ½å¸‚ãƒ«ã‚¤ãƒ¼ãƒŠ
+// ----- Aldebarana ƒAƒ‹ƒfƒoƒ‰ƒ“ -----
+// aldebaran.gat	‘‹«“ssƒAƒ‹ƒfƒoƒ‰ƒ“
+// aldeba_in.gat	‘‹«“ssƒAƒ‹ƒfƒoƒ‰ƒ“ º“à
+// alde_alche.gat	ƒAƒ‹ƒPƒ~ƒXƒgƒMƒ‹ƒh
+// alde_gld.gat		ƒAƒ‹ƒfƒoƒ‰ƒ“‰q¯“ssƒ‹ƒC[ƒi
 // -----
-// c_tower1.gat		ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³æ™‚è¨ˆå¡”åœ°ä¸Š 1F
-// mjolnir_01.gat	ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ 01 ã€œ 12
-// yuno_fild01.gat	å›½å¢ƒæ¤œå•æ‰€
-// aldeg_cas01.gat	ãƒ«ã‚¤ãƒ¼ãƒŠ ç ¦ 1 ã€œ 5
+// c_tower1.gat		ƒAƒ‹ƒfƒoƒ‰ƒ“Œv“ƒ’nã 1F
+// mjolnir_01.gat	ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ 01 ` 12
+// yuno_fild01.gat	‘‹«ŒŸ–âŠ
+// aldeg_cas01.gat	ƒ‹ƒC[ƒi Ô 1 ` 5
 //==============================================================
 alde_gld.gat,48,79,0		warp	aldebaranwarp0301	1,1,aldeg_cas01.gat,34,248
 alde_gld.gat,95,253,0		warp	aldebaranwarp0302	1,1,aldeg_cas02.gat,88,163
@@ -381,15 +381,15 @@ alde_gld.gat,284,160,0		warp	aldebaranwarp2002	1,1,aldebaran.gat,39,140
 
 
 //==============================================================
-// ----- Geffen ã‚²ãƒ•ã‚§ãƒ³ -----
-// geffen.gat		é­”æ³•ã®éƒ½å¸‚ã‚²ãƒ•ã‚§ãƒ³
-// geffen_in.gat	é­”æ³•ã®éƒ½å¸‚ã‚²ãƒ•ã‚§ãƒ³ å®¤å†…
-// gef_tower.gat	ã‚²ãƒ•ã‚§ãƒ³ä¸­å¤®å¡”
-// quiz_00.gat		â—‹Ã—ã‚¯ã‚¤ã‚ºä¼šå ´
-// quiz_01.gat		â—‹Ã—ã‚¯ã‚¤ã‚ºä¼šå ´
+// ----- Geffen ƒQƒtƒFƒ“ -----
+// geffen.gat		–‚–@‚Ì“ssƒQƒtƒFƒ“
+// geffen_in.gat	–‚–@‚Ì“ssƒQƒtƒFƒ“ º“à
+// gef_tower.gat	ƒQƒtƒFƒ“’†‰›“ƒ
+// quiz_00.gat		›~ƒNƒCƒY‰ïê
+// quiz_01.gat		›~ƒNƒCƒY‰ïê
 // -----
-// gef_dun00.gat	ã‚²ãƒ•ã‚§ãƒ³åœ°ä¸‹ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ B1F
-// gef_fild00.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// gef_dun00.gat	ƒQƒtƒFƒ“’n‰ºƒ_ƒ“ƒWƒ‡ƒ“ B1F
+// gef_fild00.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
 //==============================================================
 gef_tower.gat,153,28,0		warp	geffenwarp0401		4,2,gef_dun00.gat,104,99
 geffen.gat,217,119,0		warp	geffenwarp0501		2,4,gef_fild00.gat,46,199
@@ -453,15 +453,15 @@ gef_tower.gat,62,87,0		warp	geffenwarp1051		1,1,gef_tower.gat,60,30
 
 
 //==============================================================
-// ----- Morocc ãƒ¢ãƒ­ã‚¯ -----
-// morocc.gat		ç ‚æ¼ ã®éƒ½å¸‚ãƒ¢ãƒ­ã‚¯
-// morocc_in.gat	ç ‚æ¼ ã®éƒ½å¸‚ãƒ¢ãƒ­ã‚¯ å®¤å†…
-// moc_castle.gat	ãƒ¢ãƒ­ã‚¯åŸå†…
-// moc_ruins.gat	ãƒ¢ãƒ­ã‚¯ - ãƒ”ãƒ©ãƒŸãƒƒãƒ‰å‘¨è¾º
+// ----- Morocc ƒ‚ƒƒN -----
+// morocc.gat		»”™‚Ì“ssƒ‚ƒƒN
+// morocc_in.gat	»”™‚Ì“ssƒ‚ƒƒN º“à
+// moc_castle.gat	ƒ‚ƒƒNé“à
+// moc_ruins.gat	ƒ‚ƒƒN - ƒsƒ‰ƒ~ƒbƒhü•Ó
 // -----
-// moc_pryd01.gat	ãƒ”ãƒ©ãƒŸãƒƒãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ 1F
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
-// moc_fild20.gat	æ¬¡å…ƒã®ç‹­é–“ 01
+// moc_pryd01.gat	ƒsƒ‰ƒ~ƒbƒhƒ_ƒ“ƒWƒ‡ƒ“ 1F
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
+// moc_fild20.gat	ŸŒ³‚Ì‹·ŠÔ 01
 //==============================================================
 moc_ruins.gat,54,161,0		warp	moroccwarp0401		2,3,moc_pryd01.gat,192,9
 moc_ruins.gat,71,16,0		warp	moroccwarp0501		8,2,moc_fild19.gat,71,167
@@ -553,23 +553,23 @@ moc_castle.gat,92,82,0		warp	moroccwarp1075		3,2,moc_castle.gat,92,63
 moc_castle.gat,94,143,0		warp	moroccwarp1076		3,2,moc_castle.gat,94,160
 moc_castle.gat,94,156,0		warp	moroccwarp1077		3,2,moc_castle.gat,94,140
 
-// ãƒ”ãƒ©ãƒŸãƒƒãƒ‰å‘¨è¾º
+// ƒsƒ‰ƒ~ƒbƒhü•Ó
 morocc.gat,25,294,0		warp	moroccwarp1078		3,3,moc_ruins.gat,156,42
 moc_ruins.gat,159,37,0		warp	moroccwarp1079		3,3,morocc.gat,28,291
 
 
 
 //==============================================================
-// ----- Payon ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³ -----
-// payon.gat		å±±å²³ã®éƒ½å¸‚ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³
-// payon_in01.gat	å±±å²³ã®éƒ½å¸‚ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³ å®¤å†… 1 ã€œ 3
-// pay_arche.gat	å±±å²³ã®éƒ½å¸‚ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³
-// pay_gld.gat		ãƒãƒ¥ãƒ³ãƒªãƒ æ¹–
+// ----- Payon ƒtƒFƒCƒˆƒ“ -----
+// payon.gat		RŠx‚Ì“ssƒtƒFƒCƒˆƒ“
+// payon_in01.gat	RŠx‚Ì“ssƒtƒFƒCƒˆƒ“ º“à 1 ` 3
+// pay_arche.gat	RŠx‚Ì“ssƒtƒFƒCƒˆƒ“
+// pay_gld.gat		ƒ`ƒ…ƒ“ƒŠƒ€ŒÎ
 // -----
-// pay_fild01.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³è¿·ã„ã®æ£® 01 ã€œ 11
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
-// pay_dun00.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³åœ°ä¸‹æ´çªŸ B1F
-// payg_cas01.gat	ãƒãƒ¥ãƒ³ãƒªãƒ æ¹– ç ¦ 1 ã€œ 5
+// pay_fild01.gat	ƒtƒFƒCƒˆƒ“–À‚¢‚ÌX 01 ` 11
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
+// pay_dun00.gat	ƒtƒFƒCƒˆƒ“’n‰º“´ŒA B1F
+// payg_cas01.gat	ƒ`ƒ…ƒ“ƒŠƒ€ŒÎ Ô 1 ` 5
 //==============================================================
 pay_gld.gat,121,238,0		warp	payonwarp0301		1,1,payg_cas01.gat,214,48
 pay_gld.gat,291,116,0		warp	payonwarp0302		1,1,payg_cas02.gat,272,57
@@ -581,7 +581,7 @@ payon.gat,122,27,0		warp	payonwarp0501		5,3,pay_fild01.gat,333,356
 payon.gat,267,89,0		warp	payonwarp0502		2,4,pay_fild08.gat,20,74
 pay_gld.gat,16,276,0		warp	payonwarp0503		1,1,moc_fild02.gat,374,272
 
-// é…’å ´
+// ğê
 payon.gat,223,117,0		warp	payonwarp1001		2,2,payon_in01.gat,175,11
 payon_in01.gat,172,11,0		warp	payonwarp1002		2,2,payon.gat,219,117
 payon_in01.gat,180,43,0		warp	payonwarp1003		2,2,payon_in01.gat,181,73
@@ -590,22 +590,22 @@ payon_in01.gat,193,92,0		warp	payonwarp1005		2,2,payon_in01.gat,143,61
 payon_in01.gat,146,61,0		warp	payonwarp1006		2,2,payon_in01.gat,193,89
 payon_in01.gat,133,42,0		warp	payonwarp1007		2,2,payon_in01.gat,133,18
 payon_in01.gat,133,21,0		warp	payonwarp1008		2,2,payon_in01.gat,133,45
-// é“å…·åº—ã¨é“å…·å•†äºº
+// “¹‹ï“X‚Æ“¹‹ï¤l
 payon.gat,140,85,0		warp	payonwarp1009		2,2,payon_in01.gat,14,51
 payon_in01.gat,17,51,0		warp	payonwarp1010		2,2,payon.gat,143,85
 payon_in01.gat,10,59,0		warp	payonwarp1011		2,2,payon_in01.gat,10,83
 payon_in01.gat,10,80,0		warp	payonwarp1012		2,2,payon_in01.gat,10,56
 payon_in01.gat,10,38,0		warp	payonwarp1013		2,2,payon_in01.gat,10,14
 payon_in01.gat,10,17,0		warp	payonwarp1014		2,2,payon_in01.gat,10,41
-// æ­¦å™¨ãƒ»é˜²å…·å±‹
+// •ŠíE–h‹ï‰®
 payon.gat,135,158,0		warp	payonwarp1015		2,2,payon_in01.gat,20,129
 payon_in01.gat,23,129,0		warp	payonwarp1016		2,2,payon.gat,138,158
 payon.gat,130,169,0		warp	payonwarp1017		2,2,payon_in01.gat,13,136
 payon_in01.gat,13,139,0		warp	payonwarp1018		2,2,payon.gat,130,172
-// ã‚¢ãƒ¼ãƒãƒ£ãƒ¼å…„å¼Ÿã®å®¶
+// ƒA[ƒ`ƒƒ[ŒZ’í‚Ì‰Æ
 payon.gat,151,127,0		warp	payonwarp1019		2,2,payon_in01.gat,56,53
 payon_in01.gat,56,50,0		warp	payonwarp1020		2,2,payon.gat,151,124
-// ä¸­å¤®å®®
+// ’†‰›‹{
 payon.gat,156,247,0		warp	payonwarp1021		2,2,payon_in03.gat,98,117
 payon_in03.gat,98,114,0		warp	payonwarp1022		2,2,payon.gat,156,244
 payon_in03.gat,90,124,0		warp	payonwarp1023		2,2,payon_in03.gat,80,124
@@ -614,7 +614,7 @@ payon_in03.gat,99,133,0		warp	payonwarp1025		2,2,payon_in03.gat,99,151
 payon_in03.gat,99,148,0		warp	payonwarp1026		2,2,payon_in03.gat,99,130
 payon_in03.gat,107,124,0	warp	payonwarp1027		2,2,payon_in03.gat,117,124
 payon_in03.gat,114,124,0	warp	payonwarp1028		2,2,payon_in03.gat,104,124
-// ãƒãƒ³ã‚¿ãƒ¼ã®å®¶
+// ƒnƒ“ƒ^[‚Ì‰Æ
 payon.gat,189,233,0		warp	payonwarp1029		2,2,payon_in03.gat,149,39
 payon_in03.gat,146,39,0		warp	payonwarp1030		2,2,payon.gat,186,233
 payon_in03.gat,158,32,0		warp	payonwarp1031		2,2,payon_in03.gat,130,14
@@ -642,7 +642,7 @@ payon_in02.gat,64,56,0		warp	payonwarp1049		2,2,pay_arche.gat,141,161
 payon_in02.gat,70,33,0		warp	payonwarp1050		2,2,payon_in02.gat,58,33
 payon_in02.gat,75,67,0		warp	payonwarp1051		2,2,payon_in02.gat,13,25
 payon_in02.gat,82,45,0		warp	payonwarp1052		2,2,pay_arche.gat,74,153
-// å®®æ®¿ã®åˆ¥é¤¨
+// ‹{“a‚Ì•ÊŠÙ
 payon.gat,128,204,0		warp	payonwarp1053		2,2,payon_in03.gat,82,19
 payon_in03.gat,85,19,0		warp	payonwarp1054		2,2,payon.gat,130,204
 payon_in03.gat,74,19,0		warp	payonwarp1055		2,2,payon_in03.gat,64,19
@@ -651,12 +651,12 @@ payon_in03.gat,46,19,0		warp	payonwarp1057		2,2,payon_in03.gat,36,19
 payon_in03.gat,39,19,0		warp	payonwarp1058		2,2,payon_in03.gat,49,19
 payon_in03.gat,28,19,0		warp	payonwarp1059		2,2,payon_in03.gat,18,19
 payon_in03.gat,21,19,0		warp	payonwarp1060		2,2,payon_in03.gat,31,19
-// å¼“æ‰‹ã®é–“
+// ‹|è‚ÌŠÔ
 payon.gat,155,328,0		warp	payonwarp1061		2,2,payon_in03.gat,165,143
 payon_in03.gat,165,140,0	warp	payonwarp1062		2,2,payon.gat,155,325
 payon_in03.gat,185,178,0	warp	payonwarp1063		2,2,payon_in03.gat,185,150
 payon_in03.gat,185,153,0	warp	payonwarp1064		2,2,payon_in03.gat,185,181
-// å®®æ®¿ã®å‰åº­
+// ‹{“a‚Ì‘O’ë
 payon.gat,107,327,0		warp	payonwarp1065		2,2,payon_in03.gat,20,63
 payon_in03.gat,20,60,0		warp	payonwarp1066		2,2,payon.gat,107,323
 payon_in03.gat,20,73,0		warp	payonwarp1067		2,2,payon_in03.gat,20,90
@@ -671,7 +671,7 @@ payon_in03.gat,12,161,0		warp	payonwarp1075		2,2,payon_in03.gat,12,175
 payon_in03.gat,12,172,0		warp	payonwarp1076		2,2,payon_in03.gat,12,158
 payon_in03.gat,28,161,0		warp	payonwarp1077		2,2,payon_in03.gat,28,175
 payon_in03.gat,28,172,0		warp	payonwarp1078		2,2,payon_in03.gat,28,158
-// æ°‘å®¶
+// –¯‰Æ
 payon_in01.gat,86,9,0		warp	payonwarp1079		2,2,payon.gat,266,152
 payon.gat,270,152,0		warp	payonwarp1080		2,2,payon_in01.gat,89,9
 payon_in01.gat,107,71,0		warp	payonwarp1081		2,2,payon_in01.gat,95,37
@@ -684,16 +684,16 @@ pay_gld.gat,374,149,0		warp	payonwarp2002		1,1,payon.gat,19,143
 
 
 //==============================================================
-// ----- Prontera ãƒ—ãƒ­ãƒ³ãƒ†ãƒ© -----
-// prontera.gat		ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒƒãƒ„ç‹å›½ã®é¦–éƒ½ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©
-// prt_in.gat		ãƒ—ãƒ­ãƒ³ãƒ†ãƒ© å®¤å†…
-// prt_church.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©è–å ‚å†…
-// prt_castle.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©åŸå†…
-// prt_gld.gat		ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
-// job_cru.gat		ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼è»¢è·è©¦é¨“å ´
+// ----- Prontera ƒvƒƒ“ƒeƒ‰ -----
+// prontera.gat		ƒ‹[ƒ“ƒ~ƒbƒhƒKƒbƒc‰¤‘‚Ìñ“sƒvƒƒ“ƒeƒ‰
+// prt_in.gat		ƒvƒƒ“ƒeƒ‰ º“à
+// prt_church.gat	ƒvƒƒ“ƒeƒ‰¹“°“à
+// prt_castle.gat	ƒvƒƒ“ƒeƒ‰é“à
+// prt_gld.gat		ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
+// job_cru.gat		ƒNƒ‹ƒZƒCƒ_[“]EŒ±ê
 // -----
-// prt_fild00.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
-// prtg_cas01.gat	ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ  ç ¦ 1 ã€œ 5
+// prt_fild00.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 00 ` 11
+// prtg_cas01.gat	ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€ Ô 1 ` 5
 //==============================================================
 prt_gld.gat,129,65,0		warp	pronterawarp0301	1,1,prtg_cas01.gat,99,32
 prt_gld.gat,240,124,0		warp	pronterawarp0302	1,1,prtg_cas02.gat,43,229
@@ -740,7 +740,7 @@ prt_church.gat,109,81,0		warp	pronterawarp1029	1,2,prt_church.gat,172,19
 prt_church.gat,168,19,0		warp	pronterawarp1030	1,2,prt_church.gat,105,81
 prt_church.gat,31,19,0		warp	pronterawarp1031	1,2,prt_church.gat,94,81
 prt_church.gat,90,81,0		warp	pronterawarp1032	1,2,prt_church.gat,27,19
-// è¡—
+// ŠX
 prontera.gat,107,215,0		warp	pronterawarp1033	2,2,prt_in.gat,240,139
 prt_in.gat,240,141,0		warp	pronterawarp1034	3,1,prontera.gat,107,218
 prontera.gat,120,267,0		warp	pronterawarp1035	2,2,prt_in.gat,180,97
@@ -789,13 +789,13 @@ prt_gld.gat,159,25,0		warp	pronterawarp2002	6,2,prt_castle.gat,102,178
 
 
 //==============================================================
-// ----- Izlude ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ -----
-// izlude.gat		è¡›æ˜Ÿéƒ½å¸‚ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰
-// izlude_in.gat	è¡›æ˜Ÿéƒ½å¸‚ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ å®¤å†…
-// prt_are_in.gat	ã‚¢ãƒªãƒ¼ãƒŠå¾…æ©Ÿå®¤
-// arena_room.gat	ã‚¢ãƒªãƒ¼ãƒŠå¾…æ©Ÿå®¤
+// ----- Izlude ƒCƒYƒ‹[ƒh -----
+// izlude.gat		‰q¯“ssƒCƒYƒ‹[ƒh
+// izlude_in.gat	‰q¯“ssƒCƒYƒ‹[ƒh º“à
+// prt_are_in.gat	ƒAƒŠ[ƒi‘Ò‹@º
+// arena_room.gat	ƒAƒŠ[ƒi‘Ò‹@º
 // -----
-// prt_fild00.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// prt_fild00.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 00 ` 11
 //==============================================================
 izlude.gat,30,78,0		warp	izludewarp0501		3,3,prt_fild08.gat,367,212
 
@@ -817,7 +817,7 @@ izlude_in.gat,172,158,0		warp	izludewarp1014		3,2,izlude_in.gat,172,136
 // Swordman
 izlude_in.gat,43,169,0		warp	izludewarp1015		2,3,izlude_in.gat,64,169
 
-// ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ç©ºæ¸¯
+// ƒCƒYƒ‹[ƒh‹ó`
 izlude.gat,149,39,0		warp	izludewarp1016		1,1,izlude.gat,182,56
 izlude.gat,176,56,0		warp	izludewarp1017		1,1,izlude.gat,145,40
 
@@ -841,16 +841,16 @@ prt_are_in.gat,54,13,0		warp	izludewarp1115		1,1,arena_room.gat,100,77
 
 
 //==============================================================
-// ----- Glast Heim ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ  -----
-// glast_01.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ å¤åŸ
+// ----- Glast Heim ƒOƒ‰ƒXƒgƒwƒCƒ€ -----
+// glast_01.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ŒÃé
 // -----
-// gl_step.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ  éšæ®µãƒ€ãƒ³ã‚¸ãƒ§ãƒ³
-// gl_knt01.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ  é¨å£«å›£å†…
-// gl_in01.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ  å®¤å†…
-// gl_cas01.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ å¤åŸ 1F
-// gl_cas02.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ å¤åŸ 2F
-// gl_church.gat	ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ  ä¿®é“é™¢
-// gef_fild00.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// gl_step.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ ŠK’iƒ_ƒ“ƒWƒ‡ƒ“
+// gl_knt01.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ ‹Rm’c“à
+// gl_in01.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ º“à
+// gl_cas01.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ŒÃé 1F
+// gl_cas02.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ŒÃé 2F
+// gl_church.gat	ƒOƒ‰ƒXƒgƒwƒCƒ€ C“¹‰@
+// gef_fild00.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
 //==============================================================
 glast_01.gat,51,108,0		warp	glastwarp0401		1,1,gl_step.gat,12,7
 glast_01.gat,77,193,0		warp	glastwarp0402		1,1,gl_knt01.gat,150,15
@@ -866,19 +866,19 @@ glast_01.gat,380,304,0		warp	glastwarp0501		3,3,gef_fild06.gat,22,304
 
 
 
-//---JP2.0 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP2.0 ’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Comodo ã‚³ãƒ¢ãƒ‰ -----
-// comodo.gat		å¹»æƒ³ã®å³¶ã‚³ãƒ¢ãƒ‰
-// cmd_in01.gat		ã‚³ãƒ¢ãƒ‰å®¤å†…
-// cmd_in02.gat		ã‚³ãƒ¢ãƒ‰å®¤å†…
-// job_duncer.gat	ã‚³ãƒ¢ãƒ‰å°åŠ‡å ´
+// ----- Comodo ƒRƒ‚ƒh -----
+// comodo.gat		Œ¶‘z‚Ì“‡ƒRƒ‚ƒh
+// cmd_in01.gat		ƒRƒ‚ƒhº“à
+// cmd_in02.gat		ƒRƒ‚ƒhº“à
+// job_duncer.gat	ƒRƒ‚ƒh¬Œ€ê
 // -----
-// beach_dun.gat	è¥¿æ´çªŸ ã‚«ãƒ«
-// beach_dun2.gat	åŒ—æ´çªŸ ãƒ«ãƒ¯ãƒ³ãƒ€
-// beach_dun3.gat	æ±æ´çªŸ ãƒã‚ª
+// beach_dun.gat	¼“´ŒA ƒJƒ‹
+// beach_dun2.gat	–k“´ŒA ƒ‹ƒƒ“ƒ_
+// beach_dun3.gat	“Œ“´ŒA ƒ}ƒI
 //==============================================================
 comodo.gat,25,214,0		warp	comodowarp0401		1,1,beach_dun.gat,266,67
 comodo.gat,176,358,0		warp	comodowarp0402		1,1,beach_dun2.gat,154,25
@@ -920,52 +920,52 @@ job_duncer.gat,69,43,0		warp	comodowarp6001		1,1,comodo.gat,185,156
 
 
 
-//---JP2.5 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP2.5 ’Ç‰Áƒ}ƒbƒv---
 
 
-//---JP3.0 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP3.0 ’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Yuno ã‚¸ãƒ¥ãƒãƒ¼ -----
-// yuno.gat 		ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰å…±å’Œå›½ã®é¦–éƒ½ã‚¸ãƒ¥ãƒãƒ¼
-// yuno_in01.gat	ã‚¸ãƒ¥ãƒãƒ¼å®¤å†…
-// yuno_in02.gat	ã‚»ãƒ¼ã‚¸ã‚­ãƒ£ãƒƒã‚¹ãƒ«å®¤å†…
-// yuno_in03.gat	ã‚¸ãƒ¥ãƒãƒ¼å®¤å†…
-// yuno_in04.gat	å…±å’Œå›½å›³æ›¸é¤¨
-// yuno_in05.gat	ãƒ¦ãƒŸãƒ«ã®å¿ƒè‡“å‹•åŠ›å®¤
-// job_sage.gat		ã‚»ãƒ¼ã‚¸è»¢è·è©¦é¨“å ´
+// ----- Yuno ƒWƒ…ƒm[ -----
+// yuno.gat 		ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒh‹¤˜a‘‚Ìñ“sƒWƒ…ƒm[
+// yuno_in01.gat	ƒWƒ…ƒm[º“à
+// yuno_in02.gat	ƒZ[ƒWƒLƒƒƒbƒXƒ‹º“à
+// yuno_in03.gat	ƒWƒ…ƒm[º“à
+// yuno_in04.gat	‹¤˜a‘}‘ŠÙ
+// yuno_in05.gat	ƒ†ƒ~ƒ‹‚ÌS‘Ÿ“®—Íº
+// job_sage.gat		ƒZ[ƒW“]EŒ±ê
 // -----
-// yuno_fild04.gat	ã‚¨ãƒ«ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
+// yuno_fild04.gat	ƒGƒ‹ƒƒXƒvƒŒ[ƒg
 //==============================================================
 yuno.gat,158,13,0		warp	yunowarp0501		1,1,yuno_fild04.gat,231,284
 
-//æ­¦å™¨é˜²å…·å±‹(å·¦ä¸‹)
+//•Ší–h‹ï‰®(¶‰º)
 yuno.gat,117,135,0		warp	yunowarp1001		1,1,yuno_in01.gat,116,37
 yuno_in01.gat,116,40,0		warp	yunowarp1002		1,1,yuno.gat,120,138
 yuno_in01.gat,88,36,0		warp	yunowarp1003		1,1,yuno_in01.gat,173,34
 yuno_in01.gat,176,34,0		warp	yunowarp1004		1,1,yuno_in01.gat,91,36
-//ã‚«ãƒ–ãƒˆã®å®¶(å·¦ä¸‹)
+//ƒJƒuƒg‚Ì‰Æ(¶‰º)
 yuno.gat,48,105,0		warp	yunowarp1005		1,1,yuno_in01.gat,37,176
 yuno_in01.gat,40,176,0		warp	yunowarp1006		1,1,yuno.gat,51,105
 yuno_in01.gat,32,182,0		warp	yunowarp1007		1,1,yuno_in01.gat,86,164
 yuno_in01.gat,82,164,0		warp	yunowarp1008		1,1,yuno_in01.gat,28,182
-//ã‚¹ãƒ†ãƒ³ã‚¯ãƒ«ã®å®¶(å·¦)
+//ƒXƒeƒ“ƒNƒ‹‚Ì‰Æ(¶)
 yuno.gat,48,151,0		warp	yunowarp1009		1,1,yuno_in01.gat,30,100
 yuno_in01.gat,34,100,0		warp	yunowarp1010		1,1,yuno.gat,51,151
-//ç„¡äººå›³æ›¸é¤¨(å·¦)
+//–³l}‘ŠÙ(¶)
 yuno.gat,93,180,0		warp	yunowarp1011		1,1,yuno_in04.gat,33,127
 yuno_in04.gat,33,130,0		warp	yunowarp1012		1,1,yuno.gat,95,184
-//é“å…·å±‹(å³ä¸‹)
+//“¹‹ï‰®(‰E‰º)
 yuno.gat,196,138,0		warp	yunowarp1013		1,1,yuno_in01.gat,32,33
 yuno_in01.gat,32,36,0		warp	yunowarp1014		1,1,yuno.gat,193,142
-//å®¶(å³ä¸‹è³¢è€…å‰)
+//‰Æ(‰E‰ºŒ«Ò‘O)
 yuno.gat,264,87,0		warp	yunowarp1015		1,1,yuno_in01.gat,168,101
 yuno_in01.gat,168,104,0		warp	yunowarp1016		1,1,yuno.gat,264,90
-//å¥³åŒ»ã®å®¶(å³ä¸‹)
+//—ˆã‚Ì‰Æ(‰E‰º)
 yuno.gat,245,147,0		warp	yunowarp1017		1,1,yuno_in01.gat,101,88
 yuno_in01.gat,101,85,0		warp	yunowarp1018		1,1,yuno.gat,245,144
-//å…±å’Œå›½å›³æ›¸é¤¨
+//‹¤˜a‘}‘ŠÙ
 yuno.gat,342,203,0		warp	yunowarp1019		1,1,yuno_in04.gat,32,58
 yuno_in04.gat,28,58,0		warp	yunowarp1020		1,1,yuno.gat,338,203
 yuno_in04.gat,52,58,0		warp	yunowarp1021		1,1,yuno_in04.gat,97,58
@@ -980,7 +980,7 @@ yuno_in04.gat,103,51,0		warp	yunowarp1029		1,1,yuno_in04.gat,103,20
 yuno_in04.gat,103,22,0		warp	yunowarp1030		1,1,yuno_in04.gat,103,53
 yuno_in04.gat,122,57,0		warp	yunowarp1031		1,1,yuno_in04.gat,164,110
 yuno_in04.gat,161,110,0		warp	yunowarp1032		1,1,yuno_in04.gat,120,57
-//é­”æ³•ã‚¢ã‚«ãƒ‡ãƒŸãƒ¼
+//–‚–@ƒAƒJƒfƒ~[
 yuno.gat,323,284,0		warp	yunowarp1033		1,1,yuno_in03.gat,167,22
 yuno_in03.gat,167,19,0		warp	yunowarp1034		1,1,yuno.gat,323,280
 yuno_in03.gat,167,72,0		warp	yunowarp1035		1,1,yuno_in03.gat,179,113
@@ -995,12 +995,12 @@ yuno_in03.gat,111,192,0		warp	yunowarp1043		1,1,yuno_in03.gat,162,132
 yuno_in03.gat,162,129,0		warp	yunowarp1044		1,1,yuno_in03.gat,111,188
 yuno_in03.gat,153,134,0		warp	yunowarp1045		1,1,yuno_in03.gat,62,186
 yuno_in03.gat,66,186,0		warp	yunowarp1046		1,1,yuno_in03.gat,156,134
-//ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ç ”ç©¶æ‰€
+//ƒ‚ƒ“ƒXƒ^[Œ¤‹†Š
 yuno.gat,278,293,0		warp	yunowarp1047		1,1,yuno_in03.gat,25,15
 yuno_in03.gat,25,11,0		warp	yunowarp1048		1,1,yuno.gat,278,290
 yuno_in03.gat,25,56,0		warp	yunowarp1049		1,1,yuno_in03.gat,32,92
 yuno_in03.gat,32,89,0		warp	yunowarp1050		1,1,yuno_in03.gat,25,53
-//ãƒ¦ãƒŸãƒ«ã®å¿ƒè‡“
+//ƒ†ƒ~ƒ‹‚ÌS‘Ÿ
 yuno.gat,284,366,0		warp	yunowarp1051		1,1,yuno_in03.gat,224,23
 yuno_in03.gat,224,19,0		warp	yunowarp1052		1,1,yuno.gat,282,363
 yuno_in03.gat,219,50,0		warp	yunowarp1053		1,1,yuno_in03.gat,104,118
@@ -1011,10 +1011,10 @@ yuno_in03.gat,231,56,0		warp	yunowarp1057		1,1,yuno_in03.gat,239,144
 yuno_in03.gat,239,141,0		warp	yunowarp1058		1,1,yuno_in03.gat,231,59
 yuno_in03.gat,223,167,0		warp	yunowarp1059		1,1,yuno_in03.gat,96,59
 yuno_in03.gat,96,62,0		warp	yunowarp1060		1,1,yuno_in03.gat,223,170
-//ã‚»ãƒ¼ã‚¸ã‚­ãƒ£ãƒƒã‚¹ãƒ«
+//ƒZ[ƒWƒLƒƒƒbƒXƒ‹
 yuno.gat,87,321,0		warp	yunowarp1061		1,1,yuno_in02.gat,168,61
 yuno_in02.gat,172,61,0		warp	yunowarp1062		1,1,yuno.gat,90,318
-//ã‚»ãƒ¼ã‚¸ã‚­ãƒ£ãƒƒã‚¹ãƒ«åœ°ä¸‹(Random)
+//ƒZ[ƒWƒLƒƒƒbƒXƒ‹’n‰º(Random)
 yuno_in02.gat,82,14,0		warp	yunowarp1063		1,1,yuno_in05.gat,192,194
 yuno_in05.gat,196,194,0		warp	yunowarp1064		1,1,yuno_in02.gat,85,14
 // Yuno In05 (Entering Random Warps) -------------------------------------------
@@ -1113,15 +1113,15 @@ yuno_in05.gat,31,167,0		warp	yunowarp1078		1,1,yuno_in05.gat,50,85
 yuno_in05.gat,50,88,0		warp	yunowarp1079		1,1,yuno_in02.gat,85,14
 
 
-//ã‚¸ãƒ¥ãƒãƒ¼ç©ºæ¸¯
+//ƒWƒ…ƒm[‹ó`
 yuno.gat,53,214,0		warp	yunowarp1080		1,1,y_airport.gat,143,23
 y_airport.gat,143,16,0		warp	yunowarp1081		1,1,yuno.gat,53,207
 yuno.gat,59,240,0		warp	yunowarp1082		1,1,y_airport.gat,143,54
 yuno.gat,47,240,0		warp	yunowarp1083		1,1,y_airport.gat,143,54
-//é£›è¡Œèˆ¹
+//”òs‘D
 yuno.gat,96,261,0		warp	yunowarp1084		1,1,airplane.gat,244,58
 yuno.gat,6,261,0		warp	yunowarp1085		1,1,airplane_01.gat,244,58
-//ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰æ”¿åºœåºèˆ
+//ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒh­•{’¡É
 yuno.gat,157,322,0		warp	yunowarp1086		1,1,yuno_pre.gat,69,13
 yuno_pre.gat,69,10,0		warp	yunowarp1087		1,1,yuno.gat,157,317
 yuno_pre.gat,113,48,0		warp	yunowarp1088		1,1,yuno_pre.gat,84,22
@@ -1130,10 +1130,10 @@ yuno_pre.gat,81,68,0		warp	yunowarp1089		1,1,yuno_pre.gat,95,68
 
 
 //==============================================================
-// ----- Rogue ãƒ­ãƒ¼ã‚° -----
-// in_rogue.gat		ãƒ­ãƒ¼ã‚°ã‚®ãƒ«ãƒ‰
+// ----- Rogue ƒ[ƒO -----
+// in_rogue.gat		ƒ[ƒOƒMƒ‹ƒh
 // -----
-// cmd_fild07.gat	ãƒ•ã‚¡ãƒ­ã‚¹ç¯å°å³¶
+// cmd_fild07.gat	ƒtƒ@ƒƒX“”‘ä“‡
 //==============================================================
 in_rogue.gat,375,46,0		warp	roguewarp0501		1,1,cmd_fild07.gat,196,117
 
@@ -1142,45 +1142,45 @@ in_rogue.gat,375,125,0		warp	roguewarp6002		1,1,in_rogue.gat,379,33
 
 
 
-//---ã‚¢ãƒãƒ„è¿½åŠ ãƒãƒƒãƒ—---
+//---ƒAƒ}ƒc’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Amatsu ã‚¢ãƒãƒ„ -----
-// amatsu.gat		æ³‰æ°´ã®å›½ã‚¢ãƒãƒ„
-// ama_in01.gat		ã‚¢ãƒãƒ„ å®¤å†…
-// ama_in02.gat		æ±æ¹–åŸ æ³‰æ°´é–£
+// ----- Amatsu ƒAƒ}ƒc -----
+// amatsu.gat		ò…‚Ì‘ƒAƒ}ƒc
+// ama_in01.gat		ƒAƒ}ƒc º“à
+// ama_in02.gat		“ŒŒÎé ò…Št
 // -----
-// ama_fild01.gat	ã‚¢ãƒãƒ„ãƒ•ãƒ¼ãƒ«ãƒ‰
+// ama_fild01.gat	ƒAƒ}ƒcƒt[ƒ‹ƒh
 //==============================================================
 amatsu.gat,248,292,0		warp	amatsuwarp0501		1,1,ama_fild01.gat,75,33
 ama_in01.gat,175,171,0		warp	amatsuwarp0502		1,1,ama_fild01.gat,174,328
 ama_in01.gat,174,121,0		warp	amatsuwarp0503		1,1,ama_fild01.gat,330,139
 
-//é“å…·
+//“¹‹ï
 amatsu.gat,94,117,0		warp	amatsuwarp1001		1,1,ama_in01.gat,30,24
 ama_in01.gat,33,24,0		warp	amatsuwarp1002		1,1,amatsu.gat,97,117
-//é˜²å…·
+//–h‹ï
 amatsu.gat,132,117,0		warp	amatsuwarp1003		1,1,ama_in01.gat,89,23
 ama_in01.gat,86,23,0		warp	amatsuwarp1004		1,1,amatsu.gat,129,117
-//è”µå·¦
+//‘ ¶
 amatsu.gat,52,148,0		warp	amatsuwarp1005		1,1,ama_in01.gat,88,97
 ama_in01.gat,88,94,0		warp	amatsuwarp1006		1,1,amatsu.gat,52,145
-//è”µå³
+//‘ ‰E
 amatsu.gat,168,182,0		warp	amatsuwarp1007		1,1,ama_in01.gat,34,99
 ama_in01.gat,34,96,0		warp	amatsuwarp1008		1,1,amatsu.gat,168,179
-//æ°‘å®¶ä¸­å¤®
+//–¯‰Æ’†‰›
 amatsu.gat,177,138,0		warp	amatsuwarp1009		1,1,ama_in01.gat,28,176
 ama_in01.gat,31,176,0		warp	amatsuwarp1010		1,1,amatsu.gat,180,138
-//å¯¿å¸
+//õi
 amatsu.gat,217,116,0		warp	amatsuwarp1011		1,1,ama_in01.gat,162,25
 ama_in01.gat,157,25,0		warp	amatsuwarp1012		1,1,amatsu.gat,214,116
 ama_in01.gat,162,34,0		warp	amatsuwarp1013		1,1,ama_in01.gat,166,77
 ama_in01.gat,166,73,0		warp	amatsuwarp1014		1,1,ama_in01.gat,162,31
-//æ°‘å®¶æ±
+//–¯‰Æ“Œ
 amatsu.gat,248,160,0		warp	amatsuwarp1015		1,1,ama_in01.gat,79,178
 ama_in01.gat,76,178,0		warp	amatsuwarp1016		1,1,amatsu.gat,245,160
-//åŸ
+//é
 amatsu.gat,85,235,0		warp	amatsuwarp1017		1,1,ama_in02.gat,223,45
 ama_in02.gat,226,45,0		warp	amatsuwarp1018		1,1,amatsu.gat,88,235
 ama_in02.gat,195,44,0		warp	amatsuwarp1019		1,1,ama_in02.gat,65,40
@@ -1194,95 +1194,95 @@ ama_in02.gat,215,149,0		warp	amatsuwarp1026		1,1,ama_in02.gat,59,156
 
 
 
-//---ã‚³ãƒ³ãƒ­ãƒ³è¿½åŠ ãƒãƒƒãƒ—---
+//---ƒRƒ“ƒƒ“’Ç‰Áƒ}ƒbƒv---
 
 
 
 //==============================================================
-// ----- Gonryun ã‚³ãƒ³ãƒ­ãƒ³ -----
-// gonryun.gat		ç¥ä»™ã®å³¶ã‚³ãƒ³ãƒ­ãƒ³
-// gon_in.gat		å®¤å†…
+// ----- Gonryun ƒRƒ“ƒƒ“ -----
+// gonryun.gat		_å‚Ì“‡ƒRƒ“ƒƒ“
+// gon_in.gat		º“à
 // -----
-// gon_dun01.gat	è¥¿ç‹æ¯ç¥æ®¿ã¸
-// gon_fild01.gat	å—ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¸
+// gon_dun01.gat	¼‰¤•ê_“a‚Ö
+// gon_fild01.gat	“ìƒtƒB[ƒ‹ƒh‚Ö
 //==============================================================
 gonryun.gat,159,201,0		warp	gonryunwarp0402		1,1,gon_dun01.gat,153,48
 gonryun.gat,161,8,0		warp	gonryunwarp0501		1,1,gon_fild01.gat,191,261
 
-//æ°‘å®¶
+//–¯‰Æ
 gonryun.gat,195,93,0		warp	gonryunwarp1001		1,1,gon_in.gat,95,23
 gon_in.gat,95,26,0		warp	gonryunwarp1002		1,1,gonryun.gat,195,96
-//å®¿
+//h
 gonryun.gat,215,114,0		warp	gonryunwarp1003		1,1,gon_in.gat,152,24
 gon_in.gat,149,24,0		warp	gonryunwarp1004		1,1,gonryun.gat,212,114
-//å®¿2Fâ†“
+//h2F«
 gon_in.gat,184,11,0		warp	gonryunwarp1005		1,1,gon_in.gat,189,85
 gon_in.gat,186,85,0		warp	gonryunwarp1006		1,1,gon_in.gat,181,11
-//å®¿2Fâ†‘
+//h2Fª
 gon_in.gat,186,107,0		warp	gonryunwarp1007		1,1,gon_in.gat,181,36
 gon_in.gat,184,36,0		warp	gonryunwarp1008		1,1,gon_in.gat,189,107
-//æ°‘å®¶
+//–¯‰Æ
 gonryun.gat,221,162,0		warp	gonryunwarp1009		1,1,gon_in.gat,112,98
 gon_in.gat,109,98,0		warp	gonryunwarp1010		1,1,gonryun.gat,218,162
-//æ°‘å®¶åŒ—è¥¿
+//–¯‰Æ–k¼
 gonryun.gat,107,184,0		warp	gonryunwarp1011		1,1,gon_in.gat,72,70
 gon_in.gat,72,67,0		warp	gonryunwarp1012		1,1,gonryun.gat,107,181
-//æ‘é•·å®…
+//‘º’·‘î
 gonryun.gat,109,131,0		warp	gonryunwarp1013		1,1,gon_in.gat,44,24
 gon_in.gat,47,24,0		warp	gonryunwarp1014		1,1,gonryun.gat,112,131
-//æ‘é•·å®…2F
+//‘º’·‘î2F
 gon_in.gat,42,35,0		warp	gonryunwarp1015		1,1,gon_in.gat,34,97
 gon_in.gat,31,97,0		warp	gonryunwarp1016		1,1,gon_in.gat,39,35
 
 
 
-//---ã‚¦ãƒ³ãƒãƒ©è¿½åŠ ãƒãƒƒãƒ—
+//---ƒEƒ“ƒoƒ‰’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Umbala ã‚¦ãƒ³ãƒãƒ© -----
-// umbala.gat		ã‚¦ãƒ¼ã‚¿ãƒ³æ—ã®æ‘ã‚¦ãƒ³ãƒãƒ©
-// um_in.gat		ã‚¦ãƒ¼ã‚¿ãƒ³æ—ã®æ‘ã‚¦ãƒ³ãƒãƒ© å®¤å†…
+// ----- Umbala ƒEƒ“ƒoƒ‰ -----
+// umbala.gat		ƒE[ƒ^ƒ“‘°‚Ì‘ºƒEƒ“ƒoƒ‰
+// um_in.gat		ƒE[ƒ^ƒ“‘°‚Ì‘ºƒEƒ“ƒoƒ‰ º“à
 // -----
-// um_dun01.gat		å¤§æ¨¹ã®é“
-// um_fild04.gat	ãƒ•ãƒ ã‚¬ã‚¸ãƒ£ãƒ³ã‚°
+// um_dun01.gat		‘å÷‚Ì“¹
+// um_fild04.gat	ƒtƒ€ƒKƒWƒƒƒ“ƒO
 //==============================================================
 //umbala.gat,106,285,0		warp	umbalawarp0401		1,1,um_dun01.gat,42,30
 umbala.gat,106,285,0		warp	umbalawarp0401		1,1,yggdrasil01.gat,39,63
 umbala.gat,130,79,0		warp	umbalawarp0501		1,1,um_fild04.gat,215,336
 
-//ãƒãƒ£ãƒ“ãƒã‚¿ãƒ³ã®å®¶åŒ—
+//ƒ`ƒƒƒrƒoƒ^ƒ“‚Ì‰Æ–k
 umbala.gat,100,203,0		warp	umbalawarp1001		1,1,um_in.gat,163,69
 um_in.gat,166,69,0		warp	umbalawarp1002		1,1,umbala.gat,102,205
-//ãƒãƒ£ãƒ“ãƒã‚¿ãƒ³ã®å®¶å—
+//ƒ`ƒƒƒrƒoƒ^ƒ“‚Ì‰Æ“ì
 umbala.gat,94,186,0		warp	umbalawarp1003		1,1,um_in.gat,141,42
 um_in.gat,141,39,0		warp	umbalawarp1004		1,1,umbala.gat,94,183
-//é…‹é•·ã®å®¶
+//U’·‚Ì‰Æ
 umbala.gat,68,253,0		warp	umbalawarp1005		1,1,um_in.gat,38,113
 um_in.gat,38,110,0		warp	umbalawarp1006		1,1,umbala.gat,66,250
-//ã‚¦ã‚§ãƒŠã‚¿ãƒ³ã®å®¶
+//ƒEƒFƒiƒ^ƒ“‚Ì‰Æ
 umbala.gat,107,130,0		warp	umbalawarp1007		1,1,um_in.gat,99,66
 um_in.gat,99,63,0		warp	umbalawarp1008		1,1,umbala.gat,108,127
-//æ­¦å™¨å±‹
+//•Ší‰®
 umbala.gat,125,157,0		warp	umbalawarp1009		1,1,um_in.gat,155,114
 um_in.gat,155,111,0		warp	umbalawarp1010		1,1,umbala.gat,126,154
-//é“å…·å±‹
+//“¹‹ï‰®
 umbala.gat,138,129,0		warp	umbalawarp1011		1,1,um_in.gat,99,114
 um_in.gat,99,111,0		warp	umbalawarp1012		1,1,umbala.gat,136,127
-//ã‚·ãƒ£ãƒ¼ãƒãƒ³ã®å®¶
-//npc_town_umbala.txtã«è¨˜è¿°
+//ƒVƒƒ[ƒ}ƒ“‚Ì‰Æ
+//npc_town_umbala.txt‚É‹Lq
 
 
 
-//---ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ è¿½åŠ ãƒãƒƒãƒ—
+//---ƒjƒuƒ‹ƒwƒCƒ€’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Niflheimg ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ  -----
-// niflheim.gat		æ­»è€…ã®è¡—ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ 
-// nif_in.gat		ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ  å®¤å†…
+// ----- Niflheimg ƒjƒuƒ‹ƒwƒCƒ€ -----
+// niflheim.gat		€Ò‚ÌŠXƒjƒuƒ‹ƒwƒCƒ€
+// nif_in.gat		ƒjƒuƒ‹ƒwƒCƒ€ º“à
 // -----
-// nif_fild02.gat	ã‚®ãƒ§ãƒ«æ¸“è°·
+// nif_fild02.gat	ƒMƒ‡ƒ‹Œk’J
 //==============================================================
 niflheim.gat,19,154,0		warp	niflheimwarp0501	1,1,nif_fild02.gat,375,235
 
@@ -1315,78 +1315,78 @@ nif_in.gat,140,171,0		warp	niflheimwarp1020	1,1,nif_in.gat,65,170
 
 
 
-//---è»¢ç”Ÿã‚·ã‚¹ãƒ†ãƒ è¿½åŠ ãƒãƒƒãƒ—
+//---“]¶ƒVƒXƒeƒ€’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Valkyrie ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ç¥æ®¿ -----
-// valkyrie.gat		ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ç¥æ®¿
+// ----- Valkyrie ƒ”ƒ@ƒ‹ƒLƒŠ[_“a -----
+// valkyrie.gat		ƒ”ƒ@ƒ‹ƒLƒŠ[_“a
 //==============================================================
 valkyrie.gat,49,67,0	warp	valkyriewarp6001	1,1,valkyrie.gat,49,75
 valkyrie.gat,49,72,0	warp	valkyriewarp6001	1,1,valkyrie.gat,49,63
 
 
 
-//---é¾ä¹‹åŸè¿½åŠ ãƒãƒƒãƒ—
+//---—´”Vé’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Louyang é¾ä¹‹åŸ -----
-// louyang.gat		å¤éƒ½ é¾ä¹‹åŸ
-// lou_in01.gat		é¾ä¹‹åŸ å®¤å†…
-// lou_in02.gat		é¾ä¹‹åŸ å®¤å†…
+// ----- Louyang —´”Vé -----
+// louyang.gat		ŒÃ“s —´”Vé
+// lou_in01.gat		—´”Vé º“à
+// lou_in02.gat		—´”Vé º“à
 // -----
-// lou_dun01.gat	ç‹é™µ
-// lou_fild01.gat	é¾ä¹‹åŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// lou_dun01.gat	‰¤—Ë
+// lou_fild01.gat	—´”VéƒtƒB[ƒ‹ƒh
 //==============================================================
 louyang.gat,37,271,0		warp	louyangwarp0401		1,1,lou_dun01.gat,218,195
 louyang.gat,218,19,0		warp	louyangwarp0501		3,1,lou_fild01.gat,233,353
 
-// åŸ
+// é
 louyang.gat,218,255,0		warp	louyangwarp1001		2,1,lou_in01.gat,101,122
 lou_in01.gat,101,119,0		warp	louyangwarp1002		1,1,louyang.gat,218,252
-// åŸ -> å³ã®éƒ¨å±‹
+// é -> ‰E‚Ì•”‰®
 lou_in01.gat,125,140,0		warp	louyangwarp1003		2,1,lou_in01.gat,156,141
 lou_in01.gat,153,141,0		warp	louyangwarp1004		1,1,lou_in01.gat,122,141
-// åŸ -> å·¦ã®éƒ¨å±‹
+// é -> ¶‚Ì•”‰®
 lou_in01.gat,79,141,0		warp	louyangwarp1005		2,1,lou_in01.gat,47,141
 lou_in01.gat,50,141,0		warp	louyangwarp1006		1,1,lou_in01.gat,82,141
-// ç—…é™¢
+// •a‰@
 louyang.gat,263,93,0		warp	louyangwarp1007		1,1,lou_in02.gat,245,59
 lou_in02.gat,242,59,0		warp	louyangwarp1008		1,1,louyang.gat,260,93
-// é“å…·å±‹
+// “¹‹ï‰®
 louyang.gat,136,97,0		warp	louyangwarp1009		1,1,lou_in02.gat,250,174
 lou_in02.gat,253,177,0		warp	louyangwarp1010		1,1,louyang.gat,139,100
-// å€‰åº«
+// ‘qŒÉ
 louyang.gat,125,121,0		warp	louyangwarp1011		1,1,lou_in02.gat,198,161
 lou_in02.gat,198,159,0		warp	louyangwarp1012		1,1,louyang.gat,125,118
 louyang.gat,129,121,0		warp	louyangwarp1013		1,1,lou_in02.gat,203,161
 lou_in02.gat,203,159,0		warp	louyangwarp1014		1,1,louyang.gat,129,118
-// æ­¦å™¨å±‹
+// •Ší‰®
 louyang.gat,145,174,0		warp	louyangwarp1015		1,1,lou_in02.gat,126,168
 lou_in02.gat,126,165,0		warp	louyangwarp1016		1,1,louyang.gat,145,171
-// é…’å±‹
+// ğ‰®
 louyang.gat,280,167,0		warp	louyangwarp1017		1,1,lou_in02.gat,58,173
 lou_in02.gat,58,170,0		warp	louyangwarp1018		1,1,louyang.gat,280,164
-// é…’å±‹ -> 2Få·¦
+// ğ‰® -> 2F¶
 lou_in02.gat,35,190,0		warp	louyangwarp1019		1,1,lou_in02.gat,41,138
 lou_in02.gat,44,138,0		warp	louyangwarp1020		1,1,lou_in02.gat,38,190
-// é…’å±‹ -> 2Få³
+// ğ‰® -> 2F‰E
 lou_in02.gat,80,190,0		warp	louyangwarp1021		1,1,lou_in02.gat,74,140
 lou_in02.gat,71,140,0		warp	louyangwarp1022		1,1,lou_in02.gat,77,190
-// å®˜åº
+// Š¯’¡
 louyang.gat,309,80,0		warp	louyangwarp1023		1,1,lou_in02.gat,189,77
 lou_in02.gat,189,74,0		warp	louyangwarp1024		1,1,louyang.gat,309,77
-// å®˜åº2F
+// Š¯’¡2F
 lou_in02.gat,201,94,0		warp	louyangwarp1025		1,1,lou_in02.gat,173,46
 lou_in02.gat,176,46,0		warp	louyangwarp1026		1,1,lou_in02.gat,204,94
-// ä¸–æ¨ã¦äººã®å®¶
+// ¢Ì‚Äl‚Ì‰Æ
 louyang.gat,130,63,0		warp	louyangwarp1027		1,1,lou_in02.gat,72,31
 lou_in02.gat,72,28,0		warp	louyangwarp1028		1,1,louyang.gat,130,60
-// æ¯’è–¬ç‹ã®å®¶
+// “Å–ò‰¤‚Ì‰Æ
 louyang.gat,317,176,0		warp	louyangwarp1029		1,1,lou_in02.gat,121,31
 lou_in02.gat,121,28,0		warp	louyangwarp1030		1,1,louyang.gat,317,173
-// å±•æœ›å°
+// “W–]‘ä
 louyang.gat,133,245,0		warp	louyangwarp1031		1,1,lou_in01.gat,25,19
 lou_in01.gat,28,19,0		warp	louyangwarp1032		1,1,louyang.gat,136,245
 lou_in01.gat,14,18,0		warp	louyangwarp1033		0,0,louyang.gat,90,254
@@ -1394,12 +1394,12 @@ lou_in01.gat,14,18,0		warp	louyangwarp1033		0,0,louyang.gat,90,254
 
 
 //==============================================================
-// ----- Jawaii ã‚¸ãƒ£ãƒ¯ã‚¤ -----
-// jawaii.gat		å¸¸å¤ã®å³¶ ã‚¸ãƒ£ãƒ¯ã‚¤
-// jawaii_in.gat	ã‚¸ãƒ£ãƒ¯ã‚¤ å®¤å†…
+// ----- Jawaii ƒWƒƒƒƒC -----
+// jawaii.gat		í‰Ä‚Ì“‡ ƒWƒƒƒƒC
+// jawaii_in.gat	ƒWƒƒƒƒC º“à
 // -----
 //==============================================================
-//ç§˜å¯†é…’å ´
+//”é–§ğê
 jawaii.gat,192,215	warp	jaw001	1,1,jawaii_in.gat,27,94
 
 jawaii_in.gat,27,91,0	script	jaw001-1	45,1,1,{
@@ -1409,47 +1409,47 @@ jawaii_in.gat,27,91,0	script	jaw001-1	45,1,1,{
 		warp "jawaii_in.gat",27,94;
 	end;
 }
-//ã‚¹ã‚¤ãƒ¼ãƒˆãƒ«ãƒ¼ãƒ 
+//ƒXƒC[ƒgƒ‹[ƒ€
 jawaii_in.gat,113,61	warp	jaw01	1,1,jawaii.gat,136,203
-//ã‚¢ãƒ³ãƒ†ã‚£ãƒ¼ã‚¯ãƒ«ãƒ¼ãƒ 
+//ƒAƒ“ƒeƒB[ƒNƒ‹[ƒ€
 jawaii_in.gat,132,107	warp	jaw02	1,1,jawaii.gat,114,196
-//ãƒãƒ‹ãƒ¼ãƒ«ãƒ¼ãƒ 
+//ƒnƒj[ƒ‹[ƒ€
 jawaii_in.gat,89,117	warp	jaw03	1,1,jawaii.gat,111,186
-//ãƒ“ãƒ©ãƒ«ãƒ¼ãƒ 
+//ƒrƒ‰ƒ‹[ƒ€
 jawaii_in.gat,90,78	warp	jaw04	1,1,jawaii.gat,117,175
 
 
 
-//---ç¥å™¨ã‚¯ã‚¨ã‚¹ãƒˆè¿½åŠ ãƒãƒƒãƒ—
+//---_ŠíƒNƒGƒXƒg’Ç‰Áƒ}ƒbƒv
 
 
-//---ã‚¢ãƒ¦ã‚¿ãƒ¤è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒ†ƒ^ƒ„’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Ayothaya ã‚¢ãƒ¦ã‚¿ãƒ¤ -----
-// ayothaya.gat		ã‚¢ãƒ¦ã‚¿ãƒ¤
-// ayo_in01.gat		ã‚¢ãƒ¦ã‚¿ãƒ¤ å®¤å†…
-// ayo_in02.gat		ã‚¢ãƒ¦ã‚¿ãƒ¤ å®¤å†…
+// ----- Ayothaya ƒAƒ†ƒ^ƒ„ -----
+// ayothaya.gat		ƒAƒ†ƒ^ƒ„
+// ayo_in01.gat		ƒAƒ†ƒ^ƒ„ º“à
+// ayo_in02.gat		ƒAƒ†ƒ^ƒ„ º“à
 // -----
 //==============================================================
 ayothaya.gat,276,176,0	warp	ayothayawarp0501	1,1,ayo_fild01.gat,37,241
 
-//èˆ¹é™ã‚Šã¦æ¡Ÿæ©‹å·¦ã®å»ºç‰©
+//‘D~‚è‚ÄV‹´¶‚ÌŒš•¨
 ayothaya.gat,130,75,0	warp	ayothayawarp1001	1,1,ayo_in01.gat,17,156
 ayo_in01.gat,17,153,0	warp	ayothayawarp1002	1,1,ayothaya.gat,132,73
 ayothaya.gat,130,97,0	warp	ayothayawarp1003	1,1,ayo_in01.gat,43,183
 ayo_in01.gat,46,183,0	warp	ayothayawarp1004	1,1,ayothaya.gat,132,99
 ayothaya.gat,129,86,0	warp	ayothayawarp1005	1,1,ayo_in01.gat,21,178
 ayo_in01.gat,23,175,0	warp	ayothayawarp1006	1,1,ayothaya.gat,132,86
-//èˆ¹é™ã‚Šã¦æ¡Ÿæ©‹å³ã®å»ºç‰©
+//‘D~‚è‚ÄV‹´‰E‚ÌŒš•¨
 ayothaya.gat,165,90,0	warp	ayothayawarp1007	1,1,ayo_in01.gat,77,174
 ayo_in01.gat,73,174,0	warp	ayothayawarp1008	1,1,ayothaya.gat,162,90
 ayothaya.gat,177,90,0	warp	ayothayawarp1009	1,1,ayo_in01.gat,95,175
 ayo_in01.gat,98,175,0	warp	ayothayawarp1010	1,1,ayothaya.gat,180,90
 ayothaya.gat,173,77,0	warp	ayothayawarp1011	1,1,ayo_in01.gat,85,152
 ayo_in01.gat,85,149,0	warp	ayothayawarp1012	1,1,ayothaya.gat,173,74
-//æ—…é¤¨
+//—·ŠÙ
 ayothaya.gat,202,161,0	warp	ayothayawarp1015	1,1,ayo_in01.gat,31,108
 ayo_in01.gat,31,111,0	warp	ayothayawarp1016	1,1,ayothaya.gat,202,164
 ayothaya.gat,191,150,0	warp	ayothayawarp1013	1,1,ayo_in01.gat,13,94
@@ -1458,7 +1458,7 @@ ayothaya.gat,211,150,0	warp	ayothayawarp1017	1,1,ayo_in01.gat,47,94
 ayo_in01.gat,50,94,0	warp	ayothayawarp1018	1,1,ayothaya.gat,214,150
 ayothaya.gat,202,140,0	warp	ayothayawarp1019	1,1,ayo_in01.gat,31,81
 ayo_in01.gat,31,78,0	warp	ayothayawarp1020	1,1,ayothaya.gat,202,137
-//æ—…é¤¨éƒ¨å±‹
+//—·ŠÙ•”‰®
 ayo_in01.gat,13,107,0	warp	ayothayawarp1021	1,1,ayo_in01.gat,132,27
 ayo_in01.gat,135,27,0	warp	ayothayawarp1022	1,1,ayo_in01.gat,17,107
 ayo_in01.gat,48,107,0	warp	ayothayawarp1023	1,1,ayo_in01.gat,179,27
@@ -1467,197 +1467,197 @@ ayo_in01.gat,13,82,0	warp	ayothayawarp1025	1,1,ayo_in01.gat,18,14
 ayo_in01.gat,21,14,0	warp	ayothayawarp1026	1,1,ayo_in01.gat,17,82
 ayo_in01.gat,48,82,0	warp	ayothayawarp1027	1,1,ayo_in01.gat,63,14
 ayo_in01.gat,60,14,0	warp	ayothayawarp1028	1,1,ayo_in01.gat,45,82
-//ãƒãƒ¼ãƒªãƒ¼ãƒ‘ã‚¤é£Ÿå ‚
+//ƒ}[ƒŠ[ƒpƒCH“°
 ayothaya.gat,229,69,0	warp	ayothayawarp1029	1,1,ayo_in01.gat,137,192
 ayo_in01.gat,137,195,0	warp	ayothayawarp1030	1,1,ayothaya.gat,229,72
-//ã‚·ãƒ£ãƒ¼ãƒãƒ³æ°‘å®¶
+//ƒVƒƒ[ƒ}ƒ“–¯‰Æ
 ayothaya.gat,62,104,0	warp	ayothayawarp1031	1,1,ayo_in01.gat,191,183
 ayo_in01.gat,194,183,0	warp	ayothayawarp1032	1,1,ayothaya.gat,65,104
-//æ°‘å®¶
+//–¯‰Æ
 ayothaya.gat,111,109,0	warp	ayothayawarp1033	1,1,ayo_in01.gat,180,129
 ayo_in01.gat,177,129,0	warp	ayothayawarp1034	1,1,ayothaya.gat,111,106
-//ç¥æ®¿
+//_“a
 ayothaya.gat,208,283,0	warp	ayothayawarp1035	1,1,ayo_in02.gat,100,152
 ayo_in02.gat,100,148,0	warp	ayothayawarp1036	1,1,ayothaya.gat,208,280
 
 
 
 
-//---ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³ã‚¿ãƒ¼ãƒœãƒˆãƒ©ãƒƒã‚¯è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒ‹ƒfƒoƒ‰ƒ“ƒ^[ƒ{ƒgƒ‰ƒbƒN’Ç‰Áƒ}ƒbƒv
 
 
-//---é‹¼é‰„ã®éƒ½å¸‚ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯è¿½åŠ ãƒãƒƒãƒ—
+//---|“S‚Ì“ssƒAƒCƒ“ƒuƒƒbƒN’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Einbroch ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ -----
-// einbroch.gat		é‹¼é‰„ã®éƒ½å¸‚ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯
-// einbech.gat		æ¡é‰±ã®æ‘ã‚¢ã‚¤ãƒ³ãƒ™ãƒ•
-// ein_in01.gat		ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯å®¤å†…
-// airport.gat		ç©ºæ¸¯
-// airplane.gat		é£›è¡Œèˆ¹
+// ----- Einbroch ƒAƒCƒ“ƒuƒƒbƒN -----
+// einbroch.gat		|“S‚Ì“ssƒAƒCƒ“ƒuƒƒbƒN
+// einbech.gat		Ìz‚Ì‘ºƒAƒCƒ“ƒxƒt
+// ein_in01.gat		ƒAƒCƒ“ƒuƒƒbƒNº“à
+// airport.gat		‹ó`
+// airplane.gat		”òs‘D
 // -----
-// ein_dun01.gat	é‰±å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³
-// ein_fild08.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild09.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ein_dun01.gat	zRƒ_ƒ“ƒWƒ‡ƒ“
+// ein_fild08.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild09.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
 //==============================================================
-//æ¡é‰±ã®æ‘ã‚¢ã‚¤ãƒ³ãƒ™ãƒ•â‡’é‰±å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³
+//Ìz‚Ì‘ºƒAƒCƒ“ƒxƒtËzRƒ_ƒ“ƒWƒ‡ƒ“
 einbech.gat,138,252,0		warp	einbrochwarp0401	1,1,ein_dun01.gat,22,14
-//é‹¼é‰„ã®éƒ½å¸‚ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯â‡’ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+//|“S‚Ì“ssƒAƒCƒ“ƒuƒƒbƒNËƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
 einbroch.gat,150,25,0		warp	einbrochwarp0501	1,1,ein_fild08.gat,164,377
-//æ¡é‰±ã®æ‘ã‚¢ã‚¤ãƒ³ãƒ™ãƒ•â‡’ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+//Ìz‚Ì‘ºƒAƒCƒ“ƒxƒtËƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
 einbech.gat,62,29,0		warp	einbrochwarp0502	1,1,ein_fild09.gat,74,350
 
-//å·¥å ´
+//Hê
 einbroch.gat,179,73,0	warp	einbrochwarp1001	1,1,ein_in01.gat,81,203
 ein_in01.gat,81,198,0	warp	einbrochwarp1002	1,1,einbroch.gat,179,70
 einbroch.gat,132,79,0	warp	einbrochwarp1003	1,1,ein_in01.gat,17,213
 ein_in01.gat,13,213,0	warp	einbrochwarp1004	1,1,einbroch.gat,129,79
-//é§…
+//‰w
 einbroch.gat,214,263,0	warp	einbrochwarp1005	1,1,einbroch.gat,233,315
 einbroch.gat,233,312,0	warp	einbrochwarp1006	1,1,einbroch.gat,214,260
 einbroch.gat,250,263,0	warp	einbrochwarp1007	1,1,einbroch.gat,269,315
 einbroch.gat,269,312,0	warp	einbrochwarp1008	1,1,einbroch.gat,250,260
-//æ­¦å™¨å±‹
+//•Ší‰®
 einbroch.gat,216,214,0	warp	einbrochwarp1009	1,1,ein_in01.gat,108,17
 ein_in01.gat,108,13,0	warp	einbrochwarp1010	1,1,einbroch.gat,216,211
-//ãƒ›ãƒ†ãƒ«
+//ƒzƒeƒ‹
 einbroch.gat,257,199,0	warp	einbrochwarp1011	1,1,ein_in01.gat,198,224
 ein_in01.gat,195,224,0	warp	einbrochwarp1012	1,1,einbroch.gat,254,199
-//ãƒ›ãƒ†ãƒ«1Fâ‡”2F
+//ƒzƒeƒ‹1FÌ2F
 ein_in01.gat,211,216,0	warp	einbrochwarp1013	1,1,ein_in01.gat,274,218
 ein_in01.gat,271,218,0	warp	einbrochwarp1014	1,1,ein_in01.gat,208,216
 ein_in01.gat,211,232,0	warp	einbrochwarp1015	1,1,ein_in01.gat,274,232
 ein_in01.gat,271,232,0	warp	einbrochwarp1016	1,1,ein_in01.gat,208,232
-//ãƒ›ãƒ†ãƒ«å·¦ä¸‹ã®éƒ¨å±‹
+//ƒzƒeƒ‹¶‰º‚Ì•”‰®
 ein_in01.gat,264,203,0	warp	einbrochwarp1017	1,1,ein_in01.gat,232,173
 ein_in01.gat,232,176,0	warp	einbrochwarp1018	1,1,ein_in01.gat,264,206
-//ãƒ›ãƒ†ãƒ«å·¦ä¸Šã®éƒ¨å±‹
+//ƒzƒeƒ‹¶ã‚Ì•”‰®
 ein_in01.gat,264,246,0	warp	einbrochwarp1019	1,1,ein_in01.gat,231,276
 ein_in01.gat,231,273,0	warp	einbrochwarp1020	1,1,ein_in01.gat,264,243
-//ãƒ›ãƒ†ãƒ«å³ä¸‹ã®éƒ¨å±‹
+//ƒzƒeƒ‹‰E‰º‚Ì•”‰®
 ein_in01.gat,274,203,0	warp	einbrochwarp1021	1,1,ein_in01.gat,274,173
 ein_in01.gat,274,176,0	warp	einbrochwarp1022	1,1,ein_in01.gat,274,206
-//ãƒ›ãƒ†ãƒ«å³ä¸Šã®éƒ¨å±‹
+//ƒzƒeƒ‹‰Eã‚Ì•”‰®
 ein_in01.gat,274,246,0	warp	einbrochwarp1023	1,1,ein_in01.gat,273,276
 ein_in01.gat,273,273,0	warp	einbrochwarp1024	1,1,ein_in01.gat,274,243
-//ãƒ›ãƒ†ãƒ«ä¸­å¤®ã®éƒ¨å±‹
+//ƒzƒeƒ‹’†‰›‚Ì•”‰®
 ein_in01.gat,284,224,0	warp	einbrochwarp1025	1,1,ein_in01.gat,177,277
 ein_in01.gat,180,277,0	warp	einbrochwarp1026	1,1,ein_in01.gat,280,224
-//ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã‚®ãƒ«ãƒ‰
+//ƒuƒ‰ƒbƒNƒXƒ~ƒXƒMƒ‹ƒh
 einbroch.gat,255,107,0	warp	einbrochwarp1027	1,1,ein_in01.gat,14,17
 ein_in01.gat,14,14,0	warp	einbrochwarp1028	1,1,einbroch.gat,255,110
 ein_in01.gat,39,36,0	warp	einbrochwarp1029	1,1,ein_in01.gat,35,83
 ein_in01.gat,39,85,0	warp	einbrochwarp1030	1,1,ein_in01.gat,36,36
-//ç ”ç©¶æ‰€
+//Œ¤‹†Š
 //einbroch.gat,51,52,0	warp	einbrochwarp1031	1,1,ein_in01.gat,285,25
 ein_in01.gat,288,25,0	warp	einbrochwarp1032	1,1,einbroch.gat,54,52
-//ã‚«ãƒ¼ãƒ©ã®å®¶
+//ƒJ[ƒ‰‚Ì‰Æ
 einbroch.gat,129,229,0	warp	einbrochwarp1033	1,1,ein_in01.gat,14,147
 ein_in01.gat,11,147,0	warp	einbrochwarp1034	1,1,einbroch.gat,126,229
-//ã‚®ãƒ«ãƒŠãƒ¼ã®å®¶
+//ƒMƒ‹ƒi[‚Ì‰Æ
 einbroch.gat,290,222,0	warp	einbrochwarp1035	1,1,ein_in01.gat,121,80
 ein_in01.gat,121,77,0	warp	einbrochwarp1036	1,1,einbroch.gat,290,219
 einbroch.gat,278,233,0	warp	einbrochwarp1037	1,1,ein_in01.gat,107,95
 ein_in01.gat,103,95,0	warp	einbrochwarp1038	1,1,einbroch.gat,275,233
 ein_in01.gat,126,88,0	warp	einbrochwarp1039	1,1,ein_in01.gat,100,139
 ein_in01.gat,100,142,0	warp	einbrochwarp1040	1,1,ein_in01.gat,123,85
-//ç©ºæ¸¯
+//‹ó`
 einbroch.gat,64,207,0	warp	einbrochwarp1041	1,1,airport.gat,143,17
 airport.gat,143,14,0	warp	einbrochwarp1042	1,1,einbroch.gat,64,204
 airport.gat,142,61,0	warp	einbrochwarp1043	1,1,einbroch.gat,62,246
 einbroch.gat,64,234,0	warp	einbrochwarp1044	1,1,airport.gat,138,51
-//ç©ºæ¸¯1Fâ‡”2F
+//‹ó`1FÌ2F
 airport.gat,124,13,0	warp	einbrochwarp1045	1,1,airport.gat,19,21
 airport.gat,19,18,0	warp	einbrochwarp1046	1,1,airport.gat,122,16
 airport.gat,161,13,0	warp	einbrochwarp1047	1,1,airport.gat,47,21
 airport.gat,47,18,0	warp	einbrochwarp1048	1,1,airport.gat,163,16
-//é£›è¡Œèˆ¹
+//”òs‘D
 einbroch.gat,92,281,0	warp	einbrochwarp1049	1,1,airplane.gat,224,64
 airplane.gat,254,54,0	warp	einbrochwarp1050	1,1,airplane.gat,91,67
 airplane.gat,87,67,0	warp	einbrochwarp1051	1,1,airplane.gat,250,54
-//é…’å ´
+//ğê
 einbech.gat,145,112,0	warp	einbrochwarp1052	1,1,ein_in01.gat,268,104
 ein_in01.gat,265,104,0	warp	einbrochwarp1053	1,1,einbech.gat,141,112
 einbech.gat,154,106,0	warp	einbrochwarp1054	1,1,ein_in01.gat,285,89
 ein_in01.gat,288,89,0	warp	einbrochwarp1055	1,1,einbech.gat,157,106
-//é“å…·å±‹
+//“¹‹ï‰®
 einbech.gat,177,136,0	warp	einbrochwarp1056	1,1,ein_in01.gat,190,35
 ein_in01.gat,190,38,0	warp	einbrochwarp1057	1,1,einbech.gat,177,133
-//å…±åŒä½å®…
+//‹¤“¯Z‘î
 einbech.gat,214,121,0	warp	einbrochwarp1058	1,1,ein_in01.gat,205,84
 ein_in01.gat,205,81,0	warp	einbrochwarp1059	1,1,einbech.gat,214,118
 einbech.gat,207,135,0	warp	einbrochwarp1060	1,1,ein_in01.gat,190,99
 ein_in01.gat,187,99,0	warp	einbrochwarp1061	1,1,einbech.gat,204,135
-//å‰£å£«ã‚®ãƒ«ãƒ‰
+//Œ•mƒMƒ‹ƒh
 einbech.gat,257,109,0	warp	einbrochwarp1062	1,1,ein_in01.gat,148,153
 ein_in01.gat,145,153,0	warp	einbrochwarp1063	1,1,einbech.gat,253,109
 
 
 
-//---ä¼æ¥­éƒ½å¸‚ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³è¿½åŠ ãƒãƒƒãƒ—
+//---Šé‹Æ“ssƒŠƒqƒ^ƒ‹ƒ[ƒ“’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ -----
-// lighthalzen.gat	ä¼æ¥­éƒ½å¸‚ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³
+// -----  ƒŠƒqƒ^ƒ‹ƒ[ƒ“ -----
+// lighthalzen.gat	Šé‹Æ“ssƒŠƒqƒ^ƒ‹ƒ[ƒ“
 // -----
-// lhz_dun01.gat	ç”Ÿä½“å®Ÿé¨“ç ”ç©¶æ‰€åœ°ä¸‹ï¼‘éš
-// lhz_fild01.gat	ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// lhz_dun01.gat	¶‘ÌÀŒ±Œ¤‹†Š’n‰º‚PŠK
+// lhz_fild01.gat	ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh
 //==============================================================
 einbroch.gat,157,331,0	warp	lighthalzenwarp0501	1,1,ein_fild04.gat,184,31
 lighthalzen.gat,214,329,0	warp	lighthalzenwarp0502	1,1,lhz_fild01.gat,209,23
 
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ
 lighthalzen.gat,101,248,0	warp	lighthalzenwarp1001	1,1,lhz_in01.gat,111,126
 lhz_in01.gat,111,121,0	warp	lighthalzenwarp1002	1,1,lighthalzen.gat,101,243
 lighthalzen.gat,106,248,0	warp	lighthalzenwarp1003	1,1,lhz_in01.gat,116,126
 lhz_in01.gat,116,121,0	warp	lighthalzenwarp1004	1,1,lighthalzen.gat,106,243
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ä¼šå ´
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-ƒp[ƒeƒB[‰ïê
 lhz_in01.gat,149,179,0	warp	lighthalzenwarp1005	1,1,lhz_in01.gat,15,24
 lhz_in01.gat,11,24,0	warp	lighthalzenwarp1006	1,1,lhz_in01.gat,145,178
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-1Få¥¥
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-1F‰œ
 lhz_in01.gat,88,215,0	warp	lighthalzenwarp1007	1,1,lhz_in01.gat,106,18
 lhz_in01.gat,106,15,0	warp	lighthalzenwarp1008	1,1,lhz_in01.gat,88,211
 lhz_in01.gat,140,215,0	warp	lighthalzenwarp1009	1,1,lhz_in01.gat,158,18
 lhz_in01.gat,158,15,0	warp	lighthalzenwarp1010	1,1,lhz_in01.gat,140,211
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-1Fâ‡”2F
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-1FÌ2F
 lhz_in01.gat,76,254,0	warp	lighthalzenwarp1011	1,1,lhz_in01.gat,100,52
 lhz_in01.gat,98,55,0	warp	lighthalzenwarp1012	1,1,lhz_in01.gat,76,250
 lhz_in01.gat,188,254,0	warp	lighthalzenwarp1013	1,1,lhz_in01.gat,191,52
 lhz_in01.gat,194,55,0	warp	lighthalzenwarp1014	1,1,lhz_in01.gat,188,250
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ç§˜æ›¸å®¤
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-”é‘º
 lhz_in01.gat,231,226,0	warp	lighthalzenwarp1015	1,1,lhz_in01.gat,257,226
 lhz_in01.gat,251,226,0	warp	lighthalzenwarp1016	1,1,lhz_in01.gat,225,226
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ãƒ¬ã‚±ãƒ³ã‚¸ãƒ¥ãƒ«ãƒ ç ”ç©¶æ‰€
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-ƒŒƒPƒ“ƒWƒ…ƒ‹ƒ€Œ¤‹†Š
 lhz_in01.gat,40,224,0	warp	lighthalzenwarp1017	1,1,lhz_in01.gat,19,129
 lhz_in01.gat,15,129,0	warp	lighthalzenwarp1018	1,1,lhz_in01.gat,34,224
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ãƒ¬ã‚±ãƒ³ã‚¸ãƒ¥ãƒ«ãƒ åŒ—ç ”ç©¶å®¤
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-ƒŒƒPƒ“ƒWƒ…ƒ‹ƒ€–kŒ¤‹†º
 lhz_in01.gat,43,144,0	warp	lighthalzenwarp1019	1,1,lhz_in01.gat,278,161
 lhz_in01.gat,278,157,0	warp	lighthalzenwarp1020	1,1,lhz_in01.gat,43,139
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ãƒ¬ã‚±ãƒ³ã‚¸ãƒ¥ãƒ«ãƒ å—ç ”ç©¶å®¤
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-ƒŒƒPƒ“ƒWƒ…ƒ‹ƒ€“ìŒ¤‹†º
 //lhz_in01.gat,43,114,0	warp	lighthalzenwarp1021	1,1,lhz_in01.gat,277,130
 lhz_in01.gat,278,132,0	warp	lighthalzenwarp1022	1,1,lhz_in01.gat,43,120
-//ãƒ¬ãƒƒã‚±ãƒ³ãƒ™ãƒ«æœ¬ç¤¾-ãƒ¬ã‚±ãƒ³ã‚¸ãƒ¥ãƒ«ãƒ æ±ç ”ç©¶å®¤
+//ƒŒƒbƒPƒ“ƒxƒ‹–{Ğ-ƒŒƒPƒ“ƒWƒ…ƒ‹ƒ€“ŒŒ¤‹†º
 lhz_in01.gat,58,129,0	warp	lighthalzenwarp1021	1,1,lhz_in01.gat,196,127
 lhz_in01.gat,191,127,0	warp	lighthalzenwarp1022	1,1,lhz_in01.gat,53,129
 
-//è­¦å¯Ÿç½²
+//Œx@
 lighthalzen.gat,236,276,0	warp	lighthalzenwarp1023	1,1,lhz_in02.gat,133,199
 lhz_in02.gat,129,199,0	warp	lighthalzenwarp1024	1,1,lighthalzen.gat,232,275
-//éŠ€è¡Œ
+//‹âs
 lighthalzen.gat,198,257,0	warp	lighthalzenwarp1025	1,1,lhz_in02.gat,39,28
 lhz_in02.gat,44,28,0	warp	lighthalzenwarp1026	1,1,lighthalzen.gat,203,257
-//ãƒ›ãƒ†ãƒ«
+//ƒzƒeƒ‹
 lighthalzen.gat,159,133,0	warp	lighthalzenwarp1027	1,1,lhz_in02.gat,232,265
 lhz_in02.gat,232,261,0	warp	lighthalzenwarp1028	1,1,lighthalzen.gat,158,129
-//ãƒ›ãƒ†ãƒ«-ãƒãƒ¼
+//ƒzƒeƒ‹-ƒo[
 lhz_in02.gat,250,278,0	warp	lighthalzenwarp1029	1,1,lhz_in02.gat,265,278
 lhz_in02.gat,261,278,0	warp	lighthalzenwarp1030	1,1,lhz_in02.gat,246,278
-//ãƒ›ãƒ†ãƒ«-1Fâ‡”2F
+//ƒzƒeƒ‹-1FÌ2F
 lhz_in02.gat,210,284,0	warp	lighthalzenwarp1031	1,1,lhz_in02.gat,241,219
 lhz_in02.gat,236,219,0	warp	lighthalzenwarp1032	1,1,lhz_in02.gat,206,284
-//ãƒ›ãƒ†ãƒ«-å®¢å®¤
+//ƒzƒeƒ‹-‹qº
 lhz_in02.gat,254,212,0	warp	lighthalzenwarp1033	1,1,lhz_in02.gat,273,212
 lhz_in02.gat,269,212,0	warp	lighthalzenwarp1034	1,1,lhz_in02.gat,250,212
 lhz_in02.gat,231,200,0	warp	lighthalzenwarp1035	1,1,lhz_in02.gat,212,200
@@ -1666,89 +1666,89 @@ lhz_in02.gat,231,182,0	warp	lighthalzenwarp1037	1,1,lhz_in02.gat,212,182
 lhz_in02.gat,216,182,0	warp	lighthalzenwarp1038	1,1,lhz_in02.gat,235,182
 lhz_in02.gat,238,169,0	warp	lighthalzenwarp1039	1,1,lhz_in02.gat,238,150
 lhz_in02.gat,238,154,0	warp	lighthalzenwarp1040	1,1,lhz_in02.gat,238,173
-//å®çŸ³åº—
+//•óÎ“X
 lighthalzen.gat,93,110,0	warp	lighthalzenwarp1041	1,1,lhz_in02.gat,104,26
 lhz_in02.gat,108,26,0	warp	lighthalzenwarp1042	1,1,lighthalzen.gat,96,110
-//æ­¦å™¨å±‹
+//•Ší‰®
 lighthalzen.gat,196,46,0	warp	lighthalzenwarp1043	1,1,lhz_in02.gat,282,83
 lhz_in02.gat,282,79,0	warp	lighthalzenwarp1044	1,1,lighthalzen.gat,194,48
 lighthalzen.gat,197,36,0	warp	lighthalzenwarp1045	1,1,lhz_in02.gat,284,30
 lhz_in02.gat,288,30,0	warp	lighthalzenwarp1046	1,1,lighthalzen.gat,194,35
-//æ­¦å™¨å±‹-1Fâ‡”2F
+//•Ší‰®-1FÌ2F
 lhz_in02.gat,274,82,0	warp	lighthalzenwarp1047	1,1,lhz_in02.gat,270,14
 lhz_in02.gat,265,14,0	warp	lighthalzenwarp1048	1,1,lhz_in02.gat,269,82
-//ãƒ‡ãƒ‘ãƒ¼ãƒˆ
+//ƒfƒp[ƒg
 lighthalzen.gat,198,163,0	warp	lighthalzenwarp1049	1,1,lhz_in02.gat,21,195
 lhz_in02.gat,21,191,0	warp	lighthalzenwarp1050	1,1,lighthalzen.gat,202,160
-//ãƒ‡ãƒ‘ãƒ¼ãƒˆ-1Fâ‡”2F
+//ƒfƒp[ƒg-1FÌ2F
 lhz_in02.gat,39,204,0	warp	lighthalzenwarp1051	1,1,lhz_in02.gat,41,136
 lhz_in02.gat,36,136,0	warp	lighthalzenwarp1052	1,1,lhz_in02.gat,34,204
-//ãƒ‡ãƒ‘ãƒ¼ãƒˆ-2Fâ‡”3F
+//ƒfƒp[ƒg-2FÌ3F
 lhz_in02.gat,13,155,0	warp	lighthalzenwarp1053	1,1,lhz_in02.gat,84,223
 lhz_in02.gat,79,223,0	warp	lighthalzenwarp1054	1,1,lhz_in02.gat,17,155
 lhz_in02.gat,49,154,0	warp	lighthalzenwarp1055	1,1,lhz_in02.gat,98,155
 lhz_in02.gat,103,155,0	warp	lighthalzenwarp1056	1,1,lhz_in02.gat,44,154
-//ãƒ‡ãƒ‘ãƒ¼ãƒˆ-3F
+//ƒfƒp[ƒg-3F
 lhz_in02.gat,94,212,0	warp	lighthalzenwarp1057	1,1,lhz_in02.gat,94,144
 lhz_in02.gat,89,144,0	warp	lighthalzenwarp1058	1,1,lhz_in02.gat,89,212
-//ã‚¸ãƒ§ãƒ³ãƒ€ã‚¤ãƒ™ãƒ³ãƒˆè‡¨æ™‚æœ¬éƒ¨
+//ƒWƒ‡ƒ“ƒ_ƒCƒxƒ“ƒg—Õ–{•”
 lighthalzen.gat,238,220,0	warp	lighthalzenwarp1059	1,1,lhz_in02.gat,28,270
 lhz_in02.gat,27,265,0	warp	lighthalzenwarp1060	1,1,lighthalzen.gat,238,217
-//ã‚¸ãƒ§ãƒ³ãƒ€ã‚¤ãƒ™ãƒ³ãƒˆè‡¨æ™‚æœ¬éƒ¨-1Fâ‡”2F
+//ƒWƒ‡ƒ“ƒ_ƒCƒxƒ“ƒg—Õ–{•”-1FÌ2F
 lhz_in02.gat,13,284,0	warp	lighthalzenwarp1061	1,1,lhz_in02.gat,89,285
 lhz_in02.gat,95,285,0	warp	lighthalzenwarp1062	1,1,lhz_in02.gat,18,284
-//ã‚¸ãƒ§ãƒ³ãƒ€ã‚¤ãƒ™ãƒ³ãƒˆè‡¨æ™‚æœ¬éƒ¨-2Få¥¥
+//ƒWƒ‡ƒ“ƒ_ƒCƒxƒ“ƒg—Õ–{•”-2F‰œ
 lhz_in02.gat,114,272,0	warp	lighthalzenwarp1063	1,1,lhz_in02.gat,153,282
 lhz_in02.gat,149,282,0	warp	lighthalzenwarp1064	1,1,lhz_in02.gat,109,272
-//ã‚±ãƒ«ãƒ©ã‚½ã‚¹å®¶
+//ƒPƒ‹ƒ‰ƒ\ƒX‰Æ
 lighthalzen.gat,251,299,0	warp	lighthalzenwarp1065	1,1,lhz_in03.gat,97,21
 lhz_in03.gat,93,21,0	warp	lighthalzenwarp1066	1,1,lighthalzen.gat,247,299
-//ã‚±ãƒ«ãƒ©ã‚½ã‚¹å®¶-1Fâ‡”2F
+//ƒPƒ‹ƒ‰ƒ\ƒX‰Æ-1FÌ2F
 lhz_in03.gat,134,14,0	warp	lighthalzenwarp1067	1,1,lhz_in03.gat,125,90
 lhz_in03.gat,120,90,0	warp	lighthalzenwarp1068	1,1,lhz_in03.gat,130,14
-//æ°‘å®¶
+//–¯‰Æ
 lighthalzen.gat,50,86,0	warp	lighthalzenwarp1069	1,1,lhz_in03.gat,45,31
 lhz_in03.gat,50,31,0	warp	lighthalzenwarp1070	1,1,lighthalzen.gat,55,86
-//æ°‘å®¶-1Fâ‡”2F
+//–¯‰Æ-1FÌ2F
 lhz_in03.gat,13,31,0	warp	lighthalzenwarp1071	1,1,lhz_in03.gat,15,99
 lhz_in03.gat,20,99,0	warp	lighthalzenwarp1072	1,1,lhz_in03.gat,17,31
 
-//è²§æ°‘è¡—-é“å…·å±‹
+//•n–¯ŠX-“¹‹ï‰®
 lighthalzen.gat,324,301,0	warp	lighthalzenwarp1073	1,1,lhz_in03.gat,241,100
 lhz_in03.gat,237,100,0	warp	lighthalzenwarp1074	1,1,lighthalzen.gat,322,296
-//è²§æ°‘è¡—-é“å…·å±‹1Fâ‡”2F
+//•n–¯ŠX-“¹‹ï‰®1FÌ2F
 lhz_in03.gat,257,83,0	warp	lighthalzenwarp1075	1,1,lhz_in03.gat,255,14
 lhz_in03.gat,250,14,0	warp	lighthalzenwarp1076	1,1,lhz_in03.gat,252,83
-//è²§æ°‘è¡—-é…’å ´
+//•n–¯ŠX-ğê
 lighthalzen.gat,345,231,0	warp	lighthalzenwarp1077	1,1,lhz_in03.gat,188,15
 lhz_in03.gat,188,11,0	warp	lighthalzenwarp1078	1,1,lighthalzen.gat,344,227
 lighthalzen.gat,340,240,0	warp	lighthalzenwarp1079	1,1,lhz_in03.gat,180,86
 lhz_in03.gat,180,90,0	warp	lighthalzenwarp1080	1,1,lighthalzen.gat,339,245
-//è²§æ°‘è¡—-é…’å ´1Fâ‡”2F
+//•n–¯ŠX-ğê1FÌ2F
 lhz_in03.gat,191,35,0	warp	lighthalzenwarp1081	1,1,lhz_in03.gat,191,103
 lhz_in03.gat,190,100,0	warp	lighthalzenwarp1082	1,1,lhz_in03.gat,190,31
-//è²§æ°‘è¡—-é•·è€ã®å®¶
+//•n–¯ŠX-’·˜V‚Ì‰Æ
 lighthalzen.gat,347,261,0	warp	lighthalzenwarp1083	1,1,lhz_in03.gat,14,218
 lhz_in03.gat,10,216,0	warp	lighthalzenwarp1084	1,1,lighthalzen.gat,341,261
-//è²§æ°‘è¡—-è¶³ã®æ‚ªã„å°‘å¥³ã®å®¶
+//•n–¯ŠX-‘«‚Ìˆ«‚¢­—‚Ì‰Æ
 //lighthalzen.gat,323,322,0	warp	lighthalzenwarp1085	1,1,lhz_in03.gat,15,162
 lhz_in03.gat,12,162,0	warp	lighthalzenwarp1086	1,1,lighthalzen.gat,321,322
 
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ç©ºæ¸¯
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“‹ó`
 lighthalzen.gat,267,75,0	warp	lighthalzenwarp1087	1,1,lhz_airport.gat,142,17
 lhz_airport.gat,142,13,0	warp	lighthalzenwarp1088	1,1,lighthalzen.gat,262,75
 lhz_airport.gat,142,60,0	warp	lighthalzenwarp1089	1,1,lighthalzen.gat,296,76
 lighthalzen.gat,294,76,0	warp	lighthalzenwarp1090	1,1,lhz_airport.gat,143,53
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ç©ºæ¸¯-1Fâ‡”2F
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“‹ó`-1FÌ2F
 lhz_airport.gat,124,13,0	warp	lighthalzenwarp1091	1,1,lhz_airport.gat,19,21
 lhz_airport.gat,19,18,0	warp	lighthalzenwarp1092	1,1,lhz_airport.gat,122,16
 lhz_airport.gat,161,13,0	warp	lighthalzenwarp1093	1,1,lhz_airport.gat,47,21
 lhz_airport.gat,47,18,0	warp	lighthalzenwarp1094	1,1,lhz_airport.gat,163,16
-//é£›è¡Œèˆ¹
+//”òs‘D
 lighthalzen.gat,308,76,0	warp	lighthalzenwarp1095	1,1,airplane.gat,244,58
 airplane.gat,208,53,0		warp	lighthalzenwarp1096	1,1,airplane.gat,239,160
 airplane.gat,245,160,0		warp	lighthalzenwarp1097	1,1,airplane.gat,214,54
-//é£›è¡Œèˆ¹-å›½éš›ç·š
+//”òs‘D-‘Ûü
 airplane_01.gat,254,54,0	warp	lighthalzenwarp1098	1,1,airplane_01.gat,91,67
 airplane_01.gat,87,67,0		warp	lighthalzenwarp1099	1,1,airplane_01.gat,250,54
 airplane_01.gat,245,160,0	warp	lighthalzenwarp1100	1,1,airplane_01.gat,214,54
@@ -1760,45 +1760,45 @@ airplane_01.gat,245,160,0	warp	lighthalzenwarp1102	1,1,airplane_01.gat,214,54
 
 
 //==============================================================
-// -----  ãƒ•ã‚£ã‚²ãƒ« -----
-// hugel.gat		ç”°åœ’éƒ½å¸‚ãƒ•ã‚£ã‚²ãƒ«
-// hu_in01.gat		ãƒ•ã‚£ã‚²ãƒ«å®¤å†…
+// -----  ƒtƒBƒQƒ‹ -----
+// hugel.gat		“c‰€“ssƒtƒBƒQƒ‹
+// hu_in01.gat		ƒtƒBƒQƒ‹º“à
 // -----
-// kh_vila.gat		ã‚­ãƒ«ãƒã‚¤ãƒ«ã®åˆ¥è˜
-// kh_school.gat	ã‚­ãƒ«ãƒã‚¤ãƒ«å­¦é™¢
-// kh_rossi.gat		ãƒ­ã‚·ãƒŸã‚¨ãƒ«ã®é‚¸å®…
-// kh_mansion.gat	ã‚­ãƒ«ãƒã‚¤ãƒ«ã®é‚¸å®…
+// kh_vila.gat		ƒLƒ‹ƒnƒCƒ‹‚Ì•Ê‘‘
+// kh_school.gat	ƒLƒ‹ƒnƒCƒ‹Šw‰@
+// kh_rossi.gat		ƒƒVƒ~ƒGƒ‹‚Ì“@‘î
+// kh_mansion.gat	ƒLƒ‹ƒnƒCƒ‹‚Ì“@‘î
 // -----
-// hu_fild06.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
-// yuno_fild02.gat	ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
-// yuno_fild08.gat	ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰08
+// hu_fild06.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh06
+// yuno_fild02.gat	ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh02
+// yuno_fild08.gat	ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh08
 //==============================================================
-//ç”°åœ’éƒ½å¸‚ãƒ•ã‚£ã‚²ãƒ«â‡’ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+//“c‰€“ssƒtƒBƒQƒ‹ËƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh06
 hugel.gat,95,33,0	warp	hugelwarp0501	1,1,hu_fild06.gat,200,367
 
-//æ•™ä¼š
+//‹³‰ï
 hugel.gat,155,114,0	warp	hugelwarp1001	1,1,hu_in01.gat,211,177
 hu_in01.gat,211,173,0	warp	hugelwarp1002	1,1,hugel.gat,159,114
 hu_in01.gat,195,192,0	warp	hugelwarp1003	1,1,hu_in01.gat,158,168
 hu_in01.gat,162,168,0	warp	hugelwarp1004	1,1,hu_in01.gat,200,192
 hu_in01.gat,195,219,0	warp	hugelwarp1005	1,1,hu_in01.gat,159,228
 hu_in01.gat,162,228,0	warp	hugelwarp1006	1,1,hu_in01.gat,199,219
-//æ—…é¤¨
+//—·ŠÙ
 hugel.gat,104,79,0	warp	hugelwarp1007	1,1,hu_in01.gat,235,107
 hu_in01.gat,231,107,0	warp	hugelwarp1008	1,1,hugel.gat,101,77
 hu_in01.gat,268,123,0	warp	hugelwarp1009	1,1,hu_in01.gat,265,36
 hu_in01.gat,265,42,0	warp	hugelwarp1010	1,1,hu_in01.gat,262,123
-//é…’å ´
+//ğê
 hugel.gat,129,66,0	warp	hugelwarp1011	1,1,hu_in01.gat,350,107
 hu_in01.gat,345,107,0	warp	hugelwarp1012	1,1,hugel.gat,126,64
 hu_in01.gat,381,118,0	warp	hugelwarp1013	1,1,hu_in01.gat,379,173
 hu_in01.gat,379,178,0	warp	hugelwarp1014	1,1,hu_in01.gat,376,118
-//æ­¦å™¨å±‹
+//•Ší‰®
 hugel.gat,70,157,0	warp	hugelwarp1015	1,1,hu_in01.gat,110,373
 hu_in01.gat,110,369,0	warp	hugelwarp1016	1,1,hugel.gat,73,155
 hu_in01.gat,108,390,0	warp	hugelwarp1017	1,1,hu_in01.gat,107,322
 hu_in01.gat,114,322,0	warp	hugelwarp1018	1,1,hu_in01.gat,113,389
-//é“å…·å±‹
+//“¹‹ï‰®
 hugel.gat,92,167,0	warp	hugelwarp1019	1,1,hu_in01.gat,246,363
 hu_in01.gat,246,359,0	warp	hugelwarp1020	1,1,hugel.gat,92,163
 hu_in01.gat,248,388,0	warp	hugelwarp1021	1,1,hu_in01.gat,250,315
@@ -1807,30 +1807,30 @@ hu_in01.gat,229,313,0	warp	hugelwarp1023	1,1,hu_in01.gat,164,315
 hu_in01.gat,168,315,0	warp	hugelwarp1024	1,1,hu_in01.gat,234,313
 hu_in01.gat,168,307,0	warp	hugelwarp1025	1,1,hu_in01.gat,167,376
 hu_in01.gat,168,379,0	warp	hugelwarp1026	1,1,hu_in01.gat,168,311
-//ãƒ‘ãƒ¼ãƒ†ã‚£ç”¨å“åº—
+//ƒp[ƒeƒB—p•i“X
 hugel.gat,91,104,0	warp	hugelwarp1027	1,1,hu_in01.gat,30,304
 hu_in01.gat,30,299,0	warp	hugelwarp1028	1,1,hugel.gat,95,103
 hu_in01.gat,34,318,0	warp	hugelwarp1029	1,1,hu_in01.gat,34,251
 hu_in01.gat,34,246,0	warp	hugelwarp1030	1,1,hu_in01.gat,34,313
-//æ°‘å®¶
+//–¯‰Æ
 hugel.gat,153,153,0	warp	hugelwarp1031	1,1,hu_in01.gat,287,231
 hu_in01.gat,287,227,0	warp	hugelwarp1032	1,1,hugel.gat,153,149
 hu_in01.gat,263,252,0	warp	hugelwarp1033	1,1,hu_in01.gat,360,253
 hu_in01.gat,365,253,0	warp	hugelwarp1034	1,1,hu_in01.gat,268,252
-//æ°‘å®¶
+//–¯‰Æ
 hugel.gat,80,230,0	warp	hugelwarp1035	1,1,hu_in01.gat,24,364
 hu_in01.gat,24,362,0	warp	hugelwarp1036	1,1,hugel.gat,83,228
-//æ°‘å®¶
+//–¯‰Æ
 hugel.gat,153,216,0	warp	hugelwarp1037	1,1,hu_in01.gat,305,379
 hu_in01.gat,301,379,0	warp	hugelwarp1038	1,1,hugel.gat,147,216
 hu_in01.gat,314,386,0	warp	hugelwarp1039	1,1,hu_in01.gat,312,322
 hu_in01.gat,307,322,0	warp	hugelwarp1040	1,1,hu_in01.gat,310,386
-//ãƒãƒ³ã‚¿ãƒ¼ã‚®ãƒ«ãƒ‰
+//ƒnƒ“ƒ^[ƒMƒ‹ƒh
 hugel.gat,206,228,0	warp	hugelwarp1041	1,1,hu_in01.gat,381,368
 hu_in01.gat,381,363,0	warp	hugelwarp1042	1,1,hugel.gat,208,226
 hu_in01.gat,388,388,0	warp	hugelwarp1043	1,1,hu_in01.gat,385,319
 hu_in01.gat,380,319,0	warp	hugelwarp1044	1,1,hu_in01.gat,382,388
-//ç¥æ®¿ç™ºæ˜å›£
+//_“a”­Œ@’c
 //hugel.gat,52,90,0	warp	hugelwarp1045	1,1,hu_in01.gat,33,90
 hu_in01.gat,37,90,0	warp	hugelwarp1046	1,1,hugel.gat,52,95
 //hu_in01.gat,15,108,0	warp	hugelwarp1047	1,1,hu_in01.gat,15,155
@@ -1843,7 +1843,7 @@ hu_in01.gat,85,108,0	warp	hugelwarp1053	1,1,hu_in01.gat,85,155
 hu_in01.gat,85,151,0	warp	hugelwarp1054	1,1,hu_in01.gat,85,104
 hu_in01.gat,85,70,0	warp	hugelwarp1055	1,1,hu_in01.gat,85,25
 hu_in01.gat,85,29,0	warp	hugelwarp1056	1,1,hu_in01.gat,85,74
-//ãƒ“ãƒ³ã‚´ã‚²ãƒ¼ãƒ ä¼šå ´
+//ƒrƒ“ƒSƒQ[ƒ€‰ïê
 hugel.gat,55,208,0	warp	hugelwarp1057	1,1,que_bingo.gat,49,9
 que_bingo.gat,49,7,0	warp	hugelwarp1058	1,1,hugel.gat,57,207
 que_bingo.gat,39,34,0	warp	hugelwarp1059	1,1,que_bingo.gat,34,109
@@ -1851,14 +1851,14 @@ que_bingo.gat,34,105,0	warp	hugelwarp1060	1,1,que_bingo.gat,38,28
 que_bingo.gat,53,34,0	warp	hugelwarp1061	1,1,que_bingo.gat,49,71
 que_bingo.gat,48,66,0	warp	hugelwarp1062	1,1,que_bingo.gat,53,29
 //==============================================================
-//ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼è»¢è·æ‰€
+//ƒKƒ“ƒXƒŠƒ“ƒK[“]EŠ
 que_ng.gat,130,166,0	warp	ngwarp0101	1,1,einbroch.gat,130,197
 einbroch.gat,137,199,0	warp	ngwarp0601	1,1,que_ng.gat,138,167
 que_ng.gat,165,137,0	warp	ngwarp6001	1,1,que_ng.gat,177,41
 que_ng.gat,172,42,0	warp	ngwarp6002	1,1,que_ng.gat,160,139
 que_ng.gat,178,162,0	warp	ngwarp6003	1,1,que_ng.gat,176,86
 que_ng.gat,170,85,0	warp	ngwarp6004	1,1,que_ng.gat,182,161
-//å¿è€…è»¢è·æ‰€
+//”EÒ“]EŠ
 que_ng.gat,20,138,0	warp	ngwarp0102	1,1,amatsu.gat,147,136
 amatsu.gat,148,140,0	warp	ngwarp0602	1,1,que_ng.gat,20,142
 que_ng.gat,10,183,0	warp	ngwarp6005	1,1,que_ng.gat,33,64
@@ -1866,7 +1866,7 @@ que_ng.gat,37,64,0	warp	ngwarp6006	1,1,que_ng.gat,15,182
 que_ng.gat,30,37,0	warp	ngwarp6007	1,1,que_ng.gat,67,28
 que_ng.gat,63,30,0	warp	ngwarp6008	1,1,que_ng.gat,25,37
 //==============================================================
-//ã‚­ãƒ«ãƒ»ãƒã‚¤ãƒ«å­¦é™¢
+//ƒLƒ‹EƒnƒCƒ‹Šw‰@
 kh_school.gat,76,156,0		warp	khwarp1001	1,1,yuno_fild08.gat,155,189
 kh_school.gat,30,125,0		warp	khwarp1002	1,1,kh_school.gat,67,14
 kh_school.gat,71,14,0		warp	khwarp1003	1,1,kh_school.gat,36,125
@@ -1878,7 +1878,7 @@ kh_school.gat,35,176,0		warp	khwarp1008	1,1,kh_school.gat,148,56
 kh_school.gat,153,56,0		warp	khwarp1009	1,1,kh_school.gat,40,176
 kh_school.gat,30,155,0		warp	khwarp1010	1,1,kh_school.gat,182,116
 kh_school.gat,186,117,0		warp	khwarp1011	1,1,kh_school.gat,35,155
-//ã‚­ãƒ«ãƒ»ãƒã‚¤ãƒ«ã®åˆ¥è˜
+//ƒLƒ‹EƒnƒCƒ‹‚Ì•Ê‘‘
 kh_vila.gat,191,18,0		warp	khwarp1012	1,1,yuno_fild02.gat,74,215
 kh_vila.gat,79,11,0		warp	khwarp1013	1,1,yuno_fild02.gat,92,208
 kh_vila.gat,71,38,0		warp	khwarp1014	1,1,kh_vila.gat,42,38
@@ -1896,11 +1896,11 @@ kh_vila.gat,115,47,0		warp	khwarp1025	1,1,kh_vila.gat,85,47
 kh_vila.gat,126,75,0		warp	khwarp1026	1,1,kh_vila.gat,180,176
 kh_vila.gat,180,171,0		warp	khwarp1027	1,1,kh_vila.gat,126,70
 kh_vila.gat,175,71,0		warp	khwarp1028	1,1,kh_vila.gat,136,64
-//ã‚­ãƒ«ãƒ»ãƒã‚¤ãƒ«é‚¸
+//ƒLƒ‹EƒnƒCƒ‹“@
 lighthalzen.gat,188,204,0	warp	khwarp1029	1,1,kh_mansion.gat,84,49
 kh_mansion.gat,88,50,0		warp	khwarp1030	1,1,lighthalzen.gat,188,199
 kh_mansion.gat,21,11,0		warp	khwarp1031	1,1,kh_mansion.gat,72,49
-//ãƒ­ã‚·ãƒŸã‚¨ãƒ«é‚¸
+//ƒƒVƒ~ƒGƒ‹“@
 kh_rossi.gat,15,92,0		warp	khwarp1032	1,1,yuno.gat,270,139
 kh_rossi.gat,35,98,0		warp	khwarp1033	1,1,kh_rossi.gat,27,147
 kh_rossi.gat,27,143,0		warp	khwarp1034	1,1,kh_rossi.gat,35,94
@@ -1939,29 +1939,29 @@ kh_rossi.gat,260,190,0		warp	khwarp1066	1,1,kh_rossi.gat,220,234
 
 
 
-//---ãƒ©ãƒ˜ãƒ«è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ‰ƒwƒ‹’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ©ãƒ˜ãƒ« -----
-// rachel.gat		ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
-// ra_in01.gat		ãƒ©ãƒ˜ãƒ« å®¤å†…
-// ra_temple.gat	ãƒ•ãƒ¬ã‚¤ãƒ¤å¤§ç¥æ®¿ï¼ˆã‚»ã‚¹ãƒ«ãƒ ãƒ‹ãƒ«ï¼‰
-// ra_temin.gat		ãƒ•ãƒ¬ã‚¤ãƒ¤å¤§ç¥æ®¿ å®¤å†…
-// ra_temsky.gat	æ•™çš‡åŸ·å‹™å®¤ï¼ˆç©ºä¸­åº­åœ’ï¼‰
+// -----  ƒ‰ƒwƒ‹ -----
+// rachel.gat		ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
+// ra_in01.gat		ƒ‰ƒwƒ‹ º“à
+// ra_temple.gat	ƒtƒŒƒCƒ„‘å_“aiƒZƒXƒ‹ƒ€ƒjƒ‹j
+// ra_temin.gat		ƒtƒŒƒCƒ„‘å_“a º“à
+// ra_temsky.gat	‹³c·–±ºi‹ó’†’ë‰€j
 // -----
-// ra_fild11.gat	ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰11ï¼ˆã‚¤ãƒ€å¹³åŸï¼‰
-// ra_fild12.gat	ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰12ï¼ˆã‚¤ãƒ€å¹³åŸï¼‰
+// ra_fild11.gat	ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh11iƒCƒ_•½Œ´j
+// ra_fild12.gat	ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh12iƒCƒ_•½Œ´j
 //==============================================================
-//ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ãƒ©ãƒ˜ãƒ«â‡”ãƒ•ãƒ¬ã‚¤ãƒ¤å¤§ç¥æ®¿
+//ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“sƒ‰ƒwƒ‹ÌƒtƒŒƒCƒ„‘å_“a
 rachel.gat,150,249,0	warp	rachelwarp0101	1,1,ra_temple.gat,120,30
 ra_temple.gat,120,22,0	warp	rachelwarp0102	1,1,rachel.gat,150,243
-//ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ãƒ©ãƒ˜ãƒ«â‡’ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰11
+//ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“sƒ‰ƒwƒ‹Ëƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh11
 rachel.gat,25,125,0	warp	rachelwarp0501	1,1,ra_fild11.gat,353,226
-//ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ãƒ©ãƒ˜ãƒ«â‡’ãƒ©ãƒƒã‚»ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰12
+//ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“sƒ‰ƒwƒ‹Ëƒ‰ƒbƒZƒ‹ƒtƒB[ƒ‹ƒh12
 rachel.gat,275,125,0	warp	rachelwarp0502	1,1,ra_fild12.gat,40,226
 
-//ãƒ›ãƒ†ãƒ«
+//ƒzƒeƒ‹
 rachel.gat,115,149,0	warp	rachelwarp1001	1,1,ra_in01.gat,386,43
 ra_in01.gat,386,39,0	warp	rachelwarp1002	1,1,rachel.gat,115,144
 rachel.gat,105,171,0	warp	rachelwarp1003	1,1,ra_in01.gat,309,65
@@ -1972,7 +1972,7 @@ ra_in01.gat,357,61,0	warp	rachelwarp1007	1,1,ra_in01.gat,310,62
 ra_in01.gat,314,62,0	warp	rachelwarp1008	1,1,ra_in01.gat,361,61
 ra_in01.gat,297,59,0	warp	rachelwarp1009	1,1,ra_in01.gat,339,116
 ra_in01.gat,339,120,0	warp	rachelwarp1010	1,1,ra_in01.gat,297,63
-//æ­¦å™¨å±‹
+//•Ší‰®
 rachel.gat,42,109,0	warp	rachelwarp1011	1,1,ra_in01.gat,171,388
 ra_in01.gat,172,392,0	warp	rachelwarp1012	1,1,rachel.gat,42,114
 rachel.gat,42,87,0	warp	rachelwarp1013	1,1,ra_in01.gat,171,359
@@ -1981,14 +1981,14 @@ ra_in01.gat,165,369,0	warp	rachelwarp1015	1,1,ra_in01.gat,122,334
 ra_in01.gat,126,334,0	warp	rachelwarp1016	1,1,ra_in01.gat,169,369
 ra_in01.gat,178,370,0	warp	rachelwarp1017	1,1,ra_in01.gat,113,385
 ra_in01.gat,109,385,0	warp	rachelwarp1018	1,1,ra_in01.gat,174,370
-//é“å…·å±‹
+//“¹‹ï‰®
 rachel.gat,83,78,0	warp	rachelwarp1019	1,1,ra_in01.gat,249,266
 ra_in01.gat,249,262,0	warp	rachelwarp1020	1,1,rachel.gat,83,73
 ra_in01.gat,241,299,0	warp	rachelwarp1021	1,1,ra_in01.gat,193,312
 ra_in01.gat,197,312,0	warp	rachelwarp1022	1,1,ra_in01.gat,245,299
 ra_in01.gat,185,303,0	warp	rachelwarp1023	1,1,ra_in01.gat,194,249
 ra_in01.gat,194,245,0	warp	rachelwarp1024	1,1,ra_in01.gat,190,302
-//ã‚¸ã‚§ãƒ‰ã®å±‹æ•·
+//ƒWƒFƒh‚Ì‰®•~
 rachel.gat,103,240,0	warp	rachelwarp1025	1,1,ra_in01.gat,343,193
 ra_in01.gat,339,193,0	warp	rachelwarp1026	1,1,rachel.gat,98,238
 ra_in01.gat,381,200,0	warp	rachelwarp1027	1,1,ra_in01.gat,377,268
@@ -1997,14 +1997,14 @@ ra_in01.gat,367,255,0	warp	rachelwarp1029	1,1,ra_in01.gat,326,296
 ra_in01.gat,330,296,0	warp	rachelwarp1030	1,1,ra_in01.gat,371,255
 ra_in01.gat,319,303,0	warp	rachelwarp1031	1,1,ra_in01.gat,381,320
 ra_in01.gat,381,324,0	warp	rachelwarp1032	1,1,ra_in01.gat,319,299
-//å±‹æ•·
+//‰®•~
 rachel.gat,179,220,0	warp	rachelwarp1033	1,1,ra_in01.gat,295,352
 ra_in01.gat,295,348,0	warp	rachelwarp1034	1,1,rachel.gat,179,215
 ra_in01.gat,312,374,0	warp	rachelwarp1035	1,1,ra_in01.gat,359,374
 ra_in01.gat,355,374,0	warp	rachelwarp1036	1,1,ra_in01.gat,308,374
 ra_in01.gat,291,371,0	warp	rachelwarp1037	1,1,ra_in01.gat,225,380
 ra_in01.gat,221,380,0	warp	rachelwarp1038	1,1,ra_in01.gat,287,371
-//ã‚«ãƒƒãƒ†ã‚£ãƒ³ã‚°ã‚·ãƒ¥ã‚¨ãƒ«ã®å®¶
+//ƒJƒbƒeƒBƒ“ƒOƒVƒ…ƒGƒ‹‚Ì‰Æ
 rachel.gat,61,33,0	warp	rachelwarp1039	1,1,ra_in01.gat,181,198
 ra_in01.gat,181,202,0	warp	rachelwarp1040	1,1,rachel.gat,61,38
 rachel.gat,81,33,0	warp	rachelwarp1041	1,1,ra_in01.gat,237,198
@@ -2017,44 +2017,44 @@ ra_in01.gat,296,144,0	warp	rachelwarp1047	1,1,ra_in01.gat,235,189
 ra_in01.gat,231,189,0	warp	rachelwarp1048	1,1,ra_in01.gat,292,144
 ra_in01.gat,244,189,0	warp	rachelwarp1049	1,1,ra_in01.gat,291,189
 ra_in01.gat,287,189,0	warp	rachelwarp1050	1,1,ra_in01.gat,240,189
-//ãƒ–ãƒ«ãƒ¼ã®å®¶
+//ƒuƒ‹[‚Ì‰Æ
 rachel.gat,217,55,0	warp	rachelwarp1051	1,1,ra_in01.gat,250,34
 ra_in01.gat,250,38,0	warp	rachelwarp1052	1,1,rachel.gat,217,60
 ra_in01.gat,235,21,0	warp	rachelwarp1053	1,1,ra_in01.gat,187,31
 ra_in01.gat,183,31,0	warp	rachelwarp1054	1,1,ra_in01.gat,239,21
-//æ°‘å®¶
+//–¯‰Æ
 rachel.gat,216,160,0	warp	rachelwarp1055	1,1,ra_in01.gat,135,282
 ra_in01.gat,135,286,0	warp	rachelwarp1056	1,1,rachel.gat,216,164
-//æ°‘å®¶
+//–¯‰Æ
 rachel.gat,108,200,0	warp	rachelwarp1057	1,1,ra_in01.gat,213,83
 ra_in01.gat,213,79,0	warp	rachelwarp1058	1,1,rachel.gat,108,195
-//æ°‘å®¶
+//–¯‰Æ
 rachel.gat,90,189,0	warp	rachelwarp1059	1,1,ra_in01.gat,192,148
 ra_in01.gat,192,152,0	warp	rachelwarp1060	1,1,rachel.gat,90,193
 
-//ãƒ•ãƒ¬ã‚¤ãƒ¤å¤§ç¥æ®¿ å®¤å†…â‡’ãƒ•ãƒ¬ã‚¤ãƒ¤å¤§ç¥æ®¿
+//ƒtƒŒƒCƒ„‘å_“a º“àËƒtƒŒƒCƒ„‘å_“a
 ra_temin.gat,169,18,0	warp	rachelwarp1061	1,1,ra_temple.gat,119,175
-//ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ å®¤å†…1Fâ‡”ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ å®¤å†…2F
+//ƒtƒŒƒCƒ„_“a º“à1FÌƒtƒŒƒCƒ„_“a º“à2F
 ra_temin.gat,130,93,0	warp	rachelwarp1062	1,1,ra_temin.gat,239,258
 ra_temin.gat,239,253,0	warp	rachelwarp1063	1,1,ra_temin.gat,130,88
 ra_temin.gat,206,93,0	warp	rachelwarp1064	1,1,ra_temin.gat,312,258
 ra_temin.gat,312,253,0	warp	rachelwarp1065	1,1,ra_temin.gat,206,88
-//ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ å®¤å†…2Fâ‡”ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ è–åŸŸå‰
+//ƒtƒŒƒCƒ„_“a º“à2FÌƒtƒŒƒCƒ„_“a ¹ˆæ‘O
 ra_temin.gat,275,332,0	warp	rachelwarp1066	1,1,ra_temin.gat,27,305
 ra_temin.gat,27,299,0	warp	rachelwarp1067	1,1,ra_temin.gat,275,328
-//ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ åŸ·å‹™å®¤å‰â‡’ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ åŸ·å‹™å®¤å…¥å£
+//ƒtƒŒƒCƒ„_“a ·–±º‘OËƒtƒŒƒCƒ„_“a ·–±º“üŒû
 ra_temin.gat,275,243,0	warp	rachelwarp1068	1,1,ra_temin.gat,131,131
-//ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ å®¤å†…â‡”æ•™çš‡åŸ·å‹™å®¤
+//ƒtƒŒƒCƒ„_“a º“àÌ‹³c·–±º
 //ra_temin.gat,275,226,0	warp	rachelwarp1069	1,1,ra_temsky.gat,99,11
 ra_temsky.gat,99,8,0	warp	rachelwarp1070	1,1,ra_temin.gat,275,231
-//æ•™çš‡åŸ·å‹™å®¤
+//‹³c·–±º
 ra_temsky.gat,99,118,0	warp	rachelwarp1071	1,1,ra_temsky.gat,99,140
 ra_temsky.gat,99,135,0	warp	rachelwarp1072	1,1,ra_temsky.gat,99,113
 ra_temsky.gat,87,143,0	warp	rachelwarp1073	1,1,ra_temsky.gat,58,139
 ra_temsky.gat,62,139,0	warp	rachelwarp1074	1,1,ra_temsky.gat,91,143
 ra_temsky.gat,112,143,0	warp	rachelwarp1075	1,1,ra_temsky.gat,141,139
 ra_temsky.gat,137,139,0	warp	rachelwarp1076	1,1,ra_temsky.gat,109,143
-//ãƒ•ãƒ¬ã‚¤ãƒ¤ç¥æ®¿ å®¤å†…ï¼ˆã‚¯ã‚¨ã‚¹ãƒˆï¼‰
+//ƒtƒŒƒCƒ„_“a º“àiƒNƒGƒXƒgj
 que_rachel.gat,130,93,0		warp	rachelwarp1077	1,1,que_rachel.gat,239,258
 que_rachel.gat,239,253,0	warp	rachelwarp1078	1,1,que_rachel.gat,130,88
 que_rachel.gat,206,93,0		warp	rachelwarp1079	1,1,que_rachel.gat,312,258
@@ -2064,89 +2064,89 @@ que_rachel.gat,27,299,0		warp	rachelwarp1082	1,1,que_rachel.gat,275,328
 
 
 
-//---ãƒ™ã‚¤ãƒ³ã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒxƒCƒ“ƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ™ã‚¤ãƒ³ã‚¹ -----
-// veins.gat		å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹
-// ve_in.gat		ãƒ™ã‚¤ãƒ³ã‚¹ å®¤å†…
-// ve_in02.gat		ãƒ™ã‚¤ãƒ³ã‚¹ å®¤å†…
+// -----  ƒxƒCƒ“ƒX -----
+// veins.gat		‹¬’J“ssƒxƒCƒ“ƒX
+// ve_in.gat		ƒxƒCƒ“ƒX º“à
+// ve_in02.gat		ƒxƒCƒ“ƒX º“à
 // -----
-// ve_fild06.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
-// ve_fild07.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07
+// ve_fild06.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06
+// ve_fild07.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 07
 //==============================================================
-//å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
+//‹¬’J“ssƒxƒCƒ“ƒXËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06
 veins.gat,218,361,0	warp	veinswarp0501	1,1,ve_fild06.gat,148,225
-//å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07
+//‹¬’J“ssƒxƒCƒ“ƒXËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 07
 veins.gat,143,25,0	warp	veinswarp0502	1,1,ve_fild07.gat,147,366
-//ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹ËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 02
 rachel.gat,130,21,0	warp	veinswarp0502	1,1,ve_fild02.gat,195,377
 
-//ã‚»ã‚¹ãƒ«ãƒ ãƒ‹ãƒ«ç¥æ®¿
+//ƒZƒXƒ‹ƒ€ƒjƒ‹_“a
 veins.gat,197,260,0	warp	veinswarp1001	1,1,ve_in.gat,351,321
 ve_in.gat,351,317,0	warp	veinswarp1002	1,1,veins.gat,197,255
-//æ—…é¤¨
+//—·ŠÙ
 veins.gat,114,278,0	warp	veinswarp1003	1,1,ve_in.gat,183,207
 ve_in.gat,183,203,0	warp	veinswarp1004	1,1,veins.gat,110,278
 veins.gat,128,270,0	warp	veinswarp1005	1,1,ve_in.gat,201,211
 ve_in.gat,206,211,0	warp	veinswarp1006	1,1,veins.gat,128,266
-//æ—…é¤¨åˆ¥é¤¨
+//—·ŠÙ•ÊŠÙ
 veins.gat,130,238,0	warp	veinswarp1007	1,1,ve_in.gat,99,219
 ve_in.gat,99,215,0	warp	veinswarp1008	1,1,veins.gat,127,235
 ve_in.gat,76,229,0	warp	veinswarp1009	1,1,ve_in.gat,75,160
 ve_in.gat,71,160,0	warp	veinswarp1010	1,1,ve_in.gat,72,229
-//æ­¦å™¨å±‹
+//•Ší‰®
 veins.gat,150,179,0	warp	veinswarp1011	1,1,ve_in.gat,349,223
 ve_in.gat,349,219,0	warp	veinswarp1012	1,1,veins.gat,150,175
 ve_in.gat,347,250,0	warp	veinswarp1013	1,1,ve_in.gat,282,223
 ve_in.gat,286,223,0	warp	veinswarp1014	1,1,ve_in.gat,352,250
-//é“å…·å±‹
+//“¹‹ï‰®
 veins.gat,230,166,0	warp	veinswarp1015	1,1,ve_in.gat,251,287
 ve_in.gat,251,283,0	warp	veinswarp1016	1,1,veins.gat,230,161
 ve_in.gat,261,315,0	warp	veinswarp1017	1,1,ve_in.gat,177,297
 ve_in.gat,177,293,0	warp	veinswarp1018	1,1,ve_in.gat,261,311
-//é…’å ´
+//ğê
 veins.gat,148,220,0	warp	veinswarp1019	1,1,ve_in.gat,252,127
 ve_in.gat,256,127,0	warp	veinswarp1020	1,1,veins.gat,150,215
 ve_in.gat,224,115,0	warp	veinswarp1021	1,1,ve_in.gat,313,114
 ve_in.gat,309,114,0	warp	veinswarp1022	1,1,ve_in.gat,220,115
-//æ²»å®‰ç®¡ç†æ‰€
+//¡ˆÀŠÇ—Š
 veins.gat,88,173,0	warp	veinswarp1023	1,1,ve_in.gat,77,295
 ve_in.gat,77,291,0	warp	veinswarp1024	1,1,veins.gat,88,168
 ve_in.gat,98,299,0	warp	veinswarp1025	1,1,ve_in.gat,124,372
 ve_in.gat,128,372,0	warp	veinswarp1026	1,1,ve_in.gat,102,299
-//æ°‘å®¶
+//–¯‰Æ
 veins.gat,337,231,0	warp	veinswarp1027	1,1,ve_in.gat,194,374
 ve_in.gat,194,369,0	warp	veinswarp1028	1,1,veins.gat,331,231
-//å·¥å ´
+//Hê
 veins.gat,267,230,0	warp	veinswarp1029	1,1,ve_in02.gat,17,19
 ve_in02.gat,13,19,0	warp	veinswarp1030	1,1,veins.gat,269,225
 
 
 
-//---åã‚‚ãªãå³¶è¿½åŠ ãƒãƒƒãƒ—
+//---–¼‚à‚È‚«“‡’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// nameless_i.gat	åã‚‚ãªãå³¶ æœ
-// nameless_n.gat	åã‚‚ãªãå³¶ å¤œ
-// nameless_in.gat	åã‚‚ãªãå³¶ å®¤å†…
+// nameless_i.gat	–¼‚à‚È‚«“‡ ’©
+// nameless_n.gat	–¼‚à‚È‚«“‡ –é
+// nameless_in.gat	–¼‚à‚È‚«“‡ º“à
 // -----
-// abbey01.gat		ä¿®é“é™¢ 01
+// abbey01.gat		C“¹‰@ 01
 //==============================================================
-//åã‚‚ãªãå³¶ å¤œâ‡’ä¿®é“é™¢
+//–¼‚à‚È‚«“‡ –éËC“¹‰@
 nameless_n.gat,157,184,0	warp	namelesswarp0401	1,1,abbey01.gat,51,15
 
-//åŒ—æ±ã®å®¶
+//–k“Œ‚Ì‰Æ
 nameless_i.gat,228,232,0	warp	namelesswarp1001	1,1,nameless_in.gat,12,172
 nameless_in.gat,12,169,0	warp	namelesswarp1002	1,1,nameless_i.gat,230,229
-//åŒ—è¥¿ã®å®¶
+//–k¼‚Ì‰Æ
 nameless_i.gat,75,251,0		warp	namelesswarp1003	1,1,nameless_in.gat,82,159
 nameless_in.gat,86,159,0	warp	namelesswarp1004	1,1,nameless_i.gat,78,246
 nameless_i.gat,100,259,0	warp	namelesswarp1005	1,1,nameless_in.gat,97,180
 nameless_in.gat,96,177,0	warp	namelesswarp1006	1,1,nameless_i.gat,99,255
-//å—æ±ã®å®¶
+//“ì“Œ‚Ì‰Æ
 nameless_i.gat,252,130,0	warp	namelesswarp1007	1,1,nameless_in.gat,26,128
 nameless_in.gat,23,128,0	warp	namelesswarp1008	1,1,nameless_i.gat,249,127
 nameless_i.gat,253,116,0	warp	namelesswarp1009	1,1,nameless_in.gat,12,109
@@ -2154,59 +2154,59 @@ nameless_in.gat,12,112,0	warp	namelesswarp1010	1,1,nameless_i.gat,254,121
 
 
 
-//---ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ‚ƒXƒRƒrƒA’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ -----
-// moscovia.gat		ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢
-// mosk_in.gat		ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ å†…éƒ¨
+// -----  ƒ‚ƒXƒRƒrƒA -----
+// moscovia.gat		ƒ‚ƒXƒRƒrƒA
+// mosk_in.gat		ƒ‚ƒXƒRƒrƒA “à•”
 // -----
-// mosk_dun02.gat	æ·±ã„æ£®
+// mosk_dun02.gat	[‚¢X
 //==============================================================
-//ç‹å®®
+//‰¤‹{
 moscovia.gat,256,138,0	warp	moscoviawarp1001	1,1,mosk_in.gat,96,61
 mosk_in.gat,93,61,0	warp	moscoviawarp1002	1,1,moscovia.gat,255,140
 mosk_in.gat,99,126,0	warp	moscoviawarp1003	1,1,mosk_in.gat,21,116
 mosk_in.gat,21,113,0	warp	moscoviawarp1004	1,1,mosk_in.gat,99,123
-//æ­¦å™¨å±‹
+//•Ší‰®
 moscovia.gat,185,188,0	warp	moscoviawarp1005	1,1,mosk_in.gat,15,179
 mosk_in.gat,12,179,0	warp	moscoviawarp1006	1,1,moscovia.gat,186,191
-//é˜²å…·å±‹
+//–h‹ï‰®
 moscovia.gat,203,171,0	warp	moscoviawarp1007	1,1,mosk_in.gat,86,180
 mosk_in.gat,89,180,0	warp	moscoviawarp1008	1,1,moscovia.gat,204,169
-//é“å…·å±‹
+//“¹‹ï‰®
 moscovia.gat,223,174,0	warp	moscoviawarp1009	1,1,mosk_in.gat,14,246
 mosk_in.gat,11,246,0	warp	moscoviawarp1010	1,1,moscovia.gat,222,176
-//æ—…é¤¨
+//—·ŠÙ
 moscovia.gat,229,208,0	warp	moscoviawarp1011	1,1,mosk_in.gat,142,178
 mosk_in.gat,142,175,0	warp	moscoviawarp1012	1,1,moscovia.gat,227,207
 mosk_in.gat,150,192,0	warp	moscoviawarp1013	1,1,mosk_in.gat,204,188
 mosk_in.gat,202,188,0	warp	moscoviawarp1014	1,1,mosk_in.gat,148,192
-//æ°‘å®¶
+//–¯‰Æ
 moscovia.gat,256,179,0	warp	moscoviawarp1015	1,1,mosk_in.gat,211,114
 mosk_in.gat,211,111,0	warp	moscoviawarp1016	1,1,moscovia.gat,253,179
 mosk_in.gat,222,128,0	warp	moscoviawarp1017	1,1,mosk_in.gat,288,118
 mosk_in.gat,288,116,0	warp	moscoviawarp1018	1,1,mosk_in.gat,222,126
-//ãƒŸãƒã‚¤ãƒ«ã®å®¶
+//ƒ~ƒnƒCƒ‹‚Ì‰Æ
 moscovia.gat,205,98,0	warp	moscoviawarp1019	1,1,mosk_in.gat,214,255
 mosk_in.gat,214,252,0	warp	moscoviawarp1020	1,1,moscovia.gat,203,96
 mosk_in.gat,220,273,0	warp	moscoviawarp1021	1,1,mosk_in.gat,152,275
 mosk_in.gat,152,272,0	warp	moscoviawarp1022	1,1,mosk_in.gat,220,270
-//ãƒãƒãƒ¤ã‚¬ã®å®¶
+//ƒoƒoƒ„ƒK‚Ì‰Æ
 mosk_in.gat,215,36,0	warp	moscoviawarp1023	1,1,mosk_dun02.gat,53,217
 
 
 
-//---ã‚¢ãƒƒã‚·ãƒ¥ãƒ»ãƒã‚­ãƒ¥ãƒ¼ãƒ è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒbƒVƒ…EƒoƒLƒ…[ƒ€’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°  -----
-// mid_camp.gat		ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°
-// mid_campin.gat	ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°å†…éƒ¨
+// -----  ƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n  -----
+// mid_camp.gat		ƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n
+// mid_campin.gat	ƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n“à•”
 //==============================================================
-//é€£åˆè»æœ¬éƒ¨
+//˜A‡ŒR–{•”
 mid_camp.gat,214,249,0		warp	midcampwarp1001		1,1,mid_campin.gat,89,102
 mid_campin.gat,89,99,0		warp	midcampwarp1002		1,1,mid_camp.gat,215,247
 mid_campin.gat,66,114,0		warp	midcampwarp1003		1,1,mid_campin.gat,22,80
@@ -2225,45 +2225,45 @@ mid_campin.gat,162,170,0	warp	midcampwarp1014		1,1,mid_campin.gat,108,128
 mid_campin.gat,162,126,0	warp	midcampwarp1016		1,1,mid_campin.gat,110,120
 mid_campin.gat,113,114,0	warp	midcampwarp1017		1,1,mid_campin.gat,165,82
 mid_campin.gat,162,82,0		warp	midcampwarp1018		1,1,mid_campin.gat,110,114
-//æ­¦å™¨åº«
+//•ŠíŒÉ
 mid_camp.gat,205,211,0		warp	midcampwarp1019		1,1,mid_campin.gat,229,123
 mid_campin.gat,232,123,0	warp	midcampwarp1020		1,1,mid_camp.gat,208,211
 mid_campin.gat,223,109,0	warp	midcampwarp1021		1,1,mid_camp.gat,198,205
 mid_camp.gat,196,204,0		warp	midcampwarp1022		1,1,mid_campin.gat,220,109
-//å®¿èˆï¼ˆæ±ï¼‰
+//hÉi“Œj
 mid_camp.gat,266,260,0		warp	midcampwarp1023		1,1,mid_campin.gat,286,124
 mid_campin.gat,283,124,0	warp	midcampwarp1024		1,1,mid_camp.gat,263,260
-//å®¿èˆï¼ˆè¥¿ï¼‰
+//hÉi¼j
 mid_camp.gat,163,231,0		warp	midcampwarp1025		1,1,mid_campin.gat,376,133
 mid_campin.gat,376,136,0	warp	midcampwarp1026		1,1,mid_camp.gat,163,234
 
 
 //==============================================================
-// -----  é‰±å±±ã®è¡— ãƒãƒŒã‚¯  -----
-// manuk.gat		é‰±å±±ã®è¡— ãƒãƒŒã‚¯
-// man_in01.gat		ãƒãƒŒã‚¯ å†…éƒ¨
+// -----  zR‚ÌŠX ƒ}ƒkƒN  -----
+// manuk.gat		zR‚ÌŠX ƒ}ƒkƒN
+// man_in01.gat		ƒ}ƒkƒN “à•”
 // -----
-// man_fild02.gat	ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+// man_fild02.gat	ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 02
 //==============================================================
-//é‰±å±±ã®è¡— ãƒãƒŒã‚¯â‡’ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//zR‚ÌŠX ƒ}ƒkƒNËƒ}ƒkƒNƒtƒB[ƒ‹ƒh 02
 manuk.gat,114,357,0	warp	manukwarp0501	1,1,man_fild02.gat,138,43
 
-//é¦–é•·ã®å®¶
+//ñ’·‚Ì‰Æ
 manuk.gat,311,142,0	warp	manukwarp1001	1,1,man_in01.gat,277,41
 man_in01.gat,275,41,0	warp	manukwarp1002	1,1,manuk.gat,309,142
 man_in01.gat,318,17,0	warp	manukwarp1003	1,1,man_in01.gat,388,16
 man_in01.gat,390,16,0	warp	manukwarp1004	1,1,man_in01.gat,316,17
-//ç ”ç©¶æ‰€
+//Œ¤‹†Š
 manuk.gat,310,201,0	warp	manukwarp1005	1,1,man_in01.gat,358,121
 man_in01.gat,358,119,0	warp	manukwarp1006	1,1,manuk.gat,310,199
 man_in01.gat,328,141,0	warp	manukwarp1007	1,1,man_in01.gat,324,220
 man_in01.gat,324,222,0	warp	manukwarp1008	1,1,man_in01.gat,328,139
-//åœ°ä¸‹ç›£ç„
+//’n‰ºŠÄ–
 manuk.gat,255,110,0	warp	manukwarp1009	1,1,man_in01.gat,7,61
 man_in01.gat,5,61,0	warp	manukwarp1010	1,1,manuk.gat,253,110
 man_in01.gat,11,19,0	warp	manukwarp1011	1,1,man_in01.gat,182,32
 man_in01.gat,182,34,0	warp	manukwarp1012	1,1,man_in01.gat,11,21
-//ä½å±…
+//Z‹
 manuk.gat,257,228,0	warp	manukwarp1013	1,1,man_in01.gat,130,267
 man_in01.gat,130,265,0	warp	manukwarp1014	1,1,manuk.gat,258,226
 manuk.gat,265,237,0	warp	manukwarp1015	1,1,man_in01.gat,180,267
@@ -2276,7 +2276,7 @@ manuk.gat,302,243,0	warp	manukwarp1021	1,1,man_in01.gat,330,267
 man_in01.gat,330,265,0	warp	manukwarp1022	1,1,manuk.gat,300,241
 manuk.gat,311,234,0	warp	manukwarp1023	1,1,man_in01.gat,380,267
 man_in01.gat,380,265,0	warp	manukwarp1024	1,1,manuk.gat,309,232
-//é£Ÿå ‚
+//H“°
 manuk.gat,253,195,0	warp	manukwarp1025	1,1,man_in01.gat,24,284
 man_in01.gat,26,284,0	warp	manukwarp1026	1,1,manuk.gat,255,195
 man_in01.gat,5,275,0	warp	manukwarp1027	1,1,man_in01.gat,7,221
@@ -2289,23 +2289,23 @@ man_in01.gat,61,190,0	warp	manukwarp1033	1,1,man_in01.gat,63,238
 man_in01.gat,61,238,0	warp	manukwarp1034	1,1,man_in01.gat,61,188
 man_in01.gat,61,173,0	warp	manukwarp1035	1,1,man_in01.gat,20,173
 man_in01.gat,20,175,0	warp	manukwarp1036	1,1,man_in01.gat,61,175
-//æ°‘å®¶
+//–¯‰Æ
 manuk.gat,279,115,0	warp	manukwarp1037	1,1,man_in01.gat,123,224
 man_in01.gat,123,226,0	warp	manukwarp1038	1,1,manuk.gat,278,117
 
 
 //==============================================================
-// -----  å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰  -----
-// splendide.gat	å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
-// spl_in01.gat		ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ å†…éƒ¨01
-// spl_in02.gat		ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ å†…éƒ¨02
+// -----  ‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh  -----
+// splendide.gat	‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
+// spl_in01.gat		ƒXƒvƒŒƒ“ƒfƒBƒbƒh “à•”01
+// spl_in02.gat		ƒXƒvƒŒƒ“ƒfƒBƒbƒh “à•”02
 // -----
-// spl_fild02.gat	ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+// spl_fild02.gat	ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02
 //==============================================================
-//å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰â‡’ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒhËƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02
 splendide.gat,388,252,0	warp	splendidewarp0501	1,1,spl_fild02.gat,8,241
 
-//å¸ä»¤éƒ¨
+//i—ß•”
 splendide.gat,197,193,0	warp	splendidewarp1001	1,1,spl_in01.gat,110,19
 spl_in01.gat,110,17,0	warp	splendidewarp1002	1,1,splendide.gat,197,191
 spl_in01.gat,124,38,0	warp	splendidewarp1003	1,1,spl_in01.gat,236,36
@@ -2314,7 +2314,7 @@ spl_in01.gat,95,38,0	warp	splendidewarp1005	1,1,spl_in01.gat,199,36
 spl_in01.gat,197,36,0	warp	splendidewarp1006	1,1,spl_in01.gat,93,38
 spl_in01.gat,218,22,0	warp	splendidewarp1007	1,1,spl_in01.gat,310,19
 spl_in01.gat,310,17,0	warp	splendidewarp1008	1,1,spl_in01.gat,218,20
-//ä½å±…
+//Z‹
 splendide.gat,240,317,0	warp	splendidewarp1009	1,1,spl_in02.gat,224,232
 spl_in02.gat,222,232,0	warp	splendidewarp1010	1,1,splendide.gat,238,317
 splendide.gat,230,299,0	warp	splendidewarp1011	1,1,spl_in02.gat,207,195
@@ -2335,40 +2335,40 @@ splendide.gat,299,251,0	warp	splendidewarp1025	1,1,spl_in02.gat,140,93
 spl_in02.gat,139,91,0	warp	splendidewarp1026	1,1,splendide.gat,297,250
 splendide.gat,132,68,0	warp	splendidewarp1027	1,1,spl_in02.gat,45,52
 spl_in02.gat,44,54,0	warp	splendidewarp1028	1,1,splendide.gat,133,70
-//åœ°ä¸‹ç›£ç„
+//’n‰ºŠÄ–
 splendide.gat,170,168,0	warp	splendidewarp1029	1,1,spl_in01.gat,190,301
 spl_in01.gat,190,299,0	warp	splendidewarp1030	1,1,splendide.gat,170,166
 spl_in01.gat,191,320,0	warp	splendidewarp1031	1,1,spl_in01.gat,276,334
 spl_in01.gat,276,336,0	warp	splendidewarp1032	1,1,spl_in01.gat,190,322
-//é£Ÿå ‚
+//H“°
 splendide.gat,156,210,0	warp	splendidewarp1033	1,1,spl_in01.gat,171,189
 spl_in01.gat,171,187,0	warp	splendidewarp1034	1,1,splendide.gat,156,208
-//å•†åº—
+//¤“X
 splendide.gat,198,240,0	warp	splendidewarp1035	1,1,spl_in01.gat,110,301
 spl_in01.gat,110,299,0	warp	splendidewarp1036	1,1,splendide.gat,198,238
-//æ°‘å®¶
+//–¯‰Æ
 splendide.gat,238,212,0	warp	splendidewarp1037	1,1,spl_in01.gat,30,215
 spl_in01.gat,30,213,0	warp	splendidewarp1038	1,1,splendide.gat,237,210
-//ç ”ç©¶æ‰€
+//Œ¤‹†Š
 splendide.gat,228,164,0	warp	splendidewarp1039	1,1,spl_in01.gat,30,301
 spl_in01.gat,30,299,0	warp	splendidewarp1040	1,1,splendide.gat,228,162
 
 
 
-//---ãƒ–ãƒ©ã‚¸ãƒªã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒuƒ‰ƒWƒŠƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ–ãƒ©ã‚¸ãƒªã‚¹ -----
-// brasilis.gat		ãƒ–ãƒ©ã‚¸ãƒªã‚¹
-// bra_in01.gat		ãƒ–ãƒ©ã‚¸ãƒªã‚¹ å®¤å†…
+// -----  ƒuƒ‰ƒWƒŠƒX -----
+// brasilis.gat		ƒuƒ‰ƒWƒŠƒX
+// bra_in01.gat		ƒuƒ‰ƒWƒŠƒX º“à
 // -----
-// bra_fild01.gat	ãƒ–ãƒ©ã‚¸ãƒªã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// bra_fild01.gat	ƒuƒ‰ƒWƒŠƒXƒtƒB[ƒ‹ƒh 01
 //==============================================================
-//ãƒ–ãƒ©ã‚¸ãƒªã‚¹â‡’ãƒ–ãƒ©ã‚¸ãƒªã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+//ƒuƒ‰ƒWƒŠƒXËƒuƒ‰ƒWƒŠƒXƒtƒB[ƒ‹ƒh 01
 brasilis.gat,308,336,0	warp	brasiliswarp0501	1,1,bra_fild01.gat,74,34
 
-//ãƒ›ãƒ†ãƒ«
+//ƒzƒeƒ‹
 brasilis.gat,274,153,0	warp	brasiliswarp1001	1,1,bra_in01.gat,38,9
 bra_in01.gat,39,7,0		warp	brasiliswarp1002	1,1,brasilis.gat,273,151
 bra_in01.gat,52,27,0	warp	brasiliswarp1003	1,1,bra_in01.gat,85,26
@@ -2382,7 +2382,7 @@ bra_in01.gat,148,57,0	warp	brasiliswarp1010	1,1,bra_in01.gat,31,72
 bra_in01.gat,52,67,0	warp	brasiliswarp1011	1,1,bra_in01.gat,87,66
 bra_in01.gat,85,67,0	warp	brasiliswarp1012	1,1,bra_in01.gat,50,66
 
-//ç¾è¡“åšç‰©é¤¨
+//”üp”•¨ŠÙ
 brasilis.gat,146,162,0	warp	brasiliswarp1013	1,1,bra_in01.gat,17,137
 bra_in01.gat,17,134,0	warp	brasiliswarp1014	1,1,brasilis.gat,148,161
 bra_in01.gat,50,171,0	warp	brasiliswarp1015	1,1,bra_in01.gat,82,168
@@ -2394,86 +2394,86 @@ bra_in01.gat,206,98,0	warp	brasiliswarp1020	1,1,brasilis.gat,120,160
 
 
 
-//---ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹ -----
-// dicastes01.gat	ã‚µãƒ•ã‚¡æ—ã®é¦–éƒ½ ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹
-// dicastes02.gat	ãƒ–ãƒ«ãƒ¼ãƒ¡ãƒ´ã‚¡ãƒ«ãƒˆ
-// dic_in01.gat		ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹ å®¤å†…
+// -----  ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX -----
+// dicastes01.gat	ƒTƒtƒ@‘°‚Ìñ“s ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX
+// dicastes02.gat	ƒuƒ‹[ƒƒ”ƒ@ƒ‹ƒg
+// dic_in01.gat		ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX º“à
 // -----
-// dic_fild01.gat	ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 01
+// dic_fild01.gat	ƒJƒ~ƒ_ƒ‹R˜[ 01
 //==============================================================
-//ã‚µãƒ•ã‚¡æ—ã®é¦–éƒ½ ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹â‡’ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 01
+//ƒTƒtƒ@‘°‚Ìñ“s ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒXËƒJƒ~ƒ_ƒ‹R˜[ 01
 dicastes01.gat,199,34,0		warp	dicasteswarp0501	1,1,dic_fild01.gat,149,279
 
-//ã‚µãƒ•ã‚¡æ—ã®é¦–éƒ½ ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹â‡”ãƒ–ãƒ«ãƒ¼ãƒ¡ãƒ´ã‚¡ãƒ«ãƒˆ
+//ƒTƒtƒ@‘°‚Ìñ“s ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒXÌƒuƒ‹[ƒƒ”ƒ@ƒ‹ƒg
 dicastes01.gat,198,353,0	warp	dicasteswarp1001	1,1,dicastes02.gat,120,80
 dicastes02.gat,120,77,0		warp	dicasteswarp1002	1,1,dicastes01.gat,197,351
-//ãƒ–ãƒ«ãƒ¼ãƒ¡ãƒ´ã‚¡ãƒ«ãƒˆâ‡”ãƒ‡ã‚£ã‚¨ãƒ«
+//ƒuƒ‹[ƒƒ”ƒ@ƒ‹ƒgÌƒfƒBƒGƒ‹
 dicastes02.gat,120,237,0	warp	dicasteswarp1003	1,1,dic_in01.gat,45,246
 dic_in01.gat,45,244,0		warp	dicasteswarp1004	1,1,dicastes02.gat,119,235
-//é…’å ´ãƒãƒ¼ãƒ«ãƒ–ãƒ«ãƒ¼ãƒ¡
+//ğêƒo[ƒ‹ƒuƒ‹[ƒ
 dicastes01.gat,136,103,0	warp	dicasteswarp1005	1,1,dic_in01.gat,26,98
 dic_in01.gat,26,96,0		warp	dicasteswarp1006	1,1,dicastes01.gat,137,106
-//æˆ¦å£«ã®è¨“ç·´æ‰€
+//ím‚ÌŒP—ûŠ
 dicastes01.gat,255,175,0	warp	dicasteswarp1007	1,1,dic_in01.gat,344,272
 dic_in01.gat,342,271,0		warp	dicasteswarp1008	1,1,dicastes01.gat,255,173
-//å·¥å ´
+//Hê
 dicastes01.gat,94,259,0		warp	dicasteswarp1009	1,1,dic_in01.gat,390,53
 dic_in01.gat,390,55,0		warp	dicasteswarp1010	1,1,dicastes01.gat,95,257
-//å±…ä½åŒºåŸŸ
+//‹Z‹æˆæ
 dicastes01.gat,283,285,0	warp	dicasteswarp1011	1,1,dic_in01.gat,45,30
 dic_in01.gat,45,28,0		warp	dicasteswarp1012	1,1,dicastes01.gat,281,284
-//ç ”ç©¶æ‰€
+//Œ¤‹†Š
 dicastes01.gat,163,297,0	warp	dicasteswarp1013	1,1,dic_in01.gat,371,101
 dic_in01.gat,372,99,0		warp	dicasteswarp1014	1,1,dicastes01.gat,163,295
-//ã‚¢ãƒãƒˆåŸ·å‹™å®¤
+//ƒAƒnƒg·–±º
 dic_in01.gat,299,248,0		warp	dicasteswarp1015	1,1,dic_in01.gat,262,191
 
 
 
-//---ãƒ‡ãƒ¯ã‚¿è¿½åŠ ãƒãƒƒãƒ—
+//---ƒfƒƒ^’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ‡ãƒ¯ã‚¿ -----
-// dewata.gat		ãƒ‡ãƒ¯ã‚¿
-// dew_in01.gat		ãƒ‡ãƒ¯ã‚¿ å®¤å†…
+// -----  ƒfƒƒ^ -----
+// dewata.gat		ƒfƒƒ^
+// dew_in01.gat		ƒfƒƒ^ º“à
 // -----
-// dew_fild01.gat	ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// dew_fild01.gat	ƒfƒƒ^ƒtƒB[ƒ‹ƒh 01
 //==============================================================
-//ãƒ‡ãƒ¯ã‚¿â‡’ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+//ƒfƒƒ^Ëƒfƒƒ^ƒtƒB[ƒ‹ƒh 01
 dewata.gat,44,252,0		warp	dewatawarp0501	1,1,dew_fild01.gat,373,212
-//ãƒ‡ãƒ¯ã‚¿ å®¤å†…â‡’ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+//ƒfƒƒ^ º“àËƒfƒƒ^ƒtƒB[ƒ‹ƒh 01
 dew_in01.gat,16,31,0	warp	dewatawarp0502	1,1,dew_fild01.gat,59,273
 
 
 
-//---3æ¬¡è·è¿½åŠ ãƒãƒƒãƒ—
+//---3ŸE’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  å½±å·¥æˆ¿ -----
-// s_atelier.gat		å½±å·¥æˆ¿
+// -----  ‰eH–[ -----
+// s_atelier.gat		‰eH–[
 //==============================================================
-//ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©å½±å·¥æˆ¿
+//ƒvƒƒ“ƒeƒ‰‰eH–[
 prontera.gat,272,108,0	warp	s_atelierwarp1001	1,1,s_atelier.gat,13,119
 s_atelier.gat,10,119,0	warp	s_atelierwarp1002	1,1,prontera.gat,268,108
 s_atelier.gat,31,128,0	warp	s_atelierwarp1003	1,1,s_atelier.gat,76,125
 s_atelier.gat,76,128,0	warp	s_atelierwarp1004	1,1,s_atelier.gat,28,128
-//ãƒ©ãƒ˜ãƒ«å½±å·¥æˆ¿
+//ƒ‰ƒwƒ‹‰eH–[
 rachel.gat,180,115,0	warp	s_atelierwarp1005	1,1,s_atelier.gat,130,70
 s_atelier.gat,131,75,0	warp	s_atelierwarp1006	1,1,rachel.gat,180,118
 s_atelier.gat,117,71,0	warp	s_atelierwarp1007	1,1,s_atelier.gat,171,72
 s_atelier.gat,166,72,0	warp	s_atelierwarp1008	1,1,s_atelier.gat,117,67
-//ã‚¸ãƒ¥ãƒãƒ¼å½±å·¥æˆ¿
+//ƒWƒ…ƒm[‰eH–[
 yuno.gat,278,67,0		warp	s_atelierwarp1009	1,1,s_atelier.gat,109,123
 s_atelier.gat,105,123,0	warp	s_atelierwarp1010	1,1,yuno.gat,275,67
 s_atelier.gat,108,129,0	warp	s_atelierwarp1011	1,1,s_atelier.gat,159,125
 s_atelier.gat,159,130,0	warp	s_atelierwarp1012	1,1,s_atelier.gat,112,129
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³å½±å·¥æˆ¿
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“‰eH–[
 lighthalzen.gat,41,52,0	warp	s_atelierwarp1013	1,1,s_atelier.gat,18,75
 s_atelier.gat,18,79,0	warp	s_atelierwarp1014	1,1,lighthalzen.gat,41,56
 s_atelier.gat,32,64,0	warp	s_atelierwarp1015	1,1,s_atelier.gat,80,63
@@ -2481,35 +2481,35 @@ s_atelier.gat,80,66,0	warp	s_atelierwarp1016	1,1,s_atelier.gat,32,62
 
 
 
-//---ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆè¿½åŠ ãƒãƒƒãƒ—
+//---ƒrƒtƒƒXƒg’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆ -----
-// splendide.gat	å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
+// -----  ƒrƒtƒƒXƒg -----
+// splendide.gat	‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
 // -----
-// bif_fild01.gat	ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// bif_fild01.gat	ƒrƒtƒƒXƒgƒtƒB[ƒ‹ƒh 01
 //==============================================================
-//å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰â‡’ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+//‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒhËƒrƒtƒƒXƒgƒtƒB[ƒ‹ƒh 01
 splendide.gat,275,390,0		warp	bifrostwarp0501	1,1,bif_fild01.gat,316,50
 
 
 
-//---ãƒãƒ©ãƒ³å³¶è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ}ƒ‰ƒ““‡’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒãƒ©ãƒ³å³¶ -----
-// malangdo.gat	ãƒãƒ©ãƒ³å³¶
+// -----  ƒ}ƒ‰ƒ““‡ -----
+// malangdo.gat	ƒ}ƒ‰ƒ““‡
 // -----
-// mal_in01.gat	ãƒãƒ©ãƒ³å³¶ å®¤å†…
-// mal_in02.gat	ãƒŠãƒ“å· èˆ¹å†…
-// mal_dun01.gat	æ˜Ÿæ˜ã‚Šã®çŠç‘šç¤
+// mal_in01.gat	ƒ}ƒ‰ƒ““‡ º“à
+// mal_in02.gat	ƒiƒr† ‘D“à
+// mal_dun01.gat	¯–¾‚è‚ÌXŒèÊ
 //==============================================================
-//ãƒãƒ©ãƒ³å³¶â‡’æ˜Ÿæ˜ã‚Šã®çŠç‘šç¤
+//ƒ}ƒ‰ƒ““‡Ë¯–¾‚è‚ÌXŒèÊ
 malangdo.gat,73,239,0	warp	malangdowarp0401	1,1,mal_dun01.gat,33,230
 
-//ãƒŠãƒ“å·
+//ƒiƒr†
 malangdo.gat,162,163,0	warp	malangdowarp1001	1,1,mal_in02.gat,58,61
 mal_in02.gat,60,61,0	warp	malangdowarp1002	1,1,malangdo.gat,164,163
 mal_in02.gat,51,60,0	warp	malangdowarp1003	1,1,mal_in02.gat,31,60
@@ -2528,24 +2528,24 @@ mal_in02.gat,137,53,0	warp	malangdowarp1015	1,1,mal_in02.gat,139,33
 mal_in02.gat,139,35,0	warp	malangdowarp1016	1,1,mal_in02.gat,138,55
 mal_in02.gat,142,60,0	warp	malangdowarp1017	1,1,mal_in02.gat,162,61
 mal_in02.gat,159,61,0	warp	malangdowarp1018	1,1,mal_in02.gat,140,59
-//è¥¿ã®å®¶
+//¼‚Ì‰Æ
 malangdo.gat,112,167,0	warp	malangdowarp1019	1,1,mal_in01.gat,17,163
 mal_in01.gat,18,161,0	warp	malangdowarp1020	1,1,malangdo.gat,115,166
 mal_in01.gat,18,173,0	warp	malangdowarp1021	1,1,mal_in01.gat,72,173
 mal_in01.gat,75,174,0	warp	malangdowarp1022	1,1,mal_in01.gat,18,171
 mal_in01.gat,73,170,0	warp	malangdowarp1023	1,1,mal_in01.gat,124,172
 mal_in01.gat,124,175,0	warp	malangdowarp1024	1,1,mal_in01.gat,70,170
-//æ°‘å®¶
+//–¯‰Æ
 malangdo.gat,113,151,0	warp	malangdowarp1025	1,1,mal_in01.gat,28,118
 mal_in01.gat,30,119,0	warp	malangdowarp1026	1,1,malangdo.gat,115,150
 mal_in01.gat,20,119,0	warp	malangdowarp1027	1,1,mal_in01.gat,65,117
 mal_in01.gat,67,118,0	warp	malangdowarp1028	1,1,mal_in01.gat,21,117
-//æ—…é¤¨
+//—·ŠÙ
 malangdo.gat,135,109,0	warp	malangdowarp1029	1,1,mal_in01.gat,19,76
 mal_in01.gat,18,78,0	warp	malangdowarp1030	1,1,malangdo.gat,135,111
 mal_in01.gat,18,67,0	warp	malangdowarp1031	1,1,mal_in01.gat,65,65
 mal_in01.gat,67,66,0	warp	malangdowarp1032	1,1,mal_in01.gat,20,67
-//é“å…·å±‹
+//“¹‹ï‰®
 malangdo.gat,240,150,0	warp	malangdowarp1033	1,1,mal_in01.gat,11,17
 mal_in01.gat,9,16,0		warp	malangdowarp1034	1,1,malangdo.gat,238,149
 mal_in01.gat,20,15,0	warp	malangdowarp1035	1,1,mal_in01.gat,65,11
@@ -2553,33 +2553,33 @@ mal_in01.gat,67,12,0	warp	malangdowarp1036	1,1,mal_in01.gat,20,13
 
 
 
-//---ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ|[ƒgƒ}ƒ‰ƒ„’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ -----
-// malaya.gat		ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤
-// ma_in01.gat		ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…
-// ma_in01_jp.gat	ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…
+// -----  ƒ|[ƒgƒ}ƒ‰ƒ„ -----
+// malaya.gat		ƒ|[ƒgƒ}ƒ‰ƒ„
+// ma_in01.gat		ƒ|[ƒgƒ}ƒ‰ƒ„ º“à
+// ma_in01_jp.gat	ƒ|[ƒgƒ}ƒ‰ƒ„ º“à
 // -----
-// ma_fild01.gat	ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬
+// ma_fild01.gat	ƒoƒŠƒIEƒ}ƒqƒƒK
 //==============================================================
-//ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤â‡’ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬
+//ƒ|[ƒgƒ}ƒ‰ƒ„ËƒoƒŠƒIEƒ}ƒqƒƒK
 malaya.gat,370,277,0	warp	malayawarp0501	1,1,ma_fild01.gat,40,272
-//ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…â‡’ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬
+//ƒ|[ƒgƒ}ƒ‰ƒ„ º“àËƒoƒŠƒIEƒ}ƒqƒƒK
 ma_in01.gat,105,160,0	warp	malayawarp0502	1,1,ma_fild01.gat,248,190
 ma_in01_jp.gat,86,17,0	warp	malayawarp0503	1,1,ma_fild01.gat,162,221
 ma_in01_jp.gat,33,152,0	warp	malayawarp0504	1,1,ma_fild01.gat,257,212
 
-//æ—…é¤¨
+//—·ŠÙ
 ma_in01.gat,24,77,0		warp	malayawarp1001	1,1,malaya.gat,178,208
-//æ­¦å™¨å±‹
+//•Ší‰®
 ma_in01.gat,86,16,0		warp	malayawarp1002	1,1,malaya.gat,115,212
-//é“å…·å±‹
+//“¹‹ï‰®
 ma_in01.gat,9,24,0		warp	malayawarp1003	1,1,malaya.gat,296,167
-//å•†å®¶
+//¤‰Æ
 ma_in01.gat,126,17,0	warp	malayawarp1004	1,1,malaya.gat,261,237
-//æ°‘å®¶
+//–¯‰Æ
 ma_in01.gat,33,152,0	warp	malayawarp1005	1,1,malaya.gat,296,210
-//ãƒšãƒªãƒ¼å·
+//ƒyƒŠ[†
 ma_in01.gat,105,92,0	warp	malayawarp1006	1,1,malaya.gat,310,67

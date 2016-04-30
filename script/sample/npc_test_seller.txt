@@ -1,48 +1,48 @@
-// е§”иЁ—иІ©еЈІ(гѓ—гѓ­гЃ®е™ґж°ґдёЉгЃ«пј”дЅ“гЃ»гЃ©иЁ­зЅ®пј‰
+// €П‘х”М”„(ѓvѓЌ‚М•¬ђ…Џг‚Й‚S‘М‚Щ‚ЗђЭ’uЃj
 //
-// г‚Їгѓ­гѓјгѓігЃ®иЁ­зЅ®г‚’е®№ж“гЃ«гЃ™г‚‹гЃџг‚ЃгЃ«гЂЃgetelementofarray + getarg гЃЁгЃ„гЃ†
-// и¤‡й›‘гЃЄе‡¦зђ†г‚’е¤љз”ЁгЃ—гЃ¦гЃ„г‚‹гЃ®гЃ§гЂЃиЄ­г‚“гЃ§г‚‹йЂ”дё­гЃ§ж··д№±гЃ—гЃ¦гЃЏг‚‹гЃ‹г‚‚гЃ—г‚ЊгЃѕгЃ›г‚“гЂ‚
-// д»ЉгЃ®AthenaгЃ®г‚№г‚ЇгѓЄгѓ—гѓ€гЃ§гЃЇгЂЃгЃ“г‚ЊгЃЏг‚‰гЃ„й«жЂ§иѓЅгЃЄпј®пј°пјЈг‚‚дЅњг‚Њг‚‹гЃ®гЃ§гЂЃ
-// гЂЊе§”иЁ—иІ©еЈІгЃЊдЅњг‚Њг‚‹гЃ®гЃЄг‚‰д»–гЃ®пј®пј°пјЈг‚‚дЅњгЃЈгЃ¦гЃїгЃџгЃ„пјЃгЂЌгЃЁжЂќгЃ†дєєгЃЊ
-// е‡єгЃ¦гЃЌгЃ¦гЃ»гЃ—гЃ„гЃЄгЃЃгЂЃгЃЁгЃ„гЃ†еёЊжњ›г‚’жЊЃгЃЎгЃЄгЃЊг‚‰е…¬й–‹гЃ™г‚‹гЃ“гЃЁгЃ«гЃ—гЃѕгЃ—гЃџгЂ‚
-// дЅ•гЃ‹и‰ЇгЃ„г‚ўг‚¤гѓ‡г‚Јг‚ўгЃЊгЃ‚г‚ЊгЃ°гЂЃжЇйќћгЃЁг‚‚жЊ‘ж€¦гЃ—гЃ¦гЃїгЃ¦гЃЏгЃ гЃ•гЃ„гЂ‚
+// ѓNѓЌЃ[ѓ“‚МђЭ’u‚р—e€Х‚Й‚·‚й‚Ѕ‚Я‚ЙЃAgetelementofarray + getarg ‚Ж‚ў‚¤
+// •ЎЋG‚ИЏ€—ќ‚р‘Ѕ—p‚µ‚Д‚ў‚й‚М‚ЕЃA“З‚с‚Е‚й“r’†‚ЕЌ¬—ђ‚µ‚Д‚­‚й‚©‚а‚µ‚к‚Ь‚№‚сЃB
+// ЌЎ‚МAthena‚МѓXѓNѓЉѓvѓg‚Е‚НЃA‚±‚к‚­‚з‚ўЌ‚ђ«”\‚И‚m‚o‚b‚аЌм‚к‚й‚М‚ЕЃA
+// Ѓu€П‘х”М”„‚ЄЌм‚к‚й‚М‚И‚з‘ј‚М‚m‚o‚b‚аЌм‚Б‚Д‚Э‚Ѕ‚ўЃIЃv‚ЖЋv‚¤ђl‚Є
+// Џo‚Д‚«‚Д‚Щ‚µ‚ў‚И‚џЃA‚Ж‚ў‚¤Љу–]‚рЋќ‚ї‚И‚Є‚зЊцЉJ‚·‚й‚±‚Ж‚Й‚µ‚Ь‚µ‚ЅЃB
+// ‰Ѕ‚©—З‚ўѓAѓCѓfѓBѓA‚Є‚ ‚к‚ОЃAђҐ”с‚Ж‚а’§ђн‚µ‚Д‚Э‚Д‚­‚ѕ‚і‚ўЃB
 // 
-// вЂ»copyarrayгЃ«гѓђг‚°гЃЊгЃ‚гЃЈгЃџгЃ®гЃ§гЂЃmod1116г‚€г‚Љдё‹гЃ®гѓђгѓјг‚ёгѓ§гѓігЃ§гЃЇгЂЃ
-//   ж­ЈгЃ—гЃЏе‹•гЃЌгЃѕгЃ›г‚“гЂ‚
-//   гЃ•г‚‰гЃ«гЂЃdeletearrayгЃ«г‚‚гѓђг‚°гЃЊгЃ‚гЃЈгЃџгЃ®гЃ§гЂЃmod1127г‚€г‚Љдё‹гЃ®гѓђгѓјг‚ёгѓ§гѓігЃ§гЃЇгЂЃ
-//   г‚ўг‚¤гѓ†гѓ гЃЊгѓ­г‚№гѓ€гЃ™г‚‹гѓђг‚°гЃЊз™єз”џгЃ—гЃѕгЃ™гЂ‚
+// Ѓ¦copyarray‚ЙѓoѓO‚Є‚ ‚Б‚Ѕ‚М‚ЕЃAmod1116‚ж‚и‰є‚МѓoЃ[ѓWѓ‡ѓ“‚Е‚НЃA
+//   ђі‚µ‚­“®‚«‚Ь‚№‚сЃB
+//   ‚і‚з‚ЙЃAdeletearray‚Й‚аѓoѓO‚Є‚ ‚Б‚Ѕ‚М‚ЕЃAmod1127‚ж‚и‰є‚МѓoЃ[ѓWѓ‡ѓ“‚Е‚НЃA
+//   ѓAѓCѓeѓЂ‚ЄѓЌѓXѓg‚·‚йѓoѓO‚Є”­ђ¶‚µ‚Ь‚·ЃB
 // 
-// v1 05/02/05 : е€ќе…¬й–‹
-// v2 05/02/12 : г‚ўг‚¤гѓ†гѓ гЃЊг‚Ѕгѓјгѓ€гЃ—гЃ¦й…ЌзЅ®гЃ•г‚ЊгЃЄгЃ„гѓђг‚°г‚’дї®ж­Ј
-// v3 05/02/13 : deletearray гЃ®гѓђг‚°г‚’жЋиЁгЂЃtypoпј’з®‡ж‰Ђ(е‹•дЅњгЃ«гЃЇеЅ±йџїгЃЄгЃ—)дї®ж­Ј
+// v1 05/02/05 : Џ‰ЊцЉJ
+// v2 05/02/12 : ѓAѓCѓeѓЂ‚Єѓ\Ѓ[ѓg‚µ‚Д”z’u‚і‚к‚И‚ўѓoѓO‚рЏCђі
+// v3 05/02/13 : deletearray ‚МѓoѓO‚р–ѕ‹LЃAtypo‚Q‰УЏЉ(“®Ќм‚Й‚Н‰e‹ї‚И‚µ)ЏCђі
 
-prontera.gat,148,214,1	script	е§”иЁ—иІ©еЈІе“Ў1	112,{
+prontera.gat,148,214,1	script	€П‘х”М”„€х1	112,{
 	callfunc
 		"seller",
-		$s1_item_count,		// 0 г‚ўг‚¤гѓ†гѓ гѓЄг‚№гѓ€гЃ®еЂ‹ж•°
-		$s1_item_itemid,	// 1 г‚ўг‚¤гѓ†гѓ гѓЄг‚№гѓ€ : г‚ўг‚¤гѓ†гѓ ID
-		$s1_item_amount,	// 2 г‚ўг‚¤гѓ†гѓ гѓЄг‚№гѓ€ : иІ©еЈІеЂ‹ж•°
-		$s1_item_zeny,		// 3 г‚ўг‚¤гѓ†гѓ гѓЄг‚№гѓ€ : иІ©еЈІй‡‘йЎЌ
-		$s1_item_account,	// 4 г‚ўг‚¤гѓ†гѓ гѓЄг‚№гѓ€ : е‡єе“ЃиЂ…ID
-		$s1_account_id,		// 5 е‡єе“ЃиЂ…гѓЄг‚№гѓ€ : ID
-		$s1_account_zeny;	// 6 е‡єе“ЃиЂ…гѓЄг‚№гѓ€ : з·ЏиЁ€Zeny
+		$s1_item_count,		// 0 ѓAѓCѓeѓЂѓЉѓXѓg‚МЊВђ”
+		$s1_item_itemid,	// 1 ѓAѓCѓeѓЂѓЉѓXѓg : ѓAѓCѓeѓЂID
+		$s1_item_amount,	// 2 ѓAѓCѓeѓЂѓЉѓXѓg : ”М”„ЊВђ”
+		$s1_item_zeny,		// 3 ѓAѓCѓeѓЂѓЉѓXѓg : ”М”„‹аЉz
+		$s1_item_account,	// 4 ѓAѓCѓeѓЂѓЉѓXѓg : Џo•iЋТID
+		$s1_account_id,		// 5 Џo•iЋТѓЉѓXѓg : ID
+		$s1_account_zeny;	// 6 Џo•iЋТѓЉѓXѓg : ‘ЌЊvZeny
 }
 
-prontera.gat,153,214,1	script	е§”иЁ—иІ©еЈІе“Ў2	112,{
+prontera.gat,153,214,1	script	€П‘х”М”„€х2	112,{
 	callfunc
 		"seller",
 		$s2_item_count,$s2_item_itemid,$s2_item_amount,$s2_item_zeny,$s2_item_account,
 		$s2_account_id,$s2_account_zeny;
 }
 
-prontera.gat,158,214,1	script	е§”иЁ—иІ©еЈІе“Ў3	112,{
+prontera.gat,158,214,1	script	€П‘х”М”„€х3	112,{
 	callfunc
 		"seller",
 		$s3_item_count,$s3_item_itemid,$s3_item_amount,$s3_item_zeny,$s3_item_account,
 		$s3_account_id,$s3_account_zeny;
 }
 
-prontera.gat,163,214,1	script	е§”иЁ—иІ©еЈІе“Ў4	112,{
+prontera.gat,163,214,1	script	€П‘х”М”„€х4	112,{
 	callfunc
 		"seller",
 		$s4_item_count,$s4_item_itemid,$s4_item_amount,$s4_item_zeny,$s4_item_account,
@@ -58,244 +58,244 @@ function	script	seller	{
 	function seller_pc_addzeny;
 	function seller_pc_find;
 
-	mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-	mes "з§ЃйЃ”пј€ж Єпј‰г‚«гѓ—гѓ©г‚µгѓјгѓ“г‚№гЃ§гЃЇ";
-	mes "еЏ–еј•её‚е ґг‚’жґ»жЂ§еЊ–гЃ™г‚‹гЃџг‚ЃгЃ«";
-	mes "зљ†ж§гЃ®и¦Ѓжњ›гЃ«гЃЉз­”гЃ€гЃ—гЃ¦";
-	mes "е§”иЁ—иІ©еЈІг‚µгѓјгѓ“г‚№г‚’е§‹г‚ЃгЃѕгЃ—гЃџгЂ‚";
+	mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+	mes "Ћ„’BЃiЉ”ЃjѓJѓvѓ‰ѓTЃ[ѓrѓX‚Е‚Н";
+	mes "Ћж€шЋsЏк‚рЉ€ђ«‰»‚·‚й‚Ѕ‚Я‚Й";
+	mes "ЉF—l‚М—v–]‚Й‚Ё“љ‚¦‚µ‚Д";
+	mes "€П‘х”М”„ѓTЃ[ѓrѓX‚рЋn‚Я‚Ь‚µ‚ЅЃB";
 	next;
 	while(1) {
-		set @sel, select("е§”иЁ—иІ©еЈІгЃЁгЃЇпјџ","иіје…ҐгЃ™г‚‹","е‡єе“ЃгЃ™г‚‹","иІ©еЈІд»Јй‡‘г‚’еЏ—гЃ‘еЏ–г‚‹","г‚„г‚Ѓг‚‹");
+		set @sel, select("€П‘х”М”„‚Ж‚НЃH","Ќw“ь‚·‚й","Џo•i‚·‚й","”М”„‘г‹а‚рЋу‚ЇЋж‚й","‚в‚Я‚й");
 		if(@sel == 5) {
-			// г‚„г‚Ѓг‚‹
+			// ‚в‚Я‚й
 			break;
 		}
 		switch(@sel) {
-		case 1: // е§”иЁ—иІ©еЈІгЃЁгЃЇпјџ
-			mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-			mes "е§”иЁ—иІ©еЈІгЃЁгЃЇгЃЉе®ўж§г‚€г‚Ље•†е“Ѓг‚’";
-			mes "еЏ—гЃ‘еЏ–г‚ЉгЂЃжЊ‡е®љдѕЎж јгЃ§д»ЈеЈІгЃ™г‚‹";
-			mes "ж–°г‚µгѓјгѓ“г‚№гЃ§гЃ™гЂ‚";
+		case 1: // €П‘х”М”„‚Ж‚НЃH
+			mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+			mes "€П‘х”М”„‚Ж‚Н‚Ё‹q—l‚ж‚иЏ¤•i‚р";
+			mes "Ћу‚ЇЋж‚иЃAЋw’и‰їЉi‚Е‘г”„‚·‚й";
+			mes "ђVѓTЃ[ѓrѓX‚Е‚·ЃB";
 			next;
-			mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-			mes "д»Јй‡‘гЃЇеѕЊж—Ґз§ЃйЃ”е§”иЁ—иІ©еЈІе“Ўг‚€г‚Љ";
-			mes "еЏ—гЃ‘еЏ–г‚‹гЃ“гЃЁгЃЊгЃ§гЃЌгЃѕгЃ™гЂ‚";
+			mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+			mes "‘г‹а‚НЊг“ъЋ„’B€П‘х”М”„€х‚ж‚и";
+			mes "Ћу‚ЇЋж‚й‚±‚Ж‚Є‚Е‚«‚Ь‚·ЃB";
 			next;
-			mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-			mes "жіЁж„ЏгЃ™г‚‹з‚№гЃЁгЃ—гЃ¦гЂЃе‡єе“ЃгЃ™г‚‹е ґеђ€";
-			mes "10%гЃ®ж‰‹ж•°ж–™г‚’еЏ–г‚‰гЃ›гЃ¦ж€ґгЃЌгЃѕгЃ™гЂ‚";
-			mes "еЏ€гЂЃдёЂеє¦гЃ«иІ©еЈІгЃ§гЃЌг‚‹г‚ўг‚¤гѓ†гѓ гЃЇ";
-			mes "100зЁ®йЎћгЃЁгЃЄгЃЈгЃ¦гЃ„гЃѕгЃ™гЂ‚";
+			mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+			mes "’Ќ€У‚·‚й“_‚Ж‚µ‚ДЃAЏo•i‚·‚йЏкЌ‡";
+			mes "10%‚МЋиђ”—ї‚рЋж‚з‚№‚Д‘Х‚«‚Ь‚·ЃB";
+			mes "–”ЃA€к“x‚Й”М”„‚Е‚«‚йѓAѓCѓeѓЂ‚Н";
+			mes "100Ћн—Ю‚Ж‚И‚Б‚Д‚ў‚Ь‚·ЃB";
 			next;
 			break;
-		case 2: // иіје…ҐгЃ™г‚‹
+		case 2: // Ќw“ь‚·‚й
 			while(1) {
 				if(getarg(0) == 0) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "иІ©еЈІдё­гЃ®г‚ўг‚¤гѓ†гѓ гЃЇгЃ‚г‚ЉгЃѕгЃ›г‚“гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "”М”„’†‚МѓAѓCѓeѓЂ‚Н‚ ‚и‚Ь‚№‚сЃB";
 					next;
 					break;
 				}
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "иіје…ҐгЃ™г‚‹г‚ўг‚¤гѓ†гѓ г‚’йЃёг‚“гЃ§гЃЏгЃ гЃ•гЃ„гЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "Ќw“ь‚·‚йѓAѓCѓeѓЂ‚р‘I‚с‚Е‚­‚ѕ‚і‚ўЃB";
 				next;
-				// г‚ўг‚¤гѓ†гѓ гЃ®йЃёжЉћ
+				// ѓAѓCѓeѓЂ‚М‘I‘р
 				set @sel, seller_select(getarg(0),1,getarg(1),getarg(2),getarg(3));
 				if(@sel == -1) {
-					// г‚­гѓЈгѓіг‚»гѓ«
+					// ѓLѓѓѓ“ѓZѓ‹
 					break;
 				}
-				// еЂ‹ж•°гЃ®е…ҐеЉ›
+				// ЊВђ”‚М“ь—Н
 				if(getelementofarray(getarg(2),@sel) == 1) {
-					// пј‘гЃ¤гЃ—гЃ‹з„ЎгЃ„г‚‚гЃ®гЃЇеЂ‹ж•°г‚’иЃћгЃ‹гЃЄгЃ„
+					// ‚P‚В‚µ‚©–і‚ў‚а‚М‚НЊВђ”‚р•·‚©‚И‚ў
 					set @amount, 1;
 				} else {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "иіје…ҐгЃ™г‚‹еЂ‹ж•°г‚’е…ҐеЉ›гЃ—гЃ¦гЃЏгЃ гЃ•гЃ„гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Ќw“ь‚·‚йЊВђ”‚р“ь—Н‚µ‚Д‚­‚ѕ‚і‚ўЃB";
 					next;
 					input @amount;
 					if( (@amount > getelementofarray(getarg(2),@sel)) || (@amount <= 0)) {
-						mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-						mes "ењЁеє«гЃЊдёЌи¶ігЃ—гЃ¦гЃ„гЃѕгЃ™гЂ‚";
+						mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+						mes "ЌЭЊЙ‚Є•s‘«‚µ‚Д‚ў‚Ь‚·ЃB";
 						next;
 						break;
 					}
 				}
-				// еђ„зЁ®гѓЃг‚§гѓѓг‚Ї
+				// ЉeЋнѓ`ѓFѓbѓN
 				set @zeny , getelementofarray(getarg(3),@sel) * @amount;
 				if(@zeny > Zeny) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "Zeny гЃЊи¶іг‚ЉгЃѕгЃ›г‚“гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Zeny ‚Є‘«‚и‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(checkweight(getelementofarray(getarg(1),@sel),@amount) == 0) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "иіЄй‡Џг‚ЄгѓјгѓђгѓјгЃ§гЃ™гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Ћї—КѓIЃ[ѓoЃ[‚Е‚·ЃB";
 					next;
 					break;
 				}
-				// жњЂзµ‚зўєиЄЌ
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes getitemname(getelementofarray(getarg(1),@sel)) + " " + @amount + "еЂ‹г‚’";
-				mes getelementofarray(getarg(3),@sel) + "Zeny гЃ§иіје…ҐгЃ—гЃѕгЃ™гЂ‚";
-				mes "г‚€г‚ЌгЃ—гЃ„гЃ§гЃ™гЃ‹пјџ";
+				// ЌЕЏIЉm”F
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes getitemname(getelementofarray(getarg(1),@sel)) + " " + @amount + "ЊВ‚р";
+				mes getelementofarray(getarg(3),@sel) + "Zeny ‚ЕЌw“ь‚µ‚Ь‚·ЃB";
+				mes "‚ж‚л‚µ‚ў‚Е‚·‚©ЃH";
 				set @item_id,     getelementofarray(getarg(1),@sel);
 				set @item_zeny,   getelementofarray(getarg(3),@sel);
 				set @item_amount, getelementofarray(getarg(2),@sel);
 				next;
 				if(
-					(select("гЃЇгЃ„","гЃ„гЃ„гЃ€") != 1) ||
+					(select("‚Н‚ў","‚ў‚ў‚¦") != 1) ||
 					(@zeny > Zeny) ||
 					(checkweight(getelementofarray(getarg(1),@sel),@amount) == 0)
 				) {
-					// гЃ“гЃ“гЃ§гЃ®гѓЃг‚§гѓѓг‚Їг‚’еїг‚Њг‚‹гЃЁдёЌж­ЈгЃ«гЃ¤гЃЄгЃЊг‚‹жЃђг‚ЊгЃЊгЃ‚г‚‹
+					// ‚±‚±‚Е‚Мѓ`ѓFѓbѓN‚р–Y‚к‚й‚Ж•sђі‚Й‚В‚И‚Є‚й‹°‚к‚Є‚ ‚й
 					break;
 				} else if(
 					(@item_id     != getelementofarray(getarg(1),@sel)) ||
 					(@item_zeny   != getelementofarray(getarg(3),@sel)) ||
 					(@item_amount != getelementofarray(getarg(2),@sel))
 				) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "еЏ–еј•гЃЊеђЊж™‚гЃ«иµ·гЃ“гЃЈгЃџгЃџг‚ЃгЂЃ";
-					mes "е…€гЃ»гЃ©гЃ®г‚ўг‚¤гѓ†гѓ гЃ®иІ©еЈІг‚’";
-					mes "дё­ж–­гЃ•гЃ›гЃ¦й ‚гЃЌгЃѕгЃ—гЃџгЂ‚";
-					mes "е†Ќеє¦иіје…Ґг‚’гЃ—гЃ¦гЃЏгЃ гЃ•гЃ„гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Ћж€ш‚Є“ЇЋћ‚Й‹N‚±‚Б‚Ѕ‚Ѕ‚ЯЃA";
+					mes "ђж‚Щ‚З‚МѓAѓCѓeѓЂ‚М”М”„‚р";
+					mes "’†’f‚і‚№‚Д’ё‚«‚Ь‚µ‚ЅЃB";
+					mes "ЌД“xЌw“ь‚р‚µ‚Д‚­‚ѕ‚і‚ўЃB";
 					break;
 				}
 				set Zeny , Zeny - @zeny;
 				getitem getelementofarray(getarg(1),@sel),@amount;
 				set @dummy , seller_pc_addzeny(getarg(5),getelementofarray(getarg(4),@sel),getarg(6),@zeny);
 				if(@amount == getelementofarray(getarg(2),@sel)) {
-					// е…ЁйѓЁиіје…ҐгЃ•г‚ЊгЃџ -> й…Ќе€—г‚’е‰Љй™¤
+					// ‘S•”Ќw“ь‚і‚к‚Ѕ -> ”z—с‚рЌнЏњ
 					deletearray getelementofarray(getarg(1),@sel),1;
 					deletearray getelementofarray(getarg(2),@sel),1;
 					deletearray getelementofarray(getarg(3),@sel),1;
 					deletearray getelementofarray(getarg(4),@sel),1;
 					set getarg(0) , getarg(0) - 1;
 				} else {
-					// дёЂйѓЁгЃ®гЃїиіје…Ґ -> еЂ‹ж•°г‚’жё›г‚‰гЃ™гЃ гЃ‘
+					// €к•”‚М‚ЭЌw“ь -> ЊВђ”‚рЊё‚з‚·‚ѕ‚Ї
 					set getelementofarray(getarg(2),@sel), getelementofarray(getarg(2),@sel) - @amount;
 				}
 			}
 			break;
-		case 3: // е‡єе“ЃгЃ™г‚‹
+		case 3: // Џo•i‚·‚й
 			while(1) {
 				getinventorylist;
 				if(@inventorylist_count == 0) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "г‚ўг‚¤гѓ†гѓ гЃЊгЃ‚г‚ЉгЃѕгЃ›г‚“гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "ѓAѓCѓeѓЂ‚Є‚ ‚и‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(@inventorylist_count > 100) {
-					// иЎЁз¤єгЃ™г‚‹гЃ®гЃЇе…€й ­пј‘пјђпјђеЂ‹гЃѕгЃ§гЃ®г‚ўг‚¤гѓ†гѓ 
+					// •\Ћ¦‚·‚й‚М‚Нђж“Є‚P‚O‚OЊВ‚Ь‚Е‚МѓAѓCѓeѓЂ
 					set @inventorylist_count, 100;
 				}
 				if(getarg(0) >= 100) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "зЏѕењЁжњЂе¤§гЃѕгЃ§е‡єе“ЃгЃ•г‚ЊгЃ¦гЃ„гЃѕгЃ™гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Њ»ЌЭЌЕ‘е‚Ь‚ЕЏo•i‚і‚к‚Д‚ў‚Ь‚·ЃB";
 					next;
 					break;
 				}
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "е‡єе“ЃгЃ—гЃџгЃ„г‚ўг‚¤гѓ†гѓ г‚’йЃёг‚“гЃ§гЃЏгЃ гЃ•гЃ„гЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "Џo•i‚µ‚Ѕ‚ўѓAѓCѓeѓЂ‚р‘I‚с‚Е‚­‚ѕ‚і‚ўЃB";
 				next;
-				// г‚ўг‚¤гѓ†гѓ г‚’йЃёжЉћгЃ•гЃ›г‚‹
+				// ѓAѓCѓeѓЂ‚р‘I‘р‚і‚№‚й
 				set @sel, seller_select(@inventorylist_count,0,-1,-1,-1);
 				if(@sel == -1) {
-					// г‚­гѓЈгѓіг‚»гѓ«
+					// ѓLѓѓѓ“ѓZѓ‹
 					break;
 				} else if(@inventorylist_equip[@sel]) {
-					// иЈ…е‚™гѓ•гѓ©г‚°
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "иЈ…е‚™гЃ—гЃ¦гЃ„г‚‹е•†е“ЃгЃЇе‡єе“ЃгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// ‘•”хѓtѓ‰ѓO
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "‘•”х‚µ‚Д‚ў‚йЏ¤•i‚НЏo•i‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(!@inventorylist_identify[@sel]) {
-					// й‘‘е®љжё€гЃїгѓ•гѓ©г‚°
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "жњЄй‘‘е®љгЃ®е•†е“ЃгЃЇе‡єе“ЃгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// ЉУ’иЌП‚Эѓtѓ‰ѓO
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "–ўЉУ’и‚МЏ¤•i‚НЏo•i‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(@inventorylist_attribute[@sel]) {
-					// з ґжђЌгѓЃг‚§гѓѓг‚Ї
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "з ґжђЌгЃ—гЃџе•†е“ЃгЃЇе‡єе“ЃгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// ”j‘№ѓ`ѓFѓbѓN
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "”j‘№‚µ‚ЅЏ¤•i‚НЏo•i‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(
 					@inventorylist_card1[@sel] || @inventorylist_card2[@sel] ||
 					@inventorylist_card3[@sel] || @inventorylist_card4[@sel]
 				) {
-					// иЈЅйЂ гѓЃг‚§гѓѓг‚Ї
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "иЈЅйЂ е“ЃгЂЃг‚«гѓјгѓ‰г‚’е·®гЃ—гЃџе•†е“ЃгЃЇе‡єе“ЃгЃЇгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// ђ»‘ўѓ`ѓFѓbѓN
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "ђ»‘ў•iЃAѓJЃ[ѓh‚рЌ·‚µ‚ЅЏ¤•i‚НЏo•i‚Н‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if(@inventorylist_refine[@sel]) {
-					// зІѕйЊ¬гѓЃг‚§гѓѓг‚Ї
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "зІѕйЊ¬гЃ—гЃџе•†е“ЃгЃЇе‡єе“ЃгЃЇгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// ђёBѓ`ѓFѓbѓN
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "ђёB‚µ‚ЅЏ¤•i‚НЏo•i‚Н‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				} else if((@inventorylist_id[@sel] == 2634) || (@inventorylist_id[@sel] == 2635)) { 
-					// зµђе©љжЊ‡ијЄгѓЃг‚§гѓѓг‚Ї
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "зµђе©љжЊ‡ијЄгЃЇе‡єе“ЃгЃЇгЃ§гЃЌгЃѕгЃ›г‚“гЂ‚";
+					// Њ‹ЌҐЋw—Цѓ`ѓFѓbѓN
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Њ‹ЌҐЋw—Ц‚НЏo•i‚Н‚Е‚«‚Ь‚№‚сЃB";
 					next;
 					break;
 				}
-				// иІ©еЈІеЂ‹ж•°гЃ®е…ҐеЉ›
+				// ”М”„ЊВђ”‚М“ь—Н
 				if(@inventorylist_amount[@sel] == 1) {
-					// еЂ‹ж•°гЃЊпј‘гЃ¤гЃ—гЃ‹з„ЎгЃ„ж™‚гЃЇиЃћгЃ‹гЃЄгЃ„
+					// ЊВђ”‚Є‚P‚В‚µ‚©–і‚ўЋћ‚Н•·‚©‚И‚ў
 					set @amount, 1;
 				} else {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "е‡єе“ЃгЃ™г‚‹еЂ‹ж•°г‚’е…ҐеЉ›гЃ—гЃ¦гЃЏгЃ гЃ•гЃ„гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "Џo•i‚·‚йЊВђ”‚р“ь—Н‚µ‚Д‚­‚ѕ‚і‚ўЃB";
 					next;
 					input @amount;
 					if( (@amount > @inventorylist_amount[@sel]) || (@amount <= 0)) {
-						mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-						mes "ж‰ЂжЊЃеЂ‹ж•°г‚’и¶…гЃ€гЃ¦гЃ„гЃѕгЃ™гЂ‚";
+						mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+						mes "ЏЉЋќЊВђ”‚р’ґ‚¦‚Д‚ў‚Ь‚·ЃB";
 						next;
 						break;
 					}
 				}
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "е‡єе“ЃгЃ™г‚‹дѕЎж јг‚’е…ҐеЉ›гЃ—гЃ¦гЃЏгЃ гЃ•гЃ„гЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "Џo•i‚·‚й‰їЉi‚р“ь—Н‚µ‚Д‚­‚ѕ‚і‚ўЃB";
 				next;
 				input @money;
 				if( @money <= 0) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "0ZenyгЃ§гЃ®иІ©еЈІгЃЇе‡єжќҐгЃѕгЃ›г‚“гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "0Zeny‚Е‚М”М”„‚НЏo—€‚Ь‚№‚сЃB";
 					next;
 					break;
 				}
-				// жњЂзµ‚зўєиЄЌ
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes getitemname(@inventorylist_id[@sel]) + " " + @amount + "еЂ‹г‚’";
-				mes @money + "Zeny гЃ§е‡єе“ЃгЃ—гЃѕгЃ™гЂ‚";
-				mes "г‚€г‚ЌгЃ—гЃ„гЃ§гЃ™гЃ‹пјџ";
+				// ЌЕЏIЉm”F
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes getitemname(@inventorylist_id[@sel]) + " " + @amount + "ЊВ‚р";
+				mes @money + "Zeny ‚ЕЏo•i‚µ‚Ь‚·ЃB";
+				mes "‚ж‚л‚µ‚ў‚Е‚·‚©ЃH";
 				next;
 				if(
-					(select("гЃЇгЃ„","гЃ„гЃ„гЃ€") != 1) ||
+					(select("‚Н‚ў","‚ў‚ў‚¦") != 1) ||
 					(countitem(@inventorylist_id[@sel]) < @amount) ||
 					(getarg(0) >= 100)) {
-					// гЃ“гЃ“гЃ§гЃ®гѓЃг‚§гѓѓг‚Їг‚’еїг‚Њг‚‹гЃЁдёЌж­ЈгЃ«гЃ¤гЃЄгЃЊг‚‹жЃђг‚ЊгЃЊгЃ‚г‚‹
+					// ‚±‚±‚Е‚Мѓ`ѓFѓbѓN‚р–Y‚к‚й‚Ж•sђі‚Й‚В‚И‚Є‚й‹°‚к‚Є‚ ‚й
 					break;
 				}
-				// е‡єе“ЃиЂ…гѓЄг‚№гѓ€гЃ«з©єгЃЌгЃЊгЃ‚г‚‹гЃ‹зўєгЃ‹г‚Ѓг‚‹
+				// Џo•iЋТѓЉѓXѓg‚Й‹у‚«‚Є‚ ‚й‚©Љm‚©‚Я‚й
 				if(seller_pc_addzeny(getarg(5),getcharid(3),getarg(6),0) == 0) {
-					mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-					mes "з”ігЃ—иЁігЃ‚г‚ЉгЃѕгЃ›г‚“гЃЊ";
-					mes "е‡єе“ЃиЂ…гѓЄг‚№гѓ€гЃЊдёЂжќЇгЃ§гЃ™гЂ‚";
-					mes "д»–гЃ®е§”иЁ—иІ©еЈІе“ЎгЃ«е°‹гЃ­г‚‹гЃ‹";
-					mes "ж—Ґг‚’ж”№г‚ЃгЃ¦гЃ”е€©з”ЁгЃЏгЃ гЃ•гЃ„гЂ‚";
+					mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+					mes "ђ\‚µ–у‚ ‚и‚Ь‚№‚с‚Є";
+					mes "Џo•iЋТѓЉѓXѓg‚Є€к”t‚Е‚·ЃB";
+					mes "‘ј‚М€П‘х”М”„€х‚Йђq‚Л‚й‚©";
+					mes "“ъ‚р‰ь‚Я‚Д‚І——p‚­‚ѕ‚і‚ўЃB";
 					next;
 					break;
 				}
-				// е‡єе“Ѓй–‹е§‹
+				// Џo•iЉJЋn
 				
-				// г‚ўг‚¤гѓ†гѓ IDгЃ”гЃЁгЃ«г‚Ѕгѓјгѓ€гЃ™г‚‹
+				// ѓAѓCѓeѓЂID‚І‚Ж‚Йѓ\Ѓ[ѓg‚·‚й
 				for(set @pos , 0; @pos < getarg(0) ; set @pos, @pos + 1) {
 					if(getelementofarray(getarg(1),@pos) > @inventorylist_id[@sel]) {
 						break;
@@ -313,13 +313,13 @@ function	script	seller	{
 				set getelementofarray(getarg(4),@pos) , getcharid(3);
 				set getarg(0) , getarg(0) + 1;
 				delitem @inventorylist_id[@sel], @amount;
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "е‡єе“ЃгЃ§гЃЌгЃѕгЃ—гЃџгЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "Џo•i‚Е‚«‚Ь‚µ‚ЅЃB";
 				next;
 			};
 			seller_clean;
 			break;
-		case 4: // иІ©еЈІд»Јй‡‘г‚’еЏ—гЃ‘еЏ–г‚‹
+		case 4: // ”М”„‘г‹а‚рЋу‚ЇЋж‚й
 			//debug
 			//mes "debug";
 			//for(set @i , 0; @i < 100 ; set @i, @i + 1) {
@@ -330,23 +330,23 @@ function	script	seller	{
 			//next;
 			set @pos, seller_pc_find(getarg(5),getcharid(3));
 			if(@pos == -1) {
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "й ђгЃ‹гЃЈгЃ¦гЃ„г‚‹ZenyгЃЇгЃ‚г‚ЉгЃѕгЃ›г‚“гЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "—a‚©‚Б‚Д‚ў‚йZeny‚Н‚ ‚и‚Ь‚№‚сЃB";
 				next;
 			} else if(getelementofarray(getarg(6),@pos) == 0) {
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes "й ђгЃ‹гЃЈгЃ¦гЃ„г‚‹ZenyгЃЇгЃ‚г‚ЉгЃѕгЃ›г‚“гЂ‚";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes "—a‚©‚Б‚Д‚ў‚йZeny‚Н‚ ‚и‚Ь‚№‚сЃB";
 				next;
 			} else {
 				set @zeny , getelementofarray(getarg(6),@pos);
-				mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-				mes @zeny + "Zeny гЃ®еЈІг‚ЉдёЉгЃ’гЃ®е†…гЂЃ";
-				mes "10%гЃ®ж‰‹ж•°ж–™г‚’й ‚гЃ„гЃџж®‹г‚Љ";
+				mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+				mes @zeny + "Zeny ‚М”„‚иЏг‚°‚М“аЃA";
+				mes "10%‚МЋиђ”—ї‚р’ё‚ў‚ЅЋc‚и";
 				set @zeny, @zeny - @zeny / 10;
-				mes @zeny + "Zeny гЃ®иї”й‡‘гЃ«гЃЄг‚ЉгЃѕгЃ™гЂ‚";
+				mes @zeny + "Zeny ‚М•Ф‹а‚Й‚И‚и‚Ь‚·ЃB";
 				set Zeny, Zeny + @zeny;
 				set getelementofarray(getarg(6),@pos) , 0;
-				// е•†е“ЃдёЂи¦§гЃ«гѓЄг‚№гѓ€гЃЊз„ЎгЃ‘г‚ЊгЃ°гЂЃе‡єе“ЃиЂ…гѓЄг‚№гѓ€гЃ‹г‚‰ж¶€еЋ»
+				// Џ¤•i€к——‚ЙѓЉѓXѓg‚Є–і‚Ї‚к‚ОЃAЏo•iЋТѓЉѓXѓg‚©‚зЏБ‹Ћ
 				for(set @i , 0; @i < getarg(0) ; set @i,@i + 1) {
 					if(getelementofarray(getarg(4),@i) == getcharid(3)) {
 						break;
@@ -361,37 +361,37 @@ function	script	seller	{
 			break;
 		}
 	}
-	mes "[г‚«гѓ—гѓ©е§”иЁ—иІ©еЈІе“Ў]";
-	mes "ж€‘гЂ…г‚«гѓ—гѓ©г‚µгѓјгѓ“г‚№гЃЇгЂЃг‚€г‚Ље®Њз’§гЃЄ";
-	mes "г‚µгѓјгѓ“г‚№гЃЁз®Ўзђ†жҐ­е‹™г‚’з›®жЊ‡гЃ—";
-	mes "гЃЉе®ўж§гЃЊе®‰еїѓгЃ—гЃ¦гЃ”е€©з”ЁгЃ„гЃџгЃ гЃ‘г‚‹г‚€гЃ†";
-	mes "гЃ„гЃ¤г‚‚жњЂе–„г‚’е°ЅгЃЏгЃ—гЃ¦гЃ„гЃѕгЃ™гЂ‚";
-	mes "пј€ж Єпј‰г‚«гѓ—гѓ©г‚µгѓјгѓ“г‚№г‚’гЃ”е€©з”ЁгЃ„гЃџгЃ гЃЌ";
-	mes "гЃ‚г‚ЉгЃЊгЃЁгЃ†гЃ”гЃ–гЃ„гЃѕгЃ—гЃџгЂ‚";
+	mes "[ѓJѓvѓ‰€П‘х”М”„€х]";
+	mes "‰дЃXѓJѓvѓ‰ѓTЃ[ѓrѓX‚НЃA‚ж‚иЉ®аш‚И";
+	mes "ѓTЃ[ѓrѓX‚ЖЉЗ—ќ‹Ж–±‚р–ЪЋw‚µ";
+	mes "‚Ё‹q—l‚Є€АђS‚µ‚Д‚І——p‚ў‚Ѕ‚ѕ‚Ї‚й‚ж‚¤";
+	mes "‚ў‚В‚аЌЕ‘P‚рђs‚­‚µ‚Д‚ў‚Ь‚·ЃB";
+	mes "ЃiЉ”ЃjѓJѓvѓ‰ѓTЃ[ѓrѓX‚р‚І——p‚ў‚Ѕ‚ѕ‚«";
+	mes "‚ ‚и‚Є‚Ж‚¤‚І‚ґ‚ў‚Ь‚µ‚ЅЃB";
 	close;
 
 	// seller_pc_addzeny(account_id , target , account_zeny , zeny)
-	//     е‡єе“ЃиЂ…гѓЄг‚№гѓ€гЃ®жЊ‡е®љгЃ™г‚‹IDгЃ«zenyZг‚’еЉ з®—гЃ™г‚‹
+	//     Џo•iЋТѓЉѓXѓg‚МЋw’и‚·‚йID‚ЙzenyZ‚р‰БЋZ‚·‚й
 	//
-	//     account_id   : е‡єе“ЃиЂ…ID
-	//     target       : ж¤њзґўеЇѕи±ЎгЃ®ID
-	//     account_zeny : е‡єе“ЃиЂ…IDгЃ®ж‰ЂжЊЃZeny
-	//     zeny         : еЉ з®—гЃ™г‚‹Zeny
+	//     account_id   : Џo•iЋТID
+	//     target       : ЊџЌх‘ОЏЫ‚МID
+	//     account_zeny : Џo•iЋТID‚МЏЉЋќZeny
+	//     zeny         : ‰БЋZ‚·‚йZeny
 	function seller_pc_addzeny {
 		set @__pos , seller_pc_find(getarg(0),getarg(1));
 		if(@__pos != -1) {
-			// ж—ўгЃ«з™»йЊІгЃ•г‚ЊгЃ¦гЃ„г‚ЊгЃ°еЉ з®—гЃ—гЃ¦true г‚’иї”гЃ™
+			// Љщ‚Й“o^‚і‚к‚Д‚ў‚к‚О‰БЋZ‚µ‚Дtrue ‚р•Ф‚·
 			set getelementofarray(getarg(2), @__pos) , getelementofarray(getarg(2), @__pos) + getarg(3);
-			// 1Gz е€¶й™ђ
+			// 1Gz ђ§ЊА
 			if(getelementofarray(getarg(2), @__pos) > 1000*1000*1000) {
 				set getelementofarray(getarg(2), @__pos) , 1000*1000*1000;
 			}
 			return 1;
 		} else {
-			// з™»йЊІгЃ•г‚ЊгЃ¦гЃ„гЃЄгЃ‘г‚ЊгЃ°з©єгЃЌг‚’жЋўгЃ™
+			// “o^‚і‚к‚Д‚ў‚И‚Ї‚к‚О‹у‚«‚р’T‚·
 			for(set @__i , 0; @__i < 100 ; set @__i, @__i + 1) {
 				if(getelementofarray(getarg(0), @__i) == 0) {
-					// з©єгЃЌг‚’и¦‹гЃ¤гЃ‘гЃџгЃ®гЃ§иїЅеЉ 
+					// ‹у‚«‚рЊ©‚В‚Ї‚Ѕ‚М‚Е’З‰Б
 					set getelementofarray(getarg(0), @__i) , getarg(1);
 					set getelementofarray(getarg(2), @__i) , getarg(3);
 					return 1;
@@ -402,8 +402,8 @@ function	script	seller	{
 	}
 
 	// seller_pc_find( account_id , target)
-	//     е‡єе“ЃиЂ…гѓЄг‚№гѓ€гЃ‹г‚‰жЊ‡е®љгЃ—гЃџIDг‚’жЋўгЃ—е‡єгЃ™
-	//     и¦‹гЃ¤гЃ‹г‚‰гЃЄгЃ‘г‚ЊгЃ° -1 г‚’иї”гЃ™
+	//     Џo•iЋТѓЉѓXѓg‚©‚зЋw’и‚µ‚ЅID‚р’T‚µЏo‚·
+	//     Њ©‚В‚©‚з‚И‚Ї‚к‚О -1 ‚р•Ф‚·
 	function seller_pc_find {
 		for(set @__i , 0 ; @__i < 100 ; set @__i, @__i + 1) {
 			if(getelementofarray(getarg(0), @__i) == getarg(1)) {
@@ -414,15 +414,15 @@ function	script	seller	{
 	}
 
 	// seller_select(limit , array , data1 , data2 , data3)
-	//     array (и¦Ѓзґ ж•°limit) гЃ®дё­гЃ‹г‚‰гѓ—гѓ¬г‚¤гѓ¤гѓјгЃ«пј‘гЃ¤г‚’йЃёжЉћгЃ•гЃ›г‚‹
-	//     ж€»г‚ЉеЂ¤ -1 : г‚­гѓЈгѓіг‚»гѓ« гЃќг‚Њд»Ґе¤– : йЃёжЉћгЃ•г‚ЊгЃџе ґж‰Ђ
+	//     array (—v‘fђ”limit) ‚М’†‚©‚зѓvѓЊѓCѓ„Ѓ[‚Й‚P‚В‚р‘I‘р‚і‚№‚й
+	//     –Я‚и’l -1 : ѓLѓѓѓ“ѓZѓ‹ ‚»‚к€ИЉO : ‘I‘р‚і‚к‚ЅЏкЏЉ
 	//
-	//     data1, data2 , data3 гЃЇseller_select_sub гЃ«гЃќгЃ®гЃѕгЃѕжёЎгЃ•г‚Њг‚‹
+	//     data1, data2 , data3 ‚Нseller_select_sub ‚Й‚»‚М‚Ь‚Ь“n‚і‚к‚й
 	function seller_select {
 		set @__base,0;
 		while(1) {
 			set @__sel , select(
-				"г‚„гЃЈгЃ±г‚Љг‚„г‚Ѓг‚‹",
+				"‚в‚Б‚П‚и‚в‚Я‚й",
 				seller_select_sub(getarg(0),@__base + 0,getarg(1),getarg(2),getarg(3),getarg(4)),
 				seller_select_sub(getarg(0),@__base + 1,getarg(1),getarg(2),getarg(3),getarg(4)),
 				seller_select_sub(getarg(0),@__base + 2,getarg(1),getarg(2),getarg(3),getarg(4)),
@@ -437,7 +437,7 @@ function	script	seller	{
 				seller_nextpage(@__base + 10 < getarg(0))
 			);
 			if(@__sel == 1) {
-				// г‚„гЃЈгЃ±г‚Љг‚„г‚Ѓг‚‹
+				// ‚в‚Б‚П‚и‚в‚Я‚й
 				return -1;
 			} else if( (@__base + @__sel - 2 < getarg(0)) && (@__sel != 12) && (@__sel != 13) ) {
 				set @index , @__base + @__sel - 2;
@@ -449,7 +449,7 @@ function	script	seller	{
 					set @__base, @__base + 10;
 				}
 			} else {
-				// prev, next гЃЊиЎЁз¤єгЃ•г‚ЊгЃ¦гЃ„г‚‹
+				// prev, next ‚Є•\Ћ¦‚і‚к‚Д‚ў‚й
 				set @__base, @__base + 10;
 			}
 		}
@@ -462,15 +462,15 @@ function	script	seller	{
 			switch(getarg(2)){
 			case 0:
 				if(!@inventorylist_identify[getarg(1)]) {
-					return "????(жњЄй‘‘е®љ)";
+					return "????(–ўЉУ’и)";
 				} else {
-					return getitemname(@inventorylist_id[getarg(1)]) + " " + @inventorylist_amount[getarg(1)] + "еЂ‹";
+					return getitemname(@inventorylist_id[getarg(1)]) + " " + @inventorylist_amount[getarg(1)] + "ЊВ";
 				}
 				break;
 			case 1:
 				return
 					getitemname(getelementofarray(getarg(3),getarg(1))) + " " + 
-					getelementofarray(getarg(4),getarg(1)) + "еЂ‹" + 
+					getelementofarray(getarg(4),getarg(1)) + "ЊВ" + 
 					getelementofarray(getarg(5),getarg(1)) + "Zeny";
 				break;
 			default:
@@ -482,7 +482,7 @@ function	script	seller	{
 		}
 	}
 
-	// з„Ўй§„е¤‰ж•°г‚’ж¶€еЋ»гЃ™г‚‹
+	// –і‘К•Пђ”‚рЏБ‹Ћ‚·‚й
 	function seller_clean {
 		cleararray @inventorylist_id        , 0 , @inventorylist_count;
 		cleararray @inventorylist_amount    , 0 , @inventorylist_count;
@@ -499,14 +499,14 @@ function	script	seller	{
 
 	function seller_prevpage {
 		if(getarg(0)) {
-			return "в†ђе‰ЌгЃё";
+			return "Ѓ©‘O‚Ц";
 		} else {
 			return ;
 		}
 	}
 	function seller_nextpage {
 		if(getarg(0)) {
-			return "в†’ж¬ЎгЃё";
+			return "ЃЁЋџ‚Ц";
 		} else {
 			return ;
 		}

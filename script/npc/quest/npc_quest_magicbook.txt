@@ -2,187 +2,187 @@
 //Ragnarok Online - MagicBook Quest Script	by refis
 //====================================================================
 
-geffen_in.gat,176,105,4	script	魔法書管理者ベルロポス	64,{
+geffen_in.gat,176,105,4	script	���@���Ǘ��҃x�����|�X	64,{
 	if(Job != Job_Warlock) {
-		mes "[魔法書管理者ベルロポス]";
-		mes "ほぅ……";
-		mes "どうやら君も何かに対する";
-		mes "渇望を抱いているようだな。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�ق��c�c";
+		mes "�ǂ����N�������ɑ΂���";
+		mes "���]������Ă���悤���ȁB";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "だが……";
-		mes "君は私の進む道とは";
-		mes "違う道を歩んでいるようだな。";
-		mes "残念だ。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�����c�c";
+		mes "�N�͎��̐i�ޓ��Ƃ�";
+		mes "�Ⴄ�������ł���悤���ȁB";
+		mes "�c�O���B";
 		close;
 	}
 	if(getskilllv(2230)==0) {
-		mes "[魔法書管理者ベルロポス]";
-		mes "ふむ……";
-		mes "素質はあるが、";
-		mes "あと一つ足りないようだな。";
-		mes "そう、リリースがな……";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�ӂށc�c";
+		mes "�f���͂��邪�A";
+		mes "���ƈ����Ȃ��悤���ȁB";
+		mes "�����A�����[�X���ȁc�c";
 		close;
 	}
-	mes "[魔法書管理者ベルロポス]";
-	mes "リーディングスペルブック、";
-	mes "フリージングスペル、";
-	mes "そして魔法書……";
+	mes "[���@���Ǘ��҃x�����|�X]";
+	mes "���[�f�B���O�X�y���u�b�N�A";
+	mes "�t���[�W���O�X�y���A";
+	mes "�����Ė��@���c�c";
 	next;
-	mes "[魔法書管理者ベルロポス]";
-	mes "リリースを習得した君なら";
-	mes "興味があるだろう？";
+	mes "[���@���Ǘ��҃x�����|�X]";
+	mes "�����[�X���K�������N�Ȃ�";
+	mes "���������邾�낤�H";
 	next;
-	switch(select("特に興味は無い","リーディングスペルブックについて","フリージングスペルについて","魔法書が欲しい")) {
+	switch(select("���ɋ����͖���","���[�f�B���O�X�y���u�b�N�ɂ���","�t���[�W���O�X�y���ɂ���","���@�����~����")) {
 	case 1:
-		mes "[魔法書管理者ベルロポス]";
-		mes "……そうか。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�c�c�������B";
 		close;
 	case 2:
-		mes "[魔法書管理者ベルロポス]";
-		mes "リーディングスペルブック。";
-		mes "魔法書を読む、そのままの意味だ。";
-		mes "魔法書のことは知っているか？";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "���[�f�B���O�X�y���u�b�N�B";
+		mes "���@����ǂށA���̂܂܂̈Ӗ����B";
+		mes "���@���̂��Ƃ͒m���Ă��邩�H";
 		next;
-		if(select("はい","いいえ……")==1) {
-			mes "[魔法書管理者ベルロポス]";
-			mes "なら、これ以上私から";
-			mes "言うことはないな。";
+		if(select("�͂�","�������c�c")==1) {
+			mes "[���@���Ǘ��҃x�����|�X]";
+			mes "�Ȃ�A����ȏ㎄����";
+			mes "�������Ƃ͂Ȃ��ȁB";
 			close;
 		}
-		mes "[魔法書管理者ベルロポス]";
-		mes "魔法書はスクロールの一種だが、";
-		mes "スクロールとは大きく異なる。";
-		mes "スクロールに保存された魔法は";
-		mes "一度使用すると無くなるが、";
-		mes "魔法書はそうではない。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "���@���̓X�N���[���̈�킾���A";
+		mes "�X�N���[���Ƃ͑傫���قȂ�B";
+		mes "�X�N���[���ɕۑ����ꂽ���@��";
+		mes "��x�g�p����Ɩ����Ȃ邪�A";
+		mes "���@���͂����ł͂Ȃ��B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "そう、魔法書は何度でも";
-		mes "魔法を保存することができる。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�����A���@���͉��x�ł�";
+		mes "���@��ۑ����邱�Ƃ��ł���B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "そして、魔法書を利用すれば、";
-		mes "君はすでに習得している魔法を";
-		mes "使用することができる。";
-		mes "もちろん、魔法書がその魔法に";
-		mes "対応していないとならないが。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�����āA���@���𗘗p����΁A";
+		mes "�N�͂��łɏK�����Ă��閂�@��";
+		mes "�g�p���邱�Ƃ��ł���B";
+		mes "�������A���@�������̖��@��";
+		mes "�Ή����Ă��Ȃ��ƂȂ�Ȃ����B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "さて、なぜ君が習得している魔法を";
-		mes "わざわざ魔法書を利用して";
-		mes "使用しなければならないのか？";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "���āA�Ȃ��N���K�����Ă��閂�@��";
+		mes "�킴�킴���@���𗘗p����";
+		mes "�g�p���Ȃ���΂Ȃ�Ȃ��̂��H";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "先ほどもいったように、";
-		mes "魔法書はスクロールの一種。";
-		mes "魔法書を利用すれば";
-		mes "スクロールのように";
-		mes "詠唱せずに魔法を扱える。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "��قǂ��������悤�ɁA";
+		mes "���@���̓X�N���[���̈��B";
+		mes "���@���𗘗p�����";
+		mes "�X�N���[���̂悤��";
+		mes "�r�������ɖ��@��������B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "だが、もちろん制限はある。";
-		mes "まず、魔法書には魔法を";
-		mes "保存する必要がある。";
-		mes "いわば事前準備だな。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�����A������񐧌��͂���B";
+		mes "�܂��A���@���ɂ͖��@��";
+		mes "�ۑ�����K�v������B";
+		mes "����Ύ��O�������ȁB";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "そして、魔法書に魔法を";
-		mes "保存している間、";
-		mes "魔法書は君のSPを吸い続ける。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�����āA���@���ɖ��@��";
+		mes "�ۑ����Ă���ԁA";
+		mes "���@���͌N��SP���z��������B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "なお、君が習得していない魔法を";
-		mes "無理やり魔法書に";
-		mes "保存しようとすると……";
-		mes "いや、流石にそこまで愚かではないか。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�Ȃ��A�N���K�����Ă��Ȃ����@��";
+		mes "������薂�@����";
+		mes "�ۑ����悤�Ƃ���Ɓc�c";
+		mes "����A���΂ɂ����܂ŋ����ł͂Ȃ����B";
 		close;
 	case 3:
-		mes "[魔法書管理者ベルロポス]";
-		mes "魔法書に魔法を保存するために";
-		mes "必要となる基礎だ。";
-		mes "熟知すればより多くの魔法を";
-		mes "保存できるようになる。";
-		mes "また、強力な魔法も";
-		mes "保存できるようになるだろう。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "���@���ɖ��@��ۑ����邽�߂�";
+		mes "�K�v�ƂȂ��b���B";
+		mes "�n�m����΂�葽���̖��@��";
+		mes "�ۑ��ł���悤�ɂȂ�B";
+		mes "�܂��A���͂Ȗ��@��";
+		mes "�ۑ��ł���悤�ɂȂ邾�낤�B";
 		close;
 	case 4:
-		mes "[魔法書管理者ベルロポス]";
-		mes "悪いが、魔法書は";
-		mes "無料で配っているような";
-		mes "ものではない。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�������A���@����";
+		mes "�����Ŕz���Ă���悤��";
+		mes "���̂ł͂Ȃ��B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "魔法書を作成するには";
-		mes "いくつかの材料が必要だ。";
-		mes "だが、材料さえ持ってくれば";
-		mes "すでに作っておいた魔法書と";
-		mes "交換しよう。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "���@�����쐬����ɂ�";
+		mes "�������̍ޗ����K�v���B";
+		mes "�����A�ޗ����������Ă����";
+		mes "���łɍ���Ă��������@����";
+		mes "�������悤�B";
 		next;
-		mes "[魔法書管理者ベルロポス]";
-		mes "詳しい材料については、";
-		mes "すぐそこにいるリアに聞いてくれ。";
-		mes "あと、魔法書と材料の交換も";
-		mes "リアが行っている。";
+		mes "[���@���Ǘ��҃x�����|�X]";
+		mes "�ڂ����ޗ��ɂ��ẮA";
+		mes "���������ɂ��郊�A�ɕ����Ă���B";
+		mes "���ƁA���@���ƍޗ��̌�����";
+		mes "���A���s���Ă���B";
 		if(WL_MAGICBOOK < 1)
 			set WL_MAGICBOOK, 1;
 		close;
 	}
 }
 
-geffen_in.gat,175,112,4	script	リア	123,{
+geffen_in.gat,175,112,4	script	���A	123,{
 	if(checkitemblank()==0) {
-		mes "‐所持アイテムの種類数が多い為";
-		mes "　危険です。";
-		mes "　所持アイテムを減らしてから、";
-		mes "　再度試行してください‐";
+		mes "�]�����A�C�e���̎�ސ���������";
+		mes "�@�댯�ł��B";
+		mes "�@�����A�C�e�������炵�Ă���A";
+		mes "�@�ēx���s���Ă��������]";
 		close;
 	}
 	if(MaxWeight - Weight < 100) {
-		mes "‐所持アイテムの重量が重い為";
-		mes "　危険です。";
-		mes "　所持アイテムを減らしてから、";
-		mes "　再度試行してください‐";
+		mes "�]�����A�C�e���̏d�ʂ��d����";
+		mes "�@�댯�ł��B";
+		mes "�@�����A�C�e�������炵�Ă���A";
+		mes "�@�ēx���s���Ă��������]";
 		close;
 	}
 	if(WL_MAGICBOOK < 1 || Job != Job_Warlock) {
-		mes "[リア]";
-		mes "私は、ベルロポス様に";
-		mes "認められた方々に";
-		mes "魔法書をお渡ししております。";
+		mes "[���A]";
+		mes "���́A�x�����|�X�l��";
+		mes "�F�߂�ꂽ���X��";
+		mes "���@�������n�����Ă���܂��B";
 		close;
 	}
-	mes "[リア]";
-	mes "何かご用ですか？";
+	mes "[���A]";
+	mes "�������p�ł����H";
 	next;
-	menu "ベルロポスから魔法書について聞いた",-;
-	mes "[リア]";
-	mes "なるほど。";
-	mes "では、魔法書の作成ですね。";
-	mes "どの魔法書にしますか？";
+	menu "�x�����|�X���疂�@���ɂ��ĕ�����",-;
+	mes "[���A]";
+	mes "�Ȃ�قǁB";
+	mes "�ł́A���@���̍쐬�ł��ˁB";
+	mes "�ǂ̖��@���ɂ��܂����H";
 	next;
-	switch(select("作成をやめる","初級の魔法書","中級の魔法書","上級の魔法書")) {
+	switch(select("�쐬����߂�","�����̖��@��","�����̖��@��","�㋉�̖��@��")) {
 	case 1:
-		mes "[リア]";
-		mes "わかりました。";
-		mes "魔法書が必要になりましたら";
-		mes "またいらしてください。";
+		mes "[���A]";
+		mes "�킩��܂����B";
+		mes "���@�����K�v�ɂȂ�܂�����";
+		mes "�܂����炵�Ă��������B";
 		close;
 	case 2:
-		mes "[リア]";
-		mes "初級の魔法書ですね。";
-		mes "そちらの魔法書作成には";
-		mes "10,000 Zeny必要になります。";
-		mes "なお、古い魔法書2個、";
-		mes "または古い本のページ50個でも";
-		mes "作成できます。";
+		mes "[���A]";
+		mes "�����̖��@���ł��ˁB";
+		mes "������̖��@���쐬�ɂ�";
+		mes "10,000 Zeny�K�v�ɂȂ�܂��B";
+		mes "�Ȃ��A�Â����@��2�A";
+		mes "�܂��͌Â��{�̃y�[�W50�ł�";
+		mes "�쐬�ł��܂��B";
 		next;
-		switch(select("作成をやめる","10,000Zenyで作成する","古い魔法書2個で作成する","古い本のページ50個で作成する")) {
+		switch(select("�쐬����߂�","10,000Zeny�ō쐬����","�Â����@��2�ō쐬����","�Â��{�̃y�[�W50�ō쐬����")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@value,10000;
@@ -191,24 +191,24 @@ geffen_in.gat,175,112,4	script	リア	123,{
 		case 3:
 			set '@need,1006;
 			set '@amount,2;
-			set '@str$,"古い魔法書2個";
+			set '@str$,"�Â����@��2��";
 			break;
 		case 4:
 			set '@need,1097;
 			set '@amount,50;
-			set '@str$,"古い本のページ50個";
+			set '@str$,"�Â��{�̃y�[�W50��";
 			break;
 		}
-		mes "[リア]";
-		mes "それでは、";
-		mes "魔法書の種類を選んで下さい。";
+		mes "[���A]";
+		mes "����ł́A";
+		mes "���@���̎�ނ�I��ŉ������B";
 		next;
-		switch(select("作成をやめる","魔法書(ファイアーボルト)","魔法書(コールドボルト)","魔法書(ライトニングボルト)")) {
+		switch(select("�쐬����߂�","���@��(�t�@�C�A�[�{���g)","���@��(�R�[���h�{���g)","���@��(���C�g�j���O�{���g)")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@gain,6189;
@@ -220,58 +220,58 @@ geffen_in.gat,175,112,4	script	リア	123,{
 			set '@gain,6191;
 			break;
 		}
-		mes "[リア]";
-		mes getitemname('@gain) +"を";
-		mes '@str$ +"で作成。";
-		mes "間違いありませんか？";
+		mes "[���A]";
+		mes getitemname('@gain) +"��";
+		mes '@str$ +"�ō쐬�B";
+		mes "�ԈႢ����܂��񂩁H";
 		next;
-		if(select("作成をやめる","間違いない")==1) {
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+		if(select("�쐬����߂�","�ԈႢ�Ȃ�")==1) {
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		}
 		if('@need > 0) {
 			if(countitem('@need) < '@amount){
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			delitem '@need,'@amount;
 		} else if('@value > 0) {
 			if(Zeny < '@value){
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			set Zeny,Zeny -'@value;
 		}
 		getitem '@gain,1;
-		mes "[リア]";
-		mes "それでは魔法書をどうぞ。";
-		mes "くれぐれも無くさないよう";
-		mes "気をつけてください。";
+		mes "[���A]";
+		mes "����ł͖��@�����ǂ����B";
+		mes "���ꂮ����������Ȃ��悤";
+		mes "�C�����Ă��������B";
 		close;
 	case 3:
-		mes "[リア]";
-		mes "中級の魔法書ですね。";
-		mes "そちらの魔法書作成には";
-		mes "50,000 Zeny必要になります。";
-		mes "なお、古く青い箱2個、";
-		mes "またはエルニウム9個でも";
-		mes "作成できます。";
+		mes "[���A]";
+		mes "�����̖��@���ł��ˁB";
+		mes "������̖��@���쐬�ɂ�";
+		mes "50,000 Zeny�K�v�ɂȂ�܂��B";
+		mes "�Ȃ��A�Â�����2�A";
+		mes "�܂��̓G���j�E��9�ł�";
+		mes "�쐬�ł��܂��B";
 		next;
-		switch(select("作成をやめる","50,000Zenyで作成する","古く青い箱2個で作成する","エルニウム9個で作成する")) {
+		switch(select("�쐬����߂�","50,000Zeny�ō쐬����","�Â�����2�ō쐬����","�G���j�E��9�ō쐬����")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@value,50000;
@@ -280,24 +280,24 @@ geffen_in.gat,175,112,4	script	リア	123,{
 		case 3:
 			set '@need,603;
 			set '@amount,2;
-			set '@str$,"古く青い箱2個";
+			set '@str$,"�Â�����2��";
 			break;
 		case 4:
 			set '@need,985;
 			set '@amount,9;
-			set '@str$,"エルニウム9個";
+			set '@str$,"�G���j�E��9��";
 			break;
 		}
-		mes "[リア]";
-		mes "それでは、";
-		mes "魔法書の種類を選んで下さい。";
+		mes "[���A]";
+		mes "����ł́A";
+		mes "���@���̎�ނ�I��ŉ������B";
 		next;
-		switch(select("作成をやめる","魔法書(ストームガスト)","魔法書(ロードオブヴァーミリオン)","魔法書(メテオストーム)","魔法書(サンダーストーム)","魔法書(ユピテルサンダー)","魔法書(ウォーターボール)","魔法書(ヘヴンズドライブ)","魔法書(アーススパイク)")) {
+		switch(select("�쐬����߂�","���@��(�X�g�[���K�X�g)","���@��(���[�h�I�u���@�[�~���I��)","���@��(���e�I�X�g�[��)","���@��(�T���_�[�X�g�[��)","���@��(���s�e���T���_�[)","���@��(�E�H�[�^�[�{�[��)","���@��(�w�����Y�h���C�u)","���@��(�A�[�X�X�p�C�N)")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@gain,6192;
@@ -324,98 +324,98 @@ geffen_in.gat,175,112,4	script	リア	123,{
 			set '@gain,6201;
 			break;
 		}
-		mes "[リア]";
-		mes getitemname('@gain) +"を";
-		mes '@str$ +"で作成。";
-		mes "間違いありませんか？";
+		mes "[���A]";
+		mes getitemname('@gain) +"��";
+		mes '@str$ +"�ō쐬�B";
+		mes "�ԈႢ����܂��񂩁H";
 		next;
-		if(select("作成をやめる","間違いない")==1) {
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+		if(select("�쐬����߂�","�ԈႢ�Ȃ�")==1) {
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		}
 		if('@need > 0) {
 			if(countitem('@need) < '@amount) {
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			delitem '@need,'@amount;
 		} else if('@value > 0) {
 			if(Zeny < '@value) {
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			set Zeny,Zeny -'@value;
 		}
 		getitem '@gain,1;
-		mes "[リア]";
-		mes "それでは魔法書をどうぞ。";
-		mes "くれぐれも無くさないよう";
-		mes "気をつけてください。";
+		mes "[���A]";
+		mes "����ł͖��@�����ǂ����B";
+		mes "���ꂮ����������Ȃ��悤";
+		mes "�C�����Ă��������B";
 		close;
 	case 4:
-		mes "[リア]";
-		mes "上級の魔法書ですね。";
-		mes "そちらの魔法書作成には";
-		mes "まず100,000Zeny。";
-		mes "それと未知の欠片12個か";
-		mes "オリデオコン7個か";
-		mes "古い紫色の箱1個が必要です。";
+		mes "[���A]";
+		mes "�㋉�̖��@���ł��ˁB";
+		mes "������̖��@���쐬�ɂ�";
+		mes "�܂�100,000Zeny�B";
+		mes "����Ɩ��m�̌���12��";
+		mes "�I���f�I�R��7��";
+		mes "�Â����F�̔�1���K�v�ł��B";
 		next;
-		mes "[リア]";
-		mes "もちろん材料を集めるのも";
-		mes "大変ですよね。";
-		mes "よろしければ200,000Zenyでも";
-		mes "作成は可能ですよ。";
+		mes "[���A]";
+		mes "�������ޗ����W�߂�̂�";
+		mes "��ςł���ˁB";
+		mes "��낵�����200,000Zeny�ł�";
+		mes "�쐬�͉\�ł���B";
 		next;
-		switch(select("作成をやめる","100,000Zenyと未知の欠片12個で作成する","100,000Zenyとオリデオコン7個で作成する","100,000Zenyと古い紫色の箱1個で作成する","200,000Zenyで作成する")) {
+		switch(select("�쐬����߂�","100,000Zeny�Ɩ��m�̌���12�ō쐬����","100,000Zeny�ƃI���f�I�R��7�ō쐬����","100,000Zeny�ƌÂ����F�̔�1�ō쐬����","200,000Zeny�ō쐬����")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@value,100000;
 			set '@need,7094;
 			set '@amount,12;
-			set '@str$,"未知の欠片12個";
+			set '@str$,"���m�̌���12��";
 			break;
 		case 3:
 			set '@value,100000;
 			set '@need,984;
 			set '@amount,7;
-			set '@str$,"オリデオコン7個";
+			set '@str$,"�I���f�I�R��7��";
 			break;
 		case 4:
 			set '@value,100000;
 			set '@need,617;
 			set '@amount,1;
-			set '@str$,"古い紫色の箱1個";
+			set '@str$,"�Â����F�̔�1��";
 			break;
 		case 5:
 			set '@value,200000;
 			set '@str$,"200,000Zeny";
 			break;
 		}
-		mes "[リア]";
-		mes "それでは、";
-		mes "魔法書の種類を選んで下さい。";
+		mes "[���A]";
+		mes "����ł́A";
+		mes "���@���̎�ނ�I��ŉ������B";
 		next;
-		switch(select("作成をやめる","魔法書(アースストレイン)","魔法書(チェーンライトニング)","魔法書(クリムゾンロック)","魔法書(ドレインライフ)")) {
+		switch(select("�쐬����߂�","���@��(�A�[�X�X�g���C��)","���@��(�`�F�[�����C�g�j���O)","���@��(�N�����]�����b�N)","���@��(�h���C�����C�t)")) {
 		case 1:
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		case 2:
 			set '@gain,6202;
@@ -430,45 +430,45 @@ geffen_in.gat,175,112,4	script	リア	123,{
 			set '@gain,6205;
 			break;
 		}
-		mes "[リア]";
-		mes getitemname('@gain) +"を";
+		mes "[���A]";
+		mes getitemname('@gain) +"��";
 		if('@need > 0)
-			mes "100,000Zenyと";
-		mes '@str$ +"で作成。";
-		mes "間違いありませんか？";
+			mes "100,000Zeny��";
+		mes '@str$ +"�ō쐬�B";
+		mes "�ԈႢ����܂��񂩁H";
 		next;
-		if(select("作成をやめる","間違いない")==1) {
-			mes "[リア]";
-			mes "わかりました。";
-			mes "魔法書が必要になりましたら";
-			mes "またいらしてください。";
+		if(select("�쐬����߂�","�ԈႢ�Ȃ�")==1) {
+			mes "[���A]";
+			mes "�킩��܂����B";
+			mes "���@�����K�v�ɂȂ�܂�����";
+			mes "�܂����炵�Ă��������B";
 			close;
 		}
 		if('@need > 0) {
 			if(countitem('@need) < '@amount || Zeny < '@value) {
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			delitem '@need,'@amount;
 			set Zeny,Zeny -'@value;
 		} else if('@value > 0) {
 			if(Zeny < '@value) {
-				mes "[リア]";
-				mes "あら？";
-				mes "材料が足りないみたいですね。";
-				mes "手荷物をもう一度確認してください。";
+				mes "[���A]";
+				mes "����H";
+				mes "�ޗ�������Ȃ��݂����ł��ˁB";
+				mes "��ו���������x�m�F���Ă��������B";
 				close;
 			}
 			set Zeny,Zeny -'@value;
 		}
 		getitem '@gain,1;
-		mes "[リア]";
-		mes "それでは魔法書をどうぞ。";
-		mes "くれぐれも無くさないよう";
-		mes "気をつけてください。";
+		mes "[���A]";
+		mes "����ł͖��@�����ǂ����B";
+		mes "���ꂮ����������Ȃ��悤";
+		mes "�C�����Ă��������B";
 		close;
 	}
 }

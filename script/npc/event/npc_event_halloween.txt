@@ -3,247 +3,247 @@
 //==============================================================================
 
 //==========================================
-// ãƒ‘ãƒ³ãƒ—ã‚­ãƒ³ãƒãƒƒãƒˆã‚¯ã‚¨ã‚¹ãƒˆ
+// ƒpƒ“ƒvƒLƒ“ƒnƒbƒgƒNƒGƒXƒg
 //------------------------------------------
-prontera.gat,164,69,3	script	ç´ æ•µãªãƒ‡ãƒ“	738,{
-	mes "-æ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯ãŒ";
-	mes "ç†è§£ã§ããªã„è¨€è‘‰ã§";
-	mes "è©±ã—ã‹ã‘ã¦ãã¦ã„ã‚‹-";
+prontera.gat,164,69,3	script	‘f“G‚Èƒfƒr	738,{
+	mes "-—JŸT‚ÈƒWƒƒƒbƒN‚ª";
+	mes "—‰ð‚Å‚«‚È‚¢Œ¾—t‚Å";
+	mes "˜b‚µ‚©‚¯‚Ä‚«‚Ä‚¢‚é-";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ä½•è¨€ã£ã¦ã‚‹ã‹ã‚ã‹ã‚‰ãªã„ã ã‚ï¼Ÿ";
-	mes "ä¿ºãŒé€šè¨³ã—ã¦ã‚„ã‚‹ã‚ˆã€‚";
-	mes "ã¾ã€ãã®ãŸã‚ã«ã“ã„ã¤ã«";
-	mes "ã¤ã„ã¦ãã¦ã‚„ã£ãŸã‚“ã ã‘ã©ãªã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "‰½Œ¾‚Á‚Ä‚é‚©‚í‚©‚ç‚È‚¢‚¾‚ëH";
+	mes "‰´‚ª’Ê–ó‚µ‚Ä‚â‚é‚æB";
+	mes "‚ÜA‚»‚Ì‚½‚ß‚É‚±‚¢‚Â‚É";
+	mes "‚Â‚¢‚Ä‚«‚Ä‚â‚Á‚½‚ñ‚¾‚¯‚Ç‚ÈB";
 	next;
-	mes "-æ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯ãŒ";
-	mes "ç†è§£ã§ããªã„è¨€è‘‰ã§";
-	mes "ãƒ‡ãƒ“ãƒ«ãƒã¨è©±ã—ã¦ã„ã‚‹-";
+	mes "-—JŸT‚ÈƒWƒƒƒbƒN‚ª";
+	mes "—‰ð‚Å‚«‚È‚¢Œ¾—t‚Å";
+	mes "ƒfƒrƒ‹ƒ`‚Æ˜b‚µ‚Ä‚¢‚é-";
 	next;
 	if(countitem(7609)) {
-		mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-		mes "ã€Œå›ãŒæŒã£ã¦ã„ã‚‹ã®ã¯";
-		mes "åƒ•ã®å¿ƒã˜ã‚ƒãªã„ã‹ãªï¼Ÿ";
-		mes "ãã‚Œã‚’è¿”ã—ã¦ãã‚ŒãŸã‚‰";
-		mes "ä½•ã‹ãŠç¤¼ã‚’ã™ã‚‹ã‘ã©â€¦â€¦ã€";
-		mes "ã£ã¦ã“ã„ã¤ãŒè¨€ã£ã¦ã‚‹ãœã€‚";
+		mes "[‘f“G‚Èƒfƒr]";
+		mes "uŒN‚ªŽ‚Á‚Ä‚¢‚é‚Ì‚Í";
+		mes "–l‚ÌS‚¶‚á‚È‚¢‚©‚ÈH";
+		mes "‚»‚ê‚ð•Ô‚µ‚Ä‚­‚ê‚½‚ç";
+		mes "‰½‚©‚¨—ç‚ð‚·‚é‚¯‚Çccv";
+		mes "‚Á‚Ä‚±‚¢‚Â‚ªŒ¾‚Á‚Ä‚é‚ºB";
 		next;
-		mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-		mes "ã©ã†ã™ã‚‹ï¼Ÿ";
-		mes "ã“ã„ã¤ã®äº‹æƒ…ã‚’èª¬æ˜Žã—ã¦ã»ã—ã„ã‹ï¼Ÿ";
+		mes "[‘f“G‚Èƒfƒr]";
+		mes "‚Ç‚¤‚·‚éH";
+		mes "‚±‚¢‚Â‚ÌŽ–î‚ðà–¾‚µ‚Ä‚Ù‚µ‚¢‚©H";
 		next;
-		if(select("äº‹æƒ…ã£ã¦ï¼Ÿ","ã„ãˆã€çŸ¥ã£ã¦ã„ã¾ã™")==2) {
+		if(select("Ž–î‚Á‚ÄH","‚¢‚¦A’m‚Á‚Ä‚¢‚Ü‚·")==2) {
 			if(countitem(535) < 1 || countitem(2226) < 1) {
-				mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-				mes "ã‚“ï¼Ÿ";
-				mes "ãƒ‘ãƒ³ãƒ—ã‚­ãƒ³ãƒãƒƒãƒˆã‚’ä½œã‚‹ã«ã¯";
-				mes "ææ–™ãŒè¶³ã‚Šãªã„ã¿ãŸã„ã ãœï¼Ÿ";
+				mes "[‘f“G‚Èƒfƒr]";
+				mes "‚ñH";
+				mes "ƒpƒ“ƒvƒLƒ“ƒnƒbƒg‚ðì‚é‚É‚Í";
+				mes "Þ—¿‚ª‘«‚è‚È‚¢‚Ý‚½‚¢‚¾‚ºH";
 				close;
 			}
-			mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-			mes "ãã‚Œã‚’ã‚¸ãƒ£ãƒƒã‚¯ã«è¿”ã—ã¦ã‚„ã£ãŸã‚‰ã€";
-			mes "ã‚«ãƒœãƒãƒ£ã¨æ™®é€šã®ã‚­ãƒ£ãƒƒãƒ—ã‚’";
-			mes "ãƒ‘ãƒ³ãƒ—ã‚­ãƒ³ãƒãƒƒãƒˆã«ã—ã¦ãã‚Œã‚‹ãœã€‚";
+			mes "[‘f“G‚Èƒfƒr]";
+			mes "‚»‚ê‚ðƒWƒƒƒbƒN‚É•Ô‚µ‚Ä‚â‚Á‚½‚çA";
+			mes "ƒJƒ{ƒ`ƒƒ‚Æ•’Ê‚ÌƒLƒƒƒbƒv‚ð";
+			mes "ƒpƒ“ƒvƒLƒ“ƒnƒbƒg‚É‚µ‚Ä‚­‚ê‚é‚ºB";
 			next;
-			if(select("ã‚„ã ","ã¯ã„ã€ã©ã†ãž")==1) {
-				mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-				mes "â€¦â€¦å†—è«‡ã ã‚ˆãªï¼Ÿ";
-				mes "å¾Œã§ãã‚Œã‚’ã‚¸ãƒ£ãƒƒã‚¯ã«";
-				mes "è¿”ã—ã¦ã‚„ã‚‹ã‚“ã ã‚ˆãªï¼Ÿ";
+			if(select("‚â‚¾","‚Í‚¢A‚Ç‚¤‚¼")==1) {
+				mes "[‘f“G‚Èƒfƒr]";
+				mes "ccç’k‚¾‚æ‚ÈH";
+				mes "Œã‚Å‚»‚ê‚ðƒWƒƒƒbƒN‚É";
+				mes "•Ô‚µ‚Ä‚â‚é‚ñ‚¾‚æ‚ÈH";
 				close;
 			}
 			delitem 7609,1;
 			delitem 535,1;
 			delitem 2226,1;
 			getitem 5202,1;
-			misceffect 200,"æ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯";
-			mes "-ã‚¸ãƒ£ãƒƒã‚¯ã®å…ƒã«";
-			mes "ãƒãƒ­ã‚¦ã‚£ãƒ³ã‚¸ãƒ£ãƒƒã‚¯ã®è¨¼ã§ã‚ã‚‹";
-			mes "ã‚ªãƒ¼ãƒ©ãŒæˆ»ã£ã¦ããŸ-";
+			misceffect 200,"—JŸT‚ÈƒWƒƒƒbƒN";
+			mes "-ƒWƒƒƒbƒN‚ÌŒ³‚É";
+			mes "ƒnƒƒEƒBƒ“ƒWƒƒƒbƒN‚ÌØ‚Å‚ ‚é";
+			mes "ƒI[ƒ‰‚ª–ß‚Á‚Ä‚«‚½-";
 			next;
-			misceffect 1,"æ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯";
-			mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-			mes "ã‚“ï¼Ÿã€€ã‚ªãƒ¼ãƒ©ãŒä¸å®‰å®šã ãªâ€¦â€¦";
-			mes "ã¾ã å¿ƒãŒè¶³ã‚Šãªã„ã‚“ã ã‚ã€‚";
+			misceffect 1,"—JŸT‚ÈƒWƒƒƒbƒN";
+			mes "[‘f“G‚Èƒfƒr]";
+			mes "‚ñH@ƒI[ƒ‰‚ª•sˆÀ’è‚¾‚Ècc";
+			mes "‚Ü‚¾S‚ª‘«‚è‚È‚¢‚ñ‚¾‚ëB";
 			next;
-			mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-			mes "ã¾ã€ã„ã¤ã‹ã¯å®Œå…¨ã«å–ã‚Šæˆ»ã›ã‚‹ã ã‚ã€‚";
-			mes "æ°—é•·ã«é›†ã‚ã‚‹ã‚“ã ãªã€‚";
+			mes "[‘f“G‚Èƒfƒr]";
+			mes "‚ÜA‚¢‚Â‚©‚ÍŠ®‘S‚ÉŽæ‚è–ß‚¹‚é‚¾‚ëB";
+			mes "‹C’·‚ÉW‚ß‚é‚ñ‚¾‚ÈB";
 			close;
 		}
 		mes "[" +strcharinfo(0)+ "]";
-		mes "äº‹æƒ…ã£ã¦ï¼Ÿ";
+		mes "Ž–î‚Á‚ÄH";
 		next;
 	}
 	else {
-		mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-		mes "ã€Œæ˜”â€¦â€¦åƒ•ã¯ã­â€¦â€¦";
-		mes "ãƒãƒ­ã‚¦ã‚£ãƒ³ã‚¸ãƒ£ãƒƒã‚¯ã ã£ãŸã®â€¦â€¦";
-		mes "â€¦â€¦ã§ã‚‚ã€ä»Šã¯â€¦â€¦ã€";
+		mes "[‘f“G‚Èƒfƒr]";
+		mes "uÌcc–l‚Í‚Ëcc";
+		mes "ƒnƒƒEƒBƒ“ƒWƒƒƒbƒN‚¾‚Á‚½‚Ìcc";
+		mes "cc‚Å‚àA¡‚Íccv";
 		next;
-		mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-		mes "â€¦â€¦ã“ã®å£èª¿ã¯å«Œã ãªâ€¦â€¦";
-		mes "ã‚‚ã†ã„ã„ã€ä¿ºãŒçŸ¥ã£ã¦ã‚‹äº‹ã‚’";
-		mes "å…¨éƒ¨è©±ã—ã¦ã‚„ã‚‹ï¼";
+		mes "[‘f“G‚Èƒfƒr]";
+		mes "cc‚±‚ÌŒû’²‚ÍŒ™‚¾‚Ècc";
+		mes "‚à‚¤‚¢‚¢A‰´‚ª’m‚Á‚Ä‚éŽ–‚ð";
+		mes "‘S•”˜b‚µ‚Ä‚â‚éI";
 		next;
 	}
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "å…ƒã€…ã€ã“ã„ã¤ã¯ã“ã‚“ãª";
-	mes "å¹³å‡¡ãªã‚¸ãƒ£ãƒƒã‚¯ã˜ã‚ƒãªãã¦ã€";
-	mes "ãƒãƒ­ã‚¦ã‚£ãƒ³ã‚¸ãƒ£ãƒƒã‚¯ãªã‚“ã ã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "Œ³XA‚±‚¢‚Â‚Í‚±‚ñ‚È";
+	mes "•½–}‚ÈƒWƒƒƒbƒN‚¶‚á‚È‚­‚ÄA";
+	mes "ƒnƒƒEƒBƒ“ƒWƒƒƒbƒN‚È‚ñ‚¾B";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ã§ã‚‚ã€è‡ªåˆ†ã®å¿ƒã‚’";
-	mes "ç›—ã¾ã‚ŒãŸã›ã„ã§ã€";
-	mes "ã“ã‚“ãªæ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯ã«";
-	mes "ãªã£ã¦ã—ã¾ã£ãŸã‚“ã ã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "‚Å‚àAŽ©•ª‚ÌS‚ð";
+	mes "“‚Ü‚ê‚½‚¹‚¢‚ÅA";
+	mes "‚±‚ñ‚È—JŸT‚ÈƒWƒƒƒbƒN‚É";
+	mes "‚È‚Á‚Ä‚µ‚Ü‚Á‚½‚ñ‚¾B";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ã ã‹ã‚‰ã€ã‚ã–ã‚ã–ã“ã‚“ãªæ‰€ã¾ã§";
-	mes "è‡ªåˆ†ã®å¿ƒã‚’æŽ¢ã—ã«æ¥ãŸã‚“ã ã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "‚¾‚©‚çA‚í‚´‚í‚´‚±‚ñ‚ÈŠ‚Ü‚Å";
+	mes "Ž©•ª‚ÌS‚ð’T‚µ‚É—ˆ‚½‚ñ‚¾B";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ç›—ã‚“ã çŠ¯äººã‚‚è¦‹å½“ãŒã¤ã„ã¦ã‚‹ã€";
-	mes "è‡ªåˆ†ãŒãƒãƒ­ã‚¦ã‚£ãƒ³ã®ãƒžã‚¹ã‚³ãƒƒãƒˆã£ã¦";
-	mes "è¨€ã„è§¦ã‚‰ã—ã¦ã„ã‚‹^4A4AFFæ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰^000000ã€‚";
-	mes "å¤šåˆ†ã“ã„ã¤ã ã‚ã†ãªã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "“‚ñ‚¾”Æl‚àŒ©“–‚ª‚Â‚¢‚Ä‚éA";
+	mes "Ž©•ª‚ªƒnƒƒEƒBƒ“‚Ìƒ}ƒXƒRƒbƒg‚Á‚Ä";
+	mes "Œ¾‚¢G‚ç‚µ‚Ä‚¢‚é^4A4AFFŠy‚µ‚¢ƒ‹[ƒh^000000B";
+	mes "‘½•ª‚±‚¢‚Â‚¾‚ë‚¤‚ÈB";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ã¨ã«ã‹ãã€ãã®ã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒã‚’";
-	mes "æŽ¢ã—ã¦ã‚„ã£ã¦ãã‚Œãªã„ã‹ï¼Ÿ";
-	mes "ç¤¼ãªã‚‰ã“ã„ã¤ãŒã¡ã‚ƒã‚“ã¨ã™ã‚‹ã‹ã‚‰ã•ã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "‚Æ‚É‚©‚­A‚»‚ÌƒWƒƒƒbƒN‚ÌS‚ð";
+	mes "’T‚µ‚Ä‚â‚Á‚Ä‚­‚ê‚È‚¢‚©H";
+	mes "—ç‚È‚ç‚±‚¢‚Â‚ª‚¿‚á‚ñ‚Æ‚·‚é‚©‚ç‚³B";
 	next;
 	mes "[" +strcharinfo(0)+ "]";
-	mes "ãã‚Œã£ã¦ã©ã‚“ãªã®ï¼Ÿ";
-	mes "è©±ã‚’èžã„ã¦ã‹ã‚‰æ±ºã‚ã‚‹ã‚ˆã€‚";
+	mes "‚»‚ê‚Á‚Ä‚Ç‚ñ‚È‚ÌH";
+	mes "˜b‚ð•·‚¢‚Ä‚©‚çŒˆ‚ß‚é‚æB";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "^4A4AFFã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒã€ã‚«ãƒœãƒãƒ£ã€";
-	mes "ã‚­ãƒ£ãƒƒãƒ—ã‚’1å€‹ãšã¤^000000æŒã£ã¦æ¥ã‚Œã°ã€";
-	mes "^4A4AFFãƒ‘ãƒ³ãƒ—ã‚­ãƒ³ãƒãƒƒãƒˆ 1å€‹^000000";
-	mes "ã¨äº¤æ›ã—ã¦ãã‚Œã‚‹ã£ã¦ã•ã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "^4A4AFFƒWƒƒƒbƒN‚ÌSAƒJƒ{ƒ`ƒƒA";
+	mes "ƒLƒƒƒbƒv‚ð1ŒÂ‚¸‚Â^000000Ž‚Á‚Ä—ˆ‚ê‚ÎA";
+	mes "^4A4AFFƒpƒ“ƒvƒLƒ“ƒnƒbƒg 1ŒÂ^000000";
+	mes "‚ÆŒðŠ·‚µ‚Ä‚­‚ê‚é‚Á‚Ä‚³B";
 	next;
-	mes "[ç´ æ•µãªãƒ‡ãƒ“]";
-	mes "ã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒãªã‚“ã¦ã€";
-	mes "ã‚ã£ã¦ã‚‚ä½•ã®å½¹ã«ã‚‚ç«‹ãŸãªã„ã ã‚ï¼Ÿ";
-	mes "ã„ã„ã˜ã‚ƒãªã„ã‹ã€‚";
-	mes "äººé–“ã®ç”ºã¾ã§æ¥ã‚‹ç¨‹å›°ã£ã¦ã„ã‚‹";
-	mes "ã“ã„ã¤ã‚’åŠ©ã‘ã¦ã‚„ã£ã¦ãã‚Œã‚ˆã€‚";
+	mes "[‘f“G‚Èƒfƒr]";
+	mes "ƒWƒƒƒbƒN‚ÌS‚È‚ñ‚ÄA";
+	mes "‚ ‚Á‚Ä‚à‰½‚Ì–ð‚É‚à—§‚½‚È‚¢‚¾‚ëH";
+	mes "‚¢‚¢‚¶‚á‚È‚¢‚©B";
+	mes "lŠÔ‚Ì’¬‚Ü‚Å—ˆ‚é’ö¢‚Á‚Ä‚¢‚é";
+	mes "‚±‚¢‚Â‚ð•‚¯‚Ä‚â‚Á‚Ä‚­‚ê‚æB";
 	close;
 }
-prontera.gat,162,69,5	script	æ†‚é¬±ãªã‚¸ãƒ£ãƒƒã‚¯	1130,{}
+prontera.gat,162,69,5	script	—JŸT‚ÈƒWƒƒƒbƒN	1130,{}
 
 //==========================================
-// ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚¯ã‚¨ã‚¹ãƒˆ
+// ƒJƒ{ƒ`ƒƒƒpƒCƒNƒGƒXƒg
 //------------------------------------------
-geffen.gat,145,132,3	script	ãƒ›ã‚¤ãƒªãƒ³	729,{
+geffen.gat,145,132,3	script	ƒzƒCƒŠƒ“	729,{
 	if(HALLOWEEN_EVE == 0) {
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã‚«ãƒœãƒãƒ£ã“ãç¥žã•ã¾ã‹ã‚‰ã®";
-		mes "è´ˆã‚Šç‰©ã ã¨æ€ã‚ãªã„!?";
-		mes "ã‚ã®è±Šã‹ãªã‚«ãƒ­ãƒªãƒ¼ã¨æ „é¤Šã¯";
-		mes "ç§ãŸã¡ã«ä¸è¶³ã—ã¦ã„ã‚‹ä½“åŠ›ã‚’";
-		mes "è£œã£ã¦ãã‚Œã‚‹ã®ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "ƒJƒ{ƒ`ƒƒ‚±‚»_‚³‚Ü‚©‚ç‚Ì";
+		mes "‘¡‚è•¨‚¾‚ÆŽv‚í‚È‚¢!?";
+		mes "‚ ‚Ì–L‚©‚ÈƒJƒƒŠ[‚Æ‰h—{‚Í";
+		mes "Ž„‚½‚¿‚É•s‘«‚µ‚Ä‚¢‚é‘Ì—Í‚ð";
+		mes "•â‚Á‚Ä‚­‚ê‚é‚ÌI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã“ã®ç§ã€ãƒ›ã‚¤ãƒªãƒ³ã¯ï¼";
-		mes "ãã‚“ãªç´ æ™´ã‚‰ã—ã„ã‚«ãƒœãƒãƒ£ã‚’";
-		mes "ã‚‚ã£ã¨ãŠã„ã—ãé£Ÿã¹ã‚‹ãŸã‚ã«";
-		mes "è‰²ã€…ã¨åŠªåŠ›ã—ã¦ããŸã®ï¼";
-		mes "ãã—ã¦ã€ã‚ã‚‹æ—¥çŸ¥ã£ãŸã®ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚±‚ÌŽ„AƒzƒCƒŠƒ“‚ÍI";
+		mes "‚»‚ñ‚È‘f°‚ç‚µ‚¢ƒJƒ{ƒ`ƒƒ‚ð";
+		mes "‚à‚Á‚Æ‚¨‚¢‚µ‚­H‚×‚é‚½‚ß‚É";
+		mes "FX‚Æ“w—Í‚µ‚Ä‚«‚½‚ÌI";
+		mes "‚»‚µ‚ÄA‚ ‚é“ú’m‚Á‚½‚ÌI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã‚ã‚Œã•ãˆâ€¦â€¦";
-		mes "ã‚ã‚Œã•ãˆã‚ã‚Œã°ï¼";
-		mes "ç§ã®ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ãŒå®Œæˆã™ã‚‹ã£ã¦ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚ ‚ê‚³‚¦cc";
+		mes "‚ ‚ê‚³‚¦‚ ‚ê‚ÎI";
+		mes "Ž„‚ÌƒJƒ{ƒ`ƒƒƒpƒC‚ªŠ®¬‚·‚é‚Á‚ÄI";
 		next;
-		if(select("ã‚ã‚Œã£ã¦ä½•ï¼Ÿ","ç„¡è¦–ã™ã‚‹")==2) {
-			mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-			mes "ä½•ã‚ˆï¼ã€€ç„¡è¦–ã™ã‚‹ã®ï¼Ÿ";
-			mes "ç§ã®ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã¯ã€";
-			mes "ã‚‚ã®ã™ã£ã”ããŠã„ã—ã„ã®ã«!!";
+		if(select("‚ ‚ê‚Á‚Ä‰½H","–³Ž‹‚·‚é")==2) {
+			mes "[ƒzƒCƒŠƒ“]";
+			mes "‰½‚æI@–³Ž‹‚·‚é‚ÌH";
+			mes "Ž„‚ÌƒJƒ{ƒ`ƒƒƒpƒC‚ÍA";
+			mes "‚à‚Ì‚·‚Á‚²‚­‚¨‚¢‚µ‚¢‚Ì‚É!!";
 			close;
 		}
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã‚«ãƒœãƒãƒ£ã¨è¨€ãˆã°â€¦â€¦";
-		mes "ãã€ã‚¸ãƒ£ãƒƒã‚¯ã‚ˆã­ï¼Ÿ";
-		mes "ç§ã¯ã‚¸ãƒ£ãƒƒã‚¯ã“ãã‚«ãƒœãƒãƒ£ã®";
-		mes "å®Œæˆå½¢ã ã¨æ€ã£ã¦ã‚‹ã®ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "ƒJƒ{ƒ`ƒƒ‚ÆŒ¾‚¦‚Îcc";
+		mes "‚»AƒWƒƒƒbƒN‚æ‚ËH";
+		mes "Ž„‚ÍƒWƒƒƒbƒN‚±‚»ƒJƒ{ƒ`ƒƒ‚Ì";
+		mes "Š®¬Œ`‚¾‚ÆŽv‚Á‚Ä‚é‚ÌI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ãã®ã‚¸ãƒ£ãƒƒã‚¯ãªã‚“ã ã‘ã©ã€";
-		mes "ä¸€åŒ¹ãšã¤ã€å¾®å¦™ã«é•ã†å½¢ã‚’";
-		mes "ã—ã¦ã„ã‚‹äº‹ã«æ°—ãŒã¤ã„ãŸã®ã€‚";
-		mes "ãã—ã¦ã€ç©¶æ¥µã®ã‚¸ãƒ£ãƒƒã‚¯ã¯";
-		mes "å…¨èº«ãŒé’è‰²ã®å…‰ã«åŒ…ã¾ã‚Œã¦ã„ã‚‹ã®ã‚ˆï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚»‚ÌƒWƒƒƒbƒN‚È‚ñ‚¾‚¯‚ÇA";
+		mes "ˆê•C‚¸‚ÂA”÷–­‚Éˆá‚¤Œ`‚ð";
+		mes "‚µ‚Ä‚¢‚éŽ–‚É‹C‚ª‚Â‚¢‚½‚ÌB";
+		mes "‚»‚µ‚ÄA‹†‹É‚ÌƒWƒƒƒbƒN‚Í";
+		mes "‘Sg‚ªÂF‚ÌŒõ‚É•ï‚Ü‚ê‚Ä‚¢‚é‚Ì‚æI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ãã‚ŒãŒã€ãƒãƒ­ã‚¦ã‚£ãƒ³ã‚¸ãƒ£ãƒƒã‚¯ï¼";
-		mes "ãã®ãƒãƒ­ã‚¦ã‚£ãƒ³ã‚¸ãƒ£ãƒƒã‚¯ã¯ã€";
-		mes "æ¿ƒç¸®ã•ã‚ŒãŸã‚«ãƒœãƒãƒ£æˆåˆ†ã®çµæ™¶ä½“ã§ã‚ã‚‹";
-		mes "^4A4AFFã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒ^000000ã‚’æŒã£ã¦ã„ã‚‹ã®ã‚ˆï¼";
-		mes "ãã‚Œã•ãˆã‚ã‚Œã°ã€";
-		mes "ç§ã®ç‰¹è£½ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã®å®Œæˆï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚»‚ê‚ªAƒnƒƒEƒBƒ“ƒWƒƒƒbƒNI";
+		mes "‚»‚ÌƒnƒƒEƒBƒ“ƒWƒƒƒbƒN‚ÍA";
+		mes "”Zk‚³‚ê‚½ƒJƒ{ƒ`ƒƒ¬•ª‚ÌŒ‹»‘Ì‚Å‚ ‚é";
+		mes "^4A4AFFƒWƒƒƒbƒN‚ÌS^000000‚ðŽ‚Á‚Ä‚¢‚é‚Ì‚æI";
+		mes "‚»‚ê‚³‚¦‚ ‚ê‚ÎA";
+		mes "Ž„‚Ì“Á»ƒJƒ{ƒ`ƒƒƒpƒC‚ÌŠ®¬I";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã§ã­ã€ã‚ˆã‹ã£ãŸã‚‰ãã‚Œã‚’";
-		mes "å–ã£ã¦æ¥ã¦ãã‚Œãªã„ã‹ãªï¼Ÿ";
-		mes "ãã—ãŸã‚‰ã€ã™ãã«ç¾Žå‘³ã—ã„";
-		mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’ä½œã£ã¦ã‚ã’ã‚‹ã‚ˆã€‚";
-		mes "ç§ã®ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’é£Ÿã¹ã‚‹ã¨";
-		mes "ã‚ã¾ã‚Šã®ç¾Žå‘³ã—ã•ã«æ„Ÿå‹•ã—ã¡ã‚ƒã†ã‚ˆï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚Å‚ËA‚æ‚©‚Á‚½‚ç‚»‚ê‚ð";
+		mes "Žæ‚Á‚Ä—ˆ‚Ä‚­‚ê‚È‚¢‚©‚ÈH";
+		mes "‚»‚µ‚½‚çA‚·‚®‚É”ü–¡‚µ‚¢";
+		mes "ƒJƒ{ƒ`ƒƒƒpƒC‚ðì‚Á‚Ä‚ ‚°‚é‚æB";
+		mes "Ž„‚ÌƒJƒ{ƒ`ƒƒƒpƒC‚ðH‚×‚é‚Æ";
+		mes "‚ ‚Ü‚è‚Ì”ü–¡‚µ‚³‚ÉŠ´“®‚µ‚¿‚á‚¤‚æI";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "â€¦â€¦â€¦â€¦";
-		mes "å›ã€å¤–è¦‹ã¨æ€§æ ¼ãŒå…¨ç„¶é•ã†ã­â€¦â€¦";
-		mes "å¤§äººã—ãã†ã«è¦‹ãˆã‚‹ã®ã«";
-		mes "ã™ã”ãç©æ¥µçš„â€¦â€¦";
-		mes "â€¦â€¦ã¾ã€ã„ã£ã‹ã€‚ãã‚Œã§ã€";
-		mes "ãã®ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã®ææ–™ã¯ï¼Ÿ";
+		mes "cccc";
+		mes "ŒNAŠOŒ©‚Æ«Ši‚ª‘S‘Rˆá‚¤‚Ëcc";
+		mes "‘ål‚µ‚»‚¤‚ÉŒ©‚¦‚é‚Ì‚É";
+		mes "‚·‚²‚­Ï‹É“Icc";
+		mes "cc‚ÜA‚¢‚Á‚©B‚»‚ê‚ÅA";
+		mes "‚»‚ÌƒJƒ{ƒ`ƒƒƒpƒC‚ÌÞ—¿‚ÍH";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "è‰¯ã„è³ªå•ã§ã™ï¼";
-		mes "ç§ã®ç‰¹è£½ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã«ã¯";
-		mes "^4A4AFFã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒ 1å€‹ã€";
-		mes "ã‚«ãƒœãƒãƒ£ 2å€‹ã€åµ 2å€‹^000000ã€‚";
-		mes "ã“ã®ä¸‰ç¨®é¡žãŒå¿…è¦ãªã®ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "—Ç‚¢Ž¿–â‚Å‚·I";
+		mes "Ž„‚Ì“Á»ƒJƒ{ƒ`ƒƒƒpƒC‚É‚Í";
+		mes "^4A4AFFƒWƒƒƒbƒN‚ÌS 1ŒÂA";
+		mes "ƒJƒ{ƒ`ƒƒ 2ŒÂA—‘ 2ŒÂ^000000B";
+		mes "‚±‚ÌŽOŽí—Þ‚ª•K—v‚È‚ÌI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ä»–ã®ææ–™ã¯ç§ãŒç”¨æ„ã™ã‚‹ã‹ã‚‰ã€";
-		mes "ã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒã€ã‚«ãƒœãƒãƒ£ã€åµã‚’";
-		mes "æŒã£ã¦æ¥ã¦ã­ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‘¼‚ÌÞ—¿‚ÍŽ„‚ª—pˆÓ‚·‚é‚©‚çA";
+		mes "ƒWƒƒƒbƒN‚ÌSAƒJƒ{ƒ`ƒƒA—‘‚ð";
+		mes "Ž‚Á‚Ä—ˆ‚Ä‚ËI";
 		set HALLOWEEN_EVE,1;
 		close;
 	}
-	mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-	mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã®ææ–™ã¯";
-	mes "æ‰‹ã«å…¥ã£ãŸï¼Ÿ";
+	mes "[ƒzƒCƒŠƒ“]";
+	mes "ƒJƒ{ƒ`ƒƒƒpƒC‚ÌÞ—¿‚Í";
+	mes "Žè‚É“ü‚Á‚½H";
 	next;
-	switch(select("ææ–™ã‚’å…¨éƒ¨æŒã£ã¦ããŸ","åµã¯ã©ã“ã«ã‚ã‚‹ã®ã‹ãªï¼Ÿ","ã„ãˆã€ä½•ã‚‚")) {
+	switch(select("Þ—¿‚ð‘S•”Ž‚Á‚Ä‚«‚½","—‘‚Í‚Ç‚±‚É‚ ‚é‚Ì‚©‚ÈH","‚¢‚¦A‰½‚à")) {
 	case 1:
 		if(countitem(7609) < 1 || countitem(535) < 2 || countitem(574) < 2) {
-			mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-			mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’ä½œã‚‹ã«ã¯è¶³ã‚Šãªã„ã‚ˆã€‚";
-			mes "^4A4AFFã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒ 1å€‹ï¼";
-			mes "ã‚«ãƒœãƒãƒ£ 2å€‹ï¼";
-			mes "åµ 2å€‹ï¼^000000";
-			mes "ã“ã‚Œã‚‰ãŒç„¡ã„ã¨ä½œã‚Œãªã„ã‚ˆã€‚";
+			mes "[ƒzƒCƒŠƒ“]";
+			mes "ƒJƒ{ƒ`ƒƒƒpƒC‚ðì‚é‚É‚Í‘«‚è‚È‚¢‚æB";
+			mes "^4A4AFFƒWƒƒƒbƒN‚ÌS 1ŒÂI";
+			mes "ƒJƒ{ƒ`ƒƒ 2ŒÂI";
+			mes "—‘ 2ŒÂI^000000";
+			mes "‚±‚ê‚ç‚ª–³‚¢‚Æì‚ê‚È‚¢‚æB";
 			close;
 		}
 		misceffect 0,"";
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã‚„ã£ãŸï¼";
-		mes "ãã‚Œã˜ã‚ƒã€ã•ã£ããï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚â‚Á‚½I";
+		mes "‚»‚ê‚¶‚áA‚³‚Á‚»‚­I";
 		next;
 		misceffect 148;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ãƒ›ã‚£ãƒ¼ãƒƒï¼";
-		mes "ãƒ›ã‚¤ã‚£ã‚£ã‚£ãƒƒï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "ƒzƒB[ƒbI";
+		mes "ƒzƒCƒBƒBƒBƒbI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "å®Œæˆï¼";
-		mes "ã¯ã„ã€ã“ã‚Œã¯ã‚ãªãŸã®åˆ†ã€‚";
-		mes "ã¡ã‚ƒã‚“ã¨å‘³ã‚ã£ã¦ã‚ˆã­ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "Š®¬I";
+		mes "‚Í‚¢A‚±‚ê‚Í‚ ‚È‚½‚Ì•ªB";
+		mes "‚¿‚á‚ñ‚Æ–¡‚í‚Á‚Ä‚æ‚ËI";
 		delitem 7609,1;
 		delitem 535,2;
 		delitem 574,2;
@@ -251,212 +251,212 @@ geffen.gat,145,132,3	script	ãƒ›ã‚¤ãƒªãƒ³	729,{
 		close;
 	case 2:
 		if(HALLOWEEN_EVE != 1) {
-			mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-			mes "åµãªã‚‰ã€^4A4AFFãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ ã®ç§˜å¢ƒã®æ‘^000000ã§";
-			mes "ãƒ‹ãƒ¯ãƒˆãƒªã‚’é£¼ã£ã¦ã„ã‚‹";
-			mes "ãƒã‚§ãƒ­ã‚­ãƒ¼ã£ã¦ã‚„ã¤ãŒå£²ã£ã¦ã„ã‚‹ã‚ˆã€‚";
+			mes "[ƒzƒCƒŠƒ“]";
+			mes "—‘‚È‚çA^4A4AFFƒjƒuƒ‹ƒwƒCƒ€‚Ì”é‹«‚Ì‘º^000000‚Å";
+			mes "ƒjƒƒgƒŠ‚ðŽ”‚Á‚Ä‚¢‚é";
+			mes "ƒ`ƒFƒƒL[‚Á‚Ä‚â‚Â‚ª”„‚Á‚Ä‚¢‚é‚æB";
 			close;
 		}
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "åµï¼Ÿã€€åµã‹ãâ€¦â€¦";
-		mes "åµãªã‚‰ã‚„ã£ã±ã‚ã„ã¤ã‹ãªã€‚";
-		mes "ãƒ‹ãƒ¯ãƒˆãƒªã‚’é£¼ã£ã¦ã‚‹ã‚„ã¤ã‚’çŸ¥ã£ã¦ã‚‹ã®ã€‚";
-		mes "ãã„ã¤ã«é ¼ã‚ã°ãã£ã¨åµã‚’ã‚‚ã‚‰ãˆã‚‹ã‚ˆã€‚";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "—‘H@—‘‚©‚Ÿcc";
+		mes "—‘‚È‚ç‚â‚Á‚Ï‚ ‚¢‚Â‚©‚ÈB";
+		mes "ƒjƒƒgƒŠ‚ðŽ”‚Á‚Ä‚é‚â‚Â‚ð’m‚Á‚Ä‚é‚ÌB";
+		mes "‚»‚¢‚Â‚É—Š‚ß‚Î‚«‚Á‚Æ—‘‚ð‚à‚ç‚¦‚é‚æB";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "^4A4AFFæœ€åˆã®1å›žã ã‘ã¯ã‚µãƒ¼ãƒ“ã‚¹^000000ã§";
-		mes "ãã„ã¤ã®æ‰€ã«é€ã£ã¦ã‚ã’ã‚‹ã€‚";
-		mes "ã‚ã€ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ ã®ç§˜å¢ƒã®æ‘ã ã‹ã‚‰";
-		mes "ã¡ã‚ƒã‚“ã¨æº–å‚™ã—ãªã„ã¨å±ãªã„ã‚ã‚ˆã€‚";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "^4A4AFFÅ‰‚Ì1‰ñ‚¾‚¯‚ÍƒT[ƒrƒX^000000‚Å";
+		mes "‚»‚¢‚Â‚ÌŠ‚É‘—‚Á‚Ä‚ ‚°‚éB";
+		mes "‚ Aƒjƒuƒ‹ƒwƒCƒ€‚Ì”é‹«‚Ì‘º‚¾‚©‚ç";
+		mes "‚¿‚á‚ñ‚Æ€”õ‚µ‚È‚¢‚ÆŠë‚È‚¢‚í‚æB";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ãã‚Œã˜ã‚ƒã€ä»Šã™ãè¡Œãï¼Ÿ";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚»‚ê‚¶‚áA¡‚·‚®s‚­H";
 		next;
-		if(select("è¡Œã","è¡Œã‹ãªã„")==2) {
-			mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-			mes "æº–å‚™ä¸è¶³ï¼Ÿ";
-			mes "ã‚ãã“ã¯å±é™ºã ã‚‚ã‚“ã­ã€‚";
-			mes "ã¡ã‚ƒã‚“ã¨æº–å‚™ã§ããŸã‚‰";
-			mes "ã„ã¤ã§ã‚‚é€ã£ã¦ã‚ã’ã‚‹ã€‚";
+		if(select("s‚­","s‚©‚È‚¢")==2) {
+			mes "[ƒzƒCƒŠƒ“]";
+			mes "€”õ•s‘«H";
+			mes "‚ ‚»‚±‚ÍŠëŒ¯‚¾‚à‚ñ‚ËB";
+			mes "‚¿‚á‚ñ‚Æ€”õ‚Å‚«‚½‚ç";
+			mes "‚¢‚Â‚Å‚à‘—‚Á‚Ä‚ ‚°‚éB";
 			close;
 		}
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ãã‚Œã˜ã‚ƒã€åµã‚’ãŠé¡˜ã„ã­ã€‚";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚»‚ê‚¶‚áA—‘‚ð‚¨Šè‚¢‚ËB";
 		set HALLOWEEN_EVE,2;
 		close2;
 		warp "nif_fild01.gat",162,113;
 		end;
 	case 3:
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã¡ã‚‡ã£ã¨ï¼";
-		mes "ãã‚Œã˜ã‚ƒå›°ã‚‹ã‚ˆï¼";
-		mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã®ææ–™ã‚’";
-		mes "ã¡ã‚ƒã‚“ã¨é›†ã‚ã¦ãã¦ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚¿‚å‚Á‚ÆI";
+		mes "‚»‚ê‚¶‚á¢‚é‚æI";
+		mes "ƒJƒ{ƒ`ƒƒƒpƒC‚ÌÞ—¿‚ð";
+		mes "‚¿‚á‚ñ‚ÆW‚ß‚Ä‚«‚ÄI";
 		next;
-		mes "[ãƒ›ã‚¤ãƒªãƒ³]";
-		mes "ã„ã„ï¼Ÿã€€ã‚‚ã†ä¸€åº¦è¨€ã†ã‚ˆã€‚";
-		mes "^4A4AFFã‚¸ãƒ£ãƒƒã‚¯ã®å¿ƒ 1å€‹ï¼";
-		mes "ã‚«ãƒœãƒãƒ£ 2å€‹ï¼";
-		mes "åµ 2å€‹ï¼^000000";
-		mes "ã“ã‚ŒãŒç„¡ã„ã¨ä½œã‚Œãªã„ã‚“ã ã‹ã‚‰ï¼";
+		mes "[ƒzƒCƒŠƒ“]";
+		mes "‚¢‚¢H@‚à‚¤ˆê“xŒ¾‚¤‚æB";
+		mes "^4A4AFFƒWƒƒƒbƒN‚ÌS 1ŒÂI";
+		mes "ƒJƒ{ƒ`ƒƒ 2ŒÂI";
+		mes "—‘ 2ŒÂI^000000";
+		mes "‚±‚ê‚ª–³‚¢‚Æì‚ê‚È‚¢‚ñ‚¾‚©‚çI";
 		close;
 	}
 }
-nif_fild01.gat,165,115,3	script	ãƒã‚§ãƒ­ã‚­ãƒ¼	794,{
+nif_fild01.gat,165,115,3	script	ƒ`ƒFƒƒL[	794,{
 	switch(HALLOWEEN_EVE) {
 	default:
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ãƒ‹ãƒ¯ãƒˆãƒªã¯ã©ã“ã„ã£ãŸã‚“ã â€¦â€¦";
-		mes "ã‚“ï¼Ÿã€€å›ã¯â€¦â€¦";
-		mes "è¦‹è¦šãˆãŒç„¡ã„ãŒâ€¦â€¦";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "ƒjƒƒgƒŠ‚Í‚Ç‚±‚¢‚Á‚½‚ñ‚¾cc";
+		mes "‚ñH@ŒN‚Ícc";
+		mes "Œ©Šo‚¦‚ª–³‚¢‚ªcc";
 		next;
 		if(HALLOWEEN_EVE != 2) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ã“ã“ã¯æ‘ã ãŒã€æ™®é€šã®äººé–“ãŒ";
-			mes "æ­©ãå›žã‚Œã‚‹ç¨‹å®‰å…¨ã˜ã‚ƒãªã„ã€‚";
-			mes "ã‚±ã‚¬ã‚’ã™ã‚‹å‰ã«å¸°ã£ãŸæ–¹ãŒã„ã„ã€‚";
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "‚±‚±‚Í‘º‚¾‚ªA•’Ê‚ÌlŠÔ‚ª";
+			mes "•à‚«‰ñ‚ê‚é’öˆÀ‘S‚¶‚á‚È‚¢B";
+			mes "ƒPƒK‚ð‚·‚é‘O‚É‹A‚Á‚½•û‚ª‚¢‚¢B";
 			close;
 		}
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ã‚“ï¼Ÿã€€åµãŒæ¬²ã—ã„ã®ã‹ï¼Ÿ";
-		mes "æœ€è¿‘ã€ãƒ‘ã‚¤ã ã‹ä½•ã ã‹è¨€ã£ã¦ãŸ";
-		mes "å®¢ãŒæ¥ãŸãŒâ€¦â€¦å›ã‚‚ã‹ï¼Ÿ";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚ñH@—‘‚ª—~‚µ‚¢‚Ì‚©H";
+		mes "Å‹ßAƒpƒC‚¾‚©‰½‚¾‚©Œ¾‚Á‚Ä‚½";
+		mes "‹q‚ª—ˆ‚½‚ªccŒN‚à‚©H";
 		next;
-		if(select("ã¯ã„ã€åµã‚’å£²ã£ã¦ãã ã•ã„","ç‰¹ã«ç”¨ã¯ãªã„")==2) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ãªã‚‰ã€å›ã«ä¸€ã¤å¿ å‘Šã—ã‚ˆã†ã€‚";
-			mes "ã“ã“ã¯å±é™ºãªæ‰€ã ã€‚";
-			mes "ç”¨ãŒç„¡ã„ãªã‚‰";
-			mes "ã™ãã«ç«‹ã¡åŽ»ã£ãŸæ–¹ãŒã„ã„ã€‚";
+		if(select("‚Í‚¢A—‘‚ð”„‚Á‚Ä‚­‚¾‚³‚¢","“Á‚É—p‚Í‚È‚¢")==2) {
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "‚È‚çAŒN‚Éˆê‚Â’‰‚µ‚æ‚¤B";
+			mes "‚±‚±‚ÍŠëŒ¯‚ÈŠ‚¾B";
+			mes "—p‚ª–³‚¢‚È‚ç";
+			mes "‚·‚®‚É—§‚¿‹Ž‚Á‚½•û‚ª‚¢‚¢B";
 			close;
 		}
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ãã†ã‹â€¦â€¦";
-		mes "ã§ã‚‚ã€ç§ãŒè‚²ã¦ã¦ã„ã‚‹ãƒ‹ãƒ¯ãƒˆãƒªãŒ";
-		mes "ä½•åŒ¹ã‹é€ƒã’ã ã—ã¦ã—ã¾ã£ã¦ã€";
-		mes "ã‚ã¾ã‚Šå£²ã‚Œãªã„ã‚“ã â€¦â€¦";
-		mes "ãã†ã ãªâ€¦â€¦";
-		mes "åµã¯1å€‹å½“ã‚Š 1000Zenyã§å£²ã‚‹ã‚ˆã€‚";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚»‚¤‚©cc";
+		mes "‚Å‚àAŽ„‚ªˆç‚Ä‚Ä‚¢‚éƒjƒƒgƒŠ‚ª";
+		mes "‰½•C‚©“¦‚°‚¾‚µ‚Ä‚µ‚Ü‚Á‚ÄA";
+		mes "‚ ‚Ü‚è”„‚ê‚È‚¢‚ñ‚¾cc";
+		mes "‚»‚¤‚¾‚Ècc";
+		mes "—‘‚Í1ŒÂ“–‚è 1000Zeny‚Å”„‚é‚æB";
 		next;
-		if(select("2å€‹ãã ã•ã„","1å€‹ãã ã•ã„","é«˜ã™ãŽâ€¦â€¦")==3) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ã‚“â€¦â€¦ã‚„ã£ã±ã‚Šé«˜ã„ã‹â€¦â€¦";
-			mes "ã§ã‚‚ã€ãƒ‹ãƒ¯ãƒˆãƒªãŒé€ƒã’ã¦ã—ã¾ã£ã¦";
-			mes "åœ¨åº«ãŒã»ã¨ã‚“ã©ãªã„ã‚“ã â€¦â€¦";
+		if(select("2ŒÂ‚­‚¾‚³‚¢","1ŒÂ‚­‚¾‚³‚¢","‚‚·‚¬cc")==3) {
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "‚ñcc‚â‚Á‚Ï‚è‚‚¢‚©cc";
+			mes "‚Å‚àAƒjƒƒgƒŠ‚ª“¦‚°‚Ä‚µ‚Ü‚Á‚Ä";
+			mes "ÝŒÉ‚ª‚Ù‚Æ‚ñ‚Ç‚È‚¢‚ñ‚¾cc";
 			close;
 		}
 		set '@num,1+(@menu == 1? 1: 0);
 		if(Zeny < '@num*1000) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ãŠé‡‘ãŒè¶³ã‚Šãªã„ã‚“ã˜ã‚ƒãªã„ã‹ï¼Ÿ";
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "‚¨‹à‚ª‘«‚è‚È‚¢‚ñ‚¶‚á‚È‚¢‚©H";
 			if(@menu == 1)
-				mes "1å€‹å½“ã‚Š 1000Zenyã ã‹ã‚‰ã€";
-			mes '@num+ "å€‹ãªã‚‰" +1000*'@num+ "Zenyã«ãªã‚‹ã‚ˆã€‚";
+				mes "1ŒÂ“–‚è 1000Zeny‚¾‚©‚çA";
+			mes '@num+ "ŒÂ‚È‚ç" +1000*'@num+ "Zeny‚É‚È‚é‚æB";
 			close;
 		}
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ã¯ã„ã€ã©ã†ãžã€‚";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚Í‚¢A‚Ç‚¤‚¼B";
 		set HALLOWEEN_EVE,3;
 		set Zeny,Zeny-'@num*1000;
 		getitem 574,'@num;
 		close;
 	case 3:
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "åµãŒã¾ãŸå¿…è¦ãªã®ã‹â€¦â€¦";
-		mes "ã˜ã‚ƒã‚ã€ã¡ã‚‡ã£ã¨æ‰‹ä¼ã£ã¦ãã‚Œã€‚";
-		mes "ç§ãŒè‚²ã¦ã¦ã„ã‚‹ãƒ‹ãƒ¯ãƒˆãƒªãŒ";
-		mes "é€ƒã’å‡ºã—ãŸã‚“ã â€¦â€¦";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "—‘‚ª‚Ü‚½•K—v‚È‚Ì‚©cc";
+		mes "‚¶‚á‚ A‚¿‚å‚Á‚ÆŽè“`‚Á‚Ä‚­‚êB";
+		mes "Ž„‚ªˆç‚Ä‚Ä‚¢‚éƒjƒƒgƒŠ‚ª";
+		mes "“¦‚°o‚µ‚½‚ñ‚¾cc";
 		next;
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "å…¨éƒ¨æŽ¢ã—ã¦ã“ã„ã¨ã¯è¨€ã‚ãªã„ã€‚";
-		mes "1åŒ¹ã ã‘ã§ã‚‚æŽ¢ã—ã¦ãã¦ãã‚Œãªã„ã‹ï¼Ÿ";
-		mes "ãã—ãŸã‚‰åµã‚’3ã¤ã¾ã§å£²ã‚‹ã‚ˆã€‚";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‘S•”’T‚µ‚Ä‚±‚¢‚Æ‚ÍŒ¾‚í‚È‚¢B";
+		mes "1•C‚¾‚¯‚Å‚à’T‚µ‚Ä‚«‚Ä‚­‚ê‚È‚¢‚©H";
+		mes "‚»‚µ‚½‚ç—‘‚ð3‚Â‚Ü‚Å”„‚é‚æB";
 		next;
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ã‚ã¾ã‚Šã“ã‚“ãªäº‹ã¯ã—ãŸããªã„ã‘ã©ã€";
-		mes "ãƒ‹ãƒ¯ãƒˆãƒªãŒã„ãªã„ã¨ã©ã†ã—ã‚ˆã†ã‚‚ãªã„ã‚“ã ã€‚";
-		mes "ãŠäº’ã„ã€æœ›ã‚€ç‰©ãŒæ‰‹ã«å…¥ã‚‹ã‚“ã ã‹ã‚‰";
-		mes "æ­£å½“ãªå–ã‚Šå¼•ãã¨ã§ã‚‚æ€ã£ã¦ãã‚Œâ€¦â€¦";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚ ‚Ü‚è‚±‚ñ‚ÈŽ–‚Í‚µ‚½‚­‚È‚¢‚¯‚ÇA";
+		mes "ƒjƒƒgƒŠ‚ª‚¢‚È‚¢‚Æ‚Ç‚¤‚µ‚æ‚¤‚à‚È‚¢‚ñ‚¾B";
+		mes "‚¨ŒÝ‚¢A–]‚Þ•¨‚ªŽè‚É“ü‚é‚ñ‚¾‚©‚ç";
+		mes "³“–‚ÈŽæ‚èˆø‚«‚Æ‚Å‚àŽv‚Á‚Ä‚­‚êcc";
 		next;
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ãƒ‹ãƒ¯ãƒˆãƒªã¯ã“ã®è¾ºã«éš ã‚Œã¦ã„ã‚‹ã‚ˆã€‚";
-		mes "åˆ¥ã«ãƒ‹ãƒ¯ãƒˆãƒªã‚’é€£ã‚Œã¦ãã‚‹å¿…è¦ã¯ãªã„ã€‚";
-		mes "é­”æ³•ã‚’ã‹ã‘ã¦ã‚ã‚‹ã‹ã‚‰ã€å‘ªæ–‡ã‚’å”±ãˆã‚Œã°";
-		mes "å‹æ‰‹ã«å¸°ã£ã¦ãã‚‹ã‚ˆã€‚";
-		mes "å‘ªæ–‡ã¯^4A4AFFã€Œéžå¸¸é£Ÿã€^000000ã€‚";
-		mes "â€¦â€¦â€¦â€¦";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "ƒjƒƒgƒŠ‚Í‚±‚Ì•Ó‚É‰B‚ê‚Ä‚¢‚é‚æB";
+		mes "•Ê‚ÉƒjƒƒgƒŠ‚ð˜A‚ê‚Ä‚­‚é•K—v‚Í‚È‚¢B";
+		mes "–‚–@‚ð‚©‚¯‚Ä‚ ‚é‚©‚çAŽô•¶‚ð¥‚¦‚ê‚Î";
+		mes "ŸŽè‚É‹A‚Á‚Ä‚­‚é‚æB";
+		mes "Žô•¶‚Í^4A4AFFu”ñíHv^000000B";
+		mes "cccc";
 		next;
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "â€¦â€¦â€¦â€¦â€¦â€¦";
-		mes "æ·±ãè€ƒãˆãªãã¦ã„ã„â€¦â€¦";
-		mes "ã¨ã«ã‹ãã€ã‚ˆã‚ã—ãé ¼ã‚€ã‚ˆã€‚";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "cccccc";
+		mes "[‚­l‚¦‚È‚­‚Ä‚¢‚¢cc";
+		mes "‚Æ‚É‚©‚­A‚æ‚ë‚µ‚­—Š‚Þ‚æB";
 		close;
 	case 4:
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ã‚„ãã€å¾…ã£ã¦ãŸã‚ˆã€‚";
-		mes "å›ã«é€ã£ã¦ã‚‚ã‚‰ã£ãŸãƒ‹ãƒ¯ãƒˆãƒªã¯";
-		mes "ã™ãã«æª»ã«å…¥ã‚Œã¦ãŠã„ãŸã‚ˆã€‚";
-		mes "ã„ã¤ã¾ãŸé€ƒã’å‡ºã™ã‹ã‚ã‹ã‚‰ãªã„ã‹ã‚‰â€¦â€¦";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚â‚ŸA‘Ò‚Á‚Ä‚½‚æB";
+		mes "ŒN‚É‘—‚Á‚Ä‚à‚ç‚Á‚½ƒjƒƒgƒŠ‚Í";
+		mes "‚·‚®‚ÉŸB‚É“ü‚ê‚Ä‚¨‚¢‚½‚æB";
+		mes "‚¢‚Â‚Ü‚½“¦‚°o‚·‚©‚í‚©‚ç‚È‚¢‚©‚çcc";
 		next;
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ç´„æŸã©ãŠã‚Šåµã‚’å£²ã‚‹ã‚ˆã€‚";
-		mes "1å€‹ã€1000Zenyã€‚";
-		mes "æœ€å¤§3å€‹ã¾ã§å£²ã‚‹ã‚ˆã€‚";
-		mes "ã„ãã¤ã«ã™ã‚‹ï¼Ÿ";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "–ñ‘©‚Ç‚¨‚è—‘‚ð”„‚é‚æB";
+		mes "1ŒÂA1000ZenyB";
+		mes "Å‘å3ŒÂ‚Ü‚Å”„‚é‚æB";
+		mes "‚¢‚­‚Â‚É‚·‚éH";
 		next;
 		while(1) {
 			input '@num;
 			if('@num < 0 || '@num > 3) {
-				mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-				mes "ã¡ã‚ƒã‚“ã¨èžã„ã¦ã„ãŸã‹ãªï¼Ÿ";
-				mes "æœ€å¤§3å€‹ã¾ã§ã ã‚ˆã€‚";
+				mes "[ƒ`ƒFƒƒL[]";
+				mes "‚¿‚á‚ñ‚Æ•·‚¢‚Ä‚¢‚½‚©‚ÈH";
+				mes "Å‘å3ŒÂ‚Ü‚Å‚¾‚æB";
 				next;
 				continue;
 			}
 			break;
 		}
 		if('@num == 0) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ã„ã‚‰ãªã„ã®ã‹ãªï¼Ÿ";
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "‚¢‚ç‚È‚¢‚Ì‚©‚ÈH";
 			close;
 		}
 		if(Zeny < '@num*1000) {
-			mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-			mes "ZenyãŒè¶³ã‚Šãªã„ã‚ˆã†ã ãŒï¼Ÿ";
-			mes "ä¸€åº¦ç¢ºèªã—ã¦ã¿ãŸã‚‰ã©ã†ã‹ãªï¼Ÿ";
+			mes "[ƒ`ƒFƒƒL[]";
+			mes "Zeny‚ª‘«‚è‚È‚¢‚æ‚¤‚¾‚ªH";
+			mes "ˆê“xŠm”F‚µ‚Ä‚Ý‚½‚ç‚Ç‚¤‚©‚ÈH";
 			close;
 		}
-		mes "[ãƒã‚§ãƒ­ã‚­ãƒ¼]";
-		mes "ã¯ã„ã€ã©ã†ãžã€‚";
-		mes "åµãŒã‚‚ã£ã¨å¿…è¦ãªã‚‰ã€";
-		mes "é€ƒã’å‡ºã—ãŸä»–ã®ãƒ‹ãƒ¯ãƒˆãƒªã‚‚";
-		mes "æŽ¢ã—ã¦ãã¦ãã‚Œã€‚";
+		mes "[ƒ`ƒFƒƒL[]";
+		mes "‚Í‚¢A‚Ç‚¤‚¼B";
+		mes "—‘‚ª‚à‚Á‚Æ•K—v‚È‚çA";
+		mes "“¦‚°o‚µ‚½‘¼‚ÌƒjƒƒgƒŠ‚à";
+		mes "’T‚µ‚Ä‚«‚Ä‚­‚êB";
 		set HALLOWEEN_EVE,3;
 		set Zeny,Zeny-'@num*1000;
 		getitem 574,'@num;
 		close;
 	}
 }
-nif_fild01.gat,167,113,3	script	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª	800,{
-	mes "çœ ã£ã¦ã„ã‚‹ãƒ‹ãƒ¯ãƒˆãƒªã ã€‚";
+nif_fild01.gat,167,113,3	script	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ	800,{
+	mes "–°‚Á‚Ä‚¢‚éƒjƒƒgƒŠ‚¾B";
 	close;
 }
 
-nif_fild01.gat,199,240,5	script	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0	800,{
+nif_fild01.gat,199,240,5	script	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0	800,{
 	if(HALLOWEEN_EVE < 3) {
-		mes "çœ ã£ã¦ã„ã‚‹ãƒ‹ãƒ¯ãƒˆãƒªã ã€‚";
+		mes "–°‚Á‚Ä‚¢‚éƒjƒƒgƒŠ‚¾B";
 		close;
 	}
-	mes "ãƒã‚§ãƒ­ã‚­ãƒ¼ãŒæŽ¢ã—ã¦ã„ã‚‹";
-	mes "ãƒ‹ãƒ¯ãƒˆãƒªã¿ãŸã„ã ã€‚";
-	mes "ãƒã‚§ãƒ­ã‚­ãƒ¼ãŒæ•™ãˆã¦ãã‚ŒãŸ";
-	mes "å¸°é‚„é­”æ³•ã®å‘ªæ–‡ã‚’å”±ãˆã¦ã¿ã‚ˆã†ã€‚";
+	mes "ƒ`ƒFƒƒL[‚ª’T‚µ‚Ä‚¢‚é";
+	mes "ƒjƒƒgƒŠ‚Ý‚½‚¢‚¾B";
+	mes "ƒ`ƒFƒƒL[‚ª‹³‚¦‚Ä‚­‚ê‚½";
+	mes "‹AŠÒ–‚–@‚ÌŽô•¶‚ð¥‚¦‚Ä‚Ý‚æ‚¤B";
 	next;
 	input '@word$;
-	if('@word$ != "éžå¸¸é£Ÿ") {
+	if('@word$ != "”ñíH") {
 		mes "[" +strcharinfo(0)+ "]";
-		mes "ä½•ã‚‚èµ·ããªã„ã€‚";
-		mes "å‘ªæ–‡ã‚’é–“é•ãˆãŸã‹ãªï¼Ÿ";
+		mes "‰½‚à‹N‚«‚È‚¢B";
+		mes "Žô•¶‚ðŠÔˆá‚¦‚½‚©‚ÈH";
 		close;
 	}
 	misceffect 34;
@@ -464,624 +464,624 @@ nif_fild01.gat,199,240,5	script	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0	800,{
 	setarray '@ref,0,1,2,3,4,5,6,7;
 	deletearray '@ref[strnpcinfo(2)],1;
 	hideonnpc;
-	hideoffnpc "ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#" +'@ref[rand(7)];
-	mes "å¸°é‚„é­”æ³•ãŒç™ºå‹•ã—ã¾ã—ãŸã€‚";
+	hideoffnpc "ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#" +'@ref[rand(7)];
+	mes "‹AŠÒ–‚–@‚ª”­“®‚µ‚Ü‚µ‚½B";
 	if(HALLOWEEN_EVE == 3)
 		set HALLOWEEN_EVE,4;
 	close;
 OnInit:
 	hideonnpc;
 	if(strnpcinfo(2) == "0")
-		hideoffnpc "ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#"+rand(8);
+		hideoffnpc "ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#"+rand(8);
 	end;
 }
-nif_fild01.gat,219,267,4	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#1	800
-nif_fild01.gat,185,325,0	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#2	800
-nif_fild01.gat,147,342,0	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#3	800
-nif_fild01.gat,270,145,3	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#4	800
-nif_fild01.gat,331,329,0	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#5	800
-nif_fild01.gat,133,105,1	duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#6	800
-nif_fild01.gat,316,97,5		duplicate(ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#0)	ãƒã‚§ãƒ­ã‚­ãƒ¼ã®ãƒ‹ãƒ¯ãƒˆãƒª#7	800
+nif_fild01.gat,219,267,4	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#1	800
+nif_fild01.gat,185,325,0	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#2	800
+nif_fild01.gat,147,342,0	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#3	800
+nif_fild01.gat,270,145,3	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#4	800
+nif_fild01.gat,331,329,0	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#5	800
+nif_fild01.gat,133,105,1	duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#6	800
+nif_fild01.gat,316,97,5		duplicate(ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#0)	ƒ`ƒFƒƒL[‚ÌƒjƒƒgƒŠ#7	800
 
 //==========================================
-// ãƒ­ãƒªãƒ«ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+// ƒƒŠƒ‹ƒŠƒNƒGƒXƒg
 //------------------------------------------
-nif_in.gat,18,34,5	script	ãƒ­ãƒªãƒ«ãƒª	1505,2,2,{
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "ãŠã„ã€ãƒ­ãƒªãƒ«ãƒªã«";
-	mes "è¨€ã„ãŸã„ã“ã¨ãŒã‚ã‚‹ãªã‚‰ã€";
-	mes "ä¿ºã«è¨€ã£ã¦ã¿ãªã€‚";
-	mes "ãã„ã¤ã¯ã¾ã äººé–“ã®è¨€è‘‰ã«";
-	mes "æ…£ã‚Œã¦ã„ãªã„ã‹ã‚‰ãªã€‚";
+nif_in.gat,18,34,5	script	ƒƒŠƒ‹ƒŠ	1505,2,2,{
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "‚¨‚¢AƒƒŠƒ‹ƒŠ‚É";
+	mes "Œ¾‚¢‚½‚¢‚±‚Æ‚ª‚ ‚é‚È‚çA";
+	mes "‰´‚ÉŒ¾‚Á‚Ä‚Ý‚ÈB";
+	mes "‚»‚¢‚Â‚Í‚Ü‚¾lŠÔ‚ÌŒ¾—t‚É";
+	mes "Šµ‚ê‚Ä‚¢‚È‚¢‚©‚ç‚ÈB";
 	close;
 }
-nif_in.gat,19,32,3	script	ãƒ‡ãƒ“ãƒ«ãƒ	738,{
-	mes "-ãƒ­ãƒªãƒ«ãƒªãŒç†è§£ã§ããªã„è¨€è‘‰ã§";
-	mes "è©±ã—ã‹ã‘ã¦ãã¦ã„ã‚‹-";
+nif_in.gat,19,32,3	script	ƒfƒrƒ‹ƒ`	738,{
+	mes "-ƒƒŠƒ‹ƒŠ‚ª—‰ð‚Å‚«‚È‚¢Œ¾—t‚Å";
+	mes "˜b‚µ‚©‚¯‚Ä‚«‚Ä‚¢‚é-";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "ä½•è¨€ã£ã¦ã‚‹ã‹ã‚ã‹ã‚‰ãªã„ã ã‚ï¼Ÿ";
-	mes "ä¿ºãŒé€šè¨³ã—ã¦ã‚„ã‚‹ã‚ˆã€‚";
-	mes "ã¾ã€ãã®ãŸã‚ã«ã“ã„ã¤ã«";
-	mes "ã¤ã„ã¦ãã¦ã‚„ã£ãŸã‚“ã ã‘ã©ãªã€‚";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "‰½Œ¾‚Á‚Ä‚é‚©‚í‚©‚ç‚È‚¢‚¾‚ëH";
+	mes "‰´‚ª’Ê–ó‚µ‚Ä‚â‚é‚æB";
+	mes "‚ÜA‚»‚Ì‚½‚ß‚É‚±‚¢‚Â‚É";
+	mes "‚Â‚¢‚Ä‚«‚Ä‚â‚Á‚½‚ñ‚¾‚¯‚Ç‚ÈB";
 	next;
-	mes "-ãƒ­ãƒªãƒ«ãƒªãŒç†è§£ã§ããªã„è¨€è‘‰ã§";
-	mes "ãƒ‡ãƒ“ãƒ«ãƒã¨è©±ã—ã¦ã„ã‚‹-";
+	mes "-ƒƒŠƒ‹ƒŠ‚ª—‰ð‚Å‚«‚È‚¢Œ¾—t‚Å";
+	mes "ƒfƒrƒ‹ƒ`‚Æ˜b‚µ‚Ä‚¢‚é-";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "â€¦â€¦â€¦â€¦ã‡ï¼Ÿ";
-	mes "ãã‚Œã€ãã®ã¾ã¾è¨€ã†ã®ï¼Ÿ";
-	mes "è¨€ã‚ãªãã¡ã‚ƒã„ã‘ãªã„ï¼Ÿ";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "cccc‚¥H";
+	mes "‚»‚êA‚»‚Ì‚Ü‚ÜŒ¾‚¤‚ÌH";
+	mes "Œ¾‚í‚È‚­‚¿‚á‚¢‚¯‚È‚¢H";
 	next;
-	mes "-ãƒ­ãƒªãƒ«ãƒªãŒã†ãªã¥ã„ã¦ã„ã‚‹-";
+	mes "-ƒƒŠƒ‹ƒŠ‚ª‚¤‚È‚Ã‚¢‚Ä‚¢‚é-";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "â€¦â€¦â€¦â€¦";
-	mes "ã‚ã‹ã£ãŸã‚ˆâ€¦â€¦";
-	mes "ã„ã„ã‹ï¼ã€€ä»Šã‹ã‚‰è©±ã™ã®ã¯";
-	mes "å…¨éƒ¨ãƒ­ãƒªãƒ«ãƒªã®è¨€è‘‰ã ï¼";
-	mes "ä¿ºã¯ã“ã‚“ãªå£èª¿ã˜ã‚ƒãªã„ã‹ã‚‰ãªï¼";
-	mes "å‹˜é•ã„ã™ã‚‹ãªã‚ˆï¼";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "cccc";
+	mes "‚í‚©‚Á‚½‚æcc";
+	mes "‚¢‚¢‚©I@¡‚©‚ç˜b‚·‚Ì‚Í";
+	mes "‘S•”ƒƒŠƒ‹ƒŠ‚ÌŒ¾—t‚¾I";
+	mes "‰´‚Í‚±‚ñ‚ÈŒû’²‚¶‚á‚È‚¢‚©‚ç‚ÈI";
+	mes "Š¨ˆá‚¢‚·‚é‚È‚æI";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "ãã‚Œã˜ã‚ƒâ€¦â€¦ã‚´ãƒ›ãƒ³ã€‚";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "‚»‚ê‚¶‚áccƒSƒzƒ“B";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "ã€Œãƒ‡ãƒ“â€¦â€¦ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦ã©ã“ï¼Ÿ";
-	mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦äººé–“ãŒä½œã‚‹ã€‚";
-	mes "ãã“ã®äººé–“â€¦â€¦æŒã£ã¦ãªã„ï¼Ÿã€";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "uƒfƒrccƒJƒ{ƒ`ƒƒƒpƒCcc‚Ç‚±H";
+	mes "ƒJƒ{ƒ`ƒƒƒpƒCcclŠÔ‚ªì‚éB";
+	mes "‚»‚±‚ÌlŠÔccŽ‚Á‚Ä‚È‚¢Hv";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "â€¦â€¦ãªã‚“ã‹ã€ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’";
-	mes "ä¸€åº¦é£Ÿã¹ã¦ã¿ãŸã„ã‚“ã ã£ã¦ã•ã€‚";
-	mes "ã‚‚ã—ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’æŒã£ã¦ã‚‹ãªã‚‰";
-	mes "ã“ã„ã¤ã«ã‚„ã£ã¦ãã‚Œãªã„ã‹ï¼Ÿ";
-	mes "ãƒ­ãƒªãƒ«ãƒªã®æ©Ÿå«ŒãŒæ‚ªããªã‚‹ã¨";
-	mes "ä¿ºãŒä»Šã‚ˆã‚Šã‚‚ã£ã¨é…·ã„ç›®ã«ã‚ã†ã‚“ã ã€‚";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "cc‚È‚ñ‚©AƒJƒ{ƒ`ƒƒƒpƒC‚ð";
+	mes "ˆê“xH‚×‚Ä‚Ý‚½‚¢‚ñ‚¾‚Á‚Ä‚³B";
+	mes "‚à‚µƒJƒ{ƒ`ƒƒƒpƒC‚ðŽ‚Á‚Ä‚é‚È‚ç";
+	mes "‚±‚¢‚Â‚É‚â‚Á‚Ä‚­‚ê‚È‚¢‚©H";
+	mes "ƒƒŠƒ‹ƒŠ‚Ì‹@Œ™‚ªˆ«‚­‚È‚é‚Æ";
+	mes "‰´‚ª¡‚æ‚è‚à‚Á‚Æ“‚¢–Ú‚É‚ ‚¤‚ñ‚¾B";
 	next;
-	mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-	mes "ã‚‚ã¡ã‚ã‚“ã‚¿ãƒ€ã¨ã¯è¨€ã‚ãªã„ã€‚";
-	mes "ã¡ã‚ƒã‚“ã¨ç¤¼ã¯ã™ã‚‹ãœã€‚";
+	mes "[ƒfƒrƒ‹ƒ`]";
+	mes "‚à‚¿‚ë‚ñƒ^ƒ_‚Æ‚ÍŒ¾‚í‚È‚¢B";
+	mes "‚¿‚á‚ñ‚Æ—ç‚Í‚·‚é‚ºB";
 	next;
-	switch(select("ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’ã‚ã’ã‚‹","ã‚ã’ãªã„","ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã£ã¦ä½•ï¼Ÿ")) {
+	switch(select("ƒJƒ{ƒ`ƒƒƒpƒC‚ð‚ ‚°‚é","‚ ‚°‚È‚¢","ƒJƒ{ƒ`ƒƒƒpƒC‚Á‚Ä‰½H")) {
 	case 1:
 		if(countitem(12192) < 1) {
-			mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-			mes "ã€Œã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦ã©ã“ï¼Ÿ";
-			mes "å˜˜â€¦â€¦å˜˜ã¤ã„ãŸã®ï¼Ÿã€";
+			mes "[ƒfƒrƒ‹ƒ`]";
+			mes "uƒJƒ{ƒ`ƒƒƒpƒCcc‚Ç‚±H";
+			mes "‰Rcc‰R‚Â‚¢‚½‚ÌHv";
 			next;
-			mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-			mes "å˜˜ã¤ãã£ã¦è¨€ã£ã¦ã‚‹ãžã€‚";
-			mes "ãŠå‰ã€é…·ã„ã‚„ã¤ã ãªâ€¦â€¦";
+			mes "[ƒfƒrƒ‹ƒ`]";
+			mes "‰R‚Â‚«‚Á‚ÄŒ¾‚Á‚Ä‚é‚¼B";
+			mes "‚¨‘OA“‚¢‚â‚Â‚¾‚Ècc";
 			next;
-			mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-			mes "ã€Œã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦ãã‚ŒãŸã€‚";
-			mes "ã§ã‚‚â€¦â€¦ãªã„â€¦â€¦";
-			mes "ãƒ‡ãƒ“â€¦â€¦ãŠå‰â€¦â€¦è¨±ã•ãªã„ã€‚ã€";
+			mes "[ƒfƒrƒ‹ƒ`]";
+			mes "uƒJƒ{ƒ`ƒƒƒpƒCcc‚­‚ê‚½B";
+			mes "‚Å‚àcc‚È‚¢cc";
+			mes "ƒfƒrcc‚¨‘Occ‹–‚³‚È‚¢Bv";
 			next;
-			mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-			mes "ã£ã¦è¨€â€¦â€¦ã‚ã‚Œï¼Ÿ";
-			mes "å˜˜ã¤ãã£ã¦ä¿ºã®ã“ã¨!?";
-			mes "ã„ã‚„ã€ä¿ºã¯é£Ÿã£ã¦ãªã„ã£ã¦ï¼";
-			mes "ã“ã®äººé–“ãŒæœ€åˆã£ã‹ã‚‰â€¦â€¦";
-			mes "ã“ã‚‰ï¼ã€€ã‚„ã‚â€¦â€¦";
-			mes "ã‚¢ãƒ¼ãƒƒ!!";
+			mes "[ƒfƒrƒ‹ƒ`]";
+			mes "‚Á‚ÄŒ¾cc‚ ‚êH";
+			mes "‰R‚Â‚«‚Á‚Ä‰´‚Ì‚±‚Æ!?";
+			mes "‚¢‚âA‰´‚ÍH‚Á‚Ä‚È‚¢‚Á‚ÄI";
+			mes "‚±‚ÌlŠÔ‚ªÅ‰‚Á‚©‚çcc";
+			mes "‚±‚çI@‚â‚ßcc";
+			mes "ƒA[ƒb!!";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "å¯å“€ç›¸ãªã‚„ã¤â€¦â€¦";
-			mes "å˜˜ã¯ã„ã‘ãªã„ã‚ˆã­ã€‚";
-			mes "ãµãµãµãµãµã€‚";
+			mes "‰Âˆ£‘Š‚È‚â‚Âcc";
+			mes "‰R‚Í‚¢‚¯‚È‚¢‚æ‚ËB";
+			mes "‚Ó‚Ó‚Ó‚Ó‚ÓB";
 			close;
 		}
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã€Œã“ã‚ŒãŒâ€¦â€¦ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ï¼";
-		mes "ã‚ã‚ŠãŒã¨ã†ï¼ã€";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "u‚±‚ê‚ªccƒJƒ{ƒ`ƒƒƒpƒCI";
+		mes "‚ ‚è‚ª‚Æ‚¤Iv";
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã»ã‚‰ã€ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’ãã‚ŒãŸã‚“ã ã‹ã‚‰";
-		mes "ã¡ã‚ƒã‚“ã¨ç¤¼ã‚’ã—ãªã„ã¨ãªã€‚";
-		mes "ç¤¼ã¯ã™ã‚‹ã£ã¦è¨€ã£ã¦ãŸã ã‚ï¼Ÿ";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "‚Ù‚çAƒJƒ{ƒ`ƒƒƒpƒC‚ð‚­‚ê‚½‚ñ‚¾‚©‚ç";
+		mes "‚¿‚á‚ñ‚Æ—ç‚ð‚µ‚È‚¢‚Æ‚ÈB";
+		mes "—ç‚Í‚·‚é‚Á‚ÄŒ¾‚Á‚Ä‚½‚¾‚ëH";
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã€Œã†ã‚“â€¦â€¦";
-		mes "äººé–“â€¦â€¦å¥½ãã€‚";
-		mes "ã“ã‚Œâ€¦â€¦ã‚ã’ã‚‹ã€‚";
-		mes "ã¾ãŸâ€¦â€¦ãŠã„ã—ã„â€¦â€¦";
-		mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦ã¡ã‚‡ã†ã ã„ã€‚ã€";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "u‚¤‚ñcc";
+		mes "lŠÔccD‚«B";
+		mes "‚±‚êcc‚ ‚°‚éB";
+		mes "‚Ü‚½cc‚¨‚¢‚µ‚¢cc";
+		mes "ƒJƒ{ƒ`ƒƒƒpƒCcc‚¿‚å‚¤‚¾‚¢Bv";
 		delitem 12192,1;
 		if(rand(3))
 			getitem 7460,3;
 		else
 			getitem 12130,1;
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ãŠå‰ã®äº‹ãŒå¥½ãã ã£ã¦ã•ã€‚";
-		mes "è‰¯ã‹ã£ãŸã˜ã‚ƒã­ã‡ã‹ã€‚";
-		mes "ã¾ã ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’æ¬²ã—ãŒã£ã¦ã‚‹ã‹ã‚‰ã€";
-		mes "ä½™ã£ã¦ã„ã‚‹ã‚ˆã†ãªã‚‰";
-		mes "æŒã£ã¦ãã¦ãã‚Œã‚ˆã€‚";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "‚¨‘O‚ÌŽ–‚ªD‚«‚¾‚Á‚Ä‚³B";
+		mes "—Ç‚©‚Á‚½‚¶‚á‚Ë‚¥‚©B";
+		mes "‚Ü‚¾ƒJƒ{ƒ`ƒƒƒpƒC‚ð—~‚µ‚ª‚Á‚Ä‚é‚©‚çA";
+		mes "—]‚Á‚Ä‚¢‚é‚æ‚¤‚È‚ç";
+		mes "Ž‚Á‚Ä‚«‚Ä‚­‚ê‚æB";
 		close;
 	case 2:
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã€Œã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤â€¦â€¦é£Ÿã¹ãŸã„ã€‚";
-		mes "ãã‚ŒãŸã‚‰â€¦â€¦ã‚ã‚Œâ€¦â€¦ã‚ã’ã‚‹ã€‚ã€";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "uƒJƒ{ƒ`ƒƒƒpƒCccH‚×‚½‚¢B";
+		mes "‚­‚ê‚½‚çcc‚ ‚êcc‚ ‚°‚éBv";
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã‚ã‚ŒãŒä½•ã‹æ°—ã«ãªã‚‰ãªã„ã®ã‹ï¼Ÿ";
-		mes "ãã‚Œã«ã€ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’ãã‚ŒãŸã‚‰";
-		mes "ãƒ­ãƒªãƒ«ãƒªã‚‚å–œã¶ãœï¼Ÿ";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "‚ ‚ê‚ª‰½‚©‹C‚É‚È‚ç‚È‚¢‚Ì‚©H";
+		mes "‚»‚ê‚ÉAƒJƒ{ƒ`ƒƒƒpƒC‚ð‚­‚ê‚½‚ç";
+		mes "ƒƒŠƒ‹ƒŠ‚àŠì‚Ô‚ºH";
 		close;
 	case 3:
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "è‡ªç§°ã‚«ãƒœãƒãƒ£ãƒžã‚¹ã‚¿ãƒ¼ã£ã¦ã‚„ã¤ãŒ";
-		mes "ã‚«ãƒœãƒãƒ£ã‚’ææ–™ã«ä½œã£ãŸãƒ‘ã‚¤ã‚‰ã—ã„ã€‚";
-		mes "è©±ã«ã‚ˆã‚‹ã¨ã€ãã®å‘³ã¯å¤©ä¸‹ä¸€å“ã€‚";
-		mes "ä¸€åº¦é£Ÿã¹ã‚‹ã¨ãã®å‘³ã‚’";
-		mes "æ°¸ä¹…ã«å¿˜ã‚Œã‚‰ã‚Œãªã„ç¨‹ã‚‰ã—ã„ã€‚";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "Ž©ÌƒJƒ{ƒ`ƒƒƒ}ƒXƒ^[‚Á‚Ä‚â‚Â‚ª";
+		mes "ƒJƒ{ƒ`ƒƒ‚ðÞ—¿‚Éì‚Á‚½ƒpƒC‚ç‚µ‚¢B";
+		mes "˜b‚É‚æ‚é‚ÆA‚»‚Ì–¡‚Í“V‰ºˆê•iB";
+		mes "ˆê“xH‚×‚é‚Æ‚»‚Ì–¡‚ð";
+		mes "‰i‹v‚É–Y‚ê‚ç‚ê‚È‚¢’ö‚ç‚µ‚¢B";
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã“ã®ãƒ­ãƒªãƒ«ãƒªã‚‚ã€ãã®ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’";
-		mes "ä¸€åº¦é£Ÿã¹ã¦ã¿ãŸã„ã£ã¦äº‹ã§";
-		mes "äººé–“ãŒæ¥ã‚‹ã®ã‚’å¾…ã£ã¦ã„ã‚‹ã‚“ã ã€‚";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "‚±‚ÌƒƒŠƒ‹ƒŠ‚àA‚»‚ÌƒJƒ{ƒ`ƒƒƒpƒC‚ð";
+		mes "ˆê“xH‚×‚Ä‚Ý‚½‚¢‚Á‚ÄŽ–‚Å";
+		mes "lŠÔ‚ª—ˆ‚é‚Ì‚ð‘Ò‚Á‚Ä‚¢‚é‚ñ‚¾B";
 		next;
-		mes "[ãƒ‡ãƒ“ãƒ«ãƒ]";
-		mes "ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã£ã¦ã‚„ã¤ã‚’";
-		mes "æŽ¢ã—ã¦ãã¦ãã‚Œãªã„ã‹ï¼Ÿ";
-		mes "ã‚‚ã¡ã‚ã‚“ç¤¼ã¯ã™ã‚‹ã‹ã‚‰ã•ã€‚";
+		mes "[ƒfƒrƒ‹ƒ`]";
+		mes "ƒJƒ{ƒ`ƒƒƒpƒC‚Á‚Ä‚â‚Â‚ð";
+		mes "’T‚µ‚Ä‚«‚Ä‚­‚ê‚È‚¢‚©H";
+		mes "‚à‚¿‚ë‚ñ—ç‚Í‚·‚é‚©‚ç‚³B";
 		close;
 	}
 }
-morocc.gat,159,143,3	script	ãƒ‘ãƒ¼ãƒŸãƒªã‚¢#Haloween	799,{
-	mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-	mes "ç§ã¯ãƒ­ãƒªãƒ«ãƒªæ§˜ã®å¿ å®Ÿãªã‚‹éƒ¨ä¸‹ã€";
-	mes "éº—ã—ã®ãƒ‘ãƒ¼ãƒŸãƒªã‚¢ã€‚";
-	mes "ãƒ­ãƒªãƒ«ãƒªæ§˜ã‹ã‚‰å—ã‘ãŸæ‹›å¾…çŠ¶ã‚’";
-	mes "æŒã£ã¦ã„ã‚‹ã‹ã—ã‚‰ï¼Ÿ";
-	mes "^4A4AFFãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ ç›´è¡Œãƒã‚±ãƒƒãƒˆ^000000ã®äº‹ã‚ˆã€‚";
+morocc.gat,159,143,3	script	ƒp[ƒ~ƒŠƒA#Haloween	799,{
+	mes "[ƒp[ƒ~ƒŠƒA]";
+	mes "Ž„‚ÍƒƒŠƒ‹ƒŠ—l‚Ì’‰ŽÀ‚È‚é•”‰ºA";
+	mes "—í‚µ‚Ìƒp[ƒ~ƒŠƒAB";
+	mes "ƒƒŠƒ‹ƒŠ—l‚©‚çŽó‚¯‚½µ‘Òó‚ð";
+	mes "Ž‚Á‚Ä‚¢‚é‚©‚µ‚çH";
+	mes "^4A4AFFƒjƒuƒ‹ƒwƒCƒ€’¼sƒ`ƒPƒbƒg^000000‚ÌŽ–‚æB";
 	next;
-	if(select("æŒã£ã¦ã„ã¾ã™","ã„ã„ãˆ")==2) {
-		mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-		mes "ã‚ã‚‰ãã†â€¦â€¦";
-		mes "ã‚‚ã—æ‹›å¾…çŠ¶ãŒæ¬²ã—ã„ãªã‚‰ã€";
-		mes "ãƒ­ãƒªãƒ«ãƒªæ§˜ã«ã‚«ãƒœãƒãƒ£ãƒ‘ã‚¤ã‚’";
-		mes "ãƒ—ãƒ¬ã‚¼ãƒ³ãƒˆã—ã¦å·®ã—ä¸Šã’ã‚‹ã¨ã„ã„ã‚ã‚ˆã€‚";
+	if(select("Ž‚Á‚Ä‚¢‚Ü‚·","‚¢‚¢‚¦")==2) {
+		mes "[ƒp[ƒ~ƒŠƒA]";
+		mes "‚ ‚ç‚»‚¤cc";
+		mes "‚à‚µµ‘Òó‚ª—~‚µ‚¢‚È‚çA";
+		mes "ƒƒŠƒ‹ƒŠ—l‚ÉƒJƒ{ƒ`ƒƒƒpƒC‚ð";
+		mes "ƒvƒŒƒ[ƒ“ƒg‚µ‚Ä·‚µã‚°‚é‚Æ‚¢‚¢‚í‚æB";
 		close;
 	}
-	mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-	mes "ãã‚Œã‚’ä½¿ã£ã¦ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ ã«è¡Œãï¼Ÿ";
-	mes "ãƒãƒ­ã‚¦ã‚£ãƒ³æœŸé–“é™å®šã§";
-	mes "é€ã£ã¦ã‚ã’ã‚‹ã‚ã‚ˆã€‚";
+	mes "[ƒp[ƒ~ƒŠƒA]";
+	mes "‚»‚ê‚ðŽg‚Á‚Äƒjƒuƒ‹ƒwƒCƒ€‚És‚­H";
+	mes "ƒnƒƒEƒBƒ“ŠúŠÔŒÀ’è‚Å";
+	mes "‘—‚Á‚Ä‚ ‚°‚é‚í‚æB";
 	next;
-	if(select("è¡Œã","è¡Œã‹ãªã„")==2) {
-		mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-		mes "ã‚ã‚‰ãã†â€¦â€¦";
-		mes "ã§ã‚‚ã€ãƒ‹ãƒ–ãƒ«ãƒã‚±ãƒƒãƒˆã‚’";
-		mes "æ®‹ã—ã¦ãŠã„ã¦ã‚‚";
-		mes "ä½¿ãˆãªããªã‚‹ã ã‘ã‚ˆã€‚";
+	if(select("s‚­","s‚©‚È‚¢")==2) {
+		mes "[ƒp[ƒ~ƒŠƒA]";
+		mes "‚ ‚ç‚»‚¤cc";
+		mes "‚Å‚àAƒjƒuƒ‹ƒ`ƒPƒbƒg‚ð";
+		mes "Žc‚µ‚Ä‚¨‚¢‚Ä‚à";
+		mes "Žg‚¦‚È‚­‚È‚é‚¾‚¯‚æB";
 		close;
 	}
 	if(countitem(7460) < 1) {
-		mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-		mes "å˜˜ã¤ãâ€¦â€¦";
-		mes "ãƒã‚±ãƒƒãƒˆã‚’æŒã£ã¦ãªã„ã˜ã‚ƒãªã„ï¼";
-		mes "å˜˜ã¤ãã®è¡€ã¯å¸ã£ã¦ã‚„ã‚‹ï¼";
+		mes "[ƒp[ƒ~ƒŠƒA]";
+		mes "‰R‚Â‚«cc";
+		mes "ƒ`ƒPƒbƒg‚ðŽ‚Á‚Ä‚È‚¢‚¶‚á‚È‚¢I";
+		mes "‰R‚Â‚«‚ÌŒŒ‚Í‹z‚Á‚Ä‚â‚éI";
 		emotion 23,"";
 		percentheal -20,0;
 		close;
 	}
-	mes "[ãƒ‘ãƒ¼ãƒŸãƒªã‚¢]";
-	mes "ãƒã‚±ãƒƒãƒˆã‚’ç¢ºèªã—ãŸã‚ã€‚";
-	mes "ã§ã¯ã€è¡Œã£ã¦ã‚‰ã£ã—ã‚ƒã„ã€‚";
+	mes "[ƒp[ƒ~ƒŠƒA]";
+	mes "ƒ`ƒPƒbƒg‚ðŠm”F‚µ‚½‚íB";
+	mes "‚Å‚ÍAs‚Á‚Ä‚ç‚Á‚µ‚á‚¢B";
 	delitem 7460,1;
 	close2;
 	warp "nif_in",18,20;
 	end;
 }
-prontera.gat,155,285,3	duplicate(ãƒ‘ãƒ¼ãƒŸãƒªã‚¢#Haloween)	ãƒ‘ãƒ¼ãƒŸãƒªã‚¢	799
-payon.gat,156,231,3	duplicate(ãƒ‘ãƒ¼ãƒŸãƒªã‚¢#Haloween)	ãƒ‘ãƒ¼ãƒŸãƒªã‚¢	799
-geffen.gat,120,188,3	duplicate(ãƒ‘ãƒ¼ãƒŸãƒªã‚¢#Haloween)	ãƒ‘ãƒ¼ãƒŸãƒªã‚¢	799
-alberta.gat,80,171,3	duplicate(ãƒ‘ãƒ¼ãƒŸãƒªã‚¢#Haloween)	ãƒ‘ãƒ¼ãƒŸãƒªã‚¢	799
+prontera.gat,155,285,3	duplicate(ƒp[ƒ~ƒŠƒA#Haloween)	ƒp[ƒ~ƒŠƒA	799
+payon.gat,156,231,3	duplicate(ƒp[ƒ~ƒŠƒA#Haloween)	ƒp[ƒ~ƒŠƒA	799
+geffen.gat,120,188,3	duplicate(ƒp[ƒ~ƒŠƒA#Haloween)	ƒp[ƒ~ƒŠƒA	799
+alberta.gat,80,171,3	duplicate(ƒp[ƒ~ƒŠƒA#Haloween)	ƒp[ƒ~ƒŠƒA	799
 
 //==========================================
-// ãƒ‹ãƒ¯ãƒˆãƒªã®å¹½éœŠã‚¯ã‚¨ã‚¹ãƒˆ
+// ƒjƒƒgƒŠ‚Ì—H—ìƒNƒGƒXƒg
 //------------------------------------------
 pay_dun03.gat,0,0,0	script	ChickenGhost#pay	-1,{
 OnInit:
 	initnpctimer;
 	end;
 OnTimer180000:
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay2";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay5";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay7";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay9";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay12";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay15";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay18";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay21";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay24";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay27";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay32";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay34";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay36";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#pay39";
+	misceffect 360,"ƒjƒƒgƒŠ#pay2";
+	misceffect 360,"ƒjƒƒgƒŠ#pay5";
+	misceffect 360,"ƒjƒƒgƒŠ#pay7";
+	misceffect 360,"ƒjƒƒgƒŠ#pay9";
+	misceffect 360,"ƒjƒƒgƒŠ#pay12";
+	misceffect 360,"ƒjƒƒgƒŠ#pay15";
+	misceffect 360,"ƒjƒƒgƒŠ#pay18";
+	misceffect 360,"ƒjƒƒgƒŠ#pay21";
+	misceffect 360,"ƒjƒƒgƒŠ#pay24";
+	misceffect 360,"ƒjƒƒgƒŠ#pay27";
+	misceffect 360,"ƒjƒƒgƒŠ#pay32";
+	misceffect 360,"ƒjƒƒgƒŠ#pay34";
+	misceffect 360,"ƒjƒƒgƒŠ#pay36";
+	misceffect 360,"ƒjƒƒgƒŠ#pay39";
 	if(rand(5) == 0) {
 		for(set '@i,0; '@i <= 39; set '@i,'@i+1)
-			hideoffnpc "ãƒ‹ãƒ¯ãƒˆãƒª#pay"+'@i;
+			hideoffnpc "ƒjƒƒgƒŠ#pay"+'@i;
 		end;
 	}
 	initnpctimer;
 	end;
 OnTimer360000:
 	for(set '@i,0; '@i <= 39; set '@i,'@i+1)
-		hideonnpc "ãƒ‹ãƒ¯ãƒˆãƒª#pay"+'@i;
+		hideonnpc "ƒjƒƒgƒŠ#pay"+'@i;
 	initnpctimer;
 	end;
 }
-pay_dun03.gat,151,131,4	script	ãƒ‹ãƒ¯ãƒˆãƒª#pay0	800,{
+pay_dun03.gat,151,131,4	script	ƒjƒƒgƒŠ#pay0	800,{
 	hideonnpc;
-	mes "ãƒ‹ãƒ¯ãƒˆãƒªã«è§¦ã‚Œã‚ˆã†ã¨ã™ã‚‹ã¨ã€";
-	mes "ã¾ã‚‹ã§å®Ÿä½“ãŒãªã‹ã£ãŸã‹ã®ã‚ˆã†ã«";
-	mes "æ¶ˆãˆã¦ã—ã¾ã£ãŸã€‚";
+	mes "ƒjƒƒgƒŠ‚ÉG‚ê‚æ‚¤‚Æ‚·‚é‚ÆA";
+	mes "‚Ü‚é‚ÅŽÀ‘Ì‚ª‚È‚©‚Á‚½‚©‚Ì‚æ‚¤‚É";
+	mes "Á‚¦‚Ä‚µ‚Ü‚Á‚½B";
 	if(rand(5))
 		close;
-	mes "ãƒ‹ãƒ¯ãƒˆãƒªãŒã„ãŸæ‰€ã«ã¯";
-	mes "ã€Œåµã€ãŒä¸€ã¤è½ã¡ã¦ã„ãŸ";
+	mes "ƒjƒƒgƒŠ‚ª‚¢‚½Š‚É‚Í";
+	mes "u—‘v‚ªˆê‚Â—Ž‚¿‚Ä‚¢‚½";
 	getitem 574,1;
 	close;
 OnInit:
 	hideonnpc;
 	end;
 }
-pay_dun03.gat,152,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay1	800
-pay_dun03.gat,153,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay2	800
-pay_dun03.gat,154,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay3	800
-pay_dun03.gat,155,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay4	800
-pay_dun03.gat,156,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay5	800
-pay_dun03.gat,157,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay6	800
-pay_dun03.gat,158,131,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay7	800
-pay_dun03.gat,150,132,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay8	800
-pay_dun03.gat,153,132,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay9	800
-pay_dun03.gat,156,132,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay10	800
-pay_dun03.gat,159,132,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay11	800
-pay_dun03.gat,149,133,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay12	800
-pay_dun03.gat,160,133,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay13	800
-pay_dun03.gat,149,134,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay14	800
-pay_dun03.gat,152,134,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay15	800
-pay_dun03.gat,157,134,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay16	800
-pay_dun03.gat,160,134,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay17	800
-pay_dun03.gat,149,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay18	800
-pay_dun03.gat,151,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay19	800
-pay_dun03.gat,152,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay20	800
-pay_dun03.gat,153,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay21	800
-pay_dun03.gat,156,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay22	800
-pay_dun03.gat,157,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay23	800
-pay_dun03.gat,158,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay24	800
-pay_dun03.gat,160,135,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay25	800
-pay_dun03.gat,149,136,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay26	800
-pay_dun03.gat,152,136,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay27	800
-pay_dun03.gat,157,136,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay28	800
-pay_dun03.gat,160,136,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay29	800
-pay_dun03.gat,150,137,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay30	800
-pay_dun03.gat,153,137,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay31	800
-pay_dun03.gat,156,137,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay32	800
-pay_dun03.gat,159,137,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay33	800
-pay_dun03.gat,151,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay34	800
-pay_dun03.gat,152,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay35	800
-pay_dun03.gat,154,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay36	800
-pay_dun03.gat,155,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay37	800
-pay_dun03.gat,157,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay38	800
-pay_dun03.gat,158,138,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#pay0)	ãƒ‹ãƒ¯ãƒˆãƒª#pay39	800
+pay_dun03.gat,152,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay1	800
+pay_dun03.gat,153,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay2	800
+pay_dun03.gat,154,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay3	800
+pay_dun03.gat,155,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay4	800
+pay_dun03.gat,156,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay5	800
+pay_dun03.gat,157,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay6	800
+pay_dun03.gat,158,131,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay7	800
+pay_dun03.gat,150,132,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay8	800
+pay_dun03.gat,153,132,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay9	800
+pay_dun03.gat,156,132,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay10	800
+pay_dun03.gat,159,132,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay11	800
+pay_dun03.gat,149,133,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay12	800
+pay_dun03.gat,160,133,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay13	800
+pay_dun03.gat,149,134,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay14	800
+pay_dun03.gat,152,134,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay15	800
+pay_dun03.gat,157,134,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay16	800
+pay_dun03.gat,160,134,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay17	800
+pay_dun03.gat,149,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay18	800
+pay_dun03.gat,151,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay19	800
+pay_dun03.gat,152,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay20	800
+pay_dun03.gat,153,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay21	800
+pay_dun03.gat,156,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay22	800
+pay_dun03.gat,157,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay23	800
+pay_dun03.gat,158,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay24	800
+pay_dun03.gat,160,135,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay25	800
+pay_dun03.gat,149,136,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay26	800
+pay_dun03.gat,152,136,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay27	800
+pay_dun03.gat,157,136,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay28	800
+pay_dun03.gat,160,136,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay29	800
+pay_dun03.gat,150,137,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay30	800
+pay_dun03.gat,153,137,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay31	800
+pay_dun03.gat,156,137,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay32	800
+pay_dun03.gat,159,137,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay33	800
+pay_dun03.gat,151,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay34	800
+pay_dun03.gat,152,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay35	800
+pay_dun03.gat,154,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay36	800
+pay_dun03.gat,155,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay37	800
+pay_dun03.gat,157,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay38	800
+pay_dun03.gat,158,138,4	duplicate(ƒjƒƒgƒŠ#pay0)	ƒjƒƒgƒŠ#pay39	800
 //------------------------------------------
 prt_fild08.gat,0,0,0	script	ChickenGhost#prt	-1,{
 OnInit:
 	initnpctimer;
 	end;
 OnTimer180000:
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt2";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt4";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt5";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt8";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt12";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt15";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt18";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt20";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt22";
-	misceffect 360,"ãƒ‹ãƒ¯ãƒˆãƒª#prt24";
+	misceffect 360,"ƒjƒƒgƒŠ#prt2";
+	misceffect 360,"ƒjƒƒgƒŠ#prt4";
+	misceffect 360,"ƒjƒƒgƒŠ#prt5";
+	misceffect 360,"ƒjƒƒgƒŠ#prt8";
+	misceffect 360,"ƒjƒƒgƒŠ#prt12";
+	misceffect 360,"ƒjƒƒgƒŠ#prt15";
+	misceffect 360,"ƒjƒƒgƒŠ#prt18";
+	misceffect 360,"ƒjƒƒgƒŠ#prt20";
+	misceffect 360,"ƒjƒƒgƒŠ#prt22";
+	misceffect 360,"ƒjƒƒgƒŠ#prt24";
 	if(rand(5) == 0) {
 		for(set '@i,0; '@i <= 26; set '@i,'@i+1)
-			hideoffnpc "ãƒ‹ãƒ¯ãƒˆãƒª#prt"+'@i;
+			hideoffnpc "ƒjƒƒgƒŠ#prt"+'@i;
 		end;
 	}
 	initnpctimer;
 	end;
 OnTimer360000:
 	for(set '@i,0; '@i <= 26; set '@i,'@i+1)
-		hideonnpc "ãƒ‹ãƒ¯ãƒˆãƒª#prt"+'@i;
+		hideonnpc "ƒjƒƒgƒŠ#prt"+'@i;
 	initnpctimer;
 	end;
 }
-prt_fild08.gat,155,350,4	script	ãƒ‹ãƒ¯ãƒˆãƒª#prt0	800,{
+prt_fild08.gat,155,350,4	script	ƒjƒƒgƒŠ#prt0	800,{
 	hideonnpc;
-	mes "ãƒ‹ãƒ¯ãƒˆãƒªã«è§¦ã‚Œã‚ˆã†ã¨ã™ã‚‹ã¨ã€";
-	mes "ã¾ã‚‹ã§å®Ÿä½“ãŒãªã‹ã£ãŸã‹ã®ã‚ˆã†ã«";
-	mes "æ¶ˆãˆã¦ã—ã¾ã£ãŸã€‚";
+	mes "ƒjƒƒgƒŠ‚ÉG‚ê‚æ‚¤‚Æ‚·‚é‚ÆA";
+	mes "‚Ü‚é‚ÅŽÀ‘Ì‚ª‚È‚©‚Á‚½‚©‚Ì‚æ‚¤‚É";
+	mes "Á‚¦‚Ä‚µ‚Ü‚Á‚½B";
 	if(rand(5))
 		close;
-	mes "ãƒ‹ãƒ¯ãƒˆãƒªãŒã„ãŸæ‰€ã«ã¯";
-	mes "ã€Œåµã€ãŒä¸€ã¤è½ã¡ã¦ã„ãŸ";
+	mes "ƒjƒƒgƒŠ‚ª‚¢‚½Š‚É‚Í";
+	mes "u—‘v‚ªˆê‚Â—Ž‚¿‚Ä‚¢‚½";
 	getitem 574,1;
 	close;
 OnInit:
 	hideonnpc;
 	end;
 }
-prt_fild08.gat,155,352,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt1	800
-prt_fild08.gat,155,354,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt2	800
-prt_fild08.gat,155,356,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt3	800
-prt_fild08.gat,155,358,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt4	800
-prt_fild08.gat,154,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt5	800
-prt_fild08.gat,154,353,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt6	800
-prt_fild08.gat,154,355,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt7	800
-prt_fild08.gat,154,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt8	800
-prt_fild08.gat,153,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt9	800
-prt_fild08.gat,153,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt10	800
-prt_fild08.gat,152,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt11	800
-prt_fild08.gat,152,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt12	800
-prt_fild08.gat,151,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt13	800
-prt_fild08.gat,151,353,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt14	800
-prt_fild08.gat,151,355,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt15	800
-prt_fild08.gat,151,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt16	800
-prt_fild08.gat,150,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt17	800
-prt_fild08.gat,150,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt18	800
-prt_fild08.gat,149,351,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt19	800
-prt_fild08.gat,149,354,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt20	800
-prt_fild08.gat,149,357,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt21	800
-prt_fild08.gat,148,352,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt22	800
-prt_fild08.gat,148,356,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt23	800
-prt_fild08.gat,147,353,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt24	800
-prt_fild08.gat,147,354,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt25	800
-prt_fild08.gat,147,355,4	duplicate(ãƒ‹ãƒ¯ãƒˆãƒª#prt0)	ãƒ‹ãƒ¯ãƒˆãƒª#prt26	800
+prt_fild08.gat,155,352,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt1	800
+prt_fild08.gat,155,354,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt2	800
+prt_fild08.gat,155,356,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt3	800
+prt_fild08.gat,155,358,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt4	800
+prt_fild08.gat,154,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt5	800
+prt_fild08.gat,154,353,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt6	800
+prt_fild08.gat,154,355,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt7	800
+prt_fild08.gat,154,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt8	800
+prt_fild08.gat,153,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt9	800
+prt_fild08.gat,153,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt10	800
+prt_fild08.gat,152,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt11	800
+prt_fild08.gat,152,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt12	800
+prt_fild08.gat,151,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt13	800
+prt_fild08.gat,151,353,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt14	800
+prt_fild08.gat,151,355,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt15	800
+prt_fild08.gat,151,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt16	800
+prt_fild08.gat,150,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt17	800
+prt_fild08.gat,150,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt18	800
+prt_fild08.gat,149,351,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt19	800
+prt_fild08.gat,149,354,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt20	800
+prt_fild08.gat,149,357,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt21	800
+prt_fild08.gat,148,352,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt22	800
+prt_fild08.gat,148,356,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt23	800
+prt_fild08.gat,147,353,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt24	800
+prt_fild08.gat,147,354,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt25	800
+prt_fild08.gat,147,355,4	duplicate(ƒjƒƒgƒŠ#prt0)	ƒjƒƒgƒŠ#prt26	800
 
 //==========================================
-// æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰
+// Šy‚µ‚¢ƒ‹[ƒh
 //------------------------------------------
-abyss_01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-abyss_02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-abyss_03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-alde_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-alde_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-alde_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-alde_dun04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ama_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ama_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ama_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ama_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-anthell01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-anthell02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ayo_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ayo_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ayo_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ayo_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-beach_dun.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-beach_dun2.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-beach_dun3.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-c_tower1.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-c_tower2.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-c_tower3.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-c_tower4.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-cmd_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-ein_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_dun00.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-gef_fild00.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild12.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild13.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gef_fild14.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gefenia01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gefenia02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gefenia03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gefenia04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_cas01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_cas02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_church.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_chyard.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_in01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_knt01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_knt02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_prison.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_prison1.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_sew01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_sew02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_sew03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_sew04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gl_step.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-glast_01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gon_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gon_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gon_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-gon_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-hu_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-in_sphinx1.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-in_sphinx2.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-in_sphinx3.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-in_sphinx4.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-in_sphinx5.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-iz_dun00.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-iz_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-iz_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-iz_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-iz_dun04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-jupe_core.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-juperos_01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-juperos_02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-kh_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-kh_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lhz_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lou_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lou_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lou_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-lou_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mag_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mag_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjo_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjo_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjo_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-mjolnir_12.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild12.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild13.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild14.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild15.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild16.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild17.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_fild18.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-moc_pryd06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-nif_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-nif_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-niflheim.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-odin_tem01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-odin_tem02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-odin_tem03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-orcsdun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-orcsdun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_dun00.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_dun04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-pay_fild11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild00.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_fild11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_maze01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_maze02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-prt_maze03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_sewb1.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_sewb2.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_sewb3.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-prt_sewb4.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tha_t07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tha_t08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tha_t09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tha_t10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tha_t11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tha_t12.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,1,0,0,0
-tur_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tur_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tur_dun03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-tur_dun04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-um_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-xmas_dun01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-xmas_dun02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-xmas_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild01.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild02.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild03.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild04.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild05.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild06.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild07.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild08.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild09.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild10.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild11.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
-yuno_fild12.gat,0,0,0,0	monster	æ¥½ã—ã„ãƒ«ãƒ¼ãƒ‰	1812,3,0,0,0
+abyss_01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+abyss_02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+abyss_03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+alde_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+alde_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+alde_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+alde_dun04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ama_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ama_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ama_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ama_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+anthell01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+anthell02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ayo_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ayo_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ayo_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ayo_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+beach_dun.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+beach_dun2.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+beach_dun3.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+c_tower1.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+c_tower2.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+c_tower3.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+c_tower4.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+cmd_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+ein_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_dun00.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+gef_fild00.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild12.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild13.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gef_fild14.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gefenia01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gefenia02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gefenia03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gefenia04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_cas01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_cas02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_church.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_chyard.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_in01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_knt01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_knt02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_prison.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_prison1.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_sew01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_sew02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_sew03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_sew04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gl_step.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+glast_01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gon_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gon_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gon_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+gon_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+hu_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+in_sphinx1.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+in_sphinx2.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+in_sphinx3.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+in_sphinx4.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+in_sphinx5.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+iz_dun00.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+iz_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+iz_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+iz_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+iz_dun04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+jupe_core.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+juperos_01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+juperos_02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+kh_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+kh_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lhz_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lou_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lou_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lou_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+lou_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mag_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mag_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjo_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjo_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjo_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+mjolnir_12.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild12.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild13.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild14.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild15.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild16.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild17.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_fild18.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+moc_pryd06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+nif_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+nif_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+niflheim.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+odin_tem01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+odin_tem02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+odin_tem03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+orcsdun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+orcsdun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_dun00.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_dun04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+pay_fild11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild00.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_fild11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_maze01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_maze02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+prt_maze03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_sewb1.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_sewb2.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_sewb3.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+prt_sewb4.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tha_t07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tha_t08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tha_t09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tha_t10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tha_t11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tha_t12.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,1,0,0,0
+tur_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tur_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tur_dun03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+tur_dun04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+um_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+xmas_dun01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+xmas_dun02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+xmas_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild01.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild02.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild03.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild04.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild05.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild06.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild07.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild08.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild09.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild10.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild11.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0
+yuno_fild12.gat,0,0,0,0	monster	Šy‚µ‚¢ƒ‹[ƒh	1812,3,0,0,0

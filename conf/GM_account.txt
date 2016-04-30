@@ -1,9 +1,9 @@
-// GMとして認識するアカウントIDを設定
+// GM�Ƃ��ĔF������A�J�E���gID��ݒ�
 // <account ID> <level>
-// <GMのアカウントID> <GMのレベル>
+// <GM�̃A�J�E���gID> <GM�̃��x��>
 // <first_account_ID>-<last_account_ID> <level>
 // <first_account_ID>~<last_account_ID> <level>
-// GMのレベルは0以下は無視で最大は99
+// GM�̃��x����0�ȉ��͖����ōő��99
 
 //704554-794583 1
 //794544 1

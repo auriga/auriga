@@ -1,11 +1,11 @@
 //=========================================================================
-// ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãŠã‚ˆã³ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³
-// ï¼ˆæ”»åŸæˆ¦é–‹å§‹æ™‚ãƒ»ã‚¢ã‚¸ãƒˆæ”¾æ£„æ™‚ãƒ»ã‚¨ãƒ³ãƒšç ´å£Šæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ï¼‰
+// ƒGƒ“ƒyƒŠƒEƒ€‚¨‚æ‚Ñƒ‚ƒ“ƒXƒ^[¢Š«ƒtƒ@ƒ“ƒNƒVƒ‡ƒ“
+// iUéíŠJnEƒAƒWƒg•úŠüEƒGƒ“ƒy”j‰ó‚ÉŒÄ‚Ño‚³‚ê‚éj
 //	callfunc "AgitSummon","AgitCode";
 //-------------------------------------------------------------------------
 
 function	script	AgitSummon	{
-	//AgitCodeã‚’æ•°å€¤ã«å¤‰æ›ã™ã‚‹é–¢æ•°ã‚’è¨­å®š
+	//AgitCode‚ğ”’l‚É•ÏŠ·‚·‚éŠÖ”‚ğİ’è
 	function enum {
 		if(getarg(0)=="L1") return 11;
 		if(getarg(0)=="L2") return 12;
@@ -30,34 +30,34 @@ function	script	AgitSummon	{
 		return 0;
 	}
 
-	//ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ã®å¬å–š
+	//ƒGƒ“ƒyƒŠƒEƒ€‚Ì¢Š«
 	switch (enum(getarg(0))) {
-		case 11: monster "aldeg_cas01.gat",216,24,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#L1::OnAgitBreak"; 	break;
-		case 12: monster "aldeg_cas02.gat",214,24,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#L2::OnAgitBreak"; 	break;
-		case 13: monster "aldeg_cas03.gat",206,32,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#L3::OnAgitBreak"; 	break;
-		case 14: monster "aldeg_cas04.gat",36,218,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#L4::OnAgitBreak"; 	break;
-		case 15: monster "aldeg_cas05.gat",28,102,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#L5::OnAgitBreak"; 	break;
-		case 21: monster "gefg_cas01.gat",198,182,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#B1::OnAgitBreak"; 	break;
-		case 22: monster "gefg_cas02.gat",176,178,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#B2::OnAgitBreak"; 	break;
-		case 23: monster "gefg_cas03.gat",245,167,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#B3::OnAgitBreak"; 	break;
-		case 24: monster "gefg_cas04.gat",174,178,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#B4::OnAgitBreak"; 	break;
-		case 25: monster "gefg_cas05.gat",194,184,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#B5::OnAgitBreak"; 	break;
-		case 31: monster "payg_cas01.gat",139,139,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#C1::OnAgitBreak"; 	break;
-		case 32: monster "payg_cas02.gat",39,25,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#C2::OnAgitBreak"; 	break;
-		case 33: monster "payg_cas03.gat",269,265,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#C3::OnAgitBreak"; 	break;
-		case 34: monster "payg_cas04.gat",271,29,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#C4::OnAgitBreak"; 	break;
-		case 35: monster "payg_cas05.gat",30,30,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#C5::OnAgitBreak"; 	break;
-		case 41: monster "prtg_cas01.gat",197,197,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#V1::OnAgitBreak"; 	break;
-		case 42: monster "prtg_cas02.gat",158,174,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#V2::OnAgitBreak"; 	break;
-		case 43: monster "prtg_cas03.gat",17,221,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#V3::OnAgitBreak"; 	break;
-		case 44: monster "prtg_cas04.gat",292,14,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#V4::OnAgitBreak"; 	break;
-		case 45: monster "prtg_cas05.gat",266,266,"ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ",1288,1,"AgitExe#V5::OnAgitBreak"; 	break;
+		case 11: monster "aldeg_cas01.gat",216,24,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#L1::OnAgitBreak"; 	break;
+		case 12: monster "aldeg_cas02.gat",214,24,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#L2::OnAgitBreak"; 	break;
+		case 13: monster "aldeg_cas03.gat",206,32,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#L3::OnAgitBreak"; 	break;
+		case 14: monster "aldeg_cas04.gat",36,218,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#L4::OnAgitBreak"; 	break;
+		case 15: monster "aldeg_cas05.gat",28,102,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#L5::OnAgitBreak"; 	break;
+		case 21: monster "gefg_cas01.gat",198,182,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#B1::OnAgitBreak"; 	break;
+		case 22: monster "gefg_cas02.gat",176,178,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#B2::OnAgitBreak"; 	break;
+		case 23: monster "gefg_cas03.gat",245,167,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#B3::OnAgitBreak"; 	break;
+		case 24: monster "gefg_cas04.gat",174,178,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#B4::OnAgitBreak"; 	break;
+		case 25: monster "gefg_cas05.gat",194,184,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#B5::OnAgitBreak"; 	break;
+		case 31: monster "payg_cas01.gat",139,139,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#C1::OnAgitBreak"; 	break;
+		case 32: monster "payg_cas02.gat",39,25,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#C2::OnAgitBreak"; 	break;
+		case 33: monster "payg_cas03.gat",269,265,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#C3::OnAgitBreak"; 	break;
+		case 34: monster "payg_cas04.gat",271,29,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#C4::OnAgitBreak"; 	break;
+		case 35: monster "payg_cas05.gat",30,30,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#C5::OnAgitBreak"; 	break;
+		case 41: monster "prtg_cas01.gat",197,197,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#V1::OnAgitBreak"; 	break;
+		case 42: monster "prtg_cas02.gat",158,174,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#V2::OnAgitBreak"; 	break;
+		case 43: monster "prtg_cas03.gat",17,221,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#V3::OnAgitBreak"; 	break;
+		case 44: monster "prtg_cas04.gat",292,14,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#V4::OnAgitBreak"; 	break;
+		case 45: monster "prtg_cas05.gat",266,266,"ƒGƒ“ƒyƒŠƒEƒ€",1288,1,"AgitExe#V5::OnAgitBreak"; 	break;
 	}
-	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ä»¥å¤–ã¯ãƒ€ãƒŸãƒ¼
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ˆÈŠO‚Íƒ_ƒ~[
 	if(getcastledata('@map$,1))
-		return;					//åŸä¸»ã‚®ãƒ«ãƒ‰ãŒå±…ã‚‹ãªã‚‰ã“ã‚Œã§çµ‚äº†
+		return;					//éåƒMƒ‹ƒh‚ª‹‚é‚È‚ç‚±‚ê‚ÅI—¹
 
-	//å„ç ¦ã«ãŠã‘ã‚‹ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å‡ºç¾åº§æ¨™ã®è¨­å®š
+	//ŠeÔ‚É‚¨‚¯‚éƒ‚ƒ“ƒXƒ^[oŒ»À•W‚Ìİ’è
 	switch (enum(getarg(0))) {
 		case 11: setarray '@pos,216,23; 	break;
 		case 12: setarray '@pos,213,23; 	break;
@@ -80,76 +80,76 @@ function	script	AgitSummon	{
 		case 44: setarray '@pos,291,14; 	break;
 		case 45: setarray '@pos,266,266; 	break;
 	}
-	//åŸä¸»ã‚®ãƒ«ãƒ‰ä¸åœ¨æ™‚ã®ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®å¬å–š
+	//éåƒMƒ‹ƒh•sİ‚Ìƒ‚ƒ“ƒXƒ^[‚Ì¢Š«
 	switch (enum(getarg(0))/10) {
-	case 1:	//ãƒ«ã‚¤ãƒ¼ãƒŠ
-		areamonster '@map$,0,0,0,0,"ã‚¤ãƒ“ãƒ«ãƒ‰ãƒ«ã‚¤ãƒ‰",1117,10;
-		areamonster '@map$,0,0,0,0,"ã‚«ãƒ¼ãƒªãƒƒãƒ„ãƒãƒ¼ã‚°",1132,4;
-		areamonster '@map$,0,0,0,0,"æ·±æ·µã®é¨å£«",1219,2;
-		areamonster '@map$,0,0,0,0,"ã‚¨ã‚¯ã‚¹ã‚­ãƒ¥ãƒ¼ã‚·ãƒ§ãƒŠãƒ¼",1205,1;
-		areamonster '@map$,0,0,0,0,"ãƒšãƒãƒ¡ãƒŠ",1216,10;
-		areamonster '@map$,0,0,0,0,"ã‚¢ãƒ©ãƒ¼ãƒ ",1193,17;
-		areamonster '@map$,0,0,0,0,"ã‚¯ãƒ­ãƒƒã‚¯",1269,9;
-		areamonster '@map$,0,0,0,0,"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,7;
-		areamonster '@map$,0,0,0,0,"å½·å¾¨ã†è€…",1208,3;
-		areamonster '@map$,0,0,0,0,"ã‚¢ãƒªã‚¹",1275,1;
-		areamonster '@map$,0,0,0,0,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒŠã‚¤ãƒˆ",1268,1;
-		areamonster '@map$,0,0,0,0,"ãƒ€ãƒ¼ã‚¯ãƒ­ãƒ¼ãƒ‰",1272,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ€ãƒ¼ã‚¯ãƒ­ãƒ¼ãƒ‰",1272,1;
-		monster '@map$,'@pos[0],'@pos[1],"æ™‚è¨ˆå¡”ç®¡ç†è€…",1270,4;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒŠã‚¤ãƒˆ",1268,1;
-		monster '@map$,'@pos[0],'@pos[1],"æ·±æ·µã®é¨å£«",1219,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,5;
+	case 1:	//ƒ‹ƒC[ƒi
+		areamonster '@map$,0,0,0,0,"ƒCƒrƒ‹ƒhƒ‹ƒCƒh",1117,10;
+		areamonster '@map$,0,0,0,0,"ƒJ[ƒŠƒbƒcƒo[ƒO",1132,4;
+		areamonster '@map$,0,0,0,0,"[•£‚Ì‹Rm",1219,2;
+		areamonster '@map$,0,0,0,0,"ƒGƒNƒXƒLƒ…[ƒVƒ‡ƒi[",1205,1;
+		areamonster '@map$,0,0,0,0,"ƒyƒmƒƒi",1216,10;
+		areamonster '@map$,0,0,0,0,"ƒAƒ‰[ƒ€",1193,17;
+		areamonster '@map$,0,0,0,0,"ƒNƒƒbƒN",1269,9;
+		areamonster '@map$,0,0,0,0,"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,7;
+		areamonster '@map$,0,0,0,0,"œfœr‚¤Ò",1208,3;
+		areamonster '@map$,0,0,0,0,"ƒAƒŠƒX",1275,1;
+		areamonster '@map$,0,0,0,0,"ƒuƒ‰ƒbƒfƒBƒiƒCƒg",1268,1;
+		areamonster '@map$,0,0,0,0,"ƒ_[ƒNƒ[ƒh",1272,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒ_[ƒNƒ[ƒh",1272,1;
+		monster '@map$,'@pos[0],'@pos[1],"Œv“ƒŠÇ—Ò",1270,4;
+		monster '@map$,'@pos[0],'@pos[1],"ƒuƒ‰ƒbƒfƒBƒiƒCƒg",1268,1;
+		monster '@map$,'@pos[0],'@pos[1],"[•£‚Ì‹Rm",1219,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,5;
 		break;
-	case 2:	//ãƒ–ãƒªãƒˆãƒ‹ã‚¢
-		areamonster '@map$,0,0,0,0,"ã‚¤ãƒ“ãƒ«ãƒ‰ãƒ«ã‚¤ãƒ‰",1117,10;
-		areamonster '@map$,0,0,0,0,"ã‚¦ã‚£ãƒ³ãƒ‰ã‚´ãƒ¼ã‚¹ãƒˆ",1263,11;
-		areamonster '@map$,0,0,0,0,"ãƒãƒ¼ã‚¹ãƒªãƒ¼",1102,10;
-		areamonster '@map$,0,0,0,0,"ã‚¸ãƒ£ãƒƒã‚¯",1130,10;
-		areamonster '@map$,0,0,0,0,"ãƒãƒ«ãƒ‰ã‚¥ãƒ¼ã‚¯",1140,20;
-		areamonster '@map$,0,0,0,0,"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯",1163,9;
-		areamonster '@map$,0,0,0,0,"ã‚¢ãƒªã‚¹",1275,1;
-		areamonster '@map$,0,0,0,0,"æ·±æ·µã®é¨å£«",1219,1;
-		areamonster '@map$,0,0,0,0,"æœˆå¤œèŠ±",1150,1;
-		areamonster '@map$,0,0,0,0,"ãƒ•ãƒªã‚ªãƒ‹",1159,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒŸã‚¹ãƒ†ãƒ«ãƒ†ã‚¤ãƒ³",1203,1;
-		monster '@map$,'@pos[0],'@pos[1],"ã‚ªãƒ¼ã‚¯ãƒ’ãƒ¼ãƒ­ãƒ¼",1087,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒã‚¤ã‚ªãƒ¼ã‚¯",1213,10;
-		monster '@map$,'@pos[0],'@pos[1],"ã‚ªãƒ¼ã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1189,10;
+	case 2:	//ƒuƒŠƒgƒjƒA
+		areamonster '@map$,0,0,0,0,"ƒCƒrƒ‹ƒhƒ‹ƒCƒh",1117,10;
+		areamonster '@map$,0,0,0,0,"ƒEƒBƒ“ƒhƒS[ƒXƒg",1263,11;
+		areamonster '@map$,0,0,0,0,"ƒo[ƒXƒŠ[",1102,10;
+		areamonster '@map$,0,0,0,0,"ƒWƒƒƒbƒN",1130,10;
+		areamonster '@map$,0,0,0,0,"ƒ}ƒ‹ƒhƒD[ƒN",1140,20;
+		areamonster '@map$,0,0,0,0,"ƒŒƒCƒhƒŠƒbƒN",1163,9;
+		areamonster '@map$,0,0,0,0,"ƒAƒŠƒX",1275,1;
+		areamonster '@map$,0,0,0,0,"[•£‚Ì‹Rm",1219,1;
+		areamonster '@map$,0,0,0,0,"Œ–é‰Ô",1150,1;
+		areamonster '@map$,0,0,0,0,"ƒtƒŠƒIƒj",1159,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒ~ƒXƒeƒ‹ƒeƒCƒ“",1203,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒI[ƒNƒq[ƒ[",1087,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒnƒCƒI[ƒN",1213,10;
+		monster '@map$,'@pos[0],'@pos[1],"ƒI[ƒNƒA[ƒ`ƒƒ[",1189,10;
 		break;
-	case 3:	//ãƒãƒ¥ãƒ³ãƒªãƒ 
-		areamonster '@map$,0,0,0,0,"å¤©ä¸‹å¤§å°†è»",1277,10;
-		areamonster '@map$,0,0,0,0,"å½·å¾¨ã†è€…",1208,10;
-		areamonster '@map$,0,0,0,0,"ãƒŸãƒ¥ãƒ¼ã‚¿ãƒ³ãƒˆãƒ‰ãƒ©ã‚´ãƒ³",1262,5;
-		areamonster '@map$,0,0,0,0,"ãƒãƒ¼ã‚¹ãƒªãƒ¼",1102,5;
-		areamonster '@map$,0,0,0,0,"æœˆå¤œèŠ±",1150,1;
-		areamonster '@map$,0,0,0,0,"ã‚¨ãƒ‰ã‚¬",1115,1;
-		areamonster '@map$,0,0,0,0,"ãƒ›ãƒ­ãƒ³",1129,11;
-		areamonster '@map$,0,0,0,0,"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,5;
-		areamonster '@map$,0,0,0,0,"ã‚³ãƒœãƒ«ãƒ‰ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1282,4;
-		areamonster '@map$,0,0,0,0,"ã‚¬ãƒ¼ã‚´ã‚¤ãƒ«",1253,5;
-		monster '@map$,'@pos[0],'@pos[1],"æœˆå¤œèŠ±",1150,1;
-		monster '@map$,'@pos[0],'@pos[1],"ã‚¨ãƒ‰ã‚¬",1115,1;
-		monster '@map$,'@pos[0],'@pos[1],"å½·å¾¨ã†è€…",1208,6;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,5;
+	case 3:	//ƒ`ƒ…ƒ“ƒŠƒ€
+		areamonster '@map$,0,0,0,0,"“V‰º‘å«ŒR",1277,10;
+		areamonster '@map$,0,0,0,0,"œfœr‚¤Ò",1208,10;
+		areamonster '@map$,0,0,0,0,"ƒ~ƒ…[ƒ^ƒ“ƒgƒhƒ‰ƒSƒ“",1262,5;
+		areamonster '@map$,0,0,0,0,"ƒo[ƒXƒŠ[",1102,5;
+		areamonster '@map$,0,0,0,0,"Œ–é‰Ô",1150,1;
+		areamonster '@map$,0,0,0,0,"ƒGƒhƒK",1115,1;
+		areamonster '@map$,0,0,0,0,"ƒzƒƒ“",1129,11;
+		areamonster '@map$,0,0,0,0,"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,5;
+		areamonster '@map$,0,0,0,0,"ƒRƒ{ƒ‹ƒhƒA[ƒ`ƒƒ[",1282,4;
+		areamonster '@map$,0,0,0,0,"ƒK[ƒSƒCƒ‹",1253,5;
+		monster '@map$,'@pos[0],'@pos[1],"Œ–é‰Ô",1150,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒGƒhƒK",1115,1;
+		monster '@map$,'@pos[0],'@pos[1],"œfœr‚¤Ò",1208,6;
+		monster '@map$,'@pos[0],'@pos[1],"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,5;
 		break;
-	case 4:	//ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
-		areamonster '@map$,0,0,0,0,"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯",1163,15;
-		areamonster '@map$,0,0,0,0,"ã‚«ãƒ¼ãƒªãƒƒãƒ„ãƒãƒ¼ã‚°",1132,10;
-		areamonster '@map$,0,0,0,0,"æ·±æ·µã®é¨å£«",1219,5;
-		areamonster '@map$,0,0,0,0,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒŠã‚¤ãƒˆ",1268,5;
-		areamonster '@map$,0,0,0,0,"ã‚¹ãƒˆãƒ¼ãƒ ãƒŠã‚¤ãƒˆ",1251,1;
-		areamonster '@map$,0,0,0,0,"ãƒãƒ†ã‚£ãƒ¼",1252,1;
-		areamonster '@map$,0,0,0,0,"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,5;
-		areamonster '@map$,0,0,0,0,"ã‚°ãƒªãƒ•ã‚©ãƒ³",1259,2;
-		areamonster '@map$,0,0,0,0,"ã‚­ãƒ¡ãƒ©",1283,2;
-		areamonster '@map$,0,0,0,0,"ã‚¢ãƒªã‚¹",1275,1;
-		areamonster '@map$,0,0,0,0,"ã‚¸ãƒ«ã‚¿ã‚¹",1200,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒŠã‚¤ãƒˆ",1268,1;
-		monster '@map$,'@pos[0],'@pos[1],"ã‚¹ãƒˆãƒ¼ãƒ ãƒŠã‚¤ãƒˆ",1251,1;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒãƒ†ã‚£ãƒ¼",1252,1;
-		monster '@map$,'@pos[0],'@pos[1],"æ·±æ·µã®é¨å£«",1219,2;
-		monster '@map$,'@pos[0],'@pos[1],"ãƒ¬ã‚¤ãƒ‰ãƒªãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ£ãƒ¼",1276,5;
+	case 4:	//ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
+		areamonster '@map$,0,0,0,0,"ƒŒƒCƒhƒŠƒbƒN",1163,15;
+		areamonster '@map$,0,0,0,0,"ƒJ[ƒŠƒbƒcƒo[ƒO",1132,10;
+		areamonster '@map$,0,0,0,0,"[•£‚Ì‹Rm",1219,5;
+		areamonster '@map$,0,0,0,0,"ƒuƒ‰ƒbƒfƒBƒiƒCƒg",1268,5;
+		areamonster '@map$,0,0,0,0,"ƒXƒg[ƒ€ƒiƒCƒg",1251,1;
+		areamonster '@map$,0,0,0,0,"ƒnƒeƒB[",1252,1;
+		areamonster '@map$,0,0,0,0,"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,5;
+		areamonster '@map$,0,0,0,0,"ƒOƒŠƒtƒHƒ“",1259,2;
+		areamonster '@map$,0,0,0,0,"ƒLƒƒ‰",1283,2;
+		areamonster '@map$,0,0,0,0,"ƒAƒŠƒX",1275,1;
+		areamonster '@map$,0,0,0,0,"ƒWƒ‹ƒ^ƒX",1200,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒuƒ‰ƒbƒfƒBƒiƒCƒg",1268,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒXƒg[ƒ€ƒiƒCƒg",1251,1;
+		monster '@map$,'@pos[0],'@pos[1],"ƒnƒeƒB[",1252,1;
+		monster '@map$,'@pos[0],'@pos[1],"[•£‚Ì‹Rm",1219,2;
+		monster '@map$,'@pos[0],'@pos[1],"ƒŒƒCƒhƒŠƒbƒNƒA[ƒ`ƒƒ[",1276,5;
 		break;
 	}
 	return;
@@ -157,14 +157,14 @@ function	script	AgitSummon	{
 
 
 //=========================================================================
-// ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³å¬å–šãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³
-// ï¼ˆInterã‚µãƒ¼ãƒæ¥ç¶šæ™‚ã‚‚ã—ãã¯åŸ·äº‹ã«ã‚ˆã‚‹å¬å–šã§å‘¼ã³å‡ºã•ã‚Œã‚‹ï¼‰
+// ƒK[ƒfƒBƒAƒ“¢Š«ƒtƒ@ƒ“ƒNƒVƒ‡ƒ“
+// iInterƒT[ƒoÚ‘±‚à‚µ‚­‚Í·–‚É‚æ‚é¢Š«‚ÅŒÄ‚Ño‚³‚ê‚éj
 //	callfunc "GuardianCall","AgitCode",Num,Mes;
 //
-// â–  å¼•æ•°ã®è©³ç´°
-//	"AgitCode" -> ã‚¢ã‚¸ãƒˆã‚’ç¤ºã™ã‚³ãƒ¼ãƒ‰ï¼ˆä¾‹ï¼šL1,B2,C3,V4ï¼‰
-//	    Num    -> å¬å–šã™ã‚‹ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ã®ç•ªå·ã€10ã€œ17
-//	    Mes    -> 0:ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãªã—ã€1:ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚ã‚Šï¼ˆåŸ·äº‹ã®ã¨ãï¼‰
+// ¡ ˆø”‚ÌÚ×
+//	"AgitCode" -> ƒAƒWƒg‚ğ¦‚·ƒR[ƒhi—áFL1,B2,C3,V4j
+//	    Num    -> ¢Š«‚·‚éƒK[ƒfƒBƒAƒ“‚Ì”Ô†A10`17
+//	    Mes    -> 0:ƒƒbƒZ[ƒW‚È‚µA1:ƒƒbƒZ[ƒW‚ ‚èi·–‚Ì‚Æ‚«j
 //-------------------------------------------------------------------------
 
 function	script	GuardianCall	{
@@ -408,11 +408,11 @@ function	script	GuardianCall	{
 			case 17: monster "prtg_cas05.gat",44,248,"--ja--",1285,1,"#GuardianKilled::On_V5_17"; 	break;
 		}
 	}
-	if(getarg(2)) {		//å‘¼ã³å‡ºã—å…ƒãŒåŸ·äº‹ã®ã¨ã
-		mes "[åŸ·äº‹"+strnpcinfo(0)+"]";
-		mes "ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ãŒè¨­ç½®ã•ã‚Œã¾ã—ãŸã€‚";
-		mes "ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ã¯ç§é”ã®åŸã‚’";
-		mes "æ•µã‹ã‚‰å®ˆã£ã¦ãã‚Œã‚‹ã§ã—ã‚‡ã†ã€‚";
+	if(getarg(2)) {		//ŒÄ‚Ño‚µŒ³‚ª·–‚Ì‚Æ‚«
+		mes "[·–"+strnpcinfo(0)+"]";
+		mes "ƒK[ƒfƒBƒAƒ“‚ªİ’u‚³‚ê‚Ü‚µ‚½B";
+		mes "ƒK[ƒfƒBƒAƒ“‚Í„’B‚Ìé‚ğ";
+		mes "“G‚©‚çç‚Á‚Ä‚­‚ê‚é‚Å‚µ‚å‚¤B";
 		close;
 	}
 	return;
@@ -420,11 +420,11 @@ function	script	GuardianCall	{
 
 
 //=========================================================================
-// å„ç ¦ã®ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ç ´å£Šå¾Œã«åŸãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ›´
+// ŠeÔ‚ÌƒK[ƒfƒBƒAƒ“”j‰óŒã‚Ééƒf[ƒ^‚ğ•ÏX
 //-------------------------------------------------------------------------
 
 -	script	#GuardianKilled	-1,{
-	//ãƒ«ã‚¤ãƒ¼ãƒŠ
+	//ƒ‹ƒC[ƒi
 	On_L1_10: setcastledata "aldeg_cas01.gat",10,0; end;
 	On_L1_11: setcastledata "aldeg_cas01.gat",11,0; end;
 	On_L1_12: setcastledata "aldeg_cas01.gat",12,0; end;
@@ -465,7 +465,7 @@ function	script	GuardianCall	{
 	On_L5_15: setcastledata "aldeg_cas05.gat",15,0; end;
 	On_L5_16: setcastledata "aldeg_cas05.gat",16,0; end;
 	On_L5_17: setcastledata "aldeg_cas05.gat",17,0; end;
-	//ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+	//ƒuƒŠƒgƒjƒA
 	On_B1_10: setcastledata "gefg_cas01.gat",10,0; end;
 	On_B1_11: setcastledata "gefg_cas01.gat",11,0; end;
 	On_B1_12: setcastledata "gefg_cas01.gat",12,0; end;
@@ -506,7 +506,7 @@ function	script	GuardianCall	{
 	On_B5_15: setcastledata "gefg_cas05.gat",15,0; end;
 	On_B5_16: setcastledata "gefg_cas05.gat",16,0; end;
 	On_B5_17: setcastledata "gefg_cas05.gat",17,0; end;
-	//ãƒãƒ¥ãƒ³ãƒªãƒ 
+	//ƒ`ƒ…ƒ“ƒŠƒ€
 	On_C1_10: setcastledata "payg_cas01.gat",10,0; end;
 	On_C1_11: setcastledata "payg_cas01.gat",11,0; end;
 	On_C1_12: setcastledata "payg_cas01.gat",12,0; end;
@@ -547,7 +547,7 @@ function	script	GuardianCall	{
 	On_C5_15: setcastledata "payg_cas05.gat",15,0; end;
 	On_C5_16: setcastledata "payg_cas05.gat",16,0; end;
 	On_C5_17: setcastledata "payg_cas05.gat",17,0; end;
-	//ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+	//ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 	On_V1_10: setcastledata "prtg_cas01.gat",10,0; end;
 	On_V1_11: setcastledata "prtg_cas01.gat",11,0; end;
 	On_V1_12: setcastledata "prtg_cas01.gat",12,0; end;

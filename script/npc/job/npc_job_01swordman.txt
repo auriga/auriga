@@ -1,60 +1,60 @@
 //====================================================================
 //Ragnarok Online Swordman jobchange script
 //
-//　■ CHANGE_SM -> 0〜1, 0〜4(Old)
-//     OLD_CLASS -> 転生前の職業
+//�@�� CHANGE_SM -> 0�`1, 0�`4(Old)
+//     OLD_CLASS -> �]���O�̐E��
 //====================================================================
 
 //==========================================
-// 試験申請および転職
+// �����\������ѓ]�E
 //------------------------------------------
 
-izlude_in.gat,74,172,4	script	剣士ギルド員#SM	119,{
+izlude_in.gat,74,172,4	script	���m�M���h��#SM	119,{
 	if(Upper == UPPER_HIGH && (OLD_CLASS == Job_Knight || OLD_CLASS == Job_Crusader)) {
 		if(Job == Job_Novice) {
-			mes "[剣士ギルド員]";
-			mes "ハハハ！";
-			mes "生まれ変わってもまたソードマンに";
-			mes "なりたいとは、嬉しいことを";
-			mes "言うじゃねーか！";
+			mes "[���m�M���h��]";
+			mes "�n�n�n�I";
+			mes "���܂�ς���Ă��܂��\�[�h�}����";
+			mes "�Ȃ肽���Ƃ́A���������Ƃ�";
+			mes "��������ˁ[���I";
 			next;
 			if(getskilllv(1) < 9) {
-				mes "[剣士ギルド員]";
-				mes "わしは今忙しいから、";
-				mes "もう少し剣を振ってから来い。";
-				mes "まずは、JobLvを10にまで成長させて、";
-				mes "^0000FF「基本スキル」のレベルを9　^000000に";
-				mes "してくるってことだ。";
+				mes "[���m�M���h��]";
+				mes "�킵�͍��Z��������A";
+				mes "������������U���Ă��痈���B";
+				mes "�܂��́AJobLv��10�ɂ܂Ő��������āA";
+				mes "^0000FF�u��{�X�L���v�̃��x����9�@^000000��";
+				mes "���Ă�����Ă��Ƃ��B";
 				next;
-				mes "[剣士ギルド員]";
-				mes "ちょっと教えておくとだな、";
-				mes "^0000FF「基本スキル」^000000のレベルは";
-				mes "^0000FF「スキルリスト」^000000ウィンドウで";
-				mes "上げることができる。";
+				mes "[���m�M���h��]";
+				mes "������Ƌ����Ă����Ƃ��ȁA";
+				mes "^0000FF�u��{�X�L���v^000000�̃��x����";
+				mes "^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+				mes "�グ�邱�Ƃ��ł���B";
 				next;
-				mes "[剣士ギルド員]";
-				mes "そして、^0000FF「スキルリスト」^000000ウィンドウは";
-				mes "^0000FF「基本情報」^000000ウィンドウ内の";
-				mes "^0000FF「Skill」^000000ボタンで表示されるからな。";
+				mes "[���m�M���h��]";
+				mes "�����āA^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+				mes "^0000FF�u��{���v^000000�E�B���h�E����";
+				mes "^0000FF�uSkill�v^000000�{�^���ŕ\������邩��ȁB";
 				next;
-				mes "[剣士ギルド員]";
-				mes "最後に忘れちゃならないのは";
-				mes "スキルのレベルを上げるには、";
-				mes "スキルポイントを割り振った後、";
-				mes "^FF0000「確定」^000000ボタンが";
-				mes "必要ってことだよ。";
-				mes "注意しろよ。";
+				mes "[���m�M���h��]";
+				mes "�Ō�ɖY�ꂿ��Ȃ�Ȃ��̂�";
+				mes "�X�L���̃��x�����グ��ɂ́A";
+				mes "�X�L���|�C���g������U������A";
+				mes "^FF0000�u�m��v^000000�{�^����";
+				mes "�K�v���Ă��Ƃ���B";
+				mes "���ӂ����B";
 				next;
-				mes "[剣士ギルド員]";
-				mes "今までどうしてきたか知らんが";
-				mes "このままではソードマンとして";
-				mes "認められん。";
+				mes "[���m�M���h��]";
+				mes "���܂łǂ����Ă������m���";
+				mes "���̂܂܂ł̓\�[�h�}���Ƃ���";
+				mes "�F�߂���B";
 				close;
 			}
-			mes "[剣士ギルド員]";
-			mes "よし、問題ないな。";
-			mes "手続きも特にいらん。";
-			mes "すぐに転職させてやろう。";
+			mes "[���m�M���h��]";
+			mes "�悵�A���Ȃ��ȁB";
+			mes "�葱�������ɂ����B";
+			mes "�����ɓ]�E�����Ă�낤�B";
 			next;
 			unequip;
 			jobchange Job_Swordman,UPPER_HIGH;
@@ -64,356 +64,356 @@ izlude_in.gat,74,172,4	script	剣士ギルド員#SM	119,{
 			skill 144,1,0;
 			skill 145,1,0;
 			skill 146,1,0;
-			mes "[剣士ギルド員]";
-			mes "よし、引き締まったな。";
-			mes "これからも修錬をサボるなよ！";
+			mes "[���m�M���h��]";
+			mes "�悵�A�������܂����ȁB";
+			mes "���ꂩ����C�B���T�{��Ȃ�I";
 			close;
 		}
 	}
 	if(Upper == UPPER_HIGH) {
-		mes "[剣士ギルド員]";
-		mes "うん？";
-		mes "なんだ？";
-		mes "わしは剣士ギルドの者だ。";
+		mes "[���m�M���h��]";
+		mes "����H";
+		mes "�Ȃ񂾁H";
+		mes "�킵�͌��m�M���h�̎҂��B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "何だって言うんだ……";
-		mes "わしは今眠いんだ。";
-		mes "用が無いなら帰ってくれ。";
+		mes "[���m�M���h��]";
+		mes "�������Č����񂾁c�c";
+		mes "�킵�͍������񂾁B";
+		mes "�p�������Ȃ�A���Ă���B";
 		close;
 	}
-	mes "[剣士ギルド員]";
-	mes "わしは、ここ剣士ギルドの";
-	mes "転職係！何の用だ？";
+	mes "[���m�M���h��]";
+	mes "�킵�́A�������m�M���h��";
+	mes "�]�E�W�I���̗p���H";
 	next;
-	switch (select("ソードマンに転職する","ソードマンについて聞く","ソードマン転職要件を聞く","なんでもありません")) {
+	switch (select("�\�[�h�}���ɓ]�E����","�\�[�h�}���ɂ��ĕ���","�\�[�h�}���]�E�v���𕷂�","�Ȃ�ł�����܂���")) {
 	case 1:
 		if(Job == Job_Swordman) {
-			mes "[剣士ギルド員]";
-			mes "うはははは！";
-			mes "面白いジョーダンじゃねーか！";
-			mes "君はもうソードマンだろう？";
+			mes "[���m�M���h��]";
+			mes "���͂͂͂́I";
+			mes "�ʔ����W���[�_������ˁ[���I";
+			mes "�N�͂����\�[�h�}�����낤�H";
 //			next;
-//			mes "[組合員マンス]";
-//			mes "面白い奴だな！";
-//			mes "ソードマンになったのなら、";
-//			mes "冒険者アカデミーに";
-//			mes "行ってみるといいぞ。";
+//			mes "[�g�����}���X]";
+//			mes "�ʔ����z���ȁI";
+//			mes "�\�[�h�}���ɂȂ����̂Ȃ�A";
+//			mes "�`���҃A�J�f�~�[��";
+//			mes "�s���Ă݂�Ƃ������B";
 //			next;
-//			mes "[組合員マンス]";
-//			mes "この建物を出たら";
-//			mes "冒険者アカデミーのサポートを";
-//			mes "行っている奴がいるから、";
-//			mes "送ってもらうといいぞ！";
+//			mes "[�g�����}���X]";
+//			mes "���̌������o����";
+//			mes "�`���҃A�J�f�~�[�̃T�|�[�g��";
+//			mes "�s���Ă���z�����邩��A";
+//			mes "�����Ă��炤�Ƃ������I";
 			close;
 		}
 		if(Job != Job_Novice) {
-			mes "[剣士ギルド員]";
-			mes "はは！　まったく、変なこと言うな！";
-			mes "君はもう他の職業に";
-			mes "なっているではないか！";
+			mes "[���m�M���h��]";
+			mes "�͂́I�@�܂������A�ςȂ��ƌ����ȁI";
+			mes "�N�͂������̐E�Ƃ�";
+			mes "�Ȃ��Ă���ł͂Ȃ����I";
 			close;
 		}
 		break;
 	case 2:
-		mes "[剣士ギルド員]";
-		mes "ソードマンについて知りたい？";
-		mes "よし、説明しよう！";
+		mes "[���m�M���h��]";
+		mes "�\�[�h�}���ɂ��Ēm�肽���H";
+		mes "�悵�A�������悤�I";
 		next;
-		mes "[剣士ギルド員]";
-		mes "ソードマンの一番大きな特徴は、";
-		mes "近接戦で最強の威力を";
-		mes "発揮できるってことだ！";
-		mes "ソードマンが接近戦に";
-		mes "最強な理由は３つ！";
+		mes "[���m�M���h��]";
+		mes "�\�[�h�}���̈�ԑ傫�ȓ����́A";
+		mes "�ߐڐ�ōŋ��̈З͂�";
+		mes "�����ł�����Ă��Ƃ��I";
+		mes "�\�[�h�}�����ڋߐ��";
+		mes "�ŋ��ȗ��R�͂R�I";
 		next;
-		mes "[剣士ギルド員]";
-		mes "1つ目、他職業に比べて";
-		mes "HPがより高い！";
-		mes "2つ目、弓と杖を除いた、全ての";
-		mes "武器を使える！だから状況によって";
-		mes "必要な武器を選べる！";
+		mes "[���m�M���h��]";
+		mes "1�ځA���E�Ƃɔ�ׂ�";
+		mes "HP����荂���I";
+		mes "2�ځA�|�Ə���������A�S�Ă�";
+		mes "������g����I������󋵂ɂ����";
+		mes "�K�v�ȕ����I�ׂ�I";
 		next;
-		mes "[剣士ギルド員]";
-		mes "3つ目、ソードマンのスキルは、大抵";
-		mes "強力な物理打撃を与えるものが多い。";
-		mes "簡単な説明だが、これで十分だ。";
-		mes "何故かというと、ソードマンは世界で";
-		mes "一番格好いい職業で、そもそも";
-		mes "説明などは、必要がないからだ！";
+		mes "[���m�M���h��]";
+		mes "3�ځA�\�[�h�}���̃X�L���́A���";
+		mes "���͂ȕ����Ō���^������̂������B";
+		mes "�ȒP�Ȑ��������A����ŏ\�����B";
+		mes "���̂��Ƃ����ƁA�\�[�h�}���͐��E��";
+		mes "��Ԋi�D�����E�ƂŁA��������";
+		mes "�����Ȃǂ́A�K�v���Ȃ����炾�I";
 		close;
 	case 3:
-		mes "[剣士ギルド員]";
-		mes "ソードマンになりたいのか!?";
+		mes "[���m�M���h��]";
+		mes "�\�[�h�}���ɂȂ肽���̂�!?";
 		if(Job != Job_Novice) {
 			if(Job == Job_Swordman) {
-				mes "……っていうか、";
-				mes "君はもうソードマンだろう……？";
+				mes "�c�c���Ă������A";
+				mes "�N�͂����\�[�h�}�����낤�c�c�H";
 			}
 			else {
-				mes "しかし、君はもう他の職業に";
-				mes "なっているだろう？";
+				mes "�������A�N�͂������̐E�Ƃ�";
+				mes "�Ȃ��Ă��邾�낤�H";
 			}
-			mes "それでも聞きたい……？";
-			mes "まあ、なら教えよう。";
+			mes "����ł����������c�c�H";
+			mes "�܂��A�Ȃ狳���悤�B";
 		}
-		mes "[剣士ギルド員]";
-		mes "ソードマンになるためには、";
-		mes "まず、^0000FF「基本スキル」のレベルを9^000000 に";
-		mes "上げてからじゃないと駄目だ。";
+		mes "[���m�M���h��]";
+		mes "�\�[�h�}���ɂȂ邽�߂ɂ́A";
+		mes "�܂��A^0000FF�u��{�X�L���v�̃��x����9^000000 ��";
+		mes "�グ�Ă��炶��Ȃ��Ƒʖڂ��B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "まずは、JobLvを10にまで成長させて、";
-		mes "^0000FF「基本スキル」のレベルを9^000000 に";
-		mes "してくるってことだ。";
-		mes "^0000FF「基本スキル」^000000のレベルは";
-		mes "^0000FF「スキルリスト」^000000ウィンドウで";
-		mes "上げることができる。";
+		mes "[���m�M���h��]";
+		mes "�܂��́AJobLv��10�ɂ܂Ő��������āA";
+		mes "^0000FF�u��{�X�L���v�̃��x����9^000000 ��";
+		mes "���Ă�����Ă��Ƃ��B";
+		mes "^0000FF�u��{�X�L���v^000000�̃��x����";
+		mes "^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+		mes "�グ�邱�Ƃ��ł���B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "^0000FF「スキルリスト」^000000ウィンドウは";
-		mes "^0000FF「基本情報」^000000ウィンドウ内の";
-		mes "^0000FF「Skill」^000000ボタンで表示されるぞ。";
+		mes "[���m�M���h��]";
+		mes "^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+		mes "^0000FF�u��{���v^000000�E�B���h�E����";
+		mes "^0000FF�uSkill�v^000000�{�^���ŕ\������邼�B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "最後に忘れちゃならないのは";
-		mes "スキルのレベルを上げるには、";
-		mes "スキルポイントを割り振った後、";
-		mes "^FF0000「確定」^000000ボタンが";
-		mes "必要ってことだよ。";
-		mes "注意しろよ。";
+		mes "[���m�M���h��]";
+		mes "�Ō�ɖY�ꂿ��Ȃ�Ȃ��̂�";
+		mes "�X�L���̃��x�����グ��ɂ́A";
+		mes "�X�L���|�C���g������U������A";
+		mes "^FF0000�u�m��v^000000�{�^����";
+		mes "�K�v���Ă��Ƃ���B";
+		mes "���ӂ����B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "まあ、いま言ったことを済ませば、";
-		mes "ソードマンになる要件が全部揃うから、";
-		mes "好きな時にいつでも";
-		mes "転職できるのだ。";
+		mes "[���m�M���h��]";
+		mes "�܂��A���܌��������Ƃ��ς܂��΁A";
+		mes "�\�[�h�}���ɂȂ�v�����S����������A";
+		mes "�D���Ȏ��ɂ��ł�";
+		mes "�]�E�ł���̂��B";
 		close2;
 		cutin "start_020_jp.bmp",4;
 		end;
 	case 4:
-		mes "[剣士ギルド員]";
-		mes "ははは！君を見ていると、";
-		mes "わしの若い頃を思い出すよ！";
+		mes "[���m�M���h��]";
+		mes "�͂͂́I�N�����Ă���ƁA";
+		mes "�킵�̎Ⴂ�����v���o����I";
 		close;
 	}
-	//case1の続き
+	//case1�̑���
 	if(CHANGE_SM==0) {
-		mes "[剣士ギルド員]";
-		mes "ソードマンに転職したいか？";
-		mes "よし、なら先に";
-		mes "申し込みをするのだ。";
+		mes "[���m�M���h��]";
+		mes "�\�[�h�}���ɓ]�E���������H";
+		mes "�悵�A�Ȃ���";
+		mes "�\�����݂�����̂��B";
 		next;
-		if(select("転職申し込みをする","やめる")==2) {
-			mes "[剣士ギルド員]";
-			mes "そうか……気が変わったら";
-			mes "また来な。";
+		if(select("�]�E�\�����݂�����","��߂�")==2) {
+			mes "[���m�M���h��]";
+			mes "�������c�c�C���ς������";
+			mes "�܂����ȁB";
 			close;
 		}
-		mes "[剣士ギルド員]";
-		mes "そこにサインして……よし！";
-		mes "この申込書はすぐ処理させよう。";
-		mes "あ、転職要件を満たしたら";
-		mes "すぐ転職できるぞ。";
-		mes "転職要件を満たしているか調べるか？";
+		mes "[���m�M���h��]";
+		mes "�����ɃT�C�����āc�c�悵�I";
+		mes "���̐\�����͂������������悤�B";
+		mes "���A�]�E�v���𖞂�������";
+		mes "�����]�E�ł��邼�B";
+		mes "�]�E�v���𖞂����Ă��邩���ׂ邩�H";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[剣士ギルド員]";
-			mes "転職要件について知らない部分が";
-			mes "あったら、わしに聞いてみろ。";
-			mes "あとは、こっちが提示した条件を";
-			mes "満たすだけだ。では、幸運を祈る！";
+		if(select("�͂�","������")==2) {
+			mes "[���m�M���h��]";
+			mes "�]�E�v���ɂ��Ēm��Ȃ�������";
+			mes "��������A�킵�ɕ����Ă݂�B";
+			mes "���Ƃ́A���������񎦂���������";
+			mes "�������������B�ł́A�K�^���F��I";
 			close;
 		}
 		set CHANGE_SM,1;
-		mes "[剣士ギルド員]";
-		mes "ほう？　さてと、確認してみようか？";
+		mes "[���m�M���h��]";
+		mes "�ق��H�@���ĂƁA�m�F���Ă݂悤���H";
 		next;
 	}
-	mes "[剣士ギルド員]";
-	mes "それじゃ、早速ソードマンに";
-	mes "転職できるか確認を行うぞ！";
+	mes "[���m�M���h��]";
+	mes "���ꂶ��A�����\�[�h�}����";
+	mes "�]�E�ł��邩�m�F���s�����I";
 	next;
-	mes "[剣士ギルド員]";
-	mes "……ほう。";
+	mes "[���m�M���h��]";
+	mes "�c�c�ق��B";
 	next;
-	mes "[剣士ギルド員]";
-	mes "……ふむふむ。";
+	mes "[���m�M���h��]";
+	mes "�c�c�ӂނӂށB";
 	next;
 	if(getskilllv(1) < 9 || SkillPoint) {
-		mes "[剣士ギルド員]";
-		mes "おい、君。「基本スキル」のレベルが、";
-		mes "規定水準になっていないぞ。";
-		mes "まずは、JobLvを10にまで成長させて、";
-		mes "^0000FF「基本スキル」のレベルを9^000000 に";
-		mes "してきなさい。";
+		mes "[���m�M���h��]";
+		mes "�����A�N�B�u��{�X�L���v�̃��x�����A";
+		mes "�K�萅���ɂȂ��Ă��Ȃ����B";
+		mes "�܂��́AJobLv��10�ɂ܂Ő��������āA";
+		mes "^0000FF�u��{�X�L���v�̃��x����9^000000 ��";
+		mes "���Ă��Ȃ����B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "^0000FF「基本スキル」^000000のレベルは";
-		mes "^0000FF「スキルリスト」^000000ウィンドウで";
-		mes "上げることができる。";
-		mes "^0000FF「スキルリスト」^000000ウィンドウは";
-		mes "^0000FF「基本情報」^000000ウィンドウ内の";
-		mes "^0000FF「Skill」^000000ボタンで表示されるぞ。";
+		mes "[���m�M���h��]";
+		mes "^0000FF�u��{�X�L���v^000000�̃��x����";
+		mes "^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+		mes "�グ�邱�Ƃ��ł���B";
+		mes "^0000FF�u�X�L�����X�g�v^000000�E�B���h�E��";
+		mes "^0000FF�u��{���v^000000�E�B���h�E����";
+		mes "^0000FF�uSkill�v^000000�{�^���ŕ\������邼�B";
 		next;
-		mes "[剣士ギルド員]";
-		mes "最後に忘れちゃならないのは";
-		mes "スキルのレベルを上げるには、";
-		mes "スキルポイントを割り振った後、";
-		mes "^FF0000「確定」^000000ボタンが";
-		mes "必要ってことだから。";
-		mes "注意してくれよ。";
+		mes "[���m�M���h��]";
+		mes "�Ō�ɖY�ꂿ��Ȃ�Ȃ��̂�";
+		mes "�X�L���̃��x�����グ��ɂ́A";
+		mes "�X�L���|�C���g������U������A";
+		mes "^FF0000�u�m��v^000000�{�^����";
+		mes "�K�v���Ă��Ƃ�����B";
+		mes "���ӂ��Ă����B";
 		close2;
 		cutin "start_020_jp.bmp",4;
 		end;
 	}
-	mes "[剣士ギルド員]";
-	mes "^0000FF「基本スキル」^000000のレベルは十分だし、";
-	mes "根性もありそうだな。";
-	mes "実戦試験がまだまだのようだが、";
-	mes "これから経験を積めば問題ないだろう！";
+	mes "[���m�M���h��]";
+	mes "^0000FF�u��{�X�L���v^000000�̃��x���͏\�������A";
+	mes "���������肻�����ȁB";
+	mes "���펎�����܂��܂��̂悤�����A";
+	mes "���ꂩ��o����ς߂Ζ��Ȃ����낤�I";
 	next;
-	mes "[剣士ギルド員]";
-	mes "おめでとう！";
-	mes "君は、これからそーーどまんという";
-	mes "素晴らしい職業になるわけだ！";
-	mes "君をソードマンに任命する！";
+	mes "[���m�M���h��]";
+	mes "���߂łƂ��I";
+	mes "�N�́A���ꂩ�炻�[�[�ǂ܂�Ƃ���";
+	mes "�f���炵���E�ƂɂȂ�킯���I";
+	mes "�N���\�[�h�}���ɔC������I";
 	next;
 	getitem 11025,1;
 	unequip;
 	jobchange Job_Swordman;
 	set CHANGE_SM,0;
 	setquest 50165;
-	mes "[剣士ギルド員]";
-	mes "そして、これを受け取るがいい！";
-	mes "このソードマンの書を読めば、";
-	mes "君はソードマンとして";
-	mes "正しく歩んでいけるだろう！";
+	mes "[���m�M���h��]";
+	mes "�����āA������󂯎�邪�����I";
+	mes "���̃\�[�h�}���̏���ǂ߂΁A";
+	mes "�N�̓\�[�h�}���Ƃ���";
+	mes "����������ł����邾�낤�I";
 	next;
-	mes "[剣士ギルド員]";
-	mes "ソードマンになったことをもう一度";
-	mes "お祝いする。これから";
-	mes "剣士ギルドのため、";
-	mes "たくさん力を貸してくれ！";
+	mes "[���m�M���h��]";
+	mes "�\�[�h�}���ɂȂ������Ƃ�������x";
+	mes "���j������B���ꂩ��";
+	mes "���m�M���h�̂��߁A";
+	mes "��������͂�݂��Ă���I";
 	close;
 OnInit:
-	waitingroom "転職",0;
+	waitingroom "�]�E",0;
 	end;
 }
 
 
 //==========================================
-// 実地試験
+// ���n����
 //------------------------------------------
-//転職試験撤去
-//izlude_in.gat,62,170,6	script	剣士ギルド員	85,{
+//�]�E�����P��
+//izlude_in.gat,62,170,6	script	���m�M���h��	85,{
 //	if(Job == Job_Swordman) {
-//		mes "[剣士ギルド員]";
-//		mes "止まれ！ここは初心者実地試験場だ！";
-//		mes "既に転職したお前が入る理由はない！";
-//		mes "帰れ！";
+//		mes "[���m�M���h��]";
+//		mes "�~�܂�I�����͏��S�Ҏ��n�����ꂾ�I";
+//		mes "���ɓ]�E�������O�����闝�R�͂Ȃ��I";
+//		mes "�A��I";
 //		close;
 //	}
 //	if(Job != Job_Novice) {
-//		mes "[剣士ギルド員]";
-//		mes "何者だ！もう他の職業になっている";
-//		mes "お前が、ここに来るんじゃない！";
+//		mes "[���m�M���h��]";
+//		mes "���҂��I�������̐E�ƂɂȂ��Ă���";
+//		mes "���O���A�����ɗ���񂶂�Ȃ��I";
 //		close;
 //	}
 //	if(getskilllv(1) < 9) {
-//		mes "[剣士ギルド員]";
-//		mes "止まれ！初心者スキルポイントが";
-//		mes "９にもならない素人が来る所じゃない！";
-//		mes "スキルポイントが９以上になったら、";
-//		mes "転職試験場に入らせるからな。";
+//		mes "[���m�M���h��]";
+//		mes "�~�܂�I���S�҃X�L���|�C���g��";
+//		mes "�X�ɂ��Ȃ�Ȃ��f�l�����鏊����Ȃ��I";
+//		mes "�X�L���|�C���g���X�ȏ�ɂȂ�����A";
+//		mes "�]�E������ɓ��点�邩��ȁB";
 //		close;
 //	}
 //	switch(CHANGE_SM) {
 //	case 0:
-//		mes "[剣士ギルド員]";
-//		mes "止まれ！剣士転職試験を";
-//		mes "受けたいなら、転職申込書を";
-//		mes "書いてからだ！";
+//		mes "[���m�M���h��]";
+//		mes "�~�܂�I���m�]�E������";
+//		mes "�󂯂����Ȃ�A�]�E�\������";
+//		mes "�����Ă��炾�I";
 //		close;
 //	default:
 //		warp "izlude_in.gat",39,170;
 //		end;
 //	case 4:
-//		mes "[剣士ギルド員]";
-//		mes "止まれ！まず中央のギルド員に";
-//		mes "問い合わせてからだ！";
+//		mes "[���m�M���h��]";
+//		mes "�~�܂�I�܂������̃M���h����";
+//		mes "�₢���킹�Ă��炾�I";
 //		close;
 //	}
 //}
 
 //==============================================================
-izlude_in.gat,30,175,4	script	剣士ギルド員	92,{
-	mes "[剣士ギルド員]";
-	mes "実地試験に関して、簡単に説明しよう！";
-	mes "よーく聞いて、あとで変な質問とか";
-	mes "しないように！";
+izlude_in.gat,30,175,4	script	���m�M���h��	92,{
+	mes "[���m�M���h��]";
+	mes "���n�����Ɋւ��āA�ȒP�ɐ������悤�I";
+	mes "��[�������āA���ƂŕςȎ���Ƃ�";
+	mes "���Ȃ��悤�ɁI";
 	next;
-	mes "[剣士ギルド員]";
-	mes "この試験の目的は、丈夫な体力と強靭な";
-	mes "精神力が必要である剣士の才能が";
-	mes "あるかどうかをテストするのだ！";
-	mes "もちろん才能がなければ、";
-	mes "試験で落ちてしまうだろう。";
+	mes "[���m�M���h��]";
+	mes "���̎����̖ړI�́A��v�ȑ̗͂Ƌ��x��";
+	mes "���_�͂��K�v�ł��錕�m�̍˔\��";
+	mes "���邩�ǂ������e�X�g����̂��I";
+	mes "�������˔\���Ȃ���΁A";
+	mes "�����ŗ����Ă��܂����낤�B";
 	next;
-	mes "[剣士ギルド員]";
-	mes "試験の^33ff55合格条件^000000は、すごーく簡単だ！";
-	mes "試験場の全てのコースを";
-	mes "無事に通過して、最後の";
-	mes "チェックポイントで待っている試験官に";
-	mes "合格認定をもらうだけでいいんだ。";
+	mes "[���m�M���h��]";
+	mes "������^33ff55���i����^000000�́A�����[���ȒP���I";
+	mes "������̑S�ẴR�[�X��";
+	mes "�����ɒʉ߂��āA�Ō��";
+	mes "�`�F�b�N�|�C���g�ő҂��Ă��鎎������";
+	mes "���i�F������炤�����ł����񂾁B";
 	next;
-	mes "[剣士ギルド員]";
-	mes "反対に、放棄宣言をしたり、最後の";
-	mes "チェックポイントに到着できなかった";
-	mes "場合は不合格になる、もし、放棄宣言を";
-	mes "したいなら、各コース入り口に";
-	mes "戻ったり、各チェックポイントの";
-	mes "関係者に話したらいい。";
+	mes "[���m�M���h��]";
+	mes "���΂ɁA�����錾��������A�Ō��";
+	mes "�`�F�b�N�|�C���g�ɓ����ł��Ȃ�����";
+	mes "�ꍇ�͕s���i�ɂȂ�A�����A�����錾��";
+	mes "�������Ȃ�A�e�R�[�X�������";
+	mes "�߂�����A�e�`�F�b�N�|�C���g��";
+	mes "�֌W�҂ɘb�����炢���B";
 	next;
-	mes "[剣士ギルド員]";
-	mes "試験場は３つのコースになっていて、";
-	mes "コースを離脱したら、地下洞窟の";
-	mes "ランダムな位置に落ちてしまうから、";
-	mes "注意した方がいい。";
-	mes "それじゃ、幸運を祈る。";
+	mes "[���m�M���h��]";
+	mes "������͂R�̃R�[�X�ɂȂ��Ă��āA";
+	mes "�R�[�X�𗣒E������A�n�����A��";
+	mes "�����_���Ȉʒu�ɗ����Ă��܂�����A";
+	mes "���ӂ������������B";
+	mes "���ꂶ��A�K�^���F��B";
 	close;
 }
 
 //==============================================================
-izlude_in.gat,30,163,0	script	試験場職員	105,{
+izlude_in.gat,30,163,0	script	������E��	105,{
 	switch(CHANGE_SM) {
 	default:
-		mes "[試験場職員]";
-		mes "む、どうやって入ってきたんだ？";
+		mes "[������E��]";
+		mes "�ށA�ǂ�����ē����Ă����񂾁H";
 		close2;
 		warp "izlude_in.gat",63,169;
 		end;
 	case 1:
-		mes "[試験場職員]";
-		mes "剣士になりたいのか？ふん、";
-		mes "まあ、才能はあるみたいだな。";
-		mes "これからの人生に比べたら、ここの";
-		mes "苦難は、何ともないだろう！";
-		mes "緊張するな！お前ならできる！";
+		mes "[������E��]";
+		mes "���m�ɂȂ肽���̂��H�ӂ�A";
+		mes "�܂��A�˔\�͂���݂������ȁB";
+		mes "���ꂩ��̐l���ɔ�ׂ���A������";
+		mes "���́A���Ƃ��Ȃ����낤�I";
+		mes "�ْ�����ȁI���O�Ȃ�ł���I";
 		close2;
 		set CHANGE_SM,2;
 		break;
 	case 2:
-		mes "[試験場職員]";
-		mes "失敗したのか…";
-		mes "これをもっていけ";
+		mes "[������E��]";
+		mes "���s�����̂��c";
+		mes "����������Ă���";
 		close2;
 		getitem 512,5;
 		set CHANGE_SM,3;
 		break;
 	case 3:
-		mes "[試験場職員]";
-		mes "諦めるな！再挑戦だ”";
+		mes "[������E��]";
+		mes "���߂�ȁI�Ē��킾�h";
 		close2;
 		break;
 	}
@@ -422,14 +422,14 @@ izlude_in.gat,30,163,0	script	試験場職員	105,{
 }
 
 //==============================================================
-sword_1-1.gat,7,245,0	script	試験場サポーター#1	45,1,3,{
+sword_1-1.gat,7,245,0	script	������T�|�[�^�[#1	45,1,3,{
 	end;
 OnTouch:
-	mes "[試験場サポーター]";
-	mes "受験生 " +strcharinfo(0)+ "、放棄宣言をしますか？";
+	mes "[������T�|�[�^�[]";
+	mes "�󌱐� " +strcharinfo(0)+ "�A�����錾�����܂����H";
 	next;
-	if(select("はい","いいえ")==1) {
-		announce "試験場サポーター: 受験生 " +strcharinfo(0)+ " が試験を放棄しました。",9;
+	if(select("�͂�","������")==1) {
+		announce "������T�|�[�^�[: �󌱐� " +strcharinfo(0)+ " ��������������܂����B",9;
 		warp "izlude_in.gat",65,165;
 		end;
 	}
@@ -442,15 +442,15 @@ OnTouch:
 	end;
 }
 
-sword_1-1.gat,8,207,0	duplicate(試験場サポーター#1)	試験場サポーター#2	45,1,1
-sword_1-1.gat,8,169,0	duplicate(試験場サポーター#1)	試験場サポーター#3	45,1,1
+sword_1-1.gat,8,207,0	duplicate(������T�|�[�^�[#1)	������T�|�[�^�[#2	45,1,1
+sword_1-1.gat,8,169,0	duplicate(������T�|�[�^�[#1)	������T�|�[�^�[#3	45,1,1
 
 //==============================================================
-sword_1-1.gat,192,244,0	script	試験場サポーター#4	45,1,3,{
+sword_1-1.gat,192,244,0	script	������T�|�[�^�[#4	45,1,3,{
 	end;
 OnTouch:
 	set '@num,strnpcinfo(2);
-	announce "試験場サポーター: 受験生 " +strcharinfo(0)+ "、第" +(('@num==4)? "１": ('@num==5)? "２": "３")+ "ポイント通過。",9;
+	announce "������T�|�[�^�[: �󌱐� " +strcharinfo(0)+ "�A��" +(('@num==4)? "�P": ('@num==5)? "�Q": "�R")+ "�|�C���g�ʉ߁B",9;
 	switch('@num) {
 		case 4: warp "sword_1-1.gat",215,244; break;
 		case 5: warp "sword_1-1.gat",215,205; break;
@@ -459,48 +459,48 @@ OnTouch:
 	end;
 }
 
-sword_1-1.gat,193,207,0	duplicate(試験場サポーター#4)	試験場サポーター#5	45,1,1
-sword_1-1.gat,193,168,0	duplicate(試験場サポーター#4)	試験場サポーター#6	45,1,1
+sword_1-1.gat,193,207,0	duplicate(������T�|�[�^�[#4)	������T�|�[�^�[#5	45,1,1
+sword_1-1.gat,193,168,0	duplicate(������T�|�[�^�[#4)	������T�|�[�^�[#6	45,1,1
 
 //==============================================================
-sword_1-1.gat,230,242,2		script	試験場サポーター#7	105,{
-	mes "[試験場サポーター]";
-	mes "放棄宣言をするのか？";
+sword_1-1.gat,230,242,2		script	������T�|�[�^�[#7	105,{
+	mes "[������T�|�[�^�[]";
+	mes "�����錾������̂��H";
 	next;
-	if(select("はい","いいえ")==1) {
-		announce "試験場サポーター: 受験生 " +strcharinfo(0)+ " が試験を放棄しました。",9;
+	if(select("�͂�","������")==1) {
+		announce "������T�|�[�^�[: �󌱐� " +strcharinfo(0)+ " ��������������܂����B",9;
 		warp "izlude_in.gat",65,165;
 		end;
 	}
-	mes "[試験場サポーター]";
-	mes "よーし！";
-	mes "燃える若いパワーで立ち向かうのだ！";
+	mes "[������T�|�[�^�[]";
+	mes "��[���I";
+	mes "�R����Ⴂ�p���[�ŗ����������̂��I";
 	close;
 }
 
-sword_1-1.gat,230,204,2		duplicate(試験場サポーター#7)	試験場サポーター#8	105
+sword_1-1.gat,230,204,2		duplicate(������T�|�[�^�[#7)	������T�|�[�^�[#8	105
 
 //==============================================================
-sword_1-1.gat,230,245,2		script	医療担当サポーター#1	105,{
-	mes "[医療担当サポーター]";
-	mes "ここが第" +((strnpcinfo(2)==1)? "１": "２")+ "チェックポイントだ！";
-	mes "体力を回復してあげるから頑張れよ！";
+sword_1-1.gat,230,245,2		script	��ÒS���T�|�[�^�[#1	105,{
+	mes "[��ÒS���T�|�[�^�[]";
+	mes "��������" +((strnpcinfo(2)==1)? "�P": "�Q")+ "�`�F�b�N�|�C���g���I";
+	mes "�̗͂��񕜂��Ă����邩��撣���I";
 	heal 1000,0;
 	close;
 }
 
-sword_1-1.gat,230,207,2		duplicate(医療担当サポーター#1)	医療担当サポーター#2	105
+sword_1-1.gat,230,207,2		duplicate(��ÒS���T�|�[�^�[#1)	��ÒS���T�|�[�^�[#2	105
 
 //==============================================================
-sword_1-1.gat,223,167,4	script	マンシュタイン	92,{
-	announce "マンシュタイン: 受験生 " +strcharinfo(0)+ "、試験に合格しました。",9;
+sword_1-1.gat,223,167,4	script	�}���V���^�C��	92,{
+	announce "�}���V���^�C��: �󌱐� " +strcharinfo(0)+ "�A�����ɍ��i���܂����B",9;
 	set CHANGE_SM,4;
-	mes "[マンシュタイン]";
-	mes "試験の合格、おめでとうございます！";
-	mes "既に合格の旨は、";
-	mes "転職管理課に伝えました。";
-	mes "ここを出て、中央の転職管理職員の";
-	mes "ところに行って下さい。";
+	mes "[�}���V���^�C��]";
+	mes "�����̍��i�A���߂łƂ��������܂��I";
+	mes "���ɍ��i�̎|�́A";
+	mes "�]�E�Ǘ��ۂɓ`���܂����B";
+	mes "�������o�āA�����̓]�E�Ǘ��E����";
+	mes "�Ƃ���ɍs���ĉ������B";
 	close2;
 	warp "izlude_in.gat",66,173;
 	end;

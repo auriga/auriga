@@ -1,26 +1,26 @@
 
-// ãƒšãƒƒãƒˆã‚¹ã‚­ãƒ«ç”¨	ãƒ†ã‚¹ãƒˆã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+// ƒyƒbƒgƒXƒLƒ‹—p	ƒeƒXƒgƒXƒNƒŠƒvƒg
 
-prontera.gat,160,180,1	script	ãƒšãƒƒãƒˆã‚¹ã‚­ãƒ«	112,{
-	mes "æ”»æ’ƒã‚¹ã‚­ãƒ«ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚";
+prontera.gat,160,180,1	script	ƒyƒbƒgƒXƒLƒ‹	112,{
+	mes "UŒ‚ƒXƒLƒ‹‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B";
 	next;
-	switch( select("ãªã—", "ãƒãƒƒã‚·ãƒ¥", "ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ãƒœãƒ«ãƒˆ", "ã‚¹ãƒˆãƒ¼ãƒ ã‚¬ã‚¹ãƒˆ") ) {
+	switch( select("‚È‚µ", "ƒoƒbƒVƒ…", "ƒtƒ@ƒCƒA[ƒ{ƒ‹ƒg", "ƒXƒg[ƒ€ƒKƒXƒg") ) {
 	case 1: set @num, -1; break;
 	case 2: set @num,  5; break;
 	case 3: set @num, 19; break;
 	case 4: set @num, 89; break;
 	}
-	petskillattack @num, 10, 50, 0; // ç™ºå‹•ç‡50%
+	petskillattack @num, 10, 50, 0; // ”­“®—¦50%
 
-	mes "æ”¯æ´ã‚¹ã‚­ãƒ«ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚";
+	mes "x‰‡ƒXƒLƒ‹‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B";
 	next;
-	switch( select("ãªã—", "ãƒ’ãƒ¼ãƒ«", "ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°", "ã‚µãƒ³ã‚¯ãƒãƒ¥ã‚¢ãƒª") ) {
+	switch( select("‚È‚µ", "ƒq[ƒ‹", "ƒuƒŒƒbƒVƒ“ƒO", "ƒTƒ“ƒNƒ`ƒ…ƒAƒŠ") ) {
 	case 1: set @num, -1; break;
 	case 2: set @num, 28; break;
 	case 3: set @num, 34; break;
 	case 4: set @num, 70; break;
 	}
-	petskillsupport @num, 10, 30, 20, 100; // HP 20% ä»¥ä¸‹ã§ç™ºå‹•
+	petskillsupport @num, 10, 30, 20, 100; // HP 20% ˆÈ‰º‚Å”­“®
 	close;
 }
 

@@ -1,0 +1,4 @@
+# Auriga CP932 files
+script/** text=auto eol=crlf encoding=cp932
+db/** text=auto eol=crlf encoding=cp932
+conf/** text=auto eol=crlf encoding=cp932

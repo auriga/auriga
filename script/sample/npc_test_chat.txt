@@ -1,8 +1,8 @@
-prontera.gat,158,182,0	script	chatãƒ†ã‚¹ãƒˆ::test0001	116,{
-	mes "ãƒˆãƒªã‚¬ãƒ¼äººæ•°" + getwaitingroomstate(2);
-	mes "ãƒˆãƒªã‚¬ãƒ¼çŠ¶æ…‹" + getwaitingroomstate(3);
+prontera.gat,158,182,0	script	chatƒeƒXƒg::test0001	116,{
+	mes "ƒgƒŠƒK[l”" + getwaitingroomstate(2);
+	mes "ƒgƒŠƒK[ó‘Ô" + getwaitingroomstate(3);
 	next;
-	switch(select("æœ‰åŠ¹åŒ–","ç„¡åŠ¹åŒ–","å‰Šé™¤","ä½œæˆ")) {
+	switch(select("—LŒø‰»","–³Œø‰»","íœ","ì¬")) {
 	case 1:
 		enablewaitingroomevent;
 		close;
@@ -13,12 +13,12 @@ prontera.gat,158,182,0	script	chatãƒ†ã‚¹ãƒˆ::test0001	116,{
 		delwaitingroom;
 		close;
 	case 4:
-		waitingroom "ãƒ†ã‚¹ãƒˆ",15,"test0001::OnChatEvent",1;
+		waitingroom "ƒeƒXƒg",15,"test0001::OnChatEvent",1;
 		close;
 	}
 	end;
 OnInit:
-	waitingroom "ãƒ†ã‚¹ãƒˆ",15,"test0001::OnChatEvent",1;
+	waitingroom "ƒeƒXƒg",15,"test0001::OnChatEvent",1;
 	end;
 OnChatEvent:
 	disablewaitingroomevent;

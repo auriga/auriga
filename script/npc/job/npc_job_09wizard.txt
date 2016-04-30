@@ -1,194 +1,194 @@
 //====================================================================
 //Ragnarok Online Wizard jobchange script
 //
-//　■ CHANGE_WZ    -> 0〜12
-//     $@wz_tester$ -> 実技挑戦者のキャラ名
+//�@�� CHANGE_WZ    -> 0�`12
+//     $@wz_tester$ -> ���Z����҂̃L������
 //====================================================================
 
 //==========================================
-// 試験申請・一次試験（収集）・転職
+// �����\���E�ꎟ�����i���W�j�E�]�E
 //------------------------------------------
 
-gef_tower.gat,111,37,4	script	ギルド関係者	70,{
+gef_tower.gat,111,37,4	script	�M���h�֌W��	70,{
 	if(Upper == UPPER_HIGH) {
-		mes "[カトリーヌ]";
-		mes "うん？";
-		mes "こんな所まで何かご用かしら？";
+		mes "[�J�g���[�k]";
+		mes "����H";
+		mes "����ȏ��܂ŉ������p������H";
 		next;
-		mes "[カトリーヌ]";
-		mes "なんだか普通じゃない気配を";
-		mes "持っているわね。";
-		mes "その調子で頑張ってね。";
+		mes "[�J�g���[�k]";
+		mes "�Ȃ񂾂����ʂ���Ȃ��C�z��";
+		mes "�����Ă����ˁB";
+		mes "���̒��q�Ŋ撣���ĂˁB";
 		close;
 	}
 	if(Job == Job_Wizard) {
-		mes "[カトリーヌ]";
-		mes "もうウィザードであるあなたには";
-		mes "こちらへの用は無いはず。";
+		mes "[�J�g���[�k]";
+		mes "�����E�B�U�[�h�ł��邠�Ȃ��ɂ�";
+		mes "������ւ̗p�͖����͂��B";
 		next;
-		mes "[カトリーヌ]";
-		if(Sex == 0) {	//未調査
-			mes "ボーイフレンドでも出来たら";
-			mes "連れてきてね。フフッ";
+		mes "[�J�g���[�k]";
+		if(Sex == 0) {	//������
+			mes "�{�[�C�t�����h�ł��o������";
+			mes "�A��Ă��ĂˁB�t�t�b";
 		}
 		else
-			mes "デートの申し込みなら嬉しいけど。";
+			mes "�f�[�g�̐\�����݂Ȃ���������ǁB";
 		close;
 	}
 	if(Job != Job_Magician) {
-		mes "[魔術師ギルド関係者]";
-		mes "あら、こんな高いところまで何の用？";
-		mes "特に用が無ければ降りてくださいね。";
-		mes "ここはウィザードのための場所よ。";
+		mes "[���p�t�M���h�֌W��]";
+		mes "����A����ȍ����Ƃ���܂ŉ��̗p�H";
+		mes "���ɗp��������΍~��Ă��������ˁB";
+		mes "�����̓E�B�U�[�h�̂��߂̏ꏊ��B";
 		next;
-		mes "[魔術師ギルド関係者]";
-		mes "さ、気をつけて降りてね。";
+		mes "[���p�t�M���h�֌W��]";
+		mes "���A�C�����č~��ĂˁB";
 		close;
 	}
 	switch(CHANGE_WZ) {
 	case 0:
-		mes "[魔術師ギルド関係者]";
-		mes "あら、こんな高いところまで上って";
-		mes "くるなんて。何の用事で来たの？";
+		mes "[���p�t�M���h�֌W��]";
+		mes "����A����ȍ����Ƃ���܂ŏ����";
+		mes "����Ȃ�āB���̗p���ŗ����́H";
 		next;
-		if(select("ウィザードに転職しに来ました","…なんでもないです")==2) {
-			mes "[魔術師ギルド関係者]";
-			mes "ん…";
-			mes "特に用がなければ";
-			mes "降りてください〜。";
+		if(select("�E�B�U�[�h�ɓ]�E���ɗ��܂���","�c�Ȃ�ł��Ȃ��ł�")==2) {
+			mes "[���p�t�M���h�֌W��]";
+			mes "��c";
+			mes "���ɗp���Ȃ����";
+			mes "�~��Ă��������`�B";
 			close;
 		}
-		mes "[魔術師ギルド関係者]";
-		mes "そうね、それ以外の理由で";
-		mes "こんな高いところまで上ってこない";
-		mes "わよね。とにかくよく来ました。";
-		mes "私が転職のお手伝いをします。";
+		mes "[���p�t�M���h�֌W��]";
+		mes "�����ˁA����ȊO�̗��R��";
+		mes "����ȍ����Ƃ���܂ŏ���Ă��Ȃ�";
+		mes "���ˁB�Ƃɂ����悭���܂����B";
+		mes "�����]�E�̂���`�������܂��B";
 		next;
-		mes "[魔術師ギルド関係者]";
-		mes "私の名前はカトリーヌ=メディッチ。";
-		mes "私も転職してからそんなに経ってない";
-		mes "ウィザードよ。気楽に「カトリーヌ」と";
-		mes "呼んでくれていいわ。ふふ…";
+		mes "[���p�t�M���h�֌W��]";
+		mes "���̖��O�̓J�g���[�k=���f�B�b�`�B";
+		mes "�����]�E���Ă��炻��ȂɌo���ĂȂ�";
+		mes "�E�B�U�[�h��B�C�y�Ɂu�J�g���[�k�v��";
+		mes "�Ă�ł���Ă�����B�ӂӁc";
 		next;
-		mes "[カトリーヌ]";
-		mes "ウィザードになりたがる人は多いけど";
-		mes "脱落する人も多い…";
-		mes "ウィザードになるのは大変なことなの。";
+		mes "[�J�g���[�k]";
+		mes "�E�B�U�[�h�ɂȂ肽����l�͑�������";
+		mes "�E������l�������c";
+		mes "�E�B�U�[�h�ɂȂ�̂͑�ςȂ��ƂȂ́B";
 		next;
-		mes "[カトリーヌ]";
-		mes "まず、転職するにはJobレベル40";
-		mes "は最低必要。";
-		mes "そうでないと、ウィザードになるだけの";
-		mes "魔法力が備わってないから。";
+		mes "[�J�g���[�k]";
+		mes "�܂��A�]�E����ɂ�Job���x��40";
+		mes "�͍Œ�K�v�B";
+		mes "�����łȂ��ƁA�E�B�U�[�h�ɂȂ邾����";
+		mes "���@�͂�������ĂȂ�����B";
 		next;
-		mes "[カトリーヌ]";
-		mes "詳しい説明は、転職申し込みを";
-		mes "した後にするわ。";
-		mes "どう？今すぐ申込書を作る？";
+		mes "[�J�g���[�k]";
+		mes "�ڂ��������́A�]�E�\�����݂�";
+		mes "������ɂ����B";
+		mes "�ǂ��H�������\���������H";
 		next;
-		if(select("はい、おねがいします","もうちょっと考えてみます")==2) {
-			mes "[カトリーヌ]";
-			mes "わかりました。ゆっくり考えなさい。";
-			mes "転職申し込みは、いつでも";
-			mes "受け付けているから。";
+		if(select("�͂��A���˂������܂�","����������ƍl���Ă݂܂�")==2) {
+			mes "[�J�g���[�k]";
+			mes "�킩��܂����B�������l���Ȃ����B";
+			mes "�]�E�\�����݂́A���ł�";
+			mes "�󂯕t���Ă��邩��B";
 			close;
 		}
 		if(JobLevel < 40) {
-			mes "[カトリーヌ]";
-			mes "ほら、私がさっき言ったのを";
-			mes "思い出して。Jobレベルが40以上";
-			mes "じゃないと転職できないわよ。";
+			mes "[�J�g���[�k]";
+			mes "�ق�A�����������������̂�";
+			mes "�v���o���āBJob���x����40�ȏ�";
+			mes "����Ȃ��Ɠ]�E�ł��Ȃ����B";
 			next;
-			mes "[魔術師ギルド関係者]";
-			mes "焦らないで、もう少し勉強してきて。";
-			mes "転職条件を満たしたら受けさせて";
-			mes "あげます。";
+			mes "[���p�t�M���h�֌W��]";
+			mes "�ł�Ȃ��ŁA���������׋����Ă��āB";
+			mes "�]�E�����𖞂�������󂯂�����";
+			mes "�����܂��B";
 			close;
 		}
-		if(SkillPoint) {	//未調査
-			mes "[カトリーヌ]";
-			mes "あらあら、スキルポイントが";
-			mes "余っているみたいね。";
-			mes "スキルポイントを使い切ってから";
-			mes "来てくださいね。";
+		if(SkillPoint) {	//������
+			mes "[�J�g���[�k]";
+			mes "���炠��A�X�L���|�C���g��";
+			mes "�]���Ă���݂����ˁB";
+			mes "�X�L���|�C���g���g���؂��Ă���";
+			mes "���Ă��������ˁB";
 			close;
 		}
-		mes "[カトリーヌ]";
-		mes "はい、それでは転職申し込みを";
-		mes "受け付けます。";
-		mes "名前は " +strcharinfo(0)+ " ね。";
+		mes "[�J�g���[�k]";
+		mes "�͂��A����ł͓]�E�\�����݂�";
+		mes "�󂯕t���܂��B";
+		mes "���O�� " +strcharinfo(0)+ " �ˁB";
 		next;
-		mes "[カトリーヌ]";
-		mes "ウィザード転職試験は";
-		mes "三つに分かれていて、";
-		mes "一つめは魔法アイテム集め。";
-		mes "二つめは筆記試験";
-		mes "三つめは魔法実技試験。";
+		mes "[�J�g���[�k]";
+		mes "�E�B�U�[�h�]�E������";
+		mes "�O�ɕ�����Ă��āA";
+		mes "��߂͖��@�A�C�e���W�߁B";
+		mes "��߂͕M�L����";
+		mes "�O�߂͖��@���Z�����B";
 		next;
-		mes "[カトリーヌ]";
-		mes "この中の一番目の試験は、";
-		mes "Jobレベル50の人は免除になるわ。";
-		mes "もう十分に努力してるから。";
+		mes "[�J�g���[�k]";
+		mes "���̒��̈�Ԗڂ̎����́A";
+		mes "Job���x��50�̐l�͖Ə��ɂȂ��B";
+		mes "�����\���ɓw�͂��Ă邩��B";
 		next;
 		if(JobLevel >= 50) {
-			mes "[カトリーヌ]";
-			mes "あら、あなたJobレベル50";
-			mes "になってますね。";
-			mes "よっぽど頑張ったんですね。";
-			mes "素敵なウィザードになるでしょう。";
+			mes "[�J�g���[�k]";
+			mes "����A���Ȃ�Job���x��50";
+			mes "�ɂȂ��Ă܂��ˁB";
+			mes "����ۂǊ撣������ł��ˁB";
+			mes "�f�G�ȃE�B�U�[�h�ɂȂ�ł��傤�B";
 			next;
-			mes "[カトリーヌ]";
-			mes "それでは一つめの試験は";
-			mes "免除にしましょう。";
-			mes "でも、まだ二つの試験が";
-			mes "残ってるから安心しないでね。";
+			mes "[�J�g���[�k]";
+			mes "����ł͈�߂̎�����";
+			mes "�Ə��ɂ��܂��傤�B";
+			mes "�ł��A�܂���̎�����";
+			mes "�c���Ă邩����S���Ȃ��łˁB";
 			next;
-			mes "[カトリーヌ]";
-			mes "じゃあ、あの隅にいる人に";
-			mes "話しかけてみてください。";
-			mes "かなり難しいと思うから";
-			mes "気をつけてね。";
+			mes "[�J�g���[�k]";
+			mes "���Ⴀ�A���̋��ɂ���l��";
+			mes "�b�������Ă݂Ă��������B";
+			mes "���Ȃ����Ǝv������";
+			mes "�C�����ĂˁB";
 			set CHANGE_WZ,3;
 			close;
 		}
-		mes "[カトリーヌ]";
-		mes "それでは、申し込みを完了したので";
-		mes "一つめの試験に移りましょうか。";
+		mes "[�J�g���[�k]";
+		mes "����ł́A�\�����݂����������̂�";
+		mes "��߂̎����Ɉڂ�܂��傤���B";
 		next;
-		mes "[カトリーヌ]";
-		mes "魔法アイテムを集めてくるのが";
-		mes "一つ目の試験です。";
-		mes "大事なのは、自分の力で集めて";
-		mes "くるということです。";
+		mes "[�J�g���[�k]";
+		mes "���@�A�C�e�����W�߂Ă���̂�";
+		mes "��ڂ̎����ł��B";
+		mes "�厖�Ȃ̂́A�����̗͂ŏW�߂�";
+		mes "����Ƃ������Ƃł��B";
 		next;
-		mes "[カトリーヌ]";
-		mes "あなたが集めてくるアイテムは、";
-		if(rand(2)) {	//台詞未調査
+		mes "[�J�g���[�k]";
+		mes "���Ȃ����W�߂Ă���A�C�e���́A";
+		if(rand(2)) {	//�䎌������
 			set CHANGE_WZ,1;
-			mes "^3051FDイエロージェムストーン^000000 10個,";
-			mes "^3051FDレッドジェムストーン^000000 10個,";
-			mes "^3051FDブルージェムストーン^000000 10個,";
+			mes "^3051FD�C�G���[�W�F���X�g�[��^000000 10��,";
+			mes "^3051FD���b�h�W�F���X�g�[��^000000 10��,";
+			mes "^3051FD�u���[�W�F���X�g�[��^000000 10��,";
 		}
 		else {
 			set CHANGE_WZ,2;
-			mes "^3051FDクリスタルブルー^000000 5個,";
-			mes "^3051FDイエローライブ^000000 5個,";
-			mes "^3051FDレッドブラッド^000000 5個,";
-			mes "^3051FDウィンドオブヴェルデュール^000000 5個,";
+			mes "^3051FD�N���X�^���u���[^000000 5��,";
+			mes "^3051FD�C�G���[���C�u^000000 5��,";
+			mes "^3051FD���b�h�u���b�h^000000 5��,";
+			mes "^3051FD�E�B���h�I�u���F���f���[��^000000 5��,";
 		}
-		mes "少し手間がかかるけど";
-		mes "なんとかなるでしょう。";
+		mes "������Ԃ������邯��";
+		mes "�Ȃ�Ƃ��Ȃ�ł��傤�B";
 		next;
-		mes "[カトリーヌ]";
-		mes "それではいってらっしゃい〜。";
-		mes "ゆっくり待ってます。";
+		mes "[�J�g���[�k]";
+		mes "����ł͂����Ă�����Ⴂ�`�B";
+		mes "�������҂��Ă܂��B";
 		close;
 	case 1:
 	case 2:
-		mes "[カトリーヌ]";
-		mes "はい、アイテムは集めてきましたか？";
-		mes "それではちゃんと集められたか";
-		mes "見てみましょうか。";
+		mes "[�J�g���[�k]";
+		mes "�͂��A�A�C�e���͏W�߂Ă��܂������H";
+		mes "����ł͂����ƏW�߂�ꂽ��";
+		mes "���Ă݂܂��傤���B";
 		next;
 		if(CHANGE_WZ == 1) {
 			setarray '@need,715,716,717;
@@ -198,1017 +198,1017 @@ gef_tower.gat,111,37,4	script	ギルド関係者	70,{
 			setarray '@need,990,991,992,993;
 			set '@amount,5;
 		}
-		for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1) {	//必要アイテムのチェック
+		for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1) {	//�K�v�A�C�e���̃`�F�b�N
 			if(countitem('@need['@i]) < '@amount)
 				break;
 		}
 		if('@i < getarraysize('@need)) {
-			mes "[カトリーヌ]";
-			mes "ん？全部揃っていないわ。";
+			mes "[�J�g���[�k]";
+			mes "��H�S�������Ă��Ȃ���B";
 			next;
-			mes "[カトリーヌ]";
-			mes "せっかく上ってきて大変だったけど、";
-			mes "もう一度いってらっしゃい。";
-			mes "今度はしっかり集めてきてね。";
+			mes "[�J�g���[�k]";
+			mes "������������Ă��đ�ς��������ǁA";
+			mes "������x�����Ă�����Ⴂ�B";
+			mes "���x�͂�������W�߂Ă��ĂˁB";
 			next;
-			mes "[カトリーヌ]";
+			mes "[�J�g���[�k]";
 			for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1)
-				mes "^3051FD" +getitemname('@need['@i])+ "^000000 " +'@amount+ "個,";
-			mes "よく覚えてしっかり集めてきてね。";
+				mes "^3051FD" +getitemname('@need['@i])+ "^000000 " +'@amount+ "��,";
+			mes "�悭�o���Ă�������W�߂Ă��ĂˁB";
 			close;
 		}
-		mes "[カトリーヌ]";
-		mes "お、正確ですね！";
-		mes "よく集めてきました。";
-		mes "それらのアイテムは、ギルドで";
-		mes "有効に使わせていただきますね。";
+		mes "[�J�g���[�k]";
+		mes "���A���m�ł��ˁI";
+		mes "�悭�W�߂Ă��܂����B";
+		mes "�����̃A�C�e���́A�M���h��";
+		mes "�L���Ɏg�킹�Ă��������܂��ˁB";
 		next;
 		set CHANGE_WZ,3;
 		for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1)
 			delitem '@need['@i],'@amount;
-		mes "[カトリーヌ]";
-		mes "はい、一つめの試験は合格です。";
-		mes "でも、まだ二つの試験が";
-		mes "残ってるから安心しないでね。";
+		mes "[�J�g���[�k]";
+		mes "�͂��A��߂̎����͍��i�ł��B";
+		mes "�ł��A�܂���̎�����";
+		mes "�c���Ă邩����S���Ȃ��łˁB";
 		next;
-		mes "[カトリーヌ]";
-		mes "じゃあ、あの隅にいる人に";
-		mes "話しかけてみてください。";
-		mes "かなり難しいと思うから";
-		mes "気をつけてね。";
+		mes "[�J�g���[�k]";
+		mes "���Ⴀ�A���̋��ɂ���l��";
+		mes "�b�������Ă݂Ă��������B";
+		mes "���Ȃ����Ǝv������";
+		mes "�C�����ĂˁB";
 		close;
 	case 3:
 	case 4:
-		mes "[カトリーヌ]";
-		mes "ん？どうしたの？";
-		mes "一つめの試験は終わったから";
-		mes "あの隅にいる人のところに";
-		mes "行きなさい。";
+		mes "[�J�g���[�k]";
+		mes "��H�ǂ������́H";
+		mes "��߂̎����͏I���������";
+		mes "���̋��ɂ���l�̂Ƃ����";
+		mes "�s���Ȃ����B";
 		next;
-		mes "[カトリーヌ]";
-		mes "二つめの試験を受けなければ";
-		mes "ならないから。";
-		mes "待っているでしょうから早く行って";
-		mes "あげて。";
+		mes "[�J�g���[�k]";
+		mes "��߂̎������󂯂Ȃ����";
+		mes "�Ȃ�Ȃ�����B";
+		mes "�҂��Ă���ł��傤���瑁���s����";
+		mes "�����āB";
 		close;
 	case 5:
-		mes "[カトリーヌ]";
-		mes "ふふ、聞いていたわよ。";
-		mes "問題を解くのに苦労したわね。";
-		mes "何か贈り物でもしてあげたいけど、";
-		mes "最後の試験が残っているわね。";
+		mes "[�J�g���[�k]";
+		mes "�ӂӁA�����Ă������B";
+		mes "���������̂ɋ�J������ˁB";
+		mes "�������蕨�ł����Ă����������ǁA";
+		mes "�Ō�̎������c���Ă����ˁB";
 		next;
-		mes "[カトリーヌ]";
-		mes "もう少しであなたもウィザードに";
-		mes "なれるから、贈り物はその時に";
-		mes "しましょう。";
+		mes "[�J�g���[�k]";
+		mes "���������ł��Ȃ����E�B�U�[�h��";
+		mes "�Ȃ�邩��A���蕨�͂��̎���";
+		mes "���܂��傤�B";
 		next;
-		mes "[カトリーヌ]";
-		mes "それでは行ってらっしゃい。";
-		mes "あの人が待ってるわ。";
+		mes "[�J�g���[�k]";
+		mes "����ł͍s���Ă�����Ⴂ�B";
+		mes "���̐l���҂��Ă��B";
 		close;
-	default:	//6〜11のとき
-		mes "[カトリーヌ]";
-		mes "あらあら、試験を抜け出してきては";
-		mes "だめじゃないの。";
+	default:	//6�`11�̂Ƃ�
+		mes "[�J�g���[�k]";
+		mes "���炠��A�����𔲂��o���Ă��Ă�";
+		mes "���߂���Ȃ��́B";
 		next;
 		if(Sex == 0) {
-			mes "[カトリーヌ]";
-			mes "女の子が弱いふりをしたってだめ。";
-			mes "あなただってウィザードになるために";
-			mes "ここまで来たんでしょう？";
+			mes "[�J�g���[�k]";
+			mes "���̎q���ア�ӂ���������Ă��߁B";
+			mes "���Ȃ������ăE�B�U�[�h�ɂȂ邽�߂�";
+			mes "�����܂ŗ�����ł��傤�H";
 			next;
-			mes "[カトリーヌ]";
-			mes "私だって難しかったけど";
-			mes "諦めなかったんだから。";
-			mes "今後を生きていくつもりなら、";
-			mes "これくらいの試験なんか";
-			mes "こなせなくちゃだめ。";
+			mes "[�J�g���[�k]";
+			mes "�������ē����������";
+			mes "���߂Ȃ������񂾂���B";
+			mes "����𐶂��Ă�������Ȃ�A";
+			mes "���ꂭ�炢�̎����Ȃ�";
+			mes "���Ȃ��Ȃ����Ⴞ�߁B";
 		}
 		else {
-			mes "マジシャンだからといって、男が";
-			mes "弱気になっちゃだめ。";
+			mes "�}�W�V����������Ƃ����āA�j��";
+			mes "��C�ɂȂ����Ⴞ�߁B";
 		}
-		mes "[カトリーヌ]";
-		mes "それでは、元気を出して行きなさい。";
-		mes "あの人が待ってるわ。";
+		mes "[�J�g���[�k]";
+		mes "����ł́A���C���o���čs���Ȃ����B";
+		mes "���̐l���҂��Ă��B";
 		close;
 	case 12:
-		mes "[カトリーヌ]";
-		mes "全ての試験に合格、";
-		mes "おめでとうございます！";
+		mes "[�J�g���[�k]";
+		mes "�S�Ă̎����ɍ��i�A";
+		mes "���߂łƂ��������܂��I";
 		next;
-		mes "[カトリーヌ]";
-		mes "ああ、こうしてる場合じゃないわ。";
-		mes "すぐに転職させてあげなければ。";
+		mes "[�J�g���[�k]";
+		mes "�����A�������Ă�ꍇ����Ȃ���B";
+		mes "�����ɓ]�E�����Ă����Ȃ���΁B";
 		next;
 		unequip;
 		jobchange Job_Wizard;
 		set CHANGE_WZ,0;
-		mes "[カトリーヌ]";
-		mes "もうあなたもウィザード。";
-		mes "正々堂々として、しっかりと";
-		mes "生きていかなければならないわ。";
-		mes "私達ウィザードはとても強力な";
-		mes "魔法が使えるから、その分";
-		mes "行動は控え目にしなきゃだめよ。";
+		mes "[�J�g���[�k]";
+		mes "�������Ȃ����E�B�U�[�h�B";
+		mes "���X���X�Ƃ��āA���������";
+		mes "�����Ă����Ȃ���΂Ȃ�Ȃ���B";
+		mes "���B�E�B�U�[�h�͂ƂĂ����͂�";
+		mes "���@���g���邩��A���̕�";
+		mes "�s���͍T���ڂɂ��Ȃ��Ⴞ�߂�B";
 		next;
-		mes "[カトリーヌ]";
-		mes "街でいたずらに魔法を使ったり、";
-		mes "人の邪魔をしたりするのは厳禁。";
-		mes "ウィザードの魔法っていうのは";
-		mes "モンスターとの戦いで真価を発揮";
-		mes "するものだからね。";
+		mes "[�J�g���[�k]";
+		mes "�X�ł�������ɖ��@���g������A";
+		mes "�l�̎ז��������肷��̂͌��ցB";
+		mes "�E�B�U�[�h�̖��@���Ă����̂�";
+		mes "�����X�^�[�Ƃ̐킢�Ő^���𔭊�";
+		mes "������̂�����ˁB";
 		next;
-		mes "[カトリーヌ]";
-		mes "他の人とパーティーを組んで、";
-		mes "彼らの助けになってあげてね。";
-		mes "あ…あと、あなたにプレゼントが";
-		mes "あります。ちょっと待ってね…";
+		mes "[�J�g���[�k]";
+		mes "���̐l�ƃp�[�e�B�[��g��ŁA";
+		mes "�ނ�̏����ɂȂ��Ă����ĂˁB";
+		mes "���c���ƁA���Ȃ��Ƀv���[���g��";
+		mes "����܂��B������Ƒ҂��Ăˁc";
 		next;
-		mes "[カトリーヌ]";
-		mes "ごそごそ…";
-		mes "がさごそ…";
+		mes "[�J�g���[�k]";
+		mes "���������c";
+		mes "���������c";
 		next;
 		getitem 505,6;
-		mes "[カトリーヌ]";
-		mes "必要な時、有効に使ってくれたらと";
-		mes "思うわ。";
-		mes "私があげたんだから、売らずに";
-		mes "自分で使ってちょうだいね。";
+		mes "[�J�g���[�k]";
+		mes "�K�v�Ȏ��A�L���Ɏg���Ă��ꂽ���";
+		mes "�v����B";
+		mes "�����������񂾂���A���炸��";
+		mes "�����Ŏg���Ă��傤�����ˁB";
 		next;
-		mes "[カトリーヌ]";
-		mes "さあ、ウィザードとして素敵に";
-		mes "暮らしてくださいね。";
+		mes "[�J�g���[�k]";
+		mes "�����A�E�B�U�[�h�Ƃ��đf�G��";
+		mes "��炵�Ă��������ˁB";
 		close;
 	}
 }
 
 //==============================================================
-gef_tower.gat,107,36,4	script	白い毛の犬	81,{
+gef_tower.gat,107,36,4	script	�����т̌�	81,{
 	if(Job == Job_Wizard) {
-		mes "[マリア]";
-		mes "ここに居るより外に出て、君が";
-		mes "どれくらい強くなったか試して";
-		mes "みてはいかが？";
+		mes "[�}���A]";
+		mes "�����ɋ�����O�ɏo�āA�N��";
+		mes "�ǂꂭ�炢�����Ȃ�����������";
+		mes "�݂Ă͂������H";
 		next;
-		mes "[マリア]";
-		mes "一日一日、違った成長をするのが";
-		mes "私達ウィザードだということを";
-		mes "忘れずに。";
+		mes "[�}���A]";
+		mes "�������A���������������̂�";
+		mes "���B�E�B�U�[�h���Ƃ������Ƃ�";
+		mes "�Y�ꂸ�ɁB";
 		close;
 	}
 	if(Job != Job_Magician) {
-		mes "[犬]";
-		mes "ふん…魔法も使うことができない";
-		mes "人が何しに来たのよ？";
-		mes "暇ならゲフェン塔の下で運動でも";
-		mes "していなさい〜。";
+		mes "[��]";
+		mes "�ӂ�c���@���g�����Ƃ��ł��Ȃ�";
+		mes "�l�������ɗ����̂�H";
+		mes "�ɂȂ�Q�t�F�����̉��ŉ^���ł�";
+		mes "���Ă��Ȃ����`�B";
 		next;
-		mes "[犬]";
-		mes "早く降りなさい！";
-		mes "あんたと話している暇はないの！";
+		mes "[��]";
+		mes "�����~��Ȃ����I";
+		mes "���񂽂Ƙb���Ă���ɂ͂Ȃ��́I";
 		close;
 	}
 	switch(CHANGE_WZ) {
 	case 0:
-		mes "[犬]";
-		mes "あ、何の話をしたいかわかるよ。";
-		mes "ウィザードに転職したいんでしょう？";
+		mes "[��]";
+		mes "���A���̘b�����������킩���B";
+		mes "�E�B�U�[�h�ɓ]�E��������ł��傤�H";
 		next;
-		mes "[犬]";
-		mes "転職したいなら、横のカトリーヌに";
-		mes "相談してみて。";
-		mes "彼女ならよく手伝ってくれるでしょう。";
+		mes "[��]";
+		mes "�]�E�������Ȃ�A���̃J�g���[�k��";
+		mes "���k���Ă݂āB";
+		mes "�ޏ��Ȃ�悭��`���Ă����ł��傤�B";
 		next;
-		mes "[犬]";
-		mes "転職試験の過程でわからないことが";
-		mes "あったら私にも聞いて。";
-		mes "こう見えても物知りなんだから。";
+		mes "[��]";
+		mes "�]�E�����̉ߒ��ł킩��Ȃ����Ƃ�";
+		mes "�������玄�ɂ������āB";
+		mes "���������Ă����m��Ȃ񂾂���B";
 		next;
-		if(select("……","犬が喋ってる…")==1) {
-			mes "[犬]";
-			mes "ん？何…その間は…";
-			mes "犬が喋ってるのを見るのは";
-			mes "初めて？";
+		if(select("�c�c","���������Ă�c")==1) {
+			mes "[��]";
+			mes "��H���c���̊Ԃ́c";
+			mes "���������Ă�̂�����̂�";
+			mes "���߂āH";
 			next;
-			mes "[犬]";
-			mes "ふむ…犬が喋るところは";
-			mes "そうそう見られるものではないわね。";
-			mes "ふむふむ…";
-			mes "……";
+			mes "[��]";
+			mes "�ӂށc��������Ƃ����";
+			mes "����������������̂ł͂Ȃ���ˁB";
+			mes "�ӂނӂށc";
+			mes "�c�c";
 		}
 		else {
-			mes "[犬]";
-			mes "そんな露骨に言わなくても";
-			mes "いいじゃない！";
-			mes "どうしてこうなったかの訳も知らない";
-			mes "くせに…";
+			mes "[��]";
+			mes "����ȘI���Ɍ���Ȃ��Ă�";
+			mes "��������Ȃ��I";
+			mes "�ǂ����Ă����Ȃ������̖���m��Ȃ�";
+			mes "�����Ɂc";
 		}
 		next;
-		mes "[犬]";
-		mes "私の名前は";
-		mes "「マリア=スプル=ロドプスカ」";
-		mes "そのまま「マリア」と呼んで";
-		mes "くれればいい。";
-		mes "ここであんたのようなウィザード";
-		mes "転職希望者の手伝いをしているのよ。";
+		mes "[��]";
+		mes "���̖��O��";
+		mes "�u�}���A=�X�v��=���h�v�X�J�v";
+		mes "���̂܂܁u�}���A�v�ƌĂ��";
+		mes "�����΂����B";
+		mes "�����ł��񂽂̂悤�ȃE�B�U�[�h";
+		mes "�]�E��]�҂̎�`�������Ă���̂�B";
 		next;
-		mes "[マリア]";
-		mes "私が犬になった理由は…";
-		mes "いくつかの実験をしているときに、";
-		mes "ボーイフレンドのミスでこうなって";
-		mes "しまったの…。";
+		mes "[�}���A]";
+		mes "�������ɂȂ������R�́c";
+		mes "�������̎��������Ă���Ƃ��ɁA";
+		mes "�{�[�C�t�����h�̃~�X�ł����Ȃ���";
+		mes "���܂����́c�B";
 		next;
-		mes "[マリア]";
-		mes "理論上では数ヵ月後には薬の効き目が";
-		mes "切れるはずなんだけど…";
+		mes "[�}���A]";
+		mes "���_��ł͐�������ɂ͖�̌����ڂ�";
+		mes "�؂��͂��Ȃ񂾂��ǁc";
 		next;
-		mes "[マリア]";
-		mes "まあいいわ…";
-		mes "試験を受けるなら助けになるわ。";
+		mes "[�}���A]";
+		mes "�܂�������c";
+		mes "�������󂯂�Ȃ珕���ɂȂ��B";
 		next;
-		mes "[マリア]";
-		mes "転職についてはさっきも言った通り、";
-		mes "まずカトリーヌに話を聞きなさい。";
-		mes "彼女もウィザードになってから";
-		mes "日が浅いのよ…フフ。";
+		mes "[�}���A]";
+		mes "�]�E�ɂ��Ă͂��������������ʂ�A";
+		mes "�܂��J�g���[�k�ɘb�𕷂��Ȃ����B";
+		mes "�ޏ����E�B�U�[�h�ɂȂ��Ă���";
+		mes "�����󂢂̂�c�t�t�B";
 		next;
-		mes "[マリア]";
-		mes "転職試験の過程について";
-		mes "詳しく説明できるけど…";
-		mes "どう？私から説明してあげようか？";
+		mes "[�}���A]";
+		mes "�]�E�����̉ߒ��ɂ���";
+		mes "�ڂ��������ł��邯�ǁc";
+		mes "�ǂ��H������������Ă����悤���H";
 		next;
-		switch (select("はい！説明をお願いします","いいえ、大丈夫です","犬がものを話すのね…")) {
+		switch (select("�͂��I���������肢���܂�","�������A���v�ł�","�������̂�b���̂ˁc")) {
 			case 1:
-				mes "[マリア]";
-				mes "ん。あんたには特別に詳しく";
-				mes "教えてあげるわ。";
+				mes "[�}���A]";
+				mes "��B���񂽂ɂ͓��ʂɏڂ���";
+				mes "�����Ă������B";
 				next;
-				mes "[マリア]";
-				mes "ウィザードへ転職するには三つの";
-				mes "試験を通過しなければならないの。";
-				mes "最初に、魔法アイテムを集めてくる";
-				mes "試験があるわ。";
+				mes "[�}���A]";
+				mes "�E�B�U�[�h�֓]�E����ɂ͎O��";
+				mes "������ʉ߂��Ȃ���΂Ȃ�Ȃ��́B";
+				mes "�ŏ��ɁA���@�A�C�e�����W�߂Ă���";
+				mes "�����������B";
 				next;
-				mes "[マリア]";
-				mes "それは、カトリーヌに試験申込書を";
-				mes "提示したらすぐ始まるわ。";
-				mes "各ジェムストーンや属性原石を";
-				mes "集めるのよ。";
+				mes "[�}���A]";
+				mes "����́A�J�g���[�k�Ɏ����\������";
+				mes "�񎦂����炷���n�܂��B";
+				mes "�e�W�F���X�g�[���⑮�����΂�";
+				mes "�W�߂�̂�B";
 				next;
-				mes "[マリア]";
-				mes "二つ目は魔法クイズ。";
-				mes "あそこの隅っこにいるラウレル";
-				mes "という陰気な人が担当してる。";
+				mes "[�}���A]";
+				mes "��ڂ͖��@�N�C�Y�B";
+				mes "�������̋������ɂ��郉�E����";
+				mes "�Ƃ����A�C�Ȑl���S�����Ă�B";
 				next;
-				mes "[マリア]";
-				mes "魔法に関する問題や、モンスターに";
-				mes "関する問題、またはマジシャンに関する";
-				mes "問題だったはずよ。";
-				mes "10問も問題を出すのに、全部正解";
-				mes "しないとどんどん落第させていく";
-				mes "らしいわ…。";
+				mes "[�}���A]";
+				mes "���@�Ɋւ������A�����X�^�[��";
+				mes "�ւ�����A�܂��̓}�W�V�����Ɋւ���";
+				mes "��肾�����͂���B";
+				mes "10��������o���̂ɁA�S������";
+				mes "���Ȃ��Ƃǂ�ǂ񗎑悳���Ă���";
+				mes "�炵����c�B";
 				next;
-				mes "[マリア]";
-				mes "彼がそのまま三つ目の試験に";
-				mes "案内してくれるわ。";
-				mes "三つ目の試験は、モンスター達を";
-				mes "倒す試験よ。";
+				mes "[�}���A]";
+				mes "�ނ����̂܂܎O�ڂ̎�����";
+				mes "�ē����Ă�����B";
+				mes "�O�ڂ̎����́A�����X�^�[�B��";
+				mes "�|��������B";
 				next;
-				mes "[マリア]";
-				mes "各部屋に入ると、それぞれの部屋の";
-				mes "属性と同じ属性のモンスターが出現";
-				mes "するから、より効果的な魔法を駆使して";
-				mes "進むことが大事ね。";
+				mes "[�}���A]";
+				mes "�e�����ɓ���ƁA���ꂼ��̕�����";
+				mes "�����Ɠ��������̃����X�^�[���o��";
+				mes "���邩��A�����ʓI�Ȗ��@����g����";
+				mes "�i�ނ��Ƃ��厖�ˁB";
 				next;
-				mes "[マリア]";
-				mes "私の説明はこれくらい。";
-				mes "聞くより自分で体験したほうが";
-				mes "良いからね。";
+				mes "[�}���A]";
+				mes "���̐����͂��ꂭ�炢�B";
+				mes "������莩���ő̌������ق���";
+				mes "�ǂ�����ˁB";
 				close;
 			case 2:
-				mes "[マリア]";
-				mes "そう、それじゃ申し込みをして";
-				mes "頑張っていらっしゃい。";
+				mes "[�}���A]";
+				mes "�����A���ꂶ��\�����݂�����";
+				mes "�撣���Ă�������Ⴂ�B";
 				close;
 			case 3:
-				mes "[マリア]";
-				mes "犬で悪かったわね!!";
+				mes "[�}���A]";
+				mes "���ň����������!!";
 				next;
-				mes "[マリア]";
-				mes "もう、どっか行っちゃえ!!";
+				mes "[�}���A]";
+				mes "�����A�ǂ����s�����Ⴆ!!";
 				close2;
 				warp "gef_dun00.gat",116,102;
 				end;
 		}
 	case 1:
 	case 2:
-		mes "[マリア]";
-		mes "見たところどうしていいかわからない";
-		mes "っていう顔ね。";
-		mes "転職試験の申し込みは済ませて、";
-		mes "アイテムを集めてくるように";
-		mes "言われてたんでしょ？";
+		mes "[�}���A]";
+		mes "�����Ƃ���ǂ����Ă������킩��Ȃ�";
+		mes "���Ă�����ˁB";
+		mes "�]�E�����̐\�����݂͍ς܂��āA";
+		mes "�A�C�e�����W�߂Ă���悤��";
+		mes "�����Ă���ł���H";
 		next;
-		mes "[マリア]";
-		mes "一応これも試験だから、自分の力で";
-		mes "なんとかしないとだめ。";
+		mes "[�}���A]";
+		mes "�ꉞ���������������A�����̗͂�";
+		mes "�Ȃ�Ƃ����Ȃ��Ƃ��߁B";
 		next;
-		mes "[マリア]";
-		mes "聞いたところによると属性原石を";
-		mes "集めてくるのよね。";
-		mes "集めるのは手伝えないけど、";
-		mes "助言くらいはしてあげられるわ。";
+		mes "[�}���A]";
+		mes "�������Ƃ���ɂ��Ƒ������΂�";
+		mes "�W�߂Ă���̂�ˁB";
+		mes "�W�߂�͎̂�`���Ȃ����ǁA";
+		mes "�������炢�͂��Ă��������B";
 		next;
-		mes "[マリア]";
-		mes "クリスタルブルーは、バイラン島に";
-		mes "行ってみなさい。";
-		mes "カナトウス、ククレ、マリナ、バドン…";
-		mes "このへんのモンスターから";
-		mes "手に入れやすいでしょう。";
+		mes "[�}���A]";
+		mes "�N���X�^���u���[�́A�o�C��������";
+		mes "�s���Ă݂Ȃ����B";
+		mes "�J�i�g�E�X�A�N�N���A�}���i�A�o�h���c";
+		mes "���̂ւ�̃����X�^�[����";
+		mes "��ɓ���₷���ł��傤�B";
 		next;
-		mes "[マリア]";
-		mes "イエローライブは、昆虫型モンスター";
-		mes "らから手に入るわ。";
-		mes "ホルンやマンティス、ビタタといった";
-		mes "モンスターを倒してみて。";
+		mes "[�}���A]";
+		mes "�C�G���[���C�u�́A�����^�����X�^�[";
+		mes "�炩���ɓ����B";
+		mes "�z������}���e�B�X�A�r�^�^�Ƃ�����";
+		mes "�����X�^�[��|���Ă݂āB";
 		next;
-		mes "[マリア]";
-		mes "レッドブラッドはエルダーウィローから";
-		mes "たくさん出ると言けど、砂漠に行って";
-		mes "メタルラやスコーピオンを倒してみる";
-		mes "のもいいかもね。";
+		mes "[�}���A]";
+		mes "���b�h�u���b�h�̓G���_�[�E�B���[����";
+		mes "��������o��ƌ����ǁA�����ɍs����";
+		mes "���^������X�R�[�s�I����|���Ă݂�";
+		mes "�̂����������ˁB";
 		next;
-		mes "[マリア]";
-		mes "ウィンドオブヴェルデュールは";
-		mes "ホーネット、スタイナー、";
-		mes "スティールチョンチョンあたりかな。";
-		mes "少し頑張れば手に入るわ。";
+		mes "[�}���A]";
+		mes "�E�B���h�I�u���F���f���[����";
+		mes "�z�[�l�b�g�A�X�^�C�i�[�A";
+		mes "�X�e�B�[���`�����`���������肩�ȁB";
+		mes "�����撣��Ύ�ɓ����B";
 		next;
-		mes "[マリア]";
-		mes "それじゃ頑張ってみて。";
-		mes "ウィザードになるためには";
-		mes "これくらい基本だから。";
+		mes "[�}���A]";
+		mes "���ꂶ��撣���Ă݂āB";
+		mes "�E�B�U�[�h�ɂȂ邽�߂ɂ�";
+		mes "���ꂭ�炢��{������B";
 		close;
 	case 3:
 	case 4:
-		mes "[マリア]";
-		mes "一つ目の試験が終わって安心している";
-		mes "ようね…でも！";
-		mes "まだ試験は二つ残っているから気を";
-		mes "抜いちゃだめよ！";
+		mes "[�}���A]";
+		mes "��ڂ̎������I����Ĉ��S���Ă���";
+		mes "�悤�ˁc�ł��I";
+		mes "�܂������͓�c���Ă��邩��C��";
+		mes "�������Ⴞ�߂�I";
 		close;
 	case 5:
-		mes "[マリア]";
-		mes "うん、よく解いて来たわね。";
+		mes "[�}���A]";
+		mes "����A�悭�����ė�����ˁB";
 		next;
-		mes "[マリア]";
-		mes "それでは最後の試験まで気を抜かずに";
-		mes "頑張っていらっしゃい。";
-		mes "ラウレルが待ってるよ。";
+		mes "[�}���A]";
+		mes "����ł͍Ō�̎����܂ŋC�𔲂�����";
+		mes "�撣���Ă�������Ⴂ�B";
+		mes "���E�������҂��Ă��B";
 		close;
-	default:	//6〜11のとき
-		mes "[マリア]";
-		mes "駄目ね…あきらめて帰って来たの？";
-		mes "まったくもう…そんなことでは";
-		mes "良いウィザードになれないわよ！";
+	default:	//6�`11�̂Ƃ�
+		mes "[�}���A]";
+		mes "�ʖڂˁc������߂ċA���ė����́H";
+		mes "�܂����������c����Ȃ��Ƃł�";
+		mes "�ǂ��E�B�U�[�h�ɂȂ�Ȃ����I";
 		next;
-		mes "[マリア]";
-		mes "各部屋には、その部屋と同じ属性の";
-		mes "モンスターが出るのはわかったわね？";
-		mes "魔法を扱う人間なら、どの属性がその";
-		mes "モンスターに効果的なのかもしっかり";
-		mes "理解していなければならないわ。";
+		mes "[�}���A]";
+		mes "�e�����ɂ́A���̕����Ɠ���������";
+		mes "�����X�^�[���o��̂͂킩������ˁH";
+		mes "���@�������l�ԂȂ�A�ǂ̑���������";
+		mes "�����X�^�[�Ɍ��ʓI�Ȃ̂�����������";
+		mes "�������Ă��Ȃ���΂Ȃ�Ȃ���B";
 		next;
-		mes "[マリア]";
-		mes "スキルを使うモンスターへの対処も";
-		mes "できていなければならないから、";
-		mes "スキルで死んでしまう人は、それを";
-		mes "食らう前に倒してしまわなければ";
-		mes "ならない。";
+		mes "[�}���A]";
+		mes "�X�L�����g�������X�^�[�ւ̑Ώ���";
+		mes "�ł��Ă��Ȃ���΂Ȃ�Ȃ�����A";
+		mes "�X�L���Ŏ���ł��܂��l�́A�����";
+		mes "�H�炤�O�ɓ|���Ă��܂�Ȃ����";
+		mes "�Ȃ�Ȃ��B";
 		next;
-		mes "[マリア]";
-		mes "とにかく戻ってもう一度挑戦して";
-		mes "いらっしゃい。こんなところで音を";
-		mes "あげていてはだめ。";
+		mes "[�}���A]";
+		mes "�Ƃɂ����߂��Ă�����x���킵��";
+		mes "��������Ⴂ�B����ȂƂ���ŉ���";
+		mes "�����Ă��Ă͂��߁B";
 		close;
 	case 12:
-		mes "[マリア]";
-		mes "やっぱりやりとげたわね！";
-		mes "これからはウィザードって呼んでも";
-		mes "遜色は無いでしょうね。";
+		mes "[�}���A]";
+		mes "����ς���Ƃ�����ˁI";
+		mes "���ꂩ��̓E�B�U�[�h���ČĂ�ł�";
+		mes "���F�͖����ł��傤�ˁB";
 		next;
-		mes "[マリア]";
-		mes "おめでとう。これからも頑張るのよ。";
+		mes "[�}���A]";
+		mes "���߂łƂ��B���ꂩ����撣��̂�B";
 		close;
 	}
 }
 
 
 //==========================================
-// 二次試験（筆記）
+// �񎟎����i�M�L�j
 //------------------------------------------
 
-gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
+gef_tower.gat,102,24,8	script	�A�C�ȃE�B�U�[�h	735,{
 
 	function Routine {
-		mes "[ラウレル]";
-		mes "真面目なやつだ…。";
-		mes "どれ…今から説明してやろう。";
-		mes "もし試験が難しいと思っても、";
-		mes "言われたとおりにすれば早く簡単に";
-		mes "終えることができるだろう。";
+		mes "[���E����]";
+		mes "�^�ʖڂȂ���c�B";
+		mes "�ǂ�c������������Ă�낤�B";
+		mes "��������������Ǝv���Ă��A";
+		mes "����ꂽ�Ƃ���ɂ���Α����ȒP��";
+		mes "�I���邱�Ƃ��ł��邾�낤�B";
 		next;
-		mes "[ラウレル]";
-		mes "試験は戦闘をこなしてくることだ。";
-		mes "水の部屋、地の部屋、火の部屋と";
-		mes "順に進み、各部屋にはそれぞれの";
-		mes "部屋の属性を持ったモンスターが";
-		mes "出現する。";
+		mes "[���E����]";
+		mes "�����͐퓬�����Ȃ��Ă��邱�Ƃ��B";
+		mes "���̕����A�n�̕����A�΂̕�����";
+		mes "���ɐi�݁A�e�����ɂ͂��ꂼ���";
+		mes "�����̑����������������X�^�[��";
+		mes "�o������B";
 		next;
-		mes "[ラウレル]";
-		mes "どんなモンスターが出てくるかは";
-		mes "入ればわかる。";
-		mes "そこでは、各属性に効果的な属性で";
-		mes "対抗することによって、より簡単に";
-		mes "抜けることができるだろう…";
+		mes "[���E����]";
+		mes "�ǂ�ȃ����X�^�[���o�Ă��邩��";
+		mes "����΂킩��B";
+		mes "�����ł́A�e�����Ɍ��ʓI�ȑ�����";
+		mes "�΍R���邱�Ƃɂ���āA���ȒP��";
+		mes "�����邱�Ƃ��ł��邾�낤�c";
 		next;
-		mes "[ラウレル]";
-		mes "制限時間内に、出現したモンスターを";
-		mes "全部倒し、さらに立ちふさがるゲート";
-		mes "モンスターを倒せば次の部屋に";
-		mes "移動できる。";
+		mes "[���E����]";
+		mes "�������ԓ��ɁA�o�����������X�^�[��";
+		mes "�S���|���A����ɗ����ӂ�����Q�[�g";
+		mes "�����X�^�[��|���Ύ��̕�����";
+		mes "�ړ��ł���B";
 		next;
-		mes "[ラウレル]";
-		mes "そして私のところに戻れば、";
-		mes "転職試験は終了となる。晴れて";
-		mes "ウィザードになれるというわけだ。";
+		mes "[���E����]";
+		mes "�����Ď��̂Ƃ���ɖ߂�΁A";
+		mes "�]�E�����͏I���ƂȂ�B�����";
+		mes "�E�B�U�[�h�ɂȂ��Ƃ����킯���B";
 		return;
 	}
 
 	if(Job == Job_Novice) {
-		mes "[ラウレル]";
-		mes "ひよっこがなぜこんな場所に来た？";
-		mes "すぐに立ち去りなさい。";
+		mes "[���E����]";
+		mes "�Ђ�������Ȃ�����ȏꏊ�ɗ����H";
+		mes "�����ɗ�������Ȃ����B";
 		close2;
 		warp "geffen.gat",120,110;
 		end;
 	}
 	if(Job == Job_Priest) {
-		mes "[ラウレル]";
-		mes "帰るんだ。神の仕いに用はない。";
-		mes "魔力と神力は相容れないからな。";
+		mes "[���E����]";
+		mes "�A��񂾁B�_�̎d���ɗp�͂Ȃ��B";
+		mes "���͂Ɛ_�͂͑��e��Ȃ�����ȁB";
 		next;
-		mes "[ラウレル]";
-		mes "それでなくとも私の体調はよくない…";
-		mes "近づかずあちらへ行きなさい。";
+		mes "[���E����]";
+		mes "����łȂ��Ƃ����̑̒��͂悭�Ȃ��c";
+		mes "�߂Â���������֍s���Ȃ����B";
 		close;
 	}
 	if(Job == Job_Wizard) {
-		mes "[ラウレル]";
-		mes "…私に何の用だ？";
-		mes "お前も魔法を使う者なら魔法について";
-		mes "よく知っていなければならない。";
+		mes "[���E����]";
+		mes "�c���ɉ��̗p���H";
+		mes "���O�����@���g���҂Ȃ疂�@�ɂ���";
+		mes "�悭�m���Ă��Ȃ���΂Ȃ�Ȃ��B";
 		next;
-		mes "[ラウレル]";
-		mes "魔法を不真面目に扱っていると";
-		mes "強力な魔法を使った時、自分の";
-		mes "魔法を制御できなくなるだろう…。";
-		mes "そうなりたくなければ、魔法について";
-		mes "深く理解しておくべきだ。";
+		mes "[���E����]";
+		mes "���@��s�^�ʖڂɈ����Ă����";
+		mes "���͂Ȗ��@���g�������A������";
+		mes "���@�𐧌�ł��Ȃ��Ȃ邾�낤�c�B";
+		mes "�����Ȃ肽���Ȃ���΁A���@�ɂ���";
+		mes "�[���������Ă����ׂ����B";
 		next;
-		mes "[ラウレル]";
-		mes "残りの人生を、廃人として";
-		mes "終わらせたくなければな…。";
+		mes "[���E����]";
+		mes "�c��̐l�����A�p�l�Ƃ���";
+		mes "�I��点�����Ȃ���΂ȁc�B";
 		close;
 	}
 	if(Job != Job_Magician) {
-		mes "[ラウレル]";
-		mes "うう…苦しい…。";
-		mes "全身がまるで冷たい氷に";
-		mes "浸かっているような感じだ…。";
+		mes "[���E����]";
+		mes "�����c�ꂵ���c�B";
+		mes "�S�g���܂�ŗ₽���X��";
+		mes "�Z�����Ă���悤�Ȋ������c�B";
 		next;
-		mes "[ラウレル]";
-		mes "何だお前は…";
-		mes "あっちに行ってくれないか…。";
+		mes "[���E����]";
+		mes "�������O�́c";
+		mes "�������ɍs���Ă���Ȃ����c�B";
 		close;
 	}
 	switch(CHANGE_WZ) {
 	case 0:
-		mes "[ラウレル]";
-		mes "…何をしたいのかわからないが";
-		mes "今はお前に付き合っている暇は無い。";
+		mes "[���E����]";
+		mes "�c�����������̂��킩��Ȃ���";
+		mes "���͂��O�ɕt�������Ă���ɂ͖����B";
 		next;
-		mes "[ラウレル]";
-		mes "向こうへ行きなさい。";
+		mes "[���E����]";
+		mes "�������֍s���Ȃ����B";
 		close;
 	case 1:
 	case 2:
-		mes "[ラウレル]";
-		mes "ククク…";
-		mes "ウィザードになりたいという奴か。";
+		mes "[���E����]";
+		mes "�N�N�N�c";
+		mes "�E�B�U�[�h�ɂȂ肽���Ƃ����z���B";
 		next;
-		mes "[ラウレル]";
-		mes "そのままでいると、狩りもちびちび";
-		mes "としかできないだろう。";
+		mes "[���E����]";
+		mes "���̂܂܂ł���ƁA�������т���";
+		mes "�Ƃ����ł��Ȃ����낤�B";
 		next;
-		mes "[ラウレル]";
-		mes "ウィザードの素晴らしさを";
-		mes "後で思い知るだろう…ククク…。";
+		mes "[���E����]";
+		mes "�E�B�U�[�h�̑f���炵����";
+		mes "��Ŏv���m�邾�낤�c�N�N�N�c�B";
 		close;
 	case 3:
-		mes "[ラウレル]";
-		mes "ククク…一つめの試験を越えて来たか。";
-		mes "そう…私が二つめの試験を担当する";
-		mes "ラウレル=アスパゴラス様だ。";
+		mes "[���E����]";
+		mes "�N�N�N�c��߂̎������z���ė������B";
+		mes "�����c������߂̎�����S������";
+		mes "���E����=�A�X�p�S���X�l���B";
 		next;
-		mes "[ラウレル]";
-		mes "今からでも遅くないから";
-		mes "町に戻って平和な生活を";
-		mes "続けたらどうだ？ふふ…。";
+		mes "[���E����]";
+		mes "������ł��x���Ȃ�����";
+		mes "���ɖ߂��ĕ��a�Ȑ�����";
+		mes "��������ǂ����H�ӂӁc�B";
 		next;
-		mes "[ラウレル]";
-		mes "ククク…魔力をあやつるには";
-		mes "お前はまだ不完全だろう。";
-		mes "非常に危険だ…。";
+		mes "[���E����]";
+		mes "�N�N�N�c���͂������ɂ�";
+		mes "���O�͂܂��s���S���낤�B";
+		mes "���Ɋ댯���c�B";
 		break;
 	case 4:
-		mes "[ラウレル]";
-		mes "ククク…未練があるようだな。";
+		mes "[���E����]";
+		mes "�N�N�N�c����������悤���ȁB";
 		next;
-		mes "[ラウレル]";
-		mes "そんなに平和な暮らしが気に食わない";
-		mes "というのか？";
+		mes "[���E����]";
+		mes "����Ȃɕ��a�ȕ�炵���C�ɐH��Ȃ�";
+		mes "�Ƃ����̂��H";
 		next;
-		mes "[ラウレル]";
-		mes "魔力を操るにはお前はまだ";
-		mes "不完全だ…。考え直したほうが良いな。";
+		mes "[���E����]";
+		mes "���͂𑀂�ɂ͂��O�͂܂�";
+		mes "�s���S���c�B�l���������ق����ǂ��ȁB";
 		break;
 	case 5:
 		set CHANGE_WZ,6;
-		mes "[ラウレル]";
-		mes "よし…十分に休んだか？";
-		mes "それでは、ウィザード転職への";
-		mes "最終試験だ。";
+		mes "[���E����]";
+		mes "�悵�c�\���ɋx�񂾂��H";
+		mes "����ł́A�E�B�U�[�h�]�E�ւ�";
+		mes "�ŏI�������B";
 		next;
-		mes "[ラウレル]";
-		mes "試験について簡単に";
-		mes "説明してやろうか…。";
+		mes "[���E����]";
+		mes "�����ɂ��ĊȒP��";
+		mes "�������Ă�낤���c�B";
 		next;
-		if(select("いいえ、結構です","少し聞いてみます")==1) {
-			mes "[ラウレル]";
-			mes "無謀な奴だ…。まあ骨は拾ってやる。";
-			mes "モンスターらがお前を迎えてくれる";
-			mes "だろう。";
+		if(select("�������A���\�ł�","���������Ă݂܂�")==1) {
+			mes "[���E����]";
+			mes "���d�ȓz���c�B�܂����͏E���Ă��B";
+			mes "�����X�^�[�炪���O���}���Ă����";
+			mes "���낤�B";
 			next;
 		}
 		else {
 			Routine;
 			next;
-			mes "[ラウレル]";
-			mes "ククク…恐ろしいという表情だな。";
-			mes "まだ遅くは無い。今からでもあきらめる";
-			mes "なら、町に返してやるぞ…どうする？";
+			mes "[���E����]";
+			mes "�N�N�N�c���낵���Ƃ����\��ȁB";
+			mes "�܂��x���͖����B������ł�������߂�";
+			mes "�Ȃ�A���ɕԂ��Ă�邼�c�ǂ�����H";
 			next;
-			if(select("試験を続けてください","恐ろしいから帰ります")==2) {
-				mes "[ラウレル]";
-				mes "よく考えたな。そう…お前は";
-				mes "そのままが似合っている。";
-				mes "町に帰って平凡な人生を歩みなさい。";
+			if(select("�����𑱂��Ă�������","���낵������A��܂�")==2) {
+				mes "[���E����]";
+				mes "�悭�l�����ȁB�����c���O��";
+				mes "���̂܂܂��������Ă���B";
+				mes "���ɋA���ĕ��}�Ȑl������݂Ȃ����B";
 				close2;
 				warp "geffen.gat",120,110;
 				end;
 			}
 		}
-		//台詞未調査
-		mes "[ラウレル]";
-		mes "それでは望みどおり、今すぐ";
-		mes "送ってやる。好きなように";
-		mes "暴れてきなさい。";
+		//�䎌������
+		mes "[���E����]";
+		mes "����ł͖]�݂ǂ���A������";
+		mes "�����Ă��B�D���Ȃ悤��";
+		mes "�\��Ă��Ȃ����B";
 		next;
 		warp "job_wiz.gat",57,154;
 		end;
-	default:	//6〜9のとき
-		mes "[ラウレル]";
-		mes "なに？また試験を受けると…？";
-		mes "戦闘試験に失敗したくせに…ククク…。";
-		mes "それだけ魔法が好きなんだな…。";
+	default:	//6�`9�̂Ƃ�
+		mes "[���E����]";
+		mes "�ȂɁH�܂��������󂯂�Ɓc�H";
+		mes "�퓬�����Ɏ��s���������Ɂc�N�N�N�c�B";
+		mes "���ꂾ�����@���D���Ȃ񂾂ȁc�B";
 		next;
-		mes "[ラウレル]";
-		mes "まともにいかないところを見ると、";
-		mes "お前はもっと別の試験も";
-		mes "受けなくてはならないな…。";
-		mes "不満があるならもっと良い";
-		mes "結果を出すことだ。";
+		mes "[���E����]";
+		mes "�܂Ƃ��ɂ����Ȃ��Ƃ��������ƁA";
+		mes "���O�͂����ƕʂ̎�����";
+		mes "�󂯂Ȃ��Ă͂Ȃ�Ȃ��ȁc�B";
+		mes "�s��������Ȃ�����Ɨǂ�";
+		mes "���ʂ��o�����Ƃ��B";
 		next;
-		mes "[ラウレル]";
-		mes "それでは一度解いてみなさい…クク…。";
+		mes "[���E����]";
+		mes "����ł͈�x�����Ă݂Ȃ����c�N�N�c�B";
 		next;
-		mes "[ラウレル]";
-		mes "1. 次の中で、";
-		mes "属性の違うものを選べ。";
+		mes "[���E����]";
+		mes "1. ���̒��ŁA";
+		mes "�����̈Ⴄ���̂�I�ׁB";
 		next;
-		if(select("マンティス","カナトウス","ガイアス","キャラメル")==2)
+		if(select("�}���e�B�X","�J�i�g�E�X","�K�C�A�X","�L��������")==2)
 			set '@point,'@point+20;
-		mes "[ラウレル]";
-		mes "2. 次の中で、ルートモンスター";
-		mes "ではないモンスターを答えよ。";
+		mes "[���E����]";
+		mes "2. ���̒��ŁA���[�g�����X�^�[";
+		mes "�ł͂Ȃ������X�^�[�𓚂���B";
 		next;
-		if(select("ヨーヨー","白蓮玉","メタルラ","ゼロム")==4)
+		if(select("���[���[","���@��","���^����","�[����")==4)
 			set '@point,'@point+20;
-		mes "[ラウレル]";
-		mes "3. 次の中で詠唱反応しない";
-		mes "モンスターはどれか。";
+		mes "[���E����]";
+		mes "3. ���̒��ŉr���������Ȃ�";
+		mes "�����X�^�[�͂ǂꂩ�B";
 		next;
-		if(select("マリナ","ビタタ","スコーピオン","ガイアス")==1)
+		if(select("�}���i","�r�^�^","�X�R�[�s�I��","�K�C�A�X")==1)
 			set '@point,'@point+20;
-		mes "[ラウレル]";
-		mes "4. マリンスフィアーに効果的な";
-		mes "魔法を答えよ。";
+		mes "[���E����]";
+		mes "4. �}�����X�t�B�A�[�Ɍ��ʓI��";
+		mes "���@�𓚂���B";
 		next;
-		if(select("コールドボルト","ファイアーボルト","ライトニングボルト","ストーンカース")==3)
+		if(select("�R�[���h�{���g","�t�@�C�A�[�{���g","���C�g�j���O�{���g","�X�g�[���J�[�X")==3)
 			set '@point,'@point+20;
-		mes "[ラウレル]";
-		mes "5. 次の中から移動するモンスター";
-		mes "を選べ。";
+		mes "[���E����]";
+		mes "5. ���̒�����ړ����郂���X�^�[";
+		mes "��I�ׁB";
 		next;
-		if(select("ヒドラ","マンドラゴラ","天下大将軍","フリルドラ")==4)
+		if(select("�q�h��","�}���h���S��","�V���叫�R","�t�����h��")==4)
 			set '@point,'@point+20;
-		mes "[ラウレル]";
-		mes "クク…さあ…出来はどうだ？";
+		mes "[���E����]";
+		mes "�N�N�c�����c�o���͂ǂ����H";
 		next;
 		set CHANGE_WZ,CHANGE_WZ+1;
-		mes "[ラウレル]";
-		mes "点数は… " +'@point+ "点だ。";
+		mes "[���E����]";
+		mes "�_���́c " +'@point+ "�_���B";
 		if('@point < 40) {
-			mes "不合格だ。もう少し勉強してこい…。";
+			mes "�s���i���B���������׋����Ă����c�B";
 			next;
-			mes "[ラウレル]";
-			mes "やはりお前にはまだ足りないものが";
-			mes "ある。だから失敗するのだ…。";
+			mes "[���E����]";
+			mes "��͂肨�O�ɂ͂܂�����Ȃ����̂�";
+			mes "����B�����玸�s����̂��c�B";
 			close;
 		}
 		if('@point == 40) {
-			mes "クク…まあまあだな…";
-			mes "また戦闘試験を受けさせてやるぞ…。";
+			mes "�N�N�c�܂��܂����ȁc";
+			mes "�܂��퓬�������󂯂����Ă�邼�c�B";
 		}
 		else {
-			mes "こんなに良く解けていて、なぜ";
-			mes "実戦になるとああも弱いのだ…。";
+			mes "����Ȃɗǂ������Ă��āA�Ȃ�";
+			mes "����ɂȂ�Ƃ������ア�̂��c�B";
 		}
 		next;
-		if(select("試験に臨みます","試験についてもう一度説明して")==2) {
+		if(select("�����ɗՂ݂܂�","�����ɂ��Ă�����x��������")==2) {
 			Routine;
 			next;
 		}
-		//台詞未調査
-		mes "[ラウレル]";
-		mes "今度は泣きながら帰ってくるな…。";
-		mes "ククク…。";
-		mes "望み通りすぐに送ってやる！";
+		//�䎌������
+		mes "[���E����]";
+		mes "���x�͋����Ȃ���A���Ă���ȁc�B";
+		mes "�N�N�N�c�B";
+		mes "�]�ݒʂ肷���ɑ����Ă��I";
 		close2;
 		warp "job_wiz.gat",57,154;
 		end;
 	case 10:
-		//台詞未調査
+		//�䎌������
 		set CHANGE_WZ,11;
-		mes "[ラウレル]";
-		mes "…なんて奴だ。";
-		mes "ここまでしつこく試験に挑む奴は";
-		mes "初めてだ…。";
+		mes "[���E����]";
+		mes "�c�Ȃ�ēz���B";
+		mes "�����܂ł����������ɒ��ޓz��";
+		mes "���߂Ă��c�B";
 		next;
-		mes "[ラウレル]";
-		mes "よし…私から一つ提案がある。";
-		mes "お前も疲れただろうから…ククク…";
-		mes "そう、^3051FD古い巻物^000000を一つ";
-		mes "持って来なさい。";
+		mes "[���E����]";
+		mes "�悵�c��������Ă�����B";
+		mes "���O����ꂽ���낤����c�N�N�N�c";
+		mes "�����A^3051FD�Â�����^000000�����";
+		mes "�����ė��Ȃ����B";
 		next;
-		mes "[ラウレル]";
-		mes "それが嫌ならもう一度試験を受けて";
-		mes "受かってみろ。";
-		mes "試験場に送ってやる…。";
+		mes "[���E����]";
+		mes "���ꂪ���Ȃ������x�������󂯂�";
+		mes "�󂩂��Ă݂�B";
+		mes "������ɑ����Ă��c�B";
 		close2;
 		warp "job_wiz.gat",57,154;
 		end;
 	case 11:
-		mes "[ラウレル]";
-		mes "そうか…また来たか…ククク。";
-		mes "試験に挑戦するのか…それとも";
-		mes "^3051FD古い巻物^000000を持って来たのか？";
+		mes "[���E����]";
+		mes "�������c�܂��������c�N�N�N�B";
+		mes "�����ɒ��킷��̂��c����Ƃ�";
+		mes "^3051FD�Â�����^000000�������ė����̂��H";
 		next;
-		if(select("試験に挑戦","古い巻物を…")==1) {
-			mes "[ラウレル]";
-			mes "ククク…それくらいの根性が無いとな。";
-			mes "また送ってやるから、頑張れ…。";
+		if(select("�����ɒ���","�Â��������c")==1) {
+			mes "[���E����]";
+			mes "�N�N�N�c���ꂭ�炢�̍����������ƂȁB";
+			mes "�܂������Ă�邩��A�撣��c�B";
 			close2;
 			warp "job_wiz.gat",57,154;
 			end;
 		}
 		if(countitem(618) < 1) {
-			mes "[ラウレル]";
-			mes "持っていないではないか…。";
+			mes "[���E����]";
+			mes "�����Ă��Ȃ��ł͂Ȃ����c�B";
 			close;
 		}
 		delitem 618,1;
 		set CHANGE_WZ,12;
-		mes "[ラウレル]";
-		mes "ククク…結局手に入れてきたか。";
-		mes "まあよくやった。";
-		mes "これでまた私の研究を続けることが";
-		mes "できる。感謝するぞ…。";
+		mes "[���E����]";
+		mes "�N�N�N�c���ǎ�ɓ���Ă������B";
+		mes "�܂��悭������B";
+		mes "����ł܂����̌����𑱂��邱�Ƃ�";
+		mes "�ł���B���ӂ��邼�c�B";
 		next;
-		mes "[ラウレル]";
-		mes "ククク…カトリーヌに試験は通ったと";
-		mes "伝えておく…クククク…。";
-		mes "よく頑張った。";
+		mes "[���E����]";
+		mes "�N�N�N�c�J�g���[�k�Ɏ����͒ʂ�����";
+		mes "�`���Ă����c�N�N�N�N�c�B";
+		mes "�悭�撣�����B";
 		close;
 	case 12:
-		mes "[ラウレル]";
-		mes "試験は合格だ。";
-		mes "カトリーヌの元へ行き";
-		mes "転職の手続きを済ますがいい…。";
+		mes "[���E����]";
+		mes "�����͍��i���B";
+		mes "�J�g���[�k�̌��֍s��";
+		mes "�]�E�̎葱�����ς܂��������c�B";
 		next;
-		mes "[ラウレル]";
-		mes "行きなさい…。そして";
-		mes "望んだウィザードになりなさい…。";
-		mes "でも気をつけるんだ…魔力は常に";
-		mes "お前を狙っている…ククククク…。";
+		mes "[���E����]";
+		mes "�s���Ȃ����c�B������";
+		mes "�]�񂾃E�B�U�[�h�ɂȂ�Ȃ����c�B";
+		mes "�ł��C������񂾁c���͂͏��";
+		mes "���O��_���Ă���c�N�N�N�N�N�c�B";
 		close;
 	}
-	//筆記試験ここから
+	//�M�L������������
 	next;
-	if(select("平凡なマジシャンとして生きます","転職試験を続けてください")==1) {
-		mes "[ラウレル]";
-		mes "ははは…よく選択した。";
-		mes "ウィザードに夢を抱くんじゃない";
-		mes "魔法を使わなければならないという";
-		mes "決まりも無いな…。";
+	if(select("���}�ȃ}�W�V�����Ƃ��Đ����܂�","�]�E�����𑱂��Ă�������")==1) {
+		mes "[���E����]";
+		mes "�͂͂́c�悭�I�������B";
+		mes "�E�B�U�[�h�ɖ�������񂶂�Ȃ�";
+		mes "���@���g��Ȃ���΂Ȃ�Ȃ��Ƃ���";
+		mes "���܂�������ȁc�B";
 		next;
-		mes "[ラウレル]";
-		mes "ゆっくり塔を降りなさい。";
-		mes "決して振り返らず。";
-		mes "今持っている能力を使いながら";
-		mes "のんびりと町で暮らしなさい。";
+		mes "[���E����]";
+		mes "������蓃���~��Ȃ����B";
+		mes "�����ĐU��Ԃ炸�B";
+		mes "�������Ă���\�͂��g���Ȃ���";
+		mes "�̂�т�ƒ��ŕ�炵�Ȃ����B";
 		close;
 	}
 	if(CHANGE_WZ == 3) {
-		mes "[ラウレル]";
-		mes "うはははは！";
-		mes "お前がどれほどのものか";
-		mes "私の目ではっきり見てやる…。";
+		mes "[���E����]";
+		mes "���͂͂͂́I";
+		mes "���O���ǂ�قǂ̂��̂�";
+		mes "���̖ڂł͂����茩�Ă��c�B";
 	}
 	else {
-		mes "[ラウレル]";
-		mes "ハハハ…お前も懲りないな…。";
-		mes "どれ、それではどれだけ勉強して来たか";
-		mes "見てやろう…。";
+		mes "[���E����]";
+		mes "�n�n�n�c���O������Ȃ��ȁc�B";
+		mes "�ǂ�A����ł͂ǂꂾ���׋����ė�����";
+		mes "���Ă�낤�c�B";
 	}
 	next;
-	mes "[ラウレル]";
-	mes "それでは試験を始めよう。";
-	mes "全部正解しなければだめだ。";
+	mes "[���E����]";
+	mes "����ł͎������n�߂悤�B";
+	mes "�S���������Ȃ���΂��߂��B";
 	next;
-	mes "[ラウレル]";
-	mes "10問出題するから、全て答えなさい。";
-	mes "間違ってもどこが間違ったのかは";
-	mes "教えられない。";
+	mes "[���E����]";
+	mes "10��o�肷�邩��A�S�ē����Ȃ����B";
+	mes "�Ԉ���Ă��ǂ����Ԉ�����̂���";
+	mes "�������Ȃ��B";
 	next;
-	mes "[ラウレル]";
-	mes "クックック…それでは試験開始。";
+	mes "[���E����]";
+	mes "�N�b�N�b�N�c����ł͎����J�n�B";
 	next;
 	switch(rand(3)) {
 	case 0:
-		mes "[ラウレル]";
-		mes "1. スロットのある「ガード」は";
-		mes "どのモンスターから手に入れられるか？";
+		mes "[���E����]";
+		mes "1. �X���b�g�̂���u�K�[�h�v��";
+		mes "�ǂ̃����X�^�[�����ɓ�����邩�H";
 		next;
-		if(select("盗蟲","ペコペコ","プパ","コボルト")==4)
+		if(select("���","�y�R�y�R","�v�p","�R�{���g")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "2. 次の中で、マジシャンが一番";
-		mes "倒しやすいモンスターはどれか。";
+		mes "[���E����]";
+		mes "2. ���̒��ŁA�}�W�V���������";
+		mes "�|���₷�������X�^�[�͂ǂꂩ�B";
 		next;
-		if(select("フローラ","ガイアス","ゴーレム","ミスト")==1)
+		if(select("�t���[��","�K�C�A�X","�S�[����","�~�X�g")==1)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "3. ストーンカースが全く通じない";
-		mes "モンスターはどれか。";
+		mes "[���E����]";
+		mes "3. �X�g�[���J�[�X���S���ʂ��Ȃ�";
+		mes "�����X�^�[�͂ǂꂩ�B";
 		next;
-		if(select("エルダーウィロー","イビルドルイド","白蓮玉","マルク")==2)
+		if(select("�G���_�[�E�B���[","�C�r���h���C�h","���@��","�}���N")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "4. 風属性で水属性Lv3モンスター";
-		mes "を攻撃する場合のダメージ率は？";
+		mes "[���E����]";
+		mes "4. �������Ő�����Lv3�����X�^�[";
+		mes "���U������ꍇ�̃_���[�W���́H";
 		next;
 		if(select("125%","150%","175%","200%")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "5. 子デザートウルフとファミリアー";
-		mes "が戦ったら、どっちが勝つか。";
+		mes "[���E����]";
+		mes "5. �q�f�U�[�g�E���t�ƃt�@�~���A�[";
+		mes "���������A�ǂ����������B";
 		next;
-		if(select("子デザートウルフ","ファミリアー","相打ち","わからない")==1)
+		if(select("�q�f�U�[�g�E���t","�t�@�~���A�[","���ł�","�킩��Ȃ�")==1)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "6. 次の中でキューペットにできない";
-		mes "モンスターはどれか。";
+		mes "[���E����]";
+		mes "6. ���̒��ŃL���[�y�b�g�ɂł��Ȃ�";
+		mes "�����X�^�[�͂ǂꂩ�B";
 		next;
-		if(select("ポポリン","ロッダフロッグ","スモーキー","ポイズンスポア")==2)
+		if(select("�|�|����","���b�_�t���b�O","�X���[�L�[","�|�C�Y���X�|�A")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "7. 次の中で火属性が一番有効な";
-		mes "モンスターを選べ。";
+		mes "[���E����]";
+		mes "7. ���̒��ŉΑ�������ԗL����";
+		mes "�����X�^�[��I�ׁB";
 		next;
-		if(select("ゴブリン（短剣）","ゴブリン（フレイル）","ゴブリン（斧）","ゴブリン（ハンマー）")==4)
+		if(select("�S�u�����i�Z���j","�S�u�����i�t���C���j","�S�u�����i���j","�S�u�����i�n���}�[�j")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "8. 次の中で魔法防御力が一番高い";
-		mes "モンスターを選べ。";
+		mes "[���E����]";
+		mes "8. ���̒��Ŗ��@�h��͂���ԍ���";
+		mes "�����X�^�[��I�ׁB";
 		next;
-		if(select("ホルン","チョンチョン","アンドレ","キャラメル")==3)
+		if(select("�z����","�`�����`����","�A���h��","�L��������")==3)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "9. 種族の違うモンスターを";
-		mes "一つ選べ。";
+		mes "[���E����]";
+		mes "9. �푰�̈Ⴄ�����X�^�[��";
+		mes "��I�ׁB";
 		next;
-		if(select("ポリン","マスターリング","ゴーストリング","スポア")==3)
+		if(select("�|����","�}�X�^�[�����O","�S�[�X�g�����O","�X�|�A")==3)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "10. 次の中でアンデットではない";
-		mes "モンスターは？";
+		mes "[���E����]";
+		mes "10. ���̒��ŃA���f�b�g�ł͂Ȃ�";
+		mes "�����X�^�[�́H";
 		next;
-		if(select("ドレイク","メガロドン","デビアス","カーリッツバーグ")==3)
+		if(select("�h���C�N","���K���h��","�f�r�A�X","�J�[���b�c�o�[�O")==3)
 			set '@point,'@point+10;
 		break;
 	case 1:
-		mes "[ラウレル]";
-		mes "1. マジシャンで一番重要な";
-		mes "ステータスは？";
+		mes "[���E����]";
+		mes "1. �}�W�V�����ň�ԏd�v��";
+		mes "�X�e�[�^�X�́H";
 		next;
 		if(select("INT","AGI","DEX","VIT")==1)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "2. マジシャンの「ボルト」系列の";
-		mes "魔法に無い属性が一つある。どれか。";
+		mes "[���E����]";
+		mes "2. �}�W�V�����́u�{���g�v�n���";
+		mes "���@�ɖ��������������B�ǂꂩ�B";
 		next;
-		if(select("水属性","地属性","火属性","風属性")==2)
+		if(select("������","�n����","�Α���","������")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "3. マジシャンの特徴から一番";
-		mes "離れているものを選べ。";
+		mes "[���E����]";
+		mes "3. �}�W�V�����̓���������";
+		mes "����Ă�����̂�I�ׁB";
 		next;
-		if(select("体力が少ない","遠距離攻撃ができる","お金を儲けるのに良い","SPが多い")==3)
+		if(select("�̗͂����Ȃ�","�������U�����ł���","������ׂ���̂ɗǂ�","SP������")==3)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "4. マジシャンたちが一番多い街は？";
+		mes "[���E����]";
+		mes "4. �}�W�V������������ԑ����X�́H";
 		next;
-		if(select("プロンテラ","モロク","アルベルタ","ゲフェン")==4)
+		if(select("�v�����e��","�����N","�A���x���^","�Q�t�F��")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "5. INTが上昇しないカードは？";
+		mes "[���E����]";
+		mes "5. INT���㏸���Ȃ��J�[�h�́H";
 		next;
-		if(select("アンドレの幼虫カード","ビタタカード","子デザートウルフカード","エルダーウィローカード")==2)
+		if(select("�A���h���̗c���J�[�h","�r�^�^�J�[�h","�q�f�U�[�g�E���t�J�[�h","�G���_�[�E�B���[�J�[�h")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "6. マジシャンの長所を選べ。";
+		mes "[���E����]";
+		mes "6. �}�W�V�����̒�����I�ׁB";
 		next;
-		if(select("すぐれた歌唱力","すぐれた演技力","すぐれたダンス能力","すぐれた魔法力")==4)
+		if(select("�����ꂽ�̏���","�����ꂽ���Z��","�����ꂽ�_���X�\��","�����ꂽ���@��")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "7. マジシャンがJobLv40の時";
-		mes "加重値で得られるINT追加値は？";
+		mes "[���E����]";
+		mes "7. �}�W�V������JobLv40�̎�";
+		mes "���d�l�œ�����INT�ǉ��l�́H";
 		next;
 		if(select("8","7","6","5")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "8. マジシャンが装備することが";
-		mes "できないアイテムは？";
+		mes "[���E����]";
+		mes "8. �}�W�V�������������邱�Ƃ�";
+		mes "�ł��Ȃ��A�C�e���́H";
 		next;
-		if(select("ナイフ","キャップ","サンダル","医者のヘアバンド")==2)
+		if(select("�i�C�t","�L���b�v","�T���_��","��҂̃w�A�o���h")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "9. マジシャン転職試験で、";
-		mes "「混合液3」の触媒になる鉱石は";
-		mes "どれか。";
+		mes "[���E����]";
+		mes "9. �}�W�V�����]�E�����ŁA";
+		mes "�u�����t3�v�̐G�}�ɂȂ�z�΂�";
+		mes "�ǂꂩ�B";
 		next;
-		if(select("ブルージェムストーン","レッドジェムストーン","イエロージェムストーン","レッドブラッド")==1)
+		if(select("�u���[�W�F���X�g�[��","���b�h�W�F���X�g�[��","�C�G���[�W�F���X�g�[��","���b�h�u���b�h")==1)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "10. 魔法と関係ないカードは？";
+		mes "[���E����]";
+		mes "10. ���@�Ɗ֌W�Ȃ��J�[�h�́H";
 		next;
-		if(select("マルドゥークカード","白蓮玉カード","ウィローカード","マヤーカード")==2)
+		if(select("�}���h�D�[�N�J�[�h","���@�ʃJ�[�h","�E�B���[�J�[�h","�}���[�J�[�h")==2)
 			set '@point,'@point+10;
 		break;
 	case 2:
-		mes "[ラウレル]";
-		mes "1. ファイアーウォールを覚えるのに";
-		mes "必要でないスキルは？";
+		mes "[���E����]";
+		mes "1. �t�@�C�A�[�E�H�[�����o����̂�";
+		mes "�K�v�łȂ��X�L���́H";
 		next;
-		if(select("ファイアーボルト Lv 4","ファイアーボール Lv 5","サイト Lv 1","ナパームビート Lv 4")==4)
+		if(select("�t�@�C�A�[�{���g Lv 4","�t�@�C�A�[�{�[�� Lv 5","�T�C�g Lv 1","�i�p�[���r�[�g Lv 4")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "2. フロストダイバーでモンスターを";
-		mes "凍結させた場合、その属性は";
-		mes "どうなるか？";
+		mes "[���E����]";
+		mes "2. �t���X�g�_�C�o�[�Ń����X�^�[��";
+		mes "�����������ꍇ�A���̑�����";
+		mes "�ǂ��Ȃ邩�H";
 		next;
-		if(select("水属性","地属性","火属性","風属性")==1)
+		if(select("������","�n����","�Α���","������")==1)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "3. ナパームビートをマスター";
-		mes "した時、モンスターに与える";
-		mes "ダメージはMATKの何倍か？";
+		mes "[���E����]";
+		mes "3. �i�p�[���r�[�g���}�X�^�[";
+		mes "�������A�����X�^�[�ɗ^����";
+		mes "�_���[�W��MATK�̉��{���H";
 		next;
-		if(select("1.6倍","1.7倍","2倍","20倍")==2)
+		if(select("1.6�{","1.7�{","2�{","20�{")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "4. ストーンカース使用の時に";
-		mes "必要なアイテムは？";
+		mes "[���E����]";
+		mes "4. �X�g�[���J�[�X�g�p�̎���";
+		mes "�K�v�ȃA�C�e���́H";
 		next;
-		if(select("レッドブラッド","ブルージェムストーン","イエロージェムストーン","レッドジェムストーン")==4)
+		if(select("���b�h�u���b�h","�u���[�W�F���X�g�[��","�C�G���[�W�F���X�g�[��","���b�h�W�F���X�g�[��")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "5. セイフティウォールを覚える";
-		mes "のに必要でないスキルは？";
+		mes "[���E����]";
+		mes "5. �Z�C�t�e�B�E�H�[�����o����";
+		mes "�̂ɕK�v�łȂ��X�L���́H";
 		next;
-		if(select("ナパームビート Lv 7","ソウルストライク Lv 5","SP 回復力向上 Lv 6","サイト Lv 1")==3)
+		if(select("�i�p�[���r�[�g Lv 7","�\�E���X�g���C�N Lv 5","SP �񕜗͌��� Lv 6","�T�C�g Lv 1")==3)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "6. SP回復力向上を Lv7まで";
-		mes "習得した場合、純粋なスキル効果";
-		mes "により10秒間で回復するSPは？";
+		mes "[���E����]";
+		mes "6. SP�񕜗͌���� Lv7�܂�";
+		mes "�K�������ꍇ�A�����ȃX�L������";
+		mes "�ɂ��10�b�Ԃŉ񕜂���SP�́H";
 		next;
 		if(select("14","21","28","35")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "7. SPが 50%残っている場合、";
-		mes "エナジーコートによるダメージ";
-		mes "減少量とSP消費量は？";
+		mes "[���E����]";
+		mes "7. SP�� 50%�c���Ă���ꍇ�A";
+		mes "�G�i�W�[�R�[�g�ɂ��_���[�W";
+		mes "�����ʂ�SP����ʂ́H";
 		next;
-		if(select("ダメージ18% SP1.5%","ダメージ18% SP2%","ダメージ24% SP1.5%","ダメージ24% SP2%")==2)
+		if(select("�_���[�W18% SP1.5%","�_���[�W18% SP2%","�_���[�W24% SP1.5%","�_���[�W24% SP2%")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "8. セイフティウォールLv6使用";
-		mes "の時消費SPと回避回数は？";
+		mes "[���E����]";
+		mes "8. �Z�C�t�e�B�E�H�[��Lv6�g�p";
+		mes "�̎�����SP�Ɖ���񐔂́H";
 		next;
-		if(select("SP 40. 6回","SP 35. 6回","SP 40. 7回","SP 35. 7回")==4)
+		if(select("SP 40. 6��","SP 35. 6��","SP 40. 7��","SP 35. 7��")==4)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "9. Lv10サンダーストーム使用";
-		mes "の時消費するSPの量は？";
+		mes "[���E����]";
+		mes "9. Lv10�T���_�[�X�g�[���g�p";
+		mes "�̎������SP�̗ʂ́H";
 		next;
 		if(select("84","74","64","54")==2)
 			set '@point,'@point+10;
-		mes "[ラウレル]";
-		mes "10. イズルードダンジョンで効果が";
-		mes "高いスキルは？";
+		mes "[���E����]";
+		mes "10. �C�Y���[�h�_���W�����Ō��ʂ�";
+		mes "�����X�L���́H";
 		next;
-		if(select("ライトニングボルト","ファイアーボルト","コールドボルト","サイト")==1)
+		if(select("���C�g�j���O�{���g","�t�@�C�A�[�{���g","�R�[���h�{���g","�T�C�g")==1)
 			set '@point,'@point+10;
 		break;
 	}
-	mes "[ラウレル]";
-	mes "ご苦労様…。";
+	mes "[���E����]";
+	mes "����J�l�c�B";
 	next;
-	mes "[ラウレル]";
-	mes "どれ…点数は… " +'@point+ "点…";
+	mes "[���E����]";
+	mes "�ǂ�c�_���́c " +'@point+ "�_�c";
 	switch(CHANGE_WZ) {
 	case 3:
 		if('@point < 100) {
-			mes "不合格だ。";
+			mes "�s���i���B";
 			next;
-			mes "[ラウレル]";
-			mes "その程度でウィザードになろうと";
-			mes "思ったのか…。";
-			mes "勉強して出直しなさい。";
+			mes "[���E����]";
+			mes "���̒��x�ŃE�B�U�[�h�ɂȂ낤��";
+			mes "�v�����̂��c�B";
+			mes "�׋����ďo�����Ȃ����B";
 			set CHANGE_WZ,4;
 			close;
 		}
-		mes "ククク…良い。二つ目の試験も通過だ。";
+		mes "�N�N�N�c�ǂ��B��ڂ̎������ʉ߂��B";
 		next;
-		mes "[ラウレル]";
-		mes "まだ安心するな。三つ目の試験が";
-		mes "残っている。休んでおきなさい…";
-		mes "ククククク…。";
+		mes "[���E����]";
+		mes "�܂����S����ȁB�O�ڂ̎�����";
+		mes "�c���Ă���B�x��ł����Ȃ����c";
+		mes "�N�N�N�N�N�c�B";
 		break;
 	case 4:
 		if('@point < 80) {
-			mes "不合格だ。";
+			mes "�s���i���B";
 			next;
-			mes "[ラウレル]";
-			mes "まだまだ勉強が足りない…。";
-			mes "その程度ではウィザードになっても";
-			mes "モンスターに簡単にやられるぞ。";
+			mes "[���E����]";
+			mes "�܂��܂��׋�������Ȃ��c�B";
+			mes "���̒��x�ł̓E�B�U�[�h�ɂȂ��Ă�";
+			mes "�����X�^�[�ɊȒP�ɂ���邼�B";
 			close;
 		}
-		mes "ふん…そこそこの出来か…。";
-		mes "まあいいだろう。通過だ。";
-		mes "一度で通過できなかったが、";
-		mes "努力だけは認めてやる。";
+		mes "�ӂ�c���������̏o�����c�B";
+		mes "�܂��������낤�B�ʉ߂��B";
+		mes "��x�Œʉ߂ł��Ȃ��������A";
+		mes "�w�͂����͔F�߂Ă��B";
 		next;
-		mes "[ラウレル]";
-		mes "まだ安心するなよ。三つ目の試験がある";
-		mes "。";
-		mes "次の試験の前に休んでおきなさい…。";
+		mes "[���E����]";
+		mes "�܂����S����Ȃ�B�O�ڂ̎���������";
+		mes "�B";
+		mes "���̎����̑O�ɋx��ł����Ȃ����c�B";
 		break;
 	}
 	set CHANGE_WZ,5;
@@ -1217,30 +1217,30 @@ gef_tower.gat,102,24,8	script	陰気なウィザード	735,{
 
 
 //==========================================
-// 三次試験（実技）
-//	水×2, 地×2, 火×2の計6段階
+// �O�������i���Z�j
+//	���~2, �n�~2, �΁~2�̌v6�i�K
 //------------------------------------------
 
-job_wiz.gat,50,165,4	script	戦闘進行要員::WZ_ChatRoom	700,{
-	mes "[戦闘進行要員]";
-	mes "戦闘試験場へようこそ。";
-	mes "試験を受ける方は、試験待合室";
-	mes "へお入りください。";
+job_wiz.gat,50,165,4	script	�퓬�i�s�v��::WZ_ChatRoom	700,{
+	mes "[�퓬�i�s�v��]";
+	mes "�퓬������ւ悤�����B";
+	mes "�������󂯂���́A�����ҍ���";
+	mes "�ւ����肭�������B";
 	next;
-	mes "[戦闘進行要員]";
-	mes "他の転職希望者が試験中の場合は";
-	mes "そのまましばらくお待ちください。";
-	mes "進行状況がアナウンスされますので、";
-	mes "前の方が終わったら入場となります。";
+	mes "[�퓬�i�s�v��]";
+	mes "���̓]�E��]�҂��������̏ꍇ��";
+	mes "���̂܂܂��΂炭���҂����������B";
+	mes "�i�s�󋵂��A�i�E���X����܂��̂ŁA";
+	mes "�O�̕����I����������ƂȂ�܂��B";
 	next;
-	mes "[戦闘進行要員]";
-	mes "お一人様の戦闘試験は";
-	mes "約5分から10分程度となります。";
-	mes "もし、試験中断をご希望の場合は";
-	mes "そのままログアウトしてください。";
+	mes "[�퓬�i�s�v��]";
+	mes "����l�l�̐퓬������";
+	mes "��5������10�����x�ƂȂ�܂��B";
+	mes "�����A�������f������]�̏ꍇ��";
+	mes "���̂܂܃��O�A�E�g���Ă��������B";
 	close;
 OnInit:
-	waitingroom "試験待合室",10,"WZ_ChatRoom::OnStart",1;
+	waitingroom "�����ҍ���",10,"WZ_ChatRoom::OnStart",1;
 	end;
 OnStart:
 	disablewaitingroomevent;
@@ -1273,47 +1273,47 @@ OnKilled:
 	set 'count,'count-1;
 	if('count <= 0) {
 		stopnpctimer;
-		announce "水の部屋: " +$@wz_tester$+ "様、モンスター排除成功",9;
+		announce "���̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r������",9;
 		donpcevent "WZ_Water2::OnStart";
 	}
 	end;
 OnTimer1000:
-	announce "水の部屋: 水の部屋、戦闘試験開始です",9;
+	announce "���̕���: ���̕����A�퓬�����J�n�ł�",9;
 	end;
 OnTimer2000:
-	announce "水の部屋: 制限時間は 3分",9;
+	announce "���̕���: �������Ԃ� 3��",9;
 	end;
 OnTimer3000:
-	announce "水の部屋: 時間内にすべてのモンスターを排除してください",9;
+	announce "���̕���: ���ԓ��ɂ��ׂẴ����X�^�[��r�����Ă�������",9;
 	end;
 OnTimer33000:
-	announce "水の部屋: 残り2分 30秒",9;
+	announce "���̕���: �c��2�� 30�b",9;
 	end;
 OnTimer63000:
-	announce "水の部屋: 残り2分",9;
+	announce "���̕���: �c��2��",9;
 	end;
 OnTimer93000:
-	announce "水の部屋: 残り1分 30秒",9;
+	announce "���̕���: �c��1�� 30�b",9;
 	end;
 OnTimer123000:
-	announce "水の部屋: 残り1分",9;
+	announce "���̕���: �c��1��",9;
 	end;
 OnTimer153000:
-	announce "水の部屋: 残り30秒",9;
+	announce "���̕���: �c��30�b",9;
 	end;
 OnTimer173000:
-	announce "制限時間まで後 10秒！",9;
+	announce "�������Ԃ܂Ō� 10�b�I",9;
 	end;
 OnTimer183000:
-	announce "水の部屋: 終了",9;
+	announce "���̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Water1::OnKilled";
 	end;
 OnTimer184000:
-	announce "水の部屋: " +$@wz_tester$+ "様、モンスター排除失敗",9;
+	announce "���̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r�����s",9;
 	areawarp "job_wiz.gat",95,150,135,190,"geffen.gat",120,110;
 	end;
 OnTimer185000:
-	announce "水の部屋: 次の方、入場してください",9;
+	announce "���̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer186000:
 	stopnpctimer;
@@ -1337,30 +1337,30 @@ OnKilled:
 	set 'count,'count-1;
 	if('count <= 0) {
 		stopnpctimer;
-		announce "水の部屋: " +$@wz_tester$+ "様、門番モンスター排除成功",9;
+		announce "���̕���: " +$@wz_tester$+ "�l�A��ԃ����X�^�[�r������",9;
 		areawarp "job_wiz.gat",95,150,135,190,"job_wiz.gat",116,97;
 		donpcevent "WZ_Earth1::OnStart";
 	}
 	end;
 OnTimer1000:
-	announce "水の部屋: 門番モンスターが登場しました。制限時間は 1分です",9;
+	announce "���̕���: ��ԃ����X�^�[���o�ꂵ�܂����B�������Ԃ� 1���ł�",9;
 	end;
 OnTimer30000:
-	announce "水の部屋: 残り30秒",9;
+	announce "���̕���: �c��30�b",9;
 	end;
 OnTimer50000:
-	announce "水の部屋: 残り10秒",9;
+	announce "���̕���: �c��10�b",9;
 	end;
 OnTimer60000:
-	announce "水の部屋: 終了",9;
+	announce "���̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Water2::OnKilled";
 	end;
 OnTimer61000:
-	announce "水の部屋: " +$@wz_tester$+ "様、モンスター排除失敗",9;
+	announce "���̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r�����s",9;
 	areawarp "job_wiz.gat",98,154,129,185,"geffen.gat",120,110;
 	end;
 OnTimer62000:
-	announce "水の部屋: 次の方、入場してください",9;
+	announce "���̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer63000:
 	stopnpctimer;
@@ -1389,47 +1389,47 @@ OnKilled:
 	set 'count,'count-1;
 	if('count <= 0) {
 		stopnpctimer;
-		announce "地の部屋: " +$@wz_tester$+ "様、モンスター排除成功",9;
+		announce "�n�̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r������",9;
 		donpcevent "WZ_Earth2::OnStart";
 	}
 	end;
 OnTimer1000:
-	announce "地の部屋: 地の部屋、戦闘試験開始です",9;
+	announce "�n�̕���: �n�̕����A�퓬�����J�n�ł�",9;
 	end;
 OnTimer2000:
-	announce "地の部屋: 制限時間は 3分",9;
+	announce "�n�̕���: �������Ԃ� 3��",9;
 	end;
 OnTimer3000:
-	announce "地の部屋: 時間内にすべてのモンスターを排除してください",9;
+	announce "�n�̕���: ���ԓ��ɂ��ׂẴ����X�^�[��r�����Ă�������",9;
 	end;
 OnTimer33000:
-	announce "地の部屋: 残り2分 30秒",9;
+	announce "�n�̕���: �c��2�� 30�b",9;
 	end;
 OnTimer63000:
-	announce "地の部屋: 残り2分",9;
+	announce "�n�̕���: �c��2��",9;
 	end;
 OnTimer93000:
-	announce "地の部屋: 残り1分 30秒",9;
+	announce "�n�̕���: �c��1�� 30�b",9;
 	end;
 OnTimer123000:
-	announce "地の部屋: 残り1分",9;
+	announce "�n�̕���: �c��1��",9;
 	end;
 OnTimer153000:
-	announce "地の部屋: 残り30秒",9;
+	announce "�n�̕���: �c��30�b",9;
 	end;
 OnTimer173000:
-	announce "地の部屋: 残り10秒",9;
+	announce "�n�̕���: �c��10�b",9;
 	end;
 OnTimer183000:
-	announce "地の部屋: 終了",9;
+	announce "�n�̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Earth1::OnKilled";
 	end;
 OnTimer184000:
-	announce "地の部屋: " +$@wz_tester$+ "様、モンスター排除失敗",9;
+	announce "�n�̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r�����s",9;
 	areawarp "job_wiz.gat",95,75,135,120,"geffen.gat",120,110;
 	end;
 OnTimer185000:
-	mapannounce "job_wiz.gat","地の部屋: 次の方、入場してください",9;
+	mapannounce "job_wiz.gat","�n�̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer186000:
 	stopnpctimer;
@@ -1455,30 +1455,30 @@ OnKilled:
 	set 'count,'count-1;
 	if('count <= 0) {
 		stopnpctimer;
-		announce "地の部屋: " +$@wz_tester$+ "様、門番モンスター排除成功",9;
+		announce "�n�̕���: " +$@wz_tester$+ "�l�A��ԃ����X�^�[�r������",9;
 		areawarp "job_wiz.gat",95,75,135,120,"job_wiz.gat",46,99;
 		donpcevent "WZ_Fire1::OnStart";
 	}
 	end;
 OnTimer1000:
-	announce "地の部屋: 門番モンスターが登場しました。制限時間は 1分です",9;
+	announce "�n�̕���: ��ԃ����X�^�[���o�ꂵ�܂����B�������Ԃ� 1���ł�",9;
 	end;
 OnTimer30000:
-	announce "地の部屋: 残り30秒",9;
+	announce "�n�̕���: �c��30�b",9;
 	end;
 OnTimer50000:
-	announce "地の部屋: 残り10秒",9;
+	announce "�n�̕���: �c��10�b",9;
 	end;
 OnTimer60000:
-	announce "地の部屋: 終了",9;
+	announce "�n�̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Earth2::OnKilled";
 	end;
 OnTimer61000:
-	announce "地の部屋: " +$@wz_tester$+ "様、モンスター排除失敗",9;
+	announce "�n�̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r�����s",9;
 	areawarp "job_wiz.gat",95,75,135,120,"geffen.gat",120,110;
 	end;
 OnTimer62000:
-	announce "地の部屋: 次の方、入場してください",9;
+	announce "�n�̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer63000:
 	stopnpctimer;
@@ -1499,54 +1499,54 @@ OnStart:
 	monster "job_wiz.gat",40,103,"--ja--",1001,1,"WZ_Fire1::OnKilled";
 	monster "job_wiz.gat",58,110,"--ja--",1178,1,"WZ_Fire1::OnKilled";
 	monster "job_wiz.gat",37,89,"--ja--",1058,1,"WZ_Fire1::OnKilled";
-	monster "job_wiz.gat",33,110,"ゴブリン",1123,1,"WZ_Fire1::OnKilled";
+	monster "job_wiz.gat",33,110,"�S�u����",1123,1,"WZ_Fire1::OnKilled";
 	initnpctimer;
 	end;
 OnKilled:
 	set 'count,'count-1;
 	if('count <= 0) {
 		stopnpctimer;
-		announce "火の部屋: " +$@wz_tester$+ "様、モンスター排除成功",9;
+		announce "�΂̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r������",9;
 		donpcevent "WZ_Fire2::OnStart";
 	}
 	end;
 OnTimer1000:
-	announce "火の部屋: 火の部屋、戦闘試験開始です",9;
+	announce "�΂̕���: �΂̕����A�퓬�����J�n�ł�",9;
 	end;
 OnTimer2000:
-	announce "火の部屋: 最後の部屋です。制限時間は 3分",9;
+	announce "�΂̕���: �Ō�̕����ł��B�������Ԃ� 3��",9;
 	end;
 OnTimer3000:
-	announce "火の部屋: 時間内にすべてのモンスターを排除してください",9;
+	announce "�΂̕���: ���ԓ��ɂ��ׂẴ����X�^�[��r�����Ă�������",9;
 	end;
 OnTimer33000:
-	announce "火の部屋: 残り2分 30秒",9;
+	announce "�΂̕���: �c��2�� 30�b",9;
 	end;
 OnTimer63000:
-	announce "火の部屋: 残り2分",9;
+	announce "�΂̕���: �c��2��",9;
 	end;
 OnTimer93000:
-	announce "火の部屋: 残り1分 30秒",9;
+	announce "�΂̕���: �c��1�� 30�b",9;
 	end;
 OnTimer123000:
-	announce "火の部屋: 残り1分",9;
+	announce "�΂̕���: �c��1��",9;
 	end;
 OnTimer153000:
-	announce "火の部屋: 残り30秒",9;
+	announce "�΂̕���: �c��30�b",9;
 	end;
 OnTimer173000:
-	announce "火の部屋: 残り10秒",9;
+	announce "�΂̕���: �c��10�b",9;
 	end;
 OnTimer183000:
-	announce "火の部屋: 終了",9;
+	announce "�΂̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Fire1::OnKilled";
 	end;
 OnTimer184000:
-	announce "火の部屋: " +$@wz_tester$+ "様、モンスター排除失敗",9;
+	announce "�΂̕���: " +$@wz_tester$+ "�l�A�����X�^�[�r�����s",9;
 	areawarp "job_wiz.gat",25,75,65,120,"geffen.gat",120,110;
 	end;
 OnTimer185000:
-	announce "火の部屋: 次の方、入場してください",9;
+	announce "�΂̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer186000:
 	stopnpctimer;
@@ -1570,45 +1570,45 @@ OnKilled:
 		stopnpctimer;
 		killmonster "job_wiz.gat","WZ_Fire2::OnKilled";
 		set CHANGE_WZ,12;
-		announce "火の部屋: おめでとうございます！ " +$@wz_tester$+ "様が試験に合格しました。",9;
+		announce "�΂̕���: ���߂łƂ��������܂��I " +$@wz_tester$+ "�l�������ɍ��i���܂����B",9;
 		areawarp "job_wiz.gat",95,75,135,120,"job_wiz.gat",46,99;
 		sleep 3000;
-		announce "試験終了: 試験官の元に戻り、残りの手続きを終えてください",9;
+		announce "�����I��: �������̌��ɖ߂�A�c��̎葱�����I���Ă�������",9;
 		sleep 3000;
-		announce "試験終了: 試験を終わります。次の受験者は用意してください",9;
+		announce "�����I��: �������I���܂��B���̎󌱎҂͗p�ӂ��Ă�������",9;
 		areawarp "job_wiz.gat",30,82,61,113,"gef_tower.gat",110,33;
 		sleep 1000;
-		announce "試験終了: 次の方、入場してください",9;
+		announce "�����I��: ���̕��A���ꂵ�Ă�������",9;
 		sleep 1000;
 		enablewaitingroomevent "WZ_ChatRoom";
 		end;
 	}
 	end;
 OnTimer1000:
-	announce "火の部屋: 門番モンスターが登場しました。制限時間は 2分です",9;
+	announce "�΂̕���: ��ԃ����X�^�[���o�ꂵ�܂����B�������Ԃ� 2���ł�",9;
 	end;
 OnTimer30000:
-	announce "火の部屋: 残り1分 30秒",9;
+	announce "�΂̕���: �c��1�� 30�b",9;
 	end;
 OnTimer60000:
-	announce "火の部屋: 残り1分",9;
+	announce "�΂̕���: �c��1��",9;
 	end;
 OnTimer90000:
-	announce "火の部屋: 残り30秒",9;
+	announce "�΂̕���: �c��30�b",9;
 	end;
 OnTimer110000:
-	announce "火の部屋: 残り10秒",9;
+	announce "�΂̕���: �c��10�b",9;
 	end;
 OnTimer120000:
-	announce "火の部屋: 終了",9;
+	announce "�΂̕���: �I��",9;
 	killmonster "job_wiz.gat","WZ_Fire2::OnKilled";
 	end;
 OnTimer121000:
-	announce $@wz_tester$+ "様が試験に失敗しました！",9;
+	announce $@wz_tester$+ "�l�������Ɏ��s���܂����I",9;
 	areawarp "job_wiz.gat",25,75,65,120,"geffen.gat",120,110;
 	end;
 OnTimer122000:
-	announce "火の部屋: 次の方、入場してください",9;
+	announce "�΂̕���: ���̕��A���ꂵ�Ă�������",9;
 	end;
 OnTimer123000:
 	stopnpctimer;

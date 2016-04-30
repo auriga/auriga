@@ -1,22 +1,22 @@
-// grf: <ファイルパス>
-//   必要なgrfファイルを列挙すること。
-//   上から順に読み込んでオーバーライドするので下に記述されているものが優先される。
-//   ファイルパスは絶対パス・相対パスどちらでもよい。
+// grf: <�t�@�C���p�X>
+//   �K�v��grf�t�@�C����񋓂��邱�ƁB
+//   �ォ�珇�ɓǂݍ���ŃI�[�o�[���C�h����̂ŉ��ɋL�q����Ă�����̂��D�悳���B
+//   �t�@�C���p�X�͐�΃p�X�E���΃p�X�ǂ���ł��悢�B
 //       grf: C:\Gravity\Ragnarok\data.grf
 //       grf: ./data.grf
-//   など。
+//   �ȂǁB
 
 grf: C:\Gravity\Ragnarok\data.grf
 grf: C:\Gravity\Ragnarok\sdata.grf
 grf: C:\Gravity\Ragnarok\adata.grf
 
-// datadir: <dataフォルダのディレクトリ>
-//   dataフォルダを利用していて且つdataフォルダの読み込みが最優先の場合などに設定する。
-//   dataフォルダのあるディレクトリを指定することでdataフォルダ内のresnametable.txtを読み込み対象にする。
-//   末尾には必ず \ または / を付けること。
+// datadir: <data�t�H���_�̃f�B���N�g��>
+//   data�t�H���_�𗘗p���Ă��Ċ���data�t�H���_�̓ǂݍ��݂��ŗD��̏ꍇ�Ȃǂɐݒ肷��B
+//   data�t�H���_�̂���f�B���N�g�����w�肷�邱�Ƃ�data�t�H���_����resnametable.txt��ǂݍ��ݑΏۂɂ���B
+//   �����ɂ͕K�� \ �܂��� / ��t���邱�ƁB
 //        datadir: C:\Gravity\Ragnarok\
 //        datadir: ./
-//   など。
-//   指定がない場合（デフォルト）はデコードされたgrf内にあるresnametable.txtを自動的に参照する。
+//   �ȂǁB
+//   �w�肪�Ȃ��ꍇ�i�f�t�H���g�j�̓f�R�[�h���ꂽgrf���ɂ���resnametable.txt�������I�ɎQ�Ƃ���B
 
 datadir:

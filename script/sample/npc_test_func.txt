@@ -1,25 +1,25 @@
-// 値を返さない関数
+// �l��Ԃ��Ȃ��֐�
 function	script	func001	{
-	mes "ユーザー定義関数";
+	mes "���[�U�[��`�֐�";
 	next;
-	return;		// 省略できない
+	return;		// �ȗ��ł��Ȃ�
 }
 
-// 値を返す関数
+// �l��Ԃ��֐�
 function	script	func002	{
-	return "ユーザー定義関数２";
+	return "���[�U�[��`�֐��Q";
 }
 
-// 関数の呼び出しとサブルーティンのテスト
-prontera.gat,168,189,1	script	関数テスト	112,{
-	callfunc "func001";		// ユーザー定義関数は文字列で指定
+// �֐��̌Ăяo���ƃT�u���[�e�B���̃e�X�g
+prontera.gat,168,189,1	script	�֐��e�X�g	112,{
+	callfunc "func001";		// ���[�U�[��`�֐��͕�����Ŏw��
 	mes callfunc("func002");
 	next;
-	callsub L_SUB001;	// サブルーティンはラベルを直接指定
+	callsub L_SUB001;	// �T�u���[�e�B���̓��x���𒼐ڎw��
 	close;
 	end;
 
 L_SUB001:
-	mes "サブルーティン";
-	return;		// 省略できない
+	mes "�T�u���[�e�B��";
+	return;		// �ȗ��ł��Ȃ�
 }

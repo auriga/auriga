@@ -1,46 +1,46 @@
 //==============================================================================
 //Ragnarok Online - dye Event Script
 //
-//  ■ DYE_EVE -> 0〜3
+//  �� DYE_EVE -> 0�`3
 //==============================================================================
 
-alberta_in.gat,133,55,3	script	ルイツ	84,{
+alberta_in.gat,133,55,3	script	���C�c	84,{
 	if(DYE_EVE == 2) {
-		mes "[商人ルイツ]";
-		mes "おお、君か。";
-		mes "どうだ？ゲフェンのあの変な化学者を";
-		mes "訪ねてみたか？";
+		mes "[���l���C�c]";
+		mes "�����A�N���B";
+		mes "�ǂ����H�Q�t�F���̂��̕ςȉ��w�҂�";
+		mes "�K�˂Ă݂����H";
 		next;
-		if(select("モルゲンシュタインについて話す","いや")==1) {
-			mes "[商人ルイツ]";
-			mes "なんだ、まだ訪ねてないのか。";
-			mes "何か溶液を化合してすごい物を";
-			mes "作るらしいじゃないか。";
-			mes "行ってみるといいぞ。";
+		if(select("�����Q���V���^�C���ɂ��Ęb��","����")==1) {
+			mes "[���l���C�c]";
+			mes "�Ȃ񂾁A�܂��K�˂ĂȂ��̂��B";
+			mes "�����n�t���������Ă���������";
+			mes "���炵������Ȃ����B";
+			mes "�s���Ă݂�Ƃ������B";
 		}
 		else {
-			mes "[商人ルイツ]";
-			mes "ん？……";
-			mes "用があるのか無いのか……";
+			mes "[���l���C�c]";
+			mes "��H�c�c";
+			mes "�p������̂������̂��c�c";
 		}
 		close;
 	}
-	mes "[商人ルイツ]";
-	mes "何の用かな？";
+	mes "[���l���C�c]";
+	mes "���̗p���ȁH";
 	next;
-	setarray '@talk$,"話をする","溶液等について話す","カルボディールを見せる","ディトリミンを見せる","やめる";
-	//アイテムを所持してるかどうかで選択肢を決める、出さないものを空文字で埋める
+	setarray '@talk$,"�b������","�n�t���ɂ��Ęb��","�J���{�f�B�[����������","�f�B�g���~����������","��߂�";
+	//�A�C�e�����������Ă邩�ǂ����őI���������߂�A�o���Ȃ����̂��󕶎��Ŗ��߂�
 	if(countitem(971) && countitem(972)) {
-		set '@word$,"あの溶液";
+		set '@word$,"���̗n�t";
 		cleararray '@talk$[2],"",2;
 	}
 	else if(countitem(972)) {
-		set '@word$,"そのカルボディール";
+		set '@word$,"���̃J���{�f�B�[��";
 		set '@talk$[1],"";
 		set '@talk$[3],"";
 	}
 	else if(countitem(971)) {
-		set '@word$,"そのディトリミン";
+		set '@word$,"���̃f�B�g���~��";
 		cleararray '@talk$[1],"",2;
 	}
 	else {
@@ -48,247 +48,247 @@ alberta_in.gat,133,55,3	script	ルイツ	84,{
 	}
 	switch (select('@talk$[0],'@talk$[1],'@talk$[2],'@talk$[3],'@talk$[4])) {
 	case 1:
-		mes "[商人ルイツ]";
-		mes "魔法道具を手に入れるために、";
-		mes "ゲフェンという街に居たことがある。";
-		mes "そこで、一人の変な化学者の噂を";
-		mes "聞いたんだ。";
-		mes "興味がわいたので、噂をもとに";
-		mes "その科学者を訪ねてみたんだ。";
+		mes "[���l���C�c]";
+		mes "���@�������ɓ���邽�߂ɁA";
+		mes "�Q�t�F���Ƃ����X�ɋ������Ƃ�����B";
+		mes "�����ŁA��l�̕ςȉ��w�҂̉\��";
+		mes "�������񂾁B";
+		mes "�������킢���̂ŁA�\�����Ƃ�";
+		mes "���̉Ȋw�҂�K�˂Ă݂��񂾁B";
 		next;
-		mes "[商人ルイツ]";
-		mes "でも、結局何も得られなかった。";
-		mes "彼は研究に夢中で私のことなど";
-		mes "全く目に入っていなかったからだ。";
+		mes "[���l���C�c]";
+		mes "�ł��A���ǉ��������Ȃ������B";
+		mes "�ނ͌����ɖ����Ŏ��̂��ƂȂ�";
+		mes "�S���ڂɓ����Ă��Ȃ��������炾�B";
 		next;
-		mes "[商人ルイツ]";
-		mes "その時、彼が独り言をつぶやいた";
-		mes "のを偶然聞いてしまった……";
-		mes "「カルボーディル」「ディトリミン」…";
+		mes "[���l���C�c]";
+		mes "���̎��A�ނ��Ƃ茾���Ԃ₢��";
+		mes "�̂����R�����Ă��܂����c�c";
+		mes "�u�J���{�[�f�B���v�u�f�B�g���~���v�c";
 		next;
-		mes "[商人ルイツ]";
-		mes "最初はただの寝言かと思ったが、";
-		mes "商売をして得た知識から、そのうち";
-		mes "それがただの水ではないということが";
-		mes "わかった。";
+		mes "[���l���C�c]";
+		mes "�ŏ��͂����̐Q�����Ǝv�������A";
+		mes "���������ē����m������A���̂���";
+		mes "���ꂪ�����̐��ł͂Ȃ��Ƃ������Ƃ�";
+		mes "�킩�����B";
 		close;
 	default:
-		mes "[商人ルイツ]";
-		mes "おお！これが" +'@word$+ "か！";
-		mes "私も噂には聞いたが実物を見る";
-		mes "のは初めてだ。良く手に入れたな〜";
-		mes "でも、これを何に使うのか私には";
-		mes "さっぱりだ。奴じゃないとな……";
+		mes "[���l���C�c]";
+		mes "�����I���ꂪ" +'@word$+ "���I";
+		mes "�����\�ɂ͕�����������������";
+		mes "�̂͏��߂Ă��B�ǂ���ɓ��ꂽ�ȁ`";
+		mes "�ł��A��������Ɏg���̂����ɂ�";
+		mes "�����ς肾�B�z����Ȃ��Ƃȁc�c";
 		next;
-		mes "[商人ルイツ]";
-		mes "冒険者である君は、きっとこの";
-		mes "溶液の謎を解きたいだろう。";
-		mes "珍しいものを見せてもらったお礼に";
-		mes "その化学者の居場所を敎えておこう。";
+		mes "[���l���C�c]";
+		mes "�`���҂ł���N�́A�����Ƃ���";
+		mes "�n�t�̓�������������낤�B";
+		mes "���������̂������Ă�����������";
+		mes "���̉��w�҂̋��ꏊ���͂��Ă������B";
 		next;
-		mes "[商人ルイツ]";
-		mes "昔のことだから正確な場所までは";
-		mes "覚えてないが、ゲフェンに住んでいる";
-		mes "ことは間違いないだろう。";
-		mes "^0000FFモルゲンシュタイン^000000という";
-		mes "名前だったな。";
+		mes "[���l���C�c]";
+		mes "�̂̂��Ƃ����琳�m�ȏꏊ�܂ł�";
+		mes "�o���ĂȂ����A�Q�t�F���ɏZ��ł���";
+		mes "���Ƃ͊ԈႢ�Ȃ����낤�B";
+		mes "^0000FF�����Q���V���^�C��^000000�Ƃ���";
+		mes "���O�������ȁB";
 		next;
-		mes "[商人ルイツ]";
-		mes "詳しいことはゲフェンで聞いて";
-		mes "みてくれ。";
-		mes "それでは幸運を祈る。";
+		mes "[���l���C�c]";
+		mes "�ڂ������Ƃ̓Q�t�F���ŕ�����";
+		mes "�݂Ă���B";
+		mes "����ł͍K�^���F��B";
 		set DYE_EVE,1;
 		close;
 	case 5:
-		mes "[商人ルイツ]";
-		mes "ふーむ……";
+		mes "[���l���C�c]";
+		mes "�Ӂ[�ށc�c";
 		close;
 	}
 }
 
-geffen.gat,184,114,6	script	アウルディフォン	82,{
+geffen.gat,184,114,6	script	�A�E���f�B�t�H��	82,{
 	if(DYE_EVE == 2) {
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "運命がもう一度、";
-		mes "私達を導いたんですね。";
-		mes "あなたが来ることを待って";
-		mes "おりました。";
-		mes "で……貴方が探している人には";
-		mes "会えましたか？";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "�^����������x�A";
+		mes "���B�𓱂�����ł��ˁB";
+		mes "���Ȃ������邱�Ƃ�҂���";
+		mes "����܂����B";
+		mes "�Łc�c�M�����T���Ă���l�ɂ�";
+		mes "��܂������H";
 		next;
-		if(select("モルゲンシュタインについて話す","やめる")==1) {
-			mes "[ゲフェン住民 アウルディフォン]";
-			mes "まだ会っていないんですね。";
-			mes "彼は鍛冶屋の2階に住んでいます。";
-			mes "用心して下さい！";
-			mes "彼に近づき過ぎるのは避けた方が";
-			mes "良いです……";
+		if(select("�����Q���V���^�C���ɂ��Ęb��","��߂�")==1) {
+			mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+			mes "�܂�����Ă��Ȃ���ł��ˁB";
+			mes "�ނ͒b�艮��2�K�ɏZ��ł��܂��B";
+			mes "�p�S���ĉ������I";
+			mes "�ނɋ߂Â��߂���͔̂���������";
+			mes "�ǂ��ł��c�c";
 		}
 		else {
-			mes "[ゲフェン住民 アウルディフォン]";
-			mes "あなたの顔からは、ある意志が";
-			mes "感じられました。でも、あなたは";
-			mes "私に何も話そうとしないんですね……";
-			mes "私は貴方を友達だと思っていたのに……";
-			mes "それは私だけの錯覚でしたか？";
+			mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+			mes "���Ȃ��̊炩��́A����ӎu��";
+			mes "�������܂����B�ł��A���Ȃ���";
+			mes "���ɉ����b�����Ƃ��Ȃ���ł��ˁc�c";
+			mes "���͋M����F�B���Ǝv���Ă����̂Ɂc�c";
+			mes "����͎������̍��o�ł������H";
 		}
 		close;
 	}
-	mes "[ゲフェン住民 アウルディフォン]";
-	mes "一度過ぎ去った時間は、どんな偉大な";
-	mes "魔法を使っても戻ってこないんです。";
-	mes "私がこんな風に話している";
-	mes "この瞬間にも時間は流れています。";
-	mes "なのに、一体なぜ私を呼んだんですか？";
+	mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+	mes "��x�߂����������Ԃ́A�ǂ�Ȉ̑��";
+	mes "���@���g���Ă��߂��Ă��Ȃ���ł��B";
+	mes "��������ȕ��ɘb���Ă���";
+	mes "���̏u�Ԃɂ����Ԃ͗���Ă��܂��B";
+	mes "�Ȃ̂ɁA��̂Ȃ������Ă񂾂�ł����H";
 	next;
 	if(DYE_EVE > 0)
-		set '@talk$,"モルゲンシュタインについて聞く";
-	switch (select("話をする",'@talk$,"やめる")) {	//フラグの0のときは2番目の選択肢出ない
+		set '@talk$,"�����Q���V���^�C���ɂ��ĕ���";
+	switch (select("�b������",'@talk$,"��߂�")) {	//�t���O��0�̂Ƃ���2�Ԗڂ̑I�����o�Ȃ�
 	case 1:
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "魔法の力を研究し、追求する私も";
-		mes "普通の人とは言えません。でも、";
-		mes "この世には本当に稀有な人が";
-		mes "多いようですね……";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "���@�̗͂��������A�ǋ����鎄��";
+		mes "���ʂ̐l�Ƃ͌����܂���B�ł��A";
+		mes "���̐��ɂ͖{���ɋH�L�Ȑl��";
+		mes "�����悤�ł��ˁc�c";
 		next;
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "貴方なら、何か一つに全てをかけて";
-		mes "取組むことができますか？";
-		mes "周辺の全てを諦めたまま……";
-		mes "まるで、狂ったみたいに……";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "�M���Ȃ�A������ɑS�Ă�������";
+		mes "��g�ނ��Ƃ��ł��܂����H";
+		mes "���ӂ̑S�Ă���߂��܂܁c�c";
+		mes "�܂�ŁA�������݂����Ɂc�c";
 		close;
 	case 2:
-		set DYE_EVE,2;	//フラグが3のときでも2に戻される（仕様）
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "あの気違いについて知っているなら、";
-		mes "貴方も一般とは距離がありそうですね。";
-		mes "あの人について知りたいという人は";
-		mes "多いように見えるのですが……";
+		set DYE_EVE,2;	//�t���O��3�̂Ƃ��ł�2�ɖ߂����i�d�l�j
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "���̋C�Ⴂ�ɂ��Ēm���Ă���Ȃ�A";
+		mes "�M������ʂƂ͋��������肻���ł��ˁB";
+		mes "���̐l�ɂ��Ēm�肽���Ƃ����l��";
+		mes "�����悤�Ɍ�����̂ł����c�c";
 		next;
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "彼の詳細を説明することは、";
-		mes "私には無理です。ごめんなさい……";
-		mes "でも、理解してください。";
-		mes "私にできうる最大限は、彼の居場所を";
-		mes "教えることだけです。";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "�ނ̏ڍׂ�������邱�Ƃ́A";
+		mes "���ɂ͖����ł��B���߂�Ȃ����c�c";
+		mes "�ł��A�������Ă��������B";
+		mes "���ɂł�����ő���́A�ނ̋��ꏊ��";
+		mes "�����邱�Ƃ����ł��B";
 		next;
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "彼は鍛冶屋の2階に住んでいます。";
-		mes "用心して下さい！";
-		mes "彼に近づき過ぎるのは避けた方が";
-		mes "良いです……";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "�ނ͒b�艮��2�K�ɏZ��ł��܂��B";
+		mes "�p�S���ĉ������I";
+		mes "�ނɋ߂Â��߂���͔̂���������";
+		mes "�ǂ��ł��c�c";
 		close;
 	case 3:
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "あなたの顔からは、ある意志が";
-		mes "感じられました。でも、あなたは";
-		mes "私に何も話そうとしないんですね……";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "���Ȃ��̊炩��́A����ӎu��";
+		mes "�������܂����B�ł��A���Ȃ���";
+		mes "���ɉ����b�����Ƃ��Ȃ���ł��ˁc�c";
 		next;
-		mes "[ゲフェン住民 アウルディフォン]";
-		mes "残念ですが、私にはどうしようも";
-		mes "ありません……人間もまた、大自然の";
-		mes "一部……即ち、人間の意志は……";
-		mes "大自然の流れのようなものですから。";
+		mes "[�Q�t�F���Z�� �A�E���f�B�t�H��]";
+		mes "�c�O�ł����A���ɂ͂ǂ����悤��";
+		mes "����܂���c�c�l�Ԃ��܂��A�厩�R��";
+		mes "�ꕔ�c�c�����A�l�Ԃ̈ӎu�́c�c";
+		mes "�厩�R�̗���̂悤�Ȃ��̂ł�����B";
 		close;
 	}
 }
 
-geffen_in.gat,141,140,3	script	モルゲンシュタイン	121,{
+geffen_in.gat,141,140,3	script	�����Q���V���^�C��	121,{
 	switch(DYE_EVE) {
 	case 0:
 	case 1:
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒヒヒ……くんくん……";
-		mes "久しぶりに肉の臭いがするな。";
-		mes "人間……人間か。";
-		mes "それも生きている人間……";
-		mes "ヒヒヒヒヒヒ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�q�q�c�c���񂭂�c�c";
+		mes "�v���Ԃ�ɓ��̏L��������ȁB";
+		mes "�l�ԁc�c�l�Ԃ��B";
+		mes "����������Ă���l�ԁc�c";
+		mes "�q�q�q�q�q�q";
 		close;
 	case 2:
 		set DYE_EVE,3;
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒヒヒ……ようこそ。";
-		mes "ヒヒヒヒ……ヒヒヒヒヒッ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�q�q�c�c�悤�����B";
+		mes "�q�q�q�q�c�c�q�q�q�q�q�b�c�c";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "あ……失礼……ヒヒヒヒ……";
-		mes "私は……生きている人間をみるのが";
-		mes "久しぶりで。なんの用だ？";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���c�c����c�c�q�q�q�q�c�c";
+		mes "���́c�c�����Ă���l�Ԃ��݂�̂�";
+		mes "�v���Ԃ�ŁB�Ȃ�̗p���H";
 		break;
 	case 3:
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒヒヒ……ようこそ。";
-		mes "ヒヒヒヒ……ウヒヒヒヒッ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�q�q�c�c�悤�����B";
+		mes "�q�q�q�q�c�c�E�q�q�q�q�b�c�c";
 		break;
 	}
 	next;
-	switch (select("今やっている研究について聞く","研究品を作ってくれと頼む","やめる")) {
+	switch (select("������Ă��錤���ɂ��ĕ���","�����i������Ă���Ɨ���","��߂�")) {
 	case 1:
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒヒヒ……どこかで私の研究について";
-		mes "聞いてきたみたいだな……";
-		mes "そう……ま、全部知ってるだろうから";
-		mes "隠さずに話してやる……いや……";
-		mes "隠すこともないだろ……ヒヒヒヒヒ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�q�q�c�c�ǂ����Ŏ��̌����ɂ���";
+		mes "�����Ă����݂������ȁc�c";
+		mes "�����c�c�܁A�S���m���Ă邾�낤����";
+		mes "�B�����ɘb���Ă��c�c����c�c";
+		mes "�B�����Ƃ��Ȃ�����c�c�q�q�q�q�q�c�c";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "実は……私の研究はもう完成している…";
-		mes "この私の天才的頭脳にできないことは";
-		mes "ない……ヒヒヒ……";
-		mes "時間が問題であるだけだ……";
-		mes "時間……ヒヒヒッ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���́c�c���̌����͂����������Ă���c";
+		mes "���̎��̓V�˓I���]�ɂł��Ȃ����Ƃ�";
+		mes "�Ȃ��c�c�q�q�q�c�c";
+		mes "���Ԃ����ł��邾�����c�c";
+		mes "���ԁc�c�q�q�q�b�c�c";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "……その研究について知りたいと";
-		mes "言ったな……それはとっても簡単な";
-		mes "もんさ……水に溶けない物を";
-		mes "溶かす方法を発見しようとしただけさ。";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�c�c���̌����ɂ��Ēm�肽����";
+		mes "�������ȁc�c����͂Ƃ��Ă��ȒP��";
+		mes "���񂳁c�c���ɗn���Ȃ�����";
+		mes "�n�������@�𔭌����悤�Ƃ����������B";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "興味津々じゃないか？";
-		mes "あの堅い岩と鉄の固まりを";
-		mes "力のない液体に溶かす方法!!!";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�����ÁX����Ȃ����H";
+		mes "���̌�����ƓS�̌ł܂��";
+		mes "�͂̂Ȃ��t�̂ɗn�������@!!!";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "何もかもがどろどろ〜〜〜";
-		mes "どろどろになるだろう!!ヒヒ!!!";
-		mes "……ヒヒヒヒッ!!……どろどろ!!!";
-		mes "ヒヒヒヒッヒヒ!!!!";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�����������ǂ�ǂ�`�`�`";
+		mes "�ǂ�ǂ�ɂȂ邾�낤!!�q�q!!!";
+		mes "�c�c�q�q�q�q�b!!�c�c�ǂ�ǂ�!!!";
+		mes "�q�q�q�q�b�q�q!!!!";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "へ……へ……はぁ……はぁ……";
-		mes "と、とにかく……まだ全てを";
-		//mes "溶かすことはできないが、。";	//本鯖仕様
-		mes "溶かすことはできないが、";
-		mes "いくつか発見したことがある。";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�ցc�c�ցc�c�͂��c�c�͂��c�c";
+		mes "�ƁA�Ƃɂ����c�c�܂��S�Ă�";
+		//mes "�n�������Ƃ͂ł��Ȃ����A�B";	//�{�I�d�l
+		mes "�n�������Ƃ͂ł��Ȃ����A";
+		mes "�����������������Ƃ�����B";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "この方法で君が想像できるより、";
-		mes "ずっと多くのものが作り出せるだろう";
-		mes "……君が願うなら!!";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���̕��@�ŌN���z���ł�����A";
+		mes "�����Ƒ����̂��̂����o���邾�낤";
+		mes "�c�c�N���肤�Ȃ�!!";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "……ああ……身体中の循環が活性化し";
-		mes "顔が赤くなるこの感じ……考えるだけで";
-		mes "頭の中に愉快な液体が分泌され、";
-		mes "快楽の嬉しさに満ちるこの感じ……";
-		mes "ああああ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�c�c�����c�c�g�̒��̏z����������";
+		mes "�炪�Ԃ��Ȃ邱�̊����c�c�l���邾����";
+		mes "���̒��ɖ����ȉt�̂����傳��A";
+		mes "���y�̊������ɖ����邱�̊����c�c";
+		mes "���������c�c";
 		close;
 	case 2:
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒヒヒッ……";
-		mes "やっぱり君も興味があったんだ。";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�q�q�b�c�c";
+		mes "����ς�N���������������񂾁B";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "そう……そうだ……世の中誰だって";
-		mes "興味を持たざるを得ないだろ……";
-		mes "愉快で、興奮すること……フフフフ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�����c�c�������c�c���̒��N������";
+		mes "��������������𓾂Ȃ�����c�c";
+		mes "�����ŁA�������邱�Ɓc�c�t�t�t�t";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "さあ……何を作り出したいかい??";
-		mes "……うん？ヒヒヒヒ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�����c�c�������o����������??";
+		mes "�c�c����H�q�q�q�q";
 		next;
-		if(select("中和剤","混合剤")==1) {
+		if(select("���a��","������")==1) {
 			set '@need,971;
 			set '@price,3000;
 			set '@gain,973;
@@ -298,326 +298,326 @@ geffen_in.gat,141,140,3	script	モルゲンシュタイン	121,{
 			set '@price,4000;
 			set '@gain,974;
 		}
-		mes "[化学者モルゲンシュタイン]";
-		mes "お……" +getitemname('@gain)+ "を作りたいと言ったかい";
-		mes "……フ フ フ フ……では、";
-		mes "その遊戯のために準備する物を";
-		mes "教えてやる。";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���c�c" +getitemname('@gain)+ "����肽���ƌ���������";
+		mes "�c�c�t �t �t �t�c�c�ł́A";
+		mes "���̗V�Y�̂��߂ɏ������镨��";
+		mes "�����Ă��B";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "……どれ……お……お………";
-		mes "ああ……はあ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�c�c�ǂ�c�c���c�c���c�c�c";
+		mes "�����c�c�͂��c�c";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "お……思い出した……そう……";
-		mes "アルコール……と……" +getitemname('@need);
-		mes "……そしてそれを保管できる空きビン…";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���c�c�v���o�����c�c�����c�c";
+		mes "�A���R�[���c�c�Ɓc�c" +getitemname('@need);
+		mes "�c�c�����Ă����ۊǂł���󂫃r���c";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "この三つの物さえあれば作れる……";
-		mes "そして、私に天才的な頭脳と技術に";
-		mes "対して感謝を頼みたい……ヒヒヒヒッ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���̎O�̕���������΍���c�c";
+		mes "�����āA���ɓV�˓I�ȓ��]�ƋZ�p��";
+		mes "�΂��Ċ��ӂ𗊂݂����c�c�q�q�q�q�b";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "そんなに負担のかかるもんじゃない……";
-		mes "大したものが欲しいわけではない……";
-		mes "……フ フ フ フ";
-		mes "よ〜く聴け……" +'@price+ " zenyさえ";
-		mes "出せばいい……ヒヒヒヒ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "����Ȃɕ��S�̂�������񂶂�Ȃ��c�c";
+		mes "�債�����̂��~�����킯�ł͂Ȃ��c�c";
+		mes "�c�c�t �t �t �t";
+		mes "��`�������c�c" +'@price+ " zeny����";
+		mes "�o���΂����c�c�q�q�q�q";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "お……お……ひょっとして高いと";
-		mes "思ってるわけじゃないだろ？";
-		mes "……私には感じられる……";
-		mes "君には私のような冒険と創造の欲望が";
-		mes "あることを！";
-		mes "……ヒヒヒヒヒヒヒヒヒヒヒッ";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "���c�c���c�c�Ђ���Ƃ��č�����";
+		mes "�v���Ă�킯����Ȃ�����H";
+		mes "�c�c���ɂ͊�������c�c";
+		mes "�N�ɂ͎��̂悤�Ȗ`���Ƒn���̗~�]��";
+		mes "���邱�Ƃ��I";
+		mes "�c�c�q�q�q�q�q�q�q�q�q�q�q�b";
 		next;
-		mes "[化学者モルゲンシュタイン]";
-		mes "さあ……始めるか？";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�����c�c�n�߂邩�H";
 		next;
-		if(select("作る","やめる")==2) {
-			mes "[化学者モルゲンシュタイン]";
-			mes "フ……フフフフフ……";
+		if(select("���","��߂�")==2) {
+			mes "[���w�҃����Q���V���^�C��]";
+			mes "�t�c�c�t�t�t�t�t�c�c";
 			close;
 		}
 		if(countitem(970)<1 || countitem('@need)<1 || countitem(713)<1 || Zeny<'@price) {
-			mes "[化学者モルゲンシュタイン]";
-			mes "フフフフ……足りない……";
-			mes "ハア……ハア……早く……早く……";
-			mes "材料を集めて来たまえ!!";
-			mes "遊戯はその後に……フフフフフ";
+			mes "[���w�҃����Q���V���^�C��]";
+			mes "�t�t�t�t�c�c����Ȃ��c�c";
+			mes "�n�A�c�c�n�A�c�c�����c�c�����c�c";
+			mes "�ޗ����W�߂ė����܂�!!";
+			mes "�V�Y�͂��̌�Ɂc�c�t�t�t�t�t";
 			close;
 		}
-		mes "[化学者モルゲンシュタイン]";
-		mes "おおお……ヒヒヒヒヒヒ……";
-		mes "そう……こうして……そう……";
-		mes "もっと……ヒヒヒヒヒ";
-		mes "……アア……アハ……ハ……アハ……";
-		mes "おお……おお！";
-		mes "……おおおおおっ!!!!!!!!!";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�������c�c�q�q�q�q�q�q�c�c";
+		mes "�����c�c�������āc�c�����c�c";
+		mes "�����Ɓc�c�q�q�q�q�q";
+		mes "�c�c�A�A�c�c�A�n�c�c�n�c�c�A�n�c�c";
+		mes "�����c�c�����I";
+		mes "�c�c������������!!!!!!!!!";
 		next;
 		delitem 970,1;
 		delitem '@need,1;
 		delitem 713,1;
 		set Zeny,Zeny-'@price;
 		getitem '@gain,1;
-		mes "[化学者モルゲンシュタイン]";
-		mes "……はあ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�c�c�͂��c�c";
 		close;
 	case 3:
-		mes "[化学者モルゲンシュタイン]";
-		mes "ヒヒ……ヒヒヒヒ……";
+		mes "[���w�҃����Q���V���^�C��]";
+		mes "�q�q�c�c�q�q�q�q�c�c";
 		close;
 	}
 }
 
-prontera.gat,78,150,3	script	ダイレン	90,{
-	mes "[村の乙女ダイレン]";
-	mes "はぁ……この頃";
-	mes "広場に人が多くて複雑だわ。";
-	mes "けほんけほん……";
+prontera.gat,78,150,3	script	�_�C����	90,{
+	mes "[���̉����_�C����]";
+	mes "�͂��c�c���̍�";
+	mes "�L��ɐl�������ĕ��G����B";
+	mes "���ق񂯂ق�c�c";
 	next;
-	mes "[村の乙女ダイレン]";
-	mes "あら？なに、この塵〜、不潔だわ〜";
-	mes "首都だからと言って、どこでも";
-	mes "綺麗ってわけにはいかないのね〜。";
-	mes "あらら……それより、何かご用？";
+	mes "[���̉����_�C����]";
+	mes "����H�ȂɁA���̐o�`�A�s������`";
+	mes "��s������ƌ����āA�ǂ��ł�";
+	mes "�Y����Ă킯�ɂ͂����Ȃ��̂ˁ`�B";
+	mes "�����c�c������A�������p�H";
 	next;
-	if(select("話をする","やめる")==2) {
-		mes "[村の乙女ダイレン]";
-		mes "あら〜何？人に話しかけておいて。";
-		mes "……変な人。";
+	if(select("�b������","��߂�")==2) {
+		mes "[���̉����_�C����]";
+		mes "����`���H�l�ɘb�������Ă����āB";
+		mes "�c�c�ςȐl�B";
 		close;
 	}
-	mes "[村の乙女ダイレン]";
-	mes "もしかして、パーティとかドレスに";
-	mes "興味あるのかしら？ホホホホ";
-	mes "この頃の流行の最先端は、";
-	mes "なんといっても華麗な色で飾られた";
-	mes "ドレスですわ。";
+	mes "[���̉����_�C����]";
+	mes "���������āA�p�[�e�B�Ƃ��h���X��";
+	mes "��������̂�����H�z�z�z�z";
+	mes "���̍��̗��s�̍Ő�[�́A";
+	mes "�Ȃ�Ƃ����Ă��ؗ�ȐF�ŏ���ꂽ";
+	mes "�h���X�ł���B";
 	next;
-	mes "[村の乙女ダイレン]";
-	mes "その魂さえ奪われそうな色を";
-	mes "出すためには、砂漠の都市モロクだけで";
-	mes "作られている染料を使用しなきゃ";
-	mes "ダメらしいけど……";
-	mes "その染料の値段が想像を超えるって。";
+	mes "[���̉����_�C����]";
+	mes "���̍������D��ꂻ���ȐF��";
+	mes "�o�����߂ɂ́A�����̓s�s�����N������";
+	mes "����Ă���������g�p���Ȃ���";
+	mes "�_���炵�����ǁc�c";
+	mes "���̐����̒l�i���z���𒴂�����āB";
 	next;
-	mes "[村の乙女ダイレン]";
-	mes "ああ……一度だけでいいから";
-	mes "着てみたいわ……";
+	mes "[���̉����_�C����]";
+	mes "�����c�c��x�����ł�������";
+	mes "���Ă݂�����c�c";
 	close;
 }
 
-morocc_in.gat,146,99,3	script	ザバドリハン	58,{
-	mes "[染料製作者ザバドリハン]";
-	mes "やぁ……今日は本当に暑いね。";
-	mes "こんな天気こそ染料作りにピッタリさ！";
+morocc_in.gat,146,99,3	script	�U�o�h���n��	58,{
+	mes "[��������҃U�o�h���n��]";
+	mes "�₟�c�c�����͖{���ɏ����ˁB";
+	mes "����ȓV�C�����������Ƀs�b�^�����I";
 	next;
-	switch (select("話をする","染料をつくる","やめる")) {
+	switch (select("�b������","����������","��߂�")) {
 	case 1:
-		mes "[染料製作者ザバドリハン]";
-		mes "君に話すことは特にないけど……";
-		mes "そうだね、私の過去の話でよかったら";
-		mes "聴かせるよ。";
-		mes "少し長くてつまんないかも知れないけど";
-		mes "聴いてみるかい？";
+		mes "[��������҃U�o�h���n��]";
+		mes "�N�ɘb�����Ƃ͓��ɂȂ����ǁc�c";
+		mes "�������ˁA���̉ߋ��̘b�ł悩������";
+		mes "���������B";
+		mes "���������Ă܂�Ȃ������m��Ȃ�����";
+		mes "�����Ă݂邩���H";
 		next;
-		if(select("聴く","聴かない")==2) {
-			mes "[染料製作者ザバドリハン]";
-			mes "あはは……やれやれ……";
-			mes "私みたいな染料職人の話を";
-			mes "聞いてくれるはずないか。";
-			mes "ハハハハッ……";
+		if(select("����","�����Ȃ�")==2) {
+			mes "[��������҃U�o�h���n��]";
+			mes "���͂́c�c�����c�c";
+			mes "���݂����Ȑ����E�l�̘b��";
+			mes "�����Ă����͂��Ȃ����B";
+			mes "�n�n�n�n�b�c�c";
 			close;
 		}
-		mes "[染料製作者ザバドリハン]";
-		mes "物心がつく前から……";
-		mes "私の父は染料を作っていた。";
-		mes "数えられないほど長い時間、";
-		mes "父はずっと染料を作っていた。";
+		mes "[��������҃U�o�h���n��]";
+		mes "���S�����O����c�c";
+		mes "���̕��͐���������Ă����B";
+		mes "�������Ȃ��قǒ������ԁA";
+		mes "���͂����Ɛ���������Ă����B";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "そう……母が病気で死んだ時までも";
-		mes "……染料作りをやめなかった。";
-		mes "その時は、そんな父が憎かった……";
+		mes "[��������҃U�o�h���n��]";
+		mes "�����c�c�ꂪ�a�C�Ŏ��񂾎��܂ł�";
+		mes "�c�c����������߂Ȃ������B";
+		mes "���̎��́A����ȕ������������c�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "そんな父が嫌で染料作りも嫌いになって";
-		mes "若い頃は家を出て、何でもやって";
-		mes "みたりしたけれど……";
+		mes "[��������҃U�o�h���n��]";
+		mes "����ȕ������Ő������������ɂȂ���";
+		mes "�Ⴂ���͉Ƃ��o�āA���ł������";
+		mes "�݂��肵������ǁc�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "でも……私は今、再び家に戻って";
-		mes "染料作りの家業を継いでいる。";
-		mes "血は誤魔化せなかったみたいさ……";
-		mes "この仕事を始めて、もう……";
-		mes "15年経ったな。";
+		mes "[��������҃U�o�h���n��]";
+		mes "�ł��c�c���͍��A�ĂщƂɖ߂���";
+		mes "�������̉ƋƂ��p���ł���B";
+		mes "���͌떂�����Ȃ������݂������c�c";
+		mes "���̎d�����n�߂āA�����c�c";
+		mes "15�N�o�����ȁB";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "この頃になって感じてるのは……";
-		mes "今は父が理解できるってことさ。";
-		mes "父がどうして全てを捨てたまま、";
-		mes "染料作りに夢中になったかを……";
+		mes "[��������҃U�o�h���n��]";
+		mes "���̍��ɂȂ��Ċ����Ă�̂́c�c";
+		mes "���͕��������ł�����Ă��Ƃ��B";
+		mes "�����ǂ����đS�Ă��̂Ă��܂܁A";
+		mes "�������ɖ����ɂȂ��������c�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "それは多分、何回も繰り返した作業で";
-		mes "重なって染まっていく、あの色……";
-		mes "何十回何千回、夢の中で見たような";
-		mes "あの幻の色を出すためだったんだろう…";
+		mes "[��������҃U�o�h���n��]";
+		mes "����͑����A������J��Ԃ�����Ƃ�";
+		mes "�d�Ȃ��Đ��܂��Ă����A���̐F�c�c";
+		mes "���\�񉽐��A���̒��Ō����悤��";
+		mes "���̌��̐F���o�����߂������񂾂낤�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "フッ……";
-		mes "どうしてそれが分かるのかって？";
-		mes "それは……今の私がそうだからさ。";
-		mes "何年前からだったか……";
-		mes "色の言うことが分かるようになった";
-		mes "あの瞬間から……";
+		mes "[��������҃U�o�h���n��]";
+		mes "�t�b�c�c";
+		mes "�ǂ����Ă��ꂪ������̂����āH";
+		mes "����́c�c���̎������������炳�B";
+		mes "���N�O���炾�������c�c";
+		mes "�F�̌������Ƃ�������悤�ɂȂ���";
+		mes "���̏u�Ԃ���c�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "見てろ！";
-		mes "私は父が成し遂げられなかった";
-		mes "あの色を必ず実現させて見せるさ！";
+		mes "[��������҃U�o�h���n��]";
+		mes "���Ă�I";
+		mes "���͕��������������Ȃ�����";
+		mes "���̐F��K�����������Č����邳�I";
 		close;
 	case 2:
-		mes "[染料製作者ザバドリハン]";
-		mes "よし！君さえよかったら、作ろう。";
-		mes "私が必ず君の欲しい色を";
-		mes "出してやると、約束しよう。";
+		mes "[��������҃U�o�h���n��]";
+		mes "�悵�I�N�����悩������A��낤�B";
+		mes "�����K���N�̗~�����F��";
+		mes "�o���Ă��ƁA�񑩂��悤�B";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "で、どんな色の染料が作りたいかい？";
-		mes "作ろうとする色によって手数料が";
-		mes "違うよ。";
+		mes "[��������҃U�o�h���n��]";
+		mes "�ŁA�ǂ�ȐF�̐�������肽�������H";
+		mes "��낤�Ƃ���F�ɂ���Ď萔����";
+		mes "�Ⴄ��B";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "なぜかって？";
-		mes "この世には簡単に作れる色と、";
-		mes "そうじゃない色があるんだ。";
-		mes "手数料が高いなんて思わないでおくれ。";
-		mes "この染料は私の魂が込められている、";
-		mes "特別な物なんだからね！";
+		mes "[��������҃U�o�h���n��]";
+		mes "�Ȃ������āH";
+		mes "���̐��ɂ͊ȒP�ɍ���F�ƁA";
+		mes "��������Ȃ��F������񂾁B";
+		mes "�萔���������Ȃ�Ďv��Ȃ��ł�����B";
+		mes "���̐����͎��̍������߂��Ă���A";
+		mes "���ʂȕ��Ȃ񂾂���ˁI";
 		next;
-		switch (select("赤色の染料","黄色の染料","靑色の染料","録色の染料","紅色の染料","紫色の染料","白色の染料","黑色の染料","やめる")) {
+		switch (select("�ԐF�̐���","���F�̐���","��F�̐���","�^�F�̐���","�g�F�̐���","���F�̐���","���F�̐���","�K�F�̐���","��߂�")) {
 			case 1:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……赤色の染料を作るためには";
-				mes "赤ハーブ 30個 と 中和剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 3000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c�ԐF�̐�������邽�߂ɂ�";
+				mes "�ԃn�[�u 30�� �� ���a�܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 3000 zeny�ɂȂ�B";
 				setarray '@need,507,973,713;
 				setarray '@amount,30,1,1;
 				set '@price,3000;
 				set '@gain,975;
 				break;
 			case 2:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……黄色の染料を作るためには";
-				mes "黄ハーブ 30個 と 中和剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 3000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c���F�̐�������邽�߂ɂ�";
+				mes "���n�[�u 30�� �� ���a�܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 3000 zeny�ɂȂ�B";
 				setarray '@need,508,973,713;
 				setarray '@amount,30,1,1;
 				set '@price,3000;
 				set '@gain,976;
 				break;
 			case 3:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……青色の染料を作るためには";
-				mes "青ハーブ 20個 と 中和剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 3500 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c�F�̐�������邽�߂ɂ�";
+				mes "�n�[�u 20�� �� ���a�܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 3500 zeny�ɂȂ�B";
 				setarray '@need,510,973,713;
 				setarray '@amount,20,1,1;
 				set '@price,3500;
 				set '@gain,978;
 				break;
 			case 4:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……緑色の染料を作るためには";
-				mes "青ハーブ 5個 と 緑ハーブ 20個";
-				mes "黄ハーブ 20個　中和剤 と 混合剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "材料が多いから、間違いないように。";
-				mes "手数料は 5000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c�ΐF�̐�������邽�߂ɂ�";
+				mes "�n�[�u 5�� �� �΃n�[�u 20��";
+				mes "���n�[�u 20�@���a�� �� �����܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�ޗ�����������A�ԈႢ�Ȃ��悤�ɁB";
+				mes "�萔���� 5000 zeny�ɂȂ�B";
 				setarray '@need,510,973,713,511,508,974;
 				setarray '@amount,5,1,1,20,20,1;
 				set '@price,5000;
 				set '@gain,979;
 				break;
 			case 5:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……紅色の染料を作るためには";
-				mes "赤ハーブ 20個 と 黄ハーブ 20個";
-				mes "中和剤 と 混合剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 5000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c�g�F�̐�������邽�߂ɂ�";
+				mes "�ԃn�[�u 20�� �� ���n�[�u 20��";
+				mes "���a�� �� �����܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 5000 zeny�ɂȂ�B";
 				setarray '@need,507,973,713,974,508;
 				setarray '@amount,20,1,1,1,20;
 				set '@price,5000;
 				set '@gain,980;
 				break;
 			case 6:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……紫色の染料を作るためには";
-				mes "青ハーブ 10個と赤ハーブ 30個";
-				mes "中和剤 と 混合剤、";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 5000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c���F�̐�������邽�߂ɂ�";
+				mes "�n�[�u 10�Ɛԃn�[�u 30��";
+				mes "���a�� �� �����܁A";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 5000 zeny�ɂȂ�B";
 				setarray '@need,507,973,713,974,510;
 				setarray '@amount,20,1,1,1,10;
 				set '@price,5000;
 				set '@gain,981;
 				break;
 			case 7:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……白色の染料を作るためには";
-				mes "白ハーブ 30個 と 中和剤";
-				mes "そして空きビン 1個が必要だ。";
-				mes "手数料は 3000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c���F�̐�������邽�߂ɂ�";
+				mes "���n�[�u 30�� �� ���a��";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�萔���� 3000 zeny�ɂȂ�B";
 				setarray '@need,509,973,713;
 				setarray '@amount,30,1,1;
 				set '@price,3000;
 				set '@gain,982;
 				break;
 			case 8:
-				mes "[染料製作者ザバドリハン]";
-				mes "うーむ……黒色の染料を作るためには";
-				mes "赤、黄、緑のハーブが 30個ずつ";
-				mes "青ハーブ 5個 と 中和剤、混合剤";
-				mes "そして空きビン 1個が必要だ。";
-				mes "作成が難しく、長い時間が必要だから";
-				mes "手数料は 7000 zenyになる。";
+				mes "[��������҃U�o�h���n��]";
+				mes "���[�ށc�c���F�̐�������邽�߂ɂ�";
+				mes "�ԁA���A�΂̃n�[�u�� 30����";
+				mes "�n�[�u 5�� �� ���a�܁A������";
+				mes "�����ċ󂫃r�� 1���K�v���B";
+				mes "�쐬������A�������Ԃ��K�v������";
+				mes "�萔���� 7000 zeny�ɂȂ�B";
 				setarray '@need,507,973,713,510,508,974,511;
 				setarray '@amount,30,1,1,5,30,1,30;
 				set '@price,7000;
 				set '@gain,983;
 				break;
 			case 9:
-				mes "[染料製作者ザバドリハン]";
-				mes "何？今さら気が変わった？";
-				mes "そんな……";
+				mes "[��������҃U�o�h���n��]";
+				mes "���H������C���ς�����H";
+				mes "����ȁc�c";
 				close;
 		}
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "さあ！準備できていると思うが……";
-		mes "作業を始めるかい？";
+		mes "[��������҃U�o�h���n��]";
+		mes "�����I�����ł��Ă���Ǝv�����c�c";
+		mes "��Ƃ��n�߂邩���H";
 		next;
-		if(select("染料をつくる","やめる")==2) {
-			mes "[染料製作者ザバドリハン]";
-			mes "何？今さら気が変わった？";
-			mes "そんな……";
+		if(select("����������","��߂�")==2) {
+			mes "[��������҃U�o�h���n��]";
+			mes "���H������C���ς�����H";
+			mes "����ȁc�c";
 			close;
 		}
-		//各アイテムに対して所持数のチェックとZeny判定
+		//�e�A�C�e���ɑ΂��ď������̃`�F�b�N��Zeny����
 		for(set '@i,0; '@i<getarraysize('@need); set '@i,'@i+1) {
 			if(countitem('@need['@i]) < '@amount['@i] || Zeny<'@price) {
-				mes "[染料製作者ザバドリハン]";
-				mes "ふーむ、足りないね……";
-				mes "その材料では、満足な色が出せないな。";
-				mes "もっと材料を集めて来てくれ。";
+				mes "[��������҃U�o�h���n��]";
+				mes "�Ӂ[�ށA����Ȃ��ˁc�c";
+				mes "���̍ޗ��ł́A�����ȐF���o���Ȃ��ȁB";
+				mes "�����ƍޗ����W�߂ė��Ă���B";
 				close;
 			}
 		}
@@ -626,236 +626,236 @@ morocc_in.gat,146,99,3	script	ザバドリハン	58,{
 		}
 		set Zeny,Zeny-'@price;
 		getitem '@gain,1;
-		mes "[染料製作者ザバドリハン]";
-		mes "ふーむ……ま、これなら良く";
-		mes "できたほうさ。";
-		mes "とっても濃い色に仕上がったよ。";
-		mes "もちろん、私はこれ以上に魅惑的な色を";
-		mes "作り出すために努力するさ……";
+		mes "[��������҃U�o�h���n��]";
+		mes "�Ӂ[�ށc�c�܁A����Ȃ�ǂ�";
+		mes "�ł����ق����B";
+		mes "�Ƃ��Ă��Z���F�Ɏd�オ������B";
+		mes "�������A���͂���ȏ�ɖ��f�I�ȐF��";
+		mes "���o�����߂ɓw�͂��邳�c�c";
 		next;
-		mes "[染料製作者ザバドリハン]";
-		mes "では、染料がまた必要になったら";
-		mes "いつでも来なさい。";
+		mes "[��������҃U�o�h���n��]";
+		mes "�ł́A�������܂��K�v�ɂȂ�����";
+		mes "���ł����Ȃ����B";
 		close;
 	case 3:
-		mes "[染料製作者ザバドリハン]";
-		mes "自慢じゃないが、私は染色薬を作る";
-		mes "技術をもっているのさ。";
-		mes "もし染料が必要なら、私に";
-		mes "頼んでくれればいいさ。";
-		mes "悪くない値段で作ってあげるよ。";
+		mes "[��������҃U�o�h���n��]";
+		mes "��������Ȃ����A���͐��F������";
+		mes "�Z�p�������Ă���̂��B";
+		mes "�����������K�v�Ȃ�A����";
+		mes "����ł����΂������B";
+		mes "�����Ȃ��l�i�ō���Ă������B";
 		close;
 	}
 }
 
-prt_in.gat,284,168,3	script	ジネダインレフル	55,{
-	mes "[衣類加工士ジネダイン=レフル]";
-	mes "十一……十二……うーむ、よし。";
-	mes "今夜のパーティまでは、。";
-	mes "どうにか間に合いそうだ。";
+prt_in.gat,284,168,3	script	�W�l�_�C�����t��	55,{
+	mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+	mes "�\��c�c�\��c�c���[�ށA�悵�B";
+	mes "����̃p�[�e�B�܂ł́A�B";
+	mes "�ǂ��ɂ��Ԃɍ����������B";
 	next;
-	mes "[衣類加工士ジネダイン=レフル]";
-	mes "あ！";
-	mes "お客様、いらっしゃいませ。";
-	mes "何の用でいらしたのですか？";
+	mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+	mes "���I";
+	mes "���q�l�A��������Ⴂ�܂��B";
+	mes "���̗p�ł��炵���̂ł����H";
 	next;
-	switch (select("話をする","服を染める","やめる")) {
+	switch (select("�b������","������߂�","��߂�")) {
 	case 1:
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "ドレス注文が殺到しているところを";
-		mes "見ると、余裕のあるお嬢さんにとって";
-		mes "とても良い世になったようですね。";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�h���X�������E�����Ă���Ƃ����";
+		mes "����ƁA�]�T�̂��邨�삳��ɂƂ���";
+		mes "�ƂĂ��ǂ����ɂȂ����悤�ł��ˁB";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "贅沢と思ってるわけではありませんが…";
-		mes "まぁ、いいでしょう。";
-		mes "世にはそんな人達がいるから、";
-		mes "人間の追及する美しさが発展できると";
-		mes "言うものです。";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�ґ�Ǝv���Ă�킯�ł͂���܂��񂪁c";
+		mes "�܂��A�����ł��傤�B";
+		mes "���ɂ͂���Ȑl�B�����邩��A";
+		mes "�l�Ԃ̒ǋy��������������W�ł����";
+		mes "�������̂ł��B";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "毛も鱗もない人間が、自分の個性と";
-		mes "美しさを表現できる数少ない方法は";
-		mes "服で着飾るしかないのですから……";
-		mes "あ、これは私だけの考えですがね。";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�т��؂��Ȃ��l�Ԃ��A�����̌���";
+		mes "��������\���ł��鐔���Ȃ����@��";
+		mes "���Œ����邵���Ȃ��̂ł�����c�c";
+		mes "���A����͎������̍l���ł����ˁB";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "ハハハ……そういう視点で見たとき";
-		mes "私なりに考えてみたこの仕事は、";
-		mes "とても崇高な仕事ではないかと";
-		mes "思います。やりがいもありますし。";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�n�n�n�c�c�����������_�Ō����Ƃ�";
+		mes "���Ȃ�ɍl���Ă݂����̎d���́A";
+		mes "�ƂĂ������Ȏd���ł͂Ȃ�����";
+		mes "�v���܂��B��肪��������܂����B";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "あなたにも感じられますか？";
-		mes "アンバランスで平凡な、あの布と革を";
-		mes "綺麗な色で染めたとき……";
-		mes "まるで新しい命が生れるように";
-		mes "ほとばしるその情熱とエネルギー……";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "���Ȃ��ɂ��������܂����H";
+		mes "�A���o�����X�ŕ��}�ȁA���̕z�Ɗv��";
+		mes "�Y��ȐF�Ő��߂��Ƃ��c�c";
+		mes "�܂�ŐV�������������悤��";
+		mes "�قƂ΂��邻�̏�M�ƃG�l���M�[�c�c";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "とてもキツクて難しい作業だけれど、";
-		mes "完成されたドレスを見た時に感じられる";
-		mes "あの喜悦だけで、充分、";
-		mes "苦労が報われます。";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�ƂĂ��L�c�N�ē����Ƃ�����ǁA";
+		mes "�������ꂽ�h���X���������Ɋ�������";
+		mes "���̊�x�����ŁA�[���A";
+		mes "��J������܂��B";
 		close;
 	case 2:
-//		mes "[衣類加工士ジネダイン=レフル]";
-//		mes "ほお……あなたも服を染色しに来たと";
-//		mes "いうことですね？";
-//		mes "いいでしょう。";
-//		mes "今度の仕事は面白そうですね。";
+//		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+//		mes "�ق��c�c���Ȃ���������F���ɗ�����";
+//		mes "�������Ƃł��ˁH";
+//		mes "�����ł��傤�B";
+//		mes "���x�̎d���͖ʔ������ł��ˁB";
 //		next;
-//		mes "[衣類加工士ジネダイン=レフル]";
-//		mes "でも染色に必要な材料は";
-//		mes "残念ながら私から提供しておりません。";
-//		mes "全部持って来ていただかないと……";
-//		mes "私が必要とする材料が全部";
-//		mes "揃っているか見てみましょうか？";
+//		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+//		mes "�ł����F�ɕK�v�ȍޗ���";
+//		mes "�c�O�Ȃ��玄����񋟂��Ă���܂���B";
+//		mes "�S�������ė��Ă��������Ȃ��Ɓc�c";
+//		mes "�����K�v�Ƃ���ޗ����S��";
+//		mes "�����Ă��邩���Ă݂܂��傤���H";
 //		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "あ……あなたも服を染色しに";
-		mes "いらしたんですね？";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "���c�c���Ȃ���������F����";
+		mes "���炵����ł��ˁH";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "申し訳ございませんが、今はあなたの";
-		mes "服を染色してさしあげる時間が";
-		mes "ありません。滞っている注文を";
-		mes "仕上げるだけで精一杯ですので……";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�\���󂲂����܂��񂪁A���͂��Ȃ���";
+		mes "������F���Ă��������鎞�Ԃ�";
+		mes "����܂���B�؂��Ă��钍����";
+		mes "�d�グ�邾���Ő���t�ł��̂Łc�c";
 		next;
-		mes "[衣類加工士ジネダイン=レフル]";
-		mes "申し訳ございませんが、";
-		mes "今度また寄ってくださいませんか？";
+		mes "[�ߗމ��H�m�W�l�_�C��=���t��]";
+		mes "�\���󂲂����܂��񂪁A";
+		mes "���x�܂�����Ă��������܂��񂩁H";
 		close;
 	case 3:
-		mes "ごゆっくりして行ってください。";
-		mes "私は忙しくて手を離せないので、";
-		mes "お相手することは出来ませんが。";
+		mes "��������肵�čs���Ă��������B";
+		mes "���͖Z�����Ď�𗣂��Ȃ��̂ŁA";
+		mes "�����肷�邱�Ƃ͏o���܂��񂪁B";
 		close;
 	}
 }
 
-//■キャラ永続変数hairColorを廃止
-prt_in.gat,243,168,4	script	ヨボビチ	91,{
+//���L�����i���ϐ�hairColor��p�~
+prt_in.gat,243,168,4	script	���{�r�`	91,{
 	if(Sex==0) {
 		if(rand(2)) {
-			mes "[美容師ヨボビチ]";
-			mes "いらっしゃいませ〜。";
-			mes "あら！お姉さん…";
-			mes "髪がだいぶ傷んでいますね〜。";
-			mes "私に任せてください。";
+			mes "[���e�t���{�r�`]";
+			mes "��������Ⴂ�܂��`�B";
+			mes "����I���o����c";
+			mes "���������ԏ���ł��܂��ˁ`�B";
+			mes "���ɔC���Ă��������B";
 		}
 		else {
-			mes "[美容師ヨボビチ]";
-			mes "あら！お姉さん、";
-			mes "髪染めしてみては";
-			mes "いかがでしょう？";
-			mes "もっと綺麗になれますよ！";
-			mes "思い切ってイメージチェンジ";
-			mes "してみませんか？";
+			mes "[���e�t���{�r�`]";
+			mes "����I���o����A";
+			mes "�����߂��Ă݂Ă�";
+			mes "�������ł��傤�H";
+			mes "�������Y��ɂȂ�܂���I";
+			mes "�v���؂��ăC���[�W�`�F���W";
+			mes "���Ă݂܂��񂩁H";
 		}
 	}
 	if(Sex==1) {
-		mes "[美容師ヨボビチ]";
-		mes "いらっしゃいませ。";
-		mes "あらら…こんなに髪が傷んで…";
-		mes "ちゃんとしたお手入れが必要ですね。";
-		mes "それではお座りください。";
+		mes "[���e�t���{�r�`]";
+		mes "��������Ⴂ�܂��B";
+		mes "�����c����Ȃɔ�������Łc";
+		mes "�����Ƃ���������ꂪ�K�v�ł��ˁB";
+		mes "����ł͂����肭�������B";
 	}
 	next;
-	switch (select("髪を染める","髪染めについて","やめる")) {
+	switch (select("������߂�","�����߂ɂ���","��߂�")) {
 	case 1:
-		mes "[美容師ヨボビチ]";
-		mes "まあ、勇気を出しましたね〜。";
-		mes "さあ！それでは思い切って";
-		mes "変身してみましょう！";
-		mes "どのお色がよろしいですか？";
-		//色文字、色番号、アイテムIDの配列をセット
-		setarray '@word$,"赤","黄","紫","紅","緑","青","白","黒";
+		mes "[���e�t���{�r�`]";
+		mes "�܂��A�E�C���o���܂����ˁ`�B";
+		mes "�����I����ł͎v���؂���";
+		mes "�ϐg���Ă݂܂��傤�I";
+		mes "�ǂ̂��F����낵���ł����H";
+		//�F�����A�F�ԍ��A�A�C�e��ID�̔z����Z�b�g
+		setarray '@word$,"��","��","��","�g","��","��","��","��";
 		setarray '@color,8,1,2,3,4,5,6,7;
 		setarray '@itemid,975,976,981,980,979,978,982,983;
 		while(1) {
 			next;
-			set '@j,select("赤色でお願いします","黄色でお願いします","紫色でお願いします","紅色でお願いします",
-					"緑色でお願いします","青色でお願いします","白色でお願いします","黒色でお願いします","やっぱり今のままで")-1;
-			mes "[美容師ヨボビチ]";
-			mes "それでは" +'@word$['@j]+ "色に染めますね。";
+			set '@j,select("�ԐF�ł��肢���܂�","���F�ł��肢���܂�","���F�ł��肢���܂�","�g�F�ł��肢���܂�",
+					"�ΐF�ł��肢���܂�","�F�ł��肢���܂�","���F�ł��肢���܂�","���F�ł��肢���܂�","����ς荡�̂܂܂�")-1;
+			mes "[���e�t���{�r�`]";
+			mes "����ł�" +'@word$['@j]+ "�F�ɐ��߂܂��ˁB";
 			next;
-			if(select("はい！","やっぱやめる！")==2) {
-				if('@dyecount) {	//1回以上すでに染めたとき
-					mes "[美容師ヨボビチ]";
-					mes "今の色が気に入られたんですね。";
-					mes "お似合いですよ〜。";
+			if(select("�͂��I","����ς�߂�I")==2) {
+				if('@dyecount) {	//1��ȏシ�łɐ��߂��Ƃ�
+					mes "[���e�t���{�r�`]";
+					mes "���̐F���C�ɓ���ꂽ��ł��ˁB";
+					mes "���������ł���`�B";
 				}
 				else {
-					mes "[美容師ヨボビチ]";
-					mes "そのままでいらっしゃるのですね。";
-					mes "少しもったいない気もしますが、";
-					mes "今の色もお似合いですよ。";
+					mes "[���e�t���{�r�`]";
+					mes "���̂܂܂ł���������̂ł��ˁB";
+					mes "�������������Ȃ��C�����܂����A";
+					mes "���̐F�����������ł���B";
 				}
 				close;
 			}
 			if(Zeny<5000) {
-				mes "[美容師ヨボビチ]";
-				mes "あ、お金が足りないようです。";
+				mes "[���e�t���{�r�`]";
+				mes "���A����������Ȃ��悤�ł��B";
 				close;
 			}
 			if(countitem('@itemid['@j])<1) {
-				mes "[美容師ヨボビチ]";
-				mes "あの、" +'@word$['@j]+ "色に染めるには";
-				mes "「" +'@word$['@j]+ "色の染料」が必要です。";
+				mes "[���e�t���{�r�`]";
+				mes "���́A" +'@word$['@j]+ "�F�ɐ��߂�ɂ�";
+				mes "�u" +'@word$['@j]+ "�F�̐����v���K�v�ł��B";
 				close;
 			}
 			if(getlook(6) == '@color['@j]) {
-				mes "[美容師ヨボビチ]";
-				mes "あ、その色はお客様の";
-				mes "今の髪と同じです。";
+				mes "[���e�t���{�r�`]";
+				mes "���A���̐F�͂��q�l��";
+				mes "���̔��Ɠ����ł��B";
 				continue;
 			}
 			set '@dyecount,1;
 			set Zeny,Zeny-5000;
 			delitem '@itemid['@j],1;
 			setlook 6,'@color['@j];
-			mes "[美容師ヨボビチ]";
-			mes "どうでしょう、他の色に";
-			mes "染めてみますか？";
+			mes "[���e�t���{�r�`]";
+			mes "�ǂ��ł��傤�A���̐F��";
+			mes "���߂Ă݂܂����H";
 			next;
-			if(select("はい","いいえ")==2) {
-				mes "[美容師ヨボビチ]";
-				mes "は〜い、";
-				mes "お似合いです！";
-				mes "またのお越しをお待ちして";
-				mes "おります〜。";
+			if(select("�͂�","������")==2) {
+				mes "[���e�t���{�r�`]";
+				mes "�́`���A";
+				mes "���������ł��I";
+				mes "�܂��̂��z�������҂�����";
+				mes "����܂��`�B";
 				close;
 			}
-			mes "[美容師ヨボビチ]";
-			mes "はい、かしこまりました。";
-			mes "ご希望の色をどうぞ。";
+			mes "[���e�t���{�r�`]";
+			mes "�͂��A�������܂�܂����B";
+			mes "����]�̐F���ǂ����B";
 		}
 	case 2:
-		mes "[美容師ヨボビチ]";
-		mes "気持ちが浮かない時、";
-		mes "恋人にふられた時、";
-		mes "素敵に見せたい人がいる時、";
-		mes "おしゃれしてみたい時、";
-		mes "そんな時、イメージチェンジをして";
-		mes "気分も一新してみませんか？";
+		mes "[���e�t���{�r�`]";
+		mes "�C�����������Ȃ����A";
+		mes "���l�ɂӂ�ꂽ���A";
+		mes "�f�G�Ɍ��������l�����鎞�A";
+		mes "������ꂵ�Ă݂������A";
+		mes "����Ȏ��A�C���[�W�`�F���W������";
+		mes "�C������V���Ă݂܂��񂩁H";
 		next;
-		mes "[美容師ヨボビチ]";
-		mes "もし、こちらに髪を染める染料を";
-		mes "お持ちになったら、素敵な髪を";
-		mes "もっと素敵に変えてさしあげます。";
-		mes "料金なんか気にしちゃいけません。";
-		mes "もっと良い物が得られるのですから。";
+		mes "[���e�t���{�r�`]";
+		mes "�����A������ɔ�����߂������";
+		mes "�������ɂȂ�����A�f�G�Ȕ���";
+		mes "�����Ƒf�G�ɕς��Ă��������܂��B";
+		mes "�����Ȃ񂩋C�ɂ����Ⴂ���܂���B";
+		mes "�����Ɨǂ�����������̂ł�����B";
 		next;
-		mes "[美容師ヨボビチ]";
-		mes "* 材料及び料金案内 *";
-		mes "・^FF3080ご希望の色の染料 1個^000000";
-		mes "・^FF3080髪染め料金 5000ｚ^000000";
+		mes "[���e�t���{�r�`]";
+		mes "* �ޗ��y�ї����ē� *";
+		mes "�E^FF3080����]�̐F�̐��� 1��^000000";
+		mes "�E^FF3080�����ߗ��� 5000��^000000";
 		close;
 	case 3:
-		mes "[美容師ヨボビチ]";
-		mes "男でも女でも…人は美しくなる";
-		mes "権利と義務があります。";
+		mes "[���e�t���{�r�`]";
+		mes "�j�ł����ł��c�l�͔������Ȃ�";
+		mes "�����Ƌ`��������܂��B";
 		close;
 	}
 }

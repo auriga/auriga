@@ -1,2 +1,2 @@
-//produce_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//produce_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //ID,ItemLV,RequireSkillid,Skilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5

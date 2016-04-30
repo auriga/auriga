@@ -1,13 +1,13 @@
 //=========================================================================
-// å®ç®±ç™ºç”ŸNPC
+// •ó” ”­¶NPC
 //-------------------------------------------------------------------------
 
 -	script	#TresureBox	-1,{
 	function MakeTBox {
 		setcastledata getarg(0),2,getcastledata(getarg(0),2)+getcastledata(getarg(0),4);
 		setcastledata getarg(0),3,getcastledata(getarg(0),3)+getcastledata(getarg(0),5);
-		setcastledata getarg(0),4,0;	//å•†æ¥­æŠ•è³‡å›æ•°ãƒªã‚»ãƒƒãƒˆ
-		setcastledata getarg(0),5,0;	//é˜²è¡›æŠ•è³‡å›æ•°ãƒªã‚»ãƒƒãƒˆ
+		setcastledata getarg(0),4,0;	//¤‹Æ“Š‘‰ñ”ƒŠƒZƒbƒg
+		setcastledata getarg(0),5,0;	//–h‰q“Š‘‰ñ”ƒŠƒZƒbƒg
 		killmonster getarg(0),"#TresureBox::OnKilled";
 		set '@num1,2+(getcastledata(getarg(0),2)+5)/10;
 		set '@num2,2+getcastledata(getarg(0),2)/10;
@@ -15,8 +15,8 @@
 			set '@num1,12;
 		if('@num2 > 12)
 			set '@num2,12;
-		areamonster getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),"å®ç®±",getarg(5),'@num1,"#TresureBox::OnKilled";
-		areamonster getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),"å®ç®±",getarg(6),'@num2,"#TresureBox::OnKilled";
+		areamonster getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),"•ó” ",getarg(5),'@num1,"#TresureBox::OnKilled";
+		areamonster getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),"•ó” ",getarg(6),'@num2,"#TresureBox::OnKilled";
 		return;
 	}
 	end;
@@ -44,24 +44,24 @@ OnClock0000:
 	MakeTBox "prtg_cas05.gat",272,174,279,181,1362,1363;
 	end;
 OnKilled:
-	end;	//ãƒ€ãƒŸãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ
+	end;	//ƒ_ƒ~[ƒCƒxƒ“ƒg
 }
 
 
-//-----GMå°‚ç”¨ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰-----
+//-----GMê—pƒfƒoƒbƒOƒ‚[ƒh-----
 /*
 ===========================================================
 prontera.gat,156,195,0	script	TBOX-Control	111,{
 	if(getgmlevel()==0)
 		end;
-	mes "[TBOX-Control^ff0000(GMå°‚ç”¨)^000000]";
-	mes "å®ç®±ã‚’ç™ºç”Ÿã•ã›ã¾ã™ã‹ï¼Ÿ";
+	mes "[TBOX-Control^ff0000(GMê—p)^000000]";
+	mes "•ó” ‚ğ”­¶‚³‚¹‚Ü‚·‚©H";
 	next;
-	if(select("ã¯ã„","ã„ã„ãˆ")==2)
+	if(select("‚Í‚¢","‚¢‚¢‚¦")==2)
 		close;
 	donpcevent "#TresureBox::OnClock0000";
-	mes "[TBOX-Control^ff0000(GMå°‚ç”¨)^000000]";
-	mes "å®ç®±ã‚’ç™ºç”Ÿã•ã›ã¾ã—ãŸã€‚";
+	mes "[TBOX-Control^ff0000(GMê—p)^000000]";
+	mes "•ó” ‚ğ”­¶‚³‚¹‚Ü‚µ‚½B";
 	close;
 }
 ===========================================================

@@ -1,200 +1,200 @@
-//npc_monster.txtï¼ Athena 2007/07/05 12:08:43 (JST-9)
+//npc_monster.txt—Athena 2007/07/05 12:08:43 (JST-9)
 
-//æ°·æ´çªŸ(ice_dun01.gat)
-ice_dun01.gat,0,0,0,0	monster	ã‚¬ã‚¼ãƒ†ã‚£	1778,1,0,0,0
-ice_dun01.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,40,0,0,0
-ice_dun01.gat,0,0,0,0	monster	ãƒ ã‚¹ã‚­ãƒ—ãƒ©ãƒ¼	1780,20,0,0,0
-ice_dun01.gat,0,0,0,0	monster	ã‚·ãƒ­ãƒ	1776,60,0,0,0
+//•X“´ŒA(ice_dun01.gat)
+ice_dun01.gat,0,0,0,0	monster	ƒKƒ[ƒeƒB	1778,1,0,0,0
+ice_dun01.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,40,0,0,0
+ice_dun01.gat,0,0,0,0	monster	ƒ€ƒXƒLƒvƒ‰[	1780,20,0,0,0
+ice_dun01.gat,0,0,0,0	monster	ƒVƒƒ}	1776,60,0,0,0
 
-//æ°·æ´çªŸ(ice_dun02.gat)
-ice_dun02.gat,0,0,0,0	monster	ã‚²ã‚¤ã‚ºãƒ†ã‚£	1778,20,0,0,0
-ice_dun02.gat,0,0,0,0	monster	ã‚¢ã‚¤ã‚·ã‚¯ãƒ«	1789,10,0,0,0
-ice_dun02.gat,0,0,0,0	monster	ã‚¹ãƒã‚¦ã‚£ã‚¢ãƒ¼	1775,60,0,0,0
-ice_dun02.gat,0,0,0,0	monster	ã‚·ãƒ­ãƒ	1776,40,0,0,0
-ice_dun02.gat,0,0,0,0	monster	ã‚¢ã‚¤ã‚¹ã‚¿ã‚¤ã‚¿ãƒ³	1777,10,0,0,0
+//•X“´ŒA(ice_dun02.gat)
+ice_dun02.gat,0,0,0,0	monster	ƒQƒCƒYƒeƒB	1778,20,0,0,0
+ice_dun02.gat,0,0,0,0	monster	ƒAƒCƒVƒNƒ‹	1789,10,0,0,0
+ice_dun02.gat,0,0,0,0	monster	ƒXƒmƒEƒBƒA[	1775,60,0,0,0
+ice_dun02.gat,0,0,0,0	monster	ƒVƒƒ}	1776,40,0,0,0
+ice_dun02.gat,0,0,0,0	monster	ƒAƒCƒXƒ^ƒCƒ^ƒ“	1777,10,0,0,0
 
-//æ°·æ´çªŸ(ice_dun03.gat)
-ice_dun03.gat,0,0,0,0	monster	ã‚²ã‚¤ã‚ºãƒ†ã‚£	1778,30,0,0,0
-ice_dun03.gat,0,0,0,0	monster	ã‚¢ã‚¤ã‚·ã‚¯ãƒ«	1789,10,0,0,0
-ice_dun03.gat,0,0,0,0	monster	ã‚¹ãƒã‚¦ã‚£ã‚¢ãƒ¼	1775,20,0,0,0
-ice_dun03.gat,0,0,0,0	monster	ã‚¢ã‚¤ã‚¹ã‚¿ã‚¤ã‚¿ãƒ³	1777,50,0,0,0
-ice_dun03.gat,0,0,0,0	monster	ã‚·ãƒ­ãƒ	1776,20,0,0,0
-ice_dun03.gat,0,0,0,0	monster	ã‚¯ãƒˆãƒ«ãƒ©ãƒŠãƒƒã‚¯ã‚¹	1779,1,7200000,3600000,0
+//•X“´ŒA(ice_dun03.gat)
+ice_dun03.gat,0,0,0,0	monster	ƒQƒCƒYƒeƒB	1778,30,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ƒAƒCƒVƒNƒ‹	1789,10,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ƒXƒmƒEƒBƒA[	1775,20,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ƒAƒCƒXƒ^ƒCƒ^ƒ“	1777,50,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ƒVƒƒ}	1776,20,0,0,0
+ice_dun03.gat,0,0,0,0	monster	ƒNƒgƒ‹ƒ‰ƒiƒbƒNƒX	1779,1,7200000,3600000,0
 
-//ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ(ra_fild01.gat)
-ra_fild01.gat,0,0,0,0	monster	ãƒ ã‚¹ã‚­ãƒ—ãƒ©ãƒ¼	1780,50,0,0,0
-ra_fild01.gat,0,0,0,0	monster	ã‚¸ã‚ªã‚°ãƒ©ãƒ•ã‚¡ãƒ¼	1368,30,0,0,0
-ra_fild01.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,2,0,0,0
-ra_fild01.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,10,0,0,0
-ra_fild01.gat,0,0,0,0	monster	ã‚°ãƒªãƒ•ã‚©ãƒ³	1259,3,3600000,1800000,0
-ra_fild01.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,20,0,0,0
+//ƒAƒEƒhƒ€ƒ‰‘Œ´(ra_fild01.gat)
+ra_fild01.gat,0,0,0,0	monster	ƒ€ƒXƒLƒvƒ‰[	1780,50,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ƒWƒIƒOƒ‰ƒtƒ@[	1368,30,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,2,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,10,0,0,0
+ra_fild01.gat,0,0,0,0	monster	ƒOƒŠƒtƒHƒ“	1259,3,3600000,1800000,0
+ra_fild01.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,20,0,0,0
 
-//ã‚ªãƒƒã‚ºå³¡è°·(ra_fild02.gat)
-ra_fild02.gat,0,0,0,0	monster	ãƒ ã‚¹ã‚­ãƒ—ãƒ©ãƒ¼	1780,40,0,0,0
-ra_fild02.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,20,0,0,0
-ra_fild02.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,20,0,0,0
-ra_fild02.gat,0,0,0,0	monster	ã‚¢ãƒˆãƒ­ã‚¹	1785,1,14400000,7200000,0
+//ƒIƒbƒY‹¬’J(ra_fild02.gat)
+ra_fild02.gat,0,0,0,0	monster	ƒ€ƒXƒLƒvƒ‰[	1780,40,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,20,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,20,0,0,0
+ra_fild02.gat,0,0,0,0	monster	ƒAƒgƒƒX	1785,1,14400000,7200000,0
 
-//ãƒ©ãƒƒã‚»ãƒ«å¹³åŸ(ra_fild03.gat)
-ra_fild03.gat,0,0,0,0	monster	ã‚¢ãƒˆãƒ­ã‚¹	1785,1,10800000,5400000,0
-ra_fild03.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,30,0,0,0
-ra_fild03.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,10,0,0,0
-ra_fild03.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,10,0,0,0
-ra_fild03.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,10,0,0,0
+//ƒ‰ƒbƒZƒ‹•½Œ´(ra_fild03.gat)
+ra_fild03.gat,0,0,0,0	monster	ƒAƒgƒƒX	1785,1,10800000,5400000,0
+ra_fild03.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,30,0,0,0
+ra_fild03.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,10,0,0,0
+ra_fild03.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,10,0,0,0
+ra_fild03.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,10,0,0,0
 
-//ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ(ra_fild04.gat)
-ra_fild04.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,20,0,0,0
-ra_fild04.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,60,0,0,0
-ra_fild04.gat,0,0,0,0	monster	ã‚¢ãƒˆãƒ­ã‚¹	1785,1,18000000,9000000,0
-ra_fild04.gat,0,0,0,0	monster	ãƒ¯ã‚¤ãƒ«ãƒ‰ãƒ­ãƒ¼ã‚º	1261,10,0,0,0
-ra_fild04.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,3,0,0,0
+//ƒAƒEƒhƒ€ƒ‰‘Œ´(ra_fild04.gat)
+ra_fild04.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,20,0,0,0
+ra_fild04.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,60,0,0,0
+ra_fild04.gat,0,0,0,0	monster	ƒAƒgƒƒX	1785,1,18000000,9000000,0
+ra_fild04.gat,0,0,0,0	monster	ƒƒCƒ‹ƒhƒ[ƒY	1261,10,0,0,0
+ra_fild04.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,3,0,0,0
 
-//ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ(ra_fild05.gat)
-ra_fild05.gat,0,0,0,0	monster	ãƒ’ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰	1680,50,0,0,0
-ra_fild05.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,25,0,0,0
-ra_fild05.gat,0,0,0,0	monster	ã‚¸ã‚ªã‚°ãƒ©ãƒ•ã‚¡ãƒ¼	1368,15,0,0,0
+//ƒAƒEƒhƒ€ƒ‰‘Œ´(ra_fild05.gat)
+ra_fild05.gat,0,0,0,0	monster	ƒqƒ‹ƒEƒBƒ“ƒh	1680,50,0,0,0
+ra_fild05.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,25,0,0,0
+ra_fild05.gat,0,0,0,0	monster	ƒWƒIƒOƒ‰ƒtƒ@[	1368,15,0,0,0
 
-//ãƒãƒ«ãƒˆãƒ«ãƒŠ(ra_fild06.gat)
-ra_fild06.gat,0,0,0,0	monster	ãƒ’ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰	1680,30,0,0,0
-ra_fild06.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,10,0,0,0
-ra_fild06.gat,0,0,0,0	monster	ã‚¦ã‚£ãƒ¬ã‚¹	1627,20,0,0,0
+//ƒ|ƒ‹ƒgƒ‹ƒi(ra_fild06.gat)
+ra_fild06.gat,0,0,0,0	monster	ƒqƒ‹ƒEƒBƒ“ƒh	1680,30,0,0,0
+ra_fild06.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,10,0,0,0
+ra_fild06.gat,0,0,0,0	monster	ƒEƒBƒŒƒX	1627,20,0,0,0
 
-//ã‚ªãƒƒã‚ºå³¡è°·(ra_fild07.gat)
-ra_fild07.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,20,0,0,0
-ra_fild07.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,40,0,0,0
-ra_fild07.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,30,0,0,0
+//ƒIƒbƒY‹¬’J(ra_fild07.gat)
+ra_fild07.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,20,0,0,0
+ra_fild07.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,40,0,0,0
+ra_fild07.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,30,0,0,0
 
-//ãƒ©ãƒƒã‚»ãƒ«å¹³åŸ(ra_fild08.gat)
-ra_fild08.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,60,0,0,0
-ra_fild08.gat,0,0,0,0	monster	ãƒ‰ãƒ­ãƒƒãƒ—ã‚¹	1113,30,0,0,0
-ra_fild08.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,15,0,0,0
+//ƒ‰ƒbƒZƒ‹•½Œ´(ra_fild08.gat)
+ra_fild08.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,60,0,0,0
+ra_fild08.gat,0,0,0,0	monster	ƒhƒƒbƒvƒX	1113,30,0,0,0
+ra_fild08.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,15,0,0,0
 
-//ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ(ra_fild09.gat)
-ra_fild09.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,60,0,0,0
-ra_fild09.gat,0,0,0,0	monster	ãƒ¡ã‚¿ãƒªãƒ³	1613,20,0,0,0
-ra_fild09.gat,0,0,0,0	monster	ãƒ’ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰	1680,10,0,0,0
-ra_fild09.gat,0,0,0,0	monster	ãƒãƒ¼ãƒ”ãƒ¼	1376,1,0,0,0
+//ƒAƒEƒhƒ€ƒ‰‘Œ´(ra_fild09.gat)
+ra_fild09.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,60,0,0,0
+ra_fild09.gat,0,0,0,0	monster	ƒƒ^ƒŠƒ“	1613,20,0,0,0
+ra_fild09.gat,0,0,0,0	monster	ƒqƒ‹ƒEƒBƒ“ƒh	1680,10,0,0,0
+ra_fild09.gat,0,0,0,0	monster	ƒn[ƒs[	1376,1,0,0,0
 
-//ã‚ªãƒƒã‚ºå³¡è°·(ra_fild10.gat)
-ra_fild10.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,15,0,0,0
-ra_fild10.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,10,0,0,0
-ra_fild10.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,35,0,0,0
+//ƒIƒbƒY‹¬’J(ra_fild10.gat)
+ra_fild10.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,15,0,0,0
+ra_fild10.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,10,0,0,0
+ra_fild10.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,35,0,0,0
 
-//ãƒ©ãƒƒã‚»ãƒ«å¹³åŸ(ra_fild11.gat)
-ra_fild11.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,25,0,0,0
-ra_fild11.gat,0,0,0,0	monster	ãƒ‰ãƒ­ãƒƒãƒ—ã‚¹	1113,35,0,0,0
-ra_fild11.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,10,0,0,0
-ra_fild11.gat,0,0,0,0	monster	èµ¤ã„è‰	1078,10,180000,90000,0
-ra_fild11.gat,0,0,0,0	monster	é»„è‰²è‰	1081,10,180000,90000,0
+//ƒ‰ƒbƒZƒ‹•½Œ´(ra_fild11.gat)
+ra_fild11.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,25,0,0,0
+ra_fild11.gat,0,0,0,0	monster	ƒhƒƒbƒvƒX	1113,35,0,0,0
+ra_fild11.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,10,0,0,0
+ra_fild11.gat,0,0,0,0	monster	Ô‚¢‘	1078,10,180000,90000,0
+ra_fild11.gat,0,0,0,0	monster	‰©F‘	1081,10,180000,90000,0
 
-//ãƒ©ãƒƒã‚»ãƒ«å¹³åŸ(ra_fild12.gat)
-ra_fild12.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,40,0,0,0
-ra_fild12.gat,0,0,0,0	monster	ãƒ‰ãƒ­ãƒƒãƒ—ã‚¹	1113,65,0,0,0
-ra_fild12.gat,0,0,0,0	monster	ãƒãƒãƒªãƒ³	1031,5,0,0,0
-ra_fild12.gat,0,0,0,0	monster	é»„è‰²è‰	1081,15,180000,90000,0
-ra_fild12.gat,0,0,0,0	monster	èµ¤ã„è‰	1078,5,180000,90000,0
+//ƒ‰ƒbƒZƒ‹•½Œ´(ra_fild12.gat)
+ra_fild12.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,40,0,0,0
+ra_fild12.gat,0,0,0,0	monster	ƒhƒƒbƒvƒX	1113,65,0,0,0
+ra_fild12.gat,0,0,0,0	monster	ƒ|ƒ|ƒŠƒ“	1031,5,0,0,0
+ra_fild12.gat,0,0,0,0	monster	‰©F‘	1081,15,180000,90000,0
+ra_fild12.gat,0,0,0,0	monster	Ô‚¢‘	1078,5,180000,90000,0
 
-//æ¶™ã®æµ·å²¸(ra_fild13.gat)
-ra_fild13.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,60,0,0,0
-ra_fild13.gat,0,0,0,0	monster	ãƒ‰ãƒ­ãƒƒãƒ—ã‚¹	1113,40,0,0,0
-ra_fild13.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,5,0,0,0
+//—Ü‚ÌŠCŠİ(ra_fild13.gat)
+ra_fild13.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,60,0,0,0
+ra_fild13.gat,0,0,0,0	monster	ƒhƒƒbƒvƒX	1113,40,0,0,0
+ra_fild13.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,5,0,0,0
 
-//ç¥æ®¿è–åŸŸ(ra_san05.gat)
-ra_san05.gat,0,0,0,0	monster	ã‚°ãƒ«ãƒ¼ãƒ ã‚¢ãƒ³ãƒ€ãƒ¼ãƒŠã‚¤ãƒˆ	1768,1,7200000,3600000,0
-ra_san05.gat,0,0,0,0	monster	ã‚¢ã‚¬ãƒ´	1769,20,0,0,0
-ra_san05.gat,0,0,0,0	monster	ã‚¨ã‚­ã‚ª	1770,20,0,0,0
-ra_san05.gat,0,0,0,0	monster	ã‚¤ã‚·ãƒ©	1772,20,0,0,0
-ra_san05.gat,0,0,0,0	monster	ãƒ›ãƒ‰ãƒ¬ãƒ ãƒªãƒ³	1773,20,0,0,0
-ra_san05.gat,0,0,0,0	monster	ã‚·ãƒ¼ã‚«ãƒ¼	1774,20,0,0,0
+//_“a¹ˆæ(ra_san05.gat)
+ra_san05.gat,0,0,0,0	monster	ƒOƒ‹[ƒ€ƒAƒ“ƒ_[ƒiƒCƒg	1768,1,7200000,3600000,0
+ra_san05.gat,0,0,0,0	monster	ƒAƒKƒ”	1769,20,0,0,0
+ra_san05.gat,0,0,0,0	monster	ƒGƒLƒI	1770,20,0,0,0
+ra_san05.gat,0,0,0,0	monster	ƒCƒVƒ‰	1772,20,0,0,0
+ra_san05.gat,0,0,0,0	monster	ƒzƒhƒŒƒ€ƒŠƒ“	1773,20,0,0,0
+ra_san05.gat,0,0,0,0	monster	ƒV[ƒJ[	1774,20,0,0,0
 
-//ç¥æ®¿è–åŸŸ(ra_san01.gat)
-ra_san01.gat,0,0,0,0	monster	ã‚°ãƒ¬ãƒ ãƒªãƒ³	1632,20,0,0,0
-ra_san01.gat,0,0,0,0	monster	ãƒ“ãƒ›ãƒ«ãƒ€ãƒ¼	1633,20,0,0,0
-ra_san01.gat,0,0,0,0	monster	ã‚¤ã‚·ãƒ©	1772,10,0,0,0
-ra_san01.gat,0,0,0,0	monster	ãƒ´ã‚¡ãƒ³ãƒ™ãƒ«ã‚¯	1771,20,0,0,0
+//_“a¹ˆæ(ra_san01.gat)
+ra_san01.gat,0,0,0,0	monster	ƒOƒŒƒ€ƒŠƒ“	1632,20,0,0,0
+ra_san01.gat,0,0,0,0	monster	ƒrƒzƒ‹ƒ_[	1633,20,0,0,0
+ra_san01.gat,0,0,0,0	monster	ƒCƒVƒ‰	1772,10,0,0,0
+ra_san01.gat,0,0,0,0	monster	ƒ”ƒ@ƒ“ƒxƒ‹ƒN	1771,20,0,0,0
 
-//ç¥æ®¿è–åŸŸ(ra_san02.gat)
-ra_san02.gat,0,0,0,0	monster	ã‚°ãƒ¬ãƒ ãƒªãƒ³	1632,20,0,0,0
-ra_san02.gat,0,0,0,0	monster	ãƒ“ãƒ›ãƒ«ãƒ€ãƒ¼	1633,20,0,0,0
-ra_san02.gat,0,0,0,0	monster	ãƒ´ã‚¡ãƒ³ãƒ™ãƒ«ã‚¯	1771,40,0,0,0
-ra_san02.gat,0,0,0,0	monster	ã‚¤ã‚·ãƒ©	1772,30,0,0,0
+//_“a¹ˆæ(ra_san02.gat)
+ra_san02.gat,0,0,0,0	monster	ƒOƒŒƒ€ƒŠƒ“	1632,20,0,0,0
+ra_san02.gat,0,0,0,0	monster	ƒrƒzƒ‹ƒ_[	1633,20,0,0,0
+ra_san02.gat,0,0,0,0	monster	ƒ”ƒ@ƒ“ƒxƒ‹ƒN	1771,40,0,0,0
+ra_san02.gat,0,0,0,0	monster	ƒCƒVƒ‰	1772,30,0,0,0
 
-//ç¥æ®¿è–åŸŸ(ra_san03.gat)
-ra_san03.gat,0,0,0,0	monster	ã‚°ãƒ¬ãƒ ãƒªãƒ³	1632,20,0,0,0
-ra_san03.gat,0,0,0,0	monster	ãƒ“ãƒ›ãƒ«ãƒ€ãƒ¼	1633,20,0,0,0
-ra_san03.gat,0,0,0,0	monster	ãƒ›ãƒ‰ãƒ¬ãƒ ãƒªãƒ³	1773,30,0,0,0
-ra_san03.gat,0,0,0,0	monster	ã‚·ãƒ¼ã‚«ãƒ¼	1774,30,0,0,0
+//_“a¹ˆæ(ra_san03.gat)
+ra_san03.gat,0,0,0,0	monster	ƒOƒŒƒ€ƒŠƒ“	1632,20,0,0,0
+ra_san03.gat,0,0,0,0	monster	ƒrƒzƒ‹ƒ_[	1633,20,0,0,0
+ra_san03.gat,0,0,0,0	monster	ƒzƒhƒŒƒ€ƒŠƒ“	1773,30,0,0,0
+ra_san03.gat,0,0,0,0	monster	ƒV[ƒJ[	1774,30,0,0,0
 
-//ç¥æ®¿è–åŸŸ(ra_san04.gat)
-ra_san04.gat,0,0,0,0	monster	ã‚¢ã‚¬ãƒ´	1769,30,0,0,0
-ra_san04.gat,0,0,0,0	monster	ã‚¨ã‚­ã‚ª	1770,30,0,0,0
-ra_san04.gat,0,0,0,0	monster	ãƒ›ãƒ‰ãƒ¬ãƒ ãƒªãƒ³	1773,20,0,0,0
-ra_san04.gat,0,0,0,0	monster	ã‚·ãƒ¼ã‚«ãƒ¼	1774,20,0,0,0
+//_“a¹ˆæ(ra_san04.gat)
+ra_san04.gat,0,0,0,0	monster	ƒAƒKƒ”	1769,30,0,0,0
+ra_san04.gat,0,0,0,0	monster	ƒGƒLƒI	1770,30,0,0,0
+ra_san04.gat,0,0,0,0	monster	ƒzƒhƒŒƒ€ƒŠƒ“	1773,20,0,0,0
+ra_san04.gat,0,0,0,0	monster	ƒV[ƒJ[	1774,20,0,0,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild01.gat)
-ve_fild01.gat,0,0,0,0	monster	ãƒ ã‚«ãƒ¼	1055,40,0,0,0
-ve_fild01.gat,0,0,0,0	monster	ãƒ‰ãƒ­ãƒƒãƒ—ã‚¹	1113,20,0,0,0
-ve_fild01.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,20,0,0,0
-ve_fild01.gat,0,0,0,0	monster	ã‚µã‚¤ãƒ‰ãƒ¯ã‚¤ãƒ³ãƒ€ãƒ¼	1037,1,0,0,0
-ve_fild01.gat,0,0,0,0	monster	èµ¤ã„è‰	1078,10,180000,90000,0
-ve_fild01.gat,0,0,0,0	monster	é’ã„è‰	1079,3,1800000,900000,0
-ve_fild01.gat,0,0,0,0	monster	é»„è‰²è‰	1081,10,180000,90000,0
-ve_fild01.gat,0,0,0,0	monster	è¼ãè‰	1083,1,1800000,900000,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild01.gat)
+ve_fild01.gat,0,0,0,0	monster	ƒ€ƒJ[	1055,40,0,0,0
+ve_fild01.gat,0,0,0,0	monster	ƒhƒƒbƒvƒX	1113,20,0,0,0
+ve_fild01.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,20,0,0,0
+ve_fild01.gat,0,0,0,0	monster	ƒTƒCƒhƒƒCƒ“ƒ_[	1037,1,0,0,0
+ve_fild01.gat,0,0,0,0	monster	Ô‚¢‘	1078,10,180000,90000,0
+ve_fild01.gat,0,0,0,0	monster	Â‚¢‘	1079,3,1800000,900000,0
+ve_fild01.gat,0,0,0,0	monster	‰©F‘	1081,10,180000,90000,0
+ve_fild01.gat,0,0,0,0	monster	‹P‚­‘	1083,1,1800000,900000,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild02.gat)
-ve_fild02.gat,0,0,0,0	monster	ã‚µãƒ™ãƒ¼ã‚¸	1166,60,0,0,0
-ve_fild02.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,30,0,0,0
-ve_fild02.gat,0,0,0,0	monster	ã‚¢ãƒˆãƒ­ã‚¹	1785,1,7200000,3600000,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild02.gat)
+ve_fild02.gat,0,0,0,0	monster	ƒTƒx[ƒW	1166,60,0,0,0
+ve_fild02.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,30,0,0,0
+ve_fild02.gat,0,0,0,0	monster	ƒAƒgƒƒX	1785,1,7200000,3600000,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild03.gat)
-ve_fild03.gat,0,0,0,0	monster	ãƒã‚°ãƒãƒªãƒ³	1836,40,0,0,0
-ve_fild03.gat,0,0,0,0	monster	ã‚¹ãƒªãƒ¼ãƒ‘ãƒ¼	1386,30,0,0,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild03.gat)
+ve_fild03.gat,0,0,0,0	monster	ƒ}ƒOƒ}ƒŠƒ“	1836,40,0,0,0
+ve_fild03.gat,0,0,0,0	monster	ƒXƒŠ[ƒp[	1386,30,0,0,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild04.gat)
-ve_fild04.gat,0,0,0,0	monster	ãƒ‡ã‚¶ãƒ¼ãƒˆã‚¦ãƒ«ãƒ•	1106,30,0,0,0
-ve_fild04.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,30,0,0,0
-ve_fild04.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,15,0,0,0
-ve_fild04.gat,0,0,0,0	monster	ãƒ ã‚¹ã‚­ãƒ—ãƒ©ãƒ¼	1780,10,0,0,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild04.gat)
+ve_fild04.gat,0,0,0,0	monster	ƒfƒU[ƒgƒEƒ‹ƒt	1106,30,0,0,0
+ve_fild04.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,30,0,0,0
+ve_fild04.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,15,0,0,0
+ve_fild04.gat,0,0,0,0	monster	ƒ€ƒXƒLƒvƒ‰[	1780,10,0,0,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild05.gat)
-ve_fild05.gat,0,0,0,0	monster	ãƒ­ã‚¦ã‚£ãƒ¼ãƒ³	1782,20,0,0,0
-ve_fild05.gat,0,0,0,0	monster	ã‚¬ãƒªã‚ªãƒ³	1783,5,0,0,0
-ve_fild05.gat,0,0,0,0	monster	ãƒ‰ãƒ­ã‚»ãƒ©	1781,10,0,0,0
-ve_fild05.gat,0,0,0,0	monster	ã‚¹ãƒªãƒ¼ãƒ‘ãƒ¼	1386,10,0,0,0
-ve_fild05.gat,0,0,0,0	monster	èµ¤ã„è‰	1078,10,180000,90000,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild05.gat)
+ve_fild05.gat,0,0,0,0	monster	ƒƒEƒB[ƒ“	1782,20,0,0,0
+ve_fild05.gat,0,0,0,0	monster	ƒKƒŠƒIƒ“	1783,5,0,0,0
+ve_fild05.gat,0,0,0,0	monster	ƒhƒƒZƒ‰	1781,10,0,0,0
+ve_fild05.gat,0,0,0,0	monster	ƒXƒŠ[ƒp[	1386,10,0,0,0
+ve_fild05.gat,0,0,0,0	monster	Ô‚¢‘	1078,10,180000,90000,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild06.gat)
-ve_fild06.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,5,120000,60000,0
-ve_fild06.gat,0,0,0,0	monster	èµ¤ã„è‰	1078,3,180000,90000,0
-ve_fild06.gat,0,0,0,0	monster	è¼ãè‰	1083,1,1800000,900000,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild06.gat)
+ve_fild06.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,5,120000,60000,0
+ve_fild06.gat,0,0,0,0	monster	Ô‚¢‘	1078,3,180000,90000,0
+ve_fild06.gat,0,0,0,0	monster	‹P‚­‘	1083,1,1800000,900000,0
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ve_fild07.gat)
-ve_fild07.gat,0,0,0,0	monster	ãŠåŒ–ã‘è²	1074,40,0,0,0
-ve_fild07.gat,0,0,0,0	monster	ãƒ’ãƒˆãƒ‡	1266,30,0,0,0
-ve_fild07.gat,0,0,0,0	monster	ãƒ¬ã‚°ãƒ«ãƒ­	1254,20,0,0,0
-ve_fild07.gat,0,0,0,0	monster	ã‚¹ã‚¿ãƒ	1784,20,0,0,0
-ve_fild07.gat,0,0,0,0	monster	ã‚µã‚¤ãƒ‰ãƒ¯ã‚¤ãƒ³ãƒ€ãƒ¼	1037,1,0,0,0
-ve_fild07.gat,0,0,0,0	monster	ç™½ã„è‰	1082,5,180000,90000,0
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh(ve_fild07.gat)
+ve_fild07.gat,0,0,0,0	monster	‚¨‰»‚¯ŠL	1074,40,0,0,0
+ve_fild07.gat,0,0,0,0	monster	ƒqƒgƒf	1266,30,0,0,0
+ve_fild07.gat,0,0,0,0	monster	ƒŒƒOƒ‹ƒ	1254,20,0,0,0
+ve_fild07.gat,0,0,0,0	monster	ƒXƒ^ƒ|	1784,20,0,0,0
+ve_fild07.gat,0,0,0,0	monster	ƒTƒCƒhƒƒCƒ“ƒ_[	1037,1,0,0,0
+ve_fild07.gat,0,0,0,0	monster	”’‚¢‘	1082,5,180000,90000,0
 
-//ãƒˆãƒ¼ãƒ«ç«å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³(thor_v01.gat)
-thor_v01.gat,0,0,0,0	monster	ãƒã‚°ãƒãƒªãƒ³	1836,30,0,0,0
-thor_v01.gat,0,0,0,0	monster	ãƒãƒƒã‚«ãƒ¼	1838,50,0,0,0
-thor_v01.gat,0,0,0,0	monster	ã‚«ãƒ›	1072,20,0,0,0
-thor_v01.gat,0,0,0,0	monster	ã‚ªãƒ–ã‚·ãƒ‡ã‚£ã‚¢ãƒ³	1615,10,0,0,0
+//ƒg[ƒ‹‰ÎRƒ_ƒ“ƒWƒ‡ƒ“(thor_v01.gat)
+thor_v01.gat,0,0,0,0	monster	ƒ}ƒOƒ}ƒŠƒ“	1836,30,0,0,0
+thor_v01.gat,0,0,0,0	monster	ƒmƒbƒJ[	1838,50,0,0,0
+thor_v01.gat,0,0,0,0	monster	ƒJƒz	1072,20,0,0,0
+thor_v01.gat,0,0,0,0	monster	ƒIƒuƒVƒfƒBƒAƒ“	1615,10,0,0,0
 
-//ãƒˆãƒ¼ãƒ«ç«å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³(thor_v02.gat)
-thor_v02.gat,0,0,0,0	monster	ãƒã‚°ãƒãƒªãƒ³	1836,20,0,0,0
-thor_v02.gat,0,0,0,0	monster	ãƒãƒƒã‚«ãƒ¼	1838,10,0,0,0
-thor_v02.gat,0,0,0,0	monster	ã‚¤ãƒ³ãƒ—	1837,15,0,0,0
-thor_v02.gat,0,0,0,0	monster	ã‚«ãƒ¼ã‚µ	1833,10,0,0,0
-thor_v02.gat,0,0,0,0	monster	ã‚µãƒ©ãƒãƒ³ãƒ€ãƒ¼	1831,5,0,0,0
-thor_v02.gat,0,0,0,0	monster	ã‚½ãƒ¼ãƒ‰ãƒã‚¹ã‚¿ãƒ¼	1829,1,0,0,0
-thor_v02.gat,0,0,0,0	monster	ãƒœã‚¦ãƒã‚¹ã‚¿ãƒ¼	1830,1,0,0,0
+//ƒg[ƒ‹‰ÎRƒ_ƒ“ƒWƒ‡ƒ“(thor_v02.gat)
+thor_v02.gat,0,0,0,0	monster	ƒ}ƒOƒ}ƒŠƒ“	1836,20,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒmƒbƒJ[	1838,10,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒCƒ“ƒv	1837,15,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒJ[ƒT	1833,10,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒTƒ‰ƒ}ƒ“ƒ_[	1831,5,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒ\[ƒhƒ}ƒXƒ^[	1829,1,0,0,0
+thor_v02.gat,0,0,0,0	monster	ƒ{ƒEƒ}ƒXƒ^[	1830,1,0,0,0
 
-//ãƒˆãƒ¼ãƒ«ç«å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³(thor_v03.gat)
-thor_v03.gat,0,0,0,0	monster	ã‚½ãƒ¼ãƒ‰ãƒã‚¹ã‚¿ãƒ¼	1829,10,0,0,0
-thor_v03.gat,0,0,0,0	monster	ãƒœã‚¦ãƒã‚¹ã‚¿ãƒ¼	1830,10,0,0,0
-thor_v03.gat,0,0,0,0	monster	ã‚µãƒ©ãƒãƒ³ãƒ€ãƒ¼	1831,20,0,0,0
-thor_v03.gat,0,0,0,0	monster	ã‚«ãƒ¼ã‚µ	1833,25,0,0,0
-thor_v03.gat,0,0,0,0	monster	ã‚¤ãƒ³ãƒ—	1837,20,0,0,0
-thor_v03.gat,0,0,0,0	monster	ã‚¤ãƒ•ãƒªãƒ¼ãƒˆ	1832,1,39600000,19800000,0
+//ƒg[ƒ‹‰ÎRƒ_ƒ“ƒWƒ‡ƒ“(thor_v03.gat)
+thor_v03.gat,0,0,0,0	monster	ƒ\[ƒhƒ}ƒXƒ^[	1829,10,0,0,0
+thor_v03.gat,0,0,0,0	monster	ƒ{ƒEƒ}ƒXƒ^[	1830,10,0,0,0
+thor_v03.gat,0,0,0,0	monster	ƒTƒ‰ƒ}ƒ“ƒ_[	1831,20,0,0,0
+thor_v03.gat,0,0,0,0	monster	ƒJ[ƒT	1833,25,0,0,0
+thor_v03.gat,0,0,0,0	monster	ƒCƒ“ƒv	1837,20,0,0,0
+thor_v03.gat,0,0,0,0	monster	ƒCƒtƒŠ[ƒg	1832,1,39600000,19800000,0

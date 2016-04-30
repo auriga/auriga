@@ -1,2 +1,2 @@
-//mob_skill_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
-//MOB_ID,ãƒ€ãƒŸãƒ¼æ–‡å­—åˆ—,STATE,SKILL_ID,SKILL_LV,ä¸‡åˆ†çŽ‡,casttime,delay,å¦¨å®³å¯èƒ½,ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ,æ¡ä»¶ã‚¿ã‚¤ãƒ—,æ¡ä»¶å€¤,å€¤1,å€¤2,å€¤3,å€¤4,å€¤5,ä½¿ç”¨æ™‚ã‚¨ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
+//mob_skill_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
+//MOB_ID,ƒ_ƒ~[•¶Žš—ñ,STATE,SKILL_ID,SKILL_LV,–œ•ª—¦,casttime,delay,–WŠQ‰Â”\,ƒ^[ƒQƒbƒg,ðŒƒ^ƒCƒv,ðŒ’l,’l1,’l2,’l3,’l4,’l5,Žg—pŽžƒGƒ‚[ƒVƒ‡ƒ“

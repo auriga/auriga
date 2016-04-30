@@ -1,5 +1,5 @@
 //============================================================
-// PvP : Êéß„ÅàÂÆ§ - pvp_*_room.gat
+// PvP : çTÇ¶é∫ - pvp_*_room.gat
 //------------------------------------------------------------
 pvp_y_room.gat	mapflag	nosave		SavePoint
 pvp_y_room.gat	mapflag	nomemo		dummy
@@ -20,7 +20,7 @@ pvp_c_room.gat	mapflag	nobranch	dummy
 pvp_c_room.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : „Éó„É≠„É≥„ÉÜ„É© - pvp_y_*-1.gat
+// PvP : ÉvÉçÉìÉeÉâ - pvp_y_*-1.gat
 //------------------------------------------------------------
 pvp_y_1-1.gat	mapflag	nosave		SavePoint
 pvp_y_1-1.gat	mapflag	nomemo		dummy
@@ -79,7 +79,7 @@ pvp_y_8-1.gat	mapflag	pvp_noparty	dummy
 pvp_y_8-1.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : „Ç§„Ç∫„É´„Éº„Éâ - pvp_y_*-2.gat
+// PvP : ÉCÉYÉãÅ[Éh - pvp_y_*-2.gat
 //------------------------------------------------------------
 pvp_y_1-2.gat	mapflag	nosave		SavePoint
 pvp_y_1-2.gat	mapflag	nomemo		dummy
@@ -138,7 +138,7 @@ pvp_y_8-2.gat	mapflag	pvp_noparty	dummy
 pvp_y_8-2.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : „Éï„Çß„Ç§„É®„É≥ - pvp_y_*-3.gat
+// PvP : ÉtÉFÉCÉàÉì - pvp_y_*-3.gat
 //------------------------------------------------------------
 pvp_y_1-3.gat	mapflag	nosave		SavePoint
 pvp_y_1-3.gat	mapflag	nomemo		dummy
@@ -197,7 +197,7 @@ pvp_y_8-3.gat	mapflag	pvp_noparty	dummy
 pvp_y_8-3.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : „Ç¢„É´„Éô„É´„Çø - pvp_y_*-4.gat
+// PvP : ÉAÉãÉxÉãÉ^ - pvp_y_*-4.gat
 //------------------------------------------------------------
 pvp_y_1-4.gat	mapflag	nosave		SavePoint
 pvp_y_1-4.gat	mapflag	nomemo		dummy
@@ -256,7 +256,7 @@ pvp_y_8-4.gat	mapflag	pvp_noparty	dummy
 pvp_y_8-4.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : „É¢„É≠„ÇØ - pvp_y_*-5.gat
+// PvP : ÉÇÉçÉN - pvp_y_*-5.gat
 //------------------------------------------------------------
 pvp_y_1-5.gat	mapflag	nosave		SavePoint
 pvp_y_1-5.gat	mapflag	nomemo		dummy
@@ -315,7 +315,7 @@ pvp_y_8-5.gat	mapflag	pvp_noparty	dummy
 pvp_y_8-5.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// PvP : ÂçóÂåóÊà¶‰∫â - pvp_n_*-1.gat
+// PvP : ìÏñkêÌëà - pvp_n_*-1.gat
 //------------------------------------------------------------
 pvp_n_1-1.gat	mapflag	nosave			SavePoint
 pvp_n_1-1.gat	mapflag	nomemo			dummy
@@ -374,7 +374,7 @@ pvp_n_8-1.gat	mapflag	pvp_noparty		dummy
 pvp_n_8-1.gat	mapflag	pvp_nightmaredrop	random,equip,300
 
 //============================================================
-// PvP : „É≠„ÉÉ„ÇØ„Ç™„É≥ - pvp_n_*-2.gat
+// PvP : ÉçÉbÉNÉIÉì - pvp_n_*-2.gat
 //------------------------------------------------------------
 pvp_n_1-2.gat	mapflag	nosave			SavePoint
 pvp_n_1-2.gat	mapflag	nomemo			dummy
@@ -433,7 +433,7 @@ pvp_n_8-2.gat	mapflag	pvp_noparty		dummy
 pvp_n_8-2.gat	mapflag	pvp_nightmaredrop	random,equip,300
 
 //============================================================
-// PvP : „Éï„Ç©„Éº„É´„Éº„É† - pvp_n_*-3.gat
+// PvP : ÉtÉHÅ[ÉãÅ[ÉÄ - pvp_n_*-3.gat
 //------------------------------------------------------------
 pvp_n_1-3.gat	mapflag	nosave			SavePoint
 pvp_n_1-3.gat	mapflag	nomemo			dummy
@@ -492,7 +492,7 @@ pvp_n_8-3.gat	mapflag	pvp_noparty		dummy
 pvp_n_8-3.gat	mapflag	pvp_nightmaredrop	random,equip,300
 
 //============================================================
-// PvP : „Ç¢„É≥„ÉÄ„Éº„ÇØ„É≠„Çπ - pvp_n_*-4.gat
+// PvP : ÉAÉìÉ_Å[ÉNÉçÉX - pvp_n_*-4.gat
 //------------------------------------------------------------
 pvp_n_1-4.gat	mapflag	nosave			SavePoint
 pvp_n_1-4.gat	mapflag	nomemo			dummy
@@ -551,7 +551,7 @@ pvp_n_8-4.gat	mapflag	pvp_noparty		dummy
 pvp_n_8-4.gat	mapflag	pvp_nightmaredrop	random,equip,300
 
 //============================================================
-// PvP : „Ç∂„Éä„ÇØ„É´„Éº„É† - pvp_n_*-5.gat
+// PvP : ÉUÉiÉNÉãÅ[ÉÄ - pvp_n_*-5.gat
 //------------------------------------------------------------
 pvp_n_1-5.gat	mapflag	nosave			SavePoint
 pvp_n_1-5.gat	mapflag	nomemo			dummy
@@ -610,7 +610,7 @@ pvp_n_8-5.gat	mapflag	pvp_noparty		dummy
 pvp_n_8-5.gat	mapflag	pvp_nightmaredrop	random,equip,300
 
 //============================================================
-// PvP : „Ç§„Éô„É≥„Éà„Éõ„Éº„É´ - pvp_2vs2.gat
+// PvP : ÉCÉxÉìÉgÉzÅ[Éã - pvp_2vs2.gat
 //------------------------------------------------------------
 pvp_2vs2.gat	mapflag	nomemo	dummy
 pvp_2vs2.gat	mapflag	noteleport	dummy

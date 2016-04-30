@@ -1,12 +1,12 @@
 //=====================================================================
-// â–  OnPCã‚¤ãƒ™ãƒ³ãƒˆãƒ©ãƒ™ãƒ« ãƒ†ã‚¹ãƒˆã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+// ¡ OnPCƒCƒxƒ“ƒgƒ‰ƒxƒ‹ ƒeƒXƒgƒXƒNƒŠƒvƒg
 //						created by Rayce
-//ã€€æ³¨ï¼šbattle_auriga.confã§è©²å½“ã®é …ç›®ã‚’æœ‰åŠ¹åŒ–ã—ã¦
-//ã€€ã€€ã€€åˆ©ç”¨ã—ã¦ãã ã•ã„ã€‚
+//@’Fbattle_auriga.conf‚ÅŠY“–‚Ì€–Ú‚ğ—LŒø‰»‚µ‚Ä
+//@@@—˜—p‚µ‚Ä‚­‚¾‚³‚¢B
 //---------------------------------------------------------------------
 
 //---------------------------------------------------------------------
-//åŸ2Fã§ã®ã¿æ­»äº¡ã—ãŸã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’å…¨éƒ¨æ¶ˆã•ã‚Œã‚‹
+//é2F‚Å‚Ì‚İ€–S‚µ‚½‚çƒAƒCƒeƒ€‚ğ‘S•”Á‚³‚ê‚é
 
 gl_cas02.gat,0,0,0	script	DieControl	-1,{
 OnPCDie:
@@ -16,17 +16,17 @@ OnPCDie:
 
 
 //---------------------------------------------------------------------
-//MAPå†…ã§å€’ã—ãŸäººæ•°ã‚’è¿”ã™
+//MAP“à‚Å“|‚µ‚½l”‚ğ•Ô‚·
 
-pvp_y_1-1.gat,155,192,4	script	è¨˜éŒ²è€…	711,{
-	mes "[è¨˜éŒ²è€…]";
-	mes "ã‚ãªãŸãŒå€’ã—ãŸäººæ•°ã¯";
-	mes "^3355FF" +@pvcount+ " ^000000äººã§ã™ã€‚";
+pvp_y_1-1.gat,155,192,4	script	‹L˜^Ò	711,{
+	mes "[‹L˜^Ò]";
+	mes "‚ ‚È‚½‚ª“|‚µ‚½l”‚Í";
+	mes "^3355FF" +@pvcount+ " ^000000l‚Å‚·B";
 	close;
 OnPCKill:
 	set '@aid,getcharid(3,getcharname(PC_KILLED_CHAR));
 	if(attachrid('@aid)) {
-		set @pvcount,@pvcount+1;	//æ®ºã—ãŸç›¸æ‰‹ã®ã‚«ã‚¦ãƒ³ã‚¿ã‚’åŠ ç®—ã™ã‚‹
+		set @pvcount,@pvcount+1;	//E‚µ‚½‘Šè‚ÌƒJƒEƒ“ƒ^‚ğ‰ÁZ‚·‚é
 		detachrid;
 	}
 	end;
@@ -34,69 +34,69 @@ OnPCKill:
 
 
 //---------------------------------------------------------------------
-//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®MAPã«é–¢ã‚ã‚‰ãšãƒ­ã‚°ã‚¤ãƒ³ãƒ»ãƒ­ã‚°ã‚¢ã‚¦ãƒˆæ™‚ã«ã‚¢ãƒŠã‚¦ãƒ³ã‚¹ãŒæµã‚Œã‚‹
-//ãŸã ã—ã“ã®NPCã‚’è¨­ç½®ã—ãŸMAPã‚µãƒ¼ãƒå†…ã«é™ã‚‹
+//ƒvƒŒƒCƒ„[‚ÌMAP‚ÉŠÖ‚í‚ç‚¸ƒƒOƒCƒ“EƒƒOƒAƒEƒg‚ÉƒAƒiƒEƒ“ƒX‚ª—¬‚ê‚é
+//‚½‚¾‚µ‚±‚ÌNPC‚ğİ’u‚µ‚½MAPƒT[ƒo“à‚ÉŒÀ‚é
 
 -	script	Login/Logout	-1,{
 	function Area {
 		set '@name$,substr(getarg(0),0,3);
 		if('@name$ == "prt" || '@name$ == "pro")
-			return "ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©";
+			return "ƒvƒƒ“ƒeƒ‰";
 		if('@name$ == "gef")
-			return "ã‚²ãƒ•ã‚§ãƒ³";
+			return "ƒQƒtƒFƒ“";
 		if('@name$ == "moc" || '@name$ == "mor")
-			return "ãƒ¢ãƒ­ã‚¯";
+			return "ƒ‚ƒƒN";
 		if('@name$ == "pay")
-			return "ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³";
+			return "ƒtƒFƒCƒˆƒ“";
 		else
-			return "ãã®ä»–ã®";
+			return "‚»‚Ì‘¼‚Ì";
 	}
 OnPCLogin:
-	announce strcharinfo(0)+ "ã•ã‚“ãŒ" +Area(getmapname(strcharinfo(0)))+ "ã‚¨ãƒªã‚¢ã«ãƒ­ã‚°ã‚¤ãƒ³ã—ã¾ã—ãŸ",8,0xDDA0DD;
+	announce strcharinfo(0)+ "‚³‚ñ‚ª" +Area(getmapname(strcharinfo(0)))+ "ƒGƒŠƒA‚ÉƒƒOƒCƒ“‚µ‚Ü‚µ‚½",8,0xDDA0DD;
 	end;
 OnPCLogout:
-	announce strcharinfo(0)+ "ã•ã‚“ãŒ" +Area(getmapname(strcharinfo(0)))+ "ã‚¨ãƒªã‚¢ã§ãƒ­ã‚°ã‚¢ã‚¦ãƒˆã—ã¾ã—ãŸ",8,0xDDA0DD;
+	announce strcharinfo(0)+ "‚³‚ñ‚ª" +Area(getmapname(strcharinfo(0)))+ "ƒGƒŠƒA‚ÅƒƒOƒAƒEƒg‚µ‚Ü‚µ‚½",8,0xDDA0DD;
 	end;
 }
 
 
 //---------------------------------------------------------------------
-//ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ã€ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ã€ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ã‚’è¨ªã‚ŒãŸã®ã¹äººæ•°ã‚’è¿”ã™
-//ãŸã ã—3ã¤ã®NPCãŒåŒä¸€ã®MAPã‚µãƒ¼ãƒã«å­˜åœ¨ã™ã‚‹ã¨ãã®ã¿å‹•ä½œãŒä¿è¨¼ã•ã‚Œã‚‹
+//ƒvƒƒ“ƒeƒ‰AƒCƒYƒ‹[ƒhAƒAƒ‹ƒxƒ‹ƒ^‚ğ–K‚ê‚½‚Ì‚×l”‚ğ•Ô‚·
+//‚½‚¾‚µ3‚Â‚ÌNPC‚ª“¯ˆê‚ÌMAPƒT[ƒo‚É‘¶İ‚·‚é‚Æ‚«‚Ì‚İ“®ì‚ª•ÛØ‚³‚ê‚é
 
-prontera.gat,146,92,6	script	è¦³å…‰åœ°æ¡ˆå†…#pro	114,{
-	set '@total,'count + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#izl") + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#alb");
-	mes "[è¦³å…‰åœ°æ¡ˆå†…]";
-	mes "ã“ã“ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ã‚’è¨ªã‚ŒãŸäººã¯";
-	mes "ã®ã¹ ^3355FF" +'count+ " ^000000äººã§ã™ã€‚";
-	mes "ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ã¨ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ã‚’åˆã‚ã›ã‚‹ã¨";
-	mes "ç·è¨ˆ^3355FF " +'@total+ " ^000000äººã¨ãªã‚Šã¾ã™ã€‚";
+prontera.gat,146,92,6	script	ŠÏŒõ’nˆÄ“à#pro	114,{
+	set '@total,'count + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#izl") + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#alb");
+	mes "[ŠÏŒõ’nˆÄ“à]";
+	mes "‚±‚±ƒvƒƒ“ƒeƒ‰‚ğ–K‚ê‚½l‚Í";
+	mes "‚Ì‚× ^3355FF" +'count+ " ^000000l‚Å‚·B";
+	mes "ƒCƒYƒ‹[ƒh‚ÆƒAƒ‹ƒxƒ‹ƒ^‚ğ‡‚í‚¹‚é‚Æ";
+	mes "‘Œv^3355FF " +'@total+ " ^000000l‚Æ‚È‚è‚Ü‚·B";
 	close;
 OnPCMoveMap:
 	set 'count,'count+1;
 	end;
 }
 
-izlude.gat,134,91,4	script	è¦³å…‰åœ°æ¡ˆå†…#izl	114,{
-	set '@total,'count + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#pro") + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#alb");
-	mes "[è¦³å…‰åœ°æ¡ˆå†…]";
-	mes "ã“ã“ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ã‚’è¨ªã‚ŒãŸäººã¯";
-	mes "ã®ã¹ ^3355FF" +'count+ " ^000000äººã§ã™ã€‚";
-	mes "ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ã¨ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ã‚’åˆã‚ã›ã‚‹ã¨";
-	mes "ç·è¨ˆ^3355FF " +'@total+ " ^000000äººã¨ãªã‚Šã¾ã™ã€‚";
+izlude.gat,134,91,4	script	ŠÏŒõ’nˆÄ“à#izl	114,{
+	set '@total,'count + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#pro") + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#alb");
+	mes "[ŠÏŒõ’nˆÄ“à]";
+	mes "‚±‚±ƒCƒYƒ‹[ƒh‚ğ–K‚ê‚½l‚Í";
+	mes "‚Ì‚× ^3355FF" +'count+ " ^000000l‚Å‚·B";
+	mes "ƒvƒƒ“ƒeƒ‰‚ÆƒAƒ‹ƒxƒ‹ƒ^‚ğ‡‚í‚¹‚é‚Æ";
+	mes "‘Œv^3355FF " +'@total+ " ^000000l‚Æ‚È‚è‚Ü‚·B";
 	close;
 OnPCMoveMap:
 	set 'count,'count+1;
 	end;
 }
 
-alberta.gat,113,57,6	script	è¦³å…‰åœ°æ¡ˆå†…#alb	114,{
-	set '@total,'count + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#pro") + getvariableofnpc('count,"è¦³å…‰åœ°æ¡ˆå†…#izl");
-	mes "[è¦³å…‰åœ°æ¡ˆå†…]";
-	mes "ã“ã“ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ã‚’è¨ªã‚ŒãŸäººã¯";
-	mes "ã®ã¹ ^3355FF" +'count+ " ^000000äººã§ã™ã€‚";
-	mes "ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ã¨ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ã‚’åˆã‚ã›ã‚‹ã¨";
-	mes "ç·è¨ˆ^3355FF " +'@total+ " ^000000äººã¨ãªã‚Šã¾ã™ã€‚";
+alberta.gat,113,57,6	script	ŠÏŒõ’nˆÄ“à#alb	114,{
+	set '@total,'count + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#pro") + getvariableofnpc('count,"ŠÏŒõ’nˆÄ“à#izl");
+	mes "[ŠÏŒõ’nˆÄ“à]";
+	mes "‚±‚±ƒAƒ‹ƒxƒ‹ƒ^‚ğ–K‚ê‚½l‚Í";
+	mes "‚Ì‚× ^3355FF" +'count+ " ^000000l‚Å‚·B";
+	mes "ƒvƒƒ“ƒeƒ‰‚ÆƒCƒYƒ‹[ƒh‚ğ‡‚í‚¹‚é‚Æ";
+	mes "‘Œv^3355FF " +'@total+ " ^000000l‚Æ‚È‚è‚Ü‚·B";
 	close;
 OnPCMoveMap:
 	set 'count,'count+1;

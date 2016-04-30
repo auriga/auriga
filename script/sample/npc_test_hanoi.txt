@@ -1,46 +1,46 @@
-// ãƒãƒã‚¤ã®å¡”	ãƒ†ã‚¹ãƒˆã‚¹ã‚¯ãƒªãƒ—ãƒˆ
-// æ–°ã—ãè¿½åŠ ã—ãŸæ§‹æ–‡ã®ä½¿ç”¨æ–¹æ³•ãŒåˆ†ã‹ã‚‰ãªã„ã¨å›°ã‚‹ã®ã§ä½œã‚Šã¾ã—ãŸã€‚
+// ƒnƒmƒC‚Ì“ƒ	ƒeƒXƒgƒXƒNƒŠƒvƒg
+// V‚µ‚­’Ç‰Á‚µ‚½\•¶‚Ìg—p•û–@‚ª•ª‚©‚ç‚È‚¢‚Æ¢‚é‚Ì‚Åì‚è‚Ü‚µ‚½B
 
-prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
-	// é–¢æ•°å®£è¨€
-	function hanoi_init;		// å††ç›¤ã®åˆæœŸåŒ–
-	function hanoi_move;		// å††ç›¤ã®ç§»å‹•
-	function hanoi_display;		// å††ç›¤ã®è¡¨ç¤º
+prontera.gat,160,180,1	script	ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ	112,{
+	// ŠÖ”éŒ¾
+	function hanoi_init;		// ‰~”Õ‚Ì‰Šú‰»
+	function hanoi_move;		// ‰~”Õ‚ÌˆÚ“®
+	function hanoi_display;		// ‰~”Õ‚Ì•\¦
 	function hanoi_display_sub;
-	function hanoi_check;		// å††ç›¤ã®çŠ¶æ…‹ãŒæ­£è§£ã‹ã©ã†ã‹ç¢ºèª
-	function hanoi_solve;		// ãƒãƒã‚¤ã®å¡”ã‚’è§£ã
-	function hanoi_name;		// æ•°å­—â†’æ£’ã®åå‰å¤‰æ›
+	function hanoi_check;		// ‰~”Õ‚Ìó‘Ô‚ª³‰ğ‚©‚Ç‚¤‚©Šm”F
+	function hanoi_solve;		// ƒnƒmƒC‚Ì“ƒ‚ğ‰ğ‚­
+	function hanoi_name;		// ”š¨–_‚Ì–¼‘O•ÏŠ·
 
-	// å††ç›¤ã®æšæ•°
-	// å¤šãã—ã™ãã‚‹ã¨å¤§å¤‰ãªäº‹ã«ãªã‚‹ã®ã§æ³¨æ„ï¼
+	// ‰~”Õ‚Ì–‡”
+	// ‘½‚­‚µ‚·‚¬‚é‚Æ‘å•Ï‚È–‚É‚È‚é‚Ì‚Å’ˆÓI
 	set @level,4;
 
-	switch(select("ãƒãƒã‚¤ã®å¡”ã«ã¤ã„ã¦","éŠã‚“ã§ã¿ã‚‹","è§£ç­”ã‚’è¦‹ã‚‹","ã‚„ã£ã±ã‚Šã‚„ã‚ã‚‹")) {
+	switch(select("ƒnƒmƒC‚Ì“ƒ‚É‚Â‚¢‚Ä","—V‚ñ‚Å‚İ‚é","‰ğ“š‚ğŒ©‚é","‚â‚Á‚Ï‚è‚â‚ß‚é")) {
 	case 1:
-		// æš‡ãªæ–¹è£œå®ŒãŠé¡˜ã„ã—ã¾ã™ã€‚
-		mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-		mes "ãƒãƒã‚¤ã®å¡”ã¨ã¯ã€" + @level + "æšã®é•ã†å††ç›¤ã‚’ã€";
-		mes "åˆ¥ã®å ´æ‰€ã«ç§»å‹•ã•ã›ã‚‹ã‚²ãƒ¼ãƒ ã§ã™ã€‚";
-		mes "å††ç›¤ã®å¤§ãã•ã¯æ•°å­—ã§è¡¨ã•ã‚Œã¦ã„ã¾ã™ã€‚";
+		// ‰É‚È•û•âŠ®‚¨Šè‚¢‚µ‚Ü‚·B
+		mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+		mes "ƒnƒmƒC‚Ì“ƒ‚Æ‚ÍA" + @level + "–‡‚Ìˆá‚¤‰~”Õ‚ğA";
+		mes "•Ê‚ÌêŠ‚ÉˆÚ“®‚³‚¹‚éƒQ[ƒ€‚Å‚·B";
+		mes "‰~”Õ‚Ì‘å‚«‚³‚Í”š‚Å•\‚³‚ê‚Ä‚¢‚Ü‚·B";
 		next;
-		mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-		mes "ãƒ«ãƒ¼ãƒ«ã¯æ¬¡ã®ï¼’ã¤ã ã‘ã§ã™ã€‚";
-		mes "ãƒ»ä¸€åº¦ã«å‹•ã‹ã›ã‚‹ã®ã¯ä¸€æšã ã‘";
-		mes "ãƒ»å°ã•ã„å††ç›¤ã®ä¸Šã«å¤§ãã„å††ç›¤ã¯é‡ã­ã‚‰ãªã„";
+		mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+		mes "ƒ‹[ƒ‹‚ÍŸ‚Ì‚Q‚Â‚¾‚¯‚Å‚·B";
+		mes "Eˆê“x‚É“®‚©‚¹‚é‚Ì‚Íˆê–‡‚¾‚¯";
+		mes "E¬‚³‚¢‰~”Õ‚Ìã‚É‘å‚«‚¢‰~”Õ‚Íd‚Ë‚ç‚È‚¢";
 		next;
-		mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-		mes "æŒ‘æˆ¦ã‚’ãŠå¾…ã¡ã—ã¦ã„ã¾ã™ã€‚";
+		mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+		mes "’§í‚ğ‚¨‘Ò‚¿‚µ‚Ä‚¢‚Ü‚·B";
 		close;
 		break;
 	case 2:
-		// å††ç›¤ã‚’åˆæœŸåŒ–ã™ã‚‹
+		// ‰~”Õ‚ğ‰Šú‰»‚·‚é
 		hanoi_init;
 		do {
-			mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-			mes "ä»Šã¾ã§ã«" + @count + "å›å††ç›¤ã‚’ç§»å‹•ã—ã¾ã—ãŸã€‚";
+			mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+			mes "¡‚Ü‚Å‚É" + @count + "‰ñ‰~”Õ‚ğˆÚ“®‚µ‚Ü‚µ‚½B";
 			hanoi_display;
 			next;
-			set @pos_a , select("å††ç›¤ï¼¡ã‹ã‚‰","å††ç›¤ï¼¢ã‹ã‚‰","å††ç›¤ï¼£ã‹ã‚‰","ã‚„ã£ã±ã‚Šã‚„ã‚ã‚‹");
+			set @pos_a , select("‰~”Õ‚`‚©‚ç","‰~”Õ‚a‚©‚ç","‰~”Õ‚b‚©‚ç","‚â‚Á‚Ï‚è‚â‚ß‚é");
 			if(@pos_a == 4) { close; end; }
 			switch(@pos_a) {
 				case 1: set @move_count , @A_count; break;
@@ -48,26 +48,26 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 				case 3: set @move_count , @C_count; break;
 			}
 			if(@move_count == 0) {
-				mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-				mes "ãã®å ´æ‰€ã«å††ç›¤ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚";
+				mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+				mes "‚»‚ÌêŠ‚É‰~”Õ‚Í‚ ‚è‚Ü‚¹‚ñB";
 				next;
 				continue;
 			}
-			set @pos_b , select("å††ç›¤ï¼¡ã¸ç§»å‹•","å††ç›¤ï¼¢ã¸ç§»å‹•","å††ç›¤ï¼£ã¸ç§»å‹•","ã‚„ã£ã±ã‚Šã‚„ã‚ã‚‹");
+			set @pos_b , select("‰~”Õ‚`‚ÖˆÚ“®","‰~”Õ‚a‚ÖˆÚ“®","‰~”Õ‚b‚ÖˆÚ“®","‚â‚Á‚Ï‚è‚â‚ß‚é");
 			if(@pos_a == 4) { close; end; }
 			if(hanoi_move(@pos_a,@pos_b) == 0) {
-				// ç§»å‹•ä¸å¯èƒ½
-				mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-				mes "ç§»å‹•ã§ãã¾ã›ã‚“ã€‚";
+				// ˆÚ“®•s‰Â”\
+				mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+				mes "ˆÚ“®‚Å‚«‚Ü‚¹‚ñB";
 				next;
 				continue;
 			}
 			set @count,@count + 1;
 			if(hanoi_check()) {
-				// æ­£è§£ã—ãŸæ™‚ã®ã”è¤’ç¾
-				mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-				mes "ãŠè¦‹äº‹ã€æ­£è§£ã§ã™ã€‚(" + @count + "å›ã®å††ç›¤ç§»å‹•)";
-				mes "è³é‡‘ã¨ã—ã¦100Zenyå·®ã—ä¸Šã’ã¾ã™ã€‚";
+				// ³‰ğ‚µ‚½‚Ì‚²–J”ü
+				mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+				mes "‚¨Œ©–A³‰ğ‚Å‚·B(" + @count + "‰ñ‚Ì‰~”ÕˆÚ“®)";
+				mes "Ü‹à‚Æ‚µ‚Ä100Zeny·‚µã‚°‚Ü‚·B";
 				set Zeny,Zeny + 100;
 				break;
 			}
@@ -76,38 +76,38 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 		break;
 	case 3:
 		hanoi_init;
-		mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-		mes "ã§ã¯ã€å§‹ã‚ã¾ã™ã€‚";
+		mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+		mes "‚Å‚ÍAn‚ß‚Ü‚·B";
 		hanoi_display;
 		next;
 		hanoi_solve @level,@A_data,@C_data,@B_data,1,3,2;
-		mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-		mes @count + "å›ã®ç§»å‹•ãŒæœ€çŸ­ã§ã™ã­ã€‚";
+		mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+		mes @count + "‰ñ‚ÌˆÚ“®‚ªÅ’Z‚Å‚·‚ËB";
 		close;
 	}
-	// å®Ÿæ¼”
+	// À‰‰
 	// hanoi_solve(lv,from_array,to_array,temp_array,from_name,to_name,temp_name)
 	function hanoi_solve {
 		if(getarg(0) == 1) {
-			// hanoi_move ã¯å€¤ã‚’è¿”ã™é–¢æ•°ãªã®ã§ã€å€¤ã‚’æ¨ã¦ã‚‹å¿…è¦ãŒã‚ã‚‹
+			// hanoi_move ‚Í’l‚ğ•Ô‚·ŠÖ”‚È‚Ì‚ÅA’l‚ğÌ‚Ä‚é•K—v‚ª‚ ‚é
 			set @dummy , hanoi_move(getarg(4),getarg(5));
 
-			// ä»Šå›ã®æ‰‹é †ã‚’è¡¨ç¤º
+			// ¡‰ñ‚Ìè‡‚ğ•\¦
 			set @count , @count + 1;
-			mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-			mes "è§£ç­”" + @count + " : " + hanoi_name(getarg(4)) + "ã®å††ç›¤ã‚’" + hanoi_name(getarg(5)) + "ã«ç§»å‹•";
+			mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+			mes "‰ğ“š" + @count + " : " + hanoi_name(getarg(4)) + "‚Ì‰~”Õ‚ğ" + hanoi_name(getarg(5)) + "‚ÉˆÚ“®";
 			hanoi_display;
 			next;
 		} else {
 			hanoi_solve getarg(0) - 1,getarg(1),getarg(3),getarg(2),getarg(4),getarg(6),getarg(5);
 
-			// hanoi_move ã¯å€¤ã‚’è¿”ã™é–¢æ•°ãªã®ã§ã€å€¤ã‚’æ¨ã¦ã‚‹å¿…è¦ãŒã‚ã‚‹
+			// hanoi_move ‚Í’l‚ğ•Ô‚·ŠÖ”‚È‚Ì‚ÅA’l‚ğÌ‚Ä‚é•K—v‚ª‚ ‚é
 			set @dummy , hanoi_move(getarg(4),getarg(5));
 
-			// ä»Šå›ã®æ‰‹é †ã‚’è¡¨ç¤º
+			// ¡‰ñ‚Ìè‡‚ğ•\¦
 			set @count , @count + 1;
-			mes "[ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡]";
-			mes "è§£ç­”" + @count + " : " + hanoi_name(getarg(4)) + "ã®å††ç›¤ã‚’" + hanoi_name(getarg(5)) + "ã«ç§»å‹•";
+			mes "[ƒnƒmƒC‚Ì“ƒˆÄ“àˆõ]";
+			mes "‰ğ“š" + @count + " : " + hanoi_name(getarg(4)) + "‚Ì‰~”Õ‚ğ" + hanoi_name(getarg(5)) + "‚ÉˆÚ“®";
 			hanoi_display;
 			next;
 
@@ -122,7 +122,7 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 		}
 		return "??";
 	}
-	// åˆæœŸåŒ–ã™ã‚‹
+	// ‰Šú‰»‚·‚é
 	function hanoi_init {
 		cleararray @A_data,0,@level;
 		cleararray @B_data,0,@level;
@@ -139,7 +139,7 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 		}
 		set @count , 0;
 	}
-	// å†…å®¹ã‚’è¡¨ç¤ºã™ã‚‹
+	// “à—e‚ğ•\¦‚·‚é
 	function hanoi_display {
 		mes "A: " + hanoi_display_sub(@A_data,@A_count);
 		mes "B: " + hanoi_display_sub(@B_data,@B_count);
@@ -149,18 +149,18 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 		set @__ret$ , "";
 		set @__max  , getarg(1);
 		for(set @i , 1;@i <= @__max; set @i , @i + 1) {
-			// é…åˆ—ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹å‡¦ç†ãŒé‡ã™ãã‚‹ã‹ã‚‰æš«å®šå‡¦ç†
+			// ”z—ñ‚ğƒRƒs[‚·‚éˆ—‚ªd‚·‚¬‚é‚©‚çb’èˆ—
 			set @__ret$ , @__ret$ + getelementofarray(getarg(0),@i);
 		}
 		return @__ret$;
 	}
-	// å††ç›¤ã‚’ç§»å‹•ã™ã‚‹
+	// ‰~”Õ‚ğˆÚ“®‚·‚é
 	function hanoi_move {
 		set @__pos_a , getarg(0);
 		set @__pos_b , getarg(1);
-		// ã¾ãšæœ€åˆã«ç§»å‹•ã§ãã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+		// ‚Ü‚¸Å‰‚ÉˆÚ“®‚Å‚«‚é‚©ƒ`ƒFƒbƒN
 		if(@__pos_a == @__pos_b) {
-			// åŒã˜å††ç›¤ãªã®ã§ç§»å‹•ä¸å¯
+			// “¯‚¶‰~”Õ‚È‚Ì‚ÅˆÚ“®•s‰Â
 			return 0;
 		}
 		switch(@__pos_a) {
@@ -174,10 +174,10 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 			case 3: set @__move_val_2,@C_data[@C_count]; break;
 		}
 		if(@__move_val_2 < @__move_val_1) {
-			// ç§»å‹•ä¸å¯èƒ½ï¼ˆå°ã•ã„å††ç›¤ã®ä¸Šã«å¤§ãã„å††ç›¤ã‚’é‡ã­ã‚ˆã†ã¨ã—ãŸï¼‰
+			// ˆÚ“®•s‰Â”\i¬‚³‚¢‰~”Õ‚Ìã‚É‘å‚«‚¢‰~”Õ‚ğd‚Ë‚æ‚¤‚Æ‚µ‚½j
 			return 0;
 		}
-		// å®Ÿéš›ã«ç§»å‹•ã•ã›ã‚‹
+		// ÀÛ‚ÉˆÚ“®‚³‚¹‚é
 		switch(@__pos_a) {
 			case 1: set @A_data[@A_count],0; set @A_count,@A_count-1; break;
 			case 2: set @B_data[@B_count],0; set @B_count,@B_count-1; break;
@@ -188,10 +188,10 @@ prontera.gat,160,180,1	script	ãƒãƒã‚¤ã®å¡”æ¡ˆå†…å“¡	112,{
 			case 2: set @B_count,@B_count+1; set @B_data[@B_count],@__move_val_1; break;
 			case 3: set @C_count,@C_count+1; set @C_data[@C_count],@__move_val_1; break;
 		}
-		// ç§»å‹•å¯èƒ½
+		// ˆÚ“®‰Â”\
 		return 1;
 	}
-	// å®Œæˆã—ã¦ã‚‹ã‹ç¢ºã‹ã‚ã‚‹
+	// Š®¬‚µ‚Ä‚é‚©Šm‚©‚ß‚é
 	function hanoi_check {
 		for(set @i , 1; @i <= @level; set @i,@i + 1) {
 			if(@B_data[@i] != @level - @i + 1) break;

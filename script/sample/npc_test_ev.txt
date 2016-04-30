@@ -1,67 +1,67 @@
-// イベントのテストと解説
+// �C�x���g�̃e�X�g�Ɖ��
 //
 
 
-// * NPCの表示クラスを-1にするとイベントになり、実行可能になります。
-// * 通常のNPCでも以下のラベル付きイベントを使うことでイベントになれます。
-// * NPCスクリプトでOn〜で始まるラベルを定義すると、
-//   ラベル付きのイベントとしてエクスポートし、実行可能になります。
-// * NPCイベントで"NPC名(orイベント名)::ラベル名"とすると、
-//   指定したラベルから実行できます。
-// * ラベル名は24バイト以内にして下さい。
+// * NPC�̕\���N���X��-1�ɂ���ƃC�x���g�ɂȂ�A���s�\�ɂȂ�܂��B
+// * �ʏ��NPC�ł��ȉ��̃��x���t���C�x���g���g�����ƂŃC�x���g�ɂȂ�܂��B
+// * NPC�X�N���v�g��On�`�Ŏn�܂郉�x�����`����ƁA
+//   ���x���t���̃C�x���g�Ƃ��ăG�N�X�|�[�g���A���s�\�ɂȂ�܂��B
+// * NPC�C�x���g��"NPC��(or�C�x���g��)::���x����"�Ƃ���ƁA
+//   �w�肵�����x��������s�ł��܂��B
+// * ���x������24�o�C�g�ȓ��ɂ��ĉ������B
 
 
 // ------------------------------------------------------------------
-// 			イベントの起こし方/起こり方
+// 			�C�x���g�̋N������/�N�����
 // ------------------------------------------------------------------
 
-// 1.doeventコマンドで起こす
-// 2.MOBを倒したときに起こす
-// 　a. スクリプトmonsterコマンドの第７引数でイベント名を設定
-//   b. monsterの配置の最後の引数でイベント名を設定
-// 3.マップ初期化時に起こる（OnInit）
-// 4.NPCチャットルームが満員になったときに起こる
-// 5.時計によって起こる
-//   (OnMinute??,OnHour??,OnClock????,OnDate????) : ?は数字
+// 1.doevent�R�}���h�ŋN����
+// 2.MOB��|�����Ƃ��ɋN����
+// �@a. �X�N���v�gmonster�R�}���h�̑�V�����ŃC�x���g����ݒ�
+//   b. monster�̔z�u�̍Ō�̈����ŃC�x���g����ݒ�
+// 3.�}�b�v���������ɋN����iOnInit�j
+// 4.NPC�`���b�g���[���������ɂȂ����Ƃ��ɋN����
+// 5.���v�ɂ���ċN����
+//   (OnMinute??,OnHour??,OnClock????,OnDate????) : ?�͐���
 
-// 3,5の初期化イベント、時計イベントは、対象のPCを持たないイベントになります
-// よってPCを対象とするスクリプトを使うことは出来ません。
-// また、announceコマンドなどは0x08フラグを指定してNPC主体にする必要があります
+// 3,5�̏������C�x���g�A���v�C�x���g�́A�Ώۂ�PC�������Ȃ��C�x���g�ɂȂ�܂�
+// �����PC��ΏۂƂ���X�N���v�g���g�����Ƃ͏o���܂���B
+// �܂��Aannounce�R�}���h�Ȃǂ�0x08�t���O���w�肵��NPC��̂ɂ���K�v������܂�
 
-// ----------イベント駆動のサンプル -------------
-// クリックするとイベント「event_test2」を起こすNPC
-prontera.gat,155,180,0	script	ev_doテスト	116,{
+// ----------�C�x���g�쓮�̃T���v�� -------------
+// �N���b�N����ƃC�x���g�uevent_test2�v���N����NPC
+prontera.gat,155,180,0	script	ev_do�e�X�g	116,{
 	doevent "event_test2";
 }
 
-// ----------MOBによるイベント駆動のサンプル -------------
-// 倒すとイベント「event_test」を起こすモンスターの[召喚]
-prontera.gat,150,185,0	script	ev_mobテスト	116,{
+// ----------MOB�ɂ��C�x���g�쓮�̃T���v�� -------------
+// �|���ƃC�x���g�uevent_test�v���N���������X�^�[��[����]
+prontera.gat,150,185,0	script	ev_mob�e�X�g	116,{
 	monster "this",0,0,"Event_Mob2",1002,1,"event_test";
 }
 
-// ----------MOBによるイベント駆動のサンプル2-------------
-// 倒すとイベント「event_test3」を起こすモンスターの[配置]
+// ----------MOB�ɂ��C�x���g�쓮�̃T���v��2-------------
+// �|���ƃC�x���g�uevent_test3�v���N���������X�^�[��[�z�u]
 prontera.gat,150,180,0,0	monster	Event_Mob	1008,1,0,0,event_test3
 
-// ----------タイマによるイベント駆動のサンプル -------------
-// クリックすると５秒後にラベル「OnTimer」を実行するNPC
-// （イベント名に「NPC名::On〜で始まるラベル」を指定するとラベルを実行できる）
-prontera.gat,155,185,0	script	ev_timerテスト	116,{
-	addtimer 5000,"ev_timerテスト::OnTimer";
+// ----------�^�C�}�ɂ��C�x���g�쓮�̃T���v�� -------------
+// �N���b�N����ƂT�b��Ƀ��x���uOnTimer�v�����s����NPC
+// �i�C�x���g���ɁuNPC��::On�`�Ŏn�܂郉�x���v���w�肷��ƃ��x�������s�ł���j
+prontera.gat,155,185,0	script	ev_timer�e�X�g	116,{
+	addtimer 5000,"ev_timer�e�X�g::OnTimer";
 	end;
 OnTimer:
-	mes "５秒経ちました";
+	mes "�T�b�o���܂���";
 	close;
 }
 
-// ----------OnInit/チャットルームによるイベント駆動のサンプル -------------
-// マップサーバー起動時にラベル「OnInit」が実行され、チャットを作る
-// また、waitingroomの第3引数にイベントを設定する
-prontera.gat,145,180,0	script	ev_initテスト	116,{
+// ----------OnInit/�`���b�g���[���ɂ��C�x���g�쓮�̃T���v�� -------------
+// �}�b�v�T�[�o�[�N�����Ƀ��x���uOnInit�v�����s����A�`���b�g�����
+// �܂��Awaitingroom�̑�3�����ɃC�x���g��ݒ肷��
+prontera.gat,145,180,0	script	ev_init�e�X�g	116,{
 	end;
 OnInit:
-	waitingroom "OnInitテスト",1,"ev_initテスト::OnMax";
+	waitingroom "OnInit�e�X�g",1,"ev_init�e�X�g::OnMax";
 	end;
 OnMax:
 	warpwaitingpc "prontera.gat",155,190;
@@ -69,78 +69,78 @@ OnMax:
 
 }
 
-// ----------時計によるイベント駆動のサンプル -------------
-// 指定の時刻や日付でイベントを実行する
-// announceに0x08フラグを指定しているところに注意してください。
-prontera.gat,145,185,0	script	ev_clockテスト	116,{
+// ----------���v�ɂ��C�x���g�쓮�̃T���v�� -------------
+// �w��̎�������t�ŃC�x���g�����s����
+// announce��0x08�t���O���w�肵�Ă���Ƃ���ɒ��ӂ��Ă��������B
+prontera.gat,145,185,0	script	ev_clock�e�X�g	116,{
 	end;
-// 毎時5分
+// ����5��
 OnMinute05:
-	announce "毎時５分をお知らせします",8;
+	announce "�����T�������m�点���܂�",8;
 	end;
-// 毎日12時(24H)
+// ����12��(24H)
 OnHour12:
-	announce "正午のニュースです",8;
+	announce "���߂̃j���[�X�ł�",8;
 	end;
-// 23時59分
+// 23��59��
 OnClock2359:
-	announce "あと１分で明日です",8;
+	announce "���ƂP���Ŗ����ł�",8;
 	end;
-// １月１日
+// �P���P��
 OnDate0101:
-	announce "あけましておめでとうございます",8;
+	announce "�����܂��Ă��߂łƂ��������܂�",8;
 	end;
 }
 
 
 // ------------------------------------------------------------------
-// 			イベントスクリプトの作り方
+// 			�C�x���g�X�N���v�g�̍���
 // ------------------------------------------------------------------
-// 表示クラスを-1にするとイベント扱いになり、名前がイベント名になる。
-// エリアを指定しない場合、同じマップ内がイベントを起こす範囲になる。
-// エリアを指定する場合、共に-1にすると同じマップ鯖ならマップが違っても
-// 駆動する。エリアは半径である。なお、イベントの起こる位置というのは、
-// 対象となるPCの座標である。たとえば、遠距離攻撃でMOBを倒したときに
-// 起こるイベントはMOBの座標ではなく、PCの座標なので注意。
+// �\���N���X��-1�ɂ���ƃC�x���g�����ɂȂ�A���O���C�x���g���ɂȂ�B
+// �G���A���w�肵�Ȃ��ꍇ�A�����}�b�v�����C�x���g���N�����͈͂ɂȂ�B
+// �G���A���w�肷��ꍇ�A����-1�ɂ���Ɠ����}�b�v�I�Ȃ�}�b�v������Ă�
+// �쓮����B�G���A�͔��a�ł���B�Ȃ��A�C�x���g�̋N����ʒu�Ƃ����̂́A
+// �ΏۂƂȂ�PC�̍��W�ł���B���Ƃ��΁A�������U����MOB��|�����Ƃ���
+// �N����C�x���g��MOB�̍��W�ł͂Ȃ��APC�̍��W�Ȃ̂Œ��ӁB
 
-// ----------イベントで、エリアは指定していないサンプル------------
-// 同じマップ内でイベント「event_test」が起こると実行される
+// ----------�C�x���g�ŁA�G���A�͎w�肵�Ă��Ȃ��T���v��------------
+// �����}�b�v���ŃC�x���g�uevent_test�v���N����Ǝ��s�����
 prontera.gat,150,185,0	script	event_test	-1,{
-	announce strcharinfo(0) + " が召喚MOBを倒しました",2;
+	announce strcharinfo(0) + " ������MOB��|���܂���",2;
 	close;
 }
 
-// ----------イベントで、エリアを指定したサンプル------------
-// (155,185)から半径5セル以内でイベント「event_test2」が起こると実行される
+// ----------�C�x���g�ŁA�G���A���w�肵���T���v��------------
+// (155,185)���甼�a5�Z���ȓ��ŃC�x���g�uevent_test2�v���N����Ǝ��s�����
 prontera.gat,155,180,0	script	event_test2	-1,5,5 {
-	announce "５セル以内でクリックしましたね",19;
+	announce "�T�Z���ȓ��ŃN���b�N���܂�����",19;
 	close;
 }
 
-// ----------イベントで、エリアを-1にしたサンプル------------
-// 同じマップ鯖でイベント「event_test3」が起こると実行される
+// ----------�C�x���g�ŁA�G���A��-1�ɂ����T���v��------------
+// �����}�b�v�I�ŃC�x���g�uevent_test3�v���N����Ǝ��s�����
 prontera.gat,150,180,0	script	event_test3	-1,-1,-1 {
-	mes "配置MOB倒しましたね";
+	mes "�z�uMOB�|���܂�����";
 	close;
 }
 
 
 
 // ------------------------------------------------------------------
-// 			イベントマップ用の設定
+// 			�C�x���g�}�b�v�p�̐ݒ�
 // ------------------------------------------------------------------
-// （全てコメントアウトしてます）
+// �i�S�ăR�����g�A�E�g���Ă܂��j
 
-// ----------セーブ禁止のサンプル---------
-// このマップでログアウトすると、必ず プロンテラ の座標(156,190)に
-// セーブされる
+// ----------�Z�[�u�֎~�̃T���v��---------
+// ���̃}�b�v�Ń��O�A�E�g����ƁA�K�� �v�����e�� �̍��W(156,190)��
+// �Z�[�u�����
 //prontera.gat	mapflag	nosave	prontera.gat,156,190
 
-// ----------メモ禁止のサンプル---------
-// このマップではメモがとれない
+// ----------�����֎~�̃T���v��---------
+// ���̃}�b�v�ł̓������Ƃ�Ȃ�
 //prontera.gat	mapflag	nomemo	dummy
 
-// ----------テレポ禁止のサンプル---------
-// このマップでは蝿、蝶、テレポ、ポタが使えない
-// 注意：スクリプトのwarpの"Random","SavePoint"が無効になります
+// ----------�e���|�֎~�̃T���v��---------
+// ���̃}�b�v�ł͔��A���A�e���|�A�|�^���g���Ȃ�
+// ���ӁF�X�N���v�g��warp��"Random","SavePoint"�������ɂȂ�܂�
 //prontera.gat	mapflag	noteleport	dummy

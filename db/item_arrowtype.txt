@@ -1,81 +1,81 @@
-//1:çŸ¢,2:ã‚¹ãƒ­ãƒ¼ãƒŠã‚¤ãƒ•(ä»Šã®ã¨ã“ã‚ãƒ™ãƒŠãƒ ãƒŠã‚¤ãƒ•ç”¨),
-//4:ãƒãƒ³ãƒ‰ã‚¬ãƒ³å°‚ç”¨å¼¾,8:ãƒ©ã‚¤ãƒ•ãƒ«å°‚ç”¨å¼¾,16:ã‚·ãƒ§ãƒƒãƒˆã‚¬ãƒ³å°‚ç”¨å¼¾,
-//32:ã‚¬ãƒˆãƒªãƒ³ã‚¬ãƒ³å°‚ç”¨å¼¾,64:ã‚°ãƒ¬ãƒãƒ¼ãƒ‰ãƒ©ãƒ³ãƒãƒ£ãƒ¼å°‚ç”¨å¼¾,128:æ‰‹è£å‰£,256:è‹¦ç„¡
-//512:ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,1024:ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯æŠ•æ“²ç‰©,2048:çˆ†ç™ºè‹¦ç„¡
-1750,Arrow,çŸ¢,1
-1751,Silver_Arrow,éŠ€ã®çŸ¢,1
-1752,Fire_Arrow,ç‚ã®çŸ¢,1
-1753,Steel_Arrow,é‹¼é‰„ã®çŸ¢,1
-1754,Crystal_Arrow,æ°´æ™¶ã®çŸ¢,1
-1755,Arrow_of_Wind,é¢¨ã®çŸ¢,1
-1756,Stone_Arrow,å²©çŸ³ã®çŸ¢,1
-1757,Immaterial_Arrow,ç„¡å½¢ã®çŸ¢,1
-1758,Stun_Arrow,ã‚¹ã‚¿ãƒ³ã‚¢ãƒ­ãƒ¼,1
-1759,Freezing_Arrow,æ°·ã®çŸ¢,1
-1760,Flash_Arrow,ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ã‚¢ãƒ­ãƒ¼,1
-1761,Curse_Arrow,ã‚«ãƒ¼ã‚¹ã‚¢ãƒ­ãƒ¼,1
-1762,Rusty_Arrow,éŒ†ã³ãŸçŸ¢,1
-1763,Poison_Arrow,æ¯’çŸ¢,1
-1764,Incisive_Arrow,é‹­ã„çŸ¢,1
-1765,Oridecon_Arrow,ã‚ªãƒªãƒ‡ã‚ªã‚³ãƒ³ã®çŸ¢,1
-1766,Arrow_of_Counter_Evil,ç ´é­”çŸ¢,1
-1767,Arrow_of_Shadow,å½±çŸ¢,1
-1768,Sleep_Arrow,ã‚¹ãƒªãƒ¼ãƒ—ã‚¢ãƒ­ãƒ¼,1
-1769,Silence_Arrow,ã‚µã‚¤ãƒ¬ãƒ³ã‚¹ã‚¢ãƒ­ãƒ¼,1
-1770,Iron_Arrow,é‰„ã®çŸ¢,1
-1771,Venom_Knife,ãƒ™ãƒãƒ ãƒŠã‚¤ãƒ•,2
-1772,Unknown_Item,ç¥è–ãªçŸ¢ã®çŸ¢,1
-1773,Arrow_Of_Elf,ã‚¨ãƒ«ãƒ•ã®çŸ¢,1
-1774,Hunting_Arrow,ç‹©äººã®çŸ¢,1
-13200,Bullet,ãƒãƒ¬ãƒƒãƒˆ,124
-13201,Silver_Bullet,ã‚·ãƒ«ãƒãƒ¼ãƒãƒ¬ãƒƒãƒˆ,124
-13202,Cell_of_Blood,ãƒ–ãƒ©ãƒƒãƒ‰ãƒãƒ¬ãƒƒãƒˆ,124
-13203,Flare_Sphere,ãƒ•ã‚¡ã‚¤ã‚¢ã‚¹ãƒ•ã‚£ã‚¢,64
-13204,Lightning_Sphere,ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ•ã‚£ã‚¢,64
-13205,Poison_Sphere,ãƒã‚¤ã‚ºãƒ³ã‚¹ãƒ•ã‚£ã‚¢,64
-13206,Blind_Sphere,ãƒ€ãƒ¼ã‚¯ã‚¹ãƒ•ã‚£ã‚¢,64
-13207,Freezing_Sphere,ã‚¢ã‚¤ã‚¹ã‚¹ãƒ•ã‚£ã‚¢,64
-13250,Syuriken,æ‰‹è£å‰£,128
-13251,Raincloud_Shuriken,é›¨é›²ã®æ‰‹è£å‰£,128
-13252,Flash_Shuriken,é–ƒå…‰ã®æ‰‹è£å‰£,128
-13253,Pointed_Leaf_Shuriken,é‹­åˆƒã®æ‰‹è£å‰£,128
-13254,Piercing_Thorn_Shuriken,åˆºé‡ã®æ‰‹è£å‰£,128
-13255,Kunai_of_Frozen_Icicle,æ°·æŸ±ã®è‹¦ç„¡,256
-13256,Kunai_of_Black_Earth,é»’åœŸã®è‹¦ç„¡,256
-13257,Kunai_of_Violent_Winds,ç‹‚é¢¨ã®è‹¦ç„¡,256
-13258,Kunai_of_Fierce_Heat,çƒˆç«ã®è‹¦ç„¡,256
-13259,Kunai_of_Deadly_Poison,çŒ›æ¯’ã®è‹¦ç„¡,256
-18000,Cannon_Ball,ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,512
-18001,Holy_Cannon_Ball,ãƒ›ãƒ¼ãƒªãƒ¼ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,512
-18002,Dark_Cannon_Ball,ãƒ€ãƒ¼ã‚¯ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,512
-18003,Soul_Cannon_Ball,ã‚½ã‚¦ãƒ«ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,512
-18004,Iron_Cannon_Ball,ã‚¢ã‚¤ã‚¢ãƒ³ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«,512
-13260,Unknown_Item,ãƒªãƒ³ã‚´çˆ†å¼¾,1024
-13261,Unknown_Item,ã‚³ã‚³ãƒŠãƒƒãƒ„çˆ†å¼¾,1024
-13262,Unknown_Item,ãƒ¡ãƒ­ãƒ³çˆ†å¼¾,1024
-13263,Unknown_Item,ãƒ‘ã‚¤ãƒŠãƒƒãƒ—ãƒ«çˆ†å¼¾,1024
-13264,Unknown_Item,ãƒãƒŠãƒŠçˆ†å¼¾,1024
-13265,Unknown_Item,é»’ã„å¡Š,1024
-13266,Unknown_Item,ç¡¬ãã¦é»’ã„å¡Š,1024
-13267,Unknown_Item,ã¨ã¦ã‚‚ç¡¬ã„å¡Š,1024
-13268,Unknown_Item,ä¸æ€è­°ãªç²‰,1024
-13270,Unknown_Item,æŠ•æ“²ç”¨ãƒ•ãƒ«ã‚¹ã‚¤ãƒ³ã‚°K,1024
-13271,Unknown_Item,æŠ•æ“²ç”¨ãƒãƒŠãƒ—ãƒ©ã‚¹,1024
-13272,Unknown_Item,æŠ•æ“²ç”¨ã‚­ãƒ¥ã‚¢ãƒ¼ãƒ•ãƒªãƒ¼,1024
-13275,Unknown_Item,æŠ•æ“²ç”¨HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(å°),1024
-13276,Unknown_Item,æŠ•æ“²ç”¨HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(ä¸­),1024
-13277,Unknown_Item,æŠ•æ“²ç”¨HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(å¤§),1024
-13278,Unknown_Item,æŠ•æ“²ç”¨SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(å°),1024
-13279,Unknown_Item,æŠ•æ“²ç”¨SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(ä¸­),1024
-13280,Unknown_Item,æŠ•æ“²ç”¨SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³(å¤§),1024
-13281,Unknown_Item,æŠ•æ“²ç”¨æ¿ƒç¸®ãƒ›ãƒ¯ã‚¤ãƒˆãƒãƒ¼ã‚·ãƒ§ãƒ³Z,1024
-13282,Unknown_Item,æŠ•æ“²ç”¨ãƒ“ã‚¿ã‚¿500,1024
-13283,Unknown_Item,æŠ•æ“²ç”¨æ¿ƒç¸®ã‚µãƒ©ãƒã‚¤ãƒ³ã‚¸ãƒ¥ãƒ¼ã‚¹,1024
-13284,Unknown_Item,æŠ•æ“²ç”¨ã‚µãƒ™ãƒ¼ã‚¸ã®ä¸¸ç„¼ã,1024
-13285,Unknown_Item,æŠ•æ“²ç”¨ã‚«ã‚¯ãƒ†ãƒ«ã‚¦ã‚©ãƒ¼ã‚°ãƒ–ãƒ©ãƒƒãƒ‰,1024
-13286,Unknown_Item,æŠ•æ“²ç”¨ãƒŸãƒã‚¿ã‚¦ãƒ­ã‚¹ã®ç‰›ã‚«ãƒ«ãƒ“,1024
-13287,Unknown_Item,æŠ•æ“²ç”¨ã‚·ãƒ­ãƒã‚¢ã‚¤ã‚¹ãƒ†ã‚£ãƒ¼,1024
-13288,Unknown_Item,æŠ•æ“²ç”¨ãƒ‰ãƒ­ã‚»ãƒ©ã®ãƒãƒ¼ãƒ–ç…®,1024
-13289,Unknown_Item,æŠ•æ“²ç”¨ãƒ—ãƒ†ã‚£ãƒƒãƒˆã®ã—ã£ã½éºº,1024
-13290,Unknown_Item,æŠ•æ“²ç”¨é»’ã„ç‰©ä½“,1024
-13294,Unknown_Item,çˆ†ç™ºè‹¦ç„¡,256
+//1:–î,2:ƒXƒ[ƒiƒCƒt(¡‚Ì‚Æ‚±‚ëƒxƒiƒ€ƒiƒCƒt—p),
+//4:ƒnƒ“ƒhƒKƒ“ê—p’e,8:ƒ‰ƒCƒtƒ‹ê—p’e,16:ƒVƒ‡ƒbƒgƒKƒ“ê—p’e,
+//32:ƒKƒgƒŠƒ“ƒKƒ“ê—p’e,64:ƒOƒŒƒl[ƒhƒ‰ƒ“ƒ`ƒƒ[ê—p’e,128:è— Œ•,256:‹ê–³
+//512:ƒLƒƒƒmƒ“ƒ{[ƒ‹,1024:ƒWƒFƒlƒeƒBƒbƒN“Š±•¨,2048:”š”­‹ê–³
+1750,Arrow,–î,1
+1751,Silver_Arrow,‹â‚Ì–î,1
+1752,Fire_Arrow,‰Š‚Ì–î,1
+1753,Steel_Arrow,|“S‚Ì–î,1
+1754,Crystal_Arrow,…»‚Ì–î,1
+1755,Arrow_of_Wind,•—‚Ì–î,1
+1756,Stone_Arrow,ŠâÎ‚Ì–î,1
+1757,Immaterial_Arrow,–³Œ`‚Ì–î,1
+1758,Stun_Arrow,ƒXƒ^ƒ“ƒAƒ[,1
+1759,Freezing_Arrow,•X‚Ì–î,1
+1760,Flash_Arrow,ƒtƒ‰ƒbƒVƒ…ƒAƒ[,1
+1761,Curse_Arrow,ƒJ[ƒXƒAƒ[,1
+1762,Rusty_Arrow,K‚Ñ‚½–î,1
+1763,Poison_Arrow,“Å–î,1
+1764,Incisive_Arrow,‰s‚¢–î,1
+1765,Oridecon_Arrow,ƒIƒŠƒfƒIƒRƒ“‚Ì–î,1
+1766,Arrow_of_Counter_Evil,”j–‚–î,1
+1767,Arrow_of_Shadow,‰e–î,1
+1768,Sleep_Arrow,ƒXƒŠ[ƒvƒAƒ[,1
+1769,Silence_Arrow,ƒTƒCƒŒƒ“ƒXƒAƒ[,1
+1770,Iron_Arrow,“S‚Ì–î,1
+1771,Venom_Knife,ƒxƒmƒ€ƒiƒCƒt,2
+1772,Unknown_Item,_¹‚È–î‚Ì–î,1
+1773,Arrow_Of_Elf,ƒGƒ‹ƒt‚Ì–î,1
+1774,Hunting_Arrow,ël‚Ì–î,1
+13200,Bullet,ƒoƒŒƒbƒg,124
+13201,Silver_Bullet,ƒVƒ‹ƒo[ƒoƒŒƒbƒg,124
+13202,Cell_of_Blood,ƒuƒ‰ƒbƒhƒoƒŒƒbƒg,124
+13203,Flare_Sphere,ƒtƒ@ƒCƒAƒXƒtƒBƒA,64
+13204,Lightning_Sphere,ƒEƒBƒ“ƒhƒXƒtƒBƒA,64
+13205,Poison_Sphere,ƒ|ƒCƒYƒ“ƒXƒtƒBƒA,64
+13206,Blind_Sphere,ƒ_[ƒNƒXƒtƒBƒA,64
+13207,Freezing_Sphere,ƒAƒCƒXƒXƒtƒBƒA,64
+13250,Syuriken,è— Œ•,128
+13251,Raincloud_Shuriken,‰J‰_‚Ìè— Œ•,128
+13252,Flash_Shuriken,‘MŒõ‚Ìè— Œ•,128
+13253,Pointed_Leaf_Shuriken,‰sn‚Ìè— Œ•,128
+13254,Piercing_Thorn_Shuriken,hj‚Ìè— Œ•,128
+13255,Kunai_of_Frozen_Icicle,•X’Œ‚Ì‹ê–³,256
+13256,Kunai_of_Black_Earth,•“y‚Ì‹ê–³,256
+13257,Kunai_of_Violent_Winds,‹¶•—‚Ì‹ê–³,256
+13258,Kunai_of_Fierce_Heat,—ó‰Î‚Ì‹ê–³,256
+13259,Kunai_of_Deadly_Poison,–Ò“Å‚Ì‹ê–³,256
+18000,Cannon_Ball,ƒLƒƒƒmƒ“ƒ{[ƒ‹,512
+18001,Holy_Cannon_Ball,ƒz[ƒŠ[ƒLƒƒƒmƒ“ƒ{[ƒ‹,512
+18002,Dark_Cannon_Ball,ƒ_[ƒNƒLƒƒƒmƒ“ƒ{[ƒ‹,512
+18003,Soul_Cannon_Ball,ƒ\ƒEƒ‹ƒLƒƒƒmƒ“ƒ{[ƒ‹,512
+18004,Iron_Cannon_Ball,ƒAƒCƒAƒ“ƒLƒƒƒmƒ“ƒ{[ƒ‹,512
+13260,Unknown_Item,ƒŠƒ“ƒS”š’e,1024
+13261,Unknown_Item,ƒRƒRƒiƒbƒc”š’e,1024
+13262,Unknown_Item,ƒƒƒ“”š’e,1024
+13263,Unknown_Item,ƒpƒCƒiƒbƒvƒ‹”š’e,1024
+13264,Unknown_Item,ƒoƒiƒi”š’e,1024
+13265,Unknown_Item,•‚¢‰ò,1024
+13266,Unknown_Item,d‚­‚Ä•‚¢‰ò,1024
+13267,Unknown_Item,‚Æ‚Ä‚àd‚¢‰ò,1024
+13268,Unknown_Item,•sv‹c‚È•²,1024
+13270,Unknown_Item,“Š±—pƒtƒ‹ƒXƒCƒ“ƒOK,1024
+13271,Unknown_Item,“Š±—pƒ}ƒiƒvƒ‰ƒX,1024
+13272,Unknown_Item,“Š±—pƒLƒ…ƒA[ƒtƒŠ[,1024
+13275,Unknown_Item,“Š±—pHP‘‰Áƒ|[ƒVƒ‡ƒ“(¬),1024
+13276,Unknown_Item,“Š±—pHP‘‰Áƒ|[ƒVƒ‡ƒ“(’†),1024
+13277,Unknown_Item,“Š±—pHP‘‰Áƒ|[ƒVƒ‡ƒ“(‘å),1024
+13278,Unknown_Item,“Š±—pSP‘‰Áƒ|[ƒVƒ‡ƒ“(¬),1024
+13279,Unknown_Item,“Š±—pSP‘‰Áƒ|[ƒVƒ‡ƒ“(’†),1024
+13280,Unknown_Item,“Š±—pSP‘‰Áƒ|[ƒVƒ‡ƒ“(‘å),1024
+13281,Unknown_Item,“Š±—p”ZkƒzƒƒCƒgƒ|[ƒVƒ‡ƒ“Z,1024
+13282,Unknown_Item,“Š±—pƒrƒ^ƒ^500,1024
+13283,Unknown_Item,“Š±—p”ZkƒTƒ‰ƒ}ƒCƒ“ƒWƒ…[ƒX,1024
+13284,Unknown_Item,“Š±—pƒTƒx[ƒW‚ÌŠÛÄ‚«,1024
+13285,Unknown_Item,“Š±—pƒJƒNƒeƒ‹ƒEƒH[ƒOƒuƒ‰ƒbƒh,1024
+13286,Unknown_Item,“Š±—pƒ~ƒmƒ^ƒEƒƒX‚Ì‹ƒJƒ‹ƒr,1024
+13287,Unknown_Item,“Š±—pƒVƒƒ}ƒAƒCƒXƒeƒB[,1024
+13288,Unknown_Item,“Š±—pƒhƒƒZƒ‰‚Ìƒn[ƒuÏ,1024
+13289,Unknown_Item,“Š±—pƒvƒeƒBƒbƒg‚Ì‚µ‚Á‚Û–Ë,1024
+13290,Unknown_Item,“Š±—p•‚¢•¨‘Ì,1024
+13294,Unknown_Item,”š”­‹ê–³,256

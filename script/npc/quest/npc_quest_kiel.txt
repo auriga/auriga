@@ -1,775 +1,775 @@
 //= Athena Script ==============================================================
 // Ragnarok Online Kiel Hyre Quest Script     by Blaze
 //= Registry ===================================================================
-// KH_QUE -> 0〜56
+// KH_QUE -> 0�`56
 //==============================================================================
 
 //============================================================
-// 配達NPC
+// �z�BNPC
 //------------------------------------------------------------
-yuno_in01.gat,35,179,4	script	主人	46,3,3,{
+yuno_in01.gat,35,179,4	script	��l	46,3,3,{
 	switch(KH_QUE) {
 	case 0:
-		mes "[バンド]";
-		mes "…………";
+		mes "[�o���h]";
+		mes "�c�c�c�c";
 		next;
-		mes "[バンド]";
-		mes "あ……";
+		mes "[�o���h]";
+		mes "���c�c";
 		break;
 	case 1:
-		set '@str$,"何か困っているのですか？";
-		mes "[バンド]";
+		set '@str$,"���������Ă���̂ł����H";
+		mes "[�o���h]";
 		break;
 	case 2:
 	case 3:
- 		mes "[バンド]";
-		mes "時間に遅れないようにしてください。";
-		mes "「^FF0000キル・ハイル学院^000000」の";
-		mes "「^FF0000リコル・レイン婦人^000000」は気難しく、";
-		mes "少しでも遅れると大変な事になります。";
+ 		mes "[�o���h]";
+		mes "���Ԃɒx��Ȃ��悤�ɂ��Ă��������B";
+		mes "�u^FF0000�L���E�n�C���w�@^000000�v��";
+		mes "�u^FF0000���R���E���C���w�l^000000�v�͋C����A";
+		mes "�����ł��x���Ƒ�ςȎ��ɂȂ�܂��B";
 		close;
 	case 4:
 		if(KH_QUE_SUB&0x1 == 0) {
-			mes "[バンド]";
-			mes "配達お疲れ様でした。";
-			mes "本当に助かりました。";
-			mes "よろしければ、少ないですが";
-			mes "手数料と思って受け取ってください。";
+			mes "[�o���h]";
+			mes "�z�B�����l�ł����B";
+			mes "�{���ɏ�����܂����B";
+			mes "��낵����΁A���Ȃ��ł���";
+			mes "�萔���Ǝv���Ď󂯎���Ă��������B";
 			next;
-			menu "できれば料理用ワインを……",-;
-			mes "[バンド]";
-			mes "おや、こちらのほうがいいですか？";
-			mes "わかりました。";
-			mes "少々お待ちください。";
+			menu "�ł���Η����p���C�����c�c",-;
+			mes "[�o���h]";
+			mes "����A������̂ق��������ł����H";
+			mes "�킩��܂����B";
+			mes "���X���҂����������B";
 			next;
-			mes "ごそごそ……";
-			mes "がさごそ……";
-			mes "……";
+			mes "���������c�c";
+			mes "���������c�c";
+			mes "�c�c";
 			next;
-			mes "[バンド]";
-			mes "はい、どうぞ。";
-			mes "お金も受け取ってください。";
-			mes "私の感謝の気持ちです。";
-			mes "どうもありがとうございました。";
+			mes "[�o���h]";
+			mes "�͂��A�ǂ����B";
+			mes "�������󂯎���Ă��������B";
+			mes "���̊��ӂ̋C�����ł��B";
+			mes "�ǂ������肪�Ƃ��������܂����B";
 			getitem 7487,1;
 			set Zeny,Zeny+1000;
 			set KH_QUE_SUB,KH_QUE_SUB|0x01;
 			close;
 		}
 	default:
-		mes "[バンド]";
-		mes "以前は本当に助かりました。";
-		mes "また、機会があれば";
-		mes "よろしくお願いします。";
+		mes "[�o���h]";
+		mes "�ȑO�͖{���ɏ�����܂����B";
+		mes "�܂��A�@������";
+		mes "��낵�����肢���܂��B";
 		close;
 	}
-	mes "いらっしゃいませ。";
-	mes "何にしますか？";
+	mes "��������Ⴂ�܂��B";
+	mes "���ɂ��܂����H";
 	next;
-	switch(select("ビール","カクテル","焼酎",'@str$,"今はまだ……")) {
+	switch(select("�r�[��","�J�N�e��","�Ē�",'@str$,"���͂܂��c�c")) {
 	case 1:
-		mes "[バンド]";
-		mes "ビールですね。";
-		mes "少々お待ちください。";
+		mes "[�o���h]";
+		mes "�r�[���ł��ˁB";
+		mes "���X���҂����������B";
 		next;
-		mes "-………………-";
+		mes "-�c�c�c�c�c�c-";
 		next;
-		mes "[バンド]";
-		mes "お待たせしました。";
-		mes "これは特製、";
-		mes "「シュバルツピオ」といいます。";
+		mes "[�o���h]";
+		mes "���҂������܂����B";
+		mes "����͓����A";
+		mes "�u�V���o���c�s�I�v�Ƃ����܂��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "シュバルツピオ……";
-		mes "-鮮やかで濃い茶色が";
-		mes "ガラスのコップの中できらめいている-";
+		mes "�V���o���c�s�I�c�c";
+		mes "-�N�₩�ŔZ�����F��";
+		mes "�K���X�̃R�b�v�̒��ł���߂��Ă���-";
 		next;
 		percentheal 0,-5;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "ごく……";
+		mes "�����c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "……へぇ…………";
-		mes "おいしい。";
+		mes "�c�c�ւ��c�c�c�c";
+		mes "���������B";
 		next;
-		mes "[バンド]";
-		mes "ハハ。";
-		mes "気に入られたようですね。";
+		mes "[�o���h]";
+		mes "�n�n�B";
+		mes "�C�ɓ���ꂽ�悤�ł��ˁB";
 		close;
 	case 2:
-		mes "[バンド]";
-		mes "……";
-		mes "お客様、申し訳ありません。";
-		mes "ただいま在庫が無く……";
-		mes "近いうちに";
-		mes "準備しておきます。";
+		mes "[�o���h]";
+		mes "�c�c";
+		mes "���q�l�A�\���󂠂�܂���B";
+		mes "�������܍݌ɂ������c�c";
+		mes "�߂�������";
+		mes "�������Ă����܂��B";
 		close;
 	case 3:
-		mes "[バンド]";
-		mes "……？";
-		mes "「焼酎」ですか……";
-		mes "お客様、申し訳ありません。";
-		mes "そういったお酒は扱っておりません。";
+		mes "[�o���h]";
+		mes "�c�c�H";
+		mes "�u�Ē��v�ł����c�c";
+		mes "���q�l�A�\���󂠂�܂���B";
+		mes "���������������͈����Ă���܂���B";
 		close;
 	case 4:
 		break;
 	case 5:
-		mes "[バンド]";
-		mes "わかりました。";
-		mes "決まり次第お呼びください。";
+		mes "[�o���h]";
+		mes "�킩��܂����B";
+		mes "���܂莟�您�Ăт��������B";
 		close;
 	}
-	mes "[バンド]";
-	mes "え……それは……";
-	mes "どうやら独り言を聞かれたようですね。";
-	mes "……実は配達職員がケガをしまして、";
-	mes "入荷する商品と出荷する商品が";
-	mes "溜まってきています……";
+	mes "[�o���h]";
+	mes "���c�c����́c�c";
+	mes "�ǂ����Ƃ茾�𕷂��ꂽ�悤�ł��ˁB";
+	mes "�c�c���͔z�B�E�����P�K�����܂��āA";
+	mes "���ׂ��鏤�i�Əo�ׂ��鏤�i��";
+	mes "���܂��Ă��Ă��܂��c�c";
 	next;
-	mes "[バンド]";
-	mes "入荷の方は取引先が";
-	mes "何とかしてくださるそうですが……";
-	mes "問題は出荷の方なのです。";
-	mes "「キル・ハイル学院」に";
-	mes "配達しなければならない品物が……";
+	mes "[�o���h]";
+	mes "���ׂ̕��͎���悪";
+	mes "���Ƃ����Ă������邻���ł����c�c";
+	mes "���͏o�ׂ̕��Ȃ̂ł��B";
+	mes "�u�L���E�n�C���w�@�v��";
+	mes "�z�B���Ȃ���΂Ȃ�Ȃ��i�����c�c";
 	next;
-	mes "[バンド]";
-	mes "うーん……";
+	mes "[�o���h]";
+	mes "���[��c�c";
 	next;
-	if(select("大変ですね","私がお手伝いしましょうか？")==1) {
-		mes "[バンド]";
-		mes "えぇ、そうなんです……";
-		mes "あ、申し訳ありません。";
-		mes "無駄話がすぎましたね。";
+	if(select("��ςł���","��������`�����܂��傤���H")==1) {
+		mes "[�o���h]";
+		mes "�����A�����Ȃ�ł��c�c";
+		mes "���A�\���󂠂�܂���B";
+		mes "���ʘb�������܂����ˁB";
 		close;
 	}
-	mes "[バンド]";
-	mes "え？";
-	mes "それは助かりますが……";
-	mes "少し厄介なことなのです。";
-	mes "よろしいのでしょうか？";
+	mes "[�o���h]";
+	mes "���H";
+	mes "����͏�����܂����c�c";
+	mes "�������Ȃ��ƂȂ̂ł��B";
+	mes "��낵���̂ł��傤���H";
 	next;
-	if(select("勿論です","少し考えてみます")==2) {
-		mes "[バンド]";
-		mes "…………";
-		mes "わかりました……";
+	if(select("�ܘ_�ł�","�����l���Ă݂܂�")==2) {
+		mes "[�o���h]";
+		mes "�c�c�c�c";
+		mes "�킩��܂����c�c";
 		close;
 	}
-	mes "[バンド]";
-	mes "本当ですか？";
-	mes "ありがとうございます。";
+	mes "[�o���h]";
+	mes "�{���ł����H";
+	mes "���肪�Ƃ��������܂��B";
 	next;
-	mes "[バンド]";
-	mes "では、配達する品物と";
-	mes "受取人の名前をお教えします。";
+	mes "[�o���h]";
+	mes "�ł́A�z�B����i����";
+	mes "���l�̖��O�����������܂��B";
 	next;
-	mes "[バンド]";
-	mes "配達する品物は「^0000FF料理用ワイン^000000」";
-	mes "そして、受取人は";
-	mes "「キル・ハイル学院」の";
-	mes "「^FF0000リコル・レイン婦人^000000」です。";
+	mes "[�o���h]";
+	mes "�z�B����i���́u^0000FF�����p���C��^000000�v";
+	mes "�����āA���l��";
+	mes "�u�L���E�n�C���w�@�v��";
+	mes "�u^FF0000���R���E���C���w�l^000000�v�ł��B";
 	next;
-	mes "[バンド]";
-	mes "それでは、";
-	mes "よろしくお願いいたします。";
+	mes "[�o���h]";
+	mes "����ł́A";
+	mes "��낵�����肢�������܂��B";
 	getitem 7487,1;
 	set KH_QUE,2;
 	close;
 OnTouch:
 	if(KH_QUE == 0 && BaseLevel >= 70) {
-		mes "[バンド]";
-		mes "困りましたね……";
-		mes "これはどうすれば……";
+		mes "[�o���h]";
+		mes "����܂����ˁc�c";
+		mes "����͂ǂ�����΁c�c";
 		set KH_QUE,1;
 		close;
 	}
 	end;
 }
 
-yuno.gat,217,114,6	script	可愛い子供	96,{
+yuno.gat,217,114,6	script	�����q��	96,{
 	if(KH_QUE < 4) {
-		mes "[スズ]";
-		mes "トーストいかがでしゅか〜";
-		mes "あったかのほっかほかでちゅよ〜";
+		mes "[�X�Y]";
+		mes "�g�[�X�g�������ł��ォ�`";
+		mes "���������̂ق����ق��ł����`";
 		close;
 	}
 	if(KH_QUE == 4 && KH_QUE_SUB&0x2 == 0) {
-		mes "[スズ]";
-		mes "いらっちゃいまて〜";
-		mes "トーストはいかがでしゅか？";
+		mes "[�X�Y]";
+		mes "��������Ⴂ�܂ā`";
+		mes "�g�[�X�g�͂������ł��ォ�H";
 		next;
-		if(select("エリーの頼みできました","いいえ")==2) {
-			mes "[スズ]";
-			mes "またきてね〜";
+		if(select("�G���[�̗��݂ł��܂���","������")==2) {
+			mes "[�X�Y]";
+			mes "�܂����Ăˁ`";
 			close;
 		}
-		mes "[スズ]";
-		mes "ん〜？";
-		mes "^FF0000エリー^000000姉たまの？";
+		mes "[�X�Y]";
+		mes "��`�H";
+		mes "^FF0000�G���[^000000�o���܂́H";
 		next;
-		mes "[スズ]";
-		mes "も〜、大体わかりまつよ。";
-		mes "ま〜た実習の材料を落とちたんでちょ？";
-		mes "ホント、^FF0000エリー^000000姉たまは";
-		mes "おっちょこちょいでつね。";
+		mes "[�X�Y]";
+		mes "���`�A��̂킩��܂�B";
+		mes "�܁`�����K�̍ޗ��𗎂Ƃ�����ł���H";
+		mes "�z���g�A^FF0000�G���[^000000�o���܂�";
+		mes "�������傱���傢�łˁB";
 		next;
-		mes "[スズ]";
-		mes "わかりまちた！";
-		mes "^FF0000エリー^000000姉たまのために";
-		mes "もう一度材料をあげまつよ。";
+		mes "[�X�Y]";
+		mes "�킩��܂����I";
+		mes "^FF0000�G���[^000000�o���܂̂��߂�";
+		mes "������x�ޗ��������܂�B";
 		next;
-		mes "[スズ]";
-		mes "……っと言いたいのでつが……";
-		mes "ちょうど材料が切れてまちた。";
-		mes "よかったらリヒタルゼンの精米所まで";
-		mes "材料を取りに行ってもらえましゅか？";
+		mes "[�X�Y]";
+		mes "�c�c���ƌ��������̂ł��c�c";
+		mes "���傤�Ǎޗ����؂�Ă܂����B";
+		mes "�悩�����烊�q�^���[���̐��ď��܂�";
+		mes "�ޗ������ɍs���Ă��炦�܂��ォ�H";
 		next;
-		mes "[スズ]";
-		mes "ジュノーのトーストショップと言えば";
-		mes "小麦粉とたまごをもらえりゅはずでつ。";
+		mes "[�X�Y]";
+		mes "�W���m�[�̃g�[�X�g�V���b�v�ƌ�����";
+		mes "�������Ƃ��܂������炦���͂��łB";
 		set KH_QUE_SUB,KH_QUE_SUB|0x2;
 		close;
 	}
 	if(KH_QUE == 4 && KH_QUE_SUB&0x4 == 0) {
-		mes "[スズ]";
-		mes "リヒタルゼンの精米所で小麦粉と";
-		mes "たまごを受け取ってきてくだたい。";
-		mes "ジュノーのトーストショップから";
-		mes "きたと言えばわかりゅと思いましゅ。";
+		mes "[�X�Y]";
+		mes "���q�^���[���̐��ď��ŏ�������";
+		mes "���܂����󂯎���Ă��Ă��������B";
+		mes "�W���m�[�̃g�[�X�g�V���b�v����";
+		mes "�����ƌ����΂킩���Ǝv���܂���B";
 		close;
 	}
 	if(KH_QUE == 4 && KH_QUE_SUB&0x8 == 0) {
-		mes "[スズ]";
-		mes "お疲れさまでちた。";
-		mes "これがあなたの小麦粉とたまごでつ。";
-		mes "^FF0000エリー^000000姉たまに";
-		mes "がんばれって言っておいてくだちゃい。";
+		mes "[�X�Y]";
+		mes "����ꂳ�܂ł����B";
+		mes "���ꂪ���Ȃ��̏������Ƃ��܂��łB";
+		mes "^FF0000�G���[^000000�o���܂�";
+		mes "����΂���Č����Ă����Ă������Ⴂ�B";
 		delitem 7488,1;
 		getitem 7488,1;
 		set KH_QUE_SUB,KH_QUE_SUB|0x8;
 		close;
 	}
-	mes "[スズ]";
-	mes "焼きたてほっかほかの";
-	mes "トーストはいかがでちゅか〜？";
+	mes "[�X�Y]";
+	mes "�Ă����Ăق����ق���";
+	mes "�g�[�X�g�͂������ł��ォ�`�H";
 	close;
 }
 
-lighthalzen.gat,366,301,4	script	精米所の主人	46,{
+lighthalzen.gat,366,301,4	script	���ď��̎�l	46,{
 	if(KH_QUE < 4 || (KH_QUE == 4 && KH_QUE_SUB&0x2 == 0)) {
-		mes "[ミルス]";
-		mes "何だ？";
-		mes "今は忙しいから後にしてくれ。";
+		mes "[�~���X]";
+		mes "�����H";
+		mes "���͖Z���������ɂ��Ă���B";
 		close;
 	}
 	if(KH_QUE == 4 && KH_QUE_SUB&0x6 == 0x2) {
-		mes "[ミルス]";
-		mes "何だ？";
-		mes "今は忙しいから後にしてくれ。";
+		mes "[�~���X]";
+		mes "�����H";
+		mes "���͖Z���������ɂ��Ă���B";
 		next;
-		if(select("ジュノーのトーストショップから……","…………")==2) {
-			mes "[ミルス]";
-			mes "……なんだ、まだいたのか。";
-			mes "どっか行ってくれないか。";
+		if(select("�W���m�[�̃g�[�X�g�V���b�v����c�c","�c�c�c�c")==2) {
+			mes "[�~���X]";
+			mes "�c�c�Ȃ񂾁A�܂������̂��B";
+			mes "�ǂ����s���Ă���Ȃ����B";
 			close;
 		}
-		mes "[ミルス]";
-		mes "ああ……";
-		mes "おちびちゃんのとこのやつか。";
-		mes "ちょっと待っててくれ。";
+		mes "[�~���X]";
+		mes "�����c�c";
+		mes "�����т����̂Ƃ��̂���B";
+		mes "������Ƒ҂��ĂĂ���B";
 		next;
-		mes "[ミルス]";
-		mes "ったく……";
-		mes "あれをどこに置きやがった……";
-		mes "あのやろぅ、働きもしねぇで……";
+		mes "[�~���X]";
+		mes "�������c�c";
+		mes "������ǂ��ɒu���₪�����c�c";
+		mes "���̂�낣�A���������˂��Łc�c";
 		next;
-		mes "[ミルス]";
-		mes "あぁ、あったあった。";
-		mes "わかってるだろうが、";
-		mes "たまごは割れやすいから気をつけろよ。";
+		mes "[�~���X]";
+		mes "�����A�������������B";
+		mes "�킩���Ă邾�낤���A";
+		mes "���܂��͊���₷������C�������B";
 		getitem 7488,1;
 		set KH_QUE_SUB,KH_QUE_SUB|0x4;
 		close;
 	}
-	mes "[ミルス]";
-	mes "ったく、忙しい……";
-	mes "毎日毎日働いてばかりだ。";
-	mes "たまには遊びに行きてぇ。";
+	mes "[�~���X]";
+	mes "�������A�Z�����c�c";
+	mes "�������������Ă΂��肾�B";
+	mes "���܂ɂ͗V�тɍs���Ă��B";
 	close;
 }
 
-lighthalzen.gat,366,289,2	script	精米所の助手	84,{
+lighthalzen.gat,366,289,2	script	���ď��̏���	84,{
 	if(KH_QUE < 4 || (KH_QUE == 4 && KH_QUE_SUB&0x2 == 0)) {
-		mes "[クス]";
-		mes "チッ……";
-		mes "大して忙しくもないくせに";
-		mes "忙しいふりをしやがって……";
-		mes "ぶつぶつ……";
+		mes "[�N�X]";
+		mes "�`�b�c�c";
+		mes "�債�ĖZ�������Ȃ�������";
+		mes "�Z�����ӂ�����₪���āc�c";
+		mes "�ԂԂc�c";
 		close;
 	}
 	if(KH_QUE == 4 && KH_QUE_SUB&0x6 == 0x2) {
-		mes "[クス]";
-		mes "わッ!?";
-		mes "あ、遊んでねぇよ！";
-		mes "ほら見ろ！　働いてるだろ！";
-		mes "ったく……ぶつぶつ……";
+		mes "[�N�X]";
+		mes "��b!?";
+		mes "���A�V��ł˂���I";
+		mes "�ق猩��I�@�����Ă邾��I";
+		mes "�������c�c�ԂԂc�c";
 		close;
 	}
-	mes "[クス]";
-	mes "あ〜";
-	mes "ジュノーのトーストショップね。";
-	mes "知ってる知ってる。";
-	mes "あそこの女の子、可愛いよなぁ。";
-	mes "……ウヘヘ…………";
+	mes "[�N�X]";
+	mes "���`";
+	mes "�W���m�[�̃g�[�X�g�V���b�v�ˁB";
+	mes "�m���Ă�m���Ă�B";
+	mes "�������̏��̎q�A������Ȃ��B";
+	mes "�c�c�E�w�w�c�c�c�c";
 	close;
 }
 
 //============================================================
-// キル・ハイル学院NPC1
+// �L���E�n�C���w�@NPC1
 //------------------------------------------------------------
-yuno_fild08.gat,196,196,5	script	少女	102,{
-	mes "[少女]";
-	mes "あーぁ、私も「^0000FFキル・ハイル学院^000000」に";
-	mes "入学したいのになー";
-	mes "どうしてお母さんは";
-	mes "私を孤児にしてくれなかったの……";
+yuno_fild08.gat,196,196,5	script	����	102,{
+	mes "[����]";
+	mes "���[���A�����u^0000FF�L���E�n�C���w�@^000000�v��";
+	mes "���w�������̂ɂȁ[";
+	mes "�ǂ����Ă��ꂳ���";
+	mes "�����ǎ��ɂ��Ă���Ȃ������́c�c";
 	next;
-	menu "キル・ハイル学院？",-;
-	mes "[少女]";
-	mes "ん？　この建物のことよ。";
-	mes "孤児だけが入学できる学院。";
+	menu "�L���E�n�C���w�@�H",-;
+	mes "[����]";
+	mes "��H�@���̌����̂��Ƃ�B";
+	mes "�ǎ����������w�ł���w�@�B";
 	next;
-	mes "[少女]";
-	mes "学院を建てた人は";
-	mes "「^FF0000キル・ハイル^000000」といって、";
-	mes "変な機械をたくさん作って";
-	mes "大儲けしたんだって。";
+	mes "[����]";
+	mes "�w�@�����Ă��l��";
+	mes "�u^FF0000�L���E�n�C��^000000�v�Ƃ����āA";
+	mes "�ςȋ@�B��������������";
+	mes "��ׂ������񂾂��āB";
 	next;
-	mes "[少女]";
-	mes "それで……えーっと、社会福祉？";
-	mes "孤児たちのためにこの学院を";
-	mes "建てたんだってさ。";
+	mes "[����]";
+	mes "����Łc�c���[���ƁA�Љ���H";
+	mes "�ǎ������̂��߂ɂ��̊w�@��";
+	mes "���Ă��񂾂��Ă��B";
 	next;
-	mes "[少女]";
-	mes "この学院を卒業すれば";
-	mes "良い企業に就職できるって言うけど……";
-	mes "あーぁ、私も学院に入学したーい。";
+	mes "[����]";
+	mes "���̊w�@�𑲋Ƃ����";
+	mes "�ǂ���ƂɏA�E�ł�����Č������ǁc�c";
+	mes "���[���A�����w�@�ɓ��w�����[���B";
 	close;
 }
 
-yuno_fild08.gat,158,194,6	script	ガードマン#kh	852,{
+yuno_fild08.gat,158,194,6	script	�K�[�h�}��#kh	852,{
 	if(KH_QUE > 15) {
-		mes "[ガードマン]";
-		mes "一般人は立ち入り禁止です。";
-		mes "用件、または約束が無い限り";
-		mes "学院内への立ち入りは許可できません。";
+		mes "[�K�[�h�}��]";
+		mes "��ʐl�͗�������֎~�ł��B";
+		mes "�p���A�܂��͖񑩂���������";
+		mes "�w�@���ւ̗�������͋��ł��܂���B";
 		close;
 	}
 	if(KH_QUE > 2) {
-		mes "[ガードマン]";
-		mes "まだ用件が";
-		mes "終わっていないのですか？";
+		mes "[�K�[�h�}��]";
+		mes "�܂��p����";
+		mes "�I����Ă��Ȃ��̂ł����H";
 		close2;
 		warp "kh_school.gat",71,155;
 		end;
 	}
-	mes "[ガードマン]";
-	mes "ここは「^0000FFキル・ハイル学院^000000」。";
-	mes "一般人は立ち入り禁止です。";
-	mes "用件、または約束が無い限り";
-	mes "学院内への立ち入りは許されません。";
+	mes "[�K�[�h�}��]";
+	mes "�����́u^0000FF�L���E�n�C���w�@^000000�v�B";
+	mes "��ʐl�͗�������֎~�ł��B";
+	mes "�p���A�܂��͖񑩂���������";
+	mes "�w�@���ւ̗�������͋�����܂���B";
 	if(KH_QUE < 2)
 		close;
 	next;
-	if(select("配達にきました","…………")==2) {
-		mes "[ガードマン]";
-		mes "用件が無いなら";
-		mes "学院から離れてください。";
+	if(select("�z�B�ɂ��܂���","�c�c�c�c")==2) {
+		mes "[�K�[�h�}��]";
+		mes "�p���������Ȃ�";
+		mes "�w�@���痣��Ă��������B";
 		close;
 	}
-	mes "[ガードマン]";
-	mes "配達ですか？";
-	mes "まずは受取人の名前。";
-	mes "次に配達品が何か";
-	mes "おっしゃってください。";
+	mes "[�K�[�h�}��]";
+	mes "�z�B�ł����H";
+	mes "�܂��͎��l�̖��O�B";
+	mes "���ɔz�B�i������";
+	mes "����������Ă��������B";
 	next;
 	input '@str$;
-	if(substr('@str$,0,6) != "リコル") {
-		mes "[ガードマン]";
+	if(substr('@str$,0,6) != "���R��") {
+		mes "[�K�[�h�}��]";
 		mes '@str$;
-		mes "という方は、当学院において";
-		mes "受取人に登録されていません。";
-		mes "配達先を間違っていませんか？";
+		mes "�Ƃ������́A���w�@�ɂ�����";
+		mes "���l�ɓo�^����Ă��܂���B";
+		mes "�z�B����Ԉ���Ă��܂��񂩁H";
 		close;
 	}
 	input '@str$;
-	mes "[ガードマン]";
-	mes "^0000FF" +'@str$+ "^000000を";
-	mes "^FF0000リコル・レイン婦人^000000にですか？";
-	mes "確認するのでしばらくお待ちください。";
+	mes "[�K�[�h�}��]";
+	mes "^0000FF" +'@str$+ "^000000��";
+	mes "^FF0000���R���E���C���w�l^000000�ɂł����H";
+	mes "�m�F����̂ł��΂炭���҂����������B";
 	next;
-	mes "-ガードマンは後にある";
-	mes "何かを操作している-";
+	mes "-�K�[�h�}���͌�ɂ���";
+	mes "�����𑀍삵�Ă���-";
 	next;
-	mes "[ガードマン]";
-	mes "はい。正門です。";
-	mes "^FF0000リコル・レイン婦人^000000への配達です。";
-	mes "確認をお願いします。";
-	mes "配達品は";
-	mes "^0000FF" +'@str$+ "^000000です。";
+	mes "[�K�[�h�}��]";
+	mes "�͂��B����ł��B";
+	mes "^FF0000���R���E���C���w�l^000000�ւ̔z�B�ł��B";
+	mes "�m�F�����肢���܂��B";
+	mes "�z�B�i��";
+	mes "^0000FF" +'@str$+ "^000000�ł��B";
 	next;
-	mes "[ガードマン]";
-	mes "……はい……はい……";
-	mes "……はい。わかりました。";
+	mes "[�K�[�h�}��]";
+	mes "�c�c�͂��c�c�͂��c�c";
+	mes "�c�c�͂��B�킩��܂����B";
 	next;
-	if('@str$ != "料理用ワイン") {
-		mes "[ガードマン]";
-		mes "確認した所、^FF0000リコル・レイン婦人^000000は";
-		mes "そのような品物は";
-		mes "注文したことがないとのことです。";
+	if('@str$ != "�����p���C��") {
+		mes "[�K�[�h�}��]";
+		mes "�m�F�������A^FF0000���R���E���C���w�l^000000��";
+		mes "���̂悤�ȕi����";
+		mes "�����������Ƃ��Ȃ��Ƃ̂��Ƃł��B";
 		next;
-		mes "[ガードマン]";
-		mes "受取人、品物を";
-		mes "よく確認してみてください。";
+		mes "[�K�[�h�}��]";
+		mes "���l�A�i����";
+		mes "�悭�m�F���Ă݂Ă��������B";
 		close;
 	}
-	mes "[ガードマン]";
-	mes "確認させてもらいます";
-	mes "「^FF0000リコル・レイン婦人^000000」宛ての";
-	mes "「^0000FF料理用ワイン^000000」。";
-	mes "間違いありませんね？";
+	mes "[�K�[�h�}��]";
+	mes "�m�F�����Ă��炢�܂�";
+	mes "�u^FF0000���R���E���C���w�l^000000�v���Ă�";
+	mes "�u^0000FF�����p���C��^000000�v�B";
+	mes "�ԈႢ����܂���ˁH";
 	next;
-	menu "はい",-;
-	mes "[ガードマン]";
-	mes "確認できました。";
-	mes "直接受け取るそうなので";
-	mes "学院内への立ち入りを許可します。";
+	menu "�͂�",-;
+	mes "[�K�[�h�}��]";
+	mes "�m�F�ł��܂����B";
+	mes "���ڎ󂯎�邻���Ȃ̂�";
+	mes "�w�@���ւ̗�������������܂��B";
 	close2;
 	warp "kh_school.gat",71,155;
 	end;
 }
-yuno_fild08.gat,158,185,0	duplicate(ガードマン#kh)	ガードマン	852
+yuno_fild08.gat,158,185,0	duplicate(�K�[�h�}��#kh)	�K�[�h�}��	852
 
-kh_school.gat,57,142,6	script	学生	893,3,3,{
-	mes "[ラシ]";
-	mes "ん？……誰？";
-	mes "学院内は立ち入り禁止って";
-	mes "知らないの？";
+kh_school.gat,57,142,6	script	�w��	893,3,3,{
+	mes "[���V]";
+	mes "��H�c�c�N�H";
+	mes "�w�@���͗�������֎~����";
+	mes "�m��Ȃ��́H";
 	close;
 OnTouch:
-	mes "[ラシ]";
-	mes "ねぇねぇ。";
-	mes "あのうわさ聞いた？";
+	mes "[���V]";
+	mes "�˂��˂��B";
+	mes "���̂��킳�������H";
 	next;
-	mes "[クィネシャ]";
-	mes "うん？";
-	mes "あのうわさ？";
+	mes "[�N�B�l�V��]";
+	mes "����H";
+	mes "���̂��킳�H";
 	next;
-	mes "[ラシ]";
-	mes "そうそう。";
-	mes "幽霊が現われたんだって〜";
-	mes "幽霊よ幽霊……";
+	mes "[���V]";
+	mes "���������B";
+	mes "�H�삪����ꂽ�񂾂��ā`";
+	mes "�H���H��c�c";
 	next;
-	mes "[クィネシャ]";
-	mes "え……幽霊……？";
-	mes "……まさかぁ……";
+	mes "[�N�B�l�V��]";
+	mes "���c�c�H��c�c�H";
+	mes "�c�c�܂������c�c";
 	next;
-	mes "[ラシ]";
-	mes "本当の事らしいよ。";
-	mes "隣のクラスの「アシ」って子。";
-	mes "知ってる？";
-	mes "あの子、最近見ないじゃない。";
-	mes "どうやら幽霊を見て……";
+	mes "[���V]";
+	mes "�{���̎��炵����B";
+	mes "�ׂ̃N���X�́u�A�V�v���Ďq�B";
+	mes "�m���Ă�H";
+	mes "���̎q�A�ŋߌ��Ȃ�����Ȃ��B";
+	mes "�ǂ����H������āc�c";
 	next;
-	mes "[クィネシャ]";
-	mes "それ本当なの？";
-	mes "恐〜い……";
-	mes "ねぇ、そんな話もうやめよ？";
+	mes "[�N�B�l�V��]";
+	mes "����{���Ȃ́H";
+	mes "���`���c�c";
+	mes "�˂��A����Șb������߂�H";
 	close;
 }
 
-kh_school.gat,57,139,0	script	学生	893,{
+kh_school.gat,57,139,0	script	�w��	893,{
 	emotion 19;
-	mes "[クィネシャ]";
-	mes "うん……";
-	mes "うん……あそこ……";
-	mes "そうそう……";
-	mes "うんうん……";
+	mes "[�N�B�l�V��]";
+	mes "����c�c";
+	mes "����c�c�������c�c";
+	mes "���������c�c";
+	mes "���񂤂�c�c";
 	close;
 }
 
-kh_school.gat,176,60,4	script	婦人	101,{
+kh_school.gat,176,60,4	script	�w�l	101,{
 	if(KH_QUE != 2) {
-		mes "[リコル・レイン]";
-		mes "用事を終えたのでしたら";
-		mes "はやくお帰りください。";
-		mes "まったく、最近の人は……";
+		mes "[���R���E���C��]";
+		mes "�p�����I�����̂ł�����";
+		mes "�͂₭���A�肭�������B";
+		mes "�܂������A�ŋ߂̐l�́c�c";
 		close;
 	}
-	mes "[リコル・レイン]";
-	mes "何か御用ですか？";
+	mes "[���R���E���C��]";
+	mes "������p�ł����H";
 	next;
-	if(select("配達に来ました","何でもないです")==2) {
-		mes "[リコル・レイン]";
-		mes "ここは部外者";
-		mes "立ち入り禁止なのですから、";
-		mes "むやみに歩き回らないでください。";
+	if(select("�z�B�ɗ��܂���","���ł��Ȃ��ł�")==2) {
+		mes "[���R���E���C��]";
+		mes "�����͕��O��";
+		mes "��������֎~�Ȃ̂ł�����A";
+		mes "�ނ�݂ɕ������Ȃ��ł��������B";
 		close;
 	}
-	mes "[リコル・レイン]";
-	mes "あぁ、そうでしたね。";
-	mes "予想以上の遅れです。";
-	mes "次からはちゃんと約束の時間に";
-	mes "届けるようにしてください。";
-	mes "また遅れるようでしたら";
-	mes "取引先を変えさせてもらいます。";
+	mes "[���R���E���C��]";
+	mes "�����A�����ł����ˁB";
+	mes "�\�z�ȏ�̒x��ł��B";
+	mes "������͂����Ɩ񑩂̎��Ԃ�";
+	mes "�͂���悤�ɂ��Ă��������B";
+	mes "�܂��x���悤�ł�����";
+	mes "������ς������Ă��炢�܂��B";
 	next;
-	mes "[リコル・レイン]";
-	mes "それに……";
+	mes "[���R���E���C��]";
+	mes "����Ɂc�c";
 	mes "[????]";
-	mes "ふぇ？　……ふわわわ!?";
+	mes "�ӂ��H�@�c�c�ӂ���!?";
 	next;
-	mes "-ガチャ　どてん！-";
+	mes "-�K�`���@�ǂĂ�I-";
 	mes "[????]";
-	mes "あぃ……たたたたたぁ〜";
+	mes "�����c�c�������������`";
 	next;
-	mes "………………";
-	mes "…………";
-	mes "……";
+	mes "�c�c�c�c�c�c";
+	mes "�c�c�c�c";
+	mes "�c�c";
 	next;
-	mes "[リコル・レイン]";
-	mes "ふぅ……「^FF0000エリー^000000」。";
-	mes "またこんなことを……";
-	mes "一体いつまで遊んでいるのですか？";
-	mes "今日の夕方までクッキーができないと";
-	mes "今学期は留年ですよ。";
-	mes "わかっているのですか？";
+	mes "[���R���E���C��]";
+	mes "�ӂ��c�c�u^FF0000�G���[^000000�v�B";
+	mes "�܂�����Ȃ��Ƃ��c�c";
+	mes "��̂��܂ŗV��ł���̂ł����H";
+	mes "�����̗[���܂ŃN�b�L�[���ł��Ȃ���";
+	mes "���w���͗��N�ł���B";
+	mes "�킩���Ă���̂ł����H";
 	next;
-	mes "[エリー]";
-	mes "ふ、ふえぇぇぇ!?";
-	mes "そ……それだけは……";
+	mes "[�G���[]";
+	mes "�ӁA�ӂ�������!?";
+	mes "���c�c���ꂾ���́c�c";
 	next;
-	mes "[リコル・レイン]";
-	mes "「^FF0000エリー^000000」!!";
+	mes "[���R���E���C��]";
+	mes "�u^FF0000�G���[^000000�v!!";
 	next;
-	mes "[エリー]";
-	mes "ふぇ！";
-	mes "わ……わかりました！";
-	mes "先生！";
+	mes "[�G���[]";
+	mes "�ӂ��I";
+	mes "��c�c�킩��܂����I";
+	mes "�搶�I";
 	next;
-	mes "[リコル・レイン]";
-	mes "よろしい。";
-	mes "…………さて。";
-	mes "荷物は受け取ったので";
-	mes "あなたはお引取りください。";
-	mes "学院内に長居されては困ります。";
+	mes "[���R���E���C��]";
+	mes "��낵���B";
+	mes "�c�c�c�c���āB";
+	mes "�ו��͎󂯎�����̂�";
+	mes "���Ȃ��͂�����肭�������B";
+	mes "�w�@���ɒ�������Ă͍���܂��B";
 	delitem 7487,1;
 	set KH_QUE,3;
 	close;
 }
 
-kh_school.gat,179,39,0	script	可愛い学生	895,{
+kh_school.gat,179,39,0	script	�����w��	895,{
 	cutin "kh_elly01",2;
 	switch(KH_QUE) {
 	default:
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "ふぇ!?　ふわわわッ！";
-		mes "……ッホ……";
-		mes "まーた落とすとこだったぁ〜";
-		mes "あぶないあぶない。";
+		mes "[�G���[]";
+		mes "�ӂ�!?�@�ӂ���b�I";
+		mes "�c�c�b�z�c�c";
+		mes "�܁[�����Ƃ��Ƃ����������`";
+		mes "���ԂȂ����ԂȂ��B";
 		break;
 	case 3:
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "あー、ぅー……";
-		mes "どうしよ、どうしよぅ〜";
-		mes "ふぇぇ……";
+		mes "[�G���[]";
+		mes "���[�A���[�c�c";
+		mes "�ǂ�����A�ǂ����患�`";
+		mes "�ӂ����c�c";
 		next;
-		if(select("どうしたの？","…………")==2) {
-			mes "[エリー]";
-			mes "ふぇぇぇぇ……";
+		if(select("�ǂ������́H","�c�c�c�c")==2) {
+			mes "[�G���[]";
+			mes "�ӂ��������c�c";
 			break;
 		}
-		mes "[エリー]";
-		mes "ふぇ？";
-		mes "そ……それが……";
-		mes "クッキーを作らないといけないのに、";
-		mes "材料を落としちゃって……";
-		mes "ふ……ふぇ……";
-		mes "今日の夕方までなのに〜";
+		mes "[�G���[]";
+		mes "�ӂ��H";
+		mes "���c�c���ꂪ�c�c";
+		mes "�N�b�L�[�����Ȃ��Ƃ����Ȃ��̂ɁA";
+		mes "�ޗ��𗎂Ƃ�������āc�c";
+		mes "�Ӂc�c�ӂ��c�c";
+		mes "�����̗[���܂łȂ̂Ɂ`";
 		next;
-		if(select("私が手伝おうか？","それは……ねぇ……")==2) {
-			mes "[エリー]";
-			mes "ふぇぇ……";
-			mes "ど、どうしよう……";
-			mes "ふぇ……";
-			mes "あ、そうだ！";
+		if(select("������`�������H","����́c�c�˂��c�c")==2) {
+			mes "[�G���[]";
+			mes "�ӂ����c�c";
+			mes "�ǁA�ǂ����悤�c�c";
+			mes "�ӂ��c�c";
+			mes "���A�������I";
 			next;
 			menu "????",-;
-			mes "[エリー]";
-			mes "あの……";
-			mes "配達屋さんですよね？";
-			mes "よかったら手伝ってください！";
-			mes "ね？　お願い！";
-			mes "お願いします！";
+			mes "[�G���[]";
+			mes "���́c�c";
+			mes "�z�B������ł���ˁH";
+			mes "�悩�������`���Ă��������I";
+			mes "�ˁH�@���肢�I";
+			mes "���肢���܂��I";
 			next;
-			mes "-少女は急に私の腕を取り";
-			mes "頼み始めた-";
-			next;
-			mes "[" +strcharinfo(0)+ "]";
-			mes "え？";
-			mes "ぁ……いや……その……";
-			mes "アハハ……";
-			next;
-			mes "[エリー]";
-			mes "ね？　ね？";
-			mes "手伝って！";
-			mes "お願い！";
+			mes "-�����͋}�Ɏ��̘r�����";
+			mes "���ݎn�߂�-";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "アハハー…………";
+			mes "���H";
+			mes "���c�c����c�c���́c�c";
+			mes "�A�n�n�c�c";
 			next;
-			if(select("手伝ってあげる","断る")==2) {
+			mes "[�G���[]";
+			mes "�ˁH�@�ˁH";
+			mes "��`���āI";
+			mes "���肢�I";
+			next;
+			mes "[" +strcharinfo(0)+ "]";
+			mes "�A�n�n�[�c�c�c�c";
+			next;
+			if(select("��`���Ă�����","�f��")==2) {
 				mes "[" +strcharinfo(0)+ "]";
-				mes "ごめん。";
-				mes "仕事が忙しくて……";
+				mes "���߂�B";
+				mes "�d�����Z�����āc�c";
 				next;
 				cutin "kh_elly04",2;
 				emotion 28;
-				mes "[エリー]";
-				mes "ふぇ？";
-				mes "そうなんですか……";
-				mes "無理言ってごめんなさい。";
-				mes "…………ふぇぇ……";
-				mes "どうしよう…………";
+				mes "[�G���[]";
+				mes "�ӂ��H";
+				mes "�����Ȃ�ł����c�c";
+				mes "���������Ă��߂�Ȃ����B";
+				mes "�c�c�c�c�ӂ����c�c";
+				mes "�ǂ����悤�c�c�c�c";
 				break;
 			}
 		}
 		cutin "kh_elly02",2;
-		mes "[エリー]";
-		mes "ふええええ〜〜〜!?";
-		mes "ほ……ホント？";
-		mes "ほんとにホント!?";
-		mes "あ、ありがとう！";
-		mes "ありがとう、ありがとう、ありがとう、";
-		mes "ありがとう！";
+		mes "[�G���[]";
+		mes "�ӂ��������`�`�`!?";
+		mes "�فc�c�z���g�H";
+		mes "�ق�ƂɃz���g!?";
+		mes "���A���肪�Ƃ��I";
+		mes "���肪�Ƃ��A���肪�Ƃ��A���肪�Ƃ��A";
+		mes "���肪�Ƃ��I";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "え？　うん……ハハ……";
+		mes "���H�@����c�c�n�n�c�c";
 		next;
-		mes "[エリー]";
-		mes "エヘッ、エヘヘ。";
-		mes "ありがと！";
-		mes "エヘヘ。";
+		mes "[�G���[]";
+		mes "�G�w�b�A�G�w�w�B";
+		mes "���肪�ƁI";
+		mes "�G�w�w�B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "ア、アハハ……";
-		mes "それで……";
-		mes "何を手伝えばいいかな？";
+		mes "�A�A�A�n�n�c�c";
+		mes "����Łc�c";
+		mes "������`���΂������ȁH";
 		next;
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "ふぇ……それが……";
-		mes "実は、さっきクッキーの材料を";
-		mes "落としちゃったから";
-		mes "材料を集めてこないと……";
+		mes "[�G���[]";
+		mes "�ӂ��c�c���ꂪ�c�c";
+		mes "���́A�������N�b�L�[�̍ޗ���";
+		mes "���Ƃ������������";
+		mes "�ޗ����W�߂Ă��Ȃ��Ɓc�c";
 		next;
-		mes "[エリー]";
-		mes "私が持ってた";
-		mes "最後の材料だったから……";
-		mes "ふ、ふぇぇ……";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "あぁぁ、大丈夫！　大丈夫だから！";
-		mes "ほら、ちゃんと最後まで話して。";
-		mes "クッキーの材料を集めてくればいいの？";
-		next;
-		mes "[エリー]";
-		mes "うん……";
-		mes "……でも……";
-		mes "いきなりこんなこと";
-		mes "お願いするなんて……";
+		mes "[�G���[]";
+		mes "���������Ă�";
+		mes "�Ō�̍ޗ�����������c�c";
+		mes "�ӁA�ӂ����c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "気にしなくていいから。";
-		mes "早く材料を教えて。";
-		mes "早くしないと神経質なご婦人に";
-		mes "留年させられちゃうよ？";
+		mes "�������A���v�I�@���v������I";
+		mes "�ق�A�����ƍŌ�܂Řb���āB";
+		mes "�N�b�L�[�̍ޗ����W�߂Ă���΂����́H";
+		next;
+		mes "[�G���[]";
+		mes "����c�c";
+		mes "�c�c�ł��c�c";
+		mes "�����Ȃ肱��Ȃ���";
+		mes "���肢����Ȃ�āc�c";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�C�ɂ��Ȃ��Ă�������B";
+		mes "�����ޗ��������āB";
+		mes "�������Ȃ��Ɛ_�o���Ȃ��w�l��";
+		mes "���N������ꂿ�Ⴄ��H";
 		next;
 		cutin "kh_elly01",2;
-		mes "[エリー]";
-		mes "ふぇ!?";
-		mes "は、はい！";
-		mes "え……っと……材料は……";
-		mes "^FF0000小麦粉1、たまご1、チーズ2、";
-		mes "料理用ワイン1、ミルク7、カカオ5^000000";
-		mes "これだけ必要です！";
+		mes "[�G���[]";
+		mes "�ӂ�!?";
+		mes "�́A�͂��I";
+		mes "���c�c���Ɓc�c�ޗ��́c�c";
+		mes "^FF0000������1�A���܂�1�A�`�[�Y2�A";
+		mes "�����p���C��1�A�~���N7�A�J�J�I5^000000";
+		mes "���ꂾ���K�v�ł��I";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "う……ん……";
-		mes "ちょっと多いね……";
+		mes "���c�c��c�c";
+		mes "������Ƒ����ˁc�c";
 		next;
 		cutin "kh_elly04",2;
-		mes "[エリー]";
-		mes "ふぇぇ……";
-		mes "ご、ごめんなさい……";
+		mes "[�G���[]";
+		mes "�ӂ����c�c";
+		mes "���A���߂�Ȃ����c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "あ……いや、大丈夫だよ。";
-		mes "それにしても……";
-		mes "珍しい物もあるけど、";
-		mes "その材料はどこで手に入るの？";
+		mes "���c�c����A���v����B";
+		mes "����ɂ��Ă��c�c";
+		mes "�������������邯�ǁA";
+		mes "���̍ޗ��͂ǂ��Ŏ�ɓ���́H";
 		next;
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "「^0000FF小麦粉^000000」と「^0000FFたまご^000000」は";
-		mes "^009C00ジュノー^000000にいる「^0000FFトーストショップ^000000」に";
-		mes "お願いすればくれるはずです。";
-		mes "「^0000FF料理用ワイン^000000」は同じ^009C00ジュノー^000000の";
-		mes "「^FF0000酒店^000000」に置いてあります。";
+		mes "[�G���[]";
+		mes "�u^0000FF������^000000�v�Ɓu^0000FF���܂�^000000�v��";
+		mes "^009C00�W���m�[^000000�ɂ���u^0000FF�g�[�X�g�V���b�v^000000�v��";
+		mes "���肢����΂����͂��ł��B";
+		mes "�u^0000FF�����p���C��^000000�v�͓���^009C00�W���m�[^000000��";
+		mes "�u^FF0000��X^000000�v�ɒu���Ă���܂��B";
 		next;
-		mes "[エリー]";
-		mes "「^0000FFカカオ^000000」は「^FF0000ヨーヨー^000000」という";
-		mes "動物から手に入るらしいです。";
+		mes "[�G���[]";
+		mes "�u^0000FF�J�J�I^000000�v�́u^FF0000���[���[^000000�v�Ƃ���";
+		mes "���������ɓ���炵���ł��B";
 		next;
-		mes "[エリー]";
-		mes "ごめんなさい。";
-		mes "沢山あって大変だと思うけど……";
-		mes "よろしくお願いします！";
+		mes "[�G���[]";
+		mes "���߂�Ȃ����B";
+		mes "��R�����đ�ς��Ǝv�����ǁc�c";
+		mes "��낵�����肢���܂��I";
 		set KH_QUE,4;
 		break;
 	case 4:
 		if(KH_QUE_SUB < 0xF || countitem(548) < 2 || countitem(519) < 7 || countitem(7182) < 5) {
-			mes "[エリー]";
-			mes "「^0000FF小麦粉^000000」と「^0000FFたまご^000000」は";
-			mes "^009C00ジュノー^000000にいる「^0000FFトーストショップ^000000」に";
-			mes "お願いすればくれるはずです。";
-			mes "「^0000FF料理用ワイン^000000」は同じ^009C00ジュノー^000000の";
-			mes "「^FF0000酒店^000000」に置いてあります。";
+			mes "[�G���[]";
+			mes "�u^0000FF������^000000�v�Ɓu^0000FF���܂�^000000�v��";
+			mes "^009C00�W���m�[^000000�ɂ���u^0000FF�g�[�X�g�V���b�v^000000�v��";
+			mes "���肢����΂����͂��ł��B";
+			mes "�u^0000FF�����p���C��^000000�v�͓���^009C00�W���m�[^000000��";
+			mes "�u^FF0000��X^000000�v�ɒu���Ă���܂��B";
 			next;
-			mes "[エリー]";
-			mes "「^0000FFカカオ^000000」は「^FF0000ヨーヨー^000000」という";
-			mes "動物から手に入るらしいです。";
-			mes "沢山あって大変だと思うけど……";
-			mes "よろしくお願いします！";
+			mes "[�G���[]";
+			mes "�u^0000FF�J�J�I^000000�v�́u^FF0000���[���[^000000�v�Ƃ���";
+			mes "���������ɓ���炵���ł��B";
+			mes "��R�����đ�ς��Ǝv�����ǁc�c";
+			mes "��낵�����肢���܂��I";
 			break;
 		}
 		cutin "kh_elly02",2;
-		mes "[エリー]";
-		mes "ふぇ!?";
-		mes "もう集まったの!?";
-		mes "エヘヘ……";
-		mes "本当にありがと！";
-		mes "エヘヘッ。";
+		mes "[�G���[]";
+		mes "�ӂ�!?";
+		mes "�����W�܂�����!?";
+		mes "�G�w�w�c�c";
+		mes "�{���ɂ��肪�ƁI";
+		mes "�G�w�w�b�B";
 		next;
 		emotion 2;
-		mes "[エリー]";
-		mes "エヘヘ……";
-		mes "ふぇ！";
-		mes "そ、そうだ！　早く作らないと！";
-		mes "ちょ、ちょっと待っててね。";
-		mes "ふぇぇぇ……";
+		mes "[�G���[]";
+		mes "�G�w�w�c�c";
+		mes "�ӂ��I";
+		mes "���A�������I�@�������Ȃ��ƁI";
+		mes "����A������Ƒ҂��ĂĂˁB";
+		mes "�ӂ������c�c";
 		delitem 7488,1;
 		delitem 548,2;
 		delitem 7487,1;
@@ -779,431 +779,431 @@ kh_school.gat,179,39,0	script	可愛い学生	895,{
 		set KH_QUE_SUB,0;
 		break;
 	case 5:
-		mes "[エリー]";
-		mes "じゃんじゃじゃ〜ん。";
-		mes "エリー特製クッキーの完成〜";
-		mes "エッヘッヘ〜";
+		mes "[�G���[]";
+		mes "����񂶂Ⴖ��`��B";
+		mes "�G���[�����N�b�L�[�̊����`";
+		mes "�G�b�w�b�w�`";
 		next;
-		mes "[エリー]";
-		mes "ありがとう。";
-		mes "おかげで助かっちゃった。";
-		mes "エヘヘッ……";
-		mes "本当にありがと……";
+		mes "[�G���[]";
+		mes "���肪�Ƃ��B";
+		mes "�������ŏ�������������B";
+		mes "�G�w�w�b�c�c";
+		mes "�{���ɂ��肪�Ɓc�c";
 		next;
-		mes "[エリー]";
-		mes "ふぇ!?";
-		mes "そういえば名前！";
-		mes "名前言うの忘れてた！";
-		mes "私はエルリシャ。";
-		mes "^FF0000エリー^000000がニックネームなの。";
-		mes "よろしくね。";
+		mes "[�G���[]";
+		mes "�ӂ�!?";
+		mes "���������Ζ��O�I";
+		mes "���O�����̖Y��Ă��I";
+		mes "���̓G�����V���B";
+		mes "^FF0000�G���[^000000���j�b�N�l�[���Ȃ́B";
+		mes "��낵���ˁB";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "私は^0000FF" +strcharinfo(0)+ "^000000。";
-		mes "よろしく。";
+		mes "����^0000FF" +strcharinfo(0)+ "^000000�B";
+		mes "��낵���B";
 		next;
 		cutin "kh_elly02",2;
-		mes "[エリー]";
-		mes "エヘヘッ……";
-		mes strcharinfo(0)+ " さんだね。";
-		mes "よかったらコレ、もらって。";
-		mes "感謝の気持ちだよ。";
+		mes "[�G���[]";
+		mes "�G�w�w�b�c�c";
+		mes strcharinfo(0)+ " ���񂾂ˁB";
+		mes "�悩������R���A������āB";
+		mes "���ӂ̋C��������B";
 		getitem 538,5;
 		set KH_QUE,6;
 		break;
 	case 6:
-		mes "[エリー]";
-		mes "ふぇ……あ……";
-		mes "……ごめんなさい！";
-		mes "またお願いができちゃった。";
-		mes "……いい……かなぁ？";
+		mes "[�G���[]";
+		mes "�ӂ��c�c���c�c";
+		mes "�c�c���߂�Ȃ����I";
+		mes "�܂����肢���ł���������B";
+		mes "�c�c�����c�c���Ȃ��H";
 		next;
-		if(select("お願い？","ごめん。今は忙しくて……")==2) {
+		if(select("���肢�H","���߂�B���͖Z�����āc�c")==2) {
 			cutin "kh_elly03",2;
-			mes "[エリー]";
-			mes "ふぇ!?";
-			mes "……ふぇぇ……";
-			mes "それじゃ仕方ないよね……";
-			mes "ふぇぇ…………";
+			mes "[�G���[]";
+			mes "�ӂ�!?";
+			mes "�c�c�ӂ����c�c";
+			mes "���ꂶ��d���Ȃ���ˁc�c";
+			mes "�ӂ����c�c�c�c";
 			break;
 		}
-		mes "[エリー]";
-		mes "うん……その……";
-		mes "私にはとっても大好きな";
-		mes "お爺ちゃんがいるの。";
-		mes "とっても……とっても大切な人。";
+		mes "[�G���[]";
+		mes "����c�c���́c�c";
+		mes "���ɂ͂Ƃ��Ă���D����";
+		mes "���ꂿ��񂪂���́B";
+		mes "�Ƃ��Ă��c�c�Ƃ��Ă���؂Ȑl�B";
 		next;
-		mes "[エリー]";
-		mes strcharinfo(0)+ "さんが";
-		mes "手伝ってくれたおかげで、";
-		mes "初めてクッキーが上手に焼けたの！";
-		mes "いっつもクッキーは";
-		mes "失敗しちゃってたから……";
-		mes "エヘヘッ……";
+		mes "[�G���[]";
+		mes strcharinfo(0)+ "����";
+		mes "��`���Ă��ꂽ�������ŁA";
+		mes "���߂ăN�b�L�[�����ɏĂ����́I";
+		mes "�������N�b�L�[��";
+		mes "���s��������Ă�����c�c";
+		mes "�G�w�w�b�c�c";
 		next;
-		mes "[エリー]";
-		mes "だから……だから……";
-		mes "お爺ちゃんにこのクッキーを";
-		mes "食べてもらいたいの！";
-		mes "お爺ちゃん、きっと";
-		mes "すごく喜ぶと思うの！";
+		mes "[�G���[]";
+		mes "������c�c������c�c";
+		mes "���ꂿ���ɂ��̃N�b�L�[��";
+		mes "�H�ׂĂ��炢�����́I";
+		mes "���ꂿ���A������";
+		mes "��������ԂƎv���́I";
 		next;
-		mes "[エリー]";
-		mes "できれば私が";
-		mes "直接渡したいんだけど、";
-		mes "学院を出るのは許されてないから……";
-		mes "クッキーも焼きたてじゃないと";
-		mes "味が落ちちゃうと思うし……";
+		mes "[�G���[]";
+		mes "�ł���Ύ���";
+		mes "���ړn�������񂾂��ǁA";
+		mes "�w�@���o��̂͋�����ĂȂ�����c�c";
+		mes "�N�b�L�[���Ă����Ă���Ȃ���";
+		mes "�����������Ⴄ�Ǝv�����c�c";
 		next;
-		mes "[エリー]";
-		mes "…………";
-		mes "………………";
-		mes "ふぇぇ…………";
+		mes "[�G���[]";
+		mes "�c�c�c�c";
+		mes "�c�c�c�c�c�c";
+		mes "�ӂ����c�c�c�c";
 		next;
-		if(select("わかった、渡してくるよ","今はちょっと忙しいんだ")==2) {
+		if(select("�킩�����A�n���Ă����","���͂�����ƖZ������")==2) {
 			cutin "kh_elly03",2;
-			mes "[エリー]";
-			mes "ふぇぇ……";
-			mes "それじゃ仕方ないよね……";
+			mes "[�G���[]";
+			mes "�ӂ����c�c";
+			mes "���ꂶ��d���Ȃ���ˁc�c";
 			break;
 		}
 		cutin "kh_elly02",2;
-		mes "[エリー]";
-		mes "ふぇ！　あ、ありがとう！";
-		mes "本当にありがと！";
-		mes strcharinfo(0)+ "さんは優しいね。";
-		mes "エヘッ……";
-		mes "エヘヘッ……";
+		mes "[�G���[]";
+		mes "�ӂ��I�@���A���肪�Ƃ��I";
+		mes "�{���ɂ��肪�ƁI";
+		mes strcharinfo(0)+ "����͗D�����ˁB";
+		mes "�G�w�b�c�c";
+		mes "�G�w�w�b�c�c";
 		next;
-		mes "[エリー]";
-		mes "お爺ちゃんは「^0000FFキル・ハイルの別荘^000000」に";
-		mes "住んでいるの。";
-		mes "エリーからの贈り物って言えば";
-		mes "会ってくれるはずだよ。";
+		mes "[�G���[]";
+		mes "���ꂿ���́u^0000FF�L���E�n�C���̕ʑ�^000000�v��";
+		mes "�Z��ł���́B";
+		mes "�G���[����̑��蕨���Č�����";
+		mes "����Ă����͂�����B";
 		set KH_QUE,7;
 		break;
 	case 7:
-		mes "[エリー]";
-		mes "「^FF0000キル・ハイルの別荘^000000」は";
-		mes "「^FF0000この学院の北^000000」にあるよ。";
+		mes "[�G���[]";
+		mes "�u^FF0000�L���E�n�C���̕ʑ�^000000�v��";
+		mes "�u^FF0000���̊w�@�̖k^000000�v�ɂ����B";
 		break;
 	case 8:
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "ふぇ？";
-		mes "お爺ちゃんが出張中？";
-		mes "…………";
+		mes "[�G���[]";
+		mes "�ӂ��H";
+		mes "���ꂿ��񂪏o�����H";
+		mes "�c�c�c�c";
 		next;
-		mes "[エリー]";
-		mes "おっかしいなぁ……";
-		mes "出張なんて聞いてないのに……";
-		mes "今日は別荘にいるはずなんだけどなぁ。";
+		mes "[�G���[]";
+		mes "�����������Ȃ��c�c";
+		mes "�o���Ȃ�ĕ����ĂȂ��̂Ɂc�c";
+		mes "�����͕ʑ��ɂ���͂��Ȃ񂾂��ǂȂ��B";
 		next;
 		cutin "kh_elly04",2;
-		mes "[エリー]";
-		mes "あの……";
-		mes "もう一度行ってもらえないかな？";
-		mes "今度はこの鍵を使って。";
-		mes "この鍵を使えば別荘の中に";
-		mes "入れるよ。";
+		mes "[�G���[]";
+		mes "���́c�c";
+		mes "������x�s���Ă��炦�Ȃ����ȁH";
+		mes "���x�͂��̌����g���āB";
+		mes "���̌����g���Εʑ��̒���";
+		mes "������B";
 		getitem 7489,1;
 		set KH_QUE,9;
 		break;
 	case 9:
 	case 10:
-		mes "[エリー]";
-		mes "変だなぁ……";
-		mes "ちゃんといるって";
-		mes "言ってたのに……";
-		mes "ふ、ふぇぇ…………";
+		mes "[�G���[]";
+		mes "�ς��Ȃ��c�c";
+		mes "�����Ƃ������";
+		mes "�����Ă��̂Ɂc�c";
+		mes "�ӁA�ӂ����c�c�c�c";
 		break;
 	case 11:
-		mes "[エリー]";
-		mes "え？";
-		mes "これは……";
-		mes "…………";
+		mes "[�G���[]";
+		mes "���H";
+		mes "����́c�c";
+		mes "�c�c�c�c";
 		next;
-		mes "-エリーは封筒を開けて";
-		mes "中の手紙を読み始めた-";
+		mes "-�G���[�͕������J����";
+		mes "���̎莆��ǂݎn�߂�-";
 		next;
-		mes "-エリーへ-";
-		mes "息子と話すことがあるので、";
-		mes "本家にいるキエルに会いに行く。";
-		mes "もしこの手紙を残した日から";
-		mes "一週間以上連絡が無かったら、";
-		mes "お前のために残しておいた";
-		mes "物を持って学院を出なさい。";
+		mes "-�G���[��-";
+		mes "���q�Ƙb�����Ƃ�����̂ŁA";
+		mes "�{�Ƃɂ���L�G���ɉ�ɍs���B";
+		mes "�������̎莆���c����������";
+		mes "��T�Ԉȏ�A��������������A";
+		mes "���O�̂��߂Ɏc���Ă�����";
+		mes "���������Ċw�@���o�Ȃ����B";
 		next;
-		mes "それは別荘の書斎に隠しておいた。";
-		mes "お前に信頼できる友人がいるなら、";
-		mes "その人に頼んで、別荘に残した";
-		mes "いくつかのメッセージを辿って";
-		mes "荷物を探してもらうといい。";
+		mes "����͕ʑ��̏��ւɉB���Ă������B";
+		mes "���O�ɐM���ł���F�l������Ȃ�A";
+		mes "���̐l�ɗ���ŁA�ʑ��Ɏc����";
+		mes "�������̃��b�Z�[�W��H����";
+		mes "�ו���T���Ă��炤�Ƃ����B";
 		next;
-		mes "もしかすると";
-		mes "危ない目にあうかも知れない……";
-		mes "しかし、お前が信じている";
-		mes "友人なら大丈夫だと";
-		mes "私も信じるとしよう……";
+		mes "�����������";
+		mes "��Ȃ��ڂɂ��������m��Ȃ��c�c";
+		mes "�������A���O���M���Ă���";
+		mes "�F�l�Ȃ���v����";
+		mes "�����M����Ƃ��悤�c�c";
 		next;
-		mes "ただ、学院の学生や関係者はだめだ。";
-		mes "彼らはキエルと関係があるかもしれん。";
-		mes "必ず学院と関わりの無い者にしか";
-		mes "この手紙の事は話してはならない。";
-		mes "わかるな、エリー。";
-		mes "では、気を付けて行動しなさい。";
+		mes "�����A�w�@�̊w����֌W�҂͂��߂��B";
+		mes "�ނ�̓L�G���Ɗ֌W�����邩�������B";
+		mes "�K���w�@�Ɗւ��̖����҂ɂ���";
+		mes "���̎莆�̎��͘b���Ă͂Ȃ�Ȃ��B";
+		mes "�킩��ȁA�G���[�B";
+		mes "�ł́A�C��t���čs�����Ȃ����B";
 		next;
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "お爺ちゃん……";
-		mes "前にあった日から";
-		mes "もう10日も経っているよ……";
-		mes "……お爺ちゃん、何かあったの？";
-		mes "私……どうすれば…………";
-		mes "ふ……ふぇ…………";
+		mes "[�G���[]";
+		mes "���ꂿ���c�c";
+		mes "�O�ɂ�����������";
+		mes "����10�����o���Ă����c�c";
+		mes "�c�c���ꂿ���A�����������́H";
+		mes "���c�c�ǂ�����΁c�c�c�c";
+		mes "�Ӂc�c�ӂ��c�c�c�c";
 		delitem 7490,1;
 		set KH_QUE,12;
 		break;
 	case 12:
 		cutin "kh_elly03",2;
-		mes "[エリー]";
-		mes "ふぇぇ…………";
+		mes "[�G���[]";
+		mes "�ӂ����c�c�c�c";
 		next;
-		switch(select("お爺さんについて聞いてみる","息子というキエルについて聞いてみる","学院について聞いてみる")) {
+		switch(select("���ꂳ��ɂ��ĕ����Ă݂�","���q�Ƃ����L�G���ɂ��ĕ����Ă݂�","�w�@�ɂ��ĕ����Ă݂�")) {
 		case 1:
 			mes "[" +strcharinfo(0)+ "]";
-			mes "エリーのお爺さんって、";
-			mes "どんな人なの？";
-			mes "何か複雑な事情が";
-			mes "あるみたいだけど……";
+			mes "�G���[�̂��ꂳ����āA";
+			mes "�ǂ�Ȑl�Ȃ́H";
+			mes "�������G�Ȏ��";
+			mes "����݂��������ǁc�c";
 			next;
-			mes "[エリー]";
-			mes "…………";
-			mes "私のお爺ちゃんはキル・ハイル。";
-			mes "財団の会長である";
-			mes "「^FF0000キル・ハイル^000000」会長。";
+			mes "[�G���[]";
+			mes "�c�c�c�c";
+			mes "���̂��ꂿ���̓L���E�n�C���B";
+			mes "���c�̉�ł���";
+			mes "�u^FF0000�L���E�n�C��^000000�v��B";
 			next;
-			mes "[エリー]";
-			mes "でも、孤児だった私を";
-			mes "小さい頃から大事にしてくれた";
-			mes "親のような人……";
-			mes "厳しそうに見えるけど";
-			mes "誰よりも暖かくて……優しい人……";
+			mes "[�G���[]";
+			mes "�ł��A�ǎ�����������";
+			mes "������������厖�ɂ��Ă��ꂽ";
+			mes "�e�̂悤�Ȑl�c�c";
+			mes "���������Ɍ����邯��";
+			mes "�N�����g�����āc�c�D�����l�c�c";
 			next;
-			mes "[エリー]";
-			mes "それなのに……";
-			mes "……お爺ちゃん……";
-			mes "無事なの……？";
+			mes "[�G���[]";
+			mes "����Ȃ̂Ɂc�c";
+			mes "�c�c���ꂿ���c�c";
+			mes "�����Ȃ́c�c�H";
 			break;
 		case 2:
 			mes "[" +strcharinfo(0)+ "]";
-			mes "手紙に書いてある";
-			mes "お爺さんの息子さん、";
-			mes "「^0000FFキエル^000000」ってどんな人？";
-			mes "お爺さんと仲が悪いみたいだけど……";
+			mes "�莆�ɏ����Ă���";
+			mes "���ꂳ��̑��q����A";
+			mes "�u^0000FF�L�G��^000000�v���Ăǂ�Ȑl�H";
+			mes "���ꂳ��ƒ��������݂��������ǁc�c";
 			next;
-			mes "[エリー]";
-			mes "「^0000FFキエル^000000」さんの事は";
-			mes "私も良く知らないの。";
-			mes "学院内での行事の時、";
-			mes "そのたった一度でしか見たことないの。";
+			mes "[�G���[]";
+			mes "�u^0000FF�L�G��^000000�v����̎���";
+			mes "�����ǂ��m��Ȃ��́B";
+			mes "�w�@���ł̍s���̎��A";
+			mes "���̂�������x�ł����������ƂȂ��́B";
 			next;
-			mes "[エリー]";
-			mes "でも……顔だけは忘れられない……";
-			mes "冷たい銀髪とすごく恐い目つき。";
-			mes "鋭くて刺さりそうな視線で";
-			mes "みんなを見てた……";
+			mes "[�G���[]";
+			mes "�ł��c�c�炾���͖Y����Ȃ��c�c";
+			mes "�₽���┯�Ƃ����������ڂ��B";
+			mes "�s���Ďh���肻���Ȏ�����";
+			mes "�݂�Ȃ����Ă��c�c";
 			next;
-			mes "[エリー]";
-			mes "男だけどきれいな顔に白い肌を";
-			mes "持った綺麗な人。";
-			mes "学院の中にも「^0000FFキエル^000000」さんに憧れる";
-			mes "人は多いみたい。";
+			mes "[�G���[]";
+			mes "�j�����ǂ��ꂢ�Ȋ�ɔ�������";
+			mes "�������Y��Ȑl�B";
+			mes "�w�@�̒��ɂ��u^0000FF�L�G��^000000�v����ɓ����";
+			mes "�l�͑����݂����B";
 			next;
-			mes "[エリー]";
-			mes "でも、お爺ちゃんと「^0000FFキエル^000000」さんは";
-			mes "仲がとっても悪かったみたい。";
+			mes "[�G���[]";
+			mes "�ł��A���ꂿ���Ɓu^0000FF�L�G��^000000�v�����";
+			mes "�����Ƃ��Ă����������݂����B";
 			next;
-			mes "[エリー]";
-			mes "お爺ちゃんは「^0000FFキエル^000000」さんの";
-			mes "話が出るとすぐに怒ってた。";
-			mes "詳しい事は聞けなかったけど";
-			mes "何度も言い争ってるみたい。";
+			mes "[�G���[]";
+			mes "���ꂿ���́u^0000FF�L�G��^000000�v�����";
+			mes "�b���o��Ƃ����ɓ{���Ă��B";
+			mes "�ڂ������͕����Ȃ���������";
+			mes "���x�����������Ă�݂����B";
 			next;
-			mes "[エリー]";
-			mes "どうして仲が悪いんだろ……";
-			mes "あんなに綺麗な人と";
-			mes "優しいお爺ちゃんなのに……";
+			mes "[�G���[]";
+			mes "�ǂ����Ē��������񂾂�c�c";
+			mes "����Ȃ��Y��Ȑl��";
+			mes "�D�������ꂿ���Ȃ̂Ɂc�c";
 			break;
 		case 3:
 			mes "[" +strcharinfo(0)+ "]";
-			mes "この学院は一体どんな所？";
-			mes "学院にしては保安が徹底的。";
-			mes "施設もすごくしっかりしてる";
-			mes "ように見えるんだけど。";
+			mes "���̊w�@�͈�̂ǂ�ȏ��H";
+			mes "�w�@�ɂ��Ă͕ۈ����O��I�B";
+			mes "�{�݂��������������肵�Ă�";
+			mes "�悤�Ɍ�����񂾂��ǁB";
 			next;
-			mes "[エリー]";
-			mes "ここは、キル・ハイル財団が建てた";
-			mes "孤児たちのための専門学院。";
-			mes "志望する職業の専門教育を";
-			mes "受けることができるの。";
+			mes "[�G���[]";
+			mes "�����́A�L���E�n�C�����c�����Ă�";
+			mes "�ǎ������̂��߂̐��w�@�B";
+			mes "�u�]����E�Ƃ̐�勳���";
+			mes "�󂯂邱�Ƃ��ł���́B";
 			next;
-			mes "[エリー]";
-			mes "あ、私はカプラサービスと";
-			mes "キル・ハイル本社の秘書職を";
-			mes "志望してるの。";
-			mes "「^0000FFエリシア^000000」さんのように";
-			mes "素敵な女性になるのが夢！";
-			mes "エヘヘッ……";
+			mes "[�G���[]";
+			mes "���A���̓J�v���T�[�r�X��";
+			mes "�L���E�n�C���{�Ђ̔鏑�E��";
+			mes "�u�]���Ă�́B";
+			mes "�u^0000FF�G���V�A^000000�v����̂悤��";
+			mes "�f�G�ȏ����ɂȂ�̂����I";
+			mes "�G�w�w�b�c�c";
 			next;
-			mes "[エリー]";
-			mes "でも……ふぇ……";
-			mes "最近、学院の中で";
-			mes "変な事が起きてるの。";
-			mes "みんな、一人でいるのを";
-			mes "恐がるぐらい…………";
+			mes "[�G���[]";
+			mes "�ł��c�c�ӂ��c�c";
+			mes "�ŋ߁A�w�@�̒���";
+			mes "�ςȎ����N���Ă�́B";
+			mes "�݂�ȁA��l�ł���̂�";
+			mes "�����邮�炢�c�c�c�c";
 			next;
 			cutin "kh_elly02",2;
-			mes "[エリー]";
-			mes "でも、私は大丈夫！";
-			mes "いざとなったら";
-			mes "「" +strcharinfo(0)+ "」さんが";
-			mes "助けてくれるはずだもんね！";
-			mes "エヘヘッ……";
+			mes "[�G���[]";
+			mes "�ł��A���͑��v�I";
+			mes "�����ƂȂ�����";
+			mes "�u" +strcharinfo(0)+ "�v����";
+			mes "�����Ă����͂�������ˁI";
+			mes "�G�w�w�b�c�c";
 			next;
-			if(select("^0000FFエリシア^000000さん？","変な事？")==1) {
-				mes "[エリー]";
-				mes "お爺ちゃんの秘書。";
-				mes "すっごく綺麗なんだから！";
+			if(select("^0000FF�G���V�A^000000����H","�ςȎ��H")==1) {
+				mes "[�G���[]";
+				mes "���ꂿ���̔鏑�B";
+				mes "���������Y��Ȃ񂾂���I";
 				break;
 			}
 			cutin "kh_elly04",2;
-			mes "[エリー]";
-			mes "……これは外部の人に";
-			mes "話しちゃいけないって";
-			mes "言われてるんだけど……";
-			mes "「" +strcharinfo(0)+ "」さんは";
-			mes "私にとって特別な人だから";
-			mes "話してあげるね。";
+			mes "[�G���[]";
+			mes "�c�c����͊O���̐l��";
+			mes "�b�����Ⴂ���Ȃ�����";
+			mes "�����Ă�񂾂��ǁc�c";
+			mes "�u" +strcharinfo(0)+ "�v�����";
+			mes "���ɂƂ��ē��ʂȐl������";
+			mes "�b���Ă�����ˁB";
 			next;
-			mes "[エリー]";
-			mes "……最近、学院内に幽霊が";
-			mes "出るの！";
-			mes "…………";
-			mes "……ふぇ……信じてないでしょ！";
-			mes "本当の事なんだからね！";
+			mes "[�G���[]";
+			mes "�c�c�ŋ߁A�w�@���ɗH�삪";
+			mes "�o��́I";
+			mes "�c�c�c�c";
+			mes "�c�c�ӂ��c�c�M���ĂȂ��ł���I";
+			mes "�{���̎��Ȃ񂾂���ˁI";
 			next;
-			mes "[エリー]";
-			mes "あのね、幽霊は毎晩";
-			mes "学院の中をうろついてるの。";
-			mes "その幽霊と出会っちゃったら最後。";
-			mes "幽霊の呪いの言葉を聞いた途端、";
-			mes "体が人形みたいに固まっちゃうの！";
+			mes "[�G���[]";
+			mes "���̂ˁA�H��͖���";
+			mes "�w�@�̒���������Ă�́B";
+			mes "���̗H��Əo������������Ō�B";
+			mes "�H��̎􂢂̌��t�𕷂����r�[�A";
+			mes "�̂��l�`�݂����Ɍł܂����Ⴄ�́I";
 			next;
-			mes "[エリー]";
-			mes "学院内のある部屋に泊まっていた";
-			mes "私の友達「マヨ」も幽霊に出会って";
-			mes "人形みたいにされちゃったの……";
-			mes "後で「マヨ」が医務室に移されたって";
-			mes "聞いて、先生がいない時に医務室に";
-			mes "行ってみたの…………";
+			mes "[�G���[]";
+			mes "�w�@���̂��镔���ɔ��܂��Ă���";
+			mes "���̗F�B�u�}���v���H��ɏo�����";
+			mes "�l�`�݂����ɂ��ꂿ������́c�c";
+			mes "��Łu�}���v���㖱���Ɉڂ��ꂽ����";
+			mes "�����āA�搶�����Ȃ����Ɉ㖱����";
+			mes "�s���Ă݂��́c�c�c�c";
 			next;
-			mes "[エリー]";
-			mes "……ベッド上に「マヨ」はいた……";
-			mes "でも……いくら話しかけても";
-			mes "全然返事が無くて……";
-			mes "何の反応も無い……";
-			mes "本当に……人形みたいだったの！";
+			mes "[�G���[]";
+			mes "�c�c�x�b�h��Ɂu�}���v�͂����c�c";
+			mes "�ł��c�c������b�������Ă�";
+			mes "�S�R�Ԏ��������āc�c";
+			mes "���̔����������c�c";
+			mes "�{���Ɂc�c�l�`�݂����������́I";
 			next;
-			mes "[エリー]";
-			mes "……その瞬間、";
-			mes "私はとても恐くなって";
-			mes "医務室から逃げ出したの……";
+			mes "[�G���[]";
+			mes "�c�c���̏u�ԁA";
+			mes "���͂ƂĂ������Ȃ���";
+			mes "�㖱�����瓦���o�����́c�c";
 			next;
-			mes "[エリー]";
-			mes "私もその幽霊に出会っちゃったら、";
-			mes "そんな風になっちゃうの？";
-			mes "「" +strcharinfo(0)+ "」さんの事も";
-			mes "わからなくなっちゃうの？";
+			mes "[�G���[]";
+			mes "�������̗H��ɏo������������A";
+			mes "����ȕ��ɂȂ����Ⴄ�́H";
+			mes "�u" +strcharinfo(0)+ "�v����̎���";
+			mes "�킩��Ȃ��Ȃ����Ⴄ�́H";
 			next;
 			cutin "kh_elly02",2;
-			mes "[エリー]";
-			mes "うぅん……そんなことない！";
-			mes "私がもし幽霊と出会って";
-			mes "呪われちゃっても、";
-			mes "「" +strcharinfo(0)+ "」さんが";
-			mes "きっと助けてくれるよね！";
-			mes "エヘヘッ……";
+			mes "[�G���[]";
+			mes "������c�c����Ȃ��ƂȂ��I";
+			mes "���������H��Əo�����";
+			mes "���ꂿ����Ă��A";
+			mes "�u" +strcharinfo(0)+ "�v����";
+			mes "�����Ə����Ă�����ˁI";
+			mes "�G�w�w�b�c�c";
 			next;
-			mes "[エリー]";
-			mes "私が固まっちゃっても、";
-			mes "「" +strcharinfo(0)+ "」さんが";
-			mes "「^FF0000エリー、起きて^000000」";
-			mes "って言ってくれれば";
-			mes "きっとすぐに動けるようになるよ。";
-			mes "エヘヘッ……";
+			mes "[�G���[]";
+			mes "�����ł܂�������Ă��A";
+			mes "�u" +strcharinfo(0)+ "�v����";
+			mes "�u^FF0000�G���[�A�N����^000000�v";
+			mes "���Č����Ă�����";
+			mes "�����Ƃ����ɓ�����悤�ɂȂ��B";
+			mes "�G�w�w�b�c�c";
 			next;
-			mes "[エリー]";
-			mes "「^FF0000エリー、起きて^000000」だよ。";
-			mes "何か他の変な事言われたら";
-			mes "怒ってずっと人形のままなんだから！";
-			mes "……なんてね。";
+			mes "[�G���[]";
+			mes "�u^FF0000�G���[�A�N����^000000�v����B";
+			mes "�������̕ςȎ�����ꂽ��";
+			mes "�{���Ă����Ɛl�`�̂܂܂Ȃ񂾂���I";
+			mes "�c�c�Ȃ�ĂˁB";
 			next;
-			mes "[エリー]";
-			mes "エヘヘッ……";
-			mes "それじゃ「" +strcharinfo(0)+ "」さんも";
-			mes "困っちゃうでしょ？";
+			mes "[�G���[]";
+			mes "�G�w�w�b�c�c";
+			mes "���ꂶ��u" +strcharinfo(0)+ "�v�����";
+			mes "�������Ⴄ�ł���H";
 			set KH_QUE,13;
 			break;
 		}
 		break;
 	case 13:
 		cutin "kh_elly04",2;
-		mes "[エリー]";
-		mes "ふぇ!?　大変！";
-		mes "課題の提出時間忘れてた！";
-		mes "私、もうリコル・レイン先生に";
-		mes "会いに行かないと。";
+		mes "[�G���[]";
+		mes "�ӂ�!?�@��ρI";
+		mes "�ۑ�̒�o���ԖY��Ă��I";
+		mes "���A�������R���E���C���搶��";
+		mes "��ɍs���Ȃ��ƁB";
 		next;
-		mes "[エリー]";
-		mes "あの……よかったら別荘に行って";
-		mes "^FF0000お爺ちゃんが残してくれた物^000000を";
-		mes "探してもらえないかな？";
-		mes "私が信じられる人は";
-		mes "「" +strcharinfo(0)+ "」さん";
-		mes "しかいないの……";
+		mes "[�G���[]";
+		mes "���́c�c�悩������ʑ��ɍs����";
+		mes "^FF0000���ꂿ��񂪎c���Ă��ꂽ��^000000��";
+		mes "�T���Ă��炦�Ȃ����ȁH";
+		mes "�����M������l��";
+		mes "�u" +strcharinfo(0)+ "�v����";
+		mes "�������Ȃ��́c�c";
 		next;
-		mes "[リコル・レイン]";
-		mes "……リー！";
-		mes "…………エリー!!";
-		mes "課題の提出時間ですよ！";
-		mes "今が何時なのか、";
-		mes "わかっているのですか！";
+		mes "[���R���E���C��]";
+		mes "�c�c���[�I";
+		mes "�c�c�c�c�G���[!!";
+		mes "�ۑ�̒�o���Ԃł���I";
+		mes "���������Ȃ̂��A";
+		mes "�킩���Ă���̂ł����I";
 		next;
-		mes "[エリー]";
-		mes "ふぇえぇ!?";
-		mes "ごめんね！";
-		mes "もう行かないと！";
+		mes "[�G���[]";
+		mes "�ӂ�����!?";
+		mes "���߂�ˁI";
+		mes "�����s���Ȃ��ƁI";
 		next;
-		mes "[エリー]";
-		mes "ぁ!?　そうそう！";
-		mes "今日の夕方頃、";
-		mes "寮の私の部屋にきて。";
-		mes "まだ話したいことがあるから！";
+		mes "[�G���[]";
+		mes "��!?�@���������I";
+		mes "�����̗[�����A";
+		mes "���̎��̕����ɂ��āB";
+		mes "�܂��b���������Ƃ����邩��I";
 		next;
-		mes "[エリー]";
-		mes "寮は学院の後ろにあるの。";
-		mes "私の部屋は寮の南側の2階。";
-		mes "玄関から一番奥の部屋で、";
-		mes "梯子で上がってこれるの。";
-		mes "戻ったら窓は開けておくからね！";
+		mes "[�G���[]";
+		mes "���͊w�@�̌��ɂ���́B";
+		mes "���̕����͗��̓쑤��2�K�B";
+		mes "���ւ����ԉ��̕����ŁA";
+		mes "��q�ŏオ���Ă����́B";
+		mes "�߂����瑋�͊J���Ă�������ˁI";
 		set KH_QUE,14;
 		break;
 	case 14:
 	case 15:
-		mes "[エリー]";
-		mes "ほらほら、早く行って！";
-		mes "先生が怒っちゃうよ!?";
+		mes "[�G���[]";
+		mes "�ق�ق�A�����s���āI";
+		mes "�搶���{�����Ⴄ��!?";
 		break;
 	}
 	close2;
@@ -1212,764 +1212,764 @@ kh_school.gat,179,39,0	script	可愛い学生	895,{
 }
 
 //============================================================
-// キル・ハイルの別荘NPC
+// �L���E�n�C���̕ʑ�NPC
 //------------------------------------------------------------
-yuno_fild02.gat,93,210,4	script	ガードマン	85,{
-	mes "[ガードマン]";
-	mes "ここは私有地です。";
-	mes "許可無しに立ち入らないでもらいたい。";
+yuno_fild02.gat,93,210,4	script	�K�[�h�}��	85,{
+	mes "[�K�[�h�}��]";
+	mes "�����͎��L�n�ł��B";
+	mes "�������ɗ�������Ȃ��ł��炢�����B";
 	if(KH_QUE != 7)
 		close;
 	next;
-	if(select("^FF0000キル・ハイル^000000さんに会いたい","わかりました")==2) {
-		mes "[ガードマン]";
-		mes "さようなら。";
+	if(select("^FF0000�L���E�n�C��^000000����ɉ����","�킩��܂���")==2) {
+		mes "[�K�[�h�}��]";
+		mes "���悤�Ȃ�B";
 		close;
 	}
-	mes "[ガードマン]";
-	mes "約束されていますか？";
+	mes "[�K�[�h�}��]";
+	mes "�񑩂���Ă��܂����H";
 	next;
-	if(select("はい","いいえ")==2) {
-		mes "[ガードマン]";
-		mes "約束がなければ会う事はできません。";
-		mes "お引き取りください。";
+	if(select("�͂�","������")==2) {
+		mes "[�K�[�h�}��]";
+		mes "�񑩂��Ȃ���Ή���͂ł��܂���B";
+		mes "��������肭�������B";
 		close;
 	}
-	mes "[ガードマン]";
-	mes "……申し訳ありませんが、";
-	mes "主人は出張中です。";
-	mes "お引き取りください。";
+	mes "[�K�[�h�}��]";
+	mes "�c�c�\���󂠂�܂��񂪁A";
+	mes "��l�͏o�����ł��B";
+	mes "��������肭�������B";
 	set KH_QUE,8;
 	close;
 }
 
-yuno_fild02.gat,75,218,0	script	門	111,{
+yuno_fild02.gat,75,218,0	script	��	111,{
 	if(KH_QUE >= 10) {
-		mes "-鍵が開いている-";
+		mes "-�����J���Ă���-";
 		next;
-		if(select("入る","入らない")==2)
+		if(select("����","����Ȃ�")==2)
 			close;
 		warp "kh_vila.gat",188,18;
 		end;
 	}
-	mes "-扉には鍵が掛けられている-";
+	mes "-���ɂ͌����|�����Ă���-";
 	if(KH_QUE != 9)
 		close;
 	next;
-	if(select("エリーの鍵を使う","ほおっておく")==2) {
-		mes "…………";
+	if(select("�G���[�̌����g��","�ق����Ă���")==2) {
+		mes "�c�c�c�c";
 		close;
 	}
-	mes "-鍵を使って扉を開けると、";
-	mes "扉の間に挟まっていたのか……";
-	mes "何かが書かれた紙切れが落ちた-";
-	mes "-しかし、紙切れは拾う間もなく、";
-	mes "風に吹かれて飛んでいってしまった-";
+	mes "-�����g���Ĕ����J����ƁA";
+	mes "���̊Ԃɋ��܂��Ă����̂��c�c";
+	mes "�����������ꂽ���؂ꂪ������-";
+	mes "-�������A���؂�͏E���Ԃ��Ȃ��A";
+	mes "���ɐ�����Ĕ��ł����Ă��܂���-";
 	next;
-	mes "-一瞬の事だったが、確か";
-	mes "「^FF0000前に6歩、左に3歩、";
-	mes "前に3歩、左に4歩^000000」";
-	mes "と書かれていた-";
-	mes "-何の事かわからないが、";
-	mes "覚えておいた方がいいだろう-";
+	mes "-��u�̎����������A�m��";
+	mes "�u^FF0000�O��6���A����3���A";
+	mes "�O��3���A����4��^000000�v";
+	mes "�Ə�����Ă���-";
+	mes "-���̎����킩��Ȃ����A";
+	mes "�o���Ă����������������낤-";
 	set KH_QUE,10;
 	close2;
 	warp "kh_vila.gat",188,18;
 	end;
 }
 
-yuno_fild02.gat,109,218,0	script	門	111,{
-	mes "-扉には鍵が掛けられている-";
+yuno_fild02.gat,109,218,0	script	��	111,{
+	mes "-���ɂ͌����|�����Ă���-";
 	if(KH_QUE != 9)
 		close;
 	next;
-	if(select("エリーの鍵を使う","ほおっておく")==2) {
-		mes "…………";
+	if(select("�G���[�̌����g��","�ق����Ă���")==2) {
+		mes "�c�c�c�c";
 		close;
 	}
-	mes "-エリーから受け取った";
-	mes "鍵とは違うようだ-";
+	mes "-�G���[����󂯎����";
+	mes "���Ƃ͈Ⴄ�悤��-";
 	close;
 }
 
-kh_vila.gat,179,11,0	script	#手紙	139,1,1,{
+kh_vila.gat,179,11,0	script	#�莆	139,1,1,{
 OnTouch:
 	if(KH_QUE == 10) {
-		mes "-床に落ちている";
-		mes "「^FF0000手紙^000000」を拾い上げた-";
+		mes "-���ɗ����Ă���";
+		mes "�u^FF0000�莆^000000�v���E���グ��-";
 		getitem 7490,1;
 		set KH_QUE,11;
 		close;
 	}
-	mes "-何も無いようだ-";
+	mes "-���������悤��-";
 	close;
 }
 
-kh_vila.gat,184,20,0	script	本#kiel	111,{
+kh_vila.gat,184,20,0	script	�{#kiel	111,{
 	if(KH_QUE != 14 || rand(5)) {
-		mes "-本がある-";
+		mes "-�{������-";
 		close;
 	}
-	mes "-本棚から一冊の本を取り出すと";
-	mes "階段横の壁から通路が現われた-";
-	misceffect 316,"壁#kiel";
+	mes "-�{�I�������̖{�����o����";
+	mes "�K�i���̕ǂ���ʘH������ꂽ-";
+	misceffect 316,"��#kiel";
 	set KH_QUE,15;
 	close;
 }
-kh_vila.gat,181,20,0	duplicate(本#kiel)	本	111
-kh_vila.gat,178,20,0	duplicate(本#kiel)	本	111
-kh_vila.gat,175,19,0	duplicate(本#kiel)	本	111
+kh_vila.gat,181,20,0	duplicate(�{#kiel)	�{	111
+kh_vila.gat,178,20,0	duplicate(�{#kiel)	�{	111
+kh_vila.gat,175,19,0	duplicate(�{#kiel)	�{	111
 
-kh_vila.gat,191,14,0	script	壁#kiel	111,{
+kh_vila.gat,191,14,0	script	��#kiel	111,{
 	if(KH_QUE >= 20) {
-		mes "通路が塞がれている。";
+		mes "�ʘH���ǂ���Ă���B";
 		close;
 	}
 	if(KH_QUE < 15) {
-		mes "-ただの壁のように見える-";
-		mes "-だが、どこか違和感を感じるのは";
-		mes "気のせいだろうか？-";
+		mes "-�����̕ǂ̂悤�Ɍ�����-";
+		mes "-�����A�ǂ�����a����������̂�";
+		mes "�C�̂������낤���H-";
 		close;
 	}
-	mes "-秘密の通路が続いている-";
+	mes "-�閧�̒ʘH�������Ă���-";
 	next;
-	if(select("奥に行く","使わない")==2)
+	if(select("���ɍs��","�g��Ȃ�")==2)
 		close;
 	warp "kh_vila.gat",17,177;
 	end;
 }
 
-kh_vila.gat,16,175,0	script	箱	111,{
-	mes "-おいしくて栄養価の高い";
-	mes "ペットフード自動販売機-";
-	mes "-あなたの可愛いペットのために！-";
-	mes "-市販とは一味違うその旨さ！-";
+kh_vila.gat,16,175,0	script	��	111,{
+	mes "-���������ĉh�{���̍���";
+	mes "�y�b�g�t�[�h�����̔��@-";
+	mes "-���Ȃ��̉����y�b�g�̂��߂ɁI-";
+	mes "-�s�̂Ƃ͈ꖡ�Ⴄ���̎|���I-";
 	next;
-	mes "-使用方法-";
-	mes "-投入口に1100Zenyを入れて、";
-	mes "ダイヤルを右に2度回してください-";
-	mes "-おいしくて栄養価の高い";
-	mes "ペットフードが出てきます-";
+	mes "-�g�p���@-";
+	mes "-��������1100Zeny�����āA";
+	mes "�_�C�������E��2�x�񂵂Ă�������-";
+	mes "-���������ĉh�{���̍���";
+	mes "�y�b�g�t�[�h���o�Ă��܂�-";
 	next;
-	if(select("試してみる","やめておく")==2) {
-		mes "-なんだか怪しそうに見える-";
-		mes "-やめておこう-";
+	if(select("�����Ă݂�","��߂Ă���")==2) {
+		mes "-�Ȃ񂾂����������Ɍ�����-";
+		mes "-��߂Ă�����-";
 		close;
 	}
 	if(Zeny < 1000) {
-		mes "-Zenyが足りない-";
+		mes "-Zeny������Ȃ�-";
 		close;
 	}
-	mes "-少し高いようだが試してみよう-";
+	mes "-���������悤���������Ă݂悤-";
 	next;
-	mes "-…………-";
-	mes "-ただのペットフードにしか見えない-";
+	mes "-�c�c�c�c-";
+	mes "-�����̃y�b�g�t�[�h�ɂ��������Ȃ�-";
 	set Zeny,Zeny-1000;
 	getitem 537,1;
 	close;
 }
 
-kh_vila.gat,30,184,0	script	リンゴ箱	111,{
-	mes "-おいしそうなリンゴが";
-	mes "いっぱいに盛られている-";
+kh_vila.gat,30,184,0	script	�����S��	111,{
+	mes "-�����������ȃ����S��";
+	mes "�����ς��ɐ����Ă���-";
 	next;
-	if(select("持って行く","持って行かない")==2) {
-		mes "-なんだか怪しそうに見える-";
-		mes "-やめておこう-";
+	if(select("�����čs��","�����čs���Ȃ�")==2) {
+		mes "-�Ȃ񂾂����������Ɍ�����-";
+		mes "-��߂Ă�����-";
 		close;
 	}
-	mes "-りんごを手にしようとした瞬間、";
-	mes "嫌な臭いがしてきた-";
-	mes "-……ま、まさか……-";
+	mes "-��񂲂���ɂ��悤�Ƃ����u�ԁA";
+	mes "���ȏL�������Ă���-";
+	mes "-�c�c�܁A�܂����c�c-";
 	next;
-	mes "-このリンゴは危険すぎる-";
-	mes "-やめておこう-";
+	mes "-���̃����S�͊댯������-";
+	mes "-��߂Ă�����-";
 	close;
 }
 
-kh_vila.gat,44,126,0	script	地図	111,{
+kh_vila.gat,44,126,0	script	�n�}	111,{
 	if(KH_QUE_SUB&0x004 || KH_QUE >= 17) {
-		mes "-メッセージが書かれた紙を";
-		mes "見つけた所だ-";
-		mes "-メッセージをもう一度";
-		mes "確認してみようか？-";
+		mes "-���b�Z�[�W�������ꂽ����";
+		mes "����������-";
+		mes "-���b�Z�[�W��������x";
+		mes "�m�F���Ă݂悤���H-";
 		next;
-		if(select("確認する","必要ない")==2) {
-			mes "-その必要はなさそうだ-";
+		if(select("�m�F����","�K�v�Ȃ�")==2) {
+			mes "-���̕K�v�͂Ȃ�������-";
 			close;
 		}
 		callsub L_Routine;
 		close;
 	}
 	if(KH_QUE_SUB&0x002) {
-		mes "-やかんに入っている熱湯を、";
-		mes "地図を固定している草にかけてみた-";
-		mes "-……粘着力が弱まったのか、";
-		mes "地図が少しぐらついた-";
+		mes "-�₩��ɓ����Ă���M�����A";
+		mes "�n�}���Œ肵�Ă��鑐�ɂ����Ă݂�-";
+		mes "-�c�c�S���͂���܂����̂��A";
+		mes "�n�}�������������-";
 		next;
-		mes "-地図を壁から外そうと";
-		mes "ほんの少しだけずらした瞬間、";
-		mes "丸められた紙が転がり落ちてきた-";
+		mes "-�n�}��ǂ���O������";
+		mes "�ق�̏����������炵���u�ԁA";
+		mes "�ۂ߂�ꂽ�����]���藎���Ă���-";
 		next;
-		mes "-紙にはメッセージが書かれている-";
+		mes "-���ɂ̓��b�Z�[�W��������Ă���-";
 		next;
 		callsub L_Routine;
 		next;
-		mes "-……意味がわからない-";
-		mes "-ただ、重要な事だけは確かだろう-";
+		mes "-�c�c�Ӗ����킩��Ȃ�-";
+		mes "-�����A�d�v�Ȏ������͊m�����낤-";
 		set KH_QUE_SUB,KH_QUE_SUB|0x004;
 		close;
 	}
-	mes "-古い地図が描かれている-";
+	mes "-�Â��n�}���`����Ă���-";
 	next;
-	if(select("気にしない","もう少し見てみる")==1) {
-		mes "-あまり重要ではないだろう-";
+	if(select("�C�ɂ��Ȃ�","�����������Ă݂�")==1) {
+		mes "-���܂�d�v�ł͂Ȃ����낤-";
 		close;
 	}
-	mes "-よく見てみると、";
-	mes "一部分だけが";
-	mes "微かに浮き出ているようだ-";
-	mes "-地図の裏に何かあるのだろうか？-";
+	mes "-�悭���Ă݂�ƁA";
+	mes "�ꕔ��������";
+	mes "�����ɕ����o�Ă���悤��-";
+	mes "-�n�}�̗��ɉ�������̂��낤���H-";
 	next;
-	mes "-地図は壁に";
-	mes "堅く固定されている-";
-	mes "-どうやら草のような物体に";
-	mes "固定されているようだ-";
-	mes "-草の粘着力を弱めれたら";
-	mes "地図を外す事ができそうだ-";
+	mes "-�n�}�͕ǂ�";
+	mes "�����Œ肳��Ă���-";
+	mes "-�ǂ���瑐�̂悤�ȕ��̂�";
+	mes "�Œ肳��Ă���悤��-";
+	mes "-���̔S���͂���߂ꂽ��";
+	mes "�n�}���O�������ł�������-";
 	set KH_QUE_SUB,KH_QUE_SUB|0x001;
 	close;
 L_Routine:
-	mes "^0000FF水が乾き、地が割れば";
-	mes "彼女の心臓に行く道は開かれる";
-	mes "彼女の心臓は透明なクリスタル";
-	mes "彼女のいる所は北の海のように冷たい";
-	mes "我は彼女を探すため";
-	mes "4本の剣を持って銀の蛇と決闘する^000000";
+	mes "^0000FF���������A�n�������";
+	mes "�ޏ��̐S���ɍs�����͊J�����";
+	mes "�ޏ��̐S���͓����ȃN���X�^��";
+	mes "�ޏ��̂��鏊�͖k�̊C�̂悤�ɗ₽��";
+	mes "��͔ޏ���T������";
+	mes "4�{�̌��������ċ�̎ւƌ�������^000000";
 	next;
-	mes "^0000FF1番目：黒い怒り";
-	mes "2番目：黒い愛";
-	mes "3番目：黒い希望";
-	mes "4番目：黒い絶望^000000";
+	mes "^0000FF1�ԖځF�����{��";
+	mes "2�ԖځF������";
+	mes "3�ԖځF������]";
+	mes "4�ԖځF������]^000000";
 	next;
-	mes "^0000FF彼女がいる所を訪ねるため";
-	mes "彼女をこの手に抱くため";
-	mes "我は4本の剣を持って";
-	mes "銀の蛇と決闘する^000000";
+	mes "^0000FF�ޏ������鏊��K�˂邽��";
+	mes "�ޏ������̎�ɕ�������";
+	mes "���4�{�̌���������";
+	mes "��̎ւƌ�������^000000";
 	return;
 }
 
-kh_vila.gat,33,184,0	script	やかん	111,{
+kh_vila.gat,33,184,0	script	�₩��	111,{
 	if(KH_QUE_SUB&0x002 || KH_QUE >= 17) {
-		mes "-やかんがあった場所だ-";
+		mes "-�₩�񂪂������ꏊ��-";
 		close;
 	}
-	mes "-熱そうなお湯が入っているやかんだ-";
-	mes "-湯気がゆらゆらと立ち昇っている-";
+	mes "-�M�����Ȃ����������Ă���₩��-";
+	mes "-���C�������Ɨ��������Ă���-";
 	if(KH_QUE_SUB&0x001 == 0)
 		close;
 	next;
-	mes "-……熱湯……-";
-	mes "-これで地図を固定している草を";
-	mes "なんとかできないだろうか？-";
+	mes "-�c�c�M���c�c-";
+	mes "-����Œn�}���Œ肵�Ă��鑐��";
+	mes "�Ȃ�Ƃ��ł��Ȃ����낤���H-";
 	next;
-	if(select("試みてみる","あまり期待できない")==2) {
-		mes "-他の方法を探してみよう-";
+	if(select("���݂Ă݂�","���܂���҂ł��Ȃ�")==2) {
+		mes "-���̕��@��T���Ă݂悤-";
 		close;
 	}
-	mes "-^FF0000熱湯の入ったやかんを手に入れた^000000-";
-	mes "-やけどをしないように注意しよう-";
+	mes "-^FF0000�M���̓������₩�����ɓ��ꂽ^000000-";
+	mes "-�₯�ǂ����Ȃ��悤�ɒ��ӂ��悤-";
 	set KH_QUE_SUB,KH_QUE_SUB|0x002;
 	close;
 }
 
-kh_vila.gat,39,41,0	script	淀み	111,{
+kh_vila.gat,39,41,0	script	����	111,{
 	if(KH_QUE_SUB&0x008 || KH_QUE >= 17) {
-		mes "-ボタンを押した時、";
-		mes "階段の方から「カシャン」と";
-		mes "軽い音が聞こえた気がした-";
+		mes "-�{�^�������������A";
+		mes "�K�i�̕�����u�J�V�����v��";
+		mes "�y���������������C������-";
 		close;
 	}
-	mes "-冷たそうな水が溜まっている-";
+	mes "-�₽�����Ȑ������܂��Ă���-";
 	next;
 	if(KH_QUE_SUB&0x004 == 0) {
-		mes "-……飲むのは無理だろう-";
+		mes "-�c�c���ނ͖̂������낤-";
 		close;
 	}
-	mes "-獅子の像と二つの取っ手が見える-";
-	mes "-引くことができそうだが……-";
+	mes "-���q�̑��Ɠ�̎���肪������-";
+	mes "-�������Ƃ��ł����������c�c-";
 	next;
-	if(select("引いてみる","やめておく")==2) {
-		mes "-むやみに触らない方がいいだろう-";
+	if(select("�����Ă݂�","��߂Ă���")==2) {
+		mes "-�ނ�݂ɐG��Ȃ������������낤-";
 		close;
 	}
-	mes "-どっちを引いてみようか？-";
+	mes "-�ǂ����������Ă݂悤���H-";
 	next;
-	if(select("右側の取っ手","左側の取っ手")==1) {
-		mes "-取っ手を引っ張ると、";
-		mes "獅子の口から水が流れ始めた-";
-		mes "-しかし、すぐに流れは止まった-";
-		mes "-…………-";
-		mes "-他に変化はなさそうだ-";
+	if(select("�E���̎����","�����̎����")==1) {
+		mes "-��������������ƁA";
+		mes "���q�̌����琅������n�߂�-";
+		mes "-�������A�����ɗ���͎~�܂���-";
+		mes "-�c�c�c�c-";
+		mes "-���ɕω��͂Ȃ�������-";
 		close;
 	}
-	mes "-取っ手を引っ張ると、";
-	mes "底に穴が開き、溜まっていた水が";
-	mes "全て流れていった-";
-	mes "-水の無くなった底には";
-	mes "緑色のコケがびっしりと生えている-";
+	mes "-��������������ƁA";
+	mes "��Ɍ����J���A���܂��Ă�������";
+	mes "�S�ė���Ă�����-";
+	mes "-���̖����Ȃ�����ɂ�";
+	mes "�ΐF�̃R�P���т�����Ɛ����Ă���-";
 	next;
-	if(select("特になにもなさそうだ","もう少しよく見る")==1) {
-		mes "-……気持ち悪くなりそうだ-";
+	if(select("���ɂȂɂ��Ȃ�������","���������悭����")==1) {
+		mes "-�c�c�C���������Ȃ肻����-";
 		close;
 	}
-	mes "-よく見ると隅の方に";
-	mes "小さなボタンがあった-";
+	mes "-�悭����Ƌ��̕���";
+	mes "�����ȃ{�^����������-";
 	next;
-	if(select("押してみる","……ほおっておく")==2) {
-		mes "-何が起こるかわからない-";
-		mes "-むやみに触らない方がいいだろう-";
+	if(select("�����Ă݂�","�c�c�ق����Ă���")==2) {
+		mes "-�����N���邩�킩��Ȃ�-";
+		mes "-�ނ�݂ɐG��Ȃ������������낤-";
 		close;
 	}
-	mes "-ボタンを押すと「カシャン」";
-	mes "と何か軽い音が聞こえた-";
-	mes "-^FF0000廊下の階段^000000の方からだった-";
+	mes "-�{�^���������Ɓu�J�V�����v";
+	mes "�Ɖ����y��������������-";
+	mes "-^FF0000�L���̊K�i^000000�̕����炾����-";
 	set KH_QUE_SUB,KH_QUE_SUB|0x008;
 	close;
 }
 
-kh_vila.gat,118,143,0	script	机	111,{
+kh_vila.gat,118,143,0	script	��	111,{
 	if(KH_QUE_SUB&0x010 || KH_QUE >= 17) {
-		mes "-机の上に本や紙切れが";
-		mes "散らばっている-";
-		mes "-難しそうな内容ばかりだ-";
+		mes "-���̏�ɖ{�⎆�؂ꂪ";
+		mes "�U��΂��Ă���-";
+		mes "-������ȓ��e�΂��肾-";
 		close;
 	}
-	mes "-机の上に本や紙切れが";
-	mes "散らばっている-";
-	mes "-人工動力の製法と利用方法……-";
-	mes "-大賢者バルムントの論文集……-";
-	mes "-工場用自動機械の活用方法……-";
-	mes "-高級魔法スクロールの製法……-";
-	mes "-エリーのために……-";
+	mes "-���̏�ɖ{�⎆�؂ꂪ";
+	mes "�U��΂��Ă���-";
+	mes "-�l�H���͂̐��@�Ɨ��p���@�c�c-";
+	mes "-�匫�҃o�������g�̘_���W�c�c-";
+	mes "-�H��p�����@�B�̊��p���@�c�c-";
+	mes "-�������@�X�N���[���̐��@�c�c-";
+	mes "-�G���[�̂��߂Ɂc�c-";
 	next;
-	mes "「エリー？」";
-	mes "-白紙のページばかりの本を";
-	mes "よく調べると、一切れの紙が";
-	mes "挟まっているのを見つけた-";
-	mes "紙には「キル・ハイル企業の文章」";
-	mes "だけが写っている。";
-	mes "……一応持っていこう。";
+	mes "�u�G���[�H�v";
+	mes "-�����̃y�[�W�΂���̖{��";
+	mes "�悭���ׂ�ƁA��؂�̎���";
+	mes "���܂��Ă���̂�������-";
+	mes "���ɂ́u�L���E�n�C����Ƃ̕��́v";
+	mes "�������ʂ��Ă���B";
+	mes "�c�c�ꉞ�����Ă������B";
 	next;
-	mes "「^FF0000キル・ハイルの紋章が写った紙^000000」";
-	mes "を獲得した。";
+	mes "�u^FF0000�L���E�n�C���̖�͂��ʂ�����^000000�v";
+	mes "���l�������B";
 	set KH_QUE_SUB,KH_QUE_SUB|0x010;
 	close;
 }
 
-kh_vila.gat,123,170,0	script	棚	111,{
+kh_vila.gat,123,170,0	script	�I	111,{
 	if(KH_QUE_SUB&0x020 || KH_QUE >= 17) {
-		mes "-キル・ハイルの紋章が写った紙に";
-		mes "隠された詩を見つけた所だ-";
-		mes "-もう一度読んでみようか？-";
+		mes "-�L���E�n�C���̖�͂��ʂ�������";
+		mes "�B���ꂽ��������������-";
+		mes "-������x�ǂ�ł݂悤���H-";
 		next;
-		if(select("そんな時間はない","読んでみる")==1) {
-			mes "-はやく他の所を調べに行こう-";
+		if(select("����Ȏ��Ԃ͂Ȃ�","�ǂ�ł݂�")==1) {
+			mes "-�͂₭���̏��𒲂ׂɍs����-";
 			close;
 		}
 		callsub L_Routine;
 		close;
 	}
-	mes "-様々な色の液体が注がれた";
-	mes "試験管が置かれている-";
-	mes "-何に使われるのだろうか？-";
+	mes "-�l�X�ȐF�̉t�̂������ꂽ";
+	mes "�����ǂ��u����Ă���-";
+	mes "-���Ɏg����̂��낤���H-";
 	if(KH_QUE_SUB&0x010 == 0)
 		close;
 	next;
-	mes "-……そういえば、";
-	mes "どこかで読んだ本に、";
-	mes "特定の液体に反応するインクがあると";
-	mes "書いてあった気がする……-";
+	mes "-�c�c���������΁A";
+	mes "�ǂ����œǂ񂾖{�ɁA";
+	mes "����̉t�̂ɔ�������C���N�������";
+	mes "�����Ă������C������c�c-";
 	next;
-	if(select("そんなものあるわけが……","キル・ハイルの紋章が写った紙に……")==1) {
-		mes "そんな便利な物、あるわけない-";
+	if(select("����Ȃ��̂���킯���c�c","�L���E�n�C���̖�͂��ʂ������Ɂc�c")==1) {
+		mes "����ȕ֗��ȕ��A����킯�Ȃ�-";
 		close;
 	}
-	setarray '@str$[1],"赤","青","黄","緑";
-	if(select("赤色の液体を落としてみる","青色の液体を落としてみる","黄色い液体を落としてみる","緑色の液体を落としてみる","やめておく")==5) {
-		mes "そんな便利な物、あるわけない-";
+	setarray '@str$[1],"��","��","��","��";
+	if(select("�ԐF�̉t�̂𗎂Ƃ��Ă݂�","�F�̉t�̂𗎂Ƃ��Ă݂�","���F���t�̂𗎂Ƃ��Ă݂�","�ΐF�̉t�̂𗎂Ƃ��Ă݂�","��߂Ă���")==5) {
+		mes "����ȕ֗��ȕ��A����킯�Ȃ�-";
 		close;
 	}
-	mes "-" +'@str$[@menu]+ "色の液体が紙の表面に沿って";
-	mes "流れていく-";
+	mes "-" +'@str$[@menu]+ "�F�̉t�̂����̕\�ʂɉ�����";
+	mes "����Ă���-";
 	if(@menu != 2) {
-		mes "-不思議なことに";
-		mes "液体は紙を濡らさなかったが、";
-		mes "紙に変化は無いみたいだ-";
+		mes "-�s�v�c�Ȃ��Ƃ�";
+		mes "�t�͎̂���G�炳�Ȃ��������A";
+		mes "���ɕω��͖����݂�����-";
 		close;
 	}
-	mes "-すると、液体が流れた跡から";
-	mes "小さい文字が次々と現れた-";
+	mes "-����ƁA�t�̂����ꂽ�Ղ���";
+	mes "���������������X�ƌ��ꂽ-";
 	next;
 	callsub L_Routine;
 	next;
-	mes "-…………-";
-	mes "-なんだろう……";
-	mes "-妙に気になる詩だ-";
+	mes "-�c�c�c�c-";
+	mes "-�Ȃ񂾂낤�c�c";
+	mes "-���ɋC�ɂȂ鎍��-";
 	set KH_QUE_SUB,KH_QUE_SUB|0x020;
 	close;
 L_Routine:
-	mes "^0000FF-1番目-";
-	mes "銀の蛇は銑鉄で作られし者";
-	mes "冷たい体と堅い頭を持つ";
-	mes "我は怒りを持って蛇の頭に振り下ろす";
-	mes "銀の蛇は眠りにつく^000000";
+	mes "^0000FF-1�Ԗ�-";
+	mes "��̎ւ͑L�S�ō��ꂵ��";
+	mes "�₽���̂ƌ�����������";
+	mes "��͓{��������Ďւ̓��ɐU�艺�낷";
+	mes "��̎ւ͖���ɂ�^000000";
 	next;
-	mes "^0000FF-2番目-";
-	mes "銀の蛇は魔法で作られし者";
-	mes "魔法の体と姑息な頭を持つ";
-	mes "我は愛を持って蛇の心臓を突く";
-	mes "銀の蛇は眠りにつく^000000";
+	mes "^0000FF-2�Ԗ�-";
+	mes "��̎ւ͖��@�ō��ꂵ��";
+	mes "���@�̑̂ƌƑ��ȓ�������";
+	mes "��͈��������Ďւ̐S����˂�";
+	mes "��̎ւ͖���ɂ�^000000";
 	next;
-	mes "^0000FF-3番目-";
-	mes "銀の蛇は血と肉で作られし者";
-	mes "暖かい体と柔らかい頭を持つ";
-	mes "我は希望を持って蛇の体を抱く";
-	mes "銀の蛇は眠りにつく^000000";
+	mes "^0000FF-3�Ԗ�-";
+	mes "��̎ւ͌��Ɠ��ō��ꂵ��";
+	mes "�g�����̂Ə_�炩����������";
+	mes "��͊�]�������Ďւ̑̂����";
+	mes "��̎ւ͖���ɂ�^000000";
 	next;
-	mes "^0000FF-4番目-";
-	mes "銀の蛇は器のない者";
-	mes "その体と頭は誰にも見えない";
-	mes "我は絶望を持って虚空へ投げつける";
-	mes "銀の蛇がどうなったか誰もわからない";
-	mes "……誰にもわからない……^000000";
+	mes "^0000FF-4�Ԗ�-";
+	mes "��̎ւ͊�̂Ȃ���";
+	mes "���̑̂Ɠ��͒N�ɂ������Ȃ�";
+	mes "��͐�]�������ċ���֓�������";
+	mes "��̎ւ��ǂ��Ȃ������N���킩��Ȃ�";
+	mes "�c�c�N�ɂ��킩��Ȃ��c�c^000000";
 	next;
-	mes "^0000FF我が名は「^FF0000道を失った小さな悪魔^0000FF」";
-	mes "汝、四本の剣を持って";
-	mes "暗黒の中の彼女を訪ねよ^000000";
+	mes "^0000FF�䂪���́u^FF0000���������������Ȉ���^0000FF�v";
+	mes "���A�l�{�̌���������";
+	mes "�Í��̒��̔ޏ���K�˂�^000000";
 	return;
 }
 
-kh_vila.gat,136,68,0	script	剣飾り	111,{
+kh_vila.gat,136,68,0	script	������	111,{
 	if(KH_QUE_SUB&0x040 || KH_QUE >= 17) {
-		mes "-隠し研究所へ？-";
+		mes "-�B���������ցH-";
 		next;
-		if(select("移動する","移動しない")==2) {
-			mes "-もう少し調べ回ってみよう-";
+		if(select("�ړ�����","�ړ����Ȃ�")==2) {
+			mes "-�����������׉���Ă݂悤-";
 			close;
 		}
 		warp "kh_vila.gat",178,72;
 		end;
 	}
-	mes "-刃が違う4本の剣と";
-	mes "銀で出来た4匹の蛇の像がある-";
+	mes "-�n���Ⴄ4�{�̌���";
+	mes "��ŏo����4�C�̎ւ̑�������-";
 	if(KH_QUE_SUB&0x004 == 0)
 		close;
 	if(KH_QUE_SUB&0x020 == 0)
-		mes "-地図の裏にあった紙に隠された詩と";
+		mes "-�n�}�̗��ɂ��������ɉB���ꂽ����";
 	else {
-		mes "-キル・ハイルの紋章が写った紙に";
-		mes "隠されていた詩と";
+		mes "-�L���E�n�C���̖�͂��ʂ�������";
+		mes "�B����Ă�������";
 	}
-	mes "どこか同じ気がする-";
+	mes "�ǂ��������C������-";
 	next;
-	if(select("やはり関係はなさそうだ","もう少しよくみる")==1) {
-		mes "-恐らく偶然だろう-";
+	if(select("��͂�֌W�͂Ȃ�������","���������悭�݂�")==1) {
+		mes "-���炭���R���낤-";
 		close;
 	}
-	mes "-蛇の像をよく見てみると、";
-	mes "1匹ごとに何かが刺し込めそうな";
-	mes "穴が開いている-";
+	mes "-�ւ̑����悭���Ă݂�ƁA";
+	mes "1�C���Ƃɉ������h�����߂�����";
+	mes "�����J���Ă���-";
 	next;
-	if(select("穴をよく調べる","飾ってある剣を刺してみる")==1) {
-		mes "-……剣以外に";
-		mes "刺せるものは無さそうだ-";
+	if(select("�����悭���ׂ�","�����Ă��錕���h���Ă݂�")==1) {
+		mes "-�c�c���ȊO��";
+		mes "�h������͖̂���������-";
 		close;
 	}
 	if(KH_QUE_SUB&0x008 == 0) {
-		mes "-飾ってある剣は";
-		mes "何かに引っかかっているようだ-";
-		mes "-どうやっても取れそうに無い-";
+		mes "-�����Ă��錕��";
+		mes "�����Ɉ����������Ă���悤��-";
+		mes "-�ǂ�����Ă���ꂻ���ɖ���-";
 		close;
 	}
 	if(KH_QUE_SUB&0x020 == 0) {
-		mes "-特に変化はない-";
-		mes "-何か法則でもあるのだろうか？-";
+		mes "-���ɕω��͂Ȃ�-";
+		mes "-�����@���ł�����̂��낤���H-";
 		close;
 	}
-	mes "-どの剣をどこに刺そうか？-";
+	mes "-�ǂ̌����ǂ��Ɏh�������H-";
 	next;
 	for(set '@i,0; '@i<4; set '@i,'@i+1) {
 		switch('@i) {
-		case 0: mes "-光り輝く剣を抜いた-"; break;
-		case 1: mes "-ガラスの剣を抜いた-"; break;
-		case 2: mes "-鉄の剣を抜いた-"; break;
-		case 3: mes "-錆びた剣を抜いた-"; break;
+		case 0: mes "-����P�����𔲂���-"; break;
+		case 1: mes "-�K���X�̌��𔲂���-"; break;
+		case 2: mes "-�S�̌��𔲂���-"; break;
+		case 3: mes "-�K�т����𔲂���-"; break;
 		}
 		next;
-		set '@order['@i],select("1番目の蛇","2番目の蛇","3番目の蛇","4番目の蛇");
+		set '@order['@i],select("1�Ԗڂ̎�","2�Ԗڂ̎�","3�Ԗڂ̎�","4�Ԗڂ̎�");
 	}
 	if('@order[0] != 2 || '@order[1] != 4 || '@order[2] != 1 || '@order[3] != 3) {
-		mes "-……何の変化もない-";
-		mes "-剣を戻しておこう-";
+		mes "-�c�c���̕ω����Ȃ�-";
+		mes "-����߂��Ă�����-";
 		close;
 	}
-	mes "-ヴぅ……ン……-";
-	mes "-急に低い音が聞こえたかと思うと、";
-	mes "体がどこか遠くに行く感じがした-";
+	mes "-�����c�c���c�c-";
+	mes "-�}�ɒႢ���������������Ǝv���ƁA";
+	mes "�̂��ǂ��������ɍs������������-";
 	set KH_QUE_SUB,KH_QUE_SUB|0x040;
 	close2;
 	warp "kh_vila.gat",178,72;
 	end;
 }
 
-kh_vila.gat,179,68,0	script	試験管	111,{
-	mes "-キル・ハイル学院の制服を着た";
-	mes "男の子が試験管に入っている-";
+kh_vila.gat,179,68,0	script	������	111,{
+	mes "-�L���E�n�C���w�@�̐����𒅂�";
+	mes "�j�̎q�������ǂɓ����Ă���-";
 	close;
 }
 
-kh_vila.gat,185,68,0	script	試験管	111,{
+kh_vila.gat,185,68,0	script	������	111,{
 	if(KH_QUE_SUB&0x080 || KH_QUE >= 17) {
-		mes "-^FF00004772961^000000？-";
-		mes "-一体何の数字だろう？-";
-		mes "-…………-";
+		mes "-^FF00004772961^000000�H-";
+		mes "-��̉��̐������낤�H-";
+		mes "-�c�c�c�c-";
 		if(KH_QUE_SUB == 0x3FF) {
-			mes "-一通り調べ尽くしたようだ-";
-			mes "-エリーに会いに行こう-";
+			mes "-��ʂ蒲�אs�������悤��-";
+			mes "-�G���[�ɉ�ɍs����-";
 			close;
 		}
-		mes "-まだ何かありそうだ-";
-		mes "-もっと色んな所を調べてみよう-";
+		mes "-�܂��������肻����-";
+		mes "-�����ƐF��ȏ��𒲂ׂĂ݂悤-";
 		close;
 	}
 	if(KH_QUE_SUB&0x040 == 0)
 		end;
 	mes "-!?-";
-	mes "-老人が試験管に入っている！-";
-	mes "-…………-";
-	mes "-試験管の下に赤色ボタンがある-";
+	mes "-�V�l�������ǂɓ����Ă���I-";
+	mes "-�c�c�c�c-";
+	mes "-�����ǂ̉��ɐԐF�{�^��������-";
 	next;
-	if(select("ボタンを押す","もう少し調べる")==2) {
-		mes "-念のため、周りをよく調べよう-";
+	if(select("�{�^��������","�����������ׂ�")==2) {
+		mes "-�O�̂��߁A������悭���ׂ悤-";
 		close;
 	}
-	mes "-ボタンを押すと、";
-	mes "試験管の中の老人が";
-	mes "話しかけてきた-";
+	mes "-�{�^���������ƁA";
+	mes "�����ǂ̒��̘V�l��";
+	mes "�b�������Ă���-";
 	next;
-	mes "「………………」";
-	mes "「お前は誰だ……」";
-	mes "「見慣れぬ奴だ……」";
-	mes "「お前が我が友なら、";
-	mes "我が名を知っているな？」";
+	mes "�u�c�c�c�c�c�c�v";
+	mes "�u���O�͒N���c�c�v";
+	mes "�u������ʓz���c�c�v";
+	mes "�u���O���䂪�F�Ȃ�A";
+	mes "�䂪����m���Ă���ȁH�v";
 	next;
 	input '@str$;
-	if('@str$ != "道を失った小さな悪魔") {
-		mes "「それは私の名前ではない……」";
+	if('@str$ != "���������������Ȉ���") {
+		mes "�u����͎��̖��O�ł͂Ȃ��c�c�v";
 		close;
 	}
-	mes "「……この数字を覚えておけ。」";
-	mes "「^FF00004,7,7,2,9,6,1^000000」";
+	mes "�u�c�c���̐������o���Ă����B�v";
+	mes "�u^FF00004,7,7,2,9,6,1^000000�v";
 	next;
 	mes "-^FF00004772961^000000-";
-	mes "-一体何の数字だろう？-";
+	mes "-��̉��̐������낤�H-";
 	if(KH_QUE == 15)
 		set KH_QUE,16;
 	set KH_QUE_SUB,KH_QUE_SUB|0x080;
 	close;
 }
 
-kh_vila.gat,181,178,4	script	怖そうな犬	81,7,3,{
+kh_vila.gat,181,178,4	script	�|�����Ȍ�	81,7,3,{
 	end;
 OnTouch:
-	mes "グルルルルルル……";
+	mes "�O�������������c�c";
 	next;
-	mes "-荒々しい唸り声を上げている-";
-	mes "-無事に通り抜けれるのか？-";
+	mes "-�r�X�����X�萺���グ�Ă���-";
+	mes "-�����ɒʂ蔲�����̂��H-";
 	next;
-	if(select("試してみる","諦める")==2) {
-		mes "-さすがに危険すぎる-";
-		mes "-この先は諦めよう-";
+	if(select("�����Ă݂�","���߂�")==2) {
+		mes "-�������Ɋ댯������-";
+		mes "-���̐�͒��߂悤-";
 		close2;
 		warp "kh_vila.gat",126,70;
 		end;
 	}
 	if(countitem(537)) {
-		mes "-そういえば、ペットフードを";
-		mes "持っている-";
+		mes "-���������΁A�y�b�g�t�[�h��";
+		mes "�����Ă���-";
 		next;
-		if(select("ペットフードを使ってみる","そんなものは使わない")==1) {
-			mes "-恐る恐るペットフードを";
-			mes "犬の前に投げ捨てると、";
-			mes "犬は尻尾を振りながら";
-			mes "ペットフードを食べ始めた-";
-			mes "-今のうちに通り抜けよう-";
+		if(select("�y�b�g�t�[�h���g���Ă݂�","����Ȃ��͎̂g��Ȃ�")==1) {
+			mes "-���鋰��y�b�g�t�[�h��";
+			mes "���̑O�ɓ����̂Ă�ƁA";
+			mes "���͐K����U��Ȃ���";
+			mes "�y�b�g�t�[�h��H�׎n�߂�-";
+			mes "-���̂����ɒʂ蔲���悤-";
 			close2;
 			delitem 537,1;
 			warp "kh_vila.gat",173,182;
 			end;
 		}
 	}
-	mes "-恐る恐る近づいてみた-";
-	mes "-犬のうなり声が";
-	mes "大きくなっている気がする-";
+	mes "-���鋰��߂Â��Ă݂�-";
+	mes "-���̂��Ȃ萺��";
+	mes "�傫���Ȃ��Ă���C������-";
 	next;
-	mes "-犬の横を通り抜けようと……-";
-	mes "-…………-";
-	mes "ワン！　ワン！　ワン！";
-	mes "ワン！　ワン！　ワン！　ワン！";
+	mes "-���̉���ʂ蔲���悤�Ɓc�c-";
+	mes "-�c�c�c�c-";
+	mes "�����I�@�����I�@�����I";
+	mes "�����I�@�����I�@�����I�@�����I";
 	next;
-	mes "-………………-";
-	mes "-階段を降りるまで";
-	mes "犬に追い回された-";
+	mes "-�c�c�c�c�c�c-";
+	mes "-�K�i���~���܂�";
+	mes "���ɒǂ��񂳂ꂽ-";
 	close2;
 	warp "kh_vila.gat",126,70;
 	end;
 }
 
-kh_vila.gat,115,186,0	script	引き出し	111,{
+kh_vila.gat,115,186,0	script	�����o��	111,{
 	if(KH_QUE_SUB&0x100 || KH_QUE >= 17) {
 		if(KH_QUE_SUB == 0x3FF) {
-			mes "-一通り調べたみたいだ-";
-			mes "-そろそろエリーに会いに行こう-";
+			mes "-��ʂ蒲�ׂ��݂�����-";
+			mes "-���낻��G���[�ɉ�ɍs����-";
 			close;
 		}
-		mes "-^009CFF黄色のカードキー^000000を";
-		mes "見つけた引き出しだ-";
+		mes "-^009CFF���F�̃J�[�h�L�[^000000��";
+		mes "�����������o����-";
 		close;
 	}
-	mes "-何度も使われたような";
-	mes "痛んだ引き出しがある-";
+	mes "-���x���g��ꂽ�悤��";
+	mes "�ɂ񂾈����o��������-";
 	next;
-	if(select("引き出しを引いてみる","ほおっておく")==2) {
-		mes "-他の所を探してみよう-";
+	if(select("�����o���������Ă݂�","�ق����Ă���")==2) {
+		mes "-���̏���T���Ă݂悤-";
 		close;
 	}
-	mes "-引き出しの中には";
-	mes "黄色のカードキーがあった-";
+	mes "-�����o���̒��ɂ�";
+	mes "���F�̃J�[�h�L�[��������-";
 	getitem 7492,1;
 	set KH_QUE_SUB,KH_QUE_SUB|0x100;
 	close;
 }
 
-kh_vila.gat,14,55,0	script	とっくり	111,{
+kh_vila.gat,14,55,0	script	�Ƃ�����	111,{
 	if(countitem(7329)) {
-		mes "-古い銅の鍵を手に入れた瓶だ-";
-		mes "-……やはり高そうに見える-";
+		mes "-�Â����̌�����ɓ��ꂽ�r��-";
+		mes "-�c�c��͂荂�����Ɍ�����-";
 		close;
 	}
-	mes "-高そうな瓶がある-";
-	mes "-……どうする？-";
+	mes "-�������ȕr������-";
+	mes "-�c�c�ǂ�����H-";
 	next;
-	switch(select("瓶を割ってみる","よく見てみる","ほおっておく")) {
+	switch(select("�r�������Ă݂�","�悭���Ă݂�","�ق����Ă���")) {
 	case 1:
-		mes "-とても高そうだ……-";
-		mes "-さすがに壊すのはまずいだろう-";
+		mes "-�ƂĂ����������c�c-";
+		mes "-�������ɉ󂷂̂͂܂������낤-";
 		close;
 	case 2:
-		mes "-…………-";
-		mes "-何か入っているのだろうか？-";
+		mes "-�c�c�c�c-";
+		mes "-���������Ă���̂��낤���H-";
 		next;
-		mes "-瓶をそっと振ってみると";
-		mes "「ジィン」と鈍い音がした-";
-		mes "-やはり何かが入っているようだ-";
+		mes "-�r�������ƐU���Ă݂��";
+		mes "�u�W�B���v�Ɠ݂���������-";
+		mes "-��͂艽���������Ă���悤��-";
 		next;
-		mes "-「^FF0000古い銅の鍵^000000」を手に入れた-";
+		mes "-�u^FF0000�Â����̌�^000000�v����ɓ��ꂽ-";
 		getitem 7329,1;
 		close;
 	case 3:
-		mes "-……高そうだ-";
-		mes "-むやみに触らない方がいいだろう-";
+		mes "-�c�c��������-";
+		mes "-�ނ�݂ɐG��Ȃ������������낤-";
 		close;
 	}
 }
 
-kh_vila.gat,107,126,0	script	箱	111,{
+kh_vila.gat,107,126,0	script	��	111,{
 	if(countitem(7516) || KH_QUE >= 17) {
-		mes "-^009C00緑色のカードキー^000000が入っていた箱だ-";
+		mes "-^009C00�ΐF�̃J�[�h�L�[^000000�������Ă�������-";
 		close;
 	}
-	mes "-堅い箱が置かれている-";
-	mes "-箱を開けると、中にもう一つ";
-	mes "箱が入っていた-";
+	mes "-���������u����Ă���-";
+	mes "-�����J����ƁA���ɂ������";
+	mes "���������Ă���-";
 	next;
-	mes "-中の箱は鍵が掛かっている-";
+	mes "-���̔��͌����|�����Ă���-";
 	if(countitem(7329) < 1)
 		close;
-	mes "-古い銅の鍵で開けれそうだ-";
+	mes "-�Â����̌��ŊJ���ꂻ����-";
 	next;
-	if(select("開けてみる","開けない")==2) {
-		mes "-何が入っているかわからない-";
-		mes "-やめておいたほうがいいだろう-";
+	if(select("�J���Ă݂�","�J���Ȃ�")==2) {
+		mes "-���������Ă��邩�킩��Ȃ�-";
+		mes "-��߂Ă������ق����������낤-";
 		close;
 	}
-	mes "-「カチャン」-";
+	mes "-�u�J�`�����v-";
 	next;
-	mes "-箱の中には";
-	mes "緑色のカードキーが入っていた-";
+	mes "-���̒��ɂ�";
+	mes "�ΐF�̃J�[�h�L�[�������Ă���-";
 	delitem 7329,1;
 	getitem 7516,1;
 	close;
 }
 
-kh_vila.gat,181,138,0	script	本棚	111,{
+kh_vila.gat,181,138,0	script	�{�I	111,{
 	if(KH_QUE_SUB&0x200 || KH_QUE >= 17) {
 		if(KH_QUE_SUB == 0x3FF) {
-			mes "-一通り調べたようだ-";
-			mes "-そろそろエリーに会いに行こう-";
+			mes "-��ʂ蒲�ׂ��悤��-";
+			mes "-���낻��G���[�ɉ�ɍs����-";
 			close;
 		}
-		mes "-まだ調べたりない-";
-		mes "-もっと色んな所を調べてみよう-";
+		mes "-�܂����ׂ���Ȃ�-";
+		mes "-�����ƐF��ȏ��𒲂ׂĂ݂悤-";
 		close;
 	}
-	mes "-本で一杯になった本棚だ-";
-	mes "-隙間がまったくない-";
+	mes "-�{�ň�t�ɂȂ����{�I��-";
+	mes "-���Ԃ��܂������Ȃ�-";
 	if(countitem(7516) < 1 && countitem(7329) < 1)
 		close;
-	mes "-…………-";
+	mes "-�c�c�c�c-";
 	next;
-	mes "-………………？-";
-	mes "-「エリーのために」-";
-	mes "-エリー？-";
+	mes "-�c�c�c�c�c�c�H-";
+	mes "-�u�G���[�̂��߂Ɂv-";
+	mes "-�G���[�H-";
 	next;
-	if(select("本を読んでみる","ほおっておく")==2) {
-		mes "-他に目ぼしい本はなさそうだ-";
+	if(select("�{��ǂ�ł݂�","�ق����Ă���")==2) {
+		mes "-���ɖڂڂ����{�͂Ȃ�������-";
 		close;
 	}
-	mes "-本を読もうとしたが、";
-	mes "知らない文字で読めなかった-";
-	mes "-本を元の場所に戻そうとしたら、";
-	mes "本棚の奥に何か硬い鉄板のような";
-	mes "物があるのが目に写った-";
+	mes "-�{��ǂ����Ƃ������A";
+	mes "�m��Ȃ������œǂ߂Ȃ�����-";
+	mes "-�{�����̏ꏊ�ɖ߂����Ƃ�����A";
+	mes "�{�I�̉��ɉ����d���S�̂悤��";
+	mes "��������̂��ڂɎʂ���-";
 	next;
-	if(select("もう少しよく見る","壁だろう")==2) {
-		mes "-本を元に戻しておいた-";
+	if(select("���������悭����","�ǂ��낤")==2) {
+		mes "-�{�����ɖ߂��Ă�����-";
 		close;
 	}
-	mes "-周りの本を取り出すと、";
-	mes "隠し金庫が出てきた-";
-	mes "-穴が二つある-";
+	mes "-����̖{�����o���ƁA";
+	mes "�B�����ɂ��o�Ă���-";
+	mes "-���������-";
 	next;
-	if(select("持っている鍵を試してみる","……鍵が合いそうもない")==2) {
-		mes "-鍵を探してみよう-";
+	if(select("�����Ă��錮�������Ă݂�","�c�c���������������Ȃ�")==2) {
+		mes "-����T���Ă݂悤-";
 		close;
 	}
 	for(set '@i,1; '@i <= 2; set '@i,'@i+1) {
-		mes "-" +'@i+ "つ目の穴-";
+		mes "-" +'@i+ "�ڂ̌�-";
 		next;
-		set '@order['@i],select((countitem(7516)? "緑色のカードキー": "古い銅の鍵"),"エリーの鍵");
+		set '@order['@i],select((countitem(7516)? "�ΐF�̃J�[�h�L�[": "�Â����̌�"),"�G���[�̌�");
 	}
 	if('@order[1] != 2 || '@order[2] != 1 || countitem(7516) < 1) {
-		mes "-開かない-";
+		mes "-�J���Ȃ�-";
 		close;
 	}
-	mes "-「カチャン」と軽い音がして";
-	mes "金庫が開いた-";
-	mes "-金庫の中には鉄の箱が入っていた-";
+	mes "-�u�J�`�����v�ƌy����������";
+	mes "���ɂ��J����-";
+	mes "-���ɂ̒��ɂ͓S�̔��������Ă���-";
 	next;
-	mes "-^FF0000鉄の箱^000000を手に入れた-";
+	mes "-^FF0000�S�̔�^000000����ɓ��ꂽ-";
 	delitem 7489,1;
 	delitem 7516,1;
 	getitem 7491,1;
@@ -1980,194 +1980,194 @@ kh_vila.gat,181,138,0	script	本棚	111,{
 }
 
 //============================================================
-// キル・ハイル学院NPC2
+// �L���E�n�C���w�@NPC2
 //------------------------------------------------------------
-yuno_fild08.gat,69,185,0	script	窓	111,{
+yuno_fild08.gat,69,185,0	script	��	111,{
 	if(KH_QUE > 55) {
-		mes "-窓は閉まっている-";
+		mes "-���͕܂��Ă���-";
 		close;
 	}
 	if(KH_QUE < 14) {
-		mes "-誰の部屋だろう-";
-		mes "-窓から部屋の中にある女の子らしい";
-		mes "可愛い模様のカーテンが見える-";
+		mes "-�N�̕������낤-";
+		mes "-�����畔���̒��ɂ��鏗�̎q�炵��";
+		mes "�����͗l�̃J�[�e����������-";
 		close;
 	}
 	if(KH_QUE < 16) {
-		mes "-エリーが言ってた部屋だ-";
-		mes "-梯子は見当たらない-";
-		mes "-まだ戻ってないみたいだ-";
+		mes "-�G���[�������Ă�������-";
+		mes "-��q�͌�������Ȃ�-";
+		mes "-�܂��߂��ĂȂ��݂�����-";
 		close;
 	}
 	if(KH_QUE == 16) {
 		if(KH_QUE_SUB < 0x3FF) {
-			mes "-まだ十分な情報を得ていない-";
-			mes "-エリーのためにもう一度";
-			mes "別荘を調べてみよう-";
+			mes "-�܂��\���ȏ��𓾂Ă��Ȃ�-";
+			mes "-�G���[�̂��߂ɂ�����x";
+			mes "�ʑ��𒲂ׂĂ݂悤-";
 			close;
 		}
-		mes "-エリーが言ってた部屋だ-";
-		mes "-まだ梯子は無いようだ-";
-		mes "-……ん？　窓が少し開いている-";
-		mes "-配水管を使えば";
-		mes "登れないこともないが……-";
+		mes "-�G���[�������Ă�������-";
+		mes "-�܂���q�͖����悤��-";
+		mes "-�c�c��H�@���������J���Ă���-";
+		mes "-�z���ǂ��g����";
+		mes "�o��Ȃ����Ƃ��Ȃ����c�c-";
 		next;
 	}
-	if(select("配水管を登る","他の方法を探してみる")==2) {
-		mes "-周りに使えそうな物はない-";
+	if(select("�z���ǂ�o��","���̕��@��T���Ă݂�")==2) {
+		mes "-����Ɏg�������ȕ��͂Ȃ�-";
 		close;
 	}
 	if(rand(5)) {
-		mes "-…………ドサッ-";
-		mes "-配水管から滑り落ちてしまった-";
+		mes "-�c�c�c�c�h�T�b-";
+		mes "-�z���ǂ��犊�藎���Ă��܂���-";
 		percentheal -10,0;
 		close;
 	}
-	mes "-配水管を登って、";
-	mes "エリーの部屋に忍び込んだ-";
+	mes "-�z���ǂ�o���āA";
+	mes "�G���[�̕����ɔE�э���-";
 	close2;
 	warp "kh_school.gat",185,185;
 	end;
 }
 
-kh_school.gat,188,185,0	script	窓	111,{
+kh_school.gat,188,185,0	script	��	111,{
 	warp "yuno_fild08.gat",69,183;
 	end;
 }
 
-kh_school.gat,175,176,0	script	クッキーかご	111,{
+kh_school.gat,175,176,0	script	�N�b�L�[����	111,{
 	if(KH_QUE == 55) {
-		mes "-クッキーかごを眺めていたら、";
-		mes "開きっぱなしの窓からの風で";
-		mes "クッキーかごが少し揺れた-";
-		mes "-その時、もう一通の手紙が";
-		mes "まだ隠されていたのに気づいた-";
-		mes "-恐らく……エリーが書いた";
-		mes "^FF0000手紙^000000のようだ-";
+		mes "-�N�b�L�[�����𒭂߂Ă�����A";
+		mes "�J�����ςȂ��̑�����̕���";
+		mes "�N�b�L�[�����������h�ꂽ-";
+		mes "-���̎��A������ʂ̎莆��";
+		mes "�܂��B����Ă����̂ɋC�Â���-";
+		mes "-���炭�c�c�G���[��������";
+		mes "^FF0000�莆^000000�̂悤��-";
 		next;
-		mes "-" +strcharinfo(0)+ "さんへ……-";
-		mes "いつもドジばっかりして、";
-		mes "先生に怒られてるエリーだけど、";
-		mes "今日のクッキーはよくできてるって";
-		mes "先生に褒められちゃったよ。";
-		mes "エヘヘッ……";
+		mes "-" +strcharinfo(0)+ "����ցc�c-";
+		mes "�����h�W�΂����肵�āA";
+		mes "�搶�ɓ{���Ă�G���[�����ǁA";
+		mes "�����̃N�b�L�[�͂悭�ł��Ă����";
+		mes "�搶�ɖJ�߂�ꂿ�������B";
+		mes "�G�w�w�b�c�c";
 		next;
-		mes "これもみーんな";
-		mes strcharinfo(0)+ "さんが";
-		mes "手伝ってくれたおかげ！";
-		mes "本当にありがと！";
+		mes "������݁[���";
+		mes strcharinfo(0)+ "����";
+		mes "��`���Ă��ꂽ�������I";
+		mes "�{���ɂ��肪�ƁI";
 		next;
-		mes strcharinfo(0)+ "さん";
-		mes "みたいな人を見ると、";
-		mes "世の中にはとっても良い方が";
-		mes "たくさんいる気がするよ。";
+		mes strcharinfo(0)+ "����";
+		mes "�݂����Ȑl������ƁA";
+		mes "���̒��ɂ͂Ƃ��Ă��ǂ�����";
+		mes "�������񂢂�C�������B";
 		next;
-		mes strcharinfo(0)+ "さんは……";
-		mes "とってもあったかな人で……";
-		mes "エリーは大好きだよ！";
-		mes "エヘヘッ……";
+		mes strcharinfo(0)+ "����́c�c";
+		mes "�Ƃ��Ă����������Ȑl�Łc�c";
+		mes "�G���[�͑�D������I";
+		mes "�G�w�w�b�c�c";
 		next;
-		mes "もし、お爺ちゃんに会えたら";
-		mes " " +strcharinfo(0)+ "さんを";
-		mes "紹介させてね。";
-		mes "お爺ちゃんも";
-		mes strcharinfo(0)+ "さん";
-		mes "に会えたら、きっと笑顔になるよ。";
+		mes "�����A���ꂿ���ɉ����";
+		mes " " +strcharinfo(0)+ "�����";
+		mes "�Љ���ĂˁB";
+		mes "���ꂿ����";
+		mes strcharinfo(0)+ "����";
+		mes "�ɉ����A�����ƏΊ�ɂȂ��B";
 		next;
-		mes strcharinfo(0)+ "さん。";
-		mes "最後に一つだけ……";
-		mes "よかったら、いつまでも……";
-		mes "エリーの大切な人になって！";
-		mes "……エヘヘッ……恥ずかしいな。";
-		mes "私も" +strcharinfo(0)+ "さんを";
-		mes "笑顔にさせちゃうようにがんばるよ！";
+		mes strcharinfo(0)+ "����B";
+		mes "�Ō�Ɉ�����c�c";
+		mes "�悩������A���܂ł��c�c";
+		mes "�G���[�̑�؂Ȑl�ɂȂ��āI";
+		mes "�c�c�G�w�w�b�c�c�p���������ȁB";
+		mes "����" +strcharinfo(0)+ "�����";
+		mes "�Ί�ɂ������Ⴄ�悤�ɂ���΂��I";
 		next;
-		mes "-かごの中のクッキーから";
-		mes "いまだにエリーの温もりが";
-		mes "感じとれる気がする-";
-		mes "-私はクッキーを一つ取り出して";
-		mes "一口食べてみた-";
+		mes "-�����̒��̃N�b�L�[����";
+		mes "���܂��ɃG���[�̉����肪";
+		mes "�����Ƃ��C������-";
+		mes "-���̓N�b�L�[������o����";
+		mes "����H�ׂĂ݂�-";
 		next;
-		mes "-………………-";
-		mes "-湿気ってはいたが、";
-		mes "甘いチョコレートの味が";
-		mes "口いっぱいに広がった……-";
-		mes "-………………-";
+		mes "-�c�c�c�c�c�c-";
+		mes "-���C���Ă͂������A";
+		mes "�Â��`���R���[�g�̖���";
+		mes "�������ς��ɍL�������c�c-";
+		mes "-�c�c�c�c�c�c-";
 		next;
-		mes "-いつのまにか、私は泣いていた-";
+		mes "-���̂܂ɂ��A���͋����Ă���-";
 		next;
-		mes "-…………-";
-		mes "-ここにはいたくない……-";
+		mes "-�c�c�c�c-";
+		mes "-�����ɂ͂������Ȃ��c�c-";
 		set KH_QUE,56;
 		close2;
 		warp "yuno_fild08.gat",69,183;
 		end;
 	}
 	if(KH_QUE != 16) {
-		mes "-湿気ったクッキーが盛られている-";
+		mes "-���C�����N�b�L�[�������Ă���-";
 		close;
 	}
-	mes "-エリーのクッキーかごだ-";
-	mes "-山のように盛られている";
-	mes "クッキーの間に、白い何かが見える-";
-	mes "-クッキーを一つどかしてみたら、";
-	mes "^FF0000メッセージ^000000が書かれた";
-	mes "紙切れを見つけた-";
+	mes "-�G���[�̃N�b�L�[������-";
+	mes "-�R�̂悤�ɐ����Ă���";
+	mes "�N�b�L�[�̊ԂɁA����������������-";
+	mes "-�N�b�L�[����ǂ����Ă݂���A";
+	mes "^FF0000���b�Z�[�W^000000�������ꂽ";
+	mes "���؂��������-";
 	next;
-	if(select("読んで見る","ほおっておく")==2) {
-		mes "…………";
+	if(select("�ǂ�Ō���","�ق����Ă���")==2) {
+		mes "�c�c�c�c";
 		close;
 	}
-	mes "黒い服を着た変な男が";
-	mes "学院の中を歩いてる……";
-	mes "男の呪文か何かを聞くと";
-	mes "みんな人形みたいに固まってく！";
-	mes "恐い……恐いよ……";
+	mes "�������𒅂��ςȒj��";
+	mes "�w�@�̒�������Ă�c�c";
+	mes "�j�̎����������𕷂���";
+	mes "�݂�Ȑl�`�݂����Ɍł܂��Ă��I";
+	mes "�����c�c������c�c";
 	next;
-	mes "今、自分の部屋に隠れて";
-	mes "このメッセージを書いてるの。";
-	mes "窓は開けておいたよ。";
-	mes "……このメッセージには";
-	mes "気づいてもらえるかな？";
+	mes "���A�����̕����ɉB���";
+	mes "���̃��b�Z�[�W�������Ă�́B";
+	mes "���͊J���Ă�������B";
+	mes "�c�c���̃��b�Z�[�W�ɂ�";
+	mes "�C�Â��Ă��炦�邩�ȁH";
 	next;
-	mes "私も、皆みたいになっちゃうのかな？";
-	mes "……やだ！　そんなのやだ！";
-	mes "!?　誰か来てる！";
-	mes "やだ…………";
-	mes "やだ！　やだ！　やだ！";
-	mes "「" +strcharinfo(0)+ "」さん！";
+	mes "�����A�F�݂����ɂȂ����Ⴄ�̂��ȁH";
+	mes "�c�c�₾�I�@����Ȃ̂₾�I";
+	mes "!?�@�N�����Ă�I";
+	mes "�₾�c�c�c�c";
+	mes "�₾�I�@�₾�I�@�₾�I";
+	mes "�u" +strcharinfo(0)+ "�v����I";
 	set KH_QUE,17;
 	set KH_QUE_SUB,0;
 	close;
 }
 
-kh_school.gat,177,180,4	script	エリー	895,{
+kh_school.gat,177,180,4	script	�G���[	895,{
 	if(KH_QUE < 17) {
-		mes "[エリー]";
-		mes "……………………";
+		mes "[�G���[]";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		mes "[エリー]";
-		mes "……………………";
+		mes "[�G���[]";
+		mes "�c�c�c�c�c�c�c�c";
 		close;
 	}
 	switch(KH_QUE) {
 	case 17:
-		mes "[エリー]";
-		mes "……………………";
+		mes "[�G���[]";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		mes "-エリーが固まっている……-";
-		mes "-どうすればいいんだ……-";
+		mes "-�G���[���ł܂��Ă���c�c-";
+		mes "-�ǂ�����΂����񂾁c�c-";
 		next;
-		switch(select("エリーに触れてみる","言葉をかけてみる","ほおっておく")) {
+		switch(select("�G���[�ɐG��Ă݂�","���t�������Ă݂�","�ق����Ă���")) {
 		case 1:
-			mes "-私は震える手でエリーの";
-			mes "腕を軽く揺らしてみた-";
+			mes "-���͐k�����ŃG���[��";
+			mes "�r���y���h�炵�Ă݂�-";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "エリー？　エリー？";
+			mes "�G���[�H�@�G���[�H";
 			next;
-			mes "-何の反応もない-";
-			mes "-どうすればいいんだ……-";
+			mes "-���̔������Ȃ�-";
+			mes "-�ǂ�����΂����񂾁c�c-";
 			close;
 		case 2:
 			input '@str$;
@@ -2175,30 +2175,30 @@ kh_school.gat,177,180,4	script	エリー	895,{
 		case 3:
 			break;
 		}
-		mes "[エリー]";
-		mes "……………………";
+		mes "[�G���[]";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		if('@str$ == "エリー、起きて") {
-			mes "-その瞬間、エリーの握っていた";
-			mes "手が軽く開いて、";
-			mes "^0000FF小さな黄金の鍵^000000と";
-			mes "^0000FFボタン^000000がこぼれ落ちた-";
-			mes "-……これは？-";
+		if('@str$ == "�G���[�A�N����") {
+			mes "-���̏u�ԁA�G���[�̈����Ă���";
+			mes "�肪�y���J���āA";
+			mes "^0000FF�����ȉ����̌�^000000��";
+			mes "^0000FF�{�^��^000000�����ڂꗎ����-";
+			mes "-�c�c����́H-";
 			delitem 7491,1;
 			getitem 7493,1;
 			getitem 7494,1;
 			set KH_QUE,18;
 			close;
 		}
-		mes "-何の反応もない-";
+		mes "-���̔������Ȃ�-";
 		close;
 	case 18:
-		mes "-エリーから得た^FF0000黄金の鍵^000000で";
-		mes "^0000FF鉄の箱^000000を開けられそうだ-";
+		mes "-�G���[���瓾��^FF0000�����̌�^000000��";
+		mes "^0000FF�S�̔�^000000���J����ꂻ����-";
 		next;
-		mes "-^FF0000黄金の鍵^000000で^0000FF鉄の箱^000000を開けた-";
-		mes "-箱の中には^009C00手紙^000000と";
-		mes "^0000FF青色のカードキー^000000が入っていた-";
+		mes "-^FF0000�����̌�^000000��^0000FF�S�̔�^000000���J����-";
+		mes "-���̒��ɂ�^009C00�莆^000000��";
+		mes "^0000FF�F�̃J�[�h�L�[^000000�������Ă���-";
 		break;
 	case 19:
 	case 20:
@@ -2207,42 +2207,42 @@ kh_school.gat,177,180,4	script	エリー	895,{
 	case 23:
 	case 24:
 	case 25:
-		mes "-箱の中に入っていた手紙には";
-		mes "次のように書かれている-";
+		mes "-���̒��ɓ����Ă����莆�ɂ�";
+		mes "���̂悤�ɏ�����Ă���-";
 		break;
 	default:
-		mes "[エリー]";
-		mes "……………………";
+		mes "[�G���[]";
+		mes "�c�c�c�c�c�c�c�c";
 		close;
 	}
 	next;
-	mes "-エリーへ-";
-	mes "エリーよ、キエルはタブーを犯した。";
-	mes "私の希望だった君たちを、";
-	mes "身勝手な欲望で改造を施している。";
-	mes "私はこの愚行を止めなければならない。";
+	mes "-�G���[��-";
+	mes "�G���[��A�L�G���̓^�u�[��Ƃ����B";
+	mes "���̊�]�������N�������A";
+	mes "�g����ȗ~�]�ŉ������{���Ă���B";
+	mes "���͂��̋��s���~�߂Ȃ���΂Ȃ�Ȃ��B";
 	next;
-	mes "お前がこの箱を見つけたという事は、";
-	mes "私に何かあったという事だ。";
-	mes "だから、この箱を通して";
-	mes "私の命を君に委ねることにする。";
-	mes "君にしか開けられないこの箱なら";
-	mes "安心して委ねられる。";
+	mes "���O�����̔����������Ƃ������́A";
+	mes "���ɉ����������Ƃ��������B";
+	mes "������A���̔���ʂ���";
+	mes "���̖����N�Ɉς˂邱�Ƃɂ���B";
+	mes "�N�ɂ����J�����Ȃ����̔��Ȃ�";
+	mes "���S���Ĉς˂���B";
 	next;
-	mes "エリー、落ち着いて読んで欲しい。";
-	mes "エリー……君は……";
-	mes "……君は人間ではない。";
-	mes "嘘のようだが、これは事実だ。";
-	mes "詳しい事は、工場に行けば";
-	mes "わかるはずだ。";
+	mes "�G���[�A���������ēǂ�ŗ~�����B";
+	mes "�G���[�c�c�N�́c�c";
+	mes "�c�c�N�͐l�Ԃł͂Ȃ��B";
+	mes "�R�̂悤�����A����͎������B";
+	mes "�ڂ������́A�H��ɍs����";
+	mes "�킩��͂����B";
 	next;
-	mes "工場の入口は^0000FF寮のそばの墓地^000000にある。";
-	mes "そして、工場の隠し部屋にいる";
-	mes "^0000FFエリシア^000000を探しなさい。";
-	mes "彼女の保安システムに、";
-	mes "君の名前を入力しておいた。";
-	mes "彼女なら、私を探し出す事が";
-	mes "できるだろう。";
+	mes "�H��̓�����^0000FF���̂��΂̕�n^000000�ɂ���B";
+	mes "�����āA�H��̉B�������ɂ���";
+	mes "^0000FF�G���V�A^000000��T���Ȃ����B";
+	mes "�ޏ��̕ۈ��V�X�e���ɁA";
+	mes "�N�̖��O����͂��Ă������B";
+	mes "�ޏ��Ȃ�A����T���o������";
+	mes "�ł��邾�낤�B";
 	if(KH_QUE == 18) {
 		getitem 7495,1;
 		set KH_QUE,19;
@@ -2250,185 +2250,185 @@ kh_school.gat,177,180,4	script	エリー	895,{
 	close;
 }
 
-yuno_fild08.gat,71,170,0	script	墓	111,{
+yuno_fild08.gat,71,170,0	script	��	111,{
 	if(KH_QUE >= 55 && countitem(7509)) {
-		mes "-墓の一部が微かに光っている-";
+		mes "-��̈ꕔ�������Ɍ����Ă���-";
 		next;
-		if(select("^FF0000虹色のカードキー^000000を使う","ほおっておく")==1) {
-			mes "-カードキーを使うと、";
-			mes "奥に続く通路が開いた-";
+		if(select("^FF0000���F�̃J�[�h�L�[^000000���g��","�ق����Ă���")==1) {
+			mes "-�J�[�h�L�[���g���ƁA";
+			mes "���ɑ����ʘH���J����-";
 			next;
-			if(select("進む","やめておく")==1) {
+			if(select("�i��","��߂Ă���")==1) {
 				warp "kh_dun01.gat",3,230;
 				end;
 			}
 		}
-		mes "………………";
+		mes "�c�c�c�c�c�c";
 		close;
 	}
 	if(KH_QUE >= 20) {
-		mes "-工場へ通じる通路が開いている-";
+		mes "-�H��֒ʂ���ʘH���J���Ă���-";
 		next;
-		if(select("入る","入らない")==2) {
-			mes "-今は行かなくていいだろう-";
+		if(select("����","����Ȃ�")==2) {
+			mes "-���͍s���Ȃ��Ă������낤-";
 			close;
 		}
 		warp "kh_dun01.gat",3,230;
 		end;
 	}
 	if(KH_QUE < 19) {
-		mes "-誰かのお墓だ-";
+		mes "-�N���̂��悾-";
 		close;
 	}
-	mes "-墓地の周りを調べると、";
-	mes "隠し通路が見つかった-";
+	mes "-��n�̎���𒲂ׂ�ƁA";
+	mes "�B���ʘH����������-";
 	next;
-	mes "-よく見ると、";
-	mes "何かが入れられそうな小さな穴と、";
-	mes "0から9までの数字盤がある-";
+	mes "-�悭����ƁA";
+	mes "�����������ꂻ���ȏ����Ȍ��ƁA";
+	mes "0����9�܂ł̐����Ղ�����-";
 	next;
-	mes "-小さな穴に何を入れる？-";
+	mes "-�����Ȍ��ɉ�������H-";
 	next;
 	input '@str$;
-	if('@str$ != "黄色のカードキー") {
-		mes "-何の反応もない-";
+	if('@str$ != "���F�̃J�[�h�L�[") {
+		mes "-���̔������Ȃ�-";
 		close;
 	}
-	mes "-「^0000FF黄色のカードキー^000000」を入れると";
-	mes "「ピ」という音の後に声が流れ出た-";
-	mes "「^009C00暗証番号^000000を入力してください。」";
+	mes "-�u^0000FF���F�̃J�[�h�L�[^000000�v�������";
+	mes "�u�s�v�Ƃ������̌�ɐ�������o��-";
+	mes "�u^009C00�Ïؔԍ�^000000����͂��Ă��������B�v";
 	next;
-	mes "-数字を入力しよう-";
+	mes "-��������͂��悤-";
 	next;
 	input '@str$;
 	if('@str$ != "4772961") {
-		mes "「承認エラー。」";
-		mes "「再度入力してください。」";
+		mes "�u���F�G���[�B�v";
+		mes "�u�ēx���͂��Ă��������B�v";
 		close;
 	}
-	mes "「承認完了。」";
-	mes "「ようこそ、^FF0000キル・ハイル^000000様。」";
+	mes "�u���F�����B�v";
+	mes "�u�悤�����A^FF0000�L���E�n�C��^000000�l�B�v";
 	mes " ";
-	mes "-「ピー」という音とともに";
-	mes "通路が現われた-";
+	mes "-�u�s�[�v�Ƃ������ƂƂ���";
+	mes "�ʘH������ꂽ-";
 	set KH_QUE,20;
 	close;
 }
 
 //============================================================
-// 機械人形工場NPC
+// �@�B�l�`�H��NPC
 //------------------------------------------------------------
-kh_dun01.gat,235,48,0	script	硬いドア#kiel	111,{
+kh_dun01.gat,235,48,0	script	�d���h�A#kiel	111,{
 	if(KH_QUE >= 24) {
-		mes "-頑丈で重いドアだ-";
+		mes "-���ŏd���h�A��-";
 		close;
 	}
-	mes "-硬そうなドアがある-";
+	mes "-�d�����ȃh�A������-";
 	next;
-	if(select("アイテムを使う","ほおっておく")==2) {
-		mes "-気にしなくていいだろう-";
+	if(select("�A�C�e�����g��","�ق����Ă���")==2) {
+		mes "-�C�ɂ��Ȃ��Ă������낤-";
 		close;
 	}
 	input '@str$;
-	if(strnpcinfo(2) != "kiel" || '@str$ != "青色のカードキー") {
-		mes "-開きそうもない-";
+	if(strnpcinfo(2) != "kiel" || '@str$ != "�F�̃J�[�h�L�[") {
+		mes "-�J���������Ȃ�-";
 		close;
 	}
-	mes "-ドアが開いた-";
+	mes "-�h�A���J����-";
 	close2;
 	warp "kh_school.gat",119,144;
 	end;
 }
-kh_dun01.gat,6,18,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,6,30,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,6,60,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,6,133,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,6,164,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,76,233,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,106,233,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,235,70,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,235,93,0	duplicate(硬いドア#kiel)	硬いドア	111
-kh_dun01.gat,235,114,0	duplicate(硬いドア#kiel)	硬いドア	111
+kh_dun01.gat,6,18,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,6,30,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,6,60,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,6,133,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,6,164,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,76,233,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,106,233,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,235,70,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,235,93,0	duplicate(�d���h�A#kiel)	�d���h�A	111
+kh_dun01.gat,235,114,0	duplicate(�d���h�A#kiel)	�d���h�A	111
 
-kh_school.gat,119,149,4	script	美しい女性	894,{
+kh_school.gat,119,149,4	script	����������	894,{
 	cutin "kh_ellisia",2;
 	if(KH_QUE != 20) {
-		mes "[エリシア]";
-		mes "……はやく行きましょう。";
+		mes "[�G���V�A]";
+		mes "�c�c�͂₭�s���܂��傤�B";
 		close2;
 		cutin "kh_ellisia",255;
 		warp "kh_school.gat",120,180;
 		end;
 	}
-	mes "[エリシア]";
-	mes "…………";
-	mes "あなたは私の記憶に無い方ですね。";
+	mes "[�G���V�A]";
+	mes "�c�c�c�c";
+	mes "���Ȃ��͎��̋L���ɖ������ł��ˁB";
 	next;
-	mes "[エリシア]";
-	mes "キル・ハイル様のお話では";
-	mes "ここに入ることが許可されている人は、";
-	mes "^FF0000初期タイプのエリー^000000と";
-	mes "^FF0000エリーの友人^000000だけです。";
+	mes "[�G���V�A]";
+	mes "�L���E�n�C���l�̂��b�ł�";
+	mes "�����ɓ��邱�Ƃ�������Ă���l�́A";
+	mes "^FF0000�����^�C�v�̃G���[^000000��";
+	mes "^FF0000�G���[�̗F�l^000000�����ł��B";
 	next;
-	mes "[エリシア]";
-	mes "^FF0000エリー^000000の姿は見当たりませんね。";
-	mes "彼女に何かあったのですか？";
-	mes "そして、あなたは";
-	mes "^FF0000エリーの友人^000000なのですか？";
+	mes "[�G���V�A]";
+	mes "^FF0000�G���[^000000�̎p�͌�������܂���ˁB";
+	mes "�ޏ��ɉ����������̂ł����H";
+	mes "�����āA���Ȃ���";
+	mes "^FF0000�G���[�̗F�l^000000�Ȃ̂ł����H";
 	next;
-	mes "[エリシア]";
-	mes "もしそうなら、あなたが";
-	mes "^FF0000エリーの友人^000000である事を";
-	mes "証明できる物を見せていただけますか？";
+	mes "[�G���V�A]";
+	mes "���������Ȃ�A���Ȃ���";
+	mes "^FF0000�G���[�̗F�l^000000�ł��鎖��";
+	mes "�ؖ��ł��镨�������Ă��������܂����H";
 	next;
-	switch(select("黄色のカードキー","青色のカードキー","黄金の鍵","文様が描かれたボタン","…………？")) {
+	switch(select("���F�̃J�[�h�L�[","�F�̃J�[�h�L�[","�����̌�","���l���`���ꂽ�{�^��","�c�c�c�c�H")) {
 	default:
-		mes "[エリシア]";
-		mes "それでは^FF0000エリーの友人^000000だと";
-		mes "証明することはできません。";
-		mes "他の物を見せていただけますか？";
+		mes "[�G���V�A]";
+		mes "����ł�^FF0000�G���[�̗F�l^000000����";
+		mes "�ؖ����邱�Ƃ͂ł��܂���B";
+		mes "���̕��������Ă��������܂����H";
 		close2;
 		cutin "kh_ellisia",255;
 		end;
 	case 3:
-		mes "[エリシア]";
-		mes "キル・ハイル様が^FF0000エリー^000000に託した";
-		mes "鍵ですね。";
-		mes "わかりました。";
-		mes "あなたは間違いなく";
-		mes "^FF0000エリーの友人^000000です。";
+		mes "[�G���V�A]";
+		mes "�L���E�n�C���l��^FF0000�G���[^000000�ɑ�����";
+		mes "���ł��ˁB";
+		mes "�킩��܂����B";
+		mes "���Ȃ��͊ԈႢ�Ȃ�";
+		mes "^FF0000�G���[�̗F�l^000000�ł��B";
 		next;
-		mes "[エリシア]";
-		mes "……お待ちしておりました。";
-		mes "どうぞこちらへ。";
+		mes "[�G���V�A]";
+		mes "�c�c���҂����Ă���܂����B";
+		mes "�ǂ���������ցB";
 		close2;
 		cutin "kh_ellisia",255;
 		warp "kh_school.gat",120,180;
 		end;
 	case 4:
-		mes "[エリシア]";
-		mes "それは!?";
-		mes "^0000FFキエル^000000様の紋章！";
-		mes "私を奪いにいらっしゃったのですか!?";
+		mes "[�G���V�A]";
+		mes "�����!?";
+		mes "^0000FF�L�G��^000000�l�̖�́I";
+		mes "����D���ɂ������������̂ł���!?";
 		close2;
 		cutin "kh_ellisia",255;
-		monster "kh_school.gat",118,145,"爆弾",1745,5;
+		monster "kh_school.gat",118,145,"���e",1745,5;
 		end;
 	case 5:
-		mes "[エリシア]";
-		mes "………………";
+		mes "[�G���V�A]";
+		mes "�c�c�c�c�c�c";
 		close2;
 		cutin "kh_ellisia",255;
 		end;
 	}
 
 }
-kh_school.gat,117,149,4	script	美しい女性	894,{}
-kh_school.gat,118,149,4	script	美しい女性	894,{}
-kh_school.gat,120,149,4	script	美しい女性	894,{}
-kh_school.gat,121,149,4	script	美しい女性	894,{}
+kh_school.gat,117,149,4	script	����������	894,{}
+kh_school.gat,118,149,4	script	����������	894,{}
+kh_school.gat,120,149,4	script	����������	894,{}
+kh_school.gat,121,149,4	script	����������	894,{}
 
-kh_school.gat,122,186,4	script	美しい女性	894,{
+kh_school.gat,122,186,4	script	����������	894,{
 	cutin "kh_ellisia",2;
 	switch(KH_QUE) {
 	default:
@@ -2436,123 +2436,123 @@ kh_school.gat,122,186,4	script	美しい女性	894,{
 		warp "yuno_fild08.gat",73,172;
 		end;
 	case 20:
-		mes "[エリシア]";
-		mes "さっそくですが、";
-		mes "事態の説明をさせていただきます。";
-		mes "^FF0000キル・ハイル^000000様は現在、";
-		mes "工場のどこかに監禁されて";
-		mes "いらっしゃいます。";
+		mes "[�G���V�A]";
+		mes "���������ł����A";
+		mes "���Ԃ̐����������Ă��������܂��B";
+		mes "^FF0000�L���E�n�C��^000000�l�͌��݁A";
+		mes "�H��̂ǂ����Ɋċւ����";
+		mes "��������Ⴂ�܂��B";
 		next;
-		mes "[エリシア]";
-		mes "^FF0000キル・ハイル^000000様の救出に";
-		mes "協力していただけませんか？";
+		mes "[�G���V�A]";
+		mes "^FF0000�L���E�n�C��^000000�l�̋~�o��";
+		mes "���͂��Ă��������܂��񂩁H";
 		next;
-		if(select("工場とは一体……？","^FF0000キル・ハイル^000000さんに何が？")==1) {
-			mes "[エリシア]";
-			mes "キル・ハイル企業の秘密事業、";
-			mes "自動機械人形を作る工場です。";
-			mes "あなたが今見ている私や";
-			mes "「キル・ハイル学院」の学生は皆、";
-			mes "人間ではありません。";
-			mes "「機械人形」です。";
+		if(select("�H��Ƃ͈�́c�c�H","^FF0000�L���E�n�C��^000000����ɉ����H")==1) {
+			mes "[�G���V�A]";
+			mes "�L���E�n�C����Ƃ̔閧���ƁA";
+			mes "�����@�B�l�`�����H��ł��B";
+			mes "���Ȃ��������Ă��鎄��";
+			mes "�u�L���E�n�C���w�@�v�̊w���͊F�A";
+			mes "�l�Ԃł͂���܂���B";
+			mes "�u�@�B�l�`�v�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "人間と酷似していますが、";
-			mes "肉体的、精神的に勝る自動機械人形を";
-			mes "人間社会に提供する事が、";
-			mes "私たち「キル・ハイル企業」の目標、";
-			mes "理念なのです。";
+			mes "[�G���V�A]";
+			mes "�l�Ԃƍ������Ă��܂����A";
+			mes "���̓I�A���_�I�ɏ��鎩���@�B�l�`��";
+			mes "�l�ԎЉ�ɒ񋟂��鎖���A";
+			mes "�������u�L���E�n�C����Ɓv�̖ڕW�A";
+			mes "���O�Ȃ̂ł��B";
 			close2;
 			cutin "kh_ellisia",255;
 			end;
 		}
-		mes "[エリシア]";
-		mes "^0000FFキエル^000000様は人形たちに";
-		mes "「改造」を施しました。";
-		mes "その事実を知った^FF0000キル・ハイル^000000様が";
-		mes "^0000FFキエル^000000様の行動を";
-		mes "咎めにいらっしゃいましたが、";
-		mes "未だ帰られておりません。";
+		mes "[�G���V�A]";
+		mes "^0000FF�L�G��^000000�l�͐l�`������";
+		mes "�u�����v���{���܂����B";
+		mes "���̎�����m����^FF0000�L���E�n�C��^000000�l��";
+		mes "^0000FF�L�G��^000000�l�̍s����";
+		mes "��߂ɂ�������Ⴂ�܂������A";
+		mes "�����A���Ă���܂���B";
 		next;
-		mes "[エリシア]";
-		mes "^FF0000キル・ハイル^000000様は";
-		mes "^0000FFキエル^000000様の手に捕らわれる事を";
-		mes "予測しておられました。";
-		mes "そこで、私をここに残し複製の人形を";
-		mes "連れて行きました。";
+		mes "[�G���V�A]";
+		mes "^FF0000�L���E�n�C��^000000�l��";
+		mes "^0000FF�L�G��^000000�l�̎�ɕ߂���鎖��";
+		mes "�\�����Ă����܂����B";
+		mes "�����ŁA���������Ɏc�������̐l�`��";
+		mes "�A��čs���܂����B";
 		next;
-		mes "[エリシア]";
-		mes "^FF0000キル・ハイル^000000様の生体反応は";
-		mes "受信できますので、^FF0000キル・ハイル^000000様は";
-		mes "無事でいらっしゃいます。";
-		mes "どうか^FF0000キル・ハイル^000000様が";
-		mes "捕らわれている所を";
-		mes "探し出してください。";
+		mes "[�G���V�A]";
+		mes "^FF0000�L���E�n�C��^000000�l�̐��̔�����";
+		mes "��M�ł��܂��̂ŁA^FF0000�L���E�n�C��^000000�l��";
+		mes "�����ł�������Ⴂ�܂��B";
+		mes "�ǂ���^FF0000�L���E�n�C��^000000�l��";
+		mes "�߂���Ă��鏊��";
+		mes "�T���o���Ă��������B";
 		next;
-		mes "[エリシア]";
-		mes "秘密工場を自由に出入りできる";
-		mes "^FF0000カードキー^000000を差し上げます。";
-		mes "^FF0000キル・ハイル^000000様を見つけたら";
-		mes "私に知らせてください。";
+		mes "[�G���V�A]";
+		mes "�閧�H������R�ɏo����ł���";
+		mes "^FF0000�J�[�h�L�[^000000�������グ�܂��B";
+		mes "^FF0000�L���E�n�C��^000000�l����������";
+		mes "���ɒm�点�Ă��������B";
 		getitem 7496,1;
 		set KH_QUE,21;
 		close2;
 		cutin "kh_ellisia",255;
 		end;
 	case 21:
-		mes "[エリシア]";
-		mes "急いで^FF0000キル・ハイル^000000様を";
-		mes "お探しください。";
+		mes "[�G���V�A]";
+		mes "�}����^FF0000�L���E�n�C��^000000�l��";
+		mes "���T�����������B";
 		close2;
 		cutin "kh_ellisia",255;
 		warp "kh_dun01.gat",22,216;
 		end;
 	case 22:
-		mes "[エリシア]";
-		mes "キル・ハイル様は見つかりましたか？";
+		mes "[�G���V�A]";
+		mes "�L���E�n�C���l�͌�����܂������H";
 		next;
-		mes "-私は彼女にキル・ハイルが";
-		mes "監禁されていた場所を教え、";
-		mes "彼から託された^FF0000金属の破片^000000を";
-		mes "彼女に渡した-";
+		mes "-���͔ޏ��ɃL���E�n�C����";
+		mes "�ċւ���Ă����ꏊ�������A";
+		mes "�ނ�������ꂽ^FF0000�����̔j��^000000��";
+		mes "�ޏ��ɓn����-";
 		next;
-		mes "[エリシア]";
-		mes "ありがとうございます。";
+		mes "[�G���V�A]";
+		mes "���肪�Ƃ��������܂��B";
 		mes " ";
-		mes "-^0000FFエリシア^000000は";
-		mes "^FF0000金属のパーツ^000000を";
-		mes "自分の手首に埋め込んだ-";
+		mes "-^0000FF�G���V�A^000000��";
+		mes "^FF0000�����̃p�[�c^000000��";
+		mes "�����̎��ɖ��ߍ���-";
 		next;
-		mes "[エリシア]";
-		mes "………………";
-		mes "^FF0000キル・ハイル^000000様の暗号を確認。";
-		mes "B_2_3地域、生体反応正常。";
-		mes "…………";
-		mes "同封文書確認。";
-		mes "改造人形設計図、送信完了。";
+		mes "[�G���V�A]";
+		mes "�c�c�c�c�c�c";
+		mes "^FF0000�L���E�n�C��^000000�l�̈Í����m�F�B";
+		mes "B_2_3�n��A���̔�������B";
+		mes "�c�c�c�c";
+		mes "���������m�F�B";
+		mes "�����l�`�݌v�}�A���M�����B";
 		delitem 7497,1;
 		set KH_QUE,23;
 		close2;
 		cutin "kh_ellisia",255;
 		end;
 	case 23:
-		mes "[エリシア]";
-		mes "…………お待たせしました。";
-		mes "私は今から^FF0000キル・ハイル^000000様の";
-		mes "ご命令を遂行します。";
-		mes "後ほど、^0000FFリヒタルゼンの";
-		mes "「キル・ハイル邸宅」^000000まで";
-		mes "お越しください。";
+		mes "[�G���V�A]";
+		mes "�c�c�c�c���҂������܂����B";
+		mes "���͍�����^FF0000�L���E�n�C��^000000�l��";
+		mes "�����߂𐋍s���܂��B";
+		mes "��قǁA^0000FF���q�^���[����";
+		mes "�u�L���E�n�C���@��v^000000�܂�";
+		mes "���z�����������B";
 		next;
-		mes "[エリシア]";
-		mes "なお、失礼ですが、";
-		mes "あなたが保持しているカードキーは";
-		mes "保安上、回収させていただきます。";
+		mes "[�G���V�A]";
+		mes "�Ȃ��A����ł����A";
+		mes "���Ȃ����ێ����Ă���J�[�h�L�[��";
+		mes "�ۈ���A��������Ă��������܂��B";
 		next;
-		mes "[エリシア]";
-		mes "邸宅玄関で^FF0000黄金の鍵^000000を";
-		mes "お見せくだされば、";
-		mes "邸宅の中に入れるようになります。";
+		mes "[�G���V�A]";
+		mes "�@��ւ�^FF0000�����̌�^000000��";
+		mes "��������������΁A";
+		mes "�@��̒��ɓ����悤�ɂȂ�܂��B";
 		delitem 7492,1;
 		delitem 7495,1;
 		delitem 7496,1;
@@ -2564,8 +2564,8 @@ kh_school.gat,122,186,4	script	美しい女性	894,{
 	}
 }
 
-kh_dun01.gat,163,223,4	script	看板	857,{
-	mes "-ペット禁止-";
+kh_dun01.gat,163,223,4	script	�Ŕ�	857,{
+	mes "-�y�b�g�֎~-";
 	close;
 }
 
@@ -2580,19 +2580,19 @@ kh_dun01.gat,180,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel3	139,5,20
 kh_dun01.gat,210,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel4	139,5,20
 kh_dun01.gat,220,220,0	duplicate(MonsterWarp#kiel1)	MonsterWarp#kiel5	139,5,20
 
-kh_dun01.gat,166,223,0	script	機械装置#kiel1	111,{
-	mes "-何かを入れることができる";
-	mes "機械装置だ-";
+kh_dun01.gat,166,223,0	script	�@�B���u#kiel1	111,{
+	mes "-���������邱�Ƃ��ł���";
+	mes "�@�B���u��-";
 	if(KH_QUE < 21 || KH_QUE > 23)
 		close;
 	next;
 	input '@str$;
-	if('@str$ != "赤色のカードキー") {
-		mes "-何の反応もない-";
+	if('@str$ != "�ԐF�̃J�[�h�L�[") {
+		mes "-���̔������Ȃ�-";
 		close;
 	}
-	mes "-カードキーを入れると";
-	mes "ドアがあいた-";
+	mes "-�J�[�h�L�[�������";
+	mes "�h�A��������-";
 	close2;
 	if(strnpcinfo(2) != "")
 		warp "kh_dun01.gat",170,227;
@@ -2600,93 +2600,93 @@ kh_dun01.gat,166,223,0	script	機械装置#kiel1	111,{
 		warp "kh_dun01.gat",165,204;
 	end;
 }
-kh_dun01.gat,162,206,0	duplicate(機械装置#kiel1)	機械装置	111
+kh_dun01.gat,162,206,0	duplicate(�@�B���u#kiel1)	�@�B���u	111
 
-kh_dun01.gat,224,233,0	script	ドア	139,5,5,{
+kh_dun01.gat,224,233,0	script	�h�A	139,5,5,{
 OnTouch:
 	if(KH_QUE != 21) {
-		mes "[キル・ハイル]";
-		mes "………………";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
 		close;
 	}
 	mes "[????]";
-	mes "………………";
+	mes "�c�c�c�c�c�c";
 	next;
-	mes "-扉の向こう側から、";
-	mes "誰かの話し声が聞こえる-";
+	mes "-���̌�����������A";
+	mes "�N���̘b��������������-";
 	next;
 	mes "[????]";
-	mes "……^0000FFキエル^000000……";
-	mes "……お前は……どうして……";
+	mes "�c�c^0000FF�L�G��^000000�c�c";
+	mes "�c�c���O�́c�c�ǂ����āc�c";
 	next;
-	mes "-……^FF0000キル・ハイル^000000さんだろうか？-";
-	next;
-	mes "[" +strcharinfo(0)+ "]";
-	mes "^FF0000キル・ハイル^000000さん？";
-	next;
-	mes "[キル・ハイル]";
-	mes "……誰かね？";
+	mes "-�c�c^FF0000�L���E�n�C��^000000���񂾂낤���H-";
 	next;
 	mes "[" +strcharinfo(0)+ "]";
-	mes "私は…………";
+	mes "^FF0000�L���E�n�C��^000000����H";
 	next;
-	mes "-^FF0000キル・ハイル^000000さんに";
-	mes "^FF0000エリー^000000と^0000FFエリシア^000000さんの";
-	mes "話を伝えた-";
+	mes "[�L���E�n�C��]";
+	mes "�c�c�N���ˁH";
 	next;
-	mes "[キル・ハイル]";
-	mes "……そうか。";
-	mes "エリーは…………";
-	mes "………………";
+	mes "[" +strcharinfo(0)+ "]";
+	mes "���́c�c�c�c";
 	next;
-	mes "[キル・ハイル]";
-	mes "………………";
-	mes "これを持って行きたまえ。";
-	mes "^0000FFエリシア^000000に渡すだけでいい。";
+	mes "-^FF0000�L���E�n�C��^000000�����";
+	mes "^FF0000�G���[^000000��^0000FF�G���V�A^000000�����";
+	mes "�b��`����-";
 	next;
-	mes "-扉のすき間から";
-	mes "^FF0000金属のパーツ^000000が出てきた-";
+	mes "[�L���E�n�C��]";
+	mes "�c�c�������B";
+	mes "�G���[�́c�c�c�c";
+	mes "�c�c�c�c�c�c";
+	next;
+	mes "[�L���E�n�C��]";
+	mes "�c�c�c�c�c�c";
+	mes "����������čs�����܂��B";
+	mes "^0000FF�G���V�A^000000�ɓn�������ł����B";
+	next;
+	mes "-���̂����Ԃ���";
+	mes "^FF0000�����̃p�[�c^000000���o�Ă���-";
 	getitem 7497,1;
 	set KH_QUE,22;
 	next;
-	mes "[キル・ハイル]";
-	mes "………………";
+	mes "[�L���E�n�C��]";
+	mes "�c�c�c�c�c�c";
 	close;
 }
 
-kh_dun01.gat,44,203,0	script	機械装置#kiel2	111,{
+kh_dun01.gat,44,203,0	script	�@�B���u#kiel2	111,{
 	if(countitem(7509) < 1 || KH_QUE < 26) {
-		mes "-大きなドアがある-";
+		mes "-�傫�ȃh�A������-";
 		close;
 	}
-	mes "-カードキーが使えるドアだ-";
+	mes "-�J�[�h�L�[���g����h�A��-";
 	next;
 	input '@str$;
-	if('@str$ != "虹色のカードキー") {
-		mes "-開かない-";
+	if('@str$ != "���F�̃J�[�h�L�[") {
+		mes "-�J���Ȃ�-";
 		close;
 	}
-	mes "-「虹色のカードキー」を使うと、";
-	mes "大きなドアが開いて、";
-	mes "階段が現われた-";
+	mes "-�u���F�̃J�[�h�L�[�v���g���ƁA";
+	mes "�傫�ȃh�A���J���āA";
+	mes "�K�i������ꂽ-";
 	next;
-	if(select("降りる","降りない")==2) {
-		mes "-時間が経つと、門が閉まった-";
+	if(select("�~���","�~��Ȃ�")==2) {
+		mes "-���Ԃ��o�ƁA�傪�܂���-";
 		close;
 	}
 	warp "kh_dun02.gat",41,198;
 	end;
 }
-kh_dun01.gat,36,195,0	duplicate(機械装置#kiel2)	機械装置	111
+kh_dun01.gat,36,195,0	duplicate(�@�B���u#kiel2)	�@�B���u	111
 
 //============================================================
-// キル・ハイル邸NPC
+// �L���E�n�C���@NPC
 //------------------------------------------------------------
-kh_mansion.gat,78,54,4	script	執事	109,{
+kh_mansion.gat,78,54,4	script	����	109,{
 	if(KH_QUE < 24) {
-		mes "[執事]";
-		mes "こちらは個人住宅です。";
-		mes "お引取りください。";
+		mes "[����]";
+		mes "������͌l�Z��ł��B";
+		mes "������肭�������B";
 		close2;
 		warp "lighthalzen.gat",188,201;
 		end;
@@ -2694,36 +2694,36 @@ kh_mansion.gat,78,54,4	script	執事	109,{
 	switch(KH_QUE) {
 	case 24:
 	case 25:
-		mes "[執事]";
-		mes "主人のお客様ですか？";
-		mes "では、その証拠をお見せください。";
+		mes "[����]";
+		mes "��l�̂��q�l�ł����H";
+		mes "�ł́A���̏؋������������������B";
 		next;
-		if(select("黄金の鍵を見せる","????")==2) {
-			mes "[執事]";
-			mes "……お引取りください。";
+		if(select("�����̌���������","????")==2) {
+			mes "[����]";
+			mes "�c�c������肭�������B";
 			close2;
 			warp "lighthalzen.gat",188,201;
 			end;
 		}
-		mes "[執事]";
-		mes strcharinfo(0)+ " 様ですね。";
-		mes "お待ちしておりました。";
-		mes "ご案内させていただきます。";
+		mes "[����]";
+		mes strcharinfo(0)+ " �l�ł��ˁB";
+		mes "���҂����Ă���܂����B";
+		mes "���ē������Ă��������܂��B";
 		close2;
 		warp "kh_mansion.gat",21,14;
 		end;
 	default:
-		mes "[執事]";
-		mes "…………";
-		mes "主人に会われますか？";
+		mes "[����]";
+		mes "�c�c�c�c";
+		mes "��l�ɉ���܂����H";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[執事]";
-			mes "お待ちしております。";
+		if(select("�͂�","������")==2) {
+			mes "[����]";
+			mes "���҂����Ă���܂��B";
 			close;
 		}
-		mes "[執事]";
-		mes "こちらへどうぞ。";
+		mes "[����]";
+		mes "������ւǂ����B";
 		close2;
 		warp "kh_mansion.gat",21,14;
 		end;
@@ -2731,129 +2731,129 @@ kh_mansion.gat,78,54,4	script	執事	109,{
 	case 34:
 	case 35:
 	case 36:
-		mes "[執事]";
-		mes "ようこそおいでくださいました。";
-		mes "主人に会われますか？";
-		mes "それとも……";
+		mes "[����]";
+		mes "�悤���������ł��������܂����B";
+		mes "��l�ɉ���܂����H";
+		mes "����Ƃ��c�c";
 		next;
-		if(select("^FF0000キル・ハイル^000000さんと話を……","^0000FFミッチェル^000000を……")==1) {
-			mes "[執事]";
-			mes "承知いたしました。";
-			mes "こちらへどうぞ。";
+		if(select("^FF0000�L���E�n�C��^000000����Ƙb���c�c","^0000FF�~�b�`�F��^000000���c�c")==1) {
+			mes "[����]";
+			mes "���m�������܂����B";
+			mes "������ւǂ����B";
 			close2;
 			warp "kh_mansion.gat",21,14;
 			end;
 		}
-		mes "[執事]";
-		mes "…………";
-		mes "いい情報を入手できたようですね。";
+		mes "[����]";
+		mes "�c�c�c�c";
+		mes "�����������ł����悤�ł��ˁB";
 		next;
-		mes "-周辺を見回す執事の目つきが";
-		mes "急に鋭くなった-";
+		mes "-���ӂ����񂷎����̖ڂ���";
+		mes "�}�ɉs���Ȃ���-";
 		next;
-		mes "[執事]";
-		mes "……厄介な虫はいないようですね。";
-		mes "では、こちらへ……";
+		mes "[����]";
+		mes "�c�c���Ȓ��͂��Ȃ��悤�ł��ˁB";
+		mes "�ł́A������ցc�c";
 		close2;
 		warp "kh_mansion.gat",20,86;
 		end;
 	}
 }
 
-kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
+kh_mansion.gat,22,28,4	script	�L���E�n�C��	903,{
 	cutin "kh_kyel01",2;
 	switch(KH_QUE) {
 	case 24:
-		mes "[キル・ハイル]";
-		mes "ほぅ……";
-		mes "君が" +strcharinfo(0)+ "か？";
-		mes "今回の助力、感謝している。";
+		mes "[�L���E�n�C��]";
+		mes "�ق��c�c";
+		mes "�N��" +strcharinfo(0)+ "���H";
+		mes "����̏��́A���ӂ��Ă���B";
 		next;
-		mes "[キル・ハイル]";
-		mes "ふむ……";
-		mes "聞きたい事がありそうな顔だな。";
+		mes "[�L���E�n�C��]";
+		mes "�ӂށc�c";
+		mes "���������������肻���Ȋ炾�ȁB";
 		next;
-		mes "[キル・ハイル]";
-		mes "知りたい事があるなら遠慮なく";
-		mes "聞きたまえ。";
-		mes "ただ、私にも用事があるから……";
-		mes "そうだな、三つまでなら";
-		mes "どんな質問にも答えよう。";
+		mes "[�L���E�n�C��]";
+		mes "�m�肽����������Ȃ牓���Ȃ�";
+		mes "�������܂��B";
+		mes "�����A���ɂ��p�������邩��c�c";
+		mes "�������ȁA�O�܂łȂ�";
+		mes "�ǂ�Ȏ���ɂ������悤�B";
 		for(set '@i,0; '@i<3; set '@i,'@i+1) {
 			next;
-			switch(select("機械人形とは……？","^0000FFキエル^000000という人は……？","^FF0000エリー^000000が持っていたこれは？")) {
+			switch(select("�@�B�l�`�Ƃ́c�c�H","^0000FF�L�G��^000000�Ƃ����l�́c�c�H","^FF0000�G���[^000000�������Ă�������́H")) {
 			case 1:
-				mes "[キル・ハイル]";
-				mes "32年前……";
-				mes "私が20歳の時から魂を捧げて";
-				mes "研究してきた研究物だ。";
-				mes "大賢者バルムントが作ろうとした";
-				mes "人間と酷似し、人間のように行動する、";
-				mes "人間の手によって作られた人形。";
+				mes "[�L���E�n�C��]";
+				mes "32�N�O�c�c";
+				mes "����20�΂̎����獰�������";
+				mes "�������Ă������������B";
+				mes "�匫�҃o�������g����낤�Ƃ���";
+				mes "�l�Ԃƍ������A�l�Ԃ̂悤�ɍs������A";
+				mes "�l�Ԃ̎�ɂ���č��ꂽ�l�`�B";
 				next;
-				mes "[キル・ハイル]";
-				mes "外見はガーディアンと似ているように";
-				mes "見えるかも知れないが、";
-				mes "自分の意思が無く、";
-				mes "命令無しでは動く事もできない";
-				mes "ガーディアンとは違い、自ら考え";
-				mes "行動できる現代科学の傑作である。";
+				mes "[�L���E�n�C��]";
+				mes "�O���̓K�[�f�B�A���Ǝ��Ă���悤��";
+				mes "�����邩���m��Ȃ����A";
+				mes "�����̈ӎv�������A";
+				mes "���ߖ����ł͓��������ł��Ȃ�";
+				mes "�K�[�f�B�A���Ƃ͈Ⴂ�A����l��";
+				mes "�s���ł��錻��Ȋw�̌���ł���B";
 				next;
-				mes "[キル・ハイル]";
-				mes "もっと詳しく知りたいのなら";
-				mes "^0000FFエリシア^000000に聞きたまえ。";
+				mes "[�L���E�n�C��]";
+				mes "�����Əڂ����m�肽���̂Ȃ�";
+				mes "^0000FF�G���V�A^000000�ɕ������܂��B";
 				break;
 			case 2:
-				mes "[キル・ハイル]";
-				mes "^0000FFキエル^000000は私が唯一愛した女性との間に";
-				mes "生まれた、たった一人の息子だ。";
-				mes "彼女はあいつを産んで";
-				mes "死んでしまった……";
-				mes "^0000FFキエル^000000は天才的な機械の設計能力を";
-				mes "持っている。";
+				mes "[�L���E�n�C��]";
+				mes "^0000FF�L�G��^000000�͎����B�ꈤ���������Ƃ̊Ԃ�";
+				mes "���܂ꂽ�A��������l�̑��q���B";
+				mes "�ޏ��͂������Y���";
+				mes "����ł��܂����c�c";
+				mes "^0000FF�L�G��^000000�͓V�˓I�ȋ@�B�̐݌v�\�͂�";
+				mes "�����Ă���B";
 				next;
-				mes "[キル・ハイル]";
-				mes "^FF0000エリー^000000のような第3世代の機械人形も";
-				mes "^0000FFキエル^000000が設計した物だ。";
-				mes "しかし今は……第3世代の機械人形を";
-				mes "改造して、本来とは違う用途で";
-				mes "使用している……";
+				mes "[�L���E�n�C��]";
+				mes "^FF0000�G���[^000000�̂悤�ȑ�3����̋@�B�l�`��";
+				mes "^0000FF�L�G��^000000���݌v���������B";
+				mes "���������́c�c��3����̋@�B�l�`��";
+				mes "�������āA�{���Ƃ͈Ⴄ�p�r��";
+				mes "�g�p���Ă���c�c";
 				next;
-				mes "[キル・ハイル]";
-				mes "私はそれを止めようとしたが、";
-				mes "逆に捕らえられ、";
-				mes "あの場所に監禁されていた。";
-				mes "一体、あいつが何を望んでいるのか……";
-				mes "何故あんな行動をしたのか、";
-				mes "私にはまだわかっていない。";
+				mes "[�L���E�n�C��]";
+				mes "���͂�����~�߂悤�Ƃ������A";
+				mes "�t�ɕ߂炦���A";
+				mes "���̏ꏊ�Ɋċւ���Ă����B";
+				mes "��́A����������]��ł���̂��c�c";
+				mes "���̂���ȍs���������̂��A";
+				mes "���ɂ͂܂��킩���Ă��Ȃ��B";
 				break;
 			case 3:
-				mes "[キル・ハイル]";
-				mes "……その紋章は^0000FFキエル^000000の紋章だな。";
-				mes "黒い服の男が持っていたのか？";
-				mes "そいつは^0000FFキエル^000000個人の用心棒、";
-				mes "「カイゾ」かも知れんな。";
+				mes "[�L���E�n�C��]";
+				mes "�c�c���̖�͂�^0000FF�L�G��^000000�̖�͂��ȁB";
+				mes "�������̒j�������Ă����̂��H";
+				mes "������^0000FF�L�G��^000000�l�̗p�S�_�A";
+				mes "�u�J�C�]�v�����m���ȁB";
 				next;
-				mes "[キル・ハイル]";
-				mes "いつの間にか^0000FFキエル^000000が";
-				mes "勝手に雇っていた正体不明の男だ。";
-				mes "常に黒い服を着て姿を隠している。";
-				mes "私もあやつの顔は見たことが無い。";
+				mes "[�L���E�n�C��]";
+				mes "���̊Ԃɂ�^0000FF�L�G��^000000��";
+				mes "����Ɍق��Ă������̕s���̒j���B";
+				mes "��ɍ������𒅂Ďp���B���Ă���B";
+				mes "��������̊�͌������Ƃ������B";
 				break;
 			}
 		}
 		next;
-		mes "[キル・ハイル]";
-		mes "ふぅ……";
-		mes "質問はこれ位でいいかな？";
+		mes "[�L���E�n�C��]";
+		mes "�ӂ��c�c";
+		mes "����͂���ʂł������ȁH";
 		set KH_QUE,25;
 		break;
 	case 25:
-		mes "[キル・ハイル]";
-		mes "あと……";
-		mes "これは感謝の気持ちだ。";
-		mes "大した物ではないが、";
-		mes "受け取ってくれたまえ。";
+		mes "[�L���E�n�C��]";
+		mes "���Ɓc�c";
+		mes "����͊��ӂ̋C�������B";
+		mes "�債�����ł͂Ȃ����A";
+		mes "�󂯎���Ă��ꂽ�܂��B";
 		delitem 7493,1;
 		delitem 7494,1;
 		getitem 12105,1;
@@ -2868,411 +2868,411 @@ kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
 	case 28:
 	case 29:
 	case 30:
-		mes "[キル・ハイル]";
-		mes "他に聞きたいことがあるのかね？";
+		mes "[�L���E�n�C��]";
+		mes "���ɕ����������Ƃ�����̂��ˁH";
 		break;
 	case 31:
 	case 32:
 	case 33:
-		mes "[キル・ハイル]";
-		mes "何か話でもあるかね？";
+		mes "[�L���E�n�C��]";
+		mes "�����b�ł����邩�ˁH";
 		next;
-		mes "-まだ確かな情報はない-";
+		mes "-�܂��m���ȏ��͂Ȃ�-";
 		break;
 	case 34:
-		mes "[キル・ハイル]";
-		mes "ふむ……";
-		mes strcharinfo(0)+ "君";
-		mes "だったな？";
-		mes "何の用かな？";
+		mes "[�L���E�n�C��]";
+		mes "�ӂށc�c";
+		mes strcharinfo(0)+ "�N";
+		mes "�������ȁH";
+		mes "���̗p���ȁH";
 		next;
-		menu "^0000FFエリシア^000000について",-;
+		menu "^0000FF�G���V�A^000000�ɂ���",-;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "ジュノーのある廃屋で";
-		mes "^0000FFエリシア^000000とまったく同じ顔の";
-		mes "肖像画を見つけました。";
+		mes "�W���m�[�̂���p����";
+		mes "^0000FF�G���V�A^000000�Ƃ܂������������";
+		mes "�ё���������܂����B";
 		next;
 		cutin "kh_kyel02",2;
-		mes "[キル・ハイル]";
-		mes "………………";
-		mes "何が言いたいのかわからない。";
-		mes "それがどうかしたのかね？";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
+		mes "�������������̂��킩��Ȃ��B";
+		mes "���ꂪ�ǂ��������̂��ˁH";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "世の中には似ている人がいる。";
-		mes "その不思議な偶然が";
-		mes "私に話したいことかね？";
+		mes "[�L���E�n�C��]";
+		mes "���̒��ɂ͎��Ă���l������B";
+		mes "���̕s�v�c�ȋ��R��";
+		mes "���ɘb���������Ƃ��ˁH";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "……いいえ。";
-		mes "肖像画の女性と^0000FFエリシア^000000は";
-		mes "同一人物ではないかと";
-		mes "言っているのです。";
+		mes "�c�c�������B";
+		mes "�ё���̏�����^0000FF�G���V�A^000000��";
+		mes "����l���ł͂Ȃ�����";
+		mes "�����Ă���̂ł��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "……ハッハッハッハ！";
-		mes "君は一体何を言っているのかね？";
-		mes "^0000FFエリシア^000000の外見は";
-		mes "私が直接デザインしたものだ。";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�n�b�n�b�n�b�n�I";
+		mes "�N�͈�̉��������Ă���̂��ˁH";
+		mes "^0000FF�G���V�A^000000�̊O����";
+		mes "�������ڃf�U�C���������̂��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そうだな……肖像画なら……";
-		mes "誰かが^0000FFエリシア^000000の姿を見て";
-		mes "ついつい書き残したというのはわかる。";
-		mes "画家は自分が気に入った被写体なら";
-		mes "何でも描きたがるものだ。";
+		mes "[�L���E�n�C��]";
+		mes "�������ȁc�c�ё���Ȃ�c�c";
+		mes "�N����^0000FF�G���V�A^000000�̎p������";
+		mes "���������c�����Ƃ����̂͂킩��B";
+		mes "��Ƃ͎������C�ɓ�������ʑ̂Ȃ�";
+		mes "���ł��`����������̂��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "それにしては、その肖像画は";
-		mes "とても古かったようですが……";
-		mes "私の見た肖像画は、約30年前の";
-		mes "物だったし、その女性の名前も";
-		mes "「^0000FFエリシア^000000」";
-		mes "ジュノーに実在していた女性です。";
+		mes "����ɂ��ẮA���̏ё����";
+		mes "�ƂĂ��Â������悤�ł����c�c";
+		mes "���̌����ё���́A��30�N�O��";
+		mes "�����������A���̏����̖��O��";
+		mes "�u^0000FF�G���V�A^000000�v";
+		mes "�W���m�[�Ɏ��݂��Ă��������ł��B";
 		next;
 		cutin "kh_kyel02",2;
-		mes "[キル・ハイル]";
-		mes "………………";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
 		next;
 		cutin "kh_kyel01",2;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "私には確信があります。";
-		mes "彼女があのエリシアのモデル。";
-		mes "そして、あなたが唯一";
-		mes "愛した女性ではないかと……";
+		mes "���ɂ͊m�M������܂��B";
+		mes "�ޏ������̃G���V�A�̃��f���B";
+		mes "�����āA���Ȃ����B��";
+		mes "�����������ł͂Ȃ����Ɓc�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "………………";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "……一人の貧しい男が";
-		mes "一人の女性を愛しました。";
-		mes "しかし、彼女は他の男を";
-		mes "愛していた。";
-		mes "もちろん、";
-		mes "その男も彼女を愛していた。";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "彼女が愛した男は";
-		mes "貧しい男とは比べられない程の";
-		mes "富と権力を持った人でした。";
+		mes "�c�c��l�̕n�����j��";
+		mes "��l�̏����������܂����B";
+		mes "�������A�ޏ��͑��̒j��";
+		mes "�����Ă����B";
+		mes "�������A";
+		mes "���̒j���ޏ��������Ă����B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "しかし、皮肉なことに、";
-		mes "彼女が愛した人には";
-		mes "親が決めた婚約者がいた。";
-		mes "ある日、その男は";
-		mes "彼女を裏切って、婚約者と";
-		mes "結婚してしまった。";
+		mes "�ޏ����������j��";
+		mes "�n�����j�Ƃ͔�ׂ��Ȃ�����";
+		mes "�x�ƌ��͂��������l�ł����B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "彼女はその裏切りに";
-		mes "耐えることができず、";
-		mes "冷たい川にその身を投げた。";
-		mes "そして彼女を愛した貧しい男は";
-		mes "復讐を誓ったんです。";
+		mes "�������A����Ȃ��ƂɁA";
+		mes "�ޏ����������l�ɂ�";
+		mes "�e�����߂�����҂������B";
+		mes "������A���̒j��";
+		mes "�ޏ��𗠐؂��āA����҂�";
+		mes "�������Ă��܂����B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "男には特別な技術が";
-		mes "一つだけありました。";
-		mes "その技術は、どの企業も";
-		mes "切望していた技術です。";
+		mes "�ޏ��͂��̗��؂��";
+		mes "�ς��邱�Ƃ��ł����A";
+		mes "�₽����ɂ��̐g�𓊂����B";
+		mes "�����Ĕޏ����������n�����j��";
+		mes "���Q�𐾂�����ł��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "男はその技術を企業に売り、";
-		mes "企業はその代価として";
-		mes "男の復讐を手伝ったのです。";
+		mes "�j�ɂ͓��ʂȋZ�p��";
+		mes "���������܂����B";
+		mes "���̋Z�p�́A�ǂ̊�Ƃ�";
+		mes "�ؖ]���Ă����Z�p�ł��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "裏切った男はジェームズ。";
-		mes "可憐な少女はエリシア。";
-		mes "そして……";
-		mes "貧しい男はキル・ハイル……";
+		mes "�j�͂��̋Z�p����Ƃɔ���A";
+		mes "��Ƃ͂��̑㉿�Ƃ���";
+		mes "�j�̕��Q����`�����̂ł��B";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "���؂����j�̓W�F�[���Y�B";
+		mes "���ȏ����̓G���V�A�B";
+		mes "�����āc�c";
+		mes "�n�����j�̓L���E�n�C���c�c";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "クックックッ……";
-		mes "ハッハッハッハッハッハ！";
-		mes "すごい想像力ではないか。";
-		mes "^0000FFエリシア^000000とその女性の";
-		mes "名前が同じ、似た容姿というだけで";
-		mes "そんな話を考えたのか？";
+		mes "[�L���E�n�C��]";
+		mes "�N�b�N�b�N�b�c�c";
+		mes "�n�b�n�b�n�b�n�b�n�b�n�I";
+		mes "�������z���͂ł͂Ȃ����B";
+		mes "^0000FF�G���V�A^000000�Ƃ��̏�����";
+		mes "���O�������A�����e�p�Ƃ���������";
+		mes "����Șb���l�����̂��H";
 		next;
-		mes "[キル・ハイル]";
-		mes "もしかしたら、随分昔に";
-		mes "私がその女性を見たのかも知れない。";
-		mes "それで、無意識の内に";
-		mes "^0000FFエリシア^000000をその女性そっくりに";
-		mes "作り上げたのかもしれないな。";
+		mes "[�L���E�n�C��]";
+		mes "������������A�����̂�";
+		mes "�������̏����������̂����m��Ȃ��B";
+		mes "����ŁA���ӎ��̓���";
+		mes "^0000FF�G���V�A^000000�����̏������������";
+		mes "���グ���̂�������Ȃ��ȁB";
 		next;
-		mes "[キル・ハイル]";
-		mes "しかも、私がその女性を愛した？";
-		mes "それは君の妄想に過ぎない。";
-		mes "その女性と私が同じ場所で";
-		mes "過ごしていたという証拠が";
-		mes "一体どこにあるのかね？";
+		mes "[�L���E�n�C��]";
+		mes "�������A�������̏������������H";
+		mes "����͌N�̖ϑz�ɉ߂��Ȃ��B";
+		mes "���̏����Ǝ��������ꏊ��";
+		mes "�߂����Ă����Ƃ����؋���";
+		mes "��̂ǂ��ɂ���̂��ˁH";
 		next;
-		menu "小屋で見つけた肖像画を見せる",-;
+		menu "�����Ō������ё����������",-;
 		cutin "kh_kyel02",2;
-		mes "[キル・ハイル]";
-		mes "な!?……これは!?";
-		mes "…………どこでこれを……";
+		mes "[�L���E�n�C��]";
+		mes "��!?�c�c�����!?";
+		mes "�c�c�c�c�ǂ��ł�����c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "キル・ハイルさん。";
-		mes "これはあなたの肖像画。";
-		mes "今の反応を見ても明らかです。";
+		mes "�L���E�n�C������B";
+		mes "����͂��Ȃ��̏ё���B";
+		mes "���̔��������Ă����炩�ł��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "「^0000FFエリシア^000000」の死体を見つけた";
-		mes "漁師さんが教えてくれました。";
-		mes "彼女の指輪を取りに来た男が";
-		mes "住んでいた家。";
-		mes "そこで見つけた肖像画です。";
+		mes "�u^0000FF�G���V�A^000000�v�̎��̂�������";
+		mes "���t���񂪋����Ă���܂����B";
+		mes "�ޏ��̎w�ւ����ɗ����j��";
+		mes "�Z��ł����ƁB";
+		mes "�����Ō������ё���ł��B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "あなたはその女性がはめていた指輪を";
-		mes "現価以上の、ありえないほどの大枚を";
-		mes "払って買い取ったそうですね。";
-		mes "そんなこと、彼女を知らない人に";
-		mes "できる事なのでしょうか？";
+		mes "���Ȃ��͂��̏������͂߂Ă����w�ւ�";
+		mes "�����ȏ�́A���肦�Ȃ��قǂ̑喇��";
+		mes "�����Ĕ�������������ł��ˁB";
+		mes "����Ȃ��ƁA�ޏ���m��Ȃ��l��";
+		mes "�ł��鎖�Ȃ̂ł��傤���H";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "………………";
-		mes "随分よく調べたな…………";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
+		mes "�����悭���ׂ��ȁc�c�c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "……そうだ。";
-		mes "機械人形^0000FFエリシア^000000は";
-		mes "死んだ^0000FFエリシア^000000をモデルに";
-		mes "作られている。";
-		mes "彼女を愛しているから……";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�������B";
+		mes "�@�B�l�`^0000FF�G���V�A^000000��";
+		mes "����^0000FF�G���V�A^000000�����f����";
+		mes "����Ă���B";
+		mes "�ޏ��������Ă��邩��c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "しかし、私がジェームズを";
-		mes "追い込んだのは君の錯覚だ。";
-		mes "私はただの機械工学者だ。";
-		mes "他の事に興味はない。";
+		mes "[�L���E�n�C��]";
+		mes "�������A�����W�F�[���Y��";
+		mes "�ǂ����񂾂̂͌N�̍��o���B";
+		mes "���͂����̋@�B�H�w�҂��B";
+		mes "���̎��ɋ����͂Ȃ��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "彼を憎んだのは事実だが";
-		mes "それは若かった時の事だ。";
-		mes "それに、私にはロシミエル家のような";
-		mes "由緒正しい家系を潰す程の";
-		mes "力は持っていない。";
-		next;
-		cutin "kh_kyel02",2;
-		mes "-確かな証拠が必要みたいだ-";
-		next;
-		menu "ロシミエル家の肖像画",-;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "本当にそうなのでしょうか？";
-		mes "これを見てください。";
-		mes "この肖像画はロシミエル家の廃屋で";
-		mes "見つけた物です。";
-		mes "恐らく、ロシミエル家……";
-		mes "いえ、正しくはジェームズの家族です。";
-		next;
-		mes "-^FF0000キル・ハイル^000000は";
-		mes "肖像画をちらっと見た-";
-		next;
-		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "……それがどうした？";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "^FF0000キル・ハイル^000000さん。";
-		mes "あなたが持っている懐中時計……";
-		mes "随分古い物ですね。";
-		mes "この肖像画の中に同じような";
-		mes "物があるみたいですが……";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "どうしてあなたがこの懐中時計を";
-		mes "持っているのですか？";
+		mes "[�L���E�n�C��]";
+		mes "�ނ𑞂񂾂͎̂�������";
+		mes "����͎Ⴉ�������̎����B";
+		mes "����ɁA���ɂ̓��V�~�G���Ƃ̂悤��";
+		mes "�R���������ƌn��ׂ�����";
+		mes "�͎͂����Ă��Ȃ��B";
 		next;
 		cutin "kh_kyel02",2;
-		mes "[キル・ハイル]";
-		mes "………………";
+		mes "-�m���ȏ؋����K�v�݂�����-";
 		next;
+		menu "���V�~�G���Ƃ̏ё���",-;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "-これは効いたみたいだ！-";
+		mes "�{���ɂ����Ȃ̂ł��傤���H";
+		mes "��������Ă��������B";
+		mes "���̏ё���̓��V�~�G���Ƃ̔p����";
+		mes "���������ł��B";
+		mes "���炭�A���V�~�G���Ɓc�c";
+		mes "�����A�������̓W�F�[���Y�̉Ƒ��ł��B";
 		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "確かに、あなたにロシミエル家を";
-		mes "追い込む力は無いかもしれない……";
-		mes "ですが！";
-		mes "あなたの支援者である";
-		mes "レッケンベルなら、その程度の事";
-		mes "簡単にできてしまうのでは!?";
+		mes "-^FF0000�L���E�n�C��^000000��";
+		mes "�ё����������ƌ���-";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "……やるではないか。";
-		mes "そう、その通り。";
-		mes "私があいつを追い込んだ……";
-		mes "あいつを！　……だが！";
-		mes "それは裏切られ、全てに絶望した";
-		mes "^0000FFエリシア^000000のためだ！";
-		next;
-		mes "[キル・ハイル]";
-		mes "ジェームズが彼女を";
-		mes "裏切らなかったら……";
-		mes "彼女と幸せに暮らしたら……";
-		mes "彼女が自殺しなかったら……";
-		next;
-		mes "[キル・ハイル]";
-		mes "……ふん！";
-		mes "あんな奴は地獄に落ちればいい！";
-		mes "私の復讐のどこが悪い！";
+		mes "[�L���E�n�C��]";
+		mes "�c�c���ꂪ�ǂ������H";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "彼女は自殺したのではありません。";
-		mes "だから……";
-		mes "あなたの復讐は間違っています！";
-		next;
-		mes "[キル・ハイル]";
-		mes "何だと!?";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "……これを見てください。";
-		next;
-		menu "ジェームズのメモを見せる",-;
-		mes "[キル・ハイル]";
-		mes "……こんな紙が何だ！";
-		mes "こんな紙切れ一つで、";
-		mes "ジェームズが彼女を";
-		mes "裏切らなかったとでも言うのか？";
+		mes "^FF0000�L���E�n�C��^000000����B";
+		mes "���Ȃ��������Ă���������v�c�c";
+		mes "�����Â����ł��ˁB";
+		mes "���̏ё���̒��ɓ����悤��";
+		mes "��������݂����ł����c�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "いいえ。";
-		mes "裏切らなかったという話を";
-		mes "しているのではありません。";
-		mes "問題は紙に書かれた日付です。";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "紙切れには、ジェームズは彼女と";
-		mes "一緒に逃げ出すと書いてあります。";
-		mes "それは30年前の8月20日……";
-		mes "そして、彼女の死体が発見された日も";
-		mes "8月20日です。";
-		mes "変じゃありませんか？";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "8月20日の朝に、彼女の死体が";
-		mes "見つかったというのは事実。";
-		mes "つまり、彼女は8月19日の夜に";
-		mes "死んだという事になります……";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "どうして彼女は";
-		mes "愛する男が一緒に逃げるといった";
-		mes "その前日の夜に、冷たい川に";
-		mes "飛びこまなければならないんですか？";
-		next;
-		mes "[キル・ハイル]";
-		mes "……その男を信じることが";
-		mes "できなかったのだろう。";
-		mes "……ただ……それだけだ。";
-		mes "…………";
-		mes "……";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "………………";
-		mes "…………";
-		mes "……";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "……いいえ。";
-		mes "彼女はそんな理由で";
-		mes "川に飛び込むはずがありません。";
-		mes "この手紙に嘘があるとは";
-		mes "思えません。";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "恐らく……";
-		mes "前日、すなわち8月19日に";
-		mes "彼女が川へ来た理由は、";
-		mes "あなたが彼女を呼んだからです。";
-		next;
-		mes "[キル・ハイル]";
-		mes "…………ッ!?……";
-		mes "ふざけるのも大概にしないか！";
-		mes "私がその日彼女を呼んだという証拠が";
-		mes "どこにあるというのだ!!";
-		next;
-		menu "K.Hのメッセージ",-;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "証拠ならここにあります。";
-		mes "この手紙には8月19日の夜、";
-		mes "彼女と初めて会った場所で待つという";
-		mes "内容が書かれています。";
-		mes "そこが……川だったんでしょうね。";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "ここに使われているイニシャルK.H、";
-		mes "あなたの肖像画に書いていたのと";
-		mes "同じイニシャルです。";
-		mes "…………";
-		mes "一体、あなたと彼女の間に";
-		mes "何があったんですか？";
+		mes "�ǂ����Ă��Ȃ������̉������v��";
+		mes "�����Ă���̂ł����H";
 		next;
 		cutin "kh_kyel02",2;
-		mes "[キル・ハイル]";
-		mes "………………";
-		mes "…………";
-		mes "……";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "-����͌������݂������I-";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�m���ɁA���Ȃ��Ƀ��V�~�G���Ƃ�";
+		mes "�ǂ����ޗ͖͂�����������Ȃ��c�c";
+		mes "�ł����I";
+		mes "���Ȃ��̎x���҂ł���";
+		mes "���b�P���x���Ȃ�A���̒��x�̎�";
+		mes "�ȒP�ɂł��Ă��܂��̂ł�!?";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "フ……ハハハ……";
-		mes "そう……あの晩……";
-		mes "…………";
+		mes "[�L���E�n�C��]";
+		mes "�c�c���ł͂Ȃ����B";
+		mes "�����A���̒ʂ�B";
+		mes "����������ǂ����񂾁c�c";
+		mes "�������I�@�c�c�����I";
+		mes "����͗��؂��A�S�Ăɐ�]����";
+		mes "^0000FF�G���V�A^000000�̂��߂��I";
+		next;
+		mes "[�L���E�n�C��]";
+		mes "�W�F�[���Y���ޏ���";
+		mes "���؂�Ȃ�������c�c";
+		mes "�ޏ��ƍK���ɕ�炵����c�c";
+		mes "�ޏ������E���Ȃ�������c�c";
+		next;
+		mes "[�L���E�n�C��]";
+		mes "�c�c�ӂ�I";
+		mes "����ȓz�͒n���ɗ�����΂����I";
+		mes "���̕��Q�̂ǂ��������I";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�ޏ��͎��E�����̂ł͂���܂���B";
+		mes "������c�c";
+		mes "���Ȃ��̕��Q�͊Ԉ���Ă��܂��I";
+		next;
+		mes "[�L���E�n�C��]";
+		mes "������!?";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�c�c��������Ă��������B";
+		next;
+		menu "�W�F�[���Y�̃�����������",-;
+		mes "[�L���E�n�C��]";
+		mes "�c�c����Ȏ��������I";
+		mes "����Ȏ��؂��ŁA";
+		mes "�W�F�[���Y���ޏ���";
+		mes "���؂�Ȃ������Ƃł������̂��H";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�������B";
+		mes "���؂�Ȃ������Ƃ����b��";
+		mes "���Ă���̂ł͂���܂���B";
+		mes "���͎��ɏ����ꂽ���t�ł��B";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "���؂�ɂ́A�W�F�[���Y�͔ޏ���";
+		mes "�ꏏ�ɓ����o���Ə����Ă���܂��B";
+		mes "�����30�N�O��8��20���c�c";
+		mes "�����āA�ޏ��̎��̂��������ꂽ����";
+		mes "8��20���ł��B";
+		mes "�ς��Ⴀ��܂��񂩁H";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "8��20���̒��ɁA�ޏ��̎��̂�";
+		mes "���������Ƃ����͎̂����B";
+		mes "�܂�A�ޏ���8��19���̖��";
+		mes "���񂾂Ƃ������ɂȂ�܂��c�c";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�ǂ����Ĕޏ���";
+		mes "������j���ꏏ�ɓ�����Ƃ�����";
+		mes "���̑O���̖�ɁA�₽�����";
+		mes "��т��܂Ȃ���΂Ȃ�Ȃ���ł����H";
+		next;
+		mes "[�L���E�n�C��]";
+		mes "�c�c���̒j��M���邱�Ƃ�";
+		mes "�ł��Ȃ������̂��낤�B";
+		mes "�c�c�����c�c���ꂾ�����B";
+		mes "�c�c�c�c";
+		mes "�c�c";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�c�c�c�c�c�c";
+		mes "�c�c�c�c";
+		mes "�c�c";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�c�c�������B";
+		mes "�ޏ��͂���ȗ��R��";
+		mes "��ɔ�э��ނ͂�������܂���B";
+		mes "���̎莆�ɉR������Ƃ�";
+		mes "�v���܂���B";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "���炭�c�c";
+		mes "�O���A���Ȃ킿8��19����";
+		mes "�ޏ�����֗������R�́A";
+		mes "���Ȃ����ޏ����Ă񂾂���ł��B";
+		next;
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�b!?�c�c";
+		mes "�ӂ�����̂���T�ɂ��Ȃ����I";
+		mes "�������̓��ޏ����Ă񂾂Ƃ����؋���";
+		mes "�ǂ��ɂ���Ƃ����̂�!!";
+		next;
+		menu "K.H�̃��b�Z�[�W",-;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�؋��Ȃ炱���ɂ���܂��B";
+		mes "���̎莆�ɂ�8��19���̖�A";
+		mes "�ޏ��Ə��߂ĉ�����ꏊ�ő҂Ƃ���";
+		mes "���e��������Ă��܂��B";
+		mes "�������c�c�삾������ł��傤�ˁB";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "�����Ɏg���Ă���C�j�V����K.H�A";
+		mes "���Ȃ��̏ё���ɏ����Ă����̂�";
+		mes "�����C�j�V�����ł��B";
+		mes "�c�c�c�c";
+		mes "��́A���Ȃ��Ɣޏ��̊Ԃ�";
+		mes "������������ł����H";
+		next;
+		cutin "kh_kyel02",2;
+		mes "[�L���E�n�C��]";
+		mes "�c�c�c�c�c�c";
+		mes "�c�c�c�c";
+		mes "�c�c";
+		next;
+		cutin "kh_kyel03",2;
+		mes "[�L���E�n�C��]";
+		mes "�t�c�c�n�n�n�c�c";
+		mes "�����c�c���̔Ӂc�c";
+		mes "�c�c�c�c";
 		next;
 		cutin "kh_kyel01",2;
-		mes "[キル・ハイル]";
-		mes "あの晩、彼女は";
-		mes "川辺に来てくれた。";
-		mes "私はそんな彼女に";
-		mes "裏切り者のジェームズを忘れて";
-		mes "私と一緒に暮らそうと言った。";
+		mes "[�L���E�n�C��]";
+		mes "���̔ӁA�ޏ���";
+		mes "��ӂɗ��Ă��ꂽ�B";
+		mes "���͂���Ȕޏ���";
+		mes "���؂�҂̃W�F�[���Y��Y���";
+		mes "���ƈꏏ�ɕ�炻���ƌ������B";
 		next;
-		mes "[キル・ハイル]";
-		mes "ところが、彼女はジェームズは";
-		mes "自分を裏切らなかったし、自分と";
-		mes "一緒に逃げだす事を";
-		mes "約束したと言ったんだ。";
+		mes "[�L���E�n�C��]";
+		mes "�Ƃ��낪�A�ޏ��̓W�F�[���Y��";
+		mes "�����𗠐؂�Ȃ��������A������";
+		mes "�ꏏ�ɓ�����������";
+		mes "�񑩂����ƌ������񂾁B";
 		next;
-		mes "[キル・ハイル]";
-		mes "その言葉を聞いた時の";
-		mes "私の気持ちがわかるか？";
-		mes "フフ……本当に悲惨だった。";
+		mes "[�L���E�n�C��]";
+		mes "���̌��t�𕷂�������";
+		mes "���̋C�������킩�邩�H";
+		mes "�t�t�c�c�{���ɔߎS�������B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そんな時、彼女がしていた";
-		mes "指輪を見た瞬間……";
-		mes "……そうだな……行き場の無い";
-		mes "怒りが爆発したとでも言うべきか……";
-		mes "私は、彼女から指輪を奪って";
-		mes "川に投げ捨てようとした。";
+		mes "[�L���E�n�C��]";
+		mes "����Ȏ��A�ޏ������Ă���";
+		mes "�w�ւ������u�ԁc�c";
+		mes "�c�c�������ȁc�c�s����̖���";
+		mes "�{�肪���������Ƃł������ׂ����c�c";
+		mes "���́A�ޏ�����w�ւ�D����";
+		mes "��ɓ����̂Ă悤�Ƃ����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "彼女はそんな私から";
-		mes "指輪を取り戻そうとしたのだろう。";
-		mes "彼女らしい、弱々しい抵抗だった……";
-		mes "しかし、何日も続いた暴雨で";
-		mes "脆くなっていた地面が……";
-		mes "………………";
+		mes "[�L���E�n�C��]";
+		mes "�ޏ��͂���Ȏ�����";
+		mes "�w�ւ����߂����Ƃ����̂��낤�B";
+		mes "�ޏ��炵���A��X������R�������c�c";
+		mes "�������A�������������\�J��";
+		mes "�Ƃ��Ȃ��Ă����n�ʂ��c�c";
+		mes "�c�c�c�c�c�c";
 		next;
-		menu "………………",-;
-		mes "[キル・ハイル]";
-		mes "ク……クック……";
-		mes "ハーッハッハッハ！";
-		mes "…………ククク……";
-		mes "……ハハ……";
-		mes "………………";
+		menu "�c�c�c�c�c�c",-;
+		mes "[�L���E�n�C��]";
+		mes "�N�c�c�N�b�N�c�c";
+		mes "�n�[�b�n�b�n�b�n�I";
+		mes "�c�c�c�c�N�N�N�c�c";
+		mes "�c�c�n�n�c�c";
+		mes "�c�c�c�c�c�c";
 		delitem 7499,1;
 		delitem 7500,1;
 		delitem 7501,1;
@@ -3281,281 +3281,281 @@ kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
 		set KH_QUE,35;
 		break;
 	case 35:
-		mes "[キル・ハイル]";
-		mes "……翌日……";
-		mes "彼女の死体が見つかった。";
-		mes "あの指輪は握ったままだった。";
-		mes "……ハハ……";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�����c�c";
+		mes "�ޏ��̎��̂����������B";
+		mes "���̎w�ւ͈������܂܂������B";
+		mes "�c�c�n�n�c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "何を考えていたのか、";
-		mes "私はその指輪を買い取るため、";
-		mes "貯金を全て漁師に支払った。";
-		mes "そして……";
-		mes "呪われたジュノーを去った。";
+		mes "[�L���E�n�C��]";
+		mes "�����l���Ă����̂��A";
+		mes "���͂��̎w�ւ𔃂���邽�߁A";
+		mes "������S�ċ��t�Ɏx�������B";
+		mes "�����āc�c";
+		mes "���ꂽ�W���m�[���������B";
 		next;
-		mes "[キル・ハイル]";
-		mes "ジュノーを去った後、";
-		mes "あちこちを放浪しながら考えた。";
-		mes "なぜ私がこんな目にあったのか。";
-		mes "なぜ！　どうして！";
-		mes "……全て……全てあの男……";
-		mes "ジェームズが悪い！";
+		mes "[�L���E�n�C��]";
+		mes "�W���m�[����������A";
+		mes "������������Q���Ȃ���l�����B";
+		mes "�Ȃ���������Ȗڂɂ������̂��B";
+		mes "�Ȃ��I�@�ǂ����āI";
+		mes "�c�c�S�āc�c�S�Ă��̒j�c�c";
+		mes "�W�F�[���Y�������I";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "絶対に許すことができなかった。";
-		mes "私には無い、ありとあらゆる物を";
-		mes "持っているというのに、";
-		mes "^0000FFエリシア^000000まで手にしようとした";
-		mes "その金持ちが……";
+		mes "[�L���E�n�C��]";
+		mes "��΂ɋ������Ƃ��ł��Ȃ������B";
+		mes "���ɂ͖����A����Ƃ����镨��";
+		mes "�����Ă���Ƃ����̂ɁA";
+		mes "^0000FF�G���V�A^000000�܂Ŏ�ɂ��悤�Ƃ���";
+		mes "���̋��������c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "奴があらゆる物を失った時、";
-		mes "どれだけ醜くなるのか、";
-		mes "死んだ^0000FFエリシア^000000に";
-		mes "見せてやりたかった！";
+		mes "[�L���E�n�C��]";
+		mes "�z�������镨�����������A";
+		mes "�ǂꂾ���X���Ȃ�̂��A";
+		mes "����^0000FF�G���V�A^000000��";
+		mes "�����Ă�肽�������I";
 		next;
-		mes "[キル・ハイル]";
-		mes "それで……";
-		mes "第1世代の機械人形……";
-		mes "^0000FFエリシア^000000の設計図を持って";
-		mes "レッケンベルに行った。";
+		mes "[�L���E�n�C��]";
+		mes "����Łc�c";
+		mes "��1����̋@�B�l�`�c�c";
+		mes "^0000FF�G���V�A^000000�̐݌v�}��������";
+		mes "���b�P���x���ɍs�����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "レッケンベルは私が望む物、";
-		mes "全てを提供してくれた。";
-		mes "金、権力、人脈……";
-		mes "そしてロシミエル家を潰す";
-		mes "方法までな……";
+		mes "[�L���E�n�C��]";
+		mes "���b�P���x���͎����]�ޕ��A";
+		mes "�S�Ă�񋟂��Ă��ꂽ�B";
+		mes "���A���́A�l���c�c";
+		mes "�����ă��V�~�G���Ƃ�ׂ�";
+		mes "���@�܂łȁc�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "汚い事だとはわかっていた。";
-		mes "監視、暗殺、スパイ……";
-		mes "いつ裏切るかも知れない人間が";
-		mes "私の周りに沢山現れた。";
+		mes "[�L���E�n�C��]";
+		mes "���������Ƃ͂킩���Ă����B";
+		mes "�Ď��A�ÎE�A�X�p�C�c�c";
+		mes "�����؂邩���m��Ȃ��l�Ԃ�";
+		mes "���̎���ɑ�R���ꂽ�B";
 		next;
-		mes "[キル・ハイル]";
-		mes "フフッ……ここまで調べられた";
-		mes "君の後ろにも誰かいるようだな。";
-		mes "そいつらは何を望んでいるのかね？";
-		mes "私の命か？";
-		mes "それとも機械人形の設計図？";
-		mes "そのどちらもかね？　ハハハッ";
+		mes "[�L���E�n�C��]";
+		mes "�t�t�b�c�c�����܂Œ��ׂ�ꂽ";
+		mes "�N�̌��ɂ��N������悤���ȁB";
+		mes "������͉���]��ł���̂��ˁH";
+		mes "���̖����H";
+		mes "����Ƃ��@�B�l�`�̐݌v�}�H";
+		mes "���̂ǂ�������ˁH�@�n�n�n�b";
 		next;
-		menu "彼らは……",-;
+		menu "�ނ�́c�c",-;
 		cutin "kh_kyel01",2;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "あなたとレッケンベルの関係。";
-		mes "そして、^0000FFキエル^000000についての";
-		mes "情報を望んでいます。";
+		mes "���Ȃ��ƃ��b�P���x���̊֌W�B";
+		mes "�����āA^0000FF�L�G��^000000�ɂ��Ă�";
+		mes "����]��ł��܂��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "^0000FFキエル^000000か……";
-		mes "君には見当がついているのだろ？";
-		mes "あいつの正体について……";
+		mes "[�L���E�n�C��]";
+		mes "^0000FF�L�G��^000000���c�c";
+		mes "�N�ɂ͌��������Ă���̂���H";
+		mes "�����̐��̂ɂ��āc�c";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "やはり……機械人形ですか？";
-		mes "第2世代の……";
+		mes "��͂�c�c�@�B�l�`�ł����H";
+		mes "��2����́c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "正解だ。";
-		mes "^0000FFキエル^000000は圧縮魔法スクロールを";
-		mes "最初に使用した第2世代の機械人形だ。";
-		mes "多くの失敗と間違いを勝ち抜いた";
-		mes "唯一の第2世代……";
+		mes "[�L���E�n�C��]";
+		mes "�������B";
+		mes "^0000FF�L�G��^000000�͈��k���@�X�N���[����";
+		mes "�ŏ��Ɏg�p������2����̋@�B�l�`���B";
+		mes "�����̎��s�ƊԈႢ������������";
+		mes "�B��̑�2����c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "だからこそ、";
-		mes "私はあいつに愛着があった。";
-		mes "私と^0000FFエリシア^000000の名を取り、";
-		mes "^0000FFキエル^000000と名づけてやった。";
+		mes "[�L���E�n�C��]";
+		mes "�����炱���A";
+		mes "���͂����Ɉ������������B";
+		mes "����^0000FF�G���V�A^000000�̖������A";
+		mes "^0000FF�L�G��^000000�Ɩ��Â��Ă�����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そして、今では第3世代の機械人形を";
-		mes "任せられる程の技術を持った。";
-		mes "しかし……";
-		mes "私は良い人間を生み出すことは";
-		mes "できなかったようだ。";
-		mes "そう、良い後継者なだけだ……";
+		mes "[�L���E�n�C��]";
+		mes "�����āA���ł͑�3����̋@�B�l�`��";
+		mes "�C��������̋Z�p���������B";
+		mes "�������c�c";
+		mes "���͗ǂ��l�Ԃ𐶂ݏo�����Ƃ�";
+		mes "�ł��Ȃ������悤���B";
+		mes "�����A�ǂ���p�҂Ȃ������c�c";
 		next;
-		menu "………………",-;
-		mes "[キル・ハイル]";
-		mes "私は^0000FFキエル^000000の天才的な学習能力、";
-		mes "強い力、感情の不安定さを危惧した。";
+		menu "�c�c�c�c�c�c",-;
+		mes "[�L���E�n�C��]";
+		mes "����^0000FF�L�G��^000000�̓V�˓I�Ȋw�K�\�́A";
+		mes "�����́A����̕s���肳���뜜�����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そこで、第3世代には人間と酷似した";
-		mes "筋力と学習能力を付与し、";
-		mes "集団生活を通じて人間の感情を";
-		mes "学ぶようにした。";
+		mes "[�L���E�n�C��]";
+		mes "�����ŁA��3����ɂ͐l�Ԃƍ�������";
+		mes "�ؗ͂Ɗw�K�\�͂�t�^���A";
+		mes "�W�c������ʂ��Đl�Ԃ̊����";
+		mes "�w�Ԃ悤�ɂ����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "ところが、^0000FFキエル^000000が改造した";
-		mes "第3世代の人形たちは、";
-		mes "そのコントロールを";
-		mes "完全に無視している。";
+		mes "[�L���E�n�C��]";
+		mes "�Ƃ��낪�A^0000FF�L�G��^000000����������";
+		mes "��3����̐l�`�����́A";
+		mes "���̃R���g���[����";
+		mes "���S�ɖ������Ă���B";
 		next;
-		mes "[キル・ハイル]";
-		mes "^0000FFキエル^000000が作った改造機械人形。";
-		mes "人間の姿をした殺人兵器。";
-		mes "そう、誰も見分けることができない";
-		mes "人間の姿をした……";
+		mes "[�L���E�n�C��]";
+		mes "^0000FF�L�G��^000000������������@�B�l�`�B";
+		mes "�l�Ԃ̎p�������E�l����B";
+		mes "�����A�N���������邱�Ƃ��ł��Ȃ�";
+		mes "�l�Ԃ̎p�������c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "モンスターに似ている能力を搭載、";
-		mes "機械と融合された子供達……";
-		mes "それはレッケンベルがした";
-		mes "人間の生体実験のようだ……";
+		mes "[�L���E�n�C��]";
+		mes "�����X�^�[�Ɏ��Ă���\�͂𓋍ځA";
+		mes "�@�B�ƗZ�����ꂽ�q���B�c�c";
+		mes "����̓��b�P���x��������";
+		mes "�l�Ԃ̐��̎����̂悤���c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "考えて見るといい。";
-		mes "人間が人間の尊厳を";
-		mes "認めない世界を……";
+		mes "[�L���E�n�C��]";
+		mes "�l���Č���Ƃ����B";
+		mes "�l�Ԃ��l�Ԃ̑�����";
+		mes "�F�߂Ȃ����E���c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "そういえば……君は";
-		mes "私が思い出したくない過去に触れたな。";
-		mes "そう、君は私の尊厳を踏みにじった。";
-		mes "私はこう見えて、";
-		mes "とても怒っているのだよ。";
+		mes "[�L���E�n�C��]";
+		mes "���������΁c�c�N��";
+		mes "�����v���o�������Ȃ��ߋ��ɐG�ꂽ�ȁB";
+		mes "�����A�N�͎��̑����𓥂݂ɂ������B";
+		mes "���͂��������āA";
+		mes "�ƂĂ��{���Ă���̂���B";
 		next;
-		mes "[キル・ハイル]";
-		mes "……君が私の望みを";
-		mes "一つだけ叶えたら、";
-		mes "許してやってもいいだろう。";
+		mes "[�L���E�n�C��]";
+		mes "�c�c�N�����̖]�݂�";
+		mes "�������������A";
+		mes "�����Ă���Ă��������낤�B";
 		next;
-		menu "望み？",-;
-		mes "[キル・ハイル]";
-		mes "そうだ……";
-		mes "君に調査を頼んだ者たちの";
-		mes "目的とそう変わらない事だろう。";
+		menu "�]�݁H",-;
+		mes "[�L���E�n�C��]";
+		mes "�������c�c";
+		mes "�N�ɒ����𗊂񂾎҂�����";
+		mes "�ړI�Ƃ����ς��Ȃ������낤�B";
 		next;
 		menu "????",-;
-		mes "[キル・ハイル]";
-		mes "……^0000FFキエル^000000を止めてくれ。";
-		mes "これ以上私が作った子供たちが";
-		mes "壊されるのは見たくない。";
+		mes "[�L���E�n�C��]";
+		mes "�c�c^0000FF�L�G��^000000���~�߂Ă���B";
+		mes "����ȏ㎄��������q��������";
+		mes "�󂳂��̂͌������Ȃ��B";
 		next;
-		menu "承諾する",-,"頼みを受け入れる",-,"うなずく",-;
-		mes "[キル・ハイル]";
-		mes "ありがとう。";
-		mes "^0000FFキエル^000000はこの邸宅の地下にいる。";
+		menu "��������",-,"���݂��󂯓����",-,"���Ȃ���",-;
+		mes "[�L���E�n�C��]";
+		mes "���肪�Ƃ��B";
+		mes "^0000FF�L�G��^000000�͂��̓@��̒n���ɂ���B";
 		next;
-		mes "[キル・ハイル]";
-		mes "あいつを……第2世代の機械人形を";
-		mes "開発した場所。";
-		mes "今はキエルに改造され、私でさえ";
-		mes "奥に行く事はできなくなった。";
+		mes "[�L���E�n�C��]";
+		mes "�������c�c��2����̋@�B�l�`��";
+		mes "�J�������ꏊ�B";
+		mes "���̓L�G���ɉ�������A���ł���";
+		mes "���ɍs�����͂ł��Ȃ��Ȃ����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そこから、あいつを探し出してくれ。";
-		mes "そして、あいつの心臓から";
-		mes "ある物を取り出してくるんだ。";
-		mes "それであいつの暴走は止まる。";
+		mes "[�L���E�n�C��]";
+		mes "��������A������T���o���Ă���B";
+		mes "�����āA�����̐S������";
+		mes "���镨�����o���Ă���񂾁B";
+		mes "����ł����̖\���͎~�܂�B";
 		next;
-		menu "ある物？",-;
-		mes "[キル・ハイル]";
-		mes "^0000FFエリシア^000000の指輪……";
-		mes "全ての始まりとなった物。";
-		mes "私はあいつの心臓を作りながら、";
-		mes "ジェームズへの恨みと私の思いを";
-		mes "忘れないために、あいつの心臓に";
-		mes "その指輪を埋め込んだ。";
+		menu "���镨�H",-;
+		mes "[�L���E�n�C��]";
+		mes "^0000FF�G���V�A^000000�̎w�ցc�c";
+		mes "�S�Ă̎n�܂�ƂȂ������B";
+		mes "���͂����̐S�������Ȃ���A";
+		mes "�W�F�[���Y�ւ̍��݂Ǝ��̎v����";
+		mes "�Y��Ȃ����߂ɁA�����̐S����";
+		mes "���̎w�ւ𖄂ߍ��񂾁B";
 		next;
-		mes "[キル・ハイル]";
-		mes "普通の武器であいつを止めるのは";
-		mes "まず不可能だ。";
-		mes "第2世代のボディーの動力を";
-		mes "止めるようにする機械を使え。";
+		mes "[�L���E�n�C��]";
+		mes "���ʂ̕���ł������~�߂�̂�";
+		mes "�܂��s�\���B";
+		mes "��2����̃{�f�B�[�̓��͂�";
+		mes "�~�߂�悤�ɂ���@�B���g���B";
 		next;
 		cutin "kh_kyel03",2;
-		mes "[キル・ハイル]";
-		mes "これを^0000FFキエル^000000の体に";
-		mes "接触させれば、あいつはしばらくの間";
-		mes "満足に動けなくなる。";
-		mes "その間に、あいつの胸を開いて";
-		mes "指輪を抜き出すんだ。";
-		mes "……頼んだぞ。";
+		mes "[�L���E�n�C��]";
+		mes "�����^0000FF�L�G��^000000�̑̂�";
+		mes "�ڐG������΁A�����͂��΂炭�̊�";
+		mes "�����ɓ����Ȃ��Ȃ�B";
+		mes "���̊ԂɁA�����̋����J����";
+		mes "�w�ւ𔲂��o���񂾁B";
+		mes "�c�c���񂾂��B";
 		getitem 7504,1;
 		set KH_QUE,36;
 		next;
-		mes "[キル・ハイル]";
-		mes "準備ができたら";
-		mes "^0000FFキエル^000000の部屋まで送ろう。";
+		mes "[�L���E�n�C��]";
+		mes "�������ł�����";
+		mes "^0000FF�L�G��^000000�̕����܂ő��낤�B";
 		break;
 	default:
 		if(KH_QUE < 36 || KH_QUE > 54) {
-			mes "[キル・ハイル]";
-			mes "…………";
+			mes "[�L���E�n�C��]";
+			mes "�c�c�c�c";
 			break;
 		}
-		mes "[キル・ハイル]";
-		mes "準備はできたのかね？";
+		mes "[�L���E�n�C��]";
+		mes "�����͂ł����̂��ˁH";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[キル・ハイル]";
-			mes "準備が整ったらきたまえ。";
+		if(select("�͂�","������")==2) {
+			mes "[�L���E�n�C��]";
+			mes "�������������炫���܂��B";
 			break;
 		}
-		mes "[キル・ハイル]";
-		mes "……頼んだぞ。";
+		mes "[�L���E�n�C��]";
+		mes "�c�c���񂾂��B";
 		close2;
 		cutin "kh_kyel01",255;
-		enablenpc "キエルの部屋入口#kiel";
+		enablenpc "�L�G���̕�������#kiel";
 		initnpctimer;
 		end;
 	case 54:
-		mes "[キル・ハイル]";
-		mes "来たか……";
-		mes "^0000FFキエル^000000はどうした？";
+		mes "[�L���E�n�C��]";
+		mes "�������c�c";
+		mes "^0000FF�L�G��^000000�͂ǂ������H";
 		next;
-		mes "-^FF0000キル・ハイル^000000に、";
-		mes "今までの事を話した-";
-		mes "^FF0000キル・ハイル^000000は沈痛な顔をしている-";
+		mes "-^FF0000�L���E�n�C��^000000�ɁA";
+		mes "���܂ł̎���b����-";
+		mes "^FF0000�L���E�n�C��^000000�͒��ɂȊ�����Ă���-";
 		next;
-		mes "[キル・ハイル]";
-		mes "あいつが……ついに第4世代を……";
-		mes "それ程までにあいつの能力は……";
+		mes "[�L���E�n�C��]";
+		mes "�������c�c���ɑ�4������c�c";
+		mes "������܂łɂ����̔\�͂́c�c";
 		next;
-		mes "[キル・ハイル]";
-		mes "とりあえず、例を言おう。";
-		mes strcharinfo(0)+ "君……";
-		mes "ありがとう。";
+		mes "[�L���E�n�C��]";
+		mes "�Ƃ肠�����A����������B";
+		mes strcharinfo(0)+ "�N�c�c";
+		mes "���肪�Ƃ��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "私もじっとしてはいられないな。";
-		mes "あいつが私に挑戦するというなら";
-		mes "私も誠意を尽くしてあいつを";
-		mes "阻んでやらなければならない。";
+		mes "[�L���E�n�C��]";
+		mes "���������Ƃ��Ă͂����Ȃ��ȁB";
+		mes "���������ɒ��킷��Ƃ����Ȃ�";
+		mes "�������ӂ�s�����Ă�����";
+		mes "�j��ł��Ȃ���΂Ȃ�Ȃ��B";
 		next;
-		mes "[キル・ハイル]";
-		mes "よかったらこれを受け取ってくれ。";
-		mes "私の感謝の気持ちだ。";
+		mes "[�L���E�n�C��]";
+		mes "�悩�����炱����󂯎���Ă���B";
+		mes "���̊��ӂ̋C�������B";
 		next;
-		mes "[キル・ハイル]";
-		mes "そして、恥知らずではあるが、";
-		mes "一つ頼みがある。";
-		mes "私は工場に監禁されていた時、";
-		mes "^0000FFキエル^000000のような姿をした";
-		mes "機械人形を見たことがある。";
+		mes "[�L���E�n�C��]";
+		mes "�����āA�p�m�炸�ł͂��邪�A";
+		mes "����݂�����B";
+		mes "���͍H��Ɋċւ���Ă������A";
+		mes "^0000FF�L�G��^000000�̂悤�Ȏp������";
+		mes "�@�B�l�`���������Ƃ�����B";
 		next;
-		mes "[キル・ハイル]";
-		mes "あの時は^0000FFキエル^000000が気まぐれで作った";
-		mes "自分のコピーかと思ったが……";
-		mes "君の話を聞くと、それはどうやら";
-		mes "第4世代の試作品のようだ。";
+		mes "[�L���E�n�C��]";
+		mes "���̎���^0000FF�L�G��^000000���C�܂���ō����";
+		mes "�����̃R�s�[���Ǝv�������c�c";
+		mes "�N�̘b�𕷂��ƁA����͂ǂ����";
+		mes "��4����̎���i�̂悤���B";
 		next;
-		mes "[キル・ハイル]";
-		mes "工場の深層部まで入ることができる";
-		mes "カードキーをあげよう。";
-		mes "君には工場を調査してもらいたい。";
-		mes "私は崩れた^0000FFキエル^000000の部屋を";
-		mes "どうにかして調べてみる。";
+		mes "[�L���E�n�C��]";
+		mes "�H��̐[�w���܂œ��邱�Ƃ��ł���";
+		mes "�J�[�h�L�[�������悤�B";
+		mes "�N�ɂ͍H��𒲍����Ă��炢�����B";
+		mes "���͕��ꂽ^0000FF�L�G��^000000�̕�����";
+		mes "�ǂ��ɂ����Ē��ׂĂ݂�B";
 		next;
-		mes "[キル・ハイル]";
-		mes "十分に気をつけたまえ。";
+		mes "[�L���E�n�C��]";
+		mes "�\���ɋC�������܂��B";
 		delitem 7508,1;
 		getitem 7509,1;
 		getitem 616,1;
@@ -3571,143 +3571,143 @@ kh_mansion.gat,22,28,4	script	キル・ハイル	903,{
 	end;
 OnTimer30000:
 	stopnpctimer;
-	disablenpc "キエルの部屋入口#kiel";
+	disablenpc "�L�G���̕�������#kiel";
 	end;
 }
 
-kh_mansion.gat,18,30,4	script	エリシア	894,{
+kh_mansion.gat,18,30,4	script	�G���V�A	894,{
 	cutin "kh_ellisia",2;
 	switch(KH_QUE) {
 	case 24:
-		mes "[エリシア]";
-		mes "ようこそおいでくださいました。";
-		mes strcharinfo(0)+ "様、";
-		mes "^FF0000キル・ハイル^000000様から";
-		mes "お話がございます。";
+		mes "[�G���V�A]";
+		mes "�悤���������ł��������܂����B";
+		mes strcharinfo(0)+ "�l�A";
+		mes "^FF0000�L���E�n�C��^000000�l����";
+		mes "���b���������܂��B";
 		break;
 	case 25:
 	case 26:
-		mes "[エリシア]";
-		mes "機械人形に関する説明が";
-		mes "必要ですか？";
+		mes "[�G���V�A]";
+		mes "�@�B�l�`�Ɋւ��������";
+		mes "�K�v�ł����H";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[エリシア]";
-			mes "何かあればお申し付けください。";
+		if(select("�͂�","������")==2) {
+			mes "[�G���V�A]";
+			mes "��������΂��\���t�����������B";
 			break;
 		}
-		mes "[エリシア]";
-		mes "機械人形とは、自己も持った";
-		mes "人形を意味しています。";
-		mes "過去、多くの賢者たちが研究し、";
-		mes "繰り返し失敗してきた機械工学の";
-		mes "最高品です。";
+		mes "[�G���V�A]";
+		mes "�@�B�l�`�Ƃ́A���Ȃ�������";
+		mes "�l�`���Ӗ����Ă��܂��B";
+		mes "�ߋ��A�����̌��҂������������A";
+		mes "�J��Ԃ����s���Ă����@�B�H�w��";
+		mes "�ō��i�ł��B";
 		next;
-		mes "[エリシア]";
-		mes "私のマスターである^FF0000キル・ハイル^000000様は";
-		mes "20歳から研究を始めています。";
-		mes "現在、機械人形は3種類あり、";
-		mes "それぞれを第1世代、第2世代、第3世代";
-		mes "の機械人形と区別されています。";
+		mes "[�G���V�A]";
+		mes "���̃}�X�^�[�ł���^FF0000�L���E�n�C��^000000�l��";
+		mes "20�΂��猤�����n�߂Ă��܂��B";
+		mes "���݁A�@�B�l�`��3��ނ���A";
+		mes "���ꂼ����1����A��2����A��3����";
+		mes "�̋@�B�l�`�Ƌ�ʂ���Ă��܂��B";
 		next;
-		switch(select("第1世代？","第2世代？","第3世代？")) {
+		switch(select("��1����H","��2����H","��3����H")) {
 		case 1:
-			mes "[エリシア]";
-			mes "この私「^0000FFエリシア^000000」が";
-			mes "^FF0000キル・ハイル^000000様が作られた";
-			mes "第1世代の機械人形です。";
+			mes "[�G���V�A]";
+			mes "���̎��u^0000FF�G���V�A^000000�v��";
+			mes "^FF0000�L���E�n�C��^000000�l�����ꂽ";
+			mes "��1����̋@�B�l�`�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "純粋機械骨格に人工心臓を入れ、";
-			mes "科学的に作られた人工肌を持ってます。";
+			mes "[�G���V�A]";
+			mes "�����@�B���i�ɐl�H�S�������A";
+			mes "�Ȋw�I�ɍ��ꂽ�l�H���������Ă܂��B";
 			next;
-			mes "[エリシア]";
-			mes "頭脳には魔法スクロールを応用した";
-			mes "「記憶スクロール」を組み込んだ";
-			mes "球形機械頭脳を使用しています。";
+			mes "[�G���V�A]";
+			mes "���]�ɂ͖��@�X�N���[�������p����";
+			mes "�u�L���X�N���[���v��g�ݍ���";
+			mes "���`�@�B���]���g�p���Ă��܂��B";
 			next;
-			mes "[エリシア]";
-			mes "機械骨格を使用しているため、";
-			mes "重量が大きくなる。";
-			mes "また、限定的なスクロール容量なため、";
-			mes "複雑な学習ができず、";
-			mes "人間的な感情表現が不可能という";
-			mes "二つの欠点があります。";
+			mes "[�G���V�A]";
+			mes "�@�B���i���g�p���Ă��邽�߁A";
+			mes "�d�ʂ��傫���Ȃ�B";
+			mes "�܂��A����I�ȃX�N���[���e�ʂȂ��߁A";
+			mes "���G�Ȋw�K���ł����A";
+			mes "�l�ԓI�Ȋ���\�����s�\�Ƃ���";
+			mes "��̌��_������܂��B";
 			break;
 		case 2:
-			mes "[エリシア]";
-			mes "第1世代同様に、";
-			mes "^FF0000キル・ハイル^000000様が作られた";
-			mes "機械人形です。";
+			mes "[�G���V�A]";
+			mes "��1���㓯�l�ɁA";
+			mes "^FF0000�L���E�n�C��^000000�l�����ꂽ";
+			mes "�@�B�l�`�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "第2世代の機械人形は";
-			mes "セージのスクロール作成、";
-			mes "アルケミストのホムンクルス製造";
-			mes "等を応用した新しい機械人形です。";
+			mes "[�G���V�A]";
+			mes "��2����̋@�B�l�`��";
+			mes "�Z�[�W�̃X�N���[���쐬�A";
+			mes "�A���P�~�X�g�̃z�����N���X����";
+			mes "�������p�����V�����@�B�l�`�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "第1世代同様に機械骨格と";
-			mes "人工心臓を動力源としていますが、";
-			mes "ホムンクルス製法を利用した";
-			mes "人工ボディーを備えています。";
+			mes "[�G���V�A]";
+			mes "��1���㓯�l�ɋ@�B���i��";
+			mes "�l�H�S���𓮗͌��Ƃ��Ă��܂����A";
+			mes "�z�����N���X���@�𗘗p����";
+			mes "�l�H�{�f�B�[������Ă��܂��B";
 			next;
-			mes "[エリシア]";
-			mes "また、「記憶スクロール」の";
-			mes "10万倍以上の容量と効率性を持った";
-			mes "「圧縮記憶スクロール」によって、";
-			mes "より人間に近い学習が可能です。";
+			mes "[�G���V�A]";
+			mes "�܂��A�u�L���X�N���[���v��";
+			mes "10���{�ȏ�̗e�ʂƌ�������������";
+			mes "�u���k�L���X�N���[���v�ɂ���āA";
+			mes "���l�Ԃɋ߂��w�K���\�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "しかし、圧縮記憶スクロールに";
-			mes "不備があり、人間型ボディーと";
-			mes "機械骨格の間に適合がとれず、";
-			mes "6年程度で機能を停止してしまいます。";
+			mes "[�G���V�A]";
+			mes "�������A���k�L���X�N���[����";
+			mes "�s��������A�l�Ԍ^�{�f�B�[��";
+			mes "�@�B���i�̊ԂɓK�����Ƃꂸ�A";
+			mes "6�N���x�ŋ@�\���~���Ă��܂��܂��B";
 			break;
 		case 3:
-			mes "[エリシア]";
-			mes "第2世代の機械人形と違い、";
-			mes "第3世代は";
-			mes "^FF0000キル・ハイル^000000様の息子である";
-			mes "^0000FFキエル^000000様が設計された物です。";
+			mes "[�G���V�A]";
+			mes "��2����̋@�B�l�`�ƈႢ�A";
+			mes "��3�����";
+			mes "^FF0000�L���E�n�C��^000000�l�̑��q�ł���";
+			mes "^0000FF�L�G��^000000�l���݌v���ꂽ���ł��B";
 			next;
-			mes "[エリシア]";
-			mes "機械骨格を使わない";
-			mes "純粋なホムンクルスのボディー。";
-			mes "擬似ユミルの心臓の欠片を改造した";
-			mes "人工心臓を動力源としているため、";
-			mes "人間のような生体機能を持つことが";
-			mes "可能となりました。";
+			mes "[�G���V�A]";
+			mes "�@�B���i���g��Ȃ�";
+			mes "�����ȃz�����N���X�̃{�f�B�[�B";
+			mes "�[�����~���̐S���̌��Ђ���������";
+			mes "�l�H�S���𓮗͌��Ƃ��Ă��邽�߁A";
+			mes "�l�Ԃ̂悤�Ȑ��̋@�\�������Ƃ�";
+			mes "�\�ƂȂ�܂����B";
 			next;
-			mes "[エリシア]";
-			mes "記憶スクロールは、";
-			mes "第2世代に使われた";
-			mes "「圧縮記憶スクロール」を";
-			mes "改造した物を使用しております。";
+			mes "[�G���V�A]";
+			mes "�L���X�N���[���́A";
+			mes "��2����Ɏg��ꂽ";
+			mes "�u���k�L���X�N���[���v��";
+			mes "�������������g�p���Ă���܂��B";
 			next;
-			mes "[エリシア]";
-			mes "第2世代のスクロールより";
-			mes "性能は落ちますが、安定性は上がり";
-			mes "生産コストを抑えた";
-			mes "量産型「圧縮スクロール」です。";
+			mes "[�G���V�A]";
+			mes "��2����̃X�N���[�����";
+			mes "���\�͗����܂����A���萫�͏オ��";
+			mes "���Y�R�X�g��}����";
+			mes "�ʎY�^�u���k�X�N���[���v�ł��B";
 			next;
-			mes "[エリシア]";
-			mes "あなたが会った「^FF0000エリー^000000」が";
-			mes "第3世代のプロトタイプです。";
-			mes "現在は工場で大量販売のため、";
-			mes "量産型機械人形シリーズの";
-			mes "生産を終えた状態です。";
+			mes "[�G���V�A]";
+			mes "���Ȃ���������u^FF0000�G���[^000000�v��";
+			mes "��3����̃v���g�^�C�v�ł��B";
+			mes "���݂͍H��ő�ʔ̔��̂��߁A";
+			mes "�ʎY�^�@�B�l�`�V���[�Y��";
+			mes "���Y���I������Ԃł��B";
 			next;
-			mes "[エリシア]";
-			mes "新しく導入した学習方法として、";
-			mes "学院という場で共同生活を経験し、";
-			mes "最適化のテストを行っています。";
+			mes "[�G���V�A]";
+			mes "�V�������������w�K���@�Ƃ��āA";
+			mes "�w�@�Ƃ�����ŋ����������o�����A";
+			mes "�œK���̃e�X�g���s���Ă��܂��B";
 			break;
 		}
 		break;
 	default:
-		mes "[エリシア]";
-		mes "………………";
+		mes "[�G���V�A]";
+		mes "�c�c�c�c�c�c";
 		break;
 	}
 	close2;
@@ -3715,380 +3715,380 @@ kh_mansion.gat,18,30,4	script	エリシア	894,{
 	end;
 }
 
-lighthalzen.gat,188,200,0	script	邸宅前	139,3,1,{
+lighthalzen.gat,188,200,0	script	�@��O	139,3,1,{
 OnTouch:
 	if(KH_QUE != 26 && KH_QUE != 27)
 		end;
-	mes "-邸宅を出た瞬間、";
-	mes "頭に衝撃を受けて";
-	mes "意識を失った-";
+	mes "-�@����o���u�ԁA";
+	mes "���ɏՌ����󂯂�";
+	mes "�ӎ���������-";
 	close2;
 	heal -Hp+1,0;
 	warp "kh_mansion.gat",30,75;
 	end;
 }
 
-kh_mansion.gat,25,79,4	script	謎のある女	727,3,3,{
+kh_mansion.gat,25,79,4	script	��̂��鏗	727,3,3,{
 L_Start:
 	switch(KH_QUE) {
 	case 26:
-		mes "-………………-";
-		mes "-頭に軽い痛みがある-";
-		mes "-意識がハッキリすると、";
-		mes "目の前に一人の女性が立っていた-";
+		mes "-�c�c�c�c�c�c-";
+		mes "-���Ɍy���ɂ݂�����-";
+		mes "-�ӎ����n�b�L������ƁA";
+		mes "�ڂ̑O�Ɉ�l�̏����������Ă���-";
 		next;
 		mes "[??????]";
-		mes "フフ、お目覚めになりましたか？";
-		mes "意外と頑丈なんですね。";
-		mes "だからと言って、";
-		mes "暴れないでください。";
+		mes "�t�t�A���ڊo�߂ɂȂ�܂������H";
+		mes "�ӊO�Ɗ��Ȃ�ł��ˁB";
+		mes "������ƌ����āA";
+		mes "�\��Ȃ��ł��������B";
 		next;
 		mes "[??????]";
-		mes "でないと、あなたの安全は";
-		mes "保障できなくなります。";
-		mes "今の状況は理解できていますか？";
-		mes "私はシュバルツバルド情報部";
-		mes "所属の者です。";
+		mes "�łȂ��ƁA���Ȃ��̈��S��";
+		mes "�ۏ�ł��Ȃ��Ȃ�܂��B";
+		mes "���̏󋵂͗����ł��Ă��܂����H";
+		mes "���̓V���o���c�o���h���";
+		mes "�����̎҂ł��B";
 		next;
 		mes "[??????]";
-		mes "最近、「レッケンベル」と";
-		mes "「キル・ハイル企業」の間で";
-		mes "何か動きがあるようなので、";
-		mes "調査の中だったのです。";
+		mes "�ŋ߁A�u���b�P���x���v��";
+		mes "�u�L���E�n�C����Ɓv�̊Ԃ�";
+		mes "��������������悤�Ȃ̂ŁA";
+		mes "�����̒��������̂ł��B";
 		next;
 		mes "[??????]";
-		mes "そのため、キル・ハイルの邸宅を";
-		mes "監視していた所、";
-		mes "あなたが^FF0000キル・ハイル^000000と単独で";
-		mes "話しているとの報告を受けました。";
-		mes "そこで、少々強引な方法でしたが、";
-		mes "あなたをここへ連れて来ました。";
+		mes "���̂��߁A�L���E�n�C���̓@���";
+		mes "�Ď����Ă������A";
+		mes "���Ȃ���^FF0000�L���E�n�C��^000000�ƒP�Ƃ�";
+		mes "�b���Ă���Ƃ̕񍐂��󂯂܂����B";
+		mes "�����ŁA���X�����ȕ��@�ł������A";
+		mes "���Ȃ��������֘A��ė��܂����B";
 		next;
 		mes "[??????]";
-		mes "……強引だったのは謝罪します。";
-		mes "ですが……";
-		mes "あなたは^FF0000キル・ハイル^000000と";
-		mes "どんな関係なのですか？";
+		mes "�c�c�����������͎̂Ӎ߂��܂��B";
+		mes "�ł����c�c";
+		mes "���Ȃ���^FF0000�L���E�n�C��^000000��";
+		mes "�ǂ�Ȋ֌W�Ȃ̂ł����H";
 		next;
-		if(select("今までの事を話す","わからない")==1) {
-			mes "-あなたは、今までにあった事を";
-			mes "正直に彼女に話した-";
-			mes "-^FF0000エリー^000000の話をする時、";
-			mes "ふと自分の声がだんだんと";
-			mes "無くなっていくのに気づいた-";
-			mes "…………";
-			mes "……";
+		if(select("���܂ł̎���b��","�킩��Ȃ�")==1) {
+			mes "-���Ȃ��́A���܂łɂ���������";
+			mes "�����ɔޏ��ɘb����-";
+			mes "-^FF0000�G���[^000000�̘b�����鎞�A";
+			mes "�ӂƎ����̐������񂾂��";
+			mes "�����Ȃ��Ă����̂ɋC�Â���-";
+			mes "�c�c�c�c";
+			mes "�c�c";
 			next;
 			mes "[??????]";
-			mes "うん……そう……";
-			mes "彼女は残念だったわね……";
+			mes "����c�c�����c�c";
+			mes "�ޏ��͎c�O��������ˁc�c";
 			next;
 			mes "[??????]";
-			mes "彼女のような犠牲者を増やさないため、";
-			mes "この事件を解決するため、";
-			mes "あなたが私たちを手伝ってくれたら";
-			mes "とても助かるんだけど……";
-			mes "どうかしら？";
+			mes "�ޏ��̂悤�ȋ]���҂𑝂₳�Ȃ����߁A";
+			mes "���̎������������邽�߁A";
+			mes "���Ȃ�������������`���Ă��ꂽ��";
+			mes "�ƂĂ�������񂾂��ǁc�c";
+			mes "�ǂ�������H";
 		}
 		else {
 			mes "[??????]";
-			mes "本当にわからないの？";
-			mes "^FF0000キル・ハイル^000000と単独で会える人なんて";
-			mes "そう多くはないのよ？";
-			mes "あなたに迷惑はかけないから、";
-			mes "知っていることを話して。";
+			mes "�{���ɂ킩��Ȃ��́H";
+			mes "^FF0000�L���E�n�C��^000000�ƒP�Ƃŉ��l�Ȃ��";
+			mes "���������͂Ȃ��̂�H";
+			mes "���Ȃ��ɖ��f�͂����Ȃ�����A";
+			mes "�m���Ă��邱�Ƃ�b���āB";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "………………";
+			mes "�c�c�c�c�c�c";
 			next;
 			mes "[??????]";
-			mes "あなたが黙っていたら問題は";
-			mes "解決されなくなるの。";
-			mes "あなたの助けがあれば";
-			mes "仕事も早く終わるのよ。";
+			mes "���Ȃ����ق��Ă��������";
+			mes "��������Ȃ��Ȃ�́B";
+			mes "���Ȃ��̏����������";
+			mes "�d���������I���̂�B";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "………………";
+			mes "�c�c�c�c�c�c";
 			next;
 			mes "[??????]";
-			mes "そう……しょうがないわね……";
-			mes "それなら、私たちの方からも";
-			mes "情報を提供するわ。";
-			mes "だから、あなたが知っている情報も";
-			mes "見返りとして私たちに提供して。";
+			mes "�����c�c���傤���Ȃ���ˁc�c";
+			mes "����Ȃ�A�������̕������";
+			mes "����񋟂����B";
+			mes "������A���Ȃ����m���Ă������";
+			mes "���Ԃ�Ƃ��Ď������ɒ񋟂��āB";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "え？";
-			mes "あの……ちょっと!?";
+			mes "���H";
+			mes "���́c�c�������!?";
 			next;
 			mes "[??????]";
-			mes "そんな難しく考えなくていいわ。";
-			mes "お互いに知っている情報が";
-			mes "同じになるだけ。";
-			mes "じゃ、私たちが知っている情報から";
-			mes "話すわね。";
+			mes "����ȓ���l���Ȃ��Ă�����B";
+			mes "���݂��ɒm���Ă�����";
+			mes "�����ɂȂ邾���B";
+			mes "����A���������m���Ă����񂩂�";
+			mes "�b����ˁB";
 			next;
 			mes "[??????]";
-			mes "…………";
-			mes "^FF0000キル・ハイル^000000はあらゆる";
-			mes "自動機械を生産販売する";
-			mes "「キル・ハイル」企業の会長よ。";
+			mes "�c�c�c�c";
+			mes "^FF0000�L���E�n�C��^000000�͂�����";
+			mes "�����@�B�𐶎Y�̔�����";
+			mes "�u�L���E�n�C���v��Ƃ̉��B";
 			next;
 			mes "[??????]";
-			mes "そんな彼も、";
-			mes "初めはアインブロックで";
-			mes "小さな工場を開いていた。";
-			mes "しかし、ある日レッケンベルが";
-			mes "キル・ハイルと接触した。";
-			mes "一種の子会社のような概念よ。";
+			mes "����Ȕނ��A";
+			mes "���߂̓A�C���u���b�N��";
+			mes "�����ȍH����J���Ă����B";
+			mes "�������A��������b�P���x����";
+			mes "�L���E�n�C���ƐڐG�����B";
+			mes "���̎q��Ђ̂悤�ȊT�O��B";
 			next;
 			mes "[??????]";
-			mes "実はそこがミソ。";
-			mes "重要開発者たちがいなくなったため、";
-			mes "当時のレッケンベル最大事業だった";
-			mes "ガーディアンの修理を";
-			mes "「^FF0000キル・ハイル^000000」に";
-			mes "任せるようになったの。";
+			mes "���͂������~�\�B";
+			mes "�d�v�J���҂��������Ȃ��Ȃ������߁A";
+			mes "�����̃��b�P���x���ő厖�Ƃ�����";
+			mes "�K�[�f�B�A���̏C����";
+			mes "�u^FF0000�L���E�n�C��^000000�v��";
+			mes "�C����悤�ɂȂ����́B";
 			next;
 			mes "[??????]";
-			mes "そこに、偶然以外の";
-			mes "何か別の要因があったかは";
-			mes "わかっていないわ。";
+			mes "�����ɁA���R�ȊO��";
+			mes "�����ʂ̗v��������������";
+			mes "�킩���Ă��Ȃ���B";
 			next;
 			mes "[??????]";
-			mes "とにかく、";
-			mes "そこで予想外の後継者が生まれた。";
-			mes "彼の名は「^0000FFキエル^000000」。";
+			mes "�Ƃɂ����A";
+			mes "�����ŗ\�z�O�̌�p�҂����܂ꂽ�B";
+			mes "�ނ̖��́u^0000FF�L�G��^000000�v�B";
 			next;
 			mes "[??????]";
-			mes "しかし、キル・ハイルは未婚。";
-			mes "もしかすると、キル・ハイルの秘書";
-			mes "^0000FFエリシア^000000との子供かと";
-			mes "推測できないこともないけど……";
+			mes "�������A�L���E�n�C���͖����B";
+			mes "����������ƁA�L���E�n�C���̔鏑";
+			mes "^0000FF�G���V�A^000000�Ƃ̎q������";
+			mes "�����ł��Ȃ����Ƃ��Ȃ����ǁc�c";
 			next;
 			mes "[??????]";
-			mes "後継者「^0000FFキエル^000000」は";
-			mes "完璧な姿を見せつけたわ。";
-			mes "外見、体力、技術……どれ一つ";
-			mes "欠けていない……";
+			mes "��p�ҁu^0000FF�L�G��^000000�v��";
+			mes "�����Ȏp������������B";
+			mes "�O���A�̗́A�Z�p�c�c�ǂ���";
+			mes "�����Ă��Ȃ��c�c";
 			next;
 			mes "[??????]";
-			mes "そして、何故かわからないけど";
-			mes "「^0000FFキエル^000000」は唐突にある事業を始めた。";
-			mes "事業と言うのはおかしいけど……";
-			mes "福祉施設を兼ねた";
-			mes "専門学院を設立したのよ。";
+			mes "�����āA���̂��킩��Ȃ�����";
+			mes "�u^0000FF�L�G��^000000�v�͓��˂ɂ��鎖�Ƃ��n�߂��B";
+			mes "���Ƃƌ����̂͂����������ǁc�c";
+			mes "�����{�݂����˂�";
+			mes "���w�@��ݗ������̂�B";
 			next;
 			mes "[??????]";
-			mes "社会福祉と公言してね。";
-			mes "そこで、政府や他の競争関係にあった";
-			mes "企業はその学院に";
-			mes "学生に偽装させた調査員を";
-			mes "潜入させようとした。";
+			mes "�Љ���ƌ������ĂˁB";
+			mes "�����ŁA���{�⑼�̋����֌W�ɂ�����";
+			mes "��Ƃ͂��̊w�@��";
+			mes "�w���ɋU����������������";
+			mes "���������悤�Ƃ����B";
 			next;
 			mes "[??????]";
-			mes "しかし、その全てが入学を";
-			mes "拒否された";
-			mes "孤児に偽装した書類、優れた成績……";
-			mes "何一つ通じなかった。";
-			mes "まるで……あらかじめ決められた";
-			mes "子供だけしか入学できないように……";
+			mes "�������A���̑S�Ă����w��";
+			mes "���ۂ��ꂽ";
+			mes "�ǎ��ɋU���������ށA�D�ꂽ���сc�c";
+			mes "����ʂ��Ȃ������B";
+			mes "�܂�Łc�c���炩���ߌ��߂�ꂽ";
+			mes "�q�������������w�ł��Ȃ��悤�Ɂc�c";
 			next;
 			mes "[??????]";
-			mes "そしてつい先日、";
-			mes "その「^0000FFキエル^000000」が";
-			mes "レッケンベル関係者や関連企業の";
-			mes "社長たちを集めた";
-			mes "極秘集会を行っているの。";
+			mes "�����Ă�����A";
+			mes "���́u^0000FF�L�G��^000000�v��";
+			mes "���b�P���x���֌W�҂�֘A��Ƃ�";
+			mes "�В��������W�߂�";
+			mes "�ɔ�W����s���Ă���́B";
 			next;
 			mes "[??????]";
-			mes "いくら極秘集会とはいえ、";
-			mes "私たちも大まかな情報は得ているわ。";
-			mes "その集会で「^0000FFキエル^000000」は";
-			mes "新しいプロジェクトを発表した。";
+			mes "������ɔ�W��Ƃ͂����A";
+			mes "����������܂��ȏ��͓��Ă����B";
+			mes "���̏W��Łu^0000FF�L�G��^000000�v��";
+			mes "�V�����v���W�F�N�g�𔭕\�����B";
 			next;
 			mes "[??????]";
-			mes "それが機械人形。";
-			mes "ガーディアンと違い、";
-			mes "自己を持って行動できる機械人形。";
+			mes "���ꂪ�@�B�l�`�B";
+			mes "�K�[�f�B�A���ƈႢ�A";
+			mes "���Ȃ������čs���ł���@�B�l�`�B";
 			next;
 			mes "[??????]";
-			mes "ところが、不思議なことに";
-			mes "そんな重要な集会だというのに";
-			mes "会長である「^FF0000キル・ハイル^000000」は";
-			mes "姿を現さなかった。";
-			mes "彼の秘書である「^0000FFエリシア^000000」もね。";
+			mes "�Ƃ��낪�A�s�v�c�Ȃ��Ƃ�";
+			mes "����ȏd�v�ȏW��Ƃ����̂�";
+			mes "��ł���u^FF0000�L���E�n�C��^000000�v��";
+			mes "�p�������Ȃ������B";
+			mes "�ނ̔鏑�ł���u^0000FF�G���V�A^000000�v���ˁB";
 			next;
 			mes "[??????]";
-			mes "そもそも、その集会の数日前から";
-			mes "「^FF0000キル・ハイル^000000」の行方が";
-			mes "わからなかった……";
-			mes "っと思ったら、いつのまにか彼は";
-			mes "邸宅に姿を現わしている";
-			mes "まるで何事もなかったようにね。";
+			mes "���������A���̏W��̐����O����";
+			mes "�u^FF0000�L���E�n�C��^000000�v�̍s����";
+			mes "�킩��Ȃ������c�c";
+			mes "���Ǝv������A���̂܂ɂ��ނ�";
+			mes "�@��Ɏp�����킵�Ă���";
+			mes "�܂�ŉ������Ȃ������悤�ɂˁB";
 			next;
 			mes "[??????]";
-			mes "すると、今度は「^0000FFキエル^000000」が";
-			mes "研究を言い訳に公式の席を外している。";
+			mes "����ƁA���x�́u^0000FF�L�G��^000000�v��";
+			mes "������������Ɍ����̐Ȃ��O���Ă���B";
 			next;
 			mes "[??????]";
-			mes "どう見ても不自然すぎるわ。";
-			mes "まるで二人が入れ替わっているみたい。";
-			mes "それに、集会の裏でどんな陰謀が";
-			mes "あるのかもわからないし。";
+			mes "�ǂ����Ă��s���R�������B";
+			mes "�܂�œ�l������ւ���Ă���݂����B";
+			mes "����ɁA�W��̗��łǂ�ȉA�d��";
+			mes "����̂����킩��Ȃ����B";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "彼らの背後には";
-			mes "レッケンベルがあるからですね。";
+			mes "�ނ�̔w��ɂ�";
+			mes "���b�P���x�������邩��ł��ˁB";
 			next;
 			mes "[??????]";
-			mes "あら、ようやく話す気になった？";
-			mes "じゃあそろそろあなたの番かしらね。";
-			mes "どうぞ、楽に話すといいわ。";
+			mes "����A�悤�₭�b���C�ɂȂ����H";
+			mes "���Ⴀ���낻�날�Ȃ��̔Ԃ�����ˁB";
+			mes "�ǂ����A�y�ɘb���Ƃ�����B";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "え……あ……そんなつもりじゃ……";
-			mes "………………";
-			mes "-しかし、彼女の情報は";
-			mes "とても貴重だった-";
-			mes "-私も仕方なく話を始めた-";
-			mes "………………";
+			mes "���c�c���c�c����Ȃ��肶��c�c";
+			mes "�c�c�c�c�c�c";
+			mes "-�������A�ޏ��̏���";
+			mes "�ƂĂ��M�d������-";
+			mes "-�����d���Ȃ��b���n�߂�-";
+			mes "�c�c�c�c�c�c";
 			next;
-			mes "-^FF0000エリー^000000にであった事-";
-			mes "-^0000FFエリシア^000000、^FF0000キル・ハイル^000000について-";
-			mes "-今までの全てを話した-";
-			mes "…………";
-			mes "……";
-			next;
-			mes "[??????]";
-			mes "ん…………";
-			mes "すごいわね……";
-			mes "機械人形がそこまで…………";
+			mes "-^FF0000�G���[^000000�ɂł�������-";
+			mes "-^0000FF�G���V�A^000000�A^FF0000�L���E�n�C��^000000�ɂ���-";
+			mes "-���܂ł̑S�Ă�b����-";
+			mes "�c�c�c�c";
+			mes "�c�c";
 			next;
 			mes "[??????]";
-			mes "ねぇ。";
-			mes "あなたが私たちを手伝ってくれたら";
-			mes "とても助かるんだけど……";
-			mes "どうかしら？";
+			mes "��c�c�c�c";
+			mes "��������ˁc�c";
+			mes "�@�B�l�`�������܂Łc�c�c�c";
+			next;
+			mes "[??????]";
+			mes "�˂��B";
+			mes "���Ȃ�������������`���Ă��ꂽ��";
+			mes "�ƂĂ�������񂾂��ǁc�c";
+			mes "�ǂ�������H";
 		}
 		next;
-		if(select("手伝う","…………")==2) {
+		if(select("��`��","�c�c�c�c")==2) {
 			mes "[??????]";
-			mes "やっぱり……そうよね……";
-			mes "うんうん……沈黙は肯定よね。";
-			mes "フフ……";
+			mes "����ς�c�c������ˁc�c";
+			mes "���񂤂�c�c���ق͍m���ˁB";
+			mes "�t�t�c�c";
 			next;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "え？";
-			mes "あの……ちょっと!?";
+			mes "���H";
+			mes "���́c�c�������!?";
 			next;
 			mes "[??????]";
-			mes "そう心配しないでいいわ。";
-			mes "あなたの安全は私たちが保障する。";
-			mes "あなたはただ、私たちに協力して";
-			mes "調査さえしてくれればいいのよ。";
+			mes "�����S�z���Ȃ��ł�����B";
+			mes "���Ȃ��̈��S�͎��������ۏႷ��B";
+			mes "���Ȃ��͂����A�������ɋ��͂���";
+			mes "�����������Ă����΂����̂�B";
 			next;
-			menu "……わかりました",-;
+			menu "�c�c�킩��܂���",-;
 			mes "[" +strcharinfo(0)+ "]";
-			mes "…………";
-			mes "わかりました。";
+			mes "�c�c�c�c";
+			mes "�킩��܂����B";
 			next;
 			mes "[??????]";
 		}
 		else {
 			mes "[??????]";
-			mes "あら、意外と物わかりがいいのね。";
+			mes "����A�ӊO�ƕ��킩�肪�����̂ˁB";
 		}
-		mes "フフ……";
-		mes "あ、まだ自己紹介をしてなかったわね。";
-		mes "私はシュバルツバルド情報部所属の";
-		mes "「^0000FFミッチェル・ライラ^000000」";
-		mes "よろしくね。";
+		mes "�t�t�c�c";
+		mes "���A�܂����ȏЉ�����ĂȂ�������ˁB";
+		mes "���̓V���o���c�o���h��񕔏�����";
+		mes "�u^0000FF�~�b�`�F���E���C��^000000�v";
+		mes "��낵���ˁB";
 		set KH_QUE,27;
 		close;
 	case 27:
-		mes "[ミッチェル]";
-		mes "それでは、";
-		mes "いくつか手がかりを上げるわ。";
-		mes "ジュノーで30年程前、";
-		mes "^FF0000キル・ハイル^000000の秘書、";
-		mes "^0000FFエリシア^000000を";
-		mes "見たという女性がいるの。";
+		mes "[�~�b�`�F��]";
+		mes "����ł́A";
+		mes "�������肪������グ���B";
+		mes "�W���m�[��30�N���O�A";
+		mes "^FF0000�L���E�n�C��^000000�̔鏑�A";
+		mes "^0000FF�G���V�A^000000��";
+		mes "�����Ƃ�������������́B";
 		next;
-		mes "[ミッチェル]";
-		mes "しかし、彼女の話によると、";
-		mes "^0000FFエリシア^000000は30年前に自殺し、";
-		mes "今の^FF0000キル・ハイル^000000の秘書である";
-		mes "^0000FFエリシア^000000は";
-		mes "30年前の彼女とまったく同じ";
-		mes "姿をしているとのこと。";
+		mes "[�~�b�`�F��]";
+		mes "�������A�ޏ��̘b�ɂ��ƁA";
+		mes "^0000FF�G���V�A^000000��30�N�O�Ɏ��E���A";
+		mes "����^FF0000�L���E�n�C��^000000�̔鏑�ł���";
+		mes "^0000FF�G���V�A^000000��";
+		mes "30�N�O�̔ޏ��Ƃ܂���������";
+		mes "�p�����Ă���Ƃ̂��ƁB";
 		next;
-		mes "[ミッチェル]";
-		mes "そこで一つの仮定。";
-		mes "^0000FFエリシア^000000のモデルが";
-		mes "まさに彼女ではないかという事。";
-		mes "だから、あなたはジュノーに行って";
-		mes "^0000FFエリシア^000000について調べて欲しいの。";
+		mes "[�~�b�`�F��]";
+		mes "�����ň�̉���B";
+		mes "^0000FF�G���V�A^000000�̃��f����";
+		mes "�܂��ɔޏ��ł͂Ȃ����Ƃ������B";
+		mes "������A���Ȃ��̓W���m�[�ɍs����";
+		mes "^0000FF�G���V�A^000000�ɂ��Ē��ׂė~�����́B";
 		next;
-		mes "[ミッチェル]";
-		mes "情報があつまったら、";
-		mes "キル・ハイル邸宅にいる執事に";
-		mes "声を掛ければ、";
-		mes "私の所まで案内してくれるわ。";
+		mes "[�~�b�`�F��]";
+		mes "��񂪂��܂�����A";
+		mes "�L���E�n�C���@��ɂ��鎷����";
+		mes "�����|����΁A";
+		mes "���̏��܂ňē����Ă�����B";
 		next;
-		mes "[ミッチェル]";
-		mes "準備が整ったら、専用飛行船で";
-		mes "ジュノーまで送ってあげるわよ。";
+		mes "[�~�b�`�F��]";
+		mes "��������������A��p��s�D��";
+		mes "�W���m�[�܂ő����Ă�������B";
 		set KH_QUE,28;
 		close;
 	case 28:
-		mes "[ミッチェル]";
-		mes "どう？";
-		mes "準備はできた？";
+		mes "[�~�b�`�F��]";
+		mes "�ǂ��H";
+		mes "�����͂ł����H";
 		next;
-		if(select("はい","いいえ")==2) {
-			mes "[ミッチェル]";
-			mes "準備ができたら言って。";
+		if(select("�͂�","������")==2) {
+			mes "[�~�b�`�F��]";
+			mes "�������ł����猾���āB";
 			close;
 		}
-		mes "[ミッチェル]";
-		mes "それじゃ、お願いね。";
+		mes "[�~�b�`�F��]";
+		mes "���ꂶ��A���肢�ˁB";
 		close2;
 		warp "yuno.gat",54,209;
 		end;
 	case 33:
-		mes "[ミッチェル]";
-		mes "ああ、お帰りなさい。";
-		mes "何かいい情報があった？";
+		mes "[�~�b�`�F��]";
+		mes "�����A���A��Ȃ����B";
+		mes "����������񂪂������H";
 		next;
-		mes "-あなたはジュノーで得た情報を";
-		mes "詳しく話した-";
+		mes "-���Ȃ��̓W���m�[�œ�������";
+		mes "�ڂ����b����-";
 		next;
-		mes "[ミッチェル]";
-		mes "そう…………";
-		mes "やっぱりあなたに頼んでよかったわ。";
-		mes "有力な情報よ。";
-		mes "そこで、最後のお願いがあるの。";
+		mes "[�~�b�`�F��]";
+		mes "�����c�c�c�c";
+		mes "����ς肠�Ȃ��ɗ���ł悩������B";
+		mes "�L�͂ȏ���B";
+		mes "�����ŁA�Ō�̂��肢������́B";
 		next;
-		mes "[ミッチェル]";
-		mes "その話を^FF0000キル・ハイル^000000にすれば、";
-		mes "^0000FFキエル^000000の正体と";
-		mes "レッケンベルとの関係を";
-		mes "知る事ができるかもしれないの。";
-		mes "お願い、力を貸して。";
+		mes "[�~�b�`�F��]";
+		mes "���̘b��^FF0000�L���E�n�C��^000000�ɂ���΁A";
+		mes "^0000FF�L�G��^000000�̐��̂�";
+		mes "���b�P���x���Ƃ̊֌W��";
+		mes "�m�鎖���ł��邩������Ȃ��́B";
+		mes "���肢�A�͂�݂��āB";
 		next;
-		mes "[ミッチェル]";
-		mes "大丈夫。";
-		mes "危なくなったら私のチームが";
-		mes "フォローに入る。";
-		mes "本当に無理はしなくていいから。";
+		mes "[�~�b�`�F��]";
+		mes "���v�B";
+		mes "��Ȃ��Ȃ����玄�̃`�[����";
+		mes "�t�H���[�ɓ���B";
+		mes "�{���ɖ����͂��Ȃ��Ă�������B";
 		set KH_QUE,34;
 		next;
 		warp "kh_mansion.gat",83,50;
 		end;
 	default:
-		mes "[ミッチェル]";
-		mes "はやく行きましょう。";
+		mes "[�~�b�`�F��]";
+		mes "�͂₭�s���܂��傤�B";
 		next;
 		warp "kh_mansion.gat",83,50;
 		end;
@@ -4100,234 +4100,234 @@ OnTouch:
 }
 
 //============================================================
-// ロシミエル邸NPC
+// ���V�~�G���@NPC
 //------------------------------------------------------------
-yuno.gat,257,140,4	script	妙なお婆さん	846,{
+yuno.gat,257,140,4	script	���Ȃ��k����	846,{
 	if(KH_QUE > 30) {
-		mes "[お婆さん]";
-		mes "眠くないかい？　^0000FFエリシア^000000。";
-		mes "ん？　お腹が空いてるの？";
-		mes "それじゃあご飯にしないとねぇ……";
+		mes "[���k����]";
+		mes "�����Ȃ������H�@^0000FF�G���V�A^000000�B";
+		mes "��H�@�������󂢂Ă�́H";
+		mes "���ꂶ�Ⴀ���тɂ��Ȃ��Ƃ˂��c�c";
 		close;
 	}
 	if(KH_QUE != 28) {
-		mes "[お婆さん]";
-		mes "うちの子はどこに行ったの？";
-		mes "どこ……どこなの？";
+		mes "[���k����]";
+		mes "�����̎q�͂ǂ��ɍs�����́H";
+		mes "�ǂ��c�c�ǂ��Ȃ́H";
 		if(countitem(7500) < 1)
 			close;
 		next;
-		menu "もしかして……",-;
+		menu "���������āc�c",-;
 		cutin "kh_ellisia_port",1;
-		mes "-お婆さんに^0000FFエリシア^000000の";
-		mes "肖像画を見せてみた-";
+		mes "-���k�����^0000FF�G���V�A^000000��";
+		mes "�ё���������Ă݂�-";
 		next;
 		cutin "kh_ellisia_port",255;
-		mes "[お婆さん]";
-		mes "ん？";
-		mes "あぁ！";
-		mes "エリー！　^0000FFエリシア^000000!!";
-		mes "私のエリーを知っている!?";
-		mes "うちの子はどこにいるの!?!";
+		mes "[���k����]";
+		mes "��H";
+		mes "�����I";
+		mes "�G���[�I�@^0000FF�G���V�A^000000!!";
+		mes "���̃G���[��m���Ă���!?";
+		mes "�����̎q�͂ǂ��ɂ����!?!";
 		next;
-		mes "[お婆さん]";
-		mes "うちの子……エリーは";
-		mes "昨日、家を出てから帰ってこないのよ！";
-		mes "うちの子がどこにいるかわかったら";
-		mes "教えてちょうだい！";
+		mes "[���k����]";
+		mes "�����̎q�c�c�G���[��";
+		mes "����A�Ƃ��o�Ă���A���Ă��Ȃ��̂�I";
+		mes "�����̎q���ǂ��ɂ��邩�킩������";
+		mes "�����Ă��傤�����I";
 		next;
-		mes "-……お婆さんは";
-		mes "肖像画を見た一瞬だけ";
-		mes "正気を取り戻したようだが、";
-		mes "またすぐに独り言を";
-		mes "つぶやき始めた-";
+		mes "-�c�c���k�����";
+		mes "�ё����������u����";
+		mes "���C�����߂����悤�����A";
+		mes "�܂������ɓƂ茾��";
+		mes "�Ԃ₫�n�߂�-";
 		close;
 	}
-	mes "[お婆さん]";
-	mes "あぁ、もう泣かないで。";
-	mes "そんなに泣かれたら";
-	mes "眠れないじゃない。";
-	mes "まったくもう……";
+	mes "[���k����]";
+	mes "�����A���������Ȃ��ŁB";
+	mes "����Ȃɋ����ꂽ��";
+	mes "����Ȃ�����Ȃ��B";
+	mes "�܂����������c�c";
 	next;
-	mes "[お婆さん]";
-	mes "ほら、泣き止んで。";
-	mes "泣かない、泣かない。";
-	mes "そんなに泣いてたら";
-	mes "水の中の魚まで";
-	mes "眠れなくなっちゃうわよ。";
+	mes "[���k����]";
+	mes "�ق�A�����~��ŁB";
+	mes "�����Ȃ��A�����Ȃ��B";
+	mes "����Ȃɋ����Ă���";
+	mes "���̒��̋��܂�";
+	mes "����Ȃ��Ȃ����Ⴄ���B";
 	next;
-	if(select("何をしているんですか？","子供がよく泣くのですか？")==1) {
-		mes "[お婆さん]";
-		mes "うん？";
-		mes "あぁ……うちの子が泣き止まなくて、";
-		mes "全然寝られないのよ。";
-		mes "この子が寝ると私も安心して";
-		mes "仕事ができるのに……";
+	if(select("�������Ă����ł����H","�q�����悭�����̂ł����H")==1) {
+		mes "[���k����]";
+		mes "����H";
+		mes "�����c�c�����̎q�������~�܂Ȃ��āA";
+		mes "�S�R�Q���Ȃ��̂�B";
+		mes "���̎q���Q��Ǝ������S����";
+		mes "�d�����ł���̂Ɂc�c";
 		next;
-		mes "[お婆さん]";
-		mes "子供が寝ないから仕事ができなくて";
-		mes "生活が台無しなのよ……";
+		mes "[���k����]";
+		mes "�q�����Q�Ȃ�����d�����ł��Ȃ���";
+		mes "�������䖳���Ȃ̂�c�c";
 		next;
-		menu "子供はどこにいるのですか？",-;
-		mes "[お婆さん]";
-		mes "ん？";
-		mes "あ！　まったくどこ行ってたの！";
-		mes "どれだけ心配したか……";
-		mes "遊びに行ってばかりいるんじゃないの！";
+		menu "�q���͂ǂ��ɂ���̂ł����H",-;
+		mes "[���k����]";
+		mes "��H";
+		mes "���I�@�܂������ǂ��s���Ă��́I";
+		mes "�ǂꂾ���S�z�������c�c";
+		mes "�V�тɍs���Ă΂��肢��񂶂�Ȃ��́I";
 		next;
-		mes "[お婆さん]";
-		mes "ごめんなさいね。";
-		mes "迷惑かけちゃって。";
-		mes "ほら、はやく帰るよ！";
-		mes "まったくもう……";
+		mes "[���k����]";
+		mes "���߂�Ȃ����ˁB";
+		mes "���f����������āB";
+		mes "�ق�A�͂₭�A���I";
+		mes "�܂����������c�c";
 	}
 	else {
-		mes "[お婆さん]";
-		mes "うん？　うん……";
-		mes "子供が寒いって泣いてねぇ。";
-		mes "そんなに寒いなら";
-		mes "すぐに帰って来ればいいのに。";
+		mes "[���k����]";
+		mes "����H�@����c�c";
+		mes "�q�����������ċ����Ă˂��B";
+		mes "����ȂɊ����Ȃ�";
+		mes "�����ɋA���ė���΂����̂ɁB";
 		next;
-		mes "[お婆さん]";
-		mes "どうしてそんなに水が好きなの……";
-		mes "ほら、エリシア。";
-		mes "こっちに来て早く寝なさい。";
+		mes "[���k����]";
+		mes "�ǂ����Ă���Ȃɐ����D���Ȃ́c�c";
+		mes "�ق�A�G���V�A�B";
+		mes "�������ɗ��đ����Q�Ȃ����B";
 		next;
-		mes "[お婆さん]";
-		mes "早く寝てくれないと";
-		mes "仕事ができないじゃない……";
+		mes "[���k����]";
+		mes "�����Q�Ă���Ȃ���";
+		mes "�d�����ł��Ȃ�����Ȃ��c�c";
 	}
 	sc_start SC_CURSE,30000,1;
 	set KH_QUE,29;
 	close;
 }
 
-yuno.gat,250,132,7	script	おばさん	711,{
+yuno.gat,250,132,7	script	���΂���	711,{
 	if(KH_QUE < 29) {
-		mes "[おばさん]";
-		mes "はぁ……";
-		mes "最近、年のせいか";
-		mes "なんだか疲れるわぁ……";
+		mes "[���΂���]";
+		mes "�͂��c�c";
+		mes "�ŋ߁A�N�̂�����";
+		mes "�Ȃ񂾂�����킟�c�c";
 		close;
 	}
 	switch(KH_QUE) {
 	case 29:
-		mes "[おばさん]";
-		mes "んー……";
-		mes "なんだか天気が悪いわね。";
+		mes "[���΂���]";
+		mes "��[�c�c";
+		mes "�Ȃ񂾂��V�C��������ˁB";
 		next;
-		if(select("…………","あのお婆さんの事でちょっと……")==1) {
-			mes "[おばさん]";
-			mes "私も年をとったわねぇ……";
-			mes "……はぁ…………";
+		if(select("�c�c�c�c","���̂��k����̎��ł�����Ɓc�c")==1) {
+			mes "[���΂���]";
+			mes "�����N���Ƃ�����˂��c�c";
+			mes "�c�c�͂��c�c�c�c";
 			close;
 		}
-		mes "[おばさん]";
-		mes "ん？　あぁ……あの人？";
-		mes "あの人ならよく知ってるよ。";
-		mes "私の友達のお母さん。";
-		mes "「^0000FFエリシア^000000」……";
-		mes "若い頃に死んじゃったの……";
-		mes "本当に良い子だったのに……";
+		mes "[���΂���]";
+		mes "��H�@�����c�c���̐l�H";
+		mes "���̐l�Ȃ�悭�m���Ă��B";
+		mes "���̗F�B�̂��ꂳ��B";
+		mes "�u^0000FF�G���V�A^000000�v�c�c";
+		mes "�Ⴂ���Ɏ��񂶂�����́c�c";
+		mes "�{���ɗǂ��q�������̂Ɂc�c";
 		next;
-		mes "[おばさん]";
-		mes "あの日以来、あのお婆さんは";
-		mes "ショックであんな風に";
-		mes "なってしまったのよ…………";
+		mes "[���΂���]";
+		mes "���̓��ȗ��A���̂��k�����";
+		mes "�V���b�N�ł���ȕ���";
+		mes "�Ȃ��Ă��܂����̂�c�c�c�c";
 		next;
-		menu "^0000FFエリシア^000000さんは……",-;
-		mes "[おばさん]";
-		mes "^0000FFエリシア^000000は……";
-		mes "本当にきれいだったわ……";
-		mes "女の私が言うぐらいよ。";
+		menu "^0000FF�G���V�A^000000����́c�c",-;
+		mes "[���΂���]";
+		mes "^0000FF�G���V�A^000000�́c�c";
+		mes "�{���ɂ��ꂢ��������c�c";
+		mes "���̎����������炢��B";
 		next;
-		mes "[おばさん]";
-		mes "だから、周囲の男たちからも";
-		mes "人気があったの。";
-		mes "特にあのロシミエル家の長男、";
-		mes "ジェームズが熱中してたわ。";
-		mes "聞いた話だとプロポーズを";
-		mes "したらしいんだけど……";
+		mes "[���΂���]";
+		mes "������A���͂̒j���������";
+		mes "�l�C���������́B";
+		mes "���ɂ��̃��V�~�G���Ƃ̒��j�A";
+		mes "�W�F�[���Y���M�����Ă���B";
+		mes "�������b���ƃv���|�[�Y��";
+		mes "�����炵���񂾂��ǁc�c";
 		next;
-		mes "[おばさん]";
-		mes "数日後に^0000FFエリシア^000000が";
-		mes "死んだせいか、ロシミエル家は";
-		mes "破産したの。";
-		mes "…………";
+		mes "[���΂���]";
+		mes "�������^0000FF�G���V�A^000000��";
+		mes "���񂾂������A���V�~�G���Ƃ�";
+		mes "�j�Y�����́B";
+		mes "�c�c�c�c";
 		next;
-		menu "ロシミエル？",-;
-		mes "[おばさん]";
-		mes "ああ……ロシミエルは";
-		mes "ジュノーの中でも由緒ある家門。";
-		mes "でも……";
-		mes "^0000FFエリシア^000000が死んだ後、";
-		mes "息子のジェームズが事業を失敗して、";
-		mes "破産したのよ……";
+		menu "���V�~�G���H",-;
+		mes "[���΂���]";
+		mes "�����c�c���V�~�G����";
+		mes "�W���m�[�̒��ł��R������Ɩ�B";
+		mes "�ł��c�c";
+		mes "^0000FF�G���V�A^000000�����񂾌�A";
+		mes "���q�̃W�F�[���Y�����Ƃ����s���āA";
+		mes "�j�Y�����̂�c�c";
 		next;
-		mes "[おばさん]";
-		mes "その時、邸宅を管理していた私に";
-		mes "鍵を任せられたのよ……";
+		mes "[���΂���]";
+		mes "���̎��A�@����Ǘ����Ă�������";
+		mes "����C����ꂽ�̂�c�c";
 		next;
-		menu "邸宅に入ることはできますか？",-;
-		mes "[おばさん]";
-		mes "うーん……本当はできないけど……";
-		mes "あなたは^0000FFエリシア^000000を";
-		mes "知っているし、信じて鍵を預けるわ。";
-		mes "市の役員が来る前に";
-		mes "鍵を返してちょうだいね。";
+		menu "�@��ɓ��邱�Ƃ͂ł��܂����H",-;
+		mes "[���΂���]";
+		mes "���[��c�c�{���͂ł��Ȃ����ǁc�c";
+		mes "���Ȃ���^0000FF�G���V�A^000000��";
+		mes "�m���Ă��邵�A�M���Č���a�����B";
+		mes "�s�̖���������O��";
+		mes "����Ԃ��Ă��傤�����ˁB";
 		getitem 7498,1;
 		set KH_QUE,30;
 		close;
 	case 30:
 		if(countitem(7499) < 1 || countitem(7500) < 1 || countitem(7501) < 1 || countitem(7502) < 1) {
-			mes "[おばさん]";
-			mes "行くなら早く行って、";
-			mes "鍵を返してね。";
+			mes "[���΂���]";
+			mes "�s���Ȃ瑁���s���āA";
+			mes "����Ԃ��ĂˁB";
 			close;
 		}
-		mes "[おばさん]";
-		mes "終わったの？";
-		mes "お金になりそうな物は";
-		mes "ほとんどなかったでしょ。";
-		mes "ずいぶん前に多くの人が";
-		mes "持って行っちゃったのよ。";
+		mes "[���΂���]";
+		mes "�I������́H";
+		mes "�����ɂȂ肻���ȕ���";
+		mes "�قƂ�ǂȂ������ł���B";
+		mes "�����Ԃ�O�ɑ����̐l��";
+		mes "�����čs����������̂�B";
 		next;
-		menu "^0000FFエリシア^000000はなぜ……？",-;
-		mes "[おばさん]";
-		mes "ああ……";
-		mes "前にロシミエルの長男、";
-		mes "ジェームズが^0000FFエリシア^000000と";
-		mes "結婚を約束したって言わなかった？";
+		menu "^0000FF�G���V�A^000000�͂Ȃ��c�c�H",-;
+		mes "[���΂���]";
+		mes "�����c�c";
+		mes "�O�Ƀ��V�~�G���̒��j�A";
+		mes "�W�F�[���Y��^0000FF�G���V�A^000000��";
+		mes "������񑩂������Č���Ȃ������H";
 		next;
-		mes "[おばさん]";
-		mes "でも、実はジェームズには";
-		mes "親が決めた婚約者がいたのよ。";
-		mes "それで、ジェームズはその";
-		mes "婚約者と結婚してしまったのよ。";
+		mes "[���΂���]";
+		mes "�ł��A���̓W�F�[���Y�ɂ�";
+		mes "�e�����߂�����҂������̂�B";
+		mes "����ŁA�W�F�[���Y�͂���";
+		mes "����҂ƌ������Ă��܂����̂�B";
 		next;
-		mes "[おばさん]";
-		mes "^0000FFエリシア^000000は随分と傷ついてね……";
-		mes "自殺してしまったのよ……";
+		mes "[���΂���]";
+		mes "^0000FF�G���V�A^000000�͐����Ə����Ăˁc�c";
+		mes "���E���Ă��܂����̂�c�c";
 		next;
-		menu "もうちょっと詳しく……",-;
-		mes "[おばさん]";
-		mes "それなら私より「キル・ハイル学院」の";
-		mes "南で暮らしている漁師さんに";
-		mes "聞いてみるといいわ。";
-		mes "その人が川で^0000FFエリシア^000000の";
-		mes "死体を見つけたのよ。";
-		mes "あとはその人に聞いてみなさい。";
+		menu "����������Əڂ����c�c",-;
+		mes "[���΂���]";
+		mes "����Ȃ玄���u�L���E�n�C���w�@�v��";
+		mes "��ŕ�炵�Ă��鋙�t�����";
+		mes "�����Ă݂�Ƃ�����B";
+		mes "���̐l�����^0000FF�G���V�A^000000��";
+		mes "���̂��������̂�B";
+		mes "���Ƃ͂��̐l�ɕ����Ă݂Ȃ����B";
 		delitem 7498,1;
 		set KH_QUE,31;
 		close;
 	default:
-		mes "[おばさん]";
-		mes "ふぅ……洗濯物しないと。";
+		mes "[���΂���]";
+		mes "�ӂ��c�c���󕨂��Ȃ��ƁB";
 		close;
 	}
 }
 
-yuno.gat,273,141,0	script	ロシミエル邸入口	45,1,1,{
+yuno.gat,273,141,0	script	���V�~�G���@����	45,1,1,{
 	if(KH_QUE == 30)
 		warp "kh_rossi.gat",20,92;
 	else
@@ -4335,277 +4335,277 @@ yuno.gat,273,141,0	script	ロシミエル邸入口	45,1,1,{
 	end;
 }
 
-kh_rossi.gat,23,23,0	script	テーブル	111,{
+kh_rossi.gat,23,23,0	script	�e�[�u��	111,{
 	if(KH_QUE != 30)
 		end;
 	if(countitem(7499)) {
-		mes "-肖像画があった机だ-";
+		mes "-�ё��悪����������-";
 		close;
 	}
 	cutin "kh_family_port",1;
-	mes "-机をよく調べると、";
-	mes "引き出しを開けることができた-";
-	mes "-引き出しの中には";
-	mes "肖像画が入っていた-";
+	mes "-�����悭���ׂ�ƁA";
+	mes "�����o�����J���邱�Ƃ��ł���-";
+	mes "-�����o���̒��ɂ�";
+	mes "�ё��悪�����Ă���-";
 	getitem 7499,1;
 	close2;
 	cutin "kh_family_port",255;
 	end;
 }
 
-kh_rossi.gat,92,40,0	script	書棚	111,{
+kh_rossi.gat,92,40,0	script	���I	111,{
 	if(KH_QUE != 30)
 		end;
 	if(countitem(7500)) {
-		mes "-女性の肖像画を見つけた棚だ-";
+		mes "-�����̏ё�����������I��-";
 		close;
 	}
-	mes "-鍵が掛かった引き出しがある-";
+	mes "-�����|�����������o��������-";
 	next;
-	if(select("鍵を使う","ほおっておく")==1) {
-		if(select("1つ目の引き出し","2つ目の引き出し")==1) {
+	if(select("�����g��","�ق����Ă���")==1) {
+		if(select("1�ڂ̈����o��","2�ڂ̈����o��")==1) {
 			cutin "kh_ellisia_port",2;
-			mes "-机をよく調べると、";
-			mes "引き出しを開けることができた-";
-			mes "-引き出しの中には";
-			mes "肖像画が入っていた-";
+			mes "-�����悭���ׂ�ƁA";
+			mes "�����o�����J���邱�Ƃ��ł���-";
+			mes "-�����o���̒��ɂ�";
+			mes "�ё��悪�����Ă���-";
 			getitem 7500,1;
 			close2;
 			cutin "kh_ellisia_port",255;
 			end;
 		}
 	}
-	mes "-特に何も無い-";
+	mes "-���ɉ�������-";
 	close;
 }
 
-kh_rossi.gat,144,286,0	script	机	111,{
+kh_rossi.gat,144,286,0	script	��	111,{
 	if(KH_QUE != 30)
 		end;
-	mes "-3個の引き出しがある机だ-";
+	mes "-3�̈����o�����������-";
 	next;
-	switch(select("1個目の引き出し","2個目の引き出し","3個目の引き出し","気にしない")) {
+	switch(select("1�ڂ̈����o��","2�ڂ̈����o��","3�ڂ̈����o��","�C�ɂ��Ȃ�")) {
 	case 1:
-		mes "-何かにひっかかって開かない-";
+		mes "-�����ɂЂ��������ĊJ���Ȃ�-";
 		close;
 	case 2:
 		if(countitem(7501)) {
-			mes "-引き出しの中は空っぽだ-";
+			mes "-�����o���̒��͋���ۂ�-";
 			close;
 		}
-		mes "-引き出しの中に手紙があった-";
+		mes "-�����o���̒��Ɏ莆��������-";
 		next;
-		mes "-「k.h」というイニシャルの人が";
-		mes "^0000FFエリシア^000000に送る手紙のようだ-";
+		mes "-�uk.h�v�Ƃ����C�j�V�����̐l��";
+		mes "^0000FF�G���V�A^000000�ɑ���莆�̂悤��-";
 		getitem 7501,1;
 		close;
 	case 3:
-		mes "-引き出しの中に手紙があった-";
+		mes "-�����o���̒��Ɏ莆��������-";
 		next;
-		mes "-手紙の内容は、ジェームズが";
-		mes "^0000FFエリシア^000000にプロポーズする";
-		mes "ものだった-";
-		mes "-^0000FFエリシア^000000はジェームズから";
-		mes "婚約指輪を受けとったようだ-";
+		mes "-�莆�̓��e�́A�W�F�[���Y��";
+		mes "^0000FF�G���V�A^000000�Ƀv���|�[�Y����";
+		mes "���̂�����-";
+		mes "-^0000FF�G���V�A^000000�̓W�F�[���Y����";
+		mes "����w�ւ��󂯂Ƃ����悤��-";
 		close;
 	case 4:
-		mes "………………";
+		mes "�c�c�c�c�c�c";
 		close;
 	}
 }
 
-kh_rossi.gat,148,288,0	script	本棚	111,{
+kh_rossi.gat,148,288,0	script	�{�I	111,{
 	if(KH_QUE != 30)
 		end;
 	if(countitem(7502)) {
-		mes "-ほこりの積もった本がある-";
+		mes "-�ق���̐ς������{������-";
 		close;
 	}
-	mes "-本棚にしまわれた本の間に";
-	mes "ジェームズのメッセージが";
-	mes "挟まっているのを見つけた-";
+	mes "-�{�I�ɂ��܂�ꂽ�{�̊Ԃ�";
+	mes "�W�F�[���Y�̃��b�Z�[�W��";
+	mes "���܂��Ă���̂�������-";
 	getitem 7502,1;
 	close;
 }
 
-yuno_fild12.gat,232,222,6	script	老けた漁師	709,{
+yuno_fild12.gat,232,222,6	script	�V�������t	709,{
 	if(KH_QUE > 31) {
-		mes "[漁師]";
-		mes "なんだよ忘れたのか？";
-		mes "ったく若いくせによ。";
-		mes "もう一度言ってやるから";
-		mes "ちゃんと覚えろよな。";
+		mes "[���t]";
+		mes "�Ȃ񂾂�Y�ꂽ�̂��H";
+		mes "�������Ⴂ�����ɂ�B";
+		mes "������x�����Ă�邩��";
+		mes "�����Ɗo�����ȁB";
 		next;
-		mes "[漁師]";
-		mes "「^FF0000北東の方角^000000」にある";
-		mes "「^FF0000警備隊野営地^000000」の小屋";
-		mes "わかったな？";
+		mes "[���t]";
+		mes "�u^FF0000�k���̕��p^000000�v�ɂ���";
+		mes "�u^FF0000�x������c�n^000000�v�̏���";
+		mes "�킩�����ȁH";
 		close;
 	}
 	if(KH_QUE < 31) {
-		mes "[漁師]";
-		mes "あーぁ、釣れんなぁ。";
-		mes "めっきり魚の数が減りやがってよぉ。";
+		mes "[���t]";
+		mes "���[���A�ނ��Ȃ��B";
+		mes "�߂����苛�̐�������₪���Ă悧�B";
 		close;
 	}
-	mes "[漁師]";
-	mes "ん？";
-	mes "何だお前？";
-	mes "何か俺に用か？";
-	mes "頼みごとがあるなら何かくれよ。";
-	mes "何か。";
+	mes "[���t]";
+	mes "��H";
+	mes "�������O�H";
+	mes "�������ɗp���H";
+	mes "���݂��Ƃ�����Ȃ牽�������B";
+	mes "�����B";
 	next;
-	mes "[漁師]";
-	mes "ふぅー";
-	mes "そういえば最近、";
-	mes "新鮮なさしみを食ってないなー";
-	mes "あー、腹減ったー";
+	mes "[���t]";
+	mes "�ӂ��[";
+	mes "���������΍ŋ߁A";
+	mes "�V�N�Ȃ����݂�H���ĂȂ��ȁ[";
+	mes "���[�A���������[";
 	if(countitem(544) < 10)
 		close;
 	next;
-	mes "[漁師]";
-	mes "ん？";
-	mes "それを俺にくれるのか？";
-	mes "ほんとか？";
-	mes "へっへっへ……ありがとよ。";
-	mes "おっと、何か用があるんだろ？";
-	mes "遠慮なく言いな。";
+	mes "[���t]";
+	mes "��H";
+	mes "��������ɂ����̂��H";
+	mes "�ق�Ƃ��H";
+	mes "�ւ��ւ��ցc�c���肪�Ƃ�B";
+	mes "�����ƁA�����p������񂾂�H";
+	mes "�����Ȃ������ȁB";
 	delitem 544,10;
 	next;
-	menu "30年前にここで……",-;
-	mes "[漁師]";
-	mes "ん？　ああ……まだ覚えてるよ。";
-	mes "30年前の8月20日のことだろ？";
-	mes "あれはよく憶えている。";
-	mes "何せ女房の誕生日だからよ。";
-	mes "へへ。";
+	menu "30�N�O�ɂ����Łc�c",-;
+	mes "[���t]";
+	mes "��H�@�����c�c�܂��o���Ă��B";
+	mes "30�N�O��8��20���̂��Ƃ���H";
+	mes "����͂悭�����Ă���B";
+	mes "�������[�̒a�����������B";
+	mes "�ւցB";
 	next;
-	mes "[漁師]";
-	mes "それで、女房に何か";
-	mes "贈り物でもするかって思って";
-	mes "朝早くから網を投げに来てたんだ。";
+	mes "[���t]";
+	mes "����ŁA���[�ɉ���";
+	mes "���蕨�ł����邩���Ďv����";
+	mes "����������Ԃ𓊂��ɗ��Ă��񂾁B";
 	next;
-	mes "[漁師]";
-	mes "ところが、妙に網が重くて";
-	mes "「大物だ！」って思って";
-	mes "引き上げてみたら、";
-	mes "なんと、女の死体を引き上げちまった。";
+	mes "[���t]";
+	mes "�Ƃ��낪�A���ɖԂ��d����";
+	mes "�u�啨���I�v���Ďv����";
+	mes "�����グ�Ă݂���A";
+	mes "�Ȃ�ƁA���̎��̂������グ���܂����B";
 	next;
-	mes "[漁師]";
-	mes "驚いてジュノー警備隊に届けたよ。";
-	mes "後から聞いたんだけど、その女は";
-	mes "好きだった男に裏切られて";
-	mes "自殺しちまったんだと。";
-	mes "ったく、悪い男もいるもんだぜ。";
+	mes "[���t]";
+	mes "�����ăW���m�[�x�����ɓ͂�����B";
+	mes "�ォ�畷�����񂾂��ǁA���̏���";
+	mes "�D���������j�ɗ��؂���";
+	mes "���E�����܂����񂾂ƁB";
+	mes "�������A�����j��������񂾂��B";
 	next;
-	mes "[漁師]";
-	mes "それで、その女の死体を警備隊";
-	mes "がジュノーに持っていく途中に、";
-	mes "ぎゅっと握られていたその女の手から";
-	mes "何か光る物が落ちたんだ。";
+	mes "[���t]";
+	mes "����ŁA���̏��̎��̂��x����";
+	mes "���W���m�[�Ɏ����Ă����r���ɁA";
+	mes "������ƈ����Ă������̏��̎肩��";
+	mes "�������镨���������񂾁B";
 	next;
-	mes "[漁師]";
-	mes "ところが、警備隊の誰も";
-	mes "気付きやしなかったら、";
-	mes "警備隊がいなくなってから、";
-	mes "こっそりとそれを探してみたんだ。";
+	mes "[���t]";
+	mes "�Ƃ��낪�A�x�����̒N��";
+	mes "�C�t���₵�Ȃ�������A";
+	mes "�x���������Ȃ��Ȃ��Ă���A";
+	mes "��������Ƃ����T���Ă݂��񂾁B";
 	next;
-	mes "[漁師]";
-	mes "すると、すごく高そうな";
-	mes "指輪が落ちていたんだ。";
+	mes "[���t]";
+	mes "����ƁA��������������";
+	mes "�w�ւ������Ă����񂾁B";
 	next;
-	mes "[漁師]";
-	mes "これをどうするかって思ったけどよ。";
-	mes "死体が指輪しててもしょうがないだろ？";
-	mes "なら、生きてる俺の役に立つ方が";
-	mes "いいってもんじゃねぇか？";
+	mes "[���t]";
+	mes "������ǂ����邩���Ďv�������ǂ�B";
+	mes "���̂��w�ւ��ĂĂ����傤���Ȃ�����H";
+	mes "�Ȃ�A�����Ă鉴�̖��ɗ�����";
+	mes "�������Ă��񂶂�˂����H";
 	next;
-	mes "[漁師]";
-	mes "それで、指輪を売って女房への";
-	mes "贈り物でも買おうと思っていたら、";
-	mes "ある男が一心不乱にこっちに";
-	mes "走ってくるじゃないか。";
+	mes "[���t]";
+	mes "����ŁA�w�ւ𔄂��ď��[�ւ�";
+	mes "���蕨�ł��������Ǝv���Ă�����A";
+	mes "����j����S�s���ɂ�������";
+	mes "�����Ă��邶��Ȃ����B";
 	next;
-	mes "[漁師]";
-	mes "すると、その男は鬼気迫る感じで";
-	mes "俺に女の死体を引き上げた本人か";
-	mes "聞いてきてよ。";
-	mes "ちょっと恐かったから、素直に";
-	mes "そうだって言ったんだ。";
+	mes "[���t]";
+	mes "����ƁA���̒j�͋S�C���銴����";
+	mes "���ɏ��̎��̂������グ���{�l��";
+	mes "�����Ă��Ă�B";
+	mes "������Ƌ�����������A�f����";
+	mes "���������Č������񂾁B";
 	next;
-	mes "[漁師]";
-	mes "そしたら、指輪を拾わなかったか？";
-	mes "と聞いてきやがった。";
-	mes "俺は知らん振りをしたね。";
+	mes "[���t]";
+	mes "��������A�w�ւ��E��Ȃ��������H";
+	mes "�ƕ����Ă��₪�����B";
+	mes "���͒m���U��������ˁB";
 	next;
-	mes "[漁師]";
-	mes "すると、その男はどうしてもその指輪が";
-	mes "必要だと何度も言ってくるんだ。";
-	mes "指輪は高く買うとも言った。";
+	mes "[���t]";
+	mes "����ƁA���̒j�͂ǂ����Ă����̎w�ւ�";
+	mes "�K�v���Ɖ��x�������Ă���񂾁B";
+	mes "�w�ւ͍��������Ƃ��������B";
 	next;
-	mes "[漁師]";
-	mes "それなら、こいつに高く";
-	mes "買ってもらおうと思ってよ。";
-	mes "まぁ、男の気迫に負けたってのも";
-	mes "あったけどな。";
-	mes "その男に指輪を売ったんだ。";
+	mes "[���t]";
+	mes "����Ȃ�A�����ɍ���";
+	mes "�����Ă��炨���Ǝv���Ă�B";
+	mes "�܂��A�j�̋C���ɕ��������Ă̂�";
+	mes "���������ǂȁB";
+	mes "���̒j�Ɏw�ւ𔄂����񂾁B";
 	next;
-	mes "[漁師]";
-	mes "そしたら、予想外の大金をくれてよ。";
-	mes "後で村のやつから聞いたら、";
-	mes "故障した機械を修理しながら";
-	mes "細々と暮らす人だったってよ。";
-	mes "その後、どっかいっちまったらしい。";
+	mes "[���t]";
+	mes "��������A�\�z�O�̑��������Ă�B";
+	mes "��ő��̂���畷������A";
+	mes "�̏Ⴕ���@�B���C�����Ȃ���";
+	mes "�ׁX�ƕ�炷�l���������Ă�B";
+	mes "���̌�A�ǂ����������܂����炵���B";
 	next;
-	mes "[漁師]";
-	mes "まぁ、俺の知ってるのはこれぐらいだ。";
+	mes "[���t]";
+	mes "�܂��A���̒m���Ă�̂͂��ꂮ�炢���B";
 	next;
-	menu "その男の名前は？",-;
-	mes "[漁師]";
-	mes "ん？　名前？";
-	mes "あー、聞いた……か？";
-	mes "う〜ん、どっちにしろ";
-	mes "覚えてないなぁ。";
+	menu "���̒j�̖��O�́H",-;
+	mes "[���t]";
+	mes "��H�@���O�H";
+	mes "���[�A�������c�c���H";
+	mes "���`��A�ǂ����ɂ���";
+	mes "�o���ĂȂ��Ȃ��B";
 	next;
-	mes "[漁師]";
-	mes "何せ30年前だしな。";
-	mes "あぁ、でも住んでた場所は覚えている。";
-	mes "確か、「^FF0000北東の方角^000000」にある";
-	mes "「^FF0000警備隊野営地^000000」の小屋";
-	mes "だったよ。";
+	mes "[���t]";
+	mes "����30�N�O�����ȁB";
+	mes "�����A�ł��Z��ł��ꏊ�͊o���Ă���B";
+	mes "�m���A�u^FF0000�k���̕��p^000000�v�ɂ���";
+	mes "�u^FF0000�x������c�n^000000�v�̏���";
+	mes "��������B";
 	set KH_QUE,32;
 	close;
 }
 
-yuno_fild09.gat,158,217,0	script	木板	111,{
+yuno_fild09.gat,158,217,0	script	�ؔ�	111,{
 	if(KH_QUE != 32) {
-		mes "-沢山の木の板が";
-		mes "草むらの中に落ちている-";
+		mes "-��R�̖؂̔�";
+		mes "���ނ�̒��ɗ����Ă���-";
 		close;
 	}
-	mes "-木の板が落ちている-";
-	mes "-木の板にはK.Hという字が";
-	mes "書いている-";
+	mes "-�؂̔������Ă���-";
+	mes "-�؂̔ɂ�K.H�Ƃ�������";
+	mes "�����Ă���-";
 	next;
 	cutin "kh_kyel_port",2;
-	mes "-木の板をひっくり返すと、";
-	mes "どこかで見たような若い男の";
-	mes "肖像画が描かれていた-";
-	mes "-……どこか^FF0000キル・ハイル^000000さんに";
-	mes "似ている気がする-";
+	mes "-�؂̔��Ђ�����Ԃ��ƁA";
+	mes "�ǂ����Ō����悤�ȎႢ�j��";
+	mes "�ё��悪�`����Ă���-";
+	mes "-�c�c�ǂ���^FF0000�L���E�n�C��^000000�����";
+	mes "���Ă���C������-";
 	getitem 7503,1;
 	set KH_QUE,33;
 	next;
 	cutin "kh_kyel_port",255;
-	mes "-ある程度情報が集まったみたいだ-";
-	mes "-「ミッチェル」に会いに行こう-";
+	mes "-������x��񂪏W�܂����݂�����-";
+	mes "-�u�~�b�`�F���v�ɉ�ɍs����-";
 	close;
 }
 
 //============================================================
-// キエルの部屋NPC
+// �L�G���̕���NPC
 //------------------------------------------------------------
-kh_mansion.gat,27,27,0	script	キエルの部屋入口#kiel	45,1,1,{
+kh_mansion.gat,27,27,0	script	�L�G���̕�������#kiel	45,1,1,{
 	warp "kh_kiehl01.gat",10,31;
 	end;
 OnInit:
@@ -4613,31 +4613,31 @@ OnInit:
 	end;
 }
 
-kh_kiehl01.gat,17,39,0	script	受信機#kiel	111,{
+kh_kiehl01.gat,17,39,0	script	��M�@#kiel	111,{
 	if('mob)
 		end;
-	mes "-……ジ……ジジ……ジ……-";
+	mes "-�c�c�W�c�c�W�W�c�c�W�c�c-";
 	if(KH_QUE == 36) {
-		mes "-雑音まみれの受信機から";
-		mes "誰かの声が流れてきた-";
+		mes "-�G���܂݂�̎�M�@����";
+		mes "�N���̐�������Ă���-";
 		next;
 		mes "[????]";
-		mes "おやおや。";
-		mes "見慣れない顔ですね……";
-		mes "父に送られた刺客……でしょうか。";
+		mes "���₨��B";
+		mes "������Ȃ���ł��ˁc�c";
+		mes "���ɑ���ꂽ�h�q�c�c�ł��傤���B";
 		next;
 		mes "[????]";
-		mes "フフ……";
-		mes "そうですね……";
-		mes "ここまで無事に来れたら、";
-		mes "私のスクロールを差し上げましょう。";
-		mes "あなたの力、見せて頂きますよ。";
+		mes "�t�t�c�c";
+		mes "�����ł��ˁc�c";
+		mes "�����܂Ŗ����ɗ��ꂽ��A";
+		mes "���̃X�N���[���������グ�܂��傤�B";
+		mes "���Ȃ��̗́A�����Ē����܂���B";
 		set KH_QUE,37;
 	}
 	close2;
 	set 'mob,'mob+2;
-	monster "kh_kiehl01.gat",17,33,"エリセル",1739,1,"受信機#kiel::OnKilled";
-	monster "kh_kiehl01.gat",18,33,"エリオット",1740,1,"受信機#kiel::OnKilled";
+	monster "kh_kiehl01.gat",17,33,"�G���Z��",1739,1,"��M�@#kiel::OnKilled";
+	monster "kh_kiehl01.gat",18,33,"�G���I�b�g",1740,1,"��M�@#kiel::OnKilled";
 	end;
 OnKilled:
 	set 'mob,'mob-1;
@@ -4646,63 +4646,63 @@ OnKilled:
 	end;
 }
 
-kh_kiehl01.gat,13,40,0	script	花瓶	111,{
+kh_kiehl01.gat,13,40,0	script	�ԕr	111,{
 	if(KH_QUE < 38) {
-		mes "-花瓶が置かれている-";
+		mes "-�ԕr���u����Ă���-";
 		if(KH_QUE != 37)
 			close;
 		next;
-		switch(select("花瓶を手にもつ","花瓶を壊す","花瓶をひっくり返す")) {
+		switch(select("�ԕr����ɂ���","�ԕr����","�ԕr���Ђ�����Ԃ�")) {
 		case 1:
-			mes "-何も起きない-";
+			mes "-�����N���Ȃ�-";
 			close;
 		case 2:
-			mes "-……割れない-";
-			mes "-レッケンベルの特製品か？-";
+			mes "-�c�c����Ȃ�-";
+			mes "-���b�P���x���̓����i���H-";
 			close;
 		case 3:
 			set KH_QUE,38;
 			break;
 		}
 	}
-	mes "-花瓶の底に";
-	mes "文字が書かれている-";
-	mes "^FF0000-全ては彼女のために-";
-	mes "-全ては思い出のために-";
-	mes "-愛しい君の事は忘れない……-";
+	mes "-�ԕr�̒��";
+	mes "������������Ă���-";
+	mes "^FF0000-�S�Ă͔ޏ��̂��߂�-";
+	mes "-�S�Ă͎v���o�̂��߂�-";
+	mes "-�������N�̎��͖Y��Ȃ��c�c-";
 	close;
 }
 
-kh_kiehl01.gat,19,24,0	script	箱	111,{
+kh_kiehl01.gat,19,24,0	script	��	111,{
 	if(KH_QUE >= 39) {
-		mes "-箱の中にはもう何も無い-";
+		mes "-���̒��ɂ͂�����������-";
 		close;
 	}
-	mes "-箱が開かない-";
-	mes "-よく見ると、箱には";
-	mes "文字が沢山並んでいる-";
+	mes "-�����J���Ȃ�-";
+	mes "-�悭����ƁA���ɂ�";
+	mes "��������R����ł���-";
 	next;
 	input '@str$;
-	if('@str$ != "エリシア" || KH_QUE != 38) {
-		mes "「ピー！」";
-		mes "「暗号が違います！」";
+	if('@str$ != "�G���V�A" || KH_QUE != 38) {
+		mes "�u�s�[�I�v";
+		mes "�u�Í����Ⴂ�܂��I�v";
 		close;
 	}
-	mes "-箱を開けると、";
-	mes "「チャリン」という音がした-";
-	mes "-箱の中には";
-	mes "^FF0000小さな鍵^000000が入っていた-";
+	mes "-�����J����ƁA";
+	mes "�u�`�������v�Ƃ�����������-";
+	mes "-���̒��ɂ�";
+	mes "^FF0000�����Ȍ�^000000�������Ă���-";
 	getitem 7505,1;
 	set KH_QUE,39;
 	close;
 }
 
-kh_kiehl01.gat,44,33,0	script	大きなドア#kiel1	111,{
+kh_kiehl01.gat,44,33,0	script	�傫�ȃh�A#kiel1	111,{
 	if(KH_QUE < 39 || KH_QUE > 53) {
-		mes "-ドアに鍵が掛かっている-";
+		mes "-�h�A�Ɍ����|�����Ă���-";
 		close;
 	}
-	mes "-ドアが開いた-";
+	mes "-�h�A���J����-";
 	enablenpc "kiehlwarp1";
 	initnpctimer;
 	close;
@@ -4719,26 +4719,26 @@ OnInit:
 	end;
 }
 
-kh_kiehl01.gat,174,40,0	script	大きなドア#kiel2	111,{
+kh_kiehl01.gat,174,40,0	script	�傫�ȃh�A#kiel2	111,{
 	if(KH_QUE >= 40 && KH_QUE <= 53) {
 		enablenpc "kiehlwarp2";
 		initnpctimer;
 		end;
 	}
 	if(KH_QUE < 39 || KH_QUE > 53) {
-		mes "-ドアに鍵が掛かっている-";
+		mes "-�h�A�Ɍ����|�����Ă���-";
 		close;
 	}
-	mes "-ドアに鍵が掛かっている-";
-	mes "-鍵穴が一つある-";
+	mes "-�h�A�Ɍ����|�����Ă���-";
+	mes "-�����������-";
 	next;
 	input '@str$;
-	if('@str$ != "小さな鍵") {
-		mes "-ドアは開かない-";
+	if('@str$ != "�����Ȍ�") {
+		mes "-�h�A�͊J���Ȃ�-";
 		close;
 	}
-	mes "-^FF0000鍵^000000を差し込むと";
-	mes "ドアが開いた-";
+	mes "-^FF0000��^000000���������ނ�";
+	mes "�h�A���J����-";
 	delitem 7505,1;
 	set KH_QUE,40;
 	enablenpc "kiehlwarp2";
@@ -4757,21 +4757,21 @@ OnInit:
 	end;
 }
 
-kh_kiehl01.gat,77,107,0	script	大きなドア#kiel3	111,{
+kh_kiehl01.gat,77,107,0	script	�傫�ȃh�A#kiel3	111,{
 	if(KH_QUE < 40 || KH_QUE > 53) {
-		mes "-ドアに鍵が掛かっている-";
+		mes "-�h�A�Ɍ����|�����Ă���-";
 		close;
 	}
-	mes "-ドアに鍵が掛かっている-";
-	mes "-何かの切れ目がある-";
+	mes "-�h�A�Ɍ����|�����Ă���-";
+	mes "-�����̐؂�ڂ�����-";
 	next;
 	input '@str$;
-	if('@str$ != "黒色のカードキー" || countitem(7506) < 1) {
-		mes "-ドアは開かない-";
+	if('@str$ != "���F�̃J�[�h�L�[" || countitem(7506) < 1) {
+		mes "-�h�A�͊J���Ȃ�-";
 		close;
 	}
-	mes "-^0000FF黒色のカードキー^000000を通すと、";
-	mes "ドアが開いた-";
+	mes "-^0000FF���F�̃J�[�h�L�[^000000��ʂ��ƁA";
+	mes "�h�A���J����-";
 	delitem 7506,1;
 	enablenpc "kiehlwarp3";
 	initnpctimer;
@@ -4788,19 +4788,19 @@ OnInit:
 	disablenpc;
 	end;
 }
-kh_kiehl01.gat,15,177,0	script	機械人形	111,{}
-kh_kiehl01.gat,15,181,0	script	機械人形	111,{}
-kh_kiehl01.gat,15,182,0	script	機械人形	111,{}
-kh_kiehl01.gat,15,178,0	script	機械人形#kiel	111,{
+kh_kiehl01.gat,15,177,0	script	�@�B�l�`	111,{}
+kh_kiehl01.gat,15,181,0	script	�@�B�l�`	111,{}
+kh_kiehl01.gat,15,182,0	script	�@�B�l�`	111,{}
+kh_kiehl01.gat,15,178,0	script	�@�B�l�`#kiel	111,{
 	if('mob)
 		end;
-	mes "-試験管に触れると、";
-	mes "機械人形が飛び出してきた-";
+	mes "-�����ǂɐG���ƁA";
+	mes "�@�B�l�`����яo���Ă���-";
 	close2;
 	set 'mob,'mob+3;
-	monster "kh_kiehl01.gat",18,181,"エリオット",1740,1,"機械人形#kiel::OnKilled";
-	monster "kh_kiehl01.gat",18,180,"エリセル",1739,2,"機械人形#kiel::OnKilled";
-	monster "kh_kiehl01.gat",18,179,"エリオット",1740,1,"機械人形#kiel::OnKilled";
+	monster "kh_kiehl01.gat",18,181,"�G���I�b�g",1740,1,"�@�B�l�`#kiel::OnKilled";
+	monster "kh_kiehl01.gat",18,180,"�G���Z��",1739,2,"�@�B�l�`#kiel::OnKilled";
+	monster "kh_kiehl01.gat",18,179,"�G���I�b�g",1740,1,"�@�B�l�`#kiel::OnKilled";
 	end;
 OnKilled:
 	set 'mob,'mob-1;
@@ -4809,21 +4809,21 @@ OnKilled:
 	end;
 }
 
-kh_kiehl01.gat,42,178,0	script	大きなドア#kiel4	111,{
+kh_kiehl01.gat,42,178,0	script	�傫�ȃh�A#kiel4	111,{
 	if(KH_QUE < 40 || KH_QUE > 53) {
-		mes "-ドアに鍵が掛かっている-";
+		mes "-�h�A�Ɍ����|�����Ă���-";
 		close;
 	}
-	mes "-ドアに鍵が掛かっている-";
-	mes "-何かの切れ目がある-";
+	mes "-�h�A�Ɍ����|�����Ă���-";
+	mes "-�����̐؂�ڂ�����-";
 	next;
 	input '@str$;
-	if('@str$ != "黒色のカードキー" || countitem(7506) < 1) {
-		mes "-ドアは開かない-";
+	if('@str$ != "���F�̃J�[�h�L�[" || countitem(7506) < 1) {
+		mes "-�h�A�͊J���Ȃ�-";
 		close;
 	}
-	mes "-^0000FF黒色のカードキー^000000を通すと、";
-	mes "ドアが開いた-";
+	mes "-^0000FF���F�̃J�[�h�L�[^000000��ʂ��ƁA";
+	mes "�h�A���J����-";
 	delitem 7506,1;
 	enablenpc "kiehlwarp4";
 	initnpctimer;
@@ -4834,7 +4834,7 @@ OnTimer30000:
 	end;
 }
 kh_kiehl01.gat,41,178,0	script	kiehlwarp4	45,1,1,{
-	//warp "kh_kiehl01.gat",47,171;	//スタック位置なので位置補正
+	//warp "kh_kiehl01.gat",47,171;	//�X�^�b�N�ʒu�Ȃ̂ňʒu�␳
 	warp "kh_kiehl01.gat",47,178;
 	end;
 OnInit:
@@ -4842,59 +4842,59 @@ OnInit:
 	end;
 }
 
-kh_kiehl01.gat,166,187,0	script	大きなドア#kiel5	111,{
+kh_kiehl01.gat,166,187,0	script	�傫�ȃh�A#kiel5	111,{
 	if('mob)
 		end;
-	if(getnpctimer(1,"キエル#kiel1")) {
-		mes "-ドアはびくともしない-";
-		mes "-開けるのは無理みたいだ-";
+	if(getnpctimer(1,"�L�G��#kiel1")) {
+		mes "-�h�A�͂т��Ƃ����Ȃ�-";
+		mes "-�J����͖̂����݂�����-";
 		close;
 	}
 	switch(KH_QUE) {
 	default:
-		mes "-動かない大きなドアがある-";
+		mes "-�����Ȃ��傫�ȃh�A������-";
 		close;
 	case 40:
 	case 41:
 	case 42:
 	case 43:
-		mes "-大きなドアがある-";
-		mes "-ドアの奥から、";
-		mes "微かな物音が聞こえる-";
+		mes "-�傫�ȃh�A������-";
+		mes "-�h�A�̉�����A";
+		mes "�����ȕ�������������-";
 		next;
-		menu "ドアを押す",-,"ドアを引く",-,"ドアを蹴る",-,"ドアに軽く触れる",-,"ドアを調べる",-;
-		mes "-ドアに触れた瞬間、";
-		mes "機械人形が出現した-";
-		mes "-何か装置でもあるのか？-";
+		menu "�h�A������",-,"�h�A������",-,"�h�A���R��",-,"�h�A�Ɍy���G���",-,"�h�A�𒲂ׂ�",-;
+		mes "-�h�A�ɐG�ꂽ�u�ԁA";
+		mes "�@�B�l�`���o������-";
+		mes "-�������u�ł�����̂��H-";
 		set KH_QUE,KH_QUE+1;
 		close2;
 		set 'mob,'mob+2;
-		monster "kh_kiehl01.gat",165,183,"エリオット",1740,1,"大きなドア#kiel5::OnKilled";
-		monster "kh_kiehl01.gat",163,183,"エリセル",1739,1,"大きなドア#kiel5::OnKilled";
+		monster "kh_kiehl01.gat",165,183,"�G���I�b�g",1740,1,"�傫�ȃh�A#kiel5::OnKilled";
+		monster "kh_kiehl01.gat",163,183,"�G���Z��",1739,1,"�傫�ȃh�A#kiel5::OnKilled";
 		end;
 	case 44:
 	case 45:
 	case 46:
 	case 47:
-		mes "-ドアがほんの少しだけ開いている-";
-		mes "-何かでこじあければ";
-		mes "通れるようになるかもしれない-";
+		mes "-�h�A���ق�̏��������J���Ă���-";
+		mes "-�����ł����������";
+		mes "�ʂ��悤�ɂȂ邩������Ȃ�-";
 		if(countitem(7507) < 1)
 			close;
 		next;
-		if(select("鋼鉄","さびた鉄の片","硬い鉄の欠片","ねじ","やめておく")!=3) {
-			mes "-ドアは開かない-";
+		if(select("�|�S","���т��S�̕�","�d���S�̌���","�˂�","��߂Ă���")!=3) {
+			mes "-�h�A�͊J���Ȃ�-";
 			close;
 		}
 		if(KH_QUE < 47) {
-			mes "-ドアが少しだけ開いた-";
-			mes "-もうちょっとがんばれば";
-			mes "通れるようになりそうだ-";
+			mes "-�h�A�����������J����-";
+			mes "-����������Ƃ���΂��";
+			mes "�ʂ��悤�ɂȂ肻����-";
 		}
 		else {
-			mes "^0000FF-硬い鉄の欠片を何度も";
-			mes "使って、ようやく";
-			mes "通り抜けれるだけの空間ができた-^000000";
+			mes "^0000FF-�d���S�̌��Ђ����x��";
+			mes "�g���āA�悤�₭";
+			mes "�ʂ蔲����邾���̋�Ԃ��ł���-^000000";
 		}
 		delitem 7507,1;
 		set KH_QUE,KH_QUE+1;
@@ -4905,9 +4905,9 @@ kh_kiehl01.gat,166,187,0	script	大きなドア#kiel5	111,{
 	case 51:
 	case 52:
 	case 53:
-		mes "-ドアの奥に進みますか？-";
+		mes "-�h�A�̉��ɐi�݂܂����H-";
 		next;
-		if(select("はい","いいえ")==2)
+		if(select("�͂�","������")==2)
 			close;
 		enablenpc "kiehlwarp5";
 		initnpctimer;
@@ -4924,13 +4924,13 @@ OnTimer30000:
 kh_kiehl01.gat,166,186,0	script	kiehlwarp5	45,1,1,{
 	if(KH_QUE >= 48 && KH_QUE <= 53) {
 		enablenpc "kiehlwarp5";
-		initnpctimer "キエル#kiel1";
+		initnpctimer "�L�G��#kiel1";
 		switch(KH_QUE) {
 		case 51:
 		case 52:
-			hideoffnpc "ミッチェル#kiel";
+			hideoffnpc "�~�b�`�F��#kiel";
 			for(set '@i,1; '@i<=5; set '@i,'@i+1)
-				hideoffnpc "要員#kiel"+'@i;
+				hideoffnpc "�v��#kiel"+'@i;
 			break;
 		case 53:
 			enablenpc "kiehlwarp6";
@@ -4944,462 +4944,462 @@ OnInit:
 	end;
 }
 
-kh_kiehl02.gat,49,10,0	script	トラップ	139,4,2,{
+kh_kiehl02.gat,49,10,0	script	�g���b�v	139,4,2,{
 	if(KH_QUE != 48)
 		end;
-	monster "kh_kiehl02.gat",46,13,"アリセル",1739,1;
-	monster "kh_kiehl02.gat",47,13,"アリオット",1740,1;
-	monster "kh_kiehl02.gat",48,13,"アリセル",1739,1;
-	monster "kh_kiehl02.gat",49,13,"アリオット",1740,1;
-	monster "kh_kiehl02.gat",50,13,"アリセル",1739,1;
-	monster "kh_kiehl02.gat",51,13,"アリオット",1740,1;
-	monster "kh_kiehl02.gat",52,13,"アリセル",1739,1;
-	monster "kh_kiehl02.gat",53,13,"アリオット",1740,1;
+	monster "kh_kiehl02.gat",46,13,"�A���Z��",1739,1;
+	monster "kh_kiehl02.gat",47,13,"�A���I�b�g",1740,1;
+	monster "kh_kiehl02.gat",48,13,"�A���Z��",1739,1;
+	monster "kh_kiehl02.gat",49,13,"�A���I�b�g",1740,1;
+	monster "kh_kiehl02.gat",50,13,"�A���Z��",1739,1;
+	monster "kh_kiehl02.gat",51,13,"�A���I�b�g",1740,1;
+	monster "kh_kiehl02.gat",52,13,"�A���Z��",1739,1;
+	monster "kh_kiehl02.gat",53,13,"�A���I�b�g",1740,1;
 	set KH_QUE,49;
 	end;
 }
 
-kh_kiehl02.gat,50,52,4	script	キエル#kiel1	902,{
+kh_kiehl02.gat,50,52,4	script	�L�G��#kiel1	902,{
 	cutin "kh_kiel01",2;
 	switch(KH_QUE) {
 	default:
-		mes "[キエル]";
-		mes "……お静かに願います……";
+		mes "[�L�G��]";
+		mes "�c�c���Â��Ɋ肢�܂��c�c";
 		break;
 	case 49:
-		mes "[キエル]";
-		mes "お待ちしておりました。";
-		mes "このような所まで";
-		mes "いらっしゃるとは、";
-		mes "大変光栄です。";
+		mes "[�L�G��]";
+		mes "���҂����Ă���܂����B";
+		mes "���̂悤�ȏ��܂�";
+		mes "����������Ƃ́A";
+		mes "��ό��h�ł��B";
 		next;
-		mes "[キエル]";
-		mes "さて、先ほどお話した通り、";
-		mes "私のスクロールでも";
-		mes "差し上げたい所ですが……";
+		mes "[�L�G��]";
+		mes "���āA��قǂ��b�����ʂ�A";
+		mes "���̃X�N���[���ł�";
+		mes "�����グ�������ł����c�c";
 		next;
-		mes "[キエル]";
-		mes "残念ながら、";
-		mes "これを抜き取ってしまったら";
-		mes "私はそれこそただの人形。";
-		mes "申し訳ありませんが、";
-		mes "少々抵抗させてもらいます。";
+		mes "[�L�G��]";
+		mes "�c�O�Ȃ���A";
+		mes "����𔲂�����Ă��܂�����";
+		mes "���͂��ꂱ�������̐l�`�B";
+		mes "�\���󂠂�܂��񂪁A";
+		mes "���X��R�����Ă��炢�܂��B";
 		close2;
 		cutin "kh_kiel01",255;
 		hideonnpc;
 		set KH_QUE,50;
 		set getvariableofnpc('mob,"kielmob"),10;
-		monster "kh_kiehl02.gat",49,51,"エリオット",1740,2,"kielmob::OnKilled";
-		monster "kh_kiehl02.gat",49,51,"エリセル",1739,2,"kielmob::OnKilled";
-		monster "kh_kiehl02.gat",49,51,"コンスタント",1745,1,"kielmob::OnKilled";
-		monster "kh_kiehl02.gat",50,51,"エリオット",1740,2,"kielmob::OnKilled";
-		monster "kh_kiehl02.gat",50,51,"エリセル",1739,2,"kielmob::OnKilled";
-		monster "kh_kiehl02.gat",50,51,"コンスタント",1745,1,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",49,51,"�G���I�b�g",1740,2,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",49,51,"�G���Z��",1739,2,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",49,51,"�R���X�^���g",1745,1,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",50,51,"�G���I�b�g",1740,2,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",50,51,"�G���Z��",1739,2,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",50,51,"�R���X�^���g",1745,1,"kielmob::OnKilled";
 		end;
 	case 50:
 		cutin "kh_kiel03",2;
-		mes "[キエル]";
-		mes "流石……ですね。";
-		mes "父の刺客だけあって、";
-		mes "実力がおありのようだ。";
+		mes "[�L�G��]";
+		mes "���΁c�c�ł��ˁB";
+		mes "���̎h�q���������āA";
+		mes "���͂�������̂悤���B";
 		next;
-		mes "[キエル]";
-		mes "さて……このまま遊んでいても";
-		mes "つまらない事ですし、";
-		mes "父があなたに何を言ったのか";
-		mes "お聞かせ願えますか？";
-		next;
-		mes "[" +strcharinfo(0)+ "]";
-		mes "^FF0000キル・ハイル^000000さんは";
-		mes "あなたを止めてくれと言いました。";
-		mes "彼は自分の過去に苦しんでます。";
-		mes "^0000FFキエル^000000……";
-		mes "こんな事はやめて、私と一緒に";
-		mes "お父さんの元に帰ってください！";
+		mes "[�L�G��]";
+		mes "���āc�c���̂܂ܗV��ł��Ă�";
+		mes "�܂�Ȃ����ł����A";
+		mes "�������Ȃ��ɉ����������̂�";
+		mes "���������肦�܂����H";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "あなたは同族を苦しめている。";
-		mes "そんなの、間違っている！";
+		mes "^FF0000�L���E�n�C��^000000�����";
+		mes "���Ȃ����~�߂Ă���ƌ����܂����B";
+		mes "�ނ͎����̉ߋ��ɋꂵ��ł܂��B";
+		mes "^0000FF�L�G��^000000�c�c";
+		mes "����Ȏ��͂�߂āA���ƈꏏ��";
+		mes "��������̌��ɋA���Ă��������I";
+		next;
+		mes "[" +strcharinfo(0)+ "]";
+		mes "���Ȃ��͓������ꂵ�߂Ă���B";
+		mes "����Ȃ́A�Ԉ���Ă���I";
 		next;
 		cutin "kh_kiel01",2;
-		mes "[キエル]";
-		mes "同族……ですか？";
-		mes "……フフ……";
-		mes "それは人間であるあなた方も";
-		mes "同じではありませんか？";
-		mes "神の創造物である人間。";
-		mes "人間の創造物である機械人形。";
+		mes "[�L�G��]";
+		mes "�����c�c�ł����H";
+		mes "�c�c�t�t�c�c";
+		mes "����͐l�Ԃł��邠�Ȃ�����";
+		mes "�����ł͂���܂��񂩁H";
+		mes "�_�̑n�����ł���l�ԁB";
+		mes "�l�Ԃ̑n�����ł���@�B�l�`�B";
 		next;
-		mes "[キエル]";
-		mes "自分の利益のため、";
-		mes "同じ人間を殺し、実験するあなたたち。";
-		mes "私の願いのため、";
-		mes "人形を必要としている者に提供する私。";
-		mes "どこが違うというのです？";
+		mes "[�L�G��]";
+		mes "�����̗��v�̂��߁A";
+		mes "�����l�Ԃ��E���A�������邠�Ȃ������B";
+		mes "���̊肢�̂��߁A";
+		mes "�l�`��K�v�Ƃ��Ă���҂ɒ񋟂��鎄�B";
+		mes "�ǂ����Ⴄ�Ƃ����̂ł��H";
 		next;
-		mes "[キエル]";
-		mes "私の作った人形は人間と似ていますが、";
-		mes "学習に対して何も感じる事がない。";
-		mes "痛みも苦痛も感じることはない。";
-		mes "そう作られているのです。";
+		mes "[�L�G��]";
+		mes "���̍�����l�`�͐l�ԂƎ��Ă��܂����A";
+		mes "�w�K�ɑ΂��ĉ��������鎖���Ȃ��B";
+		mes "�ɂ݂���ɂ������邱�Ƃ͂Ȃ��B";
+		mes "��������Ă���̂ł��B";
 		next;
-		mes "[キエル]";
-		mes "しかし人間は違う。";
-		mes "目の前で苦痛を感じ、";
-		mes "訴える自分の同族である「人間」を";
-		mes "あなたたちは無視している。";
-		mes "慈悲深いのがどちらなのか、";
-		mes "明らかではありませんか？";
+		mes "[�L�G��]";
+		mes "�������l�Ԃ͈Ⴄ�B";
+		mes "�ڂ̑O�ŋ�ɂ������A";
+		mes "�i���鎩���̓����ł���u�l�ԁv��";
+		mes "���Ȃ������͖������Ă���B";
+		mes "���ߐ[���̂��ǂ���Ȃ̂��A";
+		mes "���炩�ł͂���܂��񂩁H";
 		next;
 		cutin "kh_kiel04",2;
-		mes "[キエル]";
-		mes "申し訳ありませんが、";
-		mes "あなたの提案は却下させて頂きます。";
-		mes "歪んだ愛情のため、";
-		mes "他人の家庭を破滅させてしまう。";
-		mes "そんな父が、私よりまともに人形を";
-		mes "扱えるとは到底考えられません。";
+		mes "[�L�G��]";
+		mes "�\���󂠂�܂��񂪁A";
+		mes "���Ȃ��̒�Ă͋p�������Ē����܂��B";
+		mes "�c�񂾈���̂��߁A";
+		mes "���l�̉ƒ��j�ł����Ă��܂��B";
+		mes "����ȕ����A�����܂Ƃ��ɐl�`��";
+		mes "������Ƃ͓���l�����܂���B";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "……そう。";
-		mes "彼は過ちを犯してしまった。";
-		mes "でも^0000FFキエル^000000！";
-		mes "あなたが手を組んでいる";
-		mes "レッケンベルこそ、";
-		mes "そんな人間の代表なんだ！";
+		mes "�c�c�����B";
+		mes "�ނ͉߂���Ƃ��Ă��܂����B";
+		mes "�ł�^0000FF�L�G��^000000�I";
+		mes "���Ȃ������g��ł���";
+		mes "���b�P���x�������A";
+		mes "����Ȑl�Ԃ̑�\�Ȃ񂾁I";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "彼らともう関わらないで！";
-		mes "彼らに協力するほど、";
-		mes "不幸になる人が増えてしまう！";
+		mes "�ނ�Ƃ����ւ��Ȃ��ŁI";
+		mes "�ނ�ɋ��͂���قǁA";
+		mes "�s�K�ɂȂ�l�������Ă��܂��I";
 		next;
 		cutin "kh_kiel02",2;
-		mes "[キエル]";
-		mes "…………";
-		mes "あなたがここで最初に見た部屋。";
-		mes "どんな部屋だったのか覚えていますか？";
-		mes "……五つ揃った子供用品が";
-		mes "いくつもあったでしょう……";
+		mes "[�L�G��]";
+		mes "�c�c�c�c";
+		mes "���Ȃ��������ōŏ��Ɍ��������B";
+		mes "�ǂ�ȕ����������̂��o���Ă��܂����H";
+		mes "�c�c�܂������q���p�i��";
+		mes "�������������ł��傤�c�c";
 		next;
-		mes "[キエル]";
-		mes "そこは私が";
-		mes "初めて作られた時の部屋です。";
-		mes "ですが、どうして";
-		mes "私一人しかいないというのに、";
-		mes "五つも同じ物が揃っているのか、";
-		mes "あなたにわかりますか？";
+		mes "[�L�G��]";
+		mes "�����͎���";
+		mes "���߂č��ꂽ���̕����ł��B";
+		mes "�ł����A�ǂ�����";
+		mes "����l�������Ȃ��Ƃ����̂ɁA";
+		mes "�܂��������������Ă���̂��A";
+		mes "���Ȃ��ɂ킩��܂����H";
 		next;
 		mes "[" +strcharinfo(0)+ "]";
-		mes "……!?";
+		mes "�c�c!?";
 		next;
-		mes "[キエル]";
-		mes "最初の第2世代として作られた";
-		mes "機械人形は5体。";
-		mes "私たちはレッケンベルから派遣された";
-		mes "職員から教育を受けた。";
+		mes "[�L�G��]";
+		mes "�ŏ��̑�2����Ƃ��č��ꂽ";
+		mes "�@�B�l�`��5�́B";
+		mes "�������̓��b�P���x������h�����ꂽ";
+		mes "�E�����狳����󂯂��B";
 		next;
-		mes "[キエル]";
-		mes "機械人形である私たちでも";
-		mes "耐え難い教育でした……";
-		mes "強化実験。学習能力実験。";
-		mes "状況による感情表現の学習……";
+		mes "[�L�G��]";
+		mes "�@�B�l�`�ł��鎄�����ł�";
+		mes "�ς������ł����c�c";
+		mes "���������B�w�K�\�͎����B";
+		mes "�󋵂ɂ�銴��\���̊w�K�c�c";
 		next;
-		mes "[キエル]";
-		mes "初期不良だったのか、";
-		mes "それとも偏った教育のためか……";
-		mes "4体の機械人形が学習、";
-		mes "実験中に機能を停止しました。";
+		mes "[�L�G��]";
+		mes "�����s�ǂ������̂��A";
+		mes "����Ƃ��΂�������̂��߂��c�c";
+		mes "4�̂̋@�B�l�`���w�K�A";
+		mes "�������ɋ@�\���~���܂����B";
 		next;
-		mes "[キエル]";
-		mes "そして、唯一生き残ったのが";
-		mes "この私です。";
-		mes "父は、それまで名前もなかった私に";
-		mes "^0000FFキエル^000000という名を";
-		mes "与えてくださいました。";
+		mes "[�L�G��]";
+		mes "�����āA�B�ꐶ���c�����̂�";
+		mes "���̎��ł��B";
+		mes "���́A����܂Ŗ��O���Ȃ���������";
+		mes "^0000FF�L�G��^000000�Ƃ�������";
+		mes "�^���Ă��������܂����B";
 		next;
 		cutin "kh_kiel03",2;
-		mes "[キエル]";
-		mes "レッケンベル。";
-		mes "彼らの非人道的な行いは";
-		mes "誰よりも知っていますよ。";
-		mes "そう……この身をもってね。";
-		mes "しかし、私は恨んでいません。";
+		mes "[�L�G��]";
+		mes "���b�P���x���B";
+		mes "�ނ�̔�l���I�ȍs����";
+		mes "�N�����m���Ă��܂���B";
+		mes "�����c�c���̐g�������ĂˁB";
+		mes "�������A���͍���ł��܂���B";
 		next;
-		mes "[キエル]";
-		mes "それが人間の本質。";
-		mes "人より上に立つ者の";
-		mes "本性だからです！";
+		mes "[�L�G��]";
+		mes "���ꂪ�l�Ԃ̖{���B";
+		mes "�l����ɗ��҂�";
+		mes "�{��������ł��I";
 		next;
-		mes "[キエル]";
-		mes "……さて、";
-		mes "これぐらいにしておきましょう。";
-		mes "あなたはなかなか面白い方だ。";
-		mes "このまま帰ってくださるなら、";
-		mes "出口までご案内しましょう。";
+		mes "[�L�G��]";
+		mes "�c�c���āA";
+		mes "���ꂮ�炢�ɂ��Ă����܂��傤�B";
+		mes "���Ȃ��͂Ȃ��Ȃ��ʔ��������B";
+		mes "���̂܂܋A���Ă�������Ȃ�A";
+		mes "�o���܂ł��ē����܂��傤�B";
 		close2;
 		cutin "kh_kiel01",255;
 		set KH_QUE,51;
-		hideoffnpc "ミッチェル#kiel";
+		hideoffnpc "�~�b�`�F��#kiel";
 		for(set '@i,1; '@i<=5; set '@i,'@i+1)
-			hideoffnpc "要員#kiel"+'@i;
+			hideoffnpc "�v��#kiel"+'@i;
 		end;
 	case 51:
-		mes "[ミッチェル]";
-		mes "そうはいかないわ！";
-		mes "^0000FFキエル・ハイル^000000！";
-		mes "お前を不法武器製造と";
-		mes "密輸入の容疑で逮捕する！";
+		mes "[�~�b�`�F��]";
+		mes "�����͂����Ȃ���I";
+		mes "^0000FF�L�G���E�n�C��^000000�I";
+		mes "���O��s�@���퐻����";
+		mes "���A���̗e�^�őߕ߂���I";
 		next;
-		mes "[キエル]";
-		mes "……おやおや。";
-		mes "困りましたね。";
-		mes "これでは私も";
-		mes "抵抗しなければならない。";
-		mes "……仕方ありません。";
+		mes "[�L�G��]";
+		mes "�c�c���₨��B";
+		mes "����܂����ˁB";
+		mes "����ł͎���";
+		mes "��R���Ȃ���΂Ȃ�Ȃ��B";
+		mes "�c�c�d������܂���B";
 		next;
-		mes "[キエル]";
-		mes "邪魔なあなたたちは";
-		mes "しばしの間お休みください。";
+		mes "[�L�G��]";
+		mes "�ז��Ȃ��Ȃ�������";
+		mes "���΂��̊Ԃ��x�݂��������B";
 		next;
-		mes "[ミッチェル]";
-		mes "な!?　これは!!";
-		misceffect 404,"ミッチェル#kiel";
+		mes "[�~�b�`�F��]";
+		mes "��!?�@�����!!";
+		misceffect 404,"�~�b�`�F��#kiel";
 		for(set '@i,1; '@i<=5; set '@i,'@i+1)
-			misceffect 404,"要員#kiel"+'@i;
+			misceffect 404,"�v��#kiel"+'@i;
 		next;
 		cutin "kh_kiel03",2;
-		mes "[キエル]";
-		mes "さて。";
-		mes "これではあなたも";
-		mes "帰ることはできませんね？";
-		mes "……では、もう一度";
-		mes "お相手願います。";
+		mes "[�L�G��]";
+		mes "���āB";
+		mes "����ł͂��Ȃ���";
+		mes "�A�邱�Ƃ͂ł��܂���ˁH";
+		mes "�c�c�ł́A������x";
+		mes "������肢�܂��B";
 		close2;
 		cutin "kh_kiel01",255;
 		hideonnpc;
 		set KH_QUE,52;
 		set getvariableofnpc('mob,"kielmob"),1;
-		monster "kh_kiehl02.gat",50,52,"キエル",1733,1,"kielmob::OnKilled";
+		monster "kh_kiehl02.gat",50,52,"�L�G��",1733,1,"kielmob::OnKilled";
 		end;
 	case 52:
 		cutin "kh_kiel02",2;
-		mes "[キエル]";
-		mes "……フッフッフッフ……";
-		mes "やはり、あなたの実力は";
-		mes "想定しがたいものがあります。";
+		mes "[�L�G��]";
+		mes "�c�c�t�b�t�b�t�b�t�c�c";
+		mes "��͂�A���Ȃ��̎��͂�";
+		mes "�z�肵���������̂�����܂��B";
 		next;
 		cutin "kh_kiel03",2;
-		mes "[キエル]";
-		mes "フフ……ですが。";
-		mes "あなたに私を捕まえる事はできません。";
-		mes "なぜなら、私と一緒に";
-		mes "あの世へと行く事になるからです！";
-		mes "あぁ……私には魂が無いので";
-		mes "行くのはあなただけですね……フフ。";
+		mes "[�L�G��]";
+		mes "�t�t�c�c�ł����B";
+		mes "���Ȃ��Ɏ���߂܂��鎖�͂ł��܂���B";
+		mes "�Ȃ��Ȃ�A���ƈꏏ��";
+		mes "���̐��ւƍs�����ɂȂ邩��ł��I";
+		mes "�����c�c���ɂ͍��������̂�";
+		mes "�s���̂͂��Ȃ������ł��ˁc�c�t�t�B";
 		next;
-		mes "[ミッチェル]";
+		mes "[�~�b�`�F��]";
 		mes "!!!!";
-		announce "キリキリキリキリ　ドドーン!!　ガシャ！　ガチャン！　ガチャン！",9,0xFF0000;
+		announce "�L���L���L���L���@�h�h�[��!!�@�K�V���I�@�K�`�����I�@�K�`�����I",9,0xFF0000;
 		next;
-		mes "[ミッチェル]";
+		mes "[�~�b�`�F��]";
 		mes "!!!!";
-		mes "この音は!?";
-		mes "しまった！　閉じ込められた！";
+		mes "���̉���!?";
+		mes "���܂����I�@�����߂�ꂽ�I";
 		next;
-		mes "[キエル]";
-		mes "クックックック……";
-		mes "どうです？";
-		mes "面白い仕掛けでしょう。";
+		mes "[�L�G��]";
+		mes "�N�b�N�b�N�b�N�c�c";
+		mes "�ǂ��ł��H";
+		mes "�ʔ����d�|���ł��傤�B";
 		next;
-		mes "[ミッチェル]";
-		mes "ッ……";
-		mes "早く！";
-		mes "^FF0000キル・ハイル^000000から受け取った";
-		mes "装置を使うのよ！";
+		mes "[�~�b�`�F��]";
+		mes "�b�c�c";
+		mes "�����I";
+		mes "^FF0000�L���E�n�C��^000000����󂯎����";
+		mes "���u���g���̂�I";
 		next;
-		mes "[キエル]";
-		mes "フフ……";
-		mes "何をしても無駄ですよ。";
-		mes "なにせ、自爆装置を持っているのは";
-		mes "私ではありませんから。";
-		mes "フフフ……";
-		announce "WARNING　WARNING",9,0xFF0000;
+		mes "[�L�G��]";
+		mes "�t�t�c�c";
+		mes "�������Ă����ʂł���B";
+		mes "�Ȃɂ��A�������u�������Ă���̂�";
+		mes "���ł͂���܂��񂩂�B";
+		mes "�t�t�t�c�c";
+		announce "WARNING�@WARNING",9,0xFF0000;
 		next;
-		mes "[ミッチェル]";
-		mes "なッ!?";
-		mes "まだ他にだれか……";
-		mes "まさか！";
-		mes "レッケンベルがここに!?";
+		mes "[�~�b�`�F��]";
+		mes "�ȃb!?";
+		mes "�܂����ɂ��ꂩ�c�c";
+		mes "�܂����I";
+		mes "���b�P���x����������!?";
 		next;
 		mes "[????]";
-		mes "レッケンベルではありませんよ。";
-		mes "フフ……";
-		mes "本体までお見せしているというのに。";
+		mes "���b�P���x���ł͂���܂����B";
+		mes "�t�t�c�c";
+		mes "�{�̂܂ł��������Ă���Ƃ����̂ɁB";
 		next;
-		mes "[ミッチェル]";
-		mes "誰！";
-		mes "姿を見せなさい！";
+		mes "[�~�b�`�F��]";
+		mes "�N�I";
+		mes "�p�������Ȃ����I";
 		next;
 		mes "[????]";
-		mes "まだわからないのですか？";
-		mes "それとも、私の声が";
-		mes "わからないとでも？";
+		mes "�܂��킩��Ȃ��̂ł����H";
+		mes "����Ƃ��A���̐���";
+		mes "�킩��Ȃ��Ƃł��H";
 		next;
-		mes "[ミッチェル]";
-		mes "な……";
-		mes "まさか!!";
+		mes "[�~�b�`�F��]";
+		mes "�ȁc�c";
+		mes "�܂���!!";
 		next;
-		hideoffnpc "キエル#kiel2";
+		hideoffnpc "�L�G��#kiel2";
 		next;
 		cutin "kh_kiel01",0;
-		mes "[キエル]";
-		mes "いたずらが過ぎましたね。";
-		mes "改めてご挨拶させていただきます。";
-		mes "^0000FFキエル・ハイル^000000と申します。";
+		mes "[�L�G��]";
+		mes "�������炪�߂��܂����ˁB";
+		mes "���߂Ă����A�����Ă��������܂��B";
+		mes "^0000FF�L�G���E�n�C��^000000�Ɛ\���܂��B";
 		next;
-		mes "[ミッチェル]";
-		mes "……なぜ？";
-		mes "どうして^0000FFキエル^000000が二人いるの!?";
+		mes "[�~�b�`�F��]";
+		mes "�c�c�Ȃ��H";
+		mes "�ǂ�����^0000FF�L�G��^000000����l�����!?";
 		next;
 		cutin "kh_kiel03",2;
-		mes "[キエル]";
-		mes "フフ……お忘れですか？";
-		mes "私は機械人形ですよ。";
-		mes "^0000FFミッチェル・ライラ^000000さん。";
+		mes "[�L�G��]";
+		mes "�t�t�c�c���Y��ł����H";
+		mes "���͋@�B�l�`�ł���B";
+		mes "^0000FF�~�b�`�F���E���C��^000000����B";
 		next;
-		mes "[ミッチェル]";
+		mes "[�~�b�`�F��]";
 		mes "!?";
-		mes "私の名前を……";
-		mes "どうやって!?";
+		mes "���̖��O���c�c";
+		mes "�ǂ������!?";
 		next;
-		mes "[キエル]";
-		mes "おやおや。";
-		mes "スパイがあなたたちだけと";
-		mes "本気で思っているのですか？";
+		mes "[�L�G��]";
+		mes "���₨��B";
+		mes "�X�p�C�����Ȃ�����������";
+		mes "�{�C�Ŏv���Ă���̂ł����H";
 		next;
-		mes "[覆面の男]";
-		mes "申し訳ありません。ミッチェル様。";
+		mes "[���ʂ̒j]";
+		mes "�\���󂠂�܂���B�~�b�`�F���l�B";
 		next;
-		mes "[ミッチェル]";
-		mes "ボルケウス！";
-		mes "あなたが……どうして!?";
-		mes "重傷を負ってまで";
-		mes "大統領を助けたあなたが！";
+		mes "[�~�b�`�F��]";
+		mes "�{���P�E�X�I";
+		mes "���Ȃ����c�c�ǂ�����!?";
+		mes "�d���𕉂��Ă܂�";
+		mes "�哝�̂����������Ȃ����I";
 		next;
-		mes "[ボルケウス]";
-		mes "信用を得るためなら何でもする。";
-		mes "ミッチェル様。";
-		mes "身近な人間から気を付けろと言った";
-		mes "あなた自身が、私を信用しているのは";
-		mes "見てて面白かった。";
+		mes "[�{���P�E�X]";
+		mes "�M�p�𓾂邽�߂Ȃ牽�ł�����B";
+		mes "�~�b�`�F���l�B";
+		mes "�g�߂Ȑl�Ԃ���C��t����ƌ�����";
+		mes "���Ȃ����g���A����M�p���Ă���̂�";
+		mes "���ĂĖʔ��������B";
 		next;
-		mes "[ミッチェル]";
-		mes "そんな……";
-		mes "あぁ……申し訳ありません、閣下……";
+		mes "[�~�b�`�F��]";
+		mes "����ȁc�c";
+		mes "�����c�c�\���󂠂�܂���A�t���c�c";
 		next;
-		mes "[キエル]";
-		mes "紳士的ではありませんね、カイゾ。";
-		mes "…………おっと。";
-		mes "フフ、残念ですが、";
-		mes "もう時間が無いようです。";
+		mes "[�L�G��]";
+		mes "�a�m�I�ł͂���܂���ˁA�J�C�]�B";
+		mes "�c�c�c�c�����ƁB";
+		mes "�t�t�A�c�O�ł����A";
+		mes "�������Ԃ������悤�ł��B";
 		next;
 		cutin "kh_kiel01",2;
-		mes "[キエル]";
-		mes "自爆装置が作動してから";
-		mes "5分後にこの部屋は消滅します。";
-		mes "^0000FFミッチェル・ライラ^000000さんは";
-		mes "私たちと一緒に来ていただきましょう。";
+		mes "[�L�G��]";
+		mes "�������u���쓮���Ă���";
+		mes "5����ɂ��̕����͏��ł��܂��B";
+		mes "^0000FF�~�b�`�F���E���C��^000000�����";
+		mes "�������ƈꏏ�ɗ��Ă��������܂��傤�B";
 		next;
-		mes "[キエル]";
-		mes "私はシュバルツバルドの大統領が";
-		mes "何を考えているのか";
-		mes "知りたいのです……フフ。";
+		mes "[�L�G��]";
+		mes "���̓V���o���c�o���h�̑哝�̂�";
+		mes "�����l���Ă���̂�";
+		mes "�m�肽���̂ł��c�c�t�t�B";
 		next;
-		mes "[キエル]";
-		mes "カイゾ、^0000FFミッチェル^000000さんを";
-		mes "丁重にお連れしてください。";
+		mes "[�L�G��]";
+		mes "�J�C�]�A^0000FF�~�b�`�F��^000000�����";
+		mes "���d�ɂ��A�ꂵ�Ă��������B";
 		next;
-		mes "[ボルケウス-カイゾ]";
-		mes "……了解した。";
+		mes "[�{���P�E�X-�J�C�]]";
+		mes "�c�c���������B";
 		next;
-		mes "[ミッチェル]";
-		mes "くそ！";
-		mes "離せ！";
-		mes "離せ、ボルケウス!!";
+		mes "[�~�b�`�F��]";
+		mes "�����I";
+		mes "�����I";
+		mes "�����A�{���P�E�X!!";
 		next;
-		hideonnpc "ミッチェル#kiel";
+		hideonnpc "�~�b�`�F��#kiel";
 		for(set '@i,1; '@i<=5; set '@i,'@i+1)
-			hideonnpc "要員#kiel"+'@i;
+			hideonnpc "�v��#kiel"+'@i;
 		next;
 		cutin "kh_kiel02",2;
-		mes "[キエル]";
-		mes "さて……";
-		mes "あちらの問題も片付いた事ですし……";
-		mes "少々私とお話をしましょうか？";
+		mes "[�L�G��]";
+		mes "���āc�c";
+		mes "������̖����Еt�������ł����c�c";
+		mes "���X���Ƃ��b�����܂��傤���H";
 		next;
-		mes "[キエル]";
-		mes "あぁ、失礼しました。";
-		mes "あなたにはもう時間が";
-		mes "ないようですね。";
-		mes "フフフ……";
+		mes "[�L�G��]";
+		mes "�����A���炵�܂����B";
+		mes "���Ȃ��ɂ͂������Ԃ�";
+		mes "�Ȃ��悤�ł��ˁB";
+		mes "�t�t�t�c�c";
 		next;
-		mes "[キエル]";
-		mes "ここはすぐ崩れるので";
-		mes "早く逃げた方がいいでしょう。";
+		mes "[�L�G��]";
+		mes "�����͂��������̂�";
+		mes "�������������������ł��傤�B";
 		next;
-		mes "[キエル]";
-		mes "ついで……と言ってはなんですが……";
-		mes "父に一つ伝言をお願いできますか？";
+		mes "[�L�G��]";
+		mes "���Łc�c�ƌ����Ă͂Ȃ�ł����c�c";
+		mes "���Ɉ�`�������肢�ł��܂����H";
 		next;
-		mes "[キエル]";
-		mes "恐らく……父は私の本体にある";
-		mes "^FF0000指輪^000000を持って来るように";
-		mes "頼んだのではないですか？";
-		mes "私も、指輪を初めて見た時は";
-		mes "とても驚きました。";
+		mes "[�L�G��]";
+		mes "���炭�c�c���͎��̖{�̂ɂ���";
+		mes "^FF0000�w��^000000�������ė���悤��";
+		mes "���񂾂̂ł͂Ȃ��ł����H";
+		mes "�����A�w�ւ����߂Č�������";
+		mes "�ƂĂ������܂����B";
 		next;
 		cutin "kh_kiel04",2;
-		mes "[キエル]";
-		mes "大切な物だったようですね。";
-		mes "私が壊してしまうと思って";
-		mes "気が気ではなかったでしょう。";
+		mes "[�L�G��]";
+		mes "��؂ȕ��������悤�ł��ˁB";
+		mes "�����󂵂Ă��܂��Ǝv����";
+		mes "�C���C�ł͂Ȃ������ł��傤�B";
 		next;
 		cutin "kh_kiel01",2;
-		mes "[キエル]";
-		mes "23年間御苦労さまでした。";
-		mes "もうお休みください。";
-		mes "……この私、^0000FFキエル^000000。";
+		mes "[�L�G��]";
+		mes "23�N�Ԍ��J���܂ł����B";
+		mes "�������x�݂��������B";
+		mes "�c�c���̎��A^0000FF�L�G��^000000�B";
 		next;
 		misceffect 372;
 		next;
-		mes "[キエル]";
-		mes "……攻撃する意思がない証として、";
-		mes "本体をここに残していきます。";
-		mes "さぁ、どうぞ。";
-		mes "^FF0000指輪^000000を回収して";
-		mes "父にお伝えください。";
+		mes "[�L�G��]";
+		mes "�c�c�U������ӎv���Ȃ��؂Ƃ��āA";
+		mes "�{�̂������Ɏc���Ă����܂��B";
+		mes "�����A�ǂ����B";
+		mes "^FF0000�w��^000000���������";
+		mes "���ɂ��`�����������B";
 		next;
-		mes "[キエル]";
-		mes "「あなたに作られた";
-		mes "体を返したのですから、";
-		mes "もうこれ以上、あなたとは";
-		mes "何の縁もない。";
-		mes "さようなら……」";
+		mes "[�L�G��]";
+		mes "�u���Ȃ��ɍ��ꂽ";
+		mes "�̂�Ԃ����̂ł�����A";
+		mes "��������ȏ�A���Ȃ��Ƃ�";
+		mes "���̉����Ȃ��B";
+		mes "���悤�Ȃ�c�c�v";
 		next;
-		mes "[キエル]";
-		mes "私はすでに、父の設計図に縛られた";
-		mes "第2世代の人形ではありません。";
-		mes "私自身で開発した新しい体。";
-		mes "この私自身が第4世代なのです。";
+		mes "[�L�G��]";
+		mes "���͂��łɁA���̐݌v�}�ɔ���ꂽ";
+		mes "��2����̐l�`�ł͂���܂���B";
+		mes "�����g�ŊJ�������V�����́B";
+		mes "���̎����g����4����Ȃ̂ł��B";
 		next;
-		mes "[キエル]";
-		mes "あなたの頭では少々難しいでしょうが、";
-		mes "父にはわかるはずですよ。";
-		mes "さて、もう残り3分しかありません。";
-		mes "失礼ながら、私はこれで……";
-		mes "また、お会いしましょう……フフフ。";
+		mes "[�L�G��]";
+		mes "���Ȃ��̓��ł͏��X����ł��傤���A";
+		mes "���ɂ͂킩��͂��ł���B";
+		mes "���āA�����c��3����������܂���B";
+		mes "����Ȃ���A���͂���Łc�c";
+		mes "�܂��A������܂��傤�c�c�t�t�t�B";
 		next;
-		hideonnpc "キエル#kiel2";
+		hideonnpc "�L�G��#kiel2";
 		enablenpc "kiehlwarp6";
 		delitem 7504,1;
 		setnpctimer 1999000;
@@ -5407,8 +5407,8 @@ kh_kiehl02.gat,50,52,4	script	キエル#kiel1	902,{
 		break;
 	case 53:
 		cutin "kh_kiel02",2;
-		mes "-まったく動かない^0000FFキエル^000000の";
-		mes "本体から^FF0000指輪^000000を取り出した-";
+		mes "-�܂����������Ȃ�^0000FF�L�G��^000000��";
+		mes "�{�̂���^FF0000�w��^000000�����o����-";
 		getitem 7508,1;
 		set KH_QUE,54;
 		break;
@@ -5416,7 +5416,7 @@ kh_kiehl02.gat,50,52,4	script	キエル#kiel1	902,{
 	case 55:
 	case 56:
 		cutin "kh_kiel02",2;
-		mes "-^0000FFキエル^000000の本体だけが残っている-";
+		mes "-^0000FF�L�G��^000000�̖{�̂������c���Ă���-";
 		break;
 	}
 	close2;
@@ -5426,31 +5426,31 @@ OnTimer1200000:
 	areawarp "kh_kiehl02.gat",0,0,100,100,"lighthalzen.gat",193,202;
 	killmonster "kh_kiehl02.gat","All";
 	disablenpc "kiehlwarp6";
-	hideonnpc "ミッチェル#kiel";
+	hideonnpc "�~�b�`�F��#kiel";
 	for(set '@i,1; '@i<=5; set '@i,'@i+1)
-		hideonnpc "要員#kiel"+'@i;
-	hideonnpc "キエル#kiel2";
+		hideonnpc "�v��#kiel"+'@i;
+	hideonnpc "�L�G��#kiel2";
 	hideoffnpc;
 	set 'mob,0;
 	stopnpctimer;
 	end;
 OnTimer2000000:
-	announce "爆発まで、あと3分",9,0xFF0000;
+	announce "�����܂ŁA����3��",9,0xFF0000;
 	end;
 OnTimer2060000:
-	announce "爆発まで、あと2分",9,0xFF0000;
+	announce "�����܂ŁA����2��",9,0xFF0000;
 	end;
 OnTimer2120000:
-	announce "爆発まで、あと1分",9,0xFF0000;
+	announce "�����܂ŁA����1��",9,0xFF0000;
 	end;
 OnTimer2150000:
-	announce "爆発まで、あと30秒",9,0xFF0000;
+	announce "�����܂ŁA����30�b",9,0xFF0000;
 	end;
 OnTimer2160000:
-	announce "爆発まで、あと20秒",9,0xFF0000;
+	announce "�����܂ŁA����20�b",9,0xFF0000;
 	end;
 OnTimer2170000:
-	announce "爆発まで、あと10秒",9,0xFF0000;
+	announce "�����܂ŁA����10�b",9,0xFF0000;
 	end;
 OnTimer2175000:
 	announce "5",9,0xFF0000;
@@ -5468,14 +5468,14 @@ OnTimer2179000:
 	announce "1",9,0xFF0000;
 	end;
 OnTimer2180000:
-	announce "ピーーー",9,0xFF0000;
+	announce "�s�[�[�[",9,0xFF0000;
 	areawarp "kh_kiehl02.gat",0,0,100,100,"lighthalzen.gat",193,202;
 	killmonster "kh_kiehl02.gat","All";
 	disablenpc "kiehlwarp6";
-	hideonnpc "ミッチェル#kiel";
+	hideonnpc "�~�b�`�F��#kiel";
 	for(set '@i,1; '@i<=5; set '@i,'@i+1)
-		hideonnpc "要員#kiel"+'@i;
-	hideonnpc "キエル#kiel2";
+		hideonnpc "�v��#kiel"+'@i;
+	hideonnpc "�L�G��#kiel2";
 	hideoffnpc;
 	set 'mob,0;
 	stopnpctimer;
@@ -5486,21 +5486,21 @@ kh_kiehl02.gat,0,0,0	script	kielmob	-1,{
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0)
-		hideoffnpc "キエル#kiel1";
+		hideoffnpc "�L�G��#kiel1";
 	end;
 }
 
-kh_kiehl02.gat,49,55,6	script	ミッチェル#kiel	727,{
+kh_kiehl02.gat,49,55,6	script	�~�b�`�F��#kiel	727,{
 	end;
 OnInit:
 	hideonnpc;
 	end;
 }
-kh_kiehl02.gat,53,52,4	duplicate(ミッチェル#kiel)	要員#kiel1	880
-kh_kiehl02.gat,51,49,1	duplicate(ミッチェル#kiel)	要員#kiel2	880
-kh_kiehl02.gat,47,50,0	duplicate(ミッチェル#kiel)	要員#kiel3	880
-kh_kiehl02.gat,46,53,6	duplicate(ミッチェル#kiel)	要員#kiel4	880
-kh_kiehl02.gat,48,53,5	duplicate(ミッチェル#kiel)	キエル#kiel2	902
+kh_kiehl02.gat,53,52,4	duplicate(�~�b�`�F��#kiel)	�v��#kiel1	880
+kh_kiehl02.gat,51,49,1	duplicate(�~�b�`�F��#kiel)	�v��#kiel2	880
+kh_kiehl02.gat,47,50,0	duplicate(�~�b�`�F��#kiel)	�v��#kiel3	880
+kh_kiehl02.gat,46,53,6	duplicate(�~�b�`�F��#kiel)	�v��#kiel4	880
+kh_kiehl02.gat,48,53,5	duplicate(�~�b�`�F��#kiel)	�L�G��#kiel2	902
 
 kh_kiehl02.gat,49,56,0	script	kiehlwarp6	45,1,1,{
 	warp "lighthalzen.gat",193,202;

@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 gefg_cas04.gat,0,0,0	script	#AgitExe_B4	-1,{
 OnAgitStart:
@@ -40,7 +40,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 gefg_cas04.gat,0,0,0	script	#AgitTreasure_B4	-1,{
 OnClock0000:
@@ -57,7 +57,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_B4a	{
 	callfunc "AgitEmblemFlag",0,"gefg_cas04.gat",168,43;
@@ -67,9 +67,9 @@ OnFlagEmb_B4:
 	flagemblem getcastledata("gefg_cas04.gat",1);
 	end;
 }
-gef_fild07.gat,330,171,2	duplicate(#GldFlag_B4a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4a01	722
-gef_fild13.gat,190,283,3	duplicate(#GldFlag_B4a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4a02	722
-gef_fild13.gat,199,274,3	duplicate(#GldFlag_B4a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4a03	722
+gef_fild07.gat,330,171,2	duplicate(#GldFlag_B4a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4a01	722
+gef_fild13.gat,190,283,3	duplicate(#GldFlag_B4a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4a02	722
+gef_fild13.gat,199,274,3	duplicate(#GldFlag_B4a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4a03	722
 
 -	script	#GldFlag_B4b	{
 	end;
@@ -78,20 +78,20 @@ OnFlagEmb_B4:
 	flagemblem getcastledata("gefg_cas04.gat",1);
 	end;
 }
-//geffen.gat,127,130,7		duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b01	722
-//gefg_cas04.gat,24,157,4	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b02	722
-//gefg_cas04.gat,35,158,4	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b03	722
-//gefg_cas04.gat,44,184,4	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b04	722
-//gefg_cas04.gat,51,184,4	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b05	722
-//gefg_cas04.gat,39,212,7	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b06	722
-//gefg_cas04.gat,29,212,1	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b07	722
-//gefg_cas04.gat,24,73,1	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b08	722
-//gefg_cas04.gat,35,73,4	duplicate(#GldFlag_B4b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4b09	722
+//geffen.gat,127,130,7		duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b01	722
+//gefg_cas04.gat,24,157,4	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b02	722
+//gefg_cas04.gat,35,158,4	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b03	722
+//gefg_cas04.gat,44,184,4	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b04	722
+//gefg_cas04.gat,51,184,4	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b05	722
+//gefg_cas04.gat,39,212,7	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b06	722
+//gefg_cas04.gat,29,212,1	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b07	722
+//gefg_cas04.gat,24,73,1	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b08	722
+//gefg_cas04.gat,35,73,4	duplicate(#GldFlag_B4b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4b09	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-gefg_cas04.gat,59,70,3	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B4	117,{
+gefg_cas04.gat,59,70,3	script	ƒJƒvƒ‰Eˆõ::AgitKafra_B4	117,{
 	callfunc "AgitKafra",15;
 	close;
 OnAgitInit:
@@ -101,9 +101,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-gefg_cas04.gat,73,46,3	script	ã‚±ãƒ«ãƒãƒ¼ãƒª	55,{
+gefg_cas04.gat,73,46,3	script	ƒPƒ‹ƒo[ƒŠ	55,{
 	callfunc "AgitSteward","B4",'guardian_id,'guardian_x,'guardian_y,116,123;
 	close;
 OnAgitInit:
@@ -118,7 +118,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 gefg_cas04.gat,116,123,0	script	#AgitMaster_B4	111,{
 	callfunc "AgitMaster",73,47;
@@ -126,7 +126,7 @@ gefg_cas04.gat,116,123,0	script	#AgitMaster_B4	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 gefg_cas04.gat,58,75,0	script	#AgitDungeon_B4	111,{
 	callfunc "AgitDungeon","gld_dun04.gat",268,108;
@@ -134,7 +134,7 @@ gefg_cas04.gat,58,75,0	script	#AgitDungeon_B4	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 gefg_cas04.gat,116,119,0	script	#AgitBanWarp_B4	139,6,6,{
 	callfunc "AgitBanWarp","geffen.gat",120,38;

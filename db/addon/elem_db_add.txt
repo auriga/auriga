@@ -1,2 +1,2 @@
-//elem_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//elem_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //Class,Name,JName,Lv,HP,SP,Range,Atk1,Atk2,Def,Mdef,Str,Agi,Vit,Int,Dex,Luk,Size,Race,Element,Speed,ADelay,aMotion,dMotion,{elem_script}

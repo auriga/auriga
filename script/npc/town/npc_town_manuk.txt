@@ -3,106 +3,106 @@
 //==============================================================================
 
 //============================================================
-// 猫の手職員
+// �L�̎�E��
 //------------------------------------------------------------
-manuk.gat,108,357,4	script	猫の手職員	421,{
+manuk.gat,108,357,4	script	�L�̎�E��	421,{
 	if(CATHAND_POINT == 0) {
-		mes "[猫の手職員]";
-		mes "ご利用ありがとうございます。";
-		mes "猫の手サービスでございます。";
+		mes "[�L�̎�E��]";
+		mes "�����p���肪�Ƃ��������܂��B";
+		mes "�L�̎�T�[�r�X�ł������܂��B";
 		next;
-		mes "[猫の手職員]";
-		mes "……うにゃにゃ？";
-		mes "あなたは";
-		mes "猫の手サービスと";
-		mes "会員契約していないようですなあ。";
+		mes "[�L�̎�E��]";
+		mes "�c�c���ɂ�ɂ�H";
+		mes "���Ȃ���";
+		mes "�L�̎�T�[�r�X��";
+		mes "����_�񂵂Ă��Ȃ��悤�ł��Ȃ��B";
 		next;
-		mes "[猫の手職員]";
-		mes "この機会に是が非でも";
-		mes "会員契約して欲しいです！";
-		mes "契約すると便利なサービスを";
-		mes "受けれるんですよ。";
+		mes "[�L�̎�E��]";
+		mes "���̋@��ɐ�����ł�";
+		mes "����_�񂵂ė~�����ł��I";
+		mes "�_�񂷂�ƕ֗��ȃT�[�r�X��";
+		mes "�󂯂���ł���B";
 		next;
-		mes "[猫の手職員]";
-		mes "契約は";
-		mes "^FF0000ミッドガルド連合軍駐屯地にいる";
-		mes "猫の手職員^000000がしてくれるから";
-		mes "是非、彼に話しかけて";
-		mes "契約してください。";
+		mes "[�L�̎�E��]";
+		mes "�_���";
+		mes "^FF0000�~�b�h�K���h�A���R���Ԓn�ɂ���";
+		mes "�L�̎�E��^000000�����Ă���邩��";
+		mes "����A�ނɘb��������";
+		mes "�_�񂵂Ă��������B";
 		close;
 	}
-	mes "[猫の手職員]";
-	mes "うにゃ、";
-	mes "いつも^FF0000猫の手サービス^000000";
-	mes "ご利用ありがとうございます。";
+	mes "[�L�̎�E��]";
+	mes "���ɂ�A";
+	mes "����^FF0000�L�̎�T�[�r�X^000000";
+	mes "�����p���肪�Ƃ��������܂��B";
 	next;
-	mes "[猫の手職員]";
-	mes "現在、あなたの";
-	mes "猫の手信用ポイントは、";
-	mes "^FF0000" +CATHAND_POINT+ "^000000ポイントです。";
-	mes "今日は、どのサービスをご利用ですか？";
+	mes "[�L�̎�E��]";
+	mes "���݁A���Ȃ���";
+	mes "�L�̎�M�p�|�C���g�́A";
+	mes "^FF0000" +CATHAND_POINT+ "^000000�|�C���g�ł��B";
+	mes "�����́A�ǂ̃T�[�r�X�������p�ł����H";
 	next;
-	setarray '@str$,(CATHAND_POINT >= 10)? "倉庫サービス": "",
-			(CATHAND_POINT >= 100)? "猫ワープ": "";
-	switch(select("位置保存サービス(連合軍駐屯地)",'@str$[0],'@str$[1],"やめる")) {
+	setarray '@str$,(CATHAND_POINT >= 10)? "�q�ɃT�[�r�X": "",
+			(CATHAND_POINT >= 100)? "�L���[�v": "";
+	switch(select("�ʒu�ۑ��T�[�r�X(�A���R���Ԓn)",'@str$[0],'@str$[1],"��߂�")) {
 	case 1:
 		savepoint "mid_camp.gat",56,138;
-		mes "[猫の手職員]";
-		mes "この先にある街の住民達の";
-		mes "反発があって";
-		mes "ここではセーブできないんです。";
+		mes "[�L�̎�E��]";
+		mes "���̐�ɂ���X�̏Z���B��";
+		mes "������������";
+		mes "�����ł̓Z�[�u�ł��Ȃ���ł��B";
 		next;
-		mes "[猫の手職員]";
-		mes "だから、";
-		mes "ミッドガルド連合軍駐屯地";
-		mes "にセーブしておきました。";
-		mes "申し訳ないうにゃ。";
-		mes "実は反発の原因は私です。";
+		mes "[�L�̎�E��]";
+		mes "������A";
+		mes "�~�b�h�K���h�A���R���Ԓn";
+		mes "�ɃZ�[�u���Ă����܂����B";
+		mes "�\����Ȃ����ɂ�B";
+		mes "���͔����̌����͎��ł��B";
 		next;
-		mes "[猫の手職員]";
-		mes "この前、木だと思って爪とぎをしたら";
-		mes "悲鳴が聞こえたんです。";
-		mes "不思議に思ってよく見たら、";
-		mes "木ではなくこの先の街の住民でした。";
-		mes "それからですにゃ、";
-		mes "住民が冷たくなったのは。";
+		mes "[�L�̎�E��]";
+		mes "���̑O�A�؂��Ǝv���Ē܂Ƃ���������";
+		mes "�ߖ�����������ł��B";
+		mes "�s�v�c�Ɏv���Ă悭������A";
+		mes "�؂ł͂Ȃ����̐�̊X�̏Z���ł����B";
+		mes "���ꂩ��ł��ɂ�A";
+		mes "�Z�����₽���Ȃ����̂́B";
 		close;
 	case 2:
 		if(basicskillcheck() && getskilllv(1) < 6) {
-			mes "[猫の手職員]";
-			mes "にゃにゃ？";
-			mes "おかしいですね。";
-			mes "ここに新米冒険者は";
-			mes "来れないはずなのに……";
+			mes "[�L�̎�E��]";
+			mes "�ɂ�ɂ�H";
+			mes "���������ł��ˁB";
+			mes "�����ɐV�Ė`���҂�";
+			mes "����Ȃ��͂��Ȃ̂Ɂc�c";
 			next;
-			mes "[猫の手職員]";
-			mes "基本スキルをレベル6まで";
-			mes "習得していないと";
-			mes "倉庫は利用できないのです。";
+			mes "[�L�̎�E��]";
+			mes "��{�X�L�������x��6�܂�";
+			mes "�K�����Ă��Ȃ���";
+			mes "�q�ɂ͗��p�ł��Ȃ��̂ł��B";
 			close;
 		}
 		if(Zeny < 60) {
-			mes "[猫の手職員]";
-			mes "にゃにゃ？";
-			mes "Zenyが足りないようですよ。";
-			mes "我々猫の手サービスの";
-			mes "倉庫利用料は60Zenyです。";
-			mes "お安いでしょう？";
+			mes "[�L�̎�E��]";
+			mes "�ɂ�ɂ�H";
+			mes "Zeny������Ȃ��悤�ł���B";
+			mes "��X�L�̎�T�[�r�X��";
+			mes "�q�ɗ��p����60Zeny�ł��B";
+			mes "�������ł��傤�H";
 			close;
 		}
 		set Zeny,Zeny-60;
 		openstorage;
 		close;
 	case 3:
-		mes "[猫の手職員]";
-		mes "現在、";
-		mes strcharinfo(0)+ "様の";
-		mes "猫の手信用ポイントは、";
-		mes "^FF0000" +CATHAND_POINT+ "^000000ポイント";
-		mes "ですので、次の街への";
-		mes "猫ワープサービスが利用できます。";
+		mes "[�L�̎�E��]";
+		mes "���݁A";
+		mes strcharinfo(0)+ "�l��";
+		mes "�L�̎�M�p�|�C���g�́A";
+		mes "^FF0000" +CATHAND_POINT+ "^000000�|�C���g";
+		mes "�ł��̂ŁA���̊X�ւ�";
+		mes "�L���[�v�T�[�r�X�����p�ł��܂��B";
 		next;
-		switch(select("連合軍駐屯地----5500z","スプレンディッドフィールド02----7500z","やめる")) {
+		switch(select("�A���R���Ԓn----5500z","�X�v�����f�B�b�h�t�B�[���h02----7500z","��߂�")) {
 		case 1:
 			set '@map$,"mid_camp.gat";
 			set '@warpx,56;
@@ -116,50 +116,50 @@ manuk.gat,108,357,4	script	猫の手職員	421,{
 			set '@zeny,7500;
 			break;
 		case 3:
-			mes "[猫の手職員]";
-			mes "わかりました。";
-			mes "またの利用をお待ちしています。";
+			mes "[�L�̎�E��]";
+			mes "�킩��܂����B";
+			mes "�܂��̗��p�����҂����Ă��܂��B";
 			close;
 		}
 		if(Zeny < '@zeny) {
-			mes "[猫の手職員]";
-			mes "にゃにゃ、お金が足りませんよ。";
+			mes "[�L�̎�E��]";
+			mes "�ɂ�ɂ�A����������܂����B";
 			close;
 		}
-		mes "[猫の手職員]";
-		mes "にゃにゃ、";
-		mes "それではお送りします。";
+		mes "[�L�̎�E��]";
+		mes "�ɂ�ɂ�A";
+		mes "����ł͂����肵�܂��B";
 		close2;
 		set Zeny,Zeny - '@zeny;
 		warp '@map$,'@warpx,'@warpy;
 		end;
 	case 4:
-		mes "[猫の手職員]";
-		mes "わかりました。";
-		mes "またお待ちしております。";
+		mes "[�L�̎�E��]";
+		mes "�킩��܂����B";
+		mes "�܂����҂����Ă���܂��B";
 		close;
 	}
 }
 
 //============================================================
-// マヌク商人
+// �}�k�N���l
 //------------------------------------------------------------
-man_in01.gat,286,16,1	script	マヌク商人	454,{
+man_in01.gat,286,16,1	script	�}�k�N���l	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[マヌク商人]";
-		mes "∬⊃∑";
-		mes "∝⊂∫　⊂　¬";
+		mes "[�}�k�N���l]";
+		mes "�聽��";
+		mes "�偼��@���@��";
 		close;
 	}
-	mes "[マヌク商人]";
-	mes "いらっしゃいませ。";
-	mes "何をお求めでしょうか？";
+	mes "[�}�k�N���l]";
+	mes "��������Ⴂ�܂��B";
+	mes "���������߂ł��傤���H";
 	next;
-	switch(select("商品の説明書を見る","マヌクの豪気","マヌクの意思","マヌクの信念","やめておく")) {
+	switch(select("���i�̐�����������","�}�k�N�̍��C","�}�k�N�̈ӎv","�}�k�N�̐M�O","��߂Ă���")) {
 	case 1:
-		mes "[マヌク商人]";
-		mes "はい、";
-		mes "こちら商品の説明書です。";
+		mes "[�}�k�N���l]";
+		mes "�͂��A";
+		mes "�����珤�i�̐������ł��B";
 		close2;
 		openbook 11019;
 		end;
@@ -173,489 +173,489 @@ man_in01.gat,286,16,1	script	マヌク商人	454,{
 		set '@gain,12348;
 		break;
 	case 5:
-		mes "[マヌク商人]";
-		mes "そうですか、";
-		mes "またお越しください。";
+		mes "[�}�k�N���l]";
+		mes "�����ł����A";
+		mes "�܂����z�����������B";
 		close;
 	}
-	mes "[マヌク商人]";
-	mes "^3131FFマヌクコイン1個^000000につき";
-	mes getitemname('@gain)+ "を";
-	mes "^3131FF3個^000000ご購入できます。";
+	mes "[�}�k�N���l]";
+	mes "^3131FF�}�k�N�R�C��1��^000000�ɂ�";
+	mes getitemname('@gain)+ "��";
+	mes "^3131FF3��^000000���w���ł��܂��B";
 	next;
-	if(select("買う","買わない") == 2) {
-		mes "[マヌク商人]";
-		mes "そうですか、";
-		mes "またお越しください。";
+	if(select("����","����Ȃ�") == 2) {
+		mes "[�}�k�N���l]";
+		mes "�����ł����A";
+		mes "�܂����z�����������B";
 		close;
 	}
 	if(countitem(6080) < 1) {
-		mes "[マヌク商人]";
-		mes "申し訳ありませんが";
-		mes "コインが足りませんよ。";
+		mes "[�}�k�N���l]";
+		mes "�\���󂠂�܂���";
+		mes "�R�C��������܂����B";
 		close;
 	}
 	if(checkitemblank() == 0) {
-		mes "[商人]";
-		mes "あれ？";
-		mes "荷物を持ちすぎですよ。";
-		mes "これでは商品を渡すことは出来ません。";
-		mes "荷物の種類を減らしてから";
-		mes "また話しかけてくださいね。";
+		mes "[���l]";
+		mes "����H";
+		mes "�ו������������ł���B";
+		mes "����ł͏��i��n�����Ƃ͏o���܂���B";
+		mes "�ו��̎�ނ����炵�Ă���";
+		mes "�܂��b�������Ă��������ˁB";
 		close;
 	}
 	if(checkweight('@gain,3) == 0) {
-		mes "[商人]";
-		mes "あれ？";
-		mes "荷物を持ちすぎですよ。";
-		mes "これでは商品を渡すことは出来ません。";
-		mes "荷物の重量を減らしてから";
-		mes "また話しかけてくださいね。";
+		mes "[���l]";
+		mes "����H";
+		mes "�ו������������ł���B";
+		mes "����ł͏��i��n�����Ƃ͏o���܂���B";
+		mes "�ו��̏d�ʂ����炵�Ă���";
+		mes "�܂��b�������Ă��������ˁB";
 		close;
 	}
-	mes "[マヌク商人]";
-	mes "ご利用、ありがとうございました。";
+	mes "[�}�k�N���l]";
+	mes "�����p�A���肪�Ƃ��������܂����B";
 	delitem 6080,1;
 	getitem '@gain,3;
 	close;
 }
 
 //============================================================
-// マヌク住人
+// �}�k�N�Z�l
 //------------------------------------------------------------
-manuk.gat,215,132,4	script	青年	454,{
+manuk.gat,215,132,4	script	�N	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[青年]";
-		mes "∠∫∋ ⊆ ∪∑∧ ∃ ∧∮⊃";
-		mes "∑⊂∠ ∑ ∋∵∝ ∫ ∀∝";
-		mes "∽¬∋ ⊆ ⊆⊃∮ ⊃ ";
-		mes "⊂∵∵ ∬ ∃∫⊆ ⊆ ⊂∵";
+		mes "[�N]";
+		mes "�ځ灹 �� ������ �� �ȇ���";
+		mes "������ �� ����� �� �́�";
+		mes "��ʁ� �� ������ �� ";
+		mes "����� �� �΁灺 �� ����";
 		close;
 	}
-	mes "[青年]";
-	mes "お前は……小さいな。";
-	mes "しかし妖精とは異なる種のようだな。";
-	mes "妖精ではないということは";
-	mes "我々の敵ではないということだ。";
+	mes "[�N]";
+	mes "���O�́c�c�������ȁB";
+	mes "�������d���Ƃ͈قȂ��̂悤���ȁB";
+	mes "�d���ł͂Ȃ��Ƃ������Ƃ�";
+	mes "��X�̓G�ł͂Ȃ��Ƃ������Ƃ��B";
 	close;
 }
 
-manuk.gat,188,216,3	script	学者	449,{
+manuk.gat,188,216,3	script	�w��	449,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[学者]";
-		mes "∠∪∑ ∪ ∀⊆∝ ⊃ ∽";
-		mes "¬∀∑ ∈ ∈∈∪ ∩ ";
-		mes "∋⊇∫ ∪ ∝?∮ ∩ ∫";
+		mes "[�w��]";
+		mes "�ځ��� �� �́��� �� ��";
+		mes "�ʁ͇� �� ������ �� ";
+		mes "������ �� ��?�� �� ��";
 		next;
-		mes "[学者]";
-		mes "∬?∑ ∪ ∈⊇∵ ∠ ";
-		mes "∝∋¬ ⊇ ∵⊂∬";
-		mes "∩?¬ ⊃ ⊃?∃ ? ";
+		mes "[�w��]";
+		mes "��?�� �� ������ �� ";
+		mes "�偹�� �� �恼��";
+		mes "��?�� �� ��?�� ? ";
 		close;
 	}
-	mes "[学者]";
-	mes "お前はどうしてここに来た？";
-	mes "お前は妖精とは異なる種なのか？";
-	mes "この場所はお前が立ち入って";
-	mes "良い場所ではない。";
+	mes "[�w��]";
+	mes "���O�͂ǂ����Ă����ɗ����H";
+	mes "���O�͗d���Ƃ͈قȂ��Ȃ̂��H";
+	mes "���̏ꏊ�͂��O������������";
+	mes "�ǂ��ꏊ�ł͂Ȃ��B";
 	next;
-	mes "[学者]";
-	mes "この場所は神聖なる我等の大地、";
-	mes "^0000ffヨトゥンへイム^000000。";
-	mes "軽い好奇心で立ち寄られては困る。";
+	mes "[�w��]";
+	mes "���̏ꏊ�͐_���Ȃ�䓙�̑�n�A";
+	mes "^0000ff���g�D���փC��^000000�B";
+	mes "�y���D��S�ŗ�������Ă͍���B";
 	close;
 }
 
-manuk.gat,169,260,3	script	青年	455,{
+manuk.gat,169,260,3	script	�N	455,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[青年]";
-		mes "∵¬∋ ∬ ∽¬∪ ∠ ";
-		mes "∑∧∵ ∧ ⊂⊆∮";
-		mes "∃∫∩ ∬ ∈∩∬ ⊇ ";
-		mes "∬∀∬ ∈ ∀∠∃ ∩ ∝";
-		mes "∵∝∪ ∀ ";
+		mes "[�N]";
+		mes "��ʁ� �� ��ʁ� �� ";
+		mes "���ȁ� �� ������";
+		mes "�΁灿 �� ������ �� ";
+		mes "��́� �� �́ځ� �� ��";
+		mes "��偾 �� ";
 		close;
 	}
-	mes "[青年]";
-	mes "我々サファ族は一心同体。";
-	mes "何時いかなる時でも常に";
-	mes "心は1つなのだ。";
-	mes "そう、私がこうやって壁を";
-	mes "見つめている時もな……";
+	mes "[�N]";
+	mes "��X�T�t�@���͈�S���́B";
+	mes "���������Ȃ鎞�ł����";
+	mes "�S��1�Ȃ̂��B";
+	mes "�����A������������ĕǂ�";
+	mes "���߂Ă��鎞���ȁc�c";
 	close;
 }
 
-manuk.gat,218,163,3	script	巨人の戦士	450,{
+manuk.gat,218,163,3	script	���l�̐�m	450,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[巨人の戦士]";
-		mes "∵∬∈ ∠ ∽∈⊃ ∑ ∫";
-		mes "∑⊇⊃ ⊃ ∀∩∫ ∃ ";
-		mes "∵∃⊂ ∫ ∮∩∈ ∠ ";
+		mes "[���l�̐�m]";
+		mes "��聸 �� �䁸�� �� ��";
+		mes "������ �� �́��� �� ";
+		mes "��΁� �� ������ �� ";
 		next;
-		mes "[巨人の戦士]";
-		mes "∮∵⊂ ⊆ ⊃⊃∝ ∫ ";
-		mes "∵∽∃ ¬ ∀∽∝ ⊃ ∋";
-		mes "∋∃∧ ? ∠∝∵ ∋ ∬∈";
-		mes "∵∃∀ ∬ ∽∫∬ ∠ ";
+		mes "[���l�̐�m]";
+		mes "���恼 �� ������ �� ";
+		mes "���� �� �́�� �� ��";
+		mes "���΁� ? �ځ�� �� �聸";
+		mes "��΁� �� ���� �� ";
 		close;
 	}
-	mes "[巨人の戦士]";
-	mes "最近、我等の周りを飛び回る";
-	mes "小さな妖精どもが頻繁に現れる。";
+	mes "[���l�̐�m]";
+	mes "�ŋ߁A�䓙�̎�����щ��";
+	mes "�����ȗd���ǂ����p�ɂɌ����B";
 	next;
-	mes "[巨人の戦士]";
-	mes "まぁ、奴らの出来る事といえば、";
-	mes "遠くからチマチマと魔法で";
-	mes "攻撃することくらいだ。";
-	mes "面倒ではあるが怖くも何ともない。";
-	mes "私が本気を出せば、";
-	mes "一瞬で蹴散らすことができるしな。";
+	mes "[���l�̐�m]";
+	mes "�܂��A�z��̏o���鎖�Ƃ����΁A";
+	mes "��������`�}�`�}�Ɩ��@��";
+	mes "�U�����邱�Ƃ��炢���B";
+	mes "�ʓ|�ł͂��邪�|�������Ƃ��Ȃ��B";
+	mes "�����{�C���o���΁A";
+	mes "��u�ŏR�U�炷���Ƃ��ł��邵�ȁB";
 	close;
 }
 
-manuk.gat,266,199,5	script	巨人の戦士	450,{
+manuk.gat,266,199,5	script	���l�̐�m	450,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[巨人の戦士]";
-		mes "∈∀∪ ⊂ ∽∀∑ ∧ ?";
-		mes "∧∫∪ ∈ ∬∀∪ ⊂ ";
-		mes "⊂∽⊇ ⊆ ∑∮∫ ∫ ⊂";
-		mes "∬∮∋";
+		mes "[���l�̐�m]";
+		mes "���́� �� ��͇� �� ?";
+		mes "�ȁ灾 �� ��́� �� ";
+		mes "���䁻 �� ������ �� ��";
+		mes "�臓��";
 		close;
 	}
-	mes "[巨人の戦士]";
-	mes "これだけのブラディウムの";
-	mes "貯蓄があれば、一安心ではあるが";
-	mes "またいつ底をつくとも限らん。";
-	mes "もっと集めないとな。";
+	mes "[���l�̐�m]";
+	mes "���ꂾ���̃u���f�B�E����";
+	mes "���~������΁A����S�ł͂��邪";
+	mes "�܂���������Ƃ������B";
+	mes "�����ƏW�߂Ȃ��ƂȁB";
 	close;
 }
 
-manuk.gat,225,129,5	script	学者	449,{
+manuk.gat,225,129,5	script	�w��	449,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[学者]";
-		mes "∽⊂∋ ∩ ∬∠⊃ ? ∃?⊇";
-		mes "∈∵⊆ ∧ ∩∀¬ ? ∫∬";
-		mes "∧∪¬ ∀ ⊇∵∋ ¬ ∀?∋";
-		mes "∈⊂∬ ∋ ∝∽";
+		mes "[�w��]";
+		mes "�䁼�� �� ��ځ� ? ��?��";
+		mes "���恺 �� ���́� ? ���";
+		mes "�ȁ��� �� ���恹 �� ��?��";
+		mes "������ �� ���";
 		close;
 	}
-	mes "[学者]";
-	mes "おっと！";
-	mes "妖精かと思ったら違うのか！";
-	mes "小さいから間違いそうになったよ。";
+	mes "[�w��]";
+	mes "�����ƁI";
+	mes "�d�����Ǝv������Ⴄ�̂��I";
+	mes "����������ԈႢ�����ɂȂ�����B";
 	next;
-	mes "[学者]";
-	mes "…";
-	mes "……で、お前は何者だ？";
-	mes "喋れるのか？";
-	mes "我々の言葉はわかるのか？";
-	mes "みればみるほど珍しい奴だな……。";
+	mes "[�w��]";
+	mes "�c";
+	mes "�c�c�ŁA���O�͉��҂��H";
+	mes "�����̂��H";
+	mes "��X�̌��t�͂킩��̂��H";
+	mes "�݂�΂݂�قǒ������z���ȁc�c�B";
 	close;
 }
 
-manuk.gat,286,147,3	script	青年	454,{
+manuk.gat,286,147,3	script	�N	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[青年]";
-		mes "∬∬∽ ∩ ∮∝∵ ∠ ∬";
-		mes "∩∠¬ ∈ ∝∮∽ ∀ ⊆∮";
-		mes "⊇∈∪ ∩ ∮⊆∑ ⊆ ∽¬";
-		mes "∀∈∃ ∮ ∝∋⊇";
+		mes "[�N]";
+		mes "���� �� ����� �� ��";
+		mes "���ځ� �� �凓�� �� ����";
+		mes "������ �� ������ �� ���";
+		mes "�́��� �� �偹��";
 		next;
-		mes "[青年]";
-		mes "∮⊆∀ ⊃ ¬∮∽ ∩ ∝∋";
-		mes "∮¬⊃ ⊆ ¬∝∠ ∋ ";
-		mes "∠∵ ¬ ";
+		mes "[�N]";
+		mes "������ �� �ʇ��� �� �偹";
+		mes "���ʁ� �� �ʁ�� �� ";
+		mes "�ځ� �� ";
 		close;
 	}
-	mes "[青年]";
-	mes "この土地を開拓した";
-	mes "我々の祖先達の苦労を";
-	mes "私は忘れない。";
-	mes "彼らの苦労を無駄にしない為にも";
-	mes "我々も頑張らねばな。";
+	mes "[�N]";
+	mes "���̓y�n���J�񂵂�";
+	mes "��X�̑c��B�̋�J��";
+	mes "���͖Y��Ȃ��B";
+	mes "�ނ�̋�J�𖳑ʂɂ��Ȃ��ׂɂ�";
+	mes "��X���撣��˂΂ȁB";
 	next;
-	mes "[青年]";
-	mes "まずは、あのラフィネ族だとかいう";
-	mes "妖精どもを追い払う術を";
-	mes "考えなければいけないな。";
+	mes "[�N]";
+	mes "�܂��́A���̃��t�B�l�����Ƃ�����";
+	mes "�d���ǂ���ǂ������p��";
+	mes "�l���Ȃ���΂����Ȃ��ȁB";
 	close;
 }
 
-manuk.gat,183,185,5	script	青年	454,{
+manuk.gat,183,185,5	script	�N	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[青年]";
-		mes "⊃∑∠ ∫ ∫∋∽ ∮ ";
-		mes "⊇∈ ⊂ ∃∀∩ ⊆";
-		mes "∮∧∝ ⊂ ∩∬∫ ∈ ";
-		mes "∀∬∮ ∠ ∮";
+		mes "[�N]";
+		mes "������ �� �灹�� �� ";
+		mes "���� �� �΁́� ��";
+		mes "���ȁ� �� ����� �� ";
+		mes "�́臓 �� ��";
 		next;
-		mes "[青年]";
-		mes "∑∮∫ ∧ ∝∵∪ ∫ ";
-		mes "∃⊇∈ ∬ ∑∋∪ ∑ ";
-		mes "∬∬⊂ ∀ ∽";
+		mes "[�N]";
+		mes "������ �� ��恾 �� ";
+		mes "�΁��� �� ������ �� ";
+		mes "��聼 �� ��";
 		close;
 	}
-	mes "[青年]";
-	mes "『皆は一人の為に、";
-	mes "一人は皆の為に』";
-	mes "この言葉は、我が一族の信条だ。";
+	mes "[�N]";
+	mes "�w�F�͈�l�ׂ̈ɁA";
+	mes "��l�͊F�ׂ̈Ɂx";
+	mes "���̌��t�́A�䂪�ꑰ�̐M�����B";
 	next;
-	mes "[青年]";
-	mes "私もその教えに従い、";
-	mes "皆と共に一丸となって働く！";
-	mes "全てはサファ族のために！";
+	mes "[�N]";
+	mes "�������̋����ɏ]���A";
+	mes "�F�Ƌ��Ɉ�ۂƂȂ��ē����I";
+	mes "�S�Ă̓T�t�@���̂��߂ɁI";
 	close;
 }
 
-manuk.gat,256,143,3	script	巨人の戦士	450,{
+manuk.gat,256,143,3	script	���l�̐�m	450,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[巨人の戦士]";
-		mes "⊂∫ ⊆ ∧∃⊇ ∬ ∽";
-		mes "∀∑∈ ∈ ∽⊂∑ ∀ ¬";
-		mes "∬∠ ∑ ∠ ⊂ ⊆ ∀⊃";
+		mes "[���l�̐�m]";
+		mes "���� �� �ȁ΁� �� ��";
+		mes "�͇��� �� �䁼�� �� ��";
+		mes "��� �� �� �� �� �́�";
 		close;
 	}
-	mes "[巨人の戦士]";
-	mes "敵に勝利し、我々サファ族を";
-	mes "守り続けることができるのであれば、";
-	mes "我が身が砕けようとも惜しくない。";
+	mes "[���l�̐�m]";
+	mes "�G�ɏ������A��X�T�t�@����";
+	mes "��葱���邱�Ƃ��ł���̂ł���΁A";
+	mes "�䂪�g���ӂ��悤�Ƃ��ɂ����Ȃ��B";
 	close;
 }
 
-manuk.gat,245,124,3	script	青年	455,{
+manuk.gat,245,124,3	script	�N	455,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[青年]";
-		mes "∀⊃∧ ⊂ ⊇∃∽ ⊇ ⊃";
-		mes "∑∧∵ ∩∧∫";
-		mes "∝∠? ∩ ∫∧ ∪ ";
-		mes "∃∪⊆ ∪ ∃∬∬";
-		mes "∩∝∫ ⊂ ∽⊂⊃ ∑ ";
+		mes "[�N]";
+		mes "�́��� �� ���΁� �� ��";
+		mes "���ȁ� ���ȁ�";
+		mes "���? �� ��� �� ";
+		mes "�΁��� �� �΁��";
+		mes "����� �� �䁼�� �� ";
 		close;
 	}
-	mes "[青年]";
-	mes "お前達の目には、";
-	mes "我々の戦いがどのように映るのか、";
-	mes "わからないが、我々は命がけの";
-	mes "戦いをしているのだ。";
-	mes "それだけは覚えておいて欲しい。";
+	mes "[�N]";
+	mes "���O�B�̖ڂɂ́A";
+	mes "��X�̐킢���ǂ̂悤�ɉf��̂��A";
+	mes "�킩��Ȃ����A��X�͖�������";
+	mes "�킢�����Ă���̂��B";
+	mes "���ꂾ���͊o���Ă����ė~�����B";
 	close;
 }
 
-manuk.gat,103,354,5	script	戦士	450,{
+manuk.gat,103,354,5	script	��m	450,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[戦士]";
-		mes "∀⊇∪　¬　∧∵∬　⊇";
-		mes "∬∀∽　⊆　⊆∠⊇　⊆　?";
+		mes "[��m]";
+		mes "�́����@�ʁ@�ȁ��@��";
+		mes "��́�@���@���ځ��@���@?";
 		close;
 	}
-	mes "[戦士]";
-	mes "ここは、";
-	mes "ベルゲルミルの子孫である";
-	mes "サファ族の街マヌクです。";
+	mes "[��m]";
+	mes "�����́A";
+	mes "�x���Q���~���̎q���ł���";
+	mes "�T�t�@���̊X�}�k�N�ł��B";
 	close;
 }
 
-manuk.gat,122,354,3	script	戦士	450,{
+manuk.gat,122,354,3	script	��m	450,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[戦士]";
-		mes "∀⊇∪　¬　∧∵∬ ⊇";
-		mes "∬∀∽　⊆　⊆∠⊇　⊆　?";
+		mes "[��m]";
+		mes "�́����@�ʁ@�ȁ�� ��";
+		mes "��́�@���@���ځ��@���@?";
 		close;
 	}
-	mes "[戦士]";
-	mes "ここは、";
-	mes "ベルゲルミルの子孫である";
-	mes "サファ族の街マヌクです。";
+	mes "[��m]";
+	mes "�����́A";
+	mes "�x���Q���~���̎q���ł���";
+	mes "�T�t�@���̊X�}�k�N�ł��B";
 	close;
 }
 
-manuk.gat,99,334,5	script	工員	460,{
+manuk.gat,99,334,5	script	�H��	460,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "⊂∪∬　?　∋¬∬";
-		mes "∫　∪∬⊃　∈∈";
-		mes "∩∧∮　⊂　∩∃⊂　∀　∮⊆";
-		mes "∑∧?　∃　∽∈?　∈　∬∪∋";
-		mes "∧　∝??　∧　∽∮∪　∀　∝?";
-		mes "¬⊆⊂　?　∑∵⊇";
+		mes "[�H��]";
+		mes "������@?�@���ʁ�";
+		mes "��@���聽�@����";
+		mes "���ȇ��@���@���΁��@�́@����";
+		mes "����?�@�΁@�䁸?�@���@�聾��";
+		mes "�ȁ@��??�@�ȁ@�䇓���@�́@��?";
+		mes "�ʁ����@?�@���恻";
 		close;
 	}
-	mes "[工員]";
-	mes "俺達サファ族には";
-	mes "それぞれ役割があるんだよ。";
-	mes "ちなみに俺は^0000ffピオム^000000っていう役割だ。";
-	mes "ブラディウム工場の工員だとか";
-	mes "マヌクでの労働を担当しているんだ。";
+	mes "[�H��]";
+	mes "���B�T�t�@���ɂ�";
+	mes "���ꂼ�����������񂾂�B";
+	mes "���Ȃ݂ɉ���^0000ff�s�I��^000000���Ă����������B";
+	mes "�u���f�B�E���H��̍H�����Ƃ�";
+	mes "�}�k�N�ł̘J����S�����Ă���񂾁B";
 	next;
-	mes "[工員]";
-	mes "兵役を担当しているのが^0000ffガルトン^000000だ。";
-	mes "彼らがいるから";
-	mes "俺達は安心して生活できるんだ。";
-	mes "本当に尊敬しているぜ。";
+	mes "[�H��]";
+	mes "������S�����Ă���̂�^0000ff�K���g��^000000���B";
+	mes "�ނ炪���邩��";
+	mes "���B�͈��S���Đ����ł���񂾁B";
+	mes "�{���ɑ��h���Ă��邺�B";
 	next;
-	mes "[工員]";
-	mes "ほかにも色々な役割があるんだぜ。";
+	mes "[�H��]";
+	mes "�ق��ɂ��F�X�Ȗ���������񂾂��B";
 	close;
 }
 
-manuk.gat,103,311,3	script	工員	455,{
+manuk.gat,103,311,3	script	�H��	455,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "∧∀∪　⊇　";
-		mes "∧∫∠　∪　∈∋∈　∩　∬";
+		mes "[�H��]";
+		mes "�ȁ́��@���@";
+		mes "�ȁ�ځ@���@�������@���@��";
 		close;
 	}
-	mes "[工員]";
-	mes "あ、足が……";
-	mes "もうブラディウムを注射する時間か……";
+	mes "[�H��]";
+	mes "���A�����c�c";
+	mes "�����u���f�B�E���𒍎˂��鎞�Ԃ��c�c";
 	close;
 }
 
-manuk.gat,293,203,3	script	工員	454,{
+manuk.gat,293,203,3	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "∋∃∈ ⊆ ∫";
-		mes "∽⊇∠　?　¬∀⊃　¬";
-		mes "∠∈⊇　∫　∫∽∧　∫";
-		mes "⊃⊂¬　¬　⊆∬⊇　∋　∵∈";
+		mes "[�H��]";
+		mes "���΁� �� ��";
+		mes "�䁻�ځ@?�@�ʁ́��@��";
+		mes "�ځ����@��@���ȁ@��";
+		mes "�����ʁ@�ʁ@���聻�@���@�恸";
 		close;
 	}
-	mes "[工員]";
-	mes "ああっ、気をつけて!!";
-	mes "これはサファ族の命ともいえる";
-	mes "ブラディウムなんだ！";
-	mes "取り扱い要注意！";
+	mes "[�H��]";
+	mes "�������A�C������!!";
+	mes "����̓T�t�@���̖��Ƃ�������";
+	mes "�u���f�B�E���Ȃ񂾁I";
+	mes "��舵���v���ӁI";
 	close;
 }
 
-manuk.gat,253,173,3	script	学者	449,{
+manuk.gat,253,173,3	script	�w��	449,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[学者]";
-		mes "⊂∧∠　⊃　∽∑";
-		mes "∑∫∧　∬　∮⊃∫　∋";
-		mes "∠?⊆　∮　∮∈∈　∮　∫∑";
-		mes "∵⊃⊃　∀　∠∠⊂ ∃　∩⊃";
+		mes "[�w��]";
+		mes "���ȁځ@���@�䇔";
+		mes "����ȁ@��@������@��";
+		mes "��?���@���@�������@���@�燔";
+		mes "�恽���@�́@�ځځ� �΁@����";
 		close;
 	}
-	mes "[学者]";
-	mes "あの銅像が見えますか？";
-	mes "あのお方は、我がサファ族の先祖";
-	mes "ベルゲルミル様です。";
-	mes "威風堂々としていて";
-	mes "素晴らしいと思いませんか？";
+	mes "[�w��]";
+	mes "���̓����������܂����H";
+	mes "���̂����́A�䂪�T�t�@���̐�c";
+	mes "�x���Q���~���l�ł��B";
+	mes "�Е����X�Ƃ��Ă���";
+	mes "�f���炵���Ǝv���܂��񂩁H";
 	close;
 }
 
-man_in01.gat,346,135,0	script	工員	454,{
+man_in01.gat,346,135,0	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "Π∫〓　∫　Π∫∃　⊇　〓∽∀";
-		mes "〓∩∬　〓　∀⊆〓　Σ　";
-		mes "∀〓∧　∃　∫∀∝　∈　";
+		mes "[�H��]";
+		mes "���灬�@��@����΁@���@�����";
+		mes "������@���@�́����@���@";
+		mes "�́��ȁ@�΁@��́�@���@";
 		close;
 	}
-	mes "[工員]";
-	mes "ちゃんとバルブの";
-	mes "チェックをしないとね。";
-	mes "この前、うっかり開けっ放しにして";
-	mes "大事故になりそうになったんだ〜。";
+	mes "[�H��]";
+	mes "�����ƃo���u��";
+	mes "�`�F�b�N�����Ȃ��ƂˁB";
+	mes "���̑O�A��������J���������ɂ���";
+	mes "�厖�̂ɂȂ肻���ɂȂ����񂾁`�B";
 	close;
 }
 
-man_in01.gat,393,134,3	script	工員	454,{
+man_in01.gat,393,134,3	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "∈⊃⊆　⊃　⊆〓∩";
-		mes "∧∪⊃　∩";
+		mes "[�H��]";
+		mes "�������@���@������";
+		mes "�ȁ����@��";
 		close;
 	}
-	mes "[工員]";
-	mes "ここは我々にとって、";
-	mes "重要な施設なのだ。";
-	mes "ゆえに、徹底的な危機管理が";
-	mes "必要なのだ。";
+	mes "[�H��]";
+	mes "�����͉�X�ɂƂ��āA";
+	mes "�d�v�Ȏ{�݂Ȃ̂��B";
+	mes "�䂦�ɁA�O��I�Ȋ�@�Ǘ���";
+	mes "�K�v�Ȃ̂��B";
 	next;
-	mes "[工員]";
-	mes "恥ずかしい話だが、";
-	mes "この前、工員の一人のミスで";
-	mes "大事故になりそうになったのだ。";
-	mes "再発防止を徹底しなくてな。";
+	mes "[�H��]";
+	mes "�p���������b�����A";
+	mes "���̑O�A�H���̈�l�̃~�X��";
+	mes "�厖�̂ɂȂ肻���ɂȂ����̂��B";
+	mes "�Ĕ��h�~��O�ꂵ�Ȃ��ĂȁB";
 	close;
 }
 
-man_in01.gat,377,143,5	script	工員	454,{
+man_in01.gat,377,143,5	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "〓∽∋　Σ　∩∪∧";
-		mes "∪　∠⊆∩　Σ　Π　Σ ";
+		mes "[�H��]";
+		mes "���䁹�@���@������";
+		mes "���@�ځ����@���@���@�� ";
 		close;
 	}
-	mes "[工員]";
-	mes "動作に異常なし……と。";
+	mes "[�H��]";
+	mes "����Ɉُ�Ȃ��c�c�ƁB";
 	close;
 }
 
-man_in01.gat,333,128,5	script	工員	454,{
+man_in01.gat,333,128,5	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "⊆〓〓　⊃　〓∩Π";
-		mes "∠　∩Π⊇";
+		mes "[�H��]";
+		mes "�������@���@������";
+		mes "�ځ@������";
 		close;
 	}
-	mes "[工員]";
-	mes "ねぇねぇ！";
-	mes "君の世界には巨大な";
-	mes "人型兵器があるって本当!?";
+	mes "[�H��]";
+	mes "�˂��˂��I";
+	mes "�N�̐��E�ɂ͋����";
+	mes "�l�^���킪������Ė{��!?";
 	next;
-	mes "[工員]";
-	mes "来るべき決戦の時、";
-	mes "神殿が真っ二つに分かれ、";
-	mes "その中から現れるって聞いたよ！";
+	mes "[�H��]";
+	mes "����ׂ�����̎��A";
+	mes "�_�a���^����ɕ�����A";
+	mes "���̒����猻�����ĕ�������I";
 	next;
-	mes "[工員]";
-	mes "口から荒れ狂う風を吐き、";
-	mes "角からは雷を発し、";
-	mes "拳からは数万の刃物を放ち、";
-	mes "胸からは熱い炎が出るらしいね！";
+	mes "[�H��]";
+	mes "������r�ꋶ������f���A";
+	mes "�p����͗��𔭂��A";
+	mes "������͐����̐n��������A";
+	mes "������͔M�������o��炵���ˁI";
 	next;
-	mes "[工員]";
-	mes "この前、アルナベルツって";
-	mes "国から来た人が言っていたんだ。";
-	mes "いいなあ、見たいなあ。";
+	mes "[�H��]";
+	mes "���̑O�A�A���i�x���c����";
+	mes "�����痈���l�������Ă����񂾁B";
+	mes "�����Ȃ��A�������Ȃ��B";
 	close;
 }
 
-man_in01.gat,336,128,5	script	工員	454,{
+man_in01.gat,336,128,5	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "〓∩∧ ⊇ ∈⊃";
+		mes "[�H��]";
+		mes "������ �� ����";
 		close;
 	}
-	mes "[工員]";
-	mes "この前、ミッドガルドから来たという";
-	mes "研究者達がここを見学して行ったぞ。";
-	mes "その研究者達にミッドガルドの話を";
-	mes "色々と聞けて面白かったぜ。";
+	mes "[�H��]";
+	mes "���̑O�A�~�b�h�K���h���痈���Ƃ���";
+	mes "�����ҒB�����������w���čs�������B";
+	mes "���̌����ҒB�Ƀ~�b�h�K���h�̘b��";
+	mes "�F�X�ƕ����Ėʔ����������B";
 	close;
 }
 
-man_in01.gat,283,288,3	script	工員	454,{
+man_in01.gat,283,288,3	script	�H��	454,{
 	if(!equippeditem(2782) || YGG_1QUE < 100) {
-		mes "[工員]";
-		mes "∫Π⊂　∫ 〓∫∃";
-		mes "∧　∽⊆∈　∠　∽Σ　∠";
+		mes "[�H��]";
+		mes "�烮���@�� �����";
+		mes "�ȁ@�䁺���@�ځ@�䃰�@��";
 		next;
-		mes "[工員]";
-		mes "∝〓⊇　∠　∈⊇〓";
-		mes "∩　∠∠∋　Σ　Σ";
+		mes "[�H��]";
+		mes "�偬���@�ځ@������";
+		mes "���@�ځځ��@���@��";
 		close;
 	}
-	mes "[工員]";
-	mes "うん、なかなか質のよい";
-	mes "ブラディウムだ。";
+	mes "[�H��]";
+	mes "����A�Ȃ��Ȃ����̂悢";
+	mes "�u���f�B�E�����B";
 	next;
-	mes "[工員]";
-	mes "ブラディウムは";
-	mes "私たちの命だからね。";
+	mes "[�H��]";
+	mes "�u���f�B�E����";
+	mes "�������̖�������ˁB";
 	close;
 }

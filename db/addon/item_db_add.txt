@@ -1,2 +1,2 @@
-//item_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//item_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}

@@ -1,293 +1,293 @@
-ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å†…ã«ã¦æ¬¡ã®æ›¸å¼ã«å¾“ã£ã¦å…¥åŠ›ã—ã€EnteræŠ¼ä¸‹ã€‚
-@help [é–‹å§‹è¡Œ] [çµ‚äº†è¡Œ]   ---- @ã‚³ãƒžãƒ³ãƒ‰ã«ã¤ã„ã¦ã®ãƒ˜ãƒ«ãƒ—ã‚’è¡¨ç¤º
-    è¡ŒæŒ‡å®šã—ãŸå ´åˆã¯ãã®è¡Œé–“ã®ãƒ˜ãƒ«ãƒ—ã ã‘ã‚’è¡¨ç¤º
-    è¡Œé ­ã« // ã‚’å…¥ã‚Œã‚‹ã¨ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã¨ãªã‚Šãã®è¡Œã¯è¡¨ç¤ºã•ã‚Œãªã„
+ƒƒbƒZ[ƒWƒEƒBƒ“ƒhƒE“à‚É‚ÄŽŸ‚Ì‘Ž®‚É]‚Á‚Ä“ü—Í‚µAEnter‰Ÿ‰ºB
+@help [ŠJŽns] [I—¹s]   ---- @ƒRƒ}ƒ“ƒh‚É‚Â‚¢‚Ä‚Ìƒwƒ‹ƒv‚ð•\Ž¦
+    sŽw’è‚µ‚½ê‡‚Í‚»‚ÌsŠÔ‚Ìƒwƒ‹ƒv‚¾‚¯‚ð•\Ž¦
+    s“ª‚É // ‚ð“ü‚ê‚é‚ÆƒRƒƒ“ƒgƒAƒEƒg‚Æ‚È‚è‚»‚Ìs‚Í•\Ž¦‚³‚ê‚È‚¢
 
-@die        ---- è‡ªæ®º
-@alive      ---- ç”Ÿãè¿”ã‚‹
-@save       ---- å ´æ‰€ã®ã‚»ãƒ¼ãƒ–åŠã³å†’é™ºã®è¨˜éŒ²ã‚’ã‚»ãƒ¼ãƒ–ã™ã‚‹
-@load       ---- ã‚»ãƒ¼ãƒ–ã—ãŸå ´æ‰€ã¸æˆ»ã‚‹
-@rura ãƒžãƒƒãƒ—å xåº§æ¨™ yåº§æ¨™               ---- æŒ‡å®šã—ãŸãƒžãƒƒãƒ—ã®åº§æ¨™ã¸ãƒ¯ãƒ¼ãƒ—ã§ãã‚‹
-@rura+ ãƒžãƒƒãƒ—å xåº§æ¨™ yåº§æ¨™ ã‚­ãƒ£ãƒ©å    ---- ãƒã‚·ãƒ«ãƒ¼ãƒ©
-@jump [xåº§æ¨™ yåº§æ¨™]    ---- ä»Šå±…ã‚‹ãƒžãƒƒãƒ—ã®æŒ‡å®šã—ãŸåº§æ¨™ã¸é£›ã¶
-                            åº§æ¨™çœç•¥æ™‚ã¯MAPå†…ã§ãƒ©ãƒ³ãƒ€ãƒ 
-@jumpto ã‚­ãƒ£ãƒ©å         ---- ç‰¹å®šã‚­ãƒ£ãƒ©ã®å±…ã‚‹å ´æ‰€ã¸è·³ã¶
-@go æ•°å­—orãƒžãƒƒãƒ—å       ---- ãƒ«ãƒ¼ãƒ©ç°¡æ˜“ç‰ˆ
-                              ãƒžãƒƒãƒ—åã¯gatæ•°æ–‡å­—ã®ç•¥å¼ã§è‰¯ã„
-    0:ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©  6:ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³12:ã‚¦ãƒ³ãƒãƒ©       18:ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ 24:ãƒ–ãƒ©ã‚¸ãƒªã‚¹
-    1:ãƒ¢ãƒ­ã‚¯      7:ãƒ«ãƒ†ã‚£ã‚¨    13:ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ    19:ãƒ•ã‚£ã‚²ãƒ«     25:ãƒ‡ãƒ¯ã‚¿
-    2:ã‚²ãƒ•ã‚§ãƒ³    8:ã‚³ãƒ¢ãƒ‰      14:é¾ä¹‹åŸŽ         20:ãƒ©ãƒ˜ãƒ«       26:ãƒžãƒ©ãƒ³å³¶
-    3:ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³  9:ã‚¸ãƒ¥ãƒŽãƒ¼    15:ã‚¢ãƒ¦ã‚¿ãƒ¤       21:ãƒ™ã‚¤ãƒ³ã‚¹
-    4:ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ 10:ã‚¢ãƒžãƒ„      16:ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ 22:ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢
-    5:ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰ 11:ã‚³ãƒ³ãƒ­ãƒ³    17:ã‚¢ã‚¤ãƒ³ãƒ™ãƒ•     23:é€£åˆè»é§å±¯åœ°
+@die        ---- Ž©ŽE
+@alive      ---- ¶‚«•Ô‚é
+@save       ---- êŠ‚ÌƒZ[ƒu‹y‚Ñ–`Œ¯‚Ì‹L˜^‚ðƒZ[ƒu‚·‚é
+@load       ---- ƒZ[ƒu‚µ‚½êŠ‚Ö–ß‚é
+@rura ƒ}ƒbƒv–¼ xÀ•W yÀ•W               ---- Žw’è‚µ‚½ƒ}ƒbƒv‚ÌÀ•W‚Öƒ[ƒv‚Å‚«‚é
+@rura+ ƒ}ƒbƒv–¼ xÀ•W yÀ•W ƒLƒƒƒ‰–¼    ---- ƒoƒVƒ‹[ƒ‰
+@jump [xÀ•W yÀ•W]    ---- ¡‹‚éƒ}ƒbƒv‚ÌŽw’è‚µ‚½À•W‚Ö”ò‚Ô
+                            À•WÈ—ªŽž‚ÍMAP“à‚Åƒ‰ƒ“ƒ_ƒ€
+@jumpto ƒLƒƒƒ‰–¼         ---- “Á’èƒLƒƒƒ‰‚Ì‹‚éêŠ‚Ö’µ‚Ô
+@go ”Žšorƒ}ƒbƒv–¼       ---- ƒ‹[ƒ‰ŠÈˆÕ”Å
+                              ƒ}ƒbƒv–¼‚Ígat”•¶Žš‚Ì—ªŽ®‚Å—Ç‚¢
+    0:ƒvƒƒ“ƒeƒ‰  6:ƒAƒ‹ƒfƒoƒ‰ƒ“12:ƒEƒ“ƒoƒ‰       18:ƒŠƒqƒ^ƒ‹ƒ[ƒ“ 24:ƒuƒ‰ƒWƒŠƒX
+    1:ƒ‚ƒƒN      7:ƒ‹ƒeƒBƒG    13:ƒjƒuƒ‹ƒwƒCƒ€   19:ƒtƒBƒQƒ‹     25:ƒfƒƒ^
+    2:ƒQƒtƒFƒ“    8:ƒRƒ‚ƒh      14:—´”Vé         20:ƒ‰ƒwƒ‹       26:ƒ}ƒ‰ƒ““‡
+    3:ƒtƒFƒCƒˆƒ“  9:ƒWƒ…ƒm[    15:ƒAƒ†ƒ^ƒ„       21:ƒxƒCƒ“ƒX
+    4:ƒAƒ‹ƒxƒ‹ƒ^ 10:ƒAƒ}ƒc      16:ƒAƒCƒ“ƒuƒƒbƒN 22:ƒ‚ƒXƒRƒrƒA
+    5:ƒCƒYƒ‹[ƒh 11:ƒRƒ“ƒƒ“    17:ƒAƒCƒ“ƒxƒt     23:˜A‡ŒR’““Ô’n
 
-@jobchange è·æ¥­ID [è»¢ç”Ÿ] ---- 0ã€œ44ã®è·æ¥­ã¸è»¢è·ã™ã‚‹
-                              è»¢ç”Ÿ 0=é€šå¸¸,1=è»¢ç”Ÿ,2=é¤Šå­,-1 or ç„¡ã—=ç¾çŠ¶
-    0:ãƒŽãƒ¼ãƒ“ã‚¹    7:é¨Žå£«             20:ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹   29:ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ      42:æ‹¡å¼µã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹
-    1:å‰£å£«        8:ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ       21:ãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰       30:ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯      43:å½±ç‹¼
-    2:ãƒžã‚¸ã‚·ãƒ£ãƒ³  9:ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰       22:æ‹³è–               31:ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼        44:æœ§
-    3:ã‚¢ãƒ¼ãƒãƒ£ãƒ¼  10:ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹  23:ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼     32:ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—
-    4:ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ  11:ãƒãƒ³ã‚¿ãƒ¼        24:ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼     33:ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯
-    5:å•†äºº        12:ã‚¢ã‚µã‚·ãƒ³        25:å¿è€…               34:ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹
-    6:ç›—è³Š        13:ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼    26:ãƒœãƒ³ã‚´ãƒ³/ãƒ ãƒŠãƒƒã‚¯  35:ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰
-                  14:ãƒ¢ãƒ³ã‚¯          27:ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆ         36:ã‚½ãƒ¼ã‚µãƒ©ãƒ¼
-                  15:ã‚»ãƒ¼ã‚¸          28:ãƒ€ãƒ¼ã‚¯ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼   37:ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«
-                  16:ãƒ­ãƒ¼ã‚°                                38:ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼
-                  17:ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ                          39:ä¿®ç¾…
-                  18:ãƒãƒ¼ãƒ‰                                40:ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯
-                  19:ãƒ€ãƒ³ã‚µãƒ¼                              41:ã‚·ãƒ£ãƒ‰ã‚¦ãƒã‚§ã‚¤ã‚µãƒ¼
+@jobchange E‹ÆID [“]¶] ---- 0`44‚ÌE‹Æ‚Ö“]E‚·‚é
+                              “]¶ 0=’Êí,1=“]¶,2=—{Žq,-1 or –³‚µ=Œ»ó
+    0:ƒm[ƒrƒX    7:‹RŽm             20:ƒX[ƒp[ƒm[ƒrƒX   29:ƒ‹[ƒ“ƒiƒCƒg      42:Šg’£ƒX[ƒp[ƒm[ƒrƒX
+    1:Œ•Žm        8:ƒvƒŠ[ƒXƒg       21:ƒeƒRƒ“ƒLƒbƒh       30:ƒEƒH[ƒƒbƒN      43:‰e˜T
+    2:ƒ}ƒWƒVƒƒƒ“  9:ƒEƒBƒU[ƒh       22:Œ¹               31:ƒŒƒ“ƒWƒƒ[        44:žO
+    3:ƒA[ƒ`ƒƒ[  10:ƒuƒ‰ƒbƒNƒXƒ~ƒX  23:ƒ\ƒEƒ‹ƒŠƒ“ƒJ[     32:ƒA[ƒNƒrƒVƒ‡ƒbƒv
+    4:ƒAƒRƒ‰ƒCƒg  11:ƒnƒ“ƒ^[        24:ƒKƒ“ƒXƒŠƒ“ƒK[     33:ƒƒJƒjƒbƒN
+    5:¤l        12:ƒAƒTƒVƒ“        25:”EŽÒ               34:ƒMƒƒ`ƒ“ƒNƒƒX
+    6:“‘¯        13:ƒNƒ‹ƒZƒCƒ_[    26:ƒ{ƒ“ƒSƒ“/ƒ€ƒiƒbƒN  35:ƒƒCƒ„ƒ‹ƒK[ƒh
+                  14:ƒ‚ƒ“ƒN          27:ƒfƒXƒiƒCƒg         36:ƒ\[ƒTƒ‰[
+                  15:ƒZ[ƒW          28:ƒ_[ƒNƒRƒŒƒNƒ^[   37:ƒ~ƒ“ƒXƒgƒŒƒ‹
+                  16:ƒ[ƒO                                38:ƒƒ“ƒ_ƒ‰[
+                  17:ƒAƒ‹ƒPƒ~ƒXƒg                          39:C—…
+                  18:ƒo[ƒh                                40:ƒWƒFƒlƒeƒBƒbƒN
+                  19:ƒ_ƒ“ƒT[                              41:ƒVƒƒƒhƒEƒ`ƒFƒCƒT[
 
-@option w x y z         ---- w x y z ã®ãƒ•ãƒ©ã‚°ã«å¿œã˜ãŸçŠ¶æ…‹ã«ãªã‚‹
-    w = 1 å®Œå…¨çŸ³åŒ–     x = 0x001 æ¯’           y = 0x0000001 ã‚µã‚¤ãƒˆ                  z = 0x00001 é»„è‰²ããªã‚‹ï¼ˆ2HQç­‰ï¼‰
-    w = 2 å‡çµ         x = 0x002 å‘ªã„         y = 0x0000002 ãƒã‚¤ãƒ‡ã‚£ãƒ³ã‚°çŠ¶æ…‹        z = 0x00002 ã‚ªãƒ¼ãƒãƒ¼ãƒˆãƒ©ã‚¹ãƒˆ
-    w = 3 ã‚¹ã‚¿ãƒ³       x = 0x004 æ²ˆé»™         y = 0x0000004 ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°çŠ¶æ…‹        z = 0x00004 ã‚¨ãƒŠã‚¸ãƒ¼ã‚³ãƒ¼ãƒˆ
-    w = 4 ç¡çœ          x = 0x008 æ··ä¹±         y = 0x0000008 ã‚«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«1           z = 0x00008 çˆ†è£‚æ³¢å‹•
-    w = 5 ç§»å‹•ä¸å¯     x = 0x010 æš—é—‡         y = 0x0000010 é·¹ä»˜ã                  z = 0x00010 é‡‘å‰›
-    w = 6 çŸ³åŒ–é€²è¡Œä¸­   x = 0x020 ã‚¨ãƒ³ã‚¸ã‚§ãƒ©ã‚¹ y = 0x0000020 ãƒšã‚³ãƒšã‚³ä¹—ã‚Š            z = 0x00020 ç™½åˆƒå–ã‚Š
-    w = 7 ç™ºç«         x = 0x040 å‡ºè¡€         y = 0x0000040 ã‚¤ãƒ³ãƒ“ã‚¸ãƒ–ãƒ«            z = 0x00040 ã‚ªãƒ¼ãƒ©ãƒ–ãƒ¬ãƒ¼ãƒ‰
-    w = 8 ã‚¤ãƒ³ãƒ—ãƒªã‚ºãƒ³ x = 0x080 çŒ›æ¯’         y = 0x0000080 ã‚«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«2           z = 0x00080 ãƒãƒ¼ã‚µãƒ¼ã‚¯
-                           0x100 ææ€–         y = 0x0000100 ã‚«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«3           z = 0x00100
-                                              y = 0x0000200 ã‚«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«4           z = 0x00200 ãƒ€ãƒ³ã‚¹/æ¼”å¥ä¸­
-                                              y = 0x0000400 ã‚«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«5           z = 0x00400 ãƒžãƒªã‚ªãƒãƒƒãƒˆ
-                                              y = 0x0000800 ãƒªãƒãƒ¼ã‚¹ã‚ªã‚­ãƒƒã‚·ãƒ¥      z = 0x00800 ã‚¢ã‚¹ãƒ 
-                                              y = 0x0001000 ã‚¦ã‚§ãƒ‡ã‚£ãƒ³ã‚°ãƒ‰ãƒ¬ã‚¹      z = 0x01000 æ¸©ã‚‚ã‚Š
-                                              y = 0x0002000 ãƒ«ã‚¢ãƒ•                  z = 0x02000 ã‚«ã‚¤ãƒˆ
-                                              y = 0x0004000 ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯ã®è¶³è·¡  z = 0x04000 åˆ†èº«
-                                              y = 0x0008000 å¤ªé™½ã¨æœˆã¨æ˜Ÿã®èžåˆ      z = 0x08000 é­‚çŠ¶æ…‹
-                                              y = 0x0010000 ã‚µãƒ³ã‚¿æœ                z = 0x10000 ä¸æ­»
-                                              y = 0x0020000 å¤‰èº«                    z = 0x20000
-                                              y = 0x0040000 æ°´ç€
-                                              y = 0x0080000 ç·‘ãƒ‰ãƒ©ã‚´ãƒ³ä¹—ã‚Š
-                                              y = 0x0100000 ã‚¦ã‚©ãƒ¼ã‚°ä»˜ã
-                                              y = 0x0200000 ã‚¦ã‚©ãƒ¼ã‚°ä¹—ã‚Š
-                                              y = 0x0400000 é­”å°Žã‚®ã‚¢ä¹—ã‚Š
-                                              y = 0x0800000 é»’ãƒ‰ãƒ©ã‚´ãƒ³ä¹—ã‚Š
-                                              y = 0x1000000 ç™½ãƒ‰ãƒ©ã‚´ãƒ³ä¹—ã‚Š
-                                              y = 0x2000000 é’ãƒ‰ãƒ©ã‚´ãƒ³ä¹—ã‚Š
-                                              y = 0x4000000 èµ¤ãƒ‰ãƒ©ã‚´ãƒ³ä¹—ã‚Š
+@option w x y z         ---- w x y z ‚Ìƒtƒ‰ƒO‚É‰ž‚¶‚½ó‘Ô‚É‚È‚é
+    w = 1 Š®‘SÎ‰»     x = 0x001 “Å           y = 0x0000001 ƒTƒCƒg                  z = 0x00001 ‰©F‚­‚È‚éi2HQ“™j
+    w = 2 “€Œ‹         x = 0x002 Žô‚¢         y = 0x0000002 ƒnƒCƒfƒBƒ“ƒOó‘Ô        z = 0x00002 ƒI[ƒo[ƒgƒ‰ƒXƒg
+    w = 3 ƒXƒ^ƒ“       x = 0x004 ’¾–Ù         y = 0x0000004 ƒNƒ[ƒLƒ“ƒOó‘Ô        z = 0x00004 ƒGƒiƒW[ƒR[ƒg
+    w = 4 ‡–°         x = 0x008 ¬—         y = 0x0000008 ƒJ[ƒgƒŒƒxƒ‹1           z = 0x00008 ”š—ô”g“®
+    w = 5 ˆÚ“®•s‰Â     x = 0x010 ˆÃˆÅ         y = 0x0000010 ‘é•t‚«                  z = 0x00010 ‹à„
+    w = 6 Î‰»is’†   x = 0x020 ƒGƒ“ƒWƒFƒ‰ƒX y = 0x0000020 ƒyƒRƒyƒRæ‚è            z = 0x00020 ”’nŽæ‚è
+    w = 7 ”­‰Î         x = 0x040 oŒŒ         y = 0x0000040 ƒCƒ“ƒrƒWƒuƒ‹            z = 0x00040 ƒI[ƒ‰ƒuƒŒ[ƒh
+    w = 8 ƒCƒ“ƒvƒŠƒYƒ“ x = 0x080 –Ò“Å         y = 0x0000080 ƒJ[ƒgƒŒƒxƒ‹2           z = 0x00080 ƒo[ƒT[ƒN
+                           0x100 ‹°•|         y = 0x0000100 ƒJ[ƒgƒŒƒxƒ‹3           z = 0x00100
+                                              y = 0x0000200 ƒJ[ƒgƒŒƒxƒ‹4           z = 0x00200 ƒ_ƒ“ƒX/‰‰‘t’†
+                                              y = 0x0000400 ƒJ[ƒgƒŒƒxƒ‹5           z = 0x00400 ƒ}ƒŠƒIƒlƒbƒg
+                                              y = 0x0000800 ƒŠƒo[ƒXƒIƒLƒbƒVƒ…      z = 0x00800 ƒAƒXƒ€
+                                              y = 0x0001000 ƒEƒFƒfƒBƒ“ƒOƒhƒŒƒX      z = 0x01000 ‰·‚à‚è
+                                              y = 0x0002000 ƒ‹ƒAƒt                  z = 0x02000 ƒJƒCƒg
+                                              y = 0x0004000 ƒ`ƒFƒCƒXƒEƒH[ƒN‚Ì‘«Õ  z = 0x04000 •ªg
+                                              y = 0x0008000 ‘¾—z‚ÆŒŽ‚Æ¯‚Ì—Z‡      z = 0x08000 °ó‘Ô
+                                              y = 0x0010000 ƒTƒ“ƒ^•ž                z = 0x10000 •sŽ€
+                                              y = 0x0020000 •Ïg                    z = 0x20000
+                                              y = 0x0040000 …’…
+                                              y = 0x0080000 —Îƒhƒ‰ƒSƒ“æ‚è
+                                              y = 0x0100000 ƒEƒH[ƒO•t‚«
+                                              y = 0x0200000 ƒEƒH[ƒOæ‚è
+                                              y = 0x0400000 –‚“±ƒMƒAæ‚è
+                                              y = 0x0800000 •ƒhƒ‰ƒSƒ“æ‚è
+                                              y = 0x1000000 ”’ƒhƒ‰ƒSƒ“æ‚è
+                                              y = 0x2000000 Âƒhƒ‰ƒSƒ“æ‚è
+                                              y = 0x4000000 Ôƒhƒ‰ƒSƒ“æ‚è
 
-@where [ã‚­ãƒ£ãƒ©å]  ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®å±…ã‚‹å ´æ‰€ã‚’èª¿ã¹ã‚‹
-@who               ---- ç¾åœ¨ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã®åå‰ã‚’å…¨ã¦åˆ—æŒ™ã™ã‚‹
-@who+              ---- ç¾åœ¨ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã®åå‰ãƒ»ãƒ¬ãƒ™ãƒ«ãƒ»å ´æ‰€ã‚’åˆ—æŒ™ã™ã‚‹
+@where [ƒLƒƒƒ‰–¼]  ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚Ì‹‚éêŠ‚ð’²‚×‚é
+@who               ---- Œ»ÝƒƒOƒCƒ“‚µ‚Ä‚¢‚éƒLƒƒƒ‰‚Ì–¼‘O‚ð‘S‚Ä—ñ‹“‚·‚é
+@who+              ---- Œ»ÝƒƒOƒCƒ“‚µ‚Ä‚¢‚éƒLƒƒƒ‰‚Ì–¼‘OEƒŒƒxƒ‹EêŠ‚ð—ñ‹“‚·‚é
 
-@storage           ---- å€‰åº«ã‚’é–‹ã
-@gstorage          ---- ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’é–‹ã
-@speed æ­©è¡Œé€Ÿåº¦    ---- 1ã€œ1000ã®é–“ã§æ­©è¡Œé€Ÿåº¦ã‚’èª¿ç¯€ã§ãã‚‹ã€‚1ãŒæœ€é€Ÿã€‚
-@kami ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸        ---- å¤©ã®å£°
-@kamib ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸       ---- å¤©ã®å£°ï¼ˆãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆï¼ˆé’æ–‡å­—ï¼‰
-@kamic æ•°å­— ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸  ---- æŒ‡å®šã—ãŸæ•°å­—ã®ã‚«ãƒ©ãƒ¼ã§å¤©ã®å£°
-@pvpon             ---- PKãƒ¢ãƒ¼ãƒ‰ã«ãªã‚‹ã€‚
-@pvpoff            ---- PKãƒ¢ãƒ¼ãƒ‰è§£é™¤(ãƒžãƒƒãƒ—ç§»å‹•å¾Œè§£é™¤ã€‚)
-@gvgon             ---- GvGãƒ¢ãƒ¼ãƒ‰ã«ãªã‚‹
-@gvgoff            ---- GvGãƒ¢ãƒ¼ãƒ‰è§£é™¤(ãƒžãƒƒãƒ—ç§»å‹•å¾Œè§£é™¤ã€‚)
+@storage           ---- ‘qŒÉ‚ðŠJ‚­
+@gstorage          ---- ƒMƒ‹ƒh‘qŒÉ‚ðŠJ‚­
+@speed •às‘¬“x    ---- 1`1000‚ÌŠÔ‚Å•às‘¬“x‚ð’²ß‚Å‚«‚éB1‚ªÅ‘¬B
+@kami ƒƒbƒZ[ƒW        ---- “V‚Ìº
+@kamib ƒƒbƒZ[ƒW       ---- “V‚Ìºiƒuƒ[ƒhƒLƒƒƒXƒgiÂ•¶Žšj
+@kamic ”Žš ƒƒbƒZ[ƒW  ---- Žw’è‚µ‚½”Žš‚ÌƒJƒ‰[‚Å“V‚Ìº
+@pvpon             ---- PKƒ‚[ƒh‚É‚È‚éB
+@pvpoff            ---- PKƒ‚[ƒh‰ðœ(ƒ}ƒbƒvˆÚ“®Œã‰ðœB)
+@gvgon             ---- GvGƒ‚[ƒh‚É‚È‚é
+@gvgoff            ---- GvGƒ‚[ƒh‰ðœ(ƒ}ƒbƒvˆÚ“®Œã‰ðœB)
 
-@lvup ãƒ¬ãƒ™ãƒ«å€¤     ---- æŒ‡å®šã—ãŸå€¤åˆ†ã ã‘Lvã‚¢ãƒƒãƒ—/ãƒ€ã‚¦ãƒ³ã™ã‚‹ã€‚ä¸Šé™ã¯255ã€‚
-@jobLvup å¢—åŠ å€¤    ---- æŒ‡å®šã—ãŸå€¤åˆ†ã ã‘JobLvã‚¢ãƒƒãƒ—/ãƒ€ã‚¦ãƒ³ã™ã‚‹ã€‚
-@stpoint æ•°å­—      ---- ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒã‚¤ãƒ³ãƒˆã®å¢—æ¸›
-@skpoint æ•°å­—      ---- ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®å¢—æ¸›
-@memo æ•°å­—         ---- ä»»æ„è¨˜æ†¶åŸŸãƒ¡ãƒ¢æ•°å­—ã¯0ã€œ2ã§ã€0ãŒæœ€ã‚‚æ–°ã—ã„ã€2ãŒæœ€ã‚‚å¤ã„
-@zeny æ•°å­—         ---- Zenyã®å¢—æ¸›
-@model x y z       ---- x [0ã€œ27]é«ªåž‹ã€y [0ã€œ8]é«ªã®è‰²ã€z [0ã€œ4]æœã®è‰²ã€-1ãªã‚‰å¤‰æ›´ãªã—
-@hide              ---- é€æ˜Ž ON/OFF
-@heal HPå›žå¾©é‡ SPå›žå¾©é‡             ---- HP,SPã‚’å›žå¾©ã™ã‚‹ã€‚(ä½•ã‚‚æ¸¡ã•ãªã„ã¨å®Œå…¨å›žå¾©)
-@str,@agi,@vit,@int,@dex,@luk æ•°å­—  ---- åŸºæœ¬ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®å¢—æ¸›
-@statall                            ---- å…¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹MAXã€æŒ‡å®šã•ã‚ŒãŸå ´åˆã¯å…¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®å¢—æ¸›
+@lvup ƒŒƒxƒ‹’l     ---- Žw’è‚µ‚½’l•ª‚¾‚¯LvƒAƒbƒv/ƒ_ƒEƒ“‚·‚éBãŒÀ‚Í255B
+@jobLvup ‘‰Á’l    ---- Žw’è‚µ‚½’l•ª‚¾‚¯JobLvƒAƒbƒv/ƒ_ƒEƒ“‚·‚éB
+@stpoint ”Žš      ---- ƒXƒe[ƒ^ƒXƒ|ƒCƒ“ƒg‚Ì‘Œ¸
+@skpoint ”Žš      ---- ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ì‘Œ¸
+@memo ”Žš         ---- ”CˆÓ‹L‰¯ˆæƒƒ‚”Žš‚Í0`2‚ÅA0‚ªÅ‚àV‚µ‚¢A2‚ªÅ‚àŒÃ‚¢
+@zeny ”Žš         ---- Zeny‚Ì‘Œ¸
+@model x y z       ---- x [0`27]”¯Œ^Ay [0`8]”¯‚ÌFAz [0`4]•ž‚ÌFA-1‚È‚ç•ÏX‚È‚µ
+@hide              ---- “§–¾ ON/OFF
+@heal HP‰ñ•œ—Ê SP‰ñ•œ—Ê             ---- HP,SP‚ð‰ñ•œ‚·‚éB(‰½‚à“n‚³‚È‚¢‚ÆŠ®‘S‰ñ•œ)
+@str,@agi,@vit,@int,@dex,@luk ”Žš  ---- Šî–{ƒXƒe[ƒ^ƒX‚Ì‘Œ¸
+@statall                            ---- ‘SƒXƒe[ƒ^ƒXMAXAŽw’è‚³‚ê‚½ê‡‚Í‘SƒXƒe[ƒ^ƒX‚Ì‘Œ¸
 
-@makepet ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®IDoråµã®ID     ---- ãƒšãƒƒãƒˆã®ä½œæˆ
-@petfriendly æ•°å­—  ---- ãƒšãƒƒãƒˆæ–°å¯†åº¦å¤‰æ›´(0-1000)
-@pethungry æ•°å­—    ---- ãƒšãƒƒãƒˆæº€è…¹åº¦(0-100)
-@petrename         ---- ãƒšãƒƒãƒˆã®åå‰å¤‰æ›´
+@makepet ƒ‚ƒ“ƒXƒ^[‚ÌIDor—‘‚ÌID     ---- ƒyƒbƒg‚Ìì¬
+@petfriendly ”Žš  ---- ƒyƒbƒgV–§“x•ÏX(0-1000)
+@pethungry ”Žš    ---- ƒyƒbƒg–ž• “x(0-100)
+@petrename         ---- ƒyƒbƒg‚Ì–¼‘O•ÏX
 
-@item ã‚¢ã‚¤ãƒ†ãƒ IDoråå‰ å€‹æ•°         ---- ã‚¢ã‚¤ãƒ†ãƒ ã‚’å¥½ããªå€‹æ•°ã ã‘æ‰‹ã«å…¥ã‚Œã‚‹ã€IDãŒè² ãªã‚‰ãƒ©ãƒ³ãƒ€ãƒ ç³»
-@item2 ã‚¢ã‚¤ãƒ†ãƒ IDoråå‰ å€‹æ•° é‘‘å®šçŠ¶æ…‹ ç²¾éŒ¬å€¤ ã‚¢ã‚¤ãƒ†ãƒ çŠ¶æ…‹ ã‚«ãƒ¼ãƒ‰1 ã‚«ãƒ¼ãƒ‰2 ã‚«ãƒ¼ãƒ‰3 ã‚«ãƒ¼ãƒ‰4 ä½¿ç”¨æœŸé™  ---- ã‚¢ã‚¤ãƒ†ãƒ ã‚’å¥½ããªå€‹æ•°ã ã‘æ‰‹ã«å…¥ã‚Œã‚‹ã€ã“ã¡ã‚‰ã¯é‘‘å®šçŠ¶æ…‹ã‚„ç²¾éŒ¬ã€å±žæ€§ç­‰ã®è¨­å®šã‚‚å¯èƒ½
-@item3 ã‚¢ã‚¤ãƒ†ãƒ IDoråå‰ å€‹æ•° ã‚­ãƒ£ãƒ©å     ---- ã‚­ãƒ£ãƒ©åå…¥ã‚Šã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ‰‹ã«å…¥ã‚Œã‚‹
-@itemreset         ---- æ‰€æŒã—ã¦ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’å…¨ã¦æ¶ˆã™ã€ä½†ã—è£…å‚™ä¸­ã®ã‚‚ã®ã¯æ¶ˆãˆãªã„
-@itemidentify      ---- æœªé‘‘å®šã®æ‰€æŒã‚¢ã‚¤ãƒ†ãƒ ã‚’å…¨ã¦é‘‘å®šã€‚
-@refine è£…å‚™å ´æ‰€ID ä¸Šã’ã‚‹æ•°å€¤       ---- ç²¾éŒ¬ã™ã‚‹
-    å³æ‰‹=2 å·¦æ‰‹=32 ä¸¡æ‰‹=34 é ­=256/257/768/769 ä½“=16 è‚©=4 è¶³=64 0ã§è£…å‚™ä¸­ã®å…¨è£…å‚™ã®ç²¾éŒ¬
-@produce ã‚¢ã‚¤ãƒ†ãƒ IDoråå‰ å±žæ€§ æ˜Ÿã®ã‹ã‘ã‚‰ã®æ•°    ---- æ­¦å™¨è£½é€ 
-    å±žæ€§ 0=ç„¡ã— 1=æ°´ 2=åœ° 3=ç‚Ž 4=é¢¨
-@repair            ---- å£Šã‚ŒãŸæ­¦å…·ã‚’å…¨ã¦ä¿®ç†ã™ã‚‹
-@monster ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼IDoråå‰ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ•° xåº§æ¨™ yåº§æ¨™           ---- ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šã€‚xåº§æ¨™ yåº§æ¨™ ã¯çœç•¥å¯ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
-@monster è¡¨ç¤ºå ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼IDoråå‰ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ•° xåº§æ¨™ yåº§æ¨™    ---- ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šã€‚xåº§æ¨™ yåº§æ¨™ ã¯çœç•¥å¯ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
-@monster "è¡¨ç¤ºå" ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼IDoråå‰ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ•° xåº§æ¨™ yåº§æ¨™  ---- ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šã€‚xåº§æ¨™ yåº§æ¨™ ã¯çœç•¥å¯ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
-@monstermap è¡¨ç¤ºå ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼IDoråå‰ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ•°             ---- ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šã€‚ (on entire map) ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
-@monstermap "è¡¨ç¤ºå" ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼IDoråå‰ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ•°           ---- ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¬å–šã€‚ (on entire map) ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
-@killmonster ãƒžãƒƒãƒ—å    ---- æŒ‡å®šã—ãŸãƒžãƒƒãƒ—ã«ã‚ã‚‹ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã‚’å…¨ã¦æ®ºã™ã€‚ãƒžãƒƒãƒ—åã‚’çœç•¥ã™ã‚‹ã¨è‡ªåˆ†ãŒã„ã‚‹ãƒžãƒƒãƒ—ã§ä½œå‹•ã€ã‚¢ã‚¤ãƒ†ãƒ ãƒ‰ãƒ­ãƒƒãƒ—æœ‰ã‚Š
-@killmonster2 ãƒžãƒƒãƒ—å   ---- æŒ‡å®šã—ãŸãƒžãƒƒãƒ—ã«ã‚ã‚‹ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã‚’å…¨ã¦æ®ºã™ã€‚ãƒžãƒƒãƒ—åã‚’çœç•¥ã™ã‚‹ã¨è‡ªåˆ†ãŒã„ã‚‹ãƒžãƒƒãƒ—ã§ä½œå‹•ã€ã‚¢ã‚¤ãƒ†ãƒ ãƒ‰ãƒ­ãƒƒãƒ—ç„¡ã—
-@guildlvup æ•°å­—                 ---- ã‚®ãƒ«ãƒ‰ãƒ¬ãƒ™ãƒ«ã‚’ä¸Šã’ã‚‹ã€‚
-@guildskpoint æ•°å­—              ---- ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ä¸Šã’ã‚‹ã€‚
-@recall ã‚­ãƒ£ãƒ©å                ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã‚’è‡ªåˆ†ã®åº§æ¨™ã¸ç§»å‹•ã•ã›ã‚‹ã€‚
-@charjob è·æ¥­ID [è»¢ç”Ÿ] ã‚­ãƒ£ãƒ©å ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®è·æ¥­ã‚’å¤‰æ›´ã™ã‚‹ã€‚è»¢ç”Ÿ 0=é€šå¸¸,1=è»¢ç”Ÿ,2=é¤Šå­,-1 or ç„¡ã—=ç¾çŠ¶
-@revive ã‚­ãƒ£ãƒ©å                ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã‚’ç”Ÿãè¿”ã‚‰ã›ã‚‹ã€‚
-@kill ã‚­ãƒ£ãƒ©å                  ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã‚’æˆ¦é—˜ä¸èƒ½ã«ã™ã‚‹ã€‚
-@charbaselvl æ•°å­— ã‚­ãƒ£ãƒ©å      ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®Baseãƒ¬ãƒ™ãƒ«ã®èª¿ç¯€ã€‚
-@charjlvl æ•°å­— ã‚­ãƒ£ãƒ©å         ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®Jobãƒ¬ãƒ™ãƒ«ã®èª¿ç¯€ã€‚
-@charstats ã‚­ãƒ£ãƒ©å             ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¡¨ç¤ºã€‚
-@charoption w x y z ã‚­ãƒ£ãƒ©å    ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®çŠ¶æ…‹ã®å¤‰åŒ–ã€‚
-@charsave ãƒžãƒƒãƒ—å xåº§æ¨™ yåº§æ¨™ ã‚­ãƒ£ãƒ©    ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã®ã‚»ãƒ¼ãƒ–ãƒã‚¤ãƒ³ãƒˆã‚’å¤‰æ›´ã€‚
+@item ƒAƒCƒeƒ€IDor–¼‘O ŒÂ”         ---- ƒAƒCƒeƒ€‚ðD‚«‚ÈŒÂ”‚¾‚¯Žè‚É“ü‚ê‚éAID‚ª•‰‚È‚çƒ‰ƒ“ƒ_ƒ€Œn
+@item2 ƒAƒCƒeƒ€IDor–¼‘O ŒÂ” ŠÓ’èó‘Ô ¸˜B’l ƒAƒCƒeƒ€ó‘Ô ƒJ[ƒh1 ƒJ[ƒh2 ƒJ[ƒh3 ƒJ[ƒh4 Žg—pŠúŒÀ  ---- ƒAƒCƒeƒ€‚ðD‚«‚ÈŒÂ”‚¾‚¯Žè‚É“ü‚ê‚éA‚±‚¿‚ç‚ÍŠÓ’èó‘Ô‚â¸˜BA‘®«“™‚ÌÝ’è‚à‰Â”\
+@item3 ƒAƒCƒeƒ€IDor–¼‘O ŒÂ” ƒLƒƒƒ‰–¼     ---- ƒLƒƒƒ‰–¼“ü‚è‚ÌƒAƒCƒeƒ€‚ðŽè‚É“ü‚ê‚é
+@itemreset         ---- ŠŽ‚µ‚Ä‚éƒAƒCƒeƒ€‚ð‘S‚ÄÁ‚·A’A‚µ‘•”õ’†‚Ì‚à‚Ì‚ÍÁ‚¦‚È‚¢
+@itemidentify      ---- –¢ŠÓ’è‚ÌŠŽƒAƒCƒeƒ€‚ð‘S‚ÄŠÓ’èB
+@refine ‘•”õêŠID ã‚°‚é”’l       ---- ¸˜B‚·‚é
+    ‰EŽè=2 ¶Žè=32 —¼Žè=34 “ª=256/257/768/769 ‘Ì=16 Œ¨=4 ‘«=64 0‚Å‘•”õ’†‚Ì‘S‘•”õ‚Ì¸˜B
+@produce ƒAƒCƒeƒ€IDor–¼‘O ‘®« ¯‚Ì‚©‚¯‚ç‚Ì”    ---- •Ší»‘¢
+    ‘®« 0=–³‚µ 1=… 2=’n 3=‰Š 4=•—
+@repair            ---- ‰ó‚ê‚½•‹ï‚ð‘S‚ÄC—‚·‚é
+@monster ƒ‚ƒ“ƒXƒ^[IDor–¼‘O ƒ‚ƒ“ƒXƒ^[” xÀ•W yÀ•W           ---- ƒ‚ƒ“ƒXƒ^[¢Š«BxÀ•W yÀ•W ‚ÍÈ—ª‰Âiƒ‰ƒ“ƒ_ƒ€j
+@monster •\Ž¦–¼ ƒ‚ƒ“ƒXƒ^[IDor–¼‘O ƒ‚ƒ“ƒXƒ^[” xÀ•W yÀ•W    ---- ƒ‚ƒ“ƒXƒ^[¢Š«BxÀ•W yÀ•W ‚ÍÈ—ª‰Âiƒ‰ƒ“ƒ_ƒ€j
+@monster "•\Ž¦–¼" ƒ‚ƒ“ƒXƒ^[IDor–¼‘O ƒ‚ƒ“ƒXƒ^[” xÀ•W yÀ•W  ---- ƒ‚ƒ“ƒXƒ^[¢Š«BxÀ•W yÀ•W ‚ÍÈ—ª‰Âiƒ‰ƒ“ƒ_ƒ€j
+@monstermap •\Ž¦–¼ ƒ‚ƒ“ƒXƒ^[IDor–¼‘O ƒ‚ƒ“ƒXƒ^[”             ---- ƒ‚ƒ“ƒXƒ^[¢Š«B (on entire map) iƒ‰ƒ“ƒ_ƒ€j
+@monstermap "•\Ž¦–¼" ƒ‚ƒ“ƒXƒ^[IDor–¼‘O ƒ‚ƒ“ƒXƒ^[”           ---- ƒ‚ƒ“ƒXƒ^[¢Š«B (on entire map) iƒ‰ƒ“ƒ_ƒ€j
+@killmonster ƒ}ƒbƒv–¼    ---- Žw’è‚µ‚½ƒ}ƒbƒv‚É‚ ‚éƒ‚ƒ“ƒXƒ^[‚ð‘S‚ÄŽE‚·Bƒ}ƒbƒv–¼‚ðÈ—ª‚·‚é‚ÆŽ©•ª‚ª‚¢‚éƒ}ƒbƒv‚Åì“®AƒAƒCƒeƒ€ƒhƒƒbƒv—L‚è
+@killmonster2 ƒ}ƒbƒv–¼   ---- Žw’è‚µ‚½ƒ}ƒbƒv‚É‚ ‚éƒ‚ƒ“ƒXƒ^[‚ð‘S‚ÄŽE‚·Bƒ}ƒbƒv–¼‚ðÈ—ª‚·‚é‚ÆŽ©•ª‚ª‚¢‚éƒ}ƒbƒv‚Åì“®AƒAƒCƒeƒ€ƒhƒƒbƒv–³‚µ
+@guildlvup ”Žš                 ---- ƒMƒ‹ƒhƒŒƒxƒ‹‚ðã‚°‚éB
+@guildskpoint ”Žš              ---- ƒMƒ‹ƒhƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ìã‚°‚éB
+@recall ƒLƒƒƒ‰–¼                ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ðŽ©•ª‚ÌÀ•W‚ÖˆÚ“®‚³‚¹‚éB
+@charjob E‹ÆID [“]¶] ƒLƒƒƒ‰–¼ ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ÌE‹Æ‚ð•ÏX‚·‚éB“]¶ 0=’Êí,1=“]¶,2=—{Žq,-1 or –³‚µ=Œ»ó
+@revive ƒLƒƒƒ‰–¼                ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ð¶‚«•Ô‚ç‚¹‚éB
+@kill ƒLƒƒƒ‰–¼                  ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ðí“¬•s”\‚É‚·‚éB
+@charbaselvl ”Žš ƒLƒƒƒ‰–¼      ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ÌBaseƒŒƒxƒ‹‚Ì’²ßB
+@charjlvl ”Žš ƒLƒƒƒ‰–¼         ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ÌJobƒŒƒxƒ‹‚Ì’²ßB
+@charstats ƒLƒƒƒ‰–¼             ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ÌƒXƒe[ƒ^ƒX‚Ì•\Ž¦B
+@charoption w x y z ƒLƒƒƒ‰–¼    ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚Ìó‘Ô‚Ì•Ï‰»B
+@charsave ƒ}ƒbƒv–¼ xÀ•W yÀ•W ƒLƒƒƒ‰    ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ÌƒZ[ƒuƒ|ƒCƒ“ƒg‚ð•ÏXB
 
-@night              ---- å¤œã«ã™ã‚‹ã€‚
-@day                ---- æ˜¼ã«ã™ã‚‹ã€‚
-@doom               ---- ãã®ã‚µãƒ¼ãƒãƒ¼ã®GMä»¥å¤–ã®ã™ã¹ã¦ã®ã‚­ãƒ£ãƒ©ã‚’æˆ¦é—˜ä¸èƒ½ã«ã™ã‚‹ã€‚
-@doommap            ---- ãã®ãƒžãƒƒãƒ—ã«ã„ã‚‹GMä»¥å¤–ã®ã™ã¹ã¦ã®ã‚­ãƒ£ãƒ©ã‚’æˆ¦é—˜ä¸èƒ½ã«ã™ã‚‹ã€‚
-@raise              ---- ãã®ã‚µãƒ¼ãƒãƒ¼ã®ã™ã¹ã¦ã®ã‚­ãƒ£ãƒ©ã‚’ç”Ÿãè¿”ã‚‰ã›ã‚‹ã€‚
-@raisemap           ---- ãã®ãƒžãƒƒãƒ—ã«ã„ã‚‹ã™ã¹ã¦ã®ã‚­ãƒ£ãƒ©ã‚’ç”Ÿãè¿”ã‚‰ã›ã‚‹
-@kick ã‚­ãƒ£ãƒ©å      ---- æŒ‡å®šã—ãŸã‚­ãƒ£ãƒ©ã‚’ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰å¼·åˆ¶åˆ‡æ–­ã™ã‚‹ã€‚
-@kickall            ---- ã™ã¹ã¦ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰å¼·åˆ¶åˆ‡æ–­ã™ã‚‹ã€‚
+@night              ---- –é‚É‚·‚éB
+@day                ---- ’‹‚É‚·‚éB
+@doom               ---- ‚»‚ÌƒT[ƒo[‚ÌGMˆÈŠO‚Ì‚·‚×‚Ä‚ÌƒLƒƒƒ‰‚ðí“¬•s”\‚É‚·‚éB
+@doommap            ---- ‚»‚Ìƒ}ƒbƒv‚É‚¢‚éGMˆÈŠO‚Ì‚·‚×‚Ä‚ÌƒLƒƒƒ‰‚ðí“¬•s”\‚É‚·‚éB
+@raise              ---- ‚»‚ÌƒT[ƒo[‚Ì‚·‚×‚Ä‚ÌƒLƒƒƒ‰‚ð¶‚«•Ô‚ç‚¹‚éB
+@raisemap           ---- ‚»‚Ìƒ}ƒbƒv‚É‚¢‚é‚·‚×‚Ä‚ÌƒLƒƒƒ‰‚ð¶‚«•Ô‚ç‚¹‚é
+@kick ƒLƒƒƒ‰–¼      ---- Žw’è‚µ‚½ƒLƒƒƒ‰‚ðƒT[ƒo[‚©‚ç‹­§Ø’f‚·‚éB
+@kickall            ---- ‚·‚×‚Ä‚ÌƒLƒƒƒ‰ƒNƒ^[‚ðƒT[ƒo[‚©‚ç‹­§Ø’f‚·‚éB
 
-@mapexit            ---- map-serverã‚’è½ã¨ã™ã€‚
+@mapexit            ---- map-server‚ð—Ž‚Æ‚·B
 
-@gat                     ---- ãƒ‡ãƒãƒƒã‚°ç”¨(å‘¨è¾ºgatã‚’èª¿ã¹ã‚‹)
-@packet                  ---- ãƒ‡ãƒãƒƒã‚°ç”¨(ãƒ‘ã‚±ãƒƒãƒˆè‰²ã€…)
-@icon æ•°å­— [0ã‹1] [æ™‚é–“] [æ•°å­—] ---- ãƒ‡ãƒãƒƒã‚¯ç”¨(çŠ¶æ…‹ã‚¢ã‚¤ã‚³ãƒ³ã®ON/OFF)
-@emotion                 ---- ãƒ‡ãƒãƒƒã‚°ç”¨(ã‚¨ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®è¡¨ç¤º)
-@spiritball æ•°å­—         ---- æ•°å­—[1ã€œ1000]å­”ã‚’å‡ºã™(1000â†‘ã«ã™ã‚‹ã¨è”µãŒãƒ‘ãƒ³ã‚¯ã™ã‚‹ã®ã§æ³¨æ„)
-@viewclass æ•°å­—          ---- è¦‹ãŸç›®ã®è·æ¥­ã‚’å¤‰ãˆã‚‹
+@gat                     ---- ƒfƒoƒbƒO—p(Žü•Ógat‚ð’²‚×‚é)
+@packet                  ---- ƒfƒoƒbƒO—p(ƒpƒPƒbƒgFX)
+@icon ”Žš [0‚©1] [ŽžŠÔ] [”Žš] ---- ƒfƒoƒbƒN—p(ó‘ÔƒAƒCƒRƒ“‚ÌON/OFF)
+@emotion                 ---- ƒfƒoƒbƒO—p(ƒGƒ‚[ƒVƒ‡ƒ“‚Ì•\Ž¦)
+@spiritball ”Žš         ---- ”Žš[1`1000]E‚ðo‚·(1000ª‚É‚·‚é‚Æ‘ ‚ªƒpƒ“ƒN‚·‚é‚Ì‚Å’ˆÓ)
+@viewclass ”Žš          ---- Œ©‚½–Ú‚ÌE‹Æ‚ð•Ï‚¦‚é
 
-@allskill [æ•°å­—]         ---- å…¨ã‚¹ã‚­ãƒ«ã‚’å–å¾—ã€æ•°å­—ãŒ1ã®ã¨ãã¯ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«ã‚‚å¼·åˆ¶å–å¾—
-@skillall [æ•°å­—]         ---- åŒä¸Š
-@questskill ã‚¹ã‚­ãƒ«ç•ªå·   ---- ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«ã‚’å–å¾—
-@lostskill ã‚¹ã‚­ãƒ«ç•ªå·    ---- ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«ã‚’æ¶ˆã™
+@allskill [”Žš]         ---- ‘SƒXƒLƒ‹‚ðŽæ“¾A”Žš‚ª1‚Ì‚Æ‚«‚ÍƒNƒGƒXƒgƒXƒLƒ‹‚à‹­§Žæ“¾
+@skillall [”Žš]         ---- “¯ã
+@questskill ƒXƒLƒ‹”Ô†   ---- ƒNƒGƒXƒgƒXƒLƒ‹‚ðŽæ“¾
+@lostskill ƒXƒLƒ‹”Ô†    ---- ƒNƒGƒXƒgƒXƒLƒ‹‚ðÁ‚·
 
-@party ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å      ---- ãƒ‘ãƒ¼ãƒ†ã‚£ã‚’ä½œã‚‹(åˆ¶é™ãªã—ã§)
-@guild ã‚®ãƒ«ãƒ‰å          ---- ã‚®ãƒ«ãƒ‰ã‚’ä½œã‚‹(åˆ¶é™ãªã—ã§)
-@partyoption expåˆ†é… itemåŽé›†æ–¹å¼ itemåˆ†é…æ–¹å¼   ---- ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šå¤‰æ›´(ãƒªãƒ¼ãƒ€ãƒ¼ã®ã¿)
+@party ƒp[ƒeƒB[–¼      ---- ƒp[ƒeƒB‚ðì‚é(§ŒÀ‚È‚µ‚Å)
+@guild ƒMƒ‹ƒh–¼          ---- ƒMƒ‹ƒh‚ðì‚é(§ŒÀ‚È‚µ‚Å)
+@partyoption exp•ª”z itemŽûW•ûŽ® item•ª”z•ûŽ®   ---- ƒp[ƒeƒBÝ’è•ÏX(ƒŠ[ƒ_[‚Ì‚Ý)
 
-@reloadatcommand   ---- atcommand_auriga.confã‚’å†èª­è¾¼ã™ã‚‹
-@reloadbattleconf  ---- battle_auriga.confã‚’å†èª­è¾¼ã™ã‚‹
-@reloadgmaccount   ---- gm_account_filenameã‚’å†èª­è¾¼ã™ã‚‹
-@reloadhomundb     ---- ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹é–¢é€£DBã‚’å†èª­è¾¼ã™ã‚‹
-@reloaditemdb      ---- itemdbã‚’å†èª­è¾¼ã™ã‚‹
-@reloadmercdb      ---- å‚­å…µé–¢é€£DBã‚’å†èª­è¾¼ã™ã‚‹
-@reloadelemdb      ---- ç²¾éœŠé–¢é€£DBã‚’å†èª­è¾¼ã™ã‚‹
-@reloadmobdb       ---- mobdbã‚’å†èª­è¾¼ã™ã‚‹
-@reloadpcdb        ---- ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼é–¢é€£DBã‚’å†èª­è¾¼ã™ã‚‹
-@reloadskilldb     ---- skilldbã‚’å†èª­è¾¼ã™ã‚‹
-@reloadstatusdb    ---- ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é–¢é€£DBã‚’å†èª­è¾¼ã™ã‚‹
-@reloadmotd        ---- motdã‚’å†èª­è¾¼ã™ã‚‹
+@reloadatcommand   ---- atcommand_auriga.conf‚ðÄ“Çž‚·‚é
+@reloadbattleconf  ---- battle_auriga.conf‚ðÄ“Çž‚·‚é
+@reloadgmaccount   ---- gm_account_filename‚ðÄ“Çž‚·‚é
+@reloadhomundb     ---- ƒzƒ€ƒ“ƒNƒ‹ƒXŠÖ˜ADB‚ðÄ“Çž‚·‚é
+@reloaditemdb      ---- itemdb‚ðÄ“Çž‚·‚é
+@reloadmercdb      ---- —b•ºŠÖ˜ADB‚ðÄ“Çž‚·‚é
+@reloadelemdb      ---- ¸—ìŠÖ˜ADB‚ðÄ“Çž‚·‚é
+@reloadmobdb       ---- mobdb‚ðÄ“Çž‚·‚é
+@reloadpcdb        ---- ƒvƒŒƒCƒ„[ŠÖ˜ADB‚ðÄ“Çž‚·‚é
+@reloadskilldb     ---- skilldb‚ðÄ“Çž‚·‚é
+@reloadstatusdb    ---- ƒXƒe[ƒ^ƒXŠÖ˜ADB‚ðÄ“Çž‚·‚é
+@reloadmotd        ---- motd‚ðÄ“Çž‚·‚é
 
-@gm ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰     ---- GMã«ãªã‚‹ï¼ˆç¾åœ¨å»ƒæ­¢ï¼‰
+@gm ƒpƒXƒ[ƒh     ---- GM‚É‚È‚éiŒ»Ý”pŽ~j
 
-@agitstart         ---- æ”»åŸŽæˆ¦é–‹å§‹
-@agitend           ---- æ”»åŸŽæˆ¦çµ‚äº†
+@agitstart         ---- UéíŠJŽn
+@agitend           ---- UéíI—¹
 
-@recallall                  ---- å…¨å“¡ã‚’è‡ªåˆ†ã®åº§æ¨™ã¸ç§»å‹•ã•ã›ã‚‹ã€‚
-@recallparty ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å   ---- ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å˜ä½ã§è‡ªåˆ†ã®åº§æ¨™ã¸ç§»å‹•ã•ã›ã‚‹ã€‚
-@recallguild ã‚®ãƒ«ãƒ‰å       ---- ã‚®ãƒ«ãƒ‰å˜ä½ã§è‡ªåˆ†ã®åº§æ¨™ã¸ç§»å‹•ã•ã›ã‚‹ã€‚
-@hatch                      ---- åµã‚’å­µåŒ–ã•ã›ã‚‹
-@charquestskill ã‚¹ã‚­ãƒ«ç•ªå· ã‚­ãƒ£ãƒ©å    ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã«ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«ã‚’å–å¾—ã•ã›ã‚‹
-@charlostskill ã‚¹ã‚­ãƒ«ç•ªå· ã‚­ãƒ£ãƒ©å     ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«ã‚’æ¶ˆã™
-@charpetrename ã‚­ãƒ£ãƒ©å     ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ãƒšãƒƒãƒˆã®åå‰å¤‰æ›´
-@charstpoint æ•°å­— ã‚­ãƒ£ãƒ©å  ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒã‚¤ãƒ³ãƒˆã®æ“ä½œ
-@charskpoint æ•°å­— ã‚­ãƒ£ãƒ©å  ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®æ“ä½œ
-@charstreset ã‚­ãƒ£ãƒ©å       ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒªã‚»ãƒƒãƒˆ
-@charskreset ã‚­ãƒ£ãƒ©å       ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¹ã‚­ãƒ«ãƒªã‚»ãƒƒãƒˆ
-@charreset ã‚­ãƒ£ãƒ©å         ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ»ã‚¹ã‚­ãƒ«ãƒªã‚»ãƒƒãƒˆ
-@charitemreset ã‚­ãƒ£ãƒ©å     ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®æ‰€æŒã‚¢ã‚¤ãƒ†ãƒ ã‚’å…¨ã¦æ¶ˆã™ã€ä½†ã—è£…å‚™ä¸­ã®ã‚‚ã®ã¯æ¶ˆãˆãªã„
-@charzeny æ•°å­— ã‚­ãƒ£ãƒ©å     ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®æ‰€æŒé‡‘æ“ä½œ
-@mapinfo [æ•°å­—] [ãƒžãƒƒãƒ—å]  ---- ãƒžãƒƒãƒ—æƒ…å ±
-                                 æ•°å­— 0:è¿½åŠ æƒ…å ±ãªã— 1:PCæƒ…å ± 2:NPCæƒ…å ± 3:ãƒãƒ£ãƒƒãƒˆæƒ…å ±
+@recallall                  ---- ‘Sˆõ‚ðŽ©•ª‚ÌÀ•W‚ÖˆÚ“®‚³‚¹‚éB
+@recallparty ƒp[ƒeƒB[–¼   ---- ƒp[ƒeƒB[’PˆÊ‚ÅŽ©•ª‚ÌÀ•W‚ÖˆÚ“®‚³‚¹‚éB
+@recallguild ƒMƒ‹ƒh–¼       ---- ƒMƒ‹ƒh’PˆÊ‚ÅŽ©•ª‚ÌÀ•W‚ÖˆÚ“®‚³‚¹‚éB
+@hatch                      ---- —‘‚ð›z‰»‚³‚¹‚é
+@charquestskill ƒXƒLƒ‹”Ô† ƒLƒƒƒ‰–¼    ---- Žw’èƒLƒƒƒ‰‚ÉƒNƒGƒXƒgƒXƒLƒ‹‚ðŽæ“¾‚³‚¹‚é
+@charlostskill ƒXƒLƒ‹”Ô† ƒLƒƒƒ‰–¼     ---- Žw’èƒLƒƒƒ‰‚ÌƒNƒGƒXƒgƒXƒLƒ‹‚ðÁ‚·
+@charpetrename ƒLƒƒƒ‰–¼     ---- Žw’èƒLƒƒƒ‰‚Ìƒyƒbƒg‚Ì–¼‘O•ÏX
+@charstpoint ”Žš ƒLƒƒƒ‰–¼  ---- Žw’èƒLƒƒƒ‰‚ÌƒXƒe[ƒ^ƒXƒ|ƒCƒ“ƒg‚Ì‘€ì
+@charskpoint ”Žš ƒLƒƒƒ‰–¼  ---- Žw’èƒLƒƒƒ‰‚ÌƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ì‘€ì
+@charstreset ƒLƒƒƒ‰–¼       ---- Žw’èƒLƒƒƒ‰‚ÌƒXƒe[ƒ^ƒXƒŠƒZƒbƒg
+@charskreset ƒLƒƒƒ‰–¼       ---- Žw’èƒLƒƒƒ‰‚ÌƒXƒLƒ‹ƒŠƒZƒbƒg
+@charreset ƒLƒƒƒ‰–¼         ---- Žw’èƒLƒƒƒ‰‚ÌƒXƒe[ƒ^ƒXEƒXƒLƒ‹ƒŠƒZƒbƒg
+@charitemreset ƒLƒƒƒ‰–¼     ---- Žw’èƒLƒƒƒ‰‚ÌŠŽƒAƒCƒeƒ€‚ð‘S‚ÄÁ‚·A’A‚µ‘•”õ’†‚Ì‚à‚Ì‚ÍÁ‚¦‚È‚¢
+@charzeny ”Žš ƒLƒƒƒ‰–¼     ---- Žw’èƒLƒƒƒ‰‚ÌŠŽ‹à‘€ì
+@mapinfo [”Žš] [ƒ}ƒbƒv–¼]  ---- ƒ}ƒbƒvî•ñ
+                                 ”Žš 0:’Ç‰Áî•ñ‚È‚µ 1:PCî•ñ 2:NPCî•ñ 3:ƒ`ƒƒƒbƒgî•ñ
 
-@clock     ---- ã‚µãƒ¼ãƒãƒ¼æ©Ÿã®ã‚·ã‚¹ãƒ†ãƒ æ™‚é–“
-@cleanmap  ---- ãƒžãƒƒãƒ—å†…ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ã‚¤ãƒ†ãƒ ã®å…¨æ¶ˆåŽ»
-@mobsearch mob_id/mob_name/-1/-2/-3 [mapname]    ---- æŒ‡å®šã—ãŸmobã®åº§æ¨™ã‚’ãƒžãƒƒãƒ—å†…æ¤œç´¢
-    -1ã¯ãƒžãƒƒãƒ—å†…ã®å…¨ã¦ã®mobåˆ—æŒ™/-2ã¯Bosså±žæ€§ã®mobåˆ—æŒ™/-3ã¯MVPãƒœã‚¹ã®ã¿åˆ—æŒ™
-    ãƒžãƒƒãƒ—åã¯çœç•¥å¯ã§ã€ãã®æ™‚ã¯ä½¿ã£ãŸãƒžãƒƒãƒ—å†…ã§æ¤œç´¢ã€‚
-@giveitem item_name/id æ•°å­— ã‚­ãƒ£ãƒ©å  ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã«æŒ‡å®šå€‹æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä¸Žãˆã‚‹ã€ã‚­ãƒ£ãƒ©åã«ALLã‚’å…¥ã‚Œã‚‹ã¨æŽ¥ç¶šè€…å…¨å“¡
-                                           IDãŒè² ãªã‚‰ãƒ©ãƒ³ãƒ€ãƒ ç³»
-@weather æ•°å­—/å¤©æ°—å ãƒžãƒƒãƒ—å         ---- æŒ‡å®šãƒžãƒƒãƒ—ã‚’å¯¾å¿œã—ãŸå¤©æ°—ã«ã—ã¾ã™
-    ãƒžãƒƒãƒ—æœªè¨˜å…¥ã®æ™‚ã¯ã€ä»Šå±…ã‚‹ãƒžãƒƒãƒ—
-    0:day,å¤©å€™ãƒ•ãƒ©ã‚°æ¶ˆåŽ» 1:rain 2:snow 3:sakura 4:fog 5:leaves 6:fireworks 7:low clouds 8:high clouds 9:fast low clouds
-@mes comment    ---- ã™ã¹ã¦ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡
-@mesweb comment ---- ã™ã¹ã¦ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«Webãƒãƒ£ãƒƒãƒˆã‚’é€ä¿¡
-@users          ---- ã‚µãƒ¼ãƒãƒ¼å†…ã®äººæ•°åˆ†å¸ƒã‚’è¡¨ç¤º
+@clock     ---- ƒT[ƒo[‹@‚ÌƒVƒXƒeƒ€ŽžŠÔ
+@cleanmap  ---- ƒ}ƒbƒv“àƒhƒƒbƒvƒAƒCƒeƒ€‚Ì‘SÁ‹Ž
+@mobsearch mob_id/mob_name/-1/-2/-3 [mapname]    ---- Žw’è‚µ‚½mob‚ÌÀ•W‚ðƒ}ƒbƒv“àŒŸõ
+    -1‚Íƒ}ƒbƒv“à‚Ì‘S‚Ä‚Ìmob—ñ‹“/-2‚ÍBoss‘®«‚Ìmob—ñ‹“/-3‚ÍMVPƒ{ƒX‚Ì‚Ý—ñ‹“
+    ƒ}ƒbƒv–¼‚ÍÈ—ª‰Â‚ÅA‚»‚ÌŽž‚ÍŽg‚Á‚½ƒ}ƒbƒv“à‚ÅŒŸõB
+@giveitem item_name/id ”Žš ƒLƒƒƒ‰–¼  ---- Žw’èƒLƒƒƒ‰‚ÉŽw’èŒÂ”‚ÌƒAƒCƒeƒ€‚ð—^‚¦‚éAƒLƒƒƒ‰–¼‚ÉALL‚ð“ü‚ê‚é‚ÆÚ‘±ŽÒ‘Sˆõ
+                                           ID‚ª•‰‚È‚çƒ‰ƒ“ƒ_ƒ€Œn
+@weather ”Žš/“V‹C–¼ ƒ}ƒbƒv–¼         ---- Žw’èƒ}ƒbƒv‚ð‘Î‰ž‚µ‚½“V‹C‚É‚µ‚Ü‚·
+    ƒ}ƒbƒv–¢‹L“ü‚ÌŽž‚ÍA¡‹‚éƒ}ƒbƒv
+    0:day,“VŒóƒtƒ‰ƒOÁ‹Ž 1:rain 2:snow 3:sakura 4:fog 5:leaves 6:fireworks 7:low clouds 8:high clouds 9:fast low clouds
+@mes comment    ---- ‚·‚×‚Ä‚ÌƒvƒŒƒCƒ„[‚ÉƒƒbƒZ[ƒW‚ð‘—M
+@mesweb comment ---- ‚·‚×‚Ä‚ÌƒvƒŒƒCƒ„[‚ÉWebƒ`ƒƒƒbƒg‚ð‘—M
+@users          ---- ƒT[ƒo[“à‚Ìl”•ª•z‚ð•\Ž¦
 
-@idsearch æ–‡å­—åˆ—    ---- æŒ‡å®šã—ãŸæ–‡å­—ã‚’å«ã‚€Itemã‚’æ¤œç´¢
-@shuffle æ•°å­—       ---- PCã€MOBã‚’é…ç½®(ã‚·ãƒ£ãƒƒãƒ•ãƒ«)ã—ãªãŠã™ã€‚ (0:PC,1:MOB,2:PC+MOB)
-@maintenance æ•°å­—   ---- 1:ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹çŠ¶æ…‹ã«ã™ã‚‹ 2:ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹çŠ¶æ…‹ã‚’è§£é™¤ã™ã‚‹
+@idsearch •¶Žš—ñ    ---- Žw’è‚µ‚½•¶Žš‚ðŠÜ‚ÞItem‚ðŒŸõ
+@shuffle ”Žš       ---- PCAMOB‚ð”z’u(ƒVƒƒƒbƒtƒ‹)‚µ‚È‚¨‚·B (0:PC,1:MOB,2:PC+MOB)
+@maintenance ”Žš   ---- 1:ƒƒ“ƒeƒiƒ“ƒXó‘Ô‚É‚·‚é 2:ƒƒ“ƒeƒiƒ“ƒXó‘Ô‚ð‰ðœ‚·‚é
 
-@mapflag ãƒ•ãƒ©ã‚°å [æ–‡å­—åˆ—]     ---- ãƒžãƒƒãƒ—ãƒ•ãƒ©ã‚°On/Offã€å¿…è¦ãªã‚‰æ–‡å­—åˆ—ã‚’å…¥åŠ›ã€‚(doc/script_ref.txtå‚ç…§)
-@mannerpoint æ•°å­— ã‚­ãƒ£ãƒ©å   ---- æŒ‡å®šã‚­ãƒ£ãƒ©ã®ãƒžãƒŠãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’æ¸›ã‚‰ã™ã€0ã«ã™ã‚‹ã¨è§£é™¤ã•ã‚Œã‚‹
-@connectlimit æ•°å­—           ---- ã‚­ãƒ£ãƒ©ã‚µãƒ¼ãƒãƒ¼ã«æŽ¥ç¶šå¯èƒ½ãªæœ€å¤§äººæ•°ã‚’å¤‰æ›´ã™ã‚‹ã€‚
+@mapflag ƒtƒ‰ƒO–¼ [•¶Žš—ñ]     ---- ƒ}ƒbƒvƒtƒ‰ƒOOn/OffA•K—v‚È‚ç•¶Žš—ñ‚ð“ü—ÍB(doc/script_ref.txtŽQÆ)
+@mannerpoint ”Žš ƒLƒƒƒ‰–¼   ---- Žw’èƒLƒƒƒ‰‚Ìƒ}ƒi[ƒ|ƒCƒ“ƒg‚ðŒ¸‚ç‚·A0‚É‚·‚é‚Æ‰ðœ‚³‚ê‚é
+@connectlimit ”Žš           ---- ƒLƒƒƒ‰ƒT[ƒo[‚ÉÚ‘±‰Â”\‚ÈÅ‘ål”‚ð•ÏX‚·‚éB
 
-@misceffect æ•°å­— [ID]        ---- å„ç¨®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤ºã•ã›ã‚‹
-@summon MOBã®IDoråå‰        ---- å½ã‚³ãƒ¼ãƒ«ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹
-@im MOBåorã‚¢ã‚¤ãƒ†ãƒ åorã‚¢ã‚¤ãƒ†ãƒ ID    ---- MOBã‚„ã‚¢ã‚¤ãƒ†ãƒ ã®å¬é‚„ã€è£…å‚™ä»¥å¤–ã®ã‚¢ã‚¤ãƒ†ãƒ ã¯30å€‹å¬é‚„
+@misceffect ”Žš [ID]        ---- ŠeŽíƒGƒtƒFƒNƒg‚ð•\Ž¦‚³‚¹‚é
+@summon MOB‚ÌIDor–¼‘O        ---- ‹UƒR[ƒ‹ƒzƒ€ƒ“ƒNƒ‹ƒX
+@im MOB–¼orƒAƒCƒeƒ€–¼orƒAƒCƒeƒ€ID    ---- MOB‚âƒAƒCƒeƒ€‚Ì¢ŠÒA‘•”õˆÈŠO‚ÌƒAƒCƒeƒ€‚Í30ŒÂ¢ŠÒ
 
-@npctalk npcå comment       ---- æŒ‡å®šã—ãŸNPCã«commentã‚’ç™ºè¨€ã•ã›ã‚‹
-@pettalk comment             ---- ãƒšãƒƒãƒˆã«commentã‚’ç™ºè¨€ã•ã›ã‚‹
-@homtalk comment             ---- ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã«commentã‚’ç™ºè¨€ã•ã›ã‚‹
+@npctalk npc–¼ comment       ---- Žw’è‚µ‚½NPC‚Écomment‚ð”­Œ¾‚³‚¹‚é
+@pettalk comment             ---- ƒyƒbƒg‚Écomment‚ð”­Œ¾‚³‚¹‚é
+@homtalk comment             ---- ƒzƒ€ƒ“ƒNƒ‹ƒX‚Écomment‚ð”­Œ¾‚³‚¹‚é
 
-broadcast ---- ãƒ¯ãƒ¼ãƒ«ãƒ‰å…¨ä½“ã«ç™ºè¨€
-    /nb comment  ---- é»„æ–‡å­—ã§ä¸Šéƒ¨ã«ç™ºè¨€(åå‰ç„¡ã—)
-    /b comment   ---- é»„æ–‡å­—ã§ä¸Šéƒ¨ã«ç™ºè¨€(åå‰æœ‰ã‚Š)
-    /bb comment  ---- æ°´è‰²ã§ä¸Šéƒ¨ã«ç™ºè¨€(åå‰ç„¡ã—)
+broadcast ---- ƒ[ƒ‹ƒh‘S‘Ì‚É”­Œ¾
+    /nb comment  ---- ‰©•¶Žš‚Åã•”‚É”­Œ¾(–¼‘O–³‚µ)
+    /b comment   ---- ‰©•¶Žš‚Åã•”‚É”­Œ¾(–¼‘O—L‚è)
+    /bb comment  ---- …F‚Åã•”‚É”­Œ¾(–¼‘O–³‚µ)
 
-local_broadcast  ---- åŒä¸€ãƒžãƒƒãƒ—ã®ã¿ç™ºè¨€
-    /lb comment  ---- é»„æ–‡å­—ã§ä¸Šéƒ¨ã«ç™ºè¨€(åå‰æœ‰ã‚Š)
+local_broadcast  ---- “¯ˆêƒ}ƒbƒv‚Ì‚Ý”­Œ¾
+    /lb comment  ---- ‰©•¶Žš‚Åã•”‚É”­Œ¾(–¼‘O—L‚è)
 
-mapmove   ---- ãƒžãƒƒãƒ—ç§»å‹•
-    /mm ãƒžãƒƒãƒ—å åº§æ¨™1 åº§æ¨™2
+mapmove   ---- ƒ}ƒbƒvˆÚ“®
+    /mm ƒ}ƒbƒv–¼ À•W1 À•W2
 
 resetstate
-    /resetstate  ---- ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒªã‚»ãƒƒãƒˆ
-    @resetstate  ---- åŒä¸Š
-    /resetskill  ---- ã‚¹ã‚­ãƒ«ãƒªã‚»ãƒƒãƒˆ
-    @resetskill  ---- åŒä¸Š
+    /resetstate  ---- ƒXƒe[ƒ^ƒXƒŠƒZƒbƒg
+    @resetstate  ---- “¯ã
+    /resetskill  ---- ƒXƒLƒ‹ƒŠƒZƒbƒg
+    @resetskill  ---- “¯ã
 
 changemaptype
-    /changemaptype xåº§æ¨™ yåº§æ¨™ æ•°å­—(0ã‹1)  ---- ã‚»ãƒ«ã‚¿ã‚¤ãƒ—ã‚’å¤‰æ›´ã™ã‚‹
-    /cmt xåº§æ¨™ yåº§æ¨™ æ•°å­—(0ã‹1)            ---- åŒä¸Š
-    @changemaptype xåº§æ¨™ yåº§æ¨™ æ•°å­—        ---- åŒä¸Š
+    /changemaptype xÀ•W yÀ•W ”Žš(0‚©1)  ---- ƒZƒ‹ƒ^ƒCƒv‚ð•ÏX‚·‚é
+    /cmt xÀ•W yÀ•W ”Žš(0‚©1)            ---- “¯ã
+    @changemaptype xÀ•W yÀ•W ”Žš        ---- “¯ã
 
-@econ   ---- ç·Šæ€¥æ‹›é›†å—è«¾ï¼ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ¼ä»¥å¤–ä½¿ã£ã¦ã‚‚åŠ¹æžœãªã—
-@ecoff  ---- ç·Šæ€¥å¬é›†æ‹’å¦ï¼ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ¼ä»¥å¤–ä½¿ã£ã¦ã‚‚åŠ¹æžœãªã—
+@econ   ---- ‹Ù‹}µWŽó‘øIƒMƒ‹ƒhƒƒ“ƒo[ˆÈŠOŽg‚Á‚Ä‚àŒø‰Ê‚È‚µ
+@ecoff  ---- ‹Ù‹}¢W‹‘”ÛIƒMƒ‹ƒhƒƒ“ƒo[ˆÈŠOŽg‚Á‚Ä‚àŒø‰Ê‚È‚µ
 
-@ranking æ•°å­—   ---- ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã‚’è¡¨ç¤º
-@blacksmith     ---- ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã‚’è¡¨ç¤º
-@alchemist      ---- ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆãƒ©ãƒ³ã‚­ãƒ³ã‚°ã‚’è¡¨ç¤º
-@taekwon        ---- ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚«ãƒ¼ã‚’è¡¨ç¤º
-@rankingpoint ã‚¿ã‚¤ãƒ— ãƒã‚¤ãƒ³ãƒˆ [åå‰]  ---- ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆã‚’å¤‰ãˆã‚‹
-    ã‚¿ã‚¤ãƒ— 0:ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ 1:ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ 2ãƒ†ã‚³ãƒ³
+@ranking ”Žš   ---- ƒ‰ƒ“ƒLƒ“ƒO‚ð•\Ž¦
+@blacksmith     ---- ƒuƒ‰ƒbƒNƒXƒ~ƒXƒ‰ƒ“ƒLƒ“ƒO‚ð•\Ž¦
+@alchemist      ---- ƒAƒ‹ƒPƒ~ƒXƒgƒ‰ƒ“ƒLƒ“ƒO‚ð•\Ž¦
+@taekwon        ---- ƒeƒRƒ“ƒ‰ƒ“ƒJ[‚ð•\Ž¦
+@rankingpoint ƒ^ƒCƒv ƒ|ƒCƒ“ƒg [–¼‘O]  ---- ƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg‚ð•Ï‚¦‚é
+    ƒ^ƒCƒv 0:ƒuƒ‰ƒbƒNƒXƒ~ƒX 1:ƒAƒ‹ƒPƒ~ƒXƒg 2ƒeƒRƒ“
 
-@resetfeel æ•°å­—  ---- å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ„Ÿæƒ…ã‚’ãƒªã‚»ãƒƒãƒˆ 0:å¤ªé™½ 1:æœˆ 2:æ˜Ÿ
-@resethate æ•°å­—  ---- å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ†Žæ‚ªã‚’ãƒªã‚»ãƒƒãƒˆ 0:å¤ªé™½ 1:æœˆ 2:æ˜Ÿ
+@resetfeel ”Žš  ---- ‘¾—z‚ÆŒŽ‚Æ¯‚ÌŠ´î‚ðƒŠƒZƒbƒg 0:‘¾—z 1:ŒŽ 2:¯
+@resethate ”Žš  ---- ‘¾—z‚ÆŒŽ‚Æ¯‚Ì‘žˆ«‚ðƒŠƒZƒbƒg 0:‘¾—z 1:ŒŽ 2:¯
 
-@mailbox         ---- ãƒ¡ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹è¡¨ç¤º
+@mailbox         ---- ƒ[ƒ‹ƒ{ƒbƒNƒX•\Ž¦
 
-@readvars å¤‰æ•°å [åå‰]     ---- æŒ‡å®šã—ãŸå¤‰æ•°ã®å€¤ã‚’è¡¨ç¤ºã™ã‚‹
-    ã‚ã‚‰ã‹ã˜ã‚ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«è¨˜è¼‰ã•ã‚ŒãŸå¤‰æ•°ã«å¯¾ã—ã¦ã®ã¿èª­ã¿å–ã‚Šå¯èƒ½
-    ã‚­ãƒ£ãƒ©ä¸€æ™‚/æ°¸ç¶šãƒ»ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã®å ´åˆã€åå‰çœç•¥æ™‚ã¯è‡ªåˆ†ã€å…¥åŠ›æ™‚ã¯ãã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒå¯¾è±¡
-    ãƒžãƒƒãƒ—ä¸€æ™‚/æ°¸ç¶šå¤‰æ•°ã®å ´åˆã€åå‰ã¯ä¸è¦
-    ã‚¹ã‚¯ãƒªãƒ—ãƒˆä¾å­˜å¤‰æ•°ã®å ´åˆã€åå‰ã«ã¯NPCåã‚’å…¥åŠ›ã™ã‚‹ï¼ˆå¿…é ˆï¼‰
-    é–¢æ•°ä¾å­˜å¤‰æ•°ã¯æŒ‡å®šä¸å¯ã€‚é…åˆ—ã‚’æŒ‡å®šã™ã‚‹ã“ã¨ã‚‚ã§ãã¾ã™
-@writevars å¤‰æ•°å å€¤ [åå‰] ---- æŒ‡å®šã—ãŸå¤‰æ•°ã®å€¤ã‚’è¨­å®šã™ã‚‹
-    åŒä¸Š
-    ã¾ãŸã€å€¤ã‚’"ã§å›²ã‚€ã¨"ã§å›²ã¾ã‚ŒãŸéƒ¨åˆ†ã‚’æ–‡å­—åˆ—ã¨ã—ã¦èªè­˜ã—ã¾ã™
-    ã“ã‚Œã«ã‚ˆã‚ŠåŠè§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’å«ã‚€æ–‡å­—åˆ—ã‚‚æ›¸ãè¾¼ã‚€ã“ã¨ãŒå¯èƒ½ã§ã™
-    ãŸã ã—ã“ã®å ´åˆ "è¨˜å·ã¯ \"ã€\è¨˜å·ã¯ \\ã¨ã—ã¦è¡¨è¨˜ã—ã¾ã™ï¼ˆdoc/script_ref.txtå‚ç…§ï¼‰
+@readvars •Ï”–¼ [–¼‘O]     ---- Žw’è‚µ‚½•Ï”‚Ì’l‚ð•\Ž¦‚·‚é
+    ‚ ‚ç‚©‚¶‚ßƒXƒNƒŠƒvƒg‚É‹LÚ‚³‚ê‚½•Ï”‚É‘Î‚µ‚Ä‚Ì‚Ý“Ç‚ÝŽæ‚è‰Â”\
+    ƒLƒƒƒ‰ˆêŽž/‰i‘±EƒAƒJƒEƒ“ƒg•Ï”‚Ìê‡A–¼‘OÈ—ªŽž‚ÍŽ©•ªA“ü—ÍŽž‚Í‚»‚ÌƒLƒƒƒ‰ƒNƒ^[‚ª‘ÎÛ
+    ƒ}ƒbƒvˆêŽž/‰i‘±•Ï”‚Ìê‡A–¼‘O‚Í•s—v
+    ƒXƒNƒŠƒvƒgˆË‘¶•Ï”‚Ìê‡A–¼‘O‚É‚ÍNPC–¼‚ð“ü—Í‚·‚éi•K{j
+    ŠÖ”ˆË‘¶•Ï”‚ÍŽw’è•s‰ÂB”z—ñ‚ðŽw’è‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·
+@writevars •Ï”–¼ ’l [–¼‘O] ---- Žw’è‚µ‚½•Ï”‚Ì’l‚ðÝ’è‚·‚é
+    “¯ã
+    ‚Ü‚½A’l‚ð"‚ÅˆÍ‚Þ‚Æ"‚ÅˆÍ‚Ü‚ê‚½•”•ª‚ð•¶Žš—ñ‚Æ‚µ‚Ä”FŽ¯‚µ‚Ü‚·
+    ‚±‚ê‚É‚æ‚è”¼ŠpƒXƒy[ƒX‚ðŠÜ‚Þ•¶Žš—ñ‚à‘‚«ž‚Þ‚±‚Æ‚ª‰Â”\‚Å‚·
+    ‚½‚¾‚µ‚±‚Ìê‡ "‹L†‚Í \"A\‹L†‚Í \\‚Æ‚µ‚Ä•\‹L‚µ‚Ü‚·idoc/script_ref.txtŽQÆj
 
-    ä¾‹ï¼‰@readvars @val              -> è‡ªåˆ†ã®æŒã¤ã‚­ãƒ£ãƒ©ä¸€æ™‚å¤‰æ•°@valã®å€¤ã‚’è¡¨ç¤ºã™ã‚‹
-        @readvars 'count$[3] Test   -> Testã¨ã„ã†NPCãŒæŒã¤ã‚¹ã‚¯ãƒªãƒ—ãƒˆä¾å­˜å¤‰æ•°'count$ã®è¦ç´ ç•ªå·3ã®æ–‡å­—åˆ—ã‚’è¡¨ç¤ºã™ã‚‹
-        @writevars $num 30          -> ãƒžãƒƒãƒ—æ°¸ç¶šå¤‰æ•°$numã®å€¤ã‚’30ã«å¤‰æ›´ã™ã‚‹
-        @writevars @str$ "X Y" ABCD -> ABCDã¨ã„ã†ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚­ãƒ£ãƒ©ä¸€æ™‚å¤‰æ•°@str$ã‚’æ–‡å­—åˆ— X Y ã«å¤‰æ›´ã™ã‚‹
+    —áj@readvars @val              -> Ž©•ª‚ÌŽ‚ÂƒLƒƒƒ‰ˆêŽž•Ï”@val‚Ì’l‚ð•\Ž¦‚·‚é
+        @readvars 'count$[3] Test   -> Test‚Æ‚¢‚¤NPC‚ªŽ‚ÂƒXƒNƒŠƒvƒgˆË‘¶•Ï”'count$‚Ì—v‘f”Ô†3‚Ì•¶Žš—ñ‚ð•\Ž¦‚·‚é
+        @writevars $num 30          -> ƒ}ƒbƒv‰i‘±•Ï”$num‚Ì’l‚ð30‚É•ÏX‚·‚é
+        @writevars @str$ "X Y" ABCD -> ABCD‚Æ‚¢‚¤ƒLƒƒƒ‰ƒNƒ^[‚ÌƒLƒƒƒ‰ˆêŽž•Ï”@str$‚ð•¶Žš—ñ X Y ‚É•ÏX‚·‚é
 
-@cloneskill ID [LV]     ---- æŒ‡å®šã—ãŸã‚¯ãƒ­ãƒ¼ãƒ³å¯èƒ½ãªã‚¹ã‚­ãƒ«ã‚’è¦šãˆã‚‹ã€LVçœç•¥æ™‚ã¯æœ€å¤§å€¤
-@cloneskill2 ID [LV]    ---- æŒ‡å®šã—ãŸã‚¯ãƒ­ãƒ¼ãƒ³ã‚¹ã‚­ãƒ«ã‚’è¦šãˆã‚‹ã€LVçœç•¥æ™‚ã¯æœ€å¤§å€¤
-@reproduce ID [LV]     ---- æŒ‡å®šã—ãŸãƒªãƒ—ãƒ­ãƒ‡ãƒ¥ãƒ¼ã‚¹å¯èƒ½ãªã‚¹ã‚­ãƒ«ã‚’è¦šãˆã‚‹ã€LVçœç•¥æ™‚ã¯æœ€å¤§å€¤
-@reproduce2 ID [LV]    ---- æŒ‡å®šã—ãŸãƒªãƒ—ãƒ­ãƒ‡ãƒ¥ãƒ¼ã‚¹ã‚¹ã‚­ãƒ«ã‚’è¦šãˆã‚‹ã€LVçœç•¥æ™‚ã¯æœ€å¤§å€¤
+@cloneskill ID [LV]     ---- Žw’è‚µ‚½ƒNƒ[ƒ“‰Â”\‚ÈƒXƒLƒ‹‚ðŠo‚¦‚éALVÈ—ªŽž‚ÍÅ‘å’l
+@cloneskill2 ID [LV]    ---- Žw’è‚µ‚½ƒNƒ[ƒ“ƒXƒLƒ‹‚ðŠo‚¦‚éALVÈ—ªŽž‚ÍÅ‘å’l
+@reproduce ID [LV]     ---- Žw’è‚µ‚½ƒŠƒvƒƒfƒ…[ƒX‰Â”\‚ÈƒXƒLƒ‹‚ðŠo‚¦‚éALVÈ—ªŽž‚ÍÅ‘å’l
+@reproduce2 ID [LV]    ---- Žw’è‚µ‚½ƒŠƒvƒƒfƒ…[ƒXƒXƒLƒ‹‚ðŠo‚¦‚éALVÈ—ªŽž‚ÍÅ‘å’l
 
-@mobinfo mobid/name     ---- mobdbã‚’æ¤œç´¢ã—ã€æƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹
+@mobinfo mobid/name     ---- mobdb‚ðŒŸõ‚µAî•ñ‚ð•\Ž¦‚·‚é
 
-@homlv å€¤       ---- é€£ã‚Œã¦ã„ã‚‹ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã®ãƒ¬ãƒ™ãƒ«ã‚’ä¸Šã’ã‚‹ã€‚ä¸‹ã’ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“ã€‚
-@homviewclass   ---- é€£ã‚Œã¦ã„ã‚‹ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã®è¦‹ãŸç›®ã‚’å¤‰æ›´ã™ã‚‹
-@homrecalc      ---- é€£ã‚Œã¦ã„ã‚‹ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ãƒ¬ãƒ™ãƒ«ï¼‘ã‹ã‚‰ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã¾ã§å†è¨ˆç®—ã™ã‚‹
-@evolution [ã‚¯ãƒ©ã‚¹] ---- é€£ã‚Œã¦ã„ã‚‹ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã‚’é€²åŒ–ã•ã›ã‚‹
-@makehomun å€¤   ---- ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã‚’ä½œæˆã™ã‚‹
-@homfriendly å€¤ ---- ãƒ›ãƒ ã®è¦ªå¯†åº¦ã‚’è¨­å®šã™ã‚‹
+@homlv ’l       ---- ˜A‚ê‚Ä‚¢‚éƒzƒ€ƒ“ƒNƒ‹ƒX‚ÌƒŒƒxƒ‹‚ðã‚°‚éB‰º‚°‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB
+@homviewclass   ---- ˜A‚ê‚Ä‚¢‚éƒzƒ€ƒ“ƒNƒ‹ƒX‚ÌŒ©‚½–Ú‚ð•ÏX‚·‚é
+@homrecalc      ---- ˜A‚ê‚Ä‚¢‚éƒzƒ€ƒ“ƒNƒ‹ƒX‚ÌƒXƒe[ƒ^ƒX‚ðƒŒƒxƒ‹‚P‚©‚çŒ»Ý‚ÌƒŒƒxƒ‹‚Ü‚ÅÄŒvŽZ‚·‚é
+@evolution [ƒNƒ‰ƒX] ---- ˜A‚ê‚Ä‚¢‚éƒzƒ€ƒ“ƒNƒ‹ƒX‚ði‰»‚³‚¹‚é
+@makehomun ’l   ---- ƒzƒ€ƒ“ƒNƒ‹ƒX‚ðì¬‚·‚é
+@homfriendly ’l ---- ƒzƒ€‚Ìe–§“x‚ðÝ’è‚·‚é
 
-@autoloot      ---- ã‚¢ã‚¤ãƒ†ãƒ ã®è‡ªå‹•å–å¾—æ©Ÿèƒ½ã‚’On/Offã™ã‚‹
-@hotkeyset å€¤  ---- ãƒ›ãƒƒãƒˆã‚­ãƒ¼ã‚»ãƒƒãƒˆã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+@autoloot      ---- ƒAƒCƒeƒ€‚ÌŽ©“®Žæ“¾‹@”\‚ðOn/Off‚·‚é
+@hotkeyset ’l  ---- ƒzƒbƒgƒL[ƒZƒbƒg‚ðØ‚è‘Ö‚¦‚é
 
-@callmerc å€¤ [æ™‚é–“(ç§’)]   ---- å‚­å…µã‚’å¬å–šã™ã‚‹
+@callmerc ’l [ŽžŠÔ(•b)]   ---- —b•º‚ð¢Š«‚·‚é

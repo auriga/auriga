@@ -1,5 +1,5 @@
 //============================================================
-// ã‚¢ãƒªãƒ¼ãƒŠå¾…æ©Ÿå®¤ - arena_room.gat
+// ƒAƒŠ[ƒi‘Ò‹@º - arena_room.gat
 //------------------------------------------------------------
 arena_room.gat	mapflag	nomemo		dummy
 arena_room.gat	mapflag	noteleport	dummy
@@ -7,7 +7,7 @@ arena_room.gat	mapflag	nobranch	dummy
 arena_room.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// ã‚¢ãƒªãƒ¼ãƒŠå¾…æ©Ÿå®¤ - prt_are_in.gat
+// ƒAƒŠ[ƒi‘Ò‹@º - prt_are_in.gat
 //------------------------------------------------------------
 prt_are_in.gat	mapflag	nosave		SavePoint
 prt_are_in.gat	mapflag	nomemo		dummy
@@ -16,7 +16,7 @@ prt_are_in.gat	mapflag	nobranch	dummy
 prt_are_in.gat	mapflag	nopenalty	dummy
 
 //============================================================
-// ã‚¿ã‚¤ãƒ ã‚¢ã‚¿ãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰ *-1 - force_*-1.gat
+// ƒ^ƒCƒ€ƒAƒ^ƒbƒNƒ‚[ƒh *-1 - force_*-1.gat
 //------------------------------------------------------------
 force_1-1.gat	mapflag	nosave		SavePoint
 force_1-1.gat	mapflag	nomemo		dummy
@@ -51,7 +51,7 @@ force_5-1.gat	mapflag	nopenalty	dummy
 force_5-1.gat	mapflag	nozenypenalty	dummy
 
 //============================================================
-// ã‚¿ã‚¤ãƒ ã‚¢ã‚¿ãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰ 1-2 - force_1-2.gat
+// ƒ^ƒCƒ€ƒAƒ^ƒbƒNƒ‚[ƒh 1-2 - force_1-2.gat
 //------------------------------------------------------------
 force_1-2.gat	mapflag	nosave		SavePoint
 force_1-2.gat	mapflag	nomemo		dummy

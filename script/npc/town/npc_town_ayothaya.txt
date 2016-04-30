@@ -5,740 +5,740 @@
 //============================================================
 // Shop
 //------------------------------------------------------------
-ayo_in01.gat,18,182,1	shop	道具商人	840,1750,1753,611,501,502,503,504,506,645,656,601,602,1065
-ayo_in01.gat,90,160,1	shop	防具商人	842,2211,2401,2403,2501,2503,2101,2103,2305,2321,2332,2328,2627
-ayo_in01.gat,90,192,3	shop	武器商人	843,1207,1216,1107,1122,1116,1154,1407,1457,1354,1519
+ayo_in01.gat,18,182,1	shop	����l	840,1750,1753,611,501,502,503,504,506,645,656,601,602,1065
+ayo_in01.gat,90,160,1	shop	�h��l	842,2211,2401,2403,2501,2503,2101,2103,2305,2321,2332,2328,2627
+ayo_in01.gat,90,192,3	shop	���폤�l	843,1207,1216,1107,1122,1116,1154,1407,1457,1354,1519
 
 //============================================================
-// アルベルタ⇔アユタヤ転送NPC
+// �A���x���^�̃A���^���]��NPC
 //------------------------------------------------------------
-//alberta.gat,247,42,3	script	アイバックティン	843,{
-alberta.gat,246,29,3	script	アイバックティン	843,{
-	mes "[アイバックティン]";
-	mes "こんにちは〜！";
-	mes "神秘的な雰囲気が漂う神聖な地";
-	mes "俺の故郷アユタヤを紹介するぞ!!";
+//alberta.gat,247,42,3	script	�A�C�o�b�N�e�B��	843,{
+alberta.gat,246,29,3	script	�A�C�o�b�N�e�B��	843,{
+	mes "[�A�C�o�b�N�e�B��]";
+	mes "����ɂ��́`�I";
+	mes "�_��I�ȕ��͋C���Y���_���Ȓn";
+	mes "���̌̋��A���^�����Љ�邼!!";
 	next;
-	switch(select("あ、アユタヤって何？","そのアユタヤへ行きたい！","い、いやいい")) {
+	switch(select("���A�A���^�����ĉ��H","���̃A���^���֍s�������I","���A���₢��")) {
 	case 1:
-		mes "[アイバックティン]";
-		mes "俺たちアユタヤの民は、深い信仰心を";
-		mes "持つ、真面目で平和な民族だ。";
-		mes "派手だが軽薄ではない。";
-		mes "温和だが弱いわけじゃない。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "�������A���^���̖��́A�[���M�S��";
+		mes "���A�^�ʖڂŕ��a�Ȗ������B";
+		mes "�h�肾���y���ł͂Ȃ��B";
+		mes "���a�����ア�킯����Ȃ��B";
 		next;
-		mes "[アイバックティン]";
-		mes "そう、アユタヤは食べ物が";
-		mes "おいしいんだ。";
-		mes "レモンやエビ、チリで作った";
-		mes "名物「トムヤンクン」は、";
-		mes "素晴らしい味と香りを持つ。";
-		mes "一度食べてみるといいぞ。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "�����A�A���^���͐H�ו���";
+		mes "���������񂾁B";
+		mes "��������G�r�A�`���ō����";
+		mes "�����u�g�������N���v�́A";
+		mes "�f���炵�����ƍ�������B";
+		mes "��x�H�ׂĂ݂�Ƃ������B";
 		next;
-		mes "[アイバックティン]";
-		mes "それから、ちょっと怖い話だが……";
-		mes "人食い化け物「スミンタイガー」が";
-		mes "いると言われてる遺跡もある。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "���ꂩ��A������ƕ|���b�����c�c";
+		mes "�l�H���������u�X�~���^�C�K�[�v��";
+		mes "����ƌ����Ă��Ղ�����B";
 		next;
-		mes "[アイバックティン]";
-		mes "どう？どう？";
-		mes "こんなに魅力的な場所は他にないよね？";
-		mes "もし行きたくなったらいつでも";
-		mes "俺のところへ来てくれ。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "�ǂ��H�ǂ��H";
+		mes "����Ȃɖ��͓I�ȏꏊ�͑��ɂȂ���ˁH";
+		mes "�����s�������Ȃ����炢�ł�";
+		mes "���̂Ƃ���֗��Ă���B";
 		close;
 	case 2:
-		mes "[アイバックティン]";
-		mes "俺の故郷、美しきアユタヤに";
-		mes "行きたいなら……";
-		mes "そう、10,000,zenyが必要だ。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "���̌̋��A�������A���^����";
+		mes "�s�������Ȃ�c�c";
+		mes "�����A10,000,zeny���K�v���B";
 		next;
-		mes "[アイバックティン]";
-		mes "それじゃ、出発するかい？";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "���ꂶ��A�o�����邩���H";
 		next;
-		if(select("はい、出発！","ちょと待って")==2) {
-			mes "[アイバックティン]";
-			mes "え〜!!　行かないの?!";
-			mes "俺の故郷アユタヤは誰もが望む";
-			mes "平和で美しい場所……";
-			mes "君だって行きたいはずの場所だぞ！";
+		if(select("�͂��A�o���I","����Ƒ҂���")==2) {
+			mes "[�A�C�o�b�N�e�B��]";
+			mes "���`!!�@�s���Ȃ���?!";
+			mes "���̌̋��A���^���͒N�����]��";
+			mes "���a�Ŕ������ꏊ�c�c";
+			mes "�N�����čs�������͂��̏ꏊ�����I";
 			close;
 		}
 		if(Zeny < 10000) {
-			mes "[アイバックティン]";
-			mes "おおっと!!";
-			mes "残念だが10,000zenyがないと";
-			mes "アユタヤは夢のままだ！";
-			mes "その代わりに、俺の素晴らしい";
-			mes "蹴りをお見舞いしようか？";
+			mes "[�A�C�o�b�N�e�B��]";
+			mes "��������!!";
+			mes "�c�O����10,000zeny���Ȃ���";
+			mes "�A���^���͖��̂܂܂��I";
+			mes "���̑���ɁA���̑f���炵��";
+			mes "�R��������������悤���H";
 			close;
 		}
-		mes "[アイバックティン]";
-		mes "じゃあ、アユタヤへ送ってやろう！";
-		mes "おっ、ちょっと待ってくれ!!";
-		mes "……よし！　行ってこい！";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "���Ⴀ�A�A���^���֑����Ă�낤�I";
+		mes "�����A������Ƒ҂��Ă���!!";
+		mes "�c�c�悵�I�@�s���Ă����I";
 		set Zeny,Zeny-10000;
 		close2;
 		warp "ayothaya.gat",149,71;
 		end;
 	case 3:
-		mes "[アイバックティン]";
-		mes "そうか〜？";
-		mes "誰もが望む平和で美しい場所";
-		mes "それはまさしく俺の故郷アユタヤだ！";
-		mes "その話を聞かないなんて損だぞ。";
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "�������`�H";
+		mes "�N�����]�ޕ��a�Ŕ������ꏊ";
+		mes "����͂܂��������̌̋��A���^�����I";
+		mes "���̘b�𕷂��Ȃ��Ȃ�đ������B";
 		close;
 	}
 OnInit:
-	waitingroom "アユタヤ行き",0;
+	waitingroom "�A���^���s��",0;
 	end;
 }
 
-ayothaya.gat,152,68,1	script	アイバックティン	843,{
-	mes "[アイバックティン]";
-	mes "きれいな景色、美味しい食べ物!!";
-	mes "どう？どう？";
-	mes "アユタヤはとってもよかっただろ。";
-	mes "じゃ、アルベルタへ送ろうか？";
+ayothaya.gat,152,68,1	script	�A�C�o�b�N�e�B��	843,{
+	mes "[�A�C�o�b�N�e�B��]";
+	mes "���ꂢ�Ȍi�F�A���������H�ו�!!";
+	mes "�ǂ��H�ǂ��H";
+	mes "�A���^���͂Ƃ��Ă��悩��������B";
+	mes "����A�A���x���^�֑��낤���H";
 	next;
-	if(select("うん、送って","まだ見たいところがある")==1) {
-		mes "[アイバックティン]";
-		mes "俺はずっとここにいるから";
-		mes "気が向いたら来てくれ。";
-		mes "また、幸せに満ちた君に";
-		mes "会えると信じてるぞ！！";
+	if(select("����A������","�܂��������Ƃ��낪����")==1) {
+		mes "[�A�C�o�b�N�e�B��]";
+		mes "���͂����Ƃ����ɂ��邩��";
+		mes "�C���������痈�Ă���B";
+		mes "�܂��A�K���ɖ������N��";
+		mes "���ƐM���Ă邼�I�I";
 		close2;
 		//warp "alberta.gat",235,45;
 		warp "alberta.gat",241,87;
 		end;
 	}
-	mes "[アイバックティン]";
-	mes "わかった！";
-	mes "俺の美しき故郷アユタヤは";
-	mes "離れがたい場所だろ？";
-	mes "やっぱり外の人でも同じだよな。";
-	mes "ゆっくり、思う存分楽しんできな！";
+	mes "[�A�C�o�b�N�e�B��]";
+	mes "�킩�����I";
+	mes "���̔������̋��A���^����";
+	mes "���ꂪ�����ꏊ����H";
+	mes "����ς�O�̐l�ł���������ȁB";
+	mes "�������A�v�������y����ł��ȁI";
 	close;
 }
 
 //============================================================
-// アユタヤNPC
+// �A���^��NPC
 //------------------------------------------------------------
-ayothaya.gat,143,102,5	script	老人	842,{
-	mes "[村民]";
-	mes "ふむふむ……うむ？";
-	mes "外の人かね、ふむふむ。";
-	mes "……どこに行くのかね？";
-	mes "ふむ、釣り場なんかおすすめじゃよ。";
+ayothaya.gat,143,102,5	script	�V�l	842,{
+	mes "[����]";
+	mes "�ӂނӂށc�c���ށH";
+	mes "�O�̐l���ˁA�ӂނӂށB";
+	mes "�c�c�ǂ��ɍs���̂��ˁH";
+	mes "�ӂށA�ނ��Ȃ񂩂������߂����B";
 	next;
-	mes "[村民]";
-	mes "あの釣り場なんじゃが、ちょっと";
-	mes "裏話があるんじゃよ。実はな、";
-	mes "ある者がそこで釣りをしていた所";
-	mes "なんと指輪が釣れたそうじゃ。";
-	mes "色んな魚がいるのは知っておったが";
-	mes "まさか指輪とはな……ふむふむ。";
+	mes "[����]";
+	mes "���̒ނ��Ȃ񂶂Ⴊ�A�������";
+	mes "���b������񂶂��B���͂ȁA";
+	mes "����҂������Œނ�����Ă�����";
+	mes "�Ȃ�Ǝw�ւ��ނꂽ��������B";
+	mes "�F��ȋ�������̂͒m���Ă�������";
+	mes "�܂����w�ւƂ͂ȁc�c�ӂނӂށB";
 	next;
-	mes "[村民]";
-	mes "暇つぶしの釣りで、一攫千金を";
-	mes "夢見ることができる……";
-	mes "なかなかいいもんじゃろ？";
+	mes "[����]";
+	mes "�ɂԂ��̒ނ�ŁA�ꝺ�����";
+	mes "�����邱�Ƃ��ł���c�c";
+	mes "�Ȃ��Ȃ��������񂶂��H";
 	next;
-	mes "[村民]";
-	mes "おお、ここは水産物市場の方では";
-	mes "ないか。気づけばこんな反対側にまで";
-	mes "来ておったのか……まあ、ついでに";
-	mes "ちょっと散歩していくかのう。";
-	mes "ふむふむ……";
+	mes "[����]";
+	mes "�����A�����͐��Y���s��̕��ł�";
+	mes "�Ȃ����B�C�Â��΂���Ȕ��Α��ɂ܂�";
+	mes "���Ă������̂��c�c�܂��A���ł�";
+	mes "������ƎU�����Ă������̂��B";
+	mes "�ӂނӂށc�c";
 	next;
-	mes "[村民]";
-	mes "おお、お前さん。";
-	mes "ここの水産物はどれも新鮮で";
-	mes "美味しいんじゃよ。";
-	mes "一度食べてみなされ。";
-	mes "ふむふむ……";
+	mes "[����]";
+	mes "�����A���O����B";
+	mes "�����̐��Y���͂ǂ���V�N��";
+	mes "���������񂶂��B";
+	mes "��x�H�ׂĂ݂Ȃ���B";
+	mes "�ӂނӂށc�c";
 	close;
 }
 
-ayothaya.gat,197,189,5	script	少年	841,{
-	mes "[クァン]";
-	mes "ふぅ〜、暑いっすね。";
-	mes "あなたも外から来た人っすか？";
-	mes "最近、村に旅行客が増えたっすね。";
+ayothaya.gat,197,189,5	script	���N	841,{
+	mes "[�N�@��]";
+	mes "�ӂ��`�A���������ˁB";
+	mes "���Ȃ����O���痈���l�������H";
+	mes "�ŋ߁A���ɗ��s�q�������������ˁB";
 	next;
-	mes "[クァン]";
-	mes "そうそう、ちょっと気をつけて欲しい";
-	mes "ことがあるっす。村の外の森の中に";
-	mes "とても古そうな遺跡があるけど……";
-	mes "そこはとても危険な場所っす。";
-	mes "僕みたいな一般人は入ることすら";
-	mes "できないっす。";
+	mes "[�N�@��]";
+	mes "���������A������ƋC�����ė~����";
+	mes "���Ƃ���������B���̊O�̐X�̒���";
+	mes "�ƂĂ��Â����Ȉ�Ղ����邯�ǁc�c";
+	mes "�����͂ƂĂ��댯�ȏꏊ�����B";
+	mes "�l�݂����Ȉ�ʐl�͓��邱�Ƃ���";
+	mes "�ł��Ȃ������B";
 	next;
-	mes "[クァン]";
-	mes "ただ、何かお守りの様な物を";
-	mes "身につけていれば、その中へ入れる";
-	mes "という話を聞いたことがあるっす。";
+	mes "[�N�@��]";
+	mes "�����A���������̗l�ȕ���";
+	mes "�g�ɂ��Ă���΁A���̒��֓����";
+	mes "�Ƃ����b�𕷂������Ƃ���������B";
 	next;
-	mes "[クァン]";
-	mes "僕には何のことだかさっぱりっす。";
-	mes "でもやっぱり、危険な場所へは";
-	mes "近づかない方がいいっすよ。では";
-	mes "よい旅になることを祈ってるっす。";
+	mes "[�N�@��]";
+	mes "�l�ɂ͉��̂��Ƃ��������ς�����B";
+	mes "�ł�����ς�A�댯�ȏꏊ�ւ�";
+	mes "�߂Â��Ȃ���������������B�ł�";
+	mes "�悢���ɂȂ邱�Ƃ��F���Ă�����B";
 	close;
 }
 
-ayothaya.gat,171,152,5	script	少女	838,{
+ayothaya.gat,171,152,5	script	����	838,{
 	if(rand(3)) {
-		mes "[ラルリタ]";
-		mes "村を出て、右の方へまっすぐ行くと";
-		mes "古代遺跡があります。";
-		mes "モンスターがたくさんいる";
-		mes "恐ろしい場所です。";
+		mes "[�������^]";
+		mes "�����o�āA�E�̕��ւ܂������s����";
+		mes "�Ñ��Ղ�����܂��B";
+		mes "�����X�^�[���������񂢂�";
+		mes "���낵���ꏊ�ł��B";
 		next;
-		mes "[ラルリタ]";
-		mes "それでも行くつもりなら、十分に";
-		mes "準備を整えてからの方がいいですよ。";
+		mes "[�������^]";
+		mes "����ł��s������Ȃ�A�\����";
+		mes "�����𐮂��Ă���̕��������ł���B";
 		next;
 		emotion 3;
-		mes "[ラルリタ]";
-		mes "ああ〜、この時代にも正義の勇者様が";
-		mes "いらっしゃるといいのですが……";
+		mes "[�������^]";
+		mes "�����`�A���̎���ɂ����`�̗E�җl��";
+		mes "����������Ƃ����̂ł����c�c";
 	}
 	else {
-		mes "[ラルリタ]";
-		mes "あら？";
-		mes "初めてお目にかかる方ですね？";
-		mes "私が知らない方、ということは";
-		mes "外からいらっしゃったのでしょう？";
+		mes "[�������^]";
+		mes "����H";
+		mes "���߂Ă��ڂɂ�������ł��ˁH";
+		mes "�����m��Ȃ����A�Ƃ������Ƃ�";
+		mes "�O���炢�����������̂ł��傤�H";
 		next;
-		mes "[ラルリタ]";
-		mes "う〜ん……";
-		mes "どこからいらしたのかしら……";
-		mes "あ！　あの、他国のお嬢さんたちは";
-		mes "普段どんな服を着ています？";
-		mes "どんなアクセサリーを着けている";
-		mes "のでしょうか？";
+		mes "[�������^]";
+		mes "���`��c�c";
+		mes "�ǂ����炢�炵���̂�����c�c";
+		mes "���I�@���́A�����̂��삳�񂽂���";
+		mes "���i�ǂ�ȕ��𒅂Ă��܂��H";
+		mes "�ǂ�ȃA�N�Z�T���[�𒅂��Ă���";
+		mes "�̂ł��傤���H";
 		next;
-		mes "[ラルリタ]";
-		mes "そちらの国の男性はやっぱりかっこいい";
-		mes "でしょう？　はやりの歌は何です？";
-		mes "どんな女性が好まれます？";
-		mes "う〜ん、すごく知りたいです〜!!";
+		mes "[�������^]";
+		mes "������̍��̒j���͂���ς肩��������";
+		mes "�ł��傤�H�@�͂��͉̉̂��ł��H";
+		mes "�ǂ�ȏ������D�܂�܂��H";
+		mes "���`��A�������m�肽���ł��`!!";
 	}
 	close;
 }
 
-ayothaya.gat,214,142,5	script	青年	843,{
-	mes "[ブン]";
-	mes "我々アユタヤの青年は、己を磨くため";
-	mes "伝統武術の修練に励んでいます。";
+ayothaya.gat,214,142,5	script	�N	843,{
+	mes "[�u��]";
+	mes "��X�A���^���̐N�́A�Ȃ𖁂�����";
+	mes "�`�����p�̏C���ɗ��ł��܂��B";
 	next;
-	mes "[ブン]";
-	mes "あなたも自己鍛錬として";
-	mes "アユタヤの伝統武術を";
-	mes "学んでみてはいかがでしょう？";
-	mes "きっと役に立つはずですよ。";
+	mes "[�u��]";
+	mes "���Ȃ������Ȓb�B�Ƃ���";
+	mes "�A���^���̓`�����p��";
+	mes "�w��ł݂Ă͂������ł��傤�H";
+	mes "�����Ɩ��ɗ��͂��ł���B";
 	close;
 }
 
-ayothaya.gat,189,120,3	script	青年	843,{
-	mes "[ヒュート]";
-	mes "この村には、古代遺跡みたいな";
-	mes "人々がめったに訪れない場所も";
-	mes "あります。";
+ayothaya.gat,189,120,3	script	�N	843,{
+	mes "[�q���[�g]";
+	mes "���̑��ɂ́A�Ñ��Ղ݂�����";
+	mes "�l�X���߂����ɖK��Ȃ��ꏊ��";
+	mes "����܂��B";
 	next;
-	mes "[ヒュート]";
-	mes "たまに勇気のある人たちが、周りの";
-	mes "静止を振り切って、そこへ入って";
-	mes "行くことがあります。";
+	mes "[�q���[�g]";
+	mes "���܂ɗE�C�̂���l�������A�����";
+	mes "�Î~��U��؂��āA�����֓�����";
+	mes "�s�����Ƃ�����܂��B";
 	next;
-	mes "[ヒュート]";
-	mes "けれども誰一人として帰ってきません。";
-	mes "とても恐ろしい場所です。果たして";
-	mes "そこには何があるのでしょうか？";
+	mes "[�q���[�g]";
+	mes "����ǂ��N��l�Ƃ��ċA���Ă��܂���B";
+	mes "�ƂĂ����낵���ꏊ�ł��B�ʂ�����";
+	mes "�����ɂ͉�������̂ł��傤���H";
 	next;
-	mes "[ヒュート]";
-	mes "……それでも、自分の力を試したい！";
-	mes "と思うのでしたら、危険を承知で";
-	mes "挑戦してみてもいいと思います。";
+	mes "[�q���[�g]";
+	mes "�c�c����ł��A�����̗͂����������I";
+	mes "�Ǝv���̂ł�����A�댯�����m��";
+	mes "���킵�Ă݂Ă������Ǝv���܂��B";
 	close;
 }
 
-ayothaya.gat,241,264,5	script	青年	843,{
-	mes "[ニック]";
-	mes "お前……強そうだな……";
-	mes "俺と一戦どうだ？";
+ayothaya.gat,241,264,5	script	�N	843,{
+	mes "[�j�b�N]";
+	mes "���O�c�c���������ȁc�c";
+	mes "���ƈ��ǂ����H";
 	next;
-	if(select("もちろん、戦う！","やめておく")==1) {
+	if(select("�������A�키�I","��߂Ă���")==1) {
 		emotion 16;
-		mes "[ニック]";
-		mes "冗談を真に受けて";
-		mes "戦おうとするなんて……";
-		mes "むやみに人とケンカするのは";
-		mes "よくないよ。";
+		mes "[�j�b�N]";
+		mes "��k��^�Ɏ󂯂�";
+		mes "�킨���Ƃ���Ȃ�āc�c";
+		mes "�ނ�݂ɐl�ƃP���J����̂�";
+		mes "�悭�Ȃ���B";
 	}
 	else {
 		emotion 32;
-		mes "[ニック]";
-		mes "真の強さは実戦によって";
-		mes "培われるものだ。";
-		mes "戦いを恐れてはいけないよ。";
+		mes "[�j�b�N]";
+		mes "�^�̋����͎���ɂ����";
+		mes "�|������̂��B";
+		mes "�킢������Ă͂����Ȃ���B";
 	}
 	close;
 }
 
 //============================================================
-// 古代遺跡クエストNPC
+// �Ñ��ՃN�G�X�gNPC
 //- Registry -------------------------------------------------
-// AYO_1QUE -> 0〜13
+// AYO_1QUE -> 0�`13
 //------------------------------------------------------------
-ayothaya.gat,83,132,7	script	ドッシ	843,{
+ayothaya.gat,83,132,7	script	�h�b�V	843,{
 	if(AYO_1QUE) {
-		mes "[ドッシ]";
-		mes "おや？　どうされました？";
-		mes "スミンタイガーについてもっと";
-		mes "知りたいなら、この村に住む";
-		mes "ブンソムに聞いてください。"; 
+		mes "[�h�b�V]";
+		mes "����H�@�ǂ�����܂����H";
+		mes "�X�~���^�C�K�[�ɂ��Ă�����";
+		mes "�m�肽���Ȃ�A���̑��ɏZ��";
+		mes "�u���\���ɕ����Ă��������B"; 
 		next;
-		mes "[ドッシ]";
-		mes "それでは、気をつけてくださいね。";
-		mes "スミンタイガーはあなたのすぐ隣りに";
-		mes "いるかもしれませんよ。";
+		mes "[�h�b�V]";
+		mes "����ł́A�C�����Ă��������ˁB";
+		mes "�X�~���^�C�K�[�͂��Ȃ��̂����ׂ��";
+		mes "���邩������܂����B";
 		close;
 	}
-	mes "[ドッシ]";
-	mes "こんにちは〜！";
-	mes "旅のお方ですか？　あなたが";
-	mes "興味を持ちそうな話がありますよ。";
-	mes "聞いてみます？";
+	mes "[�h�b�V]";
+	mes "����ɂ��́`�I";
+	mes "���̂����ł����H�@���Ȃ���";
+	mes "���������������Șb������܂���B";
+	mes "�����Ă݂܂��H";
 	next;
-	if(select("はい、どんな話です？","既に知っています")==2) {
-		mes "[ドッシ]";
-		mes "そうですか……";
-		mes "なら大丈夫ですね。";
+	if(select("�͂��A�ǂ�Șb�ł��H","���ɒm���Ă��܂�")==2) {
+		mes "[�h�b�V]";
+		mes "�����ł����c�c";
+		mes "�Ȃ���v�ł��ˁB";
 		close;
 	}
-	mes "[ドッシ]";
-	mes "ここアユタヤは歴史のある村です。";
-	mes "今はこんなに平和ですが、かつては";
-	mes "悪魔の様な物が出歩いていた時代も";
-	mes "ありました。";
+	mes "[�h�b�V]";
+	mes "�����A���^���͗��j�̂��鑺�ł��B";
+	mes "���͂���Ȃɕ��a�ł����A���Ă�";
+	mes "�����̗l�ȕ����o�����Ă��������";
+	mes "����܂����B";
 	next;
-	mes "[ドッシ]";
-	mes "悪魔の様な物……";
-	mes "それは「スミンタイガー」と呼ばれ";
-	mes "古代都市の中心部深くに住み着いて";
-	mes "いたそうです。";
+	mes "[�h�b�V]";
+	mes "�����̗l�ȕ��c�c";
+	mes "����́u�X�~���^�C�K�[�v�ƌĂ΂�";
+	mes "�Ñ�s�s�̒��S���[���ɏZ�ݒ�����";
+	mes "���������ł��B";
 	next;
-	mes "[ドッシ]";
-	mes "そいつの好みは……人肉。";
-	mes "しかも人を食べた後、その食べた人の";
-	mes "姿に変身できたとか。その姿で更に人を";
-	mes "だまして誘い出し、食べてしまった";
-	mes "そうです。";
+	mes "[�h�b�V]";
+	mes "�����̍D�݂́c�c�l���B";
+	mes "�������l��H�ׂ���A���̐H�ׂ��l��";
+	mes "�p�ɕϐg�ł����Ƃ��B���̎p�ōX�ɐl��";
+	mes "���܂��ėU���o���A�H�ׂĂ��܂���";
+	mes "�����ł��B";
 	next;
-	mes "[ドッシ]";
-	mes "周辺住民は、隣人が知らぬ間に";
-	mes "スミンタイガーと入れ替わって";
-	mes "自分を襲うのではないかと、";
-	mes "とても恐れていました。";
+	mes "[�h�b�V]";
+	mes "���ӏZ���́A�אl���m��ʊԂ�";
+	mes "�X�~���^�C�K�[�Ɠ���ւ����";
+	mes "�������P���̂ł͂Ȃ����ƁA";
+	mes "�ƂĂ�����Ă��܂����B";
 	next;
-	mes "[ドッシ]";
-	mes "しかし、スミンタイガーも結局は";
-	mes "ただの虎。火がついた物を近づけると";
-	mes "人のふりをすることができないそう";
-	mes "です。";
+	mes "[�h�b�V]";
+	mes "�������A�X�~���^�C�K�[�����ǂ�";
+	mes "�����̌ՁB�΂����������߂Â����";
+	mes "�l�̂ӂ�����邱�Ƃ��ł��Ȃ�����";
+	mes "�ł��B";
 	next;
-	mes "[ドッシ]";
-	mes "だから旅の途中で仲間の様子が変であっ";
-	mes "たり、周囲に疑わしい人がいた場合は、";
-	mes "火をつけたマッチなどを近づけて";
-	mes "みるとよいでしょう。";
+	mes "[�h�b�V]";
+	mes "�����痷�̓r���Œ��Ԃ̗l�q���ςł���";
+	mes "����A���͂ɋ^�킵���l�������ꍇ�́A";
+	mes "�΂������}�b�`�Ȃǂ��߂Â���";
+	mes "�݂�Ƃ悢�ł��傤�B";
 	next;
-	mes "[ドッシ]";
-	mes "でも……この方法が確実とは";
-	mes "言えないでしょう。スミンタイガーと";
-	mes "出会ってしまった時は、即逃げる！";
-	mes "これに限りますよね。";
+	mes "[�h�b�V]";
+	mes "�ł��c�c���̕��@���m���Ƃ�";
+	mes "�����Ȃ��ł��傤�B�X�~���^�C�K�[��";
+	mes "�o����Ă��܂������́A��������I";
+	mes "����Ɍ���܂���ˁB";
 	next;
-	mes "[ドッシ]";
-	mes "あなたはこの悪魔の話を信じます？";
+	mes "[�h�b�V]";
+	mes "���Ȃ��͂��̈����̘b��M���܂��H";
 	next;
-	if(select("へー、虎がタバコを吸うんだ","恐ろしい……会ったらどうしよう？")==1) {
-		mes "[ドッシ]";
-		mes "いえ、そうではないですよ。";
-		mes "……まあ、この話は祖父から";
-		mes "聞いた話なんですけどね。";
-		mes "私は鈴を着けた金色の猫を";
-		mes "見た事はあっても、スミンタイガーを";
-		mes "見た事はありませんね。";
+	if(select("�ց[�A�Ղ��^�o�R���z����","���낵���c�c�������ǂ����悤�H")==1) {
+		mes "[�h�b�V]";
+		mes "�����A�����ł͂Ȃ��ł���B";
+		mes "�c�c�܂��A���̘b�͑c������";
+		mes "�������b�Ȃ�ł����ǂˁB";
+		mes "���͗�𒅂������F�̔L��";
+		mes "�������͂����Ă��A�X�~���^�C�K�[��";
+		mes "�������͂���܂���ˁB";
 		close;
 	}
-	mes "[ドッシ]";
-	mes "確実とは言えませんが、もし万が一";
-	mes "そいつに会ってしまったら、やはり";
-	mes "一目散に逃げ出すのが一番よい";
-	mes "でしょう。この件についてもっと";
-	mes "知りたいのでしたら、ブンソムを";
-	mes "訪ねてみるとよいでしょう。";
+	mes "[�h�b�V]";
+	mes "�m���Ƃ͌����܂��񂪁A����������";
+	mes "�����ɉ���Ă��܂�����A��͂�";
+	mes "��ڎU�ɓ����o���̂���Ԃ悢";
+	mes "�ł��傤�B���̌��ɂ��Ă�����";
+	mes "�m�肽���̂ł�����A�u���\����";
+	mes "�K�˂Ă݂�Ƃ悢�ł��傤�B";
 	next;
-	mes "[ドッシ]";
-	mes "彼はこの村に住んでいますよ。";
-	mes "この件についてより詳しく話して";
-	mes "くれるはずです。彼は一見ちょっと";
-	mes "変なところが見受けられますが、";
-	mes "それには特別な理由がありまして……";
+	mes "[�h�b�V]";
+	mes "�ނ͂��̑��ɏZ��ł��܂���B";
+	mes "���̌��ɂ��Ă��ڂ����b����";
+	mes "�����͂��ł��B�ނ͈ꌩ�������";
+	mes "�ςȂƂ��낪���󂯂��܂����A";
+	mes "����ɂ͓��ʂȗ��R������܂��āc�c";
 	next;
-	mes "[ドッシ]";
-	mes "…………";
+	mes "[�h�b�V]";
+	mes "�c�c�c�c";
 	next;
-	mes "[ドッシ]";
-	mes "まあ、とにかく会ってみれば";
-	mes "判りますよ。";
+	mes "[�h�b�V]";
+	mes "�܂��A�Ƃɂ�������Ă݂��";
+	mes "����܂���B";
 	next;
-	mes "[ドッシ]";
-	mes "彼はきっと、あなたのお役に立てる";
-	mes "はずです。";
+	mes "[�h�b�V]";
+	mes "�ނ͂����ƁA���Ȃ��̂����ɗ��Ă�";
+	mes "�͂��ł��B";
 	set AYO_1QUE,1;
 	close;
 }
 
-ayo_in01.gat,181,193,4	script	シャーマン	840,{
+ayo_in01.gat,181,193,4	script	�V���[�}��	840,{
 	switch(AYO_1QUE) {
 	case 0:
-		mes "[ブンソム]";
-		mes "オオオオオオオム……ピププ……";
-		mes "クォムクォムクォム!!";
+		mes "[�u���\��]";
+		mes "�I�I�I�I�I�I�I���c�c�s�v�v�c�c";
+		mes "�N�H���N�H���N�H��!!";
 		close;
 	case 1:
-		mes "[ブンソム]";
-		mes "ぬし、何者じゃ？";
-		mes "うぬぬ……!!";
-		mes "ぬおおおっ〜!!";
+		mes "[�u���\��]";
+		mes "�ʂ��A���҂���H";
+		mes "���ʂʁc�c!!";
+		mes "�ʂ��������`!!";
 		next;
-		mes "[ブンソム]";
-		mes "ふっ…………";
+		mes "[�u���\��]";
+		mes "�ӂ��c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "…………………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "……………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "ふむ…………";
-		mes "何か用かね？";
+		mes "[�u���\��]";
+		mes "�ӂށc�c�c�c";
+		mes "�����p���ˁH";
 		next;
-		mes "[ブンソム]";
-		mes "……わしの助けが必要なようじゃな。";
-		mes "ぬしの目に恐ろしい気が写っておる。";
-		mes "ああ、わしにはわかるんじゃよ。";
+		mes "[�u���\��]";
+		mes "�c�c�킵�̏������K�v�Ȃ悤����ȁB";
+		mes "�ʂ��̖ڂɋ��낵���C���ʂ��Ă���B";
+		mes "�����A�킵�ɂ͂킩��񂶂��B";
 		next;
-		mes "[ブンソム]";
-		mes "…………………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "……………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "………………";
+		mes "[�u���\��]";
+		mes "�c�c�c�c�c�c";
 		next;
-		mes "[ブンソム]";
-		mes "な、スミンタイガーじゃと!?";
-		mes "…………";
-		mes "その名を聞くのは本当に久しぶりじゃ。";
+		mes "[�u���\��]";
+		mes "�ȁA�X�~���^�C�K�[�����!?";
+		mes "�c�c�c�c";
+		mes "���̖��𕷂��͖̂{���ɋv���Ԃ肶��B";
 		next;
-		mes "[ブンソム]";
-		mes "……ぬしはわしに何を期待しておる？";
+		mes "[�u���\��]";
+		mes "�c�c�ʂ��͂킵�ɉ������҂��Ă���H";
 		next;
-		mes "[ブンソム]";
-		mes "……信じるかどうかはぬし次第じゃ。";
-		mes "ちと話でもしてやるかのう。";
+		mes "[�u���\��]";
+		mes "�c�c�M���邩�ǂ����͂ʂ����悶��B";
+		mes "���Ƙb�ł����Ă�邩�̂��B";
 		next;
-		mes "[ブンソム]";
-		mes "……だいぶ昔のことじゃ。";
-		mes "わしの村をスミンタイガーが";
-		mes "襲ってきたのじゃよ。";
+		mes "[�u���\��]";
+		mes "�c�c�����Ԑ̂̂��Ƃ���B";
+		mes "�킵�̑����X�~���^�C�K�[��";
+		mes "�P���Ă����̂����B";
 		next;
-		mes "[ブンソム]";
-		mes "その時、なんとかあやつを";
-		mes "捕らえたんじゃが、あやつめ。";
-		mes "命乞いをしよってのう……。";
-		mes "わしはもちろん、そんなのは";
-		mes "無視して殺すべきじゃと言ったんじゃ。";
+		mes "[�u���\��]";
+		mes "���̎��A�Ȃ�Ƃ������";
+		mes "�߂炦���񂶂Ⴊ�A����߁B";
+		mes "�����������Ă̂��c�c�B";
+		mes "�킵�͂������A����Ȃ̂�";
+		mes "�������ĎE���ׂ�����ƌ������񂶂�B";
 		next;
-		mes "[ブンソム]";
-		mes "じゃが他の者は、命乞いをしている者を";
-		mes "一方的に殺すわけにはいかないと言い";
-		mes "出してな。結局、あやつを古代遺跡内の";
-		mes "洞窟に閉じ込めることにしたのじゃ。";
+		mes "[�u���\��]";
+		mes "���Ⴊ���̎҂́A��������Ă���҂�";
+		mes "����I�ɎE���킯�ɂ͂����Ȃ��ƌ���";
+		mes "�o���ĂȁB���ǁA������Ñ��Փ���";
+		mes "���A�ɕ����߂邱�Ƃɂ����̂���B";
 		next;
-		mes "[ブンソム]";
-		mes "あやつはそれから数十年、その洞窟の";
-		mes "中へ閉じ込められたままとなっておる。";
-		mes "…今はもう、死んでいると思うがのう。";
+		mes "[�u���\��]";
+		mes "����͂��ꂩ�琔�\�N�A���̓��A��";
+		mes "���֕����߂�ꂽ�܂܂ƂȂ��Ă���B";
+		mes "�c���͂����A����ł���Ǝv�����̂��B";
 		next;
-		mes "[ブンソム]";
-		mes "じゃが、スミンタイガーの能力はわしも";
-		mes "正確には知らぬ。じゃから、もしか";
-		mes "したら生きているかもしれぬ……";
+		mes "[�u���\��]";
+		mes "���Ⴊ�A�X�~���^�C�K�[�̔\�͂͂킵��";
+		mes "���m�ɂ͒m��ʁB���Ⴉ��A������";
+		mes "�����琶���Ă��邩������ʁc�c";
 		next;
-		mes "[ブンソム]";
-		mes "……数十年も飢えた状態で、洞窟の中に";
-		mes "閉じ込められたままじゃから、怖がる";
-		mes "必要はないがのう。";
+		mes "[�u���\��]";
+		mes "�c�c���\�N���Q������ԂŁA���A�̒���";
+		mes "�����߂�ꂽ�܂܂��Ⴉ��A�|����";
+		mes "�K�v�͂Ȃ����̂��B";
 		next;
-		if(select("古代遺跡に入ってみたいです","閉じ込められているなら大丈夫ですね")==2) {
-			mes "[ブンソム]";
-			mes "そうじゃ、案ずることはない。";
+		if(select("�Ñ��Ղɓ����Ă݂����ł�","�����߂��Ă���Ȃ���v�ł���")==2) {
+			mes "[�u���\��]";
+			mes "��������A�Ă��邱�Ƃ͂Ȃ��B";
 			next;
-			mes "[ブンソム]";
-			mes "………………";
-			mes "………………";
+			mes "[�u���\��]";
+			mes "�c�c�c�c�c�c";
+			mes "�c�c�c�c�c�c";
 			close;
 		}
-		mes "[ブンソム]";
-		mes "ぬしは本当に物好きじゃのう〜。";
-		mes "闇に包まれた恐ろしい空間に自ら";
-		mes "入りたがるとは……冒険家とはそういう";
-		mes "ものなのか？";
+		mes "[�u���\��]";
+		mes "�ʂ��͖{���ɕ��D������̂��`�B";
+		mes "�łɕ�܂ꂽ���낵����ԂɎ���";
+		mes "���肽����Ƃ́c�c�`���ƂƂ͂�������";
+		mes "���̂Ȃ̂��H";
 		next;
-		mes "[ブンソム]";
-		mes "もし本当に古代遺跡の中へ入りたいの";
-		mes "なら、方法がないわけでない。";
-		mes "まあ、非常に危険で困難ではあるが。";
-		mes "わしとて、そこへ行くことは勧めぬ。";
+		mes "[�u���\��]";
+		mes "�����{���ɌÑ��Ղ̒��֓��肽����";
+		mes "�Ȃ�A���@���Ȃ��킯�łȂ��B";
+		mes "�܂��A���Ɋ댯�ō���ł͂��邪�B";
+		mes "�킵�ƂāA�����֍s�����Ƃ͊��߂ʁB";
 		next;
-		mes "[ブンソム]";
-		mes "……それでも遺跡へ入ると言うのなら";
-		mes "その方法とやらを教えてやるが……";
-		mes "知りたいかね？";
+		mes "[�u���\��]";
+		mes "�c�c����ł���Ղ֓���ƌ����̂Ȃ�";
+		mes "���̕��@�Ƃ��������Ă�邪�c�c";
+		mes "�m�肽�����ˁH";
 		next;
-		if(select("そんなに危険なら……やめます","もちろん！教えてください！")==1) {
-			mes "[ブンソム]";
-			mes "そうじゃ。";
-			mes "その方がぬしのためじゃ。";
+		if(select("����ȂɊ댯�Ȃ�c�c��߂܂�","�������I�����Ă��������I")==1) {
+			mes "[�u���\��]";
+			mes "��������B";
+			mes "���̕����ʂ��̂��߂���B";
 			close;
 		}
-		mes "[ブンソム]";
-		mes "ほう〜。";
-		mes "ぬしも物好きじゃのう〜。";
+		mes "[�u���\��]";
+		mes "�ق��`�B";
+		mes "�ʂ������D������̂��`�B";
 		next;
-		mes "[ブンソム]";
-		mes "……古代遺跡へ入るならば、悪霊から";
-		mes "身を守るお守りが必要じゃ。";
-		mes "洞窟の中には幽霊や悪魔などが彷徨って";
-		mes "おるからのう。今のぬしのように";
-		mes "「神聖な力」を持たぬ者は、すぐに";
-		mes "彼らの餌となってしまうじゃろう。";
+		mes "[�u���\��]";
+		mes "�c�c�Ñ��Ղ֓���Ȃ�΁A���삩��";
+		mes "�g����邨��肪�K�v����B";
+		mes "���A�̒��ɂ͗H��∫���Ȃǂ��f�r����";
+		mes "���邩��̂��B���̂ʂ��̂悤��";
+		mes "�u�_���ȗ́v�������ʎ҂́A������";
+		mes "�ނ�̉a�ƂȂ��Ă��܂�����낤�B";
 		next;
-		mes "[ブンソム]";
-		mes "じゃが、ぬしが望むなら「神聖な力」が";
-		mes "宿る物をわしが作ってやろう。";
-		mes "この危険から身を守る「神聖な力」が";
-		mes "宿る物を作るためにはいくつかの";
-		mes "材料が必要じゃがな。";
+		mes "[�u���\��]";
+		mes "���Ⴊ�A�ʂ����]�ނȂ�u�_���ȗ́v��";
+		mes "�h�镨���킵������Ă�낤�B";
+		mes "���̊댯����g�����u�_���ȗ́v��";
+		mes "�h�镨����邽�߂ɂ͂�������";
+		mes "�ޗ����K�v���Ⴊ�ȁB";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 1個";
-		mes "糸巻 1個";
-		mes "非常に硬い皮 1個";
-		mes "聖水 1個";
+		mes "[�u���\��]";
+		mes "�j�h�� 1��";
+		mes "���� 1��";
+		mes "���ɍd���� 1��";
+		mes "���� 1��";
 		next;
-		mes "[ブンソム]";
-		mes "これらが全て揃ったら、また訪ねて";
-		mes "来るがよい。";
+		mes "[�u���\��]";
+		mes "����炪�S�đ�������A�܂��K�˂�";
+		mes "���邪�悢�B";
 		set AYO_1QUE,2;
 		close;
 	case 2:
 		if(countitem(7213) && countitem(7217) && countitem(7190) && countitem(523)) {
-			mes "[ブンソム]";
-			mes "ほう〜、よくやったのう〜。";
-			mes "では約束通り、作ってやるかのう。";
+			mes "[�u���\��]";
+			mes "�ق��`�A�悭������̂��`�B";
+			mes "�ł͖񑩒ʂ�A����Ă�邩�̂��B";
 			next;
-			callsub L_Routine,0;	//神聖な糸巻き獲得
+			callsub L_Routine,0;	//�_���Ȏ������l��
 			next;
-			mes "[ブンソム]";
-			mes "古代遺跡は2層式になっておる。";
-			mes "まず1階をくまなく探索するのじゃ。";
-			mes "そして、2階へ行くつもりなら、再び";
-			mes "わしを訪ねなされ。2階へはまた別の";
-			mes "準備が必要になるからのう。";
+			mes "[�u���\��]";
+			mes "�Ñ��Ղ�2�w���ɂȂ��Ă���B";
+			mes "�܂�1�K�����܂Ȃ��T������̂���B";
+			mes "�����āA2�K�֍s������Ȃ�A�Ă�";
+			mes "�킵��K�˂Ȃ���B2�K�ւ͂܂��ʂ�";
+			mes "�������K�v�ɂȂ邩��̂��B";
 			set AYO_1QUE,3;
 			close;
 		}
-		mes "[ブンソム]";
-		mes "「神聖な力」に必要な材料を忘れたの";
-		mes "かね？　ぬしの身を守るのに必要な";
-		mes "「神聖な力」の宿る物の材料じゃ。";
-		mes "しっかりと、集めてくるんじゃよ。";
+		mes "[�u���\��]";
+		mes "�u�_���ȗ́v�ɕK�v�ȍޗ���Y�ꂽ��";
+		mes "���ˁH�@�ʂ��̐g�����̂ɕK�v��";
+		mes "�u�_���ȗ́v�̏h�镨�̍ޗ�����B";
+		mes "��������ƁA�W�߂Ă���񂶂��B";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 1個";
-		mes "糸巻 1個";
-		mes "非常に硬い皮 1個";
-		mes "聖水 1個";
+		mes "[�u���\��]";
+		mes "�j�h�� 1��";
+		mes "���� 1��";
+		mes "���ɍd���� 1��";
+		mes "���� 1��";
 		next;
-		mes "[ブンソム]";
-		mes "これらが全て揃ったら、また訪ねて";
-		mes "来るがよい。";
+		mes "[�u���\��]";
+		mes "����炪�S�đ�������A�܂��K�˂�";
+		mes "���邪�悢�B";
 		close;
-	default:	//3〜8のとき
-		if(countitem(7285)) {	//神聖な糸巻き所持
-			mes "[ブンソム]";
-			mes "さぁ……いきなさい!!";
+	default:	//3�`8�̂Ƃ�
+		if(countitem(7285)) {	//�_���Ȏ���������
+			mes "[�u���\��]";
+			mes "�����c�c�����Ȃ���!!";
 			close;
 		}
 		if(countitem(7213) && countitem(7217) && countitem(7190) && countitem(523)) {
 			callsub L_Routine,0;
 			close;
 		}
-		mes "[ブンソム]";
-		mes "おお、神聖な糸巻きを失くしてしまった";
-		mes "のか……仕方ない、また作ってやろう。";
-		mes "材料は前の時と同じじゃ。";
+		mes "[�u���\��]";
+		mes "�����A�_���Ȏ��������������Ă��܂���";
+		mes "�̂��c�c�d���Ȃ��A�܂�����Ă�낤�B";
+		mes "�ޗ��͑O�̎��Ɠ�������B";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 1個";
-		mes "糸巻 1個";
-		mes "非常に硬い皮 1個";
-		mes "聖水 1個";
+		mes "[�u���\��]";
+		mes "�j�h�� 1��";
+		mes "���� 1��";
+		mes "���ɍd���� 1��";
+		mes "���� 1��";
 		next;
-		mes "[ブンソム]";
-		mes "これらが全て揃ったら、また訪ねて";
-		mes "来るがよい。";
+		mes "[�u���\��]";
+		mes "����炪�S�đ�������A�܂��K�˂�";
+		mes "���邪�悢�B";
 		close;
 	case 9:
 		mes "["+strcharinfo(0)+"]";
-		mes "- ^0000FF2階に行くと上……^000000 -";
-		mes "- ^0000FF……する。下にはス……^000000 -";
-		mes "- ^0000FF……これが未だに住んでいる……^000000 -";
-		mes "- ^0000FF彼……を殺さなければならない。^000000-";
+		mes "- ^0000FF2�K�ɍs���Ə�c�c^000000 -";
+		mes "- ^0000FF�c�c����B���ɂ̓X�c�c^000000 -";
+		mes "- ^0000FF�c�c���ꂪ�����ɏZ��ł���c�c^000000 -";
+		mes "- ^0000FF�ށc�c���E���Ȃ���΂Ȃ�Ȃ��B^000000-";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "- ^0000FFそして、2階……出る……する。^000000-";
-		mes "- ^0000FF……リョ……行くためには……^000000 -";
-		mes "- ^0000FF……ソン……力が……もっと……^000000-";
-		mes "- ^0000FF……する。そう、上にも……^000000";
-		mes "- ^0000FF下がることさえ……だ。^000000-";
+		mes "- ^0000FF�����āA2�K�c�c�o��c�c����B^000000-";
+		mes "- ^0000FF�c�c�����c�c�s�����߂ɂ́c�c^000000 -";
+		mes "- ^0000FF�c�c�\���c�c�͂��c�c�����Ɓc�c^000000-";
+		mes "- ^0000FF�c�c����B�����A��ɂ��c�c^000000";
+		mes "- ^0000FF�����邱�Ƃ����c�c���B^000000-";
 		next;
-		mes "[ブンソム]";
-		mes "……スミンタイガーを生かしておいた";
-		mes "ことを後悔し、遺跡へ入り帰ってこな";
-		mes "かった友人がおった……";
-		mes "ぬしには、彼奴と同じ何かを感じる……";
+		mes "[�u���\��]";
+		mes "�c�c�X�~���^�C�K�[�𐶂����Ă�����";
+		mes "���Ƃ�������A��Ղ֓���A���Ă���";
+		mes "�������F�l���������c�c";
+		mes "�ʂ��ɂ́A�ޓz�Ɠ���������������c�c";
 		next;
-		mes "[ブンソム]";
-		mes "しかし、2階へ進むには、より強い";
-		mes "お守りが必要じゃ……";
-		mes "材料を集めさえすれば、より神聖な力を";
-		mes "秘めた糸巻きを作ってやろう";
-		mes "その糸巻きさえあれば、2階へ進める";
-		mes "じゃろう。";
+		mes "[�u���\��]";
+		mes "�������A2�K�֐i�ނɂ́A��苭��";
+		mes "����肪�K�v����c�c";
+		mes "�ޗ����W�߂�������΁A���_���ȗ͂�";
+		mes "��߂�������������Ă�낤";
+		mes "���̎�������������΁A2�K�֐i�߂�";
+		mes "����낤�B";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 2個";
-		mes "糸巻 2個";
-		mes "イグドラシルの葉 1個";
-		mes "聖水 2個";
-		mes "全て揃ったら、また訪ねて来るがよい。";
+		mes "[�u���\��]";
+		mes "�j�h�� 2��";
+		mes "���� 2��";
+		mes "�C�O�h���V���̗t 1��";
+		mes "���� 2��";
+		mes "�S�đ�������A�܂��K�˂ė��邪�悢�B";
 		set AYO_1QUE,10;
 		close;
 	case 10:
 		if(countitem(7213) >= 2 && countitem(7217) >= 2 && countitem(610) >= 1 && countitem(523) >= 2) {
-			mes "[ブンソム]";
-			mes "おおう、材料を集めて来おったか。";
+			mes "[�u���\��]";
+			mes "�������A�ޗ����W�߂ė����������B";
 			next;
-			callsub L_Routine,1;	//強化された神聖な糸巻き獲得
+			callsub L_Routine,1;	//�������ꂽ�_���Ȏ������l��
 			set AYO_1QUE,11;
 			close;
 		}
-		mes "[ブンソム]";
-		mes "おや、材料を忘れたのかね？";
-		mes "神聖な糸巻きの材料は……";
+		mes "[�u���\��]";
+		mes "����A�ޗ���Y�ꂽ�̂��ˁH";
+		mes "�_���Ȏ������̍ޗ��́c�c";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 2個";
-		mes "糸巻 2個";
-		mes "イグドラシルの葉 1個";
-		mes "聖水 2個。以上じゃ。";
-		mes "これらが全て揃ったら、また訪ねて";
-		mes "来るがよい。";
+		mes "[�u���\��]";
+		mes "�j�h�� 2��";
+		mes "���� 2��";
+		mes "�C�O�h���V���̗t 1��";
+		mes "���� 2�B�ȏザ��B";
+		mes "����炪�S�đ�������A�܂��K�˂�";
+		mes "���邪�悢�B";
 		close;
 	case 11:
 	case 13:
-		if(countitem(7287)) {	//強化された神聖な糸巻き所持
-			mes "[ブンソム]";
-			mes "さぁ……いきなさい!!";
+		if(countitem(7287)) {	//�������ꂽ�_���Ȏ���������
+			mes "[�u���\��]";
+			mes "�����c�c�����Ȃ���!!";
 			close;
 		}
 		if(countitem(7213) >= 2 && countitem(7217) >= 2 && countitem(610) >= 1 && countitem(523) >= 2) {
 			callsub L_Routine,1;
 			close;
 		}
-		mes "[ブンソム]";
-		mes "おや、材料を忘れたのかね？";
-		mes "より強い神聖な糸巻きの材料は……";
+		mes "[�u���\��]";
+		mes "����A�ޗ���Y�ꂽ�̂��ˁH";
+		mes "��苭���_���Ȏ������̍ޗ��́c�c";
 		next;
-		mes "[ブンソム]";
-		mes "針刺し 2個";
-		mes "糸巻 2個";
-		mes "イグドラシルの葉 1個";
-		mes "聖水 2個、必要じゃ。";
+		mes "[�u���\��]";
+		mes "�j�h�� 2��";
+		mes "���� 2��";
+		mes "�C�O�h���V���̗t 1��";
+		mes "���� 2�A�K�v����B";
 		close;
 	case 12:
-		mes "[ブンソム]";
-		mes "オオオオ……!!";
-		mes "ぬし、何を見てきた……";
-		mes "その暗い表情に、何かを感じる……";
+		mes "[�u���\��]";
+		mes "�I�I�I�I�c�c!!";
+		mes "�ʂ��A�������Ă����c�c";
+		mes "���̈Â��\��ɁA������������c�c";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "-^0000FFブンソムに……私はもう……^000000-";
-		mes "-^0000FFああ……ここにはスミンタイ……^000000-";
-		mes "-^0000FF私の遺骨を……いや、これ……を^000000-";
-		mes "-^0000FFブンソムに……^000000-";
+		mes "-^0000FF�u���\���Ɂc�c���͂����c�c^000000-";
+		mes "-^0000FF�����c�c�����ɂ̓X�~���^�C�c�c^000000-";
+		mes "-^0000FF���̈⍜���c�c����A����c�c��^000000-";
+		mes "-^0000FF�u���\���Ɂc�c^000000-";
 		next;
-		mes "-あなたは遺跡の奥でみつけた箱を-";
-		mes "-ブンソムに渡した。-";
+		mes "-���Ȃ��͈�Ղ̉��ł݂�������-";
+		mes "-�u���\���ɓn�����B-";
 		next;
-		mes "[ブンソム]";
-		mes "……おお……友よ、私の友よ……";
-		mes "おお、おおおおぅ……";
+		mes "[�u���\��]";
+		mes "�c�c�����c�c�F��A���̗F��c�c";
+		mes "�����A�����������c�c";
 		next;
-		mes "[ブンソム]";
-		mes "ありがとう……いや、その箱は確かに";
-		mes "友人が私に残したもの。だが、私が受け";
-		mes "取るより、発見者であるぬしが持つ方が";
-		mes "ふさわしい。";
+		mes "[�u���\��]";
+		mes "���肪�Ƃ��c�c����A���̔��͊m����";
+		mes "�F�l�����Ɏc�������́B�����A������";
+		mes "�����A�����҂ł���ʂ���������";
+		mes "�ӂ��킵���B";
 		next;
-		mes "[ブンソム]";
-		mes "ありがとう、本当にありがとうよ……";
+		mes "[�u���\��]";
+		mes "���肪�Ƃ��A�{���ɂ��肪�Ƃ���c�c";
 		set AYO_1QUE,13;
 		close;
 	}
 
 //sub routine
-//  arg(0) -> 0:1F用、1:2F用
+//  arg(0) -> 0:1F�p�A1:2F�p
 L_Routine:
-	mes "[ブンソム]";
-	mes "…………………………";
-	mes "クォムクォムクォム……";
+	mes "[�u���\��]";
+	mes "�c�c�c�c�c�c�c�c�c�c";
+	mes "�N�H���N�H���N�H���c�c";
 	next;
-	mes "[ブンソム]";
-	mes "ヌウウム………………";
+	mes "[�u���\��]";
+	mes "�k�E�E���c�c�c�c�c�c";
 	next;
-	mes "[ブンソム]";
-	mes "…………ピププ……";
+	mes "[�u���\��]";
+	mes "�c�c�c�c�s�v�v�c�c";
 	next;
-	mes "[ブンソム]";
-	mes "クォムクォムクォム……";
+	mes "[�u���\��]";
+	mes "�N�H���N�H���N�H���c�c";
 	next;
-	mes "[ブンソム]";
-	mes "……クォムクォムクォム……";
-	mes "ヌウウム……ピププ……";
-	mes "クォムクォムクォム……";
+	mes "[�u���\��]";
+	mes "�c�c�N�H���N�H���N�H���c�c";
+	mes "�k�E�E���c�c�s�v�v�c�c";
+	mes "�N�H���N�H���N�H���c�c";
 	next;
 	if(getarg(0)==0) {
 		delitem 7213,1;
@@ -754,119 +754,119 @@ L_Routine:
 		delitem 523,2;
 		getitem 7287,1;
 	}
-	mes "[ブンソム]";
-	mes "おお、完成じゃ。";
-	mes "ほれ、これが神聖な力が込められた";
-	mes "糸巻きじゃ。持っていくがよい。";
+	mes "[�u���\��]";
+	mes "�����A��������B";
+	mes "�ق�A���ꂪ�_���ȗ͂����߂�ꂽ";
+	mes "����������B�����Ă������悢�B";
 	if(getarg(0)==0) {
-		mes "これさえあれば、ぬしは自由に";
-		mes "古代遺跡の内部へ入ることが";
-		mes "できるはずじゃ。";
+		mes "���ꂳ������΁A�ʂ��͎��R��";
+		mes "�Ñ��Ղ̓����֓��邱�Ƃ�";
+		mes "�ł���͂�����B";
 	}
 	else {
-		mes "これさえあれば、ぬしは2階へも";
-		mes "入ることができるはずじゃ。";
+		mes "���ꂳ������΁A�ʂ���2�K�ւ�";
+		mes "���邱�Ƃ��ł���͂�����B";
 	}
 	next;
-	mes "[ブンソム]";
-	mes "万が一これを失くしても、";
-	mes "また材料さえ集めてくれば";
-	mes "作ってやるよ。遠慮なく来なされ。";
+	mes "[�u���\��]";
+	mes "�����ꂱ����������Ă��A";
+	mes "�܂��ޗ������W�߂Ă����";
+	mes "����Ă���B�����Ȃ����Ȃ���B";
 	return;
 }
 
-ayo_fild01.gat,129,197,7	script	プレ	842,{
+ayo_fild01.gat,129,197,7	script	�v��	842,{
 	if(AYO_1QUE < 3 || (countitem(7285) < 1 && countitem(7287) < 1)) {
-		mes "[プレ]";
-		mes "あの、下に見える遺跡には近付いちゃ";
-		mes "いかん。加護無きものが近付けば、邪悪";
-		mes "な物達の餌食になってしまうからなぁ。";
+		mes "[�v��]";
+		mes "���́A���Ɍ������Ղɂ͋ߕt������";
+		mes "������B���얳�����̂��ߕt���΁A�׈�";
+		mes "�ȕ��B�̉a�H�ɂȂ��Ă��܂�����Ȃ��B";
 		next;
-		mes "[プレ]";
-		mes "帰るがよい、旅人よ。あそこに行きたい";
-		mes "のなら、それなりの加護を見つけてくる";
-		mes "がよい。";
+		mes "[�v��]";
+		mes "�A�邪�悢�A���l��B�������ɍs������";
+		mes "�̂Ȃ�A����Ȃ�̉���������Ă���";
+		mes "���悢�B";
 		close;
 	}
-	mes "[プレ]";
-	mes "ほうほうほう、ほっほっほ。";
-	mes "そちから感じられる気は……";
-	mes "神聖な糸巻きの加護を受けておるなぁ。";
+	mes "[�v��]";
+	mes "�ق��ق��ق��A�ق��ق��فB";
+	mes "�������犴������C�́c�c";
+	mes "�_���Ȏ������̉�����󂯂Ă���Ȃ��B";
 	next;
-	mes "[プレ]";
-	mes "それなら、遺跡に入っても問題はないか";
-	mes "いなぁ。遺跡に行ってみたいかね？";
+	mes "[�v��]";
+	mes "����Ȃ�A��Ղɓ����Ă����͂Ȃ���";
+	mes "���Ȃ��B��Ղɍs���Ă݂������ˁH";
 	next;
-	mes "[プレ]";
-	mes "勧めはせんが……";
-	mes "あそこは我等すら恐れる地ゆえなぁ。";
+	mes "[�v��]";
+	mes "���߂͂��񂪁c�c";
+	mes "�������͉䓙���狰���n�䂦�Ȃ��B";
 	next;
-	mes "[プレ]";
-	mes "スミンタイガーだけではない。あそこに";
-	mes "は様々な邪悪なものが溢れちょる。神聖";
-	mes "な糸巻きを持っちょっても危険極まりな";
-	mes "い。";
+	mes "[�v��]";
+	mes "�X�~���^�C�K�[�����ł͂Ȃ��B��������";
+	mes "�͗l�X�Ȏ׈��Ȃ��̂���ꂿ���B�_��";
+	mes "�Ȏ�����������������Ă��댯�ɂ܂��";
+	mes "���B";
 	next;
-	mes "[プレ]";
-	mes "それでも、行きたいかいな？";
+	mes "[�v��]";
+	mes "����ł��A�s�����������ȁH";
 	next;
-	if(select("行きたいです","怖いからやめておきます")==2) {
-		mes "[プレ]";
-		mes "賢明なり、賢明なり。";
-		mes "命は大切になぁ。";
+	if(select("�s�������ł�","�|�������߂Ă����܂�")==2) {
+		mes "[�v��]";
+		mes "�����Ȃ�A�����Ȃ�B";
+		mes "���͑�؂ɂȂ��B";
 		close;
 	}
-	mes "[プレ]";
-	mes "ほうほう、ほっほっ。怖いもの知らず";
-	mes "じゃなぁ。";
+	mes "[�v��]";
+	mes "�ق��ق��A�ق��ق��B�|�����̒m�炸";
+	mes "����Ȃ��B";
 	next;
-	mes "[プレ]";
-	mes "まぁ、糸巻きの加護があれば大丈夫かい";
-	mes "な。ただ……2階には、近付かないほう";
-	mes "がええ。";
+	mes "[�v��]";
+	mes "�܂��A�������̉��삪����Α��v����";
+	mes "�ȁB�����c�c2�K�ɂ́A�ߕt���Ȃ��ق�";
+	mes "�������B";
 	next;
-	mes "[プレ]";
-	mes "好奇心は猫を殺すと言う。";
-	mes "では、行け！";
+	mes "[�v��]";
+	mes "�D��S�͔L���E���ƌ����B";
+	mes "�ł́A�s���I";
 	next;
-	mes "- 彼は私を崖下に投げ飛ばした！　-";
-	mes "- 私は崖を転がり落ちていった…… -";
+	mes "- �ނ͎����R���ɓ�����΂����I�@-";
+	mes "- ���͊R��]���藎���Ă������c�c -";
 	close2;
 	warp "ayo_fild02.gat",30,135;
 	percentheal -10,0;
 	end;
 }
 
-ayo_fild02.gat,25,154,0	script	エイ	843,{
-	mes "[エイ]";
-	mes "探検はどうだった？";
-	mes "なにはともあれ、平和が一番。";
-	mes "村に帰る時は、邪悪な気をここで";
-	mes "払ってからにしろよ。";
-	mes "村に災いをもたらされても困るからな。";
-	mes "さあ、帰るか？";
+ayo_fild02.gat,25,154,0	script	�G�C	843,{
+	mes "[�G�C]";
+	mes "�T���͂ǂ��������H";
+	mes "�Ȃɂ͂Ƃ�����A���a����ԁB";
+	mes "���ɋA�鎞�́A�׈��ȋC��������";
+	mes "�����Ă���ɂ����B";
+	mes "���ɍЂ��������炳��Ă����邩��ȁB";
+	mes "�����A�A�邩�H";
 	next;
-	if(select("帰る","いや、もうちょっと見て回る")==2) {
-		mes "[エイ]";
-		mes "そうか？";
-		mes "まあ、気をつけるんだな。";
+	if(select("�A��","����A����������ƌ��ĉ��")==2) {
+		mes "[�G�C]";
+		mes "�������H";
+		mes "�܂��A�C������񂾂ȁB";
 		close;
 	}
-	mes "[エイ]";
-	mes "それでは、心を冷静に保てよ……";
+	mes "[�G�C]";
+	mes "����ł́A�S���ÂɕۂĂ�c�c";
 	next;
-	mes "- 彼は私の体をぐいっと持ち上げ -";
-	mes "- 上方へ思いっきり放り投げた!! -";
+	mes "- �ނ͎��̑̂��������Ǝ����グ -";
+	mes "- ����֎v����������蓊����!! -";
 	close2;
 	warp "ayo_fild01.gat",115,200;
 	end;
 }
 
 ayo_dun01.gat,272,26,0	script	#AyoDunMes	139,0,0,{
-	mes "- 下を見ると…… -";
-	mes "- 水がたまっていた。 -";
-	mes "- かなり深そうだ。もし落ちたら -";
-	mes "- ^FF0000死は避けられないだろう。^000000 -";
+	mes "- ��������Ɓc�c -";
+	mes "- �������܂��Ă����B -";
+	mes "- ���Ȃ�[�������B������������ -";
+	mes "- ^FF0000���͔������Ȃ����낤�B^000000 -";
 	close;
 }
 
@@ -877,8 +877,8 @@ ayo_dun01.gat,273,30,0	duplicate(#AyoDunMes)	AyoDunMes_	139,0,0
 
 ayo_dun01.gat,259,42,0	script	#AyoDunNavi	139,2,0,{
 	if(countitem(7285) && AYO_1QUE >= 3 && AYO_1QUE <= 9 && !rand(3)) {
-		mes "-神聖な糸巻きが不思議な気を発し-";
-		mes "-始めた。何かが近くにあるようだ。-";
+		mes "-�_���Ȏ��������s�v�c�ȋC�𔭂�-";
+		mes "-�n�߂��B�������߂��ɂ���悤���B-";
 		viewpoint 1,198,164,1,0xFF0000;
 		viewpoint 1,87,16,2,0xFF0000;
 		viewpoint 1,268,214,3,0xFF0000;
@@ -894,87 +894,87 @@ ayo_dun01.gat,259,46,0	duplicate(#AyoDunNavi)	AyoDunNavi_	139,2,0
 ayo_dun01.gat,156,148,0	duplicate(#AyoDunNavi)	AyoDunNavi_	139,0,3
 
 ayo_dun01.gat,198,164,0	script	#AyoDun1_1	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 一番目の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- ��Ԗڂ̕����̂悤���B-";
 	if(AYO_1QUE==3) {
 		next;
-		mes "- ^0000FF2階に行くと上……^000000 -";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。-";
+		mes "- ^0000FF2�K�ɍs���Ə�c�c^000000 -";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B-";
 		set AYO_1QUE,4;
 	}
 	close;
 }
 
 ayo_dun01.gat,87,16,0	script	 #AyoDun1_2	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 二番目の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- ��Ԗڂ̕����̂悤���B-";
 	if(AYO_1QUE==4) {
 		next;
-		mes "- ^0000FF……する。下にはス……^000000 -";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。-";
+		mes "- ^0000FF�c�c����B���ɂ̓X�c�c^000000 -";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B-";
 		set AYO_1QUE,5;
 	}
 	close;
 }
 
 ayo_dun01.gat,268,214,0	script	 #AyoDun1_3	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 三番目の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- �O�Ԗڂ̕����̂悤���B-";
 	if(AYO_1QUE==5) {
 		next;
-		mes "- ^0000FF……未だに住んでいる……^000000 -";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。 -";
+		mes "- ^0000FF�c�c�����ɏZ��ł���c�c^000000 -";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B -";
 		set AYO_1QUE,6;
 	}
 	close;
 }
 
 ayo_dun01.gat,147,274,0	script	 #AyoDun1_4	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 四番目の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- �l�Ԗڂ̕����̂悤���B-";
 	if(AYO_1QUE==6) {
 		next;
-		mes "- ^0000FF彼……殺さなければならない。^000000 -";
-		mes "- ^0000FFそして、2階……出る……する。^000000-";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。-";
+		mes "- ^0000FF�ށc�c�E���Ȃ���΂Ȃ�Ȃ��B^000000 -";
+		mes "- ^0000FF�����āA2�K�c�c�o��c�c����B^000000-";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B-";
 		set AYO_1QUE,7;
 	}
 	close;
 }
 
 ayo_dun01.gat,99,118,0	script	 #AyoDun1_5	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 五番目の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- �ܔԖڂ̕����̂悤���B-";
 	if(AYO_1QUE==7) {
 		next;
-		mes "- ^0000FF……リョ……行くためには……^000000 -";
-		mes "- ^0000FF……ソン……力が……もっと……^000000 -";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。 -";
+		mes "- ^0000FF�c�c�����c�c�s�����߂ɂ́c�c^000000 -";
+		mes "- ^0000FF�c�c�\���c�c�͂��c�c�����Ɓc�c^000000 -";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B -";
 		set AYO_1QUE,8;
 	}
 	close;
 }
 
 ayo_dun01.gat,16,188,0	script	 #AyoDun1_6	111,{
-	mes "- 石版のかけらを見つけた。-";
-	mes "- 何か字が書かれている。-";
-	mes "- 最後の部分のようだ。-";
+	mes "- �Δł̂�������������B-";
+	mes "- ��������������Ă���B-";
+	mes "- �Ō�̕����̂悤���B-";
 	if(AYO_1QUE==8) {
 		next;
-		mes "- ^0000FF……する。そう、上にも……^000000 -";
-		mes "- ^0000FF下がることさえ……だ。^000000 -";
-		mes "- 残り部分は破損していて -";
-		mes "- 読み取れない。 -";
+		mes "- ^0000FF�c�c����B�����A��ɂ��c�c^000000 -";
+		mes "- ^0000FF�����邱�Ƃ����c�c���B^000000 -";
+		mes "- �c�蕔���͔j�����Ă��� -";
+		mes "- �ǂݎ��Ȃ��B -";
 		set AYO_1QUE,9;
 	}
 	close;
@@ -982,8 +982,8 @@ ayo_dun01.gat,16,188,0	script	 #AyoDun1_6	111,{
 
 ayo_dun01.gat,24,282,0	script	 #AyoDun1_11	111,{
 	if(AYO_1QUE >= 11 && countitem(7287)) {
-		mes "- 神聖な糸巻きが邪悪な気を消した -";
-		mes "- ようだ。下の階へ降りよう…… -";
+		mes "- �_���Ȏ��������׈��ȋC�������� -";
+		mes "- �悤���B���̊K�֍~��悤�c�c -";
 		close2;
 		switch(rand(2)) {
 			case 0: warp "ayo_dun02.gat",23,26; break;
@@ -991,35 +991,35 @@ ayo_dun01.gat,24,282,0	script	 #AyoDun1_11	111,{
 		}
 		end;
 	}
-	mes "-2階へ通じる入口を見つけた。-";
-	mes "-だが邪悪な気が全身を襲ってくる。-";
-	mes "-思わずその場に座り込んでしまい、-";
-	mes "-体の震えが止まらない。-";
-	mes "-下へ降りることはできなさそうだ。-";
+	mes "-2�K�֒ʂ���������������B-";
+	mes "-�����׈��ȋC���S�g���P���Ă���B-";
+	mes "-�v�킸���̏�ɍ��荞��ł��܂��A-";
+	mes "-�̂̐k�����~�܂�Ȃ��B-";
+	mes "-���֍~��邱�Ƃ͂ł��Ȃ��������B-";
 	close;
 }
 
 ayo_dun02.gat,268,108,5	script	 #AyoDun2_1	111,{
 	if(AYO_1QUE==11) {
-		mes "- 木の根元から突き出た骨を -";
-		mes "- 見つけた。-";
+		mes "- �؂̍�������˂��o������ -";
+		mes "- �������B-";
 		next;
-		mes "- ブンソムが話していた -";
-		mes "- 友人のようだ。-";
+		mes "- �u���\�����b���Ă��� -";
+		mes "- �F�l�̂悤���B-";
 		next;
-		mes "- 木の幹に小さくメッセージが -";
-		mes "- 見える。-";
+		mes "- �؂̊��ɏ��������b�Z�[�W�� -";
+		mes "- ������B-";
 		next;
-		mes "- そしてそばには箱もある。-";
+		mes "- �����Ă��΂ɂ͔�������B-";
 		next;
-		mes "- あなたはメッセージを読んだ。-";
+		mes "- ���Ȃ��̓��b�Z�[�W��ǂ񂾁B-";
 		next;
-		mes "-^0000FFブンソムに……私はもう……^000000-";
-		mes "-^0000FFああ……ここにはスミンタイ……^000000-";
-		mes "-^0000FF私の遺骨を……いや、これ……を^000000-";
-		mes "-^0000FFブンソムに……^000000-";
+		mes "-^0000FF�u���\���Ɂc�c���͂����c�c^000000-";
+		mes "-^0000FF�����c�c�����ɂ̓X�~���^�C�c�c^000000-";
+		mes "-^0000FF���̈⍜���c�c����A����c�c��^000000-";
+		mes "-^0000FF�u���\���Ɂc�c^000000-";
 		next;
-		mes "- 青色の箱を手に入れた。-";
+		mes "- �F�̔�����ɓ��ꂽ�B-";
 		getitem 603,1;
 		set AYO_1QUE,12;
 		close;
@@ -1047,656 +1047,656 @@ ayo_dun01.gat,27,272,0	duplicate(AyoDunTrap)	AyoDunTrap_	139,1,1
 ayo_dun01.gat,27,273,0	duplicate(AyoDunTrap)	AyoDunTrap_	139,1,1
 
 //============================================================
-// トムヤンクンクエストNPC
+// �g�������N���N�G�X�gNPC
 //- Registry -------------------------------------------------
-// AYO_2QUE -> 0〜8
+// AYO_2QUE -> 0�`8
 //------------------------------------------------------------
-ayothaya.gat,196,265,3	script	エイノ	842,{
+ayothaya.gat,196,265,3	script	�G�C�m	842,{
 	switch(AYO_2QUE) {
 	case 0:
-		mes "[エイノ]";
-		mes "この村の高名な料理を知ってなさる";
-		mes "かね？";
+		mes "[�G�C�m]";
+		mes "���̑��̍����ȗ�����m���ĂȂ���";
+		mes "���ˁH";
 		next;
-		mes "[エイノ]";
-		mes "ここは本当に美味しい料理がたくさん";
-		mes "あるが、中でも一番有名なのが";
-		mes "^3131FFトムヤンクン^000000だ。";
+		mes "[�G�C�m]";
+		mes "�����͖{���ɔ���������������������";
+		mes "���邪�A���ł���ԗL���Ȃ̂�";
+		mes "^3131FF�g�������N��^000000���B";
 		next;
-		mes "[エイノ]";
-		mes "このスープ、感動的なくらい辛い！";
-		mes "だが、世界で5指に入るくらい美味い！";
+		mes "[�G�C�m]";
+		mes "���̃X�[�v�A�����I�Ȃ��炢�h���I";
+		mes "�����A���E��5�w�ɓ��邭�炢�������I";
 		next;
-		mes "[エイノ]";
-		mes "たぶん、誰もが死ぬ前に1回は食べたい";
-		mes "料理の一つじゃ。どうだね、食べて";
-		mes "みたくないかね？";
+		mes "[�G�C�m]";
+		mes "���Ԃ�A�N�������ʑO��1��͐H�ׂ���";
+		mes "�����̈����B�ǂ����ˁA�H�ׂ�";
+		mes "�݂����Ȃ����ˁH";
 		next;
-		if(select("勿論です","辛いものは苦手で……")==2) {
-			mes "[エイノ]";
-			mes "強要はせんが、残念じゃ……。";
+		if(select("�ܘ_�ł�","�h�����̂͋��Łc�c")==2) {
+			mes "[�G�C�m]";
+			mes "���v�͂��񂪁A�c�O����c�c�B";
 			close;
 		}
-		mes "[エイノ]";
-		mes "そうじゃのー。トムヤンクンを調理";
-		mes "できる料理人はたくさんいるが、特別に";
-		mes "^3131FFマーリー パイ^000000さんを紹介しよう。";
+		mes "[�G�C�m]";
+		mes "��������́[�B�g�������N���𒲗�";
+		mes "�ł��闿���l�͂������񂢂邪�A���ʂ�";
+		mes "^3131FF�}�[���[ �p�C^000000������Љ�悤�B";
 		next;
 		emotion 21;
-		mes "[エイノ]";
-		mes "トムヤンクンを幻想的に調理する女性";
-		mes "料理人でな。1回は彼女の料理を食べて";
-		mes "みるのをお勧めしますぞ。";
+		mes "[�G�C�m]";
+		mes "�g�������N�������z�I�ɒ������鏗��";
+		mes "�����l�łȁB1��͔ޏ��̗�����H�ׂ�";
+		mes "�݂�̂������߂��܂����B";
 		set AYO_2QUE,1;
 		close;
 	case 1:
-		mes "[エイノ]";
-		mes "^3131FFマーリー パイ^000000？";
-		mes "村のどっかにおるよ。ほっほっ。";
+		mes "[�G�C�m]";
+		mes "^3131FF�}�[���[ �p�C^000000�H";
+		mes "���̂ǂ����ɂ����B�ق��ق��B";
 		close;
 	default:
-		mes "[エイノ]";
-		mes "アユタヤは金色じゃ。";
-		mes "本当に眩しいぐらい美しいじゃろ。";
+		mes "[�G�C�m]";
+		mes "�A���^���͋��F����B";
+		mes "�{����ῂ������炢�����������B";
 		close;
 	}
 }
 
-ayo_in01.gat,145,163,3	script	料理人	839,{
+ayo_in01.gat,145,163,3	script	�����l	839,{
 	switch(AYO_2QUE) {
 	case 0:
 	case 1:
-		mes "[マーリー パイ]";
-		mes "こんにちは。私がマーリー";
-		mes "パイです。";
-		mes "私は、お客さん達に幻想的な感動を";
-		mes "プレゼントしたいと思って料理人を";
-		mes "目指しました。";
+		mes "[�}�[���[ �p�C]";
+		mes "����ɂ��́B�����}�[���[";
+		mes "�p�C�ł��B";
+		mes "���́A���q����B�Ɍ��z�I�Ȋ�����";
+		mes "�v���[���g�������Ǝv���ė����l��";
+		mes "�ڎw���܂����B";
 		next;
-		mes "[マーリー パイ]";
-		mes "特に私の特製^3131FFトムヤンクン^000000は、この村";
-		mes "最高の味です。";
-		mes "最高の^3131FFトムヤンクン^000000を作ることこそ";
-		mes "私の使命です。";
+		mes "[�}�[���[ �p�C]";
+		mes "���Ɏ��̓���^3131FF�g�������N��^000000�́A���̑�";
+		mes "�ō��̖��ł��B";
+		mes "�ō���^3131FF�g�������N��^000000����邱�Ƃ���";
+		mes "���̎g���ł��B";
 		if(AYO_2QUE==0)
 			close;
 		next;
-		mes "[マーリー パイ]";
-		mes "トムヤンクンが食べたい、ですか？";
+		mes "[�}�[���[ �p�C]";
+		mes "�g�������N�����H�ׂ����A�ł����H";
 		next;
-		mes "[マーリー パイ]";
-		mes "実は、この食堂は開業したばかりで、";
-		mes "特別に調理するのはちょっと……";
+		mes "[�}�[���[ �p�C]";
+		mes "���́A���̐H���͊J�Ƃ����΂���ŁA";
+		mes "���ʂɒ�������̂͂�����Ɓc�c";
 		next;
-		if(select("だったら、お手伝いします！","確かに、忙しそうですね……")==2) {
-			mes "[マーリー パイ]";
-			mes "はい、忙しくて忙しくて……";
-			mes "仕事が落ち着いたら、よかったら";
-			mes "作らせてください。";
+		if(select("��������A����`�����܂��I","�m���ɁA�Z�������ł��ˁc�c")==2) {
+			mes "[�}�[���[ �p�C]";
+			mes "�͂��A�Z�����ĖZ�����āc�c";
+			mes "�d����������������A�悩������";
+			mes "��点�Ă��������B";
 			close;
 		}
-		mes "[マーリー パイ]";
-		mes "え、手伝ってくれる？うーん……";
-		mes "でしたら、特製トムヤンクン用の材料を";
-		mes "集めてきてもらえますか？必要な材料は";
-		mes "^CE0000エビ^000000と^CE0000レッドチリ^000000、そして^CE0000レモン^000000です。";
-		mes "他の材料は私のほうでそろえます。";
+		mes "[�}�[���[ �p�C]";
+		mes "���A��`���Ă����H���[��c�c";
+		mes "�ł�����A�����g�������N���p�̍ޗ���";
+		mes "�W�߂Ă��Ă��炦�܂����H�K�v�ȍޗ���";
+		mes "^CE0000�G�r^000000��^CE0000���b�h�`��^000000�A������^CE0000������^000000�ł��B";
+		mes "���̍ޗ��͎��̂ق��ł��낦�܂��B";
 		next;
-		mes "[マーリー パイ]";
-		mes "特にエビは大事です。鮮度が良いほど";
-		mes "美味しいトムヤンクンが出来ます。";
+		mes "[�}�[���[ �p�C]";
+		mes "���ɃG�r�͑厖�ł��B�N�x���ǂ��ق�";
+		mes "���������g�������N�����o���܂��B";
 		next;
-		menu "良いエビは、どこで手に入りますか？",-;
-		mes "[マーリー パイ]";
-		mes "ここは海鮮資源が豊富なので、浜辺で";
-		mes "エビを取ることも出来ます。でも、";
-		mes "そうですね……私の知っている人を";
-		mes "紹介しましょうか。とても活きの良い";
-		mes "エビを、いつも売ってくれる方です。";
+		menu "�ǂ��G�r�́A�ǂ��Ŏ�ɓ���܂����H",-;
+		mes "[�}�[���[ �p�C]";
+		mes "�����͊C�N�������L�x�Ȃ̂ŁA�l�ӂ�";
+		mes "�G�r����邱�Ƃ��o���܂��B�ł��A";
+		mes "�����ł��ˁc�c���̒m���Ă���l��";
+		mes "�Љ�܂��傤���B�ƂĂ������̗ǂ�";
+		mes "�G�r���A���������Ă������ł��B";
 		next;
-		mes "[マーリー パイ]";
-		mes "私の紹介で来たと言えば、安く売って";
-		mes "くれるはずですし。";
+		mes "[�}�[���[ �p�C]";
+		mes "���̏Љ�ŗ����ƌ����΁A����������";
+		mes "�����͂��ł����B";
 		next;
-		mes "[マーリー パイ]";
-		mes "その人の名前は^3131FFトンプル^000000さんです。";
-		mes "トムヤンクンを作るエビを1kg……";
-		mes "20個欲しいとお願いしてください。";
+		mes "[�}�[���[ �p�C]";
+		mes "���̐l�̖��O��^3131FF�g���v��^000000����ł��B";
+		mes "�g�������N�������G�r��1kg�c�c";
+		mes "20�~�����Ƃ��肢���Ă��������B";
 		set AYO_2QUE,2;
 		close;
 	case 2:
 		if(countitem(567) >= 20) {
-			mes "[マーリー パイ]";
-			mes "このエビ、あちこち傷がついてません？";
-			mes "これ、トンプルさんのエビですか？";
+			mes "[�}�[���[ �p�C]";
+			mes "���̃G�r�A���������������Ă܂���H";
+			mes "����A�g���v������̃G�r�ł����H";
 			next;
-			mes "[マーリー パイ]";
-			mes "このエビでは最高のトムヤンクンを";
-			mes "作ることは出来ません。";
-			mes "もっと鮮度の高いエビをお願いします。";
+			mes "[�}�[���[ �p�C]";
+			mes "���̃G�r�ł͍ō��̃g�������N����";
+			mes "��邱�Ƃ͏o���܂���B";
+			mes "�����ƑN�x�̍����G�r�����肢���܂��B";
 		}
 		else {
-			mes "[マーリー パイ]";
-			mes "トンプルに1kgお願いしますと";
-			mes "言えばわかりますから。";
+			mes "[�}�[���[ �p�C]";
+			mes "�g���v����1kg���肢���܂���";
+			mes "�����΂킩��܂�����B";
 		}
 		close;
 	case 3:
 		if(countitem(567) < 20)
 			break;
-		mes "[マーリー パイ]";
-		mes "おかえりなさい！";
-		mes "エビを見せてくれますか？";
-		mes "これは……";
+		mes "[�}�[���[ �p�C]";
+		mes "��������Ȃ����I";
+		mes "�G�r�������Ă���܂����H";
+		mes "����́c�c";
 		next;
 		emotion 21;
-		mes "[マーリー パイ]";
-		mes "まあ！最上級のエビだわ!!";
-		mes "こんなに大きくてプリプリしたエビなら";
-		mes "最高のトムヤンクンを作れます！";
+		mes "[�}�[���[ �p�C]";
+		mes "�܂��I�ŏ㋉�̃G�r����!!";
+		mes "����Ȃɑ傫���ăv���v�������G�r�Ȃ�";
+		mes "�ō��̃g�������N�������܂��I";
 		next;
-		mes "[マーリー パイ]";
-		mes "エビの天然の甘さに、レモンの香り、";
-		mes "そして特製魚醤を隠し味に、完璧な";
-		mes "料理となるでしょう。";
+		mes "[�}�[���[ �p�C]";
+		mes "�G�r�̓V�R�̊Â��ɁA�������̍���A";
+		mes "�����ē������݂��B�����ɁA������";
+		mes "�����ƂȂ�ł��傤�B";
 		next;
-		mes "[マーリー パイ]";
-		mes "あら、私ったら！エビだけでは";
-		mes "トムヤンクンは作れないわ。";
-		mes "^CE0000レモン^000000がまだでしたね。";
+		mes "[�}�[���[ �p�C]";
+		mes "����A��������I�G�r�����ł�";
+		mes "�g�������N���͍��Ȃ���B";
+		mes "^CE0000������^000000���܂��ł����ˁB";
 		next;
-		if(select("レモンはどこがおすすめ？","すっぱいのは嫌いです。")==1) {
-			mes "[マーリー パイ]";
-			mes "そうそう、この間なのですが。村を";
-			mes "散歩していたら、美味しそうなレモンが";
-			mes "たくさんなっている木を見ました。";
-			mes "そのレモンを分けてもらえないか、";
-			mes "行って来てもらえるかしら？";
+		if(select("�������͂ǂ����������߁H","�����ς��̂͌����ł��B")==1) {
+			mes "[�}�[���[ �p�C]";
+			mes "���������A���̊ԂȂ̂ł����B����";
+			mes "�U�����Ă�����A�����������ȃ�������";
+			mes "��������Ȃ��Ă���؂����܂����B";
+			mes "���̃������𕪂��Ă��炦�Ȃ����A";
+			mes "�s���ė��Ă��炦�邩����H";
 			delitem 567,20;
 			set AYO_2QUE,4;
 		}
 		else {
 			emotion 7;
-			mes "[マーリー パイ]";
-			mes "酸っぱさはトムヤンクンに欠かせない";
-			mes "味です！";
-			mes "それがわからないような人は";
-			mes "トムヤンクンを食べる資格ありません！";
+			mes "[�}�[���[ �p�C]";
+			mes "�_���ς��̓g�������N���Ɍ������Ȃ�";
+			mes "���ł��I";
+			mes "���ꂪ�킩��Ȃ��悤�Ȑl��";
+			mes "�g�������N����H�ׂ鎑�i����܂���I";
 		}
 		close;
 	case 4:
 		if(countitem(568) >= 10) {
-			mes "[マーリー パイ]";
-			mes "これが最高のレモン？まさか……";
-			mes "ほら、良く見て。このレモンはツヤも";
-			mes "香りも薄いでしょう。";
-			mes "これは、普通のレモン以下だわ！";
+			mes "[�}�[���[ �p�C]";
+			mes "���ꂪ�ō��̃������H�܂����c�c";
+			mes "�ق�A�ǂ����āB���̃������̓c����";
+			mes "����������ł��傤�B";
+			mes "����́A���ʂ̃������ȉ�����I";
 		}
 		else {
-			mes "[マーリー パイ]";
-			mes "信じていますから……";
-			mes "最高のトムヤンクンのため、最高の";
-			mes "レモンを必ず持ってきてくれると……";
+			mes "[�}�[���[ �p�C]";
+			mes "�M���Ă��܂�����c�c";
+			mes "�ō��̃g�������N���̂��߁A�ō���";
+			mes "��������K�������Ă��Ă����Ɓc�c";
 		}
 		close;
 	case 5:
 		if(countitem(568) < 10) {
-			mes "[マーリー パイ]";
-			mes "あら、頼んであった材料は？";
-			mes "は?!まさか我慢出来なくて、調理せずに";
-			mes "食べてしまったとか?!";
+			mes "[�}�[���[ �p�C]";
+			mes "����A����ł������ޗ��́H";
+			mes "��?!�܂����䖝�o���Ȃ��āA����������";
+			mes "�H�ׂĂ��܂����Ƃ�?!";
 			close;
 		}
 		emotion 0;
-		mes "[マーリー パイ]";
-		mes "おかえりなさい！";
-		mes "なんて仕事が早いのでしょう。";
-		mes "あの、レモンを見せてもらっていい";
-		mes "ですか？";
+		mes "[�}�[���[ �p�C]";
+		mes "��������Ȃ����I";
+		mes "�Ȃ�Ďd���������̂ł��傤�B";
+		mes "���́A�������������Ă�����Ă���";
+		mes "�ł����H";
 		next;
-		mes "[マーリー パイ]";
-		mes "すごい！";
-		mes "こんな立派なレモンは初めて見たわ！";
-		mes "では最後の材料、^CE0000レッドチリ^000000を市場で";
-		mes "買ってきてもらえるかしら？";
+		mes "[�}�[���[ �p�C]";
+		mes "�������I";
+		mes "����ȗ��h�ȃ������͏��߂Č�����I";
+		mes "�ł͍Ō�̍ޗ��A^CE0000���b�h�`��^000000���s���";
+		mes "�����Ă��Ă��炦�邩����H";
 		next;
-		if(select("はい、いってきます","疲れたから、ちょっと休憩させて……")==1) {
-			mes "[マーリー パイ]";
-			mes "どうぞよろしく〜";
+		if(select("�͂��A�����Ă��܂�","��ꂽ����A������Ƌx�e�����āc�c")==1) {
+			mes "[�}�[���[ �p�C]";
+			mes "�ǂ�����낵���`";
 			delitem 568,10;
 			set AYO_2QUE,6;
 		}
 		else {
-			mes "[マーリー パイ]";
-			mes "そんなことをしていると、せっかくの";
-			mes "新鮮なエビがダメになってしまうわ…";
+			mes "[�}�[���[ �p�C]";
+			mes "����Ȃ��Ƃ����Ă���ƁA����������";
+			mes "�V�N�ȃG�r���_���ɂȂ��Ă��܂���c";
 		}
 		close;
 	case 6:
 		if(countitem(7286) >= 30) {
-			mes "[マーリー パイ]";
-			mes "どこでこんなものを買って来たの？";
-			mes "最高のトムヤンクンには最高の材料を！";
-			mes "でなければ、私も腕を揮う意味がない！";
+			mes "[�}�[���[ �p�C]";
+			mes "�ǂ��ł���Ȃ��̂𔃂��ė����́H";
+			mes "�ō��̃g�������N���ɂ͍ō��̍ޗ����I";
+			mes "�łȂ���΁A�����r�������Ӗ����Ȃ��I";
 		}
 		else {
-			mes "[マーリー パイ]";
-			mes "お疲れ様でした。";
-			mes "しばらく村の観光でもしてらしたら？";
+			mes "[�}�[���[ �p�C]";
+			mes "�����l�ł����B";
+			mes "���΂炭���̊ό��ł����Ă炵����H";
 		}
 		close;
 	case 7:
 		if(countitem(7286) < 30) {
-			mes "[マーリー パイ]";
-			mes "あら、頼んであった材料は？";
-			mes "は?!まさか我慢出来なくて、調理せずに";
-			mes "食べてしまったとか?!";
+			mes "[�}�[���[ �p�C]";
+			mes "����A����ł������ޗ��́H";
+			mes "��?!�܂����䖝�o���Ȃ��āA����������";
+			mes "�H�ׂĂ��܂����Ƃ�?!";
 			close;
 		}
 		emotion 0;
 		delitem 7286,30;
-		mes "[マーリー パイ]";
-		mes "こちらは準備出来ました。あとは";
-		mes "頼んであった材料だけです。集めて";
-		mes "いらした材料、見てよろしいですか？";
+		mes "[�}�[���[ �p�C]";
+		mes "������͏����o���܂����B���Ƃ�";
+		mes "����ł������ޗ������ł��B�W�߂�";
+		mes "���炵���ޗ��A���Ă�낵���ł����H";
 		next;
-		mes "[マーリー パイ]";
-		mes "^CE0000エビ^000000に^CE0000レッドチリ^000000、そして^CE0000レモン^000000！";
-		mes "魚醤と各種スパイスはそろってるし……";
-		mes "完璧です！";
+		mes "[�}�[���[ �p�C]";
+		mes "^CE0000�G�r^000000��^CE0000���b�h�`��^000000�A������^CE0000������^000000�I";
+		mes "���݂Ɗe��X�p�C�X�͂�����Ă邵�c�c";
+		mes "�����ł��I";
 		next;
 		misceffect 125;
-		mes "[マーリー パイ]";
-		mes "- ^FF0000トントン　^9C009Cトプトプ　^009C00コトコト^000000 -";
+		mes "[�}�[���[ �p�C]";
+		mes "- ^FF0000�g���g���@^9C009C�g�v�g�v�@^009C00�R�g�R�g^000000 -";
 		next;
 		misceffect 124;
-		mes "[マーリー パイ]";
-		mes "- ^FF0031カタカタ";
-		mes "^FF9C00コトコト";
-		mes "^639CFFシュシュ^000000 - ";
+		mes "[�}�[���[ �p�C]";
+		mes "- ^FF0031�J�^�J�^";
+		mes "^FF9C00�R�g�R�g";
+		mes "^639CFF�V���V��^000000 - ";
 		next;
 		misceffect 98;
 		misceffect 195;
-		mes "[マーリー パイ]";
-		mes "- ^9C6300トントン";
-		mes "^316363キュキュ";
-		mes "^FF0000コンコンコン　^009C00クルクルクル^000000 -";
+		mes "[�}�[���[ �p�C]";
+		mes "- ^9C6300�g���g��";
+		mes "^316363�L���L��";
+		mes "^FF0000�R���R���R���@^009C00�N���N���N��^000000 -";
 		next;
 		emotion 23;
 		misceffect 90;
 		misceffect 99;
-		mes "[マーリー パイ]";
-		mes "- トントントントン　^00009Cパタパタパタ";
-		mes "^0000FFチュアー　^0063FFカンカン^000000!! -";
+		mes "[�}�[���[ �p�C]";
+		mes "- �g���g���g���g���@^00009C�p�^�p�^�p�^";
+		mes "^0000FF�`���A�[�@^0063FF�J���J��^000000!! -";
 		next;
-		mes "[マーリー パイ]";
-		mes "…………………………";
-		mes "…………………………";
-		mes "…………………………";
+		mes "[�}�[���[ �p�C]";
+		mes "�c�c�c�c�c�c�c�c�c�c";
+		mes "�c�c�c�c�c�c�c�c�c�c";
+		mes "�c�c�c�c�c�c�c�c�c�c";
 		next;
 		emotion 21;
-		mes "[マーリー パイ]";
-		mes "トムヤンクンが完成しました！";
-		mes "この濃厚な香りと奥深い味……";
-		mes "あぁ、なんという恍惚感！";
+		mes "[�}�[���[ �p�C]";
+		mes "�g�������N�����������܂����I";
+		mes "���̔Z���ȍ���Ɖ��[�����c�c";
+		mes "�����A�Ȃ�Ƃ����������I";
 		getitem 566,10;
 		set AYO_2QUE,8;
 		next;
-		mes "[マーリー パイ]";
-		mes "トムヤンクンの秘密が何か知っていま";
-		mes "す？これはただの料理ではありません。";
-		mes "体調を良くして、元気にしてくれる";
-		mes "料理でもあるんです。";
+		mes "[�}�[���[ �p�C]";
+		mes "�g�������N���̔閧�������m���Ă���";
+		mes "���H����͂����̗����ł͂���܂���B";
+		mes "�̒���ǂ����āA���C�ɂ��Ă����";
+		mes "�����ł������ł��B";
 		next;
-		mes "[マーリー パイ]";
-		mes "なぜなら、この材料と味付けには心が";
-		mes "こもっているから。";
+		mes "[�}�[���[ �p�C]";
+		mes "�Ȃ��Ȃ�A���̍ޗ��Ɩ��t���ɂ͐S��";
+		mes "�������Ă��邩��B";
 		next;
-		mes "[マーリー パイ]";
-		mes "さあ、これがトムヤンクンです。";
-		mes "多めに包みましたから、友達と食べて";
-		mes "くださいませ！";
-		mes "トムヤンクンを食べながら、アユタヤの";
-		mes "話でもしていただけたら嬉しいです。";
+		mes "[�}�[���[ �p�C]";
+		mes "�����A���ꂪ�g�������N���ł��B";
+		mes "���߂ɕ�݂܂�������A�F�B�ƐH�ׂ�";
+		mes "���������܂��I";
+		mes "�g�������N����H�ׂȂ���A�A���^����";
+		mes "�b�ł����Ă�����������������ł��B";
 		next;
-		mes "[マーリー パイ]";
-		mes "今日はありがとうございました。";
+		mes "[�}�[���[ �p�C]";
+		mes "�����͂��肪�Ƃ��������܂����B";
 		close;
 	case 8:
 		emotion 16;
-		mes "[マーリー パイ]";
-		mes "ああ〜、忙しい忙しい!!";
-		mes "目が回りそうだわ〜!!";
+		mes "[�}�[���[ �p�C]";
+		mes "�����`�A�Z�����Z����!!";
+		mes "�ڂ���肻������`!!";
 		close;
 	}
 }
 
-ayothaya.gat,153,86,5	script	トンプル	843,{
+ayothaya.gat,153,86,5	script	�g���v��	843,{
 	switch(AYO_2QUE) {
 	default:
-		mes "[トンプル]";
-		mes "らっしゃい〜！";
-		mes "らっしゃい〜！";
-		mes "最高のエビはいかがっすか〜！";
+		mes "[�g���v��]";
+		mes "������Ⴂ�`�I";
+		mes "������Ⴂ�`�I";
+		mes "�ō��̃G�r�͂������������`�I";
 		close;
 	case 2:
-		mes "[トンプル]";
-		mes "いらっしゃい!! っらっしゃい!!";
-		mes "エビはいかがかね〜!!";
-		mes "何を探してらっしゃいますか？";
-		mes "エビ？そうでしょう!!";
-		mes "私こそ世界一のエビ商人!!";
-		mes "いくら要ります？1kg？2kg？";
+		mes "[�g���v��]";
+		mes "��������Ⴂ!! ��������Ⴂ!!";
+		mes "�G�r�͂��������ˁ`!!";
+		mes "����T���Ă�����Ⴂ�܂����H";
+		mes "�G�r�H�����ł��傤!!";
+		mes "���������E��̃G�r���l!!";
+		mes "������v��܂��H1kg�H2kg�H";
 		next;
-		if(select("トムヤンクンを作りたいんですが","高いな、このエビ！")==2) {
-			mes "[トンプル]";
-			mes "高いっすか？でも、この程度の値段で";
-			mes "世界一のトムヤンクンを食べれると";
-			mes "思ったら安いもんじゃないっすかね？";
-			mes "まぁ、無理に買えとは言いませんが、";
-			mes "残念でやんすね〜。";
+		if(select("�g�������N������肽����ł���","�����ȁA���̃G�r�I")==2) {
+			mes "[�g���v��]";
+			mes "�����������H�ł��A���̒��x�̒l�i��";
+			mes "���E��̃g�������N����H�ׂ���";
+			mes "�v������������񂶂�Ȃ��������ˁH";
+			mes "�܂��A�����ɔ����Ƃ͌����܂��񂪁A";
+			mes "�c�O�ł�񂷂ˁ`�B";
 			close;
 		}
-		mes "[トンプル]";
-		mes "おお!! パイさんの紹介でやんすね！";
-		mes "いやいや、お客さん目が高い!!";
-		mes "うちのエビは、パイさんの料理に";
-		mes "ピッタリ！";
+		mes "[�g���v��]";
+		mes "����!! �p�C����̏Љ�ł�񂷂ˁI";
+		mes "���₢��A���q����ڂ�����!!";
+		mes "�����̃G�r�́A�p�C����̗�����";
+		mes "�s�b�^���I";
 		next;
-		mes "[トンプル]";
-		mes "いつも通り、1kgでやんすね。";
-		mes "1kgで、11,000zenyいただきやす。";
+		mes "[�g���v��]";
+		mes "�����ʂ�A1kg�ł�񂷂ˁB";
+		mes "1kg�ŁA11,000zeny���������₷�B";
 		next;
-		if(select("買った！","高すぎ！")==2) {
-			mes "[トンプル]";
-			mes "そうでやんすか？最高のエビには、それ";
-			mes "相応の値段ってのがあるんでさ。";
-			mes "まぁ、無理に買えとは言いませんが、";
-			mes "残念でやんすね〜。";
+		if(select("�������I","�������I")==2) {
+			mes "[�g���v��]";
+			mes "�����ł�񂷂��H�ō��̃G�r�ɂ́A����";
+			mes "�����̒l�i���Ă̂������ł��B";
+			mes "�܂��A�����ɔ����Ƃ͌����܂��񂪁A";
+			mes "�c�O�ł�񂷂ˁ`�B";
 			close;
 		}
 		if(Zeny < 11000) {
-			mes "[トンプル]";
-			mes "お客さ〜ん、冗談はよしてくださいよ。";
-			mes "お金、足りてませんぜ。";
+			mes "[�g���v��]";
+			mes "���q���`��A��k�͂悵�Ă���������B";
+			mes "�����A����Ă܂��񂺁B";
 			close;
 		}
-		mes "[トンプル]";
-		mes "へい、まいど！お客さん、運がいい！";
-		mes "今日のエビはもう最高の最高！";
-		mes "ささ、早くパイさんに持ってってやって";
-		mes "ください。";
+		mes "[�g���v��]";
+		mes "�ւ��A�܂��ǁI���q����A�^�������I";
+		mes "�����̃G�r�͂����ō��̍ō��I";
+		mes "�����A�����p�C����Ɏ����Ă��Ă����";
+		mes "���������B";
 		emotion 21;
 		set Zeny,Zeny-11000;
 		getitem 567,20;
 		set AYO_2QUE,3;
 		close;
 	case 3:
-		mes "[トンプル]";
-		mes "エビがもっと必要で？";
+		mes "[�g���v��]";
+		mes "�G�r�������ƕK�v�ŁH";
 		next;
-		if(select("ください！","いりません！")==2) {
-			mes "[トンプル]";
-			mes "ささ、早くパイさんに持ってってやって";
-			mes "最高のトムヤンクンを召し上がって";
-			mes "ください。";
+		if(select("���������I","����܂���I")==2) {
+			mes "[�g���v��]";
+			mes "�����A�����p�C����Ɏ����Ă��Ă����";
+			mes "�ō��̃g�������N���������オ����";
+			mes "���������B";
 			close;
 		}
 		if(Zeny < 11000) {
-			mes "[トンプル]";
-			mes "お客さ〜ん、冗談はよしてくださいよ。";
-			mes "お金、足りてませんぜ。";
+			mes "[�g���v��]";
+			mes "���q���`��A��k�͂悵�Ă���������B";
+			mes "�����A����Ă܂��񂺁B";
 			close;
 		}
-		mes "[トンプル]";
-		mes "まいどあり〜。";
-		mes "今日のもキラキラツヤツヤ！";
-		mes "最高のエビですぜ！";
+		mes "[�g���v��]";
+		mes "�܂��ǂ���`�B";
+		mes "�����̂��L���L���c���c���I";
+		mes "�ō��̃G�r�ł����I";
 		set Zeny,Zeny-11000;
 		getitem 567,20;
 		close;
 	}
 }
 
-ayothaya.gat,121,240,0	script	チュンおじさん	842,1,1,{
+ayothaya.gat,121,240,0	script	�`������������	842,1,1,{
 	if(AYO_2QUE != 5) {
-		mes "[チュンおじさん]";
-		mes "……………………";
+		mes "[�`������������]";
+		mes "�c�c�c�c�c�c�c�c";
 		close;
 	}
 	emotion 4;
-	mes "[チュンおじさん]";
-	mes "おや、また何か用かね？";
+	mes "[�`������������]";
+	mes "����A�܂������p���ˁH";
 	next;
-	switch(select("いいえ","レモンちょうだい","申し訳ないですが、レモンをください…")) {
+	switch(select("������","���������傤����","�\����Ȃ��ł����A�����������������c")) {
 	case 1:
 		emotion 2;
-		mes "[チュンおじさん]";
-		mes "そうか、そうか。";
-		mes "ま、元気そうで何よりじゃ。"; 
+		mes "[�`������������]";
+		mes "�������A�������B";
+		mes "�܁A���C�����ŉ���肶��B"; 
 		close;
 	case 2:
 		emotion 6;
-		mes "[チュンおじさん]";
-		mes "それが人に物を頼む態度かっ!!";
-		mes "そんなにレモンが欲しければ、自分で";
-		mes "育てるが良い!!";
+		mes "[�`������������]";
+		mes "���ꂪ�l�ɕ��𗊂ޑԓx����!!";
+		mes "����ȂɃ��������~������΁A������";
+		mes "��Ă邪�ǂ�!!";
 		close;
 	case 3:
-		mes "[チュンおじさん]";
-		mes "もっとレモンが要るのかね？";
-		mes "うーん、さすがに今度は金を";
-		mes "いただかねばならん。";
-		mes "レモン10個、10,000zenyじゃ。";
+		mes "[�`������������]";
+		mes "�����ƃ��������v��̂��ˁH";
+		mes "���[��A�������ɍ��x�͋���";
+		mes "���������˂΂Ȃ��B";
+		mes "������10�A10,000zeny����B";
 		next;
-		if(select("お金を払う","お金を払わない")==2) {
-			mes "[チュンおじさん]";
-			mes "勝手にしなさい。";
+		if(select("�����𕥂�","�����𕥂�Ȃ�")==2) {
+			mes "[�`������������]";
+			mes "����ɂ��Ȃ����B";
 			close;
 		}
 		if(Zeny < 10000) {
-			mes "[チュンおじさん]";
-			mes "金が足りんようじゃ。";
+			mes "[�`������������]";
+			mes "���������悤����B";
 			close;
 		}
-		mes "[チュンおじさん]";
-		mes "さぁ、持っていくが良い。";
-		mes "しかし、こんなにたくさんのレモンを";
-		mes "食べるのかね？";
+		mes "[�`������������]";
+		mes "�����A�����Ă������ǂ��B";
+		mes "�������A����Ȃɂ�������̃�������";
+		mes "�H�ׂ�̂��ˁH";
 		set Zeny,Zeny-10000;
 		getitem 568,10;
 		close;
 	}
 OnTouch:
 	if(AYO_2QUE != 4) {
-		mes "[チュンおじさん]";
-		mes "……………………";
+		mes "[�`������������]";
+		mes "�c�c�c�c�c�c�c�c";
 		close;
 	}
 	emotion 20;
-	mes "[チュンおじさん]";
-	mes "おやおや、外の地からのお客人。";
-	mes "ずいぶんと長い間、ここをフラフラ";
-	mes "しておるがどうなされた？";
+	mes "[�`������������]";
+	mes "���₨��A�O�̒n����̂��q�l�B";
+	mes "�����Ԃ�ƒ����ԁA�������t���t��";
+	mes "���Ă��邪�ǂ��Ȃ��ꂽ�H";
 	next;
-	if(select("レモンが欲しいんです","すみません、何でもないです")==2) {
-		mes "[チュンおじさん]";
-		mes "そうかそうか。";
+	if(select("���������~������ł�","���݂܂���A���ł��Ȃ��ł�")==2) {
+		mes "[�`������������]";
+		mes "�������������B";
 		close;
 	}
-	mes "[チュンおじさん]";
-	mes "レモン？";
-	mes "しかし、ご覧のようにそれ程たくさん";
-	mes "実っているわけではないよ。";
-	mes "それでも欲しいのかね？";
+	mes "[�`������������]";
+	mes "�������H";
+	mes "�������A�����̂悤�ɂ������������";
+	mes "�����Ă���킯�ł͂Ȃ���B";
+	mes "����ł��~�����̂��ˁH";
 	next;
-	if(select("はい、お願いします！","では止めます")==2) {
-		mes "[チュンおじさん]";
-		mes "さてさて、1人ではこのレモンの数は";
-		mes "多いの……どうやって食べようか…";
+	if(select("�͂��A���肢���܂��I","�ł͎~�߂܂�")==2) {
+		mes "[�`������������]";
+		mes "���Ă��āA1�l�ł͂��̃������̐���";
+		mes "�����́c�c�ǂ�����ĐH�ׂ悤���c";
 		close;
 	}
-	mes "[チュンおじさん]";
-	mes "このレモンの木は、趣味で育てている";
-	mes "だけでな。それにしては、今年は綺麗に";
-	mes "実ったもんじゃあ。";
+	mes "[�`������������]";
+	mes "���̃������̖؂́A��ň�ĂĂ���";
+	mes "�����łȁB����ɂ��ẮA���N���Y���";
+	mes "���������񂶂Ⴀ�B";
 	next;
-	mes "[チュンおじさん]";
-	mes "しかしのう、ご覧のように私は商人では";
-	mes "ない。";
-	mes "いや、わしのレモンに目を留めてくれた";
-	mes "のはとても嬉しいのじゃが……";
+	mes "[�`������������]";
+	mes "�������̂��A�����̂悤�Ɏ��͏��l�ł�";
+	mes "�Ȃ��B";
+	mes "����A�킵�̃������ɖڂ𗯂߂Ă��ꂽ";
+	mes "�̂͂ƂĂ��������̂��Ⴊ�c�c";
 	next;
-	mes "[チュンおじさん]";
-	mes "そうじゃ、暇つぶしに簡単な勝負を";
-	mes "せんかね？";
-	mes "勝ったらレモンをただであげよう。";
+	mes "[�`������������]";
+	mes "��������A�ɂԂ��ɊȒP�ȏ�����";
+	mes "���񂩂ˁH";
+	mes "�������烌�����������ł����悤�B";
 	next;
-	if(select("勝負します","やめておきます")==2) {
-		mes "[チュンおじさん]";
-		mes "何か用かね？";
+	if(select("�������܂�","��߂Ă����܂�")==2) {
+		mes "[�`������������]";
+		mes "�����p���ˁH";
 		close;
 	}
 	emotion 10;
-	mes "[チュンおじさん]";
-	mes "ほっほっ。ありがとよ。";
-	mes "何、勝負と言っても、わしとジャンケン";
-	mes "するだけじゃよ。簡単じゃろ？";
+	mes "[�`������������]";
+	mes "�ق��ق��B���肪�Ƃ�B";
+	mes "���A�����ƌ����Ă��A�킵�ƃW�����P��";
+	mes "���邾�������B�ȒP�����H";
 	next;
-	mes "[チュンおじさん]";
-	mes "ジャンケンを^3131FF5回^000000して、そちが^3131FF3回^000000勝てば";
-	mes "レモンをあげよう。よいな？";
+	mes "[�`������������]";
+	mes "�W�����P����^3131FF5��^000000���āA������^3131FF3��^000000���Ă�";
+	mes "�������������悤�B�悢�ȁH";
 	next;
-	mes "[チュンおじさん]";
-	mes "では始めじゃ！";
+	mes "[�`������������]";
+	mes "�ł͎n�߂���I";
 	next;
-	mes "[チュンおじさん]";
-	mes "じゃーんけーん！";
-	while('@game < 5 && '@win < 3) {	//5戦やるか3回勝つまで
+	mes "[�`������������]";
+	mes "����[�񂯁[��I";
+	while('@game < 5 && '@win < 3) {	//5���邩3�񏟂܂�
 		next;
-		set @menu,select("チョキ","グー","パー");
+		set @menu,select("�`���L","�O�[","�p�[");
 		emotion (@menu+9),"";
 		set '@rand,rand(1,3);
 		emotion '@rand+9;
 		if((@menu==1 && '@rand==3) || (@menu==2 && '@rand==1) || (@menu==3 && '@rand==2)) {
-			mes "[チュンおじさん]";
-			mes "クホホ……";
+			mes "[�`������������]";
+			mes "�N�z�z�c�c";
 			set '@game,'@game+1;
 			set '@win,'@win+1;
 		}
-		else if('@rand == @menu) {	//引き分けのとき
-			mes "[チュンおじさん]";
-			mes "ううむ、引き分けじゃな。";
-			mes "では、あいこで！";
+		else if('@rand == @menu) {	//���������̂Ƃ�
+			mes "[�`������������]";
+			mes "�����ށA������������ȁB";
+			mes "�ł́A�������ŁI";
 		}
-		else {	//負けのとき
-			mes "[チュンおじさん]";
-			mes "ほっほっほっ";
+		else {	//�����̂Ƃ�
+			mes "[�`������������]";
+			mes "�ق��ق��ق�";
 			set '@game,'@game+1;
 		}
 	}
 	next;
-	if('@game==5) {	//完全敗北
+	if('@game==5) {	//���S�s�k
 		emotion 10;
-		mes "[チュンおじさん]";
-		mes "ほっほっほっ、わしの勝ちじゃ。";
-		mes "レモンが欲しかったら、いつでも";
-		mes "挑戦は受けてたとう！";
+		mes "[�`������������]";
+		mes "�ق��ق��ق��A�킵�̏�������B";
+		mes "���������~����������A���ł�";
+		mes "����͎󂯂Ă��Ƃ��I";
 	}
-	else {	//完全勝利
+	else {	//���S����
 		emotion 32;
-		mes "[チュンおじさん]";
-		mes "ぬしの勝ちじゃな、ほっほっ。";
-		mes "若いのは良いの〜、ほっほっほっ。";
+		mes "[�`������������]";
+		mes "�ʂ��̏�������ȁA�ق��ق��B";
+		mes "�Ⴂ�̂͗ǂ��́`�A�ق��ق��ق��B";
 		next;
-		mes "[チュンおじさん]";
-		mes "約束どおり、わしのレモンをあげよう。";
-		mes "さぁ、好きなだけ持って行きなされ。";
+		mes "[�`������������]";
+		mes "�񑩂ǂ���A�킵�̃������������悤�B";
+		mes "�����A�D���Ȃ��������čs���Ȃ���B";
 		next;
-		mes "- あなたはレモン10個を取った -";
+		mes "- ���Ȃ��̓�����10������� -";
 		getitem 568,10;
 		set AYO_2QUE,5;
 		next;
 		emotion 9;
-		mes "[チュンおじさん]";
-		mes "ずいぶんと、たくさん持っていくの。";
-		mes "ま。良きかな良きかな、ほっほっほっ。";
+		mes "[�`������������]";
+		mes "�����Ԃ�ƁA�������񎝂��Ă����́B";
+		mes "�܁B�ǂ����ȗǂ����ȁA�ق��ق��ق��B";
 	}
 	close;
 }
 
-ayothaya.gat,213,94,7	script	商人	841,{
+ayothaya.gat,213,94,7	script	���l	841,{
 	switch(AYO_2QUE) {
-	default:	//0〜5のとき
-		mes "[商人トン ド]";
-		mes "お客さん、お客さん！";
-		mes "レッドチリ、食べてみたことあります";
-		mes "かい？こんな小さい実っすけどね、";
-		mes "辛さは絶品ってやつでさ。";
+	default:	//0�`5�̂Ƃ�
+		mes "[���l�g�� �h]";
+		mes "���q����A���q����I";
+		mes "���b�h�`���A�H�ׂĂ݂����Ƃ���܂�";
+		mes "�����H����ȏ��������������ǂˁA";
+		mes "�h���͐�i���Ă�ł��B";
 		next;
-		mes "[商人トン ド]";
-		mes "アユタヤは、唐辛子や塩を使った辛くて";
-		mes "刺激的な料理が好まれてやしてね。";
-		mes "他にもレッドチリやニンニク、生姜に";
-		mes "胡椒は欠かせない香辛料なんっすよ。";
+		mes "[���l�g�� �h]";
+		mes "�A���^���́A���h�q�≖���g�����h����";
+		mes "�h���I�ȗ������D�܂�Ă₵�ĂˁB";
+		mes "���ɂ����b�h�`����j���j�N�A���I��";
+		mes "�Ӟ��͌������Ȃ����h���Ȃ������B";
 		next;
-		mes "[商人トン ド]";
-		mes "俺っちはレッドチリを売ってますんで。";
-		mes "興味あるなら、いかがっすか？";
+		mes "[���l�g�� �h]";
+		mes "�������̓��b�h�`���𔄂��Ă܂���ŁB";
+		mes "��������Ȃ�A�������������H";
 		close;
 	case 6:
-		mes "[商人トン ド]";
-		mes "へい、いらっしゃい！";
-		mes "トムヤンクンの材料が欲しいんだって？";
-		mes "俺っちが用意してやるさ！";
+		mes "[���l�g�� �h]";
+		mes "�ւ��A��������Ⴂ�I";
+		mes "�g�������N���̍ޗ����~�����񂾂��āH";
+		mes "���������p�ӂ��Ă�邳�I";
 		next;
-		mes "[商人トン ド]";
-		mes "レッドチリと魚醤、それにいつもの";
-		mes "香辛料っと！";
+		mes "[���l�g�� �h]";
+		mes "���b�h�`���Ƌ��݁A����ɂ�����";
+		mes "���h�����ƁI";
 		next;
-		mes "[商人トン ド]";
-		mes "おっしゃ、これで全部だ。";
-		mes "2000zenyもらうぜ！";
+		mes "[���l�g�� �h]";
+		mes "��������A����őS�����B";
+		mes "2000zeny���炤���I";
 		next;
-		if(select("2000zenyですね","高すぎるんじゃないの？")==2) {
+		if(select("2000zeny�ł���","��������񂶂�Ȃ��́H")==2) {
 			emotion 22;
-			mes "[商人トン ド]";
-			mes "俺っちは客を騙したりなんかしねぇさ。";
-			mes "2000zenyったら、2000zenyなのさ。";
+			mes "[���l�g�� �h]";
+			mes "�������͋q���x������Ȃ񂩂��˂����B";
+			mes "2000zeny������A2000zeny�Ȃ̂��B";
 			close;
 		}
 		if(Zeny < 2000) {
 			emotion 17;
-			mes "[商人トン ド]";
-			mes "お客さ〜ん！お金が足りないっすよ！";
+			mes "[���l�g�� �h]";
+			mes "���q���`��I����������Ȃ�������I";
 			close;
 		}
 		emotion 15;
-		mes "[商人トン ド]";
-		mes "へい、まいど！";
-		mes "あんた、運がいいぜ〜。";
-		mes "パイさんのトムヤンクンは最高さ！";
+		mes "[���l�g�� �h]";
+		mes "�ւ��A�܂��ǁI";
+		mes "���񂽁A�^���������`�B";
+		mes "�p�C����̃g�������N���͍ō����I";
 		set AYO_2QUE,7;
 		break;
 	case 7:
-		mes "[商人トン ド]";
-		mes "あれ、お客さん。";
-		mes "材料はもう全部渡したのに。";
-		mes "なんか忘れモンっすか？";
+		mes "[���l�g�� �h]";
+		mes "����A���q����B";
+		mes "�ޗ��͂����S���n�����̂ɁB";
+		mes "�Ȃ񂩖Y�ꃂ���������H";
 		next;
-		if(select("いいえ","また買います")==1) {
-			mes "[商人トン ド]";
-			mes "またな〜";
+		if(select("������","�܂������܂�")==1) {
+			mes "[���l�g�� �h]";
+			mes "�܂��ȁ`";
 			close;
 		}
 		if(Zeny < 2000) {
 			emotion 17;
-			mes "[商人トン ド]";
-			mes "お客さ〜ん！お金が足りないっすよ！";
+			mes "[���l�g�� �h]";
+			mes "���q���`��I����������Ȃ�������I";
 			close;
 		}
-		mes "[商人トン ド]";
-		mes "へい、まいどあり！";
+		mes "[���l�g�� �h]";
+		mes "�ւ��A�܂��ǂ���I";
 		break;
 	}
 	set Zeny,Zeny-2000;
@@ -1705,498 +1705,498 @@ ayothaya.gat,213,94,7	script	商人	841,{
 }
 
 //============================================================
-// 婚約指輪クエストNPC
+// ����w�փN�G�X�gNPC
 //- Registry -------------------------------------------------
-// AYO_3QUE -> 0〜14
+// AYO_3QUE -> 0�`14
 //------------------------------------------------------------
-ayothaya.gat,233,105,3	script	強そうな女性	838,{
+ayothaya.gat,233,105,3	script	�������ȏ���	838,{
 	switch(AYO_3QUE) {
 	case 0:
-		mes "[強そうな女性]";
-		mes "なんですか？";
-		mes "ああ……最近増えている旅行客ですね。";
-		mes "ここには面白いものなどありませんよ。";
-		mes "私の愚痴を聞きたいなら別ですけど。";
+		mes "[�������ȏ���]";
+		mes "�Ȃ�ł����H";
+		mes "�����c�c�ŋߑ����Ă��闷�s�q�ł��ˁB";
+		mes "�����ɂ͖ʔ������̂Ȃǂ���܂����B";
+		mes "���̋�s�𕷂������Ȃ�ʂł����ǁB";
 		next;
 		if(rand(4)) {
-			mes "[強そうな女性]";
-			mes "ふう……";
-			mes "やっぱり、浮かんでこないかしら……";
-			mes "木の棒とかでかき混ぜたら、浮かんで";
-			mes "くるかしら……";
+			mes "[�������ȏ���]";
+			mes "�ӂ��c�c";
+			mes "����ς�A������ł��Ȃ�������c�c";
+			mes "�؂̖_�Ƃ��ł�����������A�������";
+			mes "���邩����c�c";
 			next;
-			mes "[強そうな女性]";
-			mes "ん、何を見ているんです？";
-			mes "私、今忙しいんです。";
-			mes "ガイドなら他に当たってちょうだい！";
-			mes "ぶつぶつ……";
+			mes "[�������ȏ���]";
+			mes "��A�������Ă����ł��H";
+			mes "���A���Z������ł��B";
+			mes "�K�C�h�Ȃ瑼�ɓ������Ă��傤�����I";
+			mes "�ԂԂc�c";
 			close;
 		}
-		mes "[強そうな女性]";
-		mes "今、とっても忙しいんです。";
-		mes "え、立ってるだけで忙しそうに";
-		mes "見えない？まぁ、まぁ、まぁ!!";
+		mes "[�������ȏ���]";
+		mes "���A�Ƃ��Ă��Z������ł��B";
+		mes "���A�����Ă邾���ŖZ��������";
+		mes "�����Ȃ��H�܂��A�܂��A�܂�!!";
 		next;
-		mes "[強そうな女性]";
-		mes "それがレディーに対するお言葉?!";
-		mes "いい?!?!　私はね、婚約者が投げ捨てた";
-		mes "婚約指輪を探さなきゃいけないのよ!!";
+		mes "[�������ȏ���]";
+		mes "���ꂪ���f�B�[�ɑ΂��邨���t?!";
+		mes "����?!?!�@���͂ˁA����҂������̂Ă�";
+		mes "����w�ւ�T���Ȃ��Ⴂ���Ȃ��̂�!!";
 		next;
-		if(select("え？","ウソだ〜")==1) {
-			mes "[強そうな女性]";
-			mes "なによ、その態度は?!";
+		if(select("���H","�E�\���`")==1) {
+			mes "[�������ȏ���]";
+			mes "�Ȃɂ�A���̑ԓx��?!";
 			next;
 			emotion 29,"";
 			mes "["+strcharinfo(0)+"]";
-			mes "いや、だって君みたいな人が婚約してる";
-			mes "だなんて、ちょっと信じられないよ。";
-			mes "冗談でしょ？";
+			mes "����A�����ČN�݂����Ȑl�����񂵂Ă�";
+			mes "���Ȃ�āA������ƐM�����Ȃ���B";
+			mes "��k�ł���H";
 			next;
-			mes "[強そうな女性]";
-			mes "まぁー、まぁー、まぁーっ!!!!!";
-			mes "なんて失礼な人なのっ!!!!";
-			mes "あんたなんかと口ききたくないわっ!!";
+			mes "[�������ȏ���]";
+			mes "�܂��[�A�܂��[�A�܂��[��!!!!!";
+			mes "�Ȃ�Ď���Ȑl�Ȃ̂�!!!!";
+			mes "���񂽂Ȃ񂩂ƌ����������Ȃ����!!";
 			close;
 		}
-		mes "[強そうな女性]";
-		mes "何が嘘だって言うのよ!?";
-		mes "まさか、私が婚約してるってのが";
-		mes "信じられないとか?!";
+		mes "[�������ȏ���]";
+		mes "�����R�����Č����̂�!?";
+		mes "�܂����A�������񂵂Ă���Ă̂�";
+		mes "�M�����Ȃ��Ƃ�?!";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "いえいえ、そうじゃなくて。";
-		mes "指輪を探しているのに、どうしてここを";
-		mes "ウロウロしているんですか？";
+		mes "���������A��������Ȃ��āB";
+		mes "�w�ւ�T���Ă���̂ɁA�ǂ����Ă�����";
+		mes "�E���E�����Ă����ł����H";
 		next;
-		mes "[強そうな女性]";
-		mes "ああ、すみません。";
-		mes "実は、彼ったらこの水の中に指輪を";
-		mes "捨てちゃった上、雲隠れしやがりまして";
-		mes "…………";
+		mes "[�������ȏ���]";
+		mes "�����A���݂܂���B";
+		mes "���́A�ނ����炱�̐��̒��Ɏw�ւ�";
+		mes "�̂Ă��������A�_�B�ꂵ�₪��܂���";
+		mes "�c�c�c�c";
 		next;
-		mes "[強そうな女性]";
-		mes "あぁ、私ったら通りすがりの人を";
-		mes "つかまえて、こんな話を……はぁ……";
-		mes "もう事情はわかったでしょう。";
+		mes "[�������ȏ���]";
+		mes "�����A��������ʂ肷����̐l��";
+		mes "���܂��āA����Șb���c�c�͂��c�c";
+		mes "��������͂킩�����ł��傤�B";
 		next;
-		mes "[強そうな女性]";
-		mes "………………";
-		mes "……………………";
+		mes "[�������ȏ���]";
+		mes "�c�c�c�c�c�c";
+		mes "�c�c�c�c�c�c�c�c";
 		next;
-		mes "[強そうな女性]";
-		mes "………………";
-		mes "…………";
-		mes "……";
+		mes "[�������ȏ���]";
+		mes "�c�c�c�c�c�c";
+		mes "�c�c�c�c";
+		mes "�c�c";
 		next;
-		mes "[強そうな女性]";
-		mes "……いつまで人の顔を見ているつもり？";
+		mes "[�������ȏ���]";
+		mes "�c�c���܂Ől�̊�����Ă������H";
 		next;
-		if(select("あ、ごめんなさい","人の不幸って見てて楽しい")==1) {
-			mes "[強そうな女性]";
-			mes "くす、変な人ね。";
+		if(select("���A���߂�Ȃ���","�l�̕s�K���Č��ĂĊy����")==1) {
+			mes "[�������ȏ���]";
+			mes "�����A�ςȐl�ˁB";
 			if(Sex==0) {
-				mes "…………";
-				mes "あ、勘違いしないでっ！";
-				mes "面白い人って意味で言ったんだから！";
+				mes "�c�c�c�c";
+				mes "���A���Ⴂ���Ȃ��ł��I";
+				mes "�ʔ����l���ĈӖ��Ō������񂾂���I";
 			}
 			else {
-				mes "ああ、でも私はもう婚約してる身だから";
-				mes "諦めてね。";
+				mes "�����A�ł����͂������񂵂Ă�g������";
+				mes "���߂ĂˁB";
 			}
 			next;
-			mes "[シューリ]";
-			mes "自己紹介がまだでしたね。";
-			mes "私はシューリ。この村の名士の娘です。";
-			mes "あの、もしなんでしたら私の頼みを";
-			mes "聞いてもらえません？";
+			mes "[�V���[��]";
+			mes "���ȏЉ�܂��ł����ˁB";
+			mes "���̓V���[���B���̑��̖��m�̖��ł��B";
+			mes "���́A�����Ȃ�ł����玄�̗��݂�";
+			mes "�����Ă��炦�܂���H";
 			next;
-			mes "[シューリ]";
-			mes "私の婚約者はアーノンといいます。";
-			mes "こんなナイスバディーで魅力的な私の";
-			mes "何が不満なのか……";
-			mes "指輪まで贈っておいて……";
+			mes "[�V���[��]";
+			mes "���̍���҂̓A�[�m���Ƃ����܂��B";
+			mes "����ȃi�C�X�o�f�B�[�Ŗ��͓I�Ȏ���";
+			mes "�����s���Ȃ̂��c�c";
+			mes "�w�ւ܂ő����Ă����āc�c";
 			next;
-			mes "[シューリ]";
-			mes "なにを考えたのか、一度贈った指輪を";
-			mes "奪って、水の中に投げてしまったの";
-			mes "です。すぐに潜って拾って来いと、";
-			mes "ほんの少しだけ殴ったら行方不明に";
-			mes "なってしまって。";
+			mes "[�V���[��]";
+			mes "�Ȃɂ��l�����̂��A��x�������w�ւ�";
+			mes "�D���āA���̒��ɓ����Ă��܂�����";
+			mes "�ł��B�����ɐ����ďE���ė����ƁA";
+			mes "�ق�̏���������������s���s����";
+			mes "�Ȃ��Ă��܂��āB";
 			next;
 			mes "["+strcharinfo(0)+"]";
-			mes "指輪を一緒に探して欲しいの？";
+			mes "�w�ւ��ꏏ�ɒT���ė~�����́H";
 			next;
-			mes "[シューリ]";
-			mes "あら、やっぱりわかります〜？";
-			mes "指輪が見つかれば、彼も戻ってきて";
-			mes "くれるんじゃないかと思ってるんです。";
+			mes "[�V���[��]";
+			mes "����A����ς�킩��܂��`�H";
+			mes "�w�ւ�������΁A�ނ��߂��Ă���";
+			mes "�����񂶂�Ȃ����Ǝv���Ă��ł��B";
 			next;
-			mes "[シューリ]";
-			mes "ただ、私は泳ぎが苦手でして……";
-			mes "こうして、ここで悩むしかなかった";
-			mes "んです。";
+			mes "[�V���[��]";
+			mes "�����A���͉j�������ł��āc�c";
+			mes "�������āA�����ŔY�ނ����Ȃ�����";
+			mes "��ł��B";
 			next;
 			emotion 18;
-			mes "[シューリ]";
-			mes "私の代わりにズブ濡れになって";
-			mes "指輪を探してくれるなんて、なんて";
-			mes "優しい方でしょう！";
-			mes "私はここで、お待ちしていますから。";
-			mes "おほほほほほほ。";
+			mes "[�V���[��]";
+			mes "���̑���ɃY�u�G��ɂȂ���";
+			mes "�w�ւ�T���Ă����Ȃ�āA�Ȃ��";
+			mes "�D�������ł��傤�I";
+			mes "���͂����ŁA���҂����Ă��܂�����B";
+			mes "���قققققفB";
 		}
 		else {
-			mes "[強そうな女性]";
-			mes "あのね、見世物じゃないんだけど。";
-			mes "あ、そうだ。じゃあ見世物代として";
-			mes "ちょっと協力してもらいましょう。";
+			mes "[�������ȏ���]";
+			mes "���̂ˁA����������Ȃ��񂾂��ǁB";
+			mes "���A�������B���Ⴀ��������Ƃ���";
+			mes "������Ƌ��͂��Ă��炢�܂��傤�B";
 			next;
-			mes "[シューリ]";
-			mes "私はシューリ。婚約者のアーノンが";
-			mes "ここに投げ捨てた指輪が浮かんでこな";
-			mes "いか待っている、可憐で哀れな女です。";
+			mes "[�V���[��]";
+			mes "���̓V���[���B����҂̃A�[�m����";
+			mes "�����ɓ����̂Ă��w�ւ�������ł���";
+			mes "�����҂��Ă���A���ň���ȏ��ł��B";
 			next;
-			mes "[シューリ]";
-			mes "ねぇ、あなた。";
-			mes "こんな私を痛々しくて助けてあげたい";
-			mes "って思わない？";
-			mes "あー、誰かが婚約指輪を探し出して";
-			mes "私が立派な花嫁になれたら……";
-			mes "その人は村の伝説となるでしょう。";
-			next;
-			mes "["+strcharinfo(0)+"]";
-			mes "もしかして、それって……";
-			next;
-			mes "[シューリ]";
-			mes "そう！だから、あなたは私が可憐な";
-			mes "花嫁になれるように、婚約指輪を探して";
-			mes "きて。";
-			next;
-			mes "[シューリ]";
-			mes "え、アーノンですか？";
-			mes "雲隠れしちゃったって言ったでしょう。";
-			mes "指輪を捨てられちゃって、ちょこっと";
-			mes "怒って平手打ちしちゃったからって";
-			mes "ヘソを曲げてしまうなんて……";
+			mes "[�V���[��]";
+			mes "�˂��A���Ȃ��B";
+			mes "����Ȏ���ɁX�����ď����Ă�������";
+			mes "���Ďv��Ȃ��H";
+			mes "���[�A�N��������w�ւ�T���o����";
+			mes "�������h�ȉԉłɂȂꂽ��c�c";
+			mes "���̐l�͑��̓`���ƂȂ�ł��傤�B";
 			next;
 			mes "["+strcharinfo(0)+"]";
-			mes "………………";
-			mes "平手打ち？";
+			mes "���������āA������āc�c";
 			next;
-			mes "[シューリ]";
-			mes "指輪さえみつかれば、アーノンは";
-			mes "必ず戻ってくるんです！";
-			mes "そうしたら私達、永遠に幸せになれ";
-			mes "るんです！";
+			mes "[�V���[��]";
+			mes "�����I������A���Ȃ��͎�������";
+			mes "�ԉłɂȂ��悤�ɁA����w�ւ�T����";
+			mes "���āB";
 			next;
-			mes "[シューリ]";
-			mes "だから、泳げない私のかわりに指輪を";
-			mes "探してください。あなたの顔は覚え";
-			mes "ましたから……逃げても無駄よ。";
+			mes "[�V���[��]";
+			mes "���A�A�[�m���ł����H";
+			mes "�_�B�ꂵ����������Č������ł��傤�B";
+			mes "�w�ւ��̂Ă�ꂿ����āA���傱����";
+			mes "�{���ĕ���ł�����������������";
+			mes "�w�\���Ȃ��Ă��܂��Ȃ�āc�c";
 			next;
-			mes "[シューリ]";
-			mes "たぶん、指輪はここの底にあるはず。";
-			mes "頑張ってね。うふふ……";
+			mes "["+strcharinfo(0)+"]";
+			mes "�c�c�c�c�c�c";
+			mes "����ł��H";
+			next;
+			mes "[�V���[��]";
+			mes "�w�ւ����݂���΁A�A�[�m����";
+			mes "�K���߂��Ă����ł��I";
+			mes "���������玄�B�A�i���ɍK���ɂȂ�";
+			mes "���ł��I";
+			next;
+			mes "[�V���[��]";
+			mes "������A�j���Ȃ����̂����Ɏw�ւ�";
+			mes "�T���Ă��������B���Ȃ��̊�͊o��";
+			mes "�܂�������c�c�����Ă����ʂ�B";
+			next;
+			mes "[�V���[��]";
+			mes "���Ԃ�A�w�ւ͂����̒�ɂ���͂��B";
+			mes "�撣���ĂˁB���ӂӁc�c";
 		}
 		set AYO_3QUE,1;
 		close;
 	case 1:
-		mes "[シューリ]";
-		mes "ああ、旅行の方にお願いすることになる";
-		mes "なんて……でも、あの婚約指輪は";
-		mes "とってもとってもとっても、私にとって";
-		mes "大切なんです。";
+		mes "[�V���[��]";
+		mes "�����A���s�̕��ɂ��肢���邱�ƂɂȂ�";
+		mes "�Ȃ�āc�c�ł��A���̍���w�ւ�";
+		mes "�Ƃ��Ă��Ƃ��Ă��Ƃ��Ă��A���ɂƂ���";
+		mes "��؂Ȃ�ł��B";
 		next;
-		mes "[シューリ]";
-		mes "どうかお願いします。";
-		mes "私、どうしてもアーノンと結婚して";
-		mes "永遠に幸せになりたいんです。";
+		mes "[�V���[��]";
+		mes "�ǂ������肢���܂��B";
+		mes "���A�ǂ����Ă��A�[�m���ƌ�������";
+		mes "�i���ɍK���ɂȂ肽����ł��B";
 		next;
-		mes "[シューリ]";
-		mes "私、待ってます……";
-		mes "指輪が戻ってくるのを……";
-		mes "いつまでも……いつまでも……";
+		mes "[�V���[��]";
+		mes "���A�҂��Ă܂��c�c";
+		mes "�w�ւ��߂��Ă���̂��c�c";
+		mes "���܂ł��c�c���܂ł��c�c";
 		close;
 	case 2:
 		if(countitem(7288)==0) {
-			mes "[シューリ]";
-			mes "指輪が見つかった？";
-			mes "見せてください！";
-			mes "………………";
-			mes "………………ないじゃない。";
-			mes "口先だけなんて、最低よ！";
+			mes "[�V���[��]";
+			mes "�w�ւ����������H";
+			mes "�����Ă��������I";
+			mes "�c�c�c�c�c�c";
+			mes "�c�c�c�c�c�c�Ȃ�����Ȃ��B";
+			mes "���悾���Ȃ�āA�Œ��I";
 			next;
-			mes "[シューリ]";
-			mes "仕事はマジメにしたらどう？";
-			mes "いい、待ってるんだから！";
+			mes "[�V���[��]";
+			mes "�d���̓}�W���ɂ�����ǂ��H";
+			mes "�����A�҂��Ă�񂾂���I";
 			close;
 		}
-		mes "[シューリ]";
-		mes "ああ、この指輪は!!!!!!!";
-		mes "そうです！あの馬鹿アーノンが投げ";
-		mes "捨てた可哀相な私の婚約指輪!!";
-		mes "ありがとう〜！";
-		mes "あなたの名前は一生忘れないわ！";
-		mes "おほほほほほほ♪";
+		mes "[�V���[��]";
+		mes "�����A���̎w�ւ�!!!!!!!";
+		mes "�����ł��I���̔n���A�[�m��������";
+		mes "�̂Ă������Ȏ��̍���w��!!";
+		mes "���肪�Ƃ��`�I";
+		mes "���Ȃ��̖��O�͈ꐶ�Y��Ȃ���I";
+		mes "���قققققف�";
 		next;
-		mes "[シューリ]";
-		mes "ああ、でもどうしましょう……";
-		mes "せっかく指輪がみつかったのに";
-		mes "肝心のアーノンは何処に?!";
-		mes "私は幸せな花嫁になれないのかしら……";
-		mes "ああ、誰かアーノンを探してくれる";
-		mes "親切な方はいないのかしら？";
+		mes "[�V���[��]";
+		mes "�����A�ł��ǂ����܂��傤�c�c";
+		mes "���������w�ւ��݂������̂�";
+		mes "�̐S�̃A�[�m���͉�����?!";
+		mes "���͍K���ȉԉłɂȂ�Ȃ��̂�����c�c";
+		mes "�����A�N���A�[�m����T���Ă����";
+		mes "�e�؂ȕ��͂��Ȃ��̂�����H";
 		next;
-		mes "[シューリ]";
-		mes "(チラチラ、きらきら)";
+		mes "[�V���[��]";
+		mes "(�`���`���A���炫��)";
 		next;
-		if(select("そんな目で見ても無駄だ！","分かった分かった……")==1) {
-			mes "[シューリ]";
-			mes "チッ…………";
-			mes "あのね、せっかく人が気持ちよく人助け";
-			mes "させてあげようとしてるんだから、";
-			mes "ちょっとは察しなさいよ。";
-			mes "いい？アーノンを探してきなさい。";
-			mes "わかった？";
+		if(select("����ȖڂŌ��Ă����ʂ��I","�����������������c�c")==1) {
+			mes "[�V���[��]";
+			mes "�`�b�c�c�c�c";
+			mes "���̂ˁA���������l���C�����悭�l����";
+			mes "�����Ă����悤�Ƃ��Ă�񂾂���A";
+			mes "������Ƃ͎@���Ȃ�����B";
+			mes "�����H�A�[�m����T���Ă��Ȃ����B";
+			mes "�킩�����H";
 			next;
 			emotion 18;
-			mes "[シューリ]";
-			mes "ここまで関わったんだもの。";
-			mes "今更、可哀相な私を見捨てるなんて";
-			mes "出来ないわよね。";
-			mes "おほほほほほほ。";
+			mes "[�V���[��]";
+			mes "�����܂Ŋւ�����񂾂��́B";
+			mes "���X�A�����Ȏ������̂Ă�Ȃ��";
+			mes "�o���Ȃ����ˁB";
+			mes "���قققققفB";
 			next;
 			emotion 9,"";
 			mes "["+strcharinfo(0)+"]";
-			mes "……こんな女に関わるんじゃなかった。";
-			mes "あー、ついてないな……";
+			mes "�c�c����ȏ��Ɋւ��񂶂�Ȃ������B";
+			mes "���[�A���ĂȂ��ȁc�c";
 		}
 		else {
-			mes "[シューリ]";
-			mes "まぁ、嬉しい！";
-			mes "さすが私が見込んだお方！";
-			mes "お願いします、アーノンを探してきて";
-			mes "ください。";
+			mes "[�V���[��]";
+			mes "�܂��A�������I";
+			mes "���������������񂾂����I";
+			mes "���肢���܂��A�A�[�m����T���Ă���";
+			mes "���������B";
 			next;
-			mes "[シューリ]";
-			mes "村の中は、もう探しました。";
-			mes "アーノンは、この程度の水の中の指輪も";
-			mes "探せないし、私がちょこっと怒っただけ";
-			mes "で逃げ出すような気の小さい人です。";
-			mes "そう遠くには逃げていません。";
+			mes "[�V���[��]";
+			mes "���̒��́A�����T���܂����B";
+			mes "�A�[�m���́A���̒��x�̐��̒��̎w�ւ�";
+			mes "�T���Ȃ����A�������傱���Ɠ{��������";
+			mes "�œ����o���悤�ȋC�̏������l�ł��B";
+			mes "���������ɂ͓����Ă��܂���B";
 			next;
-			mes "[シューリ]";
-			mes "アーノンが見つかったら、指輪は見つけ";
-			mes "たから、心配しないで帰って来なさいと";
-			mes "伝えてください。お願いします。";
-			mes "通りすがりの親切な勇者さま……";
+			mes "[�V���[��]";
+			mes "�A�[�m��������������A�w�ւ͌���";
+			mes "������A�S�z���Ȃ��ŋA���ė��Ȃ�����";
+			mes "�`���Ă��������B���肢���܂��B";
+			mes "�ʂ肷����̐e�؂ȗE�҂��܁c�c";
 		}
 		delitem 7288,1;
 		set AYO_3QUE,3;
 		close;
-	default:	//3〜12のとき
-		mes "[シューリ]";
-		mes "アーノンはまだ?!";
-		mes "まだアーノンは見つからないの?!?!?!";
+	default:	//3�`12�̂Ƃ�
+		mes "[�V���[��]";
+		mes "�A�[�m���͂܂�?!";
+		mes "�܂��A�[�m���͌�����Ȃ���?!?!?!";
 		close;
 	case 13:
-		mes "[シューリ]";
-		mes "アーノンは?! アーノンは見つかった?!";
-		mes "…………え？";
-		mes "どうしても見つからない？";
-		mes "はぁ……まったく、どこに";
-		mes "隠れやがったのかしら……";
+		mes "[�V���[��]";
+		mes "�A�[�m����?! �A�[�m���͌�������?!";
+		mes "�c�c�c�c���H";
+		mes "�ǂ����Ă�������Ȃ��H";
+		mes "�͂��c�c�܂������A�ǂ���";
+		mes "�B��₪�����̂�����c�c";
 		next;
-		mes "[シューリ]";
-		mes "なんとなく、あなたの言うことを全部";
-		mes "信用できそうにないけど。";
-		mes "指輪をみつけてくれたし、";
-		mes "これ以上贅沢言ったらダメね。";
-		mes "ありがとうございました。";
+		mes "[�V���[��]";
+		mes "�Ȃ�ƂȂ��A���Ȃ��̌������Ƃ�S��";
+		mes "�M�p�ł������ɂȂ����ǁB";
+		mes "�w�ւ��݂��Ă��ꂽ���A";
+		mes "����ȏ��ґ򌾂�����_���ˁB";
+		mes "���肪�Ƃ��������܂����B";
 		next;
-		mes "[シューリ]";
-		mes "でも、もしどこかでアーノンを見かけ";
-		mes "たら、私は待ってるって伝えて";
-		mes "くださらない？";
-		mes "それでは、御機嫌よう。";
+		mes "[�V���[��]";
+		mes "�ł��A�����ǂ����ŃA�[�m����������";
+		mes "����A���͑҂��Ă���ē`����";
+		mes "��������Ȃ��H";
+		mes "����ł́A��@���悤�B";
 		next;
-		mes "[シューリ]";
-		mes "…………ち、使えない奴。";
-		mes "次の奴を早く探さないと……";
-		mes "ブツブツブツ…………";
+		mes "[�V���[��]";
+		mes "�c�c�c�c���A�g���Ȃ��z�B";
+		mes "���̓z�𑁂��T���Ȃ��Ɓc�c";
+		mes "�u�c�u�c�u�c�c�c�c�c";
 		close;
 	}
 }
 
-ayothaya.gat,253,99,3	script	釣り人	843,{
+ayothaya.gat,253,99,3	script	�ނ�l	843,{
 	if(AYO_3QUE == 0) {
-		mes "[ダナイ]";
-		mes "ここに住んでる魚は、落ちてきたものを";
-		mes "何でも食べちまうよ。時々、釣れた魚の";
-		mes "腹から、とんでもない物が見つかったり";
-		mes "とかな。";
+		mes "[�_�i�C]";
+		mes "�����ɏZ��ł鋛�́A�����Ă������̂�";
+		mes "���ł��H�ׂ��܂���B���X�A�ނꂽ����";
+		mes "������A�Ƃ�ł��Ȃ���������������";
+		mes "�Ƃ��ȁB";
 		next;
-		mes "[ダナイ]";
-		mes "どうだい、おまえも1回やってみるか？";
+		mes "[�_�i�C]";
+		mes "�ǂ������A���܂���1�����Ă݂邩�H";
 		close;
 	}
 	if(AYO_3QUE == 1) {
-		mes "[ダナイ]";
-		mes "へい、いらっしゃい。";
-		mes "ここの魚達は肉が好物さ。";
-		mes "まぁ、落ちたもんならなんでも食っち";
-		mes "まうんだがね。";
+		mes "[�_�i�C]";
+		mes "�ւ��A��������Ⴂ�B";
+		mes "�����̋��B�͓����D�����B";
+		mes "�܂��A����������Ȃ�Ȃ�ł��H����";
+		mes "�܂��񂾂��ˁB";
 		next;
-		mes "[ダナイ]";
-		mes "釣りがしたいなら、餌は自前で";
-		mes "よろしくな。お代は^3152FF1回 50zeny^000000。";
-		mes "それと^3152FF化け物のエサ 1個^000000だ。";
+		mes "[�_�i�C]";
+		mes "�ނ肪�������Ȃ�A�a�͎��O��";
+		mes "��낵���ȁB�����^3152FF1�� 50zeny^000000�B";
+		mes "�����^3152FF�������̃G�T 1��^000000���B";
 		next;
-		mes "[ダナイ]";
-		mes "釣りをするかい？";
+		mes "[�_�i�C]";
+		mes "�ނ�����邩���H";
 		next;
-		if(select("する","しない")==2) {
-			mes "[ダナイ]";
-			mes "釣りがしたくなったら";
-			mes "また来ればいいさ。";
+		if(select("����","���Ȃ�")==2) {
+			mes "[�_�i�C]";
+			mes "�ނ肪�������Ȃ�����";
+			mes "�܂�����΂������B";
 			close;
 		}
 		if(countitem(528)==0 || Zeny<50) {
-			mes "[ダナイ]";
-			mes "こっちも生活がかかってんだ。";
-			mes "釣りしたいなら、^3152FF1回 50zeny^000000。";
-			mes "^3152FF化け物のエサ 1個^000000は自前な。";
+			mes "[�_�i�C]";
+			mes "���������������������Ă񂾁B";
+			mes "�ނ肵�����Ȃ�A^3152FF1�� 50zeny^000000�B";
+			mes "^3152FF�������̃G�T 1��^000000�͎��O�ȁB";
 			close;
 		}
 		delitem 528,1;
 		set Zeny,Zeny-50;
-		mes "- あなたは釣り竿を水に垂らした。-";
+		mes "- ���Ȃ��͒ނ�Ƃ𐅂ɐ��炵���B-";
 		next;
-		mes "……………………………………";
+		mes "�c�c�c�c�c�c�c�c�c�c�c�c�c�c";
 		next;
-		mes "- 手ごたえが!!何か釣れたようだ！ -";
+		mes "- �育������!!�����ނꂽ�悤���I -";
 		next;
 		switch(rand(20)) {
 		case 0:
-			mes "- 魚を調べてみたら、名前が -";
-			mes "- 刻まれた指輪が出てきた。-";
+			mes "- ���𒲂ׂĂ݂���A���O�� -";
+			mes "- ���܂ꂽ�w�ւ��o�Ă����B-";
 			next;
-			mes "- 婚約指輪をみつけた！ -";
+			mes "- ����w�ւ��݂����I -";
 			getitem 7288,1;
 			set AYO_3QUE,2;
 			break;
 		case 1:
-			mes "-魚を調べてみたら、ダイヤの指輪-";
-			mes "-が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A�_�C���̎w��-";
+			mes "-���o�Ă����B-";
 			getitem 2613,1;
 			break;
 		case 2:
 		case 3:
-			mes "-魚を調べてみたら、花の指輪-";
-			mes "-が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A�Ԃ̎w��-";
+			mes "-���o�Ă����B-";
 			getitem 2612,1;
 			break;
 		case 4:
 		case 5:
 		case 6:
-			mes "-魚を調べてみたら、黄ポーション-";
-			mes "-が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A���|�[�V����-";
+			mes "-���o�Ă����B-";
 			getitem 503,1;
 			break;
 		case 7:
 		case 8:
 		case 9:
 		case 10:
-			mes "-魚を調べてみたら、赤ポーション-";
-			mes "-が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A�ԃ|�[�V����-";
+			mes "-���o�Ă����B-";
 			getitem 501,1;
 			break;
 		case 11:
 		case 12:
 		case 13:
 		case 14:
-			mes "-魚を調べてみたら、おさしみ-";
-			mes "-が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A��������-";
+			mes "-���o�Ă����B-";
 			getitem 544,1;
 			break;
 		default:
-			mes "-魚を調べてみたら、石が出てきた。-";
+			mes "-���𒲂ׂĂ݂���A�΂��o�Ă����B-";
 			getitem 7049,1;
 			break;
 		}
 		close;
 	}
-	mes "[ダナイ]";
-	mes "よう、ひさしぶり！";
-	mes "おまえが、面白いもんを釣ったって噂が";
-	mes "立ってね。その後、客がわんさか来る";
-	mes "ようになったのさ。";
+	mes "[�_�i�C]";
+	mes "�悤�A�Ђ����Ԃ�I";
+	mes "���܂����A�ʔ��������ނ������ĉ\��";
+	mes "�����ĂˁB���̌�A�q����񂳂�����";
+	mes "�悤�ɂȂ����̂��B";
 	next;
-	mes "[ダナイ]";
-	mes "また大当たりを狙いたい気持ちもわかる";
-	mes "が、他の客にも良い目を見せてやって";
-	mes "くれねぇか。";
+	mes "[�_�i�C]";
+	mes "�܂��哖�����_�������C�������킩��";
+	mes "���A���̋q�ɂ��ǂ��ڂ������Ă����";
+	mes "����˂����B";
 	close;
 }
 
-ayothaya.gat,193,171,4	script	老人	842,{
+ayothaya.gat,193,171,4	script	�V�l	842,{
 	if(AYO_3QUE == 3) {
-		mes "[亘じいさん]";
-		mes "うーん、なんであんなに急いで走って";
-		mes "おったのかのー。気になるのー。";
+		mes "[�j��������]";
+		mes "���[��A�Ȃ�ł���Ȃɋ}���ő�����";
+		mes "�������̂��́[�B�C�ɂȂ�́[�B";
 		next;
 		emotion 0;
-		mes "[亘じいさん]";
-		mes "おやおや、旅行の方ですか。";
-		mes "わしに何か用ですかの？";
+		mes "[�j��������]";
+		mes "���₨��A���s�̕��ł����B";
+		mes "�킵�ɉ����p�ł����́H";
 		next;
-		mes "[亘じいさん]";
-		mes "あぁ、わしの独り言ですか？";
-		mes "いや、何。顔は良く見えなんだが、";
-		mes "誰かがとんでもない速さで、";
-		mes "神殿の方へ走っていきましてな。";
-		mes "いやー、化け物でも見たような";
-		mes "迫力でしたわい。";
+		mes "[�j��������]";
+		mes "�����A�킵�̓Ƃ茾�ł����H";
+		mes "����A���B��͗ǂ������Ȃ񂾂��A";
+		mes "�N�����Ƃ�ł��Ȃ������ŁA";
+		mes "�_�a�̕��֑����Ă����܂��ĂȁB";
+		mes "����[�A�������ł������悤��";
+		mes "���͂ł����킢�B";
 		next;
-		mes "[亘じいさん]";
-		mes "急に後ろから現れよったもんで、";
-		mes "びっくりして倒れるところでしたわい！";
+		mes "[�j��������]";
+		mes "�}�Ɍ�납�猻����������ŁA";
+		mes "�т����肵�ē|���Ƃ���ł����킢�I";
 		next;
 		emotion 5;
-		mes "[亘じいさん]";
-		mes "そうそう。走りながら、なんかブツブツ";
-		mes "言っておったなぁ。確か……";
-		mes "^FF0000シューリ^000000とか、なんとか。";
+		mes "[�j��������]";
+		mes "���������B����Ȃ���A�Ȃ񂩃u�c�u�c";
+		mes "�����Ă������Ȃ��B�m���c�c";
+		mes "^FF0000�V���[��^000000�Ƃ��A�Ȃ�Ƃ��B";
 		set AYO_3QUE,4;
 		close;
 	}
 	if(rand(3)) {
-		mes "[亘じいさん]";
-		mes "外の地からいらした方ですな。";
-		mes "よくぞ参られた。";
-		mes "最近、本当に外からの客人が";
-		mes "増えましたなー。";
+		mes "[�j��������]";
+		mes "�O�̒n���炢�炵�����ł��ȁB";
+		mes "�悭���Q��ꂽ�B";
+		mes "�ŋ߁A�{���ɊO����̋q�l��";
+		mes "�����܂����ȁ[�B";
 		next;
-		mes "[亘じいさん]";
-		mes "村がにぎやかになって嬉しいのう。";
-		mes "これからも気兼ねなく遊びに";
-		mes "おいでなさい。";
+		mes "[�j��������]";
+		mes "�����ɂ��₩�ɂȂ��Ċ������̂��B";
+		mes "���ꂩ����C���˂Ȃ��V�т�";
+		mes "�����łȂ����B";
 		next;
-		mes "[亘じいさん]";
-		mes "そうじゃ。せっかく来たんじゃから";
-		mes "村の名物は食べたかね？";
-		mes "まだなら、あちこち歩き回ってみる";
-		mes "ことをおすすめするぞ。";
+		mes "[�j��������]";
+		mes "��������B�������������񂶂Ⴉ��";
+		mes "���̖����͐H�ׂ����ˁH";
+		mes "�܂��Ȃ�A����������������Ă݂�";
+		mes "���Ƃ��������߂��邼�B";
 		next;
-		mes "[亘じいさん]";
-		mes "ここは、海産物が豊富でな。";
-		mes "他にも海の塩を活かした料理なんかも";
-		mes "おすすめじゃ。ふぉふぉ。";
+		mes "[�j��������]";
+		mes "�����́A�C�Y�����L�x�łȁB";
+		mes "���ɂ��C�̉����������������Ȃ񂩂�";
+		mes "�������߂���B�ӂ��ӂ��B";
 	}
 	else {
-		mes "[亘じいさん]";
-		mes "久しぶりにパイさんの";
-		mes "料理が食べたいの。";
-		mes "パイさんのトムヤンクンは絶品じゃ。";
+		mes "[�j��������]";
+		mes "�v���Ԃ�Ƀp�C�����";
+		mes "�������H�ׂ����́B";
+		mes "�p�C����̃g�������N���͐�i����B";
 	}
 	close;
 }
@@ -2204,9 +2204,9 @@ ayothaya.gat,193,171,4	script	老人	842,{
 ayo_dun01.gat,255,62,0	script	#AyoDun1_7	139,1,1,{
 	if(AYO_3QUE == 4) {
 		emotion 0;
-		mes "^A52929老人の言った通りだ！^000000";
-		mes "^FF0000北^5A3110に向かった足跡発見！";
-		mes "誰か急いで駆け抜けたようだ。^000000";
+		mes "^A52929�V�l�̌������ʂ肾�I^000000";
+		mes "^FF0000�k^5A3110�Ɍ����������Ք����I";
+		mes "�N���}���ŋ삯�������悤���B^000000";
 		set AYO_3QUE,5;
 		close;
 	}
@@ -2216,9 +2216,9 @@ ayo_dun01.gat,255,62,0	script	#AyoDun1_7	139,1,1,{
 ayo_dun01.gat,74,142,0	script	#AyoDun1_8	139,1,1,{
 	if(AYO_3QUE == 5) {
 		emotion 9;
-		mes "ここにも足跡が……";
-		mes "^FF0000東^5A3110に向かった足跡発見！^000000";
-		mes "よし、追跡しよう。";
+		mes "�����ɂ����Ղ��c�c";
+		mes "^FF0000��^5A3110�Ɍ����������Ք����I^000000";
+		mes "�悵�A�ǐՂ��悤�B";
 		set AYO_3QUE,6;
 		close;
 	}
@@ -2228,10 +2228,10 @@ ayo_dun01.gat,74,142,0	script	#AyoDun1_8	139,1,1,{
 ayo_dun01.gat,244,257,0	script	#AyoDun1_9	139,1,1,{
 	if(AYO_3QUE == 6) {
 		emotion 22;
-		mes "^8C1010ここから足跡が薄くなってる……";
-		mes "疲れているのか？";
-		mes "よし、もっと調べてみるか。";
-		mes "アーノンの足跡かもしれないし……^000000";
+		mes "^8C1010�������瑫�Ղ������Ȃ��Ă�c�c";
+		mes "���Ă���̂��H";
+		mes "�悵�A�����ƒ��ׂĂ݂邩�B";
+		mes "�A�[�m���̑��Ղ�������Ȃ����c�c^000000";
 		set AYO_3QUE,7;
 		close;
 	}
@@ -2241,11 +2241,11 @@ ayo_dun01.gat,244,257,0	script	#AyoDun1_9	139,1,1,{
 ayo_dun01.gat,17,257,0	script	#AyoDun1_10	139,1,1,{
 	if(AYO_3QUE == 7) {
 		emotion 5;
-		mes "^5A3110足跡を追って来たら";
-		mes "村の人が言っていた、神殿の";
-		mes "^FF0000下層部へ続く入口まで来て";
-		mes "^5A3110しまった。^000000";
-		mes "……あの中に間違いない。";
+		mes "^5A3110���Ղ�ǂ��ė�����";
+		mes "���̐l�������Ă����A�_�a��";
+		mes "^FF0000���w���֑��������܂ŗ���";
+		mes "^5A3110���܂����B^000000";
+		mes "�c�c���̒��ɊԈႢ�Ȃ��B";
 		set AYO_3QUE,8;
 		close;
 	}
@@ -2254,10 +2254,10 @@ ayo_dun01.gat,17,257,0	script	#AyoDun1_10	139,1,1,{
 
 ayo_dun02.gat,146,120,0	script	#AyoDun2_2	139,1,1,{
 	if(AYO_3QUE == 8) {
-		mes "やはりここにも跡がある。";
-		mes "^FF0000北^000000に行ったのか……";
-		mes "かなり危ない場所みたいなのに、";
-		mes "どうしてこんな所へ……";
+		mes "��͂肱���ɂ��Ղ�����B";
+		mes "^FF0000�k^000000�ɍs�����̂��c�c";
+		mes "���Ȃ��Ȃ��ꏊ�݂����Ȃ̂ɁA";
+		mes "�ǂ����Ă���ȏ��ցc�c";
 		set AYO_3QUE,9;
 		close;
 	}
@@ -2267,26 +2267,26 @@ ayo_dun02.gat,146,120,0	script	#AyoDun2_2	139,1,1,{
 ayo_dun02.gat,135,167,0	script	#AyoDun2_3	139,1,1,{
 	if(AYO_3QUE == 9) {
 		emotion 0;
-		mes "^5A3110足跡が続いている^000000";
-		mes "お、あっちに何かある！";
+		mes "^5A3110���Ղ������Ă���^000000";
+		mes "���A�������ɉ�������I";
 		next;
-		if(select("無視しよう","^5A3110調べよう^000000")==1) {
-			mes "放っておこう。";
-			mes "それより、足跡が消えてしまっている。";
-			mes "どうしよう……もう少し";
-			mes "捜し歩いてみるか。";
+		if(select("�������悤","^5A3110���ׂ悤^000000")==1) {
+			mes "�����Ă������B";
+			mes "������A���Ղ������Ă��܂��Ă���B";
+			mes "�ǂ����悤�c�c��������";
+			mes "�{�������Ă݂邩�B";
 		}
 		else {
 			emotion 23,"";
-			mes "^FF0000チューチュー!!^000000";
-			mes "^FF0000チューチューチュー!!^000000";
+			mes "^FF0000�`���[�`���[!!^000000";
+			mes "^FF0000�`���[�`���[�`���[!!^000000";
 			next;
 			emotion 0;
-			mes "^5A3110うわぁ!!!!";
-			mes "ビックリした……はぁ、はぁ……";
-			mes "うん？これは……";
-			mes "西に向かう足跡が……";
-			mes "行ってみよう。^000000";
+			mes "^5A3110���킟!!!!";
+			mes "�r�b�N�������c�c�͂��A�͂��c�c";
+			mes "����H����́c�c";
+			mes "���Ɍ��������Ղ��c�c";
+			mes "�s���Ă݂悤�B^000000";
 		}
 		set AYO_3QUE,10;
 		close;
@@ -2296,9 +2296,9 @@ ayo_dun02.gat,135,167,0	script	#AyoDun2_3	139,1,1,{
 
 ayo_dun02.gat,77,213,0	script	#AyoDun2_4	139,1,1,{
 	if(AYO_3QUE == 10) {
-		mes "かなり奥まで来てしまった……";
-		mes "どこまで続くんだろう……";
-		mes "疲れたなぁ……";
+		mes "���Ȃ艜�܂ŗ��Ă��܂����c�c";
+		mes "�ǂ��܂ő����񂾂낤�c�c";
+		mes "��ꂽ�Ȃ��c�c";
 		set AYO_3QUE,11;
 		close;
 	}
@@ -2308,9 +2308,9 @@ ayo_dun02.gat,77,213,0	script	#AyoDun2_4	139,1,1,{
 ayo_dun02.gat,86,254,0	script	#AyoDun2_5	139,1,1,{
 	if(AYO_3QUE == 11) {
 		emotion 0;
-		mes "これは！　血?!";
-		mes "なんでこんな所に血が？";
-		mes "血の跡が^FF0000北^000000に点々と……";
+		mes "����́I�@��?!";
+		mes "�Ȃ�ł���ȏ��Ɍ����H";
+		mes "���̐Ղ�^FF0000�k^000000�ɓ_�X�Ɓc�c";
 		set AYO_3QUE,12;
 		close;
 	}
@@ -2319,296 +2319,296 @@ ayo_dun02.gat,86,254,0	script	#AyoDun2_5	139,1,1,{
 
 ayo_dun02.gat,91,264,0	script	#AyoDun2_6	111,2,2,{
 	switch(AYO_3QUE) {
-	default:	//12以下のとき
-		mes "- 大きな木の下に、うっそうとした -";
-		mes "- 草むらが茂っている。-";
+	default:	//12�ȉ��̂Ƃ�
+		mes "- �傫�Ȗ؂̉��ɁA���������Ƃ��� -";
+		mes "- ���ނ炪�΂��Ă���B-";
 		close;
 	case 13:
 		mes "["+strcharinfo(0)+"]";
-		mes "血痕か……";
-		mes "ちょっと気になるな……";
-		mes "よし、調べてみよう。";
+		mes "�������c�c";
+		mes "������ƋC�ɂȂ�ȁc�c";
+		mes "�悵�A���ׂĂ݂悤�B";
 		next;
-		mes "- 大きな木の下に、血がうっすら -";
-		mes "- ついた草むらが見える。-";
-		mes "- 草の倒れ方からみて、何かが -";
-		mes "- 通ったばかりのようだ。-";
+		mes "- �傫�Ȗ؂̉��ɁA������������ -";
+		mes "- �������ނ炪������B-";
+		mes "- ���̓|�������݂āA������ -";
+		mes "- �ʂ����΂���̂悤���B-";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "どうしようか？";
+		mes "�ǂ����悤���H";
 		next;
-		if(select("叩く","掘る")==1) {
+		if(select("�@��","�@��")==1) {
 			if(rand(5)) {
-				mes "-草むらを力一杯叩くと-";
-				mes "-おびただしい土埃が舞い上がった！-";
+				mes "-���ނ��͈�t�@����-";
+				mes "-���т��������y���������オ�����I-";
 				next;
 				mes "["+strcharinfo(0)+"]";
-				mes "げほ、げほ、げほ!!!!";
+				mes "���فA���فA����!!!!";
 				close;
 			}
-			mes "よし、叩いてみよう。バシバシ!!";
+			mes "�悵�A�@���Ă݂悤�B�o�V�o�V!!";
 			next;
-			mes "[男の声]";
-			mes "……ウウウ……ウウゥゥゥ";
+			mes "[�j�̐�]";
+			mes "�c�c�E�E�E�c�c�E�E�D�D�D";
 			next;
 			emotion 0,"";
 			mes "["+strcharinfo(0)+"]";
-			mes "何だ?!うなり声？";
-			mes "もっと叩いてみよう！";
+			mes "����?!���Ȃ萺�H";
+			mes "�����ƒ@���Ă݂悤�I";
 			next;
-			mes "- 草むらを力一杯叩いてみると、 -";
-			mes "- 土埃がもうもうと舞い上がった！ -";
-			mes "- 土埃の中から、小柄な青年が -";
-			mes "- 現れた！ -";
+			mes "- ���ނ��͈�t�@���Ă݂�ƁA -";
+			mes "- �y�������������ƕ����オ�����I -";
+			mes "- �y���̒�����A�����ȐN�� -";
+			mes "- ���ꂽ�I -";
 			next;
-			hideoffnpc "痩せた青年#ayo";
+			hideoffnpc "�������N#ayo";
 			emotion 23,"";
-			mes "[痩せた青年]";
-			mes "シューリ?! シューリか?!?!?!";
-			mes "痛い痛い痛い痛い痛い痛い痛い!!!!!!";
-			mes "わあああああー、許してくれーー!!";
+			mes "[�������N]";
+			mes "�V���[��?! �V���[����?!?!?!";
+			mes "�ɂ��ɂ��ɂ��ɂ��ɂ��ɂ��ɂ�!!!!!!";
+			mes "�킠���������[�A�����Ă���[�[!!";
 			next;
-			if(select("びっくりした！","つかまえた！")==1) {
-				mes "[痩せた青年]";
-				mes "え、僕が驚かせたの？";
+			if(select("�т����肵���I","���܂����I")==1) {
+				mes "[�������N]";
+				mes "���A�l�����������́H";
 				close2;
-				hideonnpc "痩せた青年#ayo";
+				hideonnpc "�������N#ayo";
 				end;
 			}
-			mes "[痩せた青年]";
-			mes "わぁ、放して放して許してー!!!";
-			mes "……あれ、シューリじゃない？";
-			mes "見慣れない格好だし…………";
-			mes "…………";
-			mes "と、とにかく！";
-			mes "いったいなんなのさ！";
+			mes "[�������N]";
+			mes "�킟�A�����ĕ����ċ����ā[!!!";
+			mes "�c�c����A�V���[������Ȃ��H";
+			mes "������Ȃ��i�D�����c�c�c�c";
+			mes "�c�c�c�c";
+			mes "�ƁA�Ƃɂ����I";
+			mes "���������Ȃ�Ȃ̂��I";
 			close;
 		}
-		mes "- 草むらを掘ろうとしたら、一部が -";
-		mes "- 簡単に崩れて、短く小さい悲鳴が -";
-		mes "- 聞こえた。-";
+		mes "- ���ނ���@�낤�Ƃ�����A�ꕔ�� -";
+		mes "- �ȒP�ɕ���āA�Z���������ߖ� -";
+		mes "- ���������B-";
 		next;
 		if(rand(5)) {
 			mes "["+strcharinfo(0)+"]";
-			mes "……あれ？空耳かな？";
-			mes "声が聞こえたと思ったんだけど";
-			mes "……う〜ん。";
+			mes "�c�c����H�󎨂��ȁH";
+			mes "�������������Ǝv�����񂾂���";
+			mes "�c�c���`��B";
 			close;
 		}
-		hideoffnpc "痩せた青年#ayo";
-		mes "[痩せた青年]";
-		mes "うわ、うわうあうわ、";
-		mes "だ、だだだだだ、だれだ?!?!?";
+		hideoffnpc "�������N#ayo";
+		mes "[�������N]";
+		mes "����A���키������A";
+		mes "���A�����������A���ꂾ?!?!?";
 		close;
 	case 14:
-		mes "- アーノンが隠れていた場所に -";
-		mes "- 小さな窪みが残っている。-";
-		mes "- どうやら隠れ家を移した後の -";
-		mes "- ようだ。-";
+		mes "- �A�[�m�����B��Ă����ꏊ�� -";
+		mes "- �����ȌE�݂��c���Ă���B-";
+		mes "- �ǂ����B��Ƃ��ڂ������ -";
+		mes "- �悤���B-";
 		close;
 	}
 OnTouch:
 	if(AYO_3QUE == 12) {
 		emotion 0;
-		mes "おや、これは？";
-		mes "微かだけど、血痕がある……";
-		mes "こんな所に血痕？";
-		mes "あやしい……";
+		mes "����A����́H";
+		mes "���������ǁA����������c�c";
+		mes "����ȏ��Ɍ����H";
+		mes "���₵���c�c";
 		set AYO_3QUE,13;
 		close;
 	}
 	end;
 }
 
-ayo_dun02.gat,91,264,4	script	痩せた青年#ayo	841,{
+ayo_dun02.gat,91,264,4	script	�������N#ayo	841,{
 	if(AYO_3QUE != 13) {
-		mes "[痩せた青年]";
-		mes "何だ君は？";
-		mes "ここは危ないから早く帰れってば！";
+		mes "[�������N]";
+		mes "�����N�́H";
+		mes "�����͊�Ȃ����瑁���A����Ă΁I";
 		close2;
 		hideonnpc;
 		end;
 	}
-	mes "[痩せた青年]";
-	mes "……き、ききき、君は誰だ?!";
-	mes "ど、どどど、どうして僕の隠れ家を";
-	mes "暴いたりするんだ！";
-	mes "乱暴にするから、びっくりして";
-	mes "怪我しちゃったじゃないか！";
+	mes "[�������N]";
+	mes "�c�c���A�������A�N�͒N��?!";
+	mes "�ǁA�ǂǂǁA�ǂ����Ėl�̉B��Ƃ�";
+	mes "�\�����肷��񂾁I";
+	mes "���\�ɂ��邩��A�т����肵��";
+	mes "���䂵�����������Ȃ����I";
 	next;
-	if(select("治療するよ","君がアーノン？")==2) {
-		mes "[痩せた青年]";
-		mes "アーノン？";
-		mes "…………";
-		mes "………………";
-		mes "し、知らない！そんな奴知らないぞ!!";
+	if(select("���Â����","�N���A�[�m���H")==2) {
+		mes "[�������N]";
+		mes "�A�[�m���H";
+		mes "�c�c�c�c";
+		mes "�c�c�c�c�c�c";
+		mes "���A�m��Ȃ��I����ȓz�m��Ȃ���!!";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "ガタガタ震えてるよ。";
-		mes "そこまで否定するなんて";
-		mes "やっぱり君がアーノンじゃないの？";
+		mes "�K�^�K�^�k���Ă��B";
+		mes "�����܂Ŕے肷��Ȃ��";
+		mes "����ς�N���A�[�m������Ȃ��́H";
 		next;
-		mes "[痩せた青年]";
-		mes "し、しししし、知らないっ!!!!";
-		mes "あ、アーノンなんて知らないったら!!";
-		mes "は、ははは、は、早く隠れなきゃ。";
-		mes "シュ、シューリが、シューリがっ!!";
+		mes "[�������N]";
+		mes "���A���������A�m��Ȃ���!!!!";
+		mes "���A�A�[�m���Ȃ�Ēm��Ȃ�������!!";
+		mes "�́A�͂͂́A�́A�����B��Ȃ���B";
+		mes "�V���A�V���[�����A�V���[������!!";
 		close2;
 		hideonnpc;
 		end;
 	}
-	mes "[痩せた青年]";
-	mes "え、あ、えーと……";
-	mes "あ、ありがとう……";
-	mes "ポーション持ってるかい？";
+	mes "[�������N]";
+	mes "���A���A���[�Ɓc�c";
+	mes "���A���肪�Ƃ��c�c";
+	mes "�|�[�V���������Ă邩���H";
 	next;
 	if(countitem(504)==0) {
-		mes "[痩せた青年]";
-		mes "……あ、血が止まらない。";
-		mes "普通のポーションじゃ、僕の怪我は";
-		mes "治せません。";
+		mes "[�������N]";
+		mes "�c�c���A�����~�܂�Ȃ��B";
+		mes "���ʂ̃|�[�V��������A�l�̉����";
+		mes "�����܂���B";
 		next;
 		mes "["+strcharinfo(0)+"]";
-		mes "強いポーションを持ってくるから、";
-		mes "それまでここに隠れてて。";
+		mes "�����|�[�V�����������Ă��邩��A";
+		mes "����܂ł����ɉB��ĂāB";
 		next;
-		mes "[痩せた青年]";
-		mes "あ、いえ……そんな必要は……";
-		mes "お、お願いです。僕のことは忘れて";
-		mes "ください！誰にも教えないでください！";
+		mes "[�������N]";
+		mes "���A�����c�c����ȕK�v�́c�c";
+		mes "���A���肢�ł��B�l�̂��Ƃ͖Y���";
+		mes "���������I�N�ɂ������Ȃ��ł��������I";
 		next;
 		emotion 21,"";
 		mes "["+strcharinfo(0)+"]";
-		mes "このまま放っておくのも";
-		mes "なんか悪いし、仕方ないな。";
-		mes "白ポーションでも持って出直すか。";
+		mes "���̂܂ܕ����Ă����̂�";
+		mes "�Ȃ񂩈������A�d���Ȃ��ȁB";
+		mes "���|�[�V�����ł������ďo�������B";
 		close2;
 		hideonnpc;
 		end;
 	}
 	mes "["+strcharinfo(0)+"]";
-	mes "回復ならこれにお任せ！";
-	mes "はい、白ポーションだよ。";
+	mes "�񕜂Ȃ炱��ɂ��C���I";
+	mes "�͂��A���|�[�V��������B";
 	delitem 504,1;
 	next;
-	mes "[痩せた青年]";
-	mes "ありがとう……こんな上等なものを";
-	mes "僕に使ってくれるだなんて……";
+	mes "[�������N]";
+	mes "���肪�Ƃ��c�c����ȏ㓙�Ȃ��̂�";
+	mes "�l�Ɏg���Ă���邾�Ȃ�āc�c";
 	next;
-	mes "[アーノン]";
-	mes "僕、アーノンと言います。";
-	mes "え、こんなところで何をしてたかって？";
-	mes "え、えっと、えと、その、あの……";
-	mes "ひ、ひひひ、秘密ですっ!!!!";
+	mes "[�A�[�m��]";
+	mes "�l�A�A�[�m���ƌ����܂��B";
+	mes "���A����ȂƂ���ŉ������Ă������āH";
+	mes "���A�����ƁA���ƁA���́A���́c�c";
+	mes "�ЁA�ЂЂЁA�閧�ł���!!!!";
 	next;
-	mes "[アーノン]";
-	mes "はい？シューリ？";
-	mes "あ、ああああ、あなたはシューリの?!";
-	mes "ち、ちちちちち、治療してくれたのは";
-	mes "感謝します！えと、えと、ぼ、ぼぼぼ、";
-	mes "僕はこれで!!";
+	mes "[�A�[�m��]";
+	mes "�͂��H�V���[���H";
+	mes "���A���������A���Ȃ��̓V���[����?!";
+	mes "���A�����������A���Â��Ă��ꂽ�̂�";
+	mes "���ӂ��܂��I���ƁA���ƁA�ځA�ڂڂځA";
+	mes "�l�͂����!!";
 	next;
 	disablenpc;
-	mes "[アーノン]";
-	mes "だ、だだ、だだだ、ダメです！";
-	mes "せっかくここまで逃げて来たのに!!";
+	mes "[�A�[�m��]";
+	mes "���A�����A�������A�_���ł��I";
+	mes "�������������܂œ����ė����̂�!!";
 	next;
 	enablenpc;
-	mes "[アーノン]";
-	mes "シューリの話はしないで!!!!";
-	mes "ぼ、ぼぼぼ、僕は二度とシューリの";
-	mes "もとには帰りませんから!!!!!!";
+	mes "[�A�[�m��]";
+	mes "�V���[���̘b�͂��Ȃ���!!!!";
+	mes "�ځA�ڂڂځA�l�͓�x�ƃV���[����";
+	mes "���Ƃɂ͋A��܂��񂩂�!!!!!!";
 	next;
-	mes "[アーノン]";
-	mes "え？指輪はもう見つかったから心配";
-	mes "ない？";
-	mes "……何か勘違いしてませんか？";
-	mes "僕は指輪のせいで、ここに隠れてるん";
-	mes "じゃありません。本当です、本当ですっ";
-	mes "てば！";
+	mes "[�A�[�m��]";
+	mes "���H�w�ւ͂���������������S�z";
+	mes "�Ȃ��H";
+	mes "�c�c�������Ⴂ���Ă܂��񂩁H";
+	mes "�l�͎w�ւ̂����ŁA�����ɉB��Ă��";
+	mes "���Ⴀ��܂���B�{���ł��A�{���ł���";
+	mes "�Ă΁I";
 	next;
-	mes "[アーノン]";
-	mes "……そんな目でみないでくださいよ。";
-	mes "…………………………………";
-	mes "…………………………………";
+	mes "[�A�[�m��]";
+	mes "�c�c����Ȗڂł݂Ȃ��ł���������B";
+	mes "�c�c�c�c�c�c�c�c�c�c�c�c�c";
+	mes "�c�c�c�c�c�c�c�c�c�c�c�c�c";
 	next;
-	switch (select("逃げてばっかりじゃダメだ","私に出来ることはある？")) {
+	switch (select("�����Ă΂����肶��_����","���ɏo���邱�Ƃ͂���H")) {
 	case 1:
 		mes "["+strcharinfo(0)+"]";
-		mes "世の中は、思い通りにならないことの";
-		mes "方が多い。逃げてばっかりいたら、";
-		mes "何も解決しないよ。";
+		mes "���̒��́A�v���ʂ�ɂȂ�Ȃ����Ƃ�";
+		mes "���������B�����Ă΂����肢����A";
+		mes "�����������Ȃ���B";
 		next;
-		mes "[アーノン]";
-		mes "ええ、ええ！";
-		mes "僕だってそれくらい知ってます。";
-		mes "利害関係とか、どうしようもならない";
-		mes "ことがいくらでもあるって知ってます！";
-		mes "それでも、それでも……";
-		mes "ウゥゥ……";
+		mes "[�A�[�m��]";
+		mes "�����A�����I";
+		mes "�l�����Ă��ꂭ�炢�m���Ă܂��B";
+		mes "���Q�֌W�Ƃ��A�ǂ����悤���Ȃ�Ȃ�";
+		mes "���Ƃ�������ł�������Ēm���Ă܂��I";
+		mes "����ł��A����ł��c�c";
+		mes "�E�D�D�c�c";
 		next;
-		mes "[アーノン]";
-		mes "シューリは、確かに美人です。";
-		mes "しかし……実は僕達、親が決めた";
-		mes "政略結婚なんです。";
+		mes "[�A�[�m��]";
+		mes "�V���[���́A�m���ɔ��l�ł��B";
+		mes "�������c�c���͖l�B�A�e�����߂�";
+		mes "���������Ȃ�ł��B";
 		next;
-		mes "[アーノン]";
-		mes "……僕、シューリが怖いんです。";
-		mes "なんていうか、彼女の執着というか";
-		mes "性格というか……シューリが半径3m";
-		mes "以内にいるだけで冷や汗が止まらない";
-		mes "んです！彼女のせいで、毎日悪夢に";
-		mes "うなされるんです！ウウ、ウウゥ……";
+		mes "[�A�[�m��]";
+		mes "�c�c�l�A�V���[�����|����ł��B";
+		mes "�Ȃ�Ă������A�ޏ��̎����Ƃ�����";
+		mes "���i�Ƃ������c�c�V���[�������a3m";
+		mes "�ȓ��ɂ��邾���ŗ�⊾���~�܂�Ȃ�";
+		mes "��ł��I�ޏ��̂����ŁA����������";
+		mes "���Ȃ�����ł��I�E�E�A�E�E�D�c�c";
 		next;
-		mes "[アーノン]";
-		mes "少しでも僕の返事が遅れると、鼻血が";
-		mes "出るくらい強くビンタするし！";
-		mes "ちょっとでもプレゼントが気に入らない";
-		mes "と、まっくらな部屋に閉じ込めるし！";
-		mes "ぼ、ボボボ、僕はもううんざりです！";
+		mes "[�A�[�m��]";
+		mes "�����ł��l�̕Ԏ����x���ƁA�@����";
+		mes "�o�邭�炢�����r���^���邵�I";
+		mes "������Ƃł��v���[���g���C�ɓ���Ȃ�";
+		mes "�ƁA�܂�����ȕ����ɕ����߂邵�I";
+		mes "�ځA�{�{�{�A�l�͂������񂴂�ł��I";
 		next;
-		mes "[アーノン]";
-		mes "どうか、どうか彼女に僕の居場所を";
-		mes "教えないでください！約束してくれる";
-		mes "なら、それ相応のお礼はします！";
-		mes "お願いです、このまま何もなかった";
-		mes "ように立ち去ってください！";
+		mes "[�A�[�m��]";
+		mes "�ǂ����A�ǂ����ޏ��ɖl�̋��ꏊ��";
+		mes "�����Ȃ��ł��������I�񑩂��Ă����";
+		mes "�Ȃ�A���ꑊ���̂���͂��܂��I";
+		mes "���肢�ł��A���̂܂܉����Ȃ�����";
+		mes "�悤�ɗ��������Ă��������I";
 		next;
-		menu "……うん、わかったよ",-;
-		mes "[アーノン]";
-		mes "ありがとうございます!!!!";
-		mes "それでは、お礼に僕の特技を……";
+		menu "�c�c����A�킩������",-;
+		mes "[�A�[�m��]";
+		mes "���肪�Ƃ��������܂�!!!!";
+		mes "����ł́A����ɖl�̓��Z���c�c";
 		break;
 	case 2:
-		mes "[アーノン]";
-		mes "も、もも、もちろんです！";
-		mes "僕がここに隠れていること、";
-		mes "秘密にしてください！";
-		mes "シューリには絶対に教えないで";
-		mes "ください！";
-		mes "もちろん、お礼はします！";
+		mes "[�A�[�m��]";
+		mes "���A�����A�������ł��I";
+		mes "�l�������ɉB��Ă��邱�ƁA";
+		mes "�閧�ɂ��Ă��������I";
+		mes "�V���[���ɂ͐�΂ɋ����Ȃ���";
+		mes "���������I";
+		mes "�������A����͂��܂��I";
 		next;
-		mes "[アーノン]";
-		mes "え、どんなお礼が出来るって？";
-		mes "ええとですね、例えば……";
+		mes "[�A�[�m��]";
+		mes "���A�ǂ�Ȃ��炪�o������āH";
+		mes "�����Ƃł��ˁA�Ⴆ�΁c�c";
 		break;
 	}
-	mes "この腕を、こう伸ばして……";
-	mes "このツボを押せば……";
+	mes "���̘r���A�����L�΂��āc�c";
+	mes "���̃c�{�������΁c�c";
 	next;
 	mes "["+strcharinfo(0)+"]";
-	mes "ぎゃあああ痛い!!!!";
-	mes "な、なにをするんだー!!";
+	mes "���Ⴀ�����ɂ�!!!!";
+	mes "�ȁA�Ȃɂ�����񂾁[!!";
 	next;
-	mes "[アーノン]";
-	mes "何って、ツボ療法です。疲れが";
-	mes "吹っ飛びますよ。まー、たまに";
-	mes "天国を見る人もいるみたいですが。";
+	mes "[�A�[�m��]";
+	mes "�����āA�c�{�Ö@�ł��B��ꂪ";
+	mes "������т܂���B�܁[�A���܂�";
+	mes "�V��������l������݂����ł����B";
 	next;
-	mes "- ボキボキボキ、ボキボキボキ -";
-	mes "- グギギギギ、グガガガガガガ -";
-	mes "- ドカンドカン、ギュムギュム -";
-	mes "- ゴリッ！ -";
+	mes "- �{�L�{�L�{�L�A�{�L�{�L�{�L -";
+	mes "- �O�M�M�M�M�A�O�K�K�K�K�K�K -";
+	mes "- �h�J���h�J���A�M�����M���� -";
+	mes "- �S���b�I -";
 	next;
 	if(checkre()) {
 		if(BaseLevel >= 90) 			getexp 40678,0;
@@ -2631,24 +2631,24 @@ ayo_dun02.gat,91,264,4	script	痩せた青年#ayo	841,{
 		if(BaseLevel < 50) 			getexp 8909,0;
 	}
 	set AYO_3QUE,14;
-	mes "-アーノンは体中の関節を外した後-";
-	mes "-一箇所一箇所丁寧に繋げていった。-";
-	mes "-その後、全身マッサージされると-";
-	mes "-体がスーっと軽くなって、疲れが-";
-	mes "-消えていくのがわかった！-";
+	mes "-�A�[�m���͑̒��̊֐߂��O������-";
+	mes "-��ӏ���ӏ����J�Ɍq���Ă������B-";
+	mes "-���̌�A�S�g�}�b�T�[�W������-";
+	mes "-�̂��X�[���ƌy���Ȃ��āA��ꂪ-";
+	mes "-�����Ă����̂��킩�����I-";
 	next;
 	mes "["+strcharinfo(0)+"]";
-	mes "わぁ、体が軽い！";
-	mes "頭もすっきりした感じがする！";
-	mes "うん、シューリには絶対教えないって";
-	mes "約束するよ。";
+	mes "�킟�A�̂��y���I";
+	mes "�����������肵������������I";
+	mes "����A�V���[���ɂ͐�΋����Ȃ�����";
+	mes "�񑩂����B";
 	next;
-	mes "[アーノン]";
-	mes "あ、ありがとう。";
-	mes "ぼ、ぼぼぼ、僕はこれでシューリから";
-	mes "逃げられるんだ……でも念のためだ。";
-	mes "ここも引っ越すことにするよ。";
-	mes "じゃあね、ありがとうー！";
+	mes "[�A�[�m��]";
+	mes "���A���肪�Ƃ��B";
+	mes "�ځA�ڂڂځA�l�͂���ŃV���[������";
+	mes "��������񂾁c�c�ł��O�̂��߂��B";
+	mes "�����������z�����Ƃɂ����B";
+	mes "���Ⴀ�ˁA���肪�Ƃ��[�I";
 	close2;
 	hideonnpc;
 	end;

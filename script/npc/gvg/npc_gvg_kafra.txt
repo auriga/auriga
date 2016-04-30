@@ -1,40 +1,40 @@
 //=========================================================================
-// ã‚¢ã‚¸ãƒˆå°‚å±ã‚«ãƒ—ãƒ©ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³
+// ƒAƒWƒgê‘®ƒJƒvƒ‰‚Ìƒƒjƒ…[ƒtƒ@ƒ“ƒNƒVƒ‡ƒ“
 //	callfunc "GvKafraMenu";
 //-------------------------------------------------------------------------
 
 function	script	GvKafraMenu	{
 	cutin "kafra_01",2;
-	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ä»¥å¤–ã¯ãƒ€ãƒŸãƒ¼
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ˆÈŠO‚Íƒ_ƒ~[
 	set '@gid,getcastledata('@map$,1);
 	if('@gid == 0 || getcharid(2) != '@gid) {
-		mes "[ã‚«ãƒ—ãƒ©è·å“¡]";
-		mes "ç§ã¯ã€ã‚®ãƒ«ãƒ‰";
+		mes "[ƒJƒvƒ‰Eˆõ]";
+		mes "„‚ÍAƒMƒ‹ƒh";
 		mes "^ff0000" + getguildname('@gid) + "^000000";
-		mes "ã®çš†æ§˜ã«ã ã‘ãŠä»•ãˆã™ã‚‹ã‚ˆã†ã«";
-		mes "å¥‘ç´„ã•ã‚Œã¦ãŠã‚Šã¾ã™ã€‚";
-		mes "ä»–ã®ã‚«ãƒ—ãƒ©ã‚µãƒ¼ãƒ“ã‚¹ã‚’";
-		mes "ã”åˆ©ç”¨ãã ã•ã„ã¾ã›ã€‚";
+		mes "‚ÌŠF—l‚É‚¾‚¯‚¨d‚¦‚·‚é‚æ‚¤‚É";
+		mes "Œ_–ñ‚³‚ê‚Ä‚¨‚è‚Ü‚·B";
+		mes "‘¼‚ÌƒJƒvƒ‰ƒT[ƒrƒX‚ğ";
+		mes "‚²—˜—p‚­‚¾‚³‚¢‚Ü‚¹B";
 		close2;
 		cutin "kafra_01",255;
 		end;
 	}
-	mes "[ã‚«ãƒ—ãƒ©è·å“¡]";
-	mes "ã„ã‚‰ã£ã—ã‚ƒã„ã¾ã›^ff0000" +getguildname('@gid)+ "^000000ã®çš†ã•ã‚“";
-	mes "ã‚«ãƒ—ãƒ©ã‚µãƒ¼ãƒ“ã‚¹ã¯";
-	mes "ã„ã¤ã‚‚çš†æ§˜ã®ãã°ã«ã„ã¾ã™ã€‚";
+	mes "[ƒJƒvƒ‰Eˆõ]";
+	mes "‚¢‚ç‚Á‚µ‚á‚¢‚Ü‚¹^ff0000" +getguildname('@gid)+ "^000000‚ÌŠF‚³‚ñ";
+	mes "ƒJƒvƒ‰ƒT[ƒrƒX‚Í";
+	mes "‚¢‚Â‚àŠF—l‚Ì‚»‚Î‚É‚¢‚Ü‚·B";
 	next;
 	return;
 }
 
 
 //-------------------------------------------
-// â–  ã‚«ãƒ—ãƒ©ã®ãƒ¡ã‚¤ãƒ³éƒ¨åˆ†ã®å‡¦ç†ã¯
-//    npc_town_kafra.txtå†…ã®functionå‚ç…§
+// ¡ ƒJƒvƒ‰‚ÌƒƒCƒ“•”•ª‚Ìˆ—‚Í
+//    npc_town_kafra.txt“à‚ÌfunctionQÆ
 //-------------------------------------------
 
 //==========================================
-// ãƒ«ã‚¤ãƒ¼ãƒŠ
+// ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	AgitKafra_L0	-1,{
 	callfunc "GvKafraMenu";
@@ -44,14 +44,14 @@ function	script	GvKafraMenu	{
 	end;
 }
 
-aldeg_cas01.gat,218,170,0	duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L1	117
-aldeg_cas02.gat,84,74,0		duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L2	117
-aldeg_cas03.gat,118,76,0	duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L3	117
-aldeg_cas04.gat,45,88,0		duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L4	117
-aldeg_cas05.gat,31,190,0	duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L5	117
+aldeg_cas01.gat,218,170,0	duplicate(AgitKafra_L0)	ƒJƒvƒ‰Eˆõ::AgitKafra_L1	117
+aldeg_cas02.gat,84,74,0		duplicate(AgitKafra_L0)	ƒJƒvƒ‰Eˆõ::AgitKafra_L2	117
+aldeg_cas03.gat,118,76,0	duplicate(AgitKafra_L0)	ƒJƒvƒ‰Eˆõ::AgitKafra_L3	117
+aldeg_cas04.gat,45,88,0		duplicate(AgitKafra_L0)	ƒJƒvƒ‰Eˆõ::AgitKafra_L4	117
+aldeg_cas05.gat,31,190,0	duplicate(AgitKafra_L0)	ƒJƒvƒ‰Eˆõ::AgitKafra_L5	117
 
 //==========================================
-// ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	AgitKafra_B0	-1,{
 	callfunc "GvKafraMenu";
@@ -61,14 +61,14 @@ aldeg_cas05.gat,31,190,0	duplicate(AgitKafra_L0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_L5	1
 	end;
 }
 
-gefg_cas01.gat,83,47,3		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B1	117
-gefg_cas02.gat,23,66,3		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B2	117
-gefg_cas03.gat,116,89,5		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B3	117
-gefg_cas04.gat,59,70,3		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B4	117
-gefg_cas05.gat,61,52,5		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B5	117
+gefg_cas01.gat,83,47,3		duplicate(AgitKafra_B0)	ƒJƒvƒ‰Eˆõ::AgitKafra_B1	117
+gefg_cas02.gat,23,66,3		duplicate(AgitKafra_B0)	ƒJƒvƒ‰Eˆõ::AgitKafra_B2	117
+gefg_cas03.gat,116,89,5		duplicate(AgitKafra_B0)	ƒJƒvƒ‰Eˆõ::AgitKafra_B3	117
+gefg_cas04.gat,59,70,3		duplicate(AgitKafra_B0)	ƒJƒvƒ‰Eˆõ::AgitKafra_B4	117
+gefg_cas05.gat,61,52,5		duplicate(AgitKafra_B0)	ƒJƒvƒ‰Eˆõ::AgitKafra_B5	117
 
 //==========================================
-// ãƒãƒ¥ãƒ³ãƒªãƒ 
+// ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	AgitKafra_C0	-1,{
 	callfunc "GvKafraMenu";
@@ -78,14 +78,14 @@ gefg_cas05.gat,61,52,5		duplicate(AgitKafra_B0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_B5	11
 	end;
 }
 
-payg_cas01.gat,128,58,3		duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C1	117
-payg_cas02.gat,22,275,5		duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C2	117
-payg_cas03.gat,9,263,5		duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C3	117
-payg_cas04.gat,40,235,1		duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C4	117
-payg_cas05.gat,276,227,1	duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C5	117
+payg_cas01.gat,128,58,3		duplicate(AgitKafra_C0)	ƒJƒvƒ‰Eˆõ::AgitKafra_C1	117
+payg_cas02.gat,22,275,5		duplicate(AgitKafra_C0)	ƒJƒvƒ‰Eˆõ::AgitKafra_C2	117
+payg_cas03.gat,9,263,5		duplicate(AgitKafra_C0)	ƒJƒvƒ‰Eˆõ::AgitKafra_C3	117
+payg_cas04.gat,40,235,1		duplicate(AgitKafra_C0)	ƒJƒvƒ‰Eˆõ::AgitKafra_C4	117
+payg_cas05.gat,276,227,1	duplicate(AgitKafra_C0)	ƒJƒvƒ‰Eˆõ::AgitKafra_C5	117
 
 //==========================================
-// ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	AgitKafra_V0	-1,{
 	callfunc "GvKafraMenu";
@@ -95,8 +95,8 @@ payg_cas05.gat,276,227,1	duplicate(AgitKafra_C0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C5	1
 	end;
 }
 
-prtg_cas01.gat,96,173,0		duplicate(AgitKafra_V0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V1	117
-prtg_cas02.gat,71,36,4		duplicate(AgitKafra_V0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V2	117
-prtg_cas03.gat,181,215,4	duplicate(AgitKafra_V0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V3	117
-prtg_cas04.gat,258,247,4	duplicate(AgitKafra_V0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V4	117
-prtg_cas05.gat,52,41,4		duplicate(AgitKafra_V0)	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V5	117
+prtg_cas01.gat,96,173,0		duplicate(AgitKafra_V0)	ƒJƒvƒ‰Eˆõ::AgitKafra_V1	117
+prtg_cas02.gat,71,36,4		duplicate(AgitKafra_V0)	ƒJƒvƒ‰Eˆõ::AgitKafra_V2	117
+prtg_cas03.gat,181,215,4	duplicate(AgitKafra_V0)	ƒJƒvƒ‰Eˆõ::AgitKafra_V3	117
+prtg_cas04.gat,258,247,4	duplicate(AgitKafra_V0)	ƒJƒvƒ‰Eˆõ::AgitKafra_V4	117
+prtg_cas05.gat,52,41,4		duplicate(AgitKafra_V0)	ƒJƒvƒ‰Eˆõ::AgitKafra_V5	117

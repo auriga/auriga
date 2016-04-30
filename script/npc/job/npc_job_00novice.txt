@@ -1,257 +1,257 @@
 //====================================================================
 // Ragnarok Online	Novice Script	by yukito
 //
-//　■ CHANGE_NV
-//	+0x1		ファラのパターン１
-//	+0x2		ファラのパターン２
-//	+0x4		ファラ終了
-//	+0x8		受付要員終了
-//	+0x10		インターフェース教官終了
-//	+0x20		スキル教官終了
-//	+0x40		アイテム教官終了
-//	+0x80		カプラBaseLvUp終了
-//	+0x100		カプラJobLvUp終了
-//	+0x200		エルミン終了
-//	+0x400		戦闘実習受付初回終了
-//	+0x800		戦闘実習受付２回目終了
-//	+0x1000		職業教官終了
-//	+0x2000		適正検査終了
+//�@�� CHANGE_NV
+//	+0x1		�t�@���̃p�^�[���P
+//	+0x2		�t�@���̃p�^�[���Q
+//	+0x4		�t�@���I��
+//	+0x8		��t�v���I��
+//	+0x10		�C���^�[�t�F�[�X�����I��
+//	+0x20		�X�L�������I��
+//	+0x40		�A�C�e�������I��
+//	+0x80		�J�v��BaseLvUp�I��
+//	+0x100		�J�v��JobLvUp�I��
+//	+0x200		�G���~���I��
+//	+0x400		�퓬���K��t����I��
+//	+0x800		�퓬���K��t�Q��ڏI��
+//	+0x1000		�E�Ƌ����I��
+//	+0x2000		�K�������I��
 //====================================================================
 
 //==========================================
-// 修練場外
+// �C����O
 //------------------------------------------
 
-new_1-1.gat,53,114,4	script	ファラ	727,{
+new_1-1.gat,53,114,4	script	�t�@��	727,{
 	switch(CHANGE_NV &0x7) {
 	case 0:
-		mes "[ファラ]";
-		mes "あら、初めて見る顔かしら？";
-		mes "こちらの世界へいらしたことを";
-		mes "歓迎します。";
-		mes "えっと、お名前は……";
+		mes "[�t�@��]";
+		mes "����A���߂Č���炩����H";
+		mes "������̐��E�ւ��炵�����Ƃ�";
+		mes "���}���܂��B";
+		mes "�����ƁA�����O�́c�c";
 		mes strcharinfo(0);
-		mes "……いいお名前ね。";
+		mes "�c�c���������O�ˁB";
 		next;
-		mes "[ファラ]";
-		mes "ここで会ったのも何かの縁でしょう。";
-		mes "お手伝いしますわ。";
-		mes "移動はどうすればいいの？とか";
-		mes "どこへ行けばいいの？とか";
-		mes "何か、私に聞きたいことはない？";
+		mes "[�t�@��]";
+		mes "�����ŉ�����̂������̉��ł��傤�B";
+		mes "����`�����܂���B";
+		mes "�ړ��͂ǂ�����΂����́H�Ƃ�";
+		mes "�ǂ��֍s���΂����́H�Ƃ�";
+		mes "�����A���ɕ����������Ƃ͂Ȃ��H";
 		next;
-		switch(select("どこへ行けばいいの？","基本操作について教えて","あなたは誰？")) {
+		switch(select("�ǂ��֍s���΂����́H","��{����ɂ��ċ�����","���Ȃ��͒N�H")) {
 			case 1:
-				mes "[ファラ]";
-				mes "あそこの川にかかっている橋がわかる？";
-				mes "木製でキイキイ音がするけど……";
-				mes "それを渡るとお城があるの。";
-				mes "そのお城へ入っていけばいいのよ。";
+				mes "[�t�@��]";
+				mes "�������̐�ɂ������Ă��鋴���킩��H";
+				mes "�ؐ��ŃL�C�L�C�������邯�ǁc�c";
+				mes "�����n��Ƃ��邪����́B";
+				mes "���̂���֓����Ă����΂����̂�B";
 				next;
-				mes "[ファラ]";
-				mes "建物の小さな入口の所に";
-				mes "^4A4AFFうずまいている光^000000があるの。";
-				mes "それは空間と空間をつなぐもの。";
-				mes "どこかへ移動する時は";
-				mes "必ず通らなければならないものよ。";
+				mes "[�t�@��]";
+				mes "�����̏����ȓ����̏���";
+				mes "^4A4AFF�����܂��Ă����^000000������́B";
+				mes "����͋�ԂƋ�Ԃ��Ȃ����́B";
+				mes "�ǂ����ֈړ����鎞��";
+				mes "�K���ʂ�Ȃ���΂Ȃ�Ȃ����̂�B";
 				next;
-				mes "[ファラ]";
-				mes "そう、移動はできる？";
-				mes "移動したい場所に三角の印を";
-				mes "あわせてクリック。";
-				mes "私に話しかけたようにすればいいわ。";
-				mes "大丈夫よね？";
+				mes "[�t�@��]";
+				mes "�����A�ړ��͂ł���H";
+				mes "�ړ��������ꏊ�ɎO�p�̈��";
+				mes "���킹�ăN���b�N�B";
+				mes "���ɘb���������悤�ɂ���΂�����B";
+				mes "���v��ˁH";
 				next;
-				mes "[ファラ]";
-				mes "じゃあ、そこの橋の先に";
-				mes "ある、初心者修練場へ行きなさい。";
-				mes "入り口の近くに案内をしてくれる";
-				mes "兵士がいるから、大丈夫よね？";
-				mes "うふふっ。";
+				mes "[�t�@��]";
+				mes "���Ⴀ�A�����̋��̐��";
+				mes "����A���S�ҏC����֍s���Ȃ����B";
+				mes "������̋߂��Ɉē������Ă����";
+				mes "���m�����邩��A���v��ˁH";
+				mes "���ӂӂ��B";
 				set CHANGE_NV,CHANGE_NV|0x1;
 				close;
 			case 2:
-				mes "[ファラ]";
-				mes "基本操作ね……";
-				mes "クリック、ダブルクリック、ドラッグ";
-				mes "という言葉は分かる？";
-				mes "マウスのボタンを一度押せば";
-				mes "クリックよね？";
-				mes "連続で二度押すのがダブルクリック。";
+				mes "[�t�@��]";
+				mes "��{����ˁc�c";
+				mes "�N���b�N�A�_�u���N���b�N�A�h���b�O";
+				mes "�Ƃ������t�͕�����H";
+				mes "�}�E�X�̃{�^������x������";
+				mes "�N���b�N��ˁH";
+				mes "�A���œ�x�����̂��_�u���N���b�N�B";
 				next;
-				mes "[ファラ]";
-				mes "ドラッグはマウスをクリックしたまま";
-				mes "上下左右に動かすことよ。";
-				mes "文章の選択をする時や";
-				mes "ファイルを移動する時とかに";
-				mes "よく使うわよね。";
+				mes "[�t�@��]";
+				mes "�h���b�O�̓}�E�X���N���b�N�����܂�";
+				mes "�㉺���E�ɓ��������Ƃ�B";
+				mes "���͂̑I�������鎞��";
+				mes "�t�@�C�����ړ����鎞�Ƃ���";
+				mes "�悭�g�����ˁB";
 				next;
-				mes "[ファラ]";
-				mes "こういう基本的なことは";
-				mes "まず理解しておいた方がいいわよ。";
-				mes "使う機会が多いからね。";
-				mes "そして……";
+				mes "[�t�@��]";
+				mes "����������{�I�Ȃ��Ƃ�";
+				mes "�܂��������Ă����������������B";
+				mes "�g���@���������ˁB";
+				mes "�����āc�c";
 				next;
-				mes "[ファラ]";
-				mes "冒険に必要なことは";
-				mes "その橋を渡った先にある";
-				mes "城の中で学ぶことができるよ。";
-				mes "君のような冒険の初心者のための";
-				mes "場所だからね。じゃあ、";
-				mes "初心者修練場へ行ってみなさい。";
+				mes "[�t�@��]";
+				mes "�`���ɕK�v�Ȃ��Ƃ�";
+				mes "���̋���n������ɂ���";
+				mes "��̒��Ŋw�Ԃ��Ƃ��ł����B";
+				mes "�N�̂悤�Ȗ`���̏��S�҂̂��߂�";
+				mes "�ꏊ������ˁB���Ⴀ�A";
+				mes "���S�ҏC����֍s���Ă݂Ȃ����B";
 				next;
-				mes "[ファラ]";
-				mes "建物入口に行くと";
-				mes "^4A4AFFうずまいている光^000000があるの。";
-				mes "そこをクリックして飛び込めばいいわ。";
-				mes "中には係の人がいるから";
-				mes "安心して。ふふっ。";
+				mes "[�t�@��]";
+				mes "���������ɍs����";
+				mes "^4A4AFF�����܂��Ă����^000000������́B";
+				mes "�������N���b�N���Ĕ�э��߂΂�����B";
+				mes "���ɂ͌W�̐l�����邩��";
+				mes "���S���āB�ӂӂ��B";
 				set CHANGE_NV,CHANGE_NV|0x1;
 				close;
 			case 3:
-				mes "[ファラ]";
-				mes "え、私？私はファラよ。";
-				mes "もしかして、お姉さんに";
-				mes "興味があるのかな？";
-				mes "え、違う？";
-				mes "む〜！";
-				mes "さっさと修練場へ行きなさい！";
+				mes "[�t�@��]";
+				mes "���A���H���̓t�@����B";
+				mes "���������āA���o�����";
+				mes "����������̂��ȁH";
+				mes "���A�Ⴄ�H";
+				mes "�ށ`�I";
+				mes "�������ƏC����֍s���Ȃ����I";
 				set CHANGE_NV,CHANGE_NV|0x2;
 				close;
 		}
 	case 1:
-		mes "[ファラ]";
-		mes "あら、どうしたの？";
-		mes "もしかして、行くのをためらってるの？";
-		mes "初心者修練場では様々なことを";
-		mes "学べるわよ。しかも、それだけじゃなく";
-		mes "武器や回復アイテムなども";
-		mes "支給してくれるの。";
+		mes "[�t�@��]";
+		mes "����A�ǂ������́H";
+		mes "���������āA�s���̂����߂���Ă�́H";
+		mes "���S�ҏC����ł͗l�X�Ȃ��Ƃ�";
+		mes "�w�ׂ���B�������A���ꂾ������Ȃ�";
+		mes "�����񕜃A�C�e���Ȃǂ�";
+		mes "�x�����Ă����́B";
 		next;
-		mes "[ファラ]";
-		mes "例えば……ほら";
-		mes "こんな風に経験も積めるのよ。";
+		mes "[�t�@��]";
+		mes "�Ⴆ�΁c�c�ق�";
+		mes "����ȕ��Ɍo�����ς߂�̂�B";
 		set CHANGE_NV,CHANGE_NV|0x4;
 		getexp 9,0;
 		next;
-		mes "[ファラ]";
-		mes "君にとってはちょっと";
-		mes "大変なことかもしれないけど";
-		mes "行く価値は十分にあるわ。";
-		mes "そこで学んだことが";
-		mes "いつかきっと役に立つ。";
-		mes "……初心は忘れないでね。";
+		mes "[�t�@��]";
+		mes "�N�ɂƂ��Ă͂������";
+		mes "��ςȂ��Ƃ�������Ȃ�����";
+		mes "�s�����l�͏\���ɂ����B";
+		mes "�����Ŋw�񂾂��Ƃ�";
+		mes "���������Ɩ��ɗ��B";
+		mes "�c�c���S�͖Y��Ȃ��łˁB";
 		close;
 	case 2:
-		mes "[ファラ]";
-		mes "あら、元気そうな子ね。";
-		mes "まだ何か聞きたいことでもあるの？";
-		mes "ふふ、それとも私と";
-		mes "お話がしたいのかな？";
-		mes "じゃあ、何を手伝って";
-		mes "あげましょうか……";
+		mes "[�t�@��]";
+		mes "����A���C�����Ȏq�ˁB";
+		mes "�܂����������������Ƃł�����́H";
+		mes "�ӂӁA����Ƃ�����";
+		mes "���b���������̂��ȁH";
+		mes "���Ⴀ�A������`����";
+		mes "�����܂��傤���c�c";
 		next;
-		mes "[ファラ]";
-		mes "そうね、初心者修練場へ";
-		mes "行って見るのはどうかな？";
-		mes "そこに見える橋を渡って";
-		mes "大きいお城の中へ入って行けば";
-		mes "いいのよ。中へ行けば、";
-		mes "係の人が案内してくれるからね。";
+		mes "[�t�@��]";
+		mes "�����ˁA���S�ҏC�����";
+		mes "�s���Č���̂͂ǂ����ȁH";
+		mes "�����Ɍ����鋴��n����";
+		mes "�傫������̒��֓����čs����";
+		mes "�����̂�B���֍s���΁A";
+		mes "�W�̐l���ē����Ă���邩��ˁB";
 		next;
-		mes "[ファラ]";
-		mes "もし、入口が見えなかったら";
-		mes "マウスをクリックしたまま";
-		mes "左右へドラッグしてみるといいわ。";
-		mes "そうすると画面が回転して、";
-		mes "見えるはずよ。";
+		mes "[�t�@��]";
+		mes "�����A�����������Ȃ�������";
+		mes "�}�E�X���N���b�N�����܂�";
+		mes "���E�փh���b�O���Ă݂�Ƃ�����B";
+		mes "��������Ɖ�ʂ���]���āA";
+		mes "������͂���B";
 		next;
-		mes "[ファラ]";
-		mes "それじゃ、いってらっしゃい。";
-		mes "そして私のようなレディーへの";
-		mes "礼儀も身につけてきなさいな。";
-		mes "これは、私からの贈り物よ。";
+		mes "[�t�@��]";
+		mes "���ꂶ��A�����Ă�����Ⴂ�B";
+		mes "�����Ď��̂悤�ȃ��f�B�[�ւ�";
+		mes "��V���g�ɂ��Ă��Ȃ����ȁB";
+		mes "����́A������̑��蕨��B";
 		set CHANGE_NV,CHANGE_NV|0x4;
 		getexp 9,0;
 		close;
-	default:	//5,6のとき
-		mes "[ファラ]";
-		mes "初心者修練場は、そこにある橋を";
-		mes "渡った先にあるわよ。";
-		mes "講義や戦闘など大変かもしれないけど";
-		mes "きっと役に立つと思うわ。";
-		mes "ぜひ、行ってみなさい。";
+	default:	//5,6�̂Ƃ�
+		mes "[�t�@��]";
+		mes "���S�ҏC����́A�����ɂ��鋴��";
+		mes "�n������ɂ�����B";
+		mes "�u�`��퓬�ȂǑ�ς�������Ȃ�����";
+		mes "�����Ɩ��ɗ��Ǝv����B";
+		mes "���ЁA�s���Ă݂Ȃ����B";
 		close;
 	}
 }
 
 //==============================================================
-new_1-1.gat,66,114,0	script	看板	111,{
+new_1-1.gat,66,114,0	script	�Ŕ�	111,{
 	mes "^FF0000=================================^000000";
-	mes "^FF0000= ^E708AD[歓迎]　^CE0000初^FF9400心^7BFF00者 ^00FF00修^00FFFF練^0000FF場 ^E708AD[歓迎] ^FF0000=^000000";
+	mes "^FF0000= ^E708AD[���}]�@^CE0000��^FF9400�S^7BFF00�� ^00FF00�C^00FFFF��^0000FF�� ^E708AD[���}] ^FF0000=^000000";
 	mes "^FF0000=================================^000000";
 	close;
 }
 
 //==============================================================
-new_1-1.gat,144,116,2	script	警備員	105,{
-	mes "[初心者修練場警備員]";
-	mes "ようこそ！初心者修練場へ！";
-	mes "城の中に入りますと";
-	mes "初心者修練場があります。";
+new_1-1.gat,144,116,2	script	�x����	105,{
+	mes "[���S�ҏC����x����]";
+	mes "�悤�����I���S�ҏC����ցI";
+	mes "��̒��ɓ���܂���";
+	mes "���S�ҏC���ꂪ����܂��B";
 	close;
 }
 
-new_1-1.gat,144,107,2	script	警備員	105,{
+new_1-1.gat,144,107,2	script	�x����	105,{
 	if(rand(2)) {
-		mes "[初心者修練場警備員]";
-		mes "よく来たな！";
-		mes "初心者修練場への来場を歓迎する！";
-		mes "新たな人生を歩み出す君ら初心者達が";
-		mes "自分を磨いて希望に満ちた未来を";
-		mes "築くことができるように";
-		mes "初心者修練場は全力でサポートする！";
+		mes "[���S�ҏC����x����]";
+		mes "�悭�����ȁI";
+		mes "���S�ҏC����ւ̗�������}����I";
+		mes "�V���Ȑl������ݏo���N�珉�S�ҒB��";
+		mes "�����𖁂��Ċ�]�ɖ�����������";
+		mes "�z�����Ƃ��ł���悤��";
+		mes "���S�ҏC����͑S�͂ŃT�|�[�g����I";
 	}
 	else {
-		mes "[初心者修練場警備員]";
-		mes "さあ！　いけ！　初心者達よ！";
-		mes "君らが走って行くこの道には";
-		mes "明日の陽が昇る！";
+		mes "[���S�ҏC����x����]";
+		mes "�����I�@�����I�@���S�ҒB��I";
+		mes "�N�炪�����čs�����̓��ɂ�";
+		mes "�����̗z������I";
 	}
 	close;
 }
 
 
 //==========================================
-// 受付
+// ��t
 //------------------------------------------
 
-new_1-2.gat,100,29,4	script	初心者修練場受付要員	86,{
-	mes "[初心者修練場受付要員]";
-	mes "いらっしゃいませ。";
-	mes "^FF0000初心者修練場^000000です。";
-	mes "ラグナロクオンラインを";
-	mes "初めてプレイする方は";
-	mes "まず^019CFF初心者修練場紹介^000000メニューを選んで";
-	mes "詳しい内容をご覧ください。";
+new_1-2.gat,100,29,4	script	���S�ҏC�����t�v��	86,{
+	mes "[���S�ҏC�����t�v��]";
+	mes "��������Ⴂ�܂��B";
+	mes "^FF0000���S�ҏC����^000000�ł��B";
+	mes "���O�i���N�I�����C����";
+	mes "���߂ăv���C�������";
+	mes "�܂�^019CFF���S�ҏC����Љ�^000000���j���[��I���";
+	mes "�ڂ������e���������������B";
 	while(1) {
 		next;
-		switch(select("初心者修練場申込書を作成する","すぐラグナロクオンラインを始める","^019CFF初心者修練場紹介^000000","やめる")) {
+		switch(select("���S�ҏC����\�������쐬����","�������O�i���N�I�����C�����n�߂�","^019CFF���S�ҏC����Љ�^000000","��߂�")) {
 		case 1:
-			mes "[初心者修練場受付要員]";
-			mes "あなたの申込書が受理されました。";
-			mes "修練場の各コースに関する";
-			mes "詳しい案内は、各コースの案内員に";
-			mes "お問い合わせください。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "���Ȃ��̐\�������󗝂���܂����B";
+			mes "�C����̊e�R�[�X�Ɋւ���";
+			mes "�ڂ����ē��́A�e�R�[�X�̈ē�����";
+			mes "���₢���킹���������B";
 			next;
 			if(CHANGE_NV &0x8 == 0) {
-				mes "[初心者修練場受付要員]";
-				mes "修練補助費、50Zenyを";
-				mes "支給します。コース進行中に";
-				mes "何かわからない事がありましたら";
-				mes "中央ホールの案内要員に";
-				mes "聞いてください。";
-				mes "では、初心者修練場に移動します。";
+				mes "[���S�ҏC�����t�v��]";
+				mes "�C���⏕��A50Zeny��";
+				mes "�x�����܂��B�R�[�X�i�s����";
+				mes "�����킩��Ȃ���������܂�����";
+				mes "�����z�[���̈ē��v����";
+				mes "�����Ă��������B";
+				mes "�ł́A���S�ҏC����Ɉړ����܂��B";
 				set CHANGE_NV,CHANGE_NV|0x8;
 				set Zeny,Zeny+50;
 				close2;
@@ -259,9 +259,9 @@ new_1-2.gat,100,29,4	script	初心者修練場受付要員	86,{
 			warp "new_1-2.gat",100,70;
 			end;
 		case 2:
-			mes "[初心者修練場受付要員]";
-			mes "はい、わかりました。";
-			mes "あなたの成功と健闘を祈ります。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�͂��A�킩��܂����B";
+			mes "���Ȃ��̐����ƌ������F��܂��B";
 			close2;
 			set CHANGE_NV,0;
 			switch(rand(6)) {
@@ -275,62 +275,62 @@ new_1-2.gat,100,29,4	script	初心者修練場受付要員	86,{
 			warp "SavePoint",0,0;
 			end;
 		case 3:
-			mes "[初心者修練場受付要員]";
-			mes "この初心者修練場では";
-			mes "ゲーム「ラグナロクオンライン」を";
-			mes "初めて遊ぶプレイヤーが";
-			mes "楽しくプレイ出来るように";
-			mes "ラグナロクオンラインの基本的な";
-			mes "説明を行っています。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "���̏��S�ҏC����ł�";
+			mes "�Q�[���u���O�i���N�I�����C���v��";
+			mes "���߂ėV�ԃv���C���[��";
+			mes "�y�����v���C�o����悤��";
+			mes "���O�i���N�I�����C���̊�{�I��";
+			mes "�������s���Ă��܂��B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "また、実際ゲームで経験する状況を";
-			mes "体験する戦闘訓練、及び";
-			mes "教官や担当要員との会話を通じて";
-			mes "プレイヤーに最適だと思われる";
-			mes "職業を判断し勧めておりますので";
-			mes "参考にしてください。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�܂��A���ۃQ�[���Ōo������󋵂�";
+			mes "�̌�����퓬�P���A�y��";
+			mes "������S���v���Ƃ̉�b��ʂ���";
+			mes "�v���C���[�ɍœK���Ǝv����";
+			mes "�E�Ƃ𔻒f�����߂Ă���܂��̂�";
+			mes "�Q�l�ɂ��Ă��������B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "本修練場は";
-			mes "初心者に上記教育を行う為";
-			mes "ルーンミッドガッツ王国";
-			mes "教育人的資源部の支援で";
-			mes "設立されました。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�{�C�����";
+			mes "���S�҂ɏ�L������s����";
+			mes "���[���~�b�h�K�b�c����";
+			mes "����l�I�������̎x����";
+			mes "�ݗ�����܂����B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "本修練場は2つのコースに";
-			mes "分かれていて";
-			mes "各コースで様々な修練を積みます。";
-			mes "第1コースではラグナロク";
-			mes "オンラインのプレイに必要な";
-			mes "基本的な事について案内します。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�{�C�����2�̃R�[�X��";
+			mes "������Ă���";
+			mes "�e�R�[�X�ŗl�X�ȏC����ς݂܂��B";
+			mes "��1�R�[�X�ł̓��O�i���N";
+			mes "�I�����C���̃v���C�ɕK�v��";
+			mes "��{�I�Ȏ��ɂ��Ĉē����܂��B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "第2コースでは";
-			mes "第1コースで習った理論を元に";
-			mes "モンスターが出る場所で戦闘実習を";
-			mes "行うことになります。";
-			mes "全コース終了後、各職業について";
-			mes "説明をさせていただきます。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "��2�R�[�X�ł�";
+			mes "��1�R�[�X�ŏK�������_������";
+			mes "�����X�^�[���o��ꏊ�Ő퓬���K��";
+			mes "�s�����ƂɂȂ�܂��B";
+			mes "�S�R�[�X�I����A�e�E�Ƃɂ���";
+			mes "�����������Ă��������܂��B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "また、アンケートに答えていただき";
-			mes "性格判断、深層心理解析によって";
-			mes "各プレイヤーに最適な職業を見つける";
-			mes "職業適性検査を行います。";
-			mes "その後、どの職業を選択するか";
-			mes "伺います。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�܂��A�A���P�[�g�ɓ����Ă�������";
+			mes "���i���f�A�[�w�S����͂ɂ����";
+			mes "�e�v���C���[�ɍœK�ȐE�Ƃ�������";
+			mes "�E�ƓK���������s���܂��B";
+			mes "���̌�A�ǂ̐E�Ƃ�I�����邩";
+			mes "�f���܂��B";
 			next;
-			mes "[初心者修練場受付要員]";
-			mes "紹介した初心者修練場に入る方は";
-			mes "次のメニューで";
-			mes "「初心者修練場申込書を作成する」を";
-			mes "選んでください。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "�Љ�����S�ҏC����ɓ������";
+			mes "���̃��j���[��";
+			mes "�u���S�ҏC����\�������쐬����v��";
+			mes "�I��ł��������B";
 			continue;
 		case 4:
-			mes "[初心者修練場受付要員]";
-			mes "ごゆっくりお考えください。";
+			mes "[���S�ҏC�����t�v��]";
+			mes "��������肨�l�����������B";
 			close;
 		}
 	}
@@ -338,53 +338,53 @@ new_1-2.gat,100,29,4	script	初心者修練場受付要員	86,{
 
 
 //==========================================
-// 中央の部屋
+// �����̕���
 //------------------------------------------
 
-new_1-2.gat,99,105,3	script	インターフェース教官	751,{
+new_1-2.gat,99,105,3	script	�C���^�[�t�F�[�X����	751,{
 	if(CHANGE_NV &0x10 == 0) {
-		mes "[教官クリス]";
-		mes "初めてお目にかかりますね。";
-		mes "受講証を見せていただけますか？";
+		mes "[�����N���X]";
+		mes "���߂Ă��ڂɂ�����܂��ˁB";
+		mes "��u�؂������Ă��������܂����H";
 		next;
-		mes "[教官クリス]";
-		mes "はい、これで問題ありません。";
-		mes "では" +strcharinfo(0)+ "様に";
-		mes "基本的なインターフェースについて";
-		mes "教えましょう。";
+		mes "[�����N���X]";
+		mes "�͂��A����Ŗ�肠��܂���B";
+		mes "�ł�" +strcharinfo(0)+ "�l��";
+		mes "��{�I�ȃC���^�[�t�F�[�X�ɂ���";
+		mes "�����܂��傤�B";
 		next;
-		mes "[教官クリス]";
-		mes "これは強制というわけではないので";
-		mes "もし、遠慮なさりたいのなら、その旨を";
-		mes "おっしゃってください。";
+		mes "[�����N���X]";
+		mes "����͋����Ƃ����킯�ł͂Ȃ��̂�";
+		mes "�����A�����Ȃ��肽���̂Ȃ�A���̎|��";
+		mes "����������Ă��������B";
 		next;
-		switch(select("インターフェースの講義を受けたい","話よりも、実戦を！","やめる")) {
+		switch(select("�C���^�[�t�F�[�X�̍u�`���󂯂���","�b�����A������I","��߂�")) {
 		case 1:
-			mes "[教官クリス]";
-			mes "わかりました。";
-			mes "では、講義を行います。";
-			mes "よろしいですか？";
+			mes "[�����N���X]";
+			mes "�킩��܂����B";
+			mes "�ł́A�u�`���s���܂��B";
+			mes "��낵���ł����H";
 			next;
-			mes "[教官クリス]";
-			mes "全てのウィンドウは、ドラッグで";
-			mes "位置を移動することができますが、";
-			mes "初期段階の位置を基準にして";
-			mes "各ウィンドウについて説明しましょう。";
+			mes "[�����N���X]";
+			mes "�S�ẴE�B���h�E�́A�h���b�O��";
+			mes "�ʒu���ړ����邱�Ƃ��ł��܂����A";
+			mes "�����i�K�̈ʒu����ɂ���";
+			mes "�e�E�B���h�E�ɂ��Đ������܂��傤�B";
 			next;
-			mes "[教官クリス]";
-			mes "まず画面の左上をご覧ください。";
-			mes "ご自分の名前やレベル等が表示された";
-			mes "ウィンドウがありますね。これで";
-			mes "どれくらい経験値を得たのかも";
-			mes "わかるでしょう。これがキャラクターの";
-			mes "^4A4AFF基本情報^000000になります。";
+			mes "[�����N���X]";
+			mes "�܂���ʂ̍�����������������B";
+			mes "�������̖��O�⃌�x�������\�����ꂽ";
+			mes "�E�B���h�E������܂��ˁB�����";
+			mes "�ǂꂭ�炢�o���l�𓾂��̂���";
+			mes "�킩��ł��傤�B���ꂪ�L�����N�^�[��";
+			mes "^4A4AFF��{���^000000�ɂȂ�܂��B";
 			next;
 			if(BaseLevel < 8) {
-				mes "[教官クリス]";
-				mes "では、Base経験値をあげますので";
-				mes "基本情報ウィンドウの経験値部分が";
-				mes "どのように変化するか見てください。";
-				mes "どうです？";
+				mes "[�����N���X]";
+				mes "�ł́ABase�o���l�������܂��̂�";
+				mes "��{���E�B���h�E�̌o���l������";
+				mes "�ǂ̂悤�ɕω����邩���Ă��������B";
+				mes "�ǂ��ł��H";
 				if(BaseLevel == 7)	getexp 155,0;
 				else if(BaseLevel == 6)	getexp 115,0;
 				else if(BaseLevel == 5)	getexp 78,0;
@@ -394,69 +394,69 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 				else if(BaseLevel == 1)	getexp 10,0;
 			}
 			else {
-				mes "[教官クリス]";
-				mes "……あ、けっこうレベルが";
-				mes "高いようですね。";
-				mes "それでしたら経験値は";
-				mes "もういらないですよね。";
-				mes "それでは……";
+				mes "[�����N���X]";
+				mes "�c�c���A�����������x����";
+				mes "�����悤�ł��ˁB";
+				mes "����ł�����o���l��";
+				mes "��������Ȃ��ł���ˁB";
+				mes "����ł́c�c";
 			}
 			set CHANGE_NV,CHANGE_NV|0x10;
 			next;
-			mes "[教官クリス]";
-			mes "基本情報ウィンドウに表示";
-			mes "されているメニューから";
-			mes "アイテムや友達リストを見ることも";
-			mes "できます。";
+			mes "[�����N���X]";
+			mes "��{���E�B���h�E�ɕ\��";
+			mes "����Ă��郁�j���[����";
+			mes "�A�C�e����F�B���X�g�����邱�Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[教官クリス]";
-			mes "それから経験値ですが、";
-			mes "先ほど紹介したBase経験値とは別に";
-			mes "Job経験値というものもあります。";
-			mes "^4A4AFFスキルを使うためには、この";
-			mes "Job経験値を獲得し、それにより取得";
-			mes "するスキルポイントが必要^000000になります。";
+			mes "[�����N���X]";
+			mes "���ꂩ��o���l�ł����A";
+			mes "��قǏЉ��Base�o���l�Ƃ͕ʂ�";
+			mes "Job�o���l�Ƃ������̂�����܂��B";
+			mes "^4A4AFF�X�L�����g�����߂ɂ́A����";
+			mes "Job�o���l���l�����A����ɂ��擾";
+			mes "����X�L���|�C���g���K�v^000000�ɂȂ�܂��B";
 			next;
-			mes "[教官クリス]";
-			mes "画面左下のウィンドウは、";
-			mes "チャットウィンドウと言います。";
-			mes "過去の会話は右側のバーを";
-			mes "スクロールすれば見ることができます。";
+			mes "[�����N���X]";
+			mes "��ʍ����̃E�B���h�E�́A";
+			mes "�`���b�g�E�B���h�E�ƌ����܂��B";
+			mes "�ߋ��̉�b�͉E���̃o�[��";
+			mes "�X�N���[������Ό��邱�Ƃ��ł��܂��B";
 			next;
-			mes "[教官クリス]";
-			mes "また、右のボタンで全体、パーティー、";
-			mes "ギルド向けという風に会話先を変更する";
-			mes "こともできます。";
-			mes "チャットウィンドウは常に会話できる";
-			mes "状態ですので、知り合いに声を";
-			mes "かけやすいと思います。";
+			mes "[�����N���X]";
+			mes "�܂��A�E�̃{�^���őS�́A�p�[�e�B�[�A";
+			mes "�M���h�����Ƃ������ɉ�b���ύX����";
+			mes "���Ƃ��ł��܂��B";
+			mes "�`���b�g�E�B���h�E�͏�ɉ�b�ł���";
+			mes "��Ԃł��̂ŁA�m�荇���ɐ���";
+			mes "�����₷���Ǝv���܂��B";
 			next;
-			mes "[教官クリス]";
-			mes "画面の右上にはミニマップがあります。";
-			mes "自分、パーティーメンバー、";
-			mes "ギルドメンバーの現在位置が";
-			mes "表示されます。";
+			mes "[�����N���X]";
+			mes "��ʂ̉E��ɂ̓~�j�}�b�v������܂��B";
+			mes "�����A�p�[�e�B�[�����o�[�A";
+			mes "�M���h�����o�[�̌��݈ʒu��";
+			mes "�\������܂��B";
 			next;
-			mes "[教官クリス]";
-			mes "街やフィールドでは、";
-			mes "^4A4AFF赤い点がマップの出口^000000となりますので";
-			mes "参考にしてください。";
+			mes "[�����N���X]";
+			mes "�X��t�B�[���h�ł́A";
+			mes "^4A4AFF�Ԃ��_���}�b�v�̏o��^000000�ƂȂ�܂��̂�";
+			mes "�Q�l�ɂ��Ă��������B";
 			next;
-			mes "[教官クリス]";
-			mes "では、基本情報ウィンドウにある";
-			mes "各メニューを押して";
-			mes "一度全てを開いてみてください。";
-			mes "アイテムや装備、能力値などを";
-			mes "見ることができますよ。";
+			mes "[�����N���X]";
+			mes "�ł́A��{���E�B���h�E�ɂ���";
+			mes "�e���j���[��������";
+			mes "��x�S�Ă��J���Ă݂Ă��������B";
+			mes "�A�C�e���⑕���A�\�͒l�Ȃǂ�";
+			mes "���邱�Ƃ��ł��܂���B";
 			next;
-			mes "[教官クリス]";
-			mes "退屈だったかもしれませんね。";
+			mes "[�����N���X]";
+			mes "�ދ���������������܂���ˁB";
 			if(JobLevel < 7) {
-				mes "少し経験値をあげましょう。";
-				mes "今度はJob経験値です。";
-				mes "スキルウィンドウを";
-				mes "開いて、基本スキルを";
-				mes "あげてみてください。";
+				mes "�����o���l�������܂��傤�B";
+				mes "���x��Job�o���l�ł��B";
+				mes "�X�L���E�B���h�E��";
+				mes "�J���āA��{�X�L����";
+				mes "�����Ă݂Ă��������B";
 				if(JobLevel == 6)	getexp 0,151;
 				else if(JobLevel == 5)	getexp 0,91;
 				else if(JobLevel == 4)	getexp 0,40;
@@ -465,27 +465,27 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 				else if(JobLevel == 1)	getexp 0,10;
 			}
 			else {
-				mes "……あ、けっこうレベルが";
-				mes "高いようですね。";
-				mes "それでしたら経験値は";
-				mes "もういらないですよね。";
-				mes "それでは……";
+				mes "�c�c���A�����������x����";
+				mes "�����悤�ł��ˁB";
+				mes "����ł�����o���l��";
+				mes "��������Ȃ��ł���ˁB";
+				mes "����ł́c�c";
 			}
 			next;
-			mes "[教官クリス]";
-			mes "より詳しい内容については";
-			mes "講師エドウィンに聴いてください。";
-			mes "彼なら喜んで教えてくれますよ。";
-			mes "これは、私からのささやかな";
-			mes "贈り物です。";
+			mes "[�����N���X]";
+			mes "���ڂ������e�ɂ��Ă�";
+			mes "�u�t�G�h�E�B���ɒ����Ă��������B";
+			mes "�ނȂ���ŋ����Ă���܂���B";
+			mes "����́A������̂����₩��";
+			mes "���蕨�ł��B";
 			getitem 2352,1;
 			close;
 		case 2:
-			mes "[教官クリス]";
-			mes "では、実際に戦闘を経験して";
-			mes "いただきましょう。";
-			mes "それで知識が足りないと思ったら";
-			mes "いつでも戻ってきてください。";
+			mes "[�����N���X]";
+			mes "�ł́A���ۂɐ퓬���o������";
+			mes "���������܂��傤�B";
+			mes "����Œm��������Ȃ��Ǝv������";
+			mes "���ł��߂��Ă��Ă��������B";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
@@ -495,49 +495,49 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 		}
 	}
 	if(CHANGE_NV &0x20 == 0 || CHANGE_NV &0x40 == 0) {
-		set '@word$,(CHANGE_NV &0x20 == 0)? "スキル": "アイテム";
-		mes "[教官クリス]";
-		mes "どうされました？";
-		mes "受講証を見せていただけます？";
-		mes "おや、" +'@word$+ "関連の講義が";
-		mes "まだのようですね。";
-		mes '@word$+ "教官なら私の" +((CHANGE_NV &0x20)? "右": "左")+ "にいます。";
+		set '@word$,(CHANGE_NV &0x20 == 0)? "�X�L��": "�A�C�e��";
+		mes "[�����N���X]";
+		mes "�ǂ�����܂����H";
+		mes "��u�؂������Ă��������܂��H";
+		mes "����A" +'@word$+ "�֘A�̍u�`��";
+		mes "�܂��̂悤�ł��ˁB";
+		mes '@word$+ "�����Ȃ玄��" +((CHANGE_NV &0x20)? "�E": "��")+ "�ɂ��܂��B";
 		next;
-		switch(select("じゃあ、"+'@word$+"の講義を受けたい","話ばかりだと退屈で……","あ、そう……")) {
+		switch(select("���Ⴀ�A"+'@word$+"�̍u�`���󂯂���","�b�΂��肾�Ƒދ��Łc�c","���A�����c�c")) {
 		case 1:
-			if('@word$ == "スキル") {
-				mes "[教官クリス]";
-				mes "スキルの使い方がわかると";
-				mes "戦闘がかなり楽になりますよ。";
-				mes "では、スキル教官の下へ";
-				mes "送ってあげましょう。";
+			if('@word$ == "�X�L��") {
+				mes "[�����N���X]";
+				mes "�X�L���̎g�������킩���";
+				mes "�퓬�����Ȃ�y�ɂȂ�܂���B";
+				mes "�ł́A�X�L�������̉���";
+				mes "�����Ă����܂��傤�B";
 				close2;
 				warp "new_1-2.gat",84,107;
 				end;
 			}
-			mes "[教官クリス]";
-			mes "アイテムの使い方や";
-			mes "ショートカットの活用法など";
-			mes "いろんなことを教えてくれますよ。";
-			mes "では、アイテム教官の下へ";
-			mes "送ってあげましょう。";
+			mes "[�����N���X]";
+			mes "�A�C�e���̎g������";
+			mes "�V���[�g�J�b�g�̊��p�@�Ȃ�";
+			mes "�����Ȃ��Ƃ������Ă���܂���B";
+			mes "�ł́A�A�C�e�������̉���";
+			mes "�����Ă����܂��傤�B";
 			close2;
 			warp "new_1-2.gat",115,107;
 			end;
 		case 2:
-			mes "[教官クリス]";
-			mes "では、第2コース戦闘実習マップへ";
-			mes "送ってあげましょう。";
+			mes "[�����N���X]";
+			mes "�ł́A��2�R�[�X�퓬���K�}�b�v��";
+			mes "�����Ă����܂��傤�B";
 			next;
-			if(select("あ、まだいい","送ってちょうだい")== 1) {
-				mes "[教官クリス]";
-				mes "そうですか……";
-				mes "また何かありましたら、";
-				mes "声をかけてください。";
+			if(select("���A�܂�����","�����Ă��傤����")== 1) {
+				mes "[�����N���X]";
+				mes "�����ł����c�c";
+				mes "�܂���������܂�����A";
+				mes "���������Ă��������B";
 				close;
 			}
-			mes "[教官クリス]";
-			mes "では、健闘を祈ります！";
+			mes "[�����N���X]";
+			mes "�ł́A�������F��܂��I";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
@@ -546,97 +546,97 @@ new_1-2.gat,99,105,3	script	インターフェース教官	751,{
 			close;
 		}
 	}
-	mes "[教官クリス]";
-	mes "必修講義を全て終えたようですね。";
-	mes "講師たちの話も聴きましたか？";
-	mes "次は戦闘実習ですが……";
-	mes "第2コースへ進みますか？";
+	mes "[�����N���X]";
+	mes "�K�C�u�`��S�ďI�����悤�ł��ˁB";
+	mes "�u�t�����̘b�������܂������H";
+	mes "���͐퓬���K�ł����c�c";
+	mes "��2�R�[�X�֐i�݂܂����H";
 	next;
-	switch(select("はい、次のコースへ進みたい","いや、もう少し勉強したい","すぐ街へ行きたい")) {
+	switch(select("�͂��A���̃R�[�X�֐i�݂���","����A���������׋�������","�����X�֍s������")) {
 	case 1:
-		mes "[教官クリス]";
-		mes "わかりました。";
-		mes "次のコースは戦闘の実践です。";
-		mes "担当教官の話をよく聴き";
-		mes "試験に臨んでください。";
-		mes "君にオーディンの加護あらんことを。";
+		mes "[�����N���X]";
+		mes "�킩��܂����B";
+		mes "���̃R�[�X�͐퓬�̎��H�ł��B";
+		mes "�S�������̘b���悭����";
+		mes "�����ɗՂ�ł��������B";
+		mes "�N�ɃI�[�f�B���̉��삠��񂱂Ƃ��B";
 		close2;
 		warp "new_1-2.gat",28,178;
 		end;
 	case 2:
-		mes "[教官クリス]";
-		mes "わかりました。";
-		mes "必修講義は基本的なことが中心ですので";
-		mes "足りない部分は、講師たちの話を";
-		mes "聴くとよいと思います。";
-		mes "そうすればより深く学べるでしょう。";
+		mes "[�����N���X]";
+		mes "�킩��܂����B";
+		mes "�K�C�u�`�͊�{�I�Ȃ��Ƃ����S�ł��̂�";
+		mes "����Ȃ������́A�u�t�����̘b��";
+		mes "�����Ƃ悢�Ǝv���܂��B";
+		mes "��������΂��[���w�ׂ�ł��傤�B";
 		next;
-		mes "[教官クリス]";
-		mes "もし何かわからないことがありましたら";
-		mes "いつでも尋ねてください。";
+		mes "[�����N���X]";
+		mes "���������킩��Ȃ����Ƃ�����܂�����";
+		mes "���ł��q�˂Ă��������B";
 		close;
 	case 3:
-		mes "[教官クリス]";
-		mes "街へ行きたいのですか。";
-		mes "修練場で十分学ばれたら";
-		mes "私の左にいる^4A4AFFカプラ職員^000000に";
-		mes "話しかけてください。";
+		mes "[�����N���X]";
+		mes "�X�֍s�������̂ł����B";
+		mes "�C����ŏ\���w�΂ꂽ��";
+		mes "���̍��ɂ���^4A4AFF�J�v���E��^000000��";
+		mes "�b�������Ă��������B";
 		next;
-		mes "[教官クリス]";
-		mes "カプラサービスは、各地域で";
-		mes "都市間の移動やアイテムの保管";
-		mes "サービスを行っています。";
-		mes "彼女たちのサービスを実際に";
-		mes "利用してみるとよいでしょう。";
+		mes "[�����N���X]";
+		mes "�J�v���T�[�r�X�́A�e�n���";
+		mes "�s�s�Ԃ̈ړ���A�C�e���̕ۊ�";
+		mes "�T�[�r�X���s���Ă��܂��B";
+		mes "�ޏ������̃T�[�r�X�����ۂ�";
+		mes "���p���Ă݂�Ƃ悢�ł��傤�B";
 		next;
-		mes "[教官クリス]";
-		mes "……いずれ、共に戦う日が";
-		mes "来るかもしれません。";
-		mes "己を磨くことを常にお忘れなきよう。";
-		mes "君にオーディンの加護あらんことを。";
+		mes "[�����N���X]";
+		mes "�c�c������A���ɐ키����";
+		mes "���邩������܂���B";
+		mes "�Ȃ𖁂����Ƃ���ɂ��Y��Ȃ��悤�B";
+		mes "�N�ɃI�[�f�B���̉��삠��񂱂Ƃ��B";
 		close;
 	}
 }
 
 //==============================================================
-new_1-2.gat,83,111,3	script	スキル教官	753,{
+new_1-2.gat,83,111,3	script	�X�L������	753,{
 	if(CHANGE_NV &0x20 == 0) {
-		mes "[教官サイ]";
-		mes strcharinfo(0)+ "！";
-		mes "いい名だ！";
-		mes "それじゃ、講義を始めようか。";
+		mes "[�����T�C]";
+		mes strcharinfo(0)+ "�I";
+		mes "���������I";
+		mes "���ꂶ��A�u�`���n�߂悤���B";
 		next;
-		switch(select("何を教えてくれるの？","実際に戦いたい！","やめておく")) {
+		switch(select("���������Ă����́H","���ۂɐ킢�����I","��߂Ă���")) {
 		case 1:
-			mes "[教官サイ]";
-			mes "俺は拳に全てをかける男！";
-			mes "そこでお前にとても重要な";
-			mes "必殺技を……";
-			mes "じゃなくて、スキルの使い方を";
-			mes "教えてあげよう。";
-			mes "まず、スキルをあげてやろう。";
+			mes "[�����T�C]";
+			mes "���͌��ɑS�Ă�������j�I";
+			mes "�����ł��O�ɂƂĂ��d�v��";
+			mes "�K�E�Z���c�c";
+			mes "����Ȃ��āA�X�L���̎g������";
+			mes "�����Ă����悤�B";
+			mes "�܂��A�X�L���������Ă�낤�B";
 			next;
-			mes "[教官サイ]";
-			mes "スキルウィンドウは";
-			mes "基本情報ウィンドウで";
-			mes "^4A4AFFskill^000000ボタンを";
-			mes "押せば開く。";
+			mes "[�����T�C]";
+			mes "�X�L���E�B���h�E��";
+			mes "��{���E�B���h�E��";
+			mes "^4A4AFFskill^000000�{�^����";
+			mes "�����ΊJ���B";
 			next;
-			mes "[教官サイ]";
-			mes "逆に閉じる時は";
-			mes "^4A4AFFaltキーを押したままsキー^000000";
-			mes "を押せばいい。";
-			mes "これからこういう表現は";
-			mes "「alt+s」と言うから覚えておけ。";
+			mes "[�����T�C]";
+			mes "�t�ɕ��鎞��";
+			mes "^4A4AFFalt�L�[���������܂�s�L�[^000000";
+			mes "�������΂����B";
+			mes "���ꂩ�炱�������\����";
+			mes "�ualt+s�v�ƌ�������o���Ă����B";
 			next;
-			mes "[教官サイ]";
-			mes "ウィンドウを開いたか？";
-			mes "基本機能というアイコンが見えるか？";
+			mes "[�����T�C]";
+			mes "�E�B���h�E���J�������H";
+			mes "��{�@�\�Ƃ����A�C�R���������邩�H";
 			if(JobLevel < 7) {
-				mes "下側にはスキルポイント: 1 とか";
-				mes "数字が書かれている。";
-				mes "基本スキルのアイコンの横にある";
-				mes "「LvUp」という表示を押してみろ！";
+				mes "�����ɂ̓X�L���|�C���g: 1 �Ƃ�";
+				mes "������������Ă���B";
+				mes "��{�X�L���̃A�C�R���̉��ɂ���";
+				mes "�uLvUp�v�Ƃ����\���������Ă݂�I";
 				if(JobLevel == 6)	getexp 0,151;
 				else if(JobLevel == 5)	getexp 0,91;
 				else if(JobLevel == 4)	getexp 0,40;
@@ -645,32 +645,32 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 				else if(JobLevel == 1)	getexp 0,10;
 			}
 			else {
-				mes "お、レベルが高かったのか……";
-				mes "それじゃ、「LvUp」という表示が";
-				mes "出ないな。まあ、お前なら";
-				mes "わかってるだろうからいいよな。";
+				mes "���A���x�������������̂��c�c";
+				mes "���ꂶ��A�uLvUp�v�Ƃ����\����";
+				mes "�o�Ȃ��ȁB�܂��A���O�Ȃ�";
+				mes "�킩���Ă邾�낤���炢����ȁB";
 			}
 			set CHANGE_NV,CHANGE_NV|0x20;
 			next;
-			mes "[教官サイ]";
-			mes "どうだ？";
-			mes "もっと知りたかったら講師の";
-			mes "ピッチジュダスという奴に聞け。";
-			mes "……う〜む、";
-			mes "何か教えようと思ったスキルが";
-			mes "あったはずだが……";
+			mes "[�����T�C]";
+			mes "�ǂ����H";
+			mes "�����ƒm�肽��������u�t��";
+			mes "�s�b�`�W���_�X�Ƃ����z�ɕ����B";
+			mes "�c�c���`�ށA";
+			mes "���������悤�Ǝv�����X�L����";
+			mes "�������͂������c�c";
 			next;
-			mes "[教官サイ]";
-			mes "おお、そうだ！";
-			mes "スキル「応急手当」を教えてやろう。";
-			mes "これは怪我をしている時に";
-			mes "かなり役立つスキルだ。";
+			mes "[�����T�C]";
+			mes "�����A�������I";
+			mes "�X�L���u���}�蓖�v�������Ă�낤�B";
+			mes "����͉�������Ă��鎞��";
+			mes "���Ȃ�𗧂X�L�����B";
 			next;
-			mes "^4A4AFF- スキル「応急手当」を修得した。-^000000";
+			mes "^4A4AFF- �X�L���u���}�蓖�v���C�������B-^000000";
 			skill 142,1,0;
 			next;
 			if(JobLevel < 7) {
-				mes "^4A4AFF- Job経験値を獲得した。-^000000";
+				mes "^4A4AFF- Job�o���l���l�������B-^000000";
 				if(JobLevel == 6)	getexp 0,151;
 				else if(JobLevel == 5)	getexp 0,91;
 				else if(JobLevel == 4)	getexp 0,40;
@@ -679,31 +679,31 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 				else if(JobLevel == 1)	getexp 0,10;
 			}
 			else {
-				mes "^4A4AFF- Jobレベルが高いので -";
-				mes "- すぐにはレベルが -";
-				mes "- 上がらないようだ。-^000000";
+				mes "^4A4AFF- Job���x���������̂� -";
+				mes "- �����ɂ̓��x���� -";
+				mes "- �オ��Ȃ��悤���B-^000000";
 			}
 			next;
 			percentheal -50,0;
-			mes "[教官サイ]";
-			mes "さあ、スキルウィンドウを開いてみろ！";
-			mes "^4A4AFF応急手当^000000が表示されているだろ？";
-			mes "ダブルクリックで使用できるぞ。";
-			mes "さあ、使ってみろ！";
+			mes "[�����T�C]";
+			mes "�����A�X�L���E�B���h�E���J���Ă݂�I";
+			mes "^4A4AFF���}�蓖^000000���\������Ă��邾��H";
+			mes "�_�u���N���b�N�Ŏg�p�ł��邼�B";
+			mes "�����A�g���Ă݂�I";
 			next;
-			mes "[教官サイ]";
-			mes "どうだ？";
-			mes "ちなみにスキルを使うと、";
-			mes "一定量のSPを消費するぞ。";
-			mes "応急手当は使用すると多少だが";
-			mes "体力が回復する。";
-			mes "最初のうちは重宝するスキルだ。";
+			mes "[�����T�C]";
+			mes "�ǂ����H";
+			mes "���Ȃ݂ɃX�L�����g���ƁA";
+			mes "���ʂ�SP������邼�B";
+			mes "���}�蓖�͎g�p����Ƒ�������";
+			mes "�̗͂��񕜂���B";
+			mes "�ŏ��̂����͏d�󂷂�X�L�����B";
 			next;
-			mes "[教官サイ]";
-			mes "話を聞くばかりでは疲れただろう。";
+			mes "[�����T�C]";
+			mes "�b�𕷂��΂���ł͔�ꂽ���낤�B";
 			if(BaseLevel < 8) {
-				mes "ほら、ご褒美だ。";
-				mes "俺は太っ腹な男だからな。";
+				mes "�ق�A���J�����B";
+				mes "���͑������Ȓj������ȁB";
 				if(BaseLevel == 7)	getexp 155,0;
 				else if(BaseLevel == 6)	getexp 115,0;
 				else if(BaseLevel == 5)	getexp 78,0;
@@ -713,25 +713,25 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 				else if(BaseLevel == 1)	getexp 10,0;
 			}
 			else {
-				mes "大分頑張ってるようだな。";
-				mes "まじめだね！　ハッハッハッ";
+				mes "�啪�撣���Ă�悤���ȁB";
+				mes "�܂��߂��ˁI�@�n�b�n�b�n�b";
 			}
 			next;
-			mes "[教官サイ]";
-			mes "俺の講義はここまでだ。";
-			mes "ん？話が短くて安心したか？";
-			mes "それじゃ、他の人の話も聴いてこい。";
-			mes "例えば講師のピッチジュダスなんかは";
-			mes "スキルについてもっと詳しく";
-			mes "教えてくれるぞ。";
+			mes "[�����T�C]";
+			mes "���̍u�`�͂����܂ł��B";
+			mes "��H�b���Z���Ĉ��S�������H";
+			mes "���ꂶ��A���̐l�̘b�������Ă����B";
+			mes "�Ⴆ�΍u�t�̃s�b�`�W���_�X�Ȃ񂩂�";
+			mes "�X�L���ɂ��Ă����Əڂ���";
+			mes "�����Ă���邼�B";
 			next;
-			switch(select("もうちょっと見て回りたい","いざ、実戦へ！","もういいや")) {
+			switch(select("����������ƌ��ĉ�肽��","�����A����ցI","����������")) {
 				case 1:
-					mes "[教官サイ]";
-					mes "よし、他の教官や講師と";
-					mes "話してきな、みんな快く";
-					mes "手伝ってくれるはずだ。";
-					mes "ほら、頑張れ！";
+					mes "[�����T�C]";
+					mes "�悵�A���̋�����u�t��";
+					mes "�b���Ă��ȁA�݂�ȉ���";
+					mes "��`���Ă����͂����B";
+					mes "�ق�A�撣��I";
 					close;
 				case 2:
 					break;
@@ -741,13 +741,13 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 			}
 			//fall through
 		case 2:
-			mes "[教官サイ]";
-			mes "おお、威勢がいいな。";
-			mes "確かに実際に戦闘を";
-			mes "経験するのはいいことだ。";
-			mes "じゃあ、戦闘実習のマップへ";
-			mes "送ってやろう。";
-			mes "思う存分、戦ってこい！";
+			mes "[�����T�C]";
+			mes "�����A�А��������ȁB";
+			mes "�m���Ɏ��ۂɐ퓬��";
+			mes "�o������̂͂������Ƃ��B";
+			mes "���Ⴀ�A�퓬���K�̃}�b�v��";
+			mes "�����Ă�낤�B";
+			mes "�v�������A����Ă����I";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
@@ -757,41 +757,41 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 		}
 	}
 	if(CHANGE_NV &0x10 ==0 || CHANGE_NV &0x40 == 0) {
-		set '@word$,(CHANGE_NV &0x10 == 0)? "インターフェース": "アイテム";
-		mes "[教官サイ]";
-		mes "何か聞きたいことでもあるか？";
-		mes "おや？お前、";
-		mes '@word$+ "講義が";
-		mes "まだのようだな。";
-		mes "ならばまずそれを受けてこい！";
-		mes "はははははっ！";
+		set '@word$,(CHANGE_NV &0x10 == 0)? "�C���^�[�t�F�[�X": "�A�C�e��";
+		mes "[�����T�C]";
+		mes "���������������Ƃł����邩�H";
+		mes "����H���O�A";
+		mes '@word$+ "�u�`��";
+		mes "�܂��̂悤���ȁB";
+		mes "�Ȃ�΂܂�������󂯂Ă����I";
+		mes "�͂͂͂͂͂��I";
 		next;
-		switch(select('@word$+"講義を受けてくる！","話より、実戦がいい","いや、遠慮しておく")) {
+		switch(select('@word$+"�u�`���󂯂Ă���I","�b���A���킪����","����A�������Ă���")) {
 		case 1:
-			if('@word$ == "インターフェース") {
-				mes "[教官サイ]";
-				mes "おお、そうしてこい！";
-				mes "何事も、基礎が大事だからな。";
-				mes "インターフェース教官は中央にいるぞ。";
-				mes "はははははっ。";
+			if('@word$ == "�C���^�[�t�F�[�X") {
+				mes "[�����T�C]";
+				mes "�����A�������Ă����I";
+				mes "�������A��b���厖������ȁB";
+				mes "�C���^�[�t�F�[�X�����͒����ɂ��邼�B";
+				mes "�͂͂͂͂͂��B";
 				close;
 			}
-			mes "[教官サイ]";
-			mes "おお、そうしてこい！";
-			mes "何事も、基礎が大事だからな。";
-			mes "アイテム教官は俺の左側の方にいるぞ。";
-			mes "よし、サービスだ。送ってやる。";
+			mes "[�����T�C]";
+			mes "�����A�������Ă����I";
+			mes "�������A��b���厖������ȁB";
+			mes "�A�C�e�������͉��̍����̕��ɂ��邼�B";
+			mes "�悵�A�T�[�r�X���B�����Ă��B";
 			close2;
 			warp "new_1-2.gat",115,107;
 			end;
 		case 2:
-			mes "[教官サイ]";
-			mes "おお、威勢がいいな。";
-			mes "確かに実際に戦闘を";
-			mes "経験するのはいいことだ。";
-			mes "じゃあ、戦闘実習のマップへ";
-			mes "送ってやろう。";
-			mes "思う存分、戦ってこい！";
+			mes "[�����T�C]";
+			mes "�����A�А��������ȁB";
+			mes "�m���Ɏ��ۂɐ퓬��";
+			mes "�o������̂͂������Ƃ��B";
+			mes "���Ⴀ�A�퓬���K�̃}�b�v��";
+			mes "�����Ă�낤�B";
+			mes "�v�������A����Ă����I";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
@@ -800,110 +800,110 @@ new_1-2.gat,83,111,3	script	スキル教官	753,{
 			close;
 		}
 	}
-	mes "[教官サイ]";
-	mes "どうしたんだ？";
-	mes "もう全部の講義を終えただろう？";
-	mes "はは〜ん、さてはこの俺に惚れたな。";
-	mes "……は？　違うって？";
-	mes "そう遠慮するなって。";
+	mes "[�����T�C]";
+	mes "�ǂ������񂾁H";
+	mes "�����S���̍u�`���I�������낤�H";
+	mes "�͂́`��A���Ă͂��̉��ɍ��ꂽ�ȁB";
+	mes "�c�c�́H�@�Ⴄ���āH";
+	mes "������������Ȃ��āB";
 	next;
-	mes "[教官サイ]";
-	mes "ところで、スキル講師の話は";
-	mes "きちんと聴いたよな？";
+	mes "[�����T�C]";
+	mes "�Ƃ���ŁA�X�L���u�t�̘b��";
+	mes "������ƒ�������ȁH";
 	next;
-	switch(select("次のコースへ進みたい","こ、講師？","街へ行きたい")) {
+	switch(select("���̃R�[�X�֐i�݂���","���A�u�t�H","�X�֍s������")) {
 	case 1:
-		mes "[教官サイ]";
-		mes "おう！　戦闘実習をやるんだな。";
-		mes "ああ〜、お前をあの危険なマップの";
-		mes "入り口へ送らなければ";
-		mes "ならないなんて……";
-		mes "俺の拳は涙に濡れている。";
+		mes "[�����T�C]";
+		mes "�����I�@�퓬���K�����񂾂ȁB";
+		mes "�����`�A���O�����̊댯�ȃ}�b�v��";
+		mes "������֑���Ȃ����";
+		mes "�Ȃ�Ȃ��Ȃ�āc�c";
+		mes "���̌��͗܂ɔG��Ă���B";
 		next;
-		mes "[教官サイ]";
-		mes "だが何よりもお前自身のためだ。";
-		mes "泣く泣く送ってやろう。";
-		mes "では、この拳を受け取れ！";
+		mes "[�����T�C]";
+		mes "�������������O���g�̂��߂��B";
+		mes "�������������Ă�낤�B";
+		mes "�ł́A���̌����󂯎��I";
 		close2;
 		warp "new_1-2.gat",28,178;
 		end;
 	case 2:
-		mes "[教官サイ]";
-		mes "お？その様子だと";
-		mes "知らなかったようだな。";
-		mes "俺たち教官は本当に大事な";
-		mes "基礎を中心に教えている。";
+		mes "[�����T�C]";
+		mes "���H���̗l�q����";
+		mes "�m��Ȃ������悤���ȁB";
+		mes "�����������͖{���ɑ厖��";
+		mes "��b�𒆐S�ɋ����Ă���B";
 		next;
-		mes "[教官サイ]";
-		mes "だが、それだけだとちょっと";
-		mes "物足りないよな？";
-		mes "まあ、だいたいわかれば";
-		mes "いいって人もいるだろうが、";
-		mes "中には幅広く知りたいって";
-		mes "人もいるだろ？";
+		mes "[�����T�C]";
+		mes "�����A���ꂾ�����Ƃ������";
+		mes "������Ȃ���ȁH";
+		mes "�܂��A���������킩���";
+		mes "�������Đl�����邾�낤���A";
+		mes "���ɂ͕��L���m�肽������";
+		mes "�l�����邾��H";
 		next;
-		mes "[教官サイ]";
-		mes "そこでだ、そんな頑張り屋さんの";
-		mes "ために講師たちがいるってわけだ。";
-		mes "さあ、会いに行ってこい！";
+		mes "[�����T�C]";
+		mes "�����ł��A����Ȋ撣�艮�����";
+		mes "���߂ɍu�t������������Ă킯���B";
+		mes "�����A��ɍs���Ă����I";
 		next;
-		mes "[教官サイ]";
-		mes "特に「ピッチジュダス」という奴が";
-		mes "スキルに関して詳しく";
-		mes "教えてくれるはずだ。まあ、";
-		mes "ちょっと危なっかしく見えるがな……";
-		mes "ぜひ、参考にしてくれ！";
-		mes "ははははっ！";
+		mes "[�����T�C]";
+		mes "���Ɂu�s�b�`�W���_�X�v�Ƃ����z��";
+		mes "�X�L���Ɋւ��ďڂ���";
+		mes "�����Ă����͂����B�܂��A";
+		mes "������Ɗ�Ȃ������������邪�ȁc�c";
+		mes "���ЁA�Q�l�ɂ��Ă���I";
+		mes "�͂͂͂͂��I";
 		close;
 	case 3:
-		mes "[教官サイ]";
-		mes "街なら……俺から左の方向へ";
-		mes "ずっといった先に";
-		mes "カプラ職員がいるだろ？";
-		mes "彼女に頼めば送ってくれるよ。";
-		mes "ハッハッハッ!";
-		mes "話しかけてみるんだな。";
+		mes "[�����T�C]";
+		mes "�X�Ȃ�c�c�����獶�̕�����";
+		mes "�����Ƃ��������";
+		mes "�J�v���E�������邾��H";
+		mes "�ޏ��ɗ��߂Α����Ă�����B";
+		mes "�n�b�n�b�n�b!";
+		mes "�b�������Ă݂�񂾂ȁB";
 		close;
 	}
 }
 
 //==============================================================
-new_1-2.gat,115,111,3	script	アイテム教官	726,{
+new_1-2.gat,115,111,3	script	�A�C�e������	726,{
 	if(CHANGE_NV &0x40 == 0) {
-		mes "[教官アリス]";
-		mes "こんにちはー！";
-		mes "初めまして、かな？";
-		mes "アイテムの講義をしてあげようか？";
+		mes "[�����A���X]";
+		mes "����ɂ��́[�I";
+		mes "���߂܂��āA���ȁH";
+		mes "�A�C�e���̍u�`�����Ă����悤���H";
 		next;
-		switch(select("うん、うん！アイテム！","えー、それはちょっと……","いや、街に行きたい！")) {
+		switch(select("����A����I�A�C�e���I","���[�A����͂�����Ɓc�c","����A�X�ɍs�������I")) {
 		case 1:
-			mes "[教官アリス]";
-			mes "りょーかい！";
-			mes "じゃ、講義を始めましょう！";
-			mes "アイテムウィンドウを開いてみて。";
+			mes "[�����A���X]";
+			mes "���[�����I";
+			mes "����A�u�`���n�߂܂��傤�I";
+			mes "�A�C�e���E�B���h�E���J���Ă݂āB";
 			next;
-			mes "[教官アリス]";
-			mes "基本情報ウィンドウの";
-			mes "itemというボタンを押せば";
-			mes "表示されるよ。";
-			mes "ちなみにアイテムは";
-			mes "消耗品、装備品、収集品に";
-			mes "分類されるの。";
+			mes "[�����A���X]";
+			mes "��{���E�B���h�E��";
+			mes "item�Ƃ����{�^����������";
+			mes "�\��������B";
+			mes "���Ȃ݂ɃA�C�e����";
+			mes "���Օi�A�����i�A���W�i��";
+			mes "���ނ����́B";
 			next;
-			mes "[教官アリス]";
-			mes "どう？　わかったかな？";
-			mes "初心者用ポーションをあげるから、";
-			mes "ダブルクリックで使ってみて。";
+			mes "[�����A���X]";
+			mes "�ǂ��H�@�킩�������ȁH";
+			mes "���S�җp�|�[�V�����������邩��A";
+			mes "�_�u���N���b�N�Ŏg���Ă݂āB";
 			set CHANGE_NV,CHANGE_NV|0x40;
 			getitem 569,1;
 			allowuseitem;
 			percentheal -50,0;
 			next;
 			if(countitem(569) < 1) {
-				mes "[教官アリス]";
-				mes "よくできたわねー。";
+				mes "[�����A���X]";
+				mes "�悭�ł�����ˁ[�B";
 				if(BaseLevel < 8) {
-					mes "はい、ご褒美よ。";
+					mes "�͂��A���J����B";
 					if(BaseLevel == 7)	getexp 155,0;
 					else if(BaseLevel == 6)	getexp 115,0;
 					else if(BaseLevel == 5)	getexp 78,0;
@@ -913,37 +913,37 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 					else if(BaseLevel == 1)	getexp 10,0;
 				}
 				else {
-					mes "さすがあなた";
-					mes "レベルが高いだけのことはあるわね。";
+					mes "���������Ȃ�";
+					mes "���x�������������̂��Ƃ͂����ˁB";
 				}
 			}
 			else {
-				mes "[教官アリス]";
-				mes "ほら、ダブルクリックで使用してみて。";
+				mes "[�����A���X]";
+				mes "�ق�A�_�u���N���b�N�Ŏg�p���Ă݂āB";
 			}
-			mes "……次は装備ね。";
+			mes "�c�c���͑����ˁB";
 			allowuseitem -1;
 			next;
-			mes "[教官アリス]";
-			mes "アイテムウィンドウの左側の";
-			mes "equipを押してみて。";
-			mes "そこは装備可能なアイテムが";
-			mes "表示される所なの。";
+			mes "[�����A���X]";
+			mes "�A�C�e���E�B���h�E�̍�����";
+			mes "equip�������Ă݂āB";
+			mes "�����͑����\�ȃA�C�e����";
+			mes "�\������鏊�Ȃ́B";
 			next;
-			mes "[教官アリス]";
-			mes "装備できるアイテムをあげるから";
-			mes "試しに装備をしてみましょ！";
-			mes "まず^4A4AFFサンダルをダブルクリック！^000000";
+			mes "[�����A���X]";
+			mes "�����ł���A�C�e���������邩��";
+			mes "�����ɑ��������Ă݂܂���I";
+			mes "�܂�^4A4AFF�T���_�����_�u���N���b�N�I^000000";
 			getitem 2510,1;
 			getitem 2414,1;
 			getitem 5055,1;
 			allowuseitem;
 			next;
 			if(getequipid(6) == 2414) {
-				mes "[教官アリス]";
-				mes "よくできたわねー。";
+				mes "[�����A���X]";
+				mes "�悭�ł�����ˁ[�B";
 				if(BaseLevel < 8) {
-					mes "はい、ご褒美よ。";
+					mes "�͂��A���J����B";
 					if(BaseLevel == 7)	getexp 155,0;
 					else if(BaseLevel == 6)	getexp 115,0;
 					else if(BaseLevel == 5)	getexp 78,0;
@@ -953,47 +953,47 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 					else if(BaseLevel == 1)	getexp 10,0;
 				}
 				else {
-					mes "さすがあなたレベルが高いだけの";
-					mes "ことはあるわね。";
+					mes "���������Ȃ����x��������������";
+					mes "���Ƃ͂����ˁB";
 				}
 			}
 			else {
-				mes "[教官アリス]";
-				mes "ほら、ダブルクリックで装備してみて。";
+				mes "[�����A���X]";
+				mes "�ق�A�_�u���N���b�N�ő������Ă݂āB";
 			}
-			mes "他のアイテムも同じように装備してね。";
+			mes "���̃A�C�e���������悤�ɑ������ĂˁB";
 			allowuseitem -1;
 			next;
-			mes "[教官アリス]";
-			mes "じゃ、次に^4A4AFFF12^000000を押してみて。";
-			mes "小さな四角い欄が";
-			mes "9個表示されたでしょ。";
+			mes "[�����A���X]";
+			mes "����A����^4A4AFFF12^000000�������Ă݂āB";
+			mes "�����Ȏl�p������";
+			mes "9�\�����ꂽ�ł���B";
 			next;
-			mes "[教官アリス]";
-			mes "これはショートカットウィンドウと";
-			mes "言って回復アイテムや";
-			mes "スキル、装備アイテムをマウスで";
-			mes "引っ張ってくると登録できるの。";
+			mes "[�����A���X]";
+			mes "����̓V���[�g�J�b�g�E�B���h�E��";
+			mes "�����ĉ񕜃A�C�e����";
+			mes "�X�L���A�����A�C�e�����}�E�X��";
+			mes "���������Ă���Ɠo�^�ł���́B";
 			next;
-			mes "[教官アリス]";
-			mes "そして各欄に対応する";
-			mes "^4A4AFFF1からF9^000000までのキーを";
-			mes "押せば、使用できるよ。";
+			mes "[�����A���X]";
+			mes "�����Ċe���ɑΉ�����";
+			mes "^4A4AFFF1����F9^000000�܂ł̃L�[��";
+			mes "�����΁A�g�p�ł����B";
 			next;
-			mes "[教官アリス]";
-			mes "スキルの講義を受けると";
-			mes "応急手当を教えてもらえるでしょ。";
-			mes "そのアイコンを、";
-			mes "試しにショートカットウィンドウに";
-			mes "登録してみよう！";
+			mes "[�����A���X]";
+			mes "�X�L���̍u�`���󂯂��";
+			mes "���}�蓖�������Ă��炦��ł���B";
+			mes "���̃A�C�R�����A";
+			mes "�����ɃV���[�g�J�b�g�E�B���h�E��";
+			mes "�o�^���Ă݂悤�I";
 			next;
-			mes "[教官アリス]";
-			mes "どう？わかったかな。";
-			mes "そうそう、スキルを使うには";
-			mes "スキルポイントが必要よ。";
-			mes "では基本スキルはパッシブだから";
-			mes "ショートカットウィンドウには";
-			mes "登録できないけどね。";
+			mes "[�����A���X]";
+			mes "�ǂ��H�킩�������ȁB";
+			mes "���������A�X�L�����g���ɂ�";
+			mes "�X�L���|�C���g���K�v��B";
+			mes "�ł͊�{�X�L���̓p�b�V�u������";
+			mes "�V���[�g�J�b�g�E�B���h�E�ɂ�";
+			mes "�o�^�ł��Ȃ����ǂˁB";
 			if(JobLevel < 7) {
 				if(JobLevel == 6)	getexp 0,151;
 				else if(JobLevel == 5)	getexp 0,91;
@@ -1003,21 +1003,21 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 				else if(JobLevel == 1)	getexp 0,10;
 			}
 			next;
-			mes "[教官アリス]";
-			mes "簡単でサポート万全なアリスの";
-			mes "講義はここまで！　最後に、ちょっと";
-			mes "役立つアイテムをあげる。ただし……";
-			mes "^FF0000ハエの羽、蝶の羽は";
-			mes "ここで使っちゃだめよ。^000000";
-			mes "迷子になっちゃうといけないからね。";
+			mes "[�����A���X]";
+			mes "�ȒP�ŃT�|�[�g���S�ȃA���X��";
+			mes "�u�`�͂����܂ŁI�@�Ō�ɁA�������";
+			mes "�𗧂A�C�e����������B�������c�c";
+			mes "^FF0000�n�G�̉H�A���̉H��";
+			mes "�����Ŏg�����Ⴞ�߂�B^000000";
+			mes "���q�ɂȂ����Ⴄ�Ƃ����Ȃ�����ˁB";
 			getitem 601,10;
 			getitem 602,2;
 			getitem 569,50;
 			next;
-			mes "[教官アリス]";
-			mes "そしてこれが……";
+			mes "[�����A���X]";
+			mes "�����Ă��ꂪ�c�c";
 			if(JobLevel < 7) {
-				mes "転職応援としてのJob経験値！";
+				mes "�]�E�����Ƃ��Ă�Job�o���l�I";
 				if(JobLevel == 6)	getexp 0,151;
 				else if(JobLevel == 5)	getexp 0,91;
 				else if(JobLevel == 4)	getexp 0,40;
@@ -1026,320 +1026,320 @@ new_1-2.gat,115,111,3	script	アイテム教官	726,{
 				else if(JobLevel == 1)	getexp 0,10;
 			}
 			else {
-				mes "っと、経験値をあげようと思ったけど";
-				mes "あなた、レベルが高いねー。";
-				mes "なら、ご褒美はもういいかな。";
+				mes "���ƁA�o���l�������悤�Ǝv��������";
+				mes "���Ȃ��A���x���������ˁ[�B";
+				mes "�Ȃ�A���J���͂����������ȁB";
 			}
-			mes "お疲れさま！";
+			mes "����ꂳ�܁I";
 			next;
-			switch(select("これからどうする？","いざ実戦へ！","じゃあね！")) {
+			switch(select("���ꂩ��ǂ�����H","��������ցI","���Ⴀ�ˁI")) {
 				case 1:
-					mes "[教官アリス]";
-					mes "まだ会ってない教官がいたら、講義を";
-					mes "受けてきた方がいいよ。";
-					mes "私みたいに色々と助けてくれるからさ。";
-					mes "それか、あちこち見て回るといいよ。";
+					mes "[�����A���X]";
+					mes "�܂�����ĂȂ�������������A�u�`��";
+					mes "�󂯂Ă�������������B";
+					mes "���݂����ɐF�X�Ə����Ă���邩�炳�B";
+					mes "���ꂩ�A�����������ĉ��Ƃ�����B";
 					next;
-					mes "[教官アリス]";
-					mes "講師たちの話も十分参考になるはず。";
-					mes "誰に話しかければいいのか";
-					mes "わからなくなったら、";
-					mes "近くにいる人に聞いてみて。";
+					mes "[�����A���X]";
+					mes "�u�t�����̘b���\���Q�l�ɂȂ�͂��B";
+					mes "�N�ɘb��������΂����̂�";
+					mes "�킩��Ȃ��Ȃ�����A";
+					mes "�߂��ɂ���l�ɕ����Ă݂āB";
 					close;
 				case 2:
 					break;
 				case 3:
-					mes "[教官アリス]";
-					mes "……じゃ、またね！";
+					mes "[�����A���X]";
+					mes "�c�c����A�܂��ˁI";
 					close;
 			}
 			break;
 		case 2:
-			mes "[教官アリス]";
-			mes "実戦がいいのね。";
-			mes "すぐに行きたいのかな？";
-			mes "えっと……教官たちには";
-			mes "全員会ったよね？";
-			mes "教官の講義は全部受けた方が";
-			mes "絶対お得だよ。";
+			mes "[�����A���X]";
+			mes "���킪�����̂ˁB";
+			mes "�����ɍs�������̂��ȁH";
+			mes "�����Ɓc�c���������ɂ�";
+			mes "�S���������ˁH";
+			mes "�����̍u�`�͑S���󂯂�����";
+			mes "��΂�������B";
 			next;
-			if(select("うん、実戦！","ちょっと待って！")==1)
+			if(select("����A����I","������Ƒ҂��āI")==1)
 				break;
-			mes "[教官アリス]";
-			mes "わかったわ。";
-			mes "じゃあ、もっと他の人の話も";
-			mes "聞いてきなさい。講師たちの話も";
-			mes "参考になるはずよ。";
+			mes "[�����A���X]";
+			mes "�킩������B";
+			mes "���Ⴀ�A�����Ƒ��̐l�̘b��";
+			mes "�����Ă��Ȃ����B�u�t�����̘b��";
+			mes "�Q�l�ɂȂ�͂���B";
 			close;
 		case 3:
-			mes "[教官アリス]";
-			mes "街へ行きたいなら、あそこにいる";
-			mes "カプラ職員にお願いしなさい。";
-			mes "プロンテラ、モロク、フェイヨン……";
-			mes "あなたが行きたい街へ送ってくれるよ。";
+			mes "[�����A���X]";
+			mes "�X�֍s�������Ȃ�A�������ɂ���";
+			mes "�J�v���E���ɂ��肢���Ȃ����B";
+			mes "�v�����e���A�����N�A�t�F�C�����c�c";
+			mes "���Ȃ����s�������X�֑����Ă�����B";
 			close;
 		}
-		mes "[教官アリス]";
-		mes "おお、やる気ね！";
-		mes "じゃあ、送ってあげよう。";
-		mes "送った先にいる担当の人の";
-		mes "話はちゃんと聞くのよ。";
-		mes "戦闘は命がけ！　だからね。";
-		mes "では、いってらっしゃーい！";
+		mes "[�����A���X]";
+		mes "�����A���C�ˁI";
+		mes "���Ⴀ�A�����Ă����悤�B";
+		mes "��������ɂ���S���̐l��";
+		mes "�b�͂����ƕ����̂�B";
+		mes "�퓬�͖������I�@������ˁB";
+		mes "�ł́A�����Ă������[���I";
 		close2;
 		warp "new_1-2.gat",28,178;
 		end;
 	}
 	if(CHANGE_NV &0x10 == 0 || CHANGE_NV &0x20 == 0) {
-		set '@word$,(CHANGE_NV &0x10 == 0)? "インターフェース": "スキル";
-		mes "[教官アリス]";
-		mes "何かお手伝いしようか？";
-		if('@word$ == "インターフェース") {
-			mes "あら、インターフェースの講義を";
-			mes "受けていないみたいね。";
-			mes "クリスさんの話を聞いてきた方が";
+		set '@word$,(CHANGE_NV &0x10 == 0)? "�C���^�[�t�F�[�X": "�X�L��";
+		mes "[�����A���X]";
+		mes "��������`�����悤���H";
+		if('@word$ == "�C���^�[�t�F�[�X") {
+			mes "����A�C���^�[�t�F�[�X�̍u�`��";
+			mes "�󂯂Ă��Ȃ��݂����ˁB";
+			mes "�N���X����̘b�𕷂��Ă�������";
 		}
 		else {
-			mes "あら、^4A4AFFスキルの講義^000000を受けて";
-			mes "いないみたいね。";
-			mes "サイさんの話を聞いてきた方が";
+			mes "����A^4A4AFF�X�L���̍u�`^000000���󂯂�";
+			mes "���Ȃ��݂����ˁB";
+			mes "�T�C����̘b�𕷂��Ă�������";
 		}
-		mes "いいわよ。";
+		mes "�������B";
 		next;
-		switch(select('@word$+"の講義を受けたい","話より、実戦がいい！","街へはどうやって行くの？")) {
+		switch(select('@word$+"�̍u�`���󂯂���","�b���A���킪�����I","�X�ւ͂ǂ�����čs���́H")) {
 		case 1:
-			if('@word$ == "インターフェース") {
-				mes "[教官アリス]";
-				mes "教官のクリスさんは";
-				mes "この部屋の中央にいるよ。";
-				mes "そこへ行ってクリスさんに";
-				mes "話しかけてみなさい。";
-				mes "きっと役に立つはずよ。";
+			if('@word$ == "�C���^�[�t�F�[�X") {
+				mes "[�����A���X]";
+				mes "�����̃N���X�����";
+				mes "���̕����̒����ɂ����B";
+				mes "�����֍s���ăN���X�����";
+				mes "�b�������Ă݂Ȃ����B";
+				mes "�����Ɩ��ɗ��͂���B";
 				close;
 			}
-			mes "[教官アリス]";
-			mes "教官のサイさんは";
-			mes "私の右側にいるよ。";
-			mes "そこへ行ってサイさんに";
-			mes "話しかけてみなさい。";
-			mes "じゃあ、サイさんの下へ送ってあげる。";
+			mes "[�����A���X]";
+			mes "�����̃T�C�����";
+			mes "���̉E���ɂ����B";
+			mes "�����֍s���ăT�C�����";
+			mes "�b�������Ă݂Ȃ����B";
+			mes "���Ⴀ�A�T�C����̉��֑����Ă�����B";
 			close2;
 			warp "new_1-2.gat",84,107;
 			end;
 		case 2:
-			mes "[教官アリス]";
-			mes "実戦がいいのね。";
-			mes "すぐに行きたいのかな？";
-			mes "えっと……教官たちには";
-			mes "全員会ったよね？";
-			mes "教官の講義は全部受けた方が";
-			mes "絶対お得だよ。";
+			mes "[�����A���X]";
+			mes "���킪�����̂ˁB";
+			mes "�����ɍs�������̂��ȁH";
+			mes "�����Ɓc�c���������ɂ�";
+			mes "�S���������ˁH";
+			mes "�����̍u�`�͑S���󂯂�����";
+			mes "��΂�������B";
 			next;
-			if(select("うん、実戦！","ちょっと待って！")==1) {
-				mes "[教官アリス]";
-				mes "おお、やる気ね！";
-				mes "じゃあ、送ってあげよう。";
-				mes "送った先にいる担当の人の";
-				mes "話はちゃんと聞くのよ。";
-				mes "戦闘は命がけ！　だからね。";
-				mes "では、いってらっしゃーい！";
+			if(select("����A����I","������Ƒ҂��āI")==1) {
+				mes "[�����A���X]";
+				mes "�����A���C�ˁI";
+				mes "���Ⴀ�A�����Ă����悤�B";
+				mes "��������ɂ���S���̐l��";
+				mes "�b�͂����ƕ����̂�B";
+				mes "�퓬�͖������I�@������ˁB";
+				mes "�ł́A�����Ă������[���I";
 				close2;
 				warp "new_1-2.gat",28,178;
 				end;
 			}
-			mes "[教官アリス]";
-			mes "わかったわ。";
-			mes "じゃあ、もっと他の人の話も";
-			mes "聞いてきなさい。講師たちの話も";
-			mes "参考になるはずよ。";
+			mes "[�����A���X]";
+			mes "�킩������B";
+			mes "���Ⴀ�A�����Ƒ��̐l�̘b��";
+			mes "�����Ă��Ȃ����B�u�t�����̘b��";
+			mes "�Q�l�ɂȂ�͂���B";
 			close;
 		case 3:
-			mes "[教官アリス]";
-			mes "街へ行きたいなら、あそこにいる";
-			mes "カプラ職員にお願いしなさい。";
-			mes "プロンテラ、モロク、フェイヨン……";
-			mes "あなたが行きたい街へ送ってくれるよ。";
+			mes "[�����A���X]";
+			mes "�X�֍s�������Ȃ�A�������ɂ���";
+			mes "�J�v���E���ɂ��肢���Ȃ����B";
+			mes "�v�����e���A�����N�A�t�F�C�����c�c";
+			mes "���Ȃ����s�������X�֑����Ă�����B";
 			close;
 		}
 	}
-	mes "[教官アリス]";
-	mes "どうしたの？";
-	mes "何か困ってるのかな？";
-	mes "講義は……全て受けたみたいね。";
-	mes "どこか行きたいの？";
+	mes "[�����A���X]";
+	mes "�ǂ������́H";
+	mes "���������Ă�̂��ȁH";
+	mes "�u�`�́c�c�S�Ď󂯂��݂����ˁB";
+	mes "�ǂ����s�������́H";
 	next;
-	switch(select("どこに行けばいいの？","街へ行きたい","何でもない")) {
+	switch(select("�ǂ��ɍs���΂����́H","�X�֍s������","���ł��Ȃ�")) {
 	case 1:
-		mes "[教官アリス]";
-		mes "そうね……";
-		mes "アイテムの使い方も分かってるし";
-		mes "スキルも学んだし……じゃあ、";
-		mes "残ってるのは戦闘実習だね。";
-		mes "それなら実習マップの入り口へ";
-		mes "送ってあげようか？";
+		mes "[�����A���X]";
+		mes "�����ˁc�c";
+		mes "�A�C�e���̎g�������������Ă邵";
+		mes "�X�L�����w�񂾂��c�c���Ⴀ�A";
+		mes "�c���Ă�̂͐퓬���K���ˁB";
+		mes "����Ȃ���K�}�b�v�̓������";
+		mes "�����Ă����悤���H";
 		next;
-		if(select("送って！送って！","ちょっと待って！")==1) {
-			mes "[教官アリス]";
-			mes "私があげたアイテムは";
-			mes "きちんと持っているわよね？";
-			mes "武器や防具は装備した？";
-			mes "それじゃ、送ってあげる！";
+		if(select("�����āI�����āI","������Ƒ҂��āI")==1) {
+			mes "[�����A���X]";
+			mes "�����������A�C�e����";
+			mes "������Ǝ����Ă�����ˁH";
+			mes "�����h��͑��������H";
+			mes "���ꂶ��A�����Ă�����I";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
 		}
-		mes "[教官アリス]";
-		mes "わかったわ。";
-		mes "また何かあったら";
-		mes "いつでも呼んでちょうだい。";
+		mes "[�����A���X]";
+		mes "�킩������B";
+		mes "�܂�������������";
+		mes "���ł��Ă�ł��傤�����B";
 		close;
 	case 2:
-		mes "[教官アリス]";
-		mes "街へ行きたいなら、あそこにいる";
-		mes "カプラ職員にお願いしなさい。";
-		mes "プロンテラ、モロク、フェイヨン……";
-		mes "あなたが行きたい街へ送ってくれるよ。";
+		mes "[�����A���X]";
+		mes "�X�֍s�������Ȃ�A�������ɂ���";
+		mes "�J�v���E���ɂ��肢���Ȃ����B";
+		mes "�v�����e���A�����N�A�t�F�C�����c�c";
+		mes "���Ȃ����s�������X�֑����Ă�����B";
 		close;
 	case 3:
-		mes "[教官アリス]";
-		mes "……じゃ、またね！";
+		mes "[�����A���X]";
+		mes "�c�c����A�܂��ˁI";
 		close;
 	}
 }
 
 //==============================================================
-new_1-2.gat,118,108,3	script	カプラ職員	117,{
-	mes "[カプラ職員]";
-	mes "いらっしゃいませ。";
-	mes "私は初心者の方へ";
-	mes "ご案内するために";
-	mes "カプラ本社から派遣されました。";
-	mes "よろしくお願いいたします。";
+new_1-2.gat,118,108,3	script	�J�v���E��	117,{
+	mes "[�J�v���E��]";
+	mes "��������Ⴂ�܂��B";
+	mes "���͏��S�҂̕���";
+	mes "���ē����邽�߂�";
+	mes "�J�v���{�Ђ���h������܂����B";
+	mes "��낵�����肢�������܂��B";
 	next;
-	mes "[カプラ職員]";
-	mes "我がカプラサービスは";
-	mes "ミッドガルド大陸内全ての";
-	mes "物流を管理していると言われるように";
-	mes "ほぼ全ての街で、冒険者の皆様への";
-	mes "サービスを提供させていただいて";
-	mes "おります。";
+	mes "[�J�v���E��]";
+	mes "�䂪�J�v���T�[�r�X��";
+	mes "�~�b�h�K���h�嗤���S�Ă�";
+	mes "�������Ǘ����Ă���ƌ�����悤��";
+	mes "�قڑS�Ă̊X�ŁA�`���҂̊F�l�ւ�";
+	mes "�T�[�r�X��񋟂����Ă���������";
+	mes "����܂��B";
 	next;
-	mes "[カプラ職員]";
-	mes "いらっしゃいませ。";
-	mes "カプラサービスは";
-	mes "いつも皆様のそばにいます。";
-	mes "何をお手伝いいたしましょう？";
+	mes "[�J�v���E��]";
+	mes "��������Ⴂ�܂��B";
+	mes "�J�v���T�[�r�X��";
+	mes "�����F�l�̂��΂ɂ��܂��B";
+	mes "��������`���������܂��傤�H";
 	next;
-	mes "[カプラ職員]";
-	mes "空間移動サービスについて";
-	mes "先にご案内させていただきます。";
-	mes "今、街へ移動されますと、";
-	mes "^4A4AFF二度と初心者修練場へは";
-	mes "戻れなくなります。^000000";
-	mes "あらかじめご了承ください。";
+	mes "[�J�v���E��]";
+	mes "��Ԉړ��T�[�r�X�ɂ���";
+	mes "��ɂ��ē������Ă��������܂��B";
+	mes "���A�X�ֈړ�����܂��ƁA";
+	mes "^4A4AFF��x�Ə��S�ҏC����ւ�";
+	mes "�߂�Ȃ��Ȃ�܂��B^000000";
+	mes "���炩���߂��������������B";
 	next;
-	if(select("空間移動サービス","カプラサービスには何があるの？")==1) {
+	if(select("��Ԉړ��T�[�r�X","�J�v���T�[�r�X�ɂ͉�������́H")==1) {
 		if(CHANGE_NV &0x70 == 0) {
-			mes "[カプラ職員]";
-			mes "街へ行かれるのですね。";
-			mes "では、簡単に主要都市をご紹介";
-			mes "しましょう。";
-			mes "まず、ルーンミッドガッツ王国の";
-			mes "首都プロンテラ、そしてその衛星都市";
-			mes "イズルードがあります。";
+			mes "[�J�v���E��]";
+			mes "�X�֍s�����̂ł��ˁB";
+			mes "�ł́A�ȒP�Ɏ�v�s�s�����Љ�";
+			mes "���܂��傤�B";
+			mes "�܂��A���[���~�b�h�K�b�c������";
+			mes "��s�v�����e���A�����Ă��̉q���s�s";
+			mes "�C�Y���[�h������܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "^4A4AFFモロクは砂漠の都市で、シーフや";
-			mes "アサシン^000000が多く集まっている街です。";
-			mes "^4A4AFFフェイヨンは山岳に位置しており、";
-			mes "そのすぐ近くに弓手村^000000があります。";
+			mes "[�J�v���E��]";
+			mes "^4A4AFF�����N�͍����̓s�s�ŁA�V�[�t��";
+			mes "�A�T�V��^000000�������W�܂��Ă���X�ł��B";
+			mes "^4A4AFF�t�F�C�����͎R�x�Ɉʒu���Ă���A";
+			mes "���̂����߂��ɋ|�葺^000000������܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "^4A4AFFゲフェンは魔法都市と言われています。";
-			mes "もしマジシャンになりたいのでしたら、";
-			mes "ゲフェン^000000へ行かれると良いでしょう。";
+			mes "[�J�v���E��]";
+			mes "^4A4AFF�Q�t�F���͖��@�s�s�ƌ����Ă��܂��B";
+			mes "�����}�W�V�����ɂȂ肽���̂ł�����A";
+			mes "�Q�t�F��^000000�֍s�����Ɨǂ��ł��傤�B";
 			next;
-			mes "[カプラ職員]";
-			mes "^4A4AFFアルベルタは港街でして、";
-			mes "商人組合^000000があります。";
-			mes "また、船で移動したいのでしたら、";
-			mes "アルベルタかイズルードへ行く";
-			mes "必要があります。";
-			mes "では、目的地をお選びください。";
+			mes "[�J�v���E��]";
+			mes "^4A4AFF�A���x���^�͍`�X�ł��āA";
+			mes "���l�g��^000000������܂��B";
+			mes "�܂��A�D�ňړ��������̂ł�����A";
+			mes "�A���x���^���C�Y���[�h�֍s��";
+			mes "�K�v������܂��B";
+			mes "�ł́A�ړI�n�����I�т��������B";
 			next;
 		}
-		switch (select((CHANGE_NV&0x70==0)? "": "第2コース（戦闘実習）","プロンテラ","モロク","フェイヨン","アルベルタ","ゲフェン")) {
+		switch (select((CHANGE_NV&0x70==0)? "": "��2�R�[�X�i�퓬���K�j","�v�����e��","�����N","�t�F�C����","�A���x���^","�Q�t�F��")) {
 		case 1:
-			mes "[カプラ職員]";
-			mes "第2コースへ送りましょう。";
+			mes "[�J�v���E��]";
+			mes "��2�R�[�X�֑���܂��傤�B";
 			close2;
 			warp "new_1-2.gat",28,178;
 			end;
 		case 2:
-			mes "[カプラ職員]";
-			mes "ルーンミッドガッツ王国の首都";
-			mes "プロンテラですね。";
-			mes "では、プロンテラへ送りましょう。";
-			mes "ありがとうございました。";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "���[���~�b�h�K�b�c�����̎�s";
+			mes "�v�����e���ł��ˁB";
+			mes "�ł́A�v�����e���֑���܂��傤�B";
+			mes "���肪�Ƃ��������܂����B";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close2;
 			savepoint "prontera.gat",118,72;
 			warp "prontera.gat",150,50;
 			break;
 		case 3:
-			mes "[カプラ職員]";
-			mes "砂漠の都市モロクですね。";
-			mes "中央のオアシスが素敵な所です。";
-			mes "では、モロクへ送りましょう。";
-			mes "ありがとうございました。";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "�����̓s�s�����N�ł��ˁB";
+			mes "�����̃I�A�V�X���f�G�ȏ��ł��B";
+			mes "�ł́A�����N�֑���܂��傤�B";
+			mes "���肪�Ƃ��������܂����B";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close2;
 			savepoint "morocc.gat",151,98;
 			warp "morocc.gat",155,110;
 			break;
 		case 4:
-			mes "[カプラ職員]";
-			mes "あら？　アーチャーになりたいの";
-			mes "ですか？";
-			mes "では、フェイヨンへ送りましょう。";
-			mes "ありがとうございました。";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "����H�@�A�[�`���[�ɂȂ肽����";
+			mes "�ł����H";
+			mes "�ł́A�t�F�C�����֑���܂��傤�B";
+			mes "���肪�Ƃ��������܂����B";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close2;
 			savepoint "payon.gat",160,58;
 			warp "payon.gat",166,67;
 			break;
 		case 5:
-			mes "[カプラ職員]";
-			mes "港街アルベルタですね。";
-			mes "ルーンミッドガッツ王国の";
-			mes "貿易拠点ですね。";
-			mes "また、他地域へ船便も";
-			mes "アルベルタから出ています。";
-			mes "商人組合にでもおこしでしょうか？";
+			mes "[�J�v���E��]";
+			mes "�`�X�A���x���^�ł��ˁB";
+			mes "���[���~�b�h�K�b�c������";
+			mes "�f�Ջ��_�ł��ˁB";
+			mes "�܂��A���n��֑D�ւ�";
+			mes "�A���x���^����o�Ă��܂��B";
+			mes "���l�g���ɂł��������ł��傤���H";
 			next;
-			mes "[カプラ職員]";
-			mes "では、アルベルタへ送りましょう。";
-			mes "ありがとうございました。";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "�ł́A�A���x���^�֑���܂��傤�B";
+			mes "���肪�Ƃ��������܂����B";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close2;
 			savepoint "alberta.gat",31,233;
 			warp "alberta.gat",114,58;
 			break;
 		case 6:
-			mes "[カプラ職員]";
-			mes "魔法都市ゲフェンですね。";
-			mes "ゲフェンは中央のゲフェンタワーが";
-			mes "立派です。では、ゲフェンの噴水の";
-			mes "近くへ送りましょう。";
+			mes "[�J�v���E��]";
+			mes "���@�s�s�Q�t�F���ł��ˁB";
+			mes "�Q�t�F���͒����̃Q�t�F���^���[��";
+			mes "���h�ł��B�ł́A�Q�t�F���̕�����";
+			mes "�߂��֑���܂��傤�B";
 			next;
-			mes "[カプラ職員]";
-			mes "ありがとうございました。";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "���肪�Ƃ��������܂����B";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close2;
 			savepoint "geffen.gat",118,37;
 			warp "geffen.gat",121,65;
@@ -1358,30 +1358,30 @@ new_1-2.gat,118,108,3	script	カプラ職員	117,{
 		set CHANGE_NV,0;
 		end;
 	}
-	mes "[カプラ職員]";
-	mes "カプラサービスの説明をしましょう。";
-	mes "知りたいサービスをご選択ください。";
+	mes "[�J�v���E��]";
+	mes "�J�v���T�[�r�X�̐��������܂��傤�B";
+	mes "�m�肽���T�[�r�X�����I�����������B";
 	while(1) {
 		next;
-		switch(select("位置セーブサービス","倉庫サービス","空間移動サービス","カートサービス","話をやめる")) {
+		switch(select("�ʒu�Z�[�u�T�[�r�X","�q�ɃT�[�r�X","��Ԉړ��T�[�r�X","�J�[�g�T�[�r�X","�b����߂�")) {
 		case 1:
-			mes "[カプラ職員]";
-			mes "戦闘不能時の復活地点を保存する";
-			mes "サービスです。各街のカプラ職員で";
-			mes "セーブしますと、該当のカプラ職員が";
-			mes "担当しているセーブ位置からの";
-			mes "復活が可能です。";
+			mes "[�J�v���E��]";
+			mes "�퓬�s�\���̕����n�_��ۑ�����";
+			mes "�T�[�r�X�ł��B�e�X�̃J�v���E����";
+			mes "�Z�[�u���܂��ƁA�Y���̃J�v���E����";
+			mes "�S�����Ă���Z�[�u�ʒu�����";
+			mes "�������\�ł��B";
 			next;
-			mes "[カプラ職員]";
-			mes "また、セーブ位置は一番最後に";
-			mes "保存した場所が有効になります。";
-			mes "それから「蝶の羽」というアイテムを";
-			mes "利用するとセーブ位置へ戻ることが";
-			mes "できます。";
+			mes "[�J�v���E��]";
+			mes "�܂��A�Z�[�u�ʒu�͈�ԍŌ��";
+			mes "�ۑ������ꏊ���L���ɂȂ�܂��B";
+			mes "���ꂩ��u���̉H�v�Ƃ����A�C�e����";
+			mes "���p����ƃZ�[�u�ʒu�֖߂邱�Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "この位置セーブサービスは無料ですので";
-			mes "ぜひ、ご利用ください。";
+			mes "[�J�v���E��]";
+			mes "���̈ʒu�Z�[�u�T�[�r�X�͖����ł��̂�";
+			mes "���ЁA�����p���������B";
 			if(CHANGE_NV &0x80 == 0) {
 				if(BaseLevel < 8) {
 					if(BaseLevel == 7)	getexp 155,0;
@@ -1396,58 +1396,58 @@ new_1-2.gat,118,108,3	script	カプラ職員	117,{
 			}
 			continue;
 		case 2:
-			mes "[カプラ職員]";
-			mes "我がカプラサービスは長年の歴史と";
-			mes "伝統を誇る、大陸最大の";
-			mes "物流センターです。";
+			mes "[�J�v���E��]";
+			mes "�䂪�J�v���T�[�r�X�͒��N�̗��j��";
+			mes "�`�����ւ�A�嗤�ő��";
+			mes "�����Z���^�[�ł��B";
 			next;
-			mes "[カプラ職員]";
-			mes "冒険者の皆様の品物を";
-			mes "保管させていただく";
-			mes "倉庫も、我がカプラサービスにて";
-			mes "提供しております。";
+			mes "[�J�v���E��]";
+			mes "�`���҂̊F�l�̕i����";
+			mes "�ۊǂ����Ă�������";
+			mes "�q�ɂ��A�䂪�J�v���T�[�r�X�ɂ�";
+			mes "�񋟂��Ă���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "カプラサービスは、ほぼ全ての";
-			mes "街で営業しておりますので";
-			mes "ぜひ、ご利用ください。";
+			mes "[�J�v���E��]";
+			mes "�J�v���T�[�r�X�́A�قڑS�Ă�";
+			mes "�X�ŉc�Ƃ��Ă���܂��̂�";
+			mes "���ЁA�����p���������B";
 			next;
-			mes "[カプラ職員]";
-			mes "荷物が多いと移動や戦闘中、思うように";
-			mes "動けないこともおありでしょう。";
-			mes "そんな時、我がカプラサービスの倉庫に";
-			mes "あまり使用しないアイテムを預けると";
-			mes "よいと思います。";
+			mes "[�J�v���E��]";
+			mes "�ו��������ƈړ���퓬���A�v���悤��";
+			mes "�����Ȃ����Ƃ�������ł��傤�B";
+			mes "����Ȏ��A�䂪�J�v���T�[�r�X�̑q�ɂ�";
+			mes "���܂�g�p���Ȃ��A�C�e����a�����";
+			mes "�悢�Ǝv���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "倉庫のご利用はある程度経験を";
-			mes "積まれた方を対象にさせて";
-			mes "いただいております。";
-			mes "そしてご利用の際には、";
-			mes "一定額の倉庫利用料を";
-			mes "いただいております。";
+			mes "[�J�v���E��]";
+			mes "�q�ɂ̂����p�͂�����x�o����";
+			mes "�ς܂ꂽ����Ώۂɂ�����";
+			mes "���������Ă���܂��B";
+			mes "�����Ă����p�̍ۂɂ́A";
+			mes "���z�̑q�ɗ��p����";
+			mes "���������Ă���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "倉庫のご利用には";
-			mes "^4A4AFF基本スキルのレベルが6";
-			mes "以上^000000必要です。";
+			mes "[�J�v���E��]";
+			mes "�q�ɂ̂����p�ɂ�";
+			mes "^4A4AFF��{�X�L���̃��x����6";
+			mes "�ȏ�^000000�K�v�ł��B";
 			next;
-			mes "[カプラ職員]";
-			mes "倉庫はアイテムと同じく消耗品、装備品";
-			mes "その他アイテムという風に";
-			mes "分類されております。";
+			mes "[�J�v���E��]";
+			mes "�q�ɂ̓A�C�e���Ɠ��������Օi�A�����i";
+			mes "���̑��A�C�e���Ƃ�������";
+			mes "���ނ���Ă���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "また、最高300種類のアイテムを";
-			mes "預けることができます。";
-			mes "同じアイテムの最大保管可能個数は";
-			mes "3万個となります。";
+			mes "[�J�v���E��]";
+			mes "�܂��A�ō�300��ނ̃A�C�e����";
+			mes "�a���邱�Ƃ��ł��܂��B";
+			mes "�����A�C�e���̍ő�ۊǉ\����";
+			mes "3���ƂȂ�܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "同一アカウント内のキャラクターは";
-			mes "共通の倉庫を利用することになります。";
-			mes "各街ごとに倉庫利用料は異なりますので";
-			mes "ご利用の際にはご注意ください。";
+			mes "[�J�v���E��]";
+			mes "����A�J�E���g���̃L�����N�^�[��";
+			mes "���ʂ̑q�ɂ𗘗p���邱�ƂɂȂ�܂��B";
+			mes "�e�X���Ƃɑq�ɗ��p���͈قȂ�܂��̂�";
+			mes "�����p�̍ۂɂ͂����ӂ��������B";
 			if(CHANGE_NV &0x100 == 0) {
 				if(JobLevel < 7) {
 					if(JobLevel == 6)	getexp 0,151;
@@ -1461,874 +1461,874 @@ new_1-2.gat,118,108,3	script	カプラ職員	117,{
 			}
 			continue;
 		case 3:
-			mes "[カプラ職員]";
-			mes "我がカプラサービスでは";
-			mes "長年のノウハウを生かし、皆様の旅が";
-			mes "より快適になるようにと、";
-			mes "空間移動サービスをご提供して";
-			mes "います。";
+			mes "[�J�v���E��]";
+			mes "�䂪�J�v���T�[�r�X�ł�";
+			mes "���N�̃m�E�n�E�𐶂����A�F�l�̗���";
+			mes "�����K�ɂȂ�悤�ɂƁA";
+			mes "��Ԉړ��T�[�r�X�����񋟂���";
+			mes "���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "これはとある空間術師の能力を";
-			mes "利用したもので、皆様をご希望の地域へ";
-			mes "転送するというものです。";
-			mes "転送可能な地域は各街ごとに";
-			mes "決められていますので、ご利用の際には";
-			mes "行き先もあわせてご確認ください。";
+			mes "[�J�v���E��]";
+			mes "����͂Ƃ����ԏp�t�̔\�͂�";
+			mes "���p�������̂ŁA�F�l������]�̒n���";
+			mes "�]������Ƃ������̂ł��B";
+			mes "�]���\�Ȓn��͊e�X���Ƃ�";
+			mes "���߂��Ă��܂��̂ŁA�����p�̍ۂɂ�";
+			mes "�s��������킹�Ă��m�F���������B";
 			next;
-			mes "[カプラ職員]";
-			mes "お客様のご要望に真心をもって";
-			mes "お応えするのが";
-			mes "我がカプラサービスの方針です。";
-			mes "今後もカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "���q�l�̂��v�]�ɐ^�S��������";
+			mes "����������̂�";
+			mes "�䂪�J�v���T�[�r�X�̕��j�ł��B";
+			mes "������J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			continue;
 		case 4:
-			mes "[カプラ職員]";
-			mes "我がカプラサービスでは、商人系職業の";
-			mes "方のために運送手段の一つである";
-			mes "「カート」を貸し出しております。";
-			mes "元々はアルベルタ商人組合で";
-			mes "行われていたのですが、カプラにて";
-			mes "業務を代行することになりました。";
+			mes "[�J�v���E��]";
+			mes "�䂪�J�v���T�[�r�X�ł́A���l�n�E�Ƃ�";
+			mes "���̂��߂ɉ^����i�̈�ł���";
+			mes "�u�J�[�g�v��݂��o���Ă���܂��B";
+			mes "���X�̓A���x���^���l�g����";
+			mes "�s���Ă����̂ł����A�J�v���ɂ�";
+			mes "�Ɩ����s���邱�ƂɂȂ�܂����B";
 			next;
-			mes "[カプラ職員]";
-			mes "それにより便利に手軽に利用できる";
-			mes "ようになりました。";
-			mes "カートのご利用は商人系職業である";
-			mes "商人、ブラックスミス、アルケミストと";
-			mes "その上位職業の方のみとさせて";
-			mes "いただいております。";
+			mes "[�J�v���E��]";
+			mes "����ɂ��֗��Ɏ�y�ɗ��p�ł���";
+			mes "�悤�ɂȂ�܂����B";
+			mes "�J�[�g�̂����p�͏��l�n�E�Ƃł���";
+			mes "���l�A�u���b�N�X�~�X�A�A���P�~�X�g��";
+			mes "���̏�ʐE�Ƃ̕��݂̂Ƃ�����";
+			mes "���������Ă���܂��B";
 			next;
-			mes "[カプラ職員]";
-			mes "あ、それから聞いた話なので";
-			mes "正確ではありませんが……";
-			mes "スーパーノービスの方もカートを";
-			mes "ご利用になれる場合があるそうです。";
+			mes "[�J�v���E��]";
+			mes "���A���ꂩ�畷�����b�Ȃ̂�";
+			mes "���m�ł͂���܂��񂪁c�c";
+			mes "�X�[�p�[�m�[�r�X�̕����J�[�g��";
+			mes "�����p�ɂȂ��ꍇ�����邻���ł��B";
 			next;
-			mes "[カプラ職員]";
-			mes "ご利用にはスキル「プッシュカート」が";
-			mes "必要です。";
-			mes "また、カートの貸し出し料金は";
-			mes "街ごとに異なりますので、ご利用の際は";
-			mes "ご注意ください。";
+			mes "[�J�v���E��]";
+			mes "�����p�ɂ̓X�L���u�v�b�V���J�[�g�v��";
+			mes "�K�v�ł��B";
+			mes "�܂��A�J�[�g�݂̑��o��������";
+			mes "�X���ƂɈقȂ�܂��̂ŁA�����p�̍ۂ�";
+			mes "�����ӂ��������B";
 			continue;
 		case 5:
-			mes "[カプラ職員]";
-			mes "我がカプラサービスについて";
-			mes "ご理解いただけましたでしょうか？";
-			mes "今後ともカプラサービスをよろしく";
-			mes "お願いします。";
+			mes "[�J�v���E��]";
+			mes "�䂪�J�v���T�[�r�X�ɂ���";
+			mes "���������������܂����ł��傤���H";
+			mes "����Ƃ��J�v���T�[�r�X����낵��";
+			mes "���肢���܂��B";
 			close;
 		}
 	}
 }
 
 //==============================================================
-new_1-2.gat,121,101,2	script	案内要員	105,{
-	mes "[案内要員]";
-	mes "私たち案内要員は街の入口で";
-	mes "建物などの位置情報について";
-	mes "ご案内しています。";
-	mes "初めて訪れた街では、";
-	mes "私のような案内要員をお訪ね";
-	mes "ください。";
+new_1-2.gat,121,101,2	script	�ē��v��	105,{
+	mes "[�ē��v��]";
+	mes "�������ē��v���͊X�̓�����";
+	mes "�����Ȃǂ̈ʒu���ɂ���";
+	mes "���ē����Ă��܂��B";
+	mes "���߂ĖK�ꂽ�X�ł́A";
+	mes "���̂悤�Ȉē��v�������K��";
+	mes "���������B";
 	next;
-	mes "[案内要員]";
-	mes "各街の案内要員は、街の特色";
-	mes "によって服装が異なっていたり";
-	mes "しますので、その点には気を";
-	mes "つけてくださいね。";
+	mes "[�ē��v��]";
+	mes "�e�X�̈ē��v���́A�X�̓��F";
+	mes "�ɂ���ĕ������قȂ��Ă�����";
+	mes "���܂��̂ŁA���̓_�ɂ͋C��";
+	mes "���Ă��������ˁB";
 	next;
-	mes "[案内要員]";
-	mes "街に行きたい場合は、";
-	mes "カプラ職員の空間移動";
-	mes "サービスを利用してください。";
+	mes "[�ē��v��]";
+	mes "�X�ɍs�������ꍇ�́A";
+	mes "�J�v���E���̋�Ԉړ�";
+	mes "�T�[�r�X�𗘗p���Ă��������B";
 	close;
 }
 
 
 //==========================================
-// 右の部屋
+// �E�̕���
 //------------------------------------------
 
-new_1-2.gat,161,182,6	script	インターフェース講師	92,{
-	mes "[エドウィン]";
-	mes "私はインターフェースについて";
-	mes "詳しく教えている講師よ。";
-	mes "さ、知りたい項目を選んでね。";
+new_1-2.gat,161,182,6	script	�C���^�[�t�F�[�X�u�t	92,{
+	mes "[�G�h�E�B��]";
+	mes "���̓C���^�[�t�F�[�X�ɂ���";
+	mes "�ڂ��������Ă���u�t��B";
+	mes "���A�m�肽�����ڂ�I��łˁB";
 	while(1) {
 		next;
-		switch(select("基本情報ウィンドウについて","パーティーウィンドウについて","アイテムウィンドウについて","オプションウィンドウについて","装備ウィンドウについて","やめる")) {
+		switch(select("��{���E�B���h�E�ɂ���","�p�[�e�B�[�E�B���h�E�ɂ���","�A�C�e���E�B���h�E�ɂ���","�I�v�V�����E�B���h�E�ɂ���","�����E�B���h�E�ɂ���","��߂�")) {
 		case 1:
-			mes "[エドウィン]";
-			mes "それでは基本情報ウィンドウを";
-			mes "見てみよう。";
-			mes "あなたの名前が書かれていて";
-			mes "ベースレベルと職業のレベルが";
-			mes "書かれているよね。";
+			mes "[�G�h�E�B��]";
+			mes "����ł͊�{���E�B���h�E��";
+			mes "���Ă݂悤�B";
+			mes "���Ȃ��̖��O��������Ă���";
+			mes "�x�[�X���x���ƐE�Ƃ̃��x����";
+			mes "������Ă����ˁB";
 			next;
-			mes "[エドウィン]";
-			mes "ベースレベル^8408FF(Base Lv)^000000は、";
-			mes "キミの基本的なレベルのことを";
-			mes "言うの。";
+			mes "[�G�h�E�B��]";
+			mes "�x�[�X���x��^8408FF(Base Lv)^000000�́A";
+			mes "�L�~�̊�{�I�ȃ��x���̂��Ƃ�";
+			mes "�����́B";
 			next;
-			mes "[エドウィン]";
-			mes "後ろの^8408FFJob Lv^000000は職業レベルね。";
-			mes "ちゃんと教官の講義を受けて";
-			mes "来たのなら、もう二つの違いは";
-			mes "わかっていると思うわ。";
+			mes "[�G�h�E�B��]";
+			mes "����^8408FFJob Lv^000000�͐E�ƃ��x���ˁB";
+			mes "�����Ƌ����̍u�`���󂯂�";
+			mes "�����̂Ȃ�A������̈Ⴂ��";
+			mes "�킩���Ă���Ǝv����B";
 			next;
-			mes "[エドウィン]";
-			mes "基本情報ウィンドウを見ると、";
-			mes "現在の自分の経験値がわかるわ。";
-			mes "経験値は % で表されて、やはり";
-			mes "Base Lvと Job Lvに分かれてる";
-			mes "でしょ。経験値が100%になると、";
-			mes "それぞれがレベルアップするわ。";
+			mes "[�G�h�E�B��]";
+			mes "��{���E�B���h�E������ƁA";
+			mes "���݂̎����̌o���l���킩���B";
+			mes "�o���l�� % �ŕ\����āA��͂�";
+			mes "Base Lv�� Job Lv�ɕ�����Ă�";
+			mes "�ł���B�o���l��100%�ɂȂ�ƁA";
+			mes "���ꂼ�ꂪ���x���A�b�v�����B";
 			next;
-			mes "[エドウィン]";
-			mes "HPはキミの体力を表している。";
-			mes "HPが0になると気絶して、戦闘不能";
-			mes "になるわ。その時、街に戻るか、";
-			mes "誰かが復活させてくれるのを";
-			mes "待たなければならないわ。";
+			mes "[�G�h�E�B��]";
+			mes "HP�̓L�~�̗̑͂�\���Ă���B";
+			mes "HP��0�ɂȂ�ƋC�₵�āA�퓬�s�\";
+			mes "�ɂȂ��B���̎��A�X�ɖ߂邩�A";
+			mes "�N�������������Ă����̂�";
+			mes "�҂��Ȃ���΂Ȃ�Ȃ���B";
 			next;
-			mes "[エドウィン]";
-			mes "フィールドやダンジョンで戦闘不能に";
-			mes "なってしまうと、^4A4AFF経験値 -1% の";
-			mes "ペナルティ^000000を受けるから";
-			mes "気をつけてね。";
+			mes "[�G�h�E�B��]";
+			mes "�t�B�[���h��_���W�����Ő퓬�s�\��";
+			mes "�Ȃ��Ă��܂��ƁA^4A4AFF�o���l -1% ��";
+			mes "�y�i���e�B^000000���󂯂邩��";
+			mes "�C�����ĂˁB";
 			next;
-			mes "[エドウィン]";
-			mes "SPはスキルを使う時に消費する";
-			mes "数値ね。後で職業に就くようになると";
-			mes "使えるスキルを覚えられるから、";
-			mes "そのときに試してみてね。";
-			mes "スキルの説明はスキル教官が";
-			mes "してくれるわ。";
+			mes "[�G�h�E�B��]";
+			mes "SP�̓X�L�����g�����ɏ����";
+			mes "���l�ˁB��ŐE�ƂɏA���悤�ɂȂ��";
+			mes "�g����X�L�����o�����邩��A";
+			mes "���̂Ƃ��Ɏ����Ă݂ĂˁB";
+			mes "�X�L���̐����̓X�L��������";
+			mes "���Ă�����B";
 			next;
-			mes "[エドウィン]";
-			mes "現在の自分の所持限界量を";
-			mes "知りたければ、基本情報ウィンドウの";
-			mes "下の方のweightの値を見ると";
-			mes "いいわ。";
+			mes "[�G�h�E�B��]";
+			mes "���݂̎����̏������E�ʂ�";
+			mes "�m�肽����΁A��{���E�B���h�E��";
+			mes "���̕���weight�̒l�������";
+			mes "������B";
 			next;
-			mes "[エドウィン]";
-			mes "/ の後ろの部分が所持限界量で、";
-			mes "所持重量が50%を超えると";
-			mes "自動的にHP/SPが回復しない";
-			mes "ようになるから気をつけてね。";
+			mes "[�G�h�E�B��]";
+			mes "/ �̌��̕������������E�ʂŁA";
+			mes "�����d�ʂ�50%�𒴂����";
+			mes "�����I��HP/SP���񕜂��Ȃ�";
+			mes "�悤�ɂȂ邩��C�����ĂˁB";
 			next;
-			mes "[エドウィン]";
-			mes "所持限界量の後の数値は、";
-			mes "現在キミが持っているお金を";
-			mes "表しているの。";
-			mes "ミッドガルドの貨幣単位は";
-			mes "Zeny(ゼニー)よ。";
+			mes "[�G�h�E�B��]";
+			mes "�������E�ʂ̌�̐��l�́A";
+			mes "���݃L�~�������Ă��邨����";
+			mes "�\���Ă���́B";
+			mes "�~�b�h�K���h�̉ݕ��P�ʂ�";
+			mes "Zeny(�[�j�[)��B";
 			next;
-			mes "[エドウィン]";
-			mes "基本情報ウィンドウの右側にある";
-			mes "ボタンは、別のインターフェース";
-			mes "メニューなので、1つずつ押して";
-			mes "何が表示されるか確認してみてね。";
+			mes "[�G�h�E�B��]";
+			mes "��{���E�B���h�E�̉E���ɂ���";
+			mes "�{�^���́A�ʂ̃C���^�[�t�F�[�X";
+			mes "���j���[�Ȃ̂ŁA1��������";
+			mes "�����\������邩�m�F���Ă݂ĂˁB";
 			next;
-			mes "[エドウィン]";
-			mes "あと、基本情報ウィンドウは、";
-			mes "「alt+v」で最小/最大化が";
-			mes "できるから参考にしてね。";
+			mes "[�G�h�E�B��]";
+			mes "���ƁA��{���E�B���h�E�́A";
+			mes "�ualt+v�v�ōŏ�/�ő剻��";
+			mes "�ł��邩��Q�l�ɂ��ĂˁB";
 			continue;
 		case 2:
-			mes "[エドウィン]";
-			mes "パーティーウィンドウは、";
-			mes "基本情報ウィンドウの";
-			mes "friendボタンで表示でき、";
-			mes "「alt+z」でも開くことが";
-			mes "できるわ。";
+			mes "[�G�h�E�B��]";
+			mes "�p�[�e�B�[�E�B���h�E�́A";
+			mes "��{���E�B���h�E��";
+			mes "friend�{�^���ŕ\���ł��A";
+			mes "�ualt+z�v�ł��J�����Ƃ�";
+			mes "�ł����B";
 			next;
-			mes "[エドウィン]";
-			mes "現在パーティーに属している";
-			mes "パーティーメンバーたちの";
-			mes "リストを見ることができるの。";
+			mes "[�G�h�E�B��]";
+			mes "���݃p�[�e�B�[�ɑ����Ă���";
+			mes "�p�[�e�B�[�����o�[������";
+			mes "���X�g�����邱�Ƃ��ł���́B";
 			next;
-			mes "[エドウィン]";
-			mes "パーティーを結成した";
-			mes "パーティーリーダーは、";
-			mes "経験値の分配方式を";
-			mes "変更することができるわ。";
+			mes "[�G�h�E�B��]";
+			mes "�p�[�e�B�[����������";
+			mes "�p�[�e�B�[���[�_�[�́A";
+			mes "�o���l�̕��z������";
+			mes "�ύX���邱�Ƃ��ł����B";
 			next;
-			mes "[エドウィン]";
-			mes "また、パーティーメンバーの位置は";
-			mes "画面右上のミニマップに";
-			mes "表示されるから覚えておいてね。";
+			mes "[�G�h�E�B��]";
+			mes "�܂��A�p�[�e�B�[�����o�[�̈ʒu��";
+			mes "��ʉE��̃~�j�}�b�v��";
+			mes "�\������邩��o���Ă����ĂˁB";
 			next;
-			mes "[エドウィン]";
-			mes "パーティーウィンドウとは別に、";
-			mes "友達リストも用意されていて、";
-			mes "友達に登録した人たちも";
-			mes "確認できるわ。";
-			mes "登録した人にメッセージを";
-			mes "送ることもできるのよ。";
+			mes "[�G�h�E�B��]";
+			mes "�p�[�e�B�[�E�B���h�E�Ƃ͕ʂɁA";
+			mes "�F�B���X�g���p�ӂ���Ă��āA";
+			mes "�F�B�ɓo�^�����l������";
+			mes "�m�F�ł����B";
+			mes "�o�^�����l�Ƀ��b�Z�[�W��";
+			mes "���邱�Ƃ��ł���̂�B";
 			next;
-			mes "[エドウィン]";
-			mes "パーティーの結成方法は、";
-			mes "スキル説明を担当している人が";
-			mes "教えてくれるわ。";
-			mes "こういうのは直接やってみるのが";
-			mes "一番よね。";
+			mes "[�G�h�E�B��]";
+			mes "�p�[�e�B�[�̌������@�́A";
+			mes "�X�L��������S�����Ă���l��";
+			mes "�����Ă�����B";
+			mes "���������̂͒��ڂ���Ă݂�̂�";
+			mes "��Ԃ�ˁB";
 			continue;
 		case 3:
-			mes "[エドウィン]";
-			mes "アイテムウィンドウは、3つの";
-			mes "タブに分かれていて、";
-			mes "「item」には消耗品が入るの。";
-			mes "「equip」には装備アイテム、";
-			mes "「etc」にはそれ以外のアイテムが";
-			mes "入るわ。";
+			mes "[�G�h�E�B��]";
+			mes "�A�C�e���E�B���h�E�́A3��";
+			mes "�^�u�ɕ�����Ă��āA";
+			mes "�uitem�v�ɂ͏��Օi������́B";
+			mes "�uequip�v�ɂ͑����A�C�e���A";
+			mes "�uetc�v�ɂ͂���ȊO�̃A�C�e����";
+			mes "�����B";
 			next;
-			mes "[エドウィン]";
-			mes "所持限界量を超えたり、";
-			mes "100種類より多くのアイテムは";
-			mes "持つことができないから、";
-			mes "カプラサービスの倉庫を利用すると";
-			mes "良いわね。";
+			mes "[�G�h�E�B��]";
+			mes "�������E�ʂ𒴂�����A";
+			mes "100��ނ�葽���̃A�C�e����";
+			mes "�����Ƃ��ł��Ȃ�����A";
+			mes "�J�v���T�[�r�X�̑q�ɂ𗘗p�����";
+			mes "�ǂ���ˁB";
 			next;
-			mes "[エドウィン]";
-			mes "消耗品と装備アイテムは、";
-			mes "ショートカットウィンドウに登録して";
-			mes "使うこともできるわよ。";
-			mes "とても便利だから、覚えていってね。";
+			mes "[�G�h�E�B��]";
+			mes "���Օi�Ƒ����A�C�e���́A";
+			mes "�V���[�g�J�b�g�E�B���h�E�ɓo�^����";
+			mes "�g�����Ƃ��ł�����B";
+			mes "�ƂĂ��֗�������A�o���Ă����ĂˁB";
 			next;
-			mes "[エドウィン]";
-			mes "^4A4AFFショートカットウィンドウは F12^000000";
-			mes "で開くことができるわ。";
-			mes "登録されたアイテムの使用は、";
-			mes "F1からF9までのキーに割り当て";
-			mes "られるからね。";
+			mes "[�G�h�E�B��]";
+			mes "^4A4AFF�V���[�g�J�b�g�E�B���h�E�� F12^000000";
+			mes "�ŊJ�����Ƃ��ł����B";
+			mes "�o�^���ꂽ�A�C�e���̎g�p�́A";
+			mes "F1����F9�܂ł̃L�[�Ɋ��蓖��";
+			mes "���邩��ˁB";
 			next;
-			mes "[エドウィン]";
-			mes "最後に、アイテムウィンドウは";
-			mes "「alt+e」でも開閉することができる";
-			mes "からこれも覚えておいてね。";
+			mes "[�G�h�E�B��]";
+			mes "�Ō�ɁA�A�C�e���E�B���h�E��";
+			mes "�ualt+e�v�ł��J���邱�Ƃ��ł���";
+			mes "���炱����o���Ă����ĂˁB";
 			continue;
 		case 4:
-			mes "[エドウィン]";
-			mes "オプションウィンドウは";
-			mes "基本情報ウィンドウのoption";
-			mes "ボタンでも開くことができるけど、";
-			mes "「alt+o」でも同じ。";
-			mes "オプションでは、音の調節とか";
-			mes "スキンの変更などができるわ。";
+			mes "[�G�h�E�B��]";
+			mes "�I�v�V�����E�B���h�E��";
+			mes "��{���E�B���h�E��option";
+			mes "�{�^���ł��J�����Ƃ��ł��邯�ǁA";
+			mes "�ualt+o�v�ł������B";
+			mes "�I�v�V�����ł́A���̒��߂Ƃ�";
+			mes "�X�L���̕ύX�Ȃǂ��ł����B";
 			next;
-			mes "[エドウィン]";
-			mes "音の調節はBGMを on/off";
-			mes "したり、大きさを変えられて、";
-			mes "Effectは効果音の音量を";
-			mes "調節できるわ。";
+			mes "[�G�h�E�B��]";
+			mes "���̒��߂�BGM�� on/off";
+			mes "������A�傫����ς����āA";
+			mes "Effect�͌��ʉ��̉��ʂ�";
+			mes "���߂ł����B";
 			next;
-			mes "[エドウィン]";
-			mes "スキンの部分はインターフェースの";
-			mes "スキンを変更することができるの。";
-			mes "適用したいスキンをリストから";
-			mes "選択すればいいわ。";
+			mes "[�G�h�E�B��]";
+			mes "�X�L���̕����̓C���^�[�t�F�[�X��";
+			mes "�X�L����ύX���邱�Ƃ��ł���́B";
+			mes "�K�p�������X�L�������X�g����";
+			mes "�I������΂�����B";
 			next;
-			mes "[エドウィン]";
-			mes "スナップの部分は、";
-			mes "自動的に近くの目標にカーソルを";
-			mes "合わせてくれる機能のことね。";
-			mes "attackは攻撃目標、";
-			mes "skillはスキルを使う対象、";
-			mes "itemは説明しなくても分かるわね。";
+			mes "[�G�h�E�B��]";
+			mes "�X�i�b�v�̕����́A";
+			mes "�����I�ɋ߂��̖ڕW�ɃJ�[�\����";
+			mes "���킹�Ă����@�\�̂��ƂˁB";
+			mes "attack�͍U���ڕW�A";
+			mes "skill�̓X�L�����g���ΏہA";
+			mes "item�͐������Ȃ��Ă��������ˁB";
 			next;
-			mes "[エドウィン]";
-			mes "使い方によっては便利になったり";
-			mes "邪魔になったりするけど……";
-			mes "自分に使いやすく設定するといいわ。";
+			mes "[�G�h�E�B��]";
+			mes "�g�����ɂ���Ă͕֗��ɂȂ�����";
+			mes "�ז��ɂȂ����肷�邯�ǁc�c";
+			mes "�����Ɏg���₷���ݒ肷��Ƃ�����B";
 			next;
-			mes "[エドウィン]";
-			mes "実際やってみながら覚えるのが";
-			mes "一番ね。オプションについては";
-			mes "これくらいで終わりにしましょ。";
+			mes "[�G�h�E�B��]";
+			mes "���ۂ���Ă݂Ȃ���o����̂�";
+			mes "��ԂˁB�I�v�V�����ɂ��Ă�";
+			mes "���ꂭ�炢�ŏI���ɂ��܂���B";
 			continue;
 		case 5:
-			mes "[エドウィン]";
-			mes "基本情報ウィンドウで";
-			mes "equipボタンを押したり、";
-			mes "「alt+q」を押してみて。";
-			mes "現在、キミのキャラクターが";
-			mes "装備しているアイテムを";
-			mes "見ることができるでしょ。";
+			mes "[�G�h�E�B��]";
+			mes "��{���E�B���h�E��";
+			mes "equip�{�^������������A";
+			mes "�ualt+q�v�������Ă݂āB";
+			mes "���݁A�L�~�̃L�����N�^�[��";
+			mes "�������Ă���A�C�e����";
+			mes "���邱�Ƃ��ł���ł���B";
 			next;
-			mes "[エドウィン]";
-			mes "初期状態ではナイフと";
-			mes "コットンシャツを装備しているの。";
-			mes "アイテムの装備はアイテムウィンドウで";
-			mes "装備したいアイテムをダブルクリック";
-			mes "したり、クリックしたまま";
-			mes "装備箇所にドラッグしてもいいわ。";
+			mes "[�G�h�E�B��]";
+			mes "������Ԃł̓i�C�t��";
+			mes "�R�b�g���V���c�𑕔����Ă���́B";
+			mes "�A�C�e���̑����̓A�C�e���E�B���h�E��";
+			mes "�����������A�C�e�����_�u���N���b�N";
+			mes "������A�N���b�N�����܂�";
+			mes "�����ӏ��Ƀh���b�O���Ă�������B";
 			next;
-			mes "[エドウィン]";
-			mes "F12を利用してショートカット";
-			mes "ウィンドウに登録しておくと、";
-			mes "装備の持ち替えがスムーズに";
-			mes "できて、敵に合わせて装備を";
-			mes "変える時なんかにすごく便利よ。";
+			mes "[�G�h�E�B��]";
+			mes "F12�𗘗p���ăV���[�g�J�b�g";
+			mes "�E�B���h�E�ɓo�^���Ă����ƁA";
+			mes "�����̎����ւ����X���[�Y��";
+			mes "�ł��āA�G�ɍ��킹�đ�����";
+			mes "�ς��鎞�Ȃ񂩂ɂ������֗���B";
 			continue;
 		case 6:
-			mes "[エドウィン]";
-			mes "わからないことがあったら";
-			mes "いつでも聞いてね。";
+			mes "[�G�h�E�B��]";
+			mes "�킩��Ȃ����Ƃ���������";
+			mes "���ł������ĂˁB";
 			close;
 		}
 	}
 }
 
 //==============================================================
-new_1-2.gat,182,182,3	script	ステータス講師	754,{
-	mes "[ゼルリオット]";
-	mes "世に初めの一歩を踏み出す";
-	mes "冒険者ですね。";
-	mes "私ゼルリオットはあなたの";
-	mes "ステータス……つまり能力";
-	mes "について、どのような原則の";
-	mes "上に成り立っているのかを教えます。";
+new_1-2.gat,182,182,3	script	�X�e�[�^�X�u�t	754,{
+	mes "[�[�����I�b�g]";
+	mes "���ɏ��߂̈���𓥂ݏo��";
+	mes "�`���҂ł��ˁB";
+	mes "���[�����I�b�g�͂��Ȃ���";
+	mes "�X�e�[�^�X�c�c�܂�\��";
+	mes "�ɂ��āA�ǂ̂悤�Ȍ�����";
+	mes "��ɐ��藧���Ă���̂��������܂��B";
 	next;
-	mes "[ゼルリオット]";
-	mes "まずは知りたい能力値について";
-	mes "質問してみなさい。";
+	mes "[�[�����I�b�g]";
+	mes "�܂��͒m�肽���\�͒l�ɂ���";
+	mes "���₵�Ă݂Ȃ����B";
 	next;
-	mes "[ゼルリオット]";
-	mes "あ、言い忘れましたね。";
-	mes "ステータスは、";
-	mes "力(Str)、速さ(Agi)、";
-	mes "体力(Vit)、知力(Int)";
-	mes "技(Dex)、そして";
-	mes "運(Luk)で成り立っています。";
+	mes "[�[�����I�b�g]";
+	mes "���A�����Y��܂����ˁB";
+	mes "�X�e�[�^�X�́A";
+	mes "��(Str)�A����(Agi)�A";
+	mes "�̗�(Vit)�A�m��(Int)";
+	mes "�Z(Dex)�A������";
+	mes "�^(Luk)�Ő��藧���Ă��܂��B";
 	while(1) {
 		next;
-		switch(select("StrとAgi","VitとInt","DexとLuk","やめる")) {
+		switch(select("Str��Agi","Vit��Int","Dex��Luk","��߂�")) {
 		case 1:
-			mes "[ゼルリオット]";
-			mes "Strは、直接的な攻撃で";
-			mes "相手に与えるダメージに関係する";
-			mes "Atkと、アイテムを持つことができる";
-			mes "最大所持量に関係しています。";
+			mes "[�[�����I�b�g]";
+			mes "Str�́A���ړI�ȍU����";
+			mes "����ɗ^����_���[�W�Ɋ֌W����";
+			mes "Atk�ƁA�A�C�e���������Ƃ��ł���";
+			mes "�ő及���ʂɊ֌W���Ă��܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "Strが1増加すると、直接攻撃の";
-			mes "ダメージが1増加します。";
-			mes "さらに、10単位で攻撃力にボーナス";
-			mes "が追加されます。";
+			mes "[�[�����I�b�g]";
+			mes "Str��1��������ƁA���ڍU����";
+			mes "�_���[�W��1�������܂��B";
+			mes "����ɁA10�P�ʂōU���͂Ƀ{�[�i�X";
+			mes "���ǉ�����܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "例えば具体的に説明すると、";
-			mes "あなたのStrが 48+1 と仮定して";
-			mes "みましょう。";
-			mes "あなたの純粋なStrが48で、";
-			mes "+1はJobLvや装備アイテムなどに";
-			mes "よる加重値です。";
+			mes "[�[�����I�b�g]";
+			mes "�Ⴆ�΋�̓I�ɐ�������ƁA";
+			mes "���Ȃ���Str�� 48+1 �Ɖ��肵��";
+			mes "�݂܂��傤�B";
+			mes "���Ȃ��̏�����Str��48�ŁA";
+			mes "+1��JobLv�⑕���A�C�e���Ȃǂ�";
+			mes "�����d�l�ł��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "そして、49の^4A4AFF十の位";
-			mes "4を二乗すると、(4x4)で16";
-			mes "となり、その16が攻撃力への";
-			mes "ボーナス^000000となります。";
+			mes "[�[�����I�b�g]";
+			mes "�����āA49��^4A4AFF�\�̈�";
+			mes "4���悷��ƁA(4x4)��16";
+			mes "�ƂȂ�A����16���U���͂ւ�";
+			mes "�{�[�i�X^000000�ƂȂ�܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "その後、レベルが上がりStrが";
-			mes "49+1になった場合、合計50";
-			mes "ですから、5x5で25になりますね。";
-			mes "Strが100なら、10x10で";
-			mes "100のボーナスが与えられるのです。";
-			mes "わかりますか？";
+			mes "[�[�����I�b�g]";
+			mes "���̌�A���x�����オ��Str��";
+			mes "49+1�ɂȂ����ꍇ�A���v50";
+			mes "�ł�����A5x5��25�ɂȂ�܂��ˁB";
+			mes "Str��100�Ȃ�A10x10��";
+			mes "100�̃{�[�i�X���^������̂ł��B";
+			mes "�킩��܂����H";
 			next;
-			mes "[ゼルリオット]";
-			mes "では、Agiについて説明しましょう。";
-			mes "^4A4AFFAgiは^000000 相手の攻撃を";
-			mes "回避することができる数値である";
-			mes "^4A4AFF回避率(Flee)と";
-			mes "攻撃スピード(Aspd)^000000に影響を与えます。";
+			mes "[�[�����I�b�g]";
+			mes "�ł́AAgi�ɂ��Đ������܂��傤�B";
+			mes "^4A4AFFAgi��^000000 ����̍U����";
+			mes "������邱�Ƃ��ł��鐔�l�ł���";
+			mes "^4A4AFF���(Flee)��";
+			mes "�U���X�s�[�h(Aspd)^000000�ɉe����^���܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "Agiが1増加すると、回避率も";
-			mes "1上がり、レベルが1増加しても";
-			mes "回避率が1上がります。";
-			mes "つまり、^4A4AFFFlee^000000は";
-			mes "^4A4AFFAgi + BaseLv^000000です。";
+			mes "[�[�����I�b�g]";
+			mes "Agi��1��������ƁA��𗦂�";
+			mes "1�オ��A���x����1�������Ă�";
+			mes "��𗦂�1�オ��܂��B";
+			mes "�܂�A^4A4AFFFlee^000000��";
+			mes "^4A4AFFAgi + BaseLv^000000�ł��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "具体的な例を挙げましょう。";
-			mes "あなたのレベルが40で、";
-			mes "Agiが40なら、Fleeは80";
-			mes "ということになりますね。";
+			mes "[�[�����I�b�g]";
+			mes "��̓I�ȗ�������܂��傤�B";
+			mes "���Ȃ��̃��x����40�ŁA";
+			mes "Agi��40�Ȃ�AFlee��80";
+			mes "�Ƃ������ƂɂȂ�܂��ˁB";
 			next;
-			mes "[ゼルリオット]";
-			mes "また、Fleeは、";
-			mes "通常回避率+完全回避率";
-			mes "というふうに表示されます。";
-			mes "^4A4AFFAgiは通常回避率だけに関係^000000";
-			mes "します。";
+			mes "[�[�����I�b�g]";
+			mes "�܂��AFlee�́A";
+			mes "�ʏ���+���S���";
+			mes "�Ƃ����ӂ��ɕ\������܂��B";
+			mes "^4A4AFFAgi�͒ʏ��𗦂����Ɋ֌W^000000";
+			mes "���܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "完全回避率は、Lukの値と";
-			mes "関係するので、Lukのところで";
-			mes "説明しましょう。";
+			mes "[�[�����I�b�g]";
+			mes "���S��𗦂́ALuk�̒l��";
+			mes "�֌W����̂ŁALuk�̂Ƃ����";
+			mes "�������܂��傤�B";
 			next;
-			mes "[ゼルリオット]";
-			mes "あと、攻撃スピード(Aspd)が";
-			mes "上がるほど、攻撃するまでの時間と、";
-			mes "攻撃後の硬直(ディレィ)時間が";
-			mes "減ります。";
-			mes "Aspdは職業ごとでも違いが";
-			mes "生じるので、参考にしてください。";
+			mes "[�[�����I�b�g]";
+			mes "���ƁA�U���X�s�[�h(Aspd)��";
+			mes "�オ��قǁA�U������܂ł̎��ԂƁA";
+			mes "�U����̍d��(�f�B���B)���Ԃ�";
+			mes "����܂��B";
+			mes "Aspd�͐E�Ƃ��Ƃł��Ⴂ��";
+			mes "������̂ŁA�Q�l�ɂ��Ă��������B";
 			continue;
 		case 2:
-			mes "[ゼルリオット]";
-			mes "VitとIntですね。";
-			mes "^4A4AFFVitはキャラクターの最大HPと";
-			mes "HP回復量、それから受ける";
-			mes "ダメージの減少に関連する";
-			mes "ステータスです。^000000";
+			mes "[�[�����I�b�g]";
+			mes "Vit��Int�ł��ˁB";
+			mes "^4A4AFFVit�̓L�����N�^�[�̍ő�HP��";
+			mes "HP�񕜗ʁA���ꂩ��󂯂�";
+			mes "�_���[�W�̌����Ɋ֘A����";
+			mes "�X�e�[�^�X�ł��B^000000";
 			next;
-			mes "[ゼルリオット]";
-			mes "Vitが1増加した時に上昇する";
-			mes "HPの値は職業ごとに違いますが";
-			mes "剣士系職業が一番高くなります。";
+			mes "[�[�����I�b�g]";
+			mes "Vit��1�����������ɏ㏸����";
+			mes "HP�̒l�͐E�Ƃ��ƂɈႢ�܂���";
+			mes "���m�n�E�Ƃ���ԍ����Ȃ�܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "ダメージの減少については、";
-			mes "Defの値に関連し、";
-			mes "前の値 + 後ろの値と表示されて";
-			mes "いますが、この後ろの値が";
-			mes "Vitの値になります。";
+			mes "[�[�����I�b�g]";
+			mes "�_���[�W�̌����ɂ��ẮA";
+			mes "Def�̒l�Ɋ֘A���A";
+			mes "�O�̒l + ���̒l�ƕ\�������";
+			mes "���܂����A���̌��̒l��";
+			mes "Vit�̒l�ɂȂ�܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "では前の値は何でしょうか？";
-			mes "これは装備した防具による";
-			mes "値なのです。";
+			mes "[�[�����I�b�g]";
+			mes "�ł͑O�̒l�͉��ł��傤���H";
+			mes "����͑��������h��ɂ��";
+			mes "�l�Ȃ̂ł��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "防具の防御力で、相手の攻撃を";
-			mes "%計算で減少させ、減少した";
-			mes "ダメージから後ろの値を";
-			mes "引いたダメージが、あなたが";
-			mes "受けるダメージになります。";
+			mes "[�[�����I�b�g]";
+			mes "�h��̖h��͂ŁA����̍U����";
+			mes "%�v�Z�Ō��������A��������";
+			mes "�_���[�W������̒l��";
+			mes "�������_���[�W���A���Ȃ���";
+			mes "�󂯂�_���[�W�ɂȂ�܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "ただし、これはあくまで基本的な";
-			mes "計算しかしていませんので、";
-			mes "他の要素が絡めば、また";
-			mes "受けるダメージも変化するでしょう。";
+			mes "[�[�����I�b�g]";
+			mes "�������A����͂����܂Ŋ�{�I��";
+			mes "�v�Z�������Ă��܂���̂ŁA";
+			mes "���̗v�f�����߂΁A�܂�";
+			mes "�󂯂�_���[�W���ω�����ł��傤�B";
 			next;
-			mes "[ゼルリオット]";
-			mes "そして、あなたはマジシャンに";
-			mes "なるつもりはありませんか？";
-			mes "まぁ……冗談ですが、";
-			mes "Intについてお話しましょうか。";
+			mes "[�[�����I�b�g]";
+			mes "�����āA���Ȃ��̓}�W�V������";
+			mes "�Ȃ����͂���܂��񂩁H";
+			mes "�܂��c�c��k�ł����A";
+			mes "Int�ɂ��Ă��b���܂��傤���B";
 			next;
-			mes "[ゼルリオット]";
-			mes "Intは最大SPとSP回復量、";
-			mes "Matk、Mdefに関係しています。";
+			mes "[�[�����I�b�g]";
+			mes "Int�͍ő�SP��SP�񕜗ʁA";
+			mes "Matk�AMdef�Ɋ֌W���Ă��܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "Matkは魔法攻撃力、";
-			mes "Mdefは魔法防御力を";
-			mes "表しています。";
-			mes "……ちょっと余談ですが";
-			mes "Int1あたりで上昇するSPの値は";
-			mes "職業ごとに差があります。";
+			mes "[�[�����I�b�g]";
+			mes "Matk�͖��@�U���́A";
+			mes "Mdef�͖��@�h��͂�";
+			mes "�\���Ă��܂��B";
+			mes "�c�c������Ɨ]�k�ł���";
+			mes "Int1������ŏ㏸����SP�̒l��";
+			mes "�E�Ƃ��Ƃɍ�������܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "MdefもDefと同じように、";
-			mes "前の値 + 後ろの値という";
-			mes "表示になっていると思います。";
-			mes "やはり後ろの値が、Intによる";
-			mes "ものですね。";
+			mes "[�[�����I�b�g]";
+			mes "Mdef��Def�Ɠ����悤�ɁA";
+			mes "�O�̒l + ���̒l�Ƃ���";
+			mes "�\���ɂȂ��Ă���Ǝv���܂��B";
+			mes "��͂���̒l���AInt�ɂ��";
+			mes "���̂ł��ˁB";
 			next;
-			mes "[ゼルリオット]";
-			mes "世のあらゆる物を構成する元素について";
-			mes "理解したければ、Intすなわち知力を";
-			mes "磨くことが必要です。";
-			mes "私のような学者や魔法師たちは";
-			mes "Intに重きを置いています。";
+			mes "[�[�����I�b�g]";
+			mes "���̂����镨���\�����錳�f�ɂ���";
+			mes "������������΁AInt���Ȃ킿�m�͂�";
+			mes "�������Ƃ��K�v�ł��B";
+			mes "���̂悤�Ȋw�҂▂�@�t������";
+			mes "Int�ɏd����u���Ă��܂��B";
 			continue;
 		case 3:
-			mes "[ゼルリオット]";
-			mes "DexとLukですね。";
-			mes "運で成功を収める人もいるが";
-			mes "努力によって勝ち取ることも";
-			mes "重要だ……ふむ。";
-			mes "あ、独り言です。";
-			mes "それでは始めましょうか。";
+			mes "[�[�����I�b�g]";
+			mes "Dex��Luk�ł��ˁB";
+			mes "�^�Ő��������߂�l�����邪";
+			mes "�w�͂ɂ���ď�����邱�Ƃ�";
+			mes "�d�v���c�c�ӂށB";
+			mes "���A�Ƃ茾�ł��B";
+			mes "����ł͎n�߂܂��傤���B";
 			next;
-			mes "[ゼルリオット]";
-			mes "DexはHit(命中率)とAspdに";
-			mes "大きく影響を与え、";
-			mes "攻撃力にも多少の影響を";
-			mes "与えます。";
-			mes "特に、最小ダメージの底上げです。";
+			mes "[�[�����I�b�g]";
+			mes "Dex��Hit(������)��Aspd��";
+			mes "�傫���e����^���A";
+			mes "�U���͂ɂ������̉e����";
+			mes "�^���܂��B";
+			mes "���ɁA�ŏ��_���[�W�̒�グ�ł��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "最小ダメージが向上すれば、";
-			mes "相手に与えるダメージが";
-			mes "結果的に向上しますから、";
-			mes "Dexの存在も重要ですね。";
+			mes "[�[�����I�b�g]";
+			mes "�ŏ��_���[�W�����シ��΁A";
+			mes "����ɗ^����_���[�W��";
+			mes "���ʓI�Ɍ��サ�܂�����A";
+			mes "Dex�̑��݂��d�v�ł��ˁB";
 			next;
-			mes "[ゼルリオット]";
-			mes "^4A4AFF弓を使う場合^000000は、";
-			mes "^4A4AFF攻撃力がDexの値で^000000決まりますので";
-			mes "あなたが後日アーチャーやハンター";
-			mes "になろうと思ったらDexを";
-			mes "おろそかにしてはなりません。";
+			mes "[�[�����I�b�g]";
+			mes "^4A4AFF�|���g���ꍇ^000000�́A";
+			mes "^4A4AFF�U���͂�Dex�̒l��^000000���܂�܂��̂�";
+			mes "���Ȃ�������A�[�`���[��n���^�[";
+			mes "�ɂȂ낤�Ǝv������Dex��";
+			mes "���낻���ɂ��Ă͂Ȃ�܂���B";
 			next;
-			mes "[ゼルリオット]";
-			mes "また、HitはBaseLv + Dex";
-			mes "で成り立っています。";
+			mes "[�[�����I�b�g]";
+			mes "�܂��AHit��BaseLv + Dex";
+			mes "�Ő��藧���Ă��܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "あなたのレベルが40で、";
-			mes "Dexが20だとしたら、";
-			mes "Hitは40 + 20で";
-			mes "60になります。わかりますか？";
+			mes "[�[�����I�b�g]";
+			mes "���Ȃ��̃��x����40�ŁA";
+			mes "Dex��20���Ƃ�����A";
+			mes "Hit��40 + 20��";
+			mes "60�ɂȂ�܂��B�킩��܂����H";
 			next;
-			mes "[ゼルリオット]";
-			mes "また、魔法などの詠唱を必要とする";
-			mes "スキルを使用する時、";
-			mes "^4A4AFFキャスティング(詠唱)時間を";
-			mes "減少させる^000000こともできます。";
+			mes "[�[�����I�b�g]";
+			mes "�܂��A���@�Ȃǂ̉r����K�v�Ƃ���";
+			mes "�X�L�����g�p���鎞�A";
+			mes "^4A4AFF�L���X�e�B���O(�r��)���Ԃ�";
+			mes "����������^000000���Ƃ��ł��܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "さて、Lukは言葉の通りですが、";
-			mes "Critical(クリティカル率)と";
-			mes "Flee(回避率)、そして";
-			mes "攻撃力にも多少影響があります。";
+			mes "[�[�����I�b�g]";
+			mes "���āALuk�͌��t�̒ʂ�ł����A";
+			mes "Critical(�N���e�B�J����)��";
+			mes "Flee(���)�A������";
+			mes "�U���͂ɂ������e��������܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "Criticalは";
-			mes "^4A4AFFLuk3で1ずつ^000000上がり、";
-			mes "クリティカル攻撃は、相手の防御力";
-			mes "を無視したダメージを与えることが";
-			mes "できます。";
+			mes "[�[�����I�b�g]";
+			mes "Critical��";
+			mes "^4A4AFFLuk3��1����^000000�オ��A";
+			mes "�N���e�B�J���U���́A����̖h���";
+			mes "�𖳎������_���[�W��^���邱�Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "また、Lukが10単位で";
-			mes "完全回避率が1ずつ上昇します。";
-			mes "完全回避が発動すると、";
-			mes "キャラクターの頭上にLucky";
-			mes "という表示が出ます。";
-			mes "この時、相手の攻撃を一回避けます。";
+			mes "[�[�����I�b�g]";
+			mes "�܂��ALuk��10�P�ʂ�";
+			mes "���S��𗦂�1���㏸���܂��B";
+			mes "���S�������������ƁA";
+			mes "�L�����N�^�[�̓����Lucky";
+			mes "�Ƃ����\�����o�܂��B";
+			mes "���̎��A����̍U�����������܂��B";
 			next;
-			mes "[ゼルリオット]";
-			mes "幸運という言葉は良い言葉ですが、";
-			mes "それに頼ってばかりはいけません。";
-			mes "さて、他は大丈夫でしょうか？";
+			mes "[�[�����I�b�g]";
+			mes "�K�^�Ƃ������t�͗ǂ����t�ł����A";
+			mes "����ɗ����Ă΂���͂����܂���B";
+			mes "���āA���͑��v�ł��傤���H";
 			continue;
 		case 4:
-			mes "[ゼルリオット]";
-			mes "大丈夫なようですね。";
-			mes "本から得る知識も良いですが、";
-			mes "経験から学ぶことも重要です。";
-			mes "がんばってくださいね。";
+			mes "[�[�����I�b�g]";
+			mes "���v�Ȃ悤�ł��ˁB";
+			mes "�{���瓾��m�����ǂ��ł����A";
+			mes "�o������w�Ԃ��Ƃ��d�v�ł��B";
+			mes "����΂��Ă��������ˁB";
 			close;
 		}
 	}
 }
 
 //==============================================================
-new_1-2.gat,184,172,2	script	スキル講師	47,{
+new_1-2.gat,184,172,2	script	�X�L���u�t	47,{
 	emotion 30;
-	mes "[ピッチジュダス]";
-	mes "ようこそ！";
-	mes "首が抜けそうになるほど";
-	mes "お待ちしてましたよ〜";
-	mes "ニューフェイスはかわいい！";
-	mes "このピッチ先生がスキルについて";
-	mes "真心をもって教えますよ！";
+	mes "[�s�b�`�W���_�X]";
+	mes "�悤�����I";
+	mes "�񂪔��������ɂȂ�ق�";
+	mes "���҂����Ă܂�����`";
+	mes "�j���[�t�F�C�X�͂��킢���I";
+	mes "���̃s�b�`�搶���X�L���ɂ���";
+	mes "�^�S�������ċ����܂���I";
 	while(1) {
 		next;
-		switch(select("パッシブスキルとアクティブスキル","パッシブ！ 基本スキルを学ぼう","エモーションで感情表現","やめる")) {
+		switch(select("�p�b�V�u�X�L���ƃA�N�e�B�u�X�L��","�p�b�V�u�I ��{�X�L�����w�ڂ�","�G���[�V�����Ŋ���\��","��߂�")) {
 		case 1:
-			mes "[ピッチジュダス]";
-			mes "パッシブとアクティブスキル！";
-			mes "パッシブから説明するから";
-			mes "良く聞いてください〜";
-			mes "先に「alt+s」でスキルウィンドウを";
-			mes "開いてくださいー。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�p�b�V�u�ƃA�N�e�B�u�X�L���I";
+			mes "�p�b�V�u����������邩��";
+			mes "�ǂ������Ă��������`";
+			mes "��Ɂualt+s�v�ŃX�L���E�B���h�E��";
+			mes "�J���Ă��������[�B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "使用可能なスキルが見えますか？";
-			mes "基本スキルを見ると、右側に";
-			mes "パッシブと書いてあるでしょう〜";
-			mes "それでは基本スキルのアイコンを";
-			mes "右クリックしてみましょうか。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�g�p�\�ȃX�L���������܂����H";
+			mes "��{�X�L��������ƁA�E����";
+			mes "�p�b�V�u�Ə����Ă���ł��傤�`";
+			mes "����ł͊�{�X�L���̃A�C�R����";
+			mes "�E�N���b�N���Ă݂܂��傤���B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "基本的なインターフェースについての";
-			mes "スキルを使うことができる。";
-			mes "と書いてありますね〜。";
-			mes "皆さんの生活に必要なスキルです。";
-			mes "そして、これらのスキルを使うのに";
-			mes "SPは必要ありません。";
+			mes "[�s�b�`�W���_�X]";
+			mes "��{�I�ȃC���^�[�t�F�[�X�ɂ��Ă�";
+			mes "�X�L�����g�����Ƃ��ł���B";
+			mes "�Ə����Ă���܂��ˁ`�B";
+			mes "�F����̐����ɕK�v�ȃX�L���ł��B";
+			mes "�����āA�����̃X�L�����g���̂�";
+			mes "SP�͕K�v����܂���B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "パッシブスキルは、";
-			mes "SPを消費せずに効果が";
-			mes "適用されるスキルのことを";
-			mes "言います。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�p�b�V�u�X�L���́A";
+			mes "SP��������Ɍ��ʂ�";
+			mes "�K�p�����X�L���̂��Ƃ�";
+			mes "�����܂��B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "逆に、アクティブスキルは";
-			mes "SPを消費する活動的なスキルの";
-			mes "ことを指し、スキルを使用した";
-			mes "時に発動します。剣士のバッシュや";
-			mes "アコライトのヒールなどが";
-			mes "そうですね。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�t�ɁA�A�N�e�B�u�X�L����";
+			mes "SP������銈���I�ȃX�L����";
+			mes "���Ƃ��w���A�X�L�����g�p����";
+			mes "���ɔ������܂��B���m�̃o�b�V����";
+			mes "�A�R���C�g�̃q�[���Ȃǂ�";
+			mes "�����ł��ˁB";
 			next;
-			mes "[ピッチジュダス]";
-			mes "教官の授業をしっかり受けていたら";
-			mes "応急手当のスキルを習得して";
-			mes "いるはずです。どうでしょう〜？";
-			mes "もし習得していたら、ダブルクリック";
-			mes "で一度使ってみてください。";
-			mes "SPを消費して、発動しますよね？";
+			mes "[�s�b�`�W���_�X]";
+			mes "�����̎��Ƃ���������󂯂Ă�����";
+			mes "���}�蓖�̃X�L�����K������";
+			mes "����͂��ł��B�ǂ��ł��傤�`�H";
+			mes "�����K�����Ă�����A�_�u���N���b�N";
+			mes "�ň�x�g���Ă݂Ă��������B";
+			mes "SP������āA�������܂���ˁH";
 			next;
-			mes "[ピッチジュダス]";
-			mes "そんなスキルがアクティブスキル";
-			mes "なのです。";
+			mes "[�s�b�`�W���_�X]";
+			mes "����ȃX�L�����A�N�e�B�u�X�L��";
+			mes "�Ȃ̂ł��B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "自分の技術を体力的に、もしくは";
-			mes "精神的に修練したものは大体";
-			mes "パッシブスキルとなり、";
-			mes "魔法のように使用する時に";
-			mes "発動するものはアクティブスキル";
-			mes "となります。いいですね？";
+			mes "[�s�b�`�W���_�X]";
+			mes "�����̋Z�p��̗͓I�ɁA��������";
+			mes "���_�I�ɏC���������̂͑��";
+			mes "�p�b�V�u�X�L���ƂȂ�A";
+			mes "���@�̂悤�Ɏg�p���鎞��";
+			mes "����������̂̓A�N�e�B�u�X�L��";
+			mes "�ƂȂ�܂��B�����ł��ˁH";
 			next;
-			mes "[ピッチジュダス]";
-			mes "う〜ん……説明は難しくない";
-			mes "ですか？　難しかったらもう一度";
-			mes "説明しますよ〜";
+			mes "[�s�b�`�W���_�X]";
+			mes "���`��c�c�����͓���Ȃ�";
+			mes "�ł����H�@��������������x";
+			mes "�������܂���`";
 			continue;
 		case 2:
-			mes "[ピッチジュダス]";
-			mes "パッシブスキルの真髄！";
-			mes "かわいいノービスが覚える";
-			mes "はじめてのスキル！";
-			mes "生活に必要な基本スキルを";
-			mes "勉強する時間です！";
+			mes "[�s�b�`�W���_�X]";
+			mes "�p�b�V�u�X�L���̐^���I";
+			mes "���킢���m�[�r�X���o����";
+			mes "�͂��߂ẴX�L���I";
+			mes "�����ɕK�v�Ȋ�{�X�L����";
+			mes "�׋����鎞�Ԃł��I";
 			next;
-			mes "[ピッチジュダス]";
-			mes "スキルウィンドウでアイコンの";
-			mes "上を右クリックすると説明文が";
-			mes "読めますが、基本スキルを";
-			mes "分類して項目に分けてみました。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�X�L���E�B���h�E�ŃA�C�R����";
+			mes "����E�N���b�N����Ɛ�������";
+			mes "�ǂ߂܂����A��{�X�L����";
+			mes "���ނ��č��ڂɕ����Ă݂܂����B";
 			while(1) {
 				next;
-				switch(select("取引と交換","パーティーの結成と参加","チャットルーム開設","倉庫の利用","全て分かっています")) {
+				switch(select("����ƌ���","�p�[�e�B�[�̌����ƎQ��","�`���b�g���[���J��","�q�ɂ̗��p","�S�ĕ������Ă��܂�")) {
 				case 1:
-					mes "[ピッチジュダス]";
-					mes "他の人と取引をするためには";
-					mes "基本スキルが1以上なければ";
-					mes "いけません。";
+					mes "[�s�b�`�W���_�X]";
+					mes "���̐l�Ǝ�������邽�߂ɂ�";
+					mes "��{�X�L����1�ȏ�Ȃ����";
+					mes "�����܂���B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "取引を要請する時には、";
-					mes "距離が重要です！";
-					mes "相手のすぐ側まで近づいて";
-					mes "取引を持ちかけたい相手を";
-					mes "右クリックします。1回だけですよ。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�����v�����鎞�ɂ́A";
+					mes "�������d�v�ł��I";
+					mes "����̂������܂ŋ߂Â���";
+					mes "����������������������";
+					mes "�E�N���b�N���܂��B1�񂾂��ł���B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "その後、^4808FF取引要請^000000を";
-					mes "選択すれば相手に取引要請";
-					mes "メッセージが表示されますので、";
-					mes "相手がOKすれば、交換ウィンドウが";
-					mes "開かれます。相手との距離が";
-					mes "開くと中断されますので気をつけて。";
+					mes "[�s�b�`�W���_�X]";
+					mes "���̌�A^4808FF����v��^000000��";
+					mes "�I������Α���Ɏ���v��";
+					mes "���b�Z�[�W���\������܂��̂ŁA";
+					mes "���肪OK����΁A�����E�B���h�E��";
+					mes "�J����܂��B����Ƃ̋�����";
+					mes "�J���ƒ��f����܂��̂ŋC�����āB";
 					next;
-					mes "[ピッチジュダス]";
-					mes "そして、交換ウィンドウの左側に";
-					mes "アイテムウィンドウから渡したい";
-					mes "アイテムをドラッグして置きます。";
-					mes "Zenyを渡す時は金額を";
-					mes "入力すれば良いです。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�����āA�����E�B���h�E�̍�����";
+					mes "�A�C�e���E�B���h�E����n������";
+					mes "�A�C�e�����h���b�O���Ēu���܂��B";
+					mes "Zeny��n�����͋��z��";
+					mes "���͂���Ηǂ��ł��B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "渡すアイテムを確認する時は";
-					mes "該当のアイテムを右クリックして";
-					mes "詳しい内容を見ましょう。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�n���A�C�e�����m�F���鎞��";
+					mes "�Y���̃A�C�e�����E�N���b�N����";
+					mes "�ڂ������e�����܂��傤�B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "OKを押して確認をした後に、";
-					mes "「trade」ボタンを押せば";
-					mes "自分側の交換アイテムが";
-					mes "確定されます。";
-					mes "相手側にも同じようにtrade";
-					mes "を押したら、取引が成立します。";
+					mes "[�s�b�`�W���_�X]";
+					mes "OK�������Ċm�F��������ɁA";
+					mes "�utrade�v�{�^����������";
+					mes "�������̌����A�C�e����";
+					mes "�m�肳��܂��B";
+					mes "���葤�ɂ������悤��trade";
+					mes "����������A������������܂��B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "tradeを押す前なら、";
-					mes "取引をキャンセルすることが";
-					mes "できますので、覚えておいてください。";
+					mes "[�s�b�`�W���_�X]";
+					mes "trade�������O�Ȃ�A";
+					mes "������L�����Z�����邱�Ƃ�";
+					mes "�ł��܂��̂ŁA�o���Ă����Ă��������B";
 					continue;
 				case 2:
-					mes "[ピッチジュダス]";
-					mes "これから勉強するのは〜";
-					mes "パーティーについてです！";
-					mes "パーティーと言えば、やっぱり";
-					mes "きれいな照明にきらめくドレス！";
+					mes "[�s�b�`�W���_�X]";
+					mes "���ꂩ��׋�����̂́`";
+					mes "�p�[�e�B�[�ɂ��Ăł��I";
+					mes "�p�[�e�B�[�ƌ����΁A����ς�";
+					mes "���ꂢ�ȏƖ��ɂ���߂��h���X�I";
 					next;
-					mes "[ピッチジュダス]";
-					mes "ではなく……仲間との冒険を";
-					mes "助けてくれるパーティーシステム";
-					mes "のことです……";
+					mes "[�s�b�`�W���_�X]";
+					mes "�ł͂Ȃ��c�c���ԂƂ̖`����";
+					mes "�����Ă����p�[�e�B�[�V�X�e��";
+					mes "�̂��Ƃł��c�c";
 					next;
-					mes "[ピッチジュダス]";
-					mes "パーティーは";
-					mes "^4A4AFF/organize [パーティー名]^000000";
-					mes "のコマンドで結成することができます。";
-					mes "もちろん、^4A4AFF基本スキルが7以上^000000";
-					mes "なければいけません。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�p�[�e�B�[��";
+					mes "^4A4AFF/organize [�p�[�e�B�[��]^000000";
+					mes "�̃R�}���h�Ō������邱�Ƃ��ł��܂��B";
+					mes "�������A^4A4AFF��{�X�L����7�ȏ�^000000";
+					mes "�Ȃ���΂����܂���B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "また、基本情報ウィンドウの";
-					mes "「friend」を押すと";
-					mes "パーティー情報を表示できます。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�܂��A��{���E�B���h�E��";
+					mes "�ufriend�v��������";
+					mes "�p�[�e�B�[����\���ł��܂��B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "パーティーを結成して経験値の分配";
-					mes "形式を変更したりもできますが、";
-					mes "それは後で実際にやってみて";
-					mes "ください。";
-					mes "本当は私がすぐに駆けつけて";
-					mes "お手伝いしたいんですが……";
+					mes "[�s�b�`�W���_�X]";
+					mes "�p�[�e�B�[���������Čo���l�̕��z";
+					mes "�`����ύX��������ł��܂����A";
+					mes "����͌�Ŏ��ۂɂ���Ă݂�";
+					mes "���������B";
+					mes "�{���͎��������ɋ삯����";
+					mes "����`����������ł����c�c";
 					next;
-					mes "[ピッチジュダス]";
-					mes "一方、パーティーに参加するためには";
-					mes "パーティーリーダーからの";
-					mes "要請を受けて、承諾すれば良いのです。";
-					mes "これにはレベルの制限はありません。";
+					mes "[�s�b�`�W���_�X]";
+					mes "����A�p�[�e�B�[�ɎQ�����邽�߂ɂ�";
+					mes "�p�[�e�B�[���[�_�[�����";
+					mes "�v�����󂯂āA��������Ηǂ��̂ł��B";
+					mes "����ɂ̓��x���̐����͂���܂���B";
 					next;
 					emotion 30;
-					mes "[ピッチジュダス]";
-					mes "パーティーに関する私からの説明は";
-					mes "以上です。";
-					mes "ふふふ";
+					mes "[�s�b�`�W���_�X]";
+					mes "�p�[�e�B�[�Ɋւ��鎄����̐�����";
+					mes "�ȏ�ł��B";
+					mes "�ӂӂ�";
 					continue;
 				case 3:
-					mes "[ピッチジュダス]";
-					mes "チャットルームの開設は、";
-					mes "基本スキルレベルが";
-					mes "4以上あると可能になります。";
-					mes "基本情報ウィンドウの「comm」";
-					mes "ボタンを押すか、「Alt+c」";
-					mes "で開設することができます。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�`���b�g���[���̊J�݂́A";
+					mes "��{�X�L�����x����";
+					mes "4�ȏ゠��Ɖ\�ɂȂ�܂��B";
+					mes "��{���E�B���h�E�́ucomm�v";
+					mes "�{�^�����������A�uAlt+c�v";
+					mes "�ŊJ�݂��邱�Ƃ��ł��܂��B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "チャットルームを開設した後で、";
-					mes "部屋の名前や人数などの";
-					mes "設定を変更することもできます。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�`���b�g���[�����J�݂�����ŁA";
+					mes "�����̖��O��l���Ȃǂ�";
+					mes "�ݒ��ύX���邱�Ƃ��ł��܂��B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "チャットに参加している時は";
-					mes "チャットルームの外の声は";
-					mes "聞こえません。";
-					mes "参考にしてください。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�`���b�g�ɎQ�����Ă��鎞��";
+					mes "�`���b�g���[���̊O�̐���";
+					mes "�������܂���B";
+					mes "�Q�l�ɂ��Ă��������B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "……";
-					mes "…………";
-					mes "私もチャットルームを開きたい……";
-					mes "私の身分ではそれもかないません。";
-					mes "トホホホホ……";
+					mes "[�s�b�`�W���_�X]";
+					mes "�c�c";
+					mes "�c�c�c�c";
+					mes "�����`���b�g���[�����J�������c�c";
+					mes "���̐g���ł͂�������Ȃ��܂���B";
+					mes "�g�z�z�z�z�c�c";
 					continue;
 				case 4:
-					mes "[ピッチジュダス]";
-					mes "ミッドガルド全域には";
-					mes "カプラという巨大な物流サービス";
-					mes "が存在していて、旅人たちの";
-					mes "持ち物を保管してくれるなどの";
-					mes "便利なサービスをやっています。";
-					mes "もう会いましたか？";
+					mes "[�s�b�`�W���_�X]";
+					mes "�~�b�h�K���h�S��ɂ�";
+					mes "�J�v���Ƃ�������ȕ����T�[�r�X";
+					mes "�����݂��Ă��āA���l������";
+					mes "��������ۊǂ��Ă����Ȃǂ�";
+					mes "�֗��ȃT�[�r�X������Ă��܂��B";
+					mes "������܂������H";
 					next;
-					mes "[ピッチジュダス]";
-					mes "倉庫の使用は基本スキルが";
-					mes "6以上になると可能です。";
-					mes "カプラサービスの利用に関する";
-					mes "説明は、カプラ職員が別に";
-					mes "行っているでしょう。";
+					mes "[�s�b�`�W���_�X]";
+					mes "�q�ɂ̎g�p�͊�{�X�L����";
+					mes "6�ȏ�ɂȂ�Ɖ\�ł��B";
+					mes "�J�v���T�[�r�X�̗��p�Ɋւ���";
+					mes "�����́A�J�v���E�����ʂ�";
+					mes "�s���Ă���ł��傤�B";
 					next;
-					mes "[ピッチジュダス]";
-					mes "一度にたくさんのアイテムを持つと";
-					mes "重すぎて攻撃ができなくなったり、";
-					mes "回復ができなくなることがあります。";
-					mes "普段使わないアイテムなどは";
-					mes "倉庫に保管しておくと良いでしょう。";
+					mes "[�s�b�`�W���_�X]";
+					mes "��x�ɂ�������̃A�C�e��������";
+					mes "�d�����čU�����ł��Ȃ��Ȃ�����A";
+					mes "�񕜂��ł��Ȃ��Ȃ邱�Ƃ�����܂��B";
+					mes "���i�g��Ȃ��A�C�e���Ȃǂ�";
+					mes "�q�ɂɕۊǂ��Ă����Ɨǂ��ł��傤�B";
 					continue;
 				case 5:
-					mes "[ピッチジュダス]";
-					mes "すべて分かっていらっしゃる";
-					mes "なんて！";
-					mes "このピッチ感動しました！";
+					mes "[�s�b�`�W���_�X]";
+					mes "���ׂĕ������Ă���������";
+					mes "�Ȃ�āI";
+					mes "���̃s�b�`�������܂����I";
 					next;
-					mes "[ピッチジュダス]";
-					mes "今度は他のことを";
-					mes "勉強してみましょうか。";
+					mes "[�s�b�`�W���_�X]";
+					mes "���x�͑��̂��Ƃ�";
+					mes "�׋����Ă݂܂��傤���B";
 				}
 				break;
 			}
 			continue;
 		case 3:
-			mes "[ピッチジュダス]";
-			mes "感情を表すための手段の";
-			mes "1つとしてよく使われる";
-			mes "エモーションは、皆さんの";
-			mes "コミュニケーションに幅広く";
-			mes "対応してくれるでしょう。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�����\�����߂̎�i��";
+			mes "1�Ƃ��Ă悭�g����";
+			mes "�G���[�V�����́A�F�����";
+			mes "�R�~���j�P�[�V�����ɕ��L��";
+			mes "�Ή����Ă����ł��傤�B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "スキルレベルが2以上に";
-			mes "なると使えるようになります。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�X�L�����x����2�ȏ��";
+			mes "�Ȃ�Ǝg����悤�ɂȂ�܂��B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "「Alt+L」「Alt+M」で";
-			mes "エモーションリストが表示";
-			mes "されますので、設定して使う";
-			mes "ことができます。";
+			mes "[�s�b�`�W���_�X]";
+			mes "�uAlt+L�v�uAlt+M�v��";
+			mes "�G���[�V�������X�g���\��";
+			mes "����܂��̂ŁA�ݒ肵�Ďg��";
+			mes "���Ƃ��ł��܂��B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "ああ、豊かな感情表現こそ";
-			mes "人の関係において必ず必要な";
-			mes "ものではないでしょうか！";
-			mes "言葉で伝えづらい時、是非";
-			mes "使ってみてくださいね！";
+			mes "[�s�b�`�W���_�X]";
+			mes "�����A�L���Ȋ���\������";
+			mes "�l�̊֌W�ɂ����ĕK���K�v��";
+			mes "���̂ł͂Ȃ��ł��傤���I";
+			mes "���t�œ`���Â炢���A����";
+			mes "�g���Ă݂Ă��������ˁI";
 			next;
-			mes "[ピッチジュダス]";
-			mes "あ、それで使い方なんですが、";
-			mes "「Alt+M」で登録したものを";
-			mes "使ったり、チャットウィンドウに";
-			mes "直接「/e1」のように";
-			mes "入力すると使うことができます。";
+			mes "[�s�b�`�W���_�X]";
+			mes "���A����Ŏg�����Ȃ�ł����A";
+			mes "�uAlt+M�v�œo�^�������̂�";
+			mes "�g������A�`���b�g�E�B���h�E��";
+			mes "���ځu/e1�v�̂悤��";
+			mes "���͂���Ǝg�����Ƃ��ł��܂��B";
 			next;
-			mes "[ピッチジュダス]";
-			mes "Ctrl +「;」「-」「\」";
-			mes "で、「グー」「チョキ」「パー」";
-			mes "も出すことができますよ！";
+			mes "[�s�b�`�W���_�X]";
+			mes "Ctrl +�u;�v�u-�v�u\�v";
+			mes "�ŁA�u�O�[�v�u�`���L�v�u�p�[�v";
+			mes "���o�����Ƃ��ł��܂���I";
 			next;
 			emotion 3;
-			mes "[ピッチジュダス]";
-			mes "「/help」や「/emotion」";
-			mes "コマンドで、それぞれの";
-			mes "エモーションのコマンドも";
-			mes "確認することができるので";
-			mes "ご参考に。";
-			mes "ふふ……";
+			mes "[�s�b�`�W���_�X]";
+			mes "�u/help�v��u/emotion�v";
+			mes "�R�}���h�ŁA���ꂼ���";
+			mes "�G���[�V�����̃R�}���h��";
+			mes "�m�F���邱�Ƃ��ł���̂�";
+			mes "���Q�l�ɁB";
+			mes "�ӂӁc�c";
 			continue;
 		case 4:
-			mes "[ピッチジュダス]";
-			mes "これ以上教えることも";
-			mes "無いようですね……";
-			mes "それではお元気で！";
+			mes "[�s�b�`�W���_�X]";
+			mes "����ȏ㋳���邱�Ƃ�";
+			mes "�����悤�ł��ˁc�c";
+			mes "����ł͂����C�ŁI";
 			close;
 		}
 	}
@@ -2336,91 +2336,91 @@ new_1-2.gat,184,172,2	script	スキル講師	47,{
 
 
 //==========================================
-// 左の部屋
+// ���̕���
 //------------------------------------------
 
-new_1-2.gat,17,182,5	script	進行要員	84,{
+new_1-2.gat,17,182,5	script	�i�s�v��	84,{
 
 	function Battle {
-		mes "[エルミン]";
-		mes "まず、戦闘をするためには";
-		mes "モンスターにカーソルを合わせます";
-		mes "そして左クリックをすれば";
-		mes "モンスターを攻撃します。";
+		mes "[�G���~��]";
+		mes "�܂��A�퓬�����邽�߂ɂ�";
+		mes "�����X�^�[�ɃJ�[�\�������킹�܂�";
+		mes "�����č��N���b�N�������";
+		mes "�����X�^�[���U�����܂��B";
 		next;
-		mes "[エルミン]";
-		mes "ずっとクリックしているのが面倒な場合";
-		mes "「Ctrl」を押した状態で攻撃すれば";
-		mes "モンスターを倒すまで攻撃を";
-		mes "続けます。";
+		mes "[�G���~��]";
+		mes "�����ƃN���b�N���Ă���̂��ʓ|�ȏꍇ";
+		mes "�uCtrl�v����������ԂōU�������";
+		mes "�����X�^�[��|���܂ōU����";
+		mes "�����܂��B";
 		next;
-		mes "[エルミン]";
-		mes "さらにCtrlも押したくないという方は";
-		mes "^E79C29/nc^000000 とチャットウィンドウに";
-		mes "入力してみてください。";
-		mes "これでCtrlを押さずに";
-		mes "左クリックだけで";
-		mes "攻撃を続けるようになります。";
+		mes "[�G���~��]";
+		mes "�����Ctrl�����������Ȃ��Ƃ�������";
+		mes "^E79C29/nc^000000 �ƃ`���b�g�E�B���h�E��";
+		mes "���͂��Ă݂Ă��������B";
+		mes "�����Ctrl����������";
+		mes "���N���b�N������";
+		mes "�U���𑱂���悤�ɂȂ�܂��B";
 		next;
-		mes "[エルミン]";
-		mes "モンスターの属性が";
-		mes "不死(アンデッド)の場合、";
-		mes "ヒールのスキルを利用しても";
-		mes "攻撃が可能です。";
-		mes "この時は、「Shift」を";
-		mes "押しながらヒールを使えば良いです。";
+		mes "[�G���~��]";
+		mes "�����X�^�[�̑�����";
+		mes "�s��(�A���f�b�h)�̏ꍇ�A";
+		mes "�q�[���̃X�L���𗘗p���Ă�";
+		mes "�U�����\�ł��B";
+		mes "���̎��́A�uShift�v��";
+		mes "�����Ȃ���q�[�����g���Ηǂ��ł��B";
 		next;
-		mes "[エルミン]";
-		mes "これも毎回Shiftを";
-		mes "押したくない方は^E79C29/ns^000000 という";
-		mes "便利なコマンドがあります。これで";
-		mes "Shiftを押さなくてもモンスターに";
-		mes "ヒールを使うことができます。";
+		mes "[�G���~��]";
+		mes "���������Shift��";
+		mes "���������Ȃ�����^E79C29/ns^000000 �Ƃ���";
+		mes "�֗��ȃR�}���h������܂��B�����";
+		mes "Shift�������Ȃ��Ă������X�^�[��";
+		mes "�q�[�����g�����Ƃ��ł��܂��B";
 		return;
 	}
 
 	if(CHANGE_NV &0x200 == 0) {
-		mes "[エルミン]";
-		mes "第一コースはどうでした？";
-		mes "もうラグナロクオンラインの世界を";
-		mes "だいぶ理解していただけましたか？";
+		mes "[�G���~��]";
+		mes "���R�[�X�͂ǂ��ł����H";
+		mes "�������O�i���N�I�����C���̐��E��";
+		mes "�����ԗ������Ă��������܂������H";
 		next;
-		mes "[エルミン]";
-		mes "ここでは、戦闘の基本について";
-		mes "覚えていただきたいと思います。";
-		mes "理論の講義をしっかり受けて";
-		mes "いれば、ある程度の装備を支給";
-		mes "されたはずです。";
+		mes "[�G���~��]";
+		mes "�����ł́A�퓬�̊�{�ɂ���";
+		mes "�o���Ă������������Ǝv���܂��B";
+		mes "���_�̍u�`����������󂯂�";
+		mes "����΁A������x�̑������x��";
+		mes "���ꂽ�͂��ł��B";
 		next;
-		mes "[エルミン]";
-		mes "一応、戦闘をする前に自分の";
-		mes "装備を確認して見てください。";
-		mes "装備は整いましたか？";
+		mes "[�G���~��]";
+		mes "�ꉞ�A�퓬������O�Ɏ�����";
+		mes "�������m�F���Č��Ă��������B";
+		mes "�����͐����܂������H";
 		next;
-		if(select("バッチリです","まだです")==2) {
-			mes "[エルミン]";
-			mes "支給された装備は大事に";
-			mes "使ってくださいね。";
-			mes "もし間違ってなくしてしまっても";
-			mes "もう一度支給することはできません。";
+		if(select("�o�b�`���ł�","�܂��ł�")==2) {
+			mes "[�G���~��]";
+			mes "�x�����ꂽ�����͑厖��";
+			mes "�g���Ă��������ˁB";
+			mes "�����Ԉ���ĂȂ����Ă��܂��Ă�";
+			mes "������x�x�����邱�Ƃ͂ł��܂���B";
 			close;
 		}
 		Battle;
 		next;
-		mes "[エルミン]";
-		mes "大まかですが戦闘の基本知識";
-		mes "については理解できましたか？";
-		mes "それでは、モンスターの性質と属性、";
-		mes "戦闘後の経験値やアイテムなどに";
-		mes "ついて説明いたします。";
+		mes "[�G���~��]";
+		mes "��܂��ł����퓬�̊�{�m��";
+		mes "�ɂ��Ă͗����ł��܂������H";
+		mes "����ł́A�����X�^�[�̐����Ƒ����A";
+		mes "�퓬��̌o���l��A�C�e���Ȃǂ�";
+		mes "���Đ����������܂��B";
 		next;
-		mes "[エルミン]";
-		mes "一応、戦闘には危険が伴いますので、";
-		mes "ある程度戦えるように力をお分け";
-		mes "しましょうか。";
+		mes "[�G���~��]";
+		mes "�ꉞ�A�퓬�ɂ͊댯�������܂��̂ŁA";
+		mes "������x�킦��悤�ɗ͂�������";
+		mes "���܂��傤���B";
 		next;
-		mes "[エルミン]";
-		mes "えい！　やーっ!!";
+		mes "[�G���~��]";
+		mes "�����I�@��[��!!";
 		if(BaseLevel == 7)	getexp 153,0;
 		else if(BaseLevel == 6)	getexp 112,0;
 		else if(BaseLevel == 5)	getexp 77,0;
@@ -2430,208 +2430,208 @@ new_1-2.gat,17,182,5	script	進行要員	84,{
 		else if(BaseLevel == 1)	getexp 9,0;
 		set CHANGE_NV,CHANGE_NV|0x200;
 		next;
-		mes "[エルミン]";
-		mes "ふぅ……";
-		mes "お役に立てれば良いですね。";
-		mes "それでは、何について";
-		mes "知りたいですか？";
+		mes "[�G���~��]";
+		mes "�ӂ��c�c";
+		mes "�����ɗ��Ă�Ηǂ��ł��ˁB";
+		mes "����ł́A���ɂ���";
+		mes "�m�肽���ł����H";
 	}
 	else {
-		mes "[エルミン]";
-		mes "まだ他にも知りたいことが";
-		mes "あるようですね。";
-		mes "何を聞きたいですか？";
-		set '@word$,"戦闘に関する基本操作";
+		mes "[�G���~��]";
+		mes "�܂����ɂ��m�肽�����Ƃ�";
+		mes "����悤�ł��ˁB";
+		mes "���𕷂������ł����H";
+		set '@word$,"�퓬�Ɋւ����{����";
 	}
 	while(1) {
 		next;
-		switch (select("モンスターの性質と属性","戦闘時の経験値の獲得","アイテムの獲得",'@word$,('@word$ == "")? "何もない": "話をやめる")) {
+		switch (select("�����X�^�[�̐����Ƒ���","�퓬���̌o���l�̊l��","�A�C�e���̊l��",'@word$,('@word$ == "")? "�����Ȃ�": "�b����߂�")) {
 		case 1:
-			mes "[エルミン]";
-			mes "モンスターたちの中には";
-			mes "攻撃される前に先に攻撃をしかけて";
-			mes "くるタイプのモンスターもいます。";
-			mes "また、自分の仲間を攻撃した場合";
-			mes "集まってきて攻撃してくるモンスターも";
-			mes "いるので気をつけてください。";
+			mes "[�G���~��]";
+			mes "�����X�^�[�����̒��ɂ�";
+			mes "�U�������O�ɐ�ɍU������������";
+			mes "����^�C�v�̃����X�^�[�����܂��B";
+			mes "�܂��A�����̒��Ԃ��U�������ꍇ";
+			mes "�W�܂��Ă��čU�����Ă��郂���X�^�[��";
+			mes "����̂ŋC�����Ă��������B";
 			next;
-			mes "[エルミン]";
-			mes "そしてモンスターたちはいろんな形態と";
-			mes "大きさ、属性を持っています。";
-			mes "形態には人間、動物、不死、悪魔";
-			mes "などがあり、これをよく把握すれば";
-			mes "ある程度戦闘が楽になるでしょう。";
+			mes "[�G���~��]";
+			mes "�����ă����X�^�[�����͂����Ȍ`�Ԃ�";
+			mes "�傫���A�����������Ă��܂��B";
+			mes "�`�Ԃɂ͐l�ԁA�����A�s���A����";
+			mes "�Ȃǂ�����A������悭�c�������";
+			mes "������x�퓬���y�ɂȂ�ł��傤�B";
 			next;
-			mes "[エルミン]";
-			mes "例えば、特定の形態へのダメージを";
-			mes "増加させるカードを挿した武器や";
-			mes "特定の形態からのダメージを減少";
-			mes "させるカードを挿した防具を";
-			mes "利用すれば、戦闘を有利に進める";
-			mes "ことができるでしょう。";
+			mes "[�G���~��]";
+			mes "�Ⴆ�΁A����̌`�Ԃւ̃_���[�W��";
+			mes "����������J�[�h��}���������";
+			mes "����̌`�Ԃ���̃_���[�W������";
+			mes "������J�[�h��}�����h���";
+			mes "���p����΁A�퓬��L���ɐi�߂�";
+			mes "���Ƃ��ł���ł��傤�B";
 			next;
-			mes "[エルミン]";
-			mes "モンスターの大きさは小型、中型、大型";
-			mes "と分けられます。";
-			mes "これも大きさによってダメージを増加";
-			mes "させるカードを挿した武器を利用";
-			mes "すれば、戦闘が楽になるでしょう。";
+			mes "[�G���~��]";
+			mes "�����X�^�[�̑傫���͏��^�A���^�A��^";
+			mes "�ƕ������܂��B";
+			mes "������傫���ɂ���ă_���[�W�𑝉�";
+			mes "������J�[�h��}��������𗘗p";
+			mes "����΁A�퓬���y�ɂȂ�ł��傤�B";
 			next;
-			mes "[エルミン]";
-			mes "武器ごとに特性があり、それぞれの";
-			mes "大きさによってダメージが";
-			mes "変わる場合もあります。";
-			mes "例えば、短剣は小型の対象に100%の";
-			mes "威力を発揮しますが、大型には50%";
-			mes "の威力しか発揮しません。";
+			mes "[�G���~��]";
+			mes "���킲�Ƃɓ���������A���ꂼ���";
+			mes "�傫���ɂ���ă_���[�W��";
+			mes "�ς��ꍇ������܂��B";
+			mes "�Ⴆ�΁A�Z���͏��^�̑Ώۂ�100%��";
+			mes "�З͂𔭊����܂����A��^�ɂ�50%";
+			mes "�̈З͂����������܂���B";
 			next;
-			mes "[エルミン]";
-			mes "属性は、";
-			mes "火,水,地,風,毒,不死,闇,念,聖";
-			mes "があります。";
-			mes "基本的に、モンスターの属性に反する";
-			mes "属性で攻撃するとより大きな";
-			mes "ダメージを与えられます。";
+			mes "[�G���~��]";
+			mes "�����́A";
+			mes "��,��,�n,��,��,�s��,��,�O,��";
+			mes "������܂��B";
+			mes "��{�I�ɁA�����X�^�[�̑����ɔ�����";
+			mes "�����ōU������Ƃ��傫��";
+			mes "�_���[�W��^�����܂��B";
 			next;
-			mes "[エルミン]";
-			mes "また、属性武器でダメージが与え";
-			mes "られない場合があったり、逆に";
-			mes "属性武器で攻撃しなければ";
-			mes "ダメージを与えられない場合も";
-			mes "あります。";
+			mes "[�G���~��]";
+			mes "�܂��A��������Ń_���[�W���^��";
+			mes "���Ȃ��ꍇ����������A�t��";
+			mes "��������ōU�����Ȃ����";
+			mes "�_���[�W��^�����Ȃ��ꍇ��";
+			mes "����܂��B";
 			next;
-			mes "[エルミン]";
-			mes "例えば、念属性の場合、";
-			mes "無属性の攻撃をしてもダメージが";
-			mes "ほとんど与えられず、属性武器で";
-			mes "攻撃するとダメージを";
-			mes "与えることができます。";
+			mes "[�G���~��]";
+			mes "�Ⴆ�΁A�O�����̏ꍇ�A";
+			mes "�������̍U�������Ă��_���[�W��";
+			mes "�قƂ�Ǘ^����ꂸ�A���������";
+			mes "�U������ƃ_���[�W��";
+			mes "�^���邱�Ƃ��ł��܂��B";
 			continue;
 		case 2:
-			mes "[エルミン]";
-			mes "経験値は、一般的にモンスターに";
-			mes "たくさんダメージを与えた人が";
-			mes "より多くの経験値をもらえます。";
-			mes "モンスターのHPとダメージに比例した";
-			mes "経験値が与えられるのです。";
+			mes "[�G���~��]";
+			mes "�o���l�́A��ʓI�Ƀ����X�^�[��";
+			mes "��������_���[�W��^�����l��";
+			mes "��葽���̌o���l�����炦�܂��B";
+			mes "�����X�^�[��HP�ƃ_���[�W�ɔ�Ⴕ��";
+			mes "�o���l���^������̂ł��B";
 			next;
-			mes "[エルミン]";
-			mes "例えばAさんが、";
-			mes "経験値「1000」を持ち";
-			mes "HPが「100」のモンスターを";
-			mes "攻撃して「65」のダメージを";
-			mes "与えていたら、Aさんは";
-			mes "経験値「650」を獲得します。";
+			mes "[�G���~��]";
+			mes "�Ⴆ��A���񂪁A";
+			mes "�o���l�u1000�v������";
+			mes "HP���u100�v�̃����X�^�[��";
+			mes "�U�����āu65�v�̃_���[�W��";
+			mes "�^���Ă�����AA�����";
+			mes "�o���l�u650�v���l�����܂��B";
 			next;
-			mes "[エルミン]";
-			mes "また同じ「65」のダメージを";
-			mes "与えてもモンスターのHPに";
-			mes "よって獲得できる経験値は";
-			mes "変わります。";
+			mes "[�G���~��]";
+			mes "�܂������u65�v�̃_���[�W��";
+			mes "�^���Ă������X�^�[��HP��";
+			mes "����Ċl���ł���o���l��";
+			mes "�ς��܂��B";
 			next;
-			mes "[エルミン]";
-			mes "もし、他の人が同じダメージを";
-			mes "与えた場合は、先に攻撃した";
-			mes "人に2/3の経験値が入り、";
-			mes "後から攻撃した人には";
-			mes "1/3の経験値しか入りません。";
+			mes "[�G���~��]";
+			mes "�����A���̐l�������_���[�W��";
+			mes "�^�����ꍇ�́A��ɍU������";
+			mes "�l��2/3�̌o���l������A";
+			mes "�ォ��U�������l�ɂ�";
+			mes "1/3�̌o���l��������܂���B";
 			next;
-			mes "[エルミン]";
-			mes "パーティープレイ時の経験値は、";
-			mes "公平に分配している場合は";
-			mes "パーティー全体が獲得した経験値を";
-			mes "パーティーメンバーで均等に";
-			mes "分けられます。";
+			mes "[�G���~��]";
+			mes "�p�[�e�B�[�v���C���̌o���l�́A";
+			mes "�����ɕ��z���Ă���ꍇ��";
+			mes "�p�[�e�B�[�S�̂��l�������o���l��";
+			mes "�p�[�e�B�[�����o�[�ŋϓ���";
+			mes "�������܂��B";
 			next;
-			mes "[エルミン]";
-			mes "他の人と一緒にモンスターを";
-			mes "倒す場合は、ある程度慣れたら";
-			mes "パーティープレイを活用すると";
-			mes "良いでしょう。";
+			mes "[�G���~��]";
+			mes "���̐l�ƈꏏ�Ƀ����X�^�[��";
+			mes "�|���ꍇ�́A������x���ꂽ��";
+			mes "�p�[�e�B�[�v���C�����p�����";
+			mes "�ǂ��ł��傤�B";
 			continue;
 		case 3:
-			mes "[エルミン]";
-			mes "モンスターを倒した場合、ある確率で";
-			mes "アイテムを落とすことがあります。";
-			mes "その他、「スティール」スキルで";
-			mes "アイテムを盗むこともできます。";
+			mes "[�G���~��]";
+			mes "�����X�^�[��|�����ꍇ�A����m����";
+			mes "�A�C�e���𗎂Ƃ����Ƃ�����܂��B";
+			mes "���̑��A�u�X�e�B�[���v�X�L����";
+			mes "�A�C�e���𓐂ނ��Ƃ��ł��܂��B";
 			next;
-			mes "[エルミン]";
-			mes "スティールによってモンスターから";
-			mes "アイテムを盗んでも、そのモンスター";
-			mes "を倒した時にはアイテムを落とさなく";
-			mes "なるわけではありません。";
+			mes "[�G���~��]";
+			mes "�X�e�B�[���ɂ���ă����X�^�[����";
+			mes "�A�C�e���𓐂�ł��A���̃����X�^�[";
+			mes "��|�������ɂ̓A�C�e���𗎂Ƃ��Ȃ�";
+			mes "�Ȃ�킯�ł͂���܂���B";
 			next;
-			mes "[エルミン]";
-			mes "他の人と一緒にモンスターを倒した";
-			mes "場合、基本的にはモンスターに一番";
-			mes "多くのダメージを与えた人に";
-			mes "アイテムを拾う優先権が発生します。";
+			mes "[�G���~��]";
+			mes "���̐l�ƈꏏ�Ƀ����X�^�[��|����";
+			mes "�ꍇ�A��{�I�ɂ̓����X�^�[�Ɉ��";
+			mes "�����̃_���[�W��^�����l��";
+			mes "�A�C�e�����E���D�挠���������܂��B";
 			continue;
 		case 4:
-			Battle;	//CHANGE_NV &0x200 == 0なら出ない
+			Battle;	//CHANGE_NV &0x200 == 0�Ȃ�o�Ȃ�
 			continue;
 		case 5:
-			mes "[エルミン]";
-			mes "また何かありましたら、";
-			mes "声をかけてください。";
+			mes "[�G���~��]";
+			mes "�܂���������܂�����A";
+			mes "���������Ă��������B";
 			close;
 		}
 	}
 }
 
 //==============================================================
-new_1-2.gat,38,182,3	script	受付要員	92,{
+new_1-2.gat,38,182,3	script	��t�v��	92,{
 	if(CHANGE_NV &0x200 == 0) {
-		mes "[ケーン]";
-		mes "戦闘の基本すら知らない状態で";
-		mes "実習をなさるおつもりですか？";
-		mes "申し訳ありませんが、私の右にいる";
-		mes "進行要員に、戦闘の基礎について";
-		mes "教えてもらってからおこしください。";
+		mes "[�P�[��]";
+		mes "�퓬�̊�{����m��Ȃ���Ԃ�";
+		mes "���K���Ȃ��邨����ł����H";
+		mes "�\���󂠂�܂��񂪁A���̉E�ɂ���";
+		mes "�i�s�v���ɁA�퓬�̊�b�ɂ���";
+		mes "�����Ă�����Ă��炨�������������B";
 		close;
 	}
 	if(CHANGE_NV &0x400 == 0) {
-		mes "[ケーン]";
-		mes "第2コースは、今まで学んだ知識が";
-		mes "身についているかを実際の戦闘で";
-		mes "確認します。どれだけ実戦で活用";
-		mes "できるか、それが戦闘実習の課題と";
-		mes "なります。";
+		mes "[�P�[��]";
+		mes "��2�R�[�X�́A���܂Ŋw�񂾒m����";
+		mes "�g�ɂ��Ă��邩�����ۂ̐퓬��";
+		mes "�m�F���܂��B�ǂꂾ������Ŋ��p";
+		mes "�ł��邩�A���ꂪ�퓬���K�̉ۑ��";
+		mes "�Ȃ�܂��B";
 		next;
-		mes "[ケーン]";
-		mes "実習用のマップには、様々な";
-		mes "モンスターがいます。今まで培った";
-		mes "知識を基に戦い抜いてください。";
+		mes "[�P�[��]";
+		mes "���K�p�̃}�b�v�ɂ́A�l�X��";
+		mes "�����X�^�[�����܂��B���܂Ŕ|����";
+		mes "�m������ɐ킢�����Ă��������B";
 		next;
-		mes "[ケーン]";
-		mes "こちらでは特に、目標の強制や行動の";
-		mes "制限は行いません。戦闘を実際に";
-		mes "体験できる場所へ行く、その程度に";
-		mes "考えていただいて構いません。";
+		mes "[�P�[��]";
+		mes "������ł͓��ɁA�ڕW�̋�����s����";
+		mes "�����͍s���܂���B�퓬�����ۂ�";
+		mes "�̌��ł���ꏊ�֍s���A���̒��x��";
+		mes "�l���Ă��������č\���܂���B";
 		next;
-		mes "[ケーン]";
-		mes "第2コースの実習マップを進むと、";
-		mes "その北側の入口に進行要員がいます。";
-		mes "彼がその次の場所へ送りますので";
-		mes "声をおかけください。それでは、";
-		mes "実習を始めますか？";
+		mes "[�P�[��]";
+		mes "��2�R�[�X�̎��K�}�b�v��i�ނƁA";
+		mes "���̖k���̓����ɐi�s�v�������܂��B";
+		mes "�ނ����̎��̏ꏊ�֑���܂��̂�";
+		mes "�������������������B����ł́A";
+		mes "���K���n�߂܂����H";
 		next;
-		if(select("はい、お願いします！","ちょっと準備してきます")==2) {
-			mes "[ケーン]";
-			mes "了解しました。";
-			mes "なら、私の右側にいる進行要員の";
-			mes "話を聞いてみるとよいでしょう。";
-			mes "準備ができたら、おこしください。";
+		if(select("�͂��A���肢���܂��I","������Ə������Ă��܂�")==2) {
+			mes "[�P�[��]";
+			mes "�������܂����B";
+			mes "�Ȃ�A���̉E���ɂ���i�s�v����";
+			mes "�b�𕷂��Ă݂�Ƃ悢�ł��傤�B";
+			mes "�������ł�����A���������������B";
 			close;
 		}
-		mes "[ケーン]";
-		mes "了解しました。";
-		mes "決して無理はしないでくださいね。";
-		mes "では、アイテムを支給しますので";
-		mes "危険に陥ったときにご利用ください。";
-		mes "それから……一緒に武器と盾も";
-		mes "支給しましょう。";
+		mes "[�P�[��]";
+		mes "�������܂����B";
+		mes "�����Ė����͂��Ȃ��ł��������ˁB";
+		mes "�ł́A�A�C�e�����x�����܂��̂�";
+		mes "�댯�Ɋׂ����Ƃ��ɂ����p���������B";
+		mes "���ꂩ��c�c�ꏏ�ɕ���Ə���";
+		mes "�x�����܂��傤�B";
 		set CHANGE_NV,CHANGE_NV|0x400;
 		getitem 602,1;
 		getitem 601,9;
@@ -2641,29 +2641,29 @@ new_1-2.gat,38,182,3	script	受付要員	92,{
 		getitem 569,30;
 	}
 	else {
-		mes "[ケーン]";
-		mes "無理はしないように";
-		mes "と注意しておきましたよね？";
-		mes "まあ「失敗は成功の元」という言葉も";
-		mes "ありますしね。あなたのために";
-		mes "なっていることを望みます。";
+		mes "[�P�[��]";
+		mes "�����͂��Ȃ��悤��";
+		mes "�ƒ��ӂ��Ă����܂�����ˁH";
+		mes "�܂��u���s�͐����̌��v�Ƃ������t��";
+		mes "����܂����ˁB���Ȃ��̂��߂�";
+		mes "�Ȃ��Ă��邱�Ƃ�]�݂܂��B";
 		next;
-		mes "[ケーン]";
-		mes "また挑戦しますか？";
+		mes "[�P�[��]";
+		mes "�܂����킵�܂����H";
 		next;
-		if(select("はい、ぜひ！","ちょっと準備をしてきます")==2) {
-			mes "[ケーン]";
-			mes "了解しました。";
-			mes "なら、私の右側にいる進行要員の";
-			mes "話を聞いてみるとよいでしょう。";
-			mes "準備ができたら、おこしください。";
+		if(select("�͂��A���ЁI","������Ə��������Ă��܂�")==2) {
+			mes "[�P�[��]";
+			mes "�������܂����B";
+			mes "�Ȃ�A���̉E���ɂ���i�s�v����";
+			mes "�b�𕷂��Ă݂�Ƃ悢�ł��傤�B";
+			mes "�������ł�����A���������������B";
 			close;
 		}
-		mes "[ケーン]";
-		mes "了解しました。";
-		mes "ささやかではありますが";
+		mes "[�P�[��]";
+		mes "�������܂����B";
+		mes "�����₩�ł͂���܂���";
 		if(CHANGE_NV &0x800 == 0) {
-			mes "私からの応援の品です。";
+			mes "������̉����̕i�ł��B";
 			if(BaseLevel >= 8)	getexp 200,0;
 			else if(BaseLevel == 7)	getexp 153,0;
 			else if(BaseLevel == 6)	getexp 112,0;
@@ -2675,10 +2675,10 @@ new_1-2.gat,38,182,3	script	受付要員	92,{
 			set CHANGE_NV,CHANGE_NV|0x800;
 		}
 		else {
-			mes "私からの応援の気持ちです。";
+			mes "������̉����̋C�����ł��B";
 		}
 		percentheal 100,100;
-		mes "では、気をつけて行ってください。";
+		mes "�ł́A�C�����čs���Ă��������B";
 	}
 	close2;
 	savepoint "new_1-2.gat",24,189;
@@ -2692,380 +2692,380 @@ new_1-2.gat,38,182,3	script	受付要員	92,{
 	end;
 }
 
-new_1-2.gat,28,185,3	shop	いも売り娘	90,516
+new_1-2.gat,28,185,3	shop	�������薺	90,516
 
 
 //==========================================
-// 戦闘実習
+// �퓬���K
 //------------------------------------------
 
 -	script	NoviceTraining		-1,{
-	mes "[フーマン]";
-	mes "低レベルモンスターといえど";
-	mes "甘く見ると痛い目にあいますよ。";
-	mes "下手をすると大怪我をするので";
-	mes "気をつけてくださいね。";
+	mes "[�t�[�}��]";
+	mes "�჌�x�������X�^�[�Ƃ�����";
+	mes "�Â�����ƒɂ��ڂɂ����܂���B";
+	mes "���������Ƒ���������̂�";
+	mes "�C�����Ă��������ˁB";
 	next;
-	mes "[フーマン]";
-	mes "そうそう、たまに先制攻撃を";
-	mes "しかけてくるモンスターが";
-	mes "いますので、ご注意を！";
-	mes "それでは、頑張って実習を";
-	mes "やり遂げてください!!";
+	mes "[�t�[�}��]";
+	mes "���������A���܂ɐ搧�U����";
+	mes "�������Ă��郂���X�^�[��";
+	mes "���܂��̂ŁA�����ӂ��I";
+	mes "����ł́A�撣���Ď��K��";
+	mes "��萋���Ă�������!!";
 	next;
-	mes "[フーマン]";
-	mes "……もしかして本当は、";
-	mes "ここのモンスターたちは弱い！";
-	mes "と思っています？";
-	mes "実はそんな方のためにサービス!!";
-	mes "もうちょっと強いモンスターが";
-	mes "出る所へ送ってあげましょう。";
+	mes "[�t�[�}��]";
+	mes "�c�c���������Ė{���́A";
+	mes "�����̃����X�^�[�����͎ア�I";
+	mes "�Ǝv���Ă��܂��H";
+	mes "���͂���ȕ��̂��߂ɃT�[�r�X!!";
+	mes "����������Ƌ��������X�^�[��";
+	mes "�o�鏊�֑����Ă����܂��傤�B";
 	next;
-	mes "[フーマン]";
-	mes "ちょっと、挑戦してみます？";
+	mes "[�t�[�}��]";
+	mes "������ƁA���킵�Ă݂܂��H";
 	next;
-	//NPC名から表示しない番号を取り出してそのメニューを空文字で埋める
+	//NPC������\�����Ȃ��ԍ������o���Ă��̃��j���[���󕶎��Ŗ��߂�
 	set '@num,strnpcinfo(2);
-	setarray '@serv$,"弱めのモンスターと戦いたい","ちょっと強いモンスターと戦いたい","強いモンスターに挑戦したい！";
+	setarray '@serv$,"��߂̃����X�^�[�Ɛ킢����","������Ƌ��������X�^�[�Ɛ킢����","���������X�^�[�ɒ��킵�����I";
 	set '@serv$['@num],"";
-	switch (select('@serv$[0],'@serv$[1],'@serv$[2],"いや、やめておく……")) {
+	switch (select('@serv$[0],'@serv$[1],'@serv$[2],"����A��߂Ă����c�c")) {
 	case 1:
-		mes "[フーマン]";
-		mes "わっかりましたー！";
-		mes "それでは、弱めのモンスターが";
-		mes "いる所へ送ってあげましょう。";
-		mes "ご武運を祈ります！";
+		mes "[�t�[�}��]";
+		mes "�������܂����[�I";
+		mes "����ł́A��߂̃����X�^�[��";
+		mes "���鏊�֑����Ă����܂��傤�B";
+		mes "�����^���F��܂��I";
 		next;
 		warp "new_1-3.gat",96,21;
 		end;
 	case 2:
-		mes "[フーマン]";
-		mes "わっかりましたー！";
-		mes "それでは、ちょっと強いモンスターが";
-		mes "いる所へ送ってあげましょう。";
-		mes "ご武運を祈ります！";
+		mes "[�t�[�}��]";
+		mes "�������܂����[�I";
+		mes "����ł́A������Ƌ��������X�^�[��";
+		mes "���鏊�֑����Ă����܂��傤�B";
+		mes "�����^���F��܂��I";
 		next;
 		warp "new_"+rand(2,3)+"-3.gat",96,21;
 		end;
 	case 3:
-		mes "[フーマン]";
-		mes "勇気がある方ですね……";
-		mes "では、そのご希望に応えましょう！";
-		mes "いってらっしゃーい！";
+		mes "[�t�[�}��]";
+		mes "�E�C��������ł��ˁc�c";
+		mes "�ł́A���̂���]�ɉ����܂��傤�I";
+		mes "�����Ă������[���I";
 		next;
 		warp "new_"+rand(4,5)+"-3.gat",96,21;
 		end;
 	case 4:
-		mes "[フーマン]";
-		mes "用心深い方ですね……";
-		mes "確かに、実習を確実にこなすことの方が";
-		mes "大事ですよね。ご武運を祈ります！";
+		mes "[�t�[�}��]";
+		mes "�p�S�[�����ł��ˁc�c";
+		mes "�m���ɁA���K���m���ɂ��Ȃ����Ƃ̕���";
+		mes "�厖�ł���ˁB�����^���F��܂��I";
 		close;
 	}
 }
 
-new_1-3.gat,95,30,4	duplicate(NoviceTraining)	訓練所要員#0	84
-new_2-3.gat,95,30,4	duplicate(NoviceTraining)	訓練所要員#1	84
-new_3-3.gat,95,30,4	duplicate(NoviceTraining)	訓練所要員#1	84
-new_4-3.gat,95,30,4	duplicate(NoviceTraining)	訓練所要員#2	84
-new_5-3.gat,95,30,4	duplicate(NoviceTraining)	訓練所要員#2	84
+new_1-3.gat,95,30,4	duplicate(NoviceTraining)	�P�����v��#0	84
+new_2-3.gat,95,30,4	duplicate(NoviceTraining)	�P�����v��#1	84
+new_3-3.gat,95,30,4	duplicate(NoviceTraining)	�P�����v��#1	84
+new_4-3.gat,95,30,4	duplicate(NoviceTraining)	�P�����v��#2	84
+new_5-3.gat,95,30,4	duplicate(NoviceTraining)	�P�����v��#2	84
 
 //==============================================================
 -	script	NoviceManager	85,{
-	mes "[シーマン]";
-	mes "……なんだ？";
-	mes "戦闘実習はきちんとやったのか。";
-	mes "じゃあ、次のマップへ送ってやろうか？";
+	mes "[�V�[�}��]";
+	mes "�c�c�Ȃ񂾁H";
+	mes "�퓬���K�͂�����Ƃ�����̂��B";
+	mes "���Ⴀ�A���̃}�b�v�֑����Ă�낤���H";
 	next;
-	if(select("はい、お願いします！","まだいいです")==1) {
-		mes "[シーマン]";
-		mes "よし、これから先、色々なことが";
-		mes "あるだろうが、今、学んだことを";
-		mes "決して忘れるな！それでは";
-		mes "よい冒険になることを祈る！";
+	if(select("�͂��A���肢���܂��I","�܂������ł�")==1) {
+		mes "[�V�[�}��]";
+		mes "�悵�A���ꂩ���A�F�X�Ȃ��Ƃ�";
+		mes "���邾�낤���A���A�w�񂾂��Ƃ�";
+		mes "�����ĖY���ȁI����ł�";
+		mes "�悢�`���ɂȂ邱�Ƃ��F��I";
 		close2;
 		warp "new_1-4.gat",99,10;
 		end;
 	}
-	mes "[シーマン]";
-	mes "ふむ。自ら己の未熟さを認めるのは";
-	mes "いいことだ！お前の気が済むまで";
-	mes "実習にはげんでこい！";
+	mes "[�V�[�}��]";
+	mes "�ӂށB����Ȃ̖��n����F�߂�̂�";
+	mes "�������Ƃ��I���O�̋C���ςނ܂�";
+	mes "���K�ɂ͂���ł����I";
 	close;
 }
 
-new_1-3.gat,96,174,3	duplicate(NoviceManager)	試験監督	85
-new_2-3.gat,96,174,3	duplicate(NoviceManager)	試験監督	85
-new_3-3.gat,96,174,3	duplicate(NoviceManager)	試験監督	85
-new_4-3.gat,96,174,3	duplicate(NoviceManager)	試験監督	85
-new_5-3.gat,96,174,3	duplicate(NoviceManager)	試験監督	85
+new_1-3.gat,96,174,3	duplicate(NoviceManager)	�����ē�	85
+new_2-3.gat,96,174,3	duplicate(NoviceManager)	�����ē�	85
+new_3-3.gat,96,174,3	duplicate(NoviceManager)	�����ē�	85
+new_4-3.gat,96,174,3	duplicate(NoviceManager)	�����ē�	85
+new_5-3.gat,96,174,3	duplicate(NoviceManager)	�����ē�	85
 
 
 //==========================================
-// 職業適性検査
+// �E�ƓK������
 //------------------------------------------
 
-new_1-4.gat,91,22,3	script	職業教官	57,{
-	mes "[ブルース]";
-	mes "ここまで来るのは本当に大変";
-	mes "だったでしょう。ご苦労様でした。";
-	mes "^8C2121" +strcharinfo(0)+ "^000000様";
-	mes "お会いできて嬉しいです。";
-	mes "私は、ルーンミッドガッツ王国から";
-	mes "派遣されたブルースと申します。";
+new_1-4.gat,91,22,3	script	�E�Ƌ���	57,{
+	mes "[�u���[�X]";
+	mes "�����܂ŗ���͖̂{���ɑ��";
+	mes "�������ł��傤�B����J�l�ł����B";
+	mes "^8C2121" +strcharinfo(0)+ "^000000�l";
+	mes "����ł��Ċ������ł��B";
+	mes "���́A���[���~�b�h�K�b�c��������";
+	mes "�h�����ꂽ�u���[�X�Ɛ\���܂��B";
 	next;
-	mes "[ブルース]";
-	mes "初心者の方への職業選択の";
-	mes "手助けとして、各職業の概要を";
-	mes "ご説明することが、私の任務です。";
+	mes "[�u���[�X]";
+	mes "���S�҂̕��ւ̐E�ƑI����";
+	mes "�菕���Ƃ��āA�e�E�Ƃ̊T�v��";
+	mes "���������邱�Ƃ��A���̔C���ł��B";
 	next;
-	mes "[ブルース]";
-	mes "私がご紹介する職業は、";
-	mes "^0000FF剣士、マジシャン、アーチャー、";
-	mes "商人、シーフ、アコライト、";
-	mes "特殊一次職^000000です。";
+	mes "[�u���[�X]";
+	mes "�������Љ��E�Ƃ́A";
+	mes "^0000FF���m�A�}�W�V�����A�A�[�`���[�A";
+	mes "���l�A�V�[�t�A�A�R���C�g�A";
+	mes "����ꎟ�E^000000�ł��B";
 	next;
-	mes "[ブルース]";
-	mes "どの職業について知りたいですか？";
+	mes "[�u���[�X]";
+	mes "�ǂ̐E�Ƃɂ��Ēm�肽���ł����H";
 	while(1) {
 		next;
-		switch (select("剣士","マジシャン","アーチャー","商人","シーフ","アコライト","特殊一次職","話をやめる")) {
+		switch (select("���m","�}�W�V����","�A�[�`���[","���l","�V�[�t","�A�R���C�g","����ꎟ�E","�b����߂�")) {
 		case 1:
-			mes "[ブルース]";
-			mes "剣士とは文字通り、剣を扱う者のことを";
-			mes "言います。ソードマンと呼ばれることも";
-			mes "あります。たまに剣の代わりに";
-			mes "槍をお使いになる方もいます。";
+			mes "[�u���[�X]";
+			mes "���m�Ƃ͕����ʂ�A���������҂̂��Ƃ�";
+			mes "�����܂��B�\�[�h�}���ƌĂ΂�邱�Ƃ�";
+			mes "����܂��B���܂Ɍ��̑����";
+			mes "�������g���ɂȂ�������܂��B";
 			next;
-			mes "[ブルース]";
-			mes "剣士は体力がありますので、";
-			mes "重い鎧や武器を装備することが";
-			mes "できます。";
-			mes "また弓、杖、カタール、ナックル等を";
-			mes "除くほとんどの武器を扱うことが";
-			mes "できます。";
+			mes "[�u���[�X]";
+			mes "���m�̗͑͂�����܂��̂ŁA";
+			mes "�d���Z�═��𑕔����邱�Ƃ�";
+			mes "�ł��܂��B";
+			mes "�܂��|�A��A�J�^�[���A�i�b�N������";
+			mes "�����قƂ�ǂ̕�����������Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "しかし、基本的に魔法を使えないので";
-			mes "その点が短所ではありますが、";
-			mes "これは属性が付与された武器を";
-			mes "装備することで補えます。";
+			mes "[�u���[�X]";
+			mes "�������A��{�I�ɖ��@���g���Ȃ��̂�";
+			mes "���̓_���Z���ł͂���܂����A";
+			mes "����͑������t�^���ꂽ�����";
+			mes "�������邱�Ƃŕ₦�܂��B";
 			next;
-			mes "[ブルース]";
-			mes "剣士はその強靭な体力により、";
-			mes "敵の攻撃をものともしません。";
-			mes "また、自分の身の安全を";
-			mes "図る術も身につけています。";
+			mes "[�u���[�X]";
+			mes "���m�͂��̋��x�ȑ̗͂ɂ��A";
+			mes "�G�̍U�������̂Ƃ����܂���B";
+			mes "�܂��A�����̐g�̈��S��";
+			mes "�}��p���g�ɂ��Ă��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "更に強力なスキルを駆使するようになる";
-			mes "と前衛としては、最大の威力を";
-			mes "発揮します。";
-			mes "鉄壁といっても過言ではないでしょう。";
+			mes "[�u���[�X]";
+			mes "�X�ɋ��͂ȃX�L������g����悤�ɂȂ�";
+			mes "�ƑO�q�Ƃ��ẮA�ő�̈З͂�";
+			mes "�������܂��B";
+			mes "�S�ǂƂ����Ă��ߌ��ł͂Ȃ��ł��傤�B";
 			next;
-			mes "[ブルース]";
-			mes "剣士はその肉体を生かし、体力が弱い";
-			mes "他職業を保護する役割を担っています。";
-			mes "パーティープレイ時のリーダーを務める";
-			mes "機会も多いでしょう。";
+			mes "[�u���[�X]";
+			mes "���m�͂��̓��̂𐶂����A�̗͂��ア";
+			mes "���E�Ƃ�ی삷�������S���Ă��܂��B";
+			mes "�p�[�e�B�[�v���C���̃��[�_�[�𖱂߂�";
+			mes "�@��������ł��傤�B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121剣士からはナイトや";
-			mes "クルセイダーに転職することが";
-			mes "できます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121���m����̓i�C�g��";
+			mes "�N���Z�C�_�[�ɓ]�E���邱�Ƃ�";
+			mes "�ł��܂��B^000000";
 			break;
 		case 2:
-			mes "[ブルース]";
-			mes "マジシャンは自らの魔力を基に";
-			mes "火、水、地、風等の属性を利用";
-			mes "して、魔法攻撃ができる職業です。";
+			mes "[�u���[�X]";
+			mes "�}�W�V�����͎���̖��͂����";
+			mes "�΁A���A�n�A�����̑����𗘗p";
+			mes "���āA���@�U�����ł���E�Ƃł��B";
 			next;
-			mes "[ブルース]";
-			mes "武器は杖と本が主で、その他にも";
-			mes "装備できるものはありますが、";
-			mes "体力が乏しいので、軽い物しか";
-			mes "装備できないという短所はあります。";
+			mes "[�u���[�X]";
+			mes "����͏�Ɩ{����ŁA���̑��ɂ�";
+			mes "�����ł�����̂͂���܂����A";
+			mes "�̗͂��R�����̂ŁA�y��������";
+			mes "�����ł��Ȃ��Ƃ����Z���͂���܂��B";
 			next;
-			mes "[ブルース]";
-			mes "しかしそれを補って余りある程の";
-			mes "強力な攻撃は、マジシャンが人々に";
-			mes "好まれる理由の一つでもあります。";
+			mes "[�u���[�X]";
+			mes "��������������ė]�肠�����";
+			mes "���͂ȍU���́A�}�W�V�������l�X��";
+			mes "�D�܂�闝�R�̈�ł�����܂��B";
 			next;
-			mes "[ブルース]";
-			mes "マジシャンは、パーティープレイ時";
-			mes "強力な魔法で、敵に大ダメージを";
-			mes "与える心強い仲間として活躍する";
-			mes "ことでしょう。";
+			mes "[�u���[�X]";
+			mes "�}�W�V�����́A�p�[�e�B�[�v���C��";
+			mes "���͂Ȗ��@�ŁA�G�ɑ�_���[�W��";
+			mes "�^����S�������ԂƂ��Ċ��􂷂�";
+			mes "���Ƃł��傤�B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121マジシャンからはウィザード";
-			mes "またはセージに転職することが";
-			mes "できます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121�}�W�V��������̓E�B�U�[�h";
+			mes "�܂��̓Z�[�W�ɓ]�E���邱�Ƃ�";
+			mes "�ł��܂��B^000000";
 			break;
 		case 3:
-			mes "[ブルース]";
-			mes "アーチャーは弓を利用した攻撃を";
-			mes "得意とし、遠距離攻撃ができるので";
-			mes "敵に狙われずに仲間をもサポート";
-			mes "できるという長所を持っています。";
+			mes "[�u���[�X]";
+			mes "�A�[�`���[�͋|�𗘗p�����U����";
+			mes "���ӂƂ��A�������U�����ł���̂�";
+			mes "�G�ɑ_��ꂸ�ɒ��Ԃ����T�|�[�g";
+			mes "�ł���Ƃ��������������Ă��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "短所として体力は弱いが、敵から";
-			mes "遠く離れた位置から攻撃ができるので";
-			mes "身の安全を保ちながら戦うことが";
-			mes "できます。";
+			mes "[�u���[�X]";
+			mes "�Z���Ƃ��đ̗͎͂ア���A�G����";
+			mes "�������ꂽ�ʒu����U�����ł���̂�";
+			mes "�g�̈��S��ۂ��Ȃ���키���Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "アーチャーは高い命中率と攻撃力で";
-			mes "敵が近づく前の早い段階で、素早く";
-			mes "狙い撃ちにすることができます。";
+			mes "[�u���[�X]";
+			mes "�A�[�`���[�͍����������ƍU���͂�";
+			mes "�G���߂Â��O�̑����i�K�ŁA�f����";
+			mes "�_�������ɂ��邱�Ƃ��ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121アーチャーからはハンターに";
-			mes "転職することができます。";
-			mes "またその他にも、男性の場合は";
-			mes "バード、女性の場合はダンサー";
-			mes "に転職することができます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121�A�[�`���[����̓n���^�[��";
+			mes "�]�E���邱�Ƃ��ł��܂��B";
+			mes "�܂����̑��ɂ��A�j���̏ꍇ��";
+			mes "�o�[�h�A�����̏ꍇ�̓_���T�[";
+			mes "�ɓ]�E���邱�Ƃ��ł��܂��B^000000";
 			break;
 		case 4:
-			mes "[ブルース]";
-			mes "商人は文字通り品物を売買して";
-			mes "利益を上げることがウリの職業です。";
-			mes "長い間、商売をしてきたノウハウを";
-			mes "生かし、他職業よりもっと安い価格で";
-			mes "品物を購入したり、より高い価格で";
-			mes "品物を売却することができます。";
+			mes "[�u���[�X]";
+			mes "���l�͕����ʂ�i���𔄔�����";
+			mes "���v���グ�邱�Ƃ��E���̐E�Ƃł��B";
+			mes "�����ԁA���������Ă����m�E�n�E��";
+			mes "�������A���E�Ƃ������ƈ������i��";
+			mes "�i�����w��������A��荂�����i��";
+			mes "�i���𔄋p���邱�Ƃ��ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "また、より多くのアイテムをカートに";
-			mes "積んで運ぶことができる上、自ら";
-			mes "お店を開くこともできます。";
+			mes "[�u���[�X]";
+			mes "�܂��A��葽���̃A�C�e�����J�[�g��";
+			mes "�ς�ŉ^�Ԃ��Ƃ��ł����A����";
+			mes "���X���J�����Ƃ��ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121商人からはブラックスミスや";
-			mes "アルケミストに転職することが";
-			mes "できます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121���l����̓u���b�N�X�~�X��";
+			mes "�A���P�~�X�g�ɓ]�E���邱�Ƃ�";
+			mes "�ł��܂��B^000000";
 			break;
 		case 5:
-			mes "[ブルース]";
-			mes "シーフは短剣を使った素早い攻撃と";
-			mes "身の軽さを生かした高い回避率が";
-			mes "長所です。";
+			mes "[�u���[�X]";
+			mes "�V�[�t�͒Z�����g�����f�����U����";
+			mes "�g�̌y���𐶂�����������𗦂�";
+			mes "�����ł��B";
 			next;
-			mes "[ブルース]";
-			mes "それ以外にも毒を使ったり";
-			mes "身を隠す技術も身につけることが";
-			mes "できます。万が一その毒におかされた";
-			mes "場合、その人は少しずつ体力を";
-			mes "奪われていきます。";
+			mes "[�u���[�X]";
+			mes "����ȊO�ɂ��ł��g������";
+			mes "�g���B���Z�p���g�ɂ��邱�Ƃ�";
+			mes "�ł��܂��B�����ꂻ�̓łɂ������ꂽ";
+			mes "�ꍇ�A���̐l�͏������̗͂�";
+			mes "�D���Ă����܂��B";
 			next;
-			mes "[ブルース]";
-			mes "危機的状況に陥った際、";
-			mes "素早く身を隠し、背後から攻撃を";
-			mes "仕掛けて形勢を逆転することも";
-			mes "できます。";
+			mes "[�u���[�X]";
+			mes "��@�I�󋵂Ɋׂ����ہA";
+			mes "�f�����g���B���A�w�ォ��U����";
+			mes "�d�|���Č`�����t�]���邱�Ƃ�";
+			mes "�ł��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121シーフからはアサシンや";
-			mes "ローグに転職することができます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121�V�[�t����̓A�T�V����";
+			mes "���[�O�ɓ]�E���邱�Ƃ��ł��܂��B^000000";
 			break;
 		case 6:
-			mes "[ブルース]";
-			mes "アコライトは神様に仕え、その";
-			mes "信仰を人々に教えるだけでなく、";
-			mes "他人のためには自らをも進んで";
-			mes "犠牲にする奉仕の職業です。";
+			mes "[�u���[�X]";
+			mes "�A�R���C�g�͐_�l�Ɏd���A����";
+			mes "�M��l�X�ɋ����邾���łȂ��A";
+			mes "���l�̂��߂ɂ͎�������i���";
+			mes "�]���ɂ����d�̐E�Ƃł��B";
 			next;
-			mes "[ブルース]";
-			mes "アコライトは戦闘には直接的に";
-			mes "関わるのではなく、奇跡により";
-			mes "仲間の能力を引き出したり、負傷";
-			mes "した仲間を癒す役目を担います。";
+			mes "[�u���[�X]";
+			mes "�A�R���C�g�͐퓬�ɂ͒��ړI��";
+			mes "�ւ��̂ł͂Ȃ��A��Ղɂ��";
+			mes "���Ԃ̔\�͂������o������A����";
+			mes "�������Ԃ������ڂ�S���܂��B";
 			next;
-			mes "[ブルース]";
-			mes "パーティープレイ時に欠かせない";
-			mes "職業の一つと言われています。";
+			mes "[�u���[�X]";
+			mes "�p�[�e�B�[�v���C���Ɍ������Ȃ�";
+			mes "�E�Ƃ̈�ƌ����Ă��܂��B";
 			next;
-			mes "[ブルース]";
-			mes "^8C2121アコライトからはプリースト";
-			mes "またはモンクに転職することが";
-			mes "できます。^000000";
+			mes "[�u���[�X]";
+			mes "^8C2121�A�R���C�g����̓v���[�X�g";
+			mes "�܂��̓����N�ɓ]�E���邱�Ƃ�";
+			mes "�ł��܂��B^000000";
 			break;
 		case 7:
-			mes "[ブルース]";
-			mes "特殊一次職には";
-			mes "テコンキッド、";
-			mes "忍者、";
-			mes "スーパーノービス、";
-			mes "ガンスリンガーがあります。";
-			mes "どの説明を聞きますか？";
+			mes "[�u���[�X]";
+			mes "����ꎟ�E�ɂ�";
+			mes "�e�R���L�b�h�A";
+			mes "�E�ҁA";
+			mes "�X�[�p�[�m�[�r�X�A";
+			mes "�K���X�����K�[������܂��B";
+			mes "�ǂ̐����𕷂��܂����H";
 			while(1) {
 				next;
-				switch(select("テコンキッド","忍者","スーパーノービス","ガンスリンガー","話をやめる")) {
+				switch(select("�e�R���L�b�h","�E��","�X�[�p�[�m�[�r�X","�K���X�����K�[","�b����߂�")) {
 				case 1:
-					mes "[ブルース]";
-					mes "遠い東方の国から伝わってきた、";
-					mes "主に蹴りで構成された格闘技術を";
-					mes "使いこなす職業です。";
+					mes "[�u���[�X]";
+					mes "���������̍�����`����Ă����A";
+					mes "��ɏR��ō\�����ꂽ�i���Z�p��";
+					mes "�g�����Ȃ��E�Ƃł��B";
 					next;
-					mes "[ブルース]";
-					mes "この職業を通し、";
-					mes "より強い攻撃術を持つ拳聖や、";
-					mes "様々な魂を操り、他の人を助ける";
-					mes "ソウルリンカーへの転職が";
-					mes "可能になります。";
+					mes "[�u���[�X]";
+					mes "���̐E�Ƃ�ʂ��A";
+					mes "��苭���U���p����������A";
+					mes "�l�X�ȍ��𑀂�A���̐l��������";
+					mes "�\�E�������J�[�ւ̓]�E��";
+					mes "�\�ɂȂ�܂��B";
 					break;
 				case 2:
-					mes "[ブルース]";
-					mes "素早い動きを得意とする忍者は、";
-					mes "一般武器だけではなく、";
-					mes "投擲武器や忍術を使いこなします。";
-					mes "また、様々な回避スキルと共に、";
-					mes "物理、魔法攻撃を使いこなす";
-					mes "多面性のある職業です。";
+					mes "[�u���[�X]";
+					mes "�f���������𓾈ӂƂ���E�҂́A";
+					mes "��ʕ��킾���ł͂Ȃ��A";
+					mes "���������E�p���g�����Ȃ��܂��B";
+					mes "�܂��A�l�X�ȉ���X�L���Ƌ��ɁA";
+					mes "�����A���@�U�����g�����Ȃ�";
+					mes "���ʐ��̂���E�Ƃł��B";
 					next;
-					mes "[ブルース]";
-					mes "忍者は短剣及び、風魔手裏剣、";
-					mes "投擲する武器や、魔法に似ている";
-					mes "「忍術」を使って敵と戦います。";
+					mes "[�u���[�X]";
+					mes "�E�҂͒Z���y�сA�����藠���A";
+					mes "�������镐���A���@�Ɏ��Ă���";
+					mes "�u�E�p�v���g���ēG�Ɛ킢�܂��B";
 					break;
 				case 3:
-					mes "[ブルース]";
-					mes "ノービスの心得を忘れずに、";
-					mes "さらにノービスとしての";
-					mes "自己を磨いた職業です。";
-					mes "この職業の一番の魅力は、";
-					mes "他の1次職のスキルの殆どを";
-					mes "習得する事が可能な事です。";
+					mes "[�u���[�X]";
+					mes "�m�[�r�X�̐S����Y�ꂸ�ɁA";
+					mes "����Ƀm�[�r�X�Ƃ��Ă�";
+					mes "���Ȃ𖁂����E�Ƃł��B";
+					mes "���̐E�Ƃ̈�Ԃ̖��͂́A";
+					mes "����1���E�̃X�L���̖w�ǂ�";
+					mes "�K�����鎖���\�Ȏ��ł��B";
 					next;
-					mes "[ブルース]";
-					mes "スーパーノービスになると、";
-					mes "他の職業への転職は不可能に";
-					mes "なりますが、個性溢れる";
-					mes "キャラクターとなる事が可能です。";
+					mes "[�u���[�X]";
+					mes "�X�[�p�[�m�[�r�X�ɂȂ�ƁA";
+					mes "���̐E�Ƃւ̓]�E�͕s�\��";
+					mes "�Ȃ�܂����A������";
+					mes "�L�����N�^�[�ƂȂ鎖���\�ł��B";
 					break;
 				case 4:
-					mes "[ブルース]";
-					mes "鋼鉄の都市「アインブロック」で";
-					mes "製作された銃器を扱う職業で、";
-					mes "遠距離攻撃に優れた能力を持つ";
-					mes "職業です。強力な火力を";
-					mes "目指す方にお勧めします。";
+					mes "[�u���[�X]";
+					mes "�|�S�̓s�s�u�A�C���u���b�N�v��";
+					mes "���삳�ꂽ�e��������E�ƂŁA";
+					mes "�������U���ɗD�ꂽ�\�͂�����";
+					mes "�E�Ƃł��B���͂ȉΗ͂�";
+					mes "�ڎw�����ɂ����߂��܂��B";
 					break;
 				case 5:
-					mes "[ブルース]";
-					mes "……大丈夫みたいですね。";
-					mes "では、ヘイスンに話しかけて";
-					mes "ください。";
+					mes "[�u���[�X]";
+					mes "�c�c���v�݂����ł��ˁB";
+					mes "�ł́A�w�C�X���ɘb��������";
+					mes "���������B";
 					close;
 				}
 				if(CHANGE_NV &0x1000 == 0)
 					set CHANGE_NV,CHANGE_NV|0x1000;
 			}
 		case 8:
-			mes "[ブルース]";
-			mes "……大丈夫みたいですね。";
-			mes "では、ヘイスンに話しかけてください。";
+			mes "[�u���[�X]";
+			mes "�c�c���v�݂����ł��ˁB";
+			mes "�ł́A�w�C�X���ɘb�������Ă��������B";
 			close;
 		}
 		if(CHANGE_NV &0x1000 == 0)
@@ -3074,7 +3074,7 @@ new_1-4.gat,91,22,3	script	職業教官	57,{
 }
 
 //==============================================================
-new_1-4.gat,100,29,4	script	適性検査官	46,{
+new_1-4.gat,100,29,4	script	�K��������	46,{
 
 	function Transport {
 		set CHANGE_NV,0;
@@ -3110,135 +3110,135 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 	function Place {
 		switch(getarg(0)) {
 			case 1:
-				mes "送り先は衛星都市イズルードです。";
-				mes "街の西側に剣士ギルドがありますので";
+				mes "�����͉q���s�s�C�Y���[�h�ł��B";
+				mes "�X�̐����Ɍ��m�M���h������܂��̂�";
 				break;
 			case 2:
-				mes "送り先は魔法都市ゲフェンです。";
-				mes "街の北西に魔法学校がありますので";
+				mes "�����͖��@�s�s�Q�t�F���ł��B";
+				mes "�X�̖k���ɖ��@�w�Z������܂��̂�";
 				break;
 			case 3:
-				mes "送り先は港の都市アルベルタです。";
-				mes "街の南西に商人組合がありますので";
+				mes "�����͍`�̓s�s�A���x���^�ł��B";
+				mes "�X�̓쐼�ɏ��l�g��������܂��̂�";
 				break;
 			case 4:
-				mes "送り先は砂漠の都市モロクです。";
-				mes "街の北西にあるピラミッドの地下1階に";
-				mes "シーフギルドがありますので";
+				mes "�����͍����̓s�s�����N�ł��B";
+				mes "�X�̖k���ɂ���s���~�b�h�̒n��1�K��";
+				mes "�V�[�t�M���h������܂��̂�";
 				break;
 			case 5:
-				mes "送り先は山岳の都市フェイヨンです。";
-				mes "街の北東にある弓手村に";
-				mes "アーチャーギルドがありますので";
+				mes "�����͎R�x�̓s�s�t�F�C�����ł��B";
+				mes "�X�̖k���ɂ���|�葺��";
+				mes "�A�[�`���[�M���h������܂��̂�";
 				break;
 			case 6:
-				mes "送り先は首都プロンテラです。";
-				mes "街の北東にプロンテラ大聖堂が";
-				mes "ありますので";
+				mes "�����͎�s�v�����e���ł��B";
+				mes "�X�̖k���Ƀv�����e���吹����";
+				mes "����܂��̂�";
 				break;
 		}
 		return;
 	}
 
 	if(CHANGE_NV &0x1000 == 0) {
-		mes "[ヘイスン]";
-		mes "こんにちは。";
-		mes "私は職業適性検査を担当している";
-		mes "「ヘイスン」と申します。お名前は……";
-		mes "^8C2121" +strcharinfo(0)+ "^000000様ですね。";
+		mes "[�w�C�X��]";
+		mes "����ɂ��́B";
+		mes "���͐E�ƓK��������S�����Ă���";
+		mes "�u�w�C�X���v�Ɛ\���܂��B�����O�́c�c";
+		mes "^8C2121" +strcharinfo(0)+ "^000000�l�ł��ˁB";
 		next;
-		mes "[ヘイスン]";
-		mes "まず検査の前に私の前にいる";
-		mes "ブルースから職業の説明を";
-		mes "受けてください。";
+		mes "[�w�C�X��]";
+		mes "�܂������̑O�Ɏ��̑O�ɂ���";
+		mes "�u���[�X����E�Ƃ̐�����";
+		mes "�󂯂Ă��������B";
 		close;
 	}
 	if(CHANGE_NV &0x2000) {
-		mes "[ヘイスン]";
-		mes "おや、どうなさいました？";
-		mes "既に職業適性検査は終えてますし";
-		mes "支給品もお渡ししてますよね。";
-		mes "では、近くの街にお送りしましょう。";
+		mes "[�w�C�X��]";
+		mes "����A�ǂ��Ȃ����܂����H";
+		mes "���ɐE�ƓK�������͏I���Ă܂���";
+		mes "�x���i�����n�����Ă܂���ˁB";
+		mes "�ł́A�߂��̊X�ɂ����肵�܂��傤�B";
 		next;
 		Transport;
 		end;
 	}
-	mes "[ヘイスン]";
-	mes "こんにちは、^8C2121" +strcharinfo(0)+ "^000000様。";
-	mes "ここまで来るのによくぞ頑張りました。";
-	mes "お疲れ様です。……ふむふむ";
-	mes "職業説明は既に受けたようですね。";
-	mes "では最後に、職業適性検査を行います。";
-	mes "ですが、これは強制いたしません。";
+	mes "[�w�C�X��]";
+	mes "����ɂ��́A^8C2121" +strcharinfo(0)+ "^000000�l�B";
+	mes "�����܂ŗ���̂ɂ悭���撣��܂����B";
+	mes "�����l�ł��B�c�c�ӂނӂ�";
+	mes "�E�Ɛ����͊��Ɏ󂯂��悤�ł��ˁB";
+	mes "�ł͍Ō�ɁA�E�ƓK���������s���܂��B";
+	mes "�ł����A����͋����������܂���B";
 	next;
-	mes "[ヘイスン]";
-	mes "もし受けたくなければパスをする";
-	mes "ことも可能ということです。";
-	mes "それに対し、検査を受ければ";
-	mes "その分の報酬はあります。";
+	mes "[�w�C�X��]";
+	mes "�����󂯂����Ȃ���΃p�X������";
+	mes "���Ƃ��\�Ƃ������Ƃł��B";
+	mes "����ɑ΂��A�������󂯂��";
+	mes "���̕��̕�V�͂���܂��B";
 	next;
-	mes "[ヘイスン]";
-	mes "まず、検査の過程で支給する";
-	mes "回復アイテムがあります。";
-	mes "それは冒険の序盤でかなり役に";
-	mes "立つことでしょう。";
+	mes "[�w�C�X��]";
+	mes "�܂��A�����̉ߒ��Ŏx������";
+	mes "�񕜃A�C�e��������܂��B";
+	mes "����͖`���̏��Ղł��Ȃ����";
+	mes "�����Ƃł��傤�B";
 	next;
-	mes "[ヘイスン]";
-	mes "次に検査後、^882420" +strcharinfo(0)+ "^000000様に";
-	mes "ふさわしい職業をお勧めします。";
-	mes "その後、ご希望された職業に関係のある";
-	mes "街へお送りします。その他にいくつか";
-	mes "支給品もあります。";
+	mes "[�w�C�X��]";
+	mes "���Ɍ�����A^882420" +strcharinfo(0)+ "^000000�l��";
+	mes "�ӂ��킵���E�Ƃ������߂��܂��B";
+	mes "���̌�A����]���ꂽ�E�ƂɊ֌W�̂���";
+	mes "�X�ւ����肵�܂��B���̑��ɂ�����";
+	mes "�x���i������܂��B";
 	next;
-	mes "[ヘイスン]";
-	mes "それでは、どうされますか？";
-	mes "すぐに冒険を始めるか、";
-	mes "職業適性検査を受けるか。";
-	mes "いかがでしょう？";
+	mes "[�w�C�X��]";
+	mes "����ł́A�ǂ�����܂����H";
+	mes "�����ɖ`�����n�߂邩�A";
+	mes "�E�ƓK���������󂯂邩�B";
+	mes "�������ł��傤�H";
 	next;
-	if(select("職業適性検査を受けます","遠慮します")==2) {
-		mes "[ヘイスン]";
-		mes "わかりました。それではすぐに";
-		mes "街へ送ってあげましょう。";
+	if(select("�E�ƓK���������󂯂܂�","�������܂�")==2) {
+		mes "[�w�C�X��]";
+		mes "�킩��܂����B����ł͂�����";
+		mes "�X�֑����Ă����܂��傤�B";
 		next;
-		mes "[ヘイスン]";
-		mes "更なる知識や技術は、実際の冒険で";
-		mes "経験を積みながら身につけてください。";
+		mes "[�w�C�X��]";
+		mes "�X�Ȃ�m����Z�p�́A���ۂ̖`����";
+		mes "�o����ς݂Ȃ���g�ɂ��Ă��������B";
 		next;
-		mes "[ヘイスン]";
-		mes strcharinfo(0)+ " 様の";
-		mes "これからの成功と健闘をお祈りします。";
-		mes "では、さようなら。";
+		mes "[�w�C�X��]";
+		mes strcharinfo(0)+ " �l��";
+		mes "���ꂩ��̐����ƌ��������F�肵�܂��B";
+		mes "�ł́A���悤�Ȃ�B";
 		next;
 		Transport;
 		end;
 	}
-	mes "[ヘイスン]";
-	mes "わかりました。";
-	mes "真の冒険者を目指すなら、この検査に";
-	mes "参加するのは正しい選択です。";
-	mes "もし遠慮なさっていたら、あなたは";
-	mes "とても損をしていたことでしょう。";
+	mes "[�w�C�X��]";
+	mes "�킩��܂����B";
+	mes "�^�̖`���҂�ڎw���Ȃ�A���̌�����";
+	mes "�Q������̂͐������I���ł��B";
+	mes "���������Ȃ����Ă�����A���Ȃ���";
+	mes "�ƂĂ��������Ă������Ƃł��傤�B";
 	next;
-	mes "[ヘイスン]";
-	mes "では、職業適性検査を始めます。";
-	mes "落ち着いて、普段と同じように";
-	mes "答えてください。質問に対して";
-	mes "自分の行動傾向と一番近いと";
-	mes "思われるものを選んでください。";
+	mes "[�w�C�X��]";
+	mes "�ł́A�E�ƓK���������n�߂܂��B";
+	mes "���������āA���i�Ɠ����悤��";
+	mes "�����Ă��������B����ɑ΂���";
+	mes "�����̍s���X���ƈ�ԋ߂���";
+	mes "�v������̂�I��ł��������B";
 	next;
-	mes "[ヘイスン]";
-	mes "この検査は、ただ単にあなたの性格を";
-	mes "分析するためのもので、良し悪しは";
-	mes "ありません。では、始めます。";
+	mes "[�w�C�X��]";
+	mes "���̌����́A�����P�ɂ��Ȃ��̐��i��";
+	mes "���͂��邽�߂̂��̂ŁA�ǂ�������";
+	mes "����܂���B�ł́A�n�߂܂��B";
 	next;
-	//適正試験ここから
-	//'@point配列に加算していく、要素番号は1-剣士,2-マジ,3-商人,4-シーフ,5-アチャ,6-アコ
-	mes "[ヘイスン]";
-	mes "次の中で自分と一番近いと思われる";
-	mes "単語を選んでください。";
+	//�K��������������
+	//'@point�z��ɉ��Z���Ă����A�v�f�ԍ���1-���m,2-�}�W,3-���l,4-�V�[�t,5-�A�`��,6-�A�R
+	mes "[�w�C�X��]";
+	mes "���̒��Ŏ����ƈ�ԋ߂��Ǝv����";
+	mes "�P���I��ł��������B";
 	next;
-	switch( select("勤勉","活発","奉仕","乱暴") ) {
+	switch( select("�Ε�","����","��d","���\") ) {
 		case 1:
 			set '@point[2],'@point[2]+1;
 			break;
@@ -3253,11 +3253,11 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[4],'@point[4]+1;
 			break;
 	}
-	switch( select("変化","永久") ) {
+	switch( select("�ω�","�i�v") ) {
 		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[6],'@point[6]+1; break;
 	}
-	switch( select("消費者","販売者","生産者") ) {
+	switch( select("�����","�̔���","���Y��") ) {
 		case 1:
 			set '@point[1],'@point[1]+1;
 			set '@point[4],'@point[4]+1;
@@ -3270,15 +3270,15 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[2],'@point[2]+1;
 			break;
 	}
-	switch( select("迅速","慎重") ) {
+	switch( select("�v��","�T�d") ) {
 		case 1: set '@point[4],'@point[4]+1; break;
 		case 2: set '@point[5],'@point[5]+1; break;
 	}
-	switch( select("理論","経験") ) {
+	switch( select("���_","�o��") ) {
 		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 	}
-	switch( select("過去","現在","未来") ) {
+	switch( select("�ߋ�","����","����") ) {
 		case 1:
 			set '@point[5],'@point[5]+1;
 			break;
@@ -3290,15 +3290,15 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[2],'@point[2]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "次の質問に「はい」と「いいえ」で";
-	mes "答えてください。";
+	mes "[�w�C�X��]";
+	mes "���̎���Ɂu�͂��v�Ɓu�������v��";
+	mes "�����Ă��������B";
 	next;
-	mes "[ヘイスン]";
-	mes "卑屈に生きるより";
-	mes "潔く死ぬ方がマシだ。";
+	mes "[�w�C�X��]";
+	mes "�ڋ��ɐ�������";
+	mes "�������ʕ����}�V���B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1:
 			set '@point[1],'@point[1]+1;
 			break;
@@ -3307,80 +3307,80 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[4],'@point[4]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "人の不幸は密の味がする。";
+	mes "[�w�C�X��]";
+	mes "�l�̕s�K�͖��̖�������B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[3],'@point[3]+1; break;
 		case 2: set '@point[6],'@point[6]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "危険な場所でも平気で進む。";
+	mes "[�w�C�X��]";
+	mes "�댯�ȏꏊ�ł����C�Ői�ށB";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[2],'@point[2]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "どんなことでも前に出るタイプだ。";
+	mes "[�w�C�X��]";
+	mes "�ǂ�Ȃ��Ƃł��O�ɏo��^�C�v���B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[5],'@point[5]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "ダンジョンを探検中、突き当たりに";
-	mes "ぶつかった。壁をよく調べてみると";
-	mes "「押す」という文字が書かれていた";
-	mes "ような跡がある。その跡のそばには";
-	mes "ボタンのような突き出た石がある。";
-	mes "そういう時……";
+	mes "[�w�C�X��]";
+	mes "�_���W������T�����A�˂��������";
+	mes "�Ԃ������B�ǂ��悭���ׂĂ݂��";
+	mes "�u�����v�Ƃ���������������Ă���";
+	mes "�悤�ȐՂ�����B���̐Ղ̂��΂ɂ�";
+	mes "�{�^���̂悤�ȓ˂��o���΂�����B";
+	mes "�����������c�c";
 	next;
-	mes "[ヘイスン]";
-	mes "「押す」と書いてはあるが、";
-	mes "逆に引きたくなる。";
+	mes "[�w�C�X��]";
+	mes "�u�����v�Ə����Ă͂��邪�A";
+	mes "�t�Ɉ��������Ȃ�B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[4],'@point[4]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "たまに現実にはあるはずがない";
-	mes "非現実的な現象が見える。";
+	mes "[�w�C�X��]";
+	mes "���܂Ɍ����ɂ͂���͂����Ȃ�";
+	mes "�񌻎��I�Ȍ��ۂ�������B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[6],'@point[6]+1; break;
 		case 2: set '@point[2],'@point[2]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "屋上から飛び降りると、";
-	mes "空を飛べるかもしれない。";
+	mes "[�w�C�X��]";
+	mes "���ォ���э~���ƁA";
+	mes "����ׂ邩������Ȃ��B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[6],'@point[6]+1; break;
 		case 2: set '@point[2],'@point[2]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "世の中はお金が全て。";
-	mes "お金さえあれば何でもできる。";
-	mes "お金さえあれば、生命体すら";
-	mes "売り買いできると思う。";
+	mes "[�w�C�X��]";
+	mes "���̒��͂������S�āB";
+	mes "������������Ή��ł��ł���B";
+	mes "������������΁A�����̂���";
+	mes "���蔃���ł���Ǝv���B";
 	next;
-	switch( select("はい","いいえ") ) {
+	switch( select("�͂�","������") ) {
 		case 1: set '@point[5],'@point[5]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "今度は問題形式をちょっと変えます。";
-	mes "落ち着いて検査に臨んでください。";
-	mes "では、質問に対して自分の行動傾向に";
-	mes "一番近いと思われるものを選んで";
-	mes "ください。";
+	mes "[�w�C�X��]";
+	mes "���x�͖��`����������ƕς��܂��B";
+	mes "���������Č����ɗՂ�ł��������B";
+	mes "�ł́A����ɑ΂��Ď����̍s���X����";
+	mes "��ԋ߂��Ǝv������̂�I���";
+	mes "���������B";
 	next;
-	mes "[ヘイスン]";
-	mes "時間通りに動くことは……";
+	mes "[�w�C�X��]";
+	mes "���Ԓʂ�ɓ������Ƃ́c�c";
 	next;
-	switch( select("機械のように感じて息苦しい","良い事だと思う","関係ない、私は何事にも縛られない") ) {
+	switch( select("�@�B�̂悤�Ɋ����đ��ꂵ��","�ǂ������Ǝv��","�֌W�Ȃ��A���͉����ɂ������Ȃ�") ) {
 		case 1:
 			set '@point[1],'@point[1]+1;
 			set '@point[4],'@point[4]+1;
@@ -3394,21 +3394,21 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[5],'@point[5]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "お店でとても欲しいものを見つけた。";
-	mes "衝動買いの誘惑を感じる。";
-	mes "そこであなたはそれを買う前に……";
+	mes "[�w�C�X��]";
+	mes "���X�łƂĂ��~�������̂��������B";
+	mes "�Փ������̗U�f��������B";
+	mes "�����ł��Ȃ��͂���𔃂��O�Ɂc�c";
 	next;
-	switch( select("必要な物か確認する","今、お金がいくらあるか確認する","買った後に考える") ) {
+	switch( select("�K�v�ȕ����m�F����","���A�����������炠�邩�m�F����","��������ɍl����") ) {
 		case 1: set '@point[5],'@point[5]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 		case 3: set '@point[4],'@point[4]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "あなたは多くの人達と";
-	mes "競争することが……";
+	mes "[�w�C�X��]";
+	mes "���Ȃ��͑����̐l�B��";
+	mes "�������邱�Ƃ��c�c";
 	next;
-	switch( select("好きだ","嫌いだ","どちらともいえない") ) {
+	switch( select("�D����","������","�ǂ���Ƃ������Ȃ�") ) {
 		case 1:
 			set '@point[3],'@point[3]+1;
 			break;
@@ -3420,21 +3420,21 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[6],'@point[6]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "一人では重い仕事をしなければ";
-	mes "ならない。自分だけでは途方もなく";
-	mes "時間がかかるが、大勢でやればかなり";
-	mes "早くやり終えることができる。";
-	mes "そんな時あなたなら……";
+	mes "[�w�C�X��]";
+	mes "��l�ł͏d���d�������Ȃ����";
+	mes "�Ȃ�Ȃ��B���������ł͓r�����Ȃ�";
+	mes "���Ԃ������邪�A�吨�ł��΂��Ȃ�";
+	mes "�������I���邱�Ƃ��ł���B";
+	mes "����Ȏ����Ȃ��Ȃ�c�c";
 	next;
-	switch( select("大変だとしても自分だけでやる","知り合いに助けを求める") ) {
+	switch( select("��ς��Ƃ��Ă����������ł��","�m�荇���ɏ��������߂�") ) {
 		case 1: set '@point[2],'@point[2]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "あなたに助けを求める人がいたら……";
+	mes "[�w�C�X��]";
+	mes "���Ȃ��ɏ��������߂�l��������c�c";
 	next;
-	switch( select("すぐに助ける","状況を見てから判断する","自分と関係なければ無視する") ) {
+	switch( select("�����ɏ�����","�󋵂����Ă��画�f����","�����Ɗ֌W�Ȃ���Ζ�������") ) {
 		case 1:
 			set '@point[6],'@point[6]+1;
 			break;
@@ -3448,11 +3448,11 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[4],'@point[4]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "道を歩いてると偶然「服」を見つけた。";
-	mes "あなたならどう思う？";
+	mes "[�w�C�X��]";
+	mes "��������Ă�Ƌ��R�u���v���������B";
+	mes "���Ȃ��Ȃ�ǂ��v���H";
 	next;
-	switch( select("「有名ブランド社製だ」","「この服の持ち主は誰だ？」","「持って帰ろう」","「そのままにしておこう」") ) {
+	switch( select("�u�L���u�����h�А����v","�u���̕��̎�����͒N���H�v","�u�����ċA�낤�v","�u���̂܂܂ɂ��Ă������v") ) {
 		case 1:
 			set '@point[3],'@point[3]+1;
 			break;
@@ -3467,284 +3467,284 @@ new_1-4.gat,100,29,4	script	適性検査官	46,{
 			set '@point[2],'@point[2]+1;
 			break;
 	}
-	mes "[ヘイスン]";
-	mes "会話の途中で立場が苦しくなった時……";
+	mes "[�w�C�X��]";
+	mes "��b�̓r���ŗ��ꂪ�ꂵ���Ȃ������c�c";
 	next;
-	switch( select("冗談にしてごまかす","話題を変える","徹底的に原因を追究","何はともあれ謝る") ) {
+	switch( select("��k�ɂ��Ă��܂���","�b���ς���","�O��I�Ɍ�����ǋ�","���͂Ƃ�����ӂ�") ) {
 		case 1: set '@point[4],'@point[4]+1; break;
 		case 2: set '@point[1],'@point[1]+1; break;
 		case 3: set '@point[2],'@point[2]+1; break;
 		case 4: set '@point[6],'@point[6]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "あなたの恋人が、必要もない";
-	mes "くだらない記念品を買ってくれと";
-	mes "言ってきたらあなたは……";
+	mes "[�w�C�X��]";
+	mes "���Ȃ��̗��l���A�K�v���Ȃ�";
+	mes "������Ȃ��L�O�i�𔃂��Ă����";
+	mes "�����Ă����炠�Ȃ��́c�c";
 	next;
-	switch( select("どんな物でも恋人が望むなら買う","断る","今度買ってあげると言ってごまかす") ) {
+	switch( select("�ǂ�ȕ��ł����l���]�ނȂ甃��","�f��","���x�����Ă�����ƌ����Ă��܂���") ) {
 		case 1: set '@point[1],'@point[1]+1; break;
 		case 2: set '@point[3],'@point[3]+1; break;
 		case 3: set '@point[4],'@point[4]+1; break;
 	}
-	mes "[ヘイスン]";
-	mes "検査はこれで終了です。";
-	mes "そして初心者修練場の過程も";
-	mes "全て終了しました。";
-	mes "お疲れさまでした。";
+	mes "[�w�C�X��]";
+	mes "�����͂���ŏI���ł��B";
+	mes "�����ď��S�ҏC����̉ߒ���";
+	mes "�S�ďI�����܂����B";
+	mes "����ꂳ�܂ł����B";
 	next;
-	mes "[ヘイスン]";
-	mes "これは職業適性検査の報酬になります。";
-	mes "受け取ってください。";
+	mes "[�w�C�X��]";
+	mes "����͐E�ƓK�������̕�V�ɂȂ�܂��B";
+	mes "�󂯎���Ă��������B";
 	next;
 	set CHANGE_NV,CHANGE_NV|0x2000;
 	getitem 501,4;
 	getitem 503,2;
 	getitem 506,2;
 	next;
-	mes "[ヘイスン]";
-	mes "総合評価の発表後";
-	mes "^882420" +strcharinfo(0)+ "^000000様に";
-	mes "適した職業をお教えしましょう。";
-	mes "少々お待ち下さい。";
+	mes "[�w�C�X��]";
+	mes "�����]���̔��\��";
+	mes "^882420" +strcharinfo(0)+ "^000000�l��";
+	mes "�K�����E�Ƃ����������܂��傤�B";
+	mes "���X���҂��������B";
 	next;
-	mes "[ヘイスン]";
-	mes "……………………";
-	mes "すぐに終わりますので。";
-	mes "…………………………………………";
+	mes "[�w�C�X��]";
+	mes "�c�c�c�c�c�c�c�c";
+	mes "�����ɏI���܂��̂ŁB";
+	mes "�c�c�c�c�c�c�c�c�c�c�c�c�c�c�c�c";
 	next;
-	mes "[ヘイスン]";
-	mes "……………………!!";
+	mes "[�w�C�X��]";
+	mes "�c�c�c�c�c�c�c�c!!";
 	next;
-	mes "[ヘイスン]";
-	mes "結果が出ました。";
-	mes "^882420" +strcharinfo(0)+ "^000000様の";
-	mes "総合評価を発表します。";
+	mes "[�w�C�X��]";
+	mes "���ʂ��o�܂����B";
+	mes "^882420" +strcharinfo(0)+ "^000000�l��";
+	mes "�����]���𔭕\���܂��B";
 	next;
-	//ポイントが最大の添え字を'@iに格納する
+	//�|�C���g���ő�̓Y������'@i�Ɋi�[����
 	set '@i,1;
 	for(set '@j,1; '@j<=5; set '@j,'@j+1) {
 		if('@point['@i] < '@point['@j+1])
 			set '@i,'@j+1;
 	}
-	setarray '@name$[1],"剣士","マジシャン","商人","シーフ","アーチャー","アコライト";
+	setarray '@name$[1],"���m","�}�W�V����","���l","�V�[�t","�A�[�`���[","�A�R���C�g";
 	switch('@i) {
 		case 1:
-			mes "[ヘイスン]";
-			mes "単純で直線的な性格だけど";
-			mes "信念が強くて、世界に大きな影響を";
-			mes "与える人になることを望んでいる。";
-			mes "弱い人を護ろうとする義理厚いタイプ。";
+			mes "[�w�C�X��]";
+			mes "�P���Œ����I�Ȑ��i������";
+			mes "�M�O�������āA���E�ɑ傫�ȉe����";
+			mes "�^����l�ɂȂ邱�Ƃ�]��ł���B";
+			mes "�ア�l����낤�Ƃ���`�������^�C�v�B";
 			next;
-			mes "[ヘイスン]";
-			mes "自己主張が強いあなたは";
-			mes "^696969剣士^000000が一番似合います。";
+			mes "[�w�C�X��]";
+			mes "���Ȏ咣���������Ȃ���";
+			mes "^696969���m^000000����Ԏ������܂��B";
 			break;
 		case 2:
-			mes "[ヘイスン]";
-			mes "人に愚かに見られないよう、";
-			mes "すべてを理解しようとする、一人で";
-			mes "仕事をする独立的なタイプ。";
-			mes "理知的で判断力が高い。";
-			mes "内向的、分析的で洞察力を";
-			mes "持っているタイプ。";
+			mes "[�w�C�X��]";
+			mes "�l�ɋ����Ɍ����Ȃ��悤�A";
+			mes "���ׂĂ𗝉����悤�Ƃ���A��l��";
+			mes "�d��������Ɨ��I�ȃ^�C�v�B";
+			mes "���m�I�Ŕ��f�͂������B";
+			mes "�����I�A���͓I�œ��@�͂�";
+			mes "�����Ă���^�C�v�B";
 			next;
-			mes "[ヘイスン]";
-			mes "観察が好きなあなたには";
-			mes "^696969マジシャン^000000が一番似合います。";
+			mes "[�w�C�X��]";
+			mes "�ώ@���D���Ȃ��Ȃ��ɂ�";
+			mes "^696969�}�W�V����^000000����Ԏ������܂��B";
 			break;
 		case 3:
-			mes "[ヘイスン]";
-			mes "人々の心理をよく把握する";
-			mes "大衆的な感覚が優れている。";
-			mes "組織的で決断力がある。";
-			mes "目標指向的で、責任感が強いが";
-			mes "基本的に楽観的。";
+			mes "[�w�C�X��]";
+			mes "�l�X�̐S�����悭�c������";
+			mes "��O�I�Ȋ��o���D��Ă���B";
+			mes "�g�D�I�Ō��f�͂�����B";
+			mes "�ڕW�w���I�ŁA�ӔC����������";
+			mes "��{�I�Ɋy�ϓI�B";
 			next;
-			mes "[ヘイスン]";
-			mes "成就欲が高いあなたには";
-			mes "^696969商人^000000が一番似合います。";
+			mes "[�w�C�X��]";
+			mes "���A�~���������Ȃ��ɂ�";
+			mes "^696969���l^000000����Ԏ������܂��B";
 			break;
 		case 4:
-			mes "[ヘイスン]";
-			mes "人生を愉快に過ごそうとする";
-			mes "欲求が強い。いつも新しい仕事を";
-			mes "探しながら、世界に寄与することを";
-			mes "望むタイプ。";
+			mes "[�w�C�X��]";
+			mes "�l��������ɉ߂������Ƃ���";
+			mes "�~���������B�����V�����d����";
+			mes "�T���Ȃ���A���E�Ɋ�^���邱�Ƃ�";
+			mes "�]�ރ^�C�v�B";
 			next;
-			mes "[ヘイスン]";
-			mes "冒険心豊かなあなたには";
-			mes "^696969シーフ^000000の職業が一番似合います。";
+			mes "[�w�C�X��]";
+			mes "�`���S�L���Ȃ��Ȃ��ɂ�";
+			mes "^696969�V�[�t^000000�̐E�Ƃ���Ԏ������܂��B";
 			break;
 		case 5:
-			mes "[ヘイスン]";
-			mes "普段自分でも分からないない";
-			mes "色んな感情を理解しようと努力し、";
-			mes "なお他の人にも理解して貰えるよう";
-			mes "努力するタイプ。";
-			mes "また、平凡な日常に満足せず、";
-			mes "自分だけの人生を見出そうとする。";
+			mes "[�w�C�X��]";
+			mes "���i�����ł�������Ȃ��Ȃ�";
+			mes "�F��Ȋ���𗝉����悤�Ɠw�͂��A";
+			mes "�Ȃ����̐l�ɂ��������ĖႦ��悤";
+			mes "�w�͂���^�C�v�B";
+			mes "�܂��A���}�ȓ���ɖ��������A";
+			mes "���������̐l�������o�����Ƃ���B";
 			next;
-			mes "[ヘイスン]";
-			mes "感受性が豊かでロマン派のあなたには";
-			mes "^696969アーチャー^000000が一番似合います。";
+			mes "[�w�C�X��]";
+			mes "���󐫂��L���Ń��}���h�̂��Ȃ��ɂ�";
+			mes "^696969�A�[�`���[^000000����Ԏ������܂��B";
 			break;
 		case 6:
-			mes "[ヘイスン]";
-			mes "心が温かく、優しく、人に配慮する。";
-			mes "誰にでも分け隔てなく接し、";
-			mes "助けようとする。人の世話をする";
-			mes "ことが好きなタイプ。自分は人の";
-			mes "助けが必要ないように気をつけ、他の";
-			mes "人に利他主義者と呼ばれるタイプ。";
+			mes "[�w�C�X��]";
+			mes "�S���������A�D�����A�l�ɔz������B";
+			mes "�N�ɂł������u�ĂȂ��ڂ��A";
+			mes "�����悤�Ƃ���B�l�̐��b������";
+			mes "���Ƃ��D���ȃ^�C�v�B�����͐l��";
+			mes "�������K�v�Ȃ��悤�ɋC�����A����";
+			mes "�l�ɗ�����`�҂ƌĂ΂��^�C�v�B";
 			next;
-			mes "[ヘイスン]";
-			mes "人を助けることが好きなあなたには";
-			mes "^696969アコライト^000000が一番似合います。";
-			//mes "*自己の犠牲により他の幸福を願う者*";
+			mes "[�w�C�X��]";
+			mes "�l�������邱�Ƃ��D���Ȃ��Ȃ��ɂ�";
+			mes "^696969�A�R���C�g^000000����Ԏ������܂��B";
+			//mes "*���Ȃ̋]���ɂ�葼�̍K�����肤��*";
 			break;
 	}
-	mes "……と書いてあります。";
+	mes "�c�c�Ə����Ă���܂��B";
 	next;
-	mes "[ヘイスン]";
-	mes "あなたの総合評価の結果はどうであれ";
-	mes "これは一つの参考材料に過ぎません。";
-	mes "それでは、どの職業を希望されますか？";
-	mes "検査結果の" +'@name$['@i]+ "、もしくは他の";
-	mes "職業でしょうか？";
+	mes "[�w�C�X��]";
+	mes "���Ȃ��̑����]���̌��ʂ͂ǂ��ł���";
+	mes "����͈�̎Q�l�ޗ��ɉ߂��܂���B";
+	mes "����ł́A�ǂ̐E�Ƃ���]����܂����H";
+	mes "�������ʂ�" +'@name$['@i]+ "�A�������͑���";
+	mes "�E�Ƃł��傤���H";
 	next;
-	mes "[ヘイスン]";
-	mes "参考材料として言っておきますが、";
-	mes "検査結果と同じ職業を選ばれると";
-	mes "より多くの支給を受けることが";
-	mes "できます。では、お選びください。";
+	mes "[�w�C�X��]";
+	mes "�Q�l�ޗ��Ƃ��Č����Ă����܂����A";
+	mes "�������ʂƓ����E�Ƃ�I�΂���";
+	mes "��葽���̎x�����󂯂邱�Ƃ�";
+	mes "�ł��܂��B�ł́A���I�т��������B";
 	next;
-	if(select('@name$['@i]+"で！","私が望む職業で！")==1) {
-		mes "[ヘイスン]";
-		mes "了解しました。";
-		mes "検査結果を信じるのですね。";
-		mes "それでは物品の支給後に、職業に";
-		mes "関係する街へお送りしましょう。";
+	if(select('@name$['@i]+"�ŁI","�����]�ސE�ƂŁI")==1) {
+		mes "[�w�C�X��]";
+		mes "�������܂����B";
+		mes "�������ʂ�M����̂ł��ˁB";
+		mes "����ł͕��i�̎x����ɁA�E�Ƃ�";
+		mes "�֌W����X�ւ����肵�܂��傤�B";
 		next;
-		mes "^882420[支給内訳]^000099";
+		mes "^882420[�x������]^000099";
 		switch('@i) {
 		case 1:
-			mes "ファルシオン 1個";
+			mes "�t�@���V�I�� 1��";
 			getitem 1104,1;
 			break;
 		case 2:
-			mes "ロッド 1個";
-			mes "カッター 1個";
+			mes "���b�h 1��";
+			mes "�J�b�^�[ 1��";
 			getitem 1601,1;
 			getitem 1204,1;
 			break;
 		case 3:
-			mes "バトルアックス 1個";
+			mes "�o�g���A�b�N�X 1��";
 			getitem 1351,1;
 			break;
 		case 4:
-			mes "マインゴーシュ 1個";
+			mes "�}�C���S�[�V�� 1��";
 			getitem 1207,1;
 			break;
 		case 5:
-			mes "コンポジットボウ 1個";
+			mes "�R���|�W�b�g�{�E 1��";
 			getitem 1704,1;
 			break;
 		case 6:
-			mes "メイス 1個";
+			mes "���C�X 1��";
 			getitem 1504,1;
 			break;
 		}
-		mes "プラコン 7個";
-		mes "初心者用ポーション 10個^000000";
+		mes "�v���R�� 7��";
+		mes "���S�җp�|�[�V���� 10��^000000";
 		getitem 1010,7;
 		getitem 569,10;
 		next;
-		mes "[ヘイスン]";
-		mes "支給品が全てそろっているか";
-		mes "ご確認ください。それでは";
-		mes "支給されたアイテムについて";
-		mes "簡単にご説明しましょう。";
+		mes "[�w�C�X��]";
+		mes "�x���i���S�Ă�����Ă��邩";
+		mes "���m�F���������B����ł�";
+		mes "�x�����ꂽ�A�C�e���ɂ���";
+		mes "�ȒP�ɂ��������܂��傤�B";
 		next;
-		mes "[ヘイスン]";
+		mes "[�w�C�X��]";
 		switch('@i) {
 		case 1:
-			mes "「ファルシオン」は剣士に転職した際、";
+			mes "�u�t�@���V�I���v�͌��m�ɓ]�E�����ہA";
 			break;
 		case 2:
-			mes "「ロッド」や「カッター」は";
-			mes "マジシャンに転職した際、";
+			mes "�u���b�h�v��u�J�b�^�[�v��";
+			mes "�}�W�V�����ɓ]�E�����ہA";
 			break;
 		case 3:
-			mes "「バトルアックス」は";
-			mes "商人に転職した際、";
+			mes "�u�o�g���A�b�N�X�v��";
+			mes "���l�ɓ]�E�����ہA";
 			break;
 		case 4:
-			mes "「マインゴーシュ」は";
-			mes "シーフに転職した際、";
+			mes "�u�}�C���S�[�V���v��";
+			mes "�V�[�t�ɓ]�E�����ہA";
 			break;
 		case 5:
-			mes "「コンポジットボウ」は";
-			mes "アーチャーに転職した際、";
+			mes "�u�R���|�W�b�g�{�E�v��";
+			mes "�A�[�`���[�ɓ]�E�����ہA";
 			break;
 		case 6:
-			mes "「メイス」はアコライトに転職した際、";
+			mes "�u���C�X�v�̓A�R���C�g�ɓ]�E�����ہA";
 			break;
 		}
-		mes "初心者用マインゴーシュの代わりに";
-		mes "よく使うようになる武器です。";
+		mes "���S�җp�}�C���S�[�V���̑����";
+		mes "�悭�g���悤�ɂȂ镐��ł��B";
 		next;
-		mes "[ヘイスン]";
-		mes "「プラコン」は、鍛冶屋で";
-		mes "武器レベル1のアイテムを一段階";
-		mes "アップグレードさせる時に使用する";
-		mes "アイテムです。いくつかの街には";
-		mes "鍛冶職人が営業している精錬所が";
-		mes "あります。";
+		mes "[�w�C�X��]";
+		mes "�u�v���R���v�́A�b�艮��";
+		mes "���탌�x��1�̃A�C�e������i�K";
+		mes "�A�b�v�O���[�h�����鎞�Ɏg�p����";
+		mes "�A�C�e���ł��B�������̊X�ɂ�";
+		mes "�b��E�l���c�Ƃ��Ă��鐸�B����";
+		mes "����܂��B";
 		next;
-		mes "[ヘイスン]";
-		mes "転職後にでもプラコンを持って";
-		mes "行ってみてはいかがでしょう。";
+		mes "[�w�C�X��]";
+		mes "�]�E��ɂł��v���R����������";
+		mes "�s���Ă݂Ă͂������ł��傤�B";
 		Place '@i;
-		mes "一度行ってみると良いでしょう。";
+		mes "��x�s���Ă݂�Ɨǂ��ł��傤�B";
 	}
 	else {
-		mes "[ヘイスン]";
-		mes "了解しました。";
-		mes "では、ご希望の職業を";
-		mes "お選びください。";
+		mes "[�w�C�X��]";
+		mes "�������܂����B";
+		mes "�ł́A����]�̐E�Ƃ�";
+		mes "���I�т��������B";
 		next;
-		set '@name$['@i],"";	//検査結果と同じ職業は空文字で埋める
+		set '@name$['@i],"";	//�������ʂƓ����E�Ƃ͋󕶎��Ŗ��߂�
 		set '@i,select('@name$[1],'@name$[2],'@name$[3],'@name$[4],'@name$[5],'@name$[6]);
-		mes "[ヘイスン]";
-		mes '@name$['@i]+ "ですね。";
+		mes "[�w�C�X��]";
+		mes '@name$['@i]+ "�ł��ˁB";
 		Place '@i;
 		next;
-		mes "[ヘイスン]";
-		mes "それでは物品の支給後に、職業に";
-		mes "関係する街へお送りしましょう。";
+		mes "[�w�C�X��]";
+		mes "����ł͕��i�̎x����ɁA�E�Ƃ�";
+		mes "�֌W����X�ւ����肵�܂��傤�B";
 		next;
-		mes "^882420[支給内訳]";
-		mes "^000030アドベンチャースーツ 1個";
-		mes "^000099初心者用ポーション 10個^000000";
+		mes "^882420[�x������]";
+		mes "^000030�A�h�x���`���[�X�[�c 1��";
+		mes "^000099���S�җp�|�[�V���� 10��^000000";
 		getitem 2305,1;
 		getitem 569,10;
 		next;
-		mes "[ヘイスン]";
-		mes "支給品が全てそろっているか";
-		mes "ご確認ください。それでは";
-		mes "支給されたアイテムについて";
-		mes "簡単にご説明しましょう。";
+		mes "[�w�C�X��]";
+		mes "�x���i���S�Ă�����Ă��邩";
+		mes "���m�F���������B����ł�";
+		mes "�x�����ꂽ�A�C�e���ɂ���";
+		mes "�ȒP�ɂ��������܂��傤�B";
 		next;
-		mes "[ヘイスン]";
-		mes "アドベンチャースーツは、既に";
-		mes "支給されている初心者用忍者スーツ";
-		mes "の次に着ることになる服です。";
+		mes "[�w�C�X��]";
+		mes "�A�h�x���`���[�X�[�c�́A����";
+		mes "�x������Ă��鏉�S�җp�E�҃X�[�c";
+		mes "�̎��ɒ��邱�ƂɂȂ镞�ł��B";
 	}
 	next;
-	mes "[ヘイスン]";
-	mes "では、送ります。";
-	mes "^882420" +strcharinfo(0)+ "^000000様の";
-	mes "ご武運を祈ります。さようなら。";
+	mes "[�w�C�X��]";
+	mes "�ł́A����܂��B";
+	mes "^882420" +strcharinfo(0)+ "^000000�l��";
+	mes "�����^���F��܂��B���悤�Ȃ�B";
 	close2;
 	set CHANGE_NV,0;
 	switch('@i) {

@@ -1,36 +1,36 @@
 //==============================================================================
-// Field Warp Point Script   2005-06-28(Î²3 mod by kia)
+// Field Warp Point Script   2005-06-28(ƒÀ3 mod by kia)
 //==============================================================================
 
 //-------------------------------------------
-// warp0xxx 	MAPã®åŒºåˆ‡ã‚Š  	
-// warp01xx 	è¡—ã¸         	
-// warp02xx 	GvGãƒ«ãƒ¼ãƒ ã¸  	
-// warp03xx 	ç ¦ã¸         	
-// warp04xx 	ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ 	
-// warp05xx 	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¸ 	
-// warp06xx 	JOBã‚¹ãƒ†ãƒ¼ã‚¸ã¸	
-// warp07xx 	PvPã‚¹ãƒ†ãƒ¼ã‚¸ã¸	
-// warp1xxx 	è¡—           	(ä½¿ã‚ãªã„)
-// warp2xxx 	GvGãƒ«ãƒ¼ãƒ     	(ä½¿ã‚ãªã„)
-// warp3xxx 	GvG ç ¦       	(ä½¿ã‚ãªã„)
-// warp31xx 	GvG ç ¦ï¼‘     	
-// warp32xx 	GvG ç ¦ï¼’     	
-// warp33xx 	GvG ç ¦ï¼“     	
-// warp34xx 	GvG ç ¦ï¼”     	
-// warp35xx 	GvG ç ¦ï¼•     	
-// warp4xxx 	ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³   	(ä½¿ã‚ãªã„)
-// warp5xxx 	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰   	
-// warp6xxx 	JOBã‚¹ãƒ†ãƒ¼ã‚¸  	(ä½¿ã‚ãªã„)
-// warp7xxx 	PvPã‚¹ãƒ†ãƒ¼ã‚¸  	(ä½¿ã‚ãªã„)
-// warp71xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼‘	
-// warp72xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼’	
-// warp73xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼“	
-// warp74xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼”	
-// warp75xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼•	
-// warp76xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼–	
-// warp77xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼—	
-// warp78xxx	PvPã‚¹ãƒ†ãƒ¼ã‚¸ï¼˜	
+// warp0xxx 	MAP‚Ì‹æØ‚è  	
+// warp01xx 	ŠX‚Ö         	
+// warp02xx 	GvGƒ‹[ƒ€‚Ö  	
+// warp03xx 	Ô‚Ö         	
+// warp04xx 	ƒ_ƒ“ƒWƒ‡ƒ“‚Ö 	
+// warp05xx 	ƒtƒB[ƒ‹ƒh‚Ö 	
+// warp06xx 	JOBƒXƒe[ƒW‚Ö	
+// warp07xx 	PvPƒXƒe[ƒW‚Ö	
+// warp1xxx 	ŠX           	(g‚í‚È‚¢)
+// warp2xxx 	GvGƒ‹[ƒ€    	(g‚í‚È‚¢)
+// warp3xxx 	GvG Ô       	(g‚í‚È‚¢)
+// warp31xx 	GvG Ô‚P     	
+// warp32xx 	GvG Ô‚Q     	
+// warp33xx 	GvG Ô‚R     	
+// warp34xx 	GvG Ô‚S     	
+// warp35xx 	GvG Ô‚T     	
+// warp4xxx 	ƒ_ƒ“ƒWƒ‡ƒ“   	(g‚í‚È‚¢)
+// warp5xxx 	ƒtƒB[ƒ‹ƒh   	
+// warp6xxx 	JOBƒXƒe[ƒW  	(g‚í‚È‚¢)
+// warp7xxx 	PvPƒXƒe[ƒW  	(g‚í‚È‚¢)
+// warp71xxx	PvPƒXƒe[ƒW‚P	
+// warp72xxx	PvPƒXƒe[ƒW‚Q	
+// warp73xxx	PvPƒXƒe[ƒW‚R	
+// warp74xxx	PvPƒXƒe[ƒW‚S	
+// warp75xxx	PvPƒXƒe[ƒW‚T	
+// warp76xxx	PvPƒXƒe[ƒW‚U	
+// warp77xxx	PvPƒXƒe[ƒW‚V	
+// warp78xxx	PvPƒXƒe[ƒW‚W	
 //-------------------------------------------
 // #        	script warp	
 //-------------------------------------------
@@ -39,11 +39,11 @@
 
 
 //==============================================================
-// ----- Xmas ãƒ«ãƒ†ã‚£ã‚¨ -----
-// mas_fild01.gat	ãƒ«ãƒ†ã‚£ã‚¨ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Xmas ƒ‹ƒeƒBƒG -----
+// mas_fild01.gat	ƒ‹ƒeƒBƒGƒtƒB[ƒ‹ƒh
 // -----
-// xmas.gat 		é›ªã®è¡—ãƒ«ãƒ†ã‚£ã‚¨
-// aldebaran.gat	å›½å¢ƒéƒ½å¸‚ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³
+// xmas.gat 		á‚ÌŠXƒ‹ƒeƒBƒG
+// aldebaran.gat	‘‹«“ssƒAƒ‹ƒfƒoƒ‰ƒ“
 //==============================================================
 xmas_fild01.gat,69,252,0	warp	xmaswarp0101		18,2,xmas.gat,149,44
 xmas_fild01.gat,90,252,0	warp	xmaswarp0102		18,2,xmas.gat,149,44
@@ -52,13 +52,13 @@ xmas_fild01.gat,84,51,0		warp	xmaswarp0103		10,2,aldebaran.gat,140,234
 
 
 //==============================================================
-// ----- Mjolnir ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ -----
-// mjolnir_01.gat	ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ 01 ã€œ 12
+// ----- Mjolnir ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ -----
+// mjolnir_01.gat	ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ 01 ` 12
 // -----
-// aldebaran.gat	å›½å¢ƒéƒ½å¸‚ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³
-// mjo_dun01.gat	ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å»ƒå‘ B1F
-// gef_fild00.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
-// prt_maze01.gat	è¿·å®®ã®æ£®
+// aldebaran.gat	‘‹«“ssƒAƒ‹ƒfƒoƒ‰ƒ“
+// mjo_dun01.gat	ƒ~ƒ‡ƒ‹ƒj[ƒ‹”pB B1F
+// gef_fild00.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
+// prt_maze01.gat	–À‹{‚ÌX
 //==============================================================
 mjolnir_12.gat,199,378,0	warp	mjolnirwarp0101		2,2,aldebaran.gat,138,37
 mjolnir_02.gat,79,365,0		warp	mjolnirwarp0401		2,1,mjo_dun01.gat,52,17
@@ -114,17 +114,17 @@ mjolnir_11.gat,20,220,0		warp	mjolnirwarp5032		2,4,mjolnir_10.gat,381,220
 
 
 //==============================================================
-// ----- Prontera ãƒ—ãƒ­ãƒ³ãƒ†ãƒ© -----
-// prt_fild00.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// ----- Prontera ƒvƒƒ“ƒeƒ‰ -----
+// prt_fild00.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 00 ` 11
 // -----
-// prontera.gat		ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒƒãƒ„ç‹å›½ã®é¦–éƒ½ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©
-// izlude.gat		è¡›æ˜Ÿéƒ½å¸‚ã‚¤ã‚ºãƒ«ãƒ¼ãƒ‰
-// gef_fild00.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
-// mjolnir_01.gat	ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ 01 ã€œ 12
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
-// moc_fild20.gat	æ¬¡å…ƒã®ç‹­é–“ 01
-// prt_maze01.gat	è¿·å®®ã®æ£®
-// prt_monk.gat		è–ã‚«ãƒ”ãƒˆãƒ¼ãƒªãƒŠä¿®é“é™¢
+// prontera.gat		ƒ‹[ƒ“ƒ~ƒbƒhƒKƒbƒc‰¤‘‚Ìñ“sƒvƒƒ“ƒeƒ‰
+// izlude.gat		‰q¯“ssƒCƒYƒ‹[ƒh
+// gef_fild00.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
+// mjolnir_01.gat	ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ 01 ` 12
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
+// moc_fild20.gat	ŸŒ³‚Ì‹·ŠÔ 01
+// prt_maze01.gat	–À‹{‚ÌX
+// prt_monk.gat		¹ƒJƒsƒg[ƒŠƒiC“¹‰@
 //==============================================================
 prt_fild05.gat,373,205,0	warp	pronterawarp0101	3,3,prontera.gat,26,203
 prt_fild06.gat,23,193,0		warp	pronterawarp0102	2,3,prontera.gat,285,203
@@ -207,18 +207,18 @@ prt_fild11.gat,361,184,0	warp	pronterawarp5020	2,5,prt_fild10.gat,23,196
 
 
 //==============================================================
-// ----- Geffen ã‚²ãƒ•ã‚§ãƒ³ -----
-// gef_fild00.gat	ã‚²ãƒ•ã‚§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
-// gef_fild12.gat	ã‚³ãƒ¼ãƒ‰ã®æ£®
-// gef_fild13.gat	ãƒ–ãƒªãƒˆãƒ‹ã‚¢
-// gef_fild14.gat	ã‚ªãƒ¼ã‚¯è¥¿ã®æ‘
+// ----- Geffen ƒQƒtƒFƒ“ -----
+// gef_fild00.gat	ƒQƒtƒFƒ“ƒtƒB[ƒ‹ƒh 00 ` 11
+// gef_fild12.gat	ƒR[ƒh‚ÌX
+// gef_fild13.gat	ƒuƒŠƒgƒjƒA
+// gef_fild14.gat	ƒI[ƒN¼‚Ì‘º
 // -----
-// geffen.gat		é­”æ³•ã®éƒ½å¸‚ã‚²ãƒ•ã‚§ãƒ³
-// in_orcs01.gat	ã‚ªãƒ¼ã‚¯æ‘ã®å®¤å†…
-// gefg_cas01.gat	ãƒ–ãƒªãƒˆãƒ‹ã‚¢ç ¦ 1 ã€œ 5
-// glast_01.gat		ã‚°ãƒ©ã‚¹ãƒˆãƒ˜ã‚¤ãƒ å¤åŸ
-// mjolnir_01.gat	ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ 01 ã€œ 12
-// prt_fild00.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
+// geffen.gat		–‚–@‚Ì“ssƒQƒtƒFƒ“
+// in_orcs01.gat	ƒI[ƒN‘º‚Ìº“à
+// gefg_cas01.gat	ƒuƒŠƒgƒjƒAÔ 1 ` 5
+// glast_01.gat		ƒOƒ‰ƒXƒgƒwƒCƒ€ŒÃé
+// mjolnir_01.gat	ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ 01 ` 12
+// prt_fild00.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 00 ` 11
 //==============================================================
 gef_fild00.gat,40,199,0		warp	geffenwarp0101		2,7,geffen.gat,213,119
 gef_fild04.gat,187,39,0		warp	geffenwarp0102		4,2,geffen.gat,119,210
@@ -298,20 +298,20 @@ gef_fild14.gat,180,360,0	warp	geffenwarp5038		1,1,gef_fild13.gat,200,29
 
 
 //==============================================================
-// ----- Morocc ãƒ¢ãƒ­ã‚¯ -----
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
-// moc_fild20.gat	æ¬¡å…ƒã®ç‹­é–“ 01 ã€œ 03
+// ----- Morocc ƒ‚ƒƒN -----
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
+// moc_fild20.gat	ŸŒ³‚Ì‹·ŠÔ 01 ` 03
 // -----
-// morocc.gat		ç ‚æ¼ ã®éƒ½å¸‚ãƒ¢ãƒ­ã‚¯
-// moc_ruins.gat	ãƒ¢ãƒ­ã‚¯ - ãƒ”ãƒ©ãƒŸãƒƒãƒ‰å‘¨è¾º
-// pay_gld.gat		ãƒã‚§ãƒ³ãƒªãƒ æ¹–
-// anthell01.gat	èŸ»åœ°ç„ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ B1F
-// in_sphinx1.gat	ã‚¹ãƒ•ã‚£ãƒ³ã‚¯ã‚¹ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ B1F
-// pay_fild01.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³è¿·ã„ã®æ£® 01 ã€œ 11
-// prt_fild00.gat	ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 00 ã€œ 11
-// cmd_fild08.gat	ã‚µãƒ³ãƒ€ãƒ«ãƒãƒ³è¦å¡ æ±
-// cmd_fild09.gat	ã‚µãƒ³ãƒ€ãƒ«ãƒãƒ³è¦å¡ å—
-// in_moc_16.gat	ã‚¢ã‚µã‚·ãƒ³ã‚®ãƒ«ãƒ‰
+// morocc.gat		»”™‚Ì“ssƒ‚ƒƒN
+// moc_ruins.gat	ƒ‚ƒƒN - ƒsƒ‰ƒ~ƒbƒhü•Ó
+// pay_gld.gat		ƒ`ƒFƒ“ƒŠƒ€ŒÎ
+// anthell01.gat	‹a’n–ƒ_ƒ“ƒWƒ‡ƒ“ B1F
+// in_sphinx1.gat	ƒXƒtƒBƒ“ƒNƒXƒ_ƒ“ƒWƒ‡ƒ“ B1F
+// pay_fild01.gat	ƒtƒFƒCƒˆƒ“–À‚¢‚ÌX 01 ` 11
+// prt_fild00.gat	ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 00 ` 11
+// cmd_fild08.gat	ƒTƒ“ƒ_ƒ‹ƒ}ƒ“—vÇ “Œ
+// cmd_fild09.gat	ƒTƒ“ƒ_ƒ‹ƒ}ƒ“—vÇ “ì
+// in_moc_16.gat	ƒAƒTƒVƒ“ƒMƒ‹ƒh
 //==============================================================
 moc_fild07.gat,198,21,0		warp	moroccwarp0101		2,2,morocc.gat,160,294
 moc_fild10.gat,19,207,0		warp	moroccwarp0102		2,2,morocc.gat,299,207
@@ -443,12 +443,12 @@ moc_fild22.gat,32,196,0		warp	moroccwarp5072		1,1,moc_fild20.gat,349,179
 
 
 //==============================================================
-// ----- Payon ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³ -----
-// pay_fild01.gat	ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³è¿·ã„ã®æ£® 01 ã€œ 11
+// ----- Payon ƒtƒFƒCƒˆƒ“ -----
+// pay_fild01.gat	ƒtƒFƒCƒˆƒ“–À‚¢‚ÌX 01 ` 11
 // -----
-// payon.gat		å±±å²³ã®éƒ½å¸‚ãƒ•ã‚§ã‚¤ãƒ¨ãƒ³
-// alberta.gat		æ¸¯ã®éƒ½å¸‚ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
+// payon.gat		RŠx‚Ì“ssƒtƒFƒCƒˆƒ“
+// alberta.gat		`‚Ì“ssƒAƒ‹ƒxƒ‹ƒ^
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
 //==============================================================
 pay_fild01.gat,333,360,0	warp	payonwarp0101		5,3,payon.gat,122,31
 pay_fild08.gat,17,75,0		warp	payonwarp0102		2,4,payon.gat,265,92
@@ -490,12 +490,12 @@ pay_fild10.gat,112,382,0	warp	payonwarp5026		3,2,pay_fild09.gat,112,19
 
 
 //==============================================================
-// prt_maze01.gat	è¿·å®®ã®æ£®
-// prt_maze02.gat	è¿·å®®ã®æ£®
-// prt_maze03.gat	è¿·å®®ã®æ£®
+// prt_maze01.gat	–À‹{‚ÌX
+// prt_maze02.gat	–À‹{‚ÌX
+// prt_maze03.gat	–À‹{‚ÌX
 // -----
-// mjolnir_12.gat	(1st Floor No.16)ãƒŸãƒ§ãƒ«ãƒ‹ãƒ¼ãƒ«å±±è„ˆ 12
-// prt_fild01.gat	(1st Floor No.20)ãƒ—ãƒ­ãƒ³ãƒ†ãƒ©ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// mjolnir_12.gat	(1st Floor No.16)ƒ~ƒ‡ƒ‹ƒj[ƒ‹R–¬ 12
+// prt_fild01.gat	(1st Floor No.20)ƒvƒƒ“ƒeƒ‰ƒtƒB[ƒ‹ƒh 01
 //==============================================================
 // ----- (1st Floor No.03)(1st Floor No.16)(1st Floor No.20)
 // 1st Floor No.01 -------------------------------------------------------------
@@ -708,38 +708,38 @@ prt_maze03.gat,165,22,0		warp	mazewarp5362		1,1,prt_maze03.gat,111,145	/*To No.3
 
 
 //==============================================================
-// ----- Alberta ã‚¢ãƒ«ãƒ™ãƒ«ã‚¿ -----
-// alb2trea.gat		æ²ˆæ²¡èˆ¹ä»˜è¿‘ã®å³¶
+// ----- Alberta ƒAƒ‹ƒxƒ‹ƒ^ -----
+// alb2trea.gat		’¾–v‘D•t‹ß‚Ì“‡
 // -----
-// treasure01.gat	æ²ˆæ²¡èˆ¹ï¼‘å±¤
+// treasure01.gat	’¾–v‘D‚P‘w
 //==============================================================
 alb2trea.gat,88,111,0		warp	albertawarp0401		1,1,treasure01.gat,69,24
 
 
 
-//---JP2.0 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP2.0 ’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Comodo ã‚³ãƒ¢ãƒ‰ -----
-// cmd_fild01.gat	ãƒ‘ãƒ—ãƒã‚«æ£®
-// cmd_fild02.gat	ã‚³ã‚³ãƒ¢ãƒ“ãƒ¼ãƒ
-// cmd_fild03.gat	ã‚¸ãƒŠã‚¤æ²¼
-// cmd_fild04.gat	ã‚³ã‚³ãƒ¢ãƒ“ãƒ¼ãƒ
-// cmd_fild05.gat	ãƒ‘ãƒ—ãƒã‚«æ£®å¢ƒ
-// cmd_fild06.gat	ã‚µãƒ³ãƒ€ãƒ«ãƒãƒ³è¦å¡ è¥¿
-// cmd_fild07.gat	ãƒ•ã‚¡ãƒ­ã‚¹ç¯å°å³¶
-// cmd_fild08.gat	ã‚µãƒ³ãƒ€ãƒ«ãƒãƒ³è¦å¡ æ±
-// cmd_fild09.gat	ã‚µãƒ³ãƒ€ãƒ«ãƒãƒ³è¦å¡ å—
+// ----- Comodo ƒRƒ‚ƒh -----
+// cmd_fild01.gat	ƒpƒvƒ`ƒJX
+// cmd_fild02.gat	ƒRƒRƒ‚ƒr[ƒ`
+// cmd_fild03.gat	ƒWƒiƒCÀ
+// cmd_fild04.gat	ƒRƒRƒ‚ƒr[ƒ`
+// cmd_fild05.gat	ƒpƒvƒ`ƒJX‹«
+// cmd_fild06.gat	ƒTƒ“ƒ_ƒ‹ƒ}ƒ“—vÇ ¼
+// cmd_fild07.gat	ƒtƒ@ƒƒX“”‘ä“‡
+// cmd_fild08.gat	ƒTƒ“ƒ_ƒ‹ƒ}ƒ“—vÇ “Œ
+// cmd_fild09.gat	ƒTƒ“ƒ_ƒ‹ƒ}ƒ“—vÇ “ì
 // -----
-// beach_dun3.gat	æ±æ´çªŸ ãƒã‚ª
-// um_fild03.gat	ã‚«ãƒ©ãƒ©æ²¼
-// moc_fild01.gat	ã‚½ã‚¯ãƒ©ãƒ‰ç ‚æ¼  01 ã€œ 19
-// in_rogue.gat		ãƒ­ãƒ¼ã‚°ã‚®ãƒ«ãƒ‰
+// beach_dun3.gat	“Œ“´ŒA ƒ}ƒI
+// um_fild03.gat	ƒJƒ‰ƒ‰À
+// moc_fild01.gat	ƒ\ƒNƒ‰ƒh»”™ 01 ` 19
+// in_rogue.gat		ƒ[ƒOƒMƒ‹ƒh
 //==============================================================
-// æ±æ´çªŸ ãƒã‚ª
+// “Œ“´ŒA ƒ}ƒI
 cmd_fild01.gat,26,318,0		warp	comodowarp0401		1,1,beach_dun3.gat,281,56
-// ã‚«ãƒ©ãƒ©æ²¼
+// ƒJƒ‰ƒ‰À
 cmd_fild01.gat,178,370,0	warp	comodowarp0501		1,1,um_fild03.gat,243,29
 cmd_fild01.gat,77,366,0		warp	comodowarp0502		1,1,um_fild03.gat,114,53
 // other point
@@ -785,37 +785,37 @@ cmd_fild08.gat,348,82,0		warp	comodowarp5034		1,1,anthell02.gat,168,170
 
 
 
-//---JP2.5 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP2.5 ’Ç‰Áƒ}ƒbƒv---
 
 
-//---JP3.0 è¿½åŠ ãƒãƒƒãƒ—---
+//---JP3.0 ’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Yuno ã‚¸ãƒ¥ãƒãƒ¼ -----
-// yuno_fild01.gat	å›½å¢ƒæ¤œå•æ‰€
-// yuno_fild02.gat	ã‚­ãƒ«ãƒã‚¤ãƒ«ã®åˆ¥è˜
-// yuno_fild03.gat	ã‚¨ãƒ«ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// yuno_fild04.gat	ã‚¨ãƒ«ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
+// ----- Yuno ƒWƒ…ƒm[ -----
+// yuno_fild01.gat	‘‹«ŒŸ–âŠ
+// yuno_fild02.gat	ƒLƒ‹ƒnƒCƒ‹‚Ì•Ê‘‘
+// yuno_fild03.gat	ƒGƒ‹ƒƒXƒvƒŒ[ƒg
+// yuno_fild04.gat	ƒGƒ‹ƒƒXƒvƒŒ[ƒg
 // -----
-// aldebaran.gat	å›½å¢ƒéƒ½å¸‚ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³
-// yuno.gat 		ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰å…±å’Œå›½ã®é¦–éƒ½ã‚¸ãƒ¥ãƒãƒ¼
-// mag_dun01.gat	ãƒãƒ¼ã‚°ãƒ­ãƒ¼ãƒ‰ 1å±¤
+// aldebaran.gat	‘‹«“ssƒAƒ‹ƒfƒoƒ‰ƒ“
+// yuno.gat 		ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒh‹¤˜a‘‚Ìñ“sƒWƒ…ƒm[
+// mag_dun01.gat	ƒm[ƒOƒ[ƒh 1‘w
 //==============================================================
 yuno_fild01.gat,208,18,0	warp	yunowarp0101		1,1,aldebaran.gat,140,239
 yuno_fild04.gat,231,288,0	warp	yunowarp0102		1,1,yuno.gat,158,16
 
 yuno_fild03.gat,32,139,0	warp	yunowarp0401		1,1,mag_dun01.gat,126,69
 
-//YunoFild01â‡”YunoFild02
+//YunoFild01ÌYunoFild02
 //yuno_fild01.gat,70,378,0	warp	yunowarp5001		1,1,yuno_fild02.gat,70,27
 //yuno_fild02.gat,70,23,0	warp	yunowarp5002		1,1,yuno_fild01.gat,70,375
 //yuno_fild01.gat,286,368,0	warp	yunowarp5003		1,1,yuno_fild02.gat,294,28
 //yuno_fild02.gat,294,24,0	warp	yunowarp5004		1,1,yuno_fild01.gat,286,365
-//YunoFild02â‡”YunoFild03
+//YunoFild02ÌYunoFild03
 yuno_fild02.gat,18,337,0	warp	yunowarp5005		1,1,yuno_fild03.gat,379,331
 yuno_fild03.gat,383,331,0	warp	yunowarp5006		1,1,yuno_fild02.gat,22,337
-//YunoFild03â‡”YunoFild04
+//YunoFild03ÌYunoFild04
 yuno_fild03.gat,21,162,0	warp	yunowarp5007		1,1,yuno_fild04.gat,371,147
 yuno_fild04.gat,374,149,0	warp	yunowarp5008		1,1,yuno_fild03.gat,25,162
 yuno_fild03.gat,20,79,0		warp	yunowarp5009		1,1,yuno_fild04.gat,370,81
@@ -823,15 +823,15 @@ yuno_fild04.gat,374,82,0	warp	yunowarp5010		1,1,yuno_fild03.gat,24,79
 
 
 
-//---ã‚¢ãƒãƒ„è¿½åŠ ãƒãƒƒãƒ—---
+//---ƒAƒ}ƒc’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Amatsu ã‚¢ãƒãƒ„ -----
-// ama_fild01.gat	ã‚¢ãƒãƒ„ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Amatsu ƒAƒ}ƒc -----
+// ama_fild01.gat	ƒAƒ}ƒcƒtƒB[ƒ‹ƒh
 // -----
-// amatsu.gat		æ³‰æ°´ã®å›½ã‚¢ãƒãƒ„
-// ama_in01.gat		ã‚¢ãƒãƒ„ å®¤å†…
+// amatsu.gat		ò…‚Ì‘ƒAƒ}ƒc
+// ama_in01.gat		ƒAƒ}ƒc º“à
 //==============================================================
 ama_fild01.gat,75,30,0		warp	amatsuwarp0101		1,1,amatsu.gat,248,289
 ama_fild01.gat,174,331,0	warp	amatsuwarp0102		1,1,ama_in01.gat,175,174
@@ -839,32 +839,32 @@ ama_fild01.gat,330,141,0	warp	amatsuwarp0103		1,1,ama_in01.gat,174,124
 
 
 
-//---ã‚³ãƒ³ãƒ­ãƒ³è¿½åŠ ãƒãƒƒãƒ—---
+//---ƒRƒ“ƒƒ“’Ç‰Áƒ}ƒbƒv---
 
 
 //==============================================================
-// ----- Gonryun ã‚³ãƒ³ãƒ­ãƒ³ -----
-// gon_fild01.gat	ã‚³ãƒ³ãƒ­ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Gonryun ƒRƒ“ƒƒ“ -----
+// gon_fild01.gat	ƒRƒ“ƒƒ“ƒtƒB[ƒ‹ƒh
 // -----
-// gonryun.gat		ç¥ä»™ã®å³¶ã‚³ãƒ³ãƒ­ãƒ³
+// gonryun.gat		_å‚Ì“‡ƒRƒ“ƒƒ“
 //==============================================================
 gon_fild01.gat,192,266,0	warp	gonryunwarp0101		1,1,gonryun.gat,161,11
 
 
 
-//---ã‚¦ãƒ³ãƒãƒ©è¿½åŠ ãƒãƒƒãƒ—
+//---ƒEƒ“ƒoƒ‰’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Umbala ã‚¦ãƒ³ãƒãƒ© -----
-// um_fild01.gat	ãƒ«ãƒ«ã‚«æ£®
-// um_fild02.gat	ãƒ•ãƒ ã‚¬æ£®
-// um_fild03.gat	ã‚«ãƒ©ãƒ©æ²¼
-// um_fild04.gat	ãƒ•ãƒ ã‚¬ã‚¸ãƒ£ãƒ³ã‚°ãƒ«
+// ----- Umbala ƒEƒ“ƒoƒ‰ -----
+// um_fild01.gat	ƒ‹ƒ‹ƒJX
+// um_fild02.gat	ƒtƒ€ƒKX
+// um_fild03.gat	ƒJƒ‰ƒ‰À
+// um_fild04.gat	ƒtƒ€ƒKƒWƒƒƒ“ƒOƒ‹
 // -----
-// umbala.gat		ã‚¦ãƒ¼ã‚¿ãƒ³æ—ã®æ‘ã‚¦ãƒ³ãƒãƒ©
-// beach_dun2.gat	åŒ—æ´çªŸ ãƒ«ãƒ¯ãƒ³ãƒ€
-// cmd_fild01.gat	ãƒ‘ãƒ—ãƒã‚«æ£®
+// umbala.gat		ƒE[ƒ^ƒ“‘°‚Ì‘ºƒEƒ“ƒoƒ‰
+// beach_dun2.gat	–k“´ŒA ƒ‹ƒƒ“ƒ_
+// cmd_fild01.gat	ƒpƒvƒ`ƒJX
 //==============================================================
 um_fild04.gat,215,339,0		warp	umbalawarp0101		1,1,umbala.gat,130,82
 
@@ -873,30 +873,30 @@ um_fild01.gat,31,274,0		warp	umbalawarp0401		1,1,beach_dun2.gat,255,244
 um_fild03.gat,243,26,0		warp	umbalawarp0501		1,1,cmd_fild01.gat,176,367
 um_fild03.gat,114,50,0		warp	umbalawarp0502		1,1,cmd_fild01.gat,74,363
 
-//ãƒ«ãƒ«ã‚«æ£® â‡” ãƒ•ãƒ ã‚¬æ£®
+//ƒ‹ƒ‹ƒJX Ì ƒtƒ€ƒKX
 um_fild01.gat,369,277,0		warp	umbalawarp5001		1,1,um_fild02.gat,25,272
 um_fild02.gat,22,272,0		warp	umbalawarp5002		1,1,um_fild01.gat,366,277
-//ã‚«ãƒ©ãƒ©æ²¼ â‡” ãƒ•ãƒ ã‚¬æ£®(ä¸Š)
+//ƒJƒ‰ƒ‰À Ì ƒtƒ€ƒKX(ã)
 um_fild03.gat,19,334,0		warp	umbalawarp5003		1,1,um_fild02.gat,370,329
 um_fild02.gat,373,329,0		warp	umbalawarp5004		1,1,um_fild03.gat,23,334
-//ã‚«ãƒ©ãƒ©æ²¼ â‡” ãƒ•ãƒ ã‚¬æ£®(ä¸‹)
+//ƒJƒ‰ƒ‰À Ì ƒtƒ€ƒKX(‰º)
 um_fild03.gat,32,145,0		warp	umbalawarp5005		1,1,um_fild02.gat,370,148
 um_fild02.gat,373,148,0		warp	umbalawarp5006		1,1,um_fild03.gat,36,145
-//ãƒ•ãƒ ã‚¬æ£® â‡” ãƒ•ãƒ ã‚¬ã‚¸ãƒ£ãƒ³ã‚°ãƒ«
+//ƒtƒ€ƒKX Ì ƒtƒ€ƒKƒWƒƒƒ“ƒOƒ‹
 um_fild02.gat,188,374,0		warp	umbalawarp5007		1,1,um_fild04.gat,182,16
 um_fild04.gat,182,13,0		warp	umbalawarp5008		1,1,um_fild02.gat,190,371
 
 
 
-//---ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ è¿½åŠ ãƒãƒƒãƒ—
+//---ƒjƒuƒ‹ƒwƒCƒ€’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- ãƒ•ãƒ™ãƒ«ã‚²ãƒ«ãƒŸãƒ«ã®æ³‰ -----
-// yggdrasil01.gat	ãƒ•ãƒ™ãƒ«ã‚²ãƒ«ãƒŸãƒ«ã®æ³‰(ã‚¤ã‚°ãƒ‰ãƒ©ã‚·ãƒ«ã®å¹¹)
+// ----- ƒtƒxƒ‹ƒQƒ‹ƒ~ƒ‹‚Ìò -----
+// yggdrasil01.gat	ƒtƒxƒ‹ƒQƒ‹ƒ~ƒ‹‚Ìò(ƒCƒOƒhƒ‰ƒVƒ‹‚ÌŠ²)
 // -----
-// um_dun02.gat		æ·±å¥¥ã®å¯†æ—
-// nif_fild01.gat	ç§˜å¢ƒã®æ‘
+// um_dun02.gat		[‰œ‚Ì–§—Ñ
+// nif_fild01.gat	”é‹«‚Ì‘º
 //==============================================================
 //yggdrasil01.gat,36,63,0	warp	yggdrasiwarp0401	1,1,um_dun02.gat,126,147
 yggdrasil01.gat,248,259,0	warp	yggdrasiwarp0501	1,1,nif_fild01.gat,315,67
@@ -908,12 +908,12 @@ yggdrasil01.gat,27,195,0	warp	yggdrasiwarp5002	1,1,yggdrasil01.gat,267,56
 
 
 //==============================================================
-// ----- Niflheimg ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ  -----
-// nif_fild01.gat	ç§˜å¢ƒã®æ‘
-// nif_fild02.gat	ã‚®ãƒ§ãƒ«æ¸“è°·
+// ----- Niflheimg ƒjƒuƒ‹ƒwƒCƒ€ -----
+// nif_fild01.gat	”é‹«‚Ì‘º
+// nif_fild02.gat	ƒMƒ‡ƒ‹Œk’J
 // -----
-// niflheim.gat		æ­»è€…ã®è¡—ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ 
-// yggdrasil01.gat	ãƒ•ãƒ™ãƒ«ã‚²ãƒ«ãƒŸãƒ«ã®æ³‰(ã‚¤ã‚°ãƒ‰ãƒ©ã‚·ãƒ«ã®å¹¹)
+// niflheim.gat		€Ò‚ÌŠXƒjƒuƒ‹ƒwƒCƒ€
+// yggdrasil01.gat	ƒtƒxƒ‹ƒQƒ‹ƒ~ƒ‹‚Ìò(ƒCƒOƒhƒ‰ƒVƒ‹‚ÌŠ²)
 //==============================================================
 nif_fild02.gat,378,235,0	warp	niflheimwarp0101	1,1,niflheim.gat,23,154
 //nif_fild01.gat,315,63,0	warp	niflheimwarp0501	1,1,yggdrasil01.gat,245,259
@@ -923,29 +923,29 @@ nif_fild02.gat,22,311,0		warp	niflheimwarp5002	1,1,nif_fild01.gat,340,322
 
 
 
-//---é¾ä¹‹åŸè¿½åŠ ãƒãƒƒãƒ—
+//---—´”Vé’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Louyang é¾ä¹‹åŸ -----
-// lou_fild01.gat	é¾ä¹‹åŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Louyang —´”Vé -----
+// lou_fild01.gat	—´”VéƒtƒB[ƒ‹ƒh
 // -----
-// louyang.gat		å¤éƒ½ é¾ä¹‹åŸ
+// louyang.gat		ŒÃ“s —´”Vé
 //==============================================================
 lou_fild01.gat,233,356,0	warp	louyangwarp0101		2,1,louyang.gat,218,22
 
 
 
-//---ç¥å™¨ã‚¯ã‚¨ã‚¹ãƒˆè¿½åŠ ãƒãƒƒãƒ—
+//---_ŠíƒNƒGƒXƒg’Ç‰Áƒ}ƒbƒv
 
 
-//---ã‚¢ãƒ¦ã‚¿ãƒ¤è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒ†ƒ^ƒ„’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Ayothaya ã‚¢ãƒ¦ã‚¿ãƒ¤ -----
-// ayo_fild01.gat	ã‚¢ãƒ¦ã‚¿ãƒ¤ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ayo_fild02.gat	ã‚¢ãƒ¦ã‚¿ãƒ¤ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Ayothaya ƒAƒ†ƒ^ƒ„ -----
+// ayo_fild01.gat	ƒAƒ†ƒ^ƒ„ƒtƒB[ƒ‹ƒh
+// ayo_fild02.gat	ƒAƒ†ƒ^ƒ„ƒtƒB[ƒ‹ƒh
 // -----
 //==============================================================
 ayo_fild01.gat,32,240,0		warp	ayothayawarp0101	1,1,ayothaya.gat,273,176
@@ -955,180 +955,180 @@ ayo_fild02.gat,285,150,0	warp	ayothayawarp0501	1,1,ayo_dun01.gat,275,18
 
 
 
-//---ã‚¢ãƒ«ãƒ‡ãƒãƒ©ãƒ³ã‚¿ãƒ¼ãƒœãƒˆãƒ©ãƒƒã‚¯è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒ‹ƒfƒoƒ‰ƒ“ƒ^[ƒ{ƒgƒ‰ƒbƒN’Ç‰Áƒ}ƒbƒv
 
 
-//---é‹¼é‰„ã®éƒ½å¸‚ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯è¿½åŠ ãƒãƒƒãƒ—
+//---|“S‚Ì“ssƒAƒCƒ“ƒuƒƒbƒN’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// ----- Einbroch ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ -----
-// -- ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰è¿½åŠ ãƒãƒƒãƒ— --
-// yuno_fild05.gat	ã‚¨ãƒ«ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// yuno_fild07.gat	ã‚¨ãƒ«ãƒ¡ã‚¹å³¡è°· æ·±æ·µã®è°·é–“
-// yuno_fild08.gat	ã‚­ãƒ«ãƒã‚¤ãƒ«å­¦æ ¡
-// yuno_fild09.gat	ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰è­¦å‚™éšŠé‡å–¶åœ°
-// yuno_fild11.gat	ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// yuno_fild12.gat	å›½å¢ƒæ¤œå•æ‰€
-// ein_fild06.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild07.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild08.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild09.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild10.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// ----- Einbroch ƒAƒCƒ“ƒuƒƒbƒN -----
+// -- ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh’Ç‰Áƒ}ƒbƒv --
+// yuno_fild05.gat	ƒGƒ‹ƒƒXƒvƒŒ[ƒg
+// yuno_fild07.gat	ƒGƒ‹ƒƒX‹¬’J [•£‚Ì’JŠÔ
+// yuno_fild08.gat	ƒLƒ‹ƒnƒCƒ‹ŠwZ
+// yuno_fild09.gat	ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒhŒx”õ‘à–ì‰c’n
+// yuno_fild11.gat	ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh
+// yuno_fild12.gat	‘‹«ŒŸ–âŠ
+// ein_fild06.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild07.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild08.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild09.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild10.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
 // -----
-// einbroch.gat		é‹¼é‰„ã®éƒ½å¸‚ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯
-// einbech.gat		æ¡é‰±ã®æ‘ã‚¢ã‚¤ãƒ³ãƒ™ãƒ•
-// yuno_fild04.gat	ã‚¨ãƒ«ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
+// einbroch.gat		|“S‚Ì“ssƒAƒCƒ“ƒuƒƒbƒN
+// einbech.gat		Ìz‚Ì‘ºƒAƒCƒ“ƒxƒt
+// yuno_fild04.gat	ƒGƒ‹ƒƒXƒvƒŒ[ƒg
 //==============================================================
 ein_fild08.gat,164,380,0	warp	einbrochwarp0101	2,2,einbroch.gat,150,28
 ein_fild09.gat,71,352,0		warp	einbrochwarp0102	2,2,einbech.gat,62,32
 
-//YunoFild01â‡”YunoFild09
+//YunoFild01ÌYunoFild09
 yuno_fild01.gat,70,377,0	warp	einbrochwarp5001	1,1,yuno_fild09.gat,70,21
 yuno_fild09.gat,70,18,0		warp	einbrochwarp5002	1,1,yuno_fild01.gat,70,374
 yuno_fild01.gat,287,367,0	warp	einbrochwarp5003	1,1,yuno_fild09.gat,280,32
 yuno_fild09.gat,280,29,0	warp	einbrochwarp5004	1,1,yuno_fild01.gat,287,364
-//YunoFild01â‡”YunoFild12
+//YunoFild01ÌYunoFild12
 yuno_fild01.gat,26,246,0	warp	einbrochwarp5005	1,1,yuno_fild12.gat,366,244
 yuno_fild12.gat,369,244,0	warp	einbrochwarp5006	1,1,yuno_fild01.gat,31,248
-//YunoFild02â‡”YunoFild08
+//YunoFild02ÌYunoFild08
 yuno_fild02.gat,69,22,0		warp	einbrochwarp5007	1,1,yuno_fild08.gat,75,372
 yuno_fild08.gat,75,375,0	warp	einbrochwarp5008	1,1,yuno_fild02.gat,69,25
 yuno_fild02.gat,287,16,0	warp	einbrochwarp5009	1,1,yuno_fild08.gat,285,382
 yuno_fild08.gat,285,385,0	warp	einbrochwarp5010	1,1,yuno_fild02.gat,290,20
-//YunoFild03â‡”YunoFild07
+//YunoFild03ÌYunoFild07
 yuno_fild03.gat,178,15,0	warp	einbrochwarp5011	1,1,yuno_fild07.gat,179,351
 yuno_fild07.gat,179,354,0	warp	einbrochwarp5012	1,1,yuno_fild03.gat,178,18
-//YunoFild04â‡”YunoFild05
+//YunoFild04ÌYunoFild05
 yuno_fild04.gat,42,370,0	warp	einbrochwarp5013	1,1,yuno_fild05.gat,61,33
 yuno_fild05.gat,61,29,0		warp	einbrochwarp5014	1,1,yuno_fild04.gat,42,366
-//YunoFild07â‡”YunoFild08
+//YunoFild07ÌYunoFild08
 yuno_fild07.gat,360,72,0	warp	einbrochwarp5015	1,1,yuno_fild08.gat,35,61
 yuno_fild08.gat,31,58,0		warp	einbrochwarp5016	1,1,yuno_fild07.gat,357,75
 yuno_fild07.gat,352,292,0	warp	einbrochwarp5017	1,1,yuno_fild08.gat,27,275
 yuno_fild08.gat,24,275,0	warp	einbrochwarp5018	1,1,yuno_fild07.gat,348,288
-//YunoFild07â‡”YunoFild11
+//YunoFild07ÌYunoFild11
 yuno_fild07.gat,92,28,0		warp	einbrochwarp5019	1,1,yuno_fild11.gat,91,369
 yuno_fild11.gat,91,372,0	warp	einbrochwarp5020	1,1,yuno_fild07.gat,92,31
-//YunoFild08â‡”YunoFild09
+//YunoFild08ÌYunoFild09
 yuno_fild08.gat,375,194,0	warp	einbrochwarp5021	1,1,yuno_fild09.gat,23,193
 yuno_fild09.gat,20,193,0	warp	einbrochwarp5022	1,1,yuno_fild08.gat,372,194
-//YunoFild08â‡”YunoFild12
+//YunoFild08ÌYunoFild12
 yuno_fild08.gat,134,29,0	warp	einbrochwarp5023	1,1,yuno_fild12.gat,197,371
 yuno_fild12.gat,193,372,0	warp	einbrochwarp5024	1,1,yuno_fild08.gat,134,33
-//YunoFild11â‡”YunoFild12
+//YunoFild11ÌYunoFild12
 yuno_fild11.gat,364,218,0	warp	einbrochwarp5025	1,1,yuno_fild12.gat,26,230
 yuno_fild12.gat,23,226,0	warp	einbrochwarp5026	1,1,yuno_fild11.gat,361,218
 yuno_fild11.gat,368,361,0	warp	einbrochwarp5027	1,1,yuno_fild12.gat,27,336
 yuno_fild12.gat,23,339,0	warp	einbrochwarp5028	1,1,yuno_fild11.gat,364,356
-//EinFild06â‡”YunoFild04
+//EinFild06ÌYunoFild04
 ein_fild06.gat,251,365,0	warp	einbrochwarp5029	1,1,yuno_fild04.gat,249,25
 yuno_fild04.gat,249,22,0	warp	einbrochwarp5030	1,1,ein_fild06.gat,251,362
-//EinFild06â‡”YunoFild07
+//EinFild06ÌYunoFild07
 ein_fild06.gat,355,95,0		warp	einbrochwarp5031	1,1,yuno_fild07.gat,60,79
 yuno_fild07.gat,57,79,0		warp	einbrochwarp5032	1,1,ein_fild06.gat,352,95
 ein_fild06.gat,335,176,0	warp	einbrochwarp5033	1,1,yuno_fild07.gat,76,220
 yuno_fild07.gat,73,220,0	warp	einbrochwarp5034	1,1,ein_fild06.gat,332,176
-//EinFild06â‡”EinFild07
+//EinFild06ÌEinFild07
 ein_fild06.gat,135,36,0		warp	einbrochwarp5035	1,1,ein_fild07.gat,147,359
 ein_fild07.gat,144,362,0	warp	einbrochwarp5036	1,1,ein_fild06.gat,135,39
-//EinFild07â‡”YunoFild11
+//EinFild07ÌYunoFild11
 ein_fild07.gat,381,264,0	warp	einbrochwarp5037	1,1,yuno_fild11.gat,31,266
 yuno_fild11.gat,28,266,0	warp	einbrochwarp5038	1,1,ein_fild07.gat,378,264
-//EinFild07â‡”EinFild10
+//EinFild07ÌEinFild10
 ein_fild07.gat,183,43,0		warp	einbrochwarp5039	1,1,ein_fild10.gat,196,368
 ein_fild10.gat,196,371,0	warp	einbrochwarp5040	1,1,ein_fild07.gat,179,46
-//EinFild08â‡”EinFild09
+//EinFild08ÌEinFild09
 ein_fild08.gat,361,129,0	warp	einbrochwarp5041	1,1,ein_fild09.gat,37,135
 ein_fild09.gat,34,135,0		warp	einbrochwarp5042	1,1,ein_fild08.gat,358,130
-//EinFild09â‡”EinFild10
+//EinFild09ÌEinFild10
 ein_fild09.gat,328,344,0	warp	einbrochwarp5043	1,1,ein_fild10.gat,28,330
 ein_fild10.gat,25,330,0		warp	einbrochwarp5044	1,1,ein_fild09.gat,325,344
 
 
 
-//---ä¼æ¥­éƒ½å¸‚ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³è¿½åŠ ãƒãƒƒãƒ—
+//---Šé‹Æ“ssƒŠƒqƒ^ƒ‹ƒ[ƒ“’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ -----
-// ein_fild03.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// ein_fild04.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// lhz_fild01.gat	ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// lhz_fild02.gat	ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(æ­»ç¥ã®æ¸“è°·)
-// lhz_fild03.gat	ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// -----  ƒŠƒqƒ^ƒ‹ƒ[ƒ“ -----
+// ein_fild03.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// ein_fild04.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
+// lhz_fild01.gat	ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh
+// lhz_fild02.gat	ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh(€_‚ÌŒk’J)
+// lhz_fild03.gat	ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh
 // -----
-// lighthalzen.gat	ä¼æ¥­éƒ½å¸‚ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³
-// ein_fild08.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// lighthalzen.gat	Šé‹Æ“ssƒŠƒqƒ^ƒ‹ƒ[ƒ“
+// ein_fild08.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh
 //==============================================================
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡’ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh04ËƒAƒCƒ“ƒuƒƒbƒN
 ein_fild04.gat,184,26,0		warp	lighthalzenwarp0101	1,1,einbroch.gat,157,327
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡’ä¼æ¥­éƒ½å¸‚ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh01ËŠé‹Æ“ssƒŠƒqƒ^ƒ‹ƒ[ƒ“
 lhz_fild01.gat,210,18,0		warp	lighthalzenwarp0102	1,1,lighthalzen.gat,214,327
 
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03â‡’ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh03ËƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh04
 ein_fild03.gat,361,204,0	warp	lighthalzenwarp5003	1,1,ein_fild04.gat,19,205
 ein_fild04.gat,14,205,0		warp	lighthalzenwarp5004	1,1,ein_fild03.gat,355,204
 ein_fild03.gat,361,219,0	warp	lighthalzenwarp5005	1,1,ein_fild04.gat,19,215
 ein_fild04.gat,14,215,0		warp	lighthalzenwarp5006	1,1,ein_fild03.gat,355,219
 ein_fild03.gat,363,257,0	warp	lighthalzenwarp5007	1,1,ein_fild04.gat,26,251
 ein_fild04.gat,22,250,0		warp	lighthalzenwarp5008	1,1,ein_fild03.gat,357,261
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03â‡’ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02(æ­»ç¥ã®æ¸“è°·)
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh03ËƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh02(€_‚ÌŒk’J)
 ein_fild03.gat,142,32,0		warp	lighthalzenwarp5009	1,1,lhz_fild02.gat,163,360
 lhz_fild02.gat,166,366,0	warp	lighthalzenwarp5010	1,1,ein_fild03.gat,142,40
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰08â‡’Lãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh08ËLƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh03
 ein_fild08.gat,23,275,0		warp	lighthalzenwarp5011	1,1,lhz_fild03.gat,357,284
 lhz_fild03.gat,364,282,0	warp	lighthalzenwarp5012	1,1,ein_fild08.gat,29,276
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡’ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02(æ­»ç¥ã®æ¸“è°·)
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh01ËƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh02(€_‚ÌŒk’J)
 lhz_fild01.gat,367,222,0	warp	lighthalzenwarp5013	1,1,lhz_fild02.gat,36,221
 lhz_fild02.gat,29,219,0		warp	lighthalzenwarp5014	1,1,lhz_fild01.gat,361,222
-//ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02(æ­»ç¥ã®æ¸“è°·)â‡’ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03
+//ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh02(€_‚ÌŒk’J)ËƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh03
 lhz_fild02.gat,164,37,0		warp	lighthalzenwarp5015	1,1,lhz_fild03.gat,158,343
 lhz_fild03.gat,158,350,0	warp	lighthalzenwarp5016	1,1,lhz_fild02.gat,164,44
 
 
 
-//---ãƒãƒ¼ã‚°ãƒãƒ«ãƒˆè¿½åŠ ãƒãƒƒãƒ—
+//---ƒm[ƒOƒnƒ‹ƒg’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒãƒ¼ã‚°ãƒãƒ«ãƒˆ -----
-// yuno_fild06.gat	ã‚¨ãƒ¬ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// hu_fild01.gat	ã‚¿ãƒŠãƒˆã‚¹ã‚¿ãƒ¯ãƒ¼
-// hu_fild04.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
-// hu_fild05.gat	ã‚¢ãƒ“ã‚¹ãƒ¬ã‚¤ã‚¯
-// hu_fild07.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// -----  ƒm[ƒOƒnƒ‹ƒg -----
+// yuno_fild06.gat	ƒGƒŒƒƒXƒvƒŒ[ƒg
+// hu_fild01.gat	ƒ^ƒiƒgƒXƒ^ƒ[
+// hu_fild04.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh
+// hu_fild05.gat	ƒAƒrƒXƒŒƒCƒN
+// hu_fild07.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh
 // -----
-// yuno_fild02.gat	ã‚¨ãƒ¬ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// yuno_fild03.gat	ã‚¨ãƒ¬ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// yuno_fild05.gat	ã‚¨ãƒ¬ãƒ¡ã‚¹ãƒ—ãƒ¬ãƒ¼ãƒˆ
-// yuno_fild09.gat	ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰è­¦å‚™éšŠé‡å–¶åœ°
+// yuno_fild02.gat	ƒGƒŒƒƒXƒvƒŒ[ƒg
+// yuno_fild03.gat	ƒGƒŒƒƒXƒvƒŒ[ƒg
+// yuno_fild05.gat	ƒGƒŒƒƒXƒvƒŒ[ƒg
+// yuno_fild09.gat	ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒhŒx”õ‘à–ì‰c’n
 //==============================================================
-//ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh06ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh05
 yuno_fild06.gat,41,319,0	warp	noghaltwarp5001	1,1,yuno_fild05.gat,366,319
 yuno_fild05.gat,370,321,0	warp	noghaltwarp5002	1,1,yuno_fild06.gat,48,322
-//ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03
+//ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh06ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh03
 yuno_fild06.gat,214,27,0	warp	noghaltwarp5003	1,1,yuno_fild03.gat,215,375
 yuno_fild03.gat,215,382,0	warp	noghaltwarp5004	1,1,yuno_fild06.gat,218,33
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh01ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh06
 hu_fild01.gat,141,36,0		warp	noghaltwarp5005	1,1,yuno_fild06.gat,156,368
 yuno_fild06.gat,151,370,0	warp	noghaltwarp5006	1,1,hu_fild01.gat,135,42
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh04ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh06
 hu_fild04.gat,27,126,0		warp	noghaltwarp5007	1,1,yuno_fild06.gat,362,132
 yuno_fild06.gat,369,132,0	warp	noghaltwarp5008	1,1,hu_fild04.gat,34,126
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh04ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh02
 hu_fild04.gat,122,27,0		warp	noghaltwarp5009	1,1,yuno_fild02.gat,114,370
 yuno_fild02.gat,117,375,0	warp	noghaltwarp5010	1,1,hu_fild04.gat,122,35
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh04ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh05
 hu_fild04.gat,380,183,0		warp	noghaltwarp5011	1,1,hu_fild05.gat,39,206
 hu_fild05.gat,33,198,0		warp	noghaltwarp5012	1,1,hu_fild04.gat,373,181
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰07
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh05ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh07
 hu_fild05.gat,89,43,0		warp	noghaltwarp5013	1,1,hu_fild07.gat,80,365
 hu_fild07.gat,81,370,0		warp	noghaltwarp5014	1,1,hu_fild05.gat,89,50
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰07â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh07ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh02
 hu_fild07.gat,36,352,0		warp	noghaltwarp5015	1,1,yuno_fild02.gat,378,336
 yuno_fild02.gat,383,339,0	warp	noghaltwarp5016	1,1,hu_fild07.gat,42,351
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰07â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰09
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh07ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh09
 hu_fild07.gat,57,37,0		warp	noghaltwarp5017	1,1,yuno_fild09.gat,48,370
 yuno_fild09.gat,48,376,0	warp	noghaltwarp5018	1,1,hu_fild07.gat,58,42
 hu_fild07.gat,226,38,0		warp	noghaltwarp5019	1,1,yuno_fild09.gat,220,368
@@ -1136,86 +1136,86 @@ yuno_fild09.gat,220,373,0	warp	noghaltwarp5020	1,1,hu_fild07.gat,224,43
 
 
 
-//---ç”°åœ’éƒ½å¸‚ãƒ•ã‚£ã‚²ãƒ«è¿½åŠ ãƒãƒƒãƒ—
+//---“c‰€“ssƒtƒBƒQƒ‹’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ•ã‚£ã‚²ãƒ« -----
-// hu_fild01.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01
-// hu_fild02.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
-// hu_fild03.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03
-// hu_fild04.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04
-// hu_fild05.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
-// hu_fild06.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
-// hu_fild07.gat	ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰07
+// -----  ƒtƒBƒQƒ‹ -----
+// hu_fild01.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh01
+// hu_fild02.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh02
+// hu_fild03.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh03
+// hu_fild04.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh04
+// hu_fild05.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh05
+// hu_fild06.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh06
+// hu_fild07.gat	ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh07
 // -----
-// odin_tem01.gat	ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿
-// odin_tem02.gat	ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿
-// odin_tem03.gat	ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿
+// odin_tem01.gat	ƒI[ƒfƒBƒ“_“a
+// odin_tem02.gat	ƒI[ƒfƒBƒ“_“a
+// odin_tem03.gat	ƒI[ƒfƒBƒ“_“a
 // -----
-// ein_fild01.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01
-// ein_fild02.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
-// ein_fild05.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+// ein_fild01.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01
+// ein_fild02.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh02
+// ein_fild05.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh05
 // -----
-// yuno_fild06.gat	ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+// yuno_fild06.gat	ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh06
 //==============================================================
 hu_fild06.gat,200,372,0		warp	hugelwarp0101	1,1,hugel.gat,95,37
 
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh01ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh02
 hu_fild01.gat,366,185,0		warp	hugelwarp5001	1,1,hu_fild02.gat,22,168
 hu_fild02.gat,17,168,0		warp	hugelwarp5002	1,1,hu_fild01.gat,361,189
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh02ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh03
 hu_fild02.gat,378,162,0		warp	hugelwarp5003	1,1,hu_fild03.gat,30,163
 hu_fild03.gat,25,163,0		warp	hugelwarp5004	1,1,hu_fild02.gat,373,160
 hu_fild02.gat,374,339,0		warp	hugelwarp5005	1,1,hu_fild03.gat,24,337
 hu_fild03.gat,20,338,0		warp	hugelwarp5006	1,1,hu_fild02.gat,370,339
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh02ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh04
 hu_fild02.gat,40,22,0		warp	hugelwarp5007	1,1,hu_fild04.gat,48,368
 hu_fild04.gat,47,372,0		warp	hugelwarp5008	1,1,hu_fild02.gat,40,27
 hu_fild02.gat,283,28,0		warp	hugelwarp5009	1,1,hu_fild04.gat,289,376
 hu_fild04.gat,294,379,0		warp	hugelwarp5010	1,1,hu_fild02.gat,280,31
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰03â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh03ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh05
 hu_fild03.gat,288,19,0		warp	hugelwarp5011	1,1,hu_fild05.gat,276,346
 hu_fild05.gat,284,356,0		warp	hugelwarp5012	1,1,hu_fild03.gat,288,26
-//ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05â‡”ãƒ•ã‚£ã‚²ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+//ƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh05ÌƒtƒBƒQƒ‹ƒtƒB[ƒ‹ƒh06
 hu_fild05.gat,353,126,0		warp	hugelwarp5013	1,1,hu_fild06.gat,34,119
 hu_fild06.gat,28,119,0		warp	hugelwarp5014	1,1,hu_fild05.gat,347,130
 
-//ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
+//ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh04ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh02
 yuno_fild04.gat,33,279,0	warp	hugelwarp5015	1,1,ein_fild02.gat,350,250
 ein_fild02.gat,357,251,0	warp	hugelwarp5016	1,1,yuno_fild04.gat,38,280
-//ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01
+//ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh05ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01
 yuno_fild05.gat,41,350,0	warp	hugelwarp5017	1,1,ein_fild01.gat,345,367
 ein_fild01.gat,349,369,0	warp	hugelwarp5018	1,1,yuno_fild05.gat,43,346
-//ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰09â‡”ã‚¸ãƒ¥ãƒãƒ¼ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰10
+//ƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh09ÌƒWƒ…ƒm[ƒtƒB[ƒ‹ƒh10
 yuno_fild09.gat,377,184,0	warp	hugelwarp5019	1,1,yuno_fild10.gat,44,183
 yuno_fild10.gat,39,183,0	warp	hugelwarp5020	1,1,yuno_fild09.gat,371,184
 
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh02
 ein_fild01.gat,106,34,0		warp	hugelwarp5021	1,1,ein_fild02.gat,109,358
 ein_fild02.gat,108,364,0	warp	hugelwarp5022	1,1,ein_fild01.gat,106,40
 ein_fild01.gat,234,34,0		warp	hugelwarp5023	1,1,ein_fild02.gat,258,343
 ein_fild02.gat,257,350,0	warp	hugelwarp5024	1,1,ein_fild01.gat,231,40
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰02â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh02ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh05
 ein_fild02.gat,170,29,0		warp	hugelwarp5025	1,1,ein_fild05.gat,172,366
 ein_fild05.gat,172,371,0	warp	hugelwarp5026	1,1,ein_fild02.gat,170,37
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰04â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh04ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh05
 ein_fild04.gat,343,293,0	warp	hugelwarp5027	1,1,ein_fild05.gat,80,294
 ein_fild05.gat,76,294,0		warp	hugelwarp5028	1,1,ein_fild04.gat,336,292
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰06
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh05ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh06
 ein_fild05.gat,376,183,0	warp	hugelwarp5029	1,1,ein_fild06.gat,47,166
 ein_fild06.gat,42,171,0		warp	hugelwarp5030	1,1,ein_fild05.gat,371,183
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡”ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰05
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01ÌƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh05
 ein_fild01.gat,106,34,0		warp	hugelwarp5031	1,1,ein_fild05.gat,172,366
 ein_fild05.gat,172,371,0	warp	hugelwarp5032	1,1,ein_fild01.gat,106,40
 
 //==============================================================
-//ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿01â‡”ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿02
+//ƒI[ƒfƒBƒ“_“a01ÌƒI[ƒfƒBƒ“_“a02
 odin_tem01.gat,377,182,0	warp	odinwarp5001	1,1,odin_tem02.gat,28,180
 odin_tem02.gat,21,180,0		warp	odinwarp5002	1,1,odin_tem01.gat,373,182
 odin_tem01.gat,383,334,0	warp	odinwarp5003	1,1,odin_tem02.gat,27,334
 odin_tem02.gat,21,334,0		warp	odinwarp5004	1,1,odin_tem01.gat,379,334
-//ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿02â‡”ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ç¥æ®¿03
+//ƒI[ƒfƒBƒ“_“a02ÌƒI[ƒfƒBƒ“_“a03
 odin_tem02.gat,153,349,0	warp	odinwarp5005	1,1,odin_tem03.gat,120,54
 odin_tem03.gat,121,49,0		warp	odinwarp5006	1,1,odin_tem02.gat,154,345
 odin_tem02.gat,261,377,0	warp	odinwarp5007	1,1,odin_tem03.gat,247,40
@@ -1223,136 +1223,136 @@ odin_tem03.gat,247,34,0		warp	odinwarp5008	1,1,odin_tem02.gat,263,372
 
 
 
-//---ãƒ©ãƒ˜ãƒ«è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ‰ƒwƒ‹’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ©ãƒ˜ãƒ« -----
-// rachel.gat		ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
-// ra_fild01.gat	ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ
-// ra_fild02.gat	ã‚ªã‚ºç‹­è°·
-// ra_fild03.gat	ã‚¤ãƒ€å¹³åŸ
-// ra_fild04.gat	ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ
-// ra_fild05.gat	ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ
-// ra_fild06.gat	ãƒãƒ«ãƒˆãƒ«ãƒŠ
-// ra_fild07.gat	ã‚ªã‚ºç‹­è°·
-// ra_fild08.gat	ã‚¤ãƒ€å¹³åŸ
-// ra_fild09.gat	ã‚¢ã‚¦ãƒ‰ãƒ ãƒ©è‰åŸ
-// ra_fild10.gat	ã‚ªã‚ºç‹­è°·
-// ra_fild11.gat	ã‚¤ãƒ€å¹³åŸ
-// ra_fild12.gat	ã‚¤ãƒ€å¹³åŸ
-// ra_fild13.gat	æ¶™ã®æµ·å²¸
-// lhz_fild01.gat	ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// -----  ƒ‰ƒwƒ‹ -----
+// rachel.gat		ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
+// ra_fild01.gat	ƒAƒEƒhƒ€ƒ‰‘Œ´
+// ra_fild02.gat	ƒIƒY‹·’J
+// ra_fild03.gat	ƒCƒ_•½Œ´
+// ra_fild04.gat	ƒAƒEƒhƒ€ƒ‰‘Œ´
+// ra_fild05.gat	ƒAƒEƒhƒ€ƒ‰‘Œ´
+// ra_fild06.gat	ƒ|ƒ‹ƒgƒ‹ƒi
+// ra_fild07.gat	ƒIƒY‹·’J
+// ra_fild08.gat	ƒCƒ_•½Œ´
+// ra_fild09.gat	ƒAƒEƒhƒ€ƒ‰‘Œ´
+// ra_fild10.gat	ƒIƒY‹·’J
+// ra_fild11.gat	ƒCƒ_•½Œ´
+// ra_fild12.gat	ƒCƒ_•½Œ´
+// ra_fild13.gat	—Ü‚ÌŠCŠİ
+// lhz_fild01.gat	ƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh
 // -----
-// ice_dun01.gat	æ°·ã®æ´çªŸ
+// ice_dun01.gat	•X‚Ì“´ŒA
 //==============================================================
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 11â‡’ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 11ËƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
 ra_fild11.gat,360,226,0		warp	rachelwarp0101	1,1,rachel.gat,30,125
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 12â‡’ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 12ËƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
 ra_fild12.gat,36,225,0		warp	rachelwarp0102	1,1,rachel.gat,270,125
 
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’æ°·ã®æ´çªŸ 01
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 01Ë•X‚Ì“´ŒA 01
 ra_fild01.gat,233,333,0		warp	rachelwarp0401	1,1,ice_dun01.gat,157,15
 
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 01Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 04
 ra_fild01.gat,306,38,0		warp	rachelwarp5001	1,1,ra_fild04.gat,322,371
 ra_fild04.gat,322,378,0		warp	rachelwarp5002	1,1,ra_fild01.gat,306,43
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 02Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 03
 ra_fild02.gat,373,275,0		warp	rachelwarp5003	1,1,ra_fild03.gat,28,294
 ra_fild03.gat,23,294,0		warp	rachelwarp5004	1,1,ra_fild02.gat,367,270
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 02Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 07
 ra_fild02.gat,168,36,0		warp	rachelwarp5005	1,1,ra_fild07.gat,168,349
 ra_fild07.gat,168,353,0		warp	rachelwarp5006	1,1,ra_fild02.gat,171,45
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 03Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 04
 ra_fild03.gat,374,168,0		warp	rachelwarp5007	1,1,ra_fild04.gat,29,176
 ra_fild04.gat,23,176,0		warp	rachelwarp5008	1,1,ra_fild03.gat,370,172
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 04Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 05
 ra_fild04.gat,362,351,0		warp	rachelwarp5009	1,1,ra_fild05.gat,39,353
 ra_fild05.gat,33,353,0		warp	rachelwarp5010	1,1,ra_fild04.gat,356,351
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 08
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 04Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 08
 ra_fild04.gat,263,54,0		warp	rachelwarp5011	1,1,ra_fild08.gat,287,365
 ra_fild08.gat,287,370,0		warp	rachelwarp5012	1,1,ra_fild04.gat,263,60
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 05Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 06
 ra_fild05.gat,348,274,0		warp	rachelwarp5013	1,1,ra_fild06.gat,24,277
 ra_fild06.gat,19,277,0		warp	rachelwarp5014	1,1,ra_fild05.gat,341,273
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 09
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 05Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 09
 ra_fild05.gat,27,13,0		warp	rachelwarp5015	1,1,ra_fild09.gat,30,337
 ra_fild09.gat,29,343,0		warp	rachelwarp5016	1,1,ra_fild05.gat,31,17
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06â‡”ãƒªãƒ’ã‚¿ãƒ«ã‚¼ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 06ÌƒŠƒqƒ^ƒ‹ƒ[ƒ“ƒtƒB[ƒ‹ƒh 01
 ra_fild06.gat,294,21,0		warp	rachelwarp5017	1,1,lhz_fild01.gat,296,376
 lhz_fild01.gat,296,382,0	warp	rachelwarp5018	1,1,ra_fild06.gat,298,25
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 11
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 07Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 11
 ra_fild07.gat,215,27,0		warp	rachelwarp5019	1,1,ra_fild11.gat,201,329
 ra_fild11.gat,202,335,0		warp	rachelwarp5020	1,1,ra_fild07.gat,215,32
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 08â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 09
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 08Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 09
 ra_fild08.gat,368,234,0		warp	rachelwarp5021	1,1,ra_fild09.gat,35,238
 ra_fild09.gat,27,238,0		warp	rachelwarp5022	1,1,ra_fild08.gat,360,234
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 08â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 12
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 08Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 12
 ra_fild08.gat,165,29,0		warp	rachelwarp5023	1,1,ra_fild12.gat,149,369
 ra_fild12.gat,149,374,0		warp	rachelwarp5024	1,1,ra_fild08.gat,165,36
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 10â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 11
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 10Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 11
 ra_fild10.gat,384,287,0		warp	rachelwarp5025	1,1,ra_fild11.gat,28,290
 ra_fild11.gat,21,290,0		warp	rachelwarp5026	1,1,ra_fild10.gat,379,283
-//ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 12â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 13
+//ƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 12Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 13
 ra_fild12.gat,303,27,0		warp	rachelwarp5027	1,1,ra_fild13.gat,295,341
 ra_fild13.gat,295,346,0		warp	rachelwarp5028	1,1,ra_fild12.gat,303,33
 
 
 
-//---ãƒ™ã‚¤ãƒ³ã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒxƒCƒ“ƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ™ã‚¤ãƒ³ã‚¹ -----
-// ve_fild01.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
-// ve_fild02.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
-// ve_fild03.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
-// ve_fild04.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04
-// ve_fild05.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05
-// ve_fild06.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
-// ve_fild07.gat	ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07
+// -----  ƒxƒCƒ“ƒX -----
+// ve_fild01.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 01
+// ve_fild02.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 02
+// ve_fild03.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 03
+// ve_fild04.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 04
+// ve_fild05.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 05
+// ve_fild06.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06
+// ve_fild07.gat	ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 07
 // -----
-// veins.gat		å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹
-// rachel.gat		ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
-// ra_fild11.gat	ã‚¤ãƒ€å¹³åŸ
-// ra_fild13.gat	æ¶™ã®æµ·å²¸
-// thor_v01.gat		ãƒˆãƒ¼ãƒ«ç«å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ 01
+// veins.gat		‹¬’J“ssƒxƒCƒ“ƒX
+// rachel.gat		ƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
+// ra_fild11.gat	ƒCƒ_•½Œ´
+// ra_fild13.gat	—Ü‚ÌŠCŠİ
+// thor_v01.gat		ƒg[ƒ‹‰ÎRƒ_ƒ“ƒWƒ‡ƒ“ 01
 //==============================================================
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06â‡’å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06Ë‹¬’J“ssƒxƒCƒ“ƒX
 ve_fild06.gat,153,220,0		warp	veinswarp0101	1,1,veins.gat,218,355
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 07â‡’å³¡è°·éƒ½å¸‚ãƒ™ã‚¤ãƒ³ã‚¹
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 07Ë‹¬’J“ssƒxƒCƒ“ƒX
 ve_fild07.gat,147,371,0		warp	veinswarp0102	1,1,veins.gat,146,28
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡’ã‚¢ãƒ«ãƒŠãƒ™ãƒ«ãƒ„æ•™å›½é¦–éƒ½ ãƒ©ãƒ˜ãƒ«
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 02ËƒAƒ‹ƒiƒxƒ‹ƒc‹³‘ñ“s ƒ‰ƒwƒ‹
 ve_fild02.gat,195,382,0		warp	veinswarp0103	1,1,rachel.gat,130,25
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03â‡’ãƒˆãƒ¼ãƒ«ç«å±±ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ 01
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 03Ëƒg[ƒ‹‰ÎRƒ_ƒ“ƒWƒ‡ƒ“ 01
 ve_fild03.gat,168,240,0		warp	veinswarp0401	1,1,thor_v01.gat,21,229
 
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 11
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 01Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 11
 ve_fild01.gat,243,368,0		warp	veinswarp5001	1,1,ra_fild11.gat,232,32
 ra_fild11.gat,233,27,0		warp	veinswarp5002	1,1,ve_fild01.gat,243,363
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 01ÌƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 02
 ve_fild01.gat,366,267,0		warp	veinswarp5003	1,1,ve_fild02.gat,36,263
 ve_fild02.gat,31,263,0		warp	veinswarp5004	1,1,ve_fild01.gat,361,267
 ve_fild01.gat,350,92,0		warp	veinswarp5005	1,1,ve_fild02.gat,78,133
 ve_fild02.gat,73,133,0		warp	veinswarp5006	1,1,ve_fild01.gat,345,92
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 01ÌƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 04
 ve_fild01.gat,184,20,0		warp	veinswarp5007	1,1,ve_fild04.gat,174,334
 ve_fild04.gat,174,339,0		warp	veinswarp5008	1,1,ve_fild01.gat,184,25
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡”ãƒ©ãƒ˜ãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 13
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 02Ìƒ‰ƒwƒ‹ƒtƒB[ƒ‹ƒh 13
 ve_fild02.gat,385,308,0		warp	veinswarp5009	1,1,ra_fild13.gat,34,308
 ra_fild13.gat,29,308,0		warp	veinswarp5010	1,1,ve_fild02.gat,184,25
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03â‡”ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 03ÌƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 04
 ve_fild03.gat,355,223,0		warp	veinswarp5011	1,1,ve_fild04.gat,49,249
 ve_fild04.gat,44,249,0		warp	veinswarp5012	1,1,ve_fild03.gat,350,220
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03â‡”ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 03ÌƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 05
 ve_fild03.gat,222,43,0		warp	veinswarp5013	1,1,ve_fild05.gat,200,325
 ve_fild05.gat,200,330,0		warp	veinswarp5014	1,1,ve_fild03.gat,222,48
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 04ËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06
 ve_fild04.gat,115,50,0		warp	veinswarp5015	1,1,ve_fild06.gat,80,183
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 05â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 05ËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06
 ve_fild05.gat,359,192,0		warp	veinswarp5016	1,1,ve_fild06.gat,80,183
-//ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 06â‡’ãƒ™ã‚¤ãƒ³ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 04ãƒ»05
+//ƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 06ËƒxƒCƒ“ƒXƒtƒB[ƒ‹ƒh 04E05
 ve_fild06.gat,81,177,0		script	#veinswarp5017	45,1,1,{
 	if(rand(2)) warp "ve_fild04.gat",115,55;
 	else warp "ve_fild05.gat",354,191;
@@ -1361,179 +1361,179 @@ ve_fild06.gat,81,177,0		script	#veinswarp5017	45,1,1,{
 
 
 
-//---ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ‚ƒXƒRƒrƒA’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ -----
-// mosk_fild02.gat	ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+// -----  ƒ‚ƒXƒRƒrƒA -----
+// mosk_fild02.gat	ƒ‚ƒXƒRƒrƒAƒtƒB[ƒ‹ƒh
 // -----
-// mosk_dun01.gat	æ£®
+// mosk_dun01.gat	X
 //==============================================================
-//ãƒ¢ã‚¹ã‚³ãƒ“ã‚¢ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰â‡’æ£®
+//ƒ‚ƒXƒRƒrƒAƒtƒB[ƒ‹ƒhËX
 mosk_fild02.gat,190,257,0	warp	moscoviawarp0401	1,1,mosk_dun01.gat,189,45
 
 
 
-//---é­”ç‹ãƒ¢ãƒ­ã‚¯è¿½åŠ ãƒãƒƒãƒ—
+//---–‚‰¤ƒ‚ƒƒN’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  æ´çªŸã®æ‘ -----
-// ein_fild01.gat	ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01
+// -----  “´ŒA‚Ì‘º -----
+// ein_fild01.gat	ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01
 // -----
-// cave.gat		æ´çªŸã®æ‘
+// cave.gat		“´ŒA‚Ì‘º
 //==============================================================
-//ã‚¢ã‚¤ãƒ³ãƒ–ãƒ­ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰01â‡’æ´çªŸã®æ‘
+//ƒAƒCƒ“ƒuƒƒbƒNƒtƒB[ƒ‹ƒh01Ë“´ŒA‚Ì‘º
 ein_fild01.gat,28,261,0	warp	cavewarp0101	1,1,cave.gat,97,24
 
 
 
-//---ã‚¢ãƒƒã‚·ãƒ¥ãƒ»ãƒã‚­ãƒ¥ãƒ¼ãƒ è¿½åŠ ãƒãƒƒãƒ—
+//---ƒAƒbƒVƒ…EƒoƒLƒ…[ƒ€’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  é‰±å±±ã®è¡— ãƒãƒŒã‚¯  -----
-// man_fild01.gat	ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
-// man_fild02.gat	ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
-// man_fild03.gat	ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
+// -----  zR‚ÌŠX ƒ}ƒkƒN  -----
+// man_fild01.gat	ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 01
+// man_fild02.gat	ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 02
+// man_fild03.gat	ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 03
 // -----
-// mid_camp.gat		ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°
-// manuk.gat		é‰±å±±ã®è¡— ãƒãƒŒã‚¯
+// mid_camp.gat		ƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n
+// manuk.gat		zR‚ÌŠX ƒ}ƒkƒN
 //==============================================================
-//ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°
+//ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 01Ëƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n
 man_fild01.gat,35,232,0		warp	manukwarp0101	1,1,mid_camp.gat,341,176
-//ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡’é‰±å±±ã®è¡— ãƒãƒŒã‚¯
+//ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 02ËzR‚ÌŠX ƒ}ƒkƒN
 man_fild02.gat,139,41,0		warp	manukwarp0102	1,1,manuk.gat,112,356
 
-//ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
+//ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 01Ìƒ}ƒkƒNƒtƒB[ƒ‹ƒh 03
 man_fild01.gat,103,55,0		warp	manukwarp5001	1,1,man_fild03.gat,84,366
 man_fild03.gat,84,369,0		warp	manukwarp5002	1,1,man_fild01.gat,103,58
-//ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//ƒ}ƒkƒNƒtƒB[ƒ‹ƒh 01Ìƒ}ƒkƒNƒtƒB[ƒ‹ƒh 02
 man_fild01.gat,372,230,0	warp	manukwarp5003	1,1,man_fild02.gat,34,261
 man_fild02.gat,32,261,0		warp	manukwarp5004	1,1,man_fild01.gat,369,230
 
 
 //==============================================================
-// -----  å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰  -----
-// spl_fild01.gat	ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
-// spl_fild02.gat	ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
-// spl_fild03.gat	ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
+// -----  ‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh  -----
+// spl_fild01.gat	ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 01
+// spl_fild02.gat	ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02
+// spl_fild03.gat	ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 03
 // -----
-// mid_camp.gat		ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°
-// splendide.gat	å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
+// mid_camp.gat		ƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n
+// splendide.gat	‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
 //==============================================================
-//ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡’ãƒŸãƒƒãƒ‰ã‚¬ãƒ«ãƒ‰é€£åˆè»é§å±¯åœ°
+//ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02Ëƒ~ƒbƒhƒKƒ‹ƒh˜A‡ŒR’““Ô’n
 spl_fild02.gat,382,143,0	warp	splendidewarp0101	1,1,mid_camp.gat,16,143
 spl_fild02.gat,383,216,0	warp	splendidewarp0102	1,1,mid_camp.gat,12,215
-//ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡’å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
+//ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02Ë‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
 spl_fild02.gat,6,241,0		warp	splendidewarp0103	1,1,splendide.gat,386,251
 
-//ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02â‡”ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 03
+//ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02ÌƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 03
 spl_fild02.gat,310,10,0		warp	splendidewarp5001	1,1,spl_fild03.gat,306,376
 spl_fild03.gat,306,379,0	warp	splendidewarp5002	1,1,spl_fild02.gat,311,12
 spl_fild02.gat,103,30,0		warp	splendidewarp5003	1,1,spl_fild03.gat,99,370
 spl_fild03.gat,99,373,0		warp	splendidewarp5004	1,1,spl_fild02.gat,102,32
-//ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡”ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 02
+//ƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 01ÌƒXƒvƒŒƒ“ƒfƒBƒbƒhƒtƒB[ƒ‹ƒh 02
 spl_fild01.gat,289,28,0		warp	splendidewarp5005	1,1,spl_fild02.gat,292,377
 spl_fild02.gat,293,379,0	warp	splendidewarp5006	1,1,spl_fild01.gat,289,30
 
 
 
-//---ãƒ–ãƒ©ã‚¸ãƒªã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒuƒ‰ƒWƒŠƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ–ãƒ©ã‚¸ãƒªã‚¹  -----
-// bra_fild01.gat	ãƒ–ãƒ©ã‚¸ãƒªã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// -----  ƒuƒ‰ƒWƒŠƒX  -----
+// bra_fild01.gat	ƒuƒ‰ƒWƒŠƒXƒtƒB[ƒ‹ƒh 01
 // -----
-// brasilis.gat		ãƒ–ãƒ©ã‚¸ãƒªã‚¹
+// brasilis.gat		ƒuƒ‰ƒWƒŠƒX
 //==============================================================
-//ãƒ–ãƒ©ã‚¸ãƒªã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’ãƒ–ãƒ©ã‚¸ãƒªã‚¹
+//ƒuƒ‰ƒWƒŠƒXƒtƒB[ƒ‹ƒh 01Ëƒuƒ‰ƒWƒŠƒX
 bra_fild01.gat,72,34,0		warp	brasiliswarp0101	1,1,brasilis.gat,309,334
 
 
 
-//---ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹è¿½åŠ ãƒãƒƒãƒ—
+//---ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ã‚¨ãƒ«ãƒ‡ã‚£ã‚«ã‚¹ãƒ†ã‚£ã‚¹ -----
-// dic_fild01.gat	ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 01
-// dic_fild02.gat	ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 02
+// -----  ƒGƒ‹ƒfƒBƒJƒXƒeƒBƒX -----
+// dic_fild01.gat	ƒJƒ~ƒ_ƒ‹R˜[ 01
+// dic_fild02.gat	ƒJƒ~ƒ_ƒ‹R˜[ 02
 // -----
-// dic_dun01.gat	ã‚«ãƒŸãƒ€ãƒ«ãƒˆãƒ³ãƒãƒ«
+// dic_dun01.gat	ƒJƒ~ƒ_ƒ‹ƒgƒ“ƒlƒ‹
 //==============================================================
-//ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 01â‡’ã‚«ãƒŸãƒ€ãƒ«ãƒˆãƒ³ãƒãƒ«
+//ƒJƒ~ƒ_ƒ‹R˜[ 01ËƒJƒ~ƒ_ƒ‹ƒgƒ“ƒlƒ‹
 dic_fild01.gat,24,79,0		warp	dicasteswarp0401	1,1,dic_dun01.gat,366,45
 
-//ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 01â‡”ã‚«ãƒŸãƒ€ãƒ«å±±éº“ 02
+//ƒJƒ~ƒ_ƒ‹R˜[ 01ÌƒJƒ~ƒ_ƒ‹R˜[ 02
 dic_fild01.gat,69,23,0		warp	dicasteswarp5001	1,1,dic_fild02.gat,70,373
 dic_fild02.gat,71,375,0		warp	dicasteswarp5002	1,1,dic_fild01.gat,69,25
 
 
 
-//---ãƒ‡ãƒ¯ã‚¿è¿½åŠ ãƒãƒƒãƒ—
+//---ƒfƒƒ^’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ‡ãƒ¯ã‚¿ -----
-// dew_fild01.gat	ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// -----  ƒfƒƒ^ -----
+// dew_fild01.gat	ƒfƒƒ^ƒtƒB[ƒ‹ƒh 01
 // -----
-// dewata.gat		ãƒ‡ãƒ¯ã‚¿
-// dew_in01.gat		ãƒ‡ãƒ¯ã‚¿ å®¤å†…
-// dew_dun02.gat	ã‚¤ã‚¹ã‚¿ãƒŠæ´çªŸ
+// dewata.gat		ƒfƒƒ^
+// dew_in01.gat		ƒfƒƒ^ º“à
+// dew_dun02.gat	ƒCƒXƒ^ƒi“´ŒA
 //==============================================================
-//ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’ãƒ‡ãƒ¯ã‚¿
+//ƒfƒƒ^ƒtƒB[ƒ‹ƒh 01Ëƒfƒƒ^
 dew_fild01.gat,375,212,0	warp	dewatawarp0101	1,1,dewata.gat,46,251
-//ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’ãƒ‡ãƒ¯ã‚¿ å®¤å†…
+//ƒfƒƒ^ƒtƒB[ƒ‹ƒh 01Ëƒfƒƒ^ º“à
 dew_fild01.gat,57,273,0		warp	dewatawarp0102	1,1,dew_in01.gat,15,33
 
-//ãƒ‡ãƒ¯ã‚¿ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’ã‚¤ã‚¹ã‚¿ãƒŠæ´çªŸ
+//ƒfƒƒ^ƒtƒB[ƒ‹ƒh 01ËƒCƒXƒ^ƒi“´ŒA
 dew_fild01.gat,48,65,0		warp	dewatawarp0401	1,1,dew_dun02.gat,302,30
 
 
 
-//---ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆè¿½åŠ ãƒãƒƒãƒ—
+//---ƒrƒtƒƒXƒg’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆ -----
-// bif_fild01.gat	ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01
+// -----  ƒrƒtƒƒXƒg -----
+// bif_fild01.gat	ƒrƒtƒƒXƒgƒtƒB[ƒ‹ƒh 01
 // -----
-// splendide.gat	å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
+// splendide.gat	‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
 //==============================================================
-//ãƒ“ãƒ•ãƒ­ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01â‡’å‰ç·šåŸºåœ° ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ‡ã‚£ãƒƒãƒ‰
+//ƒrƒtƒƒXƒgƒtƒB[ƒ‹ƒh 01Ë‘OüŠî’n ƒXƒvƒŒƒ“ƒfƒBƒbƒh
 bif_fild01.gat,318,48,0		warp	bifrostwarp0101	1,1,splendide.gat,270,378
 
 
 
-//---ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤è¿½åŠ ãƒãƒƒãƒ—
+//---ƒ|[ƒgƒ}ƒ‰ƒ„’Ç‰Áƒ}ƒbƒv
 
 
 //==============================================================
-// -----  ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ -----
-// ma_fild01.gat	ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬
-// ma_fild02.gat	ãƒãƒªã‚ªãƒ»ãƒ•ã‚©ãƒ¬ã‚¹ãƒˆ
+// -----  ƒ|[ƒgƒ}ƒ‰ƒ„ -----
+// ma_fild01.gat	ƒoƒŠƒIEƒ}ƒqƒƒK
+// ma_fild02.gat	ƒoƒŠƒIEƒtƒHƒŒƒXƒg
 // -----
-// malaya.gat		ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤
-// ma_in01.gat		ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…
-// ma_in01_jp.gat	ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…
-// ma_scene01.gat	ãƒã‚³ãƒŠãƒ¯æ¹–
-// ma_c_jp.gat		ãƒ–ãƒ¯ãƒ¤ã®æ´çªŸ
+// malaya.gat		ƒ|[ƒgƒ}ƒ‰ƒ„
+// ma_in01.gat		ƒ|[ƒgƒ}ƒ‰ƒ„ º“à
+// ma_in01_jp.gat	ƒ|[ƒgƒ}ƒ‰ƒ„ º“à
+// ma_scene01.gat	ƒoƒRƒiƒŒÎ
+// ma_c_jp.gat		ƒuƒƒ„‚Ì“´ŒA
 //==============================================================
-//ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬â‡’ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤
+//ƒoƒŠƒIEƒ}ƒqƒƒKËƒ|[ƒgƒ}ƒ‰ƒ„
 ma_fild01.gat,37,272,0		warp	malayawarp0101	1,1,malaya.gat,367,277
-//ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬â‡’ãƒãƒ¼ãƒˆãƒãƒ©ãƒ¤ å®¤å†…
+//ƒoƒŠƒIEƒ}ƒqƒƒKËƒ|[ƒgƒ}ƒ‰ƒ„ º“à
 ma_fild01.gat,251,190,0		warp	malayawarp0102	1,1,ma_in01.gat,108,160
 ma_fild01.gat,160,219,0		warp	malayawarp0103	1,1,ma_in01_jp.gat,83,17
 ma_fild01.gat,262,212,0		warp	malayawarp0104	1,1,ma_in01_jp.gat,36,152
 
-//ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬â‡’ãƒã‚³ãƒŠãƒ¯æ¹–
+//ƒoƒŠƒIEƒ}ƒqƒƒKËƒoƒRƒiƒŒÎ
 ma_fild01.gat,288,52,0		warp	malayawarp0401	1,1,ma_scene01.gat,142,78
-//ãƒãƒªã‚ªãƒ»ãƒ•ã‚©ãƒ¬ã‚¹ãƒˆâ‡’ãƒ–ãƒ¯ãƒ¤ã®æ´çªŸ
+//ƒoƒŠƒIEƒtƒHƒŒƒXƒgËƒuƒƒ„‚Ì“´ŒA
 ma_fild02.gat,315,323,0		warp	malayawarp0402	1,1,ma_c_jp.gat,31,56
 
-//ãƒãƒªã‚ªãƒ»ãƒãƒ’ãƒ¯ã‚¬â‡”ãƒãƒªã‚ªãƒ»ãƒ•ã‚©ãƒ¬ã‚¹ãƒˆ
+//ƒoƒŠƒIEƒ}ƒqƒƒKÌƒoƒŠƒIEƒtƒHƒŒƒXƒg
 ma_fild01.gat,266,359,0		warp	malayawarp5001	1,1,ma_fild02.gat,248,36
 ma_fild02.gat,248,33,0		warp	malayawarp5002	1,1,ma_fild01.gat,266,356

@@ -2,87 +2,87 @@
 // Ragnarok Online Divorce Event Script   2005-05-23     by Athena Wiki & Dev
 //==============================================================================
 
-nif_in.gat,190,112,5	script	デビルチ	738,{
+nif_in.gat,190,112,5	script	�f�r���`	738,{
 	if(!PartnerId) {
-		mes "[デビルチ]";
-		mes "クックックッ、所詮皆独りよ。";
-		mes "慰めにペットでも飼ってみるか？";
-		mes "近頃はわし、デビルチが";
-		mes "いいらしいぞ……";
+		mes "[�f�r���`]";
+		mes "�N�b�N�b�N�b�A���F�F�Ƃ��B";
+		mes "�Ԃ߂Ƀy�b�g�ł������Ă݂邩�H";
+		mes "�ߍ��͂킵�A�f�r���`��";
+		mes "�����炵�����c�c";
 		close;
 	}
-	mes "[デビルチ]";
-	mes "何か浮かない顔をしているな。";
-	mes "ふん、わしは幸せな奴には";
-	mes "興味ないんだがね……";
-	mes "クックックッ……";
+	mes "[�f�r���`]";
+	mes "���������Ȃ�������Ă���ȁB";
+	mes "�ӂ�A�킵�͍K���ȓz�ɂ�";
+	mes "�����Ȃ��񂾂��ˁc�c";
+	mes "�N�b�N�b�N�b�c�c";
 	next;
-	mes "[デビルチ]";
-	mes "だが一度自分の心に聞いてみるんだ。";
-	mes "ぬしは結婚して幸せになれたのか？";
-	mes "ケッケッケッ……";
+	mes "[�f�r���`]";
+	mes "������x�����̐S�ɕ����Ă݂�񂾁B";
+	mes "�ʂ��͌������čK���ɂȂꂽ�̂��H";
+	mes "�P�b�P�b�P�b�c�c";
 	next;
-	mes "[デビルチ]";
-	mes "こんな所まで来たのには";
-	mes "何か訳があるんだろう？";
-	mes "永遠の愛なんてものは……";
-	mes "ケケケッ。";
+	mes "[�f�r���`]";
+	mes "����ȏ��܂ŗ����̂ɂ�";
+	mes "�����󂪂���񂾂낤�H";
+	mes "�i���̈��Ȃ�Ă��̂́c�c";
+	mes "�P�P�P�b�B";
 	next;
-	mes "[デビルチ]";
-	mes "フン、方法は簡単だ。";
-	mes "婚姻なんてたかが契約の一種だろう？";
-	mes "わしならそれくらいすぐに";
-	mes "破棄できるぞ。相手の同意？";
-	mes "そんなものは必要ない。";
+	mes "[�f�r���`]";
+	mes "�t���A���@�͊ȒP���B";
+	mes "�����Ȃ�Ă������_��̈�킾�낤�H";
+	mes "�킵�Ȃ炻�ꂭ�炢������";
+	mes "�j���ł��邼�B����̓��ӁH";
+	mes "����Ȃ��͕̂K�v�Ȃ��B";
 	next;
-	mes "[デビルチ]";
-	mes "つまり、自由になれるってわけだ。";
-	mes "そうすれば新たな出会いもあるだろう。";
-	mes "ケッケッケッ……";
-	mes "婚姻の破棄を手伝ってやろうか？";
+	mes "[�f�r���`]";
+	mes "�܂�A���R�ɂȂ����Ă킯���B";
+	mes "��������ΐV���ȏo������邾�낤�B";
+	mes "�P�b�P�b�P�b�c�c";
+	mes "�����̔j������`���Ă�낤���H";
 	next;
-	if(select("けっこうです","お願いします")==1) {
-		mes "[デビルチ]";
-		mes "フン、フン、フン！";
-		mes "カップルなんか……ケッ!!";
-		mes "後でわしに泣きついたって";
-		mes "知らないからな！";
+	if(select("���������ł�","���肢���܂�")==1) {
+		mes "[�f�r���`]";
+		mes "�t���A�t���A�t���I";
+		mes "�J�b�v���Ȃ񂩁c�c�P�b!!";
+		mes "��ł킵�ɋ�����������";
+		mes "�m��Ȃ�����ȁI";
 		close2;
 		warp "niflheim.gat",169,162;
 		end;
 	}
-	mes "[デビルチ]";
-	mes "よかろう。";
-	mes "その意志と2,500,000Zeny";
-	mes "それで十分だ。";
-	mes "では、結婚前の状態に戻るが平気か？";
-	mes "本当に離婚してもよいんだな？";
+	mes "[�f�r���`]";
+	mes "�悩�낤�B";
+	mes "���̈ӎu��2,500,000Zeny";
+	mes "����ŏ\�����B";
+	mes "�ł́A�����O�̏�Ԃɖ߂邪���C���H";
+	mes "�{���ɗ������Ă��悢�񂾂ȁH";
 	next;
-	if(select("……少し考えさせてください","はい、離婚します")==1) {
-		mes "[デビルチ]";
-		mes "所詮人間は独り。";
-		mes "ぬしの心と資金、";
-		mes "両方準備ができたら";
-		mes "また訪ねてくるがよい……";
-		mes "ククククッ……";
+	if(select("�c�c�����l�������Ă�������","�͂��A�������܂�")==1) {
+		mes "[�f�r���`]";
+		mes "���F�l�Ԃ͓Ƃ�B";
+		mes "�ʂ��̐S�Ǝ����A";
+		mes "�����������ł�����";
+		mes "�܂��K�˂Ă��邪�悢�c�c";
+		mes "�N�N�N�N�b�c�c";
 		close;
 	}
 	if(Zeny<2500000) {
-		mes "[デビルチ]";
-		mes "2,500,000Zenyは、ぬしの";
-		mes "誠意の証だ。それすら";
-		mes "出せぬのなら諦めるんだな。";
-		mes "ケケケケッ……";
+		mes "[�f�r���`]";
+		mes "2,500,000Zeny�́A�ʂ���";
+		mes "���ӂ̏؂��B���ꂷ��";
+		mes "�o���ʂ̂Ȃ���߂�񂾂ȁB";
+		mes "�P�P�P�P�b�c�c";
 		close;
 	}
 	set '@name$,getcharname(PartnerId);
-	mes "[デビルチ]";
-	mes "仕方ねぇな。破棄してやるか。";
-	mes "よしよし。ちょっと待ってな。";
+	mes "[�f�r���`]";
+	mes "�d���˂��ȁB�j�����Ă�邩�B";
+	mes "�悵�悵�B������Ƒ҂��ĂȁB";
 	close2;
-	set '@name$,getcharname(divorce(0));	//念のためもう１回名前を要求
+	set '@name$,getcharname(divorce(0));	//�O�̂��߂����P�񖼑O��v��
 	heal -Hp+1,-Sp;
 	set Zeny,Zeny-2500000;
-	announce strcharinfo(0)+ "さんと " +'@name$+ "さんが離婚しました。",0x1a;
+	announce strcharinfo(0)+ "����� " +'@name$+ "���񂪗������܂����B",0x1a;
 	end;
 }

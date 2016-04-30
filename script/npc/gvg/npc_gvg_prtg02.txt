@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 prtg_cas02.gat,0,0,0	script	#AgitExe_V2	-1,{
 OnAgitStart:
@@ -42,7 +42,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 prtg_cas02.gat,0,0,0	script	#AgitTreasure_V2	-1,{
 OnClock0000:
@@ -59,7 +59,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_V2a	{
 	callfunc "AgitEmblemFlag",0,"prtg_cas02.gat",169,55;
@@ -69,11 +69,11 @@ OnFlagEmb_V2:
 	flagemblem getcastledata("prtg_cas02.gat",1);
 	end;
 }
-prt_gld.gat,153,213,3	duplicate(#GldFlag_V2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2a01	722
-prt_gld.gat,244,126,8	duplicate(#GldFlag_V2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2a02	722
-prt_gld.gat,244,128,8	duplicate(#GldFlag_V2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2a03	722
-prt_gld.gat,236,126,8	duplicate(#GldFlag_V2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2a04	722
-prt_gld.gat,236,128,8	duplicate(#GldFlag_V2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2a05	722
+prt_gld.gat,153,213,3	duplicate(#GldFlag_V2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2a01	722
+prt_gld.gat,244,126,8	duplicate(#GldFlag_V2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2a02	722
+prt_gld.gat,244,128,8	duplicate(#GldFlag_V2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2a03	722
+prt_gld.gat,236,126,8	duplicate(#GldFlag_V2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2a04	722
+prt_gld.gat,236,128,8	duplicate(#GldFlag_V2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2a05	722
 
 -	script	#GldFlag_V2b	{
 	end;
@@ -82,24 +82,24 @@ OnFlagEmb_V2:
 	flagemblem getcastledata("prtg_cas02.gat",1);
 	end;
 }
-//prontera.gat,146,194,3	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b01	722
-//prtg_cas02.gat,40,227,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b02	722
-//prtg_cas02.gat,46,227,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b03	722
-//prtg_cas02.gat,11,219,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b04	722
-//prtg_cas02.gat,11,214,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b05	722
-//prtg_cas02.gat,20,219,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b06	722
-//prtg_cas02.gat,20,214,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b07	722
-//prtg_cas02.gat,79,227,8	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b08	722
-//prtg_cas02.gat,70,227,8	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b09	722
-//prtg_cas02.gat,38,189,8	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b10	722
-//prtg_cas02.gat,34,189,8	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b11	722
-//prtg_cas02.gat,153,161,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b12	722
-//prtg_cas02.gat,162,161,4	duplicate(#GldFlag_V2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2b13	722
+//prontera.gat,146,194,3	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b01	722
+//prtg_cas02.gat,40,227,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b02	722
+//prtg_cas02.gat,46,227,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b03	722
+//prtg_cas02.gat,11,219,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b04	722
+//prtg_cas02.gat,11,214,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b05	722
+//prtg_cas02.gat,20,219,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b06	722
+//prtg_cas02.gat,20,214,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b07	722
+//prtg_cas02.gat,79,227,8	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b08	722
+//prtg_cas02.gat,70,227,8	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b09	722
+//prtg_cas02.gat,38,189,8	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b10	722
+//prtg_cas02.gat,34,189,8	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b11	722
+//prtg_cas02.gat,153,161,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b12	722
+//prtg_cas02.gat,162,161,4	duplicate(#GldFlag_V2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2b13	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-prtg_cas02.gat,71,36,4	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V2	117,{
+prtg_cas02.gat,71,36,4	script	ƒJƒvƒ‰Eˆõ::AgitKafra_V2	117,{
 	callfunc "AgitKafra",14;
 	close;
 OnAgitInit:
@@ -109,9 +109,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-prtg_cas02.gat,94,61,4	script	ãƒ«ã‚¨	55,{
+prtg_cas02.gat,94,61,4	script	ƒ‹ƒG	55,{
 	callfunc "AgitSteward","V2",'guardian_id,'guardian_x,'guardian_y,207,229;
 	close;
 OnAgitInit:
@@ -126,7 +126,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 prtg_cas02.gat,207,228,0	script	#AgitMaster_V2	111,{
 	callfunc "AgitMaster",94,62;
@@ -134,7 +134,7 @@ prtg_cas02.gat,207,228,0	script	#AgitMaster_V2	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 prtg_cas02.gat,84,72,0	script	#AgitDungeon_V2	111,{
 	callfunc "AgitDungeon","gld_dun03.gat",164,268;
@@ -142,7 +142,7 @@ prtg_cas02.gat,84,72,0	script	#AgitDungeon_V2	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 prtg_cas02.gat,202,228,0	script	#AgitBanWarp_V2	139,6,6,{
 	callfunc "AgitBanWarp","prontera.gat",119,64;

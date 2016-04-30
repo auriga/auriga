@@ -1,81 +1,81 @@
 //= Auriga Script ==============================================================
 // Ragnarok Online Quest List Script
 //==============================================================================
--	script	ã‚¨ã‚¤ãƒ‰#Quest	468,{
+-	script	ƒGƒCƒh#Quest	468,{
 	misceffect 12,"";
 	emotion 0;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã‚€â€¦â€¦ï¼Ÿ";
-	mes "ã“ã®æ„Ÿã˜ã¯â€¦â€¦ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "‚ŞccH";
+	mes "‚±‚ÌŠ´‚¶‚ÍccB";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã¡ã‚‡ã£ã¨ãã“ã®ã‚ªãƒã‚¨";
-	mes "é¡”ã‚’è¦‹ã›ã¦ã¿ã‚ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "‚¿‚å‚Á‚Æ‚»‚±‚ÌƒIƒ}ƒG";
+	mes "Šç‚ğŒ©‚¹‚Ä‚İ‚ëB";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã‚ªãƒã‚¨ã¯å¤šãã®çµŒé¨“ã‚’";
-	mes "ç©ã¿é‡ã­ã¦ããŸå†’é™ºè€…ã®ã‚ˆã†ã ãªã€‚";
-	mes "ã„ã„ç›®ã‚’ã—ã¦ã„ã‚‹ã€‚";
-	mes "ã‚ªãƒã‚¨ã®ã‚ˆã†ãªå¥´ã¯å«Œã„ã§ã¯ãªã„ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "ƒIƒ}ƒG‚Í‘½‚­‚ÌŒoŒ±‚ğ";
+	mes "Ï‚İd‚Ë‚Ä‚«‚½–`Œ¯Ò‚Ì‚æ‚¤‚¾‚ÈB";
+	mes "‚¢‚¢–Ú‚ğ‚µ‚Ä‚¢‚éB";
+	mes "ƒIƒ}ƒG‚Ì‚æ‚¤‚È“z‚ÍŒ™‚¢‚Å‚Í‚È‚¢B";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã•ã¦ã€ã¨ãã«ç”¨ä»¶ãŒ";
-	mes "ã‚ã£ãŸã‚ã‘ã§ã¯ãªã„ãŒ";
-	mes "å‘¼ã³æ­¢ã‚ã¦";
-	mes "ã—ã¾ã£ãŸã—ãªã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "‚³‚ÄA‚Æ‚­‚É—pŒ‚ª";
+	mes "‚ ‚Á‚½‚í‚¯‚Å‚Í‚È‚¢‚ª";
+	mes "ŒÄ‚Ñ~‚ß‚Ä";
+	mes "‚µ‚Ü‚Á‚½‚µ‚ÈB";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã“ã‚Œã‚‚ä½•ã‹ã®ç¸ã ã€‚";
-	mes "ã‚ªãƒã‚¨ã®æ—…ã®è»Œè·¡ã‚’";
-	mes "è¦‹ã¦ã‚„ã‚ã†ã‹ï¼Ÿ";
+	mes "[ƒGƒCƒh]";
+	mes "‚±‚ê‚à‰½‚©‚Ì‰‚¾B";
+	mes "ƒIƒ}ƒG‚Ì—·‚Ì‹OÕ‚ğ";
+	mes "Œ©‚Ä‚â‚ë‚¤‚©H";
 	next;
-	menu "ãˆï¼Ÿ",-;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã‚ªãƒ¬ã®å·¦ç›®ã¯äººã®éå»ã‚’";
-	mes "è¦‹é€ã‹ã™ã“ã¨ãŒã§ãã‚‹ã€‚";
-	mes "åˆ¥ã«é‡‘ã‚’ã¨ã£ãŸã‚Šã¯ã—ãªã„ã€‚";
-	mes "ã•ã¦ã€ã©ã†ã™ã‚‹ï¼Ÿ";
+	menu "‚¦H",-;
+	mes "[ƒGƒCƒh]";
+	mes "ƒIƒŒ‚Ì¶–Ú‚Íl‚Ì‰ß‹‚ğ";
+	mes "Œ©“§‚©‚·‚±‚Æ‚ª‚Å‚«‚éB";
+	mes "•Ê‚É‹à‚ğ‚Æ‚Á‚½‚è‚Í‚µ‚È‚¢B";
+	mes "‚³‚ÄA‚Ç‚¤‚·‚éH";
 	next;
-	mes "[ã‚¤ãƒ³ãƒ•ã‚©ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³]";
-	mes "^FF0000-æ—¢ã«ã‚¯ãƒªã‚¢ãƒ¼ã•ã‚ŒãŸ";
-	mes "ã‚¯ã‚¨ã‚¹ãƒˆãŒã‚¯ã‚¨ã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«";
-	mes "è¡¨ç¤ºã•ã‚Œã‚‹ã‚ˆã†ã«ãªã‚Šã¾ã™ã€‚";
-	mes "è©³ã—ãã¯ã‚¯ã‚¨ã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦(Alt+U)ã‚’";
-	mes "ã”ç¢ºèªãã ã•ã„-";
+	mes "[ƒCƒ“ƒtƒHƒ[ƒVƒ‡ƒ“]";
+	mes "^FF0000-Šù‚ÉƒNƒŠƒA[‚³‚ê‚½";
+	mes "ƒNƒGƒXƒg‚ªƒNƒGƒXƒgƒEƒBƒ“ƒhƒE‚É";
+	mes "•\¦‚³‚ê‚é‚æ‚¤‚É‚È‚è‚Ü‚·B";
+	mes "Ú‚µ‚­‚ÍƒNƒGƒXƒgƒEƒBƒ“ƒhƒE(Alt+U)‚ğ";
+	mes "‚²Šm”F‚­‚¾‚³‚¢-";
 	next;
-	mes "[ã‚¤ãƒ³ãƒ•ã‚©ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³]";
-	mes "^FF0000-ãªãŠã€è¡¨ç¤ºã•ã‚Œã‚‹ã‚¯ã‚¨ã‚¹ãƒˆã¯";
-	mes "ç¾åœ¨ã‚¯ã‚¨ã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã§";
-	mes "å¯¾å¿œã•ã‚ŒãŸã‚‚ã®ã®ã¿";
-	mes "è¡¨ç¤ºã•ã‚Œã¾ã™-";
+	mes "[ƒCƒ“ƒtƒHƒ[ƒVƒ‡ƒ“]";
+	mes "^FF0000-‚È‚¨A•\¦‚³‚ê‚éƒNƒGƒXƒg‚Í";
+	mes "Œ»İƒNƒGƒXƒgƒEƒBƒ“ƒhƒE‚Å";
+	mes "‘Î‰‚³‚ê‚½‚à‚Ì‚Ì‚İ";
+	mes "•\¦‚³‚ê‚Ü‚·-";
 	next;
-	if(select("ãŠé¡˜ã„ã—ã¾ã™","ã¾ãŸä»Šåº¦ã«ã—ã¾ã™") == 2) {
-		mes "[ã‚¨ã‚¤ãƒ‰]";
-		mes "ãã†ã‹â€¦ã€‚";
-		mes "ã¾ãã„ã„ã€‚";
-		mes "ã¾ãŸã€æ°—ãŒå‘ã„ãŸã‚‰æ¥ã‚‹ã¨ã„ã„ã€‚";
+	if(select("‚¨Šè‚¢‚µ‚Ü‚·","‚Ü‚½¡“x‚É‚µ‚Ü‚·") == 2) {
+		mes "[ƒGƒCƒh]";
+		mes "‚»‚¤‚©cB";
+		mes "‚Ü‚Ÿ‚¢‚¢B";
+		mes "‚Ü‚½A‹C‚ªŒü‚¢‚½‚ç—ˆ‚é‚Æ‚¢‚¢B";
 		close;
 	}
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "ã‚ã‹ã£ãŸã€‚";
-	mes "ãã®ã¾ã¾ã—ã°ã—å¾…ã¦ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "‚í‚©‚Á‚½B";
+	mes "‚»‚Ì‚Ü‚Ü‚µ‚Î‚µ‘Ò‚ÄB";
 	next;
-	mes "-ã‚¨ã‚¤ãƒ‰ã¯ä½•ã‹å‘Ÿãã¯ã˜ã‚ãŸ-";
+	mes "-ƒGƒCƒh‚Í‰½‚©™ê‚«‚Í‚¶‚ß‚½-";
 	next;
 	misceffect 8,"";
 	misceffect 36,"";
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "å‘ªã‚ã‚Œã—æˆ‘ãŒã¾ãªã“";
-	mes "ã“ã®è€…ã®æ—…ã®è»Œè·¡ã‚’ç¤ºã›ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "ô‚í‚ê‚µ‰ä‚ª‚Ü‚È‚±";
+	mes "‚±‚ÌÒ‚Ì—·‚Ì‹OÕ‚ğ¦‚¹B";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "â€¦";
+	mes "[ƒGƒCƒh]";
+	mes "c";
 
-	// ã‚½ãƒ¼ãƒ‰ãƒãƒ³è»¢è· [npc_job_01swordman.txt]
+	// ƒ\[ƒhƒ}ƒ““]E [npc_job_01swordman.txt]
 	if(CHANGE_SM > 0) setquest 1014;
 	if(getbaseclass(Class,1) == CLASS_SM) chgquest 1014,50165;
 
-	// ãƒã‚¸ã‚·ãƒ£ãƒ³è»¢è· [npc_job_02magician.txt]
+	// ƒ}ƒWƒVƒƒƒ““]E [npc_job_02magician.txt]
 	switch(CHANGE_MG) {
 		case 1: setquest 1005; break;
 		case 2: setquest 1006; break;
@@ -91,11 +91,11 @@
 			break;
 	}
 
-	// ã‚¢ãƒ¼ãƒãƒ£ãƒ¼è»¢è· [npc_job_03archer.txt]
+	// ƒA[ƒ`ƒƒ[“]E [npc_job_03archer.txt]
 	if(CHANGE_AC > 0) setquest 1004;
 	if(getbaseclass(Class,1) == CLASS_AC) chgquest 1004,50055;
 
-	// ã‚¢ã‚³ãƒ©ã‚¤ãƒˆè»¢è· [npc_job_04acolyte.txt]
+	// ƒAƒRƒ‰ƒCƒg“]E [npc_job_04acolyte.txt]
 	switch(CHANGE_AL) {
 		case 1: setquest 1001; break;
 		case 2: setquest 1002; break;
@@ -112,7 +112,7 @@
 			break;
 	}
 
-	// ãƒãƒ¼ãƒãƒ£ãƒ³ãƒˆè»¢è· [npc_job_05merchant.txt]
+	// ƒ}[ƒ`ƒƒƒ“ƒg“]E [npc_job_05merchant.txt]
 	switch(CHANGE_MC) {
 		case 1: case 2: case 9: case 10:
 			setquest 1009;
@@ -150,7 +150,7 @@
 			break;
 	}
 
-	// ã‚·ãƒ¼ãƒ•è»¢è· [npc_job_06thief.txt]
+	// ƒV[ƒt“]E [npc_job_06thief.txt]
 	switch(CHANGE_TF) {
 		case 2: setquest 1013; break;
 		case 3: chgquest 1013,50110; break;
@@ -160,11 +160,11 @@
 			break;
 	}
 
-	// ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒãƒ¼ãƒ“ã‚¹è»¢è· [npc_job_23supernovice.txt]
+	// ƒX[ƒp[ƒm[ƒrƒX“]E [npc_job_23supernovice.txt]
 	if(CHANGE_SNV > 0) setquest 6010;
 	if(getbaseclass(Class,1) == CLASS_SNV) chgquest 6010,50275;
 
-	// ãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰è»¢è· [npc_job_24taekwonkid.txt]
+	// ƒeƒRƒ“ƒLƒbƒh“]E [npc_job_24taekwonkid.txt]
 	switch(CHANGE_TK) {
 		case 1: setquest 6000; break;
 		case 2: chgquest 6000,6001; break;
@@ -175,7 +175,7 @@
 			break;
 	}
 
-	// ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼è»¢è· [npc_job_28gunslinger.txt]
+	// ƒKƒ“ƒXƒŠƒ“ƒK[“]E [npc_job_28gunslinger.txt]
 	switch(CHANGE_GS) {
 		case 1: setquest 6020; break;
 		case 2: chgquest 6020,6021; break;
@@ -188,7 +188,7 @@
 			break;
 	}
 
-	// å¿è€…è»¢è· [npc_job_29ninja.txt]
+	// ”EÒ“]E [npc_job_29ninja.txt]
 	switch(CHANGE_NJ) {
 		case 1: setquest 6015; break;
 		case 2: chgquest 6015,6016; break;
@@ -200,11 +200,11 @@
 			break;
 	}
 
-	// è»¢ç”Ÿ [npc_job_transmigration.txt]
+	// “]¶ [npc_job_transmigration.txt]
 	if(TRANSMIGRATE > 0) setquest 1000;
 	if(Upper == UPPER_HIGH) chgquest 1000,50000;
 
-	// é­”ç‹ãƒ¢ãƒ­ã‚¯è¨ä¼ [npc_town_morocc.txt]
+	// –‚‰¤ƒ‚ƒƒN“¢”° [npc_town_morocc.txt]
 	switch(MOC_2QUE) {
 		case 1: setquest 3050; break;
 		case 2: chgquest 3050,3051; break;
@@ -215,7 +215,7 @@
 		case 7: chgquest 3056,59345; break;
 	}
 
-	// é‹å‘½ã®ã‚«ãƒ©ã‚¹ [npc_town_morocc.txt]
+	// ‰^–½‚ÌƒJƒ‰ƒX [npc_town_morocc.txt]
 	switch(MOC_3QUE) {
 		case 1:
 			setquest 2063;
@@ -244,20 +244,20 @@
 	}
 
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "â€¦â€¦";
+	mes "[ƒGƒCƒh]";
+	mes "cc";
 	next;
-	mes "[ã‚¨ã‚¤ãƒ‰]";
-	mes "â€¦â€¦â€¦ã€‚";
-	mes "ãµã‚€ã€ã‚ªãƒã‚¨ã®æ—…ã®";
-	mes "è»Œè·¡ã‚’è¦‹ã›ã¦ã‚‚ã‚‰ã£ãŸã€‚";
-	mes "ã¾ãŸã€æ°—ãŒå‘ã„ãŸã‚‰æ¥ã‚‹ã¨ã„ã„ã€‚";
+	mes "[ƒGƒCƒh]";
+	mes "cccB";
+	mes "‚Ó‚ŞAƒIƒ}ƒG‚Ì—·‚Ì";
+	mes "‹OÕ‚ğŒ©‚¹‚Ä‚à‚ç‚Á‚½B";
+	mes "‚Ü‚½A‹C‚ªŒü‚¢‚½‚ç—ˆ‚é‚Æ‚¢‚¢B";
 	close;
 }
 
-prontera.gat,106,69,5	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
-izlude.gat,133,92,3	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
-geffen.gat,115,65,5	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
-morocc.gat,160,97,3	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
-payon.gat,178,104,3	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
-alberta.gat,122,59,3	duplicate(ã‚¨ã‚¤ãƒ‰#Quest)	ã‚¨ã‚¤ãƒ‰	880
+prontera.gat,106,69,5	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880
+izlude.gat,133,92,3	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880
+geffen.gat,115,65,5	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880
+morocc.gat,160,97,3	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880
+payon.gat,178,104,3	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880
+alberta.gat,122,59,3	duplicate(ƒGƒCƒh#Quest)	ƒGƒCƒh	880

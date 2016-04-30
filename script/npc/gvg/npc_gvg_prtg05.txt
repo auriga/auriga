@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 prtg_cas05.gat,0,0,0	script	#AgitExe_V5	-1,{
 OnAgitStart:
@@ -42,7 +42,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 prtg_cas05.gat,0,0,0	script	#AgitTreasure_V5	-1,{
 OnClock0000:
@@ -59,7 +59,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_V5a	{
 	callfunc "AgitEmblemFlag",0,"prtg_cas05.gat",52,41;
@@ -69,11 +69,11 @@ OnFlagEmb_V5:
 	flagemblem getcastledata("prtg_cas05.gat",1);
 	end;
 }
-prt_gld.gat,167,213,5	duplicate(#GldFlag_V5a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5a01	722
-prt_gld.gat,199,243,2	duplicate(#GldFlag_V5a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5a02	722
-prt_gld.gat,199,236,2	duplicate(#GldFlag_V5a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5a03	722
-prt_gld.gat,197,243,2	duplicate(#GldFlag_V5a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5a04	722
-prt_gld.gat,197,236,2	duplicate(#GldFlag_V5a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5a05	722
+prt_gld.gat,167,213,5	duplicate(#GldFlag_V5a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5a01	722
+prt_gld.gat,199,243,2	duplicate(#GldFlag_V5a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5a02	722
+prt_gld.gat,199,236,2	duplicate(#GldFlag_V5a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5a03	722
+prt_gld.gat,197,243,2	duplicate(#GldFlag_V5a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5a04	722
+prt_gld.gat,197,236,2	duplicate(#GldFlag_V5a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5a05	722
 
 -	script	#GldFlag_V5b	{
 	end;
@@ -82,20 +82,20 @@ OnFlagEmb_V5:
 	flagemblem getcastledata("prtg_cas05.gat",1);
 	end;
 }
-//prontera.gat,165,194,5	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b01	722
-//prtg_cas05.gat,19,247,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b02	722
-//prtg_cas05.gat,19,243,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b03	722
-//prtg_cas05.gat,26,247,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b04	722
-//prtg_cas05.gat,26,243,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b05	722
-//prtg_cas05.gat,249,289,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b06	722
-//prtg_cas05.gat,256,289,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b07	722
-//prtg_cas05.gat,253,271,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b08	722
-//prtg_cas05.gat,273,257,4	duplicate(#GldFlag_V5b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5b09	722
+//prontera.gat,165,194,5	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b01	722
+//prtg_cas05.gat,19,247,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b02	722
+//prtg_cas05.gat,19,243,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b03	722
+//prtg_cas05.gat,26,247,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b04	722
+//prtg_cas05.gat,26,243,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b05	722
+//prtg_cas05.gat,249,289,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b06	722
+//prtg_cas05.gat,256,289,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b07	722
+//prtg_cas05.gat,253,271,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b08	722
+//prtg_cas05.gat,273,257,4	duplicate(#GldFlag_V5b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5b09	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-prtg_cas05.gat,52,41,4	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_V5	117,{
+prtg_cas05.gat,52,41,4	script	ƒJƒvƒ‰Eˆõ::AgitKafra_V5	117,{
 	callfunc "AgitKafra",14;
 	close;
 OnAgitInit:
@@ -105,9 +105,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-prtg_cas05.gat,36,37,4	script	ãƒ¬ã‚¤ãƒ	55,{
+prtg_cas05.gat,36,37,4	script	ƒŒƒCƒm	55,{
 	callfunc "AgitSteward","V5",'guardian_id,'guardian_x,'guardian_y,281,176;
 	close;
 OnAgitInit:
@@ -122,7 +122,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 prtg_cas05.gat,281,176,0	script	#AgitMaster_V5	111,{
 	callfunc "AgitMaster",36,38;
@@ -130,7 +130,7 @@ prtg_cas05.gat,281,176,0	script	#AgitMaster_V5	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 prtg_cas05.gat,212,95,0	script	#AgitDungeon_V5	111,{
 	callfunc "AgitDungeon","gld_dun03.gat",199,28;
@@ -138,7 +138,7 @@ prtg_cas05.gat,212,95,0	script	#AgitDungeon_V5	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 prtg_cas05.gat,276,178,0	script	#AgitBanWarp_V5	139,6,6,{
 	callfunc "AgitBanWarp","prontera.gat",119,64;

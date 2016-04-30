@@ -1,2 +1,2 @@
-//skill_tree.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
-// Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,è¨ˆ5å€‹ã¾ã§ç¹°ã‚Šè¿”ã—,BaseLv,JobLv,Class
+//skill_tree.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
+// Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,Œv5ŒÂ‚Ü‚ÅŒJ‚è•Ô‚µ,BaseLv,JobLv,Class

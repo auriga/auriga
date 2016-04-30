@@ -1,16 +1,16 @@
 //=====================================================================
-//武具精錬NPCセリフパターン1
-//	（プロンテラ・アルベルタ・アインブロック）
+//����BNPC�Z���t�p�^�[��1
+//	�i�v�����e���E�A���x���^�E�A�C���u���b�N�j
 //  callfunc "Refine1","NPCName",SuccessEmotion,FalureEmotion;
 //--------------------------------------------------------------------
 
 function	script	Refine1	{
 	mes "["+getarg(0)+"]";
-	mes "俺は武器と防具を精錬する鍛冶屋だ。";
-	mes "君が装備しているアイテムの中で";
-	mes "好きなものを精錬できるのだ。";
-	mes "どの装備アイテムを";
-	mes "精錬したいのかい？";
+	mes "���͕���Ɩh��𐸘B����b�艮���B";
+	mes "�N���������Ă���A�C�e���̒���";
+	mes "�D���Ȃ��̂𐸘B�ł���̂��B";
+	mes "�ǂ̑����A�C�e����";
+	mes "���B�������̂����H";
 	next;
 	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
 				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
@@ -18,53 +18,53 @@ function	script	Refine1	{
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
-			mes "君の足りない脳みそを";
-			mes "精錬してあげようか？";
+			mes "�N�̑���Ȃ��]�݂���";
+			mes "���B���Ă����悤���H";
 			break;
 		case 2:
-			mes "俺の熱い体で君の体を";
-			mes "精錬してあげるわ！";
+			mes "���̔M���̂ŌN�̑̂�";
+			mes "���B���Ă������I";
 			break;
 		case 3:
-			mes "君の左手をロケットパンチに";
-			mes "する腕はないな。";
+			mes "�N�̍�������P�b�g�p���`��";
+			mes "����r�͂Ȃ��ȁB";
 			break;
 		case 4:
-			mes "現代科学技術でも君の右手を";
-			mes "ドリルにすることは";
-			mes "できないね。";
+			mes "����Ȋw�Z�p�ł��N�̉E���";
+			mes "�h�����ɂ��邱�Ƃ�";
+			mes "�ł��Ȃ��ˁB";
 			break;
 		case 5:
-			mes "ローブを持ってないじゃないか！";
+			mes "���[�u�������ĂȂ�����Ȃ����I";
 			break;
 		case 6:
-			mes "君の足の臭いすごいぜ！";
+			mes "�N�̑��̏L�����������I";
 			break;
 		case 7:
 		case 8:
-			mes "どこにアクセサリーがあるのかい？";
+			mes "�ǂ��ɃA�N�Z�T���[������̂����H";
 			break;
 		case 9:
 		case 10:
-			mes "何を精錬しろと言うんだ？";
-			mes "他のアイテムの事かい？";
+			mes "���𐸘B����ƌ����񂾁H";
+			mes "���̃A�C�e���̎������H";
 			break;
 		}
 		return;
 	}
 	if(getequipisenableref('@i)==0) {
-		mes "このアイテムは精錬不可能だ。";
+		mes "���̃A�C�e���͐��B�s�\���B";
 		return;
 	}
 	if(getequipisidentify('@i)==0) {
-		mes "これは未鑑定だから精錬できない。";
+		mes "����͖��Ӓ肾���琸�B�ł��Ȃ��B";
 		return;
 	}
 	if(getequiprefinerycnt('@i)>=10) {
-		mes "これ以上は精錬できないぞ。";
+		mes "����ȏ�͐��B�ł��Ȃ����B";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
+	//����Ăяo�����̂ݗ����ƃA�C�e��ID�����ꂼ��i�[
 	if('price[0]==0) {
 		setarray 'price,5000,100,500,5000,10000;
 		setarray 'itemid,985,1010,1011,984,984;
@@ -72,116 +72,116 @@ function	script	Refine1	{
 	set '@wlv,getequipweaponlv('@i);
 	switch('@wlv) {
 	case 0:
-		mes "君が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "続けるかい？";
+		mes "�N���I�񂾑����𐸘B����ɂ�";
+		mes "^ff9999�G���j�E��^000000��";
+		mes "�萔��5000Zeny���K�v���ȁB";
+		mes "�����邩���H";
 		break;
 	case 1:
-		mes "レベル1の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だな。";
-		mes "続けるのか？";
+		mes "���x��1�̕���𐸘B�������̂����H";
+		mes "���B���邽�߁A ^ff9999�v���R��^000000��";
+		mes "�萔��100Zeny���K�v���ȁB";
+		mes "������̂��H";
 		break;
 	case 2:
-		mes "レベル2の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だな。";
-		mes "続けるのか？";
+		mes "���x��2�̕���𐸘B�������̂����H";
+		mes "���B���邽�߁A ^ff9999�G���x���^�R��^000000��";
+		mes "�萔��500Zeny���K�v���ȁB";
+		mes "������̂��H";
 		break;
 	case 3:
-		mes "レベル3の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "続けるのか？";
+		mes "���x��3�̕���𐸘B�������̂����H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��5000Zeny���K�v���ȁB";
+		mes "������̂��H";
 		break;
 	case 4:
-		mes "レベル4の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だな。";
-		mes "続けるのか？";
+		mes "���x��4�̕���𐸘B�������̂����H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��10000Zeny���K�v���ȁB";
+		mes "������̂��H";
 		break;
 	}
 	next;
-	if(select("はい","いいえ")==2) {
+	if(select("�͂�","������")==2) {
 		mes "["+getarg(0)+"]";
-		mes "君が嫌なら仕方がないだろう…";
+		mes "�N�����Ȃ�d�����Ȃ����낤�c";
 		return;
 	}
 	if(getequippercentrefinery('@i) < 100) {
 		mes "["+getarg(0)+"]";
-		if('@wlv==0) {	//防具のとき
-			mes "おおっと！この防具はもうたくさんの";
-			mes "精錬をしてきたみたいだな…これ以上";
-			mes "精錬したら防具が壊れるかも";
-			mes "しれないぞ。防具が壊れたら";
+		if('@wlv==0) {	//�h��̂Ƃ�
+			mes "�������ƁI���̖h��͂������������";
+			mes "���B�����Ă����݂������ȁc����ȏ�";
+			mes "���B������h����邩��";
+			mes "����Ȃ����B�h���ꂽ��";
 		}
-		else {		//武器のとき
-			mes "おおっと！この武器はもうたくさんの";
-			mes "精錬をしてきたみたいだな…これ以上";
-			mes "精錬したら武器が壊れるかも";
-			mes "しれないぞ。武器が壊れたら";
+		else {		//����̂Ƃ�
+			mes "�������ƁI���̕���͂������������";
+			mes "���B�����Ă����݂������ȁc����ȏ�";
+			mes "���B�����畐�킪���邩��";
+			mes "����Ȃ����B���킪��ꂽ��";
 		}
-		mes "2度と使えなくなる…それでも";
-		mes "精錬をする気なのかい？";
+		mes "2�x�Ǝg���Ȃ��Ȃ�c����ł�";
+		mes "���B������C�Ȃ̂����H";
 		next;
-		if(select("はい","いいえ")==2) {
+		if(select("�͂�","������")==2) {
 			mes "["+getarg(0)+"]";
-			mes "良い選択だな。";
-			mes "俺も無理して他人の武器を壊したら";
-			mes "気分が悪くなるからさ…";
+			mes "�ǂ��I�����ȁB";
+			mes "�����������đ��l�̕�����󂵂���";
+			mes "�C���������Ȃ邩�炳�c";
 			return;
 		}
 	}
 	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
 		mes "["+getarg(0)+"]";
-		mes "それが君が持ってる全部かい？";
-		mes "残念だが、材料が足りないんじゃ";
-		mes "仕方がないな。";
-		mes "俺はただでやってやるほど";
-		mes "心が広くないからな。";
+		mes "���ꂪ�N�������Ă�S�������H";
+		mes "�c�O�����A�ޗ�������Ȃ��񂶂�";
+		mes "�d�����Ȃ��ȁB";
+		mes "���͂����ł���Ă��ق�";
+		mes "�S���L���Ȃ�����ȁB";
 		return;
 	}
 	delitem 'itemid['@wlv],1;
 	set Zeny,Zeny-'price['@wlv];
 	mes "["+getarg(0)+"]";
-	mes "カン！ カン！ カン!!";
+	mes "�J���I �J���I �J��!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
 		successrefitem '@i;
 		next;
 		emotion getarg(1);
 		mes "["+getarg(0)+"]";
-		mes "さあ、出来上ったよ！";
-		mes "久々に良い物ができた。";
-		mes "武具が強くなって君も嬉しいだろ？";
+		mes "�����A�o���������I";
+		mes "�v�X�ɗǂ������ł����B";
+		mes "��������Ȃ��ČN������������H";
 	}
 	else {
 		failedrefitem '@i;
 		next;
 		emotion getarg(2);
 		mes "["+getarg(0)+"]";
-		mes "クホホホホ…";
+		mes "�N�z�z�z�z�c";
 		next;
 		mes "["+getarg(0)+"]";
-		mes "すまん！";
-		mes "精錬中に武具が壊れてしまったな…";
-		mes "ほ、ほら、俺がやめろって";
-		mes "最初に言っただろう？";
+		mes "���܂�I";
+		mes "���B���ɕ�����Ă��܂����ȁc";
+		mes "�فA�ق�A������߂����";
+		mes "�ŏ��Ɍ��������낤�H";
 	}
 	return;
-	//closeで終了
+	//close�ŏI��
 }
 
 //=====================================================================
-//武具精錬NPCセリフパターン2
-//	（フェイヨン・ジュノー）
+//����BNPC�Z���t�p�^�[��2
+//	�i�t�F�C�����E�W���m�[�j
 //  callfunc "Refine2","NPCName",SuccessEmotion,FalureEmotion;
 //--------------------------------------------------------------------
 
 function	script	Refine2	{
 	mes "["+getarg(0)+"]";
-	mes "来たか。まあとにかく";
-	mes "精錬したい装備を出せ。";
+	mes "�������B�܂��Ƃɂ���";
+	mes "���B�������������o���B";
 	next;
 	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
 				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
@@ -189,57 +189,57 @@ function	script	Refine2	{
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
-			mes "俺は忙しい！お前の冗談に";
-			mes "付き合っている時間など無いんだ。";
-			mes "頭を突っ込んでどうするつもりだ？";
+			mes "���͖Z�����I���O�̏�k��";
+			mes "�t�������Ă��鎞�ԂȂǖ����񂾁B";
+			mes "����˂�����łǂ�������肾�H";
 			break;
 		case 2:
-			mes "俺は忙しいと言っているだろう！";
+			mes "���͖Z�����ƌ����Ă��邾�낤�I";
 			break;
 		case 3:
-			mes "くだらない冗談はやめてくれ！";
+			mes "������Ȃ���k�͂�߂Ă���I";
 			break;
 		case 4:
-			mes "お前、精錬する気あるのか？";
+			mes "���O�A���B����C����̂��H";
 			break;
 		case 5:
-			mes "かえれ！";
+			mes "������I";
 			break;
 		case 6:
-			mes "くだらない悪戯に付き合う";
-			mes "暇は無いんだ！";
+			mes "������Ȃ����Y�ɕt������";
+			mes "�ɂ͖����񂾁I";
 			break;
 		case 7:
-			mes "精錬しないのなら用は無いだろ？";
+			mes "���B���Ȃ��̂Ȃ�p�͖�������H";
 			break;
 		case 8:
-			mes "俺は忙しい！";
+			mes "���͖Z�����I";
 			break;
 		case 9:
-			mes "どこを精錬するって？";
+			mes "�ǂ��𐸘B������āH";
 			break;
 		case 10:
-			mes "帰ってくれないか？";
+			mes "�A���Ă���Ȃ����H";
 			break;
 		}
 		return;
 	}
 	if(getequipisenableref('@i)==0) {
-		mes "これは精錬できない。";
-		mes "他を当たってくれ。";
+		mes "����͐��B�ł��Ȃ��B";
+		mes "���𓖂����Ă���B";
 		return;
 	}
 	if(getequipisidentify('@i)==0) {
-		mes "わけのわからない物を";
-		mes "精錬する趣味は無い…";
+		mes "�킯�̂킩��Ȃ�����";
+		mes "���B�����͖����c";
 		return;
 	}
 	if(getequiprefinerycnt('@i)>=10) {
-		mes "これ以上手を加えるところが";
-		mes "無いぞ！";
+		mes "����ȏ���������Ƃ��낪";
+		mes "�������I";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
+	//����Ăяo�����̂ݗ����ƃA�C�e��ID�����ꂼ��i�[
 	if('price[0]==0 || 'itemid[0]==0) {
 		setarray 'price,5000,100,500,5000,10000;
 		setarray 'itemid,985,1010,1011,984,984;
@@ -247,103 +247,103 @@ function	script	Refine2	{
 	set '@wlv,getequipweaponlv('@i);
 	switch('@wlv) {
 	case 0:
-		mes "お前が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "ビタ1Zeny負けられない。";
+		mes "���O���I�񂾑����𐸘B����ɂ�";
+		mes "^ff9999�G���j�E��^000000��";
+		mes "�萔��5000Zeny���K�v���ȁB";
+		mes "�r�^1Zeny�������Ȃ��B";
 		break;
 	case 1:
-		mes "レベル1の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だな。";
-		mes "ビタ1Zeny負けられない。";
+		mes "���x��1�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�v���R��^000000��";
+		mes "�萔��100Zeny���K�v���ȁB";
+		mes "�r�^1Zeny�������Ȃ��B";
 		break;
 	case 2:
-		mes "レベル2の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だな。";
-		mes "ビタ1Zeny負けられない。";
+		mes "���x��2�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�G���x���^�R��^000000��";
+		mes "�萔��500Zeny���K�v���ȁB";
+		mes "�r�^1Zeny�������Ȃ��B";
 		break;
 	case 3:
-		mes "レベル3の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "久しぶりに俺の実力を見せてやるか。";
+		mes "���x��3�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��5000Zeny���K�v���ȁB";
+		mes "�v���Ԃ�ɉ��̎��͂������Ă�邩�B";
 		break;
 	case 4:
-		mes "レベル4の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だな。";
-		mes "レベル4の武器か…興奮するぜ！";
+		mes "���x��4�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��10000Zeny���K�v���ȁB";
+		mes "���x��4�̕��킩�c�������邺�I";
 		break;
 	}
 	next;
-	if(select("はい","いいえ")==2) {
+	if(select("�͂�","������")==2) {
 		mes "["+getarg(0)+"]";
-		mes "遊びじゃないんだよ！";
+		mes "�V�т���Ȃ��񂾂�I";
 		return;
 	}
 	if(getequippercentrefinery('@i) < 100) {
 		mes "["+getarg(0)+"]";
-		mes "く…どこからこんな厄介な物を";
-		mes "持ってきたんだ…。";
-		mes "これ以上の精錬は危険だ。";
-		mes "それを承知でやるというのか？";
+		mes "���c�ǂ����炱��Ȗ��ȕ���";
+		mes "�����Ă����񂾁c�B";
+		mes "����ȏ�̐��B�͊댯���B";
+		mes "��������m�ł��Ƃ����̂��H";
 		next;
-		if(select("はい","いいえ")==2) {
+		if(select("�͂�","������")==2) {
 			mes "["+getarg(0)+"]";
-			mes "つまらん…";
-			mes "俺は忙しい、帰ってくれ。";
+			mes "�܂��c";
+			mes "���͖Z�����A�A���Ă���B";
 			return;
 		}
 	}
 	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
 		mes "["+getarg(0)+"]";
-		mes "1Zenyも負けられないから";
-		mes "精錬したければお金を持ってきな。";
+		mes "1Zeny���������Ȃ�����";
+		mes "���B��������΂����������Ă��ȁB";
 		return;
 	}
 	delitem 'itemid['@wlv],1;
 	set Zeny,Zeny-'price['@wlv];
 	mes "["+getarg(0)+"]";
-	mes "カン！ カン！ カン!!";
+	mes "�J���I �J���I �J��!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
 		successrefitem '@i;
 		next;
 		emotion getarg(1);
 		mes "["+getarg(0)+"]";
-		mes "バッチリだ！";
-		mes "また来てくれ。";
+		mes "�o�b�`�����I";
+		mes "�܂����Ă���B";
 	}
 	else {
 		failedrefitem '@i;
 		next;
 		emotion getarg(2);
 		mes "["+getarg(0)+"]";
-		mes "ふ…";
+		mes "�Ӂc";
 		next;
 		mes "["+getarg(0)+"]";
-		mes "残念だ…";
-		mes "まあ人生こういうこともある。";
-		mes "落ち込むなよ…";
+		mes "�c�O���c";
+		mes "�܂��l�������������Ƃ�����B";
+		mes "�������ނȂ�c";
 	}
 	return;
-	//closeで終了
+	//close�ŏI��
 }
 
 //=====================================================================
-//武具精錬NPCセリフパターン3
-//	（モロク）
+//����BNPC�Z���t�p�^�[��3
+//	�i�����N�j
 //  callfunc "Refine3","NPCName",SuccessEmotion,FalureEmotion;
 //--------------------------------------------------------------------
 
 function	script	Refine3	{
 	mes "["+getarg(0)+"]";
-	mes "私は武器と防具を精錬する鍛冶屋。";
-	mes "汝が装備しているアイテムの中で";
-	mes "好きなものを精錬できる。";
-	mes "どの装備アイテムを";
-	mes "精錬したいのか？";
+	mes "���͕���Ɩh��𐸘B����b�艮�B";
+	mes "�����������Ă���A�C�e���̒���";
+	mes "�D���Ȃ��̂𐸘B�ł���B";
+	mes "�ǂ̑����A�C�e����";
+	mes "���B�������̂��H";
 	next;
 	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
 				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
@@ -351,51 +351,51 @@ function	script	Refine3	{
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
-			mes "汝の足りない脳みそを";
-			mes "精錬してさしあげようか？";
+			mes "���̑���Ȃ��]�݂���";
+			mes "���B���Ă��������悤���H";
 			break;
 		case 2:
-			mes "私の熱い体で汝の体を";
-			mes "精錬してあげるわ！";
+			mes "���̔M���̂œ��̑̂�";
+			mes "���B���Ă������I";
 			break;
 		case 3:
-			mes "汝の左手を改造する技術は無い。";
+			mes "���̍������������Z�p�͖����B";
 			break;
 		case 4:
-			mes "汝の右手をマシンガンに";
-			mes "するのは無理だ。";
+			mes "���̉E����}�V���K����";
+			mes "����͖̂������B";
 			break;
 		case 5:
-			mes "ローブを持っていないな。";
+			mes "���[�u�������Ă��Ȃ��ȁB";
 			break;
 		case 6:
-			mes "臭い…";
+			mes "�L���c";
 			break;
 		case 7:
 		case 8:
-			mes "どのアクセサリーか？";
+			mes "�ǂ̃A�N�Z�T���[���H";
 			break;
 		case 9:
 		case 10:
-			mes "何を精錬せよと言う？";
-			mes "他のアイテムの事か？";
+			mes "���𐸘B����ƌ����H";
+			mes "���̃A�C�e���̎����H";
 			break;
 		}
 		return;
 	}
 	if(getequipisenableref('@i)==0) {
-		mes "このアイテムは精錬不可能。";
+		mes "���̃A�C�e���͐��B�s�\�B";
 		return;
 	}
 	if(getequipisidentify('@i)==0) {
-		mes "これは未鑑定だから精錬できない。";
+		mes "����͖��Ӓ肾���琸�B�ł��Ȃ��B";
 		return;
 	}
 	if(getequiprefinerycnt('@i)>=10) {
-		mes "これ以上は精錬できない。";
+		mes "����ȏ�͐��B�ł��Ȃ��B";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
+	//����Ăяo�����̂ݗ����ƃA�C�e��ID�����ꂼ��i�[
 	if('price[0]==0 || 'itemid[0]==0) {
 		setarray 'price,5000,100,500,5000,10000;
 		setarray 'itemid,985,1010,1011,984,984;
@@ -403,119 +403,119 @@ function	script	Refine3	{
 	set '@wlv,getequipweaponlv('@i);
 	switch('@wlv) {
 	case 0:
-		mes "汝が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と ";
-		mes "手数料5000Zenyが必要だ。";
-		mes "続けるか？";
+		mes "�����I�񂾑����𐸘B����ɂ�";
+		mes "^ff9999�G���j�E��^000000�� ";
+		mes "�萔��5000Zeny���K�v���B";
+		mes "�����邩�H";
 		break;
 	case 1:
-		mes "レベル1の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だ。";
-		mes "続けるか？";
+		mes "���x��1�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�v���R��^000000��";
+		mes "�萔��100Zeny���K�v���B";
+		mes "�����邩�H";
 		break;
 	case 2:
-		mes "レベル2の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だ。";
-		mes "続けるか？";
+		mes "���x��2�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�G���x���^�R��^000000��";
+		mes "�萔��500Zeny���K�v���B";
+		mes "�����邩�H";
 		break;
 	case 3:
-		mes "レベル3の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だ。";
-		mes "続けるか？";
+		mes "���x��3�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��5000Zeny���K�v���B";
+		mes "�����邩�H";
 		break;
 	case 4:
-		mes "レベル4の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だ。";
-		mes "続けるか？";
+		mes "���x��4�̕���𐸘B�������̂��H";
+		mes "���B���邽�߁A ^ff9999�I���f�I�R��^000000��";
+		mes "�萔��10000Zeny���K�v���B";
+		mes "�����邩�H";
 		break;
 	}
 	next;
-	if(select("はい","いいえ")==2) {
+	if(select("�͂�","������")==2) {
 		mes "["+getarg(0)+"]";
-		mes "汝がやめるなら仕方がない…";
+		mes "������߂�Ȃ�d�����Ȃ��c";
 		return;
 	}
 	if(getequippercentrefinery('@i) < 100) {
 		mes "["+getarg(0)+"]";
-		if('@wlv==0) {	//防具のとき
-			mes "ふむ…この防具はもうたくさんの";
-			mes "精錬をしてきたみたいだな…これ以上";
-			mes "精錬したら防具が壊れるかも";
-			mes "しれない。防具が壊れたら";
+		if('@wlv==0) {	//�h��̂Ƃ�
+			mes "�ӂށc���̖h��͂������������";
+			mes "���B�����Ă����݂������ȁc����ȏ�";
+			mes "���B������h����邩��";
+			mes "����Ȃ��B�h���ꂽ��";
 		}
-		else {		//武器のとき
-			mes "ふむ…この武器はもうたくさんの";
-			mes "精錬をしてきたみたいだな…これ以上";
-			mes "精錬したら武器が壊れるかも";
-			mes "しれない。武器が壊れたら";
+		else {		//����̂Ƃ�
+			mes "�ӂށc���̕���͂������������";
+			mes "���B�����Ă����݂������ȁc����ȏ�";
+			mes "���B�����畐�킪���邩��";
+			mes "����Ȃ��B���킪��ꂽ��";
 		}
-		mes "2度と使えなくなる…それでも";
-		mes "精錬をする気なのか？";
+		mes "2�x�Ǝg���Ȃ��Ȃ�c����ł�";
+		mes "���B������C�Ȃ̂��H";
 		next;
-		if(select("はい","いいえ")==2) {
+		if(select("�͂�","������")==2) {
 			mes "["+getarg(0)+"]";
-			mes "良い選択だ。";
-			mes "私も無理して他人の武器を壊したら";
-			mes "気分が悪くなるから…";
+			mes "�ǂ��I�����B";
+			mes "�����������đ��l�̕�����󂵂���";
+			mes "�C���������Ȃ邩��c";
 			return;
 		}
 	}
 	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
 		mes "["+getarg(0)+"]";
-		mes "それが汝が持ってる全部か？";
-		mes "残念だが、材料が足りないならば";
-		mes "仕方がない。";
-		mes "私はただでやってさしあげるほど";
-		mes "心が広くない。";
+		mes "���ꂪ���������Ă�S�����H";
+		mes "�c�O�����A�ޗ�������Ȃ��Ȃ��";
+		mes "�d�����Ȃ��B";
+		mes "���͂����ł���Ă���������ق�";
+		mes "�S���L���Ȃ��B";
 		return;
 	}
 	delitem 'itemid['@wlv],1;
 	set Zeny,Zeny-'price['@wlv];
 	mes "["+getarg(0)+"]";
-	mes "カン！ カン！ カン!!";
+	mes "�J���I �J���I �J��!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
 		successrefitem '@i;
 		next;
 		emotion getarg(1);
 		mes "["+getarg(0)+"]";
-		mes "さあ、出来た！";
-		mes "久々に良い物ができたな。";
-		mes "武具が強くなって汝も嬉しかろう？";
+		mes "�����A�o�����I";
+		mes "�v�X�ɗǂ������ł����ȁB";
+		mes "��������Ȃ��ē����������낤�H";
 	}
 	else {
 		failedrefitem '@i;
 		next;
 		emotion getarg(2);
 		mes "["+getarg(0)+"]";
-		mes "………";
+		mes "�c�c�c";
 		next;
 		mes "["+getarg(0)+"]";
-		mes "すまない…";
-		mes "精錬中に武具が壊れてしまった…";
-		mes "しかし、最初に忠告はしたぞ？";
+		mes "���܂Ȃ��c";
+		mes "���B���ɕ�����Ă��܂����c";
+		mes "�������A�ŏ��ɒ����͂������H";
 	}
 	return;
-	//closeで終了
+	//close�ŏI��
 }
 
 //=====================================================================
-//武具精錬NPCセリフパターン4
-//	（プロンテラ）
+//����BNPC�Z���t�p�^�[��4
+//	�i�v�����e���j
 //  callfunc "Refine4","NPCName",SuccessEmotion,FalureEmotion;
 //--------------------------------------------------------------------
 
 function	script	Refine4	{
 	mes "["+getarg(0)+"]";
-	mes "俺は武器と防具を精錬する鍛冶屋だ！";
-	mes "お前が装備しているアイテムを";
-	mes "精錬できるってわけだ。";
-	mes "ただし、濃縮オリデオコンか";
-	mes "濃縮エルニウムが必要だぞ。";
-	mes "どの装備アイテムを精錬したい？";
+	mes "���͕���Ɩh��𐸘B����b�艮���I";
+	mes "���O���������Ă���A�C�e����";
+	mes "���B�ł�����Ă킯���B";
+	mes "�������A�Z�k�I���f�I�R����";
+	mes "�Z�k�G���j�E�����K�v�����B";
+	mes "�ǂ̑����A�C�e���𐸘B�������H";
 	next;
 	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
 				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
@@ -523,54 +523,54 @@ function	script	Refine4	{
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
-			mes "お前の悪い頭を精錬してあげようか？";
+			mes "���O�̈������𐸘B���Ă����悤���H";
 			break;
 		case 2:
-			mes "俺の熱い体でお前の体を";
-			mes "精錬してあげるぜ。";
+			mes "���̔M���̂ł��O�̑̂�";
+			mes "���B���Ă����邺�B";
 			break;
 		case 3:
-			mes "残念ながら、お前の左手を";
-			mes "ロケットパンチにする能力はないね。";
+			mes "�c�O�Ȃ���A���O�̍����";
+			mes "���P�b�g�p���`�ɂ���\�͂͂Ȃ��ˁB";
 			break;
 		case 4:
-			mes "現代科学技術でもお前の右手を";
-			mes "ロケットパンチにする事はできないぜ。";
+			mes "����Ȋw�Z�p�ł����O�̉E���";
+			mes "���P�b�g�p���`�ɂ��鎖�͂ł��Ȃ����B";
 			break;
 		case 5:
-			mes "持っているローブがないじゃないか？";
+			mes "�����Ă��郍�[�u���Ȃ�����Ȃ����H";
 			break;
 		case 6:
-			mes "お前、足のにおいがすごいね。";
+			mes "���O�A���̂ɂ������������ˁB";
 			break;
 		case 7:
 		case 8:
-			mes "どのアクセサリーを言ってるんだろ？";
+			mes "�ǂ̃A�N�Z�T���[�������Ă�񂾂�H";
 			break;
 		case 9:
-			mes "何を精錬してほしいんだ？";
-			mes "もしかして、頭の他の所？";
+			mes "���𐸘B���Ăق����񂾁H";
+			mes "���������āA���̑��̏��H";
 			break;
 		case 10:
-			mes "お前の頭蓋骨を精錬してやろうか？";
+			mes "���O�̓��W���𐸘B���Ă�낤���H";
 			break;
 		}
 		return;
 	}
 	if(getequipisenableref('@i)==0) {
-		mes "ふむ、これは精錬できる";
-		mes "アイテムじゃないんだぜ……";
+		mes "�ӂށA����͐��B�ł���";
+		mes "�A�C�e������Ȃ��񂾂��c�c";
 		return;
 	}
 	if(getequipisidentify('@i)==0) {
-		mes "未鑑定だから精錬できないな。";
+		mes "���Ӓ肾���琸�B�ł��Ȃ��ȁB";
 		return;
 	}
 	if(getequiprefinerycnt('@i)>=10) {
-		mes "これ以上は精錬できないな。";
+		mes "����ȏ�͐��B�ł��Ȃ��ȁB";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
+	//����Ăяo�����̂ݗ����ƃA�C�e��ID�����ꂼ��i�[
 	if('price[0]==0) {
 		setarray 'price,5000,100,500,5000,10000;
 		setarray 'itemid,7619,7620,7620,7620,7620;
@@ -578,52 +578,52 @@ function	script	Refine4	{
 	set '@wlv,getequipweaponlv('@i);
 	switch('@wlv) {
 	case 0:
-		mes "お前が選んだ装備を";
-		mes "精錬するためには";
-		mes "^FF9C9C濃縮エルニウム^000000と";
-		mes "手数料5000Zenyが必要だぜ？";
-		mes "精錬するか？";
+		mes "���O���I�񂾑�����";
+		mes "���B���邽�߂ɂ�";
+		mes "^FF9C9C�Z�k�G���j�E��^000000��";
+		mes "�萔��5000Zeny���K�v�����H";
+		mes "���B���邩�H";
 		break;
 	case 1:
-		mes "レベル1の武器を";
-		mes "精錬しようとしてるんだね。";
-		mes "精錬のためには";
-		mes "^FF9C9C濃縮オリデオコン^000000と";
-		mes "手数料100Zenyが必要だぜ？";
-		mes "精錬するか？";
+		mes "���x��1�̕����";
+		mes "���B���悤�Ƃ��Ă�񂾂ˁB";
+		mes "���B�̂��߂ɂ�";
+		mes "^FF9C9C�Z�k�I���f�I�R��^000000��";
+		mes "�萔��100Zeny���K�v�����H";
+		mes "���B���邩�H";
 		break;
 	case 2:
-		mes "レベル2の武器を";
-		mes "精錬しようとしてるんだね。";
-		mes "精錬のためには";
-		mes "^FF9C9C濃縮オリデオコン^000000と";
-		mes "手数料500Zenyが必要だぜ？";
-		mes "精錬するか？";
+		mes "���x��2�̕����";
+		mes "���B���悤�Ƃ��Ă�񂾂ˁB";
+		mes "���B�̂��߂ɂ�";
+		mes "^FF9C9C�Z�k�I���f�I�R��^000000��";
+		mes "�萔��500Zeny���K�v�����H";
+		mes "���B���邩�H";
 		break;
 	case 3:
-		mes "レベル3の武器を";
-		mes "精錬しようとしてるんだね。";
-		mes "精錬のためには";
-		mes "^FF9C9C濃縮オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だぜ？";
-		mes "精錬するか？";
+		mes "���x��3�̕����";
+		mes "���B���悤�Ƃ��Ă�񂾂ˁB";
+		mes "���B�̂��߂ɂ�";
+		mes "^FF9C9C�Z�k�I���f�I�R��^000000��";
+		mes "�萔��5000Zeny���K�v�����H";
+		mes "���B���邩�H";
 		break;
 	case 4:
-		mes "レベル4の武器を";
-		mes "精錬しようとしてるんだね。";
-		mes "精錬のためには";
-		mes "^FF9C9C濃縮オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だぜ？";
-		mes "精錬するか？";
+		mes "���x��4�̕����";
+		mes "���B���悤�Ƃ��Ă�񂾂ˁB";
+		mes "���B�̂��߂ɂ�";
+		mes "^FF9C9C�Z�k�I���f�I�R��^000000��";
+		mes "�萔��10000Zeny���K�v�����H";
+		mes "���B���邩�H";
 		break;
 	}
 	next;
-	if(select("はい","いいえ")==2) {
+	if(select("�͂�","������")==2) {
 		mes "["+getarg(0)+"]";
-		mes "お前がいやだったら仕方ないしな。";
+		mes "���O�����₾������d���Ȃ����ȁB";
 		return;
 	}
-	// 濃縮課金アイテム精錬テーブル
+	// �Z�k�ۋ��A�C�e�����B�e�[�u��
 	switch('@wlv) {
 	case 0: setarray '@parcent,100,100,100,100, 90, 60, 60, 30, 30, 10; break;
 	case 1: setarray '@parcent,100,100,100,100,100,100,100, 90, 60, 20; break;
@@ -633,149 +633,149 @@ function	script	Refine4	{
 	}
 	if('@parcent[getequiprefinerycnt('@i)] < 100) {
 		mes "["+getarg(0)+"]";
-		if('@wlv==0) {	//防具のとき
-			mes "あらら！";
-			mes "この防具はもう";
-			mes "何回も精錬されちゃったね。";
-			mes "これ以上精錬すると";
-			mes "防具が壊れちゃう";
-			mes "恐れがある……";
+		if('@wlv==0) {	//�h��̂Ƃ�
+			mes "�����I";
+			mes "���̖h��͂���";
+			mes "��������B���ꂿ������ˁB";
+			mes "����ȏ㐸�B�����";
+			mes "�h���ꂿ�Ⴄ";
+			mes "���ꂪ����c�c";
 			next;
 			mes "["+getarg(0)+"]";
-			mes "防具が壊れちゃうと";
-			mes "二度と使えないんだぜ?!";
-			mes "中に打ち込まれたカードも特性も";
-			mes "^FF0000すべてが消えちゃう^000000んだからね。";
-			mes "^FF0000防具自体が消えちゃう^000000ってわけだ。";
-			mes "それでも精錬するつもりか？";
-		} else {		//武器のとき
-			mes "あらら！";
-			mes "この武器はもう";
-			mes "何回も精錬されちゃったね。";
-			mes "これ以上精錬すると";
-			mes "武器が壊れちゃう";
-			mes "恐れがある……";
+			mes "�h���ꂿ�Ⴄ��";
+			mes "��x�Ǝg���Ȃ��񂾂�?!";
+			mes "���ɑł����܂ꂽ�J�[�h��������";
+			mes "^FF0000���ׂĂ��������Ⴄ^000000�񂾂���ˁB";
+			mes "^FF0000�h��̂��������Ⴄ^000000���Ă킯���B";
+			mes "����ł����B������肩�H";
+		} else {		//����̂Ƃ�
+			mes "�����I";
+			mes "���̕���͂���";
+			mes "��������B���ꂿ������ˁB";
+			mes "����ȏ㐸�B�����";
+			mes "���킪��ꂿ�Ⴄ";
+			mes "���ꂪ����c�c";
 			next;
 			mes "["+getarg(0)+"]";
-			mes "武器が壊れちゃうと";
-			mes "二度と使えないんだぜ?!";
-			mes "中に打ち込まれたカードも特性も";
-			mes "^FF0000すべてが消えちゃう^000000んだからね。";
-			mes "^FF0000武器自体が消えちゃう^000000ってわけだ。";
-			mes "それでも精錬するつもりか？";
+			mes "���킪��ꂿ�Ⴄ��";
+			mes "��x�Ǝg���Ȃ��񂾂�?!";
+			mes "���ɑł����܂ꂽ�J�[�h��������";
+			mes "^FF0000���ׂĂ��������Ⴄ^000000�񂾂���ˁB";
+			mes "^FF0000���펩�̂��������Ⴄ^000000���Ă킯���B";
+			mes "����ł����B������肩�H";
 		}
 		next;
-		if(select("はい","いいえ")==2) {
+		if(select("�͂�","������")==2) {
 			mes "["+getarg(0)+"]";
-			mes "そうだな、物は大切に扱うべきだからな。";
+			mes "�������ȁA���͑�؂Ɉ����ׂ�������ȁB";
 			return;
 		}
 	}
 	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
 		mes "["+getarg(0)+"]";
-		mes "これがお前が持ってるすべてか？";
-		mes "残念だけど、材料が足りないと";
-		mes "精錬してあげられないぜ。";
-		mes "俺も仕事をした代価くらい";
-		mes "貰わないとな……。";
+		mes "���ꂪ���O�������Ă邷�ׂĂ��H";
+		mes "�c�O�����ǁA�ޗ�������Ȃ���";
+		mes "���B���Ă������Ȃ����B";
+		mes "�����d���������㉿���炢";
+		mes "���Ȃ��Ƃȁc�c�B";
 		return;
 	}
 	delitem 'itemid['@wlv],1;
 	set Zeny,Zeny-'price['@wlv];
 	mes "["+getarg(0)+"]";
-	mes "カン！ カン！ カン！";
+	mes "�J���I �J���I �J���I";
 	if('@parcent[getequiprefinerycnt('@i)] > rand(100)) {
 		successrefitem '@i;
 		next;
 		emotion getarg(1);
 		mes "["+getarg(0)+"]";
-		mes "さ！ 無事に精錬が終わったぜ。";
-		mes "俺の腕はまだ使えるぜ！";
-		mes "自分で言うのもなんだが、";
-		mes "なかなか良い出来じゃないか！";
+		mes "���I �����ɐ��B���I��������B";
+		mes "���̘r�͂܂��g���邺�I";
+		mes "�����Ō����̂��Ȃ񂾂��A";
+		mes "�Ȃ��Ȃ��ǂ��o������Ȃ����I";
 	}
 	else {
 		failedrefitem '@i;
 		next;
 		emotion getarg(2);
 		mes "["+getarg(0)+"]";
-		mes "ウアアアアアアアアアアッ!!!!";
+		mes "�E�A�A�A�A�A�A�A�A�A�A�b!!!!";
 		next;
 		mes "["+getarg(0)+"]";
-		mes "あ、あら……";
-		mes "失敗しちゃった。ご、ごめん……";
-		mes "装備が壊れちゃったな……";
-		mes "だ、だからさ……";
-		mes "危ないって言ったじゃないか……";
-		mes "俺を恨まないでくれ……";
+		mes "���A����c�c";
+		mes "���s����������B���A���߂�c�c";
+		mes "��������ꂿ������ȁc�c";
+		mes "���A�����炳�c�c";
+		mes "��Ȃ����Č���������Ȃ����c�c";
+		mes "�������܂Ȃ��ł���c�c";
 	}
 	return;
-	//closeで終了
+	//close�ŏI��
 }
 
-// ----- アルベルタ -----
-alberta_in.gat,28,58,4	script	フレドリック	85,{
-	callfunc "Refine1","フレドリックヘルマンソン",18,4;
+// ----- �A���x���^ -----
+alberta_in.gat,28,58,4	script	�t���h���b�N	85,{
+	callfunc "Refine1","�t���h���b�N�w���}���\��",18,4;
 	close;
 }
-// ----- プロンテラ -----
-prt_in.gat,63,60,0	script	ホルグレン	85,{
-	callfunc "Refine1","ホルグレン",21,23;
+// ----- �v�����e�� -----
+prt_in.gat,63,60,0	script	�z���O����	85,{
+	callfunc "Refine1","�z���O����",21,23;
 	close;
 }
-// ----- モロク -----
-morocc_in.gat,73,38,4	script	アラガム	99,{
-	callfunc "Refine3","アラガムサレー",30,16;
+// ----- �����N -----
+morocc_in.gat,73,38,4	script	�A���K��	99,{
+	callfunc "Refine3","�A���K���T���[",30,16;
 	close;
 }
-// ----- フェイヨン -----
-payon.gat,144,173,5	script	アントニオ	88,{
-	callfunc "Refine2","アントニオ",0,32;
+// ----- �t�F�C���� -----
+payon.gat,144,173,5	script	�A���g�j�I	88,{
+	callfunc "Refine2","�A���g�j�I",0,32;
 	close;
 }
-// ----- ジュノー -----
-yuno_in01.gat,171,21,4	script	ディスターブ	85,{
-	callfunc "Refine2","ディスターブ",9,0;
+// ----- �W���m�[ -----
+yuno_in01.gat,171,21,4	script	�f�B�X�^�[�u	85,{
+	callfunc "Refine2","�f�B�X�^�[�u",9,0;
 	close;
 }
-// ----- アインブロック -----
-ein_in01.gat,24,87,5	script	マンダスマン	826,{
-	callfunc "Refine1","マンダスマン",18,4;
+// ----- �A�C���u���b�N -----
+ein_in01.gat,24,87,5	script	�}���_�X�}��	826,{
+	callfunc "Refine1","�}���_�X�}��",18,4;
 	close;
 }
-// ----- プロンテラ -----
-prontera.gat,123,65,1	script	フランツ	85,{
-	callfunc "Refine4","フランツ",21,23;
+// ----- �v�����e�� -----
+prontera.gat,123,65,1	script	�t�����c	85,{
+	callfunc "Refine4","�t�����c",21,23;
 	close;
 }
 
 //====================================================================
-//精錬石販売NPC
+//���B�Δ̔�NPC
 //--------------------------------------------------------------------
 
 -	script	BuyStone	-1,{
 	if(checkitemblank()==0) {
-		mes "- 所持アイテムの種類数が -";
-		mes "- 多いため、アイテムを受けとる -";
-		mes "- ことができません。 -";
-		mes "- 所持アイテムを減らしてから -";
-		mes "- 再度話しかけてください。 -";
+		mes "- �����A�C�e���̎�ސ��� -";
+		mes "- �������߁A�A�C�e�����󂯂Ƃ� -";
+		mes "- ���Ƃ��ł��܂���B -";
+		mes "- �����A�C�e�������炵�Ă��� -";
+		mes "- �ēx�b�������Ă��������B -";
 		close;
 	}
 	mes "["+strnpcinfo(0)+"]";
-	mes "鉄や鋼鉄の武器を精錬する時に";
-	mes "使える金属を売っています。";
-	mes "1レベルの武器精錬に使える";
-	mes "^007777プラコン^000000と";
-	mes "2レベルの武器精錬に使える";
-	mes "^007777エンベルタコン^000000があります。";
+	mes "�S��|�S�̕���𐸘B���鎞��";
+	mes "�g��������𔄂��Ă��܂��B";
+	mes "1���x���̕��퐸�B�Ɏg����";
+	mes "^007777�v���R��^000000��";
+	mes "2���x���̕��퐸�B�Ɏg����";
+	mes "^007777�G���x���^�R��^000000������܂��B";
 	next;
 	mes "["+strnpcinfo(0)+"]";
-	mes "プラコンは1個200Zeny、";
-	mes "エンベルタコンは";
-	mes "1個1000Zenyです。";
+	mes "�v���R����1��200Zeny�A";
+	mes "�G���x���^�R����";
+	mes "1��1000Zeny�ł��B";
 	next;
-	switch (select("プラコン購入","エンベルタコン購入","他の金属はないか聞いてみる")) {
+	switch (select("�v���R���w��","�G���x���^�R���w��","���̋����͂Ȃ��������Ă݂�")) {
 	case 1:
 		set '@price,200;
 		set '@itemid,1010;
@@ -786,83 +786,83 @@ prontera.gat,123,65,1	script	フランツ	85,{
 		break;
 	case 3:
 		mes "["+strnpcinfo(0)+"]";
-		mes "1レベルと2レベルの武器より";
-		mes "レベルが高い武器を精錬するための";
-		mes "金属ですね。";
-		mes "もうご存知かもしれませんが、";
-		mes "オリデオコンとエルニウムは";
-		mes "手に入れるのがすごく難しくてね…";
+		mes "1���x����2���x���̕�����";
+		mes "���x������������𐸘B���邽�߂�";
+		mes "�����ł��ˁB";
+		mes "���������m��������܂��񂪁A";
+		mes "�I���f�I�R���ƃG���j�E����";
+		mes "��ɓ����̂�����������Ăˁc";
 		close;
 	}
 	mes "["+strnpcinfo(0)+"]";
-	mes "いくつ購入しますか？";
-	mes "取り引きを中止したければ";
-	mes "「0」でお願いします。";
+	mes "�����w�����܂����H";
+	mes "�������𒆎~���������";
+	mes "�u0�v�ł��肢���܂��B";
 	while(1) {
 		next;
 		input '@num;
 		if('@num<=0) {
 			mes "["+strnpcinfo(0)+"]";
-			mes "取引中止ですね。";
+			mes "������~�ł��ˁB";
 			close;
 		}
 		if('@num>500) {
 			mes "["+strnpcinfo(0)+"]";
-			mes "500個以下で決めてください。";
+			mes "500�ȉ��Ō��߂Ă��������B";
 			continue;
 		}
-		break;	//while文抜ける
+		break;	//while��������
 	}
 	if(Zeny<'@price*'@num) {
 		mes "["+strnpcinfo(0)+"]";
-		mes "あれ？お客さん…";
-		mes "お金が足りませんね。";
-		mes "すみませんが、うちも商売だから";
-		mes "損するわけにはいかないんですよ。";
+		mes "����H���q����c";
+		mes "����������܂���ˁB";
+		mes "���݂܂��񂪁A����������������";
+		mes "������킯�ɂ͂����Ȃ���ł���B";
 		close;
 	}
 	if(checkweight('@itemid,'@num)==0) {
 		mes "["+strnpcinfo(0)+"]";
-		mes "荷物が多いですね。";
-		mes "持ち物を整理してから";
-		mes "またおこしください。";
+		mes "�ו��������ł��ˁB";
+		mes "�������𐮗����Ă���";
+		mes "�܂����������������B";
 		close;
 	}
 	set Zeny,Zeny-'@price*'@num;
 	getitem '@itemid,'@num;
 	mes "["+strnpcinfo(0)+"]";
-	mes "ご購入、ありがとうございました。";
+	mes "���w���A���肪�Ƃ��������܂����B";
 	close;
 }
 
-alberta_in.gat,13,71,4	duplicate(BuyStone)	カラマンリス	86
-prt_in.gat,56,68,4	duplicate(BuyStone)	ブルウェル	86
-morocc_in.gat,63,32,0	duplicate(BuyStone)	サド		99
-payon.gat,145,178,4	duplicate(BuyStone)	ベグナド	88
-yuno_in01.gat,171,27,4	duplicate(BuyStone)	ティルレマ	86
-ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
+alberta_in.gat,13,71,4	duplicate(BuyStone)	�J���}�����X	86
+prt_in.gat,56,68,4	duplicate(BuyStone)	�u���E�F��	86
+morocc_in.gat,63,32,0	duplicate(BuyStone)	�T�h		99
+payon.gat,145,178,4	duplicate(BuyStone)	�x�O�i�h	88
+yuno_in01.gat,171,27,4	duplicate(BuyStone)	�e�B�����}	86
+ein_in01.gat,15,87,4	duplicate(BuyStone)	�e�B���C�n�[�X	86
 
 
 //====================================================================
-//精錬石交換NPC
+//���B�Ό���NPC
 //--------------------------------------------------------------------
 
 -	script	ChangeStone	-1,{
 	if(checkitemblank()==0) {
-		mes "- 所持アイテムの種類数が -";
-		mes "- 多いため、アイテムを受けとる -";
-		mes "- ことができません。 -";
-		mes "- 所持アイテムを減らしてから -";
-		mes "- 再度話しかけてください。 -";
+		mes "- �����A�C�e���̎�ސ��� -";
+		mes "- �������߁A�A�C�e�����󂯂Ƃ� -";
+		mes "- ���Ƃ��ł��܂���B -";
+		mes "- �����A�C�e�������炵�Ă��� -";
+		mes "- �ēx�b�������Ă��������B -";
 		close;
 	}
-	mes "["+strnpcinfo(3)+"]";	//識別子を参照
-	mes "オリデオコンやエルニウムの原石を";
-	mes "僕に持ってきたら、すぐに";
-	mes "オリデオコンとエルニウムにしてあげる。";
-	mes "但し、原石は各5つ以上持ってくるように。";
+	mes "["+strnpcinfo(3)+"]";	//���ʎq���Q��
+	mes "�I���f�I�R����G���j�E���̌��΂�";
+	mes "�l�Ɏ����Ă�����A������";
+	mes "�I���f�I�R���ƃG���j�E���ɂ��Ă�����B";
+	mes "�A���A���΂͊e5�ȏ㎝���Ă���悤�ɁB";
 	next;
-	switch (select("オリデオコンを作る","エルニウムを作る","属性石について聞く")) {
+	switch (select("�I���f�I�R�������","�G���j�E�������","�����΂ɂ��ĕ���")) {
 	case 1:
 		set '@itemid,756;
 		set '@gain,984;
@@ -873,146 +873,146 @@ ein_in01.gat,15,87,4	duplicate(BuyStone)	ティルイハース	86
 		break;
 	case 3:
 		mes "["+strnpcinfo(3)+"]";
-		mes "属性石ねえ…";
-		mes "私の金属精錬人生20年で";
-		mes "話はよく聞いたけど実際には";
-		mes "見たことはないな。";
-		mes "聞くところによると、金属が";
-		mes "火、水、地、風の属性を持つらしい。";
+		mes "�����΂˂��c";
+		mes "���̋������B�l��20�N��";
+		mes "�b�͂悭���������ǎ��ۂɂ�";
+		mes "�������Ƃ͂Ȃ��ȁB";
+		mes "�����Ƃ���ɂ��ƁA������";
+		mes "�΁A���A�n�A���̑��������炵���B";
 		next;
 		mes "["+strnpcinfo(3)+"]";
-		mes "その属性石を武器を作る時に";
-		mes "混入すれば、属性を持つ武器を";
-		mes "作れるという…";
-		mes "はは…そんなことができるのは";
-		mes "相当な精錬職人だろうね。";
+		mes "���̑����΂𕐊����鎞��";
+		mes "��������΁A�������������";
+		mes "����Ƃ����c";
+		mes "�͂́c����Ȃ��Ƃ��ł���̂�";
+		mes "�����Ȑ��B�E�l���낤�ˁB";
 		close;
 	}
 	if(countitem('@itemid)<5) {
 		mes "["+strnpcinfo(3)+"]";
-		mes "え？冗談でしょ？";
-		mes getitemname('@itemid)+ "が5つ以上無いと";
-		mes getitemname('@gain)+ "が作れないと言ったじゃないか。";
+		mes "���H��k�ł���H";
+		mes getitemname('@itemid)+ "��5�ȏ㖳����";
+		mes getitemname('@gain)+ "�����Ȃ��ƌ���������Ȃ����B";
 		close;
 	}
 	mes "["+strnpcinfo(3)+"]";
-	mes getitemname('@gain)+ "を作る量はどうする？";
+	mes getitemname('@gain)+ "�����ʂ͂ǂ�����H";
 	next;
-	if(select("1個分だけ作る","作れるだけ作る")==1) {
+	if(select("1���������","���邾�����")==1) {
 		if(checkweight('@gain,1)==0) {
-			mes "‐所持アイテムの重量が重い為";
-			mes "　危険です。";
-			mes "　所持アイテムを減らしてから、";
-			mes "　再度話しかけてください‐";
+			mes "�]�����A�C�e���̏d�ʂ��d����";
+			mes "�@�댯�ł��B";
+			mes "�@�����A�C�e�������炵�Ă���A";
+			mes "�@�ēx�b�������Ă��������]";
 			close;
 		}
 		delitem '@itemid,5;
 		getitem '@gain,1;
 		mes "["+strnpcinfo(3)+"]";
-		mes "ほら、約束の" +getitemname('@gain)+ "だ。";
-		mes "いつでもまた来てくれ。";
+		mes "�ق�A�񑩂�" +getitemname('@gain)+ "���B";
+		mes "���ł��܂����Ă���B";
 		close;
 	}
 	set '@num,countitem('@itemid)/5;
 	mes "["+strnpcinfo(3)+"]";
-	mes getitemname('@itemid)+ "^FF0000" +('@num*5)+ "^000000個で";
-	mes getitemname('@gain)+ "^FF0000" +'@num+ "^000000個作ればいい？";
+	mes getitemname('@itemid)+ "^FF0000" +('@num*5)+ "^000000��";
+	mes getitemname('@gain)+ "^FF0000" +'@num+ "^000000���΂����H";
 	next;
-	if(select("やっぱりやめます","お願いします")==1) {
+	if(select("����ς��߂܂�","���肢���܂�")==1) {
 		mes "["+strnpcinfo(3)+"]";
-		mes "いつでもまた来てくれ。";
+		mes "���ł��܂����Ă���B";
 		close;
 	}
 	if(checkweight('@gain,1)==0) {
-		mes "‐所持アイテムの重量が重い為";
-		mes "　危険です。";
-		mes "　所持アイテムを減らしてから、";
-		mes "　再度話しかけてください‐";
+		mes "�]�����A�C�e���̏d�ʂ��d����";
+		mes "�@�댯�ł��B";
+		mes "�@�����A�C�e�������炵�Ă���A";
+		mes "�@�ēx�b�������Ă��������]";
 		close;
 	}
 	delitem '@itemid,'@num*5;
 	getitem '@gain,'@num;
 	mes "["+strnpcinfo(3)+"]";
-	mes "ほら、約束の" +getitemname('@gain)+ "だ。";
-	mes "いつでもまた来てくれ。";
+	mes "�ق�A�񑩂�" +getitemname('@gain)+ "���B";
+	mes "���ł��܂����Ă���B";
 	close;
 }
 
-alberta_in.gat,21,63,5	duplicate(ChangeStone)	ゼノフォン::ゼノフォン ゾロタス	84
-prt_in.gat,63,69,4	duplicate(ChangeStone)	ディートリヒ		84
-morocc_in.gat,72,32,0	duplicate(ChangeStone)	アブドゥル		99
-payon.gat,137,178,5	duplicate(ChangeStone)	ハキム			88
-yuno_in01.gat,164,27,4	duplicate(ChangeStone)	ティルレイ		84
-ein_in01.gat,18,82,5	duplicate(ChangeStone)	マティシュタイン	84
+alberta_in.gat,21,63,5	duplicate(ChangeStone)	�[�m�t�H��::�[�m�t�H�� �]���^�X	84
+prt_in.gat,63,69,4	duplicate(ChangeStone)	�f�B�[�g���q		84
+morocc_in.gat,72,32,0	duplicate(ChangeStone)	�A�u�h�D��		99
+payon.gat,137,178,5	duplicate(ChangeStone)	�n�L��			88
+yuno_in01.gat,164,27,4	duplicate(ChangeStone)	�e�B�����C		84
+ein_in01.gat,18,82,5	duplicate(ChangeStone)	�}�e�B�V���^�C��	84
 
 
 //====================================================================
-//武具修理NPC
+//����C��NPC
 //--------------------------------------------------------------------
 
 -	script	Repairer	-1,{
-	mes "[修理工]";
-	mes "そこの旅人、";
-	mes "修理したいアイテムはあるか？";
-	mes "アイテムの修理は俺に任せてくれ！";
+	mes "[�C���H]";
+	mes "�����̗��l�A";
+	mes "�C���������A�C�e���͂��邩�H";
+	mes "�A�C�e���̏C���͉��ɔC���Ă���I";
 	next;
-	if(select("実は修理して欲しいアイテムが……","今は特に無いです")==2) {
-		mes "[修理工]";
-		mes "ふむ……";
-		mes "なら俺に用は無いな。";
+	if(select("���͏C�����ė~�����A�C�e�����c�c","���͓��ɖ����ł�")==2) {
+		mes "[�C���H]";
+		mes "�ӂށc�c";
+		mes "�Ȃ牴�ɗp�͖����ȁB";
 		close;
 	}
 	set '@num,getrepairableitemcount();
 	if('@num==0) {
-		mes "[修理工]";
-		mes "おいおい……";
-		mes "修理する必要のあるものなんて";
-		mes "一つも持っていないじゃないか。";
-		mes "はぁ……";
-		mes "お前のようなヤツが増えると";
-		mes "俺の商売もあがったりだよ……";
+		mes "[�C���H]";
+		mes "���������c�c";
+		mes "�C������K�v�̂�����̂Ȃ��";
+		mes "��������Ă��Ȃ�����Ȃ����B";
+		mes "�͂��c�c";
+		mes "���O�̂悤�ȃ��c���������";
+		mes "���̏��������������肾��c�c";
 		close;
 	}
 	set '@price,'@num*5000;
-	mes "[修理工]";
-	mes "ふむ……";
-	mes "お前が持っているアイテムで";
-	mes "損傷しているアイテムは";
-	mes '@num+ "だな。";
+	mes "[�C���H]";
+	mes "�ӂށc�c";
+	mes "���O�������Ă���A�C�e����";
+	mes "�������Ă���A�C�e����";
+	mes '@num+ "���ȁB";
 	next;
-	mes "[修理工]";
-	mes "一つ修理するのに 5000 Zenyだから";
-	mes "全て直すと" +'@price+ "Zenyとなる。";
-	mes "修理するか？";
+	mes "[�C���H]";
+	mes "��C������̂� 5000 Zeny������";
+	mes "�S�Ē�����" +'@price+ "Zeny�ƂȂ�B";
+	mes "�C�����邩�H";
 	next;
-	if(select("お願いします","いいえ")==2) {
-		mes "[修理工]";
-		mes "俺は、アイテムが傷ついたまま";
-		mes "放って置かれるのが";
-		mes "たまらなく嫌いなんだ。";
-		mes "損傷したアイテムはすぐ直そうぜ。";
+	if(select("���肢���܂�","������")==2) {
+		mes "[�C���H]";
+		mes "���́A�A�C�e�����������܂�";
+		mes "�����Ēu�����̂�";
+		mes "���܂�Ȃ������Ȃ񂾁B";
+		mes "���������A�C�e���͂������������B";
 		close;
 	}
 	if(Zeny<'@price) {
-		mes "[修理工]";
-		mes "お金が足りないようだ";
+		mes "[�C���H]";
+		mes "����������Ȃ��悤��";
 		close;
 	}
 	set Zeny,Zeny-'@price;
 	repairitem;
-	mes "[修理工]";
-	mes "OK！";
-	mes "直ったな。";
-	mes "アイテムにも寿命があるってことを";
-	mes "覚えておくんだな。";
+	mes "[�C���H]";
+	mes "OK�I";
+	mes "�������ȁB";
+	mes "�A�C�e���ɂ�������������Ă��Ƃ�";
+	mes "�o���Ă����񂾂ȁB";
 	close;
 }
 
-alberta_in.gat,31,65,4	duplicate(Repairer)	修理工	84
-prt_in.gat,63,54,2	duplicate(Repairer)	修理工	86
-//morocc_in.gat,71,41,4	duplicate(Repairer)	修理工	99
-moc_ruins.gat,107,94,4	duplicate(Repairer)	修理工	99
-payon.gat,143,165,7	duplicate(Repairer)	修理工	88
-geffen_in.gat,34,166,2	duplicate(Repairer)	修理工	86
-aldeba_in.gat,38,60,2	duplicate(Repairer)	修理工	86
-yuno_in01.gat,175,28,2	duplicate(Repairer)	修理工	86
+alberta_in.gat,31,65,4	duplicate(Repairer)	�C���H	84
+prt_in.gat,63,54,2	duplicate(Repairer)	�C���H	86
+//morocc_in.gat,71,41,4	duplicate(Repairer)	�C���H	99
+moc_ruins.gat,107,94,4	duplicate(Repairer)	�C���H	99
+payon.gat,143,165,7	duplicate(Repairer)	�C���H	88
+geffen_in.gat,34,166,2	duplicate(Repairer)	�C���H	86
+aldeba_in.gat,38,60,2	duplicate(Repairer)	�C���H	86
+yuno_in01.gat,175,28,2	duplicate(Repairer)	�C���H	86

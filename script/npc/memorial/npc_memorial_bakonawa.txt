@@ -3,40 +3,40 @@
 //==============================================================================
 
 //============================================================
-// ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ç”ŸæˆNPC
+// ƒ_ƒ“ƒWƒ‡ƒ“¶¬NPC
 //------------------------------------------------------------
-ma_scene01.gat,174,179,4	script	ã‚¿ãƒ›ãƒ¼	541,{
+ma_scene01.gat,174,179,4	script	ƒ^ƒz[	541,{
 	if(BaseLevel < 140) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã“ã“ã¯ã¨ã¦ã‚‚å±é™ºãªå ´æ‰€ã§ã™ã€‚";
-		mes "è¡—ã«æˆ»ã£ã¦ä¸‹ã•ã„ï¼";
+		mes "[ƒ^ƒz[]";
+		mes "‚±‚±‚Í‚Æ‚Ä‚àŠëŒ¯‚ÈêŠ‚Å‚·B";
+		mes "ŠX‚É–ß‚Á‚Ä‰º‚³‚¢I";
 		next;
-		mes "â€ã“ã®ã‚¯ã‚¨ã‚¹ãƒˆã‚’é€²è¡Œã™ã‚‹ã«ã¯";
-		mes "ã€€ãƒ¬ãƒ™ãƒ«ãŒè¶³ã‚Šãªã„ã‚ˆã†ã§ã™ã€‚";
-		mes "ã€€^FF0000Baseãƒ¬ãƒ™ãƒ«140ä»¥ä¸Š^000000ã«ãªã£ãŸã‚‰";
-		mes "ã€€å†åº¦è©±ã—ã‹ã‘ã¦ãã ã•ã„â€";
+		mes "]‚±‚ÌƒNƒGƒXƒg‚ğis‚·‚é‚É‚Í";
+		mes "@ƒŒƒxƒ‹‚ª‘«‚è‚È‚¢‚æ‚¤‚Å‚·B";
+		mes "@^FF0000BaseƒŒƒxƒ‹140ˆÈã^000000‚É‚È‚Á‚½‚ç";
+		mes "@Ä“x˜b‚µ‚©‚¯‚Ä‚­‚¾‚³‚¢]";
 		close;
 	}
 	if(MALAYA_6QUE < 7 && MALAYA_7QUE < 15) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãƒã‚³ãƒŠãƒ¯ã®ã›ã„ã§";
-		mes "ç§ãŸã¡ã¯ã¿ã‚“ãªæ­»ã¬ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚";
-		mes "èª°ã‹ã€ãƒã‚³ãƒŠãƒ¯ã‚’é€€æ²»ã—ã¦ãã‚Œã‚‹";
-		mes "å¼·ã„äººãŒç¾ã‚Œãªã„ã ã‚ã†ã‹â€¦â€¦";
+		mes "[ƒ^ƒz[]";
+		mes "ƒoƒRƒiƒ‚Ì‚¹‚¢‚Å";
+		mes "„‚½‚¿‚Í‚İ‚ñ‚È€‚Ê‚©‚à‚µ‚ê‚Ü‚¹‚ñB";
+		mes "’N‚©AƒoƒRƒiƒ‚ğ‘Ş¡‚µ‚Ä‚­‚ê‚é";
+		mes "‹­‚¢l‚ªŒ»‚ê‚È‚¢‚¾‚ë‚¤‚©cc";
 		close;
 	}
 	if(getonlinepartymember() < 1) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã“ã®å…ˆã¯ä¸€äººã§ã¯å±é™ºã§ã™ã€‚";
-		mes "ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã‚’çµæˆã—ã¦æ¥ã¦ä¸‹ã•ã„ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚±‚Ìæ‚Íˆêl‚Å‚ÍŠëŒ¯‚Å‚·B";
+		mes "ƒp[ƒeƒB[‚ğŒ‹¬‚µ‚Ä—ˆ‚Ä‰º‚³‚¢B";
 		close;
 	}
 	if(checkquest(12279) & 0x4) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãƒã‚³ãƒŠãƒ¯ã‚’é€€æ²»ã—ãŸæ™‚ã«";
-		mes "ã“ã‚“ãªã‚‚ã®ã‚’æ‹¾ã„ã¾ã—ãŸã€‚";
-		mes "ã‚‚ã—ã‹ã—ãŸã‚‰ã€ã‚ãªãŸãŸã¡ã®";
-		mes "å½¹ã«ç«‹ã¤ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã­ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "ƒoƒRƒiƒ‚ğ‘Ş¡‚µ‚½‚É";
+		mes "‚±‚ñ‚È‚à‚Ì‚ğE‚¢‚Ü‚µ‚½B";
+		mes "‚à‚µ‚©‚µ‚½‚çA‚ ‚È‚½‚½‚¿‚Ì";
+		mes "–ğ‚É—§‚Â‚©‚à‚µ‚ê‚Ü‚¹‚ñ‚ËB";
 		getitem 6499,5;
 		if(checkre()) {
 			getexp 500000,0;
@@ -57,186 +57,186 @@ ma_scene01.gat,174,179,4	script	ã‚¿ãƒ›ãƒ¼	541,{
 	}
 	if(checkquest(12278)) {
 		if(!(checkquest(12278) & 0x2)) {
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ãƒã‚³ãƒŠãƒ¯æ¹–ã«ä¸‹ã‚Šã‚‹ãŸã‚ã®";
-			mes "å‘½ç¶±ã‚’ä½¿ã„åˆ‡ã£ã¦ã—ã¾ã„ã¾ã—ãŸã€‚";
-			mes "ç”¨æ„ã«æ™‚é–“ãŒã‹ã‹ã‚‹ã®ã§ã€";
-			mes "ã¾ãŸä»Šåº¦æ¥ã¦ãã ã•ã„ã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "ƒoƒRƒiƒŒÎ‚É‰º‚è‚é‚½‚ß‚Ì";
+			mes "–½j‚ğg‚¢Ø‚Á‚Ä‚µ‚Ü‚¢‚Ü‚µ‚½B";
+			mes "—pˆÓ‚ÉŠÔ‚ª‚©‚©‚é‚Ì‚ÅA";
+			mes "‚Ü‚½¡“x—ˆ‚Ä‚­‚¾‚³‚¢B";
 			close;
 		}
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "å‘½ç¶±ã®ç”¨æ„ãŒã§ãã¾ã—ãŸã€‚";
-		mes "ã“ã‚Œã§ãƒã‚³ãƒŠãƒ¯æ¹–ã«";
-		mes "è¡Œãã“ã¨ãŒã§ãã¾ã™ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "–½j‚Ì—pˆÓ‚ª‚Å‚«‚Ü‚µ‚½B";
+		mes "‚±‚ê‚ÅƒoƒRƒiƒŒÎ‚É";
+		mes "s‚­‚±‚Æ‚ª‚Å‚«‚Ü‚·B";
 		delquest 12278;
 		close;
 	}
 	setquest 12279;
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãƒã‚³ãƒŠãƒ¯é€€æ²»ã‚’ä»»ã•ã‚ŒãŸäººã§ã™ã­ï¼Ÿ";
-		mes "çµ¶å£ã‚’ä¸‹ã‚Šã‚‹ãŸã‚";
-		mes "ã—ã£ã‹ã‚Šæº–å‚™ã‚’ã—ã¦ãã ã•ã„ã€‚";
-		set '@str1$,"å‘½ç¶±ã‚’å·»ã„ã¦ä¸‹ã•ã„";
-		set '@str2$,"ä»Šã‹ã‚‰ä¸‹ã‚Šã¾ã™";
+		mes "[ƒ^ƒz[]";
+		mes "ƒoƒRƒiƒ‘Ş¡‚ğ”C‚³‚ê‚½l‚Å‚·‚ËH";
+		mes "â•Ç‚ğ‰º‚è‚é‚½‚ß";
+		mes "‚µ‚Á‚©‚è€”õ‚ğ‚µ‚Ä‚­‚¾‚³‚¢B";
+		set '@str1$,"–½j‚ğŠª‚¢‚Ä‰º‚³‚¢";
+		set '@str2$,"¡‚©‚ç‰º‚è‚Ü‚·";
 	}
 	else {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãƒã‚³ãƒŠãƒ¯ã‚’é€€æ²»ã™ã‚‹ãŸã‚ã«";
-		mes "æ¥ã¦ãã‚ŒãŸã‚“ã§ã™ã­ã€‚";
-		mes "ãƒªãƒ¼ãƒ€ãƒ¼ã¨ç§ã§ã€çµ¶å£ã‚’ä¸‹ã‚Šã‚‹ãŸã‚ã®";
-		mes "å‘½ç¶±ã‚’å·»ãã¾ã™ã­ã€‚";
-		set '@str2$,"ä»Šã‹ã‚‰ä¸‹ã‚Šã¾ã™";
+		mes "[ƒ^ƒz[]";
+		mes "ƒoƒRƒiƒ‚ğ‘Ş¡‚·‚é‚½‚ß‚É";
+		mes "—ˆ‚Ä‚­‚ê‚½‚ñ‚Å‚·‚ËB";
+		mes "ƒŠ[ƒ_[‚Æ„‚ÅAâ•Ç‚ğ‰º‚è‚é‚½‚ß‚Ì";
+		mes "–½j‚ğŠª‚«‚Ü‚·‚ËB";
+		set '@str2$,"¡‚©‚ç‰º‚è‚Ü‚·";
 	}
 	next;
-	switch(select('@str1$,'@str2$,"ã‚­ãƒ£ãƒ³ã‚»ãƒ«")) {
+	switch(select('@str1$,'@str2$,"ƒLƒƒƒ“ƒZƒ‹")) {
 	case 1:
 		if(getpartyleader(getcharid(1)) != strcharinfo(0)) {
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ãŠã‚„ï¼Ÿ";
-			mes "ã„ã¤ã®é–“ã«ã‹ãƒªãƒ¼ãƒ€ãƒ¼ã§ã¯";
-			mes "ãªããªã£ã¦ã—ã¾ã£ã¦ã„ã¾ã™ã­ã€‚";
-			mes "ãƒªãƒ¼ãƒ€ãƒ¼ã‚’é€£ã‚Œã¦ãã¦ãã ã•ã„ã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "‚¨‚âH";
+			mes "‚¢‚Â‚ÌŠÔ‚É‚©ƒŠ[ƒ_[‚Å‚Í";
+			mes "‚È‚­‚È‚Á‚Ä‚µ‚Ü‚Á‚Ä‚¢‚Ü‚·‚ËB";
+			mes "ƒŠ[ƒ_[‚ğ˜A‚ê‚Ä‚«‚Ä‚­‚¾‚³‚¢B";
 			close;
 		}
 		mdcreate "Bakonawa Lake";
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãã‚Œã§ã¯ã€å‘½ç¶±ã‚’å·»ãã¾ã™ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚»‚ê‚Å‚ÍA–½j‚ğŠª‚«‚Ü‚·B";
 		close;
 	case 2:
 		switch(mdenter("Bakonawa Lake")) {
-		case 0:	// ã‚¨ãƒ©ãƒ¼ãªã—
-			announce "[" +strcharinfo(1)+ "]ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã®[" +strcharinfo(0)+ "]ãŒ[Bakonawa Lake]ã«å…¥å ´ã—ã¾ã™",0x9,0x00FF99;
+		case 0:	// ƒGƒ‰[‚È‚µ
+			announce "[" +strcharinfo(1)+ "]ƒp[ƒeƒB[‚Ì[" +strcharinfo(0)+ "]‚ª[Bakonawa Lake]‚É“üê‚µ‚Ü‚·",0x9,0x00FF99;
 			setquest 12278;
 			donpcevent getmdnpcname("BakonawaControl")+ "::OnStart";
 			end;
-		case 1:	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼æœªåŠ å…¥
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "å›ã®ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã«çµ¶å£ã‚’ä¸‹ã‚Šã‚‹";
-			mes "è¨±å¯ã¯å‡ºã¦ã„ã¾ã›ã‚“ã‚ˆã€‚";
+		case 1:	// ƒp[ƒeƒB[–¢‰Á“ü
+			mes "[ƒ^ƒz[]";
+			mes "ŒN‚Ìƒp[ƒeƒB[‚Éâ•Ç‚ğ‰º‚è‚é";
+			mes "‹–‰Â‚Ío‚Ä‚¢‚Ü‚¹‚ñ‚æB";
 			close;
-		case 2:	// ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³æœªä½œæˆ
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ã¾ã å‘½ç¶±ã‚’ä½“ã«å·»ã„ã¦ã„ã¾ã›ã‚“ã€‚";
-			mes "æ—©ã¾ã‚‰ãªã„ã§ãã ã•ã„ã€‚";
+		case 2:	// ƒ_ƒ“ƒWƒ‡ƒ“–¢ì¬
+			mes "[ƒ^ƒz[]";
+			mes "‚Ü‚¾–½j‚ğ‘Ì‚ÉŠª‚¢‚Ä‚¢‚Ü‚¹‚ñB";
+			mes "‘‚Ü‚ç‚È‚¢‚Å‚­‚¾‚³‚¢B";
 			close;
-		default:	// ãã®ä»–ã‚¨ãƒ©ãƒ¼
+		default:	// ‚»‚Ì‘¼ƒGƒ‰[
 			close;
 		}
 	case 3:
 		if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "æº–å‚™ãŒã¾ã çµ‚ã‚ã£ã¦ã„ãªã„ã®ã§ã™ã‹ï¼Ÿ";
-			mes "ã§ãã‚‹ã ã‘æ—©ãæº–å‚™ã‚’çµ‚ã‚ã‚‰ã›ã¦ã€";
-			mes "ãƒã‚³ãƒŠãƒ¯ã‚’é€€æ²»ã—ã¦ãã ã•ã„ã­ï¼";
+			mes "[ƒ^ƒz[]";
+			mes "€”õ‚ª‚Ü‚¾I‚í‚Á‚Ä‚¢‚È‚¢‚Ì‚Å‚·‚©H";
+			mes "‚Å‚«‚é‚¾‚¯‘‚­€”õ‚ğI‚í‚ç‚¹‚ÄA";
+			mes "ƒoƒRƒiƒ‚ğ‘Ş¡‚µ‚Ä‚­‚¾‚³‚¢‚ËI";
 		}
 		close;
 	}
 }
 
 //============================================================
-// ãƒã‚³ãƒŠãƒ¯ã®æ£²ã¿å‡¦
+// ƒoƒRƒiƒ‚Ì±‚İˆ
 //------------------------------------------------------------
 1@ma_b.gat,0,0,0	script	BakonawaControl	-1,{
 OnStart:
 	if('flag > 0)
 		end;
 	set 'flag,1;
-	hideonnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#å®Œäº†");
-	hideonnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—");
+	hideonnpc getmdnpcname("ƒ^ƒz[#Š®—¹");
+	hideonnpc getmdnpcname("ƒ^ƒz[#¸”s");
 	end;
 }
 
-1@ma_b.gat,63,52,4	script	ã‚¿ãƒ›ãƒ¼#nf	541,{
-	mes "[ã‚¿ãƒ›ãƒ¼]";
-	mes "ã„ã‚ˆã„ã‚ˆãƒã‚³ãƒŠãƒ¯ã¨ã®æˆ¦é—˜ã§ã™ã€‚";
-	mes "ã§ãã‚‹ã“ã¨ãªã‚‰ç§ã‚‚åŠ å‹¢ã—ãŸã„ã®ã§ã™ãŒ";
-	mes "ã¿ãªã•ã‚“ã®ã‚ˆã†ã«å¼·ããªã„ã®ã§";
-	mes "å²©é™°ã«éš ã‚Œã¦ã„ã¾ã™ã­ã€‚";
+1@ma_b.gat,63,52,4	script	ƒ^ƒz[#nf	541,{
+	mes "[ƒ^ƒz[]";
+	mes "‚¢‚æ‚¢‚æƒoƒRƒiƒ‚Æ‚Ìí“¬‚Å‚·B";
+	mes "‚Å‚«‚é‚±‚Æ‚È‚ç„‚à‰Á¨‚µ‚½‚¢‚Ì‚Å‚·‚ª";
+	mes "‚İ‚È‚³‚ñ‚Ì‚æ‚¤‚É‹­‚­‚È‚¢‚Ì‚Å";
+	mes "Šâ‰A‚É‰B‚ê‚Ä‚¢‚Ü‚·‚ËB";
 	next;
-	mes "[ã‚¿ãƒ›ãƒ¼]";
-	mes "ãƒã‚³ãƒŠãƒ¯ã¯ã€æ™‚é–“ãŒçµŒã¤ã¨";
-	mes "æ¹–ã®åº•ã«é€ƒã’ã¦ã—ã¾ã„ã¾ã™ã€‚";
-	mes "ã¾ãŸã€æ”»æ’ƒãŒé€šã˜ãªã„çŠ¶æ…‹ã«ãªã‚‹";
-	mes "å ´åˆã‚‚ã‚ã‚Šã¾ã™ã€‚";
-	mes "ç§ãŒå²©é™°ã‹ã‚‰ã‚µãƒãƒ¼ãƒˆã—ã¾ã™ã®ã§";
-	mes "ç¢ºèªã—ãªãŒã‚‰æˆ¦ã£ã¦ãã ã•ã„ã€‚";
+	mes "[ƒ^ƒz[]";
+	mes "ƒoƒRƒiƒ‚ÍAŠÔ‚ªŒo‚Â‚Æ";
+	mes "ŒÎ‚Ì’ê‚É“¦‚°‚Ä‚µ‚Ü‚¢‚Ü‚·B";
+	mes "‚Ü‚½AUŒ‚‚ª’Ê‚¶‚È‚¢ó‘Ô‚É‚È‚é";
+	mes "ê‡‚à‚ ‚è‚Ü‚·B";
+	mes "„‚ªŠâ‰A‚©‚çƒTƒ|[ƒg‚µ‚Ü‚·‚Ì‚Å";
+	mes "Šm”F‚µ‚È‚ª‚çí‚Á‚Ä‚­‚¾‚³‚¢B";
 	next;
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã§ã¯ã€ä»Šã‹ã‚‰ãƒã‚³ãƒŠãƒ¯ã‚’";
-		mes "æ¹–ã®ä¸Šã«å¼•ããšã‚Šå‡ºã—ã¦è¦‹ã›ã¾ã™ã€‚";
-		mes "ã¾ãšã¯10åˆ†ä»¥å†…ã«å€’ã—ã¦ãã ã•ã„ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚Å‚ÍA¡‚©‚çƒoƒRƒiƒ‚ğ";
+		mes "ŒÎ‚Ìã‚Éˆø‚«‚¸‚èo‚µ‚ÄŒ©‚¹‚Ü‚·B";
+		mes "‚Ü‚¸‚Í10•ªˆÈ“à‚É“|‚µ‚Ä‚­‚¾‚³‚¢B";
 		next;
-		if(select("å¾…ã£ã¦ï¼ã€€ã¾ã ã ï¼","ã‚ã‹ã£ãŸã€ã§ã¯å§‹ã‚ã‚ˆã†ï¼") == 1) {
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ã‚â€¦â€¦å±ãªã„ã˜ã‚ƒãªã„ã§ã™ã‹ï¼";
-			mes "ã‚ã‚„ã†ãå‘¼ã³å‡ºã™æ‰€ã§ã—ãŸã‚ˆã€‚";
+		if(select("‘Ò‚Á‚ÄI@‚Ü‚¾‚¾I","‚í‚©‚Á‚½A‚Å‚Ín‚ß‚æ‚¤I") == 1) {
+			mes "[ƒ^ƒz[]";
+			mes "‚ ccŠë‚È‚¢‚¶‚á‚È‚¢‚Å‚·‚©I";
+			mes "‚ ‚â‚¤‚­ŒÄ‚Ño‚·Š‚Å‚µ‚½‚æB";
 			close;
 		}
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã§ã¯ã€ç‰¹æ®Šãªè–¬ã‚’æ¹–ã«";
-		mes "ä¸€æ»´è½ã¨ã—ã¦ã¿ã¾ã™ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚Å‚ÍA“Áê‚È–ò‚ğŒÎ‚É";
+		mes "ˆê“H—‚Æ‚µ‚Ä‚İ‚Ü‚·B";
 		next;
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "æ¹–ã¸ã®å½±éŸ¿ã¯çŸ­æ™‚é–“ã§ã™ãŒã€";
-		mes "ãƒã‚³ãƒŠãƒ¯ã®å¥´ã¯æ•æ„Ÿã«åå¿œã—ã¦";
-		mes "æ°´é¢ã«é£›ã³å‡ºã—ã¦ãã‚‹ã§ã—ã‚‡ã†ã€‚";
-		donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1")+"::OnStart";
-		hideonnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#nf");
+		mes "[ƒ^ƒz[]";
+		mes "ŒÎ‚Ö‚Ì‰e‹¿‚Í’ZŠÔ‚Å‚·‚ªA";
+		mes "ƒoƒRƒiƒ‚Ì“z‚Í•qŠ´‚É”½‰‚µ‚Ä";
+		mes "…–Ê‚É”ò‚Ño‚µ‚Ä‚­‚é‚Å‚µ‚å‚¤B";
+		donpcevent getmdnpcname("#ƒoƒRƒiƒn1")+"::OnStart";
+		hideonnpc getmdnpcname("ƒ^ƒz[#nf");
 		close;
 	}
 	else {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "æº–å‚™ãŒã§ããŸã‚‰ã€ãƒªãƒ¼ãƒ€ãƒ¼ã‹ã‚‰";
-		mes "è©±ã—ã‹ã‘ã‚‹ã‚ˆã†ä¼ãˆã¦ãã ã•ã„ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "€”õ‚ª‚Å‚«‚½‚çAƒŠ[ƒ_[‚©‚ç";
+		mes "˜b‚µ‚©‚¯‚é‚æ‚¤“`‚¦‚Ä‚­‚¾‚³‚¢B";
 		close;
 	}
 }
 
-1@ma_b.gat,36,111,4	script	#ãƒã‚³ãƒŠãƒ¯n1	844,{
+1@ma_b.gat,36,111,4	script	#ƒoƒRƒiƒn1	844,{
 OnStart:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šãƒã‚³ãƒŠãƒ¯ãŒç¾ã‚Œã¾ã—ãŸï¼ã€€10åˆ†ä»¥å†…ã«å€’ã—ã¦ãã ã•ã„ï¼",0x9,0x00ffff,0x190,15;
-	monster getmdmapname("1@ma_b.gat"),78,83,"ãƒã‚³ãƒŠãƒ¯",2320,1,getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1")+"::OnKilled";
+	announce "ƒ^ƒz[FƒoƒRƒiƒ‚ªŒ»‚ê‚Ü‚µ‚½I@10•ªˆÈ“à‚É“|‚µ‚Ä‚­‚¾‚³‚¢I",0x9,0x00ffff,0x190,15;
+	monster getmdmapname("1@ma_b.gat"),78,83,"ƒoƒRƒiƒ",2320,1,getmdnpcname("#ƒoƒRƒiƒn1")+"::OnKilled";
 	initnpctimer;
 	end;
 OnKilled:
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯è¨ä¼n1")+"::OnStart";
+	donpcevent getmdnpcname("#ƒoƒRƒiƒ“¢”°n1")+"::OnStart";
 	stopnpctimer;
-	hideonnpc getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1");
+	hideonnpc getmdnpcname("#ƒoƒRƒiƒn1");
 	end;
-OnTimer1000:	callsub OnAnnounce,"10åˆ†",15;
-OnTimer60000:	callsub OnAnnounce,"9åˆ†",15;
-OnTimer120000:	callsub OnAnnounce,"8åˆ†",15;
-OnTimer180000:	callsub OnAnnounce,"7åˆ†",15;
-OnTimer240000:	callsub OnAnnounce,"6åˆ†",15;
-OnTimer300000:	callsub OnAnnounce,"5åˆ†",15;
-OnTimer360000:	callsub OnAnnounce,"4åˆ†",15;
-OnTimer420000:	callsub OnAnnounce,"3åˆ†",15;
-OnTimer480000:	callsub OnAnnounce,"2åˆ†",15;
-OnTimer540000:	callsub OnAnnounce,"1åˆ†",15;
-OnTimer570000:	callsub OnAnnounce,"30ç§’",18;
+OnTimer1000:	callsub OnAnnounce,"10•ª",15;
+OnTimer60000:	callsub OnAnnounce,"9•ª",15;
+OnTimer120000:	callsub OnAnnounce,"8•ª",15;
+OnTimer180000:	callsub OnAnnounce,"7•ª",15;
+OnTimer240000:	callsub OnAnnounce,"6•ª",15;
+OnTimer300000:	callsub OnAnnounce,"5•ª",15;
+OnTimer360000:	callsub OnAnnounce,"4•ª",15;
+OnTimer420000:	callsub OnAnnounce,"3•ª",15;
+OnTimer480000:	callsub OnAnnounce,"2•ª",15;
+OnTimer540000:	callsub OnAnnounce,"1•ª",15;
+OnTimer570000:	callsub OnAnnounce,"30•b",18;
 OnTimer600000:
-	announce "ãƒã‚³ãƒŠãƒ¯ãŒæ¹–ã®ä¸­ã«é€ƒã’ã¦è¡Œãã¾ã—ãŸã€‚",0x9,0xffff00,0x190,20;
-	donpcevent getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—")+"::OnStart";
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1")+"::OnKilled";
+	announce "ƒoƒRƒiƒ‚ªŒÎ‚Ì’†‚É“¦‚°‚Äs‚«‚Ü‚µ‚½B",0x9,0xffff00,0x190,20;
+	donpcevent getmdnpcname("ƒ^ƒz[#¸”s")+"::OnStart";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn1")+"::OnKilled";
 	stopnpctimer;
-	hideonnpc getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1");
+	hideonnpc getmdnpcname("#ƒoƒRƒiƒn1");
 	end;
 OnAnnounce:
-	announce "åˆ¶é™æ™‚é–“"+getarg(0),0x9,0xFF4400,0x190,getarg(1);
-	donpcevent getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnStart";
+	announce "§ŒÀŠÔ"+getarg(0),0x9,0xFF4400,0x190,getarg(1);
+	donpcevent getmdnpcname("#è‰º¢Š«n1")+"::OnStart";
 	end;
 }
 
-1@ma_b.gat,78,81,0	script	#æ‰‹ä¸‹å¬å–šn1	139,4,5,{
+1@ma_b.gat,78,81,0	script	#è‰º¢Š«n1	139,4,5,{
 OnStart:
-	hideoffnpc getmdnpcname("#æ‰‹ä¸‹å¬å–šn1");
+	hideoffnpc getmdnpcname("#è‰º¢Š«n1");
 	initnpctimer;
 	end;
 OnTouch:
 	stopnpctimer;
-	hideonnpc getmdnpcname("#æ‰‹ä¸‹å¬å–šn1");
+	hideonnpc getmdnpcname("#è‰º¢Š«n1");
 	end;
 OnTimer5000:
 	set '@map$,getmdmapname("1@ma_b.gat");
@@ -245,170 +245,170 @@ OnTimer5000:
 	for(set '@i,0; '@i<9; set '@i,'@i+1) {
 		set '@rand,rand(1,10);
 		if('@rand > 7)
-			monster '@map$,'@x['@i],'@y['@i],"ãƒã‚³ãƒŠãƒ¯ã®æ„å¿—",2337,1,getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnKilled";
+			monster '@map$,'@x['@i],'@y['@i],"ƒoƒRƒiƒ‚ÌˆÓu",2337,1,getmdnpcname("#è‰º¢Š«n1")+"::OnKilled";
 		else if('@rand < 4)
-			monster '@map$,'@x['@i],'@y['@i],"ãƒã‚³ãƒŠãƒ¯ã®æ„å¿—",2343,1,getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnKilled";
+			monster '@map$,'@x['@i],'@y['@i],"ƒoƒRƒiƒ‚ÌˆÓu",2343,1,getmdnpcname("#è‰º¢Š«n1")+"::OnKilled";
 	}
-	hideonnpc getmdnpcname("#æ‰‹ä¸‹å¬å–šn1");
+	hideonnpc getmdnpcname("#è‰º¢Š«n1");
 	end;
 OnTimer50000:
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnKilled";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#è‰º¢Š«n1")+"::OnKilled";
 	stopnpctimer;
 	end;
 OnKilled:
 	end;
 }
 
-1@ma_b.gat,1,5,4	script	#ãƒã‚³ãƒŠãƒ¯è¨ä¼n1	844,{
+1@ma_b.gat,1,5,4	script	#ƒoƒRƒiƒ“¢”°n1	844,{
 	end;
 OnStart:
 	initnpctimer;
 	end;
 OnTimer100:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šã¾ã ã§ã™ï¼ã€€ä¼èª¬ã«ã‚ˆã‚‹ã¨ã€ãƒã‚³ãƒŠãƒ¯ã¯æœˆã‚’é£²ã¿è¾¼ã‚‚ã†ã¨å†ã³å§¿ã‚’è¦‹ã›ã‚‹ã¯ãšã§ã™ï¼",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[F‚Ü‚¾‚Å‚·I@“`à‚É‚æ‚é‚ÆAƒoƒRƒiƒ‚ÍŒ‚ğˆù‚İ‚à‚¤‚ÆÄ‚Ñp‚ğŒ©‚¹‚é‚Í‚¸‚Å‚·I",0x9,0x00ffff,0x190,15;
 	end;
 OnTimer5000:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šå¥´ãŒæœˆã«é›†ä¸­ã§ããªã„ã‚ˆã†ã«ã€é‹ã¨å¤ªé¼“ã‚’å£Šã‚Œã‚‹ãã‚‰ã„å©ã„ã¦é‚ªé­”ã—ã¦ãã ã•ã„ï¼",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[F“z‚ªŒ‚ÉW’†‚Å‚«‚È‚¢‚æ‚¤‚ÉA“ç‚Æ‘¾ŒÛ‚ğ‰ó‚ê‚é‚­‚ç‚¢’@‚¢‚Ä×–‚‚µ‚Ä‚­‚¾‚³‚¢I",0x9,0x00ffff,0x190,15;
 	end;
 OnTimer10000:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šå¥´ãŒæ°´ã®ä¸Šã«ç¾ã‚Œã¦ã‚‚ç„¡è¦–ã—ã¦ãã ã•ã„ã€‚é‹ã¨å¤ªé¼“ã‚’å©ãã“ã¨ã«é›†ä¸­ã™ã‚‹ã‚“ã§ã™ï¼",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[F“z‚ª…‚Ìã‚ÉŒ»‚ê‚Ä‚à–³‹‚µ‚Ä‚­‚¾‚³‚¢B“ç‚Æ‘¾ŒÛ‚ğ’@‚­‚±‚Æ‚ÉW’†‚·‚é‚ñ‚Å‚·I",0x9,0x00ffff,0x190,15;
 	end;
 OnTimer15000:
-	announce "ç›®æ¨™â€æ¹–ã®å·¦å³ã«ã‚ã‚‹é‹ã¨å¤ªé¼“ã‚’4å€‹ã€å£Šã‚Œã‚‹ã¾ã§æ”»æ’ƒã™ã‚‹â€",0x9,0xff3300,0x190,15;
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2")+"::OnStart";
+	announce "–Ú•W]ŒÎ‚Ì¶‰E‚É‚ ‚é“ç‚Æ‘¾ŒÛ‚ğ4ŒÂA‰ó‚ê‚é‚Ü‚ÅUŒ‚‚·‚é]",0x9,0xff3300,0x190,15;
+	donpcevent getmdnpcname("#ƒoƒRƒiƒn2")+"::OnStart";
 	stopnpctimer;
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#ãƒã‚³ãƒŠãƒ¯n2	844,{
+1@ma_b.gat,36,111,4	script	#ƒoƒRƒiƒn2	844,{
 	end;
 OnStart:
-	set '@label$, getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2")+"::OnKilled";
+	set '@label$, getmdnpcname("#ƒoƒRƒiƒn2")+"::OnKilled";
 	set '@map$, getmdmapname("1@ma_b.gat");
-	monster '@map$,95,98,"é‹",2328,1,'@label$;
-	monster '@map$,60,98,"é‹",2328,1,'@label$;
-	monster '@map$,97,104,"å¤ªé¼“",2328,1,'@label$;
-	monster '@map$,58,104,"å¤ªé¼“",2328,1,'@label$;
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1")+"::OnStart";
+	monster '@map$,95,98,"“ç",2328,1,'@label$;
+	monster '@map$,60,98,"“ç",2328,1,'@label$;
+	monster '@map$,97,104,"‘¾ŒÛ",2328,1,'@label$;
+	monster '@map$,58,104,"‘¾ŒÛ",2328,1,'@label$;
+	donpcevent getmdnpcname("#ƒoƒRƒiƒn2-1")+"::OnStart";
 	initnpctimer;
 	end;
 OnKilled:
-	set '@count,getmapmobs(getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2")+"::OnKilled");
+	set '@count,getmapmobs(getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn2")+"::OnKilled");
 	if('@count < 1) {
-		donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1")+"::OnEnd";
+		donpcevent getmdnpcname("#ƒoƒRƒiƒn2-1")+"::OnEnd";
 		stopnpctimer;
 	}
 	else
-		announce "ã‚¿ãƒ›ãƒ¼ï¼šã„ã„æ„Ÿã˜ã§ã™ã€ã‚ã¨"+'@count+"å€‹ã§ã™ï¼",0x9,0x00ffff,0x190,15;
+		announce "ƒ^ƒz[F‚¢‚¢Š´‚¶‚Å‚·A‚ ‚Æ"+'@count+"ŒÂ‚Å‚·I",0x9,0x00ffff,0x190,15;
 	end;
-OnTimer1000:	callsub OnAnnounce,"5åˆ†",15,1;
-OnTimer60000:	callsub OnAnnounce,"4åˆ†",15,1;
-OnTimer120000:	callsub OnAnnounce,"3åˆ†",15,1;
-OnTimer180000:	callsub OnAnnounce,"2åˆ†",15,1;
-OnTimer240000:	callsub OnAnnounce,"1åˆ†",15,1;
-OnTimer270000:	callsub OnAnnounce,"30ç§’",15,0;
-OnTimer280000:	callsub OnAnnounce,"20ç§’",15,0;
-OnTimer290000:	callsub OnAnnounce,"10ç§’",15,0;
-OnTimer295000:	callsub OnAnnounce,"5ç§’",16,0;
-OnTimer296000:	callsub OnAnnounce,"4ç§’",17,0;
-OnTimer297000:	callsub OnAnnounce,"3ç§’",18,0;
-OnTimer298000:	callsub OnAnnounce,"2ç§’",19,0;
-OnTimer299000:	callsub OnAnnounce,"1ç§’",20,0;
+OnTimer1000:	callsub OnAnnounce,"5•ª",15,1;
+OnTimer60000:	callsub OnAnnounce,"4•ª",15,1;
+OnTimer120000:	callsub OnAnnounce,"3•ª",15,1;
+OnTimer180000:	callsub OnAnnounce,"2•ª",15,1;
+OnTimer240000:	callsub OnAnnounce,"1•ª",15,1;
+OnTimer270000:	callsub OnAnnounce,"30•b",15,0;
+OnTimer280000:	callsub OnAnnounce,"20•b",15,0;
+OnTimer290000:	callsub OnAnnounce,"10•b",15,0;
+OnTimer295000:	callsub OnAnnounce,"5•b",16,0;
+OnTimer296000:	callsub OnAnnounce,"4•b",17,0;
+OnTimer297000:	callsub OnAnnounce,"3•b",18,0;
+OnTimer298000:	callsub OnAnnounce,"2•b",19,0;
+OnTimer299000:	callsub OnAnnounce,"1•b",20,0;
 OnTimer300000:
-	announce "ãƒã‚³ãƒŠãƒ¯ãŒæ¹–ã®ä¸­ã«é€ƒã’ã¦è¡Œãã¾ã—ãŸã€‚",0x9,0xffff00,0x190,20;
-	donpcevent getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—")+"::OnStart";
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2")+"::OnKilled";
+	announce "ƒoƒRƒiƒ‚ªŒÎ‚Ì’†‚É“¦‚°‚Äs‚«‚Ü‚µ‚½B",0x9,0xffff00,0x190,20;
+	donpcevent getmdnpcname("ƒ^ƒz[#¸”s")+"::OnStart";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn2")+"::OnKilled";
 	stopnpctimer;
 	end;
 OnAnnounce:
-	announce "åˆ¶é™æ™‚é–“"+getarg(0),0x9,0xff4400,0x190,getarg(1);
-	if(getarg(2)) donpcevent getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnStart";
+	announce "§ŒÀŠÔ"+getarg(0),0x9,0xff4400,0x190,getarg(1);
+	if(getarg(2)) donpcevent getmdnpcname("#è‰º¢Š«n1")+"::OnStart";
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#ãƒã‚³ãƒŠãƒ¯n2-1	844,{
+1@ma_b.gat,36,111,4	script	#ƒoƒRƒiƒn2-1	844,{
 	end;
 OnInstanceInit:
-	disablenpc getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1");
+	disablenpc getmdnpcname("#ƒoƒRƒiƒn2-1");
 	end;
 OnStart:
-	enablenpc getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1");
-	monster getmdmapname("1@ma_b.gat"),78,93,"ãƒã‚³ãƒŠãƒ¯",2321,1,getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1")+"::OnKilled";
+	enablenpc getmdnpcname("#ƒoƒRƒiƒn2-1");
+	monster getmdmapname("1@ma_b.gat"),78,93,"ƒoƒRƒiƒ",2321,1,getmdnpcname("#ƒoƒRƒiƒn2-1")+"::OnKilled";
 	end;
 OnEnd:
-	enablenpc getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1");
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n2-1")+"::OnKilled";
+	enablenpc getmdnpcname("#ƒoƒRƒiƒn2-1");
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn2-1")+"::OnKilled";
 	initnpctimer;
 	end;
 OnTimer1000:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šãƒã‚³ãƒŠãƒ¯ãŒæ°´ã®ä¸­ã«éš ã‚Œã¦ã—ã¾ã„ã¾ã—ãŸã­ã€‚ã“ã‚Œã§çµ‚ã‚ã£ãŸã®ã‹ãªï¼Ÿ",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[FƒoƒRƒiƒ‚ª…‚Ì’†‚É‰B‚ê‚Ä‚µ‚Ü‚¢‚Ü‚µ‚½‚ËB‚±‚ê‚ÅI‚í‚Á‚½‚Ì‚©‚ÈH",0x9,0x00ffff,0x190,15;
 	end;
 OnTimer5000:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šã‚ã£ã€æ°´ã®ä¸­ã§ä½•ã‹ãŒå‹•ã„ã¦ã„ã¾ã™ï¼ã€€ã‚„ã¤ãŒæ¥ã¾ã™ï¼",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[F‚ ‚ÁA…‚Ì’†‚Å‰½‚©‚ª“®‚¢‚Ä‚¢‚Ü‚·I@‚â‚Â‚ª—ˆ‚Ü‚·I",0x9,0x00ffff,0x190,15;
 	end;
 OnTimer10000:
-	announce "ç›®æ¨™â€ã•ã‚‰ã«å‡¶æš´ã«ãªã£ãŸãƒã‚³ãƒŠãƒ¯ã‚’å€’ã™ã“ã¨â€",0x9,0xff3300,0x190,15;
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3")+"::OnStart";
+	announce "–Ú•W]‚³‚ç‚É‹¥–\‚É‚È‚Á‚½ƒoƒRƒiƒ‚ğ“|‚·‚±‚Æ]",0x9,0xff3300,0x190,15;
+	donpcevent getmdnpcname("#ƒoƒRƒiƒn3")+"::OnStart";
 	stopnpctimer;
 	end;
 OnKilled:
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#ãƒã‚³ãƒŠãƒ¯n3	844,{
+1@ma_b.gat,36,111,4	script	#ƒoƒRƒiƒn3	844,{
 	end;
 OnStart:
 	initnpctimer;
-	monster getmdmapname("1@ma_b.gat"),78,83,"Enraged Bakonawa",2322,1,getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3")+"::OnKilled";
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3-1")+"::OnStart";
+	monster getmdmapname("1@ma_b.gat"),78,83,"Enraged Bakonawa",2322,1,getmdnpcname("#ƒoƒRƒiƒn3")+"::OnKilled";
+	donpcevent getmdnpcname("#ƒoƒRƒiƒn3-1")+"::OnStart";
 	end;
 OnKilled:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šãƒã‚³ãƒŠãƒ¯ã‚’é€€æ²»ã—ã¾ã—ãŸï¼ã€€ã“ã‚Œã§ã—ã°ã‚‰ãã®é–“ã¯å¹³ç©ã«æš®ã‚‰ã™ã“ã¨ãŒã§ãã¾ã™ã€‚",0x9,0x00ffff,0x190,15;
-	donpcevent getmdnpcname("ã‚¿ãƒ›ãƒ¼#å®Œäº†")+"::OnStart";
-	donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3-1")+"::OnEnd";
+	announce "ƒ^ƒz[FƒoƒRƒiƒ‚ğ‘Ş¡‚µ‚Ü‚µ‚½I@‚±‚ê‚Å‚µ‚Î‚ç‚­‚ÌŠÔ‚Í•½‰¸‚É•é‚ç‚·‚±‚Æ‚ª‚Å‚«‚Ü‚·B",0x9,0x00ffff,0x190,15;
+	donpcevent getmdnpcname("ƒ^ƒz[#Š®—¹")+"::OnStart";
+	donpcevent getmdnpcname("#ƒoƒRƒiƒn3-1")+"::OnEnd";
 	stopnpctimer;
 	end;
 OnTimer1000:
-	callsub OnAnnounce,"10åˆ†",15,1;
+	callsub OnAnnounce,"10•ª",15,1;
 	end;
 OnTimer60000:
 OnTimer120000:
 OnTimer180000:
 OnTimer240000:
-	donpcevent getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnStart";
+	donpcevent getmdnpcname("#è‰º¢Š«n1")+"::OnStart";
 	end;
-OnTimer300000:	callsub OnAnnounce,"5åˆ†",15,1;
-OnTimer360000:	callsub OnAnnounce,"4åˆ†",15,1;
-OnTimer420000:	callsub OnAnnounce,"3åˆ†",15,1;
-OnTimer480000:	callsub OnAnnounce,"2åˆ†",15,1;
-OnTimer540000:	callsub OnAnnounce,"1åˆ†",15,1;
-OnTimer570000:	callsub OnAnnounce,"30ç§’",15,0;
-OnTimer580000:	callsub OnAnnounce,"20ç§’",15,0;
-OnTimer590000:	callsub OnAnnounce,"10ç§’",15,0;
-OnTimer595000:	callsub OnAnnounce,"5ç§’",16,0;
-OnTimer596000:	callsub OnAnnounce,"4ç§’",17,0;
-OnTimer597000:	callsub OnAnnounce,"3ç§’",18,0;
-OnTimer598000:	callsub OnAnnounce,"2ç§’",19,0;
-OnTimer599000:	callsub OnAnnounce,"1ç§’",20,0;
+OnTimer300000:	callsub OnAnnounce,"5•ª",15,1;
+OnTimer360000:	callsub OnAnnounce,"4•ª",15,1;
+OnTimer420000:	callsub OnAnnounce,"3•ª",15,1;
+OnTimer480000:	callsub OnAnnounce,"2•ª",15,1;
+OnTimer540000:	callsub OnAnnounce,"1•ª",15,1;
+OnTimer570000:	callsub OnAnnounce,"30•b",15,0;
+OnTimer580000:	callsub OnAnnounce,"20•b",15,0;
+OnTimer590000:	callsub OnAnnounce,"10•b",15,0;
+OnTimer595000:	callsub OnAnnounce,"5•b",16,0;
+OnTimer596000:	callsub OnAnnounce,"4•b",17,0;
+OnTimer597000:	callsub OnAnnounce,"3•b",18,0;
+OnTimer598000:	callsub OnAnnounce,"2•b",19,0;
+OnTimer599000:	callsub OnAnnounce,"1•b",20,0;
 OnTimer600000:
-	announce "ãƒã‚³ãƒŠãƒ¯ãŒæ¹–ã®ä¸­ã«é€ƒã’ã¦è¡Œãã¾ã—ãŸã€‚",0x9,0xffff00,0x190,20;
-	donpcevent getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—")+"::OnStart";
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3")+"::OnKilled";
+	announce "ƒoƒRƒiƒ‚ªŒÎ‚Ì’†‚É“¦‚°‚Äs‚«‚Ü‚µ‚½B",0x9,0xffff00,0x190,20;
+	donpcevent getmdnpcname("ƒ^ƒz[#¸”s")+"::OnStart";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn3")+"::OnKilled";
 	stopnpctimer;
 	end;
 OnAnnounce:
-	announce "åˆ¶é™æ™‚é–“"+getarg(0),0x9,0xff4400,0x190,getarg(1);
-	if(getarg(2)) donpcevent getmdnpcname("#æ‰‹ä¸‹å¬å–šn1")+"::OnStart";
+	announce "§ŒÀŠÔ"+getarg(0),0x9,0xff4400,0x190,getarg(1);
+	if(getarg(2)) donpcevent getmdnpcname("#è‰º¢Š«n1")+"::OnStart";
 	end;
 }
 
-1@ma_b.gat,36,111,4	script	#ãƒã‚³ãƒŠãƒ¯n3-1	844,{
+1@ma_b.gat,36,111,4	script	#ƒoƒRƒiƒn3-1	844,{
 	end;
 OnStart:
 	initnpctimer;
 	end;
 OnEnd:
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3-1")+"::OnKilled";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn3-1")+"::OnKilled";
 	stopnpctimer;
 	end;
 OnTimer120000:	callsub OnMobSpawn,10;
@@ -421,109 +421,109 @@ OnTimer420000:	callsub OnMobSpawn,40;
 OnTimer480000:	callsub OnMobSpawn,45;
 OnTimer540000:	callsub OnMobSpawn,50;
 OnTimer600000:
-	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3-1")+"::OnKilled";
+	killmonster getmdmapname("1@ma_b.gat"),getmdnpcname("#ƒoƒRƒiƒn3-1")+"::OnKilled";
 	stopnpctimer;
 	end;
 OnMobSpawn:
-	set '@label$, getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n3-1")+"::OnKilled";
+	set '@label$, getmdnpcname("#ƒoƒRƒiƒn3-1")+"::OnKilled";
 	set '@map$, getmdmapname("1@ma_b.gat");
 	killmonster '@map$,'@label$;
-	areamonster '@map$,74,74,82,74,"ãƒã‚³ãƒŠãƒ¯ã®æ‰‹ä¸‹",2334,getarg(0),'@label$;
+	areamonster '@map$,74,74,82,74,"ƒoƒRƒiƒ‚Ìè‰º",2334,getarg(0),'@label$;
 	end;
 OnKilled:
 	end;
 }
 
-1@ma_b.gat,66,64,0	script	ã‚¿ãƒ›ãƒ¼#å®Œäº†	541,{
-	mes "[ã‚¿ãƒ›ãƒ¼]";
-	mes "ã™ã”ã„æˆ¦ã„ã§ã—ãŸã­ï¼";
-	mes "æ‰‹ä¸‹ãŒæ®‹ã£ã¦ã„ãŸã‚‰å±é™ºãªã®ã§ã€";
-	mes "ä¸Šã«æˆ»ã‚Šã¾ã—ã‚‡ã†ã€‚";
+1@ma_b.gat,66,64,0	script	ƒ^ƒz[#Š®—¹	541,{
+	mes "[ƒ^ƒz[]";
+	mes "‚·‚²‚¢í‚¢‚Å‚µ‚½‚ËI";
+	mes "è‰º‚ªc‚Á‚Ä‚¢‚½‚çŠëŒ¯‚È‚Ì‚ÅA";
+	mes "ã‚É–ß‚è‚Ü‚µ‚å‚¤B";
 	next;
-	mes "[ã‚¿ãƒ›ãƒ¼]";
-	mes "ã‚ï¼";
-	mes "å¤–ã§ç§ã«è©±ã—ã‹ã‘ã¦ãã‚ŒãŸã‚‰ã€";
-	mes "ãŠç¤¼ã‚’å·®ã—ä¸Šã’ã¾ã™ã­ï¼";
+	mes "[ƒ^ƒz[]";
+	mes "‚ I";
+	mes "ŠO‚Å„‚É˜b‚µ‚©‚¯‚Ä‚­‚ê‚½‚çA";
+	mes "‚¨—ç‚ğ·‚µã‚°‚Ü‚·‚ËI";
 	close2;
 	warp "ma_scene01.gat",175,176;
 	end;
 OnStart:
-	hideoffnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#å®Œäº†");
+	hideoffnpc getmdnpcname("ƒ^ƒz[#Š®—¹");
 	initnpctimer;
 	end;
 OnTimer1000:
-	monster getmdmapname("1@ma_b.gat"),78,74,"ãƒã‚³ãƒŠãƒ¯ã®å®ç®±",2335,1;
+	monster getmdmapname("1@ma_b.gat"),78,74,"ƒoƒRƒiƒ‚Ì•ó” ",2335,1;
 	end;
 OnTimer10000:
-	announce "ã‚¿ãƒ›ãƒ¼ï¼šå®ç®±ã‚’é–‹ã‘ãŸã‚‰ã€ç§ã®æ‰€ã«æ¥ã¦ãã ã•ã„ã€‚æ¸¡ã—ãŸã„ç‰©ãŒã‚ã‚Šã¾ã™ã€‚",0x9,0x00ffff,0x190,15;
+	announce "ƒ^ƒz[F•ó” ‚ğŠJ‚¯‚½‚çA„‚ÌŠ‚É—ˆ‚Ä‚­‚¾‚³‚¢B“n‚µ‚½‚¢•¨‚ª‚ ‚è‚Ü‚·B",0x9,0x00ffff,0x190,15;
 	stopnpctimer;
 	end;
 }
 
-1@ma_b.gat,61,52,4	script	ã‚¿ãƒ›ãƒ¼#å¤±æ•—	541,{
-	mes "[ã‚¿ãƒ›ãƒ¼]";
-	mes "å–ã‚Šé€ƒãŒã—ã¦ã—ã¾ã„ã¾ã—ãŸã­ã€‚";
-	mes "æ¹–ã®åº•ã«æ½œã£ã¦ã—ã¾ã†ã¨ã€";
-	mes "ã“ã¡ã‚‰ã‹ã‚‰æ‰‹å‡ºã—ã§ãã¾ã›ã‚“ã€‚";
+1@ma_b.gat,61,52,4	script	ƒ^ƒz[#¸”s	541,{
+	mes "[ƒ^ƒz[]";
+	mes "æ‚è“¦‚ª‚µ‚Ä‚µ‚Ü‚¢‚Ü‚µ‚½‚ËB";
+	mes "ŒÎ‚Ì’ê‚Éö‚Á‚Ä‚µ‚Ü‚¤‚ÆA";
+	mes "‚±‚¿‚ç‚©‚çèo‚µ‚Å‚«‚Ü‚¹‚ñB";
 	next;
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã‚‚ã†ä¸€åº¦æŒ‘æˆ¦ã—ã¾ã™ã‹ï¼Ÿ";
+		mes "[ƒ^ƒz[]";
+		mes "‚à‚¤ˆê“x’§í‚µ‚Ü‚·‚©H";
 		next;
-		switch(select("ã¡ã‚‡ã£ã¨å¾…ã£ã¦","ã‚‚ã†ä¸€åº¦å‘¼ã³å‡ºã—ã¦ãã‚Œ","ã‚ãã‚‰ã‚ã¦å¸°ã‚‹")) {
+		switch(select("‚¿‚å‚Á‚Æ‘Ò‚Á‚Ä","‚à‚¤ˆê“xŒÄ‚Ño‚µ‚Ä‚­‚ê","‚ ‚«‚ç‚ß‚Ä‹A‚é")) {
 		case 1:
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ã‚â€¦â€¦å±ãªã„ã˜ã‚ƒãªã„ã§ã™ã‹ï¼";
-			mes "ã‚ã‚„ã†ãå‘¼ã³å‡ºã™æ‰€ã§ã—ãŸã‚ˆã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "‚ ccŠë‚È‚¢‚¶‚á‚È‚¢‚Å‚·‚©I";
+			mes "‚ ‚â‚¤‚­ŒÄ‚Ño‚·Š‚Å‚µ‚½‚æB";
 			close;
 		case 2:
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ã§ã¯ã€ã‚ã‚‰ãŸã‚ã¦";
-			mes "ç‰¹æ®Šãªè–¬ã‚’æ¹–ã«è½ã¨ã—ã¦ã¿ã¾ã™ã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "‚Å‚ÍA‚ ‚ç‚½‚ß‚Ä";
+			mes "“Áê‚È–ò‚ğŒÎ‚É—‚Æ‚µ‚Ä‚İ‚Ü‚·B";
 			next;
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ç§ã¯éš ã‚Œã¾ã™ã€‚";
-			mes "ã¾ãšã¯10åˆ†ä»¥å†…ã«";
-			mes "ãƒã‚³ãƒŠãƒ¯ã‚’å€’ã—ã¦ãã ã•ã„ï¼";
-			donpcevent getmdnpcname("#ãƒã‚³ãƒŠãƒ¯n1")+"::OnStart";
-			hideonnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—");
+			mes "[ƒ^ƒz[]";
+			mes "„‚Í‰B‚ê‚Ü‚·B";
+			mes "‚Ü‚¸‚Í10•ªˆÈ“à‚É";
+			mes "ƒoƒRƒiƒ‚ğ“|‚µ‚Ä‚­‚¾‚³‚¢I";
+			donpcevent getmdnpcname("#ƒoƒRƒiƒn1")+"::OnStart";
+			hideonnpc getmdnpcname("ƒ^ƒz[#¸”s");
 			close;
 		case 3:
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ç„¡å¿µã§ã™ã€‚";
-			mes "è…•ã‚’ç£¨ã„ã¦ã€æ¬¡å›ã¯é€€æ²»ã—ã¾ã—ã‚‡ã†ã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "–³”O‚Å‚·B";
+			mes "˜r‚ğ–‚¢‚ÄAŸ‰ñ‚Í‘Ş¡‚µ‚Ü‚µ‚å‚¤B";
 			next;
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ãã‚Œã§ã¯ã€æˆ»ã‚Šã¾ã—ã‚‡ã†ã€‚";
+			mes "[ƒ^ƒz[]";
+			mes "‚»‚ê‚Å‚ÍA–ß‚è‚Ü‚µ‚å‚¤B";
 			close2;
 			warp "ma_scene01.gat",175,176;
 			end;
 		}
 	}
 	else {
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ã‚‚ã†ä¸€åº¦æŒ‘æˆ¦ã™ã‚‹ã‹";
-		mes "ãƒªãƒ¼ãƒ€ãƒ¼ã¨ç›¸è«‡ã—ã¦ãã ã•ã„ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚à‚¤ˆê“x’§í‚·‚é‚©";
+		mes "ƒŠ[ƒ_[‚Æ‘Š’k‚µ‚Ä‚­‚¾‚³‚¢B";
 		next;
-		if(select("ã‚‚ã†ä¸€åº¦å‘¼ã³å‡ºã—ã¦ãã‚Œ","ã‚ãã‚‰ã‚ã¦å¸°ã‚‹") == 1) {
-			mes "[ã‚¿ãƒ›ãƒ¼]";
-			mes "ãã‚Œã§ã¯ã€ãƒªãƒ¼ãƒ€ãƒ¼ã‹ã‚‰";
-			mes "è©±ã—ã‹ã‘ã‚‹ã‚ˆã†ä¼ãˆã¦ãã ã•ã„ã€‚";
+		if(select("‚à‚¤ˆê“xŒÄ‚Ño‚µ‚Ä‚­‚ê","‚ ‚«‚ç‚ß‚Ä‹A‚é") == 1) {
+			mes "[ƒ^ƒz[]";
+			mes "‚»‚ê‚Å‚ÍAƒŠ[ƒ_[‚©‚ç";
+			mes "˜b‚µ‚©‚¯‚é‚æ‚¤“`‚¦‚Ä‚­‚¾‚³‚¢B";
 			close;
 		}
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ç„¡å¿µã§ã™ã€‚";
-		mes "è…•ã‚’ç£¨ã„ã¦ã€æ¬¡å›ã¯é€€æ²»ã—ã¾ã—ã‚‡ã†ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "–³”O‚Å‚·B";
+		mes "˜r‚ğ–‚¢‚ÄAŸ‰ñ‚Í‘Ş¡‚µ‚Ü‚µ‚å‚¤B";
 		next;
-		mes "[ã‚¿ãƒ›ãƒ¼]";
-		mes "ãã‚Œã§ã¯ã€æˆ»ã‚Šã¾ã—ã‚‡ã†ã€‚";
+		mes "[ƒ^ƒz[]";
+		mes "‚»‚ê‚Å‚ÍA–ß‚è‚Ü‚µ‚å‚¤B";
 		close2;
 		warp "ma_scene01.gat",175,176;
 		end;
 	}
 OnStart:
-	hideoffnpc getmdnpcname("ã‚¿ãƒ›ãƒ¼#å¤±æ•—");
+	hideoffnpc getmdnpcname("ƒ^ƒz[#¸”s");
 	end;
 }
 
-//1@ma_b.gat,62,51,0	warp	#ãƒã‚³ãƒŠãƒ¯å…¥å£ãƒ†ãƒ¬ãƒ	2,2,ma_scene01.gat,175,176
+//1@ma_b.gat,62,51,0	warp	#ƒoƒRƒiƒ“üŒûƒeƒŒƒ|	2,2,ma_scene01.gat,175,176

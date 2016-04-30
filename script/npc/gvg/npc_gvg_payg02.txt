@@ -3,7 +3,7 @@
 //==============================================================================
 
 //============================================================
-// GvGãƒ¡ã‚¤ãƒ³å‡¦ç†
+// GvGƒƒCƒ“ˆ—
 //------------------------------------------------------------
 payg_cas02.gat,0,0,0	script	#AgitExe_C2	-1,{
 OnAgitStart:
@@ -40,7 +40,7 @@ OnAgitSummon:
 }
 
 //============================================================
-// å®ç®±
+// •ó” 
 //------------------------------------------------------------
 payg_cas02.gat,0,0,0	script	#AgitTreasure_C2	-1,{
 OnClock0000:
@@ -57,7 +57,7 @@ OnKilled:
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO
 //------------------------------------------------------------
 -	script	#GldFlag_C2a	{
 	callfunc "AgitEmblemFlag",0,"payg_cas02.gat",278,251;
@@ -67,11 +67,11 @@ OnFlagEmb_C2:
 	flagemblem getcastledata("payg_cas02.gat",1);
 	end;
 }
-pay_gld.gat,347,116,2	duplicate(#GldFlag_C2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2a01	722
-pay_gld.gat,292,112,6	duplicate(#GldFlag_C2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2a02	722
-pay_gld.gat,292,120,6	duplicate(#GldFlag_C2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2a03	722
-pay_gld.gat,291,135,6	duplicate(#GldFlag_C2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2a04	722
-pay_gld.gat,271,163,0	duplicate(#GldFlag_C2a)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2a05	722
+pay_gld.gat,347,116,2	duplicate(#GldFlag_C2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2a01	722
+pay_gld.gat,292,112,6	duplicate(#GldFlag_C2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2a02	722
+pay_gld.gat,292,120,6	duplicate(#GldFlag_C2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2a03	722
+pay_gld.gat,291,135,6	duplicate(#GldFlag_C2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2a04	722
+pay_gld.gat,271,163,0	duplicate(#GldFlag_C2a)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2a05	722
 
 -	script	#GldFlag_C2b	{
 	end;
@@ -80,19 +80,19 @@ OnFlagEmb_C2:
 	flagemblem getcastledata("payg_cas02.gat",1);
 	end;
 }
-//payon.gat,97,322,4		duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b01	722
-//payon.gat,166,173,3		duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b02	722
-//payg_cas02.gat,254,40,6	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b03	722
-//payg_cas02.gat,254,48,6	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b04	722
-//payg_cas02.gat,202,49,0	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b05	722
-//payg_cas02.gat,209,49,0	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b06	722
-//payg_cas02.gat,59,282,4	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b07	722
-//payg_cas02.gat,70,282,4	duplicate(#GldFlag_C2b)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2b08	722
+//payon.gat,97,322,4		duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b01	722
+//payon.gat,166,173,3		duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b02	722
+//payg_cas02.gat,254,40,6	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b03	722
+//payg_cas02.gat,254,48,6	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b04	722
+//payg_cas02.gat,202,49,0	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b05	722
+//payg_cas02.gat,209,49,0	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b06	722
+//payg_cas02.gat,59,282,4	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b07	722
+//payg_cas02.gat,70,282,4	duplicate(#GldFlag_C2b)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2b08	722
 
 //============================================================
-// ã‚«ãƒ—ãƒ©è·å“¡
+// ƒJƒvƒ‰Eˆõ
 //------------------------------------------------------------
-payg_cas02.gat,22,275,5	script	ã‚«ãƒ—ãƒ©è·å“¡::AgitKafra_C2	117,{
+payg_cas02.gat,22,275,5	script	ƒJƒvƒ‰Eˆõ::AgitKafra_C2	117,{
 	callfunc "AgitKafra",16;
 	close;
 OnAgitInit:
@@ -102,9 +102,9 @@ OnAgitInit:
 }
 
 //============================================================
-// åŸ·äº‹
+// ·–
 //------------------------------------------------------------
-payg_cas02.gat,22,260,7	script	ãƒã‚§ãƒªã‚ªã‚¹	55,{
+payg_cas02.gat,22,260,7	script	ƒ`ƒFƒŠƒIƒX	55,{
 	callfunc "AgitSteward","C2",'guardian_id,'guardian_x,'guardian_y,141,149;
 	close;
 OnAgitInit:
@@ -119,7 +119,7 @@ OnAgitInit:
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒ}ƒXƒ^[ƒ‹[ƒ€‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 payg_cas02.gat,149,149,0	script	#AgitMaster_C2	111,{
 	callfunc "AgitMaster",22,261;
@@ -127,7 +127,7 @@ payg_cas02.gat,149,149,0	script	#AgitMaster_C2	111,{
 }
 
 //============================================================
-// ã‚®ãƒ«ãƒ‰ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã¸ã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒMƒ‹ƒhƒ_ƒ“ƒWƒ‡ƒ“‚Ö‚ÌƒXƒCƒbƒ`
 //------------------------------------------------------------
 payg_cas02.gat,278,247,0	script	#AgitDungeon_C2	111,{
 	callfunc "AgitDungeon","gld_dun01.gat",54,165;
@@ -135,7 +135,7 @@ payg_cas02.gat,278,247,0	script	#AgitDungeon_C2	111,{
 }
 
 //============================================================
-// ãƒã‚¹ã‚¿ãƒ¼ãƒ«ãƒ¼ãƒ åˆ¶é™
+// ƒ}ƒXƒ^[ƒ‹[ƒ€§ŒÀ
 //------------------------------------------------------------
 payg_cas02.gat,145,144,0	script	#AgitBanWarp_C2	139,6,6,{
 	callfunc "AgitBanWarp","payon.gat",100,100;

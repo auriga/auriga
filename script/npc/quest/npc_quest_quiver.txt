@@ -1,41 +1,41 @@
-//矢筒作成NPC
-payon_in01.gat,5,134,4	script	発明家ゼックス	89,{
+//��쐬NPC
+payon_in01.gat,5,134,4	script	�����ƃ[�b�N�X	89,{
 	if(Weight*100/MaxWeight >= 90) {
-		mes "[発明家ゼックス]";
-		mes "なんだかたくさん物を持って";
-		mes "いるね。";
-		mes "持ち物を減らして来たら";
-		mes "いい話、してあげるんだけどな。";
+		mes "[�����ƃ[�b�N�X]";
+		mes "�Ȃ񂾂��������񕨂�������";
+		mes "����ˁB";
+		mes "�����������炵�ė�����";
+		mes "�����b�A���Ă�����񂾂��ǂȁB";
 		close;
 	}
-	mes "[発明家ゼックス]";
-	mes "僕は天才発明家のゼックス！";
-	mes "実は、歴史に残る大発明をしたんだ。";
-	mes "その名^FF0000魔法の矢筒^000000!!";
+	mes "[�����ƃ[�b�N�X]";
+	mes "�l�͓V�˔����Ƃ̃[�b�N�X�I";
+	mes "���́A���j�Ɏc��唭���������񂾁B";
+	mes "���̖�^FF0000���@�̖^000000!!";
 	next;
-	mes "[発明家ゼックス]";
-	mes "数年間、来る日も来る日も……";
-	mes "雨の日も、雪の日も……";
-	mes "研究に研究を重ねてきた結果！";
-	mes "なんと魔力を利用して矢を凝縮し、";
-	mes "携帯できる^0000FF魔法の矢筒^000000を";
-	mes "作ることに成功したんだ！";
+	mes "[�����ƃ[�b�N�X]";
+	mes "���N�ԁA���������������c�c";
+	mes "�J�̓����A��̓����c�c";
+	mes "�����Ɍ������d�˂Ă������ʁI";
+	mes "�Ȃ�Ɩ��͂𗘗p���Ė���Ïk���A";
+	mes "�g�тł���^0000FF���@�̖^000000��";
+	mes "��邱�Ƃɐ��������񂾁I";
 	next;
 	emotion 21;
-	mes "[発明家ゼックス]";
-	mes "これこそ、弓矢を使う人たちにとって";
-	mes "喉から手が出るほど欲しかった";
-	mes "ものに違いない！";
-	mes "ふっふ〜ん。";
-	mes "我こそは偉大な発明家、ゼックス!!!";
+	mes "[�����ƃ[�b�N�X]";
+	mes "���ꂱ���A�|����g���l�����ɂƂ���";
+	mes "�A����肪�o��قǗ~��������";
+	mes "���̂ɈႢ�Ȃ��I";
+	mes "�ӂ��Ӂ`��B";
+	mes "�䂱���͈̑�Ȕ����ƁA�[�b�N�X!!!";
 	next;
-	mes "[発明家ゼックス]";
-	mes "さて、欲しい矢筒はあるかい？";
-	mes "君の心をわしづかみにすること";
-	mes "間違いなし！の品物だ。";
+	mes "[�����ƃ[�b�N�X]";
+	mes "���āA�~������͂��邩���H";
+	mes "�N�̐S���킵�Â��݂ɂ��邱��";
+	mes "�ԈႢ�Ȃ��I�̕i�����B";
 	next;
-	switch (select("矢筒","鉄の矢筒","鋼鉄の矢筒","オリデオコンの矢筒","炎の矢筒","銀の矢筒","風の矢筒",
-						"岩石の矢筒","水晶の矢筒","影の矢筒","無形の矢筒","錆びた矢筒")) {
+	switch (select("�","�S�̖","�|�S�̖","�I���f�I�R���̖","���̖","��̖","���̖",
+						"��΂̖","�����̖","�e�̖","���`�̖","�K�т��")) {
 		case 1:
 			set '@arr,1750;
 			set '@quiv,12004;
@@ -86,50 +86,50 @@ payon_in01.gat,5,134,4	script	発明家ゼックス	89,{
 			break;
 	}
 	if(countitem('@arr)<500 || Zeny<500) {
-		mes "[発明家ゼックス]";
-		mes "これは" +getitemname('@arr)+ "を";
-		mes "500本入れることができる矢筒だよ。";
-		mes "僕だけにできる特別な加工をしていて、";
-		mes "500本そのまま持つより、これに";
-		mes "入れた方が軽くなるという優れもの";
-		mes "なんだ。";
+		mes "[�����ƃ[�b�N�X]";
+		mes "�����" +getitemname('@arr)+ "��";
+		mes "500�{����邱�Ƃ��ł�������B";
+		mes "�l�����ɂł�����ʂȉ��H�����Ă��āA";
+		mes "500�{���̂܂܎����A�����";
+		mes "���ꂽ�����y���Ȃ�Ƃ����D�����";
+		mes "�Ȃ񂾁B";
 		next;
-		mes "[発明家ゼックス]";
-		mes "どう？ 驚いたでしょ？";
-		mes "まるで輝く宝石のような神秘の";
-		mes "アイテム！ 僕の宝物さ！";
-		mes "矢筒が要るなら" +getitemname('@arr)+ "500本と";
-		mes "500Zenyを持ってきて。";
-		mes "矢筒に入れてあげるよ。";
+		mes "[�����ƃ[�b�N�X]";
+		mes "�ǂ��H �������ł���H";
+		mes "�܂�ŋP����΂̂悤�Ȑ_���";
+		mes "�A�C�e���I �l�̕󕨂��I";
+		mes "����v��Ȃ�" +getitemname('@arr)+ "500�{��";
+		mes "500Zeny�������Ă��āB";
+		mes "��ɓ���Ă������B";
 		close;
 	}
-	mes "[発明家ゼックス]";
-	mes "おお、ちゃんと必要な本数を";
-	mes "持っているね。";
-	mes "これに入れて使ってみるかい？";
-	mes "^FF0000500Zeny^000000で";
-	mes getitemname('@arr)+ "500本を";
-	mes "この矢筒に入れてあげるよ。";
+	mes "[�����ƃ[�b�N�X]";
+	mes "�����A�����ƕK�v�Ȗ{����";
+	mes "�����Ă���ˁB";
+	mes "����ɓ���Ďg���Ă݂邩���H";
+	mes "^FF0000500Zeny^000000��";
+	mes getitemname('@arr)+ "500�{��";
+	mes "���̖�ɓ���Ă������B";
 	next;
-	switch (select("組み合わせ可能なだけ入れてもらう","矢筒1個分だけ入れてもらう","やめる")) {
+	switch (select("�g�ݍ��킹�\�Ȃ�������Ă��炤","�1����������Ă��炤","��߂�")) {
 	case 1:
-		set '@have,countitem('@arr);	//矢所持数
-		set '@max,'@have/500;		//最大交換数
-		set '@price,'@max*500;		//料金
-		mes "[発明家ゼックス]";
-		mes "所持している" +getitemname('@arr)+ " :";
-		mes "^0000FF" +'@have+ " 本^000000";
-		mes "組み合わせ可能な" +getitemname('@quiv)+ " :";
-		mes "^0000FF" +'@max+ " 個^000000";
-		mes "組み合わせに必要なZeny :";
+		set '@have,countitem('@arr);	//�����
+		set '@max,'@have/500;		//�ő������
+		set '@price,'@max*500;		//����
+		mes "[�����ƃ[�b�N�X]";
+		mes "�������Ă���" +getitemname('@arr)+ " :";
+		mes "^0000FF" +'@have+ " �{^000000";
+		mes "�g�ݍ��킹�\��" +getitemname('@quiv)+ " :";
+		mes "^0000FF" +'@max+ " ��^000000";
+		mes "�g�ݍ��킹�ɕK�v��Zeny :";
 		mes "^0000FF" +'@price+ " Zeny^000000";
 		next;
-		mes "交換しますか？";
+		mes "�������܂����H";
 		next;
-		if(select("交換する","交換しない")==2) {
-			mes "[発明家ゼックス]";
-			mes "なんだ……";
-			mes "せっかくすごい発明をしたのに……";
+		if(select("��������","�������Ȃ�")==2) {
+			mes "[�����ƃ[�b�N�X]";
+			mes "�Ȃ񂾁c�c";
+			mes "�������������������������̂Ɂc�c";
 			close;
 		}
 		break;
@@ -138,19 +138,19 @@ payon_in01.gat,5,134,4	script	発明家ゼックス	89,{
 		set '@price,500;
 		break;
 	case 3:
-		mes "[発明家ゼックス]";
-		mes "なんだ……";
-		mes "せっかくすごい発明をしたのに……";
+		mes "[�����ƃ[�b�N�X]";
+		mes "�Ȃ񂾁c�c";
+		mes "�������������������������̂Ɂc�c";
 		close;
 	}
 	delitem '@arr,'@max*500;
 	set Zeny,Zeny-'@price;
 	getitem '@quiv,'@max;
-	mes "[発明家ゼックス]";
-	mes "ほら、これだよ。";
-	mes "そこで、^0000FF注意点^000000が一つだけ";
-	mes "あるからよく覚えておいてね。";
-	mes "^FF0000重量が90%を超えると、この矢筒は";
-	mes "使えなくなるから気をつけて。^000000";
+	mes "[�����ƃ[�b�N�X]";
+	mes "�ق�A���ꂾ��B";
+	mes "�����ŁA^0000FF���ӓ_^000000�������";
+	mes "���邩��悭�o���Ă����ĂˁB";
+	mes "^FF0000�d�ʂ�90%�𒴂���ƁA���̖��";
+	mes "�g���Ȃ��Ȃ邩��C�����āB^000000";
 	close;
 }

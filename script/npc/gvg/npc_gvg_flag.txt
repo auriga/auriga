@@ -1,20 +1,20 @@
 //=========================================================================
-// ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°å…±é€šãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³
+// ƒMƒ‹ƒhƒtƒ‰ƒbƒO‹¤’Êƒtƒ@ƒ“ƒNƒVƒ‡ƒ“
 //	callfunc "FlagSrc",AreaIndex,"MAP",X,Y;
 //
-// â–  å¼•æ•°ã®è©³ç´°
-//	AreaIndex -> 0:ãƒ«ã‚¤ãƒ¼ãƒŠã€1:ãã®ä»–
+// ¡ ˆø”‚ÌÚ×
+//	AreaIndex -> 0:ƒ‹ƒC[ƒiA1:‚»‚Ì‘¼
 //-------------------------------------------------------------------------
 
 function	script	FlagSrc	{
 	set '@gid,getcastledata(getarg(1),1);
-	if('@gid > 0 && getcharid(2)=='@gid && getarg(2)) {	//åŸä¸»ã‚®ãƒ«ãƒ‰ã§Xåº§æ¨™ã®å€¤ãŒã‚ã‚Œã°true
-		mes "[ å£° ]";
-		mes "å‹‡è€…ã‚ˆâ€¦";
-		mes "å›ã®åœ°ã«å¸°ã‚‹ã‹ï¼Ÿ";
+	if('@gid > 0 && getcharid(2)=='@gid && getarg(2)) {	//éåƒMƒ‹ƒh‚ÅXÀ•W‚Ì’l‚ª‚ ‚ê‚Îtrue
+		mes "[ º ]";
+		mes "—EÒ‚æc";
+		mes "ŒN‚Ì’n‚É‹A‚é‚©H";
 		next;
-		if(select("ç ¦ã«å¸°ã‚‹","ã‚„ã‚ã‚‹")==1) {
-			//é¸æŠå¾…ã¡ä¸­ã«åŸä¸»ãŒå¤‰æ›´ã•ã‚ŒãŸå ´åˆã‚’è€ƒæ…®ã—ã¦å†åº¦ãƒã‚§ãƒƒã‚¯
+		if(select("Ô‚É‹A‚é","‚â‚ß‚é")==1) {
+			//‘I‘ğ‘Ò‚¿’†‚Ééå‚ª•ÏX‚³‚ê‚½ê‡‚ğl—¶‚µ‚ÄÄ“xƒ`ƒFƒbƒN
 			set '@gid,getcastledata(getarg(1),1);
 			if('@gid > 0 && getcharid(2)=='@gid && getarg(2)) {
 				warp getarg(1),getarg(2),getarg(3);
@@ -23,52 +23,52 @@ function	script	FlagSrc	{
 		}
 		return;
 	}
-	mes "[ ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒƒãƒ„ç‹å›½é ˜ ]";
+	mes "[ ƒ‹[ƒ“ƒ~ƒbƒhƒKƒbƒc‰¤‘—Ì ]";
 	mes " ";
 	mes "1.";
 	switch(getarg(0)) {
 	case 0:
-		mes "ã“ã¡ã‚‰ã¯ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒƒãƒ„ç‹å›½ã¨";
-		mes "ã‚·ãƒ¥ãƒãƒ«ãƒ„ãƒãƒ«ãƒ‰å…±å’Œå›½ã®å”å®šã«ã‚ˆã‚Šã€";
+		mes "‚±‚¿‚ç‚Íƒ‹[ƒ“ƒ~ƒbƒhƒKƒbƒc‰¤‘‚Æ";
+		mes "ƒVƒ…ƒoƒ‹ƒcƒoƒ‹ƒh‹¤˜a‘‚Ì‹¦’è‚É‚æ‚èA";
 		break;
 	case 1:
-		mes "ã“ã¡ã‚‰ã¯ãƒ«ãƒ¼ãƒ³ãƒŸãƒƒãƒ‰ã‚¬ãƒƒãƒ„ç‹å›½ã«";
-		mes "ã‚ˆã£ã¦";
+		mes "‚±‚¿‚ç‚Íƒ‹[ƒ“ƒ~ƒbƒhƒKƒbƒc‰¤‘‚É";
+		mes "‚æ‚Á‚Ä";
 		break;
 	}
 	if('@gid <= 0) {
-		mes "æ­£å¼æ‰€æœ‰è€…ãŒãªã„ã‚¢ã‚¸ãƒˆã§ã‚ã‚‹ã“ã¨ã‚’";
-		mes "å…¬è¡¨ã™ã‚‹ã€‚";
+		mes "³®Š—LÒ‚ª‚È‚¢ƒAƒWƒg‚Å‚ ‚é‚±‚Æ‚ğ";
+		mes "Œö•\‚·‚éB";
 		next;
 		mes " ";
 		mes "2.";
-		mes "ã“ã¡ã‚‰ã‚’å®ˆã£ã¦ã„ã‚‹å‡„ã˜ã„";
-		mes "è©¦ç·´ã«å‹ã£ã¦ã€ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ã‚’";
-		mes "ç ´å£Šã™ã‚‹å‹‡è€…ã«ã¯å›½ç‹ãŒ";
-		mes "èªå®šã™ã‚‹ã‚¢ã‚¸ãƒˆæ‰€æœ‰æ¨©ãŒé™„ä¸ã•ã‚Œã‚‹";
+		mes "‚±‚¿‚ç‚ğç‚Á‚Ä‚¢‚é¦‚¶‚¢";
+		mes "—û‚ÉŸ‚Á‚ÄAƒGƒ“ƒyƒŠƒEƒ€‚ğ";
+		mes "”j‰ó‚·‚é—EÒ‚É‚Í‘‰¤‚ª";
+		mes "”F’è‚·‚éƒAƒWƒgŠ—LŒ ‚ª•—^‚³‚ê‚é";
 	}
 	else {
-		mes "ã‚®ãƒ«ãƒ‰ ^ff0000 " +getguildname('@gid)+ " ^000000ã®";
-		mes "æ‰€æœ‰ã§ã‚ã‚‹ã“ã¨ã‚’èªã‚ã‚‰ã‚Œã¦ã„ã‚‹ã€‚";
+		mes "ƒMƒ‹ƒh ^ff0000 " +getguildname('@gid)+ " ^000000‚Ì";
+		mes "Š—L‚Å‚ ‚é‚±‚Æ‚ğ”F‚ß‚ç‚ê‚Ä‚¢‚éB";
 		next;
 		mes " ";
 		mes "2.";
-		mes "^ff0000 " +getguildname('@gid)+ " ^000000 ã®ãƒã‚¹ã‚¿ãƒ¼ã¯";
-		mes "^ff0000 " +getguildmaster('@gid)+ " ^000000ã§ã‚ã‚‹ã€‚";
-		mes "ã“ã‚Œã«ç•°è­°ã®ã‚ã‚‹è€…ã¯ã€å‰£ã‚’å–ã‚Š";
-		mes "åŠ›ã‚’ä»¥ã£ã¦åèª‰ã‚’å‹ã¡å–ã‚Šãªã•ã„ã€‚";
+		mes "^ff0000 " +getguildname('@gid)+ " ^000000 ‚Ìƒ}ƒXƒ^[‚Í";
+		mes "^ff0000 " +getguildmaster('@gid)+ " ^000000‚Å‚ ‚éB";
+		mes "‚±‚ê‚ÉˆÙ‹c‚Ì‚ ‚éÒ‚ÍAŒ•‚ğæ‚è";
+		mes "—Í‚ğˆÈ‚Á‚Ä–¼—_‚ğŸ‚¿æ‚è‚È‚³‚¢B";
 	}
 	return;
 }
 
 
 //-------------------------------------------
-// â–  Interã‚µãƒ¼ãƒæ¥ç¶šæ™‚ã«OnAgitInitãŒã€
-//    åŸä¸»å¤‰æ›´æ™‚ã«OnFlagEmb_XYãŒå‘¼ã³å‡ºã•ã‚Œã‚‹
+// ¡ InterƒT[ƒoÚ‘±‚ÉOnAgitInit‚ªA
+//    éå•ÏX‚ÉOnFlagEmb_XY‚ªŒÄ‚Ño‚³‚ê‚é
 //-------------------------------------------
 
 //==========================================
-// L1 : ãƒ«ã‚¤ãƒ¼ãƒŠ
+// L1 : ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	GdFlag_L1	722,{
 	callfunc "FlagSrc",0,"aldeg_cas01.gat",0,0;
@@ -80,7 +80,7 @@ OnFlagEmb_L1:
 	end;
 }
 
-alde_gld.gat,257,153,7	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-00	722,{
+alde_gld.gat,257,153,7	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-00	722,{
 	callfunc "FlagSrc",0,"aldeg_cas01.gat",218,170;
 	close;
 OnAgitInit:
@@ -89,28 +89,28 @@ OnFlagEmb_L1:
 	end;
 }
 
-alde_gld.gat,61,87,6		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-01	722
-alde_gld.gat,61,79,6		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-02	722
-alde_gld.gat,45,87,8		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-03	722
-alde_gld.gat,51,87,8		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-04	722
-//aldeg_cas01.gat,30,248,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-05	722
-//aldeg_cas01.gat,30,246,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-06	722
-//aldeg_cas01.gat,37,248,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-07	722
-//aldeg_cas01.gat,37,246,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-08	722
-//aldeg_cas01.gat,95,80,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-09	722
-//aldeg_cas01.gat,95,59,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-10	722
-//aldeg_cas01.gat,62,75,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-11	722
-//aldeg_cas01.gat,70,75,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-12	722
-//aldeg_cas01.gat,74,75,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-13	722
-//aldeg_cas01.gat,62,64,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-14	722
-//aldeg_cas01.gat,66,64,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-15	722
-//aldeg_cas01.gat,70,64,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-16	722
-//aldeg_cas01.gat,74,64,2		duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-17	722
-//aldeg_cas01.gat,203,150,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-18	722
-//aldeg_cas01.gat,210,150,4	duplicate(GdFlag_L1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L1-19	722
+alde_gld.gat,61,87,6		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-01	722
+alde_gld.gat,61,79,6		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-02	722
+alde_gld.gat,45,87,8		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-03	722
+alde_gld.gat,51,87,8		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-04	722
+//aldeg_cas01.gat,30,248,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-05	722
+//aldeg_cas01.gat,30,246,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-06	722
+//aldeg_cas01.gat,37,248,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-07	722
+//aldeg_cas01.gat,37,246,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-08	722
+//aldeg_cas01.gat,95,80,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-09	722
+//aldeg_cas01.gat,95,59,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-10	722
+//aldeg_cas01.gat,62,75,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-11	722
+//aldeg_cas01.gat,70,75,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-12	722
+//aldeg_cas01.gat,74,75,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-13	722
+//aldeg_cas01.gat,62,64,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-14	722
+//aldeg_cas01.gat,66,64,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-15	722
+//aldeg_cas01.gat,70,64,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-16	722
+//aldeg_cas01.gat,74,64,2		duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-17	722
+//aldeg_cas01.gat,203,150,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-18	722
+//aldeg_cas01.gat,210,150,4	duplicate(GdFlag_L1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L1-19	722
 
 //==========================================
-// L2 : ãƒ«ã‚¤ãƒ¼ãƒŠ
+// L2 : ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	GdFlag_L2	722,{
 	callfunc "FlagSrc",0,"aldeg_cas02.gat",0,0;
@@ -122,7 +122,7 @@ OnFlagEmb_L2:
 	end;
 }
 
-alde_gld.gat,257,166,5	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-00	722,{
+alde_gld.gat,257,166,5	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-00	722,{
 	callfunc "FlagSrc",0,"aldeg_cas02.gat",84,74;
 	close;
 OnAgitInit:
@@ -131,25 +131,25 @@ OnFlagEmb_L2:
 	end;
 }
 
-//aldeg_cas02.gat,82,71,2		duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-01	722
-//aldeg_cas02.gat,67,30,2		duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-02	722
-//aldeg_cas02.gat,183,140,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-03	722
-//aldeg_cas02.gat,212,152,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-04	722
-//aldeg_cas02.gat,108,39,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-05	722
-//aldeg_cas02.gat,57,213,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-06	722
-//aldeg_cas02.gat,91,181,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-07	722
-//aldeg_cas02.gat,103,53,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-08	722
-//aldeg_cas02.gat,73,53,2		duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-09	722
-//aldeg_cas02.gat,63,41,2		duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-10	722
-//aldeg_cas02.gat,229,6,2		duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-11	722
-//aldeg_cas02.gat,230,40,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-12	722
-//aldeg_cas02.gat,197,40,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-13	722
-//aldeg_cas02.gat,32,213,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-14	722
-//aldeg_cas02.gat,88,180,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-15	722
-//aldeg_cas02.gat,121,29,2	duplicate(GdFlag_L2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L2-16	722
+//aldeg_cas02.gat,82,71,2		duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-01	722
+//aldeg_cas02.gat,67,30,2		duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-02	722
+//aldeg_cas02.gat,183,140,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-03	722
+//aldeg_cas02.gat,212,152,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-04	722
+//aldeg_cas02.gat,108,39,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-05	722
+//aldeg_cas02.gat,57,213,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-06	722
+//aldeg_cas02.gat,91,181,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-07	722
+//aldeg_cas02.gat,103,53,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-08	722
+//aldeg_cas02.gat,73,53,2		duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-09	722
+//aldeg_cas02.gat,63,41,2		duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-10	722
+//aldeg_cas02.gat,229,6,2		duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-11	722
+//aldeg_cas02.gat,230,40,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-12	722
+//aldeg_cas02.gat,197,40,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-13	722
+//aldeg_cas02.gat,32,213,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-14	722
+//aldeg_cas02.gat,88,180,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-15	722
+//aldeg_cas02.gat,121,29,2	duplicate(GdFlag_L2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L2-16	722
 
 //==========================================
-// L3 : ãƒ«ã‚¤ãƒ¼ãƒŠ
+// L3 : ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	GdFlag_L3	722,{
 	callfunc "FlagSrc",0,"aldeg_cas03.gat",0,0;
@@ -161,7 +161,7 @@ OnFlagEmb_L3:
 	end;
 }
 
-alde_gld.gat,262,153,7	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-00	722,{
+alde_gld.gat,262,153,7	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-00	722,{
 	callfunc "FlagSrc",0,"aldeg_cas03.gat",118,76;
 	close;
 OnAgitInit:
@@ -170,28 +170,28 @@ OnFlagEmb_L3:
 	end;
 }
 
-//aldeg_cas03.gat,176,175,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-01	722
-//aldeg_cas03.gat,85,103,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-02	722
-//aldeg_cas03.gat,77,115,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-03	722
-//aldeg_cas03.gat,77,215,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-04	722
-//aldeg_cas03.gat,112,107,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-05	722
-//aldeg_cas03.gat,112,117,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-06	722
-//aldeg_cas03.gat,69,71,2		duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-07	722
-//aldeg_cas03.gat,91,69,2		duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-08	722
-//aldeg_cas03.gat,108,60,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-09	722
-//aldeg_cas03.gat,121,73,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-10	722
-//aldeg_cas03.gat,121,73,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-11	722
-//aldeg_cas03.gat,75,102,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-12	722
-//aldeg_cas03.gat,199,169,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-13	722
-//aldeg_cas03.gat,181,179,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-14	722
-//aldeg_cas03.gat,192,44,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-15	722
-//aldeg_cas03.gat,88,108,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-16	722
-//aldeg_cas03.gat,208,145,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-17	722
-//aldeg_cas03.gat,207,75,2	duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-18	722
-//aldeg_cas03.gat,96,62,2		duplicate(GdFlag_L3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L3-19	722
+//aldeg_cas03.gat,176,175,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-01	722
+//aldeg_cas03.gat,85,103,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-02	722
+//aldeg_cas03.gat,77,115,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-03	722
+//aldeg_cas03.gat,77,215,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-04	722
+//aldeg_cas03.gat,112,107,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-05	722
+//aldeg_cas03.gat,112,117,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-06	722
+//aldeg_cas03.gat,69,71,2		duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-07	722
+//aldeg_cas03.gat,91,69,2		duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-08	722
+//aldeg_cas03.gat,108,60,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-09	722
+//aldeg_cas03.gat,121,73,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-10	722
+//aldeg_cas03.gat,121,73,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-11	722
+//aldeg_cas03.gat,75,102,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-12	722
+//aldeg_cas03.gat,199,169,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-13	722
+//aldeg_cas03.gat,181,179,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-14	722
+//aldeg_cas03.gat,192,44,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-15	722
+//aldeg_cas03.gat,88,108,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-16	722
+//aldeg_cas03.gat,208,145,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-17	722
+//aldeg_cas03.gat,207,75,2	duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-18	722
+//aldeg_cas03.gat,96,62,2		duplicate(GdFlag_L3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L3-19	722
 
 //==========================================
-// L4 : ãƒ«ã‚¤ãƒ¼ãƒŠ
+// L4 : ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	GdFlag_L4	722,{
 	callfunc "FlagSrc",0,"aldeg_cas04.gat",0,0;
@@ -203,7 +203,7 @@ OnFlagEmb_L4:
 	end;
 }
 
-alde_gld.gat,262,166,5	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-00	722,{
+alde_gld.gat,262,166,5	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-00	722,{
 	callfunc "FlagSrc",0,"aldeg_cas04.gat",45,88;
 	close;
 OnAgitInit:
@@ -212,28 +212,28 @@ OnFlagEmb_L4:
 	end;
 }
 
-//aldeg_cas04.gat,167,61,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-01	722
-//aldeg_cas04.gat,164,90,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-02	722
-//aldeg_cas04.gat,143,209,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-03	722
-//aldeg_cas04.gat,129,193,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-04	722
-//aldeg_cas04.gat,112,206,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-05	722
-//aldeg_cas04.gat,113,212,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-06	722
-//aldeg_cas04.gat,77,117,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-07	722
-//aldeg_cas04.gat,186,42,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-08	722
-//aldeg_cas04.gat,30,69,2		duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-09	722
-//aldeg_cas04.gat,55,97,2		duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-10	722
-//aldeg_cas04.gat,45,98,2		duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-11	722
-//aldeg_cas04.gat,33,116,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-12	722
-//aldeg_cas04.gat,130,180,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-13	722
-//aldeg_cas04.gat,129,193,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-14	722
-//aldeg_cas04.gat,142,209,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-15	722
-//aldeg_cas04.gat,33,107,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-16	722
-//aldeg_cas04.gat,133,220,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-17	722
-//aldeg_cas04.gat,169,22,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-18	722
-//aldeg_cas04.gat,169,15,2	duplicate(GdFlag_L4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L4-19	722
+//aldeg_cas04.gat,167,61,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-01	722
+//aldeg_cas04.gat,164,90,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-02	722
+//aldeg_cas04.gat,143,209,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-03	722
+//aldeg_cas04.gat,129,193,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-04	722
+//aldeg_cas04.gat,112,206,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-05	722
+//aldeg_cas04.gat,113,212,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-06	722
+//aldeg_cas04.gat,77,117,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-07	722
+//aldeg_cas04.gat,186,42,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-08	722
+//aldeg_cas04.gat,30,69,2		duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-09	722
+//aldeg_cas04.gat,55,97,2		duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-10	722
+//aldeg_cas04.gat,45,98,2		duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-11	722
+//aldeg_cas04.gat,33,116,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-12	722
+//aldeg_cas04.gat,130,180,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-13	722
+//aldeg_cas04.gat,129,193,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-14	722
+//aldeg_cas04.gat,142,209,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-15	722
+//aldeg_cas04.gat,33,107,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-16	722
+//aldeg_cas04.gat,133,220,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-17	722
+//aldeg_cas04.gat,169,22,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-18	722
+//aldeg_cas04.gat,169,15,2	duplicate(GdFlag_L4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L4-19	722
 
 //==========================================
-// L5 : ãƒ«ã‚¤ãƒ¼ãƒŠ
+// L5 : ƒ‹ƒC[ƒi
 //------------------------------------------
 -	script	GdFlag_L5	722,{
 	callfunc "FlagSrc",0,"aldeg_cas05.gat",0,0;
@@ -245,7 +245,7 @@ OnFlagEmb_L5:
 	end;
 }
 
-alde_gld.gat,267,153,7	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-00	722,{
+alde_gld.gat,267,153,7	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-00	722,{
 	callfunc "FlagSrc",0,"aldeg_cas05.gat",31,190;
 	close;
 OnAgitInit:
@@ -254,26 +254,26 @@ OnFlagEmb_L5:
 	end;
 }
 
-//aldeg_cas05.gat,170,85,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-01	722
-//aldeg_cas05.gat,142,212,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-02	722
-//aldeg_cas05.gat,149,196,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-03	722
-//aldeg_cas05.gat,41,180,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-04	722
-//aldeg_cas05.gat,38,201,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-05	722
-//aldeg_cas05.gat,65,182,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-06	722
-//aldeg_cas05.gat,65,205,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-07	722
-//aldeg_cas05.gat,10,218,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-08	722
-//aldeg_cas05.gat,164,201,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-09	722
-//aldeg_cas05.gat,216,96,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-10	722
-//aldeg_cas05.gat,217,80,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-11	722
-//aldeg_cas05.gat,14,117,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-12	722
-//aldeg_cas05.gat,10,225,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-13	722
-//aldeg_cas05.gat,187,59,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-14	722
-//aldeg_cas05.gat,154,51,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-15	722
-//aldeg_cas05.gat,22,211,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-16	722
-//aldeg_cas05.gat,150,202,2	duplicate(GdFlag_L5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#L5-17	722
+//aldeg_cas05.gat,170,85,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-01	722
+//aldeg_cas05.gat,142,212,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-02	722
+//aldeg_cas05.gat,149,196,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-03	722
+//aldeg_cas05.gat,41,180,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-04	722
+//aldeg_cas05.gat,38,201,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-05	722
+//aldeg_cas05.gat,65,182,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-06	722
+//aldeg_cas05.gat,65,205,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-07	722
+//aldeg_cas05.gat,10,218,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-08	722
+//aldeg_cas05.gat,164,201,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-09	722
+//aldeg_cas05.gat,216,96,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-10	722
+//aldeg_cas05.gat,217,80,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-11	722
+//aldeg_cas05.gat,14,117,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-12	722
+//aldeg_cas05.gat,10,225,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-13	722
+//aldeg_cas05.gat,187,59,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-14	722
+//aldeg_cas05.gat,154,51,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-15	722
+//aldeg_cas05.gat,22,211,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-16	722
+//aldeg_cas05.gat,150,202,2	duplicate(GdFlag_L5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#L5-17	722
 
 //==========================================
-// B1 : ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// B1 : ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	GdFlag_B1	722,{
 	callfunc "FlagSrc",1,"gefg_cas01.gat",0,0;
@@ -285,7 +285,7 @@ OnFlagEmb_B1:
 	end;
 }
 
-gef_fild07.gat,330,199,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-00	722,{
+gef_fild07.gat,330,199,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-00	722,{
 	callfunc "FlagSrc",1,"gefg_cas01.gat",83,47;
 	close;
 OnAgitInit:
@@ -294,19 +294,19 @@ OnFlagEmb_B1:
 	end;
 }
 
-gef_fild13.gat,148,51,5		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-01	722
-gef_fild13.gat,155,54,5		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-02	722
-gef_fild13.gat,212,79,6		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-03	722
-gef_fild13.gat,211,71,6		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-04	722
-//gefg_cas01.gat,28,157,4		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-05	722
-//gefg_cas01.gat,22,156,5		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-06	722
-//gefg_cas01.gat,68,185,3		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-07	722
-//gefg_cas01.gat,17,171,5		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-08	722
-//gefg_cas01.gat,59,16,4		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-09	722
-//gefg_cas01.gat,64,16,4		duplicate(GdFlag_B1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B1-10	722
+gef_fild13.gat,148,51,5		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-01	722
+gef_fild13.gat,155,54,5		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-02	722
+gef_fild13.gat,212,79,6		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-03	722
+gef_fild13.gat,211,71,6		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-04	722
+//gefg_cas01.gat,28,157,4		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-05	722
+//gefg_cas01.gat,22,156,5		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-06	722
+//gefg_cas01.gat,68,185,3		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-07	722
+//gefg_cas01.gat,17,171,5		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-08	722
+//gefg_cas01.gat,59,16,4		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-09	722
+//gefg_cas01.gat,64,16,4		duplicate(GdFlag_B1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B1-10	722
 
 //==========================================
-// B2 : ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// B2 : ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	GdFlag_B2	722,{
 	callfunc "FlagSrc",1,"gefg_cas02.gat",0,0;
@@ -318,7 +318,7 @@ OnFlagEmb_B2:
 	end;
 }
 
-gef_fild07.gat,330,204,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-00	722,{
+gef_fild07.gat,330,204,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-00	722,{
 	callfunc "FlagSrc",1,"gefg_cas02.gat",23,66;
 	close;
 OnAgitInit:
@@ -327,20 +327,20 @@ OnFlagEmb_B2:
 	end;
 }
 
-gef_fild13.gat,303,243,4	duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-01	722
-gef_fild13.gat,312,243,4	duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-02	722
-gef_fild13.gat,290,243,4	duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-03	722
-gef_fild13.gat,324,243,4	duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-04	722
-//gefg_cas02.gat,65,130,5		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-05	722
-//gefg_cas02.gat,30,123,5		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-06	722
-//gefg_cas02.gat,65,139,6		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-07	722
-//gefg_cas02.gat,37,177,6		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-08	722
-//gefg_cas02.gat,37,168,6		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-09	722
-//gefg_cas02.gat,68,47,2		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-10	722
-//gefg_cas02.gat,68,36,2		duplicate(GdFlag_B2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B2-11	722
+gef_fild13.gat,303,243,4	duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-01	722
+gef_fild13.gat,312,243,4	duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-02	722
+gef_fild13.gat,290,243,4	duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-03	722
+gef_fild13.gat,324,243,4	duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-04	722
+//gefg_cas02.gat,65,130,5		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-05	722
+//gefg_cas02.gat,30,123,5		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-06	722
+//gefg_cas02.gat,65,139,6		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-07	722
+//gefg_cas02.gat,37,177,6		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-08	722
+//gefg_cas02.gat,37,168,6		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-09	722
+//gefg_cas02.gat,68,47,2		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-10	722
+//gefg_cas02.gat,68,36,2		duplicate(GdFlag_B2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B2-11	722
 
 //==========================================
-// B3 : ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// B3 : ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	GdFlag_B3	722,{
 	callfunc "FlagSrc",1,"gefg_cas03.gat",0,0;
@@ -352,7 +352,7 @@ OnFlagEmb_B3:
 	end;
 }
 
-gef_fild07.gat,330,176,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-00	722,{
+gef_fild07.gat,330,176,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-00	722,{
 	callfunc "FlagSrc",1,"gefg_cas03.gat",116,89;
 	close;
 OnAgitInit:
@@ -361,23 +361,23 @@ OnFlagEmb_B3:
 	end;
 }
 
-gef_fild13.gat,78,182,4		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-01	722
-gef_fild13.gat,87,182,4		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-02	722
-gef_fild13.gat,73,295,7		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-03	722
-gef_fild13.gat,113,274,7	duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-04	722
-gef_fild13.gat,144,235,6	duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-05	722
-gef_fild13.gat,144,244,4	duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-06	722
-//gefg_cas03.gat,122,220,6	duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-07	722
-//gefg_cas03.gat,122,229,6	duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-08	722
-//gefg_cas03.gat,91,257,7		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-09	722
-//gefg_cas03.gat,52,276,7		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-10	722
-//gefg_cas03.gat,56,164,4		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-11	722
-//gefg_cas03.gat,65,164,4		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-12	722
-//gefg_cas03.gat,37,214,1		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-13	722
-//gefg_cas03.gat,34,208,1		duplicate(GdFlag_B3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B3-14	722
+gef_fild13.gat,78,182,4		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-01	722
+gef_fild13.gat,87,182,4		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-02	722
+gef_fild13.gat,73,295,7		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-03	722
+gef_fild13.gat,113,274,7	duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-04	722
+gef_fild13.gat,144,235,6	duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-05	722
+gef_fild13.gat,144,244,4	duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-06	722
+//gefg_cas03.gat,122,220,6	duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-07	722
+//gefg_cas03.gat,122,229,6	duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-08	722
+//gefg_cas03.gat,91,257,7		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-09	722
+//gefg_cas03.gat,52,276,7		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-10	722
+//gefg_cas03.gat,56,164,4		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-11	722
+//gefg_cas03.gat,65,164,4		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-12	722
+//gefg_cas03.gat,37,214,1		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-13	722
+//gefg_cas03.gat,34,208,1		duplicate(GdFlag_B3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B3-14	722
 
 //==========================================
-// B4 : ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// B4 : ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	GdFlag_B4	722,{
 	callfunc "FlagSrc",1,"gefg_cas04.gat",0,0;
@@ -389,7 +389,7 @@ OnFlagEmb_B4:
 	end;
 }
 
-gef_fild07.gat,330,171,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-00	722,{
+gef_fild07.gat,330,171,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-00	722,{
 	callfunc "FlagSrc",1,"gefg_cas04.gat",59,70;
 	close;
 OnAgitInit:
@@ -398,19 +398,19 @@ OnFlagEmb_B4:
 	end;
 }
 
-gef_fild13.gat,190,283,3	duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-01	722
-gef_fild13.gat,199,274,3	duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-02	722
-//gefg_cas04.gat,24,157,4		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-03	722
-//gefg_cas04.gat,35,158,4		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-04	722
-//gefg_cas04.gat,44,184,4		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-05	722
-//gefg_cas04.gat,51,184,4		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-06	722
-//gefg_cas04.gat,39,212,7		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-07	722
-//gefg_cas04.gat,29,212,1		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-08	722
-//gefg_cas04.gat,24,73,1		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-09	722
-//gefg_cas04.gat,35,73,4		duplicate(GdFlag_B4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B4-10	722
+gef_fild13.gat,190,283,3	duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-01	722
+gef_fild13.gat,199,274,3	duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-02	722
+//gefg_cas04.gat,24,157,4		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-03	722
+//gefg_cas04.gat,35,158,4		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-04	722
+//gefg_cas04.gat,44,184,4		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-05	722
+//gefg_cas04.gat,51,184,4		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-06	722
+//gefg_cas04.gat,39,212,7		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-07	722
+//gefg_cas04.gat,29,212,1		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-08	722
+//gefg_cas04.gat,24,73,1		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-09	722
+//gefg_cas04.gat,35,73,4		duplicate(GdFlag_B4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B4-10	722
 
 //==========================================
-// B5 : ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// B5 : ƒuƒŠƒgƒjƒA
 //------------------------------------------
 -	script	GdFlag_B5	722,{
 	callfunc "FlagSrc",1,"gefg_cas05.gat",0,0;
@@ -422,7 +422,7 @@ OnFlagEmb_B5:
 	end;
 }
 
-gef_fild07.gat,330,166,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-00	722,{
+gef_fild07.gat,330,166,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-00	722,{
 	callfunc "FlagSrc",1,"gefg_cas05.gat",61,52;
 	close;
 OnAgitInit:
@@ -431,19 +431,19 @@ OnFlagEmb_B5:
 	end;
 }
 
-gef_fild13.gat,302,87,7		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-01	722
-gef_fild13.gat,313,83,0		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-02	722
-gef_fild13.gat,252,51,2		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-03	722
-gef_fild13.gat,26,147,2		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-04	722
-//gefg_cas05.gat,77,185,7		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-05	722
-//gefg_cas05.gat,92,181,0		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-06	722
-//gefg_cas05.gat,83,158,1		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-07	722
-//gefg_cas05.gat,62,144,7		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-08	722
-//gefg_cas05.gat,62,66,4		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-09	722
-//gefg_cas05.gat,69,66,4		duplicate(GdFlag_B5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#B5-10	722
+gef_fild13.gat,302,87,7		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-01	722
+gef_fild13.gat,313,83,0		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-02	722
+gef_fild13.gat,252,51,2		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-03	722
+gef_fild13.gat,26,147,2		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-04	722
+//gefg_cas05.gat,77,185,7		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-05	722
+//gefg_cas05.gat,92,181,0		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-06	722
+//gefg_cas05.gat,83,158,1		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-07	722
+//gefg_cas05.gat,62,144,7		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-08	722
+//gefg_cas05.gat,62,66,4		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-09	722
+//gefg_cas05.gat,69,66,4		duplicate(GdFlag_B5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#B5-10	722
 
 //==========================================
-// C1 : ãƒãƒ¥ãƒ³ãƒªãƒ 
+// C1 : ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	GdFlag_C1	722,{
 	callfunc "FlagSrc",1,"payg_cas01.gat",0,0;
@@ -455,7 +455,7 @@ OnFlagEmb_C1:
 	end;
 }
 
-pay_gld.gat,347,125,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-00	722,{
+pay_gld.gat,347,125,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-00	722,{
 	callfunc "FlagSrc",1,"payg_cas01.gat",212,108;
 	close;
 OnAgitInit:
@@ -464,19 +464,19 @@ OnFlagEmb_C1:
 	end;
 }
 
-pay_gld.gat,125,236,4		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-01	722
-pay_gld.gat,110,233,4		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-02	722
-pay_gld.gat,116,233,4		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-03	722
-pay_gld.gat,91,239,2		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-04	722
-//payg_cas01.gat,238,67,4		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-05	722
-//payg_cas01.gat,233,67,4		duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-06	722
-//payg_cas01.gat,221,123,4	duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-07	722
-//payg_cas01.gat,221,116,4	duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-08	722
-//payg_cas01.gat,206,108,4	duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-09	722
-//payg_cas01.gat,212,108,4	duplicate(GdFlag_C1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C1-10	722
+pay_gld.gat,125,236,4		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-01	722
+pay_gld.gat,110,233,4		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-02	722
+pay_gld.gat,116,233,4		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-03	722
+pay_gld.gat,91,239,2		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-04	722
+//payg_cas01.gat,238,67,4		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-05	722
+//payg_cas01.gat,233,67,4		duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-06	722
+//payg_cas01.gat,221,123,4	duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-07	722
+//payg_cas01.gat,221,116,4	duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-08	722
+//payg_cas01.gat,206,108,4	duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-09	722
+//payg_cas01.gat,212,108,4	duplicate(GdFlag_C1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C1-10	722
 
 //==========================================
-// C2 : ãƒãƒ¥ãƒ³ãƒªãƒ 
+// C2 : ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	GdFlag_C2	722,{
 	callfunc "FlagSrc",1,"payg_cas02.gat",0,0;
@@ -488,7 +488,7 @@ OnFlagEmb_C2:
 	end;
 }
 
-pay_gld.gat,347,116,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-00	722,{
+pay_gld.gat,347,116,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-00	722,{
 	callfunc "FlagSrc",1,"payg_cas02.gat",22,275;
 	close;
 OnAgitInit:
@@ -497,19 +497,19 @@ OnFlagEmb_C2:
 	end;
 }
 
-pay_gld.gat,292,112,6		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-01	722
-pay_gld.gat,292,120,6		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-02	722
-pay_gld.gat,291,135,6		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-03	722
-pay_gld.gat,271,163,0		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-04	722
-//payg_cas02.gat,254,40,6		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-05	722
-//payg_cas02.gat,254,48,6		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-06	722
-//payg_cas02.gat,202,49,0		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-07	722
-//payg_cas02.gat,209,49,0		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-08	722
-//payg_cas02.gat,59,282,4		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-09	722
-//payg_cas02.gat,70,282,4		duplicate(GdFlag_C2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C2-10	722
+pay_gld.gat,292,112,6		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-01	722
+pay_gld.gat,292,120,6		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-02	722
+pay_gld.gat,291,135,6		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-03	722
+pay_gld.gat,271,163,0		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-04	722
+//payg_cas02.gat,254,40,6		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-05	722
+//payg_cas02.gat,254,48,6		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-06	722
+//payg_cas02.gat,202,49,0		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-07	722
+//payg_cas02.gat,209,49,0		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-08	722
+//payg_cas02.gat,59,282,4		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-09	722
+//payg_cas02.gat,70,282,4		duplicate(GdFlag_C2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C2-10	722
 
 //==========================================
-// C3 : ãƒãƒ¥ãƒ³ãƒªãƒ 
+// C3 : ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	GdFlag_C3	722,{
 	callfunc "FlagSrc",1,"payg_cas03.gat",0,0;
@@ -521,7 +521,7 @@ OnFlagEmb_C3:
 	end;
 }
 
-pay_gld.gat,341,106,0	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-00	722,{
+pay_gld.gat,341,106,0	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-00	722,{
 	callfunc "FlagSrc",1,"payg_cas03.gat",9,263;
 	close;
 OnAgitInit:
@@ -530,19 +530,19 @@ OnFlagEmb_C3:
 	end;
 }
 
-pay_gld.gat,321,298,2		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-01	722
-pay_gld.gat,321,289,2		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-02	722
-pay_gld.gat,327,304,1		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-03	722
-pay_gld.gat,333,254,4		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-04	722
-//payg_cas03.gat,236,54,2		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-05	722
-//payg_cas03.gat,236,45,2		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-06	722
-//payg_cas03.gat,259,66,4		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-07	722
-//payg_cas03.gat,266,66,4		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-08	722
-//payg_cas03.gat,34,31,4		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-09	722
-//payg_cas03.gat,43,31,4		duplicate(GdFlag_C3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C3-10	722
+pay_gld.gat,321,298,2		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-01	722
+pay_gld.gat,321,289,2		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-02	722
+pay_gld.gat,327,304,1		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-03	722
+pay_gld.gat,333,254,4		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-04	722
+//payg_cas03.gat,236,54,2		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-05	722
+//payg_cas03.gat,236,45,2		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-06	722
+//payg_cas03.gat,259,66,4		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-07	722
+//payg_cas03.gat,266,66,4		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-08	722
+//payg_cas03.gat,34,31,4		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-09	722
+//payg_cas03.gat,43,31,4		duplicate(GdFlag_C3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C3-10	722
 
 //==========================================
-// C4 : ãƒãƒ¥ãƒ³ãƒªãƒ 
+// C4 : ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	GdFlag_C4	722,{
 	callfunc "FlagSrc",1,"payg_cas04.gat",0,0;
@@ -554,7 +554,7 @@ OnFlagEmb_C4:
 	end;
 }
 
-pay_gld.gat,330,106,0	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-00	722,{
+pay_gld.gat,330,106,0	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-00	722,{
 	callfunc "FlagSrc",1,"payg_cas04.gat",40,235;
 	close;
 OnAgitInit:
@@ -563,19 +563,19 @@ OnFlagEmb_C4:
 	end;
 }
 
-pay_gld.gat,137,160,0		duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-01	722
-pay_gld.gat,143,160,0		duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-02	722
-pay_gld.gat,133,151,2		duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-03	722
-pay_gld.gat,153,166,1		duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-04	722
-//payg_cas04.gat,255,259,0	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-05	722
-//payg_cas04.gat,248,259,0	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-06	722
-//payg_cas04.gat,248,168,6	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-07	722
-//payg_cas04.gat,248,160,6	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-08	722
-//payg_cas04.gat,232,181,4	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-09	722
-//payg_cas04.gat,239,181,4	duplicate(GdFlag_C4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C4-10	722
+pay_gld.gat,137,160,0		duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-01	722
+pay_gld.gat,143,160,0		duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-02	722
+pay_gld.gat,133,151,2		duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-03	722
+pay_gld.gat,153,166,1		duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-04	722
+//payg_cas04.gat,255,259,0	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-05	722
+//payg_cas04.gat,248,259,0	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-06	722
+//payg_cas04.gat,248,168,6	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-07	722
+//payg_cas04.gat,248,160,6	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-08	722
+//payg_cas04.gat,232,181,4	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-09	722
+//payg_cas04.gat,239,181,4	duplicate(GdFlag_C4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C4-10	722
 
 //==========================================
-// C5 : ãƒãƒ¥ãƒ³ãƒªãƒ 
+// C5 : ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 -	script	GdFlag_C5	722,{
 	callfunc "FlagSrc",1,"payg_cas05.gat",0,0;
@@ -587,7 +587,7 @@ OnFlagEmb_C5:
 	end;
 }
 
-pay_gld.gat,318,106,0	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-00	722,{
+pay_gld.gat,318,106,0	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-00	722,{
 	callfunc "FlagSrc",1,"payg_cas05.gat",276,227;
 	close;
 OnAgitInit:
@@ -596,19 +596,19 @@ OnFlagEmb_C5:
 	end;
 }
 
-pay_gld.gat,208,268,4		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-01	722
-pay_gld.gat,199,268,4		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-02	722
-pay_gld.gat,190,277,3		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-03	722
-pay_gld.gat,187,294,2		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-04	722
-//payg_cas05.gat,32,249,4		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-05	722
-//payg_cas05.gat,24,249,4		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-06	722
-//payg_cas05.gat,62,271,0		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-07	722
-//payg_cas05.gat,57,271,0		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-08	722
-//payg_cas05.gat,55,252,2		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-09	722
-//payg_cas05.gat,55,260,2		duplicate(GdFlag_C5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#C5-10	722
+pay_gld.gat,208,268,4		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-01	722
+pay_gld.gat,199,268,4		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-02	722
+pay_gld.gat,190,277,3		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-03	722
+pay_gld.gat,187,294,2		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-04	722
+//payg_cas05.gat,32,249,4		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-05	722
+//payg_cas05.gat,24,249,4		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-06	722
+//payg_cas05.gat,62,271,0		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-07	722
+//payg_cas05.gat,57,271,0		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-08	722
+//payg_cas05.gat,55,252,2		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-09	722
+//payg_cas05.gat,55,260,2		duplicate(GdFlag_C5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#C5-10	722
 
 //==========================================
-// V1 : ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// V1 : ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	GdFlag_V1	722,{
 	callfunc "FlagSrc",1,"prtg_cas01.gat",0,0;
@@ -620,7 +620,7 @@ OnFlagEmb_V1:
 	end;
 }
 
-prt_gld.gat,160,210,4	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-00	722,{
+prt_gld.gat,160,210,4	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-00	722,{
 	callfunc "FlagSrc",1,"prtg_cas01.gat",97,174;
 	close;
 OnAgitInit:
@@ -629,23 +629,23 @@ OnFlagEmb_V1:
 	end;
 }
 
-prt_gld.gat,131,60,6		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-01	722
-prt_gld.gat,138,68,6		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-02	722
-prt_gld.gat,138,60,6		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-03	722
-prt_gld.gat,135,60,6		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-04	722
-//prtg_cas01.gat,58,56,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-05	722
-//prtg_cas01.gat,64,56,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-06	722
-//prtg_cas01.gat,76,32,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-07	722
-//prtg_cas01.gat,84,32,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-08	722
-//prtg_cas01.gat,94,39,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-09	722
-//prtg_cas01.gat,94,24,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-10	722
-//prtg_cas01.gat,73,14,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-11	722
-//prtg_cas01.gat,73,6,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-12	722
-//prtg_cas01.gat,55,46,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-13	722
-//prtg_cas01.gat,45,46,4		duplicate(GdFlag_V1)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V1-14	722
+prt_gld.gat,131,60,6		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-01	722
+prt_gld.gat,138,68,6		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-02	722
+prt_gld.gat,138,60,6		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-03	722
+prt_gld.gat,135,60,6		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-04	722
+//prtg_cas01.gat,58,56,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-05	722
+//prtg_cas01.gat,64,56,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-06	722
+//prtg_cas01.gat,76,32,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-07	722
+//prtg_cas01.gat,84,32,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-08	722
+//prtg_cas01.gat,94,39,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-09	722
+//prtg_cas01.gat,94,24,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-10	722
+//prtg_cas01.gat,73,14,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-11	722
+//prtg_cas01.gat,73,6,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-12	722
+//prtg_cas01.gat,55,46,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-13	722
+//prtg_cas01.gat,45,46,4		duplicate(GdFlag_V1)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V1-14	722
 
 //==========================================
-// V2 : ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// V2 : ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	GdFlag_V2	722,{
 	callfunc "FlagSrc",1,"prtg_cas02.gat",0,0;
@@ -657,7 +657,7 @@ OnFlagEmb_V2:
 	end;
 }
 
-prt_gld.gat,153,213,3	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-00	722,{
+prt_gld.gat,153,213,3	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-00	722,{
 	callfunc "FlagSrc",1,"prtg_cas02.gat",71,36;
 	close;
 OnAgitInit:
@@ -666,25 +666,25 @@ OnFlagEmb_V2:
 	end;
 }
 
-prt_gld.gat,244,126,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-01	722
-prt_gld.gat,244,128,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-02	722
-prt_gld.gat,236,126,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-03	722
-prt_gld.gat,236,128,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-04	722
-//prtg_cas02.gat,40,227,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-05	722
-//prtg_cas02.gat,46,227,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-06	722
-//prtg_cas02.gat,11,219,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-07	722
-//prtg_cas02.gat,11,214,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-08	722
-//prtg_cas02.gat,20,219,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-09	722
-//prtg_cas02.gat,20,214,4		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-10	722
-//prtg_cas02.gat,79,227,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-11	722
-//prtg_cas02.gat,70,227,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-12	722
-//prtg_cas02.gat,38,189,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-13	722
-//prtg_cas02.gat,34,189,8		duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-14	722
-//prtg_cas02.gat,153,161,4	duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-15	722
-//prtg_cas02.gat,162,161,4	duplicate(GdFlag_V2)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V2-16	722
+prt_gld.gat,244,126,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-01	722
+prt_gld.gat,244,128,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-02	722
+prt_gld.gat,236,126,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-03	722
+prt_gld.gat,236,128,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-04	722
+//prtg_cas02.gat,40,227,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-05	722
+//prtg_cas02.gat,46,227,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-06	722
+//prtg_cas02.gat,11,219,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-07	722
+//prtg_cas02.gat,11,214,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-08	722
+//prtg_cas02.gat,20,219,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-09	722
+//prtg_cas02.gat,20,214,4		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-10	722
+//prtg_cas02.gat,79,227,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-11	722
+//prtg_cas02.gat,70,227,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-12	722
+//prtg_cas02.gat,38,189,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-13	722
+//prtg_cas02.gat,34,189,8		duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-14	722
+//prtg_cas02.gat,153,161,4	duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-15	722
+//prtg_cas02.gat,162,161,4	duplicate(GdFlag_V2)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V2-16	722
 
 //==========================================
-// V3 : ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// V3 : ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	GdFlag_V3	722,{
 	callfunc "FlagSrc",1,"prtg_cas03.gat",0,0;
@@ -696,7 +696,7 @@ OnFlagEmb_V3:
 	end;
 }
 
-prt_gld.gat,150,220,2	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-00	722,{
+prt_gld.gat,150,220,2	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-00	722,{
 	callfunc "FlagSrc",1,"prtg_cas03.gat",181,215;
 	close;
 OnAgitInit:
@@ -705,23 +705,23 @@ OnFlagEmb_V3:
 	end;
 }
 
-prt_gld.gat,147,140,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-01	722
-prt_gld.gat,147,136,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-02	722
-prt_gld.gat,158,140,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-03	722
-prt_gld.gat,158,136,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-04	722
-//prtg_cas03.gat,168,28,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-05	722
-//prtg_cas03.gat,182,28,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-06	722
-//prtg_cas03.gat,43,50,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-07	722
-//prtg_cas03.gat,48,50,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-08	722
-//prtg_cas03.gat,43,58,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-09	722
-//prtg_cas03.gat,48,58,4		duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-10	722
-//prtg_cas03.gat,158,210,4	duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-11	722
-//prtg_cas03.gat,169,210,4	duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-12	722
-//prtg_cas03.gat,162,201,4	duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-13	722
-//prtg_cas03.gat,165,201,4	duplicate(GdFlag_V3)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V3-14	722
+prt_gld.gat,147,140,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-01	722
+prt_gld.gat,147,136,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-02	722
+prt_gld.gat,158,140,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-03	722
+prt_gld.gat,158,136,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-04	722
+//prtg_cas03.gat,168,28,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-05	722
+//prtg_cas03.gat,182,28,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-06	722
+//prtg_cas03.gat,43,50,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-07	722
+//prtg_cas03.gat,48,50,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-08	722
+//prtg_cas03.gat,43,58,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-09	722
+//prtg_cas03.gat,48,58,4		duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-10	722
+//prtg_cas03.gat,158,210,4	duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-11	722
+//prtg_cas03.gat,169,210,4	duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-12	722
+//prtg_cas03.gat,162,201,4	duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-13	722
+//prtg_cas03.gat,165,201,4	duplicate(GdFlag_V3)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V3-14	722
 
 //==========================================
-// V4 : ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// V4 : ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	GdFlag_V4	722,{
 	callfunc "FlagSrc",1,"prtg_cas04.gat",0,0;
@@ -733,7 +733,7 @@ OnFlagEmb_V4:
 	end;
 }
 
-prt_gld.gat,169,220,6	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-00	722,{
+prt_gld.gat,169,220,6	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-00	722,{
 	callfunc "FlagSrc",1,"prtg_cas04.gat",258,247;
 	close;
 OnAgitInit:
@@ -742,23 +742,23 @@ OnFlagEmb_V4:
 	end;
 }
 
-prt_gld.gat,120,243,6		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-01	722
-prt_gld.gat,120,236,6		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-02	722
-prt_gld.gat,122,243,6		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-03	722
-prt_gld.gat,122,236,6		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-04	722
-//prtg_cas04.gat,82,29,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-05	722
-//prtg_cas04.gat,75,29,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-06	722
-//prtg_cas04.gat,75,27,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-07	722
-//prtg_cas04.gat,82,27,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-08	722
-//prtg_cas04.gat,59,29,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-09	722
-//prtg_cas04.gat,67,29,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-10	722
-//prtg_cas04.gat,258,25,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-11	722
-//prtg_cas04.gat,258,20,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-12	722
-//prtg_cas04.gat,263,20,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-13	722
-//prtg_cas04.gat,263,27,4		duplicate(GdFlag_V4)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V4-14	722
+prt_gld.gat,120,243,6		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-01	722
+prt_gld.gat,120,236,6		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-02	722
+prt_gld.gat,122,243,6		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-03	722
+prt_gld.gat,122,236,6		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-04	722
+//prtg_cas04.gat,82,29,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-05	722
+//prtg_cas04.gat,75,29,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-06	722
+//prtg_cas04.gat,75,27,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-07	722
+//prtg_cas04.gat,82,27,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-08	722
+//prtg_cas04.gat,59,29,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-09	722
+//prtg_cas04.gat,67,29,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-10	722
+//prtg_cas04.gat,258,25,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-11	722
+//prtg_cas04.gat,258,20,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-12	722
+//prtg_cas04.gat,263,20,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-13	722
+//prtg_cas04.gat,263,27,4		duplicate(GdFlag_V4)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V4-14	722
 
 //==========================================
-// V5 : ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// V5 : ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 -	script	GdFlag_V5	722,{
 	callfunc "FlagSrc",1,"prtg_cas05.gat",0,0;
@@ -770,7 +770,7 @@ OnFlagEmb_V5:
 	end;
 }
 
-prt_gld.gat,167,213,5	script	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-00	722,{
+prt_gld.gat,167,213,5	script	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-00	722,{
 	callfunc "FlagSrc",1,"prtg_cas05.gat",52,41;
 	close;
 OnAgitInit:
@@ -779,15 +779,15 @@ OnFlagEmb_V5:
 	end;
 }
 
-prt_gld.gat,199,243,2		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-01	722
-prt_gld.gat,199,236,2		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-02	722
-prt_gld.gat,197,243,2		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-03	722
-prt_gld.gat,197,236,2		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-04	722
-//prtg_cas05.gat,19,247,4		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-05	722
-//prtg_cas05.gat,19,243,4		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-06	722
-//prtg_cas05.gat,26,247,4		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-07	722
-//prtg_cas05.gat,26,243,4		duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-08	722
-//prtg_cas05.gat,249,289,4	duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-09	722
-//prtg_cas05.gat,256,289,4	duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-10	722
-//prtg_cas05.gat,253,271,4	duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-11	722
-//prtg_cas05.gat,273,257,4	duplicate(GdFlag_V5)	ã‚®ãƒ«ãƒ‰ãƒ•ãƒ©ãƒƒã‚°#V5-12	722
+prt_gld.gat,199,243,2		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-01	722
+prt_gld.gat,199,236,2		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-02	722
+prt_gld.gat,197,243,2		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-03	722
+prt_gld.gat,197,236,2		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-04	722
+//prtg_cas05.gat,19,247,4		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-05	722
+//prtg_cas05.gat,19,243,4		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-06	722
+//prtg_cas05.gat,26,247,4		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-07	722
+//prtg_cas05.gat,26,243,4		duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-08	722
+//prtg_cas05.gat,249,289,4	duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-09	722
+//prtg_cas05.gat,256,289,4	duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-10	722
+//prtg_cas05.gat,253,271,4	duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-11	722
+//prtg_cas05.gat,273,257,4	duplicate(GdFlag_V5)	ƒMƒ‹ƒhƒtƒ‰ƒbƒO#V5-12	722

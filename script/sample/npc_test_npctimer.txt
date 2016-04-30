@@ -1,9 +1,9 @@
-prontera.gat,156,183,0	script	NPCtimerãƒ†ã‚¹ãƒˆ::npctimerX0000	116,{
-	mes "ã‚¿ã‚¤ãƒãƒ¼å€¤" + getnpctimer(0);
-	mes "ã‚¿ã‚¤ãƒãƒ¼çŠ¶æ…‹" + getnpctimer(1,"npctimerX0000");
-	mes "ã‚¤ãƒ™ãƒ³ãƒˆå€‹æ•°" + getnpctimer(2);
+prontera.gat,156,183,0	script	NPCtimerƒeƒXƒg::npctimerX0000	116,{
+	mes "ƒ^ƒCƒ}[’l" + getnpctimer(0);
+	mes "ƒ^ƒCƒ}[ó‘Ô" + getnpctimer(1,"npctimerX0000");
+	mes "ƒCƒxƒ“ƒgŒÂ”" + getnpctimer(2);
 	next;
-	switch(select("åˆæœŸåŒ–","åœæ­¢","å†é–‹","è¨­å®š")) {
+	switch(select("‰Šú‰»","’â~","ÄŠJ","İ’è")) {
 	case 1:
 		initnpctimer;
 		close;
@@ -20,12 +20,12 @@ prontera.gat,156,183,0	script	NPCtimerãƒ†ã‚¹ãƒˆ::npctimerX0000	116,{
 	}
 	end;
 OnTimer1000:
-	announce "1ç§’çµŒé",0;
+	announce "1•bŒo‰ß",0;
 	end;
 OnTimer5000:
-	announce "5ç§’çµŒé",0;
+	announce "5•bŒo‰ß",0;
 	end;
 OnTimer10000:
-	announce "10ç§’çµŒé",0;
+	announce "10•bŒo‰ß",0;
 	end;
 }

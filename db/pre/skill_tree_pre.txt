@@ -1,14 +1,14 @@
 //skill_tree.txt
-// Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,JobLv,Class
+// Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,�v5�܂ŌJ��Ԃ�,BaseLv,JobLv,Class
 
 // Lord Knight
-1,7,397,5,55,10,58,5,63,1,0,0,0,0,0,0,2//LK_SPIRALPIERCE	#スパイラルピアース#
+1,7,397,5,55,10,58,5,63,1,0,0,0,0,0,0,2//LK_SPIRALPIERCE	#�X�p�C�����s�A�[�X#
 
 // Chaser
-1,16,390,5,215,1,0,0,0,0,0,0,0,0,0,0,2//ST_REJECTSWORD	#リジェクトソード#
+1,16,390,5,215,1,0,0,0,0,0,0,0,0,0,0,2//ST_REJECTSWORD	#���W�F�N�g�\�[�h#
 
 // Rune Knight(High)
-1,29,397,5,55,10,58,5,63,1,0,0,0,0,0,0,2	//LK_SPIRALPIERCE#スパイラルピアース#
+1,29,397,5,55,10,58,5,63,1,0,0,0,0,0,0,2	//LK_SPIRALPIERCE#�X�p�C�����s�A�[�X#
 
 // Shadow Chaser(High)
-1,41,390,5,215,1,0,0,0,0,0,0,0,0,0,0,2	//ST_REJECTSWORD#リジェクトソード#
+1,41,390,5,215,1,0,0,0,0,0,0,0,0,0,0,2	//ST_REJECTSWORD#���W�F�N�g�\�[�h#

@@ -1,14 +1,14 @@
 //==============================================================================
 // Ragnarok Online Job Group Functions
 //==============================================================================
-//	Grp_Novice  ï¼šã€€ã€€ãƒŽãƒ¼ãƒ“ã‚¹ç³»åˆ—ï¼ˆãƒŽãƒ¼ãƒ“ã‚¹ã€ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹ï¼‰
-//	Grp_Swordmanï¼šã€€ã‚½ãƒ¼ãƒ‰ãƒžãƒ³ç³»åˆ—ï¼ˆã‚½ãƒ¼ãƒ‰ãƒžãƒ³ã€ãƒŠã‚¤ãƒˆã€ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼ï¼‰
-//	Grp_Magicianï¼šã€€ãƒžã‚¸ã‚·ãƒ£ãƒ³ç³»åˆ—ï¼ˆãƒžã‚¸ã‚·ãƒ£ãƒ³ã€ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã€ã‚»ãƒ¼ã‚¸ï¼‰
-//	Grp_Archer  ï¼šã€€ã‚¢ãƒ¼ãƒãƒ£ãƒ¼ç³»åˆ—ï¼ˆã‚¢ãƒãƒ£ã€ãƒãƒ³ã‚¿ã€ãƒãƒ¼ãƒ‰ã€ãƒ€ãƒ³ã‚µãƒ¼ï¼‰
-//	Grp_Acolyte ï¼šã€€ã‚¢ã‚³ãƒ©ã‚¤ãƒˆç³»åˆ—ï¼ˆã‚¢ã‚³ãƒ©ã‚¤ãƒˆã€ãƒ—ãƒªãƒ¼ã‚¹ãƒˆã€ãƒ¢ãƒ³ã‚¯ï¼‰k
-//	Grp_Merchantï¼šãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆç³»åˆ—ï¼ˆãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆã€ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã€ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆï¼‰
-//	Grp_Thief   ï¼šã€€ã€€ã€€ã‚·ãƒ¼ãƒ•ç³»åˆ—ï¼ˆã‚·ãƒ¼ãƒ•ã€ã‚¢ã‚µã‚·ãƒ³ã€ãƒ­ãƒ¼ã‚°ï¼‰
-//	Grp_TaeKwon ï¼šã€€ã€€ã€€ãƒ†ã‚³ãƒ³ç³»åˆ—ï¼ˆãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰ã€æ‹³è–ã€ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼ï¼‰
+//	Grp_Novice  F@@ƒm[ƒrƒXŒn—ñiƒm[ƒrƒXAƒX[ƒp[ƒm[ƒrƒXj
+//	Grp_SwordmanF@ƒ\[ƒhƒ}ƒ“Œn—ñiƒ\[ƒhƒ}ƒ“AƒiƒCƒgAƒNƒ‹ƒZƒCƒ_[j
+//	Grp_MagicianF@ƒ}ƒWƒVƒƒƒ“Œn—ñiƒ}ƒWƒVƒƒƒ“AƒEƒBƒU[ƒhAƒZ[ƒWj
+//	Grp_Archer  F@ƒA[ƒ`ƒƒ[Œn—ñiƒAƒ`ƒƒAƒnƒ“ƒ^Aƒo[ƒhAƒ_ƒ“ƒT[j
+//	Grp_Acolyte F@ƒAƒRƒ‰ƒCƒgŒn—ñiƒAƒRƒ‰ƒCƒgAƒvƒŠ[ƒXƒgAƒ‚ƒ“ƒNjk
+//	Grp_MerchantFƒ}[ƒ`ƒƒƒ“ƒgŒn—ñiƒ}[ƒ`ƒƒƒ“ƒgAƒuƒ‰ƒbƒNƒXƒ~ƒXAƒAƒ‹ƒPƒ~ƒXƒgj
+//	Grp_Thief   F@@@ƒV[ƒtŒn—ñiƒV[ƒtAƒAƒTƒVƒ“Aƒ[ƒOj
+//	Grp_TaeKwon F@@@ƒeƒRƒ“Œn—ñiƒeƒRƒ“ƒLƒbƒhAŒ¹Aƒ\ƒEƒ‹ƒŠƒ“ƒJ[j
 //------------------------------------------------------------------------------
 function	script	JobGroup	{
 	set '@cnt, 0;

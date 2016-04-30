@@ -1,32 +1,32 @@
 //=========================================================================
-// ã‚¢ã‚¸ãƒˆãƒ€ãƒ³ã‚¸ãƒ§ãƒ³è¡Œãã®ã‚¹ã‚¤ãƒƒãƒ
+// ƒAƒWƒgƒ_ƒ“ƒWƒ‡ƒ“s‚«‚ÌƒXƒCƒbƒ`
 //	callfunc "DungeonSwitch","MAP",X,Y;
 //-------------------------------------------------------------------------
 
 function	script	DungeonSwitch	{
-	mes "[å£°]";
-	mes "è©¦ç·´ã«æŒ‘ã‚€ãªã‚‰ã°å…ˆã¸é€²ã‚€ãŒã‚ˆã„";
+	mes "[º]";
+	mes "—û‚É’§‚Ş‚È‚ç‚Îæ‚Öi‚Ş‚ª‚æ‚¢";
 	next;
 	mes " ";
-	mes "å°ã•ãªãƒ¬ãƒãƒ¼ãŒã‚ã‚Šã¾ã™ã€‚";
-	mes "å¼•ãã¾ã™ã‹ï¼Ÿ";
+	mes "¬‚³‚ÈƒŒƒo[‚ª‚ ‚è‚Ü‚·B";
+	mes "ˆø‚«‚Ü‚·‚©H";
 	next;
-	if(select("å¼•ã","å¼•ã‹ãªã„")==2)
+	if(select("ˆø‚­","ˆø‚©‚È‚¢")==2)
 		return;
-	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ä»¥å¤–ã¯ãƒ€ãƒŸãƒ¼
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ˆÈŠO‚Íƒ_ƒ~[
 	set '@gid,getcastledata('@map$,1);
 	if('@gid && '@gid == getcharid(2)) {
 		warp getarg(0),getarg(1),getarg(2);
 		end;
 	}
 	mes " ";
-	mes "ã—ã‹ã—ä½•ã‚‚èµ·ã“ã‚‰ãªã‹ã£ãŸã€‚";
+	mes "‚µ‚©‚µ‰½‚à‹N‚±‚ç‚È‚©‚Á‚½B";
 	return;
 }
 
 
 //==========================================
-// ãƒ«ã‚¤ãƒ¼ãƒŠ
+// ƒ‹ƒC[ƒi
 //------------------------------------------
 aldeg_cas01.gat,211,179,0	script	#DungeonSwitch_L1	111,{
 	callfunc "DungeonSwitch","gld_dun02.gat",32,122;
@@ -54,7 +54,7 @@ aldeg_cas05.gat,23,205,0		script	#DungeonSwitch_L5	111,{
 }
 
 //==========================================
-// ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+// ƒuƒŠƒgƒjƒA
 //------------------------------------------
 gefg_cas01.gat,78,84,0	script	#DungeonSwitch_B1	111,{
 	callfunc "DungeonSwitch","gld_dun04.gat",39,258;
@@ -82,7 +82,7 @@ gefg_cas05.gat,65,22,0	script	#DungeonSwitch_B5	111,{
 }
 
 //==========================================
-// ãƒãƒ¥ãƒ³ãƒªãƒ 
+// ƒ`ƒ…ƒ“ƒŠƒ€
 //------------------------------------------
 payg_cas01.gat,101,25,0		script	#DungeonSwitch_C1	111,{
 	callfunc "DungeonSwitch","gld_dun01.gat",186,165;
@@ -110,7 +110,7 @@ payg_cas05.gat,238,11,0		script	#DungeonSwitch_C5	111,{
 }
 
 //==========================================
-// ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+// ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 //------------------------------------------
 prtg_cas01.gat,94,200,0	script	#DungeonSwitch_V1	111,{
 	callfunc "DungeonSwitch","gld_dun03.gat",28,251;

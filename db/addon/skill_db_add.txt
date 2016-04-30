@@ -1,2 +1,2 @@
-//skill_db.txtã¸ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
+//skill_db.txt‚ÖƒI[ƒo[ƒ‰ƒCƒh
 //id,range,hit,inf,pl,nk,max,list_num,castcancel,cast_defence_rate,inf2,maxcount,skill_type,blow_count

@@ -1,45 +1,45 @@
 //=========================================================================
-// ã‚¢ã‚¸ãƒˆæ”¾æ£„ãƒ»ã‚®ãƒ«ãƒ‰è§£ä½“å…±é€šãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³
+// ƒAƒWƒg•úŠüEƒMƒ‹ƒh‰ğ‘Ì‹¤’Êƒtƒ@ƒ“ƒNƒVƒ‡ƒ“
 //	callfunc "AgitGiveUp","AgitCode";
 //
-// â–  ã‚­ãƒ£ã‚¹ãƒˆ
-//	"::OnFlagEmb_XY" ã¯npc_gvg_flag.txtã‚’å‚ç…§
+// ¡ ƒLƒƒƒXƒg
+//	"::OnFlagEmb_XY" ‚Ínpc_gvg_flag.txt‚ğQÆ
 //
-// â–  function
-//	æ”»åŸæˆ¦ä¸­ãªã‚‰function "AgitSummon" ã‚’å‘¼ã³å‡ºã™ï¼ˆnpc_gvg_monsterï¼‰
+// ¡ function
+//	Uéí’†‚È‚çfunction "AgitSummon" ‚ğŒÄ‚Ño‚·inpc_gvg_monsterj
 //-------------------------------------------------------------------------
 
 function	script	AgitGiveUp	{
-	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ä»¥å¤–ã¯ãƒ€ãƒŸãƒ¼
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ˆÈŠO‚Íƒ_ƒ~[
 	killmonsterall '@map$;
 	disablenpc "AgitKafra_"+getarg(0);
 	for(set '@i,1; '@i<=17; set '@i,'@i+1) {
 		setcastledata '@map$,'@i,('@i==2 || '@i==3)? 1: 0;
 	}
-	donpcevent "::OnFlagEmb_"+getarg(0);		//ãƒ•ãƒ©ãƒƒã‚°ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ ã®å¤‰æ›´
+	donpcevent "::OnFlagEmb_"+getarg(0);		//ƒtƒ‰ƒbƒOƒGƒ“ƒuƒŒƒ€‚Ì•ÏX
 	maprespawnguildid '@map$,0,7;
 	if(agitcheck())
-		callfunc "AgitSummon",getarg(0);	//MobãŠã‚ˆã³ã‚¨ãƒ³ãƒšå¬å–š
+		callfunc "AgitSummon",getarg(0);	//Mob‚¨‚æ‚ÑƒGƒ“ƒy¢Š«
 	return;
 }
 
 
 //=========================================================================
-// æ”»åŸæˆ¦å®Ÿè¡Œéƒ¨
-//	å…¨ã¦ã®å‡¦ç†ã¯ã“ã“ã§è¡Œã†ï¼
+// UéíÀs•”
+//	‘S‚Ä‚Ìˆ—‚Í‚±‚±‚Ås‚¤I
 //
-// ã€€â€» strnpcinfo(2) ã«ã‚ˆã‚Šã‚¢ã‚¸ãƒˆã‚³ãƒ¼ãƒ‰ã‚’å–å¾—ã™ã‚‹
-//      duplicateã™ã‚‹ã®ã§æ¯å›NPCã®å±…ã‚‹MAPåã‚’é–¢æ•°ä¾å­˜å¤‰æ•°ã«å–å¾—ã™ã‚‹
+// @¦ strnpcinfo(2) ‚É‚æ‚èƒAƒWƒgƒR[ƒh‚ğæ“¾‚·‚é
+//      duplicate‚·‚é‚Ì‚Å–ˆ‰ñNPC‚Ì‹‚éMAP–¼‚ğŠÖ”ˆË‘¶•Ï”‚Éæ“¾‚·‚é
 //-------------------------------------------------------------------------
 
 -	script	AgitExe	-1,{
 OnAgitInit:
-	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ä»¥å¤–ã¯ãƒ€ãƒŸãƒ¼
-	if('@map$ == "-")					//duplicateå…ƒã¯ä½•ã‚‚ã—ãªã„
+	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);		//'@map$ˆÈŠO‚Íƒ_ƒ~[
+	if('@map$ == "-")					//duplicateŒ³‚Í‰½‚à‚µ‚È‚¢
 		end;
 	if(getcastledata('@map$,9) == 0)
 		disablenpc "AgitKafra_"+strnpcinfo(2);
-	for(set '@i,10; '@i<=17; set '@i,'@i+1) {	//è¨­ç½®æ¸ˆã¿ãƒ•ãƒ©ã‚°ãŒã‚ã‚Œã°ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³å¬å–š
+	for(set '@i,10; '@i<=17; set '@i,'@i+1) {	//İ’uÏ‚İƒtƒ‰ƒO‚ª‚ ‚ê‚ÎƒK[ƒfƒBƒAƒ“¢Š«
 		if(getcastledata('@map$,'@i))
 			callfunc "GuardianCall",strnpcinfo(2),'@i,0;
 	}
@@ -49,7 +49,7 @@ OnAgitStart:
 	if('@map$ == "-")
 		end;
 	maprespawnguildid '@map$,getcastledata('@map$,1),2;
-	callfunc "AgitSummon",strnpcinfo(2);	//ã‚¨ãƒ³ãƒšå¬å–š(npc_gvg_monster.txt)
+	callfunc "AgitSummon",strnpcinfo(2);	//ƒGƒ“ƒy¢Š«(npc_gvg_monster.txt)
 	gvgon '@map$;
 	end;
 OnAgitBreak:
@@ -57,7 +57,7 @@ OnAgitBreak:
 	if('@map$ == "-")
 		end;
 	killmonsterall '@map$;
-	set '@gid,getcharid(2);		//ã‚¨ãƒ³ãƒšç ´å£Šè€…ã®RIDã‚’å–å¾—ã§ãã‚‹
+	set '@gid,getcharid(2);		//ƒGƒ“ƒy”j‰óÒ‚ÌRID‚ğæ“¾‚Å‚«‚é
 	if('@gid <= 0)
 		end;
 	setcastledata '@map$,1,'@gid;
@@ -69,17 +69,17 @@ OnAgitBreak:
 		else
 			setcastledata '@map$,'@i,0;
 	}
-	announce "ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãŒç ´å£Šã•ã‚Œã¾ã—ãŸ",9,0x00ff00;
+	announce "ƒGƒ“ƒyƒŠƒEƒ€‚ª”j‰ó‚³‚ê‚Ü‚µ‚½",9,0x00ff00;
 	sleep 800;
-	announce "ç ¦ [" +getcastlename('@map$)+ "]ã‚’ [" +getguildname('@gid)+ "] ã‚®ãƒ«ãƒ‰ãŒå é ˜ã—ã¾ã—ãŸ",0x20;
-	donpcevent "::OnFlagEmb_"+strnpcinfo(2);	//ãƒ•ãƒ©ãƒƒã‚°ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ ã®å¤‰æ›´(npc_gvg_flag.txt)
+	announce "Ô [" +getcastlename('@map$)+ "]‚ğ [" +getguildname('@gid)+ "] ƒMƒ‹ƒh‚ªè—Ì‚µ‚Ü‚µ‚½",0x20;
+	donpcevent "::OnFlagEmb_"+strnpcinfo(2);	//ƒtƒ‰ƒbƒOƒGƒ“ƒuƒŒƒ€‚Ì•ÏX(npc_gvg_flag.txt)
 	end;
 OnAgitEliminate:
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
 	if('@map$ == "-")
 		end;
 	maprespawnguildid '@map$,getcastledata('@map$,1),6;
-	callfunc "AgitSummon",strnpcinfo(2);	//ã‚¨ãƒ³ãƒšã®ã¿å†å¬å–š(npc_gvg_monster.txt)
+	callfunc "AgitSummon",strnpcinfo(2);	//ƒGƒ“ƒy‚Ì‚İÄ¢Š«(npc_gvg_monster.txt)
 	end;
 OnGuildBreak:
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
@@ -92,30 +92,30 @@ OnAgitEnd:
 	if('@map$ == "-")
 		end;
 	maprespawnguildid '@map$,getcastledata('@map$,1),4;
-	killmonster '@map$,strnpcinfo(0)+"::OnAgitBreak";	//ã‚¨ãƒ³ãƒšã®ã¿æŠ¹æ®º
+	killmonster '@map$,strnpcinfo(0)+"::OnAgitBreak";	//ƒGƒ“ƒy‚Ì‚İ–•E
 	gvgoff '@map$;
 	end;
 }
 
-//ãƒ«ã‚¤ãƒ¼ãƒŠ
+//ƒ‹ƒC[ƒi
 aldeg_cas01.gat,0,0,0	duplicate(AgitExe)	AgitExe#L1	-1
 aldeg_cas02.gat,0,0,0	duplicate(AgitExe)	AgitExe#L2	-1
 aldeg_cas03.gat,0,0,0	duplicate(AgitExe)	AgitExe#L3	-1
 aldeg_cas04.gat,0,0,0	duplicate(AgitExe)	AgitExe#L4	-1
 aldeg_cas05.gat,0,0,0	duplicate(AgitExe)	AgitExe#L5	-1
-//ãƒ–ãƒªãƒˆãƒ‹ã‚¢
+//ƒuƒŠƒgƒjƒA
 gefg_cas01.gat,0,0,0	duplicate(AgitExe)	AgitExe#B1	-1
 gefg_cas02.gat,0,0,0	duplicate(AgitExe)	AgitExe#B2	-1
 gefg_cas03.gat,0,0,0	duplicate(AgitExe)	AgitExe#B3	-1
 gefg_cas04.gat,0,0,0	duplicate(AgitExe)	AgitExe#B4	-1
 gefg_cas05.gat,0,0,0	duplicate(AgitExe)	AgitExe#B5	-1
-//ãƒãƒ¥ãƒ³ãƒªãƒ 
+//ƒ`ƒ…ƒ“ƒŠƒ€
 payg_cas01.gat,0,0,0	duplicate(AgitExe)	AgitExe#C1	-1
 payg_cas02.gat,0,0,0	duplicate(AgitExe)	AgitExe#C2	-1
 payg_cas03.gat,0,0,0	duplicate(AgitExe)	AgitExe#C3	-1
 payg_cas04.gat,0,0,0	duplicate(AgitExe)	AgitExe#C4	-1
 payg_cas05.gat,0,0,0	duplicate(AgitExe)	AgitExe#C5	-1
-//ãƒ´ã‚¡ãƒ«ã‚­ãƒªãƒ¼ãƒ¬ãƒ«ãƒ 
+//ƒ”ƒ@ƒ‹ƒLƒŠ[ƒŒƒ‹ƒ€
 prtg_cas01.gat,0,0,0	duplicate(AgitExe)	AgitExe#V1	-1
 prtg_cas02.gat,0,0,0	duplicate(AgitExe)	AgitExe#V2	-1
 prtg_cas03.gat,0,0,0	duplicate(AgitExe)	AgitExe#V3	-1

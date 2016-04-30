@@ -1,29 +1,29 @@
 /*=========================================================================
- * æ±ç”¨æ–‡å­—åˆ—å‡¦ç†ãƒ¦ãƒ¼ã‚¶ãƒ¼å®šç¾©é–¢æ•°ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ©ã‚¤ãƒ–ãƒ©ãƒª
+ * ”Ä—p•¶š—ñˆ—ƒ†[ƒU[’è‹`ŠÖ”ƒXƒNƒŠƒvƒgƒ‰ƒCƒuƒ‰ƒŠ
  *				created by Rayce (rewritten Auriga068)
  *
- * â–  substré–¢æ•°ã‚’åˆ©ç”¨ã™ã‚‹ã“ã¨ã§æ–‡å­—åˆ—å‡¦ç†ç”¨ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªé–¢æ•°ã‚’ä½œæˆã™ã‚‹
- *    ã“ã¨ãŒã§ãã¾ã™ã€‚
- *    æœ¬æ¥ãªã‚‰ã°ä½¿ã„ãŸã„é–¢æ•°ã‚’script.cã«ç›´æ¥è¿½åŠ ã™ã‚‹ã¨ã“ã‚ã§ã™ãŒ
- *    å…¨ã¦ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªé–¢æ•°ã‚’è¿½åŠ ã—ã¦ã„ãã®ã¯ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã«ç„¡é§„ãŒç”Ÿã˜ã¾ã™
- *    ï¼ˆã—ã‹ã‚‚æ–‡å­—åˆ—å‡¦ç†ã‚’è¡Œã‚ãªã„äººãªã‚‰ã°å…¨ãå¿…è¦ãªã„ï¼‰ã€‚
- *    substré–¢æ•°ã¯Perlãƒ©ã‚¤ã‚¯ãªä»•æ§˜ã«ãªã£ã¦ã„ã‚‹ãŸã‚ã€ä»»æ„ã®æ–‡å­—åˆ—ã‚’æŸ”è»Ÿã«
- *    å–ã‚Šå‡ºã™ã“ã¨ãŒå¯èƒ½ã§ã™ã€‚
- *    getstrlené–¢æ•°ã¨çµ„ã¿åˆã‚ã›ã‚‹ã“ã¨ã§ã‹ãªã‚Šã®ç¯„å›²ã®æ–‡å­—åˆ—å‡¦ç†ãŒå®Ÿç¾ã§ãã¾ã™ã€‚
- *    ã“ã“ã§ã¯é »ç¹ã«ä½¿ã„ãã†ãªfunctionã®ä¾‹ã‚’ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã¨ã—ã¦ç”¨æ„ã—ã¦ãŠãã¾ã™ã€‚
+ * ¡ substrŠÖ”‚ğ—˜—p‚·‚é‚±‚Æ‚Å•¶š—ñˆ——p‚Ìƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ğì¬‚·‚é
+ *    ‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+ *    –{—ˆ‚È‚ç‚Îg‚¢‚½‚¢ŠÖ”‚ğscript.c‚É’¼Ú’Ç‰Á‚·‚é‚Æ‚±‚ë‚Å‚·‚ª
+ *    ‘S‚Ä‚Ìƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ğ’Ç‰Á‚µ‚Ä‚¢‚­‚Ì‚Íƒ\[ƒXƒR[ƒh‚É–³‘Ê‚ª¶‚¶‚Ü‚·
+ *    i‚µ‚©‚à•¶š—ñˆ—‚ğs‚í‚È‚¢l‚È‚ç‚Î‘S‚­•K—v‚È‚¢jB
+ *    substrŠÖ”‚ÍPerlƒ‰ƒCƒN‚Èd—l‚É‚È‚Á‚Ä‚¢‚é‚½‚ßA”CˆÓ‚Ì•¶š—ñ‚ğ_“î‚É
+ *    æ‚èo‚·‚±‚Æ‚ª‰Â”\‚Å‚·B
+ *    getstrlenŠÖ”‚Æ‘g‚İ‡‚í‚¹‚é‚±‚Æ‚Å‚©‚È‚è‚Ì”ÍˆÍ‚Ì•¶š—ñˆ—‚ªÀŒ»‚Å‚«‚Ü‚·B
+ *    ‚±‚±‚Å‚Í•p”É‚Ég‚¢‚»‚¤‚Èfunction‚Ì—á‚ğƒ‰ƒCƒuƒ‰ƒŠ‚Æ‚µ‚Ä—pˆÓ‚µ‚Ä‚¨‚«‚Ü‚·B
  *
- * â–  Cè¨€èªã¨ã¯é•ã„ãƒã‚¤ãƒ³ã‚¿ã®æ¦‚å¿µã¯ã‚ã‚Šã¾ã›ã‚“ã®ã§ã€æ–‡å­—åˆ—æ¤œç´¢ç³»ã®
- *    é–¢æ•°ã§ã¯ä½•ç•ªç›®ã«ä¸€è‡´ã—ãŸã‹ã‚’è¿”ã‚Šå€¤ã¨ã—ã¾ã™ã€‚
+ * ¡ CŒ¾Œê‚Æ‚Íˆá‚¢ƒ|ƒCƒ“ƒ^‚ÌŠT”O‚Í‚ ‚è‚Ü‚¹‚ñ‚Ì‚ÅA•¶š—ñŒŸõŒn‚Ì
+ *    ŠÖ”‚Å‚Í‰½”Ô–Ú‚Éˆê’v‚µ‚½‚©‚ğ•Ô‚è’l‚Æ‚µ‚Ü‚·B
  *-------------------------------------------------------------------------
  */
 
 //===============================================
-// å·¦å´ç©ºç™½é™¤å»
+// ¶‘¤‹ó”’œ‹
 //	callfunc("StrTrim","<string>")
 //-----------------------------------------------
 function	script	StrTrim	{
 	set '@dup$,getarg(0);
-	while(1) {	// å‰æ–¹æ¤œç´¢
+	while(1) {	// ‘O•ûŒŸõ
 		set '@buf$,substr('@dup$,'@i,1);
 		if('@buf$ == "" || '@buf$ != " ")
 			break;
@@ -33,12 +33,12 @@ function	script	StrTrim	{
 }
 
 //===============================================
-// å³å´ç©ºç™½é™¤å»
+// ‰E‘¤‹ó”’œ‹
 //	callfunc("StrRTrim","<string>")
 //-----------------------------------------------
 function	script	StrRTrim	{
 	set '@dup$,getarg(0);
-	while(1) {	// å¾Œæ–¹æ¤œç´¢
+	while(1) {	// Œã•ûŒŸõ
 		set '@i,'@i-1;
 		set '@buf$,substr('@dup$,'@i,1);
 		if('@buf$ == "" || '@buf$ != " ")
@@ -48,7 +48,7 @@ function	script	StrRTrim	{
 }
 
 //===============================================
-// æŒ‡å®šæ–‡å­—åˆ—ãŒæœ€ã‚‚å…ˆé ­ã«å‡ºç¾ã™ã‚‹ä½ç½®ã‚’è¿”ã™
+// w’è•¶š—ñ‚ªÅ‚àæ“ª‚ÉoŒ»‚·‚éˆÊ’u‚ğ•Ô‚·
 //	callfunc("StrIndex","<str1>","<str2>")
 //-----------------------------------------------
 function	script	StrIndex	{
@@ -65,7 +65,7 @@ function	script	StrIndex	{
 }
 
 //===============================================
-// æŒ‡å®šæ–‡å­—åˆ—ãŒæœ€ã‚‚æœ«å°¾ã«å‡ºç¾ã™ã‚‹ä½ç½®ã‚’è¿”ã™
+// w’è•¶š—ñ‚ªÅ‚à––”ö‚ÉoŒ»‚·‚éˆÊ’u‚ğ•Ô‚·
 //	callfunc("StrRIndex","<str1>","<str2>")
 //-----------------------------------------------
 function	script	StrRIndex	{
@@ -82,8 +82,8 @@ function	script	StrRIndex	{
 }
 
 //===============================================
-// æŒ‡å®šæ–‡å­—åˆ—ã®ã„ãšã‚Œã‹ã®æ–‡å­—ã‚’æ¢ç´¢
-// å‹•ä½œãŒä¿è¨¼ã•ã‚Œã‚‹ã®ã¯ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®ã¿
+// w’è•¶š—ñ‚Ì‚¢‚¸‚ê‚©‚Ì•¶š‚ğ’Tõ
+// “®ì‚ª•ÛØ‚³‚ê‚é‚Ì‚Í‚PƒoƒCƒg•¶š‚Ì‚İ
 //	callfunc("StrCSpn","<str1>","<str2>")
 //-----------------------------------------------
 function	script	StrCSpn	{
@@ -92,8 +92,8 @@ function	script	StrCSpn	{
 	set '@max,getstrlen('@src$);
 	set '@len,getstrlen('@dst$);
 
-	for(set '@i,0; '@i < '@max; set '@i,'@i+1) {		// <str1>ã®èµ°æŸ»
-		for(set '@j,0; '@j < '@len; set '@j,'@j+1) {	// <str2>ã®èµ°æŸ»
+	for(set '@i,0; '@i < '@max; set '@i,'@i+1) {		// <str1>‚Ì‘–¸
+		for(set '@j,0; '@j < '@len; set '@j,'@j+1) {	// <str2>‚Ì‘–¸
 			if( substr('@src$,'@i,1) == substr('@dst$,'@j,1) )
 				return '@i;
 		}
@@ -102,8 +102,8 @@ function	script	StrCSpn	{
 }
 
 //===============================================
-// æŒ‡å®šæ–‡å­—åˆ—ã®ã„ãšã‚Œã‹ã®æ–‡å­—åˆ—ã‚’æ¢ç´¢
-// ï¼’ãƒã‚¤ãƒˆå˜ä½ã§æ¤œç´¢ã™ã‚‹
+// w’è•¶š—ñ‚Ì‚¢‚¸‚ê‚©‚Ì•¶š—ñ‚ğ’Tõ
+// ‚QƒoƒCƒg’PˆÊ‚ÅŒŸõ‚·‚é
 //	callfunc("StrWCSpn","<str1>","<str2>")
 //-----------------------------------------------
 function	script	StrWCSpn	{
@@ -112,8 +112,8 @@ function	script	StrWCSpn	{
 	set '@max,getstrlen('@src$);
 	set '@len,getstrlen('@dst$);
 
-	for(set '@i,0; '@i < '@max; set '@i,'@i+2) {		// <str1>ã®èµ°æŸ»
-		for(set '@j,0; '@j < '@len; set '@j,'@j+2) {	// <str2>ã®èµ°æŸ»
+	for(set '@i,0; '@i < '@max; set '@i,'@i+2) {		// <str1>‚Ì‘–¸
+		for(set '@j,0; '@j < '@len; set '@j,'@j+2) {	// <str2>‚Ì‘–¸
 			if( substr('@src$,'@i,2) == substr('@dst$,'@j,2) )
 				return '@i;
 		}
@@ -122,7 +122,7 @@ function	script	StrWCSpn	{
 }
 
 //===============================================
-// <n>ç•ªç›®ã‚’ï¼‘ãƒã‚¤ãƒˆå‰Šã‚‹
+// <n>”Ô–Ú‚ğ‚PƒoƒCƒgí‚é
 //	callfunc("StrDelete","<string>",<n>)
 //-----------------------------------------------
 function	script	StrDelete	{
@@ -135,7 +135,7 @@ function	script	StrDelete	{
 }
 
 //===============================================
-// <n>ç•ªç›®ä»¥é™ã®æ–‡å­—åˆ—ã‚’å·¦ã«<len>ãƒã‚¤ãƒˆãšã‚‰ã™
+// <n>”Ô–ÚˆÈ~‚Ì•¶š—ñ‚ğ¶‚É<len>ƒoƒCƒg‚¸‚ç‚·
 //	callfunc("StrShift","<string>",<n>,<len>)
 //-----------------------------------------------
 function	script	StrShift	{
@@ -145,18 +145,18 @@ function	script	StrShift	{
 	if('@n < 0 || '@len < 0 || '@n > getstrlen('@buf$))
 		return "";
 
-	if('@len == 0)		// ãšã‚‰ã›ãªã„ã®ã§ä½•ã‚‚ã—ãªã„
+	if('@len == 0)		// ‚¸‚ç‚¹‚È‚¢‚Ì‚Å‰½‚à‚µ‚È‚¢
 		return '@buf$;
 
-	if('@len > '@n)		// æŒ‡å®šä½ç½®ã‚ˆã‚Šã‚‚shiftå€¤ãŒå¤§ãã„ãªã‚‰shiftå€¤ã‚’ä½ç½®ã«ã™ã‚‹
+	if('@len > '@n)		// w’èˆÊ’u‚æ‚è‚àshift’l‚ª‘å‚«‚¢‚È‚çshift’l‚ğˆÊ’u‚É‚·‚é
 		set '@n,'@len;
 
 	return substr('@buf$,0,'@n - '@len) + substr('@buf$,'@n);
 }
 
 //===============================================
-// <n>ç•ªç›®ä»¥é™ã®æ–‡å­—åˆ—ã‚’å³ã«ãšã‚‰ã—ã¦
-// æŒ‡å®šæ–‡å­—åˆ—ã‚’æŒ¿å…¥ã™ã‚‹
+// <n>”Ô–ÚˆÈ~‚Ì•¶š—ñ‚ğ‰E‚É‚¸‚ç‚µ‚Ä
+// w’è•¶š—ñ‚ğ‘}“ü‚·‚é
 //	callfunc("StrInsert","<str1>",<n>,"<str2>")
 //-----------------------------------------------
 function	script	StrInsert	{
@@ -169,25 +169,25 @@ function	script	StrInsert	{
 }
 
 //===============================================
-// <str1>ã«å«ã¾ã‚Œã‚‹<str2>ã‚’<str3>ã«ç½®æ›
+// <str1>‚ÉŠÜ‚Ü‚ê‚é<str2>‚ğ<str3>‚É’uŠ·
 //	callfunc("StrReplace","<str1>","<str2>","<str3>")
 //-----------------------------------------------
 function	script	StrReplace	{
 	set '@buf$,getarg(0);
 	set '@n,callfunc("StrIndex",'@buf$,getarg(1));
 	if('@n < 0)
-		return '@buf$;	// ä½•ã‚‚ã—ãªã„
+		return '@buf$;	// ‰½‚à‚µ‚È‚¢
 
 	return substr('@buf$,0,'@n) + getarg(2) + substr('@buf$,'@n + getstrlen(getarg(1)));
 }
 
 //===============================================
-// å…ˆé ­ã‹ã‚‰é †ã«<str1>ã«å«ã¾ã‚Œã‚‹<str2>ã‚’
-// <str3>ã«å…¨éƒ¨ç½®æ›ã™ã‚‹
+// æ“ª‚©‚ç‡‚É<str1>‚ÉŠÜ‚Ü‚ê‚é<str2>‚ğ
+// <str3>‚É‘S•”’uŠ·‚·‚é
 //	callfunc("StrAReplace","<str1>","<str2>","<str3>")
 //-----------------------------------------------
 function	script	StrAReplace	{
-	// StrIndexã‚’å±•é–‹ã—ã¦åˆ©ç”¨ã™ã‚‹
+	// StrIndex‚ğ“WŠJ‚µ‚Ä—˜—p‚·‚é
 	set '@src$,getarg(0);
 	set '@dst$,getarg(1);
 	set '@len,getstrlen('@dst$);
@@ -196,16 +196,16 @@ function	script	StrAReplace	{
 	for(set '@i,0; '@i <= '@max; set '@i,'@i+1) {
 		if( substr('@src$,'@i,'@len) == '@dst$ ) {
 			set '@ret$,'@ret$ + substr('@src$,'@pos,'@i - '@pos) + getarg(2);
-			set '@pos,'@i + '@len;	// æ¬¡ã®æ¤œç´¢é–‹å§‹ä½ç½®ã‚’ä¿å­˜
-			set '@i,'@pos-1;	// æ¬¡ã®æ¤œç´¢ä½ç½®ã¾ã§é£›ã°ã™
+			set '@pos,'@i + '@len;	// Ÿ‚ÌŒŸõŠJnˆÊ’u‚ğ•Û‘¶
+			set '@i,'@pos-1;	// Ÿ‚ÌŒŸõˆÊ’u‚Ü‚Å”ò‚Î‚·
 		}
 	}
-	return '@ret$ + substr('@src$,'@pos);	// æ®‹ã‚Šã‚’æœ«å°¾ã¾ã§ç¹‹ã„ã§çµ‚äº†
+	return '@ret$ + substr('@src$,'@pos);	// c‚è‚ğ––”ö‚Ü‚ÅŒq‚¢‚ÅI—¹
 }
 
 //===============================================
-// æ–‡å­—åˆ—ã®ä¸¦ã³ã‚’é€†ã«ã™ã‚‹
-// å‹•ä½œãŒä¿è¨¼ã•ã‚Œã‚‹ã®ã¯ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®ã¿
+// •¶š—ñ‚Ì•À‚Ñ‚ğ‹t‚É‚·‚é
+// “®ì‚ª•ÛØ‚³‚ê‚é‚Ì‚Í‚PƒoƒCƒg•¶š‚Ì‚İ
 //	callfunc("StrReverse","<string>")
 //-----------------------------------------------
 function	script	StrReverse	{
@@ -219,8 +219,8 @@ function	script	StrReverse	{
 }
 
 //===============================================
-// æ–‡å­—åˆ—ã®ä¸¦ã³ã‚’é€†ã«ã™ã‚‹
-// ï¼’ãƒã‚¤ãƒˆå˜ä½ã§ä¸¦ã³æ›¿ãˆã‚‹
+// •¶š—ñ‚Ì•À‚Ñ‚ğ‹t‚É‚·‚é
+// ‚QƒoƒCƒg’PˆÊ‚Å•À‚Ñ‘Ö‚¦‚é
 //	callfunc("StrWReverse","<string>")
 //-----------------------------------------------
 function	script	StrWReverse	{
@@ -230,14 +230,14 @@ function	script	StrWReverse	{
 	for(set '@i,'@len-2; '@i >= 0; set '@i,'@i-2) {
 		set '@ret$,'@ret$ + substr('@buf$,'@i,2);
 	}
-	if('@i != 0)	// æ–‡å­—åˆ—é•·ãŒå¥‡æ•°ã®ã¨ãã¯ä½™ã£ãŸå…ˆé ­1ãƒã‚¤ãƒˆã‚’è¶³ã™
+	if('@i != 0)	// •¶š—ñ’·‚ªŠï”‚Ì‚Æ‚«‚Í—]‚Á‚½æ“ª1ƒoƒCƒg‚ğ‘«‚·
 		set '@ret$,'@ret$ + substr('@buf$,0,1);
 	return '@ret$;
 }
 
 //===============================================
-// æ–‡å­—åˆ—ã®ä¸¦ã³ã‚’ã‚·ãƒ£ãƒƒãƒ•ãƒ«ã™ã‚‹
-// å‹•ä½œãŒä¿è¨¼ã•ã‚Œã‚‹ã®ã¯ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®ã¿
+// •¶š—ñ‚Ì•À‚Ñ‚ğƒVƒƒƒbƒtƒ‹‚·‚é
+// “®ì‚ª•ÛØ‚³‚ê‚é‚Ì‚Í‚PƒoƒCƒg•¶š‚Ì‚İ
 //	callfunc("StrShuffle","<string>")
 //-----------------------------------------------
 function	script	StrShuffle	{
@@ -246,19 +246,19 @@ function	script	StrShuffle	{
 
 	for(set '@i,'@len-1; '@i >= 0; set '@i,'@i-1) {
 		if('@i == 0) {
-			set '@ret$,'@ret$ + '@dup$;			// æœ€å¾Œã¯ä¹±æ•°ä½¿ã‚ãšãã®ã¾ã¾çµåˆ
+			set '@ret$,'@ret$ + '@dup$;			// ÅŒã‚Í—”g‚í‚¸‚»‚Ì‚Ü‚ÜŒ‹‡
 		} else {
 			set '@rand,rand('@i);
 			set '@ret$,'@ret$ + substr('@dup$,'@rand,1);
-			set '@dup$,callfunc("StrDelete",'@dup$,'@rand);	// é¸ã‚“ã æ–‡å­—ã¯å‰Šã‚‹
+			set '@dup$,callfunc("StrDelete",'@dup$,'@rand);	// ‘I‚ñ‚¾•¶š‚Íí‚é
 		}
 	}
 	return '@ret$;
 }
 
 //===============================================
-// <n>ç•ªç›®ã‹ã‚‰ï¼‘ãƒã‚¤ãƒˆãšã¤åˆ†è§£ã—ã¦é…åˆ—ã«æ ¼ç´
-// ãŸã ã—é…åˆ—ä¸Šé™ã®128byteã¾ã§
+// <n>”Ô–Ú‚©‚ç‚PƒoƒCƒg‚¸‚Â•ª‰ğ‚µ‚Ä”z—ñ‚ÉŠi”[
+// ‚½‚¾‚µ”z—ñãŒÀ‚Ì128byte‚Ü‚Å
 //	callfunc("StrArray","<string>",<n>,<variable>)
 //-----------------------------------------------
 function	script	StrArray	{
@@ -269,15 +269,15 @@ function	script	StrArray	{
 	for(set '@i,0; '@i < '@max && '@i < 128; set '@i,'@i+1) {
 		set getelementofarray(getarg(2),'@i),substr('@buf$,'@n+'@i,1);
 	}
-	return '@i;	// æ ¼ç´ã—ãŸå€‹æ•°ã‚’è¿”ã™
+	return '@i;	// Ši”[‚µ‚½ŒÂ”‚ğ•Ô‚·
 }
 
 //===============================================
-// ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ã«ã‚ˆã‚‹æ–‡å­—åˆ—åˆ†å‰²
+// ƒZƒpƒŒ[ƒ^‚É‚æ‚é•¶š—ñ•ªŠ„
 //	callfunc("StrSplit","<string>","<sep>",<variable>")
 //-----------------------------------------------
 function	script	StrSplit	{
-	// StrIndexã‚’å±•é–‹ã—ã¦åˆ©ç”¨ã™ã‚‹
+	// StrIndex‚ğ“WŠJ‚µ‚Ä—˜—p‚·‚é
 	set '@src$,getarg(0);
 	set '@dst$,getarg(1);
 	set '@len,getstrlen('@dst$);
@@ -287,30 +287,30 @@ function	script	StrSplit	{
 		if( substr('@src$,'@i,'@len) == '@dst$ ) {
 			set getelementofarray(getarg(2),'@idx),substr('@src$,'@pos,'@i - '@pos);
 			set '@idx,'@idx+1;
-			set '@pos,'@i + '@len;	// æ¬¡ã®æ¤œç´¢é–‹å§‹ä½ç½®ã‚’ä¿å­˜
-			set '@i,'@pos-1;	// æ¬¡ã®æ¤œç´¢ä½ç½®ã¾ã§é£›ã°ã™
+			set '@pos,'@i + '@len;	// Ÿ‚ÌŒŸõŠJnˆÊ’u‚ğ•Û‘¶
+			set '@i,'@pos-1;	// Ÿ‚ÌŒŸõˆÊ’u‚Ü‚Å”ò‚Î‚·
 		}
 	}
-	set getelementofarray(getarg(2),'@idx),substr('@src$,'@pos);	// æ®‹ã‚Šã‚’æœ«å°¾ã¾ã§ç¹‹ã
-	return '@idx+1;	// æ ¼ç´ã—ãŸå€‹æ•°ã‚’è¿”ã™
+	set getelementofarray(getarg(2),'@idx),substr('@src$,'@pos);	// c‚è‚ğ––”ö‚Ü‚ÅŒq‚®
+	return '@idx+1;	// Ši”[‚µ‚½ŒÂ”‚ğ•Ô‚·
 }
 
 
 //===============================================
-// substré–¢æ•°ã®ä»•æ§˜
+// substrŠÖ”‚Ìd—l
 //-----------------------------------------------
-prontera.gat,157,191,4	script	æ–‡å­—åˆ—æŠ½å‡ºãƒ†ã‚¹ãƒˆ	112,{
+prontera.gat,157,191,4	script	•¶š—ñ’ŠoƒeƒXƒg	112,{
 	set '@buf$,"ABCDEFGH";
-	mes "[offsetã®ç¢ºèª]";
-	mes "æ­£ã®offset â†’";
-	mes "ã€€  0   1   2   3   4   5   6   7";
-	mes "ã€€  A   B   C   D   E   F   G   H";
-	mes "ã€€ -8  -7  -6  -5  -4  -3  -2  -1";
-	mes "è² ã®offset â†";
+	mes "[offset‚ÌŠm”F]";
+	mes "³‚Ìoffset ¨";
+	mes "@  0   1   2   3   4   5   6   7";
+	mes "@  A   B   C   D   E   F   G   H";
+	mes "@ -8  -7  -6  -5  -4  -3  -2  -1";
+	mes "•‰‚Ìoffset ©";
 	next;
-	mes "[è² ã®length]";
-	mes "ã€€  0   1   2   3   4   5   6   7";
-	mes "ã€€  A   B   C   D   E   F   G   H";
+	mes "[•‰‚Ìlength]";
+	mes "@  0   1   2   3   4   5   6   7";
+	mes "@  A   B   C   D   E   F   G   H";
 	mes " ";
 	mes "-1: A   B   C   D   E   F   G   -";
 	mes "-3: A   B   C   D   E   -   -   -";
@@ -333,14 +333,14 @@ prontera.gat,157,191,4	script	æ–‡å­—åˆ—æŠ½å‡ºãƒ†ã‚¹ãƒˆ	112,{
 	mes "16 : " + substr('@buf$,-3,-4);
 	mes "17 : " + substr('@buf$,6,-2);
 	next;
-	mes "[ãƒ†ã‚¹ãƒˆ]";
-	mes "æ–‡å­—åˆ—ã‚’å…¥åŠ›";
+	mes "[ƒeƒXƒg]";
+	mes "•¶š—ñ‚ğ“ü—Í";
 	next;
 	input '@str$;
-	mes "é–‹å§‹ä½ç½®ã‚’å…¥åŠ›";
+	mes "ŠJnˆÊ’u‚ğ“ü—Í";
 	next;
 	input '@offset;
-	mes "å–å¾—å€‹æ•°ã‚’å…¥åŠ›";
+	mes "æ“¾ŒÂ”‚ğ“ü—Í";
 	next;
 	input '@count;
 	mes "substr(\"" +'@str$+ "\"," +'@offset+ "," +'@count+ ")";
@@ -349,34 +349,34 @@ prontera.gat,157,191,4	script	æ–‡å­—åˆ—æŠ½å‡ºãƒ†ã‚¹ãƒˆ	112,{
 }
 
 //===============================================
-// æ–‡å­—åˆ—å‡¦ç†ä½¿ç”¨ä¾‹
+// •¶š—ñˆ—g—p—á
 //-----------------------------------------------
-prontera.gat,159,191,4	script	æ–‡å­—åˆ—å‡¦ç†ãƒ†ã‚¹ãƒˆ	113,{
+prontera.gat,159,191,4	script	•¶š—ñˆ—ƒeƒXƒg	113,{
 	mes "StrTrim : "     + callfunc("StrTrim","   ABC");				// ABC
 	mes "StrRTrim : "    + callfunc("StrRTrim","ABC   ");				// ABC
 	mes "StrIndex : "    + callfunc("StrIndex","ABCDEF","CDE");			// 2
 	mes "StrRIndex : "   + callfunc("StrRIndex","ABCDEF-ABCDEF","CDE");		// 9
 	mes "StrCSpn : "     + callfunc("StrCSpn","ABCDEF","XYFDZ");			// 3
-	mes "StrWCSpn : "    + callfunc("StrWCSpn","ã‚ã„ã†ãˆãŠ","ã‚“ãˆã„");		// 2
+	mes "StrWCSpn : "    + callfunc("StrWCSpn","‚ ‚¢‚¤‚¦‚¨","‚ñ‚¦‚¢");		// 2
 	mes "StrDelete : "   + callfunc("StrDelete","ABCDEF",4);			// ABCDF
 	mes "StrShift : "    + callfunc("StrShift","ABCDEF",3,2);			// ADEF
 	mes "StrInsert : "   + callfunc("StrInsert","ABCDEF",3,"XYZ");			// ABCXYZDEF
 	mes "StrReplace : "  + callfunc("StrReplace","ABCDEF-ABCDEF","CD","XYZ");	// ABXYZDEF-ABCDEF
 	mes "StrAReplace : " + callfunc("StrAReplace","ABCDEF-ABCDEF","CD","XYZ");	// ABXYZDEF-ABXYZDEF
 	mes "StrReverse : "  + callfunc("StrReverse","ABCDEF");				// FEDCBA
-	mes "StrWReverse : " + callfunc("StrWReverse","ã‚ã„ã†ãˆãŠ");			// ãŠãˆã†ã„ã‚
+	mes "StrWReverse : " + callfunc("StrWReverse","‚ ‚¢‚¤‚¦‚¨");			// ‚¨‚¦‚¤‚¢‚ 
 	mes "StrShuffle : "  + callfunc("StrShuffle","ABCDEF");				// [random]
 	next;
 	mes "StrArray :";
 	set '@c,callfunc("StrArray","ABCDEF",2,'@buf$);		// 4
 	for(set '@i,0; '@i < '@c; set '@i,'@i+1) {
-		mes "ã€€" + '@i + " -> " + '@buf$['@i];		// é †ã«C,D,E,F
+		mes "@" + '@i + " -> " + '@buf$['@i];		// ‡‚ÉC,D,E,F
 	}
 	next;
 	mes "StrSplit :";
 	set '@c,callfunc("StrSplit","ABC#DE#F","#",'@buf$);	// 3
 	for(set '@i,0; '@i < '@c; set '@i,'@i+1) {
-		mes "ã€€" + '@i + " -> " + '@buf$['@i];		// é †ã«ABC,DE,F
+		mes "@" + '@i + " -> " + '@buf$['@i];		// ‡‚ÉABC,DE,F
 	}
 	close;
 }

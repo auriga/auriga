@@ -1,12 +1,12 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Niflheim Monster Spawn Scriptã€€ã€€Ep 15.2
+// Ragnarok Online Niflheim Monster Spawn Script@@Ep 15.2
 //==============================================================================
 
 //============================================================
-// æ­»è€…ã®è¡—ãƒ‹ãƒ–ãƒ«ãƒ˜ã‚¤ãƒ  - niflheim.gat
+// €Ò‚ÌŠXƒjƒuƒ‹ƒwƒCƒ€ - niflheim.gat
 //------------------------------------------------------------
-niflheim.gat,0,0,0,0	monster	ã‚­ãƒ¥ãƒ¼ãƒ–	1508,75,5000,0,0
-niflheim.gat,0,0,0,0	monster	ãƒ«ãƒ¼ãƒ‰	1509,75,5000,0,0
+niflheim.gat,0,0,0,0	monster	ƒLƒ…[ƒu	1508,75,5000,0,0
+niflheim.gat,0,0,0,0	monster	ƒ‹[ƒh	1509,75,5000,0,0
 
 niflheim.gat,0,0,0	script	#NifMVP	-1,{
 OnInit:
@@ -15,115 +15,115 @@ OnInit:
 OnTimer7980000:
 	switch(rand(7)) {
 	case 0:
-		monster "niflheim.gat",327,193,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",330,193,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",324,193,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",327,196,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",327,190,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",324,190,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",330,190,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",324,196,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",330,196,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",327,193,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",330,193,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",324,193,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",327,196,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",327,190,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",324,190,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",330,190,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",324,196,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",330,196,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 1:
-		monster "niflheim.gat",337,252,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",337,255,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",337,249,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",334,252,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",340,252,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",334,249,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",340,255,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",340,249,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",334,255,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",337,252,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",337,255,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",337,249,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",334,252,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",340,252,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",334,249,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",340,255,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",340,249,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",334,255,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 2:
-		monster "niflheim.gat",190,185,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",190,188,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",190,182,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",193,185,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",187,185,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",187,182,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",193,182,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",193,188,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",187,188,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",190,185,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",190,188,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",190,182,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",193,185,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",187,185,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",187,182,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",193,182,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",193,188,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",187,188,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 3:
-		monster "niflheim.gat",131,138,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",131,141,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",131,135,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",128,138,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",134,138,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",134,141,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",128,141,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",134,135,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",128,135,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",131,138,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",131,141,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",131,135,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",128,138,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",134,138,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",134,141,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",128,141,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",134,135,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",128,135,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 4:
-		monster "niflheim.gat",311,64,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",311,67,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",311,61,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",308,64,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",314,64,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",314,61,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",314,67,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",308,67,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",308,61,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",311,64,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",311,67,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",311,61,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",308,64,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",314,64,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",314,61,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",314,67,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",308,67,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",308,61,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 5:
-		monster "niflheim.gat",238,131,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",238,134,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",238,128,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",235,131,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",241,131,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",235,128,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",235,134,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",241,128,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",241,134,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",238,131,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",238,134,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",238,128,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",235,131,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",241,131,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",235,128,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",235,134,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",241,128,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",241,134,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	case 6:
-		monster "niflheim.gat",86,219,"ãƒ­ãƒ¼ãƒ‰ã‚ªãƒ–ãƒ‡ã‚¹",1373,1,"#NifMVP::OnKilled1";
-		monster "niflheim.gat",86,222,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",86,216,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",89,219,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",83,219,"ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒãƒ¼ãƒ€ãƒ¼",1507,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",89,222,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",89,216,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",83,222,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
-		monster "niflheim.gat",83,216,"ãƒ­ãƒªãƒ«ãƒª",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",86,219,"ƒ[ƒhƒIƒuƒfƒX",1373,1,"#NifMVP::OnKilled1";
+		monster "niflheim.gat",86,222,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",86,216,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",89,219,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",83,219,"ƒuƒ‰ƒbƒfƒBƒ}[ƒ_[",1507,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",89,222,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",89,216,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",83,222,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
+		monster "niflheim.gat",83,216,"ƒƒŠƒ‹ƒŠ",1505,1,"#NifMVP::OnKilled2";
 		break;
 	}
-	monster "niflheim.gat",154,95,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",115,65,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",330,195,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",151,83,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",285,245,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",235,135,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",265,48,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",186,139,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",166,267,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",82,202,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",219,44,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",287,44,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",275,165,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",138,204,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",299,39,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",31,154,"ãƒ‡ã‚£ã‚¹ã‚¬ã‚¤ã‚º",1506,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",154,96,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",116,65,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",151,84,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",286,245,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",330,196,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",236,135,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",165,49,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",167,267,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",82,203,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",220,44,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",287,45,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",287,44,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",276,166,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",139,205,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",300,39,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
-	monster "niflheim.gat",31,155,"ãƒ‡ãƒ¥ãƒ©ãƒãƒ³",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",154,95,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",115,65,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",330,195,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",151,83,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",285,245,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",235,135,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",265,48,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",186,139,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",166,267,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",82,202,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",219,44,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",287,44,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",275,165,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",138,204,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",299,39,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",31,154,"ƒfƒBƒXƒKƒCƒY",1506,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",154,96,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",116,65,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",151,84,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",286,245,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",330,196,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",236,135,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",165,49,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",167,267,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",82,203,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",220,44,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",287,45,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",287,44,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",276,166,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",139,205,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",300,39,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
+	monster "niflheim.gat",31,155,"ƒfƒ…ƒ‰ƒnƒ“",1504,1,"#NifMVP::OnKilled2";
 	stopnpctimer;
 	end;
 OnKilled1:
@@ -131,5 +131,5 @@ OnKilled1:
 	initnpctimer;
 	end;
 OnKilled2:
-	end;	//ãƒ€ãƒŸãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆ
+	end;	//ƒ_ƒ~[ƒCƒxƒ“ƒg
 }

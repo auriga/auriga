@@ -1,12 +1,12 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Gonryun Field Monster Spawn Scriptã€€ã€€Ep 15.2
+// Ragnarok Online Gonryun Field Monster Spawn Script@@Ep 15.2
 //==============================================================================
 
 //============================================================
-// ã‚³ãƒ³ãƒ­ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ 01 - gon_fild01.gat
+// ƒRƒ“ƒƒ“ƒtƒB[ƒ‹ƒh 01 - gon_fild01.gat
 //------------------------------------------------------------
-gon_fild01.gat,0,0,0,0	monster	ã‚³ã‚¦		1415,70,5000,0,0
-gon_fild01.gat,0,0,0,0	monster	ãƒãƒ£ãƒƒã‚­ãƒ¼	1417,20,5000,0,0
-gon_fild01.gat,0,0,0,0	monster	å›£å­ç«¥å­	1409,60,5000,0,0
-gon_fild01.gat,0,0,0,0	monster	ç·‘è‰²è‰		1080,5,5000,0,0
-gon_fild01.gat,0,0,0,0	monster	è¼ãè‰		1083,1,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	ƒRƒE		1415,70,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	ƒ`ƒƒƒbƒL[	1417,20,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	’cq“¶q	1409,60,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	—ÎF‘		1080,5,5000,0,0
+gon_fild01.gat,0,0,0,0	monster	‹P‚­‘		1083,1,5000,0,0

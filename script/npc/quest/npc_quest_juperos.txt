@@ -12,23 +12,23 @@ juperos_01.gat,51,249,0		warp	juperoswarp4002		3,3,jupe_cave.gat,36,51
 juperos_01.gat,100,91,0		script	juperoswarp4003		139,2,2{
 	initnpctimer;
 	mes "^797979["+strcharinfo(0)+"]^000000";
-	mes "æš–ã‹ã„å…‰ã«åŒ…ã¾ã‚Œã¦ã„ã‚‹ã€‚";
-	mes "ã¾ã‚‹ã§ã€ä½“ãŒå®™ã«";
-	mes "æµ®ã‹ã‚“ã§ã„ã‚‹ã‹ã®ã‚ˆã†ã â€¦â€¦ã€‚";
-	mes "ã‚ã‚â€¦â€¦ã€‚";
+	mes "’g‚©‚¢Œõ‚É•ï‚Ü‚ê‚Ä‚¢‚éB";
+	mes "‚Ü‚é‚ÅA‘Ì‚ª’ˆ‚É";
+	mes "•‚‚©‚ñ‚Å‚¢‚é‚©‚Ì‚æ‚¤‚¾ccB";
+	mes "‚ ‚ ccB";
 	next;
-	if(select("ã‚‚ã†å°‘ã—ã®é–“ã€ã“ã®å…‰ã«åŒ…ã¾ã‚Œã¦ã„ãŸã„â€¦â€¦","ã‚ã£ï¼ã€€ãã‚“ãªã“ã¨è€ƒãˆã¦ã‚‹å ´åˆã˜ã‚ƒãªã„ï¼")==1) {
+	if(select("‚à‚¤­‚µ‚ÌŠÔA‚±‚ÌŒõ‚É•ï‚Ü‚ê‚Ä‚¢‚½‚¢cc","‚ ‚ÁI@‚»‚ñ‚È‚±‚Æl‚¦‚Ä‚éê‡‚¶‚á‚È‚¢I")==1) {
 		misceffect 348,"";
 		mes "^797979["+strcharinfo(0)+"]^000000";
-		mes "ã‚ã‚â€¦â€¦ã€‚";
-		mes "ä½“ãŒè»½ããªã£ã¦ã„ãæ°—ãŒã™ã‚‹â€¦â€¦ã€‚";
+		mes "‚ ‚ ccB";
+		mes "‘Ì‚ªŒy‚­‚È‚Á‚Ä‚¢‚­‹C‚ª‚·‚éccB";
 		next;
 		warp "juperos_02.gat",128,278;
 		end;
 	}
 	mes "^797979["+strcharinfo(0)+"]^000000";
-	mes "ã“ã®å…‰ã¯ã©ã“ã‹ã‚‰æ¥ã¦ã„ã‚‹ã‚“ã ?!";
-	mes "ã™ãã«ã€ã“ã“ã‹ã‚‰é›¢ã‚Œãªãã‚ƒâ€¦â€¦ã€‚";
+	mes "‚±‚ÌŒõ‚Í‚Ç‚±‚©‚ç—ˆ‚Ä‚¢‚é‚ñ‚¾?!";
+	mes "‚·‚®‚ÉA‚±‚±‚©‚ç—£‚ê‚È‚«‚áccB";
 	next;
 	warp "juperos_01.gat",96,91;
 	end;
@@ -49,19 +49,19 @@ juperos_02.gat,130,149,0	script	juperoswarp4005		139,2,2{ warp "jupe_gate.gat",5
 jupe_gate.gat,50,171,0		script	juperoswarp4006		139,4,0{
 	initnpctimer;
 	mes "^797979["+strcharinfo(0)+"]^000000";
-	mes "ä¸Šã®å±¤ã«æˆ»ã‚‹ã“ã¨ãŒã§ãã‚‹";
-	mes "ãƒ¯ãƒ¼ãƒ—ã®ã‚ˆã†ã ã€‚";
+	mes "ã‚Ì‘w‚É–ß‚é‚±‚Æ‚ª‚Å‚«‚é";
+	mes "ƒ[ƒv‚Ì‚æ‚¤‚¾B";
 	next;
-	if(select("ãƒ¯ãƒ¼ãƒ—ã«èº«ã‚’ä»»ã›ã‚‹","ãƒ¯ãƒ¼ãƒ—ã‹ã‚‰é›¢ã‚Œã‚‹")==1) {
+	if(select("ƒ[ƒv‚Ég‚ğ”C‚¹‚é","ƒ[ƒv‚©‚ç—£‚ê‚é")==1) {
 		misceffect 348,"";
 		mes "^797979["+strcharinfo(0)+"]^000000";
-		mes "ä½“ãŒè»½ããªã£ãŸã‚ˆã†ãªæ„Ÿã˜ãŒã™ã‚‹â€¦â€¦ã€‚";
+		mes "‘Ì‚ªŒy‚­‚È‚Á‚½‚æ‚¤‚ÈŠ´‚¶‚ª‚·‚éccB";
 		next;
 		warp "juperos_02.gat",130,142;
 		end;
 	}
 	mes "^797979["+strcharinfo(0)+"]^000000";
-	mes "ã¾ã ä¸Šã®å±¤ã«ã¯æˆ»ã‚‰ãªã„ï¼";
+	mes "‚Ü‚¾ã‚Ì‘w‚É‚Í–ß‚ç‚È‚¢I";
 	next;
 	warp "jupe_gate.gat",50,168;
 	end;
@@ -79,32 +79,32 @@ jupe_ele_r.gat,49,27,0		warp	juperoswarp4012		1,1,jupe_gate.gat,49,53
 jupe_ele.gat,41,33,0		warp	juperoswarp4013		4,4,jupe_core.gat,150,286
 
 //============================================================
-// ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®
+// ƒQ[ƒg§Œä‘•’u
 //------------------------------------------------------------
-juperos_02.gat,0,0,0	script	ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®#juperos	-1,{
+juperos_02.gat,0,0,0	script	ƒQ[ƒg§Œä‘•’u#juperos	-1,{
 OnInit:
 	hideonnpc "juperoswarp4005";
 	set 'jupe_gate,3;
-	monster "juperos_02.gat",24,275,"ç¬¬1ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®",1674,1,"ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®#juperos::OnKilled";
-	monster "juperos_02.gat",240,29,"ç¬¬2ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®",1674,1,"ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®#juperos::OnKilled";
-	monster "juperos_02.gat",282,183,"ç¬¬3ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®",1674,1,"ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®#juperos::OnKilled";
+	monster "juperos_02.gat",24,275,"‘æ1ƒQ[ƒg§Œä‘•’u",1674,1,"ƒQ[ƒg§Œä‘•’u#juperos::OnKilled";
+	monster "juperos_02.gat",240,29,"‘æ2ƒQ[ƒg§Œä‘•’u",1674,1,"ƒQ[ƒg§Œä‘•’u#juperos::OnKilled";
+	monster "juperos_02.gat",282,183,"‘æ3ƒQ[ƒg§Œä‘•’u",1674,1,"ƒQ[ƒg§Œä‘•’u#juperos::OnKilled";
 	end;
 OnKilled:
 	set 'jupe_gate,'jupe_gate-1;
 	switch('jupe_gate) {
-	case 2: announce "èª°ã‹ã­ï¼Ÿã€€ã“ã“ã¸æ¥ãŸã®ã¯â€¦â€¦ã€‚",9,0xFF0000; break;
-	case 1: announce "æ®‹å¿µã ãŒã€ã“ã“ã¯ã‹ã¤ã¦ã®ã‚¸ãƒ¥ãƒ”ãƒ­ã‚¹ã§ã¯ãªã„ãŒãªâ€¦â€¦ã€‚",9,0xFF0000; break;
+	case 2: announce "’N‚©‚ËH@‚±‚±‚Ö—ˆ‚½‚Ì‚ÍccB",9,0xFF0000; break;
+	case 1: announce "c”O‚¾‚ªA‚±‚±‚Í‚©‚Â‚Ä‚ÌƒWƒ…ƒsƒƒX‚Å‚Í‚È‚¢‚ª‚ÈccB",9,0xFF0000; break;
 	default:
-		announce "æ™‚é–“ã‚’ä¸ãˆã‚ˆã†ï¼ã€€æˆ‘ã«ä¼šã„ãŸã‘ã‚Œã°ã€æ¢ã—å‡ºã™ãŒã‚ˆã„ï¼",9,0xFF0000;
+		announce "ŠÔ‚ğ—^‚¦‚æ‚¤I@‰ä‚É‰ï‚¢‚½‚¯‚ê‚ÎA’T‚µo‚·‚ª‚æ‚¢I",9,0xFF0000;
 		areamisceffect "juperos_02.gat",0,0,300,300,563;
 		areasoundeffect "juperos_02.gat",0,0,300,300,"earth_quake.wav",0;
 		sleep 5000;
-		announce "ã‚¦ã‚£ã‚¤ã‚¤ãƒ¼ãƒ¼ãƒ³ãƒƒï¼ã€€ã‚¦ã‚£ã‚¤ã‚¤ãƒ¼ãƒ¼ãƒ³ãƒƒï¼",9,0xE55AA4;
+		announce "ƒEƒBƒCƒC[[ƒ“ƒbI@ƒEƒBƒCƒC[[ƒ“ƒbI",9,0xE55AA4;
 		areasoundeffect "juperos_02.gat",0,0,300,300,"jupe_warning.wav",0;
 		sleep 2000;
-		announce "è¨ªå•è€…ã«å‘Šã’ã¾ã™ã€‚",9,0xE55AA4;
+		announce "–K–âÒ‚É‚°‚Ü‚·B",9,0xE55AA4;
 		sleep 2000;
-		announce "å°‘ã—ã®é–“ã€æ¬¡ã®åŒºåŸŸã¸ã®ç«‹ã¡å…¥ã‚Šã‚’è¨±å¯ã—ã¾ã™ã€‚ã‚²ãƒ¼ãƒˆã¸ãŠå…¥ã‚Šãã ã•ã„ã€‚",9,0xE55AA4;
+		announce "­‚µ‚ÌŠÔAŸ‚Ì‹æˆæ‚Ö‚Ì—§‚¿“ü‚è‚ğ‹–‰Â‚µ‚Ü‚·BƒQ[ƒg‚Ö‚¨“ü‚è‚­‚¾‚³‚¢B",9,0xE55AA4;
 		hideoffnpc "juperoswarp4005";
 		misceffect 561,"juperoswarp4005";
 		set 't,26;
@@ -116,197 +116,197 @@ OnTimer23000:
 	misceffect 561,"juperoswarp4005";
 	if('t == 2) {
 		sleep 4000;
-		announce "è¨ªå•è€…ã«å‘Šã’ã¾ã™ã€‚ã¾ã‚‚ãªãã€æ¬¡ã®åŒºåŸŸã¸é€šã˜ã‚‹ã‚²ãƒ¼ãƒˆãŒé–‰ã˜ã¾ã™ã€‚",9,0xE55AA4;
+		announce "–K–âÒ‚É‚°‚Ü‚·B‚Ü‚à‚È‚­AŸ‚Ì‹æˆæ‚Ö’Ê‚¶‚éƒQ[ƒg‚ª•Â‚¶‚Ü‚·B",9,0xE55AA4;
 		sleep 5000;
-		announce "ã‚²ãƒ¼ãƒˆãŒé–‰ã˜ã‚‹ã¾ã§ã€ã‚ã¨ç´„1åˆ†ã§ã™ã€‚",9,0xE55AA4;
+		announce "ƒQ[ƒg‚ª•Â‚¶‚é‚Ü‚ÅA‚ ‚Æ–ñ1•ª‚Å‚·B",9,0xE55AA4;
 	}
 	if('t == 0) {
 		sleep 2000;
 		hideonnpc "juperoswarp4005";
-		announce "ã‚²ãƒ¼ãƒˆãŒé–‰ã˜ã¾ã—ãŸã€‚",9,0xE55AA4;
+		announce "ƒQ[ƒg‚ª•Â‚¶‚Ü‚µ‚½B",9,0xE55AA4;
 		sleep 3000;
-		announce "åˆ¶å¾¡è£…ç½®ã¯å†ç¨¼å‹•æº–å‚™ã«å…¥ã‚Šã¾ã™ã€‚",9,0xE55AA4;
+		announce "§Œä‘•’u‚ÍÄ‰Ò“®€”õ‚É“ü‚è‚Ü‚·B",9,0xE55AA4;
 		end;
 	}
 	initnpctimer;
 	end;
 OnTimer602000:
 	stopnpctimer;
-	donpcevent "ã‚²ãƒ¼ãƒˆåˆ¶å¾¡è£…ç½®#juperos::OnInit";
+	donpcevent "ƒQ[ƒg§Œä‘•’u#juperos::OnInit";
 	end;
 }
 
 //============================================================
-// ä¿å®‰åŒºåŸŸ
+// •ÛˆÀ‹æˆæ
 //------------------------------------------------------------
 jupe_area1.gat,0,0,0	script	jupe_area1	-1,{
 OnSummon1:
 	set 'flag,1;
 	initnpctimer;
 	sleep 1000;
-	announce "ã“ã“ã¾ã§è¾¿ã‚Šç€ã„ãŸè€…ã‚‰ã‚ˆâ€¦â€¦ã€‚",9,0xFF0000;
+	announce "‚±‚±‚Ü‚Å’H‚è’…‚¢‚½Ò‚ç‚æccB",9,0xFF0000;
 	sleep 2000;
-	announce "æˆ‘ã¯ãŠå‰ã‚‰ã‚’é˜»ã‚‚ã†ã¨è€ƒãˆã¦ã¯ãŠã‚‰ã¬ã€‚",9,0xFF0000;
+	announce "‰ä‚Í‚¨‘O‚ç‚ğ‘j‚à‚¤‚Æl‚¦‚Ä‚Í‚¨‚ç‚ÊB",9,0xFF0000;
 	areasoundeffect "this",0,0,164,300,"jupe_warning.wav",0;
 	sleep 2000;
-	announce "ã—ã‹ã—ã€ã“ã®é–‰é–ã•ã‚ŒãŸåœ°ã«æ•¢ãˆã¦æ¥ãŸã‹ã‚‰ã«ã¯",9,0xFF0000;
+	announce "‚µ‚©‚µA‚±‚Ì•Â½‚³‚ê‚½’n‚ÉŠ¸‚¦‚Ä—ˆ‚½‚©‚ç‚É‚Í",9,0xFF0000;
 	set 'mob,8;
-	monster "jupe_area1.gat",30,263,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,262,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,261,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,260,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,259,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,258,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,257,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,256,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,263,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,262,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,261,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,260,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,259,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,258,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,257,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,256,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
 	sleep 2000;
-	announce "è¦šæ‚Ÿã¯ã§ãã¦ã„ã‚‹ã ã‚ã†ãªï¼Ÿ",9,0xFF0000;
+	announce "ŠoŒå‚Í‚Å‚«‚Ä‚¢‚é‚¾‚ë‚¤‚ÈH",9,0xFF0000;
 	sleep 1000;
 	areasoundeffect "this",0,0,164,300,"jupe_warning.wav",0;
 	end;
 OnSummon2:
-	announce "ã•ã¦ã€ä»Šåº¦ã¯ã©ã†ã‹ãªï¼Ÿ",9,0xFF0000;
+	announce "‚³‚ÄA¡“x‚Í‚Ç‚¤‚©‚ÈH",9,0xFF0000;
 	areasoundeffect "this",0,0,164,300,"jupe_warning.wav",0;
 	sleep 2000;
-	announce "ã‚‚ã†ä¸€åº¦â€¦â€¦",9,0xFF0000;
+	announce "‚à‚¤ˆê“xcc",9,0xFF0000;
 	sleep 2000;
-	announce "å®ŸåŠ›ã‚’è¦‹ã›ã‚‹ãŒã‚ˆã„ï¼",9,0xFF0000;
+	announce "À—Í‚ğŒ©‚¹‚é‚ª‚æ‚¢I",9,0xFF0000;
 	areasoundeffect "this",0,0,164,300,"jupe_warning.wav",0;
 	set 'mob,8;
-	monster "jupe_area1.gat",30,238,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",31,238,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",32,238,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",33,238,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",34,238,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",35,238,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",36,238,"ä¿å®‰è¦å“¡",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",37,238,"ä¿å®‰è¦å“¡",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,238,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",31,238,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",32,238,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",33,238,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",34,238,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",35,238,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",36,238,"•ÛˆÀ—vˆõ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",37,238,"•ÛˆÀ—vˆõ",1669,1,"jupe_area1::OnKilled";
 	end;
 OnSummon3:
 	set 'flag,4;
 	initnpctimer;
 	sleep 2000;
-	announce "ã¾ã ã¾ã ã¾ã â€¦â€¦ã€‚",9,0xFF0000;
+	announce "‚Ü‚¾‚Ü‚¾‚Ü‚¾ccB",9,0xFF0000;
 	sleep 2000;
-	announce "ã•ã‚ã€æ¥ã‚‹ãŒã‚ˆã„ã€æˆ‘ã®æ‰€ã¾ã§ï¼",9,0xFF0000;
+	announce "‚³‚ A—ˆ‚é‚ª‚æ‚¢A‰ä‚ÌŠ‚Ü‚ÅI",9,0xFF0000;
 	set 'mob,8;
-	monster "jupe_area1.gat",30,176,"ä¸Šç´šè­¦å‚™å…µ",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",31,176,"ä¸Šç´šè­¦å‚™å…µ",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",32,176,"ä¸Šç´šè­¦å‚™å…µ",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",33,176,"ä¸Šç´šè­¦å‚™å…µ",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",34,176,"ä¸Šç´šè­¦å‚™å…µ",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",35,176,"ä¸Šç´šè­¦å‚™å…µ",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",36,176,"ä¸Šç´šè­¦å‚™å…µ",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",37,176,"ä¸Šç´šè­¦å‚™å…µ",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,176,"ã‹‰Œx”õ•º",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",31,176,"ã‹‰Œx”õ•º",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",32,176,"ã‹‰Œx”õ•º",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",33,176,"ã‹‰Œx”õ•º",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",34,176,"ã‹‰Œx”õ•º",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",35,176,"ã‹‰Œx”õ•º",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",36,176,"ã‹‰Œx”õ•º",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",37,176,"ã‹‰Œx”õ•º",1675,1,"jupe_area1::OnKilled";
 	sleep 2000;
-	announce "æˆ‘ãŒèª°ãªã®ã‹ã€çŸ¥ã‚ŠãŸã„ã‹ã­ï¼Ÿ",9,0xFF0000;
+	announce "‰ä‚ª’N‚È‚Ì‚©A’m‚è‚½‚¢‚©‚ËH",9,0xFF0000;
 	sleep 2000;
-	announce "ã§ã¯ã€ã“ã„ã¤ã‚‰ã«å‹ã£ãŸã‚‰æ•™ãˆã¦ã‚„ã‚ã†ï¼",9,0xFF0000;
+	announce "‚Å‚ÍA‚±‚¢‚Â‚ç‚ÉŸ‚Á‚½‚ç‹³‚¦‚Ä‚â‚ë‚¤I",9,0xFF0000;
 	end;
 OnSummon4:
-	announce "æˆ‘ã¯ã€ã“ã®åœ°ä¸‹ç ”ç©¶æ‰€ã®æ‰€é•·ã€",9,0xFF0000;
+	announce "‰ä‚ÍA‚±‚Ì’n‰ºŒ¤‹†Š‚ÌŠ’·A",9,0xFF0000;
 	sleep 2000;
-	announce "ã„ã‚„ã€æ‰€é•·ã ã£ãŸâ€¦â€¦",9,0xFF0000;
+	announce "‚¢‚âAŠ’·‚¾‚Á‚½cc",9,0xFF0000;
 	sleep 2000;
-	announce "ãƒ´ã‚§ã‚¹ãƒ‘ãƒ¼ãƒ»ãƒ‹ãƒ¥ãƒˆãƒ¼ãƒ³ã€‚äººã¯ã€ç‰©ç‹‚ã„ãƒ´ã‚§ã‚¹ãƒ‘ãƒ¼ã¨å‘¼ã‚“ã ãŒãªã€‚",9,0xFF0000;
+	announce "ƒ”ƒFƒXƒp[Eƒjƒ…ƒg[ƒ“Bl‚ÍA•¨‹¶‚¢ƒ”ƒFƒXƒp[‚ÆŒÄ‚ñ‚¾‚ª‚ÈB",9,0xFF0000;
 	set 'mob,13;
-	monster "jupe_area1.gat",30,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",31,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",32,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",33,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",34,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",35,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",36,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",37,152,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",30,150,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",31,150,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",32,150,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",33,150,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",34,150,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,152,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",31,152,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",32,152,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",33,152,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",34,152,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",35,152,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",36,152,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",37,152,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,150,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",31,150,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",32,150,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",33,150,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",34,150,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
 	end;
 OnSummon5:
 	set 'flag,7;
 	initnpctimer;
 	sleep 2000;
-	announce "æˆ‘ã¯ã€ã“ã“ã¸ã®ç«‹ã¡å…¥ã‚Šã‚’é˜»ã‚€ãŸã‚ã«",9,0xFF0000;
+	announce "‰ä‚ÍA‚±‚±‚Ö‚Ì—§‚¿“ü‚è‚ğ‘j‚Ş‚½‚ß‚É",9,0xFF0000;
 	sleep 2000;
-	announce "è­¦å‚™ã‚·ã‚¹ãƒ†ãƒ ã‚’ä½œã£ãŸã®ã§ã¯ãªã„ã€‚",9,0xFF0000;
+	announce "Œx”õƒVƒXƒeƒ€‚ğì‚Á‚½‚Ì‚Å‚Í‚È‚¢B",9,0xFF0000;
 	set 'mob,8;
-	monster "jupe_area1.gat",30,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",31,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",32,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",33,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",34,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",35,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",36,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",37,89,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",30,89,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",31,89,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",32,89,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",33,89,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",34,89,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",35,89,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",36,89,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",37,89,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
 	sleep 2000;
-	announce "ã§ã¯ã€ä½•ã®ãŸã‚ã«ã‹ã¨â€¦â€¦ï¼Ÿã€€ãƒ•ãƒƒã€ä½™èˆˆã ã‚ˆã€‚",9,0xFF0000;
+	announce "‚Å‚ÍA‰½‚Ì‚½‚ß‚É‚©‚ÆccH@ƒtƒbA—]‹»‚¾‚æB",9,0xFF0000;
 	sleep 2000;
-	announce "æ°¸é ã«æ­»ã¬ã“ã¨ãŒã§ãã¬ã€æˆ‘ã®ãŸã‚ã«ãª!!",9,0xFF0000;
+	announce "‰i‰“‚É€‚Ê‚±‚Æ‚ª‚Å‚«‚ÊA‰ä‚Ì‚½‚ß‚É‚È!!",9,0xFF0000;
 	end;
 OnSummon6:
-	announce "ã“ã“ã¾ã§ä½•ã—ã«æ¥ãŸã‚“ã ï¼Ÿ",9,0xFF0000;
+	announce "‚±‚±‚Ü‚Å‰½‚µ‚É—ˆ‚½‚ñ‚¾H",9,0xFF0000;
 	sleep 2000;
-	announce "ã“ã®ä¸‹ã«ä½•ã‹ã‚ã‚‹ã¨æ€ã£ã¦ã„ã‚‹ã®ã‹ã­ï¼Ÿ",9,0xFF0000;
+	announce "‚±‚Ì‰º‚É‰½‚©‚ ‚é‚Æv‚Á‚Ä‚¢‚é‚Ì‚©‚ËH",9,0xFF0000;
 	sleep 2000;
-	announce "è¨€ã£ã¦ãŠããŒã€ã“ã®ä¸‹ã¯åœ°ç„ã ãï¼",9,0xFF0000;
+	announce "Œ¾‚Á‚Ä‚¨‚­‚ªA‚±‚Ì‰º‚Í’n–‚¾‚¼I",9,0xFF0000;
 	set 'mob,15;
-	monster "jupe_area1.gat",42,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",43,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",44,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",45,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",46,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",47,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",48,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",49,64,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",42,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",43,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",44,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",45,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",46,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",47,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",48,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",49,62,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",42,64,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",43,64,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",44,64,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",45,64,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",46,64,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",47,64,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",48,64,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",49,64,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",42,62,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",43,62,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",44,62,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",45,62,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",46,62,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",47,62,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",48,62,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",49,62,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
 	end;
 OnSummon7:
 	set 'flag,10;
 	initnpctimer;
 	sleep 2000;
-	announce "æˆ‘ã«å‹ã¤è€…ã‚’æ¢ã—ã¦ã„ãŸã€‚",9,0xFF0000;
+	announce "‰ä‚ÉŸ‚ÂÒ‚ğ’T‚µ‚Ä‚¢‚½B",9,0xFF0000;
 	sleep 2000;
-	announce "ã“ã®è¨€è‘‰ã‚’èã„ã¦ã„ã‚‹è€…ãŒã€ãã®è€…ãªã®ã ã‚ã†ã‹ï¼Ÿ",9,0xFF0000;
+	announce "‚±‚ÌŒ¾—t‚ğ•·‚¢‚Ä‚¢‚éÒ‚ªA‚»‚ÌÒ‚È‚Ì‚¾‚ë‚¤‚©H",9,0xFF0000;
 	set 'mob,8;
-	monster "jupe_area1.gat",92,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",96,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",100,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",104,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",92,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",96,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",100,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",104,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",92,154,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",96,154,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",100,154,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",104,154,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",92,161,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",96,161,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",100,161,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",104,161,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
 	sleep 2000;
-	announce "â€¦â€¦å¤‰ã‚ã‚Šæœã¦ãŸæˆ‘ãŒè‚‰ä½“ã¯ã€",9,0xFF0000;
+	announce "cc•Ï‚í‚è‰Ê‚Ä‚½‰ä‚ª“÷‘Ì‚ÍA",9,0xFF0000;
 	sleep 2000;
-	announce "ã“ã®ä¸‹ã®ã©ã“ã‹ã«ã‚ã‚‹ã§ã‚ã‚ã†ã€‚",9,0xFF0000;
+	announce "‚±‚Ì‰º‚Ì‚Ç‚±‚©‚É‚ ‚é‚Å‚ ‚ë‚¤B",9,0xFF0000;
 	end;
 OnSummon8:
-	announce "æˆ‘ã¯æ­»ã¬ã“ã¨ãŒã§ãã¬ï¼",9,0xFF0000;
+	announce "‰ä‚Í€‚Ê‚±‚Æ‚ª‚Å‚«‚ÊI",9,0xFF0000;
 	sleep 2000;
-	announce "ãªã‚‰ã°æˆ‘ã¯ã€ã“ã“ã§å¼·ãè€…ã‚’å¾…ã¨ã†ã€‚",9,0xFF0000;
+	announce "‚È‚ç‚Î‰ä‚ÍA‚±‚±‚Å‹­‚«Ò‚ğ‘Ò‚Æ‚¤B",9,0xFF0000;
 	sleep 2000;
-	announce "æ°¸é ã«ã€æœªæ¥æ°¸åŠ«ã«ãªï¼",9,0xFF0000;
+	announce "‰i‰“‚ÉA–¢—ˆ‰i…‚É‚ÈI",9,0xFF0000;
 	set 'mob,10;
-	monster "jupe_area1.gat",104,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",108,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",111,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",112,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",115,161,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",104,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",108,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",111,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",112,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1675,1,"jupe_area1::OnKilled";
-	monster "jupe_area1.gat",115,154,"ã‚¬ãƒ¼ãƒ‰ãƒãƒ³",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",104,161,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",108,161,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",111,161,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",112,161,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",115,161,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",104,154,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",108,154,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",111,154,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",112,154,"ƒK[ƒhƒ}ƒ“",1675,1,"jupe_area1::OnKilled";
+	monster "jupe_area1.gat",115,154,"ƒK[ƒhƒ}ƒ“",1669,1,"jupe_area1::OnKilled";
 	end;
 OnKilled:
 	set 'mob,'mob-1;
@@ -314,22 +314,22 @@ OnKilled:
 		sleep 2000;
 		switch('flag) {
 		case 1: donpcevent "jupe_area1::OnSummon2"; break;
-		case 2: announce "ãƒãƒƒã‚¯ã€ãƒãƒƒã‚¯ã€ãƒãƒƒã‚¯â€¦â€¦ã€‚",9,0xFF0000; break;
+		case 2: announce "ƒ`ƒbƒNAƒ`ƒbƒNAƒ`ƒbƒNccB",9,0xFF0000; break;
 		case 4: donpcevent "jupe_area1::OnSummon4"; break;
-		case 5: announce "â€¦â€¦ã¾ã ã¾ã ã ã€‚",9,0xFF0000; break;
+		case 5: announce "cc‚Ü‚¾‚Ü‚¾‚¾B",9,0xFF0000; break;
 		case 7: donpcevent "jupe_area1::OnSummon6"; break;
-		case 8: announce "ãã‚Œã§ã‚‚ã¨ã„ã†ã®ãªã‚‰ã€è¡ŒããŒã‚ˆã„ï¼",9,0xFF0000; break;
+		case 8: announce "‚»‚ê‚Å‚à‚Æ‚¢‚¤‚Ì‚È‚çAs‚­‚ª‚æ‚¢I",9,0xFF0000; break;
 		case 10: donpcevent "jupe_area1::OnSummon8"; break;
-		case 11: announce "æ¥½ã—ã‚ãŸã‹ã­ï¼Ÿ",9,0xFF0000; break;
+		case 11: announce "Šy‚µ‚ß‚½‚©‚ËH",9,0xFF0000; break;
 		}
 		set 'flag,'flag+1;
 	}
 	end;
 OnTimer600000:
 	if(rand(2))
-		announce "é€ƒã’ãŸã®ã‹â€¦â€¦ã€‚",9,0xFF0000;
+		announce "“¦‚°‚½‚Ì‚©ccB",9,0xFF0000;
 	else
-		announce "ã‚±ãƒƒâ€¦â€¦è…°æŠœã‘ã‚â€¦â€¦ã€‚",9,0xFF0000;
+		announce "ƒPƒbcc˜”²‚¯‚ßccB",9,0xFF0000;
 	sleep 2000;
 	stopnpctimer;
 	areawarp "this",0,0,70,300,"jupe_gate.gat",49,138;
@@ -344,30 +344,30 @@ jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
 	set '@id,substr(strnpcinfo(2),11,1);
 	cutin '@id,2;
 	if(getvariableofnpc('flag,"jupe_area1") != ('@id-1)*3) {
-		mes "-ã‚ã‚‹æ¨¡æ§˜ãŒæã‹ã‚ŒãŸç©´ãŒã‚ã‚‹ã€‚";
-		mes "ä½•ã‹ã‚’å…¥ã‚Œã‚‹ã“ã¨ãŒã§ããã†ã -";
-		mes "-å‘ã“ã†å´ã¸æ¸¡ã‚‹ãŸã‚ã®è£…ç½®ã®ã‚ˆã†ã -";
+		mes "-‚ ‚é–Í—l‚ª•`‚©‚ê‚½ŒŠ‚ª‚ ‚éB";
+		mes "‰½‚©‚ğ“ü‚ê‚é‚±‚Æ‚ª‚Å‚«‚»‚¤‚¾-";
+		mes "-Œü‚±‚¤‘¤‚Ö“n‚é‚½‚ß‚Ì‘•’u‚Ì‚æ‚¤‚¾-";
 		close2;
 		cutin '@id,255;
 		end;
 	}
-	mes "-ã©ã“ã‹ã§è¦‹ãŸã‚ˆã†ãªç©´ãŒã‚ã‚‹ã€‚";
-	mes "ä½•ã‹ã‚’å…¥ã‚Œã‚‹ã“ã¨ãŒã§ããã†ã -";
-	mes "-å‘ã“ã†å´ã¸æ¸¡ã‚‹ãŸã‚ã®";
-	mes "è£…ç½®ã‹ã‚‚ã—ã‚Œãªã„â€¦â€¦-";
+	mes "-‚Ç‚±‚©‚ÅŒ©‚½‚æ‚¤‚ÈŒŠ‚ª‚ ‚éB";
+	mes "‰½‚©‚ğ“ü‚ê‚é‚±‚Æ‚ª‚Å‚«‚»‚¤‚¾-";
+	mes "-Œü‚±‚¤‘¤‚Ö“n‚é‚½‚ß‚Ì";
+	mes "‘•’u‚©‚à‚µ‚ê‚È‚¢cc-";
 	next;
-	if(select("ç´‹ç« ã®æ¬ ç‰‡ã‚’ã¯ã‚ã¦ã¿ã‚‹","ä½•ã‚‚ã—ãªã„")==1) {
+	if(select("–äÍ‚ÌŒ‡•Ğ‚ğ‚Í‚ß‚Ä‚İ‚é","‰½‚à‚µ‚È‚¢")==1) {
 		if(countitem(7355+'@id)) {
 			cutin '@id+"-1",2;
 			misceffect 159;
-			mes "-æŒã£ã¦ã„ãŸç´‹ç« ã®æ¬ ç‰‡ãŒ";
-			mes "ã´ã£ãŸã‚Šã¯ã¾ã£ãŸ-";
+			mes "-‚Á‚Ä‚¢‚½–äÍ‚ÌŒ‡•Ğ‚ª";
+			mes "‚Ò‚Á‚½‚è‚Í‚Ü‚Á‚½-";
 			next;
-			mes "-ç´‹ç« ã®æ¬ ç‰‡ã‚’ã¯ã‚ãŸç©´ãŒå‹•ãã€";
-			mes "åœ°é¢ã‹ã‚‰å°ã•ãªéœ‡å‹•ã‚’æ„Ÿã˜ãŸ-";
-			mes "-å‘ã“ã†å´ã¸è¡ŒããŸã‚ã®";
-			mes "ãƒ¯ãƒ¼ãƒ—ãŒä½œå‹•ã—ãŸã‚ˆã†ã -";
-			mes "-ç´‹ç« ã®æ¬ ç‰‡ã‚’å›åã—ãŸ-";
+			mes "-–äÍ‚ÌŒ‡•Ğ‚ğ‚Í‚ß‚½ŒŠ‚ª“®‚«A";
+			mes "’n–Ê‚©‚ç¬‚³‚Èk“®‚ğŠ´‚¶‚½-";
+			mes "-Œü‚±‚¤‘¤‚Ös‚­‚½‚ß‚Ì";
+			mes "ƒ[ƒv‚ªì“®‚µ‚½‚æ‚¤‚¾-";
+			mes "-–äÍ‚ÌŒ‡•Ğ‚ğ‰ñû‚µ‚½-";
 			hideonnpc;
 			hideoffnpc "juperoswarp" + '@id + "#jupe_area1";
 			misceffect 561,"juperoswarp" + '@id + "#jupe_area1";
@@ -375,13 +375,13 @@ jupe_area1.gat,88,224,0	script	#jupe_area1-1	844,{
 			initnpctimer;
 		}
 		else {
-			mes "-ç©´ã«å…¥ã‚‹ã‚ˆã†ãªç‰©ã‚’";
-			mes "æŒã£ã¦ã„ãªã„-";
+			mes "-ŒŠ‚É“ü‚é‚æ‚¤‚È•¨‚ğ";
+			mes "‚Á‚Ä‚¢‚È‚¢-";
 		}
 	}
 	else {
 		mes "[" +strcharinfo(0)+ "]";
-		mes "ã“ã‚“ãªã‚‚ã®ã«æ§‹ã£ã¦ã„ã‚‹æš‡ã¯ãªã„â€¦â€¦ã€‚";
+		mes "‚±‚ñ‚È‚à‚Ì‚É\‚Á‚Ä‚¢‚é‰É‚Í‚È‚¢ccB";
 	}
 	close2;
 	cutin '@id,255;
@@ -396,14 +396,14 @@ jupe_area1.gat,25,238,0	duplicate(#jupe_area1-1)	#jupe_area1-2	844
 jupe_area1.gat,36,146,0	duplicate(#jupe_area1-1)	#jupe_area1-3	844
 jupe_area1.gat,50,49,0	duplicate(#jupe_area1-1)	#jupe_area1-4	844
 
-jupe_area1.gat,112,162,0	script	ãƒ¬ãƒãƒ¼#jupe_area1	844,{
-	mes "[ã‚ã‹ã‚‰ãªã„è£…ç½®]";
-	mes "ãƒ¬ãƒãƒ¼ãŒã‚ã‚‹ã€‚";
+jupe_area1.gat,112,162,0	script	ƒŒƒo[#jupe_area1	844,{
+	mes "[‚í‚©‚ç‚È‚¢‘•’u]";
+	mes "ƒŒƒo[‚ª‚ ‚éB";
 	if(getvariableofnpc('flag,"jupe_area1") != 12)
 		close;
-	mes "å¼•ãã“ã¨ãŒã§ããã†ã ã€‚";
+	mes "ˆø‚­‚±‚Æ‚ª‚Å‚«‚»‚¤‚¾B";
 	next;
-	if(select("ãƒ¬ãƒãƒ¼ã‚’å¼•ã","ã‚„ã‚ã‚‹")==1) {
+	if(select("ƒŒƒo[‚ğˆø‚­","‚â‚ß‚é")==1) {
 		hideonnpc;
 		hideoffnpc "juperoswarp5#jupe_area1";
 		misceffect 561,"juperoswarp5#jupe_area1";
@@ -412,7 +412,7 @@ jupe_area1.gat,112,162,0	script	ãƒ¬ãƒãƒ¼#jupe_area1	844,{
 		close;
 	}
 	mes "[" +strcharinfo(0)+ "]";
-	mes "ã“ã‚“ãªã‚‚ã®ã«æ§‹ã£ã¦ã„ã‚‹æš‡ã¯ãªã„â€¦â€¦ã€‚";
+	mes "‚±‚ñ‚È‚à‚Ì‚É\‚Á‚Ä‚¢‚é‰É‚Í‚È‚¢ccB";
 	close;
 OnTimer22000:
 	stopnpctimer;
@@ -448,11 +448,11 @@ OnInit:
 }
 
 //============================================================
-// ã‚¨ãƒ¬ãƒ™ãƒ¼ã‚¿ãƒ¼
+// ƒGƒŒƒx[ƒ^[
 //------------------------------------------------------------
-jupe_ele_r.gat,51,98,0	script	ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele	844,{
-	mes "-ã“ã®æ©Ÿæ¢°ã¯ã€";
-	mes "èª°ã‹ãŒä½¿ç”¨ã—ã¦ã„ã‚‹ã‚ˆã†ã -";
+jupe_ele_r.gat,51,98,0	script	ƒXƒCƒbƒ`is’†#jupe_ele	844,{
+	mes "-‚±‚Ì‹@ŠB‚ÍA";
+	mes "’N‚©‚ªg—p‚µ‚Ä‚¢‚é‚æ‚¤‚¾-";
 	close;
 OnInit:
 	hideonnpc;
@@ -460,9 +460,9 @@ OnInit:
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0) {
-		stopnpctimer "ã‚¹ã‚¤ãƒƒãƒ#jupe_ele";
+		stopnpctimer "ƒXƒCƒbƒ`#jupe_ele";
 		sleep 5000;
-		announce "å¹»å½±ã‚’ç ´ã‚Šã—è€…ã‚‰ã‚ˆã€æ›´ã«å¥¥ã¸é€²ã‚“ã§ã¿ãªã„ã‹ï¼Ÿ",9,0x66FF00;
+		announce "Œ¶‰e‚ğ”j‚è‚µÒ‚ç‚æAX‚É‰œ‚Öi‚ñ‚Å‚İ‚È‚¢‚©H",9,0x66FF00;
 		areasoundeffect "jupe_ele_r.gat",0,0,100,160,"earth_quake.wav",0;
 		sleep 4000;
 		disablenpc "juperoswarp4013";
@@ -474,43 +474,43 @@ OnKilled:
 	end;
 }
 
-jupe_ele_r.gat,51,98,0	script	ã‚¹ã‚¤ãƒƒãƒ#jupe_ele	844,{
+jupe_ele_r.gat,51,98,0	script	ƒXƒCƒbƒ`#jupe_ele	844,{
 	cutin "5",2;
-	mes "-ä½•ã‹ã‚’ä½œå‹•ã•ã›ã‚‹ã“ã¨ãŒ";
-	mes "ã§ããã†ãªãƒ¬ãƒãƒ¼ã¨ã€";
-	mes "ç”¨é€”ä¸æ˜ãª4å€‹ã®ç©´ãŒã‚ã‚‹-";
+	mes "-‰½‚©‚ğì“®‚³‚¹‚é‚±‚Æ‚ª";
+	mes "‚Å‚«‚»‚¤‚ÈƒŒƒo[‚ÆA";
+	mes "—p“r•s–¾‚È4ŒÂ‚ÌŒŠ‚ª‚ ‚é-";
 	next;
-	if(select("ãƒ¬ãƒãƒ¼ã‚’å¼•ã„ã¦ã¿ã‚‹","è§¦ã‚‰ãªã„")==2) {
-		mes "-å¾—ä½“ã®çŸ¥ã‚Œãªã„ç‰©ã«ã¯";
-		mes "è§¦ã‚‰ãªã„æ–¹ãŒã„ã„â€¦â€¦-";
+	if(select("ƒŒƒo[‚ğˆø‚¢‚Ä‚İ‚é","G‚ç‚È‚¢")==2) {
+		mes "-“¾‘Ì‚Ì’m‚ê‚È‚¢•¨‚É‚Í";
+		mes "G‚ç‚È‚¢•û‚ª‚¢‚¢cc-";
 		close2;
 		cutin "5",255;
 		end;
 	}
-	mes "-^797979ã‚«ãƒãƒ£ã€ã‚«ãƒãƒ£^000000-";
+	mes "-^797979ƒJƒ`ƒƒAƒJƒ`ƒƒ^000000-";
 	next;
-	mes "-^797979ãƒ¬ãƒãƒ¼ã‚’å¼•ã„ã¦ã¿ãŸãŒã€";
-	mes "ä½•ã‚‚åå¿œãŒãªã„^000000-";
-	mes "-ãƒ¬ãƒãƒ¼ã®æ¨ªã«ã‚ã‚‹ç©´ã«";
-	mes "ä½•ã‹ã‚’å…¥ã‚Œã‚‹ã¨ä½œå‹•ã™ã‚‹ã‚ˆã†ã -";
+	mes "-^797979ƒŒƒo[‚ğˆø‚¢‚Ä‚İ‚½‚ªA";
+	mes "‰½‚à”½‰‚ª‚È‚¢^000000-";
+	mes "-ƒŒƒo[‚Ì‰¡‚É‚ ‚éŒŠ‚É";
+	mes "‰½‚©‚ğ“ü‚ê‚é‚Æì“®‚·‚é‚æ‚¤‚¾-";
 	if(countitem(7356) < 1 && countitem(7357) < 1 && countitem(7358) < 1 && countitem(7359) < 1) {
 		close2;
 		cutin "5",255;
 		end;
 	}
 	next;
-	menu "ç´‹ç« ã®æ¬ ç‰‡ã‚’ã¯ã‚ã¦ã¿ã‚‹",-;
+	menu "–äÍ‚ÌŒ‡•Ğ‚ğ‚Í‚ß‚Ä‚İ‚é",-;
 	if(countitem(7356) < 1 || countitem(7357) < 1 || countitem(7358) < 1 || countitem(7359) < 1) {
-		mes "-ç´‹ç« ã®æ¬ ç‰‡ãŒè¶³ã‚Šãªã„ã‚ˆã†ã -";
-		mes "-ã©ã†ã‚„ã‚‰ã€å…¨ã¦ã®ç´‹ç« ã®æ¬ ç‰‡ã‚’";
-		mes "ä¸€ç·’ã«ã¯ã‚ãªã‘ã‚Œã°ãªã‚‰ãªã„ã‚ˆã†ã -";
+		mes "-–äÍ‚ÌŒ‡•Ğ‚ª‘«‚è‚È‚¢‚æ‚¤‚¾-";
+		mes "-‚Ç‚¤‚â‚çA‘S‚Ä‚Ì–äÍ‚ÌŒ‡•Ğ‚ğ";
+		mes "ˆê‚É‚Í‚ß‚È‚¯‚ê‚Î‚È‚ç‚È‚¢‚æ‚¤‚¾-";
 		close2;
 		cutin "5",255;
 		end;
 	}
 	initnpctimer;
 	hideonnpc;
-	hideoffnpc "ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele";
+	hideoffnpc "ƒXƒCƒbƒ`is’†#jupe_ele";
 	misceffect 72;
 	areamisceffect "jupe_ele_r.gat",0,0,100,160,563;
 	delitem 7356,1;
@@ -518,143 +518,143 @@ jupe_ele_r.gat,51,98,0	script	ã‚¹ã‚¤ãƒƒãƒ#jupe_ele	844,{
 	delitem 7358,1;
 	delitem 7359,1;
 	cutin "5-1",2;
-	mes "-ã“ã®éƒ¨å±‹ã‚’è¦†ã£ã¦ã„ãŸãŸãã•ã‚“ã®";
-	mes "ç´‹ç« ã®æ¬ ç‰‡ãŒé™ã£ã¦ããŸ-";
-	mes "-ã“ã‚Œã§ã¯ã€ã‚‚ã†å›åã™ã‚‹ã“ã¨ãŒ";
-	mes "ã§ããªã„-";
+	mes "-‚±‚Ì•”‰®‚ğ•¢‚Á‚Ä‚¢‚½‚½‚­‚³‚ñ‚Ì";
+	mes "–äÍ‚ÌŒ‡•Ğ‚ª~‚Á‚Ä‚«‚½-";
+	mes "-‚±‚ê‚Å‚ÍA‚à‚¤‰ñû‚·‚é‚±‚Æ‚ª";
+	mes "‚Å‚«‚È‚¢-";
 	close2;
 	cutin "5",255;
 	end;
 OnTimer2000:
-	announce "â€¦â€¦å¾Œä¸–ã®å­å­«ãŸã¡ã‚ˆâ€¦â€¦ã€‚",9,0x66FF00;
+	announce "ccŒã¢‚Ìq‘·‚½‚¿‚æccB",9,0x66FF00;
 	sleep 3000;
-	announce "ä½•æ•…ã€ã“ã®éƒ½å¸‚ãŒåœ°ã«åŸ‹ã‚‚ã‚ŒãŸã‹ã€çŸ¥ã‚ŠãŸã„ã‹â€¦â€¦ï¼Ÿ",9,0x66FF00;
+	announce "‰½ŒÌA‚±‚Ì“ss‚ª’n‚É–„‚à‚ê‚½‚©A’m‚è‚½‚¢‚©ccH",9,0x66FF00;
 	sleep 4000;
-	announce "ãªã‚‰ã°ã€é€²ã‚€ãŒã‚ˆã„ã€‚",9,0x66FF00;
+	announce "‚È‚ç‚ÎAi‚Ş‚ª‚æ‚¢B",9,0x66FF00;
 	sleep 3000;
-	announce "ãŠå‰ã‚‰ãŒæœ›ã‚€ã‚‚ã®ã‚’è¦‹ã›ã¦ã‚ã’ã‚ˆã†ã€‚",9,0x66FF00;
+	announce "‚¨‘O‚ç‚ª–]‚Ş‚à‚Ì‚ğŒ©‚¹‚Ä‚ ‚°‚æ‚¤B",9,0x66FF00;
 	sleep 7000;
-	announce "ä½†ã—ã€å…¨ã¦ã®å¹»å½±ã¨â€¦â€¦",9,0xFF9900;
+	announce "’A‚µA‘S‚Ä‚ÌŒ¶‰e‚Æcc",9,0xFF9900;
 	sleep 3000;
-	announce "å…¨ã¦ã®å½ã‚Šã‚’ä¹—ã‚Šè¶Šãˆã‚Œã°ãªâ€¦â€¦ã€‚",9,0xFF0000;
+	announce "‘S‚Ä‚Ì‹U‚è‚ğæ‚è‰z‚¦‚ê‚Î‚ÈccB",9,0xFF0000;
 	sleep 3000;
-	announce "20åˆ†ã®æ™‚ã‚’ä¸ãˆã‚ˆã†",9,0xFF0000;
+	announce "20•ª‚Ì‚ğ—^‚¦‚æ‚¤",9,0xFF0000;
 	sleep 1000;
-	set getvariableofnpc('mob,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele"),9;
-	monster "jupe_ele_r.gat",44,99,"è­¦å‚™å…µ",1669,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	set getvariableofnpc('mob,"ƒXƒCƒbƒ`is’†#jupe_ele"),9;
+	monster "jupe_ele_r.gat",44,99,"Œx”õ•º",1669,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",55,99,"è­¦å‚™å…µ",1675,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",55,99,"Œx”õ•º",1675,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",45,84,"è­¦å‚™å…µ",1683,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",45,84,"Œx”õ•º",1683,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",54,84,"è­¦å‚™å…µ",1675,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",54,84,"Œx”õ•º",1675,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",45,99,"è­¦å‚™å…µ",1669,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",45,99,"Œx”õ•º",1669,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",54,99,"è­¦å‚™å…µ",1683,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",54,99,"Œx”õ•º",1683,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",48,84,"è­¦å‚™å…µ",1669,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",48,84,"Œx”õ•º",1669,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",52,84,"è­¦å‚™å…µ",1683,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
+	monster "jupe_ele_r.gat",52,84,"Œx”õ•º",1683,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
 	sleep 200;
-	monster "jupe_ele_r.gat",50,84,"è­¦å‚™éšŠé•·",1684,1,"ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele::OnKilled";
-	announce "æˆ‘ã¯ã—ã°ã—ã®é–“ã€å¹»å½±ã¨å…±ã«ã„ã‚ˆã†ã€‚",9,0xFF0000;
+	monster "jupe_ele_r.gat",50,84,"Œx”õ‘à’·",1684,1,"ƒXƒCƒbƒ`is’†#jupe_ele::OnKilled";
+	announce "‰ä‚Í‚µ‚Î‚µ‚ÌŠÔAŒ¶‰e‚Æ‹¤‚É‚¢‚æ‚¤B",9,0xFF0000;
 	end;
 OnTimer144000:
 	stopnpctimer;
-	announce "æœŸå¾…å¤–ã‚Œã ã£ãŸã‹â€¦â€¦ã€‚",9,0x66FF00;
+	announce "Šú‘ÒŠO‚ê‚¾‚Á‚½‚©ccB",9,0x66FF00;
 	sleep 2000;
 	areawarp "jupe_ele_r.gat",0,0,100,160,"jupe_gate.gat",49,138;
 	killmonster "this","All";
-	hideonnpc "ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele";
-	hideoffnpc "ã‚¹ã‚¤ãƒƒãƒ#jupe_ele";
+	hideonnpc "ƒXƒCƒbƒ`is’†#jupe_ele";
+	hideoffnpc "ƒXƒCƒbƒ`#jupe_ele";
 	end;
 }
 
 jupe_ele.gat,0,0,0	script	jupe_ele	-1,{
 OnSummon1:
 	sleep 2000;
-	announce "ã“ã“ã¾ã§è¾¿ã‚Šç€ã„ãŸãŠå‰ã‚‰ã®æ ¹æ€§ã«ã€æ•¬æ„ã‚’è¡¨ã™ã‚‹ã€‚",9,0xFF0000;
+	announce "‚±‚±‚Ü‚Å’H‚è’…‚¢‚½‚¨‘O‚ç‚Ìª«‚ÉAŒhˆÓ‚ğ•\‚·‚éB",9,0xFF0000;
 	sleep 3000;
-	announce "ã•ã¦â€¦â€¦ã“ã®ã‚ã‚‰ã‚†ã‚‹ã‚‚ã®ã¯è½ã¨ã—ç©´ãªã®ã‹ã€ã‚‚ã—ãã¯ä¾µå…¥è€…ã‚’ã‚ã¶ã‚Šå‡ºã™ãŸã‚ã®ã¾ã‚„ã‹ã—ãªã®ã‹ã€",9,0xFF0000;
+	announce "‚³‚Äcc‚±‚Ì‚ ‚ç‚ä‚é‚à‚Ì‚Í—‚Æ‚µŒŠ‚È‚Ì‚©A‚à‚µ‚­‚ÍN“üÒ‚ğ‚ ‚Ô‚èo‚·‚½‚ß‚Ì‚Ü‚â‚©‚µ‚È‚Ì‚©A",9,0xFF0000;
 	sleep 3000;
-	announce "è©¦ã—ã¦ã¿ã‚‹ã‹ã­â€¦â€¦ã€‚",9,0xFF0000;
+	announce "‚µ‚Ä‚İ‚é‚©‚ËccB",9,0xFF0000;
 	sleep 4000;
 	set 'mob,8;
-	monster "jupe_ele.gat",48,44,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,42,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,42,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,44,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,51,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,53,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,53,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",48,51,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,44,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,42,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,42,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,44,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,51,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,53,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,53,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,51,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
 	end;
 OnSummon2:
 	sleep 2000;
-	announce "ã“ã“ã¯å…ƒã€…ã€ãŠå‰ã‚‰ãŒæ€ã†ã‚ˆã†ãª",9,0xFF0000;
+	announce "‚±‚±‚ÍŒ³XA‚¨‘O‚ç‚ªv‚¤‚æ‚¤‚È",9,0xFF0000;
 	sleep 3000;
-	announce "æˆç†Ÿã—ç¹æ „ã‚’æ¥µã‚ãŸæ–‡åŒ–éƒ½å¸‚ã§ã¯ãªã‹ã£ãŸã€‚",9,0xFF0000;
+	announce "¬n‚µ”É‰h‚ğ‹É‚ß‚½•¶‰»“ss‚Å‚Í‚È‚©‚Á‚½B",9,0xFF0000;
 	sleep 3000;
-	announce "äººé–“ã®çœŸã®æã‚ã—ã•ã‚’å…¨ã¦èåˆã•ã›â€¦â€¦",9,0xFF0000;
+	announce "lŠÔ‚Ì^‚Ì‹°‚ë‚µ‚³‚ğ‘S‚Ä—Z‡‚³‚¹cc",9,0xFF0000;
 	sleep 3000;
-	announce "é¥ã‹ã«äººé–“ã®æƒ³åƒã‚’è¶…ãˆãŸå ´æ‰€ã€‚",9,0xFF0000;
+	announce "—y‚©‚ÉlŠÔ‚Ì‘z‘œ‚ğ’´‚¦‚½êŠB",9,0xFF0000;
 	sleep 1000;
 	set 'mob,8;
-	monster "jupe_ele.gat",48,44,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,42,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,42,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,44,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,51,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,53,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,53,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",48,51,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,44,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,42,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,42,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,44,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,51,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,53,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,53,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,51,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
 	end;
 OnSummon3:
 	sleep 2000;
-	announce "ãŠå‰ã‚‰ã®ç›®ã«ã€ã“ã“ã«ã‚ã‚‹ã‚‚ã®ã¯ã©ã†è¦‹ãˆã¦ã„ã‚‹ï¼Ÿ",9,0xFF0000;
+	announce "‚¨‘O‚ç‚Ì–Ú‚ÉA‚±‚±‚É‚ ‚é‚à‚Ì‚Í‚Ç‚¤Œ©‚¦‚Ä‚¢‚éH",9,0xFF0000;
 	sleep 3000;
-	announce "ãã‚Œã¯ã€æœ¬å½“ã«è¦‹ãˆã¦ã„ã‚‹ã®ã‹ï¼Ÿ",9,0xFF0000;
+	announce "‚»‚ê‚ÍA–{“–‚ÉŒ©‚¦‚Ä‚¢‚é‚Ì‚©H",9,0xFF0000;
 	sleep 3000;
-	announce "ãã‚Œã¨ã‚‚â€¦â€¦ãã†è¦‹ãˆã‚‹ã¨ä¿¡ã˜ã¦ã„ã‚‹ã ã‘ã§ã¯ãªã„ã®ã‹ï¼Ÿ",9,0xFF0000;
+	announce "‚»‚ê‚Æ‚àcc‚»‚¤Œ©‚¦‚é‚ÆM‚¶‚Ä‚¢‚é‚¾‚¯‚Å‚Í‚È‚¢‚Ì‚©H",9,0xFF0000;
 	sleep 4000;
 	set 'mob,8;
-	monster "jupe_ele.gat",48,44,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,42,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,42,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,44,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,51,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,53,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,53,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",48,51,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,44,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,42,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,42,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,44,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,51,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,53,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,53,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,51,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
 	end;
 OnSummon4:
 	sleep 2000;
-	announce "å¿˜ã‚Œã‚‹ã§ãªã„ãâ€¦â€¦ã„ã¤ã‹ãŠå‰ã‚‰ã®é¦–ã‚’ã—ã‚ã‚‹ã®ã¯â€¦â€¦",9,0xFF0000;
+	announce "–Y‚ê‚é‚Å‚È‚¢‚¼cc‚¢‚Â‚©‚¨‘O‚ç‚Ìñ‚ğ‚µ‚ß‚é‚Ì‚Ícc",9,0xFF0000;
 	sleep 3000;
-	announce "ç´›ã‚Œã‚‚ãªãã€ãŠå‰ã‚‰è‡ªèº«ã ãã€‚",9,0xFF0000;
+	announce "•´‚ê‚à‚È‚­A‚¨‘O‚ç©g‚¾‚¼B",9,0xFF0000;
 	sleep 3000;
 	set 'mob,8;
-	monster "jupe_ele.gat",48,44,"è­¦å‚™å…µ",1684,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,42,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,42,"è­¦å‚™å…µ",1684,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,44,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",35,51,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",38,53,"è­¦å‚™å…µ",1669,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",45,53,"è­¦å‚™å…µ",1683,1,"jupe_ele::OnKilled";
-	monster "jupe_ele.gat",48,51,"è­¦å‚™å…µ",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,44,"Œx”õ•º",1684,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,42,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,42,"Œx”õ•º",1684,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,44,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",35,51,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",38,53,"Œx”õ•º",1669,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",45,53,"Œx”õ•º",1683,1,"jupe_ele::OnKilled";
+	monster "jupe_ele.gat",48,51,"Œx”õ•º",1675,1,"jupe_ele::OnKilled";
 	end;
 OnClear:
 	sleep 2000;
-	announce "æˆ‘ã¯ä½•ã‚‚è¨€ã£ã¦ã¯ãŠã‚‰ã¬ã€‚",9,0x66FF00;
+	announce "‰ä‚Í‰½‚àŒ¾‚Á‚Ä‚Í‚¨‚ç‚ÊB",9,0x66FF00;
 	sleep 3000;
-	announce "ã“ã‚Œã‚’ãŠå‰ã‚‰ãŒèãé ƒã«ã¯ã€æã‚‰ãâ€¦â€¦æˆ‘ã‚‰ã®éƒ½å¸‚ã¯ã“ã®ä¸–ã‹ã‚‰æ¶ˆãˆã¦ã„ã‚‹ã§ã‚ã‚ã†ã€‚",9,0x66FF00;
+	announce "‚±‚ê‚ğ‚¨‘O‚ç‚ª•·‚­ ‚É‚ÍA‹°‚ç‚­cc‰ä‚ç‚Ì“ss‚Í‚±‚Ì¢‚©‚çÁ‚¦‚Ä‚¢‚é‚Å‚ ‚ë‚¤B",9,0x66FF00;
 	sleep 3000;
-	announce "å…¨ã¦ã®ã“ã¨ãŒé–“é•ã„ã§ã‚ã£ãŸã€‚æˆ‘ã‚‰ã¯ã€ã“ã“ã«ã„ã¦ã¯ãªã‚‰ã¬å­˜åœ¨ã§ã‚ã£ãŸã€‚",9,0x66FF00;
+	announce "‘S‚Ä‚Ì‚±‚Æ‚ªŠÔˆá‚¢‚Å‚ ‚Á‚½B‰ä‚ç‚ÍA‚±‚±‚É‚¢‚Ä‚Í‚È‚ç‚Ê‘¶İ‚Å‚ ‚Á‚½B",9,0x66FF00;
 	sleep 3000;
-	announce "äººé–“ã¯ã€ã“ã“ã«ã„ã¦ã‚‚ã‚ˆã„ã®ã ã‚ã†ã‹ï¼Ÿ",9,0x66FF00;
+	announce "lŠÔ‚ÍA‚±‚±‚É‚¢‚Ä‚à‚æ‚¢‚Ì‚¾‚ë‚¤‚©H",9,0x66FF00;
 	sleep 1000;
-	announce "â€¦â€¦é¡˜ã†ãªã‚‰ã°ã€æ›´ã«å¥¥ã¸é€²ã‚€ãŒã‚ˆã„ã€‚",9,0x66FF00;
+	announce "ccŠè‚¤‚È‚ç‚ÎAX‚É‰œ‚Öi‚Ş‚ª‚æ‚¢B",9,0x66FF00;
 	enablenpc "juperoswarp4013";
 	end;
 OnKilled:
@@ -672,12 +672,12 @@ OnKilled:
 	end;
 OnTimer144000:
 	stopnpctimer;
-	announce "æœŸå¾…å¤–ã‚Œã ã£ãŸã‹â€¦â€¦ã€‚",9,0x66FF00;
+	announce "Šú‘ÒŠO‚ê‚¾‚Á‚½‚©ccB",9,0x66FF00;
 	sleep 2000;
 	areawarp "jupe_ele.gat",0,0,100,124,"jupe_gate.gat",49,138;
 	killmonster "this","All";
 	set 'flag,0;
-	hideonnpc "ã‚¹ã‚¤ãƒƒãƒé€²è¡Œä¸­#jupe_ele";
-	hideoffnpc "ã‚¹ã‚¤ãƒƒãƒ#jupe_ele";
+	hideonnpc "ƒXƒCƒbƒ`is’†#jupe_ele";
+	hideoffnpc "ƒXƒCƒbƒ`#jupe_ele";
 	end;
 }

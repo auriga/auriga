@@ -1,80 +1,80 @@
 // Produce NPC by kalen
-// 仕様書
+// �d�l��
 //
-//・デフォルトの材料
-//　作りたい属性武器の元武器を２個
-//　属性を入れるなら属性石５個
-//　星１つにつきかけらを１０個
+//�E�f�t�H���g�̍ޗ�
+//�@��肽����������̌�������Q��
+//�@����������Ȃ瑮���΂T��
+//�@���P�ɂ���������P�O��
 //
-//・元武器については、チェックが複雑になるのでS最低(店売り？)のみカウントします。
-//　作成する武器もS最低(チェックしたIDと同一)なので、同じ武器を連続作成したり、
-//　手持ちで既に属性武器があったりすると、材料として使われてしまう可能性があります。
-//・'producer_idを自分の鯖の特定のキャラIDにあわせて使用してください。
-//　「NPC作成」とかのキャラを作成しそれにあわせて使うといいでしょう。
+//�E������ɂ��ẮA�`�F�b�N�����G�ɂȂ�̂�S�Œ�(�X����H)�̂݃J�E���g���܂��B
+//�@�쐬���镐���S�Œ�(�`�F�b�N����ID�Ɠ���)�Ȃ̂ŁA���������A���쐬������A
+//�@�莝���Ŋ��ɑ������킪�������肷��ƁA�ޗ��Ƃ��Ďg���Ă��܂��\��������܂��B
+//�E'producer_id�������̎I�̓���̃L����ID�ɂ��킹�Ďg�p���Ă��������B
+//�@�uNPC�쐬�v�Ƃ��̃L�������쐬������ɂ��킹�Ďg���Ƃ����ł��傤�B
 
-prontera.gat,129,191,0	script	作成NPC	726,{
+prontera.gat,129,191,0	script	�쐬NPC	726,{
 	if('producer_id == 0)
-		set 'producer_id,150000;	// 作成者ID（デフォルト150000）
-	mes "[作成NPC]";
-	mes "こちらでは、属性武器の作成をしております。";
-	mes "材料は作りたい装備が2つで、";
-	mes "属性入りの場合は^0000ff属性石5つ^000000";
-	mes "★入りの場合は^0000ff星のかけら10つ^000000";
-	mes "で★1個となります。";
+		set 'producer_id,150000;	// �쐬��ID�i�f�t�H���g150000�j
+	mes "[�쐬NPC]";
+	mes "������ł́A��������̍쐬�����Ă���܂��B";
+	mes "�ޗ��͍�肽��������2�ŁA";
+	mes "��������̏ꍇ��^0000ff������5��^000000";
+	mes "������̏ꍇ��^0000ff���̂�����10��^000000";
+	mes "�Ł�1�ƂȂ�܂��B";
 	next;
-	switch(select("^ff0000必ずお読み下さい。^000000","短剣系列","片手剣系列","両手剣系列","槍系列","斧系列列","鈍器系列","ナックル系列")) {
+	switch(select("^ff0000�K�����ǂ݉������B^000000","�Z���n��","�Ў茕�n��","���茕�n��","���n��","���n���","�݊�n��","�i�b�N���n��")) {
 	case 1:
-		mes "[作成NPC]";
-		mes "基本的に全部Sが最低のものでないと";
-		mes "カウントされません。";
-		mes "同じ武器を連続して作成すると";
-		mes "一つ前に作ったものを";
-		mes "材料にしてしまう事があります。";
+		mes "[�쐬NPC]";
+		mes "��{�I�ɑS��S���Œ�̂��̂łȂ���";
+		mes "�J�E���g����܂���B";
+		mes "���������A�����č쐬�����";
+		mes "��O�ɍ�������̂�";
+		mes "�ޗ��ɂ��Ă��܂���������܂��B";
 		next;
-		mes "[作成NPC]";
-		mes "重要なItemや、作ったものは、";
-		mes "かならず預けるか";
-		mes "カートに入れてからお願いします。";
-		mes "尚Itemが消えても補償はいたしません。";
+		mes "[�쐬NPC]";
+		mes "�d�v��Item��A��������̂́A";
+		mes "���Ȃ炸�a���邩";
+		mes "�J�[�g�ɓ���Ă��炨�肢���܂��B";
+		mes "��Item�������Ă��⏞�͂������܂���B";
 		close;
-	case 2:	// 短剣
+	case 2:	// �Z��
 		setarray '@id,1201,1204,1207,1210,1213,1216,1219,1222;
 		break;
-	case 3:	// 片手剣
+	case 3:	// �Ў茕
 		setarray '@id,1101,1104,1107,1110,1113,1122,1119,1123,1126,1129;
 		break;
-	case 4:	// 両手剣
+	case 4:	// ���茕
 		setarray '@id,1116,1151,1154,1157,1160,1163;
 		break;
-	case 5:	// 槍
+	case 5:	// ��
 		setarray '@id,1401,1404,1407,1451,1454,1457,1460,1463,1410;
 		break;
-	case 6:	// 斧
+	case 6:	// ��
 		setarray '@id,1301,1351,1354,1357,1360;
 		break;
-	case 7:	// 鈍器
+	case 7:	// �݊�
 		setarray '@id,1501,1504,1507,1510,1519,1513,1516,1522;
 		break;
-	case 8:	// ナックル
+	case 8:	// �i�b�N��
 		setarray '@id,1801,1803,1805,1807,1809,1811;
 		break;
 	}
 
-	// getitemname(0) は ""（空文字）が返るのでそのままselectに使って問題ない
+	// getitemname(0) �� ""�i�󕶎��j���Ԃ�̂ł��̂܂�select�Ɏg���Ė��Ȃ�
 	set '@n,select(getitemname('@id[0]),getitemname('@id[1]),getitemname('@id[2]),getitemname('@id[3]),getitemname('@id[4]),
 	               getitemname('@id[5]),getitemname('@id[6]),getitemname('@id[7]),getitemname('@id[8]),getitemname('@id[9]))-1;
 	if(countitem('@id['@n]) < 2) {
-		mes "[作成NPC]";
-		mes "材料が足りないようです。";
+		mes "[�쐬NPC]";
+		mes "�ޗ�������Ȃ��悤�ł��B";
 		close;
 	}
-	mes "[作成NPC]";
-	mes "属性はどうしますか？";
-	mes "属性を付与したい場合、";
-	mes "^3355ff属性石5つ^000000が必要となります。";
+	mes "[�쐬NPC]";
+	mes "�����͂ǂ����܂����H";
+	mes "������t�^�������ꍇ�A";
+	mes "^3355ff������5��^000000���K�v�ƂȂ�܂��B";
 	next;
 
-	switch(select("いらない","^ff0000火属性^000000","^0033ff水属性^000000","^996600土属性^000000","^00cc66風属性^000000")) {
+	switch(select("����Ȃ�","^ff0000�Α���^000000","^0033ff������^000000","^996600�y����^000000","^00cc66������^000000")) {
 	case 1:
 		break;
 	case 2:
@@ -95,16 +95,16 @@ prontera.gat,129,191,0	script	作成NPC	726,{
 		break;
 	}
 	if('@attr > 0 && countitem('@attr) < 5) {
-		mes "[作成NPC]";
-		mes "材料が足りないようです。";
+		mes "[�쐬NPC]";
+		mes "�ޗ�������Ȃ��悤�ł��B";
 		close;
 	}
-	mes "[作成NPC]";
-	mes "★はどうしますか？";
-	mes "★を付与したい場合、";
-	mes "^3355ff星のかけら10つ^000000が必要となります。";
+	mes "[�쐬NPC]";
+	mes "���͂ǂ����܂����H";
+	mes "����t�^�������ꍇ�A";
+	mes "^3355ff���̂�����10��^000000���K�v�ƂȂ�܂��B";
 	next;
-	switch(select("いらない","★一つ","★二つ",('@opt == 0)? "★三つ": "")) {
+	switch(select("����Ȃ�","�����","�����",('@opt == 0)? "���O��": "")) {
 	case 1:
 		break;
 	case 2:
@@ -121,18 +121,18 @@ prontera.gat,129,191,0	script	作成NPC	726,{
 		break;
 	}
 	if('@star > 0 && countitem(1000) < '@star) {
-		mes "[作成NPC]";
-		mes "材料が足りないようです。";
+		mes "[�쐬NPC]";
+		mes "�ޗ�������Ȃ��悤�ł��B";
 		close;
 	}
-	mes "[作成NPC]";
-	mes "それでは、作成します。";
+	mes "[�쐬NPC]";
+	mes "����ł́A�쐬���܂��B";
 	next;
 	delitem '@id['@n],2;
 	delitem 1000,'@star;
 	delitem '@attr,5;
 	getitem2 '@id['@n],1,1,0,0,255,'@opt,'producer_id&0xffff,('producer_id>>16)&0xffff;
-	mes "[作成NPC]";
-	mes "完了しました。";
+	mes "[�쐬NPC]";
+	mes "�������܂����B";
 	close;
 }
