@@ -232,6 +232,7 @@ void party_recv_info(struct party *sp)
 	struct map_session_data *sd;
 	struct party *p;
 	int i;
+	int memorial_id;
 
 	nullpo_retv(sp);
 
@@ -242,7 +243,11 @@ void party_recv_info(struct party *sp)
 		// 最初のロードなのでユーザーのチェックを行う
 		party_check_member(sp);
 	}
+
+	// メモリアルダンジョンIDの一時保存＆書き戻し
+	memorial_id = p->memorial_id;
 	memcpy(p,sp,sizeof(struct party));
+	p->memorial_id = memorial_id;
 
 	for(i=0;i<MAX_PARTY;i++){	// sdの設定
 		sd = map_id2sd(p->member[i].account_id);
