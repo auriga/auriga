@@ -1,4 +1,10 @@
 ----------------------------------------
+//1272 [2016/10/24] by refis
+
+・scriptフォルダ以下のファイル拡張子を.scにリネームする（conf/map_auriga.conf, script/*）
+	-> 中身はテキストのままですが、エディタの表示設定を反映させやすくするため変更
+
+----------------------------------------
 //1271 [2016/07/31] by refis
 
 ・パーティ情報受信時にmemorial_idが消失する問題を修正（party.c）
@@ -835,7 +841,7 @@ example:
 //1191 [2014/02/05] by Rayce
 
 ・2012-04-10aRagexeRE のPACKETVERをコンパイラの定義に追加（vc_make.bat, bcc32_make.bat, Makefile）
-	reported by うに?く さん
+	reported by うに～く さん
 
 ・クライアントのタイムスタンプのパケット受信（0x044a）対応（clif.c, packet_db.txt）
   ※利用機会がないのでコメントアウトしている
@@ -2165,7 +2171,7 @@ example:
 ・item_db.txtの更新 (item_db.txt, item_db_pre.txt)
 	-> バグfix
 	-> スロットエンチャント装備の効果修正
-		Thanks bunta さん、うに?く さん、Akayumi さん
+		Thanks bunta さん、うに～く さん、Akayumi さん
 
 ・ゲフェンのテイミング商人エラーを修正 (npc_town_geffen.txt)
 	Thanks Schwarzwald さん
@@ -2183,7 +2189,7 @@ example:
 //1105 [2013/08/18] by refis
 
 ・Auriga-1104の関数修正でNULLチェックがなかったのを修正 (script.c)
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ・エリア指定のモンスター出現の際、エリア指定が終点＜始点となる場合にエラーとなるのを修正 (mob.c)
 	Thanks 716 さん
@@ -2221,7 +2227,7 @@ example:
 ・接続切断時の処理を修正
 	-> 接続切断通知はセーブ時ではなく切断完了時に送信させる (char/char.c, map/clif.c)
 	-> Auriga-1068以降不要だったセーブ後の切断処理を修正 (chrif.c)
-		Thanks うに?く さん
+		Thanks うに～く さん
 
 ----------------------------------------
 //1102 [2013/08/16] by Blaze
@@ -2460,7 +2466,7 @@ example:
 //1084 [2013/07/02] by refis
 
 ・エンドレスタワーでモンスター重複Popするbugfix（npc_memorial_tower.txt）
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ・魔導ギア搭乗時、サンクチュアリ効果が発揮されていなかったのを修正（skill.c）
 	Thanks ねぴぴ さん
@@ -2862,7 +2868,7 @@ example:
 ・skill_cast_dbをリニューアルデータに更新（skill_cast_db.txt, skill_cast_db_pre.txt）
 
 ・1048で忍者関連NPCがduplicateエラーを起こしていたのを修正（npc_job_29ninja.txt）
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ----------------------------------------
 //1048 [2013/04/29] by refis
@@ -2917,7 +2923,7 @@ example:
 //1043 [2013/04/15] by refis
 
 ・状態異常「SC_EXEEDBREAK」のtypo修正（status.c）
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ・mob_db_pre.txtが正常に読み込まれない問題を修正（mob.c）
 	Thanks ねぴぴ さん
@@ -2934,7 +2940,7 @@ example:
 //1041 [2013/03/26] by refis
 
 ・spl_fild03にコルヌスではなくクブリンが出現するミスを修正（npc_quest_ashvacuum.txt）
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ・メモリアルダンジョンのNPCがタイマーイベントを発行中に削除された場合
 	npc_timerevent errorが発生するのを修正（map.c）
@@ -3419,7 +3425,7 @@ example:
 //1004 [2013/03/04] by refis
 
 ・1001以降、通常カード効果が発揮されなかった不具合を修正 (status.c)
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ----------------------------------------
 //1003 [2013/03/02] by refis
@@ -3691,7 +3697,7 @@ example:
 //0978 [2012/08/11] by refis
 
 ・0977での関数のスペルミスを修正 (npc_misc_refine.txt)
-	Thanks NP3228 さん、うに?く さん
+	Thanks NP3228 さん、うに～く さん
 
 ----------------------------------------
 //0977 [2012/08/09] by refis
@@ -3807,7 +3813,7 @@ example:
 ・エルディカスティスへの帰還、モーラへの帰還の処理を少し修正 (src/map/skill.c)
 
 ・マップサーバー間移動要求の不具合を修正 (src/char/char.c)
-	Thanks うに?く さん
+	Thanks うに～く さん
 
 ----------------------------------------
 //0967 [2012/06/17] by Blaze
@@ -4095,7 +4101,7 @@ example:
 	-> 傭兵自身のデータを「mercenary」テーブルに保存するように。
 
 ・モンスター傭兵実装（common/mmo.h, merc.*, db/merc_db.txt, merc_skill_tree.txt）
-	-> 傭兵IDを定められたID（6017?6046）しか登録できなかったのを任意のIDで登録できるように変更。
+	-> 傭兵IDを定められたID（6017～6046）しか登録できなかったのを任意のIDで登録できるように変更。
 
 ・傭兵DBの構造を変更（merc.*, db/merc_db.txt, db/addon/merc_db_add.txt, doc/db_ref.txt）
 	-> 傭兵のクラスIDを任意に定義できる様にした為、ViewClassを廃止
@@ -4125,7 +4131,7 @@ example:
 ・NPCスキル「不死属性付与」は属性レベル2以上にならないよう修正 (src/map/skill.c)
 	Thanks Akayumi さん
 
-・3次職のBaseLv90?98迄のHP・SPデータを追加 (db/job_hp_db.txt db/job_sp_db.txt)
+・3次職のBaseLv90～98迄のHP・SPデータを追加 (db/job_hp_db.txt db/job_sp_db.txt)
 
 ----------------------------------------
 //0943 [2012/04/20] by refis
@@ -4139,7 +4145,7 @@ example:
 
 ・搭乗システム、モンスター変身中キャラが画面に入ったとき、正常に表示されなかったのを修正 (src/map/clif.c src/map/status.c)
 	-> 相互の干渉関係が不明なため、搭乗システムが優先される暫定処置です
-		Thanks うに?く さん、ryokucha さん
+		Thanks うに～く さん、ryokucha さん
 
 ・アサシンスキル「クローキング」で壁沿い移動時の無効な判定を修正 (src/map/status.c)
 	Thanks Akayumi さん
@@ -4534,7 +4540,7 @@ example:
 //0910 [2012/01/22] by popori
 
 ・0886のバグ修正とマジックナンバー削減 (src/map/buyingstore.c src/map/clif.c src/map/pc.* src/map/vending.c)
-　うに?くさん、Akayumiさんに感謝
+　うに～くさん、Akayumiさんに感謝
 
 ----------------------------------------
 //0909 [2012/01/22] by popori
@@ -4672,10 +4678,10 @@ example:
 　　基本ASPDはリニューアル後の忍者と同一で暫定
 
 ・packet_db.txtの修正 (db/packet_db.txt)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ・mob_avail.txtの読み込み修正 (db/mob_avail.txt)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ----------------------------------------
 //0898 [2012/01/04] by popori
@@ -5162,7 +5168,7 @@ example:
   同じクエストが重複して存在できてしまう問題を修正
   特にSQLモードだと「Duplicate Entry ... for key 'PRIMARY'」が発生して
   追加処理に失敗していた（quest.c）
-		reported by うに?くさん
+		reported by うに～くさん
 
 ・setquest命令やchgquest命令で、追加ではなく上書き更新したいのに
   MAX_QUESTLISTに達していると更新できない問題を修正（quest.c）
@@ -5540,7 +5546,7 @@ example:
 ・本家の設定に合わせてペットの髪型情報の送信はAREA指定で送るよう変更 (src/map/clif.* src/map/pet.c)
 
 ・フリーキャストで移動速度が増加するバグを修正 (src/map/status.c src/map/unit.c)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ・攻撃による状態異常付与の仕様を一部巻き戻す (src/map/battle.*)
  ->スキル「猛虎硬派山」のノックバック効果はダメージが発生しないとノックバックしないよう変更
@@ -6579,7 +6585,7 @@ example:
 
 ・MAPサーバが複数ある場合、異なるMAPサーバに移動すると
   太陽と月と星の感情を上書き登録出来てしまうバグを修正（skill.c）
-		reported by うに?くさん
+		reported by うに～くさん
 
 ・doc/client_packet.txtを一部修正
   それに伴い、一部のパケット区切りを変更（clif.c）
@@ -7337,7 +7343,7 @@ example:
 　aris999さん、 dragontail789さんに感謝
 
 ・スキル「フィアーブリーズ」で0除算が発生する可能性を修正 (battle.c)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ・MAX_PACKET_DBを0x850に拡張 (clif.h)
 
@@ -7345,7 +7351,7 @@ example:
 //0722 [2010/03/12] by Blaze
 
 ・0719で追加された状態異常のタイマー判定がおかしかったのを修正(status.c)
-	Thanks うに?くさん
+	Thanks うに～くさん
 
 ・スクリプト命令「setdragon」を拡張(script.c, pc.*, doc/script_ref.txt)
 	->パラメータで色違いドラゴンに騎乗できるように(省略可)
@@ -7428,7 +7434,7 @@ example:
 ・マーダラーボーナスの経験値倍加はビットシフトに変更 (pc.c)
 
 ・バーンとバジン兄弟クエストの不具合修正をマージ (npc_town_yuno.txt)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ・ホムンクルススキル「S.B.R.44」の計算式修正をマージ (battle.c)
 　tomoさんに感謝
@@ -7597,8 +7603,8 @@ example:
 ・アイテムボーナスの一部の仕様を変更 (battle.c)
 　Toshiさんに感謝
 「bWeaponComaEle」「bWeaponComaEle2」「bWeaponComaRace」「bWeaponComaRace2」においての
-　種族指定で0?9の種族を指定した際BOSSも適用される仕様でしたが
-　この仕様を変更し0?9の種族を指定した場合はBOSSを適用外にする仕様にします。
+　種族指定で0～9の種族を指定した際BOSSも適用される仕様でしたが
+　この仕様を変更し0～9の種族を指定した場合はBOSSを適用外にする仕様にします。
 
 ・0706にて追加したキャッシュアイテム関連の微修正 (skill_cast_db.txt)
 
@@ -7838,7 +7844,7 @@ example:
 //0689 [2009/10/16] by popori
 
 ・アクティブタイマーが永続してしまうバグを修正 (pc.c)
-　うに?くさんに感謝
+　うに～くさんに感謝
 
 ・ヒールのディレイが消えているのを修正 (skill_cast_db.txt)
 　Cocoaさんに感謝
@@ -8354,9 +8360,9 @@ example:
 ----------------------------------------
 //0651 [2009/09/22] by Rayce
 
-・砦で MobId: 1285?1288 のモンスターを呼び出すと、常にギルド所属扱いになるのを撤廃（mob.c）
+・砦で MobId: 1285～1288 のモンスターを呼び出すと、常にギルド所属扱いになるのを撤廃（mob.c）
 
-・NPCスクリプトの getguardianinfo 関数で、indexに1?8以外を指定すると
+・NPCスクリプトの getguardianinfo 関数で、indexに1～8以外を指定すると
   バッファオーバーフロー/アンダーフローが発生するのを修正（script.c）
 
 ----------------------------------------
@@ -9636,7 +9642,7 @@ example:
 ・0559でコンパイルが通らない不具合修正（status.c）
 
 ・ダブルストレイフィングの計算式修正（battle.c）
-	reported by うに?くさん
+	reported by うに～くさん
 
 ・Def、Mdefが不の値になるように修正（status.c）
 
@@ -9688,9 +9694,9 @@ example:
 ・アルケミストクエストスキルが進行しない不具合修正（npc_quest_skillget2.txt）
 	const.txtのJobClass部分が修正された場合また修正が必要になります。
 
-・huge cgiよりmob_db.txtの1916?1925のデータ修正
+・huge cgiよりmob_db.txtの1916～1925のデータ修正
 
-・huge cgiよりmob_skill_db.txtに1916?1925のデータ追記
+・huge cgiよりmob_skill_db.txtに1916～1925のデータ追記
 
 ----------------------------------------
 //0555 [2008/10/15] by Blaze
@@ -10927,9 +10933,9 @@ example:
 
 ・グラウンドドリフトの処理改善（skill.c, db/item_arrowtype.txt, db/skill_require_db2.txt）
 	item_arrowtype.txtに新しく5項目追加。
-	今までは設置されるスフィアの種類をアイテムID13203?13207で決め打ちしていましたが、
+	今までは設置されるスフィアの種類をアイテムID13203～13207で決め打ちしていましたが、
 	item_arrowtype.txtの「arrow_type」で決めるように拡張します。
-	アイテムID13203?13207以外のアイテムをグラウンドドリフト用の弾丸として指定可能です。
+	アイテムID13203～13207以外のアイテムをグラウンドドリフト用の弾丸として指定可能です。
 
 	例１）13200,Bullet,バレット,1148
 		バレット装備で風のグラウンドドリフトを設置
@@ -11092,7 +11098,7 @@ example:
 //0440 [2008/01/22] by Cocoa
 
 ・AthenaProjectよりMob使用スキルをmerge、thanks to Blazeさん
-	-> 初期?Ep5、Ep6?Ep10.2までのMob使用スキルを本鯖準拠に更新（Rev.99,120,228）
+	-> 初期～Ep5、Ep6～Ep10.2までのMob使用スキルを本鯖準拠に更新（Rev.99,120,228）
 	Lv10のヒール、ファイアーボール、サイトラッシャー、ツーハンドクイッケンをLv11にしてあります。
 
 ・AthenaProject Rev.99より一部をmerge、thanks to Blazeさん
@@ -11453,13 +11459,13 @@ example:
 	-> リヒタルゼンNPCに追加クエスト「レッケンベルのアルバイト」を実装（npc_town_lighthalzen.txt）
 ・AthenaProject Rev.97より部分的にmerge、thanks to Blazeさん
 	-> NPCスキル「闇属性変化」と「念属性変化」のIDが入れ替わってたのを修正（skill.*）
-	-> Ep10.3?Ep11.2までのMob使用スキルを本鯖準拠に更新
+	-> Ep10.3～Ep11.2までのMob使用スキルを本鯖準拠に更新
 
 ----------------------------------------
 //0406 [2007/11/15] by Rayce
 
 ・AthenaProject Rev.94よりmerge、thanks to Blazeさん
-	-> ID338?354の第二期NPCスキルの宣言名、IDを本鯖と同期
+	-> ID338～354の第二期NPCスキルの宣言名、IDを本鯖と同期
 	   エフェクトを正常表示するように（skill.*）
 	-> ID変更に伴い、「不死属性付与」「取り巻き呼び戻し」「後退」「インビジブル」の使用Mobの
 	   スキルを修正（mob_skill_db.txt）
@@ -11509,7 +11515,7 @@ example:
 //0402 [2007/11/14] by Rayce
 
 ・AthenaProject Rev.82よりmerge、thanks to Blazeさん
-	-> ラヘル?ベインス追加マップの水位を設定（conf/water_height.txt）
+	-> ラヘル～ベインス追加マップの水位を設定（conf/water_height.txt）
 	-> ベインス追加マップのマップフラグを設定（mapflag/mapflag.txt）
 
 ・AthenaProject Rev.83よりmerge、thanks to Blazeさん
@@ -11994,7 +12000,7 @@ example:
 //0363 [2007/10/12] by Rayce
 
 ・BLOCK_DATA_SIZE にunit_head構造体のサイズを加算するように変更（malloc.c）
-	40948?40960byteのメモリをアロケートするとき、size2hash() では許容範囲内の
+	40948～40960byteのメモリをアロケートするとき、size2hash() では許容範囲内の
 	ハッシュ値になるにも関わらずブロック長を超えるサイズとみなされてしまい、
 	unit_head_large になる気持ち悪さを修正します。
 
@@ -12054,7 +12060,7 @@ example:
 ・スーバーノービスの金剛について（battle.*, map.h, pc.c）
 	thanks to Cocoaさん
 
-	-> 経験値計算の過程でオーバーフローするため「Base経験値が99.0?99.9%」の判定が
+	-> 経験値計算の過程でオーバーフローするため「Base経験値が99.0～99.9%」の判定が
 	   失敗してしまうバグを修正
 	-> Lvが最大でも経験値がbattle_auriga.confの snovice_maxexp_border 以上なら
 	   何時でも金剛が発動するように修正
@@ -13068,7 +13074,7 @@ example:
 ----------------------------------------
 //0296 [2007/08/27] by Rayce
 
-・0291?0293で追加したNPCスキルのエフェクトが出ないので暫定的に修正（skill.c）
+・0291～0293で追加したNPCスキルのエフェクトが出ないので暫定的に修正（skill.c）
 	何故か clif_skill_nodamage() ではなく clif_skill_damage() にエフェクトが含まれている模様。
 	流石にエフェクトがないと寂しいので無理矢理修正しています。
 
@@ -13331,8 +13337,8 @@ example:
 	@hotkeysetを使ったあとF12でページをめくったりすると画面に更新されます。
 
 　　例）MAX_HOTKEYSを54にしている場合
-　　　　　　@hotkeyset 0 →  0 ? 26まで
-　　　　　　@hotkeyset 1 → 27 ? 53まで
+　　　　　　@hotkeyset 0 →  0 ～ 26まで
+　　　　　　@hotkeyset 1 → 27 ～ 53まで
 
 ----------------------------------------
 //0281 [2007/08/19] by Rayce
@@ -13675,7 +13681,7 @@ example:
 	save/scdata.txtからステータス異常を復帰する場合、status_change_start() のtickには
 	必ず残り時間が入っています。
 	従って一定時間ごとに status_change_tiemr() 呼び出す必要のあるステータス異常は、タイマーの
-	インターバルをtickではなくval2?4のいずれかに入れるように統一します。
+	インターバルをtickではなくval2～4のいずれかに入れるように統一します。
 	tickは関数内部で書き換えるため、status_change_start() を呼び出すときのtickは0で構いません。
 
 ・上記の変更に合わせて以下のステータス異常を修正（skill.c, status.c）
@@ -14076,7 +14082,7 @@ example:
 ・DEBUG_VARSの出力結果を元に修正（db/item_db.txt）
 	bonus bUnbreakableArmor,n; → bonus bUnbreakableArmor,0;
 ・スクリプトの命令/関数/ラベル/変数のデータ量が増えてきたので、SCRIPT_HASH_SIZEを1021に引き上げ（script.c）
-	外部ハッシュに繋がれるのがだいたい4?5個くらいに集約
+	外部ハッシュに繋がれるのがだいたい4～5個くらいに集約
 
 ・SQL: GCCのときにコンパイルエラーになっていたので修正（int_guild.c）
 
@@ -15313,7 +15319,7 @@ example:
 
 ・AthenaProject2289-fixよりmerge、thanks to 暇人さん
 　以下Readmeより転載
-　　・料理使用時のアイコン(STR?LUK、HIT、FLEE、CRITICAL)を表示するように修正 (status.c、status.h)
+　　・料理使用時のアイコン(STR～LUK、HIT、FLEE、CRITICAL)を表示するように修正 (status.c、status.h)
 　　　AthenaProject BTS報告chaさん thank's
 　　・料理使用時ログアウトしても効果が残るように修正 (scdata_db.txt)
 
@@ -17208,7 +17214,7 @@ example:
 
 ・属性を示す定数を ELE_*** として定義（map.h）
 　属性に関連する値を気付いた範囲で置き換え
-　現在は無(0)?不死(9)までしかありませんが、拡張要素でさらに種類を（19まで）増やしてもある程度
+　現在は無(0)～不死(9)までしかありませんが、拡張要素でさらに種類を（19まで）増やしてもある程度
 　正常に作動することを考慮して部分的に修正
 
 ・全体的に細かい修正
@@ -17322,7 +17328,7 @@ example:
 
 ・AthenaProject2266よりmerge, thanks to Blazeさん
 　以下Readmeをそのまま転載
-	・忍者・ガンスリンガーのJOBEXPテーブルLv49?更新（exp.txt）
+	・忍者・ガンスリンガーのJOBEXPテーブルLv49～更新（exp.txt）
 	・テコン系列のHP・SP係数など修正（job_db1.txt）
 	・item_fabox.txt、item_arrowtype.txt、mob_boss.txt更新
 	・ハンター転職員の座標を修正（npc_job_11hunter.txt）
@@ -17825,11 +17831,11 @@ example:
 	conf/help1.txt（同様に2,3,4）に追記し忘れることが多いので、@help1,2,3,4は廃止
 	代替方式として@helpを「@help [開始行] [終了行]」のように引数を可変にします
 	行指定しない場合は全てのヘルプを表示します
-	指定した場合は開始行?終了行のヘルプだけを表示します
+	指定した場合は開始行～終了行のヘルプだけを表示します
 	ただし0は指定なしを意味します
 	また行頭に // を付けるとコメントアウトと見なされ、その行は表示されません
-	　　例）@help 0 20  -> 最初の行?20行目まで表示
-	　　　　@help 10 0  -> 10行目?最後の行まで表示
+	　　例）@help 0 20  -> 最初の行～20行目まで表示
+	　　　　@help 10 0  -> 10行目～最後の行まで表示
 ・conf/help.txtの整理
 
 ----------------------------------------
