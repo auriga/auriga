@@ -2535,6 +2535,11 @@ L_RECALC:
 		sd->amotion = sd->aspd>>1;
 	}
 
+	if(battle_config.min_lv100_aspdfix && sd->status.base_level < 100 && sd->aspd < battle_config.max_aspd) {
+		sd->aspd = battle_config.max_aspd;
+		sd->amotion = sd->aspd>>1;
+	}
+
 	if(map[sd->bl.m].flag.pk) {
 		if(sd->aspd < battle_config.pk_max_aspd) {
 			sd->aspd = battle_config.pk_max_aspd;

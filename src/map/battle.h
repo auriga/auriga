@@ -612,6 +612,7 @@ extern struct Battle_Config {
 	int ranker_potion_bonus;
 	int ranker_potion_bonus_rogue;
 	int ranker_weapon_bonus;
+	int min_lv100_aspdfix;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

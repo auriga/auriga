@@ -1205,7 +1205,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 		damage += (300 + 5 * sd->status.base_level) * skill / 100;
 	}
 
-	// ビーストベイン(+4 〜 +40) vs 動物 or 昆虫
+	// ビーストベイン(+4 ～ +40) vs 動物 or 昆虫
 	if((skill = pc_checkskill(sd,HT_BEASTBANE)) > 0 && (race == RCT_BRUTE || race == RCT_INSECT) )
 	{
 		damage += (skill * 4);
@@ -1215,25 +1215,25 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 	}
 
 #ifndef PRE_RENEWAL
-	// 武器研究(+2 〜 +20)
+	// 武器研究(+2 ～ +20)
 	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0) {
 		damage += (skill * 2);
 	}
 #endif
 
-	// レンジャーメイン(+5 〜 +50) vs 動物 or 植物 or 魚類
+	// レンジャーメイン(+5 ～ +50) vs 動物 or 植物 or 魚類
 	if((skill = pc_checkskill(sd,RA_RANGERMAIN)) > 0 && (race == RCT_BRUTE || race == RCT_PLANT || race == RCT_FISH) )
 	{
 		damage += (skill * 5);
 	}
 
-	// 魔導ギアライセンス(+15 〜 +75)
+	// 魔導ギアライセンス(+15 ～ +75)
 	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MADOLICENCE)) > 0)
 	{
 		damage += (skill * 15);
 	}
 
-	// 火と大地の研究(+10 〜 +50) vs 火属性 or 地属性
+	// 火と大地の研究(+10 ～ +50) vs 火属性 or 地属性
 	if((skill = pc_checkskill(sd,NC_RESEARCHFE)) > 0 && (element == ELE_FIRE || element == ELE_EARTH))
 	{
 		damage += (skill * 10);
@@ -1245,30 +1245,30 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 	{
 		case WT_1HSWORD:
 #ifndef PRE_RENEWAL
-			// アルケミスト斧修練(+3 〜 +30)
+			// アルケミスト斧修練(+3 ～ +30)
 			if((skill = pc_checkskill(sd,AM_AXEMASTERY)) > 0) {
 				damage += (skill * 3);
 			}
 #endif
 			// fall through
 		case WT_DAGGER:
-			// 剣修練(+4 〜 +40) 片手剣 短剣含む
+			// 剣修練(+4 ～ +40) 片手剣 短剣含む
 			if((skill = pc_checkskill(sd,SM_SWORD)) > 0) {
 				damage += (skill * 4);
 			}
-			// ジェネティック剣修練(+10 〜 +50)
+			// ジェネティック剣修練(+10 ～ +50)
 			if((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0) {
 				damage += (skill * 10);
 			}
 			break;
 		case WT_2HSWORD:
-			// 両手剣修練(+4 〜 +40) 両手剣
+			// 両手剣修練(+4 ～ +40) 両手剣
 			if((skill = pc_checkskill(sd,SM_TWOHAND)) > 0) {
 				damage += (skill * 4);
 			}
 			break;
 		case WT_1HSPEAR:
-			// 槍修練(+4 〜 +40,+5 〜 +50,+10 〜 +100) 槍
+			// 槍修練(+4 ～ +40,+5 ～ +50,+10 ～ +100) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
 				if(pc_isdragon(sd) && pc_checkskill(sd,RK_DRAGONTRAINING) >= 5)
 					damage += (skill * 10);	// ドラゴンに乗っててトレーニングLvMAX
@@ -1279,7 +1279,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			}
 			break;
 		case WT_2HSPEAR:
-			// 槍修練(+4 〜 +40,+5 〜 +50,+10 〜 +100) 槍
+			// 槍修練(+4 ～ +40,+5 ～ +50,+10 ～ +100) 槍
 			if((skill = pc_checkskill(sd,KN_SPEARMASTERY)) > 0) {
 				if(pc_isdragon(sd) && pc_checkskill(sd,RK_DRAGONTRAINING) >= 5)
 					damage += (skill * 10);	// ドラゴンに乗っててトレーニングLvMAX
@@ -1306,7 +1306,7 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 			}
 			break;
 		case WT_MACE:
-			// メイス修練(+3 〜 +30) メイス
+			// メイス修練(+3 ～ +30) メイス
 			if((skill = pc_checkskill(sd,PR_MACEMASTERY)) > 0) {
 				damage += (skill * 3);
 			}
@@ -1320,37 +1320,37 @@ static int battle_addmastery(struct map_session_data *sd,struct block_list *targ
 		case WT_BOW:
 			break;
 		case WT_FIST:
-			// タイリギ(+10 〜 +100) 素手
+			// タイリギ(+10 ～ +100) 素手
 			if((skill = pc_checkskill(sd,TK_RUN)) > 0) {
 				damage += (skill * 10);
 			}
 			// fall through
 		case WT_KNUCKLE:
-			// 鉄拳(+3 〜 +30) 素手,ナックル
+			// 鉄拳(+3 ～ +30) 素手,ナックル
 			if((skill = pc_checkskill(sd,MO_IRONHAND)) > 0) {
 				damage += (skill * 3);
 			}
 			break;
 		case WT_MUSICAL:
-			// 楽器の練習(+3 〜 +30) 楽器
+			// 楽器の練習(+3 ～ +30) 楽器
 			if((skill = pc_checkskill(sd,BA_MUSICALLESSON)) > 0) {
 				damage += (skill * 3);
 			}
 			break;
 		case WT_WHIP:
-			// ダンスの練習(+3 〜 +30) 鞭
+			// ダンスの練習(+3 ～ +30) 鞭
 			if((skill = pc_checkskill(sd,DC_DANCINGLESSON)) > 0) {
 				damage += (skill * 3);
 			}
 			break;
 		case WT_BOOK:
-			// アドバンスドブック(+3 〜 +30) {
+			// アドバンスドブック(+3 ～ +30) {
 			if((skill = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0) {
 				damage += (skill * 3);
 			}
 			break;
 		case WT_KATAR:
-			// カタール修練(+3 〜 +30) カタール
+			// カタール修練(+3 ～ +30) カタール
 			if((skill = pc_checkskill(sd,AS_KATAR)) > 0) {
 				// ソニックブロー時は別処理（1撃に付き1/8適応)
 				damage += (skill * 3);
@@ -1646,7 +1646,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int lh;			// 左手
 		int hitrate;		// ヒット確率
 		int autocounter;	// オートカウンターON
-		int da;			// 連撃判定（0〜2）
+		int da;			// 連撃判定（0～2）
 		int idef;		// DEF無視
 		int idef_;		// DEf無視（左手）
 		int nocardfix;		// カード補正なし
@@ -2234,7 +2234,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int tk_power_damage = 0, tk_power_damage2 = 0;
 #endif
 
-		// 回避できなかったときのみstep9〜18のダメージ計算を行う
+		// 回避できなかったときのみstep9～18のダメージ計算を行う
 		wd.dmg_lv = ATK_DEF;
 
 		/* ９．基本ダメージの算出 */
@@ -5129,17 +5129,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int dmg = wd.damage, dmg2 = wd.damage2;
 		// 影狼・朧の場合
 		if(src_sd->s_class.job == PC_JOB_KG || src_sd->s_class.job == PC_JOB_OB) {
-			// 右手修練(80% 〜 120%) 右手全般
+			// 右手修練(80% ～ 120%) 右手全般
 			skill = pc_checkskill(src_sd,KO_RIGHT);
 			wd.damage = wd.damage * (70 + (skill * 10))/100;
-			// 左手修練(60% 〜 100%) 左手全般
+			// 左手修練(60% ～ 100%) 左手全般
 			skill = pc_checkskill(src_sd,KO_LEFT);
 			wd.damage2 = wd.damage2 * (50 + (skill * 10))/100;
 		} else {
-			// 右手修練(60% 〜 100%) 右手全般
+			// 右手修練(60% ～ 100%) 右手全般
 			skill = pc_checkskill(src_sd,AS_RIGHT);
 			wd.damage = wd.damage * (50 + (skill * 10))/100;
-			// 左手修練(40% 〜 80%) 左手全般
+			// 左手修練(40% ～ 80%) 左手全般
 			skill = pc_checkskill(src_sd,AS_LEFT);
 			wd.damage2 = wd.damage2 * (30 + (skill * 10))/100;
 		}
@@ -7015,7 +7015,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 
 	clif_damage(src, target, tick, wd.amotion, wd.dmotion, wd.damage, wd.div_, wd.type, wd.damage2, 0);
 
-	// 二刀流左手とカタール追撃のミス表示(無理やり〜)
+	// 二刀流左手とカタール追撃のミス表示(無理やり～)
 	if(sd && (sd->status.weapon >= WT_DOUBLE_DD || sd->status.weapon == WT_KATAR) && wd.damage2 == 0)
 		clif_damage(src, target, tick+10, wd.amotion, wd.dmotion, 0, 1, 0, 0, 0);
 
@@ -8974,6 +8974,7 @@ int battle_config_read(const char *cfgName)
 		{ "ranker_potion_bonus",                &battle_config.ranker_potion_bonus,                150      },
 		{ "ranker_potion_bonus_rogue",          &battle_config.ranker_potion_bonus_rogue,          200      },
 		{ "ranker_weapon_bonus",                &battle_config.ranker_weapon_bonus,                10       },
+		{ "min_lv100_aspdfix",                  &battle_config.min_lv100_aspdfix,                  1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

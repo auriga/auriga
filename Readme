@@ -1,4 +1,10 @@
 ----------------------------------------
+//1275 [2016/10/25] by refis
+
+・Lv100以下のプレイヤーのAspdをmax_aspdに補正するかどうかを戦闘設定に追加（conf/battle_auriga.conf, battle.*, status.c）
+	Thanks rapis さん
+
+----------------------------------------
 //1274 [2016/10/25] by refis
 
 ・atcommand_go_db.txtの更新（atcommand_go_db.txt）
