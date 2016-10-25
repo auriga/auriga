@@ -1,4 +1,15 @@
 ----------------------------------------
+//1276 [2016/10/25] by refis
+
+・スキル[マナリチャージ]を装備効果と加算処理するよう修正（skill.c, status.c）
+	Thanks ARIA さん
+
+・スキル[転生一次職業の魂]の効果を修正（skill.c, status.c）
+	Thanks SOLDIER_POPORING さん
+
+・[RE]:スキル[ハイディング]のSP消費時間を修正（status.c）
+
+----------------------------------------
 //1275 [2016/10/25] by refis
 
 ・Lv100以下のプレイヤーのAspdをmax_aspdに補正するかどうかを戦闘設定に追加（conf/battle_auriga.conf, battle.*, status.c）

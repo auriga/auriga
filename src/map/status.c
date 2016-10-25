@@ -1014,15 +1014,23 @@ L_RECALC:
 		}
 
 		// 上位一次職の魂
-		// 謎なのでLV/10増加
-		if(sd->sc.data[SC_HIGH].timer != -1)
-		{
-			sd->paramb[0] += sd->status.base_level/10;
-			sd->paramb[1] += sd->status.base_level/10;
-			sd->paramb[2] += sd->status.base_level/10;
-			sd->paramb[3] += sd->status.base_level/10;
-			sd->paramb[4] += sd->status.base_level/10;
-			sd->paramb[5] += sd->status.base_level/10;
+		if(sd->sc.data[SC_HIGH].timer != -1) {
+			if(sd->status.base_level < 60) {
+				if(sd->status.str < sd->status.base_level-10)  sd->paramb[0] += sd->status.base_level-10 - sd->status.str;
+				if(sd->status.agi < sd->status.base_level-10)  sd->paramb[1] += sd->status.base_level-10 - sd->status.agi;
+				if(sd->status.vit < sd->status.base_level-10)  sd->paramb[2] += sd->status.base_level-10 - sd->status.vit;
+				if(sd->status.int_ < sd->status.base_level-10) sd->paramb[3] += sd->status.base_level-10 - sd->status.int_;
+				if(sd->status.dex < sd->status.base_level-10)  sd->paramb[4] += sd->status.base_level-10 - sd->status.dex;
+				if(sd->status.luk < sd->status.base_level-10)  sd->paramb[5] += sd->status.base_level-10 - sd->status.luk;
+			}
+			else {
+				if(sd->status.str < 50)  sd->paramb[0] += 50 - sd->status.str;
+				if(sd->status.agi < 50)  sd->paramb[1] += 50 - sd->status.agi;
+				if(sd->status.vit < 50)  sd->paramb[2] += 50 - sd->status.vit;
+				if(sd->status.int_ < 50) sd->paramb[3] += 50 - sd->status.int_;
+				if(sd->status.dex < 50)  sd->paramb[4] += 50 - sd->status.dex;
+				if(sd->status.luk < 50)  sd->paramb[5] += 50 - sd->status.luk;
+			}
 		}
 
 		// 食事用
@@ -1672,6 +1680,13 @@ L_RECALC:
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
+	}
+
+	// SP消費
+	if((skill = pc_checkskill(sd,HP_MANARECHARGE)) > 0) {	// マナリチャージ
+		sd->dsprate -= skill * 4;
+		if(sd->dsprate < 0)
+			sd->dsprate = 0;
 	}
 
 	// 自然回復HP
@@ -9808,7 +9823,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_HIDING:		/* ハイディング */
 		if(sd) {		/* SPがあって、時間制限の間は持続 */
 			if(sd->status.sp > 0 && (--sc->data[type].val2) > 0) {
+#ifdef PRE_RENEWAL
 				if(sc->data[type].val2 % (sc->data[type].val1+3) == 0) {
+#else
+				if(sc->data[type].val2 % (sc->data[type].val1+4) == 0) {
+#endif
 					sd->status.sp--;
 					clif_updatestatus(sd,SP_SP);
 				}

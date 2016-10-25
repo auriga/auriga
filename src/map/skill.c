@@ -5406,6 +5406,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case MER_INCAGI:
 	case AL_BLESSING:		/* ブレッシング */
 	case MER_BLESSING:
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_HIGH].timer != -1)
+			status_change_end(bl,SC_HIGH,-1);
 		if(dstsd && dstsd->sc.data[SC_ELEMENTUNDEAD].timer != -1) {
 			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 			break;
@@ -7393,7 +7396,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			pc_addspiritball(dstsd,skill_get_time(skillid,skilllv),1);
 		}
 		break;
-	case BS_GREED:			/* 貪欲 */
+	case BS_GREED:			/* グリード */
 		if (sd && (battle_config.greed_use_town || !map[src->m].flag.town) && !map[src->m].flag.pvp && !map[src->m].flag.gvg) {	// 街・PvP・GvGでは使用不可
 			struct party *p = NULL;
 			if(sd->status.party_id > 0)
@@ -7573,11 +7576,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SL_BLACKSMITH:		/* ブラックスミスの魂 */
 	case SL_HUNTER:			/* ハンターの魂 */
 	case SL_SOULLINKER:		/* ソウルリンカーの魂 */
-	case SL_HIGH:			/* 一次上位職業の魂 */
 	case SL_DEATHKNIGHT:		/* デスナイトの魂 */
 	case SL_COLLECTOR:		/* ダークコレクターの魂 */
 	case SL_NINJA:			/* 忍者の魂 */
 	case SL_GUNNER:			/* ガンスリンガーの魂 */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(src,SC_SMA,skilllv,0,0,0,3000,0);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case SL_HIGH:			/* 転生一次職業の魂 */
+		if(status_get_lv(bl) < 11 || status_get_lv(bl) > 70) {   // 対象のベースレベルが11以下、または70以上だと使用不可
+			if(sd)
+				clif_skill_fail(sd,skillid,0,0,0);
+				break;
+			}
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(src,SC_SMA,skilllv,0,0,0,3000,0);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -11690,7 +11702,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			if (battle_check_target(&src->bl,bl,BCT_PARTY) > 0) {	// 味方(PT)対象
 				int type = 0;
 				switch(atn_rand()%13) {
-				case 0:		// HPを回復(1000〜9999？)
+				case 0:		// HPを回復(1000～9999？)
 					battle_heal(NULL,bl,1000+atn_rand()%9000,0,0);
 					break;
 				case 1:		// MHPを100%増加(持続時間60秒)
@@ -11746,7 +11758,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			}
 			else if (battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && !(status_get_mode(bl)&MD_BOSS)) {	// 敵対象でボス以外
 				switch(atn_rand()%8) {
-				case 0:		// ランダムダメージ(1000〜9999？)
+				case 0:		// ランダムダメージ(1000～9999？)
 					battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 					break;
 				case 1:		// 呪い効果付与
@@ -13261,11 +13273,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 
 	if(sd->skill_used.id == BD_ENCORE && cnd->id == sd->skill_dance.id)	// アンコール時はSP消費が半分
 		sp /= 2;
-	if((mana = pc_checkskill(sd,HP_MANARECHARGE)) > 0)		// マナリチャージで使用SP減少
-		sp -= sp * mana / 25;
 	if(sd->sc.data[SC_RECOGNIZEDSPELL].timer!=-1)		// リゴグナイズドスペル時は消費SP25%増加
 		sp = sp * 125 / 100;
-	if(sd->sc.data[SC_UNLIMITED_HUMMING_VOICE].timer != -1) {	// エンドレスハミングボイス時は消費SP〜15%増加
+	if(sd->sc.data[SC_UNLIMITED_HUMMING_VOICE].timer != -1) {	// エンドレスハミングボイス時は消費SP～15%増加
 		int cost = 15;
 		cost -= sd->sc.data[SC_UNLIMITED_HUMMING_VOICE].val4 * 3;
 		if(cost > 0)
