@@ -3370,6 +3370,9 @@ static int mobskill_use_id(struct mob_data *md,struct block_list *target,int ski
 			md->skilldelay[i] = tick + casttime;
 	}
 
+	if(target && !battle_check_range(&md->bl,target,skill_get_fixed_range(&md->bl,ms->skill_id,ms->skill_lv)))
+		return 0;
+
 	return unit_skilluse_id2(
 		&md->bl, (target ? target->id : md->target_id), ms->skill_id,
 		ms->skill_lv, casttime, ms->cancel

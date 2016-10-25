@@ -266,6 +266,7 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
 void clif_openbook(struct map_session_data *sd, int nameid, int page);
 void clif_msgstringtable(struct map_session_data *sd, int line);
 void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes);
+void clif_msgstringtable3(struct map_session_data *sd, int line, int value);
 void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data);
 void clif_break_equip(struct map_session_data *sd, int where);
 void clif_send_equipopen(struct map_session_data *sd);

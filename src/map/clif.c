@@ -15987,7 +15987,7 @@ void clif_break_equip(struct map_session_data *sd, int where)
 }
 
 /*==========================================
- * msgstringtable表示（引数あり）
+ * msgstringtable表示（文字列引数あり）
  *------------------------------------------
  */
 void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes)
@@ -16004,6 +16004,25 @@ void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes
 	WFIFOW(fd,4) = line;
 	memcpy(WFIFOP(fd,6),mes,len);
 	WFIFOSET(fd,WFIFOW(fd,2));
+
+	return;
+}
+
+/*==========================================
+ * msgstringtable表示（数値引数あり）
+ *------------------------------------------
+ */
+void clif_msgstringtable3(struct map_session_data *sd, int line, int value)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd  = sd->fd;
+	WFIFOW(fd,0) = 0x7e2;
+	WFIFOW(fd,2) = line;
+	WFIFOL(fd,4) = value;
+	WFIFOSET(fd,packet_db[0x7e2].len);
 
 	return;
 }
