@@ -27,3 +27,5 @@
 24,bra,brasilis.gat,195,215	// 24:bra#ブラジリス#
 25,dew,dewata.gat,199,177	// 25:dew#デワタ#
 26,mal,malangdo.gat,143,119	// 26:mal#マラン島#
+27,ma,malaya.gat,281,211	// 27:ma#ポートマラヤ#
+28,mo,mora.gat,57,142		// 28:mora#レシア族の街 モーラ#

@@ -1,4 +1,13 @@
 ----------------------------------------
+//1274 [2016/10/25] by refis
+
+・atcommand_go_db.txtの更新（atcommand_go_db.txt）
+
+・changematerial_db.txtの更新（changematerial_db.txt）
+
+・produce_db.txtの更新（produce_db.txt）
+
+----------------------------------------
 //1273 [2016/10/25] by refis
 
 ・モンスターが対象指定スキル詠唱完了時に距離チェックさせる（mob.c）
