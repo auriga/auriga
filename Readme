@@ -1,4 +1,9 @@
 ----------------------------------------
+//1278 [2016/11/06] by refis
+
+・changematerial_db.txtの更新（changematerial_db.txt）
+
+----------------------------------------
 //1277 [2016/10/26] by refis
 
 ・スキル関連DBをRR仕様に修正（skill_cast_db.txt, skill_db.txt, skill_require_db.txt）
