@@ -1,4 +1,13 @@
 ----------------------------------------
+//1279 [2016/11/08] by refis
+
+・item_db.txtに新規アイテム群のIDだけ追加しておく（item_db.txt）
+
+・hideonnpcに関する仕様変更（npc.c, script_ref.txt）
+	-> disablenpcと差別化のためhide中のNPCはイベント実行を受け付けるように変更
+	-> ex. killイベント、doevent系
+
+----------------------------------------
 //1278 [2016/11/06] by refis
 
 ・changematerial_db.txtの更新（changematerial_db.txt）

@@ -146,7 +146,7 @@ int npc_enable(const char *name,int flag)
 		return 0;
 
 	if (flag&1) {	// 有効化
-		nd->flag &= ~1;
+		nd->flag &= ~3;
 		clif_spawnnpc(nd);
 	} else if (flag&2) {
 		nd->flag &= ~1;
@@ -157,7 +157,7 @@ int npc_enable(const char *name,int flag)
 		nd->option = OPTION_HIDE;
 		clif_changeoption(&nd->bl);
 	} else {	// 無効化
-		nd->flag |= 1;
+		nd->flag |= 3;
 		clif_clearchar(&nd->bl,0);
 	}
 	switch(nd->subtype) {
@@ -628,7 +628,7 @@ int npc_event(struct map_session_data *sd,const char *eventname)
 		}
 		return 1;
 	}
-	if (nd->flag&1) {	// 無効化されている
+	if (nd->flag&3) {	// 無効化されている
 		npc_event_dequeue(sd);
 		return 0;
 	}
