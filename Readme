@@ -1,4 +1,15 @@
 ----------------------------------------
+//1280 [2016/11/08] by refis
+
+・グラストヘイムメモリアルアップデートに対応 (map_auriga.conf, npc_memorial_glastheim.sc, npc_quest_glastheim.sc)
+	-> モンスター出現情報を追加変更 (npc_monster_glast.sc)
+	-> item_db, monster_dbの更新 (item_db.txt, mob_db.txt, mob_skill_db.txt)
+	-> mapflagの更新 (mapflag.sc, mapflag_memorial.sc)
+	-> quest_dbの更新 (quest_db.txt)
+
+・script_ref.txtの更新ミスを修正（script_ref.txt）
+
+----------------------------------------
 //1279 [2016/11/08] by refis
 
 ・item_db.txtに新規アイテム群のIDだけ追加しておく（item_db.txt）

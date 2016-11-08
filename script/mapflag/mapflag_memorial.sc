@@ -162,3 +162,25 @@
 1@ma_b.gat	mapflag	monster_noteleport	dummy
 1@ma_b.gat	mapflag	noicewall	dummy
 1@ma_b.gat	mapflag	noabra		dummy
+
+//============================================================
+// ŒÃ‚Ì‹RŽm’c01 - 1@gl_k.gat
+//------------------------------------------------------------
+1@gl_k.gat	mapflag	nosave			SavePoint
+1@gl_k.gat	mapflag	nomemo			dummy
+1@gl_k.gat	mapflag	noteleport		dummy
+1@gl_k.gat	mapflag	nobranch		dummy
+1@gl_k.gat	mapflag	monster_noteleport	dummy
+1@gl_k.gat	mapflag	noicewall	dummy
+1@gl_k.gat	mapflag	noabra		dummy
+
+//============================================================
+// ŒÃ‚Ì‹RŽm’c02 - 2@gl_k.gat
+//------------------------------------------------------------
+2@gl_k.gat	mapflag	nosave			SavePoint
+2@gl_k.gat	mapflag	nomemo			dummy
+2@gl_k.gat	mapflag	noteleport		dummy
+2@gl_k.gat	mapflag	nobranch		dummy
+2@gl_k.gat	mapflag	monster_noteleport	dummy
+2@gl_k.gat	mapflag	noicewall	dummy
+2@gl_k.gat	mapflag	noabra		dummy

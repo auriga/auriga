@@ -208,8 +208,10 @@ geffen_in.gat	mapflag	nobranch	dummy
 geffen_in.gat	mapflag	nopenalty	dummy
 geffen_in.gat	mapflag	noicewall	dummy
 gl_cas01.gat	mapflag	nomemo	dummy
+gl_cas02_.gat	mapflag	nomemo	dummy
 gl_cas02.gat	mapflag	nomemo	dummy
 gl_church.gat	mapflag	nomemo	dummy
+gl_chyard_.gat	mapflag	nomemo	dummy
 gl_chyard.gat	mapflag	nomemo	dummy
 gl_dun01.gat	mapflag	nomemo	dummy
 gl_dun02.gat	mapflag	nomemo	dummy

@@ -1216,7 +1216,7 @@
 2019,Unknown_Item,攻城戦TEツーハンドスタッフ,9,,,0,50,,1,,142672405,,34,3,40,,1,{},{}
 2020,Unknown_Item,ヨルムンガンド,9,,,3000,200,,1,,134283776,,34,4,90,,,{},{}
 
-2022,Unknown_Item,スタッフオブゲフェン,9,,,1000,100,,1,1,512,,34,1,150,,1,{},{}
+2022,Staff_Of_Geffen,スタッフオブゲフェン,9,150000,,1000,100:300,,1,1,512,,34,1,150,,1,{},{ bonus bInt,20; }
 
 2028,Unknown_Item,アイオーンスタッフ,9,,,2500,180,,1,2,512,,34,4,110,,1,{},{}
 2029,Unknown_Item,退魔神の杖,9,,,800,30,,1,,142672405,,34,3,70,,1,{},{}
@@ -1621,7 +1621,7 @@
 2496,Unknown_Item,攻城戦TEシューズ,4,,,0,,5,,,1000333311,,64,,40,,1,{},{}
 2497,Unknown_Item,攻城戦TEブーツ,4,,,0,,10,,,279714,,64,,40,,1,{},{}
 2498,Unknown_Item,攻城戦TEマジックサンダル,4,,,0,,5,,,142672405,,64,,40,,1,{},{}
-2499,Unknown_Item,時空ブーツ,4,,,600,,20,,,1000333311,,64,,10,,1,{},{}
+2499,Temporal_Boots,時空ブーツ,4,5000,,600,,20,,,1000333311,,64,,10,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); }
 
 2501,Hood,フード,4,1000,,200,,4,,0,1000333311,2,4,,0,0,1,{},{}
 2502,Hood_,フード,4,1000,,200,,4,,1,1000333311,2,4,,0,0,1,{},{}
@@ -2059,7 +2059,7 @@
 2946,Unknown_Item,攻城戦TE反抗の指輪,4,,,0,,0,,,1000333311,,136,,40,,,{},{}
 
 2948,Unknown_Item,魔王の翼,4,20,,100,,0,,1,1000333311,2,136,,70,,,{},{ bonus bFlee,5; }
-2949,Unknown_Item,銀細工のブレスレット,4,,,100,,3,,1,991944702,,136,,60,,,{},{}
+2949,Silversmith_Bracelet,銀細工のブレスレット,4,50000,,100,,3:3,,1,991944702,,136,,60,,,{},{ bonus bStr,1; bonus bAgi,1; bonus bVit,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; skill 277,5; }
 
 2951,Unknown_Item,ブルークヴァシルリング,4,,,100,,0,,,1000333311,,136,,1,,,{},{}
 2952,Unknown_Item,レッドクヴァシルリング,4,,,100,,0,,,1000333311,,136,,1,,,{},{}
@@ -2853,12 +2853,12 @@
 4872,Unknown_Item,攻撃速度2,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,6; }
 4873,Unknown_Item,攻撃速度3,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,8; }
 4874,Unknown_Item,春の緑柱石,6,,,,,,,,,,65535,,,,,{},{}
-4875,Unknown_Item,熊の力,6,,,,,,,,,,65535,,,,,{},{}
-4876,Unknown_Item,暴走した魔力,6,,,,,,,,,,65535,,,,,{},{}
-4877,Unknown_Item,光速,6,,,,,,,,,,65535,,,,,{},{}
-4878,Unknown_Item,鋼鎧,6,,,,,,,,,,65535,,,,,{},{}
-4879,Unknown_Item,大鷲の眼光,6,,,,,,,,,,65535,,,,,{},{}
-4880,Unknown_Item,幸運な日,6,,,,,,,,,,65535,,,,,{},{}
+4875,Bear's_Power,熊の力,6,,,,,,,,,,65535,,,,,{},{ bonus3 bRevAutoActiveWeapon,4875,20,5000; if(checkactiveitem()){ misceffect 220,""; active_montransform 1060; bonus bStr,200; bonus2 bHPPenaltyTime,1000,500; } }
+4876,Runaway_Magic,暴走した魔力,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4876,15,10000,EAS_MAGIC; if(checkactiveitem()){ misceffect 220,""; bonus bInt,200; bonus2 bSPPenaltyTime,1000,200; } }
+4877,Speed_Of_Light,光速,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4877,10,5000,EAS_WEAPON; if(checkactiveitem()){ misceffect 99,""; bonus bAspdAddRate,100; bonus bFlee2,100; bonus2 bHPPenaltyTime,1000,400; bonus2 bSPPenaltyTime,1000,40; } }
+4878,Muscle_Fool,鋼鎧,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4878,20,5000,EAS_REVENGE; if(checkactiveitem()){ misceffect 17,"";  bonus2 bAddRace,Rct_Boss,-50; bonus2 bAddRace,Rct_NonBoss,-50;  bonus2 bMatkRate,-50; bonus bDef,1000; } }
+4879,Hawkeye,大鷲の眼光,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4879,30,5000,EAS_WEAPON; if(checkactiveitem()){ misceffect 99,""; bonus bDex,200; bonus2 bSPPenaltyTime,1000,50; } }
+4880,Lucky_Day,幸運な日,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4880,15,5000,EAS_WEAPON|EAS_MAGIC|EAS_REVENGE; if(checkactiveitem()){ misceffect 68,""; bonus bLuk,200; bonus3 bAddMonsterDropItem,7444,Rct_Boss,10; bonus3 bAddMonsterDropItem,7444,Rct_NonBoss,10; } }
 4881,Unknown_Item,攻撃速度4,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,10; }
 4882,Unknown_Item,Atk + 1%,3,,,0,,,,,,,,,,,,{},{}
 4883,Unknown_Item,Matk + 1%,3,,,0,,,,,,,,,,,,{},{}
@@ -4400,13 +4400,13 @@
 6604,Unknown_Item,ルーン魔力のエッセンス,3,,,0,,,,,,,,,,,,{},{}
 6605,Unknown_Item,ムスペルリウム,3,,,0,,,,,,,,,,,,{},{}
 
-6607,Unknown_Item,時間の結晶,3,,,10,,,,,,,,,,,,{},{}
-6608,Unknown_Item,凝固された魔力,3,,,10,,,,,,,,,,,,{},{}
-6609,Unknown_Item,古城の亡者の爪,3,,,10,,,,,,,,,,,,{},{}
-6610,Unknown_Item,古城の亡者の歯,3,,,10,,,,,,,,,,,,{},{}
-6611,Unknown_Item,豪華な鍵,3,,,10,,,,,,,,,,,,{},{}
-6612,Unknown_Item,金貨のかご,3,,,200,,,,,,,,,,,,{},{}
-6613,Unknown_Item,派手なブローチ,3,,,10,,,,,,,,,,,,{},{}
+6607,Temporal_Crystal,時間の結晶,3,20,,10,,,,,,,,,,,,{},{}
+6608,Coagulated_Spell,凝固された魔力,3,20,,10,,,,,,,,,,,,{},{}
+6609,Glast_Decayed_Nail,古城の亡者の爪,3,2800,,10,,,,,,,,,,,,{},{}
+6610,Glast_Horrendous_Mouth,古城の亡者の歯,3,3200,,10,,,,,,,,,,,,{},{}
+6611,Unknown_Item,豪華な鍵,3,50000,,10,,,,,,,,,,,,{},{}
+6612,Gold_Coin_Basket,金貨のかご,3,300000,,200,,,,,,,,,,,,{},{}
+6613,Colorful_Brooch,派手なブローチ,3,100000,,10,,,,,,,,,,,,{},{}
 
 6615,Unknown_Item,攻城戦ギルド記念コイン,3,,,10,,,,,,,,,,,,{},{}
 
@@ -4775,9 +4775,9 @@
 7225,Pumpkin_Bucket,カボチャの提灯,3,486,,10,,,,,,,,,,,,{},{}
 7226,Pill,丸薬,3,2,,10,,,,,,,,,,,,{},{}
 7227,TCG_Card,反対派の証,4,,,0,,0,,,1000333311,2,136,,1,,,{},{}
-7228,Gold_Bullion,金塊,3,,,300,,,,,,,,,,,,{},{}
-7229,Silver_Bullion,銀塊,3,,,300,,,,,,,,,,,,{},{}
-7230,White_Gold_Bullion,白金の塊,3,,,300,,,,,,,,,,,,{},{}
+7228,Gold_Bullion,金塊,3,100000,,300,,,,,,,,,,,,{},{}
+7229,Silver_Bullion,銀塊,3,50000,,300,,,,,,,,,,,,{},{}
+7230,White_Gold_Bullion,白金の塊,3,200000,,300,,,,,,,,,,,,{},{}
 7231,Gold_Ore,金鉱石,3,,,150,,,,,,,,,,,,{},{}
 7232,Silver_Ore,銀鉱石,3,,,150,,,,,,,,,,,,{},{}
 7233,Mithril_Ore,ミスリル鉱石,3,,,150,,,,,,,,,,,,{},{}
@@ -6659,7 +6659,7 @@
 13083,Unknown_Item,攻城戦TEナイフ,5,,,0,100,,1,,143087343,,2,3,40,,1,{},{}
 13084,Unknown_Item,エイワズナイフ,5,,,200,80,,1,,681533167,2,2,4,60,1,1,{},{ bonus bAtkEle,Ele_Earth; bonus bAgi,2; bonus bMaxHPrate,-2; bonus2 bSubEle,Ele_Earth,2; bonus2 bSubEle,Ele_Wind,-5; if(getequiprefinerycnt()>=7) { bonus2 bSubEle,Ele_Earth,3; bonus bMaxHPrate,getequiprefinerycnt()-6; } }
 13085,Unknown_Item,カノナイフ,5,,,200,80,,1,,671569646,2,2,4,60,1,1,{},{ bonus bAtkEle,Ele_Fire; bonus bAgi,2; bonus bMaxHPrate,-2; bonus2 bSubEle,Ele_Fire,2; bonus2 bSubEle,Ele_Water,-5; if(getequiprefinerycnt()>=7) { bonus2 bSubEle,Ele_Fire,3; bonus bMaxHPrate,getequiprefinerycnt()-6; } }
-13086,Unknown_Item,金細工の短剣,5,,,500,35,,1,,134698734,,2,1,1,,1,{},{}
+13086,Goldsmithing_Dagger,金細工の短剣,5,82000,,500,35:25,,1,,134698734,,2,1,1,,1,{},{}
 13087,Unknown_Item,ハガラズナイフ,5,20,,200,80,,1,,673144558,2,2,4,60,1,1,{},{ bonus bAtkEle,Ele_Wind; bonus bAgi,2; bonus bMaxHPrate,-2; bonus2 bSubEle,Ele_Wind,2; bonus2 bSubEle,Ele_Earth,-5; if(getequiprefinerycnt()>=7) { bonus2 bSubEle,Ele_Wind,3; bonus bMaxHPrate,getequiprefinerycnt()-6; } }
 13088,Unknown_Item,クリスナーガ,5,20,,500,110:50,,1,1,673144558,2,2,4,30,1,1,{},{ if(getequiprefinerycnt()>=5) bonus bMatk,30; if(getequiprefinerycnt()>=7) bonus bMatk,40; if(getequiprefinerycnt()>=9) bonus bMatk,50; }
 13089,Unknown_Item,フェイスワームの足,5,,,500,110,,1,1,143087343,,2,3,24,,1,{},{}
@@ -6868,7 +6868,7 @@
 13437,Orcish_Sword_,オーキッシュソード,5,,,800,90,,1,4,8803555,2,2,3,5,2,1,{},{ bonus bUnbreakableWeapon,0; }
 13438,Unknown_Item,マジカルブレード,5,,,2000,165:110,,1,2,414946,2,2,4,105,2,1,{},{ if(getequiprefinerycnt(3)==10){ bonus3 bAutoSpell,13,5,50; bonus3 bAutoSpell,90,5,50; bonus3 bAutoSpell,14,5,50; bonus3 bAutoSpell,19,5,50; bonus3 bAutoSpell,20,5,50; end; } bonus3 bAutoSpell,13,3,50; if(getequiprefinerycnt(3)>=2){ bonus3 bAutoSpell,90,3,50; } if(getequiprefinerycnt(3)>=4){ bonus3 bAutoSpell,14,3,50; } if(getequiprefinerycnt(3)>=6){ bonus3 bAutoSpell,19,3,50; } if(getequiprefinerycnt(3)>=8){ bonus3 bAutoSpell,20,3,50; } }
 13439,Unknown_Item,攻城戦TEソード,5,,,0,120,,1,,8803555,,2,3,40,,1,{},{}
-13440,Unknown_Item,儀式用の剣,5,,,500,60,,1,,8803555,,2,1,1,,1,{},{}
+13440,Ceremonial_Sword,儀式用の剣,5,135000,,500,60,,1,,8803555,,2,1,1,,1,{},{ bonus bAtkEle,Ele_Holy; }
 
 13442,Unknown_Item,古い洋傘,5,,,500,120,,1,3,8803555,,2,3,80,,1,{},{}
 
@@ -8057,7 +8057,7 @@
 15063,Unknown_Item,攻城戦TEメイル,4,,,0,,25,,,279714,,16,,40,,1,{},{}
 15064,Unknown_Item,攻城戦TEマジックコート,4,,,0,,5,,,142672405,,16,,40,,1,{},{}
 
-15066,Unknown_Item,精巧な鎧,4,,,3000,,120,,1,0,,16,,150,,1,{},{}
+15066,Engraved_Armor,精巧な鎧,4,110000,,3000,,120:25,,1,128,,16,,150,,1,{},{}
 
 15070,Unknown_Item,幸福の服,4,20,,1000,,5:5,,1,1000333311,2,16,,1,,1,{},{ bonus bLuk,getequiprefinerycnt(2); }
 15071,Unknown_Item,ヴァルキリーローブ,4,20,,2800,,55,,1,2088958,2,16,,1,,1,{},{ bonus bStr,1; bonus bVit,1; bonus bAgi,1; bonus bInt,1; bonus bDex,1; bonus bLuk,1; bonus bUnbreakableArmor,0; switch(getbaseclass(Class)) { case CLASS_SM: case CLASS_MC: case CLASS_TF: bonus2 bResEff,Eff_Stun,5000; break; case CLASS_MG: case CLASS_AC: case CLASS_AL: bonus2 bResEff,Eff_Silence,5000; break; } }
@@ -10323,7 +10323,7 @@
 21004,Unknown_Item,アルカブリンガー,9,,,0,280,,1,2,16512,2,34,3,100,,1,{},{ bonus bAspd,getequiprefinerycnt(4)/2; }
 
 21006,Unknown_Item,攻城戦TEツーハンドソード,9,,,0,150,,1,,16514,,34,3,40,,1,{},{}
-21007,Unknown_Item,重厚な大剣,9,,,2500,330,,1,1,0,,34,1,150,,1,{},{}
+21007,Heavy_Sword,重厚な大剣,9,78000,,2500,330,,1,1,16512,,34,1,150,,1,{},{ bonus bStr,20; }
 21008,Unknown_Item,小烏丸,9,,,1000,170,,1,2,16514,,34,4,50,,1,{},{}
 
 21012,Unknown_Item,魔導剣,9,,,2200,200,,1,2,128,,34,4,110,,1,{},{}
@@ -10339,18 +10339,18 @@
 21024,Unknown_Item,達人の剣,9,,,2000,180,,1,3,16514,,34,4,80,,1,{},{}
 21025,Unknown_Item,アヴェンジャークレイモア,9,,,0,220,,1,,0,,34,4,100,,1,{},{}
 
-22000,Unknown_Item,力の時空ブーツ,4,,,600,,25,,,2088832,,64,,99,,1,{},{}
-22001,Unknown_Item,知力の時空ブーツ,4,,,600,,20,,,2088832,,64,,99,,1,{},{}
-22002,Unknown_Item,俊敏の時空ブーツ,4,,,600,,25,,,2088832,,64,,99,,1,{},{}
-22003,Unknown_Item,体力の時空ブーツ,4,,,600,,25,,,2088832,,64,,99,,1,{},{}
-22004,Unknown_Item,技巧の時空ブーツ,4,,,600,,25,,,2088832,,64,,99,,1,{},{}
-22005,Unknown_Item,幸運の時空ブーツ,4,,,600,,20,,,2088832,,64,,99,,1,{},{}
-22006,Unknown_Item,力の時空ブーツ,4,,,600,,25,,1,2088832,,64,,99,,1,{},{}
-22007,Unknown_Item,体力の時空ブーツ,4,,,600,,25,,1,2088832,,64,,99,,1,{},{}
-22008,Unknown_Item,技巧の時空ブーツ,4,,,600,,25,,1,2088832,,64,,99,,1,{},{}
-22009,Unknown_Item,知力の時空ブーツ,4,,,600,,20,,1,2088832,,64,,99,,1,{},{}
-22010,Unknown_Item,俊敏の時空ブーツ,4,,,600,,25,,1,2088832,,64,,99,,1,{},{}
-22011,Unknown_Item,幸運の時空ブーツ,4,,,600,,20,,1,2088832,,64,,99,,1,{},{}
+22000,Temporal_STR_Boots,力の時空ブーツ,4,50000,,600,,25,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bBaseAtk,(getequiprefinerycnt(6)/3)*7; if(readparam(bStr)>=120) bonus bBaseAtk,50; }
+22001,Temporal_INT_Boots,知力の時空ブーツ,4,50000,,600,,20:5,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bMatk,(getequiprefinerycnt(6)/3)*10; if(readparam(bInt)>=120) bonus bMatk,60; }
+22002,Temporal_AGI_Boots,俊敏の時空ブーツ,4,50000,,600,,25,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bAspdRate,(getequiprefinerycnt(6)/3)*3; if(readparam(bAgi)>=120) bonus bAspd,1; }
+22003,Temporal_VIT_Boots,体力の時空ブーツ,4,50000,,600,,25,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*300); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); if(readparam(bVit)>=120) bonus bMaxHPrate,8; }
+22004,Temporal_DEX_Boots,技巧の時空ブーツ,4,50000,,600,,25,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bDex,(getequiprefinerycnt(6)/3)*3; if(readparam(bDex)>=120) bonus bAddLongWeaponDamage,5; }
+22005,Temporal_LUK_Boots,幸運の時空ブーツ,4,50000,,600,,20:5,,,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bAddCriticalDamage,(getequiprefinerycnt(6)/3)*2; if(readparam(bLuk)>=120) bonus bAddCriticalDamage,30; }
+22006,Temporal_STR_Boots_,力の時空ブーツ,4,50000,,600,,25,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bBaseAtk,(getequiprefinerycnt(6)/3)*7; if(readparam(bStr)>=120) bonus bBaseAtk,50; }
+22007,Temporal_VIT_Boots_,体力の時空ブーツ,4,50000,,600,,25,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*300); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); if(readparam(bVit)>=120) bonus bMaxHPrate,8; }
+22008,Temporal_DEX_Boots_,技巧の時空ブーツ,4,50000,,600,,25,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bDex,(getequiprefinerycnt(6)/3)*3; if(readparam(bDex)>=120) bonus bAddLongWeaponDamage,5; }
+22009,Temporal_INT_Boots_,知力の時空ブーツ,4,50000,,600,,20:5,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bMatk,(getequiprefinerycnt(6)/3)*10; if(readparam(bInt)>=120) bonus bMatk,60; }
+22010,Temporal_AGI_Boots_,俊敏の時空ブーツ,4,50000,,600,,25,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bAspdRate,(getequiprefinerycnt(6)/3)*3; if(readparam(bAgi)>=120) bonus bAspd,1; }
+22011,Temporal_LUK_Boots_,幸運の時空ブーツ,4,50000,,600,,20:5,,1,2088832,,64,,99,,1,{},{ bonus bMaxHP,300+((getequiprefinerycnt(6)/3)*100); bonus bMaxSP,30+((getequiprefinerycnt(6)/3)*10); bonus bAddCriticalDamage,(getequiprefinerycnt(6)/3)*2; if(readparam(bLuk)>=120) bonus bAddCriticalDamage,30; }
 
 22016,Unknown_Item,暗殺者の靴,4,20,,300,,10,,,1000333311,,64,,30,,1,{},{ bonus2 bExpRate,Rct_Human,5+getequiprefinerycnt(6); bonus2 bJobRate,Rct_Human,5+getequiprefinerycnt(6); }
 22017,Unknown_Item,漁師の靴,4,,,300,,10,,,1000333311,,64,,30,,1,{},{}
