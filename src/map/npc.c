@@ -802,7 +802,7 @@ bool npc_isnear(struct block_list *bl)
 	r = battle_config.min_npc_vendchat_distance;
 
 	// エリア判定
-	if(range > 0 && map_foreachinarea(npc_isnear_sub,bl->m,bl->x-r,bl->y-r,bl->x+r,bl->y+r,BL_NPC) )
+	if(r > 0 && map_foreachinarea(npc_isnear_sub,bl->m,bl->x-r,bl->y-r,bl->x+r,bl->y+r,BL_NPC) )
 		return true;
 
 	return false;
