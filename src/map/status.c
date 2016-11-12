@@ -7004,6 +7004,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 					return 0;
 				icon_val1 = 1;	// val1は1
 				icon_val2 = 25;	// val2は25(移動速度向上)
+				clif_status_load_id(sd,SI_RIDING,1);
 			}
 			calc_flag = 1;
 			ud->state.change_speed = 1;
@@ -9004,8 +9005,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SWING:				/* スイングダンス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
-		case SC_ALL_RIDING:			/* 騎乗システム */
 		case SC_WIND_STEP:			/* ウィンドステップ */
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_ALL_RIDING:			/* 騎乗システム */
+			if(sd)
+				clif_status_load_id(sd,SI_RIDING,0);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;

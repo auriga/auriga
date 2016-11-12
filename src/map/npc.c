@@ -777,6 +777,38 @@ static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
 }
 
 /*==========================================
+ * 近くかどうかの判定
+ *------------------------------------------
+ */
+static int npc_isnear_sub(struct block_list *bl, va_list ap)
+{
+	struct npc_data *nd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, nd = (struct npc_data *)bl);
+
+	if(nd->class_ < 0)	// イベント系は常にOK
+		return 0;
+
+	return 1;
+}
+
+bool npc_isnear(struct block_list *bl)
+{
+	int r;
+
+	nullpo_retr(false, bl);
+
+	r = battle_config.min_npc_vendchat_distance;
+
+	// エリア判定
+	if(range > 0 && map_foreachinarea(npc_isnear_sub,bl->m,bl->x-r,bl->y-r,bl->x+r,bl->y+r,BL_NPC) )
+		return true;
+
+	return false;
+}
+
+/*==========================================
  * NPCのオープンチャット発言
  *------------------------------------------
  */

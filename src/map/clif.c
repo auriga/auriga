@@ -18778,6 +18778,11 @@ static void clif_parse_CreateChatRoom(int fd,struct map_session_data *sd, int cm
 		return;
 	}
 
+	if(npc_isnear(&sd->bl)) {
+		clif_skill_fail(sd,1,83,0,0);
+		return;
+	}
+
 	len = (int)RFIFOW(fd,GETPACKETPOS(cmd,0));
 	if (len <= GETPACKETPOS(cmd,4))
 		return;

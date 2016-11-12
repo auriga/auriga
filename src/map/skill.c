@@ -6457,8 +6457,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 
 	case MC_VENDING:			/* 露店開設 */
-		if(sd && pc_iscarton(sd))
+		if(sd && pc_iscarton(sd)) {
+			if(npc_isnear(&sd->bl)) {
+				clif_skill_fail(sd,skillid,83,0,0);
+				return 1;
+			}
 			clif_openvendingreq(sd,2+sd->ud.skilllv);
+		}
 		break;
 
 	case AL_TELEPORT:			/* テレポート */
@@ -7639,6 +7644,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case ALL_BUYING_STORE:			/* 買取露店開設 */
 		if(sd) {
+			if(npc_isnear(&sd->bl)) {
+				clif_skill_fail(sd,skillid,83,0,0);
+				return 1;
+			}
 			buyingstore_openstorewindow(sd, MAX_BUYINGSTORE_COUNT);
 		}
 		break;

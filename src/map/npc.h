@@ -44,6 +44,8 @@ int npc_globalmessage(const char *name,const char *mes);
 int npc_enable(const char *name,int flag);
 struct npc_data* npc_name2id(const char *name);
 
+bool npc_isnear(struct block_list *bl);
+
 int npc_get_new_npc_id(void);
 
 void npc_addsrcfile(const char *);

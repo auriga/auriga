@@ -1,4 +1,11 @@
 ----------------------------------------
+//1281 [2016/11/12] by refis
+
+・NPCの周囲で露店やチャットを開けなくするかどうかを戦闘設定に追加 (battle_auriga.conf, battle.*, clif.c, npc.*, skill.c)
+
+・騎乗中はアイコンを表示するように修正 (status.c)
+
+----------------------------------------
 //1280 [2016/11/08] by refis
 
 ・グラストヘイムメモリアルアップデートに対応 (map_auriga.conf, npc_memorial_glastheim.sc, npc_quest_glastheim.sc)

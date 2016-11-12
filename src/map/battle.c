@@ -8975,6 +8975,7 @@ int battle_config_read(const char *cfgName)
 		{ "ranker_potion_bonus_rogue",          &battle_config.ranker_potion_bonus_rogue,          200      },
 		{ "ranker_weapon_bonus",                &battle_config.ranker_weapon_bonus,                10       },
 		{ "min_lv100_aspdfix",                  &battle_config.min_lv100_aspdfix,                  1        },
+		{ "min_npc_vendchat_distance",          &battle_config.min_npc_vendchat_distance,          3        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 
