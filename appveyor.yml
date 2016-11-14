@@ -1,0 +1,33 @@
+version: '{branch}-1.0.{build}'
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2015
+configuration: Release
+platform: x64
+clone_folder: c:\project\auriga
+environment:
+  matrix:
+  - VSVER: 2015_x64
+    PACKETVER: 20150513
+  - VSVER: 2015_x64
+    PACKETVER: 20141022
+  - VSVER: 2015_x64
+    PACKETVER: 20140305
+  - VSVER: 2015_x64
+    PACKETVER: 20140115
+  - VSVER: 2015_x64
+    PACKETVER: 20131223
+services: mysql
+build_script:
+- cmd: vc_make_appveyor.bat
+notifications:
+- provider: GitHubPullRequest
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  channel: '#appveyor'
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
