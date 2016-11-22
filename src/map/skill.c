@@ -13111,7 +13111,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 // PC用判定( 0: 使用失敗 1: 使用成功 )
 static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_condition *cnd, int type)
 {
-	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,mana,arrow;
+	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,arrow;
 	int itemid[10],amount[10];
 	int item_nocost = 0;
 	struct block_list *bl = NULL, *target = NULL;

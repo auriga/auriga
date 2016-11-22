@@ -2856,7 +2856,7 @@
 4875,Bear's_Power,åFÇÃóÕ,6,,,,,,,,,,65535,,,,,{},{ bonus3 bRevAutoActiveWeapon,4875,20,5000; if(checkactiveitem()){ misceffect 220,""; active_montransform 1060; bonus bStr,200; bonus2 bHPPenaltyTime,1000,500; } }
 4876,Runaway_Magic,ñ\ëñÇµÇΩñÇóÕ,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4876,15,10000,EAS_MAGIC; if(checkactiveitem()){ misceffect 220,""; bonus bInt,200; bonus2 bSPPenaltyTime,1000,200; } }
 4877,Speed_Of_Light,åıë¨,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4877,10,5000,EAS_WEAPON; if(checkactiveitem()){ misceffect 99,""; bonus bAspdAddRate,100; bonus bFlee2,100; bonus2 bHPPenaltyTime,1000,400; bonus2 bSPPenaltyTime,1000,40; } }
-4878,Muscle_Fool,ç|äZ,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4878,20,5000,EAS_REVENGE; if(checkactiveitem()){ misceffect 17,"";  bonus2 bAddRace,Rct_Boss,-50; bonus2 bAddRace,Rct_NonBoss,-50;  bonus2 bMatkRate,-50; bonus bDef,1000; } }
+4878,Muscle_Fool,ç|äZ,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4878,20,5000,EAS_REVENGE; if(checkactiveitem()){ misceffect 17,"";  bonus2 bAddRace,Rct_Boss,-50; bonus2 bAddRace,Rct_NonBoss,-50;  bonus bMatkRate,-50; bonus bDef,1000; } }
 4879,Hawkeye,ëÂòhÇÃä·åı,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4879,30,5000,EAS_WEAPON; if(checkactiveitem()){ misceffect 99,""; bonus bDex,200; bonus2 bSPPenaltyTime,1000,50; } }
 4880,Lucky_Day,çKâ^Ç»ì˙,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4880,15,5000,EAS_WEAPON|EAS_MAGIC|EAS_REVENGE; if(checkactiveitem()){ misceffect 68,""; bonus bLuk,200; bonus3 bAddMonsterDropItem,7444,Rct_Boss,10; bonus3 bAddMonsterDropItem,7444,Rct_NonBoss,10; } }
 4881,Unknown_Item,çUåÇë¨ìx4,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,10; }

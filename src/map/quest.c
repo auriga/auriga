@@ -315,6 +315,22 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 					clif_update_questcount(sd, qd->nameid);
 				}
 			}
+			for(j = 0; j < sizeof(quest_db[qd->nameid].drop)/sizeof(quest_db[qd->nameid].drop[0]); j++) {
+				if(quest_db[qd->nameid].drop[j].id != mob_id)
+					continue;
+				if(atn_rand()%10000 < quest_db[qd->nameid].drop[j].p) {
+					int flag;
+					struct item tmp_item;
+
+					memset(&tmp_item, 0, sizeof(tmp_item));
+					tmp_item.nameid = quest_db[qd->nameid].drop[j].nameid;
+					tmp_item.amount = 1;
+					tmp_item.identify = 1;
+					if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+						clif_additem(sd, 0, 0, flag);
+					}
+				}
+			}
 		}
 	}
 
@@ -361,18 +377,18 @@ static int quest_readdb(void)
 
 	i=0;
 	while(fgets(line,1020,fp)){
-		char *split[9];
+		char *split[18];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<9 && p;j++){
+		for(j=0,p=line;j<18 && p;j++){
 			split[j]=p;
 			p=strchr(p,',');
 			if(p) *p++=0;
 		}
-		if(j < 9)
+		if(j < 18)
 			continue;
 		if(i < 0 || i >= MAX_QUEST_DB)
 			continue;
@@ -402,6 +418,11 @@ static int quest_readdb(void)
 				quest_killdb[n] = mob_id;
 				max_killdb_count++;
 			}
+		}
+		for(j = 0; j < sizeof(quest_db[0].drop)/sizeof(quest_db[0].drop[0]); j++) {
+			quest_db[i].drop[j].id     = (short)atoi(split[10+j*3]);
+			quest_db[i].drop[j].nameid = atoi(split[11+j*3]);
+			quest_db[i].drop[j].p      = atoi(split[12+j*3]);
 		}
 
 		if(++i >= MAX_QUEST_DB)

@@ -32,6 +32,11 @@ struct quest_db {
 		short id;
 		short count;
 	} mob[3];
+	struct {
+		short id;
+		int nameid;
+		int p;
+	} drop[3];
 };
 
 struct quest_data *quest_get_data(struct map_session_data *sd, int quest_id);
