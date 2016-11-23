@@ -1958,7 +1958,7 @@ rachel.gat,150,249,0	warp	rachelwarp0101	1,1,ra_temple.gat,120,30
 ra_temple.gat,120,22,0	warp	rachelwarp0102	1,1,rachel.gat,150,243
 //アルナベルツ教国首都ラヘル⇒ラヘルフィールド11
 rachel.gat,25,125,0	warp	rachelwarp0501	1,1,ra_fild11.gat,353,226
-//アルナベルツ教国首都ラヘル⇒ラッセルフィールド12
+//アルナベルツ教国首都ラヘル⇒ラヘルフィールド12
 rachel.gat,275,125,0	warp	rachelwarp0502	1,1,ra_fild12.gat,40,226
 
 //ホテル
@@ -2583,3 +2583,36 @@ ma_in01.gat,126,17,0	warp	malayawarp1004	1,1,malaya.gat,261,237
 ma_in01.gat,33,152,0	warp	malayawarp1005	1,1,malaya.gat,296,210
 //ペリー号
 ma_in01.gat,105,92,0	warp	malayawarp1006	1,1,malaya.gat,310,67
+
+
+
+//---エクラージュ追加マップ
+
+
+//==============================================================
+// -----  エクラージュ -----
+// eclage.gat		ラフィネ族の首都 エクラージュ
+// ecl_in01.gat		エクラージュ 内部
+// ecl_in02.gat		エクラージュ 内部
+// ecl_in03.gat		エクラージュ 内部
+// ecl_hub01.gat	エクラージュ通路
+//==============================================================
+//エクラージュ⇔エクラージュ 内部
+eclage.gat,299,309,0	warp	eclagewarp1001	1,1,ecl_in01.gat,47,11
+ecl_in01.gat,47,8,0		warp	eclagewarp1002	1,1,eclage.gat,297,307
+
+//エクラージュ 内部
+ecl_in01.gat,8,67,0		warp	eclagewarp1003	1,1,ecl_hub01.gat,38,94
+ecl_hub01.gat,40,95,0	warp	eclagewarp1004	1,1,ecl_in01.gat,11,67
+ecl_hub01.gat,22,109,0	warp	eclagewarp1005	1,1,ecl_in02.gat,99,7
+ecl_in02.gat,98,4,0		warp	eclagewarp1006	1,1,ecl_hub01.gat,23,107
+ecl_in02.gat,80,18,0	warp	eclagewarp1007	1,1,ecl_in02.gat,157,66
+ecl_in02.gat,157,68,0	warp	eclagewarp1008	1,1,ecl_in02.gat,83,18
+ecl_in01.gat,84,68,0	warp	eclagewarp1009	1,1,ecl_hub01.gat,107,107
+ecl_hub01.gat,107,110,0	warp	eclagewarp1010	1,1,ecl_in01.gat,82,68
+ecl_hub01.gat,127,95,0	warp	eclagewarp1011	1,1,ecl_hub01.gat,18,32
+ecl_hub01.gat,18,34,0	warp	eclagewarp1012	1,1,ecl_hub01.gat,125,94
+ecl_hub01.gat,40,14,0	warp	eclagewarp1013	1,1,ecl_in03.gat,144,17
+ecl_in03.gat,144,14,0	warp	eclagewarp1014	1,1,ecl_hub01.gat,40,11
+ecl_hub01.gat,105,36,0	warp	eclagewarp1015	1,1,ecl_in01.gat,82,68
+ecl_in01.gat,138,17,0	warp	eclagewarp1016	1,1,ecl_hub01.gat,18,32

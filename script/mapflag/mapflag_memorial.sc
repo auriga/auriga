@@ -184,3 +184,14 @@
 2@gl_k.gat	mapflag	monster_noteleport	dummy
 2@gl_k.gat	mapflag	noicewall	dummy
 2@gl_k.gat	mapflag	noabra		dummy
+
+//============================================================
+// エクラージュ 内部 - 1@ecl.gat
+//------------------------------------------------------------
+1@ecl.gat	mapflag	nosave			SavePoint
+1@ecl.gat	mapflag	nomemo			dummy
+1@ecl.gat	mapflag	noteleport		dummy
+1@ecl.gat	mapflag	nobranch		dummy
+1@ecl.gat	mapflag	monster_noteleport	dummy
+1@ecl.gat	mapflag	noicewall	dummy
+1@ecl.gat	mapflag	noabra		dummy

@@ -1287,3 +1287,25 @@ ma_dun01_jp.gat,107,63,0	warp	malayawarp4004	1,1,ma_dun01_jp.gat,113,63
 ma_dun01_jp.gat,110,63,0	warp	malayawarp4005	1,1,ma_dun01_jp.gat,104,63
 ma_dun01_jp.gat,111,176,0	warp	malayawarp4006	1,1,ma_dun01_jp.gat,113,49
 ma_dun01_jp.gat,111,49,0	warp	malayawarp4007	1,1,ma_dun01_jp.gat,113,176
+
+
+
+//---エクラージュ追加マップ
+
+
+//==============================================================
+// -----  エクラージュ -----
+// ecl_tdun01.gat	ビフロストタワー 1階
+// ecl_tdun02.gat	ビフロストタワー 2階
+// ecl_tdun03.gat	ビフロストタワー 3階
+// -----
+// ecl_fild01.gat	花が咲き始めた大地
+//==============================================================
+//ビフロストタワー⇒花が咲き始めた大地
+ecl_tdun01.gat,61,11,0	warp	eclagewarp0501	1,1,ecl_fild01.gat,182,92
+
+//ビフロストタワー
+ecl_tdun01.gat,67,106,0	warp	eclagewarp4001	1,1,ecl_tdun02.gat,60,88
+ecl_tdun02.gat,60,90,0	warp	eclagewarp4002	1,1,ecl_tdun01.gat,70,105
+ecl_tdun02.gat,52,9,0	warp	eclagewarp4003	1,1,ecl_tdun03.gat,47,13
+ecl_tdun03.gat,49,11,0	warp	eclagewarp4004	1,1,ecl_tdun02.gat,50,11

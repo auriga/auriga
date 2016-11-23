@@ -449,6 +449,7 @@ prontera.gat,125,208,5	script	グリフォン管理兵	105,{
 prontera.gat,163,178,3		duplicate(3rdRentalGear)	魔導ギア管理兵#pro		105
 dicastes01.gat,187,203,3	duplicate(3rdRentalGear)	魔導ギア管理兵#dicas	105
 mora.gat,91,112,3			duplicate(3rdRentalGear)	魔導ギア管理兵#mora		105
+ecl_in01.gat,41,25,5		duplicate(3rdRentalGear)	魔導ギア管理兵#ecl		105
 
 //==========================================
 // ルーン原石販売員 - ルーンナイト

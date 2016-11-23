@@ -420,9 +420,9 @@ static int quest_readdb(void)
 			}
 		}
 		for(j = 0; j < sizeof(quest_db[0].drop)/sizeof(quest_db[0].drop[0]); j++) {
-			quest_db[i].drop[j].id     = (short)atoi(split[10+j*3]);
-			quest_db[i].drop[j].nameid = atoi(split[11+j*3]);
-			quest_db[i].drop[j].p      = atoi(split[12+j*3]);
+			quest_db[i].drop[j].id     = (short)atoi(split[9+j*3]);
+			quest_db[i].drop[j].nameid = atoi(split[10+j*3]);
+			quest_db[i].drop[j].p      = atoi(split[11+j*3]);
 		}
 
 		if(++i >= MAX_QUEST_DB)

@@ -1,4 +1,36 @@
 ----------------------------------------
+//1284 [2016/11/23] by refis
+
+・エクラージュNPC実装 (npc_town_eclage.sc, npc_memorial_hometree.sc)
+	-> 冒険者達との出会いクエスト実装
+	-> 夢見る作家クエスト実装
+	-> エクラージュの王クエスト実装
+	-> 美しさの代償クエスト実装
+	-> 妖精たちの事件簿クエスト実装
+	-> 悠久なる絆クエスト実装
+	-> エクラージュの悪戯キッズクエスト実装
+	-> ラフィネ流ガーデニングクエスト実装
+	-> 塔に挑んだ冒険者達クエスト実装
+	-> 塔の中の冒険者クエスト実装
+	-> プロフェッサーワームの記憶クエスト実装
+
+・エクラージュ関連NPC追加 (npc_job_thirdclass.sc)
+
+・エクラージュ追加マップのwarp更新 (npc_warp_dun.sc, npc_warp_fild.sc, npc_warp_town.sc)
+
+・エクラージュ追加マップのmapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・エクラージュ追加マップのmonster出現定義追加 (npc_monster_eclfild.sc, npc_monster_ecltdun.sc)
+
+・item_dbの更新 (item_db.txt, item_db2.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・Auriga-1283のACCESS_VIOLATION修正 (quest.c)
+
+----------------------------------------
 //1283 [2016/11/22] by refis
 
 ・quest_dbでのアイテムドロップの追加拡張 (quest_db.txt, quest.*)
