@@ -1,4 +1,18 @@
 ----------------------------------------
+//1285 [2016/11/25] by refis
+
+・サラの記憶NPC実装 (npc_memorial_sara.sc)
+	-> レイヤン・ムーアクエスト実装 (npc_quest_herovestige.sc, npc_quest_ashvacuum.sc)
+
+・サラの記憶追加マップのmapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・mob_dbの更新 (mob_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1284 [2016/11/23] by refis
 
 ・エクラージュNPC実装 (npc_town_eclage.sc, npc_memorial_hometree.sc)

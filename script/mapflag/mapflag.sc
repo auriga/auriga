@@ -131,6 +131,9 @@ cmd_in02.gat	mapflag	nopenalty	dummy
 cmd_in02.gat	mapflag	noicewall	dummy
 comodo.gat	mapflag	town	dummy
 comodo.gat	mapflag	nopenalty	dummy
+dali.gat	mapflag	nomemo		dummy
+dali.gat	mapflag	noteleport	dummy
+dali.gat	mapflag	nobranch	dummy
 dew_dun01.gat	mapflag	nomemo	dummy
 dew_dun02.gat	mapflag	nomemo	dummy
 dew_in01.gat	mapflag	nomemo	dummy

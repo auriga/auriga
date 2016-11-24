@@ -195,3 +195,14 @@
 1@ecl.gat	mapflag	monster_noteleport	dummy
 1@ecl.gat	mapflag	noicewall	dummy
 1@ecl.gat	mapflag	noabra		dummy
+
+//============================================================
+// ƒTƒ‰‚Ì‹L‰¯ - 1@sara.gat
+//------------------------------------------------------------
+1@sara.gat	mapflag	nosave			SavePoint
+1@sara.gat	mapflag	nomemo			dummy
+1@sara.gat	mapflag	noteleport		dummy
+1@sara.gat	mapflag	nobranch		dummy
+1@sara.gat	mapflag	monster_noteleport	dummy
+1@sara.gat	mapflag	noicewall	dummy
+1@sara.gat	mapflag	noabra		dummy
