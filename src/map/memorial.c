@@ -495,7 +495,7 @@ int memorial_delete(int memorial_id)
 	md->keep_limit = 0;
 	md->idle_limit = 0;
 	md->users = 0;
-	memset(memorial_data[i].map, 0, sizeof(memorial_data[i].map));
+	memset(memorial_data[memorial_id-1].map, 0, sizeof(memorial_data[memorial_id-1].map));
 
 	printf("memorial_delete: memorial_id=%03d count=%d\n", memorial_id, count);
 
