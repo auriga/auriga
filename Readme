@@ -1,4 +1,11 @@
 ----------------------------------------
+//1286 [2017/01/28] by refis
+
+・スクリプト命令「getmapxy」でMOBオブジェクトを指定できるように拡張（doc/script_ref.txt, script.c）
+
+・スクリプト命令「dropitem2」実装（doc/script_ref.txt, script.c）
+
+----------------------------------------
 //1285 [2016/11/25] by refis
 
 ・サラの記憶NPC実装 (npc_memorial_sara.sc)

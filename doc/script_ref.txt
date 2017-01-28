@@ -2146,6 +2146,30 @@ AurigaNPCScript
 			<limit>は使用可能時間で単位は秒です。
 			省略すると0で無期限となります。
 
+		dropitem2命令
+			dropitem2 <gatname>,<x>,<y>,<itemid>,<num>,<tick>,<identify>,<refine>,<attribute>,
+			<card1>,<card2>,<card3>,<card4>[,<limit>];
+
+			gatname		文字列
+			x,y		数値
+			itemid		数値または文字列
+			num,identify,refine,attribute,card1,card2,card3,card4,tick	数値
+			limit		数値、省略可
+
+			<itemid>で指定したアイテムを<num>個分、<gatname>で指定したMAPの座標<x>,<y>にドロップさせます。
+			マップ名を"this"にすると、命令を実行したNPCのMAPを参照します。
+			アイテムが消滅するまでの時間は、battle_auriga.confで設定されたflooritem_lifetimeの値に
+			<tick>ミリ秒を加算した時間になります。
+
+			<identify> 鑑定状態(0で未鑑定、1で鑑定)
+			<refine> 精錬値
+			<attribute> アイテムの状態
+			<card1> 差さっているカード、製造武器なら255で装備以外のアイテムでキャラの名前を入れたい時は254
+			<card2> 差さっているカード、製造武器なら属性と星のかけらの数を設定。星のかけらの数(範囲:0~3)*5*256 + 属性(無:0、火:3、水:1、風:4、土:2)
+			<card3> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの下の2バイト
+			<card4> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの上の2バイト
+			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
+
 		getexp命令
 			getexp <base>,<job>[,<quest>];
 
@@ -3205,9 +3229,10 @@ AurigaNPCScript
 					0 - キャラクター
 					1 - NPC
 					2 - PET
-					3 - MOB（未実装）
+					3 - MOB
 					4 - HOM
 			<chrname>		オブジェクト名を指定します（省略可）
+							オブジェクトのタイプがMOBの場合はオブジェクトID
 
 			指定したオブジェクトが存在するマップ名を<variable_mapname>変数に、
 			座標を<variable_x>,<variable_y>変数に代入します。

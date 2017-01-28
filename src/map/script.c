@@ -4023,6 +4023,7 @@ int buildin_recalcstatus(struct script_state *st);
 int buildin_sqlquery(struct script_state *st);
 int buildin_strescape(struct script_state *st);
 int buildin_dropitem(struct script_state *st);
+int buildin_dropitem2(struct script_state *st);
 int buildin_getexp(struct script_state *st);
 int buildin_getiteminfo(struct script_state *st);
 int buildin_getonlinepartymember(struct script_state *st);
@@ -4338,6 +4339,7 @@ struct script_function buildin_func[] = {
 	{buildin_sqlquery,"sqlquery","s*"},
 	{buildin_strescape,"strescape","s"},
 	{buildin_dropitem,"dropitem","siiiii*"},
+	{buildin_dropitem2,"dropitem2","siiiiiiiiiiii*"},
 	{buildin_getexp,"getexp","ii*"},
 	{buildin_getiteminfo,"getiteminfo","si"},
 	{buildin_getonlinepartymember,"getonlinepartymember","*"},
@@ -10290,6 +10292,7 @@ int buildin_getmapxy(struct script_state *st)
 {
 	struct map_session_data *sd = NULL;
 	struct npc_data         *nd = NULL;
+	struct mob_data         *md = NULL;
 	struct pet_data         *pd = NULL;
 	struct homun_data       *hd = NULL;
 	int num;
@@ -10361,8 +10364,16 @@ int buildin_getmapxy(struct script_state *st)
 			memcpy(mapname,map[pd->bl.m].name,24);
 			break;
 		case 3:		// Get Mob Position
-			push_val(st->stack,C_INT,-1);
-			return 0;
+			if( st->end > st->start+6 )
+				md = map_id2md(conv_num(st,& (st->stack->stack_data[st->start+6])));
+			if ( md==NULL || md->bl.prev == NULL || md->hp <= 0) {	// wrong mob id
+				push_val(st->stack,C_INT,-1);
+				return 0;
+			}
+			x=md->bl.x;
+			y=md->bl.y;
+			memcpy(mapname,map[md->bl.m].name,24);
+			break;
 		case 4:		// Get Homun Position
 			if( st->end>st->start+6 )
 				sd=map_nick2sd(conv_str(st,& (st->stack->stack_data[st->start+6])));
@@ -11833,6 +11844,97 @@ int buildin_dropitem(struct script_state *st)
 		map_addflooritem(&item_tmp,amount,m,x,y,0,0,0,0);
 		battle_config.flooritem_lifetime -= tick;
 	}
+
+	return 0;
+}
+
+/*==========================================
+ * アイテムドロップ
+ *------------------------------------------
+ */
+int buildin_dropitem2(struct script_state *st)
+{
+	int nameid=0, i=0, amount;
+	int x,y,m,tick;
+	int iden,ref,attr,c1,c2,c3,c4;
+	unsigned int limit = 0;
+	char *str;
+	struct script_data *data;
+	struct item_data *item_data;
+	struct item item_tmp;
+
+	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y   = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	data = &(st->stack->stack_data[st->start+5]);
+	get_val(st,data);
+	if(isstr(data)) {
+		const char *name = conv_str(st,data);
+		struct item_data *item_data = itemdb_searchname(name);
+		if(item_data)
+			nameid = item_data->nameid;
+	} else {
+		nameid = conv_num(st,data);
+	}
+
+	amount = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	tick   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	iden   = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	ref    = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	attr   = conv_num(st,& (st->stack->stack_data[st->start+10]));
+	c1     = conv_num(st,& (st->stack->stack_data[st->start+11]));
+	c2     = conv_num(st,& (st->stack->stack_data[st->start+12]));
+	c3     = conv_num(st,& (st->stack->stack_data[st->start+13]));
+	c4     = conv_num(st,& (st->stack->stack_data[st->start+14]));
+	if(st->end > st->start+15)
+		limit = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+15]));
+
+	m = script_mapname2mapid(st,str);
+	if(m < 0)
+		return 0;
+
+	do {
+		memset(&item_tmp,0,sizeof(item_tmp));
+
+		if(nameid < 0)		// ランダム
+			item_tmp.nameid = itemdb_searchrandomid(-nameid);
+		else
+			item_tmp.nameid = nameid;
+
+		if(!itemdb_exists(item_tmp.nameid))
+			break;
+
+		item_data = itemdb_search(item_tmp.nameid);
+
+		if(itemdb_isarmor(item_data->nameid) || itemdb_isweapon(item_data->nameid)) {
+			if(ref > MAX_REFINE)
+				ref = MAX_REFINE;
+		} else if(item_data->flag.pet_egg) {
+			iden = 1;
+			ref = 0;
+		} else {
+			iden = 1;
+			ref = attr = 0;
+		}
+
+		if(iden || battle_config.itemidentify)
+			item_tmp.identify = 1;
+		else
+			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
+
+		item_tmp.refine    = ref;
+		item_tmp.attribute = attr;
+		item_tmp.card[0]   = c1;
+		item_tmp.card[1]   = c2;
+		item_tmp.card[2]   = c3;
+		item_tmp.card[3]   = c4;
+		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
+
+		battle_config.flooritem_lifetime += tick;
+		map_addflooritem(&item_tmp,amount,m,x,y,0,0,0,0);
+		battle_config.flooritem_lifetime -= tick;
+	} while(nameid < 0 && ++i < amount);	// ランダム系はアイテムの再抽選
 
 	return 0;
 }
