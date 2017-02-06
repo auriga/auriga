@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2002-2007  Auriga
  *
  * This file is part of Auriga.
@@ -3640,28 +3640,37 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( (500 + 100 * skill_lv) * (status_get_lv(src)+100) / 200, 100 );
 			break;
 		case RK_HUNDREDSPEAR:	// ハンドレッドスピア
-			DMG_FIX( (600 + 40 * skill_lv + ((src_sd)? pc_checkskill(src_sd,LK_SPIRALPIERCE): 0) * 20) * (status_get_lv(src)+100) / 200, 100 );
+			{
+				int dmg = 600 + 80 * skill_lv;
+				if(src_sd) {
+					int idx = src_sd->equip_index[EQUIP_INDEX_RARM];
+					if(idx >= 0 && src_sd->inventory_data[idx] && itemdb_isweapon(src_sd->inventory_data[idx]->nameid))
+						dmg += 1000 - src_sd->inventory_data[idx]->weight/10;
+				}
+				DMG_FIX( dmg * ((status_get_lv(src)/2+50) / 100) + (((src_sd)? pc_checkskill(src_sd,LK_SPIRALPIERCE): 0) * 50), 100 );
+			}
 			break;
 		case RK_WINDCUTTER:	// ウィンドカッター
 			DMG_FIX( (100 + 50 * skill_lv) * status_get_lv(src) / 100, 100 );
 			break;
 		case RK_IGNITIONBREAK:	// イグニッションブレイク
 			{
-				int dmg = 200 + 200 * skill_lv;
+				int dmg = 300 * skill_lv;
 				int dist = unit_distance(src,target);
 				if(dist > 3)			// 遠距離
-					dmg /= 2;
+					dmg = 200 * skill_lv;
 				else if(dist > 1)		// 中距離
-					dmg -= 100;
+					dmg = 250 * skill_lv;
+				dmg = dmg * status_get_lv(src) / 100;
 				if(s_ele == ELE_FIRE)	// 火属性武器装備時
-					dmg = dmg * 150 / 100;
-				DMG_FIX( dmg * (100 + status_get_lv(src)) / 200, 100 );
+					dmg += 100 * skill_lv;
+				DMG_FIX( dmg, 100 );
 			}
 			break;
 		case RK_DRAGONBREATH:	// ドラゴンブレス
 			{
 				int dmg = src_sd ? pc_checkskill(src_sd,RK_DRAGONTRAINING) : 0;
-				dmg = (status_get_hp(src) / 50 + status_get_max_sp(src) / 4) * skill_lv * status_get_lv(src) / 150 * (90 + 5 * dmg) / 100;
+				dmg = (status_get_hp(src) / 75 + status_get_max_sp(src) / 6) * skill_lv * status_get_lv(src) / 100 * (95 + 5 * dmg) / 100;
 				DMG_SET( battle_attr_fix(dmg, s_ele, status_get_element(target)) );
 			}
 			break;
@@ -3684,9 +3693,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case GC_CROSSIMPACT:	// クロスインパクト
 			if(sc && sc->data[SC_EDP].timer != -1) {
-				DMG_FIX( (1150 + 50 * skill_lv) / 2, 100 );
+				DMG_FIX( (1000 + 100 * skill_lv) * status_get_lv(src) / 120 / 2, 100 );
 			} else {
-				DMG_FIX( 1150 + 50 * skill_lv, 100 );
+				DMG_FIX( (1000 + 100 * skill_lv) * status_get_lv(src) / 120, 100 );
 			}
 			break;
 		case GC_DARKILLUSION:	// ダークイリュージョン
@@ -3694,29 +3703,37 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case GC_COUNTERSLASH:	// カウンタースラッシュ
 			if(src_sd) {
-				int rate = 300 + 100 * skill_lv + status_get_agi(src) * 2 + src_sd->status.job_level * 4;
+				int rate = (300 + 100 * skill_lv) * status_get_lv(src) / 120 + status_get_agi(src) * 2 + src_sd->status.job_level * 4;
 				if(sc && sc->data[SC_EDP].timer != -1)
 					rate >>= 1;
 				DMG_FIX( rate, 100 );
 			} else {
-				DMG_FIX( 300 + 100 * skill_lv + status_get_agi(src) * 2, 100 );
+				DMG_FIX( (300 + 100 * skill_lv) * status_get_lv(src) / 120 + status_get_agi(src) * 2, 100 );
 			}
 			break;
 		case GC_VENOMPRESSURE:	// ベナムプレッシャー
-			DMG_FIX( 500, 100 );
+			DMG_FIX( 1000, 100 );
 			break;
 		case GC_PHANTOMMENACE:	// ファントムメナス
 			DMG_FIX( 300, 100 );
 			break;
 		case GC_ROLLINGCUTTER:	// ローリングカッター
-			DMG_FIX( 100 + 20 * skill_lv, 100 );
+			if(sc && sc->data[SC_EDP].timer != -1) {
+				DMG_FIX( (50 + 50 * skill_lv) * status_get_lv(src) / 100 / 2, 100 );
+			} else {
+				DMG_FIX( (50 + 50 * skill_lv) * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case GC_CROSSRIPPERSLASHER:	// クロスリッパースラッシャー
-			if(sc && sc->data[SC_ROLLINGCUTTER].timer != -1) {
-				int rate = sc->data[SC_ROLLINGCUTTER].val1 / 2 * 100;
-				DMG_FIX( 160 + 40 * skill_lv + rate, 100 );
-			} else {
-				DMG_FIX( 160 + 40 * skill_lv, 100 );
+			{
+				int dmg = (400 + 80 * skill_lv) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_ROLLINGCUTTER].timer != -1) {
+					dmg += sc->data[SC_ROLLINGCUTTER].val1 * status_get_agi(src) / 100;
+				}
+				if(sc && sc->data[SC_EDP].timer != -1) {
+					dmg >>= 1;
+				}
+				DMG_FIX( dmg, 100 );
 			}
 			break;
 		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
@@ -4504,7 +4521,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_ENCHANTBLADE].timer != -1 && (!skill_num || skill_num == RA_FIRINGTRAP || skill_num == RA_ICEBOUNDTRAP) ) {
 				static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 				ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
-				wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
+				wd.damage += ebd.damage + ((100 + sc->data[SC_ENCHANTBLADE].val1 * 20) * status_get_lv(src) / 150);
 			}
 			// ジャイアントグロース
 			if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {
@@ -5004,7 +5021,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(sc->data[SC_ENCHANTBLADE].timer != -1 && wd.damage > 0 && (!skill_num || skill_num == RA_FIRINGTRAP || skill_num == RA_ICEBOUNDTRAP) ) {
 			static struct Damage ebd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			ebd = battle_calc_attack(BF_MAGIC,src,target,RK_ENCHANTBLADE,sc->data[SC_ENCHANTBLADE].val1,wd.flag);
-			wd.damage += ebd.damage + 100 + sc->data[SC_ENCHANTBLADE].val1 * 20;
+			wd.damage += ebd.damage + ((100 + sc->data[SC_ENCHANTBLADE].val1 * 20) * status_get_lv(src) / 150);
 		}
 		// ジャイアントグロース
 		if(sc->data[SC_TURISUSS].timer != -1 && wd.flag&BF_SHORT && !skill_num) {

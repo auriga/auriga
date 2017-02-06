@@ -3006,7 +3006,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case ML_SPIRALPIERCE:
 	case MER_CRASH:			/* クラッシュ */
 	case RK_SONICWAVE:			/* ソニックウェーブ */
-	case RK_WINDCUTTER:		/* ウィンドカッター */
 	case RK_DRAGONBREATH:	/* ドラゴンブレス */
 	case AB_DUPLELIGHT_MELEE:	/* デュプレライト(物理) */
 	case RA_WUGBITE:		/* ウォーグバイト */
@@ -4124,6 +4123,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-5,src->y-5,src->x+5,src->y+5,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+		}
+		break;
+	case RK_WINDCUTTER:		/* ウィンドカッター */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(skill_area_temp[1] == 0 ? 0 : 0x0500));
+			}
 		}
 		break;
 	case RK_CRUSHSTRIKE:	/* クラッシュストライク */
@@ -7901,7 +7908,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case RK_ENCHANTBLADE:		/* エンチャントブレイド */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,status_get_int(src)+status_get_lv(src)/10,0,0,skill_get_time(skillid,skilllv),0);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,status_get_int(src),0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case RK_DRAGONHOWLING:	/* ドラゴンハウリング */
 		if(flag&1) {
@@ -10221,15 +10228,13 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case RK_WINDCUTTER:	/* ウィンドカッター */
 		{
-			int ar = 3;
+			int dir = path_calc_dir(src,x,y);
 			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = x;
-			skill_area_temp[3] = y;
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
-			map_foreachinarea(skill_area_sub,
-				src->m,x-ar,y-ar,x+ar,y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
+			map_foreachinshootpath(
+				skill_area_sub,src->m,src->x,src->y,dirx[dir],diry[dir],6,2,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,skill_castend_damage_id
+			);
 		}
 		break;
 	case RK_DRAGONBREATH:	/* ドラゴンブレス */
