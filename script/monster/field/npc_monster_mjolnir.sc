@@ -65,6 +65,7 @@ mjolnir_03.gat,0,0,0,0		monster	ダスティネス	1114,20,5000,0,0
 mjolnir_03.gat,0,0,0,0		monster	ホーネット	1004,200,5000,0,0
 mjolnir_03.gat,0,0,0,0		monster	フローラ	1118,10,5000,0,0
 mjolnir_03.gat,0,0,0,0		monster	アルゴス	1100,10,5000,0,0
+mjolnir_03.gat,0,0,0,0		monster	ミストレス	1059,1,7200000,3600000,1
 mjolnir_03.gat,211,216,10,10	monster	輝く草		1083,1,1800000,900000,1
 mjolnir_03.gat,280,252,10,10	monster	輝く草		1083,1,1800000,900000,1
 mjolnir_03.gat,135,94,0,0	monster	緑色草		1080,1,180000,90000,1
@@ -90,7 +91,6 @@ mjolnir_04.gat,0,0,0,0		monster	マンティス	1139,10,5000,0,0
 mjolnir_04.gat,0,0,0,0		monster	ホーネット	1004,30,5000,0,0
 mjolnir_04.gat,0,0,0,0		monster	アルギオペ	1099,20,5000,0,0
 mjolnir_04.gat,0,0,0,0		monster	ダスティネス	1114,20,5000,0,0
-mjolnir_04.gat,0,0,0,0		monster	ミストレス	1059,1,7200000,3600000,1
 mjolnir_04.gat,200,200,30,30	monster	輝く草		1083,3,1800000,900000,1
 mjolnir_04.gat,177,34,0,0	monster	緑色草		1080,1,180000,90000,1
 mjolnir_04.gat,122,28,0,0	monster	緑色草		1080,1,180000,90000,1
