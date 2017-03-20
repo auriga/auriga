@@ -1,4 +1,19 @@
 ----------------------------------------
+//1291 [2017/03/20] by refis
+
+・時計塔ナイトメアNPC実装 (npc_town_aldebaran.sc)
+
+・時計塔ナイトメア追加マップのmapflag更新 (mapflag.sc)
+
+・時計塔ナイトメア追加マップのmonster出現定義追加 (npc_monster_ctower.sc)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・VS2012ソリューションファイル名を修正 (Auriga-11.sln)
+
+----------------------------------------
 //1290 [2017/03/12] by refis
 
 ・ミストレス出現マップの誤りを修正（npc_monster_mjolnir.sc）

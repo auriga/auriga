@@ -107,6 +107,10 @@ c_tower1.gat	mapflag	nomemo	dummy
 c_tower2.gat	mapflag	nomemo	dummy
 c_tower3.gat	mapflag	nomemo	dummy
 c_tower4.gat	mapflag	nomemo	dummy
+c_tower1_.gat	mapflag	nomemo	dummy
+c_tower2_.gat	mapflag	nomemo	dummy
+c_tower3_.gat	mapflag	nomemo	dummy
+c_tower4_.gat	mapflag	nomemo	dummy
 cave.gat	mapflag	nomemo	dummy
 cave.gat	mapflag	noteleport	dummy
 cave.gat	mapflag	nobranch	dummy
