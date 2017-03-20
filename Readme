@@ -1,4 +1,11 @@
 ----------------------------------------
+//1292 [2017/03/20] by refis
+
+・経験値リセットNPC [闇魔術師]実装 (npc_misc_reset.sc, map_auriga.conf)
+
+・セカンドコスチュームNPCを更新 (npc_misc_pointshop.sc)
+
+----------------------------------------
 //1291 [2017/03/20] by refis
 
 ・時計塔ナイトメアNPC実装 (npc_town_aldebaran.sc)
