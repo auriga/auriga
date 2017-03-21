@@ -1,4 +1,28 @@
 ----------------------------------------
+//1294 [2017/03/21] by refis
+
+・2015/10/13、2017/02/21配置変更、ステータス調整に対応
+ (mob_db.txt, mob_skill_db.txt, npc_monster_gefdun.sc, npc_monster_izdun.sc, npc_monster_lhzdun.sc)
+	Thanks ARIA さん
+
+----------------------------------------
+//1293 [2017/03/21] by refis
+
+・冒険者アカデミーNPC実装 (quest/academy/*)
+	-> 初心者修練場を撤去 (npc_job_00novice.sc, npc_warp_town.sc)
+	Special Thanks Pneuma さん!!
+
+・冒険者アカデミー追加マップのmapflag更新 (mapflag_academy.sc)
+
+・冒険者アカデミー追加マップのwarp追加 (npc_warp_academy.sc)
+
+・冒険者アカデミー追加マップのmonster出現定義追加 (npc_monster_academy.sc)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・quest_db.txt更新 (quest_db.txt)
+
+----------------------------------------
 //1292 [2017/03/20] by refis
 
 ・経験値リセットNPC [闇魔術師]実装 (npc_misc_reset.sc, map_auriga.conf)
