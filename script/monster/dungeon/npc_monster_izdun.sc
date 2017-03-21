@@ -114,12 +114,14 @@ OnTimer8700000:
 OnTimer9000000:
 	stopnpctimer;
 	set 'kraken,5;
-	set 'mob,callmonster("iz_dun05.gat",0,0,"--ja--",2202,"#IzdunMVP::OnKilled");
-	monster "iz_dun05.gat",0,0,"--ja--",2384,1,"#IzdunMVP::OnKilled2";
-	monster "iz_dun05.gat",0,0,"--ja--",2385,1,"#IzdunMVP::OnKilled2";
-	monster "iz_dun05.gat",0,0,"--ja--",2386,1,"#IzdunMVP::OnKilled2";
-	monster "iz_dun05.gat",0,0,"--ja--",2387,1,"#IzdunMVP::OnKilled2";
-	monster "iz_dun05.gat",0,0,"--ja--",2388,1,"#IzdunMVP::OnKilled2";
+	set '@x,rand(55,75);
+	set '@y,rand(70,90);
+	set 'mob,callmonster("iz_dun05.gat",'@x,'@y,"クラーケン",2202,"#IzdunMVP::OnKilled");
+	monster "iz_dun05.gat",15,206,"テンタクルス",2384,1,"#IzdunMVP::OnKilled2";
+	monster "iz_dun05.gat",250,228,"テンタクルス",2385,1,"#IzdunMVP::OnKilled2";
+	monster "iz_dun05.gat",142,18,"テンタクルス",2386,1,"#IzdunMVP::OnKilled2";
+	monster "iz_dun05.gat",12,98,"テンタクルス",2387,1,"#IzdunMVP::OnKilled2";
+	monster "iz_dun05.gat",196,28,"テンタクルス",2388,1,"#IzdunMVP::OnKilled2";
 	end;
 OnKilled:
 	killmonster "iz_dun05.gat","#IzdunMVP";
