@@ -148,12 +148,18 @@ in_moc_16.gat,18,8,0		warp	assassinwarp0501	1,1,moc_fild16.gat,205,291
 // new_5-1.gat		èâêSé“èCó˚èÍ 1 Å` 4
 // -----
 //==============================================================
-new_1-1.gat,148,112,0		warp	newwarp6001		2,2,new_1-2.gat,100,9
-new_1-2.gat,100,6,0		warp	newwarp6002		2,2,new_1-1.gat,144,112
-new_1-2.gat,126,106,0		warp	newwarp6003		2,2,new_1-2.gat,160,171
-new_1-2.gat,156,171,0		warp	newwarp6004		2,2,new_1-2.gat,123,106
-new_1-2.gat,73,106,0		warp	newwarp6005		2,2,new_1-2.gat,41,172
-new_1-2.gat,46,172,0		warp	newwarp6006		2,2,new_1-2.gat,78,106
+new_1-1.gat,148,112,0		warp	newwarp6001		2,2,new_1-2.gat,33,179
+new_1-2.gat,100,6,0		warp	newwarp6002		2,2,new_1-2.gat,33,179
+new_1-2.gat,126,106,0		warp	newwarp6003		2,2,new_1-2.gat,33,179
+new_1-2.gat,156,171,0		warp	newwarp6004		2,2,new_1-2.gat,33,179
+new_1-2.gat,73,106,0		warp	newwarp6005		2,2,new_1-2.gat,33,179
+new_1-2.gat,46,172,0		warp	newwarp6006		2,2,new_1-2.gat,33,179
+//new_1-1.gat,148,112,0		warp	newwarp6001		2,2,new_1-2.gat,100,9
+//new_1-2.gat,100,6,0		warp	newwarp6002		2,2,new_1-1.gat,144,112
+//new_1-2.gat,126,106,0		warp	newwarp6003		2,2,new_1-2.gat,160,171
+//new_1-2.gat,156,171,0		warp	newwarp6004		2,2,new_1-2.gat,123,106
+//new_1-2.gat,73,106,0		warp	newwarp6005		2,2,new_1-2.gat,41,172
+//new_1-2.gat,46,172,0		warp	newwarp6006		2,2,new_1-2.gat,78,106
 
 
 
