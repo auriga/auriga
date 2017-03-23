@@ -25,7 +25,7 @@
 #include "mmo.h"
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool partydb_sql_init(void);
 int partydb_sql_sync(void);
 const struct party* partydb_sql_load_str(const char *str);
@@ -36,7 +36,7 @@ bool partydb_sql_new(struct party *p);
 int partydb_sql_config_read_sub(const char *w1,const char *w2);
 void partydb_sql_final(void);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define partydb_init     partydb_sql_init
 #define partydb_sync     partydb_sql_sync
 #define partydb_save     partydb_sql_save

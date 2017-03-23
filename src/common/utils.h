@@ -77,7 +77,7 @@ typedef int32  intptr;
 
 
 // =====================
-// é–¢æ•°åãƒã‚¯ãƒ­
+// ŠÖ”–¼ƒ}ƒNƒ
 // ---------------------
 #if __STDC_VERSION < 199901L
 #	if __GNUC__ >= 2 || _MSC_VER >= 1300
@@ -89,17 +89,17 @@ typedef int32  intptr;
 
 
 // =====================
-// æ”¹è¡Œã‚³ãƒ¼ãƒ‰
+// ‰üsƒR[ƒh
 // ---------------------
 #ifdef CYGWIN
-#	define NEWLINE "\r\n"	// (CR/LFï¼šWindowsç³»)
+#	define NEWLINE "\r\n"	// (CR/LFFWindowsŒn)
 #else
-#	define NEWLINE "\n"	// (LFï¼šUnixç³»ï¼‰
+#	define NEWLINE "\n"	// (LFFUnixŒnj
 #endif
 
 
 // =====================
-// å¤§ããªæ•°å­—ç”¨ã®å‹
+// ‘å‚«‚È”š—p‚ÌŒ^
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 	typedef double atn_bignumber;
@@ -108,7 +108,7 @@ typedef int32  intptr;
 #endif
 
 // =====================
-// å¤§ããªæ•°å­—ç”¨ã®å¤‰æ›æŒ‡å®šå­
+// ‘å‚«‚È”š—p‚Ì•ÏŠ·w’èq
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
 #	define BIGNUMCODE ".0f"
@@ -120,7 +120,7 @@ typedef int32  intptr;
 
 
 // =====================
-// strcmp ç³»ã®ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// strcmp Œn‚ÌƒGƒCƒŠƒAƒX
 // ---------------------
 #include <string.h>
 
@@ -164,7 +164,7 @@ typedef int32  intptr;
 
 
 // =====================
-// VC ã§ã®è¿½åŠ å‡¦ç†
+// VC ‚Å‚Ì’Ç‰Áˆ—
 // ---------------------
 #if defined(WINDOWS) && defined(_MSC_VER)
 
@@ -187,17 +187,17 @@ typedef int32  intptr;
 
 
 // =====================
-// atn_rand() å®šç¾©
+// atn_rand() ’è‹`
 // ---------------------
 #ifndef WINDOWS
 #	define RANDOMSTD2X
 
 #elif defined(_MSC_VER)
-	// random ã®ç²¾åº¦ã¨ãƒ“ãƒƒãƒˆæ•°ã‚’ä¸Šã’ã‚‹
+	// random ‚Ì¸“x‚Æƒrƒbƒg”‚ğã‚°‚é
 #	define RANDOM64
 
 #elif defined(__BORLANDC__)
-	// random ã®ãƒ“ãƒƒãƒˆæ•°ã‚’ä¸Šã’ã‚‹
+	// random ‚Ìƒrƒbƒg”‚ğã‚°‚é
 #	define RANDOM32
 
 #else
@@ -207,60 +207,60 @@ typedef int32  intptr;
 
 
 // =====================
-// atn_rand() ã®ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// atn_rand() ‚ÌƒGƒCƒŠƒAƒX
 // ---------------------
 
-#ifdef RANDOM32				// 32ãƒ“ãƒƒãƒˆç²¾åº¦ç·šå½¢åˆåŒæ³•
+#ifdef RANDOM32				// 32ƒrƒbƒg¸“xüŒ`‡“¯–@
 	void atn_int24_srandom32( int seed );
 	int atn_int24_random32(void);
 #	define atn_rand()	atn_int24_random32()
 #	define atn_srand(x)	atn_int24_srandom32(x)
 #	define ATN_RAND_MAX	0x00ffffff
 
-#elif defined(RANDOM64)		// 64ãƒ“ãƒƒãƒˆç²¾åº¦ç·šå½¢åˆåŒæ³•
+#elif defined(RANDOM64)		// 64ƒrƒbƒg¸“xüŒ`‡“¯–@
 	void atn_int31_srandom64( int seed );
 	int atn_int31_random64(void);
 #	define atn_rand()	atn_int31_random64()
 #	define atn_srand(x)	atn_int31_srandom64(x)
 #	define ATN_RAND_MAX	0x7fffffff
 
-#elif defined(RANDOM32X)	// 32ãƒ“ãƒƒãƒˆç²¾åº¦ç·šå½¢åˆåŒæ³•(ä¸‹ä½ãƒ“ãƒƒãƒˆã®è³ªã‚’ä¸Šã’ã‚‹)
+#elif defined(RANDOM32X)	// 32ƒrƒbƒg¸“xüŒ`‡“¯–@(‰ºˆÊƒrƒbƒg‚Ì¿‚ğã‚°‚é)
 	void atn_int24_srandom32( int seed );
 	int atn_int24_random32(void);
 #	define atn_rand()	( atn_int24_random32() ^ (atn_int24_random32()>>12) )
 #	define atn_srand(x)	atn_int24_srandom32(x)
 #	define ATN_RAND_MAX	0x00ffffff
 
-#elif defined(RANDOM64X)	// 64ãƒ“ãƒƒãƒˆç²¾åº¦ç·šå½¢åˆåŒæ³•(ä¸‹ä½ãƒ“ãƒƒãƒˆã®è³ªã‚’ä¸Šã’ã‚‹)
+#elif defined(RANDOM64X)	// 64ƒrƒbƒg¸“xüŒ`‡“¯–@(‰ºˆÊƒrƒbƒg‚Ì¿‚ğã‚°‚é)
 	void atn_int31_srandom64( int seed );
 	int atn_int31_random64(void);
 #	define atn_rand()	( atn_int31_random64() ^ (atn_int31_random64()>>16) )
 #	define atn_srand(x)	atn_int31_srandom64(x)
 #	define ATN_RAND_MAX	0x7fffffff
 
-#elif defined(RANDOMMT)		// ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ„ã‚¤ã‚¹ã‚¿ãƒ¼
+#elif defined(RANDOMMT)		// ƒƒ‹ƒZƒ“ƒkƒcƒCƒXƒ^[
 	void atn_srandommt( unsigned long seed );
 	int atn_int31_randommt(void);
 #	define atn_rand()	atn_int31_randommt()
 #	define atn_srand(x)	atn_srandommt(x)
 #	define ATN_RAND_MAX	0x7fffffff
 
-#elif defined(RANDOMSTD2)	// rand() 2å›(BCC/VC ã§æœ‰åŠ¹ãƒ“ãƒƒãƒˆæ•°ã‚’ä¸Šã’ã‚‹)
+#elif defined(RANDOMSTD2)	// rand() 2‰ñ(BCC/VC ‚Å—LŒøƒrƒbƒg”‚ğã‚°‚é)
 #	define atn_rand()	( ( (rand()<<15) + rand() ) & 0x3fffffff )
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX	0x3fffffff
 
-#elif defined(RANDOMSTD2X)	// rand() 2å›(gcc ã§ä¸‹ä½ãƒ“ãƒƒãƒˆã®è³ªã‚’ä¸Šã’ã‚‹)
+#elif defined(RANDOMSTD2X)	// rand() 2‰ñ(gcc ‚Å‰ºˆÊƒrƒbƒg‚Ì¿‚ğã‚°‚é)
 #	define atn_rand()	(  rand() ^ (rand()>>8) )
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX RAND_MAX
 
-#elif defined(RANDOMSTD3X)	// rand() 3å›(BCC/VC ã§æœ‰åŠ¹ãƒ“ãƒƒãƒˆæ•°ã‚’ä¸Šã’ã‚‹ï¼†ä¸‹ä½ãƒ“ãƒƒãƒˆã®è³ªã‚’ä¸Šã’ã‚‹)
+#elif defined(RANDOMSTD3X)	// rand() 3‰ñ(BCC/VC ‚Å—LŒøƒrƒbƒg”‚ğã‚°‚é•‰ºˆÊƒrƒbƒg‚Ì¿‚ğã‚°‚é)
 #	define atn_rand()	( ( (rand()<<15) + rand() ^ (rand()>>8) ) & 0x3fffffff )
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX	0x3fffffff
 
-#else						// é€šå¸¸ã®ãƒ©ãƒ³ãƒ€ãƒ 
+#else						// ’Êí‚Ìƒ‰ƒ“ƒ_ƒ€
 #	define atn_rand()	rand()
 #	define atn_srand(x)	srand(x)
 #	define ATN_RAND_MAX	RAND_MAX
@@ -268,17 +268,17 @@ typedef int32  intptr;
 
 
 // =====================
-// ãƒã‚¤ãƒ³ã‚¿ãƒ»æ•°å€¤ã‚­ãƒ£ã‚¹ãƒˆ
+// ƒ|ƒCƒ“ƒ^E”’lƒLƒƒƒXƒg
 // ---------------------
 
-// x64 gcc ã®è­¦å‘Š "warning: cast to/from pointer from/to integer of different size" ã®æŠ‘åˆ¶ã®ãŸã‚
+// x64 gcc ‚ÌŒx "warning: cast to/from pointer from/to integer of different size" ‚Ì—}§‚Ì‚½‚ß
 #define INT2PTR(x)  ((void *)(intptr)(x))
 #define UINT2PTR(x) ((void *)(uintptr)(x))
 #define PTR2INT(x)  ((int)(intptr)(x))
 #define PTR2UINT(x) ((unsigned int)(uintptr)(x))
 
 // =====================
-// è«–ç†å‹
+// ˜_—Œ^
 // ---------------------
 #ifndef __cplusplus
 	typedef char bool;

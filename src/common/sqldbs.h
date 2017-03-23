@@ -103,7 +103,7 @@ extern struct sqldbs_handle mysql_handle;
 // map
 #define MAPREG_TABLE "mapreg"
 
-// ãƒ—ãƒªãƒšã‚¢ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆå‹ã‚µã‚¤ã‚ºå¤‰æ›ç”¨ãƒ†ãƒ¼ãƒ–ãƒ«
+// ƒvƒŠƒyƒAƒhƒXƒe[ƒgƒƒ“ƒgŒ^ƒTƒCƒY•ÏŠ·—pƒe[ƒuƒ‹
 enum {
 	SQL_DATA_TYPE_NULL,
 	SQL_DATA_TYPE_INT8,
@@ -168,7 +168,7 @@ int sqldbs_stmt_affected_rows(struct sqldbs_stmt *st);
 void sqldbs_stmt_free_result(struct sqldbs_stmt *st);
 void sqldbs_stmt_close(struct sqldbs_stmt *st);
 
-// æ¥ç¶š
+// Ú‘±
 void sqldbs_close(struct sqldbs_handle *hd);
 bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user, const char *passwd,
 	const char *db, unsigned short port, const char *charset, int keepalive, const char *tag);

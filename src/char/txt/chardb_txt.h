@@ -26,7 +26,7 @@
 #include "utils.h"
 #include "../char.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag);
 bool chardb_txt_init(void);
 void chardb_txt_sync(void);
@@ -41,7 +41,7 @@ bool chardb_txt_build_ranking(void);
 int chardb_txt_config_read_sub(const char* w1,const char* w2);
 bool chardb_txt_set_online(int char_id, bool is_online);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define chardb_make            chardb_txt_make
 #define chardb_init            chardb_txt_init
 #define chardb_sync            chardb_txt_sync

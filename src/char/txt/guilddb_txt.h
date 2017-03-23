@@ -26,7 +26,7 @@
 #include "utils.h"
 #include "journal.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool guilddb_txt_new(struct guild *g2);
 bool guilddb_txt_init(void);
 bool guilddb_txt_save(struct guild* g2);
@@ -37,7 +37,7 @@ const struct guild* guilddb_txt_load_str(const char *str);
 bool guilddb_txt_delete(int guild_id);
 int guilddb_txt_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define guilddb_new      guilddb_txt_new
 #define guilddb_init     guilddb_txt_init
 #define guilddb_save     guilddb_txt_save

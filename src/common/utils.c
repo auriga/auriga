@@ -28,7 +28,7 @@
 
 
 /*==========================================
- * 0b -> 2é€²æ•°å¤‰æ›å¯¾å¿œå‹strtoul
+ * 0b -> 2i”•ÏŠ·‘Î‰Œ^strtoul
  *------------------------------------------
  */
 unsigned long strtobxul(const char *s, char **endptr, int base)
@@ -44,9 +44,9 @@ unsigned long strtobxul(const char *s, char **endptr, int base)
 		i++;
 	}
 	if(s[i] == '0' && (s[i+1] == 'b' || s[i+1] == 'B')) {
-		// 2é€²æ•°å‡¦ç†
+		// 2i”ˆ—
 		char *buf = (char *)aStrdup(s);
-		buf[i+1] = '0';	// 0b ã‚’ 00 ã«ã™ã‚‹
+		buf[i+1] = '0';	// 0b ‚ğ 00 ‚É‚·‚é
 		ret = strtoul(buf, endptr, 2);
 		if(endptr) {
 			*endptr = (char *)&s[*endptr - buf];
@@ -61,8 +61,8 @@ unsigned long strtobxul(const char *s, char **endptr, int base)
 
 /*==========================================
  * Hex Dump
- *  æ¨™æº–å‡ºåŠ›ã®è¡¨ç¤ºã‚’ã‚¹ãƒ ãƒ¼ã‚ºã«ã™ã‚‹ãŸã‚
- *  è‡ªå‰ã§å®Œå…¨ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã™ã‚‹
+ *  •W€o—Í‚Ì•\¦‚ğƒXƒ€[ƒY‚É‚·‚é‚½‚ß
+ *  ©‘O‚ÅŠ®‘Sƒoƒbƒtƒ@ƒŠƒ“ƒO‚·‚é
  *------------------------------------------
  */
 void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
@@ -70,7 +70,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 	size_t i, j;
 	char *output, *p;
 
-	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1è¡Œã‚ãŸã‚Š96æ–‡å­—ã¨ã—ã¦è¨ˆç®—
+	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1s‚ ‚½‚è96•¶š‚Æ‚µ‚ÄŒvZ
 
 	strcat(output, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" NEWLINE);
 	strcat(output, "----  -----------------------------------------------   ----------------");
@@ -105,7 +105,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 }
 
 /*==========================================
- * 32bitç·šå½¢åˆåŒæ³•(æˆ»ã‚Šå€¤ã¯24ãƒ“ãƒƒãƒˆæœ‰åŠ¹)
+ * 32bitüŒ`‡“¯–@(–ß‚è’l‚Í24ƒrƒbƒg—LŒø)
  *------------------------------------------
  */
 #ifdef RANDOM32
@@ -123,7 +123,7 @@ int atn_int24_random32(void)
 #endif	// ifdef RANDOM32
 
 /*==========================================
- * 64bitç·šå½¢åˆåŒæ³•(æˆ»ã‚Šå€¤ã¯31ãƒ“ãƒƒãƒˆæœ‰åŠ¹)
+ * 64bitüŒ`‡“¯–@(–ß‚è’l‚Í31ƒrƒbƒg—LŒø)
  *------------------------------------------
  */
 #ifdef RANDOM64
@@ -142,7 +142,7 @@ int atn_int31_random64(void)
 #endif	// ifdef RANDOM64
 
 /*==========================================
- * ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ„ã‚¤ã‚¹ã‚¿ãƒ¼
+ * ƒƒ‹ƒZƒ“ƒkƒcƒCƒXƒ^[
  *------------------------------------------
  */
 // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html

@@ -31,10 +31,10 @@
 
 #include "malloc.h"
 
-// 独自メモリマネージャを使用しない場合、次をコメントアウトしてください
+// �Ǝ��������}�l�[�W�����g�p���Ȃ��ꍇ�A�����R�����g�A�E�g���Ă�������
 #define USE_MEMMGR
 
-// デバッグモード（エラーチェックの強化用、通常運営ではお勧めできない）
+// �f�o�b�O���[�h�i�G���[�`�F�b�N�̋����p�A�ʏ�^�c�ł͂����߂ł��Ȃ��j
 //#define DEBUG_MEMMGR
 
 
@@ -162,23 +162,23 @@ double memmgr_usage(void)
 #else /* USE_MEMMGR */
 
 /*
- * メモリマネージャ
- *     malloc , free の処理を効率的に出来るようにしたもの。
- *     複雑な処理を行っているので、若干重くなるかもしれません。
+ * �������}�l�[�W��
+ *     malloc , free �̏����������I�ɏo����悤�ɂ������́B
+ *     ���G�ȏ������s���Ă���̂ŁA�኱�d���Ȃ邩������܂���B
  *
- * データ構造など（説明下手ですいません^^; ）
- *     ・メモリを複数の「ブロック」に分けて、さらにブロックを複数の「ユニット」
- *       に分けています。ユニットのサイズは、１ブロックの容量を複数個に均等配分
- *       したものです。たとえば、１ユニット32KBの場合、ブロック１つは32Byteのユ
- *       ニットが、1024個集まって出来ていたり、64Byteのユニットが 512個集まって
- *       出来ていたりします。（padding,unit_head を除く）
+ * �f�[�^�\���Ȃǁi��������ł����܂���^^; �j
+ *     �E�������𕡐��́u�u���b�N�v�ɕ����āA����Ƀu���b�N�𕡐��́u���j�b�g�v
+ *       �ɕ����Ă��܂��B���j�b�g�̃T�C�Y�́A�P�u���b�N�̗e�ʂ𕡐��ɋϓ��z��
+ *       �������̂ł��B���Ƃ��΁A�P���j�b�g32KB�̏ꍇ�A�u���b�N�P��32Byte�̃�
+ *       �j�b�g���A1024�W�܂��ďo���Ă�����A64Byte�̃��j�b�g�� 512�W�܂���
+ *       �o���Ă����肵�܂��B�ipadding,unit_head �������j
  *
- *     ・ブロック同士はリンクリスト(block_next) でつながり、同じサイズを持つ
- *       ブロック同士もリンクリスト(unfill_prev,unfill_next) でつながって
- *       います。それにより、不要となったメモリの再利用が効率的に行えます。
+ *     �E�u���b�N���m�̓����N���X�g(block_next) �łȂ���A�����T�C�Y������
+ *       �u���b�N���m�������N���X�g(unfill_prev,unfill_next) �łȂ�����
+ *       ���܂��B����ɂ��A�s�v�ƂȂ����������̍ė��p�������I�ɍs���܂��B
  */
 
-/* ユニット */
+/* ���j�b�g */
 struct unit_head {
 	struct block   *block;
 	const char     *file;
@@ -190,33 +190,33 @@ struct unit_head {
 	uint32 checksum;
 };
 
-/* ブロックのアライメント */
+/* �u���b�N�̃A���C�����g */
 #define BLOCK_ALIGNMENT1	16
 #define BLOCK_ALIGNMENT2	64
 
-/* ブロックに入るデータ量 */
+/* �u���b�N�ɓ���f�[�^�� */
 #define BLOCK_DATA_COUNT1	128
 #define BLOCK_DATA_COUNT2	736
 
-/* ブロックの大きさ: 16*128 + 64*736 = 48KB */
+/* �u���b�N�̑傫��: 16*128 + 64*736 = 48KB */
 #define BLOCK_DATA_SIZE1	( BLOCK_ALIGNMENT1 * BLOCK_DATA_COUNT1 )
 #define BLOCK_DATA_SIZE2	( BLOCK_ALIGNMENT2 * BLOCK_DATA_COUNT2 )
 #define BLOCK_DATA_SIZE		( BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 + sizeof(struct unit_head) )
 
-/* 一度に確保するブロックの数 */
+/* ��x�Ɋm�ۂ���u���b�N�̐� */
 #define BLOCK_ALLOC		104
 
-/* ブロック */
+/* �u���b�N */
 struct block {
-	struct block* block_next;		/* 次に確保した領域 */
-	struct block* unfill_prev;		/* 次の埋まっていない領域 */
-	struct block* unfill_next;		/* 次の埋まっていない領域 */
-	unsigned short unit_size;		/* ユニットの大きさ */
-	unsigned short unit_hash;		/* ユニットのハッシュ */
-	unsigned short unit_count;		/* ユニットの個数 */
-	unsigned short unit_used;		/* 使用ユニット数 */
-	unsigned short unit_unfill;		/* 未使用ユニットの場所 */
-	unsigned short unit_maxused;		/* 使用ユニットの最大値 */
+	struct block* block_next;		/* ���Ɋm�ۂ����̈� */
+	struct block* unfill_prev;		/* ���̖��܂��Ă��Ȃ��̈� */
+	struct block* unfill_next;		/* ���̖��܂��Ă��Ȃ��̈� */
+	unsigned short unit_size;		/* ���j�b�g�̑傫�� */
+	unsigned short unit_hash;		/* ���j�b�g�̃n�b�V�� */
+	unsigned short unit_count;		/* ���j�b�g�̌� */
+	unsigned short unit_used;		/* �g�p���j�b�g�� */
+	unsigned short unit_unfill;		/* ���g�p���j�b�g�̏ꏊ */
+	unsigned short unit_maxused;		/* �g�p���j�b�g�̍ő�l */
 	char data[ BLOCK_DATA_SIZE ];
 };
 
@@ -224,7 +224,7 @@ static struct block *hash_unfill[BLOCK_DATA_COUNT1 + BLOCK_DATA_COUNT2 + 1];
 static struct block *block_first, *block_last;
 static struct block block_head;
 
-/* メモリを使い回せない領域用のデータ */
+/* ���������g���񂹂Ȃ��̈�p�̃f�[�^ */
 struct unit_head_large {
 	size_t                  size;
 	struct unit_head_large* prev;
@@ -255,7 +255,7 @@ static unsigned short size2hash( size_t size )
 	if( size <= BLOCK_DATA_SIZE1 + BLOCK_DATA_SIZE2 )
 		return (unsigned short)(size - BLOCK_DATA_SIZE1 + BLOCK_ALIGNMENT2 - 1) / BLOCK_ALIGNMENT2 + BLOCK_DATA_COUNT1;
 
-	return 0xffff;	// ブロック長を超える場合は hash にしない
+	return 0xffff;	// �u���b�N���𒴂���ꍇ�� hash �ɂ��Ȃ�
 }
 
 static size_t hash2size( unsigned short hash )
@@ -278,8 +278,8 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	}
 	memmgr_usage_bytes += size;
 
-	/* ブロック長を超える領域の確保には、malloc() を用いる */
-	/* その際、unit_head.block に NULL を代入して区別する */
+	/* �u���b�N���𒴂���̈�̊m�ۂɂ́Amalloc() ��p���� */
+	/* ���̍ہAunit_head.block �� NULL �������ċ�ʂ��� */
 	if(size_hash == 0xffff) {
 		struct unit_head_large* p = (struct unit_head_large *)malloc(sizeof(struct unit_head_large) + size);
 
@@ -288,7 +288,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 			exit(1);
 		}
 #ifdef DEBUG_MEMMGR
-		// タイムスタンプの記録
+		// �^�C���X�^���v�̋L�^
 		p->unit_head.time_stamp = time(NULL);
 #endif
 		p->size            = size;
@@ -312,7 +312,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 		return ret;
 	}
 
-	/* 同一サイズのブロックが確保されていない時、新たに確保する */
+	/* ����T�C�Y�̃u���b�N���m�ۂ���Ă��Ȃ����A�V���Ɋm�ۂ��� */
 	if(hash_unfill[size_hash]) {
 		block = hash_unfill[size_hash];
 	} else {
@@ -320,7 +320,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	}
 
 	if( block->unit_unfill == 0xFFFF ) {
-		// free済み領域が残っていない
+		// free�ςݗ̈悪�c���Ă��Ȃ�
 		memmgr_assert(block->unit_used <  block->unit_count);
 		memmgr_assert(block->unit_used == block->unit_maxused);
 		head = block2unit(block, block->unit_maxused);
@@ -332,7 +332,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 	block->unit_used++;
 
 	if( block->unit_unfill == 0xFFFF && block->unit_maxused >= block->unit_count) {
-		// ユニットを使い果たしたので、unfillリストから削除
+		// ���j�b�g���g���ʂ������̂ŁAunfill���X�g����폜
 		if( block->unfill_prev == &block_head ) {
 			hash_unfill[ size_hash ] = block->unfill_next;
 		} else {
@@ -359,7 +359,7 @@ void* aMalloc_(size_t size, const char *file, int line, const char *func)
 			}
 		}
 		memset( (char *)head + sizeof(struct unit_head) - sizeof(uint32), 0xcd, sz );
-		// タイムスタンプの記録
+		// �^�C���X�^���v�̋L�^
 		head->time_stamp = time(NULL);
 	}
 #endif
@@ -404,9 +404,9 @@ void* aRealloc_(void *memblock, size_t size, const char *file, int line, const c
 	p = aMalloc_(size,file,line,func);
 	if(p != NULL) {
 		if(old_size > size)
-			memcpy(p, memblock, size);	// サイズ縮小
+			memcpy(p, memblock, size);	// �T�C�Y�k��
 		else
-			memcpy(p, memblock, old_size);	// サイズ拡大
+			memcpy(p, memblock, old_size);	// �T�C�Y�g��
 	}
 	aFree_(memblock,file,line,func);
 	return p;
@@ -433,7 +433,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 
 	head = (struct unit_head *)((char *)ptr - sizeof(struct unit_head) + sizeof(uint32));
 	if(head->size == 0) {
-		/* malloc() で直に確保された領域 */
+		/* malloc() �Œ��Ɋm�ۂ��ꂽ�̈� */
 		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - sizeof(struct unit_head_large) + sizeof(uint32));
 
 		if(*(uint32*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(uint32) + head_large->size) != 0xdeadbeaf)
@@ -453,7 +453,7 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 			free(head_large);
 		}
 	} else {
-		/* ユニット解放 */
+		/* ���j�b�g��� */
 		struct block *block = head->block;
 
 		if( (uintptr)block + sizeof(struct block) < (uintptr)head ) {
@@ -472,11 +472,11 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 #endif
 			memmgr_assert( block->unit_used > 0 );
 			if(--block->unit_used == 0) {
-				/* ブロックの解放 */
+				/* �u���b�N�̉�� */
 				block_free(block);
 			} else {
 				if( block->unfill_prev == NULL ) {
-					// unfill リストに追加
+					// unfill ���X�g�ɒǉ�
 					if( hash_unfill[ block->unit_hash ] ) {
 						hash_unfill[ block->unit_hash ]->unfill_prev = block;
 					}
@@ -491,19 +491,19 @@ void aFree_(void *ptr, const char *file, int line, const char *func)
 	}
 }
 
-/* ブロックを確保する */
+/* �u���b�N���m�ۂ��� */
 static struct block* block_malloc(unsigned short hash)
 {
 	struct block *p;
 
 	if(hash_unfill[0] != NULL) {
-		/* ブロック用の領域は確保済み */
+		/* �u���b�N�p�̗̈�͊m�ۍς� */
 		p = hash_unfill[0];
 		hash_unfill[0] = hash_unfill[0]->unfill_next;
 	} else {
 		int i;
 
-		/* ブロック用の領域を新たに確保する */
+		/* �u���b�N�p�̗̈��V���Ɋm�ۂ��� */
 		p = (struct block *)malloc(sizeof(struct block) * BLOCK_ALLOC);
 
 		if(p == NULL) {
@@ -512,17 +512,17 @@ static struct block* block_malloc(unsigned short hash)
 		}
 
 		if(block_first == NULL) {
-			/* 初回確保 */
+			/* ����m�� */
 			block_first = p;
 		} else {
 			block_last->block_next = p;
 		}
 		block_last = &p[BLOCK_ALLOC - 1];
 		block_last->block_next = NULL;
-		/* ブロックを連結させる */
+		/* �u���b�N��A�������� */
 		for(i = 0; i < BLOCK_ALLOC; i++) {
 			if(i != 0) {
-				// p[0] はこれから使うのでリンクには加えない
+				// p[0] �͂��ꂩ��g���̂Ń����N�ɂ͉����Ȃ�
 				p[i].unfill_next = hash_unfill[0];
 				hash_unfill[0]   = &p[i];
 				p[i].unfill_prev = NULL;
@@ -534,7 +534,7 @@ static struct block* block_malloc(unsigned short hash)
 		}
 	}
 
-	// unfill に追加
+	// unfill �ɒǉ�
 	memmgr_assert(hash_unfill[ hash ] == NULL);
 	hash_unfill[ hash ] = p;
 	p->unfill_prev  = &block_head;

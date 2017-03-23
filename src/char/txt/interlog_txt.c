@@ -30,7 +30,7 @@
 static char inter_log_filename[1024] = "log/inter.log";
 
 /*==========================================
- * 繝ｭ繧ｰ險倬鹸
+ * ログ記録
  *------------------------------------------
  */
 int interlog_log_txt(const char *fmt, ...)
@@ -52,7 +52,7 @@ int interlog_log_txt(const char *fmt, ...)
 }
 
 /*==========================================
- * 險ｭ螳壹ヵ繧｡繧､繝ｫ隱ｭ霎ｼ
+ * 設定ファイル読込
  *------------------------------------------
  */
 int interlog_config_read_txt(const char *w1, const char *w2)

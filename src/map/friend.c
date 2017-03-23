@@ -37,7 +37,7 @@
 static struct dbt * online_db = NULL;
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿
  *------------------------------------------
  */
 int friend_add_request( struct map_session_data *sd, const char* name )
@@ -46,13 +46,13 @@ int friend_add_request( struct map_session_data *sd, const char* name )
 
 	nullpo_retr(0, sd);
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
 	if( tsd==NULL )
 	{
-		// å¤±æ•—
+		// ¸”s
 		clif_friend_add_ack( sd->fd, 0, 0, msg_txt(175), 1 ); // log off
 		return 0;
 	}
@@ -75,13 +75,13 @@ int friend_add_request( struct map_session_data *sd, const char* name )
 	tsd->friend_invite_char = sd->status.char_id;
 	memcpy( tsd->friend_invite_name, sd->status.name, 24 );
 
-	// è¦æ±‚ã‚’å‡ºã™
+	// —v‹‚ğo‚·
 	clif_friend_add_request( tsd->fd, sd );
 	return 1;
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹è¿”ç­”
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿•Ô“š
  *------------------------------------------
  */
 int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, int flag )
@@ -90,11 +90,11 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 
 	nullpo_retr(0, sd);
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	// å¤‰ã˜ã‚ƒãªã„ã‹1
+	// •Ï‚¶‚á‚È‚¢‚©1
 	if( sd->friend_invite != account_id || sd->friend_invite_char != char_id ||  tsd==NULL )
 	{
 		clif_friend_add_ack( sd->fd, sd->friend_invite, sd->friend_invite_char, sd->friend_invite_name, 1 );
@@ -102,7 +102,7 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 	}
 	sd->friend_invite = 0;
 
-	// å¤‰ã˜ã‚ƒãªã„ã‹2
+	// •Ï‚¶‚á‚È‚¢‚©2
 	if( tsd->friend_invite != sd->bl.id || char_id != tsd->status.char_id )
 	{
 		clif_friend_add_ack( sd->fd, sd->friend_invite, sd->friend_invite_char, sd->friend_invite_name, 1 );
@@ -110,17 +110,17 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 	}
 	tsd->friend_invite = 0;
 
-	// è¿½åŠ æ‹’å¦
+	// ’Ç‰Á‹‘”Û
 	if( flag==0 )
 	{
 		clif_friend_add_ack( tsd->fd, sd->bl.id, sd->status.char_id, sd->status.name, 1 );
 		return 0;
 	}
 
-	// è¿½åŠ å‡¦ç†
+	// ’Ç‰Áˆ—
 	if( sd->status.friend_num==MAX_FRIEND || tsd->status.friend_num==MAX_FRIEND )
 	{
-		// äººæ•°ã‚ªãƒ¼ãƒãƒ¼
+		// l”ƒI[ƒo[
 		clif_friend_add_ack( sd->fd, tsd->bl.id, tsd->status.char_id, tsd->status.name, (sd->status.friend_num==MAX_FRIEND)? 2:3 );
 		clif_friend_add_ack( tsd->fd, sd->bl.id, sd->status.char_id, sd->status.name, (tsd->status.friend_num==MAX_FRIEND)? 2:3 );
 		return 0;
@@ -137,7 +137,7 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 	tsd->status.friend_num++;
 	tsd->state.friend_sended = 0;
 
-	// è¿½åŠ é€šçŸ¥
+	// ’Ç‰Á’Ê’m
 	clif_friend_add_ack( sd->fd, tsd->bl.id, tsd->status.char_id, tsd->status.name, 0 );
 	clif_friend_add_ack( tsd->fd, sd->bl.id, sd->status.char_id, sd->status.name, 0 );
 
@@ -145,7 +145,7 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆå‰Šé™¤ç”¨ãƒ˜ãƒ«ãƒ‘
+ * —F’BƒŠƒXƒgíœ—pƒwƒ‹ƒp
  *------------------------------------------
  */
 static int friend_delete( struct map_session_data *sd, int account_id, int char_id )
@@ -162,7 +162,7 @@ static int friend_delete( struct map_session_data *sd, int account_id, int char_
 			sd->status.friend_num--;
 			sd->state.friend_sended = 0;
 			memmove( frd, frd+1, sizeof(struct friend_data)* ( sd->status.friend_num - i ) );
-			clif_friend_del_ack( sd->fd, account_id, char_id );	// é€šçŸ¥
+			clif_friend_del_ack( sd->fd, account_id, char_id );	// ’Ê’m
 			return 1;
 		}
 	}
@@ -170,7 +170,7 @@ static int friend_delete( struct map_session_data *sd, int account_id, int char_
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆå‰Šé™¤
+ * —F’BƒŠƒXƒgíœ
  *------------------------------------------
  */
 int friend_del_request( struct map_session_data *sd, int account_id, int char_id )
@@ -179,7 +179,7 @@ int friend_del_request( struct map_session_data *sd, int account_id, int char_id
 
 	nullpo_retr(0, sd);
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
@@ -196,14 +196,14 @@ int friend_del_request( struct map_session_data *sd, int account_id, int char_id
 }
 
 /*==========================================
- * åˆ¥ã‚µãƒ¼ãƒãƒ¼ã®å‹é”ãƒªã‚¹ãƒˆå‰Šé™¤
+ * •ÊƒT[ƒo[‚Ì—F’BƒŠƒXƒgíœ
  *------------------------------------------
  */
 int friend_del_from_otherserver( int account_id, int char_id, int account_id2, int char_id2 )
 {
 	struct map_session_data *tsd = map_id2sd( account_id );
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
@@ -214,7 +214,7 @@ int friend_del_from_otherserver( int account_id, int char_id, int account_id2, i
 }
 
 /*==========================================
- * ãƒ­ãƒ¼ãƒ‰ç›´å¾Œã®æƒ…å ±é€ä¿¡
+ * ƒ[ƒh’¼Œã‚Ìî•ñ‘—M
  *------------------------------------------
  */
 int friend_send_info( struct map_session_data *sd )
@@ -223,17 +223,17 @@ int friend_send_info( struct map_session_data *sd )
 
 	nullpo_retr(0, sd);
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	if(sd->state.friend_sended != 0)	// ãƒ­ã‚°ã‚¤ãƒ³ã®ã¨ãã«ã™ã§ã«é€ä¿¡æ¸ˆã¿
+	if(sd->state.friend_sended != 0)	// ƒƒOƒCƒ“‚Ì‚Æ‚«‚É‚·‚Å‚É‘—MÏ‚İ
 		return 0;
 
-	// ãƒªã‚¹ãƒˆé€ä¿¡
+	// ƒŠƒXƒg‘—M
 	clif_friend_send_info( sd );
 
-	// å…¨å“¡ã®ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±ã‚’é€ä¿¡
+	// ‘Sˆõ‚ÌƒIƒ“ƒ‰ƒCƒ“î•ñ‚ğ‘—M
 	for( i=0; i<sd->status.friend_num; i++ )
 	{
 		if( numdb_exists( online_db, sd->status.friend_data[i].char_id ) )
@@ -246,7 +246,7 @@ int friend_send_info( struct map_session_data *sd )
 }
 
 /*==========================================
- * ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±é€ä¿¡
+ * ƒIƒ“ƒ‰ƒCƒ“î•ñ‘—M
  *------------------------------------------
  */
 int friend_send_online( struct map_session_data *sd, int flag )
@@ -255,21 +255,21 @@ int friend_send_online( struct map_session_data *sd, int flag )
 
 	nullpo_retr(0, sd);
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	if(flag==0 && sd->state.friend_sended != 0)	// ãƒ­ã‚°ã‚¤ãƒ³ã®ã¨ãã«ã™ã§ã«é€ä¿¡æ¸ˆã¿
+	if(flag==0 && sd->state.friend_sended != 0)	// ƒƒOƒCƒ“‚Ì‚Æ‚«‚É‚·‚Å‚É‘—MÏ‚İ
 		return 0;
 
-	// ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±ã‚’ä¿å­˜
+	// ƒIƒ“ƒ‰ƒCƒ“î•ñ‚ğ•Û‘¶
 	if( flag==0 ) {
 		numdb_insert( online_db, sd->status.char_id, INT2PTR(1) );
 	} else {
 		numdb_erase( online_db, sd->status.char_id );
 	}
 
-	// å…¨å“¡ã«é€šçŸ¥
+	// ‘Sˆõ‚É’Ê’m
 	for( i=0; i<sd->status.friend_num; i++ )
 	{
 		struct map_session_data *sd2 = map_id2sd( sd->status.friend_data[i].account_id );
@@ -279,7 +279,7 @@ int friend_send_online( struct map_session_data *sd, int flag )
 		}
 	}
 
-	// char é¯–ã¸é€šçŸ¥
+	// char I‚Ö’Ê’m
 	chrif_friend_online( sd, flag );
 	sd->state.friend_sended = 1;
 
@@ -287,25 +287,25 @@ int friend_send_online( struct map_session_data *sd, int flag )
 }
 
 /*==========================================
- * åˆ¥ãƒãƒƒãƒ—ã‚µãƒ¼ãƒãƒ¼ã®å‹äººã®ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±é€ä¿¡
+ * •Êƒ}ƒbƒvƒT[ƒo[‚Ì—Fl‚ÌƒIƒ“ƒ‰ƒCƒ“î•ñ‘—M
  *------------------------------------------
  */
 int friend_send_online_from_otherserver( int account_id, int char_id, int flag, int num, int* list )
 {
 	int i;
 
-	// ã‚µãƒ¼ãƒãƒ¼å´ç®¡ç†ã‹ã©ã†ã‹
+	// ƒT[ƒo[‘¤ŠÇ—‚©‚Ç‚¤‚©
 	if( !battle_config.serverside_friendlist )
 		return 0;
 
-	// ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±ã‚’ä¿å­˜
+	// ƒIƒ“ƒ‰ƒCƒ“î•ñ‚ğ•Û‘¶
 	if( flag==0 ) {
 		numdb_insert( online_db, char_id, INT2PTR(1) );
 	} else {
 		numdb_erase( online_db, char_id );
 	}
 
-	// å…¨å“¡ã«é€šçŸ¥
+	// ‘Sˆõ‚É’Ê’m
 	for( i=0; i<num; i++ )
 	{
 		struct map_session_data *sd2 = map_id2sd( list[i*2] );
@@ -318,7 +318,7 @@ int friend_send_online_from_otherserver( int account_id, int char_id, int flag, 
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 void do_init_friend(void)
@@ -327,7 +327,7 @@ void do_init_friend(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 void do_final_friend(void)

@@ -46,7 +46,7 @@ static int pet_journal_cache = 1000;
 #endif
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int petdb_txt_config_read_sub(const char* w1,const char *w2)
@@ -73,7 +73,7 @@ int petdb_txt_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ƒyƒbƒgƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int pet_tostr(char *str, struct s_pet *p)
@@ -97,7 +97,7 @@ static int pet_tostr(char *str, struct s_pet *p)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ƒyƒbƒgƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int pet_fromstr(char *str, struct s_pet *p)
@@ -145,20 +145,20 @@ static int pet_fromstr(char *str, struct s_pet *p)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// ƒyƒbƒgƒf[ƒ^‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 int pet_journal_rollforward( int key, void* buf, int flag )
 {
 	struct s_pet* p = (struct s_pet *)numdb_search( pet_db, key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct s_pet*)buf)->pet_id )
 	{
 		printf("int_pet: journal: key != pet_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( p )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -170,7 +170,7 @@ int pet_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		p = (struct s_pet*)aCalloc( 1, sizeof( struct s_pet ) );
@@ -186,7 +186,7 @@ int pet_journal_rollforward( int key, void* buf, int flag )
 #endif
 
 /*==========================================
- * ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * ƒyƒbƒgƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool petdb_txt_read(void)
@@ -221,19 +221,19 @@ static bool petdb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &pet_journal, sizeof(struct s_pet), pet_journal_file ) )
 		{
 			int c = journal_rollforward( &pet_journal, pet_journal_rollforward );
 
 			printf("int_pet: journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			petdb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &pet_journal );
 			journal_create( &pet_journal, sizeof(struct s_pet), pet_journal_cache, pet_journal_file );
 		}
@@ -244,7 +244,7 @@ static bool petdb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int petdb_txt_sync_sub(void *key, void *data, va_list ap)
@@ -277,7 +277,7 @@ int petdb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( pet_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &pet_journal );
 		journal_create( &pet_journal, sizeof(struct s_pet), pet_journal_cache, pet_journal_file );
 	}
@@ -287,7 +287,7 @@ int petdb_txt_sync(void)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿å‰Šé™¤
+ * ƒyƒbƒgƒf[ƒ^íœ
  *------------------------------------------
  */
 bool petdb_txt_delete(int pet_id)
@@ -310,7 +310,7 @@ bool petdb_txt_delete(int pet_id)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆIDã‹ã‚‰ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒyƒbƒgID‚©‚çƒyƒbƒgƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct s_pet* petdb_txt_load(int pet_id)
@@ -319,7 +319,7 @@ const struct s_pet* petdb_txt_load(int pet_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool petdb_txt_save(struct s_pet *p2)
@@ -343,7 +343,7 @@ bool petdb_txt_save(struct s_pet *p2)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆä½œæˆ
+ * ƒyƒbƒgì¬
  *------------------------------------------
  */
 bool petdb_txt_new(struct s_pet *p)
@@ -357,7 +357,7 @@ bool petdb_txt_new(struct s_pet *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int petdb_txt_final_sub(void *key, void *data, va_list ap)
@@ -383,7 +383,7 @@ void petdb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool petdb_txt_init(void)

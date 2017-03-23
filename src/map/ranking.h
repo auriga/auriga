@@ -43,13 +43,13 @@ int ranking_display_point(struct map_session_data * sd,int ranking_id);
 
 int ranking_set_data(int ranking_id,struct Ranking_Data *rd);
 
-//ãƒ©ãƒ³ã‚­ãƒ³ã‚°
+//ƒ‰ƒ“ƒLƒ“ƒO
 enum {
-	RK_BLACKSMITH = 0,	// ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹
-	RK_ALCHEMIST  = 1,	// ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ
-	RK_TAEKWON    = 2,	// ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚«ãƒ¼
-	RK_PK         = 3,	// è™æ®º
-	//RK_PVP      = 4,	// PVPãƒ©ãƒ³ã‚­ãƒ³ã‚°
+	RK_BLACKSMITH = 0,	// ƒuƒ‰ƒbƒNƒXƒ~ƒX
+	RK_ALCHEMIST  = 1,	// ƒAƒ‹ƒPƒ~ƒXƒg
+	RK_TAEKWON    = 2,	// ƒeƒRƒ“ƒ‰ƒ“ƒJ[
+	RK_PK         = 3,	// ‹sE
+	//RK_PVP      = 4,	// PVPƒ‰ƒ“ƒLƒ“ƒO
 };
 
 int do_init_ranking(void);

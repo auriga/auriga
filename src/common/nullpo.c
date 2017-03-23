@@ -28,7 +28,7 @@
 static void nullpo_info_core(const char *file, int line, const char *func, const char *fmt, va_list ap);
 
 /*======================================
- * Nullãƒã‚§ãƒƒã‚¯ åŠã³ æƒ…å ±å‡ºåŠ›
+ * Nullƒ`ƒFƒbƒN ‹y‚Ñ î•ño—Í
  *--------------------------------------
  */
 int nullpo_chk_f(const char *file, int line, const char *func, const void *target, const char *fmt, ...)
@@ -54,7 +54,7 @@ int nullpo_chk(const char *file, int line, const char *func, const void *target)
 }
 
 /*======================================
- * nullpoæƒ…å ±å‡ºåŠ›(å¤–éƒ¨å‘¼å‡ºã—å‘ã‘ãƒ©ãƒƒãƒ‘)
+ * nullpoî•ño—Í(ŠO•”ŒÄo‚µŒü‚¯ƒ‰ƒbƒp)
  *--------------------------------------
  */
 void nullpo_info_f(const char *file, int line, const char *func, const char *fmt, ...)
@@ -72,7 +72,7 @@ void nullpo_info(const char *file, int line, const char *func)
 }
 
 /*======================================
- * nullpoæƒ…å ±å‡ºåŠ›(Main)
+ * nullpoî•ño—Í(Main)
  *--------------------------------------
  */
 static void nullpo_info_core(const char *file, int line, const char *func, const char *fmt, va_list ap)
@@ -93,13 +93,13 @@ static void nullpo_info_core(const char *file, int line, const char *func, const
 		{
 			vprintf(fmt, ap);
 
-			// æœ€å¾Œã«æ”¹è¡Œã—ãŸã‹ç¢ºèª
+			// ÅŒã‚É‰üs‚µ‚½‚©Šm”F
 			if (fmt[strlen(fmt)-1] != '\n')
 				printf("\n");
 		}
 	}
 	printf("--- end nullpo info ----------------------------------------\n");
 
-	// ã“ã“ã‚‰ã§nullpoãƒ­ã‚°ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãå‡ºã›ãŸã‚‰
-	// ã¾ã¨ã‚ã¦æå‡ºã§ãã‚‹ãªã¨æ€ã£ã¦ã„ãŸã‚Šã€‚
+	// ‚±‚±‚ç‚ÅnullpoƒƒO‚ğƒtƒ@ƒCƒ‹‚É‘‚«o‚¹‚½‚ç
+	// ‚Ü‚Æ‚ß‚Ä’ño‚Å‚«‚é‚È‚Æv‚Á‚Ä‚¢‚½‚èB
 }

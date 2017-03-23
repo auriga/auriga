@@ -117,7 +117,7 @@ int mapif_delete_hom(int fd,int homun_id)
 }
 
 //---------------------------------------------------------------------------------------
-// ãƒ›ãƒ ã‚’æ–°è¦ä½œæˆ
+// ƒzƒ€‚ğV‹Kì¬
 int mapif_parse_CreateHom(int fd)
 {
 	int account_id = RFIFOL(fd,4);
@@ -130,32 +130,32 @@ int mapif_parse_CreateHom(int fd)
 	return 0;
 }
 
-// ãƒ›ãƒ ã®ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+// ƒzƒ€‚Ìƒf[ƒ^‘—M
 int mapif_parse_LoadHom(int fd)
 {
 	mapif_load_hom(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10));
 	return 0;
 }
 
-// ãƒ›ãƒ ã®ãƒ‡ãƒ¼ã‚¿å—ä¿¡ï¼†ä¿å­˜
+// ƒzƒ€‚Ìƒf[ƒ^óM••Û‘¶
 int mapif_parse_SaveHom(int fd)
 {
 	mapif_save_hom(fd,RFIFOL(fd,4),(struct mmo_homunstatus *)RFIFOP(fd,8));
 	return 0;
 }
 
-// ãƒ›ãƒ å‰Šé™¤
+// ƒzƒ€íœ
 int mapif_parse_DeleteHom(int fd)
 {
 	mapif_delete_hom(fd,RFIFOL(fd,10));
 	return 0;
 }
 
-// map server ã‹ã‚‰ã®é€šä¿¡
-// ãƒ»ï¼‘ãƒ‘ã‚±ãƒƒãƒˆã®ã¿è§£æã™ã‚‹ã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒ‡ãƒ¼ã‚¿ã¯inter.cã«ã‚»ãƒƒãƒˆã—ã¦ãŠãã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒã‚§ãƒƒã‚¯ã‚„ã€RFIFOSKIPã¯å‘¼ã³å‡ºã—å…ƒã§è¡Œã‚ã‚Œã‚‹ã®ã§è¡Œã£ã¦ã¯ãªã‚‰ãªã„
-// ãƒ»ã‚¨ãƒ©ãƒ¼ãªã‚‰0(false)ã€ãã†ã§ãªã„ãªã‚‰1(true)ã‚’ã‹ãˆã•ãªã‘ã‚Œã°ãªã‚‰ãªã„
+// map server ‚©‚ç‚Ì’ÊM
+// E‚PƒpƒPƒbƒg‚Ì‚İ‰ğÍ‚·‚é‚±‚Æ
+// EƒpƒPƒbƒg’·ƒf[ƒ^‚Íinter.c‚ÉƒZƒbƒg‚µ‚Ä‚¨‚­‚±‚Æ
+// EƒpƒPƒbƒg’·ƒ`ƒFƒbƒN‚âARFIFOSKIP‚ÍŒÄ‚Ño‚µŒ³‚Ås‚í‚ê‚é‚Ì‚Ås‚Á‚Ä‚Í‚È‚ç‚È‚¢
+// EƒGƒ‰[‚È‚ç0(false)A‚»‚¤‚Å‚È‚¢‚È‚ç1(true)‚ğ‚©‚¦‚³‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
 int inter_hom_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)){

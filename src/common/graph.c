@@ -29,12 +29,12 @@
 #include "grfio.h"
 #include "malloc.h"
 
-#define GRP_WIDTH    (640-48)				// ã‚°ãƒ©ãƒ•ã®å¹…
-#define GRP_HEIGHT   (240-20)				// ã‚°ãƒ©ãƒ•ã®é«˜ã•
+#define GRP_WIDTH    (640-48)				// ƒOƒ‰ƒt‚Ì•
+#define GRP_HEIGHT   (240-20)				// ƒOƒ‰ƒt‚Ì‚‚³
 #define graph_rgb(r,g,b) (((r) << 16) | ((g) << 8) | (b))
-#define GRP_COLOR    graph_rgb(0,0,255)		// ã‚°ãƒ©ãƒ•ã®è‰²
+#define GRP_COLOR    graph_rgb(0,0,255)		// ƒOƒ‰ƒt‚ÌF
 
-/* ãƒ•ã‚©ãƒ³ãƒˆé¡(8*16pixel)ã€‚ã¿ã£ã¨ã‚‚ãªã„ã®ã§ã€èª°ã‹æ›¸ãç›´ã—ã‚­ãƒœãƒ³ãƒŒ */
+/* ƒtƒHƒ“ƒg—Ş(8*16pixel)B‚İ‚Á‚Æ‚à‚È‚¢‚Ì‚ÅA’N‚©‘‚«’¼‚µƒLƒ{ƒ“ƒk */
 static const char *graph_fonts[16] = {
 /* 0123456789. */
 	"xxxxxxx      xx xxxxxxx xxxxxxx xx   xx xxxxxxx xxxxxxx xxxxxxx xxxxxxx xxxxxxx         ",
@@ -83,9 +83,9 @@ static struct graph* graph_create(unsigned int x, unsigned int y)
 	struct graph *g = (struct graph*)aCalloc(sizeof(struct graph),1);
 
 	if(g == NULL) return NULL;
-	// 256 * 3   : ãƒ‘ãƒ¬ãƒƒãƒˆãƒ‡ãƒ¼ã‚¿
-	// x * y * 2 : ã‚¤ãƒ¡ãƒ¼ã‚¸ã®ãƒãƒƒãƒ•ã‚¡
-	// 256       : ãƒãƒ£ãƒ³ã‚¯ãƒ‡ãƒ¼ã‚¿ãªã©ã®äºˆå‚™
+	// 256 * 3   : ƒpƒŒƒbƒgƒf[ƒ^
+	// x * y * 2 : ƒCƒ[ƒW‚Ìƒoƒbƒtƒ@
+	// 256       : ƒ`ƒƒƒ“ƒNƒf[ƒ^‚È‚Ç‚Ì—\”õ
 	g->png_data = (unsigned char *)aMalloc(4 * 256 + (x + 1) * y * 2);
 	g->raw_data = (unsigned char *)aCalloc( (x + 1) * y , sizeof(unsigned char));
 	memcpy(
@@ -110,7 +110,7 @@ static struct graph* graph_create(unsigned int x, unsigned int y)
 	return g;
 }
 
-// ãƒ‘ãƒ¬ãƒƒãƒˆã®è¨­å®š
+// ƒpƒŒƒbƒg‚Ìİ’è
 static void graph_pallet(struct graph* g, int idx, unsigned int c)
 {
 	if (g == NULL || c >= 256)
@@ -133,7 +133,7 @@ static void graph_pallet(struct graph* g, int idx, unsigned int c)
 	return;
 }
 
-// ãƒ”ã‚¯ã‚»ãƒ«è‰²ã®è¨­å®š
+// ƒsƒNƒZƒ‹F‚Ìİ’è
 static void graph_setpixel(struct graph* g, int x, int y, int color)
 {
 	if(g == NULL || color >= 256)
@@ -150,7 +150,7 @@ static void graph_setpixel(struct graph* g, int x, int y, int color)
 	return;
 }
 
-// ãƒ”ã‚¯ã‚»ãƒ«è‰²ã®å–å¾—
+// ƒsƒNƒZƒ‹F‚Ìæ“¾
 /* -- actually not used
 static int graph_getpixel(struct graph* g, int x, int y)
 {
@@ -206,7 +206,7 @@ static void graph_free(struct graph* g)
 
 #define graph_raw_data(g,x,y) (&(g)->raw_data[(y) * ((g)->width+1)+(x)+1])
 
-// å››è§’å½¢ã®æç”»
+// lŠpŒ`‚Ì•`‰æ
 static void graph_square(struct graph* g,int x,int y,int xe,int ye,int color)
 {
 	int i;
@@ -225,7 +225,7 @@ static void graph_square(struct graph* g,int x,int y,int xe,int ye,int color)
 	return;
 }
 
-// ç”»åƒã®ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ï¼ˆãŸã ã—ã€å¯¾è±¡ã¯ã‚°ãƒ©ãƒ•ã®éƒ¨åˆ†ã®ã¿ï¼‰
+// ‰æ‘œ‚ÌƒXƒNƒ[ƒ‹i‚½‚¾‚µA‘ÎÛ‚ÍƒOƒ‰ƒt‚Ì•”•ª‚Ì‚İj
 static void graph_scroll(struct graph* g,int n,int color)
 {
 	int y;
@@ -233,7 +233,7 @@ static void graph_scroll(struct graph* g,int n,int color)
 	if(g == NULL) return;
 
 	for(y = 0; y <= g->height - 20; y++) {
-		// æœ«ç«¯ã®ãƒ”ã‚¯ã‚»ãƒ«ã¯å«ã¾ãªã„ã®ã§æ³¨æ„
+		// ––’[‚ÌƒsƒNƒZƒ‹‚ÍŠÜ‚Ü‚È‚¢‚Ì‚Å’ˆÓ
 		memmove(
 			graph_raw_data(g,48  ,y),
 			graph_raw_data(g,48+n,y),
@@ -246,7 +246,7 @@ static void graph_scroll(struct graph* g,int n,int color)
 	return;
 }
 
-// ç›´ç·šã®æç”»
+// ’¼ü‚Ì•`‰æ
 static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color)
 {
 	int i;
@@ -258,13 +258,13 @@ static void graph_line(struct graph* g, int x0, int y0, int x1, int y1,int color
 		for(i = x0; i <= x1; i++)
 			graph_setpixel(g,i,y0,color);
 	} else {
-		// æ–œã‚ã®ç·šã¯æ›¸ã‹ãªã„ã®ã§ã¨ã‚Šã‚ãˆãšç„¡è¦–
+		// Î‚ß‚Ìü‚Í‘‚©‚È‚¢‚Ì‚Å‚Æ‚è‚ ‚¦‚¸–³‹
 	}
 
 	return;
 }
 
-// æ–‡å­—è¡¨ç¤º
+// •¶š•\¦
 static void graph_drawtext(struct graph *g, const char *str, int x, int y, int color)
 {
 	int i, j;
@@ -302,14 +302,14 @@ static void graph_data(struct graph* g,double value)
 	if(g->line_pos == NULL || value > g->graph_max) {
 		int div_num, cutf = 0;
 		double base;
-		// æœ€å¤§å€¤ãŒæ›´æ–°ã•ã‚ŒãŸã‹æœ€åˆã®æç”»ãªã®ã§ã€ä¸€ç«¯ç”»é¢ã‚’æ¶ˆå»ã—ã¦
-		// ã‚¼ãƒ­ã‹ã‚‰æ›¸ãç›´ã™
+		// Å‘å’l‚ªXV‚³‚ê‚½‚©Å‰‚Ì•`‰æ‚È‚Ì‚ÅAˆê’[‰æ–Ê‚ğÁ‹‚µ‚Ä
+		// ƒ[ƒ‚©‚ç‘‚«’¼‚·
 
 		graph_square(g,0,0,g->width,g->height,0);
 		graph_line(g,47,0,47,g->height-20,1);
 		graph_line(g,g->width-1,0,g->width-1,g->height-20,1);
 
-		// æœ€ä¸Šä½æ¡ã‚’10ã®æ•´æ•°ä¹—å˜ä½ã§åˆ‡ã‚Šæ¨ã¦( 3 -> 1, 48 -> 10, 100 -> 100 )
+		// ÅãˆÊŒ…‚ğ10‚Ì®”æ’PˆÊ‚ÅØ‚èÌ‚Ä( 3 -> 1, 48 -> 10, 100 -> 100 )
 		if( value < 0.04 ) {
 			base = 0.01;
 			div_num  = 4;
@@ -317,33 +317,33 @@ static void graph_data(struct graph* g,double value)
 			base = pow(10.0, floor(log10(value) ) );
 			div_num  = (int)ceil(value / base);
 		}
-		// åˆ†å‰²æ•°ã®èª¿æ•´( 3 - 5 )
+		// •ªŠ„”‚Ì’²®( 3 - 5 )
 		if( div_num <= 2 ) { div_num *= 2;  base /= 2;       }
 		if( div_num <= 2 ) { div_num *= 2;  base /= 2;       }
 		if( div_num >  5 ) { div_num = (div_num+1)/2; base *= 2; }
 		aFree( g->line_pos );
 		g->line_pos   = (int *)aMalloc( div_num < 0 ? 4 : (div_num+1) * sizeof(int) );
 		g->line_count = div_num+1;
-		g->graph_max  = div_num * base; // ã‚°ãƒ©ãƒ•ä¸Šã®æœ€å¤§å€¤
+		g->graph_max  = div_num * base; // ƒOƒ‰ƒtã‚ÌÅ‘å’l
 
-		// è»¸ä¸Šã®ç›®ç››ã‚Šã‚’æ‰“ã¤
+		// ²ã‚Ì–Ú·‚è‚ğ‘Å‚Â
 		for(i = div_num; i >= 0; i--) {
 			char buf[256];
 			int  ypos;
-			// ç›®ç››ã‚Šä¸Šã®æ¨ªç·šã®ä½ç½®ã‚’è¨ˆç®—
+			// –Ú·‚èã‚Ì‰¡ü‚ÌˆÊ’u‚ğŒvZ
 			ypos = (GRP_HEIGHT)*(div_num-i)/div_num;
 			g->line_pos[i] = ypos;
 
-			// ç›®ç››ã‚Šã®æ–‡å­—ã‚’æç”»
+			// –Ú·‚è‚Ì•¶š‚ğ•`‰æ
 			sprintf(buf, "%.2f", i * base );
 			if( cutf || strlen(buf) > 6 ) {
-				// æ–‡å­—ãŒé•·ã™ãã‚‹ã®ã§ã€å°æ•°ç‚¹ä»¥ä¸‹ã‚’å‰Šã‚‹
+				// •¶š‚ª’·‚·‚¬‚é‚Ì‚ÅA¬”“_ˆÈ‰º‚ğí‚é
 				char *p = strchr(buf, '.');
 				if( p ) *p = 0;
 				cutf = 1;
 			}
 			if( strlen(buf) < 6 ) {
-				// ï¼–æ–‡å­—ã«æº€ãŸãªã„ã®ã§å…ˆé ­ã«ã‚¹ãƒšãƒ¼ã‚¹ã‚’ä»˜åŠ ã™ã‚‹
+				// ‚U•¶š‚É–‚½‚È‚¢‚Ì‚Åæ“ª‚ÉƒXƒy[ƒX‚ğ•t‰Á‚·‚é
 				size_t len = 6 - strlen(buf);
 				char buf2[256];
 				memset(buf2, ' ', len);
@@ -351,13 +351,13 @@ static void graph_data(struct graph* g,double value)
 				strcat(buf2, buf);
 				strcpy(buf, buf2);
 			} else {
-				buf[6] = 0; // ï¼–æ–‡å­—ä»¥é™ã‚’ã‚«ãƒƒãƒˆ
+				buf[6] = 0; // ‚U•¶šˆÈ~‚ğƒJƒbƒg
 			}
 			graph_drawtext(g,buf,0,ypos,1);
 		}
 		start = 48;
 	} else {
-		// ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã¦ãƒã‚¤ãƒ³ãƒˆæ‰“ã¤
+		// ƒXƒNƒ[ƒ‹‚µ‚Äƒ|ƒCƒ“ƒg‘Å‚Â
 		graph_scroll(g,1,0);
 		start = g->width - 2;
 	}
@@ -379,7 +379,7 @@ static void graph_data(struct graph* g,double value)
 	return;
 }
 
-// ä¸Šã®é–¢æ•°ç¾¤ã‚’åˆ©ç”¨ã—ã¦ã€è‡ªå‹•çš„ã«ã‚°ãƒ©ãƒ•ã‚’ä½œæˆã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼ç¾¤
+// ã‚ÌŠÖ”ŒQ‚ğ—˜—p‚µ‚ÄA©“®“I‚ÉƒOƒ‰ƒt‚ğì¬‚·‚éƒ^ƒCƒ}[ŒQ
 
 struct graph_sensor {
 	struct graph* graph;

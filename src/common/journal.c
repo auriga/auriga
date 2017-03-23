@@ -33,21 +33,21 @@
 #	include <unistd.h>
 #endif
 
-#define UNUSEDCHUNK_DEFAULT_QUEUESIZE	256		// ã‚­ãƒ¥ãƒ¼ã®æœ€å°ã‚µã‚¤ã‚º ( 2 ã®ç´¯ä¹—ã§ã‚ã‚‹ã“ã¨ )
-#define CHUNKUNITSIZE 					4096	// ãƒãƒ£ãƒ³ã‚¯ã®æœ€å°ã‚µã‚¤ã‚ºï¼ˆå¤šåˆ†ãƒ‡ã‚£ã‚¹ã‚¯ã®ã‚¯ãƒ©ã‚¹ã‚¿ã‚µã‚¤ã‚ºã«ã™ã‚‹ã¨ã„ã„ã¨æ€ã‚ã‚Œã‚‹ï¼‰
+#define UNUSEDCHUNK_DEFAULT_QUEUESIZE	256		// ƒLƒ…[‚ÌÅ¬ƒTƒCƒY ( 2 ‚Ì—İæ‚Å‚ ‚é‚±‚Æ )
+#define CHUNKUNITSIZE 					4096	// ƒ`ƒƒƒ“ƒN‚ÌÅ¬ƒTƒCƒYi‘½•ªƒfƒBƒXƒN‚ÌƒNƒ‰ƒXƒ^ƒTƒCƒY‚É‚·‚é‚Æ‚¢‚¢‚Æv‚í‚ê‚éj
 
-//#define JOURNAL_DEBUG		// å®šç¾©ã™ã‚‹ã¨ã€æ­£å¸¸çµ‚äº†æ™‚ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã›ãšã«åˆ¥åã«ã—ã¦æ®‹ã™
-							// ".debug0" ã¯çµ‚äº†ã®éç¨‹ã§å‡ºã‚‹ã‚´ãƒŸã€".debug1" ã¯çµ‚äº†æ™‚ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«
+//#define JOURNAL_DEBUG		// ’è‹`‚·‚é‚ÆA³íI—¹‚Éƒtƒ@ƒCƒ‹‚ğíœ‚¹‚¸‚É•Ê–¼‚É‚µ‚Äc‚·
+							// ".debug0" ‚ÍI—¹‚Ì‰ß’ö‚Åo‚éƒSƒ~A".debug1" ‚ÍI—¹‚ÌƒWƒƒ[ƒiƒ‹
 
 
-#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL18"	// è­˜åˆ¥å­ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«æ§‹é€ ã‚’å¤‰ãˆãŸã‚‰ã€æœ€å¾Œã®æ•°å€¤ã‚’å¤‰ãˆã‚‹ã¹ãï¼‰
+#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL18"	// ¯•Êqiƒtƒ@ƒCƒ‹\‘¢‚ğ•Ï‚¦‚½‚çAÅŒã‚Ì”’l‚ğ•Ï‚¦‚é‚×‚«j
 
 static int journal_first = 1;
 
 static int journal_flush_timer( int tid, unsigned int tick, int id, void *data );
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®åˆæœŸåŒ–( load ã¨å…±é€šéƒ¨åˆ†)
+// ƒWƒƒ[ƒiƒ‹‚Ì‰Šú‰»( load ‚Æ‹¤’Ê•”•ª)
 // ------------------------------------------
 static void journal_init_( struct journal* j, size_t datasize, const char* filename )
 {
@@ -69,13 +69,13 @@ static void journal_init_( struct journal* j, size_t datasize, const char* filen
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®åˆæœŸåŒ–
+// ƒWƒƒ[ƒiƒ‹‚Ì‰Šú‰»
 // ------------------------------------------
 void journal_create( struct journal* j, size_t datasize, int cache_interval, const char* filename )
 {
 	static int first = 1;
 
-	// æœ€åˆãªã‚‰é–¢æ•°åç™»éŒ²
+	// Å‰‚È‚çŠÖ”–¼“o˜^
 	if( first )
 	{
 		first = 0;
@@ -84,11 +84,11 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 
 	journal_init_( j, datasize, filename );
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ˜ãƒƒãƒ€ã®è¨­å®š
+	// ƒtƒ@ƒCƒ‹ƒwƒbƒ_‚Ìİ’è
 	memcpy( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) );
 	j->fhd.datasize = (unsigned int)datasize;
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œã£ã¦ãƒ˜ãƒƒãƒ€æ›¸ãè¾¼ã¿
+	// ƒtƒ@ƒCƒ‹‚ğì‚Á‚Äƒwƒbƒ_‘‚«‚İ
 	if( ( j->fp = fopen( filename, "w+b" ) ) == NULL )
 	{
 		printf("journal: fopen [%s]: failed\n", filename );
@@ -96,7 +96,7 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 	}
 	fwrite( &j->fhd, sizeof(j->fhd), 1, j->fp );
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã™ã‚‹ãªã‚‰ã‚¿ã‚¤ãƒãƒ¼è¨­å®š
+	// ƒLƒƒƒbƒVƒ…‚·‚é‚È‚çƒ^ƒCƒ}[İ’è
 	if( cache_interval > 0)
 	{
 		j->cache_timer = add_timer_interval( gettick()+ atn_rand()%cache_interval + cache_interval,
@@ -105,24 +105,24 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®æœªä½¿ç”¨ã‚¨ãƒªã‚¢ã‚’è¿½åŠ 
+// ƒWƒƒ[ƒiƒ‹‚Ì–¢g—pƒGƒŠƒA‚ğ’Ç‰Á
 // ------------------------------------------
 static void journal_push_free( struct journal *j, int pos )
 {
-	// ã‚­ãƒ¥ãƒ¼ã®ãƒ¡ãƒ¢ãƒªãŒãªã„ãªã‚‰ç¢ºä¿ã™ã‚‹
+	// ƒLƒ…[‚Ìƒƒ‚ƒŠ‚ª‚È‚¢‚È‚çŠm•Û‚·‚é
 	if( j->unusedchunk_size==0 )
 	{
 		j->unusedchunk_size = UNUSEDCHUNK_DEFAULT_QUEUESIZE;
 		j->unusedchunk_queue = (int *)aCalloc( sizeof(int), UNUSEDCHUNK_DEFAULT_QUEUESIZE );
 	}
 
-	// ã‚­ãƒ¥ãƒ¼ã«ç™»éŒ²
+	// ƒLƒ…[‚É“o˜^
 	j->unusedchunk_queue[ j->unusedchunk_write ++ ] = pos;
 	j->unusedchunk_write %= j->unusedchunk_size;
 
 	if( j->unusedchunk_read == j->unusedchunk_write )
 	{
-		// ã‚­ãƒ¥ãƒ¼ãŒã„ã£ã±ã„ã«ãªã£ãŸã®ã§æ‹¡å¼µã™ã‚‹ ( ã‚­ãƒ¥ãƒ¼å†…éƒ¨ã®é †ç•ªã¯å…¥ã‚Œæ›¿ã‚ã£ã¦ã‚‚ã‚ˆã„ )
+		// ƒLƒ…[‚ª‚¢‚Á‚Ï‚¢‚É‚È‚Á‚½‚Ì‚ÅŠg’£‚·‚é ( ƒLƒ…[“à•”‚Ì‡”Ô‚Í“ü‚ê‘Ö‚í‚Á‚Ä‚à‚æ‚¢ )
 		int* p = (int *)aCalloc( sizeof(int), j->unusedchunk_size*2 );
 		memcpy( p, j->unusedchunk_queue, sizeof(int)*j->unusedchunk_size );
 		aFree( j->unusedchunk_queue );
@@ -136,7 +136,7 @@ static void journal_push_free( struct journal *j, int pos )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ‡ãƒ¼ã‚¿ã®ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒWƒƒ[ƒiƒ‹‚Ìƒf[ƒ^‚ÌƒfƒXƒgƒ‰ƒNƒ^
 // ------------------------------------------
 static void journal_final_dtor( struct journal_data* dat )
 {
@@ -148,7 +148,7 @@ static void journal_final_dtor( struct journal_data* dat )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ‡ãƒ¼ã‚¿ã®çµ‚äº†å‡¦ç†(db_foreach)
+// ƒWƒƒ[ƒiƒ‹‚Ìƒf[ƒ^‚ÌI—¹ˆ—(db_foreach)
 // ------------------------------------------
 static int journal_final_sub( void* key, void* data, va_list ap )
 {
@@ -157,43 +157,43 @@ static int journal_final_sub( void* key, void* data, va_list ap )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®çµ‚äº†å‡¦ç†
+// ƒWƒƒ[ƒiƒ‹‚ÌI—¹ˆ—
 // ------------------------------------------
 void journal_final( struct journal* j )
 {
 	if( journal_first )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã¯ä¸€åº¦ã‚‚åˆæœŸåŒ–ã•ã‚Œã¦ãªã„ã®ã§ä½•ã‚‚ã—ãªã„
+		// ƒWƒƒ[ƒiƒ‹‚Íˆê“x‚à‰Šú‰»‚³‚ê‚Ä‚È‚¢‚Ì‚Å‰½‚à‚µ‚È‚¢
 		return;
 	}
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ç”¨ã®ã‚¿ã‚¤ãƒãƒ¼å‰Šé™¤
+	// ƒLƒƒƒbƒVƒ…ƒtƒ‰ƒbƒVƒ…—p‚Ìƒ^ƒCƒ}[íœ
 	if( j->cache_timer != -1 )
 	{
 		delete_timer( j->cache_timer, journal_flush_timer );
 		j->cache_timer = -1;
 	}
 
-	// ä½œæˆãƒ¢ãƒ¼ãƒ‰ãªã‚‰ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
+	// ì¬ƒ‚[ƒh‚È‚çƒtƒ‰ƒbƒVƒ…
 	if( j->mode==0 && j->db && j->fp )
 	{
 		journal_flush( j );
 	}
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
+	// ƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
 	if( j->fp )
 	{
 		fclose( j->fp );
 		j->fp = NULL;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ç ´æ£„
+	// ƒf[ƒ^”jŠü
 	if( j->db ){
 		numdb_final( j->db, journal_final_sub );
 		j->db=NULL;
 	}
 
-	// ç©ºãã‚­ãƒ¥ãƒ¼ã®å‰Šé™¤
+	// ‹ó‚«ƒLƒ…[‚Ìíœ
 	if( j->unusedchunk_queue )
 	{
 		aFree( j->unusedchunk_queue );
@@ -201,7 +201,7 @@ void journal_final( struct journal* j )
 		j->unusedchunk_size = 0;
 	}
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã®å‰Šé™¤
+	// ƒtƒ@ƒCƒ‹‚Ìíœ
 	if( j->mode==0 && j->filename[0] )
 #ifdef JOURNAL_DEBUG
 	{
@@ -220,7 +220,7 @@ void journal_final( struct journal* j )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã¸æ›¸ãè¾¼ã¿(ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã¸æ›¸ãè¾¼ã¿)
+// ƒWƒƒ[ƒiƒ‹‚Ö‘‚«‚İ(ƒWƒƒ[ƒiƒ‹‚ÌƒLƒƒƒbƒVƒ…‚Ö‘‚«‚İ)
 // ------------------------------------------
 int journal_write( struct journal* j, int key, const void* data )
 {
@@ -234,7 +234,7 @@ int journal_write( struct journal* j, int key, const void* data )
 
 	dat = (struct journal_data*)numdb_search( j->db, key );
 
-	// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ç™»éŒ²
+	// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ì“o˜^
 	if( !dat )
 	{
 		dat = (struct journal_data *)aCalloc( 1,sizeof(struct journal_data ) );
@@ -242,13 +242,13 @@ int journal_write( struct journal* j, int key, const void* data )
 		dat->idx = -1;
 	}
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç”¨ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	// ƒLƒƒƒbƒVƒ…—p‚Ìƒƒ‚ƒŠŠm•Û
 	if( !dat->buf )
 	{
 		dat->buf = aCalloc( 1, j->datasize );
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®æ›¸ãæ›ãˆã‹å‰Šé™¤ã‹
+	// ƒf[ƒ^‚Ì‘‚«Š·‚¦‚©íœ‚©
 	if( data )
 	{
 		memcpy( dat->buf, data, j->datasize );
@@ -260,7 +260,7 @@ int journal_write( struct journal* j, int key, const void* data )
 		dat->flag = JOURNAL_FLAG_DELETE;
 	}
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã—ãªã„ãªã‚‰ã™ãã«ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã‚€
+	// ƒLƒƒƒbƒVƒ…‚µ‚È‚¢‚È‚ç‚·‚®‚Éƒtƒ@ƒCƒ‹‚É‘‚«‚Ş
 	if( j->cache_timer==-1 )
 	{
 		journal_flush( j );
@@ -270,7 +270,7 @@ int journal_write( struct journal* j, int key, const void* data )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã¸æ›¸ãè¾¼ã¿(ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®æ›¸ãè¾¼ã¿)
+// ƒWƒƒ[ƒiƒ‹‚Ö‘‚«‚İ(ƒWƒƒ[ƒiƒ‹‚ÌƒLƒƒƒbƒVƒ…‚©‚çƒtƒ@ƒCƒ‹‚Ö‚Ì‘‚«‚İ)
 // ------------------------------------------
 static int journal_flush_sub( void* key, void* data, va_list ap )
 {
@@ -281,34 +281,34 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	struct journal_header jhd;
 	int old_idx = dat->idx;
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ‡ãƒ¼ã‚¿ã¯ãªã„ã®ã§é£›ã°ã™
+	// ƒLƒƒƒbƒVƒ…ƒf[ƒ^‚Í‚È‚¢‚Ì‚Å”ò‚Î‚·
 	if( !dat->buf )
 	{
 		return 0;
 	}
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ä¸­ã®ä½ç½®ã‚’å¼·åˆ¶çš„ã«ç½®ãæ›ãˆã‚‹ã®ã¯ã€ã“ã®ãƒ‡ãƒ¼ã‚¿ã®æ›¸ãè¾¼ã¿ä¸­ã«
-	// å•é¡ŒãŒèµ·ã“ã£ãŸæ™‚ã«ã€ä»¥å‰ã®æ›¸ãè¾¼ã¿ãƒ‡ãƒ¼ã‚¿ã‚’ç”Ÿã‹ã›ã‚‹ã‚ˆã†ã«ã™ã‚‹ç‚ºã§ã™ã€‚
+	// ƒtƒ@ƒCƒ‹’†‚ÌˆÊ’u‚ğ‹­§“I‚É’u‚«Š·‚¦‚é‚Ì‚ÍA‚±‚Ìƒf[ƒ^‚Ì‘‚«‚İ’†‚É
+	// –â‘è‚ª‹N‚±‚Á‚½‚ÉAˆÈ‘O‚Ì‘‚«‚İƒf[ƒ^‚ğ¶‚©‚¹‚é‚æ‚¤‚É‚·‚éˆ×‚Å‚·B
 	if( j->unusedchunk_read != j->unusedchunk_write )
 	{
-		// ç©ºããƒãƒ£ãƒ³ã‚¯ã‹ã‚‰å–ã‚Šå‡ºã™
+		// ‹ó‚«ƒ`ƒƒƒ“ƒN‚©‚çæ‚èo‚·
 		dat->idx = j->unusedchunk_queue[ j->unusedchunk_read ++ ];
 		j->unusedchunk_read %= j->unusedchunk_size;
 	}
 	else
 	{
-		// ç©ºããŒãªã„ã®ã§æ–°ã—ãä½œã‚‹
+		// ‹ó‚«‚ª‚È‚¢‚Ì‚ÅV‚µ‚­ì‚é
 		dat->idx = (int)( j->nextchunk ++ );
 	}
 
-	// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«æ›¸ãè¾¼ã¿ç”¨ã®ãƒ˜ãƒƒãƒ€è¨­å®š
+	// ƒWƒƒ[ƒiƒ‹‘‚«‚İ—p‚Ìƒwƒbƒ_İ’è
 	jhd.key = PTR2INT(key);
 	jhd.timestamp = timestamp;
 	jhd.tick = tick;
 	jhd.flag = dat->flag;
 	jhd.crc32 = grfio_crc32( (const unsigned char *)dat->buf, (unsigned int)j->datasize );
 
-	// ãƒ‡ãƒ¼ã‚¿æ›¸ãè¾¼ã¿
+	// ƒf[ƒ^‘‚«‚İ
 	fseek( j->fp, (long)(dat->idx * j->chunksize), SEEK_SET );
 	if( fwrite( &jhd, sizeof(jhd), 1, j->fp )==0 ||
 		fwrite( dat->buf, j->datasize, 1, j->fp )==0 )
@@ -317,7 +317,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 		return 0;
 	}
 
-	// æ›¸ãè¾¼ã‚“ã ã®ã§ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ‡ãƒ¼ã‚¿ã¯ã‚‚ã†ã„ã‚‰ãªã„
+	// ‘‚«‚ñ‚¾‚Ì‚ÅƒLƒƒƒbƒVƒ…ƒf[ƒ^‚Í‚à‚¤‚¢‚ç‚È‚¢
 	aFree( dat->buf );
 	dat->buf = NULL;
 
@@ -330,7 +330,7 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®å…¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã¸æ›¸ãè¾¼ã‚€
+// ƒWƒƒ[ƒiƒ‹‚Ì‘SƒLƒƒƒbƒVƒ…‚ğƒtƒ@ƒCƒ‹‚Ö‘‚«‚Ş
 // ------------------------------------------
 int journal_flush( struct journal* j )
 {
@@ -343,7 +343,7 @@ int journal_flush( struct journal* j )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®å…¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã¸æ›¸ãè¾¼ã‚€(ã‚¿ã‚¤ãƒãƒ¼)
+// ƒWƒƒ[ƒiƒ‹‚Ì‘SƒLƒƒƒbƒVƒ…‚ğƒtƒ@ƒCƒ‹‚Ö‘‚«‚Ş(ƒ^ƒCƒ}[)
 // ------------------------------------------
 static int journal_flush_timer( int tid, unsigned int tick, int id, void *data )
 {
@@ -352,7 +352,7 @@ static int journal_flush_timer( int tid, unsigned int tick, int id, void *data )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
+// ƒWƒƒ[ƒiƒ‹‚©‚çƒf[ƒ^‚ğíœ
 // ------------------------------------------
 int journal_delete( struct journal* j, int key )
 {
@@ -370,7 +370,7 @@ int journal_delete( struct journal* j, int key )
 
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‹ã‚‰æœ€æ–°ãƒ‡ãƒ¼ã‚¿ã®å–å¾—( commit ã«ä½¿ç”¨)
+// ƒWƒƒ[ƒiƒ‹‚©‚çÅVƒf[ƒ^‚Ìæ“¾( commit ‚Ég—p)
 // ------------------------------------------
 const char* journal_get( struct journal* j, int key, int* flag )
 {
@@ -385,7 +385,7 @@ const char* journal_get( struct journal* j, int key, int* flag )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®å…¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚€
+// ƒWƒƒ[ƒiƒ‹‚Ì‘SƒLƒƒƒbƒVƒ…‚ğƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş
 // ------------------------------------------
 int journal_load_with_convert( struct journal* j, size_t datasize, const char* filename, void(*func)( struct journal_header *jhd, void *buf ) )
 {
@@ -394,15 +394,15 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 
 	journal_init_( j, datasize, filename );
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ç”¨ã«é–‹ã
+	// ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ—p‚ÉŠJ‚­
 	if( ( j->fp = fopen( filename, "r+b" ) ) == NULL )
 	{
 		return 0;
 	}
 
-	j->mode = 1;	// èª­ã¿å–ã‚Šãƒ¢ãƒ¼ãƒ‰ãƒ•ãƒ©ã‚°
+	j->mode = 1;	// “Ç‚İæ‚èƒ‚[ƒhƒtƒ‰ƒO
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ­£ã—ã„ã‹ãƒã‚§ãƒƒã‚¯
+	// ƒtƒ@ƒCƒ‹‚ª³‚µ‚¢‚©ƒ`ƒFƒbƒN
 	fread( &j->fhd, 1, sizeof(j->fhd), j->fp );
 	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) != 0 )
 	{
@@ -415,33 +415,33 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 		abort();
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿ãƒ«ãƒ¼ãƒ—
+	// ƒf[ƒ^‚Ì“Ç‚İ‚İƒ‹[ƒv
 	c = 0;
 	for( i=1; fseek( j->fp, (long)(i*j->chunksize), SEEK_SET ), fread( &jhd, sizeof(jhd), 1, j->fp ) > 0; i++ )
 	{
 		struct journal_data *dat;
 		unsigned char* buf = (unsigned char *)aCalloc( 1, datasize );
 
-		// ãƒ‡ãƒ¼ã‚¿æœ¬ä½“ã®èª­ã¿è¾¼ã¿ã¨ crc32 ãƒã‚§ãƒƒã‚¯
+		// ƒf[ƒ^–{‘Ì‚Ì“Ç‚İ‚İ‚Æ crc32 ƒ`ƒFƒbƒN
 		if( fread( buf, datasize, 1, j->fp ) == 0 || grfio_crc32( buf, (unsigned int)datasize ) != jhd.crc32 )
 		{
 			printf("journal: file broken [%s], but continue...\n", filename );
 			aFree( buf );
-			continue;	// ã“ã®ãƒ‡ãƒ¼ã‚¿ãŒå£Šã‚Œã¦ã¦ã‚‚ä»–ã®ãƒ‡ãƒ¼ã‚¿ã¯ç”Ÿãã¦ã‚‹ã¨æ€ã‚ã‚Œã‚‹
+			continue;	// ‚±‚Ìƒf[ƒ^‚ª‰ó‚ê‚Ä‚Ä‚à‘¼‚Ìƒf[ƒ^‚Í¶‚«‚Ä‚é‚Æv‚í‚ê‚é
 		}
 
-		// å¤‰æ›å‡¦ç†
+		// •ÏŠ·ˆ—
 		if( func )
 			func( &jhd, buf );
 
-		// ç™»éŒ²å‡¦ç†
+		// “o˜^ˆ—
 		dat = (struct journal_data*)numdb_search( j->db, jhd.key );
 		if( dat )
 		{
-			// ã™ã§ã«ã‚ã‚‹ã®ã§ç½®ãæ›ãˆãŒå¿…è¦ã‹èª¿ã¹ã‚‹
+			// ‚·‚Å‚É‚ ‚é‚Ì‚Å’u‚«Š·‚¦‚ª•K—v‚©’²‚×‚é
 			if( jhd.timestamp > dat->timestamp  &&  DIFF_TICK( jhd.tick, dat->tick ) > 0 )
 			{
-				// ç½®ãæ›ãˆ
+				// ’u‚«Š·‚¦
 				journal_push_free( j, dat->idx );
 				aFree( dat->buf );
 				dat->buf = buf;
@@ -452,13 +452,13 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 			}
 			else
 			{
-				// ç½®ãæ›ãˆãªã„
+				// ’u‚«Š·‚¦‚È‚¢
 				aFree( buf );
 			}
 		}
 		else
 		{
-			// æ–°ã—ãç™»éŒ²
+			// V‚µ‚­“o˜^
 			dat = (struct journal_data*)aCalloc( 1, sizeof(struct journal_data) );
 			dat->buf = buf;
 			dat->timestamp = jhd.timestamp;
@@ -473,7 +473,7 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰(foreach)
+// ƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh(foreach)
 // ------------------------------------------
 typedef int(* JOURNAL_ROLLFORWARD_CALLBACK )( int, void*, int );
 static int journal_rollforward_sub( void* key, void* data, va_list ap )
@@ -488,7 +488,7 @@ static int journal_rollforward_sub( void* key, void* data, va_list ap )
 }
 
 // ==========================================
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+// ƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 // ------------------------------------------
 int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int flag ) )
 {

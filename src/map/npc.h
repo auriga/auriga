@@ -67,7 +67,7 @@ int npc_settimerevent_tick(struct npc_data *nd,int newtimer);
 int npc_timeout_start(struct map_session_data *sd);
 int npc_timeout_stop(struct map_session_data *sd);
 
-// 繝｡繝｢繝ｪ繧｢繝ｫ繝繝ｳ繧ｸ繝ｧ繝ｳ髢｢騾｣
+// メモリアルダンジョン関連
 int npc_addmdnpc(struct npc_data *src_nd, int m);
 int npc_free(struct npc_data *nd);
 

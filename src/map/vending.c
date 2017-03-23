@@ -39,10 +39,10 @@
 #include "unit.h"
 #include "status.h"
 
-// éœ²åº—ID
+// ˜I“XID
 static unsigned int vending_id = 0;
 
-// éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥å¤±æ•—
+// ˜I“XƒAƒCƒeƒ€w“ü¸”s
 enum e_fail_vending
 {
 	VENDING_FAIL_NOTHING    = 0,
@@ -55,7 +55,7 @@ enum e_fail_vending
 };
 
 /*==========================================
- * éœ²åº—é–‰é–
+ * ˜I“X•Â½
  *------------------------------------------
 */
 void vending_closevending(struct map_session_data *sd)
@@ -73,7 +73,7 @@ void vending_closevending(struct map_session_data *sd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆè¦æ±‚
+ * ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg—v‹
  *------------------------------------------
  */
 void vending_vendinglistreq(struct map_session_data *sd, int id)
@@ -106,7 +106,7 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥
+ * ˜I“XƒAƒCƒeƒ€w“ü
  *------------------------------------------
  */
 void vending_purchasereq(struct map_session_data *sd, short count, int account_id, unsigned int vender_id, const unsigned char *data)
@@ -136,7 +136,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 	if( sd->state.deal_mode )
 		return;
 
-	// vender_idãŒé•ãˆã°ä¸å¯
+	// vender_id‚ªˆá‚¦‚Î•s‰Â
 	if( vsd->vender_id != vender_id )
 	{
 		clif_buyvending(sd, 0, 0, VENDING_FAIL_INVALIDVID);
@@ -176,26 +176,26 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 			}
 		}
 		if( j == vsd->vend_num )
-			return; // å£²ã‚Šåˆ‡ã‚Œ
+			return; // ”„‚èØ‚ê
 
 		zeny += ((double)vsd->vending[j].value * (double)amount);
 		if( zeny > (double)sd->status.zeny || zeny < 0. || zeny > (double)MAX_ZENY )
 		{ // fix positiv overflow (buyer)
 			clif_buyvending(sd, idx, amount, 1); // you don't have enough zenys
-			return; // zenyä¸è¶³
+			return; // zeny•s‘«
 		}
 
 		if( zeny + (double)vsd->status.zeny > (double)MAX_ZENY )
 		{ // fix positiv overflow (merchand)
 			clif_buyvending(sd, idx, vsd->vending[j].amount, VENDING_FAIL_ZENY); // not enough quantity
-			return; // zenyä¸è¶³
+			return; // zeny•s‘«
 		}
 
 		weight += itemdb_weight(vsd->status.cart[idx].nameid) * amount;
 		if( weight + sd->weight > sd->max_weight )
 		{
 			clif_buyvending(sd, idx, amount, VENDING_FAIL_WEIGHT); // you can not buy, because overweight
-			return; // é‡é‡è¶…é
+			return; // d—Ê’´‰ß
 		}
 
 		// if they try to add packets (example: get twice or more 2 apples if marchand has only 3 apples).
@@ -213,19 +213,19 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		case ADDITEM_NEW:
 			new_++;
 			if (new_ > blank)
-				return; // ç¨®é¡æ•°è¶…é
+				return; // í—Ş”’´‰ß
 			break;
 		case ADDITEM_OVERAMOUNT:
-			return; // ã‚¢ã‚¤ãƒ†ãƒ æ•°è¶…é
+			return; // ƒAƒCƒeƒ€”’´‰ß
 		}
 	}
 
-	// ã‚¼ãƒ‹ãƒ¼æ”¯æ‰•ã„
+	// ƒ[ƒj[x•¥‚¢
 	pc_payzeny(sd, (int)zeny);
-	// ç¨é‡‘ã‚’å·®ã—å¼•ã
+	// Å‹à‚ğ·‚µˆø‚­
 	if( battle_config.tax_rate )
 		zeny = zeny * (100 - battle_config.tax_rate) / 100;
-	// ã‚¼ãƒ‹ãƒ¼å—ã‘å–ã‚Š
+	// ƒ[ƒj[ó‚¯æ‚è
 	pc_getzeny(vsd, (int)zeny);
 
 	// vending items
@@ -246,7 +246,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		}
 	}
 
-	// vend_numã‚’åˆ‡ã‚Šè©°ã‚ã‚‹
+	// vend_num‚ğØ‚è‹l‚ß‚é
 	for( i = 0, cursor = 0; i < vsd->vend_num; i++ )
 	{
 		if( vsd->vending[i].amount == 0 )
@@ -271,7 +271,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 }
 
 /*==========================================
- * éœ²åº—é–‹è¨­
+ * ˜I“XŠJİ
  *------------------------------------------
  */
 void vending_openvending(struct map_session_data *sd, short count, const char *shop_title, bool is_open, const unsigned char *data)
@@ -325,7 +325,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 		short amount = *(short *)(data + 8*i + 2);
 		int value    = *(int *)(data + 8*i + 4);
 
-		// ã‚¢ã‚¤ãƒ†ãƒ ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€å€‹æ•°ã®ãƒã‚§ãƒƒã‚¯
+		// ƒAƒCƒeƒ€ƒCƒ“ƒfƒbƒNƒXAŒÂ”‚Ìƒ`ƒFƒbƒN
 		if( idx < 0 || idx >= MAX_CART || amount <= 0 )
 		{
 			memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
@@ -333,13 +333,13 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 			return;
 		}
 
-		// éœ²åº—ãƒ‡ãƒ¼ã‚¿ã«ã‚»ãƒƒãƒˆ
+		// ˜I“Xƒf[ƒ^‚ÉƒZƒbƒg
 		sd->vending[i].index  = idx;
 		sd->vending[i].amount = amount;
 		sd->vending[i].value  = value;
 
-		// ã‚«ãƒ¼ãƒˆå†…ã®ã‚¢ã‚¤ãƒ†ãƒ æ•°ã¨è²©å£²ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ æ•°ã«ç›¸é•ãŒã‚ã£ãŸã‚‰ä¸­æ­¢
-		// ã¤ã„ã§ã«âˆ’å€¤ã®å€¤æ®µã‚„âˆ’å€¤ã®å€‹æ•°ãƒã‚§ãƒƒã‚¯ã‚‚ã„ã‚Œã¦ã¾ã™
+		// ƒJ[ƒg“à‚ÌƒAƒCƒeƒ€”‚Æ”Ì”„‚·‚éƒAƒCƒeƒ€”‚É‘Šˆá‚ª‚ ‚Á‚½‚ç’†~
+		// ‚Â‚¢‚Å‚É?’l‚Ì’l’i‚â?’l‚ÌŒÂ”ƒ`ƒFƒbƒN‚à‚¢‚ê‚Ä‚Ü‚·
 		if( pc_cartitem_amount(sd, idx, amount) < 0 )
 		{
 			memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
@@ -347,7 +347,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 			return;
 		}
 
-		// å€¤æ®µãƒã‚§ãƒƒã‚¯
+		// ’l’iƒ`ƒFƒbƒN
 		if( sd->vending[i].value > battle_config.vending_max_value )
 		{
 			sd->vending[i].value = battle_config.vending_max_value;

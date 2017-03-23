@@ -22,20 +22,20 @@
 #ifndef _BATTLE_H_
 #define _BATTLE_H_
 
-// ãƒ€ãƒ¡ãƒ¼ã‚¸
+// ƒ_ƒ[ƒW
 struct Damage {
 	int damage,damage2;
 	int type, div_;
 	int amotion, dmotion;
 	int blewcount;
 	int flag;
-	int dmg_lv;	//å›²ã¾ã‚Œæ¸›ç®—è¨ˆç®—ç”¨ã€€0:ã‚¹ã‚­ãƒ«æ”»æ’ƒ ATK_LUCKY,ATK_FLEE,ATK_DEF
+	int dmg_lv;	//ˆÍ‚Ü‚êŒ¸ZŒvZ—p@0:ƒXƒLƒ‹UŒ‚ ATK_LUCKY,ATK_FLEE,ATK_DEF
 };
 
-// å±æ€§ä¿®æ­£è¨ˆç®—
+// ‘®«C³ŒvZ
 int battle_attr_fix(int damage,int atk_elem,int def_elem);
 
-// æœ€çµ‚è¨ˆç®—ã®ãƒ•ãƒ©ã‚°
+// ÅIŒvZ‚Ìƒtƒ‰ƒO
 enum {
 	BF_WEAPON     = 0x0001,
 	BF_MAGIC      = 0x0002,
@@ -49,7 +49,7 @@ enum {
 	BF_SKILLMASK  = 0x0f00,
 };
 
-// å›²ã¾ã‚ŒãƒšãƒŠãƒ«ãƒ†ã‚£è¨ˆç®—ç”¨
+// ˆÍ‚Ü‚êƒyƒiƒ‹ƒeƒBŒvZ—p
 enum {
 	ATK_LUCKY = 1,
 	ATK_FLEE,
@@ -60,13 +60,13 @@ struct map_session_data;
 struct mob_data;
 struct block_list;
 
-// å®Ÿéš›ã«HPã‚’å¢—æ¸›
+// ÀÛ‚ÉHP‚ğ‘Œ¸
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int skillid,int skilllv,int flag);
 int battle_damage(struct block_list *bl,struct block_list *target,int damage,int skillid,int skilllv,int flag);
 int battle_damage_area(struct block_list *bl,va_list ap);
 int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,int flag);
 
-// æ”»æ’ƒå‡¦ç†ã¾ã¨ã‚
+// UŒ‚ˆ—‚Ü‚Æ‚ß
 int battle_weapon_attack( struct block_list *bl,struct block_list *target,
 	unsigned int tick,int flag);
 int battle_skill_attack(int attack_type,struct block_list* src,struct block_list *dsrc,
@@ -90,7 +90,7 @@ int battle_delarrow(struct map_session_data* sd,int num,int skillid);
 void battle_join_struggle(struct mob_data *md,struct block_list *src);
 
 
-// è¨­å®š
+// İ’è
 extern struct Battle_Config {
 	int warp_point_debug;
 	int enemy_critical;
@@ -485,9 +485,9 @@ extern struct Battle_Config {
 	int master_get_homun_base_exp;
 	int master_get_homun_job_exp;
 
-	int item_rate_details,item_rate_1,item_rate_10,item_rate_100,item_rate_1000;	//ãƒ‰ãƒ­ãƒƒãƒ—ãƒ¬ãƒ¼ãƒˆè©³ç´°
-	int item_rate_1_min,item_rate_10_min,item_rate_100_min,item_rate_1000_min;	//ãƒ‰ãƒ­ãƒƒãƒ—ãƒ¬ãƒ¼ãƒˆè©³ç´°min
-	int item_rate_1_max,item_rate_10_max,item_rate_100_max,item_rate_1000_max;	//ãƒ‰ãƒ­ãƒƒãƒ—ãƒ¬ãƒ¼ãƒˆè©³ç´°max
+	int item_rate_details,item_rate_1,item_rate_10,item_rate_100,item_rate_1000;	//ƒhƒƒbƒvƒŒ[ƒgÚ×
+	int item_rate_1_min,item_rate_10_min,item_rate_100_min,item_rate_1000_min;	//ƒhƒƒbƒvƒŒ[ƒgÚ×min
+	int item_rate_1_max,item_rate_10_max,item_rate_100_max,item_rate_1000_max;	//ƒhƒƒbƒvƒŒ[ƒgÚ×max
 	int dropitem_itemrate_fix;
 
 	int monster_damage_delay;

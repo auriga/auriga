@@ -36,7 +36,7 @@
 static struct dbt *storage_db  = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int storagedb_sql_config_read_sub(const char* w1,const char* w2)
@@ -45,7 +45,7 @@ int storagedb_sql_config_read_sub(const char* w1,const char* w2)
 }
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆIDã‹ã‚‰å€‰åº«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒAƒJƒEƒ“ƒgID‚©‚ç‘qŒÉƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct storage* storagedb_sql_load(int account_id)
@@ -64,7 +64,7 @@ const struct storage* storagedb_sql_load(int account_id)
 }
 
 /*==========================================
- * å€‰åº«ãƒ‡ãƒ¼ã‚¿ã®ã‚»ãƒ¼ãƒ–
+ * ‘qŒÉƒf[ƒ^‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool storagedb_sql_save(struct storage *s2)
@@ -86,7 +86,7 @@ bool storagedb_sql_save(struct storage *s2)
 }
 
 /*==========================================
- * å€‰åº«ãƒ‡ãƒ¼ã‚¿ã®åŒæœŸ
+ * ‘qŒÉƒf[ƒ^‚Ì“¯Šú
  *------------------------------------------
  */
 int storagedb_sql_sync(void)
@@ -96,7 +96,7 @@ int storagedb_sql_sync(void)
 }
 
 /*==========================================
- * å€‰åº«ãƒ‡ãƒ¼ã‚¿å‰Šé™¤
+ * ‘qŒÉƒf[ƒ^íœ
  *------------------------------------------
  */
 bool storagedb_sql_delete(int account_id)
@@ -113,7 +113,7 @@ bool storagedb_sql_delete(int account_id)
 		if(s) {
 			int i;
 			for(i = 0; i < s->storage_amount; i++) {
-				// ãƒšãƒƒãƒˆå‰Šé™¤
+				// ƒyƒbƒgíœ
 				if(s->store_item[i].card[0] == (short)0xff00) {
 					if( petdb_delete(*((int *)(&s->store_item[i].card[1]))) == false )
 						break;
@@ -145,7 +145,7 @@ bool storagedb_sql_delete(int account_id)
 }
 
 /*==========================================
- * å€‰åº«ãƒ‡ãƒ¼ã‚¿çµ‚äº†
+ * ‘qŒÉƒf[ƒ^I—¹
  *------------------------------------------
  */
 static int storage_db_final(void *key, void *data, va_list ap)
@@ -164,7 +164,7 @@ void storagedb_sql_final(void)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰IDã‹ã‚‰ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒMƒ‹ƒhID‚©‚çƒMƒ‹ƒh‘qŒÉ‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct guild_storage *gstoragedb_sql_load(int guild_id)
@@ -184,7 +184,7 @@ const struct guild_storage *gstoragedb_sql_load(int guild_id)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã®ã‚»ãƒ¼ãƒ–
+ * ƒMƒ‹ƒh‘qŒÉ‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool gstoragedb_sql_save(struct guild_storage *gs2, int easy)
@@ -207,7 +207,7 @@ bool gstoragedb_sql_save(struct guild_storage *gs2, int easy)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã®åŒæœŸ
+ * ƒMƒ‹ƒh‘qŒÉ‚Ì“¯Šú
  *------------------------------------------
  */
 int gstoragedb_sql_sync(void)
@@ -217,7 +217,7 @@ int gstoragedb_sql_sync(void)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«å‰Šé™¤
+ * ƒMƒ‹ƒh‘qŒÉíœ
  *------------------------------------------
  */
 bool gstoragedb_sql_delete(int guild_id)
@@ -234,7 +234,7 @@ bool gstoragedb_sql_delete(int guild_id)
 		if(s) {
 			int i;
 			for(i = 0; i < s->storage_amount; i++) {
-				// ãƒšãƒƒãƒˆå‰Šé™¤
+				// ƒyƒbƒgíœ
 				if( s->store_item[i].card[0] == (short)0xff00) {
 					if( petdb_delete(*((int *)(&s->store_item[i].card[1]))) == false )
 						break;
@@ -266,7 +266,7 @@ bool gstoragedb_sql_delete(int guild_id)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã®çµ‚äº†
+ * ƒMƒ‹ƒh‘qŒÉ‚ÌI—¹
  *------------------------------------------
  */
 static int gstorage_db_final(void *key,void *data,va_list ap)
@@ -285,7 +285,7 @@ void gstoragedb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool storagedb_sql_init(void)

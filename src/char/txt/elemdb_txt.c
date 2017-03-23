@@ -45,7 +45,7 @@ static int elem_journal_cache = 1000;
 #endif
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int elemdb_txt_config_read_sub(const char* w1,const char *w2)
@@ -72,7 +72,7 @@ int elemdb_txt_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * ç²¾éœŠãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ¸—ìƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int elem_tostr(char *str, struct mmo_elemstatus *e)
@@ -91,7 +91,7 @@ static int elem_tostr(char *str, struct mmo_elemstatus *e)
 }
 
 /*==========================================
- * ç²¾éœŠãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ¸—ìƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int elem_fromstr(char *str, struct mmo_elemstatus *e)
@@ -125,20 +125,20 @@ static int elem_fromstr(char *str, struct mmo_elemstatus *e)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// å‚­å…µãƒ‡ãƒ¼ã‚¿ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// —b•ºƒf[ƒ^‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 int elem_journal_rollforward( int key, void* buf, int flag )
 {
 	struct mmo_elemstatus* e = (struct mmo_elemstatus *)numdb_search( elem_db, key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_elemstatus*)buf)->elem_id )
 	{
 		printf("int_elem: journal: key != elem_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( e )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -150,7 +150,7 @@ int elem_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		e = (struct mmo_elemstatus*) aCalloc( 1, sizeof( struct mmo_elemstatus ) );
@@ -167,7 +167,7 @@ int elemdb_txt_sync(void);
 #endif
 
 /*==========================================
- * ç²¾éœŠãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * ¸—ìƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool elemdb_txt_read(void)
@@ -202,19 +202,19 @@ static bool elemdb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_file ) )
 		{
 			int c = journal_rollforward( &elem_journal, elem_journal_rollforward );
 
 			printf("int_elem: journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			elemdb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &elem_journal );
 			journal_create( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_cache, elem_journal_file );
 		}
@@ -225,7 +225,7 @@ static bool elemdb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int elemdb_txt_sync_sub(void *key,void *data,va_list ap)
@@ -257,7 +257,7 @@ int elemdb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( elem_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &elem_journal );
 		journal_create( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_cache, elem_journal_file );
 	}
@@ -267,7 +267,7 @@ int elemdb_txt_sync(void)
 }
 
 /*==========================================
- * ç²¾éœŠå‰Šé™¤
+ * ¸—ìíœ
  *------------------------------------------
  */
 bool elemdb_txt_delete(int elem_id)
@@ -290,7 +290,7 @@ bool elemdb_txt_delete(int elem_id)
 }
 
 /*==========================================
- * ç²¾éœŠIDã‹ã‚‰ç²¾éœŠãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ¸—ìID‚©‚ç¸—ìƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_elemstatus* elemdb_txt_load(int elem_id)
@@ -299,7 +299,7 @@ const struct mmo_elemstatus* elemdb_txt_load(int elem_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool elemdb_txt_save(struct mmo_elemstatus *p2)
@@ -323,7 +323,7 @@ bool elemdb_txt_save(struct mmo_elemstatus *p2)
 }
 
 /*==========================================
- * ç²¾éœŠä½œæˆ
+ * ¸—ìì¬
  *------------------------------------------
  */
 bool elemdb_txt_new(struct mmo_elemstatus *p2)
@@ -341,7 +341,7 @@ bool elemdb_txt_new(struct mmo_elemstatus *p2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int elemdb_txt_final_sub(void *key, void *data, va_list ap)
@@ -367,7 +367,7 @@ void elemdb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool elemdb_txt_init(void)

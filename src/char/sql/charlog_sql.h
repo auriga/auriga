@@ -22,11 +22,11 @@
 #ifndef _CHARLOG_SQL_H_
 #define _CHARLOG_SQL_H_
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 int charlog_log_sql(const char *fmt, ...);
 int charlog_config_read_sql(const char *str, const char *str2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define charlog_log charlog_log_sql
 #define charlog_config_read charlog_config_read_sql
 

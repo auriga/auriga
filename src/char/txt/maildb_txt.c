@@ -39,7 +39,7 @@ static char mail_dir[1024] = "save/mail_data/";
 static char mail_txt[1024] = "save/mail.txt";
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 int maildb_txt_config_read_sub(const char *w1, const char *w2)
@@ -58,7 +58,7 @@ int maildb_txt_config_read_sub(const char *w1, const char *w2)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«æœ¬æ–‡ã®ä¿å­˜
+ * ƒ[ƒ‹–{•¶‚Ì•Û‘¶
  *------------------------------------------
  */
 bool maildb_txt_store_mail(int char_id, struct mail_data *md)
@@ -95,7 +95,7 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®ã‚»ãƒ¼ãƒ–
+ * ƒ[ƒ‹‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAIL_STORE_MAX])
@@ -137,7 +137,7 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
+ * ƒ[ƒ‹ƒf[ƒ^‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md[MAIL_STORE_MAX])
@@ -163,7 +163,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 			char *p;
 			lines++;
 
-			// Auriga-0300ä»¥é™ã®å½¢å¼
+			// Auriga-0300ˆÈ~‚ÌŒ`®
 			s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
 				&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
@@ -219,7 +219,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 		}
 		fclose(fp);
 
-		if(i != m->store) {	// æ•°ã«ç›¸é•ã‚ã‚Šï¼Ÿ
+		if(i != m->store) {	// ”‚É‘Šˆá‚ ‚èH
 			struct mail m2;
 			printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
 			memcpy(&m2,m,sizeof(struct mail));
@@ -235,7 +235,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«å‰Šé™¤
+ * ƒ[ƒ‹íœ
  *------------------------------------------
  */
 bool maildb_txt_deletemail(int char_id, unsigned int mail_num, const struct mail *m)
@@ -269,7 +269,7 @@ bool maildb_txt_deletemail(int char_id, unsigned int mail_num, const struct mail
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ƒ[ƒ‹ƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int mail_tostr(char *str, struct mail *m)
@@ -283,7 +283,7 @@ static int mail_tostr(char *str, struct mail *m)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ƒ[ƒ‹ƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int mail_fromstr(char *str, struct mail *m)
@@ -307,7 +307,7 @@ static int mail_fromstr(char *str, struct mail *m)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * ƒ[ƒ‹ƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool maildb_txt_read(void)
@@ -328,7 +328,7 @@ static bool maildb_txt_read(void)
 			struct mail *m = (struct mail *)aCalloc(1, sizeof(struct mail));
 			if(mail_fromstr(line, m) == 0 && m->char_id > 0) {
 				numdb_insert(mail_db, m->char_id, m);
-				if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// å€¤ãŒç•°å¸¸ãªã®ã§è£œæ­£ã™ã‚‹
+				if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// ’l‚ªˆÙí‚È‚Ì‚Å•â³‚·‚é
 					struct mail_data md[MAIL_STORE_MAX];
 					memset(md, 0, sizeof(md));
 					maildb_txt_read_mail(m->char_id, m, md);
@@ -347,7 +347,7 @@ static bool maildb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int maildb_txt_sync_sub(void *key, void *data, va_list ap)
@@ -378,7 +378,7 @@ int maildb_txt_sync(void)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©å‰Šé™¤ã«ã‚ˆã‚‹ãƒ¡ãƒ¼ãƒ«å‰Šé™¤
+ * ƒLƒƒƒ‰íœ‚É‚æ‚éƒ[ƒ‹íœ
  *------------------------------------------
  */
 bool maildb_txt_delete(int char_id)
@@ -395,7 +395,7 @@ bool maildb_txt_delete(int char_id)
 		maildb_txt_read_mail(char_id, m, md);
 
 		for(i = 0; i < m->store; i++) {
-			// ãƒšãƒƒãƒˆå‰Šé™¤
+			// ƒyƒbƒgíœ
 			if(md[i].item.card[0] == (short)0xff00)
 				petdb_delete(*((int *)(&md[i].item.card[1])));
 		}
@@ -412,7 +412,7 @@ bool maildb_txt_delete(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒLƒƒƒ‰ID‚©‚çƒ[ƒ‹ƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mail* maildb_txt_load(int char_id)
@@ -421,7 +421,7 @@ const struct mail* maildb_txt_load(int char_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool maildb_txt_save(struct mail *m2)
@@ -441,7 +441,7 @@ bool maildb_txt_save(struct mail *m2)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ä½œæˆ
+ * ƒ[ƒ‹ì¬
  *------------------------------------------
  */
 bool maildb_txt_new(int account_id, int char_id)
@@ -458,7 +458,7 @@ bool maildb_txt_new(int account_id, int char_id)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int maildb_txt_final_sub(void *key, void *data, va_list ap)
@@ -477,7 +477,7 @@ void maildb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool maildb_txt_init(void)

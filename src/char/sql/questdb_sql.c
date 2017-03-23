@@ -34,7 +34,7 @@
 static struct dbt *quest_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int questdb_sql_config_read_sub(const char *w1, const char *w2)
@@ -43,7 +43,7 @@ int questdb_sql_config_read_sub(const char *w1, const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int questdb_sql_sync(void)
@@ -53,7 +53,7 @@ int questdb_sql_sync(void)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿å‰Šé™¤
+ * ƒNƒGƒXƒgƒf[ƒ^íœ
  *------------------------------------------
  */
 bool questdb_sql_delete(int char_id)
@@ -73,7 +73,7 @@ bool questdb_sql_delete(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰ã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+ * ƒLƒƒƒ‰ID‚©‚çƒNƒGƒXƒgƒf[ƒ^‚ğæ“¾
  *------------------------------------------
  */
 const struct quest *questdb_sql_load(int char_id)
@@ -82,7 +82,7 @@ const struct quest *questdb_sql_load(int char_id)
 	struct quest *q = (struct quest *)numdb_search(quest_db, char_id);
 
 	if(q && q->char_id == char_id) {
-		// æ—¢ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒå­˜åœ¨ã™ã‚‹
+		// Šù‚ÉƒLƒƒƒbƒVƒ…‚ª‘¶İ‚·‚é
 		return q;
 	}
 	if(q == NULL) {
@@ -125,7 +125,7 @@ const struct quest *questdb_sql_load(int char_id)
 		}
 		q->count = (i < MAX_QUESTLIST)? i: MAX_QUESTLIST;
 	} else {
-		// è¦‹ã¤ã‹ã‚‰ãªãã¦ã‚‚æ­£å¸¸
+		// Œ©‚Â‚©‚ç‚È‚­‚Ä‚à³í
 		q = NULL;
 	}
 	sqldbs_free_result(&mysql_handle);
@@ -134,7 +134,7 @@ const struct quest *questdb_sql_load(int char_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool questdb_sql_save(struct quest *q2)
@@ -147,7 +147,7 @@ bool questdb_sql_save(struct quest *q2)
 	q1 = questdb_sql_load(q2->char_id);
 
 	if(q1 && q1->count <= 0 && q2->count <= 0) {
-		// ãƒ‡ãƒ¼ã‚¿ãŒå…±ã«0å€‹ãªã®ã§ä½•ã‚‚ã—ãªã„
+		// ƒf[ƒ^‚ª‹¤‚É0ŒÂ‚È‚Ì‚Å‰½‚à‚µ‚È‚¢
 		return true;
 	}
 
@@ -159,7 +159,7 @@ bool questdb_sql_save(struct quest *q2)
 		int i;
 
 		if(q1 == NULL || q1->count > 0) {
-			// ãƒ‡ãƒ¼ã‚¿ã‚µãƒ¼ãƒå´ã«ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ã¨ãã ã‘å‰Šé™¤ã‚¯ã‚¨ãƒªã‚’ç™ºè¡Œ
+			// ƒf[ƒ^ƒT[ƒo‘¤‚Éƒf[ƒ^‚ª‚ ‚é‚Æ‚«‚¾‚¯íœƒNƒGƒŠ‚ğ”­s
 			if( sqldbs_query(&mysql_handle, "DELETE FROM `" QUEST_TABLE "` WHERE `char_id`='%d'", q2->char_id) == false )
 				break;
 		}
@@ -196,7 +196,7 @@ bool questdb_sql_save(struct quest *q2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int questdb_sql_final_sub(void *key, void *data, va_list ap)
@@ -215,7 +215,7 @@ void questdb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool questdb_sql_init(void)

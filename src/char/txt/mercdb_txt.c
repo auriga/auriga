@@ -45,7 +45,7 @@ static int merc_journal_cache = 1000;
 #endif
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int mercdb_txt_config_read_sub(const char* w1,const char *w2)
@@ -72,7 +72,7 @@ int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * å‚­å…µãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * —b•ºƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int merc_tostr(char *str, struct mmo_mercstatus *m)
@@ -92,7 +92,7 @@ static int merc_tostr(char *str, struct mmo_mercstatus *m)
 }
 
 /*==========================================
- * å‚­å…µãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * —b•ºƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int merc_fromstr(char *str, struct mmo_mercstatus *m)
@@ -104,7 +104,7 @@ static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 
 	memset(m, 0, sizeof(struct mmo_mercstatus));
 
-	// Auriga-0945ä»¥é™ã®å½¢å¼
+	// Auriga-0945ˆÈ~‚ÌŒ`®
 	set = sscanf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
 		&tmp_int[0],&tmp_int[1],
 		&tmp_int[2],&tmp_int[3],
@@ -114,7 +114,7 @@ static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 	{
 		char tmp_str[256];
 
-		// Auriga-0597ä»¥é™ã®å½¢å¼
+		// Auriga-0597ˆÈ~‚ÌŒ`®
 		set = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%u",
 			&tmp_int[0],&tmp_int[1],tmp_str,
 			&tmp_int[2],&tmp_int[3],
@@ -141,20 +141,20 @@ static int merc_fromstr(char *str, struct mmo_mercstatus *m)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// å‚­å…µãƒ‡ãƒ¼ã‚¿ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// —b•ºƒf[ƒ^‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 int merc_journal_rollforward( int key, void* buf, int flag )
 {
 	struct mmo_mercstatus* m = (struct mmo_mercstatus *)numdb_search( merc_db, key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_mercstatus*)buf)->merc_id )
 	{
 		printf("int_merc: journal: key != merc_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( m )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -166,7 +166,7 @@ int merc_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		m = (struct mmo_mercstatus*) aCalloc( 1, sizeof( struct mmo_mercstatus ) );
@@ -183,7 +183,7 @@ int mercdb_txt_sync(void);
 #endif
 
 /*==========================================
- * å‚­å…µãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * —b•ºƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool mercdb_txt_read(void)
@@ -218,19 +218,19 @@ static bool mercdb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_file ) )
 		{
 			int c = journal_rollforward( &merc_journal, merc_journal_rollforward );
 
 			printf("int_merc: journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			mercdb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &merc_journal );
 			journal_create( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_cache, merc_journal_file );
 		}
@@ -241,7 +241,7 @@ static bool mercdb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int mercdb_txt_sync_sub(void *key, void *data, va_list ap)
@@ -274,7 +274,7 @@ int mercdb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( merc_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &merc_journal );
 		journal_create( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_cache, merc_journal_file );
 	}
@@ -284,7 +284,7 @@ int mercdb_txt_sync(void)
 }
 
 /*==========================================
- * å‚­å…µå‰Šé™¤
+ * —b•ºíœ
  *------------------------------------------
  */
 bool mercdb_txt_delete(int merc_id)
@@ -307,7 +307,7 @@ bool mercdb_txt_delete(int merc_id)
 }
 
 /*==========================================
- * å‚­å…µIDã‹ã‚‰å‚­å…µãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰
+ * —b•ºID‚©‚ç—b•ºƒf[ƒ^‚Ìƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_mercstatus* mercdb_txt_load(int merc_id)
@@ -316,7 +316,7 @@ const struct mmo_mercstatus* mercdb_txt_load(int merc_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool mercdb_txt_save(struct mmo_mercstatus *p2)
@@ -340,7 +340,7 @@ bool mercdb_txt_save(struct mmo_mercstatus *p2)
 }
 
 /*==========================================
- * å‚­å…µä½œæˆ
+ * —b•ºì¬
  *------------------------------------------
  */
 bool mercdb_txt_new(struct mmo_mercstatus *p2)
@@ -359,7 +359,7 @@ bool mercdb_txt_new(struct mmo_mercstatus *p2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int mercdb_txt_final_sub(void *key,void *data,va_list ap)
@@ -385,7 +385,7 @@ void mercdb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool mercdb_txt_init(void)

@@ -34,8 +34,8 @@
 #define AURIGA_SERVER_INTER		4	// inter server
 #define AURIGA_SERVER_MAP		8	// map server
 
-// AURIGA_MOD_VERSIONã¯æœªå®šç¾©ã§ã™
-// Revisionç•ªå·ã‚’æ›´æ–°ã—ã¦ãã ã•ã„
+// AURIGA_MOD_VERSION‚Í–¢’è‹`‚Å‚·
+// Revision”Ô†‚ğXV‚µ‚Ä‚­‚¾‚³‚¢
 #define AURIGA_MOD_VERSION	0	// mod version
 
 int get_current_version(void);

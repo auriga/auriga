@@ -158,9 +158,9 @@ int login_convert(void)
 			i = sscanf(p, "%d\t%255[^\t]\t%255[^\t]\t%255[^\t]\t%c\t%d\t%d\t%n",
 				&account_id, userid, pass, lastlogin, &sex, &logincount, &state, &n);
 
-			if(i < 5)		// %newid% ã®è¡Œã¯convertã—ãªã„
+			if(i < 5)		// %newid% ‚Ìs‚Íconvert‚µ‚È‚¢
 				continue;
-			if(account_id < 0)	// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆIDãŒãŠã‹ã—ã„å ´åˆã¯å¿µã®ãŸã‚å¼¾ã„ã¦ãŠã
+			if(account_id < 0)	// ƒAƒJƒEƒ“ƒgID‚ª‚¨‚©‚µ‚¢ê‡‚Í”O‚Ì‚½‚ß’e‚¢‚Ä‚¨‚­
 				continue;
 			user_level = isGM(account_id);
 
@@ -169,14 +169,14 @@ int login_convert(void)
 			pass[23]      = '\0';
 			lastlogin[23] = '\0';
 
-			// ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ãŒãªã„å ´åˆã¯ "@" ã«ç½®æ›
+			// ƒ[ƒ‹ƒAƒhƒŒƒX‚ª‚È‚¢ê‡‚Í "@" ‚É’uŠ·
 			if( n <= 0 || sscanf(p+n, "%255[^\t]\t%n", email, &n2) != 1 || !strchr(email,'@') ) {
 				memset(&email,0,sizeof(email));
 				email[0] = '@';
 			}
 			n = (n2 > 0)? n+n2: 0;
 
-			// å…¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å…±æœ‰ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•° ( ## å¤‰æ•° ) èª­ã¿è¾¼ã¿
+			// ‘Sƒ[ƒ‹ƒh‹¤—LƒAƒJƒEƒ“ƒg•Ï” ( ## •Ï” ) “Ç‚İ‚İ
 			if(n > 0) {
 				char str[256];
 				memset(&dat, 0, sizeof(dat));
@@ -196,11 +196,11 @@ int login_convert(void)
 				dat.reg_num = 0;
 			}
 
-			// ã‚µãƒ¼ãƒã®å ´åˆIDãŒ0ã ã¨AUTO_INCREMENTã•ã‚Œã‚‹ã®ã§è£œæ­£ã™ã‚‹
+			// ƒT[ƒo‚Ìê‡ID‚ª0‚¾‚ÆAUTO_INCREMENT‚³‚ê‚é‚Ì‚Å•â³‚·‚é
 			if(sex == 'S')
 				account_id++;
 
-			// è­¦å‘ŠæŠ‘åˆ¶ã®ãŸã‚å¤‰æ›ã—ã¦ãŠã
+			// Œx—}§‚Ì‚½‚ß•ÏŠ·‚µ‚Ä‚¨‚­
 			if(strcmp(lastlogin,"-") == 0)
 				strcpy(lastlogin,"0000-00-00 00:00:00");
 

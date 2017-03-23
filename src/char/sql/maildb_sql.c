@@ -36,7 +36,7 @@
 static struct dbt *mail_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int maildb_sql_config_read_sub(const char *w1, const char *w2)
@@ -45,7 +45,7 @@ int maildb_sql_config_read_sub(const char *w1, const char *w2)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«æœ¬æ–‡ã®ä¿å­˜
+ * ƒ[ƒ‹–{•¶‚Ì•Û‘¶
  *------------------------------------------
  */
 bool maildb_sql_store_mail(int char_id, struct mail_data *md)
@@ -78,7 +78,7 @@ bool maildb_sql_store_mail(int char_id, struct mail_data *md)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®ã‚»ãƒ¼ãƒ–
+ * ƒ[ƒ‹‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAIL_STORE_MAX])
@@ -90,7 +90,7 @@ bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 	if(i < 0 || i >= MAIL_STORE_MAX)
 		return false;
 
-	// readã‚‚ã—ãã¯zeny,itemãƒ‡ãƒ¼ã‚¿ã‚’æ›´æ–°ã™ã‚‹ã ã‘ã§ã‚ˆã„
+	// read‚à‚µ‚­‚Ízeny,itemƒf[ƒ^‚ğXV‚·‚é‚¾‚¯‚Å‚æ‚¢
 	result = sqldbs_query(&mysql_handle,
 		"UPDATE `" MAIL_DATA_TABLE "` SET `read` = '%d', `zeny` = '%d', "
 		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
@@ -106,7 +106,7 @@ bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®èª­ã¿å–ã‚Š
+ * ƒ[ƒ‹‚Ì“Ç‚İæ‚è
  *------------------------------------------
  */
 bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md[MAIL_STORE_MAX])
@@ -167,7 +167,7 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 	}
 	sqldbs_free_result(&mysql_handle);
 
-	if(i != m->store) {	// æ•°ã«ç›¸é•ã‚ã‚Šï¼Ÿ
+	if(i != m->store) {	// ”‚É‘Šˆá‚ ‚èH
 		struct mail m2;
 		printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
 		memcpy(&m2, m, sizeof(struct mail));
@@ -181,7 +181,7 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«å‰Šé™¤
+ * ƒ[ƒ‹íœ
  *------------------------------------------
  */
 bool maildb_sql_deletemail(int char_id, unsigned int mail_num, const struct mail *m)
@@ -209,7 +209,7 @@ bool maildb_sql_deletemail(int char_id, unsigned int mail_num, const struct mail
 
 	if(sqldbs_affected_rows(&mysql_handle) <= 0)
 	{
-		// å‰Šé™¤å¤±æ•—
+		// íœ¸”s
 		return false;
 	}
 
@@ -221,7 +221,7 @@ bool maildb_sql_deletemail(int char_id, unsigned int mail_num, const struct mail
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int maildb_sql_sync(void)
@@ -231,7 +231,7 @@ int maildb_sql_sync(void)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©å‰Šé™¤ã«ã‚ˆã‚‹ãƒ¡ãƒ¼ãƒ«å‰Šé™¤
+ * ƒLƒƒƒ‰íœ‚É‚æ‚éƒ[ƒ‹íœ
  *------------------------------------------
  */
 bool maildb_sql_delete(int char_id)
@@ -253,7 +253,7 @@ bool maildb_sql_delete(int char_id)
 			maildb_sql_read_mail(char_id, m, md);
 
 			for(i = 0; i < m->store; i++) {
-				// ãƒšãƒƒãƒˆå‰Šé™¤
+				// ƒyƒbƒgíœ
 				if(md[i].item.card[0] == (short)0xff00) {
 					if( petdb_delete(*((int *)(&md[i].item.card[1]))) == false )
 						break;
@@ -288,7 +288,7 @@ bool maildb_sql_delete(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒLƒƒƒ‰ID‚©‚çƒ[ƒ‹ƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mail* maildb_sql_load(int char_id)
@@ -297,11 +297,11 @@ const struct mail* maildb_sql_load(int char_id)
 	char **sql_row;
 	struct mail *m = (struct mail *)numdb_search(mail_db, char_id);
 
-	// æ—¢ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒå­˜åœ¨ã™ã‚‹
+	// Šù‚ÉƒLƒƒƒbƒVƒ…‚ª‘¶İ‚·‚é
 	if(m && m->char_id == char_id)
 		return m;
 
-	// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®ä½œæˆ
+	// ƒLƒƒƒbƒVƒ…‚Ìì¬
 	if(m == NULL)
 	{
 		m = (struct mail *)aMalloc(sizeof(struct mail));
@@ -322,13 +322,13 @@ const struct mail* maildb_sql_load(int char_id)
 		m->rates      = (unsigned int)atoi(sql_row[1]);
 		m->store      = atoi(sql_row[2]);
 
-		if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// å€¤ãŒç•°å¸¸ãªã®ã§è£œæ­£ã™ã‚‹
+		if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// ’l‚ªˆÙí‚È‚Ì‚Å•â³‚·‚é
 			struct mail_data md[MAIL_STORE_MAX];
 			memset(md, 0, sizeof(md));
 			maildb_sql_read_mail(m->char_id, m, md);
 		}
 	} else {
-		// è¦‹ã¤ã‹ã‚‰ãªãã¦ã‚‚æ­£å¸¸
+		// Œ©‚Â‚©‚ç‚È‚­‚Ä‚à³í
 		m = NULL;
 	}
 	sqldbs_free_result(&mysql_handle);
@@ -337,7 +337,7 @@ const struct mail* maildb_sql_load(int char_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool maildb_sql_save(struct mail *m2)
@@ -382,7 +382,7 @@ bool maildb_sql_save(struct mail *m2)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ä½œæˆ
+ * ƒ[ƒ‹ì¬
  *------------------------------------------
  */
 bool maildb_sql_new(int account_id, int char_id)
@@ -390,7 +390,7 @@ bool maildb_sql_new(int account_id, int char_id)
 	bool result = false;
 	struct mail *m = (struct mail *)numdb_search(mail_db, char_id);
 
-	// mail_load() ã§mail_dbã«ç™»éŒ²ã—ãŸã‚ã¨å‘¼ã°ã‚Œã‚‹ã¯ãšã ãŒå¿µã®ãŸã‚
+	// mail_load() ‚Åmail_db‚É“o˜^‚µ‚½‚ ‚ÆŒÄ‚Î‚ê‚é‚Í‚¸‚¾‚ª”O‚Ì‚½‚ß
 	if(m == NULL) {
 		m = (struct mail *)aMalloc(sizeof(struct mail));
 		numdb_insert(mail_db, char_id, m);
@@ -410,7 +410,7 @@ bool maildb_sql_new(int account_id, int char_id)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int maildb_sql_final_sub(void *key, void *data, va_list ap)
@@ -429,7 +429,7 @@ void maildb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool maildb_sql_init(void)

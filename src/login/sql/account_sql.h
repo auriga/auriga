@@ -27,7 +27,7 @@
 
 #include "../login.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool account_sql_init(void);
 void account_sql_final(void);
 void account_sql_sync(void);
@@ -41,7 +41,7 @@ bool account_sql_account_save(struct mmo_account *ac2);
 bool account_sql_account_new(struct mmo_account* account,const char *tmpstr);
 void display_conf_warnings_sql(void);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define login_init            account_sql_init
 #define login_sync            account_sql_sync
 #define login_final           account_sql_final

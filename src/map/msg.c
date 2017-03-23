@@ -51,7 +51,7 @@ const char * msg_txt(int msg_number)
 }
 
 /*==========================================
- * ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆä»˜ããƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
+ * ƒtƒH[ƒ}ƒbƒg•t‚«ƒƒbƒZ[ƒWo—Í
  *------------------------------------------
  */
 void msg_output(const int fd, const char *format, ...)
@@ -69,7 +69,7 @@ void msg_output(const int fd, const char *format, ...)
 }
 
 /*==========================================
- * Message of the Dayã®é€ä¿¡
+ * Message of the Day‚Ì‘—M
  *------------------------------------------
  */
 void msg_send_motd(struct map_session_data *sd)
@@ -139,7 +139,7 @@ int msg_config_read(const char *cfgName)
 }
 
 /*==========================================
- * Message of the Dayã®èª­ã¿è¾¼ã¿
+ * Message of the Day‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 int msg_read_motd(void)
@@ -180,8 +180,8 @@ int msg_read_motd(void)
 	}
 
 	if(size > 0) {
-		motd = (char *)aRealloc(motd, pos + 1);	// ç¸®å°å‡¦ç†
-		motd[pos] = '\0';	// æœ«å°¾ã« \0 ã‚’2ã¤ç¶šã‘ã‚‹
+		motd = (char *)aRealloc(motd, pos + 1);	// k¬ˆ—
+		motd[pos] = '\0';	// ––”ö‚É \0 ‚ğ2‚Â‘±‚¯‚é
 	}
 
 	fclose(fp);
@@ -190,7 +190,7 @@ int msg_read_motd(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 void do_final_msg(void)
@@ -212,7 +212,7 @@ void do_final_msg(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 int do_init_msg(void)

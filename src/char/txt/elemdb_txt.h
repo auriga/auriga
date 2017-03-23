@@ -24,7 +24,7 @@
 
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool elemdb_txt_init(void);
 int elemdb_txt_sync(void);
 bool elemdb_txt_delete(int elem_id);
@@ -34,7 +34,7 @@ bool elemdb_txt_new(struct mmo_elemstatus *p);
 void elemdb_txt_final(void);
 int elemdb_txt_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define elemdb_init   elemdb_txt_init
 #define elemdb_sync   elemdb_txt_sync
 #define elemdb_delete elemdb_txt_delete

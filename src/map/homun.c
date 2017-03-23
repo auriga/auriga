@@ -64,7 +64,7 @@ static struct homun_skill_tree_entry {
 } homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼æƒ…å ±ã®æ¤œç´¢
+ * ƒXƒLƒ‹ƒcƒŠ[î•ñ‚ÌŒŸõ
  *------------------------------------------
  */
 static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int skillid)
@@ -81,7 +81,7 @@ static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int ski
 		if(st[mid].id && st[mid].id == skillid)
 			return &st[mid];
 
-		// 0ã®ã¨ãã¯å¤§ã¨ã¿ãªã™
+		// 0‚Ì‚Æ‚«‚Í‘å‚Æ‚İ‚È‚·
 		if(st[mid].id == 0 || st[mid].id > skillid)
 			max = mid;
 		else
@@ -91,7 +91,7 @@ static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int ski
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ã®MaxLvã‚’è¿”ã™
+ * ƒXƒLƒ‹‚ÌMaxLv‚ğ•Ô‚·
  *------------------------------------------
  */
 int homun_get_skilltree_max(int class_,int skillid)
@@ -106,7 +106,7 @@ int homun_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- * è…¹æ¸›ã‚Š
+ * • Œ¸‚è
  *------------------------------------------
  */
 static int homun_hungry_cry(int tid,unsigned int tick,int id,void *data)
@@ -148,9 +148,9 @@ static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 	sd->hd->status.hungry--;
 
 	if(sd->hd->status.hungry == 0) {
-		sd->hd->status.hungry = 1;	// 0ã«ã¯ãªã‚‰ãªã„
+		sd->hd->status.hungry = 1;	// 0‚É‚Í‚È‚ç‚È‚¢
 	}
-	if(sd->hd->status.hungry <= 10) {	// 10ä»¥ä¸‹ã§æ¸›ã‚Šå§‹ã‚ã‚‹(æ³£ãã‚¨ãƒ¢ã‚’20ç§’ã«1å›å‡ºã™ã‚ˆã†ã«ãªã‚‹)
+	if(sd->hd->status.hungry <= 10) {	// 10ˆÈ‰º‚ÅŒ¸‚èn‚ß‚é(‹ƒ‚«ƒGƒ‚‚ğ20•b‚É1‰ño‚·‚æ‚¤‚É‚È‚é)
 		int f = 0;
 		if(sd->hd->intimate == sd->hd->status.intimate)
 			f = 1;
@@ -169,7 +169,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 	}
 
 	clif_send_homdata(sd,2,sd->hd->status.hungry);
-	// æœ¬é¯–ã§ã¯ã“ã“ã§ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’é€ã‚‰ãªã„ãŒã€é€ã‚‰ãªã„ã¨"ãƒ›ãƒ ãŒè…¹ãºã“ã§ã™ï¼"ãŒå‡ºãªã„
+	// –{I‚Å‚Í‚±‚±‚ÅƒXƒe[ƒ^ƒX‚ğ‘—‚ç‚È‚¢‚ªA‘—‚ç‚È‚¢‚Æ"ƒzƒ€‚ª• ‚Ø‚±‚Å‚·I"‚ªo‚È‚¢
 	clif_send_homstatus(sd,0);
 
 	interval = 60*1000;
@@ -195,7 +195,7 @@ int homun_hungry_timer_delete(struct homun_data *hd)
 }
 
 /*==========================================
- * ä¸Šæ˜‡ã‚¹ãƒ†è¨ˆç®—
+ * ã¸ƒXƒeŒvZ
  *------------------------------------------
  */
 int homun_upstatus(struct mmo_homunstatus *hd)
@@ -213,7 +213,7 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 	grow_sp = homun_db[class_].grow_max.sp - homun_db[class_].grow_min.sp + 1;
 	hd->max_sp += homun_db[class_].grow_min.sp + atn_rand()%grow_sp;
 
-	//å„ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã¯å‰å›ã‚¢ãƒƒãƒ—æ™‚ã®ç«¯æ•°åˆ†ã‚’åŠ ç®—ã—ã¦è¨ˆç®—
+	//ŠeƒXƒe[ƒ^ƒX‚Í‘O‰ñƒAƒbƒv‚Ì’[”•ª‚ğ‰ÁZ‚µ‚ÄŒvZ
 	grow_str = homun_db[class_].grow_max.str - homun_db[class_].grow_min.str + 1;
 	grow_str = homun_db[class_].grow_min.str + atn_rand()%grow_str;
 	hd->str += (grow_str + hd->f_str) / 10;
@@ -248,7 +248,7 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 }
 
 /*==========================================
- * å„ã‚¹ãƒ†è¨ˆç®—
+ * ŠeƒXƒeŒvZ
  *------------------------------------------
  */
 int homun_calc_status(struct homun_data *hd)
@@ -281,49 +281,49 @@ int homun_calc_status(struct homun_data *hd)
 	hd->hprecov_rate = 100;
 	hd->sprecov_rate = 100;
 
-	// ãƒã‚§ãƒ³ã‚¸ã‚¤ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚·ãƒ§ãƒ³
+	// ƒ`ƒFƒ“ƒWƒCƒ“ƒXƒgƒ‰ƒNƒVƒ‡ƒ“
 	if((lv = homun_checkskill(hd,HVAN_INSTRUCT)) > 0)
 	{
 		hd->str  += lv - ((lv % 3 == 2)? 1 : 0);
 		hd->int_ += lv - ((lv % 3 == 0)? 1 : 0);
 	}
-	// è„³æ‰‹è¡“
+	// ”]èp
 	if((lv = homun_checkskill(hd,HLIF_BRAIN)) > 0)
 	{
 		sp_rate += lv;
 		hd->sprecov_rate += lv*3;
 	}
-	// ã‚¢ãƒ€ãƒãƒ³ãƒ†ã‚£ã‚¦ãƒ ã‚¹ã‚­ãƒ³
+	// ƒAƒ_ƒ}ƒ“ƒeƒBƒEƒ€ƒXƒLƒ“
 	if((lv = homun_checkskill(hd,HAMI_SKIN)) > 0)
 	{
 		hp_rate += lv*2;
 		hd->def += lv*4;
 		hd->hprecov_rate += lv*5;
 	}
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã«ã‚ˆã‚‹åŸºæœ¬ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è£œæ­£ãƒ›ãƒ ã‚¹ã‚­ãƒ«
+	// ƒXƒe[ƒ^ƒX•Ï‰»‚É‚æ‚éŠî–{ƒpƒ‰ƒ[ƒ^•â³ƒzƒ€ƒXƒLƒ‹
 	if(hd->sc.count > 0)
 	{
-		// ç·Šæ€¥å›é¿
+		// ‹Ù‹}‰ñ”ğ
 		if(hd->sc.data[SC_AVOID].timer != -1)
 			speed_rate -= hd->sc.data[SC_AVOID].val1*10;
-		// ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸
+		// ƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW
 		if(hd->sc.data[SC_CHANGE].timer != -1) {
 			hd->vit  += 30 * hd->sc.data[SC_CHANGE].val1;
 			hd->int_ += 20 * hd->sc.data[SC_CHANGE].val1;
 		}
-		// ãƒ–ãƒ©ãƒƒãƒ‰ãƒ©ã‚¹ãƒˆ
+		// ƒuƒ‰ƒbƒhƒ‰ƒXƒg
 		if(hd->sc.data[SC_BLOODLUST].timer != -1)
 			atk_rate += hd->sc.data[SC_BLOODLUST].val1*10+20;
-		// ãƒ•ãƒªãƒƒãƒˆãƒ ãƒ¼ãƒ–
+		// ƒtƒŠƒbƒgƒ€[ƒu
 		if(hd->sc.data[SC_FLEET].timer != -1) {
 			aspd_rate -= hd->sc.data[SC_FLEET].val1*3;
 			atk_rate  += 5+hd->sc.data[SC_FLEET].val1*5;
 		}
 
-		// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã«ã‚ˆã‚‹åŸºæœ¬ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è£œæ­£
+		// ƒXƒe[ƒ^ƒX•Ï‰»‚É‚æ‚éŠî–{ƒpƒ‰ƒ[ƒ^•â³
 		if(battle_config.allow_homun_status_change)
 		{
-			// ã‚´ã‚¹ãƒšãƒ«ALL+20
+			// ƒSƒXƒyƒ‹ALL+20
 			if(hd->sc.data[SC_INCALLSTATUS].timer != -1) {
 				hd->str  += hd->sc.data[SC_INCALLSTATUS].val1;
 				hd->agi  += hd->sc.data[SC_INCALLSTATUS].val1;
@@ -333,28 +333,28 @@ int homun_calc_status(struct homun_data *hd)
 				hd->luk  += hd->sc.data[SC_INCALLSTATUS].val1;
 			}
 
-			if(hd->sc.data[SC_INCREASEAGI].timer != -1)	// é€Ÿåº¦å¢—åŠ 
+			if(hd->sc.data[SC_INCREASEAGI].timer != -1)	// ‘¬“x‘‰Á
 				hd->agi += 2+hd->sc.data[SC_INCREASEAGI].val1;
 
-			if(hd->sc.data[SC_DECREASEAGI].timer != -1)	// é€Ÿåº¦æ¸›å°‘(agiã¯battle.cã§)
+			if(hd->sc.data[SC_DECREASEAGI].timer != -1)	// ‘¬“xŒ¸­(agi‚Íbattle.c‚Å)
 				hd->agi -= 2+hd->sc.data[SC_DECREASEAGI].val1;
 
-			if(hd->sc.data[SC_BLESSING].timer != -1) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+			if(hd->sc.data[SC_BLESSING].timer != -1) {	// ƒuƒŒƒbƒVƒ“ƒO
 				hd->str  += hd->sc.data[SC_BLESSING].val1;
 				hd->dex  += hd->sc.data[SC_BLESSING].val1;
 				hd->int_ += hd->sc.data[SC_BLESSING].val1;
 			}
-			if(hd->sc.data[SC_SUITON].timer != -1) {	// æ°´é
+			if(hd->sc.data[SC_SUITON].timer != -1) {	// …“Ù
 				if(hd->sc.data[SC_SUITON].val3)
 					hd->agi += hd->sc.data[SC_SUITON].val3;
 				if(hd->sc.data[SC_SUITON].val4)
 					hd->speed = hd->speed*2;
 			}
 
-			if(hd->sc.data[SC_GLORIA].timer != -1)	// ã‚°ãƒ­ãƒªã‚¢
+			if(hd->sc.data[SC_GLORIA].timer != -1)	// ƒOƒƒŠƒA
 				hd->luk += 30;
 
-			if(hd->sc.data[SC_QUAGMIRE].timer != -1) {	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+			if(hd->sc.data[SC_QUAGMIRE].timer != -1) {	// ƒNƒ@ƒOƒ}ƒCƒA
 				short subagi = 0;
 				short subdex = 0;
 				subagi = (hd->status.agi/2 < hd->sc.data[SC_QUAGMIRE].val1*10) ? hd->status.agi/2 : hd->sc.data[SC_QUAGMIRE].val1*10;
@@ -393,13 +393,13 @@ int homun_calc_status(struct homun_data *hd)
 
 	aspd = aspd_k - aspd_k * hd->dex / 1000 - (aspd_k * hd->agi / 250);
 
-	// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ã‚¹
+	// ƒfƒBƒtƒFƒ“ƒX
 	if(hd->sc.data[SC_DEFENCE].timer != -1)
 		hd->def += hd->sc.data[SC_DEFENCE].val1*2;
-	// ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ã‚¹ãƒ”ãƒ¼ãƒ‰
+	// ƒI[ƒo[ƒhƒXƒs[ƒh
 	if(hd->sc.data[SC_SPEED].timer != -1)
 		hd->flee = hd->flee + 10 + hd->sc.data[SC_SPEED].val1*10;
-	// è£œæ­£
+	// •â³
 	if(atk_rate != 100)
 		hd->atk = hd->atk*atk_rate/100;
 	if(matk_rate != 100)
@@ -424,14 +424,14 @@ int homun_calc_status(struct homun_data *hd)
 		hd->speed = hd->speed*speed_rate/100;
 
 	if(hd->max_hp <= 0)
-		hd->max_hp = 1;	// mhp 0 ã ã¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¨ãƒ©ãƒ¼
+		hd->max_hp = 1;	// mhp 0 ‚¾‚ÆƒNƒ‰ƒCƒAƒ“ƒgƒGƒ‰[
 	if(hd->max_sp <= 0)
 		hd->max_sp = 1;
 
 	// ASPD
 	hd->aspd = (int)ceil(aspd);
 
-	// è‡ªç„¶å›å¾©
+	// ©‘R‰ñ•œ
 	hd->nhealhp = hd->max_hp/100 + hd->vit/5 + 2;
 	hd->nhealsp = (hd->int_/6)+(hd->max_sp/100)+1;
 	if(hd->int_ >= 120)
@@ -447,7 +447,7 @@ int homun_calc_status(struct homun_data *hd)
 }
 
 /*==========================================
- * å„ã‚¹ãƒ†å†è¨ˆç®—
+ * ŠeƒXƒeÄŒvZ
  *------------------------------------------
  */
 int homun_recalc_status(struct homun_data *hd)
@@ -474,14 +474,14 @@ int homun_recalc_status(struct homun_data *hd)
 
 	for(lv=1; lv<hd->status.base_level; lv++)
 	{
-		homun_upstatus(&hd->status);	// ã‚¹ãƒ†ã‚¢ãƒƒãƒ—è¨ˆç®—
-		homun_calc_status(hd);		// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—
+		homun_upstatus(&hd->status);	// ƒXƒeƒAƒbƒvŒvZ
+		homun_calc_status(hd);		// ƒXƒe[ƒ^ƒXŒvZ
 	}
 	return 0;
 }
 
 /*==========================================
- * ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹IDã‚’å–å¾—
+ * ƒzƒ€ƒ“ƒNƒ‹ƒXID‚ğæ“¾
  *------------------------------------------
  */
 static int homun_get_create_homunid(void)
@@ -497,13 +497,13 @@ static int homun_get_create_homunid(void)
 }
 
 /*==========================================
- * ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹æ–°è¦ä½œæˆ
+ * ƒzƒ€ƒ“ƒNƒ‹ƒXV‹Kì¬
  *------------------------------------------
  */
 int homun_create_hom(struct map_session_data *sd,int homunid)
 {
 	struct mmo_homunstatus hd;
-	int class_ = homunid - HOM_ID;	// ä½œæˆã•ã‚Œã‚‹ãƒ›ãƒ ã®é¸å®šæ–¹æ³•ä¸æ˜
+	int class_ = homunid - HOM_ID;	// ì¬‚³‚ê‚éƒzƒ€‚Ì‘I’è•û–@•s–¾
 
 	nullpo_retr(1, sd);
 
@@ -518,9 +518,9 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.max_hp       = 1;
 	hd.max_sp       = 0;
 	hd.status_point = 0;
-	hd.skill_point  = homun_db[class_].skillpoint;	// åˆæœŸã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆå°å…¥ã™ã‚‹ã‹ã‚‚â€¦æˆé•·ã—ãªã„ãƒ›ãƒ ç”¨
+	hd.skill_point  = homun_db[class_].skillpoint;	// ‰ŠúƒXƒLƒ‹ƒ|ƒCƒ“ƒg“±“ü‚·‚é‚©‚àc¬’·‚µ‚È‚¢ƒzƒ€—p
 
-	//å„ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¢ãƒƒãƒ—æ™‚ã®ç«¯æ•°ä¿å­˜ç”¨
+	//ŠeƒXƒe[ƒ^ƒXƒAƒbƒv‚Ì’[”•Û‘¶—p
 	hd.f_str = 0;
 	hd.f_agi = 0;
 	hd.f_vit = 0;
@@ -528,7 +528,7 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.f_dex = 0;
 	hd.f_luk = 0;
 
-	// åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’DBã‹ã‚‰åŸ‹ã‚è¾¼ã¿
+	// ‰ŠúƒXƒe[ƒ^ƒX‚ğDB‚©‚ç–„‚ß‚İ
 	hd.max_hp = homun_db[class_].hp;
 	hd.max_sp = homun_db[class_].sp;
 	hd.str    = homun_db[class_].str;
@@ -541,8 +541,8 @@ int homun_create_hom(struct map_session_data *sd,int homunid)
 	hd.hp = hd.max_hp;
 	hd.sp = hd.max_sp;
 
-	hd.intimate    = 2000;	// è¦ªå¯†åº¦ 2000/100000
-	hd.hungry      = 50;	// æº€è…¹åº¦ 50/100
+	hd.intimate    = 2000;	// e–§“x 2000/100000
+	hd.hungry      = 50;	// –• “x 50/100
 	hd.incubate    = 0;
 	hd.rename_flag = 0;
 
@@ -584,10 +584,10 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->bl.y             = hd->ud.to_y;
 	hd->bl.id            = npc_get_new_npc_id();
 	hd->dir              = sd->dir;
-	hd->speed            = status_get_speed(&sd->bl);	// æ­©è¡Œé€Ÿåº¦ã¯ã€ã‚³ãƒ¼ãƒ«æ™‚ã®ä¸»äººã®speedã«ãªã‚‹
+	hd->speed            = status_get_speed(&sd->bl);	// •às‘¬“x‚ÍAƒR[ƒ‹‚Ìål‚Ìspeed‚É‚È‚é
 	hd->bl.type          = BL_HOM;
 	hd->target_id        = 0;
-	hd->attackable       = 1;	// ã“ã‚Œã‚’0ã«ã™ã‚‹ã¨ã€ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‹ã‚‰æ”»æ’ƒãƒ‘ã‚±ãƒƒãƒˆã‚’å‡ºã•ãªããªã‚‹
+	hd->attackable       = 1;	// ‚±‚ê‚ğ0‚É‚·‚é‚ÆAƒNƒ‰ƒCƒAƒ“ƒg‚©‚çUŒ‚ƒpƒPƒbƒg‚ğo‚³‚È‚­‚È‚é
 	hd->limits_to_growth = 0;
 	hd->msd              = sd;
 	hd->view_class       = homun_db[class_].view_class;
@@ -597,20 +597,20 @@ static int homun_data_init(struct map_session_data *sd)
 
 	unit_dataset(&hd->bl);
 
-	// è¦ªå¯†åº¦
+	// e–§“x
 	if(battle_config.save_homun_temporal_intimate) {
 		hd->intimate = pc_readglobalreg(sd,"HOM_TEMP_INTIMATE");
-		if(hd->intimate == 0)	// æ—§äº’æ›
+		if(hd->intimate == 0)	// ‹ŒŒİŠ·
 			hd->intimate = hd->status.intimate;
 	} else {
 		hd->intimate = hd->status.intimate;
 	}
 
 #ifdef DYNAMIC_SC_DATA
-	// ãƒ€ãƒŸãƒ¼æŒ¿å…¥
+	// ƒ_ƒ~[‘}“ü
 	hd->sc.data = dummy_sc_data;
 #else
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã®åˆæœŸåŒ–
+	// ƒXƒe[ƒ^ƒXˆÙí‚Ì‰Šú‰»
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		hd->sc.data[i].timer = -1;
 		hd->sc.data[i].val1  = 0;
@@ -626,9 +626,9 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->sc.opt3  = OPT3_NORMAL;
 
 	hd->status.option &= OPTION_MASK;
-	hd->sc.option = hd->status.option;	// optionã¯scã«ç§»ã—ã¦ä½¿ã†
+	hd->sc.option = hd->status.option;	// option‚Ísc‚ÉˆÚ‚µ‚Äg‚¤
 
-	homun_calc_status(hd);			// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—
+	homun_calc_status(hd);			// ƒXƒe[ƒ^ƒXŒvZ
 	map_addiddb(&hd->bl);
 
 	hd->natural_heal_hp = add_timer(tick+HOM_NATURAL_HEAL_HP_INTERVAL,homun_natural_heal_hp,hd->bl.id,NULL);
@@ -644,7 +644,7 @@ static int homun_data_init(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚³ãƒ¼ãƒ«ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹
+ * ƒR[ƒ‹ƒzƒ€ƒ“ƒNƒ‹ƒX
  *------------------------------------------
  */
 int homun_callhom(struct map_session_data *sd)
@@ -655,12 +655,12 @@ int homun_callhom(struct map_session_data *sd)
 		return 0;
 
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id) {
-		// ä½œæˆæ¸ˆã¿ãªã‚‰ã€å‡ºã™
+		// ì¬Ï‚İ‚È‚çAo‚·
 		sd->hd = (struct homun_data *)aCalloc(1,sizeof(struct homun_data));
 
 		if(!homun_data_init(sd) && sd->bl.prev != NULL)
 		{
-			if(sd->hd->status.hp <= 0) {	// æ­»äº¡
+			if(sd->hd->status.hp <= 0) {	// €–S
 				clif_skill_fail(sd,AM_CALLHOMUN,0,0,0);
 				unit_free(&sd->hd->bl,0);
 				return 0;
@@ -677,15 +677,15 @@ int homun_callhom(struct map_session_data *sd)
 			skill_unit_move(&sd->hd->bl,gettick(),1);
 		}
 	} else if(sd->status.homun_id <= 0 && sd->state.homun_creating == 0) {
-		// åˆèª•ç”Ÿãªã‚‰ã€ãƒ‡ãƒ¼ã‚¿ä½œæˆ
-		int idx = pc_search_inventory(sd,7142);	// ã‚¨ãƒ³ãƒ–ãƒªã‚ªæ‰€æŒã‚’ç¢ºèª
+		// ‰’a¶‚È‚çAƒf[ƒ^ì¬
+		int idx = pc_search_inventory(sd,7142);	// ƒGƒ“ƒuƒŠƒIŠ‚ğŠm”F
 		sd->status.homun_id = 0;
 		if(idx < 0) {
 			clif_skill_fail(sd,AM_CALLHOMUN,0,0,0);
 			return 0;
 		}
-		pc_delitem(sd,idx,1,0,1);	// ã‚¨ãƒ³ãƒ–ãƒªã‚ªæ¶ˆå»
-		//if(atn_rand()%100<80)		// æˆåŠŸç‡ä¸æ˜ã€œ
+		pc_delitem(sd,idx,1,0,1);	// ƒGƒ“ƒuƒŠƒIÁ‹
+		//if(atn_rand()%100<80)		// ¬Œ÷—¦•s–¾?
 		homun_create_hom(sd,homun_get_create_homunid());
 	}
 
@@ -693,7 +693,7 @@ int homun_callhom(struct map_session_data *sd)
 }
 
 /*==========================================
- * interã‹ã‚‰ãƒ›ãƒ ã®ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+ * inter‚©‚çƒzƒ€‚Ìƒf[ƒ^óM
  *------------------------------------------
  */
 int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int flag)
@@ -706,9 +706,9 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 
 	if(sd == NULL || sd->status.char_id != char_id || (!pc_checkskill(sd, AM_CALLHOMUN) && sd->status.homun_id == 0))
 	{
-		// ã‚³ãƒ¼ãƒ«ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹æœªç¿’å¾—ã‹ã¤æœªæ‰€æŒã§ç„¡è¦–(è»¢ç”Ÿã‚„ãƒªã‚»ãƒƒãƒˆãªã©)
+		// ƒR[ƒ‹ƒzƒ€ƒ“ƒNƒ‹ƒX–¢K“¾‚©‚Â–¢Š‚Å–³‹(“]¶‚âƒŠƒZƒbƒg‚È‚Ç)
 		if(flag) {
-			// æ–°è¦ä½œæˆæ™‚ãªã‚‰ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹
+			// V‹Kì¬‚È‚çƒzƒ€ƒf[ƒ^‚ğíœ‚·‚é
 			intif_delete_homdata(account_id,char_id,p->homun_id);
 		}
 		if(sd)
@@ -718,7 +718,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 
 	if(sd->status.homun_id > 0) {
 		memcpy(&sd->hom,p,sizeof(struct mmo_homunstatus));
-		// ç”Ÿå‘½å€«ç†æœªç¿’å¾—æ™‚æ ¼ç´
+		// ¶–½—Ï—–¢K“¾Ši”[
 		if(!pc_checkskill(sd, AM_BIOETHICS))
 			sd->hom.incubate = 0;
 		if(sd->hom.incubate && sd->hom.hp > 0)
@@ -726,7 +726,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 			if(homun_callhom(sd))
 				clif_homskillinfoblock(sd);
 		}
-	} else if(sd->status.homun_id <= 0 && !sd->hd) {	// ãƒ›ãƒ æ–°è¦ä½œæˆ
+	} else if(sd->status.homun_id <= 0 && !sd->hd) {	// ƒzƒ€V‹Kì¬
 		memcpy(&sd->hom,p,sizeof(struct mmo_homunstatus));
 		sd->status.homun_id = sd->hom.homun_id;
 		homun_callhom(sd);
@@ -737,7 +737,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 }
 
 /*==========================================
- * å®‰æ¯	...ã‚¨ãƒ³ãƒ–ãƒªã‚ªã¯ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªã«ã¯æˆ»ã‚‰ãªã„
+ * ˆÀ‘§	...ƒGƒ“ƒuƒŠƒI‚ÍƒCƒ“ƒxƒ“ƒgƒŠ‚É‚Í–ß‚ç‚È‚¢
  *------------------------------------------
  */
 int homun_return_embryo(struct map_session_data *sd)
@@ -748,7 +748,7 @@ int homun_return_embryo(struct map_session_data *sd)
 	nullpo_retr(0, hd = sd->hd);
 
 	if(sd->status.homun_id > 0) {
-		// è¦ªå¯†åº¦ä¿å­˜
+		// e–§“x•Û‘¶
 		if(battle_config.save_homun_temporal_intimate)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 		hd->status.incubate = 0;
@@ -759,7 +759,7 @@ int homun_return_embryo(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒªã‚¶ãƒ›ãƒ 
+ * ƒŠƒUƒzƒ€
  *------------------------------------------
  */
 int homun_revive(struct map_session_data *sd,int skilllv)
@@ -775,7 +775,7 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 		clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0,0);
 		return 0;
 	}
-	// è˜‡ç”Ÿæ™‚HP = æ­»äº¡æ™‚HPï¼ˆâ‰¦0ï¼‰+ MAXHP * (Skill Lv * 0.2)
+	// ‘h¶HP = €–SHPi…0j+ MAXHP * (Skill Lv * 0.2)
 	sd->hom.hp = sd->hom.hp + sd->hom.max_hp * skilllv / 5;
 	if(sd->hom.max_hp < sd->hom.hp)
 		sd->hom.hp = sd->hom.max_hp;
@@ -785,7 +785,7 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 }
 
 /*==========================================
- * ã‚¨ã‚µã‚’ã‚ã’ã‚‹
+ * ƒGƒT‚ğ‚ ‚°‚é
  *------------------------------------------
  */
 static int homun_food(struct map_session_data *sd)
@@ -857,7 +857,7 @@ static int homun_food(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ›ãƒ å‰Šé™¤
+ * ƒzƒ€íœ
  *------------------------------------------
  */
 int homun_delete_data(struct map_session_data *sd)
@@ -865,9 +865,9 @@ int homun_delete_data(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(sd->status.homun_id > 0 && sd->hd) {
-		// è¦ªå¯†åº¦ä¿å­˜
+		// e–§“x•Û‘¶
 		if(battle_config.save_homun_temporal_intimate)
-			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",2000);	// åˆæœŸå€¤ã«
+			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",2000);	// ‰Šú’l‚É
 		unit_free(&sd->hd->bl,0);
 		intif_delete_homdata(sd->status.account_id,sd->status.char_id,sd->status.homun_id);
 		sd->status.homun_id = 0;
@@ -880,7 +880,7 @@ int homun_delete_data(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ›ãƒ ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®å¿œç­”
+ * ƒzƒ€‚Ìƒƒjƒ…[‚Ì‰“š
  *------------------------------------------
  */
 int homun_menu(struct map_session_data *sd,int menunum)
@@ -905,7 +905,7 @@ int homun_menu(struct map_session_data *sd,int menunum)
 }
 
 /*==========================================
- * å¾…æ©Ÿå‘½ä»¤ãªã©ã§ã€ä¸»äººã®ä¸‹ã¸ç§»å‹•
+ * ‘Ò‹@–½—ß‚È‚Ç‚ÅAål‚Ì‰º‚ÖˆÚ“®
  *------------------------------------------
  */
 int homun_return_master(struct map_session_data *sd)
@@ -921,7 +921,7 @@ int homun_return_master(struct map_session_data *sd)
 }
 
 /*==========================================
- * åå‰ã®å¤‰æ›´
+ * –¼‘O‚Ì•ÏX
  *------------------------------------------
  */
 int homun_change_name(struct map_session_data *sd,const char *name)
@@ -955,10 +955,10 @@ int homun_change_name(struct map_session_data *sd,const char *name)
 }
 
 /*==========================================
- * classã‚’å¤‰æ›´
- * class == -1 ã§ãƒ›ãƒ ã‚’é€²åŒ–ã•ã›ã‚‹
- * class == 0 ã«ã™ã‚‹ã¨ã€é€²åŒ–å¾Œã®classã«å¤‰æ›´
- * ï¼ˆé€²åŒ–ã™ã‚‹ã‚ã‘ã§ã¯ãªã„==ã‚¹ãƒ†ä¸Šæ˜‡ã¯ãªã©ã¯ãªã—ï¼‰
+ * class‚ğ•ÏX
+ * class == -1 ‚Åƒzƒ€‚ği‰»‚³‚¹‚é
+ * class == 0 ‚É‚·‚é‚ÆAi‰»Œã‚Ìclass‚É•ÏX
+ * ii‰»‚·‚é‚í‚¯‚Å‚Í‚È‚¢==ƒXƒeã¸‚Í‚È‚Ç‚Í‚È‚µj
  *------------------------------------------
  */
 int homun_change_class( struct map_session_data *sd, int class_ )
@@ -988,7 +988,7 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 		// change intimate to 19
 		sd->hd->intimate = 1900;
 
-		// é€²åŒ–ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹UP
+		// i‰»ƒXƒe[ƒ^ƒXUP
 		sd->hd->status.max_hp += homun_db[class_].evo_min.hp + atn_rand()%(homun_db[class_].evo_max.hp - homun_db[class_].evo_min.hp + 1);
 		sd->hd->status.max_sp += homun_db[class_].evo_min.sp + atn_rand()%(homun_db[class_].evo_max.sp - homun_db[class_].evo_min.sp + 1);
 		sd->hd->status.str += homun_db[class_].evo_min.str + atn_rand()%(homun_db[class_].evo_max.str - homun_db[class_].evo_min.str + 1);
@@ -1010,7 +1010,7 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ã®æ¤œç´¢ æ‰€æœ‰ã—ã¦ã„ãŸå ´åˆLvãŒè¿”ã‚‹
+ * ƒXƒLƒ‹‚ÌŒŸõ Š—L‚µ‚Ä‚¢‚½ê‡Lv‚ª•Ô‚é
  *------------------------------------------
  */
 int homun_checkskill(struct homun_data *hd,int skill_id)
@@ -1029,7 +1029,7 @@ int homun_checkskill(struct homun_data *hd,int skill_id)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆå‰²ã‚ŠæŒ¯ã‚Š
+ * ƒXƒLƒ‹ƒ|ƒCƒ“ƒgŠ„‚èU‚è
  *------------------------------------------
  */
 void homun_skillup(struct map_session_data *sd, int skill_num)
@@ -1060,7 +1060,7 @@ void homun_skillup(struct map_session_data *sd, int skill_num)
 }
 
 /*==========================================
- * è¦šãˆã‚‰ã‚Œã‚‹ã‚¹ã‚­ãƒ«ã®è¨ˆç®—
+ * Šo‚¦‚ç‚ê‚éƒXƒLƒ‹‚ÌŒvZ
  *------------------------------------------
  */
 int homun_calc_skilltree(struct homun_data *hd)
@@ -1073,9 +1073,9 @@ int homun_calc_skilltree(struct homun_data *hd)
 
 	for(i=0; i<MAX_HOMSKILL; i++) {
 		hd->status.skill[i].id = 0;
-		if(hd->status.skill[i].flag) {		// cardã‚¹ã‚­ãƒ«ãªã‚‰
-			hd->status.skill[i].lv   = (hd->status.skill[i].flag == 1)? 0: hd->status.skill[i].flag-2;	// æœ¬å½“ã®lvã«
-			hd->status.skill[i].flag = 0;	// flagã¯0ã«ã—ã¦ãŠã
+		if(hd->status.skill[i].flag) {		// cardƒXƒLƒ‹‚È‚ç
+			hd->status.skill[i].lv   = (hd->status.skill[i].flag == 1)? 0: hd->status.skill[i].flag-2;	// –{“–‚Ìlv‚É
+			hd->status.skill[i].flag = 0;	// flag‚Í0‚É‚µ‚Ä‚¨‚­
 		}
 	}
 
@@ -1108,7 +1108,7 @@ int homun_calc_skilltree(struct homun_data *hd)
 }
 
 /*==========================================
- * ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—
+ * ƒŒƒxƒ‹ƒAƒbƒv
  *------------------------------------------
  */
 static int homun_checkbaselevelup(struct homun_data *hd)
@@ -1118,16 +1118,16 @@ static int homun_checkbaselevelup(struct homun_data *hd)
 	nullpo_retr(0, hd);
 
 	if(hd->status.base_exp >= next && next > 0) {
-		// baseå´ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—å‡¦ç†
+		// base‘¤ƒŒƒxƒ‹ƒAƒbƒvˆ—
 		hd->status.base_exp -= next;
 
 		hd->status.base_level++;
-		//hd->status.status_point += 15 + (hd->status.base_level+14)/3;	// å¾®èª¿æ•´ã—ã¦ã‚‚ã†ã¾ãã„ã‹ãšãƒ»ãƒ»ãƒ»
-		if(hd->status.base_level%3 == 0)	// 3ãƒ¬ãƒ™ãƒ«æ¯ã«SkillPointåŠ ç®—
+		//hd->status.status_point += 15 + (hd->status.base_level+14)/3;	// ”÷’²®‚µ‚Ä‚à‚¤‚Ü‚­‚¢‚©‚¸EEE
+		if(hd->status.base_level%3 == 0)	// 3ƒŒƒxƒ‹–ˆ‚ÉSkillPoint‰ÁZ
 			hd->status.skill_point++;
 
-		homun_upstatus(&hd->status);	// ã‚¹ãƒ†ã‚¢ãƒƒãƒ—è¨ˆç®—
-		homun_calc_status(hd);			// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—
+		homun_upstatus(&hd->status);	// ƒXƒeƒAƒbƒvŒvZ
+		homun_calc_status(hd);			// ƒXƒe[ƒ^ƒXŒvZ
 		homun_heal(hd,hd->max_hp,hd->max_sp);
 		clif_misceffect2(&hd->bl,568);
 		if(hd->msd) {
@@ -1141,7 +1141,7 @@ static int homun_checkbaselevelup(struct homun_data *hd)
 }
 
 /*==========================================
- * çµŒé¨“å€¤å–å¾—
+ * ŒoŒ±’læ“¾
  *------------------------------------------
  */
 int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
@@ -1156,7 +1156,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 		job_exp  = job_exp  * (125 + md->sc.data[SC_RICHMANKIM].val1*11)/100;
 	}
 
-	if(hd->msd) {	// ä¸»äººã¸æŒ‡å®šå€ã®çµŒé¨“å€¤
+	if(hd->msd) {	// ål‚Öw’è”{‚ÌŒoŒ±’l
 		atn_bignumber mbexp = 0, mjexp = 0;
 		if(battle_config.master_get_homun_base_exp)
 			mbexp = base_exp * battle_config.master_get_homun_base_exp / 100;
@@ -1173,7 +1173,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 
 		if(next > 0) {
 			if(per <= 0) {
-				// æœ¬é¯–ä»•æ§˜ã®å–å¾—çµŒé¨“å€¤ä¸Šé™
+				// –{Id—l‚Ìæ“¾ŒoŒ±’lãŒÀ
 				atn_bignumber limit_exp = next * 2 - hd->status.base_exp - 1;
 				if(base_exp > limit_exp)
 					base_exp = limit_exp;
@@ -1209,7 +1209,7 @@ int homun_gainexp(struct homun_data *hd,struct mob_data *md,atn_bignumber base_e
 }
 
 /*==========================================
- * base levelå´å¿…è¦çµŒé¨“å€¤è¨ˆç®—
+ * base level‘¤•K—vŒoŒ±’lŒvZ
  *------------------------------------------
  */
 int homun_nextbaseexp(struct homun_data *hd)
@@ -1223,17 +1223,17 @@ int homun_nextbaseexp(struct homun_data *hd)
 
 	i = homun_db[hd->status.class_-HOM_ID].exp_table;
 	/*
-	if(hd->status.class_ >= 6001 && hd->status.class_ < 6005) i=0;		// ç¬¬ä¸€æœŸãƒ›ãƒ ï¼ˆ4ç¨®ï¼‰
-	else if(hd->status.class_ >= 6005 && hd->status.class_ < 6009) i=1;	// ç¬¬äºŒæœŸãƒ›ãƒ ï¼ˆ4ç¨®ï¼‰
-	else if(hd->status.class_ >= 6009 && hd->status.class_ < 6013) i=2;	// ç¬¬ä¸€æœŸãƒ›ãƒ é€²åŒ–ï¼ˆ4ç¨®ï¼‰
-	else if(hd->status.class_ >= 6013 && hd->status.class_ < 6017) i=3;	// ç¬¬äºŒæœŸãƒ›ãƒ é€²åŒ–ï¼ˆ4ç¨®ï¼‰
-	else  i=0;		// ãã®ä»–ï¼Ÿ
+	if(hd->status.class_ >= 6001 && hd->status.class_ < 6005) i=0;		// ‘æˆêŠúƒzƒ€i4íj
+	else if(hd->status.class_ >= 6005 && hd->status.class_ < 6009) i=1;	// ‘æ“ñŠúƒzƒ€i4íj
+	else if(hd->status.class_ >= 6009 && hd->status.class_ < 6013) i=2;	// ‘æˆêŠúƒzƒ€i‰»i4íj
+	else if(hd->status.class_ >= 6013 && hd->status.class_ < 6017) i=3;	// ‘æ“ñŠúƒzƒ€i‰»i4íj
+	else  i=0;		// ‚»‚Ì‘¼H
 	*/
 	return homun_exp_table[i][hd->status.base_level-1];
 }
 
 /*==========================================
- * hdã«damageã®ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * hd‚Édamage‚Ìƒ_ƒ[ƒW
  *------------------------------------------
  */
 int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
@@ -1243,11 +1243,11 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 	nullpo_retr(0, hd);
 	nullpo_retr(0, sd = hd->msd);
 
-	// æ—¢ã«æ­»ã‚“ã§ã„ãŸã‚‰ç„¡åŠ¹
+	// Šù‚É€‚ñ‚Å‚¢‚½‚ç–³Œø
 	if(unit_isdead(&hd->bl))
 		return 0;
 
-	// æ­©ã„ã¦ã„ãŸã‚‰è¶³ã‚’æ­¢ã‚ã‚‹
+	// •à‚¢‚Ä‚¢‚½‚ç‘«‚ğ~‚ß‚é
 	unit_stop_walking(&hd->bl,battle_config.pc_hit_stop_type);
 
 	if(damage > 0 && hd->sc.data[SC_GRAVITATION_USER].timer != -1)
@@ -1262,22 +1262,22 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 	if(hd->status.hp > hd->max_hp)
 		hd->status.hp = hd->max_hp;
 
-	// over killåˆ†ã¯ä¸¸ã‚ã‚‹
+	// over kill•ª‚ÍŠÛ‚ß‚é
 	if(damage > hd->status.hp)
 		damage = hd->status.hp;
 
 	hd->status.hp -= damage;
 
-	// ãƒã‚¤ãƒ‰çŠ¶æ…‹ã‚’è§£é™¤
+	// ƒnƒCƒhó‘Ô‚ğ‰ğœ
 	status_change_hidden_end(&hd->bl);
 
 	clif_send_homstatus(sd,0);
 
-	// æ­»äº¡ã—ã¦ã„ãŸ
+	// €–S‚µ‚Ä‚¢‚½
 	if(hd->status.hp <= 0) {
 		if(battle_config.save_homun_temporal_intimate)
 			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
-		// ã‚¹ã‚­ãƒ«ãƒ¦ãƒ‹ãƒƒãƒˆã‹ã‚‰ã®é›¢è„±
+		// ƒXƒLƒ‹ƒ†ƒjƒbƒg‚©‚ç‚Ì—£’E
 		hd->status.hp = 1;
 		skill_unit_move(&hd->bl,gettick(),0);
 		hd->status.hp = 0;
@@ -1289,14 +1289,14 @@ int homun_damage(struct block_list *src,struct homun_data *hd,int damage)
 }
 
 /*==========================================
- * HP/SPå›å¾©
+ * HP/SP‰ñ•œ
  *------------------------------------------
  */
 int homun_heal(struct homun_data *hd,int hp,int sp)
 {
 	nullpo_retr(0, hd);
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ä¸­ã¯å›å¾©ã•ã›ãªã„
+	// ƒo[ƒT[ƒN’†‚Í‰ñ•œ‚³‚¹‚È‚¢
 	if(hd->sc.data[SC_BERSERK].timer != -1) {
 		if(sp > 0)
 			sp = 0;
@@ -1324,25 +1324,25 @@ int homun_heal(struct homun_data *hd,int hp,int sp)
 }
 
 /*==========================================
- * sdãŒé€£ã‚Œã¦ã„ã‚‹ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã¯æœ‰åŠ¹ã‹
+ * sd‚ª˜A‚ê‚Ä‚¢‚éƒzƒ€ƒ“ƒNƒ‹ƒX‚Í—LŒø‚©
  *------------------------------------------
  */
 int homun_isalive(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
 
-	if(sd->status.homun_id == 0 || sd->hd == NULL)	// ãƒ›ãƒ ã‚’æŒã£ã¦ãªã„
+	if(sd->status.homun_id == 0 || sd->hd == NULL)	// ƒzƒ€‚ğ‚Á‚Ä‚È‚¢
 		return 0;
-	if(sd->hd->status.hp <= 0)	// ãƒ›ãƒ ãŒæ­»ã‚“ã§ã‚‹
+	if(sd->hd->status.hp <= 0)	// ƒzƒ€‚ª€‚ñ‚Å‚é
 		return 0;
-	if(sd->hd->status.incubate == 0)	// ãƒ›ãƒ ã‚’å‡ºã—ã¦ãªã„
+	if(sd->hd->status.incubate == 0)	// ƒzƒ€‚ğo‚µ‚Ä‚È‚¢
 		return 0;
 
 	return 1;
 }
 
 /*==========================================
- * è‡ªç„¶å›å¾©ç‰©
+ * ©‘R‰ñ•œ•¨
  *------------------------------------------
  */
 static int homun_natural_heal_hp(int tid,unsigned int tick,int id,void *data)
@@ -1426,7 +1426,7 @@ int homun_natural_heal_timer_delete(struct homun_data *hd)
 }
 
 /*==========================================
- * ãƒ›ãƒ ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒ¼ãƒ–
+ * ƒzƒ€‚Ìƒf[ƒ^‚ğƒZ[ƒu
  *------------------------------------------
  */
 int homun_save_data(struct map_session_data *sd)
@@ -1439,7 +1439,7 @@ int homun_save_data(struct map_session_data *sd)
 	if(battle_config.save_homun_temporal_intimate)
 		pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
 
-	// optionã®ã‚³ãƒ”ãƒ¼
+	// option‚ÌƒRƒs[
 	hd->status.option = hd->sc.option;
 
 	memcpy(&sd->hom,&hd->status,sizeof(struct mmo_homunstatus));
@@ -1449,10 +1449,10 @@ int homun_save_data(struct map_session_data *sd)
 }
 
 //
-// åˆæœŸåŒ–ç‰©
+// ‰Šú‰»•¨
 //
 /*==========================================
- * ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+ * ƒzƒ€ƒ“ƒNƒ‹ƒX‰ŠúƒXƒe[ƒ^ƒXƒf[ƒ^“Ç‚İ‚İ
  *------------------------------------------
  */
 static int read_homundb(void)
@@ -1467,7 +1467,7 @@ static int read_homundb(void)
 	const char *filename[] = { "db/homun_db.txt", "db/addon/homun_db_add.txt" };
 	const char *filename2;
 
-	// DBæƒ…å ±ã®åˆæœŸåŒ–
+	// DBî•ñ‚Ì‰Šú‰»
 	for(i=0; i<MAX_HOMUN_DB; i++) {
 		if(homun_db[i].script)
 			script_free_code(homun_db[i].script);
@@ -1541,7 +1541,7 @@ static int read_homundb(void)
 			homun_db[j].element    = atoi(str[29]);
 			homun_db[j].evo_class  = atoi(str[30]);
 			homun_db[j].exp_table  = atoi(str[31]);
-			homun_db[j].skillpoint = homun_db[j].base_level/3; // äºˆç´„ ã¨ã‚Šã‚ãˆãšãƒ™ãƒ¼ã‚¹/3
+			homun_db[j].skillpoint = homun_db[j].base_level/3; // —\–ñ ‚Æ‚è‚ ‚¦‚¸ƒx[ƒX/3
 
 			// force \0 terminal
 			homun_db[j].name[23]  = '\0';
@@ -1639,9 +1639,9 @@ static int read_homundb(void)
 }
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã‚€
- * exp.txt å¿…è¦çµŒé¨“å€¤
- * homun_skill_tree.txt ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç‚İ‚Ş
+ * exp.txt •K—vŒoŒ±’l
+ * homun_skill_tree.txt ƒXƒLƒ‹ƒcƒŠ[
  *------------------------------------------
  */
 static int homun_readdb(void)
@@ -1651,7 +1651,7 @@ static int homun_readdb(void)
 	char line[1024],*p;
 	const char *filename;
 
-	// å¿…è¦çµŒé¨“å€¤èª­ã¿è¾¼ã¿
+	// •K—vŒoŒ±’l“Ç‚İ‚İ
 	memset(homun_exp_table, 0, sizeof(homun_exp_table));
 	filename = "db/exp_homun.txt";
 	fp = fopen(filename, "r");
@@ -1681,7 +1681,7 @@ static int homun_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼
+	// ƒXƒLƒ‹ƒcƒŠ[
 	memset(homun_skill_tree,0,sizeof(homun_skill_tree));
 	filename = "db/homun_skill_tree.txt";
 	fp = fopen(filename, "r");
@@ -1718,12 +1718,12 @@ static int homun_readdb(void)
 		for(j=0; st[j].id && st[j].id != skillid; j++);
 
 		if(j >= MAX_HOMSKILL_TREE - 1) {
-			// æœ«å°¾ã¯ã‚¢ãƒ³ã‚«ãƒ¼ã¨ã—ã¦0ã«ã—ã¦ãŠãå¿…è¦ãŒã‚ã‚‹
+			// ––”ö‚ÍƒAƒ“ƒJ[‚Æ‚µ‚Ä0‚É‚µ‚Ä‚¨‚­•K—v‚ª‚ ‚é
 			printf("homun_readdb: skill (%d) is over max tree %d!!\n", skillid, MAX_HOMSKILL_TREE);
 			continue;
 		}
 		if(j > 0 && skillid < st[j-1].id) {
-			// ã‚¹ã‚­ãƒ«IDã®æ˜‡é †ã«ä¸¦ã‚“ã§ãªã„å ´åˆ
+			// ƒXƒLƒ‹ID‚Ì¸‡‚É•À‚ñ‚Å‚È‚¢ê‡
 			int max = j;
 			while(j > 0 && skillid < st[j-1].id) {
 				j--;
@@ -1751,7 +1751,7 @@ static int homun_readdb(void)
 }
 
 /*==========================================
- * ã‚¨ãƒ³ãƒ–ãƒªã‚ªãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
+ * ƒGƒ“ƒuƒŠƒIƒf[ƒ^‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static int homun_read_embryodb(void)
@@ -1763,7 +1763,7 @@ static int homun_read_embryodb(void)
 	char *str[10],*p;
 	const char *filename = "db/embryo_db.txt";
 
-	// èª­ã¿è¾¼ã‚€åº¦ã€åˆæœŸåŒ–
+	// “Ç‚İ‚Ş“xA‰Šú‰»
 	embryo_default = 6001;
 	memset(embryo_data, 0, sizeof(embryo_data));
 
@@ -1809,7 +1809,7 @@ static int homun_read_embryodb(void)
 }
 
 /*==========================================
- * ãƒ›ãƒ DBã®ãƒªãƒ­ãƒ¼ãƒ‰
+ * ƒzƒ€DB‚ÌƒŠƒ[ƒh
  *------------------------------------------
  */
 void homun_reload(void)
@@ -1820,7 +1820,7 @@ void homun_reload(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–å‡¦ç†
+ * ‰Šú‰»ˆ—
  *------------------------------------------
  */
 int do_init_homun(void)
@@ -1838,7 +1838,7 @@ int do_init_homun(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 int do_final_homun(void)

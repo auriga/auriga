@@ -29,7 +29,7 @@
 
 #include "int_status.h"
 
-// ãƒ€ãƒŸãƒ¼é–¢æ•°ç¾¤
+// ƒ_ƒ~[ŠÖ”ŒQ
 #ifdef NO_SCDATA_SAVING
 
 bool status_dummy_init(void) { return true; }
@@ -47,7 +47,7 @@ int mapif_load_scdata(int fd,int account_id,int char_id)
 	struct scdata *sc = statusdb_load(char_id);
 
 	if(sc) {
-		if(sc->account_id <= 0) {	// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆIDãŒãªã„ã®ã¯å›°ã‚‹ã®ã§è£œå®Œ
+		if(sc->account_id <= 0) {	// ƒAƒJƒEƒ“ƒgID‚ª‚È‚¢‚Ì‚Í¢‚é‚Ì‚Å•âŠ®
 			sc->account_id = account_id;
 		}
 		else if(sc->account_id != account_id) {
@@ -81,7 +81,7 @@ int mapif_load_scdata(int fd,int account_id,int char_id)
 static int mapif_save_scdata_ack(int fd,int account_id,int flag)
 {
 	/*
-	// ä»Šã®ã¨ã“ã‚ä½¿ã„é“ãŒãªã„ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
+	// ¡‚Ì‚Æ‚±‚ëg‚¢“¹‚ª‚È‚¢‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg
 	WFIFOW(fd,0)=0x3879;
 	WFIFOL(fd,2)=account_id;
 	WFIFOB(fd,6)=flag;
@@ -91,16 +91,16 @@ static int mapif_save_scdata_ack(int fd,int account_id,int flag)
 }
 
 //-------------------------------------------------------------------
-// map serverã‹ã‚‰ã®é€šä¿¡
+// map server‚©‚ç‚Ì’ÊM
 
-// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿è¦æ±‚å—ä¿¡
+// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^—v‹óM
 int mapif_parse_LoadStatusChange(int fd)
 {
 	mapif_load_scdata(fd,RFIFOL(fd,2),RFIFOL(fd,6));
 	return 0;
 }
 
-// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ä¿å­˜
+// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^•Û‘¶
 int mapif_parse_SaveStatusChange(int fd)
 {
 	struct scdata sc;
@@ -127,11 +127,11 @@ int mapif_parse_SaveStatusChange(int fd)
 }
 
 //---------------------------------------------------------
-// map server ã‹ã‚‰ã®é€šä¿¡
-// ãƒ»ï¼‘ãƒ‘ã‚±ãƒƒãƒˆã®ã¿è§£æã™ã‚‹ã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒ‡ãƒ¼ã‚¿ã¯inter.cã«ã‚»ãƒƒãƒˆã—ã¦ãŠãã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒã‚§ãƒƒã‚¯ã‚„ã€RFIFOSKIPã¯å‘¼ã³å‡ºã—å…ƒã§è¡Œã‚ã‚Œã‚‹ã®ã§è¡Œã£ã¦ã¯ãªã‚‰ãªã„
-// ãƒ»ã‚¨ãƒ©ãƒ¼ãªã‚‰0(false)ã€ãã†ã§ãªã„ãªã‚‰1(true)ã‚’ã‹ãˆã•ãªã‘ã‚Œã°ãªã‚‰ãªã„
+// map server ‚©‚ç‚Ì’ÊM
+// E‚PƒpƒPƒbƒg‚Ì‚İ‰ğÍ‚·‚é‚±‚Æ
+// EƒpƒPƒbƒg’·ƒf[ƒ^‚Íinter.c‚ÉƒZƒbƒg‚µ‚Ä‚¨‚­‚±‚Æ
+// EƒpƒPƒbƒg’·ƒ`ƒFƒbƒN‚âARFIFOSKIP‚ÍŒÄ‚Ño‚µŒ³‚Ås‚í‚ê‚é‚Ì‚Ås‚Á‚Ä‚Í‚È‚ç‚È‚¢
+// EƒGƒ‰[‚È‚ç0(false)A‚»‚¤‚Å‚È‚¢‚È‚ç1(true)‚ğ‚©‚¦‚³‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
 int inter_status_parse_frommap(int fd)
 {
 #ifndef NO_SCDATA_SAVING

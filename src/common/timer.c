@@ -36,8 +36,8 @@
 #include "timer.h"
 #include "malloc.h"
 
-// ã‚¿ã‚¤ãƒãƒ¼é–“éš”ã®æœ€å°å€¤ã€‚ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®å¤§é‡å¬é‚„æ™‚ã€å¤šæ•°ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šæ™‚ã«
-// ã‚µãƒ¼ãƒãƒ¼ãŒåå¿œã—ãªããªã‚‹å ´åˆã¯ã€TIMER_MIN_INTERVAL ã‚’å¢—ã‚„ã—ã¦ãã ã•ã„ã€‚
+// ƒ^ƒCƒ}[ŠÔŠu‚ÌÅ¬’lBƒ‚ƒ“ƒXƒ^[‚Ì‘å—Ê¢ŠÒA‘½”‚ÌƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚É
+// ƒT[ƒo[‚ª”½‰‚µ‚È‚­‚È‚éê‡‚ÍATIMER_MIN_INTERVAL ‚ğ‘‚â‚µ‚Ä‚­‚¾‚³‚¢B
 
 // If the server shows no reaction when processing thousands of monsters
 // or connected by many clients, please increase TIMER_MIN_INTERVAL.
@@ -146,7 +146,7 @@ unsigned int gettick(void)
 
 #if 0
 
-// ãƒ‡ãƒãƒƒã‚°ç”¨é–¢æ•°ç¾¤
+// ƒfƒoƒbƒO—pŠÖ”ŒQ
 static void dump_timer_heap(void)
 {
 	int j;
@@ -191,18 +191,18 @@ static void push_timer_heap(int idx)
 			timer_heap[0] = 0;
 	}
 
-	// timer_heap[0]   : ã‚¿ã‚¤ãƒãƒ¼ãƒ’ãƒ¼ãƒ—ã®æ•°
-	// timer_heap[1..] : ã‚¿ã‚¤ãƒãƒ¼ãƒ’ãƒ¼ãƒ—ï¼ˆå¤§ã€€â†’ã€€å°ï¼‰
-	// tickãŒç­‰ã—ã„å ´åˆã¯å¤§ã®æ–¹ã«æŒ¿å…¥ã•ã‚Œã‚‹
+	// timer_heap[0]   : ƒ^ƒCƒ}[ƒq[ƒv‚Ì”
+	// timer_heap[1..] : ƒ^ƒCƒ}[ƒq[ƒvi‘å@¨@¬j
+	// tick‚ª“™‚µ‚¢ê‡‚Í‘å‚Ì•û‚É‘}“ü‚³‚ê‚é
 	if(timer_heap[0] == 0) {
-		// ãƒ‡ãƒ¼ã‚¿ãŒç„¡ã„ : å…ˆé ­ã«è¿½åŠ 
+		// ƒf[ƒ^‚ª–³‚¢ : æ“ª‚É’Ç‰Á
 		timer_heap[0]++;
 		timer_heap[1] = idx;
 	} else if(DIFF_TICK(timer_data[timer_heap[timer_heap[0]]].tick,timer_data[idx].tick) > 0) {
-		// æœ€å¾Œå°¾ã«è¿½åŠ 
+		// ÅŒã”ö‚É’Ç‰Á
 		timer_heap[++timer_heap[0]] = idx;
 	} else if(DIFF_TICK(timer_data[timer_heap[1]].tick,timer_data[idx].tick) <= 0) {
-		// å…ˆé ­ã«è¿½åŠ 
+		// æ“ª‚É’Ç‰Á
 		memmove(&timer_heap[2],&timer_heap[1],timer_heap[0] * sizeof(int));
 		timer_heap[0]++;
 		timer_heap[1] = idx;
@@ -224,7 +224,7 @@ static void push_timer_heap(int idx)
 	// check_timer_heap();
 }
 
-// æŒ‡å®šã—ãŸindex ã‚’æŒã¤ã‚¿ã‚¤ãƒãƒ¼ãƒ’ãƒ¼ãƒ—ã‚’è¿”ã™
+// w’è‚µ‚½index ‚ğ‚Âƒ^ƒCƒ}[ƒq[ƒv‚ğ•Ô‚·
 static int search_timer_heap(int idx)
 {
 	if (timer_heap == NULL || timer_heap[0] <= 0) {
@@ -278,7 +278,7 @@ static int top_timer_heap(void)
 	if (timer_heap == NULL || timer_heap[0] <= 0)
 		return -1;
 
-	// tick ãŒ 0xFFFFFFFF -> 0x00000000 ã«ç¹°ã‚Šä¸ŠãŒã‚‹æ™‚ã®æš«å®šå¯¾ç­–
+	// tick ‚ª 0xFFFFFFFF -> 0x00000000 ‚ÉŒJ‚èã‚ª‚é‚Ìb’è‘Îô
 	// temporary fix for timer not working 49.7 days period
 	if (gettick() < 0x08000000) {
 		unsigned int tick = timer_data[ timer_heap[1] ].tick;
@@ -373,7 +373,7 @@ int delete_timer(int id,int (*func)(int,unsigned int,int,void*))
 		return -2;
 	}
 
-	// ãã®ã†ã¡æ¶ˆãˆã‚‹ã«ã¾ã‹ã›ã‚‹
+	// ‚»‚Ì‚¤‚¿Á‚¦‚é‚É‚Ü‚©‚¹‚é
 	timer_data[id].func = NULL;
 	timer_data[id].type = TIMER_ONCE_AUTODEL;
 	// timer_data[id].tick -= 60 * 60 * 1000;
@@ -409,7 +409,7 @@ void do_final_timer(void)
 	if(free_timer_list)
 		aFree(free_timer_list);
 	if(timer_data) {
-		// add_timer2ã«ã‚ˆã‚‹dataã®è§£æ”¾
+		// add_timer2‚É‚æ‚édata‚Ì‰ğ•ú
 		int i;
 		for(i = 0; i < timer_data_num; i++) {
 			struct TimerData *td = &timer_data[i];
@@ -446,10 +446,10 @@ int do_timer(unsigned int tick)
 		timer_data[i].type |= TIMER_REMOVE_HEAP;
 		if (timer_data[i].func) {
 			if (diff < -1000) {
-				// 1ç§’ä»¥ä¸Šã®å¤§å¹…ãªé…å»¶ãŒç™ºç”Ÿã—ã¦ã„ã‚‹ã®ã§ã€
-				// timerå‡¦ç†ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’ç¾åœ¨å€¤ã¨ã™ã‚‹äº‹ã§
-				// å‘¼ã³å‡ºã—æ™‚ã‚¿ã‚¤ãƒŸãƒ³ã‚°(å¼•æ•°ã®tick)ç›¸å¯¾ã§å‡¦ç†ã—ã¦ã‚‹
-				// timeré–¢æ•°ã®æ¬¡å›å‡¦ç†ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’é…ã‚‰ã›ã‚‹
+				// 1•bˆÈã‚Ì‘å•‚È’x‰„‚ª”­¶‚µ‚Ä‚¢‚é‚Ì‚ÅA
+				// timerˆ—ƒ^ƒCƒ~ƒ“ƒO‚ğŒ»İ’l‚Æ‚·‚é–‚Å
+				// ŒÄ‚Ño‚µƒ^ƒCƒ~ƒ“ƒO(ˆø”‚Ìtick)‘Š‘Î‚Åˆ—‚µ‚Ä‚é
+				// timerŠÖ”‚ÌŸ‰ñˆ—ƒ^ƒCƒ~ƒ“ƒO‚ğ’x‚ç‚¹‚é
 				timer_data[i].func(i,tick,timer_data[i].id,timer_data[i].data);
 			} else {
 				timer_data[i].func(i,timer_data[i].tick,timer_data[i].id,timer_data[i].data);

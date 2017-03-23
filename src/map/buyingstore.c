@@ -39,10 +39,10 @@
 #include "trade.h"
 #include "unit.h"
 
-// è²·å–éœ²åº—ID
+// ”ƒæ˜I“XID
 static unsigned int buyingstore_id = 0;
 
-// è²·å–éœ²åº—é–‹è¨­å¤±æ•—å®šç¾©
+// ”ƒæ˜I“XŠJİ¸”s’è‹`
 enum e_open_failstore
 {
 	FAILED_OPEN_INVALIDDATA	= 1,
@@ -50,14 +50,14 @@ enum e_open_failstore
 	FAILED_OPEN_NODATA		= 8,
 };
 
-// è²·å–éœ²åº—é–‰é–å®šç¾©
+// ”ƒæ˜I“X•Â½’è‹`
 enum e_close_store
 {
 	CLOSE_ZENY		= 3,
 	CLOSE_NOITEM	= 4,
 };
 
-// è²·å–éœ²åº—è²·ã„å–ã‚Šå¤±æ•—å®šç¾©
+// ”ƒæ˜I“X”ƒ‚¢æ‚è¸”s’è‹`
 enum e_trade_failstore
 {
 	FAILED_TRADE_INVALIDDATA	= 5,
@@ -66,24 +66,24 @@ enum e_trade_failstore
 };
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºå‡¦ç†
+ * ”ƒæ˜I“XƒEƒCƒ“ƒhƒE•\¦ˆ—
  *
- * @param sd è²·å–éœ²åº—é–‹è¨­è¦æ±‚è€…
- * @param count è²·å–éœ²åº—æœ€å¤§ç™»éŒ²ã‚¢ã‚¤ãƒ†ãƒ æ•°
- * @return falseãªã‚‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºä¸å¯çŠ¶æ…‹
+ * @param sd ”ƒæ˜I“XŠJİ—v‹Ò
+ * @param count ”ƒæ˜I“XÅ‘å“o˜^ƒAƒCƒeƒ€”
+ * @return false‚È‚çƒEƒCƒ“ƒhƒE•\¦•s‰Âó‘Ô
  *------------------------------------------
  */
 bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char count)
 {
 	nullpo_retr(false, sd);
 
-	// è²·å–éœ²åº—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãŒé–‹ã‘ã‚‹çŠ¶æ…‹ã‹ãƒã‚§ãƒƒã‚¯
+	// ”ƒæ˜I“XƒEƒCƒ“ƒhƒE‚ªŠJ‚¯‚éó‘Ô‚©ƒ`ƒFƒbƒN
 	if( sd->state.store || sd->state.deal_mode )
 	{
 		return false;
 	}
 
-	// countã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// count‚Ì”ÍˆÍƒ`ƒFƒbƒN
 	if( count == 0 || count > MAX_BUYINGSTORE_COUNT )
 	{
 		return false;
@@ -96,14 +96,14 @@ bool buyingstore_openstorewindow(struct map_session_data *sd, unsigned char coun
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‹è¨­å‡¦ç†
+ * ”ƒæ˜I“XŠJİˆ—
  *
- * @param sd è²·å–éœ²åº—é–‹è¨­è¦æ±‚è€…
- * @param limit_zeny æœ€å¤§è²·åé‡‘é¡
- * @param result trueãªã‚‰é–‹è¨­ã™ã‚‹
- * @param store_name è²·å–éœ²åº—å
- * @param data ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿
- * @param count ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿å€‹æ•°
+ * @param sd ”ƒæ˜I“XŠJİ—v‹Ò
+ * @param limit_zeny Å‘å”ƒû‹àŠz
+ * @param result true‚È‚çŠJİ‚·‚é
+ * @param store_name ”ƒæ˜I“X–¼
+ * @param data ƒAƒCƒeƒ€ƒf[ƒ^
+ * @param count ƒAƒCƒeƒ€ƒf[ƒ^ŒÂ”
  *------------------------------------------
  */
 void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool result, const char *store_name, const unsigned char *data, int count)
@@ -113,11 +113,11 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 
 	nullpo_retv(sd);
 
-	// è²·å–éœ²åº—ã‚­ãƒ£ãƒ³ã‚»ãƒ«
+	// ”ƒæ˜I“XƒLƒƒƒ“ƒZƒ‹
 	if( result == false )
 		return;
 
-	// é‡‘é¡ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// ‹àŠz‚Ì”ÍˆÍƒ`ƒFƒbƒN
 	if( limit_zeny <= 0 || limit_zeny > sd->status.zeny )
 	{
 		sd->buyingstore.count = 0;
@@ -125,7 +125,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// countã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// count‚Ì”ÍˆÍƒ`ƒFƒbƒN
 	if( count <= 0 || count > sd->buyingstore.count )
 	{
 		sd->buyingstore.count = 0;
@@ -133,7 +133,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// éœ²åº—é–‹è¨­ä¸­ã¯é–‹è¨­ä¸å¯
+	// ˜I“XŠJİ’†‚ÍŠJİ•s‰Â
 	if( sd->state.store )
 	{
 		sd->buyingstore.count = 0;
@@ -141,7 +141,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// å–å¼•ä¸­ã¯é–‹è¨­ä¸å¯
+	// æˆø’†‚ÍŠJİ•s‰Â
 	if( sd->state.deal_mode )
 	{
 		sd->buyingstore.count = 0;
@@ -149,7 +149,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// å…ˆé ­ãŒnullæ–‡å­—ã‹ãƒã‚§ãƒƒã‚¯
+	// æ“ª‚ªnull•¶š‚©ƒ`ƒFƒbƒN
 	if( store_name[0] == '\0' )
 	{
 		sd->buyingstore.count = 0;
@@ -157,7 +157,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// ãƒ‡ã‚¿ãƒƒãƒã•ã›ã‚‹
+	// ƒfƒ^ƒbƒ`‚³‚¹‚é
 	if( sd->npc_id )
 		npc_event_dequeue(sd);
 	if( sd->trade.partner )
@@ -165,13 +165,13 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	if( sd->chatID )
 		chat_leavechat(sd, 0);
 
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é‡é‡å–å¾—
+	// ƒvƒŒƒCƒ„[‚Ìd—Êæ“¾
 	weight = sd->weight;
 
-	// è²·å–éœ²åº—ãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
+	// ”ƒæ˜I“Xƒf[ƒ^‰Šú‰»
 	memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
 
-	// ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆã®ãƒã‚§ãƒƒã‚¯
+	// ƒAƒCƒeƒ€ƒŠƒXƒg‚Ìƒ`ƒFƒbƒN
 	for( i = 0; i < count; i++ )
 	{
 		short nameid = *(short *)(data + 8*i + 0);
@@ -179,7 +179,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		int value    = *(int *)(data + 8*i + 4);
 		int idx;
 
-		// è‡ªåˆ†ãŒæ‰€æŒã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã§ãªã„ã¨è²·å–å‡ºæ¥ãªã„
+		// ©•ª‚ªŠ‚µ‚Ä‚¢‚éƒAƒCƒeƒ€‚Å‚È‚¢‚Æ”ƒæo—ˆ‚È‚¢
 		if( (idx = pc_search_inventory(sd, nameid)) == -1 )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -187,7 +187,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// å€‹æ•°ã®ãƒã‚§ãƒƒã‚¯
+		// ŒÂ”‚Ìƒ`ƒFƒbƒN
 		if( amount <= 0 || sd->status.inventory[idx].amount+amount > battle_config.max_buyingstore_amount )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -195,7 +195,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// ã‚¢ã‚¤ãƒ†ãƒ IDã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯
+		// ƒAƒCƒeƒ€ID‚Ì‘¶İƒ`ƒFƒbƒN
 		if( (id = itemdb_exists(nameid)) == NULL )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -203,7 +203,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// é‡‘é¡ãƒã‚§ãƒƒã‚¯
+		// ‹àŠzƒ`ƒFƒbƒN
 		if( value <= 0 || value > battle_config.max_buyingstore_zeny )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -211,7 +211,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// è²·å–éœ²åº—ã§è²·ã„å–ã‚Šå¯èƒ½ãªã‚¢ã‚¤ãƒ†ãƒ ã‹ãƒã‚§ãƒƒã‚¯
+		// ”ƒæ˜I“X‚Å”ƒ‚¢æ‚è‰Â”\‚ÈƒAƒCƒeƒ€‚©ƒ`ƒFƒbƒN
 		if( itemdb_isbuyingable(nameid) != 1 )
 		{
 			memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -219,7 +219,7 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			return;
 		}
 
-		// é‡è¤‡ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ IDãŒãªã„ã‹ãƒã‚§ãƒƒã‚¯
+		// d•¡‚·‚éƒAƒCƒeƒ€ID‚ª‚È‚¢‚©ƒ`ƒFƒbƒN
 		if( i )
 		{
 			int j;
@@ -234,14 +234,14 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 			}
 		}
 
-		// è²·å–éœ²åº—ãƒ‡ãƒ¼ã‚¿ã«ã‚»ãƒƒãƒˆ
+		// ”ƒæ˜I“Xƒf[ƒ^‚ÉƒZƒbƒg
 		weight += id->weight * amount;
 		sd->buyingstore.item[i].nameid = nameid;
 		sd->buyingstore.item[i].amount = amount;
 		sd->buyingstore.item[i].value  = value;
 	}
 
-	// é‡é‡ãƒã‚§ãƒƒã‚¯
+	// d—Êƒ`ƒFƒbƒN
 	if( (sd->max_weight*90) / 100 < weight )
 	{
 		memset(&sd->buyingstore, 0, sizeof(struct buyingstore));
@@ -249,11 +249,11 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 		return;
 	}
 
-	// ç§»å‹•ã¨æ”»æ’ƒã‚’æ­¢ã‚ã‚‹
+	// ˆÚ“®‚ÆUŒ‚‚ğ~‚ß‚é
 	unit_stop_walking(&sd->bl, 1);
 	unit_stopattack(&sd->bl);
 
-	// è²·å–éœ²åº—ã‚ªãƒ¼ãƒ—ãƒ³
+	// ”ƒæ˜I“XƒI[ƒvƒ“
 	sd->state.store = STORE_TYPE_BUYINGSTORE;
 	sd->buyer_id = ++buyingstore_id;
 	sd->buyingstore.limit_zeny = limit_zeny;
@@ -268,9 +268,9 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‰é–å‡¦ç†
+ * ”ƒæ˜I“X•Â½ˆ—
  *
- * @param sd è²·å–éœ²åº—é–‰é–è¦æ±‚è€…
+ * @param sd ”ƒæ˜I“X•Â½—v‹Ò
  *------------------------------------------
  */
 void buyingstore_close(struct map_session_data *sd)
@@ -288,10 +288,10 @@ void buyingstore_close(struct map_session_data *sd)
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆè¡¨ç¤º
+ * ”ƒæ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg•\¦
  *
- * @param sd è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆå›è¦§è¦æ±‚è€…
- * @param account_id è²·å–éœ²åº—é–‹è¨­è€…ã‚¢ã‚«ã‚¦ãƒ³ãƒˆID
+ * @param sd ”ƒæ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg‰ñ———v‹Ò
+ * @param account_id ”ƒæ˜I“XŠJİÒƒAƒJƒEƒ“ƒgID
  *------------------------------------------
  */
 void buyingstore_itemlist(struct map_session_data* sd, int account_id)
@@ -300,52 +300,52 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 
 	nullpo_retv(sd);
 
-	// å¯¾è±¡ãŒå­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ª‘¶İ‚·‚é‚©ƒ`ƒFƒbƒN
 	if( (ssd = map_id2sd(account_id)) == NULL )
 		return;
 
-	// å¯¾è±¡ãŒblock_listã‹ã‚‰æŠœã‘ã¦ã„ãªã„ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ªblock_list‚©‚ç”²‚¯‚Ä‚¢‚È‚¢‚©ƒ`ƒFƒbƒN
 	if( ssd->bl.prev == NULL )
 		return;
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒåŒã˜ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ª“¯‚¶‚©ƒ`ƒFƒbƒN
 	if( ssd->bl.id == sd->bl.id )
 		return;
 
-	// è‡ªèº«ãŒéœ²åº—é–‹è¨­ä¸­ã‹ãƒã‚§ãƒƒã‚¯
+	// ©g‚ª˜I“XŠJİ’†‚©ƒ`ƒFƒbƒN
 	if( sd->state.store )
 		return;
 
-	// å¯¾è±¡ãŒè²·å–éœ²åº—ã‚’é–‰é–ä¸­
+	// ‘ÎÛ‚ª”ƒæ˜I“X‚ğ•Â½’†
 	if( ssd->state.store != STORE_TYPE_BUYINGSTORE )
 		return;
 
-	// å¯¾è±¡ãŒå–å¼•ä¸­ã‚‚ã—ãã¯è‡ªèº«ãŒå–å¼•ä¸­ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ªæˆø’†‚à‚µ‚­‚Í©g‚ªæˆø’†‚©ƒ`ƒFƒbƒN
 	if( ssd->state.deal_mode != 0 || sd->state.deal_mode != 0 )
 		return;
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒåŒã˜MAPã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ª“¯‚¶MAP‚©ƒ`ƒFƒbƒN
 	if( sd->bl.m != ssd->bl.m )
 		return;
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒAREA_SIZEå†…ã«å±…ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ªAREA_SIZE“à‚É‹‚é‚©ƒ`ƒFƒbƒN
 	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
 		return;
 
-	// ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆã‚’é€ã‚‹
+	// ƒAƒCƒeƒ€ƒŠƒXƒg‚ğ‘—‚é
 	clif_itemlist_buyingstore(sd,ssd);
 
 	return;
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ å£²å´å‡¦ç†
+ * ”ƒæ˜I“XƒAƒCƒeƒ€”„‹pˆ—
  *
- * @param sd å£²å´è€…
- * @param account_id è²·å–éœ²åº—é–‹è¨­è€…ã‚¢ã‚«ã‚¦ãƒ³ãƒˆID
- * @param buyer_id è²·å–éœ²åº—é–‹è¨­è€…ã‚¹ãƒˆã‚¢ID
- * @param data ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿
- * @param count ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿å€‹æ•°
+ * @param sd ”„‹pÒ
+ * @param account_id ”ƒæ˜I“XŠJİÒƒAƒJƒEƒ“ƒgID
+ * @param buyer_id ”ƒæ˜I“XŠJİÒƒXƒgƒAID
+ * @param data ƒAƒCƒeƒ€ƒf[ƒ^
+ * @param count ƒAƒCƒeƒ€ƒf[ƒ^ŒÂ”
  *------------------------------------------
  */
 void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int buyer_id, const unsigned char *data, int count)
@@ -358,90 +358,90 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 
 	nullpo_retv(sd);
 
-	// å¯¾è±¡ãŒå­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ª‘¶İ‚·‚é‚©ƒ`ƒFƒbƒN
 	if( (ssd = map_id2sd(account_id)) == NULL )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å¯¾è±¡ãŒblock_listã‹ã‚‰æŠœã‘ã¦ã„ãªã„ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ªblock_list‚©‚ç”²‚¯‚Ä‚¢‚È‚¢‚©ƒ`ƒFƒbƒN
 	if( ssd->bl.prev == NULL )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒåŒã˜ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ª“¯‚¶‚©ƒ`ƒFƒbƒN
 	if( ssd->bl.id == sd->bl.id )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒåŒä¸€MAPã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ª“¯ˆêMAP‚©ƒ`ƒFƒbƒN
 	if( ssd->bl.m != sd->bl.m )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å¯¾è±¡ã¨è‡ªèº«ãŒAREA_SIZEå†…ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚Æ©g‚ªAREA_SIZE“à‚©ƒ`ƒFƒbƒN
 	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å¯¾è±¡ãŒéœ²åº—é–‹è¨­ä¸­ã‹ãƒã‚§ãƒƒã‚¯
+	// ‘ÎÛ‚ª˜I“XŠJİ’†‚©ƒ`ƒFƒbƒN
 	if( ssd->state.store != STORE_TYPE_BUYINGSTORE )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// buyer_idãŒé•ãˆã°ä¸å¯
+	// buyer_id‚ªˆá‚¦‚Î•s‰Â
 	if( ssd->buyer_id != buyer_id )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// countã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// count‚Ì”ÍˆÍƒ`ƒFƒbƒN
 	if( count <= 0 || count > ssd->buyingstore.count )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// éœ²åº—é–‹è¨­ä¸­ã¯å£²å´ä¸å¯
+	// ˜I“XŠJİ’†‚Í”„‹p•s‰Â
 	if( sd->state.store )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// å–å¼•ä¸­ã¯å£²å´ä¸å¯
+	// æˆø’†‚Í”„‹p•s‰Â
 	if( sd->state.deal_mode )
 	{
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
 
-	// è²·å–éœ²åº—é–‹è¨­è€…ã®é‡é‡å–å¾—
+	// ”ƒæ˜I“XŠJİÒ‚Ìd—Êæ“¾
 	weight = ssd->weight;
 
-	// è²·å–éœ²åº—é–‹è¨­è€…ã®ç©ºãã‚¢ã‚¤ãƒ†ãƒ æ¬„ã®å€‹æ•°å–å¾—
+	// ”ƒæ˜I“XŠJİÒ‚Ì‹ó‚«ƒAƒCƒeƒ€—“‚ÌŒÂ”æ“¾
 	blank = pc_inventoryblank(ssd);
 
-	// ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿ç¢ºèªå‡¦ç†
+	// ƒAƒCƒeƒ€ƒf[ƒ^Šm”Fˆ—
 	for( i = 0; i < count; i++ )
 	{
 		short idx    = *(short *)(data + 6*i + 0) - 2;
 		short nameid = *(short *)(data + 6*i + 2);
 		short amount = *(short *)(data + 6*i + 4);
 
-		// indexã®é‡è¤‡ãƒã‚§ãƒƒã‚¯
+		// index‚Ìd•¡ƒ`ƒFƒbƒN
 		if( i )
 		{
 			int j;
@@ -456,35 +456,35 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 			}
 		}
 
-		// indexã®ç¯„å›²ãƒã‚§ãƒƒã‚¯
+		// index‚Ì”ÍˆÍƒ`ƒFƒbƒN
 		if( idx < 0 || idx >= MAX_INVENTORY )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 			return;
 		}
 
-		// indexã«ã‚¢ã‚¤ãƒ†ãƒ ã¯å­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+		// index‚ÉƒAƒCƒeƒ€‚Í‘¶İ‚·‚é‚©ƒ`ƒFƒbƒN
 		if( sd->inventory_data[idx] == NULL )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 			return;
 		}
 
-		// ã‚¢ã‚¤ãƒ†ãƒ IDã®ãƒã‚§ãƒƒã‚¯
+		// ƒAƒCƒeƒ€ID‚Ìƒ`ƒFƒbƒN
 		if( sd->status.inventory[idx].nameid != nameid )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 			return;
 		}
 
-		// å€‹æ•°ã®ãƒã‚§ãƒƒã‚¯
+		// ŒÂ”‚Ìƒ`ƒFƒbƒN
 		if( amount <= 0 || sd->status.inventory[idx].amount < amount )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_COUNT, 0);
 			return;
 		}
 
-		// è²·ã„å–ã‚Šçµ‚äº†ãƒã‚§ãƒƒã‚¯
+		// ”ƒ‚¢æ‚èI—¹ƒ`ƒFƒbƒN
 		for( listidx = 0; listidx < ssd->buyingstore.count; listidx++ )
 		{
 			if( ssd->buyingstore.item[listidx].nameid == nameid )
@@ -498,42 +498,42 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 			}
 		}
 
-		// å€‹æ•°ãƒã‚§ãƒƒã‚¯
+		// ŒÂ”ƒ`ƒFƒbƒN
 		if( ssd->buyingstore.item[listidx].amount < amount )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_COUNT, 0);
 			return;
 		}
 
-		// é‡é‡è¨ˆç®—
+		// d—ÊŒvZ
 		weight += itemdb_weight(sd->inventory_data[idx]->nameid) * amount;
 
-		// é‡é‡ãƒã‚§ãƒƒã‚¯
+		// d—Êƒ`ƒFƒbƒN
 		if( weight > ssd->max_weight )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 			return;
 		}
 
-		// Zenyè¨ˆç®—
+		// ZenyŒvZ
 		zeny += amount * ssd->buyingstore.item[listidx].value;
 
-		// Zenyãƒã‚§ãƒƒã‚¯
+		// Zenyƒ`ƒFƒbƒN
 		if( sd->status.zeny > MAX_ZENY - zeny )
 		{
-			// è²·å–å¯¾è±¡ã‚¢ã‚¤ãƒ†ãƒ ã®åˆè¨ˆé‡‘é¡ãŒã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒæ‰€æŒå¯èƒ½ãªæœ€å¤§é‡‘é¡(2,147,483,647 Zeny)ã‚’è¶…éã—ã¦ã„ã¾ã™ã€‚
+			// ”ƒæ‘ÎÛƒAƒCƒeƒ€‚Ì‡Œv‹àŠz‚ªAƒLƒƒƒ‰ƒNƒ^[‚ªŠ‰Â”\‚ÈÅ‘å‹àŠz(2,147,483,647 Zeny)‚ğ’´‰ß‚µ‚Ä‚¢‚Ü‚·B
 			clif_msgstringtable(sd, 0x74e);
 			return;
 		}
 
-		// è²·ã„å–ã‚Šé™åº¦ãƒã‚§ãƒƒã‚¯
+		// ”ƒ‚¢æ‚èŒÀ“xƒ`ƒFƒbƒN
 		if( zeny > ssd->buyingstore.limit_zeny )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_ZENY, 0);
 			return;
 		}
 
-		// ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªç©ºããƒã‚§ãƒƒã‚¯
+		// ƒCƒ“ƒxƒ“ƒgƒŠ‹ó‚«ƒ`ƒFƒbƒN
 		switch(pc_checkadditem(ssd, sd->inventory_data[idx]->nameid, amount))
 		{
 			case ADDITEM_EXIST:
@@ -548,14 +548,14 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		}
 	}
 
-	// è²·ã„å–ã‚Šå‡¦ç†
+	// ”ƒ‚¢æ‚èˆ—
 	for( i = 0; i < count; i++ )
 	{
 		short idx    = *(short *)(data + 6*i + 0) - 2;
 		short nameid = *(short *)(data + 6*i + 2);
 		short amount = *(short *)(data + 6*i + 4);
 
-		// è²·ã„å–ã‚Šå•†å“ã®Zenyè¨ˆç®—
+		// ”ƒ‚¢æ‚è¤•i‚ÌZenyŒvZ
 		for( listidx = 0; listidx < ssd->buyingstore.count; listidx++ )
 		{
 			if( ssd->buyingstore.item[listidx].nameid == nameid )
@@ -565,22 +565,22 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 			}
 		}
 
-		// ã‚¢ã‚¤ãƒ†ãƒ ã®ç§»å‹•
+		// ƒAƒCƒeƒ€‚ÌˆÚ“®
 		pc_additem(ssd, &sd->status.inventory[idx], amount);
 		pc_delitem(sd, idx, amount, 1, 0);
 		ssd->buyingstore.item[listidx].amount -= amount;
 
-		// Zenyã®æ”¯æ‰•ã„
+		// Zeny‚Ìx•¥‚¢
 		pc_payzeny(ssd, (int)zeny);
 		pc_getzeny(sd, (int)zeny);
 		ssd->buyingstore.limit_zeny -= (int)zeny;
 
-		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã¸é€ä¿¡
+		// ƒNƒ‰ƒCƒAƒ“ƒg‚Ö‘—M
 		clif_delete_buyingstore(sd, idx, amount, ssd->buyingstore.item[listidx].value);
 		clif_update_buyingstore(ssd, nameid, amount, ssd->buyingstore.item[listidx].value * amount, sd->bl.id, sd->char_id);
 	}
 
-	// è²·ã„å–ã‚Šå“æ•°ãƒã‚§ãƒƒã‚¯
+	// ”ƒ‚¢æ‚è•i”ƒ`ƒFƒbƒN
 	for( i = 0; (i < ssd->buyingstore.count) && (ssd->buyingstore.item[i].amount <= 0); i++ );
 	if( i == ssd->buyingstore.count )
 	{
@@ -588,14 +588,14 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		buyingstore_close(ssd);
 	}
 
-	// limit_zenyã®ãƒã‚§ãƒƒã‚¯
+	// limit_zeny‚Ìƒ`ƒFƒbƒN
 	if( ssd->buyingstore.limit_zeny <= 0 )
 	{
 		clif_failed_trybuyingstore(ssd, CLOSE_ZENY);
 		buyingstore_close(ssd);
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒ¼ãƒ–
+	// ƒf[ƒ^‚ğƒZ[ƒu
 	chrif_save(sd,0);
 	chrif_save(ssd,0);
 

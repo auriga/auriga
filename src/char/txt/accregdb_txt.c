@@ -45,7 +45,7 @@ static int accreg_journal_cache = 1000;
 #endif
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int accregdb_txt_config_read_sub(const char *w1,const char *w2)
@@ -72,7 +72,7 @@ int accregdb_txt_config_read_sub(const char *w1,const char *w2)
 }
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ƒAƒJƒEƒ“ƒg•Ï”‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int accregdb_tostr(char *str, struct accreg *reg)
@@ -91,7 +91,7 @@ static int accregdb_tostr(char *str, struct accreg *reg)
 }
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ƒAƒJƒEƒ“ƒg•Ï”‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int accregdb_fromstr(const char *str, struct accreg *reg)
@@ -121,20 +121,20 @@ static int accregdb_fromstr(const char *str, struct accreg *reg)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// ƒAƒJƒEƒ“ƒg•Ï”‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 int accregdb_journal_rollforward( int key, void* buf, int flag )
 {
 	struct accreg* reg = (struct accreg *)numdb_search( accreg_db, key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct accreg*)buf)->account_id )
 	{
 		printf("inter: accreg_journal: key != account_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( reg )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -146,7 +146,7 @@ int accregdb_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		reg = (struct accreg*) aCalloc( 1, sizeof( struct accreg ) );
@@ -161,7 +161,7 @@ int accregdb_txt_sync(void);
 #endif
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã®èª­ã¿è¾¼ã¿
+ * ƒAƒJƒEƒ“ƒg•Ï”‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool accregdb_txt_read(void)
@@ -195,19 +195,19 @@ static bool accregdb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &accreg_journal, sizeof(struct accreg), accreg_journal_file ) )
 		{
 			int c = journal_rollforward( &accreg_journal, accregdb_journal_rollforward );
 
 			printf("inter: accreg_journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			accregdb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &accreg_journal );
 			journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
 		}
@@ -218,7 +218,7 @@ static bool accregdb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int accregdb_txt_sync_sub(void *key, void *data, va_list ap)
@@ -253,7 +253,7 @@ int accregdb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( accreg_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &accreg_journal );
 		journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
 	}
@@ -263,7 +263,7 @@ int accregdb_txt_sync(void)
 }
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã®ãƒ­ãƒ¼ãƒ‰
+ * ƒAƒJƒEƒ“ƒg•Ï”‚Ìƒ[ƒh
  *------------------------------------------
  */
 const struct accreg* accregdb_txt_load(int account_id)
@@ -272,7 +272,7 @@ const struct accreg* accregdb_txt_load(int account_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool accregdb_txt_save(struct accreg *reg2)
@@ -297,7 +297,7 @@ bool accregdb_txt_save(struct accreg *reg2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int accregdb_txt_final_sub(void *key, void *data, va_list ap)
@@ -321,7 +321,7 @@ void accregdb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool accregdb_txt_init(void)

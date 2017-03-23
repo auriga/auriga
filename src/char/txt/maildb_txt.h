@@ -24,7 +24,7 @@
 
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool maildb_txt_store_mail(int char_id,struct mail_data *md);
 bool maildb_txt_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STORE_MAX]);
 bool maildb_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL_STORE_MAX]);
@@ -38,7 +38,7 @@ bool maildb_txt_new(int account_id,int char_id);
 void maildb_txt_final(void);
 int maildb_txt_config_read_sub(const char *w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define maildb_store_mail      maildb_txt_store_mail
 #define maildb_save_mail       maildb_txt_save_mail
 #define maildb_read_mail       maildb_txt_read_mail

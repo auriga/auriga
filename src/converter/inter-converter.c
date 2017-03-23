@@ -46,7 +46,7 @@ struct scdata {
 	} data[MAX_STATUSCHANGE];
 };
 
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+// ƒAƒJƒEƒ“ƒg•Ï”‚ğ•¶š—ñ‚©‚ç•ÏŠ·
 static int accreg_fromstr(const char *str,struct accreg *reg)
 {
 	int j,v,n;
@@ -71,7 +71,7 @@ static int accreg_fromstr(const char *str,struct accreg *reg)
 	return 0;
 }
 
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°ã‚’æ›¸ãè¾¼ã¿
+// ƒAƒJƒEƒ“ƒg•Ï”‚ğ‘‚«‚İ
 static int accreg_tosql(struct accreg *reg)
 {
 	int j;
@@ -91,7 +91,7 @@ static int accreg_tosql(struct accreg *reg)
 	return 0;
 }
 
-// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
 static int status_fromstr(char *str, struct scdata *sc)
 {
 	int i,next,set,len;
@@ -104,7 +104,7 @@ static int status_fromstr(char *str, struct scdata *sc)
 		return 1;
 
 	if(str[next] == '\n' || str[next] == '\r')
-		return 1;	// account_idã¨char_idã ã‘ã®è¡Œã¯æœ‰ã‚Šå¾—ãªã„
+		return 1;	// account_id‚Æchar_id‚¾‚¯‚Ìs‚Í—L‚è“¾‚È‚¢
 	next++;
 
 	for(i=0; str[next] && str[next] != '\t'; i++) {
@@ -129,7 +129,7 @@ static int status_fromstr(char *str, struct scdata *sc)
 	return 0;
 }
 
-// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã¿
+// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚ğ‘‚«‚İ
 static int status_tosql(struct scdata *sc)
 {
 	int i;
@@ -148,7 +148,7 @@ static int status_tosql(struct scdata *sc)
 	return 0;
 }
 
-// ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+// ƒ[ƒ‹ƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
 static int mail_fromstr(char *str,struct mail *m)
 {
 	int s;
@@ -167,7 +167,7 @@ static int mail_fromstr(char *str,struct mail *m)
 	return 0;
 }
 
-// ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã®å‰Šé™¤
+// ƒ[ƒ‹ƒf[ƒ^‚Ìíœ
 static int mail_delete_fromsql(int char_id)
 {
 	sqldbs_query(&mysql_handle, "DELETE FROM `mail` WHERE `char_id` = '%d'", char_id);
@@ -175,7 +175,7 @@ static int mail_delete_fromsql(int char_id)
 	return 0;
 }
 
-// ãƒ¡ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã¿
+// ƒ[ƒ‹ƒf[ƒ^‚ğ‘‚«‚İ
 static int mail_tosql(struct mail* m)
 {
 	mail_delete_fromsql(m->char_id);
@@ -189,7 +189,7 @@ static int mail_tosql(struct mail* m)
 	return 0;
 }
 
-// å€‹äººãƒ¡ãƒ¼ãƒ«BOXã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+// ŒÂlƒ[ƒ‹BOX‚ğ•¶š—ñ‚©‚ç•ÏŠ·
 static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 {
 	int n;
@@ -201,7 +201,7 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
 		&tmp_int[14],&tmp_int[15],&tmp_int[16],body_data);
 	if(n!=21) {
-		// ä¸€åº¦ã‚‚é–‹ã‹ã‚Œã¦ãªã„ãƒ¡ãƒ¼ãƒ«BOXã¯Auriga-0300ã‚ˆã‚Šå¤ã„å½¢å¼ã®ã¾ã¾ã®å¯èƒ½æ€§ãŒã‚ã‚‹
+		// ˆê“x‚àŠJ‚©‚ê‚Ä‚È‚¢ƒ[ƒ‹BOX‚ÍAuriga-0300‚æ‚èŒÃ‚¢Œ`®‚Ì‚Ü‚Ü‚Ì‰Â”\«‚ª‚ ‚é
 		tmp_int[14] = 0;
 		n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
 			&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
@@ -236,12 +236,12 @@ static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 	md->receive_name[23] = '\0';
 	md->title[39]        = '\0';
 
-	// md->bodyã¯ä½¿ã‚ãªã„
+	// md->body‚Íg‚í‚È‚¢
 
 	return 0;
 }
 
-// å€‹äººãƒ¡ãƒ¼ãƒ«BOXã‚’æ›¸ãè¾¼ã¿
+// ŒÂlƒ[ƒ‹BOX‚ğ‘‚«‚İ
 static int mailbox_tosql(struct mail_data *md,const char *body_data)
 {
 	char buf[3][256];
@@ -345,7 +345,7 @@ int inter_convert(void)
 					charid_list = (int *)aRealloc(charid_list, list_size*sizeof(int));
 					memset(charid_list+(list_size-256), 0, 256*sizeof(int));
 				}
-				charid_list[list_num++] = m.char_id;	// ã‚­ãƒ£ãƒ©IDã‚’ãƒªã‚¹ãƒˆã«ä¿å­˜
+				charid_list[list_num++] = m.char_id;	// ƒLƒƒƒ‰ID‚ğƒŠƒXƒg‚É•Û‘¶
 			} else {
 				printf("mail: broken data [%s] line %d\n", mail_txt, c);
 			}
@@ -359,12 +359,12 @@ int inter_convert(void)
 			fp = fopen(filename,"r");
 			if(fp == NULL) {
 				printf("cant't read : %s\n",filename);
-				mail_delete_fromsql(charid_list[i]);	// æ•´åˆæ€§ãŒå–ã‚Œãªã„ã®ã§ `mail` ã‹ã‚‰å‰Šé™¤
+				mail_delete_fromsql(charid_list[i]);	// ®‡«‚ªæ‚ê‚È‚¢‚Ì‚Å `mail` ‚©‚çíœ
 				continue;
 			}
 			c = 0;
 			while(fgets(line, sizeof(line), fp)) {
-				char body_data[1024];	// bodyã¯ãƒã‚¤ãƒŠãƒªãƒ‡ãƒ¼ã‚¿ã®ã¾ã¾SQLã«æµã—è¾¼ã‚€ã®ã§UNHEXã—ãªã„
+				char body_data[1024];	// body‚ÍƒoƒCƒiƒŠƒf[ƒ^‚Ì‚Ü‚ÜSQL‚É—¬‚µ‚Ş‚Ì‚ÅUNHEX‚µ‚È‚¢
 				c++;
 				memset(&md, 0, sizeof(md));
 				if(mailbox_fromstr(line, &md, body_data) == 0) {

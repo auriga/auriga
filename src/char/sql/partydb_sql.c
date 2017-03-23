@@ -35,7 +35,7 @@
 static struct dbt *party_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int partydb_sql_config_read_sub(const char *w1,const char *w2)
@@ -44,7 +44,7 @@ int partydb_sql_config_read_sub(const char *w1,const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int partydb_sql_sync(void)
@@ -54,7 +54,7 @@ int partydb_sql_sync(void)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£åã‹ã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒp[ƒeƒB–¼‚©‚çƒp[ƒeƒBƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct party* partydb_sql_load_str(const char *str)
@@ -78,7 +78,7 @@ const struct party* partydb_sql_load_str(const char *str)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£IDã‹ã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒp[ƒeƒBID‚©‚çƒp[ƒeƒBƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct party* partydb_sql_load_num(int party_id)
@@ -138,7 +138,7 @@ const struct party* partydb_sql_load_num(int party_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool partydb_sql_save(struct party *p2)
@@ -173,7 +173,7 @@ bool partydb_sql_save(struct party *p2)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‰Šé™¤
+ * ƒp[ƒeƒBíœ
  *------------------------------------------
  */
 bool partydb_sql_delete(int party_id)
@@ -191,7 +191,7 @@ bool partydb_sql_delete(int party_id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ä½œæˆ
+ * ƒp[ƒeƒBì¬
  *------------------------------------------
  */
 bool partydb_sql_new(struct party *p)
@@ -222,7 +222,7 @@ bool partydb_sql_new(struct party *p)
 	}
 	sqldbs_free_result(&mysql_handle);
 
-	// DBã«æŒ¿å…¥
+	// DB‚É‘}“ü
 	result = sqldbs_query(&mysql_handle,
 		"INSERT INTO `" PARTY_TABLE "` (`party_id`, `name`, `exp`, `item`, `leader_id`) "
 		"VALUES ('%d','%s', '%d', '%d', '%d')",
@@ -236,7 +236,7 @@ bool partydb_sql_new(struct party *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int partydb_sql_final_sub(void *key, void *data, va_list ap)
@@ -254,7 +254,7 @@ void partydb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool partydb_sql_init(void)

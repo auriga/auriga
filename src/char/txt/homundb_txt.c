@@ -45,7 +45,7 @@ static int homun_journal_cache = 1000;
 #endif
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int homundb_txt_config_read_sub(const char* w1,const char *w2)
@@ -72,7 +72,7 @@ int homundb_txt_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ƒzƒ€ƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int homun_tostr(char *str, struct mmo_homunstatus *h)
@@ -116,7 +116,7 @@ static int homun_tostr(char *str, struct mmo_homunstatus *h)
 }
 
 /*==========================================
- * ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ƒzƒ€ƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int homun_fromstr(char *str, struct mmo_homunstatus *h)
@@ -129,7 +129,7 @@ static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 
 	memset(h, 0, sizeof(struct mmo_homunstatus));
 
-	// Auriga-0594ä»¥é™ã®å½¢å¼
+	// Auriga-0594ˆÈ~‚ÌŒ`®
 	s = sscanf(str, "%d,%d,%255[^\t]\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d%n",
 		&tmp_int[0],&tmp_int[1],tmp_str,
 		&tmp_int[2],&tmp_int[3],
@@ -203,7 +203,7 @@ static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 		h->intimate = 100000;
 
 	if(str[next] == '\n' || str[next] == '\r')
-		return 1;	// ã‚¹ã‚­ãƒ«æƒ…å ±ãªã—
+		return 1;	// ƒXƒLƒ‹î•ñ‚È‚µ
 
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
@@ -227,20 +227,20 @@ static int homun_fromstr(char *str, struct mmo_homunstatus *h)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// ƒzƒ€ƒf[ƒ^‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 int homun_journal_rollforward( int key, void* buf, int flag )
 {
 	struct mmo_homunstatus* h = (struct mmo_homunstatus *)numdb_search( homun_db, key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_homunstatus*)buf)->homun_id )
 	{
 		printf("int_homun: journal: key != homun_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( h )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -252,7 +252,7 @@ int homun_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		h = (struct mmo_homunstatus*) aCalloc( 1, sizeof( struct mmo_homunstatus ) );
@@ -269,7 +269,7 @@ int homundb_txt_sync(void);
 #endif
 
 /*==========================================
- * ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * ƒzƒ€ƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool homundb_txt_read(void)
@@ -304,19 +304,19 @@ static bool homundb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &homun_journal, sizeof(struct mmo_homunstatus), homun_journal_file ) )
 		{
 			int c = journal_rollforward( &homun_journal, homun_journal_rollforward );
 
 			printf("int_homun: journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			homundb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &homun_journal );
 			journal_create( &homun_journal, sizeof(struct mmo_homunstatus), homun_journal_cache, homun_journal_file );
 		}
@@ -327,7 +327,7 @@ static bool homundb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int homundb_txt_sync_sub(void *key, void *data, va_list ap)
@@ -360,7 +360,7 @@ int homundb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( homun_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &homun_journal );
 		journal_create( &homun_journal, sizeof(struct mmo_homunstatus), homun_journal_cache, homun_journal_file );
 	}
@@ -370,7 +370,7 @@ int homundb_txt_sync(void)
 }
 
 /*==========================================
- * ãƒ›ãƒ å‰Šé™¤
+ * ƒzƒ€íœ
  *------------------------------------------
  */
 bool homundb_txt_delete(int homun_id)
@@ -393,7 +393,7 @@ bool homundb_txt_delete(int homun_id)
 }
 
 /*==========================================
- * ãƒ›ãƒ IDã‹ã‚‰ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒzƒ€ID‚©‚çƒzƒ€ƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_homunstatus* homundb_txt_load(int homun_id)
@@ -402,7 +402,7 @@ const struct mmo_homunstatus* homundb_txt_load(int homun_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool homundb_txt_save(struct mmo_homunstatus *p2)
@@ -426,7 +426,7 @@ bool homundb_txt_save(struct mmo_homunstatus *p2)
 }
 
 /*==========================================
- * ãƒ›ãƒ ä½œæˆ
+ * ƒzƒ€ì¬
  *------------------------------------------
  */
 bool homundb_txt_new(struct mmo_homunstatus *p2)
@@ -445,7 +445,7 @@ bool homundb_txt_new(struct mmo_homunstatus *p2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int homundb_txt_final_sub(void *key, void *data, va_list ap)
@@ -471,7 +471,7 @@ void homundb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool homundb_txt_init(void)

@@ -35,7 +35,7 @@ struct scdata {
 int inter_status_parse_frommap(int fd);
 
 #ifdef NO_SCDATA_SAVING
-	// ãƒ€ãƒŸãƒ¼ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+	// ƒ_ƒ~[ƒvƒƒgƒ^ƒCƒvéŒ¾
 	bool status_dummy_init(void);
 	int status_dummy_sync(void);
 	bool status_dummy_delete(int char_id);
@@ -44,7 +44,7 @@ int inter_status_parse_frommap(int fd);
 	void status_dummy_final(void);
 	int status_dummy_config_read_sub(const char *w1,const char *w2);
 
-	// ãƒ€ãƒŸãƒ¼ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// ƒ_ƒ~[ƒGƒCƒŠƒAƒX
 	#define statusdb_init   status_dummy_init
 	#define statusdb_sync   status_dummy_sync
 	#define statusdb_delete status_dummy_delete

@@ -73,7 +73,7 @@
 #include "elem.h"
 #include "bank.h"
 
-/* ãƒ‘ã‚±ãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ */
+/* ƒpƒPƒbƒgƒf[ƒ^ƒx[ƒX */
 #define MAX_PACKET_DB 0xA90
 
 struct packet_db {
@@ -134,7 +134,7 @@ static unsigned int cryptKey[3];
 
 
 /*==========================================
- * mapé¯–ã®ãƒ›ã‚¹ãƒˆè¨­å®š
+ * mapI‚ÌƒzƒXƒgİ’è
  *------------------------------------------
  */
 void clif_sethost(const char *host)
@@ -151,7 +151,7 @@ void clif_sethost(const char *host)
 }
 
 /*==========================================
- * mapé¯–ã®ipè¨­å®š
+ * mapI‚Ìipİ’è
  *------------------------------------------
  */
 void clif_setip(void)
@@ -162,7 +162,7 @@ void clif_setip(void)
 }
 
 /*==========================================
- * mapé¯–ã®portè¨­å®š
+ * mapI‚Ìportİ’è
  *------------------------------------------
  */
 void clif_setport(unsigned short port)
@@ -173,7 +173,7 @@ void clif_setport(unsigned short port)
 }
 
 /*==========================================
- * mapé¯–ã®ipèª­ã¿å‡ºã—
+ * mapI‚Ìip“Ç‚İo‚µ
  *------------------------------------------
  */
 unsigned long clif_getip(void)
@@ -182,7 +182,7 @@ unsigned long clif_getip(void)
 }
 
 /*==========================================
- * mapé¯–ã®portèª­ã¿å‡ºã—
+ * mapI‚Ìport“Ç‚İo‚µ
  *------------------------------------------
  */
 unsigned short clif_getport(void)
@@ -209,7 +209,7 @@ int clif_countusers(void)
 }
 
 /*==========================================
- * å…¨ã¦ã®clientã«å¯¾ã—ã¦func()å®Ÿè¡Œ
+ * ‘S‚Ä‚Ìclient‚É‘Î‚µ‚Äfunc()Às
  *------------------------------------------
  */
 int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
@@ -234,7 +234,7 @@ int clif_foreachclient(int (*func)(struct map_session_data*,va_list),...)
 }
 
 /*==========================================
- * clif_sendã§AREA*æŒ‡å®šæ™‚ç”¨
+ * clif_send‚ÅAREA*w’è—p
  *------------------------------------------
  */
 static int clif_send_sub(struct block_list *bl,va_list ap)
@@ -291,7 +291,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 	}
 
 	switch(type){
-	case ALL_CLIENT:	// å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡
+	case ALL_CLIENT:	// ‘SƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M
 		for(i=0;i<fd_max;i++){
 			if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth){
 				memcpy(WFIFOP(i,0),buf,len);
@@ -299,7 +299,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 			}
 		}
 		break;
-	case ALL_SAMEMAP:	// åŒã˜ãƒãƒƒãƒ—ã®å…¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡
+	case ALL_SAMEMAP:	// “¯‚¶ƒ}ƒbƒv‚Ì‘SƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M
 		for(i=0;i<fd_max;i++){
 			if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth && sd->bl.m == bl->m){
 				memcpy(WFIFOP(i,0),buf,len);
@@ -338,16 +338,16 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 		}
 		break;
 
-	case PARTY_AREA:		// åŒã˜ç”»é¢å†…ã®å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
-	case PARTY_AREA_WOS:		// è‡ªåˆ†ä»¥å¤–ã®åŒã˜ç”»é¢å†…ã®å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
+	case PARTY_AREA:		// “¯‚¶‰æ–Ê“à‚Ì‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
+	case PARTY_AREA_WOS:		// ©•ªˆÈŠO‚Ì“¯‚¶‰æ–Ê“à‚Ì‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
 		x0=bl->x-AREA_SIZE;
 		y0=bl->y-AREA_SIZE;
 		x1=bl->x+AREA_SIZE;
 		y1=bl->y+AREA_SIZE;
-	case PARTY:			// å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
-	case PARTY_WOS:			// è‡ªåˆ†ä»¥å¤–ã®å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
-	case PARTY_SAMEMAP:		// åŒã˜ãƒãƒƒãƒ—ã®å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
-	case PARTY_SAMEMAP_WOS:		// è‡ªåˆ†ä»¥å¤–ã®åŒã˜ãƒãƒƒãƒ—ã®å…¨ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒã«é€ä¿¡
+	case PARTY:			// ‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
+	case PARTY_WOS:			// ©•ªˆÈŠO‚Ì‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
+	case PARTY_SAMEMAP:		// “¯‚¶ƒ}ƒbƒv‚Ì‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
+	case PARTY_SAMEMAP_WOS:		// ©•ªˆÈŠO‚Ì“¯‚¶ƒ}ƒbƒv‚Ì‘Sƒp[ƒeƒB[ƒƒ“ƒo‚É‘—M
 		{
 			struct party *p = NULL;
 			if(bl->type==BL_PC){
@@ -362,7 +362,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 					if( sd->bl.id==bl->id && (type==PARTY_WOS ||
 						type==PARTY_SAMEMAP_WOS || type==PARTY_AREA_WOS))
 						continue;
-					if(type!=PARTY && type!=PARTY_WOS && bl->m!=sd->bl.m)	// ãƒãƒƒãƒ—ãƒã‚§ãƒƒã‚¯
+					if(type!=PARTY && type!=PARTY_WOS && bl->m!=sd->bl.m)	// ƒ}ƒbƒvƒ`ƒFƒbƒN
 						continue;
 					if((type==PARTY_AREA || type==PARTY_AREA_WOS) &&
 						(sd->bl.x<x0 || sd->bl.y<y0 ||
@@ -409,7 +409,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 
 	default:
 		if(battle_config.error_log)
-			printf("clif_send ã¾ã ä½œã£ã¦ãªã„ã‚ˆãƒ¼\n");
+			printf("clif_send ‚Ü‚¾ì‚Á‚Ä‚È‚¢‚æ[\n");
 		return;
 	}
 
@@ -417,7 +417,7 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 }
 
 //
-// ãƒ‘ã‚±ãƒƒãƒˆä½œã£ã¦é€ä¿¡
+// ƒpƒPƒbƒgì‚Á‚Ä‘—M
 //
 /*==========================================
  *
@@ -1358,7 +1358,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸ typeã¯Mobã®å ´åˆã¯1ã§ä»–ã¯0ï¼Ÿ
+ * ƒNƒ‰ƒXƒ`ƒFƒ“ƒW type‚ÍMob‚Ìê‡‚Í1‚Å‘¼‚Í0H
  *------------------------------------------
  */
 void clif_class_change(struct block_list *bl,int class_,int type)
@@ -1379,7 +1379,7 @@ void clif_class_change(struct block_list *bl,int class_,int type)
 }
 
 /*==========================================
- * MOBè¡¨ç¤º1
+ * MOB•\¦1
  *------------------------------------------
  */
 static int clif_mob0078(struct mob_data *md,unsigned char *buf)
@@ -1817,7 +1817,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 }
 
 /*==========================================
- * MOBè¡¨ç¤º2
+ * MOB•\¦2
  *------------------------------------------
  */
 static int clif_mob007b(struct mob_data *md,unsigned char *buf)
@@ -2695,7 +2695,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚èŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -2713,7 +2713,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚èŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -2731,7 +2731,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚èŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -2752,7 +2752,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=pd->speed;
 	WBUFW(buf,23)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,25)=100;	// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,25)=100;	// ’²‚×‚½ŒÀ‚èŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,31)=view;
 	else
@@ -3041,7 +3041,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šã§ã¯å›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚è‚Å‚ÍŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -3060,7 +3060,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šã§ã¯å›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚è‚Å‚ÍŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -3079,7 +3079,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,5)=pd->bl.id;
 	WBUFW(buf,9)=pd->speed;
 	WBUFW(buf,19)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,21)=100;	// èª¿ã¹ãŸé™ã‚Šã§ã¯å›ºå®š
+	WBUFW(buf,21)=100;	// ’²‚×‚½ŒÀ‚è‚Å‚ÍŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,27)=view;
 	else
@@ -3101,7 +3101,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=pd->speed;
 	WBUFW(buf,23)=mob_get_viewclass(pd->class_);
-	WBUFW(buf,25)=100;	// èª¿ã¹ãŸé™ã‚Šã§ã¯å›ºå®š
+	WBUFW(buf,25)=100;	// ’²‚×‚½ŒÀ‚è‚Å‚ÍŒÅ’è
 	if((view = itemdb_viewid(pd->equip)) > 0)
 		WBUFW(buf,31)=view;
 	else
@@ -3902,7 +3902,7 @@ static void clif_set0192(int fd, int m, int x, int y, int type)
 }
 
 /*==========================================
- * å½±ç‹¼ãƒ»æœ§ã®çƒä½“è¡¨ç¤º(IDæŒ‡å®šé€ä¿¡)
+ * ‰e˜TEO‚Ì‹…‘Ì•\¦(IDw’è‘—M)
  *------------------------------------------
  */
 static void clif_elementball_id(const int fd, struct map_session_data *dstsd)
@@ -3999,28 +3999,28 @@ void clif_spawnpc(struct map_session_data *sd)
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
 
-	// å®Œå…¨ãªã‚¤ãƒ³ãƒ“ã‚¸ãƒ–ãƒ«ãƒ¢ãƒ¼ãƒ‰ãªã‚‰é€ä¿¡ã—ãªã„
+	// Š®‘S‚ÈƒCƒ“ƒrƒWƒuƒ‹ƒ‚[ƒh‚È‚ç‘—M‚µ‚È‚¢
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
-		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// é©šæ„•
+		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// ‹Áœ±
 			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,MOBID_PORING,0,0);
-//		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«ã‚·ã‚¹ãƒ†ãƒ 
+//		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// ƒ‚ƒ“ƒXƒ^[•ÏgƒVƒXƒeƒ€
 //			clif_seteffect_enter(&sd->bl,SI_MONSTER_TRANSFORM,0,sd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
-//		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«
+//		else if(sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// ƒAƒNƒeƒBƒuƒ‚ƒ“ƒXƒ^[•Ïg
 //			clif_seteffect_enter(&sd->bl,SI_ACTIVE_MONSTER_TRANSFORM,0,sd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
-		else if(sd->sc.data[SC_ALL_RIDING].timer != -1)	// æ­ä¹—ã‚·ã‚¹ãƒ†ãƒ 
+		else if(sd->sc.data[SC_ALL_RIDING].timer != -1)	// “‹æƒVƒXƒeƒ€
 			clif_seteffect_enter(&sd->bl,SI_ALL_RIDING,9999,1,25,0);
-		if(sd->sc.data[SC_ON_PUSH_CART].timer != -1)	// ã‚«ãƒ¼ãƒˆ
+		if(sd->sc.data[SC_ON_PUSH_CART].timer != -1)	// ƒJ[ƒg
 			clif_seteffect_enter(&sd->bl,SI_ON_PUSH_CART,9999,sd->sc.data[SC_ON_PUSH_CART].val1,0,0);
-		if(sd->sc.data[SC_BANDING].timer != -1)	// ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+		if(sd->sc.data[SC_BANDING].timer != -1)	// ƒoƒ“ƒfƒBƒ“ƒO
 			clif_seteffect_enter(&sd->bl,SI_BANDING,9999,sd->sc.data[SC_BANDING].val1,0,0);
-		if(sd->sc.data[SC_HAT_EFFECT].timer != -1)	// é ­è£…å‚™ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		if(sd->sc.data[SC_HAT_EFFECT].timer != -1)	// “ª‘•”õƒGƒtƒFƒNƒg
 			clif_seteffect_enter(&sd->bl,SI_HAT_EFFECT,9999,sd->sc.data[SC_HAT_EFFECT].val1,0,0);
 	}
 	if(sd->spiritball.num > 0)
 		clif_spiritball(sd);
 	if(sd->coin.num > 0)
 		clif_coin(sd);
-	if(sd->elementball.num > 0)	// å½±ç‹¼ãƒ»æœ§ã®çƒä½“è¡¨ç¤º
+	if(sd->elementball.num > 0)	// ‰e˜TEO‚Ì‹…‘Ì•\¦
 		clif_elementball(sd);
 	if(sd->sc.data[SC_BERKANA].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_BERKANA].val2);
@@ -4413,7 +4413,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFL(buf,2) =hd->bl.id;
 	WBUFW(buf,6) =hd->speed;
 	WBUFW(buf,20)=hd->view_class;
-	WBUFW(buf,28)=8;		// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,28)=8;		// ’²‚×‚½ŒÀ‚èŒÅ’è
 	WBUFPOS(buf,36,hd->bl.x,hd->bl.y,hd->dir);
 #elif PACKETVER < 20091104
 	len = packet_db[0x7c].len;
@@ -4424,7 +4424,7 @@ void clif_spawnhom(struct homun_data *hd)
 	WBUFL(buf,3) =hd->bl.id;
 	WBUFW(buf,7) =hd->speed;
 	WBUFW(buf,21)=hd->view_class;
-	WBUFW(buf,29)=8;		// èª¿ã¹ãŸé™ã‚Šå›ºå®š
+	WBUFW(buf,29)=8;		// ’²‚×‚½ŒÀ‚èŒÅ’è
 	WBUFPOS(buf,37,hd->bl.x,hd->bl.y,hd->dir);
 #elif PACKETVER < 20110111
 	len = 62 + (int)strlen(hd->status.name);
@@ -4491,7 +4491,7 @@ void clif_spawnhom(struct homun_data *hd)
 #endif
 	clif_send(buf,len,&hd->bl,AREA);
 
-	// ãƒ›ãƒ ã§ã¯ã€0x78ãƒ‘ã‚±ãƒƒãƒˆã‚„ã€ãã‚Œã«ä»£ã‚ã‚‹ãƒ‘ã‚±ãƒƒãƒˆã®ç¢ºèªã§ããš
+	// ƒzƒ€‚Å‚ÍA0x78ƒpƒPƒbƒg‚âA‚»‚ê‚É‘ã‚í‚éƒpƒPƒbƒg‚ÌŠm”F‚Å‚«‚¸
 	//len = clif_hom0078(hd,buf);
 	//clif_send(buf,len,&hd->bl,AREA);
 
@@ -4749,7 +4749,7 @@ static int clif_set_mobhpinfo(struct block_list *bl, va_list ap)
 	offset = 6;
 #endif
 
-	// ç‰¹å®šçŠ¶æ…‹ç•°å¸¸æ™‚ãƒ»ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãƒ»MVPãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã«ã¯è¡¨ç¤ºã—ãªã„
+	// “Á’èó‘ÔˆÙíEƒGƒ“ƒyƒŠƒEƒ€EMVPƒ‚ƒ“ƒXƒ^[‚É‚Í•\¦‚µ‚È‚¢
 	if(mob_check_hpinfo(sd,md))
 	{
 		WFIFOL(sd->fd,65+offset)=0xffffffff;
@@ -4856,7 +4856,7 @@ void clif_move(struct block_list *bl)
 {
 	nullpo_retv(bl);
 
-	// å®Œå…¨ãªã‚¤ãƒ³ãƒ“ã‚¸ãƒ–ãƒ«ãƒ¢ãƒ¼ãƒ‰ãªã‚‰é€ä¿¡ã—ãªã„
+	// Š®‘S‚ÈƒCƒ“ƒrƒWƒuƒ‹ƒ‚[ƒh‚È‚ç‘—M‚µ‚È‚¢
 	if(bl->type == BL_PC && battle_config.gm_perfect_hide) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd && pc_isinvisible(sd))
@@ -4871,7 +4871,7 @@ void clif_move(struct block_list *bl)
 			unsigned char buf[16];
 
 			if(ud->state.change_speed) {
-				// é€Ÿåº¦ãŒå¤‰æ›´ã•ã‚ŒãŸã¨ãã¯å¤ã„æ­©è¡Œãƒ‘ã‚±ãƒƒãƒˆã‚’é€ä¿¡ã™ã‚‹
+				// ‘¬“x‚ª•ÏX‚³‚ê‚½‚Æ‚«‚ÍŒÃ‚¢•àsƒpƒPƒbƒg‚ğ‘—M‚·‚é
 				clif_move_sub(bl);
 				ud->state.change_speed = 0;
 			}
@@ -4968,7 +4968,7 @@ void clif_changemapserver(struct map_session_data *sd, const char *mapname, int 
 }
 
 /*==========================================
- * ä½ç½®è£œæ­£
+ * ˆÊ’u•â³
  *------------------------------------------
  */
 int clif_fixpos(struct block_list *bl)
@@ -4978,7 +4978,7 @@ int clif_fixpos(struct block_list *bl)
 	if(battle_config.clif_fixpos_type)
 	{
 		int x[4], y[4];
-		// clif_fixpos2 ç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆ
+		// clif_fixpos2 —p‚Ìƒf[ƒ^‚ğì¬
 		x[0] = bl->x - AREA_SIZE;
 		x[1] = bl->x + AREA_SIZE;
 		x[2] = bl->x - AREA_SIZE;
@@ -5001,7 +5001,7 @@ int clif_fixpos(struct block_list *bl)
 }
 
 /*==========================================
- * ä½ç½®è£œæ­£2
+ * ˆÊ’u•â³2
  *------------------------------------------
  */
 static int clif_fixpos2_sub(struct block_list *bl, va_list ap)
@@ -5014,7 +5014,7 @@ static int clif_fixpos2_sub(struct block_list *bl, va_list ap)
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
-	if( src_bl->id != sd->bl.id ) { // è‡ªåˆ†ã¯é™¤å¤–
+	if( src_bl->id != sd->bl.id ) { // ©•ª‚ÍœŠO
 		memcpy( WFIFOP(sd->fd, 0), buf, len);
 		WFIFOSET( sd->fd, len );
 	}
@@ -5033,10 +5033,10 @@ int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 		int len;
 
 		// self position is changed
-		// è‡ªã‚­ãƒ£ãƒ©ã®å¹ãé£›ã°ã—ãƒ‘ã‚±é€ä¿¡ï¼ˆå”åŠ›è€…å‹Ÿé›†ï¼‰
-		// ã‚„ã£ã±ã‚ŠJTã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒæ®‹ã£ã¦ã„ã‚‹å†…ã«ãƒ‘ã‚±é€ä¿¡ã—ã¦ã‚‚
-		// ç§»å‹•ã—ãªã„ã®ã¯è”µã®ä»•æ§˜ã£ã½ã„ã€‚ã€‚ã€‚
-		// ã€€â†’ clif_blown() ã‚’åˆ©ç”¨ã™ã‚‹ã‚ˆã†ã«å¤‰æ›´
+		// ©ƒLƒƒƒ‰‚Ì‚«”ò‚Î‚µƒpƒP‘—Mi‹¦—ÍÒ•åWj
+		// ‚â‚Á‚Ï‚èJT‚ÌƒGƒtƒFƒNƒg‚ªc‚Á‚Ä‚¢‚é“à‚ÉƒpƒP‘—M‚µ‚Ä‚à
+		// ˆÚ“®‚µ‚È‚¢‚Ì‚Í‘ ‚Ìd—l‚Á‚Û‚¢BBB
+		// @¨ clif_blown() ‚ğ—˜—p‚·‚é‚æ‚¤‚É•ÏX
 
 		if( bl->type == BL_PC ) {
 			struct map_session_data *sd = (struct map_session_data*)bl;
@@ -5110,7 +5110,7 @@ int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 }
 
 /*==========================================
- * ç§»å‹•ä¸­ã®ä½ç½®è£œæ­£
+ * ˆÚ“®’†‚ÌˆÊ’u•â³
  *------------------------------------------
  */
 void clif_fixwalkpos(struct block_list *bl)
@@ -5129,7 +5129,7 @@ void clif_fixwalkpos(struct block_list *bl)
 }
 
 /*==========================================
- * å¹ãé£›ã°ã—
+ * ‚«”ò‚Î‚µ
  *------------------------------------------
  */
 void clif_blown(struct block_list *bl, int x, int y)
@@ -5231,7 +5231,7 @@ void clif_selllist(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¹ãƒšã‚·ãƒ£ãƒ«ã‚¢ã‚¤ãƒ†ãƒ è²©å£²ãƒªã‚¹ãƒˆ
+ * ƒXƒyƒVƒƒƒ‹ƒAƒCƒeƒ€”Ì”„ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
@@ -5251,7 +5251,7 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 		id  = itemdb_search(nd->u.shop_item[i].nameid);
 		val = nd->u.shop_item[i].value;
 		WFIFOL(fd,8+i*11) = val;
-		WFIFOL(fd,12+i*11) = val;		// DCã¯ãªã„ã®ã§ä¾¡æ ¼ã¯åŒã˜
+		WFIFOL(fd,12+i*11) = val;		// DC‚Í‚È‚¢‚Ì‚Å‰¿Ši‚Í“¯‚¶
 		WFIFOB(fd,16+i*11) = id->type;
 		if(id->view_id > 0)
 			WFIFOW(fd,17+i*11) = id->view_id;
@@ -5268,7 +5268,7 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 		id  = itemdb_search(nd->u.shop_item[i].nameid);
 		val = nd->u.shop_item[i].value;
 		WFIFOL(fd,12+i*11) = val;
-		WFIFOL(fd,16+i*11) = val;		// DCã¯ãªã„ã®ã§ä¾¡æ ¼ã¯åŒã˜
+		WFIFOL(fd,16+i*11) = val;		// DC‚Í‚È‚¢‚Ì‚Å‰¿Ši‚Í“¯‚¶
 		WFIFOB(fd,20+i*11) = id->type;
 		if(id->view_id > 0)
 			WFIFOW(fd,21+i*11) = id->view_id;
@@ -5802,7 +5802,7 @@ void clif_delitem(struct map_session_data *sd, short type, int n, int amount)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ã®æ™‚é–“åˆ‡ã‚Œå‰Šé™¤
+ * ƒAƒCƒeƒ€‚ÌŠÔØ‚êíœ
  *------------------------------------------
  */
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid)
@@ -5850,7 +5850,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*10+10)=sd->status.inventory[i].amount;
 		if(sd->inventory_data[i]->equip == LOC_ARROW){
 			WFIFOW(fd,n*10+12)=LOC_ARROW;
-			if(sd->status.inventory[i].equip) arrow=i;	// ã¤ã„ã§ã«çŸ¢è£…å‚™ãƒã‚§ãƒƒã‚¯
+			if(sd->status.inventory[i].equip) arrow=i;	// ‚Â‚¢‚Å‚É–î‘•”õƒ`ƒFƒbƒN
 		}
 		else
 			WFIFOW(fd,n*10+12)=0;
@@ -5878,7 +5878,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*18+10)=sd->status.inventory[i].amount;
 		if(sd->inventory_data[i]->equip == LOC_ARROW){
 			WFIFOW(fd,n*18+12)=LOC_ARROW;
-			if(sd->status.inventory[i].equip) arrow=i;	// ã¤ã„ã§ã«çŸ¢è£…å‚™ãƒã‚§ãƒƒã‚¯
+			if(sd->status.inventory[i].equip) arrow=i;	// ‚Â‚¢‚Å‚É–î‘•”õƒ`ƒFƒbƒN
 		}
 		else
 			WFIFOW(fd,n*18+12)=0;
@@ -5910,7 +5910,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*22+10)=sd->status.inventory[i].amount;
 		if(sd->inventory_data[i]->equip == LOC_ARROW){
 			WFIFOW(fd,n*22+12)=LOC_ARROW;
-			if(sd->status.inventory[i].equip) arrow=i;	// ã¤ã„ã§ã«çŸ¢è£…å‚™ãƒã‚§ãƒƒã‚¯
+			if(sd->status.inventory[i].equip) arrow=i;	// ‚Â‚¢‚Å‚É–î‘•”õƒ`ƒFƒbƒN
 		}
 		else
 			WFIFOW(fd,n*22+12)=0;
@@ -5942,7 +5942,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*22+9)=sd->status.inventory[i].amount;
 		if(sd->inventory_data[i]->equip == LOC_ARROW){
 			WFIFOW(fd,n*22+11)=LOC_ARROW;
-			if(sd->status.inventory[i].equip) arrow=i;	// ã¤ã„ã§ã«çŸ¢è£…å‚™ãƒã‚§ãƒƒã‚¯
+			if(sd->status.inventory[i].equip) arrow=i;	// ‚Â‚¢‚Å‚É–î‘•”õƒ`ƒFƒbƒN
 		}
 		else
 			WFIFOW(fd,n*22+11)=0;
@@ -5975,7 +5975,7 @@ void clif_itemlist(struct map_session_data *sd)
 		WFIFOW(fd,n*24+9)=sd->status.inventory[i].amount;
 		if(sd->inventory_data[i]->equip == LOC_ARROW){
 			WFIFOL(fd,n*24+11)=LOC_ARROW;
-			if(sd->status.inventory[i].equip) arrow=i;	// ã¤ã„ã§ã«çŸ¢è£…å‚™ãƒã‚§ãƒƒã‚¯
+			if(sd->status.inventory[i].equip) arrow=i;	// ‚Â‚¢‚Å‚É–î‘•”õƒ`ƒFƒbƒN
 		}
 		else
 			WFIFOL(fd,n*24+11)=0;
@@ -6422,7 +6422,7 @@ void clif_equiplist(struct map_session_data *sd)
 }
 
 /*==========================================
- * å€‰åº«ã®æ¶ˆè€—å“&åé›†å“ãƒªã‚¹ãƒˆ
+ * ‘qŒÉ‚ÌÁ–Õ•i&ûW•iƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, int max, const char *name)
@@ -6583,7 +6583,7 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 		WFIFOW(fd,2)=len;
 		WFIFOSET(fd,len);
 		if(i < max) {
-			// è¶…éåˆ†ã¯ãƒ‘ã‚±ãƒƒãƒˆåˆ†å‰²
+			// ’´‰ß•ª‚ÍƒpƒPƒbƒg•ªŠ„
 			clif_storageitemlist_sub(fd, item, i, max, name);
 		}
 	}
@@ -6592,7 +6592,7 @@ static void clif_storageitemlist_sub(const int fd, struct item *item, int idx, i
 }
 
 /*==========================================
- * å€‰åº«ã®è£…å‚™ãƒªã‚¹ãƒˆ
+ * ‘qŒÉ‚Ì‘•”õƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, int max, const char *name)
@@ -7010,7 +7010,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 		WFIFOW(fd,2)=len;
 		WFIFOSET(fd,len);
 		if(i < max) {
-			// è¶…éåˆ†ã¯ãƒ‘ã‚±ãƒƒãƒˆåˆ†å‰²
+			// ’´‰ß•ª‚ÍƒpƒPƒbƒg•ªŠ„
 			clif_storageequiplist_sub(fd, item, i, max, name);
 		}
 	}
@@ -7019,7 +7019,7 @@ static void clif_storageequiplist_sub(const int fd, struct item *item, int idx, 
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©ã•ã‚“ã«é ã‘ã¦ã‚ã‚‹æ¶ˆè€—å“&åé›†å“ãƒªã‚¹ãƒˆ
+ * ƒJƒvƒ‰‚³‚ñ‚É—a‚¯‚Ä‚ ‚éÁ–Õ•i&ûW•iƒŠƒXƒg
  *------------------------------------------
  */
 void clif_storageitemlist(struct map_session_data *sd, struct storage *stor)
@@ -7033,7 +7033,7 @@ void clif_storageitemlist(struct map_session_data *sd, struct storage *stor)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©ã•ã‚“ã«é ã‘ã¦ã‚ã‚‹è£…å‚™ãƒªã‚¹ãƒˆ
+ * ƒJƒvƒ‰‚³‚ñ‚É—a‚¯‚Ä‚ ‚é‘•”õƒŠƒXƒg
  *------------------------------------------
  */
 void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
@@ -7047,7 +7047,7 @@ void clif_storageequiplist(struct map_session_data *sd, struct storage *stor)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã«é ã‘ã¦ã‚ã‚‹æ¶ˆè€—å“&åé›†å“ãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒh‘qŒÉ‚É—a‚¯‚Ä‚ ‚éÁ–Õ•i&ûW•iƒŠƒXƒg
  *------------------------------------------
  */
 void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage *stor)
@@ -7061,7 +7061,7 @@ void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã«é ã‘ã¦ã‚ã‚‹è£…å‚™å“ãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒh‘qŒÉ‚É—a‚¯‚Ä‚ ‚é‘•”õ•iƒŠƒXƒg
  *------------------------------------------
  */
 void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storage *stor)
@@ -7075,7 +7075,7 @@ void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storag
 }
 
 /*==========================================
- * GMã¸å ´æ‰€ã¨HPé€šçŸ¥
+ * GM‚ÖêŠ‚ÆHP’Ê’m
  *------------------------------------------
  */
 static void clif_hpmeter(struct map_session_data *sd)
@@ -7119,8 +7119,8 @@ static void clif_hpmeter(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’é€ã‚Šã¤ã‘ã‚‹
- * è¡¨ç¤ºå°‚ç”¨æ•°å­—ã¯ã“ã®ä¸­ã§è¨ˆç®—ã—ã¦é€ã‚‹
+ * ƒXƒe[ƒ^ƒX‚ğ‘—‚è‚Â‚¯‚é
+ * •\¦ê—p”š‚Í‚±‚Ì’†‚ÅŒvZ‚µ‚Ä‘—‚é
  *------------------------------------------
  */
 void clif_updatestatus(struct map_session_data *sd, int type)
@@ -7391,7 +7391,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
 	nullpo_retv(bl);
 
 #if PACKETVER >= 4
-	if(bl->type == BL_SKILL && type == LOOK_BASE) {		// ãƒˆãƒ©ãƒƒãƒ—ã®ãƒ¦ãƒ‹ãƒƒãƒˆIDå¤‰æ›´
+	if(bl->type == BL_SKILL && type == LOOK_BASE) {		// ƒgƒ‰ƒbƒv‚Ìƒ†ƒjƒbƒgID•ÏX
 		WBUFW(buf,0)=0xc3;
 		WBUFL(buf,2)=bl->id;
 		WBUFB(buf,6)=type;
@@ -7454,7 +7454,7 @@ void clif_changelook(struct block_list *bl, int type, int val)
 }
 
 /*==========================================
- * æœè‰²ãƒ‘ã‚±ãƒƒãƒˆé€ã‚Šä»˜ã‘ï¼ˆåŸºæœ¬è‰²ã‚’é™¤ãï¼‰
+ * •FƒpƒPƒbƒg‘—‚è•t‚¯iŠî–{F‚ğœ‚­j
  *------------------------------------------
  */
 /*void clif_send_clothcolor(struct block_list *bl)
@@ -7551,7 +7551,7 @@ static void clif_initialstatus(struct map_session_data *sd)
 }
 
 /*==========================================
- * çŸ¢è£…å‚™
+ * –î‘•”õ
  *------------------------------------------
  */
 void clif_arrowequip(struct map_session_data *sd, int idx)
@@ -7587,7 +7587,7 @@ void clif_arrow_fail(struct map_session_data *sd, unsigned short type)
 }
 
 /*==========================================
- * ä½œæˆå¯èƒ½ çŸ¢ãƒªã‚¹ãƒˆé€ä¿¡
+ * ì¬‰Â”\ –îƒŠƒXƒg‘—M
  *------------------------------------------
  */
 void clif_arrow_create_list(struct map_session_data *sd)
@@ -7624,7 +7624,7 @@ void clif_arrow_create_list(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒã‚¤ã‚ºãƒ‹ãƒ³ã‚°ã‚¦ã‚§ãƒãƒ³é¸æŠ
+ * ƒ|ƒCƒYƒjƒ“ƒOƒEƒFƒ|ƒ“‘I‘ğ
  *------------------------------------------
  */
 void clif_poison_list(struct map_session_data *sd, short lv)
@@ -7667,7 +7667,7 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 }
 
 /*==========================================
- * ãƒªãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯é¸æŠ
+ * ƒŠ[ƒfƒBƒ“ƒOƒXƒyƒ‹ƒuƒbƒN‘I‘ğ
  *------------------------------------------
  */
 void clif_reading_sb_list(struct map_session_data *sd)
@@ -7712,7 +7712,7 @@ void clif_reading_sb_list(struct map_session_data *sd)
 }
 
 /*==========================================
- * FAW ãƒã‚¸ãƒƒã‚¯ãƒ‡ã‚³ã‚¤é¸æŠ
+ * FAW ƒ}ƒWƒbƒNƒfƒRƒC‘I‘ğ
  *------------------------------------------
  */
 void clif_magicdecoy_list(struct map_session_data *sd, short lv, short x, short y)
@@ -7864,7 +7864,7 @@ void clif_misceffect(struct block_list* bl, int type)
 }
 
 /*==========================================
- * blã‹ã‚‰ç™ºç”Ÿã™ã‚‹ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * bl‚©‚ç”­¶‚·‚éƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_misceffect2(struct block_list *bl,int type)
@@ -7896,7 +7896,7 @@ void clif_misceffect3(int fd, int id, int type)
 }
 
 /*==========================================
- * è¡¨ç¤ºã‚ªãƒ—ã‚·ãƒ§ãƒ³å¤‰æ›´
+ * •\¦ƒIƒvƒVƒ‡ƒ“•ÏX
  *------------------------------------------
  */
 void clif_changeoption(struct block_list* bl)
@@ -7938,7 +7938,7 @@ void clif_changeoption(struct block_list* bl)
 }
 
 /*==========================================
- * è¡¨ç¤ºã‚ªãƒ—ã‚·ãƒ§ãƒ³å¤‰æ›´2
+ * •\¦ƒIƒvƒVƒ‡ƒ“•ÏX2
  *------------------------------------------
  */
 void clif_changeoption2(struct block_list *bl)
@@ -8039,7 +8039,7 @@ void clif_createchat(struct map_session_data *sd, unsigned char fail)
  */
 void clif_dispchat(struct chat_data *cd, int fd)
 {
-	unsigned char buf[80];	// æœ€å¤§title(60ãƒã‚¤ãƒˆ)+17
+	unsigned char buf[80];	// Å‘åtitle(60ƒoƒCƒg)+17
 
 	if(cd==NULL || *cd->owner==NULL)
 		return;
@@ -8063,13 +8063,13 @@ void clif_dispchat(struct chat_data *cd, int fd)
 }
 
 /*==========================================
- * chatã®çŠ¶æ…‹å¤‰æ›´æˆåŠŸ
- * å¤–éƒ¨ã®äººç”¨ã¨å‘½ä»¤ã‚³ãƒ¼ãƒ‰(d7->df)ãŒé•ã†ã ã‘
+ * chat‚Ìó‘Ô•ÏX¬Œ÷
+ * ŠO•”‚Ìl—p‚Æ–½—ßƒR[ƒh(d7->df)‚ªˆá‚¤‚¾‚¯
  *------------------------------------------
  */
 void clif_changechatstatus(struct chat_data *cd)
 {
-	unsigned char buf[80];	// æœ€å¤§title(60ãƒã‚¤ãƒˆ)+17
+	unsigned char buf[80];	// Å‘åtitle(60ƒoƒCƒg)+17
 
 	if(cd==NULL || cd->usersd[0]==NULL)
 		return;
@@ -8214,7 +8214,7 @@ void clif_leavechat(struct chat_data* cd, struct map_session_data *sd, unsigned 
 }
 
 /*==========================================
- * å–ã‚Šå¼•ãè¦è«‹å—ã‘
+ * æ‚èˆø‚«—v¿ó‚¯
  *------------------------------------------
  */
 void clif_traderequest(struct map_session_data *sd, const char *name)
@@ -8242,7 +8242,7 @@ void clif_traderequest(struct map_session_data *sd, const char *name)
 }
 
 /*==========================================
- * å–ã‚Šå¼•ãè¦æ±‚å¿œç­”
+ * æ‚èˆø‚«—v‹‰“š
  *------------------------------------------
  */
 void clif_tradestart(struct map_session_data *sd, unsigned char type)
@@ -8270,7 +8270,7 @@ void clif_tradestart(struct map_session_data *sd, unsigned char type)
 }
 
 /*==========================================
- * ç›¸æ‰‹æ–¹ã‹ã‚‰ã®ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ 
+ * ‘Šè•û‚©‚ç‚ÌƒAƒCƒeƒ€’Ç‰Á
  *------------------------------------------
  */
 void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd, int idx, int amount)
@@ -8479,7 +8479,7 @@ void clif_tradeadditem(struct map_session_data *sd,struct map_session_data *tsd,
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ æˆåŠŸ/å¤±æ•—
+ * ƒAƒCƒeƒ€’Ç‰Á¬Œ÷/¸”s
  *------------------------------------------
  */
 void clif_tradeitemok(struct map_session_data *sd, unsigned short idx, unsigned char fail)
@@ -8498,7 +8498,7 @@ void clif_tradeitemok(struct map_session_data *sd, unsigned short idx, unsigned 
 }
 
 /*==========================================
- * å–ã‚Šå¼•ãokæŠ¼ã—
+ * æ‚èˆø‚«ok‰Ÿ‚µ
  *------------------------------------------
  */
 void clif_tradedeal_lock(struct map_session_data *sd, unsigned char fail)
@@ -8516,7 +8516,7 @@ void clif_tradedeal_lock(struct map_session_data *sd, unsigned char fail)
 }
 
 /*==========================================
- * å–ã‚Šå¼•ããŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸ
+ * æ‚èˆø‚«‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½
  *------------------------------------------
  */
 void clif_tradecancelled(struct map_session_data *sd)
@@ -8533,7 +8533,7 @@ void clif_tradecancelled(struct map_session_data *sd)
 }
 
 /*==========================================
- * å–ã‚Šå¼•ãå®Œäº†
+ * æ‚èˆø‚«Š®—¹
  *------------------------------------------
  */
 void clif_tradecompleted(struct map_session_data *sd, unsigned char fail)
@@ -8551,7 +8551,7 @@ void clif_tradecompleted(struct map_session_data *sd, unsigned char fail)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã®ã‚¢ã‚¤ãƒ†ãƒ æ•°ã‚’æ›´æ–°
+ * ƒJƒvƒ‰‘qŒÉ‚ÌƒAƒCƒeƒ€”‚ğXV
  *------------------------------------------
  */
 void clif_updatestorageamount(struct map_session_data *sd, struct storage *stor)
@@ -8571,7 +8571,7 @@ void clif_updatestorageamount(struct map_session_data *sd, struct storage *stor)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿½åŠ ã™ã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚ÉƒAƒCƒeƒ€‚ğ’Ç‰Á‚·‚é
  *------------------------------------------
  */
 void clif_storageitemadded(struct map_session_data *sd, struct storage *stor, int idx, int amount)
@@ -8911,7 +8911,7 @@ void clif_guildstorageitemadded(struct map_session_data *sd, struct guild_storag
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–ã‚Šå»ã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚©‚çƒAƒCƒeƒ€‚ğæ‚è‹‚é
  *------------------------------------------
  */
 void clif_storageitemremoved(struct map_session_data *sd, int idx, int amount)
@@ -8930,7 +8930,7 @@ void clif_storageitemremoved(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‚’é–‰ã˜ã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚ğ•Â‚¶‚é
  *------------------------------------------
  */
 void clif_storageclose(struct map_session_data *sd)
@@ -8947,7 +8947,7 @@ void clif_storageclose(struct map_session_data *sd)
 }
 
 /*==========================================
- * é€šå¸¸æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼†ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * ’ÊíUŒ‚ƒGƒtƒFƒNƒg•ƒ_ƒ[ƒW
  *------------------------------------------
  */
 void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2, int is_spdamage)
@@ -9014,7 +9014,7 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ‹¾ã†
+ * ƒAƒCƒeƒ€‚ğE‚¤
  *------------------------------------------
  */
 void clif_takeitem(struct block_list* src, int dst_id)
@@ -9033,7 +9033,7 @@ void clif_takeitem(struct block_list* src, int dst_id)
 }
 
 /*==========================================
- * PCè¡¨ç¤º
+ * PC•\¦
  *------------------------------------------
  */
 static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_data* dstsd)
@@ -9041,7 +9041,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 	nullpo_retv(sd);
 	nullpo_retv(dstsd);
 
-	// å®Œå…¨ãªã‚¤ãƒ³ãƒ“ã‚¸ãƒ–ãƒ«ãƒ¢ãƒ¼ãƒ‰ãªã‚‰é€ä¿¡ã—ãªã„
+	// Š®‘S‚ÈƒCƒ“ƒrƒWƒuƒ‹ƒ‚[ƒh‚È‚ç‘—M‚µ‚È‚¢
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(dstsd))
 	{
 		int len;
@@ -9053,19 +9053,19 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			WFIFOSET(sd->fd,len);
 		}
 
-		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// é©šæ„•
+		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// ‹Áœ±
 			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,MOBID_PORING,0,0);
-		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«ã‚·ã‚¹ãƒ†ãƒ 
+		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// ƒ‚ƒ“ƒXƒ^[•ÏgƒVƒXƒeƒ€
 			clif_status_change_id(sd,dstsd->bl.id,SI_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_MONSTER_TRANSFORM].val1,0,0);
-		else if(dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«
+		else if(dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].timer != -1)	// ƒAƒNƒeƒBƒuƒ‚ƒ“ƒXƒ^[•Ïg
 			clif_status_change_id(sd,dstsd->bl.id,SI_ACTIVE_MONSTER_TRANSFORM,1,0,dstsd->sc.data[SC_ACTIVE_MONSTER_TRANSFORM].val1,0,0);
-		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// æ­ä¹—ã‚·ã‚¹ãƒ†ãƒ 
+		else if(dstsd->sc.data[SC_ALL_RIDING].timer != -1)	// “‹æƒVƒXƒeƒ€
 			clif_status_change_id(sd,dstsd->bl.id,SI_ALL_RIDING,1,9999,1,25,0);
-		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// ã‚«ãƒ¼ãƒˆ
+		if(dstsd->sc.data[SC_ON_PUSH_CART].timer != -1)	// ƒJ[ƒg
 			clif_status_change_id(sd,dstsd->bl.id,SI_ON_PUSH_CART,1,9999,dstsd->sc.data[SC_ON_PUSH_CART].val1,0,0);
-		if(dstsd->sc.data[SC_BANDING].timer != -1)	// ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+		if(dstsd->sc.data[SC_BANDING].timer != -1)	// ƒoƒ“ƒfƒBƒ“ƒO
 			clif_status_change_id(sd,dstsd->bl.id,SI_BANDING,1,9999,dstsd->sc.data[SC_BANDING].val1,0,0);
-		if(dstsd->sc.data[SC_HAT_EFFECT].timer != -1)	// é ­è£…å‚™ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		if(dstsd->sc.data[SC_HAT_EFFECT].timer != -1)	// “ª‘•”õƒGƒtƒFƒNƒg
 			clif_status_change_id(sd,dstsd->bl.id,SI_HAT_EFFECT,1,9999,dstsd->sc.data[SC_HAT_EFFECT].val1,0,0);
 	}
 
@@ -9089,7 +9089,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		clif_set01e1(sd->fd,dstsd,dstsd->coin.num);
 	}
 
-	// å½±ç‹¼ãƒ»æœ§ã®çƒä½“è¡¨ç¤º
+	// ‰e˜TEO‚Ì‹…‘Ì•\¦
 	if(dstsd->elementball.num > 0) {
 		clif_elementball_id(sd->fd,dstsd);
 	}
@@ -9103,7 +9103,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 }
 
 /*==========================================
- * NPCè¡¨ç¤º
+ * NPC•\¦
  *------------------------------------------
  */
 static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd)
@@ -9130,7 +9130,7 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 }
 
 /*==========================================
- * MOBè¡¨ç¤º
+ * MOB•\¦
  *------------------------------------------
  */
 static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* md)
@@ -9156,7 +9156,7 @@ static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* m
 		offset = 0;
 #endif
 	}
-	// ç‰¹å®šçŠ¶æ…‹ç•°å¸¸æ™‚ãƒ»ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãƒ»MVPãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã«ã¯è¡¨ç¤ºã—ãªã„
+	// “Á’èó‘ÔˆÙíEƒGƒ“ƒyƒŠƒEƒ€EMVPƒ‚ƒ“ƒXƒ^[‚É‚Í•\¦‚µ‚È‚¢
 	if(mob_check_hpinfo(sd,md))
 	{
 		WFIFOL(sd->fd,65+offset)=0xffffffff;
@@ -9174,7 +9174,7 @@ static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* m
 }
 
 /*==========================================
- * PETè¡¨ç¤º
+ * PET•\¦
  *------------------------------------------
  */
 static void clif_getareachar_pet(struct map_session_data* sd, struct pet_data* pd)
@@ -9199,7 +9199,7 @@ static void clif_getareachar_pet(struct map_session_data* sd, struct pet_data* p
 }
 
 /*==========================================
- * HOMè¡¨ç¤º
+ * HOM•\¦
  *------------------------------------------
  */
 static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data* hd)
@@ -9213,7 +9213,7 @@ static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data*
 	if(hd->ud.walktimer != -1) {
 		len = clif_hom007b(hd,WFIFOP(sd->fd,0));
 	} else {
-		// 0x78ã ã¨åº§æ¨™ã‚ºãƒ¬ã‚’èµ·ã“ã™
+		// 0x78‚¾‚ÆÀ•WƒYƒŒ‚ğ‹N‚±‚·
 		len = clif_hom0078(hd,WFIFOP(sd->fd,0));
 	}
 #endif
@@ -9228,7 +9228,7 @@ static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data*
 }
 
 /*==========================================
- * MERCè¡¨ç¤º
+ * MERC•\¦
  *------------------------------------------
  */
 static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data* mcd)
@@ -9242,7 +9242,7 @@ static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data*
 	if(mcd->ud.walktimer != -1) {
 		len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
 	} else {
-		// 0x78ã ã¨åº§æ¨™ã‚ºãƒ¬ã‚’èµ·ã“ã™
+		// 0x78‚¾‚ÆÀ•WƒYƒŒ‚ğ‹N‚±‚·
 		len = clif_merc0078(mcd,WFIFOP(sd->fd,0));
 	}
 #endif
@@ -9257,7 +9257,7 @@ static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data*
 }
 
 /*==========================================
- * ELEMè¡¨ç¤º
+ * ELEM•\¦
  *------------------------------------------
  */
 static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data* eld)
@@ -9271,7 +9271,7 @@ static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data*
 	if(eld->ud.walktimer != -1) {
 		len = clif_elem007b(eld,WFIFOP(sd->fd,0));
 	} else {
-		// 0x78ã ã¨åº§æ¨™ã‚ºãƒ¬ã‚’èµ·ã“ã™
+		// 0x78‚¾‚ÆÀ•WƒYƒŒ‚ğ‹N‚±‚·
 		len = clif_elem0078(eld,WFIFOP(sd->fd,0));
 	}
 #endif
@@ -9286,7 +9286,7 @@ static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data*
 }
 
 /*==========================================
- * ITEMè¡¨ç¤º
+ * ITEM•\¦
  *------------------------------------------
  */
 static void clif_getareachar_item(struct map_session_data* sd, struct flooritem_data* fitem)
@@ -9316,7 +9316,7 @@ static void clif_getareachar_item(struct map_session_data* sd, struct flooritem_
 }
 
 /*==========================================
- * å ´æ‰€ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒè¦–ç•Œã«å…¥ã‚‹
+ * êŠƒXƒLƒ‹ƒGƒtƒFƒNƒg‚ª‹ŠE‚É“ü‚é
  *------------------------------------------
  */
 static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill_unit *unit)
@@ -9344,7 +9344,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 	if(unit->group->skill_id == WZ_ICEWALL)
 		clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 #elif PACKETVER < 20110719
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
 		WFIFOL(fd, 6)=unit->group->src_id;
@@ -9372,7 +9372,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 	}
 #elif PACKETVER < 20120925
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
 		WFIFOL(fd, 6)=unit->group->src_id;
@@ -9402,7 +9402,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 	}
 #elif PACKETVER < 20130731
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
 		WFIFOL(fd, 6)=unit->group->src_id;
@@ -9432,7 +9432,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 			clif_set0192(fd,unit->bl.m,unit->bl.x,unit->bl.y,5);
 	}
 #else
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WFIFOW(fd, 0)=0x1c9;
 		WFIFOL(fd, 2)=unit->bl.id;
 		WFIFOL(fd, 6)=unit->group->src_id;
@@ -9468,7 +9468,7 @@ static void clif_getareachar_skillunit(struct map_session_data *sd, struct skill
 }
 
 /*==========================================
- * å ´æ‰€ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒè¦–ç•Œã‹ã‚‰æ¶ˆãˆã‚‹
+ * êŠƒXƒLƒ‹ƒGƒtƒFƒNƒg‚ª‹ŠE‚©‚çÁ‚¦‚é
  *------------------------------------------
  */
 static void clif_clearchar_skillunit(struct skill_unit *unit, int fd)
@@ -9606,7 +9606,7 @@ int clif_pcoutsight(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * è¦–é‡
+ * ‹–ì
  *------------------------------------------
  */
 int clif_pcinsight(struct block_list *bl,va_list ap)
@@ -9894,8 +9894,8 @@ static void clif_skillinfo(struct map_session_data *sd, int skillid, int type, i
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒªã‚¹ãƒˆã‚’é€ä¿¡ã™ã‚‹
- * 16KBè¶…éã«å‚™ãˆã¦WFIFORESERVEã™ã‚‹
+ * ƒXƒLƒ‹ƒŠƒXƒg‚ğ‘—M‚·‚é
+ * 16KB’´‰ß‚É”õ‚¦‚ÄWFIFORESERVE‚·‚é
  *------------------------------------------
  */
 void clif_skillinfoblock(struct map_session_data *sd)
@@ -9944,7 +9944,7 @@ void clif_skillinfoblock(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«å‰²ã‚ŠæŒ¯ã‚Šé€šçŸ¥
+ * ƒXƒLƒ‹Š„‚èU‚è’Ê’m
  *------------------------------------------
  */
 void clif_skillup(struct map_session_data *sd, int skill_num)
@@ -9978,7 +9978,7 @@ void clif_skillup(struct map_session_data *sd, int skill_num)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«è© å”±ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é€ä¿¡ã™ã‚‹
+ * ƒXƒLƒ‹‰r¥ƒGƒtƒFƒNƒg‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int dst_y,int skill_num,int casttime)
@@ -9992,7 +9992,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFW(buf,10) = dst_x;
 	WBUFW(buf,12) = dst_y;
 	WBUFW(buf,14) = skill_num;
-	WBUFL(buf,16) = skill_get_pl(skill_num);	// å±æ€§
+	WBUFL(buf,16) = skill_get_pl(skill_num);	// ‘®«
 	WBUFL(buf,20) = casttime;
 	clif_send(buf,packet_db[0x13e].len, bl, AREA);
 #else
@@ -10002,7 +10002,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFW(buf,10) = dst_x;
 	WBUFW(buf,12) = dst_y;
 	WBUFW(buf,14) = skill_num;
-	WBUFL(buf,16) = skill_get_pl(skill_num);	// å±æ€§
+	WBUFL(buf,16) = skill_get_pl(skill_num);	// ‘®«
 	WBUFL(buf,20) = casttime;
 	WBUFB(buf,24) = 0;
 	clif_send(buf,packet_db[0x7fb].len, bl, AREA);
@@ -10029,7 +10029,7 @@ void clif_skillcastcancel(struct block_list* bl)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨å¤±æ•—
+ * ƒXƒLƒ‹g—p¸”s
  *------------------------------------------
  */
 void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int btype, int val)
@@ -10054,7 +10054,7 @@ void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int bt
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼†ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * ƒXƒLƒ‹UŒ‚ƒGƒtƒFƒNƒg•ƒ_ƒ[ƒW
  *------------------------------------------
  */
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
@@ -10109,7 +10109,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 }
 
 /*==========================================
- * å¹ãé£›ã°ã—ã‚¹ã‚­ãƒ«æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼†ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * ‚«”ò‚Î‚µƒXƒLƒ‹UŒ‚ƒGƒtƒFƒNƒg•ƒ_ƒ[ƒW
  *------------------------------------------
  */
 /*void clif_skill_damage2(struct block_list *src,struct block_list *dst,
@@ -10151,7 +10151,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 }*/
 
 /*==========================================
- * æ”¯æ´/å›å¾©ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * x‰‡/‰ñ•œƒXƒLƒ‹ƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail)
@@ -10186,7 +10186,7 @@ void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill
 }
 
 /*==========================================
- * å ´æ‰€ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * êŠƒXƒLƒ‹ƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,unsigned int tick)
@@ -10208,7 +10208,7 @@ void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int 
 }
 
 /*==========================================
- * å ´æ‰€ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¡¨ç¤º
+ * êŠƒXƒLƒ‹ƒGƒtƒFƒNƒg•\¦
  *------------------------------------------
  */
 void clif_skill_setunit(struct skill_unit *unit)
@@ -10230,7 +10230,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 	WBUFB(buf,15)=1;
 	clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 #elif PACKETVER < 20110719
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WBUFW(buf, 0)=0x1c9;
 		WBUFL(buf, 2)=unit->bl.id;
 		WBUFL(buf, 6)=unit->group->src_id;
@@ -10255,7 +10255,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 		clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 	}
 #else
-	if(unit->group->unit_id == UNT_GRAFFITI) {	// ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// ƒOƒ‰ƒtƒBƒeƒB
 		WBUFW(buf, 0)=0x1c9;
 		WBUFL(buf, 2)=unit->bl.id;
 		WBUFL(buf, 6)=unit->group->src_id;
@@ -10295,7 +10295,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 }
 
 /*==========================================
- * å ´æ‰€ã‚¹ã‚­ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå‰Šé™¤
+ * êŠƒXƒLƒ‹ƒGƒtƒFƒNƒgíœ
  *------------------------------------------
  */
 void clif_skill_delunit(struct skill_unit *unit)
@@ -10312,7 +10312,7 @@ void clif_skill_delunit(struct skill_unit *unit)
 }
 
 /*==========================================
- * ãƒ¯ãƒ¼ãƒ—å ´æ‰€é¸æŠ
+ * ƒ[ƒvêŠ‘I‘ğ
  *------------------------------------------
  */
 void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
@@ -10335,7 +10335,7 @@ void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢å¿œç­”
+ * ƒƒ‚‰“š
  *------------------------------------------
  */
 void clif_skill_memo(struct map_session_data *sd, unsigned char flag)
@@ -10371,7 +10371,7 @@ void clif_skill_teleportmessage(struct map_session_data *sd, unsigned short flag
 }
 
 /*==========================================
- * ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æƒ…å ±
+ * ƒ‚ƒ“ƒXƒ^[î•ñ
  *------------------------------------------
  */
 void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
@@ -10406,7 +10406,7 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 	for(i=0; i<9 && i<ELE_MAX-1; i++)
 		WBUFB(buf,20+i) = battle_attr_fix(100,i+1,md->def_ele);
 	for( ; i<9; i++)
-		WBUFB(buf,20+i) = 100;	// ELE_MAXãŒ10ã‚ˆã‚Šå°ã•ã„å ´åˆ
+		WBUFB(buf,20+i) = 100;	// ELE_MAX‚ª10‚æ‚è¬‚³‚¢ê‡
 
 	if(sd->status.party_id>0) {
 		clif_send(buf,packet_db[0x18c].len,&sd->bl,PARTY_AREA);
@@ -10419,7 +10419,7 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ åˆæˆå¯èƒ½ãƒªã‚¹ãƒˆ
+ * ƒAƒCƒeƒ€‡¬‰Â”\ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int skillid, int skilllv)
@@ -10454,7 +10454,7 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int s
 }
 
 /*==========================================
- * æ–™ç†ãƒªã‚¹ãƒˆ
+ * —¿—ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv)
@@ -10485,14 +10485,14 @@ void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int
 		sd->skill_menu.lv = skilllv;
 	}
 	else if(skillid != 1) {
-		clif_skill_message(sd, skillid, 1573);	// ææ–™ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚
+		clif_skill_message(sd, skillid, 1573);	// Ş—¿‚ª‘¶İ‚µ‚Ü‚¹‚ñB
 	}
 
 	return;
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã‚¢ã‚¤ã‚³ãƒ³/ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºï¼ˆå…¨ä½“ï¼‰
+ * ó‘ÔˆÙíƒAƒCƒRƒ“/ƒƒbƒZ[ƒW•\¦i‘S‘Ìj
  *------------------------------------------
  */
 void clif_status_load(struct block_list *bl, int type, unsigned char flag)
@@ -10511,7 +10511,7 @@ void clif_status_load(struct block_list *bl, int type, unsigned char flag)
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã‚¢ã‚¤ã‚³ãƒ³/ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
+ * ó‘ÔˆÙíƒAƒCƒRƒ“/ƒƒbƒZ[ƒW•\¦
  *------------------------------------------
  */
 void clif_status_load_id(struct map_session_data *sd, int type, unsigned char flag)
@@ -10531,7 +10531,7 @@ void clif_status_load_id(struct map_session_data *sd, int type, unsigned char fl
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã‚¢ã‚¤ã‚³ãƒ³/ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºï¼ˆå…¨ä½“ï¼‰
+ * ó‘ÔˆÙíƒAƒCƒRƒ“/ƒƒbƒZ[ƒW•\¦i‘S‘Ìj
  *------------------------------------------
  */
 void clif_status_change(struct block_list *bl, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3)
@@ -10587,7 +10587,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 	WBUFW(buf,2)=type;
 	WBUFL(buf,4)=bl->id;
 	WBUFB(buf,8)=flag;
-	WBUFL(buf,9)=tick;	// æœ€å¤§æŒç¶šæ™‚é–“
+	WBUFL(buf,9)=tick;	// Å‘å‘±ŠÔ
 	WBUFL(buf,13)=tick;
 	WBUFL(buf,17)=val1;
 	WBUFL(buf,21)=val2;
@@ -10599,7 +10599,7 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã‚¢ã‚¤ã‚³ãƒ³/ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
+ * ó‘ÔˆÙíƒAƒCƒRƒ“/ƒƒbƒZ[ƒW•\¦
  *------------------------------------------
  */
 void clif_status_change_id(struct map_session_data *sd, int id, int type, unsigned char flag, unsigned int tick, int val1, int val2, int val3)
@@ -10624,7 +10624,7 @@ void clif_status_change_id(struct map_session_data *sd, int id, int type, unsign
 	WFIFOW(fd,2)=type;
 	WFIFOL(fd,4)=id;
 	WFIFOB(fd,8)=flag;
-	WFIFOL(fd,9)=tick;	// æœ€å¤§æŒç¶šæ™‚é–“
+	WFIFOL(fd,9)=tick;	// Å‘å‘±ŠÔ
 	WFIFOL(fd,13)=tick;
 	WFIFOL(fd,17)=val1;
 	WFIFOL(fd,21)=val2;
@@ -10636,7 +10636,7 @@ void clif_status_change_id(struct map_session_data *sd, int id, int type, unsign
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¡¨ç¤ºï¼ˆå…¨ä½“ï¼‰
+ * ó‘ÔˆÙíƒGƒtƒFƒNƒg•\¦i‘S‘Ìj
  *------------------------------------------
  */
 void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, int val1, int val2, int val3)
@@ -10668,7 +10668,7 @@ void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, in
 	WBUFW(buf,0)=0x984;
 	WBUFL(buf,2)=bl->id;
 	WBUFW(buf,6)=type;
-	WBUFL(buf,8)=tick;	// æœ€å¤§æŒç¶šæ™‚é–“
+	WBUFL(buf,8)=tick;	// Å‘å‘±ŠÔ
 	WBUFL(buf,12)=tick;
 	WBUFL(buf,16)=val1;
 	WBUFL(buf,20)=val2;
@@ -10680,7 +10680,7 @@ void clif_seteffect_enter(struct block_list *bl, int type, unsigned int tick, in
 }
 
 /*==========================================
- * ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
+ * ƒƒbƒZ[ƒW•\¦
  *------------------------------------------
  */
 void clif_displaymessage(const int fd, const char* mes)
@@ -10712,7 +10712,7 @@ void clif_disp_onlyself(const int fd, const char *mes)
 }
 
 /*==========================================
- * å¤©ã®å£°ã‚’é€ä¿¡ã™ã‚‹
+ * “V‚Ìº‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, unsigned int flag)
@@ -10743,7 +10743,7 @@ void clif_GMmessage(struct block_list *bl, const char* mes, size_t len, unsigned
 }
 
 /*==========================================
- * ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+ * ƒOƒ[ƒoƒ‹ƒƒbƒZ[ƒW
  *------------------------------------------
  */
 void clif_GlobalMessage(struct block_list *bl, const char *message, int target)
@@ -10770,7 +10770,7 @@ void clif_GlobalMessage(struct block_list *bl, const char *message, int target)
 }
 
 /*==========================================
- * ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒãƒ«ãƒã‚«ãƒ©ãƒ¼ï¼‰
+ * ƒOƒ[ƒoƒ‹ƒƒbƒZ[ƒWiƒ}ƒ‹ƒ`ƒJƒ‰[j
  *------------------------------------------
  */
 void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int target)
@@ -10794,7 +10794,7 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 }
 
 /*==========================================
- * ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ï¼‰
+ * ƒOƒ[ƒoƒ‹ƒƒbƒZ[ƒWiƒvƒŒƒCƒ„[j
  *------------------------------------------
  */
 void clif_disp_overhead(struct map_session_data *sd, const char* mes)
@@ -10826,7 +10826,7 @@ void clif_disp_overhead(struct map_session_data *sd, const char* mes)
 }
 
 /*==========================================
- * å¤©ã®å£°ï¼ˆãƒãƒ«ãƒã‚«ãƒ©ãƒ¼ï¼‰ã‚’é€ä¿¡
+ * “V‚Ìºiƒ}ƒ‹ƒ`ƒJƒ‰[j‚ğ‘—M
  *------------------------------------------
  */
 void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned int color, int type, int size, int align, int pos_y, unsigned int flag)
@@ -10854,7 +10854,7 @@ void clif_announce(struct block_list *bl, const char* mes, size_t len, unsigned 
 }
 
 /*==========================================
- * HPSPå›å¾©ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é€ä¿¡ã™ã‚‹
+ * HPSP‰ñ•œƒGƒtƒFƒNƒg‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_heal(int fd, int type, int val)
@@ -10875,7 +10875,7 @@ void clif_heal(int fd, int type, int val)
 }
 
 /*==========================================
- * å¾©æ´»ã™ã‚‹
+ * •œŠˆ‚·‚é
  *------------------------------------------
  */
 void clif_resurrection(struct block_list *bl, unsigned short type)
@@ -10893,7 +10893,7 @@ void clif_resurrection(struct block_list *bl, unsigned short type)
 }
 
 /*==========================================
- * PvPãƒ»GvGå®Ÿè£…
+ * PvPEGvGÀ‘•
  *------------------------------------------
  */
 void clif_set0199(int fd, unsigned short type)
@@ -10906,7 +10906,7 @@ void clif_set0199(int fd, unsigned short type)
 }
 
 /*==========================================
- * PvPãƒ»GvGå®Ÿè£…ï¼ˆMAPå…¨ä½“ï¼‰
+ * PvPEGvGÀ‘•iMAP‘S‘Ìj
  *------------------------------------------
  */
 void clif_send0199(int m, unsigned short type)
@@ -10980,7 +10980,7 @@ void clif_mapproperty(struct map_session_data *sd)
 }
 
 /*==========================================
- * PVPé †ä½
+ * PVP‡ˆÊ
  *------------------------------------------
  */
 void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type)
@@ -11012,7 +11012,7 @@ void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type
 }
 
 /*==========================================
- * ç²¾éŒ¬ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é€ä¿¡ã™ã‚‹
+ * ¸˜BƒGƒtƒFƒNƒg‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_refine(int fd, unsigned short fail, int idx, int val)
@@ -11027,7 +11027,7 @@ void clif_refine(int fd, unsigned short fail, int idx, int val)
 }
 
 /*==========================================
- * Wisã‚’é€ä¿¡ã™ã‚‹
+ * Wis‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len, int gmlevel, int ccade)
@@ -11059,7 +11059,7 @@ void clif_wis_message(int fd, const char *nick, const char *mes, size_t mes_len,
 }
 
 /*==========================================
- * Wisã®é€ä¿¡çµæœã‚’é€ä¿¡ã™ã‚‹
+ * Wis‚Ì‘—MŒ‹‰Ê‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_wis_end(int fd, unsigned char flag, int ccade)
@@ -11079,7 +11079,7 @@ void clif_wis_end(int fd, unsigned char flag, int ccade)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDåå‰å¼•ãçµæœã‚’é€ä¿¡ã™ã‚‹
+ * ƒLƒƒƒ‰ID–¼‘Oˆø‚«Œ‹‰Ê‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_solved_charname(struct map_session_data *sd, int char_id)
@@ -11104,7 +11104,7 @@ void clif_solved_charname(struct map_session_data *sd, int char_id)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒ‰ã®æŒ¿å…¥å¯èƒ½ãƒªã‚¹ãƒˆã‚’è¿”ã™
+ * ƒJ[ƒh‚Ì‘}“ü‰Â”\ƒŠƒXƒg‚ğ•Ô‚·
  *------------------------------------------
  */
 static void clif_use_card(struct map_session_data *sd, int idx)
@@ -11128,15 +11128,15 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 		if(sd->inventory_data[i] == NULL)
 			continue;
 		k++;
-		if(!itemdb_isarmor(sd->inventory_data[i]->nameid) && !itemdb_isweapon(sd->inventory_data[i]->nameid))	// æ­¦å™¨é˜²å…·ã˜ã‚ƒãªã„
+		if(!itemdb_isarmor(sd->inventory_data[i]->nameid) && !itemdb_isweapon(sd->inventory_data[i]->nameid))	// •Ší–h‹ï‚¶‚á‚È‚¢
 			continue;
 		if(itemdb_isspecial(sd->status.inventory[i].card[0]))
 			continue;
-		if(sd->status.inventory[i].identify == 0)	// æœªé‘‘å®š
+		if(sd->status.inventory[i].identify == 0)	// –¢ŠÓ’è
 			continue;
-		if((sd->inventory_data[i]->equip&ep) == 0)	// è£…å‚™å€‹æ‰€ãŒé•ã†
+		if((sd->inventory_data[i]->equip&ep) == 0)	// ‘•”õŒÂŠ‚ªˆá‚¤
 			continue;
-		if(itemdb_isweapon(sd->inventory_data[i]->nameid) && ep == LOC_LARM)	// ç›¾ã‚«ãƒ¼ãƒ‰ã¨ä¸¡æ‰‹æ­¦å™¨
+		if(itemdb_isweapon(sd->inventory_data[i]->nameid) && ep == LOC_LARM)	// ‚ƒJ[ƒh‚Æ—¼è•Ší
 			continue;
 
 		for(j=0; j<sd->inventory_data[i]->slot; j++) {
@@ -11154,7 +11154,7 @@ static void clif_use_card(struct map_session_data *sd, int idx)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒ‰ã®æŒ¿å…¥çµ‚äº†
+ * ƒJ[ƒh‚Ì‘}“üI—¹
  *------------------------------------------
  */
 void clif_insert_card(struct map_session_data *sd, int idx_equip, int idx_card, unsigned char flag)
@@ -11174,7 +11174,7 @@ void clif_insert_card(struct map_session_data *sd, int idx_equip, int idx_card, 
 }
 
 /*==========================================
- * é‘‘å®šå¯èƒ½ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆé€ä¿¡
+ * ŠÓ’è‰Â”\ƒAƒCƒeƒ€ƒŠƒXƒg‘—M
  *------------------------------------------
  */
 void clif_item_identify_list(struct map_session_data *sd)
@@ -11203,7 +11203,7 @@ void clif_item_identify_list(struct map_session_data *sd)
 }
 
 /*==========================================
- * é‘‘å®šçµæœ
+ * ŠÓ’èŒ‹‰Ê
  *------------------------------------------
  */
 void clif_item_identified(struct map_session_data *sd, int idx, unsigned char flag)
@@ -11222,7 +11222,7 @@ void clif_item_identified(struct map_session_data *sd, int idx, unsigned char fl
 }
 
 /*==========================================
- * é¤Šå­è¦è«‹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°è¡¨ç¤º
+ * —{q—v¿ƒ_ƒCƒAƒƒO•\¦
  *------------------------------------------
  */
 static void clif_baby_req_display(struct map_session_data *dst_sd, struct map_session_data *src_sd, int p_id)
@@ -11242,7 +11242,7 @@ static void clif_baby_req_display(struct map_session_data *dst_sd, struct map_se
 }
 
 /*==========================================
- * é¤Šå­ãƒã‚§ãƒƒã‚¯å¤±æ•—
+ * —{qƒ`ƒFƒbƒN¸”s
  *------------------------------------------
  */
 void clif_baby_req_fail(struct map_session_data *sd, int type)
@@ -11260,10 +11260,10 @@ void clif_baby_req_fail(struct map_session_data *sd, int type)
 }
 
 /*==========================================
- * é¤Šå­ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè¡¨ç¤º
+ * —{qƒ^[ƒQƒbƒg•\¦
  *------------------------------------------
  */
-// 0x1f8ã¯ä½¿ã‚ã‚Œã¦ãªã„æ–¹å¼ï¼Ÿ
+// 0x1f8‚Íg‚í‚ê‚Ä‚È‚¢•û®H
 /*void clif_baby_target_display(struct map_session_data *sd)
 {
 	int fd;
@@ -11278,7 +11278,7 @@ void clif_baby_req_fail(struct map_session_data *sd, int type)
 }*/
 
 /*==========================================
- * ä¿®ç†å¯èƒ½ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆé€ä¿¡
+ * C—‰Â”\ƒAƒCƒeƒ€ƒŠƒXƒg‘—M
  *------------------------------------------
  */
 void clif_item_repair_list(struct map_session_data *sd, struct map_session_data *dstsd)
@@ -11335,7 +11335,7 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
 	WFIFOB(fd, 4)=flag;
 	WFIFOSET(fd,packet_db[0x1fe].len);
 
-	if(sd->skill_menu.val && sd->bl.id != sd->skill_menu.val && flag == 0) {	// æˆåŠŸã—ãŸã‚‰ç›¸æ‰‹ã«ã‚‚é€šçŸ¥
+	if(sd->skill_menu.val && sd->bl.id != sd->skill_menu.val && flag == 0) {	// ¬Œ÷‚µ‚½‚ç‘Šè‚É‚à’Ê’m
 		struct map_session_data *dstsd = map_id2sd(sd->skill_menu.val);
 		if(dstsd)
 			clif_item_repaireffect(dstsd,flag,nameid);
@@ -11347,7 +11347,7 @@ void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int
 }
 
 /*==========================================
- * æ­¦å™¨ç²¾éŒ¬å¯èƒ½ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆé€ä¿¡
+ * •Ší¸˜B‰Â”\ƒAƒCƒeƒ€ƒŠƒXƒg‘—M
  *------------------------------------------
  */
 void clif_weapon_refine_list(struct map_session_data *sd)
@@ -11431,7 +11431,7 @@ void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ã«ã‚ˆã‚‹ä¸€æ™‚çš„ãªã‚¹ã‚­ãƒ«åŠ¹æœ
+ * ƒAƒCƒeƒ€‚É‚æ‚éˆê“I‚ÈƒXƒLƒ‹Œø‰Ê
  *------------------------------------------
  */
 void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, const char *name)
@@ -11458,7 +11458,7 @@ void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, cons
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã«ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ 
+ * ƒJ[ƒg‚ÉƒAƒCƒeƒ€’Ç‰Á
  *------------------------------------------
  */
 void clif_cart_additem(struct map_session_data *sd, int n, int amount)
@@ -11620,7 +11620,7 @@ void clif_cart_additem(struct map_session_data *sd, int n, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ å‰Šé™¤
+ * ƒJ[ƒg‚©‚çƒAƒCƒeƒ€íœ
  *------------------------------------------
  */
 void clif_cart_delitem(struct map_session_data *sd, int n, int amount)
@@ -11639,7 +11639,7 @@ void clif_cart_delitem(struct map_session_data *sd, int n, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã®ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆ
+ * ƒJ[ƒg‚ÌƒAƒCƒeƒ€ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_cart_itemlist(struct map_session_data *sd)
@@ -11806,7 +11806,7 @@ void clif_cart_itemlist(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã®è£…å‚™å“ãƒªã‚¹ãƒˆ
+ * ƒJ[ƒg‚Ì‘•”õ•iƒŠƒXƒg
  *------------------------------------------
  */
 void clif_cart_equiplist(struct map_session_data *sd)
@@ -12230,7 +12230,7 @@ void clif_cart_equiplist(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã®ã‚¯ãƒªã‚¢
+ * ƒJ[ƒg‚ÌƒNƒŠƒA
  *------------------------------------------
  */
 void clif_cart_clear(struct map_session_data *sd)
@@ -12247,7 +12247,7 @@ void clif_cart_clear(struct map_session_data *sd)
 }
 
 /*==========================================
- * éœ²åº—é–‹è¨­
+ * ˜I“XŠJİ
  *------------------------------------------
  */
 void clif_openvendingreq(struct map_session_data *sd, int num)
@@ -12265,7 +12265,7 @@ void clif_openvendingreq(struct map_session_data *sd, int num)
 }
 
 /*==========================================
- * éœ²åº—çœ‹æ¿è¡¨ç¤º
+ * ˜I“XŠÅ”Â•\¦
  *------------------------------------------
  */
 void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd)
@@ -12288,7 +12288,7 @@ void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd
 }
 
 /*==========================================
- * éœ²åº—çœ‹æ¿æ¶ˆå»
+ * ˜I“XŠÅ”ÂÁ‹
  *------------------------------------------
  */
 void clif_closevendingboard(struct block_list* bl, int fd)
@@ -12310,7 +12310,7 @@ void clif_closevendingboard(struct block_list* bl, int fd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆ
+ * ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
@@ -12515,7 +12515,7 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥å¤±æ•—
+ * ˜I“XƒAƒCƒeƒ€w“ü¸”s
  *------------------------------------------
  */
 void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned char fail)
@@ -12535,7 +12535,7 @@ void clif_buyvending(struct map_session_data *sd, int idx, int amount, unsigned 
 }
 
 /*==========================================
- * éœ²åº—é–‹è¨­æˆåŠŸé€šçŸ¥
+ * ˜I“XŠJİ¬Œ÷’Ê’m
  *------------------------------------------
  */
 void clif_openvending_ack(struct map_session_data *sd)
@@ -12551,7 +12551,7 @@ void clif_openvending_ack(struct map_session_data *sd)
 }
 
 /*==========================================
- * éœ²åº—é–‹è¨­æˆåŠŸ
+ * ˜I“XŠJİ¬Œ÷
  *------------------------------------------
  */
 int clif_openvending(struct map_session_data *sd)
@@ -12648,7 +12648,7 @@ int clif_openvending(struct map_session_data *sd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è²©å£²å ±å‘Š
+ * ˜I“XƒAƒCƒeƒ€”Ì”„•ñ
  *------------------------------------------
  */
 void clif_vendingreport(struct map_session_data *sd, int idx, int amount, int account_id, int char_id, int value)
@@ -12677,7 +12677,7 @@ void clif_vendingreport(struct map_session_data *sd, int idx, int amount, int ac
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ä½œæˆå®Œäº†
+ * ƒp[ƒeƒBì¬Š®—¹
  *------------------------------------------
  */
 void clif_party_created(struct map_session_data *sd, unsigned char flag)
@@ -12695,7 +12695,7 @@ void clif_party_created(struct map_session_data *sd, unsigned char flag)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ã‚¤ãƒ³æƒ…å ±
+ * ƒp[ƒeƒBƒƒCƒ“î•ñ
  *------------------------------------------
  */
 void clif_party_main_info(struct party *p, int fd)
@@ -12724,12 +12724,12 @@ void clif_party_main_info(struct party *p, int fd)
 	WBUFB(buf,79) = (p->item&1)? 1: 0;
 	WBUFB(buf,80) = (p->item&2)? 1: 0;
 
-	if(fd >= 0){	// fdãŒè¨­å®šã•ã‚Œã¦ã‚‹ãªã‚‰ãã‚Œã«é€ã‚‹
+	if(fd >= 0){	// fd‚ªİ’è‚³‚ê‚Ä‚é‚È‚ç‚»‚ê‚É‘—‚é
 		memcpy(WFIFOP(fd,0),buf,packet_db[0x1e9].len);
 		WFIFOSET(fd,packet_db[0x1e9].len);
 		return;
 	}
-	if(!sd) {	// ãƒªãƒ¼ãƒ€ãƒ¼ãŒã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãªã®ã§ãƒ­ã‚°ã‚¤ãƒ³ä¸­ã®ãƒ¡ãƒ³ãƒãƒ¼ã‚’æ¢ã™
+	if(!sd) {	// ƒŠ[ƒ_[‚ªƒIƒtƒ‰ƒCƒ“‚È‚Ì‚ÅƒƒOƒCƒ“’†‚Ìƒƒ“ƒo[‚ğ’T‚·
 		for(i=0; i<MAX_PARTY && !p->member[i].sd; i++);
 		if(i >= MAX_PARTY)
 			return;
@@ -12741,7 +12741,7 @@ void clif_party_main_info(struct party *p, int fd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£æƒ…å ±é€ä¿¡
+ * ƒp[ƒeƒBî•ñ‘—M
  *------------------------------------------
  */
 void clif_party_info(struct party *p, int fd)
@@ -12767,7 +12767,7 @@ void clif_party_info(struct party *p, int fd)
 		}
 	}
 	WBUFW(buf,2)=28+c*46;
-	if(fd>=0){	// fdãŒè¨­å®šã•ã‚Œã¦ã‚‹ãªã‚‰ãã‚Œã«é€ã‚‹
+	if(fd>=0){	// fd‚ªİ’è‚³‚ê‚Ä‚é‚È‚ç‚»‚ê‚É‘—‚é
 		memcpy(WFIFOP(fd,0),buf,WBUFW(buf,2));
 		WFIFOSET(fd,WFIFOW(fd,2));
 		return;
@@ -12779,7 +12779,7 @@ void clif_party_info(struct party *p, int fd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‹§èª˜
+ * ƒp[ƒeƒBŠ©—U
  *------------------------------------------
  */
 void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd, const char *name)
@@ -12807,7 +12807,7 @@ void clif_party_invite(struct map_session_data *sd, struct map_session_data *tsd
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‹§èª˜çµæœ
+ * ƒp[ƒeƒBŠ©—UŒ‹‰Ê
  *------------------------------------------
  */
 void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigned char flag)
@@ -12834,7 +12834,7 @@ void clif_party_inviteack(struct map_session_data *sd, const char *nick, unsigne
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£åŠ å…¥è¦è«‹å¯å¦
+ * ƒp[ƒeƒB‰Á“ü—v¿‰Â”Û
  *------------------------------------------
  */
 void clif_send_partyconfig(struct map_session_data *sd)
@@ -12852,10 +12852,10 @@ void clif_send_partyconfig(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šé€ä¿¡
- * flag & 0x001=expå¤‰æ›´ãƒŸã‚¹
- *        0x010=itemå¤‰æ›´ãƒŸã‚¹ï¼ˆç¾åœ¨ã¯å­˜åœ¨ã—ãªã„ï¼‰
- *        0x100=ä¸€äººã«ã®ã¿é€ä¿¡
+ * ƒp[ƒeƒBİ’è‘—M
+ * flag & 0x001=exp•ÏXƒ~ƒX
+ *        0x010=item•ÏXƒ~ƒXiŒ»İ‚Í‘¶İ‚µ‚È‚¢j
+ *        0x100=ˆêl‚É‚Ì‚İ‘—M
  *------------------------------------------
  */
 void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
@@ -12899,7 +12899,7 @@ void clif_party_option(struct party *p, struct map_session_data *sd, int flag)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è„±é€€ï¼ˆè„±é€€å‰ã«å‘¼ã¶ã“ã¨ï¼‰
+ * ƒp[ƒeƒB’E‘Şi’E‘Ş‘O‚ÉŒÄ‚Ô‚±‚Æj
  *------------------------------------------
  */
 void clif_party_leaved(struct party *p, struct map_session_data *sd, int account_id, const char *name, int flag)
@@ -12932,7 +12932,7 @@ void clif_party_leaved(struct party *p, struct map_session_data *sd, int account
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡
+ * ƒp[ƒeƒBƒƒbƒZ[ƒW‘—M
  *------------------------------------------
  */
 void clif_party_message(struct party *p, int account_id, const char *mes, size_t len)
@@ -12963,7 +12963,7 @@ void clif_party_message(struct party *p, int account_id, const char *mes, size_t
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£åº§æ¨™é€šçŸ¥
+ * ƒp[ƒeƒBÀ•W’Ê’m
  *------------------------------------------
  */
 void clif_party_xy(struct map_session_data *sd)
@@ -12982,7 +12982,7 @@ void clif_party_xy(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£HPé€šçŸ¥
+ * ƒp[ƒeƒBHP’Ê’m
  *------------------------------------------
  */
 void clif_party_hp(struct map_session_data *sd)
@@ -13009,7 +13009,7 @@ void clif_party_hp(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å ´æ‰€ç§»å‹•ï¼ˆæœªä½¿ç”¨ï¼‰
+ * ƒp[ƒeƒBêŠˆÚ“®i–¢g—pj
  *------------------------------------------
  */
 /*void clif_party_move(struct party *p, struct map_session_data *sd, unsigned char online)
@@ -13034,7 +13034,7 @@ void clif_party_hp(struct map_session_data *sd)
 }*/
 
 /*==========================================
- * æ”»æ’ƒã™ã‚‹ãŸã‚ã«ç§»å‹•ãŒå¿…è¦
+ * UŒ‚‚·‚é‚½‚ß‚ÉˆÚ“®‚ª•K—v
  *------------------------------------------
  */
 void clif_movetoattack(struct map_session_data *sd, struct block_list *bl)
@@ -13058,7 +13058,7 @@ void clif_movetoattack(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
- * è£½é€ ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * »‘¢ƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_produceeffect(struct map_session_data *sd, unsigned short flag, int nameid)
@@ -13067,7 +13067,7 @@ void clif_produceeffect(struct map_session_data *sd, unsigned short flag, int na
 
 	nullpo_retv(sd);
 
-	// åå‰ã®ç™»éŒ²ã¨é€ä¿¡ã‚’å…ˆã«ã—ã¦ãŠã
+	// –¼‘O‚Ì“o˜^‚Æ‘—M‚ğæ‚É‚µ‚Ä‚¨‚­
 	if( map_charid2nick(sd->status.char_id)==NULL )
 		map_addchariddb(sd->status.char_id,sd->status.name,sd->status.account_id,clif_getip(),clif_getport());
 	clif_solved_charname(sd,sd->status.char_id);
@@ -13120,7 +13120,7 @@ void clif_pet_rulet(struct map_session_data *sd, unsigned char data)
 }
 
 /*==========================================
- * petåµãƒªã‚¹ãƒˆä½œæˆ
+ * pet—‘ƒŠƒXƒgì¬
  *------------------------------------------
  */
 void clif_sendegg(struct map_session_data *sd)
@@ -13161,7 +13161,7 @@ void clif_send_petdata(struct map_session_data *sd, unsigned char type, int para
 	nullpo_retv(sd);
 
 	if(!sd->pd)
-		return; // æ–°å¯†åº¦0ã«ãªã‚‹ã¨NULL
+		return; // V–§“x0‚É‚È‚é‚ÆNULL
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1a4;
@@ -13174,7 +13174,7 @@ void clif_send_petdata(struct map_session_data *sd, unsigned char type, int para
 }
 
 /*==========================================
- * petã®é«ªå‹æƒ…å ±é€ä¿¡
+ * pet‚Ì”¯Œ^î•ñ‘—M
  *------------------------------------------
  */
 void clif_send_pethair(struct map_session_data *sd)
@@ -13184,7 +13184,7 @@ void clif_send_pethair(struct map_session_data *sd)
 	nullpo_retv(sd);
 
 	if(!sd->pd)
-		return; // æ–°å¯†åº¦0ã«ãªã‚‹ã¨NULL
+		return; // V–§“x0‚É‚È‚é‚ÆNULL
 
 	WBUFW(buf,0)=0x1a4;
 	WBUFB(buf,2)=5;
@@ -13322,7 +13322,7 @@ void clif_pet_food(struct map_session_data *sd, int foodid, unsigned char fail)
 }
 
 /*==========================================
- * ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ« ãƒªã‚¹ãƒˆé€ä¿¡
+ * ƒI[ƒgƒXƒyƒ‹ ƒŠƒXƒg‘—M
  *------------------------------------------
  */
 void clif_autospell(struct map_session_data *sd, int skilllv)
@@ -13369,7 +13369,7 @@ void clif_autospell(struct map_session_data *sd, int skilllv)
 }
 
 /*==========================================
- * ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³ã®é’ã„ç³¸
+ * ƒfƒBƒ{[ƒVƒ‡ƒ“‚ÌÂ‚¢…
  *------------------------------------------
  */
 void clif_devotion(struct map_session_data *sd)
@@ -13390,7 +13390,7 @@ void clif_devotion(struct map_session_data *sd)
 }
 
 /*==========================================
- * æ°£çƒ
+ * Ÿ†‹…
  *------------------------------------------
  */
 void clif_spiritball(struct map_session_data *sd)
@@ -13408,7 +13408,7 @@ void clif_spiritball(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚³ã‚¤ãƒ³
+ * ƒRƒCƒ“
  *------------------------------------------
  */
 void clif_coin(struct map_session_data *sd)
@@ -13444,7 +13444,7 @@ void clif_combo_delay(struct block_list *bl, int wait)
 }
 
 /*==========================================
- * ç™½åˆƒå–ã‚Š
+ * ”’næ‚è
  *------------------------------------------
  */
 void clif_bladestop(struct block_list *src, int dst_id, int flag)
@@ -13463,7 +13463,7 @@ void clif_bladestop(struct block_list *src, int dst_id, int flag)
 }
 
 /*==========================================
- * ã‚´ã‚¹ãƒšãƒ«ã®åŠ¹æœè¡¨ç¤º
+ * ƒSƒXƒyƒ‹‚ÌŒø‰Ê•\¦
  *------------------------------------------
  */
 void clif_gospel_message(struct map_session_data *sd, int type)
@@ -13505,7 +13505,7 @@ void clif_changemapcell(int m, int x, int y, int cell_type, int type)
 }
 
 /*==========================================
- * MVPã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * MVPƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_mvp_effect(struct block_list *bl)
@@ -13522,7 +13522,7 @@ void clif_mvp_effect(struct block_list *bl)
 }
 
 /*==========================================
- * MVPã‚¢ã‚¤ãƒ†ãƒ å–å¾—
+ * MVPƒAƒCƒeƒ€æ“¾
  *------------------------------------------
  */
 void clif_mvp_item(struct map_session_data *sd, int nameid)
@@ -13543,7 +13543,7 @@ void clif_mvp_item(struct map_session_data *sd, int nameid)
 }
 
 /*==========================================
- * MVPã‚¢ã‚¤ãƒ†ãƒ é‡é‡ã‚ªãƒ¼ãƒãƒ¼
+ * MVPƒAƒCƒeƒ€d—ÊƒI[ƒo[
  *------------------------------------------
  */
 void clif_mvp_fail_item(struct map_session_data *sd)
@@ -13560,7 +13560,7 @@ void clif_mvp_fail_item(struct map_session_data *sd)
 }
 
 /*==========================================
- * MVPçµŒé¨“å€¤å–å¾—
+ * MVPŒoŒ±’læ“¾
  *------------------------------------------
  */
 void clif_mvp_exp(struct map_session_data *sd, int exp)
@@ -13578,7 +13578,7 @@ void clif_mvp_exp(struct map_session_data *sd, int exp)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ä½œæˆå¯å¦é€šçŸ¥
+ * ƒMƒ‹ƒhì¬‰Â”Û’Ê’m
  *------------------------------------------
  */
 void clif_guild_created(struct map_session_data *sd, unsigned char flag)
@@ -13596,7 +13596,7 @@ void clif_guild_created(struct map_session_data *sd, unsigned char flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰æ‰€å±é€šçŸ¥
+ * ƒMƒ‹ƒhŠ‘®’Ê’m
  *------------------------------------------
  */
 void clif_guild_belonginfo(struct map_session_data *sd, struct guild *g)
@@ -13624,7 +13624,7 @@ void clif_guild_belonginfo(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ­ã‚°ã‚¤ãƒ³é€šçŸ¥
+ * ƒMƒ‹ƒhƒƒ“ƒoƒƒOƒCƒ“’Ê’m
  *------------------------------------------
  */
 void clif_guild_memberlogin_notice(struct guild *g, int idx, unsigned char flag)
@@ -13664,7 +13664,7 @@ void clif_guild_memberlogin_notice(struct guild *g, int idx, unsigned char flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒã‚¹ã‚¿ãƒ¼é€šçŸ¥(14dã¸ã®å¿œç­”)
+ * ƒMƒ‹ƒhƒ}ƒXƒ^[’Ê’m(14d‚Ö‚Ì‰“š)
  *------------------------------------------
  */
 static void clif_guild_masterormember(struct map_session_data *sd)
@@ -13687,7 +13687,7 @@ static void clif_guild_masterormember(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŸºæœ¬æƒ…å ±
+ * ƒMƒ‹ƒhŠî–{î•ñ
  *------------------------------------------
  */
 void clif_guild_basicinfo(struct map_session_data *sd, struct guild *g)
@@ -13706,20 +13706,20 @@ void clif_guild_basicinfo(struct map_session_data *sd, struct guild *g)
 	WFIFOL(fd,18)=g->average_lv;
 	WFIFOL(fd,22)=g->exp;
 	WFIFOL(fd,26)=g->next_exp;
-	WFIFOL(fd,30)=0;	// ä¸Šç´
-	WFIFOL(fd,34)=0;	// VWï¼ˆæ€§æ ¼ã®æ‚ªã•ï¼Ÿï¼šæ€§å‘ã‚°ãƒ©ãƒ•å·¦å³ï¼‰
-	WFIFOL(fd,38)=0;	// RFï¼ˆæ­£ç¾©ã®åº¦åˆã„ï¼Ÿï¼šæ€§å‘ã‚°ãƒ©ãƒ•ä¸Šä¸‹ï¼‰
+	WFIFOL(fd,30)=0;	// ã”[
+	WFIFOL(fd,34)=0;	// VWi«Ši‚Ìˆ«‚³HF«ŒüƒOƒ‰ƒt¶‰Ej
+	WFIFOL(fd,38)=0;	// RFi³‹`‚Ì“x‡‚¢HF«ŒüƒOƒ‰ƒtã‰ºj
 	WFIFOL(fd,42)=g->emblem_id;
 	memcpy(WFIFOP(fd,46),g->name,24);
 	memcpy(WFIFOP(fd,70),g->master,24);
-	strncpy(WFIFOP(fd,94),"",20);	// æœ¬æ‹ åœ°
+	strncpy(WFIFOP(fd,94),"",20);	// –{‹’’n
 	WFIFOSET(fd,packet_db[0x1b6].len);
 
 	return;
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŒç›Ÿ/æ•µå¯¾æƒ…å ±
+ * ƒMƒ‹ƒh“¯–¿/“G‘Îî•ñ
  *------------------------------------------
  */
 void clif_guild_allianceinfo(struct map_session_data *sd, struct guild *g)
@@ -13748,7 +13748,7 @@ void clif_guild_allianceinfo(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ¼ãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒhƒƒ“ƒo[ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_guild_memberlist(struct map_session_data *sd, struct guild *g)
@@ -13775,7 +13775,7 @@ void clif_guild_memberlist(struct map_session_data *sd, struct guild *g)
 		WFIFOL(fd,c*104+22)=m->exp;
 		WFIFOL(fd,c*104+26)=(int)m->online;
 		WFIFOL(fd,c*104+30)=m->position;
-		memset(WFIFOP(fd,c*104+34),0,50);	// ãƒ¡ãƒ¢ï¼Ÿ
+		memset(WFIFOP(fd,c*104+34),0,50);	// ƒƒ‚H
 		memcpy(WFIFOP(fd,c*104+84),m->name,24);
 		c++;
 	}
@@ -13786,7 +13786,7 @@ void clif_guild_memberlist(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å½¹è·åãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒh–ğE–¼ƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_guild_positionnamelist(struct map_session_data *sd, struct guild *g)
@@ -13809,7 +13809,7 @@ static void clif_guild_positionnamelist(struct map_session_data *sd, struct guil
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å½¹è·æƒ…å ±ãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒh–ğEî•ñƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_guild_positioninfolist(struct map_session_data *sd, struct guild *g)
@@ -13835,7 +13835,7 @@ static void clif_guild_positioninfolist(struct map_session_data *sd, struct guil
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å½¹è·å¤‰æ›´é€šçŸ¥
+ * ƒMƒ‹ƒh–ğE•ÏX’Ê’m
  *------------------------------------------
  */
 void clif_guild_positionchanged(struct guild *g, int idx)
@@ -13861,7 +13861,7 @@ void clif_guild_positionchanged(struct guild *g, int idx)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒå¤‰æ›´é€šçŸ¥
+ * ƒMƒ‹ƒhƒƒ“ƒo•ÏX’Ê’m
  *------------------------------------------
  */
 void clif_guild_memberpositionchanged(struct guild *g, int idx)
@@ -13885,7 +13885,7 @@ void clif_guild_memberpositionchanged(struct guild *g, int idx)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ é€ä¿¡
+ * ƒMƒ‹ƒhƒGƒ“ƒuƒŒƒ€‘—M
  *------------------------------------------
  */
 void clif_guild_emblem(struct map_session_data *sd, struct guild *g)
@@ -13910,7 +13910,7 @@ void clif_guild_emblem(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«é€ä¿¡
+ * ƒMƒ‹ƒhƒXƒLƒ‹‘—M
  *------------------------------------------
  */
 void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
@@ -13945,7 +13945,7 @@ void clif_guild_skillinfo(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å‘ŠçŸ¥é€ä¿¡
+ * ƒMƒ‹ƒh’m‘—M
  *------------------------------------------
  */
 void clif_guild_notice(struct map_session_data *sd, struct guild *g)
@@ -13968,7 +13968,7 @@ void clif_guild_notice(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒå‹§èª˜
+ * ƒMƒ‹ƒhƒƒ“ƒoŠ©—U
  *------------------------------------------
  */
 void clif_guild_invite(struct map_session_data *sd, struct guild *g)
@@ -13988,7 +13988,7 @@ void clif_guild_invite(struct map_session_data *sd, struct guild *g)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒå‹§èª˜çµæœ
+ * ƒMƒ‹ƒhƒƒ“ƒoŠ©—UŒ‹‰Ê
  *------------------------------------------
  */
 void clif_guild_inviteack(struct map_session_data *sd, unsigned char flag)
@@ -14006,7 +14006,7 @@ void clif_guild_inviteack(struct map_session_data *sd, unsigned char flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè„±é€€é€šçŸ¥
+ * ƒMƒ‹ƒhƒƒ“ƒo’E‘Ş’Ê’m
  *------------------------------------------
  */
 void clif_guild_leave(struct map_session_data *sd, const char *name, const char *mes)
@@ -14024,7 +14024,7 @@ void clif_guild_leave(struct map_session_data *sd, const char *name, const char 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè¿½æ”¾é€šçŸ¥
+ * ƒMƒ‹ƒhƒƒ“ƒo’Ç•ú’Ê’m
  *------------------------------------------
  */
 void clif_guild_explusion(struct map_session_data *sd, const char *name, const char *mes)
@@ -14050,7 +14050,7 @@ void clif_guild_explusion(struct map_session_data *sd, const char *name, const c
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰è¿½æ”¾ãƒ¡ãƒ³ãƒãƒªã‚¹ãƒˆ
+ * ƒMƒ‹ƒh’Ç•úƒƒ“ƒoƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *g)
@@ -14093,7 +14093,7 @@ static void clif_guild_explusionlist(struct map_session_data *sd, struct guild *
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ä¼šè©±
+ * ƒMƒ‹ƒh‰ï˜b
  *------------------------------------------
  */
 void clif_guild_message(struct guild *g, const char *mes, size_t len)
@@ -14118,7 +14118,7 @@ void clif_guild_message(struct guild *g, const char *mes, size_t len)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«å‰²ã‚ŠæŒ¯ã‚Šé€šçŸ¥
+ * ƒMƒ‹ƒhƒXƒLƒ‹Š„‚èU‚è’Ê’m
  *------------------------------------------
  */
 void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int flag)
@@ -14152,7 +14152,7 @@ void clif_guild_skillup(struct map_session_data *sd, int skill_num, int lv, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŒç›Ÿè¦è«‹
+ * ƒMƒ‹ƒh“¯–¿—v¿
  *------------------------------------------
  */
 void clif_guild_reqalliance(struct map_session_data *sd, int account_id, const char *name)
@@ -14171,7 +14171,7 @@ void clif_guild_reqalliance(struct map_session_data *sd, int account_id, const c
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŒç›Ÿçµæœ
+ * ƒMƒ‹ƒh“¯–¿Œ‹‰Ê
  *------------------------------------------
  */
 void clif_guild_allianceack(struct map_session_data *sd, unsigned int flag)
@@ -14189,7 +14189,7 @@ void clif_guild_allianceack(struct map_session_data *sd, unsigned int flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰é–¢ä¿‚è§£æ¶ˆé€šçŸ¥
+ * ƒMƒ‹ƒhŠÖŒW‰ğÁ’Ê’m
  *------------------------------------------
  */
 void clif_guild_delalliance(struct map_session_data *sd, int guild_id, int flag)
@@ -14208,7 +14208,7 @@ void clif_guild_delalliance(struct map_session_data *sd, int guild_id, int flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰æ•µå¯¾çµæœ
+ * ƒMƒ‹ƒh“G‘ÎŒ‹‰Ê
  *------------------------------------------
  */
 void clif_guild_oppositionack(struct map_session_data *sd, unsigned char flag)
@@ -14226,7 +14226,7 @@ void clif_guild_oppositionack(struct map_session_data *sd, unsigned char flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰é–¢ä¿‚è¿½åŠ 
+ * ƒMƒ‹ƒhŠÖŒW’Ç‰Á
  *------------------------------------------
  */
 /*void clif_guild_allianceadded(struct guild *g,int idx)
@@ -14249,7 +14249,7 @@ void clif_guild_oppositionack(struct map_session_data *sd, unsigned char flag)
 }*/
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰è§£æ•£é€šçŸ¥
+ * ƒMƒ‹ƒh‰ğU’Ê’m
  *------------------------------------------
  */
 void clif_guild_broken(struct map_session_data *sd, unsigned int flag)
@@ -14267,7 +14267,7 @@ void clif_guild_broken(struct map_session_data *sd, unsigned int flag)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ¼ã®ä½ç½®åº§æ¨™é€ä¿¡
+ * ƒMƒ‹ƒhƒƒ“ƒo[‚ÌˆÊ’uÀ•W‘—M
  *------------------------------------------
  */
 void clif_guild_xy(struct map_session_data *sd)
@@ -14286,7 +14286,7 @@ void clif_guild_xy(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¨ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
+ * ƒGƒ‚[ƒVƒ‡ƒ“
  *------------------------------------------
  */
 void clif_emotion(struct block_list *bl,int type)
@@ -14304,7 +14304,7 @@ void clif_emotion(struct block_list *bl,int type)
 }
 
 /*==========================================
- * ãƒˆãƒ¼ã‚­ãƒ¼ãƒœãƒƒã‚¯ã‚¹
+ * ƒg[ƒL[ƒ{ƒbƒNƒX
  *------------------------------------------
  */
 void clif_talkiebox(struct block_list *bl,const char* talkie)
@@ -14322,7 +14322,7 @@ void clif_talkiebox(struct block_list *bl,const char* talkie)
 }
 
 /*==========================================
- * çµå©šã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * Œ‹¥ƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_wedding_effect(struct block_list *bl)
@@ -14339,7 +14339,7 @@ void clif_wedding_effect(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚ãªãŸã«é€¢ã„ãŸã„ä½¿ç”¨æ™‚åå‰å«ã³
+ * ‚ ‚È‚½‚Éˆ§‚¢‚½‚¢g—p–¼‘O‹©‚Ñ
  *------------------------------------------
  */
 void clif_callpartner(struct map_session_data *sd)
@@ -14364,7 +14364,7 @@ void clif_callpartner(struct map_session_data *sd)
 }
 
 /*==========================================
- * é›¢å©šå®Œäº†é€šçŸ¥
+ * —£¥Š®—¹’Ê’m
  *------------------------------------------
  */
 void clif_divorced(struct map_session_data *sd, const char *name)
@@ -14382,7 +14382,7 @@ void clif_divorced(struct map_session_data *sd, const char *name)
 }
 
 /*==========================================
- * åº§ã‚‹/ç«‹ã¤
+ * À‚é/—§‚Â
  *------------------------------------------
  */
 void clif_sitting(struct block_list *bl, int sit)
@@ -14400,7 +14400,7 @@ void clif_sitting(struct block_list *bl, int sit)
 }
 
 /*==========================================
- * å«ã¶
+ * ‹©‚Ô
  *------------------------------------------
  */
 void clif_onlymessage(const char *mes, size_t len)
@@ -14408,27 +14408,27 @@ void clif_onlymessage(const char *mes, size_t len)
 	unsigned char *buf = (unsigned char *)aMalloc(len+8);
 
 	switch (battle_config.mes_send_type) {
-		case 0:	// ã‚®ãƒ«ãƒ‰ä¼šè©±
+		case 0:	// ƒMƒ‹ƒh‰ï˜b
 			WBUFW(buf, 0)=0x17f;
 			WBUFW(buf, 2)=(unsigned short)(len+4);
 			memcpy(WBUFP(buf,4),mes,len);
 			break;
-		case 1:	// ã‚ªãƒ¼ãƒ—ãƒ³ä¼šè©±
+		case 1:	// ƒI[ƒvƒ“‰ï˜b
 			WBUFW(buf, 0)=0x8d;
 			WBUFW(buf, 2)=(unsigned short)(len+8);
 			WBUFL(buf, 4)=0;
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
-		case 2:	// ãƒ‘ãƒ¼ãƒ†ã‚£ä¼šè©±
+		case 2:	// ƒp[ƒeƒB‰ï˜b
 			WBUFW(buf, 0)=0x109;
 			WBUFW(buf, 2)=(unsigned short)(len+8);
-			WBUFL(buf, 4)=0xffffffff;	// account_idã¯0ã ã¨ç„¡åå¿œãªã®ã§ãƒ€ãƒŸãƒ¼ã‚’å…¥ã‚Œã¦ãŠã
+			WBUFL(buf, 4)=0xffffffff;	// account_id‚Í0‚¾‚Æ–³”½‰‚È‚Ì‚Åƒ_ƒ~[‚ğ“ü‚ê‚Ä‚¨‚­
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
-		case 3:	// ã‚ªãƒ¼ãƒ—ãƒ³GMä¼šè©±
+		case 3:	// ƒI[ƒvƒ“GM‰ï˜b
 			WBUFW(buf, 0)=0x8d;
 			WBUFW(buf, 2)=(unsigned short)(len+8);
-			WBUFL(buf, 4)=pc_get_gm_account_dummy();	// ãƒ€ãƒŸãƒ¼ç”¨GMã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’å…¥ã‚Œã‚‹
+			WBUFL(buf, 4)=pc_get_gm_account_dummy();	// ƒ_ƒ~[—pGMƒAƒJƒEƒ“ƒg‚ğ“ü‚ê‚é
 			memcpy(WBUFP(buf,8),mes,len);
 			break;
 		default:
@@ -14480,7 +14480,7 @@ void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int
 }
 
 /*==========================================
- * ãƒãƒŠãƒ¼ãƒã‚¤ãƒ³ãƒˆä»˜ä¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+ * ƒ}ƒi[ƒ|ƒCƒ“ƒg•t—^ƒƒbƒZ[ƒW
  *------------------------------------------
  */
 void clif_manner_message(struct map_session_data* sd, int type)
@@ -14496,7 +14496,7 @@ void clif_manner_message(struct map_session_data* sd, int type)
 }
 
 /*==========================================
- * ãƒãƒŠãƒ¼ãƒã‚¤ãƒ³ãƒˆã®å—é ˜
+ * ƒ}ƒi[ƒ|ƒCƒ“ƒg‚Ìó—Ì
  *------------------------------------------
  */
 void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, int type)
@@ -14514,7 +14514,7 @@ void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, 
 }
 
 /*==========================================
- * Wisæ‹’å¦è¨±å¯å¿œç­”
+ * Wis‹‘”Û‹–‰Â‰“š
  *------------------------------------------
  */
 static void clif_wisexin(struct map_session_data *sd, int type, unsigned char flag)
@@ -14533,7 +14533,7 @@ static void clif_wisexin(struct map_session_data *sd, int type, unsigned char fl
 }
 
 /*==========================================
- * Wiså…¨æ‹’å¦è¨±å¯å¿œç­”
+ * Wis‘S‹‘”Û‹–‰Â‰“š
  *------------------------------------------
  */
 static void clif_wisall(struct map_session_data *sd, int type, unsigned char flag)
@@ -14552,7 +14552,7 @@ static void clif_wisall(struct map_session_data *sd, int type, unsigned char fla
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å–å¾—
+ * ƒXƒe[ƒ^ƒXæ“¾
  *------------------------------------------
  */
 static void clif_check(int fd, struct map_session_data *sd)
@@ -14610,7 +14610,7 @@ static void clif_check(int fd, struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚µã‚¦ãƒ³ãƒ‰ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+ * ƒTƒEƒ“ƒhƒGƒtƒFƒNƒg
  *------------------------------------------
  */
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval)
@@ -14634,7 +14634,7 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 }
 
 /*==========================================
- * æ®‹å½±
+ * c‰e
  *------------------------------------------
  */
 void clif_bodyrelocation(struct block_list *bl, int x, int y)
@@ -14653,7 +14653,7 @@ void clif_bodyrelocation(struct block_list *bl, int x, int y)
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆã®æƒ…å ±é€šçŸ¥
+ * —F’BƒŠƒXƒg‚Ìî•ñ’Ê’m
  *------------------------------------------
  */
 void clif_friend_send_info(struct map_session_data *sd)
@@ -14677,7 +14677,7 @@ void clif_friend_send_info(struct map_session_data *sd)
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆã®ã‚ªãƒ³ãƒ©ã‚¤ãƒ³æƒ…å ±é€šçŸ¥
+ * —F’BƒŠƒXƒg‚ÌƒIƒ“ƒ‰ƒCƒ“î•ñ’Ê’m
  *------------------------------------------
  */
 void clif_friend_send_online(const int fd, int account_id, int char_id, int flag)
@@ -14692,7 +14692,7 @@ void clif_friend_send_online(const int fd, int account_id, int char_id, int flag
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿
  *------------------------------------------
  */
 void clif_friend_add_request(const int fd, struct map_session_data *sd)
@@ -14709,7 +14709,7 @@ void clif_friend_add_request(const int fd, struct map_session_data *sd)
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹è¿”ç­”
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿•Ô“š
  *------------------------------------------
  */
 void clif_friend_add_ack(const int fd, int account_id, int char_id, const char* name, unsigned short flag)
@@ -14725,7 +14725,7 @@ void clif_friend_add_ack(const int fd, int account_id, int char_id, const char* 
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ å‰Šé™¤é€šçŸ¥
+ * —F’BƒŠƒXƒg’Ç‰Áíœ’Ê’m
  *------------------------------------------
  */
 void clif_friend_del_ack(const int fd, int account_id, int char_id)
@@ -14739,7 +14739,7 @@ void clif_friend_del_ack(const int fd, int account_id, int char_id)
 }
 
 /*==========================================
- * BSãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆ
+ * BSƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg
  *------------------------------------------
  */
 void clif_blacksmith_point(const int fd,const int total,const int point)
@@ -14753,7 +14753,7 @@ void clif_blacksmith_point(const int fd,const int total,const int point)
 }
 
 /*==========================================
- * BSãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * BSƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 void clif_blacksmith_ranking(const int fd,const char *charname[10],const int point[10])
@@ -14771,7 +14771,7 @@ void clif_blacksmith_ranking(const int fd,const char *charname[10],const int poi
 }
 
 /*==========================================
- * ã‚¢ãƒ«ã‚±ãƒŸãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆ
+ * ƒAƒ‹ƒPƒ~ƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg
  *------------------------------------------
  */
 void clif_alchemist_point(const int fd,const int total,const int point)
@@ -14785,7 +14785,7 @@ void clif_alchemist_point(const int fd,const int total,const int point)
 }
 
 /*==========================================
- * ã‚¢ãƒ«ã‚±ãƒŸãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * ƒAƒ‹ƒPƒ~ƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 void clif_alchemist_ranking(const int fd,const char *charname[10],const int point[10])
@@ -14803,7 +14803,7 @@ void clif_alchemist_ranking(const int fd,const char *charname[10],const int poin
 }
 
 /*==========================================
- * ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆ
+ * ƒeƒRƒ“ƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg
  *------------------------------------------
  */
 void clif_taekwon_point(const int fd,const int total,const int point)
@@ -14817,7 +14817,7 @@ void clif_taekwon_point(const int fd,const int total,const int point)
 }
 
 /*==========================================
- * ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * ƒeƒRƒ“ƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[10])
@@ -14835,7 +14835,7 @@ void clif_taekwon_ranking(const int fd,const char *charname[10],const int point[
 }
 
 /*==========================================
- * è™æ®ºè€…ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆ
+ * ‹sEÒƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg
  *------------------------------------------
  */
 void clif_pk_point(const int fd,const int total,const int point)
@@ -14849,7 +14849,7 @@ void clif_pk_point(const int fd,const int total,const int point)
 }
 
 /*==========================================
- * è™æ®ºè€…ãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * ‹sEÒƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 void clif_pk_ranking(const int fd,const char *charname[10],const int point[10])
@@ -14867,7 +14867,7 @@ void clif_pk_ranking(const int fd,const char *charname[10],const int point[10])
 }
 
 /*==========================================
- * ä¸€æ‹¬ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒã‚¤ãƒ³ãƒˆ
+ * ˆêŠ‡ƒ‰ƒ“ƒLƒ“ƒOƒ|ƒCƒ“ƒg
  *------------------------------------------
  */
 void clif_updata_ranking_point(const int fd,const int total,const int point,int ranking_id)
@@ -14882,7 +14882,7 @@ void clif_updata_ranking_point(const int fd,const int total,const int point,int 
 }
 
 /*==========================================
- * ä¸€æ‹¬ãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * ˆêŠ‡ƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 void clif_rankinglist(const int fd,const char *charname[10],const int point[10],int ranking_id,int mypoint)
@@ -14902,7 +14902,7 @@ void clif_rankinglist(const int fd,const char *charname[10],const int point[10],
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«BOXã‚’è¡¨ç¤ºã•ã›ã‚‹
+ * ƒ[ƒ‹BOX‚ğ•\¦‚³‚¹‚é
  *------------------------------------------
  */
 void clif_openmailbox(const int fd)
@@ -14915,8 +14915,8 @@ void clif_openmailbox(const int fd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ä¸€è¦§è¡¨ï¼ˆBOXã‚’é–‹ã„ã¦ã„ã‚‹æ™‚ã«è”µã¸é€ä¿¡ï¼‰
- *  0x23fã®å¿œç­”
+ * ƒ[ƒ‹ˆê——•\iBOX‚ğŠJ‚¢‚Ä‚¢‚é‚É‘ ‚Ö‘—Mj
+ *  0x23f‚Ì‰“š
  *------------------------------------------
  */
 void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX])
@@ -14927,7 +14927,7 @@ void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md
 
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x240;
-	WFIFOL(fd,4) = store;	// 0ã®ã¨ãã¯ç”»é¢ã®ã‚¯ãƒªã‚¢
+	WFIFOL(fd,4) = store;	// 0‚Ì‚Æ‚«‚Í‰æ–Ê‚ÌƒNƒŠƒA
 	for(i=0;i<store;i++){
 		WFIFOL(fd,8+73*i)  = md[i].mail_num;
 		memcpy(WFIFOP(fd,12+73*i),md[i].title,40);
@@ -14942,7 +14942,7 @@ void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãŒé€ä¿¡ã§ãã¾ã—ãŸã¨ã‹ã§ãã¾ã›ã‚“ã¨ã‹
+ * ƒ[ƒ‹‚ª‘—M‚Å‚«‚Ü‚µ‚½‚Æ‚©‚Å‚«‚Ü‚¹‚ñ‚Æ‚©
  *------------------------------------------
  */
 void clif_res_sendmail(const int fd,int fail)
@@ -14955,7 +14955,7 @@ void clif_res_sendmail(const int fd,int fail)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ãŒæ·»ä»˜ã§ãã¾ã—ãŸã¨ã‹ã§ãã¾ã›ã‚“ã¨ã‹
+ * ƒAƒCƒeƒ€‚ª“Y•t‚Å‚«‚Ü‚µ‚½‚Æ‚©‚Å‚«‚Ü‚¹‚ñ‚Æ‚©
  *------------------------------------------
  */
 void clif_res_sendmail_setappend(const int fd,int idx,int flag)
@@ -14969,7 +14969,7 @@ void clif_res_sendmail_setappend(const int fd,int idx,int flag)
 }
 
 /*==========================================
- * æ·»ä»˜ã‚¢ã‚¤ãƒ†ãƒ å–å¾—
+ * “Y•tƒAƒCƒeƒ€æ“¾
  *------------------------------------------
  */
 void clif_mail_getappend(const int fd,int flag)
@@ -14982,7 +14982,7 @@ void clif_mail_getappend(const int fd,int flag)
 }
 
 /*==========================================
- * æ–°ç€ãƒ¡ãƒ¼ãƒ«ãŒå±Šãã¾ã—ãŸ
+ * V’…ƒ[ƒ‹‚ª“Í‚«‚Ü‚µ‚½
  *------------------------------------------
  */
 void clif_arrive_newmail(const int fd,struct mail_data *md)
@@ -14999,7 +14999,7 @@ void clif_arrive_newmail(const int fd,struct mail_data *md)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã‚’é¸æŠå—ä¿¡	Interâ†’æœ¬äººã¸
+ * ƒ[ƒ‹‚ğ‘I‘ğóM	Inter¨–{l‚Ö
  *------------------------------------------
  */
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
@@ -15015,7 +15015,7 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 	WFIFOL(fd,4)=md->mail_num;
 	memcpy(WFIFOP(fd, 8),md->title,40);
 	memcpy(WFIFOP(fd,48),md->char_name,24);
-	WFIFOL(fd,72)=0x22;	// å¢ƒç•Œï¼Ÿ
+	WFIFOL(fd,72)=0x22;	// ‹«ŠEH
 	WFIFOL(fd,76)=md->zeny;
 	WFIFOL(fd,80)=md->item.amount;
 	if((view = itemdb_viewid(md->item.nameid)) > 0)
@@ -15037,7 +15037,7 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ãŒå‰Šé™¤ã§ãã¾ã—ãŸã¨ã‹ã§ãã¾ã›ã‚“ã¨ã‹
+ * ƒ[ƒ‹‚ªíœ‚Å‚«‚Ü‚µ‚½‚Æ‚©‚Å‚«‚Ü‚¹‚ñ‚Æ‚©
  *------------------------------------------
  */
 void clif_deletemail_res(const int fd,int mail_num,int flag)
@@ -15051,7 +15051,7 @@ void clif_deletemail_res(const int fd,int mail_num,int flag)
 }
 
 /*==========================================
- * æ–¹å‘è»¢æ›
+ * •ûŒü“]Š·
  *------------------------------------------
  */
 void clif_changedir(struct block_list *bl, int headdir, int dir)
@@ -15107,10 +15107,10 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 #if PACKETVER < 20141223
 	WFIFOW(fd,0)=0x22e;
 	memcpy(WFIFOP(fd,2),hd->status.name,24);
-	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // åå‰ä»˜ã‘ãŸãƒ•ãƒ©ã‚° 1ã§å¤‰æ›´ä¸å¯ 2ã¯æ­»äº¡çŠ¶æ…‹
+	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // –¼‘O•t‚¯‚½ƒtƒ‰ƒO 1‚Å•ÏX•s‰Â 2‚Í€–Só‘Ô
 	WFIFOW(fd,27)=hd->status.base_level;	// Lv
-	WFIFOW(fd,29)=hd->status.hungry;		// æº€è…¹åº¦
-	WFIFOW(fd,31)=hd->intimate/100;	// æ–°å¯†åº¦
+	WFIFOW(fd,29)=hd->status.hungry;		// –• “x
+	WFIFOW(fd,31)=hd->intimate/100;	// V–§“x
 	WFIFOW(fd,33)=hd->status.equip;			// equip id
 	WFIFOW(fd,35)=hd->atk;					// Atk
 	WFIFOW(fd,37)=hd->matk;					// MAtk
@@ -15127,15 +15127,15 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,59)=hd->status.base_exp;		// Exp
 	WFIFOL(fd,63)=homun_nextbaseexp(hd);	// NextExp
 	WFIFOW(fd,67)=hd->status.skill_point;	// skill point
-	WFIFOW(fd,69)=hd->attackable;			// æ”»æ’ƒå¯å¦ãƒ•ãƒ©ã‚° 0:ä¸å¯/1:è¨±å¯
+	WFIFOW(fd,69)=hd->attackable;			// UŒ‚‰Â”Ûƒtƒ‰ƒO 0:•s‰Â/1:‹–‰Â
 	WFIFOSET(fd,packet_db[0x22e].len);
 #else
 	WFIFOW(fd,0)=0x9f7;
 	memcpy(WFIFOP(fd,2),hd->status.name,24);
-	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // åå‰ä»˜ã‘ãŸãƒ•ãƒ©ã‚° 1ã§å¤‰æ›´ä¸å¯ 2ã¯æ­»äº¡çŠ¶æ…‹
+	WFIFOB(fd,26)=(unit_isdead(&hd->bl))? 2: battle_config.homun_rename? 0: hd->status.rename_flag; // –¼‘O•t‚¯‚½ƒtƒ‰ƒO 1‚Å•ÏX•s‰Â 2‚Í€–Só‘Ô
 	WFIFOW(fd,27)=hd->status.base_level;	// Lv
-	WFIFOW(fd,29)=hd->status.hungry;		// æº€è…¹åº¦
-	WFIFOW(fd,31)=hd->intimate/100;	// æ–°å¯†åº¦
+	WFIFOW(fd,29)=hd->status.hungry;		// –• “x
+	WFIFOW(fd,31)=hd->intimate/100;	// V–§“x
 	WFIFOW(fd,33)=hd->status.equip;			// equip id
 	WFIFOW(fd,35)=hd->atk;					// Atk
 	WFIFOW(fd,37)=hd->matk;					// MAtk
@@ -15152,7 +15152,7 @@ void clif_send_homstatus(struct map_session_data *sd, int flag)
 	WFIFOL(fd,63)=hd->status.base_exp;		// Exp
 	WFIFOL(fd,67)=homun_nextbaseexp(hd);	// NextExp
 	WFIFOW(fd,71)=hd->status.skill_point;	// skill point
-	WFIFOW(fd,73)=hd->attackable;			// æ”»æ’ƒå¯å¦ãƒ•ãƒ©ã‚° 0:ä¸å¯/1:è¨±å¯
+	WFIFOW(fd,73)=hd->attackable;			// UŒ‚‰Â”Ûƒtƒ‰ƒO 0:•s‰Â/1:‹–‰Â
 	WFIFOSET(fd,packet_db[0x9f7].len);
 #endif
 
@@ -15179,7 +15179,7 @@ void clif_hom_food(struct map_session_data *sd, int foodid, unsigned char fail)
 }
 
 /*==========================================
- * ãƒ›ãƒ ã®ã‚¹ã‚­ãƒ«ãƒªã‚¹ãƒˆã‚’é€ä¿¡ã™ã‚‹
+ * ƒzƒ€‚ÌƒXƒLƒ‹ƒŠƒXƒg‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_homskillinfoblock(struct map_session_data *sd)
@@ -15216,7 +15216,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ›ãƒ ã®ã‚¹ã‚­ãƒ«å‰²ã‚ŠæŒ¯ã‚Šé€šçŸ¥
+ * ƒzƒ€‚ÌƒXƒLƒ‹Š„‚èU‚è’Ê’m
  *------------------------------------------
  */
 void clif_homskillup(struct map_session_data *sd, int skill_num)
@@ -15242,7 +15242,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ„Ÿæƒ…ã®ç™»éŒ²å®Œäº†
+ * ‘¾—z‚ÆŒ‚Æ¯‚ÌŠ´î‚Ì“o˜^Š®—¹
  *------------------------------------------
  */
 static void clif_feel_saveack(struct map_session_data *sd, int lv)
@@ -15276,7 +15276,7 @@ static void clif_feel_saveack(struct map_session_data *sd, int lv)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ„Ÿæƒ…ã®ç™»éŒ²æƒ…å ±
+ * ‘¾—z‚ÆŒ‚Æ¯‚ÌŠ´î‚Ì“o˜^î•ñ
  *------------------------------------------
  */
 void clif_feel_info(struct map_session_data *sd, int skilllv)
@@ -15297,7 +15297,7 @@ void clif_feel_info(struct map_session_data *sd, int skilllv)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ†ã—ã¿ã®ç™»éŒ²å®Œäº†
+ * ‘¾—z‚ÆŒ‚Æ¯‚Ì‘‚µ‚İ‚Ì“o˜^Š®—¹
  *------------------------------------------
  */
 void clif_hate_mob(struct map_session_data *sd, int skilllv, int id)
@@ -15322,7 +15322,7 @@ void clif_hate_mob(struct map_session_data *sd, int skilllv, int id)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ†ã—ã¿ã®ç™»éŒ²æƒ…å ±
+ * ‘¾—z‚ÆŒ‚Æ¯‚Ì‘‚µ‚İ‚Ì“o˜^î•ñ
  *------------------------------------------
  */
 void clif_hate_info(struct map_session_data *sd, int skilllv, int id)
@@ -15347,7 +15347,7 @@ void clif_hate_info(struct map_session_data *sd, int skilllv, int id)
 }
 
 /*==========================================
- * ãƒ†ã‚³ãƒ³ãƒŸãƒƒã‚·ãƒ§ãƒ³
+ * ƒeƒRƒ“ƒ~ƒbƒVƒ‡ƒ“
  *------------------------------------------
  */
 void clif_mission_mob(struct map_session_data *sd, int id, int count)
@@ -15368,7 +15368,7 @@ void clif_mission_mob(struct map_session_data *sd, int id, int count)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®å¤©ä½¿
+ * ‘¾—z‚ÆŒ‚Æ¯‚Ì“Vg
  *------------------------------------------
  */
 void clif_angel_message(struct map_session_data *sd)
@@ -15388,7 +15388,7 @@ void clif_angel_message(struct map_session_data *sd)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ„Ÿæƒ…ã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°è¡¨ç¤º
+ * ‘¾—z‚ÆŒ‚Æ¯‚ÌŠ´î‚Ìƒ_ƒCƒAƒƒO•\¦
  *------------------------------------------
  */
 void clif_feel_display(struct map_session_data *sd, int skilllv)
@@ -15406,7 +15406,7 @@ void clif_feel_display(struct map_session_data *sd, int skilllv)
 }
 
 /*==========================================
- * ãƒãƒ¼ãƒ€ãƒ©ãƒ¼
+ * ƒ}[ƒ_ƒ‰[
  *------------------------------------------
  */
 void clif_send_murderer(struct map_session_data *sd,int target,int flag)
@@ -15425,7 +15425,7 @@ void clif_send_murderer(struct map_session_data *sd,int target,int flag)
 }
 
 /*==========================================
- * temperæ›´æ–°
+ * temperXV
  *------------------------------------------
  */
 void clif_update_temper(struct map_session_data *sd)
@@ -15464,7 +15464,7 @@ void clif_update_temper(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ›ãƒƒãƒˆã‚­ãƒ¼ã®é€ä¿¡
+ * ƒzƒbƒgƒL[‚Ì‘—M
  *------------------------------------------
  */
 void clif_send_hotkey(struct map_session_data *sd)
@@ -15522,7 +15522,7 @@ void clif_send_hotkey(struct map_session_data *sd)
 }
 
 /*==========================================
- * MVPãƒœã‚¹æƒ…å ±
+ * MVPƒ{ƒXî•ñ
  *------------------------------------------
  */
 void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type)
@@ -15549,7 +15549,7 @@ void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int 
 }
 
 /*==========================================
- * èª­æ›¸ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º
+ * “Ç‘ƒEƒBƒ“ƒhƒE‚Ì•\¦
  *------------------------------------------
  */
 void clif_openbook(struct map_session_data *sd, int nameid, int page)
@@ -15599,21 +15599,21 @@ void clif_send_mercstatus(struct map_session_data *sd)
 	WFIFOW(fd,50) = mcd->max_hp;
 	WFIFOW(fd,52) = mcd->status.sp;
 	WFIFOW(fd,54) = mcd->max_sp;
-	WFIFOL(fd,56) = mcd->status.limit;	// é›‡ç”¨æœŸé™
-	WFIFOW(fd,60) = merc_get_fame(sd, mcd->status.class_);	// åå£°å€¤
-	WFIFOL(fd,62) = merc_get_call(sd, mcd->status.class_);	// å¬å–šå›æ•°
-	WFIFOL(fd,66) = mcd->status.kill_count;	// ã‚­ãƒ«ã‚«ã‚¦ãƒ³ãƒˆ
-	WFIFOW(fd,70) = mcd->attackrange;	// æ”»æ’ƒç¯„å›²
+	WFIFOL(fd,56) = mcd->status.limit;	// ŒÙ—pŠúŒÀ
+	WFIFOW(fd,60) = merc_get_fame(sd, mcd->status.class_);	// –¼º’l
+	WFIFOL(fd,62) = merc_get_call(sd, mcd->status.class_);	// ¢Š«‰ñ”
+	WFIFOL(fd,66) = mcd->status.kill_count;	// ƒLƒ‹ƒJƒEƒ“ƒg
+	WFIFOW(fd,70) = mcd->attackrange;	// UŒ‚”ÍˆÍ
 #else
 	WFIFOL(fd,48) = mcd->status.hp;
 	WFIFOL(fd,52) = mcd->max_hp;
 	WFIFOL(fd,56) = mcd->status.sp;
 	WFIFOL(fd,60) = mcd->max_sp;
-	WFIFOL(fd,64) = mcd->status.limit;	// é›‡ç”¨æœŸé™
-	WFIFOW(fd,68) = merc_get_fame(sd, mcd->status.class_);	// åå£°å€¤
-	WFIFOL(fd,70) = merc_get_call(sd, mcd->status.class_);	// å¬å–šå›æ•°
-	WFIFOL(fd,74) = mcd->status.kill_count;	// ã‚­ãƒ«ã‚«ã‚¦ãƒ³ãƒˆ
-	WFIFOW(fd,78) = mcd->attackrange;	// æ”»æ’ƒç¯„å›²
+	WFIFOL(fd,64) = mcd->status.limit;	// ŒÙ—pŠúŒÀ
+	WFIFOW(fd,68) = merc_get_fame(sd, mcd->status.class_);	// –¼º’l
+	WFIFOL(fd,70) = merc_get_call(sd, mcd->status.class_);	// ¢Š«‰ñ”
+	WFIFOL(fd,74) = mcd->status.kill_count;	// ƒLƒ‹ƒJƒEƒ“ƒg
+	WFIFOW(fd,78) = mcd->attackrange;	// UŒ‚”ÍˆÍ
 #endif
 	WFIFOSET(fd,packet_db[0x29b].len);
 
@@ -15621,7 +15621,7 @@ void clif_send_mercstatus(struct map_session_data *sd)
 }
 
 /*==========================================
- * å‚­å…µã®ã‚¹ã‚­ãƒ«ãƒªã‚¹ãƒˆã‚’é€ä¿¡ã™ã‚‹
+ * —b•º‚ÌƒXƒLƒ‹ƒŠƒXƒg‚ğ‘—M‚·‚é
  *------------------------------------------
  */
 void clif_mercskillinfoblock(struct map_session_data *sd)
@@ -15658,7 +15658,7 @@ void clif_mercskillinfoblock(struct map_session_data *sd)
 }
 
 /*==========================================
- * å‚­å…µã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’é€ã‚Šã¤ã‘ã‚‹
+ * —b•º‚ÌƒXƒe[ƒ^ƒX‚ğ‘—‚è‚Â‚¯‚é
  *------------------------------------------
  */
 void clif_mercupdatestatus(struct map_session_data *sd, int type)
@@ -15727,7 +15727,7 @@ void clif_mercupdatestatus(struct map_session_data *sd, int type)
 }
 
 /*==========================================
- * msgstringtableè¡¨ç¤º
+ * msgstringtable•\¦
  *------------------------------------------
  */
 void clif_msgstringtable(struct map_session_data *sd, int line)
@@ -15745,7 +15745,7 @@ void clif_msgstringtable(struct map_session_data *sd, int line)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆ
+ * ƒNƒGƒXƒgƒŠƒXƒg
  *------------------------------------------
  */
 void clif_questlist(struct map_session_data *sd)
@@ -15802,7 +15802,7 @@ void clif_questlist(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆè©³ç´°
+ * ƒNƒGƒXƒgƒŠƒXƒgÚ×
  *------------------------------------------
  */
 void clif_questlist_info(struct map_session_data *sd)
@@ -15843,7 +15843,7 @@ void clif_questlist_info(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆè¿½åŠ 
+ * ƒNƒGƒXƒgƒŠƒXƒg’Ç‰Á
  *------------------------------------------
  */
 void clif_add_questlist(struct map_session_data *sd, int quest_id)
@@ -15884,7 +15884,7 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆå‰Šé™¤
+ * ƒNƒGƒXƒgƒŠƒXƒgíœ
  *------------------------------------------
  */
 void clif_del_questlist(struct map_session_data *sd, int quest_id)
@@ -15902,7 +15902,7 @@ void clif_del_questlist(struct map_session_data *sd, int quest_id)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆè¨ä¼æ•°æ›´æ–°
+ * ƒNƒGƒXƒgƒŠƒXƒg“¢”°”XV
  *------------------------------------------
  */
 void clif_update_questcount(struct map_session_data *sd, int quest_id)
@@ -15936,7 +15936,7 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ¡ãƒ³ãƒãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ç²å¾—ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+ * ƒp[ƒeƒB[ƒƒ“ƒo[ƒAƒCƒeƒ€Šl“¾ƒƒbƒZ[ƒW
  *------------------------------------------
  */
 void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data)
@@ -15967,7 +15967,7 @@ void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_dat
 }
 
 /*==========================================
- * è£…å‚™ç ´å£Š
+ * ‘•”õ”j‰ó
  *------------------------------------------
  */
 void clif_break_equip(struct map_session_data *sd, int where)
@@ -15987,7 +15987,7 @@ void clif_break_equip(struct map_session_data *sd, int where)
 }
 
 /*==========================================
- * msgstringtableè¡¨ç¤ºï¼ˆæ–‡å­—åˆ—å¼•æ•°ã‚ã‚Šï¼‰
+ * msgstringtable•\¦i•¶š—ñˆø”‚ ‚èj
  *------------------------------------------
  */
 void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes)
@@ -16009,7 +16009,7 @@ void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes
 }
 
 /*==========================================
- * msgstringtableè¡¨ç¤ºï¼ˆæ•°å€¤å¼•æ•°ã‚ã‚Šï¼‰
+ * msgstringtable•\¦i”’lˆø”‚ ‚èj
  *------------------------------------------
  */
 void clif_msgstringtable3(struct map_session_data *sd, int line, int value)
@@ -16028,7 +16028,7 @@ void clif_msgstringtable3(struct map_session_data *sd, int line, int value)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ä½œæˆ
+ * ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ì¬
  *------------------------------------------
  */
 void clif_memorial_create(struct map_session_data *sd, const char *name, int num, int flag)
@@ -16042,9 +16042,9 @@ void clif_memorial_create(struct map_session_data *sd, const char *name, int num
 	memcpy(WBUFP(buf,2),name,61);
 	WBUFB(buf,62) = '\0';	// \0 terminal
 	WBUFW(buf,63) = num;
-	if(flag) {	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å…¨ä½“ã«é€ä¿¡
+	if(flag) {	// ƒp[ƒeƒB[‘S‘Ì‚É‘—M
 		clif_send(buf,packet_db[0x2cb].len,&sd->bl,PARTY);
-	} else {	// å€‹åˆ¥ã«é€ä¿¡
+	} else {	// ŒÂ•Ê‚É‘—M
 		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cb].len);
 		WFIFOSET(sd->fd,packet_db[0x2cb].len);
 	}
@@ -16054,7 +16054,7 @@ void clif_memorial_create(struct map_session_data *sd, const char *name, int num
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³å¾…æ©ŸçŠ¶æ…‹å¤‰æ›´
+ * ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“‘Ò‹@ó‘Ô•ÏX
  *------------------------------------------
  */
 void clif_memorial_changewait(struct map_session_data *sd, int num, int flag)
@@ -16066,9 +16066,9 @@ void clif_memorial_changewait(struct map_session_data *sd, int num, int flag)
 
 	WBUFW(buf,0) = 0x2cc;
 	WBUFW(buf,2) = num;
-	if(flag) {	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å…¨ä½“ã«é€ä¿¡
+	if(flag) {	// ƒp[ƒeƒB[‘S‘Ì‚É‘—M
 		clif_send(buf,packet_db[0x2cc].len,&sd->bl,PARTY);
-	} else {	// å€‹åˆ¥ã«é€ä¿¡
+	} else {	// ŒÂ•Ê‚É‘—M
 		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cc].len);
 		WFIFOSET(sd->fd,packet_db[0x2cc].len);
 	}
@@ -16078,7 +16078,7 @@ void clif_memorial_changewait(struct map_session_data *sd, int num, int flag)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³çŠ¶æ…‹é€šçŸ¥
+ * ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ó‘Ô’Ê’m
  *------------------------------------------
  */
 void clif_memorial_status(struct map_session_data *sd, const char *name, unsigned int limit1, unsigned int limit2, int flag)
@@ -16093,9 +16093,9 @@ void clif_memorial_status(struct map_session_data *sd, const char *name, unsigne
 	WBUFB(buf,62) = '\0';	// \0 terminal
 	WBUFL(buf,63) = limit1;
 	WBUFL(buf,67) = limit2;
-	if(flag) {	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å…¨ä½“ã«é€ä¿¡
+	if(flag) {	// ƒp[ƒeƒB[‘S‘Ì‚É‘—M
 		clif_send(buf,packet_db[0x2cd].len,&sd->bl,PARTY);
-	} else {	// å€‹åˆ¥ã«é€ä¿¡
+	} else {	// ŒÂ•Ê‚É‘—M
 		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2cd].len);
 		WFIFOSET(sd->fd,packet_db[0x2cd].len);
 	}
@@ -16105,7 +16105,7 @@ void clif_memorial_status(struct map_session_data *sd, const char *name, unsigne
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³é€²è¡Œå¤‰æ›´é€šçŸ¥
+ * ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“is•ÏX’Ê’m
  *------------------------------------------
  */
 void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned int limit, int flag)
@@ -16118,9 +16118,9 @@ void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned 
 	WBUFW(buf,0) = 0x2ce;
 	WBUFL(buf,2) = type;
 	WBUFL(buf,6) = limit;
-	if(flag) {	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼å…¨ä½“ã«é€ä¿¡
+	if(flag) {	// ƒp[ƒeƒB[‘S‘Ì‚É‘—M
 		clif_send(buf,packet_db[0x2ce].len,&sd->bl,PARTY);
-	} else {	// å€‹åˆ¥ã«é€ä¿¡
+	} else {	// ŒÂ•Ê‚É‘—M
 		memcpy(WFIFOP(sd->fd,0),buf,packet_db[0x2ce].len);
 		WFIFOSET(sd->fd,packet_db[0x2ce].len);
 	}
@@ -16130,7 +16130,7 @@ void clif_memorial_changestatus(struct map_session_data *sd, int type, unsigned 
 }
 
 /*==========================================
- * è£…å‚™ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æƒ…å ±
+ * ‘•”õƒEƒBƒ“ƒhƒEî•ñ
  *------------------------------------------
  */
 void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *tsd)
@@ -16495,7 +16495,7 @@ void clif_party_equiplist(struct map_session_data *sd, struct map_session_data *
 }
 
 /*==========================================
- * è£…å‚™ã‚’å…¬é–‹ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+ * ‘•”õ‚ğŒöŠJ‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 void clif_send_equipopen(struct map_session_data *sd)
@@ -16515,7 +16515,7 @@ void clif_send_equipopen(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ•ã‚©ãƒ³ãƒˆã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+ * ƒtƒHƒ“ƒg‚ğƒZƒbƒg‚·‚é
  *------------------------------------------
  */
 void clif_setfont(struct map_session_data *sd)
@@ -16533,7 +16533,7 @@ void clif_setfont(struct map_session_data *sd)
 }
 
 /*==========================================
- * è© å”±ãƒãƒ¼è¡¨ç¤º
+ * ‰r¥ƒo[•\¦
  *------------------------------------------
  */
 void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second)
@@ -16552,7 +16552,7 @@ void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned 
 }
 
 /*==========================================
- * è© å”±ãƒãƒ¼ä¸­æ–­
+ * ‰r¥ƒo[’†’f
  *------------------------------------------
  */
 void clif_progressbar_abort(struct map_session_data *sd)
@@ -16569,7 +16569,7 @@ void clif_progressbar_abort(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«å›ºæœ‰ãƒ‡ã‚£ãƒ¬ã‚¤è¡¨ç¤º
+ * ƒXƒLƒ‹ŒÅ—LƒfƒBƒŒƒC•\¦
  *------------------------------------------
  */
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick)
@@ -16590,7 +16590,7 @@ void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int 
 }
 
 /*==========================================
- * ãƒŸãƒ¬ãƒ‹ã‚¢ãƒ ã‚·ãƒ¼ãƒ«ãƒ‰
+ * ƒ~ƒŒƒjƒAƒ€ƒV[ƒ‹ƒh
  *------------------------------------------
  */
 void clif_mshield(struct map_session_data *sd, int num)
@@ -16609,7 +16609,7 @@ void clif_mshield(struct map_session_data *sd, int num)
 }
 
 /*==========================================
- * ã‚ªãƒ¼ãƒˆã‚·ãƒ£ãƒ‰ã‚¦ã‚¹ãƒšãƒ«
+ * ƒI[ƒgƒVƒƒƒhƒEƒXƒyƒ‹
  *------------------------------------------
  */
 void clif_autoshadowspell(struct map_session_data *sd, short lv)
@@ -16646,7 +16646,7 @@ void clif_autoshadowspell(struct map_session_data *sd, short lv)
 }
 
 /*==========================================
- * NPCã‚¤ãƒ™ãƒ³ãƒˆè¡¨ç¤º
+ * NPCƒCƒxƒ“ƒg•\¦
  *------------------------------------------
  */
 void clif_showevent(struct map_session_data *sd, struct block_list *bl, short state, short type)
@@ -16669,7 +16669,7 @@ void clif_showevent(struct map_session_data *sd, struct block_list *bl, short st
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ åˆæˆãƒªã‚¹ãƒˆ
+ * ƒAƒCƒeƒ€‡¬ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_convertitem(struct map_session_data *sd, int skillid, int skilllv)
@@ -16692,7 +16692,7 @@ void clif_convertitem(struct map_session_data *sd, int skillid, int skilllv)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+ * ƒXƒLƒ‹ƒƒbƒZ[ƒW
  *------------------------------------------
  */
 void clif_skill_message(struct map_session_data *sd, int skillid, int type)
@@ -16713,7 +16713,7 @@ void clif_skill_message(struct map_session_data *sd, int skillid, int type)
 }
 
 /*==========================================
- * çµŒé¨“å€¤å–å¾—è¡¨ç¤º
+ * ŒoŒ±’læ“¾•\¦
  *------------------------------------------
  */
 void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
@@ -16734,7 +16734,7 @@ void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼å¤‰æ›´æƒ…å ±
+ * ƒp[ƒeƒB[ƒŠ[ƒ_[•ÏXî•ñ
  *------------------------------------------
  */
 void clif_partyleader_info(struct party *p, int old_account_id, int account_id)
@@ -16745,7 +16745,7 @@ void clif_partyleader_info(struct party *p, int old_account_id, int account_id)
 	nullpo_retv(p);
 
 	if(!sd) {
-		// ãƒªãƒ¼ãƒ€ãƒ¼ãŒã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãªã®ã§ãƒ­ã‚°ã‚¤ãƒ³ä¸­ã®ãƒ¡ãƒ³ãƒãƒ¼ã‚’æ¢ã™
+		// ƒŠ[ƒ_[‚ªƒIƒtƒ‰ƒCƒ“‚È‚Ì‚ÅƒƒOƒCƒ“’†‚Ìƒƒ“ƒo[‚ğ’T‚·
 		sd = party_getavailablesd(p);
 		if(!sd)
 			return;
@@ -16760,7 +16760,7 @@ void clif_partyleader_info(struct party *p, int old_account_id, int account_id)
 }
 
 /*==========================================
- * éŸ³æ¥½ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é³´ã‚‰ã™
+ * ‰¹Šyƒtƒ@ƒCƒ‹‚ğ–Â‚ç‚·
  *------------------------------------------
  */
 void clif_musiceffect(struct map_session_data *sd, const char *name)
@@ -16778,7 +16778,7 @@ void clif_musiceffect(struct map_session_data *sd, const char *name)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ç™»éŒ²è¦æ±‚å¿œç­”
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO“o˜^—v‹‰“š
  *------------------------------------------
  */
 void clif_bookingregack(struct map_session_data *sd, int flag)
@@ -16802,7 +16802,7 @@ void clif_bookingregack(struct map_session_data *sd, int flag)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°æ¤œç´¢è¦æ±‚å¿œç­”
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOŒŸõ—v‹‰“š
  *------------------------------------------
  */
 void clif_searchbookingack(struct map_session_data *sd, struct booking_data **list, int count, int flag)
@@ -16854,7 +16854,7 @@ void clif_searchbookingack(struct map_session_data *sd, struct booking_data **li
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ç™»éŒ²å‰Šé™¤è¦æ±‚å¿œç­”
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO“o˜^íœ—v‹‰“š
  *------------------------------------------
  */
 void clif_deletebookingack(struct map_session_data* sd, int flag)
@@ -16878,7 +16878,7 @@ void clif_deletebookingack(struct map_session_data* sd, int flag)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒªã‚¹ãƒˆè¿½åŠ 
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒŠƒXƒg’Ç‰Á
  *------------------------------------------
  */
 void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd)
@@ -16916,7 +16916,7 @@ void clif_insertbookinglist(struct map_session_data *sd, struct booking_data *bd
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒªã‚¹ãƒˆæ›´æ–°
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒŠƒXƒgXV
  *------------------------------------------
  */
 void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd)
@@ -16946,7 +16946,7 @@ void clif_updatebookinglist(struct map_session_data* sd, struct booking_data *bd
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ç™»éŒ²å‰Šé™¤
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO“o˜^íœ
  *------------------------------------------
  */
 void clif_deletebooking(struct map_session_data* sd, unsigned int id)
@@ -16969,7 +16969,7 @@ void clif_deletebooking(struct map_session_data* sd, unsigned int id)
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚ªãƒ¼ãƒ—ãƒ³
+ * ”ƒæ˜I“XƒEƒCƒ“ƒhƒEƒI[ƒvƒ“
  *------------------------------------------
  */
 void clif_openwindow_buyingstore(struct map_session_data *sd)
@@ -16987,7 +16987,7 @@ void clif_openwindow_buyingstore(struct map_session_data *sd)
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‹è¨­å¤±æ•—
+ * ”ƒæ˜I“XŠJİ¸”s
  *------------------------------------------
  */
 void clif_failed_openbuyingstore(struct map_session_data *sd, unsigned short result, int weight)
@@ -17006,7 +17006,7 @@ void clif_failed_openbuyingstore(struct map_session_data *sd, unsigned short res
 }
 
 /*==========================================
- * è²·å–éœ²åº—è‡ªã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆ
+ * ”ƒæ˜I“X©ƒAƒCƒeƒ€ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_showmylist_buyingstore(struct map_session_data *sd)
@@ -17035,7 +17035,7 @@ void clif_showmylist_buyingstore(struct map_session_data *sd)
 }
 
 /*==========================================
- * è²·å–éœ²åº—è¡¨ç¤º
+ * ”ƒæ˜I“X•\¦
  *------------------------------------------
  */
 void clif_show_buyingstore(struct block_list *bl, const char *store_title, int fd)
@@ -17060,7 +17060,7 @@ void clif_show_buyingstore(struct block_list *bl, const char *store_title, int f
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‰é–
+ * ”ƒæ˜I“X•Â½
  *------------------------------------------
  */
 void clif_close_buyingstore(struct block_list *bl, int fd)
@@ -17082,7 +17082,7 @@ void clif_close_buyingstore(struct block_list *bl, int fd)
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆ
+ * ”ƒæ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg
  *------------------------------------------
  */
 void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_data *ssd)
@@ -17113,7 +17113,7 @@ void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_d
 }
 
 /*==========================================
- * è²·å–éœ²åº—çµ‚äº†
+ * ”ƒæ˜I“XI—¹
  *------------------------------------------
  */
 void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
@@ -17131,7 +17131,7 @@ void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ æ›´æ–°
+ * ”ƒæ˜I“XƒAƒCƒeƒ€XV
  *------------------------------------------
  */
 void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount, int value, int account_id, int char_id)
@@ -17162,7 +17162,7 @@ void clif_update_buyingstore(struct map_session_data *sd, short nameid, short am
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ å‰Šé™¤
+ * ”ƒæ˜I“XƒAƒCƒeƒ€íœ
  *------------------------------------------
  */
 void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amount, int value)
@@ -17182,7 +17182,7 @@ void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amoun
 }
 
 /*==========================================
- * è²·å–éœ²åº—è²·ã„å–ã‚Šå¤±æ•—
+ * ”ƒæ˜I“X”ƒ‚¢æ‚è¸”s
  *------------------------------------------
  */
 void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid)
@@ -17201,7 +17201,7 @@ void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, sho
 }
 
 /*==========================================
- * ç²¾éœŠã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é€ä¿¡
+ * ¸—ìƒXƒe[ƒ^ƒX‘—M
  *------------------------------------------
  */
 void clif_send_elemstatus(struct map_session_data *sd)
@@ -17225,7 +17225,7 @@ void clif_send_elemstatus(struct map_session_data *sd)
 }
 
 /*==========================================
- * ç²¾éœŠã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ›´æ–°
+ * ¸—ìƒXƒe[ƒ^ƒXXV
  *------------------------------------------
  */
 void clif_elemupdatestatus(struct map_session_data *sd, int type)
@@ -17260,7 +17260,7 @@ void clif_elemupdatestatus(struct map_session_data *sd, int type)
 }
 
 /*==========================================
- * å½±ç‹¼ãƒ»æœ§ã®çƒä½“è¡¨ç¤º(ã‚¨ãƒªã‚¢é€ä¿¡)
+ * ‰e˜TEO‚Ì‹…‘Ì•\¦(ƒGƒŠƒA‘—M)
  *------------------------------------------
  */
 void clif_elementball(struct map_session_data *sd)
@@ -17279,7 +17279,7 @@ void clif_elementball(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ å€‹äººã‚¿ãƒ–ç§»å‹•
+ * ƒAƒCƒeƒ€ŒÂlƒ^ƒuˆÚ“®
  *------------------------------------------
  */
 void clif_privateitem(struct map_session_data *sd, short idx, char flag)
@@ -17298,7 +17298,7 @@ void clif_privateitem(struct map_session_data *sd, short idx, char flag)
 }
 
 /*==========================================
-* ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼HPãƒãƒ¼æ›´æ–°
+* ƒ‚ƒ“ƒXƒ^[HPƒo[XV
 *------------------------------------------
 */
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
@@ -17312,7 +17312,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 	fd=sd->fd;
 	WFIFOW(fd,0) = 0x977;
 	WFIFOL(fd,2) = md->bl.id;
-	// ç‰¹å®šçŠ¶æ…‹ç•°å¸¸æ™‚ãƒ»ã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãƒ»MVPãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã«ã¯è¡¨ç¤ºã—ãªã„
+	// “Á’èó‘ÔˆÙíEƒGƒ“ƒyƒŠƒEƒ€EMVPƒ‚ƒ“ƒXƒ^[‚É‚Í•\¦‚µ‚È‚¢
 	if(mob_check_hpinfo(sd,md))
 	{
 		WFIFOL(fd, 6) = 0xffffffff;
@@ -17328,7 +17328,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 }
 
 /*==========================================
- * éŠ€è¡Œé ã‘å…¥ã‚Œé€šçŸ¥
+ * ‹âs—a‚¯“ü‚ê’Ê’m
  *------------------------------------------
  */
 void clif_bank_deposit(struct map_session_data *sd, int flag)
@@ -17348,7 +17348,7 @@ void clif_bank_deposit(struct map_session_data *sd, int flag)
 }
 
 /*==========================================
- * éŠ€è¡Œå¼•ãå‡ºã—é€šçŸ¥
+ * ‹âsˆø‚«o‚µ’Ê’m
  *------------------------------------------
  */
 void clif_bank_withdraw(struct map_session_data *sd, int flag)
@@ -17368,7 +17368,7 @@ void clif_bank_withdraw(struct map_session_data *sd, int flag)
 }
 
 /*==========================================
- * é ­ä¸Šã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
+ * “ªã‚ÉƒƒbƒZ[ƒW•\¦
  *------------------------------------------
  */
 void clif_showscript(struct block_list *bl, char *mes)
@@ -17395,7 +17395,7 @@ void clif_showscript(struct block_list *bl, char *mes)
 }
 
 /*==========================================
- * ã‚µãƒ¼ãƒãƒ¼æƒ…å ±é€šçŸ¥
+ * ƒT[ƒo[î•ñ’Ê’m
  *------------------------------------------
  */
 void clif_send_personalinfo(struct map_session_data *sd)
@@ -17457,7 +17457,7 @@ void clif_send_personalinfo(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‡ã‚¸ã‚¿ãƒ«ã‚¿ã‚¤ãƒãƒ¼è¡¨ç¤º
+ * ƒfƒWƒ^ƒ‹ƒ^ƒCƒ}[•\¦
  *------------------------------------------
  */
 void clif_showdigit(struct map_session_data* sd, unsigned char type, int value)
@@ -17476,7 +17476,7 @@ void clif_showdigit(struct map_session_data* sd, unsigned char type, int value)
 }
 
 /*==========================================
- * ãƒ‰ãƒ¬ã‚¹ãƒ«ãƒ¼ãƒ è¡¨ç¤º
+ * ƒhƒŒƒXƒ‹[ƒ€•\¦
  *------------------------------------------
  */
 void clif_dressing_room(struct map_session_data *sd, int view)
@@ -17493,7 +17493,7 @@ void clif_dressing_room(struct map_session_data *sd, int view)
 }
 
 /*==========================================
- * send packet ãƒ‡ãƒãƒƒã‚°ç”¨
+ * send packet ƒfƒoƒbƒO—p
  *------------------------------------------
  */
 void clif_send_packet(struct map_session_data *sd, const char *message)
@@ -17504,7 +17504,7 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 
 	nullpo_retv(sd);
 
-	// ä»»æ„ã®èª­ã¿è¾¼ã¿ã¯30byteã¾ã§è¨±å¯ã™ã‚‹
+	// ”CˆÓ‚Ì“Ç‚İ‚İ‚Í30byte‚Ü‚Å‹–‰Â‚·‚é
 	n = sscanf(message, "%x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x %x",
 				&packet,&p[2],&p[3],&p[4],&p[5],&p[6],&p[7],&p[8],&p[9],
 				&p[10],&p[11],&p[12],&p[13],&p[14],&p[15],&p[16],&p[17],&p[18],&p[19],
@@ -17527,13 +17527,13 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 	if(db_len >= 0) {
 		len = db_len;
 		i = 2;
-	} else {	// å¯å¤‰é•·
+	} else {	// ‰Â•Ï’·
 		if(n == 1 || p[2] <= 0){
 			printf("clif_send_packet_test packet:%x len=-1 input len %cpacket len x1 x2...\n", packet, GM_Symbol());
 			return;
 		}
 		WFIFOW(fd,2) = (len=p[2]);
-		i = 4;		// p[2]ã‚’shortå‹ã¨ã—ã¦å–ã‚‹ãŸã‚p[3]ã¯ç„¡è¦–ã™ã‚‹
+		i = 4;		// p[2]‚ğshortŒ^‚Æ‚µ‚Äæ‚é‚½‚ßp[3]‚Í–³‹‚·‚é
 	}
 
 	for(; i < len; i++) {
@@ -17554,7 +17554,7 @@ void clif_send_packet(struct map_session_data *sd, const char *message)
 // ------------
 // clif_parse_*
 // ------------
-// ãƒ‘ã‚±ãƒƒãƒˆèª­ã¿å–ã£ã¦è‰²ã€…æ“ä½œ
+// ƒpƒPƒbƒg“Ç‚İæ‚Á‚ÄFX‘€ì
 /*==========================================
  *
  *------------------------------------------
@@ -17577,12 +17577,12 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 	client_tick = RFIFOL(fd,GETPACKETPOS(cmd,3));
 	sex         = RFIFOB(fd,GETPACKETPOS(cmd,4));
 
-	// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆIDã®ä¸æ­£ãƒã‚§ãƒƒã‚¯
+	// ƒAƒJƒEƒ“ƒgID‚Ì•s³ƒ`ƒFƒbƒN
 	if(account_id < START_ACCOUNT_NUM || account_id > END_ACCOUNT_NUM) {
 		printf("clif_parse_WantToConnection : invalid Account ID !!\n");
 		return;
 	}
-	// Sexã®ãƒã‚§ãƒƒã‚¯
+	// Sex‚Ìƒ`ƒFƒbƒN
 	if(sex != SEX_FEMALE && sex != SEX_MALE) {
 		printf("clif_parse_WantToConnection : invalid Sex !!\n");
 		return;
@@ -17596,9 +17596,9 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 
 	pc_setnewpc(sd, account_id, char_id, login_id1, client_tick, sex);
 	if((old_sd = map_id2sd(account_id)) != NULL) {
-		// 2é‡loginãªã®ã§åˆ‡æ–­ç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹
+		// 2dlogin‚È‚Ì‚ÅØ’f—p‚Ìƒf[ƒ^‚ğ•Û‘¶‚·‚é
 		old_sd->new_fd=fd;
-		sd->new_fd = -1; // æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã¯ã‚»ãƒ¼ãƒ–ã—ãªã„ãƒ•ãƒ©ã‚°
+		sd->new_fd = -1; // V‚µ‚¢ƒf[ƒ^‚ÍƒZ[ƒu‚µ‚È‚¢ƒtƒ‰ƒO
 	} else {
 		map_addiddb(&sd->bl);
 	}
@@ -17619,8 +17619,8 @@ static void clif_parse_WantToConnection(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * 007d ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´ãƒãƒƒãƒ—èª­ã¿è¾¼ã¿å®Œäº†
- * mapä¾µå…¥æ™‚ã«å¿…è¦ãªãƒ‡ãƒ¼ã‚¿ã‚’å…¨ã¦é€ã‚Šã¤ã‘ã‚‹
+ * 007d ƒNƒ‰ƒCƒAƒ“ƒg‘¤ƒ}ƒbƒv“Ç‚İ‚İŠ®—¹
+ * mapN“ü‚É•K—v‚Èƒf[ƒ^‚ğ‘S‚Ä‘—‚è‚Â‚¯‚é
  *------------------------------------------
  */
 static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
@@ -17630,7 +17630,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(sd->bl.prev != NULL)
 		return;
 
-	if(!sd->state.auth) {	// èªè¨¼å®Œäº†ã—ã¦ãªã„
+	if(!sd->state.auth) {	// ”FØŠ®—¹‚µ‚Ä‚È‚¢
 		clif_authfail_fd(fd,0);
 		return;
 	}
@@ -17660,7 +17660,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	}
 
-	map_addblock(&sd->bl);	// ãƒ–ãƒ­ãƒƒã‚¯ç™»éŒ²
+	map_addblock(&sd->bl);	// ƒuƒƒbƒN“o˜^
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
 		clif_spawnpc(sd);	// spawn
 	}
@@ -17702,7 +17702,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.pk_noshift && !map[sd->bl.m].flag.pk)
 		sd->status.karma = 0;
 
-	// ãƒšãƒƒãƒˆ
+	// ƒyƒbƒg
 	if(sd->status.pet_id > 0 && sd->pd && sd->pet.intimate > 0) {
 		map_addblock(&sd->pd->bl);
 		clif_spawnpet(sd->pd);
@@ -17710,7 +17710,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_pethair(sd);
 		clif_send_petstatus(sd);
 	}
-	// ãƒ›ãƒ 
+	// ƒzƒ€
 	if(sd->hd) {
 		map_addblock(&sd->hd->bl);
 		mob_ai_hard_spawn(&sd->hd->bl, 1);
@@ -17719,7 +17719,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_homstatus(sd,1);
 		clif_send_homstatus(sd,0);
 	}
-	// å‚­å…µ
+	// —b•º
 	if(sd->mcd) {
 		map_addblock(&sd->mcd->bl);
 		mob_ai_hard_spawn( &sd->mcd->bl, 1 );
@@ -17727,7 +17727,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_send_mercstatus(sd);
 		clif_mercskillinfoblock(sd);
 	}
-	// ç²¾éœŠ
+	// ¸—ì
 	if(sd->eld) {
 		map_addblock(&sd->eld->bl);
 		mob_ai_hard_spawn( &sd->eld->bl, 1 );
@@ -17736,8 +17736,8 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	if(sd->state.connect_new) {
-		// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿è¦æ±‚
-		// pc_authok() ã§å‘¼ã³å‡ºã™ã¨ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒåæ˜ ã•ã‚Œãªã„
+		// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^—v‹
+		// pc_authok() ‚ÅŒÄ‚Ño‚·‚ÆƒNƒ‰ƒCƒAƒ“ƒg‚ÉƒGƒtƒFƒNƒg‚ª”½‰f‚³‚ê‚È‚¢
 		intif_request_scdata(sd->status.account_id,sd->status.char_id);
 
 		clif_skillinfoblock(sd);
@@ -17750,7 +17750,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_initialstatus(sd);
 		clif_send_personalinfo(sd);
 
-		// ã‚­ãƒ©ãƒ¼æƒ…å ±é€ä¿¡
+		// ƒLƒ‰[î•ñ‘—M
 		if(battle_config.save_pckiller_type)
 			clif_update_temper(sd);
 
@@ -17776,12 +17776,12 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_changelook(&sd->bl,LOOK_WEAPON,0);
 #endif
 
-	// optionç³»åˆæœŸåŒ–(ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«å¯¾ã™ã‚‹...)
-	// åŒä¸€ãƒ‘ã‚±ã‚’2å›é€ã‚‹ã“ã¨ã§ã‚‚ååˆ†ã§ã™ãŒã€æ°—æŒã¡æ‚ªã„ã®ã§0ã§åˆæœŸåŒ–ã¨ã„ã†å½¢ã«
+	// optionŒn‰Šú‰»(ƒNƒ‰ƒCƒAƒ“ƒg‚É‘Î‚·‚é...)
+	// “¯ˆêƒpƒP‚ğ2‰ñ‘—‚é‚±‚Æ‚Å‚à\•ª‚Å‚·‚ªA‹C‚¿ˆ«‚¢‚Ì‚Å0‚Å‰Šú‰»‚Æ‚¢‚¤Œ`‚É
 	clif_changeoption(&sd->bl);
 	clif_changeoption(&sd->bl);
 
-	// æš«å®šèµ¤ã‚¨ãƒ¢é˜²æ­¢å‡¦ç†
+	// b’èÔƒGƒ‚–h~ˆ—
 	if(sd->status.manner < 0) {
 		if(battle_config.nomanner_mode)
 			sd->status.manner = 0;
@@ -17799,12 +17799,12 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		if(pc_isfalcon(sd))
 			clif_status_load_id(sd,SI_FALCON,1);
 
-		// OnPCLoginã‚¤ãƒ™ãƒ³ãƒˆ
+		// OnPCLoginƒCƒxƒ“ƒg
 		if(battle_config.pc_login_script)
 			npc_event_doall_id("OnPCLogin",sd->bl.id,sd->bl.m);
 	}
 
-	// OnPCLoginã‚¤ãƒ™ãƒ³ãƒˆ
+	// OnPCLoginƒCƒxƒ“ƒg
 	if (battle_config.pc_mapin_script)
 		npc_event_doall_id("OnPCMapIn",sd->bl.id,sd->bl.m);
 
@@ -17918,7 +17918,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 				g = guild_search(ssd->status.guild_id);
 
 			if ((battle_config.show_always_party_name && p != NULL) || g != NULL) {
-				// ã‚®ãƒ«ãƒ‰æ‰€å±ãªã‚‰ãƒ‘ã‚±ãƒƒãƒˆ0195ã‚’è¿”ã™
+				// ƒMƒ‹ƒhŠ‘®‚È‚çƒpƒPƒbƒg0195‚ğ•Ô‚·
 				WFIFOW(fd, 0) = 0x195;
 				if (p)
 					memcpy(WFIFOP(fd,30), p->name, 24);
@@ -17940,7 +17940,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			} else {
 				WFIFOSET(fd,packet_db[0x95].len);
 			}
-			// ãƒãƒ¼ãƒ€ãƒ©ãƒ¼
+			// ƒ}[ƒ_ƒ‰[
 			if(battle_config.pk_murderer_point > 0) {
 				if(ranking_get_point(ssd,RK_PK) >= battle_config.pk_murderer_point)
 					clif_send_murderer(sd,ssd->bl.id,1);
@@ -17952,10 +17952,10 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			struct npc_data *snd=(struct npc_data*)bl;
 			memcpy(WFIFOP(fd,6),snd->name,24);
 			if(snd->position[0]) {
-				// ã‚®ãƒ«ãƒ‰æ‰€å±ãªã‚‰ãƒ‘ã‚±ãƒƒãƒˆ0195ã‚’è¿”ã™
+				// ƒMƒ‹ƒhŠ‘®‚È‚çƒpƒPƒbƒg0195‚ğ•Ô‚·
 				WFIFOW(fd, 0)=0x195;
-				strncpy(WFIFOP(fd,30),"NPC",24);	// PTå
-				strncpy(WFIFOP(fd,54),"NPC",24);	// Guildå
+				strncpy(WFIFOP(fd,30),"NPC",24);	// PT–¼
+				strncpy(WFIFOP(fd,54),"NPC",24);	// Guild–¼
 				memcpy(WFIFOP(fd,78),snd->position,24);
 				WFIFOSET(fd,packet_db[0x195].len);
 				break;
@@ -18033,7 +18033,7 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -18141,15 +18141,15 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	}
 	if(sd->npc_id != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->sc.option&OPTION_HIDE || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
 		return;
-	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// ã‚ªãƒ¼ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
-	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ãƒ‡ã‚¹ãƒã‚¦ãƒ³ãƒ‰
-	   sd->sc.data[SC_BLADESTOP].timer != -1 ||	// ç™½åˆƒå–ã‚Š
-	   sd->sc.data[SC_RUN].timer != -1 ||		// ã‚¿ã‚¤ãƒªã‚®
-	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// å¼·åˆ¶ç§»å‹•ä¸­
-	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) ||	// ãƒ€ãƒ³ã‚¹ä¸­
-	   sd->sc.data[SC__MANHOLE].timer != -1 ||		// ãƒãƒ³ãƒ›ãƒ¼ãƒ«
-	   sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// å‘ªç¸›é™£(ä½¿ç”¨è€…)
-	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// å‘ªç¸›é™£
+	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// ƒI[ƒgƒJƒEƒ“ƒ^[
+	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ƒfƒXƒoƒEƒ“ƒh
+	   sd->sc.data[SC_BLADESTOP].timer != -1 ||	// ”’næ‚è
+	   sd->sc.data[SC_RUN].timer != -1 ||		// ƒ^ƒCƒŠƒM
+	   sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// ‹­§ˆÚ“®’†
+	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) ||	// ƒ_ƒ“ƒX’†
+	   sd->sc.data[SC__MANHOLE].timer != -1 ||		// ƒ}ƒ“ƒz[ƒ‹
+	   sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// ô”›w(g—pÒ)
+	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// ô”›w
 		return;
 
 	tick=gettick();
@@ -18197,7 +18197,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 3) {
 			pc_setsit(sd);
 			clif_sitting(&sd->bl, 1);
-			skill_sit(sd,1);	// ã‚®ãƒ£ãƒ³ã‚°ã‚¹ã‚¿ãƒ¼ãƒ‘ãƒ©ãƒ€ã‚¤ã‚¹ãŠã‚ˆã³ãƒ†ã‚³ãƒ³ä¼‘æ¯è¨­å®š
+			skill_sit(sd,1);	// ƒMƒƒƒ“ƒOƒXƒ^[ƒpƒ‰ƒ_ƒCƒX‚¨‚æ‚ÑƒeƒRƒ“‹x‘§İ’è
 		} else {
 			clif_skill_fail(sd,1,0,2,0);
 		}
@@ -18206,7 +18206,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		if(sd->sc.data[SC_SITDOWN_FORCE].timer == -1 || sd->sc.data[SC_BANANA_BOMB].timer == -1) {
 			pc_setstand(sd);
 			clif_sitting(&sd->bl, 0);
-			skill_sit(sd,0);	// ã‚®ãƒ£ãƒ³ã‚°ã‚¹ã‚¿ãƒ¼ãƒ‘ãƒ©ãƒ€ã‚¤ã‚¹ãŠã‚ˆã³ãƒ†ã‚³ãƒ³ä¼‘æ¯è§£é™¤
+			skill_sit(sd,0);	// ƒMƒƒƒ“ƒOƒXƒ^[ƒpƒ‰ƒ_ƒCƒX‚¨‚æ‚ÑƒeƒRƒ“‹x‘§‰ğœ
 		}
 		break;
 	}
@@ -18258,7 +18258,7 @@ static void clif_parse_Restart(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * Wisã®é€ä¿¡
+ * Wis‚Ì‘—M
  *------------------------------------------
  */
 static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
@@ -18288,7 +18288,7 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 	if (strncmp(name, sd->status.name, 24) == 0)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -18341,14 +18341,14 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 
 	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->chatID || sd->state.mail_appending ||
 	    sd->state.storage_flag || pc_iscloaking(sd) ||
-	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// ã‚ªãƒ¼ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
-	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ãƒ‡ã‚¹ãƒã‚¦ãƒ³ãƒ‰
-	    sd->sc.data[SC_RUN].timer != -1 ||			// ã‚¿ã‚¤ãƒªã‚®
-	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// å¼·åˆ¶ç§»å‹•ä¸­æ‹¾ãˆãªã„
-	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// ç™½åˆƒå–ã‚Š
-	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// ãƒãƒ³ãƒ›ãƒ¼ãƒ«
-	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// å‘ªç¸›é™£(ä½¿ç”¨è€…)
-	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// å‘ªç¸›é™£
+	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// ƒI[ƒgƒJƒEƒ“ƒ^[
+	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ƒfƒXƒoƒEƒ“ƒh
+	    sd->sc.data[SC_RUN].timer != -1 ||			// ƒ^ƒCƒŠƒM
+	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// ‹­§ˆÚ“®’†E‚¦‚È‚¢
+	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// ”’næ‚è
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// ƒ}ƒ“ƒz[ƒ‹
+	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// ô”›w(g—pÒ)
+	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// ô”›w
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -18382,29 +18382,29 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
-		clif_delitem(sd, 0, item_index, 0);	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«å¤±æ•—ãƒ‘ã‚±ãƒƒãƒˆã‚’é€ä¿¡ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+		clif_delitem(sd, 0, item_index, 0);	// ƒNƒ‰ƒCƒAƒ“ƒg‚É¸”sƒpƒPƒbƒg‚ğ‘—M‚·‚é•K—v‚ª‚ ‚é
 		return;
 	}
 
 	if(++sd->anti_hacker.drop_delay_count == 6) {
 		char output[128];
-		// %s (ID:%d) ã®ã‚¢ã‚¤ãƒ†ãƒ ãƒ‰ãƒ­ãƒƒãƒ—é–“éš”ãŒç•°å¸¸ã§ã™ï¼
+		// %s (ID:%d) ‚ÌƒAƒCƒeƒ€ƒhƒƒbƒvŠÔŠu‚ªˆÙí‚Å‚·I
 		snprintf(output, sizeof(output), msg_txt(47), sd->status.name, sd->status.char_id);
 		printf("%s\n", output);
 	}
 
 	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
 	    DIFF_TICK(tick, sd->anti_hacker.drop_delay_tick) < 0 ||
-	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// ã‚ªãƒ¼ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
-	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ãƒ‡ã‚¹ãƒã‚¦ãƒ³ãƒ‰
-	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// ç™½åˆƒå–ã‚Š
-	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// å¼·åˆ¶ç§»å‹•ä¸­
-	    sd->sc.data[SC_BERSERK].timer != -1 ||		// ãƒãƒ¼ã‚µãƒ¼ã‚¯
-	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// ãƒãƒ³ãƒ›ãƒ¼ãƒ«
-	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// å‘ªç¸›é™£(ä½¿ç”¨è€…)
-	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||	// å‘ªç¸›é™£
-	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// å®‰ã‚‰ãã®å­å®ˆå”„
-		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ãƒ€ã‚¤ãƒ¤ãƒ¢ãƒ³ãƒ‰ãƒ€ã‚¹ãƒˆ
+	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// ƒI[ƒgƒJƒEƒ“ƒ^[
+	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// ƒfƒXƒoƒEƒ“ƒh
+	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// ”’næ‚è
+	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||		// ‹­§ˆÚ“®’†
+	    sd->sc.data[SC_BERSERK].timer != -1 ||		// ƒo[ƒT[ƒN
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// ƒ}ƒ“ƒz[ƒ‹
+	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// ô”›w(g—pÒ)
+	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||	// ô”›w
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// ˆÀ‚ç‚¬‚Ìqç‰S
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ƒ_ƒCƒ„ƒ‚ƒ“ƒhƒ_ƒXƒg
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -18452,20 +18452,20 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->special_state.item_no_use != 0 || sd->state.store || sd->state.deal_mode != 0 ||
 		(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_STONECURSE_ING && sd->sc.opt1 != OPT1_BURNNING) ||
 	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
-	    DIFF_TICK(tick, sd->item_delay_tick) < 0 || 	// ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ã‚£ãƒ¬ã‚¤
-	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// æ­»ã‚“ã ãµã‚Š
-	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// å¼·åˆ¶ç§»å‹•ä¸­
-	    sd->sc.data[SC_BERSERK].timer != -1 ||	// ãƒãƒ¼ã‚µãƒ¼ã‚¯
-	    sd->sc.data[SC_FULLBUSTER].timer != -1 ||	// ãƒ•ãƒ«ãƒã‚¹ã‚¿ãƒ¼
-	    sd->sc.data[SC_WEDDING].timer != -1 ||	// çµå©šè¡£è£…
-	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// ä¼šè©±ç¦æ­¢
-	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 ||	// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä½¿ç”¨è€…
-	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒ•ã‚©ãƒ¼ãƒ 
-	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
-	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// ãƒãƒ³ãƒ›ãƒ¼ãƒ«
-	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// å®‰ã‚‰ãã®å­å®ˆå”„
-	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 ||	// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
-		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ãƒ€ã‚¤ãƒ¤ãƒ¢ãƒ³ãƒ‰ãƒ€ã‚¹ãƒˆ
+	    DIFF_TICK(tick, sd->item_delay_tick) < 0 || 	// ƒAƒCƒeƒ€ƒfƒBƒŒƒC
+	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// €‚ñ‚¾‚Ó‚è
+	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// ‹­§ˆÚ“®’†
+	    sd->sc.data[SC_BERSERK].timer != -1 ||	// ƒo[ƒT[ƒN
+	    sd->sc.data[SC_FULLBUSTER].timer != -1 ||	// ƒtƒ‹ƒoƒXƒ^[
+	    sd->sc.data[SC_WEDDING].timer != -1 ||	// Œ‹¥ˆß‘•
+	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// ‰ï˜b‹Ö~
+	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 ||	// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒhg—pÒ
+	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// ƒVƒƒƒhƒEƒtƒH[ƒ€
+	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
+	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// ƒ}ƒ“ƒz[ƒ‹
+	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// ˆÀ‚ç‚¬‚Ìqç‰S
+	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 ||	// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ƒ_ƒCƒ„ƒ‚ƒ“ƒhƒ_ƒXƒg
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
@@ -18501,13 +18501,13 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
 		return;
 
-	// å–å¼•è¦è«‹ä¸­
+	// æˆø—v¿’†
 	if (sd->trade.partner != 0) {
 		clif_equipitemack(sd, idx, 0, 0);	// fail
 		return;
 	}
 
-	// æœªé‘‘å®šã‚‚ã—ãã¯ç ´å£Šã•ã‚Œã¦ã„ã‚‹
+	// –¢ŠÓ’è‚à‚µ‚­‚Í”j‰ó‚³‚ê‚Ä‚¢‚é
 	if (sd->status.inventory[idx].identify != 1 || sd->status.inventory[idx].attribute != 0) {
 		clif_equipitemack(sd, idx, 0, 0);	// fail
 		return;
@@ -18519,11 +18519,11 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 			case ITEMTYPE_AMMO:
 			case ITEMTYPE_THROWWEAPON:
 			case ITEMTYPE_CANNONBALL:
-				// çŸ¢ãƒ»å¼¾ä¸¸ãƒ»è‹¦ç„¡ãƒ»æ‰‹è£å‰£ãƒ»ã‚­ãƒ£ãƒãƒ³ãƒœãƒ¼ãƒ«
+				// –îE’eŠÛE‹ê–³Eè— Œ•EƒLƒƒƒmƒ“ƒ{[ƒ‹
 				pc_equipitem(sd, idx, LOC_ARROW);
 				break;
 			default:
-				if(sd->inventory_data[idx]->flag.pet_acce)	// ãƒšãƒƒãƒˆç”¨è£…å‚™å“
+				if(sd->inventory_data[idx]->flag.pet_acce)	// ƒyƒbƒg—p‘•”õ•i
 					pet_equipitem(sd, idx);
 				else
 #if PACKETVER < 20120925
@@ -18556,7 +18556,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
 
-	// å–å¼•è¦è«‹ä¸­
+	// æˆø—v¿’†
 	if (sd->trade.partner != 0) {
 		clif_unequipitemack(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2, 0, 0);	// fail
 		return;
@@ -18575,7 +18575,7 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	// æ­»ã‚“ã§ã„ãŸã‚Šã€èµ¤ã‚¨ãƒ¢ã®æ™‚ã¯NPCã‚’ã‚¯ãƒªãƒƒã‚¯ã§ããªã„
+	// €‚ñ‚Å‚¢‚½‚èAÔƒGƒ‚‚Ì‚ÍNPC‚ğƒNƒŠƒbƒN‚Å‚«‚È‚¢
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
 		return;
@@ -18595,7 +18595,7 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 {
 	nullpo_retv(sd);
 
-	// æ­»ã‚“ã§ã„ãŸã‚Šã€èµ¤ã‚¨ãƒ¢ã®æ™‚ã¯NPCã‚’ã‚¯ãƒªãƒƒã‚¯ã§ããªã„
+	// €‚ñ‚Å‚¢‚½‚èAÔƒGƒ‚‚Ì‚ÍNPC‚ğƒNƒŠƒbƒN‚Å‚«‚È‚¢
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
 		return;
@@ -18617,7 +18617,7 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 
 	nullpo_retv(sd);
 
-	// æ­»ã‚“ã§ã„ãŸã‚Šã€èµ¤ã‚¨ãƒ¢ã®æ™‚ã¯NPCã‚’ã‚¯ãƒªãƒƒã‚¯ã§ããªã„
+	// €‚ñ‚Å‚¢‚½‚èAÔƒGƒ‚‚Ì‚ÍNPC‚ğƒNƒŠƒbƒN‚Å‚«‚È‚¢
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
 		return;
@@ -18650,7 +18650,7 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 
 	nullpo_retv(sd);
 
-	// æ­»ã‚“ã§ã„ãŸã‚Šã€èµ¤ã‚¨ãƒ¢ã®æ™‚ã¯NPCã‚’ã‚¯ãƒªãƒƒã‚¯ã§ããªã„
+	// €‚ñ‚Å‚¢‚½‚èAÔƒGƒ‚‚Ì‚ÍNPC‚ğƒNƒŠƒbƒN‚Å‚«‚È‚¢
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
 		return;
@@ -18674,7 +18674,7 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * ã‚¹ãƒšã‚·ãƒ£ãƒ«ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥ã‚¢ã‚¤ã‚³ãƒ³
+ * ƒXƒyƒVƒƒƒ‹ƒAƒCƒeƒ€w“üƒAƒCƒRƒ“
  *------------------------------------------
  */
 static void clif_parse_NpcPointShopOpen(int fd,struct map_session_data *sd, int cmd)
@@ -18715,7 +18715,7 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 
 	nullpo_retv(sd);
 
-	// æ­»ã‚“ã§ã„ãŸã‚Šã€èµ¤ã‚¨ãƒ¢ã®æ™‚ã¯NPCã‚’ã‚¯ãƒªãƒƒã‚¯ã§ããªã„
+	// €‚ñ‚Å‚¢‚½‚èAÔƒGƒ‚‚Ì‚ÍNPC‚ğƒNƒŠƒbƒN‚Å‚«‚È‚¢
 	if(unit_isdead(&sd->bl)) {
 		clif_clearchar_area(&sd->bl,1);
 		return;
@@ -18859,7 +18859,7 @@ static void clif_parse_ChatLeave(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * å–å¼•è¦è«‹ã‚’ç›¸æ‰‹ã«é€ã‚‹
+ * æˆø—v¿‚ğ‘Šè‚É‘—‚é
  *------------------------------------------
  */
 static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
@@ -18886,7 +18886,7 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * å–å¼•è¦è«‹
+ * æˆø—v¿
  *------------------------------------------
  */
 static void clif_parse_TradeAck(int fd,struct map_session_data *sd, int cmd)
@@ -18908,7 +18908,7 @@ static void clif_parse_TradeAck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ 
+ * ƒAƒCƒeƒ€’Ç‰Á
  *------------------------------------------
  */
 static void clif_parse_TradeAddItem(int fd,struct map_session_data *sd, int cmd)
@@ -18921,7 +18921,7 @@ static void clif_parse_TradeAddItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ å®Œäº†(okæŠ¼ã—)
+ * ƒAƒCƒeƒ€’Ç‰ÁŠ®—¹(ok‰Ÿ‚µ)
  *------------------------------------------
  */
 static void clif_parse_TradeOk(int fd,struct map_session_data *sd, int cmd)
@@ -18932,7 +18932,7 @@ static void clif_parse_TradeOk(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * å–å¼•ã‚­ãƒ£ãƒ³ã‚»ãƒ«
+ * æˆøƒLƒƒƒ“ƒZƒ‹
  *------------------------------------------
  */
 static void clif_parse_TradeCancel(int fd,struct map_session_data *sd, int cmd)
@@ -18943,7 +18943,7 @@ static void clif_parse_TradeCancel(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * å–å¼•è¨±è«¾(tradeæŠ¼ã—)
+ * æˆø‹–‘ø(trade‰Ÿ‚µ)
  *------------------------------------------
  */
 static void clif_parse_TradeCommit(int fd,struct map_session_data *sd, int cmd)
@@ -18967,7 +18967,7 @@ static void clif_parse_StopAttack(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã¸ã‚¢ã‚¤ãƒ†ãƒ ã‚’ç§»ã™
+ * ƒJ[ƒg‚ÖƒAƒCƒeƒ€‚ğˆÚ‚·
  *------------------------------------------
  */
 static void clif_parse_PutItemToCart(int fd,struct map_session_data *sd, int cmd)
@@ -18982,7 +18982,7 @@ static void clif_parse_PutItemToCart(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒˆã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’å‡ºã™
+ * ƒJ[ƒg‚©‚çƒAƒCƒeƒ€‚ğo‚·
  *------------------------------------------
  */
 static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int cmd)
@@ -18997,7 +18997,7 @@ static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * ä»˜å±å“(é·¹,ãƒšã‚³,ã‚«ãƒ¼ãƒˆ)ã‚’ã¯ãšã™
+ * •t‘®•i(‘é,ƒyƒR,ƒJ[ƒg)‚ğ‚Í‚¸‚·
  *------------------------------------------
  */
 static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
@@ -19012,7 +19012,7 @@ static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒã‚§ãƒ³ã‚¸ã‚«ãƒ¼ãƒˆ
+ * ƒ`ƒFƒ“ƒWƒJ[ƒg
  *------------------------------------------
  */
 static void clif_parse_ChangeCart(int fd,struct map_session_data *sd, int cmd)
@@ -19024,7 +19024,7 @@ static void clif_parse_ChangeCart(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¢ãƒƒãƒ—
+ * ƒXƒe[ƒ^ƒXƒAƒbƒv
  *------------------------------------------
  */
 static void clif_parse_StatusUp(int fd,struct map_session_data *sd, int cmd)
@@ -19036,16 +19036,16 @@ static void clif_parse_StatusUp(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—
+ * ƒXƒLƒ‹ƒŒƒxƒ‹ƒAƒbƒv
  *------------------------------------------
  */
 static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
 {
 	int skill_num = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
-	if( skill_num >= GUILD_SKILLID )	// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«
+	if( skill_num >= GUILD_SKILLID )	// ƒMƒ‹ƒhƒXƒLƒ‹
 		guild_skillup(sd,skill_num,0,0);
-	else if( skill_num >= HOM_SKILLID )	// ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹ã‚¹ã‚­ãƒ«
+	else if( skill_num >= HOM_SKILLID )	// ƒzƒ€ƒ“ƒNƒ‹ƒXƒXƒLƒ‹
 		homun_skillup(sd,skill_num);
 	else
 		pc_skillup(sd,skill_num);
@@ -19054,7 +19054,7 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ï¼ˆIDæŒ‡å®šï¼‰
+ * ƒXƒLƒ‹g—piIDw’èj
  *------------------------------------------
  */
 static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd)
@@ -19100,7 +19100,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
-		// ãƒ›ãƒ ã‚¹ã‚­ãƒ«
+		// ƒzƒ€ƒXƒLƒ‹
 		struct homun_data *hd = sd->hd;
 		if( hd && (lv = homun_checkskill(hd,skillnum)) ) {
 			if(skilllv > lv)
@@ -19112,7 +19112,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_SELF)	// è‡ªåˆ†ãŒå¯¾è±¡
+			if(inf & INF_SELF)	// ©•ª‚ª‘ÎÛ
 				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
@@ -19120,7 +19120,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 	if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
-		// å‚­å…µã‚¹ã‚­ãƒ«
+		// —b•ºƒXƒLƒ‹
 		struct merc_data *mcd = sd->mcd;
 		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
 			if(skilllv > lv)
@@ -19132,7 +19132,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, mcd->skillstatictimer[skillnum-MERC_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_SELF)	// è‡ªåˆ†ãŒå¯¾è±¡
+			if(inf & INF_SELF)	// ©•ª‚ª‘ÎÛ
 				unit_skilluse_id(&mcd->bl,mcd->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&mcd->bl,target_id,skillnum,skilllv);
@@ -19140,7 +19140,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 	if(skillnum >= ELEM_SKILLID && skillnum < MAX_ELEM_SKILLID) {
-		// ç²¾éœŠã‚¹ã‚­ãƒ«
+		// ¸—ìƒXƒLƒ‹
 		struct elem_data *eld = sd->eld;
 		if( eld && (lv = elem_checkskill(eld,skillnum)) ) {
 			if(skilllv > lv)
@@ -19152,7 +19152,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 			if(DIFF_TICK(tick, eld->skillstatictimer[skillnum-ELEM_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_SELF)	// è‡ªåˆ†ãŒå¯¾è±¡
+			if(inf & INF_SELF)	// ©•ª‚ª‘ÎÛ
 				unit_skilluse_id(&eld->bl,eld->bl.id,skillnum,skilllv);
 			else
 				unit_skilluse_id(&eld->bl,target_id,skillnum,skilllv);
@@ -19162,14 +19162,14 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	if(skillnum >= GUILD_SKILLID) {
 		struct guild *g = guild_search(sd->status.guild_id);
 
-		// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«ã¯ã‚®ãƒ«ãƒã‚¹ã®ã¿
+		// ƒMƒ‹ƒhƒXƒLƒ‹‚ÍƒMƒ‹ƒ}ƒX‚Ì‚İ
 		if(g == NULL || sd != guild_get_guildmaster_sd(g))
 			return;
-		// skilllvã¯å¸¸ã«0ãªã®ã§ç¾åœ¨ã®ã‚¹ã‚­ãƒ«Lvã§è£œæ­£ã™ã‚‹
+		// skilllv‚Íí‚É0‚È‚Ì‚ÅŒ»İ‚ÌƒXƒLƒ‹Lv‚Å•â³‚·‚é
 		skilllv = guild_checkskill(g, skillnum);
 	}
 
-	// infã®ã€Œå³æ™‚ç™ºå‹•ã€ãŒã€Œæ•µã€ã«å¤‰ã‚ã‚‹å ´åˆ
+	// inf‚Ìu‘¦”­“®v‚ªu“Gv‚É•Ï‚í‚éê‡
 	switch(skillnum) {
 		case MO_EXTREMITYFIST:
 			if(sd->sc.data[SC_COMBO].timer == -1 || (sd->sc.data[SC_COMBO].val1 != MO_COMBOFINISH && sd->sc.data[SC_COMBO].val1 != CH_CHAINCRUSH)) {
@@ -19190,7 +19190,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	}
 
 	if((inf & INF_SELF) && !change_inf) {
-		// å³æ™‚ç™ºå‹•ãªã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è‡ªåˆ†è‡ªèº«ã«ã™ã‚‹
+		// ‘¦”­“®‚È‚çƒ^[ƒQƒbƒg‚ğ©•ª©g‚É‚·‚é
 		target_id = sd->bl.id;
 	}
 
@@ -19202,7 +19202,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	}
 
-	// static timerã®åˆ¤å®š
+	// static timer‚Ì”»’è
 	skilldb_id = skill_get_skilldb_id(skillnum);
 	if(skilldb_id <= 0)
 		return;
@@ -19210,7 +19210,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
-	// cooldownã®åˆ¤å®š
+	// cooldown‚Ì”»’è
 	if(DIFF_TICK(tick, sd->skillcooldown[skilldb_id]) < 0) {
 		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
@@ -19233,7 +19233,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	sc = status_get_sc(bl);
 	if(sc && sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT) && ((&sd->bl) != bl))
 	{
-		// æ˜†è™«ã¨æ‚ªé­”ã¯æ”»æ’ƒå¯èƒ½ï¼Ÿ
+		// ©’‚Æˆ«–‚‚ÍUŒ‚‰Â”\H
 		if(sd->race != RCT_INSECT && sd->race != RCT_DEMON)
 			return;
 	}
@@ -19278,7 +19278,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ï¼ˆå ´æ‰€æŒ‡å®šï¼‰
+ * ƒXƒLƒ‹g—piêŠw’èj
  *------------------------------------------
  */
 static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cmd)
@@ -19304,7 +19304,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	}
 
 	if(skillnum >= HOM_SKILLID && skillnum < MAX_HOM_SKILLID) {
-		// ãƒ›ãƒ ã‚¹ã‚­ãƒ«
+		// ƒzƒ€ƒXƒLƒ‹
 		struct homun_data *hd = sd->hd;
 		if( hd && (lv = homun_checkskill(hd,skillnum)) ) {
 			if(skilllv > lv)
@@ -19321,7 +19321,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 	}
 	if(skillnum >= MERC_SKILLID && skillnum < MAX_MERC_SKILLID) {
-		// å‚­å…µã‚¹ã‚­ãƒ«
+		// —b•ºƒXƒLƒ‹
 		struct merc_data *mcd = sd->mcd;
 		if( mcd && (lv = merc_checkskill(mcd,skillnum)) ) {
 			if(skilllv > lv)
@@ -19338,7 +19338,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 	}
 	if(skillnum >= ELEM_SKILLID && skillnum < MAX_ELEM_SKILLID) {
-		// ç²¾éœŠã‚¹ã‚­ãƒ«
+		// ¸—ìƒXƒLƒ‹
 		struct elem_data *eld = sd->eld;
 		if( eld && (lv = elem_checkskill(eld,skillnum)) ) {
 			if(skilllv > lv)
@@ -19362,7 +19362,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		return;
 	}
 
-	// static timerã®åˆ¤å®š
+	// static timer‚Ì”»’è
 	skilldb_id = skill_get_skilldb_id(skillnum);
 	if(skilldb_id <= 0)
 		return;
@@ -19370,7 +19370,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
 	}
-	// cooldownã®åˆ¤å®š
+	// cooldown‚Ì”»’è
 	if(DIFF_TICK(tick, sd->skillcooldown[skilldb_id]) < 0) {
 		clif_skill_fail(sd,skillnum,4,0,0);
 		return;
@@ -19427,7 +19427,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ï¼ˆmapæŒ‡å®šï¼‰
+ * ƒXƒLƒ‹g—pimapw’èj
  *------------------------------------------
  */
 static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
@@ -19461,7 +19461,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¢è¦æ±‚
+ * ƒƒ‚—v‹
  *------------------------------------------
  */
 static void clif_parse_RequestMemo(int fd,struct map_session_data *sd, int cmd)
@@ -19472,7 +19472,7 @@ static void clif_parse_RequestMemo(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ åˆæˆ
+ * ƒAƒCƒeƒ€‡¬
  *------------------------------------------
  */
 static void clif_parse_ProduceMix(int fd,struct map_session_data *sd, int cmd)
@@ -19494,7 +19494,7 @@ static void clif_parse_ProduceMix(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * æ­¦å™¨ä¿®ç†
+ * •ŠíC—
  *------------------------------------------
  */
 static void clif_parse_RepairItem(int fd,struct map_session_data *sd, int cmd)
@@ -19509,7 +19509,7 @@ static void clif_parse_RepairItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * æ­¦å™¨ç²¾éŒ¬
+ * •Ší¸˜B
  *------------------------------------------
  */
 static void clif_parse_WeaponRefine(int fd,struct map_session_data *sd, int cmd)
@@ -19602,7 +19602,7 @@ static void clif_parse_NpcCloseClicked(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ é‘‘å®š
+ * ƒAƒCƒeƒ€ŠÓ’è
  *------------------------------------------
  */
 static void clif_parse_ItemIdentify(int fd,struct map_session_data *sd, int cmd)
@@ -19613,7 +19613,7 @@ static void clif_parse_ItemIdentify(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆé¸æŠå—ä¿¡
+ * ƒAƒCƒeƒ€ƒŠƒXƒg‘I‘ğóM
  *------------------------------------------
  */
 static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
@@ -19622,19 +19622,19 @@ static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
 
 	switch(sd->skill_menu.id)
 	{
-		case AC_MAKINGARROW:		/* çŸ¢ä½œæˆ */
+		case AC_MAKINGARROW:		/* –îì¬ */
 			skill_arrow_create(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 			break;
 
-		case GC_POISONINGWEAPON:	/* ãƒã‚¤ã‚ºãƒ‹ãƒ³ã‚°ã‚¦ã‚§ãƒãƒ³ */
+		case GC_POISONINGWEAPON:	/* ƒ|ƒCƒYƒjƒ“ƒOƒEƒFƒ|ƒ“ */
 			skill_poisoning_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 			break;
 
-		case WL_READING_SB:			/* ãƒªãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯ */
+		case WL_READING_SB:			/* ƒŠ[ƒfƒBƒ“ƒOƒXƒyƒ‹ƒuƒbƒN */
 			skill_reading_sb(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 			break;
 
-		case NC_MAGICDECOY:			/* FAW ãƒã‚¸ãƒƒã‚¯ãƒ‡ã‚³ã‚¤ */
+		case NC_MAGICDECOY:			/* FAW ƒ}ƒWƒbƒNƒfƒRƒC */
 			skill_magicdecoy(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
 			break;
 	}
@@ -19645,7 +19645,7 @@ static void clif_parse_SelectItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«å—ä¿¡
+ * ƒI[ƒgƒXƒyƒ‹óM
  *------------------------------------------
  */
 static void clif_parse_AutoSpell(int fd,struct map_session_data *sd, int cmd)
@@ -19656,7 +19656,7 @@ static void clif_parse_AutoSpell(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒ‰ä½¿ç”¨
+ * ƒJ[ƒhg—p
  *------------------------------------------
  */
 static void clif_parse_UseCard(int fd,struct map_session_data *sd, int cmd)
@@ -19667,7 +19667,7 @@ static void clif_parse_UseCard(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚«ãƒ¼ãƒ‰æŒ¿å…¥è£…å‚™é¸æŠ
+ * ƒJ[ƒh‘}“ü‘•”õ‘I‘ğ
  *------------------------------------------
  */
 static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
@@ -19687,12 +19687,12 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 	if (unit_isdead(&sd->bl))
 		return;
 
-	if (sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// æ­»ã‚“ã ãµã‚Š
-	    sd->sc.data[SC_BLADESTOP].timer != -1 ||	// ç™½åˆƒå–ã‚Š
-	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// å¼·åˆ¶ç§»å‹•
-	    sd->sc.data[SC_BERSERK].timer != -1 ||	// ãƒãƒ¼ã‚µãƒ¼ã‚¯
-	    sd->sc.data[SC_WEDDING].timer != -1 ||	// çµå©šè¡£è£…
-	    sd->sc.data[SC_NOCHAT].timer != -1)		// ä¼šè©±ç¦æ­¢
+	if (sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// €‚ñ‚¾‚Ó‚è
+	    sd->sc.data[SC_BLADESTOP].timer != -1 ||	// ”’næ‚è
+	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// ‹­§ˆÚ“®
+	    sd->sc.data[SC_BERSERK].timer != -1 ||	// ƒo[ƒT[ƒN
+	    sd->sc.data[SC_WEDDING].timer != -1 ||	// Œ‹¥ˆß‘•
+	    sd->sc.data[SC_NOCHAT].timer != -1)		// ‰ï˜b‹Ö~
 		return;
 
 	pc_insert_card(sd, idx, RFIFOW(fd,GETPACKETPOS(cmd,1))-2);
@@ -19701,7 +19701,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * 0193 ã‚­ãƒ£ãƒ©IDåå‰å¼•ã
+ * 0193 ƒLƒƒƒ‰ID–¼‘Oˆø‚«
  *------------------------------------------
  */
 static void clif_parse_SolveCharName(int fd,struct map_session_data *sd, int cmd)
@@ -19767,7 +19767,7 @@ static void clif_parse_LGMmessage(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã¸å…¥ã‚Œã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚Ö“ü‚ê‚é
  *------------------------------------------
  */
 static void clif_parse_MoveToKafra(int fd,struct map_session_data *sd, int cmd)
@@ -19791,7 +19791,7 @@ static void clif_parse_MoveToKafra(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰å‡ºã™
+ * ƒJƒvƒ‰‘qŒÉ‚©‚ço‚·
  *------------------------------------------
  */
 static void clif_parse_MoveFromKafra(int fd,struct map_session_data *sd, int cmd)
@@ -19815,7 +19815,7 @@ static void clif_parse_MoveFromKafra(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã¸ã‚«ãƒ¼ãƒˆã‹ã‚‰å…¥ã‚Œã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚ÖƒJ[ƒg‚©‚ç“ü‚ê‚é
  *------------------------------------------
  */
 static void clif_parse_MoveToKafraFromCart(int fd,struct map_session_data *sd, int cmd)
@@ -19840,7 +19840,7 @@ static void clif_parse_MoveToKafraFromCart(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰ã‚«ãƒ¼ãƒˆã¸å‡ºã™
+ * ƒJƒvƒ‰‘qŒÉ‚©‚çƒJ[ƒg‚Öo‚·
  *------------------------------------------
  */
 static void clif_parse_MoveFromKafraToCart(int fd,struct map_session_data *sd, int cmd)
@@ -19865,7 +19865,7 @@ static void clif_parse_MoveFromKafraToCart(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‚’é–‰ã˜ã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚ğ•Â‚¶‚é
  *------------------------------------------
  */
 static void clif_parse_CloseKafra(int fd,struct map_session_data *sd, int cmd)
@@ -19885,7 +19885,7 @@ static void clif_parse_CloseKafra(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã‚’ä½œã‚‹
+ * ƒp[ƒeƒB‚ğì‚é
  *------------------------------------------
  */
 static void clif_parse_CreateParty(int fd,struct map_session_data *sd, int cmd)
@@ -19899,7 +19899,7 @@ static void clif_parse_CreateParty(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã‚’ä½œã‚‹2
+ * ƒp[ƒeƒB‚ğì‚é2
  *------------------------------------------
  */
 static void clif_parse_CreateParty2(int fd,struct map_session_data *sd, int cmd)
@@ -19916,7 +19916,7 @@ static void clif_parse_CreateParty2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã«å‹§èª˜
+ * ƒp[ƒeƒB‚ÉŠ©—U
  *------------------------------------------
  */
 static void clif_parse_PartyInvite(int fd,struct map_session_data *sd, int cmd)
@@ -19929,7 +19929,7 @@ static void clif_parse_PartyInvite(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã«å‹§èª˜2
+ * ƒp[ƒeƒB‚ÉŠ©—U2
  *------------------------------------------
  */
 static void clif_parse_PartyInvite2(int fd,struct map_session_data *sd, int cmd)
@@ -19943,7 +19943,7 @@ static void clif_parse_PartyInvite2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‹§èª˜è¿”ç­”
+ * ƒp[ƒeƒBŠ©—U•Ô“š
  *------------------------------------------
  */
 static void clif_parse_ReplyPartyInvite(int fd,struct map_session_data *sd, int cmd)
@@ -19959,7 +19959,7 @@ static void clif_parse_ReplyPartyInvite(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‹§èª˜è¿”ç­”2
+ * ƒp[ƒeƒBŠ©—U•Ô“š2
  *------------------------------------------
  */
 static void clif_parse_ReplyPartyInvite2(int fd,struct map_session_data *sd, int cmd)
@@ -19992,7 +19992,7 @@ static void clif_parse_RefusePartyInvite(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è„±é€€è¦æ±‚
+ * ƒp[ƒeƒB’E‘Ş—v‹
  *------------------------------------------
  */
 static void clif_parse_LeaveParty(int fd,struct map_session_data *sd, int cmd)
@@ -20003,7 +20003,7 @@ static void clif_parse_LeaveParty(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£é™¤åè¦æ±‚
+ * ƒp[ƒeƒBœ–¼—v‹
  *------------------------------------------
  */
 static void clif_parse_RemovePartyMember(int fd,struct map_session_data *sd, int cmd)
@@ -20014,7 +20014,7 @@ static void clif_parse_RemovePartyMember(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šå¤‰æ›´è¦æ±‚
+ * ƒp[ƒeƒBİ’è•ÏX—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int cmd)
@@ -20025,7 +20025,7 @@ static void clif_parse_PartyChangeOption(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šå¤‰æ›´è¦æ±‚2
+ * ƒp[ƒeƒBİ’è•ÏX—v‹2
  *------------------------------------------
  */
 static void clif_parse_PartyChangeOption2(int fd,struct map_session_data *sd, int cmd)
@@ -20039,7 +20039,7 @@ static void clif_parse_PartyChangeOption2(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡è¦æ±‚
+ * ƒp[ƒeƒBƒƒbƒZ[ƒW‘—M—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
@@ -20079,7 +20079,7 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if(sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -20089,7 +20089,7 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * éœ²åº—é–‰é–
+ * ˜I“X•Â½
  *------------------------------------------
  */
 static void clif_parse_CloseVending(int fd,struct map_session_data *sd, int cmd)
@@ -20100,7 +20100,7 @@ static void clif_parse_CloseVending(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆè¦æ±‚
+ * ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg—v‹
  *------------------------------------------
  */
 static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cmd)
@@ -20115,7 +20115,7 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥
+ * ˜I“XƒAƒCƒeƒ€w“ü
  *------------------------------------------
  */
 static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
@@ -20130,7 +20130,7 @@ static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ è³¼å…¥2
+ * ˜I“XƒAƒCƒeƒ€w“ü2
  *------------------------------------------
  */
 static void clif_parse_PurchaseReq2(int fd,struct map_session_data *sd, int cmd)
@@ -20146,7 +20146,7 @@ static void clif_parse_PurchaseReq2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * éœ²åº—é–‹è¨­
+ * ˜I“XŠJİ
  *------------------------------------------
  */
 static void clif_parse_OpenVending(int fd,struct map_session_data *sd, int cmd)
@@ -20165,7 +20165,7 @@ static void clif_parse_OpenVending(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚’ä½œã‚‹
+ * ƒMƒ‹ƒh‚ğì‚é
  *------------------------------------------
  */
 static void clif_parse_CreateGuild(int fd,struct map_session_data *sd, int cmd)
@@ -20182,7 +20182,7 @@ static void clif_parse_CreateGuild(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒã‚¹ã‚¿ãƒ¼ã‹ã©ã†ã‹ç¢ºèª
+ * ƒMƒ‹ƒhƒ}ƒXƒ^[‚©‚Ç‚¤‚©Šm”F
  *------------------------------------------
  */
 static void clif_parse_GuildCheckMaster(int fd,struct map_session_data *sd, int cmd)
@@ -20193,7 +20193,7 @@ static void clif_parse_GuildCheckMaster(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰æƒ…å ±è¦æ±‚
+ * ƒMƒ‹ƒhî•ñ—v‹
  *------------------------------------------
  */
 static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int cmd)
@@ -20207,23 +20207,23 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 		return;
 
 	switch(RFIFOL(fd,GETPACKETPOS(cmd,0))) {
-	case 0:	// ã‚®ãƒ«ãƒ‰åŸºæœ¬æƒ…å ±ã€åŒç›Ÿæ•µå¯¾æƒ…å ±
+	case 0:	// ƒMƒ‹ƒhŠî–{î•ñA“¯–¿“G‘Îî•ñ
 		clif_guild_basicinfo(sd, g);
 		clif_guild_allianceinfo(sd, g);
 		clif_guild_emblem(sd, g);
 		break;
-	case 1:	// ãƒ¡ãƒ³ãƒãƒ¼ãƒªã‚¹ãƒˆã€å½¹è·åãƒªã‚¹ãƒˆ
+	case 1:	// ƒƒ“ƒo[ƒŠƒXƒgA–ğE–¼ƒŠƒXƒg
 		clif_guild_positionnamelist(sd, g);
 		clif_guild_memberlist(sd, g);
 		break;
-	case 2:	// å½¹è·åãƒªã‚¹ãƒˆã€å½¹è·æƒ…å ±ãƒªã‚¹ãƒˆ
+	case 2:	// –ğE–¼ƒŠƒXƒgA–ğEî•ñƒŠƒXƒg
 		clif_guild_positionnamelist(sd, g);
 		clif_guild_positioninfolist(sd, g);
 		break;
-	case 3:	// ã‚¹ã‚­ãƒ«ãƒªã‚¹ãƒˆ
+	case 3:	// ƒXƒLƒ‹ƒŠƒXƒg
 		clif_guild_skillinfo(sd, g);
 		break;
-	case 4:	// è¿½æ”¾ãƒªã‚¹ãƒˆ
+	case 4:	// ’Ç•úƒŠƒXƒg
 		clif_guild_explusionlist(sd, g);
 		break;
 	default:
@@ -20235,7 +20235,7 @@ static void clif_parse_GuildRequestInfo(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å½¹è·å¤‰æ›´
+ * ƒMƒ‹ƒh–ğE•ÏX
  *------------------------------------------
  */
 static void clif_parse_GuildChangePositionInfo(int fd,struct map_session_data *sd, int cmd)
@@ -20265,7 +20265,7 @@ static void clif_parse_GuildChangePositionInfo(int fd,struct map_session_data *s
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒå½¹è·å¤‰æ›´
+ * ƒMƒ‹ƒhƒƒ“ƒo–ğE•ÏX
  *------------------------------------------
  */
 static void clif_parse_GuildChangeMemberPosition(int fd,struct map_session_data *sd, int cmd)
@@ -20295,7 +20295,7 @@ static void clif_parse_GuildChangeMemberPosition(int fd,struct map_session_data 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ è¦æ±‚
+ * ƒMƒ‹ƒhƒGƒ“ƒuƒŒƒ€—v‹
  *------------------------------------------
  */
 static void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd, int cmd)
@@ -20309,7 +20309,7 @@ static void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ å¤‰æ›´
+ * ƒMƒ‹ƒhƒGƒ“ƒuƒŒƒ€•ÏX
  *------------------------------------------
  */
 static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int cmd)
@@ -20331,7 +20331,7 @@ static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å‘ŠçŸ¥å¤‰æ›´
+ * ƒMƒ‹ƒh’m•ÏX
  *------------------------------------------
  */
 static void clif_parse_GuildChangeNotice(int fd,struct map_session_data *sd, int cmd)
@@ -20362,7 +20362,7 @@ static void clif_parse_GuildChangeNotice(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å‹§èª˜
+ * ƒMƒ‹ƒhŠ©—U
  *------------------------------------------
  */
 static void clif_parse_GuildInvite(int fd,struct map_session_data *sd, int cmd) // S 0x0168 <TargetAccID>.l <sourceAccID>.l <myCharactorID>.l
@@ -20380,7 +20380,7 @@ static void clif_parse_GuildInvite(int fd,struct map_session_data *sd, int cmd) 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å‹§èª˜è¿”ä¿¡
+ * ƒMƒ‹ƒhŠ©—U•ÔM
  *------------------------------------------
  */
 static void clif_parse_GuildReplyInvite(int fd,struct map_session_data *sd, int cmd)
@@ -20391,7 +20391,7 @@ static void clif_parse_GuildReplyInvite(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰è„±é€€
+ * ƒMƒ‹ƒh’E‘Ş
  *------------------------------------------
  */
 static void clif_parse_GuildLeave(int fd,struct map_session_data *sd, int cmd)
@@ -20405,7 +20405,7 @@ static void clif_parse_GuildLeave(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰è¿½æ”¾
+ * ƒMƒ‹ƒh’Ç•ú
  *------------------------------------------
  */
 static void clif_parse_GuildExplusion(int fd,struct map_session_data *sd, int cmd)
@@ -20419,7 +20419,7 @@ static void clif_parse_GuildExplusion(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ä¼šè©±
+ * ƒMƒ‹ƒh‰ï˜b
  *------------------------------------------
  */
 static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
@@ -20459,7 +20459,7 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -20469,7 +20469,7 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŒç›Ÿè¦æ±‚
+ * ƒMƒ‹ƒh“¯–¿—v‹
  *------------------------------------------
  */
 static void clif_parse_GuildRequestAlliance(int fd,struct map_session_data *sd, int cmd)
@@ -20478,7 +20478,7 @@ static void clif_parse_GuildRequestAlliance(int fd,struct map_session_data *sd, 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰åŒç›Ÿè¦æ±‚è¿”ä¿¡
+ * ƒMƒ‹ƒh“¯–¿—v‹•ÔM
  *------------------------------------------
  */
 static void clif_parse_GuildReplyAlliance(int fd,struct map_session_data *sd, int cmd)
@@ -20487,7 +20487,7 @@ static void clif_parse_GuildReplyAlliance(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰é–¢ä¿‚è§£æ¶ˆ
+ * ƒMƒ‹ƒhŠÖŒW‰ğÁ
  *------------------------------------------
  */
 static void clif_parse_GuildDelAlliance(int fd,struct map_session_data *sd, int cmd)
@@ -20496,7 +20496,7 @@ static void clif_parse_GuildDelAlliance(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰æ•µå¯¾
+ * ƒMƒ‹ƒh“G‘Î
  *------------------------------------------
  */
 static void clif_parse_GuildOpposition(int fd,struct map_session_data *sd, int cmd)
@@ -20505,7 +20505,7 @@ static void clif_parse_GuildOpposition(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰è§£æ•£
+ * ƒMƒ‹ƒh‰ğU
  *------------------------------------------
  */
 static void clif_parse_GuildBreak(int fd,struct map_session_data *sd, int cmd)
@@ -20514,7 +20514,7 @@ static void clif_parse_GuildBreak(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒãƒ¼æƒ…å ±ï¼ˆæœªä½¿ç”¨ï¼‰
+ * ƒMƒ‹ƒhƒƒ“ƒo[î•ñi–¢g—pj
  *------------------------------------------
  */
 static void clif_parse_GuildMemberInfo(int fd,struct map_session_data *sd, int cmd)
@@ -20624,7 +20624,7 @@ static void clif_parse_GMHide(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã«ã‚ˆã‚‹ãƒãƒ£ãƒƒãƒˆç¦æ­¢æ™‚é–“ä»˜ä¸
+ * GM‚É‚æ‚éƒ`ƒƒƒbƒg‹Ö~ŠÔ•t—^
  *------------------------------------------
  */
 static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
@@ -20639,10 +20639,10 @@ static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.nomanner_mode)
 		return;
 
-	// ã‚¿ã‚¤ãƒªã‚®ä¸­ã¯èµ¤ã‚¨ãƒ¢ã«ãªã‚‰ãªã„
+	// ƒ^ƒCƒŠƒM’†‚ÍÔƒGƒ‚‚É‚È‚ç‚È‚¢
 	if(sd->sc.data[SC_RUN].timer != -1)
 		return;
-	// å¿µã®ãŸã‚å¼·åˆ¶ç§»å‹•ä¸­ã‚‚
+	// ”O‚Ì‚½‚ß‹­§ˆÚ“®’†‚à
 	if(sd->sc.data[SC_FORCEWALKING].timer != -1)
 		return;
 
@@ -20674,7 +20674,7 @@ static void clif_parse_GMReqNoChat(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã«ã‚ˆã‚‹ãƒãƒ£ãƒƒãƒˆç¦æ­¢æ™‚é–“å‚ç…§ï¼ˆï¼Ÿï¼‰
+ * GM‚É‚æ‚éƒ`ƒƒƒbƒg‹Ö~ŠÔQÆiHj
  *------------------------------------------
  */
 static void clif_parse_GMReqNoChatCount(int fd,struct map_session_data *sd, int cmd)
@@ -20690,7 +20690,7 @@ static void clif_parse_GMReqNoChatCount(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * /doridoriã«ã‚ˆã‚‹SPR2å€
+ * /doridori‚É‚æ‚éSPR2”{
  *------------------------------------------
  */
 static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
@@ -20709,7 +20709,7 @@ static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¹ãƒ‘ãƒãƒ“ã®çˆ†è£‚æ³¢å‹•
+ * ƒXƒpƒmƒr‚Ì”š—ô”g“®
  *------------------------------------------
  */
 static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, int cmd)
@@ -20748,7 +20748,7 @@ static int pstrcmp(const void *a, const void *b)
 }
 
 /*==========================================
- * Wisæ‹’å¦è¨±å¯ /ex /in
+ * Wis‹‘”Û‹–‰Â /ex /in
  *------------------------------------------
  */
 static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
@@ -20762,14 +20762,14 @@ static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 
 	qsort(sd->wis_refusal[0], MAX_WIS_REFUSAL, sizeof(sd->wis_refusal[0]), pstrcmp);
 	if(type == 0) {	// ex
-		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ã™ã§ã«è¿½åŠ ã•ã‚Œã¦ã„ã‚Œã°ä½•ã‚‚ã—ãªã„
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ‚·‚Å‚É’Ç‰Á‚³‚ê‚Ä‚¢‚ê‚Î‰½‚à‚µ‚È‚¢
 			if(strcmp(sd->wis_refusal[i], name) == 0) {
 				flag = 0;
 				clif_wisexin(sd, type, flag);
 				return;
 			}
 		}
-		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ç©ºã®æ‹’å¦ãƒªã‚¹ãƒˆã«è¿½åŠ (ã¨ã‚Šã‚ãˆãš)
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ‹ó‚Ì‹‘”ÛƒŠƒXƒg‚É’Ç‰Á(‚Æ‚è‚ ‚¦‚¸)
 			if(sd->wis_refusal[i][0] == 0) {
 				memcpy(sd->wis_refusal[i], name, 24);
 				sd->wis_refusal[i][23] = '\0';
@@ -20783,7 +20783,7 @@ static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 			flag = 0;
 		}
 	} else {		// in
-		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ä¸€è‡´ã™ã‚‹æ‹’å¦ãƒªã‚¹ãƒˆã‚’ç©ºã«
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	// ˆê’v‚·‚é‹‘”ÛƒŠƒXƒg‚ğ‹ó‚É
 			if(strcmp(sd->wis_refusal[i], name) == 0) {
 				sd->wis_refusal[i][0] = 0;
 				flag = 0;
@@ -20797,7 +20797,7 @@ static void clif_parse_wisexin(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * Wisæ‹’å¦ãƒªã‚¹ãƒˆ
+ * Wis‹‘”ÛƒŠƒXƒg
  *------------------------------------------
  */
 static void clif_parse_wisexlist(int fd,struct map_session_data *sd, int cmd)
@@ -20818,14 +20818,14 @@ static void clif_parse_wisexlist(int fd,struct map_session_data *sd, int cmd)
 	WFIFOW(fd,2) = 4+j*24;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
-	if(j >= MAX_WIS_REFUSAL)	// æº€ã‚¿ãƒ³ãªã‚‰æœ€å¾Œã®1å€‹ã‚’æ¶ˆã™
+	if(j >= MAX_WIS_REFUSAL)	// –ƒ^ƒ“‚È‚çÅŒã‚Ì1ŒÂ‚ğÁ‚·
 		sd->wis_refusal[MAX_WIS_REFUSAL-1][0] = 0;
 
 	return;
 }
 
 /*==========================================
- * Wiså…¨æ‹’å¦è¨±å¯ /exall /inall
+ * Wis‘S‹‘”Û‹–‰Â /exall /inall
  *------------------------------------------
  */
 static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
@@ -20838,7 +20838,7 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
 		sd->state.wis_all = 1;
 	} else {	// inall
 		int i;
-		for(i=0;i<MAX_WIS_REFUSAL;i++)	// æ‹’å¦ãƒªã‚¹ãƒˆã‚’ç©ºã«
+		for(i=0;i<MAX_WIS_REFUSAL;i++)	// ‹‘”ÛƒŠƒXƒg‚ğ‹ó‚É
 			sd->wis_refusal[i][0]=0;
 		sd->state.wis_all = 0;
 	}
@@ -20846,7 +20846,7 @@ static void clif_parse_wisall(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /killall
+ * GMƒRƒ}ƒ“ƒh /killall
  *------------------------------------------
  */
 static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
@@ -20862,7 +20862,7 @@ static void clif_parse_GMkillall(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /summon
+ * GMƒRƒ}ƒ“ƒh /summon
  *------------------------------------------
  */
 static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
@@ -20879,7 +20879,7 @@ static void clif_parse_GMsummon(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /item /monster
+ * GMƒRƒ}ƒ“ƒh /item /monster
  *------------------------------------------
  */
 static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int cmd )
@@ -20896,7 +20896,7 @@ static void clif_parse_GMitemmonster( int fd, struct map_session_data *sd, int c
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /shift
+ * GMƒRƒ}ƒ“ƒh /shift
  *------------------------------------------
  */
 static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
@@ -20913,7 +20913,7 @@ static void clif_parse_GMshift(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /recall
+ * GMƒRƒ}ƒ“ƒh /recall
  *------------------------------------------
  */
 static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
@@ -20930,7 +20930,7 @@ static void clif_parse_GMrecall(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /changemaptype
+ * GMƒRƒ}ƒ“ƒh /changemaptype
  *------------------------------------------
  */
 static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int cmd)
@@ -20942,7 +20942,7 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
 
 	x    = RFIFOW(fd, GETPACKETPOS(cmd,0));
 	y    = RFIFOW(fd, GETPACKETPOS(cmd,1));
-	type = RFIFOW(fd, GETPACKETPOS(cmd,2));	// 0ã‹1ã®ã¿
+	type = RFIFOW(fd, GETPACKETPOS(cmd,2));	// 0‚©1‚Ì‚İ
 
 	sprintf(command, "%cchangemaptype %d %d %d", GM_Symbol(), x, y, type&1);
 	is_atcommand_sub(fd, sd, command, 0);
@@ -20951,7 +20951,7 @@ static void clif_parse_GMchangemaptype(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /rc
+ * GMƒRƒ}ƒ“ƒh /rc
  *------------------------------------------
  */
 static void clif_parse_GMrc(int fd,struct map_session_data *sd, int cmd)
@@ -20966,7 +20966,7 @@ static void clif_parse_GMrc(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /check
+ * GMƒRƒ}ƒ“ƒh /check
  *------------------------------------------
  */
 static void clif_parse_GMcheck(int fd,struct map_session_data *sd, int cmd)
@@ -20985,17 +20985,17 @@ static void clif_parse_GMcheck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /ã‚½è–ãƒ³
+ * GMƒRƒ}ƒ“ƒh /ƒ\ä±ƒ“
  *------------------------------------------
  */
 static void clif_parse_GMcharge(int fd,struct map_session_data *sd, int cmd)
 {
-	// åŠ¹æœä¸æ˜
+	// Œø‰Ê•s–¾
 	return;
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿
  *------------------------------------------
  */
 static void clif_parse_FriendAddRequest(int fd,struct map_session_data *sd, int cmd)
@@ -21005,7 +21005,7 @@ static void clif_parse_FriendAddRequest(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆè¿½åŠ è¦è«‹è¿”ç­”
+ * —F’BƒŠƒXƒg’Ç‰Á—v¿•Ô“š
  *------------------------------------------
  */
 static void clif_parse_FriendAddReply(int fd,struct map_session_data *sd, int cmd)
@@ -21015,7 +21015,7 @@ static void clif_parse_FriendAddReply(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * å‹é”ãƒªã‚¹ãƒˆå‰Šé™¤è¦æ±‚
+ * —F’BƒŠƒXƒgíœ—v‹
  *------------------------------------------
  */
 static void clif_parse_FriendDeleteRequest(int fd,struct map_session_data *sd, int cmd)
@@ -21047,7 +21047,7 @@ static void clif_parse_PvPInfo(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * BSãƒ©ãƒ³ã‚­ãƒ³ã‚°	/blacksmith
+ * BSƒ‰ƒ“ƒLƒ“ƒO	/blacksmith
  *------------------------------------------
  */
 static void clif_parse_RankingBlacksmith(int fd,struct map_session_data *sd, int cmd)
@@ -21059,7 +21059,7 @@ static void clif_parse_RankingBlacksmith(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ã‚¢ãƒ«ã‚±ãƒŸãƒ©ãƒ³ã‚­ãƒ³ã‚°	/alchemist
+ * ƒAƒ‹ƒPƒ~ƒ‰ƒ“ƒLƒ“ƒO	/alchemist
  *------------------------------------------
  */
 static void clif_parse_RankingAlchemist(int fd,struct map_session_data *sd, int cmd)
@@ -21071,7 +21071,7 @@ static void clif_parse_RankingAlchemist(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚­ãƒ³ã‚°	/taekwon
+ * ƒeƒRƒ“ƒ‰ƒ“ƒLƒ“ƒO	/taekwon
  *------------------------------------------
  */
 static void clif_parse_RankingTaekwon(int fd,struct map_session_data *sd, int cmd)
@@ -21083,7 +21083,7 @@ static void clif_parse_RankingTaekwon(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * è™æ®ºè€…ãƒ©ãƒ³ã‚­ãƒ³ã‚°	/pk
+ * ‹sEÒƒ‰ƒ“ƒLƒ“ƒO	/pk
  *------------------------------------------
  */
 static void clif_parse_RankingPk(int fd,struct map_session_data *sd, int cmd)
@@ -21095,7 +21095,7 @@ static void clif_parse_RankingPk(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ã‚­ãƒ³ã‚°
+ * ƒ‰ƒ“ƒLƒ“ƒO
  *------------------------------------------
  */
 static void clif_parse_Ranking(int fd,struct map_session_data *sd, int cmd)
@@ -21111,7 +21111,7 @@ static void clif_parse_Ranking(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«é€ä¿¡
+ * ƒ[ƒ‹‘—M
  *------------------------------------------
  */
 static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
@@ -21120,19 +21120,19 @@ static void clif_parse_SendMail(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	if(!battle_config.romail) {	// ãƒ¡ãƒ¼ãƒ«é€ä¿¡ã‚’ç¦æ­¢
+	if(!battle_config.romail) {	// ƒ[ƒ‹‘—M‚ğ‹Ö~
 		clif_res_sendmail(fd,1);
 		return;
 	}
 
-	bodylen = RFIFOW(fd,GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,3) - 1;	// \0ã¯å‰Šã‚‹
+	bodylen = RFIFOW(fd,GETPACKETPOS(cmd,0)) - GETPACKETPOS(cmd,3) - 1;	// \0‚Íí‚é
 	mail_checkmail(sd, RFIFOP(fd,GETPACKETPOS(cmd,1)), RFIFOP(fd,GETPACKETPOS(cmd,2)), RFIFOP(fd,GETPACKETPOS(cmd,3)), bodylen);
 
 	return;
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®é¸æŠå—ä¿¡
+ * ƒ[ƒ‹‚Ì‘I‘ğóM
  *------------------------------------------
  */
 static void clif_parse_ReadMail(int fd,struct map_session_data *sd, int cmd)
@@ -21170,7 +21170,7 @@ static void clif_parse_MailWinOpen(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	// 0: å…¨ã¦è¿”å´ 1: ã‚¢ã‚¤ãƒ†ãƒ ã®ã¿è¿”å´ 2: Zenyã®ã¿è¿”å´
+	// 0: ‘S‚Ä•Ô‹p 1: ƒAƒCƒeƒ€‚Ì‚İ•Ô‹p 2: Zeny‚Ì‚İ•Ô‹p
 	flag = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
 	mail_removeitem(sd, flag&3);
@@ -21179,7 +21179,7 @@ static void clif_parse_MailWinOpen(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«BOXã®æ›´æ–°è¦æ±‚
+ * ƒ[ƒ‹BOX‚ÌXV—v‹
  *------------------------------------------
  */
 static void clif_parse_RefleshMailBox(int fd,struct map_session_data *sd, int cmd)
@@ -21192,7 +21192,7 @@ static void clif_parse_RefleshMailBox(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã«æ·»ä»˜
+ * ƒ[ƒ‹‚É“Y•t
  *------------------------------------------
  */
 static void clif_parse_SendMailSetAppend(int fd,struct map_session_data *sd, int cmd)
@@ -21210,7 +21210,7 @@ static void clif_parse_SendMailSetAppend(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«å‰Šé™¤
+ * ƒ[ƒ‹íœ
  *------------------------------------------
  */
 static void clif_parse_DeleteMail(int fd,struct map_session_data *sd, int cmd)
@@ -21224,7 +21224,7 @@ static void clif_parse_DeleteMail(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«è¿”é€
+ * ƒ[ƒ‹•Ô‘—
  *------------------------------------------
  */
 static void clif_parse_ReturnMail(int fd,struct map_session_data *sd, int cmd)
@@ -21234,12 +21234,12 @@ static void clif_parse_ReturnMail(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	// ã¨ã‚Šã‚ãˆãšæœªå®Ÿè£…
+	// ‚Æ‚è‚ ‚¦‚¸–¢À‘•
 	return;
 }
 
 /*==========================================
- * ãƒ›ãƒ ãƒ³ã‚¯ãƒ«ã‚¹
+ * ƒzƒ€ƒ“ƒNƒ‹ƒX
  *------------------------------------------
  */
 static void clif_parse_HomMenu(int fd,struct map_session_data *sd, int cmd)
@@ -21329,7 +21329,7 @@ static void clif_parse_HomMercActionRequest(int fd,struct map_session_data *sd, 
 	target_id   = RFIFOL(fd,GETPACKETPOS(cmd,1));
 	action_type = RFIFOB(fd,GETPACKETPOS(cmd,2));
 
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨é•ã„ once attack ã—ã‹ãªã„
+	// ƒvƒŒƒCƒ„[‚Æˆá‚¢ once attack ‚µ‚©‚È‚¢
 	if(action_type == 0) {
 		struct block_list *bl = map_id2bl(target_id);
 		if(bl && mob_gvmobcheck(sd,bl) == 0)
@@ -21349,17 +21349,17 @@ static void clif_parse_ChangeHomName(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * /effectã¨ã‹
+ * /effect‚Æ‚©
  *------------------------------------------
  */
 static void clif_parse_clientsetting(int fd,struct map_session_data *sd, int cmd)
 {
-	// RFIFOL(fd,GETPACKETPOS(cmd,0))	effectã‚’åˆ‡ã£ã¦ã‚‹ã‹ã©ã†ã‹
+	// RFIFOL(fd,GETPACKETPOS(cmd,0))	effect‚ğØ‚Á‚Ä‚é‚©‚Ç‚¤‚©
 	return;
 }
 
 /*==========================================
- * é¤Šå­è¦æ±‚
+ * —{q—v‹
  *------------------------------------------
  */
 static void clif_parse_BabyRequest(int fd,struct map_session_data *sd, int cmd)
@@ -21382,7 +21382,7 @@ static void clif_parse_BabyRequest(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * é¤Šå­è¿”ç­”
+ * —{q•Ô“š
  *------------------------------------------
  */
 static void clif_parse_BabyReply(int fd,struct map_session_data *sd, int cmd)
@@ -21392,7 +21392,7 @@ static void clif_parse_BabyReply(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ„Ÿæƒ…ã®ã‚»ãƒ¼ãƒ–è¿”ç­”
+ * ‘¾—z‚ÆŒ‚Æ¯‚ÌŠ´î‚ÌƒZ[ƒu•Ô“š
  *------------------------------------------
  */
 static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
@@ -21402,7 +21402,7 @@ static void clif_parse_FeelSaveAck(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * æ–™ç†è¦æ±‚å¿œç­”
+ * —¿——v‹‰“š
  *------------------------------------------
  */
 static void clif_parse_Making(int fd,struct map_session_data *sd, int cmd)
@@ -21420,7 +21420,7 @@ static void clif_parse_Making(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ›ãƒƒãƒˆã‚­ãƒ¼ã®ã‚»ãƒ¼ãƒ–
+ * ƒzƒbƒgƒL[‚ÌƒZ[ƒu
  *------------------------------------------
  */
 static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
@@ -21459,7 +21459,7 @@ static void clif_parse_HotkeySave(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ã®è¨¼ã«ã‚ˆã‚‹å¾©æ´»
+ * ƒW[ƒNƒtƒŠ[ƒh‚ÌØ‚É‚æ‚é•œŠˆ
  *------------------------------------------
  */
 static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
@@ -21468,11 +21468,11 @@ static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	if(map[sd->bl.m].flag.pvp && sd->pvp_point < 0)	// PVPã§å¾©æ´»ä¸å¯èƒ½çŠ¶æ…‹
+	if(map[sd->bl.m].flag.pvp && sd->pvp_point < 0)	// PVP‚Å•œŠˆ•s‰Â”\ó‘Ô
 		return;
 	if(!unit_isdead(&sd->bl))
 		return;
-	if((idx = pc_search_inventory(sd,7621)) < 0)	// ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ã®è¨¼ã‚’æ‰€æŒã—ã¦ã„ãªã„
+	if((idx = pc_search_inventory(sd,7621)) < 0)	// ƒW[ƒNƒtƒŠ[ƒh‚ÌØ‚ğŠ‚µ‚Ä‚¢‚È‚¢
 		return;
 
 	pc_delitem(sd,idx,1,0,1);
@@ -21484,13 +21484,13 @@ static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
 	if(battle_config.pc_invincible_time > 0)
 		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	clif_resurrection(&sd->bl,1);
-	clif_misceffect2(&sd->bl,77);	// ãƒªã‚¶ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’ä»˜ã‘ã¦ã¿ã‚‹
+	clif_misceffect2(&sd->bl,77);	// ƒŠƒU‚ÌƒGƒtƒFƒNƒg‚ğ•t‚¯‚Ä‚İ‚é
 
 	return;
 }
 
 /*==========================================
- * å‚­å…µãƒ¡ãƒ‹ãƒ¥ãƒ¼
+ * —b•ºƒƒjƒ…[
  *------------------------------------------
  */
 static void clif_parse_MercMenu(int fd,struct map_session_data *sd, int cmd)
@@ -21501,7 +21501,7 @@ static void clif_parse_MercMenu(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * è£…å‚™ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºè¦æ±‚
+ * ‘•”õƒEƒBƒ“ƒhƒE•\¦—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyEquipWindow(int fd,struct map_session_data *sd, int cmd)
@@ -21512,7 +21512,7 @@ static void clif_parse_PartyEquipWindow(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * è£…å‚™å…¬é–‹è¦æ±‚
+ * ‘•”õŒöŠJ—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyEquipOpen(int fd,struct map_session_data *sd, int cmd)
@@ -21530,8 +21530,8 @@ static void clif_parse_PartyEquipOpen(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ãƒãƒ³ãƒ†ã‚£ãƒ³ã‚°ãƒªã‚¹ãƒˆ
- * è©³ç´°ä¸æ˜ãªãŸã‚æœªå®Ÿè£…
+ * ƒnƒ“ƒeƒBƒ“ƒOƒŠƒXƒg
+ * Ú×•s–¾‚È‚½‚ß–¢À‘•
  *------------------------------------------
  */
 static void clif_parse_HuntingList(int fd,struct map_session_data *sd, int cmd)
@@ -21550,8 +21550,8 @@ static void clif_parse_HuntingList(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * æˆ¦å ´ãƒãƒ£ãƒƒãƒˆé€ä¿¡è¦æ±‚
- * è©³ç´°ä¸æ˜ãªãŸã‚æœªå®Ÿè£…
+ * íêƒ`ƒƒƒbƒg‘—M—v‹
+ * Ú×•s–¾‚È‚½‚ß–¢À‘•
  *------------------------------------------
  */
 static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd)
@@ -21591,7 +21591,7 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -21608,7 +21608,7 @@ static void clif_parse_BattleMessage(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼ãƒã‚§ãƒ³ã‚¸
+ * ƒp[ƒeƒB[ƒŠ[ƒ_[ƒ`ƒFƒ“ƒW
  *------------------------------------------
  */
 static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int cmd)
@@ -21619,7 +21619,7 @@ static void clif_parse_PartyChangeLeader(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * GMã«ã‚ˆã‚‹è£…å‚™è§£é™¤
+ * GM‚É‚æ‚é‘•”õ‰ğœ
  *------------------------------------------
  */
 static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
@@ -21646,7 +21646,7 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 		}
 	}
 
-	/* 1åˆ†é–“è„±è¡£ç³»ã®çŠ¶æ…‹ç•°å¸¸ã«ã‹ã‹ã‚‹ */
+	/* 1•ªŠÔ’EˆßŒn‚Ìó‘ÔˆÙí‚É‚©‚©‚é */
 	status_change_start(&tsd->bl,SC_STRIPWEAPON,1,0,0,0,60000,0);
 	status_change_start(&tsd->bl,SC_STRIPSHIELD,1,0,0,0,60000,0);
 	status_change_start(&tsd->bl,SC_STRIPARMOR,1,0,0,0,60000,0);
@@ -21659,7 +21659,7 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ç™»éŒ²
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO“o˜^
  *------------------------------------------
  */
 static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *sd, int cmd)
@@ -21680,7 +21680,7 @@ static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *s
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ç™»éŒ²2
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO“o˜^2
  *------------------------------------------
  */
 static void clif_parse_PartyBookingRegisterReq2(int fd,struct map_session_data *sd, int cmd)
@@ -21694,14 +21694,14 @@ static void clif_parse_PartyBookingRegisterReq2(int fd,struct map_session_data *
 	lv   = RFIFOW(fd,GETPACKETPOS(cmd,0));
 	memo = (char *)RFIFOP(fd,GETPACKETPOS(cmd,1));
 
-	// ç™»éŒ²å‡¦ç†
+	// “o˜^ˆ—
 	booking_register2(sd,lv,memo);
 
 	return;
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°æ¤œç´¢è¦æ±‚
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOŒŸõ—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd, int cmd)
@@ -21714,27 +21714,27 @@ static void clif_parse_PartyBookingSearchReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°æ¤œç´¢è¦æ±‚2
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOŒŸõ—v‹2
  *------------------------------------------
  */
 static void clif_parse_PartyBookingSearchReq2(int fd,struct map_session_data *sd, int cmd)
 {
 	int lv;
-	// TODO:æ®‹ã‚Š6ãƒã‚¤ãƒˆã¯ä½•ã«ä½¿ã†ã®ã‹ä¸æ˜
+	// TODO:c‚è6ƒoƒCƒg‚Í‰½‚Ég‚¤‚Ì‚©•s–¾
 
 	nullpo_retv(sd);
 
 	// parse
 	lv = RFIFOW(fd,GETPACKETPOS(cmd,0));
 
-	// æ¤œç´¢å‡¦ç†
+	// ŒŸõˆ—
 	booking_searchcond2(sd,lv);
 
 	return;
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°å‰Šé™¤è¦æ±‚
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOíœ—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd, int cmd)
@@ -21747,7 +21747,7 @@ static void clif_parse_PartyBookingDeleteReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°å‰Šé™¤è¦æ±‚2
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOíœ—v‹2
  *------------------------------------------
  */
 static void clif_parse_PartyBookingDeleteReq2(int fd,struct map_session_data *sd, int cmd)
@@ -21760,7 +21760,7 @@ static void clif_parse_PartyBookingDeleteReq2(int fd,struct map_session_data *sd
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆè¦æ±‚
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒAƒbƒvƒf[ƒg—v‹
  *------------------------------------------
  */
 static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd, int cmd)
@@ -21779,7 +21779,7 @@ static void clif_parse_PartyBookingUpdateReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆè¦æ±‚2
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒAƒbƒvƒf[ƒg—v‹2
  *------------------------------------------
  */
 static void clif_parse_PartyBookingUpdateReq2(int fd,struct map_session_data *sd, int cmd)
@@ -21797,7 +21797,7 @@ static void clif_parse_PartyBookingUpdateReq2(int fd,struct map_session_data *sd
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒªã‚¹ãƒˆé¸æŠå—ä¿¡
+ * ƒXƒLƒ‹ƒŠƒXƒg‘I‘ğóM
  *------------------------------------------
  */
 static void clif_parse_SelectSkill(int fd,struct map_session_data *sd, int cmd)
@@ -21806,7 +21806,7 @@ static void clif_parse_SelectSkill(int fd,struct map_session_data *sd, int cmd)
 
 	switch(sd->skill_menu.id)
 	{
-		case SC_AUTOSHADOWSPELL:		/* ã‚·ãƒ£ãƒ‰ã‚¦ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ« */
+		case SC_AUTOSHADOWSPELL:		/* ƒVƒƒƒhƒEƒI[ƒgƒXƒyƒ‹ */
 			skill_autoshadowspell(sd,RFIFOW(fd,GETPACKETPOS(cmd,1)));
 			break;
 	}
@@ -21817,7 +21817,7 @@ static void clif_parse_SelectSkill(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ å¤‰æ›ãƒªã‚¹ãƒˆå—ä¿¡
+ * ƒAƒCƒeƒ€•ÏŠ·ƒŠƒXƒgóM
  *------------------------------------------
  */
 static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
@@ -21829,18 +21829,18 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 	type = RFIFOL(fd,GETPACKETPOS(cmd,1));
 	flag = RFIFOL(fd,GETPACKETPOS(cmd,2));
 
-	// OKæ™‚ã‹ã¤ã‚¢ã‚¤ãƒ†ãƒ å€‹æ•°1ä»¥ä¸Šã®å ´åˆ
+	// OK‚©‚ÂƒAƒCƒeƒ€ŒÂ”1ˆÈã‚Ìê‡
 	if(flag == 1 && num > 0) {
 		switch(type) {
 			case 0:
-				/* ãƒã‚§ãƒ³ã‚¸ãƒãƒ†ãƒªã‚¢ãƒ« */
+				/* ƒ`ƒFƒ“ƒWƒ}ƒeƒŠƒAƒ‹ */
 				if(sd->skill_menu.id == GN_CHANGEMATERIAL) {
 					skill_changematerial(sd, num, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,3)));
 				}
 				break;
 			case 1:
 			case 2:
-				/* ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ã‚¢ãƒŠãƒ©ã‚¤ã‚·ã‚¹ */
+				/* ƒGƒŒƒƒ“ƒ^ƒ‹ƒAƒiƒ‰ƒCƒVƒX */
 				if(sd->skill_menu.id == SO_EL_ANALYSIS) {
 					skill_el_analysis(sd, num, type, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,3)));
 				}
@@ -21854,7 +21854,7 @@ static void clif_parse_ConvertItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆçŠ¶æ…‹å¤‰æ›´
+ * ƒNƒGƒXƒgƒŠƒXƒgó‘Ô•ÏX
  *------------------------------------------
  */
 static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
@@ -21879,7 +21879,7 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * è© å”±ãƒãƒ¼å®Œäº†
+ * ‰r¥ƒo[Š®—¹
  *------------------------------------------
  */
 static void clif_parse_ProgressBar(int fd,struct map_session_data *sd, int cmd)
@@ -21892,7 +21892,7 @@ static void clif_parse_ProgressBar(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‹è¨­è¦æ±‚
+ * ”ƒæ˜I“XŠJİ—v‹
  *------------------------------------------
  */
 static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -21903,7 +21903,7 @@ static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, in
 	char *store_name = RFIFOP(fd,GETPACKETPOS(cmd,3));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,4));
 
-	// æœ«å°¾ã«nullæ–‡å­—ã‚’ã‚»ãƒƒãƒˆ
+	// ––”ö‚Énull•¶š‚ğƒZƒbƒg
 	store_name[79] = '\0';
 
 	buyingstore_openstore(sd, limit_zeny, result, store_name, data, ( len <= 0 ) ? 0 : len/8);
@@ -21912,7 +21912,7 @@ static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * è²·å–éœ²åº—é–‰é–è¦æ±‚
+ * ”ƒæ˜I“X•Â½—v‹
  *------------------------------------------
  */
 static void clif_parse_CloseBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -21923,7 +21923,7 @@ static void clif_parse_CloseBuyingStoreReq(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆè¦æ±‚
+ * ”ƒæ˜I“XƒAƒCƒeƒ€ƒŠƒXƒg—v‹
  *------------------------------------------
  */
 static void clif_parse_ClickBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -21936,7 +21936,7 @@ static void clif_parse_ClickBuyingStoreReq(int fd,struct map_session_data *sd, i
 }
 
 /*==========================================
- * è²·å–éœ²åº—ã‚¢ã‚¤ãƒ†ãƒ å£²å´è¦æ±‚
+ * ”ƒæ˜I“XƒAƒCƒeƒ€”„‹p—v‹
  *------------------------------------------
  */
 static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -21952,7 +21952,7 @@ static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /recall2
+ * GMƒRƒ}ƒ“ƒh /recall2
  *------------------------------------------
  */
 static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
@@ -21972,7 +21972,7 @@ static void clif_parse_GMrecall2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * GMã‚³ãƒãƒ³ãƒ‰ /remove2
+ * GMƒRƒ}ƒ“ƒh /remove2
  *------------------------------------------
  */
 static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
@@ -21992,7 +21992,7 @@ static void clif_parse_GMremove2(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * æˆ¦å ´å…¥å ´ç™»éŒ²
+ * íê“üê“o˜^
  *------------------------------------------
  */
 static void clif_parse_RegBattleGround(int fd,struct map_session_data *sd, int cmd)
@@ -22002,7 +22002,7 @@ static void clif_parse_RegBattleGround(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- * å€‹äººã‚¿ãƒ–ã¸ã‚¢ã‚¤ãƒ†ãƒ ç§»å‹•
+ * ŒÂlƒ^ƒu‚ÖƒAƒCƒeƒ€ˆÚ“®
  *------------------------------------------
  */
 static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
@@ -22031,7 +22031,7 @@ static void clif_parse_MoveItem(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒªã‚¹ãƒˆã‹ã‚‰é™¤å¤–
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒŠƒXƒg‚©‚çœŠO
  *------------------------------------------
  */
 static void clif_parse_PartyBookingIgnoreReq(int fd,struct map_session_data *sd, int cmd)
@@ -22041,7 +22041,7 @@ static void clif_parse_PartyBookingIgnoreReq(int fd,struct map_session_data *sd,
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒªã‚¹ãƒˆã‹ã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼åŠ å…¥ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒŠƒXƒg‚©‚çƒp[ƒeƒB[‰Á“üƒŠƒNƒGƒXƒg
  *------------------------------------------
  */
 static void clif_parse_PartyBookingJoinPartyReq(int fd,struct map_session_data *sd, int cmd)
@@ -22051,7 +22051,7 @@ static void clif_parse_PartyBookingJoinPartyReq(int fd,struct map_session_data *
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒ¡ãƒ³ãƒãƒ¼å¬å–šãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒƒ“ƒo[¢Š«ƒŠƒNƒGƒXƒg
  *------------------------------------------
  */
 static void clif_parse_PartyBookingSummonMember(int fd,struct map_session_data *sd, int cmd)
@@ -22065,7 +22065,7 @@ static void clif_parse_PartyBookingSummonMember(int fd,struct map_session_data *
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ãƒªã‚¹ãƒˆã‹ã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼åŠ å…¥ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚­ãƒ£ãƒ³ã‚»ãƒ«
+ * ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒOƒŠƒXƒg‚©‚çƒp[ƒeƒB[‰Á“üƒŠƒNƒGƒXƒgƒLƒƒƒ“ƒZƒ‹
  *------------------------------------------
  */
 static void clif_parse_PartyBookingJoinPartyCancel(int fd,struct map_session_data *sd, int cmd)
@@ -22085,8 +22085,8 @@ static void clif_parse_BlockingPlayCancel(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * ã‚¯ãƒ©ãƒ³ãƒãƒ£ãƒƒãƒˆé€ä¿¡è¦æ±‚
- * è©³ç´°ä¸æ˜ãªãŸã‚æœªå®Ÿè£…
+ * ƒNƒ‰ƒ“ƒ`ƒƒƒbƒg‘—M—v‹
+ * Ú×•s–¾‚È‚½‚ß–¢À‘•
  *------------------------------------------
  */
 static void clif_parse_ClanMessage(int fd,struct map_session_data *sd, int cmd)
@@ -22109,7 +22109,7 @@ static void clif_parse_ClanMessage(int fd,struct map_session_data *sd, int cmd)
 	if (is_atcommand(fd, sd, message) != AtCommand_None)
 		return;
 
-	// ãƒãƒ¼ã‚µãƒ¼ã‚¯ã€ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ãªã‚‰ä¼šè©±ä¸å¯
+	// ƒo[ƒT[ƒNAƒ`ƒƒƒbƒg‹Ö~ó‘Ô‚È‚ç‰ï˜b•s‰Â
 	if (sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_NOCHAT].timer != -1 || sd->sc.data[SC_DEEP_SLEEP].timer != -1)
 		return;
 
@@ -22125,7 +22125,7 @@ static void clif_parse_ClanMessage(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * éŠ€è¡Œé ã‘å…¥ã‚Œè¦æ±‚
+ * ‹âs—a‚¯“ü‚ê—v‹
  *------------------------------------------
  */
 static void clif_parse_BankingDepositReq(int fd,struct map_session_data *sd, int cmd)
@@ -22141,7 +22141,7 @@ static void clif_parse_BankingDepositReq(int fd,struct map_session_data *sd, int
 }
 
 /*==========================================
- * éŠ€è¡Œå¼•ãå‡ºã—è¦æ±‚
+ * ‹âsˆø‚«o‚µ—v‹
  *------------------------------------------
  */
 static void clif_parse_BankingWithdrawReq(int fd,struct map_session_data *sd, int cmd)
@@ -22157,7 +22157,7 @@ static void clif_parse_BankingWithdrawReq(int fd,struct map_session_data *sd, in
 }
 
 /*==========================================
- * éŠ€è¡Œæƒ…å ±è¦æ±‚
+ * ‹âsî•ñ—v‹
  *------------------------------------------
  */
 static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cmd)
@@ -22184,8 +22184,8 @@ static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—
- * åˆ©ç”¨æ©Ÿä¼šãŒãªã„ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
+ * ƒNƒ‰ƒCƒAƒ“ƒg‚Ìƒ^ƒCƒ€ƒXƒ^ƒ“ƒv
+ * —˜—p‹@‰ï‚ª‚È‚¢‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg
  *------------------------------------------
  */
 static void clif_parse_ClientTimeStamp(int fd,struct map_session_data *sd, int cmd)
@@ -22334,7 +22334,7 @@ static void clif_parse_OpenWriteRoDEX(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ãƒ›ãƒƒãƒˆã‚­ãƒ¼ã®ãƒ†ãƒ¼ãƒ–ãƒ«å›è»¢
+ * ƒzƒbƒgƒL[‚Ìƒe[ƒuƒ‹‰ñ“]
  *------------------------------------------
  */
 static void clif_parse_HotkeyRotate(int fd,struct map_session_data *sd, int cmd)
@@ -22379,7 +22379,7 @@ static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
- * ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é‘‘å®š
+ * ƒƒ“ƒNƒŠƒbƒNŠÓ’è
  *------------------------------------------
  */
 static void clif_parse_OneClickItemidentify(int fd,struct map_session_data *sd, int cmd)
@@ -22405,7 +22405,7 @@ static void clif_parse_OneClickItemidentify(int fd,struct map_session_data *sd, 
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * ƒNƒ‰ƒCƒAƒ“ƒg‚ÌƒfƒXƒgƒ‰ƒNƒ^
  *------------------------------------------
  */
 static int clif_disconnect(int fd)
@@ -22429,8 +22429,8 @@ static int clif_disconnect(int fd)
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‹ã‚‰ã®ãƒ‘ã‚±ãƒƒãƒˆè§£æ
- * socket.cã®do_parsepacketã‹ã‚‰å‘¼ã³å‡ºã•ã‚Œã‚‹
+ * ƒNƒ‰ƒCƒAƒ“ƒg‚©‚ç‚ÌƒpƒPƒbƒg‰ğÍ
+ * socket.c‚Ìdo_parsepacket‚©‚çŒÄ‚Ño‚³‚ê‚é
  *------------------------------------------
  */
 int clif_parse(int fd)
@@ -22438,7 +22438,7 @@ int clif_parse(int fd)
 	int cmd, packet_len = 0;
 	struct map_session_data *sd;
 
-	// charé¯–ã«ç¹‹ãŒã£ã¦ãªã„é–“ã¯æ¥ç¶šç¦æ­¢
+	// charI‚ÉŒq‚ª‚Á‚Ä‚È‚¢ŠÔ‚ÍÚ‘±‹Ö~
 	if(!chrif_isconnect())
 		session[fd]->eof = 1;
 
@@ -22449,10 +22449,10 @@ int clif_parse(int fd)
 			return 0;
 		cmd = RFIFOW(fd,0);
 
-		// ç®¡ç†ç”¨ãƒ‘ã‚±ãƒƒãƒˆå‡¦ç†
+		// ŠÇ——pƒpƒPƒbƒgˆ—
 		if(cmd >= 30000) {
 			switch(cmd) {
-			case 0x7530:	// Aurigaæƒ…å ±å–å¾—
+			case 0x7530:	// Aurigaî•ñæ“¾
 				WFIFOW(fd,0)=0x7531;
 				WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 				WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -22464,13 +22464,13 @@ int clif_parse(int fd)
 				WFIFOSET(fd,11);
 				RFIFOSKIP(fd,2);
 				return 0;
-			case 0x7532:	// æ¥ç¶šã®åˆ‡æ–­
+			case 0x7532:	// Ú‘±‚ÌØ’f
 				close(fd);
 				session[fd]->eof = 1;
 				return 0;
 			default:
 				if(battle_config.use_packet_obfuscation) {
-					// ãƒ‘ã‚±ãƒƒãƒˆé›£èª­åŒ–ã®å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§æ¬¡ã®å‡¦ç†ã«æ¸¡ã™
+					// ƒpƒPƒbƒg“ï“Ç‰»‚Ì‰Â”\«‚ª‚ ‚é‚Ì‚ÅŸ‚Ìˆ—‚É“n‚·
 					break;
 				}
 				printf("clif_parse: unknown admin packet 0x%04x disconnect session #%d\n", cmd, fd);
@@ -22494,7 +22494,7 @@ int clif_parse(int fd)
 			break;
 		}
 
-		// ã‚²ãƒ¼ãƒ ç”¨ä»¥å¤–ã®ãƒ‘ã‚±ãƒƒãƒˆãªã®ã§åˆ‡æ–­
+		// ƒQ[ƒ€—pˆÈŠO‚ÌƒpƒPƒbƒg‚È‚Ì‚ÅØ’f
 		if(cmd >= MAX_PACKET_DB || packet_db[cmd].len == 0) {
 			printf("clif_parse: unsupported packet 0x%04x disconnect session #%d\n", cmd, fd);
 #ifdef DUMP_UNKNOWN_PACKET
@@ -22506,18 +22506,18 @@ int clif_parse(int fd)
 			return 0;
 		}
 
-		// èªè¨¼ã‚’çµ‚ãˆã‚‹å‰ã«0072ä»¥å¤–ãŒæ¥ãŸã®ã§åˆ‡æ–­
+		// ”FØ‚ğI‚¦‚é‘O‚É0072ˆÈŠO‚ª—ˆ‚½‚Ì‚ÅØ’f
 		if((!sd || sd->state.auth == 0) && packet_db[cmd].func != clif_parse_WantToConnection) {
 			close(fd);
 			session[fd]->eof = 1;
 			return 0;
 		}
 
-		// ãƒ‘ã‚±ãƒƒãƒˆé•·ã‚’è¨ˆç®—
+		// ƒpƒPƒbƒg’·‚ğŒvZ
 		packet_len = packet_db[cmd].len;
 		if(packet_len == -1) {
 			if(RFIFOREST(fd) < 4)
-				return 0;	// å¯å¤‰é•·ãƒ‘ã‚±ãƒƒãƒˆã§é•·ã•ã®æ‰€ã¾ã§ãƒ‡ãƒ¼ã‚¿ãŒæ¥ã¦ãªã„
+				return 0;	// ‰Â•Ï’·ƒpƒPƒbƒg‚Å’·‚³‚ÌŠ‚Ü‚Åƒf[ƒ^‚ª—ˆ‚Ä‚È‚¢
 			packet_len = RFIFOW(fd,2);
 			if(packet_len < 4 || packet_len > 0x8000) {
 				printf("clif_parse: invalid packet 0x%04x length %d disconnect session #%d\n", cmd, packet_len, fd);
@@ -22531,7 +22531,7 @@ int clif_parse(int fd)
 			}
 		}
 		if(RFIFOREST(fd) < packet_len)
-			return 0;	// ã¾ã 1ãƒ‘ã‚±ãƒƒãƒˆåˆ†ãƒ‡ãƒ¼ã‚¿ãŒæƒã£ã¦ãªã„
+			return 0;	// ‚Ü‚¾1ƒpƒPƒbƒg•ªƒf[ƒ^‚ª‘µ‚Á‚Ä‚È‚¢
 
 		if(battle_config.use_packet_obfuscation || cmd != RFIFOW(fd, 0)) {
 			RFIFOW(fd, 0) = cmd;
@@ -22541,15 +22541,15 @@ int clif_parse(int fd)
 		}
 
 		if(sd && sd->state.auth == 1 && sd->state.waitingdisconnect) {
-			;	// åˆ‡æ–­å¾…ã¡ã®å ´åˆãƒ‘ã‚±ãƒƒãƒˆã‚’å‡¦ç†ã—ãªã„
+			;	// Ø’f‘Ò‚¿‚Ìê‡ƒpƒPƒbƒg‚ğˆ—‚µ‚È‚¢
 		} else if(sd && sd->bl.prev == NULL && packet_db[cmd].func != clif_parse_LoadEndAck && packet_db[cmd].func != clif_parse_ClientTimeStamp) {
-			;	// ãƒ–ãƒ­ãƒƒã‚¯ã«ç¹‹ãŒã£ã¦ã„ãªã„ã¨ãã«007dã¨044aä»¥å¤–ãŒæ¥ãŸã‚‰å‡¦ç†ã—ãªã„
+			;	// ƒuƒƒbƒN‚ÉŒq‚ª‚Á‚Ä‚¢‚È‚¢‚Æ‚«‚É007d‚Æ044aˆÈŠO‚ª—ˆ‚½‚çˆ—‚µ‚È‚¢
 		} else if(packet_db[cmd].func) {
-			g_packet_len = packet_len;	// GETPACKETPOS ç”¨ã«ä¿å­˜
-			// ãƒ‘ã‚±ãƒƒãƒˆå‡¦ç†
+			g_packet_len = packet_len;	// GETPACKETPOS —p‚É•Û‘¶
+			// ƒpƒPƒbƒgˆ—
 			packet_db[cmd].func(fd,sd,cmd);
 		} else {
-			// ä¸æ˜ãªãƒ‘ã‚±ãƒƒãƒˆ
+			// •s–¾‚ÈƒpƒPƒbƒg
 			printf("clif_parse: unknown packet 0x%04x session #%d\n", cmd, fd);
 #ifdef DUMP_UNKNOWN_PACKET
 			hex_dump(stdout, RFIFOP(fd,0), packet_len);
@@ -22563,7 +22563,7 @@ int clif_parse(int fd)
 }
 
 /*==========================================
- * ãƒ‘ã‚±ãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹èª­ã¿è¾¼ã¿
+ * ƒpƒPƒbƒgƒf[ƒ^ƒx[ƒX“Ç‚İ‚İ
  *------------------------------------------
  */
 static int packetdb_readdb_sub(char *line, int ln)
@@ -22889,7 +22889,7 @@ static void packetdb_readdb(void)
 			if(strcmpi(w1, "#packet_ver") == 0) {
 				int ver = atoi(w2);
 				if(ver <= PACKETVER && ver >= stock.version) {
-					// PACKETVERã«æœ€ã‚‚è¿‘ã„æ—¥ä»˜ãŒè¦‹ã¤ã‹ã£ãŸã®ã§å¤ã„æƒ…å ±ã‚’ç ´æ£„ã™ã‚‹
+					// PACKETVER‚ÉÅ‚à‹ß‚¢“ú•t‚ªŒ©‚Â‚©‚Á‚½‚Ì‚ÅŒÃ‚¢î•ñ‚ğ”jŠü‚·‚é
 					memset(stock.data, 0, sizeof(struct stock_line) * stock.size);
 					memset(stock.crypt, 0, sizeof(stock.crypt));
 					stock.count   = 0;
@@ -22926,7 +22926,7 @@ static void packetdb_readdb(void)
 			continue;
 
 		if(stock.version > 0) {
-			// packet_verã®å®šç¾©ãŒã‚ã‚‹ã®ã§å–å¾—è¡Œã‚’ä¸€æ™‚çš„ã«ä¿å­˜ã—ã¦ãŠã
+			// packet_ver‚Ì’è‹`‚ª‚ ‚é‚Ì‚Åæ“¾s‚ğˆê“I‚É•Û‘¶‚µ‚Ä‚¨‚­
 			if(stock.count >= stock.size) {
 				stock.size += 16;
 				stock.data = (struct stock_line *)aRealloc(stock.data, sizeof(struct stock_line) * stock.size);
@@ -22936,7 +22936,7 @@ static void packetdb_readdb(void)
 			stock.data[stock.count].ln = ln;
 			stock.count++;
 		} else {
-			// ãã®ã¾ã¾èª­ã¿è¾¼ã‚€
+			// ‚»‚Ì‚Ü‚Ü“Ç‚İ‚Ş
 			if(packetdb_readdb_sub(line, ln)) {
 				aFree(stock.data);
 				exit(1);
@@ -22946,7 +22946,7 @@ static void packetdb_readdb(void)
 	}
 	fclose(fp);
 
-	// ä¿å­˜ã—ã¦ãŠã„ãŸpacket_verã®æƒ…å ±ã§ä¸Šæ›¸ã
+	// •Û‘¶‚µ‚Ä‚¨‚¢‚½packet_ver‚Ìî•ñ‚Åã‘‚«
 	if(stock.version > 0) {
 		int i;
 		for(i = 0; i < stock.count; i++) {
@@ -22970,7 +22970,7 @@ static void packetdb_readdb(void)
 }
 
 /*==========================================
- * Webãƒãƒ£ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ 
+ * Webƒ`ƒƒƒbƒgƒVƒXƒeƒ€
  *------------------------------------------
  */
 #define MAX_CHAT_MESSAGE 15
@@ -22987,7 +22987,7 @@ void clif_webchat_message(const char* head,const char *mes1,const char *mes2)
 	snprintf(temp, sizeof(temp), "%s %s : %s", head, mes1, mes2);
 	p = httpd_quote_meta(temp);
 
-	// é‡è¤‡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚ã‚‹å ´åˆç™ºè¨€å–ã‚Šæ¶ˆã—
+	// d•¡ƒƒbƒZ[ƒW‚ª‚ ‚éê‡”­Œ¾æ‚èÁ‚µ
 	for(i = 0; i < MAX_CHAT_MESSAGE; i++) {
 		if(!strcmp(p, webchat_message[i])) {
 			aFree(p);
@@ -23028,13 +23028,13 @@ void clif_webchat(struct httpd_session_data* sd,const char* url)
 			err = "Message is too long."; break;
 		} else if(mes[0]) {
 			if(httpd_get_method(sd) != HTTPD_METHOD_POST) {
-				// POSTä»¥å¤–ã®æ›¸ãè¾¼ã¿ã¯ãŠæ–­ã‚Š
+				// POSTˆÈŠO‚Ì‘‚«‚İ‚Í‚¨’f‚è
 				err = "Illegal request."; break;
 			}
 			clif_webchat_message("[web]",name1,mes);
 		}
 		// print form
-		// ï¼“ï¼ç§’ã”ã¨ã«æ›´æ–°
+		// ‚R‚O•b‚²‚Æ‚ÉXV
 		p += sprintf(p,"<html><head>\n");
 		p += sprintf(p,"<meta http-equiv=\"Refresh\" content=\"30;URL=/chat?name=%s\">\n",name2);
 		p += sprintf(p,"<title>Auriga Chat</title></head>\n\n<body>\n");
@@ -23068,7 +23068,7 @@ void clif_webchat(struct httpd_session_data* sd,const char* url)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 void do_final_clif(void)

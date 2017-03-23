@@ -20,12 +20,12 @@
  */
 
 /***********************************************************
- * md5è¨ˆç®—ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ 
+ * md5ŒvZƒAƒ‹ƒSƒŠƒYƒ€
  *
- * ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã¯ä»¥ä¸‹ã®URLã‚’å‚è€ƒã«ã—ã¾ã—ãŸ
+ * ƒ\[ƒXƒR[ƒh‚ÍˆÈ‰º‚ÌURL‚ğQl‚É‚µ‚Ü‚µ‚½
  * http://www.geocities.co.jp/SiliconValley-Oakland/8878/lab17/lab17.html
  *
- * 2006/09/10 å°‘ã—ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹ã®æ•´ç†ã¨ HMAC-MD5 ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ è¿½åŠ 
+ * 2006/09/10 ­‚µƒCƒ“ƒ^[ƒtƒFƒCƒX‚Ì®—‚Æ HMAC-MD5 ƒAƒ‹ƒSƒŠƒYƒ€’Ç‰Á
  ***********************************************************/
 
 #include <string.h>
@@ -38,7 +38,7 @@
 #define UINT_MAX 4294967295U
 #endif
 
-// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+// ƒOƒ[ƒoƒ‹•Ï”
 static unsigned int *pX;
 
 // Stirng Table
@@ -61,10 +61,10 @@ static const unsigned int T[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391  //60
 };
 
-// ROTATE_LEFTã¯ x ã‚’å·¦ã«nãƒ“ãƒƒãƒˆå›è»¢ã•ã›ã‚‹ã€‚ã“ã‚Œã¯RFCã‹ã‚‰ãã®ã¾ã¾æµç”¨
+// ROTATE_LEFT‚Í x ‚ğ¶‚Énƒrƒbƒg‰ñ“]‚³‚¹‚éB‚±‚ê‚ÍRFC‚©‚ç‚»‚Ì‚Ü‚Ü—¬—p
 #define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
 
-// ãã®ä»–ã®è¨ˆç®—ã«ä½¿ã†é–¢æ•°
+// ‚»‚Ì‘¼‚ÌŒvZ‚Ég‚¤ŠÖ”
 static unsigned int F(unsigned int X, unsigned int Y, unsigned int Z)
 {
 	return (X & Y) | (~X & Z);
@@ -112,21 +112,21 @@ static void Round4(unsigned int *a, unsigned int b, unsigned int c, unsigned int
 
 static void MD5_Round_Calculate(const unsigned char *block, unsigned int *A2, unsigned int *B2, unsigned int *C2, unsigned int *D2)
 {
-	//create X å¿…è¦ãªã®ã§
+	//create X •K—v‚È‚Ì‚Å
 	unsigned int X[16]; //512bit 64byte
 	int j,k;
 
-	//Save A as AA, B as BB, C as CC, and D as DD (A,B,C,Dã®ä¿å­˜)
+	//Save A as AA, B as BB, C as CC, and D as DD (A,B,C,D‚Ì•Û‘¶)
 	unsigned int A=*A2, B=*B2, C=*C2, D=*D2;
 	unsigned int AA = A,BB = B,CC = C,DD = D;
 
-	//ãƒ©ã‚¦ãƒ³ãƒ‰ã®è¨ˆç®—ã®ç‚ºã«ä»•æ–¹ãªãå¤§åŸŸå¤‰æ•°ã‚’ã€‚ã€‚ã€‚ for Round1...4
+	//ƒ‰ƒEƒ“ƒh‚ÌŒvZ‚Ìˆ×‚Éd•û‚È‚­‘åˆæ•Ï”‚ğBBB for Round1...4
 	pX = X;
 
 	//Copy block(padding_message) i into X
 	for (j=0,k=0; j<64; j+=4,k++)
-		X[k] = ( (unsigned int )block[j] )	// 8byte*4 -> 32byte å¤‰æ›
-			| ( ((unsigned int )block[j+1]) << 8 ) // RFCã§ã„ã†Decodeã¨ã„ã†é–¢æ•°
+		X[k] = ( (unsigned int )block[j] )	// 8byte*4 -> 32byte •ÏŠ·
+			| ( ((unsigned int )block[j+1]) << 8 ) // RFC‚Å‚¢‚¤Decode‚Æ‚¢‚¤ŠÖ”
 			| ( ((unsigned int )block[j+2]) << 16 )
 			| ( ((unsigned int )block[j+3]) << 24 );
 
@@ -154,85 +154,85 @@ static void MD5_Round_Calculate(const unsigned char *block, unsigned int *A2, un
 	Round4(&A,B,C,D,  8, 6, 56); Round4(&D,A,B,C, 15, 10, 57); Round4(&C,D,A,B,  6, 15, 58); Round4(&B,C,D,A, 13, 21, 59);
 	Round4(&A,B,C,D,  4, 6, 60); Round4(&D,A,B,C, 11, 10, 61); Round4(&C,D,A,B,  2, 15, 62); Round4(&B,C,D,A,  9, 21, 63);
 
-	// Then perform the following additions. (åŠ ç®—ã—ã¾ã—ã‚‡ã†)
+	// Then perform the following additions. (‰ÁZ‚µ‚Ü‚µ‚å‚¤)
 	*A2 = A + AA;
 	*B2 = B + BB;
 	*C2 = C + CC;
 	*D2 = D + DD;
 
-	//æ©Ÿå¯†æƒ…å ±ã®ã‚¯ãƒªã‚¢
+	//‹@–§î•ñ‚ÌƒNƒŠƒA
 	memset(pX, 0, sizeof(X));
 }
 
 //-------------------------------------------------------------------
-// å¤–éƒ¨ç”¨é–¢æ•°
+// ŠO•”—pŠÖ”
 
-/** stringã¯ç¬¦å·åŒ–ã—ãŸã„æ–‡å­—åˆ—ã§outputã¯ç¬¦å·åŒ–ã•ã‚ŒãŸãƒã‚¤ãƒŠãƒª */
+/** string‚Í•„†‰»‚µ‚½‚¢•¶š—ñ‚Åoutput‚Í•„†‰»‚³‚ê‚½ƒoƒCƒiƒŠ */
 void MD5_Binary(const char * string, int len, char * output)
 {
 	//var
 	/* 8bit */
-	unsigned char padding_message[64];	// æ‹¡å¼µãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ 512bit 64byte
-	unsigned char *pstring;			// ç¾åœ¨èµ°æŸ»æ³¨ä¸­ã®stringã®ä½ç½®ã‚’ä¿æŒ
+	unsigned char padding_message[64];	// Šg’£ƒƒbƒZ[ƒW 512bit 64byte
+	unsigned char *pstring;			// Œ»İ‘–¸’’†‚Ìstring‚ÌˆÊ’u‚ğ•Û
 	//unsigned char digest[16];
 	/* 32bit */
-	unsigned int string_byte_len;	// stringã®ãƒã‚¤ãƒˆé•·ã‚’ä¿æŒ
-	unsigned int string_bit_len;	// stringã®ãƒ“ãƒƒãƒˆé•·ã‚’ä¿æŒ
-	unsigned int copy_len;		// 1-3ã§ä½¿ã†æ®‹ã£ãŸãƒã‚¤ãƒˆæ•°
-	unsigned int msg_digest[4];	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ€ã‚¤ã‚¸ã‚§ã‚¹ãƒˆ 128bit 4byte
-	unsigned int *A = &msg_digest[0];	// RFCã«å‰‡ã£ãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ€ã‚¤ã‚¸ã‚§ã‚¹ãƒˆï¼ˆã®ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ï¼‰
+	unsigned int string_byte_len;	// string‚ÌƒoƒCƒg’·‚ğ•Û
+	unsigned int string_bit_len;	// string‚Ìƒrƒbƒg’·‚ğ•Û
+	unsigned int copy_len;		// 1-3‚Åg‚¤c‚Á‚½ƒoƒCƒg”
+	unsigned int msg_digest[4];	// ƒƒbƒZ[ƒWƒ_ƒCƒWƒFƒXƒg 128bit 4byte
+	unsigned int *A = &msg_digest[0];	// RFC‚É‘¥‚Á‚½ƒƒbƒZ[ƒWƒ_ƒCƒWƒFƒXƒgi‚ÌƒŠƒtƒ@ƒŒƒ“ƒXj
 	unsigned int *B = &msg_digest[1];
 	unsigned int *C = &msg_digest[2];
 	unsigned int *D = &msg_digest[3];
 	int i;
 
 	// prog
-	// Step 3. Initialize MD Buffer (A,B,C,Dã®åˆæœŸåŒ–;ã‚¹ãƒ†ãƒƒãƒ—ï¼“ã§ã™ãŒä»•æ–¹ãªãå…ˆé ­ã«)
+	// Step 3. Initialize MD Buffer (A,B,C,D‚Ì‰Šú‰»;ƒXƒeƒbƒv‚R‚Å‚·‚ªd•û‚È‚­æ“ª‚É)
 	*A = 0x67452301;
 	*B = 0xefcdab89;
 	*C = 0x98badcfe;
 	*D = 0x10325476;
 
-	// Step 1. Append Padding Bits (ç¬¦å·ãƒ“ãƒƒãƒˆã®æ‹¡å¼µ)
+	// Step 1. Append Padding Bits (•„†ƒrƒbƒg‚ÌŠg’£)
 	//1-1
-	string_byte_len = len;	// æ–‡å­—åˆ—ã®ãƒã‚¤ãƒˆé•·ã‚’å–å¾—
-	pstring = (unsigned char *)string;	// ç¾åœ¨ã®æ–‡å­—åˆ—ã®ä½ç½®ã‚’ã‚»ãƒƒãƒˆ
+	string_byte_len = len;	// •¶š—ñ‚ÌƒoƒCƒg’·‚ğæ“¾
+	pstring = (unsigned char *)string;	// Œ»İ‚Ì•¶š—ñ‚ÌˆÊ’u‚ğƒZƒbƒg
 
-	// 1-2 é•·ã•ãŒï¼–ï¼”ãƒã‚¤ãƒˆæœªæº€ã«ãªã‚‹ã¾ã§è¨ˆç®—ã‚’ç¹°ã‚Šè¿”ã™
+	// 1-2 ’·‚³‚ª‚U‚SƒoƒCƒg–¢–‚É‚È‚é‚Ü‚ÅŒvZ‚ğŒJ‚è•Ô‚·
 	for (i=string_byte_len; 64<=i; i-=64,pstring+=64)
 		MD5_Round_Calculate(pstring, A,B,C,D);
 
 	// 1-3
-	copy_len = string_byte_len % 64;	// æ®‹ã£ãŸãƒã‚¤ãƒˆæ•°ã‚’ç®—å‡º
-	strncpy((char *)padding_message, (char *)pstring, copy_len);	// æ‹¡å¼µãƒ“ãƒƒãƒˆåˆ—ã¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚³ãƒ”ãƒ¼
-	memset(padding_message+copy_len, 0, 64 - copy_len);	// æ‹¡å¼µãƒ“ãƒƒãƒˆé•·ã«ãªã‚‹ã¾ã§0ã§åŸ‹ã‚ã‚‹
-	padding_message[copy_len] |= 0x80;	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®æ¬¡ã¯1
+	copy_len = string_byte_len % 64;	// c‚Á‚½ƒoƒCƒg”‚ğZo
+	strncpy((char *)padding_message, (char *)pstring, copy_len);	// Šg’£ƒrƒbƒg—ñ‚ÖƒƒbƒZ[ƒW‚ğƒRƒs[
+	memset(padding_message+copy_len, 0, 64 - copy_len);	// Šg’£ƒrƒbƒg’·‚É‚È‚é‚Ü‚Å0‚Å–„‚ß‚é
+	padding_message[copy_len] |= 0x80;	// ƒƒbƒZ[ƒW‚ÌŸ‚Í1
 
 	// 1-4
-	// æ®‹ã‚ŠãŒ56ãƒã‚¤ãƒˆä»¥ä¸Šï¼ˆï¼–ï¼”ãƒã‚¤ãƒˆæœªæº€ï¼‰ãªã‚‰ã°ï¼–ï¼”ãƒã‚¤ãƒˆã«æ‹¡å¼µã—ã¦è¨ˆç®—
+	// c‚è‚ª56ƒoƒCƒgˆÈãi‚U‚SƒoƒCƒg–¢–j‚È‚ç‚Î‚U‚SƒoƒCƒg‚ÉŠg’£‚µ‚ÄŒvZ
 	if (56 <= copy_len) {
 		MD5_Round_Calculate(padding_message, A,B,C,D);
-		memset(padding_message, 0, 56);	// æ–°ãŸã«ï¼•ï¼–ãƒã‚¤ãƒˆã‚’ï¼ã§åŸ‹ã‚ã‚‹
+		memset(padding_message, 0, 56);	// V‚½‚É‚T‚UƒoƒCƒg‚ğ‚O‚Å–„‚ß‚é
 	}
 
-	//Step 2. Append Length (é•·ã•ã®æƒ…å ±ã‚’è¿½åŠ )
-	string_bit_len = string_byte_len * 8;	// ãƒã‚¤ãƒˆé•·ã‹ã‚‰ãƒ“ãƒƒãƒˆé•·ã¸ï¼ˆä¸‹ä½ï¼“ï¼’ãƒã‚¤ãƒˆï¼‰
-	memcpy(&padding_message[56], &string_bit_len, 4);	// ä¸‹ä½ï¼“ï¼’ãƒã‚¤ãƒˆã‚’ã‚»ãƒƒãƒˆ
+	//Step 2. Append Length (’·‚³‚Ìî•ñ‚ğ’Ç‰Á)
+	string_bit_len = string_byte_len * 8;	// ƒoƒCƒg’·‚©‚çƒrƒbƒg’·‚Öi‰ºˆÊ‚R‚QƒoƒCƒgj
+	memcpy(&padding_message[56], &string_bit_len, 4);	// ‰ºˆÊ‚R‚QƒoƒCƒg‚ğƒZƒbƒg
 
-	// ä¸‹ä½ï¼“ï¼’ãƒã‚¤ãƒˆã ã‘ã§ã¯ãƒ“ãƒƒãƒˆé•·ã‚’è¡¨ç¾ã§ããªã„ã¨ãã¯ä¸Šä½ã«æ¡ä¸Šã’
+	// ‰ºˆÊ‚R‚QƒoƒCƒg‚¾‚¯‚Å‚Íƒrƒbƒg’·‚ğ•\Œ»‚Å‚«‚È‚¢‚Æ‚«‚ÍãˆÊ‚ÉŒ…ã‚°
 	if (UINT_MAX / 8 < string_byte_len) {
 		unsigned int high = (string_byte_len - UINT_MAX / 8) * 8;
 		memcpy(&padding_message[60], &high, 4);
 	} else {
-		memset(&padding_message[60], 0, 4);	// ã“ã®å ´åˆã¯ä¸Šä½ã«ã¯ï¼ã§ã‚ˆã„
+		memset(&padding_message[60], 0, 4);	// ‚±‚Ìê‡‚ÍãˆÊ‚É‚Í‚O‚Å‚æ‚¢
 	}
 
-	// Step 4. Process Message in 16-Word Blocks (MD5ã®è¨ˆç®—)
+	// Step 4. Process Message in 16-Word Blocks (MD5‚ÌŒvZ)
 	MD5_Round_Calculate(padding_message, A,B,C,D);
 
-	// Step 5. Output (å‡ºåŠ›)
+	// Step 5. Output (o—Í)
 	memcpy(output,msg_digest,16);
-	//memcpy(digest, msg_digest, 16);	// 8byte*4 <- 32byte å¤‰æ› RFCã§ã„ã†Encodeã¨ã„ã†é–¢æ•°
+	//memcpy(digest, msg_digest, 16);	// 8byte*4 <- 32byte •ÏŠ· RFC‚Å‚¢‚¤Encode‚Æ‚¢‚¤ŠÖ”
 
 	/*
 	sprintf(output,
@@ -244,7 +244,7 @@ void MD5_Binary(const char * string, int len, char * output)
 	*/
 }
 
-/** stringã¯ç¬¦å·åŒ–ã—ãŸã„æ–‡å­—åˆ—ã§outputã¯ç¬¦å·åŒ–ã•ã‚ŒãŸæ–‡å­—åˆ— */
+/** string‚Í•„†‰»‚µ‚½‚¢•¶š—ñ‚Åoutput‚Í•„†‰»‚³‚ê‚½•¶š—ñ */
 void MD5_String(const char * string, char * output)
 {
 	unsigned char digest[16];
@@ -258,7 +258,7 @@ void MD5_String(const char * string, char * output)
 		digest[12], digest[13], digest[14], digest[15]);
 }
 
-// ä»¥å‰ã¨ã®äº’æ›æ€§ã®ãŸã‚
+// ˆÈ‘O‚Æ‚ÌŒİŠ·«‚Ì‚½‚ß
 void MD5_String2binary( const char * string, char * output)
 {
 	MD5_Binary(string, (int)strlen(string), output);
@@ -276,35 +276,35 @@ void HMAC_MD5_Binary( const char *key, int keylen, const char *str, int len, cha
 	char temp[ KEYLENGTH + DIGESTLENGTH ];
 	int i;
 
-	// æ–‡å­—åˆ—ãŒé•·ã„ã®ã§ãƒ¡ãƒ¢ãƒªã‚’ç¢ºä¿
+	// •¶š—ñ‚ª’·‚¢‚Ì‚Åƒƒ‚ƒŠ‚ğŠm•Û
 	if( len > STRMAXLENGTH )
 		hmackey = (char*)aMalloc( KEYLENGTH+len + 16 );
 
-	// éµã®è¨ˆç®—
+	// Œ®‚ÌŒvZ
 	memset( hmackey, 0, KEYLENGTH );
 	if( keylen <= KEYLENGTH )	memcpy( hmackey, key, keylen );
 	else						MD5_Binary( key, keylen, hmackey );
 
-	// éµã®ã‚³ãƒ”ãƒ¼
+	// Œ®‚ÌƒRƒs[
 	memcpy( temp, hmackey, KEYLENGTH );
 
-	// éµã® XOR
+	// Œ®‚Ì XOR
 	for( i=0; i<KEYLENGTH; i+=4 )
 	{
 		*((unsigned int*)(hmackey+i)) ^= 0x36363636;	// ipad
 		*((unsigned int*)(temp+i)) ^= 0x5c5c5c5c;		// opad
 	}
 
-	// str ã®çµåˆ
+	// str ‚ÌŒ‹‡
 	memcpy( hmackey+KEYLENGTH, str, len );
 
-	// ä¸­é–“æ–‡å­—åˆ—ç”Ÿæˆ
+	// ’†ŠÔ•¶š—ñ¶¬
 	MD5_Binary( hmackey, KEYLENGTH+len, temp+KEYLENGTH );
 
-	// è¨ˆç®—çµæœç”Ÿæˆ
+	// ŒvZŒ‹‰Ê¶¬
 	MD5_Binary( temp, KEYLENGTH+DIGESTLENGTH, output );
 
-	// å¿…è¦ãªã‚‰ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾
+	// •K—v‚È‚çƒƒ‚ƒŠ‚ğ‰ğ•ú
 	if( hmackey != hmackey2 )
 		aFree(hmackey);
 }

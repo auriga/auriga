@@ -35,7 +35,7 @@
 static struct dbt *pet_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int petdb_sql_config_read_sub(const char* w1,const char *w2)
@@ -44,7 +44,7 @@ int petdb_sql_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int petdb_sql_sync(void)
@@ -54,7 +54,7 @@ int petdb_sql_sync(void)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆå‰Šé™¤
+ * ƒyƒbƒgíœ
  *------------------------------------------
  */
 bool petdb_sql_delete(int pet_id)
@@ -70,7 +70,7 @@ bool petdb_sql_delete(int pet_id)
 		aFree(p);
 	} else {
 		if(sqldbs_affected_rows(&mysql_handle) <= 0)
-			return false;	// SQLã‹ã‚‰å‰Šé™¤ã§ããªã„ã¨ãã ã‘fail
+			return false;	// SQL‚©‚çíœ‚Å‚«‚È‚¢‚Æ‚«‚¾‚¯fail
 	}
 
 	printf("pet_id: %d deleted\n", pet_id);
@@ -79,7 +79,7 @@ bool petdb_sql_delete(int pet_id)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆIDã‹ã‚‰ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒyƒbƒgID‚©‚çƒyƒbƒgƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct s_pet* petdb_sql_load(int pet_id)
@@ -140,7 +140,7 @@ const struct s_pet* petdb_sql_load(int pet_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool petdb_sql_save(struct s_pet *p2)
@@ -177,7 +177,7 @@ bool petdb_sql_save(struct s_pet *p2)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆä½œæˆ
+ * ƒyƒbƒgì¬
  *------------------------------------------
  */
 bool petdb_sql_new(struct s_pet *p)
@@ -205,7 +205,7 @@ bool petdb_sql_new(struct s_pet *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int petdb_sql_final_sub(void *key, void *data, va_list ap)
@@ -224,7 +224,7 @@ void petdb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool petdb_sql_init(void)

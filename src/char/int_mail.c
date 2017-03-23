@@ -168,28 +168,28 @@ int mapif_parse_SendMail(int fd)
 
 	rd = chardb_nick2chardata(md.receive_name);
 
-	// å—ã‘å–ã‚‹äººãŒå­˜åœ¨ã—ã¾ã›ã‚“
+	// ó‚¯æ‚él‚ª‘¶İ‚µ‚Ü‚¹‚ñ
 	if(rd == NULL)
 	{
 		mapif_mail_res(fd,sd->st.account_id,1);
 		return 0;
 	}
 
-	// åŒã˜ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã«ã¯é€ã‚Œãªã„
+	// “¯‚¶ƒAƒJƒEƒ“ƒg‚É‚Í‘—‚ê‚È‚¢
 	if(sd->st.account_id == rd->st.account_id)
 	{
 		mapif_mail_res(fd,sd->st.account_id,1);
 		return 0;
 	}
 
-	// ä¿å­˜ã ã®ä½•ã ã®
+	// •Û‘¶‚¾‚Ì‰½‚¾‚Ì
 	m = maildb_load(rd->st.char_id);
 	if(m)
 	{
 		struct mail m2;
 		if(m->store >= MAIL_STORE_MAX)
 		{
-			// æœ€å¤§å—ä¿¡æ•°ã‚’è¶Šãˆã‚‹å ´åˆã¯ä¸€ç•ªå¤ã„ãƒ¡ãƒ¼ãƒ«ã‚’å‰Šé™¤ã™ã‚‹
+			// Å‘åóM”‚ğ‰z‚¦‚éê‡‚Íˆê”ÔŒÃ‚¢ƒ[ƒ‹‚ğíœ‚·‚é
 			struct mail_data md[MAIL_STORE_MAX];
 
 			maildb_read_mail(rd->st.char_id, m, md);
@@ -207,9 +207,9 @@ int mapif_parse_SendMail(int fd)
 		md.mail_num = 1;
 	}
 
-	maildb_store_mail(rd->st.char_id,&md);	// ä¿å­˜
-	mapif_mail_res(fd,sd->st.account_id,0);	// é€ä¿¡æˆåŠŸ
-	mapif_mail_newmail(fd,&md);		// æ–°ç€ãƒ¡ãƒ¼ãƒ«é€šçŸ¥
+	maildb_store_mail(rd->st.char_id,&md);	// •Û‘¶
+	mapif_mail_res(fd,sd->st.account_id,0);	// ‘—M¬Œ÷
+	mapif_mail_newmail(fd,&md);		// V’…ƒ[ƒ‹’Ê’m
 
 	return 0;
 }
@@ -223,7 +223,7 @@ int mapif_parse_DeleteMail(int fd)
 		return 0;
 
 	flag = maildb_deletemail(m->char_id,RFIFOL(fd,6),m);
-	mapif_mail_delmail(fd,m->account_id,RFIFOL(fd,6),!flag);	// çµæœé€ä¿¡
+	mapif_mail_delmail(fd,m->account_id,RFIFOL(fd,6),!flag);	// Œ‹‰Ê‘—M
 
 	return 0;
 }
@@ -306,7 +306,7 @@ int mapif_parse_CheckMail(int fd)
 
 	rd = chardb_nick2chardata(md->receive_name);
 
-	// å—ã‘å–ã‚‹äººãŒå­˜åœ¨ã—ã¾ã›ã‚“
+	// ó‚¯æ‚él‚ª‘¶İ‚µ‚Ü‚¹‚ñ
 	if(rd == NULL || rd->st.account_id == send_id)
 		mapif_mail_res(fd,send_id,1);
 	else
@@ -336,7 +336,7 @@ int mapif_parse_DeleteAppend(int fd)
 		{
 			if( md[i].mail_num == mail_num )
 			{
-				// ã“ã“ã§æ·»ä»˜ã‚¢ã‚¤ãƒ†ãƒ ã¨zenyã‚’å‰Šé™¤ã™ã‚‹
+				// ‚±‚±‚Å“Y•tƒAƒCƒeƒ€‚Æzeny‚ğíœ‚·‚é
 				memset(&md[i].item, 0, sizeof(struct item));
 				md[i].zeny = 0;
 				maildb_save_mail(char_id, i, m->store, md);
@@ -348,11 +348,11 @@ int mapif_parse_DeleteAppend(int fd)
 	return 0;
 }
 
-// map server ã‹ã‚‰ã®é€šä¿¡
-// ãƒ»ï¼‘ãƒ‘ã‚±ãƒƒãƒˆã®ã¿è§£æã™ã‚‹ã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒ‡ãƒ¼ã‚¿ã¯inter.cã«ã‚»ãƒƒãƒˆã—ã¦ãŠãã“ã¨
-// ãƒ»ãƒ‘ã‚±ãƒƒãƒˆé•·ãƒã‚§ãƒƒã‚¯ã‚„ã€RFIFOSKIPã¯å‘¼ã³å‡ºã—å…ƒã§è¡Œã‚ã‚Œã‚‹ã®ã§è¡Œã£ã¦ã¯ãªã‚‰ãªã„
-// ãƒ»ã‚¨ãƒ©ãƒ¼ãªã‚‰0(false)ã€ãã†ã§ãªã„ãªã‚‰1(true)ã‚’ã‹ãˆã•ãªã‘ã‚Œã°ãªã‚‰ãªã„
+// map server ‚©‚ç‚Ì’ÊM
+// E‚PƒpƒPƒbƒg‚Ì‚İ‰ğÍ‚·‚é‚±‚Æ
+// EƒpƒPƒbƒg’·ƒf[ƒ^‚Íinter.c‚ÉƒZƒbƒg‚µ‚Ä‚¨‚­‚±‚Æ
+// EƒpƒPƒbƒg’·ƒ`ƒFƒbƒN‚âARFIFOSKIP‚ÍŒÄ‚Ño‚µŒ³‚Ås‚í‚ê‚é‚Ì‚Ås‚Á‚Ä‚Í‚È‚ç‚È‚¢
+// EƒGƒ‰[‚È‚ç0(false)A‚»‚¤‚Å‚È‚¢‚È‚ç1(true)‚ğ‚©‚¦‚³‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
 int inter_mail_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)) {

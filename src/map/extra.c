@@ -277,9 +277,9 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		// write file
 		if ((fp = lock_fopen(extra_file_txt, &lock)) != NULL) {
-			fprintf(fp, "// このファイルの内容は変更しないでください！" NEWLINE
-			            "// MAPサーバによって自動的に管理されています" NEWLINE
-			            "// 追加したい場合は「%s」を利用してください" NEWLINE
+			fprintf(fp, "// ���̃t�@�C���̓��e�͕ύX���Ȃ��ł��������I" NEWLINE
+			            "// MAP�T�[�o�ɂ���Ď����I�ɊǗ�����Ă��܂�" NEWLINE
+			            "// �ǉ��������ꍇ�́u%s�v�𗘗p���Ă�������" NEWLINE
 			            "//" NEWLINE, extra_add_file_txt);
 			for (i = 0; i < extra_num; i++)
 				fprintf(fp,"%d,%d,%s" NEWLINE, extra_dat[i].item_id, extra_dat[i].quantity, extra_dat[i].name);
@@ -291,7 +291,7 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
- * 終了
+ * �I��
  *------------------------------------------
  */
 int do_final_extra(void)
@@ -306,7 +306,7 @@ int do_final_extra(void)
 }
 
 /*==========================================
- * 初期化
+ * ������
  *------------------------------------------
  */
 int do_init_extra(void)

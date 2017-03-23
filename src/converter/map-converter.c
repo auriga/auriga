@@ -37,7 +37,7 @@ struct script_mapreg {
 	} u;
 };
 
-// 豌ｸ邯夂噪繝槭ャ繝怜､画焚繧呈枚蟄怜�励°繧牙､画鋤
+// 永続的マップ変数を文字列から変換
 static int mapreg_fromstr(const char *line,struct script_mapreg *reg)
 {
 	char buf[256];
@@ -66,7 +66,7 @@ static int mapreg_fromstr(const char *line,struct script_mapreg *reg)
 	return 0;
 }
 
-// 豌ｸ邯夂噪繝槭ャ繝怜､画焚繧呈嶌縺崎ｾｼ縺ｿ
+// 永続的マップ変数を書き込み
 static int mapreg_tosql(struct script_mapreg *reg)
 {
 	char buf1[64], buf2[1024];

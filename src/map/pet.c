@@ -53,7 +53,7 @@ struct pet_db pet_db[MAX_PET_DB];
 static int pet_count;
 
 /*==========================================
- * ãƒšãƒƒãƒˆDBã®æ¤œç´¢
+ * ƒyƒbƒgDB‚ÌŒŸõ
  *------------------------------------------
  */
 static int pet_search_index(int key, int type)
@@ -92,7 +92,7 @@ static int pet_search_index(int key, int type)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆDBã‚’è¿”ã™
+ * ƒyƒbƒgDB‚ğ•Ô‚·
  *------------------------------------------
  */
 struct pet_db* pet_search_data(int key, int type)
@@ -142,7 +142,7 @@ int pet_hungry_val(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆã®æ”»æ’ƒå¯¾è±¡æ±ºå®š
+ * ƒyƒbƒg‚ÌUŒ‚‘ÎÛŒˆ’è
  *------------------------------------------
  */
 int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
@@ -192,7 +192,7 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 }
 
 /*==========================================
- * è…¹æ¸›ã‚Š
+ * • Œ¸‚è
  *------------------------------------------
  */
 static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
@@ -245,7 +245,7 @@ static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * è…¹æ¸›ã‚Šã‚¿ã‚¤ãƒãƒ¼å‰Šé™¤
+ * • Œ¸‚èƒ^ƒCƒ}[íœ
  *------------------------------------------
  */
 int pet_hungry_timer_delete(struct pet_data *pd)
@@ -333,7 +333,7 @@ static int pet_data_init(struct map_session_data *sd)
 }
 
 /*==========================================
- * å­µåŒ–
+ * ›z‰»
  *------------------------------------------
  */
 static int pet_birth_process(struct map_session_data *sd)
@@ -374,7 +374,7 @@ static int pet_birth_process(struct map_session_data *sd)
 }
 
 /*==========================================
- * interã‹ã‚‰æƒ…å ±å–å¾—
+ * inter‚©‚çî•ñæ“¾
  *------------------------------------------
  */
 int pet_recv_petdata(int account_id,struct s_pet *p,int flag)
@@ -412,7 +412,7 @@ int pet_recv_petdata(int account_id,struct s_pet *p,int flag)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆã®åµã‚’é¸æŠ
+ * ƒyƒbƒg‚Ì—‘‚ğ‘I‘ğ
  *------------------------------------------
  */
 int pet_select_egg(struct map_session_data *sd,short egg_index)
@@ -434,7 +434,7 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 }
 
 /*==========================================
- * æ•ç²è¦æ±‚
+ * •ßŠl—v‹
  *------------------------------------------
  */
 int pet_catch_process1(struct map_session_data *sd,int target_class)
@@ -448,7 +448,7 @@ int pet_catch_process1(struct map_session_data *sd,int target_class)
 }
 
 /*==========================================
- * ãƒ«ãƒ¼ãƒ¬ãƒƒãƒˆ
+ * ƒ‹[ƒŒƒbƒg
  *------------------------------------------
  */
 int pet_catch_process2(struct map_session_data *sd,int target_id)
@@ -465,7 +465,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	// target_idã«ã‚ˆã‚‹æ•µâ†’åµåˆ¤å®š
+	// target_id‚É‚æ‚é“G¨—‘”»’è
 	db = pet_search_data(md->class_,PET_CLASS);
 	if(db == NULL || sd->catch_target_class != md->class_) {
 		clif_pet_rulet(sd,0);
@@ -479,7 +479,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		pet_catch_rate = pet_catch_rate * battle_config.pet_catch_rate / 100;
 
 	if(atn_rand()%10000 < pet_catch_rate) {
-		// æˆåŠŸ
+		// ¬Œ÷
 		unit_remove_map(&md->bl,0,0);
 		clif_pet_rulet(sd,1);
 		intif_create_pet(
@@ -487,7 +487,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 			db->EggID,0,db->intimate,100,0,1,md->name
 		);
 	} else {
-		// å¤±æ•—
+		// ¸”s
 		clif_pet_rulet(sd,0);
 	}
 
@@ -495,7 +495,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 }
 
 /*==========================================
- * æ•ç²æˆåŠŸ
+ * •ßŠl¬Œ÷
  *------------------------------------------
  */
 int pet_get_egg(int account_id,int pet_id,int flag)
@@ -534,7 +534,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 }
 
 /*==========================================
- * ã‚¨ã‚µã‚’ã‚ã’ã‚‹
+ * ƒGƒT‚ğ‚ ‚°‚é
  *------------------------------------------
  */
 static int pet_food(struct map_session_data *sd)
@@ -594,7 +594,7 @@ static int pet_food(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹
+ * ƒpƒtƒH[ƒ}ƒ“ƒX
  *------------------------------------------
  */
 static int pet_performance(struct map_session_data *sd)
@@ -614,14 +614,14 @@ static int pet_performance(struct map_session_data *sd)
 		clif_pet_performance(&pd->bl, atn_rand() % perform + 1);
 	}
 
-	// ãƒ«ãƒ¼ãƒˆã—ãŸItemã‚’è½ã¨ã•ã›ã‚‹
+	// ƒ‹[ƒg‚µ‚½Item‚ğ—‚Æ‚³‚¹‚é
 	pet_lootitem_drop(pd,NULL);
 
 	return 0;
 }
 
 /*==========================================
- * åµã«æˆ»ã™
+ * —‘‚É–ß‚·
  *------------------------------------------
  */
 int pet_return_egg(struct map_session_data *sd)
@@ -635,7 +635,7 @@ int pet_return_egg(struct map_session_data *sd)
 	if(sd->status.pet_id <= 0)
 		return 0;
 
-	// ãƒ«ãƒ¼ãƒˆã—ãŸItemã‚’è½ã¨ã•ã›ã‚‹
+	// ƒ‹[ƒg‚µ‚½Item‚ğ—‚Æ‚³‚¹‚é
 	pet_lootitem_drop(sd->pd,sd);
 	unit_free(&sd->pd->bl,0);
 	sd->status.pet_id = 0;
@@ -674,7 +674,7 @@ int pet_return_egg(struct map_session_data *sd)
 }
 
 /*==========================================
- * è£…å‚™ã—ã¦ã„ãŸã‚‚ã®ã‚’å¤–ã™
+ * ‘•”õ‚µ‚Ä‚¢‚½‚à‚Ì‚ğŠO‚·
  *------------------------------------------
  */
 static int pet_unequipitem(struct map_session_data *sd)
@@ -708,7 +708,7 @@ static int pet_unequipitem(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®å¿œç­”
+ * ƒyƒbƒg‚Ìƒƒjƒ…[‚Ì‰“š
  *------------------------------------------
  */
 int pet_menu(struct map_session_data *sd,int menunum)
@@ -739,7 +739,7 @@ int pet_menu(struct map_session_data *sd,int menunum)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ã‚’è£…å‚™ã™ã‚‹
+ * ƒAƒCƒeƒ€‚ğ‘•”õ‚·‚é
  *------------------------------------------
  */
 void pet_equipitem(struct map_session_data *sd, int idx)
@@ -762,7 +762,7 @@ void pet_equipitem(struct map_session_data *sd, int idx)
 }
 
 /*==========================================
- * åå‰ã®å¤‰æ›´
+ * –¼‘O‚Ì•ÏX
  *------------------------------------------
  */
 int pet_change_name(struct map_session_data *sd,const char *name)
@@ -798,7 +798,7 @@ int pet_change_name(struct map_session_data *sd,const char *name)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ãƒ€ãƒ æ­©è¡Œ
+ * ƒ‰ƒ“ƒ_ƒ€•às
  *------------------------------------------
  */
 static int pet_randomwalk(struct pet_data *pd,unsigned int tick)
@@ -849,7 +849,7 @@ static int pet_randomwalk(struct pet_data *pd,unsigned int tick)
 }
 
 /*==========================================
- * ãƒ­ãƒƒã‚¯è§£é™¤
+ * ƒƒbƒN‰ğœ
  *------------------------------------------
  */
 static int pet_unlocktarget(struct pet_data *pd)
@@ -862,7 +862,7 @@ static int pet_unlocktarget(struct pet_data *pd)
 }
 
 /*==========================================
- * ãƒ«ãƒ¼ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®ã‚µãƒ¼ãƒ
+ * ƒ‹[ƒgƒAƒCƒeƒ€‚ÌƒT[ƒ`
  *------------------------------------------
  */
 static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
@@ -880,16 +880,16 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 	if(fitem->first_get_id > 0) {
 		struct map_session_data *sd = map_id2sd(fitem->first_get_id);
 		if(sd && sd->pd != pd) {
-			// ãƒ«ãƒ¼ãƒˆæ¨©ç„¡ã—
+			// ƒ‹[ƒgŒ –³‚µ
 			return 0;
 		}
 	}
 	if(pd->lootitem_weight + itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount > battle_config.pet_weight) {
-		// é‡é‡ã‚ªãƒ¼ãƒãƒ¼
+		// d—ÊƒI[ƒo[
 		return 0;
 	}
 
-	if( unit_can_reach(&pd->bl,bl->x,bl->y) && atn_rand()%1000 < 1000/(++(*itc)) ) {	// ç¯„å›²å†…ã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+	if( unit_can_reach(&pd->bl,bl->x,bl->y) && atn_rand()%1000 < 1000/(++(*itc)) ) {	// ”ÍˆÍ“à‚Å“™Šm—¦‚É‚·‚é
 		pd->target_id = bl->id;
 	}
 
@@ -897,13 +897,13 @@ static int pet_ai_sub_hard_lootsearch(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆAI
+ * ƒyƒbƒgAI
  *------------------------------------------
  */
 static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 {
 	struct map_session_data *sd = NULL;
-	const int loot_range = 3;	// ãƒ«ãƒ¼ãƒˆã«è¡Œãå°„ç¨‹ç¯„å›²
+	const int loot_range = 3;	// ƒ‹[ƒg‚És‚­Ë’ö”ÍˆÍ
 	int dist;
 
 	nullpo_retr(0, pd);
@@ -917,13 +917,13 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		return 0;
 	if(pd->ud.attacktimer != -1 || pd->ud.skilltimer != -1 || pd->bl.m != sd->bl.m)
 		return 0;
-	// æ­©è¡Œä¸­ã¯ï¼“æ­©ã”ã¨ã«AIå‡¦ç†ã‚’è¡Œã†
+	// •às’†‚Í‚R•à‚²‚Æ‚ÉAIˆ—‚ğs‚¤
 	if(pd->ud.walktimer != -1 && pd->ud.walkpath.path_pos <= 2)
 		return 0;
 	pd->last_thinktime = tick;
 
 	if(unit_isdead(&sd->bl)) {
-		// ä¸»äººãŒæ­»äº¡ã—ã¦ã„ã‚‹ãªã‚‰æ”»æ’ƒæ­¢ã‚
+		// ål‚ª€–S‚µ‚Ä‚¢‚é‚È‚çUŒ‚~‚ß
 		if(pd->target_id > 0) {
 			unit_stopattack(&pd->bl);
 			pet_unlocktarget(pd);
@@ -931,7 +931,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 	}
 
 	if(sd->pet.intimate <= 0) {
-		if(battle_config.pet_leave) {	// æ–°å¯†åº¦0ã§å³åˆ»æ¶ˆãˆã‚‹ã‹
+		if(battle_config.pet_leave) {	// V–§“x0‚Å‘¦Á‚¦‚é‚©
 			unit_free(&sd->pd->bl,0);
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
@@ -967,7 +967,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		return 0;
 	}
 
-	// ãƒšãƒƒãƒˆã«ã‚ˆã‚‹ãƒ«ãƒ¼ãƒˆ
+	// ƒyƒbƒg‚É‚æ‚éƒ‹[ƒg
 	if(battle_config.pet_lootitem) {
 		if( pd->target_id <= 0 &&
 		    (!battle_config.pet_loot_type || pd->lootitem_count < LOOTITEM_SIZE) &&
@@ -1008,13 +1008,13 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					pd->speed = sd->petDB->speed;
 				do {
 					if(i == 0) {
-						// æœ€åˆã¯AEGISã¨åŒã˜æ–¹æ³•ã§æ¤œç´¢
+						// Å‰‚ÍAEGIS‚Æ“¯‚¶•û–@‚ÅŒŸõ
 						dx = md->bl.x - pd->bl.x;
 						dy = md->bl.y - pd->bl.y;
 						if(dx < 0) dx++; else if(dx > 0) dx--;
 						if(dy < 0) dy++; else if(dy > 0) dy--;
 					} else {
-						// ã ã‚ãªã‚‰Athenaå¼(ãƒ©ãƒ³ãƒ€ãƒ )
+						// ‚¾‚ß‚È‚çAthena®(ƒ‰ƒ“ƒ_ƒ€)
 						dx = md->bl.x - pd->bl.x + atn_rand()%3 - 1;
 						dy = md->bl.y - pd->bl.y + atn_rand()%3 - 1;
 					}
@@ -1022,7 +1022,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					i++;
 				} while(ret == 0 && i < 5);
 
-				if(ret == 0) { // ç§»å‹•ä¸å¯èƒ½ãªæ‰€ã‹ã‚‰ã®æ”»æ’ƒãªã‚‰2æ­©ä¸‹ã‚‹
+				if(ret == 0) { // ˆÚ“®•s‰Â”\‚ÈŠ‚©‚ç‚ÌUŒ‚‚È‚ç2•à‰º‚é
 					if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
 					if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
 					unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
@@ -1035,10 +1035,10 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 				return 0;
 			if(pd->a_skill && atn_rand()%100 < pd->a_skill->rate + pd->msd->pet.intimate * pd->a_skill->bonusrate / 1000) {
 				if(skill_get_inf(pd->a_skill->id) & INF_GROUND) {
-					// å ´æ‰€æŒ‡å®š
+					// êŠw’è
 					unit_skilluse_pos( &pd->bl, md->bl.x, md->bl.y, pd->a_skill->id, pd->a_skill->lv);
 				} else {
-					// IDæŒ‡å®š
+					// IDw’è
 					unit_skilluse_id(&pd->bl, pd->target_id, pd->a_skill->id, pd->a_skill->lv);
 				}
 			} else if(battle_config.pet_attack_support) {
@@ -1046,17 +1046,17 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			}
 		}
 	}
-	else if(pd->target_id > 0) {	// ãƒ«ãƒ¼ãƒˆå‡¦ç†
+	else if(pd->target_id > 0) {	// ƒ‹[ƒgˆ—
 		struct block_list *bl_item = map_id2bl(pd->target_id);
 
 		if(bl_item == NULL || bl_item->type != BL_ITEM || bl_item->m != pd->bl.m ||
 		   (dist = path_distance(pd->bl.x,pd->bl.y,bl_item->x,bl_item->y)) > loot_range) {
-			 // é ã™ãã‚‹ã‹ã‚¢ã‚¤ãƒ†ãƒ ãŒãªããªã£ãŸ
+			 // ‰“‚·‚¬‚é‚©ƒAƒCƒeƒ€‚ª‚È‚­‚È‚Á‚½
 			pet_unlocktarget(pd);
 		} else if(dist > 0) {
 			int dx, dy;
 			if(pd->ud.walktimer != -1 && (DIFF_TICK(pd->next_walktime,tick) < 0 || path_distance(pd->ud.to_x,pd->ud.to_y,bl_item->x,bl_item->y) <= 0))
-				return 0; // æ—¢ã«ç§»å‹•ä¸­
+				return 0; // Šù‚ÉˆÚ“®’†
 
 			pd->next_walktime = tick + 500;
 			dx = bl_item->x - pd->bl.x;
@@ -1068,14 +1068,14 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 
 			unit_walktoxy(&pd->bl,pd->bl.x+dx,pd->bl.y+dy);
 		} else {
-			// ã‚¢ã‚¤ãƒ†ãƒ ã¾ã§ãŸã©ã‚Šç€ã„ãŸ
+			// ƒAƒCƒeƒ€‚Ü‚Å‚½‚Ç‚è’…‚¢‚½
 			struct flooritem_data *fitem = (struct flooritem_data *)bl_item;
 
 			if(pd->ud.attacktimer != -1)
-				return 0; // æ”»æ’ƒä¸­
-			if(pd->ud.walktimer != -1)	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+				return 0; // UŒ‚’†
+			if(pd->ud.walktimer != -1)	// •às’†‚È‚ç’â~
 				unit_stop_walking(&pd->bl,1);
-			if(pd->loottype == 1) {		// ãƒšãƒƒãƒˆè‡ªèº«ãŒæ‰€æœ‰ã™ã‚‹å ´åˆ
+			if(pd->loottype == 1) {		// ƒyƒbƒg©g‚ªŠ—L‚·‚éê‡
 				if(pd->lootitem_count < LOOTITEM_SIZE) {
 					memcpy(&pd->lootitem[pd->lootitem_count++],&fitem->item_data,sizeof(pd->lootitem[0]));
 					pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
@@ -1092,7 +1092,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					memmove(&pd->lootitem[0],&pd->lootitem[1],sizeof(pd->lootitem[0])*(LOOTITEM_SIZE-1));
 					memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
 				}
-			} else if(pd->loottype == 2) {	// ãƒšãƒƒãƒˆãŒæ‹¾ã£ãŸç¬é–“ã«é£¼ã„ä¸»ã¸
+			} else if(pd->loottype == 2) {	// ƒyƒbƒg‚ªE‚Á‚½uŠÔ‚É”‚¢å‚Ö
 				if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount)) {
 					pet_unlocktarget(pd);
 					return 0;
@@ -1111,7 +1111,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		}
 	}
 	else {
-		// å¾…æ©Ÿæ™‚ã€é©å½“ã«æ­©ãå›ã‚‹
+		// ‘Ò‹@A“K“–‚É•à‚«‰ñ‚é
 		/*
 		if(pc_issit(sd)) {
 			if(dist < 5 && path_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 5) {
@@ -1164,7 +1164,7 @@ static int pet_ai_hard(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * delayä»˜ãitem drop (timeré–¢æ•°)
+ * delay•t‚«item drop (timerŠÖ”)
  *------------------------------------------
  */
 static int pet_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
@@ -1173,7 +1173,7 @@ static int pet_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 
 	ditem = (struct delay_item_drop2 *)data;
 
-	// ãƒšãƒƒãƒˆã®åµãªã‚‰ãƒ‰ãƒ­ãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¤ã‚­ãƒ¥ãƒ¼ã‹ã‚‰popã™ã‚‹
+	// ƒyƒbƒg‚Ì—‘‚È‚çƒhƒƒbƒvƒfƒBƒŒƒCƒLƒ…[‚©‚çpop‚·‚é
 	if(ditem->item_data.card[0] == (short)0xff00) {
 		struct delay_item_drop2 *p = map_pop_delayitem_que();
 		if(p != ditem)
@@ -1190,7 +1190,7 @@ static int pet_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * ãƒ«ãƒ¼ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã®ãƒ‰ãƒ­ãƒƒãƒ—
+ * ƒ‹[ƒgƒAƒCƒeƒ€‚Ìƒhƒƒbƒv
  *------------------------------------------
  */
 int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
@@ -1208,7 +1208,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 		if(sd) {
 			struct item *item_data = &pd->lootitem[i];
 
-			// è½ã¨ã•ãªã„ã§ç›´æ¥PCã®Itemæ¬„ã¸
+			// —‚Æ‚³‚È‚¢‚Å’¼ÚPC‚ÌItem—“‚Ö
 			if((flag = pc_additem(sd,item_data,item_data->amount))) {
 				clif_additem(sd,0,0,flag);
 				map_addflooritem(item_data,item_data->amount,pd->bl.m,pd->bl.x,pd->bl.y,0,0,0,0);
@@ -1227,7 +1227,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			ditem->next      = NULL;
 
 			if(ditem->item_data.card[0] == (short)0xff00) {
-				// ãƒšãƒƒãƒˆã®åµã¯ãƒ‰ãƒ­ãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¤ã‚­ãƒ¥ãƒ¼ã«ä¿å­˜ã™ã‚‹
+				// ƒyƒbƒg‚Ì—‘‚ÍƒhƒƒbƒvƒfƒBƒŒƒCƒLƒ…[‚É•Û‘¶‚·‚é
 				map_push_delayitem_que(ditem);
 				add_timer(tick+540,pet_delay_item_drop2,0,ditem);
 			} else {
@@ -1238,7 +1238,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 	memset(pd->lootitem,0,LOOTITEM_SIZE * sizeof(struct item));
 	pd->lootitem_count  = 0;
 	pd->lootitem_weight = 0;
-	pd->lootitem_timer  = tick + 10000;	// 10*1000msã®é–“æ‹¾ã‚ãªã„
+	pd->lootitem_timer  = tick + 10000;	// 10*1000ms‚ÌŠÔE‚í‚È‚¢
 
 	return 1;
 }
@@ -1263,7 +1263,7 @@ int pet_lootitem_free(struct pet_data *pd)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆã‚¹ã‚­ãƒ«
+ * ƒyƒbƒgƒXƒLƒ‹
  *------------------------------------------
  */
 int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
@@ -1297,10 +1297,10 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 	}
 
 	if(skill_get_inf(pd->s_skill->id) & INF_GROUND) {
-		// å ´æ‰€æŒ‡å®š
+		// êŠw’è
 		unit_skilluse_pos( &pd->bl, sd->bl.x, sd->bl.y, pd->s_skill->id, pd->s_skill->lv);
 	} else {
-		// IDæŒ‡å®š
+		// IDw’è
 		unit_skilluse_id(&pd->bl, sd->bl.id, pd->s_skill->id, pd->s_skill->lv);
 	}
 
@@ -1310,7 +1310,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * ãƒšãƒƒãƒˆãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+ * ƒyƒbƒgƒf[ƒ^“Ç‚İ‚İ
  *------------------------------------------
  */
 int read_petdb(void)
@@ -1389,10 +1389,10 @@ int read_petdb(void)
 			pet_db[j].name[23]  = '\0';
 			pet_db[j].jname[23] = '\0';
 
-			// ãƒšãƒƒãƒˆã®åµã®ã‚¢ã‚¤ãƒ†ãƒ IDã«pet_eggãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+			// ƒyƒbƒg‚Ì—‘‚ÌƒAƒCƒeƒ€ID‚Épet_eggƒtƒ‰ƒO‚ğƒZƒbƒg‚·‚é
 			itemdb_search(pet_db[j].EggID)->flag.pet_egg = 1;
 
-			// ãƒšãƒƒãƒˆã®ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼ã®ã‚¢ã‚¤ãƒ†ãƒ IDã«pet_acceãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+			// ƒyƒbƒg‚ÌƒAƒNƒZƒTƒŠ[‚ÌƒAƒCƒeƒ€ID‚Épet_acceƒtƒ‰ƒO‚ğƒZƒbƒg‚·‚é
 			itemdb_search(pet_db[j].AcceID)->flag.pet_acce = 1;
 
 			if(k < 0)
@@ -1418,14 +1418,14 @@ int read_petdb(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 int do_init_pet(void)
 {
 	unsigned int tick = gettick();
 
-	// åˆå›ã®ã¿ã§ãƒªãƒ­ãƒ¼ãƒ‰æ™‚ã¯ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’ã‚¯ãƒªã‚¢ã—ãªã„
+	// ‰‰ñ‚Ì‚İ‚ÅƒŠƒ[ƒh‚Íƒf[ƒ^ƒx[ƒX‚ğƒNƒŠƒA‚µ‚È‚¢
 	memset(pet_db,0,sizeof(pet_db));
 	pet_count = 0;
 
@@ -1442,7 +1442,7 @@ int do_init_pet(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 int do_final_pet(void)

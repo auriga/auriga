@@ -22,11 +22,11 @@
 #ifndef _INTERLOG_SQL_H_
 #define _INTERLOG_SQL_H_
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 int interlog_log_sql(const char *fmt, ...);
 int interlog_config_read_sql(const char *str, const char *str2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define interlog_log interlog_log_sql
 #define interlog_config_read interlog_config_read_sql
 

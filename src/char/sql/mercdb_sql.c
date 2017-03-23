@@ -34,7 +34,7 @@
 static struct dbt *merc_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int mercdb_sql_config_read_sub(const char* w1,const char *w2)
@@ -43,7 +43,7 @@ int mercdb_sql_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int mercdb_sql_sync(void)
@@ -53,7 +53,7 @@ int mercdb_sql_sync(void)
 }
 
 /*==========================================
- * å‚­å…µå‰Šé™¤
+ * —b•ºíœ
  *------------------------------------------
  */
 bool mercdb_sql_delete(int merc_id)
@@ -88,7 +88,7 @@ bool mercdb_sql_delete(int merc_id)
 }
 
 /*==========================================
- * å‚­å…µIDã‹ã‚‰å‚­å…µãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * —b•ºID‚©‚ç—b•ºƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_mercstatus* mercdb_sql_load(int merc_id)
@@ -143,7 +143,7 @@ const struct mmo_mercstatus* mercdb_sql_load(int merc_id)
 	}
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool mercdb_sql_save(struct mmo_mercstatus *p2)
@@ -199,7 +199,7 @@ bool mercdb_sql_save(struct mmo_mercstatus *p2)
 }
 
 /*==========================================
- * å‚­å…µä½œæˆ
+ * —b•ºì¬
  *------------------------------------------
  */
 bool mercdb_sql_new(struct mmo_mercstatus *p)
@@ -229,7 +229,7 @@ bool mercdb_sql_new(struct mmo_mercstatus *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int mercdb_sql_final_sub(void *key,void *data,va_list ap)
@@ -248,7 +248,7 @@ void mercdb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool mercdb_sql_init(void)

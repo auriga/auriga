@@ -28,7 +28,7 @@
 #include "pc.h"
 
 /*==========================================
- * é ã‘å…¥ã‚Œ
+ * —a‚¯“ü‚ê
  *------------------------------------------
  */
 void bank_deposit(struct map_session_data *sd, int target_id, int zeny)
@@ -41,12 +41,12 @@ void bank_deposit(struct map_session_data *sd, int target_id, int zeny)
 	if(!tmpsd || sd != tmpsd)
 		return;
 
-	// å–å¼•ä¸å¯ãƒã‚§ãƒƒã‚¯
+	// æˆø•s‰Âƒ`ƒFƒbƒN
 	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
 	    sd->state.mail_appending || sd->chatID != 0 )
 		return;
 
-	// Zenyãƒã‚§ãƒƒã‚¯
+	// Zenyƒ`ƒFƒbƒN
 	if(zeny <= 0) {
 		clif_bank_deposit(sd, 1);
 		return;
@@ -60,21 +60,21 @@ void bank_deposit(struct map_session_data *sd, int target_id, int zeny)
 		return;
 	}
 
-	// Zenyã®æ”¯æ‰•ã„
+	// Zeny‚Ìx•¥‚¢
 	pc_payzeny(sd, zeny);
 	sd->deposit += zeny;
 
-	// é é‡‘é¡å¤‰æ•°ã®ä¿å­˜
+	// —a‹àŠz•Ï”‚Ì•Û‘¶
 	pc_setaccountreg(sd,"#PC_DEPOSIT",sd->deposit);
 
-	// å–å¼•çµæœé€ä¿¡
+	// æˆøŒ‹‰Ê‘—M
 	clif_bank_deposit(sd, 0);
 
 	return;
 }
 
 /*==========================================
- * å¼•ãå‡ºã—
+ * ˆø‚«o‚µ
  *------------------------------------------
  */
 void bank_withdraw(struct map_session_data *sd, int target_id, int zeny)
@@ -87,12 +87,12 @@ void bank_withdraw(struct map_session_data *sd, int target_id, int zeny)
 	if(!tmpsd || sd != tmpsd)
 		return;
 
-	// å–å¼•ä¸å¯ãƒã‚§ãƒƒã‚¯
+	// æˆø•s‰Âƒ`ƒFƒbƒN
 	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
 	    sd->state.mail_appending || sd->chatID != 0 )
 		return;
 
-	// Zenyãƒã‚§ãƒƒã‚¯
+	// Zenyƒ`ƒFƒbƒN
 	if(zeny <= 0) {
 		clif_bank_withdraw(sd, 2);
 		return;
@@ -104,14 +104,14 @@ void bank_withdraw(struct map_session_data *sd, int target_id, int zeny)
 	if(sd->status.zeny > MAX_ZENY - zeny)
 		return;
 
-	// Zenyã®æ”¯æ‰•ã„
+	// Zeny‚Ìx•¥‚¢
 	pc_getzeny(sd, zeny);
 	sd->deposit -= zeny;
 
-	// é é‡‘é¡å¤‰æ•°ã®ä¿å­˜
+	// —a‹àŠz•Ï”‚Ì•Û‘¶
 	pc_setaccountreg(sd,"#PC_DEPOSIT",sd->deposit);
 
-	// å–å¼•çµæœé€ä¿¡
+	// æˆøŒ‹‰Ê‘—M
 	clif_bank_withdraw(sd, 0);
 
 	return;

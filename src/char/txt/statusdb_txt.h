@@ -27,7 +27,7 @@
 #include "utils.h"
 #include "../int_status.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool statusdb_txt_init(void);
 int statusdb_txt_sync(void);
 bool statusdb_txt_delete(int char_id);
@@ -36,7 +36,7 @@ bool statusdb_txt_save(struct scdata *sc2);
 void statusdb_txt_final(void);
 int statusdb_txt_config_read_sub(const char *w1, const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define statusdb_init   statusdb_txt_init
 #define statusdb_sync   statusdb_txt_sync
 #define statusdb_delete statusdb_txt_delete

@@ -71,13 +71,13 @@ static const int packet_len_table[]={
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 };
 
-extern int char_fd;		// inter serverã®fdã¯char_fdã‚’ä½¿ã†
-#define inter_fd (char_fd)	// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+extern int char_fd;		// inter server‚Ìfd‚Íchar_fd‚ğg‚¤
+#define inter_fd (char_fd)	// ƒGƒCƒŠƒAƒX
 
 //-----------------------------------------------------------------
-// inter serverã¸ã®é€ä¿¡
+// inter server‚Ö‚Ì‘—M
 
-// ãƒšãƒƒãƒˆ
+// ƒyƒbƒg
 void intif_create_pet(int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
 	short pet_equip,short intimate,short hungry,char rename_flag,char incubate,const char *pet_name)
 {
@@ -141,7 +141,7 @@ void intif_delete_petdata(int pet_id)
 	return;
 }
 
-// ãƒ›ãƒ 
+// ƒzƒ€
 void intif_create_hom(int account_id, int char_id, struct mmo_homunstatus *h)
 {
 	if (inter_fd < 0)
@@ -199,7 +199,7 @@ void intif_delete_homdata(int account_id, int char_id, int homun_id)
 	return;
 }
 
-// å‚­å…µ
+// —b•º
 void intif_create_merc(int account_id, int char_id, struct mmo_mercstatus *m)
 {
 	if (inter_fd < 0)
@@ -257,7 +257,7 @@ void intif_delete_mercdata(int account_id, int char_id, int merc_id)
 	return;
 }
 
-// ç²¾éœŠ
+// ¸—ì
 void intif_create_elem(int account_id, int char_id, struct mmo_elemstatus *m)
 {
 	if (inter_fd < 0)
@@ -315,7 +315,7 @@ void intif_delete_elemdata(int account_id, int char_id, int elem_id)
 	return;
 }
 
-// GMãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡
+// GMƒƒbƒZ[ƒW‚ğ‘—M
 void intif_GMmessage(const char* mes, size_t len, int flag)
 {
 	int lp = (flag&0x30)? 4: 0;
@@ -325,7 +325,7 @@ void intif_GMmessage(const char* mes, size_t len, int flag)
 
 	WFIFOW(inter_fd,0) = 0x3000;
 	WFIFOW(inter_fd,2) = (unsigned short)(lp + len + 16);
-	WFIFOL(inter_fd,4) = 0xFF000000;	// non colorç”¨ãƒ€ãƒŸãƒ¼ã‚³ãƒ¼ãƒ‰
+	WFIFOL(inter_fd,4) = 0xFF000000;	// non color—pƒ_ƒ~[ƒR[ƒh
 	WFIFOW(inter_fd,8) = 0;
 	WFIFOW(inter_fd,10) = 0;
 	WFIFOW(inter_fd,12) = 0;
@@ -344,7 +344,7 @@ void intif_GMmessage(const char* mes, size_t len, int flag)
 	return;
 }
 
-// GMãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆãƒãƒ«ãƒã‚«ãƒ©ãƒ¼ï¼‰ã‚’é€ä¿¡
+// GMƒƒbƒZ[ƒWiƒ}ƒ‹ƒ`ƒJƒ‰[j‚ğ‘—M
 int intif_announce(const char* mes,size_t len,unsigned int color,int type,int size,int align,int pos_y)
 {
 	if (inter_fd < 0)
@@ -363,7 +363,7 @@ int intif_announce(const char* mes,size_t len,unsigned int color,int type,int si
 	return 0;
 }
 
-// Wisã®é€ä¿¡
+// Wis‚Ì‘—M
 void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, size_t mes_len)
 {
 	nullpo_retv(sd);
@@ -382,7 +382,7 @@ void intif_wis_message(struct map_session_data *sd, const char *nick, const char
 	return;
 }
 
-// Wisã®è¿”äº‹
+// Wis‚Ì•Ô–
 static int intif_wis_replay(int id,int flag)
 {
 	if (inter_fd < 0)
@@ -396,7 +396,7 @@ static int intif_wis_replay(int id,int flag)
 	return 0;
 }
 
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°é€ä¿¡
+// ƒAƒJƒEƒ“ƒg•Ï”‘—M
 int intif_saveaccountreg(struct map_session_data *sd)
 {
 	int j,p;
@@ -418,7 +418,7 @@ int intif_saveaccountreg(struct map_session_data *sd)
 	return 0;
 }
 
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°è¦æ±‚
+// ƒAƒJƒEƒ“ƒg•Ï”—v‹
 int intif_request_accountreg(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
@@ -433,7 +433,7 @@ int intif_request_accountreg(struct map_session_data *sd)
 	return 0;
 }
 
-// å€‰åº«ãƒ‡ãƒ¼ã‚¿è¦æ±‚
+// ‘qŒÉƒf[ƒ^—v‹
 int intif_request_storage(int account_id)
 {
 	if (inter_fd < 0)
@@ -446,7 +446,7 @@ int intif_request_storage(int account_id)
 	return 0;
 }
 
-// å€‰åº«ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+// ‘qŒÉƒf[ƒ^‘—M
 int intif_send_storage(struct storage *stor)
 {
 	nullpo_retr(0, stor);
@@ -463,7 +463,7 @@ int intif_send_storage(struct storage *stor)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿è¦æ±‚
+// ƒMƒ‹ƒh‘qŒÉƒf[ƒ^—v‹
 int intif_request_guild_storage(int account_id,int guild_id)
 {
 	if (inter_fd < 0)
@@ -477,7 +477,7 @@ int intif_request_guild_storage(int account_id,int guild_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+// ƒMƒ‹ƒh‘qŒÉƒf[ƒ^‘—M
 int intif_send_guild_storage(int account_id,struct guild_storage *gstor)
 {
 	if (inter_fd < 0)
@@ -494,7 +494,7 @@ int intif_send_guild_storage(int account_id,struct guild_storage *gstor)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ­ãƒƒã‚¯è¦æ±‚
+// ƒMƒ‹ƒh‘qŒÉƒƒbƒN—v‹
 int intif_trylock_guild_storage(struct map_session_data *sd,int npc_id)
 {
 	if (inter_fd < 0)
@@ -509,7 +509,7 @@ int intif_trylock_guild_storage(struct map_session_data *sd,int npc_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ­ãƒƒã‚¯è§£é™¤
+// ƒMƒ‹ƒh‘qŒÉƒƒbƒN‰ğœ
 int intif_unlock_guild_storage(int guild_id)
 {
 	if (inter_fd < 0)
@@ -522,7 +522,7 @@ int intif_unlock_guild_storage(int guild_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒƒãƒ‰ãƒ­ãƒƒã‚¯è§£é™¤
+// ƒMƒ‹ƒh‘qŒÉƒfƒbƒhƒƒbƒN‰ğœ
 int intif_deadlock_guild_storage(int guild_id)
 {
 	if (inter_fd < 0)
@@ -535,7 +535,7 @@ int intif_deadlock_guild_storage(int guild_id)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ä½œæˆè¦æ±‚
+// ƒp[ƒeƒBì¬—v‹
 void intif_create_party(struct map_session_data *sd, const char *name, int item, int item2)
 {
 	nullpo_retv(sd);
@@ -557,7 +557,7 @@ void intif_create_party(struct map_session_data *sd, const char *name, int item,
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£æƒ…å ±è¦æ±‚
+// ƒp[ƒeƒBî•ñ—v‹
 int intif_request_partyinfo(int party_id)
 {
 	if (inter_fd < 0)
@@ -570,7 +570,7 @@ int intif_request_partyinfo(int party_id)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è¿½åŠ è¦æ±‚
+// ƒp[ƒeƒB’Ç‰Á—v‹
 void intif_party_addmember(struct map_session_data *sd)
 {
 	nullpo_retv(sd);
@@ -590,7 +590,7 @@ void intif_party_addmember(struct map_session_data *sd)
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šå¤‰æ›´
+// ƒp[ƒeƒBİ’è•ÏX
 void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp, int item)
 {
 	if (inter_fd < 0)
@@ -607,7 +607,7 @@ void intif_party_changeoption(int party_id, int account_id, int baby_id, int exp
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è„±é€€è¦æ±‚
+// ƒp[ƒeƒB’E‘Ş—v‹
 void intif_party_leave(int party_id, int account_id, int char_id)
 {
 	if (inter_fd < 0)
@@ -622,7 +622,7 @@ void intif_party_leave(int party_id, int account_id, int char_id)
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ç§»å‹•è¦æ±‚
+// ƒp[ƒeƒBˆÚ“®—v‹
 void intif_party_changemap(struct map_session_data *sd, unsigned char online)
 {
 	nullpo_retv(sd);
@@ -642,7 +642,7 @@ void intif_party_changemap(struct map_session_data *sd, unsigned char online)
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼è§£æ•£è¦æ±‚
+// ƒp[ƒeƒB[‰ğU—v‹
 int intif_break_party(int party_id)
 {
 	if (inter_fd < 0)
@@ -655,7 +655,7 @@ int intif_break_party(int party_id)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ä¼šè©±é€ä¿¡
+// ƒp[ƒeƒB‰ï˜b‘—M
 int intif_party_message(int party_id,int account_id,const char *mes,size_t len)
 {
 	if (inter_fd < 0)
@@ -671,7 +671,7 @@ int intif_party_message(int party_id,int account_id,const char *mes,size_t len)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ç«¶åˆãƒã‚§ãƒƒã‚¯è¦æ±‚
+// ƒp[ƒeƒB‹£‡ƒ`ƒFƒbƒN—v‹
 int intif_party_checkconflict(int party_id,int account_id,int char_id)
 {
 	if (inter_fd < 0)
@@ -686,7 +686,7 @@ int intif_party_checkconflict(int party_id,int account_id,int char_id)
 	return 0;
 }
 
-//ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼å¤‰æ›´è¦æ±‚
+//ƒp[ƒeƒB[ƒŠ[ƒ_[•ÏX—v‹
 int intif_party_leaderchange(int party_id,int account_id,int char_id)
 {
 	if (inter_fd < 0)
@@ -701,7 +701,7 @@ int intif_party_leaderchange(int party_id,int account_id,int char_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ä½œæˆè¦æ±‚
+// ƒMƒ‹ƒhì¬—v‹
 void intif_guild_create(const char *name, const struct guild_member *master)
 {
 	nullpo_retv(master);
@@ -719,7 +719,7 @@ void intif_guild_create(const char *name, const struct guild_member *master)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰æƒ…å ±è¦æ±‚
+// ƒMƒ‹ƒhî•ñ—v‹
 void intif_guild_request_info(int guild_id)
 {
 	if (inter_fd < 0)
@@ -732,7 +732,7 @@ void intif_guild_request_info(int guild_id)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè¿½åŠ è¦æ±‚
+// ƒMƒ‹ƒhƒƒ“ƒo’Ç‰Á—v‹
 int intif_guild_addmember(int guild_id,struct guild_member *m)
 {
 	if (inter_fd < 0)
@@ -747,7 +747,7 @@ int intif_guild_addmember(int guild_id,struct guild_member *m)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè„±é€€/è¿½æ”¾è¦æ±‚
+// ƒMƒ‹ƒhƒƒ“ƒo’E‘Ş/’Ç•ú—v‹
 int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const char *mes)
 {
 	if (inter_fd < 0)
@@ -764,7 +764,7 @@ int intif_guild_leave(int guild_id,int account_id,int char_id,int flag,const cha
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒã®ã‚ªãƒ³ãƒ©ã‚¤ãƒ³çŠ¶æ³/Lvæ›´æ–°è¦æ±‚
+// ƒMƒ‹ƒhƒƒ“ƒo‚ÌƒIƒ“ƒ‰ƒCƒ“ó‹µ/LvXV—v‹
 void intif_guild_memberinfoshort(int guild_id,int account_id, int char_id, unsigned char online, int lv, int class_)
 {
 	if (inter_fd < 0)
@@ -782,7 +782,7 @@ void intif_guild_memberinfoshort(int guild_id,int account_id, int char_id, unsig
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰è§£æ•£é€šçŸ¥
+// ƒMƒ‹ƒh‰ğU’Ê’m
 int intif_guild_break(int guild_id)
 {
 	if (inter_fd < 0)
@@ -795,7 +795,7 @@ int intif_guild_break(int guild_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ä¼šè©±é€ä¿¡
+// ƒMƒ‹ƒh‰ï˜b‘—M
 int intif_guild_message(int guild_id,int account_id,const char *mes,size_t len)
 {
 	if (inter_fd < 0)
@@ -811,7 +811,7 @@ int intif_guild_message(int guild_id,int account_id,const char *mes,size_t len)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ç«¶åˆãƒã‚§ãƒƒã‚¯è¦æ±‚
+// ƒMƒ‹ƒh‹£‡ƒ`ƒFƒbƒN—v‹
 int intif_guild_checkconflict(int guild_id,int account_id,int char_id)
 {
 	if (inter_fd < 0)
@@ -826,7 +826,7 @@ int intif_guild_checkconflict(int guild_id,int account_id,int char_id)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸºæœ¬æƒ…å ±å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒhŠî–{î•ñ•ÏX—v‹
 int intif_guild_change_basicinfo(int guild_id,int type,const void *data,int len)
 {
 	if (inter_fd < 0)
@@ -842,7 +842,7 @@ int intif_guild_change_basicinfo(int guild_id,int type,const void *data,int len)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒæƒ…å ±å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒhƒƒ“ƒoî•ñ•ÏX—v‹
 int intif_guild_change_memberinfo(int guild_id,int account_id,int char_id,int type,const void *data,int len)
 {
 	if (inter_fd < 0)
@@ -860,7 +860,7 @@ int intif_guild_change_memberinfo(int guild_id,int account_id,int char_id,int ty
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å½¹è·å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒh–ğE•ÏX—v‹
 void intif_guild_position(int guild_id, int idx, struct guild_position *p)
 {
 	if (inter_fd < 0)
@@ -876,7 +876,7 @@ void intif_guild_position(int guild_id, int idx, struct guild_position *p)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«ã‚¢ãƒƒãƒ—è¦æ±‚
+// ƒMƒ‹ƒhƒXƒLƒ‹ƒAƒbƒv—v‹
 int intif_guild_skillup(int guild_id,int skill_num,int account_id,int level,unsigned char flag)
 {
 	if (inter_fd < 0)
@@ -893,7 +893,7 @@ int intif_guild_skillup(int guild_id,int skill_num,int account_id,int level,unsi
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŒç›Ÿ/æ•µå¯¾è¦æ±‚
+// ƒMƒ‹ƒh“¯–¿/“G‘Î—v‹
 int intif_guild_alliance(int guild_id1,int guild_id2,int account_id1,int account_id2,int flag)
 {
 	if (inter_fd < 0)
@@ -910,7 +910,7 @@ int intif_guild_alliance(int guild_id1,int guild_id2,int account_id1,int account
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å‘ŠçŸ¥å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒh’m•ÏX—v‹
 void intif_guild_notice(int guild_id, const char *mes1, const char *mes2)
 {
 	if (inter_fd < 0)
@@ -925,7 +925,7 @@ void intif_guild_notice(int guild_id, const char *mes1, const char *mes2)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒhƒGƒ“ƒuƒŒƒ€•ÏX—v‹
 void intif_guild_emblem(int guild_id, unsigned short len, const char *data)
 {
 	if (guild_id <= 0 || len > 2000) // len always >=0, it's unsigned
@@ -944,7 +944,7 @@ void intif_guild_emblem(int guild_id, unsigned short len, const char *data)
 	return;
 }
 
-// ç¾åœ¨ã®ã‚®ãƒ«ãƒ‰åŸå é ˜ã‚®ãƒ«ãƒ‰ã‚’èª¿ã¹ã‚‹
+// Œ»İ‚ÌƒMƒ‹ƒhéè—ÌƒMƒ‹ƒh‚ğ’²‚×‚é
 int intif_guild_castle_dataload(int castle_id, int idx)
 {
 	if (inter_fd < 0)
@@ -958,7 +958,7 @@ int intif_guild_castle_dataload(int castle_id, int idx)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸå é ˜ã‚®ãƒ«ãƒ‰å¤‰æ›´è¦æ±‚
+// ƒMƒ‹ƒhéè—ÌƒMƒ‹ƒh•ÏX—v‹
 int intif_guild_castle_datasave(int castle_id, int idx, int value)
 {
 	if (inter_fd < 0)
@@ -974,7 +974,7 @@ int intif_guild_castle_datasave(int castle_id, int idx, int value)
 }
 
 /*==========================================
- * æŒ‡å®šã—ãŸåå‰ã®ã‚­ãƒ£ãƒ©ã®å ´æ‰€è¦æ±‚
+ * w’è‚µ‚½–¼‘O‚ÌƒLƒƒƒ‰‚ÌêŠ—v‹
  *------------------------------------------
  */
 static int intif_charposreq(int account_id,const char *name,int flag)
@@ -992,7 +992,7 @@ static int intif_charposreq(int account_id,const char *name,int flag)
 }
 
 /*==========================================
- * æŒ‡å®šã—ãŸåå‰ã®ã‚­ãƒ£ãƒ©ã®å ´æ‰€ã«ç§»å‹•ã™ã‚‹
+ * w’è‚µ‚½–¼‘O‚ÌƒLƒƒƒ‰‚ÌêŠ‚ÉˆÚ“®‚·‚é
  * @jumpto
  *------------------------------------------
  */
@@ -1004,7 +1004,7 @@ int intif_jumpto(int account_id,const char *name)
 }
 
 /*==========================================
- * æŒ‡å®šã—ãŸåå‰ã®ã‚­ãƒ£ãƒ©ã®å ´æ‰€è¡¨ç¤ºã™ã‚‹
+ * w’è‚µ‚½–¼‘O‚ÌƒLƒƒƒ‰‚ÌêŠ•\¦‚·‚é
  * @where
  *------------------------------------------
  */
@@ -1016,8 +1016,8 @@ int intif_where(int account_id,const char *name)
 }
 
 /*==========================================
- * æŒ‡å®šã—ãŸåå‰ã®ã‚­ãƒ£ãƒ©ã‚’å‘¼ã³å¯„ã›ã‚‹
- * flag=0 ã‚ãªãŸã«é€¢ã„ãŸã„
+ * w’è‚µ‚½–¼‘O‚ÌƒLƒƒƒ‰‚ğŒÄ‚ÑŠñ‚¹‚é
+ * flag=0 ‚ ‚È‚½‚Éˆ§‚¢‚½‚¢
  * flag=1 @recall
  *------------------------------------------
  */
@@ -1044,10 +1044,10 @@ int intif_charmovereq(struct map_session_data *sd,const char *name,int flag)
 }
 
 /*==========================================
- * æŒ‡å®šã—ãŸåå‰ã®ã‚­ãƒ£ãƒ©ã‚’æŒ‡å®šã—ãŸå ´æ‰€ã«å‘¼ã³å¯„ã›ã‚‹
- * flag=0 ã‚ãªãŸã«é€¢ã„ãŸã„
+ * w’è‚µ‚½–¼‘O‚ÌƒLƒƒƒ‰‚ğw’è‚µ‚½êŠ‚ÉŒÄ‚ÑŠñ‚¹‚é
+ * flag=0 ‚ ‚È‚½‚Éˆ§‚¢‚½‚¢
  * flag=1 @recall
- * flag=2 é¤Šå­ç³»å‘¼ã³å‡ºã—ã‚¹ã‚­ãƒ«
+ * flag=2 —{qŒnŒÄ‚Ño‚µƒXƒLƒ‹
  *------------------------------------------
  */
 int intif_charmovereq2(struct map_session_data *sd,const char *name,const char *mapname,short x, short y,int flag)
@@ -1073,7 +1073,7 @@ int intif_charmovereq2(struct map_session_data *sd,const char *name,const char *
 }
 
 /*==========================================
- * å¯¾è±¡IDã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡
+ * ‘ÎÛID‚ÉƒƒbƒZ[ƒW‚ğ‘—M
  *------------------------------------------
  */
 int intif_displaymessage(int account_id, const char* mes)
@@ -1094,7 +1094,7 @@ int intif_displaymessage(int account_id, const char* mes)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«BOXæ›´æ–°è¦æ±‚
+ * ƒ[ƒ‹BOXXV—v‹
  *------------------------------------------
  */
 int intif_mailbox(int char_id)
@@ -1110,7 +1110,7 @@ int intif_mailbox(int char_id)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®é€ä¿¡
+ * ƒ[ƒ‹‚Ì‘—M
  *------------------------------------------
  */
 int intif_sendmail(struct mail_data *md)
@@ -1130,7 +1130,7 @@ int intif_sendmail(struct mail_data *md)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®å‰Šé™¤è¦æ±‚
+ * ƒ[ƒ‹‚Ìíœ—v‹
  *------------------------------------------
  */
 int intif_deletemail(int char_id,int mail_num)
@@ -1147,7 +1147,7 @@ int intif_deletemail(int char_id,int mail_num)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã®é¸æŠå—ä¿¡
+ * ƒ[ƒ‹‚Ì‘I‘ğóM
  *------------------------------------------
  */
 int intif_readmail(int char_id,int mail_num)
@@ -1164,7 +1164,7 @@ int intif_readmail(int char_id,int mail_num)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã«æ·»ä»˜ã•ã‚ŒãŸã‚‚ã®å—ä¿¡
+ * ƒ[ƒ‹‚É“Y•t‚³‚ê‚½‚à‚ÌóM
  *------------------------------------------
  */
 int intif_mail_getappend(int char_id,int mail_num)
@@ -1181,7 +1181,7 @@ int intif_mail_getappend(int char_id,int mail_num)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«ã‚’å—ã‘å–ã‚‹äººãŒã„ã‚‹ã‹ç¢ºèªè¦æ±‚
+ * ƒ[ƒ‹‚ğó‚¯æ‚él‚ª‚¢‚é‚©Šm”F—v‹
  *------------------------------------------
  */
 int intif_mail_checkmail(int account_id,struct mail_data *md)
@@ -1202,7 +1202,7 @@ int intif_mail_checkmail(int account_id,struct mail_data *md)
 }
 
 /*==========================================
- * mail_numã®æ·»ä»˜ã‚¢ã‚¤ãƒ†ãƒ ã€Zenyã®å‰Šé™¤
+ * mail_num‚Ì“Y•tƒAƒCƒeƒ€AZeny‚Ìíœ
  *------------------------------------------
  */
 int intif_mail_deleteappend(int char_id, int mail_num)
@@ -1219,7 +1219,7 @@ int intif_mail_deleteappend(int char_id, int mail_num)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿è¦æ±‚
+ * ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^—v‹
  *------------------------------------------
  */
 int intif_request_scdata(int account_id,int char_id)
@@ -1238,7 +1238,7 @@ int intif_request_scdata(int account_id,int char_id)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ä¿å­˜
+ * ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^•Û‘¶
  *------------------------------------------
  */
 int intif_save_scdata(struct map_session_data *sd)
@@ -1267,7 +1267,7 @@ int intif_save_scdata(struct map_session_data *sd)
 				WFIFOL(inter_fd,p+6)  = sd->sc.data[i].val2;
 				WFIFOL(inter_fd,p+10) = sd->sc.data[i].val3;
 				WFIFOL(inter_fd,p+14) = sd->sc.data[i].val4;
-				WFIFOL(inter_fd,p+18) = DIFF_TICK(td->tick, tick);	// æ®‹ã‚Šæ™‚é–“
+				WFIFOL(inter_fd,p+18) = DIFF_TICK(td->tick, tick);	// c‚èŠÔ
 				p+=22;
 			}
 		}
@@ -1280,7 +1280,7 @@ int intif_save_scdata(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿è¦æ±‚
+ * ƒNƒGƒXƒgƒf[ƒ^—v‹
  *------------------------------------------
  */
 int intif_request_quest(int account_id,int char_id)
@@ -1297,7 +1297,7 @@ int intif_request_quest(int account_id,int char_id)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ä¿å­˜
+ * ƒNƒGƒXƒgƒf[ƒ^•Û‘¶
  *------------------------------------------
  */
 int intif_save_quest(struct map_session_data *sd)
@@ -1338,7 +1338,7 @@ int intif_save_quest(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©é¯–ã®åˆ¶é™äººæ•°ã®å¤‰æ›´é€ä¿¡
+ * ƒLƒƒƒ‰I‚Ì§ŒÀl”‚Ì•ÏX‘—M
  *------------------------------------------
  */
 int intif_char_connect_limit(int limit)
@@ -1354,9 +1354,9 @@ int intif_char_connect_limit(int limit)
 }
 
 //-----------------------------------------------------------------
-// inter serverã‹ã‚‰å—ä¿¡
+// inter server‚©‚çóM
 
-// wiså—ä¿¡
+// wisóM
 static int intif_parse_WisMessage(int fd)
 {
 	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,36));
@@ -1367,27 +1367,27 @@ static int intif_parse_WisMessage(int fd)
 	if(sd && ssd) {
 		int i, j = 0;
 
-		for(i=0; i<MAX_WIS_REFUSAL; i++) {	//æ‹’å¦ãƒªã‚¹ãƒˆã«åå‰ãŒã‚ã‚‹ã‹ã©ã†ã‹åˆ¤å®šã—ã¦ã‚ã‚Œã°æ‹’å¦
+		for(i=0; i<MAX_WIS_REFUSAL; i++) {	//‹‘”ÛƒŠƒXƒg‚É–¼‘O‚ª‚ ‚é‚©‚Ç‚¤‚©”»’è‚µ‚Ä‚ ‚ê‚Î‹‘”Û
 			if(strcmp(sd->wis_refusal[i],RFIFOP(fd,12)) == 0) {
 				j++;
 				break;
 			}
 		}
 		if(sd->state.wis_all) {
-			intif_wis_replay(id,3);	// å—ä¿¡æ‹’å¦
+			intif_wis_replay(id,3);	// óM‹‘”Û
 		} else if(j > 0) {
-			intif_wis_replay(id,2);	// å—ä¿¡æ‹’å¦
+			intif_wis_replay(id,2);	// óM‹‘”Û
 		} else {
 			clif_wis_message(sd->fd,RFIFOP(fd,12),RFIFOP(fd,60),RFIFOW(fd,2)-60,gmlevel,ssd->char_id);
-			intif_wis_replay(id,0);	// é€ä¿¡æˆåŠŸ
+			intif_wis_replay(id,0);	// ‘—M¬Œ÷
 		}
 	} else {
-		intif_wis_replay(id,1);	// ãã‚“ãªäººã„ã¾ã›ã‚“
+		intif_wis_replay(id,1);	// ‚»‚ñ‚Èl‚¢‚Ü‚¹‚ñ
 	}
 	return 0;
 }
 
-// wisé€ä¿¡çµæœå—ä¿¡
+// wis‘—MŒ‹‰ÊóM
 static int intif_parse_WisEnd(int fd)
 {
 	struct map_session_data* sd = map_nick2sd(RFIFOP(fd,2));
@@ -1402,7 +1402,7 @@ static int intif_parse_WisEnd(int fd)
 	return 0;
 }
 
-// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå¤‰æ•°é€šçŸ¥
+// ƒAƒJƒEƒ“ƒg•Ï”’Ê’m
 static int intif_parse_AccountReg(int fd)
 {
 	int j,p;
@@ -1418,13 +1418,13 @@ static int intif_parse_AccountReg(int fd)
 	}
 	sd->save_reg.account_num = j;
 
-	// é é‡‘æƒ…å ±ã‚’æ ¼ç´
+	// —a‹àî•ñ‚ğŠi”[
 	sd->deposit = pc_readaccountreg(sd,"#PC_DEPOSIT");
 
 	return 0;
 }
 
-// å€‰åº«ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+// ‘qŒÉƒf[ƒ^óM
 static int intif_parse_LoadStorage(int fd)
 {
 	if(RFIFOW(fd,2)-8 != sizeof(struct storage)) {
@@ -1436,7 +1436,7 @@ static int intif_parse_LoadStorage(int fd)
 	return storage_storageload(RFIFOL(fd,4), (struct storage *)RFIFOP(fd,8));
 }
 
-// å€‰åº«ãƒ‡ãƒ¼ã‚¿é€ä¿¡æˆåŠŸ
+// ‘qŒÉƒf[ƒ^‘—M¬Œ÷
 static int intif_parse_SaveStorage(int fd)
 {
 	if(battle_config.save_log)
@@ -1444,7 +1444,7 @@ static int intif_parse_SaveStorage(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+// ƒMƒ‹ƒh‘qŒÉƒf[ƒ^óM
 static int intif_parse_LoadGuildStorage(int fd)
 {
 	if(RFIFOW(fd,2)-12 != sizeof(struct guild_storage)) {
@@ -1456,7 +1456,7 @@ static int intif_parse_LoadGuildStorage(int fd)
 	return storage_guild_storageload(RFIFOL(fd,4), RFIFOL(fd,8), (struct guild_storage *)RFIFOP(fd,12));
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿é€ä¿¡æˆåŠŸ
+// ƒMƒ‹ƒh‘qŒÉƒf[ƒ^‘—M¬Œ÷
 static int intif_parse_SaveGuildStorage(int fd)
 {
 	if(battle_config.save_log) {
@@ -1465,14 +1465,14 @@ static int intif_parse_SaveGuildStorage(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ­ãƒƒã‚¯è¦æ±‚è¿”ç­”
+// ƒMƒ‹ƒh‘qŒÉƒƒbƒN—v‹•Ô“š
 static int intif_parse_TrylockGuildStorageAck(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
 	int guild_id = RFIFOL(fd,6);
 	int flag     = RFIFOB(fd,14);
 
-	// æ—¢ã«å­˜åœ¨ã—ã¦ãªã„ã‹ã‚®ãƒ«ãƒ‰ãŒé•ã†ãªã‚‰
+	// Šù‚É‘¶İ‚µ‚Ä‚È‚¢‚©ƒMƒ‹ƒh‚ªˆá‚¤‚È‚ç
 	if(sd == NULL || sd->status.guild_id != guild_id) {
 		intif_unlock_guild_storage(guild_id);
 		return 0;
@@ -1485,7 +1485,7 @@ static int intif_parse_TrylockGuildStorageAck(int fd)
 	else if(sd->state.gstorage_lockreq == 2) {	// atcommand
 		if(flag) {
 			if(flag == 2) {
-				// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å‰Šé™¤ã—ã¦ãƒªãƒ­ãƒ¼ãƒ‰
+				// ƒLƒƒƒbƒVƒ…‚ğíœ‚µ‚ÄƒŠƒ[ƒh
 				storage_guild_delete(guild_id);
 			}
 			storage_guild_storageopen(sd);
@@ -1494,7 +1494,7 @@ static int intif_parse_TrylockGuildStorageAck(int fd)
 		}
 	}
 	else {
-		// ãƒªãƒ­ã‚°ã‚¤ãƒ³ç­‰ã‚’ã—ãŸãŸã‚å€‰åº«ã‚’é–‹ãå¿…è¦ãŒãªã„
+		// ƒŠƒƒOƒCƒ““™‚ğ‚µ‚½‚½‚ß‘qŒÉ‚ğŠJ‚­•K—v‚ª‚È‚¢
 		intif_unlock_guild_storage(sd->status.guild_id);
 	}
 	sd->state.gstorage_lockreq = 0;
@@ -1502,7 +1502,7 @@ static int intif_parse_TrylockGuildStorageAck(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ­ãƒƒã‚¯è§£é™¤è¿”ç­”
+// ƒMƒ‹ƒh‘qŒÉƒƒbƒN‰ğœ•Ô“š
 static int intif_parse_UnlockGuildStorageAck(int fd)
 {
 	if(battle_config.save_log)
@@ -1510,7 +1510,7 @@ static int intif_parse_UnlockGuildStorageAck(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒƒãƒ‰ãƒ­ãƒƒã‚¯ãƒã‚§ãƒƒã‚¯
+// ƒMƒ‹ƒh‘qŒÉƒfƒbƒhƒƒbƒNƒ`ƒFƒbƒN
 static int intif_parse_ChecklockGuildStorage(int fd)
 {
 	storage_guild_checklock(RFIFOL(fd,2));
@@ -1518,7 +1518,7 @@ static int intif_parse_ChecklockGuildStorage(int fd)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ä½œæˆå¯å¦
+// ƒp[ƒeƒBì¬‰Â”Û
 static int intif_parse_PartyCreated(int fd)
 {
 	if(battle_config.etc_log)
@@ -1527,7 +1527,7 @@ static int intif_parse_PartyCreated(int fd)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£æƒ…å ±
+// ƒp[ƒeƒBî•ñ
 static int intif_parse_PartyInfo(int fd)
 {
 	if( RFIFOW(fd,2)==8){
@@ -1545,7 +1545,7 @@ static int intif_parse_PartyInfo(int fd)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è¿½åŠ é€šçŸ¥
+// ƒp[ƒeƒB’Ç‰Á’Ê’m
 static void intif_parse_PartyMemberAdded(int fd)
 {
 	if(battle_config.etc_log)
@@ -1555,14 +1555,14 @@ static void intif_parse_PartyMemberAdded(int fd)
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è¨­å®šå¤‰æ›´é€šçŸ¥
+// ƒp[ƒeƒBİ’è•ÏX’Ê’m
 static int intif_parse_PartyOptionChanged(int fd)
 {
 	party_optionchanged(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOB(fd,10),RFIFOB(fd,11),RFIFOB(fd,12));
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è„±é€€é€šçŸ¥
+// ƒp[ƒeƒB’E‘Ş’Ê’m
 static int intif_parse_PartyMemberLeaved(int fd)
 {
 	if(battle_config.etc_log)
@@ -1571,14 +1571,14 @@ static int intif_parse_PartyMemberLeaved(int fd)
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£è§£æ•£é€šçŸ¥
+// ƒp[ƒeƒB‰ğU’Ê’m
 static int intif_parse_PartyBroken(int fd)
 {
 	party_broken(RFIFOL(fd,2));
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ç§»å‹•é€šçŸ¥
+// ƒp[ƒeƒBˆÚ“®’Ê’m
 static void intif_parse_PartyMove(int fd)
 {
 	party_recv_movemap(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31));
@@ -1586,28 +1586,28 @@ static void intif_parse_PartyMove(int fd)
 	return;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+// ƒp[ƒeƒBƒƒbƒZ[ƒW
 static int intif_parse_PartyMessage(int fd)
 {
 	party_recv_message(RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12),RFIFOW(fd,2)-12);
 	return 0;
 }
 
-// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼å¤‰æ›´é€šçŸ¥
+// ƒp[ƒeƒB[ƒŠ[ƒ_[•ÏX’Ê’m
 static int intif_parse_PartyLeaderChanged(int fd)
 {
 	party_leaderchanged(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ä½œæˆå¯å¦
+// ƒMƒ‹ƒhì¬‰Â”Û
 static int intif_parse_GuildCreated(int fd)
 {
 	guild_created(RFIFOL(fd,2),RFIFOL(fd,6));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰æƒ…å ±
+// ƒMƒ‹ƒhî•ñ
 static int intif_parse_GuildInfo(int fd)
 {
 	if( RFIFOW(fd,2)==8){
@@ -1625,7 +1625,7 @@ static int intif_parse_GuildInfo(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè¿½åŠ é€šçŸ¥
+// ƒMƒ‹ƒhƒƒ“ƒo’Ç‰Á’Ê’m
 static int intif_parse_GuildMemberAdded(int fd)
 {
 	if(battle_config.etc_log)
@@ -1634,7 +1634,7 @@ static int intif_parse_GuildMemberAdded(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒè„±é€€/è¿½æ”¾é€šçŸ¥
+// ƒMƒ‹ƒhƒƒ“ƒo’E‘Ş/’Ç•ú’Ê’m
 static int intif_parse_GuildMemberLeaved(int fd)
 {
 	guild_member_leaved(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14),
@@ -1642,21 +1642,21 @@ static int intif_parse_GuildMemberLeaved(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒã‚ªãƒ³ãƒ©ã‚¤ãƒ³çŠ¶æ…‹/Lvå¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒhƒƒ“ƒoƒIƒ“ƒ‰ƒCƒ“ó‘Ô/Lv•ÏX’Ê’m
 static int intif_parse_GuildMemberInfoShort(int fd)
 {
 	guild_recv_memberinfoshort(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14),RFIFOW(fd,15),RFIFOW(fd,17));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰è§£æ•£é€šçŸ¥
+// ƒMƒ‹ƒh‰ğU’Ê’m
 static int intif_parse_GuildBroken(int fd)
 {
 	guild_broken(RFIFOL(fd,2),RFIFOB(fd,6));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸºæœ¬æƒ…å ±å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒhŠî–{î•ñ•ÏX’Ê’m
 static int intif_parse_GuildBasicInfoChanged(int fd)
 {
 	int type     = RFIFOW(fd,8);
@@ -1676,7 +1676,7 @@ static int intif_parse_GuildBasicInfoChanged(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ãƒ¡ãƒ³ãƒæƒ…å ±å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒhƒƒ“ƒoî•ñ•ÏX’Ê’m
 static int intif_parse_GuildMemberInfoChanged(int fd)
 {
 	int type       = RFIFOW(fd,16);
@@ -1702,7 +1702,7 @@ static int intif_parse_GuildMemberInfoChanged(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å½¹è·å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒh–ğE•ÏX’Ê’m
 static int intif_parse_GuildPosition(int fd)
 {
 	if( RFIFOW(fd,2)!=sizeof(struct guild_position)+12 ){
@@ -1713,42 +1713,42 @@ static int intif_parse_GuildPosition(int fd)
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«å‰²ã‚ŠæŒ¯ã‚Šé€šçŸ¥
+// ƒMƒ‹ƒhƒXƒLƒ‹Š„‚èU‚è’Ê’m
 static int intif_parse_GuildSkillUp(int fd)
 {
 	guild_skillupack(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŒç›Ÿ/æ•µå¯¾é€šçŸ¥
+// ƒMƒ‹ƒh“¯–¿/“G‘Î’Ê’m
 static int intif_parse_GuildAlliance(int fd)
 {
 	guild_allianceack(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOL(fd,14),RFIFOB(fd,18),RFIFOP(fd,19),RFIFOP(fd,43));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰å‘ŠçŸ¥å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒh’m•ÏX’Ê’m
 static int intif_parse_GuildNotice(int fd)
 {
 	guild_notice_changed(RFIFOL(fd,2),RFIFOP(fd,6),RFIFOP(fd,66));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ã‚¨ãƒ³ãƒ–ãƒ¬ãƒ å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒhƒGƒ“ƒuƒŒƒ€•ÏX’Ê’m
 static int intif_parse_GuildEmblem(int fd)
 {
 	guild_emblem_changed(RFIFOW(fd,2)-12,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12));
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰ä¼šè©±å—ä¿¡
+// ƒMƒ‹ƒh‰ï˜bóM
 static int intif_parse_GuildMessage(int fd)
 {
 	guild_recv_message(RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12),RFIFOW(fd,2)-12);
 	return 0;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸãƒ‡ãƒ¼ã‚¿è¦æ±‚è¿”ä¿¡
+// ƒMƒ‹ƒhéƒf[ƒ^—v‹•ÔM
 static void intif_parse_GuildCastleDataLoad(int fd)
 {
 	guild_castledataloadack(RFIFOW(fd,2),RFIFOB(fd,4),RFIFOL(fd,5));
@@ -1756,7 +1756,7 @@ static void intif_parse_GuildCastleDataLoad(int fd)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸãƒ‡ãƒ¼ã‚¿å¤‰æ›´é€šçŸ¥
+// ƒMƒ‹ƒhéƒf[ƒ^•ÏX’Ê’m
 static void intif_parse_GuildCastleDataSave(int fd)
 {
 	guild_castledatasaveack(RFIFOW(fd,2),RFIFOB(fd,4),RFIFOL(fd,5));
@@ -1764,7 +1764,7 @@ static void intif_parse_GuildCastleDataSave(int fd)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰åŸãƒ‡ãƒ¼ã‚¿ä¸€æ‹¬å—ä¿¡(åˆæœŸåŒ–æ™‚)
+// ƒMƒ‹ƒhéƒf[ƒ^ˆêŠ‡óM(‰Šú‰»)
 static void intif_parse_GuildCastleAllDataLoad(int fd)
 {
 	guild_castlealldataload(RFIFOW(fd,2),(struct guild_castle *)RFIFOP(fd,4));
@@ -1772,7 +1772,7 @@ static void intif_parse_GuildCastleAllDataLoad(int fd)
 	return;
 }
 
-// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼æœ€å¤§å€¤å—ä¿¡(åˆæœŸåŒ–æ™‚)
+// ƒMƒ‹ƒhƒXƒLƒ‹ƒcƒŠ[Å‘å’lóM(‰Šú‰»)
 static void intif_parse_GuildSkillMaxLoad(int fd)
 {
 	guild_skillmax_load(RFIFOW(fd,2),(int *)RFIFOP(fd,4));
@@ -1865,7 +1865,7 @@ static int intif_parse_DeleteHomOk(int fd)
 }
 
 /*==========================================
- * å‚­å…µ
+ * —b•º
  *------------------------------------------
  */
 static int intif_parse_RecvMercData(int fd)
@@ -1905,7 +1905,7 @@ static int intif_parse_DeleteMercOk(int fd)
 }
 
 /*==========================================
- * ç²¾éœŠ
+ * ¸—ì
  *------------------------------------------
  */
 static int intif_parse_RecvElemData(int fd)
@@ -1945,7 +1945,7 @@ static int intif_parse_DeleteElemOk(int fd)
 }
 
 /*==========================================
- * ãƒ¡ãƒ¼ãƒ«é–¢é€£
+ * ƒ[ƒ‹ŠÖ˜A
  *------------------------------------------
  */
 static int intif_parse_MailSendRes(int fd)
@@ -2022,7 +2022,7 @@ static int intif_parse_MailCheckOK(int fd)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–¢é€£
+ * ƒXƒe[ƒ^ƒXˆÙíŠÖ˜A
  *------------------------------------------
  */
 static int intif_parse_LoadStatusChange(int fd)
@@ -2042,7 +2042,7 @@ static int intif_parse_LoadStatusChange(int fd)
 			int tick = (int)RFIFOL(fd,p+18);
 			if(tick <= 0)
 				continue;
-			// ã“ã“ã§ã¯åŠ¹æœæ™‚é–“è£œæ­£ãŠã‚ˆã³ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å†è¨ˆç®—ã—ãªã„ï¼ˆflag=2+4ï¼‰
+			// ‚±‚±‚Å‚ÍŒø‰ÊŠÔ•â³‚¨‚æ‚ÑƒXƒe[ƒ^ƒXÄŒvZ‚µ‚È‚¢iflag=2+4j
 			status_change_start(&sd->bl, type, RFIFOL(fd,p+2), RFIFOL(fd,p+6), RFIFOL(fd,p+10), RFIFOL(fd,p+14), (unsigned int)tick, 6);
 			calc_flag = 1;
 		}
@@ -2064,7 +2064,7 @@ static int intif_parse_SaveStatusChange(int fd)
 }
 
 /*==========================================
- * ã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿é–¢é€£
+ * ƒNƒGƒXƒgƒf[ƒ^ŠÖ˜A
  *------------------------------------------
  */
 static int intif_parse_LoadQuestList(int fd)
@@ -2111,7 +2111,7 @@ static int intif_parse_SaveQuestList(int fd)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ãŒå­˜åœ¨ã—ãŸã‚‰Interã¸ãã®ä½ç½®ã‚’è¿”ä¿¡
+ * ƒLƒƒƒ‰‚ª‘¶İ‚µ‚½‚çInter‚Ö‚»‚ÌˆÊ’u‚ğ•ÔM
  *------------------------------------------
  */
 static int intif_parse_CharPosReq(int fd)
@@ -2135,7 +2135,7 @@ static int intif_parse_CharPosReq(int fd)
 }
 
 /*==========================================
- * Interã‹ã‚‰å¯¾è±¡ã‚­ãƒ£ãƒ©ã®å±…å ´æ‰€ãŒé€ã‚‰ã‚Œã¦æ¥ãŸ
+ * Inter‚©‚ç‘ÎÛƒLƒƒƒ‰‚Ì‹êŠ‚ª‘—‚ç‚ê‚Ä—ˆ‚½
  * flag=0 @where
  * flag=1 @jumpto
  *------------------------------------------
@@ -2156,10 +2156,10 @@ static int intif_parse_CharPos(int fd)
 	return 0;
 }
 /*==========================================
- * ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’æŒ‡å®šä½ç½®ã«ç§»å‹•ã•ã›ã‚‹
- * flag=0 ã‚ãªãŸã„ã«é€¢ã„ãŸã„ãªã®ã§æŒ‡è¼ªã®æ‰€æŒãƒã‚§ãƒƒã‚¯
- * flag=1 @recallãªã®ã§GMãƒ¬ãƒ™ãƒ«ã‚’æ¯”ã¹ãŸã‚Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã—ãŸã‚Š
- * flag=2 é¤Šå­ç³»å‘¼ã³å‡ºã—ã‚¹ã‚­ãƒ«
+ * ƒLƒƒƒ‰ƒNƒ^[‚ğw’èˆÊ’u‚ÉˆÚ“®‚³‚¹‚é
+ * flag=0 ‚ ‚È‚½‚¢‚Éˆ§‚¢‚½‚¢‚È‚Ì‚Åw—Ö‚ÌŠƒ`ƒFƒbƒN
+ * flag=1 @recall‚È‚Ì‚ÅGMƒŒƒxƒ‹‚ğ”ä‚×‚½‚èƒƒbƒZ[ƒW‚ğ•\¦‚µ‚½‚è
+ * flag=2 —{qŒnŒÄ‚Ño‚µƒXƒLƒ‹
  *------------------------------------------
  */
 static int intif_parse_CharMoveReq(int fd)
@@ -2172,7 +2172,7 @@ static int intif_parse_CharMoveReq(int fd)
 
 	if(sd){
 		if(flag==0){
-			// ã‚ãªãŸã«é€¢ã„ãŸã„
+			// ‚ ‚È‚½‚Éˆ§‚¢‚½‚¢
 			int i;
 			for( i = 0; i < MAX_INVENTORY; i++ ){
 				if( (sd->status.inventory[i].nameid == WEDDING_RING_M || sd->status.inventory[i].nameid == WEDDING_RING_F) && sd->status.inventory[i].equip ){
@@ -2182,7 +2182,7 @@ static int intif_parse_CharMoveReq(int fd)
 			}
 		}
 		else if(flag==1){
-			if(pc_numisGM(account_id) > pc_isGM(sd)){	// @recallã‹ã¤å‘¼ã³å‡ºã—å…ƒGMãƒ¬ãƒ™ãƒ«ãŒå¤§ãã„
+			if(pc_numisGM(account_id) > pc_isGM(sd)){	// @recall‚©‚ÂŒÄ‚Ño‚µŒ³GMƒŒƒxƒ‹‚ª‘å‚«‚¢
 				char output[200];
 				pc_setpos(sd,RFIFOP(fd,31),RFIFOW(fd,47),RFIFOW(fd,49),2);
 				snprintf(output, sizeof output, msg_txt(46), RFIFOP(fd,6));
@@ -2196,7 +2196,7 @@ static int intif_parse_CharMoveReq(int fd)
 }
 
 /*==========================================
- * å¯¾è±¡IDã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡
+ * ‘ÎÛID‚ÉƒƒbƒZ[ƒW‚ğ‘—M
  *------------------------------------------
  */
 static int intif_parse_DisplayMessage(int fd)
@@ -2210,19 +2210,19 @@ static int intif_parse_DisplayMessage(int fd)
 }
 
 //-----------------------------------------------------------------
-// inter serverã‹ã‚‰ã®é€šä¿¡
-// ã‚¨ãƒ©ãƒ¼ãŒã‚ã‚Œã°0(false)ã‚’è¿”ã™ã“ã¨
-// ãƒ‘ã‚±ãƒƒãƒˆãŒå‡¦ç†ã§ãã‚Œã°1,ãƒ‘ã‚±ãƒƒãƒˆé•·ãŒè¶³ã‚Šãªã‘ã‚Œã°2ã‚’è¿”ã™ã“ã¨
+// inter server‚©‚ç‚Ì’ÊM
+// ƒGƒ‰[‚ª‚ ‚ê‚Î0(false)‚ğ•Ô‚·‚±‚Æ
+// ƒpƒPƒbƒg‚ªˆ—‚Å‚«‚ê‚Î1,ƒpƒPƒbƒg’·‚ª‘«‚è‚È‚¯‚ê‚Î2‚ğ•Ô‚·‚±‚Æ
 int intif_parse(int fd)
 {
 	int packet_len;
 	int cmd = RFIFOW(fd,0);
 
-	// ãƒ‘ã‚±ãƒƒãƒˆã®IDç¢ºèª
+	// ƒpƒPƒbƒg‚ÌIDŠm”F
 	if(cmd < 0x3800 || cmd >= 0x3800 + sizeof(packet_len_table) / sizeof(packet_len_table[0]))
 		return 0;
 
-	// ãƒ‘ã‚±ãƒƒãƒˆã®é•·ã•ç¢ºèª
+	// ƒpƒPƒbƒg‚Ì’·‚³Šm”F
 	packet_len = packet_len_table[cmd-0x3800];
 	if(packet_len == 0)
 		return 0;
@@ -2235,7 +2235,7 @@ int intif_parse(int fd)
 	if(RFIFOREST(fd) < packet_len)
 		return 2;
 
-	// å‡¦ç†åˆ†å²
+	// ˆ—•ªŠò
 	switch(cmd) {
 	case 0x3800:
 		if(RFIFOL(fd,4) == 0xFF000000)
@@ -2311,7 +2311,7 @@ int intif_parse(int fd)
 	default:
 		return 0;
 	}
-	// ãƒ‘ã‚±ãƒƒãƒˆèª­ã¿é£›ã°ã—
+	// ƒpƒPƒbƒg“Ç‚İ”ò‚Î‚µ
 	RFIFOSKIP(fd,packet_len);
 
 	return 1;

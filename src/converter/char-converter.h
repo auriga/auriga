@@ -26,7 +26,7 @@
 
 int char_convert(void);
 
-// char.hã‚ˆã‚Š
+// char.h‚æ‚è
 struct mmo_chardata {
 	struct mmo_charstatus st;
 	struct registry reg;

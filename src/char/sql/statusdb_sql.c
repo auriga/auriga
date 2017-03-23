@@ -36,7 +36,7 @@
 static struct dbt *scdata_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 int statusdb_sql_config_read_sub(const char *w1, const char *w2)
@@ -45,7 +45,7 @@ int statusdb_sql_config_read_sub(const char *w1, const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int statusdb_sql_sync(void)
@@ -55,7 +55,7 @@ int statusdb_sql_sync(void)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‡ãƒ¼ã‚¿å‰Šé™¤
+ * ƒXƒe[ƒ^ƒXƒf[ƒ^íœ
  *------------------------------------------
  */
 bool statusdb_sql_delete(int char_id)
@@ -75,8 +75,8 @@ bool statusdb_sql_delete(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
- * è² è·è»½æ¸›ã‚’å„ªå…ˆã—ã¦constã‚’ä»˜ã‘ãªã„
+ * ƒLƒƒƒ‰ID‚©‚çƒXƒe[ƒ^ƒXƒf[ƒ^‚ğƒ[ƒh
+ * •‰‰×ŒyŒ¸‚ğ—Dæ‚µ‚Äconst‚ğ•t‚¯‚È‚¢
  *------------------------------------------
  */
 struct scdata *statusdb_sql_load(int char_id)
@@ -85,7 +85,7 @@ struct scdata *statusdb_sql_load(int char_id)
 	struct scdata *sc = (struct scdata *)numdb_search(scdata_db, char_id);
 
 	if(sc && sc->char_id == char_id) {
-		// æ—¢ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒå­˜åœ¨ã™ã‚‹
+		// Šù‚ÉƒLƒƒƒbƒVƒ…‚ª‘¶İ‚·‚é
 		return sc;
 	}
 	if(sc == NULL) {
@@ -122,7 +122,7 @@ struct scdata *statusdb_sql_load(int char_id)
 		}
 		sc->count = (i < MAX_STATUSCHANGE)? i: MAX_STATUSCHANGE;
 	} else {
-		// è¦‹ã¤ã‹ã‚‰ãªãã¦ã‚‚æ­£å¸¸
+		// Œ©‚Â‚©‚ç‚È‚­‚Ä‚à³í
 		sc = NULL;
 	}
 	sqldbs_free_result(&mysql_handle);
@@ -131,7 +131,7 @@ struct scdata *statusdb_sql_load(int char_id)
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool statusdb_sql_save(struct scdata *sc2)
@@ -144,7 +144,7 @@ bool statusdb_sql_save(struct scdata *sc2)
 	sc1 = statusdb_sql_load(sc2->char_id);
 
 	if(sc1 && sc1->count <= 0 && sc2->count <= 0) {
-		// ãƒ‡ãƒ¼ã‚¿ãŒå…±ã«0å€‹ãªã®ã§ä½•ã‚‚ã—ãªã„
+		// ƒf[ƒ^‚ª‹¤‚É0ŒÂ‚È‚Ì‚Å‰½‚à‚µ‚È‚¢
 		return true;
 	}
 
@@ -156,7 +156,7 @@ bool statusdb_sql_save(struct scdata *sc2)
 		int i;
 
 		if(sc1 == NULL || sc1->count > 0) {
-			// ãƒ‡ãƒ¼ã‚¿ã‚µãƒ¼ãƒå´ã«ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ã¨ãã ã‘å‰Šé™¤ã‚¯ã‚¨ãƒªã‚’ç™ºè¡Œ
+			// ƒf[ƒ^ƒT[ƒo‘¤‚Éƒf[ƒ^‚ª‚ ‚é‚Æ‚«‚¾‚¯íœƒNƒGƒŠ‚ğ”­s
 			if( sqldbs_query(&mysql_handle, "DELETE FROM `" SCDATA_TABLE "` WHERE `char_id`='%d'", sc2->char_id) == false )
 				break;
 		}
@@ -188,7 +188,7 @@ bool statusdb_sql_save(struct scdata *sc2)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int statusdb_sql_final_sub(void *key, void *data, va_list ap)
@@ -207,7 +207,7 @@ void statusdb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool statusdb_sql_init(void)

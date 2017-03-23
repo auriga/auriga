@@ -58,7 +58,7 @@ static struct elem_skill_tree_entry {
 static int elem_count;
 
 /*==========================================
- * ç²¾éœŠDBã®æ¤œç´¢
+ * ¸—ìDB‚ÌŒŸõ
  *------------------------------------------
  */
 static int elem_search_index(int nameid)
@@ -75,7 +75,7 @@ static int elem_search_index(int nameid)
 }
 
 /*==========================================
- * ç²¾éœŠDBã‚’è¿”ã™
+ * ¸—ìDB‚ğ•Ô‚·
  *------------------------------------------
  */
 struct elem_db* elem_search_data(int nameid)
@@ -89,7 +89,7 @@ struct elem_db* elem_search_data(int nameid)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼æƒ…å ±ã®æ¤œç´¢
+ * ƒXƒLƒ‹ƒcƒŠ[î•ñ‚ÌŒŸõ
  *------------------------------------------
  */
 static struct elem_skill_tree_entry* elem_search_skilltree(int class_, int skillid)
@@ -111,7 +111,7 @@ static struct elem_skill_tree_entry* elem_search_skilltree(int class_, int skill
 		if(st[mid].id && st[mid].id == skillid)
 			return &st[mid];
 
-		// 0ã®ã¨ãã¯å¤§ã¨ã¿ãªã™
+		// 0‚Ì‚Æ‚«‚Í‘å‚Æ‚İ‚È‚·
 		if(st[mid].id == 0 || st[mid].id > skillid)
 			max = mid;
 		else
@@ -121,7 +121,7 @@ static struct elem_skill_tree_entry* elem_search_skilltree(int class_, int skill
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ã®MaxLvã‚’è¿”ã™
+ * ƒXƒLƒ‹‚ÌMaxLv‚ğ•Ô‚·
  *------------------------------------------
  */
 int elem_get_skilltree_max(int class_,int skillid)
@@ -136,7 +136,7 @@ int elem_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- * ãƒ­ãƒƒã‚¯è§£é™¤
+ * ƒƒbƒN‰ğœ
  *------------------------------------------
  */
 static int elem_unlocktarget(struct elem_data *eld)
@@ -149,7 +149,7 @@ static int elem_unlocktarget(struct elem_data *eld)
 }
 
 /*==========================================
- * å¬å–šã‚¿ã‚¤ãƒãƒ¼
+ * ¢Š«ƒ^ƒCƒ}[
  *------------------------------------------
  */
 static int elem_summon_timer(int tid,unsigned int tick,int id,void *data)
@@ -172,7 +172,7 @@ static int elem_summon_timer(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * å¬å–šã‚¿ã‚¤ãƒãƒ¼å‰Šé™¤
+ * ¢Š«ƒ^ƒCƒ}[íœ
  *------------------------------------------
  */
 int elem_summon_timer_delete(struct elem_data *eld)
@@ -188,7 +188,7 @@ int elem_summon_timer_delete(struct elem_data *eld)
 }
 
 /*==========================================
- * æŒ‡å®šIDã®å­˜åœ¨å ´æ‰€ã¸ã®åˆ°é”å¯èƒ½æ€§
+ * w’èID‚Ì‘¶İêŠ‚Ö‚Ì“’B‰Â”\«
  *------------------------------------------
  */
 static int elem_can_reach(struct elem_data *eld,struct block_list *bl,int range)
@@ -198,22 +198,22 @@ static int elem_can_reach(struct elem_data *eld,struct block_list *bl,int range)
 	nullpo_retr(0, eld);
 	nullpo_retr(0, bl);
 
-	if(eld->bl.m != bl-> m)	// é•ã†ãƒãƒƒãƒ—
+	if(eld->bl.m != bl-> m)	// ˆá‚¤ƒ}ƒbƒv
 		return 0;
 
-	if( range > 0 && range < path_distance(eld->bl.x,eld->bl.y,bl->x,bl->y) )	// é ã™ãã‚‹
+	if( range > 0 && range < path_distance(eld->bl.x,eld->bl.y,bl->x,bl->y) )	// ‰“‚·‚¬‚é
 		return 0;
 
-	if( eld->bl.x == bl->x && eld->bl.y == bl->y )	// åŒã˜ãƒã‚¹
+	if( eld->bl.x == bl->x && eld->bl.y == bl->y )	// “¯‚¶ƒ}ƒX
 		return 1;
 
 	if( eld->attackrange > 6 ) {
-		// æ”»æ’ƒå¯èƒ½ãªå ´åˆã¯é è·é›¢æ”»æ’ƒã€ãã‚Œä»¥å¤–ã¯ç§»å‹•ã‚’è©¦ã¿ã‚‹
+		// UŒ‚‰Â”\‚Èê‡‚Í‰“‹——£UŒ‚A‚»‚êˆÈŠO‚ÍˆÚ“®‚ğ‚İ‚é
 		if( path_search_long(NULL,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y) )
 			return 1;
 	}
 
-	// éšœå®³ç‰©åˆ¤å®š
+	// áŠQ•¨”»’è
 	wpd.path_len = 0;
 	wpd.path_pos = 0;
 	if( !path_search(&wpd,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y,0) && wpd.path_len <= AREA_SIZE )
@@ -223,7 +223,7 @@ static int elem_can_reach(struct elem_data *eld,struct block_list *bl,int range)
 }
 
 /*==========================================
- * ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ­ãƒƒã‚¯ãŒå¯èƒ½ã‹ã©ã†ã‹
+ * ƒ^[ƒQƒbƒg‚ÌƒƒbƒN‚ª‰Â”\‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 static int elem_can_lock(struct elem_data *eld, struct block_list *bl)
@@ -258,7 +258,7 @@ static int elem_can_lock(struct elem_data *eld, struct block_list *bl)
 }
 
 /*==========================================
- * ç²¾éœŠç­–æ•µãƒ«ãƒ¼ãƒ†ã‚£ãƒ³
+ * ¸—ìô“Gƒ‹[ƒeƒBƒ“
  *------------------------------------------
  */
 static int elem_ai_sub_timer_search(struct block_list *bl,va_list ap)
@@ -277,16 +277,16 @@ static int elem_ai_sub_timer_search(struct block_list *bl,va_list ap)
 
 	dist = path_distance(eld->bl.x,eld->bl.y,bl->x,bl->y);
 
-	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–
+	// ƒAƒNƒeƒBƒu
 	range = (eld->sc.data[SC_BLIND].timer != -1 || eld->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
 
-	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå°„ç¨‹å†…ã«ã„ã‚‹ãªã‚‰ã€ãƒ­ãƒƒã‚¯ã™ã‚‹
+	// ƒ^[ƒQƒbƒgË’ö“à‚É‚¢‚é‚È‚çAƒƒbƒN‚·‚é
 	if(dist <= range && battle_check_target(&eld->bl,bl,BCT_ENEMY) >= 1 && elem_can_lock(eld,bl)) {
-		// å°„ç·šãƒã‚§ãƒƒã‚¯
+		// Ëüƒ`ƒFƒbƒN
 		cell_t cell_flag = (eld->attackrange > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
 		if( path_search_long_real(NULL,eld->bl.m,eld->bl.x,eld->bl.y,bl->x,bl->y,cell_flag) &&
 		    elem_can_reach(eld,bl,range) &&
-		    atn_rand()%1000 < 1000/(++count) )	// ç¯„å›²å†…PCã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+		    atn_rand()%1000 < 1000/(++count) )	// ”ÍˆÍ“àPC‚Å“™Šm—¦‚É‚·‚é
 		{
 			eld->target_id = bl->id;
 		}
@@ -296,7 +296,7 @@ static int elem_ai_sub_timer_search(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * ç²¾éœŠAIå‡¦ç†
+ * ¸—ìAIˆ—
  *------------------------------------------
  */
 static int elem_ai_sub_timer(void *key,void *data,va_list ap)
@@ -355,21 +355,21 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 		    tbl->m != eld->bl.m || tbl->prev == NULL ||
 		    (dist = path_distance(eld->bl.x,eld->bl.y,tbl->x,tbl->y)) >= AREA_SIZE )
 		{
-			// å¯¾è±¡ãŒå±…ãªã„ / ã©ã“ã‹ã«æ¶ˆãˆãŸ / è¦–ç•Œå¤–
+			// ‘ÎÛ‚ª‹‚È‚¢ / ‚Ç‚±‚©‚ÉÁ‚¦‚½ / ‹ŠEŠO
 			if(eld->target_id > 0) {
 				elem_unlocktarget(eld);
 				if(eld->ud.walktimer != -1)
-					unit_stop_walking(&eld->bl,5);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+					unit_stop_walking(&eld->bl,5);	// •às’†‚È‚ç’â~
 				return 0;
 			}
 		} else if(tbl->type & BL_CHAR) {
 			if(!elem_can_lock(eld,tbl)) {
-				// ã‚¹ã‚­ãƒ«ãªã©ã«ã‚ˆã‚‹ç­–æ•µå¦¨å®³åˆ¤å®š
+				// ƒXƒLƒ‹‚È‚Ç‚É‚æ‚éô“G–WŠQ”»’è
 				elem_unlocktarget(eld);
 			} else if(!battle_check_range(&eld->bl,tbl,eld->attackrange)) {
-				// æ”»æ’ƒç¯„å›²å¤–ãªã®ã§ç§»å‹•
-				if( !unit_can_move(&eld->bl) || unit_isrunning(&eld->bl) ) {	// å‹•ã‘ãªã„çŠ¶æ…‹ã«ã‚ã‚‹
-					// ã‚¢ãƒ³ã‚¯ãƒ«ã€èœ˜è››ã®å·£æ‹˜æŸä¸­ã¯å¼·åˆ¶å¾…æ©Ÿ
+				// UŒ‚”ÍˆÍŠO‚È‚Ì‚ÅˆÚ“®
+				if( !unit_can_move(&eld->bl) || unit_isrunning(&eld->bl) ) {	// “®‚¯‚È‚¢ó‘Ô‚É‚ ‚é
+					// ƒAƒ“ƒNƒ‹A’wå‚Ì‘ƒS‘©’†‚Í‹­§‘Ò‹@
 					if(eld->sc.data && (eld->sc.data[SC_ANKLE].timer != -1 || eld->sc.data[SC_SPIDERWEB].timer != -1 ||
 					   eld->sc.data[SC_ELECTRICSHOCKER].timer != -1 || eld->sc.data[SC_MAGNETICFIELD].timer != -1 ||
 					   eld->sc.data[SC_SITDOWN_FORCE].timer != -1 || eld->sc.data[SC_FALLENEMPIRE].timer != -1 ||
@@ -379,21 +379,21 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 					return 0;
 				}
 				if(eld->ud.walktimer != -1 && path_distance(eld->ud.to_x,eld->ud.to_y,tbl->x,tbl->y) < 2)
-					return 0; // æ—¢ã«ç§»å‹•ä¸­
+					return 0; // Šù‚ÉˆÚ“®’†
 				if( !elem_can_reach(eld,tbl,AREA_SIZE) ) {
-					elem_unlocktarget(eld);	// ç§»å‹•ã§ããªã„ã®ã§ã‚¿ã‚²è§£é™¤ï¼ˆIWã¨ã‹ï¼Ÿï¼‰
+					elem_unlocktarget(eld);	// ˆÚ“®‚Å‚«‚È‚¢‚Ì‚Åƒ^ƒQ‰ğœiIW‚Æ‚©Hj
 				} else {
-					// è¿½è·¡
+					// ’ÇÕ
 					int dx, dy, ret, i = 0;
 					do {
 						if(i == 0) {
-							// æœ€åˆã¯AEGISã¨åŒã˜æ–¹æ³•ã§æ¤œç´¢
+							// Å‰‚ÍAEGIS‚Æ“¯‚¶•û–@‚ÅŒŸõ
 							dx = tbl->x - eld->bl.x;
 							dy = tbl->y - eld->bl.y;
 							if(dx < 0) dx++; else if(dx > 0) dx--;
 							if(dy < 0) dy++; else if(dy > 0) dy--;
 						} else {
-							// ã ã‚ãªã‚‰Athenaå¼(ãƒ©ãƒ³ãƒ€ãƒ )
+							// ‚¾‚ß‚È‚çAthena®(ƒ‰ƒ“ƒ_ƒ€)
 							dx = tbl->x - eld->bl.x + atn_rand()%3 - 1;
 							dy = tbl->y - eld->bl.y + atn_rand()%3 - 1;
 						}
@@ -401,18 +401,18 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 						i++;
 					} while(ret == 0 && i < 5);
 
-					if(ret == 0) { // ç§»å‹•ä¸å¯èƒ½ãªæ‰€ã‹ã‚‰ã®æ”»æ’ƒãªã‚‰2æ­©ä¸‹ã‚‹
+					if(ret == 0) { // ˆÚ“®•s‰Â”\‚ÈŠ‚©‚ç‚ÌUŒ‚‚È‚ç2•à‰º‚é
 						if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
 						if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
 						unit_walktoxy(&eld->bl,eld->bl.x+dx,eld->bl.y+dy);
 					}
 				}
 			} else {
-				// æ”»æ’ƒå°„ç¨‹ç¯„å›²å†…
+				// UŒ‚Ë’ö”ÍˆÍ“à
 				if(eld->ud.walktimer != -1)
-					unit_stop_walking(&eld->bl,1);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+					unit_stop_walking(&eld->bl,1);	// •às’†‚È‚ç’â~
 				if(eld->ud.attacktimer != -1 || eld->ud.canact_tick > tick)
-					return 0; // æ—¢ã«æ”»æ’ƒä¸­
+					return 0; // Šù‚ÉUŒ‚’†
 				unit_attack(&eld->bl, eld->target_id, 1);
 			}
 			return 0;
@@ -433,7 +433,7 @@ static int elem_ai_sub_timer(void *key,void *data,va_list ap)
 }
 
 /*==========================================
- * ç²¾éœŠAIã‚¿ã‚¤ãƒãƒ¼
+ * ¸—ìAIƒ^ƒCƒ}[
  *------------------------------------------
  */
 static int elem_ai_timer(int tid,unsigned int tick,int id,void *data)
@@ -444,7 +444,7 @@ static int elem_ai_timer(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * å„ã‚¹ãƒ†è¨ˆç®—
+ * ŠeƒXƒeŒvZ
  *------------------------------------------
  */
 int elem_calc_status(struct elem_data *eld)
@@ -488,23 +488,23 @@ int elem_calc_status(struct elem_data *eld)
 	eld->hprecov_rate = 100;
 	eld->sprecov_rate = 100;
 
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã«ã‚ˆã‚‹åŸºæœ¬ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è£œæ­£
+	// ƒXƒe[ƒ^ƒX•Ï‰»‚É‚æ‚éŠî–{ƒpƒ‰ƒ[ƒ^•â³
 	if(eld->sc.count > 0)
 	{
 		int sc_speed_rate = 100;
 
-		if(eld->sc.data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// é€Ÿåº¦å¢—åŠ ã«ã‚ˆã‚‹ç§»å‹•é€Ÿåº¦å¢—åŠ 
+		if(eld->sc.data[SC_INCREASEAGI].timer != -1 && sc_speed_rate > 75)	// ‘¬“x‘‰Á‚É‚æ‚éˆÚ“®‘¬“x‘‰Á
 			sc_speed_rate = 75;
 
 		eld->speed = eld->speed * sc_speed_rate / 100;
 
-		if(eld->sc.data[SC_DECREASEAGI].timer != -1) {		// é€Ÿåº¦æ¸›å°‘(agiã¯battle.cã§)
-			if(eld->sc.data[SC_DEFENDER].timer == -1) {	// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼æ™‚ã¯é€Ÿåº¦ä½ä¸‹ã—ãªã„
+		if(eld->sc.data[SC_DECREASEAGI].timer != -1) {		// ‘¬“xŒ¸­(agi‚Íbattle.c‚Å)
+			if(eld->sc.data[SC_DEFENDER].timer == -1) {	// ƒfƒBƒtƒFƒ“ƒ_[‚Í‘¬“x’á‰º‚µ‚È‚¢
 				eld->speed = eld->speed *((eld->sc.data[SC_DECREASEAGI].val1 > 5)? 150: 133)/100;
 			}
 		}
 
-		// ã‚´ã‚¹ãƒšãƒ«ALL+20
+		// ƒSƒXƒyƒ‹ALL+20
 		if(eld->sc.data[SC_INCALLSTATUS].timer != -1) {
 			eld->str  += eld->sc.data[SC_INCALLSTATUS].val1;
 			eld->agi  += eld->sc.data[SC_INCALLSTATUS].val1;
@@ -514,28 +514,28 @@ int elem_calc_status(struct elem_data *eld)
 			eld->luk  += eld->sc.data[SC_INCALLSTATUS].val1;
 		}
 
-		if(eld->sc.data[SC_INCREASEAGI].timer != -1)	// é€Ÿåº¦å¢—åŠ 
+		if(eld->sc.data[SC_INCREASEAGI].timer != -1)	// ‘¬“x‘‰Á
 			eld->agi += 2+eld->sc.data[SC_INCREASEAGI].val1;
 
-		if(eld->sc.data[SC_DECREASEAGI].timer != -1)	// é€Ÿåº¦æ¸›å°‘(agiã¯battle.cã§)
+		if(eld->sc.data[SC_DECREASEAGI].timer != -1)	// ‘¬“xŒ¸­(agi‚Íbattle.c‚Å)
 			eld->agi -= 2+eld->sc.data[SC_DECREASEAGI].val1;
 
-		if(eld->sc.data[SC_BLESSING].timer != -1) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+		if(eld->sc.data[SC_BLESSING].timer != -1) {	// ƒuƒŒƒbƒVƒ“ƒO
 			eld->str  += eld->sc.data[SC_BLESSING].val1;
 			eld->dex  += eld->sc.data[SC_BLESSING].val1;
 			eld->int_ += eld->sc.data[SC_BLESSING].val1;
 		}
-		if(eld->sc.data[SC_SUITON].timer != -1) {	// æ°´é
+		if(eld->sc.data[SC_SUITON].timer != -1) {	// …“Ù
 			if(eld->sc.data[SC_SUITON].val3)
 				eld->agi += eld->sc.data[SC_SUITON].val3;
 			if(eld->sc.data[SC_SUITON].val4)
 				eld->speed = eld->speed*2;
 		}
 
-		if(eld->sc.data[SC_GLORIA].timer != -1)	// ã‚°ãƒ­ãƒªã‚¢
+		if(eld->sc.data[SC_GLORIA].timer != -1)	// ƒOƒƒŠƒA
 			eld->luk += 30;
 
-		if(eld->sc.data[SC_QUAGMIRE].timer != -1) {	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+		if(eld->sc.data[SC_QUAGMIRE].timer != -1) {	// ƒNƒ@ƒOƒ}ƒCƒA
 			short subagi = 0;
 			short subdex = 0;
 			subagi = (eld->agi/2 < eld->sc.data[SC_QUAGMIRE].val1*10) ? eld->agi/2 : eld->sc.data[SC_QUAGMIRE].val1*10;
@@ -549,11 +549,11 @@ int elem_calc_status(struct elem_data *eld)
 			eld->dex -= subdex;
 		}
 
-		if(eld->sc.data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// ã‚¿ã‚¤ãƒ€ãƒ«ã‚¦ã‚§ãƒãƒ³(ç²¾éœŠ)
+		if(eld->sc.data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// ƒ^ƒCƒ_ƒ‹ƒEƒFƒ|ƒ“(¸—ì)
 			atk_rate += eld->sc.data[SC_TIDAL_WEAPON_OPTION].val2;
 	}
 
-	// ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ«ã‚·ãƒ³ãƒ‘ã‚·ãƒ¼
+	// ƒGƒŒƒƒ“ƒ^ƒ‹ƒVƒ“ƒpƒV[
 	if(eld->msd) {
 		int skill = pc_checkskill(eld->msd,SO_EL_SYMPATHY);
 		eld->max_hp += 500 * skill;
@@ -568,7 +568,7 @@ int elem_calc_status(struct elem_data *eld)
 	eld->flee     += eld->agi + eld->base_level;
 	eld->critical += eld->luk * 3 + 10;
 
-	// è£œæ­£
+	// •â³
 	if(atk_rate != 100) {
 		eld->atk1 = eld->atk1*atk_rate/100;
 		eld->atk2 = eld->atk2*atk_rate/100;
@@ -601,7 +601,7 @@ int elem_calc_status(struct elem_data *eld)
 	if(eld->max_sp <= 0)
 		eld->max_sp = 1;
 
-	// è‡ªç„¶å›å¾©
+	// ©‘R‰ñ•œ
 	eld->nhealhp = (int)(((atn_bignumber)eld->max_hp * eld->vit / 10000 + 1) * 6);
 	eld->nhealsp = (int)(((atn_bignumber)eld->max_sp * (eld->int_ + 10) / 750) + 1);
 	if(eld->hprecov_rate != 100)
@@ -614,7 +614,7 @@ int elem_calc_status(struct elem_data *eld)
 	    (eld->sc.data[SC_PROVOKE].timer == -1 || eld->sc.data[SC_PROVOKE].val2 == 0) &&
 	    !unit_isdead(&eld->bl) )
 	{
-		// ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ç™ºå‹•
+		// ƒI[ƒgƒo[ƒT[ƒN”­“®
 		status_change_start(&eld->bl,SC_PROVOKE,10,1,0,0,0,0);
 	}
 
@@ -622,7 +622,7 @@ int elem_calc_status(struct elem_data *eld)
 }
 
 /*==========================================
- * ç²¾éœŠå¬å–š
+ * ¸—ì¢Š«
  *------------------------------------------
  */
 int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
@@ -633,7 +633,7 @@ int elem_create_data(struct map_session_data *sd,int class_, unsigned int limit)
 
 	nullpo_retr(1, sd);
 
-	if(sd->status.elem_id > 0 || sd->eld)	// æ—¢ã«å¬å–šä¸­
+	if(sd->status.elem_id > 0 || sd->eld)	// Šù‚É¢Š«’†
 		return 1;
 	if(sd->state.elem_creating)
 		return 1;
@@ -690,7 +690,7 @@ static int elem_data_init(struct map_session_data *sd)
 	eld->bl.type = BL_ELEM;
 	memcpy(eld->name, elem_db[class_].jname , 24);
 	eld->dir         = sd->dir;
-	eld->speed       = status_get_speed(&sd->bl);	// æ­©è¡Œé€Ÿåº¦ã¯ã€ã‚³ãƒ¼ãƒ«æ™‚ã®ä¸»äººã®speedã«ãªã‚‹
+	eld->speed       = status_get_speed(&sd->bl);	// •às‘¬“x‚ÍAƒR[ƒ‹‚Ìål‚Ìspeed‚É‚È‚é
 	eld->target_id   = 0;
 	eld->msd         = sd;
 	eld->view_class  = sd->eld->status.class_;
@@ -698,7 +698,7 @@ static int elem_data_init(struct map_session_data *sd)
 	eld->attackrange = elem_db[class_].range;
 	eld->last_thinktime = tick;
 
-	// ã‚¹ã‚­ãƒ«å–å¾—
+	// ƒXƒLƒ‹æ“¾
 	for(i = 0; (id = elem_skill_tree[class_][i].id) > 0; i++) {
 		id -= ELEM_SKILLID;
 		eld->skill[id].id = id + ELEM_SKILLID;
@@ -709,10 +709,10 @@ static int elem_data_init(struct map_session_data *sd)
 	unit_dataset(&eld->bl);
 
 #ifdef DYNAMIC_SC_DATA
-	// ãƒ€ãƒŸãƒ¼æŒ¿å…¥
+	// ƒ_ƒ~[‘}“ü
 	eld->sc.data = dummy_sc_data;
 #else
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã®åˆæœŸåŒ–
+	// ƒXƒe[ƒ^ƒXˆÙí‚Ì‰Šú‰»
 	for(i=0; i<MAX_STATUSCHANGE; i++) {
 		eld->sc.data[i].timer = -1;
 		eld->sc.data[i].val1  = 0;
@@ -727,7 +727,7 @@ static int elem_data_init(struct map_session_data *sd)
 	eld->sc.opt2  = OPT2_NORMAL;
 	eld->sc.opt3  = OPT3_NORMAL;
 
-	elem_calc_status(eld);			// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—
+	elem_calc_status(eld);			// ƒXƒe[ƒ^ƒXŒvZ
 	map_addiddb(&eld->bl);
 
 	eld->natural_heal_hp = (eld->status.mode == ELMODE_WAIT)? add_timer(tick+ELEM_NATURAL_HEAL_HP_INTERVAL,elem_natural_heal_hp,eld->bl.id,NULL): -1;
@@ -745,7 +745,7 @@ static int elem_data_init(struct map_session_data *sd)
 }
 
 /*==========================================
- * interã‹ã‚‰ç²¾éœŠã®ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+ * inter‚©‚ç¸—ì‚Ìƒf[ƒ^óM
  *------------------------------------------
  */
 int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int flag)
@@ -759,7 +759,7 @@ int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int f
 	if(sd == NULL || sd->status.char_id != char_id || (sd->status.elem_id && sd->status.elem_id != p->elem_id))
 	{
 		if(flag) {
-			// æ–°è¦ä½œæˆæ™‚ãªã‚‰ç²¾éœŠãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹
+			// V‹Kì¬‚È‚ç¸—ìƒf[ƒ^‚ğíœ‚·‚é
 			intif_delete_elemdata(account_id,char_id,p->elem_id);
 		}
 		if(sd)
@@ -776,7 +776,7 @@ int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int f
 
 		if(!elem_data_init(sd) && sd->bl.prev != NULL)
 		{
-			if(sd->eld->status.hp <= 0) {	// æ­»äº¡
+			if(sd->eld->status.hp <= 0) {	// €–S
 				elem_delete_data(sd);
 				sd->state.elem_creating = 0;
 				return 0;
@@ -795,7 +795,7 @@ int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int f
 }
 
 /*==========================================
- * ç²¾éœŠå‰Šé™¤
+ * ¸—ìíœ
  *------------------------------------------
  */
 int elem_delete_data(struct map_session_data *sd)
@@ -816,7 +816,7 @@ int elem_delete_data(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ã®æ¤œç´¢ æ‰€æœ‰ã—ã¦ã„ãŸå ´åˆLvãŒè¿”ã‚‹
+ * ƒXƒLƒ‹‚ÌŒŸõ Š—L‚µ‚Ä‚¢‚½ê‡Lv‚ª•Ô‚é
  *------------------------------------------
  */
 int elem_checkskill(struct elem_data *eld,int skill_id)
@@ -835,7 +835,7 @@ int elem_checkskill(struct elem_data *eld,int skill_id)
 }
 
 /*==========================================
- * ç²¾éœŠãƒ¢ãƒ¼ãƒ‰å¤‰æ›´
+ * ¸—ìƒ‚[ƒh•ÏX
  *------------------------------------------
  */
 int elem_change_mode(struct elem_data *eld, int mode)
@@ -847,18 +847,18 @@ int elem_change_mode(struct elem_data *eld, int mode)
 
 	elem_unlocktarget(eld);
 
-	// ç²¾éœŠã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã‚’çµ‚äº†
+	// ¸—ì‚ÌƒXƒe[ƒ^ƒX•Ï‰»‚ğI—¹
 	status_change_elemclear(&eld->bl);
 	if(eld->msd)
 		status_change_elemclear(&eld->msd->bl);
 
-	// æŒ‡å®šã•ã‚ŒãŸãƒ¢ãƒ¼ãƒ‰ãŒç¾ãƒ¢ãƒ¼ãƒ‰ã¨åŒã˜ã§ã‚ã‚Œã°å¾…æ©Ÿãƒ¢ãƒ¼ãƒ‰
+	// w’è‚³‚ê‚½ƒ‚[ƒh‚ªŒ»ƒ‚[ƒh‚Æ“¯‚¶‚Å‚ ‚ê‚Î‘Ò‹@ƒ‚[ƒh
 	if(eld->status.mode == mode)
 		eld->status.mode = ELMODE_WAIT;
 	else
 		eld->status.mode = mode;
 
-	// å¾…æ©Ÿãƒ¢ãƒ¼ãƒ‰ã«å¤‰æ›´ã™ã‚‹ã¨ãã¯è‡ªç„¶å›å¾©ã‚¿ã‚¤ãƒãƒ¼é–‹å§‹
+	// ‘Ò‹@ƒ‚[ƒh‚É•ÏX‚·‚é‚Æ‚«‚Í©‘R‰ñ•œƒ^ƒCƒ}[ŠJn
 	if(eld->status.mode == ELMODE_WAIT) {
 		unsigned tick = gettick();
 
@@ -870,7 +870,7 @@ int elem_change_mode(struct elem_data *eld, int mode)
 	else if(eld->natural_heal_hp != -1 || eld->natural_heal_sp != -1)
 		elem_natural_heal_timer_delete(eld);
 
-	// æ”¯æ´ãƒ¢ãƒ¼ãƒ‰ã‹é˜²å¾¡ãƒ¢ãƒ¼ãƒ‰ã«å¤‰æ›´ã™ã‚‹ã¨ãã¯ã‚¹ã‚­ãƒ«ä½¿ç”¨
+	// x‰‡ƒ‚[ƒh‚©–hŒäƒ‚[ƒh‚É•ÏX‚·‚é‚Æ‚«‚ÍƒXƒLƒ‹g—p
 	if(eld->status.mode == ELMODE_PASSIVE || eld->status.mode == ELMODE_DEFENSIVE)
 		elem_skilluse(eld,&eld->bl,eld->status.mode);
 
@@ -878,7 +878,7 @@ int elem_change_mode(struct elem_data *eld, int mode)
 }
 
 /*==========================================
- * ç²¾éœŠã‚¹ã‚­ãƒ«ä½¿ç”¨
+ * ¸—ìƒXƒLƒ‹g—p
  *------------------------------------------
  */
 int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode)
@@ -913,7 +913,7 @@ int elem_skilluse(struct elem_data *eld, struct block_list *bl, int mode)
 }
 
 /*==========================================
- * çµŒé¨“å€¤å–å¾—
+ * ŒoŒ±’læ“¾
  *------------------------------------------
  */
 int elem_gainexp(struct elem_data *eld,struct mob_data *md,atn_bignumber base_exp,atn_bignumber job_exp)
@@ -936,7 +936,7 @@ int elem_gainexp(struct elem_data *eld,struct mob_data *md,atn_bignumber base_ex
 }
 
 /*==========================================
- * eldã«damageã®ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * eld‚Édamage‚Ìƒ_ƒ[ƒW
  *------------------------------------------
  */
 int elem_damage(struct block_list *src,struct elem_data *eld,int damage)
@@ -946,11 +946,11 @@ int elem_damage(struct block_list *src,struct elem_data *eld,int damage)
 	nullpo_retr(0, eld);
 	nullpo_retr(0, sd = eld->msd);
 
-	// æ—¢ã«æ­»ã‚“ã§ã„ãŸã‚‰ç„¡åŠ¹
+	// Šù‚É€‚ñ‚Å‚¢‚½‚ç–³Œø
 	if(unit_isdead(&eld->bl))
 		return 0;
 
-	// æ­©ã„ã¦ã„ãŸã‚‰è¶³ã‚’æ­¢ã‚ã‚‹
+	// •à‚¢‚Ä‚¢‚½‚ç‘«‚ğ~‚ß‚é
 	if((eld->sc.data[SC_ENDURE].timer == -1 && eld->sc.data[SC_BERSERK].timer == -1) || map[eld->bl.m].flag.gvg)
 		unit_stop_walking(&eld->bl,battle_config.pc_hit_stop_type);
 
@@ -966,20 +966,20 @@ int elem_damage(struct block_list *src,struct elem_data *eld,int damage)
 	if(eld->status.hp > eld->max_hp)
 		eld->status.hp = eld->max_hp;
 
-	// over killåˆ†ã¯ä¸¸ã‚ã‚‹
+	// over kill•ª‚ÍŠÛ‚ß‚é
 	if(damage > eld->status.hp)
 		damage = eld->status.hp;
 
 	eld->status.hp -= damage;
 
-	// ãƒã‚¤ãƒ‰çŠ¶æ…‹ã‚’è§£é™¤
+	// ƒnƒCƒhó‘Ô‚ğ‰ğœ
 	status_change_hidden_end(&eld->bl);
 
 	clif_elemupdatestatus(sd,SP_HP);
 
-	// æ­»äº¡ã—ã¦ã„ãŸ
+	// €–S‚µ‚Ä‚¢‚½
 	if(eld->status.hp <= 0) {
-		// ã‚¹ã‚­ãƒ«ãƒ¦ãƒ‹ãƒƒãƒˆã‹ã‚‰ã®é›¢è„±
+		// ƒXƒLƒ‹ƒ†ƒjƒbƒg‚©‚ç‚Ì—£’E
 		eld->status.hp = 1;
 		skill_unit_move(&eld->bl,gettick(),0);
 		eld->status.hp = 0;
@@ -990,7 +990,7 @@ int elem_damage(struct block_list *src,struct elem_data *eld,int damage)
 		    eld->status.hp < eld->max_hp>>2 &&
 		    (eld->sc.data[SC_PROVOKE].timer == -1 || eld->sc.data[SC_PROVOKE].val2 == 0) )
 		{
-			// ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ç™ºå‹•
+			// ƒI[ƒgƒo[ƒT[ƒN”­“®
 			status_change_start(&eld->bl,SC_PROVOKE,10,1,0,0,0,0);
 		}
 	}
@@ -999,7 +999,7 @@ int elem_damage(struct block_list *src,struct elem_data *eld,int damage)
 }
 
 /*==========================================
- * HP/SPå›å¾©
+ * HP/SP‰ñ•œ
  *------------------------------------------
  */
 int elem_heal(struct elem_data *eld,int hp,int sp)
@@ -1030,7 +1030,7 @@ int elem_heal(struct elem_data *eld,int hp,int sp)
 }
 
 /*==========================================
- * è‡ªç„¶å›å¾©ç‰©
+ * ©‘R‰ñ•œ•¨
  *------------------------------------------
  */
 static int elem_natural_heal_hp(int tid,unsigned int tick,int id,void *data)
@@ -1106,7 +1106,7 @@ int elem_natural_heal_timer_delete(struct elem_data *eld)
 }
 
 /*==========================================
- * ç²¾éœŠã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒ¼ãƒ–
+ * ¸—ì‚Ìƒf[ƒ^‚ğƒZ[ƒu
  *------------------------------------------
  */
 int elem_save_data(struct map_session_data *sd)
@@ -1122,10 +1122,10 @@ int elem_save_data(struct map_session_data *sd)
 }
 
 //
-// åˆæœŸåŒ–ç‰©
+// ‰Šú‰»•¨
 //
 /*==========================================
- * ç²¾éœŠåˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+ * ¸—ì‰ŠúƒXƒe[ƒ^ƒXƒf[ƒ^“Ç‚İ‚İ
  *------------------------------------------
  */
 static int read_elem_db(void)
@@ -1137,7 +1137,7 @@ static int read_elem_db(void)
 	struct script_code *script = NULL;
 	const char *filename[] = { "db/elem_db.txt", "db/addon/elem_db_add.txt" };
 
-	// DBæƒ…å ±ã®åˆæœŸåŒ–
+	// DBî•ñ‚Ì‰Šú‰»
 	for(i=0; i<MAX_ELEM_DB; i++) {
 		if(elem_db[i].script)
 			script_free_code(elem_db[i].script);
@@ -1238,7 +1238,7 @@ static int read_elem_db(void)
 }
 
 /*==========================================
- * ç²¾éœŠã‚¹ã‚­ãƒ«ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+ * ¸—ìƒXƒLƒ‹ƒf[ƒ^“Ç‚İ‚İ
  *------------------------------------------
  */
 static int read_elem_skilldb(void)
@@ -1248,7 +1248,7 @@ static int read_elem_skilldb(void)
 	char line[1024], *p;
 	const char *filename = "db/elem_skill_tree.txt";
 
-	// ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼
+	// ƒXƒLƒ‹ƒcƒŠ[
 	memset(elem_skill_tree, 0, sizeof(elem_skill_tree));
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
@@ -1289,12 +1289,12 @@ static int read_elem_skilldb(void)
 		for(j=0; st[j].id && st[j].id != skillid; j++);
 
 		if(j >= MAX_ELEMSKILL_TREE - 1) {
-			// æœ«å°¾ã¯ã‚¢ãƒ³ã‚«ãƒ¼ã¨ã—ã¦0ã«ã—ã¦ãŠãå¿…è¦ãŒã‚ã‚‹
+			// ––”ö‚ÍƒAƒ“ƒJ[‚Æ‚µ‚Ä0‚É‚µ‚Ä‚¨‚­•K—v‚ª‚ ‚é
 			printf("read_elem_skilldb: skill (%d) is over max tree %d!!\n", skillid, MAX_ELEMSKILL_TREE);
 			continue;
 		}
 		if(j > 0 && skillid < st[j-1].id) {
-			// ã‚¹ã‚­ãƒ«IDã®æ˜‡é †ã«ä¸¦ã‚“ã§ãªã„å ´åˆ
+			// ƒXƒLƒ‹ID‚Ì¸‡‚É•À‚ñ‚Å‚È‚¢ê‡
 			int max = j;
 			while(j > 0 && skillid < st[j-1].id) {
 				j--;
@@ -1316,7 +1316,7 @@ static int read_elem_skilldb(void)
 }
 
 /*==========================================
- * ç²¾éœŠDBã®ãƒªãƒ­ãƒ¼ãƒ‰
+ * ¸—ìDB‚ÌƒŠƒ[ƒh
  *------------------------------------------
  */
 void elem_reload(void)
@@ -1326,7 +1326,7 @@ void elem_reload(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–å‡¦ç†
+ * ‰Šú‰»ˆ—
  *------------------------------------------
  */
 int do_init_elem(void)
@@ -1347,7 +1347,7 @@ int do_init_elem(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 int do_final_elem(void)

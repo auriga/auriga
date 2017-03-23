@@ -69,8 +69,8 @@ struct item_data {
 	int view_id;
 	int group;
 	int delay;
-	int upper; 	//0:all(7ã«å¼·åˆ¶å¤‰æ›) 1:è»¢ç”Ÿå‰ 2:è»¢ç”Ÿ 4:é¤Šå­
-	int zone;	//0:åˆ¶é™ç„¡ 1:normal 2:pvp 4:gvg 8:pk 16:turbo 32:noteleport 64:noreturn 128:nobranch
+	int upper; 	//0:all(7‚É‹­§•ÏŠ·) 1:“]¶‘O 2:“]¶ 4:—{q
+	int zone;	//0:§ŒÀ–³ 1:normal 2:pvp 4:gvg 8:pk 16:turbo 32:noteleport 64:noreturn 128:nobranch
 	int arrow_type;
 	int card_type;
 };

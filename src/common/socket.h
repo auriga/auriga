@@ -36,10 +36,10 @@
 #define RFIFOSIZE_SERVERLINK 128 * 1024
 #define WFIFOSIZE_SERVERLINK 128 * 1024
 
-// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒï¼‘åº¦ã«å—ã‘å–ã‚Œã‚‹ã®ã¯21820byteã¾ã§
+// ƒNƒ‰ƒCƒAƒ“ƒg‚ª‚P“x‚Éó‚¯æ‚ê‚é‚Ì‚Í21820byte‚Ü‚Å
 #define SOCKET_EMPTY_SIZE (20 * 1024)
 
-// ã“ã“ã§é–‰ã˜ã‚‹ã®ã§ã¯ãªãã€socket.c ã§é–‰ã˜ã‚‹
+// ‚±‚±‚Å•Â‚¶‚é‚Ì‚Å‚Í‚È‚­Asocket.c ‚Å•Â‚¶‚é
 #define close(id) do { if (session[id]) session[id]->eof = 1; } while(0);
 
 // define declaration
@@ -94,9 +94,9 @@ struct socket_data {
 	int (*func_send)(int);
 	int (*func_parse)(int);
 	int (*func_destruct)(int);
-	int flag_destruct;	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ãŒå†åº¦å‘¼ã°ã‚Œãªã„ç‚ºã®ãƒ•ãƒ©ã‚°
-	int flag_httpd;		// 0:httpd æœªè§£æ 1;è§£ææ¸ˆã¿
-	unsigned int rlr_tick, rlr_bytes, rlr_disc;	// å¸¯åŸŸåˆ¶é™ç”¨
+	int flag_destruct;	// ƒfƒXƒgƒ‰ƒNƒ^‚ªÄ“xŒÄ‚Î‚ê‚È‚¢ˆ×‚Ìƒtƒ‰ƒO
+	int flag_httpd;		// 0:httpd –¢‰ğÍ 1;‰ğÍÏ‚İ
+	unsigned int rlr_tick, rlr_bytes, rlr_disc;	// ‘Ñˆæ§ŒÀ—p
 	void* session_data;
 	void* session_data2;
 	unsigned short server_port;

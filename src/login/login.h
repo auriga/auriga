@@ -26,10 +26,10 @@
 
 #define MAX_CHAR_SERVERS 5
 
-#define PASSWORDENC		3	// æš—å·åŒ–ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã«å¯¾å¿œã•ã›ã‚‹ã¨ãå®šç¾©ã™ã‚‹
-							// passwordencryptã®ã¨ãã¯1ã€
-							// passwordencrypt2ã®ã¨ãã¯2ã«ã™ã‚‹ã€‚
-							// 3ã«ã™ã‚‹ã¨ä¸¡æ–¹ã«å¯¾å¿œ
+#define PASSWORDENC		3	// ˆÃ†‰»ƒpƒXƒ[ƒh‚É‘Î‰‚³‚¹‚é‚Æ‚«’è‹`‚·‚é
+							// passwordencrypt‚Ì‚Æ‚«‚Í1A
+							// passwordencrypt2‚Ì‚Æ‚«‚Í2‚É‚·‚éB
+							// 3‚É‚·‚é‚Æ—¼•û‚É‘Î‰
 
 struct login_session_data {
 	int account_id;

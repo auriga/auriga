@@ -72,37 +72,37 @@ struct journal
 };
 
 
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’é–‰ã˜ã‚‹
-//  journal_create, journal_load ã—ãŸã‚‰å¿…ãšå‘¼ã¶å¿…è¦ãŒã‚ã‚‹
+// ƒWƒƒ[ƒiƒ‹‚ğ•Â‚¶‚é
+//  journal_create, journal_load ‚µ‚½‚ç•K‚¸ŒÄ‚Ô•K—v‚ª‚ ‚é
 void journal_final( struct journal* j );
 
-// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹(æ›¸ãè¾¼ã¿ãƒ¢ãƒ¼ãƒ‰ã§é–‹ã)
-//   ã“ã®ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã™ã‚‹æ“ä½œã¯ journal_write, journal_flush, journal_final ã®ã¿è¨±å¯ã•ã‚Œã‚‹
+// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é(‘‚«‚İƒ‚[ƒh‚ÅŠJ‚­)
+//   ‚±‚Ìƒf[ƒ^‚É‘Î‚·‚é‘€ì‚Í journal_write, journal_flush, journal_final ‚Ì‚İ‹–‰Â‚³‚ê‚é
 void journal_create( struct journal* j, size_t datasize, int cache_interval, const char* filename );
 
-// æ—¢å­˜ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰å°‚ç”¨ã®èª­ã¿è¾¼ã¿ãƒ¢ãƒ¼ãƒ‰ã§é–‹ã
-//   ã“ã®ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã™ã‚‹æ“ä½œã¯ journal_rollforward, journal_final ã®ã¿è¨±å¯ã•ã‚Œã‚‹
-//   ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ãŒçµ‚ã‚ã£ãŸã‚‰ final ã—ã¦é–‹æ”¾ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
+// Šù‘¶‚ÌƒWƒƒ[ƒiƒ‹‚ğƒ[ƒ‹ƒtƒHƒ[ƒhê—p‚Ì“Ç‚İ‚İƒ‚[ƒh‚ÅŠJ‚­
+//   ‚±‚Ìƒf[ƒ^‚É‘Î‚·‚é‘€ì‚Í journal_rollforward, journal_final ‚Ì‚İ‹–‰Â‚³‚ê‚é
+//   ƒ[ƒ‹ƒtƒHƒ[ƒh‚ªI‚í‚Á‚½‚ç final ‚µ‚ÄŠJ•ú‚·‚é•K—v‚ª‚ ‚éB
 int journal_load_with_convert( struct journal* j, size_t datasize, const char* filename, void(*func)( struct journal_header *jhd, void *buf ) );
 #define journal_load(j, datasize, filename) journal_load_with_convert(j, datasize, filename, NULL)
 
 
-// ãƒ‡ãƒ¼ã‚¿ã®æ›¸ãè¾¼ã¿ ( journal_create å¾Œã®ã¿ )
-//   key: è­˜åˆ¥ç”¨ã®ã‚­ãƒ¼ï¼ˆãƒ¦ãƒ‹ãƒ¼ã‚¯ã§ã‚ã‚‹ã“ã¨ï¼‰
-//   data: ä¿å­˜ã™ã‚‹å®Ÿãƒ‡ãƒ¼ã‚¿, NULL ã§ãƒ‡ãƒ¼ã‚¿ã®å‰Šé™¤
+// ƒf[ƒ^‚Ì‘‚«‚İ ( journal_create Œã‚Ì‚İ )
+//   key: ¯•Ê—p‚ÌƒL[iƒ†ƒj[ƒN‚Å‚ ‚é‚±‚Æj
+//   data: •Û‘¶‚·‚éÀƒf[ƒ^, NULL ‚Åƒf[ƒ^‚Ìíœ
 int journal_write( struct journal* j, int key, const void* data );
 
-// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ ( journal_create å¾Œã®ã¿ )
+// ƒLƒƒƒbƒVƒ…‚Ìƒtƒ‰ƒbƒVƒ… ( journal_create Œã‚Ì‚İ )
 int journal_flush( struct journal* j );
 
 
-// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã®é–¢æ•° ( journal_load å¾Œã®ã¿ )
-//   ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®å…¨ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦ func ã§è¨­å®šã—ãŸã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã‚’å‘¼ã³å‡ºã™
-//   ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¯ä»¥ä¸‹ã®ã¨ãŠã‚Š
-//   key: journal_write ã§è¨­å®šã—ãŸ key (ãƒ¦ãƒ‹ãƒ¼ã‚¯)
-//   buf: journal_write ã§è¨­å®šã—ãŸ data
-//   flag: journal_write ã§ data ã« NULL ãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹ã¨ JOURNAL_FLAG_DELETE,
-//         ãã‚Œä»¥å¤–ã§ã¯ JOURNAL_FLAG_WRITE ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã€‚
+// ƒ[ƒ‹ƒtƒHƒ[ƒh—p‚ÌŠÖ” ( journal_load Œã‚Ì‚İ )
+//   ƒWƒƒ[ƒiƒ‹‚Ì‘Sƒf[ƒ^‚É‘Î‚µ‚Ä func ‚Åİ’è‚µ‚½ƒR[ƒ‹ƒoƒbƒNŠÖ”‚ğŒÄ‚Ño‚·
+//   ƒ[ƒ‹ƒtƒHƒ[ƒh—p‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”‚Ìƒpƒ‰ƒ[ƒ^‚ÍˆÈ‰º‚Ì‚Æ‚¨‚è
+//   key: journal_write ‚Åİ’è‚µ‚½ key (ƒ†ƒj[ƒN)
+//   buf: journal_write ‚Åİ’è‚µ‚½ data
+//   flag: journal_write ‚Å data ‚É NULL ‚ªw’è‚³‚ê‚Ä‚¢‚é‚Æ JOURNAL_FLAG_DELETE,
+//         ‚»‚êˆÈŠO‚Å‚Í JOURNAL_FLAG_WRITE ‚ªİ’è‚³‚ê‚Ä‚¢‚éB
 int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int flag ) );
 
 

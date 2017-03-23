@@ -43,12 +43,12 @@
 #include "msg.h"
 #include "memorial.h"
 
-#define PARTY_SEND_XYHP_INVERVAL	1000	// åº§æ¨™ã‚„ï¼¨ï¼°é€ä¿¡ã®é–“éš”
+#define PARTY_SEND_XYHP_INVERVAL	1000	// À•W‚â‚g‚o‘—M‚ÌŠÔŠu
 
 static struct dbt* party_db = NULL;
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£æ¤œç´¢
+ * ƒp[ƒeƒBŒŸõ
  *------------------------------------------
  */
 struct party *party_search(int party_id)
@@ -57,7 +57,7 @@ struct party *party_search(int party_id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£åæ¤œç´¢
+ * ƒp[ƒeƒB–¼ŒŸõ
  *------------------------------------------
  */
 static int party_searchname_sub(void *key, void *data, va_list ap)
@@ -87,7 +87,7 @@ struct party* party_searchname(const char *str)
 }
 
 /*==========================================
- * ä½œæˆè¦æ±‚
+ * ì¬—v‹
  *------------------------------------------
  */
 void party_create(struct map_session_data *sd, const char *name, int item, int item2)
@@ -127,7 +127,7 @@ void party_create(struct map_session_data *sd, const char *name, int item, int i
 }
 
 /*==========================================
- * ä½œæˆå¯å¦
+ * ì¬‰Â”Û
  *------------------------------------------
  */
 void party_created(int account_id, unsigned char fail, int party_id, const char *name)
@@ -159,7 +159,7 @@ void party_created(int account_id, unsigned char fail, int party_id, const char 
 }
 
 /*==========================================
- * æƒ…å ±è¦æ±‚
+ * î•ñ—v‹
  *------------------------------------------
  */
 void party_request_info(int party_id)
@@ -170,7 +170,7 @@ void party_request_info(int party_id)
 }
 
 /*==========================================
- * æ‰€å±ã‚­ãƒ£ãƒ©ã®ç¢ºèª
+ * Š‘®ƒLƒƒƒ‰‚ÌŠm”F
  *------------------------------------------
  */
 static void party_check_member(struct party *p)
@@ -184,12 +184,12 @@ static void party_check_member(struct party *p)
 		if(session[i] && (sd = (struct map_session_data *)session[i]->session_data) && sd->state.auth){
 			if(sd->status.party_id==p->party_id){
 				int j,f=1;
-				for(j=0;j<MAX_PARTY;j++){	// ãƒ‘ãƒ¼ãƒ†ã‚£ã«ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ã‹ç¢ºèª
+				for(j=0;j<MAX_PARTY;j++){	// ƒp[ƒeƒB‚Éƒf[ƒ^‚ª‚ ‚é‚©Šm”F
 					if(p->member[j].account_id==sd->status.account_id){
 						if(p->member[j].char_id == sd->status.char_id)
-							f=0;	// ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹
+							f=0;	// ƒf[ƒ^‚ª‚ ‚é
 						else
-							p->member[j].sd=NULL;	// åŒå¢åˆ¥ã‚­ãƒ£ãƒ©ã ã£ãŸ
+							p->member[j].sd=NULL;	// “¯C•ÊƒLƒƒƒ‰‚¾‚Á‚½
 					}
 				}
 				if(f){
@@ -205,7 +205,7 @@ static void party_check_member(struct party *p)
 }
 
 /*==========================================
- * æƒ…å ±å–å¾—å¤±æ•—ï¼ˆãã®IDã®ã‚­ãƒ£ãƒ©ã‚’å…¨éƒ¨æœªæ‰€å±ã«ã™ã‚‹ï¼‰
+ * î•ñæ“¾¸”si‚»‚ÌID‚ÌƒLƒƒƒ‰‚ğ‘S•”–¢Š‘®‚É‚·‚éj
  *------------------------------------------
  */
 void party_recv_noinfo(int party_id)
@@ -224,7 +224,7 @@ void party_recv_noinfo(int party_id)
 }
 
 /*==========================================
- * æƒ…å ±å–å¾—
+ * î•ñæ“¾
  *------------------------------------------
  */
 void party_recv_info(struct party *sp)
@@ -240,16 +240,16 @@ void party_recv_info(struct party *sp)
 		p = (struct party *)aMalloc(sizeof(struct party));
 		numdb_insert(party_db,sp->party_id,p);
 
-		// æœ€åˆã®ãƒ­ãƒ¼ãƒ‰ãªã®ã§ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ãƒã‚§ãƒƒã‚¯ã‚’è¡Œã†
+		// Å‰‚Ìƒ[ƒh‚È‚Ì‚Åƒ†[ƒU[‚Ìƒ`ƒFƒbƒN‚ğs‚¤
 		party_check_member(sp);
 	}
 
-	// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³IDã®ä¸€æ™‚ä¿å­˜ï¼†æ›¸ãæˆ»ã—
+	// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ID‚Ìˆê•Û‘¶•‘‚«–ß‚µ
 	memorial_id = p->memorial_id;
 	memcpy(p,sp,sizeof(struct party));
 	p->memorial_id = memorial_id;
 
-	for(i=0;i<MAX_PARTY;i++){	// sdã®è¨­å®š
+	for(i=0;i<MAX_PARTY;i++){	// sd‚Ìİ’è
 		sd = map_id2sd(p->member[i].account_id);
 		if( sd != NULL &&
 		    sd->status.char_id == p->member[i].char_id &&
@@ -263,7 +263,7 @@ void party_recv_info(struct party *sp)
 	clif_party_main_info(p,-1);
 	clif_party_info(p,-1);
 
-	for(i=0;i<MAX_PARTY;i++){	// è¨­å®šæƒ…å ±ã®é€ä¿¡
+	for(i=0;i<MAX_PARTY;i++){	// İ’èî•ñ‚Ì‘—M
 		sd = p->member[i].sd;
 		if(sd!=NULL && sd->state.party_sended == 0){
 			clif_party_option(p,sd,0x100);
@@ -275,7 +275,7 @@ void party_recv_info(struct party *sp)
 }
 
 /*==========================================
- * ä½ç½®é€šçŸ¥ã‚¯ãƒªã‚¢
+ * ˆÊ’u’Ê’mƒNƒŠƒA
  *------------------------------------------
  */
 static void party_send_xy_clear(struct party *p)
@@ -297,7 +297,7 @@ static void party_send_xy_clear(struct party *p)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã¸ã®å‹§èª˜
+ * ƒp[ƒeƒB‚Ö‚ÌŠ©—U
  *------------------------------------------
  */
 void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
@@ -311,21 +311,21 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 	if(p == NULL)
 		return;
 
-	if(tsd == NULL) {	// ç›¸æ‰‹ãŒè¦‹ã¤ã‹ã‚‰ãªã„
+	if(tsd == NULL) {	// ‘Šè‚ªŒ©‚Â‚©‚ç‚È‚¢
 		clif_party_inviteack(sd,"",7);
 		return;
 	}
-	if(tsd->state.waitingdisconnect) {	// ç›¸æ‰‹ãŒåˆ‡æ–­å¾…ã¡
+	if(tsd->state.waitingdisconnect) {	// ‘Šè‚ªØ’f‘Ò‚¿
 		clif_party_inviteack(sd,tsd->status.name,1);
 		return;
 	}
 	if(!battle_config.invite_request_check) {
-		if(tsd->guild_invite > 0 || tsd->trade.partner || tsd->adopt_invite) {	// ç›¸æ‰‹ãŒå–å¼•ä¸­ã‹ã©ã†ã‹
+		if(tsd->guild_invite > 0 || tsd->trade.partner || tsd->adopt_invite) {	// ‘Šè‚ªæˆø’†‚©‚Ç‚¤‚©
 			clif_party_inviteack(sd,tsd->status.name,1);
 			return;
 		}
 	}
-	if(tsd->status.party_id > 0 || tsd->party_invite > 0) {	// ç›¸æ‰‹ã®æ‰€å±ç¢ºèª
+	if(tsd->status.party_id > 0 || tsd->party_invite > 0) {	// ‘Šè‚ÌŠ‘®Šm”F
 		clif_party_inviteack(sd,tsd->status.name,0);
 		return;
 	}
@@ -333,7 +333,7 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 		if(p->member[i].account_id == sd->status.account_id &&
 		   p->member[i].char_id == sd->status.char_id &&
 		   p->member[i].leader == 0)
-			return;		// è¦è«‹è€…ãŒãƒªãƒ¼ãƒ€ãƒ¼ã§ã¯ãªã„ï¼ˆhacker?ï¼‰
+			return;		// —v¿Ò‚ªƒŠ[ƒ_[‚Å‚Í‚È‚¢ihacker?j
 
 		if(p->member[i].account_id <= 0) {
 			empty = 1;
@@ -348,15 +348,15 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 			}
 		}
 	}
-	if(!empty) {	// å®šå“¡ã‚ªãƒ¼ãƒãƒ¼
+	if(!empty) {	// ’èˆõƒI[ƒo[
 		clif_party_inviteack(sd,tsd->status.name,3);
 		return;
 	}
-	if(tsd->status.refuse_partyinvite) {	// ç›¸æ‰‹ãŒå‹§èª˜æ‹’å¦ä¸­
+	if(tsd->status.refuse_partyinvite) {	// ‘Šè‚ªŠ©—U‹‘”Û’†
 		clif_party_inviteack(sd,tsd->status.name,5);
 		return;
 	}
-	if(battle_config.party_invite_range_check) {	// ç›¸æ‰‹ã®MAPã¨è·é›¢ã‚’ç¢ºèª
+	if(battle_config.party_invite_range_check) {	// ‘Šè‚ÌMAP‚Æ‹——£‚ğŠm”F
 		if(sd->bl.m != tsd->bl.m || path_distance(sd->bl.x,sd->bl.y,tsd->bl.x,tsd->bl.y) > AREA_SIZE) {
 			clif_party_inviteack(sd,tsd->status.name,1);
 			return;
@@ -372,7 +372,7 @@ void party_invite(struct map_session_data *sd, struct map_session_data *tsd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£å‹§èª˜ã¸ã®è¿”ç­”
+ * ƒp[ƒeƒBŠ©—U‚Ö‚Ì•Ô“š
  *------------------------------------------
  */
 void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
@@ -381,15 +381,15 @@ void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
 
 	nullpo_retv(sd);
 
-	if(flag == 1) {	// æ‰¿è«¾
+	if(flag == 1) {	// ³‘ø
 		if(sd->party_invite > 0) {
-			// interé¯–ã¸è¿½åŠ è¦æ±‚
+			// interI‚Ö’Ç‰Á—v‹
 			intif_party_addmember(sd);
 			return;
 		}
 	}
 
-	// æ‹’å¦
+	// ‹‘”Û
 	sd->party_invite         = 0;
 	sd->party_invite_account = 0;
 	tsd = map_id2sd(account_id);
@@ -400,7 +400,7 @@ void party_reply_invite(struct map_session_data *sd, int account_id, int flag)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ç«¶åˆç¢ºèª
+ * ƒp[ƒeƒB‹£‡Šm”F
  *------------------------------------------
  */
 static void party_check_conflict(struct map_session_data *sd)
@@ -413,7 +413,7 @@ static void party_check_conflict(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãŒè¿½åŠ ã•ã‚ŒãŸ
+ * ƒp[ƒeƒB‚ª’Ç‰Á‚³‚ê‚½
  *------------------------------------------
  */
 void party_member_added(int party_id, int account_id, int char_id, unsigned char flag)
@@ -429,7 +429,7 @@ void party_member_added(int party_id, int account_id, int char_id, unsigned char
 		if(flag == 0) {
 			if(battle_config.error_log)
 				printf("party: member added error %d is not online\n",account_id);
-			intif_party_leave(party_id, account_id, char_id); // ã‚­ãƒ£ãƒ©å´ã«ç™»éŒ²ã§ããªã‹ã£ãŸãŸã‚è„±é€€è¦æ±‚ã‚’å‡ºã™
+			intif_party_leave(party_id, account_id, char_id); // ƒLƒƒƒ‰‘¤‚É“o˜^‚Å‚«‚È‚©‚Á‚½‚½‚ß’E‘Ş—v‹‚ğo‚·
 		}
 		return;
 	}
@@ -437,30 +437,30 @@ void party_member_added(int party_id, int account_id, int char_id, unsigned char
 	sd->party_invite         = 0;
 	sd->party_invite_account = 0;
 
-	if(flag == 1) {	// å¤±æ•—
+	if(flag == 1) {	// ¸”s
 		if(sd2)
 			clif_party_inviteack(sd2,sd->status.name,0);
 		return;
 	}
 
-	// æˆåŠŸ
+	// ¬Œ÷
 	sd->state.party_sended = 0;
 	sd->status.party_id    = party_id;
 
 	if(sd2)
 		clif_party_inviteack(sd2,sd->status.name,2);
 
-	// ã„ã¡ãŠã†ç«¶åˆç¢ºèª
+	// ‚¢‚¿‚¨‚¤‹£‡Šm”F
 	party_check_conflict(sd);
 
-	// åº§æ¨™å†é€šçŸ¥è¦è«‹
+	// À•WÄ’Ê’m—v¿
 	party_send_xy_clear(p);
 
 	return;
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£é™¤åè¦æ±‚
+ * ƒp[ƒeƒBœ–¼—v‹
  *------------------------------------------
  */
 void party_removemember(struct map_session_data *sd, int account_id, const char *name)
@@ -473,7 +473,7 @@ void party_removemember(struct map_session_data *sd, int account_id, const char 
 	if( (p = party_search(sd->status.party_id)) == NULL )
 		return;
 
-	for(i=0;i<MAX_PARTY;i++){	// ãƒªãƒ¼ãƒ€ãƒ¼ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
+	for(i=0;i<MAX_PARTY;i++){	// ƒŠ[ƒ_[‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
 		if (p->member[i].account_id == sd->status.account_id &&
 		    p->member[i].char_id == sd->status.char_id) {
 			if(p->member[i].leader==0)
@@ -481,7 +481,7 @@ void party_removemember(struct map_session_data *sd, int account_id, const char 
 		}
 	}
 
-	for(i=0;i<MAX_PARTY;i++){	// æ‰€å±ã—ã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹
+	for(i=0;i<MAX_PARTY;i++){	// Š‘®‚µ‚Ä‚¢‚é‚©’²‚×‚é
 		if (p->member[i].account_id == account_id &&
 		    strncmp(p->member[i].name, name, 24) == 0){
 			intif_party_leave(p->party_id, account_id, p->member[i].char_id);
@@ -493,7 +493,7 @@ void party_removemember(struct map_session_data *sd, int account_id, const char 
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è„±é€€è¦æ±‚
+ * ƒp[ƒeƒB’E‘Ş—v‹
  *------------------------------------------
  */
 void party_leave(struct map_session_data *sd)
@@ -506,7 +506,7 @@ void party_leave(struct map_session_data *sd)
 	if( (p = party_search(sd->status.party_id)) == NULL )
 		return;
 
-	for(i=0;i<MAX_PARTY;i++){	// æ‰€å±ã—ã¦ã„ã‚‹ã‹
+	for(i=0;i<MAX_PARTY;i++){	// Š‘®‚µ‚Ä‚¢‚é‚©
 		if (p->member[i].account_id == sd->status.account_id &&
 		    p->member[i].char_id == sd->status.char_id) {
 			intif_party_leave(p->party_id, sd->status.account_id, p->member[i].char_id);
@@ -518,7 +518,7 @@ void party_leave(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒãŒè„±é€€ã—ãŸ
+ * ƒp[ƒeƒBƒƒ“ƒo‚ª’E‘Ş‚µ‚½
  *------------------------------------------
  */
 void party_member_leaved(int party_id, int account_id, int char_id)
@@ -541,11 +541,11 @@ void party_member_leaved(int party_id, int account_id, int char_id)
 	if(sd && sd->status.party_id == party_id && sd->status.char_id == char_id) {
 		sd->status.party_id    = 0;
 		sd->state.party_sended = 0;
-		// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã«å±…ã‚‹å ´åˆ
+		// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“‚É‹‚éê‡
 		if(map[sd->bl.m].memorial_id) {
 			pc_setpos(sd, sd->status.save_point.map, sd->status.save_point.x, sd->status.save_point.y, 3);
 		}
-		// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
+		// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“î•ñƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é
 		if(p && p->memorial_id) {
 			clif_memorial_changestatus(sd, 4, 0, 0);
 		}
@@ -555,7 +555,7 @@ void party_member_leaved(int party_id, int account_id, int char_id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£è§£æ•£é€šçŸ¥
+ * ƒp[ƒeƒB‰ğU’Ê’m
  *------------------------------------------
  */
 void party_broken(int party_id)
@@ -571,18 +571,18 @@ void party_broken(int party_id)
 			clif_party_leaved(p, p->member[i].sd, p->member[i].account_id, p->member[i].name, 0x10);
 			p->member[i].sd->status.party_id    = 0;
 			p->member[i].sd->state.party_sended = 0;
-			// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ã«å±…ã‚‹å ´åˆ
+			// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“‚É‹‚éê‡
 			if(map[p->member[i].sd->bl.m].memorial_id) {
 				pc_setpos(p->member[i].sd, p->member[i].sd->status.save_point.map, p->member[i].sd->status.save_point.x, p->member[i].sd->status.save_point.y, 3);
 			}
-			// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
+			// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“î•ñƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é
 			if(p->memorial_id) {
 				clif_memorial_changestatus(p->member[i].sd, 4, 0, 0);
 			}
 		}
 	}
 
-	// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³å‰Šé™¤
+	// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“íœ
 	if(p->memorial_id)
 		memorial_delete(p->memorial_id);
 
@@ -593,8 +593,8 @@ void party_broken(int party_id)
 }
 
 /*==========================================
- * å®¶æ—å…¬å¹³ã«å¿…è¦ãªæœ€ä½æ¡ä»¶ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¦
- * é¤Šå­ã‚­ãƒ£ãƒ©ã®IDã‚’è¿”ã™
+ * ‰Æ‘°Œö•½‚É•K—v‚ÈÅ’áğŒ‚ğƒ`ƒFƒbƒN‚µ‚Ä
+ * —{qƒLƒƒƒ‰‚ÌID‚ğ•Ô‚·
  *------------------------------------------
  */
 static int party_check_family_share(struct party *p)
@@ -623,8 +623,8 @@ static int party_check_family_share(struct party *p)
 		}
 	}
 
-	// 3äººPTã§é¤Šå­ã‚­ãƒ£ãƒ©ãŒå±…ã¦ã©ã¡ã‚‰ã‹ã®è¦ªã¨åŒä¸€MAPä¸Šã«ã„ã‚‹ãªã‚‰è¨±å¯
-	// ãŸã ã—è¦ªå­é–¢ä¿‚ãŒæ­£ã—ã„ã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯ã¯int_party.cã§è¡Œã†
+	// 3lPT‚Å—{qƒLƒƒƒ‰‚ª‹‚Ä‚Ç‚¿‚ç‚©‚Ìe‚Æ“¯ˆêMAPã‚É‚¢‚é‚È‚ç‹–‰Â
+	// ‚½‚¾‚µeqŠÖŒW‚ª³‚µ‚¢‚©‚Ç‚¤‚©‚Ìƒ`ƒFƒbƒN‚Íint_party.c‚Ås‚¤
 
 	if(count == 3 && baby_idx >= 0) {
 		m = &p->member[baby_idx];
@@ -636,7 +636,7 @@ static int party_check_family_share(struct party *p)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã®è¨­å®šå¤‰æ›´è¦æ±‚
+ * ƒp[ƒeƒB‚Ìİ’è•ÏX—v‹
  *------------------------------------------
  */
 void party_changeoption(struct map_session_data *sd, int exp, int item)
@@ -657,7 +657,7 @@ void party_changeoption(struct map_session_data *sd, int exp, int item)
 				if(exp > 0 && !p->exp) {
 					baby_id = party_check_family_share(p);
 				}
-				if(item < 0) {	// è² ã®ã¨ãã¯ã‚¢ã‚¤ãƒ†ãƒ åˆ†é…è¨­å®šã‚’å¤‰æ›´ã—ãªã„
+				if(item < 0) {	// •‰‚Ì‚Æ‚«‚ÍƒAƒCƒeƒ€•ª”zİ’è‚ğ•ÏX‚µ‚È‚¢
 					item = p->item;
 				}
 				intif_party_changeoption(sd->status.party_id, sd->status.account_id, baby_id, exp, item);
@@ -670,7 +670,7 @@ void party_changeoption(struct map_session_data *sd, int exp, int item)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ã®è¨­å®šå¤‰æ›´é€šçŸ¥
+ * ƒp[ƒeƒB‚Ìİ’è•ÏX’Ê’m
  *------------------------------------------
  */
 void party_optionchanged(int party_id, int account_id, unsigned char exp, unsigned char item, int flag)
@@ -695,7 +695,7 @@ void party_optionchanged(int party_id, int account_id, unsigned char exp, unsign
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒã®ç§»å‹•é€šçŸ¥
+ * ƒp[ƒeƒBƒƒ“ƒo‚ÌˆÚ“®’Ê’m
  *------------------------------------------
  */
 void party_recv_movemap(int party_id, int account_id, int char_id, const char *mapname, unsigned char online, unsigned short lv)
@@ -722,7 +722,7 @@ void party_recv_movemap(int party_id, int account_id, int char_id, const char *m
 		return;
 	}
 
-	for(i=0;i<MAX_PARTY;i++){	// sdå†è¨­å®š
+	for(i=0;i<MAX_PARTY;i++){	// sdÄİ’è
 		sd = map_id2sd(p->member[i].account_id);
 		if( sd != NULL &&
 		    sd->status.char_id == p->member[i].char_id &&
@@ -733,7 +733,7 @@ void party_recv_movemap(int party_id, int account_id, int char_id, const char *m
 			p->member[i].sd = NULL;
 	}
 
-	party_send_xy_clear(p);	// åº§æ¨™å†é€šçŸ¥è¦è«‹
+	party_send_xy_clear(p);	// À•WÄ’Ê’m—v¿
 
 	clif_party_main_info(p,-1);
 	clif_party_info(p,-1);
@@ -742,7 +742,7 @@ void party_recv_movemap(int party_id, int account_id, int char_id, const char *m
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒã®ç§»å‹•
+ * ƒp[ƒeƒBƒƒ“ƒo‚ÌˆÚ“®
  *------------------------------------------
  */
 void party_send_movemap(struct map_session_data *sd)
@@ -756,21 +756,21 @@ void party_send_movemap(struct map_session_data *sd)
 
 	intif_party_changemap(sd,1);
 
-	if( sd->state.party_sended != 0 )	// ã‚‚ã†ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ‡ãƒ¼ã‚¿ã¯é€ä¿¡æ¸ˆã¿
+	if( sd->state.party_sended != 0 )	// ‚à‚¤ƒp[ƒeƒBƒf[ƒ^‚Í‘—MÏ‚İ
 		return;
 
-	// ç«¶åˆç¢ºèª
+	// ‹£‡Šm”F
 	party_check_conflict(sd);
 
-	// ã‚ã‚‹ãªã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£æƒ…å ±é€ä¿¡
+	// ‚ ‚é‚È‚çƒp[ƒeƒBî•ñ‘—M
 	if( (p=party_search(sd->status.party_id))!=NULL ){
-		party_check_member(p);	// æ‰€å±ã‚’ç¢ºèªã™ã‚‹
+		party_check_member(p);	// Š‘®‚ğŠm”F‚·‚é
 		if(sd->status.party_id==p->party_id){
 			clif_party_main_info(p,sd->fd);
 			clif_party_info(p,sd->fd);
 			clif_party_option(p,sd,0x100);
 			sd->state.party_sended = 1;
-			// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³æƒ…å ±
+			// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“î•ñ
 			if(p->memorial_id)
 				memorial_reqinfo(sd, p->memorial_id);
 		}
@@ -780,7 +780,7 @@ void party_send_movemap(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒã®ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ
+ * ƒp[ƒeƒBƒƒ“ƒo‚ÌƒƒOƒAƒEƒg
  *------------------------------------------
  */
 void party_send_logout(struct map_session_data *sd)
@@ -792,7 +792,7 @@ void party_send_logout(struct map_session_data *sd)
 	if( sd->status.party_id>0 )
 		intif_party_changemap(sd,0);
 
-	// sdãŒç„¡åŠ¹ã«ãªã‚‹ã®ã§ãƒ‘ãƒ¼ãƒ†ã‚£æƒ…å ±ã‹ã‚‰å‰Šé™¤
+	// sd‚ª–³Œø‚É‚È‚é‚Ì‚Åƒp[ƒeƒBî•ñ‚©‚çíœ
 	if( (p=party_search(sd->status.party_id))!=NULL ){
 		int i;
 		for(i=0;i<MAX_PARTY;i++) {
@@ -805,7 +805,7 @@ void party_send_logout(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡
+ * ƒp[ƒeƒBƒƒbƒZ[ƒW‘—M
  *------------------------------------------
  */
 void party_send_message(struct map_session_data *sd, const char *mes, size_t len)
@@ -819,7 +819,7 @@ void party_send_message(struct map_session_data *sd, const char *mes, size_t len
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å—ä¿¡
+ * ƒp[ƒeƒBƒƒbƒZ[ƒWóM
  *------------------------------------------
  */
 void party_recv_message(int party_id, int account_id, const char *mes, size_t len)
@@ -834,7 +834,7 @@ void party_recv_message(int party_id, int account_id, const char *mes, size_t le
 }
 
 /*==========================================
- * ä½ç½®ã‚„HPé€šçŸ¥
+ * ˆÊ’u‚âHP’Ê’m
  *------------------------------------------
  */
 static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
@@ -847,13 +847,13 @@ static int party_send_xyhp_timer_sub(void *key, void *data, va_list ap)
 	for(i=0;i<MAX_PARTY;i++){
 		struct map_session_data *sd;
 		if((sd=p->member[i].sd)!=NULL){
-			// åº§æ¨™é€šçŸ¥
+			// À•W’Ê’m
 			if(sd->party_x!=sd->bl.x || sd->party_y!=sd->bl.y){
 				clif_party_xy(sd);
 				sd->party_x=sd->bl.x;
 				sd->party_y=sd->bl.y;
 			}
-			// ï¼¨ï¼°é€šçŸ¥
+			// ‚g‚o’Ê’m
 			if(sd->party_hp!=sd->status.hp){
 				clif_party_hp(sd);
 				sd->party_hp=sd->status.hp;
@@ -872,7 +872,7 @@ static int party_send_xyhp_timer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
- * HPé€šçŸ¥ã®å¿…è¦æ€§æ¤œæŸ»ç”¨ï¼ˆmap_foreachinmoveareaã‹ã‚‰å‘¼ã°ã‚Œã‚‹ï¼‰
+ * HP’Ê’m‚Ì•K—v«ŒŸ¸—pimap_foreachinmovearea‚©‚çŒÄ‚Î‚ê‚éj
  *------------------------------------------
  */
 int party_send_hp_check(struct block_list *bl,va_list ap)
@@ -895,7 +895,7 @@ int party_send_hp_check(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * çµŒé¨“å€¤å…¬å¹³åˆ†é…
+ * ŒoŒ±’lŒö•½•ª”z
  *------------------------------------------
  */
 void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_exp, atn_bignumber job_exp)
@@ -911,8 +911,8 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 	for(i=c=0;i<MAX_PARTY;i++)
 	{
 		if((sd = p->member[i].sd) != NULL && sd->bl.prev && sd->bl.m == md->bl.m && !unit_isdead(&sd->bl)) {
-			if( (sd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// æ­»ã‚“ã ãµã‚Šã—ã¦ã„ãªã„
-			    (sd->sc.data[SC_HIDING].timer == -1	   || !battle_config.noexp_hiding   ) )		// ãƒã‚¤ãƒ‰ã—ã¦ã„ãªã„
+			if( (sd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// €‚ñ‚¾‚Ó‚è‚µ‚Ä‚¢‚È‚¢
+			    (sd->sc.data[SC_HIDING].timer == -1	   || !battle_config.noexp_hiding   ) )		// ƒnƒCƒh‚µ‚Ä‚¢‚È‚¢
 				sdlist[c++] = sd;
 		}
 	}
@@ -933,7 +933,7 @@ void party_exp_share(struct party *p, struct mob_data *md, atn_bignumber base_ex
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ åˆ†é…
+ * ƒAƒCƒeƒ€•ª”z
  *------------------------------------------
  */
 int party_loot_share(struct party *p, struct map_session_data *sd, struct item *item_data, int first)
@@ -949,16 +949,16 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 			if((psd[c] = p->member[i].sd) && psd[c]->bl.prev && psd[c]->bl.m == sd->bl.m && !unit_isdead(&psd[c]->bl))
 				c++;
 		}
-		while(c > 0) {	// ãƒ©ãƒ³ãƒ€ãƒ é¸æŠ
+		while(c > 0) {	// ƒ‰ƒ“ƒ_ƒ€‘I‘ğ
 			i = atn_rand()%c;
 			if(pc_additem(psd[i],item_data,item_data->amount)) {
-				// å–å¾—å¤±æ•—
+				// æ“¾¸”s
 				psd[i] = psd[c-1];
 				c--;
 			} else {
 				if(battle_config.party_item_share_show && psd[i] != sd) {
 #if PACKETVER < 20071106
-					msg_output(sd->fd, msg_txt(177), psd[i]->status.name);	// %sã•ã‚“ã«ã‚¢ã‚¤ãƒ†ãƒ ãŒåˆ†é…ã•ã‚Œã¾ã—ãŸ
+					msg_output(sd->fd, msg_txt(177), psd[i]->status.name);	// %s‚³‚ñ‚ÉƒAƒCƒeƒ€‚ª•ª”z‚³‚ê‚Ü‚µ‚½
 #else
 					clif_show_partyshareitem(sd,item_data);
 #endif
@@ -968,12 +968,12 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 		}
 	}
 
-	// åˆ†é…ã§ããªã„ã®ã§å…ƒã®sdã«æ¸¡ã™
+	// •ª”z‚Å‚«‚È‚¢‚Ì‚ÅŒ³‚Ìsd‚É“n‚·
 	return pc_additem(sd,item_data,item_data->amount);
 }
 
 /*==========================================
- * è£…å‚™ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤º
+ * ‘•”õƒEƒBƒ“ƒhƒE•\¦
  *------------------------------------------
  */
 void party_equip_window(struct map_session_data *sd, int account_id)
@@ -989,15 +989,15 @@ void party_equip_window(struct map_session_data *sd, int account_id)
 	if(tsd == NULL)
 		return;
 
-	if(tsd->state.waitingdisconnect)	// ç›¸æ‰‹ãŒåˆ‡æ–­å¾…ã¡
+	if(tsd->state.waitingdisconnect)	// ‘Šè‚ªØ’f‘Ò‚¿
 		return;
 	if(battle_config.equip_window_type == 1) {
-		if(tsd->status.party_id <= 0 || sd->status.party_id != tsd->status.party_id)	// PTãŒç•°ãªã‚‹
+		if(tsd->status.party_id <= 0 || sd->status.party_id != tsd->status.party_id)	// PT‚ªˆÙ‚È‚é
 			return;
 	}
-	if(sd->bl.m != tsd->bl.m || path_distance(sd->bl.x, sd->bl.y, tsd->bl.x, tsd->bl.y) > AREA_SIZE)	// è·é›¢ãŒé ã„
+	if(sd->bl.m != tsd->bl.m || path_distance(sd->bl.x, sd->bl.y, tsd->bl.x, tsd->bl.y) > AREA_SIZE)	// ‹——£‚ª‰“‚¢
 		return;
-	if(!tsd->status.show_equip) {	// ç›¸æ‰‹ãŒè£…å‚™ã‚’å…¬é–‹ã—ã¦ãªã„
+	if(!tsd->status.show_equip) {	// ‘Šè‚ª‘•”õ‚ğŒöŠJ‚µ‚Ä‚È‚¢
 		clif_msgstringtable(sd, 0x54d);
 		return;
 	}
@@ -1008,7 +1008,7 @@ void party_equip_window(struct map_session_data *sd, int account_id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼å¤‰æ›´è¦æ±‚
+ * ƒp[ƒeƒB[ƒŠ[ƒ_[•ÏX—v‹
  *------------------------------------------
  */
 void party_changeleader(struct map_session_data *sd, int id)
@@ -1049,7 +1049,7 @@ void party_changeleader(struct map_session_data *sd, int id)
 }
 
 /*==========================================
- * ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒªãƒ¼ãƒ€ãƒ¼å¤‰æ›´é€šçŸ¥
+ * ƒp[ƒeƒB[ƒŠ[ƒ_[•ÏX’Ê’m
  *------------------------------------------
  */
 void party_leaderchanged(int party_id, int old_account_id, int account_id)
@@ -1088,7 +1088,7 @@ void party_leaderchanged(int party_id, int old_account_id, int account_id)
 }
 
 /*==========================================
- * åŒã˜ãƒãƒƒãƒ—ã®ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒãƒ¼å…¨ä½“ã«å‡¦ç†ã‚’ã‹ã‘ã‚‹
+ * “¯‚¶ƒ}ƒbƒv‚Ìƒp[ƒeƒBƒƒ“ƒo[‘S‘Ì‚Éˆ—‚ğ‚©‚¯‚é
  *------------------------------------------
  */
 int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_session_data *sd,int range,...)
@@ -1121,10 +1121,10 @@ int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_sess
 		}
 	}
 
-	map_freeblock_lock();	// ãƒ¡ãƒ¢ãƒªã‹ã‚‰ã®è§£æ”¾ã‚’ç¦æ­¢ã™ã‚‹
+	map_freeblock_lock();	// ƒƒ‚ƒŠ‚©‚ç‚Ì‰ğ•ú‚ğ‹Ö~‚·‚é
 
 	for(i=0; i<blockcount; i++) {
-		if(list[i]->prev) {	// æœ‰åŠ¹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
+		if(list[i]->prev) {	// —LŒø‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
 			va_list ap;
 			va_start(ap, range);
 			ret += func(list[i],ap);
@@ -1132,14 +1132,14 @@ int party_foreachsamemap(int (*func)(struct block_list*,va_list),struct map_sess
 		}
 	}
 
-	map_freeblock_unlock();	// è§£æ”¾ã‚’è¨±å¯ã™ã‚‹
+	map_freeblock_unlock();	// ‰ğ•ú‚ğ‹–‰Â‚·‚é
 
 	return ret;
 }
 
 /*==========================================
- * åŒã˜ãƒãƒƒãƒ—ã§ã‚ªãƒ³ãƒ©ã‚¤ãƒ³ä¸­ã®ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒãƒ¼ã®æ•°ã‚’è¿”ã™
- * 0:å±…ãªã„ã‹,PTãŒãªã„
+ * “¯‚¶ƒ}ƒbƒv‚ÅƒIƒ“ƒ‰ƒCƒ“’†‚Ìƒp[ƒeƒBƒƒ“ƒo[‚Ì”‚ğ•Ô‚·
+ * 0:‹‚È‚¢‚©,PT‚ª‚È‚¢
  *------------------------------------------
  */
 int party_check_same_map_member_count(struct map_session_data *sd)
@@ -1168,7 +1168,7 @@ int party_check_same_map_member_count(struct map_session_data *sd)
 }
 
 /*==========================================
- * ãƒ­ã‚°ã‚¤ãƒ³ä¸­ã®ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¡ãƒ³ãƒãƒ¼ã®ï¼‘äººã®sdã‚’è¿”ã™
+ * ƒƒOƒCƒ“’†‚Ìƒp[ƒeƒBƒƒ“ƒo[‚Ì‚Pl‚Ìsd‚ğ•Ô‚·
  *------------------------------------------
  */
 struct map_session_data *party_getavailablesd(struct party *p)
@@ -1187,7 +1187,7 @@ struct map_session_data *party_getavailablesd(struct party *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int party_db_final(void *key,void *data,va_list ap)
@@ -1206,7 +1206,7 @@ void do_final_party(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 void do_init_party(void)

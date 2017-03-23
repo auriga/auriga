@@ -50,7 +50,7 @@
 #include "malloc.h"
 #include "utils.h"
 
-// socket.h ã§define ã•ã‚ŒãŸcloseã‚’ç½®ãæ›ãˆ
+// socket.h ‚Ådefine ‚³‚ê‚½close‚ğ’u‚«Š·‚¦
 #ifdef WINDOWS
 	#undef close
 	#define close(id) do{ if(session[id]) closesocket(session[id]->socket); } while(0);
@@ -129,7 +129,7 @@ static int recv_to_fifo(int fd)
 
 	//printf("recv_to_fifo : %d %d\n", fd, sd->eof);
 
-	if (sd->eof || (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0))	// å¸¯åŸŸåˆ¶é™ä¸­
+	if (sd->eof || (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0))	// ‘Ñˆæ§ŒÀ’†
 		return -1;
 
 	len = recv(sockfd(fd), sd->rdata_size, (int)RFIFOSPACE(fd), 0);
@@ -148,12 +148,12 @@ static int recv_to_fifo(int fd)
 		}
 
 //		printf("rs: %d %d\n",len, session[fd]->auth );
-		// å¸¯åŸŸåˆ¶é™ç”¨ã®è¨ˆç®—
+		// ‘Ñˆæ§ŒÀ—p‚ÌŒvZ
 		if (sd->auth >= 0) {
 			int tick_diff = DIFF_TICK(tick, sd->rlr_tick);
 			sd->rlr_bytes += len;
 
-			// å¸¯åŸŸã®åˆ¶é™
+			// ‘Ñˆæ‚Ì§ŒÀ
 			if (tick_diff >= recv_limit_rate_period) {
 				int rate = sd->rlr_bytes * 1000 / tick_diff;
 //				printf("rlr: %d %d\n", sd->rlr_bytes, rate);
@@ -205,7 +205,7 @@ static int send_from_fifo(int fd)
 			sd->wdata_size = sd->wdata;
 			sd->wdata_pos  = sd->wdata;
 		} else if ((sd->wdata_pos - sd->wdata) * 8 > (sd->max_wdata - sd->wdata)) {
-			// ã‚¯ãƒªã‚¢ã™ã‚‹é–“éš”ã‚’æ¸›ã‚‰ã—ã¦ã¿ã‚‹
+			// ƒNƒŠƒA‚·‚éŠÔŠu‚ğŒ¸‚ç‚µ‚Ä‚İ‚é
 			memmove(sd->wdata, sd->wdata_pos, WFIFOREST(fd));
 			sd->wdata_size = sd->wdata + WFIFOREST(fd);
 			sd->wdata_pos  = sd->wdata;
@@ -430,7 +430,7 @@ int make_listen_port(unsigned short port, unsigned long sip)
 #endif
 
 	server_address.sin_family      = AF_INET;
-	server_address.sin_addr.s_addr = sip;		// 1710:INADDR_ANYã‹ã‚‰å¤‰æ›´
+	server_address.sin_addr.s_addr = sip;		// 1710:INADDR_ANY‚©‚ç•ÏX
 	server_address.sin_port        = htons(port);
 
 	result = bind(fd, (struct sockaddr*)&server_address, sizeof(server_address));
@@ -560,7 +560,7 @@ int make_connection(unsigned long ip, unsigned short port)
 
 	result = connect(fd, (struct sockaddr *)(&server_address), sizeof(struct sockaddr_in));
 	if (result != 0) {
-		// æ¥ç¶šå¤±æ•—
+		// Ú‘±¸”s
 #ifdef WINDOWS
 		if (WSAGetLastError() != WSAEWOULDBLOCK) {
 			printf("make_connection: connect error (socket.c) %08x:%d\n", (int)ip, port);
@@ -624,12 +624,12 @@ void delete_session(int fd)
 		return;
 
 	if (session[fd]) {
-		// ï¼’é‡å‘¼ã³å‡ºã—ã®é˜²æ­¢
+		// ‚QdŒÄ‚Ño‚µ‚Ì–h~
 		if (session[fd]->flag_destruct)
 			return;
 
 		session[fd]->flag_destruct = 1;
-		// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‘¼ã³å‡ºã™
+		// ƒfƒXƒgƒ‰ƒNƒ^‚ğŒÄ‚Ño‚·
 		if (session[fd]->func_destruct)
 			session[fd]->func_destruct(fd);
 		close(fd);
@@ -692,12 +692,12 @@ void WFIFORESERVE(int fd, size_t len)
 	while(len + SOCKET_EMPTY_SIZE > (size_t)(s->max_wdata - s->wdata)) {
 		size_t new_size = (size_t)(s->max_wdata - s->wdata) << 1;
 
-		// é€ä¿¡ãƒãƒƒãƒ•ã‚¡ã®åˆ¶é™ã‚µã‚¤ã‚ºè¶…éãƒã‚§ãƒƒã‚¯
+		// ‘—Mƒoƒbƒtƒ@‚Ì§ŒÀƒTƒCƒY’´‰ßƒ`ƒFƒbƒN
 		if (s->auth >= 0 && new_size > (size_t)send_limit_buffer_size) {
 			printf("socket: session #%d wdata (%lu) exceed limited size.\n", fd, (unsigned long)new_size);
-			s->wdata_pos  = s->wdata;	// ãƒ‡ãƒ¼ã‚¿ã‚’æ¶ˆã—ã¦ã¨ã‚Šã‚ãˆãšç©ºãã‚’ä½œã‚‹
+			s->wdata_pos  = s->wdata;	// ƒf[ƒ^‚ğÁ‚µ‚Ä‚Æ‚è‚ ‚¦‚¸‹ó‚«‚ğì‚é
 			s->wdata_size = s->wdata;
-			// ç©ºãã‚¹ãƒšãƒ¼ã‚¹ãŒè¶³ã‚Šãªã„ã‹ã‚‚ã—ã‚Œãªã„ã®ã§ã€å†ç¢ºä¿
+			// ‹ó‚«ƒXƒy[ƒX‚ª‘«‚è‚È‚¢‚©‚à‚µ‚ê‚È‚¢‚Ì‚ÅAÄŠm•Û
 			realloc_fifo(fd, 0, len);
 			s->eof = 1;
 			return;
@@ -727,7 +727,7 @@ void WFIFOSET(int fd, size_t len)
 		s->wdata_pos  = s->wdata;
 		s->wdata_size = s->wdata;
 		s->eof = 1;
-		exit(1);	// ã‚¢ã‚¯ã‚»ã‚¹é•åã—ã¦ã„ã‚‹ã¯ãšãªã®ã§ã‚µãƒ¼ãƒã‚’è½ã¨ã™
+		exit(1);	// ƒAƒNƒZƒXˆá”½‚µ‚Ä‚¢‚é‚Í‚¸‚È‚Ì‚ÅƒT[ƒo‚ğ—‚Æ‚·
 	}
 	WFIFORESERVE(fd, s->wdata_size - s->wdata);
 
@@ -983,34 +983,34 @@ void do_sendrecv(int next)
 	int ret, i;
 	unsigned int tick = gettick();
 
-	// select ã™ã‚‹ãŸã‚ã®æº–å‚™
+	// select ‚·‚é‚½‚ß‚Ì€”õ
 	memcpy(&rfd, &readfds, sizeof(fd_set));
 	FD_ZERO(&wfd);
 	for(i = 0; i < fd_max; i++) {
 		struct socket_data *sd = session[i];
 		if (sd) {
-			// ãƒãƒƒãƒ•ã‚¡ã«ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ãªã‚‰é€ä¿¡å¯èƒ½ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹
+			// ƒoƒbƒtƒ@‚Éƒf[ƒ^‚ª‚ ‚é‚È‚ç‘—M‰Â”\‚©ƒ`ƒFƒbƒN‚·‚é
 			if (sd->wdata_size != sd->wdata_pos)
 				FD_SET(sockfd(i), &wfd);
 
-			// å—ä¿¡å¸¯åŸŸåˆ¶é™ä¸­ãªã‚‰ã“ã® socket ã¯å—ä¿¡å¯èƒ½ã‹ãƒã‚§ãƒƒã‚¯ã—ãªã„
+			// óM‘Ñˆæ§ŒÀ’†‚È‚ç‚±‚Ì socket ‚ÍóM‰Â”\‚©ƒ`ƒFƒbƒN‚µ‚È‚¢
 			if (recv_limit_rate_enable && sd->auth >= 0 && DIFF_TICK(sd->rlr_tick, tick) > 0)
 				FD_CLR(sockfd(i), &rfd);
 		}
 	}
 
-	// ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã®è¨­å®šï¼ˆæœ€å¤§1ç§’ï¼‰
+	// ƒ^ƒCƒ€ƒAƒEƒg‚Ìİ’èiÅ‘å1•bj
 	if (next > 1000)
 		next = 1000;
 	timeout.tv_sec  = next / 1000;
 	timeout.tv_usec = next % 1000 * 1000;
 
-	// select ã§é€šä¿¡ã‚’å¾…ã¤
+	// select ‚Å’ÊM‚ğ‘Ò‚Â
 	ret = select(fd_max, &rfd, &wfd, NULL, &timeout);
 	if (ret <= 0)
 		return;
 
-	// select çµæœã«ã—ãŸãŒã£ã¦é€å—ä¿¡ã™ã‚‹
+	// select Œ‹‰Ê‚É‚µ‚½‚ª‚Á‚Ä‘—óM‚·‚é
 	process_fdset(&rfd, &wfd);
 
 	return;
@@ -1029,20 +1029,20 @@ void do_parsepacket(void)
 
 		if (sd->eof ||
 		    (sd->flag_destruct == 0 && sd->auth >= 0 &&
-		     DIFF_TICK(tick, sd->tick) > ((sd->auth) ? auth_timeout : unauth_timeout))) {	// ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆ
+		     DIFF_TICK(tick, sd->tick) > ((sd->auth) ? auth_timeout : unauth_timeout))) {	// ƒ^ƒCƒ€ƒAƒEƒg
 			delete_session(i);
 
 		} else {
 
-			// ãƒ‘ã‚±ãƒƒãƒˆã®è§£æ
+			// ƒpƒPƒbƒg‚Ì‰ğÍ
 			if (sd->func_parse && sd->rdata_size != sd->rdata_pos) {
 				size_t s = RFIFOREST(i);
 #ifdef NO_HTTPD
 				sd->func_parse(i);
 #else
 				if (!sd->flag_httpd && httpd_enable) {
-					// httpd ã«å›ã™ã©ã†ã‹ã®åˆ¤å®šãŒã¾ã è¡Œã‚ã‚Œã¦ãªã„
-					// å…ˆé ­ï¼’ãƒã‚¤ãƒˆãŒ GE or POãªã‚‰httpd ã«å›ã—ã¦ã¿ã‚‹
+					// httpd ‚É‰ñ‚·‚Ç‚¤‚©‚Ì”»’è‚ª‚Ü‚¾s‚í‚ê‚Ä‚È‚¢
+					// æ“ª‚QƒoƒCƒg‚ª GE or PO‚È‚çhttpd ‚É‰ñ‚µ‚Ä‚İ‚é
 					if (sd->rdata_size - sd->rdata >= 2) {
 						sd->flag_httpd = 1;
 						if ((sd->rdata[0] == 'G' && sd->rdata[1] == 'E') ||
@@ -1056,7 +1056,7 @@ void do_parsepacket(void)
 				if (sd->flag_httpd || !httpd_enable)
 					sd->func_parse(i);
 #endif
-				// èªè¨¼ãŒçµ‚äº†ã—ã¦ã‚‹ãªã‚‰å—ä¿¡ãŒã‚ã‚Œã° tick ã‚’æ›´æ–°
+				// ”FØ‚ªI—¹‚µ‚Ä‚é‚È‚çóM‚ª‚ ‚ê‚Î tick ‚ğXV
 				if (s != RFIFOREST(i)) {
 					if (sd->auth)
 						sd->tick = tick;
@@ -1067,7 +1067,7 @@ void do_parsepacket(void)
 				}
 			}
 
-			// ã‚¯ãƒªã‚¢ã™ã‚‹é–“éš”ã‚’æ¸›ã‚‰ã—ã¦ã¿ã‚‹
+			// ƒNƒŠƒA‚·‚éŠÔŠu‚ğŒ¸‚ç‚µ‚Ä‚İ‚é
 			if (sd->rdata_pos == sd->rdata_size) { // all FIFO readed
 				sd->rdata_size = sd->rdata;
 				sd->rdata_pos  = sd->rdata;
@@ -1115,7 +1115,7 @@ int parsepacket_timer(int tid, unsigned int tick, int id, void *data)
 	return 0;
 }
 
-/* DDoS æ”»æ’ƒå¯¾ç­– */
+/* DDoS UŒ‚‘Îô */
 
 enum {
 	ACO_DENY_ALLOW = 0,
@@ -1149,9 +1149,9 @@ struct _connect_history {
 static struct _connect_history *connect_history[0x10000];
 static int connect_check_(unsigned long ip);
 
-// æ¥ç¶šã§ãã‚‹ã‹ã©ã†ã‹ã®ç¢ºèª
-//   false : æ¥ç¶šOK
-//   true  : æ¥ç¶šNG
+// Ú‘±‚Å‚«‚é‚©‚Ç‚¤‚©‚ÌŠm”F
+//   false : Ú‘±OK
+//   true  : Ú‘±NG
 static int connect_check(unsigned long ip)
 {
 	int result = connect_check_(ip);
@@ -1169,7 +1169,7 @@ static int connect_check_(unsigned long ip)
 	int i, is_allowip = 0, is_denyip = 0, connect_ok = 0;
 	unsigned int tick = gettick();
 
-	// allow , deny ãƒªã‚¹ãƒˆã«å…¥ã£ã¦ã„ã‚‹ã‹ç¢ºèª
+	// allow , deny ƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚é‚©Šm”F
 	for(i = 0; i < access_allownum; i++) {
 		if ((ip & access_allow[i].mask) == (access_allow[i].ip & access_allow[i].mask)) {
 			if (access_debug)
@@ -1188,11 +1188,11 @@ static int connect_check_(unsigned long ip)
 			break;
 		}
 	}
-	// ã‚³ãƒã‚¯ãƒˆå‡ºæ¥ã‚‹ã‹ã©ã†ã‹ç¢ºèª
+	// ƒRƒlƒNƒgo—ˆ‚é‚©‚Ç‚¤‚©Šm”F
 	// connect_ok
-	//   0 : ç„¡æ¡ä»¶ã«æ‹’å¦
-	//   1 : ç”°ä»£ç ²ãƒã‚§ãƒƒã‚¯ã®çµæœæ¬¡ç¬¬
-	//   2 : ç„¡æ¡ä»¶ã«è¨±å¯
+	//   0 : –³ğŒ‚É‹‘”Û
+	//   1 : “c‘ã–Cƒ`ƒFƒbƒN‚ÌŒ‹‰ÊŸ‘æ
+	//   2 : –³ğŒ‚É‹–‰Â
 	switch(access_order) {
 	case ACO_ALLOW_DENY:
 		if (is_denyip)
@@ -1219,18 +1219,18 @@ static int connect_check_(unsigned long ip)
 		break;
 	}
 
-	// æ¥ç¶šå±¥æ­´ã‚’èª¿ã¹ã‚‹
+	// Ú‘±—š—ğ‚ğ’²‚×‚é
 	while(hist) {
 		if (ip == hist->ip) {
-			// åŒã˜IPç™ºè¦‹
+			// “¯‚¶IP”­Œ©
 			if (hist->status) {
-				// ban ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã‚‹
+				// ban ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚é
 				return ((connect_ok == 2) ? 1 : 0);
 			} else if (DIFF_TICK(tick,hist->tick) < ddos_interval) {
-				// ddos_intervalç§’ä»¥å†…ã«ãƒªã‚¯ã‚¨ã‚¹ãƒˆæœ‰ã‚Š
+				// ddos_interval•bˆÈ“à‚ÉƒŠƒNƒGƒXƒg—L‚è
 				hist->tick = tick;
 				if (hist->count++ >= ddos_count) {
-					// ddos æ”»æ’ƒã‚’æ¤œå‡º
+					// ddos UŒ‚‚ğŒŸo
 					unsigned char *p = (unsigned char *)&ip;
 					hist->status = 1;
 					printf("connect_check: ddos attack detected (%d.%d.%d.%d)\n", p[0], p[1], p[2], p[3]);
@@ -1238,7 +1238,7 @@ static int connect_check_(unsigned long ip)
 				} else
 					return connect_ok;
 			} else {
-				// ddos_intervalç§’ä»¥å†…ã«ãƒªã‚¯ã‚¨ã‚¹ãƒˆç„¡ã„ã®ã§ã‚¿ã‚¤ãƒãƒ¼ã‚¯ãƒªã‚¢
+				// ddos_interval•bˆÈ“à‚ÉƒŠƒNƒGƒXƒg–³‚¢‚Ì‚Åƒ^ƒCƒ}[ƒNƒŠƒA
 				hist->tick  = tick;
 				hist->count = 0;
 				return connect_ok;
@@ -1246,7 +1246,7 @@ static int connect_check_(unsigned long ip)
 		}
 		hist = hist->next;
 	}
-	// IPãƒªã‚¹ãƒˆã«ç„¡ã„ã®ã§æ–°è¦ä½œæˆ
+	// IPƒŠƒXƒg‚É–³‚¢‚Ì‚ÅV‹Kì¬
 	hist_new = (struct _connect_history *)aCalloc(1, sizeof(struct _connect_history));
 	hist_new->ip   = ip;
 	hist_new->tick = tick;
@@ -1295,7 +1295,7 @@ static int connect_check_clear(int tid, unsigned int tick, int id, void *data)
 	return list;
 }
 
-// IPãƒã‚¹ã‚¯ãƒã‚§ãƒƒã‚¯
+// IPƒ}ƒXƒNƒ`ƒFƒbƒN
 static int access_ipmask(const char *str,struct _access_control* acc)
 {
 	unsigned int mask = 0, ip;
@@ -1452,7 +1452,7 @@ static void do_final_socket(void)
 	aFree(access_allow);
 	aFree(access_deny);
 
-	// session[0] ã®ãƒ€ãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
+	// session[0] ‚Ìƒ_ƒ~[ƒf[ƒ^‚ğíœ
 	aFree(session[0]->rdata);
 	aFree(session[0]->wdata);
 	aFree(session[0]);
@@ -1485,12 +1485,12 @@ void do_socket(void)
 	atexit(do_final_socket);
 	socket_config_read();
 
-	// session[0] ã«ãƒ€ãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç¢ºä¿ã™ã‚‹
+	// session[0] ‚Éƒ_ƒ~[ƒf[ƒ^‚ğŠm•Û‚·‚é
 	session[0] = (struct socket_data *)aCalloc(1, sizeof(*session[0]));
 	session[0]->auth = -1;
 	realloc_fifo(0, RFIFO_SIZE, WFIFO_SIZE);
 
-	// ã¨ã‚Šã‚ãˆãšï¼•åˆ†ã”ã¨ã«ä¸è¦ãªãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹
+	// ‚Æ‚è‚ ‚¦‚¸‚T•ª‚²‚Æ‚É•s—v‚Èƒf[ƒ^‚ğíœ‚·‚é
 	add_timer_func_list(connect_check_clear);
 	add_timer_interval(tick + 1000, connect_check_clear, 0, NULL, 300 * 1000);
 
@@ -1499,7 +1499,7 @@ void do_socket(void)
 
 
 // ==========================================
-// å‡ºåŠ›
+// o—Í
 // ------------------------------------------
 static void socket_httpd_page_send(int fd, const char *str)
 {
@@ -1512,7 +1512,7 @@ static void socket_httpd_page_send(int fd, const char *str)
 }
 
 // ==========================================
-// ãƒ˜ãƒƒãƒ€éƒ¨åˆ†
+// ƒwƒbƒ_•”•ª
 // ------------------------------------------
 static void socket_httpd_page_header(struct httpd_session_data *sd)
 {
@@ -1526,7 +1526,7 @@ static void socket_httpd_page_header(struct httpd_session_data *sd)
 }
 
 // ==========================================
-// ãƒ•ãƒƒã‚¿éƒ¨åˆ†
+// ƒtƒbƒ^•”•ª
 // ------------------------------------------
 static void socket_httpd_page_footer(int fd)
 {
@@ -1542,7 +1542,7 @@ static void socket_httpd_page_footer(int fd)
 }
 
 // ==========================================
-// ã‚¢ã‚¯ã‚»ã‚¹åˆ¶å¾¡ã®è¨­å®šç¢ºèª
+// ƒAƒNƒZƒX§Œä‚Ìİ’èŠm”F
 // ------------------------------------------
 static void socket_httpd_page_access_settings(struct httpd_session_data *sd, const char *url)
 {
@@ -1583,7 +1583,7 @@ static void socket_httpd_page_access_settings(struct httpd_session_data *sd, con
 }
 
 // ==========================================
-// DoS ã‚¢ã‚¿ãƒƒã‚¯ã®çŠ¶æ³ç¢ºèª
+// DoS ƒAƒ^ƒbƒN‚Ìó‹µŠm”F
 // ------------------------------------------
 static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const char *url)
 {
@@ -1591,7 +1591,7 @@ static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const ch
 	unsigned int tick = gettick();
 	char *p;
 
-	// DoS ãƒ–ãƒ­ãƒƒã‚¯è§£é™¤
+	// DoS ƒuƒƒbƒN‰ğœ
 	p = httpd_get_value(sd, "dosdelete");
 	if (*p) {
 		for(i = 0; i < 100; i++) {
@@ -1615,7 +1615,7 @@ static void socket_httpd_page_dos_attack(struct httpd_session_data *sd, const ch
 
 	socket_httpd_page_header(sd);
 
-	// DoS ã‚¢ã‚¿ãƒƒã‚¯ã®ãƒ–ãƒ­ãƒƒã‚¯ãƒªã‚¹ãƒˆ
+	// DoS ƒAƒ^ƒbƒN‚ÌƒuƒƒbƒNƒŠƒXƒg
 	len = sprintf(WFIFOP(fd,0 ),
 	      "<h2>Anti-DoS Attack : blocking IP address list</h2>\n"
 	      "<form action=\"%s\" method=\"post\">\n"
@@ -1656,7 +1656,7 @@ void (*socket_httpd_page_connection_func)(int fd,char*,char*,char*);
 void socket_set_httpd_page_connection_func(void (*func)(int fd,char*,char*,char*)){ socket_httpd_page_connection_func = func; }
 
 // ==========================================
-// æ¥ç¶šçŠ¶æ³ç¢ºèª
+// Ú‘±ó‹µŠm”F
 // ------------------------------------------
 static void socket_httpd_page_connection(struct httpd_session_data *hsd, const char *url)
 {
@@ -1664,7 +1664,7 @@ static void socket_httpd_page_connection(struct httpd_session_data *hsd, const c
 	int fd = hsd->fd;
 	char *p;
 
-	// å¼·åˆ¶åˆ‡æ–­
+	// ‹­§Ø’f
 	p = httpd_get_value(hsd, "disconnect");
 	if (*p) {
 		for(i = 1; i < fd_max; i++) {
@@ -1741,7 +1741,7 @@ static void socket_httpd_page_connection(struct httpd_session_data *hsd, const c
 	return;
 }
 
-// socket ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒ‘ãƒãƒ«ï¼ˆdo_init_httpd ã§ httpd ã«ç™»éŒ²ã•ã‚Œã‚‹ï¼‰
+// socket ƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹ido_init_httpd ‚Å httpd ‚É“o˜^‚³‚ê‚éj
 void socket_httpd_page(struct httpd_session_data* sd, const char* url)
 {
 	int i, len;

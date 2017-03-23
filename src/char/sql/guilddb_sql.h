@@ -25,7 +25,7 @@
 #include "mmo.h"
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool guilddb_sql_new(struct guild *g);
 bool guilddb_sql_init(void);
 bool guilddb_sql_save(struct guild* g2);
@@ -36,7 +36,7 @@ const struct guild* guilddb_sql_load_str(const char *str);
 bool guilddb_sql_delete(int guild_id);
 int guilddb_sql_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define guilddb_new      guilddb_sql_new
 #define guilddb_init     guilddb_sql_init
 #define guilddb_save     guilddb_sql_save

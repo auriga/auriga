@@ -26,7 +26,7 @@
 #include "utils.h"
 #include "../char.h"
 
-// æ›´æ–°å®šç¾©
+// XV’è‹`
 enum {
 	TABLE_NUM_INVENTORY,
 	TABLE_NUM_CART,
@@ -34,7 +34,7 @@ enum {
 	TABLE_NUM_GUILD_STORAGE,
 };
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch);
 bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch);
 const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag);
@@ -51,7 +51,7 @@ const struct mmo_chardata* chardb_sql_nick2chardata(const char *char_name);
 int chardb_sql_config_read_sub(const char* w1,const char* w2);
 bool chardb_sql_set_online(int char_id, bool is_online);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define chardb_make            chardb_sql_make
 #define chardb_init            chardb_sql_init
 #define chardb_sync            chardb_sql_sync

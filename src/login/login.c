@@ -47,7 +47,7 @@
 #include "md5calc.h"
 #endif
 
-// æ€§åˆ¥ã‚³ãƒ³ãƒãƒ¼ãƒˆ
+// «•ÊƒRƒ“ƒo[ƒg
 #define sex_num2str(num) ((num == SEX_FEMALE)? 'F' : (num == SEX_MALE) ? 'M' : 'S')
 #define sex_str2num(str) ((str == 'F')? SEX_FEMALE : (str == 'M')? SEX_MALE : SEX_SERVER)
 
@@ -90,7 +90,7 @@ static struct dbt *gm_account_db = NULL;
 static int gm_account_db_final(void *key, void *data, va_list ap);
 
 /*==========================================
- * GMã‚¢ã‚«ã‚¦ãƒ³ãƒˆèª­ã¿è¾¼ã¿
+ * GMƒAƒJƒEƒ“ƒg“Ç‚İ‚İ
  *------------------------------------------
  */
 static void read_gm_account(void)
@@ -155,7 +155,7 @@ static void read_gm_account(void)
 }
 
 /*==========================================
- * GMã‹ã©ã†ã‹
+ * GM‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 int isGM(int account_id)
@@ -173,7 +173,7 @@ int isGM(int account_id)
 }
 
 /*==========================================
- * authfifoã®æ¯”è¼ƒ
+ * authfifo‚Ì”äŠr
  *------------------------------------------
  */
 static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, unsigned long ip)
@@ -195,8 +195,8 @@ static bool cmp_authfifo(int i, int account_id, int login_id1, int login_id2, un
 }
 
 /*==========================================
- * è‡ªåˆ†ä»¥å¤–ã®å…¨ã¦ã®charã‚µãƒ¼ãƒãƒ¼ã«ãƒ‡ãƒ¼ã‚¿é€ä¿¡
- * ï¼ˆé€ä¿¡ã—ãŸcharé¯–ã®æ•°ã‚’è¿”ã™ï¼‰
+ * ©•ªˆÈŠO‚Ì‘S‚Ä‚ÌcharƒT[ƒo[‚Éƒf[ƒ^‘—M
+ * i‘—M‚µ‚½charI‚Ì”‚ğ•Ô‚·j
  *------------------------------------------
  */
 static int charif_sendallwos(int sfd, unsigned char *buf, size_t len)
@@ -218,7 +218,7 @@ static int charif_sendallwos(int sfd, unsigned char *buf, size_t len)
 }
 
 /*==========================================
- * èªè¨¼
+ * ”FØ
  *------------------------------------------
  */
 static int mmo_auth(struct login_session_data *sd)
@@ -252,7 +252,7 @@ static int mmo_auth(struct login_session_data *sd)
 	// to avoid invalid length (min 4 char for account name, max 23 including _F/_M)
 	if( config.new_account_flag == true && len >= 4 && len <= 21 && sd->passwdenc == 0 && sd->userid[len] == '_' && (sd->userid[len+1] == 'F' || sd->userid[len+1] == 'M') )
 	{
-		// æ–°è¦ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä½œæˆ
+		// V‹KƒAƒJƒEƒ“ƒgì¬
 		char *adm_pass = strchr(sd->pass,'@');
 		if( adm_pass == NULL )
 			adm_pass = sd->pass + strlen(sd->pass);
@@ -269,26 +269,26 @@ static int mmo_auth(struct login_session_data *sd)
 			sd->userid[0] = 0;
 	}
 
-	// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚‰ãªã„
+	// ƒAƒJƒEƒ“ƒg‚ªŒ©‚Â‚©‚ç‚È‚¢
 	if( (ac = account_load_str(sd->userid)) == NULL )
 	{
-		if( newaccount == false )	// æ–°è¦ä½œæˆä»¥å¤–
+		if( newaccount == false )	// V‹Kì¬ˆÈŠO
 			loginlog_log("auth failed no account %s %s %d %s", tmpstr, sd->userid, newaccount, (sd->passwdenc == 0)? sd->pass:"");
 		else
 		{
-			// æ–°è¦ä½œæˆ
+			// V‹Kì¬
 			struct mmo_account ac2;
 			memset( &ac2, 0, sizeof(ac2) );
 			strncpy(ac2.userid,sd->userid,24);
 			strncpy(ac2.pass  ,sd->pass  ,24);
 			ac2.sex = sd->userid[len+1];
-			if( account_new(&ac2, tmpstr) == false )	// ä½œæˆå¤±æ•—
+			if( account_new(&ac2, tmpstr) == false )	// ì¬¸”s
 				loginlog_log("auth new failed %s %s %d %s", tmpstr, sd->userid, newaccount, sd->pass);
 		}
 		return 0;
 	}
 
-	// ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯(MD5)
+	// ƒpƒXƒ[ƒhƒ`ƒFƒbƒN(MD5)
 	if( sd->passwdenc > 0 )
 	{
 		bool encpasswdok = false;
@@ -327,7 +327,7 @@ static int mmo_auth(struct login_session_data *sd)
 
 		if( encpasswdok == false )
 		{
-			// èªè¨¼å¤±æ•—
+			// ”FØ¸”s
 			char logbuf[1024],*p=logbuf;
 			int j;
 			p += sprintf(p, "auth failed pass error %s %s enc=%d recv[", tmpstr, sd->userid, sd->passwdenc);
@@ -344,7 +344,7 @@ static int mmo_auth(struct login_session_data *sd)
 	}
 	else if( strcmp(sd->pass,ac->pass) || newaccount == true )
 	{
-		// èªè¨¼å¤±æ•—
+		// ”FØ¸”s
 		loginlog_log("auth failed pass error %s %s %s %d", tmpstr, sd->userid, sd->pass, newaccount);
 		return 1;
 	}
@@ -362,7 +362,7 @@ static int mmo_auth(struct login_session_data *sd)
 		return 2;
 	}
 
-	// èªè¨¼æˆåŠŸ
+	// ”FØ¬Œ÷
 	loginlog_log("auth ok %s %s new=%d", tmpstr, ac->userid, newaccount);
 	{
 		struct mmo_account ac2;
@@ -372,7 +372,7 @@ static int mmo_auth(struct login_session_data *sd)
 		memcpy(ac2.lastip,sd->lastip,16);
 		account_save(&ac2);
 
-		// session data åˆæœŸåŒ–
+		// session data ‰Šú‰»
 		sd->account_id = ac->account_id;
 		sd->login_id1  = atn_rand();
 		sd->login_id2  = atn_rand();
@@ -380,11 +380,11 @@ static int mmo_auth(struct login_session_data *sd)
 		memcpy(sd->lastlogin,tmpstr,24);
 	}
 
-	return -1;	// èªè¨¼OK
+	return -1;	// ”FØOK
 }
 
 /*==========================================
- * èªè¨¼å¾Œã®è¨­å®š
+ * ”FØŒã‚Ìİ’è
  *------------------------------------------
  */
 static void login_authok(struct login_session_data *sd, int fd)
@@ -397,7 +397,7 @@ static void login_authok(struct login_session_data *sd, int fd)
 		unsigned char buf[8];
 		int c = 0;
 
-		// å…¨charã‚µãƒ¼ãƒã¸åŒä¸€ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã®åˆ‡æ–­è¦æ±‚
+		// ‘ScharƒT[ƒo‚Ö“¯ˆêƒAƒJƒEƒ“ƒg‚ÌØ’f—v‹
 		WBUFW(buf,0) = 0x2730;
 		WBUFL(buf,2) = sd->account_id;
 		charif_sendallwos(-1,buf,6);
@@ -412,7 +412,7 @@ static void login_authok(struct login_session_data *sd, int fd)
 		}
 		if( c > 0 )
 		{
-			// äºŒé‡ãƒ­ã‚°ã‚¤ãƒ³ã®å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§èªè¨¼å¤±æ•—ã«ã™ã‚‹
+			// “ñdƒƒOƒCƒ“‚Ì‰Â”\«‚ª‚ ‚é‚Ì‚Å”FØ¸”s‚É‚·‚é
 			WFIFOW(fd,0) = 0x81;
 			WFIFOB(fd,2) = 8;
 			WFIFOSET(fd,3);
@@ -466,14 +466,14 @@ static void login_authok(struct login_session_data *sd, int fd)
 	auth_fifo[auth_fifo_pos].ip         = session[fd]->client_addr.sin_addr.s_addr;
 	auth_fifo_pos++;
 
-	// èªè¨¼çµ‚äº†ã‚’ socket.c ã«ä¼ãˆã‚‹
+	// ”FØI—¹‚ğ socket.c ‚É“`‚¦‚é
 	session[fd]->auth = 1;
 
 	return;
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã‚µãƒ¼ãƒã®ã‚½ã‚±ãƒƒãƒˆãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * ƒLƒƒƒ‰ƒNƒ^ƒT[ƒo‚Ìƒ\ƒPƒbƒgƒfƒXƒgƒ‰ƒNƒ^
  *------------------------------------------
  */
 static int parse_char_disconnect(int fd)
@@ -493,7 +493,7 @@ static int parse_char_disconnect(int fd)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã‚µãƒ¼ãƒã‹ã‚‰ã®ãƒ‘ã‚±ãƒƒãƒˆè§£æ
+ * ƒLƒƒƒ‰ƒNƒ^ƒT[ƒo‚©‚ç‚ÌƒpƒPƒbƒg‰ğÍ
  *------------------------------------------
  */
 int parse_fromchar(int fd)
@@ -513,7 +513,7 @@ int parse_fromchar(int fd)
 		switch(RFIFOW(fd,0))
 		{
 
-		case 0x2712:	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼é¯–ã¸ã®ãƒ­ã‚°ã‚¤ãƒ³èªè¨¼
+		case 0x2712:	// ƒLƒƒƒ‰ƒNƒ^[I‚Ö‚ÌƒƒOƒCƒ“”FØ
 			if( RFIFOREST(fd) < 19 )
 				return 0;
 			{
@@ -538,7 +538,7 @@ int parse_fromchar(int fd)
 				{
 					const struct mmo_account *ac = account_load_num(auth_fifo[i].account_id);
 
-					// account_regé€ä¿¡
+					// account_reg‘—M
 					if(ac)
 					{
 						int p,j;
@@ -572,14 +572,14 @@ int parse_fromchar(int fd)
 			}
 			break;
 
-		case 0x2714:	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼æ•°é€šçŸ¥
+		case 0x2714:	// ƒ[ƒ‹ƒh‚Ìƒ†[ƒU[”’Ê’m
 			if( RFIFOREST(fd) < 6 )
 				return 0;
 
 			server[id].users = RFIFOL(fd,2);
 			RFIFOSKIP(fd,6);
 			break;
-		case 0x2715:	// ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹èªè¨¼
+		case 0x2715:	// ƒ[ƒ‹ƒAƒhƒŒƒX”FØ
 			if( RFIFOREST(fd) < 50 )
 				return 0;
 			{
@@ -596,7 +596,7 @@ int parse_fromchar(int fd)
 				RFIFOSKIP(fd,50);
 			}
 			return 0;
-		case 0x2717:	// èª•ç”Ÿæ—¥èªè¨¼
+		case 0x2717:	// ’a¶“ú”FØ
 			if( RFIFOREST(fd) < 17 )
 				return 0;
 			{
@@ -615,8 +615,8 @@ int parse_fromchar(int fd)
 			return 0;
 
 		case 0x2720:
-			// GMã«ãªã‚ŠãŸãƒ¼ã„
-			// SQL åŒ–ãŒé¢å€’ãªã®ã§ã¨ã‚Šã‚ãˆãšä¿ç•™
+			// GM‚É‚È‚è‚½[‚¢
+			// SQL ‰»‚ª–Ê“|‚È‚Ì‚Å‚Æ‚è‚ ‚¦‚¸•Û—¯
 			WFIFOW(fd,0)=0x2721;
 			WFIFOL(fd,2)=RFIFOL(fd,4);
 			WFIFOL(fd,6)=RFIFOL(fd,4);
@@ -669,7 +669,7 @@ int parse_fromchar(int fd)
 					ac2.account_reg2_num = j;
 					account_save(&ac2);
 
-					// ä»–ã®ã‚µãƒ¼ãƒãƒ¼ã¸ãƒã‚¹ãƒˆï¼ˆåŒå¢ãƒ­ã‚°ã‚¤ãƒ³ãŒãªã‘ã‚Œã°é€ã‚‰ãªãã¦ã„ã„ï¼‰
+					// ‘¼‚ÌƒT[ƒo[‚Öƒ|ƒXƒgi“¯CƒƒOƒCƒ“‚ª‚È‚¯‚ê‚Î‘—‚ç‚È‚­‚Ä‚¢‚¢j
 					memcpy(WBUFP(buf,0),RFIFOP(fd,0),RFIFOW(fd,2));
 					WBUFW(buf,0)=0x2729;
 					charif_sendallwos(fd,buf,WBUFW(buf,2));
@@ -680,12 +680,12 @@ int parse_fromchar(int fd)
 			}
 			break;
 
-		case 0x272b:	// charã‚µãƒ¼ãƒãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹çŠ¶æ…‹
+		case 0x272b:	// charƒT[ƒoƒƒ“ƒeƒiƒ“ƒXó‘Ô
 			if( RFIFOREST(fd) < 3 )
 				return 0;
 
 			server[id].maintenance=RFIFOB(fd,2);
-			// charã‚µãƒ¼ãƒã«å¿œç­”
+			// charƒT[ƒo‚É‰“š
 			WFIFOW(fd,0)=0x272c;
 			WFIFOB(fd,2)=server[id].maintenance;
 			WFIFOSET(fd,3);
@@ -709,7 +709,7 @@ int parse_fromchar(int fd)
 }
 
 /*==========================================
- * ã‚¢ãƒ‰ãƒŸãƒ³ã®ã‚½ã‚±ãƒƒãƒˆãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * ƒAƒhƒ~ƒ“‚Ìƒ\ƒPƒbƒgƒfƒXƒgƒ‰ƒNƒ^
  *------------------------------------------
  */
 static int parse_admin_disconnect(int fd)
@@ -728,7 +728,7 @@ static int parse_admin_disconnect(int fd)
 }
 
 /*==========================================
- * ã‚¢ãƒ‰ãƒŸãƒ³ã®ãƒ‘ã‚±ãƒƒãƒˆè§£æ
+ * ƒAƒhƒ~ƒ“‚ÌƒpƒPƒbƒg‰ğÍ
  *------------------------------------------
  */
 int parse_admin(int fd)
@@ -739,7 +739,7 @@ int parse_admin(int fd)
 	{
 		switch(RFIFOW(fd,0))
 		{
-			case 0x7530:	// Aurigaæƒ…å ±å–å¾—
+			case 0x7530:	// Aurigaî•ñæ“¾
 				WFIFOW(fd,0)=0x7531;
 				WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 				WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -752,7 +752,7 @@ int parse_admin(int fd)
 				RFIFOSKIP(fd,2);
 				break;
 
-			case 0x7532:	// æ¥ç¶šã®åˆ‡æ–­(defaultã¨å‡¦ç†ã¯ä¸€ç·’ã ãŒæ˜ç¤ºçš„ã«ã™ã‚‹ãŸã‚)
+			case 0x7532:	// Ú‘±‚ÌØ’f(default‚Æˆ—‚Íˆê‚¾‚ª–¾¦“I‚É‚·‚é‚½‚ß)
 				RFIFOSKIP(fd,2);
 				close(fd);
 				session[fd]->eof=1;
@@ -762,7 +762,7 @@ int parse_admin(int fd)
 				if( RFIFOREST(fd) < 11 )
 					return 0;
 				{
-					// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãƒªã‚¹ãƒˆ
+					// ƒAƒJƒEƒ“ƒgƒŠƒXƒg
 					int st  = RFIFOL(fd,2);
 					int ed  = RFIFOL(fd,6);
 					int len = 4;
@@ -799,11 +799,11 @@ int parse_admin(int fd)
 				}
 				break;
 
-			case 0x7930:	// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä½œæˆè¦æ±‚
+			case 0x7930:	// ƒAƒJƒEƒ“ƒgì¬—v‹
 				if( RFIFOREST(fd) < 98 )
 					return 0;
 				{
-					// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä½œæˆ
+					// ƒAƒJƒEƒ“ƒgì¬
 					struct mmo_account ma;
 					memset( &ma, 0, sizeof(ma) );
 					memcpy(ma.userid,RFIFOP(fd, 2),24);
@@ -812,7 +812,7 @@ int parse_admin(int fd)
 					memcpy(ma.mail,RFIFOP(fd,51),40);
 					memcpy(ma.birth,RFIFOP(fd,91),7);
 
-					// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä½œæˆçµæœé€šçŸ¥
+					// ƒAƒJƒEƒ“ƒgì¬Œ‹‰Ê’Ê’m
 					WFIFOW(fd,0) = 0x7931;
 					WFIFOW(fd,2) = 0;
 					memcpy(WFIFOP(fd,4),RFIFOP(fd,2),24);
@@ -824,7 +824,7 @@ int parse_admin(int fd)
 				break;
 
 			case 0x7932:
-				// ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤
+				// ƒAƒJƒEƒ“ƒgíœ
 				if( RFIFOREST(fd) < 26 )
 					return 0;
 				{
@@ -839,7 +839,7 @@ int parse_admin(int fd)
 					memcpy(WFIFOP(fd,4),RFIFOP(fd,2),24);
 					if(ac)
 					{
-						// ã‚­ãƒ£ãƒ©ã‚µãƒ¼ãƒãƒ¼ã¸å‰Šé™¤é€šçŸ¥
+						// ƒLƒƒƒ‰ƒT[ƒo[‚Öíœ’Ê’m
 						unsigned char buf[8];
 						WBUFW(buf,0) = 0x272a;
 						WBUFL(buf,2) = ac->account_id;
@@ -853,7 +853,7 @@ int parse_admin(int fd)
 				break;
 
 			case 0x7934:
-				// ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰å¤‰æ›´
+				// ƒpƒXƒ[ƒh•ÏX
 				if( RFIFOREST(fd) < 50 )
 					return 0;
 
@@ -881,7 +881,7 @@ int parse_admin(int fd)
 				break;
 
 			case 0x7936:
-				// ãƒãƒ³çŠ¶æ…‹å¤‰æ›´
+				// ƒoƒ“ó‘Ô•ÏX
 				if( RFIFOREST(fd) < 30 )
 					return 0;
 				{
@@ -1031,7 +1031,7 @@ int parse_admin(int fd)
 }
 
 /*==========================================
- * ãƒ­ã‚°ã‚¤ãƒ³ã‚µãƒ¼ãƒã®ã‚½ã‚±ãƒƒãƒˆãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * ƒƒOƒCƒ“ƒT[ƒo‚Ìƒ\ƒPƒbƒgƒfƒXƒgƒ‰ƒNƒ^
  *------------------------------------------
  */
 static int parse_login_disconnect(int fd)
@@ -1050,7 +1050,7 @@ static int parse_login_disconnect(int fd)
 }
 
 /*==========================================
- * ãƒ­ã‚°ã‚¤ãƒ³ã‚µãƒ¼ãƒã®ãƒ‘ã‚±ãƒƒãƒˆè§£æ
+ * ƒƒOƒCƒ“ƒT[ƒo‚ÌƒpƒPƒbƒg‰ğÍ
  *------------------------------------------
  */
 int parse_login(int fd)
@@ -1085,23 +1085,23 @@ int parse_login(int fd)
 
 		switch(cmd)
 		{
-		case 0x200:		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã§accountã‚ªãƒ—ã‚·ãƒ§ãƒ³ä½¿ç”¨æ™‚ã®è¬ãƒ‘ã‚±ãƒƒãƒˆã¸ã®å¯¾å¿œ
+		case 0x200:		// ƒNƒ‰ƒCƒAƒ“ƒg‚ÅaccountƒIƒvƒVƒ‡ƒ“g—p‚Ì“äƒpƒPƒbƒg‚Ö‚Ì‘Î‰
 			if( RFIFOREST(fd) < 26 )
 				return 0;
 			RFIFOSKIP(fd,26);
 			break;
-		case 0x204:		// 2004-06-22æš—å·åŒ–ragexeå¯¾å¿œ
+		case 0x204:		// 2004-06-22ˆÃ†‰»ragexe‘Î‰
 			if( RFIFOREST(fd) < 18 )
 				return 0;
 			RFIFOSKIP(fd,18);
 			break;
-		case 0x258:		// 2005-12-14 nProtecté–¢ä¿‚ Part 1
+		case 0x258:		// 2005-12-14 nProtectŠÖŒW Part 1
 			memset(WFIFOP(fd,0),0,18);
 			WFIFOW(fd,0)=0x0227;
 			WFIFOSET(fd,18);
 			RFIFOSKIP(fd,2);
 			break;
-		case 0x228:		// 2005-12-14 nProtecté–¢ä¿‚ Part 2
+		case 0x228:		// 2005-12-14 nProtectŠÖŒW Part 2
 			if( RFIFOREST(fd) < 18 )
 				return 0;
 			WFIFOW(fd,0)=0x0259;
@@ -1110,13 +1110,13 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,18);
 			break;
 
-		case 0x0064:	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚
-		case 0x01dd:	// æš—å·åŒ–ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚
-		case 0x01fa:	// æš—å·åŒ–ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ï¼ˆlangtype=5ï¼‰
-		case 0x0277:	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ï¼Ÿ
-		case 0x027c:	// æš—å·åŒ–ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚
-		case 0x02b0:	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ï¼ˆlangtype=0ï¼‰
-		case 0x0825:	// ã‚·ãƒ³ã‚°ãƒ«ã‚µã‚¤ãƒ³ã‚ªãƒ³ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ï¼ˆlangtype=0ï¼‰
+		case 0x0064:	// ƒNƒ‰ƒCƒAƒ“ƒgƒƒOƒCƒ“—v‹
+		case 0x01dd:	// ˆÃ†‰»ƒƒOƒCƒ“—v‹
+		case 0x01fa:	// ˆÃ†‰»ƒƒOƒCƒ“—v‹ilangtype=5j
+		case 0x0277:	// ƒNƒ‰ƒCƒAƒ“ƒgƒƒOƒCƒ“—v‹H
+		case 0x027c:	// ˆÃ†‰»ƒƒOƒCƒ“—v‹
+		case 0x02b0:	// ƒNƒ‰ƒCƒAƒ“ƒgƒƒOƒCƒ“—v‹ilangtype=0j
+		case 0x0825:	// ƒVƒ“ƒOƒ‹ƒTƒCƒ“ƒIƒ“ƒƒOƒCƒ“—v‹ilangtype=0j
 		{
 			int result = -1;
 			bool enc_flag;
@@ -1195,13 +1195,13 @@ int parse_login(int fd)
 				loginlog_log("client connection request %s from %s", sd->userid, sd->lastip);
 			}
 
-			if( config.login_version > 0 && config.login_version != version )	// è¦å®šå¤–ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‹ã‚‰ã®æ¥ç¶šã‚’æ‹’å¦
+			if( config.login_version > 0 && config.login_version != version )	// ‹K’èŠO‚Ìƒo[ƒWƒ‡ƒ“‚©‚ç‚ÌÚ‘±‚ğ‹‘”Û
 				result = 5;
-			if( config.login_type > 0 && config.login_type != clienttype )	// è¦å®šå¤–ã®ã‚¿ã‚¤ãƒ—ã‹ã‚‰ã®æ¥ç¶šã‚’æ‹’å¦
+			if( config.login_type > 0 && config.login_type != clienttype )	// ‹K’èŠO‚Ìƒ^ƒCƒv‚©‚ç‚ÌÚ‘±‚ğ‹‘”Û
 				result = 5;
-			if( strlen(sd->userid) < 4 )	// IDãŒ4å­—æœªæº€ã‚’æ‹’å¦
+			if( strlen(sd->userid) < 4 )	// ID‚ª4š–¢–‚ğ‹‘”Û
 				result = 3;
-			if( !enc_flag && strlen(sd->pass) < 4 ) // æš—å·åŒ–PASSã¯md5ç¬¦å·ãªã®ã§ \0 ãŒå«ã¾ã‚Œã‚‹å¯èƒ½æ€§æœ‰ã‚Š
+			if( !enc_flag && strlen(sd->pass) < 4 ) // ˆÃ†‰»PASS‚Ímd5•„†‚È‚Ì‚Å \0 ‚ªŠÜ‚Ü‚ê‚é‰Â”\«—L‚è
 				result = 3;
 #ifdef PASSWORDENC
 			sd->passwdenc = (enc_flag)? PASSWORDENC: 0;
@@ -1230,9 +1230,9 @@ int parse_login(int fd)
 		}
 		break;
 
-		case 0x01db:	// æš—å·åŒ–Keyé€ä¿¡è¦æ±‚
-		case 0x272d:	// Charã®æš—å·åŒ–ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚
-		case 0x791a:	// ç®¡ç†ãƒ‘ã‚±ãƒƒãƒˆã§æš—å·åŒ–keyè¦æ±‚
+		case 0x01db:	// ˆÃ†‰»Key‘—M—v‹
+		case 0x272d:	// Char‚ÌˆÃ†‰»ƒƒOƒCƒ“—v‹
+		case 0x791a:	// ŠÇ—ƒpƒPƒbƒg‚ÅˆÃ†‰»key—v‹
 		{
 			int i;
 
@@ -1244,7 +1244,7 @@ int parse_login(int fd)
 				session[fd]->eof=1;
 				return 0;
 			}
-			// æš—å·åŒ–ç”¨ã®ãƒãƒ£ãƒ¬ãƒ³ã‚¸ç”Ÿæˆ
+			// ˆÃ†‰»—p‚Ìƒ`ƒƒƒŒƒ“ƒW¶¬
 			sd->md5keylen = atn_rand()%(sizeof(sd->md5key)/4)+(sizeof(sd->md5key)-sizeof(sd->md5key)/4);
 			for( i = 0; i < sd->md5keylen; i++ )
 				sd->md5key[i] = atn_rand()%255+1;
@@ -1257,8 +1257,8 @@ int parse_login(int fd)
 			break;
 		}
 
-		case 0x2710:	// Charã‚µãƒ¼ãƒãƒ¼æ¥ç¶šè¦æ±‚
-		case 0x272f:	// Charã‚µãƒ¼ãƒãƒ¼æ¥ç¶šè¦æ±‚(æš—å·åŒ–ãƒ­ã‚°ã‚¤ãƒ³)
+		case 0x2710:	// CharƒT[ƒo[Ú‘±—v‹
+		case 0x272f:	// CharƒT[ƒo[Ú‘±—v‹(ˆÃ†‰»ƒƒOƒCƒ“)
 			if( RFIFOREST(fd) < 84 )
 				break;
 			if( config.login_sport != 0 && config.login_port != config.login_sport && session[fd]->server_port != config.login_sport )
@@ -1296,7 +1296,7 @@ int parse_login(int fd)
 				session[fd]->func_parse    = parse_fromchar;
 				session[fd]->func_destruct = parse_char_disconnect;
 				realloc_fifo(fd, RFIFOSIZE_SERVERLINK, WFIFOSIZE_SERVERLINK);
-				session[fd]->auth = -1; // èªè¨¼çµ‚äº†ã‚’ socket.c ã«ä¼ãˆã‚‹
+				session[fd]->auth = -1; // ”FØI—¹‚ğ socket.c ‚É“`‚¦‚é
 			}
 			else
 			{
@@ -1307,7 +1307,7 @@ int parse_login(int fd)
 			RFIFOSKIP(fd,84);
 			break;
 
-		case 0x7530:	// Aurigaæƒ…å ±å–å¾—
+		case 0x7530:	// Aurigaî•ñæ“¾
 			WFIFOW(fd,0)=0x7531;
 			WFIFOB(fd,2)=AURIGA_MAJOR_VERSION;
 			WFIFOB(fd,3)=AURIGA_MINOR_VERSION;
@@ -1319,13 +1319,13 @@ int parse_login(int fd)
 			WFIFOSET(fd,11);
 			RFIFOSKIP(fd,2);
 			break;
-		case 0x7532:	// æ¥ç¶šã®åˆ‡æ–­(defaultã¨å‡¦ç†ã¯ä¸€ç·’ã ãŒæ˜ç¤ºçš„ã«ã™ã‚‹ãŸã‚)
+		case 0x7532:	// Ú‘±‚ÌØ’f(default‚Æˆ—‚Íˆê‚¾‚ª–¾¦“I‚É‚·‚é‚½‚ß)
 			RFIFOSKIP(fd,2);
 			close(fd);
 			session[fd]->eof=1;
 			return 0;
 
-		case 0x7918:	// ç®¡ç†ãƒ¢ãƒ¼ãƒ‰ãƒ­ã‚°ã‚¤ãƒ³
+		case 0x7918:	// ŠÇ—ƒ‚[ƒhƒƒOƒCƒ“
 			if( RFIFOREST(fd) < 4 )
 				break;
 			if( config.ristrict_admin_local == true )
@@ -1333,7 +1333,7 @@ int parse_login(int fd)
 				unsigned long ip = (unsigned long)session[fd]->client_addr.sin_addr.s_addr;
 				if(ip != host2ip("127.0.0.1", NULL))
 				{
-					// ãƒ­ãƒ¼ã‚«ãƒ«ãƒ›ã‚¹ãƒˆä»¥å¤–ã¯å¤±æ•—
+					// ƒ[ƒJƒ‹ƒzƒXƒgˆÈŠO‚Í¸”s
 					printf("parse_admin failed: source ip address is not localhost: %lu\n", ip);
 					break;
 				}
@@ -1357,17 +1357,17 @@ int parse_login(int fd)
 			WFIFOB(fd,2)=1;
 
 			if(RFIFOW(fd,4) == 0)
-			{	// ãƒ—ãƒ¬ãƒ¼ãƒ³
+			{	// ƒvƒŒ[ƒ“
 				if( strcmp(RFIFOP(fd,6),config.ladmin_pass) == 0 )
 				{
 					WFIFOB(fd,2)=0;
 					session[fd]->func_parse=parse_admin;
 					session[fd]->func_destruct = parse_admin_disconnect;
-					session[fd]->auth = -1; // èªè¨¼çµ‚äº†ã‚’ socket.c ã«ä¼ãˆã‚‹
+					session[fd]->auth = -1; // ”FØI—¹‚ğ socket.c ‚É“`‚¦‚é
 				}
 			}
 			else
-			{					// æš—å·åŒ–
+			{					// ˆÃ†‰»
 				struct login_session_data *ld = (struct login_session_data *)session[fd]->session_data;
 				if(!ld)
 					printf("login: md5key not created for admin login\n");
@@ -1386,7 +1386,7 @@ int parse_login(int fd)
 						WFIFOB(fd,2)=0;
 						session[fd]->func_parse=parse_admin;
 						session[fd]->func_destruct = parse_admin_disconnect;
-						session[fd]->auth = -1; // èªè¨¼çµ‚äº†ã‚’ socket.c ã«ä¼ãˆã‚‹
+						session[fd]->auth = -1; // ”FØI—¹‚ğ socket.c ‚É“`‚¦‚é
 					}
 				}
 			}
@@ -1410,7 +1410,7 @@ int parse_login(int fd)
 }
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚»ãƒƒãƒˆ
+ * İ’èƒtƒ@ƒCƒ‹‚ÌƒfƒtƒHƒ‹ƒgƒZƒbƒg
  *------------------------------------------
  */
 static void login_config_set_defaultvalue(void)
@@ -1434,7 +1434,7 @@ static void login_config_set_defaultvalue(void)
 }
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static void login_config_read(const char *cfgName)
@@ -1538,7 +1538,7 @@ static void login_config_read(const char *cfgName)
 }
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®è­¦å‘Šè¡¨ç¤º
+ * İ’èƒtƒ@ƒCƒ‹‚ÌŒx•\¦
  *------------------------------------------
  */
 static void display_conf_warnings(void)
@@ -1578,7 +1578,7 @@ static void display_conf_warnings(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 static int login_sync_timer(int tid, unsigned int tick, int id, void *data)
@@ -1589,7 +1589,7 @@ static int login_sync_timer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
- * çµ‚äº†ç›´å‰å‡¦ç†
+ * I—¹’¼‘Oˆ—
  *------------------------------------------
  */
 void do_pre_final(void)
@@ -1599,7 +1599,7 @@ void do_pre_final(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int gm_account_db_final(void *key, void *data, va_list ap)
@@ -1639,7 +1639,7 @@ void do_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 int do_init(int argc,char **argv)

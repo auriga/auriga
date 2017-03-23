@@ -189,7 +189,7 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 			break;
 		case EXCEPTION_INVALID_DISPOSITION:
 		default:
-			// ä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©ã®ãƒŸã‚¹ or ä½•ã‚‚ã—ãªã„ä¾‹å¤–
+			// —áŠOƒnƒ“ƒhƒ‰‚Ìƒ~ƒX or ‰½‚à‚µ‚È‚¢—áŠO
 			return EXCEPTION_CONTINUE_SEARCH;
 	}
 
@@ -200,7 +200,7 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL
 	);
 
-	// ãƒ­ã‚°ãŒå–ã‚Œãªã‹ã£ãŸã®ã§ä½•ã‚‚ã—ãªã„ã€‚
+	// ƒƒO‚ªæ‚ê‚È‚©‚Á‚½‚Ì‚Å‰½‚à‚µ‚È‚¢B
 	if( hFile == INVALID_HANDLE_VALUE )
 		return EXCEPTION_CONTINUE_SEARCH;
 
@@ -275,11 +275,11 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 #endif
 	) {
 #ifdef __BORLANDC__
-		// BCC ã®å ´åˆã¯ã‚·ãƒ³ãƒœãƒ«åãŒåˆ†ã‹ã‚‰ãªã„ã®ã§ã‚¢ãƒ‰ãƒ¬ã‚¹ã¯å¼•ã‹ãªã„ã€‚
-		// ã‚·ãƒ³ãƒœãƒ«åã®å‡ºåŠ›ã¯crashdump.plã§è¡Œã†ã€‚
+		// BCC ‚Ìê‡‚ÍƒVƒ“ƒ{ƒ‹–¼‚ª•ª‚©‚ç‚È‚¢‚Ì‚ÅƒAƒhƒŒƒX‚Íˆø‚©‚È‚¢B
+		// ƒVƒ“ƒ{ƒ‹–¼‚Ìo—Í‚Ícrashdump.pl‚Ås‚¤B
 		len = wsprintf(buf, "\t0x%08x : unknown\r\n", stack.AddrPC.Offset);
 #elif defined(_WIN64)
-		// SymGetSymFromAddr64 ã¯ä½¿ç”¨ã™ã‚‹ã¹ãã˜ã‚ƒãªã„ã‚‰ã—ã„â€¦ã€‚
+		// SymGetSymFromAddr64 ‚Íg—p‚·‚é‚×‚«‚¶‚á‚È‚¢‚ç‚µ‚¢cB
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
 			len = wsprintf(
 				buf, "\t0x%016I64x : %s + 0x%I64x",
@@ -376,11 +376,11 @@ int main(int argc, char **argv)
 
 	atexit(do_close);
 
-	// å‡ºåŠ›ã‚’ãƒãƒƒãƒ•ã‚¡ç„¡ã—ã«ã™ã‚‹
+	// o—Í‚ğƒoƒbƒtƒ@–³‚µ‚É‚·‚é
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 
-	// èµ·å‹•å¼•æ•°
+	// ‹N“®ˆø”
 	for(i = 1; i < argc - 1; i += 2) {
 		if(strcmp(argv[i], "--stdout") == 0) {
 			if(stdout_fp == NULL) {
@@ -398,11 +398,11 @@ int main(int argc, char **argv)
 
 	output_log_header();
 
-	// Windowsã‚µãƒ¼ãƒ“ã‚¹ã®å‡¦ç†ã‚’å®Ÿè¡Œ
+	// WindowsƒT[ƒrƒX‚Ìˆ—‚ğÀs
 	if(winservice_init(argc, argv))
 		return 0;
 
-	// ãƒ¡ã‚¤ãƒ³å‡¦ç†ç¶šè¡Œ
+	// ƒƒCƒ“ˆ—‘±s
 	return main_sub(argc, argv);
 }
 
@@ -415,7 +415,7 @@ int main_sub(int argc, char **argv)
 	int next;
 
 	pid_create(argv[0]);
-	do_init_memmgr(argv[0]); // ä¸€ç•ªæœ€åˆã«å®Ÿè¡Œã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	do_init_memmgr(argv[0]); // ˆê”ÔÅ‰‚ÉÀs‚·‚é•K—v‚ª‚ ‚é
 	do_socket();
 	printf("PACKETVER: %d\n", PACKETVER);
 

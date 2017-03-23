@@ -25,7 +25,7 @@
 #include "mmo.h"
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool homundb_sql_init(void);
 int homundb_sql_sync(void);
 bool homundb_sql_delete(int homun_id);
@@ -35,7 +35,7 @@ bool homundb_sql_new(struct mmo_homunstatus *p2);
 void homundb_sql_final(void);
 int homundb_sql_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define homundb_init   homundb_sql_init
 #define homundb_sync   homundb_sql_sync
 #define homundb_delete homundb_sql_delete

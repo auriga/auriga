@@ -27,7 +27,7 @@
 #include "loginlog_sql.h"
 
 /*==========================================
- * 繝ｭ繧ｰ險倬鹸
+ * ログ記録
  *------------------------------------------
  */
 int loginlog_log_sql(const char *fmt, ...)
@@ -45,7 +45,7 @@ int loginlog_log_sql(const char *fmt, ...)
 }
 
 /*==========================================
- * 險ｭ螳壹ヵ繧｡繧､繝ｫ隱ｭ霎ｼ
+ * 設定ファイル読込
  *------------------------------------------
  */
 int loginlog_config_read_sql(const char *str, const char *str2)

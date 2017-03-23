@@ -34,7 +34,7 @@
 static struct dbt *homun_db = NULL;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹‚Ì“Ç
  *------------------------------------------
  */
 int homundb_sql_config_read_sub(const char* w1,const char *w2)
@@ -43,7 +43,7 @@ int homundb_sql_config_read_sub(const char* w1,const char *w2)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 int homundb_sql_sync(void)
@@ -53,7 +53,7 @@ int homundb_sql_sync(void)
 }
 
 /*==========================================
- * ãƒ›ãƒ å‰Šé™¤
+ * ƒzƒ€íœ
  *------------------------------------------
  */
 bool homundb_sql_delete(int homun_id)
@@ -92,7 +92,7 @@ bool homundb_sql_delete(int homun_id)
 }
 
 /*==========================================
- * ãƒ›ãƒ IDã‹ã‚‰ãƒ›ãƒ ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰
+ * ƒzƒ€ID‚©‚çƒzƒ€ƒf[ƒ^‚Ìƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_homunstatus* homundb_sql_load(int homun_id)
@@ -172,7 +172,7 @@ const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < MAX_HOMSKILL; i++) {
 		int id = atoi(sql_row[0]);
 		if(id < HOM_SKILLID || id >= MAX_HOM_SKILLID) {
-			// DBæ“ä½œã—ã¦å¤‰ãªã‚¹ã‚­ãƒ«ã‚’è¦šãˆã•ã›ã‚‰ã‚Œã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§ãƒã‚§ãƒƒã‚¯
+			// DB‘€ì‚µ‚Ä•Ï‚ÈƒXƒLƒ‹‚ğŠo‚¦‚³‚¹‚ç‚ê‚é‰Â”\«‚ª‚ ‚é‚Ì‚Åƒ`ƒFƒbƒN
 			printf("homundb_sql_load: invaild skill id: %d\n", id);
 		} else {
 			p->skill[id-HOM_SKILLID].id = id;
@@ -204,7 +204,7 @@ const struct mmo_homunstatus* homundb_sql_load(int homun_id)
 	}
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–
+ * ƒZ[ƒu
  *------------------------------------------
  */
 bool homundb_sql_save(struct mmo_homunstatus *p2)
@@ -302,7 +302,7 @@ bool homundb_sql_save(struct mmo_homunstatus *p2)
 }
 
 /*==========================================
- * ãƒ›ãƒ ä½œæˆ
+ * ƒzƒ€ì¬
  *------------------------------------------
  */
 bool homundb_sql_new(struct mmo_homunstatus *p)
@@ -370,7 +370,7 @@ bool homundb_sql_new(struct mmo_homunstatus *p)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int homundb_sql_final_sub(void *key, void *data, va_list ap)
@@ -389,7 +389,7 @@ void homundb_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool homundb_sql_init(void)

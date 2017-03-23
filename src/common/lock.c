@@ -25,17 +25,17 @@
 #include "lock.h"
 #include "utils.h"
 
-// 書き込みファイルの保護処理
-// （書き込みが終わるまで、旧ファイルを保管しておく）
+// �������݃t�@�C���̕ی쏈��
+// �i�������݂��I���܂ŁA���t�@�C����ۊǂ��Ă����j
 
-// 新しいファイルの書き込み開始
+// �V�����t�@�C���̏������݊J�n
 FILE* lock_fopen(const char* filename,int *info)
 {
 	char newfile[2048];
 	FILE *fp;
 	int  no = 0;
 
-	// 安全なファイル名を得る（手抜き）
+	// ���S�ȃt�@�C�����𓾂�i�蔲���j
 	do {
 		snprintf(newfile, sizeof(newfile), "%s_%04d.tmp", filename, ++no);
 	} while( (fp = fopen(newfile,"r")) && (fclose(fp), no < 9999) );
@@ -47,7 +47,7 @@ FILE* lock_fopen(const char* filename,int *info)
 	return fopen(newfile,"w");
 }
 
-// 旧ファイルを削除＆新ファイルをリネーム
+// ���t�@�C�����폜���V�t�@�C�������l�[��
 int lock_fclose(FILE *fp,const char* filename,int *info)
 {
 	int  ret = 0;
@@ -57,7 +57,7 @@ int lock_fclose(FILE *fp,const char* filename,int *info)
 		ret = fclose(fp);
 		snprintf(newfile, sizeof(newfile), "%s_%04d.tmp", filename, *info);
 		if(remove(filename) == 0 || errno == ENOENT) {
-			// このタイミングで落ちると最悪。
+			// ���̃^�C�~���O�ŗ�����ƍň��B
 			rename(newfile,filename);
 		}
 		return ret;

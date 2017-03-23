@@ -39,7 +39,7 @@ static struct dbt *storage_db;
 static struct dbt *guild_storage_db;
 
 /*==========================================
- * å€‰åº«å†…ã‚¢ã‚¤ãƒ†ãƒ ã‚½ãƒ¼ãƒˆ
+ * ‘qŒÉ“àƒAƒCƒeƒ€ƒ\[ƒg
  *------------------------------------------
  */
 static int storage_comp_item_by_key(const void *_i1, const void *_i2)
@@ -82,7 +82,7 @@ static int storage_comp_item_by_type(const void *_i1, const void *_i2)
 	struct item_data *data1, *data2;
 
 	if(i1->nameid == 0 || i2->nameid == 0) {
-		// æœ«å°¾ã«é›†ã‚ã‚‹ã®ã§åè»¢
+		// ––”ö‚ÉW‚ß‚é‚Ì‚Å”½“]
 		return i2->nameid - i1->nameid;
 	}
 
@@ -94,7 +94,7 @@ static int storage_comp_item_by_type(const void *_i1, const void *_i2)
 	if(data1->type < data2->type)
 		return -1;
 
-	// æ­¦å™¨ãƒ»é˜²å…·ãªã‚‰LOCã§ã‚½ãƒ¼ãƒˆ
+	// •ŠíE–h‹ï‚È‚çLOC‚Åƒ\[ƒg
 	if(itemdb_isarmor(data1->nameid) || itemdb_isweapon(data1->nameid)) {
 		if(data1->equip > data2->equip)
 			return 1;
@@ -102,7 +102,7 @@ static int storage_comp_item_by_type(const void *_i1, const void *_i2)
 			return -1;
 	}
 
-	// æœ€å¾Œã¯ã‚¢ã‚¤ãƒ†ãƒ IDã§ã‚½ãƒ¼ãƒˆ
+	// ÅŒã‚ÍƒAƒCƒeƒ€ID‚Åƒ\[ƒg
 	if(data1->nameid > data2->nameid)
 		return 1;
 	if(data1->nameid < data2->nameid)
@@ -127,7 +127,7 @@ static void storage_sortitem(struct item *item,int max,unsigned int *sortkey,int
 		int i;
 		qsort(item, max, sizeof(struct item), cmp);
 
-		// ã‚½ãƒ¼ãƒˆã‚­ãƒ¼ã®ãƒªãƒŠãƒ³ãƒãƒªãƒ³ã‚°
+		// ƒ\[ƒgƒL[‚ÌƒŠƒiƒ“ƒoƒŠƒ“ƒO
 		*sortkey = 0;
 		for(i=0; i<max; i++) {
 			if(item->nameid > 0)
@@ -141,7 +141,7 @@ static void storage_sortitem(struct item *item,int max,unsigned int *sortkey,int
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+ * ƒJƒvƒ‰‘qŒÉƒf[ƒ^ƒx[ƒX
  *------------------------------------------
  */
 static struct storage *account2storage(int account_id)
@@ -158,7 +158,7 @@ static struct storage *account2storage(int account_id)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‚’å‰Šé™¤
+ * ƒJƒvƒ‰‘qŒÉ‚ğíœ
  *------------------------------------------
  */
 void storage_delete(int account_id)
@@ -172,7 +172,7 @@ void storage_delete(int account_id)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‚’é–‹ã
+ * ƒJƒvƒ‰‘qŒÉ‚ğŠJ‚­
  *------------------------------------------
  */
 int storage_storageopen(struct map_session_data *sd)
@@ -183,11 +183,11 @@ int storage_storageopen(struct map_session_data *sd)
 	nullpo_retr(0, sd);
 
 	if(sd->state.storage_flag == 1)
-		return 0;	// æ—¢ã«ã‚«ãƒ—ãƒ©å€‰åº«ã‚’é–‹ã„ã¦ã„ã‚‹
+		return 0;	// Šù‚ÉƒJƒvƒ‰‘qŒÉ‚ğŠJ‚¢‚Ä‚¢‚é
 
 	gmlvl = pc_isGM(sd);
 	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
-		return 0;	// è¨­å®šã—ã¦ã„ã‚‹GMãƒ¬ãƒ™ãƒ«ã‚ˆã‚Šä½ã„
+		return 0;	// İ’è‚µ‚Ä‚¢‚éGMƒŒƒxƒ‹‚æ‚è’á‚¢
 
 	if((stor = (struct storage *)numdb_search(storage_db,sd->status.account_id)) != NULL) {
 		if(stor->storage_status)
@@ -196,7 +196,7 @@ int storage_storageopen(struct map_session_data *sd)
 	}
 
 	if(sd->state.storage_flag == 2)
-		storage_guild_storageclose(sd); // ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’ã™ã§ã«é–‹ã„ã¦ã„ã‚‹å ´åˆé–‰ã˜ã‚‹
+		storage_guild_storageclose(sd); // ƒMƒ‹ƒh‘qŒÉ‚ğ‚·‚Å‚ÉŠJ‚¢‚Ä‚¢‚éê‡•Â‚¶‚é
 
 	if(stor != NULL) {
 		sd->state.storage_flag = 1;
@@ -210,7 +210,7 @@ int storage_storageopen(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ãƒ‡ãƒ¼ã‚¿ã®å—ä¿¡
+ * ƒJƒvƒ‰‘qŒÉƒf[ƒ^‚ÌóM
  *------------------------------------------
  */
 int storage_storageload(int account_id, struct storage *s)
@@ -228,7 +228,7 @@ int storage_storageload(int account_id, struct storage *s)
 		return 1;
 	}
 
-	// æ—¢ã«å€‰åº«ã‚’é–‹ã„ã¦ãªã„ã‹ãƒã‚§ãƒƒã‚¯
+	// Šù‚É‘qŒÉ‚ğŠJ‚¢‚Ä‚È‚¢‚©ƒ`ƒFƒbƒN
 	if(sd->state.storage_flag == 1)
 		return 0;
 	if(sd->state.storage_flag == 2)
@@ -251,7 +251,7 @@ int storage_storageload(int account_id, struct storage *s)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã¸ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ 
+ * ƒJƒvƒ‰‘qŒÉ‚ÖƒAƒCƒeƒ€’Ç‰Á
  *------------------------------------------
  */
 static int storage_additem(struct map_session_data *sd,struct storage *stor,struct item *item_data,int amount)
@@ -269,7 +269,7 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 	nullpo_retr(1, data = itemdb_search(item_data->nameid));
 
 	if(!itemdb_isequip2(data)) {
-		// è£…å‚™å“ã§ã¯ãªã„ã®ã§ã€æ—¢æ‰€æœ‰å“ãªã‚‰å€‹æ•°ã®ã¿å¤‰åŒ–ã•ã›ã‚‹
+		// ‘•”õ•i‚Å‚Í‚È‚¢‚Ì‚ÅAŠùŠ—L•i‚È‚çŒÂ”‚Ì‚İ•Ï‰»‚³‚¹‚é
 		for(i=0; i<MAX_STORAGE; i++) {
 			if(stor->store_item[i].nameid  == item_data->nameid  &&
 			   stor->store_item[i].card[0] == item_data->card[0] &&
@@ -290,7 +290,7 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 		return 1;
 	}
 
-	// è£…å‚™å“ã‹æœªæ‰€æœ‰å“ã ã£ãŸã®ã§ç©ºãæ¬„ã¸è¿½åŠ 
+	// ‘•”õ•i‚©–¢Š—L•i‚¾‚Á‚½‚Ì‚Å‹ó‚«—“‚Ö’Ç‰Á
 	for(i=0; i<MAX_STORAGE; i++) {
 		if(stor->store_item[i].nameid == 0) {
 			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
@@ -308,7 +308,7 @@ static int storage_additem(struct map_session_data *sd,struct storage *stor,stru
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¸›ã‚‰ã™
+ * ƒJƒvƒ‰‘qŒÉ‚©‚çƒAƒCƒeƒ€‚ğŒ¸‚ç‚·
  *------------------------------------------
  */
 static void storage_delitem(struct map_session_data *sd,struct storage *stor,int n,int amount)
@@ -333,7 +333,7 @@ static void storage_delitem(struct map_session_data *sd,struct storage *stor,int
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã¸å…¥ã‚Œã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚Ö“ü‚ê‚é
  *------------------------------------------
  */
 void storage_storageadd(struct map_session_data *sd, int idx, int amount)
@@ -359,7 +359,7 @@ void storage_storageadd(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰å‡ºã™
+ * ƒJƒvƒ‰‘qŒÉ‚©‚ço‚·
  *------------------------------------------
  */
 void storage_storageget(struct map_session_data *sd, int idx, int amount)
@@ -389,7 +389,7 @@ void storage_storageget(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã¸ã‚«ãƒ¼ãƒˆã‹ã‚‰å…¥ã‚Œã‚‹
+ * ƒJƒvƒ‰‘qŒÉ‚ÖƒJ[ƒg‚©‚ç“ü‚ê‚é
  *------------------------------------------
  */
 void storage_storageaddfromcart(struct map_session_data *sd, int idx, int amount)
@@ -415,7 +415,7 @@ void storage_storageaddfromcart(struct map_session_data *sd, int idx, int amount
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‹ã‚‰ã‚«ãƒ¼ãƒˆã¸å‡ºã™
+ * ƒJƒvƒ‰‘qŒÉ‚©‚çƒJ[ƒg‚Öo‚·
  *------------------------------------------
  */
 void storage_storagegettocart(struct map_session_data *sd, int idx, int amount)
@@ -429,7 +429,7 @@ void storage_storagegettocart(struct map_session_data *sd, int idx, int amount)
 		return;
 	if(idx < 0 || idx >= MAX_STORAGE)
 		return;
-	if(itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// ã‚«ãƒ¼ãƒˆã¸å‡ºã›ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	if(itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// ƒJ[ƒg‚Öo‚¹‚é‚©ƒ`ƒFƒbƒN
 		return;
 	if(amount < 1 || amount > stor->store_item[idx].amount)
 		return;
@@ -441,7 +441,7 @@ void storage_storagegettocart(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã‚’é–‰ã˜ã¦ä¿å­˜
+ * ƒJƒvƒ‰‘qŒÉ‚ğ•Â‚¶‚Ä•Û‘¶
  *------------------------------------------
  */
 void storage_storageclose(struct map_session_data *sd)
@@ -467,7 +467,7 @@ void storage_storageclose(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚«ãƒ—ãƒ©å€‰åº«ã®ä¿å­˜
+ * ƒJƒvƒ‰‘qŒÉ‚Ì•Û‘¶
  *------------------------------------------
  */
 void storage_storage_save(struct map_session_data *sd)
@@ -487,7 +487,7 @@ void storage_storage_save(struct map_session_data *sd)
 
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+ * ƒMƒ‹ƒh‘qŒÉƒf[ƒ^ƒx[ƒX
  *------------------------------------------
  */
 static struct guild_storage *guild2storage(int guild_id)
@@ -507,7 +507,7 @@ static struct guild_storage *guild2storage(int guild_id)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’å‰Šé™¤
+ * ƒMƒ‹ƒh‘qŒÉ‚ğíœ
  *------------------------------------------
  */
 void storage_guild_delete(int guild_id)
@@ -521,7 +521,7 @@ void storage_guild_delete(int guild_id)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’é–‹ã
+ * ƒMƒ‹ƒh‘qŒÉ‚ğŠJ‚­
  *------------------------------------------
  */
 int storage_guild_storageopen(struct map_session_data *sd)
@@ -534,14 +534,14 @@ int storage_guild_storageopen(struct map_session_data *sd)
 	if(sd->status.guild_id <= 0)
 		return 2;
 	if(sd->state.storage_flag == 2)
-		return 3;	// æ—¢ã«ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’é–‹ã„ã¦ã„ã‚‹
+		return 3;	// Šù‚ÉƒMƒ‹ƒh‘qŒÉ‚ğŠJ‚¢‚Ä‚¢‚é
 
 	gmlvl = pc_isGM(sd);
 	if(gmlvl > 0 && battle_config.gm_can_drop_lv > gmlvl)
-		return 2;	// è¨­å®šã—ã¦ã„ã‚‹GMãƒ¬ãƒ™ãƒ«ã‚ˆã‚Šä½ã„
+		return 2;	// İ’è‚µ‚Ä‚¢‚éGMƒŒƒxƒ‹‚æ‚è’á‚¢
 
 	if(sd->state.storage_flag == 1)
-		storage_storageclose(sd); // ã‚«ãƒ—ãƒ©å€‰åº«ã‚’ã™ã§ã«é–‹ã„ã¦ã„ã‚‹å ´åˆé–‰ã˜ã‚‹
+		storage_storageclose(sd); // ƒJƒvƒ‰‘qŒÉ‚ğ‚·‚Å‚ÉŠJ‚¢‚Ä‚¢‚éê‡•Â‚¶‚é
 
 	if((gstor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
 		gstor->storage_status  = 1;
@@ -557,7 +557,7 @@ int storage_guild_storageopen(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ãƒ‡ãƒ¼ã‚¿ã®å—ä¿¡
+ * ƒMƒ‹ƒh‘qŒÉƒf[ƒ^‚ÌóM
  *------------------------------------------
  */
 int storage_guild_storageload(int account_id, int guild_id, struct guild_storage *s)
@@ -578,7 +578,7 @@ int storage_guild_storageload(int account_id, int guild_id, struct guild_storage
 		return 1;
 	}
 
-	// æ—¢ã«å€‰åº«ã‚’é–‹ã„ã¦ãªã„ã‹ãƒã‚§ãƒƒã‚¯
+	// Šù‚É‘qŒÉ‚ğŠJ‚¢‚Ä‚È‚¢‚©ƒ`ƒFƒbƒN
 	if(sd->state.storage_flag == 2)
 		return 0;
 	if(sd->state.storage_flag == 1)
@@ -606,7 +606,7 @@ int storage_guild_storageload(int account_id, int guild_id, struct guild_storage
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã¸ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ 
+ * ƒMƒ‹ƒh‘qŒÉ‚ÖƒAƒCƒeƒ€’Ç‰Á
  *------------------------------------------
  */
 static int storage_guild_additem(struct map_session_data *sd,struct guild_storage *stor,struct item *item_data,int amount)
@@ -624,7 +624,7 @@ static int storage_guild_additem(struct map_session_data *sd,struct guild_storag
 	nullpo_retr(1, data = itemdb_search(item_data->nameid));
 
 	if(!itemdb_isequip2(data)) {
-		// è£…å‚™å“ã§ã¯ãªã„ã®ã§ã€æ—¢æ‰€æœ‰å“ãªã‚‰å€‹æ•°ã®ã¿å¤‰åŒ–ã•ã›ã‚‹
+		// ‘•”õ•i‚Å‚Í‚È‚¢‚Ì‚ÅAŠùŠ—L•i‚È‚çŒÂ”‚Ì‚İ•Ï‰»‚³‚¹‚é
 		for(i=0; i<MAX_GUILD_STORAGE; i++) {
 			if(stor->store_item[i].nameid  == item_data->nameid  &&
 			   stor->store_item[i].card[0] == item_data->card[0] &&
@@ -645,7 +645,7 @@ static int storage_guild_additem(struct map_session_data *sd,struct guild_storag
 		return 1;
 	}
 
-	// è£…å‚™å“ã‹æœªæ‰€æœ‰å“ã ã£ãŸã®ã§ç©ºãæ¬„ã¸è¿½åŠ 
+	// ‘•”õ•i‚©–¢Š—L•i‚¾‚Á‚½‚Ì‚Å‹ó‚«—“‚Ö’Ç‰Á
 	for(i=0; i<MAX_GUILD_STORAGE; i++) {
 		if(stor->store_item[i].nameid == 0) {
 			memcpy(&stor->store_item[i],item_data,sizeof(stor->store_item[0]));
@@ -663,7 +663,7 @@ static int storage_guild_additem(struct map_session_data *sd,struct guild_storag
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¸›ã‚‰ã™
+ * ƒMƒ‹ƒh‘qŒÉ‚©‚çƒAƒCƒeƒ€‚ğŒ¸‚ç‚·
  *------------------------------------------
  */
 static void storage_guild_delitem(struct map_session_data *sd,struct guild_storage *stor,int n,int amount)
@@ -688,7 +688,7 @@ static void storage_guild_delitem(struct map_session_data *sd,struct guild_stora
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã¸å…¥ã‚Œã‚‹
+ * ƒMƒ‹ƒh‘qŒÉ‚Ö“ü‚ê‚é
  *------------------------------------------
  */
 void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
@@ -715,7 +715,7 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‹ã‚‰å‡ºã™
+ * ƒMƒ‹ƒh‘qŒÉ‚©‚ço‚·
  *------------------------------------------
  */
 void storage_guild_storageget(struct map_session_data *sd, int idx, int amount)
@@ -743,7 +743,7 @@ void storage_guild_storageget(struct map_session_data *sd, int idx, int amount)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã¸ã‚«ãƒ¼ãƒˆã‹ã‚‰å…¥ã‚Œã‚‹
+ * ƒMƒ‹ƒh‘qŒÉ‚ÖƒJ[ƒg‚©‚ç“ü‚ê‚é
  *------------------------------------------
  */
 void storage_guild_storageaddfromcart(struct map_session_data *sd, int idx, int amount)
@@ -770,7 +770,7 @@ void storage_guild_storageaddfromcart(struct map_session_data *sd, int idx, int 
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‹ã‚‰ã‚«ãƒ¼ãƒˆã¸å‡ºã™
+ * ƒMƒ‹ƒh‘qŒÉ‚©‚çƒJ[ƒg‚Öo‚·
  *------------------------------------------
  */
 void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int amount)
@@ -785,7 +785,7 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 		return;
 	if(idx < 0 || idx >= MAX_GUILD_STORAGE)
 		return;
-	if(itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// ã‚«ãƒ¼ãƒˆã¸å‡ºã›ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+	if(itemdb_iscartable(stor->store_item[idx].nameid) == 0)	// ƒJ[ƒg‚Öo‚¹‚é‚©ƒ`ƒFƒbƒN
 		return;
 	if(amount < 1 || amount > stor->store_item[idx].amount)
 		return;
@@ -797,7 +797,7 @@ void storage_guild_storagegettocart(struct map_session_data *sd, int idx, int am
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã‚’é–‰ã˜ã¦ä¿å­˜
+ * ƒMƒ‹ƒh‘qŒÉ‚ğ•Â‚¶‚Ä•Û‘¶
  *------------------------------------------
  */
 void storage_guild_storageclose(struct map_session_data *sd)
@@ -824,7 +824,7 @@ void storage_guild_storageclose(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã®ä¿å­˜
+ * ƒMƒ‹ƒh‘qŒÉ‚Ì•Û‘¶
  *------------------------------------------
  */
 void storage_guild_storagesave(struct map_session_data *sd)
@@ -843,7 +843,7 @@ void storage_guild_storagesave(struct map_session_data *sd)
 }
 
 /*==========================================
- * ã‚®ãƒ«ãƒ‰å€‰åº«ã®ãƒ‡ãƒƒãƒ‰ãƒ­ãƒƒã‚¯ãƒã‚§ãƒƒã‚¯
+ * ƒMƒ‹ƒh‘qŒÉ‚ÌƒfƒbƒhƒƒbƒNƒ`ƒFƒbƒN
  *------------------------------------------
  */
 int storage_guild_checklock(int guild_id)
@@ -858,12 +858,12 @@ int storage_guild_checklock(int guild_id)
 	for(i = 0; i < g->max_member; i++) {
 		struct map_session_data *sd = g->member[i].sd;
 		if(sd && sd->state.storage_flag == 2) {
-			// å€‰åº«ã‚’é–‹ã„ã¦ã„ã‚‹äººãŒå±…ãŸã®ã§OK
+			// ‘qŒÉ‚ğŠJ‚¢‚Ä‚¢‚él‚ª‹‚½‚Ì‚ÅOK
 			return 0;
 		}
 	}
 
-	// èª°ã‚‚ä½¿ç”¨ã—ã¦ã„ãªã„ã®ã§ãƒ‡ãƒƒãƒ‰ãƒ­ãƒƒã‚¯ã‚’è§£é™¤ã™ã‚‹
+	// ’N‚àg—p‚µ‚Ä‚¢‚È‚¢‚Ì‚ÅƒfƒbƒhƒƒbƒN‚ğ‰ğœ‚·‚é
 	stor = (struct guild_storage *)numdb_search(guild_storage_db, guild_id);
 	if(stor) {
 		stor->storage_status = 0;
@@ -890,7 +890,7 @@ static int guild_storage_db_final(void *key,void *data,va_list ap)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®ã‚¯ãƒªã‚¢
+ * ƒLƒƒƒbƒVƒ…‚ÌƒNƒŠƒA
  *------------------------------------------
  */
 void storage_clear_cache(void)
@@ -904,7 +904,7 @@ void storage_clear_cache(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 void do_final_storage(void)
@@ -922,7 +922,7 @@ void do_final_storage(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 void do_init_storage(void)

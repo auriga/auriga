@@ -25,7 +25,7 @@
 #include "mmo.h"
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool homundb_txt_init(void);
 int homundb_txt_sync(void);
 bool homundb_txt_delete(int homun_id);
@@ -35,7 +35,7 @@ bool homundb_txt_new(struct mmo_homunstatus *p);
 void homundb_txt_final(void);
 int homundb_txt_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define homundb_init   homundb_txt_init
 #define homundb_sync   homundb_txt_sync
 #define homundb_delete homundb_txt_delete

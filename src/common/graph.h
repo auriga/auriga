@@ -24,10 +24,10 @@
 
 void do_init_graph(void);
 
-// aurigaã®çŠ¶æ…‹ã‚’èª¿æŸ»ã™ã‚‹ã‚»ãƒ³ã‚µãƒ¼ã‚’è¿½åŠ ã™ã‚‹ã€‚
-// string        : ã‚»ãƒ³ã‚µãƒ¼ã®åç§°(Login Users ãªã©)
-// inetrval      : ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’å–å¾—ã™ã‚‹é–“éš”(msec)
-// callback_func : ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’è¿”ã™é–¢æ•°( unsigned int login_users(void); ãªã©)
+// auriga‚Ìó‘Ô‚ğ’²¸‚·‚éƒZƒ“ƒT[‚ğ’Ç‰Á‚·‚éB
+// string        : ƒZƒ“ƒT[‚Ì–¼Ì(Login Users ‚È‚Ç)
+// inetrval      : ƒZƒ“ƒT[‚Ì’l‚ğæ“¾‚·‚éŠÔŠu(msec)
+// callback_func : ƒZƒ“ƒT[‚Ì’l‚ğ•Ô‚·ŠÖ”( unsigned int login_users(void); ‚È‚Ç)
 
 void graph_add_sensor(const char* string, int interval, double (*callback_func)(void));
 

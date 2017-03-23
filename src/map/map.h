@@ -43,32 +43,32 @@
 #define MAX_WIS_REFUSAL 14
 #define MAX_MOBGROUP	13
 #define MAX_ITEMGROUP	12
-#define MAX_EFF_TYPE	16	// ã‚¢ã‚¤ãƒ†ãƒ ãƒœãƒ¼ãƒŠã‚¹ã®çŠ¶æ…‹ç•°å¸¸ã®æ•°
-#define MAX_SKILL_DAMAGE_UP	10	// ã‚¹ã‚­ãƒ«ã‚’å¼·åŒ–ã§ãã‚‹æ•°
-#define MAX_SKILL_BLOW  5		// ã‚¹ã‚­ãƒ«ã‚’å¹ãé£›ã°ã—åŒ–
-#define MAX_SKILL_HEAL_UP	7	// ã‚¹ã‚­ãƒ«ã®å›å¾©é‡ã‚’å¼·åŒ–ã§ãã‚‹æ•°
-#define MAX_SKILL_FIXCASTRATE	10	// ã‚¹ã‚­ãƒ«ã®å›ºå®šè© å”±æ™‚é–“ã‚’æ¸›ã‚‰ã›ã‚‹æ•°
-#define MAX_SKILL_ADDCASTRATE	10 	//ã‚¹ã‚­ãƒ«ã®è© å”±æ™‚é–“ã‚’æ¸›ã‚‰ã›ã‚‹æ•°
-#define MAX_SKILL_ADDCASTTIME	10 	//ã‚¹ã‚­ãƒ«ã®è© å”±æ™‚é–“ã‚’æ¸›ã‚‰ã›ã‚‹æ•°
-#define MAX_SKILL_ADDCOOLDOWN	10 	//ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’æ¸›ã‚‰ã›ã‚‹æ•°
-#define MAX_SKILL_ADDEFF	10	// ã‚¹ã‚­ãƒ«ã§è¿½åŠ çŠ¶æ…‹ç•°å¸¸åŒ–ã§ãã‚‹æ•°
-#define MAX_SKILL_ADDSPCOST	10 	//ã‚¹ã‚­ãƒ«ã®æ¶ˆè²»SPã‚’å¢—ã‚„ã›ã‚‹æ•°
-#define MAX_BONUS_CLASS	10	// ã‚¢ã‚¤ãƒ†ãƒ ãƒœãƒ¼ãƒŠã‚¹ã®ã‚¯ãƒ©ã‚¹ã®å®¹é‡
-#define MAX_BONUS_ADDDROP	10	// ã‚¢ã‚¤ãƒ†ãƒ ãƒœãƒ¼ãƒŠã‚¹ã®ãƒ‰ãƒ­ãƒƒãƒ—ã®å®¹é‡
-#define MAX_BONUS_AUTOSPELL  16		// ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«ã®å®¹é‡
-#define MAX_ACTIVEITEM  10		// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¢ã‚¤ãƒ†ãƒ ã®å®¹é‡
+#define MAX_EFF_TYPE	16	// ƒAƒCƒeƒ€ƒ{[ƒiƒX‚Ìó‘ÔˆÙí‚Ì”
+#define MAX_SKILL_DAMAGE_UP	10	// ƒXƒLƒ‹‚ğ‹­‰»‚Å‚«‚é”
+#define MAX_SKILL_BLOW  5		// ƒXƒLƒ‹‚ğ‚«”ò‚Î‚µ‰»
+#define MAX_SKILL_HEAL_UP	7	// ƒXƒLƒ‹‚Ì‰ñ•œ—Ê‚ğ‹­‰»‚Å‚«‚é”
+#define MAX_SKILL_FIXCASTRATE	10	// ƒXƒLƒ‹‚ÌŒÅ’è‰r¥ŠÔ‚ğŒ¸‚ç‚¹‚é”
+#define MAX_SKILL_ADDCASTRATE	10 	//ƒXƒLƒ‹‚Ì‰r¥ŠÔ‚ğŒ¸‚ç‚¹‚é”
+#define MAX_SKILL_ADDCASTTIME	10 	//ƒXƒLƒ‹‚Ì‰r¥ŠÔ‚ğŒ¸‚ç‚¹‚é”
+#define MAX_SKILL_ADDCOOLDOWN	10 	//ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ğŒ¸‚ç‚¹‚é”
+#define MAX_SKILL_ADDEFF	10	// ƒXƒLƒ‹‚Å’Ç‰Áó‘ÔˆÙí‰»‚Å‚«‚é”
+#define MAX_SKILL_ADDSPCOST	10 	//ƒXƒLƒ‹‚ÌÁ”ïSP‚ğ‘‚â‚¹‚é”
+#define MAX_BONUS_CLASS	10	// ƒAƒCƒeƒ€ƒ{[ƒiƒX‚ÌƒNƒ‰ƒX‚Ì—e—Ê
+#define MAX_BONUS_ADDDROP	10	// ƒAƒCƒeƒ€ƒ{[ƒiƒX‚Ìƒhƒƒbƒv‚Ì—e—Ê
+#define MAX_BONUS_AUTOSPELL  16		// ƒI[ƒgƒXƒyƒ‹‚Ì—e—Ê
+#define MAX_ACTIVEITEM  10		// ƒAƒNƒeƒBƒuƒAƒCƒeƒ€‚Ì—e—Ê
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
-#define MAX_WEAPON_LEVEL 4	// æœ€å¤§æ­¦å™¨Lv
-#define MAX_REFINE 10		// æœ€å¤§ç²¾éŒ¬å€¤
-#define MAX_ELE_LEVEL 4		// æœ€å¤§å±æ€§Lv
-#define MAX_SIZE_FIX 3		// ã‚µã‚¤ã‚ºã®ç¨®é¡
-#define MAX_FREEZE_SPELL 7	// ãƒªãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯ã§ä¿æŒã§ãã‚‹ã‚¹ã‚­ãƒ«æ•°
-#define MAX_SPIRITBALL 15	// æ°—åŠŸãƒ»ã‚³ã‚¤ãƒ³ã®æœ€å¤§æ•°
-#define MAX_BUYINGSTORE_COUNT 5	// è³¼è²·éœ²åº—æœ€å¤§ã‚¢ã‚¤ãƒ†ãƒ ç™»éŒ²æ•°
-#define MAX_BOOKING_MEMO_LENGTH 37	// ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ–ãƒƒã‚­ãƒ³ã‚°ã®å‹Ÿé›†ãƒ¡ãƒ¢æœ€å¤§æ–‡å­—æ•°
-#define MAX_ELEMENTBALL 10	// å½±ç‹¼ãƒ»æœ§ã®çƒä½“æœ€å¤§æ•°
-#define MAX_MEMORIAL_MAP 200	// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³ãƒãƒƒãƒ—æœ€å¤§ç”Ÿæˆæ•°
+#define MAX_WEAPON_LEVEL 4	// Å‘å•ŠíLv
+#define MAX_REFINE 10		// Å‘å¸˜B’l
+#define MAX_ELE_LEVEL 4		// Å‘å‘®«Lv
+#define MAX_SIZE_FIX 3		// ƒTƒCƒY‚Ìí—Ş
+#define MAX_FREEZE_SPELL 7	// ƒŠ[ƒfƒBƒ“ƒOƒXƒyƒ‹ƒuƒbƒN‚Å•Û‚Å‚«‚éƒXƒLƒ‹”
+#define MAX_SPIRITBALL 15	// ‹CŒ÷EƒRƒCƒ“‚ÌÅ‘å”
+#define MAX_BUYINGSTORE_COUNT 5	// w”ƒ˜I“XÅ‘åƒAƒCƒeƒ€“o˜^”
+#define MAX_BOOKING_MEMO_LENGTH 37	// ƒp[ƒeƒB[ƒuƒbƒLƒ“ƒO‚Ì•åWƒƒ‚Å‘å•¶š”
+#define MAX_ELEMENTBALL 10	// ‰e˜TEO‚Ì‹…‘ÌÅ‘å”
+#define MAX_MEMORIAL_MAP 200	// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ƒ}ƒbƒvÅ‘å¶¬”
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -99,7 +99,7 @@ enum {
 	SCRIPT,
 };
 
-// ç¨®æ—
+// í‘°
 enum {
 	RCT_FORMLESS = 0,
 	RCT_UNDEAD,
@@ -116,10 +116,10 @@ enum {
 	RCT_MAX,
 };
 
-// å…¨ç¨®æ—ç”¨
+// ‘Sí‘°—p
 #define RCT_ALL	10
 
-// å±æ€§
+// ‘®«
 enum {
 	ELE_NONE = -1,
 	ELE_NEUTRAL = 0,
@@ -135,7 +135,7 @@ enum {
 	ELE_MAX,
 };
 
-// æ•µã‚¿ã‚¤ãƒ—
+// “Gƒ^ƒCƒv
 enum {
 	EMY_ETC = 0,
 	EMY_PC,
@@ -145,7 +145,7 @@ enum {
 	EMY_MAX
 };
 
-// status.weaponãŠã‚ˆã³weapontype1, weapontype2ç”¨ã®æ­¦å™¨ã‚¿ã‚¤ãƒ—å®šç¾©
+// status.weapon‚¨‚æ‚Ñweapontype1, weapontype2—p‚Ì•Šíƒ^ƒCƒv’è‹`
 enum {
 	WT_FIST     = 0,
 	WT_DAGGER,
@@ -156,7 +156,7 @@ enum {
 	WT_1HAXE,
 	WT_2HAXE,
 	WT_MACE,
-	WT_2HMACE,		// æœªä½¿ç”¨
+	WT_2HMACE,		// –¢g—p
 	WT_STAFF,
 	WT_BOW,
 	WT_KNUCKLE,
@@ -171,17 +171,17 @@ enum {
 	WT_GRENADE,
 	WT_HUUMA,
 	WT_2HSTAFF,
-	WT_MAX,				// åŸºæœ¬æ­¦å™¨æœ€å¤§å€¤
-	WT_DOUBLE_DD = 93,	// äºŒåˆ€æµ çŸ­å‰£+çŸ­å‰£
-	WT_DOUBLE_SS,		// äºŒåˆ€æµ ç‰‡æ‰‹å‰£+ç‰‡æ‰‹å‰£
-	WT_DOUBLE_AA,		// äºŒåˆ€æµ ç‰‡æ‰‹æ–§+ç‰‡æ‰‹æ–§
-	WT_DOUBLE_DS,		// äºŒåˆ€æµ çŸ­å‰£+ç‰‡æ‰‹å‰£
-	WT_DOUBLE_DA,		// äºŒåˆ€æµ çŸ­å‰£+ç‰‡æ‰‹æ–§
-	WT_DOUBLE_SA,		// äºŒåˆ€æµ ç‰‡æ‰‹å‰£+ç‰‡æ‰‹æ–§
-	WT_DOUBLE_MAX		// äºŒåˆ€æµæœ€å¤§å€¤
+	WT_MAX,				// Šî–{•ŠíÅ‘å’l
+	WT_DOUBLE_DD = 93,	// “ñ“—¬ ’ZŒ•+’ZŒ•
+	WT_DOUBLE_SS,		// “ñ“—¬ •ĞèŒ•+•ĞèŒ•
+	WT_DOUBLE_AA,		// “ñ“—¬ •Ğè•€+•Ğè•€
+	WT_DOUBLE_DS,		// “ñ“—¬ ’ZŒ•+•ĞèŒ•
+	WT_DOUBLE_DA,		// “ñ“—¬ ’ZŒ•+•Ğè•€
+	WT_DOUBLE_SA,		// “ñ“—¬ •ĞèŒ•+•Ğè•€
+	WT_DOUBLE_MAX		// “ñ“—¬Å‘å’l
 };
 
-// è£…å‚™ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+// ‘•”õƒCƒ“ƒfƒbƒNƒX
 enum e_equip_index
 {
 	EQUIP_INDEX_LACCESSORY			= 0,
@@ -209,7 +209,7 @@ enum e_equip_index
 	EQUIP_INDEX_MAX					= 22,
 };
 
-// ç‰¹æ®ŠMob
+// “ÁêMob
 enum {
     MOBID_PORING = 1002,
     MOBID_EMPERIUM = 1288,
@@ -346,9 +346,9 @@ struct cell_xy {
 };
 
 struct pc_base_job {
-	short job;	// è·æ¥­ã€ãŸã ã—è»¢ç”Ÿè·ã‚„é¤Šå­è·ã®å ´åˆã¯å…ƒã®è·æ¥­ã‚’è¿”ã™(å»ƒãƒ—ãƒªâ†’ãƒ—ãƒª)
-	short type;	// ãƒãƒ“ 0, ä¸€æ¬¡è· 1, äºŒæ¬¡è· 2, ã‚¹ãƒ‘ãƒãƒ“ 3
-	short upper;	// é€šå¸¸ 0, è»¢ç”Ÿ 1, é¤Šå­ 2
+	short job;	// E‹ÆA‚½‚¾‚µ“]¶E‚â—{qE‚Ìê‡‚ÍŒ³‚ÌE‹Æ‚ğ•Ô‚·(”pƒvƒŠ¨ƒvƒŠ)
+	short type;	// ƒmƒr 0, ˆêŸE 1, “ñŸE 2, ƒXƒpƒmƒr 3
+	short upper;	// ’Êí 0, “]¶ 1, —{q 2
 };
 
 struct npc_data;
@@ -375,11 +375,11 @@ struct map_session_data {
 		unsigned gangsterparadise : 1;
 		unsigned taekwonrest : 1;
 		unsigned potionpitcher_flag : 1;
-		unsigned storage_flag : 2;	// 0:å€‰åº«æœªä½¿ç”¨, 1:å€‹äººå€‰åº«ä½¿ç”¨ä¸­, 2:ã‚®ãƒ«ãƒ‰å€‰åº«ä½¿ç”¨ä¸­
+		unsigned storage_flag : 2;	// 0:‘qŒÉ–¢g—p, 1:ŒÂl‘qŒÉg—p’†, 2:ƒMƒ‹ƒh‘qŒÉg—p’†
 		unsigned autoloot : 1;
 		unsigned refuse_emergencycall : 1;
 		unsigned reg_dirty : 1;
-		unsigned gstorage_lockreq : 2;	// 0:ç„¡ã—, 1:scriptã‹ã‚‰ãƒ­ãƒƒã‚¯è¦æ±‚ä¸­, 2:atcommandã‹ã‚‰ãƒ­ãƒƒã‚¯è¦æ±‚ä¸­
+		unsigned gstorage_lockreq : 2;	// 0:–³‚µ, 1:script‚©‚çƒƒbƒN—v‹’†, 2:atcommand‚©‚çƒƒbƒN—v‹’†
 		unsigned inventory_dirty : 1;
 		unsigned cart_dirty : 1;
 		unsigned icon_weight : 2;
@@ -394,14 +394,14 @@ struct map_session_data {
 		unsigned party_sended : 1;
 		unsigned guild_sended : 1;
 		unsigned friend_sended : 1;
-		unsigned wis_all : 1;	// Wiså…¨æ‹’å¦è¨±å¯ãƒ•ãƒ©ã‚°
-		unsigned joinchat : 1;	// å‚åŠ orä¸»å‚¬
+		unsigned wis_all : 1;	// Wis‘S‹‘”Û‹–‰Âƒtƒ‰ƒO
+		unsigned joinchat : 1;	// Q‰ÁoråÃ
 		unsigned mail_appending : 1;
 		unsigned snovice_dead_flag : 1;
 		unsigned sn_doridori : 1;
 		unsigned tk_doridori_hp : 1;
 		unsigned tk_doridori_sp : 1;
-		unsigned store : 2;	// 0:ä½•ã‚‚é–‹ã„ã¦ã„ãªã„, 1:éœ²åº—ã‚’é–‹ã„ã¦ã„ã‚‹, 2:è³¼è²·éœ²åº—ã‚’é–‹ã„ã¦ã„ã‚‹
+		unsigned store : 2;	// 0:‰½‚àŠJ‚¢‚Ä‚¢‚È‚¢, 1:˜I“X‚ğŠJ‚¢‚Ä‚¢‚é, 2:w”ƒ˜I“X‚ğŠJ‚¢‚Ä‚¢‚é
 		unsigned blockedmove : 1;
 		unsigned alliance_message : 1;
 	} state;
@@ -453,17 +453,17 @@ struct map_session_data {
 	struct buyingstore buyingstore;
 	int inventory_num;
 
-	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wisæ‹’å¦ãƒªã‚¹ãƒˆ
+	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis‹‘”ÛƒŠƒXƒg
 
 	struct {
 		short attackrange;
 		short attackrange_;
-		short add_attackrange;	// bAtkRange2ç”¨
-		short add_attackrange_rate;	// bAtkRangeRate2 ç”¨
+		short add_attackrange;	// bAtkRange2—p
+		short add_attackrange_rate;	// bAtkRangeRate2 —p
 	} range;
 
 	unsigned int skillstatictimer[MAX_SKILL_DB];
-	unsigned int skillcooldown[MAX_SKILL_DB];		// ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+	unsigned int skillcooldown[MAX_SKILL_DB];		// ƒN[ƒ‹ƒ^ƒCƒ€
 
 	struct {
 		short id;
@@ -509,14 +509,14 @@ struct map_session_data {
 	struct {
 		int hp,sp;
 		int hptick,sptick,spirithptick,spiritsptick;
-		int tk_hp,tk_sp;	// å®‰ã‚‰ã‹ãªä¼‘æ¯,æ¥½ã—ã„ä¼‘æ¯
+		int tk_hp,tk_sp;	// ˆÀ‚ç‚©‚È‹x‘§,Šy‚µ‚¢‹x‘§
 		int resthptick,restsptick;
 	} regen;
 
 	short view_class;
 	struct pc_base_job s_class;
 
-	short weapontype1,weapontype2;	// ã€œWT_MAX
+	short weapontype1,weapontype2;	// ?WT_MAX
 	int paramb[6],paramc[6],parame[6],paramcard[6];
 	int hit,flee,flee2,aspd,amotion,dmotion;
 	int watk,watk2,atkmods[MAX_SIZE_FIX];
@@ -529,10 +529,10 @@ struct map_session_data {
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[EMY_MAX],subsize[MAX_SIZE_FIX];
 	int def_eleenemy[ELE_MAX];
 	int addeff[MAX_EFF_TYPE],addeff2[MAX_EFF_TYPE],reseff[MAX_EFF_TYPE],addeff_range_flag[MAX_EFF_TYPE];
-	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[EMY_MAX],addsize_[MAX_SIZE_FIX];	// äºŒåˆ€æµã®ãŸã‚ã«è¿½åŠ 
-	int atk_ele_,star_,overrefine_;				// äºŒåˆ€æµã®ãŸã‚ã«è¿½åŠ 
+	int watk_,watk_2,atkmods_[MAX_SIZE_FIX],addele_[ELE_MAX],addrace_[RCT_MAX],addenemy_[EMY_MAX],addsize_[MAX_SIZE_FIX];	// “ñ“—¬‚Ì‚½‚ß‚É’Ç‰Á
+	int atk_ele_,star_,overrefine_;				// “ñ“—¬‚Ì‚½‚ß‚É’Ç‰Á
 	int base_atk,atk_rate;
-	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// æŒ‡è²«
+	int weapon_atk[WT_MAX],weapon_atk_rate[WT_MAX];	// wŠÑ
 	int arrow_atk,arrow_ele,arrow_cri,arrow_hit,arrow_range;
 	int arrow_addele[ELE_MAX],arrow_addrace[RCT_MAX],arrow_addenemy[EMY_MAX],arrow_addsize[MAX_SIZE_FIX],arrow_addeff[MAX_EFF_TYPE],arrow_addeff2[MAX_EFF_TYPE];
 	int nhealhp,nhealsp,nshealhp,nshealsp,nsshealhp,nsshealsp;
@@ -602,12 +602,12 @@ struct map_session_data {
 	int sp_rate_penalty_tick;
 	short hp_rate_penalty_value;
 	short sp_rate_penalty_value;
-	// è£…å‚™è§£é™¤æ™‚ã®HP/SPãƒšãƒŠãƒ«ãƒ†ã‚£
+	// ‘•”õ‰ğœ‚ÌHP/SPƒyƒiƒ‹ƒeƒB
 	short hp_penalty_unrig_value[EQUIP_INDEX_MAX];
 	short sp_penalty_unrig_value[EQUIP_INDEX_MAX];
 	short hp_rate_penalty_unrig[EQUIP_INDEX_MAX];
 	short sp_rate_penalty_unrig[EQUIP_INDEX_MAX];
-	short mob_class_change_rate;	// mobã‚’å¤‰åŒ–ã•ã›ã‚‹ç¢ºç‡
+	short mob_class_change_rate;	// mob‚ğ•Ï‰»‚³‚¹‚éŠm—¦
 	short curse_by_muramasa;
 
 	short loss_equip_rate_when_die[EQUIP_INDEX_MAX];
@@ -648,7 +648,7 @@ struct map_session_data {
 		short rate[MAX_BONUS_AUTOSPELL];
 		unsigned int flag[MAX_BONUS_AUTOSPELL];
 		short card_id[MAX_BONUS_AUTOSPELL];
-		short skill[MAX_BONUS_AUTOSPELL];	// ã‚¹ã‚­ãƒ«ã§ç™ºå‹•ã™ã‚‹ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«ç”¨
+		short skill[MAX_BONUS_AUTOSPELL];	// ƒXƒLƒ‹‚Å”­“®‚·‚éƒI[ƒgƒXƒyƒ‹—p
 		short count;
 	} autospell;
 
@@ -657,7 +657,7 @@ struct map_session_data {
 		short rate[MAX_ACTIVEITEM];
 		unsigned int tick[MAX_ACTIVEITEM];
 		unsigned int flag[MAX_ACTIVEITEM];
-		short skill[MAX_ACTIVEITEM];	// ã‚¹ã‚­ãƒ«ã§ç™ºå‹•ã™ã‚‹ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¢ã‚¤ãƒ†ãƒ ç”¨
+		short skill[MAX_ACTIVEITEM];	// ƒXƒLƒ‹‚Å”­“®‚·‚éƒAƒNƒeƒBƒuƒAƒCƒeƒ€—p
 		short count;
 	} activeitem;
 	int activeitem_timer[MAX_ACTIVEITEM];
@@ -673,7 +673,7 @@ struct map_session_data {
 	short itemheal_rate[MAX_ITEMGROUP];
 	short use_itemid;
 	int   use_nameditem;
-	int   bonus_damage;	// å¿…ä¸­ãƒ€ãƒ¡ãƒ¼ã‚¸
+	int   bonus_damage;	// •K’†ƒ_ƒ[ƒW
 
 	struct {
 		short num;
@@ -736,17 +736,17 @@ struct map_session_data {
 	struct merc_data *mcd;
 	struct elem_data *eld;
 
-	// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«è¨ˆç®—ç”¨ 0:å½±éŸ¿å¤– 0>å½±éŸ¿ä¸‹
-	// ç§»å‹•æ™‚ã®åˆ¤å®šã«ä½¿ç”¨
+	// ƒMƒ‹ƒhƒXƒLƒ‹ŒvZ—p 0:‰e‹¿ŠO 0>‰e‹¿‰º
+	// ˆÚ“®‚Ì”»’è‚Ég—p
 	short under_the_influence_of_the_guild_skill;
 
-	// æ‹³è–ç”¨
+	// Œ¹—p
 	int feel_index[3];
 	short hate_mob[3];
 
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;
-	int tk_mission_target;		// ãƒ†ã‚³ãƒ³
+	int tk_mission_target;		// ƒeƒRƒ“
 	short ranker_weapon_bonus;
 	short ranker_weapon_bonus_;
 
@@ -776,7 +776,7 @@ struct map_session_data {
 		int merderer_char_id;
 	} kill;
 
-	// ãƒ¡ãƒ¼ãƒ«æ·»ä»˜æƒ…å ±
+	// ƒ[ƒ‹“Y•tî•ñ
 	struct {
 		int index;
 		int amount;
@@ -843,14 +843,14 @@ struct map_session_data {
 	char hotkey_rotate;
 	int shop_point;
 
-	int npc_idle_timer;		// NPCã®ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆç”¨
+	int npc_idle_timer;		// NPC‚Ìƒ^ƒCƒ€ƒAƒEƒg—p
 	unsigned int npc_idle_tick;
 
 	int freeze_sp_slot;
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
-	int overheat;			// é­”å°ã‚®ã‚¢åŠ ç†±åº¦ï¼ˆæš«å®šï¼‰
-	int shadowform_id;		// ã‚·ãƒ£ãƒ‰ã‚¦ãƒ•ã‚©ãƒ¼ãƒ 
-	int deposit;			// é é‡‘é¡
+	int overheat;			// –‚“±ƒMƒA‰Á”M“xib’èj
+	int shadowform_id;		// ƒVƒƒƒhƒEƒtƒH[ƒ€
+	int deposit;			// —a‹àŠz
 	unsigned int cryptKey;
 };
 
@@ -899,7 +899,7 @@ struct npc_data {
 			char name[16];
 		} warp;
 	} u;
-	// ã“ã“ã«ãƒ¡ãƒ³ãƒã‚’è¿½åŠ ã—ã¦ã¯ãªã‚‰ãªã„(shop_itemãŒå¯å¤‰é•·ã®ç‚º)
+	// ‚±‚±‚Éƒƒ“ƒo‚ğ’Ç‰Á‚µ‚Ä‚Í‚È‚ç‚È‚¢(shop_item‚ª‰Â•Ï’·‚Ìˆ×)
 };
 
 struct mob_data {
@@ -946,8 +946,8 @@ struct mob_data {
 	short recallmob_count;
 	short recallcount;
 	short guardup_lv;
-	int ai_pc_count; // è¿‘ãã«ã„ã‚‹PCã®æ•°
-	struct mob_data *ai_next, *ai_prev; // ã¾ã˜ã‚AIç”¨ã®ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆ
+	int ai_pc_count; // ‹ß‚­‚É‚¢‚éPC‚Ì”
+	struct mob_data *ai_next, *ai_prev; // ‚Ü‚¶‚ßAI—p‚ÌƒŠƒ“ƒNƒŠƒXƒg
 	int areanpc_id;
 };
 
@@ -1092,7 +1092,7 @@ struct booking_data {
 
 struct map_data {
 	char name[24];
-	unsigned char *gat;	// NULLãªã‚‰ä¸‹ã®map_data_other_serverã¨ã—ã¦æ‰±ã†
+	unsigned char *gat;	// NULL‚È‚ç‰º‚Ìmap_data_other_server‚Æ‚µ‚Äˆµ‚¤
 	struct block_list **block;
 	struct block_list **block_mob;
 	int m;
@@ -1160,11 +1160,11 @@ struct map_data {
 
 struct map_data_other_server {
 	char name[24];
-	unsigned char *gat;	// NULLå›ºå®šã«ã—ã¦åˆ¤æ–­
+	unsigned char *gat;	// NULLŒÅ’è‚É‚µ‚Ä”»’f
 	unsigned long ip;
 	unsigned short port;
-	// ä¸€åº¦ä»–map ã‚µãƒ¼ãƒãƒ¼ã®æ‹…å½“ã«ãªã£ã¦ã€
-	// ã‚‚ã†ä¸€åº¦è‡ªåˆ†ã®æ‹…å½“ã«ãªã‚‹å ´åˆãŒã‚ã‚‹ã®ã§å¾…é¿ã•ã›ã¦ãŠã
+	// ˆê“x‘¼map ƒT[ƒo[‚Ì’S“–‚É‚È‚Á‚ÄA
+	// ‚à‚¤ˆê“x©•ª‚Ì’S“–‚É‚È‚éê‡‚ª‚ ‚é‚Ì‚Å‘Ò”ğ‚³‚¹‚Ä‚¨‚­
 	struct map_data* map;
 };
 
@@ -1258,7 +1258,7 @@ enum {
 	SP_NO_CASTCANCEL2,SP_INFINITE_ENDURE,SP_ITEM_NO_USE,SP_FIX_DAMAGE,SP_NO_KNOCKBACK,	// 2006-2010
 };
 
-// ãƒãƒƒãƒ—ãƒ•ãƒ©ã‚°ç”¨å®šæ•°
+// ƒ}ƒbƒvƒtƒ‰ƒO—p’è”
 enum {
 	MF_NOSAVE=0,MF_NOMEMO,MF_NOTELEPORT,MF_NOPORTAL,MF_NORETURN,MF_MONSTER_NOTELEPORT,MF_NOBRANCH,		// 0-6
 	MF_NOPENALTY,MF_PVP,MF_PVP_NOPARTY,MF_PVP_NOGUILD,MF_PVP_NIGHTMAREDROP,MF_PVP_NOCALCRANK,		// 7-12
@@ -1270,29 +1270,29 @@ enum {
 
 // CELL
 #define CELL_MASK     0x0f
-#define CELL_NPC      0x80	// NPCã‚»ãƒ«
-#define CELL_BASILICA 0x40	// BASILICAã‚»ãƒ«
+#define CELL_NPC      0x80	// NPCƒZƒ‹
+#define CELL_BASILICA 0x40	// BASILICAƒZƒ‹
 
 /*
- * map_getcell()ã§ä½¿ç”¨ã•ã‚Œã‚‹ãƒ•ãƒ©ã‚°
+ * map_getcell()‚Åg—p‚³‚ê‚éƒtƒ‰ƒO
  */
 typedef enum {
-	CELL_CHKNONE     = -1,		// ç„¡ã—
-	CELL_CHKWALL     = 0,		// å£(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—1)
-	CELL_CHKWATER,			// æ°´å ´(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—3)
-	CELL_CHKGROUND,			// åœ°é¢éšœå®³ç‰©(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—5)
-	CELL_CHKPASS,			// é€šéå¯èƒ½(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—1,5ä»¥å¤–)
-	CELL_CHKNOPASS,			// é€šéä¸å¯(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—1,5)
-	CELL_GETTYPE,			// ã‚»ãƒ«ã‚¿ã‚¤ãƒ—ã‚’è¿”ã™
-	CELL_CHKNPC      = 0x10,	// ã‚¿ãƒƒãƒã‚¿ã‚¤ãƒ—ã®NPC(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—0x80ãƒ•ãƒ©ã‚°)
-	CELL_CHKBASILICA,		// ãƒã‚¸ãƒªã‚«(ã‚»ãƒ«ã‚¿ã‚¤ãƒ—0x40ãƒ•ãƒ©ã‚°)
+	CELL_CHKNONE     = -1,		// –³‚µ
+	CELL_CHKWALL     = 0,		// •Ç(ƒZƒ‹ƒ^ƒCƒv1)
+	CELL_CHKWATER,			// …ê(ƒZƒ‹ƒ^ƒCƒv3)
+	CELL_CHKGROUND,			// ’n–ÊáŠQ•¨(ƒZƒ‹ƒ^ƒCƒv5)
+	CELL_CHKPASS,			// ’Ê‰ß‰Â”\(ƒZƒ‹ƒ^ƒCƒv1,5ˆÈŠO)
+	CELL_CHKNOPASS,			// ’Ê‰ß•s‰Â(ƒZƒ‹ƒ^ƒCƒv1,5)
+	CELL_GETTYPE,			// ƒZƒ‹ƒ^ƒCƒv‚ğ•Ô‚·
+	CELL_CHKNPC      = 0x10,	// ƒ^ƒbƒ`ƒ^ƒCƒv‚ÌNPC(ƒZƒ‹ƒ^ƒCƒv0x80ƒtƒ‰ƒO)
+	CELL_CHKBASILICA,		// ƒoƒWƒŠƒJ(ƒZƒ‹ƒ^ƒCƒv0x40ƒtƒ‰ƒO)
 } cell_t;
 
-// map_setcell()ã§ä½¿ç”¨ã•ã‚Œã‚‹ãƒ•ãƒ©ã‚°
+// map_setcell()‚Åg—p‚³‚ê‚éƒtƒ‰ƒO
 enum {
-	CELL_SETNPC      = 0x10,	// ã‚¿ãƒƒãƒã‚¿ã‚¤ãƒ—ã®NPCã‚’ã‚»ãƒƒãƒˆ
-	CELL_SETBASILICA,		// ãƒã‚¸ãƒªã‚«ã‚’ã‚»ãƒƒãƒˆ
-	CELL_CLRBASILICA,		// ãƒã‚¸ãƒªã‚«ã‚’ã‚¯ãƒªã‚¢
+	CELL_SETNPC      = 0x10,	// ƒ^ƒbƒ`ƒ^ƒCƒv‚ÌNPC‚ğƒZƒbƒg
+	CELL_SETBASILICA,		// ƒoƒWƒŠƒJ‚ğƒZƒbƒg
+	CELL_CLRBASILICA,		// ƒoƒWƒŠƒJ‚ğƒNƒŠƒA
 };
 
 struct chat_data {
@@ -1341,22 +1341,22 @@ extern char motd_txt[];
 extern char help_txt[];
 extern char extra_add_file_txt[]; // to add items from external software (use append to add a line)
 
-// gaté–¢é€£
+// gatŠÖ˜A
 int map_getcell(int,int,int,cell_t);
 int map_getcellp(struct map_data*,int,int,cell_t);
 void map_setcell(int,int,int,int);
 int map_random_freecell(int,int*,int*);
 
-// é¯–å…¨ä½“æƒ…å ±
+// I‘S‘Ìî•ñ
 void map_setusers(int);
 int map_getusers(void);
 
-// blockå‰Šé™¤é–¢é€£
+// blockíœŠÖ˜A
 int map_freeblock(void *bl);
 int map_freeblock_lock(void);
 int map_freeblock_unlock(void);
 
-// blocké–¢é€£
+// blockŠÖ˜A
 #define map_block_is_differ(bl,to_m,to_x,to_y) \
 	( (bl)->m != (to_m) || (bl)->x/BLOCK_SIZE != (to_x)/BLOCK_SIZE || (bl)->y/BLOCK_SIZE != (to_y)/BLOCK_SIZE )
 
@@ -1369,11 +1369,11 @@ int map_foreachcommonarea(int (*func)(struct block_list*,va_list),int m,int x[4]
 
 //int map_countnearpc(int, int, int); // not use
 
-// blocké–¢é€£ã«è¿½åŠ 
+// blockŠÖ˜A‚É’Ç‰Á
 int map_count_oncell(int m,int x,int y,int type);
 struct skill_unit *map_find_skill_unit_oncell(struct block_list *,int x,int y,int skill_id,struct skill_unit *);
 
-// ä¸€æ™‚çš„objecté–¢é€£
+// ˆê“IobjectŠÖ˜A
 int map_addobject(struct block_list *);
 int map_delobject(int);
 int map_delobjectnofree(int id);
@@ -1384,22 +1384,22 @@ int map_quit(struct map_session_data *);
 // npc
 int map_addnpc(int,struct npc_data *);
 
-// ãƒ¡ãƒ¢ãƒªã‚¢ãƒ«ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³é–¢é€£
+// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ŠÖ˜A
 int map_addmdmap(const char*,int);
 int map_delmdmap(int);
 
-// åºŠã‚¢ã‚¤ãƒ†ãƒ é–¢é€£
+// °ƒAƒCƒeƒ€ŠÖ˜A
 int map_clearflooritem_timer(int,unsigned int,int,void*);
 #define map_clearflooritem(id) map_clearflooritem_timer(0,0,id,(void*)1)
 int map_addflooritem(struct item *,int,int,int,int,int,int,int,int);
 int map_searchfreecell(struct cell_xy *list,int m,int x0,int y0,int x1,int y1);
 
-// ãƒ‰ãƒ­ãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¤ã‚­ãƒ¥ãƒ¼
+// ƒhƒƒbƒvƒfƒBƒŒƒCƒLƒ…[
 void map_push_delayitem_que(struct delay_item_drop2 *ditem);
 struct delay_item_drop2 *map_pop_delayitem_que(void);
 void map_clear_delayitem_que(void);
 
-// ã‚­ãƒ£ãƒ©idï¼ï¼ã‚­ãƒ£ãƒ©å å¤‰æ›é–¢é€£
+// ƒLƒƒƒ‰id„ƒLƒƒƒ‰–¼ •ÏŠ·ŠÖ˜A
 struct charid2nick *char_search(int char_id);
 void map_addchariddb(int charid, const char *name, int account_id, unsigned long ip, unsigned short port);
 void map_delchariddb(int charid);
@@ -1434,10 +1434,10 @@ int map_getmaptype(int m);
 
 int map_who(int fd);
 
-// block_list é–¢é€£ã®ã‚­ãƒ£ã‚¹ãƒˆã¯é–“é•ã„ã‚’ä¾µã—ã‚„ã™ã„ã®ã§ã€
-// ãªã‚‹ã¹ãã“ã®ãƒã‚¯ãƒ­ã‚’ä½¿ç”¨ã™ã‚‹ã‚ˆã†ã«ã—ã¦ãã ã•ã„ã€‚
+// block_list ŠÖ˜A‚ÌƒLƒƒƒXƒg‚ÍŠÔˆá‚¢‚ğN‚µ‚â‚·‚¢‚Ì‚ÅA
+// ‚È‚é‚×‚­‚±‚Ìƒ}ƒNƒ‚ğg—p‚·‚é‚æ‚¤‚É‚µ‚Ä‚­‚¾‚³‚¢B
 
-// ä½¿ç”¨æ–¹æ³•:
+// g—p•û–@:
 //     void hoge( struct block_list* bl) {
 //         struct map_session_data *sd;
 //         struct pet_data *pd;

@@ -31,7 +31,7 @@ struct script_data {
 		char *str;
 		void *ptr;
 	} u;
-	struct linkdb_node** ref; // ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹
+	struct linkdb_node** ref; // ƒŠƒtƒ@ƒŒƒ“ƒX
 };
 
 struct script_code {
@@ -43,7 +43,7 @@ struct script_code {
 struct script_stack {
 	int sp,sp_max,defsp;
 	struct script_data *stack_data;
-	struct linkdb_node **var_function;	// é–¢æ•°ä¾å­˜å¤‰æ•°
+	struct linkdb_node **var_function;	// ŠÖ”ˆË‘¶•Ï”
 };
 
 struct script_sleep {

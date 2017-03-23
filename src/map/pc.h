@@ -247,7 +247,7 @@ int pc_delelementball(struct map_session_data *sd, int count, int type);
 
 int pc_runtodir(struct map_session_data *sd);
 
-// DB再読込用
+// DB�ēǍ��p
 int pc_readdb(void);
 
 int do_final_pc(void);

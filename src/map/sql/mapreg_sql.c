@@ -43,7 +43,7 @@ static char map_server_charset[32] = "";
 static int  map_server_keepalive   = 0;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int mapreg_sql_config_read_sub(const char *w1, const char *w2)
@@ -77,7 +77,7 @@ int mapreg_sql_config_read_sub(const char *w1, const char *w2)
 }
 
 /*==========================================
- * ãƒãƒƒãƒ—å¤‰æ•°ã®å–å¾—
+ * ƒ}ƒbƒv•Ï”‚Ìæ“¾
  *------------------------------------------
  */
 int mapreg_sql_getreg(int num)
@@ -86,7 +86,7 @@ int mapreg_sql_getreg(int num)
 }
 
 /*==========================================
- * ãƒãƒƒãƒ—å¤‰æ•°ã®å¤‰æ›´
+ * ƒ}ƒbƒv•Ï”‚Ì•ÏX
  *------------------------------------------
  */
 bool mapreg_sql_setreg(int num, int val, int eternal)
@@ -121,7 +121,7 @@ bool mapreg_sql_setreg(int num, int val, int eternal)
 }
 
 /*==========================================
- * æ–‡å­—åˆ—å‹ãƒãƒƒãƒ—å¤‰æ•°ã®å–å¾—
+ * •¶š—ñŒ^ƒ}ƒbƒv•Ï”‚Ìæ“¾
  *------------------------------------------
  */
 char* mapreg_sql_getregstr(int num)
@@ -130,7 +130,7 @@ char* mapreg_sql_getregstr(int num)
 }
 
 /*==========================================
- * æ–‡å­—åˆ—å‹ãƒãƒƒãƒ—å¤‰æ•°ã®å¤‰æ›´
+ * •¶š—ñŒ^ƒ}ƒbƒv•Ï”‚Ì•ÏX
  *------------------------------------------
  */
 bool mapreg_sql_setregstr(int num, const char *str, int eternal)
@@ -172,7 +172,7 @@ bool mapreg_sql_setregstr(int num, const char *str, int eternal)
 }
 
 /*==========================================
- * æ°¸ç¶šçš„ãƒãƒƒãƒ—å¤‰æ•°ã®èª­ã¿è¾¼ã¿
+ * ‰i‘±“Iƒ}ƒbƒv•Ï”‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static int mapreg_sql_load(void)
@@ -206,7 +206,7 @@ static int mapreg_sql_load(void)
 }
 
 /*==========================================
- * æ°¸ç¶šçš„ãƒãƒƒãƒ—å¤‰æ•°ã®è‡ªå‹•ã‚»ãƒ¼ãƒ–
+ * ‰i‘±“Iƒ}ƒbƒv•Ï”‚Ì©“®ƒZ[ƒu
  *------------------------------------------
  */
 int mapreg_sql_autosave(void)
@@ -217,7 +217,7 @@ int mapreg_sql_autosave(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 static int mapreg_sql_strdb_final(void *key, void *data, va_list ap)
@@ -240,7 +240,7 @@ int mapreg_sql_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool mapreg_sql_init(void)

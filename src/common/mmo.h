@@ -71,27 +71,27 @@
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635
 
-#define MAX_RANKING 4	// ãƒ©ãƒ³ã‚­ãƒ³ã‚°æ•°
-#define MAX_RANKER  10	// ãƒ©ãƒ³ã‚­ãƒ³ã‚°äººæ•°
+#define MAX_RANKING 4	// ƒ‰ƒ“ƒLƒ“ƒO”
+#define MAX_RANKER  10	// ƒ‰ƒ“ƒLƒ“ƒOl”
 
-#define MAX_HOMUN_DB 16			// ãƒ›ãƒ ã®æ•°
-#define HOM_ID 6001			// ãƒ›ãƒ IDé–‹å§‹å€¤
+#define MAX_HOMUN_DB 16			// ƒzƒ€‚Ì”
+#define HOM_ID 6001			// ƒzƒ€IDŠJŽn’l
 
-#define MAX_MERC_DB 50			// å‚­å…µã®æ•°
-#define MAX_MERC_TYPE 3			// å‚­å…µã®ç¨®é¡ž
+#define MAX_MERC_DB 50			// —b•º‚Ì”
+#define MAX_MERC_TYPE 3			// —b•º‚ÌŽí—Þ
 
-#define MAX_ELEM_DB 12			// ç²¾éœŠã®æ•°
-#define ELEM_ID 2114			// ç²¾éœŠIDã®é–‹å§‹å€¤
+#define MAX_ELEM_DB 12			// ¸—ì‚Ì”
+#define ELEM_ID 2114			// ¸—ìID‚ÌŠJŽn’l
 
-// ã‚¹ã‚­ãƒ«IDå®šç¾©
-#define SECOND_SKILLID 1001		// 2æ¬¡è·ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define THIRD_SKILLID  2001		// 3æ¬¡è·ã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define QUEST_SKILLID  2533		// ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define KO_SKILLID     3001		// å½±ç‹¼ã€æœ§IDã®é–‹å§‹å€¤
-#define HOM_SKILLID    8001		// ãƒ›ãƒ ã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define MERC_SKILLID   8201		// å‚­å…µã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define ELEM_SKILLID   8401		// ç²¾éœŠã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
-#define GUILD_SKILLID 10000		// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«IDã®é–‹å§‹å€¤
+// ƒXƒLƒ‹ID’è‹`
+#define SECOND_SKILLID 1001		// 2ŽŸEƒNƒGƒXƒgƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define THIRD_SKILLID  2001		// 3ŽŸEƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define QUEST_SKILLID  2533		// ƒNƒGƒXƒgƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define KO_SKILLID     3001		// ‰e˜TAžOID‚ÌŠJŽn’l
+#define HOM_SKILLID    8001		// ƒzƒ€ƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define MERC_SKILLID   8201		// —b•ºƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define ELEM_SKILLID   8401		// ¸—ìƒXƒLƒ‹ID‚ÌŠJŽn’l
+#define GUILD_SKILLID 10000		// ƒMƒ‹ƒhƒXƒLƒ‹ID‚ÌŠJŽn’l
 
 #define MAX_SKILL       708
 #define MAX_SECONDSKILL  19
@@ -103,373 +103,373 @@
 #define MAX_ELEMSKILL    42
 #define MAX_GUILDSKILL   16
 
-#define MAX_SECOND_SKILLID (SECOND_SKILLID+MAX_SECONDSKILL)	// 2æ¬¡è·ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_THIRD_SKILLID  (THIRD_SKILLID+MAX_THIRDSKILL)	// 3æ¬¡è·ã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_QUEST_SKILLID  (QUEST_SKILLID+MAX_QUESTSKILL)	// ã‚¯ã‚¨ã‚¹ãƒˆã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_KO_SKILLID     (KO_SKILLID+MAX_KOSKILL)			// å½±ç‹¼ã€æœ§ã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ãƒ›ãƒ ã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// å‚­å…µã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_ELEM_SKILLID   (ELEM_SKILLID+MAX_ELEMSKILL)		// ç²¾éœŠã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
-#define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«IDã®æœ€å¤§å€¤
+#define MAX_SECOND_SKILLID (SECOND_SKILLID+MAX_SECONDSKILL)	// 2ŽŸEƒNƒGƒXƒgƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_THIRD_SKILLID  (THIRD_SKILLID+MAX_THIRDSKILL)	// 3ŽŸEƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_QUEST_SKILLID  (QUEST_SKILLID+MAX_QUESTSKILL)	// ƒNƒGƒXƒgƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_KO_SKILLID     (KO_SKILLID+MAX_KOSKILL)			// ‰e˜TAžOƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ƒzƒ€ƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// —b•ºƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_ELEM_SKILLID   (ELEM_SKILLID+MAX_ELEMSKILL)		// ¸—ìƒXƒLƒ‹ID‚ÌÅ‘å’l
+#define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ƒMƒ‹ƒhƒXƒLƒ‹ID‚ÌÅ‘å’l
 
 #define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_KOSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
-#define MAX_PCSKILL  MAX_KO_SKILLID		// PCãŒä½¿ç”¨å¯èƒ½ã®æœ€å¤§ã®ã‚¹ã‚­ãƒ«ID
+#define MAX_PCSKILL  MAX_KO_SKILLID		// PC‚ªŽg—p‰Â”\‚ÌÅ‘å‚ÌƒXƒLƒ‹ID
 
 #define MAX_QUESTLIST 100
 
-// ãƒ–ãƒ­ãƒƒã‚¯IDå®šç¾©
+// ƒuƒƒbƒNID’è‹`
 #define MIN_FLOORITEM            2
 #define MAX_FLOORITEM      1999999
 #define START_ACCOUNT_NUM  2000000
 #define END_ACCOUNT_NUM    5000000
 #define START_NPC_NUM      5000001
-#define END_NPC_NUM       16777215	// SL_SMAã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¡¨ç¾å¯èƒ½ä¸Šé™ = 0x00ffffff
+#define END_NPC_NUM       16777215	// SL_SMA‚ÌƒGƒtƒFƒNƒg•\Œ»‰Â”\ãŒÀ = 0x00ffffff
 
-// ã‚¯ãƒ©ã‚¹IDå®šç¾©
+// ƒNƒ‰ƒXID’è‹`
 enum {
-	PC_CLASS_NV = 0,		// ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_SM,			// ã‚½ãƒ¼ãƒ‰ãƒžãƒ³
-	PC_CLASS_MG,			// ãƒžã‚¸ã‚·ãƒ£ãƒ³
-	PC_CLASS_AC,			// ã‚¢ãƒ¼ãƒãƒ£ãƒ¼
-	PC_CLASS_AL,			// ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ
-	PC_CLASS_MC,			// ãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ
-	PC_CLASS_TF,			// ã‚·ãƒ¼ãƒ•
-	PC_CLASS_KN,			// ãƒŠã‚¤ãƒˆ
-	PC_CLASS_PR,			// ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ
-	PC_CLASS_WZ,			// ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰
-	PC_CLASS_BS,			// ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹
-	PC_CLASS_HT,			// ãƒãƒ³ã‚¿ãƒ¼
-	PC_CLASS_AS,			// ã‚¢ã‚µã‚·ãƒ³
-	PC_CLASS_KN2,			// ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_CR,			// ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼
-	PC_CLASS_MO,			// ãƒ¢ãƒ³ã‚¯
-	PC_CLASS_SA,			// ã‚»ãƒ¼ã‚¸
-	PC_CLASS_RG,			// ãƒ­ãƒ¼ã‚°
-	PC_CLASS_AM,			// ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ
-	PC_CLASS_BA,			// ãƒãƒ¼ãƒ‰
-	PC_CLASS_DC,			// ãƒ€ãƒ³ã‚µãƒ¼
-	PC_CLASS_CR2,			// ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼(é¨Žä¹—)
-	PC_CLASS_WE,			// ã‚¦ã‚§ãƒ‡ã‚£ãƒ³ã‚°
-	PC_CLASS_SNV,			// ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_GS,			// ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼
-	PC_CLASS_NJ,			// å¿è€…
-	PC_CLASS_ST,			// ã‚µãƒ³ã‚¿
-	PC_CLASS_SU,			// æ°´ç€
-	PC_CLASS_NV_H = 4001,	// è»¢ç”ŸãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_SM_H,			// è»¢ç”Ÿã‚½ãƒ¼ãƒ‰ãƒžãƒ³
-	PC_CLASS_MG_H,			// è»¢ç”Ÿãƒžã‚¸ã‚·ãƒ£ãƒ³
-	PC_CLASS_AC_H,			// è»¢ç”Ÿã‚¢ãƒ¼ãƒãƒ£ãƒ¼
-	PC_CLASS_AL_H,			// è»¢ç”Ÿã‚¢ã‚³ãƒ©ã‚¤ãƒˆ
-	PC_CLASS_MC_H,			// è»¢ç”Ÿãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ
-	PC_CLASS_TF_H,			// è»¢ç”Ÿã‚·ãƒ¼ãƒ•
-	PC_CLASS_KN_H,			// ãƒ­ãƒ¼ãƒ‰ãƒŠã‚¤ãƒˆ
-	PC_CLASS_PR_H,			// ãƒã‚¤ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ
-	PC_CLASS_WZ_H,			// ãƒã‚¤ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰
-	PC_CLASS_BS_H,			// ãƒ›ãƒ¯ã‚¤ãƒˆã‚¹ãƒŸã‚¹
-	PC_CLASS_HT_H,			// ã‚¹ãƒŠã‚¤ãƒ‘ãƒ¼
-	PC_CLASS_AS_H,			// ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹
-	PC_CLASS_KN2_H,			// ãƒ­ãƒ¼ãƒ‰ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_CR_H,			// ãƒ‘ãƒ©ãƒ‡ã‚£ãƒ³
-	PC_CLASS_MO_H,			// ãƒãƒ£ãƒ³ãƒ”ã‚ªãƒ³
-	PC_CLASS_SA_H,			// ãƒ—ãƒ­ãƒ•ã‚§ãƒƒã‚µãƒ¼
-	PC_CLASS_RG_H,			// ãƒã‚§ã‚¤ã‚µãƒ¼
-	PC_CLASS_AM_H,			// ã‚¯ãƒªã‚¨ã‚¤ã‚¿ãƒ¼
-	PC_CLASS_BA_H,			// ã‚¯ãƒ©ã‚¦ãƒ³
-	PC_CLASS_DC_H,			// ã‚¸ãƒ—ã‚·ãƒ¼
-	PC_CLASS_CR2_H,			// ãƒ‘ãƒ©ãƒ‡ã‚£ãƒ³(é¨Žä¹—)
-	PC_CLASS_NV_B,			// é¤Šå­ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_SM_B,			// é¤Šå­ã‚½ãƒ¼ãƒ‰ãƒžãƒ³
-	PC_CLASS_MG_B,			// é¤Šå­ãƒžã‚¸ã‚·ãƒ£ãƒ³
-	PC_CLASS_AC_B,			// é¤Šå­ã‚¢ãƒ¼ãƒãƒ£ãƒ¼
-	PC_CLASS_AL_B,			// é¤Šå­ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ
-	PC_CLASS_MC_B,			// é¤Šå­ãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ
-	PC_CLASS_TF_B,			// é¤Šå­ã‚·ãƒ¼ãƒ•
-	PC_CLASS_KN_B,			// é¤Šå­ãƒŠã‚¤ãƒˆ
-	PC_CLASS_PR_B,			// é¤Šå­ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ
-	PC_CLASS_WZ_B,			// é¤Šå­ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰
-	PC_CLASS_BS_B,			// é¤Šå­ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹
-	PC_CLASS_HT_B,			// é¤Šå­ãƒãƒ³ã‚¿ãƒ¼
-	PC_CLASS_AS_B,			// é¤Šå­ã‚¢ã‚µã‚·ãƒ³
-	PC_CLASS_KN2_B,			// é¤Šå­ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_CR_B,			// é¤Šå­ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼
-	PC_CLASS_MO_B,			// é¤Šå­ãƒ¢ãƒ³ã‚¯
-	PC_CLASS_SA_B,			// é¤Šå­ã‚»ãƒ¼ã‚¸
-	PC_CLASS_RG_B,			// é¤Šå­ãƒ­ãƒ¼ã‚°
-	PC_CLASS_AM_B,			// é¤Šå­ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ
-	PC_CLASS_BA_B,			// é¤Šå­ãƒãƒ¼ãƒ‰
-	PC_CLASS_DC_B,			// é¤Šå­ãƒ€ãƒ³ã‚µãƒ¼
-	PC_CLASS_CR2_B,			// é¤Šå­ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼(é¨Žä¹—)
-	PC_CLASS_SNV_B,			// é¤Šå­ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_TK,			// ãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰
-	PC_CLASS_SG,			// æ‹³è–
-	PC_CLASS_SG2,			// æ‹³è–(èžåˆ)
-	PC_CLASS_SL,			// ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼
-	PC_CLASS_MB,			// ã‚­ãƒ§ãƒ³ã‚·ãƒ¼
-	PC_CLASS_DK,			// ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆ
-	PC_CLASS_DA,			// ãƒ€ãƒ¼ã‚¯ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼
+	PC_CLASS_NV = 0,		// ƒm[ƒrƒX
+	PC_CLASS_SM,			// ƒ\[ƒhƒ}ƒ“
+	PC_CLASS_MG,			// ƒ}ƒWƒVƒƒƒ“
+	PC_CLASS_AC,			// ƒA[ƒ`ƒƒ[
+	PC_CLASS_AL,			// ƒAƒRƒ‰ƒCƒg
+	PC_CLASS_MC,			// ƒ}[ƒ`ƒƒƒ“ƒg
+	PC_CLASS_TF,			// ƒV[ƒt
+	PC_CLASS_KN,			// ƒiƒCƒg
+	PC_CLASS_PR,			// ƒvƒŠ[ƒXƒg
+	PC_CLASS_WZ,			// ƒEƒBƒU[ƒh
+	PC_CLASS_BS,			// ƒuƒ‰ƒbƒNƒXƒ~ƒX
+	PC_CLASS_HT,			// ƒnƒ“ƒ^[
+	PC_CLASS_AS,			// ƒAƒTƒVƒ“
+	PC_CLASS_KN2,			// ƒiƒCƒg(‹Ræ)
+	PC_CLASS_CR,			// ƒNƒ‹ƒZƒCƒ_[
+	PC_CLASS_MO,			// ƒ‚ƒ“ƒN
+	PC_CLASS_SA,			// ƒZ[ƒW
+	PC_CLASS_RG,			// ƒ[ƒO
+	PC_CLASS_AM,			// ƒAƒ‹ƒPƒ~ƒXƒg
+	PC_CLASS_BA,			// ƒo[ƒh
+	PC_CLASS_DC,			// ƒ_ƒ“ƒT[
+	PC_CLASS_CR2,			// ƒNƒ‹ƒZƒCƒ_[(‹Ræ)
+	PC_CLASS_WE,			// ƒEƒFƒfƒBƒ“ƒO
+	PC_CLASS_SNV,			// ƒX[ƒp[ƒm[ƒrƒX
+	PC_CLASS_GS,			// ƒKƒ“ƒXƒŠƒ“ƒK[
+	PC_CLASS_NJ,			// ”EŽÒ
+	PC_CLASS_ST,			// ƒTƒ“ƒ^
+	PC_CLASS_SU,			// …’…
+	PC_CLASS_NV_H = 4001,	// “]¶ƒm[ƒrƒX
+	PC_CLASS_SM_H,			// “]¶ƒ\[ƒhƒ}ƒ“
+	PC_CLASS_MG_H,			// “]¶ƒ}ƒWƒVƒƒƒ“
+	PC_CLASS_AC_H,			// “]¶ƒA[ƒ`ƒƒ[
+	PC_CLASS_AL_H,			// “]¶ƒAƒRƒ‰ƒCƒg
+	PC_CLASS_MC_H,			// “]¶ƒ}[ƒ`ƒƒƒ“ƒg
+	PC_CLASS_TF_H,			// “]¶ƒV[ƒt
+	PC_CLASS_KN_H,			// ƒ[ƒhƒiƒCƒg
+	PC_CLASS_PR_H,			// ƒnƒCƒvƒŠ[ƒXƒg
+	PC_CLASS_WZ_H,			// ƒnƒCƒEƒBƒU[ƒh
+	PC_CLASS_BS_H,			// ƒzƒƒCƒgƒXƒ~ƒX
+	PC_CLASS_HT_H,			// ƒXƒiƒCƒp[
+	PC_CLASS_AS_H,			// ƒAƒTƒVƒ“ƒNƒƒX
+	PC_CLASS_KN2_H,			// ƒ[ƒhƒiƒCƒg(‹Ræ)
+	PC_CLASS_CR_H,			// ƒpƒ‰ƒfƒBƒ“
+	PC_CLASS_MO_H,			// ƒ`ƒƒƒ“ƒsƒIƒ“
+	PC_CLASS_SA_H,			// ƒvƒƒtƒFƒbƒT[
+	PC_CLASS_RG_H,			// ƒ`ƒFƒCƒT[
+	PC_CLASS_AM_H,			// ƒNƒŠƒGƒCƒ^[
+	PC_CLASS_BA_H,			// ƒNƒ‰ƒEƒ“
+	PC_CLASS_DC_H,			// ƒWƒvƒV[
+	PC_CLASS_CR2_H,			// ƒpƒ‰ƒfƒBƒ“(‹Ræ)
+	PC_CLASS_NV_B,			// —{Žqƒm[ƒrƒX
+	PC_CLASS_SM_B,			// —{Žqƒ\[ƒhƒ}ƒ“
+	PC_CLASS_MG_B,			// —{Žqƒ}ƒWƒVƒƒƒ“
+	PC_CLASS_AC_B,			// —{ŽqƒA[ƒ`ƒƒ[
+	PC_CLASS_AL_B,			// —{ŽqƒAƒRƒ‰ƒCƒg
+	PC_CLASS_MC_B,			// —{Žqƒ}[ƒ`ƒƒƒ“ƒg
+	PC_CLASS_TF_B,			// —{ŽqƒV[ƒt
+	PC_CLASS_KN_B,			// —{ŽqƒiƒCƒg
+	PC_CLASS_PR_B,			// —{ŽqƒvƒŠ[ƒXƒg
+	PC_CLASS_WZ_B,			// —{ŽqƒEƒBƒU[ƒh
+	PC_CLASS_BS_B,			// —{Žqƒuƒ‰ƒbƒNƒXƒ~ƒX
+	PC_CLASS_HT_B,			// —{Žqƒnƒ“ƒ^[
+	PC_CLASS_AS_B,			// —{ŽqƒAƒTƒVƒ“
+	PC_CLASS_KN2_B,			// —{ŽqƒiƒCƒg(‹Ræ)
+	PC_CLASS_CR_B,			// —{ŽqƒNƒ‹ƒZƒCƒ_[
+	PC_CLASS_MO_B,			// —{Žqƒ‚ƒ“ƒN
+	PC_CLASS_SA_B,			// —{ŽqƒZ[ƒW
+	PC_CLASS_RG_B,			// —{Žqƒ[ƒO
+	PC_CLASS_AM_B,			// —{ŽqƒAƒ‹ƒPƒ~ƒXƒg
+	PC_CLASS_BA_B,			// —{Žqƒo[ƒh
+	PC_CLASS_DC_B,			// —{Žqƒ_ƒ“ƒT[
+	PC_CLASS_CR2_B,			// —{ŽqƒNƒ‹ƒZƒCƒ_[(‹Ræ)
+	PC_CLASS_SNV_B,			// —{ŽqƒX[ƒp[ƒm[ƒrƒX
+	PC_CLASS_TK,			// ƒeƒRƒ“ƒLƒbƒh
+	PC_CLASS_SG,			// Œ¹
+	PC_CLASS_SG2,			// Œ¹(—Z‡)
+	PC_CLASS_SL,			// ƒ\ƒEƒ‹ƒŠƒ“ƒJ[
+	PC_CLASS_MB,			// ƒLƒ‡ƒ“ƒV[
+	PC_CLASS_DK,			// ƒfƒXƒiƒCƒg
+	PC_CLASS_DA,			// ƒ_[ƒNƒRƒŒƒNƒ^[
 	// 4053
-	PC_CLASS_RK = 4054,		// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ
-	PC_CLASS_WL,			// ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯
-	PC_CLASS_RA,			// ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼
-	PC_CLASS_AB,			// ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—
-	PC_CLASS_NC,			// ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯
-	PC_CLASS_GC,			// ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹
-	PC_CLASS_RK_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ
-	PC_CLASS_WL_H,			// è»¢ç”Ÿã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯
-	PC_CLASS_RA_H,			// è»¢ç”Ÿãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼
-	PC_CLASS_AB_H,			// è»¢ç”Ÿã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—
-	PC_CLASS_NC_H,			// è»¢ç”Ÿãƒ¡ã‚«ãƒ‹ãƒƒã‚¯
-	PC_CLASS_GC_H,			// è»¢ç”Ÿã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹
-	PC_CLASS_LG,			// ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰
-	PC_CLASS_SO,			// ã‚½ãƒ¼ã‚µãƒ©ãƒ¼
-	PC_CLASS_MI,			// ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«
-	PC_CLASS_WA,			// ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼
-	PC_CLASS_SR,			// ä¿®ç¾…
-	PC_CLASS_GN,			// ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯
-	PC_CLASS_SC,			// ã‚·ãƒ£ãƒ‰ã‚¦ãƒã‚§ã‚¤ã‚µãƒ¼
-	PC_CLASS_LG_H,			// è»¢ç”Ÿãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰
-	PC_CLASS_SO_H,			// è»¢ç”Ÿã‚½ãƒ¼ã‚µãƒ©ãƒ¼
-	PC_CLASS_MI_H,			// è»¢ç”ŸãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«
-	PC_CLASS_WA_H,			// è»¢ç”Ÿãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼
-	PC_CLASS_SR_H,			// è»¢ç”Ÿä¿®ç¾…
-	PC_CLASS_GN_H,			// è»¢ç”Ÿã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯
-	PC_CLASS_SC_H,			// è»¢ç”Ÿã‚·ãƒ£ãƒ‰ã‚¦ãƒã‚§ã‚¤ã‚µãƒ¼
-	PC_CLASS_RK2,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK2_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_LG2,			// ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_LG2_H,			// è»¢ç”Ÿãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_RA2,			// ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_RA2_H,			// è»¢ç”Ÿãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_NC2,			// ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_NC2_H,			// è»¢ç”Ÿãƒ¡ã‚«ãƒ‹ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_RK3,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK3_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK4,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK4_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK5,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK5_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK6,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK6_H,			// è»¢ç”Ÿãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_RK_B,			// é¤Šå­ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ
-	PC_CLASS_WL_B,			// é¤Šå­ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯
-	PC_CLASS_RA_B,			// é¤Šå­ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼
-	PC_CLASS_AB_B,			// é¤Šå­ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—
-	PC_CLASS_NC_B,			// é¤Šå­ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯
-	PC_CLASS_GC_B,			// é¤Šå­ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹
-	PC_CLASS_LG_B,			// é¤Šå­ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰
-	PC_CLASS_SO_B,			// é¤Šå­ã‚½ãƒ¼ã‚µãƒ©ãƒ¼
-	PC_CLASS_MI_B,			// é¤Šå­ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«
-	PC_CLASS_WA_B,			// é¤Šå­ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼
-	PC_CLASS_SR_B,			// é¤Šå­ä¿®ç¾…
-	PC_CLASS_GN_B,			// é¤Šå­ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯
-	PC_CLASS_SC_B,			// é¤Šå­ã‚·ãƒ£ãƒ‰ã‚¦ãƒã‚§ã‚¤ã‚µãƒ¼
-	PC_CLASS_RK2_B,			// é¤Šå­ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_LG2_B,			// é¤Šå­ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_RA2_B,			// é¤Šå­ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_NC2_B,			// é¤Šå­ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_NJ2   = 4114,	// å¿è€…(é¨Žä¹—)
-	PC_CLASS_GS2,			// ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼(é¨Žä¹—)
-	PC_CLASS_SM2,			// ã‚½ãƒ¼ãƒ‰ãƒžãƒ³(é¨Žä¹—)
-	PC_CLASS_SL2,			// ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼(é¨Žä¹—)
-	PC_CLASS_BS2_H,			// ãƒ›ãƒ¯ã‚¤ãƒˆã‚¹ãƒŸã‚¹(é¨Žä¹—)
-	PC_CLASS_MC2,			// ãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ(é¨Žä¹—)
-	PC_CLASS_GN2,			// ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_AM2_H,			// ã‚¯ãƒªã‚¨ã‚¤ã‚¿ãƒ¼(é¨Žä¹—)
-	PC_CLASS_AC2,			// ã‚¢ãƒ¼ãƒãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_SG3,			// æ‹³è–(é¨Žä¹—)
-	PC_CLASS_NV2,			// ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_MO2,			// ãƒ¢ãƒ³ã‚¯(é¨Žä¹—)
-	PC_CLASS_AL2,			// ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_SR2,			// ä¿®ç¾…(é¨Žä¹—)
-	PC_CLASS_SNV2,			// ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_AB2,			// ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—(é¨Žä¹—)
-	PC_CLASS_MG2,			// ãƒžã‚¸ã‚·ãƒ£ãƒ³(é¨Žä¹—)
-	PC_CLASS_SA2,			// ã‚»ãƒ¼ã‚¸(é¨Žä¹—)
-	PC_CLASS_SO2,			// ã‚½ãƒ¼ã‚µãƒ©ãƒ¼(é¨Žä¹—)
-	PC_CLASS_WL2,			// ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_WZ2,			// ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_SA2_H,			// ãƒ—ãƒ­ãƒ•ã‚§ãƒƒã‚µãƒ¼(é¨Žä¹—)
-	PC_CLASS_WZ2_H,			// ãƒã‚¤ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_AM2,			// ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ(é¨Žä¹—)
-	PC_CLASS_BS2,			// ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹(é¨Žä¹—)
-	PC_CLASS_MO2_H,			// ãƒãƒ£ãƒ³ãƒ”ã‚ªãƒ³(é¨Žä¹—)
-	PC_CLASS_GC2,			// ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹(é¨Žä¹—)
-	PC_CLASS_TF2,			// ã‚·ãƒ¼ãƒ•(é¨Žä¹—)
-	PC_CLASS_RG2,			// ãƒ­ãƒ¼ã‚°(é¨Žä¹—)
-	PC_CLASS_RG2_H,			// ãƒã‚§ã‚¤ã‚µãƒ¼(é¨Žä¹—)
+	PC_CLASS_RK = 4054,		// ƒ‹[ƒ“ƒiƒCƒg
+	PC_CLASS_WL,			// ƒEƒH[ƒƒbƒN
+	PC_CLASS_RA,			// ƒŒƒ“ƒWƒƒ[
+	PC_CLASS_AB,			// ƒA[ƒNƒrƒVƒ‡ƒbƒv
+	PC_CLASS_NC,			// ƒƒJƒjƒbƒN
+	PC_CLASS_GC,			// ƒMƒƒ`ƒ“ƒNƒƒX
+	PC_CLASS_RK_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg
+	PC_CLASS_WL_H,			// “]¶ƒEƒH[ƒƒbƒN
+	PC_CLASS_RA_H,			// “]¶ƒŒƒ“ƒWƒƒ[
+	PC_CLASS_AB_H,			// “]¶ƒA[ƒNƒrƒVƒ‡ƒbƒv
+	PC_CLASS_NC_H,			// “]¶ƒƒJƒjƒbƒN
+	PC_CLASS_GC_H,			// “]¶ƒMƒƒ`ƒ“ƒNƒƒX
+	PC_CLASS_LG,			// ƒƒCƒ„ƒ‹ƒK[ƒh
+	PC_CLASS_SO,			// ƒ\[ƒTƒ‰[
+	PC_CLASS_MI,			// ƒ~ƒ“ƒXƒgƒŒƒ‹
+	PC_CLASS_WA,			// ƒƒ“ƒ_ƒ‰[
+	PC_CLASS_SR,			// C—…
+	PC_CLASS_GN,			// ƒWƒFƒlƒeƒBƒbƒN
+	PC_CLASS_SC,			// ƒVƒƒƒhƒEƒ`ƒFƒCƒT[
+	PC_CLASS_LG_H,			// “]¶ƒƒCƒ„ƒ‹ƒK[ƒh
+	PC_CLASS_SO_H,			// “]¶ƒ\[ƒTƒ‰[
+	PC_CLASS_MI_H,			// “]¶ƒ~ƒ“ƒXƒgƒŒƒ‹
+	PC_CLASS_WA_H,			// “]¶ƒƒ“ƒ_ƒ‰[
+	PC_CLASS_SR_H,			// “]¶C—…
+	PC_CLASS_GN_H,			// “]¶ƒWƒFƒlƒeƒBƒbƒN
+	PC_CLASS_SC_H,			// “]¶ƒVƒƒƒhƒEƒ`ƒFƒCƒT[
+	PC_CLASS_RK2,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK2_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_LG2,			// ƒƒCƒ„ƒ‹ƒK[ƒh(‹Ræ)
+	PC_CLASS_LG2_H,			// “]¶ƒƒCƒ„ƒ‹ƒK[ƒh(‹Ræ)
+	PC_CLASS_RA2,			// ƒŒƒ“ƒWƒƒ[(‹Ræ)
+	PC_CLASS_RA2_H,			// “]¶ƒŒƒ“ƒWƒƒ[(‹Ræ)
+	PC_CLASS_NC2,			// ƒƒJƒjƒbƒN(‹Ræ)
+	PC_CLASS_NC2_H,			// “]¶ƒƒJƒjƒbƒN(‹Ræ)
+	PC_CLASS_RK3,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK3_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK4,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK4_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK5,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK5_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK6,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK6_H,			// “]¶ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_RK_B,			// —{Žqƒ‹[ƒ“ƒiƒCƒg
+	PC_CLASS_WL_B,			// —{ŽqƒEƒH[ƒƒbƒN
+	PC_CLASS_RA_B,			// —{ŽqƒŒƒ“ƒWƒƒ[
+	PC_CLASS_AB_B,			// —{ŽqƒA[ƒNƒrƒVƒ‡ƒbƒv
+	PC_CLASS_NC_B,			// —{ŽqƒƒJƒjƒbƒN
+	PC_CLASS_GC_B,			// —{ŽqƒMƒƒ`ƒ“ƒNƒƒX
+	PC_CLASS_LG_B,			// —{ŽqƒƒCƒ„ƒ‹ƒK[ƒh
+	PC_CLASS_SO_B,			// —{Žqƒ\[ƒTƒ‰[
+	PC_CLASS_MI_B,			// —{Žqƒ~ƒ“ƒXƒgƒŒƒ‹
+	PC_CLASS_WA_B,			// —{Žqƒƒ“ƒ_ƒ‰[
+	PC_CLASS_SR_B,			// —{ŽqC—…
+	PC_CLASS_GN_B,			// —{ŽqƒWƒFƒlƒeƒBƒbƒN
+	PC_CLASS_SC_B,			// —{ŽqƒVƒƒƒhƒEƒ`ƒFƒCƒT[
+	PC_CLASS_RK2_B,			// —{Žqƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_LG2_B,			// —{ŽqƒƒCƒ„ƒ‹ƒK[ƒh(‹Ræ)
+	PC_CLASS_RA2_B,			// —{ŽqƒŒƒ“ƒWƒƒ[(‹Ræ)
+	PC_CLASS_NC2_B,			// —{ŽqƒƒJƒjƒbƒN(‹Ræ)
+	PC_CLASS_NJ2   = 4114,	// ”EŽÒ(‹Ræ)
+	PC_CLASS_GS2,			// ƒKƒ“ƒXƒŠƒ“ƒK[(‹Ræ)
+	PC_CLASS_SM2,			// ƒ\[ƒhƒ}ƒ“(‹Ræ)
+	PC_CLASS_SL2,			// ƒ\ƒEƒ‹ƒŠƒ“ƒJ[(‹Ræ)
+	PC_CLASS_BS2_H,			// ƒzƒƒCƒgƒXƒ~ƒX(‹Ræ)
+	PC_CLASS_MC2,			// ƒ}[ƒ`ƒƒƒ“ƒg(‹Ræ)
+	PC_CLASS_GN2,			// ƒWƒFƒlƒeƒBƒbƒN(‹Ræ)
+	PC_CLASS_AM2_H,			// ƒNƒŠƒGƒCƒ^[(‹Ræ)
+	PC_CLASS_AC2,			// ƒA[ƒ`ƒƒ[(‹Ræ)
+	PC_CLASS_SG3,			// Œ¹(‹Ræ)
+	PC_CLASS_NV2,			// ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_MO2,			// ƒ‚ƒ“ƒN(‹Ræ)
+	PC_CLASS_AL2,			// ƒAƒRƒ‰ƒCƒg(‹Ræ)
+	PC_CLASS_SR2,			// C—…(‹Ræ)
+	PC_CLASS_SNV2,			// ƒX[ƒp[ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_AB2,			// ƒA[ƒNƒrƒVƒ‡ƒbƒv(‹Ræ)
+	PC_CLASS_MG2,			// ƒ}ƒWƒVƒƒƒ“(‹Ræ)
+	PC_CLASS_SA2,			// ƒZ[ƒW(‹Ræ)
+	PC_CLASS_SO2,			// ƒ\[ƒTƒ‰[(‹Ræ)
+	PC_CLASS_WL2,			// ƒEƒH[ƒƒbƒN(‹Ræ)
+	PC_CLASS_WZ2,			// ƒEƒBƒU[ƒh(‹Ræ)
+	PC_CLASS_SA2_H,			// ƒvƒƒtƒFƒbƒT[(‹Ræ)
+	PC_CLASS_WZ2_H,			// ƒnƒCƒEƒBƒU[ƒh(‹Ræ)
+	PC_CLASS_AM2,			// ƒAƒ‹ƒPƒ~ƒXƒg(‹Ræ)
+	PC_CLASS_BS2,			// ƒuƒ‰ƒbƒNƒXƒ~ƒX(‹Ræ)
+	PC_CLASS_MO2_H,			// ƒ`ƒƒƒ“ƒsƒIƒ“(‹Ræ)
+	PC_CLASS_GC2,			// ƒMƒƒ`ƒ“ƒNƒƒX(‹Ræ)
+	PC_CLASS_TF2,			// ƒV[ƒt(‹Ræ)
+	PC_CLASS_RG2,			// ƒ[ƒO(‹Ræ)
+	PC_CLASS_RG2_H,			// ƒ`ƒFƒCƒT[(‹Ræ)
 	PC_CLASS_RG3_H,			// JT_DOG_STALKER
-	PC_CLASS_AS2,			// ã‚¢ã‚µã‚·ãƒ³(é¨Žä¹—)
-	PC_CLASS_AS2_H,			// ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹(é¨Žä¹—)
-	PC_CLASS_DC2,			// ãƒ€ãƒ³ã‚µãƒ¼(é¨Žä¹—)
-	PC_CLASS_MI2,			// ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«(é¨Žä¹—)
-	PC_CLASS_BA2,			// ãƒãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_HT2_H,			// ã‚¹ãƒŠã‚¤ãƒ‘ãƒ¼(é¨Žä¹—)
-	PC_CLASS_WA2,			// ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼(é¨Žä¹—)
-	PC_CLASS_DC2_H,			// ã‚¸ãƒ—ã‚·ãƒ¼(é¨Žä¹—)
-	PC_CLASS_BA2_H,			// ã‚¯ãƒ©ã‚¦ãƒ³(é¨Žä¹—)
-	PC_CLASS_HT2,			// ãƒãƒ³ã‚¿ãƒ¼(é¨Žä¹—)
-	PC_CLASS_TK2,			// ãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰(é¨Žä¹—)
-	PC_CLASS_PR2,			// ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ(é¨Žä¹—)
-	PC_CLASS_PR2_H,			// ãƒã‚¤ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ(é¨Žä¹—)
-	PC_CLASS_NV2_B,			// é¤Šå­ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_SM2_B,			// é¤Šå­ã‚½ãƒ¼ãƒ‰ãƒžãƒ³(é¨Žä¹—)
-	PC_CLASS_MG2_B,			// é¤Šå­ãƒžã‚¸ã‚·ãƒ£ãƒ³(é¨Žä¹—)
-	PC_CLASS_AC2_B,			// é¤Šå­ã‚¢ãƒ¼ãƒãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_AL2_B,			// é¤Šå­ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_MC2_B,			// é¤Šå­ãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ(é¨Žä¹—)
-	PC_CLASS_HT2_B,			// é¤Šå­ãƒãƒ³ã‚¿ãƒ¼(é¨Žä¹—)
-	PC_CLASS_AS2_B,			// é¤Šå­ã‚¢ã‚µã‚·ãƒ³(é¨Žä¹—)
-	PC_CLASS_MO2_B,			// é¤Šå­ãƒ¢ãƒ³ã‚¯(é¨Žä¹—)
-	PC_CLASS_SA2_B,			// é¤Šå­ã‚»ãƒ¼ã‚¸(é¨Žä¹—)
+	PC_CLASS_AS2,			// ƒAƒTƒVƒ“(‹Ræ)
+	PC_CLASS_AS2_H,			// ƒAƒTƒVƒ“ƒNƒƒX(‹Ræ)
+	PC_CLASS_DC2,			// ƒ_ƒ“ƒT[(‹Ræ)
+	PC_CLASS_MI2,			// ƒ~ƒ“ƒXƒgƒŒƒ‹(‹Ræ)
+	PC_CLASS_BA2,			// ƒo[ƒh(‹Ræ)
+	PC_CLASS_HT2_H,			// ƒXƒiƒCƒp[(‹Ræ)
+	PC_CLASS_WA2,			// ƒƒ“ƒ_ƒ‰[(‹Ræ)
+	PC_CLASS_DC2_H,			// ƒWƒvƒV[(‹Ræ)
+	PC_CLASS_BA2_H,			// ƒNƒ‰ƒEƒ“(‹Ræ)
+	PC_CLASS_HT2,			// ƒnƒ“ƒ^[(‹Ræ)
+	PC_CLASS_TK2,			// ƒeƒRƒ“ƒLƒbƒh(‹Ræ)
+	PC_CLASS_PR2,			// ƒvƒŠ[ƒXƒg(‹Ræ)
+	PC_CLASS_PR2_H,			// ƒnƒCƒvƒŠ[ƒXƒg(‹Ræ)
+	PC_CLASS_NV2_B,			// —{Žqƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_SM2_B,			// —{Žqƒ\[ƒhƒ}ƒ“(‹Ræ)
+	PC_CLASS_MG2_B,			// —{Žqƒ}ƒWƒVƒƒƒ“(‹Ræ)
+	PC_CLASS_AC2_B,			// —{ŽqƒA[ƒ`ƒƒ[(‹Ræ)
+	PC_CLASS_AL2_B,			// —{ŽqƒAƒRƒ‰ƒCƒg(‹Ræ)
+	PC_CLASS_MC2_B,			// —{Žqƒ}[ƒ`ƒƒƒ“ƒg(‹Ræ)
+	PC_CLASS_HT2_B,			// —{Žqƒnƒ“ƒ^[(‹Ræ)
+	PC_CLASS_AS2_B,			// —{ŽqƒAƒTƒVƒ“(‹Ræ)
+	PC_CLASS_MO2_B,			// —{Žqƒ‚ƒ“ƒN(‹Ræ)
+	PC_CLASS_SA2_B,			// —{ŽqƒZ[ƒW(‹Ræ)
 	PC_CLASS_RG3_B,			// JT_DOG_CHASER_B
-	PC_CLASS_AM2_B,			// é¤Šå­ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ(é¨Žä¹—)
-	PC_CLASS_BA2_B,			// é¤Šå­ãƒãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_DC2_B,			// é¤Šå­ãƒ€ãƒ³ã‚µãƒ¼(é¨Žä¹—)
-	PC_CLASS_SNV2_B,		// é¤Šå­ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_WL2_B,			// é¤Šå­ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_AB2_B,			// é¤Šå­ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—(é¨Žä¹—)
-	PC_CLASS_GC2_B,			// é¤Šå­ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹(é¨Žä¹—)
-	PC_CLASS_SO2_B,			// é¤Šå­ã‚½ãƒ¼ã‚µãƒ©ãƒ¼(é¨Žä¹—)
-	PC_CLASS_MI2_B,			// é¤Šå­ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«(é¨Žä¹—)
-	PC_CLASS_WA2_B,			// é¤Šå­ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼(é¨Žä¹—)
-	PC_CLASS_SR2_B,			// é¤Šå­ä¿®ç¾…(é¨Žä¹—)
-	PC_CLASS_GN2_B,			// é¤Šå­ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_TF2_B,			// é¤Šå­ã‚·ãƒ¼ãƒ•(é¨Žä¹—)
-	PC_CLASS_RG2_B,			// é¤Šå­ãƒ­ãƒ¼ã‚°(é¨Žä¹—)
-	PC_CLASS_NV2_H,			// è»¢ç”ŸãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_SM2_H,			// è»¢ç”Ÿã‚½ãƒ¼ãƒ‰ãƒžãƒ³(é¨Žä¹—)
-	PC_CLASS_MG2_H,			// è»¢ç”Ÿãƒžã‚¸ã‚·ãƒ£ãƒ³(é¨Žä¹—)
-	PC_CLASS_AC2_H,			// è»¢ç”Ÿã‚¢ãƒ¼ãƒãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_AL2_H,			// è»¢ç”Ÿã‚¢ã‚³ãƒ©ã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_MC2_H,			// è»¢ç”Ÿãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ(é¨Žä¹—)
-	PC_CLASS_TF2_H,			// è»¢ç”Ÿã‚·ãƒ¼ãƒ•(é¨Žä¹—)
-	PC_CLASS_ESNV,			// æ‹¡å¼µãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_ESNV_B,		// é¤Šå­æ‹¡å¼µãƒŽãƒ¼ãƒ“ã‚¹
-	PC_CLASS_ESNV2,			// æ‹¡å¼µã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_ESNV2_B,		// é¤Šå­æ‹¡å¼µã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹(é¨Žä¹—)
-	PC_CLASS_PR2_B,			// é¤Šå­ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ(é¨Žä¹—)
-	PC_CLASS_WZ2_B,			// é¤Šå­ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_BS2_B,			// é¤Šå­ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹(é¨Žä¹—)
-	PC_CLASS_NC3,			// ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_RA3,			// ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_KN3,			// ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_KN3_H,			// ãƒ­ãƒ¼ãƒ‰ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_LG3,			// ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_RK7,			// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_CR3,			// ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼(é¨Žä¹—)
-	PC_CLASS_CR3_H,			// ãƒ‘ãƒ©ãƒ‡ã‚£ãƒ³(é¨Žä¹—)
-	PC_CLASS_NC3_B,			// é¤Šå­ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯(é¨Žä¹—)
-	PC_CLASS_RA3_B,			// é¤Šå­ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼(é¨Žä¹—)
-	PC_CLASS_KN3_B,			// é¤Šå­ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_LG3_B,			// é¤Šå­ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰(é¨Žä¹—)
-	PC_CLASS_RK7_B,			// é¤Šå­ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ(é¨Žä¹—)
-	PC_CLASS_CR3_B,			// é¤Šå­ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼(é¨Žä¹—)
-	PC_CLASS_KG,			// å½±ç‹¼
-	PC_CLASS_OB,			// æœ§
-	PC_CLASS_KG2,			// å½±ç‹¼(é¨Žä¹—)
-	PC_CLASS_OB2,			// æœ§(é¨Žä¹—)
+	PC_CLASS_AM2_B,			// —{ŽqƒAƒ‹ƒPƒ~ƒXƒg(‹Ræ)
+	PC_CLASS_BA2_B,			// —{Žqƒo[ƒh(‹Ræ)
+	PC_CLASS_DC2_B,			// —{Žqƒ_ƒ“ƒT[(‹Ræ)
+	PC_CLASS_SNV2_B,		// —{ŽqƒX[ƒp[ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_WL2_B,			// —{ŽqƒEƒH[ƒƒbƒN(‹Ræ)
+	PC_CLASS_AB2_B,			// —{ŽqƒA[ƒNƒrƒVƒ‡ƒbƒv(‹Ræ)
+	PC_CLASS_GC2_B,			// —{ŽqƒMƒƒ`ƒ“ƒNƒƒX(‹Ræ)
+	PC_CLASS_SO2_B,			// —{Žqƒ\[ƒTƒ‰[(‹Ræ)
+	PC_CLASS_MI2_B,			// —{Žqƒ~ƒ“ƒXƒgƒŒƒ‹(‹Ræ)
+	PC_CLASS_WA2_B,			// —{Žqƒƒ“ƒ_ƒ‰[(‹Ræ)
+	PC_CLASS_SR2_B,			// —{ŽqC—…(‹Ræ)
+	PC_CLASS_GN2_B,			// —{ŽqƒWƒFƒlƒeƒBƒbƒN(‹Ræ)
+	PC_CLASS_TF2_B,			// —{ŽqƒV[ƒt(‹Ræ)
+	PC_CLASS_RG2_B,			// —{Žqƒ[ƒO(‹Ræ)
+	PC_CLASS_NV2_H,			// “]¶ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_SM2_H,			// “]¶ƒ\[ƒhƒ}ƒ“(‹Ræ)
+	PC_CLASS_MG2_H,			// “]¶ƒ}ƒWƒVƒƒƒ“(‹Ræ)
+	PC_CLASS_AC2_H,			// “]¶ƒA[ƒ`ƒƒ[(‹Ræ)
+	PC_CLASS_AL2_H,			// “]¶ƒAƒRƒ‰ƒCƒg(‹Ræ)
+	PC_CLASS_MC2_H,			// “]¶ƒ}[ƒ`ƒƒƒ“ƒg(‹Ræ)
+	PC_CLASS_TF2_H,			// “]¶ƒV[ƒt(‹Ræ)
+	PC_CLASS_ESNV,			// Šg’£ƒm[ƒrƒX
+	PC_CLASS_ESNV_B,		// —{ŽqŠg’£ƒm[ƒrƒX
+	PC_CLASS_ESNV2,			// Šg’£ƒX[ƒp[ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_ESNV2_B,		// —{ŽqŠg’£ƒX[ƒp[ƒm[ƒrƒX(‹Ræ)
+	PC_CLASS_PR2_B,			// —{ŽqƒvƒŠ[ƒXƒg(‹Ræ)
+	PC_CLASS_WZ2_B,			// —{ŽqƒEƒBƒU[ƒh(‹Ræ)
+	PC_CLASS_BS2_B,			// —{Žqƒuƒ‰ƒbƒNƒXƒ~ƒX(‹Ræ)
+	PC_CLASS_NC3,			// ƒƒJƒjƒbƒN(‹Ræ)
+	PC_CLASS_RA3,			// ƒŒƒ“ƒWƒƒ[(‹Ræ)
+	PC_CLASS_KN3,			// ƒiƒCƒg(‹Ræ)
+	PC_CLASS_KN3_H,			// ƒ[ƒhƒiƒCƒg(‹Ræ)
+	PC_CLASS_LG3,			// ƒƒCƒ„ƒ‹ƒK[ƒh(‹Ræ)
+	PC_CLASS_RK7,			// ƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_CR3,			// ƒNƒ‹ƒZƒCƒ_[(‹Ræ)
+	PC_CLASS_CR3_H,			// ƒpƒ‰ƒfƒBƒ“(‹Ræ)
+	PC_CLASS_NC3_B,			// —{ŽqƒƒJƒjƒbƒN(‹Ræ)
+	PC_CLASS_RA3_B,			// —{ŽqƒŒƒ“ƒWƒƒ[(‹Ræ)
+	PC_CLASS_KN3_B,			// —{ŽqƒiƒCƒg(‹Ræ)
+	PC_CLASS_LG3_B,			// —{ŽqƒƒCƒ„ƒ‹ƒK[ƒh(‹Ræ)
+	PC_CLASS_RK7_B,			// —{Žqƒ‹[ƒ“ƒiƒCƒg(‹Ræ)
+	PC_CLASS_CR3_B,			// —{ŽqƒNƒ‹ƒZƒCƒ_[(‹Ræ)
+	PC_CLASS_KG,			// ‰e˜T
+	PC_CLASS_OB,			// žO
+	PC_CLASS_KG2,			// ‰e˜T(‹Ræ)
+	PC_CLASS_OB2,			// žO(‹Ræ)
 	PC_CLASS_MAX
 };
 
-// è·æ¥­å®šç¾©
+// E‹Æ’è‹`
 enum {
-	PC_JOB_NV = 0,	// ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_JOB_SM,		// ã‚½ãƒ¼ãƒ‰ãƒžãƒ³
-	PC_JOB_MG,		// ãƒžã‚¸ã‚·ãƒ£ãƒ³
-	PC_JOB_AC,		// ã‚¢ãƒ¼ãƒãƒ£ãƒ¼
-	PC_JOB_AL,		// ã‚¢ã‚³ãƒ©ã‚¤ãƒˆ
-	PC_JOB_MC,		// ãƒžãƒ¼ãƒãƒ£ãƒ³ãƒˆ
-	PC_JOB_TF,		// ã‚·ãƒ¼ãƒ•
-	PC_JOB_KN,		// ãƒŠã‚¤ãƒˆ
-	PC_JOB_PR,		// ãƒ—ãƒªãƒ¼ã‚¹ãƒˆ
-	PC_JOB_WZ,		// ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰
-	PC_JOB_BS,		// ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹
-	PC_JOB_HT,		// ãƒãƒ³ã‚¿ãƒ¼
-	PC_JOB_AS,		// ã‚¢ã‚µã‚·ãƒ³
-	PC_JOB_CR,		// ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼
-	PC_JOB_MO,		// ãƒ¢ãƒ³ã‚¯
-	PC_JOB_SA,		// ã‚»ãƒ¼ã‚¸
-	PC_JOB_RG,		// ãƒ­ãƒ¼ã‚°
-	PC_JOB_AM,		// ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆ
-	PC_JOB_BA,		// ãƒãƒ¼ãƒ‰
-	PC_JOB_DC,		// ãƒ€ãƒ³ã‚µãƒ¼
-	PC_JOB_SNV,		// ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_JOB_TK,		// ãƒ†ã‚³ãƒ³ã‚­ãƒƒãƒ‰
-	PC_JOB_SG,		// æ‹³è–
-	PC_JOB_SL,		// ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼
-	PC_JOB_GS,		// ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼
-	PC_JOB_NJ,		// å¿è€…
-	PC_JOB_MB,		// ã‚­ãƒ§ãƒ³ã‚·ãƒ¼
-	PC_JOB_DK,		// ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆ
-	PC_JOB_DA,		// ãƒ€ãƒ¼ã‚¯ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼
-	PC_JOB_RK,		// ãƒ«ãƒ¼ãƒ³ãƒŠã‚¤ãƒˆ
-	PC_JOB_WL,		// ã‚¦ã‚©ãƒ¼ãƒ­ãƒƒã‚¯
-	PC_JOB_RA,		// ãƒ¬ãƒ³ã‚¸ãƒ£ãƒ¼
-	PC_JOB_AB,		// ã‚¢ãƒ¼ã‚¯ãƒ“ã‚·ãƒ§ãƒƒãƒ—
-	PC_JOB_NC,		// ãƒ¡ã‚«ãƒ‹ãƒƒã‚¯
-	PC_JOB_GC,		// ã‚®ãƒ­ãƒãƒ³ã‚¯ãƒ­ã‚¹
-	PC_JOB_LG,		// ãƒ­ã‚¤ãƒ¤ãƒ«ã‚¬ãƒ¼ãƒ‰
-	PC_JOB_SO,		// ã‚½ãƒ¼ã‚µãƒ©ãƒ¼
-	PC_JOB_MI,		// ãƒŸãƒ³ã‚¹ãƒˆãƒ¬ãƒ«
-	PC_JOB_WA,		// ãƒ¯ãƒ³ãƒ€ãƒ©ãƒ¼
-	PC_JOB_SR,		// ä¿®ç¾…
-	PC_JOB_GN,		// ã‚¸ã‚§ãƒãƒ†ã‚£ãƒƒã‚¯
-	PC_JOB_SC,		// ã‚·ãƒ£ãƒ‰ã‚¦ãƒã‚§ã‚¤ã‚µãƒ¼
-	PC_JOB_ESNV,	// æ‹¡å¼µã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒŽãƒ¼ãƒ“ã‚¹
-	PC_JOB_KG,		// å½±ç‹¼
-	PC_JOB_OB,		// æœ§
+	PC_JOB_NV = 0,	// ƒm[ƒrƒX
+	PC_JOB_SM,		// ƒ\[ƒhƒ}ƒ“
+	PC_JOB_MG,		// ƒ}ƒWƒVƒƒƒ“
+	PC_JOB_AC,		// ƒA[ƒ`ƒƒ[
+	PC_JOB_AL,		// ƒAƒRƒ‰ƒCƒg
+	PC_JOB_MC,		// ƒ}[ƒ`ƒƒƒ“ƒg
+	PC_JOB_TF,		// ƒV[ƒt
+	PC_JOB_KN,		// ƒiƒCƒg
+	PC_JOB_PR,		// ƒvƒŠ[ƒXƒg
+	PC_JOB_WZ,		// ƒEƒBƒU[ƒh
+	PC_JOB_BS,		// ƒuƒ‰ƒbƒNƒXƒ~ƒX
+	PC_JOB_HT,		// ƒnƒ“ƒ^[
+	PC_JOB_AS,		// ƒAƒTƒVƒ“
+	PC_JOB_CR,		// ƒNƒ‹ƒZƒCƒ_[
+	PC_JOB_MO,		// ƒ‚ƒ“ƒN
+	PC_JOB_SA,		// ƒZ[ƒW
+	PC_JOB_RG,		// ƒ[ƒO
+	PC_JOB_AM,		// ƒAƒ‹ƒPƒ~ƒXƒg
+	PC_JOB_BA,		// ƒo[ƒh
+	PC_JOB_DC,		// ƒ_ƒ“ƒT[
+	PC_JOB_SNV,		// ƒX[ƒp[ƒm[ƒrƒX
+	PC_JOB_TK,		// ƒeƒRƒ“ƒLƒbƒh
+	PC_JOB_SG,		// Œ¹
+	PC_JOB_SL,		// ƒ\ƒEƒ‹ƒŠƒ“ƒJ[
+	PC_JOB_GS,		// ƒKƒ“ƒXƒŠƒ“ƒK[
+	PC_JOB_NJ,		// ”EŽÒ
+	PC_JOB_MB,		// ƒLƒ‡ƒ“ƒV[
+	PC_JOB_DK,		// ƒfƒXƒiƒCƒg
+	PC_JOB_DA,		// ƒ_[ƒNƒRƒŒƒNƒ^[
+	PC_JOB_RK,		// ƒ‹[ƒ“ƒiƒCƒg
+	PC_JOB_WL,		// ƒEƒH[ƒƒbƒN
+	PC_JOB_RA,		// ƒŒƒ“ƒWƒƒ[
+	PC_JOB_AB,		// ƒA[ƒNƒrƒVƒ‡ƒbƒv
+	PC_JOB_NC,		// ƒƒJƒjƒbƒN
+	PC_JOB_GC,		// ƒMƒƒ`ƒ“ƒNƒƒX
+	PC_JOB_LG,		// ƒƒCƒ„ƒ‹ƒK[ƒh
+	PC_JOB_SO,		// ƒ\[ƒTƒ‰[
+	PC_JOB_MI,		// ƒ~ƒ“ƒXƒgƒŒƒ‹
+	PC_JOB_WA,		// ƒƒ“ƒ_ƒ‰[
+	PC_JOB_SR,		// C—…
+	PC_JOB_GN,		// ƒWƒFƒlƒeƒBƒbƒN
+	PC_JOB_SC,		// ƒVƒƒƒhƒEƒ`ƒFƒCƒT[
+	PC_JOB_ESNV,	// Šg’£ƒX[ƒp[ƒm[ƒrƒX
+	PC_JOB_KG,		// ‰e˜T
+	PC_JOB_OB,		// žO
 	PC_JOB_MAX
 };
 
 enum {
-	PC_UPPER_NORMAL = 0,	// æœªè»¢ç”Ÿ
-	PC_UPPER_HIGH,			// è»¢ç”Ÿ
-	PC_UPPER_BABY,			// é¤Šå­
+	PC_UPPER_NORMAL = 0,	// –¢“]¶
+	PC_UPPER_HIGH,			// “]¶
+	PC_UPPER_BABY,			// —{Žq
 	PC_UPPER_MAX
 };
 
-// æ€§åˆ¥ãƒ†ãƒ¼ãƒ–ãƒ«
+// «•Êƒe[ƒuƒ‹
 enum {
 	SEX_FEMALE = 0,
 	SEX_MALE,
 	SEX_SERVER
 };
 
-// è£…å‚™ç®‡æ‰€
+// ‘•”õ‰ÓŠ
 enum {
 	LOC_NOTHING           = 0x000000,
-	LOC_HEAD              = 0x000001,	// é ­ä¸‹æ®µ
-	LOC_RARM              = 0x000002,	// å³æ‰‹
-	LOC_ROBE              = 0x000004,	// è‚©
-	LOC_RACCESSORY        = 0x000008,	// ã‚¢ã‚¯ã‚»ã‚µãƒªå³
-	LOC_BODY              = 0x000010,	// ä½“
-	LOC_LARM              = 0x000020,	// å·¦æ‰‹
-	LOC_RLARM             = 0x000022,	// ä¸¡æ‰‹
-	LOC_SHOES             = 0x000040,	// é´
-	LOC_LACCESSORY        = 0x000080,	// ã‚¢ã‚¯ã‚»ã‚µãƒªå·¦
-	LOC_RLACCESSORY       = 0x000088,	// ã‚¢ã‚¯ã‚»ã‚µãƒªå³å·¦
-	LOC_HEAD2             = 0x000100,	// é ­ä¸Šæ®µ
-	LOC_HEAD_TB           = 0x000101,	// é ­ä¸Šä¸‹æ®µ
-	LOC_HEAD3             = 0x000200,	// é ­ä¸­æ®µ
-	LOC_HEAD_MB           = 0x000201,	// é ­ä¸­ä¸‹æ®µ
-	LOC_HEAD_TM           = 0x000300,	// é ­ä¸Šä¸­æ®µ
-	LOC_HEAD_TMB          = 0x000301,	// é ­ä¸Šä¸­ä¸‹æ®µ
-	LOC_COSTUME_HEAD2     = 0x000400,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸Šæ®µ
-	LOC_COSTUME_HEAD3     = 0x000800,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸­æ®µ
-	LOC_COSTUME_HEAD_TM   = 0x000C00,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸Šä¸­æ®µ
-	LOC_COSTUME_HEAD      = 0x001000,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸‹æ®µ
-	LOC_COSTUME_HEAD_TB   = 0x001400,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸Šä¸‹æ®µ
-	LOC_COSTUME_HEAD_MB   = 0x001800,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸­ä¸‹æ®µ
-	LOC_COSTUME_HEAD_TMB  = 0x001C00,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ ä¸Šä¸­ä¸‹æ®µ
-	LOC_COSTUME_ROBE      = 0x002000,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ è‚©
-	LOC_COSTUME_FLOOR     = 0x004000,	// ã‚³ã‚¹ãƒãƒ¥ãƒ¼ãƒ FLOOR
-	LOC_ARROW             = 0x008000,	// çŸ¢ãƒ»å¼¾ä¸¸ãƒ»è‹¦ç„¡ãƒ»æ‰‹è£å‰£ãƒ»ã‚­ãƒ£ãƒŽãƒ³ãƒœãƒ¼ãƒ«
-	LOC_ARMOR_SHADOW      = 0x010000,	// ã‚¢ãƒ¼ãƒžãƒ¼ã‚·ãƒ£ãƒ‰ã‚¦
-	LOC_WEAPON_SHADOW     = 0x020000,	// ã‚¦ã‚§ãƒãƒ³ã‚·ãƒ£ãƒ‰ã‚¦
-	LOC_SHIELD_SHADOW     = 0x040000,	// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚·ãƒ£ãƒ‰ã‚¦
-	LOC_SHOES_SHADOW      = 0x080000,	// ã‚·ãƒ¥ãƒ¼ã‚ºã‚·ãƒ£ãƒ‰ã‚¦
-	LOC_RACCESSORY_SHADOW = 0x100000,	// ã‚¢ã‚¯ã‚»ã‚µãƒªå³ã‚·ãƒ£ãƒ‰ã‚¦
-	LOC_LACCESSORY_SHADOW = 0x200000,	// ã‚¢ã‚¯ã‚»ã‚µãƒªå·¦ã‚·ãƒ£ãƒ‰ã‚¦
+	LOC_HEAD              = 0x000001,	// “ª‰º’i
+	LOC_RARM              = 0x000002,	// ‰EŽè
+	LOC_ROBE              = 0x000004,	// Œ¨
+	LOC_RACCESSORY        = 0x000008,	// ƒAƒNƒZƒTƒŠ‰E
+	LOC_BODY              = 0x000010,	// ‘Ì
+	LOC_LARM              = 0x000020,	// ¶Žè
+	LOC_RLARM             = 0x000022,	// —¼Žè
+	LOC_SHOES             = 0x000040,	// ŒC
+	LOC_LACCESSORY        = 0x000080,	// ƒAƒNƒZƒTƒŠ¶
+	LOC_RLACCESSORY       = 0x000088,	// ƒAƒNƒZƒTƒŠ‰E¶
+	LOC_HEAD2             = 0x000100,	// “ªã’i
+	LOC_HEAD_TB           = 0x000101,	// “ªã‰º’i
+	LOC_HEAD3             = 0x000200,	// “ª’†’i
+	LOC_HEAD_MB           = 0x000201,	// “ª’†‰º’i
+	LOC_HEAD_TM           = 0x000300,	// “ªã’†’i
+	LOC_HEAD_TMB          = 0x000301,	// “ªã’†‰º’i
+	LOC_COSTUME_HEAD2     = 0x000400,	// ƒRƒXƒ`ƒ…[ƒ€ã’i
+	LOC_COSTUME_HEAD3     = 0x000800,	// ƒRƒXƒ`ƒ…[ƒ€’†’i
+	LOC_COSTUME_HEAD_TM   = 0x000C00,	// ƒRƒXƒ`ƒ…[ƒ€ã’†’i
+	LOC_COSTUME_HEAD      = 0x001000,	// ƒRƒXƒ`ƒ…[ƒ€‰º’i
+	LOC_COSTUME_HEAD_TB   = 0x001400,	// ƒRƒXƒ`ƒ…[ƒ€ã‰º’i
+	LOC_COSTUME_HEAD_MB   = 0x001800,	// ƒRƒXƒ`ƒ…[ƒ€’†‰º’i
+	LOC_COSTUME_HEAD_TMB  = 0x001C00,	// ƒRƒXƒ`ƒ…[ƒ€ã’†‰º’i
+	LOC_COSTUME_ROBE      = 0x002000,	// ƒRƒXƒ`ƒ…[ƒ€Œ¨
+	LOC_COSTUME_FLOOR     = 0x004000,	// ƒRƒXƒ`ƒ…[ƒ€FLOOR
+	LOC_ARROW             = 0x008000,	// –îE’eŠÛE‹ê–³EŽè— Œ•EƒLƒƒƒmƒ“ƒ{[ƒ‹
+	LOC_ARMOR_SHADOW      = 0x010000,	// ƒA[ƒ}[ƒVƒƒƒhƒE
+	LOC_WEAPON_SHADOW     = 0x020000,	// ƒEƒFƒ|ƒ“ƒVƒƒƒhƒE
+	LOC_SHIELD_SHADOW     = 0x040000,	// ƒV[ƒ‹ƒhƒVƒƒƒhƒE
+	LOC_SHOES_SHADOW      = 0x080000,	// ƒVƒ…[ƒYƒVƒƒƒhƒE
+	LOC_RACCESSORY_SHADOW = 0x100000,	// ƒAƒNƒZƒTƒŠ‰EƒVƒƒƒhƒE
+	LOC_LACCESSORY_SHADOW = 0x200000,	// ƒAƒNƒZƒTƒŠ¶ƒVƒƒƒhƒE
 };
 
 struct item {
@@ -550,7 +550,7 @@ struct mmo_charstatus {
 
 	int merc_fame[MAX_MERC_TYPE],merc_call[MAX_MERC_TYPE];
 
-	short weapon;	// ã€œWT_DOUBLE_MAX
+	short weapon;	// ?WT_DOUBLE_MAX
 	short shield;
 	short robe;
 	short head_top,head_mid,head_bottom;
@@ -603,7 +603,7 @@ struct mmo_homunstatus {
 
 	struct skill skill[MAX_HOMSKILL];
 
-	int intimate;	// ãƒšãƒƒãƒˆã¨é•ã„æœ€å¤§100,000ã§è¨ˆç®—
+	int intimate;	// ƒyƒbƒg‚Æˆá‚¢Å‘å100,000‚ÅŒvŽZ
 	short hungry;
 	char rename_flag;
 	char incubate;
@@ -749,13 +749,13 @@ struct square {
 };
 
 enum {
-	GBI_EXP        = 1,	// ã‚®ãƒ«ãƒ‰ã®EXP
-	GBI_GUILDLV    = 2,	// ã‚®ãƒ«ãƒ‰ã®Lv
-	GBI_SKILLPOINT = 3,	// ã‚®ãƒ«ãƒ‰ã®ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆ
-	GBI_SKILLLV    = 4,	// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«Lv
+	GBI_EXP        = 1,	// ƒMƒ‹ƒh‚ÌEXP
+	GBI_GUILDLV    = 2,	// ƒMƒ‹ƒh‚ÌLv
+	GBI_SKILLPOINT = 3,	// ƒMƒ‹ƒh‚ÌƒXƒLƒ‹ƒ|ƒCƒ“ƒg
+	GBI_SKILLLV    = 4,	// ƒMƒ‹ƒhƒXƒLƒ‹Lv
 
-	GMI_POSITION   = 0,	// ãƒ¡ãƒ³ãƒãƒ¼ã®å½¹è·å¤‰æ›´
-	GMI_EXP        = 1,	// ãƒ¡ãƒ³ãƒãƒ¼ã®EXP
+	GMI_POSITION   = 0,	// ƒƒ“ƒo[‚Ì–ðE•ÏX
+	GMI_EXP        = 1,	// ƒƒ“ƒo[‚ÌEXP
 };
 
 enum {
@@ -780,8 +780,8 @@ enum {
 struct mail {
 	int account_id;
 	int char_id;
-	unsigned int rates;	// ç·ä»¶æ•°
-	int store;		// ä¿æœ‰ä»¶æ•°
+	unsigned int rates;	// ‘Œ”
+	int store;		// •Û—LŒ”
 };
 
 struct mail_data {

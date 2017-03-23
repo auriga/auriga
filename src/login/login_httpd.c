@@ -64,7 +64,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 
 	do {
 		if(httpd_get_method(sd) != HTTPD_METHOD_POST) {
-			// POSTä»¥å¤–ãŠæ–­ã‚Š
+			// POSTˆÈŠO‚¨’f‚è
 			msg = "Illegal request."; break;
 		}
 		if(!httpd_new_account_flag) {
@@ -80,7 +80,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			msg = "Illegal character found in UserID."; break;
 		}
 
-		if(check[0]) {	// ID ã®ãƒã‚§ãƒƒã‚¯ã¯ userid ã ã‘ã§ã„ã„
+		if(check[0]) {	// ID ‚Ìƒ`ƒFƒbƒN‚Í userid ‚¾‚¯‚Å‚¢‚¢
 			if(account_load_str(userid) == NULL) {
 				msg = "OK : You can use UserID.";
 			} else {
@@ -109,7 +109,7 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			strncpy(ma.userid,userid,24);
 			strncpy(ma.pass  ,passwd,24);
 			ma.sex = gender[0];
-			strncpy(ma.mail  ,"@"     ,40); // æš«å®š
+			strncpy(ma.mail  ,"@"     ,40); // b’è
 			strncpy(ma.birth ,"000000", 7);
 			sprintf(buf,"( httpd %08lx )",httpd_get_ip(sd));
 			if( !account_new(&ma,buf) ) {
@@ -120,8 +120,8 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 		}
 	} while(0);
 
-	// HTTP/1.1ã§è¿”ã™ã¨ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’é€£ç¶šã—ã¦ä½œæˆã™ã‚‹é¦¬é¹¿ãŒã„ãã†ãªã®ã§ã€
-	// ã‚ãˆã¦HTTP/1.0æ‰±ã„ã—ã¦ã„ã‚‹ã€‚
+	// HTTP/1.1‚Å•Ô‚·‚ÆƒAƒJƒEƒ“ƒg‚ğ˜A‘±‚µ‚Äì¬‚·‚é”n­‚ª‚¢‚»‚¤‚È‚Ì‚ÅA
+	// ‚ ‚¦‚ÄHTTP/1.0ˆµ‚¢‚µ‚Ä‚¢‚éB
 	httpd_send_head(sd,200,"text/plain",-1);
 	httpd_send_data(sd,(int)strlen(msg),msg);
 
@@ -164,7 +164,7 @@ static int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_d
 	const char *p;
 
 	p = (const char *)memchr(userid, '\0', 24);
-	if( p == NULL )	// 24æ–‡å­—ä»¥ä¸Šã¯ã‚ã‚Šãˆãªã„
+	if( p == NULL )	// 24•¶šˆÈã‚Í‚ ‚è‚¦‚È‚¢
 		return 0;
 
 	acc = account_load_str( userid );

@@ -24,7 +24,7 @@
 
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool elemdb_sql_init(void);
 int elemdb_sql_sync(void);
 bool elemdb_sql_delete(int elem_id);
@@ -34,7 +34,7 @@ bool elemdb_sql_new(struct mmo_elemstatus *p2);
 void elemdb_sql_final(void);
 int elemdb_sql_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define elemdb_init   elemdb_sql_init
 #define elemdb_sync   elemdb_sql_sync
 #define elemdb_delete elemdb_sql_delete

@@ -24,7 +24,7 @@
 
 #include "utils.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool petdb_txt_init(void);
 int petdb_txt_sync(void);
 bool petdb_txt_delete(int pet_id);
@@ -34,7 +34,7 @@ bool petdb_txt_new(struct s_pet *p);
 void petdb_txt_final(void);
 int petdb_txt_config_read_sub(const char* w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define petdb_init   petdb_txt_init
 #define petdb_sync   petdb_txt_sync
 #define petdb_delete petdb_txt_delete

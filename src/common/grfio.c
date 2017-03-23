@@ -27,20 +27,20 @@
  *********************************************************************
  *	$Id: grfio.c,v 1.4 2003/11/10 23:32:44 jmb Exp $
  *
- *	2002/12/18 ... åŸç‰ˆ
- *	2003/01/23 ... ã‚³ãƒ¼ãƒ‰ä¿®æ­£
- *	2003/02/01 ... LocalFileåŠã³è¤‡æ•°GRFãƒã‚§ãƒƒã‚¯å‡¦ç†ã‚’è¿½åŠ ,æš—å·è§£èª­å‡¦ç†ã‚’æ”¹è‰¯
- *	2003/02/02 ... grfãŒç„¡ãã¦ã‚‚æ­¢ã¾ã‚‰ãªã„ã‚ˆã†ã«ä¿®æ­£
- *	2003/02/02 ... grfèª­ã¿è¾¼ã¿æŒ‡å®šã‚’å¾Œã‹ã‚‰è¿½åŠ ã§ãã‚‹ã‚ˆã†ã«ä¿®æ­£(grfio_addé–¢æ•°è¿½åŠ )
- *	2003/02/03 ... grfio_resourcecheckå‡¦ç†æ™‚ã€ã‚¨ãƒ³ãƒˆãƒªè¿½åŠ å‡¦ç†æ–¹æ³•ã‚’ä¿®æ­£
- *	2003/02/05 ... grfio_initå†…å‡¦ç†ã®å¤‰æ›´
- *	2003/02/23 ... ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚§ãƒƒã‚¯ã‚’GRFIO_LOCALã§ã‚¹ã‚¤ãƒƒãƒ(ãƒ‡ãƒ•ã‚©ã‚’æ©Ÿèƒ½Offã«)
- *      2003/10/21 ãƒ»ãƒ»ãƒ» Î±ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã‚€ã‚ˆã†ã«ã—ãŸã€‚
+ *	2002/12/18 ... Œ´”Å
+ *	2003/01/23 ... ƒR[ƒhC³
+ *	2003/02/01 ... LocalFile‹y‚Ñ•¡”GRFƒ`ƒFƒbƒNˆ—‚ğ’Ç‰Á,ˆÃ†‰ğ“Çˆ—‚ğ‰ü—Ç
+ *	2003/02/02 ... grf‚ª–³‚­‚Ä‚à~‚Ü‚ç‚È‚¢‚æ‚¤‚ÉC³
+ *	2003/02/02 ... grf“Ç‚İ‚İw’è‚ğŒã‚©‚ç’Ç‰Á‚Å‚«‚é‚æ‚¤‚ÉC³(grfio_addŠÖ”’Ç‰Á)
+ *	2003/02/03 ... grfio_resourcecheckˆ—AƒGƒ“ƒgƒŠ’Ç‰Áˆ—•û–@‚ğC³
+ *	2003/02/05 ... grfio_init“àˆ—‚Ì•ÏX
+ *	2003/02/23 ... ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹ƒ`ƒFƒbƒN‚ğGRFIO_LOCAL‚ÅƒXƒCƒbƒ`(ƒfƒtƒH‚ğ‹@”\Off‚É)
+ *      2003/10/21 EEE ƒ¿ƒNƒ‰ƒCƒAƒ“ƒg‚Ìƒf[ƒ^‚ğ“Ç‚Ş‚æ‚¤‚É‚µ‚½B
  *	2003/11/10 ... Ready new grf format.
  *	2003/11/11 ... version check fix & bug fix
  *	2006/05/27 ... Reading of customed GRF (by Yor)
- *	2006/12/11 ... data,sdata,adataã®åˆ¶é™ã‚’ç„¡ãã—ã¦MAX_GRF_FILESå€‹ã¾ã§èª­ã¿è¾¼ã¿å¯¾å¿œ
- *	2006/12/29 ãƒ»ãƒ»ãƒ» ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡å‰Šæ¸›ã®ãŸã‚gat,txtä»¥å¤–ã¯entryã—ãªã„ã€resnametable.txtã®æŒ‡å®šå¯¾å¿œ
+ *	2006/12/11 ... data,sdata,adata‚Ì§ŒÀ‚ğ–³‚­‚µ‚ÄMAX_GRF_FILESŒÂ‚Ü‚Å“Ç‚İ‚İ‘Î‰
+ *	2006/12/29 EEE ƒƒ‚ƒŠg—p—ÊíŒ¸‚Ì‚½‚ßgat,txtˆÈŠO‚Íentry‚µ‚È‚¢Aresnametable.txt‚Ìw’è‘Î‰
  */
 
 #include <stdio.h>
@@ -113,13 +113,13 @@ typedef struct {
 	char fn[128-4*5]; // file name
 	char gentry; // read grf file select
 } FILELIST;
-// gentry ... 0  :ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚ˆã‚Šå–å¾—
-//            1>=:gentry_table[gentry-1]ã®ãƒªã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«ã‚ˆã‚Šå–å¾—
-//            1<=:ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒã‚§ãƒƒã‚¯
-//                   æœ‰ã‚Œã°0ã«å†ã‚»ãƒƒãƒˆã—ã¦ä»¥é™ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚ˆã‚Šå–å¾—
-//                   ç„¡ã‘ã‚Œã°ç¬¦å·åè»¢ã—ã¦å†ã‚»ãƒƒãƒˆã—ã€1>=ã¨åŒã˜ããƒªã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«ã‚ˆã‚Šå–å¾—
+// gentry ... 0  :ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚æ‚èæ“¾
+//            1>=:gentry_table[gentry-1]‚ÌƒŠƒ\[ƒXƒtƒ@ƒCƒ‹‚æ‚èæ“¾
+//            1<=:ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚ğƒ`ƒFƒbƒN
+//                   —L‚ê‚Î0‚ÉÄƒZƒbƒg‚µ‚ÄˆÈ~ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚æ‚èæ“¾
+//                   –³‚¯‚ê‚Î•„†”½“]‚µ‚ÄÄƒZƒbƒg‚µA1>=‚Æ“¯‚¶‚­ƒŠƒ\[ƒXƒtƒ@ƒCƒ‹‚æ‚èæ“¾
 
-// â€»FILELIST.gentryã‚’charã§å®šç¾©ã—ã¦ã„ã‚‹ã®ã§grfio_addã§è¿½åŠ ã§ãã‚‹ä¸Šé™ã¯127ã‚³ã¾ã§ã«ãªã‚Šã¾ã™
+// ¦FILELIST.gentry‚ğchar‚Å’è‹`‚µ‚Ä‚¢‚é‚Ì‚Ågrfio_add‚Å’Ç‰Á‚Å‚«‚éãŒÀ‚Í127ƒR‚Ü‚Å‚É‚È‚è‚Ü‚·
 #define GENTRY_LIMIT 127
 
 static FILELIST *filelist    = NULL;
@@ -426,7 +426,7 @@ static FILELIST *filelist_find(const char *fname)
  *	File List : Filelist add
  *------------------------------------------
  */
-#define FILELIST_ADDS 1024 // ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆæ•°å¢—åˆ†
+#define FILELIST_ADDS 1024 // ƒtƒ@ƒCƒ‹ƒŠƒXƒg”‘•ª
 
 static FILELIST* filelist_add(FILELIST *entry)
 {
@@ -501,7 +501,7 @@ int grfio_size(const char *fname)
 
 		strncpy(lfname,fname,255);
 		lfname[sizeof(lfname)-1] = '\0';
-		for(p = lfname; *p; p++) {	// â€»Unixæ™‚ã®ã¿
+		for(p = lfname; *p; p++) {	// ¦Unix‚Ì‚İ
 			if (*p == '\\')
 				*p = '/';
 		}
@@ -541,7 +541,7 @@ void* grfio_reads(const char *fname, int *size)
 
 		strncpy(lfname,fname,255);
 		lfname[sizeof(lfname)-1]= '\0';
-		for(p = lfname; *p; p++) {	// â€»Unixæ™‚ã®ã¿
+		for(p = lfname; *p; p++) {	// ¦Unix‚Ì‚İ
 			if (*p == '\\')
 				*p = '/';
 		}
@@ -723,8 +723,8 @@ static int grfio_entryread(const char *gfname,int gentry)
 				if(!ext_ptr)
 					continue;
 
-				// gat,txt,rswä»¥å¤–ã¯ä¸è¦ãªã®ã§èª­ã¿è¾¼ã¾ãªã„
-				if(strcasecmp(ext_ptr,".gat") == 0) {	// ã‚‚ã—å¿…è¦ãªã‚‰ã°gnd,act,sprã‚‚srccount=0
+				// gat,txt,rswˆÈŠO‚Í•s—v‚È‚Ì‚Å“Ç‚İ‚Ü‚È‚¢
+				if(strcasecmp(ext_ptr,".gat") == 0) {	// ‚à‚µ•K—v‚È‚ç‚Îgnd,act,spr‚àsrccount=0
 					srccount = 0;
 				} else if(strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
 					int lop;
@@ -743,9 +743,9 @@ static int grfio_entryread(const char *gfname,int gentry)
 				strncpy(aentry.fn,fname,sizeof(aentry.fn)-1);
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
 #ifdef GRFIO_LOCAL
-				aentry.gentry         = -(gentry+1);	// è² æ•°ã«ã™ã‚‹ã®ã¯åˆå›LocalFileCheckã‚’ã•ã›ã‚‹ãŸã‚ã®Flagã¨ã—ã¦
+				aentry.gentry         = -(gentry+1);	// •‰”‚É‚·‚é‚Ì‚Í‰‰ñLocalFileCheck‚ğ‚³‚¹‚é‚½‚ß‚ÌFlag‚Æ‚µ‚Ä
 #else
-				aentry.gentry         = gentry+1;		// åˆå›LocalFileCheckç„¡ã—
+				aentry.gentry         = gentry+1;		// ‰‰ñLocalFileCheck–³‚µ
 #endif
 				filelist_modify(&aentry);
 			}
@@ -819,7 +819,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 			if(!ext_ptr)
 				continue;
 
-			// gat,txt,rswä»¥å¤–ã¯ä¸è¦ãªã®ã§èª­ã¿è¾¼ã¾ãªã„
+			// gat,txt,rswˆÈŠO‚Í•s—v‚È‚Ì‚Å“Ç‚İ‚Ü‚È‚¢
 			if(strcasecmp(ext_ptr,".gat") != 0 && strcasecmp(ext_ptr,".txt") != 0 && strcasecmp(ext_ptr,".rsw") != 0)
 				continue;
 
@@ -852,9 +852,9 @@ static int grfio_entryread(const char *gfname,int gentry)
 				strncpy(aentry.fn,fname,sizeof(aentry.fn)-1);
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
 #ifdef GRFIO_LOCAL
-				aentry.gentry         = -(gentry+1);	// è² æ•°ã«ã™ã‚‹ã®ã¯åˆå›LocalFileCheckã‚’ã•ã›ã‚‹ãŸã‚ã®Flagã¨ã—ã¦
+				aentry.gentry         = -(gentry+1);	// •‰”‚É‚·‚é‚Ì‚Í‰‰ñLocalFileCheck‚ğ‚³‚¹‚é‚½‚ß‚ÌFlag‚Æ‚µ‚Ä
 #else
-				aentry.gentry         = gentry+1;		// åˆå›LocalFileCheckç„¡ã—
+				aentry.gentry         = gentry+1;		// ‰‰ñLocalFileCheck–³‚µ
 #endif
 				filelist_modify(&aentry);
 			}
@@ -902,7 +902,7 @@ static void grfio_resourcecheck(const char *data_dir)
 			if(!ext_ptr)
 				continue;
 
-			// gat,txt,rswã®ã¿ãƒã‚§ãƒƒã‚¯
+			// gat,txt,rsw‚Ì‚İƒ`ƒFƒbƒN
 			if(strcasecmp(ext_ptr,".gat") == 0 || strcasecmp(ext_ptr,".txt") == 0 || strcasecmp(ext_ptr,".rsw") == 0) {
 				sprintf(dst,"data\\%s",w2);
 
@@ -1038,13 +1038,13 @@ void grfio_init(const char *fname)
 	int result = 0;
 
 	grfio_load_zlib();
-	hashinit();		// hashãƒ†ãƒ¼ãƒ–ãƒ«åˆæœŸåŒ–
-	atexit(grfio_final);	// çµ‚äº†å‡¦ç†å®šç¾©
+	hashinit();		// hashƒe[ƒuƒ‹‰Šú‰»
+	atexit(grfio_final);	// I—¹ˆ—’è‹`
 
 	if(fname == NULL)
 		return;
 
-	// grf-files.txt ãŒã‚ã‚‹ãªã‚‰èª­ã¿è¾¼ã‚€
+	// grf-files.txt ‚ª‚ ‚é‚È‚ç“Ç‚İ‚Ş
 	data_conf = fopen(fname, "r");
 	if(data_conf) {
 		char line[1024], w1[1024], w2[1024];
@@ -1066,13 +1066,13 @@ void grfio_init(const char *fname)
 	} // end of reading grf-files.txt
 
 	if(!(result&1)) {
-		// ãƒªã‚½ãƒ¼ã‚¹ãŒä¸€ã¤ã‚‚èª­ã‚ãªã‹ã£ãŸ
+		// ƒŠƒ\[ƒX‚ªˆê‚Â‚à“Ç‚ß‚È‚©‚Á‚½
 		printf("not grf file readed exit!!\n");
 		return;
 	}
 
-	grfio_resourcecheck(data_dir);	// ãƒªã‚½ãƒ¼ã‚¹ãƒã‚§ãƒƒã‚¯
-	filelist_adjust();		// filelistã®ä¸è¦ã‚¨ãƒªã‚¢è§£æ”¾
+	grfio_resourcecheck(data_dir);	// ƒŠƒ\[ƒXƒ`ƒFƒbƒN
+	filelist_adjust();		// filelist‚Ì•s—vƒGƒŠƒA‰ğ•ú
 
 	return;
 }

@@ -30,7 +30,7 @@
 #include "lock.h"
 
 /*==========================================
- * å¹³è¡¡æœ¨ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+ * •½t–Øƒf[ƒ^ƒx[ƒX
  *------------------------------------------
  */
 #define MALLOC_DBN
@@ -49,7 +49,7 @@ static void * malloc_dbn(void)
 		if(dbn_root_rest<=0){
 			void *p;
 			if(dbn_root_num >= ROOT_BUCKET) {
-				// ãƒ¡ãƒ¢ãƒªç¢ºä¿å‡ºæ¥ãªã„ã®ã§ã‚µãƒ¼ãƒã‚’è½ã¨ã™
+				// ƒƒ‚ƒŠŠm•Ûo—ˆ‚È‚¢‚Ì‚ÅƒT[ƒo‚ğ—‚Æ‚·
 				printf("malloc_dbn: dbn out of memory %dx%d !!\n", ROOT_BUCKET, ROOT_SIZE);
 				exit(1);
 			}
@@ -238,7 +238,7 @@ static void db_rotate_right(struct dbn *p,struct dbn **root)
 static void db_rebalance(struct dbn *p,struct dbn **root)
 {
 	p->color = RED;
-	while(p!=*root && p->parent->color==RED){ // rootã¯å¿…ãšé»’ã§è¦ªã¯èµ¤ã„ã®ã§è¦ªã®è¦ªã¯å¿…ãšå­˜åœ¨ã™ã‚‹
+	while(p!=*root && p->parent->color==RED){ // root‚Í•K‚¸•‚Åe‚ÍÔ‚¢‚Ì‚Åe‚Ìe‚Í•K‚¸‘¶İ‚·‚é
 		if (p->parent == p->parent->parent->left) {
 			struct dbn *y = p->parent->parent->right;
 			if (y && y->color == RED) {
@@ -290,7 +290,7 @@ static void db_rebalance_erase(struct dbn *z,struct dbn **root)
 			y = y->left;
 		x = y->right;
 	}
-	if (y != z) { // å·¦å³ãŒä¸¡æ–¹åŸ‹ã¾ã£ã¦ã„ãŸæ™‚ yã‚’zã®ä½ç½®ã«æŒã£ã¦ãã¦zã‚’æµ®ã‹ã›ã‚‹
+	if (y != z) { // ¶‰E‚ª—¼•û–„‚Ü‚Á‚Ä‚¢‚½ y‚ğz‚ÌˆÊ’u‚É‚Á‚Ä‚«‚Äz‚ğ•‚‚©‚¹‚é
 		z->left->parent = y;
 		y->left = z->left;
 		if (y != z->right) {
@@ -316,7 +316,7 @@ static void db_rebalance_erase(struct dbn *z,struct dbn **root)
 		}
 
 		y = z;
-	} else { // ã©ã¡ã‚‰ã‹ç©ºã„ã¦ã„ãŸå ´åˆ xã‚’zã®ä½ç½®ã«æŒã£ã¦ãã¦zã‚’æµ®ã‹ã›ã‚‹
+	} else { // ‚Ç‚¿‚ç‚©‹ó‚¢‚Ä‚¢‚½ê‡ x‚ğz‚ÌˆÊ’u‚É‚Á‚Ä‚«‚Äz‚ğ•‚‚©‚¹‚é
 		x_parent = y->parent;
 		if (x) x->parent = y->parent;
 		if (*root == z)
@@ -326,8 +326,8 @@ static void db_rebalance_erase(struct dbn *z,struct dbn **root)
 		else
 			z->parent->right = x;
 	}
-	// ã“ã“ã¾ã§è‰²ã®ç§»å‹•ã®é™¤ã„ã¦é€šå¸¸ã®2åˆ†æœ¨ã¨åŒã˜
-	if (y->color != RED) { // èµ¤ãŒæ¶ˆãˆã‚‹åˆ†ã«ã¯å½±éŸ¿ç„¡ã—
+	// ‚±‚±‚Ü‚ÅF‚ÌˆÚ“®‚Ìœ‚¢‚Ä’Êí‚Ì2•ª–Ø‚Æ“¯‚¶
+	if (y->color != RED) { // Ô‚ªÁ‚¦‚é•ª‚É‚Í‰e‹¿–³‚µ
 		while (x != *root && (x == NULL || x->color == BLACK))
 			if (x == x_parent->left) {
 				struct dbn* w = x_parent->right;
@@ -424,7 +424,7 @@ void* db_insert(struct dbt *table,void* key,void* data)
 		if(c==0){ // replace
 			void *old_data = p->data;
 			if(p->deleted) {
-				// å‰Šé™¤ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ãªã®ã§ã€free_list ä¸Šã®å‰Šé™¤äºˆå®šã‚’æ¶ˆã™
+				// íœ‚³‚ê‚½ƒf[ƒ^‚È‚Ì‚ÅAfree_list ã‚Ìíœ—\’è‚ğÁ‚·
 				int i;
 				for(i = 0; i < table->free_count ; i++) {
 					if(table->free_list[i].z == p) {
@@ -535,7 +535,7 @@ int db_foreach_sub(struct dbt* table,int(*func)(void*,void*,va_list), va_list ap
 	int i,sp;
 	int count, ret = 0;
 	struct dbn *p,*pn;
-	struct dbn *stack[64];	// red-black treeãªã®ã§64å€‹stackãŒã‚ã‚Œã°2^32å€‹ãƒãƒ¼ãƒ‰ã¾ã§å¤§ä¸ˆå¤«
+	struct dbn *stack[64];	// red-black tree‚È‚Ì‚Å64ŒÂstack‚ª‚ ‚ê‚Î2^32ŒÂƒm[ƒh‚Ü‚Å‘åä•v
 
 	if( table == NULL )
 		return 0;
@@ -660,7 +660,7 @@ int db_final(struct dbt *table,int (*func)(void*,void*,va_list),...)
 }
 
 /*==========================================
- * ç·šå½¢ãƒªã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+ * üŒ`ƒŠƒXƒgƒf[ƒ^ƒx[ƒX
  *------------------------------------------
  */
 void linkdb_insert( struct linkdb_node** head, void *key, void* data)
@@ -695,7 +695,7 @@ void* linkdb_search( struct linkdb_node** head, void *key)
 	while( node ) {
 		if( node->key == key ) {
 			if( node->prev && n > 5 ) {
-				// å‡¦ç†åŠ¹ç‡æ”¹å–„ã®ç‚ºã«headã«ç§»å‹•ã•ã›ã‚‹
+				// ˆ—Œø—¦‰ü‘P‚Ìˆ×‚Éhead‚ÉˆÚ“®‚³‚¹‚é
 				if(node->prev) node->prev->next = node->next;
 				if(node->next) node->next->prev = node->prev;
 				node->next = *head;
@@ -721,7 +721,7 @@ int linkdb_exists( struct linkdb_node** head, void *key)
 	while( node ) {
 		if( node->key == key ) {
 			if( node->prev && n > 5 ) {
-				// å‡¦ç†åŠ¹ç‡æ”¹å–„ã®ç‚ºã«headã«ç§»å‹•ã•ã›ã‚‹
+				// ˆ—Œø—¦‰ü‘P‚Ìˆ×‚Éhead‚ÉˆÚ“®‚³‚¹‚é
 				if(node->prev) node->prev->next = node->next;
 				if(node->next) node->next->prev = node->prev;
 				node->next = *head;
@@ -771,7 +771,7 @@ void* linkdb_replace( struct linkdb_node** head, void *key, void *data )
 		if( node->key == key ) {
 			void *old_data = node->data;
 			if( node->prev && n > 5 ) {
-				// å‡¦ç†åŠ¹ç‡æ”¹å–„ã®ç‚ºã«headã«ç§»å‹•ã•ã›ã‚‹
+				// ˆ—Œø—¦‰ü‘P‚Ìˆ×‚Éhead‚ÉˆÚ“®‚³‚¹‚é
 				if(node->prev) node->prev->next = node->next;
 				if(node->next) node->next->prev = node->prev;
 				node->next = *head;
@@ -785,7 +785,7 @@ void* linkdb_replace( struct linkdb_node** head, void *key, void *data )
 		node = node->next;
 		n++;
 	}
-	// è¦‹ã¤ã‹ã‚‰ãªã„ã®ã§æŒ¿å…¥
+	// Œ©‚Â‚©‚ç‚È‚¢‚Ì‚Å‘}“ü
 	linkdb_insert( head, key, data );
 
 	return NULL;
@@ -806,10 +806,10 @@ void linkdb_final( struct linkdb_node** head )
 }
 
 /*==========================================
- * CSVãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+ * CSVƒf[ƒ^ƒx[ƒX
  *------------------------------------------
  */
-// csv ã®èª­ã¿è¾¼ã¿ã€‚skip_comment ãŒçœŸã®ã¨ãã¯ã€è¡Œé ­ã«//ãŒã‚ã‚‹è¡Œã‚’èª­ã¿é£›ã°ã™ã€‚
+// csv ‚Ì“Ç‚İ‚İBskip_comment ‚ª^‚Ì‚Æ‚«‚ÍAs“ª‚É//‚ª‚ ‚és‚ğ“Ç‚İ”ò‚Î‚·B
 struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 {
 	int  i;
@@ -828,9 +828,9 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 		struct csvdb_line *line;
 
 		if( buf[0] == '\0' || buf[0] == '\r' || buf[0] == '\n' )
-			continue; // ç©ºè¡Œ
+			continue; // ‹ós
 		if( skip_comment && buf[0] == '/' && buf[1] == '/' )
-			continue; // ã‚³ãƒ¡ãƒ³ãƒˆ
+			continue; // ƒRƒƒ“ƒg
 
 		if( csv->row_count == csv->row_max ) {
 			csv->row_max += 64;
@@ -843,9 +843,9 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 		if( buf[max-1] == '\n' )
 			max--;
 
-		// lineã«ã‚³ãƒ”ãƒ¼ã—ã€è¡Œæœ«ã«NUL ã‚’ï¼’ã¤ç¶šã‘ã•ã›ã‚‹
+		// line‚ÉƒRƒs[‚µAs––‚ÉNUL ‚ğ‚Q‚Â‘±‚¯‚³‚¹‚é
 		line = &csv->data[csv->row_count++];
-		line->buf = (char *)aMalloc(max+2);	// 1byteä½™åˆ†ã«ç¢ºä¿
+		line->buf = (char *)aMalloc(max+2);	// 1byte—]•ª‚ÉŠm•Û
 		memcpy(line->buf, buf, max);
 		line->buf[max  ] = 0;
 		line->buf[max+1] = 0;
@@ -853,9 +853,9 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 
 		for(s = line->buf; s[0] && line->num < MAX_CSVCOL; ) {
 			if( *s == '"' ) {
-				// [""] ã‚’ ["] ã«ç½®ãæ›ãˆã€[",] ã‚’çµ‚äº†ã®åˆå›³ã¨ã™ã‚‹ã€‚
-				// è¡Œæœ«ã«NUL ãŒï¼’ã¤ç¶šãã®ã§ã€k[n] ãŒNUL ã®ã¨ã
-				// k[n+1]ã‚’å‚ç…§ã—ã¦ã‚‚å®‰å…¨ã€‚
+				// [""] ‚ğ ["] ‚É’u‚«Š·‚¦A[",] ‚ğI—¹‚Ì‡}‚Æ‚·‚éB
+				// s––‚ÉNUL ‚ª‚Q‚Â‘±‚­‚Ì‚ÅAk[n] ‚ªNUL ‚Ì‚Æ‚«
+				// k[n+1]‚ğQÆ‚µ‚Ä‚àˆÀ‘SB
 				char *j = ++s, *k = s;
 				while( k[0] ) {
 					if( k[0] == '"' ) {
@@ -892,19 +892,19 @@ struct csvdb_data* csvdb_open(const char* file, int skip_comment)
 	return csv;
 }
 
-// è¡Œæ•°ã‚’è¿”ã™
+// s”‚ğ•Ô‚·
 int csvdb_get_rows(struct csvdb_data *csv)
 {
 	return ( csv == NULL ? -1 : csv->row_notempty );
 }
 
-// æŒ‡å®šã—ãŸè¡Œã®åˆ—æ•°ã‚’è¿”ã™
+// w’è‚µ‚½s‚Ì—ñ”‚ğ•Ô‚·
 int csvdb_get_columns(struct csvdb_data *csv, int row)
 {
 	return ( csv == NULL || row < 0 || csv->row_notempty <= row ? -1 : csv->data[csv->index[row]].num);
 }
 
-// æŒ‡å®šã—ãŸè¡Œã€åˆ—ã®ãƒ‡ãƒ¼ã‚¿ã‚’æ•´æ•°ã«ã—ã¦è¿”ã™
+// w’è‚µ‚½sA—ñ‚Ìƒf[ƒ^‚ğ®”‚É‚µ‚Ä•Ô‚·
 int csvdb_get_num(struct csvdb_data *csv, int row, int col)
 {
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
@@ -913,7 +913,7 @@ int csvdb_get_num(struct csvdb_data *csv, int row, int col)
 	return csv->data[csv->index[row]].data_v[col];
 }
 
-// æŒ‡å®šã—ãŸè¡Œã€åˆ—ã®ãƒ‡ãƒ¼ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+// w’è‚µ‚½sA—ñ‚Ìƒf[ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
 const char* csvdb_get_str(struct csvdb_data *csv, int row, int col)
 {
 	if( csv == NULL || row < 0 || csv->row_notempty <= row || col < 0 || csv->data[csv->index[row]].num <= col )
@@ -922,7 +922,7 @@ const char* csvdb_get_str(struct csvdb_data *csv, int row, int col)
 	return csv->data[csv->index[row]].data_p[col];
 }
 
-// å…ˆé ­ã®è¡Œã«ã‚ã‚‹æ•°å­—ãŒvalue ã¨ä¸€è‡´ã™ã‚‹è¡Œã‚’è¿”ã™
+// æ“ª‚Ìs‚É‚ ‚é”š‚ªvalue ‚Æˆê’v‚·‚és‚ğ•Ô‚·
 int csvdb_find_num(struct csvdb_data *csv, int col, int value)
 {
 	int i;
@@ -939,7 +939,7 @@ int csvdb_find_num(struct csvdb_data *csv, int col, int value)
 	return -1;
 }
 
-// å…ˆé ­ã®è¡Œã«ã‚ã‚‹æ–‡å­—ãŒvalue ã¨ä¸€è‡´ã™ã‚‹è¡Œã‚’è¿”ã™
+// æ“ª‚Ìs‚É‚ ‚é•¶š‚ªvalue ‚Æˆê’v‚·‚és‚ğ•Ô‚·
 int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
 {
 	int i;
@@ -956,13 +956,13 @@ int csvdb_find_str(struct csvdb_data *csv, int col, const char* value)
 	return -1;
 }
 
-// csv ã®ãƒªã‚µã‚¤ã‚º(ãŸã ã—ã€åˆ—æ•°ã¯ç„¡è¦–ã•ã‚Œã‚‹)
+// csv ‚ÌƒŠƒTƒCƒY(‚½‚¾‚µA—ñ”‚Í–³‹‚³‚ê‚é)
 static int csvdb_resize(struct csvdb_data *csv, int row, int col)
 {
 	if( csv == NULL || col < 0 || row < 0 || col >= MAX_CSVCOL)
 		return 0;
 
-	// è¡Œã®æ‹¡å¼µ
+	// s‚ÌŠg’£
 	if( csv->row_count < row ) {
 		int i;
 
@@ -985,7 +985,7 @@ static int csvdb_resize(struct csvdb_data *csv, int row, int col)
 	return 1;
 }
 
-// æŒ‡å®šã—ãŸè¡Œã€åˆ—ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã™ã‚‹
+// w’è‚µ‚½sA—ñ‚Ìƒf[ƒ^‚ğİ’è‚·‚é
 int csvdb_set_num(struct csvdb_data *csv, int row, int col, int num)
 {
 	char buf[32];
@@ -994,7 +994,7 @@ int csvdb_set_num(struct csvdb_data *csv, int row, int col, int num)
 	return csvdb_set_str(csv, row, col, buf);
 }
 
-// æŒ‡å®šã—ãŸè¡Œã€åˆ—ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã™ã‚‹
+// w’è‚µ‚½sA—ñ‚Ìƒf[ƒ^‚ğİ’è‚·‚é
 int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str)
 {
 	int i;
@@ -1029,7 +1029,7 @@ int csvdb_set_str(struct csvdb_data *csv, int row, int col, const char* str)
 	return 1;
 }
 
-// æŒ‡å®šã—ãŸè¡Œã€åˆ—ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
+// w’è‚µ‚½sA—ñ‚Ìƒf[ƒ^‚ğƒNƒŠƒA‚·‚é
 int csvdb_clear_row(struct csvdb_data *csv, int row)
 {
 	struct csvdb_line *line;
@@ -1052,7 +1052,7 @@ int csvdb_clear_row(struct csvdb_data *csv, int row)
 	return 1;
 }
 
-// ä¸¦ã³æ›¿ãˆé–¢æ•°ç¾¤
+// •À‚Ñ‘Ö‚¦ŠÖ”ŒQ
 static int    csvdb_sort_key = 0;
 static struct csvdb_line * csvdb_sort_data = NULL;
 
@@ -1084,17 +1084,17 @@ int csvdb_sort(struct csvdb_data *csv, int key, int order)
 	csvdb_sort_key  = key;
 	csvdb_sort_data = csv->data;
 	if( order != -1 ) {
-		// æ˜‡é †
+		// ¸‡
 		qsort( csv->index, csv->row_notempty, sizeof(int), csvdb_sort_asc);
 	} else {
-		// é™é †
+		// ~‡
 		qsort( csv->index, csv->row_notempty, sizeof(int), csvdb_sort_desc);
 	}
 	csv->dirty = 1;
 	return 1;
 }
 
-// æŒ‡å®šã—ãŸè¡Œã‚’å‰Šé™¤ã™ã‚‹
+// w’è‚µ‚½s‚ğíœ‚·‚é
 int csvdb_delete_row(struct csvdb_data *csv, int row)
 {
 	int i;
@@ -1111,7 +1111,7 @@ int csvdb_delete_row(struct csvdb_data *csv, int row)
 	return 1;
 }
 
-// è¡Œã‚’æŒ¿å…¥ã™ã‚‹
+// s‚ğ‘}“ü‚·‚é
 int csvdb_insert_row(struct csvdb_data *csv, int row)
 {
 	int i;
@@ -1128,7 +1128,7 @@ int csvdb_insert_row(struct csvdb_data *csv, int row)
 	return 1;
 }
 
-// ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãå‡ºã™
+// ƒtƒ@ƒCƒ‹‚É‘‚«o‚·
 int csvdb_flush(struct csvdb_data *csv)
 {
 	int  i, j, lock;
@@ -1138,7 +1138,7 @@ int csvdb_flush(struct csvdb_data *csv)
 		return 0;
 
 	if( !csv->dirty )
-		return 1; // æ›´æ–°ã•ã‚Œã¦ãªã‘ã‚Œã°ä½•ã‚‚ã—ãªã„
+		return 1; // XV‚³‚ê‚Ä‚È‚¯‚ê‚Î‰½‚à‚µ‚È‚¢
 
 	fp = lock_fopen( csv->file, &lock );
 	if( !fp )
@@ -1170,7 +1170,7 @@ int csvdb_flush(struct csvdb_data *csv)
 	return 1;
 }
 
-// ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾ã™ã‚‹
+// ƒƒ‚ƒŠ‚ğ‰ğ•ú‚·‚é
 void csvdb_close(struct csvdb_data *csv)
 {
 	int i, j;
@@ -1198,7 +1198,7 @@ void csvdb_close(struct csvdb_data *csv)
 	aFree( csv );
 }
 
-// ãƒ‡ãƒãƒƒã‚°ç”¨
+// ƒfƒoƒbƒO—p
 void csvdb_dump(struct csvdb_data* csv)
 {
 	int i;

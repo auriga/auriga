@@ -24,7 +24,7 @@
 
 #include "../int_quest.h"
 
-// ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
+// ƒvƒƒgƒ^ƒCƒvéŒ¾
 bool questdb_sql_init(void);
 int  questdb_sql_sync(void);
 bool  questdb_sql_delete(int char_id);
@@ -33,7 +33,7 @@ bool  questdb_sql_save(struct quest *q2);
 void questdb_sql_final(void);
 int questdb_sql_config_read_sub(const char *w1,const char *w2);
 
-// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+// ƒGƒCƒŠƒAƒX
 #define questdb_init   questdb_sql_init
 #define questdb_sync   questdb_sql_sync
 #define questdb_delete questdb_sql_delete

@@ -24,32 +24,32 @@
 
 #include "map.h"
 
-// æ‹¡å¼µã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«
+// Šg’£ƒI[ƒgƒXƒyƒ‹
 enum {
-	EAS_SHORT       = 0x00000001,	// è¿‘è·é›¢ç‰©ç†
-	EAS_LONG        = 0x00000002,	// é è·é›¢ç‰©ç†
-	EAS_WEAPON      = 0x00000003,	// ç‰©ç†
-	EAS_MAGIC       = 0x00000004,	// é­”æ³•
-	EAS_MISC        = 0x00000008,	// miscï¼ˆç½ ãƒ»é·¹ãƒ»ç«ç‚Žç“¶ç­‰ï¼‰
-	EAS_TARGET      = 0x00000010,	// è‡ªåˆ†ã«ä½¿ã†
-	EAS_SELF        = 0x00000020,	// è‡ªåˆ†ã«ä½¿ã†
-	EAS_TARGET_RAND = 0x00000040,	// è‡ªåˆ†ã‹æ”»æ’ƒå¯¾è±¡ã«ä½¿ã†
-	//EAS_TARGET    = 0x00000080,	// è‡ªåˆ†ã‹æ”»æ’ƒå¯¾è±¡ã«ä½¿ã†
-	EAS_FLUCT       = 0x00000100,	// æ—§ASç”¨ 1ã€œ3ã®ã‚ã‚Œ
-	EAS_RANDOM      = 0x00000200,	// 1ã€œæŒ‡å®šã¾ã§ãƒ©ãƒ³ãƒ€ãƒ 
-	EAS_USEMAX      = 0x00000400,	// MAXãƒ¬ãƒ™ãƒ«ãŒã‚ã‚Œã°ãã‚Œã‚’
-	EAS_USEBETTER   = 0x00000800,	// æŒ‡å®šä»¥ä¸Šã®ã‚‚ã®ãŒã‚ã‚Œã°ãã‚Œã‚’(MAXã˜ã‚ƒãªãã¦ã‚‚å¯èƒ½)
+	EAS_SHORT       = 0x00000001,	// ‹ß‹——£•¨—
+	EAS_LONG        = 0x00000002,	// ‰“‹——£•¨—
+	EAS_WEAPON      = 0x00000003,	// •¨—
+	EAS_MAGIC       = 0x00000004,	// –‚–@
+	EAS_MISC        = 0x00000008,	// misciã©E‘éE‰Î‰Š•r“™j
+	EAS_TARGET      = 0x00000010,	// Ž©•ª‚ÉŽg‚¤
+	EAS_SELF        = 0x00000020,	// Ž©•ª‚ÉŽg‚¤
+	EAS_TARGET_RAND = 0x00000040,	// Ž©•ª‚©UŒ‚‘ÎÛ‚ÉŽg‚¤
+	//EAS_TARGET    = 0x00000080,	// Ž©•ª‚©UŒ‚‘ÎÛ‚ÉŽg‚¤
+	EAS_FLUCT       = 0x00000100,	// ‹ŒAS—p 1?3‚Ì‚ ‚ê
+	EAS_RANDOM      = 0x00000200,	// 1?Žw’è‚Ü‚Åƒ‰ƒ“ƒ_ƒ€
+	EAS_USEMAX      = 0x00000400,	// MAXƒŒƒxƒ‹‚ª‚ ‚ê‚Î‚»‚ê‚ð
+	EAS_USEBETTER   = 0x00000800,	// Žw’èˆÈã‚Ì‚à‚Ì‚ª‚ ‚ê‚Î‚»‚ê‚ð(MAX‚¶‚á‚È‚­‚Ä‚à‰Â”\)
 	EAS_NOSP        = 0x00001000,	// SP0
 	EAS_SPCOST1     = 0x00002000,	// SP2/3
 	EAS_SPCOST2     = 0x00004000,	// SP1/2
-	EAS_SPCOST3     = 0x00008000,	// SP1.5å€
-	EAS_ATTACK      = 0x00010000,	// æ”»æ’ƒ
-	EAS_REVENGE     = 0x00020000,	// åæ’ƒ
-	EAS_NORMAL      = 0x00040000,	// é€šå¸¸æ”»æ’ƒ
-	EAS_SKILL       = 0x00080000,	// ã‚¹ã‚­ãƒ«
+	EAS_SPCOST3     = 0x00008000,	// SP1.5”{
+	EAS_ATTACK      = 0x00010000,	// UŒ‚
+	EAS_REVENGE     = 0x00020000,	// ”½Œ‚
+	EAS_NORMAL      = 0x00040000,	// ’ÊíUŒ‚
+	EAS_SKILL       = 0x00080000,	// ƒXƒLƒ‹
 };
 
-// ã‚«ãƒ¼ãƒ‰åŠ¹æžœã®ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«
+// ƒJ[ƒhŒø‰Ê‚ÌƒI[ƒgƒXƒyƒ‹
 int bonus_autospell_start(struct block_list *src,struct block_list *bl,unsigned int mode,unsigned int tick,int flag);
 int bonus_autospellskill_start(struct block_list *src,struct block_list *bl,int skillid,unsigned int tick,int flag);
 

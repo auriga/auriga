@@ -54,9 +54,9 @@
 #include "quest.h"
 #include "elem.h"
 
-#define MOB_LAZYMOVEPERC     50		// æ‰‹æŠœããƒ¢ãƒ¼ãƒ‰MOBã®ç§»å‹•ç¢ºç‡ï¼ˆåƒåˆ†ç‡ï¼‰
-#define MOB_LAZYWARPPERC     20		// æ‰‹æŠœããƒ¢ãƒ¼ãƒ‰MOBã®ãƒ¯ãƒ¼ãƒ—ç¢ºç‡ï¼ˆåƒåˆ†ç‡ï¼‰
-#define MOB_LAZYSKILLUSEPERC  2		// æ‰‹æŠœããƒ¢ãƒ¼ãƒ‰MOBã®ã‚¹ã‚­ãƒ«ä½¿ç”¨ç¢ºç‡ï¼ˆåƒåˆ†ç‡ï¼‰
+#define MOB_LAZYMOVEPERC     50		// è”²‚«ƒ‚[ƒhMOB‚ÌˆÚ“®Šm—¦iç•ª—¦j
+#define MOB_LAZYWARPPERC     20		// è”²‚«ƒ‚[ƒhMOB‚Ìƒ[ƒvŠm—¦iç•ª—¦j
+#define MOB_LAZYSKILLUSEPERC  2		// è”²‚«ƒ‚[ƒhMOB‚ÌƒXƒLƒ‹g—pŠm—¦iç•ª—¦j
 
 static struct mob_db mob_db_real[MOB_ID_MAX-MOB_ID_MIN];
 struct mob_db *mob_db = &mob_db_real[-MOB_ID_MIN];
@@ -65,7 +65,7 @@ static struct random_mob_data random_mob[MAX_RAND_MOB_TYPE];
 static struct mob_talk mob_talk_db[MAX_MOB_TALK];
 
 /*==========================================
- * ãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ (å¿…è¦ãªç‰©ã®ã¿)
+ * ƒ[ƒJƒ‹ƒvƒƒgƒ^ƒCƒvéŒ¾ (•K—v‚È•¨‚Ì‚İ)
  *------------------------------------------
  */
 static int mob_makedummymobdb(int);
@@ -75,7 +75,7 @@ static int mob_skillid2skillidx(int class_,int skillid);
 static int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx);
 
 /*==========================================
- * mobã‚’åå‰ã§æ¤œç´¢
+ * mob‚ğ–¼‘O‚ÅŒŸõ
  *------------------------------------------
  */
 int mobdb_searchname(const char *str)
@@ -103,14 +103,14 @@ int mobdb_checkid(const int mob_id)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ãƒ€ãƒ ç³»ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æ¤œç´¢
+ * ƒ‰ƒ“ƒ_ƒ€Œnƒ‚ƒ“ƒXƒ^[ŒŸõ
  *------------------------------------------
  */
 int mobdb_searchrandomid(int type,unsigned short lv)
 {
 	int c;
 
-	// typeã¯1ä»¥ä¸Šãªã®ã§ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹
+	// type‚Í1ˆÈã‚È‚Ì‚ÅƒfƒNƒŠƒƒ“ƒg‚·‚é
 	type--;
 	if(type < 0 || type >= MAX_RAND_MOB_TYPE)
 		return MOB_ID_DEFAULT;
@@ -133,7 +133,7 @@ int mobdb_searchrandomid(int type,unsigned short lv)
 }
 
 /*==========================================
- * MOBå‡ºç¾ç”¨ã®æœ€ä½é™ã®ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆ
+ * MOBoŒ»—p‚ÌÅ’áŒÀ‚Ìƒf[ƒ^ƒZƒbƒg
  *------------------------------------------
  */
 static int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
@@ -171,7 +171,7 @@ static int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
 }
 
 /*==========================================
- * ä¸€ç™ºMOBå‡ºç¾(ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨)
+ * ˆê”­MOBoŒ»(ƒXƒNƒŠƒvƒg—p)
  *------------------------------------------
  */
 int mob_once_spawn(struct map_session_data *sd,int m,
@@ -181,12 +181,12 @@ int mob_once_spawn(struct map_session_data *sd,int m,
 	int count, lv;
 	int r = class_;
 
-	if( m < 0 || amount <= 0 || (class_ >= 0 && !mobdb_checkid(class_)) )	// å€¤ãŒç•°å¸¸ãªã‚‰å¬å–šã‚’æ­¢ã‚ã‚‹
+	if( m < 0 || amount <= 0 || (class_ >= 0 && !mobdb_checkid(class_)) )	// ’l‚ªˆÙí‚È‚ç¢Š«‚ğ~‚ß‚é
 		return 0;
 
 	lv = (sd)? sd->status.base_level: MAX_LEVEL;
 
-	if(class_ < 0) {	// ãƒ©ãƒ³ãƒ€ãƒ ã«å¬å–š
+	if(class_ < 0) {	// ƒ‰ƒ“ƒ_ƒ€‚É¢Š«
 		class_ = mobdb_searchrandomid(-class_,lv);
 	}
 	if(sd) {
@@ -215,8 +215,8 @@ int mob_once_spawn(struct map_session_data *sd,int m,
 		md->y0 = y;
 		md->xs = 0;
 		md->ys = 0;
-		md->spawndelay1  = -1;	// ä¸€åº¦ã®ã¿ãƒ•ãƒ©ã‚°
-		md->spawndelay2  = -1;	// ä¸€åº¦ã®ã¿ãƒ•ãƒ©ã‚°
+		md->spawndelay1  = -1;	// ˆê“x‚Ì‚İƒtƒ‰ƒO
+		md->spawndelay2  = -1;	// ˆê“x‚Ì‚İƒtƒ‰ƒO
 		md->state.nodrop = 0;
 		md->state.noexp  = 0;
 		md->state.nomvp  = 0;
@@ -224,7 +224,7 @@ int mob_once_spawn(struct map_session_data *sd,int m,
 		md->ai_prev = md->ai_next = NULL;
 
 #ifdef DYNAMIC_SC_DATA
-		// ãƒ€ãƒŸãƒ¼æŒ¿å…¥
+		// ƒ_ƒ~[‘}“ü
 		md->sc.data = dummy_sc_data;
 #endif
 
@@ -238,7 +238,7 @@ int mob_once_spawn(struct map_session_data *sd,int m,
 }
 
 /*==========================================
- * ä¸€ç™ºMOBå‡ºç¾(ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨ï¼†ã‚¨ãƒªã‚¢æŒ‡å®š)
+ * ˆê”­MOBoŒ»(ƒXƒNƒŠƒvƒg—p•ƒGƒŠƒAw’è)
  *------------------------------------------
  */
 int mob_once_spawn_area(struct map_session_data *sd,int m,
@@ -250,7 +250,7 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 	if(m < 0)
 		return 0;
 
-	// ã‚¨ãƒªã‚¢ã®å¤§å°æ¯”è¼ƒ
+	// ƒGƒŠƒA‚Ì‘å¬”äŠr
 	if(x0 > x1) {
 		x0 ^= x1;
 		x1 ^= x0;
@@ -264,14 +264,14 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 
 	max = (y1-y0+1)*(x1-x0+1)*3;
 	if(x0 <= 0 && y0 <= 0)
-		max = 50;	// mob_spawnã«å€£ã£ã¦50
+		max = 50;	// mob_spawn‚É•í‚Á‚Ä50
 	else if(max > 1000)
 		max = 1000;
 
 	for(i=0; i<amount; i++) {
 		int j = 0;
 		do {
-			if(x0 <= 0 && y0 <= 0 && x1 <= 0 && y1 <= 0) {	// x0,y0,x1,y1ãŒ0ä»¥ä¸‹ã®ã¨ãä½ç½®ãƒ©ãƒ³ãƒ€ãƒ æ¹§ã
+			if(x0 <= 0 && y0 <= 0 && x1 <= 0 && y1 <= 0) {	// x0,y0,x1,y1‚ª0ˆÈ‰º‚Ì‚Æ‚«ˆÊ’uƒ‰ƒ“ƒ_ƒ€—N‚«
 				x = atn_rand()%(map[m].xs-2)+1;
 				y = atn_rand()%(map[m].ys-2)+1;
 			} else {
@@ -282,10 +282,10 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 
 		if(j >= max) {
 			if(lx < 0) {
-				// æœ€åˆã«æ²¸ãå ´æ‰€ã®æ¤œç´¢ã‚’å¤±æ•—ã—ãŸã®ã§ã‚„ã‚ã‚‹
+				// Å‰‚É•¦‚­êŠ‚ÌŒŸõ‚ğ¸”s‚µ‚½‚Ì‚Å‚â‚ß‚é
 				return 0;
 			}
-			// æ¤œç´¢ã«å¤±æ•—ã—ãŸã®ã§ä»¥å‰ã«æ²¸ã„ãŸå ´æ‰€ã‚’ä½¿ã†
+			// ŒŸõ‚É¸”s‚µ‚½‚Ì‚ÅˆÈ‘O‚É•¦‚¢‚½êŠ‚ğg‚¤
 			x = lx;
 			y = ly;
 		}
@@ -299,7 +299,7 @@ int mob_once_spawn_area(struct map_session_data *sd,int m,
 }
 
 /*==========================================
- * delayä»˜ãmob spawn (timeré–¢æ•°)
+ * delay•t‚«mob spawn (timerŠÖ”)
  *------------------------------------------
  */
 int mob_delayspawn(int tid,unsigned int tick,int id,void *data)
@@ -309,7 +309,7 @@ int mob_delayspawn(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * mobå‡ºç¾ã€‚è‰²ã€…åˆæœŸåŒ–ã‚‚ã“ã“ã§
+ * moboŒ»BFX‰Šú‰»‚à‚±‚±‚Å
  *------------------------------------------
  */
 int mob_spawn(int id)
@@ -321,7 +321,7 @@ int mob_spawn(int id)
 
 	md = map_id2md(id);
 	if(md == NULL) {
-		// æ—¢ã«å‰Šé™¤ã•ã‚ŒãŸå¯èƒ½æ€§ãŒã‚ã‚‹
+		// Šù‚Éíœ‚³‚ê‚½‰Â”\«‚ª‚ ‚é
 		return -1;
 	}
 
@@ -330,14 +330,14 @@ int mob_spawn(int id)
 
 	if( md->bl.prev != NULL ) {
 //		clif_clearchar_area(&md->bl,3);
-//		skill_unit_move(&md->bl,tick,0);  // sc_dataã¯åˆæœŸåŒ–ã•ã‚Œã‚‹ç‚ºå¿…è¦ãªã„
+//		skill_unit_move(&md->bl,tick,0);  // sc_data‚Í‰Šú‰»‚³‚ê‚éˆ×•K—v‚È‚¢
 		mob_ai_hard_spawn( &md->bl, 0 );
 		map_delblock(&md->bl);
 	} else {
 		if(md->class_ < 0 && battle_config.dead_branch_active) {
-			md->mode |= MD_CANMOVE + MD_AGGRESSIVE + MD_CANATTACK;				// æmobã¯ç§»å‹•ã—ã¦ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§åæ’ƒ
+			md->mode |= MD_CANMOVE + MD_AGGRESSIVE + MD_CANATTACK;				// }mob‚ÍˆÚ“®‚µ‚ÄƒAƒNƒeƒBƒu‚Å”½Œ‚
 		}
-		else if(md->class_ >= 0 && md->class_ != md->base_class) {	// ã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸ã—ãŸMob
+		else if(md->class_ >= 0 && md->class_ != md->base_class) {	// ƒNƒ‰ƒXƒ`ƒFƒ“ƒW‚µ‚½Mob
 			memcpy(md->name,mob_db[md->base_class].jname,24);
 			md->speed = mob_db[md->base_class].speed;
 		}
@@ -357,11 +357,11 @@ int mob_spawn(int id)
 
 	if(i >= retry) {
 		if(md->spawndelay1 == -1 && md->spawndelay2 == -1) {
-			// ä¸€åº¦ã—ã‹æ²¸ã‹ãªã„ã®ã¯å£ã§ãªã„é™ã‚Šã‚¹ã‚¿ãƒƒã‚¯ä½ç½®ã§ã‚‚å‡ºã™
+			// ˆê“x‚µ‚©•¦‚©‚È‚¢‚Ì‚Í•Ç‚Å‚È‚¢ŒÀ‚èƒXƒ^ƒbƒNˆÊ’u‚Å‚ào‚·
 			if(!map_getcell(md->bl.m,x,y,CELL_CHKGROUND))
 				return 1;
 		} else {
-			// 1ç§’å¾Œã«ãƒªãƒˆãƒ©ã‚¤ã™ã‚‹
+			// 1•bŒã‚ÉƒŠƒgƒ‰ƒC‚·‚é
 			add_timer(tick+1000,mob_delayspawn,id,NULL);
 			return 1;
 		}
@@ -406,7 +406,7 @@ int mob_spawn(int id)
 	md->lootitem_count = 0;
 
 #ifdef DYNAMIC_SC_DATA
-	// ãƒ€ãƒŸãƒ¼æŒ¿å…¥
+	// ƒ_ƒ~[‘}“ü
 	if(md->sc.data == NULL)
 		md->sc.data = dummy_sc_data;
 #else
@@ -435,7 +435,7 @@ int mob_spawn(int id)
 		md->sc.option |= mob_db[md->class_].option;
 
 	map_addblock(&md->bl);
-	skill_unit_move(&md->bl,tick,1);	// sc_dataåˆæœŸåŒ–å¾Œã®å¿…è¦ãŒã‚ã‚‹
+	skill_unit_move(&md->bl,tick,1);	// sc_data‰Šú‰»Œã‚Ì•K—v‚ª‚ ‚é
 
 	clif_spawnmob(md);
 	mob_ai_hard_spawn( &md->bl, 1 );
@@ -447,7 +447,7 @@ int mob_spawn(int id)
 }
 
 /*==========================================
- * æŒ‡å®šIDã®å­˜åœ¨å ´æ‰€ã¸ã®åˆ°é”å¯èƒ½æ€§
+ * w’èID‚Ì‘¶İêŠ‚Ö‚Ì“’B‰Â”\«
  *------------------------------------------
  */
 static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
@@ -457,11 +457,11 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 	nullpo_retr(0, md);
 	nullpo_retr(0, bl);
 
-	if(md->bl.m != bl-> m)	// é•ã†ãƒãƒƒãƒ—
+	if(md->bl.m != bl-> m)	// ˆá‚¤ƒ}ƒbƒv
 		return 0;
 
 	if(md->guild_id) {
-		// ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ã¯ã‚®ãƒ«ãƒ‰åŸã«å±ã™ã‚‹PCã«ã¯æ”»æ’ƒã—ãªã„
+		// ƒK[ƒfƒBƒAƒ“‚ÍƒMƒ‹ƒhé‚É‘®‚·‚éPC‚É‚ÍUŒ‚‚µ‚È‚¢
 		if(bl->type == BL_PC) {
 			struct map_session_data *sd = (struct map_session_data *)bl;
 			struct guild *g;
@@ -475,7 +475,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 				return 0;
 		}
 	} else if(md->master_id > 0 && md->state.special_mob_ai && map[bl->m].flag.gvg) {
-		// GvGæ™‚ãƒã‚¤ã‚ªãƒ—ãƒ©ãƒ³ãƒˆMobã¯åŒä¸€ã‚®ãƒ«ãƒ‰ã‹åŒç›Ÿã‚®ãƒ«ãƒ‰æ‰€å±ã®PCãƒ»MOBã«ã¯æ”»æ’ƒã—ãªã„
+		// GvGƒoƒCƒIƒvƒ‰ƒ“ƒgMob‚Í“¯ˆêƒMƒ‹ƒh‚©“¯–¿ƒMƒ‹ƒhŠ‘®‚ÌPCEMOB‚É‚ÍUŒ‚‚µ‚È‚¢
 		if(bl->type & (BL_PC | BL_MOB)) {
 			int gid = status_get_guild_id(bl);
 
@@ -484,19 +484,19 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 		}
 	}
 
-	if( range > 0 && range < path_distance(md->bl.x,md->bl.y,bl->x,bl->y) )	// é ã™ãã‚‹
+	if( range > 0 && range < path_distance(md->bl.x,md->bl.y,bl->x,bl->y) )	// ‰“‚·‚¬‚é
 		return 0;
 
-	if( md->bl.x == bl->x && md->bl.y == bl->y )	// åŒã˜ãƒã‚¹
+	if( md->bl.x == bl->x && md->bl.y == bl->y )	// “¯‚¶ƒ}ƒX
 		return 1;
 
 	if( mob_db[md->class_].range > 6 ) {
-		// æ”»æ’ƒå¯èƒ½ãªå ´åˆã¯é è·é›¢æ”»æ’ƒã€ãã‚Œä»¥å¤–ã¯ç§»å‹•ã‚’è©¦ã¿ã‚‹
+		// UŒ‚‰Â”\‚Èê‡‚Í‰“‹——£UŒ‚A‚»‚êˆÈŠO‚ÍˆÚ“®‚ğ‚İ‚é
 		if( path_search_long(NULL,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y) )
 			return 1;
 	}
 
-	// éšœå®³ç‰©åˆ¤å®š
+	// áŠQ•¨”»’è
 	wpd.path_len = 0;
 	wpd.path_pos = 0;
 	if( !path_search(&wpd,md->bl.m,md->bl.x,md->bl.y,bl->x,bl->y,0) && wpd.path_len <= AREA_SIZE )
@@ -506,7 +506,7 @@ static int mob_can_reach(struct mob_data *md,struct block_list *bl,int range)
 }
 
 /*==========================================
- * ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ­ãƒƒã‚¯ãŒå¯èƒ½ã‹ã©ã†ã‹
+ * ƒ^[ƒQƒbƒg‚ÌƒƒbƒN‚ª‰Â”\‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 static int mob_can_lock(struct mob_data *md, struct block_list *bl)
@@ -546,7 +546,7 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 }
 
 /*==========================================
- * æ”»æ’ƒå¯¾è±¡ã®å¤‰æ›´ãŒå¯èƒ½ã‹
+ * UŒ‚‘ÎÛ‚Ì•ÏX‚ª‰Â”\‚©
  *------------------------------------------
  */
 static int mob_can_changetarget(struct mob_data* md, int mode)
@@ -567,7 +567,7 @@ static int mob_can_changetarget(struct mob_data* md, int mode)
 }
 
 /*==========================================
- * ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®æ”»æ’ƒå¯¾è±¡æ±ºå®š
+ * ƒ‚ƒ“ƒXƒ^[‚ÌUŒ‚‘ÎÛŒˆ’è
  *------------------------------------------
  */
 int mob_target(struct mob_data *md,struct block_list *bl,int dist)
@@ -583,7 +583,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 		md->target_id = 0;
 		return 0;
 	}
-	// ã‚¢ã‚¤ãƒ†ãƒ ä»¥å¤–ã§ã‚¿ã‚²ã‚’å¤‰ãˆã‚‹æ°—ãŒãªã„ãªã‚‰ä½•ã‚‚ã—ãªã„
+	// ƒAƒCƒeƒ€ˆÈŠO‚Åƒ^ƒQ‚ğ•Ï‚¦‚é‹C‚ª‚È‚¢‚È‚ç‰½‚à‚µ‚È‚¢
 	if( md->target_id > 0 ) {
 		struct block_list *target = map_id2bl(md->target_id);
 		if( target && target->type != BL_ITEM && (!(mode&MD_AGGRESSIVE) || atn_rand()%100 > 25) )
@@ -592,7 +592,7 @@ int mob_target(struct mob_data *md,struct block_list *bl,int dist)
 
 	if(mob_can_lock(md,bl)) {
 		if(bl->type & BL_CHAR)
-			md->target_id = bl->id;	// å¦¨å®³ãŒãªã‹ã£ãŸã®ã§ãƒ­ãƒƒã‚¯
+			md->target_id = bl->id;	// –WŠQ‚ª‚È‚©‚Á‚½‚Ì‚ÅƒƒbƒN
 		md->min_chase = dist + 13;
 		if(md->min_chase > 26)
 			md->min_chase = 26;
@@ -611,18 +611,18 @@ int mob_attacktarget(struct mob_data *md,struct block_list *target,int flag)
 
 	if(flag == 0 && md->target_id)
 		return 0;
-	if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) )	// å‹•ã‘ãªã„çŠ¶æ…‹ã«ã‚ã‚‹
+	if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) )	// “®‚¯‚È‚¢ó‘Ô‚É‚ ‚é
 		return 0;
 
 	unit_stopattack(&md->bl);
 	mob_target(md,target,path_distance(md->bl.x,md->bl.y,target->x,target->y));
-	//md->state.skillstate = MSS_CHASE;	// çªæ’ƒæ™‚ã‚¹ã‚­ãƒ«
+	//md->state.skillstate = MSS_CHASE;	// “ËŒ‚ƒXƒLƒ‹
 
 	return 0;
 }
 
 /*==========================================
- * ç­–æ•µãƒ«ãƒ¼ãƒ†ã‚£ãƒ³
+ * ô“Gƒ‹[ƒeƒBƒ“
  *------------------------------------------
  */
 static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
@@ -638,45 +638,45 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 
 	flag = va_arg(ap,int);
 
-	cnt[3]++; // ç¯„å›²å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ•°
+	cnt[3]++; // ”ÍˆÍ“à‚ÌƒIƒuƒWƒFƒNƒg”
 
 	if( smd->bl.id == bl->id )
 		return 0; // self
 
 	dist = path_distance(smd->bl.x,smd->bl.y,bl->x,bl->y);
 
-	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–
+	// ƒAƒNƒeƒBƒu
 	if( (flag & 1) && (bl->type & BL_CHAR) ) {
 		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
 
-		// ãƒã‚¤ãƒ‘ãƒ¼ã‚¢ã‚¯ãƒ†ã‚£ãƒ–è¿½å°¾ã¯æœ€ã‚‚è¿‘ã„æ•µã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã™ã‚‹
+		// ƒnƒCƒp[ƒAƒNƒeƒBƒu’Ç”ö‚ÍÅ‚à‹ß‚¢“G‚ğƒ^[ƒQƒbƒg‚·‚é
 		if(smd->state.skillstate == MSS_FOLLOW) {
 			struct block_list *tbl = map_id2bl(smd->target_id);
 			if(tbl)
 				range = path_distance(smd->bl.x,smd->bl.y,tbl->x,tbl->y);
 		}
 
-		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå°„ç¨‹å†…ã«ã„ã‚‹ãªã‚‰ã€ãƒ­ãƒƒã‚¯ã™ã‚‹
+		// ƒ^[ƒQƒbƒgË’ö“à‚É‚¢‚é‚È‚çAƒƒbƒN‚·‚é
 		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl) ) {
-			// å°„ç·šãƒã‚§ãƒƒã‚¯
+			// Ëüƒ`ƒFƒbƒN
 			cell_t cell_flag = (mob_db[smd->class_].range > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
 			if( path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,cell_flag) &&
 			    mob_can_reach(smd,bl,range) &&
-			    atn_rand()%1000 < 1000/(++cnt[0]) )	// ç¯„å›²å†…PCã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+			    atn_rand()%1000 < 1000/(++cnt[0]) )	// ”ÍˆÍ“àPC‚Å“™Šm—¦‚É‚·‚é
 			{
 				smd->target_id = bl->id;
 				smd->min_chase = 13;
 			}
 		}
 	}
-	// ãƒ«ãƒ¼ãƒˆ
+	// ƒ‹[ƒg
 	if( (flag & 2) && bl->type == BL_ITEM && smd->target_id < MAX_FLOORITEM && dist < 11 ) {
-		if( mob_can_reach(smd,bl,12) && atn_rand()%1000 < 1000/(++cnt[1]) ) {	// ç¯„å›²å†…ã‚¢ã‚¤ãƒ†ãƒ ã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+		if( mob_can_reach(smd,bl,12) && atn_rand()%1000 < 1000/(++cnt[1]) ) {	// ”ÍˆÍ“àƒAƒCƒeƒ€‚Å“™Šm—¦‚É‚·‚é
 			smd->target_id = bl->id;
 			smd->min_chase = 13;
 		}
 	}
-	// ãƒªãƒ³ã‚¯
+	// ƒŠƒ“ƒN
 	if( (flag & 4) && bl->type == BL_MOB ) {
 		struct mob_data *tmd = (struct mob_data *)bl;
 		if( tmd && tmd->class_ == smd->class_ && !tmd->target_id && dist < 13 ) {
@@ -684,13 +684,13 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 			tmd->min_chase = 13;
 		}
 	}
-	// æ¥è§¦åå¿œ
+	// ÚG”½‰
 	if( (flag & 8) && (bl->type & BL_CHAR) ) {
 		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: mob_db[smd->class_].range;
 
-		// æ”»æ’ƒå°„ç¨‹å†…ã«ã„ã‚‹ãªã‚‰ã€ãƒ­ãƒƒã‚¯ã™ã‚‹
+		// UŒ‚Ë’ö“à‚É‚¢‚é‚È‚çAƒƒbƒN‚·‚é
 		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl)) {
-			// å°„ç·šãƒã‚§ãƒƒã‚¯
+			// Ëüƒ`ƒFƒbƒN
 			cell_t cell_flag = (mob_db[smd->class_].range > 6 ? CELL_CHKWALL : CELL_CHKNOPASS);
 			if( path_search_long_real(NULL,smd->bl.m,smd->bl.x,smd->bl.y,bl->x,bl->y,cell_flag) &&
 			    mob_can_reach(smd,bl,range) )
@@ -705,7 +705,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * å–ã‚Šå·»ããƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®å‡¦ç†
+ * æ‚èŠª‚«ƒ‚ƒ“ƒXƒ^[‚Ìˆ—
  *------------------------------------------
  */
 static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
@@ -716,23 +716,23 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 	nullpo_retr(0, md);
 
-	if((bl = map_id2bl(md->master_id)) == NULL || unit_isdead(bl)) {	// ä¸»ãŒæ­»äº¡ã—ã¦ã„ã‚‹ã‹è¦‹ã¤ã‹ã‚‰ãªã„
+	if((bl = map_id2bl(md->master_id)) == NULL || unit_isdead(bl)) {	// å‚ª€–S‚µ‚Ä‚¢‚é‚©Œ©‚Â‚©‚ç‚È‚¢
 		if(md->state.special_mob_ai > 0)
 			unit_remove_map(&md->bl,3,0);
 		else
 			unit_remove_map(&md->bl,1,0);
 		return 0;
 	}
-	if(md->state.special_mob_ai > 0)	// ä¸»ãŒPCã®å ´åˆã¯ã€ä»¥é™ã®å‡¦ç†ã¯è¦ã‚‰ãªã„
+	if(md->state.special_mob_ai > 0)	// å‚ªPC‚Ìê‡‚ÍAˆÈ~‚Ìˆ—‚Í—v‚ç‚È‚¢
 		return 0;
 
 	if(bl->type == BL_MOB)
-		mmd = (struct mob_data *)bl;	// ä¸»ã®æƒ…å ±
+		mmd = (struct mob_data *)bl;	// å‚Ìî•ñ
 
-	// ä¸»ã§ã¯ãªã„
+	// å‚Å‚Í‚È‚¢
 	if(!mmd || mmd->bl.id != md->master_id)
 		return 0;
-	// å‘¼ã³æˆ»ã—
+	// ŒÄ‚Ñ–ß‚µ
 	if(mmd->state.recall_flag == 1) {
 		if(mmd->recallcount < mmd->recallmob_count + 2) {
 			int dx = atn_rand()%5-2+mmd->bl.x;
@@ -746,25 +746,25 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 		md->state.master_check = 1;
 		return 0;
 	}
-	// ä¸»ãŒé•ã†ãƒãƒƒãƒ—ã«ã„ã‚‹ã®ã§ãƒ†ãƒ¬ãƒãƒ¼ãƒˆã—ã¦è¿½ã„ã‹ã‘ã‚‹
+	// å‚ªˆá‚¤ƒ}ƒbƒv‚É‚¢‚é‚Ì‚ÅƒeƒŒƒ|[ƒg‚µ‚Ä’Ç‚¢‚©‚¯‚é
 	if(mmd->bl.m != md->bl.m) {
 		mob_warp(md,mmd->bl.m,mmd->bl.x,mmd->bl.y,3);
 		md->state.master_check = 1;
 		return 0;
 	}
 
-	// ä¸»ã¨ã®è·é›¢ã‚’æ¸¬ã‚‹
+	// å‚Æ‚Ì‹——£‚ğ‘ª‚é
 	old_dist = md->master_dist;
 	md->master_dist = path_distance(md->bl.x,md->bl.y,mmd->bl.x,mmd->bl.y);
 
-	// ç›´å‰ã¾ã§ä¸»ãŒè¿‘ãã«ã„ãŸã®ã§ãƒ†ãƒ¬ãƒãƒ¼ãƒˆã—ã¦è¿½ã„ã‹ã‘ã‚‹
+	// ’¼‘O‚Ü‚Åå‚ª‹ß‚­‚É‚¢‚½‚Ì‚ÅƒeƒŒƒ|[ƒg‚µ‚Ä’Ç‚¢‚©‚¯‚é
 	if(old_dist < 10 && md->master_dist > 18) {
 		mob_warp(md,-1,mmd->bl.x,mmd->bl.y,3);
 		md->state.master_check = 1;
 		return 0;
 	}
 
-	// ä¸»ãŒã„ã‚‹ãŒã€å°‘ã—é ã„ã®ã§è¿‘å¯„ã‚‹
+	// å‚ª‚¢‚é‚ªA­‚µ‰“‚¢‚Ì‚Å‹ßŠñ‚é
 	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->master_dist < 15) {
 		int i = 0, dx, dy, ret;
 		if(md->master_dist > 2) {
@@ -797,7 +797,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 		md->state.master_check = 1;
 	}
 
-	// ä¸»ãŒã„ã¦ã€ä¸»ãŒãƒ­ãƒƒã‚¯ã—ã¦ã„ã¦è‡ªåˆ†ã¯ãƒ­ãƒƒã‚¯ã—ã¦ã„ãªã„
+	// å‚ª‚¢‚ÄAå‚ªƒƒbƒN‚µ‚Ä‚¢‚Ä©•ª‚ÍƒƒbƒN‚µ‚Ä‚¢‚È‚¢
 	if(mmd->target_id > 0 && !md->target_id) {
 		struct block_list *tbl = map_id2bl(mmd->target_id);
 		if(tbl && (tbl->type != BL_ITEM || md->mode & MD_ITEMLOOT) && mob_can_lock(md,tbl)) {
@@ -811,7 +811,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
- * ãƒ­ãƒƒã‚¯ã‚’æ­¢ã‚ã¦å¾…æ©ŸçŠ¶æ…‹ã«ç§»ã‚‹ã€‚
+ * ƒƒbƒN‚ğ~‚ß‚Ä‘Ò‹@ó‘Ô‚ÉˆÚ‚éB
  *------------------------------------------
  */
 int mob_unlocktarget(struct mob_data *md,unsigned int tick)
@@ -826,7 +826,7 @@ int mob_unlocktarget(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ãƒ€ãƒ æ­©è¡Œ
+ * ƒ‰ƒ“ƒ_ƒ€•às
  *------------------------------------------
  */
 static int mob_randomwalk(struct mob_data *md,unsigned int tick)
@@ -843,7 +843,7 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
 		if(d < 4) d = 4;
 		if(d > 6) d = 6;
 
-		for(i=0; i<retrycount; i++) {	// ç§»å‹•ã§ãã‚‹å ´æ‰€ã®æ¢ç´¢
+		for(i=0; i<retrycount; i++) {	// ˆÚ“®‚Å‚«‚éêŠ‚Ì’Tõ
 			int r = atn_rand();
 			x = md->bl.x + r%(d*2+1) - d;
 			y = md->bl.y + r/(d*2+1)%(d*2+1) - d;
@@ -864,7 +864,7 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
 				}
 			}
 		}
-		for(i=c=0; i<md->ud.walkpath.path_len; i++) {	// æ¬¡ã®æ­©è¡Œé–‹å§‹æ™‚åˆ»ã‚’è¨ˆç®—
+		for(i=c=0; i<md->ud.walkpath.path_len; i++) {	// Ÿ‚Ì•àsŠJn‚ğŒvZ
 			if(md->ud.walkpath.path[i] & 1)
 				c += speed*14/10;
 			else
@@ -878,7 +878,7 @@ static int mob_randomwalk(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
- * PCãŒè¿‘ãã«ã„ã‚‹MOBã®AI
+ * PC‚ª‹ß‚­‚É‚¢‚éMOB‚ÌAI
  *------------------------------------------
  */
 int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
@@ -897,13 +897,13 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		return 0;
 	md->last_thinktime = tick;
 
-	// æ”»æ’ƒä¸­ã‹ã‚¹ã‚­ãƒ«è© å”±ä¸­
+	// UŒ‚’†‚©ƒXƒLƒ‹‰r¥’†
 	if( md->ud.attacktimer != -1 || md->ud.skilltimer != -1 )
 		return 0;
-	// æ­©è¡Œä¸­ã¯ï¼“æ­©ã”ã¨ã«AIå‡¦ç†ã‚’è¡Œã†
+	// •às’†‚Í‚R•à‚²‚Æ‚ÉAIˆ—‚ğs‚¤
 	if( md->ud.walktimer != -1 && md->ud.walkpath.path_pos <= 1 )
 		return 0;
-	// æ­»äº¡ä¸­
+	// €–S’†
 	if( md->bl.prev == NULL ) {
 		if(DIFF_TICK(tick,md->next_walktime) > MIN_MOBTHINKTIME)
 			md->next_walktime = tick;
@@ -912,11 +912,11 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	mode = status_get_mode( &md->bl );
 
-	// ç•°å¸¸
+	// ˆÙí
 	if(md->sc.data[SC_BLADESTOP].timer != -1 || md->sc.data[SC__MANHOLE].timer != -1 || md->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 || md->sc.data[SC_CURSEDCIRCLE].timer != -1)
 		return 0;
 	if(md->sc.opt1 > OPT1_NORMAL && md->sc.opt1 != OPT1_STONECURSE_ING && md->sc.opt1 != OPT1_BURNNING) {
-		if(md->sc.opt1 != OPT1_FREEZING || md->ud.walktimer == -1)    // å‡çµä¸­ã¯ç§»å‹•ãŒçµ‚ã‚ã‚‹ã¾ã§å‡¦ç†ã‚’ç¶šã‘ã‚‹(æ»‘ã‚Š)
+		if(md->sc.opt1 != OPT1_FREEZING || md->ud.walktimer == -1)    // “€Œ‹’†‚ÍˆÚ“®‚ªI‚í‚é‚Ü‚Åˆ—‚ğ‘±‚¯‚é(ŠŠ‚è)
 			return 0;
 	}
 
@@ -928,7 +928,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	else
 		tbl = map_id2bl(md->target_id);
 
-	// ã¾ãšæ”»æ’ƒã•ã‚ŒãŸã‹ç¢ºèª
+	// ‚Ü‚¸UŒ‚‚³‚ê‚½‚©Šm”F
 	if( mode > 0 && md->attacked_id > 0 && (tbl == NULL || tbl->type == BL_ITEM || mob_can_changetarget(md,mode)) )
 	{
 		struct block_list *abl = map_id2bl(md->attacked_id);
@@ -945,7 +945,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			md->attacked_id = 0;
 		}
 		else if(md->attacked_id > 0) {
-			// è·é›¢ãŒé ã„å ´åˆã¯ã‚¿ã‚²ã‚’å¤‰æ›´ã—ãªã„
+			// ‹——£‚ª‰“‚¢ê‡‚Íƒ^ƒQ‚ğ•ÏX‚µ‚È‚¢
 			if(!md->target_id || dist < 3) {
 				md->target_id   = md->attacked_id; // set target
 				attack_type     = 1;
@@ -956,7 +956,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 			}
 		}
 
-		// ãƒã‚¤ãƒ‘ãƒ¼ã‚¢ã‚¯ãƒ†ã‚£ãƒ–AIã®ç‹‚åŒ–
+		// ƒnƒCƒp[ƒAƒNƒeƒBƒuAI‚Ì‹¶‰»
 		if(md->state.angry) {
 			md->state.angry = 0;
 			if(md->state.skillstate == MSS_ANGRY)
@@ -967,27 +967,27 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	md->state.master_check = 0;
-	// å–ã‚Šå·»ããƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®å‡¦ç†
+	// æ‚èŠª‚«ƒ‚ƒ“ƒXƒ^[‚Ìˆ—
 	if(md->master_id > 0) {
 		mob_ai_sub_hard_slavemob(md,tick);
 		if(md->bl.prev == NULL)
-			return 0; // è¦ªã¨åŒæ™‚ã«æ­»ã‚“ã 
+			return 0; // e‚Æ“¯‚É€‚ñ‚¾
 	}
 
-	// ãƒªãƒ³ã‚¯ / ã‚¢ã‚¯ãƒ†ã‚£ãƒ´ / ãƒ«ãƒ¼ãƒˆãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®æ¤œç´¢
-	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ´åˆ¤å®š
+	// ƒŠƒ“ƒN / ƒAƒNƒeƒBƒ” / ƒ‹[ƒgƒ‚ƒ“ƒXƒ^[‚ÌŒŸõ
+	// ƒAƒNƒeƒBƒ””»’è
 	if( ((md->target_id < MAX_FLOORITEM && mode&MD_AGGRESSIVE) || md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
 		search_flag |= 1;
 	}
 
-	// ãƒ«ãƒ¼ãƒˆãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚µãƒ¼ãƒ
+	// ƒ‹[ƒgƒ‚ƒ“ƒXƒ^[‚ÌƒAƒCƒeƒ€ƒT[ƒ`
 	if( !md->target_id && mode&MD_ITEMLOOT && !md->state.master_check ) {
 		if( md->lootitem && (battle_config.monster_loot_type == 0 || md->lootitem_count < LOOTITEM_SIZE) ) {
 			search_flag |= 2;
 		}
 	}
 
-	// ãƒªãƒ³ã‚¯åˆ¤å®š
+	// ƒŠƒ“ƒN”»’è
 	if( md->target_id > 0 && mode&MD_FRIENDLINK && md->ud.attacktarget_lv > 0 ) {
 		struct map_session_data *asd = map_id2sd(md->target_id);
 		if(asd && asd->invincible_timer == -1 && !pc_isinvisible(asd)) {
@@ -995,47 +995,47 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		}
 	}
 
-	// æ¥è§¦åå¿œåˆ¤å®š
+	// ÚG”½‰”»’è
 	if( md->target_id > 0 && mode&MD_CHANGECHASE && (md->state.skillstate == MSS_CHASE || md->state.skillstate == MSS_FOLLOW) && !md->state.master_check && battle_config.monster_active_enable ) {
 		search_flag |= 8;
 	}
 
 	if( search_flag ) {
 		int count[4] = { 0, 0, 0, 0 };
-		// å°„ç¨‹ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–(12), ãƒ«ãƒ¼ãƒˆ(12), ãƒªãƒ³ã‚¯(12) ãªã®ã§ã€
-		// å‘¨å›²AREA_SIZEä»¥ä¸Šã®ç¯„å›²ã‚’è©®ç´¢ã™ã‚‹å¿…è¦ã¯ç„¡ã„
+		// Ë’ö‚ªƒAƒNƒeƒBƒu(12), ƒ‹[ƒg(12), ƒŠƒ“ƒN(12) ‚È‚Ì‚ÅA
+		// üˆÍAREA_SIZEˆÈã‚Ì”ÍˆÍ‚ğ‘Fõ‚·‚é•K—v‚Í–³‚¢
 		map_foreachinarea(mob_ai_sub_hard_search,md->bl.m,
 						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
 						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
 						  (BL_CHAR|BL_ITEM),md,count,search_flag);
-		search_flag = count[3] + 20; // ç¯„å›²å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ•°
+		search_flag = count[3] + 20; // ”ÍˆÍ“à‚ÌƒIƒuƒWƒFƒNƒg”
 	}
 
 	if( md->target_id <= 0 || (tbl = map_id2bl(md->target_id)) == NULL ||
 	    tbl->m != md->bl.m || tbl->prev == NULL ||
 	    (dist = path_distance(md->bl.x,md->bl.y,tbl->x,tbl->y)) >= md->min_chase )
 	{
-		// å¯¾è±¡ãŒå±…ãªã„ / ã©ã“ã‹ã«æ¶ˆãˆãŸ / è¦–ç•Œå¤–
+		// ‘ÎÛ‚ª‹‚È‚¢ / ‚Ç‚±‚©‚ÉÁ‚¦‚½ / ‹ŠEŠO
 		if(md->target_id > 0) {
 			mob_unlocktarget(md,tick);
 			if(md->ud.walktimer != -1)
-				unit_stop_walking(&md->bl,5);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+				unit_stop_walking(&md->bl,5);	// •às’†‚È‚ç’â~
 			return search_flag;
 		}
 	} else if(tbl->type & BL_CHAR) {
-		// å¯¾è±¡ãŒPCã€MOBã€HOMã‚‚ã—ãã¯MERC
+		// ‘ÎÛ‚ªPCAMOBAHOM‚à‚µ‚­‚ÍMERC
 		if(!mob_can_lock(md,tbl)) {
-			// ã‚¹ã‚­ãƒ«ãªã©ã«ã‚ˆã‚‹ç­–æ•µå¦¨å®³åˆ¤å®š
+			// ƒXƒLƒ‹‚È‚Ç‚É‚æ‚éô“G–WŠQ”»’è
 			mob_unlocktarget(md,tick);
 		} else if(!battle_check_range(&md->bl,tbl,mob_db[md->class_].range)) {
-			// æ”»æ’ƒç¯„å›²å¤–ãªã®ã§ç§»å‹•
-			if(!(mode&MD_CANMOVE)) {	// ç§»å‹•ã—ãªã„ãƒ¢ãƒ¼ãƒ‰
+			// UŒ‚”ÍˆÍŠO‚È‚Ì‚ÅˆÚ“®
+			if(!(mode&MD_CANMOVE)) {	// ˆÚ“®‚µ‚È‚¢ƒ‚[ƒh
 				mob_unlocktarget(md,tick);
 				mobskill_use(md,tick,-1);
 				return search_flag;
 			}
-			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) ) {	// å‹•ã‘ãªã„çŠ¶æ…‹ã«ã‚ã‚‹
-				// ã‚¢ãƒ³ã‚¯ãƒ«ã€èœ˜è››ã®å·£æ‹˜æŸä¸­ã¯å¼·åˆ¶å¾…æ©Ÿ
+			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) ) {	// “®‚¯‚È‚¢ó‘Ô‚É‚ ‚é
+				// ƒAƒ“ƒNƒ‹A’wå‚Ì‘ƒS‘©’†‚Í‹­§‘Ò‹@
 				if(md->sc.data && (md->sc.data[SC_ANKLE].timer != -1 || md->sc.data[SC_SPIDERWEB].timer != -1 ||
 				   md->sc.data[SC_ELECTRICSHOCKER].timer != -1 || md->sc.data[SC_MAGNETICFIELD].timer != -1 ||
 				   md->sc.data[SC_SITDOWN_FORCE].timer != -1 || md->sc.data[SC_FALLENEMPIRE].timer != -1 ||
@@ -1044,28 +1044,28 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 					mob_unlocktarget(md,tick);
 				if(md->sc.option&OPTION_HIDE)
 					mob_unlocktarget(md,tick);
-				if(DIFF_TICK(md->ud.canmove_tick,tick) <= 0)	// ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ‡ã‚£ãƒ¬ã‚¤ä¸­ã§ãªã„ãªã‚‰ã‚¹ã‚­ãƒ«ä½¿ç”¨
+				if(DIFF_TICK(md->ud.canmove_tick,tick) <= 0)	// ƒ_ƒ[ƒWƒfƒBƒŒƒC’†‚Å‚È‚¢‚È‚çƒXƒLƒ‹g—p
 					mobskill_use(md,tick,-1);
 				return search_flag;
 			}
-			md->state.skillstate = md->state.angry?MSS_FOLLOW:MSS_CHASE;	// çªæ’ƒæ™‚ã‚¹ã‚­ãƒ«
+			md->state.skillstate = md->state.angry?MSS_FOLLOW:MSS_CHASE;	// “ËŒ‚ƒXƒLƒ‹
 			mobskill_use(md,tick,-1);
 			if(md->ud.walktimer != -1 && path_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) < 2)
-				return search_flag; // æ—¢ã«ç§»å‹•ä¸­
+				return search_flag; // Šù‚ÉˆÚ“®’†
 			if( !mob_can_reach(md,tbl,(md->min_chase > 13)? md->min_chase: 13) ) {
-				mob_unlocktarget(md,tick);	// ç§»å‹•ã§ããªã„ã®ã§ã‚¿ã‚²è§£é™¤ï¼ˆIWã¨ã‹ï¼Ÿï¼‰
+				mob_unlocktarget(md,tick);	// ˆÚ“®‚Å‚«‚È‚¢‚Ì‚Åƒ^ƒQ‰ğœiIW‚Æ‚©Hj
 			} else {
-				// è¿½è·¡
+				// ’ÇÕ
 				int dx, dy, ret, i = 0;
 				do {
 					if(i == 0) {
-						// æœ€åˆã¯AEGISã¨åŒã˜æ–¹æ³•ã§æ¤œç´¢
+						// Å‰‚ÍAEGIS‚Æ“¯‚¶•û–@‚ÅŒŸõ
 						dx = tbl->x - md->bl.x;
 						dy = tbl->y - md->bl.y;
 						if(dx < 0) dx++; else if(dx > 0) dx--;
 						if(dy < 0) dy++; else if(dy > 0) dy--;
 					} else {
-						// ã ã‚ãªã‚‰Athenaå¼(ãƒ©ãƒ³ãƒ€ãƒ )
+						// ‚¾‚ß‚È‚çAthena®(ƒ‰ƒ“ƒ_ƒ€)
 						dx = tbl->x - md->bl.x + atn_rand()%3 - 1;
 						dy = tbl->y - md->bl.y + atn_rand()%3 - 1;
 					}
@@ -1073,19 +1073,19 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 					i++;
 				} while(ret == 0 && i < 5);
 
-				if(ret == 0) { // ç§»å‹•ä¸å¯èƒ½ãªæ‰€ã‹ã‚‰ã®æ”»æ’ƒãªã‚‰2æ­©ä¸‹ã‚‹
+				if(ret == 0) { // ˆÚ“®•s‰Â”\‚ÈŠ‚©‚ç‚ÌUŒ‚‚È‚ç2•à‰º‚é
 					if(dx < 0) dx = 2; else if(dx > 0) dx = -2;
 					if(dy < 0) dy = 2; else if(dy > 0) dy = -2;
 					unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
 				}
 			}
 		} else {
-			// æ”»æ’ƒå°„ç¨‹ç¯„å›²å†…
+			// UŒ‚Ë’ö”ÍˆÍ“à
 			if(md->ud.walktimer != -1)
-				unit_stop_walking(&md->bl,1);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+				unit_stop_walking(&md->bl,1);	// •às’†‚È‚ç’â~
 			if(md->ud.attacktimer != -1 || md->ud.canact_tick > tick)
-				return search_flag; // æ—¢ã«æ”»æ’ƒä¸­
-			if(battle_config.mob_attack_fixwalkpos)	// å¼·åˆ¶ä½ç½®è£œæ­£
+				return search_flag; // Šù‚ÉUŒ‚’†
+			if(battle_config.mob_attack_fixwalkpos)	// ‹­§ˆÊ’u•â³
 				clif_fixwalkpos(&md->bl);
 			unit_attack(&md->bl, md->target_id, attack_type);
 			md->state.skillstate = md->state.angry?MSS_ANGRY:MSS_ATTACK;
@@ -1093,27 +1093,27 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		return search_flag;
 	} else if(tbl->type == BL_ITEM && md->lootitem) {
 		if(dist > 0) {
-			// ã‚¢ã‚¤ãƒ†ãƒ ã¾ã§ç§»å‹•
-			if(!(mode&MD_CANMOVE)) {	// ç§»å‹•ä¸å¯ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼
+			// ƒAƒCƒeƒ€‚Ü‚ÅˆÚ“®
+			if(!(mode&MD_CANMOVE)) {	// ˆÚ“®•s‰Âƒ‚ƒ“ƒXƒ^[
 				mob_unlocktarget(md,tick);
 				return search_flag;
 			}
-			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) )	// å‹•ã‘ãªã„çŠ¶æ…‹ã«ã‚ã‚‹
+			if( !unit_can_move(&md->bl) || unit_isrunning(&md->bl) )	// “®‚¯‚È‚¢ó‘Ô‚É‚ ‚é
 				return search_flag;
-			md->state.skillstate = MSS_LOOT;	// ãƒ«ãƒ¼ãƒˆæ™‚ã‚¹ã‚­ãƒ«ä½¿ç”¨
+			md->state.skillstate = MSS_LOOT;	// ƒ‹[ƒgƒXƒLƒ‹g—p
 			mobskill_use(md,tick,-1);
 			if(md->ud.walktimer != -1 && path_distance(md->ud.to_x,md->ud.to_y,tbl->x,tbl->y) <= 0)
-				return search_flag; // æ—¢ã«ç§»å‹•ä¸­
+				return search_flag; // Šù‚ÉˆÚ“®’†
 			if( !unit_walktoxy(&md->bl,tbl->x,tbl->y) )
-				mob_unlocktarget(md,tick);// ç§»å‹•ã§ããªã„ã®ã§ã‚¿ã‚²è§£é™¤ï¼ˆIWã¨ã‹ï¼Ÿï¼‰
+				mob_unlocktarget(md,tick);// ˆÚ“®‚Å‚«‚È‚¢‚Ì‚Åƒ^ƒQ‰ğœiIW‚Æ‚©Hj
 		} else {
-			// ã‚¢ã‚¤ãƒ†ãƒ ã¾ã§ãŸã©ã‚Šç€ã„ãŸ
+			// ƒAƒCƒeƒ€‚Ü‚Å‚½‚Ç‚è’…‚¢‚½
 			struct flooritem_data *fitem;
 
 			if(md->ud.attacktimer != -1)
-				return search_flag; // æ”»æ’ƒä¸­
+				return search_flag; // UŒ‚’†
 			if(md->ud.walktimer != -1)
-				unit_stop_walking(&md->bl,1);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+				unit_stop_walking(&md->bl,1);	// •às’†‚È‚ç’â~
 			fitem = (struct flooritem_data *)tbl;
 			if(md->lootitem_count < LOOTITEM_SIZE) {
 				memcpy(&md->lootitem[md->lootitem_count++],&fitem->item_data,sizeof(md->lootitem[0]));
@@ -1137,7 +1137,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		}
 		return search_flag;
 	} else {
-		// æ”»æ’ƒå¯¾è±¡ä»¥å¤–ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒ†ã‚£ãƒ³ã‚°ã—ãŸï¼ˆãƒã‚°
+		// UŒ‚‘ÎÛˆÈŠO‚ğƒ^[ƒQƒbƒeƒBƒ“ƒO‚µ‚½iƒoƒO
 		if(battle_config.error_log) {
 			printf("mob_ai_sub_hard target type error (%d: %s type = 0x%03x) in %s (%d,%d)\n",
 				md->class_, mob_db[md->class_].jname, tbl->type, map[md->bl.m].name, md->bl.x, md->bl.y);
@@ -1145,39 +1145,39 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 		if(md->target_id > 0) {
 			mob_unlocktarget(md,tick);
 			if(md->ud.walktimer != -1)
-				unit_stop_walking(&md->bl,5);	// æ­©è¡Œä¸­ãªã‚‰åœæ­¢
+				unit_stop_walking(&md->bl,5);	// •às’†‚È‚ç’â~
 			return search_flag;
 		}
 	}
 
-	// å¾…æ©Ÿæ™‚ã‚¹ã‚­ãƒ«ä½¿ç”¨
+	// ‘Ò‹@ƒXƒLƒ‹g—p
 	if(md->state.skillstate == MSS_IDLE) {
-		if((md->mode&MD_ANGRY) && !md->state.angry)	// å¾…æ©Ÿæ™‚ã«ãƒã‚¤ãƒ‘ãƒ¼ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã¸æˆ»ã™
+		if((md->mode&MD_ANGRY) && !md->state.angry)	// ‘Ò‹@‚ÉƒnƒCƒp[ƒAƒNƒeƒBƒu‚Ö–ß‚·
 			md->state.angry = 1;
-		if(++md->idlecount%10 == 0) {		// 10å›ã«1åº¦ä½¿ç”¨åˆ¤å®š
+		if(++md->idlecount%10 == 0) {		// 10‰ñ‚É1“xg—p”»’è
 			md->idlecount = 0;
 			if( mobskill_use(md,tick,-1) ) {
 				return search_flag;
 			}
 		}
-	} else if( mobskill_use(md,tick,-1) ) {		// æ­©è¡Œæ™‚ã‚¹ã‚­ãƒ«ä½¿ç”¨
+	} else if( mobskill_use(md,tick,-1) ) {		// •àsƒXƒLƒ‹g—p
 		return search_flag;
 	}
 
-	// æ­©è¡Œå‡¦ç†
-	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&		// ç§»å‹•å¯èƒ½MOB&å‹•ã‘ã‚‹çŠ¶æ…‹ã«ã‚ã‚‹
-	    (md->master_id == 0 || md->state.special_mob_ai || md->master_dist > 10) )	// å–ã‚Šå·»ãMOBã˜ã‚ƒãªã„
+	// •àsˆ—
+	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&		// ˆÚ“®‰Â”\MOB&“®‚¯‚éó‘Ô‚É‚ ‚é
+	    (md->master_id == 0 || md->state.special_mob_ai || md->master_dist > 10) )	// æ‚èŠª‚«MOB‚¶‚á‚È‚¢
 	{
 		if( DIFF_TICK(md->next_walktime,tick) > 7000 && md->ud.walktimer == -1 ) {
 			md->next_walktime = tick + atn_rand()%2000 + 1000;
 		}
 
-		// ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•
+		// ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
 		if( mob_randomwalk(md,tick) )
 			return search_flag;
 	}
 
-	// æ­©ãçµ‚ã‚ã£ã¦ã‚‹ã®ã§å¾…æ©Ÿ
+	// •à‚«I‚í‚Á‚Ä‚é‚Ì‚Å‘Ò‹@
 	if( md->ud.walktimer == -1 )
 		md->state.skillstate = MSS_IDLE;
 
@@ -1185,24 +1185,24 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
- * ç­–æ•µãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ç”¨ã‚µãƒ–é–¢æ•°ç¾¤
- *     PCã®è¦–ç•Œå†…ã«ã„ã‚‹MOB ã®ä¸€è¦§ã‚’ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆã«ã‚ˆã£ã¦ä¿æŒã™ã‚‹
+ * ô“Gƒ‹[ƒeƒBƒ“—pƒTƒuŠÖ”ŒQ
+ *     PC‚Ì‹ŠE“à‚É‚¢‚éMOB ‚Ìˆê——‚ğƒŠƒ“ƒNƒŠƒXƒg‚É‚æ‚Á‚Ä•Û‚·‚é
  *------------------------------------------
  */
 static struct mob_data*  mob_ai_hard_head;
 static int               mob_ai_hard_count;
 static struct mob_data** mob_ai_hard_buf;
 static int               mob_ai_hard_max;
-// æœªå‡¦ç†IDä¸€æ™‚ä¿å­˜ç”¨
+// –¢ˆ—IDˆê•Û‘¶—p
 static int *             mob_ai_hard_next_id;
 static int               mob_ai_hard_next_max;
 static int               mob_ai_hard_next_count;
-// ãƒ¢ãƒ‹ã‚¿ãƒªãƒ³ã‚°ç”¨
-static int               mob_ai_hard_graph1; // å‡¦ç†å›æ•°
-static int               mob_ai_hard_graph2; // ã‚¿ã‚¤ãƒãƒ¼å‘¼ã³å‡ºã—å›æ•°
+// ƒ‚ƒjƒ^ƒŠƒ“ƒO—p
+static int               mob_ai_hard_graph1; // ˆ—‰ñ”
+static int               mob_ai_hard_graph2; // ƒ^ƒCƒ}[ŒÄ‚Ño‚µ‰ñ”
 
 /*==========================================
- * PCè¦–ç•Œå†…ã¸MOB ç§»å‹•
+ * PC‹ŠE“à‚ÖMOB ˆÚ“®
  *------------------------------------------
  */
 int mob_ai_hard_add(struct mob_data *md)
@@ -1212,10 +1212,10 @@ int mob_ai_hard_add(struct mob_data *md)
 	if( md->bl.prev == NULL )
 		return 0;
 	if( mob_ai_hard_head == NULL ) {
-		// å…ˆé ­ã«è¿½åŠ 
+		// æ“ª‚É’Ç‰Á
 		mob_ai_hard_head = md;
 	} else {
-		// ãƒªã‚¹ãƒˆé€£çµ
+		// ƒŠƒXƒg˜AŒ‹
 		md->ai_next = mob_ai_hard_head;
 		mob_ai_hard_head->ai_prev = md;
 		mob_ai_hard_head = md;
@@ -1225,7 +1225,7 @@ int mob_ai_hard_add(struct mob_data *md)
 }
 
 /*==========================================
- * PCè¦–ç•Œå¤–ã¸MOB ç§»å‹•
+ * PC‹ŠEŠO‚ÖMOB ˆÚ“®
  *------------------------------------------
  */
 int mob_ai_hard_del(struct mob_data *md)
@@ -1235,12 +1235,12 @@ int mob_ai_hard_del(struct mob_data *md)
 	if( md->bl.prev == NULL )
 		return 0;
 	if( mob_ai_hard_head == md ) {
-		// å…ˆé ­ã‹ã‚‰å‰Šé™¤
+		// æ“ª‚©‚çíœ
 		mob_ai_hard_head = md->ai_next;
 		if( mob_ai_hard_head )
 			mob_ai_hard_head->ai_prev = NULL;
 	} else {
-		// é€”ä¸­ã‹ã‚‰æŠœã‘ã‚‹
+		// “r’†‚©‚ç”²‚¯‚é
 		if( md->ai_prev ) md->ai_prev->ai_next = md->ai_next;
 		if( md->ai_next ) md->ai_next->ai_prev = md->ai_prev;
 	}
@@ -1255,7 +1255,7 @@ int mob_ai_hard_del(struct mob_data *md)
 }
 
 /*==========================================
- * PCè¦–ç•Œå†…ã¸ã®MOB ã®å‡ºå…¥ã‚Š(map_foreach*** ç³»çµ±ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°)
+ * PC‹ŠE“à‚Ö‚ÌMOB ‚Ìo“ü‚è(map_foreach*** Œn“‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”)
  *------------------------------------------
  */
 int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
@@ -1290,7 +1290,7 @@ int mob_ai_hard_spawn_sub(struct block_list *tbl, va_list ap)
 }
 
 /*==========================================
- * MOB ã¨PCã®å‡ºç¾ãƒ»æ¶ˆæ»…å‡¦ç†( flag = 0: æ¶ˆæ»…ã€1: å‡ºç¾ )
+ * MOB ‚ÆPC‚ÌoŒ»EÁ–Åˆ—( flag = 0: Á–ÅA1: oŒ» )
  *------------------------------------------
  */
 int mob_ai_hard_spawn( struct block_list *bl, int flag )
@@ -1308,7 +1308,7 @@ int mob_ai_hard_spawn( struct block_list *bl, int flag )
 }
 
 /*==========================================
- * PCè¦–ç•Œå†…ã®mobç”¨ã¾ã˜ã‚å‡¦ç† (interval timeré–¢æ•°)
+ * PC‹ŠE“à‚Ìmob—p‚Ü‚¶‚ßˆ— (interval timerŠÖ”)
  *------------------------------------------
  */
 static int mob_ai_hard_createlist(void)
@@ -1335,22 +1335,22 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 	unsigned int limit = MIN_MOBTHINKTIME * battle_config.mob_ai_cpu_usage / 100;
 
 	map_freeblock_lock();
-	mob_ai_hard_graph2++; // ã‚¿ã‚¤ãƒãƒ¼å‘¼ã³å‡ºã—å›æ•°
+	mob_ai_hard_graph2++; // ƒ^ƒCƒ}[ŒÄ‚Ño‚µ‰ñ”
 
 	if( battle_config.mob_ai_limiter == 0 ) {
-		// ãƒªãƒŸãƒƒã‚¿ãƒ¼ç„¡ã—
+		// ƒŠƒ~ƒbƒ^[–³‚µ
 		int i;
 		int max = mob_ai_hard_createlist();
 
 		for(i = 0; i < max; i++) {
 			mob_ai_sub_hard(mob_ai_hard_buf[i], tick);
 		}
-		mob_ai_hard_graph1++; // å‡¦ç†æ¸ˆã¿æ•°
-	} else if( gettick() - tick <= limit ) { // å‡¦ç†æ™‚é–“ã«ä½™è£•ãŒã‚ã‚‹ã‹åˆ¤å®š
-		// ãƒªãƒŸãƒƒã‚¿ãƒ¼æœ‰ã‚Š
+		mob_ai_hard_graph1++; // ˆ—Ï‚İ”
+	} else if( gettick() - tick <= limit ) { // ˆ—ŠÔ‚É—]—T‚ª‚ ‚é‚©”»’è
+		// ƒŠƒ~ƒbƒ^[—L‚è
 		int j = 0;
 
-		// å‰å›ã®ã‚„ã‚Šæ®‹ã—ã®å‡¦ç†
+		// ‘O‰ñ‚Ì‚â‚èc‚µ‚Ìˆ—
 		while( mob_ai_hard_next_count > 0 ) {
 			struct mob_data *md = map_id2md( mob_ai_hard_next_id[--mob_ai_hard_next_count] );
 			if(md == NULL || md->bl.prev == NULL)
@@ -1362,12 +1362,12 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 					break;
 			}
 		}
-		// ã‚„ã‚Šæ®‹ã—ã®å‡¦ç†ã‚’çµ‚ãˆãŸã®ã§ã€å‡¦ç†ç”¨ãƒªã‚¹ãƒˆã‚’è£œå¡«ã™ã‚‹
+		// ‚â‚èc‚µ‚Ìˆ—‚ğI‚¦‚½‚Ì‚ÅAˆ——pƒŠƒXƒg‚ğ•â“U‚·‚é
 		if( mob_ai_hard_next_count == 0 ) {
 			int i;
 			int max = mob_ai_hard_createlist();
 
-			mob_ai_hard_graph1++; // å‡¦ç†æ¸ˆã¿æ•°
+			mob_ai_hard_graph1++; // ˆ—Ï‚İ”
 			for(i = 0; i < max; i++) {
 				j += mob_ai_sub_hard(mob_ai_hard_buf[i], tick) + 5;
 				if( j > 10000 ) {
@@ -1377,7 +1377,7 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 				}
 			}
 			if( i != max ) {
-				// ã‚„ã‚Šæ®‹ã—ãŸIDã‚’ä¿å­˜ã™ã‚‹
+				// ‚â‚èc‚µ‚½ID‚ğ•Û‘¶‚·‚é
 				int k;
 				mob_ai_hard_next_count = max - i;
 				if( mob_ai_hard_next_count >= mob_ai_hard_next_max ) {
@@ -1395,7 +1395,7 @@ static int mob_ai_hard(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * mob ã®ãƒ¢ãƒ‹ã‚¿ãƒªãƒ³ã‚°
+ * mob ‚Ìƒ‚ƒjƒ^ƒŠƒ“ƒO
  *------------------------------------------
  */
 double mob_ai_hard_sensor(void)
@@ -1411,7 +1411,7 @@ double mob_ai_hard_sensor(void)
 }
 
 /*==========================================
- * æ‰‹æŠœããƒ¢ãƒ¼ãƒ‰MOB AIï¼ˆè¿‘ãã«PCãŒã„ãªã„ï¼‰
+ * è”²‚«ƒ‚[ƒhMOB AIi‹ß‚­‚ÉPC‚ª‚¢‚È‚¢j
  *------------------------------------------
  */
 static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
@@ -1426,7 +1426,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 		return 0;
 	if((md = (struct mob_data *)bl) == NULL)
 		return 0;
-	if(md->ai_pc_count > 0)		// PCã®è¿‘ãã«ã„ã‚‹ã®ã§æ‰‹æŠœãå‡¦ç†ã¯ã—ãªã„
+	if(md->ai_pc_count > 0)		// PC‚Ì‹ß‚­‚É‚¢‚é‚Ì‚Åè”²‚«ˆ—‚Í‚µ‚È‚¢
 		return 0;
 
 	tick = va_arg(ap,unsigned int);
@@ -1444,7 +1444,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 		return 0;
 	}
 
-	// å–ã‚Šå·»ããƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®å‡¦ç†ï¼ˆå‘¼ã³æˆ»ã—ã•ã‚ŒãŸæ™‚ï¼‰
+	// æ‚èŠª‚«ƒ‚ƒ“ƒXƒ^[‚Ìˆ—iŒÄ‚Ñ–ß‚µ‚³‚ê‚½j
 	if( md->master_id > 0 && md->state.special_mob_ai == 0 ) {
 		struct mob_data *mmd = map_id2md(md->master_id);
 
@@ -1458,19 +1458,19 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 	{
 		int mode = mob_db[md->class_].mode;
 		if( map[md->bl.m].users > 0 ) {
-			// åŒã˜ãƒãƒƒãƒ—ã«PC, HOM, MERCãŒã„ã‚‹ã®ã§ã€å°‘ã—ã¾ã—ãªæ‰‹æŠœãå‡¦ç†ã‚’ã™ã‚‹
+			// “¯‚¶ƒ}ƒbƒv‚ÉPC, HOM, MERC‚ª‚¢‚é‚Ì‚ÅA­‚µ‚Ü‚µ‚Èè”²‚«ˆ—‚ğ‚·‚é
 
 			if( (mode&MD_CANMOVE) && atn_rand()%1000 < MOB_LAZYMOVEPERC ) {
-				// æ™‚ã€…ç§»å‹•ã™ã‚‹
+				// XˆÚ“®‚·‚é
 				mob_randomwalk(md,tick);
 			}
 			else if( MOB_LAZYSKILLUSEPERC > 0 && atn_rand()%1000 < MOB_LAZYSKILLUSEPERC ) {
-				// æ™‚ã€…ã‚¹ã‚­ãƒ«ã‚’ä½¿ã†
+				// XƒXƒLƒ‹‚ğg‚¤
 				mobskill_use(md,tick,-1);
 			}
 		} else {
-			// åŒã˜ãƒãƒƒãƒ—ã«ã™ã‚‰PCãŒã„ãªã„ã®ã§ã€ã¨ã£ã¦ã‚‚é©å½“ãªå‡¦ç†ã‚’ã™ã‚‹
-			// å¬å–šMOBã§ãªã„ã€BOSSã§ã‚‚ãªã„MOBã¯å ´åˆã€æ™‚ã€…ãƒ¯ãƒ¼ãƒ—ã™ã‚‹
+			// “¯‚¶ƒ}ƒbƒv‚É‚·‚çPC‚ª‚¢‚È‚¢‚Ì‚ÅA‚Æ‚Á‚Ä‚à“K“–‚Èˆ—‚ğ‚·‚é
+			// ¢Š«MOB‚Å‚È‚¢ABOSS‚Å‚à‚È‚¢MOB‚Íê‡AXƒ[ƒv‚·‚é
 			if( (mode&MD_CANMOVE) && !(mode & MD_BOSS) && atn_rand()%1000 < MOB_LAZYWARPPERC && md->x0 <= 0 && !md->master_id && mob_db[md->class_].mexp <= 0 ) {
 				mob_warp(md,-1,-1,-1,-1);
 			}
@@ -1481,7 +1481,7 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 }
 
 /*==========================================
- * PCè¦–ç•Œå¤–ã®mobç”¨æ‰‹æŠœãå‡¦ç† (interval timeré–¢æ•°)
+ * PC‹ŠEŠO‚Ìmob—pè”²‚«ˆ— (interval timerŠÖ”)
  *------------------------------------------
  */
 static int mob_ai_lazy(int tid,unsigned int tick,int id,void *data)
@@ -1492,7 +1492,7 @@ static int mob_ai_lazy(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * delayä»˜ãitem drop (timeré–¢æ•°)
+ * delay•t‚«item drop (timerŠÖ”)
  *------------------------------------------
  */
 static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
@@ -1521,7 +1521,7 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 			if((flag = party_loot_share(p, sd, &temp_item, sd->bl.id)) != 0) {
 				clif_additem(sd,0,0,flag);
 			} else {
-				// å–å¾—æˆåŠŸ
+				// æ“¾¬Œ÷
 				aFree(ditem);
 				return 0;
 			}
@@ -1538,7 +1538,7 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 }
 
 /*==========================================
- * delayä»˜ãitem drop (timeré–¢æ•°) - lootitem
+ * delay•t‚«item drop (timerŠÖ”) - lootitem
  *------------------------------------------
  */
 static int mob_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
@@ -1547,7 +1547,7 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 
 	nullpo_retr(0, ditem = (struct delay_item_drop2 *)data);
 
-	// ãƒšãƒƒãƒˆã®åµãªã‚‰ãƒ‰ãƒ­ãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¤ã‚­ãƒ¥ãƒ¼ã‹ã‚‰popã™ã‚‹
+	// ƒyƒbƒg‚Ì—‘‚È‚çƒhƒƒbƒvƒfƒBƒŒƒCƒLƒ…[‚©‚çpop‚·‚é
 	if(ditem->item_data.card[0] == (short)0xff00) {
 		struct delay_item_drop2 *p = map_pop_delayitem_que();
 		if(p != ditem)
@@ -1566,7 +1566,7 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 			if((flag = party_loot_share(p, sd, &ditem->item_data, sd->bl.id)) != 0) {
 				clif_additem(sd,0,0,flag);
 			} else {
-				// å–å¾—æˆåŠŸ
+				// æ“¾¬Œ÷
 				aFree(ditem);
 				return 0;
 			}
@@ -1668,12 +1668,12 @@ static int mob_hpinfo(struct block_list *bl, va_list ap)
 	if(sd == NULL)
 		return 0;
 
-	if(linkdb_exists( &md->dmglog, INT2PTR(-bl->id) )) {	// æ”»æ’ƒã—ãŸãƒ›ãƒ ãƒ»å‚­å…µãƒ»ç²¾éœŠ
-		if(!linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// ä¸»äººãŒéå…±é—˜ãªã‚‰ä»£ã‚ã‚Šã«HPæƒ…å ±ã‚’æ›´æ–°
+	if(linkdb_exists( &md->dmglog, INT2PTR(-bl->id) )) {	// UŒ‚‚µ‚½ƒzƒ€E—b•ºE¸—ì
+		if(!linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// ål‚ª”ñ‹¤“¬‚È‚ç‘ã‚í‚è‚ÉHPî•ñ‚ğXV
 			clif_monster_hpinfo(sd, md);
 		}
 	}
-	else if(linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// æ”»æ’ƒã—ãŸãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã€ãƒ›ãƒ ãƒ»å‚­å…µãƒ»ç²¾éœŠã®ä¸»äºº
+	else if(linkdb_exists( &md->dmglog, INT2PTR(sd->status.char_id) )) {	// UŒ‚‚µ‚½ƒvƒŒƒCƒ„[Aƒzƒ€E—b•ºE¸—ì‚Ìål
 		clif_monster_hpinfo(sd, md);
 	}
 
@@ -1681,7 +1681,7 @@ static int mob_hpinfo(struct block_list *bl, va_list ap)
 }
 
 /*==========================================
- * mdã«damageã®ãƒ€ãƒ¡ãƒ¼ã‚¸
+ * md‚Édamage‚Ìƒ_ƒ[ƒW
  *------------------------------------------
  */
 int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
@@ -1689,7 +1689,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 	int max_hp;
 	unsigned int tick = gettick();
 
-	nullpo_retr(0, md);	// srcã¯NULLã§å‘¼ã°ã‚Œã‚‹å ´åˆã‚‚ã‚ã‚‹ã®ã§ã€ä»–ã§ãƒã‚§ãƒƒã‚¯
+	nullpo_retr(0, md);	// src‚ÍNULL‚ÅŒÄ‚Î‚ê‚éê‡‚à‚ ‚é‚Ì‚ÅA‘¼‚Åƒ`ƒFƒbƒN
 
 	if(md->bl.prev == NULL) {
 		if(battle_config.error_log)
@@ -1699,7 +1699,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 
 	if(md->hp <= 0) {
 		if(md->bl.prev != NULL) {
-			mobskill_use(md,tick,-1);	// æ­»äº¡æ™‚ã‚¹ã‚­ãƒ«
+			mobskill_use(md,tick,-1);	// €–SƒXƒLƒ‹
 			unit_remove_map(&md->bl,1,0);
 		}
 		return 0;
@@ -1720,7 +1720,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 	if(md->hp > max_hp)
 		md->hp = max_hp;
 
-	// over killåˆ†ã¯ä¸¸ã‚ã‚‹
+	// over kill•ª‚ÍŠÛ‚ß‚é
 	if(damage > md->hp)
 		damage = md->hp;
 
@@ -1729,7 +1729,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		int damage2 = 0;
 		int id = 0;
 
-		// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆãŸäººã¨å€‹äººç´¯è¨ˆãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¿å­˜(Expè¨ˆç®—ç”¨)
+		// ƒ_ƒ[ƒW‚ğ—^‚¦‚½l‚ÆŒÂl—İŒvƒ_ƒ[ƒW‚ğ•Û‘¶(ExpŒvZ—p)
 		if(src->type == BL_PC) {
 			struct map_session_data *src_sd = (struct map_session_data *)src;
 			if(src_sd)
@@ -1752,7 +1752,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			if(src_md && src_md->state.special_mob_ai)
 			{
 				struct map_session_data *msd = map_id2sd(src_md->master_id);
-				// msdãŒNULLã®ã¨ãã¯ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ­ã‚°ã«è¨˜éŒ²ã—ãªã„
+				// msd‚ªNULL‚Ì‚Æ‚«‚Íƒ_ƒ[ƒWƒƒO‚É‹L˜^‚µ‚È‚¢
 				if(msd) {
 					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(msd->status.char_id) ));
 					linkdb_replace( &md->dmglog, INT2PTR(msd->status.char_id), INT2PTR(damage2) );
@@ -1760,27 +1760,27 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 				}
 			}
 		} else if(src->type & (BL_HOM | BL_MERC | BL_ELEM)) {
-			// ãƒ›ãƒ ãƒ»å‚­å…µãƒ»ç²¾éœŠã®å ´åˆã¯IDã‚’è² ã«åè»¢ã™ã‚‹
+			// ƒzƒ€E—b•ºE¸—ì‚Ìê‡‚ÍID‚ğ•‰‚É”½“]‚·‚é
 			damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
 			linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
 			id = src->id;
 		}
 
-		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®å¤‰æ›´
+		// ƒ^[ƒQƒbƒg‚Ì•ÏX
 		if( md->attacked_id <= 0 && md->state.special_mob_ai == 0 && id > 0 && atn_rand()%1000 < 1000 / (++md->attacked_players) )
 			md->attacked_id = id;
 	}
 
 	md->hp -= damage;
 
-	// ãƒã‚¤ãƒ‰çŠ¶æ…‹ã‚’è§£é™¤
+	// ƒnƒCƒhó‘Ô‚ğ‰ğœ
 	status_change_hidden_end(&md->bl);
 
-	if(md->state.special_mob_ai == 2) {	// ã‚¹ãƒ•ã‚£ã‚¢ãƒ¼ãƒã‚¤ãƒ³
+	if(md->state.special_mob_ai == 2) {	// ƒXƒtƒBƒA[ƒ}ƒCƒ“
 		int skillidx = mob_skillid2skillidx(md->class_,NPC_SELFDESTRUCTION2);
-		// è‡ªçˆ†è© å”±é–‹å§‹
+		// ©”š‰r¥ŠJn
 		if(skillidx >= 0 && mobskill_use_id(md,&md->bl,skillidx)) {
-			// ç™ºå‹•ã—ãŸè‡ªçˆ†ã«ã‚ˆã£ã¦æ—¢ã«æ¶ˆæ»…ã—ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§å¿…ãšãƒã‚§ãƒƒã‚¯ã™ã‚‹
+			// ”­“®‚µ‚½©”š‚É‚æ‚Á‚ÄŠù‚ÉÁ–Å‚µ‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚Ì‚Å•K‚¸ƒ`ƒFƒbƒN‚·‚é
 			if(md && md->hp > 0 && md->bl.prev != NULL) {
 				md->dir = path_calc_dir(src,md->bl.x,md->bl.y);
 				md->mode |= MD_CANMOVE;
@@ -1792,7 +1792,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 	}
 
 	if(md->hp <= 0) {
-		// æ­»äº¡å‡¦ç†
+		// €–Sˆ—
 		map_freeblock_lock();
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
@@ -1806,7 +1806,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 }
 
 /*==========================================
- * mdã®æ­»äº¡å‡¦ç†
+ * md‚Ì€–Sˆ—
  *------------------------------------------
  */
 static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned int tick)
@@ -1830,10 +1830,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		int dmg;
 	} mvp[3];
 
-	nullpo_retr(0, md);	// srcã¯NULLã§å‘¼ã°ã‚Œã‚‹å ´åˆã‚‚ã‚ã‚‹ã®ã§ã€ä»–ã§ãƒã‚§ãƒƒã‚¯
+	nullpo_retr(0, md);	// src‚ÍNULL‚ÅŒÄ‚Î‚ê‚éê‡‚à‚ ‚é‚Ì‚ÅA‘¼‚Åƒ`ƒFƒbƒN
 
 	if(src) {
-		// ã‚³ãƒãƒ³ãƒ‰ã‚„ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§ã®æ­»äº¡ã§ãªã„ãªã‚‰ã‚¹ã‚­ãƒ«ä½¿ç”¨
+		// ƒRƒ}ƒ“ƒh‚âƒXƒNƒŠƒvƒg‚Å‚Ì€–S‚Å‚È‚¢‚È‚çƒXƒLƒ‹g—p
 		md->hp = 1;
 		md->state.skillstate = MSS_DEAD;
 		mobskill_use(md,tick,-1);
@@ -1855,7 +1855,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		int hp = 0,sp = 0;
 		int race_id = status_get_race(&md->bl);
 
-		// ã‚«ãƒ¼ãƒ‰ã«ã‚ˆã‚‹æ­»äº¡æ™‚HPSPå¸åå‡¦ç†
+		// ƒJ[ƒh‚É‚æ‚é€–SHPSP‹zûˆ—
 		sp += sd->sp_gain_value;
 		hp += sd->hp_gain_value;
 		if(atn_rand()%100 < sd->hp_drain_rate_race[race_id])
@@ -1867,11 +1867,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(hp || sp)
 			pc_heal(sd,hp,sp);
 
-		// å‚­å…µã®ã‚­ãƒ«ã‚«ã‚¦ãƒ³ãƒˆå¢—åŠ 
+		// —b•º‚ÌƒLƒ‹ƒJƒEƒ“ƒg‘‰Á
 		if(sd->mcd)
 			merc_killcount(sd->mcd, mob_db[md->class_].lv);
 
-		// ã‚¯ã‚¨ã‚¹ãƒˆãƒªã‚¹ãƒˆè¨ä¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
+		// ƒNƒGƒXƒgƒŠƒXƒg“¢”°ƒ^[ƒQƒbƒg
 		if(quest_search_mobid(md->class_)) {
 			if(sd->status.party_id)
 				map_foreachinarea(quest_killcount_sub,src->m,
@@ -1882,7 +1882,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				quest_killcount(sd, md->class_);
 		}
 
-		// ãƒ†ã‚³ãƒ³ãƒŸãƒƒã‚·ãƒ§ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
+		// ƒeƒRƒ“ƒ~ƒbƒVƒ‡ƒ“ƒ^[ƒQƒbƒg
 		if(sd->status.class_ == PC_CLASS_TK && md->class_ == sd->tk_mission_target) {
 			ranking_gain_point(sd,RK_TAEKWON,1);
 			ranking_setglobalreg(sd,RK_TAEKWON);
@@ -1894,7 +1894,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					sd->tk_mission_target = mobdb_searchrandomid(1,sd->status.base_level);
 					if(mob_db[sd->tk_mission_target].max_hp <= 0)
 						continue;
-					if(mob_db[sd->tk_mission_target].mode & MD_BOSS)	// ãƒœã‚¹å±æ€§é™¤å¤–
+					if(mob_db[sd->tk_mission_target].mode & MD_BOSS)	// ƒ{ƒX‘®«œŠO
 						continue;
 					break;
 				}
@@ -1904,12 +1904,12 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				clif_mission_mob(sd,sd->tk_mission_target,0);
 			}
 		}
-	} else if(mcd) {	// å‚­å…µã®ã‚­ãƒ«ã‚«ã‚¦ãƒ³ãƒˆå¢—åŠ ï¼ˆå‚­å…µè‡ªèº«ãŒå€’ã—ãŸã¨ãï¼‰
+	} else if(mcd) {	// —b•º‚ÌƒLƒ‹ƒJƒEƒ“ƒg‘‰Ái—b•º©g‚ª“|‚µ‚½‚Æ‚«j
 		merc_killcount(mcd, mob_db[md->class_].lv);
 	}
 
-	// mapå¤–ã«æ¶ˆãˆãŸäººã¯è¨ˆç®—ã‹ã‚‰é™¤ãã®ã§
-	// overkillåˆ†ã¯ç„¡ã„ã‘ã©sumã¯max_hpã¨ã¯é•ã†
+	// mapŠO‚ÉÁ‚¦‚½l‚ÍŒvZ‚©‚çœ‚­‚Ì‚Å
+	// overkill•ª‚Í–³‚¢‚¯‚Çsum‚Ímax_hp‚Æ‚Íˆá‚¤
 	i    = 0;
 	node = md->dmglog;
 	while( node ) {
@@ -1930,7 +1930,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(tmpsd)
 				tmpbl[i] = &tmpsd->bl;
 		} else {
-			tmpbl[i] = map_id2bl(-id);	// ãƒ›ãƒ ãƒ»å‚­å…µãƒ»ç²¾éœŠã®å ´åˆã¯IDãŒè² ã«åè»¢ã•ã‚Œã¦ã„ã‚‹
+			tmpbl[i] = map_id2bl(-id);	// ƒzƒ€E—b•ºE¸—ì‚Ìê‡‚ÍID‚ª•‰‚É”½“]‚³‚ê‚Ä‚¢‚é
 		}
 		if( !tmpbl[i] || !(tmpbl[i]->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM)) ) {
 			tmpbl[i] = NULL;
@@ -1941,24 +1941,24 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			continue;
 
 		damage = PTR2INT(node->data);
-		tdmg += damage;	// ãƒˆãƒ¼ã‚¿ãƒ«ãƒ€ãƒ¡ãƒ¼ã‚¸
+		tdmg += damage;	// ƒg[ƒ^ƒ‹ƒ_ƒ[ƒW
 
 		if(mvp_damage < damage) {
 			if( mvp[0].bl == NULL || damage > mvp[0].dmg ) {
-				// ä¸€ç•ªå¤§ãã„ãƒ€ãƒ¡ãƒ¼ã‚¸
+				// ˆê”Ô‘å‚«‚¢ƒ_ƒ[ƒW
 				mvp[2] = mvp[1];
 				mvp[1] = mvp[0];
 				mvp[0].bl  = tmpbl[i];
 				mvp[0].dmg = damage;
 				mvp_damage = (mvp[2].bl == NULL) ? 0 : mvp[2].dmg;
 			} else if( mvp[1].bl == NULL || damage > mvp[1].dmg ) {
-				// ï¼’ç•ªç›®ã«å¤§ãã„ãƒ€ãƒ¡ãƒ¼ã‚¸
+				// ‚Q”Ô–Ú‚É‘å‚«‚¢ƒ_ƒ[ƒW
 				mvp[2]     = mvp[1];
 				mvp[1].bl  = tmpbl[i];
 				mvp[1].dmg = damage;
 				mvp_damage = (mvp[2].bl == NULL) ? 0 : mvp[2].dmg;
 			} else {
-				// ï¼“ç•ªç›®ã«å¤§ãã„ãƒ€ãƒ¡ãƒ¼ã‚¸
+				// ‚R”Ô–Ú‚É‘å‚«‚¢ƒ_ƒ[ƒW
 				mvp[2].bl  = tmpbl[i];
 				mvp[2].dmg = damage;
 				mvp_damage = damage;
@@ -1966,7 +1966,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		}
 	}
 
-	// çµŒé¨“å€¤ã®åˆ†é…
+	// ŒoŒ±’l‚Ì•ª”z
 	if(!md->state.noexp && tdmg > 0)
 	{
 		int pnum = 0;
@@ -1986,11 +1986,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(battle_config.joint_struggle_limit && per > battle_config.joint_struggle_limit)
 			per = battle_config.joint_struggle_limit;
 
-		// ç¥ç¦
+		// j•Ÿ
 		if(sd) {
-			if (sd->sc.data[SC_MIRACLE].timer != -1) { // å¤ªé™½ã¨æœˆã¨æ˜Ÿã®å¥‡è·¡
+			if (sd->sc.data[SC_MIRACLE].timer != -1) { // ‘¾—z‚ÆŒ‚Æ¯‚ÌŠïÕ
 				tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
-			} else {                                  // å¤ªé™½ã®ç¥ç¦ã€æœˆã®ç¥ç¦ã€æ˜Ÿã®ç¥ç¦
+			} else {                                  // ‘¾—z‚Ìj•ŸAŒ‚Ìj•ŸA¯‚Ìj•Ÿ
 				if ((battle_config.allow_skill_without_day || is_day_of_sun()) && md->class_ == sd->hate_mob[0])
 					tk_exp_rate = 10 * pc_checkskill(sd, SG_SUN_BLESS);
 				else if ((battle_config.allow_skill_without_day || is_day_of_moon()) && md->class_ == sd->hate_mob[1])
@@ -2054,13 +2054,13 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if( !tmpsd )
 				continue;
 
-			if((pid = tmpsd->status.party_id) > 0) {	// ãƒ‘ãƒ¼ãƒ†ã‚£ã«å…¥ã£ã¦ã„ã‚‹
+			if((pid = tmpsd->status.party_id) > 0) {	// ƒp[ƒeƒB‚É“ü‚Á‚Ä‚¢‚é
 				int j;
-				for(j = 0; j < pnum; j++) {	// å…¬å¹³ãƒ‘ãƒ¼ãƒ†ã‚£ãƒªã‚¹ãƒˆã«ã„ã‚‹ã‹ã©ã†ã‹
+				for(j = 0; j < pnum; j++) {	// Œö•½ƒp[ƒeƒBƒŠƒXƒg‚É‚¢‚é‚©‚Ç‚¤‚©
 					if(pt[j].id == pid)
 						break;
 				}
-				if(j >= pnum) {	// ã„ãªã„ã¨ãã¯å…¬å¹³ã‹ã©ã†ã‹ç¢ºèª
+				if(j >= pnum) {	// ‚¢‚È‚¢‚Æ‚«‚ÍŒö•½‚©‚Ç‚¤‚©Šm”F
 					struct party *p = party_search(pid);
 					if(p && p->exp != 0) {
 						pt[pnum].id       = pid;
@@ -2070,20 +2070,20 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 						pnum++;
 						continue;
 					}
-				} else {	// ã„ã‚‹ã¨ãã¯å…¬å¹³
+				} else {	// ‚¢‚é‚Æ‚«‚ÍŒö•½
 					pt[j].base_exp += base_exp;
 					pt[j].job_exp  += job_exp;
 					continue;
 				}
 			}
-			if(base_exp > 0 || job_exp > 0)	// å„è‡ªå–å¾—
+			if(base_exp > 0 || job_exp > 0)	// Še©æ“¾
 			{
-				if( (tmpsd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// æ­»ã‚“ã ãµã‚Šã—ã¦ã„ãªã„
-				    (tmpsd->sc.data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ãƒã‚¤ãƒ‰ã—ã¦ã„ãªã„
+				if( (tmpsd->sc.data[SC_TRICKDEAD].timer == -1 || !battle_config.noexp_trickdead) && 	// €‚ñ‚¾‚Ó‚è‚µ‚Ä‚¢‚È‚¢
+				    (tmpsd->sc.data[SC_HIDING].timer == -1    || !battle_config.noexp_hiding) )		// ƒnƒCƒh‚µ‚Ä‚¢‚È‚¢
 					pc_gainexp(tmpsd, md, base_exp, job_exp, 0);
 			}
 		}
-		// å…¬å¹³åˆ†é…
+		// Œö•½•ª”z
 		for(i = 0; i < pnum; i++)
 			party_exp_share(pt[i].p, md, pt[i].base_exp, pt[i].job_exp);
 	}
@@ -2162,7 +2162,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			if(sd->get_zeny_num2 > 0 && atn_rand()%100 < sd->get_zeny_num2)
 				pc_getzeny(sd,mob_db[md->class_].lv*10);
 		}
-		// é‰±çŸ³ç™ºè¦‹å‡¦ç†
+		// zÎ”­Œ©ˆ—
 		if(sd && mvp[0].bl && (&sd->bl == mvp[0].bl) && pc_checkskill(sd, BS_FINDINGORE) > 0) {
 			int rate = battle_config.finding_ore_drop_rate * battle_config.item_rate / 100;
 
@@ -2199,7 +2199,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->next      = NULL;
 
 				if(ditem->item_data.card[0] == (short)0xff00) {
-					// ãƒšãƒƒãƒˆã®åµã¯ãƒ‰ãƒ­ãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¤ã‚­ãƒ¥ãƒ¼ã«ä¿å­˜ã™ã‚‹
+					// ƒyƒbƒg‚Ì—‘‚ÍƒhƒƒbƒvƒfƒBƒŒƒCƒLƒ…[‚É•Û‘¶‚·‚é
 					map_push_delayitem_que(ditem);
 					add_timer(tick+540,mob_delay_item_drop2,0,ditem);
 				} else {
@@ -2210,11 +2210,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		}
 	}
 
-	// mvpå‡¦ç†
+	// mvpˆ—
 	if(mvp[0].bl && mob_db[md->class_].mexp > 0 && !md->state.nomvp) {
 		struct map_session_data *mvpsd = map_bl2msd(mvp[0].bl);
 
-		// ãƒ›ãƒ ãƒ»å‚­å…µãƒ»ç²¾éœŠãŒå–ã£ãŸMVPã¯ä¸»äººã¸
+		// ƒzƒ€E—b•ºE¸—ì‚ªæ‚Á‚½MVP‚Íål‚Ö
 		if( mvpsd ) {
 			int j,ret;
 			struct item item;
@@ -2223,16 +2223,16 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			   (battle_config.mvp_announce == 2 && !(md->spawndelay1 == -1 && md->spawndelay2 == -1)))
 			{
 				char output[256];
-				// "ã€MVPæƒ…å ±ã€‘%sã•ã‚“ãŒ%sã‚’å€’ã—ã¾ã—ãŸï¼"
+				// "yMVPî•ñz%s‚³‚ñ‚ª%s‚ğ“|‚µ‚Ü‚µ‚½I"
 				snprintf(output, sizeof output, msg_txt(134), mvpsd->status.name, mob_db[md->class_].jname);
 				clif_GMmessage(&mvpsd->bl,output,strlen(output)+1,0x10);
 			}
-			clif_mvp_effect(mvp[0].bl);	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+			clif_mvp_effect(mvp[0].bl);	// ƒGƒtƒFƒNƒg
 
 			if(mob_db[md->class_].mexpper > atn_rand()%10000) {
 				atn_bignumber mexp = (atn_bignumber)mob_db[md->class_].mexp * battle_config.mvp_exp_rate * (9+count)/1000;
 
-				// ãƒ›ãƒ ã‚„å‚­å…µã‹ã‚‰ã‚‚ã‚‰ã†MVPçµŒé¨“å€¤ã«ã‚‚å€ç‡ã‚’é©ç”¨ã™ã‚‹
+				// ƒzƒ€‚â—b•º‚©‚ç‚à‚ç‚¤MVPŒoŒ±’l‚É‚à”{—¦‚ğ“K—p‚·‚é
 				if(mvp[0].bl->type == BL_HOM)
 					mexp = mexp * battle_config.master_get_homun_base_exp / 100;
 				else if(mvp[0].bl->type == BL_MERC)
@@ -2281,7 +2281,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	}
 
 	if(md->state.rebirth || (md->sc.data[SC_REBIRTH].timer == -1 && !md->state.rebirth)) {
-		// ã‚¬ãƒ¼ãƒ‡ã‚£ã‚¢ãƒ³ã ã£ãŸã‚‰ã‚¢ã‚¸ãƒˆæƒ…å ±ã‹ã‚‰å‰Šé™¤
+		// ƒK[ƒfƒBƒAƒ“‚¾‚Á‚½‚çƒAƒWƒgî•ñ‚©‚çíœ
 		if(md->guild_id) {
 			struct guild_castle *gc = guild_mapid2gc(md->bl.m);
 			if(gc) {
@@ -2305,7 +2305,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			}
 		}
 
-		// SCRIPTå®Ÿè¡Œ
+		// SCRIPTÀs
 		if(md->npc_event[0]) {
 			struct map_session_data *ssd = map_bl2msd(src);
 
@@ -2329,7 +2329,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(md->sc.data[SC_REBIRTH].timer != -1 && !md->state.rebirth) {
 			mob_rebirth(md, tick);
 		} else {
-			// ã‚¹ã‚­ãƒ«ãƒ¦ãƒ‹ãƒƒãƒˆã‹ã‚‰ã®é›¢è„±ã‚’å…ˆã«æ¸ˆã¾ã›ã¦ãŠã
+			// ƒXƒLƒ‹ƒ†ƒjƒbƒg‚©‚ç‚Ì—£’E‚ğæ‚ÉÏ‚Ü‚¹‚Ä‚¨‚­
 			md->hp = 1;
 			skill_unit_move(&md->bl,tick,0);
 			md->hp = 0;
@@ -2341,7 +2341,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 }
 
 /*==========================================
- * ãƒªãƒãƒ¼ã‚¹
+ * ƒŠƒo[ƒX
  *------------------------------------------
  */
 static int mob_rebirth(struct mob_data *md, unsigned int tick)
@@ -2350,7 +2350,7 @@ static int mob_rebirth(struct mob_data *md, unsigned int tick)
 
 	nullpo_retr(0, md);
 
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãŒè§£é™¤ã•ã‚Œã‚‹å‰ã«ã‚¹ã‚­ãƒ«Lvã‚’ä¿å­˜
+	// ƒXƒe[ƒ^ƒXˆÙí‚ª‰ğœ‚³‚ê‚é‘O‚ÉƒXƒLƒ‹Lv‚ğ•Û‘¶
 	skilllv = md->sc.data[SC_REBIRTH].val1;
 	if(skilllv > 10)
 		skilllv = 10;
@@ -2365,7 +2365,7 @@ static int mob_rebirth(struct mob_data *md, unsigned int tick)
 	linkdb_final( &md->dmglog );
 
 	clif_foreachclient(unit_mobstopattacked,md->bl.id);
-	status_change_clear(&md->bl,2);	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã‚’è§£é™¤ã™ã‚‹
+	status_change_clear(&md->bl,2);	// ƒXƒe[ƒ^ƒXˆÙí‚ğ‰ğœ‚·‚é
 	if(md->deletetimer != -1) {
 		delete_timer(md->deletetimer,mob_timer_delete);
 		md->deletetimer = -1;
@@ -2395,7 +2395,7 @@ static int mob_rebirth(struct mob_data *md, unsigned int tick)
 }
 
 /*==========================================
- * ãƒ‰ãƒ­ãƒƒãƒ—ç‡ã«å€ç‡ã‚’é©ç”¨
+ * ƒhƒƒbƒv—¦‚É”{—¦‚ğ“K—p
  *------------------------------------------
  */
 int mob_droprate_fix(struct block_list *bl,int item,int drop)
@@ -2468,7 +2468,7 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 			case ITEMTYPE_ARMORTB:
 			case ITEMTYPE_ARMORMB:
 			case ITEMTYPE_ARMORTMB:
-				if(itemdb_search(item)->flag.pet_acce)	// ãƒšãƒƒãƒˆç”¨è£…å‚™å“
+				if(itemdb_search(item)->flag.pet_acce)	// ƒyƒbƒg—p‘•”õ•i
 					drop_fix = drop * battle_config.petequip_drop_rate / 100;
 				else
 					drop_fix = drop * battle_config.equip_drop_rate / 100;
@@ -2491,7 +2491,7 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 		}
 	}
 
-	// ãƒãƒ–ãƒ«ã‚¬ãƒ 
+	// ƒoƒuƒ‹ƒKƒ€
 	if(sc && sc->data[SC_ITEMDROPRATE].timer != -1)
 		drop_fix = drop_fix * sc->data[SC_ITEMDROPRATE].val1 / 100;
 
@@ -2502,7 +2502,7 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸
+ * ƒNƒ‰ƒXƒ`ƒFƒ“ƒW
  *------------------------------------------
  */
 static int mob_class_change_id(struct mob_data *md,int mob_id)
@@ -2517,7 +2517,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 	if(!mobdb_checkid(mob_id))
 		return 0;
 
-	max_hp  = status_get_max_hp(&md->bl);	// max_hp>0ã¯ä¿è¨¼
+	max_hp  = status_get_max_hp(&md->bl);	// max_hp>0‚Í•ÛØ
 	hp_rate = md->hp * 100 / max_hp;
 	clif_class_change(&md->bl,mob_get_viewclass(mob_id),1);
 
@@ -2571,7 +2571,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 
 	clif_clearchar_area(&md->bl,0);
 
-	// ã“ã®å ´åˆå‰Šé™¤->è¿½åŠ ã®å‡¦ç†ã¯å¿…è¦ãªã„
+	// ‚±‚Ìê‡íœ->’Ç‰Á‚Ìˆ—‚Í•K—v‚È‚¢
 	// mob_ai_hard_spawn( &md->bl, 0 );
 	// mob_ai_hard_spawn( &md->bl, 1 );
 
@@ -2581,7 +2581,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ï¼‰
+ * ƒNƒ‰ƒXƒ`ƒFƒ“ƒWiƒ‰ƒ“ƒ_ƒ€j
  *------------------------------------------
  */
 int mob_class_change_randam(struct mob_data *md,unsigned short lv)
@@ -2590,14 +2590,14 @@ int mob_class_change_randam(struct mob_data *md,unsigned short lv)
 
 	nullpo_retr(0, md);
 
-	// å¤æœ¨ã®æå¬å–šãƒªã‚¹ãƒˆã‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã«å¬å–š
+	// ŒÃ–Ø‚Ì}¢Š«ƒŠƒXƒg‚©‚çƒ‰ƒ“ƒ_ƒ€‚É¢Š«
 	class_ = mobdb_searchrandomid(1,lv);
 
 	return mob_class_change_id(md,class_);
 }
 
 /*==========================================
- * ã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸ï¼ˆãƒªã‚¹ãƒˆé¸æŠï¼‰
+ * ƒNƒ‰ƒXƒ`ƒFƒ“ƒWiƒŠƒXƒg‘I‘ğj
  *------------------------------------------
  */
 int mob_class_change(struct mob_data *md,const int *value,int value_count)
@@ -2617,7 +2617,7 @@ int mob_class_change(struct mob_data *md,const int *value,int value_count)
 }
 
 /*==========================================
- * mobå›å¾©
+ * mob‰ñ•œ
  *------------------------------------------
  */
 int mob_heal(struct mob_data *md,int heal)
@@ -2628,7 +2628,7 @@ int mob_heal(struct mob_data *md,int heal)
 
 	md->hp += heal;
 	if( md->hp <= 0 ) {
-		md->hp = 1;		// æ­»äº¡æ™‚ã‚¹ã‚­ãƒ«å¯¾ç­–
+		md->hp = 1;		// €–SƒXƒLƒ‹‘Îô
 		mob_damage(NULL,md,1,0);
 	} else
 	if( max_hp < md->hp )
@@ -2643,7 +2643,7 @@ int mob_heal(struct mob_data *md,int heal)
 }
 
 /*==========================================
- * mobãƒ¯ãƒ¼ãƒ—
+ * mobƒ[ƒv
  *------------------------------------------
  */
 int mob_warp(struct mob_data *md,int m,int x,int y,int type)
@@ -2666,15 +2666,15 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 		clif_clearchar_area(&md->bl,type);
 	}
 
-	if(bx > 0 && by > 0) {	// ä½ç½®æŒ‡å®šã®å ´åˆå‘¨å›²ï¼™ã‚»ãƒ«ã‚’æ¢ç´¢
+	if(bx > 0 && by > 0) {	// ˆÊ’uw’è‚Ìê‡üˆÍ‚XƒZƒ‹‚ğ’Tõ
 		xs = ys = 9;
 	}
 
 	while( (x < 0 || y < 0 || map_getcell(m,x,y,CELL_CHKNOPASS)) && (i++) < 1000 ) {
-		if( xs > 0 && ys > 0 && i < 250 ) {	// æŒ‡å®šä½ç½®ä»˜è¿‘ã®æ¢ç´¢
+		if( xs > 0 && ys > 0 && i < 250 ) {	// w’èˆÊ’u•t‹ß‚Ì’Tõ
 			x = bx+atn_rand()%xs-xs/2;
 			y = by+atn_rand()%ys-ys/2;
-		} else {				// å®Œå…¨ãƒ©ãƒ³ãƒ€ãƒ æ¢ç´¢
+		} else {				// Š®‘Sƒ‰ƒ“ƒ_ƒ€’Tõ
 			x = atn_rand()%(map[m].xs-2)+1;
 			y = atn_rand()%(map[m].ys-2)+1;
 		}
@@ -2698,7 +2698,7 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 	md->bl.m = m;
 	md->bl.x = md->ud.to_x = x;
 	md->bl.y = md->ud.to_y = y;
-	//md->target_id   = 0;	// ã‚¿ã‚²ã‚’è§£é™¤ã™ã‚‹
+	//md->target_id   = 0;	// ƒ^ƒQ‚ğ‰ğœ‚·‚é
 	md->attacked_id = 0;
 	md->state.skillstate = MSS_IDLE;
 	if(moveblock)
@@ -2714,7 +2714,7 @@ int mob_warp(struct mob_data *md,int m,int x,int y,int type)
 }
 
 /*==========================================
- * å–ã‚Šå·»ãã®æ•°è¨ˆç®—ç”¨(foreachinarea)
+ * æ‚èŠª‚«‚Ì”ŒvZ—p(foreachinarea)
  *------------------------------------------
  */
 static int mob_countslave_sub(struct block_list *bl,va_list ap)
@@ -2735,7 +2735,7 @@ static int mob_countslave_sub(struct block_list *bl,va_list ap)
 }
 
 /*==========================================
- * ç·å–ã‚Šå·»ãã®æ•°è¨ˆç®—
+ * ‘æ‚èŠª‚«‚Ì”ŒvZ
  *------------------------------------------
  */
 int mob_countslave(struct mob_data *md)
@@ -2748,7 +2748,7 @@ int mob_countslave(struct mob_data *md)
 }
 
 /*==========================================
- * æŒ‡å®šç¯„å›²å†…ã®å–ã‚Šå·»ãã®æ•°è¨ˆç®—
+ * w’è”ÍˆÍ“à‚Ìæ‚èŠª‚«‚Ì”ŒvZ
  *------------------------------------------
  */
 static int mob_countslave_area(struct mob_data *md,int range)
@@ -2761,7 +2761,7 @@ static int mob_countslave_area(struct mob_data *md,int range)
 }
 
 /*==========================================
- * æ‰‹ä¸‹MOBå¬å–š
+ * è‰ºMOB¢Š«
  *------------------------------------------
  */
 int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag)
@@ -2779,7 +2779,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 	while(count < size && mobdb_checkid(value[count])) {
 		count++;
 	}
-	if(count <= 0)	// å€¤ãŒç•°å¸¸ãªã‚‰å¬å–šã‚’æ­¢ã‚ã‚‹
+	if(count <= 0)	// ’l‚ªˆÙí‚È‚ç¢Š«‚ğ~‚ß‚é
 		return 0;
 
 	for(k=0; k<amount; k++) {
@@ -2811,13 +2811,13 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 		md->y0          = y;
 		md->xs          = 0;
 		md->ys          = 0;
-		md->spawndelay1 = -1;	// ä¸€åº¦ã®ã¿ãƒ•ãƒ©ã‚°
-		md->spawndelay2 = -1;	// ä¸€åº¦ã®ã¿ãƒ•ãƒ©ã‚°
+		md->spawndelay1 = -1;	// ˆê“x‚Ì‚İƒtƒ‰ƒO
+		md->spawndelay2 = -1;	// ˆê“x‚Ì‚İƒtƒ‰ƒO
 		md->ai_pc_count = 0;
 		md->ai_prev = md->ai_next = NULL;
 
 #ifdef DYNAMIC_SC_DATA
-		// ãƒ€ãƒŸãƒ¼æŒ¿å…¥
+		// ƒ_ƒ~[‘}“ü
 		md->sc.data = dummy_sc_data;
 #endif
 
@@ -2836,15 +2836,15 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 			switch (battle_config.slave_inherit_mode) {
 			case 0:
 				break;
-			case 1: // ã‚¢ã‚¯ãƒ†ã‚£ãƒ–
+			case 1: // ƒAƒNƒeƒBƒu
 				if (!(md->mode&MD_AGGRESSIVE))
 					md->mode = md->mode | MD_AGGRESSIVE;
 				break;
-			case 2: // ãƒãƒ³ã‚¢ã‚¯ãƒ†ã‚£ãƒ–
+			case 2: // ƒmƒ“ƒAƒNƒeƒBƒu
 				if (md->mode&MD_AGGRESSIVE)
 					md->mode = md->mode & ~MD_AGGRESSIVE;
 				break;
-			default: // ä¸»äººã¨åŒã˜
+			default: // ål‚Æ“¯‚¶
 				if (md2->mode&MD_AGGRESSIVE)
 					md->mode = md->mode | MD_AGGRESSIVE;
 				else
@@ -2861,7 +2861,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 }
 
 /*==========================================
- * MOBskillã‹ã‚‰è©²å½“skillidã®skillidxã‚’è¿”ã™
+ * MOBskill‚©‚çŠY“–skillid‚Ìskillidx‚ğ•Ô‚·
  *------------------------------------------
  */
 static int mob_skillid2skillidx(int class_,int skillid)
@@ -2880,7 +2880,7 @@ static int mob_skillid2skillidx(int class_,int skillid)
 }
 
 /*==========================================
- * commandä½¿ç”¨
+ * commandg—p
  *------------------------------------------
  */
 static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
@@ -3025,7 +3025,7 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 			break;
 	}
 
-	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸åˆ¥
+	// ƒ^[ƒQƒbƒg‘I•Ê
 	switch(target_type)
 	{
 		case MCT_MASTER:
@@ -3079,7 +3079,7 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 }
 
 /*==========================================
- * modechangeä½¿ç”¨
+ * modechangeg—p
  *------------------------------------------
  */
 static int mobskill_modechange(struct block_list *bl, va_list ap )
@@ -3133,7 +3133,7 @@ static int mobskill_modechange(struct block_list *bl, va_list ap )
 }
 
 /*==========================================
- * ç¾åœ¨ã¨ã¯åˆ¥ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’æ¤œç´¢ã™ã‚‹
+ * Œ»İ‚Æ‚Í•Ê‚Ìƒ^[ƒQƒbƒg‚ğŒŸõ‚·‚é
  *------------------------------------------
  */
 static int mobskill_anothertarget(struct block_list *bl, va_list ap)
@@ -3179,13 +3179,13 @@ static int mobskill_anothertarget(struct block_list *bl, va_list ap)
 			}
 			break;
 	}
-	if( atn_rand()%1000 < 1000/(++(*c)) )	// ç¯„å›²å†…ã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+	if( atn_rand()%1000 < 1000/(++(*c)) )	// ”ÍˆÍ“à‚Å“™Šm—¦‚É‚·‚é
 		*target = bl;
 	return 1;
 }
 
 /*==========================================
- * è¿‘ãã®å‘³æ–¹ã§HPã®æ¡ä»¶ãŒåˆã†ã‚‚ã®ã‚’æ¢ã™
+ * ‹ß‚­‚Ì–¡•û‚ÅHP‚ÌğŒ‚ª‡‚¤‚à‚Ì‚ğ’T‚·
  *------------------------------------------
  */
 static int mob_getfriendhpmaxrate_sub(struct block_list *bl,va_list ap)
@@ -3214,7 +3214,7 @@ static int mob_getfriendhpmaxrate_sub(struct block_list *bl,va_list ap)
 	    (diff > 0 && cond == MSC_FRIENDHPGTMAXRATE) )
 	{
 		int *c = va_arg(ap,int *);
-		if( atn_rand()%1000 < 1000/(++(*c)) )	// ç¯„å›²å†…ã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+		if( atn_rand()%1000 < 1000/(++(*c)) )	// ”ÍˆÍ“à‚Å“™Šm—¦‚É‚·‚é
 			(*fr) = bl;
 	}
 	return 0;
@@ -3228,7 +3228,7 @@ static struct block_list *mob_getfriendhpmaxrate(struct mob_data *md,int cond,in
 
 	nullpo_retr(NULL, md);
 
-	if(md->state.special_mob_ai)	// PCãŒä¸»ã®å¬å–šMOBãªã‚‰PCã‚’æ¤œç´¢
+	if(md->state.special_mob_ai)	// PC‚ªå‚Ì¢Š«MOB‚È‚çPC‚ğŒŸõ
 		type = BL_PC;
 	else
 		type = BL_MOB;
@@ -3240,7 +3240,7 @@ static struct block_list *mob_getfriendhpmaxrate(struct mob_data *md,int cond,in
 }
 
 /*==========================================
- * è¿‘ãã®å‘³æ–¹ã§ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹çŠ¶æ…‹ãŒåˆã†ã‚‚ã®ã‚’æ¢ã™
+ * ‹ß‚­‚Ì–¡•û‚ÅƒXƒe[ƒ^ƒXó‘Ô‚ª‡‚¤‚à‚Ì‚ğ’T‚·
  *------------------------------------------
  */
 static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
@@ -3280,7 +3280,7 @@ static int mob_getfriendstatus_sub(struct block_list *bl,va_list ap)
 			flag = (sc->data[cond2].timer != -1);
 		}
 		if( flag^(cond1 == MSC_FRIENDSTATUSOFF) ) {
-			if( atn_rand()%1000 < 1000/(++(*c)) )	// ç¯„å›²å†…ã§ç­‰ç¢ºç‡ã«ã™ã‚‹
+			if( atn_rand()%1000 < 1000/(++(*c)) )	// ”ÍˆÍ“à‚Å“™Šm—¦‚É‚·‚é
 				*fr = bl;
 		}
 	}
@@ -3295,7 +3295,7 @@ static struct block_list *mob_getfriendstatus(struct mob_data *md,int cond1,int 
 
 	nullpo_retr(0, md);
 
-	if(md->state.special_mob_ai)	// PCãŒä¸»ã®å¬å–šMOBãªã‚‰PCã‚’æ¤œç´¢
+	if(md->state.special_mob_ai)	// PC‚ªå‚Ì¢Š«MOB‚È‚çPC‚ğŒŸõ
 		type = BL_PC;
 	else
 		type = BL_MOB;
@@ -3307,7 +3307,7 @@ static struct block_list *mob_getfriendstatus(struct mob_data *md,int cond1,int 
 }
 
 /*==========================================
- * åæ’ƒå¯èƒ½ãªçŠ¶æ…‹ã‹ã©ã†ã‹
+ * ”½Œ‚‰Â”\‚Èó‘Ô‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
@@ -3321,17 +3321,17 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 
 	if(target)
 	{
-		// ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ‡ã‚£ãƒ¬ã‚¤ä¸­ã¯å‹•ã‘ã‚‹ã¨ã¿ãªã™ã®ã§ä¸€æ™‚ç½®æ›
+		// ƒ_ƒ[ƒWƒfƒBƒŒƒC’†‚Í“®‚¯‚é‚Æ‚İ‚È‚·‚Ì‚Åˆê’uŠ·
 		unsigned int tick = md->ud.canmove_tick;
 		int flag;
 
 		md->ud.canmove_tick = gettick();
 
 		if( unit_can_move(&md->bl) && !unit_isrunning(&md->bl) ) {
-			// å‹•ã‘ã‚‹ã¨ã
+			// “®‚¯‚é‚Æ‚«
 			flag = mob_can_reach(md,target,AREA_SIZE);
 		} else {
-			// å‹•ã‘ãªã„ã¨ã
+			// “®‚¯‚È‚¢‚Æ‚«
 			flag = battle_check_range(&md->bl,target,range);
 		}
 		md->ud.canmove_tick = tick;
@@ -3339,7 +3339,7 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 			return 1;
 	}
 
-	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«åæ’ƒã§ããªã„çŠ¶æ…‹ãªã®ã§è¿‘ãã«æ”»æ’ƒã§ãã‚‹ç›¸æ‰‹ãŒã„ã‚‹ã‹æ¢ã™
+	// ƒ^[ƒQƒbƒg‚É”½Œ‚‚Å‚«‚È‚¢ó‘Ô‚È‚Ì‚Å‹ß‚­‚ÉUŒ‚‚Å‚«‚é‘Šè‚ª‚¢‚é‚©’T‚·
 	map_foreachinarea(mobskill_anothertarget,
 		md->bl.m,md->bl.x-range,md->bl.y-range,md->bl.x+range,md->bl.y+range,
 		BL_CHAR,md,MST_ANOTHERTARGET,&c,&tbl);
@@ -3348,7 +3348,7 @@ static int mob_can_counterattack(struct mob_data *md,struct block_list *target)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ï¼ˆè© å”±é–‹å§‹ã€IDæŒ‡å®šï¼‰
+ * ƒXƒLƒ‹g—pi‰r¥ŠJnAIDw’èj
  *------------------------------------------
  */
 static int mobskill_use_id(struct mob_data *md,struct block_list *target,int skill_idx)
@@ -3380,7 +3380,7 @@ static int mobskill_use_id(struct mob_data *md,struct block_list *target,int ski
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ï¼ˆå ´æ‰€æŒ‡å®šï¼‰
+ * ƒXƒLƒ‹g—piêŠw’èj
  *------------------------------------------
  */
 static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int skill_idx)
@@ -3406,7 +3406,7 @@ static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int 
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨åˆ¤å®š
+ * ƒXƒLƒ‹g—p”»’è
  *------------------------------------------
  */
 int mobskill_use(struct mob_data *md,unsigned int tick,int event)
@@ -3422,10 +3422,10 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 	if(battle_config.mob_skill_use == 0 || md->ud.skilltimer != -1)
 		return 0;
 
-	if(md->sc.data[SC_SELFDESTRUCTION].timer != -1)	// è‡ªçˆ†ä¸­ã¯ã‚¹ã‚­ãƒ«ã‚’ä½¿ã‚ãªã„
+	if(md->sc.data[SC_SELFDESTRUCTION].timer != -1)	// ©”š’†‚ÍƒXƒLƒ‹‚ğg‚í‚È‚¢
 		return 0;
 
-	if(md->state.special_mob_ai >= 2)		// ã‚¹ãƒ•ã‚£ã‚¢ãƒ¼ãƒã‚¤ãƒ³ã¯ã‚¹ã‚­ãƒ«ã‚’ä½¿ã‚ãªã„
+	if(md->state.special_mob_ai >= 2)		// ƒXƒtƒBƒA[ƒ}ƒCƒ“‚ÍƒXƒLƒ‹‚ğg‚í‚È‚¢
 		return 0;
 
 	if(md->state.skillstate != MSS_DEAD) {
@@ -3437,7 +3437,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		}
 	}
 
-	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ãƒã‚¹ã‚¿ãƒ¼ã®æƒ…å ±å–å¾—
+	// ƒ^[ƒQƒbƒg‚Æƒ}ƒXƒ^[‚Ìî•ñæ“¾
 	target = map_id2bl(md->target_id);
 	if(target && !(target->type & BL_CHAR))
 		target = NULL;
@@ -3451,27 +3451,27 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 		int c2 = ms[i].cond2;
 		int flag = 0;
 
-		// eventãƒˆãƒªã‚¬ãƒ¼ã®ã¨ãã«æ¡ä»¶ãŒåˆã‚ãªã„
+		// eventƒgƒŠƒK[‚Ì‚Æ‚«‚ÉğŒ‚ª‡‚í‚È‚¢
 		if(event >= 0 && (event&0xffff) != ms[i].cond1)
 			continue;
 
-		// ãƒ‡ã‚£ãƒ¬ã‚¤ä¸­
+		// ƒfƒBƒŒƒC’†
 		if(DIFF_TICK(tick,md->skilldelay[i]) < ms[i].delay)
 			continue;
 
-		// ã‚³ãƒãƒ³ãƒ‰å°‚ç”¨
+		// ƒRƒ}ƒ“ƒhê—p
 		if(ms[i].state == MSS_COMMANDONLY || ms[i].state == MSS_DISABLE)
 			continue;
 
-		// çŠ¶æ…‹åˆ¤å®š
+		// ó‘Ô”»’è
 		if(ms[i].state != MSS_ANY && ms[i].state != md->state.skillstate)
 			continue;
 
-		// ç¢ºç‡åˆ¤å®š
+		// Šm—¦”»’è
 		if(atn_rand()%10000 >= ms[i].permillage)
 			continue;
 
-		// æ¡ä»¶åˆ¤å®š
+		// ğŒ”»’è
 		switch( ms[i].cond1 ) {
 		case MSC_ALWAYS:
 			flag = 1;
@@ -3576,7 +3576,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				flag ^= ( ms[i].cond1 == MSC_MASTERSTATUSOFF );
 			}
 			break;
-		/* ä»¥ä¸‹ã¯eventãƒˆãƒªã‚¬ãƒ¼ã§ã®ã¿å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚‚ã® */
+		/* ˆÈ‰º‚ÍeventƒgƒŠƒK[‚Å‚Ì‚İŒÄ‚Ño‚³‚ê‚é‚à‚Ì */
 		case MSC_CASTTARGETED:
 		case MSC_CLOSEDATTACKED:
 		case MSC_LONGRANGEATTACKED:
@@ -3635,7 +3635,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			default:
 				tbl = &md->bl;
 				break;
-			// ç‰¹æ®ŠAIç³»
+			// “ÁêAIŒn
 			case MST_COMMAND:
 			{
 				int range = ms[i].val[1];
@@ -3696,7 +3696,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				return 1;
 			}
 			case MST_TARGETCHANGE:
-				// æœªå®šç¾©ï¼Ÿ
+				// –¢’è‹`H
 				md->skilldelay[i] = tick + ms[i].delay;
 				return 1;
 		}
@@ -3704,7 +3704,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			continue;
 
 		if( skill_get_inf(ms[i].skill_id)&INF_GROUND ) {
-			// å ´æ‰€æŒ‡å®š
+			// êŠw’è
 			int x = tbl->x;
 			int y = tbl->y;
 
@@ -3726,7 +3726,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			}
 			return mobskill_use_pos(md,x,y,i);
 		} else {
-			// å¯¾è±¡æŒ‡å®š
+			// ‘ÎÛw’è
 			return mobskill_use_id(md,tbl,i);
 		}
 	}
@@ -3734,7 +3734,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ä½¿ç”¨ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
+ * ƒXƒLƒ‹g—pƒCƒxƒ“ƒgˆ—
  *------------------------------------------
  */
 int mobskill_event(struct mob_data *md,int flag)
@@ -3743,7 +3743,7 @@ int mobskill_event(struct mob_data *md,int flag)
 
 	nullpo_retr(0, md);
 
-	// ãƒ«ãƒ¼ãƒ‰ã‚¢ã‚¿ãƒƒã‚¯ã‚’æœ€å„ªå…ˆã™ã‚‹
+	// ƒ‹[ƒhƒAƒ^ƒbƒN‚ğÅ—Dæ‚·‚é
 	if( !mobskill_use(md, tick, MSC_RUDEATTACKED) ) {
 		if( (flag&BF_SHORT) && mobskill_use(md, tick, MSC_CLOSEDATTACKED) )
 			return 1;
@@ -3756,7 +3756,7 @@ int mobskill_event(struct mob_data *md,int flag)
 }
 
 /*==========================================
- * MobãŒã‚¨ãƒ³ãƒšãƒªã‚¦ãƒ ãªã©ã®å ´åˆã®åˆ¤å®š
+ * Mob‚ªƒGƒ“ƒyƒŠƒEƒ€‚È‚Ç‚Ìê‡‚Ì”»’è
  *------------------------------------------
  */
 int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
@@ -3777,16 +3777,16 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 		struct guild *g = guild_search(sd->status.guild_id);
 
 		if(g == NULL && md->class_ == MOBID_EMPERIUM)
-			return 0;	// ã‚®ãƒ«ãƒ‰æœªåŠ å…¥ãªã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡ã—
+			return 0;	// ƒMƒ‹ƒh–¢‰Á“ü‚È‚çƒ_ƒ[ƒW–³‚µ
 		if(guild_mapid2gc(sd->bl.m) != NULL && !map[sd->bl.m].flag.gvg)
-			return 0;	// ç ¦å†…ã§Gvã˜ã‚ƒãªã„ã¨ãã¯ãƒ€ãƒ¡ãƒ¼ã‚¸ãªã—
+			return 0;	// Ô“à‚ÅGv‚¶‚á‚È‚¢‚Æ‚«‚Íƒ_ƒ[ƒW‚È‚µ
 		if(g) {
 			if(g->guild_id == md->guild_id)
-				return 0;	// è‡ªå é ˜ã‚®ãƒ«ãƒ‰ã®ã‚¨ãƒ³ãƒšãªã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡ã—
+				return 0;	// ©è—ÌƒMƒ‹ƒh‚ÌƒGƒ“ƒy‚È‚çƒ_ƒ[ƒW–³‚µ
 			if(guild_checkskill(g, GD_APPROVAL) <= 0 && md->class_ == MOBID_EMPERIUM)
-				return 0;	// æ­£è¦ã‚®ãƒ«ãƒ‰æ‰¿èªãŒãªã„ã¨ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡ã—
+				return 0;	// ³‹KƒMƒ‹ƒh³”F‚ª‚È‚¢‚Æƒ_ƒ[ƒW–³‚µ
 			if(guild_check_alliance(md->guild_id, g->guild_id, 0) == 1)
-				return 0;	// åŒç›Ÿãªã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡ã—
+				return 0;	// “¯–¿‚È‚çƒ_ƒ[ƒW–³‚µ
 		}
 	}
 
@@ -3794,7 +3794,7 @@ int mob_gvmobcheck(struct map_session_data *sd, struct block_list *bl)
 }
 
 /*==========================================
- * æŒ‡å®šç¯„å›²å†…ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’é¸å®š
+ * w’è”ÍˆÍ“à‚Ìƒ^[ƒQƒbƒg‚ğ‘I’è
  *------------------------------------------
  */
 struct block_list * mob_selecttarget(struct mob_data *md, int range)
@@ -3812,7 +3812,7 @@ struct block_list * mob_selecttarget(struct mob_data *md, int range)
 }
 
 /*==========================================
- * Mobã®ç™ºè¨€
+ * Mob‚Ì”­Œ¾
  *------------------------------------------
  */
 int mob_talk(struct mob_data *md, int msg_id)
@@ -3830,7 +3830,7 @@ int mob_talk(struct mob_data *md, int msg_id)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«ç”¨ã‚¿ã‚¤ãƒãƒ¼å‰Šé™¤ï¼ˆæœªä½¿ç”¨ï¼‰
+ * ƒXƒLƒ‹—pƒ^ƒCƒ}[íœi–¢g—pj
  *------------------------------------------
  */
 /*
@@ -3850,10 +3850,10 @@ int mobskill_deltimer(struct mob_data *md )
 */
 
 //
-// åˆæœŸåŒ–
+// ‰Šú‰»
 //
 /*==========================================
- * æœªè¨­å®šmobãŒä½¿ã‚ã‚ŒãŸã®ã§æš«å®šåˆæœŸå€¤è¨­å®š
+ * –¢İ’èmob‚ªg‚í‚ê‚½‚Ì‚Åb’è‰Šú’lİ’è
  *------------------------------------------
  */
 static int mob_makedummymobdb(int class_)
@@ -3906,7 +3906,7 @@ static int mob_makedummymobdb(int class_)
 }
 
 /*==========================================
- * db/mob_db.txtèª­ã¿è¾¼ã¿
+ * db/mob_db.txt“Ç‚İ‚İ
  *------------------------------------------
  */
 #define DB_ADD(a,b) a = ( (!cov || strlen(str[b]) > 0) ? atoi(str[b]) : a )
@@ -3955,15 +3955,15 @@ static int mob_readdb(void)
 			}
 			class_ = atoi(str[num]);
 
-			// åå‰è¨­å®šå‰ãªã®ã§mobdb_checkid() ã¯ä½¿ãˆãªã„
+			// –¼‘Oİ’è‘O‚È‚Ì‚Åmobdb_checkid() ‚Íg‚¦‚È‚¢
 			if(class_ < MOB_ID_MIN || class_ >= MOB_ID_MAX)
 				continue;
 			if(n == 1 && mob_db[class_].view_class == class_)
-				cov = 1;	// mob_db_addã«ã‚ˆã‚‹ã€ã™ã§ã«ç™»éŒ²ã®ã‚ã‚‹IDã®ä¸Šæ›¸ãã‹ã©ã†ã‹
+				cov = 1;	// mob_db_add‚É‚æ‚éA‚·‚Å‚É“o˜^‚Ì‚ ‚éID‚Ìã‘‚«‚©‚Ç‚¤‚©
 
 			mob_db[class_].view_class = class_;
 
-			// ã“ã“ã‹ã‚‰å…ˆã¯ã€mob_db_addã§ã¯è¨˜è¿°ã®ã‚ã‚‹éƒ¨åˆ†ã®ã¿åæ˜ 
+			// ‚±‚±‚©‚çæ‚ÍAmob_db_add‚Å‚Í‹Lq‚Ì‚ ‚é•”•ª‚Ì‚İ”½‰f
 			if(!cov || strlen(str[num+1]) > 0) {
 				strncpy(mob_db[class_].name,str[num+1],24);
 				mob_db[class_].name[23] = '\0';		// force \0 terminal
@@ -4000,14 +4000,14 @@ static int mob_readdb(void)
 			DB_ADD(mob_db[class_].dmotion,  (num=28));
 			num++;
 
-			// ã‚¢ã‚¤ãƒ†ãƒ ãƒ‰ãƒ­ãƒƒãƒ—ã®è¨­å®š
+			// ƒAƒCƒeƒ€ƒhƒƒbƒv‚Ìİ’è
 			for(i=0; i<ITEM_DROP_COUNT; i++,num+=2) {
 				int nameid;
 				if(!cov || strlen(str[num]) != 0)
 					nameid = atoi(str[num]);
 				else
 					nameid = mob_db[class_].dropitem[i].nameid;
-				mob_db[class_].dropitem[i].nameid = (nameid == 0)? 512: nameid;	// id=0ã¯ã€ãƒªãƒ³ã‚´ã«ç½®ãæ›ãˆ
+				mob_db[class_].dropitem[i].nameid = (nameid == 0)? 512: nameid;	// id=0‚ÍAƒŠƒ“ƒS‚É’u‚«Š·‚¦
 				if(cov && strlen(str[num+1]) == 0)
 					continue;
 				mob_db[class_].dropitem[i].p = atoi(str[num+1]);
@@ -4046,7 +4046,7 @@ static int mob_readdb(void)
 	filename2 = "db/mob_group_db.txt";
 	fp = fopen(filename2, "r");
 	if(fp == NULL)
-		return 0;	// ç„¡ãã¦ã‚‚æˆåŠŸ group_id = 0 æœªåˆ†é¡ã®ãŸã‚
+		return 0;	// –³‚­‚Ä‚à¬Œ÷ group_id = 0 –¢•ª—Ş‚Ì‚½‚ß
 
 	while(fgets(line,1020,fp)){
 		int class_, group_id, i;
@@ -4086,7 +4086,7 @@ static int mob_readdb(void)
 }
 
 /*==========================================
- * MOBè¡¨ç¤ºã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯å¤‰æ›´ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
+ * MOB•\¦ƒOƒ‰ƒtƒBƒbƒN•ÏXƒf[ƒ^“Ç‚İ‚İ
  *------------------------------------------
  */
 static int mob_readdb_mobavail(void)
@@ -4124,7 +4124,7 @@ static int mob_readdb_mobavail(void)
 
 		class_ = atoi(str[0]);
 
-		if(!mobdb_checkid(class_))	// å€¤ãŒç•°å¸¸ãªã‚‰å‡¦ç†ã—ãªã„ã€‚
+		if(!mobdb_checkid(class_))	// ’l‚ªˆÙí‚È‚çˆ—‚µ‚È‚¢B
 			continue;
 		k = atoi(str[1]);
 		if(k >= 0) {
@@ -4159,7 +4159,7 @@ static int mob_readdb_mobavail(void)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ãƒ€ãƒ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®ã‚½ãƒ¼ãƒˆ
+ * ƒ‰ƒ“ƒ_ƒ€ƒ‚ƒ“ƒXƒ^[ƒf[ƒ^‚Ìƒ\[ƒg
  *------------------------------------------
  */
 static int mob_sort_randommonster(const void *_e1, const void *_e2)
@@ -4174,7 +4174,7 @@ static int mob_sort_randommonster(const void *_e1, const void *_e2)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ãƒ€ãƒ ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
+ * ƒ‰ƒ“ƒ_ƒ€ƒ‚ƒ“ƒXƒ^[ƒf[ƒ^‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static int mob_read_randommonster(void)
@@ -4234,10 +4234,10 @@ static int mob_read_randommonster(void)
 		if(random_mob[randomid].entry <= 0)
 			continue;
 
-		// Lvã®ä½ã„é †ã«ä¸¦ã³æ›¿ãˆ
+		// Lv‚Ì’á‚¢‡‚É•À‚Ñ‘Ö‚¦
 		qsort(random_mob[randomid].data, random_mob[randomid].entry, sizeof(random_mob[randomid].data[0]), mob_sort_randommonster);
 
-		// ä¹±æ•°å€¤ã®åŠ ç®—
+		// —”’l‚Ì‰ÁZ
 		for(c = 1; c < random_mob[randomid].entry; c++) {
 			random_mob[randomid].data[c].qty += random_mob[randomid].data[c-1].qty;
 		}
@@ -4249,7 +4249,7 @@ static int mob_read_randommonster(void)
 }
 
 /*==========================================
- * db/mob_talk_db.txtèª­ã¿è¾¼ã¿
+ * db/mob_talk_db.txt“Ç‚İ‚İ
  *------------------------------------------
  */
 static int mob_readtalkdb(void)
@@ -4296,7 +4296,7 @@ static int mob_readtalkdb(void)
 }
 
 /*==========================================
- * db/mob_skill_db.txtèª­ã¿è¾¼ã¿
+ * db/mob_skill_db.txt“Ç‚İ‚İ
  *------------------------------------------
  */
 static int mob_readskilldb(void)
@@ -4473,7 +4473,7 @@ static int mob_readskilldb(void)
 				}
 			}
 			if( j == sizeof(state)/sizeof(state[0]) ) {
-				ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+				ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 				printf("mob_skill: unknown state %s line %d\n", sp[2], lineno);
 			}
 			ms->skill_id   = atoi(sp[3]);
@@ -4492,7 +4492,7 @@ static int mob_readskilldb(void)
 				}
 			}
 			if( j == sizeof(target)/sizeof(target[0]) ) {
-				ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+				ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 				printf("mob_skill: unknown target %s line %d\n", sp[9], lineno);
 			}
 
@@ -4503,7 +4503,7 @@ static int mob_readskilldb(void)
 				}
 			}
 			if( j == sizeof(cond1)/sizeof(cond1[0]) ) {
-				ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+				ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 				printf("mob_skill: unknown cond1 %s line %d\n", sp[10], lineno);
 			}
 
@@ -4524,13 +4524,13 @@ static int mob_readskilldb(void)
 			case MSC_MASTERSTATUSON:
 			case MSC_MASTERSTATUSOFF:
 				if( j == sizeof(cond2)/sizeof(cond2[0]) ) {
-					ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+					ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 					printf("mob_skill: invalid combination (%s,%s) line %d\n", sp[10], sp[11], lineno);
 				}
 				break;
 			default:
 				if( j != sizeof(cond2)/sizeof(cond2[0]) ) {
-					ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+					ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 					printf("mob_skill: invalid combination (%s,%s) line %d\n", sp[10], sp[11], lineno);
 				}
 				break;
@@ -4545,7 +4545,7 @@ static int mob_readskilldb(void)
 			}
 			if( j == sizeof(command_target)/sizeof(command_target[0]) ) {
 				if( isalpha((unsigned char)sp[12][0]) ) {
-					ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+					ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 					printf("mob_skill: unknown val0 %s line %d\n", sp[12], lineno);
 				}
 			}
@@ -4559,7 +4559,7 @@ static int mob_readskilldb(void)
 			}
 			if( j == sizeof(command_target)/sizeof(command_target[0]) ) {
 				if( isalpha((unsigned char)sp[13][0]) ) {
-					ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+					ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 					printf("mob_skill: unknown val1 %s line %d\n", sp[13], lineno);
 				}
 			}
@@ -4573,7 +4573,7 @@ static int mob_readskilldb(void)
 			}
 			if( j == sizeof(command_target)/sizeof(command_target[0]) ) {
 				if( isalpha((unsigned char)sp[14][0]) ) {
-					ms->state = MSS_DISABLE;	// ç„¡åŠ¹ã«ã™ã‚‹
+					ms->state = MSS_DISABLE;	// –³Œø‚É‚·‚é
 					printf("mob_skill: unknown val2 %s line %d\n", sp[14], lineno);
 				}
 			}
@@ -4600,7 +4600,7 @@ static int mob_readskilldb(void)
 
 
 /*==========================================
-* mob_mode_db.txtèª­ã¿è¾¼ã¿
+* mob_mode_db.txt“Ç‚İ‚İ
 *------------------------------------------
 */
 static int mob_readmobmodedb(void)
@@ -4639,7 +4639,7 @@ static int mob_readmobmodedb(void)
 
 		class_ = atoi(str[0]);
 
-		if (!mobdb_checkid(class_))	// å€¤ãŒç•°å¸¸ãªã‚‰å‡¦ç†ã—ãªã„ã€‚
+		if (!mobdb_checkid(class_))	// ’l‚ªˆÙí‚È‚çˆ—‚µ‚È‚¢B
 			continue;
 
 		k = atoi(str[1]);
@@ -4654,7 +4654,7 @@ static int mob_readmobmodedb(void)
 }
 
 /*==========================================
- * ãƒªãƒ­ãƒ¼ãƒ‰
+ * ƒŠƒ[ƒh
  *------------------------------------------
  */
 void mob_reload(void)
@@ -4668,7 +4668,7 @@ void mob_reload(void)
 }
 
 /*==========================================
- * mobå‘¨ã‚ŠåˆæœŸåŒ–
+ * mobü‚è‰Šú‰»
  *------------------------------------------
  */
 int do_init_mob(void)

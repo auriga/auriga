@@ -24,8 +24,8 @@
 
 #include "map.h"
 
-#define MAX_MEMORIAL_DATA		50		// 繝｡繝｢繝ｪ繧｢繝ｫ繝繝ｳ繧ｸ繝ｧ繝ｳ譛螟ｧ逋ｻ骭ｲ謨ｰ
-#define MAX_MEMORIAL_SEGMAP		8		// 繝｡繝｢繝ｪ繧｢繝ｫ繝繝ｳ繧ｸ繝ｧ繝ｳ譛螟ｧ蛻�蜑ｲ繝槭ャ繝玲焚
+#define MAX_MEMORIAL_DATA		50		// メモリアルダンジョン最大登録数
+#define MAX_MEMORIAL_SEGMAP		8		// メモリアルダンジョン最大分割マップ数
 
 enum {
 	MDCREATE_NOERROR = 0,
