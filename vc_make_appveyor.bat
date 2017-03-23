@@ -60,7 +60,7 @@ set __PACKETDEF__=/D "PACKETVER=%PACKETVER%" /D "NEW_006b"
 rem ----------------------------------------------------------------
 rem Build path settings
 
-rem ---- VC++ 2015 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®š
+rem ---- VC++ 2015 64bitƒRƒ“ƒpƒCƒ‹ ‚ÌÝ’è
 if not "%VSVER%"=="2015_x64" goto SKIPVSVER14
 set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
@@ -71,71 +71,71 @@ set __MULTIBUILD__=/MP
 :SKIPVSVER14
 
 rem ----------------------------------------------------------------
-rem SQL ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem SQL ‚ÌÝ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.7\include;%INCLUDE%
 set LIB=C:\Program Files\MySQL\MySQL Server 5.7\lib;%LIB%
 
 rem ----------------------------------------------------------------
-rem ãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®é¸æŠž
+rem ƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚Ì‘I‘ð
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ã®é¸æŠž ï¼š SQL ã«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
+rem ƒf[ƒ^•Û‘¶•û–@‚Ì‘I‘ð F SQL ‚É‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚·‚é
 rem set __TXT_MODE__=/D "TXT_ONLY"
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ TXT ã®æ™‚ã€ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’ä½¿ã†ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒf[ƒ^•Û‘¶•û–@‚ª TXT ‚ÌŽžAƒWƒƒ[ƒiƒ‹‚ðŽg‚¤‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __TXT_MODE__=/D "TXT_ONLY" /D "TXT_JOURNAL"
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ SQL ã®æ™‚ã€txt-converter ãŒä¸è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒf[ƒ^•Û‘¶•û–@‚ª SQL ‚ÌŽžAtxt-converter ‚ª•s—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __TXTCONVERTER__=SKIP
 
-rem zlib.dllã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem zlib.dll‚ðƒRƒ“ƒpƒCƒ‹‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 set __ZLIB__=/D "LOCALZLIB"
 
-rem login_id2 ã‚„ IP ã§ AUTHFIFO ã‚’æ¯”è¼ƒã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem login_id2 ‚â IP ‚Å AUTHFIFO ‚ð”äŠr‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __CMP_AFL2__=/D "CMP_AUTHFIFO_LOGIN2"
 rem set __CMP_AFIP__=/D "CMP_AUTHFIFO_IP"
 
-rem httpd ã‚’å®Œå…¨ã«ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem httpd ‚ðŠ®‘S‚É–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 set __NO_HTTPD__=/D "NO_HTTPD"
 
-rem httpd ã§å¤–éƒ¨ CGI ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
+rem httpd ‚ÅŠO•” CGI ‚ðŽg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚·‚é
 set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 
-rem csvdb ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‹ã‚‰ã®åˆ©ç”¨ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem csvdb ‚ÌƒXƒNƒŠƒvƒg‚©‚ç‚Ì—˜—p‚ð–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
-rem RåŒ–å‰ã®ã‚·ã‚¹ãƒ†ãƒ ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem R‰»‘O‚ÌƒVƒXƒeƒ€‚ðŽg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 set __PRE_RENEWAL__=/D "PRE_RENEWAL"
 
-rem MB ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem MB ‚ðŽg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __EXCLASS__=/D "CLASS_MB"
 
-rem å‹•çš„ã«MOBã® sc_data ã‚’ç¢ºä¿ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem “®“I‚ÉMOB‚Ì sc_data ‚ðŠm•Û‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
 
-rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒLƒƒƒ‰‚Ìíœ‚Éƒ[ƒ‹ƒAƒhƒŒƒX‚ðŽg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __AC_MAIL__=/D "AC_MAIL"
 
-rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«èª•ç”Ÿæ—¥ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒLƒƒƒ‰‚Ìíœ‚É’a¶“ú‚ðŽg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __AC_BIRTHDATE__=/D "AC_BIRTHDATE"
 
-rem ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã®ä¿å­˜ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚Ì•Û‘¶‚ð–³Œø‚É‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __NO_SCDATA_SAVING__=/D "NO_SCDATA_SAVING"
 
-rem ã‚¿ã‚¤ãƒžãƒ¼ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒ^ƒCƒ}[‚ðƒLƒƒƒbƒVƒ…‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ð‚Í‚¸‚·
 rem set __TIMER_CACHE__=/D "TIMER_CACHE=256"
 
 rem ---------------------------
-rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š
+rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“Ý’è
 
-@rem CPUæœ€é©åŒ–ã‚¹ã‚¤ãƒƒãƒ(By Nameless)
-@rem ä»¥ä¸‹ã®ä¾‹ã‚’å‚è€ƒã«ã‚¹ã‚¤ãƒƒãƒåã‚’è¨˜å…¥ã—ã¦ãã ã•ã„ã€‚
+@rem CPUÅ“K‰»ƒXƒCƒbƒ`(By Nameless)
+@rem ˆÈ‰º‚Ì—á‚ðŽQl‚ÉƒXƒCƒbƒ`–¼‚ð‹L“ü‚µ‚Ä‚­‚¾‚³‚¢B
 set _model_=NOOPTIMIZE
 
-@rem æœ€é©åŒ–ãªã—
+@rem Å“K‰»‚È‚µ
 if "%_model_%"=="NOOPTIMIZE" set __cpu__=/c /W3 /Od /Zi
 
 rem ----------------------------------------------------------------
-rem æœ€çµ‚çš„ãªãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ç”Ÿæˆ
+rem ÅI“I‚Èƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚ð¶¬
 if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
@@ -150,24 +150,24 @@ set __include__=/I "../common/zlib/" /I "../common/"
 if "%__TXT_MODE__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 rem ----------------------------------------------------------------
-rem è­¦å‘Šã®æŠ‘åˆ¶
-rem   C4819 : è¡¨ç¤ºã§ããªã„æ–‡å­—ã‚’å«ã‚“ã§ã„ã¾ã™
+rem Œx‚Ì—}§
+rem   C4819 : •\Ž¦‚Å‚«‚È‚¢•¶Žš‚ðŠÜ‚ñ‚Å‚¢‚Ü‚·
 set __warning__=/wd4819
 
 rem ----------------------------------------------------------------
-rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®è¡¨ç¤º
+rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“‚Ì•\Ž¦
 
-echo â– Compile Infoâ– 
-echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
+echo ¡Compile Info¡
+echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
 echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]
-echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
+echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
 
-rem ãƒ“ãƒ«ãƒ‰ä½œæ¥­æœ¬ä½“
+rem ƒrƒ‹ƒhì‹Æ–{‘Ì
 
-rem å…±é€šã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+rem ‹¤’ÊƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌƒRƒ“ƒpƒCƒ‹
 cd src\common\zlib
 if "%__ZLIB__%"=="" goto NOZLIB2
 echo Compiling zlib...
@@ -180,7 +180,7 @@ cd ..\
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
-rem ã‚µãƒ¼ãƒãƒ¼æœ¬ä½“ã®ãƒ“ãƒ«ãƒ‰
+rem ƒT[ƒo[–{‘Ì‚Ìƒrƒ‹ƒh
 echo Building login server...
 cd ..\login
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
@@ -199,11 +199,11 @@ cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../map-server.exe"
 if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
-rem å¿…è¦ãªã‚‰ txt-converter ã‚’ãƒ“ãƒ«ãƒ‰
+rem •K—v‚È‚ç txt-converter ‚ðƒrƒ‹ƒh
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 
-echo ã‚³ãƒ³ãƒãƒ¼ã‚¿ãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo ƒRƒ“ƒo[ƒ^[ƒRƒ“ƒpƒCƒ‹
 cd ..\converter
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
@@ -212,7 +212,7 @@ if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
 cd ..\..\
 
-rem ä¸å¿…è¦ãªãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤
+rem •s•K—v‚Èƒtƒ@ƒCƒ‹‚ðíœ
 echo Cleanup build files
 if "%__ZLIB__%"=="" goto NOZLIB3
 del src\common\zlib\*.obj

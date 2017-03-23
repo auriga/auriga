@@ -1,24 +1,24 @@
 @echo off
-rem VC++ ã§ã®ãƒ“ãƒ«ãƒ‰ç”¨ãƒãƒƒãƒãƒ•ã‚¡ã‚¤ãƒ«
+rem VC++ ‚Å‚Ìƒrƒ‹ƒh—pƒoƒbƒ`ƒtƒ@ƒCƒ‹
 
-rem å¯¾å¿œã™ã‚‹ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+rem ‘Î‰‚·‚éƒRƒ“ƒpƒCƒ‰‚Ìƒo[ƒWƒ‡ƒ“
 rem  - Visual C++ 6.0
 rem  - Visual C++ .NET (Visual C++ .NET 2002)
 rem  - Visual C++ .NET 2003
 rem  - Visual C++ Toolkit 2003
-rem  - Visual C++ 2005 (Express Edition å«ã‚€)
+rem  - Visual C++ 2005 (Express Edition ŠÜ‚Ş)
 rem  - Visual C++ 2008 Express Edition
-rem  - Visual C++ 2008 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+rem  - Visual C++ 2008 64bitƒRƒ“ƒpƒCƒ‹
 rem  - Visual C++ 2010 Express Edition
 
 rem ----------------------------------------------------------------
-rem å…±é€šè¨­å®š
+rem ‹¤’Êİ’è
 echo vc_make.bat - Auriga makefile for Visual C++
 set __VCVER__=7
 set __BITTYPE__=x32
 
 rem ----------------------------------------------------------------
-rem ãƒ‘ã‚±ãƒƒãƒˆå®šç¾©
+rem ƒpƒPƒbƒg’è‹`
 rem 2015-05-13aRagexe: 20150513
 rem 2014-10-22bRagexe: 20141022
 rem 2014-03-05bRagexe: 20140305
@@ -68,110 +68,110 @@ rem 2006-10-23aSakexe: 20061023
 set __PACKETDEF__=/D "PACKETVER=20150513" /D "NEW_006b"
 
 rem ----------------------------------------------------------------
-rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã”ã¨ã®è¨­å®šï¼ˆè‡ªåˆ†ã®ç’°å¢ƒã«ã‚ã†ã‚‚ã®ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™ï¼‰
+rem ƒRƒ“ƒpƒCƒ‰‚²‚Æ‚Ìİ’èi©•ª‚ÌŠÂ‹«‚É‚ ‚¤‚à‚Ì‚ÌƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·j
 
-rem ---- VC++ Toolkit 2003 ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ Toolkit 2003 ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files\Microsoft Visual C++ Toolkit 2003\bin;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
 rem set INCLUDE=C:\Program Files\Microsoft Visual C++ Toolkit 2003\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
 rem set LIB=C:\Program Files\Microsoft Visual C++ Toolkit 2003\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
-rem ---- VC++ Toolkit 2003 ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ Toolkit 2003 ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2005 Express Edition ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2005 Express Edition ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files\Microsoft Visual Studio 8\VC\bin;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
 rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
 rem set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
 rem set __VCVER__=8
-rem ---- VC++ 2005 Express Edition ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2005 Express Edition ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2005 (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2005 (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio 8\VC\bin\VCVARS32.BAT"
 rem set __VCVER__=8
-rem ---- VC++ 2005 (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2005 (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2008 Express Edition ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2008 Express Edition ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
 rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 9.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
 rem set LIB=C:\Program Files\Microsoft Visual Studio 9.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
 rem set __VCVER__=9
-rem ---- VC++ 2008 Express Edition ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2008 Express Edition ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2008 (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2008 (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\VCVARS32.BAT"
 rem set __VCVER__=9
-rem ---- VC++ 2008 (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2008 (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2008 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2008 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\lib\amd64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\x64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\SDK\v2.0\lib\amd64;%LIB%
 rem set __VCVER__=9
 rem set __BITTYPE__=x64
-rem ---- VC++ 2008 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2008 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2010 Express Edition ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2010 Express Edition ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
 rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 10.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
 rem set LIB=C:\Program Files\Microsoft Visual Studio 10.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
 rem set __VCVER__=10
-rem ---- VC++ 2010 Express Edition ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2010 Express Edition ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2010 (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2010 (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\VCVARS32.BAT"
 rem set __VCVER__=10
-rem ---- VC++ 2010 (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2010 (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2010 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2010 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v7.1\Include;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64;C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\SDK\v2.0\lib\amd64;%LIB%
 rem set __VCVER__=10
 rem set __BITTYPE__=x64
-rem ---- VC++ 2010 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2010 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2012 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2012 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin;C:\Program Files\Windows Kits\8.0\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\SDK\v2.0\lib\amd64;%LIB%
 rem set __VCVER__=11
 rem set __BITTYPE__=x64
-rem ---- VC++ 2012 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (Expressä»¥å¤–) ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2012 64bitƒRƒ“ƒpƒCƒ‹ (ExpressˆÈŠO) ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2013 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2013 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem sset PATH=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;C:\Program Files (x86)\Windows Kits\8.1\bin\x64;C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
 rem sset INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;%INCLUDE%
 rem sset LIB=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib\amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;%LIB%
 rem sset __VCVER__=12
 rem sset __BITTYPE__=x64
-rem ---- VC++ 2013 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2013 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ 2015 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 2015 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
 rem set __VCVER__=14
 rem set __BITTYPE__=x64
-rem ---- VC++ 2015 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 2015 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ .NET 2003 ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ .NET 2003 ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
-rem ---- VC++ .NET 2003 ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ .NET 2003 ‚Ìİ’è‚±‚±‚Ü‚Å
 
-rem ---- VC++ .NET (2002) / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ .NET (2002) / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio .NET\Vc7\bin\vcvars32.bat"
-rem ---- VC++ .NET (2002) ã®è¨­å®š ã“ã“ã¾ã§
+rem ---- VC++ .NET (2002) ‚Ìİ’è ‚±‚±‚Ü‚Å
 
-rem ---- VC++ 6.0 / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ---- VC++ 6.0 / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem call "C:\Program Files\Microsoft Visual Studio\VC98\Bin\vcvars32.bat"
 rem set __VCVER__=6
-rem ---- VC++ 6.0 ã®è¨­å®šã“ã“ã¾ã§
+rem ---- VC++ 6.0 ‚Ìİ’è‚±‚±‚Ü‚Å
 
 rem ----------------------------------------------------------------
-rem SQL ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem SQL ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.5\include;%INCLUDE%
 rem set LIB=C:\Program Files\MySQL\MySQL Server 5.5\lib;%LIB%
 
 rem ----------------------------------------------------------------
-rem VC8ä»¥ä¸Š ã§æŒ‡å®šã§ããªã„ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®å›é¿å‡¦ç†
+rem VC8ˆÈã ‚Åw’è‚Å‚«‚È‚¢ƒIƒvƒVƒ‡ƒ“‚Ì‰ñ”ğˆ—
 if "%__VCVER__%"=="8" goto SKIPVC8
 if "%__VCVER__%"=="9" goto SKIPVC8
 if "%__VCVER__%"=="10" goto SKIPVC8
@@ -182,13 +182,13 @@ set __OPT_OP__=/Op
 :SKIPVC8
 
 rem ----------------------------------------------------------------
-rem VC6 ã§æŒ‡å®šã§ããªã„ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®å›é¿å‡¦ç†
+rem VC6 ‚Åw’è‚Å‚«‚È‚¢ƒIƒvƒVƒ‡ƒ“‚Ì‰ñ”ğˆ—
 if "%__VCVER__%"=="6" goto SKIPVC6
 set __FIXOPT2__=/MAP /nologo
 :SKIPVC6
 
 rem ----------------------------------------------------------------
-rem VC9ä»¥ä¸‹ ã§æŒ‡å®šã§ããªã„ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®å›é¿å‡¦ç†
+rem VC9ˆÈ‰º ‚Åw’è‚Å‚«‚È‚¢ƒIƒvƒVƒ‡ƒ“‚Ì‰ñ”ğˆ—
 if "%__VCVER__%"=="6" goto SKIPVC9
 if "%__VCVER__%"=="7" goto SKIPVC9
 if "%__VCVER__%"=="8" goto SKIPVC9
@@ -196,94 +196,94 @@ set __MULTIBUILD__=/MP
 :SKIPVC9
 
 rem ----------------------------------------------------------------
-rem ãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®é¸æŠ
+rem ƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚Ì‘I‘ğ
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ã®é¸æŠ ï¼š SQL ã«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
+rem ƒf[ƒ^•Û‘¶•û–@‚Ì‘I‘ğ F SQL ‚É‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚·‚é
 set __TXT_MODE__=/D "TXT_ONLY"
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ TXT ã®æ™‚ã€ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’ä½¿ã†ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒf[ƒ^•Û‘¶•û–@‚ª TXT ‚ÌAƒWƒƒ[ƒiƒ‹‚ğg‚¤‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __TXT_MODE__=/D "TXT_ONLY" /D "TXT_JOURNAL"
 
-rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ SQL ã®æ™‚ã€txt-converter ãŒä¸è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒf[ƒ^•Û‘¶•û–@‚ª SQL ‚ÌAtxt-converter ‚ª•s—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __TXTCONVERTER__=SKIP
 
-rem zlib.dllã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem zlib.dll‚ğƒRƒ“ƒpƒCƒ‹‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __ZLIB__=/D "LOCALZLIB"
 
-rem login_id2 ã‚„ IP ã§ AUTHFIFO ã‚’æ¯”è¼ƒã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem login_id2 ‚â IP ‚Å AUTHFIFO ‚ğ”äŠr‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __CMP_AFL2__=/D "CMP_AUTHFIFO_LOGIN2"
 rem set __CMP_AFIP__=/D "CMP_AUTHFIFO_IP"
 
-rem httpd ã‚’å®Œå…¨ã«ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem httpd ‚ğŠ®‘S‚É–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 set __NO_HTTPD__=/D "NO_HTTPD"
 
-rem httpd ã§å¤–éƒ¨ CGI ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
+rem httpd ‚ÅŠO•” CGI ‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚·‚é
 set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 
-rem csvdb ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‹ã‚‰ã®åˆ©ç”¨ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem csvdb ‚ÌƒXƒNƒŠƒvƒg‚©‚ç‚Ì—˜—p‚ğ–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
-rem RåŒ–å‰ã®ã‚·ã‚¹ãƒ†ãƒ ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem R‰»‘O‚ÌƒVƒXƒeƒ€‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 set __PRE_RENEWAL__=/D "PRE_RENEWAL"
 
-rem MB ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem MB ‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __EXCLASS__=/D "CLASS_MB"
 
-rem å‹•çš„ã«MOBã® sc_data ã‚’ç¢ºä¿ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem “®“I‚ÉMOB‚Ì sc_data ‚ğŠm•Û‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
 
-rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒLƒƒƒ‰‚Ìíœ‚Éƒ[ƒ‹ƒAƒhƒŒƒX‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __AC_MAIL__=/D "AC_MAIL"
 
-rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«èª•ç”Ÿæ—¥ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒLƒƒƒ‰‚Ìíœ‚É’a¶“ú‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __AC_BIRTHDATE__=/D "AC_BIRTHDATE"
 
-rem ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã®ä¿å­˜ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚Ì•Û‘¶‚ğ–³Œø‚É‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __NO_SCDATA_SAVING__=/D "NO_SCDATA_SAVING"
 
-rem ã‚¿ã‚¤ãƒãƒ¼ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
+rem ƒ^ƒCƒ}[‚ğƒLƒƒƒbƒVƒ…‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
 rem set __TIMER_CACHE__=/D "TIMER_CACHE=256"
 
 rem ---------------------------
-rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š
+rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“İ’è
 
-@rem CPUæœ€é©åŒ–ã‚¹ã‚¤ãƒƒãƒ(By Nameless)
-@rem ä»¥ä¸‹ã®ä¾‹ã‚’å‚è€ƒã«ã‚¹ã‚¤ãƒƒãƒåã‚’è¨˜å…¥ã—ã¦ãã ã•ã„ã€‚
+@rem CPUÅ“K‰»ƒXƒCƒbƒ`(By Nameless)
+@rem ˆÈ‰º‚Ì—á‚ğQl‚ÉƒXƒCƒbƒ`–¼‚ğ‹L“ü‚µ‚Ä‚­‚¾‚³‚¢B
 set _model_=x32
 
-@rem æœ€é©åŒ–ãªã—
+@rem Å“K‰»‚È‚µ
 if "%_model_%"=="NOOPTIMIZE" set __cpu__=/c /W3 /Od /Zi
 
-@rem CPUã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£32BitCPU/64BitCPU
+@rem CPUƒA[ƒLƒeƒNƒ`ƒƒ32BitCPU/64BitCPU
 if "%_model_%"=="x32" set __cpu__=/c /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 if "%_model_%"=="x64" set __cpu__=/c /arch:SSE2 /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 
-@rem ãƒ¡ãƒ¢ãƒªãƒ¼1024ä»¥ä¸Šæ­è¼‰ã®32bitCPU/64bitCPU
+@rem ƒƒ‚ƒŠ[1024ˆÈã“‹Ú‚Ì32bitCPU/64bitCPU
 if "%_model_%"=="HiMemL" set __cpu__=/c /bigobj /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 if "%_model_%"=="HiMemH" set __cpu__=/c /bigobj /arch:SSE2 /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 
-@rem ã‚¹ã‚¿ãƒƒã‚¯åˆ¶å¾¡ã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã§è¡Œã†å ´åˆ
+@rem ƒXƒ^ƒbƒN§Œä‚ğƒRƒ“ƒpƒCƒ‰‚Ås‚¤ê‡
 if "%_model_%"=="Stac32" set __cpu__=/c /F4096 /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 if "%_model_%"=="Stac64" set __cpu__=/c /F4096 /arch:SSE2 /W3 /O2 %__OPT_OP__% /GA /TC /Zi
-@rem AMDç³»64bitCPUç”¨
+@rem AMDŒn64bitCPU—p
 if "%_model_%"=="A64x2" set __cpu__=/c /favor:blend /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 if "%_model_%"=="A64x1" set __cpu__=/c /favor:AMD64 /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 
-@rem Intelç³»64bitCPUç”¨
+@rem IntelŒn64bitCPU—p
 if "%_model_%"=="EM64T" set __cpu__=/c /favor:EM64T /W3 /O2 %__OPT_OP__% /GA /TC /Zi
 
 
-@rem ä»¥ä¸‹å®Ÿé¨“æ®µéš(äººæŸ±æ±‚ã‚€ by Nameless)
-@rem æš´èµ°é¢¨å‘³â€¦32BitCPUæœ€é«˜é€Ÿãƒ¢ãƒ¼ãƒ‰
+@rem ˆÈ‰ºÀŒ±’iŠK(l’Œ‹‚Ş by Nameless)
+@rem –\‘–•—–¡c32BitCPUÅ‚‘¬ƒ‚[ƒh
 if "%_model_%"=="mode01" set __cpu__=/c /fp:fast /F4096 /bigobj /W3 /Ox /GA /TC /Zi
-@rem æš´èµ°é¢¨å‘³â€¦64BitCPUæœ€é«˜é€Ÿãƒ¢ãƒ¼ãƒ‰
+@rem –\‘–•—–¡c64BitCPUÅ‚‘¬ƒ‚[ƒh
 if "%_model_%"=="mode02" set __cpu__=/c /arch:SSE2 /fp:fast /F4096 /bigobj /W3 /Ox /Gr /GA /TC /Zi
-@rem æš´èµ°é¢¨å‘³â€¦AMD 64x2 & FXç³»æœ€é©åŒ–ãƒ»æœ€é«˜é€Ÿ
+@rem –\‘–•—–¡cAMD 64x2 & FXŒnÅ“K‰»EÅ‚‘¬
 if "%_model_%"=="mode03" set __cpu__=/c /arch:SSE2 /fp:fast /F4096 /bigobj /favor:AMD64 /W3 /Ox /Gr /GA /TC /Zi
 if "%_model_%"=="mode04" set __cpu__=/c /arch:SSE2 /fp:fast /F4096 /bigobj /favor:blend /W3 /Ox /Gr /GA /TC /Zi
-@rem æš´èµ°é¢¨å‘³â€¦Intel 64bitCPUç”¨æœ€é©åŒ–ãƒ»æœ€é«˜é€Ÿ
+@rem –\‘–•—–¡cIntel 64bitCPU—pÅ“K‰»EÅ‚‘¬
 if "%_model_%"=="mode05" set __cpu__=/c /arch:SSE2 /fp:fast /F4096 /bigobj /favor:EM64T /W3 /Ox /Gr /GA /TC /Zi
-@rem ä»¥ä¸‹ãƒªã‚¶ãƒ¼ãƒ–
+@rem ˆÈ‰ºƒŠƒU[ƒu
 if "%_model_%"=="mode06" set __cpu__=/c /W3 /Ox /Gr /GA /TC /Zi
 if "%_model_%"=="mode07" set __cpu__=/c /W3 /Ox /Gr /GA /TC /Zi
 if "%_model_%"=="mode08" set __cpu__=/c /W3 /Ox /Gr /GA /TC /Zi
@@ -292,7 +292,7 @@ if "%_model_%"=="mode09" set __cpu__=/c /W3 /Ox /Gr /GA /TC /Zi
 
 
 rem ----------------------------------------------------------------
-rem æœ€çµ‚çš„ãªãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ç”Ÿæˆ
+rem ÅI“I‚Èƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚ğ¶¬
 if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
@@ -307,55 +307,55 @@ set __include__=/I "../common/zlib/" /I "../common/"
 if "%__TXT_MODE__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 rem ----------------------------------------------------------------
-rem è­¦å‘Šã®æŠ‘åˆ¶
-rem   C4819 : è¡¨ç¤ºã§ããªã„æ–‡å­—ã‚’å«ã‚“ã§ã„ã¾ã™
+rem Œx‚Ì—}§
+rem   C4819 : •\¦‚Å‚«‚È‚¢•¶š‚ğŠÜ‚ñ‚Å‚¢‚Ü‚·
 set __warning__=/wd4819
 
 rem ----------------------------------------------------------------
-rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®è¡¨ç¤º
+rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“‚Ì•\¦
 
-echo â– ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æƒ…å ±è¡¨ç¤ºâ– 
-echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
+echo ¡ƒRƒ“ƒpƒCƒ‹î•ñ•\¦¡
+echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
 echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]
-echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
+echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
 
-rem ãƒ“ãƒ«ãƒ‰ä½œæ¥­æœ¬ä½“
+rem ƒrƒ‹ƒhì‹Æ–{‘Ì
 
-rem å…±é€šã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+rem ‹¤’ÊƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌƒRƒ“ƒpƒCƒ‹
 cd src\common\zlib
 if "%__ZLIB__%"=="" goto NOZLIB2
-echo zlibã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo zlib‚ÌƒRƒ“ƒpƒCƒ‹
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 
 :NOZLIB2
-echo å…±é€šã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo ‹¤’ÊƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌƒRƒ“ƒpƒCƒ‹
 cd ..\
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 
-rem ã‚µãƒ¼ãƒãƒ¼æœ¬ä½“ã®ãƒ“ãƒ«ãƒ‰
-echo ãƒ­ã‚°ã‚¤ãƒ³ã‚µãƒ¼ãƒãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+rem ƒT[ƒo[–{‘Ì‚Ìƒrƒ‹ƒh
+echo ƒƒOƒCƒ“ƒT[ƒo[ƒRƒ“ƒpƒCƒ‹
 cd ..\login
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../login-server.exe"
 
-echo ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚µãƒ¼ãƒãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo ƒLƒƒƒ‰ƒNƒ^[ƒT[ƒo[ƒRƒ“ƒpƒCƒ‹
 cd ..\char
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../char-server.exe"
 
-echo ãƒãƒƒãƒ—ã‚µãƒ¼ãƒãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo ƒ}ƒbƒvƒT[ƒo[ƒRƒ“ƒpƒCƒ‹
 cd ..\map
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../map-server.exe"
 
-rem å¿…è¦ãªã‚‰ txt-converter ã‚’ãƒ“ãƒ«ãƒ‰
+rem •K—v‚È‚ç txt-converter ‚ğƒrƒ‹ƒh
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 
-echo ã‚³ãƒ³ãƒãƒ¼ã‚¿ãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+echo ƒRƒ“ƒo[ƒ^[ƒRƒ“ƒpƒCƒ‹
 cd ..\converter
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
@@ -363,8 +363,8 @@ link %__opt2__% /out:"../../txt-converter.exe"
 
 cd ..\..\
 
-rem ä¸å¿…è¦ãªãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤
-echo ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ç­‰ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+rem •s•K—v‚Èƒtƒ@ƒCƒ‹‚ğíœ
+echo ƒIƒuƒWƒFƒNƒgƒtƒ@ƒCƒ‹“™‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
 if "%__ZLIB__%"=="" goto NOZLIB3
 del src\common\zlib\*.obj
 :NOZLIB3
@@ -377,5 +377,5 @@ if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER2
 del src\converter\*.obj
 :NOCONVERTER2
 
-rem çµæœç¢ºèªç”¨ã®ä¸€æ™‚åœæ­¢
+rem Œ‹‰ÊŠm”F—p‚Ìˆê’â~
 pause

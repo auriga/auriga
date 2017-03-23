@@ -80,13 +80,13 @@ goto end
 
 :boot
 if not exist %2 goto end
-echo Auriga 自動再起動スクリプト for WIN32
+echo Auriga �����ċN���X�N���v�g for WIN32
 echo.
-echo %2 の異常終了を監視中です。
-echo サーバーを終了するには、最初にこのウィンドウを閉じてください。
+echo %2 �ُ̈�I�����Ď����ł��B
+echo �T�[�o�[���I������ɂ́A�ŏ��ɂ��̃E�B���h�E����Ă��������B
 start /wait %2
 cls
-echo %2 が終了しました。再起動します。
+echo %2 ���I�����܂����B�ċN�����܂��B
 echo. | date /T
 echo. | time /T
 goto boot
