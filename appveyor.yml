@@ -1,7 +1,9 @@
 version: '{branch}-1.0.{build}'
 pull_requests:
   do_not_increment_build_number: true
-image: Visual Studio 2015
+image: 
+  - Visual Studio 2017
+  - Visual Studio 2015
 configuration: Release
 platform: x64
 clone_folder: c:\project\auriga
