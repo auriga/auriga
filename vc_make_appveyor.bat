@@ -70,6 +70,16 @@ set __BITTYPE__=x64
 set __MULTIBUILD__=/MP
 :SKIPVSVER14
 
+rem ---- VC++ 2017 64bitコンパイル の設定
+if not "%VSVER%"=="2017_x64" goto SKIPVSVER2017
+set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin\HostX64\x64C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\binC:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
+set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.14393.0\ucrt;%INCLUDE%
+set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\lib\x86;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Include\10.0.14393.0\ucrt\x64;%LIB%
+set __VCVER__=14
+set __BITTYPE__=x64
+set __MULTIBUILD__=/MP
+:SKIPVSVER2017
+
 rem ----------------------------------------------------------------
 rem SQL の設定 / 必要ならコメントアウトをはずす
 set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.7\include;%INCLUDE%
