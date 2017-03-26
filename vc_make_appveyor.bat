@@ -3,8 +3,6 @@ rem Build script for appveyor
 
 rem ----------------------------------------------------------------
 echo vc_make_appveyor.bat - Auriga makefile for Visual C++
-echo "%PACKETVER%"
-echo "%VCVER%"_"%BITTYPE%"
 
 rem ----------------------------------------------------------------
 rem Defined packet versions
@@ -60,7 +58,7 @@ rem ----------------------------------------------------------------
 rem Build path settings
 
 rem ---- VC++ 2015 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è
-if not "%VCVER%_%BITTYPE%"=="2015_x64" goto SKIPVSVER14
+if not "%VCVER%_%BITTYPE%"=="14_x64" goto SKIPVSVER14
 set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
 set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
@@ -170,6 +168,7 @@ echo ¡Compile Info¡
 echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
 echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
+echo [PACKETVER = %__PACKETVER__%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]
 echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
