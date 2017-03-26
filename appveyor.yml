@@ -9,6 +9,16 @@ platform: x64
 clone_folder: c:\project\auriga
 environment:
   matrix:
+  - VSVER: 2017_x64
+    PACKETVER: 20150513
+  - VSVER: 2017_x64
+    PACKETVER: 20141022
+  - VSVER: 2017_x64
+    PACKETVER: 20140305
+  - VSVER: 2017_x64
+    PACKETVER: 20140115
+  - VSVER: 2017_x64
+    PACKETVER: 20131223
   - VSVER: 2015_x64
     PACKETVER: 20150513
   - VSVER: 2015_x64
