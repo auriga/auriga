@@ -58,7 +58,7 @@ rem ----------------------------------------------------------------
 rem Build path settings
 
 rem ---- VC++ 2015 64bitコンパイル の設定
-if not "%VCVER%_%BITTYPE%"=="14_x64" goto SKIPVSVER14
+if not "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" goto SKIPVSVER14
 set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
 set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
@@ -68,7 +68,7 @@ set __MULTIBUILD__=/MP
 :SKIPVSVER14
 
 rem ---- VC++ 2017 64bitコンパイル の設定
-if not "%VCVER%_%BITTYPE%"=="2017_x64" goto SKIPVSVER2017
+if not "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" goto SKIPVSVER2017
 set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
 set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
 set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\ucrt\x64;%LIB%
@@ -166,9 +166,10 @@ rem コンパイルオプションの表示
 
 echo ■Compile Info■
 echo ◆───────────────────────────────◆
+echo [IMAGE = %APPVEYOR_BUILD_WORKER_IMAGE%]
 echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
-echo [PACKETVER = %__PACKETVER__%]
+echo [PACKETVER = %PACKETVER%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]
 echo ◆───────────────────────────────◆
