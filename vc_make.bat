@@ -152,6 +152,14 @@ rem set __VCVER__=14
 rem set __BITTYPE__=x64
 rem ---- VC++ 2015 64bitコンパイル の設定ここまで
 
+rem ---- VC++ 2017 64bitコンパイル の設定
+rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
+rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
+rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\ucrt\x64;%LIB%
+rem set __VCVER__=2017
+rem set __BITTYPE__=x64
+rem ---- VC++ 2017 64bitコンパイル の設定ここまで
+
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
 rem ---- VC++ .NET 2003 の設定ここまで
@@ -178,6 +186,7 @@ if "%__VCVER__%"=="10" goto SKIPVC8
 if "%__VCVER__%"=="11" goto SKIPVC8
 if "%__VCVER__%"=="12" goto SKIPVC8
 if "%__VCVER__%"=="14" goto SKIPVC8
+if "%__VCVER__%"=="2017" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 
