@@ -1,13 +1,10 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Moscovia Field Monster Spawn Script　　Ep 12.1
+// Ragnarok Online Moscovia Field Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
 // モスコビアフィールド 02 - mosk_fild02.gat
 //------------------------------------------------------------
-mosk_fild02.gat,0,0,0,0		monster	ビッグフット	1060,40,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	キャラメル	1103,20,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	マンティス	1139,30,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	ポリン		1002,10,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	黄色草		1081,5,0,0,0
-mosk_fild02.gat,0,0,0,0		monster	白い草		1082,5,10000,0,0
+mosk_fild02.gat,0,0,0,0		monster	キャラメル		1103,20,5000,0,0
+mosk_fild02.gat,0,0,0,0		monster	ウッドゴブリン	1880,150,5000,0,1
+mosk_fild02.gat,0,0,0,0		monster	レス			1881,80,5000,0,1

@@ -1,5 +1,5 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Brasilis Field Monster Spawn Script　　Ep 13.2
+// Ragnarok Online Brasilis Field Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================

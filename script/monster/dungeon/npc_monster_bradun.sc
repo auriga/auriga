@@ -1,5 +1,5 @@
 //= Auriga Script ==============================================================
-// Ragnarok Online Brasilis Dungeon Monster Spawn Script　　Ep 13.2
+// Ragnarok Online Brasilis Dungeon Monster Spawn Script　　Ep 15.2
 //==============================================================================
 
 //============================================================
@@ -14,14 +14,12 @@
 //bra_dun01.gat,0,0,0,0	monster	ヒドラ			1068,15,5000,0,0
 
 //jRO
-bra_dun01.gat,0,0,0,0	monster	ピラニア		2070,40,0,0,0
-bra_dun01.gat,0,0,0,0	monster	イアラ			2069,20,0,0,0
+bra_dun01.gat,0,0,0,0	monster	ピラニア		2070,60,5000,0,0
+bra_dun01.gat,0,0,0,0	monster	イアラ			2069,100,5000,0,0
 bra_dun01.gat,0,0,0,0	monster	黒いきのこ		1084,5,120000,60000,0
-bra_dun01.gat,0,0,0,0	monster	マリナ			1141,5,0,0,0
-bra_dun01.gat,0,0,0,0	monster	ククレ			1070,40,0,0,0
-bra_dun01.gat,0,0,0,0	monster	タラフロッグ	1034,40,0,0,0
-bra_dun01.gat,0,0,0,0	monster	首なしラバ		2071,20,0,0,0
-bra_dun01.gat,0,0,0,0	monster	ヒドラ			1068,60,0,0,0
+bra_dun01.gat,0,0,0,0	monster	ククレ			1070,40,5000,0,0
+bra_dun01.gat,0,0,0,0	monster	タラフロッグ	1034,50,5000,0,0
+bra_dun01.gat,0,0,0,0	monster	ヒドラ			1068,60,5000,0,0
 
 //============================================================
 // 滝の中の洞窟 02 - 滝の中の洞窟 01_dun02.gat
@@ -37,10 +35,10 @@ bra_dun01.gat,0,0,0,0	monster	ヒドラ			1068,60,0,0,0
 //bra_dun02.gat,0,0,0,0	monster	ボイタタ		2068,1,7200000,6000000,1
 
 //jRO
-bra_dun02.gat,0,0,0,0	monster	ピラニア		2070,50,5000,0,0
-bra_dun02.gat,0,0,0,0	monster	イアラ			2069,50,5000,0,0
-bra_dun02.gat,0,0,0,0	monster	首なしラバ		2071,30,5000,0,0
+bra_dun02.gat,0,0,0,0	monster	ピラニア		2070,10,5000,0,0
+bra_dun02.gat,0,0,0,0	monster	イアラ			2069,20,5000,0,0
+bra_dun02.gat,0,0,0,0	monster	首なしラバ		2071,90,5000,0,0
 bra_dun02.gat,0,0,0,0	monster	ヒドラ			1068,20,5000,0,0
 bra_dun02.gat,0,0,0,0	monster	輝く草			1083,1,1800000,900000,0
 bra_dun02.gat,0,0,0,0	monster	赤いきのこ		1085,5,120000,60000,0
-bra_dun02.gat,0,0,0,0	monster	ボイタタ		2068,1,7200000,6000000,1
+bra_dun02.gat,0,0,0,0	monster	ボイタタ		2068,1,7200000,0,1
