@@ -21,7 +21,7 @@ notifications:
   on_build_failure: true
   on_build_status_changed: false
 - provider: Slack
-  incoming_webhook: https://hooks.slack.com/services/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
+  incoming_webhook: https://hooks.slack.com/services/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
   channel: '#appveyor'
   on_build_success: true
   on_build_failure: true
