@@ -52,7 +52,6 @@ OnInit:
 	initnpctimer;
 	end;
 OnTimer3600000:
-	stopnpctimer;
 	switch(rand(5)) {
 		case 0: set 'iz_monster,1158; break;	//フェン
 		case 1: set 'iz_monster,1069; break;	//ソードフィッシュ
@@ -61,7 +60,6 @@ OnTimer3600000:
 		case 4: set 'iz_monster,1264; break;	//半漁人
 	}
 	areamonster "iz_dun03.gat",0,0,0,0,"--ja--",'iz_monster,80,"#IzdunEVNT::OnKilled";
-	startnpctimer;
 	end;
 OnKilled:
 	if(getnpctimer(0) > 3600000 && getnpctimer(0) < 3900000){
@@ -69,6 +67,7 @@ OnKilled:
 	}
 	end;
 OnTimer3900000:
+	killmonster "iz_dun03.gat","#IzdunEVNT::OnKilled";
 	initnpctimer;
 	end;
 }
@@ -99,7 +98,7 @@ iz_dun05.gat,0,0,0,0	monster	スロフォ		2201,140,5000,0,0
 iz_dun05.gat,0,0,0,0	monster	キングドラモ	2198,40,5000,0,0
 iz_dun05.gat,0,0,0,0	monster	タクン			2205,20,60000,0,0
 
-iz_dun05.gat,0,0,0	script	#IzdunMVP1	-1,{
+iz_dun05.gat,0,0,0	script	#IzdunMVP	-1,{
 OnInit:
 	initnpctimer;
 	end;
@@ -124,7 +123,7 @@ OnTimer9000000:
 	monster "iz_dun05.gat",196,28,"テンタクルス",2388,1,"#IzdunMVP::OnKilled2";
 	end;
 OnKilled:
-	killmonster "iz_dun05.gat","#IzdunMVP";
+	killmonster "iz_dun05.gat","#IzdunMVP::OnKilled2";
 	initnpctimer;
 	end;
 OnKilled2:
