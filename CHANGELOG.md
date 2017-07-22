@@ -1,4 +1,14 @@
 ----------------------------------------
+//1298 [2017/07/22] by refis
+
+・生体工学研究所出現モンスターのスペル誤りを訂正 (npc_monster_lhzdun.sc)
+
+・mob_db.txt, mob_skill_db.txt, skill_db.txt, skill_db2.txtの更新
+	Special Thanks mcrx さん!!
+
+・新規アイテム群のIDのみ追加更新
+
+----------------------------------------
 //1297 [2017/06/02] by refis
 
 ・一部ダンジョンのモンスター出現情報のミスを修正 (monster/dungeon/*)
