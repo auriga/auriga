@@ -309,21 +309,26 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 	for(i = 0; i < sd->questlist; i++) {
 		qd = &sd->quest[i];
 		if(qd->nameid > 0) {
+			int qid;
 			for(j = 0; j < sizeof(qd->mob)/sizeof(qd->mob[0]); j++) {
 				if(qd->mob[j].id == mob_id && qd->mob[j].count < qd->mob[j].max) {
 					qd->mob[j].count++;
 					clif_update_questcount(sd, qd->nameid);
 				}
 			}
-			for(j = 0; j < sizeof(quest_db[qd->nameid].drop)/sizeof(quest_db[qd->nameid].drop[0]); j++) {
-				if(quest_db[qd->nameid].drop[j].id != mob_id)
+			qid = quest_search_db(qd->nameid);   // qidŽæ“¾
+			if(qid < 0)      // qid‚ª‚Ý‚Â‚©‚ç‚È‚©‚Á‚½‚Ì‚Å‚±‚±‚Ü‚Å
+				continue;
+
+			for(j = 0; j < sizeof(quest_db[qid].drop)/sizeof(quest_db[qid].drop[0]); j++) {
+				if(quest_db[qid].drop[j].id != mob_id)
 					continue;
-				if(atn_rand()%10000 < quest_db[qd->nameid].drop[j].p) {
+				if(atn_rand()%10000 < quest_db[qid].drop[j].p) {
 					int flag;
 					struct item tmp_item;
 
 					memset(&tmp_item, 0, sizeof(tmp_item));
-					tmp_item.nameid = quest_db[qd->nameid].drop[j].nameid;
+					tmp_item.nameid = quest_db[qid].drop[j].nameid;
 					tmp_item.amount = 1;
 					tmp_item.identify = 1;
 					if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
