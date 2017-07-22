@@ -1,4 +1,9 @@
 ----------------------------------------
+//1300 [2017/07/22] by refis
+
+・luascriptシステムの実装準備 (Auriga-14.sln, vc_make.bat, vc_clean.bat, bcc32_make.bat, bcc32_clean.bat, map.c, luascript.*, lua_auriga.conf, common/lua)
+
+----------------------------------------
 //1299 [2017/07/22] by refis
 
 ・討伐系クエストでクラッシュしてしまう不具合を修正 (quest.*)

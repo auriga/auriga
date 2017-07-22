@@ -72,6 +72,7 @@
 #include "elem.h"
 #include "memorial.h"
 #include "extra.h"
+#include "luascript.h"
 
 // ‹É—Í static‚Åƒ[ƒJƒ‹‚Éû‚ß‚é
 static struct dbt *id_db        = NULL;
@@ -2991,6 +2992,7 @@ void do_final(void)
 	do_final_friend();
 	do_final_unit();
 	do_final_mob();
+	do_final_luascript();
 	do_final_atcommand();
 
 	for(i = 0; i < MAX_FLOORITEM; i++) {
@@ -3133,6 +3135,7 @@ int do_init(int argc,char *argv[])
 	do_init_npc();
 	do_init_memorial();
 	do_init_pc();
+	do_init_luascript();
 	do_init_bonus();
 	do_init_party();
 	do_init_booking();

@@ -148,12 +148,13 @@ if "%_model_%"=="AMD64" set __cpu__=-6 -Oc -Ov -f -ff -tWM
 if "%_model_%"=="DCORE" set __cpu__=-6 -a16 -C -d -f -ff -Hc -i133 -Jgd -k- -Oc -Oxt -Ve -VF -xf -xp
 
 set __define__=%__cpu__% %__PACKETDEF__% -DFD_SETSIZE=4096 -D_WIN32 -DWINDOWS %__base__% %__NO_HTTPD__% %__NO_HTTPD_CGI__% %__NO_CSVDB_SCRIPT__% %__ZLIB__% %__SKIP__% %__PRE_RENEWAL__% %__EXCLASS__% %__DYNAMIC_STATUS_CHANGE__% %__AC_MAIL__% %__AC_BIRTHDATE__% %__NO_SCDATA_SAVING__% %__TIMER_CACHE__%
-set __include__=-I../common/ -I../common/zlib/ %__sqlinclude__%
+set __include__=-I../common/ -I../common/lua/ -I../common/zlib/ %__sqlinclude__%
 
 if "%__ZLIB__%"=="" goto NOZLIB
 set __common__=..\common\zlib\*.c
 :NOZLIB
 set __common__=..\common\*.c %__common__%
+set __lualib__=-L..\common\lua lualib.lib
 
 if "%__base__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
@@ -175,17 +176,22 @@ if "%__base__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 set __warning__=-w-8004 -w-8008 -w-8012 -w-8057 -w-8060 -w-8066
 
+@echo luaコンパイル
+cd src\common\lua
+bcc32 -j255 -c *.c
+tlib lualib.lib /a *.obj
+
 @echo ログインサーバーコンパイル
-cd src\login
-bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
+cd ..\..\login
+bcc32 -j255 -M -e..\..\login-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__% %__lualib__%
 
 @echo キャラクターサーバーコンパイル
 cd ..\char
-bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
+bcc32 -j255 -M -e..\..\char-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__% %__lualib__%
 
 @echo マップサーバーコンパイル
 cd ..\map
-bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__%
+bcc32 -j255 -M -e..\..\map-server.exe %__warning__% %__define__% %__include__% *.c .\%__dbmode__%\*.c %__common__% %__sqllib__% %__lualib__%
 
 @rem 必要なら txt-converter をコンパイル
 if NOT "%__base__%"=="" goto NOCONVERTER1
@@ -197,6 +203,8 @@ bcc32 -j255 -M -e..\..\txt-converter.exe %__warning__% %__define__% %__include__
 
 cd ..\..\
 @echo オブジェクトファイル等のクリーンアップ
+del src\common\lua\*.obj > NUL
+del src\common\lua\*.lib > NUL
 del src\char\*.obj > NUL
 del src\login\*.obj > NUL
 del src\map\*.obj > NUL

@@ -2,6 +2,8 @@ del login-server.exe
 del char-server.exe
 del map-server.exe
 del txt-converter.exe
+del src\common\lua\*.obj
+del src\common\lua\*.lib
 del src\char\*.obj
 del src\login\*.obj
 del src\map\*.obj
