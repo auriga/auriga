@@ -343,6 +343,7 @@ cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 echo luaのコンパイル
 cd ..\lua
 cl %__BITOPTION__% /D "_LIB" /c *.c
+del lua.obj luac.obj
 lib /out:lualib.lib *.obj
 
 echo 共通コンポーネントのコンパイル

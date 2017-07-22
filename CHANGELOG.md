@@ -1,4 +1,18 @@
 ----------------------------------------
+//1301 [2017/07/23] by refis
+
+・ランダムオプションシステムの実装
+ (lua_auriga.conf, bonus.*, itemdb.*, luascript.c, map.h, mob.c, status.c, db/item_randopt_db.lua)
+
+・db_ref.txtの更新（db_ref.txt）
+	Thanks mcrx さん
+
+・ビルド中のワーニングを修正（vc_make.bat, vc_make_appveyor.bat）
+	Thanks mcrx さん
+
+・item_db更新時に余分なスロットが変更されていた箇所を訂正（item_db.txt）
+
+----------------------------------------
 //1300 [2017/07/22] by refis
 
 ・luascriptシステムの実装準備 (Auriga-14.sln, vc_make.bat, vc_clean.bat, bcc32_make.bat, bcc32_clean.bat, map.c, luascript.*, lua_auriga.conf, common/lua)

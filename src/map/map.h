@@ -516,7 +516,7 @@ struct map_session_data {
 	short view_class;
 	struct pc_base_job s_class;
 
-	short weapontype1,weapontype2;	// ?WT_MAX
+	short weapontype1,weapontype2;	// Å`WT_MAX
 	int paramb[6],paramc[6],parame[6],paramcard[6];
 	int hit,flee,flee2,aspd,amotion,dmotion;
 	int watk,watk2,atkmods[MAX_SIZE_FIX];
@@ -1181,6 +1181,7 @@ struct delay_item_drop {
 	short m,x,y;
 	int nameid,amount;
 	int first_id,second_id,third_id;
+	int randopt;
 };
 
 struct delay_item_drop2 {

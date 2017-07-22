@@ -28,6 +28,9 @@
 #define MAX_RAND_ITEM_ENTRY		1000
 #define MAX_RAND_ITEM_AMOUNT	10000
 
+#define MAX_RANDOPT_ENTRY		100
+#define MAX_RANDOPT_TABLE		20
+
 struct item_data {
 	int nameid;
 	char name[48];
@@ -83,6 +86,18 @@ struct random_item_data {
 	int entry;
 };
 
+struct randopt_item_data {
+	int nameid;
+	int mobid;
+	struct {
+		int slot;
+		int optid;
+		int optval_min;
+		int optval_max;
+		int rate;
+	} opt[MAX_RANDOPT_TABLE];
+};
+
 struct item_data* itemdb_searchname(const char *name);
 struct item_data* itemdb_search(int nameid);
 struct item_data* itemdb_exists(int nameid);
@@ -129,6 +144,12 @@ int itemdb_isbuyingable(int nameid);
 int itemdb_isnonconsume(int nameid);
 
 int itemdb_idsearch(const int fd, const char *str, int (*func)(void*, void*, va_list));
+
+int itemdb_randopt_mob(int mobid);
+int itemdb_randopt_item(int nameid);
+struct randopt_item_data itemdb_randopt_data(int mobid, int nameid);
+
+int itemdb_insert_randoptdb(struct randopt_item_data ro);
 
 void itemdb_reload(void);
 void do_final_itemdb(void);

@@ -1508,6 +1508,29 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 	temp_item.identify = !itemdb_isequip3(temp_item.nameid);
 	if(battle_config.itemidentify)
 		temp_item.identify = 1;
+	if(ditem->randopt) {
+		struct randopt_item_data ro = itemdb_randopt_data(ditem->randopt, temp_item.nameid);
+		if(ro.nameid) {
+			int i, slot = 0;
+			int rate = 0;
+			for(i = 0; i < sizeof(ro.opt) / sizeof(ro.opt[0]); i++) {
+				if(ro.opt[i].slot != slot)
+					rate = 0;
+				slot = ro.opt[i].slot;
+				if(temp_item.opt[slot].id > 0)
+					continue;
+				rate += ro.opt[i].rate;
+				if(rate >= atn_rand()%10000) {
+					temp_item.opt[slot].id = ro.opt[i].optid;
+					if(ro.opt[i].optval_min != ro.opt[i].optval_max)
+						temp_item.opt[slot].val = ro.opt[i].optval_min + atn_rand() % (ro.opt[i].optval_max - ro.opt[i].optval_min + 1);
+					else
+						temp_item.opt[slot].val = ro.opt[i].optval_min;
+					rate = 0;
+				}
+			}
+		}
+	}
 
 	if(ditem->first_id > 0) {
 		struct map_session_data *sd = map_id2sd(ditem->first_id);
@@ -2093,6 +2116,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 	// item drop
 	if(!(type&1) && !map[md->bl.m].flag.nodrop && !md->state.rebirth) {
 		if(!md->state.nodrop) {
+			int r = 0;
+			if(itemdb_randopt_mob(md->class_))
+				r = md->class_;
+
 			for(i=0; i<ITEM_DROP_COUNT; i++) {
 				int itemid;
 				struct delay_item_drop *ditem;
@@ -2119,6 +2146,11 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
+				ditem->randopt   = 0;
+				if(itemdb_isequip3(itemid) && itemdb_randopt_item(itemid)) {
+					ditem->randopt = r;
+				}
+
 				add_timer2(tick+500+i,mob_delay_item_drop,0,ditem);
 			}
 		}
@@ -2154,6 +2186,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 					ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 					ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
+					ditem->randopt   = 0;
 					add_timer2(tick+520+i,mob_delay_item_drop,0,ditem);
 				}
 			}
@@ -2181,6 +2214,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
 				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
 				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
+				ditem->randopt   = 0;
 				add_timer2(tick + 520 + i, mob_delay_item_drop, 0, ditem);
 			}
 		}

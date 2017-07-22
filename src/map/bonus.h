@@ -35,8 +35,8 @@ enum {
 	EAS_SELF        = 0x00000020,	// 自分に使う
 	EAS_TARGET_RAND = 0x00000040,	// 自分か攻撃対象に使う
 	//EAS_TARGET    = 0x00000080,	// 自分か攻撃対象に使う
-	EAS_FLUCT       = 0x00000100,	// 旧AS用 1?3のあれ
-	EAS_RANDOM      = 0x00000200,	// 1?指定までランダム
+	EAS_FLUCT       = 0x00000100,	// 旧AS用 1～3のあれ
+	EAS_RANDOM      = 0x00000200,	// 1～指定までランダム
 	EAS_USEMAX      = 0x00000400,	// MAXレベルがあればそれを
 	EAS_USEBETTER   = 0x00000800,	// 指定以上のものがあればそれを(MAXじゃなくても可能)
 	EAS_NOSP        = 0x00001000,	// SP0
@@ -60,6 +60,7 @@ int bonus_param1(struct map_session_data *sd,int type,int val);
 int bonus_param2(struct map_session_data *sd,int type,int type2,int val);
 int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int val);
 int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int type4,unsigned int val);
+int bonus_randopt(struct map_session_data *sd,int id,int val);
 
 int do_final_bonus(void);
 int do_init_bonus(void);

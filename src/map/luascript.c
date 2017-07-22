@@ -411,6 +411,78 @@ int do_final_luascript(void)
 // 埋め込み関数
 //
 
+/*==========================================
+ * item_randopt_db.lua
+ *------------------------------------------
+ */
+static int luafunc_addrandopt(lua_State *NL)
+{
+	int nameid, mob_id, val;
+	int i=0;
+	struct randopt_item_data ro;
+
+	memset(&ro, 0, sizeof(ro));
+
+	nameid=luaL_checkint(NL,1);
+	if(!itemdb_exists(nameid))
+		return 0;
+	ro.nameid = nameid;
+
+	mob_id=luaL_checkint(NL,2);
+	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+		return 0;
+	ro.mobid = mob_id;
+
+	lua_pushnil(NL);
+	while(lua_next(NL, 3)) {
+		if(lua_istable(NL,-1)) {
+			lua_pushnil(NL);
+			while(lua_next(NL, -2)) {
+				switch(luaL_checkint(NL,-2)) {  // key を表示
+				case 1:
+					val = luaL_checkint(NL,-1) - 1;
+					if(val < 0 || val >= 5)
+						val = 0;
+					ro.opt[i].slot = val;
+					break;
+				case 2:
+					ro.opt[i].optid = luaL_checkint(NL,-1);
+					break;
+				case 3:
+					if(lua_istable(NL,-1)) {
+						lua_rawgeti(NL,-1,1);
+						ro.opt[i].optval_min = luaL_checkint(NL,-1);
+						lua_pop(NL, 1);      // 値を取り除く
+						lua_rawgeti(NL,-1,2);
+						ro.opt[i].optval_max = luaL_checkint(NL,-1);
+						lua_pop(NL, 1);      // 値を取り除く
+					}
+					else {
+						val = luaL_checkint(NL,-1);
+						ro.opt[i].optval_min = val;
+						ro.opt[i].optval_max = val;
+					}
+					break;
+				case 4:
+					ro.opt[i].rate = luaL_checkint(NL,-1);
+					break;
+				}
+				lua_pop(NL, 1);      // 値を取り除く
+			}
+			lua_pop(NL, 1);      // 値を取り除く
+			if(++i >= MAX_RANDOPT_TABLE)
+				break;
+		}
+	}
+	lua_pop(NL, 3);      // 値を取り除く
+
+	itemdb_insert_randoptdb(ro);
+
+	return 0;
+}
+
 const struct Lua_function luafunc[] = {
+	{"addrandopt",luafunc_addrandopt},
+
 	{NULL,NULL}
 };

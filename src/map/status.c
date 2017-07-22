@@ -50,6 +50,7 @@
 #include "merc.h"
 #include "elem.h"
 #include "msg.h"
+#include "bonus.h"
 
 static struct job_db {
 	int max_weight_base;
@@ -679,8 +680,9 @@ L_RECALC:
 
 		if(sd->inventory_data[idx]) {
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
+				int j;
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
-					int j, c;
+					int c;
 					for(j=0; j<4; j++) {	// カード
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
@@ -695,10 +697,19 @@ L_RECALC:
 						sd->state.lr_flag = 0;
 					}
 				}
+				for(j=0; j<5; j++) {	// ランダムオプション
+					if(sd->status.inventory[idx].opt[j].id <= 0)
+						continue;
+					if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
+						sd->state.lr_flag = 1;
+					bonus_randopt(sd, sd->status.inventory[idx].opt[j].id, sd->status.inventory[idx].opt[j].val);
+					sd->state.lr_flag = 0;
+				}
 			}
 			else if(itemdb_isarmor(sd->inventory_data[idx]->nameid)) { // 防具
+				int j;
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
-					int j, c;
+					int c;
 					for(j=0; j<4; j++) {	// カード
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
@@ -709,6 +720,11 @@ L_RECALC:
 							run_script(itemdb_usescript(c),0,sd->bl.id,0);
 						run_script(itemdb_equipscript(c),0,sd->bl.id,0);
 					}
+				}
+				for(j=0; j<5; j++) {	// ランダムオプション
+					if(sd->status.inventory[idx].opt[j].id <= 0)
+						continue;
+					bonus_randopt(sd, sd->status.inventory[idx].opt[j].id, sd->status.inventory[idx].opt[j].val);
 				}
 			}
 		}

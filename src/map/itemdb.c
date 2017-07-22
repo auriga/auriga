@@ -44,6 +44,7 @@
 
 static struct dbt* item_db = NULL;
 static struct random_item_data random_item[MAX_RAND_ITEM_TYPE];
+static struct randopt_item_data randopt_item[MAX_RANDOPT_ENTRY];
 
 /*==========================================
  * 名前で検索
@@ -105,6 +106,54 @@ int itemdb_searchrandomid(int type)
 		return random_item[type].data[i].nameid;
 	}
 	return 0;
+}
+
+/*==========================================
+ * ランダムオプションMOB存在確認
+ *------------------------------------------
+ */
+int itemdb_randopt_mob(int mobid)
+{
+	int i;
+
+	for(i=0; i < MAX_RANDOPT_ENTRY; i++) {
+		if(mobid == randopt_item[i].mobid)
+			return 1;
+	}
+	return 0;
+}
+
+/*==========================================
+ * ランダムオプションITEM存在確認
+ *------------------------------------------
+ */
+int itemdb_randopt_item(int nameid)
+{
+	int i;
+
+	for(i=0; i < MAX_RANDOPT_ENTRY; i++) {
+		if(nameid == randopt_item[i].nameid)
+			return 1;
+	}
+	return 0;
+}
+
+/*==========================================
+ * ランダムオプションDATA検索
+ *------------------------------------------
+ */
+struct randopt_item_data itemdb_randopt_data(int mobid, int nameid)
+{
+	int i;
+	struct randopt_item_data ro;
+
+	memset(&ro,0,sizeof(ro));
+
+	for(i=0; i < MAX_RANDOPT_ENTRY; i++)
+		if(mobid == randopt_item[i].mobid && nameid == randopt_item[i].nameid)
+			return randopt_item[i];
+
+	return ro;
 }
 
 /*==========================================
@@ -969,6 +1018,26 @@ static int itemdb_read_cardillustnametable(void)
 	aFree(buf);
 	printf("read data\\num2cardillustnametable.txt done.\n");
 
+	return 0;
+}
+
+/*==========================================
+ * ランダムオプションDBの登録
+ *------------------------------------------
+ */
+int itemdb_insert_randoptdb(struct randopt_item_data ro)
+{
+	static int randopt_init;
+
+	if(!randopt_init++)
+		memset(&randopt_item, 0, sizeof(randopt_item));
+
+	if(randopt_init > MAX_RANDOPT_ENTRY)
+		return 0;
+
+	randopt_item[randopt_init - 1] = ro;
+
+	printf("read db/item_randopt_db.lua done (count=%d)\n\r", randopt_init);
 	return 0;
 }
 
