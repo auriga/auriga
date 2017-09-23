@@ -1,4 +1,10 @@
 ----------------------------------------
+//1304 [2017/09/24] by refis
+
+・item_db.txt, item_db2.txt, item_cardtype.txtの更新
+	Special Thanks mcrx さん!!
+
+----------------------------------------
 //1303 [2017/08/16] by refis
 
 ・mob_db.txt, item_db.txtの更新
