@@ -1,4 +1,13 @@
 ----------------------------------------
+//1305 [2017/09/24] by refis
+
+・item_randopt_db.luaにデータを追加できないミスを修正（item_randopt_db.lua）
+	Thanks Alt さん
+
+・ランダムオプションのコンパイルエラーを修正（bonus.c）
+	Thanks wool さん、mcrx さん
+
+----------------------------------------
 //1304 [2017/09/24] by refis
 
 ・item_db.txt, item_db2.txt, item_cardtype.txtの更新

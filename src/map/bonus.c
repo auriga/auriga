@@ -1944,7 +1944,8 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case 35:
 		if(sd->state.lr_flag != 2) {
 			if(id == 35) {
-				for(int i=0;i<ELE_MAX;i++)
+				int i;
+				for(i=0;i<ELE_MAX;i++)
 					sd->subele[i] += val;
 			}
 			else

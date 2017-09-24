@@ -12,12 +12,12 @@ ItemRandoptTBL =
 function main()
 	for k,v in pairs(ItemRandoptTBL) do
 		result,msg = addrandopt(v.ID,v.MOB_ID,v.Option);
-		if(not result) then
-			return false,msg;
+		if(result) then
+			return true,"Success";
 		end
 	end
 
-	return true,"Success";
+	return false,msg;
 end
 
 main()
