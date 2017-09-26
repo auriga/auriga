@@ -147,10 +147,12 @@ $RECYCLE.BIN/
 
 
 ### Auriga
-src/*/*/GNUmakefile
-src/*/GNUmakefile
+src/**/GNUmakefile
 src/common/lua/lua
 src/common/lua/luac
-login-server
-char-server
-map-server
+/log/
+/save/
+/login-server
+/char-server
+/map-server
+*.pid
