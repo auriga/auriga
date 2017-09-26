@@ -14,7 +14,7 @@ else
 endif
 
 map-server: $(MAP_SRC:.c=.o) $(COMMON_SRC:.c=.o)
-	$(CC) -o ../../$@ $> $(LIBS)
+	$(CC) -o ../../$@ $> $(LIBS) ../common/lua/liblua.a
 
 clean:
 	rm -f *.o

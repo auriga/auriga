@@ -67,7 +67,7 @@ else
     MAKE = make
 endif
 
-CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -I../common $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
 LIBS = -lm
 
 #Link Zlib(NOTrecommended)
@@ -77,12 +77,26 @@ LIBS = -lm
 CFLAGS += -g
 
 #optimize(recommended)
+CFLAGS += -Og
 #CFLAGS += -O2
-CFLAGS += -O3
-CFLAGS += -ffast-math
+#CFLAGS += -O3
+#CFLAGS += -ffast-math
 
 ifeq ($(GCC_VERSION), 4)
-    CFLAGS += -Wno-unused-parameter -Wno-pointer-sign -fno-strict-aliasing
+    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
+    CFLAGS += -fno-strict-aliasing
+endif
+ifeq ($(GCC_VERSION), 5)
+    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
+    CFLAGS += -fno-strict-aliasing
+endif
+ifeq ($(GCC_VERSION), 6)
+    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
+    CFLAGS += -fno-strict-aliasing
+endif
+ifeq ($(GCC_VERSION), 7)
+    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
+    CFLAGS += -fno-strict-aliasing
 endif
 
 ifdef SQLFLAG
@@ -276,6 +290,7 @@ MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" LIBS="$(LIBS)"
 
 all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
 	cd src ; cd common ; $(MAKE) $(MKDEF) $@ ; cd ..
+	cd src ; cd common ; cd lua ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd common ; cd zlib ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd login ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd char ; $(MAKE) $(MKDEF) $@ ; cd ..
@@ -285,6 +300,7 @@ all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakef
 ifdef SQLFLAG
 sql: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
 	cd src ; cd common ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
+	cd src ; cd common ; cd lua ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd common ; cd zlib ; $(MAKE) $(MKDEF) $@ ; cd ..
 	cd src ; cd login ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
 	cd src ; cd char ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
@@ -297,6 +313,8 @@ endif
 
 src/common/GNUmakefile: src/common/Makefile
 	sed -e 's/$$>/$$^/' src/common/Makefile > src/common/GNUmakefile
+src/common/lua/GNUmakefile: src/common/lua/Makefile
+	sed -e 's/$$>/$$^/' src/common/lua/Makefile > src/common/lua/GNUmakefile
 src/common/zlib/GNUmakefile: src/common/zlib/Makefile
 	sed -e 's/$$>/$$^/' src/common/zlib/Makefile > src/common/zlib/GNUmakefile
 src/login/GNUmakefile: src/login/Makefile
