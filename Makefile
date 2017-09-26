@@ -3,7 +3,8 @@
 CC = gcc -pipe
 
 # Detecting gcc version
-GCC_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
+GCC_MAJOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
+GCC_MINOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f2)
 
 # 2013-12-23cRagexeRE: 20131223
 # 2013-07-31aRagexeRE: 20130731
@@ -67,7 +68,7 @@ else
     MAKE = make
 endif
 
-CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
 LIBS = -lm
 
 #Link Zlib(NOTrecommended)
@@ -77,27 +78,39 @@ LIBS = -lm
 CFLAGS += -g
 
 #optimize(recommended)
-CFLAGS += -Og
 #CFLAGS += -O2
 #CFLAGS += -O3
 #CFLAGS += -ffast-math
+ifeq ($(GCC_MAJOR_VERSION), 4)
+    ifeq ($(GCC_MINOR_VERSION), 7)
+        CFLAGS += -O2
+    endif
+    ifeq ($(GCC_MINOR_VERSION), 8)
+        CFLAGS += -Og
+    endif
+    ifeq ($(GCC_MINOR_VERSION), 9)
+        CFLAGS += -Og
+    endif
+endif
+ifeq ($(GCC_MAJOR_VERSION), 5)
+    CFLAGS += -Og
+endif
+ifeq ($(GCC_MAJOR_VERSION), 6)
+    CFLAGS += -Og
+endif
+ifeq ($(GCC_MAJOR_VERSION), 7)
+    CFLAGS += -Og
+endif
 
-ifeq ($(GCC_VERSION), 4)
-    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
-    CFLAGS += -fno-strict-aliasing
-endif
-ifeq ($(GCC_VERSION), 5)
-    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
-    CFLAGS += -fno-strict-aliasing
-endif
-ifeq ($(GCC_VERSION), 6)
-    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
-    CFLAGS += -fno-strict-aliasing
-endif
-ifeq ($(GCC_VERSION), 7)
-    CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable -Wno-pointer-sign
-    CFLAGS += -fno-strict-aliasing
-endif
+# C Standard - ISO/IEC 9899:1999
+CFLAGS += -std=c99
+
+# Ignore Warning
+CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable
+CFLAGS += -Wno-pointer-sign -Wno-sign-compare
+
+# No Strict Aliasing
+CFLAGS += -fno-strict-aliasing
 
 ifdef SQLFLAG
     CFLAGS += -I$(MYSQL_INCLUDE)
