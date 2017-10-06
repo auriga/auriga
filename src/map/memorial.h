@@ -63,6 +63,8 @@ struct memorial_data {
 	} map[MAX_MEMORIAL_SEGMAP];
 };
 
+int memorial_search_party(int id);
+
 int memorial_create(const char *memorial_name, int party_id);
 int memorial_delete(int memorial_id);
 int memorial_enter(struct map_session_data *sd, const char *memorial_name);

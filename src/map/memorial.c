@@ -96,6 +96,22 @@ static struct memorial_db *memorial_searchname_db(const char *memorial_name)
 }
 
 /*==========================================
+ * PTIDからメモリアルDATAのIDを検索
+ *------------------------------------------
+ */
+int memorial_search_party(int id)
+{
+	int i;
+
+	for(i = 0; i < MAX_MEMORIAL_DATA; i++) {
+		if(memorial_data[i].party_id == id)
+			return i + 1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * メモリアルダンジョン削除タイマー
  *------------------------------------------
  */

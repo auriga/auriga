@@ -245,7 +245,7 @@ void party_recv_info(struct party *sp)
 	}
 
 	// ƒƒ‚ƒŠƒAƒ‹ƒ_ƒ“ƒWƒ‡ƒ“ID‚ÌˆêŽž•Û‘¶•‘‚«–ß‚µ
-	memorial_id = p->memorial_id;
+	memorial_id = memorial_search_party(sp->party_id);
 	memcpy(p,sp,sizeof(struct party));
 	p->memorial_id = memorial_id;
 
