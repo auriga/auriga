@@ -565,6 +565,7 @@ L_RECALC:
 	memset(sd->magic_addele,0,sizeof(sd->magic_addele));
 	memset(sd->magic_addrace,0,sizeof(sd->magic_addrace));
 	memset(sd->magic_addenemy,0,sizeof(sd->magic_addenemy));
+	memset(sd->magic_addsize,0,sizeof(sd->magic_addsize));
 	memset(sd->magic_addeff,0,sizeof(sd->magic_addeff));
 	memset(sd->magic_subrace,0,sizeof(sd->magic_subrace));
 	sd->perfect_hit = 0;

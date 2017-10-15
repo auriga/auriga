@@ -1117,6 +1117,12 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		if(sd->state.lr_flag != 2)
 			sd->magic_addenemy[type2] += val;
 		break;
+	case SP_MAGIC_ADDSIZE:
+		if(type2 < 0 || type2 >= MAX_SIZE_FIX)
+			break;
+		if(sd->state.lr_flag != 2)
+			sd->magic_addsize[type2] += val;
+		break;
 	case SP_ADDEFFMAGIC:
 		if(type2 < 0 || type2 >= MAX_EFF_TYPE)
 			break;
@@ -1832,40 +1838,40 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	nullpo_retr(0, sd);
 
 	switch(id) {
-	case 1:
+	case OPT_MAXHPAMOUNT:
 		if(sd->state.lr_flag != 2)
 			sd->status.max_hp += val;
 		break;
-	case 2:
+	case OPT_MAXSPAMOUNT:
 		if(sd->state.lr_flag != 2)
 			sd->status.max_sp += val;
 		break;
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	case 8:
+	case OPT_STRAMOUNT:
+	case OPT_AGIAMOUNT:
+	case OPT_VITAMOUNT:
+	case OPT_INTAMOUNT:
+	case OPT_DEXAMOUNT:
+	case OPT_LUKAMOUNT:
 		if(sd->state.lr_flag != 2)
-			sd->parame[id-3] += val;
+			sd->parame[id-OPT_STRAMOUNT] += val;
 		break;
-	case 9:
+	case OPT_MAXHPPERCENT:
 		if(sd->state.lr_flag != 2)
 			sd->hprate += val;
 		break;
-	case 10:
+	case OPT_MAXSPPERCENT:
 		if(sd->state.lr_flag != 2)
 			sd->sprate += val;
 		break;
-	case 11:
+	case OPT_HPACCELERATION:
 		if(sd->state.lr_flag != 2)
 			sd->hprecov_rate += val;
 		break;
-	case 12:
+	case OPT_SPACCELERATION:
 		if(sd->state.lr_flag != 2)
 			sd->sprecov_rate += val;
 		break;
-	case 13:
+	case OPT_ATKPERCENT:
 		if(!sd->state.lr_flag) {
 			sd->addrace[RCT_BOSS] += val;
 			sd->addrace[RCT_NONBOSS] += val;
@@ -1877,21 +1883,21 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 			sd->arrow_addrace[RCT_NONBOSS] += val;
 		}
 		break;
-	case 14:
+	case OPT_MAGICATKPERCENT:
 		if(sd->state.lr_flag != 2) {
 			sd->magic_addrace[RCT_BOSS] += val;
 			sd->magic_addrace[RCT_NONBOSS] += val;
 		}
 		break;
-	case 15:
+	case OPT_PLUSASPD:
 		if(sd->state.lr_flag != 2)
 			sd->aspd_add -= val*10;
 		break;
-	case 16:
+	case OPT_PLUSASPDPERCENT:
 		if(sd->state.lr_flag != 2)
 			sd->aspd_add_rate += val;
 		break;
-	case 17:
+	case OPT_ATTPOWER:
 		if(sd->state.lr_flag != 2)
 #ifdef PRE_RENEWAL
 			sd->base_atk += val;
@@ -1899,13 +1905,13 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 			sd->plus_atk += val;
 #endif
 		break;
-	case 18:
+	case OPT_HITSUCCESSVALUE:
 		if(sd->state.lr_flag != 2)
 			sd->hit += val;
 		else
 			sd->arrow_hit += val;
 		break;
-	case 19:
+	case OPT_ATTMPOWER:
 		if(sd->state.lr_flag != 2) {
 #ifdef PRE_RENEWAL
 			sd->matk1 += val;
@@ -1915,203 +1921,203 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 #endif
 		}
 		break;
-	case 20:
+	case OPT_ITEMDEFPOWER:
 		if(sd->state.lr_flag != 2)
 			sd->def += val;
 		break;
-	case 21:
+	case OPT_MDEFPOWER:
 		if(sd->state.lr_flag != 2)
 			sd->mdef += val;
 		break;
-	case 22:
+	case OPT_AVOIDSUCCESSVALUE:
 		if(sd->state.lr_flag != 2)
 			sd->flee += val;
 		break;
-	case 23:
+	case OPT_PLUSAVOIDSUCCESSVALUE:
 		if(sd->state.lr_flag != 2)
 			sd->flee2 += val*10;
 		break;
-	case 24:
+	case OPT_CRITICALSUCCESSVALUE:
 		if(sd->state.lr_flag != 2)
 			sd->critical += val*10;
 		else
 			sd->arrow_cri += val*10;
 		break;
-	case 25:
-	case 26:
-	case 27:
-	case 28:
-	case 29:
-	case 30:
-	case 31:
-	case 32:
-	case 33:
-	case 34:
-	case 35:
+	case OPT_ATTR_TOLERACE_NOTHING:
+	case OPT_ATTR_TOLERACE_WATER:
+	case OPT_ATTR_TOLERACE_GROUND:
+	case OPT_ATTR_TOLERACE_FIRE:
+	case OPT_ATTR_TOLERACE_WIND:
+	case OPT_ATTR_TOLERACE_POISON:
+	case OPT_ATTR_TOLERACE_SAINT:
+	case OPT_ATTR_TOLERACE_DARKNESS:
+	case OPT_ATTR_TOLERACE_TELEKINESIS:
+	case OPT_ATTR_TOLERACE_UNDEAD:
+	case OPT_ATTR_TOLERACE_ALL:
 		if(sd->state.lr_flag != 2) {
-			if(id == 35) {
+			if(id == OPT_ATTR_TOLERACE_ALL) {
 				int i;
 				for(i=0;i<ELE_MAX;i++)
 					sd->subele[i] += val;
 			}
 			else
-				sd->subele[id-25] += val;
+				sd->subele[id-OPT_ATTR_TOLERACE_NOTHING] += val;
 		}
 		break;
-	case 36:
-	case 38:
-	case 40:
-	case 42:
-	case 44:
-	case 46:
-	case 48:
-	case 50:
-	case 52:
-	case 54:
+	case OPT_DAMAGE_ELE_NOTHING_USER:
+	case OPT_DAMAGE_ELE_WATER_USER:
+	case OPT_DAMAGE_ELE_GROUND_USER:
+	case OPT_DAMAGE_ELE_FIRE_USER:
+	case OPT_DAMAGE_ELE_WIND_USER:
+	case OPT_DAMAGE_ELE_POISON_USER:
+	case OPT_DAMAGE_ELE_SAINT_USER:
+	case OPT_DAMAGE_ELE_DARKNESS_USER:
+	case OPT_DAMAGE_ELE_TELEKINESIS_USER:
+	case OPT_DAMAGE_ELE_UNDEAD_USER:
 		if(sd->state.lr_flag != 2)
-			sd->def_eleenemy[(id+1-36)/2] += val;
+			sd->def_eleenemy[(id+1-OPT_DAMAGE_ELE_NOTHING_USER)/2] += val;
 		break;
-	case 37:
-	case 39:
-	case 41:
-	case 43:
-	case 45:
-	case 47:
-	case 49:
-	case 51:
-	case 53:
-	case 55:
+	case OPT_DAMAGE_ELE_NOTHING_TARGET:
+	case OPT_DAMAGE_ELE_WATER_TARGET:
+	case OPT_DAMAGE_ELE_GROUND_TARGET:
+	case OPT_DAMAGE_ELE_FIRE_TARGET:
+	case OPT_DAMAGE_ELE_WIND_TARGET:
+	case OPT_DAMAGE_ELE_POISON_TARGET:
+	case OPT_DAMAGE_ELE_SAINT_TARGET:
+	case OPT_DAMAGE_ELE_DARKNESS_TARGET:
+	case OPT_DAMAGE_ELE_TELEKINESIS_TARGET:
+	case OPT_DAMAGE_ELE_UNDEAD_TARGET:
 		if(!sd->state.lr_flag)
-			sd->addele[(id+1-37)/2] += val;
+			sd->addele[(id+1-OPT_DAMAGE_ELE_NOTHING_TARGET)/2] += val;
 		else if(sd->state.lr_flag == 1)
-			sd->addele_[(id+1-37)/2] += val;
+			sd->addele_[(id+1-OPT_DAMAGE_ELE_NOTHING_TARGET)/2] += val;
 		else if(sd->state.lr_flag == 2)
-			sd->arrow_addele[(id+1-37)/2] += val;
+			sd->arrow_addele[(id+1-OPT_DAMAGE_ELE_NOTHING_TARGET)/2] += val;
 		break;
-	case 56:
-	case 58:
-	case 60:
-	case 62:
-	case 64:
-	case 66:
-	case 68:
-	case 70:
-	case 72:
-	case 74:
+	case OPT_MDAMAGE_ELE_NOTHING_USER:
+	case OPT_MDAMAGE_ELE_WATER_USER:
+	case OPT_MDAMAGE_ELE_GROUND_USER:
+	case OPT_MDAMAGE_ELE_FIRE_USER:
+	case OPT_MDAMAGE_ELE_WIND_USER:
+	case OPT_MDAMAGE_ELE_POISON_USER:
+	case OPT_MDAMAGE_ELE_SAINT_USER:
+	case OPT_MDAMAGE_ELE_DARKNESS_USER:
+	case OPT_MDAMAGE_ELE_TELEKINESIS_USER:
+	case OPT_MDAMAGE_ELE_UNDEAD_USER:
 		if(sd->state.lr_flag != 2)
-			sd->def_eleenemy[(id+1-36)/2] += val;
+			sd->def_eleenemy[(id+1-OPT_MDAMAGE_ELE_NOTHING_USER)/2] += val;
 		break;
-	case 57:
-	case 59:
-	case 61:
-	case 63:
-	case 65:
-	case 67:
-	case 69:
-	case 71:
-	case 73:
-	case 75:
+	case OPT_MDAMAGE_ELE_NOTHING_TARGET:
+	case OPT_MDAMAGE_ELE_WATER_TARGET:
+	case OPT_MDAMAGE_ELE_GROUND_TARGET:
+	case OPT_MDAMAGE_ELE_FIRE_TARGET:
+	case OPT_MDAMAGE_ELE_WIND_TARGET:
+	case OPT_MDAMAGE_ELE_POISON_TARGET:
+	case OPT_MDAMAGE_ELE_SAINT_TARGET:
+	case OPT_MDAMAGE_ELE_DARKNESS_TARGET:
+	case OPT_MDAMAGE_ELE_TELEKINESIS_TARGET:
+	case OPT_MDAMAGE_ELE_UNDEAD_TARGET:
 		if(sd->state.lr_flag != 2)
-			sd->magic_addele[(id+1-57)/2] += val;
+			sd->magic_addele[(id+1-OPT_MDAMAGE_ELE_NOTHING_TARGET)/2] += val;
 		break;
-	case 76:
-	case 77:
-	case 78:
-	case 79:
-	case 80:
-	case 81:
-	case 82:
-	case 83:
-	case 84:
-	case 85:
-	case 86:
+	case OPT_BODY_ATTR_NOTHING:
+	case OPT_BODY_ATTR_WATER:
+	case OPT_BODY_ATTR_GROUND:
+	case OPT_BODY_ATTR_FIRE:
+	case OPT_BODY_ATTR_WIND:
+	case OPT_BODY_ATTR_POISON:
+	case OPT_BODY_ATTR_SAINT:
+	case OPT_BODY_ATTR_DARKNESS:
+	case OPT_BODY_ATTR_TELEKINESIS:
+	case OPT_BODY_ATTR_UNDEAD:
+	case OPT_BODY_ATTR_ALL:
 		if(sd->state.lr_flag != 2)
-			sd->def_ele = id-76;
+			sd->def_ele = id-OPT_BODY_ATTR_NOTHING;
 		break;
-	case 87:
-	case 88:
-	case 89:
-	case 90:
-	case 91:
-	case 92:
-	case 93:
-	case 94:
-	case 95:
-	case 96:
+	case OPT_RACE_TOLERACE_NOTHING:
+	case OPT_RACE_TOLERACE_UNDEAD:
+	case OPT_RACE_TOLERACE_ANIMAL:
+	case OPT_RACE_TOLERACE_PLANT:
+	case OPT_RACE_TOLERACE_INSECT:
+	case OPT_RACE_TOLERACE_FISHS:
+	case OPT_RACE_TOLERACE_DEVIL:
+	case OPT_RACE_TOLERACE_HUMAN:
+	case OPT_RACE_TOLERACE_ANGEL:
+	case OPT_RACE_TOLERACE_DRAGON:
 		if(sd->state.lr_flag != 2)
-			sd->subrace[id-87] += val;
+			sd->subrace[id-OPT_RACE_TOLERACE_NOTHING] += val;
 		break;
-	case 97:
-	case 98:
-	case 99:
-	case 100:
-	case 101:
-	case 102:
-	case 103:
-	case 104:
-	case 105:
-	case 106:
+	case OPT_RACE_DAMAGE_NOTHING:
+	case OPT_RACE_DAMAGE_UNDEAD:
+	case OPT_RACE_DAMAGE_ANIMAL:
+	case OPT_RACE_DAMAGE_PLANT:
+	case OPT_RACE_DAMAGE_INSECT:
+	case OPT_RACE_DAMAGE_FISHS:
+	case OPT_RACE_DAMAGE_DEVIL:
+	case OPT_RACE_DAMAGE_HUMAN:
+	case OPT_RACE_DAMAGE_ANGEL:
+	case OPT_RACE_DAMAGE_DRAGON:
 		if(!sd->state.lr_flag)
-			sd->addrace[id-97] += val;
+			sd->addrace[id-OPT_RACE_DAMAGE_NOTHING] += val;
 		else if(sd->state.lr_flag == 1)
-			sd->addrace_[id-97] += val;
+			sd->addrace_[id-OPT_RACE_DAMAGE_NOTHING] += val;
 		else if(sd->state.lr_flag == 2)
-			sd->arrow_addrace[id-97] += val;
+			sd->arrow_addrace[id-OPT_RACE_DAMAGE_NOTHING] += val;
 		break;
-	case 107:
-	case 108:
-	case 109:
-	case 110:
-	case 111:
-	case 112:
-	case 113:
-	case 114:
-	case 115:
-	case 116:
+	case OPT_RACE_MDAMAGE_NOTHING:
+	case OPT_RACE_MDAMAGE_UNDEAD:
+	case OPT_RACE_MDAMAGE_ANIMAL:
+	case OPT_RACE_MDAMAGE_PLANT:
+	case OPT_RACE_MDAMAGE_INSECT:
+	case OPT_RACE_MDAMAGE_FISHS:
+	case OPT_RACE_MDAMAGE_DEVIL:
+	case OPT_RACE_MDAMAGE_HUMAN:
+	case OPT_RACE_MDAMAGE_ANGEL:
+	case OPT_RACE_MDAMAGE_DRAGON:
 		if(sd->state.lr_flag != 2)
-			sd->magic_addrace[id-107] += val;
+			sd->magic_addrace[id-OPT_RACE_MDAMAGE_NOTHING] += val;
 		break;
-	case 117:
-	case 118:
-	case 119:
-	case 120:
-	case 121:
-	case 122:
-	case 123:
-	case 124:
-	case 125:
-	case 126:
-		sd->critical_race[id-117] += val*10;
+	case OPT_RACE_CRI_NOTHING:
+	case OPT_RACE_CRI_UNDEAD:
+	case OPT_RACE_CRI_ANIMAL:
+	case OPT_RACE_CRI_PLANT:
+	case OPT_RACE_CRI_INSECT:
+	case OPT_RACE_CRI_FISHS:
+	case OPT_RACE_CRI_DEVIL:
+	case OPT_RACE_CRI_HUMAN:
+	case OPT_RACE_CRI_ANGEL:
+	case OPT_RACE_CRI_DRAGON:
+		sd->critical_race[id-OPT_RACE_CRI_NOTHING] += val*10;
 		break;
-	case 127:
-	case 128:
-	case 129:
-	case 130:
-	case 131:
-	case 132:
-	case 133:
-	case 134:
-	case 135:
-	case 136:
+	case OPT_RACE_IGNORE_DEF_NOTHING:
+	case OPT_RACE_IGNORE_DEF_UNDEAD:
+	case OPT_RACE_IGNORE_DEF_ANIMAL:
+	case OPT_RACE_IGNORE_DEF_PLANT:
+	case OPT_RACE_IGNORE_DEF_INSECT:
+	case OPT_RACE_IGNORE_DEF_FISHS:
+	case OPT_RACE_IGNORE_DEF_DEVIL:
+	case OPT_RACE_IGNORE_DEF_HUMAN:
+	case OPT_RACE_IGNORE_DEF_ANGEL:
+	case OPT_RACE_IGNORE_DEF_DRAGON:
 		if(!sd->state.lr_flag)
-			sd->ignore_def_race[id-127] += val;
+			sd->ignore_def_race[id-OPT_RACE_IGNORE_DEF_NOTHING] += val;
 		else if(sd->state.lr_flag == 1)
-			sd->ignore_def_race_[id-127] += val;
+			sd->ignore_def_race_[id-OPT_RACE_IGNORE_DEF_NOTHING] += val;
 		break;
-	case 137:
-	case 138:
-	case 139:
-	case 140:
-	case 141:
-	case 142:
-	case 143:
-	case 144:
-	case 145:
-	case 146:
+	case OPT_RACE_IGNORE_MDEF_NOTHING:
+	case OPT_RACE_IGNORE_MDEF_UNDEAD:
+	case OPT_RACE_IGNORE_MDEF_ANIMAL:
+	case OPT_RACE_IGNORE_MDEF_PLANT:
+	case OPT_RACE_IGNORE_MDEF_INSECT:
+	case OPT_RACE_IGNORE_MDEF_FISHS:
+	case OPT_RACE_IGNORE_MDEF_DEVIL:
+	case OPT_RACE_IGNORE_MDEF_HUMAN:
+	case OPT_RACE_IGNORE_MDEF_ANGEL:
+	case OPT_RACE_IGNORE_MDEF_DRAGON:
 		if(sd->state.lr_flag != 2)
-			sd->ignore_mdef_race[id-137] += val;
+			sd->ignore_mdef_race[id-OPT_RACE_IGNORE_MDEF_NOTHING] += val;
 		break;
-	case 147:
+	case OPT_CLASS_DAMAGE_NORMAL_TARGET:
 		if(!sd->state.lr_flag)
 			sd->addrace[RCT_NONBOSS] += val;
 		else if(sd->state.lr_flag == 1)
@@ -2119,7 +2125,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 		else if(sd->state.lr_flag == 2)
 			sd->arrow_addrace[RCT_NONBOSS] += val;
 		break;
-	case 148:
+	case OPT_CLASS_DAMAGE_BOSS_TARGET:
 		if(!sd->state.lr_flag)
 			sd->addrace[RCT_BOSS] += val;
 		else if(sd->state.lr_flag == 1)
@@ -2127,78 +2133,78 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 		else if(sd->state.lr_flag == 2)
 			sd->arrow_addrace[RCT_BOSS] += val;
 		break;
-	case 149:
+	case OPT_CLASS_DAMAGE_NORMAL_USER:
 		if(sd->state.lr_flag != 2)
 			sd->subrace[RCT_NONBOSS] += val;
 		break;
-	case 150:
+	case OPT_CLASS_DAMAGE_BOSS_USER:
 		if(sd->state.lr_flag != 2)
 			sd->subrace[RCT_BOSS] += val;
 		break;
-	case 151:
+	case OPT_CLASS_MDAMAGE_NORMAL:
 		if(sd->state.lr_flag != 2)
 			sd->magic_addrace[RCT_NONBOSS] += val;
 		break;
-	case 152:
+	case OPT_CLASS_MDAMAGE_BOSS:
 		if(sd->state.lr_flag != 2)
 			sd->magic_addrace[RCT_BOSS] += val;
 		break;
-	case 153:
+	case OPT_CLASS_IGNORE_DEF_NORMAL:
 		if(!sd->state.lr_flag)
 			sd->ignore_def_race[RCT_NONBOSS] += val;
 		else if(sd->state.lr_flag == 1)
 			sd->ignore_def_race_[RCT_NONBOSS] += val;
 		break;
-	case 154:
+	case OPT_CLASS_IGNORE_DEF_BOSS:
 		if(!sd->state.lr_flag)
 			sd->ignore_def_race[RCT_BOSS] += val;
 		else if(sd->state.lr_flag == 1)
 			sd->ignore_def_race_[RCT_BOSS] += val;
 		break;
-	case 155:
+	case OPT_CLASS_IGNORE_MDEF_NORMAL:
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_race[RCT_NONBOSS] += val;
 		break;
-	case 156:
+	case OPT_CLASS_IGNORE_MDEF_BOSS:
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_race[RCT_BOSS] += val;
 		break;
-	case 157:
-	case 158:
-	case 159:
+	case OPT_DAMAGE_SIZE_SMALL_TARGET:
+	case OPT_DAMAGE_SIZE_MIDIUM_TARGET:
+	case OPT_DAMAGE_SIZE_LARGE_TARGET:
 		if(!sd->state.lr_flag)
-			sd->addsize[id-157] += val;
+			sd->addsize[id-OPT_DAMAGE_SIZE_SMALL_TARGET] += val;
 		else if(sd->state.lr_flag == 1)
-			sd->addsize_[id-157] += val;
+			sd->addsize_[id-OPT_DAMAGE_SIZE_SMALL_TARGET] += val;
 		else if(sd->state.lr_flag == 2)
-			sd->arrow_addsize[id-157] += val;
+			sd->arrow_addsize[id-OPT_DAMAGE_SIZE_SMALL_TARGET] += val;
 		break;
-	case 160:
-	case 161:
-	case 162:
-		sd->subsize[id-160] += val;
+	case OPT_DAMAGE_SIZE_SMALL_USER:
+	case OPT_DAMAGE_SIZE_MIDIUM_USER:
+	case OPT_DAMAGE_SIZE_LARGE_USER:
+		sd->subsize[id-OPT_DAMAGE_SIZE_SMALL_USER] += val;
 		break;
-	case 163:
+	case OPT_DAMAGE_SIZE_PERFECT:
 		if(sd->state.lr_flag != 2)
 			sd->special_state.no_sizefix = 1;
 		break;
-	case 164:
+	case OPT_DAMAGE_CRI_TARGET:
 		if(sd->state.lr_flag != 2)
 			sd->critical_damage += val;
 		break;
-	case 165:
+	case OPT_DAMAGE_CRI_USER:
 		if(sd->state.lr_flag != 2)
 			sd->critical_def += val;
 		break;
-	case 166:
+	case OPT_RANGE_ATTACK_DAMAGE_TARGET:
 		if(sd->state.lr_flag != 2)
 			sd->long_weapon_damege_rate += val;
 		break;
-	case 167:
+	case OPT_RANGE_ATTACK_DAMAGE_USER:
 		if(sd->state.lr_flag != 2)
 			sd->long_attack_def_rate += val;
 		break;
-	case 168:
+	case OPT_HEAL_VALUE:
 		{
 			int i, j;
 			int skill[5] = {28,70,231,2043,2051};
@@ -2222,7 +2228,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 			}
 		}
 		break;
-	case 169:
+	case OPT_HEAL_MODIFY_PERCENT:
 		{
 			int i, j;
 			int skill[4] = {28,70,231,2051};
@@ -2246,51 +2252,55 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 			}
 		}
 		break;
-	case 170:
+	case OPT_DEC_SPELL_CAST_TIME:
 		if(sd->state.lr_flag != 2)
 			sd->castrate += val;
 		break;
-	case 171:
+	case OPT_DEC_SPELL_DELAY_TIME:
 		sd->skill_delay_rate += val;
 		break;
-	case 172:
+	case OPT_DEC_SP_CONSUMPTION:
 		if(sd->state.lr_flag != 2)
 			sd->dsprate += val;
 		break;
-	case 173: //HP_DRAIN
-	case 174: //SP_DRAIN
+	case OPT_HP_DRAIN: //HP_DRAIN
+	case OPT_SP_DRAIN: //SP_DRAIN
 		break;
-	case 175:
-	case 176:
-	case 177:
-	case 178:
-	case 179:
-	case 180:
-	case 181:
-	case 182:
-	case 183:
-	case 184:
+	case OPT_WEAPON_ATTR_NOTHING:
+	case OPT_WEAPON_ATTR_WATER:
+	case OPT_WEAPON_ATTR_GROUND:
+	case OPT_WEAPON_ATTR_FIRE:
+	case OPT_WEAPON_ATTR_WIND:
+	case OPT_WEAPON_ATTR_POISON:
+	case OPT_WEAPON_ATTR_SAINT:
+	case OPT_WEAPON_ATTR_DARKNESS:
+	case OPT_WEAPON_ATTR_TELEKINESIS:
+	case OPT_WEAPON_ATTR_UNDEAD:
 		if(!sd->state.lr_flag)
-			sd->atk_ele = id-175;
+			sd->atk_ele = id-OPT_WEAPON_ATTR_NOTHING;
 		else if(sd->state.lr_flag == 1)
-			sd->atk_ele_ = id-175;
+			sd->atk_ele_ = id-OPT_WEAPON_ATTR_NOTHING;
 		else if(sd->state.lr_flag == 2)
-			sd->arrow_ele = id-175;
+			sd->arrow_ele = id-OPT_WEAPON_ATTR_NOTHING;
 		break;
-	case 185:
+	case OPT_WEAPON_INDESTRUCTIBLE:
 		if(sd->state.lr_flag != 2)
 			sd->unbreakable_equip |= LOC_RARM;
 		break;
-	case 186:
+	case OPT_BODY_INDESTRUCTIBLE:
 		if(sd->state.lr_flag != 2)
 			sd->unbreakable_equip |= LOC_BODY;
 		break;
-	case 187: //魔法攻撃時、小型モンスターに与えるダメージ + x%
-	case 188: //魔法攻撃時、中型モンスターに与えるダメージ + x%
-	case 189: //魔法攻撃時、大型モンスターに与えるダメージ + x%
-	case 190: //小型モンスターから受ける魔法ダメージ - x%
-	case 191: //中型モンスターから受ける魔法ダメージ - x%
-	case 192: //大型モンスターから受ける魔法ダメージ - x%
+	case OPT_MDAMAGE_SIZE_SMALL_TARGET:
+	case OPT_MDAMAGE_SIZE_MIDIUM_TARGET:
+	case OPT_MDAMAGE_SIZE_LARGE_TARGET:
+		if(sd->state.lr_flag != 2)
+			sd->magic_addsize[id-OPT_MDAMAGE_SIZE_SMALL_TARGET] += val;
+		break;
+	case OPT_MDAMAGE_SIZE_SMALL_USER:
+	case OPT_MDAMAGE_SIZE_MIDIUM_USER:
+	case OPT_MDAMAGE_SIZE_LARGE_USER:
+		sd->magic_subsize[id-OPT_MDAMAGE_SIZE_SMALL_USER] += val;
 		break;
 	default:
 		if(battle_config.error_log)

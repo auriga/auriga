@@ -1,4 +1,11 @@
 ----------------------------------------
+//1309 [2017/10/15] by refis
+
+・アイテムボーナス「bMagicAddSize」追加（db/const.txt, doc/item_bonus.txt, battle.c, bonus.c, map.h, status.c）
+
+・ランダムオプションボーナスをenumで整理（bonus.c, map.h）
+
+----------------------------------------
 //1308 [2017/10/15] by refis
 
 ・bonus4 bAutoSpellにEAS_CONDITIONを追加（db/const.txt, doc/item_bonus.txt, bonus.*）

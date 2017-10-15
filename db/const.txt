@@ -594,6 +594,7 @@ bAddEleMagicDamageRate	1179
 bHPRatePenaltyTime	1180
 bSPRatePenaltyTime	1181
 bMagicAddGroup	1182
+bMagicAddSize	1183
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

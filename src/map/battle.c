@@ -5500,7 +5500,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change    *sc = NULL, *t_sc = NULL;
 	int ele, race;
-	int mdef1, mdef2, t_ele, t_race, t_group, t_enemy, t_mode;
+	int mdef1, mdef2, t_ele, t_race, t_group, t_enemy, t_size, t_mode;
 	int t_class, cardfix, i;
 	int normalmagic_flag = 1;
 	int add_rate = 0;
@@ -5529,6 +5529,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	t_race  = status_get_race(target);
 	t_group = status_get_group(target);
 	t_enemy = status_get_enemy_type(target);
+	t_size  = status_get_size(target);
 	t_mode  = status_get_mode(target);
 	t_sc    = status_get_sc(target);
 
@@ -5596,6 +5597,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			cardfix = cardfix*(100+sd->magic_addrace[t_race])/100;
 		cardfix = cardfix*(100+sd->magic_addele[t_ele])/100;
 		cardfix = cardfix*(100+sd->magic_addenemy[t_enemy])/100;
+		cardfix = cardfix*(100+sd->magic_addsize[t_size])/100;
 		if(t_mode & MD_BOSS)
 			cardfix = cardfix*(100+sd->magic_addrace[RCT_BOSS])/100;
 		else
@@ -6338,6 +6340,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			cardfix = cardfix*(100+sd->magic_addrace[t_race])/100;
 		cardfix = cardfix*(100+sd->magic_addele[t_ele])/100;
 		cardfix = cardfix*(100+sd->magic_addenemy[t_enemy])/100;
+		cardfix = cardfix*(100+sd->magic_addsize[t_size])/100;
 		if(t_mode & MD_BOSS)
 			cardfix = cardfix*(100+sd->magic_addrace[RCT_BOSS])/100;
 		else
