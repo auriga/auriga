@@ -467,6 +467,9 @@
                                             EAS_SPCOST2      SP1/2倍
                                             EAS_SPCOST3      SP1.5倍
 
+                                          <<使用条件：指定しない場合は無視>>
+                                            EAS_CONDITION    スキル使用条件をチェックする
+
                                           例:
                                           攻撃時SP消費2/3でFB1～3を使用(旧ファイアーブランド)
                                               bonus4 bAutoSpell,19,3,2500,EAS_ATTACK|EAS_FLUCT|EAS_SPCOST1;

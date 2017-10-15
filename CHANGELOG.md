@@ -1,4 +1,13 @@
 ----------------------------------------
+//1308 [2017/10/15] by refis
+
+・bonus4 bAutoSpellにEAS_CONDITIONを追加（db/const.txt, doc/item_bonus.txt, bonus.*）
+	-> スキル使用条件をチェックさせる
+	-> SP消費もチェックするため、通常はEAS_NOSPも指定してください
+
+・オートスペルでハイネスヒールをアンデットに使用時にも回復させていた問題を修正（bonus.c）
+
+----------------------------------------
 //1307 [2017/10/15] by refis
 
 ・アイテムボーナスの種族設定にRct_Playerを追加（db/const.txt, doc/item_bonus.txt, battle.c, map.h）

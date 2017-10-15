@@ -47,6 +47,7 @@ enum {
 	EAS_REVENGE     = 0x00020000,	// 反撃
 	EAS_NORMAL      = 0x00040000,	// 通常攻撃
 	EAS_SKILL       = 0x00080000,	// スキル
+	EAS_CONDITION   = 0x00100000,	// 使用条件
 };
 
 // カード効果のオートスペル

@@ -168,6 +168,12 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 	if(sd->status.sp < sp)
 		return 0;
 
+	// コンディションチェック
+	if(asflag&EAS_CONDITION) {
+		if(!skill_check_condition(&sd->bl,1))
+			return 0;
+	}
+
 	if(battle_config.bonus_autospell_delay_enable) {
 		int delay = skill_delayfix(&sd->bl, skillid, skilllv);
 		sd->ud.canact_tick = tick + delay;
@@ -185,7 +191,7 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 				f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				break;
 			case 1:	// 支援系
-				if( (skillid == AL_HEAL || (skillid == ALL_RESURRECTION && target->type != BL_PC)) &&
+				if( (skillid == AL_HEAL || skillid == AB_HIGHNESSHEAL || (skillid == ALL_RESURRECTION && target->type != BL_PC)) &&
 				    battle_check_undead(status_get_race(target),status_get_element(target)) )
 					f = skill_castend_damage_id(&sd->bl,target,skillid,skilllv,tick,flag);
 				else
