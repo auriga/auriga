@@ -638,6 +638,7 @@ Rct_Angel	8
 Rct_Dragon	9
 Rct_Boss	10
 Rct_NonBoss	11
+Rct_Player	12
 Rct_All	10
 
 //‘®«

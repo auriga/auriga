@@ -5146,7 +5146,7 @@ static int atcommand_vars_sub(struct map_session_data *sd,const char *src_var,co
 		}
 	} else {
 		const char *format = msg_txt(67);
-		script_write_vars(pl_sd, dst_var, elem, (postfix == '$')? (void*)str: (void*)strtobxl(str,NULL,0), ref);
+		script_write_vars(pl_sd, dst_var, elem, (postfix == '$')? (void*)str: INT2PTR(strtobxl(str,NULL,0)), ref);
 		output = (char *)aMalloc(strlen(format) + strlen(src_var) + strlen(str) + 1);
 		sprintf(output, format, src_var, str);
 	}

@@ -1,4 +1,11 @@
 ----------------------------------------
+//1307 [2017/10/15] by refis
+
+・アイテムボーナスの種族設定にRct_Playerを追加（db/const.txt, doc/item_bonus.txt, battle.c, map.h）
+
+・atcommand.cの型変換エラーを修正（atcommand.c）
+
+----------------------------------------
 //1306 [2017/10/06] by refis
 
 ・パーティ情報読み込み時にmemorial_idをチェックするように強化（memorial.*, party.c）

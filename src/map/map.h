@@ -113,6 +113,7 @@ enum {
 	RCT_DRAGON,
 	RCT_BOSS,
 	RCT_NONBOSS,
+	RCT_PLAYER,
 	RCT_MAX,
 };
 
