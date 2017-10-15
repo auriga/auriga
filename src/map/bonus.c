@@ -484,6 +484,16 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2)
 			sd->parame[type-SP_STR] += val;
 		break;
+	case SP_ALLSTATUS:
+		if(sd->state.lr_flag != 2) {
+			sd->parame[SP_STR] += val;
+			sd->parame[SP_AGI] += val;
+			sd->parame[SP_VIT] += val;
+			sd->parame[SP_INT] += val;
+			sd->parame[SP_DEX] += val;
+			sd->parame[SP_LUK] += val;
+		}
+		break;
 	case SP_ATK1:
 		if(!sd->state.lr_flag)
 			sd->watk += val;
@@ -1012,14 +1022,26 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 
 	switch(type) {
 	case SP_ADDELE:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(!sd->state.lr_flag)
-			sd->addele[type2] += val;
-		else if(sd->state.lr_flag == 1)
-			sd->addele_[type2] += val;
-		else if(sd->state.lr_flag == 2)
-			sd->arrow_addele[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(!sd->state.lr_flag)
+					sd->addele[i] += val;
+				else if(sd->state.lr_flag == 1)
+					sd->addele_[i] += val;
+				else if(sd->state.lr_flag == 2)
+					sd->arrow_addele[i] += val;
+			}
+		}
+		else {
+			if(!sd->state.lr_flag)
+				sd->addele[type2] += val;
+			else if(sd->state.lr_flag == 1)
+				sd->addele_[type2] += val;
+			else if(sd->state.lr_flag == 2)
+				sd->arrow_addele[type2] += val;
+		}
 		break;
 	case SP_ADDRACE:
 		if(type2 < 0 || type2 >= RCT_MAX)
@@ -1052,10 +1074,18 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->arrow_addsize[type2] += val;
 		break;
 	case SP_SUBELE:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(sd->state.lr_flag != 2)
-			sd->subele[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(sd->state.lr_flag != 2)
+					sd->subele[i] += val;
+			}
+		}
+		else {
+			if(sd->state.lr_flag != 2)
+				sd->subele[type2] += val;
+		}
 		break;
 	case SP_SUBRACE:
 		if(type2 < 0 || type2 >= RCT_MAX)
@@ -1100,10 +1130,18 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->reseff[type2] += val;
 		break;
 	case SP_MAGIC_ADDELE:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(sd->state.lr_flag != 2)
-			sd->magic_addele[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(sd->state.lr_flag != 2)
+					sd->magic_addele[i] += val;
+			}
+		}
+		else {
+			if(sd->state.lr_flag != 2)
+				sd->magic_addele[type2] += val;
+		}
 		break;
 	case SP_MAGIC_ADDRACE:
 		if(type2 < 0 || type2 >= RCT_MAX)
@@ -1605,22 +1643,46 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_mdef_enemy[type2] += val;
 		break;
 	case SP_DEF_ELEENEMY:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(sd->state.lr_flag != 2)
-			sd->def_eleenemy[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(sd->state.lr_flag != 2)
+					sd->def_eleenemy[i] += val;
+			}
+		}
+		else {
+			if(sd->state.lr_flag != 2)
+				sd->def_eleenemy[type2] += val;
+		}
 		break;
 	case SP_ADD_ELEWEAPONDAMAGE_RATE:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(sd->state.lr_flag != 2)
-			sd->skill_eleweapon_dmgup[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(sd->state.lr_flag != 2)
+					sd->skill_eleweapon_dmgup[i] += val;
+			}
+		}
+		else {
+			if(sd->state.lr_flag != 2)
+				sd->skill_eleweapon_dmgup[type2] += val;
+		}
 		break;
 	case SP_ADD_ELEMAGICDAMAGE_RATE:
-		if(type2 < 0 || type2 >= ELE_MAX)
+		if(type2 < 0 || type2 > ELE_MAX)
 			break;
-		if(sd->state.lr_flag != 2)
-			sd->skill_elemagic_dmgup[type2] += val;
+		if(type2 == ELE_ALL) {
+			for(i=0; i<ELE_MAX; i++) {
+				if(sd->state.lr_flag != 2)
+					sd->skill_elemagic_dmgup[i] += val;
+			}
+		}
+		else {
+			if(sd->state.lr_flag != 2)
+				sd->skill_elemagic_dmgup[type2] += val;
+		}
 		break;
 	case SP_HP_RATE_PENALTY_TIME:
 		sd->hp_rate_penalty_time = type2;

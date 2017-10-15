@@ -595,6 +595,7 @@ bHPRatePenaltyTime	1180
 bSPRatePenaltyTime	1181
 bMagicAddGroup	1182
 bMagicAddSize	1183
+bAllStatus		1184
 
 bRestartFullRecover	2000
 bNoCastCancel	2001
@@ -653,7 +654,7 @@ Ele_Holy	6
 Ele_Dark	7
 Ele_Ghost	8
 Ele_Undead	9
-Ele_Random	10
+Ele_All	10
 
 //“Gƒ^ƒCƒv
 Emy_Etc	0

@@ -1,4 +1,14 @@
 ----------------------------------------
+//1313 [2017/10/16] by refis
+
+・アイテムボーナス「bAllStatus」追加（db/const.txt, doc/item_bonus.txt, bonus.c, map.h）
+
+・アイテムボーナスの属性設定にEle_Allを追加（db/const.txt, doc/item_bonus.txt, bonus.c, map.h）
+	-> 未実装のEle_Randomを削除
+
+・ミンストレルのJob補正値の誤りを修正（db/job_db2.txt, db/job_db2-2.txt）
+
+----------------------------------------
 //1312 [2017/10/15] by refis
 
 ・ノンアクティブモンスターの多くが非反撃状態だったミスを修正（mob_db.txt）
