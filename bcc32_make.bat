@@ -84,8 +84,8 @@ set __NO_HTTPD_CGI__=-DNO_HTTPD_CGI
 @rem csvdb のスクリプトからの利用を無効にする場合コメントアウトをはずす
 :set __NO_CSVDB_SCRIPT__=-DNO_CSVDB_SCRIPT
 
-rem R化前のシステムを使う場合はコメントアウトをはずす
-set __PRE_RENEWAL__=-DPRE_RENEWAL
+@rem R化前のシステムを使う場合はコメントアウトをはずす
+:set __PRE_RENEWAL__=-DPRE_RENEWAL
 
 @rem MBでごにょごにょ (通常はコメントアウト)
 :set __EXCLASS__=-DCLASS_MB

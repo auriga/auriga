@@ -152,7 +152,7 @@ CFLAGS += -DNO_HTTPD_CGI
 #CFLAGS += -DNO_CSVDB_SCRIPT
 
 # usable pre refine system
-CFLAGS += -DPRE_RENEWAL
+#CFLAGS += -DPRE_RENEWAL
 
 # usable MB
 #CFLAGS += -DCLASS_MB
