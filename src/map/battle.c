@@ -7935,7 +7935,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 
 	/* HP,SP‹zû */
 	if(sd && dmg.flag&BF_WEAPON && src != bl && damage > 0) {
-		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
+		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO || skillid == KO_HUUMARANKA))) {
 			// “‹zûAˆê’è‹zû‚Æ‚à‚É
 			battle_attack_drain(src, dmg.damage, dmg.damage2, 3);
 		}

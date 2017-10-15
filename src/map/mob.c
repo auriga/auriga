@@ -1087,7 +1087,9 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				return search_flag; // Šù‚ÉUŒ‚’†
 			if(battle_config.mob_attack_fixwalkpos)	// ‹­§ˆÊ’u•â³
 				clif_fixwalkpos(&md->bl);
-			unit_attack(&md->bl, md->target_id, attack_type);
+			// ’ÊíUŒ‚‚Í‚µ‚È‚¢
+			if(!mob_db[md->class_].mode_opt[MDOPT_NOATTACK])
+				unit_attack(&md->bl, md->target_id, attack_type);
 			md->state.skillstate = md->state.angry?MSS_ANGRY:MSS_ATTACK;
 		}
 		return search_flag;
@@ -4678,7 +4680,7 @@ static int mob_readmobmodedb(void)
 
 		k = atoi(str[1]);
 		val = atoi(str[2]);
-		if (k > 0 && val > 0)
+		if (k > 0 && k < MAX_MODE_OPT && val > 0)
 			mob_db[class_].mode_opt[k] = val;
 		ln++;
 	}

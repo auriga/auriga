@@ -1,4 +1,17 @@
 ----------------------------------------
+//1311 [2017/10/15] by refis
+
+・スキル[風魔手裏剣乱華]がドレイン効果を発揮しない不具合を修正（battle.c）
+	Thanks ねぴぴ さん
+
+・MobオプションAI[MDOPT_NOATTACK]の処理位置を調整（mob.c, unit.c）
+
+----------------------------------------
+//1310 [2017/10/15] by refis
+
+・デフォルトで[PRE_RENEWAL]を外すよう変更（bcc32_make.bat, Makefile, vc_make.bat）
+
+----------------------------------------
 //1309 [2017/10/15] by refis
 
 ・アイテムボーナス「bMagicAddSize」追加（db/const.txt, doc/item_bonus.txt, battle.c, bonus.c, map.h, status.c）
