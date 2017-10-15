@@ -1,4 +1,9 @@
 ----------------------------------------
+//1314 [2017/10/16] by refis
+
+・モンスタースキル使用条件[afterskill], [masterattacked]実装（doc/db_ref.txt, mob.*）
+
+----------------------------------------
 //1313 [2017/10/16] by refis
 
 ・アイテムボーナス「bAllStatus」追加（db/const.txt, doc/item_bonus.txt, bonus.c, map.h）
@@ -7,6 +12,7 @@
 	-> 未実装のEle_Randomを削除
 
 ・ミンストレルのJob補正値の誤りを修正（db/job_db2.txt, db/job_db2-2.txt）
+	Thanks mcrx さん
 
 ----------------------------------------
 //1312 [2017/10/15] by refis

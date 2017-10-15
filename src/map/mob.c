@@ -2999,6 +2999,8 @@ static int mobskill_command_use_id_sub(struct block_list *bl, va_list ap )
 	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 	md->skilldelay[skill_idx] = gettick() + casttime;
+	md->ud.skillid = ms->skill_id;
+	md->ud.skilllv = ms->skill_lv;
 
 	return unit_skilluse_id2(&md->bl,target_id, ms->skill_id,ms->skill_lv, casttime, ms->cancel);
 }
@@ -3108,6 +3110,8 @@ static int mobskill_command(struct block_list *bl, va_list ap)
 	casttime = skill_castfix(bl, ms->skill_id, ms->casttime, 0);
 	md->skillidx = skill_idx;
 	md->skilldelay[skill_idx] = gettick() + casttime;
+	md->ud.skillid = ms->skill_id;
+	md->ud.skilllv = ms->skill_lv;
 
 	unit_skilluse_id2(&md->bl,target_id, ms->skill_id,ms->skill_lv, casttime, ms->cancel);
 
@@ -3400,6 +3404,8 @@ static int mobskill_use_id(struct mob_data *md,struct block_list *target,int ski
 
 	casttime     = ms->casttime;
 	md->skillidx = skill_idx;
+	md->ud.skillid = ms->skill_id;
+	md->ud.skilllv = ms->skill_lv;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
 		if(mds[i].skill_id == ms->skill_id)
@@ -3432,6 +3438,8 @@ static int mobskill_use_pos( struct mob_data *md, int skill_x, int skill_y, int 
 
 	casttime     = ms->casttime;
 	md->skillidx = skill_idx;
+	md->ud.skillid = ms->skill_id;
+	md->ud.skilllv = ms->skill_lv;
 
 	for(i=0; i<mob_db[md->class_].maxskill; i++) {
 		if(mds[i].skill_id == ms->skill_id)
@@ -3612,6 +3620,12 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 				flag ^= ( ms[i].cond1 == MSC_MASTERSTATUSOFF );
 			}
 			break;
+		case MSC_MASTERATTACKED:
+			flag = (master && unit_counttargeted(master, 0) > 0);
+			break;
+		case MSC_AFTERSKILL:
+			flag = (md->ud.skillid == c2);
+			break;
 		/* ˆÈ‰º‚ÍeventƒgƒŠƒK[‚Å‚Ì‚ÝŒÄ‚Ño‚³‚ê‚é‚à‚Ì */
 		case MSC_CASTTARGETED:
 		case MSC_CLOSEDATTACKED:
@@ -3683,6 +3697,8 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 							int casttime = skill_castfix(&md->bl, ms[i].skill_id, ms[i].casttime, 0);
 							md->skilldelay[i] = tick + casttime;
 							md->skillidx = i;
+							md->ud.skillid = ms[i].skill_id;
+							md->ud.skilllv = ms[i].skill_lv;
 							unit_skilluse_id2(&md->bl,md->bl.id, ms[i].skill_id,
 								ms[i].skill_lv,casttime, ms[i].cancel);
 
@@ -4362,6 +4378,7 @@ static int mob_readskilldb(void)
 		{ "longrangeattacked", MSC_LONGRANGEATTACKED },
 		{ "skillused",         MSC_SKILLUSED         },
 		{ "casttargeted",      MSC_CASTTARGETED      },
+		{ "afterskill",        MSC_AFTERSKILL        },
 		{ "targethpgtmaxrate", MSC_TARGETHPGTMAXRATE },
 		{ "targethpltmaxrate", MSC_TARGETHPLTMAXRATE },
 		{ "targethpgt",        MSC_TARGETHPGT        },
@@ -4372,6 +4389,7 @@ static int mob_readskilldb(void)
 		{ "masterhpltmaxrate", MSC_MASTERHPLTMAXRATE },
 		{ "masterstatuson",    MSC_MASTERSTATUSON    },
 		{ "masterstatusoff",   MSC_MASTERSTATUSOFF   },
+		{ "masterattacked",    MSC_MASTERATTACKED    },
 		{ "areaslavegt",       MSC_AREASLAVEGT       },
 		{ "areaslavele",       MSC_AREASLAVELE       },
 		{ "rudeattacked",      MSC_RUDEATTACKED      },

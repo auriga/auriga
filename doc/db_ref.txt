@@ -673,6 +673,7 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 		myhpltmaxrate     	自分のHPが指定％未満になったら
 		mystatuson        	自分がステータス異常(条件値)に掛かっていたら
 		mystatusoff       	自分がステータス異常(条件値)に掛かっていなかったら
+		afterskill        	自分がスキル(条件値)を使ったら
 		friendhpgtmaxrate 	仲間のHPが指定％を超えていたら、範囲は周囲8セル固定
 		friendhpltmaxrate 	仲間のHPが指定％未満になったら、範囲は周囲8セル固定
 		friendstatuson    	仲間がステータス異常(条件値)に掛かっていたら、範囲は周囲8セル固定
@@ -691,6 +692,7 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 		masterhpltmaxrate 	マスターのHPが指定％未満になったら
 		masterstatuson    	マスターがステータス異常(条件値)に掛かっていたら
 		masterstatusoff   	マスターがステータス異常(条件値)に掛かっていなかったら
+		masterattacked    	マスターが攻撃されていたら
 		areaslavegt       	周囲の手下数が指定数を超えていたら、条件値の下位8bitに数を、上位8bitに範囲を入れること
 		areaslavele       	周囲の手下数が指定数以下になったら、条件値の下位8bitに数を、上位8bitに範囲を入れること
 	[反撃型 : 被攻撃時に呼び出し]
