@@ -10260,6 +10260,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
 				unit_heal(bl, 0, -damage);
+			clif_damage(bl,bl,tick,0,status_get_dmotion(bl),1,0,0,0,0);
+			unit_skillcastcancel(bl,0);		// ‰r¥–WŠQ
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -10285,7 +10287,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_PYREXIA:	/* ƒpƒCƒŒƒbƒNƒVƒA */
 		if((--sc->data[type].val2) > 0) {
-			unit_heal(bl, -100, 0);
+			clif_damage(bl,bl,tick,0,status_get_dmotion(bl),100,0,0,0,0);
+			battle_damage(bl,bl,100,0,0,0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);

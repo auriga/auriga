@@ -3235,46 +3235,41 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		skill_addtimerskill(src,tick+1000,bl->id,0,0,skillid,skilllv,BF_WEAPON,flag);
 		break;
 	case MO_EXTREMITYFIST:	/* ˆ¢C—…”e–PŒ */
-		if(sd) {
-			int dx = bl->x - sd->bl.x;
-			int dy = bl->y - sd->bl.y;
+		{
+			int dx = 0;
+			int dy = 0;
+			short dir = 0;
 
-			if(dx > 0) dx++;
-			else if(dx < 0) dx--;
-			if(dy > 0) dy++;
-			else if(dy < 0) dy--;
-			if(dx == 0 && dy == 0) dx++;
-			if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
-				dx = bl->x - sd->bl.x;
-				dy = bl->y - sd->bl.y;
-				if(path_search(NULL,src->m,sd->bl.x,sd->bl.y,sd->bl.x+dx,sd->bl.y+dy,1) == -1) {
-					clif_skill_fail(sd,sd->ud.skillid,0,0,0);
-					break;
-				}
-			}
-			sd->ud.to_x = sd->bl.x + dx;
-			sd->ud.to_y = sd->bl.y + dy;
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|(is_enemy ? 0 : 0x01000000));
-			if(!is_enemy && sd->status.sp > 0) {
+			if(!is_enemy && sd && sd->status.sp > 0) {
 				sd->status.sp = 0;
 				clif_updatestatus(sd, SP_SP);
 			}
-			clif_walkok(sd);
-			clif_move(&sd->bl);
-			if(dx < 0) dx = -dx;
-			if(dy < 0) dy = -dy;
-			sd->ud.attackabletime = sd->ud.canmove_tick = tick + 100 + sd->speed * ((dx > dy)? dx: dy);
-			if(sd->ud.canact_tick < sd->ud.canmove_tick)
-				sd->ud.canact_tick = sd->ud.canmove_tick;
-			unit_movepos(&sd->bl,sd->ud.to_x,sd->ud.to_y,0);
-			status_change_end(&sd->bl,SC_COMBO,-1);
-		} else {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|(is_enemy ? 0 : 0x01000000));
-		}
-		status_change_end(src, SC_EXPLOSIONSPIRITS, -1);
-		sc = status_get_sc(src);
-		if(sc && sc->data[SC_BLADESTOP].timer != -1) {
-			status_change_end(src,SC_BLADESTOP,-1);
+			if(sd) {
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + 100 + sd->speed * ((dx > dy)? dx: dy);
+				if(sd->ud.canact_tick < sd->ud.canmove_tick)
+					sd->ud.canact_tick = sd->ud.canmove_tick;
+			}
+			status_change_end(src,SC_COMBO,-1);
+			status_change_end(src, SC_EXPLOSIONSPIRITS, -1);
+			sc = status_get_sc(src);
+			if(sc && sc->data[SC_BLADESTOP].timer != -1) {
+				status_change_end(src,SC_BLADESTOP,-1);
+			}
+			dir = path_calc_dir(src,bl->x,bl->y);
+			if(dir > 0 && dir < 4) dx = -3;
+			else if(dir > 4) dx = 3;
+			if(dir > 2 && dir < 6) dy = -3;
+			else if(dir == 7 || dir < 2) dy = 3;
+			if(dx == 0 && dy == 0) dx = 1;
+			if(!unit_movepos(src,src->x + dx,src->y + dy,1)) {
+				if(dx > 0) dx = -1;
+				else if(dx < 0) dx = 1;
+				if(dy > 0) dy = -1;
+				else if(dy < 0) dy = 1;
+
+				unit_movepos(src,src->x + dx,src->y + dy,1);
+			}
 		}
 		break;
 	case GS_BULLSEYE:		/* ƒuƒ‹ƒYƒAƒC */
