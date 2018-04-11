@@ -71,4 +71,6 @@ int npc_timeout_stop(struct map_session_data *sd);
 int npc_addmdnpc(struct npc_data *src_nd, int m);
 int npc_free(struct npc_data *nd);
 
+int npc_atcommand_load(const char *filepath);
+
 #endif

@@ -2815,6 +2815,17 @@ static int npc_parse_srcfile(const char *filepath)
 }
 
 /*==========================================
+ * NPCファイルのコマンド読み込み
+ *------------------------------------------
+ */
+int npc_atcommand_load(const char *filepath)
+{
+	npc_parse_srcfile(filepath);
+
+	return 1;
+}
+
+/*==========================================
  * 終了
  *------------------------------------------
  */
