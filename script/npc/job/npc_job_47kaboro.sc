@@ -4065,6 +4065,7 @@ job_ko.gat,145,47,6	script	ƒqƒ‡ƒE#ko2	730,{
 
 job_ko.gat,0,0,0	script	ko_test_mon	139,{
 OnTimer300000:
+	initnpctimer;
 	killmonster "job_ko.gat","ko_test_mon::OnKilled1";
 	set '@r,rand(getarraysize('mobid));
 	areamonster "job_ko.gat",128,26,168,66,"ˆê‘°‚Ì‰ß‹Ž",'mobid['@r],1,"ko_test_mon::OnKilled1";
