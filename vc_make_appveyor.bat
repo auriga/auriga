@@ -69,7 +69,7 @@ set __MULTIBUILD__=/MP
 
 rem ---- VC++ 2017 64bitコンパイル の設定
 if not "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" goto SKIPVSVER2017
-call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvars64.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 set __VCVER__=2017
 set __BITTYPE__=x64
 set __MULTIBUILD__=/MP
