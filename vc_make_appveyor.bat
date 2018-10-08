@@ -57,7 +57,7 @@ set __PACKETDEF__=/D "PACKETVER=%PACKETVER%" /D "NEW_006b"
 rem ----------------------------------------------------------------
 rem Build path settings
 
-rem ---- VC++ 2015 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è
+rem ---- VC++ 2015 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®š
 if not "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" goto SKIPVSVER14
 set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
@@ -67,82 +67,82 @@ set __BITTYPE__=x64
 set __MULTIBUILD__=/MP
 :SKIPVSVER14
 
-rem ---- VC++ 2017 64bitƒRƒ“ƒpƒCƒ‹ ‚Ìİ’è
+rem ---- VC++ 2017 64bitã‚³ãƒ³ãƒ‘ã‚¤ãƒ« ã®è¨­å®š
 if not "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" goto SKIPVSVER2017
-set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
-set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
-set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.11.25503\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\ucrt\x64;%LIB%
+set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
+set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
+set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\ï¼‘ï¼•ï¼ï¼\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\ucrt\x64;%LIB%
 set __VCVER__=2017
 set __BITTYPE__=x64
 set __MULTIBUILD__=/MP
 :SKIPVSVER2017
 
 rem ----------------------------------------------------------------
-rem SQL ‚Ìİ’è / •K—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem SQL ã®è¨­å®š / å¿…è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.7\include;%INCLUDE%
 set LIB=C:\Program Files\MySQL\MySQL Server 5.7\lib;%LIB%
 
 rem ----------------------------------------------------------------
-rem ƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚Ì‘I‘ğ
+rem ãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®é¸æŠ
 
-rem ƒf[ƒ^•Û‘¶•û–@‚Ì‘I‘ğ F SQL ‚É‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚·‚é
+rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ã®é¸æŠ ï¼š SQL ã«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
 rem set __TXT_MODE__=/D "TXT_ONLY"
 
-rem ƒf[ƒ^•Û‘¶•û–@‚ª TXT ‚ÌAƒWƒƒ[ƒiƒ‹‚ğg‚¤‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ TXT ã®æ™‚ã€ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’ä½¿ã†ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __TXT_MODE__=/D "TXT_ONLY" /D "TXT_JOURNAL"
 
-rem ƒf[ƒ^•Û‘¶•û–@‚ª SQL ‚ÌAtxt-converter ‚ª•s—v‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ãƒ‡ãƒ¼ã‚¿ä¿å­˜æ–¹æ³•ãŒ SQL ã®æ™‚ã€txt-converter ãŒä¸è¦ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __TXTCONVERTER__=SKIP
 
-rem zlib.dll‚ğƒRƒ“ƒpƒCƒ‹‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem zlib.dllã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 set __ZLIB__=/D "LOCALZLIB"
 
-rem login_id2 ‚â IP ‚Å AUTHFIFO ‚ğ”äŠr‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem login_id2 ã‚„ IP ã§ AUTHFIFO ã‚’æ¯”è¼ƒã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __CMP_AFL2__=/D "CMP_AUTHFIFO_LOGIN2"
 rem set __CMP_AFIP__=/D "CMP_AUTHFIFO_IP"
 
-rem httpd ‚ğŠ®‘S‚É–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem httpd ã‚’å®Œå…¨ã«ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 set __NO_HTTPD__=/D "NO_HTTPD"
 
-rem httpd ‚ÅŠO•” CGI ‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚·‚é
+rem httpd ã§å¤–éƒ¨ CGI ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹
 set __NO_HTTPD_CGI__=/D "NO_HTTPD_CGI"
 
-rem csvdb ‚ÌƒXƒNƒŠƒvƒg‚©‚ç‚Ì—˜—p‚ğ–³Œø‚É‚·‚éê‡ƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem csvdb ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‹ã‚‰ã®åˆ©ç”¨ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
-rem R‰»‘O‚ÌƒVƒXƒeƒ€‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem RåŒ–å‰ã®ã‚·ã‚¹ãƒ†ãƒ ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 set __PRE_RENEWAL__=/D "PRE_RENEWAL"
 
-rem MB ‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem MB ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __EXCLASS__=/D "CLASS_MB"
 
-rem “®“I‚ÉMOB‚Ì sc_data ‚ğŠm•Û‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem å‹•çš„ã«MOBã® sc_data ã‚’ç¢ºä¿ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 set __DYNAMIC_STATUS_CHANGE__=/D "DYNAMIC_SC_DATA"
 
-rem ƒLƒƒƒ‰‚Ìíœ‚Éƒ[ƒ‹ƒAƒhƒŒƒX‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __AC_MAIL__=/D "AC_MAIL"
 
-rem ƒLƒƒƒ‰‚Ìíœ‚É’a¶“ú‚ğg‚¤ê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ã‚­ãƒ£ãƒ©ã®å‰Šé™¤ã«èª•ç”Ÿæ—¥ã‚’ä½¿ã†å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __AC_BIRTHDATE__=/D "AC_BIRTHDATE"
 
-rem ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚Ì•Û‘¶‚ğ–³Œø‚É‚·‚éê‡‚ÍƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã®ä¿å­˜ã‚’ç„¡åŠ¹ã«ã™ã‚‹å ´åˆã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __NO_SCDATA_SAVING__=/D "NO_SCDATA_SAVING"
 
-rem ƒ^ƒCƒ}[‚ğƒLƒƒƒbƒVƒ…‚·‚é‚È‚çƒRƒƒ“ƒgƒAƒEƒg‚ğ‚Í‚¸‚·
+rem ã‚¿ã‚¤ãƒãƒ¼ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã™ã‚‹ãªã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã‚’ã¯ãšã™
 rem set __TIMER_CACHE__=/D "TIMER_CACHE=256"
 
 rem ---------------------------
-rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“İ’è
+rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š
 
-@rem CPUÅ“K‰»ƒXƒCƒbƒ`(By Nameless)
-@rem ˆÈ‰º‚Ì—á‚ğQl‚ÉƒXƒCƒbƒ`–¼‚ğ‹L“ü‚µ‚Ä‚­‚¾‚³‚¢B
+@rem CPUæœ€é©åŒ–ã‚¹ã‚¤ãƒƒãƒ(By Nameless)
+@rem ä»¥ä¸‹ã®ä¾‹ã‚’å‚è€ƒã«ã‚¹ã‚¤ãƒƒãƒåã‚’è¨˜å…¥ã—ã¦ãã ã•ã„ã€‚
 set _model_=NOOPTIMIZE
 
-@rem Å“K‰»‚È‚µ
+@rem æœ€é©åŒ–ãªã—
 if "%_model_%"=="NOOPTIMIZE" set __cpu__=/c /W3 /Od /Zi
 
 rem ----------------------------------------------------------------
-rem ÅI“I‚Èƒrƒ‹ƒhƒIƒvƒVƒ‡ƒ“‚ğ¶¬
+rem æœ€çµ‚çš„ãªãƒ“ãƒ«ãƒ‰ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 if "%__ZLIB__%"=="" goto NOZLIB1
 set __LINKZLIB__=../common/zlib/*.obj
 :NOZLIB1
@@ -157,26 +157,26 @@ set __include__=/I "../common/zlib/" /I "../common/lua/" /I "../common/"
 if "%__TXT_MODE__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
 rem ----------------------------------------------------------------
-rem Œx‚Ì—}§
-rem   C4819 : •\¦‚Å‚«‚È‚¢•¶š‚ğŠÜ‚ñ‚Å‚¢‚Ü‚·
+rem è­¦å‘Šã®æŠ‘åˆ¶
+rem   C4819 : è¡¨ç¤ºã§ããªã„æ–‡å­—ã‚’å«ã‚“ã§ã„ã¾ã™
 set __warning__=/wd4819
 
 rem ----------------------------------------------------------------
-rem ƒRƒ“ƒpƒCƒ‹ƒIƒvƒVƒ‡ƒ“‚Ì•\¦
+rem ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®è¡¨ç¤º
 
-echo ¡Compile Info¡
-echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
+echo â– Compile Infoâ– 
+echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
 echo [IMAGE = %APPVEYOR_BUILD_WORKER_IMAGE%]
 echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
 echo [PACKETVER = %PACKETVER%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]
-echo Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„ŸŸ
+echo â—†â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â—†
 
-rem ƒrƒ‹ƒhì‹Æ–{‘Ì
+rem ãƒ“ãƒ«ãƒ‰ä½œæ¥­æœ¬ä½“
 
-rem ‹¤’ÊƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌƒRƒ“ƒpƒCƒ‹
+rem å…±é€šã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 cd src\common\zlib
 if "%__ZLIB__%"=="" goto NOZLIB2
 echo Compiling zlib...
@@ -195,7 +195,7 @@ cd ..\
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
-rem ƒT[ƒo[–{‘Ì‚Ìƒrƒ‹ƒh
+rem ã‚µãƒ¼ãƒãƒ¼æœ¬ä½“ã®ãƒ“ãƒ«ãƒ‰
 echo Building login server...
 cd ..\login
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
@@ -214,11 +214,11 @@ cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c .\%__dbmode__%\*.c
 link %__opt2__% /out:"../../map-server.exe"
 if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
-rem •K—v‚È‚ç txt-converter ‚ğƒrƒ‹ƒh
+rem å¿…è¦ãªã‚‰ txt-converter ã‚’ãƒ“ãƒ«ãƒ‰
 if NOT "%__TXT_MODE__%"=="" goto NOCONVERTER1
 if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 
-echo ƒRƒ“ƒo[ƒ^[ƒRƒ“ƒpƒCƒ‹
+echo ã‚³ãƒ³ãƒãƒ¼ã‚¿ãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 cd ..\converter
 cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
 link %__opt2__% /out:"../../txt-converter.exe"
@@ -227,7 +227,7 @@ if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
 
 cd ..\..\
 
-rem •s•K—v‚Èƒtƒ@ƒCƒ‹‚ğíœ
+rem ä¸å¿…è¦ãªãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤
 echo Cleanup build files
 if "%__ZLIB__%"=="" goto NOZLIB3
 del src\common\zlib\*.obj
