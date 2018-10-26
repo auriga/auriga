@@ -3565,6 +3565,15 @@ AurigaNPCScript
 			見つからない場合は ""（空文字）を返します。
 			なお、モンスター名はmob_db.txtを参照します
 
+		getmercinfo 関数
+			getmercinfo(<num>)
+
+			<num>	数字
+
+			numに対応した連れ歩いている傭兵の情報を取得します。
+			0:merc_id 1:class 2:fame 3:call_count 4:kill_count 5:life_time
+			連れてない場合は0を返します。
+
 		checkactiveitem 関数
 			checkactiveitem(<itemid>)
 

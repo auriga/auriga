@@ -4053,6 +4053,7 @@ int buildin_openbuyingstore(struct script_state *st);
 int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
+int buildin_getmercinfo(struct script_state *st);
 int buildin_mercheal(struct script_state *st);
 int buildin_mercsc_start(struct script_state *st);
 int buildin_mdcreate(struct script_state *st);
@@ -4369,6 +4370,7 @@ struct script_function buildin_func[] = {
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
 	{buildin_progressbar,"progressbar","i*"},
+	{buildin_getmercinfo,"getmercinfo","i"},
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},
 	{buildin_mdcreate,"mdcreate","s*"},
@@ -12769,6 +12771,57 @@ int buildin_progressbar(struct script_state *st)
 		npc_timeout_start(sd);
 	}
 
+	return 0;
+}
+
+
+/*==========================================
+ * ˜A‚ê•à‚¢‚Ä‚¢‚é—b•º‚Ìî•ñæ“¾
+ * 0:merc_id 1:merc_class_lv 2:fame
+ * 3:call_count 4:kill_count 5:lifetime
+ *------------------------------------------
+ */
+int buildin_getmercinfo(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(sd && sd->status.merc_id > 0 && sd->mcd){
+		switch(type){
+			case 0:
+				push_val(st->stack,C_INT,sd->status.merc_id);
+				break;
+			case 1:
+				push_val(st->stack,C_INT,sd->mcd->status.class_);
+				break;
+			case 2:
+				push_val(st->stack,C_INT,merc_get_fame(sd,sd->mcd->status.class_));
+				break;
+			case 3:
+				push_val(st->stack,C_INT,merc_get_call(sd,sd->mcd->status.class_));
+				break;
+			case 4:
+				push_val(st->stack,C_INT,sd->mcd->status.kill_count);
+				break;
+			case 5:
+				{
+					unsigned int diff;
+					unsigned int now  = (unsigned int)time(NULL);
+					if(sd->mcd->status.limit > now)
+						diff = (sd->mcd->status.limit - now) * 1000;
+					else
+						diff = 1;
+					push_val(st->stack,C_INT,diff);
+				}
+				break;
+			default:
+				push_val(st->stack,C_INT,0);
+				break;
+		}
+	}
+	else {
+		push_val(st->stack,C_INT,0);
+	}
 	return 0;
 }
 
