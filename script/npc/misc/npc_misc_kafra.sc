@@ -9,14 +9,16 @@
 //			2: コモド用
 //			3: 特殊用、セリフなし
 //			4: アインブログ・アインベフ用（空間移動選択時）
-//	SelectNum -> 7つのサービスの中から選択するビットフラグ（0x7fで7個全部）
-//			+1:  位置セーブ
-//			+2:  倉庫
-//			+4:  空間移動
-//			+8:  カート
-//			+16: カプラポイント
-//			+32: カプラ配置案内
-//			+64: 終了
+//	SelectNum -> 7つのサービスの中から選択するビットフラグ（0x1ffで7個全部）
+//			+1:   位置セーブ
+//			+2:   倉庫
+//			+4:   空間移動
+//			+8:   カート
+//			+16:  カプラポイント
+//			+32:  カプラ配置案内
+//			+64:  装備解除
+//			+128: 倉庫ショートカット
+//			+256: 終了
 //	"OutSave",OutX,OutY -> 「外でセーブ」のセーブポイント
 //	                        選択肢が出ない場合もこれに該当
 //	"InSave",InX,InY    -> 「中でセーブ」のセーブポイント
@@ -226,6 +228,92 @@ function	script	KafraMain	{
 		return;
 	}
 
+	//装備解除サービス
+	function KafraUnequip {
+		misceffect 389,"";
+		misceffect 411,"";
+		unequip -2;
+		mes "[カプラ職員]";
+		mes "装備アイテムを解除いたしました。";
+		mes "ご利用ありがとうございます。";
+		return;
+	}
+
+	//「倉庫ショートカット」の設定変更
+	function KafraStorageConf {
+		mes "[カプラ職員]";
+		mes "「倉庫ショートカット」の";
+		mes "設定を変更していただけます。";
+		if(checkquest(202060) & 0x8)
+			mes "現在は「設定^FF0000ON^000000」となっています。";
+		else
+			mes "現在は「設定^0000FFOFF^000000」となっています。";
+		mes "いかがいたしましょうか？";
+		next;
+		if(select("切り替える","やっぱりやめる") == 2) {
+			mes "[カプラ職員]";
+			mes "かしこまりました。";
+			mes "設定を変更する際は";
+			mes "またお越しくださいませ。";
+			return;
+		}
+		if(checkquest(202060) & 0x8) {
+			setquest 202060;
+			delquest 202060;
+		}
+		else {
+			setquest 202060;
+			compquest 202060;
+		}
+		misceffect 128,"";
+		mes "[カプラ職員]";
+		if(checkquest(202060) & 0x8)
+			mes "「設定^FF0000ON^000000」に切り替えました。";
+		else
+			mes "「設定^0000FFOFF^000000」に切り替えました。";
+		mes "設定を変更する際は";
+		mes "またお越しくださいませ。";
+		return;
+	}
+
+	//初回設定
+	function KafraInit {
+		mes "[カプラ職員]";
+		mes "冒険者の皆様に、より満足いただけるよう";
+		mes "「^FF0000倉庫ショートカット^000000」サービスと";
+		mes "「^FF0000装備解除^000000」サービスの提供を";
+		mes "開始いたしました。";
+		next;
+		mes "[カプラ職員]";
+		mes "「^FF0000倉庫ショートカット^000000」サービスは";
+		mes "設定を「ON」にすることで";
+		mes "ご利用いただけます。";
+		mes "現在は「設定^0000FFOFF^000000」となっています。";
+		mes "今すぐ設定を切り替えますか？";
+		mes "後程、切り替えることもできます。";
+		next;
+		switch(select("今はやめておく","「ON」に切り替える")) {
+		case 1:
+			mes "[カプラ職員]";
+			mes "かしこまりました。";
+			break;
+		case 2:
+			setquest 202060;
+			compquest 202060;
+			misceffect 128,"";
+			mes "[カプラ職員]";
+			mes "「設定^FF0000ON^000000」に切り替えました。";
+			break;
+		}
+		mes "設定を変更する際は";
+		mes "「^FF0000「倉庫ショートカット」の設定変更^000000」と";
+		mes "お申し付けください。";
+		next;
+		setquest 202065;
+		compquest 202065;
+		return;
+	}
+
 	//終了
 	function KafraEnd {
 		mes "[カプラ職員]";
@@ -240,13 +328,38 @@ function	script	KafraMain	{
 
 	//ここからmain
 	KafraSpeech getarg(0);
-	setarray '@serv$,"位置セーブサービス","倉庫サービス","空間移動サービス",
-				"カートサービス","カプラポイント確認","カプラ職員配置案内","終了";
-	for(set '@i,0; '@i<7; set '@i,'@i+1) {
+	if(!checkquest(202065)) {
+		KafraInit;
+	}
+	if(checkquest(202060) & 0x8) {
+		while(1) {
+			switch(select("^0000FF倉庫^000000を開く","装備の解除","いつものサービスを利用")) {
+			case 1:
+				//倉庫サービスは分離
+				callfunc "KafraStorage",getarg(8);
+				end;
+			case 2:
+				misceffect 389,"";
+				misceffect 411,"";
+				unequip -2;
+				mes "[カプラ職員]";
+				mes "装備アイテムを解除いたしました。";
+				mes "続けて倉庫サービスをご利用いただけます。";
+				next;
+				continue;
+			case 3:
+				break;
+			}
+			break;
+		}
+	}
+	setarray '@serv$,"位置セーブサービス","倉庫サービス -> " +getarg(8)+ "zeny","空間移動サービス",
+				"カートサービス","カプラポイント確認","カプラ職員配置案内","装備解除サービス","「倉庫ショートカット」の設定変更","終了";
+	for(set '@i,0; '@i<9; set '@i,'@i+1) {
 		if(getarg(1)&(1<<'@i) == 0)
 			set '@serv$['@i],"";	//SelectNumのビットフラグが立ってなければ空で埋める
 	}
-	switch (select('@serv$[0],'@serv$[1],'@serv$[2],'@serv$[3],'@serv$[4],'@serv$[5],'@serv$[6])) {
+	switch (select('@serv$[0],'@serv$[1],'@serv$[2],'@serv$[3],'@serv$[4],'@serv$[5],'@serv$[6],'@serv$[7],'@serv$[8])) {
 		case 1:
 			//0,1はダミー
 			KafraSave 0,1,getarg(2),getarg(3),getarg(4),getarg(5),getarg(6),getarg(7);
@@ -275,6 +388,12 @@ function	script	KafraMain	{
 			mes "カプラ職員がいます。";
 			return;	//case6のみreturnして配置案内
 		case 7:
+			KafraUnequip;
+			break;
+		case 8:
+			KafraStorageConf;
+			break;
+		case 9:
 			KafraEnd;
 			break;
 	}
@@ -315,7 +434,7 @@ prontera.gat,146,89,6	script	カプラ職員	117,{
 	cutin "kafra_01",2;
 	setarray '@code,2,3,4,5,6,8,7;
 	setarray '@price,600,1200,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",1,0x7f,"prontera.gat",116,72,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"prontera.gat",116,72,"NULL",0,0,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,146,89,1,0x0000FF;
 	viewpoint 1,282,200,2,0x0000FF;
@@ -333,7 +452,7 @@ prontera.gat,282,200,2	script	カプラ職員	114,{
 	cutin "kafra_04",2;
 	setarray '@code,2,3,4,5,6,8,7;
 	setarray '@price,600,1200,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",1,0x7f,"prt_fild06.gat",33,192,"prontera.gat",279,200,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"prt_fild06.gat",33,192,"prontera.gat",279,200,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,146,89,1,0x0000FF;
 	viewpoint 1,282,200,2,0x0000FF;
@@ -351,7 +470,7 @@ prontera.gat,151,29,0	script	カプラ職員	115,{
 	cutin "kafra_03",2;
 	setarray '@code,2,3,4,5,6,8,7;
 	setarray '@price,600,1200,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",1,0x7f,"prt_fild08.gat",170,368,"prontera.gat",116,72,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"prt_fild08.gat",170,368,"prontera.gat",116,72,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,146,89,1,0x0000FF;
 	viewpoint 1,282,200,2,0x0000FF;
@@ -369,7 +488,7 @@ prontera.gat,29,207,6	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	setarray '@code,2,3,4,5,6,8,7;
 	setarray '@price,600,1200,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",1,0x7f,"prt_fild05.gat",368,205,"prontera.gat",33,207,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"prt_fild05.gat",368,205,"prontera.gat",33,207,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,146,89,1,0x0000FF;
 	viewpoint 1,282,200,2,0x0000FF;
@@ -387,7 +506,7 @@ prt_fild01.gat,198,47,0	script	カプラ職員	112,{
 	cutin "kafra_06",2;
 	setarray '@code,2,3,4,5,6,8,7;
 	setarray '@price,600,1200,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",1,0x5f,"prt_fild01.gat",198,51,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1df,"prt_fild01.gat",198,51,"NULL",0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -397,7 +516,7 @@ prt_fild01.gat,198,47,0	script	カプラ職員	112,{
 
 prt_fild05.gat,290,224,4	script	カプラ職員	114,{
 	cutin "kafra_04",2;
-	callfunc "KafraMain",0,0x5b,"prt_fild05.gat",274,244,"NULL",0,0,30,800;
+	callfunc "KafraMain",0,0x1db,"prt_fild05.gat",274,244,"NULL",0,0,30,800;
 	end;
 }
 
@@ -409,7 +528,7 @@ izlude.gat,134,88,4	script	カプラ職員	115,{
 	cutin "kafra_03",2;
 	setarray '@code,1,5,4,3,8;
 	setarray '@price,600,1200,1200,1200,1800;
-	callfunc "KafraMain",1,0x7f,"prt_fild08.gat",350,202,"izlude.gat",94,103,30,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"prt_fild08.gat",350,202,"izlude.gat",94,103,30,800,'@code,'@price;
 	close2;
 	viewpoint 1,136,88,1,0x0000FF;
 	cutin "kafra_03",255;
@@ -424,7 +543,7 @@ geffen.gat,120,62,0	script	カプラ職員	115,{
 	cutin "kafra_03",2;
 	setarray '@code,1,8,7,9;
 	setarray '@price,1200,1200,1700,1700;
-	callfunc "KafraMain",0,0x7f,"geffen.gat",120,38,"NULL",0,0,30,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1ff,"geffen.gat",120,38,"NULL",0,0,30,800,'@code,'@price;
 	close2;
 	viewpoint 1,120,62,1,0x0000FF;
 	viewpoint 1,203,123,2,0x0000FF;
@@ -440,7 +559,7 @@ geffen.gat,203,123,4	script	カプラ職員	114,{
 	cutin "kafra_04",2;
 	setarray '@code,1,8,7,9;
 	setarray '@price,1200,1200,1700,1700;
-	callfunc "KafraMain",0,0x7f,"gef_fild00.gat",55,222,"geffen.gat",120,38,30,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1ff,"gef_fild00.gat",55,222,"geffen.gat",120,38,30,800,'@code,'@price;
 	close2;
 	viewpoint 1,120,62,1,0x0000FF;
 	viewpoint 1,203,123,2,0x0000FF;
@@ -456,7 +575,7 @@ morocc.gat,156,97,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	setarray '@code,1,4,6,10,11;
 	setarray '@price,1200,1200,1800,1800,1200;
-	callfunc "KafraMain",1,0x7f,"morocc.gat",156,46,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"morocc.gat",156,46,"NULL",0,0,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,160,258,1,0x0000FF;
 	viewpoint 1,159,97,2,0x0000FF;
@@ -472,7 +591,7 @@ morocc.gat,160,258,4	script	カプラ職員	114,{
 	cutin "kafra_04",2;
 	setarray '@code,1,4,6,10,11;
 	setarray '@price,1200,1200,1800,1800,1200;
-	callfunc "KafraMain",1,0x7f,"moc_fild07.gat",211,29,"morocc.gat",160,283,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"moc_fild07.gat",211,29,"morocc.gat",160,283,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,160,258,1,0x0000FF;
 	viewpoint 1,159,97,2,0x0000FF;
@@ -486,7 +605,7 @@ morocc.gat,160,258,4	script	カプラ職員	114,{
 
 moc_ruins.gat,59,157,6	script	カプラ職員	117,{
 	cutin "kafra_01",2;
-	callfunc "KafraMain",1,0x5a,0,0,0,0,0,0,50,800;
+	callfunc "KafraMain",1,0x1da,0,0,0,0,0,0,50,800;
 	end;
 }
 
@@ -498,7 +617,7 @@ alberta.gat,28,229,0	script	カプラ職員	116,{
 	cutin "kafra_02",2;
 	setarray '@code,4,1,5;
 	setarray '@price,1200,1800,1800;
-	callfunc "KafraMain",1,0x7f,"pay_fild03.gat",387,76,"alberta.gat",31,231,50,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"pay_fild03.gat",387,76,"alberta.gat",31,231,50,800,'@code,'@price;
 	close2;
 	viewpoint 1,28,229,1,0x0000FF;
 	viewpoint 1,113,60,2,0x0000FF;
@@ -514,7 +633,7 @@ alberta.gat,113,60,6	script	カプラ職員#alberta2	112,{
 	cutin "kafra_06",2;
 	setarray '@code,4,1,5;
 	setarray '@price,1200,1800,1800;
-	callfunc "KafraMain",1,0x7f,"alberta.gat",117,56,"NULL",0,0,50,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1ff,"alberta.gat",117,56,"NULL",0,0,50,800,'@code,'@price;
 	close2;
 	viewpoint 1,28,229,1,0x0000FF;
 	viewpoint 1,113,60,2,0x0000FF;
@@ -528,7 +647,7 @@ alberta.gat,113,60,6	script	カプラ職員#alberta2	112,{
 
 alb2trea.gat,59,69,6	script	カプラ職員	117,{
 	cutin "kafra_01",2;
-	callfunc "KafraMain",0,0x5a,0,0,0,0,0,0,50,800;
+	callfunc "KafraMain",0,0x1da,0,0,0,0,0,0,50,800;
 	end;
 }
 
@@ -540,7 +659,7 @@ payon.gat,175,226,4	script	カプラ職員	116,{
 	cutin "kafra_02",2;
 	setarray '@code,6,1,5;
 	setarray '@price,1200,1200,1200;
-	callfunc "KafraMain",1,0x5f,"payon.gat",207,113,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1df,"payon.gat",207,113,"NULL",0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -552,7 +671,7 @@ payon.gat,181,104,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	setarray '@code,6,1,5;
 	setarray '@price,1200,1200,1200;
-	callfunc "KafraMain",1,0x5f,"payon.gat",160,58,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",1,0x1df,"payon.gat",160,58,"NULL",0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -562,7 +681,7 @@ payon.gat,181,104,4	script	カプラ職員	113,{
 
 pay_arche.gat,55,123,4	script	カプラ職員	114,{
 	cutin "kafra_04",2;
-	callfunc "KafraMain",1,0x5b,"pay_arche.gat",50,145,"NULL",0,0,40,800;
+	callfunc "KafraMain",1,0x1db,"pay_arche.gat",50,145,"NULL",0,0,40,800;
 	end;
 }
 
@@ -574,7 +693,7 @@ aldebaran.gat,143,119,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	setarray '@code,3,13,2,1,9;
 	setarray '@price,1200,1200,1800,2000,1700;
-	callfunc "KafraMain",0,0x5f,"aldebaran.gat",167,112,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1df,"aldebaran.gat",167,112,"NULL",0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -586,7 +705,7 @@ cmd_in02.gat,146,180,4	script	カプラ職員	721,{
 	cutin "kafra_07",2;
 	setarray '@code,5,12;
 	setarray '@price,1800,1200;
-	callfunc "KafraMain",2,0x5f,"comodo.gat",209,143,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",2,0x1df,"comodo.gat",209,143,"NULL",0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -598,7 +717,7 @@ cmd_fild07.gat,136,134,4	script	カプラ職員	721,{
 	cutin "kafra_07",2;
 	setarray '@code,10,5;
 	setarray '@price,1200,1200;
-	callfunc "KafraMain",2,0x5f,"cmd_fild07.gat",127,134,"NULL",0,0,80,1000,'@code,'@price;
+	callfunc "KafraMain",2,0x1df,"cmd_fild07.gat",127,134,"NULL",0,0,80,1000,'@code,'@price;
 	end;
 }
 
@@ -610,7 +729,7 @@ comodo.gat,195,150,4	script	カプラ職員	721,{
 	cutin "kafra_07",2;
 	setarray '@code,5,12,19;
 	setarray '@price,1800,1200,1800;
-	callfunc "KafraMain",2,0x5f,"comodo.gat",180,151,"NULL",0,0,80,1000,'@code,'@price;
+	callfunc "KafraMain",2,0x1df,"comodo.gat",180,151,"NULL",0,0,80,1000,'@code,'@price;
 	end;
 }
 
@@ -622,7 +741,7 @@ gef_fild10.gat,73,340,5	script	カプラ職員	117,{
 	cutin "kafra_01",2;
 	setarray '@code,3,8;
 	setarray '@price,1700,1700;
-	callfunc "KafraMain",0,0x5a,0,0,0,0,0,0,130,800;
+	callfunc "KafraMain",0,0x1da,0,0,0,0,0,0,130,800;
 	end;
 }
 
@@ -634,7 +753,7 @@ mjolnir_02.gat,82,362,4	script	カプラ職員	117,{
 	cutin "kafra_01",2;
 	setarray '@code,1,3;
 	setarray '@price,1700,1700;
-	callfunc "KafraMain",1,0x5a,0,0,0,0,0,0,100,800;
+	callfunc "KafraMain",1,0x1da,0,0,0,0,0,0,100,800;
 	end;
 }
 
@@ -646,7 +765,7 @@ yuno.gat,152,187,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	set '@code,8;
 	set '@price,1200;
-	callfunc "KafraMain",0,0x7f,"yuno.gat",158,124,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1ff,"yuno.gat",158,124,"NULL",0,0,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,327,109,2,0x0000FF;
 	viewpoint 1,277,221,3,0x0000FF;
@@ -662,7 +781,7 @@ yuno.gat,327,109,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	set '@code,8;
 	set '@price,1200;
-	callfunc "KafraMain",0,0x7f,"yuno.gat",327,100,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1ff,"yuno.gat",327,100,"NULL",0,0,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,152,187,1,0x0000FF;
 	viewpoint 1,277,221,3,0x0000FF;
@@ -678,7 +797,7 @@ yuno.gat,277,221,4	script	カプラ職員	113,{
 	cutin "kafra_05",2;
 	set '@code,8;
 	set '@price,1200;
-	callfunc "KafraMain",0,0x7f,"yuno.gat",275,229,"NULL",0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",0,0x1ff,"yuno.gat",275,229,"NULL",0,0,40,800,'@code,'@price;
 	close2;
 	viewpoint 1,152,187,1,0x0000FF;
 	viewpoint 1,327,109,2,0x0000FF;
@@ -706,7 +825,7 @@ amatsu.gat,102,149,5	script	カプラ職員#amatsunomal	116,{
 	mes "サービスを欠かしません。";
 	mes "何をお手伝いいたしましょう？";
 	next;
-	callfunc "KafraMain",3,0x5b,"amatsu.gat",116,94,"NULL",0,0,80,700;
+	callfunc "KafraMain",3,0x1db,"amatsu.gat",116,94,"NULL",0,0,80,700;
 	end;
 }
 
@@ -716,7 +835,7 @@ amatsu.gat,102,149,5	script	カプラ職員#amatsunomal	116,{
 
 gonryun.gat,159,122,4	script	カプラ職員	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",1,0x5b,"gonryun.gat",160,62,"NULL",0,0,80,700;
+	callfunc "KafraMain",1,0x1db,"gonryun.gat",160,62,"NULL",0,0,80,700;
 	end;
 }
 
@@ -728,7 +847,7 @@ umbala.gat,87,160,5	script	カプラ職員	721,{
 	cutin "kafra_07",2;
 	set '@code,10;
 	set '@price,1800;
-	callfunc "KafraMain",0,0x57,"umbala.gat",100,154,"NULL",0,0,80,0,'@code,'@price;
+	callfunc "KafraMain",0,0x1d7,"umbala.gat",100,154,"NULL",0,0,80,0,'@code,'@price;
 	end;
 }
 
@@ -780,7 +899,7 @@ niflheim.gat,202,180,3	script	カプラ職員	791,{
 
 louyang.gat,210,104,4	script	カプラ職員	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",1,0x5b,"louyang.gat",218,97,"NULL",0,0,80,700;
+	callfunc "KafraMain",1,0x1db,"louyang.gat",218,97,"NULL",0,0,80,700;
 	end;
 }
 
@@ -790,7 +909,7 @@ louyang.gat,210,104,4	script	カプラ職員	116,{
 
 ayothaya.gat,212,169,6	script	カプラ職員	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",1,0x5b,"ayothaya.gat",217,187,"NULL",0,0,80,700;
+	callfunc "KafraMain",1,0x1db,"ayothaya.gat",217,187,"NULL",0,0,80,700;
 	end;
 }
 
@@ -800,7 +919,7 @@ ayothaya.gat,212,169,6	script	カプラ職員	116,{
 
 einbroch.gat,242,205,5	script	カプラ職員#einbroch1	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",4,0x7f,"einbroch.gat",239,197,"NULL",0,0,40,800;
+	callfunc "KafraMain",4,0x1ff,"einbroch.gat",239,197,"NULL",0,0,40,800;
 	close2;
 	viewpoint 1,242,205,1,0x0000FF;
 	viewpoint 1,59,203,2,0x0000FF;
@@ -814,7 +933,7 @@ einbroch.gat,242,205,5	script	カプラ職員#einbroch1	116,{
 
 einbroch.gat,59,203,5	script	カプラ職員#einbroch2	117,{
 	cutin "kafra_01",2;
-	callfunc "KafraMain",4,0x7f,"einbroch.gat",239,197,"NULL",0,0,40,800;
+	callfunc "KafraMain",4,0x1ff,"einbroch.gat",239,197,"NULL",0,0,40,800;
 	close2;
 	viewpoint 1,242,205,1,0x0000FF;
 	viewpoint 1,59,203,2,0x0000FF;
@@ -828,7 +947,7 @@ einbroch.gat,59,203,5	script	カプラ職員#einbroch2	117,{
 
 einbech.gat,181,132,5	script	カプラ職員	115,{
 	cutin "kafra_03",2;
-	callfunc "KafraMain",4,0x7f,"einbech.gat",181,123,"NULL",0,0,40,850;
+	callfunc "KafraMain",4,0x1ff,"einbech.gat",181,123,"NULL",0,0,40,850;
 	close2;
 	viewpoint 1,181,132,1,0x0000FF;
 	cutin "kafra_03",255;
@@ -841,7 +960,7 @@ einbech.gat,181,132,5	script	カプラ職員	115,{
 
 lighthalzen.gat,191,320,4	script	カプラ職員	861,{
 	cutin "kafra_09",2;
-	callfunc "KafraMain",4,0x5f,"lighthalzen.gat",194,313,"NULL",0,0,40,800;
+	callfunc "KafraMain",4,0x1df,"lighthalzen.gat",194,313,"NULL",0,0,40,800;
 	end;
 }
 
@@ -851,7 +970,7 @@ lighthalzen.gat,191,320,4	script	カプラ職員	861,{
 
 lighthalzen.gat,164,100,4	script	カプラ職員	860,{
 	cutin "kafra_08",2;
-	callfunc "KafraMain",4,0x5f,"lighthalzen.gat",158,96,"NULL",0,0,40,800;
+	callfunc "KafraMain",4,0x1df,"lighthalzen.gat",158,96,"NULL",0,0,40,800;
 	end;
 }
 
@@ -861,7 +980,7 @@ lighthalzen.gat,164,100,4	script	カプラ職員	860,{
 
 lhz_in02.gat,237,284,4	script	カプラ職員	861,{
 	cutin "kafra_09",2;
-	callfunc "KafraMain",4,0x5f,"lhz_in02.gat",278,214,"NULL",0,0,40,800;
+	callfunc "KafraMain",4,0x1df,"lhz_in02.gat",278,214,"NULL",0,0,40,800;
 	end;
 }
 
@@ -871,7 +990,7 @@ lhz_in02.gat,237,284,4	script	カプラ職員	861,{
 
 moscovia.gat,223,191,3	script	カプラ職員	114,{
 	cutin "kafra_04",2;
-	callfunc "KafraMain",1,0x5b,"moscovia.gat",220,193,"NULL",0,0,80,700;
+	callfunc "KafraMain",1,0x1db,"moscovia.gat",220,193,"NULL",0,0,80,700;
 	end;
 }
 
@@ -881,7 +1000,7 @@ moscovia.gat,223,191,3	script	カプラ職員	114,{
 
 brasilis.gat,197,221,3	script	カプラ職員	112,{
 	cutin "kafra_06",2;
-	callfunc "KafraMain",1,0x5b,"brasilis.gat",195,259,"NULL",0,0,40,700;
+	callfunc "KafraMain",1,0x1db,"brasilis.gat",195,259,"NULL",0,0,40,700;
 	end;
 }
 
@@ -891,7 +1010,7 @@ brasilis.gat,197,221,3	script	カプラ職員	112,{
 
 dewata.gat,202,184,6	script	カプラ職員	117,{
 	cutin "kafra_01",2;
-	callfunc "KafraMain",1,0x5b,"dewata.gat",199,177,"NULL",0,0,40,800;
+	callfunc "KafraMain",1,0x1db,"dewata.gat",199,177,"NULL",0,0,40,800;
 	end;
 }
 
@@ -900,12 +1019,12 @@ dewata.gat,202,184,6	script	カプラ職員	117,{
 //----------------------------------
 
 malaya.gat,71,79,4	script	カプラ職員	581,{
-	callfunc "KafraMain",1,0x5b,"malaya.gat",44,54,"NULL",0,0,500,800;
+	callfunc "KafraMain",1,0x1db,"malaya.gat",44,54,"NULL",0,0,500,800;
 	end;
 }
 
 malaya.gat,234,204,4	script	カプラ職員	581,{
-	callfunc "KafraMain",1,0x5b,"malaya.gat",281,211,"NULL",0,0,500,800;
+	callfunc "KafraMain",1,0x1db,"malaya.gat",281,211,"NULL",0,0,500,800;
 	end;
 }
 
@@ -966,6 +1085,6 @@ prontera.gat,248,42,0	script	カプラ職員#ProSword	116,{
 
 izlu2dun.gat,106,58,4	script	カプラ職員#Byalan	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",0,0x5a,0,0,0,0,0,0,40,800;
+	callfunc "KafraMain",0,0x1da,0,0,0,0,0,0,40,800;
 	end;
 }

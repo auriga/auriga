@@ -392,7 +392,7 @@ morocc_in.gat,140,102,4	script	Œ©K¶	86,{
 //==============================================================
 izlu2dun.gat,106,58,4	script	ƒJƒvƒ‰Eˆõ::MC_DeliverBya	116,{
 	cutin "kafra_02",2;
-	callfunc "KafraMain",0,0x5a,0,0,0,0,0,0,40,800;
+	callfunc "KafraMain",0,0x1da,0,0,0,0,0,0,40,800;
 	end;
 OnInit:
 	//‚±‚ê‚ª“Ç‚İ‚Ü‚ê‚é‚Æ‚«‚Ínpc_town_kafra.txt‚Ì•û‚ğ–³Œø‚É‚·‚é

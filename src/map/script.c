@@ -10192,7 +10192,12 @@ int buildin_unequip(struct script_state *st)
 		if(i >= 0)
 			pc_unequipitem(sd,i,0);
 	} else {
-		for(i=0;i<EQUIP_INDEX_MAX;i++) {
+		int max = EQUIP_INDEX_MAX;
+		if(num == -3)
+			max = EQUIP_INDEX_ARMOR_SHADOW;
+		else if(num == -2)
+			max = EQUIP_INDEX_COSTUME_HEAD;
+		for(i=0;i<max;i++) {
 			if(sd->equip_index[i] >= 0 )
 				pc_unequipitem(sd,sd->equip_index[i],0);
 		}

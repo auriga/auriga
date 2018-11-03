@@ -391,7 +391,7 @@ amatsu.gat,102,149,4	script	カプラ職員#amatsuevent	112,{
 	mes "さて、お仕事もしないと……";
 	mes "お客様、何をお手伝いいたしましょう？";
 	next;
-	callfunc "KafraMain",3,0x5b,"amatsu.gat",116,94,"NULL",0,0,80,700;
+	callfunc "KafraMain",3,0x11b,"amatsu.gat",116,94,"NULL",0,0,80,700;
 	end;
 OnInit:
 	//デフォルトのカプラ・ガイドを無効にする

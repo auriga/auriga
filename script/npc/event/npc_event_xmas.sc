@@ -224,7 +224,7 @@ xmas_in.gat,112,86,4	script	カプラビニット	114,{
 
 xmas_in.gat,97,99,4	script	カプラグラリス	113,{
 	cutin "kafra_05",2;
-	callfunc "KafraMain",1,0x42,0,0,0,0,0,0,100,0;
+	callfunc "KafraMain",1,0x102,0,0,0,0,0,0,100,0;
 	end;
 }
 

@@ -40,7 +40,7 @@ function	script	GvKafraMenu	{
 	callfunc "GvKafraMenu";
 	set '@code,17;
 	set '@price,200;
-	callfunc "KafraMain",3,0x4e,0,0,0,0,0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",3,0x1ce,0,0,0,0,0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -57,7 +57,7 @@ aldeg_cas05.gat,31,190,0	duplicate(AgitKafra_L0)	カプラ職員::AgitKafra_L5	117
 	callfunc "GvKafraMenu";
 	set '@code,15;
 	set '@price,200;
-	callfunc "KafraMain",3,0x4e,0,0,0,0,0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",3,0x1ce,0,0,0,0,0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -74,7 +74,7 @@ gefg_cas05.gat,61,52,5		duplicate(AgitKafra_B0)	カプラ職員::AgitKafra_B5	117
 	callfunc "GvKafraMenu";
 	set '@code,16;
 	set '@price,200;
-	callfunc "KafraMain",3,0x4e,0,0,0,0,0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",3,0x1ce,0,0,0,0,0,0,40,800,'@code,'@price;
 	end;
 }
 
@@ -91,7 +91,7 @@ payg_cas05.gat,276,227,1	duplicate(AgitKafra_C0)	カプラ職員::AgitKafra_C5	117
 	callfunc "GvKafraMenu";
 	set '@code,14;
 	set '@price,200;
-	callfunc "KafraMain",3,0x4e,0,0,0,0,0,0,40,800,'@code,'@price;
+	callfunc "KafraMain",3,0x1ce,0,0,0,0,0,0,40,800,'@code,'@price;
 	end;
 }
 
