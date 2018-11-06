@@ -206,3 +206,14 @@
 1@sara.gat	mapflag	monster_noteleport	dummy
 1@sara.gat	mapflag	noicewall	dummy
 1@sara.gat	mapflag	noabra		dummy
+
+//============================================================
+// ƒzƒ‰[‚¨‚à‚¿‚áHê - 1@xm_d.gat
+//------------------------------------------------------------
+1@xm_d.gat	mapflag	nosave			SavePoint
+1@xm_d.gat	mapflag	nomemo			dummy
+1@xm_d.gat	mapflag	noteleport		dummy
+1@xm_d.gat	mapflag	nobranch		dummy
+1@xm_d.gat	mapflag	monster_noteleport	dummy
+1@xm_d.gat	mapflag	noicewall	dummy
+1@xm_d.gat	mapflag	noabra		dummy

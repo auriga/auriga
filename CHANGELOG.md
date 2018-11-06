@@ -1,4 +1,14 @@
 ----------------------------------------
+//1320 [2018/11/07] by refis
+
+・ホラーおもちゃ工場実装 (map_auriga.conf, npc_memorial_horroroftoy.sc)
+	-> 関連アイテム交換NPC実装 (npc_town_lutie.sc)
+	-> item_db, monster_dbの更新 (item_db.txt, item_random.txt, mob_db.txt, mob_skill_db.txt)
+	-> const.txtの更新 (const.txt)
+	-> mapflagの更新 (mapflag_memorial.sc)
+	-> quest_dbの更新 (quest_db.txt)
+
+----------------------------------------
 //1319 [2018/11/04] by refis
 
 ・ヴェルキリーヘルム作成NPCを更新（npc_quest_hat5.sc）
