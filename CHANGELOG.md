@@ -1,4 +1,15 @@
 ----------------------------------------
+//1321 [2018/11/30] by refis
+
+・キャラクター削除待機時間を10秒に修正（char_auriga.conf）
+
+・セカンドコスチュームNPCを更新（npc_misc_pointshop.sc）
+	Thanks magnus さん
+
+・上位の次元ブーツにスロットエンチャントしたときの交換不具合を修正（npc_quest_glastheim.sc）
+	Thanks rinaserver さん
+
+----------------------------------------
 //1320 [2018/11/07] by refis
 
 ・ホラーおもちゃ工場実装 (map_auriga.conf, npc_memorial_horroroftoy.sc)

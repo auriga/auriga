@@ -492,8 +492,7 @@ prontera.gat,127,62,4	script	ファッションデザイナー	573,{
 	mes "同じ職業でも服そのものを変更する";
 	mes "試みに挑戦しているのだ。";
 	next;
-	if( Job != Job_Genetic && Job != Job_Guillotine && Job != Job_Mechanic && Job != Job_RoyalGuard && 
-		Job != Job_ArchBishop && Job != Job_Ranger && Job != Job_Warlock && Job != Job_Minstrel && Job != Job_Wanderer) {
+	if(Job < Job_RuneKnight || Job > Job_ShadowChaser) {
 		mes "[ファッションデザイナー]";
 		mes "幾度となく試行錯誤を重ね、";
 		mes "新しい服……そう、";
@@ -525,15 +524,7 @@ prontera.gat,127,62,4	script	ファッションデザイナー	573,{
 			close;
 		}
 		mes "‐セカンドコスチューム提供済み職業‐";
-		mes "・ミンストレル^FF0000NEW!!^000000";
-		mes "・ワンダラー^FF0000NEW!!^000000";
-		mes "・ウォーロック";
-		mes "・レンジャー";
-		mes "・アークビショップ";
-		mes "・ロイヤルガード";
-		mes "・メカニック";
-		mes "・ギロチンクロス";
-		mes "・ジェネティック";
+		mes "全職対応！^FF0000NEW!!^000000";
 		mes "　";
 		mes "以上";
 		close;

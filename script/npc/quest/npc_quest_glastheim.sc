@@ -700,10 +700,10 @@ glast_01.gat,210,270,8	script	×HEl	726,{
 	}
 	switch(getequipid(6)) {
 	case 22000: set '@gain,22006; break;
-	case 22001: set '@gain,22007; break;
-	case 22002: set '@gain,22008; break;
-	case 22003: set '@gain,22009; break;
-	case 22004: set '@gain,22010; break;
+	case 22001: set '@gain,22009; break;
+	case 22002: set '@gain,22010; break;
+	case 22003: set '@gain,22007; break;
+	case 22004: set '@gain,22008; break;
 	case 22005: set '@gain,22011; break;
 	case 0:
 		mes "[×HEl]";
