@@ -87,17 +87,19 @@
 #define SECOND_SKILLID 1001		// 2次職クエストスキルIDの開始値
 #define THIRD_SKILLID  2001		// 3次職スキルIDの開始値
 #define QUEST_SKILLID  2533		// クエストスキルIDの開始値
-#define KO_SKILLID     3001		// 影狼、朧IDの開始値
+#define KO_SKILLID     3001		// 影狼、朧スキルIDの開始値
+#define EX3_SKILLID    5001		// 3次職追加スキルIDの開始値
 #define HOM_SKILLID    8001		// ホムスキルIDの開始値
 #define MERC_SKILLID   8201		// 傭兵スキルIDの開始値
 #define ELEM_SKILLID   8401		// 精霊スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_SKILL       708
+#define MAX_SKILL       750
 #define MAX_SECONDSKILL  19
 #define MAX_THIRDSKILL  520
 #define MAX_QUESTSKILL   16
 #define MAX_KOSKILL      35
+#define MAX_EX3SKILL     15
 #define MAX_HOMSKILL     16
 #define MAX_MERCSKILL    40
 #define MAX_ELEMSKILL    42
@@ -107,13 +109,14 @@
 #define MAX_THIRD_SKILLID  (THIRD_SKILLID+MAX_THIRDSKILL)	// 3次職スキルIDの最大値
 #define MAX_QUEST_SKILLID  (QUEST_SKILLID+MAX_QUESTSKILL)	// クエストスキルIDの最大値
 #define MAX_KO_SKILLID     (KO_SKILLID+MAX_KOSKILL)			// 影狼、朧スキルIDの最大値
+#define MAX_EX3_SKILLID    (EX3_SKILLID+MAX_EX3SKILL)		// 3次職追加スキルIDの最大値
 #define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
 #define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
 #define MAX_ELEM_SKILLID   (ELEM_SKILLID+MAX_ELEMSKILL)		// 精霊スキルIDの最大値
 #define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
 
-#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_KOSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
-#define MAX_PCSKILL  MAX_KO_SKILLID		// PCが使用可能の最大のスキルID
+#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_KOSKILL+MAX_EX3SKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
+#define MAX_PCSKILL  MAX_EX3_SKILLID		// PCが使用可能の最大のスキルID
 
 #define MAX_QUESTLIST 100
 
@@ -155,6 +158,9 @@ enum {
 	PC_CLASS_NJ,			// 忍者
 	PC_CLASS_ST,			// サンタ
 	PC_CLASS_SU,			// 水着
+	PC_CLASS_HA,			// 韓服
+	PC_CLASS_OKT,			// オクトーバーフェスト
+	PC_CLASS_SU2,			// 水着2
 	PC_CLASS_NV_H = 4001,	// 転生ノービス
 	PC_CLASS_SM_H,			// 転生ソードマン
 	PC_CLASS_MG_H,			// 転生マジシャン

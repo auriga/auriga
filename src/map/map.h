@@ -42,7 +42,7 @@
 #define MAX_DROP_PER_MAP 8
 #define MAX_WIS_REFUSAL 14
 #define MAX_MOBGROUP	13
-#define MAX_ITEMGROUP	12
+#define MAX_ITEMGROUP	13
 #define MAX_EFF_TYPE	16	// アイテムボーナスの状態異常の数
 #define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化

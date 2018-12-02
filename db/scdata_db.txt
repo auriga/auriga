@@ -599,6 +599,15 @@
 627,SC_ATKPOTION,0,1,0,0			// ATK上昇
 628,SC_MATKPOTION,0,1,0,0			// MATK上昇
 629,SC_ALMIGHTY,1,0,0,0		// ATK,MATK上昇（食事用、死亡しても効果維持）
+630,SC_DARKCROW,1,1,0,0		// ダーククロー
+631,SC_UNLIMIT,1,1,0,0		// アンリミット
+632,SC_ILLUSIONDOPING,1,1,0,0		// イリュージョンドーピング
+633,SC_FRIGG_SONG,1,1,0,0		// フリッグの歌
+634,SC_OFFERTORIUM,1,1,0,0		// オフェルトリウム
+635,SC_TELEKINESIS_INTENSE,1,1,0,0		// テレキネシスインテンス
+636,SC_KINGS_GRACE,0,1,0,0		// キングスグレイス
+637,SC_FULL_THROTTLE,1,1,0,0		// フルスロットル
+638,SC_REBOUND,1,0,0,0		// リバウンド
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
