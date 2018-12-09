@@ -703,6 +703,12 @@ function	script	JobChanger	{
 		mes "英雄に祝福を！";
 		close;
 	}
+	if(sc_ison(SC_ALL_RIDING)) {
+		mes "‐騎乗生物を利用した状態では";
+		mes "　進行できません。";
+		mes "　騎乗生物から降りてください‐";
+		close;
+	}
 	if(SkillPoint) {
 		mes "["+getarg(0)+"]";
 		mes "まだ学ばなければならないことが";

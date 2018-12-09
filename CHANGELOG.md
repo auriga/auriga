@@ -1,4 +1,28 @@
 ----------------------------------------
+//1323 [2018/12/09] by refis
+
+・転生時に騎乗生物のチェック抜けがあったので修正（npc_job_transmigration.sc）
+
+・スキルのRR仕様へ修正の続き
+（skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_require_db.txt, skill_unit_db.txt, battle.c, skill.*, status.c）
+
+----------------------------------------
+//1322 [2018/12/03] by refis
+
+・モンスター使用スキルを修正（mob_skill_db.txt）
+
+・アイテムグループを追加（item_group_db.txt, map.h）
+
+・状態異常アイコンを更新（status.*）
+
+・スキルのRR仕様へ修正の続き
+（skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_require_db.txt, skill_require_db2.txt, battle.c, skill.*, status.*）
+
+・NPCスキル[フレイムクロス]、[パルスストライクII]、[ダンシングブレード]、
+　[ダークピアーシング]、[デスサモン]を実装
+（skill_cast_db.txt, skill_db.txt, skill_unit_db.txt, battle.c, skill.c, status.c）
+
+----------------------------------------
 //1321 [2018/11/30] by refis
 
 ・キャラクター削除待機時間を10秒に修正（char_auriga.conf）

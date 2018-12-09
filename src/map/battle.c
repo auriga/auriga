@@ -2827,12 +2827,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
 				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
 			}
-			if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
-				add_rate += sc->data[SC_BEYOND_OF_WARCRY].val1 * 5 + sc->data[SC_BEYOND_OF_WARCRY].val4 * 3;
-			}
-			if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
-				add_rate -= sc->data[SC_MELODYOFSINK].val1 * 5;
-			}
 		}
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
@@ -3856,6 +3850,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( (200 + (500 - 100 * t_size) * skill_lv) * status_get_lv(src) / 150, 100 );
 			break;
 #endif
+		case NC_MAGMA_ERUPTION:	/* マグマイラプション */
+			DMG_FIX( 450 + 50 * skill_lv, 100 );
+			break;
 		case SC_FATALMENACE:	// フェイタルメナス
 			DMG_FIX( 100 + 100 * skill_lv, 100 );
 			break;
@@ -4039,7 +4036,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( ( 40 * skill_lv + status_get_dex(src) ) * status_get_lv(src) / 100 + status_get_agi(src) / 4, 100 );
 			break;
 		case WM_GREAT_ECHO:		// グレートエコー
-			DMG_FIX( 900 + 100 * skill_lv + 100 * wflag, 100 );
+			{
+				int rate = 400 + 200 * skill_lv;
+				if(wflag >= 3 && wflag <= 7) {
+					rate += 100<<(wflag-3);
+				}
+				DMG_FIX( rate * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case WM_SOUND_OF_DESTRUCTION:	// サウンドオブディストラクション
 			DMG_FIX( 250, 100 );
@@ -5641,12 +5644,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		if(sc->data[SC_MOONLIT_SERENADE].timer != -1) {	// 月明かりのセレナーデ
 			add_rate += sc->data[SC_MOONLIT_SERENADE].val4;
 		}
-		if(sc->data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
-			add_rate += sc->data[SC_MELODYOFSINK].val1 * 5 + sc->data[SC_MELODYOFSINK].val4 * 3;
-		}
-		if(sc->data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ビヨンドオブウォークライ
-			add_rate -= sc->data[SC_BEYOND_OF_WARCRY].val1 * 5;
-		}
 	}
 
 	/* ３．基本ダメージ計算(スキルごとに処理) */
@@ -6796,6 +6793,12 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 			if(sd)
 				mid.damage += 40 * pc_checkskill(sd,RA_RESEARCHTRAP);
 		}
+		break;
+	case NC_MAGMA_ERUPTION_DOTDAMAGE:	/* マグマイラプション(追撃) */
+		mid.damage = 800 + 200 * skill_lv;
+		damagefix = 0;
+		flag &= ~(BF_SKILLMASK|BF_RANGEMASK|BF_WEAPONMASK);
+		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_SHORT|BF_WEAPON;
 		break;
 	case GN_THORNS_TRAP:		// ソーントラップ
 		mid.damage = 100 + 200 * skill_lv + int_;
