@@ -6578,6 +6578,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				return 0;
 			}
 			break;
+		case SC_MAGNIFICAT:
+			status_change_end(bl,SC_OFFERTORIUM,-1);
+			break;
+		case SC_OFFERTORIUM:
+			status_change_end(bl,SC_MAGNIFICAT,-1);
+			break;
 		// 3次新毒スキル
 		case SC_TOXIN:
 		case SC_PARALIZE:
@@ -6762,6 +6768,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			return 0;
 	}
 
+	/* キングスグレイス状態では特定異常にかからない */
+	if(sc->data[SC_KINGS_GRACE].timer != -1) {
+		if(type >= SC_STONE && type <= SC_BLEED)
+			return 0;
+		switch(type) {
+			case SC_DPOISON:	case SC_HALLUCINATION:	case SC_FEAR:		case SC_HELLINFERNO:
+			case SC_FROSTMISTY:	case SC_DEEP_SLEEP:	case SC_DIAMONDDUST:	case SC_MANDRAGORA:
+				return 0;
+		}
+	}
+
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
 		if(type == SC_ALL_RIDING || type == SC_HAT_EFFECT) {
 			status_change_end(bl,type,-1);
@@ -6880,6 +6897,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NAUTHIZ:			/* リフレッシュ */
 		case SC_ISHA:				/* バイタリティアクティベーション */
 		case SC_WEAPONBLOCKING2:	/* ウェポンブロッキング（ブロック） */
+		case SC_OFFERTORIUM:		/* オフェルトリウム */
 		case SC_WHITEIMPRISON:		/* ホワイトインプリズン */
 		case SC_RECOGNIZEDSPELL:	/* リゴグナイズドスペル */
 		case SC_STASIS:				/* ステイシス */
@@ -6890,6 +6908,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__DEADLYINFECT:		/* デッドリーインフェクト */
 		case SC__IGNORANCE:			/* マスカレード ： イグノアランス */
 		case SC__MANHOLE:			/* マンホール */
+		case SC__ESCAPE:			/* エスケープ */
 		case SC_FALLENEMPIRE:		/* 大纏崩捶 */
 		case SC_CRESCENTELBOW:		/* 破碎柱 */
 		case SC_CURSEDCIRCLE_USER:	/* 呪縛陣(使用者) */
@@ -6914,7 +6933,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_JP_EVENT04:
 		case SC_RAID:
 		case SC_PHI_DEMON:			/* 古代精霊のお守り */
-		case SC_OFFERTORIUM:		/* オフェルトリウム */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -8157,6 +8175,32 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 6000;
 			calc_flag = 1;
 			break;
+		case SC_KINGS_GRACE:	/* キングスグレイス */
+			status_change_end(bl,SC_POISON,-1);
+			status_change_end(bl,SC_BLIND,-1);
+			status_change_end(bl,SC_FREEZE,-1);
+			status_change_end(bl,SC_STONE,-1);
+			status_change_end(bl,SC_STUN,-1);
+			status_change_end(bl,SC_SLEEP,-1);
+			status_change_end(bl,SC_BLEED,-1);
+			status_change_end(bl,SC_CURSE,-1);
+			status_change_end(bl,SC_CONFUSION,-1);
+			status_change_end(bl,SC_SILENCE,-1);
+			status_change_end(bl,SC_DPOISON,-1);
+			status_change_end(bl,SC_HALLUCINATION,-1);
+			status_change_end(bl,SC_FEAR,-1);
+			status_change_end(bl,SC_HELLINFERNO,-1);
+			status_change_end(bl,SC_FROSTMISTY,-1);
+			status_change_end(bl,SC_DEEP_SLEEP,-1);
+			status_change_end(bl,SC_DIAMONDDUST,-1);
+			status_change_end(bl,SC_MANDRAGORA,-1);
+			status_change_end(bl,SC_DEVOTION,-1);
+			unit_stopattack(bl);
+			unit_stop_walking(bl,0);
+			val2 = tick / 1000;
+			val4 = 3 + val1;
+			tick = 1000;
+			break;
 		case SC_RAISINGDRAGON:	/* 潜龍昇天 */
 			val2 = tick / 5000;
 			val3 = val1 + 2;	// MaxHP,MaxSP増加率
@@ -8198,9 +8242,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_RUSH_WINDMILL:		/* 風車に向かって突撃 */
 			val4 = (val1 * 6) + (val2 / 5) + val3;
+			calc_flag = 1;
 			break;
 		case SC_MOONLIT_SERENADE:	/* 月明かりのセレナーデ */
 			val4 = (val1 * 5) + (val2 / 4) + val3;
+			calc_flag = 1;
 			break;
 		case SC_ECHOSONG:			/* エコーの歌 */
 			calc_flag = 1;
@@ -8230,6 +8276,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				val3 += (val2-2) * 4;
 				val4 += val2-2;
 			}
+			calc_flag = 1;
 			break;
 		case SC_MELODYOFSINK:		/* メロディーオブシンク */
 			val3 = val1 * 2;
@@ -8240,6 +8287,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			val2 = tick / 1000;
 			tick = 1000;
+			calc_flag = 1;
 			break;
 		case SC_SONG_OF_MANA:		/* マナの歌 */
 			val2 = tick / 5000;
@@ -8979,9 +9027,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TURISUSS:			/* ジャイアントグロース */
 		case SC_EISIR:				/* ファイティングスピリット */
 		case SC_FEAR:				/* 恐怖 */
+		case SC_UNLIMIT:			/* アンリミット */
 		case SC_EPICLESIS:			/* エピクレシス */
 		case SC_LAUDAAGNUS:			/* ラウダアグヌス */
 		case SC_LAUDARAMUS:			/* ラウダラムス */
+		case SC_TELEKINESIS_INTENSE:	/* テレキネシスインテンス */
 		case SC_VENOMIMPRESS:		/* ベナムインプレス */
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
 		case SC_HALLUCINATIONWALK2:	/* ハルシネーションウォーク(ペナルティ) */
@@ -9009,6 +9059,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_GLOOMYDAY:			/* メランコリー */
 		case SC_LERADS_DEW:			/* レーラズの露 */
 		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
+		case SC_BEYOND_OF_WARCRY:	/* ビヨンドオブウォークライ */
+		case SC_MELODYOFSINK:		/* メロディーオブシンク */
+		case SC_FRIGG_SONG:			/* フリッグの歌 */
 		case SC_STRIKING:			/* ストライキング */
 		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ファイアーエクスパンション(煙幕) */
 		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ファイアーエクスパンション(催涙ガス) */
@@ -10554,6 +10607,15 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			} else {
 				timer = add_timer(6000+tick, status_change_timer,bl->id, data);
 			}
+		}
+		break;
+	case SC_KINGS_GRACE:	/* キングスグレイス */
+		if((--sc->data[type].val2) > 0) {
+			if(sd) {
+				int hp = sd->status.max_hp * sc->data[type].val4 / 100;
+				unit_heal(bl, hp, 0);
+			}
+			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
 		break;
 	case SC_RAISINGDRAGON:		/* 潜龍昇天 */

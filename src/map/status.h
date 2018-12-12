@@ -783,6 +783,7 @@ enum {
 	SC_KINGS_GRACE			= 636,
 	SC_FULL_THROTTLE		= 637,
 	SC_REBOUND				= 638,
+	SC__ESCAPE				= 639,
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
 	SC_RESISTCLEAR          = 1001,

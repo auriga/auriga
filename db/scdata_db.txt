@@ -608,6 +608,7 @@
 636,SC_KINGS_GRACE,0,1,0,0		// キングスグレイス
 637,SC_FULL_THROTTLE,1,1,0,0		// フルスロットル
 638,SC_REBOUND,1,0,0,0		// リバウンド
+639,SC__ESCAPE,-1,1,0,0		// エスケープ
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

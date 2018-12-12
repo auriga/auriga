@@ -1123,12 +1123,12 @@
 5005,0,6,4,0,1,1,1,yes,0,0,0,none,0	//RK_LUXANIMA#ラクスアニマ#
 5006,1,6,2,-1,0,5,1,yes,0,0,0,weapon,0	//NC_MAGMA_ERUPTION#マグマイラプション#
 5007,0,6,4,0,1,5,1,yes,0,0,0,none,0	//WM_FRIGG_SONG#フリッグの歌#
-//5008,0,6,4,0,1,5,1,yes,0,0,0,none,0	//SO_ELEMENTAL_SHIELD#エレメンタルシールド#
-//5009,1,6,1,0,1,5,1,yes,0,0,0,none,0	//SR_FLASHCOMBO#閃光連撃#
-//5010,0,6,4,0,1,5,1,yes,0,0,0,none,5:6:7:8:9	//SC_ESCAPE#エスケープ#
+5008,0,6,4,0,1,5,1,yes,0,0,0,none,0	//SO_ELEMENTAL_SHIELD#エレメンタルシールド#
+5009,1,6,1,0,1,5,1,yes,0,0,0,none,0	//SR_FLASHCOMBO#閃光連撃#
+5010,0,6,4,0,1,5,1,yes,0,0,0,none,5:6:7:8:9	//SC_ESCAPE#エスケープ#
 5011,0,6,4,0,1,5,1,yes,0,0,0,none,0	//AB_OFFERTORIUM#オフェルトリウム#
 5012,0,6,4,0,1,5,1,yes,0,0,0,none,0	//WL_TELEKINESIS_INTENSE#テレキネシスインテンス#
-//5013,0,6,4,0,1,5,1,yes,0,0,0,none,0	//LG_KINGS_GRACE#キングスグレイス#
+5013,0,6,4,0,1,5,1,yes,0,0,0,none,0	//LG_KINGS_GRACE#キングスグレイス#
 //5014,0,6,4,0,1,5,1,yes,0,1,0,none,0	//ALL_FULL_THROTTLE#フルスロットル#
 5015,1,6,1,0,0,5,1,no,0,0,0,misc,0	//NC_MAGMA_ERUPTION_DOTDAMAGE#マグマイラプション(追撃)#
 

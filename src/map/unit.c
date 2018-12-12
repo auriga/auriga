@@ -1683,6 +1683,7 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_MAGNETICFIELD].timer != -1 ||		// マグネティックフィールド
 		    sc->data[SC__MANHOLE].timer != -1 ||	// マンホール
 		    sc->data[SC_SITDOWN_FORCE].timer != -1 ||	// 転倒
+		    sc->data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
 		    sc->data[SC_FALLENEMPIRE].timer != -1 ||	// 大纏崩捶
 		    sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
 		    sc->data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
@@ -1692,6 +1693,7 @@ int unit_can_move(struct block_list *bl)
 		    sc->data[SC_VACUUM_EXTREME].timer != -1 ||	// バキュームエクストリーム
 		    sc->data[SC_THORNS_TRAP].timer != -1 ||	// ソーントラップ
 		    sc->data[SC_BANANA_BOMB].timer != -1 ||	// バナナ爆弾
+			sc->data[SC__ESCAPE].timer != -1 ||		// エスケープ
 			sc->data[SC_MEIKYOUSISUI].timer != -1 ||	// 明鏡止水
 			sc->data[SC_KG_KAGEHUMI].timer != -1	// 影踏み
 		)
@@ -1788,6 +1790,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_FULLBUSTER].timer != -1 ||
 		   sc->data[SC_KEEPING].timer != -1 ||
 		   sc->data[SC_WHITEIMPRISON].timer != -1 ||
+		   sc->data[SC_KINGS_GRACE].timer != -1 ||
 		   sc->data[SC__SHADOWFORM].timer != -1 ||
 		   sc->data[SC__MANHOLE].timer != -1 ||
 		   sc->data[SC_CURSEDCIRCLE_USER].timer != -1 ||
@@ -1798,6 +1801,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	}
 	if( tsc ) {
 		if(tsc->data[SC_TRICKDEAD].timer != -1 ||
+		   tsc->data[SC_KINGS_GRACE].timer != -1 ||
 		   tsc->data[SC__MANHOLE].timer != -1)
 			return 0;
 	}

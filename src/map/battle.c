@@ -1563,6 +1563,10 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 			if(sc->data[SC_STRIKING].timer != -1) {
 				damage += sc->data[SC_STRIKING].val3;
 			}
+			// 風車に向かって突撃
+			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {
+				damage += sc->data[SC_RUSH_WINDMILL].val4;
+			}
 		}
 #ifdef PRE_RENEWAL
 		if(sd) {
@@ -1746,6 +1750,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			calc_flag.autocounter = 1;
 		}
 	}
+
+	// キングスグレイス
+	if(t_sc && t_sc->data[SC_KINGS_GRACE].timer != -1)
+		return wd;
 
 	/* ２．初期化補正 */
 	if( (src_sd && battle_config.pc_attack_attr_none) ||
@@ -2824,9 +2832,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_CURSE].timer != -1)
 				add_rate -= 25;
 #endif
-			if(sc->data[SC_RUSH_WINDMILL].timer != -1) {	// 風車に向かって突撃
-				add_rate += sc->data[SC_RUSH_WINDMILL].val4;
-			}
 		}
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
@@ -5501,9 +5506,14 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		damage += (atn_rand()%sd->overrefine)+1;
 #endif
 
-	// 魔法力増幅
-	if(sc && sc->data[SC_MAGICPOWER].timer != -1)
-		damage += damage * (sc->data[SC_MAGICPOWER].val1 * 5) / 100;
+	if(sc) {
+		// 魔法力増幅
+		if(sc->data[SC_MAGICPOWER].timer != -1)
+			damage += damage * (sc->data[SC_MAGICPOWER].val1 * 5) / 100;
+		// 月明かりのセレナーデ
+		if(sc->data[SC_MOONLIT_SERENADE].timer != -1)
+			damage += sc->data[SC_MOONLIT_SERENADE].val4;
+	}
 
 	return ((damage>0)?damage:1);
 }
@@ -5557,6 +5567,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		sd->state.attack_type = BF_MAGIC;
 		sd->state.arrow_atk = 0;
 	}
+
+	// キングスグレイス
+	if(t_sc && t_sc->data[SC_KINGS_GRACE].timer != -1)
+		return mgd;
 
 	/* １．mgd構造体の初期設定 */
 	mgd.div_      = skill_get_num(skill_num,skill_lv);
@@ -5641,9 +5655,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			add_rate += 20*sc->data[SC_MINDBREAKER].val1;
 		}
 #endif
-		if(sc->data[SC_MOONLIT_SERENADE].timer != -1) {	// 月明かりのセレナーデ
-			add_rate += sc->data[SC_MOONLIT_SERENADE].val4;
-		}
 	}
 
 	/* ３．基本ダメージ計算(スキルごとに処理) */
@@ -6628,6 +6639,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	struct Damage mid = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct mob_data *md = NULL;
+	struct status_change    *t_sc = NULL;
 	struct skill_unit       *unit = NULL;
 	int int_, dex, race, ele;
 	int skill;
@@ -6656,10 +6668,17 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	race = status_get_race(bl);
 	ele  = skill_get_pl(skill_num);
 
+	// ターゲット
+	t_sc = status_get_sc(target);		// 対象のステータス異常
+
 	if(sd) {
 		sd->state.attack_type = BF_MISC;
 		sd->state.arrow_atk = 0;
 	}
+
+	// キングスグレイス
+	if(skill_num != PA_PRESSURE && t_sc && t_sc->data[SC_KINGS_GRACE].timer != -1)
+		return mid;
 
 	/* １．mid構造体の初期設定 */
 	mid.div_      = skill_get_num(skill_num,skill_lv);

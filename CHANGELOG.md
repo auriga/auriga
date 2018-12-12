@@ -1,4 +1,10 @@
 ----------------------------------------
+//1324 [2018/12/13] by refis
+
+・スキルをRR仕様に修正
+（scdata_db.txt, skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_require_db.txt, skill_unit_db.txt, battle.c, skill.c, status.*, unit.c）
+
+----------------------------------------
 //1323 [2018/12/09] by refis
 
 ・転生時に騎乗生物のチェック抜けがあったので修正（npc_job_transmigration.sc）
