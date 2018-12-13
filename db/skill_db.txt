@@ -1118,7 +1118,7 @@
 
 5001,1,8,1,-1,0,5,3,yes,0,0,0,weapon,0	//GC_DARKCROW#ダーククロー#
 5002,0,6,4,0,1,5,1,yes,0,0,0,none,0	//RA_UNLIMIT#アンリミット#
-5003,1,6,1,-1,0,5,1,yes,0,0,0,weapon,0	//GN_ILLUSIONDOPING#イリュージョンドーピング#
+5003,7,6,1,-1,0,5,1,yes,0,0,0,weapon,0	//GN_ILLUSIONDOPING#イリュージョンドーピング#
 5004,9,6,2,1,4,10,1,no,0,0,0,weapon,0	//RK_DRAGONBREATH_WATER#ウォータードラゴンブレス#
 5005,0,6,4,0,1,1,1,yes,0,0,0,none,0	//RK_LUXANIMA#ラクスアニマ#
 5006,1,6,2,-1,0,5,1,yes,0,0,0,weapon,0	//NC_MAGMA_ERUPTION#マグマイラプション#

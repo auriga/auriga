@@ -7039,6 +7039,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_GLOOMYDAY:			/* メランコリー */
 		case SC_LERADS_DEW:			/* レーラズの露 */
 		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
+		case SC_ILLUSIONDOPING:		/* イリュージョンドーピング */
 		case SC_MYSTERIOUS_POWDER:	/* 不思議な粉 */
 		case SC_BOOST500:			/* ブースト500 */
 		case SC_FULL_SWING_K:		/* フルスイングK */

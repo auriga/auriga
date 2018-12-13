@@ -5073,7 +5073,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		} else {
 			int ar = (skilllv+1)/2;
 			skill_area_temp[1] = bl->id;
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x0500);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20));
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
@@ -11487,7 +11487,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 		return 0;
 
 	switch (sg->unit_id) {
-	case UNT_PNEUMA:	/* ニューマ */
+//	case UNT_PNEUMA:	/* ニューマ */
 	case UNT_SAFETYWALL:	/* セイフティウォール */
 		if(!sc || sc->data[type].timer==-1)
 			status_change_start(bl,type,sg->skill_lv,src->bl.id,0,0,sg->limit,0);
@@ -11842,6 +11842,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	linkdb_replace( node, INT2PTR(tickset_id), UINT2PTR(tickset_tick) );
 
 	switch (sg->unit_id) {
+	case UNT_PNEUMA:	/* ニューマ */
+		if(!sc || sc->data[SC_PNEUMA].timer==-1)
+			status_change_start(bl,SC_PNEUMA,sg->skill_lv,src->bl.id,0,0,sg->limit,0);
+		break;
 	case UNT_WARP_ACTIVE:	/* ワープポータル(発動後) */
 		if (bl->type == BL_PC) {
 			struct map_session_data *sd = (struct map_session_data *)bl;
@@ -12354,7 +12358,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		sg->limit=DIFF_TICK(tick,sg->tick)+1500;
 		break;
 	case UNT_MAGMA_ERUPTION:	/* マグマイラプション */
-		battle_skill_attack(BF_MISC,ss,&src->bl,bl,NC_MAGMA_ERUPTION_DOTDAMAGE,sg->skill_lv,tick,0x0500);
+		battle_skill_attack(BF_MISC,ss,&src->bl,bl,NC_MAGMA_ERUPTION_DOTDAMAGE,sg->skill_lv,tick,0x500);
 		break;
 	case UNT_MANHOLE:	/* マンホール */
 		if(sg->val2 == 0) {
@@ -19300,6 +19304,9 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
 			break;
 		case GN_SLINGITEM_RANGEMELEEATK:	// スリングアイテム(遠距離攻撃)
 			skillid = GN_SLINGITEM;
+			break;
+		case NC_MAGMA_ERUPTION_DOTDAMAGE:	// マグマイラプション
+			skillid = NC_MAGMA_ERUPTION;
 			break;
 	}
 
