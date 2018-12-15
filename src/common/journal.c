@@ -40,7 +40,7 @@
 							// ".debug0" は終了の過程で出るゴミ、".debug1" は終了時のジャーナル
 
 
-#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL18"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
+#define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL19"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
 
 static int journal_first = 1;
 

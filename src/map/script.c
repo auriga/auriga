@@ -13479,7 +13479,7 @@ int buildin_sc_onparam(struct script_state *st)
 	num  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
 	if(type < 0 || type >= MAX_STATUSCHANGE) {
-		printf("buildin_sc_ison: invaild type %d\n", type);
+		printf("buildin_sc_onparam: invaild type %d\n", type);
 		push_val(st->stack,C_INT,0);
 		return 0;
 	}

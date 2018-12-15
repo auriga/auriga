@@ -27,7 +27,7 @@
 #include "../char.h"
 
 // プロトタイプ宣言
-const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag);
+const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, short job, char sex, unsigned char slot, int *flag);
 bool chardb_txt_init(void);
 void chardb_txt_sync(void);
 const struct mmo_chardata* chardb_txt_load(int char_id);

@@ -112,6 +112,7 @@ void clif_misceffect(struct block_list* bl, int type);
 void clif_misceffect2(struct block_list *bl, int type);
 void clif_misceffect3(int fd, int id, int type);
 void clif_changeoption(struct block_list *bl);
+void clif_changeoption_single(struct block_list* bl, struct map_session_data *tsd);
 void clif_changeoption2(struct block_list *bl);
 void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned char ok);
 void clif_GlobalMessage(struct block_list *bl,const char *message, int target);

@@ -77,9 +77,13 @@ static int char_maintenance;
 static int char_new;
 static int delete_delay_time = 86400;
 
-int start_zeny   = 500;
-int start_weapon = 1201;		/* Knife */
-int start_armor  = 2301;		/* Cotton Shirt */
+int human_start_zeny   = 500;
+int human_start_weapon = 1201;		/* Knife */
+int human_start_armor  = 2301;		/* Cotton Shirt */
+
+int doram_start_zeny   = 500;
+int doram_start_weapon = 1681;		/* Short_Foxtail_Staff */
+int doram_start_armor  = 2301;		/* Cotton Shirt */
 
 struct Ranking_Data ranking_data[MAX_RANKING][MAX_RANKER];
 char GM_account_filename[1024] = "conf/GM_account.txt";
@@ -135,7 +139,9 @@ const char ranking_reg[MAX_RANKING][32] = {
 };
 
 // 初期位置（confファイルから再設定可能）
-struct point start_point = { "new_1-1.gat", 53, 111 };
+struct point human_start_point = { "new_1-1.gat", 53, 111 };
+//struct point doram_start_point = { "new_do1.gat", 95, 255 };
+struct point doram_start_point = { "new_1-1.gat", 53, 111 };
 
 static struct dbt *gm_account_db;
 
@@ -954,7 +960,7 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 		WFIFOL(fd,161+i*147) = st->robe;	// 肩装備
 		WFIFOL(fd,165+i*147) = 0;	// TODO: スロット変更が可能な状態かどうか
 		WFIFOL(fd,169+i*147) = 0;	// TODO: Add-Ons
-		WFIFOB(fd,173+i*147) = sd->sex;	// TODO: 性別
+		WFIFOB(fd,173+i*147) = st->sex;	// 性別
 	}
 	WFIFOW(fd,2)=found_num*147+27;
 	WFIFOSET(fd,WFIFOW(fd,2));
@@ -1380,7 +1386,7 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOL(fd,136) = st->robe;	// 肩装備
 	WFIFOL(fd,140) = 0;	// TODO: スロット変更が可能な状態かどうか
 	WFIFOL(fd,144) = 0;	// TODO: Add-Ons
-	WFIFOB(fd,148) = sex;	// TODO: 性別
+	WFIFOB(fd,148) = sex;	// 性別
 	WFIFOSET(fd,149);
 #endif
 }
@@ -1621,7 +1627,7 @@ static int char_ranking_delete(int char_id)
  * キャラ作成
  *------------------------------------------
  */
-static const struct mmo_chardata* char_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
+static const struct mmo_chardata* char_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, short job, char sex, unsigned char slot, int *flag)
 {
 	int n;
 	int status_point = 0;
@@ -1672,7 +1678,7 @@ static const struct mmo_chardata* char_make(int account_id, const unsigned char 
 		return NULL;
 	}
 
-	return chardb_make(account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, flag);
+	return chardb_make(account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, job, sex, slot, flag);
 }
 
 /*==========================================
@@ -2096,7 +2102,7 @@ int parse_tologin(int fd)
 										WFIFOL(fdc,138+j*147) = st->robe;	// 肩装備
 										WFIFOL(fdc,142+j*147) = 0;	// スロット変更が可能な状態かどうか
 										WFIFOL(fdc,146+j*147) = 0;	// TODO: Add-Ons
-										WFIFOB(fdc,150+j*147) = sd->sex;	// 性別
+										WFIFOB(fdc,150+j*147) = st->sex;	// 性別
 									}
 									WFIFOW(fdc,2)=found_num*147+4;
 #endif
@@ -2585,8 +2591,13 @@ static int parse_frommap(int fd)
 						break;
 					}
 				}
-				if( cd != NULL && i < AUTH_FIFO_SIZE && auth_fifo[i].sex == sex )
-				{
+				if( cd != NULL && i < AUTH_FIFO_SIZE &&
+#if PACKETVER >= 20151029
+					sex != 99
+#else
+					auth_fifo[i].sex == sex
+#endif
+				) {
 					unsigned char buf[48];
 					struct char_online *c;
 					size_t s1 = sizeof(struct mmo_charstatus);
@@ -3385,9 +3396,12 @@ int parse_char(int fd)
 
 		case 0x67:	// キャラクター作成
 		case 0x970:
+		case 0xa39:
 			if( cmd == 0x67 && RFIFOREST(fd) < 37 )
 				return 0;
 			if( cmd == 0x970 && RFIFOREST(fd) < 31 )
+				return 0;
+			if( cmd == 0xa39 && RFIFOREST(fd) < 36 )
 				return 0;
 			{
 				// キャラ作成パラメータの取得
@@ -3413,12 +3427,19 @@ int parse_char(int fd)
 				short hair_color = RFIFOW(fd,27);
 				short hair = RFIFOW(fd,29);
 #endif
+#if PACKETVER < 20151029
+				short job = 0;
+				char sex  = sd->sex;
+#else
+				short job = RFIFOW(fd, 31);
+				char sex  = RFIFOB(fd, 35);
+#endif
 				int flag=0x04;
 				const struct mmo_chardata *cd;
 				struct global_reg reg[ACCOUNT_REG2_NUM];
 
 				name[23] = '\0';	// force \0 terminal
-				cd = char_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, slot, &flag );
+				cd = char_make( sd->account_id, name, str, agi, vit, int_, dex, luk, hair_color, hair, job, sex, slot, &flag );
 
 				if(cd == NULL) {
 					WFIFOW(fd,0)=0x6e;
@@ -3426,7 +3447,7 @@ int parse_char(int fd)
 					WFIFOSET(fd,3);
 				} else {
 					int i, ch;
-					mmo_char_send006d(fd, &cd->st, sd->sex);
+					mmo_char_send006d(fd, &cd->st, sex);
 
 					for(ch=0;ch<max_char_slot;ch++) {
 						if(sd->found_char[ch] == NULL) {
@@ -3441,8 +3462,10 @@ int parse_char(int fd)
 				}
 #if PACKETVER < 20120307
 				RFIFOSKIP(fd,37);
-#else
+#elif PACKETVER < 20151029
 				RFIFOSKIP(fd,31);
+#else
+				RFIFOSKIP(fd,36);
 #endif
 			}
 			break;
@@ -3954,25 +3977,44 @@ static void char_config_read(const char *cfgName)
 			autosave_interval = atoi(w2) * 1000;
 			if (autosave_interval <= 0)
 				autosave_interval = DEFAULT_AUTOSAVE_INTERVAL_CS;
-		} else if (strcmpi(w1, "start_point") == 0) {
+		} else if (strcmpi(w1, "human_start_point") == 0) {
 			char map[1024];
 			int x, y;
 			if (sscanf(w2, "%1023[^,],%d,%d", map, &x, &y) < 3)
 				continue;
-			memcpy(start_point.map, map, 16);
-			start_point.map[15] = '\0';
-			start_point.x       = x;
-			start_point.y       = y;
-		} else if (strcmpi(w1, "start_zeny") == 0) {
-			start_zeny = atoi(w2);
-			if (start_zeny < 0) {
-				printf("char_config_read: Invalid start_zeny value: %d. Set to 0 (default).\n", start_zeny);
-				start_zeny = 0;
+			memcpy(human_start_point.map, map, 16);
+			human_start_point.map[15] = '\0';
+			human_start_point.x       = x;
+			human_start_point.y       = y;
+		} else if (strcmpi(w1, "human_start_zeny") == 0) {
+			human_start_zeny = atoi(w2);
+			if (human_start_zeny < 0) {
+				printf("char_config_read: Invalid human_start_zeny value: %d. Set to 0 (default).\n", human_start_zeny);
+				human_start_zeny = 0;
 			}
-		} else if (strcmpi(w1, "start_weapon") == 0) {
-			start_weapon = atoi(w2);
-		} else if (strcmpi(w1, "start_armor") == 0) {
-			start_armor = atoi(w2);
+		} else if (strcmpi(w1, "human_start_weapon") == 0) {
+			human_start_weapon = atoi(w2);
+		} else if (strcmpi(w1, "human_start_armor") == 0) {
+			human_start_armor = atoi(w2);
+		} else if (strcmpi(w1, "doram_start_point") == 0) {
+			char map[1024];
+			int x, y;
+			if (sscanf(w2, "%1023[^,],%d,%d", map, &x, &y) < 3)
+				continue;
+			memcpy(doram_start_point.map, map, 16);
+			doram_start_point.map[15] = '\0';
+			doram_start_point.x       = x;
+			doram_start_point.y       = y;
+		} else if (strcmpi(w1, "doram_start_zeny") == 0) {
+			doram_start_zeny = atoi(w2);
+			if (doram_start_zeny < 0) {
+				printf("char_config_read: Invalid doram_start_zeny value: %d. Set to 0 (default).\n", doram_start_zeny);
+				doram_start_zeny = 0;
+			}
+		} else if (strcmpi(w1, "doram_start_weapon") == 0) {
+			doram_start_weapon = atoi(w2);
+		} else if (strcmpi(w1, "doram_start_armor") == 0) {
+			doram_start_armor = atoi(w2);
 		} else if (strcmpi(w1, "unknown_char_name") == 0) {
 			strncpy(unknown_char_name, w2, 24);
 			unknown_char_name[23] = '\0';

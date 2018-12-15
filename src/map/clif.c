@@ -7938,6 +7938,50 @@ void clif_changeoption(struct block_list* bl)
 }
 
 /*==========================================
+ * 表示オプション変更
+ *------------------------------------------
+ */
+void clif_changeoption_single(struct block_list* bl, struct map_session_data *tsd)
+{
+	int fd;
+	struct status_change *sc;
+	struct map_session_data *sd = NULL;
+
+	nullpo_retv(bl);
+	nullpo_retv(sd);
+
+	sc = status_get_sc(bl);
+
+	if(bl->type == BL_PC)
+		sd = (struct map_session_data *)bl;
+	if(sd) {
+		clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
+		clif_changelook(&sd->bl,LOOK_BODY2,sd->status.style);
+	}
+
+	fd=tsd->fd;
+#if PACKETVER < 7
+	WFIFOW(fd, 0) = 0x119;
+	WFIFOL(fd, 2) = bl->id;
+	WFIFOW(fd, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
+	WFIFOW(fd, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
+	WFIFOW(fd,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
+	WFIFOB(fd,12) = (sd) ? (unsigned char)sd->status.karma : ( bl->type == BL_MOB )? mob_is_pcview(((struct mob_data *)bl)->class_) : 0;
+	WFIFOSET(fd,packet_db[0x119].len);
+#else
+	WFIFOW(fd, 0) = 0x229;
+	WFIFOL(fd, 2) = bl->id;
+	WFIFOW(fd, 6) = (sc) ? sc->opt1 : OPT1_NORMAL;
+	WFIFOW(fd, 8) = (sc) ? sc->opt2 : OPT2_NORMAL;
+	WFIFOL(fd,10) = (sc) ? sc->option : (bl->type == BL_NPC) ? ((struct npc_data *)bl)->option : OPTION_NOTHING;
+	WFIFOB(fd,14) = (sd) ? (unsigned char)sd->status.karma : ( bl->type == BL_MOB )? mob_is_pcview(((struct mob_data *)bl)->class_) : 0;
+	WFIFOSET(fd,packet_db[0x229].len);
+#endif
+
+	return;
+}
+
+/*==========================================
  * 表示オプション変更2
  *------------------------------------------
  */
@@ -18012,7 +18056,11 @@ static void clif_parse_GlobalMessage(int fd,struct map_session_data *sd, int cmd
 	if (message_size > 255)	// too long
 		return;
 
+#if PACKETVER >= 20151029
+	message[message_size] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+#else
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+#endif
 
 	if (battle_config.check_player_name_global_msg) {
 		// structure of message: <player_name> : <message>
@@ -18276,7 +18324,12 @@ static void clif_parse_Wis(int fd,struct map_session_data *sd, int cmd)
 	if (message_size > 255)	// too long
 		return;
 
+#if PACKETVER >= 20151029
+	message[message_size] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+	message_size++;
+#else
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+#endif
 
 	if(is_atcommand_sub(fd, sd, message, 0) != AtCommand_None)
 		return;
@@ -18314,7 +18367,12 @@ static void clif_parse_GMmessage(int fd,struct map_session_data *sd, int cmd)
 	if (message_size > 255)	// too long
 		return;
 
+#if PACKETVER >= 20151029
+	message[message_size] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+	message_size++;
+#else
 	message[message_size - 1] = 0; // be sure to have a NULL (hacker can send a no-NULL terminated string)
+#endif
 
 	if (battle_config.atc_gmonly == 0 ||
 	    pc_isGM(sd) >= get_atcommand_level(AtCommand_Broadcast))
@@ -18460,6 +18518,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_WEDDING].timer != -1 ||	// 結婚衣装
 	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// 会話禁止
 	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 ||	// グラビテーションフィールド使用者
+	    sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
 	    sd->sc.data[SC__SHADOWFORM].timer != -1 ||	// シャドウフォーム
 	    sd->sc.data[SC__INVISIBILITY].timer != -1 ||	// インビジビリティ
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// マンホール
@@ -19223,6 +19282,7 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc.data[SC_SANTA].timer != -1 ||
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
 	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+	    sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
 		(sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_SELF)))
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
@@ -19396,6 +19456,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	    sd->sc.data[SC_SANTA].timer != -1 ||
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
 	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+	    sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
 	    sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
@@ -19448,6 +19509,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 	   sd->sc.data[SC_SANTA].timer != -1 ||
 	   sd->sc.data[SC_SUMMER].timer != -1 ||
 	   sd->sc.data[SC_ALL_RIDING].timer != -1 ||
+	   sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
 	   sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
 		return;
 
@@ -19576,7 +19638,11 @@ static void clif_parse_NpcStringInput(int fd,struct map_session_data *sd, int cm
 	if (len < (int)GETPACKETPOS(cmd,2) + 1)
 		return;
 	// normal client send NULL -> force it (against hacker)
+#if PACKETVER >= 20151029
+	RFIFOB(fd,len) = '\0';
+#else
 	RFIFOB(fd,len - 1) = '\0';
+#endif
 
 	if (len - (int)GETPACKETPOS(cmd,2) >= sizeof(sd->npc_str)) { // message includes NULL
 		//printf("clif: input string too long !\n"); // no display, it's not an error, just a check against overflow (and hacker)
@@ -20058,7 +20124,12 @@ static void clif_parse_PartyMessage(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	// normal client send NULL -> force it (against hacker)
+#if PACKETVER >= 20151029
+	message[message_size] = '\0';
+	message_size++;
+#else
 	message[message_size - 1] = '\0';
+#endif
 
 	if (battle_config.check_player_name_party_msg) {
 		// structure of message: <player_name> : <message>
@@ -20438,7 +20509,12 @@ static void clif_parse_GuildMessage(int fd,struct map_session_data *sd, int cmd)
 		return;
 
 	// normal client send NULL -> force it (against hacker)
+#if PACKETVER >= 20151029
+	message[message_size] = '\0';
+	message_size++;
+#else
 	message[message_size - 1] = '\0';
+#endif
 
 	if (battle_config.check_player_name_guild_msg) {
 		// structure of message: <player_name> : <message>

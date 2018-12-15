@@ -374,6 +374,12 @@ enum {
 	PC_CLASS_OB,			// 朧
 	PC_CLASS_KG2,			// 影狼(騎乗)
 	PC_CLASS_OB2,			// 朧(騎乗)
+	PC_CLASS_RB,			// リベリオン
+	PC_CLASS_RB2,			// リベリオン(騎乗)
+	PC_CLASS_SUM   = 4218,	// サモナー
+	PC_CLASS_SUM2,			// サモナー(騎乗)
+	PC_CLASS_SUM_B,			// 養子サモナー
+	PC_CLASS_SUM2_B,		// 養子サモナー(騎乗)
 	PC_CLASS_MAX
 };
 
@@ -424,6 +430,8 @@ enum {
 	PC_JOB_ESNV,	// 拡張スーパーノービス
 	PC_JOB_KG,		// 影狼
 	PC_JOB_OB,		// 朧
+	PC_JOB_RB,		// リベリオン
+	PC_JOB_SUM,		// サモナー
 	PC_JOB_MAX
 };
 
@@ -578,6 +586,7 @@ struct mmo_charstatus {
 	char show_equip;
 	short font;
 	short style;
+	char sex;
 };
 
 struct registry {

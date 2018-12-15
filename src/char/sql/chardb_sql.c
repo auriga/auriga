@@ -308,7 +308,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`, `elem_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
-		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`, `style`"
+		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`, `style`, `sex`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id
 	);
 	if(result == false) {
@@ -384,6 +384,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.show_equip          = atoi(sql_row[52]);
 	p->st.font                = atoi(sql_row[53]);
 	p->st.style               = atoi(sql_row[54]);
+	p->st.sex                 = atoi(sql_row[55]);
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';
@@ -671,6 +672,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_UNUM(show_equip        ,"show_equip");
 	UPDATE_UNUM(font              ,"font");
 	UPDATE_NUM(style              ,"style");
+	UPDATE_NUM(sex                ,"sex");
 
 	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;
@@ -831,7 +833,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
  * キャラ作成
  *------------------------------------------
  */
-const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, unsigned char slot, int *flag)
+const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, short job, char sex, unsigned char slot, int *flag)
 {
 	int char_id = 0;
 	char buf[256];
@@ -870,6 +872,11 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 	// try
 	do
 	{
+		struct point start_point;
+		int start_weapon = human_start_weapon;
+		int start_armor  = human_start_armor;
+		int start_zeny   = human_start_zeny;
+
 		int max_hp = 40 * (100 + vit) / 100;
 		int hp = 40 * (100 + vit) / 100;
 		int max_sp = 11 * (100 + int_) / 100;
@@ -881,11 +888,21 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		str = agi = vit = int_ = dex = luk = 1;
 #endif
 
+		memcpy(&start_point, &human_start_point, sizeof(human_start_point));
+
+		// ドラム族用初期設定
+		if(job == PC_CLASS_SUM) {
+			start_weapon       = doram_start_weapon;
+			start_armor        = doram_start_armor;
+			start_zeny         = doram_start_zeny;
+			memcpy(&start_point, &doram_start_point, sizeof(doram_start_point));
+		}
+
 		// prepare
 		if( sqldbs_stmt_prepare(st,
 			"INSERT INTO `" CHAR_TABLE "` (`account_id`,`char_num`,`name`,`zeny`,`str`,`agi`,`vit`,`int`,"
-			"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`status_point`,`hair`,`hair_color`,`last_map`,`last_x`,"
-			"`last_y`,`save_map`,`save_x`,`save_y`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+			"`dex`,`luk`,`max_hp`,`hp`,`max_sp`,`sp`,`status_point`,`hair`,`hair_color`,`class`,`sex`,`last_map`,`last_x`,"
+			"`last_y`,`save_map`,`save_x`,`save_y`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 		) == false )
 			break;
 
@@ -907,12 +924,14 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		sqldbs_stmt_bind_param(st, 14, SQL_DATA_TYPE_SHORT,      &status_point,   0                      );
 		sqldbs_stmt_bind_param(st, 15, SQL_DATA_TYPE_SHORT,      &hair,           0                      );
 		sqldbs_stmt_bind_param(st, 16, SQL_DATA_TYPE_SHORT,      &hair_color,     0                      );
-		sqldbs_stmt_bind_param(st, 17, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
-		sqldbs_stmt_bind_param(st, 18, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
-		sqldbs_stmt_bind_param(st, 19, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
-		sqldbs_stmt_bind_param(st, 20, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
-		sqldbs_stmt_bind_param(st, 21, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
-		sqldbs_stmt_bind_param(st, 22, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
+		sqldbs_stmt_bind_param(st, 17, SQL_DATA_TYPE_SHORT,      &job,            0                      );
+		sqldbs_stmt_bind_param(st, 18, SQL_DATA_TYPE_UCHAR,      &sex,            0                      );
+		sqldbs_stmt_bind_param(st, 19, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
+		sqldbs_stmt_bind_param(st, 20, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
+		sqldbs_stmt_bind_param(st, 21, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
+		sqldbs_stmt_bind_param(st, 22, SQL_DATA_TYPE_VAR_STRING, start_point.map, strlen(start_point.map));
+		sqldbs_stmt_bind_param(st, 23, SQL_DATA_TYPE_SHORT,      &start_point.x,  0                      );
+		sqldbs_stmt_bind_param(st, 24, SQL_DATA_TYPE_SHORT,      &start_point.y,  0                      );
 
 		// execute
 		if( sqldbs_stmt_execute(st) == false )
@@ -924,7 +943,6 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		// デフォルト装備(武器)
 		if(start_weapon > 0)
 		{
-			// ナイフ
 			if( sqldbs_query(&mysql_handle,
 				"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 				"VALUES (1, '%d', '%d', '%d', '%d', '%d')",
@@ -936,7 +954,6 @@ const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *
 		// デフォルト装備(防具)
 		if(start_armor > 0)
 		{
-			// コットンシャツ
 			if( sqldbs_query(&mysql_handle,
 				"INSERT INTO `" INVENTORY_TABLE "` (`id`, `char_id`, `nameid`, `amount`, `equip`, `identify`) "
 				"VALUES (2, '%d', '%d', '%d', '%d', '%d')",

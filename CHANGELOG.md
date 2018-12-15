@@ -1,4 +1,23 @@
 ----------------------------------------
+//1326 [2018/12/15] by refis
+
+・クライアント対応、リベリオン、ドラム族準備
+（char_auriga.conf, const.txt, job_*_db.txt, main.sql, Auriga1326_changetable.sql,
+  char.*, chardb_*.*, journal.c, mmo.h, clif.c, pc.*）
+
+・typo修正（script.c）
+
+・clif_changeoption_singleの追加（clif.*）
+
+・キングスグレイス状態の相手に攻撃するときはパケット段階で遮断させる（clif.c）
+
+・バイタリティアクティベーションのSP回復量を修正（pc.c）
+
+・各職のレベル限界、ステータス限界、必要経験値をRRに対応（battle_auriga.conf, exp.txt, pc.c）
+
+・ジョブ補正値をRR対応（job_db*.txt）
+
+----------------------------------------
 //1325 [2018/12/14] by refis
 
 ・イリュージョンドーピングの射程、使用時エラー修正（skill_db.txt, skill.c, status.c）

@@ -89,6 +89,7 @@ CREATE TABLE `char_data` (
   `show_equip` smallint(6) NOT NULL default '0',
   `font` smallint(6) NOT NULL default '0',
   `style` smallint(6) NOT NULL default '0',
+  `sex` tinyint(4) unsigned NOT NULL default '99',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),
