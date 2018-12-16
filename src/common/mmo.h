@@ -101,7 +101,7 @@
 #define MAX_KOSKILL      35
 #define MAX_EX3SKILL     15
 #define MAX_HOMSKILL     16
-#define MAX_MERCSKILL    40
+#define MAX_MERCSKILL    41
 #define MAX_ELEMSKILL    42
 #define MAX_GUILDSKILL   16
 

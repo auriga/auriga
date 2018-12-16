@@ -40,7 +40,7 @@
 #include "pc.h"
 #include "battle.h"
 
-#define MAX_MEMORIAL_DB		20		// メモリアルダンジョン最大DB数
+#define MAX_MEMORIAL_DB		40		// メモリアルダンジョン最大DB数
 #define MEMORIAL_INVERVAL	60000	// メモリアルダンジョン予約処理間隔(ms)
 #define MEMORIAL_LIMIT		300		// メモリアルダンジョン入場・無人制限時間(秒)
 

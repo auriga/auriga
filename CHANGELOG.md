@@ -1,4 +1,12 @@
 ----------------------------------------
+//1327 [2018/12/16] by refis
+
+・memorial_db.txtの更新（memorial_db.txt, memorial.c）
+
+・傭兵スキル「マインドブラスター」実装
+（skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_require_db.txt, mmo.h, skill.c）
+
+----------------------------------------
 //1326 [2018/12/15] by refis
 
 ・クライアント対応、リベリオン、ドラム族準備

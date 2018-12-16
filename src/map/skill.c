@@ -356,6 +356,8 @@ int MercSkillStatusChangeTable[MAX_MERCSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚
 	SC_DEVOTION,SC_MAGNIFICAT,SC_WEAPONQUICKEN,SC_SIGHT,-1,-1,-1,-1,-1,-1,
 	/* 8231- */
 	-1,SC_PROVOKE,SC_AUTOBERSERK,SC_DECREASEAGI,-1,SC_SILENCE,-1,SC_KYRIE,SC_BLESSING,SC_INCREASEAGI,
+	/* 8241- */
+	SC_INVINCIBLEOFF,
 };
 
 /* (ƒXƒLƒ‹”Ô† - ELEM_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
@@ -8008,6 +8010,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_INVINCIBLE:		/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ */
 		status_change_end(bl, SC_INVINCIBLEOFF, -1);
 	case NPC_INVINCIBLEOFF:		/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ƒIƒt */
+	case MER_INVINCIBLEOFF2:	/* ƒ}ƒCƒ“ƒhƒuƒ‰ƒXƒ^[ */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
