@@ -9409,7 +9409,7 @@ int pc_readdb(void)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10) != 20)
+		if(sscanf(line,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11) != 22)
 			continue;
 		exp_table[0][i]  = bn;
 		exp_table[1][i]  = b1;
@@ -9420,17 +9420,19 @@ int pc_readdb(void)
 		exp_table[6][i]  = b6;
 		exp_table[7][i]  = b7;
 		exp_table[8][i]  = b8;
-		exp_table[9][i]  = jn;
-		exp_table[10][i] = j1;
-		exp_table[11][i] = j2;
-		exp_table[12][i] = j3;
-		exp_table[13][i] = j4;
-		exp_table[14][i] = j5;
-		exp_table[15][i] = j6;
-		exp_table[16][i] = j7;
-		exp_table[17][i] = j8;
-		exp_table[18][i] = j9;
-		exp_table[19][i] = j10;
+		exp_table[9][i]  = b9;
+		exp_table[10][i] = jn;
+		exp_table[11][i] = j1;
+		exp_table[12][i] = j2;
+		exp_table[13][i] = j3;
+		exp_table[14][i] = j4;
+		exp_table[15][i] = j5;
+		exp_table[16][i] = j6;
+		exp_table[17][i] = j7;
+		exp_table[18][i] = j8;
+		exp_table[19][i] = j9;
+		exp_table[20][i] = j10;
+		exp_table[21][i] = j11;
 		i++;
 		if(i >= MAX_LEVEL)
 			break;
