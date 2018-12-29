@@ -9404,7 +9404,7 @@ int pc_readdb(void)
 	}
 	i = 0;
 	while(fgets(line,1020,fp)) {
-		int bn,b1,b2,b3,b4,b5,b6,b7,b8,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10;
+		int bn,b1,b2,b3,b4,b5,b6,b7,b8,b9,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10,j11;
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
