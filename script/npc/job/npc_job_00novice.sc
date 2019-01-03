@@ -10,7 +10,7 @@
 new_1-1.gat,53,111,0	script	#start_jp	139,1,1,{
 OnTouch:
 	if(CHANGE_NV & 0x1 == 0) {
-		cutin "start_jp.bmp",1;
+		cutin "start_jp.bmp",3;
 		set CHANGE_NV,CHANGE_NV|0x1;
 	}
 	end;
