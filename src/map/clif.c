@@ -7948,7 +7948,7 @@ void clif_changeoption_single(struct block_list* bl, struct map_session_data *ts
 	struct map_session_data *sd = NULL;
 
 	nullpo_retv(bl);
-	nullpo_retv(sd);
+	nullpo_retv(tsd);
 
 	sc = status_get_sc(bl);
 
