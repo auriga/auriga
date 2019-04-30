@@ -40,7 +40,7 @@
 		mes "誠にありがとうございます。";
 		break;
 	case 2:
-		if(basicskillcheck() && getskilllv(1) < 6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "[ジョンダ職員]";
 			mes "誠に申し訳ございません、お客様。";
 			mes "倉庫は、基本スキルレベル6を";

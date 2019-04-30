@@ -609,6 +609,21 @@
 637,SC_FULL_THROTTLE,1,1,0,0		// フルスロットル
 638,SC_REBOUND,1,0,0,0		// リバウンド
 639,SC__ESCAPE,-1,1,0,0		// エスケープ
+640,SC_SUHIDE,0,7,0,0			// かくれる
+641,SC_SU_STOOP,0,7,0,0			// うずくまる
+642,SC_CATNIPPOWDER,0,1,0,0		// イヌハッカシャワー
+643,SC_SV_ROOTTWIST,0,1,0,0		// マタタビの根っこ
+644,SC_BITESCAR,0,1,0,0			// タロウの傷
+645,SC_ARCLOUSEDASH,1,7,0,0		// アクラウスダッシュ
+646,SC_TUNAPARTY,0,1,0,0		// マグロシールド
+647,SC_SHRIMP,1,1,0,0			// エビ三昧
+648,SC_FRESHSHRIMP,1,1,0,0		// 新鮮なエビ
+649,SC_HISS,1,1,0,0				// 警戒
+650,SC_NYANGGRASS,0,1,0,0		// ニャングラス
+651,SC_CHATTERING,1,3,0,0		// チャタリング
+652,SC_GROOMING,1,1,0,0				// グルーミング
+653,SC_PROTECTIONOFSHRIMP,1,1,0,0	// エビパーティー
+654,SC_SPIRITOFLAND,0,1,0,0			// 大地の魂
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

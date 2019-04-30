@@ -220,8 +220,7 @@ int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 #define pc_is1stclass(sd) (((sd)->s_class.job >= PC_JOB_SM && (sd)->s_class.job <= PC_JOB_TF) ||	\
 						   (sd)->s_class.job == PC_JOB_SNV || (sd)->s_class.job == PC_JOB_TK ||	\
 						   (sd)->s_class.job == PC_JOB_GS || (sd)->s_class.job == PC_JOB_NJ ||		\
-						   (sd)->s_class.job == PC_JOB_MB || (sd)->s_class.job == PC_JOB_ESNV ||		\
-						   (sd)->s_class.job == PC_JOB_SUM)
+						   (sd)->s_class.job == PC_JOB_MB || (sd)->s_class.job == PC_JOB_ESNV)
 
 #define pc_is2ndclass(sd) (((sd)->s_class.job >= PC_JOB_KN && (sd)->s_class.job <= PC_JOB_DC) ||	\
 						   (sd)->s_class.job == PC_JOB_SG || (sd)->s_class.job == PC_JOB_SL ||		\
@@ -230,6 +229,8 @@ int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 						   (sd)->s_class.job == PC_JOB_RB)
 
 #define pc_is3rdclass(sd) ((sd)->s_class.job >= PC_JOB_RK && (sd)->s_class.job <= PC_JOB_SC)
+
+#define pc_isdoram(sd) ((sd)->s_class.job == PC_JOB_SUM)
 
 struct pc_base_job pc_calc_base_job(int b_class);
 int pc_calc_class_job(int job,int upper);

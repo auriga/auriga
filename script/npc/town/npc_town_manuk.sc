@@ -68,7 +68,7 @@ manuk.gat,108,357,4	script	”L‚ÌèEˆõ	421,{
 		mes "Z–¯‚ª—â‚½‚­‚È‚Á‚½‚Ì‚ÍB";
 		close;
 	case 2:
-		if(basicskillcheck() && getskilllv(1) < 6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "[”L‚ÌèEˆõ]";
 			mes "‚É‚á‚É‚áH";
 			mes "‚¨‚©‚µ‚¢‚Å‚·‚ËB";

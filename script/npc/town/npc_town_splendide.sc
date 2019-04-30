@@ -66,7 +66,7 @@ spl_fild02.gat,373,240,4	script	”L‚ÌèEˆõ	421,{
 		mes "\‚µ–ó‚È‚¢‚É‚á‚¨cc";
 		close;
 	case 2:
-		if(basicskillcheck() && getskilllv(1) < 6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "[”L‚ÌèEˆõ]";
 			mes "‚É‚á‚É‚áH";
 			mes "‚¨‚©‚µ‚¢‚Å‚·‚ËB";

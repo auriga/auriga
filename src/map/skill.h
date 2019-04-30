@@ -167,10 +167,11 @@ int GetSkillStatusChangeTable(int id);
 	  ((id) >= QUEST_SKILLID && (id) < MAX_QUEST_SKILLID) ? ((id) - QUEST_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL) : \
 	  ((id) >= KO_SKILLID && (id) < MAX_KO_SKILLID) ? ((id) - KO_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL) : \
 	  ((id) >= EX3_SKILLID && (id) < MAX_EX3_SKILLID) ? ((id) - EX3_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL) : \
-	  ((id) >= HOM_SKILLID && (id) < MAX_HOM_SKILLID) ? ((id) - HOM_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL) : \
-	  ((id) >= MERC_SKILLID && (id) < MAX_MERC_SKILLID) ? ((id) - MERC_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_HOMSKILL) : \
-	  ((id) >= ELEM_SKILLID && (id) < MAX_ELEM_SKILLID) ? ((id) - ELEM_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_HOMSKILL + MAX_MERCSKILL) : \
-	  ((id) >= GUILD_SKILLID && (id) < MAX_GUILD_SKILLID) ? ((id) - GUILD_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_HOMSKILL + MAX_MERCSKILL + MAX_ELEMSKILL) : \
+	  ((id) >= SUM_SKILLID && (id) < MAX_SUM_SKILLID) ? ((id) - SUM_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL) : \
+	  ((id) >= HOM_SKILLID && (id) < MAX_HOM_SKILLID) ? ((id) - HOM_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_SUMSKILL) : \
+	  ((id) >= MERC_SKILLID && (id) < MAX_MERC_SKILLID) ? ((id) - MERC_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_SUMSKILL + MAX_HOMSKILL) : \
+	  ((id) >= ELEM_SKILLID && (id) < MAX_ELEM_SKILLID) ? ((id) - ELEM_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_SUMSKILL + MAX_HOMSKILL + MAX_MERCSKILL) : \
+	  ((id) >= GUILD_SKILLID && (id) < MAX_GUILD_SKILLID) ? ((id) - GUILD_SKILLID + MAX_SKILL + MAX_SECONDSKILL + MAX_THIRDSKILL + MAX_QUESTSKILL + MAX_KOSKILL + MAX_EX3SKILL + MAX_SUMSKILL + MAX_HOMSKILL + MAX_MERCSKILL + MAX_ELEMSKILL) : \
 	  0 )
 
 int skill_get_hit(int id);
@@ -241,6 +242,7 @@ int skill_unit_ondamaged(struct skill_unit *src,struct block_list *bl,int damage
 
 int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtime);
 int skill_delayfix(struct block_list *bl, int skillid, int skilllv);
+int skill_cooldownfix(struct block_list *bl, int skillid, int skilllv);
 int skill_unit_move(struct block_list *bl,unsigned int tick,int flag);
 int skill_unit_move_unit_group( struct skill_unit_group *group, int m,int dx,int dy);
 

@@ -156,7 +156,7 @@ dewata.gat,127,289,6	script	ホテル従業員	537,{
 		warp "dewata.gat",106,289;
 		end;
 	case 3:
-		if(basicskillcheck() && getskilllv(1) < 6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "[ホテル従業員]";
 			mes "倉庫は基本スキルレベル6を";
 			mes "習得してから利用可能となります。";

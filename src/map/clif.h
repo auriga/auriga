@@ -181,6 +181,8 @@ int clif_elemoutsight(struct block_list *bl, va_list ap);
 void clif_class_change(struct block_list *bl, int class_, int type);
 
 void clif_skillinfoblock(struct map_session_data *sd);
+void clif_addskill(struct map_session_data *sd, int skill_num);
+void clif_delskill(struct map_session_data *sd, int skill_num);
 void clif_skillup(struct map_session_data *sd, int skill_num);
 
 void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int dst_y,int skill_num,int casttime);

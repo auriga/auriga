@@ -19330,7 +19330,7 @@ mid_camp.gat,62,125,4	script	”L‚ÌèEˆõ	421,{
 		savepoint "mid_camp.gat",56,139;
 		close;
 	case 2:
-		if(basicskillcheck() && getskilllv(1) < 6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "[”L‚ÌèEˆõ]";
 			mes "‚É‚á‚É‚áH";
 			mes "‚¨‚©‚µ‚¢‚Å‚·‚ËB";

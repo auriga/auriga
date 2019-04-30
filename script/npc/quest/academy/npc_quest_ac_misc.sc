@@ -404,7 +404,7 @@ ac_cl_area.gat,41,145,4	script	カプラサービス	888,{
 		mes "いつも皆様のそばに‐";
 		close;
 	case 2:
-		if(basicskillcheck() && getskilllv(1)<6) {
+		if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 			mes "‐倉庫は基本スキルレベル6を";
 			mes "習得してから利用可能となります‐";
 			mes " ";

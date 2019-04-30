@@ -209,7 +209,11 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 620- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_ZANGETSU,SI_GENSOU,SI_ASSUMPTIO2,SI_PHI_DEMON,SI_PLUSATTACKPOWER,SI_PLUSMAGICPOWER,SI_ALMIGHTY,
 	/* 630- */
-	SI_DARKCROW,SI_UNLIMIT,SI_BLANK,SI_FRIGG_SONG,SI_OFFERTORIUM,SI_TELEKINESIS_INTENSE,SI_KINGS_GRACE,SI_FULL_THROTTLE,SI_REBOUND,SI_BLANK
+	SI_DARKCROW,SI_UNLIMIT,SI_BLANK,SI_FRIGG_SONG,SI_OFFERTORIUM,SI_TELEKINESIS_INTENSE,SI_KINGS_GRACE,SI_FULL_THROTTLE,SI_REBOUND,SI_BLANK,
+	/* 640- */
+	SI_SUHIDE,SI_SU_STOOP,SI_CATNIPPOWDER,SI_SV_ROOTTWIST,SI_BITESCAR,SI_ARCLOUSEDASH,SI_TUNAPARTY,SI_SHRIMP,SI_FRESHSHRIMP,SI_HISS,
+	/* 650- */
+	SI_NYANGGRASS,SI_CHATTERING,SI_GROOMING,SI_PROTECTIONOFSHRIMP,SI_BLANK
 };
 
 /*==========================================
@@ -911,6 +915,9 @@ L_RECALC:
 	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0) {	// トラップ研究
 		sd->paramb[3] += skill;
 	}
+	if(pc_checkskill(sd,SU_POWEROFLAND) > 0) {	// 大地の力
+		sd->paramb[3] += 7;
+	}
 
 	// マーダラーボーナス
 	if(battle_config.pk_murderer_point > 0) {
@@ -1097,6 +1104,9 @@ L_RECALC:
 
 		if(sd->sc.data[SC_DECREASEAGI].timer != -1)	// 速度減少（オーバースキル仕様はAGI-50）
 			sd->paramb[1] -= (sd->sc.data[SC_DECREASEAGI].val2)? 50: 2+sd->sc.data[SC_DECREASEAGI].val1;
+
+		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1)	// アクラウスダッシュ
+			sd->paramb[1] += sd->sc.data[SC_ARCLOUSEDASH].val2;
 
 		if(sd->sc.data[SC_BLESSING].timer != -1) {	// ブレッシング
 			sd->paramb[0] += sd->sc.data[SC_BLESSING].val1;
@@ -1492,7 +1502,10 @@ L_RECALC:
 	sd->flee     += 100 + sd->paramc[1] + sd->paramc[5]/5 + sd->status.base_level;
 	sd->def2     += (int)(sd->paramc[2]/2. + sd->status.base_level/2. + sd->paramc[1]/5.);
 	sd->mdef2    += (int)(sd->paramc[3] + sd->status.base_level/4. + sd->paramc[2]/5. + sd->paramc[4]/5.);
-	sd->flee2    += sd->paramc[5] + 10;
+	if(pc_isdoram(sd))
+		sd->flee2    += sd->paramc[5] * 120 / 100 + 10;
+	else
+		sd->flee2    += sd->paramc[5] + 10;
 	sd->critical += sd->paramc[5]*33/10 + 10;
 #endif
 
@@ -1605,6 +1618,9 @@ L_RECALC:
 			sd->hit += skill;
 		}
 	}
+	if((skill = pc_checkskill(sd,SU_SOULATTACK)) > 0) {	// ソウルアタック
+		sd->range.attackrange = 13;
+	}
 	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0)	// 武器研究の命中率増加
 		sd->hit += skill*2;
 	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// 剣修練の命中率増加
@@ -1628,6 +1644,16 @@ L_RECALC:
 	if((skill = pc_checkskill(sd,BS_SKINTEMPER)) > 0) { // スキンテンパリング
 		sd->subele[ELE_FIRE]    += skill*4;
 		sd->subele[ELE_NEUTRAL] += skill*1;
+	}
+
+	if(pc_checkskill(sd,SU_SPRITEMABLE) > 0) {	// にゃん魂
+		sd->status.max_hp += 2000;
+		sd->status.max_sp += 200;
+		clif_status_load_id(sd,SI_SPRITEMABLE,1);
+	}
+	if(pc_checkskill(sd,SU_POWEROFSEA) > 0) {	// 海の力
+		sd->status.max_hp += 1000;
+		sd->status.max_sp += 100;
 	}
 
 	// bAtkRange2,bAtkRangeRate2の射程計算
@@ -1809,6 +1835,13 @@ L_RECALC:
 			sd->flee += sd->sc.data[SC_INCFLEE].val1;
 		if(sd->sc.data[SC_INCFLEE2].timer != -1)
 			sd->flee += sd->sc.data[SC_INCFLEE2].val1;
+		if(sd->sc.data[SC_GROOMING].timer != -1)	// グルーミング
+			sd->flee += sd->sc.data[SC_GROOMING].val2;
+	}
+	if(pc_isdoram(sd) && pc_checkskill(sd,SU_POWEROFLIFE) > 0) {	// 生命の力
+		sd->hit += 50;
+		sd->flee += 50;
+		sd->critical += 200;
 	}
 	// Def
 	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MAINFRAME)) > 0) {		// 魔導ギア＆メインフレーム改造
@@ -2014,6 +2047,13 @@ L_RECALC:
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1140 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1867)) {
 			sd->matk1 += 25;
 			sd->matk2 += 25;
+		}
+		if(sd->sc.data[SC_CHATTERING].timer != -1) {
+			sd->base_atk += sd->sc.data[SC_CHATTERING].val2;
+#ifdef PRE_RENEWAL
+			sd->matk1 += sd->sc.data[SC_CHATTERING].val2;
+#endif
+			sd->matk2 += sd->sc.data[SC_CHATTERING].val2;
 		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
@@ -3499,6 +3539,19 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				haste_val1 = bonus;
 		}
 
+		// チャタリング
+		if(sd->sc.data[SC_CHATTERING].timer != -1) {
+			int bonus = sd->sc.data[SC_CHATTERING].val3;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// アクラウスダッシュ
+		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
+		}
+
 		/* speedが減少するステータス計算2 */
 
 		// 融合
@@ -3661,6 +3714,31 @@ int status_get_lv(struct block_list *bl)
 		return mob_db[((struct mob_data *)bl)->class_].lv;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.base_level;
+	else if(bl->type == BL_PET && (struct pet_data *)bl)
+		return ((struct pet_data *)bl)->msd->pet.level;
+	else if(bl->type == BL_HOM && (struct homun_data *)bl)
+		return ((struct homun_data *)bl)->status.base_level;
+	else if(bl->type == BL_MERC && (struct merc_data *)bl)
+		return ((struct merc_data *)bl)->base_level;
+	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
+		return ((struct elem_data *)bl)->base_level;
+
+	return 0;
+}
+
+/*==========================================
+ * 対象の職業レベルを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_jlv(struct block_list *bl)
+{
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_MOB && (struct mob_data *)bl)
+		return mob_db[((struct mob_data *)bl)->class_].lv;
+	else if(bl->type == BL_PC && (struct map_session_data *)bl)
+		return ((struct map_session_data *)bl)->status.job_level;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		return ((struct pet_data *)bl)->msd->pet.level;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
@@ -4169,6 +4247,8 @@ int status_get_flee(struct block_list *bl)
 		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)      // スピアクイッケン
 			flee += sc->data[SC_SPEARQUICKEN].val1 * 2;
 #endif
+		if(sc->data[SC_GROOMING].timer != -1 && bl->type != BL_PC)	// グルーミング
+			flee += sc->data[SC_GROOMING].val2;
 	}
 
 	// 回避率補正
@@ -4412,6 +4492,8 @@ int status_get_baseatk(struct block_list *bl)
 			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 			batk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+		if(sc->data[SC_CHATTERING].timer != -1 && bl->type == BL_MOB)	// チャタリング
+			batk += sc->data[SC_CHATTERING].val2;
 	}
 	if(batk < 1) batk = 1;	// base_atkは最低でも1
 	return batk;
@@ -4685,6 +4767,10 @@ int status_get_matk1(struct block_list *bl)
 				matk1 = matk1*80/100;
 			if(sc->data[SC_ODINS_POWER].timer != -1)	// オーディンの力
 				matk1 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+#ifdef PRE_RENEWAL
+			if(sc->data[SC_CHATTERING].timer != -1)	// チャタリング
+				matk1 += sc->data[SC_CHATTERING].val2;
+#endif
 		}
 	}
 	return matk1;
@@ -4749,6 +4835,8 @@ int status_get_matk2(struct block_list *bl)
 				matk2 = matk2*80/100;
 			if(sc->data[SC_ODINS_POWER].timer != -1)	// オーディンの力
 				matk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+			if(sc->data[SC_CHATTERING].timer != -1)	// チャタリング
+				matk2 += sc->data[SC_CHATTERING].val2;
 		}
 	}
 	return matk2;
@@ -6165,7 +6253,7 @@ int status_get_size(struct block_list *bl)
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
 		return mob_db[((struct mob_data *)bl)->class_].size;
 	} else if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(pc_isbaby((struct map_session_data *)bl))
+		if(pc_isbaby((struct map_session_data *)bl) || pc_isdoram((struct map_session_data *)bl))
 			return 0;
 		else
 			return 1;
@@ -6778,6 +6866,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				return 0;
 		}
 	}
+	/* 特定MAPではタロウの傷状態にならない */
+	if(type == SC_BITESCAR && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg && !map[sd->bl.m].flag.turbo)
+		return 0;
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */
 		if(type == SC_ALL_RIDING || type == SC_HAT_EFFECT) {
@@ -6789,7 +6880,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND &&
 			type != SC_SHAPESHIFT && type != SC_ON_PUSH_CART)
 			return 0;
-		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING || type == SC_ORATIO)
+		if((type >= SC_STUN && type <= SC_BLIND) || type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING || type == SC_ORATIO || type == SC_FRESHSHRIMP)
 			return 0;	/* 継ぎ足しができない状態異常である時は状態異常を行わない */
 		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT || type == SC__AUTOSHADOWSPELL || type == SC_PROPERTYWALK) {
 			// 異常中にもう一度状態異常になった時に解除してから再度かかる
@@ -6927,6 +7018,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KO_JYUMONJIKIRI:	/* 十文字斬り */
 		case SC_CIRCLE_OF_FIRE:		/* サークルオブファイア */
 		case SC_TIDAL_WEAPON:		/* タイダルウェポン */
+		case SC_SU_STOOP:			/* うずくまる */
+		case SC_CATNIPPOWDER:		/* イヌハッカシャワー */
+		case SC_BITESCAR:			/* タロウの傷 */
+		case SC_TUNAPARTY:			/* マグロシールド */
+		case SC_SHRIMP:				/* エビ三昧 */
+		case SC_HISS:				/* 警戒 */
+		case SC_NYANGGRASS:			/* ニャングラス */
+		case SC_PROTECTIONOFSHRIMP:	/* エビパーティー */
+		case SC_SPIRITOFLAND:		/* 大地の魂 */
 		case SC_JP_EVENT01:
 		case SC_JP_EVENT02:
 		case SC_JP_EVENT03:
@@ -8381,6 +8481,38 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_GENSOU:		/* 幻術 -朧幻想- */
 			val2 = val1 * 10; 	// ダメージ反射率
 			break;
+		case SC_SUHIDE:				/* かくれる */
+			tick = 60 * 1000;
+			break;
+		case SC_ARCLOUSEDASH:		/* アクラウスダッシュ */
+			val2 = 3 + ((val1-1) / 2) * 6;	// AGI増加
+			val3 = 5 + (val1/2) * 5;	// 遠距離攻撃増加
+			ud->state.change_speed = 1;
+			calc_flag = 1;
+			break;
+		case SC_FRESHSHRIMP:		/* 新鮮なエビ */
+			val3 = 13000 - 2000 * val1;
+			val2 = tick / val3;
+			tick = val3;
+			break;
+		case SC_CHATTERING:			/* チャタリング */
+			if(val1 >= 5)	// ATK/MATK増加
+				val2 = 150;
+			else if(val1 == 4)
+				val2 = 100;
+			else
+				val2 = 10 + val1 * 20;
+			val3 = (val1>=5)? 35: 25;	// 移動速度増加
+			ud->state.change_speed = 1;
+			calc_flag = 1;
+			break;
+		case SC_GROOMING:			/* グルーミング */
+			val2 = val1 * 10;	// Flee増加
+			break;
+		case SC_SV_ROOTTWIST:	/* マタタビの根っこ */
+			val3 = tick / 1000;
+			tick = 1000;
+			break;
 		case SC_MER_FLEE:		/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:		/* 傭兵ボーナス(ATK) */
 		case SC_MER_HIT:		/* 傭兵ボーナス(HIT) */
@@ -9095,6 +9227,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ZANGETSU:			/* 幻術 -残月- */
 		case SC_AKAITSUKI:			/* 幻術 -紅月- */
 		case SC_KYOUGAKU:			/* 幻術 -驚愕- */
+		case SC_GROOMING:			/* グルーミング */
 		case SC_ODINS_POWER:		/* オーディンの力 */
 		case SC_MER_FLEE:			/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:			/* 傭兵ボーナス(ATK) */
@@ -9149,6 +9282,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SWING:				/* スイングダンス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
+		case SC_ARCLOUSEDASH:		/* アクラウスダッシュ */
+		case SC_CHATTERING:			/* チャタリング */
 		case SC_WIND_STEP:			/* ウィンドステップ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
@@ -10171,6 +10306,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ROLLINGCUTTER:
 	case SC_WUGDASH:
 	case SC_EXEEDBREAK:
+	case SC_SUHIDE:
 	case SC_ALL_RIDING:	/* 騎乗システム */
 	case SC_ON_PUSH_CART:	/* カート */
 	case SC_HAT_EFFECT:	/* 頭装備エフェクト */
@@ -10804,6 +10940,24 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd->status.sp >= 1) {
 				sd->status.sp -= 1;
 				clif_updatestatus(sd,SP_SP);
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
+		}
+		break;
+	case SC_FRESHSHRIMP:		/* 新鮮なエビ */
+		if((--sc->data[type].val2) > 0) {
+			unit_heal(bl, sc->data[type].val4, 0);
+			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SV_ROOTTWIST:	/* マタタビの根っこ */
+		if((--sc->data[type].val3) > 0) {
+			struct block_list *src = map_id2bl(sc->data[type].val2);
+			if(src && tid != -1) {
+				battle_skill_attack(BF_MISC,src,src,bl,SU_SV_ROOTTWIST_ATK,sc->data[type].val1,tick,(0x0f<<20)|0x500);
+			}
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}
 		}
@@ -11502,6 +11656,8 @@ int status_change_hidden_end(struct block_list *bl)
 			status_change_end(bl,SC_CAMOUFLAGE,-1);
 	 	if(sc->data[SC_STEALTHFIELD].timer != -1)
 			status_change_end(bl,SC_STEALTHFIELD,-1);
+	 	if(sc->data[SC_SUHIDE].timer != -1)
+			status_change_end(bl,SC_SUHIDE,-1);
 	}
 	return 0;
 }

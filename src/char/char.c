@@ -2593,7 +2593,7 @@ static int parse_frommap(int fd)
 				}
 				if( cd != NULL && i < AUTH_FIFO_SIZE &&
 #if PACKETVER >= 20151029
-					sex != 99
+					sex >= SEX_FEMALE && sex <= SEX_MALE
 #else
 					auth_fifo[i].sex == sex
 #endif

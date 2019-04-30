@@ -1,4 +1,21 @@
 ----------------------------------------
+//1332 [2019/05/01] by refis
+
+・ログイン認証処理を調整（char.c）
+
+・clif_addskill、clif_delskillを追加（clif.*）
+
+・クールダウン計算をskill_cooldownfixとして分離させる（skill.*）
+
+・status_get_jlvを追加して直接参照を避ける（battle.c, status.*）
+
+・ドラム族DB修正（scdata_db.txt, skill_cast_db.txt, skill.txt）
+
+・ドラム族SCRIPT準備（script/npc/*）
+
+・ドラム族SKILL準備（src/common/mmo.h, src/map/*）
+
+----------------------------------------
 //1331 [2019/04/05] by refis
 
 ・非消費アイテムが消費されてしまっていたのを修正（item_db2.txt）

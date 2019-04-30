@@ -5585,7 +5585,7 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 
 	skill_point = pc_calc_skillpoint(sd);
 
-	if(skill_point < 9)
+	if(skill_point < 9 || pc_isdoram(sd))
 		up_level = 0;
 	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && (pc_is2ndclass(sd) || pc_is3rdclass(sd)))
 		up_level = 1;

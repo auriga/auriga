@@ -404,7 +404,7 @@ function	script	KafraMain	{
 
 //倉庫サービスだけ分離
 function	script	KafraStorage	{
-	if(basicskillcheck() && getskilllv(1)<6) {
+	if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 		mes "[カプラ職員]";
 		mes "倉庫は基本スキルレベル6を";
 		mes "習得してから利用可能となります。";
@@ -872,7 +872,7 @@ niflheim.gat,202,180,3	script	カプラ職員	791,{
 		mes "忘れないでください……";
 		close;
 	}
-	if(basicskillcheck() && getskilllv(1) < 6) {
+	if(basicskillcheck() && ((getskilllv(1) < 6 && Job != Job_Summoner) || (getskilllv(5018) < 1 && Job == Job_Summoner))) {
 		mes "[カプラ職員]";
 		mes "倉庫は……基本スキルレベル6を";
 		mes "習得してから利用可能となります……";
