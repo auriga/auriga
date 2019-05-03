@@ -4726,7 +4726,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 
 			// アクラウスダッシュ
-			if(sc->data[SC_ARCLOUSEDASH].timer != -1 && src_sd && pc_isdoram(src_sd)) {
+			if(sc->data[SC_ARCLOUSEDASH].timer != -1 && src_sd && pc_isdoram(src_sd) && wd.flag&BF_LONG) {
 				wd.damage += wd.damage * sc->data[SC_ARCLOUSEDASH].val3 / 100;
 			}
 		}
@@ -6309,9 +6309,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case LG_RAYOFGENESIS:			/* レイオブジェネシス */
 			if(sc && sc->data[SC_BANDING].timer != -1) {
-				MATK_FIX( (300 * skill_lv + sc->data[SC_BANDING].val2 * 200) * status_get_jlv(src) / 25, 100 );
+				MATK_FIX( (300 * skill_lv + sc->data[SC_BANDING].val2 * 200) * status_get_jlv(bl) / 25, 100 );
 			} else {
-				MATK_FIX( (300 * skill_lv + 200) * status_get_jlv(src) / 25, 100 );
+				MATK_FIX( (300 * skill_lv + 200) * status_get_jlv(bl) / 25, 100 );
 			}
 			break;
 		case WM_METALICSOUND:	/* メタリックサウンド */

@@ -12065,6 +12065,12 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 			}
 		}
 		break;
+	case UNT_NYANGGRASS:	/* ニャングラス */
+		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0) {
+			if(!sc || sc->data[SC_NYANGGRASS].timer==-1)
+				status_change_start(bl,SC_NYANGGRASS,sg->skill_lv,src->bl.id,0,0,sg->limit,0);
+		}
+		break;
 /*	default:
 		if(battle_config.error_log)
 			printf("skill_unit_onplace: Unknown skill unit id=%d block=%d\n",sg->unit_id,bl->id);
@@ -12943,6 +12949,7 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 	case UNT_VOLCANO:	/* ボルケーノ */
 	case UNT_DELUGE:	/* デリュージ */
 	case UNT_VIOLENTGALE:	/* バイオレントゲイル */
+	case UNT_NYANGGRASS:	/* ニャングラス */
 		sc = status_get_sc(bl);
 		type = GetSkillStatusChangeTable(sg->skill_id);
 		if( type == -1 ) break;

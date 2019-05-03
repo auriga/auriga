@@ -2545,6 +2545,13 @@ L_RECALC:
 		if(sd->sc.data[SC_ILLUSIONDOPING].timer != -1) {
 			sd->hit -= 50;
 		}
+		// ニャングラス
+		if(sd->sc.data[SC_NYANGGRASS].timer != -1)
+			sd->def = sd->mdef = 0;
+		// 警戒
+		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val1 > 0) {
+			sd->flee2 += sd->sc.data[SC_HISS].val2;
+		}
 	}
 
 	// テコンランカーボーナス
@@ -3550,6 +3557,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
+		}
+
+		// 警戒
+		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val4 > 0) {
+			if(haste_val1 < sd->sc.data[SC_HISS].val3)
+				haste_val1 = sd->sc.data[SC_HISS].val3;
 		}
 
 		/* speedが減少するステータス計算2 */
@@ -4941,6 +4954,9 @@ int status_get_def(struct block_list *bl)
 			// オーディンの力
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
 				def -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
+			// ニャングラス
+			if(sc->data[SC_NYANGGRASS].timer != -1 && bl->type != BL_PC)
+				def >>= 1;
 			// アンリミット
 			if(sc->data[SC_UNLIMIT].timer != -1)
 				def = 1;
@@ -5010,6 +5026,9 @@ int status_get_mdef(struct block_list *bl)
 			// 点穴 -反-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
 				mdef -= sc->data[SC_GENTLETOUCH_CHANGE].val3;
+			// ニャングラス
+			if(sc->data[SC_NYANGGRASS].timer != -1 && bl->type != BL_PC)
+				mdef >>= 1;
 			// アンリミット
 			if(sc->data[SC_UNLIMIT].timer != -1)
 				mdef = 1;
@@ -7023,8 +7042,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_BITESCAR:			/* タロウの傷 */
 		case SC_TUNAPARTY:			/* マグロシールド */
 		case SC_SHRIMP:				/* エビ三昧 */
-		case SC_HISS:				/* 警戒 */
-		case SC_NYANGGRASS:			/* ニャングラス */
 		case SC_PROTECTIONOFSHRIMP:	/* エビパーティー */
 		case SC_SPIRITOFLAND:		/* 大地の魂 */
 		case SC_JP_EVENT01:
@@ -7140,6 +7157,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_LERADS_DEW:			/* レーラズの露 */
 		case SC_DANCE_WITH_WUG:		/* ダンスウィズウォーグ */
 		case SC_ILLUSIONDOPING:		/* イリュージョンドーピング */
+		case SC_NYANGGRASS:			/* ニャングラス */
 		case SC_MYSTERIOUS_POWDER:	/* 不思議な粉 */
 		case SC_BOOST500:			/* ブースト500 */
 		case SC_FULL_SWING_K:		/* フルスイングK */
@@ -8506,8 +8524,27 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			break;
+		case SC_HISS:				/* 警戒 */
+			if(val1 >= 5)	// 完全回避増加
+				val2 = 50;
+			else if(val1 == 4)
+				val2 = 25;
+			else
+				val2 = val1 * 5;
+			if(val1 >= 4)	// 移動速度増加
+				val3 = 60;
+			else if(val1 == 3)
+				val3 = 40;
+			else
+				val3 = 25;
+			val4 = tick / 1000;
+			val1 = 15;
+			tick = 1000;
+			calc_flag = 1;
+			break;
 		case SC_GROOMING:			/* グルーミング */
 			val2 = val1 * 10;	// Flee増加
+			calc_flag = 1;
 			break;
 		case SC_SV_ROOTTWIST:	/* マタタビの根っこ */
 			val3 = tick / 1000;
@@ -10948,6 +10985,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			unit_heal(bl, sc->data[type].val4, 0);
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_HISS:				/* 警戒 */
+		if((--sc->data[type].val4) > 0) {
+			if(sc->data[type].val1 > 0)
+				sc->data[type].val1--;
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_SV_ROOTTWIST:	/* マタタビの根っこ */
