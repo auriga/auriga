@@ -129,7 +129,7 @@ lhz_dun04.gat,151,276,3	script	研究員#memo	865,{
 	case 8:
 	case 11:
 		for(set '@i,5113;'@i<5126;set '@i,'@i+1) {
-			set '@total,'@total + ((checkquest('@quest) & 0x4) == 0);
+			set '@total,'@total + ((checkquest('@i) & 0x4) == 0);
 		}
 		if('@total == 0) {
 			mes "[ボルセブ]";
@@ -240,9 +240,9 @@ lhz_dun04.gat,151,276,3	script	研究員#memo	865,{
 			mes "　ボルセブの旧研究室（座標:43, 114）";
 			mes "　に行ってみよう‐";
 			for(set '@i,5113;'@i<5126;set '@i,'@i+1) {
-				delquest '@quest;
+				delquest '@i;
 			}
-			chgquest 5126,72020;
+			chgquest 5111,72020;
 			set LHZ_6QUE,9;
 			close;
 		}

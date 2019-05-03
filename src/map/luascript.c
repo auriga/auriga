@@ -400,7 +400,8 @@ int do_init_luascript(void)
  */
 int do_final_luascript(void)
 {
-	lua_close(L);
+	if(L)
+		lua_close(L);
 
 	return 0;
 }
