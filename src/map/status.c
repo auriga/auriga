@@ -2546,11 +2546,23 @@ L_RECALC:
 			sd->hit -= 50;
 		}
 		// ニャングラス
-		if(sd->sc.data[SC_NYANGGRASS].timer != -1)
+		if(sd->sc.data[SC_NYANGGRASS].timer != -1) {
 			sd->def = sd->mdef = 0;
+		}
 		// 警戒
 		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val1 > 0) {
 			sd->flee2 += sd->sc.data[SC_HISS].val2;
+		}
+		// イヌハッカシャワー
+		if(sd->sc.data[SC_CATNIPPOWDER].timer != -1) {
+			sd->watk -= sd->watk * sd->sc.data[SC_CATNIPPOWDER].val2 / 100;
+			sd->matk1 -= sd->matk1 * sd->sc.data[SC_CATNIPPOWDER].val2 / 100;
+			sd->nhealhp += sd->nhealhp * sd->sc.data[SC_CATNIPPOWDER].val3 / 100;
+			if(sd->nhealhp > 0x7fff)
+				sd->nhealhp = 0x7fff;
+			sd->nhealsp += sd->nhealsp * sd->sc.data[SC_CATNIPPOWDER].val3 / 100;
+			if(sd->nhealsp > 0x7fff)
+				sd->nhealsp = 0x7fff;
 		}
 	}
 
@@ -4586,6 +4598,8 @@ int status_get_atk(struct block_list *bl)
 			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 			atk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+		if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// イヌハッカシャワー
+			atk -= atk * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		if(rate != 100)	// NPC爆裂波動とエスクを倍率加算させる
 			atk = atk * rate / 100;
 	}
@@ -4698,6 +4712,8 @@ int status_get_atk2(struct block_list *bl)
 				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// オーディンの力
 				atk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
+			if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// イヌハッカシャワー
+				atk2 -= atk2 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 			if(rate != 100)	// NPC爆裂波動とエスクを倍率加算させる
 				atk2 = atk2 * rate / 100;
 		}
@@ -4784,6 +4800,8 @@ int status_get_matk1(struct block_list *bl)
 			if(sc->data[SC_CHATTERING].timer != -1)	// チャタリング
 				matk1 += sc->data[SC_CHATTERING].val2;
 #endif
+			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// イヌハッカシャワー
+				matk1 -= matk1 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		}
 	}
 	return matk1;
@@ -4850,6 +4868,8 @@ int status_get_matk2(struct block_list *bl)
 				matk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 			if(sc->data[SC_CHATTERING].timer != -1)	// チャタリング
 				matk2 += sc->data[SC_CHATTERING].val2;
+			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// イヌハッカシャワー
+				matk2 -= matk2 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		}
 	}
 	return matk2;
@@ -7038,7 +7058,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CIRCLE_OF_FIRE:		/* サークルオブファイア */
 		case SC_TIDAL_WEAPON:		/* タイダルウェポン */
 		case SC_SU_STOOP:			/* うずくまる */
-		case SC_CATNIPPOWDER:		/* イヌハッカシャワー */
 		case SC_BITESCAR:			/* タロウの傷 */
 		case SC_TUNAPARTY:			/* マグロシールド */
 		case SC_SHRIMP:				/* エビ三昧 */
@@ -8549,6 +8568,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SV_ROOTTWIST:	/* マタタビの根っこ */
 			val3 = tick / 1000;
 			tick = 1000;
+			break;
+		case SC_CATNIPPOWDER:		/* イヌハッカシャワー */
+			val2 = 30;	// 武器攻撃力とMatk減少
+			val3 = 50;	// HP・SP自然回復量増加
+			calc_flag = 1;
 			break;
 		case SC_MER_FLEE:		/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:		/* 傭兵ボーナス(ATK) */

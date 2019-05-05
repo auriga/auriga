@@ -2606,6 +2606,7 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					skill_castend_nodamage_id);
 				break;
 			case WZ_METEOR:
+			case SU_CN_METEOR:				/* イヌハッカメテオ */
 				if(skl->type >= 0) {
 					int x = skl->type>>16, y = skl->type&0xffff;
 					if(map_getcell(src->m,x,y,CELL_CHKPASS))
@@ -10017,6 +10018,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,rate,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
+	case SU_CN_POWDERING:	/* イヌハッカシャワー */
+		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
+		break;
 	case SU_SV_ROOTTWIST:	/* マタタビの根っこ */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,src->id,0,0,skill_get_time(skillid,skilllv),0);
@@ -10150,7 +10154,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 		battle_heal(NULL,bl,heal,0,0);
 		break;
-	case SU_CN_POWDERING:	/* イヌハッカシャワー */
 	case SU_SHRIMPARTY:	/* エビパーティー */
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -10675,6 +10678,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case WZ_METEOR:			/* メテオストーム */
+	case SU_CN_METEOR:	/* イヌハッカメテオ */
 		{
 			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
 			int interval = (skilllv > 10)? 2500: 1000;
@@ -11190,30 +11194,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0,0);
-		break;
-	case SU_CN_METEOR:	/* イヌハッカメテオ */
-		{
-			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
-			int interval = (skilllv > 10)? 2500: 1000;
-			int loop = skilllv / 2 + 2;
-			for(i=0; i < loop; i++) {
-				if(skilllv > 10) {
-					tmpx = x + (atn_rand()%29 - 14);
-					tmpy = y + (atn_rand()%29 - 14);
-				} else {
-					tmpx = x + (atn_rand()%7 - 3);
-					tmpy = y + (atn_rand()%7 - 3);
-				}
-				if(i == 0 && map_getcell(src->m,tmpx,tmpy,CELL_CHKPASS)) {
-					clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
-				} else if(i > 0) {
-					skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,(x1<<16)|y1,0);
-				}
-				x1 = tmpx;
-				y1 = tmpy;
-			}
-			skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skillid,skilllv,-1,0);
-		}
 		break;
 
 	}
@@ -12886,6 +12866,12 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 					break;
 			}
 		}
+		break;
+	case UNT_CATNIPPOWDER:	/* イヌハッカシャワー */
+		if(sg->src_id == bl->id || (status_get_mode(bl)&MD_BOSS))
+			break;
+		if(sc && sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1 && battle_check_target(&src->bl, bl, BCT_ENEMY) > 0)
+			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,0,0,0,sg->limit,0);
 		break;
 	case UNT_VENOMFOG:	/* ベナムフォグ */
 		{
@@ -17355,6 +17341,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case KO_HUUMARANKA:
 		case KO_MAKIBISHI:
 		case KO_ZENKAI:
+		case SU_CN_METEOR:
 		case NPC_DISSONANCE:
 		case NPC_UGLYDANCE:
 			skill_delunit(unit);
