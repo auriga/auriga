@@ -1,4 +1,19 @@
 ----------------------------------------
+//1337 [2019/05/06] by refis
+
+・リファレンスの更新漏れを訂正（db_ref.txt）
+
+・2015-10-29aRagexeRE、2016-12-28aRagexeRE、2017-06-14bRagexeREのpacket_dbを追加（packet_db.txt）
+	-> 構造体「party_member」に「class_」を格納するよう追加（mmo.h）
+	-> パケット拡張、新規追加に対応（login.c, int_party.c, intif.c, party.*, clif.c）
+	-> 内部パケットの拡張（int_party.c, inter.c, intif.c）
+	-> 足りなくなるのでMAX_PACKET_DBの拡張（clif.c）
+
+・新パケットのエラー対策でダミー関数を用意する（clif.c, packet_db.txt）
+
+・PACKETVERを「20151029」に引き上げ（bcc32_make.bat Makefile vc_make.bat *.dsp）
+
+----------------------------------------
 //1336 [2019/05/06] by refis
 
 ・サモナー追加関連アイテムを追加（item_db.txt, item_db2.txt）

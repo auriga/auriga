@@ -61,7 +61,7 @@
 static const int packet_len_table[]={
 	-1,-1,51, 0, -1, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3800-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
-	35,-1,39,13, 38,33, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
+	35,-1,39,13, 38,35, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
 	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
@@ -552,7 +552,8 @@ void intif_create_party(struct map_session_data *sd, const char *name, int item,
 	memcpy(WFIFOP(inter_fd,36),sd->status.name,24);
 	memcpy(WFIFOP(inter_fd,60),map[sd->bl.m].name,16);
 	WFIFOW(inter_fd,76)= sd->status.base_level;
-	WFIFOSET(inter_fd,78);
+	WFIFOW(inter_fd,78)= sd->status.class_;
+	WFIFOSET(inter_fd,80);
 
 	return;
 }
@@ -585,7 +586,8 @@ void intif_party_addmember(struct map_session_data *sd)
 	memcpy(WFIFOP(inter_fd,14),sd->status.name,24);
 	memcpy(WFIFOP(inter_fd,38),map[sd->bl.m].name,16);
 	WFIFOW(inter_fd,54) = sd->status.base_level;
-	WFIFOSET(inter_fd,56);
+	WFIFOW(inter_fd,56) = sd->status.class_;
+	WFIFOSET(inter_fd,58);
 
 	return;
 }
@@ -637,7 +639,8 @@ void intif_party_changemap(struct map_session_data *sd, unsigned char online)
 	memcpy(WFIFOP(inter_fd,14),map[sd->bl.m].name,16);
 	WFIFOB(inter_fd,30)=online;
 	WFIFOW(inter_fd,31)=sd->status.base_level;
-	WFIFOSET(inter_fd,33);
+	WFIFOW(inter_fd,33)=sd->status.class_;
+	WFIFOSET(inter_fd,35);
 
 	return;
 }
@@ -1581,7 +1584,7 @@ static int intif_parse_PartyBroken(int fd)
 // パーティ移動通知
 static void intif_parse_PartyMove(int fd)
 {
-	party_recv_movemap(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31));
+	party_recv_movemap(RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31),RFIFOW(fd,33));
 
 	return;
 }

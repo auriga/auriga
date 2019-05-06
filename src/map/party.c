@@ -698,7 +698,7 @@ void party_optionchanged(int party_id, int account_id, unsigned char exp, unsign
  * パーティメンバの移動通知
  *------------------------------------------
  */
-void party_recv_movemap(int party_id, int account_id, int char_id, const char *mapname, unsigned char online, unsigned short lv)
+void party_recv_movemap(int party_id, int account_id, int char_id, const char *mapname, unsigned char online, unsigned short lv, unsigned short class_)
 {
 	struct map_session_data *sd;
 	struct party *p;
@@ -713,6 +713,7 @@ void party_recv_movemap(int party_id, int account_id, int char_id, const char *m
 			memcpy(m->map,mapname,16);
 			m->online = online;
 			m->lv     = lv;
+			m->class_ = class_;
 			break;
 		}
 	}

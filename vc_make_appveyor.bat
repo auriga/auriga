@@ -6,6 +6,9 @@ echo vc_make_appveyor.bat - Auriga makefile for Visual C++
 
 rem ----------------------------------------------------------------
 rem Defined packet versions
+rem 2017-06-14bRagexeRE: 20170614
+rem 2016-12-28aRagexeRE: 20161228
+rem 2015-10-29aRagexeRE: 20151029
 rem 2015-05-13aRagexe: 20150513
 rem 2014-10-22bRagexe: 20141022
 rem 2014-03-05bRagexe: 20140305
@@ -109,7 +112,7 @@ rem csvdb のスクリプトからの利用を無効にする場合コメント�
 rem set __NO_CSVDB_SCRIPT__=/D "NO_CSVDB_SCRIPT"
 
 rem R化前のシステムを使う場合はコメントアウトをはずす
-set __PRE_RENEWAL__=/D "PRE_RENEWAL"
+rem set __PRE_RENEWAL__=/D "PRE_RENEWAL"
 
 rem MB を使う場合はコメントアウトをはずす
 rem set __EXCLASS__=/D "CLASS_MB"

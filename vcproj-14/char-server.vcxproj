@@ -59,7 +59,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20131223;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20151029;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
       <ExceptionHandling>
@@ -102,7 +102,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20131223;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOCALZLIB;PACKETVER=20151029;NEW_006b;NO_HTTPD;NO_HTTPD_CGI;DYNAMIC_SC_DATA;WIN64;_WIN64;FD_SETSIZE=4096;_CRT_SECURE_NO_DEPRECATE;WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>

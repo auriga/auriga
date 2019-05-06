@@ -194,7 +194,8 @@ static void mapif_party_membermoved(int party_id, struct party_member *m)
 	memcpy(WBUFP(buf,14),m->map,16);
 	WBUFB(buf,30)=m->online;
 	WBUFW(buf,31)=m->lv;
-	mapif_sendall(buf,33);
+	WBUFW(buf,33)=m->class_;
+	mapif_sendall(buf,35);
 
 	return;
 }
@@ -245,7 +246,7 @@ int mapif_party_leader_changed(int party_id,int old_account_id,int account_id)
 
 // パーティ
 int mapif_parse_CreateParty(int fd, int account_id, int char_id, const char *name,
-	unsigned char item, unsigned char item2, const char *nick, const char *map, unsigned short lv)
+	unsigned char item, unsigned char item2, const char *nick, const char *map, unsigned short lv, unsigned short class_)
 {
 	struct party *p;
 	int i;
@@ -277,6 +278,7 @@ int mapif_parse_CreateParty(int fd, int account_id, int char_id, const char *nam
 	p->member[0].leader = 1;
 	p->member[0].online = 1;
 	p->member[0].lv     = lv;
+	p->member[0].class_ = class_;
 
 	if(partydb_new(p) == true) {
 		// 成功
@@ -303,7 +305,7 @@ int mapif_parse_PartyInfo(int fd,int party_id)
 }
 
 // パーティ追加要求
-int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,const char *nick,const char *map,int lv)
+int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,const char *nick,const char *map,int lv,int class_)
 {
 	const struct party *p1 = partydb_load_num(party_id);
 	struct party p2;
@@ -328,6 +330,7 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,co
 			p2.member[i].leader  = 0;
 			p2.member[i].online  = 1;
 			p2.member[i].lv=lv;
+			p2.member[i].lv=class_;
 			mapif_party_memberadded(fd, party_id, account_id, char_id, nick, 0);
 			mapif_party_info(-1,&p2);
 
@@ -418,7 +421,7 @@ void mapif_parse_PartyLeave(int fd, int party_id, int account_id, int char_id)
 }
 
 // パーティマップ更新要求
-static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int char_id, const char *map, unsigned char online, unsigned short lv)
+static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int char_id, const char *map, unsigned char online, unsigned short lv, unsigned short class_)
 {
 	const struct party *p1 = partydb_load_num(party_id);
 	struct party p2;
@@ -434,6 +437,7 @@ static void mapif_parse_PartyChangeMap(int fd, int party_id, int account_id, int
 			p2.member[i].map[15] = '\0';	// force \0 terminal
 			p2.member[i].online  = online;
 			p2.member[i].lv      = lv;
+			p2.member[i].class_  = class_;
 			mapif_party_membermoved(party_id, &p2.member[i]);
 
 			if( p2.exp>0 && !party_check_exp_share(&p2,0) ){
@@ -509,12 +513,12 @@ int mapif_parse_PartyLeaderChange(int fd,int party_id,int account_id,int char_id
 int inter_party_parse_frommap(int fd)
 {
 	switch(RFIFOW(fd,0)){
-	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,34),RFIFOB(fd,35),RFIFOP(fd,36),RFIFOP(fd,60),RFIFOW(fd,76)); break;
+	case 0x3020: mapif_parse_CreateParty(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOP(fd,10),RFIFOB(fd,34),RFIFOB(fd,35),RFIFOP(fd,36),RFIFOP(fd,60),RFIFOW(fd,76),RFIFOW(fd,78)); break;
 	case 0x3021: mapif_parse_PartyInfo(fd,RFIFOL(fd,2)); break;
-	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOP(fd,38),RFIFOW(fd,54)); break;
+	case 0x3022: mapif_parse_PartyAddMember(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOP(fd,38),RFIFOW(fd,54),RFIFOW(fd,56)); break;
 	case 0x3023: mapif_parse_PartyChangeOption(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOB(fd,14),RFIFOB(fd,15)); break;
 	case 0x3024: mapif_parse_PartyLeave(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10)); break;
-	case 0x3025: mapif_parse_PartyChangeMap(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31)); break;
+	case 0x3025: mapif_parse_PartyChangeMap(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10),RFIFOP(fd,14),RFIFOB(fd,30),RFIFOW(fd,31),RFIFOW(fd,33)); break;
 	case 0x3026: mapif_parse_BreakParty(fd,RFIFOL(fd,2)); break;
 	case 0x3027: mapif_parse_PartyMessage(fd,RFIFOL(fd,4),RFIFOL(fd,8),RFIFOP(fd,12),RFIFOW(fd,2)-12); break;
 	case 0x3028: mapif_parse_PartyCheck(fd,RFIFOL(fd,2),RFIFOL(fd,6),RFIFOL(fd,10)); break;

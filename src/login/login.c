@@ -391,6 +391,15 @@ static void login_authok(struct login_session_data *sd, int fd)
 {
 	int server_num = 0;
 	int i;
+#if PACKETVER < 20170315
+	int cmd = 0x69;
+	int header = 47;
+	int size = 32;
+#else
+	int cmd = 0xac4;
+	int header = 64;
+	int size = 160;
+#endif
 
 	if( config.detect_multiple_login == true )
 	{
@@ -424,25 +433,31 @@ static void login_authok(struct login_session_data *sd, int fd)
 	{
 		if( server_fd[i] >= 0 )
 		{
-			WFIFOL(fd,47+server_num*32)   = server[i].ip;
-			WFIFOW(fd,47+server_num*32+4) = server[i].port;
-			memcpy(WFIFOP(fd,47+server_num*32+6), server[i].name, 20);
-			WFIFOW(fd,47+server_num*32+26) = server[i].users;
-			WFIFOW(fd,47+server_num*32+28) = server[i].maintenance;
-			WFIFOW(fd,47+server_num*32+30) = server[i].new_;
+			WFIFOL(fd,header+server_num*size)   = server[i].ip;
+			WFIFOW(fd,header+server_num*size+4) = server[i].port;
+			memcpy(WFIFOP(fd,header+server_num*size+6), server[i].name, 20);
+			WFIFOW(fd,header+server_num*size+26) = server[i].users;
+			WFIFOW(fd,header+server_num*size+28) = server[i].maintenance;
+			WFIFOW(fd,header+server_num*size+30) = server[i].new_;
+#if PACKETVER >= 20170315
+			memset(WFIFOP(fd, header+server_num*size+32), 0, 128);
+#endif
 			server_num++;
 		}
 	}
 
-	WFIFOW(fd, 0) = 0x69;
-	WFIFOW(fd, 2) = 47+32*server_num;
+	WFIFOW(fd, 0) = cmd;
+	WFIFOW(fd, 2) = header+size*server_num;
 	WFIFOL(fd, 4) = sd->login_id1;
 	WFIFOL(fd, 8) = sd->account_id;
 	WFIFOL(fd,12) = sd->login_id2;
 	WFIFOL(fd,16) = 0;
 	memcpy(WFIFOP(fd,20),sd->lastlogin,24);
 	WFIFOB(fd,46) = sex_str2num(sd->sex);
-	WFIFOSET(fd,47+32*server_num);
+#if PACKETVER >= 20170315
+	memset(WFIFOP(fd,47),0,17);
+#endif
+	WFIFOSET(fd,header+size*server_num);
 
 	for( i = 0; i < AUTH_FIFO_SIZE; i++ )
 	{

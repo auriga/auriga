@@ -3369,12 +3369,22 @@ int parse_char(int fd)
 					break;
 				}
 
+#if PACKETVER < 20170315
 				WFIFOW(fd,0) = 0x71;
 				WFIFOL(fd,2) = st.char_id;
 				memcpy(WFIFOP(fd,6),st.last_point.map,16);
 				WFIFOL(fd,22) = server[i].ip;
 				WFIFOW(fd,26) = server[i].port;
 				WFIFOSET(fd,28);
+#else
+				WFIFOW(fd,0) = 0xac5;
+				WFIFOL(fd,2) = st.char_id;
+				memcpy(WFIFOP(fd,6),st.last_point.map,16);
+				WFIFOL(fd,22) = server[i].ip;
+				WFIFOW(fd,26) = server[i].port;
+				memset(WFIFOP(fd, 28), 0, 128);
+				WFIFOSET(fd,156);
+#endif
 
 				// 同一アカウントの未認証データを全て破棄しておく
 				for( i = 0; i < AUTH_FIFO_SIZE; i++ )

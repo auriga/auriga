@@ -6,6 +6,9 @@ CC = gcc -pipe
 GCC_MAJOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 GCC_MINOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f2)
 
+# 2017-06-14bRagexeRE: 20170614
+# 2016-12-28aRagexeRE: 20161228
+# 2015-10-29aRagexeRE: 20151029
 # 2015-05-13aRagexe: 20150513
 # 2014-10-22bRagexe: 20141022
 # 2014-03-05bRagexe: 20140305
@@ -52,7 +55,7 @@ GCC_MINOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d
 # 2007-05-21aSakexe: 20070521
 # 2007-02-12aSakexe: 20070212
 # 2006-10-23aSakexe: 20061023
-PACKETDEF = -DPACKETVER=20150513 -DNEW_006b
+PACKETDEF = -DPACKETVER=20151029 -DNEW_006b
 
 PLATFORM = $(shell uname)
 
