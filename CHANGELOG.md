@@ -1,4 +1,13 @@
 ----------------------------------------
+//1336 [2019/05/06] by refis
+
+・サモナー追加関連アイテムを追加（item_db.txt, item_db2.txt）
+
+・MAX_ITEMGROUPを15に拡張（item_group_db.txt, map.h）
+
+・3次職追加スキル、サモナースキルをskill_tree.txtに追記（skill_tree.txt）
+
+----------------------------------------
 //1335 [2019/05/05] by refis
 
 ・イヌハッカシャワー、イヌハッカメテオの効果がなかったのを修正（skill_unit_db.txt, skill.c, status.c）
