@@ -6853,6 +6853,10 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	if(job >= PC_JOB_MAX)
 		return 1;
 
+	// ƒTƒ‚ƒi[‚Æ‘¼E‹Æ‚Í‘ŠŒÝ‚É“]E•s‰Â
+	if((sd->s_class.job != PC_JOB_SUM && job == PC_JOB_SUM) || (sd->s_class.job == PC_JOB_SUM && job != PC_JOB_SUM))
+		return 1;
+
 	// “]¶E—{Žq‚È‚µ‚ÌE‹Æ
 	if(job >= PC_JOB_TK && job <= PC_JOB_DA)
 		upper = PC_UPPER_NORMAL;
