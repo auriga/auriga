@@ -12780,11 +12780,11 @@ void clif_vendinglist(struct map_session_data *sd, struct map_session_data *vsd)
 		WFIFOW(fd,n*53+56) = vsd->status.cart[idx].opt[4].val;
 		WFIFOB(fd,n*53+58) = 0;
 		WFIFOL(fd,n*53+59) = pc_equippoint(sd,idx);
-		WFIFOW(fd,n*53+63) = vsd->inventory_data[idx]->look;
+		WFIFOW(fd,n*53+63) = data->look;
 		n++;
 	}
 	if(n > 0){
-		WFIFOW(fd,2)=12+n*47;
+		WFIFOW(fd,2)=12+n*53;
 		WFIFOSET(fd,WFIFOW(fd,2));
 	}
 #endif
