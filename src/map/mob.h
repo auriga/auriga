@@ -71,6 +71,7 @@ struct mob_db {
 	short view_class,view_size;
 	short hair,hair_color,clothes_color;
 	short weapon,shield,robe,head_top,head_mid,head_bottom;
+	short style;
 	short group_id;
 	unsigned char sex,pcview_flag;
 	unsigned int option;
@@ -203,6 +204,7 @@ int mob_heal(struct mob_data*,int);
 #define mob_get_head_top(a)      mob_db[(a)].head_top
 #define mob_get_head_mid(a)      mob_db[(a)].head_mid
 #define mob_get_head_bottom(a)   mob_db[(a)].head_bottom
+#define mob_get_style(a)         mob_db[(a)].style
 #define mob_is_pcview(a)         mob_db[(a)].pcview_flag
 
 int do_init_mob(void);

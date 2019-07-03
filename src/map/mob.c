@@ -4089,6 +4089,7 @@ static int mob_readdb(void)
 			mob_db[class_].head_top      = 0;
 			mob_db[class_].head_mid      = 0;
 			mob_db[class_].head_bottom   = 0;
+			mob_db[class_].style         = 0;
 			memset(mob_db[class_].mode_opt, 0, sizeof(mob_db[class_].mode_opt));
 		}
 		fclose(fp);
@@ -4200,9 +4201,10 @@ static int mob_readdb_mobavail(void)
 			mob_db[class_].head_top      = atoi(str[10]);
 			mob_db[class_].head_mid      = atoi(str[11]);
 			mob_db[class_].head_bottom   = atoi(str[12]);
-			mob_db[class_].option        = ((unsigned int)atoi(str[13])) & ~(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING);
+			mob_db[class_].style         = atoi(str[13]);
+			mob_db[class_].option        = ((unsigned int)atoi(str[14])) & ~(OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING);
 
-			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[14]));
+			mob_db[class_].view_class = pc_calc_class_job(mob_db[class_].view_class, atoi(str[15]));
 		}
 		ln++;
 	}
