@@ -426,6 +426,18 @@ OnTimer3000:
 		mes "　少しすねたような表情をしている‐";
 		unittalk getcharid(3),strcharinfo(0)+" : ‐花を抱えた少女がいる。褐色がかった肌の色をした少女は、少しすねたような表情をしている‐";
 		next;
+		if(SARA_1QUE > 0) {
+			if(select("急ぐ","会話をする") == 1) {
+				mes "‐サラの身に何か";
+				mes "　悪いことが起きそうだ。";
+				mes "　急いでサラを探そう‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐サラの身に何か悪いことが起きそうだ。急いでサラを探そう‐";
+				hideonnpc getmdnpcname("少女#sara0");
+				hideoffnpc getmdnpcname("warp01#sara0");
+				hideoffnpc getmdnpcname("navi#sara0");
+				close;
+			}
+		}
 		mes "‐少女にここが何処なのかを訪ねると、";
 		mes "　にっこりと、ひとなつっこい笑顔で";
 		mes "　こちらを見た‐";
@@ -704,6 +716,22 @@ OnTalk3:
 		mes "なにかご用？";
 		unittalk "サラ : あっ！　さっきの" +((Sex)? "お兄さん": "お姉さん")+ "だぁ！　なにかご用？";
 		next;
+		if(SARA_1QUE > 0) {
+			if(select("急ぐ","会話をする") == 1) {
+				cutin "sara_9sara1",255;
+				mes "‐突然サラは叫びながら";
+				mes "　駆け出した。";
+				mes "　その間に警備兵がこちらを";
+				mes "　取り囲む‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐突然サラは叫びながら駆け出した。その間に警備兵がこちらを取り囲む‐";
+				hideonnpc getmdnpcname("サラ・アイリン#sa1");
+				announce "南の方角に逃げたサラを追いかけよう！",0x9,0xffff00;
+				donpcevent getmdnpcname("サラ・アイリン#sa1")+"::OnStart";
+				hideoffnpc getmdnpcname("サラ・アイリン#sa1a");
+				hideoffnpc getmdnpcname("warp12#sara1");
+				close;
+			}
+		}
 		mes "[サラ]";
 		mes "あ、ちょっと待ってね、";
 		mes "ママにお花を渡すの！";
@@ -1313,6 +1341,18 @@ OnKilled:
 		mes "サラは……ひぐっ。";
 		unittalk "サラ : ……わからない……サラは……サラは……ひぐっ。";
 		next;
+		if(SARA_1QUE > 0) {
+			if(select("急ぐ","会話をする") == 1) {
+				cutin "sara_9sara2",255;
+				mes "‐サラは再び叫びながら、";
+				mes "　南西の方角へ逃げていった。";
+				mes "　大長老アイリンに話しかけよう‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐サラは再び叫びながら、南西の方角へ逃げていった‐";
+				hideoffnpc getmdnpcname("大長老アイリン#sa5a");
+				hideonnpc getmdnpcname("サラ・アイリン#sa5");
+				close;
+			}
+		}
 		hideoffnpc getmdnpcname("大長老アイリン#sa5a");
 		cutin "sara_elder_irine4",2;
 		mes "[大長老アイリン]";
@@ -1375,75 +1415,83 @@ OnKilled:
 		mes "貴様は……";
 		mes "この殺人犯め！　まだ生きていたのか！";
 		unittalk "大長老アイリン : 貴様は……この殺人犯め！　まだ生きていたのか！";
-		next;
-		switch(select("^0000ff自分は殺人犯ではないと説明する（戦闘なし）^000000","^ff0000大長老を力でねじ伏せる（戦闘あり）^000000")) {
-		case 1:
-			cutin "sara_elder_irine3",255;
-			mes "‐自分は殺人犯ではないことを";
-			mes "　大長老アイリンに説明した‐";
-			unittalk getcharid(3),strcharinfo(0)+" : ‐自分は殺人犯ではないことを大長老アイリンに説明した‐";
+		while(1) {
 			next;
-			cutin "sara_elder_irine3",2;
-			mes "[大長老アイリン]";
-			mes "……とぼけるつもりか？";
-			unittalk "大長老アイリン : ……とぼけるつもりか？";
-			next;
-			cutin "sara_elder_irine3",255;
-			hideoffnpc getmdnpcname("#paydef_sara1");
-			mes "[フェイヨン守護兵]";
-			mes "大長老様！";
-			donpcevent getmdnpcname("#paydef_sara1")+"::OnTalk1";
-			next;
-			cutin "sara_elder_irine3",2;
-			mes "[大長老アイリン]";
-			mes "守護兵！";
-			mes "殺人犯はここだ！";
-			mes "あいつを包囲しろ!!";
-			unittalk "大長老アイリン : 守護兵！　殺人犯はここだ！　あいつを包囲しろ!!";
-			next;
-			cutin "sara_elder_irine3",255;
-			mes "[フェイヨン守護兵]";
-			mes "大長老様、それが……";
-			donpcevent getmdnpcname("#paydef_sara1")+"::OnTalk2";
-			next;
-			cutin "sara_elder_irine3",2;
-			mes "[大長老アイリン]";
-			mes "どうした？";
-			mes "この緊急事態に！";
-			unittalk "大長老アイリン : どうした？　この緊急事態に！";
-			next;
-			cutin "sara_elder_irine3",255;
-			mes "‐大長老アイリンは、駆け付けた";
-			mes "　フェイヨン守護兵と何やら";
-			mes "　話し始めた。";
-			mes "　もう一度、大長老アイリンに";
-			mes "　話しかけてみよう‐";
-			unittalk getcharid(3),strcharinfo(0)+" : ‐大長老アイリンは、駆け付けたフェイヨン守護兵と何やら話し始めた‐";
-			close2;
-			hideonnpc getmdnpcname("大長老アイリン#sa5a");
-			hideonnpc getmdnpcname("#paydef_sara1");
-			hideoffnpc getmdnpcname("大長老アイリン#sa5b");
-			set getvariableofnpc('flag,getmdnpcname("大長老アイリン#sa5b")),1;
-			end;
-		case 2:
-			cutin "sara_elder_irine3",255;
-			mes "‐サラを追うのをはばむため、";
-			mes "　大長老アイリンの前に";
-			mes "　立ちはだかった‐";
-			unittalk getcharid(3),strcharinfo(0)+" : ‐サラを追うのをはばむため、大長老アイリンの前に立ちはだかった‐";
-			next;
-			cutin "sara_elder_irine3",2;
-			mes "[大長老アイリン]";
-			mes "おい！";
-			mes "あいつを包囲しろ!!";
-			unittalk "大長老アイリン : おい！　あいつを包囲しろ!!";
-			close2;
-			cutin "sara_9sara2",255;
-			hideonnpc getmdnpcname("大長老アイリン#sa5a");
-			hideonnpc getmdnpcname("#paydef_sara1");
-			set getvariableofnpc('flag,getmdnpcname("大長老アイリン#sa5b")),2;
-			donpcevent getmdnpcname("callmon_a#sara300")+"::OnStart";
-			end;
+			switch(select("どうするか考える","^0000ff自分は殺人犯ではないと説明する（戦闘なし）^000000","^ff0000大長老を力でねじ伏せる（戦闘あり）^000000")) {
+			case 1:
+				mes "[大長老アイリン]";
+				mes "どうした！";
+				mes "何か言ったらどうだ！";
+				unittalk "大長老アイリン : どうした！　何か言ったらどうだ！";
+				continue;
+			case 2:
+				cutin "sara_elder_irine3",255;
+				mes "‐自分は殺人犯ではないことを";
+				mes "　大長老アイリンに説明した‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐自分は殺人犯ではないことを大長老アイリンに説明した‐";
+				next;
+				cutin "sara_elder_irine3",2;
+				mes "[大長老アイリン]";
+				mes "……とぼけるつもりか？";
+				unittalk "大長老アイリン : ……とぼけるつもりか？";
+				next;
+				cutin "sara_elder_irine3",255;
+				hideoffnpc getmdnpcname("#paydef_sara1");
+				mes "[フェイヨン守護兵]";
+				mes "大長老様！";
+				donpcevent getmdnpcname("#paydef_sara1")+"::OnTalk1";
+				next;
+				cutin "sara_elder_irine3",2;
+				mes "[大長老アイリン]";
+				mes "守護兵！";
+				mes "殺人犯はここだ！";
+				mes "あいつを包囲しろ!!";
+				unittalk "大長老アイリン : 守護兵！　殺人犯はここだ！　あいつを包囲しろ!!";
+				next;
+				cutin "sara_elder_irine3",255;
+				mes "[フェイヨン守護兵]";
+				mes "大長老様、それが……";
+				donpcevent getmdnpcname("#paydef_sara1")+"::OnTalk2";
+				next;
+				cutin "sara_elder_irine3",2;
+				mes "[大長老アイリン]";
+				mes "どうした？";
+				mes "この緊急事態に！";
+				unittalk "大長老アイリン : どうした？　この緊急事態に！";
+				next;
+				cutin "sara_elder_irine3",255;
+				mes "‐大長老アイリンは、駆け付けた";
+				mes "　フェイヨン守護兵と何やら";
+				mes "　話し始めた。";
+				mes "　もう一度、大長老アイリンに";
+				mes "　話しかけてみよう‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐大長老アイリンは、駆け付けたフェイヨン守護兵と何やら話し始めた‐";
+				close2;
+				hideonnpc getmdnpcname("大長老アイリン#sa5a");
+				hideonnpc getmdnpcname("#paydef_sara1");
+				hideoffnpc getmdnpcname("大長老アイリン#sa5b");
+				set getvariableofnpc('flag,getmdnpcname("大長老アイリン#sa5b")),1;
+				end;
+			case 3:
+				cutin "sara_elder_irine3",255;
+				mes "‐サラを追うのをはばむため、";
+				mes "　大長老アイリンの前に";
+				mes "　立ちはだかった‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐サラを追うのをはばむため、大長老アイリンの前に立ちはだかった‐";
+				next;
+				cutin "sara_elder_irine3",2;
+				mes "[大長老アイリン]";
+				mes "おい！";
+				mes "あいつを包囲しろ!!";
+				unittalk "大長老アイリン : おい！　あいつを包囲しろ!!";
+				close2;
+				cutin "sara_9sara2",255;
+				hideonnpc getmdnpcname("大長老アイリン#sa5a");
+				hideonnpc getmdnpcname("#paydef_sara1");
+				set getvariableofnpc('flag,getmdnpcname("大長老アイリン#sa5b")),2;
+				donpcevent getmdnpcname("callmon_a#sara300")+"::OnStart";
+				end;
+			}
 		}
 	}
 	else {
@@ -1490,6 +1538,21 @@ OnTalk3:
 			unittalk "大長老アイリン : 誰の指示を受けてこんな事を！　妻だけでなく、サラまで狙うとは!!";
 		}
 		next;
+		if(SARA_1QUE > 0) {
+			if(select("急ぐ","会話をする") == 1) {
+				mes "[大長老アイリン]";
+				mes "総力を出してサラを探し出そう。";
+				mes "君もサラを見つけたら私の所に";
+				mes "連れて来てくれ。";
+				mes "私からサラにすべてを説明する……。";
+				unittalk "大長老アイリン : 総力を出してサラを探し出そう。君もサラを見つけたら私の所に連れて来てくれ。私からサラにすべてを説明する……。";
+				announce strcharinfo(0) + " : サラが逃げて行った南西の方向に行ってみよう。",0x9,0xffff00;
+				cutin "sara_elder_irine4",255;
+				hideonnpc getmdnpcname("大長老アイリン#sa5b");
+				hideoffnpc getmdnpcname("warp56#sara5");
+				close;
+			}
+		}
 		menu "殺人犯はあなたではないのか？",-;
 		cutin "sara_elder_irine4",255;
 		mes "[" + strcharinfo(0) + "]";
@@ -1572,7 +1635,7 @@ OnTalk3:
 		mes "私からサラにすべてを説明する……。";
 		unittalk "大長老アイリン : 総力を出してサラを探し出そう。君もサラを見つけたら私の所に連れて来てくれ。私からサラにすべてを説明する……。";
 		close2;
-		announce strcharinfo(0) + " : サラが逃げて行った南西の方向に行ってみよう。",0x1,0xffff00,0x190,12,0,0;
+		announce strcharinfo(0) + " : サラが逃げて行った南西の方向に行ってみよう。",0x9,0xffff00;
 		cutin "sara_elder_irine4",255;
 		hideonnpc getmdnpcname("大長老アイリン#sa5b");
 		hideoffnpc getmdnpcname("warp56#sara5");
@@ -1600,6 +1663,22 @@ OnTalk2:
 1@sara.gat,39,142,3	script	サラ・アイリン#sa6	668,{
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
 		hideoffnpc getmdnpcname("#hugin_sara2");
+		if(SARA_1QUE > 0) {
+			mes "‐サラを見つけた‐";
+			next;
+			if(select("急ぐ","会話をする") == 1) {
+				mes "‐サラが消えたのと同時に周辺の";
+				mes "　風景が歪み始めた。";
+				mes "　探検家のレーンが話していたように、";
+				mes "　狭間から出なければならないようだ‐";
+				unittalk getcharid(3),strcharinfo(0)+" : ‐サラが消えたのと同時に周辺の風景が歪み始めた。探検家のレーンが話していたように、狭間から出なければならないようだ‐";
+				close2;
+				hideonnpc getmdnpcname("サラ・アイリン#sa6");
+				hideoffnpc getmdnpcname("#warp_end_sara6");
+				hideoffnpc getmdnpcname("warp67#sara6");
+				end;
+			}
+		}
 		mes "‐サラに声をかけようとした";
 		mes "　瞬間、背後から強い襲撃を受け";
 		mes "　崩れ落ちた‐";

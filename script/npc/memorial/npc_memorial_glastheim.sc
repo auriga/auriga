@@ -458,6 +458,21 @@ OnStart:
 1@gl_k.gat,149,41,5	script	バルムント#0	654,{
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
 		cutin "GL_BARMUND1",2;
+		if(OLDGLAST_QUE >= 1) {
+			mes "‐難しい顔をした男が立っている‐";
+			next;
+			if(select("急ぐ","会話をする") == 1) {
+				mes "[バルムント]";
+				mes "急げ！　ハインリヒ卿の所に行って";
+				mes "ヒメルメズの事を知らせろ。";
+				mes "私もすぐに向かう！";
+				unittalk "バルムント : 急げ！　ハインリヒ卿の所に行って ヒメルメズの事を知らせろ。私もすぐに向かう！";
+				close2;
+				cutin "GL_BARMUND2",255;
+				donpcevent getmdnpcname("バルムント#0")+"::OnStart";
+				end;
+			}
+		}
 		mes "[バルムント]";
 		mes "^0000ffヘリコ^000000がよこした";
 		mes "協力者というのは君なのか？";
@@ -557,6 +572,28 @@ OnTalk7:
 1@gl_k.gat,149,100,5	script	ハインリヒ#1	652,{
 	if(getpartyleader(getcharid(1)) == strcharinfo(0)) {
 		cutin "GL_HEINRICH2",2;
+		if(OLDGLAST_QUE >= 1) {
+			mes "‐彼がバルムントの言っていた";
+			mes "　ハインリヒ卿だろう‐";
+			next;
+			if(select("急ぐ","会話をする") == 1) {
+				for(set '@i,1; '@i<=20; set '@i,'@i+4) {
+					hideonnpc getmdnpcname("カーリッツバーグ騎士#"+'@i);
+					hideonnpc getmdnpcname("カーリッツバーグ騎士#"+('@i+1));
+					hideonnpc getmdnpcname("白の騎士#"+('@i+2));
+					hideonnpc getmdnpcname("白の騎士#"+('@i+3));
+				}
+				hideonnpc getmdnpcname("カーリッツバーグ騎士#21");
+				hideonnpc getmdnpcname("カーリッツバーグ騎士#22");
+				hideonnpc getmdnpcname("ヒメルメズ#1");
+				hideonnpc getmdnpcname("バルムント#1");
+				hideonnpc getmdnpcname("ハインリヒ#1");
+				initnpctimer;
+				setnpctimer 200000;
+				cutin "GL_HEINRICH1",255;
+				close;
+			}
+		}
 		mes "["+strcharinfo(0)+"]";
 		mes "あなたがハインリヒ様ですね。";
 		mes "この城の事でバルムント様より";
@@ -870,6 +907,19 @@ OnTimer178000:
 	announce "ハインリヒ : 西側は幼い子供が多くいるエリアなのです……。",0x9,0xffff00;
 	end;
 OnTimer182000:
+	stopnpctimer;
+	announce "ハインリヒ : 怯えている子供がいるかもしれません。どうかよろしくお願いします。",0x9,0xffff00;
+	hideoffnpc getmdnpcname("#2統制");
+	hideoffnpc getmdnpcname("#2統制2");
+	donpcevent getmdnpcname("#2統制_mobdead")+ "::OnStart";
+	end;
+OnTimer202000:
+	announce "ハインリヒ : 最初は西側のエリアを集中的に捜索していただけますか？",0x9,0xffff00;
+	end;
+OnTimer206000:
+	announce "ハインリヒ : 西側は幼い子供が多くいるエリアなのです……。",0x9,0xffff00;
+	end;
+OnTimer210000:
 	stopnpctimer;
 	announce "ハインリヒ : 怯えている子供がいるかもしれません。どうかよろしくお願いします。",0x9,0xffff00;
 	hideoffnpc getmdnpcname("#2統制");
@@ -1287,6 +1337,19 @@ OnTimer5000:
 1@gl_k.gat,222,216,0	warp	#4統制2	2,2,1@gl_k.gat,235,216
 
 1@gl_k.gat,150,257,0	script	#ヒメルon	139,6,6,{
+	if(OLDGLAST_QUE >= 1) {
+		mes "‐大階段の前には";
+		mes "　余裕の笑みを浮かべた";
+		mes "　ヒメルメズがいた‐";
+		next;
+		if(select("急ぐ","会話をする") == 1) {
+			hideonnpc;
+			hideonnpc getmdnpcname("ヒメルメズ#2");
+			initnpctimer;
+			setnpctimer 36000;
+			close;
+		}
+	}
 	hideonnpc;
 	initnpctimer;
 	end;
@@ -1433,6 +1496,7 @@ OnTalk5:
 		setquest 12319;
 		getitem 6607,1;
 		getitem 6608,1;
+		set OLDGLAST_QUE,1;
 		close2;
 		cutin "GL_BARMUND1",255;
 		end;
@@ -1674,6 +1738,19 @@ OnTimer1000:
 2@gl_k.gat,149,32,0	warp	#1統制	2,2,1@gl_k.gat,150,270
 
 2@gl_k.gat,150,66,0	script	#ハインon	139,10,10,{
+	if(OLDGLAST_QUE >= 2) {
+		mes "‐ハインリヒとバルムントが";
+		mes "　何やら話をしている‐";
+		next;
+		if(select("急ぐ","会話をする") == 1) {
+			hideonnpc;
+			hideonnpc getmdnpcname("ハインリヒ#21");
+			hideonnpc getmdnpcname("バルムント#21");
+			initnpctimer;
+			setnpctimer 76000;
+			close;
+		}
+	}
 	hideonnpc;
 	initnpctimer;
 	end;
@@ -2206,6 +2283,19 @@ OnTimer60000:
 }
 
 2@gl_k.gat,158,252,1	script	ヒメルメズ#22	650,3,3,{
+	if(OLDGLAST_QUE >= 2) {
+		mes "‐ハインリヒ達と共に";
+		mes "　ヒメルメズに追いついた‐";
+		next;
+		if(select("急ぐ","会話をする") == 1) {
+			hideonnpc;
+			hideonnpc getmdnpcname("ハインリヒ#23");
+			hideonnpc getmdnpcname("バルムント#23");
+			initnpctimer;
+			setnpctimer 88000;
+			close;
+		}
+	}
 	hideonnpc getmdnpcname("ヒメルメズ#22");
 	hideoffnpc getmdnpcname("ヒメルメズ#23");
 	initnpctimer;
@@ -2300,6 +2390,18 @@ OnTimer84000:
 	misceffect 90,getmdnpcname("ゲルハルト#23");
 	end;
 OnTimer87000:
+	stopnpctimer;
+	hideonnpc getmdnpcname("ゲルハルト#23");
+	donpcevent getmdnpcname("#アムダ統制")+"::OnStart";
+	donpcevent getmdnpcname("#2ボス統制")+"::OnStart";
+	end;
+OnTimer90000:
+	announce "ゲルハルトの体が変わっていく……!!",0x9,0xffffff;
+	end;
+OnTimer93000:
+	misceffect 90,getmdnpcname("ゲルハルト#23");
+	end;
+OnTimer96000:
 	stopnpctimer;
 	hideonnpc getmdnpcname("ゲルハルト#23");
 	donpcevent getmdnpcname("#アムダ統制")+"::OnStart";
@@ -2577,6 +2679,7 @@ OnKilled:
 				getitem 6608,5;
 				getexp 350000,0;
 				getexp 0,250000;
+				set OLDGLAST_QUE,2;
 			}
 			else {
 				delquest 12319;
@@ -2588,6 +2691,7 @@ OnKilled:
 				mes "受け取ってくれ。";
 				getitem 6607,1;
 				getitem 6608,1;
+				set OLDGLAST_QUE,2;
 			}
 		}
 		else {
