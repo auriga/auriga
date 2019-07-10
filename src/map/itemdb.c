@@ -600,6 +600,9 @@ static int itemdb_read_itemdb(void)
 			id->upper            = 0;
 			id->zone             = 0;
 
+			// È—ª‚·‚éê‡‚É”õ‚¦‚Ä‚±‚±‚Å‰Šú‰»‚µ‚Ä‚¨‚­
+			id->unequip_script   = NULL;
+
 			// force \0 terminal
 			id->name[47]  = '\0';
 			id->jname[47] = '\0';
@@ -633,6 +636,23 @@ static int itemdb_read_itemdb(void)
 			}
 			script = parse_script(p, filename[i], lines);
 			id->equip_script = (script_is_error(script))? NULL: script;
+
+			np++;
+			if(*np != ',')
+				continue;
+
+			if((p = strchr(np + 1, '{')) == NULL)
+				continue;
+
+			np = parse_script_line_end(p, filename[i], lines);
+			if(!np)
+				continue;
+
+			if(id->unequip_script) {
+				script_free_code(id->unequip_script);
+			}
+			script = parse_script(p, filename[i], lines);
+			id->unequip_script = (script_is_error(script))? NULL: script;
 		}
 		fclose(fp);
 		printf("read %s done (count=%d)\n",filename[i],ln);
@@ -1080,6 +1100,8 @@ static int itemdb_final(void *key,void *data,va_list ap)
 		script_free_code(id->use_script);
 	if(id->equip_script)
 		script_free_code(id->equip_script);
+	if(id->unequip_script)
+		script_free_code(id->unequip_script);
 	aFree(id);
 
 	return 0;

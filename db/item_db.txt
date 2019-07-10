@@ -1,5 +1,5 @@
 //item_db.txt＠Auriga + Auriga db_override + Auriga db_override 2010/10/27 17:53:58 (JST)
-//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript}
+//ID,Name,Jname,Type,Price,Sell,Weight,ATK,DEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript},{UnEquipScript}
 501,Red_Potion,赤ポーション,0,50,,70,,,,,2074075135,2,,,,,,{ itemheal rand(45,65),0; },{}
 502,Orange_Potion,紅ポーション,0,200,,100,,,,,2074075135,2,,,,,,{ itemheal rand(105,145),0; },{}
 503,Yellow_Potion,黄ポーション,0,550,,130,,,,,2074075135,2,,,,,,{ itemheal rand(175,235),0; },{}

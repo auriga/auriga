@@ -7807,6 +7807,18 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				}
 			}
 		}
+		if(sd->inventory_data[n]->unequip_script)
+			run_script(sd->inventory_data[n]->unequip_script,0,sd->bl.id,0);
+		if(!itemdb_isspecial(sd->status.inventory[n].card[0])) {
+			int c;
+			for(i=0; i<4; i++) {
+				if((c = sd->status.inventory[n].card[i]) <= 0)
+					continue;
+
+				if(itemdb_unequipscript(c))
+					run_script(itemdb_unequipscript(c),0,sd->bl.id,0);
+			}
+		}
 		if(sd->status.inventory[n].equip & LOC_RARM) {
 			sd->weapontype1 = WT_FIST;
 			sd->status.weapon = sd->weapontype2;
