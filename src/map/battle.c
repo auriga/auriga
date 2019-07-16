@@ -6419,7 +6419,12 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			break;
 		case SU_SV_STEMSPEAR:	/* マタタビランス */
-			MATK_FIX( 5000, 100 );
+			{
+				const int ele_type[5] = { ELE_GHOST, ELE_WATER, ELE_WIND, ELE_EARTH, ELE_FIRE };
+				if(skill_lv <= 5)
+					ele = ele_type[skill_lv-1];
+				MATK_FIX( 5000, 100 );
+			}
 			break;
 		case SU_CN_METEOR:	/* イヌハッカメテオ */
 			MATK_FIX( 700, 100 );

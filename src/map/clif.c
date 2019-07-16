@@ -16100,24 +16100,24 @@ void clif_msgstringtable(struct map_session_data *sd, int line)
 void clif_questlist(struct map_session_data *sd)
 {
 	int fd, i, len=8;
+	int active=0;
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
 #if PACKETVER < 20141022
 	WFIFOW(fd,0) = 0x2b1;
-	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
 		struct quest_data *qd = &sd->quest[i];
 		if(qd->nameid != 0 && qd->state < 2) {
 			WFIFOL(fd,len)   = qd->nameid;
 			WFIFOB(fd,len+4) = qd->state;
 			len += 5;
+			active++;
 		}
 	}
 #else
 	WFIFOW(fd,0) = 0x97a;
-	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
 		int id, j, n;
 		struct quest_data *qd = &sd->quest[i];
@@ -16141,10 +16141,12 @@ void clif_questlist(struct map_session_data *sd)
 			}
 			WFIFOW(fd,len+13) = n;
 			len += 15+n*32;
+			active++;
 		}
 	}
 #endif
 	WFIFOW(fd,2) = len;
+	WFIFOL(fd,4) = active;
 	WFIFOSET(fd,len);
 
 	return;
@@ -16157,12 +16159,12 @@ void clif_questlist(struct map_session_data *sd)
 void clif_questlist_info(struct map_session_data *sd)
 {
 	int fd, i, j, n, id, len=8;
+	int active=0;
 
 	nullpo_retv(sd);
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x2b2;
-	WFIFOL(fd,4) = sd->questlist;
 	for(i = 0; i < sd->questlist; i++) {
 		struct quest_data *qd = &sd->quest[i];
 		if(qd->nameid != 0 && qd->state < 2) {
@@ -16183,9 +16185,11 @@ void clif_questlist_info(struct map_session_data *sd)
 			}
 			WFIFOW(fd,len+12) = n;
 			len += 104;
+			active++;
 		}
 	}
 	WFIFOW(fd,2) = len;
+	WFIFOL(fd,4) = active;
 	WFIFOSET(fd,len);
 
 	return;
