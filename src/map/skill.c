@@ -10009,8 +10009,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SU_TUNAPARTY:	/* マグロシールド */
 		{
 			int rate;
-			if( dstsd && dstsd->special_state.no_magic_damage )
-				break;
+
 			rate = (int)(skilllv * 10 * (atn_bignumber)status_get_max_hp(bl) / 100);
 			if(sd && pc_checkskill(sd,SU_SPIRITOFSEA) > 0)	// 海の魂
 				rate *= 2;
@@ -10124,9 +10123,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
 					heal = 0;
 			}
-			//if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
-			//	heal = 0;	/* 黄金蟲カード（ヒール量０） */
-
 			battle_heal(NULL,bl,heal,0,0);
 			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skillid,skilllv,0,0,skill_get_time(skillid,skilllv),0);
@@ -10139,20 +10135,19 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SU_TUNABELLY:	/* 大トロ */
-		int heal = (int)(5 + skilllv * 5 + (skilllv>=5? 20: (skilllv==4? 10: 0)) * (atn_bignumber)status_get_max_hp(bl) / 100);
+		{
+			int heal = (int)(5 + skilllv * 5 + (skilllv>=5? 20: (skilllv==4? 10: 0)) * (atn_bignumber)status_get_max_hp(bl) / 100);
 
-		if(sc) {
-			if(sc->data[SC_CRITICALWOUND].timer != -1)
-				heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
-			if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
-				heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
-			if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
-				heal = 0;
+			if(sc) {
+				if(sc->data[SC_CRITICALWOUND].timer != -1)
+					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+				if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
+					heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
+				if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
+					heal = 0;
+			}
+			battle_heal(NULL,bl,heal,0,0);
 		}
-		//if(bl->type == BL_PC && ((struct map_session_data *)bl)->special_state.no_magic_damage)
-		//	heal = 0;	/* 黄金蟲カード（ヒール量０） */
-
-		battle_heal(NULL,bl,heal,0,0);
 		break;
 	case SU_SHRIMPARTY:	/* エビパーティー */
 		if(sd) {
