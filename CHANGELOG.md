@@ -1,4 +1,12 @@
 ----------------------------------------
+//1344 [2019/07/20] by refis
+
+・ピラミッドナイトメア実装
+（map_auriga.conf, mob_db.txt, mob_skill_db.txt, mapflag.sc, npc_monster_mocpryd.sc, npc_quest_pryd_nm.sc）
+
+・次元の狭間 時の通路01にtownフラグを追加（mapflag.sc）
+
+----------------------------------------
 //1343 [2019/07/16] by refis
 
 ・ワープポータルが使用できなくなっていたのを修正（skill_db2.txt）

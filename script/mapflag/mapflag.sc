@@ -135,7 +135,9 @@ cmd_in02.gat	mapflag	nopenalty	dummy
 cmd_in02.gat	mapflag	noicewall	dummy
 comodo.gat	mapflag	town	dummy
 comodo.gat	mapflag	nopenalty	dummy
-dali.gat	mapflag	nomemo		dummy
+dali.gat	mapflag	town	dummy
+dali.gat	mapflag	nopenalty	dummy
+dali.gat	mapflag	nomemo	dummy
 dali.gat	mapflag	noteleport	dummy
 dali.gat	mapflag	nobranch	dummy
 dew_dun01.gat	mapflag	nomemo	dummy
@@ -678,6 +680,8 @@ moc_pryd04.gat	mapflag	nomemo	dummy
 moc_pryd05.gat	mapflag	nomemo	dummy
 moc_pryd06.gat	mapflag	nomemo	dummy
 moc_prydb1.gat	mapflag	nomemo	dummy
+moc_prydn1.gat	mapflag	nomemo	dummy
+moc_prydn2.gat	mapflag	nomemo	dummy
 moc_ruins.gat	mapflag	town	dummy
 moc_ruins.gat	mapflag	nopenalty	dummy
 monk_in.gat	mapflag	nomemo	dummy
