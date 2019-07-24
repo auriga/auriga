@@ -1759,7 +1759,7 @@ AurigaNPCScript
 		sc_start命令
 			sc_start <type>,<tick>,<val1>[,<target>];
 
-			<type>		かけたい状態異常の番号。詳しくはskill.hかcheck_optionの項目を参照してください
+			<type>		かけたい状態異常の番号。詳しくはdb/scdata.txt、skill.hかcheck_optionの項目を参照してください
 			<tick>		状態異常にかかる時間?
 			<val1>		詳細は不明
 			<target>	状態異常にしたい対象を数値で指定します。
@@ -1770,7 +1770,7 @@ AurigaNPCScript
 		sc_start2命令
 			sc_start2 <type>,<tick>,<val1>,<percentage>[,<target>];
 
-			<type>		 かけたい状態異常の番号。詳しくはskill.hかcheck_optionの項目を参照してください
+			<type>		 かけたい状態異常の番号。詳しくはdb/scdata.txt、skill.hかcheck_optionの項目を参照してください
 			<tick>		 状態異常にかかる時間?
 			<val1>		 詳細は不明
 			<percentage> 指定した状態異常になる確率を指定します。
@@ -1782,7 +1782,7 @@ AurigaNPCScript
 		sc_start3命令
 			sc_start3 <type>,<val1>,<val2>,<val3>,<val4>,<tick>,<flag>,[,<target>];
 
-			<type>		かけたい状態異常の番号。詳しくはskill.hかcheck_optionの項目を参照してください
+			<type>		かけたい状態異常の番号。詳しくはdb/scdata.txt、skill.hかcheck_optionの項目を参照してください
 			<val1>		詳細は不明
 			<val2>		詳細は不明
 			<val3>		詳細は不明
@@ -1801,7 +1801,7 @@ AurigaNPCScript
 		sc_starte命令
 			sc_starte <type>,<tick>,<val1>[,<target>];
 
-			<type>		かけたい状態異常の番号。詳しくはskill.hかcheck_optionの項目を参照してください
+			<type>		かけたい状態異常の番号。詳しくはdb/scdata.txt、skill.hかcheck_optionの項目を参照してください
 			<tick>		状態異常にかかる時間?
 			<val1>		詳細は不明
 			<target>	状態異常にしたい対象を数値で指定します。
@@ -1814,7 +1814,7 @@ AurigaNPCScript
 		sc_end命令
 			sc_end <type>[,<target>];
 
-			<type>		解除したい状態異常の番号。詳しくはskill.hかcheck_optionの項目を参照してください
+			<type>		解除したい状態異常の番号。詳しくはdb/scdata.txt、skill.hかcheck_optionの項目を参照してください
 			<target>	状態異常を解除したい対象を数値で指定します。
 					省略した場合は自分自身にかかります。
 
