@@ -4028,8 +4028,10 @@ void clif_spawnpc(struct map_session_data *sd)
 			clif_seteffect_enter(&sd->bl,SI_SUHIDE,9999,sd->sc.data[SC_SUHIDE].val1,0,0);
 		if(pc_checkskill(sd,SU_SPRITEMABLE) > 0)	// ‚É‚á‚ñ°
 			clif_seteffect_enter(&sd->bl,SI_SPRITEMABLE,9999,1,0,0);
+#if PACKETVER >= 20150513
 		if(sd->hatEffect.count)
 			clif_hat_effects(sd,&sd->bl,AREA);
+#endif
 	}
 	if(sd->spiritball.num > 0)
 		clif_spiritball(sd);
@@ -9216,8 +9218,10 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			clif_status_change_id(sd,dstsd->bl.id,SI_SUHIDE,1,9999,dstsd->sc.data[SC_SUHIDE].val1,0,0);
 		if(pc_checkskill(dstsd,SU_SPRITEMABLE) > 0)	// ‚É‚á‚ñ°
 			clif_status_change_id(sd,dstsd->bl.id,SI_SPRITEMABLE,1,9999,1,0,0);
+#if PACKETVER >= 20150513
 		if(dstsd->hatEffect.count)
 			clif_hat_effects(sd,&dstsd->bl,SELF);
+#endif
 	}
 
 	if(dstsd->chatID) {
