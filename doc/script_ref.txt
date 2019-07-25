@@ -2522,6 +2522,17 @@ AurigaNPCScript
 
 			ドレスルームウィンドウを開きます。
 
+		hateffect命令
+			hateffect <value>,<type>;
+
+			value	数値
+			type	数値は0か1、文字列の場合はFALSEまたはTRUE
+
+			hateffectとしてvalueで指定されたエフェクトを表示します。
+			type=0	<value>のエフェクトをエフェクト表示リストから削除します。
+			type=1	<value>のエフェクトをエフェクト表示リストへ追加し表示します。
+			詳しいvalueの種類はconst.txt参照してください。
+
 
 	＊関数
 		rand関数

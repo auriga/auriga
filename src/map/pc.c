@@ -1412,6 +1412,10 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->anti_hacker.drop_delay_tick    = tick;
 	sd->anti_hacker.drop_delay_count   = 0;
 
+#if PACKETVER >= 20150513
+	memset(&sd->hatEffect,0,sizeof(sd->hatEffect));
+#endif
+
 	unit_dataset(&sd->bl);
 
 	// アカウント変数の送信要求

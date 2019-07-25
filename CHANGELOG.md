@@ -1,4 +1,13 @@
 ----------------------------------------
+//1346 [2019/07/25] by refis
+
+・Hat_Effect表示「0xa3b」を追加（clif.*）
+	-> スクリプト命令「hateffect」実装（map.h, pc.c, script.c, status.h, script_ref.txt, const.txt）
+	Thanks Excella さん
+
+・露店開設中に別の露店を開けないよう修正（clif.c）
+
+----------------------------------------
 //1345 [2019/07/20] by refis
 
 ・一部ドラム族スキルをno_magic_damage無効に修正（skill.c）

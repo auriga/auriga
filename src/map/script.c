@@ -4078,6 +4078,7 @@ int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
+int buildin_hateffect(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4395,6 +4396,7 @@ struct script_function buildin_func[] = {
 	{buildin_showdigit,"showdigit","ii"},
 	{buildin_checkre,"checkre",""},
 	{buildin_opendressroom,"opendressroom",""},
+	{buildin_hateffect,"hateffect","ii"},
 	{NULL,NULL,NULL}
 };
 
@@ -13571,5 +13573,62 @@ int buildin_opendressroom(struct script_state *st)
 	nullpo_retr(0, sd);
 
 	clif_dressing_room(sd, 0);
+	return 0;
+}
+
+/*==========================================
+ * Hat_effect
+ *------------------------------------------
+ */
+int buildin_hateffect(struct script_state *st)
+{
+#if PACKETVER >= 20150513
+	struct map_session_data *sd = script_rid2sd(st);
+	bool enable;
+	int i, effectID;
+
+	nullpo_retr(0, sd);
+
+	effectID = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	enable = conv_num(st,& (st->stack->stack_data[st->start+3])) ? true : false;
+
+	if( effectID <= HAT_EF_MIN || effectID >= HAT_EF_MAX ) {
+		printf( "buildin_hateffect: unsupported hat effect id: %d\n", effectID );
+		return 1;
+	}
+
+	for(i = 0; i < sd->hatEffect.count; i++) {
+		if(sd->hatEffect.id[i] == effectID)
+			break;
+	}
+
+	if( enable ) {
+		if( i < sd->hatEffect.count ) {
+			return 0;
+		}
+
+		sd->hatEffect.id[sd->hatEffect.count] = effectID;
+		sd->hatEffect.count++;
+	}
+	else {
+		if( i == sd->hatEffect.count ) {
+			return 0;
+		}
+
+		for( ; i < sd->hatEffect.count - 1; i++ ) {
+			sd->hatEffect.id[i] = sd->hatEffect.id[i+1];
+		}
+
+		sd->hatEffect.count--;
+
+		if( !sd->hatEffect.count )
+			sd->hatEffect.count = 0;
+
+	}
+
+	if( !sd->state.connect_new ) {
+		clif_hat_effect_single( sd, effectID, enable );
+	}
+#endif
 	return 0;
 }

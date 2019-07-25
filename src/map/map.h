@@ -57,6 +57,7 @@
 #define MAX_BONUS_ADDDROP	10	// アイテムボーナスのドロップの容量
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
+#define MAX_HAT_EFFECT 128		//HAT_EFFECTの最大数
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
 #define MAX_WEAPON_LEVEL 4	// 最大武器Lv
@@ -846,6 +847,13 @@ struct map_session_data {
 	short hotkey_set;
 	char hotkey_rotate;
 	int shop_point;
+
+#if PACKETVER >= 20150513
+	struct {
+		int id[MAX_HAT_EFFECT];
+		short count;
+	} hatEffect;
+#endif
 
 	int npc_idle_timer;		// NPCのタイムアウト用
 	unsigned int npc_idle_tick;

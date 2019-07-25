@@ -4028,6 +4028,8 @@ void clif_spawnpc(struct map_session_data *sd)
 			clif_seteffect_enter(&sd->bl,SI_SUHIDE,9999,sd->sc.data[SC_SUHIDE].val1,0,0);
 		if(pc_checkskill(sd,SU_SPRITEMABLE) > 0)	// にゃん魂
 			clif_seteffect_enter(&sd->bl,SI_SPRITEMABLE,9999,1,0,0);
+		if(sd->hatEffect.count)
+			clif_hat_effects(sd,&sd->bl,AREA);
 	}
 	if(sd->spiritball.num > 0)
 		clif_spiritball(sd);
@@ -9214,6 +9216,8 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			clif_status_change_id(sd,dstsd->bl.id,SI_SUHIDE,1,9999,dstsd->sc.data[SC_SUHIDE].val1,0,0);
 		if(pc_checkskill(dstsd,SU_SPRITEMABLE) > 0)	// にゃん魂
 			clif_status_change_id(sd,dstsd->bl.id,SI_SPRITEMABLE,1,9999,1,0,0);
+		if(dstsd->hatEffect.count)
+			clif_hat_effects(sd,&dstsd->bl,SELF);
 	}
 
 	if(dstsd->chatID) {
@@ -17846,6 +17850,70 @@ void clif_dressing_room(struct map_session_data *sd, int view)
 }
 
 /*==========================================
+ * clif_hat_effects複数送信
+ *------------------------------------------
+ */
+void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, enum send_target target)
+{
+#if PACKETVER >= 20150513
+	unsigned char* buf;
+	int len,i;
+	struct map_session_data *tsd;
+	struct block_list* tbl;
+
+	if(target == SELF) {
+		tsd = BL_DOWNCAST(BL_PC,bl);
+		tbl = &sd->bl;
+	}
+	else {
+		tsd = sd;
+		tbl = bl;
+	}
+
+	if( !tsd->hatEffect.count )
+		return;
+
+	len = 9 + tsd->hatEffect.count * 2;
+
+	buf = (unsigned char*)aMalloc( len );
+
+	WBUFW(buf,0) = 0xa3b;
+	WBUFW(buf,2) = len;
+	WBUFL(buf,4) = tsd->bl.id;
+	WBUFB(buf,8) = 1;
+
+	for( i = 0; i < tsd->hatEffect.count; i++ ) {
+		WBUFW(buf,9+i*2) = tsd->hatEffect.id[i];
+	}
+
+	clif_send(buf, len,tbl,target);
+
+	aFree(buf);
+#endif
+}
+
+/*==========================================
+ * clif_hat_effect送信
+ *------------------------------------------
+ */
+void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enable)
+{
+#if PACKETVER >= 20150513
+	unsigned char buf[13];
+
+	WBUFW(buf,0) = 0xa3b;
+	WBUFW(buf,2) = 13;
+	WBUFL(buf,4) = sd->bl.id;
+	WBUFB(buf,8) = enable;
+	WBUFL(buf,9) = effectId;
+
+	clif_send(buf,13,&sd->bl,AREA);
+
+#endif
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -20487,6 +20555,9 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
 {
 	nullpo_retv(sd);
 
+	if(sd->state.store)
+		return;
+
 	vending_vendinglistreq(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 	if(sd->npc_id)
 		npc_event_dequeue(sd);
@@ -20504,6 +20575,9 @@ static void clif_parse_PurchaseReq(int fd,struct map_session_data *sd, int cmd)
 	int account_id = RFIFOL(fd,GETPACKETPOS(cmd,1));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,2));
 
+	if(sd->state.store)
+		return;
+
 	vending_purchasereq(sd, ( len <= 0 ) ? 0 : len/4, account_id, sd->vender_id, data);
 
 	return;
@@ -20519,6 +20593,9 @@ static void clif_parse_PurchaseReq2(int fd,struct map_session_data *sd, int cmd)
 	int account_id =  RFIFOL(fd,GETPACKETPOS(cmd,1));
 	unsigned int vender_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,3));
+
+	if(sd->state.store)
+		return;
 
 	vending_purchasereq(sd, ( len <= 0 ) ? 0 : len/4, account_id, vender_id, data);
 
