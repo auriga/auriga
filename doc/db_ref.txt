@@ -449,7 +449,7 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK:MATK,DEF:MDEF,Range,Slot,Job,Gender,Loc
 ==========================================================================
 10. db/item_db2.txt
 --------------------------------------------------------------------------
-ID,Upper,Zone,Dropable,Sellable,Storageable,GuildStorageable,Cartable,Dalay,Buyingable,Nonconsume
+ID,Upper,Zone,Dropable,Sellable,Storageable,GuildStorageable,Cartable,Dalay,Cooldown,Buyingable,Nonconsume
 
 ID          = アイテムID
 Upper       = 転生による使用・装備制限
@@ -481,6 +481,7 @@ Cartable         = 倉庫からカートに出すのが可能かどうか
                    0 : 可（デフォルト） 1 : 不可
 Delay            = 使用後に指定した時間ディレイを付ける、単位はms
                    ただしどのアイテムも使えなくなるので注意
+Cooldown         = 使用後に指定した時間個別クールタイムを付ける、単位はms
 Buyingable       = 買取露店で買い取り可能かどうか
                    0 : 不可（デフォルト） 1 : 可
 Nonconsume       = 使用時アイテム数を消費しない

@@ -597,6 +597,7 @@ static int itemdb_read_itemdb(void)
 			id->view_id          = 0;
 			id->group            = 0;
 			id->delay            = 0;
+			id->cooldown         = 0;
 			id->upper            = 0;
 			id->zone             = 0;
 
@@ -671,7 +672,7 @@ static int itemdb_read_itemdb(void)
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
-		for(j=0,np=p=line;j<11 && p;j++){
+		for(j=0,np=p=line;j<12 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
@@ -692,8 +693,9 @@ static int itemdb_read_itemdb(void)
 		id->flag.guildstorageable = (atoi(str[6]) == 0)? 0: 1;
 		id->flag.cartable    = (atoi(str[7]) == 0)? 0: 1;
 		id->delay            = atoi(str[8]);
-		id->flag.buyingable  = (atoi(str[9]) == 0)? 0: 1;
-		id->flag.nonconsume  = (atoi(str[10]) == 0)? 0: 1;
+		id->cooldown         = atoi(str[9]);
+		id->flag.buyingable  = (atoi(str[10]) == 0)? 0: 1;
+		id->flag.nonconsume  = (atoi(str[11]) == 0)? 0: 1;
 	}
 	fclose(fp);
 	printf("read %s (count=%d)\n", filename2, ln);

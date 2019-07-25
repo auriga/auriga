@@ -73,6 +73,7 @@ struct item_data {
 	int view_id;
 	int group;
 	int delay;
+	int cooldown;
 	int upper; 	//0:all(7Ç…ã≠êßïœä∑) 1:ì]ê∂ëO 2:ì]ê∂ 4:ó{éq
 	int zone;	//0:êßå¿ñ≥ 1:normal 2:pvp 4:gvg 8:pk 16:turbo 32:noteleport 64:noreturn 128:nobranch
 	int arrow_type;

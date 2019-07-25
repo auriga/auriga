@@ -1399,6 +1399,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 		sd->skillstatictimer[i] = tick;
 		sd->skillcooldown[i] = tick;
 	}
+	memset(&sd->itemcooldown,0,sizeof(sd->itemcooldown));
 
 	sd->state.autoloot = (battle_config.item_auto_get)? 1: 0;
 
@@ -2713,7 +2714,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 {
 	int nameid,amount;
 	struct item_data *item;
-	int flag;
+	int flag,i;
 
 	nullpo_retv(sd);
 
@@ -2731,6 +2732,37 @@ void pc_useitem(struct map_session_data *sd, int n)
 			clif_msgstringtable(sd, 0x6ee);	// アイテムを使用できるレベルに達していません。
 		return;
 	}
+
+	if(item->cooldown > 0) {
+		unsigned int tick = gettick();
+		for(i=0;i<MAX_ITEMCOOLDOWN;i++) {
+			if(sd->itemcooldown[i].nameid == nameid || sd->itemcooldown[i].nameid == 0)
+				break;
+		}
+		if(i == MAX_ITEMCOOLDOWN) {
+			// アイテムクールタイムリストがいっぱい
+			return;
+		}
+		if(sd->itemcooldown[i].nameid == nameid) {
+			int delay = DIFF_TICK(sd->itemcooldown[i].time, tick) / 1000;
+			if(delay > 0) {
+				clif_useitemack(sd,n,0,0);
+				clif_msgstringtable3(sd, 0x746, delay + 1);
+				return;
+			}
+		}
+		else {
+			sd->itemcooldown[i].nameid = nameid;
+		}
+		sd->itemcooldown[i].time = tick + item->cooldown;
+		for(i=0;i<MAX_ITEMCOOLDOWN;i++) {
+			if(sd->itemcooldown[i].nameid != 0 && DIFF_TICK(sd->itemcooldown[i].time, tick) <= 0) {
+				sd->itemcooldown[i].nameid = 0;
+				sd->itemcooldown[i].time = 0;
+			}
+		}
+	}
+
 	sd->use_itemid = nameid;
 	if(sd->status.inventory[n].card[0] == 0x00fe)
 		sd->use_nameditem = *((int *)(&sd->status.inventory[n].card[2]));

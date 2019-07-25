@@ -58,6 +58,7 @@
 #define MAX_BONUS_AUTOSPELL  16		// オートスペルの容量
 #define MAX_ACTIVEITEM  10		// アクティブアイテムの容量
 #define MAX_HAT_EFFECT 128		//HAT_EFFECTの最大数
+#define MAX_ITEMCOOLDOWN 10		//最大アイテムクールリスト数
 #define MAX_DEAL_ITEMS 10
 #define MAX_VENDING 12
 #define MAX_WEAPON_LEVEL 4	// 最大武器Lv
@@ -469,6 +470,11 @@ struct map_session_data {
 
 	unsigned int skillstatictimer[MAX_SKILL_DB];
 	unsigned int skillcooldown[MAX_SKILL_DB];		// クールタイム
+
+	struct {
+		int nameid;
+		unsigned int time;		// アイテム毎のクールタイム
+	} itemcooldown[MAX_ITEMCOOLDOWN];
 
 	struct {
 		short id;
