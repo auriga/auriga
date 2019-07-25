@@ -2714,7 +2714,7 @@ void pc_useitem(struct map_session_data *sd, int n)
 {
 	int nameid,amount;
 	struct item_data *item;
-	int flag,i;
+	int flag;
 
 	nullpo_retv(sd);
 
@@ -2735,32 +2735,39 @@ void pc_useitem(struct map_session_data *sd, int n)
 
 	if(item->cooldown > 0) {
 		unsigned int tick = gettick();
+		int i,j = -1;
 		for(i=0;i<MAX_ITEMCOOLDOWN;i++) {
+			// 同一IDのidxか未使用idxを探す
 			if(sd->itemcooldown[i].nameid == nameid || sd->itemcooldown[i].nameid == 0)
 				break;
+			// 使用済みのうちクールタイム切れがあれば控える
+			if(DIFF_TICK(sd->itemcooldown[i].time, tick) <= 0) {
+				j = i;
+			}
 		}
+		// アイテムクールタイムリストがいっぱい
 		if(i == MAX_ITEMCOOLDOWN) {
-			// アイテムクールタイムリストがいっぱい
-			return;
+			// かつクールタイム切れがない
+			if(j < 0) {
+				clif_useitemack(sd,n,0,0);
+				return;
+			}
+			// クールタイム切れidxに差し替える
+			i = j;
 		}
+		// 同一IDならクールタイムチェック
 		if(sd->itemcooldown[i].nameid == nameid) {
 			int delay = DIFF_TICK(sd->itemcooldown[i].time, tick) / 1000;
 			if(delay > 0) {
 				clif_useitemack(sd,n,0,0);
-				clif_msgstringtable3(sd, 0x746, delay + 1);
+				clif_msgstringtable3(sd, 0x746, delay + 1);	// %d 秒後に使用できます。
 				return;
 			}
 		}
-		else {
+		else {	// 未使用idxかクールタイムidxならnameidを入れ替える
 			sd->itemcooldown[i].nameid = nameid;
 		}
 		sd->itemcooldown[i].time = tick + item->cooldown;
-		for(i=0;i<MAX_ITEMCOOLDOWN;i++) {
-			if(sd->itemcooldown[i].nameid != 0 && DIFF_TICK(sd->itemcooldown[i].time, tick) <= 0) {
-				sd->itemcooldown[i].nameid = 0;
-				sd->itemcooldown[i].time = 0;
-			}
-		}
 	}
 
 	sd->use_itemid = nameid;

@@ -28,6 +28,7 @@
 struct quest_db {
 	int nameid;
 	unsigned int limit;
+	bool limit_type;
 	struct {
 		short id;
 		short count;

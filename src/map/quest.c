@@ -132,8 +132,24 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 
 	memset(&qd, 0, sizeof(struct quest_data));
 	qd.nameid = quest_db[qid].nameid;
-	if(quest_db[qid].limit)
-		qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
+	if(quest_db[qid].limit) {
+		if(quest_db[qid].limit_type == 0)
+			qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
+		else {
+			int time_today;
+			time_t t;
+			struct tm * lt;
+			unsigned char day = quest_db[qid].limit / 86400;
+
+			t = time(NULL);
+			lt = localtime(&t);
+			time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+			if(time_today < (int)((quest_db[qid].limit)%86400))
+				qd.limit = (unsigned int)(time(NULL) + quest_db[qid].limit - time_today);
+			else
+				qd.limit = (unsigned int)(time(NULL) + 86400 + quest_db[qid].limit - time_today);
+		}
+	}
 	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
 		qd.mob[i].id  = quest_db[qid].mob[i].id;
 		qd.mob[i].max = quest_db[qid].mob[i].count;
@@ -399,7 +415,26 @@ static int quest_readdb(void)
 			continue;
 
 		quest_db[i].nameid = atoi(split[0]);
-		quest_db[i].limit  = atoi(split[2]);
+
+		if(strchr(split[2],':') == NULL) {
+			quest_db[i].limit = atoi(split[2]);
+			quest_db[i].limit_type = 0;
+		}
+		else {
+			unsigned char day, hour, min;
+
+			day = atoi(split[2]);
+			split[2] = strchr(split[2],':');
+			*split[2] ++= 0;
+			hour = atoi(split[2]);
+			split[2] = strchr(split[2],':');
+			*split[2] ++= 0;
+			min = atoi(split[2]);
+
+			quest_db[i].limit = day * 86400 + hour * 3600 + min * 60;
+			quest_db[i].limit_type = 1;
+		}
+
 		for(j = 0; j < sizeof(quest_db[0].mob)/sizeof(quest_db[0].mob[0]); j++) {
 			int mob_id = atoi(split[3+j*2]);
 			quest_db[i].mob[j].id    = (short)mob_id;

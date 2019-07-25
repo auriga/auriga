@@ -39,6 +39,7 @@ memorial_db.txt       メモリアルダンジョンのデータを設定
 item_cardtype.txt     カードの種類を設定
 mob_talk_db.txt       モンスターの発言内容を設定
 elem_db.txt           精霊のデータを設定
+quest_db.txt          クエストのデータを設定
 item_randopt_db.lua   ランダムオプションのリストデータを設定
 
 
@@ -1190,7 +1191,35 @@ elem_script: (未実装)
 
 
 ==========================================================================
-31. db/item_randopt_db.lua
+31. db/quest_db.txt
+--------------------------------------------------------------------------
+QuestID,Title,Limit,Target1ID,Target1Num,Target2ID,Target2Num,Target3ID,Target3Num,Drop1MobID,Drop1ItemID,Drop1Rate,Drop2MobID,Drop2ItemID,Drop2Rate,Drop3MobID,Drop3ItemID,Drop3Rate
+
+QuestID     : クエストのID
+Title       : クエスト名称
+Limit       : クエストの制限時間
+              整数値の場合、秒
+              DD:HH:MM形式の場合、DD回目のHH時MM分
+              00:05:00なら1回目のAM5:00、02:05:00なら3回目のAM5:00
+Target1ID   : キルカウント対象のMobID
+Target1Num  : キルカウント対象の討伐数
+Target2ID   : 同上
+Target2Num  : 同上
+Target3ID   : 同上
+Target3Num  : 同上
+Drop1MobID  : キルドロップ対象のMobID
+Drop1ItemID : キルドロップするItemID
+Drop1Rate   : キルドロップ確率(万分率)
+Drop2MobID  : 同上
+Drop2ItemID : 同上
+Drop2Rate   : 同上
+Drop3MobID  : 同上
+Drop3ItemID : 同上
+Drop3Rate   : 同上
+
+
+==========================================================================
+32. db/item_randopt_db.lua
 --------------------------------------------------------------------------
 ID,MOB_ID,{Slot,OptID,{OptVal_min,OptVal_max},Rate}
 
