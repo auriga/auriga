@@ -9257,6 +9257,8 @@ int battle_config_read(const char *cfgName)
 		{ "esnv_max_aspd",                      &battle_config.esnv_max_aspd,                      140      },
 		{ "ko_status_max",                      &battle_config.ko_status_max,                      120      },
 		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
+		{ "sum_status_max",                     &battle_config.sum_status_max,                     125      },
+		{ "sum_max_aspd",                       &battle_config.sum_max_aspd,                       140      },
 		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },
 		{ "elem_attackskill_rate",              &battle_config.elem_attackskill_rate,              500      },
 		{ "slave_inherit_mode",                 &battle_config.slave_inherit_mode,                 2        },
