@@ -1024,94 +1024,33 @@ yuno_in02.gat,172,61,0		warp	yunowarp1062		1,1,yuno.gat,90,318
 yuno_in02.gat,82,14,0		warp	yunowarp1063		1,1,yuno_in05.gat,192,194
 yuno_in05.gat,196,194,0		warp	yunowarp1064		1,1,yuno_in02.gat,85,14
 // Yuno In05 (Entering Random Warps) -------------------------------------------
-yuno_in05.gat,153,141,0		script	#yunowarp1065	45,1,1,{
-	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
-	}
-}
-// Yuno In05 (Random Warps - Cross Shaped) -------------------------------------
-yuno_in05.gat,196,102,0		script	#yunowarp1066	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",169,102; end;
-		case 1:	warp "yuno_in05.gat",128,82;  end;
-		case 2:	warp "yuno_in05.gat",156,141; end;
-	}
-}
-yuno_in05.gat,181,116,0		script	#yunowarp1067	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
-	}
-}
-yuno_in05.gat,165,102,0		script	#yunowarp1068	45,1,1,{
-	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
-	}
-}
-yuno_in05.gat,181,91,0		script	#yunowarp1069	45,1,1,{
-	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",176,48;  end;
-	}
-}
+yuno_in05.gat,153,142,0		warp	yunowarp1065		1,1,yuno_in05.gat,192,103
+yuno_in05.gat,196,103,0		warp	yunowarp1066		1,1,yuno_in05.gat,156,142
+// Yuno In05 (Random Warps - Cross-Shaped) -------------------------------------------
+yuno_in05.gat,181,116,0		warp	yunowarp1067		1,1,yuno_in05.gat,177,12
+yuno_in05.gat,165,103,0		warp	yunowarp1068		1,1,yuno_in05.gat,145,83
+yuno_in05.gat,181,91,0		warp	yunowarp1069		1,1,yuno_in05.gat,177,49
 // Yuno In05 (Random Warps - T-Shaped) -----------------------------------------
-yuno_in05.gat,148,82,0		script	#yunowarp1070	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",169,102; end;
-		case 1:	warp "yuno_in05.gat",128,82;  end;
-		case 2:	warp "yuno_in05.gat",156,141; end;
-	}
-}
-yuno_in05.gat,125,82,0		script	#yunowarp1071	45,1,1,{
-	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",192,102; end;
-		case 1:	warp "yuno_in05.gat",145,82;  end;
-	}
-}
-yuno_in05.gat,136,71,0		script	#yunowarp1072	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",16,185;  end;
-		case 2:	warp "yuno_in05.gat",176,48;  end;
-	}
-}
+yuno_in05.gat,148,83,0		warp	yunowarp1070		1,1,yuno_in05.gat,168,103
+yuno_in05.gat,125,83,0		warp	yunowarp1071		1,1,yuno_in05.gat,192,103
+yuno_in05.gat,137,71,0		warp	yunowarp1072		1,1,yuno_in05.gat,15,185
 // Yuno In05 (Random Warps - Other) --------------------------------------------
-yuno_in05.gat,16,188,0		script	#yunowarp1073	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
-	}
-}
-yuno_in05.gat,176,9,0		script	#yunowarp1074	45,1,1,{
-	switch(rand(2)) {
-		case 0:	warp "yuno_in05.gat",181,112; end;
-		case 1:	warp "yuno_in05.gat",176,48;  end;
-	}
-}
-yuno_in05.gat,176,52,0		script	#yunowarp1075	45,1,1,{
-	switch(rand(3)) {
-		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
-	}
-}
+yuno_in05.gat,16,188,0		warp	yunowarp1073		1,1,yuno_in05.gat,137,74
+yuno_in05.gat,177,9,0		warp	yunowarp1074		1,1,yuno_in05.gat,181,113
+yuno_in05.gat,177,52,0		warp	yunowarp1075		1,1,yuno_in05.gat,181,94
 // Yuno In05 (Destination - Room) ----------------------------------------------
 yuno_in05.gat,40,178,0		script	#yunowarp1076	45,1,1,{
 	switch(rand(3)) {
 		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 1:	warp "yuno_in05.gat",177,12; end;
+		case 2:	warp "yuno_in05.gat",137,74; end;
 	}
 }
 yuno_in05.gat,47,186,0		script	#yunowarp1077	45,1,1,{
 	switch(rand(3)) {
 		case 0:	warp "yuno_in05.gat",181,94; end;
-		case 1:	warp "yuno_in05.gat",176,13; end;
-		case 2:	warp "yuno_in05.gat",136,75; end;
+		case 1:	warp "yuno_in05.gat",177,12; end;
+		case 2:	warp "yuno_in05.gat",137,74; end;
 	}
 }
 // Yuno In05 (Destination - Escaped Random Warps) ------------------------------
@@ -1329,7 +1268,7 @@ nif_in.gat,140,171,0		warp	niflheimwarp1020	1,1,nif_in.gat,65,170
 // valkyrie.gat		ヴァルキリー神殿
 //==============================================================
 valkyrie.gat,49,67,0	warp	valkyriewarp6001	1,1,valkyrie.gat,49,75
-valkyrie.gat,49,72,0	warp	valkyriewarp6001	1,1,valkyrie.gat,49,63
+valkyrie.gat,49,72,0	warp	valkyriewarp6002	1,1,valkyrie.gat,49,63
 
 
 

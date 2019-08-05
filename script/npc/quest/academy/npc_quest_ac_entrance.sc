@@ -3,6 +3,7 @@
 //------------------------------------------------------------
 // Ragnarok Online -- 冒険者アカデミー  受付・講習室
 //                                                  by Pneuma
+// 1.1 since 2019 Updata, Add マスター・スヌス by refis
 //------------------------------------------------------------
 
 // 受付員
@@ -193,22 +194,22 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 			if(checkitemblank()) getitem 2112, 1;
 			if(checkitemblank()) getitem 5055, 1;
 		}
+		if(!getskilllv(142)){	// 初回会話時のみに変更？
+			next;
+			cutin "jp_quest_help01.bmp", 255;
+			mes "[エーラ]";
+			mes "あら？　まだスキル「^0000FF応急手当^000000」を";
+			mes "覚えていないようですね。";
+			mes "せっかくなので、";
+			mes "スキル「^0000FF応急手当^000000」も教えますね。";
+			mes "これは怪我をしている時に";
+			mes "かなり役立つスキルですよ。";
+			next;
+			skill 142,1,0;
+			mes "^4d4dff- スキル「応急手当」を修得した。 - ^000000";
+		}
 	}
-	if(!getskilllv(142)){
-		next;
-		cutin "jp_quest_help01.bmp", 255;
-		mes "[エーラ]";
-		mes "あら？　まだスキル「^0000FF応急手当^000000」を";
-		mes "覚えていないようですね。";
-		mes "せっかくなので、";
-		mes "スキル「^0000FF応急手当^000000」も教えますね。";
-		mes "これは怪我をしている時に";
-		mes "かなり役立つスキルですよ。";
-		next;
-		skill 142,1,0;
-		mes "^4d4dff- スキル「応急手当」を修得した。 - ^000000";
-	}
-	if(!checkquest(100056) && !checkquest(201036)){
+	if(!checkquest(100056) && !checkquest(201036) && !checkquest(201815)){
 		next;
 		cutin "jp_quest_help01.bmp", 255;
 		mes "[エーラ]";
@@ -219,24 +220,25 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 		mes "無料で配布しているんです。";
 		next;
 		mes "[エーラ]";
-		mes "こちらのアイテムは";
+		mes "1つ目のアイテムは";
 		mes "^4d4dff分厚い戦闘教範^000000と言って、";
 		mes "使用すると、1時間の間、";
 		mes "獲得経験値が 50%増加する";
 		mes "アイテムなんです！";
 		next;
 		mes "[エーラ]";
-		mes "駆け出しのノービスの内なら、";
-		mes "1度だけ10個セットで";
-		mes "配布しているんですよ。";
+		mes "2つ目のアイテムは";
+		mes "^4d4dffレベルアップボックス^000000と言って、";
+		mes "一定のレベルに達すると開封できるボックスで";
+		mes "開封すると様々なアイテムが";
+		mes "入手できるんです！";
 		next;
 		getcombathan;
 	}
-	if(checkquest(100056) && !checkquest(201036)){
-		next;
-		cutin "jp_quest_help01.bmp", 255;
+	if(checkquest(100056) && !checkquest(201036) && !checkquest(201815)){
 		mes "[エーラ]";
-		mes "それでは、^4d4dff分厚い戦闘教範^000000を";
+		mes "それでは、^4d4dff分厚い戦闘教範^000000と";
+		mes "^4d4dffレベルアップボックス^000000を";
 		mes "渡しますね。";
 		next;
 		getcombathan;
@@ -266,7 +268,23 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 	close;
 
 	function	getcombathan	{
-		if(!checkweight(12312, 10)){
+		if(MaxWeight - Weight < 2000){
+			mes "[エーラ]";
+			mes "あら？";
+			mes "渡そうと思ったら、荷物が重過ぎて、";
+			mes "持てないみたいですね。";
+			mes "荷物を減らしてくださいね。";
+			next;
+			mes "‐所持アイテムの重量が多いため";
+			mes "アイテムを受けとることができません‐";
+			mes "‐所持アイテムを減らしてから、再度";
+			mes "話しかけてください‐";
+			close2;
+			if(!checkquest(100056)) setquest 100056;
+			cutin "jp_quest_help01.bmp", 255;
+			end;
+		}
+		if(checkitemblank() < 3){
 			mes "[エーラ]";
 			mes "あら？";
 			mes "渡そうと思ったら、";
@@ -278,7 +296,7 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 			mes "‐所持アイテムを減らしてから、再度";
 			mes "話しかけてください‐";
 			close2;
-			setquest 100056;
+			if(!checkquest(100056)) setquest 100056;
 			cutin "jp_quest_help01.bmp", 255;
 			end;
 		}
@@ -286,9 +304,48 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 		mes "[エーラ]";
 		mes "これを使って、";
 		mes "立派な冒険者を目指してください！";
+		getitem 25023, 1;
 		getitem 12312, 10;
+		getitem2 22954,1,1,0,0,0,0,0,0,1209600;
 		delquest 100056;
-		setquest 201036;
+		//setquest 201036;	// 古いクエスト
+		setquest 201815;
+		next;
+		mes "[エーラ]";
+		mes "ボックスの中から様々なアイテムが";
+		mes "入手できるんですけど、";
+		mes "最初にもらえるボックスには";
+		mes "「防具交換チケット」というアイテムが";
+		mes "入っています。";
+		next;
+		mes "[エーラ]";
+		mes "チケットはレベルに応じて色々なアイテムと";
+		mes "交換できるのですが、";
+		mes "そのアイテム交換をしてくれるのが";
+		mes "すぐそこにいる";
+		mes "^FF0000「マスター・スヌスさん」^000000です！";
+		next;
+		mes "[エーラ]";
+		mes "ボックスからチケットを手に入れたら";
+		mes "必ず「マスター・スヌスさん」のところへ";
+		mes "きてください！";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　^FF0000「レベルアップボックス」は";
+		mes "　受け取ってから約2週間で";
+		mes "　自動的に消滅します。";
+		mes "　「レベルアップボックス」の";
+		mes "　再配布は行っておりませんので";
+		mes "　期限内の開封をお願いします。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　^FF0000また、忍者、ガンスリンガー、";
+		mes "　スーパーノービス、";
+		mes "　テコンキッドに転職した場合、";
+		mes "　転職時に「レベルアップボックス」";
+		mes "　及び、「武器交換チケット」、";
+		mes "　「防具交換チケット」は";
+		mes "　回収させて頂きます。";
 		return;
 	}
 }
@@ -427,8 +484,14 @@ ac_cl_room.gat,30,46,6	script	プロン#ac_room	750,{
 		if(AC_NOVICE_QUE < 1){
 			if(BaseLevel<2 || JobLevel<2){
 				mes "お祝いをしよう！";
-				if (BaseLevel<2) getexp 10,0;
-				if (JobLevel<2) getexp 0,31;
+				if(checkre()) {
+					if (BaseLevel<2) getexp 2,0;
+					if (JobLevel<2) getexp 0,8;
+				}
+				else {
+					if (BaseLevel<2) getexp 10,0;
+					if (JobLevel<2) getexp 0,31;
+				}
 			}
 			set AC_NOVICE_QUE,1;
 		}
@@ -441,8 +504,14 @@ ac_cl_room.gat,30,46,6	script	プロン#ac_room	750,{
 		if (AC_NOVICE_QUE < 2){
 			if(BaseLevel<3 || JobLevel<3){
 				mes "お祝いをしよう！";
-				if (BaseLevel<3) getexp 17,0;
-				if (JobLevel<3) getexp 0,44;
+				if(checkre()) {
+					if (BaseLevel<3) getexp 4,0;
+					if (JobLevel<3) getexp 0,10;
+				}
+				else {
+					if (BaseLevel<3) getexp 17,0;
+					if (JobLevel<3) getexp 0,44;
+				}
 			}
 			set AC_NOVICE_QUE,2;
 		}
@@ -459,10 +528,18 @@ ac_cl_room.gat,30,46,6	script	プロン#ac_room	750,{
 		if(AC_NOVICE_QUE < 3){
 			if(BaseLevel<5 || JobLevel<5){
 				mes "お祝いをしよう！";
-				if (BaseLevel<4) getexp 26,0;
-				if (JobLevel<4) getexp 0,59;
-				if (BaseLevel<5) getexp 37,0;
-				if (JobLevel<5) getexp 0,77;
+				if(checkre()) {
+					if (BaseLevel<4) getexp 5,0;
+					if (JobLevel<4) getexp 0,12;
+					if (BaseLevel<5) getexp 9,0;
+					if (JobLevel<5) getexp 0,16;
+				}
+				else {
+					if (BaseLevel<4) getexp 26,0;
+					if (JobLevel<4) getexp 0,59;
+					if (BaseLevel<5) getexp 37,0;
+					if (JobLevel<5) getexp 0,77;
+				}
 			}
 			set AC_NOVICE_QUE,3;
 		}
@@ -2568,8 +2645,14 @@ ac_cl_room.gat,57,46,2	script	アルディ#ac_room	751,{
 				next;
 			}
 			next;
-			if (BaseLevel<6) getexp 79,0;
-			if (JobLevel<6) getexp 0,117;
+			if(checkre()) {
+				if (BaseLevel<6) getexp 12,0;
+				if (JobLevel<6) getexp 0,24;
+			}
+			else {
+				if (BaseLevel<6) getexp 79,0;
+				if (JobLevel<6) getexp 0,117;
+			}
 			set AC_NOVICE_QUE, 11;
 		case 11:
 			mes "[アルディ]";
@@ -2577,8 +2660,14 @@ ac_cl_room.gat,57,46,2	script	アルディ#ac_room	751,{
 			mes "少し話しておこう。";
 			next;
 			ABOUT_WORLDMAP;
-			if (BaseLevel<7) getexp 113,0;
-			if (JobLevel<7) getexp 0,181;
+			if(checkre()) {
+				if (BaseLevel<7) getexp 15,0;
+				if (JobLevel<7) getexp 0,38;
+			}
+			else {
+				if (BaseLevel<7) getexp 113,0;
+				if (JobLevel<7) getexp 0,181;
+			}
 			set AC_NOVICE_QUE, 12;
 		case 12:
 			mes "[アルディ]";
@@ -2587,8 +2676,14 @@ ac_cl_room.gat,57,46,2	script	アルディ#ac_room	751,{
 			mes "立派な冒険者になることを";
 			mes "期待しているぞ！";
 			next;
-			if (BaseLevel<8) getexp 154,0;
-			if (JobLevel<8) getexp 0,221;
+			if(checkre()) {
+				if (BaseLevel<8) getexp 18,0;
+				if (JobLevel<8) getexp 0,46;
+			}
+			else {
+				if (BaseLevel<8) getexp 154,0;
+				if (JobLevel<8) getexp 0,221;
+			}
 			set AC_NOVICE_QUE, 13;
 		case 13:
 		case 14:
@@ -3398,10 +3493,18 @@ ac_cl_room.gat,44,65,4	script	フェイ#ac_room	828,6,6,{
 		if(AC_NOVICE_QUE<21){
 			if (JobLevel<10 || BaseLevel<10) {
 				mes "お祝いをしよう！";
-				if (BaseLevel<9) getexp 201,0;
-				if (JobLevel<9) getexp 0,273;
-				if (BaseLevel<10) getexp 253,0;
-				if (JobLevel<10) getexp 0,680;
+				if(checkre()) {
+					if (BaseLevel<9) getexp 21,0;
+					if (JobLevel<9) getexp 0,56;
+					//if (BaseLevel<10) getexp 253,0;
+					if (JobLevel<10) getexp 0,60;
+				}
+				else {
+					if (BaseLevel<9) getexp 201,0;
+					if (JobLevel<9) getexp 0,273;
+					if (BaseLevel<10) getexp 253,0;
+					if (JobLevel<10) getexp 0,680;
+				}
 			}
 			set AC_NOVICE_QUE, 21;
 		}
@@ -4710,3 +4813,821 @@ ac_library.gat,107,108,0	duplicate(操作ノート#func)	操作ノート#_2	111
 ac_cl_room.gat,45,62,4	duplicate(操作ノート#func)	操作ノート#3	111
 ac_cl_room.gat,33,47,4	duplicate(操作ノート#func)	操作ノート#4	111
 ac_cl_room.gat,55,44,4	duplicate(操作ノート#func)	操作ノート#4_1	111
+
+ac_cl_room.gat,37,32,4	script	マスター・スヌス	51,{
+	function GetBeginnerEquip;
+	if(AC_PASSPORT<2){
+		mes "[マスター・スヌス]";
+		mes "ん？君はまだアカデミーでの";
+		mes "入学手続きが";
+		mes "完了していないようだね。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "まずは、^FF0000「エーラさん」^000000の";
+		mes "ところで入学手続きを";
+		mes "すませるんだ。";
+		close;
+	}
+	mes "[マスター・スヌス]";
+	// 挨拶分岐未調査
+	if(gettime(3) >= 5 && gettime(3) <= 10)
+		mes "やぁ、おはよう。";
+	else if(gettime(3) >= 11 && gettime(3) <= 17)
+		mes "やぁ、こんにちは。";
+	else
+		mes "やぁ、こんばんは。";
+	next;
+	if(Upper == UPPER_HIGH || getbaseclass(Class) > CLASS_DC || Job >= Job_RuneKnight) {
+		mes "[マスター・スヌス]";
+		mes "冒険者として十分に";
+		mes "成長している君には";
+		mes "僕の導きは必要ないだろう。";
+		mes "人生とは孤独なものさ……";
+		mes "孤独だからこそ、仲間と共に歩む事が";
+		mes "なにより素晴らしいのさ！";
+		next;
+		mes "[マスター・スヌス]";
+		mes "ギルドに入るのもいいだろう。";
+		mes "見ず知らずの相手とひと時";
+		mes "共に歩むのもいいだろう……";
+		next;
+		mes "[マスター・スヌス]";
+		mes "これからの君の道が";
+		mes "素晴らしい物になる事を";
+		mes "願っているよ。";
+		close;
+	}
+	if(AC_PASSPORT == 2) {
+		mes "[マスター・スヌス]";
+		mes "初めまして。";
+		mes "僕の名はスヌス………";
+		mes "マスター・スヌスと呼んでくれ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "まずは……君の為に";
+		mes "^0000FF初心者用ポーション^000000を用意したんだ。";
+		mes "量は少ないが、君の助けになれば";
+		mes "と思ってね。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "HPが減って危なくなったら";
+		mes "これを使って回復するんだ。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　^FF0000マスター・スヌスから";
+		mes "　提供される初心者用ポーション";
+		mes "　の提供期間は";
+		mes "　2週間となります‐";
+		//setquest 117475;
+		//compquest 117475;
+		setquest 117480;
+		set AC_PASSPORT,3;
+		next;
+	}
+	if(checkquest(117480)) {
+		if(checkquest(117480)&2) {
+			mes "‐インフォメーション‐";
+			mes "　初心者用ポーション提供開始から";
+			mes "　2週間経過したので、";
+			mes "　初心者用ポーションの配布は";
+			mes "　終了となります‐";
+			delquest 117480;
+			delquest 117470;
+			next;
+		}
+		else {
+			if(!checkquest(117470) || checkquest(117470)&2) {
+				if(MaxWeight - Weight < 1000) {
+					mes "[マスター・スヌス]";
+					mes "……ちょっと荷物が";
+					mes "重すぎるみたいだね。";
+					mes "荷物を整理して、^FF0000所持重量を";
+					mes "^FF0000減らして^000000おいで。";
+					mes "改めて初心者用ポーションを";
+					mes "渡してあげるよ。";
+				}
+				else if(checkitemblank() < 3) {
+					mes "[マスター・スヌス]";
+					mes "……ちょっと荷物が";
+					mes "多すぎるみたいだね。";
+					mes "荷物を整理して、^FF0000所持種類数を";
+					mes "^FF0000減らして^000000おいで。";
+					mes "改めて初心者用ポーションを";
+					mes "渡してあげるよ。";
+				}
+				else {
+					setquest 117470;
+					// 個数分岐未調査
+					if(BaseLevel < 30)
+						getitem 569, 100;
+					else if(BaseLevel < 60)
+						getitem 569, 300;
+					else if(BaseLevel < 80)
+						getitem 569, 500;
+					else
+						getitem 569, 1000;
+					mes "[マスター・スヌス]";
+					mes "少し時間はかかるけど";
+					mes "また用意しておくよ。";
+					mes "いつ頃渡せるかは、";
+					mes "クエストウィンドウを確認";
+					mes "しておくれ。";
+				}
+			}
+			else {
+				mes "[マスター・スヌス]";
+				mes "初心者用ポーションはまだ";
+				mes "準備中なんだ。";
+				mes "いつ頃渡せるかは、";
+				mes "クエストウィンドウを確認";
+				mes "しておくれ。";
+			}
+			next;
+		}
+	}
+	else {
+		mes "[マスター・スヌス]";
+		mes "冒険は順調かい？";
+		next;
+	}
+	mes "[マスター・スヌス]";
+	mes "さて、それじゃあ……";
+	next;
+	if(select("アイテム交換","立ち去る") == 2) {
+		mes "[マスター・スヌス]";
+		mes "そうかい？";
+		mes "また来るといい。";
+		close;
+	}
+	mes "[マスター・スヌス]";
+	mes "アイテム交換だね。";
+	mes "君が交換できるのは……";
+	next;
+	if(AC_BEGINNER_EQUIP == 12) {
+		mes "[マスター・スヌス]";
+		mes "チケットがないようだから、";
+		mes "君にあげられるものは";
+		mes "なさそうだね……";
+		next;
+		mes "[マスター・スヌス]";
+		mes "それだけの実力があって";
+		mes "JobLvが50に達しているのなら";
+		mes "君は次のステージに進む";
+		mes "時が来たんだろうね。";
+		next;
+		if(countitem(25020) == 0) {
+			mes "[マスター・スヌス]";
+			mes "そういえば、君は";
+			mes "「卒業証書」は";
+			mes "持っていないようだね。";
+			mes "未開封のレベルアップ";
+			mes "ボックスがあるなら";
+			mes "開けておくといいよ。";
+			next;
+			mes "[マスター・スヌス]";
+			mes "さて、君さえよければ";
+			mes "「メテウスシルプ」という";
+			mes "人物のところへ案内しよう。";
+			mes "そこで「転生」の手続きに";
+			mes "進むことが可能となる。";
+			next;
+			mes "[マスター・スヌス]";
+			mes "手続きを行うには";
+			mes "^FF00001,285,000Zeny^000000が必要と";
+			mes "なるので、注意しておくれ。";
+		}
+		else {
+			mes "[マスター・スヌス]";
+			mes "君さえよければ";
+			mes "「メテウスシルプ」という";
+			mes "人物のところへ案内しよう。";
+			next;
+			mes "[マスター・スヌス]";
+			mes "そこで「卒業証書」を";
+			mes "渡せば無料で「転生」の";
+			mes "手続きに進むことが";
+			mes "可能となる。";
+			next;
+			mes "[マスター・スヌス]";
+			mes "「卒業証書」をなくして";
+			mes "しまうと「転生」の手続きに";
+			mes "^FF00001,285,000Zeny^000000が必要と";
+			mes "なるので、注意しておくれ。";
+		}
+		next;
+		mes "[マスター・スヌス]";
+		mes "それじゃ、";
+		mes "「メテウスシルプ」へいくかい？";
+		next;
+		if(select("はい","また今度にする") == 2) {
+			mes "[マスター・スヌス]";
+			mes "そうかい？";
+			mes "また来るといい。";
+			close;
+		}
+		mes "[マスター・スヌス]";
+		mes "いままで教えたことを";
+		mes "忘れずにこれからも";
+		mes "冒険を頑張ってほしい！";
+		close2;
+		warp "yuno_in02.gat",90,162;
+		end;
+	}
+	if(countitem(25018) < 1 && countitem(25019) < 1) {
+		mes "[マスター・スヌス]";
+		mes "チケットを持っていない";
+		mes "みたいだね。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "レベルを上げて";
+		mes "レベルアップボックスを";
+		mes "開けたら、チケットが";
+		mes "手に入るんだ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "頑張ってね！";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　^FF0000アイテム交換は";
+		mes "　忍者、テコンキッド、";
+		mes "　ソウルリンカー、拳聖、";
+		mes "　ガンスリンガー、";
+		mes "　スーパーノービスを除く";
+		mes "　未転生職業のみの権利です。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　また、転生後の職業での";
+		mes "　交換は受け付けていませんので";
+		mes "　ご注意ください。";
+		close;
+	}
+	if(Job == Job_Novice) {
+		mes "[マスター・スヌス]";
+		mes "チケットは持っているけれど……";
+		mes "まずはテコンキッドを除く";
+		mes "いずれかの一次職に";
+		mes "転職してから……だね。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "転職したら、またおいで。";
+		mes "その時改めて、チケットとアイテムを";
+		mes "交換してあげよう。";
+		close;
+	}
+	switch(AC_BEGINNER_EQUIP) {
+	case 0:
+		if(countitem(25019) == 0) close;
+
+		mes "[マスター・スヌス]";
+		mes "[衣装] ビギナー帽";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,1;
+		delitem 25019, 1;
+		getitem 20307, 1;
+		mes "[マスター・スヌス]";
+		mes "[衣装] ビギナー帽は";
+		mes "冒険をはじめてまもない";
+		mes "冒険者に贈っている";
+		mes "装備アイテムであり";
+		mes "冒険者ビギナーの証でもある。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "この帽子は、";
+		mes "装備しているだけで";
+		mes "様々なステータスを";
+		mes "強化してくれる。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "また、これを装備していれば";
+		mes "他の熟練した冒険者が";
+		mes "手を貸してくれることも";
+		mes "あるだろうから、きちんと";
+		mes "身に着けておいてくれ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "それと…";
+		mes "[衣装] ビギナー帽を";
+		mes "装備した状態で";
+		mes "スキル「応急手当」を";
+		mes "使えば、僕の所に";
+		mes "戻ってくることが出来るんだ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "何かあれば使うといい。";
+		mes "僕はいつでも此処に";
+		mes "居るからね。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　^FF0000習得しているスキルを確認、";
+		mes "　使用する場合は";
+		mes "　基本情報画面の「Skill」を押すか";
+		mes "　「Alt + S」でスキルウィンドウを";
+		mes "　呼び出すことができます。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　[[衣装] ビギナー帽]は、";
+		mes "　次の職業への転職の際に";
+		mes "　回収をさせて頂きます。";
+		mes "　忍者、ガンスリンガー";
+		mes "　テコンキッド";
+		mes "　スーパーノービス。";
+		next;
+		mes "‐インフォメーション‐";
+		mes "　それ以外の職業は";
+		mes "　「転生」又は";
+		mes "　「3次職転職」の際に";
+		mes "　回収させて頂きます。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "ところで、この部屋にいる人達から";
+		mes "講習は全部受けたかい？";
+		mes "もし受けてないようであれば";
+		mes "きちんと受けておくんだよ。";
+		next;
+		break;
+	case 1:
+		if(countitem(25018) == 0) close;
+
+		GetBeginnerEquip;
+		break;
+	case 2:
+		if(countitem(25019) == 0) close;
+
+		mes "[マスター・スヌス]";
+		mes "フード[0]";
+		mes "サンダル[0]";
+		mes "ガード[0]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,3;
+		delitem 25019, 1;
+		getitem 2501, 1;
+		getitem 2401, 1;
+		getitem 2101, 1;
+		mes "[マスター・スヌス]";
+		mes "いま渡した防具は";
+		mes "装備することで少しなりとも";
+		mes "モンスターからの";
+		mes "ダメージを軽減して";
+		mes "くれるものだから、";
+		next;
+		mes "[マスター・スヌス]";
+		mes "忘れずに装備する";
+		mes "ようにしてくれ。";
+		if(checkre()) {
+			mes "ただし、盾である";
+			mes "「ガード」は攻撃速度が";
+			mes "遅くなるデメリットも";
+			mes "あるから注意してくれ。";
+		}
+		next;
+		mes "[マスター・スヌス]";
+		mes "まずは試しに装備してみて";
+		mes "使い勝手が悪いようであれば";
+		mes "無理に装備する必要はないぞ。";
+		next;
+		break;
+	case 3:
+		if(countitem(25018) == 0) close;
+
+		GetBeginnerEquip;
+		mes "[マスター・スヌス]";
+		mes "今回渡した武器は";
+		mes "以前渡したものよりは";
+		mes "攻撃力が強化された武器だ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "いま所持している武器より";
+		mes "攻撃力が高いようであれば";
+		mes "是非使ってみてほしい。";
+		next;
+		break;
+	case 4:
+		if(countitem(25019) == 0) close;
+
+		while(1) {
+			mes "[マスター・スヌス]";
+			mes "そうだね……";
+			mes "どれが欲しいか、選んでご覧。";
+			next;
+			switch(select("モルフェウスセット","ヘルモードセット①","ヘルモードセット②")) {
+			case 1:
+				mes "[マスター・スヌス]";
+				mes "アコライト、マジシャン系の";
+				mes "後衛にお勧めの防具だね。";
+				setarray '@itemid,5126,2518,2648,2649;
+				break;
+			case 2:
+				mes "[マスター・スヌス]";
+				mes "前衛にお勧めの防具だね。";
+				mes "HPやSPが増加したり";
+				mes "モンスターから受けるダメージを";
+				mes "軽減する効果をもっているぞ。";
+				setarray '@itemid,5123,2353,2517,2418;
+				break;
+			case 3:
+				mes "[マスター・スヌス]";
+				mes "前衛にお勧めの防具だね。";
+				mes "装備することで回避力や";
+				mes "回復アイテムの回復効果を";
+				mes "強化する効果をもっているぞ。";
+				setarray '@itemid,5123,2353,2516,2417;
+				break;
+			}
+			next;
+			mes "[マスター・スヌス]";
+			mes getitemname('@itemid[0])+ "[" +getiteminfo('@itemid[0],10)+ "]";
+			mes getitemname('@itemid[1])+ "[" +getiteminfo('@itemid[1],10)+ "]";
+			mes getitemname('@itemid[2])+ "[" +getiteminfo('@itemid[2],10)+ "]";
+			mes getitemname('@itemid[3])+ "[" +getiteminfo('@itemid[3],10)+ "]";
+			mes "これにするかい？";
+			next;
+			if(select("いいえ","はい") == 2) {
+				break;
+			}
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid[0])+ "[" +getiteminfo('@itemid[0],10)+ "]";
+		mes getitemname('@itemid[1])+ "[" +getiteminfo('@itemid[1],10)+ "]";
+		mes getitemname('@itemid[2])+ "[" +getiteminfo('@itemid[2],10)+ "]";
+		mes getitemname('@itemid[3])+ "[" +getiteminfo('@itemid[3],10)+ "]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,5;
+		delitem 25019, 1;
+		getitem '@itemid[0], 1;
+		getitem '@itemid[1], 1;
+		getitem '@itemid[2], 1;
+		getitem '@itemid[3], 1;
+		mes "[マスター・スヌス]";
+		mes "今回渡した防具は";
+		mes "全て装備することで";
+		mes "特殊な効果が発揮される";
+		mes "すごい防具なんだ！";
+		next;
+		mes "[マスター・スヌス]";
+		mes "^FF0000セット装備は、";
+		mes "全てそろった状態で";
+		mes "装備しないと";
+		mes "効果を発揮しない^000000ので";
+		mes "装備するときは";
+		mes "そのことを忘れないようにね。";
+		next;
+		break;
+	case 5:
+		if(countitem(25018) == 0) close;
+
+		GetBeginnerEquip;
+		mes "[マスター・スヌス]";
+		mes "今回渡した武器は";
+		mes "以前渡したものより";
+		mes "更に強化された武器だ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "武器によっては";
+		mes "ステータスやスキルを";
+		mes "強化してくれる";
+		mes "物もあるので";
+		next;
+		mes "[マスター・スヌス]";
+		mes "いま所持している武器より";
+		mes "攻撃力が高いようであれば";
+		mes "是非使ってみてほしい。";
+		next;
+		break;
+	case 6:
+		if(countitem(25019) == 0) close;
+
+		switch(getbaseclass(Class)) {
+		case CLASS_KN: set '@itemid,5950; break;
+		case CLASS_CR: set '@itemid,2606; break;
+		case CLASS_WZ: set '@itemid,5951; break;
+		case CLASS_SA: set '@itemid,5956; break;
+		case CLASS_HT: set '@itemid,5952; break;
+		case CLASS_BA: set '@itemid,5958; break;
+		case CLASS_DC: set '@itemid,5957; break;
+		case CLASS_PR: set '@itemid,5953; break;
+		case CLASS_MO: set '@itemid,5959; break;
+		case CLASS_BS: set '@itemid,5954; break;
+		case CLASS_AM: set '@itemid,5960; break;
+		case CLASS_AS: set '@itemid,5955; break;
+		case CLASS_RG: set '@itemid,5961; break;
+		}
+		if('@itemid == 0) {	// 未調査
+			mes "[マスター・スヌス]";
+			mes "まだ2次職に転職していない";
+			mes "君にあげられるものは";
+			mes "なさそうだね……";
+			close;
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid);
+		mes "を君に貸してあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,7;
+		delitem 25019, 1;
+		getitem2 '@itemid,1,1,0,0,0,0,0,0,1209600;
+		mes "[マスター・スヌス]";
+		mes "今回渡した防具は";
+		mes "装備することで";
+		mes "特殊な効果を発揮する";
+		mes "特別な防具だ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "ただ効果がかなり";
+		mes "すぐれているので";
+		mes "今回はレンタルという";
+		mes "かたちで防具を渡している。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "今回渡した防具は";
+		mes "いまから約2週間で";
+		mes "自動的に消滅するので";
+		mes "まずは装備して";
+		mes "その効果を試してみてほしい。";
+		next;
+		break;
+	case 7:
+		if(countitem(25019) == 0) close;
+
+		mes "[マスター・スヌス]";
+		mes "イヤリング[1]";
+		mes "ネックレス[1]";
+		mes "ロザリオ[1]";
+		mes "グローブ[1]";
+		mes "ブローチ[1]";
+		mes "リング[1]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,8;
+		delitem 25019, 1;
+		getitem 2622, 1;
+		getitem 2623, 1;
+		getitem 2626, 1;
+		getitem 2624, 1;
+		getitem 2625, 1;
+		getitem 2621, 1;
+		mes "[マスター・スヌス]";
+		mes "今回渡した防具は";
+		mes "アクセサリーという";
+		mes "場所に装備できる";
+		mes "防具だ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "装備することで";
+		mes "ステータスを上昇させる";
+		mes "効果があるので";
+		mes "君の好みで使ってみてほしい。";
+		next;
+		break;
+	case 8:
+		if(countitem(25019) == 0) close;
+
+		while(1) {
+			mes "[マスター・スヌス]";
+			mes "そうだね……";
+			mes "どれが欲しいか、選んでご覧。";
+			next;
+			switch(select("エベシ嵐のうねり[1]","クレイトス大地の裂け目[1]","ルシウス火山の激しさ[1]","シャピニハ海の叫び[1]")) {
+			case 1:
+				set '@elem$,"風";
+				set '@itemid,2349;
+				break;
+			case 2:
+				set '@elem$,"地";
+				set '@itemid,2351;
+				break;
+			case 3:
+				set '@elem$,"火";
+				set '@itemid,2345;
+				break;
+			case 4:
+				set '@elem$,"水";
+				set '@itemid,2347;
+				break;
+			}
+			mes "[マスター・スヌス]";
+			mes "鎧に" +'@elem$+ "属性が付与されている";
+			mes "防具だね。";
+			mes '@elem$+ "属性攻撃をしてくる";
+			mes "ダンジョンやフィールドで";
+			mes "有効だよ。";
+			next;
+			mes "[マスター・スヌス]";
+			mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+			mes "これにするかい？";
+			next;
+			if(select("いいえ","はい") == 2) {
+				break;
+			}
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,9;
+		delitem 25019, 1;
+		getitem '@itemid, 1;
+		break;
+	case 9:
+		if(countitem(25019) == 0) close;
+
+		mes "[マスター・スヌス]";
+		mes "ルイーゼの赤い靴[1]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,10;
+		delitem 25019, 1;
+		getitem 22068, 1;
+		mes "[マスター・スヌス]";
+		mes "今回渡した防具は";
+		mes "装備することで";
+		mes "[初心者用ポーション]の";
+		mes "回復効果を高めることが";
+		mes "できる防具だ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "またこの防具を";
+		mes "精錬していくことで";
+		mes "[初心者用ポーション]の";
+		mes "回復効果を更に";
+		mes "高めることができるぞ。";
+		next;
+		mes "[マスター・スヌス]";
+		mes "ただし、精錬を重ねていくと";
+		mes "精錬に失敗することがあって";
+		mes "防具そのものを失って";
+		mes "しまうこともあるから";
+		mes "注意するようにしてほしい。";
+		next;
+		break;
+	case 10:
+		if(countitem(25019) == 0) close;
+
+		while(1) {
+			mes "[マスター・スヌス]";
+			mes "そうだね……";
+			mes "どれが欲しいか、選んでご覧。";
+			next;
+			switch(select("シャレールシールド[1]","フロワシールド[1]","ソルシールド[1]","ルヴァンシールド[1]","ソンブルシールド[1]","ラモールシールド[1]","エスプリシールド[1]","リュミエールシールド[1]","プワゾンシールド[1]")) {
+			case 1: set '@elem$,"火";   set '@race$,"悪魔"; set '@itemid,2159; break;
+			case 2: set '@elem$,"水";   set '@race$,"動物"; set '@itemid,2163; break;
+			case 3: set '@elem$,"地";   set '@race$,"魚貝"; set '@itemid,2165; break;
+			case 4: set '@elem$,"風";   set '@race$,"昆虫"; set '@itemid,2194; break;
+			case 5: set '@elem$,"闇";   set '@race$,"不死"; set '@itemid,2164; break;
+			case 6: set '@elem$,"不死"; set '@race$,"人間"; set '@itemid,2158; break;
+			case 7: set '@elem$,"念";   set '@race$,"天使"; set '@itemid,2175; break;
+			case 8: set '@elem$,"聖";   set '@race$,"竜";   set '@itemid,2174; break;
+			case 9: set '@elem$,"毒";   set '@race$,"植物"; set '@itemid,2167; break;
+			}
+			mes "[マスター・スヌス]";
+			mes '@elem$+ "属性モンスターから受ける";
+			mes "ダメージを少し軽減し、";
+			mes '@race$+ "型モンスターから受ける";
+			mes "ダメージが少し増える";
+			mes "盾だね。";
+			next;
+			mes "[マスター・スヌス]";
+			mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+			mes "これにするかい？";
+			next;
+			if(select("いいえ","はい") == 2) {
+				break;
+			}
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,11;
+		delitem 25019, 1;
+		getitem '@itemid, 1;
+		break;
+	case 11:
+		if(countitem(25019) == 0) close;
+
+		while(1) {
+			mes "[マスター・スヌス]";
+			mes "そうだね……";
+			mes "どれが欲しいか、選んでご覧。";
+			next;
+			switch(select("シャレールマント[1]","フロワマント[1]","ソルマント[1]","ルヴァンマント[1]","ソンブルマント[1]","ラモールマント[1]","エスプリマント[1]","リュミエールマント[1]","プワゾンマント[1]")) {
+			case 1: set '@elem$,"火";   set '@race$,"悪魔"; set '@itemid,2596; break;
+			case 2: set '@elem$,"水";   set '@race$,"動物"; set '@itemid,2593; break;
+			case 3: set '@elem$,"地";   set '@race$,"魚貝"; set '@itemid,20701; break;
+			case 4: set '@elem$,"風";   set '@race$,"昆虫"; set '@itemid,20750; break;
+			case 5: set '@elem$,"闇";   set '@race$,"不死"; set '@itemid,2595; break;
+			case 6: set '@elem$,"不死"; set '@race$,"人間"; set '@itemid,2598; break;
+			case 7: set '@elem$,"念";   set '@race$,"天使"; set '@itemid,20716; break;
+			case 8: set '@elem$,"聖";   set '@race$,"竜";   set '@itemid,20705; break;
+			case 9: set '@elem$,"毒";   set '@race$,"植物"; set '@itemid,20708; break;
+			}
+			mes "[マスター・スヌス]";
+			mes '@elem$+ "属性モンスターから受ける";
+			mes "ダメージを少し軽減し、";
+			mes '@race$+ "型モンスターから受ける";
+			mes "ダメージが少し増える";
+			mes "マントだね。";
+			next;
+			mes "[マスター・スヌス]";
+			mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+			mes "これにするかい？";
+			next;
+			if(select("いいえ","はい") == 2) {
+				break;
+			}
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+		mes "を君にあげよう。";
+		next;
+		set AC_BEGINNER_EQUIP,12;
+		delitem 25019, 1;
+		getitem '@itemid, 1;
+		break;
+	}
+	mes "[マスター・スヌス]";
+	mes "まだチケットを持っているなら";
+	mes "もう一度話しかけておくれ。";
+	next;
+	mes "‐インフォメーション‐";
+	mes "　^FF0000アイテム交換は";
+	mes "　未転生時のみの権利です。";
+	mes "　転生後は受け付けていませんので";
+	mes "　交換し忘れにご注意ください‐";
+	close;
+
+	function	GetBeginnerEquip	{
+		switch(AC_BEGINNER_EQUIP) {
+		case 1:
+			switch(getbaseclass(Class)) {
+			case CLASS_SM: set '@itemid,1107; break;
+			case CLASS_MG: set '@itemid,1601; break;
+			case CLASS_AC: set '@itemid,1704; break;
+			case CLASS_AL: set '@itemid,1504; break;
+			case CLASS_MC: set '@itemid,1301; break;
+			case CLASS_TF: set '@itemid,1207; break;
+			}
+			break;
+		case 3:
+			switch(getbaseclass(Class)) {
+			case CLASS_SM: set '@itemid,1122; break;
+			case CLASS_MG: set '@itemid,1607; break;
+			case CLASS_AC: set '@itemid,1710; break;
+			case CLASS_AL: set '@itemid,1519; break;
+			case CLASS_MC: set '@itemid,1354; break;
+			case CLASS_TF: set '@itemid,1216; break;
+			}
+			break;
+		case 5:
+			switch(getbaseclass(Class)) {
+			case CLASS_SM:
+				if(getbaseclass(Class,2) == CLASS_KN) { set '@itemid,1163; }
+				else if(getbaseclass(Class,2) == CLASS_CR) { set '@itemid,1410; }	// 未確認
+				break;
+			case CLASS_MG:
+				if(getbaseclass(Class,2) == CLASS_WZ) { set '@itemid,1619; }
+				else if(getbaseclass(Class,2) == CLASS_SA) { set '@itemid,1551; }	// 未確認
+				break;
+			case CLASS_AC:
+				if(getbaseclass(Class,2) == CLASS_HT) { set '@itemid,1718; }
+				else if(getbaseclass(Class,2) == CLASS_BA) { set '@itemid,1907; }
+				else if(getbaseclass(Class,2) == CLASS_DC) { set '@itemid,1956; }	// 未確認
+				break;
+			case CLASS_AL:
+				if(getbaseclass(Class,2) == CLASS_PR) { set '@itemid,1625; }
+				else if(getbaseclass(Class,2) == CLASS_MO) { set '@itemid,1807; }	// 未確認
+				break;
+			case CLASS_MC:
+				if(getbaseclass(Class,2) == CLASS_BS) { set '@itemid,1360; }
+				else if(getbaseclass(Class,2) == CLASS_AM) { set '@itemid,1119; }
+				break;
+			case CLASS_TF:
+				if(getbaseclass(Class,2) == CLASS_AS) { set '@itemid,1360; }	// 未確認
+				else if(getbaseclass(Class,2) == CLASS_RG) { set '@itemid,1360; }	// 未確認
+				break;
+			}
+			break;
+		}
+		if('@itemid == 0) {	// 未調査
+			mes "[マスター・スヌス]";
+			mes "まだ2次職に転職していない";
+			mes "君にあげられるものは";
+			mes "なさそうだね……";
+			close;
+		}
+		mes "[マスター・スヌス]";
+		mes getitemname('@itemid)+ "[" +getiteminfo('@itemid,10)+ "]";
+		mes "を君にあげよう。";
+		set AC_BEGINNER_EQUIP,AC_BEGINNER_EQUIP + 1;
+		delitem 25018, 1;
+		getitem '@itemid, 1;
+		next;
+		return;
+	}
+
+OnInit:
+	waitingroom "マスター・スヌス",0;
+	end;
+}

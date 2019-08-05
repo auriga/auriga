@@ -72,3 +72,26 @@ function	script	ItemdbAlmightyHeal	{
 	}
 	return;
 }
+
+//============================================================
+// 被ヒール系効果向上総合
+//------------------------------------------------------------
+function	script	ItemdbAlmightySubHeal	{
+	set '@flag,getarg(0);
+	set '@val,getarg(1);
+	if('@flag&1)
+		bonus2 bAddSkillSubHealRate,28,'@val;	/* ヒール */
+	if('@flag&2)
+		bonus2 bAddSkillSubHealRate,70,'@val;	/* サンクチュアリ */
+	if('@flag&4)
+		bonus2 bAddSkillSubHealRate,231,'@val;	/* ポーションピッチャー */
+	if('@flag&8)
+		bonus2 bAddSkillSubHealRate,478,'@val;	/* スリムポーションピッチャー */
+	if('@flag&16)
+		bonus2 bAddSkillSubHealRate,322,'@val;	/* イドゥンの林檎 */
+	if('@flag&32)
+		bonus2 bAddSkillSubHealRate,2043,'@val;	/* コルセオヒール */
+	if('@flag&64)
+		bonus2 bAddSkillSubHealRate,2051,'@val;	/* ハイネスヒール */
+	return;
+}

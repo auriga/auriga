@@ -50,6 +50,32 @@ yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 		mes "ご希望でしたらお納めください。";
 		mes "ご寄付なさいますか？";
 		next;
+		if(countitem(25020) > 0) {
+			next;
+			mes "[メテウスシルプ]";
+			mes "と、普段なら寄付金を頂いて";
+			mes "いるのですが、";
+			mes "貴方は「卒業証書」を";
+			mes "お持ちのようですね。";
+			next;
+			mes "[メテウスシルプ]";
+			mes "「卒業証書」をお渡し頂ければ";
+			mes "無料で閲覧を";
+			mes "許可しております。";
+			mes "中にお入りになりますか？";
+			next;
+			if(select("入る","やめる") == 2) {
+				mes "[メテウスシルプ]";
+				mes "ゆっくりご見学ください。";
+				mes "楽しい旅行になるとよいですね。";
+				close;
+			}
+			delitem 25020,1;
+			set TRANSMIGRATE,101;
+			mes "[メテウスシルプ]";
+			mes "では、どうぞ中へお入りください。";
+			close;
+		}
 		if(select("寄付する","やめる")==2) {
 			mes "[メテウスシルプ]";
 			mes "ゆっくりご見学ください。";
@@ -65,7 +91,6 @@ yuno_in02.gat,88,164,5	script	メテウスシルプ	742,{
 		}
 		set Zeny,Zeny-1285000;
 		set TRANSMIGRATE,1;
-		setquest 1000;
 	}
 	mes "[メテウスシルプ]";
 	mes "ありがとうございます。";
@@ -151,6 +176,7 @@ yuno_in02.gat,93,207,0	script	ユミルの書	111,{
 	mes "何も知ることができなかった。";
 	mes "それゆえ私はここに記録を残そう。";
 	next;
+	if(!checkquest(1000)) setquest 1000;
 	mes "[ユミルの書]";
 	mes "後代の誰かがこの記録を見つけ出し、";
 	mes "その意志と希望、時代の最後の光を";
@@ -158,13 +184,14 @@ yuno_in02.gat,93,207,0	script	ユミルの書	111,{
 	mes "そして今一度ヴァルキリーの神殿で";
 	mes "英雄達を導く者が現われることを";
 	mes "切に待ち望む。またその後に……";
-	set TRANSMIGRATE,2;
+	if(TRANSMIGRATE == 1) set TRANSMIGRATE,2;
+	else if(TRANSMIGRATE == 101) set TRANSMIGRATE,102;
 	close;
 }
 
 //==============================================================
 yuno_in05.gat,49,43,0	script	ユミルの心臓	111,{
-	if(TRANSMIGRATE == 2)
+	if(TRANSMIGRATE == 2 || TRANSMIGRATE == 102)
 		warp "valkyrie.gat",48,8;
 	end;
 }
@@ -190,7 +217,7 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "新たな生を得ることになります。";
 	mes "戦士達に光あれ！";
 	next;
-	if(Weight || checkcart() || checkfalcon() || checkriding() || sc_ison(SC_ALL_RIDING)) {
+	if(Weight || SkillPoint|| checkcart() || checkfalcon() || checkriding() || sc_ison(SC_ALL_RIDING)) {
 		mes "[ヴァルキリー]";
 		mes "あなたは準備しなければ";
 		mes "ならないことがあります。";
@@ -200,14 +227,27 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 		mes "表れるものですから。";
 		next;
 		mes "[ヴァルキリー]";
-		mes "アイテムやお金……何も持たない";
-		mes "空の状態でなければなりません。";
+		mes "アイテムやスキルポイントなど";
+		mes "何も持たない";
+		mes "状態でなければなりません。";
 		mes "旅を共にした動物達やカートなども";
 		mes "持って行くことはできません。";
-		mes "それでは……用意ができましたら";
-		mes "お越しください。";
+		next;
+		mes "[ヴァルキリー]";
+		mes "一度街へ戻って準備をしますか？";
+		mes "戻るならば送ってあげましょう。";
+		next;
+		if(select("いいえ","はい") == 1) {
+			mes "[ヴァルキリー]";
+			mes "それでは……用意ができましたら";
+			mes "お越しください。";
+			close;
+		}
+		mes "[ヴァルキリー]";
+		mes "それでは街へお送りします。";
+		mes "用意ができたらお越しください。";
 		close2;
-		warp "yuno_in02.gat",93,205;
+		warp "yuno.gat",151,183;
 		end;
 	}
 	mes "[ヴァルキリー]";
@@ -216,15 +256,6 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	mes "無心になった今、あなたの";
 	mes "名誉がよく表れております。";
 	next;
-	if(SkillPoint) {
-		mes "[ヴァルキリー]";
-		mes "……未練があるようですね。";
-		mes "地上へ戻り、その未練を全て";
-		mes "お捨てになってからお越しください。";
-		close2;
-		warp "yuno_in02.gat",93,205;
-		end;
-	}
 	mes "[ヴァルキリー]";
 	mes "お眠りなさい……";
 	mes "あなたに刻まれている";
@@ -249,6 +280,15 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	next;
 	mes "[ヴァルキリー]";
 	mes "三つ……";
+	for(set '@i,22954;'@i<=22969;set '@i,'@i+1) {
+		if(countitem('@i))
+			delitem '@i,1;
+	}
+	if(countitem(25018)) delitem 25018,1;
+	if(countitem(25019)) delitem 25019,1;
+	if(countitem(25020)) delitem 25020,1;
+	if(getequipid(14) == 20307) unequip 14;
+	if(countitem(20307)) delitem 20307,1;
 	set OLD_CLASS,Job;
 	jobchange Job_Novice,UPPER_HIGH;
 	set BaseLevel,1;
@@ -259,17 +299,48 @@ valkyrie.gat,48,86,4	script	ヴァルキリー	811,{
 	skill 142,1,0;
 	set SkillPoint,0;
 	set StatusPoint,100;
+	if(TRANSMIGRATE == 102)
+		set '@TRANSMIGRATE,1;
 	set TRANSMIGRATE,0;
+	set AC_BEGINNER_EQUIP,0;
 	chgquest 1000,50000;
 	next;
-	getitem 1202,1;
-	getitem 2302,1;
 	mes "[ヴァルキリー]";
 	mes "おめでとうございます。";
 	mes "全ての儀式が終了いたしました。";
 	mes "こちらは、新たな道を歩む";
 	mes "戦士へのささやかな贈り物です。";
+	getitem 1202,1;
+	getitem 2302,1;
 	next;
+	if('@TRANSMIGRATE) {
+		mes "[インフォメーション]";
+		mes "ヴァルキリーからの贈り物を";
+		mes "貰うと^0000FFBaseLvとJobLvが^000000";
+		mes "^0000FF10になります。^000000";
+		mes "贈り物を貰いますか？";
+		next;
+		if(select("はい","いいえ") == 1) {
+			getexp 2,0;
+			getexp 4,0;
+			getexp 6,0;
+			getexp 9,0;
+			getexp 12,0;
+			getexp 15,0;
+			getexp 18,0;
+			getexp 21,0;
+			getexp 27,0;
+			getexp 0,4;
+			getexp 0,6;
+			getexp 0,8;
+			getexp 0,10;
+			getexp 0,20;
+			getexp 0,30;
+			getexp 0,40;
+			getexp 0,50;
+			getexp 0,60;
+		}
+	}
 	mes "[ヴァルキリー]";
 	mes "くれぐれも、過去のウルドが";
 	mes "記憶したあなたの生が無駄に";

@@ -1,4 +1,18 @@
 ----------------------------------------
+//1352 [2019/08/05] by refis
+
+・アカデミーNPCを更新
+	-> マスター・スヌスを実装（npc_quest_ac_entrance.sc）
+	-> [卒業証書]実装（npc_job_transmigration.sc）
+	-> 関連NPCの処理調整（npc_job_thirdclass.sc）
+
+・上記に合わせてセージキャッスル内のランダムワープを廃止（npc_warp_town.sc）
+
+・item_db.txtの更新（item_db.txt, function_itemdb.sc）
+
+・quest_db.txtの更新（quest_db.txt）
+
+----------------------------------------
 //1351 [2019/08/05] by refis
 
 ・戦闘設定[gm_all_skill]をデフォルトで0にする（battle_auriga.conf）

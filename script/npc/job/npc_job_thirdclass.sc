@@ -87,7 +87,7 @@ function	script	jobchenge3rd_func	{
 		mes "それもひとつの道でしょう。";
 		close;
 	}
-	if(Weight || checkriding() || checkcart() || checkfalcon() || sc_ison(SC_ALL_RIDING)) {
+	if(Weight || SkillPoint || checkriding() || checkcart() || checkfalcon() || sc_ison(SC_ALL_RIDING)) {
 		mes "[転職代行係]";
 		mes "あなたは準備しなければ";
 		mes "ならないことがありますね。";
@@ -96,8 +96,9 @@ function	script	jobchenge3rd_func	{
 		mes "無にしてください。";
 		next;
 		mes "[転職代行係]";
-		mes "アイテム等の荷物を持たない";
-		mes "空の状態でなければなりません。";
+		mes "アイテムやスキルポイントなど";
+		mes "何も持たない";
+		mes "状態でなければなりません。";
 		mes "旅を共にした動物達やカート、";
 		mes "騎乗生物なども";
 		mes "持って行くことはできません。";
@@ -299,6 +300,17 @@ function	script	jobchenge3rd_func	{
 		break;
 	}
 	getitem 2795,1;	//熟していないリンゴの指輪
+	if(Upper == UPPER_BABY) {
+		for(set '@i,22954;'@i<=22969;set '@i,'@i+1) {
+			if(countitem('@i))
+				delitem '@i,1;
+		}
+		if(countitem(25018)) delitem 25018,1;
+		if(countitem(25019)) delitem 25019,1;
+		if(countitem(25020)) delitem 25020,1;
+		if(getequipid(14) == 20307) unequip 14;
+		if(countitem(20307)) delitem 20307,1;
+	}
 	mes "[転職代行係]";
 	mes "さあ、これで貴方は";
 	mes '@3rdName$ +"となりました。";
