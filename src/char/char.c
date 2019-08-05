@@ -2053,7 +2053,10 @@ int parse_tologin(int fd)
 										WFIFOW(fdc,112+j*144) = st->char_num;
 										WFIFOW(fdc,114+j*144) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 										memcpy(WFIFOP(fdc,116+j*144),st->last_point.map,16);	// 最後に在籍していたMAP名
-										WFIFOL(fdc,132+j*144) = st->delete_date;	// 削除待機時間
+										if(st->delete_date)
+											WFIFOL(fdc,132+j*144) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+										else
+											WFIFOL(fdc,132+j*144) = 0;
 										WFIFOL(fdc,136+j*144) = st->robe;	// 肩装備
 										WFIFOL(fdc,140+j*144) = 0;	// スロット変更が可能な状態かどうか
 										WFIFOL(fdc,144+j*144) = 0;	// TODO: Add-Ons
@@ -2098,7 +2101,10 @@ int parse_tologin(int fd)
 										WFIFOW(fdc,114+j*147) = st->char_num;
 										WFIFOW(fdc,116+j*147) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
 										memcpy(WFIFOP(fdc,118+j*147),st->last_point.map,16);	// 最後に在籍していたMAP名
-										WFIFOL(fdc,134+j*147) = st->delete_date;	// 削除待機時間
+										if(st->delete_date)
+											WFIFOL(fdc,134+j*147) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+										else
+											WFIFOL(fdc,134+j*147) = 0;
 										WFIFOL(fdc,138+j*147) = st->robe;	// 肩装備
 										WFIFOL(fdc,142+j*147) = 0;	// スロット変更が可能な状態かどうか
 										WFIFOL(fdc,146+j*147) = 0;	// TODO: Add-Ons
@@ -3720,6 +3726,117 @@ int parse_char(int fd)
 				WFIFOSET(fd,10);
 				RFIFOSKIP(fd,6);
 				break;
+			}
+
+		case 0x9a1:
+			RFIFOSKIP(fd, 2);
+			{
+				int found_num = chardb_load_all(sd,sd->account_id);
+				int j;
+				const struct mmo_charstatus *st;
+				WFIFOW(fd,0)=0x99d;
+				for( j = 0; j < max_char_slot ; j++ ) {
+					if(sd->found_char[j] == NULL)
+						continue;
+					st = &sd->found_char[j]->st;
+#if PACKETVER < 20141022
+					WFIFOL(fd,4+j*144) = st->char_id;
+					WFIFOL(fd,8+j*144) = st->base_exp;
+					WFIFOL(fd,12+j*144) = st->zeny;
+					WFIFOL(fd,16+j*144) = st->job_exp;
+					WFIFOL(fd,20+j*144) = st->job_level;
+					WFIFOL(fd,24+j*144) = 0;
+					WFIFOL(fd,28+j*144) = 0;
+					WFIFOL(fd,32+j*144) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+					WFIFOL(fd,36+j*144) = st->karma;
+					WFIFOL(fd,40+j*144) = st->manner;
+					WFIFOW(fd,44+j*144) = st->status_point;
+					WFIFOL(fd,46+j*144) = st->hp;
+					WFIFOL(fd,50+j*144) = st->max_hp;
+					WFIFOW(fd,54+j*144) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+					WFIFOW(fd,56+j*144) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+					WFIFOW(fd,58+j*144) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+					WFIFOW(fd,60+j*144) = st->class_;
+					WFIFOW(fd,62+j*144) = st->hair;
+					WFIFOW(fd,64+j*144) = st->weapon;
+					WFIFOW(fd,66+j*144) = st->base_level;
+					WFIFOW(fd,68+j*144) = st->skill_point;
+					WFIFOW(fd,70+j*144) = st->head_bottom;
+					WFIFOW(fd,72+j*144) = st->shield;
+					WFIFOW(fd,74+j*144) = st->head_top;
+					WFIFOW(fd,76+j*144) = st->head_mid;
+					WFIFOW(fd,78+j*144) = st->hair_color;
+					WFIFOW(fd,80+j*144) = st->clothes_color;
+					memcpy(WFIFOP(fd,82+j*144), st->name, 24);
+					WFIFOB(fd,106+j*144) = (st->str > 255)  ? 255: st->str;
+					WFIFOB(fd,107+j*144) = (st->agi > 255)  ? 255: st->agi;
+					WFIFOB(fd,108+j*144) = (st->vit > 255)  ? 255: st->vit;
+					WFIFOB(fd,109+j*144) = (st->int_ > 255) ? 255: st->int_;
+					WFIFOB(fd,110+j*144) = (st->dex > 255)  ? 255: st->dex;
+					WFIFOB(fd,111+j*144) = (st->luk > 255)  ? 255: st->luk;
+					WFIFOW(fd,112+j*144) = st->char_num;
+					WFIFOW(fd,114+j*144) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+					memcpy(WFIFOP(fd,116+j*144),st->last_point.map,16);	// 最後に在籍していたMAP名
+					if(st->delete_date)
+						WFIFOL(fd,132+j*144) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+					else
+						WFIFOL(fd,132+j*144) = 0;
+					WFIFOL(fd,136+j*144) = st->robe;	// 肩装備
+					WFIFOL(fd,140+j*144) = 0;	// スロット変更が可能な状態かどうか
+					WFIFOL(fd,144+j*144) = 0;	// TODO: Add-Ons
+				}
+				WFIFOW(fd,2)=found_num*144+4;
+#else
+					WFIFOL(fd,4+j*147) = st->char_id;
+					WFIFOL(fd,8+j*147) = st->base_exp;
+					WFIFOL(fd,12+j*147) = st->zeny;
+					WFIFOL(fd,16+j*147) = st->job_exp;
+					WFIFOL(fd,20+j*147) = st->job_level;
+					WFIFOL(fd,24+j*147) = 0;
+					WFIFOL(fd,28+j*147) = 0;
+					WFIFOL(fd,32+j*147) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+					WFIFOL(fd,36+j*147) = st->karma;
+					WFIFOL(fd,40+j*147) = st->manner;
+					WFIFOW(fd,44+j*147) = st->status_point;
+					WFIFOL(fd,46+j*147) = st->hp;
+					WFIFOL(fd,50+j*147) = st->max_hp;
+					WFIFOW(fd,54+j*147) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+					WFIFOW(fd,56+j*147) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+					WFIFOW(fd,58+j*147) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+					WFIFOW(fd,60+j*147) = st->class_;
+					WFIFOW(fd,62+j*147) = st->hair;
+					WFIFOW(fd,64+j*147) = st->style;
+					WFIFOW(fd,66+j*147) = st->weapon;
+					WFIFOW(fd,68+j*147) = st->base_level;
+					WFIFOW(fd,70+j*147) = st->skill_point;
+					WFIFOW(fd,72+j*147) = st->head_bottom;
+					WFIFOW(fd,74+j*147) = st->shield;
+					WFIFOW(fd,76+j*147) = st->head_top;
+					WFIFOW(fd,78+j*147) = st->head_mid;
+					WFIFOW(fd,80+j*147) = st->hair_color;
+					WFIFOW(fd,82+j*147) = st->clothes_color;
+					memcpy(WFIFOP(fd,84+j*147), st->name, 24);
+					WFIFOB(fd,108+j*147) = (st->str > 255)  ? 255: st->str;
+					WFIFOB(fd,109+j*147) = (st->agi > 255)  ? 255: st->agi;
+					WFIFOB(fd,110+j*147) = (st->vit > 255)  ? 255: st->vit;
+					WFIFOB(fd,111+j*147) = (st->int_ > 255) ? 255: st->int_;
+					WFIFOB(fd,112+j*147) = (st->dex > 255)  ? 255: st->dex;
+					WFIFOB(fd,113+j*147) = (st->luk > 255)  ? 255: st->luk;
+					WFIFOW(fd,114+j*147) = st->char_num;
+					WFIFOW(fd,116+j*147) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+					memcpy(WFIFOP(fd,118+j*147),st->last_point.map,16);	// 最後に在籍していたMAP名
+					if(st->delete_date)
+						WFIFOL(fd,134+j*147) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+					else
+						WFIFOL(fd,134+j*147) = 0;
+					WFIFOL(fd,138+j*147) = st->robe;	// 肩装備
+					WFIFOL(fd,142+j*147) = 0;	// スロット変更が可能な状態かどうか
+					WFIFOL(fd,146+j*147) = 0;	// TODO: Add-Ons
+					WFIFOB(fd,150+j*147) = st->sex;	// 性別
+				}
+				WFIFOW(fd,2)=found_num*147+4;
+#endif
+				WFIFOSET(fd,WFIFOW(fd,2));
 			}
 
 		case 0x7530:	// Auriga情報取得

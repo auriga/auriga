@@ -7922,6 +7922,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RETURN_TO_ELDICASTES:		/* エルディカスティスへの帰還 */
 	case ALL_GUARDIAN_RECALL:		/* モーラへの帰還 */
 	case ECLAGE_RECALL:		/* エクラージュへの帰還 */
+	case ALL_PRONTERA_RECALL:		/* プロンテラへの帰還 */
+	case ALL_THANATOS_RECALL:		/* タナトスタワーへの帰還 */
 		if(sd) {
 			int x, y;
 			const char *mapname;
@@ -7938,6 +7940,14 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				x = 44;
 				y = 151;
 				mapname = "mora.gat";
+			} else if(skillid == ALL_PRONTERA_RECALL) {
+				x = 115;
+				y = 72;
+				mapname = "prontera.gat";
+			} else if(skillid == ALL_THANATOS_RECALL) {
+				x = 139;
+				y = 156;
+				mapname = "hu_fild01.gat";
 			} else {
 				x = 47;
 				y = 31;
