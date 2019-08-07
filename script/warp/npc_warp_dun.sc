@@ -1158,6 +1158,11 @@ abbey02.gat,149,7,0	warp	namelesswarp4004	1,1,abbey01.gat,322,96
 //C“¹‰@ 02ÌC“¹‰@ 03
 abbey02.gat,149,290,0	warp	namelesswarp4005	1,1,abbey03.gat,120,9
 abbey03.gat,119,6,0	warp	namelesswarp4006	1,1,abbey02.gat,149,285
+//C“¹‰@ 02 ŠOüƒŠƒ“ƒN
+abbey02.gat,106,30,0	warp	namelesswarp4007	1,1,abbey02.gat,198,30
+abbey02.gat,193,30,0	warp	namelesswarp4008	1,1,abbey02.gat,101,30
+abbey02.gat,106,270,0	warp	namelesswarp4009	1,1,abbey02.gat,198,270
+abbey02.gat,193,270,0	warp	namelesswarp4010	1,1,abbey02.gat,101,270
 
 
 
