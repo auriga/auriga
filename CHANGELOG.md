@@ -1,4 +1,11 @@
 ----------------------------------------
+//1355 [2019/08/19] by refis
+
+・ポイントショップ関連NPCのサモナー対応（npc_misc_pointshop.txt）
+
+・ジェレミーの美容クーポン及び関連NPC実装（item_db.txt, npc_misc_pointshop.txt）
+
+----------------------------------------
 //1354 [2019/08/08] by refis
 
 ・名もなき島の配置情報を更新（mob_db.txt, mob_skill_db.txt, npc_monster_nameless.txt）
