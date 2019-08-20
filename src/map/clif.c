@@ -4083,7 +4083,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && nd->option != OPTION_HIDE) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && nd->option&(OPTION_HIDE | OPTION_CLOAKING)) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 #if PACKETVER < 20071106
@@ -9268,7 +9268,7 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 ||(nd->flag&1 && nd->option != OPTION_HIDE) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && nd->option&(OPTION_HIDE | OPTION_CLOAKING)) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 	len = clif_npc0078(nd,WFIFOP(sd->fd,0));
@@ -17807,7 +17807,7 @@ void clif_send_personalinfo(struct map_session_data *sd)
 	WFIFOL(fd,43)=0;	// premium exp
 	WFIFOL(fd,47)=0;	// premium penalty
 	WFIFOL(fd,51)=0;	// premium drop
-	WFIFOB(fd,52)=2;
+	WFIFOB(fd,55)=2;
 	WFIFOL(fd,56)=0;
 	WFIFOL(fd,60)=0;
 	WFIFOL(fd,64)=0;
@@ -18578,7 +18578,8 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 	   (sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1) ||	// ダンス中
 	   sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
 	   sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
-	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// 呪縛陣
+	   sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||		// 呪縛陣
+	   sd->sc.data[SC_SUHIDE].timer != -1 )	// かくれる
 		return;
 
 	tick=gettick();
@@ -18787,7 +18788,8 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_BLADESTOP].timer != -1 ||		// 白刃取り
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||		// マンホール
 	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
-	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1)		// 呪縛陣
+	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||		// 呪縛陣
+		sd->sc.data[SC_SUHIDE].timer != -1 )	// かくれる
 	{
 		clif_additem(sd,0,0,6);
 		return;
@@ -18843,7 +18845,8 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_CURSEDCIRCLE_USER].timer != -1 ||	// 呪縛陣(使用者)
 	    sd->sc.data[SC_CURSEDCIRCLE].timer != -1 ||	// 呪縛陣
 	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
-		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ダイヤモンドダスト
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 ||	// ダイヤモンドダスト
+		sd->sc.data[SC_SUHIDE].timer != -1 )	// かくれる
 	{
 		clif_delitem(sd, 0, item_index, 0);
 		return;
@@ -18905,7 +18908,8 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC__MANHOLE].timer != -1 ||	// マンホール
 	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
 	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 ||	// フライデーナイトフィーバー
-		sd->sc.data[SC_DIAMONDDUST].timer != -1 )	// ダイヤモンドダスト
+		sd->sc.data[SC_DIAMONDDUST].timer != -1 ||	// ダイヤモンドダスト
+		sd->sc.data[SC_SUHIDE].timer != -1 )	// かくれる
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
@@ -18938,7 +18942,7 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 	if ((sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	     sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
-	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
 
 	// 取引要請中
@@ -18991,7 +18995,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1)
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
 	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
@@ -19020,6 +19024,8 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_click(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
@@ -19040,6 +19046,8 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_buysellsel(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
@@ -19062,6 +19070,8 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
@@ -19095,6 +19105,8 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
@@ -19160,6 +19172,8 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
 	if(sd->npc_id != 0 || sd->state.store || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	else
@@ -19664,7 +19678,8 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
 	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
 	    sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
-		(sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_SELF)))
+	    (sd->sc.data[SC_MEIKYOUSISUI].timer != -1 && !(inf & INF_SELF)) ||
+	    (sd->sc.data[SC_SUHIDE].timer != -1 && skillnum != SU_HIDE))
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -19838,7 +19853,8 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 	    sd->sc.data[SC_SUMMER].timer != -1 ||
 	    sd->sc.data[SC_ALL_RIDING].timer != -1 ||
 	    sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
-	    sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
+	    sd->sc.data[SC_MEIKYOUSISUI].timer != -1 ||
+	    sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
 	if(sd->sc.data[SC_BASILICA].timer != -1 && (skillnum != HP_BASILICA || sd->sc.data[SC_BASILICA].val2 != sd->bl.id))
 		return;
@@ -19891,7 +19907,8 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 	   sd->sc.data[SC_SUMMER].timer != -1 ||
 	   sd->sc.data[SC_ALL_RIDING].timer != -1 ||
 	   sd->sc.data[SC_KINGS_GRACE].timer != -1 ||	// キングスグレイス
-	   sd->sc.data[SC_MEIKYOUSISUI].timer != -1)
+	   sd->sc.data[SC_MEIKYOUSISUI].timer != -1 ||
+	   sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
 
 	if(sd->invincible_timer != -1)

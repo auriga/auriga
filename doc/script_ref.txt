@@ -1223,6 +1223,24 @@ AurigaNPCScript
 			<npcname>への接触を有効にし、さらに範囲が指定されている場合は、同時に範囲内PCに対してOnTouchイベントを実行します。
 			<npcname>を省略すると、命令を実行したNPCが対象になります。
 
+		cloakonnpc命令
+			cloakonnpc [<npcname>];
+
+			npcname		文字列
+
+			<npcname>をクローキング状態にします。
+			アタッチしているPCがいる場合、そのPCに対してのみクローキング状態になります。
+			<npcname>を省略すると、命令を実行したNPCが対象になります。
+
+		cloakoffnpc命令
+			cloakoffnpc [<npcname>];
+
+			npcname		文字列
+
+			クローキング状態の<npcname>を表示します。
+			アタッチしているPCがいる場合、そのPCに対してのみクローキング状態を解除します。
+			<npcname>を省略すると、命令を実行したNPCが対象になります。
+
 		mapannounce命令
 			mapannounce <gatname>,<string>,<flag>[,<color>[,<type>,<size>,<align>,<y>]];
 

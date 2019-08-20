@@ -1,4 +1,13 @@
 ----------------------------------------
+//1357 [2019/08/20] by refis
+
+・サモナースキル[かくれる]使用中の挙動修正（clif.c）
+
+・サーバー情報通知のパケット誤りを修正（clif.c）
+
+・スクリプト命令「cloakonnpc」「cloakoffnpc」実装（clif.c, script.c, script_ref.txt）
+
+----------------------------------------
 //1356 [2019/08/19] by refis
 
 ・Patch 1355 follow up（npc_misc_pointshop.txt）

@@ -3883,6 +3883,8 @@ int buildin_enablenpc(struct script_state *st);
 int buildin_disablenpc(struct script_state *st);
 int buildin_hideoffnpc(struct script_state *st);
 int buildin_hideonnpc(struct script_state *st);
+int buildin_cloakoffnpc(struct script_state *st);
+int buildin_cloakonnpc(struct script_state *st);
 int buildin_sc_start(struct script_state *st);
 int buildin_sc_start2(struct script_state *st);
 int buildin_sc_starte(struct script_state *st);
@@ -4201,6 +4203,8 @@ struct script_function buildin_func[] = {
 	{buildin_disablenpc,"disablenpc","*"},
 	{buildin_hideoffnpc,"hideoffnpc","*"},
 	{buildin_hideonnpc,"hideonnpc","*"},
+	{buildin_cloakoffnpc,"cloakoffnpc","*"},
+	{buildin_cloakonnpc,"cloakonnpc","*"},
 	{buildin_sc_start,"sc_start","iii*"},
 	{buildin_sc_start2,"sc_start2","iiii*"},
 	{buildin_sc_starte,"sc_starte","iii*"},
@@ -7838,6 +7842,81 @@ int buildin_hideonnpc(struct script_state *st)
 		}
 	}
 	npc_enable(nd->exname,4);
+	return 0;
+}
+
+/*==========================================
+ * 特定のユーザーの視界内NPCの表示
+ *------------------------------------------
+ */
+int buildin_cloakoffnpc(struct script_state *st)
+{
+	struct npc_data *nd;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	if(st->end > st->start+2) {
+		char *name = conv_str(st,& (st->stack->stack_data[st->start+2]));
+		nd = npc_name2id(name);
+		if(nd == NULL) {
+			return 0;
+		}
+	} else {
+		nd = map_id2nd(st->oid);
+		if(nd == NULL) {
+			printf("buildin_cloakoffnpc: fatal error: npc not attached\n");
+			return 0;
+		}
+	}
+
+	if(sd) {
+		// 表示用に一時退避
+		int flag = nd->option;
+		nd->option &= ~OPTION_CLOAKING;
+		clif_changeoption_single(&nd->bl, sd);
+		nd->option = flag;
+	}
+	else	// アタッチがない場合はNPC情報書き換え
+		nd->option &= ~OPTION_CLOAKING;
+
+	return 0;
+}
+
+/*==========================================
+ * 特定のユーザーの視界内NPCをクローキング
+ *------------------------------------------
+ */
+int buildin_cloakonnpc(struct script_state *st)
+{
+	struct npc_data *nd;
+	struct map_session_data *sd = NULL;
+
+	if(st->rid)	// クローキング時はアタッチがなくても許容する
+		sd = script_rid2sd(st);
+
+	if(st->end > st->start+2) {
+		char *name = conv_str(st,& (st->stack->stack_data[st->start+2]));
+		nd = npc_name2id(name);
+		if(nd == NULL) {
+			return 0;
+		}
+	} else {
+		nd = map_id2nd(st->oid);
+		if(nd == NULL) {
+			printf("buildin_cloakonnpc: fatal error: npc not attached\n");
+			return 0;
+		}
+	}
+
+	if(sd) {
+		// 表示用に一時退避
+		int flag = nd->option;
+		nd->option |= OPTION_CLOAKING;
+		clif_changeoption_single(&nd->bl, sd);
+		nd->option = flag;
+	}
+	else	// アタッチがない場合はNPC情報書き換え
+		nd->option |= OPTION_CLOAKING;
+
 	return 0;
 }
 
