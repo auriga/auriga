@@ -587,7 +587,7 @@ moc_prydn2.gat,179,99,0	script	#prydn_Secret_A	139,1,1,{
 }
 
 moc_prydn2.gat,193,16,0	script	#prydn_Secret_B-1	139,1,1,{
-	unittalk getcharid(3),"!?";
+	showmessage "!?","";
 	soundeffect "se_door02.wav", 0, 0;
 	hideonnpc "#prydn_Secret_B-1";
 	hideoffnpc "#prydn_Secret_B-2";
@@ -609,7 +609,7 @@ OnInit:
 }
 
 moc_prydn2.gat,127,47,0	script	#prydn_Secret_C-1	139,1,1,{
-	unittalk getcharid(3),"!?";
+	showmessage "!?","";
 	soundeffect "se_door02.wav", 0, 0;
 	hideonnpc "#prydn_Secret_C-1";
 	hideoffnpc "#prydn_Secret_C-2";
@@ -631,7 +631,7 @@ OnInit:
 }
 
 moc_prydn2.gat,133,75,0	script	#prydn_Secret_C-3	139,1,1,{
-	unittalk getcharid(3),"!?";
+	showmessage "!?","";
 	soundeffect "se_door02.wav", 0, 0;
 	hideonnpc "#prydn_Secret_C-3";
 	hideoffnpc "#prydn_Secret_C-4";
@@ -656,12 +656,12 @@ moc_prydn2.gat,29,88,0	script	#prydn_Secret_D-1	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
@@ -692,12 +692,12 @@ moc_prydn2.gat,45,87,0	script	#prydn_Secret_D-3	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
@@ -728,12 +728,12 @@ moc_prydn2.gat,29,172,0	script	#prydn_Secret_E-1	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
@@ -764,12 +764,12 @@ moc_prydn2.gat,47,196,0	script	#prydn_Secret_E-3	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
@@ -800,12 +800,12 @@ moc_prydn2.gat,156,196,0	script	#prydn_Secret_F-1	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
@@ -836,12 +836,12 @@ moc_prydn2.gat,174,172,0	script	#prydn_Secret_F-3	139,1,0,{
 OnTouch:
 	switch('flag) {
 	case 0:
-		unittalk getcharid(3),"?";
+		showmessage "?","";
 		set 'flag,1;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;
 	case 1:
-		unittalk getcharid(3),"!?";
+		showmessage "!?","";
 		set 'flag,2;
 		soundeffect "alarm_move.wav", 0, 0;
 		end;

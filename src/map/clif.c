@@ -10982,6 +10982,33 @@ void clif_GlobalMessage(struct block_list *bl, const char *message, int target)
 }
 
 /*==========================================
+ * グローバルメッセージ（対象指定）
+ *------------------------------------------
+ */
+void clif_GlobalMessage_id(struct block_list *bl, int id, const char *message, int target)
+{
+	unsigned char buf[256];
+	size_t len;
+
+	nullpo_retv(bl);
+
+	if(message == NULL)
+		return;
+
+	len = strlen(message)+1;
+	if(len > sizeof(buf) - 8)
+		len = sizeof(buf) - 8;
+
+	WBUFW(buf,0) = 0x8d;
+	WBUFW(buf,2) = (unsigned short)(len+8);
+	WBUFL(buf,4) = id;
+	strncpy(WBUFP(buf,8), message, len);
+	clif_send(buf, WBUFW(buf,2), bl, target);
+
+	return;
+}
+
+/*==========================================
  * グローバルメッセージ（マルチカラー）
  *------------------------------------------
  */

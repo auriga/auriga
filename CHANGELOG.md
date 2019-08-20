@@ -1,4 +1,15 @@
 ----------------------------------------
+//1358 [2019/08/21] by refis
+
+・ピラミッドナイトメア2Fの隠しワープ起動時の発言処理を修正（npc_quest_pryd_nm.sc）
+
+・スクリプト命令「mobuseskillpos」実装（script.c, script_ref.txt）
+
+・スクリプト関数「getnpcid」実装（script.c, script_ref.txt）
+
+・スクリプト命令「unittalk」で発言の可視対象を指定できるよう拡張（clif.*, script.c, script_ref.txt）
+
+----------------------------------------
 //1357 [2019/08/20] by refis
 
 ・サモナースキル[かくれる]使用中の挙動修正（clif.c）

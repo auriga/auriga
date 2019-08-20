@@ -2457,6 +2457,19 @@ AurigaNPCScript
 			<eff_id>が正の値の場合、スキル使用時に<eff_id>で指定したmob_talkを発言します。
 			<eff_id>が負の値の場合、スキル使用時に<eff_id>で指定したエモーションを出します。
 
+		mobuseskillpos命令
+			mobuseskillpos <object_id>,<skillid>,<skilllv>,<x>,<y>,<casttime>,<cast_cancel>;
+
+			object_id		数値
+			skillid			使用するスキルのID
+			skilllv			使用するスキルのLv
+			x,y				数値
+			casttime		詠唱時間（ms）
+			cast_cancel		0=中断不可, 1=中断可能
+
+			<object_id>で指定したモンスターに対し
+			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<x>,<y>の座標に使用させます。
+
 		areamobuseskill命令
 			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<eff_id>,<target>;
 
@@ -2487,13 +2500,18 @@ AurigaNPCScript
 			文字列型を使用するときは変数名にポストフィックスを忘れないで下さい。
 
 		unittalk命令
-			unittalk [<object_id>,]<message>;
+			unittalk [<object_id>,]<message>[,<flag>];
 
 			object_id	数値
 			message	文字列
+			flag	数値
 
-			<object_id>で指定したユニットにオープンチャットで発言させます。
+			<object_id>で指定したユニットに<flag>の範囲に対して<message>を発言させます。
 			<object_id>を省略した場合、発動させたNPCが発言します。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		pcblockmove命令
 			pcblockmove <flag>;
@@ -2745,11 +2763,22 @@ AurigaNPCScript
 			n		数値
 			charname	キャラクタ名(省略可)
 
-			キャラ情報をIDで返します(charnameが指定されていない場合は自分)。
+			キャラ情報を数値で返します。
+			<charname>が指定されていない場合は実行PCが対象です。
 			n=0	キャラID
-			n=1	パーティー
-			n=2	ギルド
+			n=1	パーティーID
+			n=2	ギルドID
 			n=3	アカウントID
+
+		getnpcid関数
+			getnpcid(<n>[,<npcname>])
+
+			n		数値
+			npcname	NPC名(省略可)
+
+			NPC情報を数値で返します。
+			<npcname>が指定されていない場合は実行NPCが対象です。
+			n=0	object_id
 
 		getcharname関数
 			getcharname(<char_id>)

@@ -3807,6 +3807,7 @@ int buildin_checkweight(struct script_state *st);
 int buildin_checkitemblank(struct script_state *st);
 int buildin_readparam(struct script_state *st);
 int buildin_getcharid(struct script_state *st);
+int buildin_getnpcid(struct script_state *st);
 int buildin_getcharname(struct script_state *st);
 int buildin_getpartyname(struct script_state *st);
 int buildin_getpartymember(struct script_state *st);
@@ -4067,6 +4068,7 @@ int buildin_active_montransform(struct script_state *st);
 int buildin_callmonster(struct script_state *st);
 int buildin_removemonster(struct script_state *st);
 int buildin_mobuseskill(struct script_state *st);
+int buildin_mobuseskillpos(struct script_state *st);
 int buildin_areamobuseskill(struct script_state *st);
 int buildin_getequipcardid(struct script_state *st);
 int buildin_setpartyinmap(struct script_state *st);
@@ -4129,6 +4131,7 @@ struct script_function buildin_func[] = {
 	{buildin_checkitemblank,"checkitemblank",""},
 	{buildin_readparam,"readparam","i*"},
 	{buildin_getcharid,"getcharid","i*"},
+	{buildin_getnpcid,"getnpcid","i*"},
 	{buildin_getcharname,"getcharname","i"},
 	{buildin_getpartyname,"getpartyname","i"},
 	{buildin_getpartymember,"getpartymember","i"},
@@ -4387,6 +4390,7 @@ struct script_function buildin_func[] = {
 	{buildin_callmonster,"callmonster","siiss*"},
 	{buildin_removemonster,"removemonster","i"},
 	{buildin_mobuseskill,"mobuseskill","iiiiiii"},
+	{buildin_mobuseskillpos,"mobuseskillpos","iiiiiii"},
 	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiii"},
 	{buildin_getequipcardid,"getequipcardid","ii"},
 	{buildin_setpartyinmap,"setpartyinmap","ii"},
@@ -6046,6 +6050,29 @@ int buildin_getcharid(struct script_state *st)
 			case 2: id = sd->status.guild_id;   break;
 			case 3: id = sd->status.account_id; break;
 		}
+	}
+	push_val(st->stack,C_INT,id);
+
+	return 0;
+}
+
+/*==========================================
+ * NPCのID取得
+ *------------------------------------------
+ */
+int buildin_getnpcid(struct script_state *st)
+{
+	int num, id = -1;
+	struct npc_data *nd;
+
+	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 )
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	else
+		nd = map_id2nd(st->oid);
+
+	switch(num) {
+		case 0: id = nd->bl.id; break;
 	}
 	push_val(st->stack,C_INT,id);
 
@@ -13223,6 +13250,37 @@ int buildin_mobuseskill(struct script_state *st)
 }
 
 /*==========================================
+ * モンスター設置スキル行使
+ *------------------------------------------
+ */
+int buildin_mobuseskillpos(struct script_state *st)
+{
+	struct mob_data *md;
+	int id,skillid,skilllv,x,y,casttime,cancel;
+
+	id       = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	skillid  = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	skilllv  = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x        = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y        = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	casttime = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	cancel   = conv_num(st,& (st->stack->stack_data[st->start+8]));
+
+	if((md = map_id2md(id)) == NULL)
+		return 0;
+	if(skillid <= 0 || skilllv <= 0)
+		return 0;
+
+	if(md->ud.skilltimer != -1)
+		unit_skillcastcancel(&md->bl,0);
+
+	if(skill_get_inf(skillid) & INF_GROUND)
+		unit_skilluse_pos2(&md->bl, x, y, skillid, skilllv, casttime, cancel);
+
+	return 0;
+}
+
+/*==========================================
  * 範囲指定モンスタースキル行使
  *------------------------------------------
  */
@@ -13416,12 +13474,14 @@ int buildin_unittalk(struct script_state *st)
 	struct block_list *bl;
 	struct script_data *data;
 	char *mes = NULL;
+	int flag = 0;
 
 	data = &(st->stack->stack_data[st->start+2]);
 	get_val(st,data);
 	if( isstr(data) ) {
 		bl = map_id2bl(st->oid);
 		mes = conv_str(st,data);
+		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	} else {
 		bl = map_id2bl(conv_num(st,data));
 
@@ -13430,15 +13490,28 @@ int buildin_unittalk(struct script_state *st)
 		if( isstr(data) ) {
 			mes = conv_str(st,data);
 		}
+		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	}
 
 	if(bl == NULL || mes == NULL)
 		return 0;
 
-	if(bl->type == BL_PC)	// グローバルメッセージ送信
-		clif_disp_overhead((struct map_session_data *)bl, mes);
-	else if(bl->m >= 0)
-		clif_GlobalMessage(bl, mes, AREA);
+	if(bl->type == BL_PC) {	// グローバルメッセージ送信
+		struct map_session_data *sd = (struct map_session_data *)bl;
+		if(flag)
+			clif_displaymessage(sd->fd, mes);
+		else
+			clif_disp_overhead(sd, mes);
+	}
+	else if(bl->m >= 0) {
+		if(flag) {
+			struct map_session_data *sd = script_rid2sd(st);
+			if(sd)
+				clif_GlobalMessage_id(&sd->bl, bl->id, mes, SELF);
+		}
+		else
+			clif_GlobalMessage(bl, mes, AREA);
+	}
 
 	return 0;
 }
