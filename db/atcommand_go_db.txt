@@ -29,3 +29,4 @@
 26,mal,malangdo.gat,143,119	// 26:mal#マラン島#
 27,ma,malaya.gat,281,211	// 27:ma#ポートマラヤ#
 28,mo,mora.gat,57,142		// 28:mora#レシア族の街 モーラ#
+29,lasa,lasagna.gat,321,222	// 29:lasa#港町ラザーニャ#

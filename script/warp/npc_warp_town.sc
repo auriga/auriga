@@ -2561,3 +2561,32 @@ ecl_hub01.gat,40,14,0	warp	eclagewarp1013	1,1,ecl_in03.gat,144,17
 ecl_in03.gat,144,14,0	warp	eclagewarp1014	1,1,ecl_hub01.gat,40,11
 ecl_hub01.gat,105,36,0	warp	eclagewarp1015	1,1,ecl_in01.gat,82,68
 ecl_in01.gat,138,17,0	warp	eclagewarp1016	1,1,ecl_hub01.gat,18,32
+
+
+
+//---ラザーニャ追加マップ
+
+
+//==============================================================
+// -----  ラザーニャ -----
+// lasagna.gat		港町ラザーニャ
+// conch_in.gat		コンキリエ号
+// -----
+// lasa_fild01.gat	ラビオル平原 01
+// lasa_fild02.gat	ラビオル森 01
+//==============================================================
+//港町ラザーニャ⇒ラビオル平原 01
+lasagna.gat,150,54,0	warp	lasagnawarp0501	2,2,lasa_fild01.gat,131,378
+lasagna.gat,327,51,0	warp	lasagnawarp0502	2,2,lasa_fild01.gat,344,371
+//港町ラザーニャ⇒ラビオル森 01
+lasagna.gat,358,91,0	warp	lasagnawarp0503	2,2,lasa_fild02.gat,20,98
+
+//港町ラザーニャ⇔コンキリエ号
+lasagna.gat,205,327,0	warp	lasagnawarp1001	2,2,conch_in.gat,55,61
+conch_in.gat,59,62,0	warp	lasagnawarp1002	2,2,lasagna.gat,205,324
+
+//コンキリエ号
+conch_in.gat,50,60,0	warp	lasagnawarp1003	2,2,conch_in.gat,30,60
+conch_in.gat,36,60,0	warp	lasagnawarp1004	2,2,conch_in.gat,54,60
+conch_in.gat,143,60,0	warp	lasagnawarp1005	2,2,conch_in.gat,165,60
+conch_in.gat,159,60,0	warp	lasagnawarp1006	2,2,conch_in.gat,138,60

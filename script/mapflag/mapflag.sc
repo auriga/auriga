@@ -135,6 +135,8 @@ cmd_in02.gat	mapflag	nopenalty	dummy
 cmd_in02.gat	mapflag	noicewall	dummy
 comodo.gat	mapflag	town	dummy
 comodo.gat	mapflag	nopenalty	dummy
+conch_in.gat	mapflag	nomemo	dummy
+conch_in.gat	mapflag	noteleport	dummy
 dali.gat	mapflag	town	dummy
 dali.gat	mapflag	nopenalty	dummy
 dali.gat	mapflag	nomemo	dummy
@@ -165,6 +167,13 @@ dicastes01.gat	mapflag	nopenalty	dummy
 dicastes02.gat	mapflag	nomemo	dummy
 dicastes02.gat	mapflag	town	dummy
 dicastes02.gat	mapflag	nopenalty	dummy
+do_tu01a.gat	mapflag	nomemo	dummy
+do_tu02a.gat	mapflag	nomemo	dummy
+do_tu03a.gat	mapflag	nomemo	dummy
+do_tu04a.gat	mapflag	nomemo	dummy
+do_tu05a.gat	mapflag	nomemo	dummy
+do_tu06a.gat	mapflag	nomemo	dummy
+do_tu07a.gat	mapflag	nomemo	dummy
 e_tower.gat	mapflag	nomemo	dummy
 e_tower.gat	mapflag	noteleport	dummy
 e_tower.gat	mapflag	nosave	SavePoint
@@ -497,6 +506,13 @@ kh_vila.gat	mapflag	noteleport	dummy
 kh_vila.gat	mapflag	nobranch	dummy
 kh_vila.gat	mapflag	nopenalty	dummy
 kh_vila.gat	mapflag	noicewall	dummy
+lasa_dun01.gat	mapflag	nomemo	dummy
+lasa_dun02.gat	mapflag	nomemo	dummy
+lasa_dun03.gat	mapflag	nomemo	dummy
+lasa_fild01.gat	mapflag	nomemo	dummy
+lasa_fild02.gat	mapflag	nomemo	dummy
+lasagna.gat	mapflag	town	dummy
+lasagna.gat	mapflag	nopenalty	dummy
 lhz_airport.gat	mapflag	nomemo	dummy
 lhz_airport.gat	mapflag	noteleport	dummy
 lhz_airport.gat	mapflag	nobranch	dummy
@@ -744,6 +760,8 @@ new_4-3.gat	mapflag	noteleport	dummy
 new_4-3.gat	mapflag	noreturn	dummy
 new_5-3.gat	mapflag	noteleport	dummy
 new_5-3.gat	mapflag	noreturn	dummy
+new_do1.gat	mapflag	noteleport	dummy
+new_do1.gat	mapflag	noreturn	dummy
 nif_fild01.gat	mapflag	nomemo	dummy
 nif_fild02.gat	mapflag	nomemo	dummy
 nif_in.gat	mapflag	nomemo	dummy

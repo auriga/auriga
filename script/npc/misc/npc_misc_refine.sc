@@ -1016,3 +1016,345 @@ payon.gat,143,165,7	duplicate(Repairer)	修理工	88
 geffen_in.gat,34,166,2	duplicate(Repairer)	修理工	86
 aldeba_in.gat,38,60,2	duplicate(Repairer)	修理工	86
 yuno_in01.gat,175,28,2	duplicate(Repairer)	修理工	86
+
+
+//=====================================================================
+//鍛冶職人NPC
+//  callfunc "BlackSmith","NPCName",SuccessEmotion,FalureEmotion;
+//--------------------------------------------------------------------
+
+function	script	BlackSmith	{
+	mes "["+getarg(0)+"]";
+	mes "俺は武器と防具を精錬する鍛冶屋だ。";
+	mes "今日はどうしたんだ？";
+	next;
+	switch(select("精錬する","精錬用品を買う","アイテムを修理する","話をやめる")) {
+	case 1:
+		break;
+	case 2:
+		if(checkitemblank()==0) {
+			mes "- 所持アイテムの種類数が -";
+			mes "- 多いため、アイテムを受けとる -";
+			mes "- ことができません。 -";
+			mes "- 所持アイテムを減らしてから -";
+			mes "- 再度話しかけてください。 -";
+			return;
+		}
+		mes "["+getarg(0)+"]";
+		mes "鉄や鋼鉄の武器を精錬する時に";
+		mes "使える金属が必要か？";
+		mes "1レベルの武器精錬に使える";
+		mes "^007777プラコン^000000 と";
+		mes "2レベルの武器精錬に使える";
+		mes "^007777エンベルタコン^000000 があるぞ。";
+		next;
+		mes "["+getarg(0)+"]";
+		mes "プラコンは1個200Zeny、";
+		mes "エンベルタコンは";
+		mes "1個1000Zenyだ。";
+		next;
+		switch(select("プラコン購入","エンベルタコン購入","他の金属はないか聞いてみる")) {
+		case 1:
+			set '@price,200;
+			set '@itemid,1010;
+			break;
+		case 2:
+			set '@price,1000;
+			set '@itemid,1011;
+			break;
+		case 3:
+			mes "["+getarg(0)+"]";
+			mes "1レベルと2レベルの武器より";
+			mes "レベルが高い武器を精錬するための";
+			mes "金属だな。";
+			mes "もう知っているかもしれないが､ ";
+			mes "オリデオコンとエルニウムは";
+			mes "手に入れるのがすごく難しくてな…。";
+			return;
+		}
+		mes "["+getarg(0)+"]";
+		mes "いくつ購入するんだ？";
+		mes "取り引きを中止したければ";
+		mes "「0」で頼む。";
+		while(1) {
+			next;
+			input '@num;
+			if('@num<=0) {
+				mes "["+getarg(0)+"]";
+				mes "取引中止だな。";
+				return;
+			}
+			if('@num>500) {
+				mes "["+getarg(0)+"]";
+				mes "500個以下で決めてくれ。";
+				continue;
+			}
+			break;	//while文抜ける
+		}
+		if(Zeny<'@price*'@num) {
+			mes "["+getarg(0)+"]";
+			mes "あれ？　お客さん……";
+			mes "お金が足りないね。";
+			mes "すまないが、うちも商売だから";
+			mes "損するわけにはいかないんだよ。";
+			return;
+		}
+		if(checkweight('@itemid,'@num)==0) {
+			mes "["+getarg(0)+"]";
+			mes "荷物が多いな。";
+			mes "持ち物を整理してから";
+			mes "また来てもらえるか？。";
+			return;
+		}
+		set Zeny,Zeny-'@price*'@num;
+		getitem '@itemid,'@num;
+		mes "["+getarg(0)+"]";
+		mes "確かに受け取ったぜ。";
+		mes "また来てくれよな。";
+		return;
+	case 3:
+		set '@num,getrepairableitemcount();
+		if('@num==0) {
+			mes "["+getarg(0)+"]";
+			mes "おいおい……";
+			mes "修理する必要のあるものなんて";
+			mes "一つも持っていないじゃないか。";
+			mes "はぁ……";
+			mes "お前のようなヤツが増えると";
+			mes "俺の商売もあがったりだよ……";
+			return;
+		}
+		set '@price,'@num*5000;
+		mes "["+getarg(0)+"]";
+		mes "ふむ……";
+		mes "お前が持っているアイテムで";
+		mes "損傷しているアイテムは";
+		mes '@num+ "だな。";
+		next;
+		mes "["+getarg(0)+"]";
+		mes "一つ修理するのに 5000 Zenyだから";
+		mes "全て直すと" +'@price+ "Zenyとなる。";
+		mes "修理するか？";
+		next;
+		if(select("お願いします","いいえ")==2) {
+			mes "["+getarg(0)+"]";
+			mes "俺は、アイテムが傷ついたまま";
+			mes "放って置かれるのが";
+			mes "たまらなく嫌いなんだ。";
+			mes "損傷したアイテムはすぐ直そうぜ。";
+			return;
+		}
+		if(Zeny<'@price) {
+			mes "["+getarg(0)+"]";
+			mes "お金が足りないようだ";
+			return;
+		}
+		set Zeny,Zeny-'@price;
+		repairitem;
+		mes "["+getarg(0)+"]";
+		mes "OK！";
+		mes "直ったな。";
+		mes "アイテムにも寿命があるってことを";
+		mes "覚えておくんだな。";
+		return;
+	case 4:
+		mes "["+getarg(0)+"]";
+		mes "そうかい。残念だな。";
+		mes "いつでも来てくれよな。";
+		return;
+	}
+	// 以下武具精練
+	mes "["+getarg(0)+"]";
+	mes "俺は武器と防具を精錬する鍛冶屋だ。";
+	mes "君が装備しているアイテムの中で";
+	mes "好きなものを精錬できるのだ。";
+	mes "どの装備アイテムを";
+	mes "精錬したいのかい？";
+	next;
+	set '@i,select(
+			getequipisequiped(1)? "^nItemID^"+getequipid(1): "",
+			getequipisequiped(2)? "^nItemID^"+getequipid(2): "",
+			getequipisequiped(3)? "^nItemID^"+getequipid(3): "",
+			getequipisequiped(4)? "^nItemID^"+getequipid(4): "",
+			getequipisequiped(5)? "^nItemID^"+getequipid(5): "",
+			getequipisequiped(6)? "^nItemID^"+getequipid(6): "",
+			"やっぱりやめる");
+	if('@i == 7) {
+		mes "[鍛冶職人]";
+		mes "また来るんだな。";
+		return;
+	}
+	mes "["+getarg(0)+"]";
+	if(getequipisenableref('@i)==0) {
+		mes "このアイテムは精錬不可能だ。";
+		return;
+	}
+	if(getequipisidentify('@i)==0) {
+		mes "これは未鑑定だから精錬できない。";
+		return;
+	}
+	if(getequiprefinerycnt('@i)>=10) {
+		mes "これ以上は精錬できないぞ。";
+		return;
+	}
+	//初回呼び出し時のみ料金とアイテムID、連続精練上限をそれぞれ格納
+	if('price[0]==0) {
+		setarray 'price,5000,100,500,5000,10000;
+		setarray 'itemid,985,1010,1011,984,984;
+		setarray 'max,4,7,6,5,4;
+	}
+	set '@wlv,getequipweaponlv('@i);
+	if(getequiprefinerycnt('@i)<'max) {
+		mes "この装備をどうするんだ？";
+		mes "安全圏内は一気に精錬出来るぜ。";
+		mes "一気に精錬するなら";
+		mes "安全圏分の素材とZenyが必要だ。";
+		next;
+		switch(select("精錬する","一気に精錬する","やめる")) {
+		case 1:
+			mes "["+getarg(0)+"]";
+			break;
+		case 2:
+			set '@num,'max - getequiprefinerycnt('@i);
+			mes "["+getarg(0)+"]";
+			mes "君が選んだ装備を精錬するには";
+			mes "^0000FF" +getitemname('itemid['@wlv])+ " " +'@num+ "個^000000と";
+			mes "^0000FF手数料 " +('price['@wlv]*'@num)+ "Zeny^000000が必要だ。";
+			mes "精錬を続けるかい？";
+			next;
+			if(select("はい","やっぱりやめる") == 2) {
+				mes "["+getarg(0)+"]";
+				mes "また来るんだな。";
+				return;
+			}
+			if(countitem('itemid['@wlv])<'@num || Zeny<'price['@wlv]*'@num) {
+				mes "["+getarg(0)+"]";
+				mes "それが君が持ってる全部かい？";
+				mes "残念だが、材料が足りないんじゃ";
+				mes "仕方がないな。";
+				mes "俺はただでやってやるほど";
+				mes "心が広くないからな。";
+				return;
+			}
+			for(set '@j,0; '@j<'@num; set '@j,'@j+1) {
+				if(getequippercentrefinery('@i) < 100) {
+					mes "["+getarg(0)+"]";
+					mes "何かがおかしいぞ？";
+					return;
+				}
+				delitem 'itemid['@wlv],1;
+				set Zeny,Zeny-'price['@wlv];
+				successrefitem '@i;
+			}
+			mes "["+getarg(0)+"]";
+			mes "さぁ出来たぞ。";
+			mes "持って行くと良い。";
+			return;
+			//closeで終了
+		case 3:
+			mes "[鍛冶職人]";
+			mes "また来るんだな。";
+			return;
+		}
+	}
+	switch('@wlv) {
+	case 0:
+		mes "君が選んだ装備を精錬するには";
+		mes "^ff9999エルニウム^000000と";
+		mes "手数料5000Zenyが必要だな。";
+		mes "続けるかい？";
+		break;
+	case 1:
+		mes "レベル1の武器を精錬したいのかい？";
+		mes "精錬するため、 ^ff9999プラコン^000000と";
+		mes "手数料100Zenyが必要だな。";
+		mes "続けるのか？";
+		break;
+	case 2:
+		mes "レベル2の武器を精錬したいのかい？";
+		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
+		mes "手数料500Zenyが必要だな。";
+		mes "続けるのか？";
+		break;
+	case 3:
+		mes "レベル3の武器を精錬したいのかい？";
+		mes "精錬するため、 ^ff9999オリデオコン^000000と";
+		mes "手数料5000Zenyが必要だな。";
+		mes "続けるのか？";
+		break;
+	case 4:
+		mes "レベル4の武器を精錬したいのかい？";
+		mes "精錬するため、 ^ff9999オリデオコン^000000と";
+		mes "手数料10000Zenyが必要だな。";
+		mes "続けるのか？";
+		break;
+	}
+	next;
+	if(select("はい","いいえ")==2) {
+		mes "["+getarg(0)+"]";
+		mes "君が嫌なら仕方がないだろう…";
+		return;
+	}
+	if(getequippercentrefinery('@i) < 100) {
+		mes "["+getarg(0)+"]";
+		if('@wlv==0) {	//防具のとき
+			mes "おおっと！この防具はもうたくさんの";
+			mes "精錬をしてきたみたいだな…これ以上";
+			mes "精錬したら防具が壊れるかも";
+			mes "しれないぞ。防具が壊れたら";
+		}
+		else {		//武器のとき
+			mes "おおっと！この武器はもうたくさんの";
+			mes "精錬をしてきたみたいだな…これ以上";
+			mes "精錬したら武器が壊れるかも";
+			mes "しれないぞ。武器が壊れたら";
+		}
+		mes "2度と使えなくなる…それでも";
+		mes "精錬をする気なのかい？";
+		next;
+		if(select("はい","いいえ")==2) {
+			mes "["+getarg(0)+"]";
+			mes "良い選択だな。";
+			mes "俺も無理して他人の武器を壊したら";
+			mes "気分が悪くなるからさ…";
+			return;
+		}
+	}
+	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+		mes "["+getarg(0)+"]";
+		mes "それが君が持ってる全部かい？";
+		mes "残念だが、材料が足りないんじゃ";
+		mes "仕方がないな。";
+		mes "俺はただでやってやるほど";
+		mes "心が広くないからな。";
+		return;
+	}
+	delitem 'itemid['@wlv],1;
+	set Zeny,Zeny-'price['@wlv];
+	mes "["+getarg(0)+"]";
+	mes "カン！ カン！ カン!!";
+	if(getequippercentrefinery('@i) > rand(100)) {
+		successrefitem '@i;
+		next;
+		emotion getarg(1);
+		mes "["+getarg(0)+"]";
+		mes "さあ、出来上ったよ！";
+		mes "久々に良い物ができた。";
+		mes "武具が強くなって君も嬉しいだろ？";
+	}
+	else {
+		failedrefitem '@i;
+		next;
+		emotion getarg(2);
+		mes "["+getarg(0)+"]";
+		mes "クホホホホ…";
+		next;
+		mes "["+getarg(0)+"]";
+		mes "すまん！";
+		mes "精錬中に武具が壊れてしまったな…";
+		mes "ほ、ほら、俺がやめろって";
+		mes "最初に言っただろう？";
+	}
+	return;
+	//closeで終了
+}

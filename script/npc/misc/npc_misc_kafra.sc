@@ -49,7 +49,7 @@
 //	17	アルデバラン（アジト）
 //	18	ラヘル（アジト）
 //	19	ウンバラ
-//	20	予備1
+//	20	マラン島
 //
 // ■ parse終了処理
 //	「カプラ配置案内」がある場合にはviewpointを付け加え、cutinを消す
@@ -121,7 +121,7 @@ function	script	KafraMain	{
 			setarray 'placename$,	"プロンテラ","イズルード","ゲフェン","フェイヨン","モロク","アルベルタ",
 						"オークダンジョン","アルデバラン","ミョルニール廃鉱","コモド","ファロス燈台島",
 						"コモドファロス燈台","ジュノー","プロンテラ","ゲフェン","フェイヨン","アルデバラン",
-						"ラヘル","ウンバラ","予備1";
+						"ラヘル","ウンバラ","マラン島";
 		}
 		for(set '@i,0; '@i<getarraysize('@price); set '@i,'@i+1)
 			set '@place$['@i],'placename$[ getelementofarray(getarg(10),'@i)-1 ] +" -> "+ '@price['@i] +" z";
@@ -167,8 +167,8 @@ function	script	KafraMain	{
 			case 17: warp "aldebaran.gat",132,103;	break;
 			case 18: warp "rachel.gat",115,125;	break;
 			case 19: warp "umbala",100,154;		break;
-			//予備
-			case 20: warp "SavePoint",0,0;		break;
+			//追加
+			case 20: warp "malangdo.gat",135,134;	break;
 		}
 		end;
 	}
@@ -1086,5 +1086,77 @@ prontera.gat,248,42,0	script	カプラ職員#ProSword	116,{
 izlu2dun.gat,106,58,4	script	カプラ職員#Byalan	116,{
 	cutin "kafra_02",2;
 	callfunc "KafraMain",0,0x1da,0,0,0,0,0,0,40,800;
+	end;
+}
+
+//----------------------------------
+// < 港町ラザーニャ >
+//----------------------------------
+
+lasagna.gat,300,242,4	script	カプラ職員#lasagna	117,5,5,{
+	cutin "kafra_01",2;
+	setarray '@code,1,2,20;
+	setarray '@price,0,0,0;
+	callfunc "KafraMain",1,0x1df,"lasagna.gat",298,239,"NULL",0,0,0,800,'@code,'@price;
+	close2;
+	cutin "kafra_01",255;
+	end;
+OnTouch:
+	if(DORAM_1QUE == 100) {
+		cutin "kafra_01",2;
+		mes "[カプラ職員]";
+		mes "ドラムの新米冒険者さん、";
+		mes "こんにちは。";
+		mes "こちらはカプラサービスです。";
+		set DORAM_1QUE,0;
+		next;
+		cutin "kafra_01",255;
+		mes "^009eff【インフォメーション】";
+		mes "各地にいるカプラサービスでは";
+		mes "位置セーブサービスや";
+		mes "倉庫サービス、";
+		mes "空間移動サービスなど、";
+		mes "冒険に必要なサポートを";
+		mes "受けることができます。^000000";
+		next;
+		cutin "do_su_025",3;
+		mes "^009eff【インフォメーション】";
+		mes "倉庫サービスは所持している";
+		mes "アイテムを倉庫に預けることが";
+		mes "できます。";
+		mes "預けたアイテムは種別ごとの";
+		mes "タブに分けられて保管されます。^000000";
+		next;
+		cutin "do_su_026",3;
+		mes "^009eff【インフォメーション】";
+		mes "倉庫に預けたアイテムは";
+		mes "別の場所の倉庫からも";
+		mes "取り出すことができます。";
+		mes "また、同じアカウント内の";
+		mes "別のキャラクターで";
+		mes "取り出すこともできます。^000000";
+		next;
+		cutin "kafra_01",2;
+		mes "[カプラ職員]";
+		mes "自警団のオリオさんが";
+		mes "新米冒険者さんが来たら";
+		mes "自分のところに来るように";
+		mes "伝えて欲しいと言っていました。";
+		next;
+		mes "[カプラ職員]";
+		mes "オリオさんは";
+		mes "ここから南東の広場にいます。";
+		mes "今後の冒険の方法について";
+		mes "レクチャーするとのことですので、";
+		mes "直接会ってお話を聞いてみては";
+		mes "いかがでしょうか？";
+		next;
+		cutin "kafra_01",255;
+		mes "^009eff【インフォメーション】";
+		mes "南東の広場にいる";
+		mes "オリオに話しかけましょう！^000000";
+		viewpoint 1,323,229,1,0xFF0000;
+		close;
+	}
 	end;
 }

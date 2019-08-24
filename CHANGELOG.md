@@ -1,4 +1,31 @@
 ----------------------------------------
+//1359 [2019/08/25] by refis
+
+・サモナー用チュートリアルクエスト実装（npc_job_49summoner.sc）
+
+・港町ラザーニャNPC実装（npc_town_lasagna.sc）
+
+・ラザーニャ関連NPC追加 (npc_misc_kafra.sc, npc_misc_pointshop.sc, npc_misc_refine.sc, npc_quest_hairstylist.sc)
+
+・ラザーニャ追加マップのwarp更新 (npc_warp_dun.sc, npc_warp_fild.sc, npc_warp_town.sc)
+
+・ラザーニャ追加マップのmapflag更新 (mapflag.sc)
+
+・ラザーニャ追加マップのmonster出現定義追加 (npc_monster_lasafild.sc, npc_monster_lasadun.sc)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・atcommand_go_dbの更新 (atcommand_go_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・ドラム族スタート地点を変更 (char_auriga.conf)
+
+・婚礼品NPCの販売リスト修正 (npc_town_prontera.sc, npc_town_lighthalzen.sc)
+
+----------------------------------------
 //1358 [2019/08/21] by refis
 
 ・ピラミッドナイトメア2Fの隠しワープ起動時の発言処理を修正（npc_quest_pryd_nm.sc）

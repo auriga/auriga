@@ -1314,3 +1314,27 @@ ecl_tdun01.gat,67,106,0	warp	eclagewarp4001	1,1,ecl_tdun02.gat,60,88
 ecl_tdun02.gat,60,90,0	warp	eclagewarp4002	1,1,ecl_tdun01.gat,70,105
 ecl_tdun02.gat,52,9,0	warp	eclagewarp4003	1,1,ecl_tdun03.gat,47,13
 ecl_tdun03.gat,49,11,0	warp	eclagewarp4004	1,1,ecl_tdun02.gat,50,11
+
+
+
+//---ラザーニャ追加マップ
+
+
+//==============================================================
+// -----  ラザーニャ -----
+// lasa_dun01.gat	龍の巣 01
+// lasa_dun02.gat	龍の巣 02
+// lasa_dun03.gat	龍の巣 03
+// -----
+// lasa_fild02.gat	ラビオル森 01
+//==============================================================
+//龍の巣 01⇒ラビオル森 01
+lasa_dun01.gat,18,143,0	warp	lasagnawarp0501	2,2,lasa_fild02.gat,344,243
+
+//龍の巣 01⇔龍の巣 02
+lasa_dun01.gat,157,98,0	warp	lasagnawarp4001	2,2,lasa_dun02.gat,22,171
+lasa_dun02.gat,18,171,0	warp	lasagnawarp4002	2,2,lasa_dun01.gat,153,98
+
+//龍の巣 02⇔龍の巣 03
+lasa_dun02.gat,146,58,0	warp	lasagnawarp4003	2,2,lasa_dun03.gat,190,18
+lasa_dun03.gat,190,15,0	warp	lasagnawarp4004	2,2,lasa_dun02.gat,146,54

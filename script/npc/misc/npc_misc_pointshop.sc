@@ -17,6 +17,7 @@ hugel.gat,83,150,3		substore(SpecialItemShopper)	スペシャルアイテム販売	73
 comodo.gat,198,149,4	substore(SpecialItemShopper)	スペシャルアイテム販売	73
 rachel.gat,132,144,2	substore(SpecialItemShopper)	スペシャルアイテム販売	73
 mid_camp.gat,59,130,4	substore(SpecialItemShopper)	スペシャルアイテム販売	73
+lasagna.gat,346,244,6	substore(SpecialItemShopper)	スペシャルアイテム販売	73
 
 //============================================================
 // デフォルトカラーチケット, エクストラカラーチケット

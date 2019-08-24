@@ -1560,3 +1560,25 @@ ecl_fild01.gat,182,82,0	warp	eclagewarp0401	1,1,ecl_tdun01.gat,60,13
 
 //花が咲き始めた大地⇒ビフロストフィールド 02
 ecl_fild01.gat,207,72,0	warp	eclagewarp0501	1,1,bif_fild02.gat,294,350
+
+
+
+//---ラザーニャ追加マップ
+
+
+//==============================================================
+// -----  ラザーニャ -----
+// lasa_fild01.gat	ラビオル平原 01
+// lasa_fild02.gat	ラビオル森 01
+// -----
+// lasagna.gat		港町ラザーニャ
+// lasa_dun01.gat	龍の巣 01
+//==============================================================
+//ラビオル平原 01⇒港町ラザーニャ
+lasa_fild01.gat,134,381,0	warp	lasagnawarp0101	2,2,lasagna.gat,153,58
+lasa_fild01.gat,341,375,0	warp	lasagnawarp0102	2,2,lasagna.gat,327,56
+//ラビオル森 01⇒港町ラザーニャ
+lasa_fild02.gat,16,98,0		warp	lasagnawarp0103	2,2,lasagna.gat,355,92
+
+//ラビオル森 01⇒龍の巣 01
+lasa_fild02.gat,348,244,0	warp	lasagnawarp0401	2,2,lasa_dun01.gat,24,143
