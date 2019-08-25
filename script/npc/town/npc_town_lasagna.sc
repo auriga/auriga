@@ -62,6 +62,52 @@ lasagna.gat,305,242,4	script	治療師ハル	10164,{
 //============================================================
 // 転送NPC
 //============================================================
+izlude.gat,181,187,3	script	ドラム船員#izlude	544,{
+	mes "[ドラム船員]";
+	mes "ミッドガルド大陸から";
+	mes "パースタ大陸へ！";
+	mes "港町ラザーニャまで";
+	mes "^0000cd500Zeny^000000でご案内！";
+	next;
+	if(select("ラザーニャ -> 500 z","やめる") == 2) {
+		mes "[ドラム船員]";
+		mes "わかりました";
+		close;
+	}
+	if(Zeny < 500) {
+		mes "[ドラム船員]";
+		mes "Zenyが足りないんですが？";
+		mes "所持金を確認していただけますか？";
+		close;
+	}
+	set Zeny,Zeny-500;
+	warp "lasagna.gat",206,297;
+	end;
+}
+
+malangdo.gat,218,81,0	script	ドラム船員#malangdo	544,{
+	mes "[ドラム船員]";
+	mes "マラン島から";
+	mes "パースタ大陸へ！";
+	mes "港町ラザーニャまで";
+	mes "^0000cd500Zeny^000000でご案内！";
+	next;
+	if(select("ラザーニャ -> 500 z","やめる") == 2) {
+		mes "[ドラム船員]";
+		mes "わかりました";
+		close;
+	}
+	if(Zeny < 500) {
+		mes "[ドラム船員]";
+		mes "Zenyが足りないんですが？";
+		mes "所持金を確認していただけますか？";
+		close;
+	}
+	set Zeny,Zeny-500;
+	warp "lasagna.gat",206,297;
+	end;
+}
+
 lasagna.gat,203,324,5	script	エッグリン#do_tu02	10157,{
 	mes "[エッグリン]";
 	if(Job == Job_Summoner) {

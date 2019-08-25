@@ -144,11 +144,16 @@ function	script	ac_map_info	{
 -	script	アカデミー関係者#func	-1,{
 	function WARP_ACADEMY;
 	function JOIN_ACADEMY;
+	function DORAM_ACADEMY;
 
 	set '@novice,callfunc("AC_GetNovice");
 	set '@gatname$,getmapname("");
 	while ('save_gatname$['@mapnumber]!='@gatname$) set '@mapnumber,'@mapnumber+1;
 
+	if(Job == Job_Summoner){ // ドラム族専用
+		DORAM_ACADEMY;
+		end;
+	} else
 	if (AC_PASSPORT==0){ // 未入学
 		JOIN_ACADEMY;
 		end;
@@ -336,6 +341,56 @@ function	script	ac_map_info	{
 		}
 		WARP_ACADEMY;
 		return;
+	}
+
+	function	DORAM_ACADEMY	{
+		mes "[アカデミー関係者]";
+		mes "こんにちは。";
+		mes "今、新入生を募集してるんだ。";
+		mes "ドラムの君は冒険者アカデミーに";
+		mes "入学することはできないが、";
+		mes "見学するのは自由だよ。";
+		mes "見学していくかい？";
+		next;
+		switch(select("見学しない","見学する","冒険者アカデミーとは？")) {
+		case 1:
+			mes "[アカデミー関係者]";
+			mes "そうか。";
+			mes "残念だ。";
+			close;
+		case 2:
+			set AC_SAVE_MAP, '@mapnumber;
+			mes "[アカデミー関係者]";
+			mes "それじゃ、冒険者アカデミーに";
+			mes "転送するね。";
+			mes "　";
+			mes "‐アカデミーの登録地点が";
+			mes "^FF0000" +'save_mapname$[AC_SAVE_MAP]+ "^000000になりました‐";
+			close2;
+			warp "ac_cl_room.gat",44,32;
+			end;
+		case 3:
+			mes "[アカデミー関係者]";
+			mes "冒険者アカデミーは冒険者たちの";
+			mes "サポートを行う学校だよ。";
+			mes "冒険者アカデミーは寄付金で";
+			mes "成り立っているんだ。";
+			mes "アカデミーに入学することで、";
+			mes "いろいろな知識が学べるんだよ。";
+			next;
+			mes "[アカデミー関係者]";
+			mes "冒険中の困難なできごとも、";
+			mes "アカデミーにいる先生や先輩達に";
+			mes "聞けば、すぐに解決するはずさ。";
+			next;
+			mes "[アカデミー関係者]";
+			mes "冒険に必要なことを学んでいくことで";
+			mes "いろんな特典が得られるんだ。";
+			mes "　";
+			mes "冒険者を全面的にサポートする学校、";
+			mes "それが冒険者アカデミーなのさ。";
+			close;
+		}
 	}
 
 OnTouch:

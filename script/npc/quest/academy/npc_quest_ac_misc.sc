@@ -69,7 +69,7 @@ OnInit:
 // 冒険者アカデミー専用Lv判定
 //  未転生1次職、BaseLevelが55未満 ならば真を返す。
 function	script	AC_GetNovice	{
-	return (BaseLevel<=55 && Upper!=1 && (Job<=6 || Job==Job_TaeKwon || Job==Job_Gunslinger || Job==Job_Ninja || Job==Job_SuperNovice));
+	return (BaseLevel<=55 && Upper!=1 && Job!=Job_Summoner && (Job<=6 || Job==Job_TaeKwon || Job==Job_Gunslinger || Job==Job_Ninja || Job==Job_SuperNovice));
 }
 
 //----------------------------------
@@ -130,23 +130,23 @@ function	script	AC_NoviceInfo	{
 	return;
 }
 
-prontera.gat,146,51,0	script	#GT_07	139,5,5{
+prontera.gat,146,51,0	script	#GT_07	139,5,5,{
 OnTouch:
 	callfunc "AC_NoviceInfo","‐ここは首都^0000FFプロンテラ^000000‐",153,192;
 }
-geffen.gat,120,79,0	script	#GT_02	139,5,5{
+geffen.gat,120,79,0	script	#GT_02	139,5,5,{
 OnTouch:
 	callfunc "AC_NoviceInfo","‐ここは魔法都市^0000FFゲフェン^000000‐",116,109;
 }
-morocc.gat,156,94,0	script	#GT_03	139,5,5{
+morocc.gat,156,94,0	script	#GT_03	139,5,5,{
 OnTouch:
 	callfunc "AC_NoviceInfo","‐ここは砂漠の都市^0000FFモロク^000000‐",147,101;
 }
-payon.gat,166,67,0	script	#GT_04	139,5,5{
+payon.gat,166,67,0	script	#GT_04	139,5,5,{
 OnTouch:
 	callfunc "AC_NoviceInfo","‐ここは山岳都市^0000FFフェイヨン^000000‐",159,205;
 }
-alberta.gat,114,58,0	script	#GT_05	139,5,5{
+alberta.gat,114,58,0	script	#GT_05	139,5,5,{
 OnTouch:
 	callfunc "AC_NoviceInfo","‐ここは港街^0000FFアルベルタ^000000‐",107,132;
 }
@@ -423,9 +423,6 @@ ac_cl_area.gat,41,145,4	script	カプラサービス	888,{
 		mes "‐利用するのをやめた‐";
 		close;
 	}
-	end;
-OnInit:
-	waitingroom "カプラサービス", 0;
 	end;
 }
 

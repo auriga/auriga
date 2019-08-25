@@ -94,7 +94,7 @@ ac_spec_03.gat,105,78		warp	acpracwp13		1,1,ac_cl_area.gat,53,181
 // 確認メッセージ付きWARP
 
 ac_cl_area.gat,71,74,0	script	#教室棟2F_warp1	45,1,1,{/* 52554 */
-	if(!(AC_HINT_01 & 0x1)){
+	if(!(AC_HINT_01 & 0x1) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟1F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -113,7 +113,7 @@ ac_cl_area.gat,71,74,0	script	#教室棟2F_warp1	45,1,1,{/* 52554 */
 }
 
 ac_cl_area.gat,71,14,0	script	#教室棟2F_warp2	45,1,1,{/* 52555 */
-	if(!(AC_HINT_01 & 0x1)){
+	if(!(AC_HINT_01 & 0x1) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟1F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -132,7 +132,7 @@ ac_cl_area.gat,71,14,0	script	#教室棟2F_warp2	45,1,1,{/* 52555 */
 }
 
 ac_cl_room.gat,152,18,0	script	#自習室_warp1	45,1,1,{/* 52556 */
-	if(!(AC_HINT_01 & 0x2)){
+	if(!(AC_HINT_01 & 0x2) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟1F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -151,7 +151,7 @@ ac_cl_room.gat,152,18,0	script	#自習室_warp1	45,1,1,{/* 52556 */
 }
 
 ac_cl_area.gat,30,185,0	script	#教室棟1F_warp1	45,1,1,{/* 52557 */
-	if(!(AC_HINT_01 & 0x4)){
+	if(!(AC_HINT_01 & 0x4) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟2F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -170,7 +170,7 @@ ac_cl_area.gat,30,185,0	script	#教室棟1F_warp1	45,1,1,{/* 52557 */
 }
 
 ac_cl_area.gat,35,176,0	script	#教室棟1F_warp2	45,1,1,{/* 52558 */
-	if(!(AC_HINT_01 & 0x8)){
+	if(!(AC_HINT_01 & 0x8) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000自習室^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -189,6 +189,12 @@ ac_cl_area.gat,35,176,0	script	#教室棟1F_warp2	45,1,1,{/* 52558 */
 }
 
 ac_cl_area.gat,35,133,0	script	#教室棟1F_warp3	45,1,1,{/* 52559 */
+	if(Job == Job_Summoner) {
+		mes "[インフォメーション]";
+		mes "‐ドラム族はこの先に";
+		mes "　進むことができません‐";
+		close;
+	}
 	if(!(AC_HINT_01 & 0x10)){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000受付・講習室^000000です‐";
@@ -208,7 +214,7 @@ ac_cl_area.gat,35,133,0	script	#教室棟1F_warp3	45,1,1,{/* 52559 */
 }
 
 ac_cl_area.gat,30,125,0	script	#教室棟1F_warp4	45,1,1,{/* 52560 */
-	if(!(AC_HINT_01 & 0x20)){
+	if(!(AC_HINT_01 & 0x20) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟2F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -227,7 +233,7 @@ ac_cl_area.gat,30,125,0	script	#教室棟1F_warp4	45,1,1,{/* 52560 */
 }
 
 ac_cl_area.gat,76,156,0	script	#教室棟1F_warp5	45,1,1,{/* 52561 */
-	if(!(AC_HINT_01 & 0x40)){
+	if(!(AC_HINT_01 & 0x40) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟ホール^000000です‐";
 		mes "‐武器・防具などの販売や";
@@ -249,7 +255,7 @@ ac_cl_area.gat,76,156,0	script	#教室棟1F_warp5	45,1,1,{/* 52561 */
 }
 
 ac_cl_hall.gat,167,72,0	script	#教室ホール_warp1	45,1,1,{/* 52562 */
-	if(!(AC_HINT_01 & 0x80)){
+	if(!(AC_HINT_01 & 0x80) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟1F^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -268,7 +274,7 @@ ac_cl_hall.gat,167,72,0	script	#教室ホール_warp1	45,1,1,{/* 52562 */
 }
 
 ac_cl_hall.gat,167,19,0	script	#教室ホール_warp5	45,1,1,{/* 52563 */
-	if(!(AC_HINT_01 & 0x100)){
+	if(!(AC_HINT_01 & 0x100) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000エントランスホール^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -287,7 +293,7 @@ ac_cl_hall.gat,167,19,0	script	#教室ホール_warp5	45,1,1,{/* 52563 */
 }
 
 ac_en_hall.gat,54,13,0	script	#入り口_warp1	45,1,1,{/* 52564 */
-	if(!(AC_HINT_01 & 0x200)){
+	if(!(AC_HINT_01 & 0x200) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000教室棟ホール^000000です‐";
 		mes "‐このまま進みますか？‐";
@@ -328,7 +334,7 @@ ac_en_hall.gat,97,7,0	script	#入り口_warp2	45,1,1,{/* 52565 */
 }
 
 ac_en_hall.gat,143,13,0	script	#入り口_warp3	45,1,1,{/* 52566 */
-	if(!(AC_HINT_01 & 0x400)){
+	if(!(AC_HINT_01 & 0x400) && Job!=Job_Summoner){
 		mes "[インフォメーション]";
 		mes "‐この先は^FF0000図書室^000000です‐";
 		mes "‐このまま進みますか？‐";

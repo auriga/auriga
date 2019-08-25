@@ -11,6 +11,13 @@ ac_cl_room.gat,43,41,4	script	受付員エーラ#エーラ	90,{
 	function getcombathan;
 	set '@novice, callfunc("AC_GetNovice");
 
+	if(Job==Job_Summoner) {
+		mes "[エーラ]";
+		mes "ドラムさんですね。";
+		mes "冒険者アカデミーへようこそ！";
+		mes "ゆっくり見学していってくださいね。";
+		close;
+	}
 	if(AC_PASSPORT>=2){
 		if(Job!=Job_Novice) {
 			mes "[エーラ]";
@@ -4828,6 +4835,18 @@ ac_cl_room.gat,37,32,4	script	マスター・スヌス	51,{
 		mes "すませるんだ。";
 		close;
 	}
+	if(checkquest(201036)) {
+		mes "‐男はなにやら忙しそうである‐";
+		next;
+		mes "‐インフォメーション‐";
+		//mes "　^FF00002015年5月26日";
+		//mes "　定期メンテナンス以前に";
+		//mes "　「分厚い戦闘教範」を";
+		//mes "　受け取っている場合、";
+		mes "　こちらのNPCを";
+		mes "　利用することができません‐";
+		close;
+	}
 	mes "[マスター・スヌス]";
 	// 挨拶分岐未調査
 	if(gettime(3) >= 5 && gettime(3) <= 10)
@@ -4920,9 +4939,11 @@ ac_cl_room.gat,37,32,4	script	マスター・スヌス	51,{
 					// 個数分岐未調査
 					if(BaseLevel < 30)
 						getitem 569, 100;
-					else if(BaseLevel < 60)
+					else if(BaseLevel < 50)
+						getitem 569, 200;
+					else if(BaseLevel < 70)
 						getitem 569, 300;
-					else if(BaseLevel < 80)
+					else if(BaseLevel < 90)
 						getitem 569, 500;
 					else
 						getitem 569, 1000;
