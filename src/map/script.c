@@ -6071,8 +6071,10 @@ int buildin_getnpcid(struct script_state *st)
 	else
 		nd = map_id2nd(st->oid);
 
-	switch(num) {
-		case 0: id = nd->bl.id; break;
+	if(nd) {
+		switch(num) {
+			case 0: id = nd->bl.id; break;
+		}
 	}
 	push_val(st->stack,C_INT,id);
 
