@@ -836,6 +836,11 @@
 27022,Unknown_Item,[ECO] サラマンダー・アルマカード,0
 27023,Unknown_Item,[ECO] モーモー・アルマカード,0
 27024,Unknown_Item,[ECO] ミニー・ドゥ・アルマカード,1
+27026,Unknown_Item,フレイムコンドルカード,0
+27027,Unknown_Item,フレイムサンドマンカード,0
+27028,Unknown_Item,フレイムフリルドラカード,0
+27029,Unknown_Item,フレイムゴーレムカード,1
+27030,Unknown_Item,フレイムバグカード,0
 27031,Unknown_Item,迷宮のバフォメットカード,1
 27032,Unknown_Item,迷宮のドラキュラカード,1
 27033,Unknown_Item,不滅の呪われた騎士カード,0
@@ -886,6 +891,14 @@
 27078,Unknown_Item,シャドウチェイサーガーティーカード,0
 27079,Unknown_Item,ワンダラートレンティーニカード,0
 27080,Unknown_Item,ミンストレルアルフォシオカード,0
+27081,Unknown_Item,怒りの月夜花カード,0
+27082,Unknown_Item,怒りの九尾狐カード,0
+27083,Unknown_Item,怨恨のボンゴンカード,1
+27084,Unknown_Item,怨恨のソヒーカード,0
+27085,Unknown_Item,怨恨のムナックカード,0
+27086,Unknown_Item,怨恨のAスケルトンカード,1
+27087,Unknown_Item,真理の魔法使いカード,0
+27088,Unknown_Item,狂乱した冒険者カード,0
 27089,Unknown_Item,T W Oカード,0
 27090,Unknown_Item,DR815カード,0
 27091,Unknown_Item,GC109カード,0
@@ -898,6 +911,15 @@
 27098,Unknown_Item,修理型ウェルスギアカード,1
 27099,Unknown_Item,探査型ウェルスギアカード,1
 27100,Unknown_Item,クラップカード,0
+27101,Unknown_Item,スウィートナイトメアカード,0
+27102,Unknown_Item,マットドレインリアーカード,1
+27103,Unknown_Item,安らぎを奪われし者達カード,0
+27104,Unknown_Item,怒りのドラキュラカード,0
+27105,Unknown_Item,ボミカード,0
+27110,Unknown_Item,怒りのゲイズティカード,1
+27111,Unknown_Item,怒りのスノウアーカード,0
+27112,Unknown_Item,怒りのアイスタイタンカード,0
+27113,Unknown_Item,覚醒クトルラナックスカード,0
 27127,Unknown_Item,古王グローザカード,0
 27128,Unknown_Item,深層の古王グローザカード,0
 27129,Unknown_Item,正義のカード,1
@@ -920,6 +942,42 @@
 27146,Unknown_Item,CUTIEカード,1
 27155,Unknown_Item,キャンサー,0
 27156,Unknown_Item,タウロス,0
+27185,Unknown_Item,ラウンドライダーカード,0
+27186,Unknown_Item,サイドライダーカード,0
+27187,Unknown_Item,ブレードライダーカード,0
+27188,Unknown_Item,トップラウンドライダーカード,1
+27189,Unknown_Item,トップサイドライダーカード,1
+27190,Unknown_Item,コヨーテカード,0
+27191,Unknown_Item,ガスターカード,0
+27192,Unknown_Item,トップブレードライダーカード,0
+27194,Unknown_Item,カニバラウスカード,0
+27195,Unknown_Item,プラズマラットカード,0
+27204,Unknown_Item,ジェミニ,0
+27205,Unknown_Item,サジタリウス,0
+27223,Unknown_Item,エッグリンカード,0
+27226,Unknown_Item,偵察バジルリスクカード,0
+27227,Unknown_Item,突撃バジルリスクカード,0
+27228,Unknown_Item,ビッグエッグリンカード,0
+27229,Unknown_Item,リーフルナティックカード,0
+27230,Unknown_Item,グラスファブルカード,0
+27231,Unknown_Item,ワイルドホーネットカード,0
+27232,Unknown_Item,スウィートフロッグカード,0
+27233,Unknown_Item,ハンターウルフカード,0
+27234,Unknown_Item,トランススポアカード,0
+27235,Unknown_Item,ジャングルマンドラゴラカード,0
+27236,Unknown_Item,フルーツポムスパイダーカード,0
+27237,Unknown_Item,女王フェイスワームカード,1
+27238,Unknown_Item,フェイスワームカード,0
+27239,Unknown_Item,ダークフェイスワームカード,0
+27240,Unknown_Item,フェイスワームの卵カード,0
+27241,Unknown_Item,フェイスワームの幼虫カード,0
+27242,Unknown_Item,大長老アイリンカード,0
+27243,Unknown_Item,フェイヨン警備兵&フェイヨン守護兵カード,0
+27244,Unknown_Item,ペル&キスミー・ペルカード,0
+27245,Unknown_Item,シンギング・ペル&スイング・ペルカード,0
+27246,Unknown_Item,ジターバグカード,0
+27247,Unknown_Item,fff・ジターバグカード,0
+27248,Unknown_Item,サラの幻影カード,0
 29042,Unknown_Item,エナジー<守護竜>,2
 29043,Unknown_Item,エナジー<戦乙女>,2
 29044,Unknown_Item,エナジー<烈風>,2
