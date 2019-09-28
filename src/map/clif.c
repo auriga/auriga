@@ -13046,8 +13046,8 @@ void clif_party_main_info(struct party *p, int fd)
 	memcpy(WBUFP(buf,offset+15), p->name, 24);
 	memcpy(WBUFP(buf,offset+39), p->member[i].name, 24);
 	memcpy(WBUFP(buf,offset+63), p->member[i].map, 13);
-	WBUFB(buf,79) = (p->item&1)? 1: 0;
-	WBUFB(buf,80) = (p->item&2)? 1: 0;
+	WBUFB(buf,offset+79) = (p->item&1)? 1: 0;
+	WBUFB(buf,offset+80) = (p->item&2)? 1: 0;
 
 	if(fd >= 0){	// fd‚ªİ’è‚³‚ê‚Ä‚é‚È‚ç‚»‚ê‚É‘—‚é
 		memcpy(WFIFOP(fd,0),buf,packet_db[cmd].len);

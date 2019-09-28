@@ -329,8 +329,8 @@ int mapif_parse_PartyAddMember(int fd,int party_id,int account_id,int char_id,co
 			p2.member[i].map[15] = '\0';	// force \0 terminal
 			p2.member[i].leader  = 0;
 			p2.member[i].online  = 1;
-			p2.member[i].lv=lv;
-			p2.member[i].lv=class_;
+			p2.member[i].lv      = lv;
+			p2.member[i].class_  = class_;
 			mapif_party_memberadded(fd, party_id, account_id, char_id, nick, 0);
 			mapif_party_info(-1,&p2);
 
