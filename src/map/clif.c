@@ -17884,7 +17884,7 @@ void clif_dressing_room(struct map_session_data *sd, int view)
  * clif_hat_effects•¡”‘—M
  *------------------------------------------
  */
-void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, enum send_target target)
+void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int target)
 {
 #if PACKETVER >= 20150513
 	unsigned char* buf;

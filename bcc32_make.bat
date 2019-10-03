@@ -157,7 +157,7 @@ if "%__ZLIB__%"=="" goto NOZLIB
 set __common__=..\common\zlib\*.c
 :NOZLIB
 set __common__=..\common\*.c %__common__%
-set __lualib__=-L..\common\lua lualib.lib
+set __lualib__=-L..\common\lua ..\common\lua\lualib.lib
 
 if "%__base__%"=="" (set __dbmode__=sql) else (set __dbmode__=txt)
 
@@ -181,8 +181,8 @@ set __warning__=-w-8004 -w-8008 -w-8012 -w-8057 -w-8060 -w-8066
 
 @echo luaコンパイル
 cd src\common\lua
-bcc32 -j255 -c *.c
-tlib lualib.lib /a *.obj
+bcc32 -j255 -c %__warning__% *.c
+tlib lualib.lib +lapi +lauxlib +lbaselib +lcode +ldblib +ldebug +ldo +ldump +lfunc +lgc +linit +liolib +llex +lmathlib +lmem +loadlib +lobject +lopcodes +loslib +lparser +lstate +lstring +lstrlib +ltable +ltablib +ltm +lua +luac +lundump +lvm +lzio +print.obj
 
 @echo ログインサーバーコンパイル
 cd ..\..\login
