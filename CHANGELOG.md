@@ -1,4 +1,13 @@
 ----------------------------------------
+//1366 [2019/10/03] by refis
+
+・マスター・スヌスの職業チェック修正 (npc_quest_ac_entrance.sc)
+	Thanks rinaserver さん
+
+・スクリプト命令「unittalk」の排他チェック強化 (script.c)
+	Thanks rinaserver さん、Dallen さん
+
+----------------------------------------
 //1365 [2019/10/03] by refis
 
 ・BCCコンパイル時に存在しないenumのエラーが発生していたのを修正 (clif.*)

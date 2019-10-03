@@ -5320,7 +5320,7 @@ ac_cl_room.gat,37,32,4	script	マスター・スヌス	51,{
 	case 6:
 		if(countitem(25019) == 0) close;
 
-		switch(getbaseclass(Class)) {
+		switch(getbaseclass(Class,2)) {
 		case CLASS_KN: set '@itemid,5950; break;
 		case CLASS_CR: set '@itemid,2606; break;
 		case CLASS_WZ: set '@itemid,5951; break;

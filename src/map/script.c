@@ -13483,7 +13483,8 @@ int buildin_unittalk(struct script_state *st)
 	if( isstr(data) ) {
 		bl = map_id2bl(st->oid);
 		mes = conv_str(st,data);
-		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		if( st->end > st->start+3 )
+			flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	} else {
 		bl = map_id2bl(conv_num(st,data));
 
@@ -13492,7 +13493,8 @@ int buildin_unittalk(struct script_state *st)
 		if( isstr(data) ) {
 			mes = conv_str(st,data);
 		}
-		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
+		if( st->end > st->start+4 )
+			flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	}
 
 	if(bl == NULL || mes == NULL)
