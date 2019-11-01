@@ -1,4 +1,13 @@
 ----------------------------------------
+//1367 [2019/11/02] by refis
+
+・PACKETVER[20161228]の定義抜けを修正 (packet_db.txt)
+	Thanks Dallen さん
+
+・clif_skill_setunitの定義更新漏れを修正 (clif.c)
+	Thanks Dallen さん
+
+----------------------------------------
 //1366 [2019/10/03] by refis
 
 ・マスター・スヌスの職業チェック修正 (npc_quest_ac_entrance.sc)

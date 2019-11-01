@@ -10466,7 +10466,7 @@ void clif_skill_setunit(struct skill_unit *unit)
 		WBUFB(buf,15)=1;
 		clif_send(buf,packet_db[0x11f].len,&unit->bl,AREA);
 	}
-#else
+#elif PACKETVER < 20120925
 	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
 		WBUFW(buf, 0)=0x1c9;
 		WBUFL(buf, 2)=unit->bl.id;
@@ -10499,6 +10499,77 @@ void clif_skill_setunit(struct skill_unit *unit)
 			WBUFB(buf,17)=0;
 		}
 		WBUFB(buf,18)=1;
+		clif_send(buf,WBUFW(buf,2),&unit->bl,AREA);
+	}
+#elif PACKETVER < 20130731
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
+		WBUFW(buf, 0)=0x1c9;
+		WBUFL(buf, 2)=unit->bl.id;
+		WBUFL(buf, 6)=unit->group->src_id;
+		WBUFW(buf,10)=unit->bl.x;
+		WBUFW(buf,12)=unit->bl.y;
+		WBUFB(buf,14)=unit->group->unit_id;
+		WBUFB(buf,15)=1;
+		WBUFB(buf,16)=1;
+		memcpy(WBUFP(buf,17),unit->group->valstr,80);
+		clif_send(buf,packet_db[0x1c9].len,&unit->bl,AREA);
+	} else {
+		struct block_list *src = map_id2bl(unit->group->src_id);
+
+		WBUFW(buf, 0)=0x99f;
+		WBUFW(buf, 2)=22;
+		WBUFL(buf, 4)=unit->bl.id;
+		WBUFL(buf, 8)=unit->group->src_id;
+		WBUFW(buf,12)=unit->bl.x;
+		WBUFW(buf,14)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WBUFL(buf,16)=UNT_ATTACK_SKILLS;
+		else
+			WBUFL(buf,16)=unit->group->unit_id;
+		if(src && src->type == BL_PC) {
+			struct map_session_data *sd = (struct map_session_data *)src;
+
+			WBUFB(buf,20)= pc_checkskill(sd,WL_RADIUS);
+		} else {
+			WBUFB(buf,20)=0;
+		}
+		WBUFB(buf,21)=1;
+		clif_send(buf,WBUFW(buf,2),&unit->bl,AREA);
+	}
+#else
+	if(unit->group->unit_id == UNT_GRAFFITI) {	// グラフィティ
+		WBUFW(buf, 0)=0x1c9;
+		WBUFL(buf, 2)=unit->bl.id;
+		WBUFL(buf, 6)=unit->group->src_id;
+		WBUFW(buf,10)=unit->bl.x;
+		WBUFW(buf,12)=unit->bl.y;
+		WBUFB(buf,14)=unit->group->unit_id;
+		WBUFB(buf,15)=1;
+		WBUFB(buf,16)=1;
+		memcpy(WBUFP(buf,17),unit->group->valstr,80);
+		clif_send(buf,packet_db[0x1c9].len,&unit->bl,AREA);
+	} else {
+		struct block_list *src = map_id2bl(unit->group->src_id);
+
+		WBUFW(buf, 0)=0x9ca;
+		WBUFW(buf, 2)=23;
+		WBUFL(buf, 4)=unit->bl.id;
+		WBUFL(buf, 8)=unit->group->src_id;
+		WBUFW(buf,12)=unit->bl.x;
+		WBUFW(buf,14)=unit->bl.y;
+		if(battle_config.trap_is_invisible && skill_unit_istrap(unit->group->unit_id))
+			WBUFL(buf,16)=UNT_ATTACK_SKILLS;
+		else
+			WBUFL(buf,16)=unit->group->unit_id;
+		if(src && src->type == BL_PC) {
+			struct map_session_data *sd = (struct map_session_data *)src;
+
+			WBUFB(buf,20)= pc_checkskill(sd,WL_RADIUS);
+		} else {
+			WBUFB(buf,20)=0;
+		}
+		WBUFB(buf,21)=1;
+		WBUFB(buf,22)=(unsigned char)unit->group->skill_lv;
 		clif_send(buf,WBUFW(buf,2),&unit->bl,AREA);
 	}
 #endif

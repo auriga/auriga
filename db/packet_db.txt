@@ -3891,6 +3891,7 @@
 0x09a8,16
 0x09aa,16
 0x09d4,2,npcpointshopclose,0
+0x0a37,59
 
 //2017-06-14bRagexeRE
 #packet_ver: 20170614
