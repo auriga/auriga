@@ -4106,6 +4106,7 @@ static int mob_readdb(void)
 				id->mvpitem[i].p = atoi(str[num+1])*battle_config.mvp_item_rate/100;
 			}
 
+			memset(id->skill, 0, sizeof(id->skill));
 			id->maxskill      = 0;
 			id->view_size     = 0;
 			id->sex           = SEX_FEMALE;
@@ -4789,10 +4790,25 @@ int do_init_mob(void)
  *
  *------------------------------------------
  */
+static int mobdb_final(void *key,void *data,va_list ap)
+{
+	struct mobdb_data *id;
+
+	nullpo_retr(0, id = (struct mobdb_data *)data);
+
+	aFree(id);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int do_final_mob(void)
 {
 	if(mob_db) {
-		numdb_final(mob_db, NULL);
+		numdb_final(mob_db, mobdb_final);
 		mob_db = NULL;
 	}
 
