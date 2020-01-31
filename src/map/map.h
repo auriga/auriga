@@ -303,7 +303,7 @@ struct quest_data {
 	char state;
 	unsigned int limit;
 	struct {
-		short id;
+		int id;
 		short max;
 		short count;
 	} mob[3];
@@ -315,7 +315,7 @@ struct buyingstore {
 	struct {
 		int value;
 		short amount;
-		short nameid;
+		int nameid;
 	} item[MAX_BUYINGSTORE_COUNT];
 };
 
@@ -524,7 +524,7 @@ struct map_session_data {
 		int resthptick,restsptick;
 	} regen;
 
-	short view_class;
+	int view_class;
 	struct pc_base_job s_class;
 
 	short weapontype1,weapontype2;	// ～WT_MAX
@@ -565,7 +565,7 @@ struct map_session_data {
 	short add_def_classid[MAX_BONUS_CLASS],add_mdef_classid[MAX_BONUS_CLASS];
 	int add_def_classrate[MAX_BONUS_CLASS],add_mdef_classrate[MAX_BONUS_CLASS];
 	short monster_drop_item_count;
-	short monster_drop_itemid[MAX_BONUS_ADDDROP];
+	int monster_drop_itemid[MAX_BONUS_ADDDROP];
 	int monster_drop_race[MAX_BONUS_ADDDROP],monster_drop_itemrate[MAX_BONUS_ADDDROP];
 	int double_add_rate,speed_add_rate,aspd_add_rate,perfect_hit_add, get_zeny_add_num,get_zeny_add_num2;
 	short splash_range,splash_add_range;
@@ -682,7 +682,7 @@ struct map_session_data {
 	short short_weapon_damege_rate,long_weapon_damege_rate;
 
 	short itemheal_rate[MAX_ITEMGROUP];
-	short use_itemid;
+	int   use_itemid;
 	int   use_nameditem;
 	int   bonus_damage;	// 必中ダメージ
 
@@ -753,7 +753,7 @@ struct map_session_data {
 
 	// 拳聖用
 	int feel_index[3];
-	short hate_mob[3];
+	int hate_mob[3];
 
 	int ranking_point[MAX_RANKING];
 	short am_pharmacy_success;
@@ -888,8 +888,8 @@ struct npc_item_list {
 struct npc_data {
 	struct block_list bl;
 	short n;
-	short class_,dir;
-	short speed;
+	int class_;
+	short dir,speed;
 	char name[24];
 	char exname[24];
 	char position[24];
@@ -925,7 +925,8 @@ struct mob_data {
 	struct unit_data  ud;
 	struct status_change sc;
 	short n;
-	short base_class,class_,dir,mode;
+	int base_class,class_;
+	short dir,mode;
 	short m,x0,y0,xs,ys;
 	short idlecount;
 	char name[24];
@@ -989,11 +990,11 @@ struct pet_skill_support {
 struct pet_data {
 	struct block_list bl;
 	struct unit_data  ud;
-	short class_,dir;
-	short speed;
+	int class_;
+	short dir,speed;
 	char name[24];
 	short view_size;
-	short equip;
+	int equip;
 	int target_id;
 	unsigned int next_walktime,last_thinktime;
 	int hungry_timer;

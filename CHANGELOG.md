@@ -1,4 +1,17 @@
 ----------------------------------------
+//1370 [2020/01/31] by refis
+
+・MobIDでshort型以上のIDを扱えるように改修（map.h）
+	-> mob_db構造体をmobdb_dataに名称変更しDB管理させる（mob.*）
+	-> データ参照はmobdb_exists関数とmobdb_search関数を通す
+	（atcommand.c, battle.c, clif.c, itemdb.c, luascript.c,
+	  npc.c, pc.c, pet.c, script.c, skill.c, status.c）
+
+・ItemIDでshort型以上のIDを扱えるように改修（map.h, itemdb.c）
+
+・2017-08-30bRagexeREのpacket_dbを追加（packet_db.txt, Makefile, bcc32_make.bat, vc_make.bat）
+
+----------------------------------------
 //1369 [2020/01/30] by refis
 
 ・キャラクターのEXP,JEXPをatn_bignumberに対応（char.c, chardb_*.c, mmo.h, clif.c, pc.*, skill.c）

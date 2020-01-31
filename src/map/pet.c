@@ -162,11 +162,11 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 		int rate;
 
 		if(md) {
-			int mode = mob_db[pd->class_].mode;
-			int race = mob_db[pd->class_].race;
+			int mode = mobdb_search(pd->class_)->mode;
+			int race = mobdb_search(pd->class_)->race;
 			if(pd->bl.m != md->bl.m || md->bl.prev == NULL || path_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13)
 				return 0;
-			if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) )
+			if(mobdb_search(pd->class_)->mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) )
 				return 0;
 		}
 		if(!type) {
@@ -327,7 +327,7 @@ static int pet_data_init(struct map_session_data *sd)
 	pd->lootitem_count  = 0;
 	pd->lootitem_weight = 0;
 	pd->lootitem_timer  = tick;
-	pd->view_size       = mob_db[pd->class_].view_size;
+	pd->view_size       = mobdb_search(pd->class_)->view_size;
 
 	return 0;
 }
@@ -472,7 +472,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	pet_catch_rate = (db->capture + (sd->status.base_level - mob_db[md->class_].lv) * 30 + sd->paramc[5] * 20) * (200 - md->hp * 100 / mob_db[md->class_].max_hp) / 100;
+	pet_catch_rate = (db->capture + (sd->status.base_level - mobdb_search(md->class_)->lv) * 30 + sd->paramc[5] * 20) * (200 - md->hp * 100 / mobdb_search(md->class_)->max_hp) / 100;
 	if(pet_catch_rate < 1)
 		pet_catch_rate = 1;
 	if(battle_config.pet_catch_rate != 100)
@@ -483,7 +483,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		unit_remove_map(&md->bl,0,0);
 		clif_pet_rulet(sd,1);
 		intif_create_pet(
-			sd->status.account_id,sd->status.char_id,db->class_,mob_db[db->class_].lv,
+			sd->status.account_id,sd->status.char_id,db->class_,mobdb_search(db->class_)->lv,
 			db->EggID,0,db->intimate,100,0,1,md->name
 		);
 	} else {
@@ -985,16 +985,16 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 	}
 
 	if(pd->target_id > MAX_FLOORITEM) {
-		int mode = mob_db[pd->class_].mode;
-		int race = mob_db[pd->class_].race;
+		int mode = mobdb_search(pd->class_)->mode;
+		int race = mobdb_search(pd->class_)->race;
 		struct mob_data *md = map_id2md(pd->target_id);
 
 		if(md == NULL || pd->bl.m != md->bl.m || md->bl.prev == NULL ||
 		   path_distance(pd->bl.x,pd->bl.y,md->bl.x,md->bl.y) > 13) {
 			pet_unlocktarget(pd);
-		} else if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON)) {
+		} else if(mobdb_search(pd->class_)->mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON)) {
 			pet_unlocktarget(pd);
-		} else if(!battle_check_range(&pd->bl,&md->bl,mob_db[pd->class_].range)) {
+		} else if(!battle_check_range(&pd->bl,&md->bl,mobdb_search(pd->class_)->range)) {
 			if(pd->ud.walktimer != -1 && path_distance(pd->ud.to_x,pd->ud.to_y,md->bl.x,md->bl.y) < 2)
 				return 0;
 			if(!unit_can_reach(&pd->bl,md->bl.x,md->bl.y)) {
@@ -1356,7 +1356,7 @@ int read_petdb(void)
 				break;
 
 			nameid = atoi(str[0]);
-			if(nameid <= 0 || nameid >= MOB_ID_MAX)
+			if(nameid <= 0 || !mobdb_exists(nameid))
 				continue;
 
 			k = pet_search_index(nameid, PET_CLASS);

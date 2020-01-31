@@ -2359,6 +2359,7 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 	char eventname[4096] = "";
 	char eventtemp[4096] = "";
 	struct mob_data *md;
+	struct mobdb_data *id;
 
 	// 引数の個数チェック
 	if(sscanf(w1,"%23[^,],%d,%d,%d,%d%n",mapname,&x,&y,&xs,&ys,&n) != 5 || w1[n] != 0 ||
@@ -2371,11 +2372,13 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 	if(m < 0)
 		return 0;	// assignされてないMAPなので終了
 
-	if(!mobdb_checkid(class_)) {
+	if(!mobdb_exists(class_)) {
 		// 定期沸きでID異常は注意を促す
 		printf("npc_monster bad class: %d line %d\a\n",class_,lines);
 		return 0;
 	}
+
+	id = mobdb_search(class_);
 
 	if(eventtemp[0]) {
 		char *p;
@@ -2399,8 +2402,8 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 			num = 1;
 	}
 
-	if(mob_db[class_].mode & MD_BOSS) {
-		if(mob_db[class_].mexp > 0) {
+	if(id->mode & MD_BOSS) {
+		if(id->mexp > 0) {
 			if(battle_config.mob_mvp_boss_delay_rate != 100) {
 				delay1 = delay1 * battle_config.mob_mvp_boss_delay_rate / 100;
 				delay2 = delay2 * battle_config.mob_mvp_boss_delay_rate / 100;
@@ -2431,9 +2434,9 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 		md->bl.y = y;
 
 		if(strcmp(w3,"--en--") == 0) {
-			memcpy(md->name,mob_db[class_].name,24);
+			memcpy(md->name,id->name,24);
 		} else if(strcmp(w3,"--ja--") == 0) {
-			memcpy(md->name,mob_db[class_].jname,24);
+			memcpy(md->name,id->jname,24);
 		} else {
 			memcpy(md->name,w3,24);
 			md->name[23] = '\0';
@@ -2454,9 +2457,9 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 		memset(&md->state,0,sizeof(md->state));
 		md->target_id   = 0;
 		md->attacked_id = 0;
-		md->speed       = mob_db[class_].speed;
+		md->speed       = id->speed;
 
-		if(mob_db[class_].mode & MD_ITEMLOOT)
+		if(id->mode & MD_ITEMLOOT)
 			md->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 		else
 			md->lootitem = NULL;
@@ -2489,7 +2492,7 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 				}
 			}
 		}
-		if(mob_db[md->class_].mexp > 0) {
+		if(id->mexp > 0) {
 			if(!(md->spawndelay1 == -1 && md->spawndelay2 == -1 && md->n == 0)) {
 				// 再出現するMVPボスなら凸面鏡用に登録
 				map[md->bl.m].mvpboss = md;

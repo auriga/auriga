@@ -2484,7 +2484,7 @@ int atcommand_makepet(const int fd, struct map_session_data* sd, AtCommandType c
 	if (db) {
 		sd->catch_target_class = db->class_;
 		intif_create_pet(
-			sd->status.account_id, sd->status.char_id, db->class_, mob_db[db->class_].lv,
+			sd->status.account_id, sd->status.char_id, db->class_, mobdb_search(db->class_)->lv,
 		    db->EggID, 0, db->intimate, 100, 0, 1, db->jname
 		);
 	}
@@ -3589,7 +3589,7 @@ int atcommand_summon(const int fd, struct map_session_data* sd, AtCommandType co
 	if ((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
-		md->mode        = mob_db[md->class_].mode | MD_AGGRESSIVE;
+		md->mode        = mobdb_search(md->class_)->mode | MD_AGGRESSIVE;
 		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}
@@ -3936,7 +3936,7 @@ static int atcommand_mobsearch_sub(struct block_list *bl,va_list ap)
 				return 0;
 			break;
 		case -3:
-			if ( !(status_get_mode(&md->bl)&MD_BOSS) || mob_db[md->class_].mexp <= 0 )
+			if ( !(status_get_mode(&md->bl)&MD_BOSS) || mobdb_search(md->class_)->mexp <= 0 )
 				return 0;
 			break;
 		default:
@@ -3964,7 +3964,7 @@ int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType
 
 	if ((mob_id = atoi(mob_name)) == 0)
 		mob_id = mobdb_searchname(mob_name);
-	if (mob_id != -1 && mob_id != -2 && mob_id != -3 && !mobdb_checkid(mob_id)) {
+	if (mob_id != -1 && mob_id != -2 && mob_id != -3 && !mobdb_exists(mob_id)) {
 		msg_output(fd, msg_txt(93), mob_name);
 		return 0;
 	}
@@ -3973,8 +3973,8 @@ int atcommand_mobsearch(const int fd, struct map_session_data* sd, AtCommandType
 		p = msg_txt(153); // all
 	else if (mob_id == -2 || mob_id == -3)
 		p = msg_txt(154); // boss
-	else if (mob_id > 0 && mob_id == atoi(mob_name) && mob_db[mob_id].jname[0])
-		p = mob_db[mob_id].jname; // --ja--
+	else if (mob_id > 0 && mob_id == atoi(mob_name) && mobdb_search(mob_id)->jname[0])
+		p = mobdb_search(mob_id)->jname; // --ja--
 	else
 		p = mob_name;
 
@@ -5361,7 +5361,7 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	const char *melement[] = { "–³", "–³", "…", "’n", "‰Î", "•—", "“Å", "¹", "ˆÅ", "”O", "•sŽ€" };
 	char output[200];
 	struct item_data *item_data;
-	struct mob_db *m;
+	struct mobdb_data *m;
 	int i, j, mob_id;
 	size_t len;
 
@@ -5373,12 +5373,12 @@ int atcommand_mobinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	if ((mob_id = atoi(message)) == 0)
 		mob_id = mobdb_searchname(message);
 
-	if (!mobdb_checkid(mob_id)) {
+	if (!mobdb_exists(mob_id)) {
 		clif_displaymessage(fd, msg_txt(40));
 		return 0;
 	}
 
-	m = &mob_db[mob_id];
+	m = mobdb_search(mob_id);
 
 	// stats
 	msg_output(fd, "%s Monster: %s/%s (%d)", ((m->mexp)? "MVP": ""),

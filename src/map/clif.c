@@ -2632,7 +2632,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x78;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
@@ -2654,7 +2654,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x1d8;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
@@ -2676,7 +2676,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x22a;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFL(buf,12)=mob_db[pd->class_].option;
+		WBUFL(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,16)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,18)=mob_get_hair(pd->class_);
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
@@ -2698,7 +2698,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x2ee;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFL(buf,12)=mob_db[pd->class_].option;
+		WBUFL(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,16)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,18)=mob_get_hair(pd->class_);
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
@@ -2723,7 +2723,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -2748,7 +2748,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -2774,7 +2774,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -2803,7 +2803,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFL(buf,9)=0;
 		WBUFW(buf,13)=pd->speed;
-		WBUFL(buf,19)=mob_db[pd->class_].option;
+		WBUFL(buf,19)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,23)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,25)=mob_get_hair(pd->class_);
 		WBUFW(buf,27)=mob_get_weapon(pd->class_);
@@ -2833,7 +2833,7 @@ static int clif_pet0078(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFL(buf,9)=0;
 		WBUFW(buf,13)=pd->speed;
-		WBUFL(buf,19)=mob_db[pd->class_].option;
+		WBUFL(buf,19)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,23)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,25)=mob_get_hair(pd->class_);
 		WBUFW(buf,27)=mob_get_weapon(pd->class_);
@@ -3016,7 +3016,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x7b;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
@@ -3039,7 +3039,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x1da;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFW(buf,12)=mob_db[pd->class_].option;
+		WBUFW(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,14)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,16)=mob_get_hair(pd->class_);
 		WBUFW(buf,18)=mob_get_weapon(pd->class_);
@@ -3062,7 +3062,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFW(buf,0)=0x22c;
 		WBUFL(buf,2)=pd->bl.id;
 		WBUFW(buf,6)=pd->speed;
-		WBUFL(buf,12)=mob_db[pd->class_].option;
+		WBUFL(buf,12)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,16)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,18)=mob_get_hair(pd->class_);
 		WBUFW(buf,20)=mob_get_weapon(pd->class_);
@@ -3086,7 +3086,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,2)=0;
 		WBUFL(buf,3)=pd->bl.id;
 		WBUFW(buf,7)=pd->speed;
-		WBUFL(buf,13)=mob_db[pd->class_].option;
+		WBUFL(buf,13)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,17)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,19)=mob_get_hair(pd->class_);
 		WBUFW(buf,21)=mob_get_weapon(pd->class_);
@@ -3110,7 +3110,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,2)=0;
 		WBUFL(buf,3)=pd->bl.id;
 		WBUFW(buf,7)=pd->speed;
-		WBUFL(buf,13)=mob_db[pd->class_].option;
+		WBUFL(buf,13)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,17)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,19)=mob_get_hair(pd->class_);
 		WBUFW(buf,21)=mob_get_weapon(pd->class_);
@@ -3136,7 +3136,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -3162,7 +3162,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -3189,7 +3189,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFB(buf,4)=0;
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFW(buf,9)=pd->speed;
-		WBUFL(buf,15)=mob_db[pd->class_].option;
+		WBUFL(buf,15)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,19)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,21)=mob_get_hair(pd->class_);
 		WBUFW(buf,23)=mob_get_weapon(pd->class_);
@@ -3219,7 +3219,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFL(buf,9)=0;
 		WBUFW(buf,13)=pd->speed;
-		WBUFL(buf,19)=mob_db[pd->class_].option;
+		WBUFL(buf,19)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,23)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,25)=mob_get_hair(pd->class_);
 		WBUFW(buf,27)=mob_get_weapon(pd->class_);
@@ -3250,7 +3250,7 @@ static int clif_pet007b(struct pet_data *pd,unsigned char *buf)
 		WBUFL(buf,5)=pd->bl.id;
 		WBUFL(buf,9)=0;
 		WBUFW(buf,13)=pd->speed;
-		WBUFL(buf,19)=mob_db[pd->class_].option;
+		WBUFL(buf,19)=mobdb_search(pd->class_)->option;
 		WBUFW(buf,23)=mob_get_viewclass(pd->class_);
 		WBUFW(buf,25)=mob_get_hair(pd->class_);
 		WBUFW(buf,27)=mob_get_weapon(pd->class_);
@@ -11233,17 +11233,17 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 
 	WBUFW(buf, 0)=0x18c;
 	WBUFW(buf, 2)=mob_get_viewclass(md->class_);
-	WBUFW(buf, 4)=mob_db[md->class_].lv;
-	WBUFW(buf, 6)=mob_db[md->class_].size;
+	WBUFW(buf, 4)=mobdb_search(md->class_)->lv;
+	WBUFW(buf, 6)=mobdb_search(md->class_)->size;
 	WBUFL(buf, 8)=md->hp;
 #ifdef PRE_RENEWAL
 	WBUFW(buf,12)=status_get_def2(&md->bl);
 #else
 	WBUFW(buf,12)=status_get_def(&md->bl);
 #endif
-	WBUFW(buf,14)=mob_db[md->class_].race;
+	WBUFW(buf,14)=mobdb_search(md->class_)->race;
 #ifdef PRE_RENEWAL
-	WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mob_db[md->class_].vit>>1);
+	WBUFW(buf,16)=status_get_mdef2(&md->bl) - (mobdb_search(md->class_)->vit>>1);
 #else
 	WBUFW(buf,16)=status_get_mdef(&md->bl);
 #endif
@@ -16325,8 +16325,8 @@ void clif_hate_mob(struct map_session_data *sd, int skilllv, int id)
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x20e;
-	if(mobdb_checkid(id) > 0) {
-		strncpy(WFIFOP(fd,2),mob_db[id].jname,24);
+	if(mobdb_exists(id)) {
+		strncpy(WFIFOP(fd,2),mobdb_search(id)->jname,24);
 	} else {
 		memset(WFIFOP(fd,2), 0, 24);
 	}
@@ -16350,8 +16350,8 @@ void clif_hate_info(struct map_session_data *sd, int skilllv, int id)
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x20e;
-	if(mobdb_checkid(id) > 0) {
-		strncpy(WFIFOP(fd,2),mob_db[id].jname,24);
+	if(mobdb_exists(id)) {
+		strncpy(WFIFOP(fd,2),mobdb_search(id)->jname,24);
 	} else {
 		memset(WFIFOP(fd,2), 0, 24);
 	}
@@ -16375,7 +16375,7 @@ void clif_mission_mob(struct map_session_data *sd, int id, int count)
 
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x20e;
-	strncpy(WFIFOP(fd,2),mob_db[id].jname,24);
+	strncpy(WFIFOP(fd,2),mobdb_search(id)->jname,24);
 	WFIFOL(fd,26) = id;
 	WFIFOB(fd,30) = count;
 	WFIFOB(fd,31) = 20;
@@ -16799,8 +16799,8 @@ void clif_questlist(struct map_session_data *sd)
 					WFIFOL(fd,len+15+n*32) = id;
 					WFIFOW(fd,len+19+n*32) = qd->mob[j].count;
 					WFIFOW(fd,len+21+n*32) = qd->mob[j].max;
-					if(mobdb_checkid(id) > 0) {
-						strncpy(WFIFOP(fd,len+23+n*32),mob_db[id].jname,24);
+					if(mobdb_exists(id)) {
+						strncpy(WFIFOP(fd,len+23+n*32),mobdb_search(id)->jname,24);
 					} else {
 						memset(WFIFOP(fd,len+23+n*32), 0, 24);
 					}
@@ -16843,8 +16843,8 @@ void clif_questlist_info(struct map_session_data *sd)
 				if((id = (int)qd->mob[j].id) != 0) {
 					WFIFOL(fd,len+14+n*30) = id;
 					WFIFOW(fd,len+18+n*30) = qd->mob[j].count;
-					if(mobdb_checkid(id) > 0) {
-						strncpy(WFIFOP(fd,len+20+n*30),mob_db[id].jname,24);
+					if(mobdb_exists(id)) {
+						strncpy(WFIFOP(fd,len+20+n*30),mobdb_search(id)->jname,24);
 					} else {
 						memset(WFIFOP(fd,len+20+n*30), 0, 24);
 					}
@@ -16890,8 +16890,8 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 		if((id = (int)qd->mob[i].id) != 0) {
 			WFIFOL(fd,17+n*30) = id;
 			WFIFOW(fd,21+n*30) = qd->mob[i].count;
-			if(mobdb_checkid(id) > 0) {
-				strncpy(WFIFOP(fd,23+n*30),mob_db[id].jname,24);
+			if(mobdb_exists(id)) {
+				strncpy(WFIFOP(fd,23+n*30),mobdb_search(id)->jname,24);
 			} else {
 				memset(WFIFOP(fd,23+n*30), 0, 24);
 			}

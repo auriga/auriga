@@ -7106,7 +7106,7 @@ int buildin_makepet(struct script_state *st)
 	if(db && sd) {
 		sd->catch_target_class = db->class_;
 		intif_create_pet(
-			sd->status.account_id, sd->status.char_id, db->class_, mob_db[db->class_].lv,
+			sd->status.account_id, sd->status.char_id, db->class_, mobdb_search(db->class_)->lv,
 			db->EggID, 0, db->intimate, 100, 0, 1, db->jname
 		);
 	}
@@ -7133,7 +7133,7 @@ int buildin_monster(struct script_state *st)
 
 	if((mob_id = atoi(mobname)) == 0)
 		mob_id = mobdb_searchname(mobname);
-	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+	if(mob_id >= 0 && !mobdb_exists(mob_id))
 		return 0;
 
 	amount = conv_num(st,& (st->stack->stack_data[st->start+7]));
@@ -10167,7 +10167,7 @@ static int buildin_getmapmobs_sub(struct block_list *bl,va_list ap)
 		return 1;
 
 	// ‘ÎÛMobID
-	if (mob_id >= MOB_ID_MIN && mob_id <= MOB_ID_MAX && mob_id == ((struct mob_data*)bl)->class_)
+	if (mob_id == ((struct mob_data*)bl)->class_)
 		return 1;
 
 	return 0;
@@ -10392,7 +10392,7 @@ int buildin_summon(struct script_state *st)
 	if((md = map_id2md(id)) != NULL) {
 		md->state.special_mob_ai = 1;
 		md->master_id   = sd->bl.id;
-		md->mode        = mob_db[md->class_].mode | MD_AGGRESSIVE;
+		md->mode        = mobdb_search(md->class_)->mode | MD_AGGRESSIVE;
 		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);
 		clif_misceffect2(&md->bl,344);
 	}
@@ -12332,7 +12332,7 @@ int buildin_callguardian(struct script_state *st)
 
 	if((mob_id = atoi(mobname)) == 0)
 		mob_id = mobdb_searchname(mobname);
-	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+	if(mob_id >= 0 && !mobdb_exists(mob_id))
 		return 0;
 
 	amount = conv_num(st,& (st->stack->stack_data[st->start+7]));
@@ -12449,10 +12449,10 @@ int buildin_getmobname(struct script_state *st)
 {
 	int mob_class = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
-	if(!mobdb_checkid(mob_class))
+	if(!mobdb_exists(mob_class))
 		push_str(st->stack,C_CONSTSTR,"");
 	else
-		push_str(st->stack,C_STR,(unsigned char *)aStrdup(mob_db[mob_class].jname));
+		push_str(st->stack,C_STR,(unsigned char *)aStrdup(mobdb_search(mob_class)->jname));
 
 	return 0;
 }
@@ -13149,7 +13149,7 @@ int buildin_callmonster(struct script_state *st)
 
 	if((mob_id = atoi(mobname)) == 0)
 		mob_id = mobdb_searchname(mobname);
-	if(mob_id >= 0 && !mobdb_checkid(mob_id))
+	if(mob_id >= 0 && !mobdb_exists(mob_id))
 		return 0;
 
 	if(st->end > st->start+7) {

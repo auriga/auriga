@@ -3044,32 +3044,35 @@ static int pc_show_steal(struct block_list *bl,va_list ap)
 int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 {
 	int skill,rate,itemid,flag;
+	struct mobdb_data *id;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
 
+	id = mobdb_search(md->class_);
+
 	if(battle_config.item_rate <= 0 || md->state.steal_flag)
 		return 0;
-	if(mob_db[md->class_].mexp > 0 || mob_db[md->class_].mode&MD_BOSS)
+	if(id->mexp > 0 || id->mode&MD_BOSS)
 		return 0;
 	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
-	skill = (sd->paramc[4] - mob_db[md->class_].dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 4;
+	skill = (sd->paramc[4] - id->dex)/2 + pc_checkskill(sd,TF_STEAL) * 6 + 4;
 	if(skill > 0) {
 		int i;
 		for(i=0; i<ITEM_DROP_COUNT-1; i++) {
-			itemid = mob_db[md->class_].dropitem[i].nameid;
+			itemid = id->dropitem[i].nameid;
 			if(itemid > 0 && itemdb_type(itemid) != ITEMTYPE_CARD) {
-				if(mob_db[md->class_].dropitem[i].p <= 0)
+				if(id->dropitem[i].p <= 0)
 					continue;
-				rate = mob_db[md->class_].dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
+				rate = id->dropitem[i].p * skill * battle_config.steal_rate / 10000 + 1;
 				if(rate > 0 && sd->add_steal_rate > 0)
 					rate = rate * sd->add_steal_rate / 100;
 
 				if(battle_config.battle_log)
 					printf("skill=%d, mob base=%d, rate=%d, bc.rate=%d, add=%d\n",
-						skill, mob_db[md->class_].dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
+						skill, id->dropitem[i].p, rate, battle_config.steal_rate, sd->add_steal_rate );
 
 				if(atn_rand()%10000 < rate) {
 					struct item tmp_item;
@@ -3102,7 +3105,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
  */
 int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 {
-	int rate,skilllv;
+	int rate,skilllv,lv;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
@@ -3112,15 +3115,16 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 	if(md->sc.data[SC_STONE].timer != -1 || md->sc.data[SC_FREEZE].timer != -1)
 		return 0;
 
+	lv = mobdb_search(md->class_)->lv;
 	skilllv = pc_checkskill(sd,RG_STEALCOIN);
-	rate  = skilllv*10 + (sd->status.base_level - mob_db[md->class_].lv)*2 + (sd->paramc[4] + sd->paramc[5])/2;
+	rate  = skilllv*10 + (sd->status.base_level - lv)*2 + (sd->paramc[4] + sd->paramc[5])/2;
 
 	if(atn_rand()%1000 < rate) {
-		int max = 10 * mob_db[md->class_].lv;
-		int min = 8 * mob_db[md->class_].lv;
+		int max = 10 * lv;
+		int min = 8 * lv;
 		int range = max - min + 1;
 		int rnd = atn_rand()%range+min;
-		int zeny = mob_db[md->class_].lv * skilllv / 10 + rnd;
+		int zeny = lv * skilllv / 10 + rnd;
 		pc_getzeny(sd,zeny);
 		md->state.steal_coin_flag = 1;
 		return 1;

@@ -22,8 +22,6 @@
 #ifndef _MOB_H_
 #define _MOB_H_
 
-#define MOB_ID_MIN 1001
-#define MOB_ID_MAX 3901
 #define MOB_ID_DEFAULT 1002
 #define MAX_RAND_MOB_TYPE	10
 #define MAX_RAND_MOB_ENTRY	1000
@@ -47,7 +45,8 @@ struct mob_skill {
 	short msg_id;
 };
 
-struct mob_db {
+struct mobdb_data {
+	int class_;
 	char name[24],jname[24];
 	unsigned short lv;
 	int max_hp,max_sp;
@@ -68,7 +67,8 @@ struct mob_db {
 		int nameid;
 		int p;
 	} mvpitem[3];
-	short view_class,view_size;
+	int view_class;
+	short view_size;
 	short hair,hair_color,clothes_color;
 	short weapon,shield,robe,head_top,head_mid,head_bottom;
 	short style;
@@ -78,7 +78,6 @@ struct mob_db {
 	int maxskill;
 	struct mob_skill skill[MAX_MOBSKILL];
 };
-extern struct mob_db *mob_db;
 
 struct random_mob_data_entry {
 	int class_;
@@ -178,8 +177,10 @@ enum {
 	MSS_FOLLOW      = 10,	// “ËŒ‚(”ñ‹¶‰»)
 };
 
-int mobdb_searchname(const char *str);
-int mobdb_checkid(const int mob_id);
+struct mobdb_data* mobdb_exists(int mob_id);
+struct mobdb_data* mobdb_search(int mob_id);
+int mobdb_searchname(const char *name);
+
 int mobdb_searchrandomid(int type,unsigned short lv);
 
 int mob_once_spawn(struct map_session_data *sd,int m,
@@ -193,19 +194,19 @@ int mob_damage(struct block_list *,struct mob_data*,int,int);
 int mob_heal(struct mob_data*,int);
 
 // Œ©‚©‚¯Žæ“¾
-#define mob_get_viewclass(a)     mob_db[(a)].view_class
-#define mob_get_sex(a)           mob_db[(a)].sex
-#define mob_get_hair(a)          mob_db[(a)].hair
-#define mob_get_hair_color(a)    mob_db[(a)].hair_color
-#define mob_get_clothes_color(a) mob_db[(a)].clothes_color
-#define mob_get_weapon(a)        mob_db[(a)].weapon
-#define mob_get_shield(a)        mob_db[(a)].shield
-#define mob_get_robe(a)          mob_db[(a)].robe
-#define mob_get_head_top(a)      mob_db[(a)].head_top
-#define mob_get_head_mid(a)      mob_db[(a)].head_mid
-#define mob_get_head_bottom(a)   mob_db[(a)].head_bottom
-#define mob_get_style(a)         mob_db[(a)].style
-#define mob_is_pcview(a)         mob_db[(a)].pcview_flag
+#define mob_get_viewclass(a)     mobdb_search(a)->view_class
+#define mob_get_sex(a)           mobdb_search(a)->sex
+#define mob_get_hair(a)          mobdb_search(a)->hair
+#define mob_get_hair_color(a)    mobdb_search(a)->hair_color
+#define mob_get_clothes_color(a) mobdb_search(a)->clothes_color
+#define mob_get_weapon(a)        mobdb_search(a)->weapon
+#define mob_get_shield(a)        mobdb_search(a)->shield
+#define mob_get_robe(a)          mobdb_search(a)->robe
+#define mob_get_head_top(a)      mobdb_search(a)->head_top
+#define mob_get_head_mid(a)      mobdb_search(a)->head_mid
+#define mob_get_head_bottom(a)   mobdb_search(a)->head_bottom
+#define mob_get_style(a)         mobdb_search(a)->style
+#define mob_is_pcview(a)         mobdb_search(a)->pcview_flag
 
 int do_init_mob(void);
 int do_final_mob(void);

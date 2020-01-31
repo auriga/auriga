@@ -3674,7 +3674,7 @@ int status_get_group(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class_].group_id;
+		return mobdb_search(((struct mob_data *)bl)->class_)->group_id;
 	// PC PET‚Í0i–¢Ý’è)
 
 	return 0;
@@ -3740,7 +3740,7 @@ int status_get_lv(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class_].lv;
+		return mobdb_search(((struct mob_data *)bl)->class_)->lv;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.base_level;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
@@ -3765,7 +3765,7 @@ int status_get_jlv(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class_].lv;
+		return mobdb_search(((struct mob_data *)bl)->class_)->lv;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->status.job_level;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
@@ -3790,11 +3790,11 @@ int status_get_range(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class_].range;
+		return mobdb_search(((struct mob_data *)bl)->class_)->range;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		return ((struct map_session_data *)bl)->range.attackrange;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class_].range;
+		return mobdb_search(((struct pet_data *)bl)->class_)->range;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		return 2;//((struct homun_data *)bl)->attackrange;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
@@ -3872,9 +3872,9 @@ int status_get_max_hp(struct block_list *bl)
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && ((struct mob_data*)bl)) {
-			atn_bignumber hp = mob_db[((struct mob_data*)bl)->class_].max_hp;
+			atn_bignumber hp = mobdb_search(((struct mob_data*)bl)->class_)->max_hp;
 			struct guild_castle *gc = guild_mapid2gc(bl->m);
-			if(mob_db[((struct mob_data*)bl)->class_].mexp > 0) {
+			if(mobdb_search(((struct mob_data*)bl)->class_)->mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
 					hp = hp * battle_config.mvp_hp_rate / 100;
 				}
@@ -3887,8 +3887,8 @@ int status_get_max_hp(struct block_list *bl)
 			}
 			max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
 		} else if(bl->type == BL_PET && ((struct pet_data*)bl)) {
-			max_hp = mob_db[((struct pet_data*)bl)->class_].max_hp;
-			if(mob_db[((struct pet_data*)bl)->class_].mexp > 0) {
+			max_hp = mobdb_search(((struct pet_data*)bl)->class_)->max_hp;
+			if(mobdb_search(((struct pet_data*)bl)->class_)->mexp > 0) {
 				if(battle_config.mvp_hp_rate != 100) {
 					atn_bignumber hp = (atn_bignumber)max_hp * battle_config.mvp_hp_rate / 100;
 					max_hp = (hp > 0x7FFFFFFF ? 0x7FFFFFFF : (int)hp);
@@ -3949,11 +3949,11 @@ int status_get_str(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && ((struct mob_data *)bl))
-		str = mob_db[((struct mob_data *)bl)->class_].str;
+		str = mobdb_search(((struct mob_data *)bl)->class_)->str;
 	else if(bl->type == BL_PC && ((struct map_session_data *)bl))
 		return ((struct map_session_data *)bl)->paramc[0];
 	else if(bl->type == BL_PET && ((struct pet_data *)bl))
-		str = mob_db[((struct pet_data *)bl)->class_].str;
+		str = mobdb_search(((struct pet_data *)bl)->class_)->str;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		str = ((struct homun_data *)bl)->status.str;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -3994,11 +3994,11 @@ int status_get_agi(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		agi = mob_db[((struct mob_data *)bl)->class_].agi;
+		agi = mobdb_search(((struct mob_data *)bl)->class_)->agi;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		agi = ((struct map_session_data *)bl)->paramc[1];
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		agi = mob_db[((struct pet_data *)bl)->class_].agi;
+		agi = mobdb_search(((struct pet_data *)bl)->class_)->agi;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		agi = ((struct homun_data *)bl)->agi;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -4046,11 +4046,11 @@ int status_get_vit(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		vit = mob_db[((struct mob_data *)bl)->class_].vit;
+		vit = mobdb_search(((struct mob_data *)bl)->class_)->vit;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		vit = ((struct map_session_data *)bl)->paramc[2];
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		vit = mob_db[((struct pet_data *)bl)->class_].vit;
+		vit = mobdb_search(((struct pet_data *)bl)->class_)->vit;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		vit = ((struct homun_data *)bl)->vit;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -4083,11 +4083,11 @@ int status_get_int(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		int_ = mob_db[((struct mob_data *)bl)->class_].int_;
+		int_ = mobdb_search(((struct mob_data *)bl)->class_)->int_;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		int_ = ((struct map_session_data *)bl)->paramc[3];
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		int_ = mob_db[((struct pet_data *)bl)->class_].int_;
+		int_ = mobdb_search(((struct pet_data *)bl)->class_)->int_;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		int_ = ((struct homun_data *)bl)->int_;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -4128,11 +4128,11 @@ int status_get_dex(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		dex = mob_db[((struct mob_data *)bl)->class_].dex;
+		dex = mobdb_search(((struct mob_data *)bl)->class_)->dex;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		dex = ((struct map_session_data *)bl)->paramc[4];
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		dex = mob_db[((struct pet_data *)bl)->class_].dex;
+		dex = mobdb_search(((struct pet_data *)bl)->class_)->dex;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		dex = ((struct homun_data *)bl)->dex;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -4184,11 +4184,11 @@ int status_get_luk(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		luk = mob_db[((struct mob_data *)bl)->class_].luk;
+		luk = mobdb_search(((struct mob_data *)bl)->class_)->luk;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 		luk = ((struct map_session_data *)bl)->paramc[5];
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		luk = mob_db[((struct pet_data *)bl)->class_].luk;
+		luk = mobdb_search(((struct pet_data *)bl)->class_)->luk;
 	else if(bl->type == BL_HOM && ((struct homun_data *)bl))
 		luk = ((struct homun_data *)bl)->luk;
 	else if(bl->type == BL_MERC && ((struct merc_data *)bl))
@@ -4555,15 +4555,15 @@ int status_get_atk(struct block_list *bl)
 			int guardup_lv = md->guardup_lv;
 #ifndef PRE_RENEWAL
 			if(battle_config.monster_atk2_to_matk)
-				atk = mob_db[md->class_].atk1 * 8 / 10;
+				atk = mobdb_search(md->class_)->atk1 * 8 / 10;
 			else
 #endif
-				atk = mob_db[md->class_].atk1;
+				atk = mobdb_search(md->class_)->atk1;
 			if(guardup_lv > 0)
 				atk += 1000*guardup_lv;
 		}
 	} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		atk = mob_db[((struct pet_data*)bl)->class_].atk1;
+		atk = mobdb_search(((struct pet_data*)bl)->class_)->atk1;
 	}
 
 	if(sc) {
@@ -4662,15 +4662,15 @@ int status_get_atk2(struct block_list *bl)
 				int guardup_lv = md->guardup_lv;
 #ifndef PRE_RENEWAL
 				if(battle_config.monster_atk2_to_matk)
-					atk2 = mob_db[md->class_].atk1 * 12 / 10;
+					atk2 = mobdb_search(md->class_)->atk1 * 12 / 10;
 				else
 #endif
-					atk2 = mob_db[md->class_].atk2;
+					atk2 = mobdb_search(md->class_)->atk2;
 				if(guardup_lv > 0)
 					atk2 += 1000*guardup_lv;
 			}
 		} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-			atk2 = mob_db[((struct pet_data*)bl)->class_].atk2;
+			atk2 = mobdb_search(((struct pet_data*)bl)->class_)->atk2;
 		}
 		if(sc) {
 			int rate = 100;
@@ -4772,7 +4772,7 @@ int status_get_matk1(struct block_list *bl)
 
 #ifndef PRE_RENEWAL
 		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
-			matk1 = mob_db[status_get_class(bl)].atk2 * 13 / 10;
+			matk1 = mobdb_search(status_get_class(bl))->atk2 * 13 / 10;
 		else
 #endif
 			matk1 = int_+(int_/5)*(int_/5);
@@ -4781,8 +4781,8 @@ int status_get_matk1(struct block_list *bl)
 		if(battle_config.mob_take_over_sp == 1) {
 			if(bl->type == BL_MOB) {
 				int b_class = status_get_class(bl);		// ’¼ÚmaxspŽæ“¾–³—‚Ìˆ×ƒ€ƒŠƒ„ƒŠ
-				if(mob_db[b_class].max_sp > 0) {		// 1ˆÈã‚ÌŽž‚Ì‚Ý
-					matk1 = matk1 * (mob_db[b_class].max_sp/100);
+				if(mobdb_search(b_class)->max_sp > 0) {		// 1ˆÈã‚ÌŽž‚Ì‚Ý
+					matk1 = matk1 * (mobdb_search(b_class)->max_sp/100);
 				}
 			}
 		}
@@ -4842,7 +4842,7 @@ int status_get_matk2(struct block_list *bl)
 
 #ifndef PRE_RENEWAL
 		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
-			matk2 = mob_db[status_get_class(bl)].atk2 * 7 / 10;
+			matk2 = mobdb_search(status_get_class(bl))->atk2 * 7 / 10;
 		else
 #endif
 			matk2 = int_+(int_/7)*(int_/7);
@@ -4851,8 +4851,8 @@ int status_get_matk2(struct block_list *bl)
 		if(battle_config.mob_take_over_sp == 1) {
 			if(bl->type == BL_MOB) {
 				int b_class = status_get_class(bl);		// ’¼ÚmaxspŽæ“¾–³—‚Ìˆ×ƒ€ƒŠƒ„ƒŠ
-				if(mob_db[b_class].max_sp > 0) {		// 1ˆÈã‚ÌŽž‚Ì‚Ý
-					matk2 = matk2 * (mob_db[b_class].max_sp/100);
+				if(mobdb_search(b_class)->max_sp > 0) {		// 1ˆÈã‚ÌŽž‚Ì‚Ý
+					matk2 = matk2 * (mobdb_search(b_class)->max_sp/100);
 				}
 			}
 		}
@@ -4898,9 +4898,9 @@ int status_get_def(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		def = ((struct map_session_data *)bl)->def;
 	} else if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		def = mob_db[((struct mob_data *)bl)->class_].def;
+		def = mobdb_search(((struct mob_data *)bl)->class_)->def;
 	} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		def = mob_db[((struct pet_data *)bl)->class_].def;
+		def = mobdb_search(((struct pet_data *)bl)->class_)->def;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
 		def = ((struct merc_data *)bl)->def;
 	} else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
@@ -5012,7 +5012,7 @@ int status_get_mdef(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl)
 		mdef = ((struct map_session_data *)bl)->mdef;
 	else if(bl->type == BL_MOB && (struct mob_data *)bl)
-		mdef = mob_db[((struct mob_data *)bl)->class_].mdef;
+		mdef = mobdb_search(((struct mob_data *)bl)->class_)->mdef;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		mdef = ((struct homun_data *)bl)->mdef;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
@@ -5020,7 +5020,7 @@ int status_get_mdef(struct block_list *bl)
 	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
 		mdef = ((struct elem_data *)bl)->mdef;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		mdef = mob_db[((struct pet_data *)bl)->class_].mdef;
+		mdef = mobdb_search(((struct pet_data *)bl)->class_)->mdef;
 
 	if(mdef < 1000000) {
 		if(sc) {
@@ -5079,12 +5079,12 @@ int status_get_def2(struct block_list *bl)
 		def2 = ((struct map_session_data *)bl)->def2;
 	else if(bl->type == BL_MOB && (struct mob_data *)bl)
 #ifdef PRE_RENEWAL
-		def2 = mob_db[((struct mob_data *)bl)->class_].vit;
+		def2 = mobdb_search(((struct mob_data *)bl)->class_)->vit;
 #else
-		def2 = (int)(mob_db[((struct mob_data *)bl)->class_].vit/(float)2 + mob_db[((struct mob_data *)bl)->class_].lv/(float)2);
+		def2 = (int)(mobdb_search(((struct mob_data *)bl)->class_)->vit/(float)2 + mobdb_search(((struct mob_data *)bl)->class_)->lv/(float)2);
 #endif
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		def2 = mob_db[((struct pet_data *)bl)->class_].vit;
+		def2 = mobdb_search(((struct pet_data *)bl)->class_)->vit;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
 		def2 = ((struct homun_data *)bl)->def;
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
@@ -5155,9 +5155,9 @@ int status_get_mdef2(struct block_list *bl)
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 #ifdef PRE_RENEWAL
-		mdef2 = mob_db[((struct mob_data *)bl)->class_].int_ + (mob_db[((struct mob_data *)bl)->class_].vit>>1);
+		mdef2 = mobdb_search(((struct mob_data *)bl)->class_)->int_ + (mobdb_search(((struct mob_data *)bl)->class_)->vit>>1);
 #else
-		mdef2 = (int)(mob_db[((struct mob_data *)bl)->class_].int_/(float)4 + mob_db[((struct mob_data *)bl)->class_].lv/(float)4);
+		mdef2 = (int)(mobdb_search(((struct mob_data *)bl)->class_)->int_/(float)4 + mobdb_search(((struct mob_data *)bl)->class_)->lv/(float)4);
 #endif
 	else if(bl->type == BL_PC && (struct map_session_data *)bl)
 #ifdef PRE_RENEWAL
@@ -5166,7 +5166,7 @@ int status_get_mdef2(struct block_list *bl)
 		mdef2 = ((struct map_session_data *)bl)->mdef2;
 #endif
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		mdef2 = mob_db[((struct pet_data *)bl)->class_].int_ + (mob_db[((struct pet_data *)bl)->class_].vit>>1);
+		mdef2 = mobdb_search(((struct pet_data *)bl)->class_)->int_ + (mobdb_search(((struct pet_data *)bl)->class_)->vit>>1);
 	else if (bl->type == BL_HOM && (struct homun_data *)bl)
 		mdef2 = ((struct homun_data *)bl)->mdef;
 	else if (bl->type == BL_MERC && (struct merc_data *)bl)
@@ -5420,18 +5420,18 @@ int status_get_adelay(struct block_list *bl)
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
-			if(mob_db[((struct mob_data *)bl)->class_].adelay < mob_db[((struct mob_data *)bl)->class_].amotion)
-				calc_adelay = mob_db[((struct mob_data *)bl)->class_].amotion;
+			if(mobdb_search(((struct mob_data *)bl)->class_)->adelay < mobdb_search(((struct mob_data *)bl)->class_)->amotion)
+				calc_adelay = mobdb_search(((struct mob_data *)bl)->class_)->amotion;
 			else
-				calc_adelay = mob_db[((struct mob_data *)bl)->class_].adelay;
+				calc_adelay = mobdb_search(((struct mob_data *)bl)->class_)->adelay;
 
 			if(guardup_lv > 0)
 				bonus_rate -= 5 + 5*guardup_lv;
 		} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-			if(mob_db[((struct pet_data *)bl)->class_].adelay < mob_db[((struct pet_data *)bl)->class_].amotion)
-				calc_adelay = mob_db[((struct pet_data *)bl)->class_].amotion;
+			if(mobdb_search(((struct pet_data *)bl)->class_)->adelay < mobdb_search(((struct pet_data *)bl)->class_)->amotion)
+				calc_adelay = mobdb_search(((struct pet_data *)bl)->class_)->amotion;
 			else
-				calc_adelay = mob_db[((struct pet_data *)bl)->class_].adelay;
+				calc_adelay = mobdb_search(((struct pet_data *)bl)->class_)->adelay;
 		} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 			calc_adelay = (((struct homun_data *)bl)->aspd);
 		} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
@@ -5668,11 +5668,11 @@ int status_get_amotion(struct block_list *bl)
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
 			int guardup_lv = ((struct mob_data*)bl)->guardup_lv;
-			calc_amotion = mob_db[((struct mob_data *)bl)->class_].amotion;
+			calc_amotion = mobdb_search(((struct mob_data *)bl)->class_)->amotion;
 			if(guardup_lv > 0)
 				bonus_rate -= 5 + 5*guardup_lv;
 		} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-			calc_amotion = mob_db[((struct pet_data *)bl)->class_].amotion;
+			calc_amotion = mobdb_search(((struct pet_data *)bl)->class_)->amotion;
 		} else if(bl->type == BL_HOM && (struct homun_data *)bl && ((struct homun_data *)bl)->msd) {
 			calc_amotion = ((struct homun_data *)bl)->aspd;
 		} else if(bl->type == BL_MERC && (struct merc_data *)bl && ((struct merc_data *)bl)->msd) {
@@ -5896,7 +5896,7 @@ int status_get_dmotion(struct block_list *bl)
 	nullpo_retr(2000, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		dmotion = mob_db[((struct mob_data *)bl)->class_].dmotion;
+		dmotion = mobdb_search(((struct mob_data *)bl)->class_)->dmotion;
 		if(battle_config.monster_damage_delay_rate != 100)
 			dmotion = dmotion*battle_config.monster_damage_delay_rate/100;
 	}
@@ -5924,7 +5924,7 @@ int status_get_dmotion(struct block_list *bl)
 		dmotion = ((struct elem_data *)bl)->dmotion;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		dmotion = mob_db[((struct pet_data *)bl)->class_].dmotion;
+		dmotion = mobdb_search(((struct pet_data *)bl)->class_)->dmotion;
 	}
 
 	return dmotion;
@@ -5983,7 +5983,7 @@ int status_get_element(struct block_list *bl)
 		ret = 20+((struct map_session_data *)bl)->def_ele;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		ret = mob_db[((struct pet_data *)bl)->class_].element;
+		ret = mobdb_search(((struct pet_data *)bl)->class_)->element;
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		ret = homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].element;
@@ -6232,13 +6232,13 @@ int status_get_race(struct block_list *bl)
 	nullpo_retr(RCT_FORMLESS, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		race = mob_db[((struct mob_data *)bl)->class_].race;
+		race = mobdb_search(((struct mob_data *)bl)->class_)->race;
 	}
 	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		race = ((struct map_session_data *)bl)->race;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		return mob_db[((struct pet_data *)bl)->class_].race;
+		return mobdb_search(((struct pet_data *)bl)->class_)->race;
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].race;
@@ -6294,14 +6294,14 @@ int status_get_size(struct block_list *bl)
 	nullpo_retr(1, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		return mob_db[((struct mob_data *)bl)->class_].size;
+		return mobdb_search(((struct mob_data *)bl)->class_)->size;
 	} else if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		if(pc_isbaby((struct map_session_data *)bl) || pc_isdoram((struct map_session_data *)bl))
 			return 0;
 		else
 			return 1;
 	} else if(bl->type == BL_PET && (struct pet_data *)bl) {
-		return mob_db[((struct pet_data *)bl)->class_].size;
+		return mobdb_search(((struct pet_data *)bl)->class_)->size;
 	} else if(bl->type == BL_HOM && (struct homun_data *)bl) {
 		return homun_db[((struct homun_data *)bl)->status.class_-HOM_ID].size;
 	} else if(bl->type == BL_MERC && (struct merc_data *)bl) {
@@ -6327,10 +6327,10 @@ int status_get_mode(struct block_list *bl)
 
 	if(bl->type == BL_MOB) {
 		struct mob_data* md = (struct mob_data*)bl;
-		return (md->mode ? md->mode : mob_db[md->class_].mode);
+		return (md->mode ? md->mode : mobdb_search(md->class_)->mode);
 	}
 	else if(bl->type == BL_PET) {
-		return mob_db[((struct pet_data *)bl)->class_].mode;
+		return mobdb_search(((struct pet_data *)bl)->class_)->mode;
 	}
 
 	return MD_CANMOVE;	// ‚Æ‚è‚ ‚¦‚¸“®‚­‚Æ‚¢‚¤‚±‚Æ‚Å1
@@ -6345,9 +6345,9 @@ int status_get_mexp(struct block_list *bl)
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
-		return mob_db[((struct mob_data *)bl)->class_].mexp;
+		return mobdb_search(((struct mob_data *)bl)->class_)->mexp;
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
-		return mob_db[((struct pet_data *)bl)->class_].mexp;
+		return mobdb_search(((struct pet_data *)bl)->class_)->mexp;
 
 	return 0;
 }

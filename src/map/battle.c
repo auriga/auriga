@@ -1888,7 +1888,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	} else if (src_md && skill_num == 0) {
 		do {
 			// ダブルアタック
-			if (mob_db[src_md->class_].mode_opt[MDOPT_DOUBLE] && atn_rand() % 100 < mob_db[src_md->class_].mode_opt[MDOPT_DOUBLE]*5)
+			if (mobdb_search(src_md->class_)->mode_opt[MDOPT_DOUBLE] && atn_rand() % 100 < mobdb_search(src_md->class_)->mode_opt[MDOPT_DOUBLE]*5)
 			{
 				calc_flag.da = 1;
 				calc_flag.hitrate = calc_flag.hitrate * 110 / 100;
@@ -1900,7 +1900,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ６．クリティカル計算 */
 	if( calc_flag.da == 0 &&
 	    (skill_num == 0 || skill_num == KN_AUTOCOUNTER || skill_num == SN_SHARPSHOOTING || skill_num == NJ_KIRIKAGE || skill_num == MA_SHARPSHOOTING || skill_num == LG_PINPOINTATTACK) &&
-	    (!src_md || battle_config.enemy_critical || mob_db[src_md->class_].mode_opt[MDOPT_CRITICAL]) &&
+	    (!src_md || battle_config.enemy_critical || mobdb_search(src_md->class_)->mode_opt[MDOPT_CRITICAL]) &&
 	    skill_lv >= 0 )
 	{
 		// 連撃が発動してなくて、通常攻撃・オートカウンター・シャープシューティング・影斬りならば
@@ -5450,7 +5450,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		wd.dmg_lv  = ATK_LUCKY;
 	}
 
-	if (target_md != NULL && (battle_config.enemy_perfect_flee || mob_db[target_md->class_].mode_opt[MDOPT_PERFECT_FREE]))	// 対象が完全回避をする設定がONなら
+	if (target_md != NULL && (battle_config.enemy_perfect_flee || mobdb_search(target_md->class_)->mode_opt[MDOPT_PERFECT_FREE]))	// 対象が完全回避をする設定がONなら
 	{
 		if(skill_num == 0 && skill_lv >= 0 && wd.div_ < 255 && atn_rand()%1000 < status_get_flee2(target) )
 		{
@@ -6913,8 +6913,8 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)
 			skill = 0;
-		if (md && mob_db[md->class_].mode_opt[MDOPT_STEELCROW])
-			skill = mob_db[md->class_].mode_opt[MDOPT_STEELCROW];
+		if (md && mobdb_search(md->class_)->mode_opt[MDOPT_STEELCROW])
+			skill = mobdb_search(md->class_)->mode_opt[MDOPT_STEELCROW];
 		mid.damage = ((dex/10+int_/2+skill*3+40)*2*(150+skill_lv*70)/100)*5;
 		if(sd) {
 			if(battle_config.allow_falconassault_elemet) {
@@ -8492,9 +8492,9 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 	if(ss->type == BL_PET && target->type == BL_MOB) {
 		struct pet_data *pd = (struct pet_data*)ss;
 		struct mob_data *md = (struct mob_data*)target;
-		int mode = mob_db[pd->class_].mode;
-		int race = mob_db[pd->class_].race;
-		if(mob_db[pd->class_].mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) ) {
+		int mode = mobdb_search(pd->class_)->mode;
+		int race = mobdb_search(pd->class_)->race;
+		if(mobdb_search(pd->class_)->mexp <= 0 && !(mode&MD_BOSS) && (md->sc.option & (OPTION_HIDE | OPTION_CLOAKING) && race != RCT_INSECT && race != RCT_DEMON) ) {
 			return 1; // 失敗
 		} else {
 			return 0; // 成功

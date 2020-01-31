@@ -196,15 +196,15 @@ struct item_data* itemdb_search(int nameid)
 		id->type = ITEMTYPE_EVENT;   // correction
 	else if((nameid >= 1750 && nameid < 1771) || (nameid >= 13200 && nameid < 13300))
 		id->type = ITEMTYPE_ARROW;  // arrow
-	else if((nameid > 1100 && nameid < 2000) || (nameid >= 13000 && nameid < 13350))
+	else if((nameid > 1100 && nameid < 2000) || (nameid >= 13000 && nameid < 13500) || (nameid >= 16000 && nameid < 16100))
 		id->type = ITEMTYPE_WEAPON;   // weapon
-	else if((nameid > 2100 && nameid < 3000) || (nameid > 5000 && nameid < 6000))
+	else if((nameid > 2100 && nameid < 3000) || (nameid > 5000 && nameid < 6000) || (nameid >= 15000 && nameid < 16000))
 		id->type = ITEMTYPE_ARMOR;   // armor
 	else if(nameid > 4000 && nameid < 5000)
 		id->type = ITEMTYPE_CARD;   // card
 	else if(nameid > 9000 && nameid < 10000)
 		id->flag.pet_egg = 1;   // egg
-	else if(nameid > 10000)
+	else if(nameid > 10000 && nameid < 11000)
 		id->flag.pet_acce = 1;   // petequip
 
 	return id;
