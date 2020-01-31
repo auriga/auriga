@@ -7889,22 +7889,45 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOW(fd,0)=0xb1;
 		WFIFOL(fd,4)=sd->status.zeny;
 		break;
+#if PACKETVER < 20170830
 	case SP_BASEEXP:
 		WFIFOW(fd,0)=0xb1;
-		WFIFOL(fd,4)=sd->status.base_exp;
+		WFIFOL(fd,4)=(sd->status.base_exp > 0x7fffffff)? 0x7fffffff: (int)sd->status.base_exp;
 		break;
 	case SP_JOBEXP:
 		WFIFOW(fd,0)=0xb1;
-		WFIFOL(fd,4)=sd->status.job_exp;
+		WFIFOL(fd,4)=(sd->status.job_exp > 0x7fffffff)? 0x7fffffff: (int)sd->status.job_exp;
 		break;
 	case SP_NEXTBASEEXP:
 		WFIFOW(fd,0)=0xb1;
-		WFIFOL(fd,4)=pc_nextbaseexp(sd);
+		WFIFOL(fd,4)=(pc_nextbaseexp(sd) > 0x7fffffff)? 0x7fffffff: (int)pc_nextbaseexp(sd);
 		break;
 	case SP_NEXTJOBEXP:
 		WFIFOW(fd,0)=0xb1;
-		WFIFOL(fd,4)=pc_nextjobexp(sd);
+		WFIFOL(fd,4)=(pc_nextjobexp(sd) > 0x7fffffff)? 0x7fffffff: (int)pc_nextjobexp(sd);
 		break;
+#else
+	case SP_BASEEXP:
+		WFIFOW(fd,0)=0xacb;
+		WFIFOQ(fd,4)=sd->status.base_exp;
+		len=12;
+		break;
+	case SP_JOBEXP:
+		WFIFOW(fd,0)=0xacb;
+		WFIFOQ(fd,4)=sd->status.job_exp;
+		len=12;
+		break;
+	case SP_NEXTBASEEXP:
+		WFIFOW(fd,0)=0xacb;
+		WFIFOQ(fd,4)=pc_nextbaseexp(sd);
+		len=12;
+		break;
+	case SP_NEXTJOBEXP:
+		WFIFOW(fd,0)=0xacb;
+		WFIFOQ(fd,4)=pc_nextjobexp(sd);
+		len=12;
+		break;
+#endif
 
 		// 00be
 	case SP_USTR:
@@ -17721,12 +17744,21 @@ void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
 	nullpo_retv(sd);
 
 	fd = sd->fd;
+#if PACKETVER < 20170830
 	WFIFOW(fd,0) = 0x7f6;
 	WFIFOL(fd,2) = sd->bl.id;
 	WFIFOL(fd,6) = exp;
 	WFIFOW(fd,10) = type;
 	WFIFOW(fd,12) = quest;
 	WFIFOSET(fd,packet_db[0x7f6].len);
+#else
+	WFIFOW(fd,0) = 0xacc;
+	WFIFOL(fd,2) = sd->bl.id;
+	WFIFOQ(fd,6) = exp;
+	WFIFOW(fd,14) = type;
+	WFIFOW(fd,16) = quest;
+	WFIFOSET(fd,packet_db[0xacc].len);
+#endif
 
     return;
 }
@@ -21834,7 +21866,8 @@ static void clif_parse_doridori(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, int cmd)
 {
-	int next, rate = 0;
+	atn_bignumber next;
+	int rate = 0;
 
 	nullpo_retv(sd);
 
@@ -21847,7 +21880,7 @@ static void clif_parse_sn_explosionspirits(int fd,struct map_session_data *sd, i
 	{
 		if(battle_config.etc_log) {
 			printf(
-				"SuperNovice explosionspirits!! %d %d %d %d\n",
+				"SuperNovice explosionspirits!! %d %d %" BIGNUMCODE " %d\n",
 				sd->bl.id, sd->s_class.job, sd->status.base_exp, rate
 			);
 		}

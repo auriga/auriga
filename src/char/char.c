@@ -279,9 +279,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,4+i*106) = st->char_id;
-		WFIFOL(fd,8+i*106) = st->base_exp;
+		WFIFOL(fd,8+i*106) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,12+i*106) = st->zeny;
-		WFIFOL(fd,16+i*106) = st->job_exp;
+		WFIFOL(fd,16+i*106) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,20+i*106) = st->job_level;
 		WFIFOL(fd,24+i*106) = 0;
 		WFIFOL(fd,28+i*106) = 0;
@@ -328,9 +328,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,24+i*106) = st->char_id;
-		WFIFOL(fd,28+i*106) = st->base_exp;
+		WFIFOL(fd,28+i*106) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,32+i*106) = st->zeny;
-		WFIFOL(fd,36+i*106) = st->job_exp;
+		WFIFOL(fd,36+i*106) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,40+i*106) = st->job_level;
 		WFIFOL(fd,44+i*106) = 0;
 		WFIFOL(fd,48+i*106) = 0;
@@ -377,9 +377,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,24+i*112) = st->char_id;
-		WFIFOL(fd,28+i*112) = st->base_exp;
+		WFIFOL(fd,28+i*112) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,32+i*112) = st->zeny;
-		WFIFOL(fd,36+i*112) = st->job_exp;
+		WFIFOL(fd,36+i*112) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,40+i*112) = st->job_level;
 		WFIFOL(fd,44+i*112) = 0;
 		WFIFOL(fd,48+i*112) = 0;
@@ -427,9 +427,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,24+i*108) = st->char_id;
-		WFIFOL(fd,28+i*108) = st->base_exp;
+		WFIFOL(fd,28+i*108) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,32+i*108) = st->zeny;
-		WFIFOL(fd,36+i*108) = st->job_exp;
+		WFIFOL(fd,36+i*108) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,40+i*108) = st->job_level;
 		WFIFOL(fd,44+i*108) = 0;
 		WFIFOL(fd,48+i*108) = 0;
@@ -480,9 +480,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*112) = st->char_id;
-		WFIFOL(fd,31+i*112) = st->base_exp;
+		WFIFOL(fd,31+i*112) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*112) = st->zeny;
-		WFIFOL(fd,39+i*112) = st->job_exp;
+		WFIFOL(fd,39+i*112) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*112) = st->job_level;
 		WFIFOL(fd,47+i*112) = 0;
 		WFIFOL(fd,51+i*112) = 0;
@@ -533,9 +533,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*108) = st->char_id;
-		WFIFOL(fd,31+i*108) = st->base_exp;
+		WFIFOL(fd,31+i*108) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*108) = st->zeny;
-		WFIFOL(fd,39+i*108) = st->job_exp;
+		WFIFOL(fd,39+i*108) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*108) = st->job_level;
 		WFIFOL(fd,47+i*108) = 0;
 		WFIFOL(fd,51+i*108) = 0;
@@ -586,9 +586,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*128) = st->char_id;
-		WFIFOL(fd,31+i*128) = st->base_exp;
+		WFIFOL(fd,31+i*128) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*128) = st->zeny;
-		WFIFOL(fd,39+i*128) = st->job_exp;
+		WFIFOL(fd,39+i*128) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*128) = st->job_level;
 		WFIFOL(fd,47+i*128) = 0;
 		WFIFOL(fd,51+i*128) = 0;
@@ -640,9 +640,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*112) = st->char_id;
-		WFIFOL(fd,31+i*112) = st->base_exp;
+		WFIFOL(fd,31+i*112) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*112) = st->zeny;
-		WFIFOL(fd,39+i*112) = st->job_exp;
+		WFIFOL(fd,39+i*112) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*112) = st->job_level;
 		WFIFOL(fd,47+i*112) = 0;
 		WFIFOL(fd,51+i*112) = 0;
@@ -693,9 +693,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*132) = st->char_id;
-		WFIFOL(fd,31+i*132) = st->base_exp;
+		WFIFOL(fd,31+i*132) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*132) = st->zeny;
-		WFIFOL(fd,39+i*132) = st->job_exp;
+		WFIFOL(fd,39+i*132) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*132) = st->job_level;
 		WFIFOL(fd,47+i*132) = 0;
 		WFIFOL(fd,51+i*132) = 0;
@@ -748,9 +748,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*136) = st->char_id;
-		WFIFOL(fd,31+i*136) = st->base_exp;
+		WFIFOL(fd,31+i*136) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*136) = st->zeny;
-		WFIFOL(fd,39+i*136) = st->job_exp;
+		WFIFOL(fd,39+i*136) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*136) = st->job_level;
 		WFIFOL(fd,47+i*136) = 0;
 		WFIFOL(fd,51+i*136) = 0;
@@ -804,9 +804,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*140) = st->char_id;
-		WFIFOL(fd,31+i*140) = st->base_exp;
+		WFIFOL(fd,31+i*140) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*140) = st->zeny;
-		WFIFOL(fd,39+i*140) = st->job_exp;
+		WFIFOL(fd,39+i*140) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*140) = st->job_level;
 		WFIFOL(fd,47+i*140) = 0;
 		WFIFOL(fd,51+i*140) = 0;
@@ -861,9 +861,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*144) = st->char_id;
-		WFIFOL(fd,31+i*144) = st->base_exp;
+		WFIFOL(fd,31+i*144) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*144) = st->zeny;
-		WFIFOL(fd,39+i*144) = st->job_exp;
+		WFIFOL(fd,39+i*144) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*144) = st->job_level;
 		WFIFOL(fd,47+i*144) = 0;
 		WFIFOL(fd,51+i*144) = 0;
@@ -904,7 +904,7 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 	}
 	WFIFOW(fd,2)=found_num*144+27;
 	WFIFOSET(fd,WFIFOW(fd,2));
-#else
+#elif PACKETVER < 20170830
 	WFIFOW(fd,0)=0x6b;
 	WFIFOB(fd,4)=max_char_slot;
 	WFIFOB(fd,5)=max_char_slot;
@@ -919,9 +919,9 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 			continue;
 		st = &sd->found_char[i]->st;
 		WFIFOL(fd,27+i*147) = st->char_id;
-		WFIFOL(fd,31+i*147) = st->base_exp;
+		WFIFOL(fd,31+i*147) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 		WFIFOL(fd,35+i*147) = st->zeny;
-		WFIFOL(fd,39+i*147) = st->job_exp;
+		WFIFOL(fd,39+i*147) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 		WFIFOL(fd,43+i*147) = st->job_level;
 		WFIFOL(fd,47+i*147) = 0;
 		WFIFOL(fd,51+i*147) = 0;
@@ -964,6 +964,66 @@ static int mmo_char_send006b(int fd, struct char_session_data *sd)
 	}
 	WFIFOW(fd,2)=found_num*147+27;
 	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	WFIFOW(fd,0)=0x6b;
+	WFIFOB(fd,4)=max_char_slot;
+	WFIFOB(fd,5)=max_char_slot;
+	WFIFOB(fd,6)=max_char_slot;
+	WFIFOB(fd,7)=0;
+	WFIFOL(fd,8)=0;
+	WFIFOL(fd,12)=0;
+	WFIFOL(fd,16)=0;
+	memset(WFIFOP(fd,20), 0, 7);
+	for( i = 0; i < max_char_slot ; i++ ) {
+		if(sd->found_char[i] == NULL)
+			continue;
+		st = &sd->found_char[i]->st;
+		WFIFOL(fd,27+i*155) = st->char_id;
+		WFIFOQ(fd,31+i*155) = st->base_exp;
+		WFIFOL(fd,39+i*155) = st->zeny;
+		WFIFOQ(fd,43+i*155) = st->job_exp;
+		WFIFOL(fd,51+i*155) = st->job_level;
+		WFIFOL(fd,55+i*155) = 0;
+		WFIFOL(fd,59+i*155) = 0;
+		WFIFOL(fd,63+i*155) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+		WFIFOL(fd,67+i*155) = st->karma;
+		WFIFOL(fd,71+i*155) = st->manner;
+		WFIFOW(fd,75+i*155) = st->status_point;
+		WFIFOL(fd,77+i*155) = st->hp;
+		WFIFOL(fd,81+i*155) = st->max_hp;
+		WFIFOW(fd,85+i*155) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+		WFIFOW(fd,87+i*155) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+		WFIFOW(fd,89+i*155) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+		WFIFOW(fd,91+i*155) = st->class_;
+		WFIFOW(fd,93+i*155) = st->hair;
+		WFIFOW(fd,95+i*155) = st->style;
+		WFIFOW(fd,97+i*155) = st->weapon;
+		WFIFOW(fd,99+i*155) = st->base_level;
+		WFIFOW(fd,101+i*155) = st->skill_point;
+		WFIFOW(fd,103+i*155) = st->head_bottom;
+		WFIFOW(fd,105+i*155) = st->shield;
+		WFIFOW(fd,107+i*155) = st->head_top;
+		WFIFOW(fd,109+i*155) = st->head_mid;
+		WFIFOW(fd,111+i*155) = st->hair_color;
+		WFIFOW(fd,113+i*155) = st->clothes_color;
+		memcpy(WFIFOP(fd,115+i*155), st->name, 24);
+		WFIFOB(fd,139+i*155) = (st->str > 255)  ? 255: st->str;
+		WFIFOB(fd,140+i*155) = (st->agi > 255)  ? 255: st->agi;
+		WFIFOB(fd,141+i*155) = (st->vit > 255)  ? 255: st->vit;
+		WFIFOB(fd,142+i*155) = (st->int_ > 255) ? 255: st->int_;
+		WFIFOB(fd,143+i*155) = (st->dex > 255)  ? 255: st->dex;
+		WFIFOB(fd,144+i*155) = (st->luk > 255)  ? 255: st->luk;
+		WFIFOW(fd,145+i*155) = st->char_num;
+		WFIFOW(fd,147+i*155) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+		memcpy(WFIFOP(fd,149+i*155),st->last_point.map,16);	// 最後に在籍していたMAP名
+		WFIFOL(fd,165+i*155) = st->delete_date;	// 削除待機時間
+		WFIFOL(fd,169+i*155) = st->robe;	// 肩装備
+		WFIFOL(fd,173+i*155) = 0;	// TODO: スロット変更が可能な状態かどうか
+		WFIFOL(fd,177+i*155) = 0;	// TODO: Add-Ons
+		WFIFOB(fd,181+i*155) = st->sex;	// 性別
+	}
+	WFIFOW(fd,2)=found_num*155+27;
+	WFIFOSET(fd,WFIFOW(fd,2));
 #endif
 
 	return 0;
@@ -980,9 +1040,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #if PACKETVER < 20070212
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1018,9 +1078,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20100223 && defined(NEW_006b)
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1057,9 +1117,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20100223
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1096,9 +1156,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20100728
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1136,9 +1196,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20100803
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1175,9 +1235,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20110111
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1216,9 +1276,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20110928
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1258,9 +1318,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20111025
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1301,9 +1361,9 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 #elif PACKETVER < 20141022
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1342,12 +1402,12 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOL(fd,138) = 0;	// TODO: スロット変更が可能な状態かどうか
 	WFIFOL(fd,142) = 0;	// TODO: Add-Ons
 	WFIFOSET(fd,146);
-#else
+#elif PACKETVER < 20170830
 	WFIFOW(fd,0) = 0x6d;
 	WFIFOL(fd,2) = st->char_id;
-	WFIFOL(fd,6) = st->base_exp;
+	WFIFOL(fd,6) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 	WFIFOL(fd,10) = st->zeny;
-	WFIFOL(fd,14) = st->job_exp;
+	WFIFOL(fd,14) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 	WFIFOL(fd,18) = st->job_level;
 	WFIFOL(fd,22) = 0;	// bodystate
 	WFIFOL(fd,26) = 0;	// healthstate
@@ -1388,6 +1448,52 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOL(fd,144) = 0;	// TODO: Add-Ons
 	WFIFOB(fd,148) = sex;	// 性別
 	WFIFOSET(fd,149);
+#else
+	WFIFOW(fd,0) = 0x6d;
+	WFIFOL(fd,2) = st->char_id;
+	WFIFOQ(fd,6) = st->base_exp;
+	WFIFOL(fd,14) = st->zeny;
+	WFIFOQ(fd,18) = st->job_exp;
+	WFIFOL(fd,26) = st->job_level;
+	WFIFOL(fd,30) = 0;	// bodystate
+	WFIFOL(fd,34) = 0;	// healthstate
+	WFIFOL(fd,38) = st->option;
+	WFIFOL(fd,42) = st->karma;
+	WFIFOL(fd,46) = st->manner;
+	WFIFOW(fd,50) = st->status_point;
+	WFIFOL(fd,52) = st->hp;
+	WFIFOL(fd,56) = st->max_hp;
+	WFIFOW(fd,60) = (st->sp     > 0x7fff) ? 0x7fff : st->sp;
+	WFIFOW(fd,62) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+	WFIFOW(fd,64) = DEFAULT_WALK_SPEED; // char_dat[i].speed;
+	WFIFOW(fd,66) = st->class_;
+	WFIFOW(fd,68) = st->hair;
+	WFIFOW(fd,70) = st->style;
+	WFIFOW(fd,72) = st->weapon;
+	WFIFOW(fd,74) = st->base_level;
+	WFIFOW(fd,76) = st->skill_point;
+	WFIFOW(fd,78) = st->head_bottom;
+	WFIFOW(fd,80) = st->shield;
+	WFIFOW(fd,82) = st->head_top;
+	WFIFOW(fd,84) = st->head_mid;
+	WFIFOW(fd,86) = st->hair_color;
+	WFIFOW(fd,88) = st->clothes_color;
+	memcpy( WFIFOP(fd,90), st->name, 24 );
+	WFIFOB(fd,114) = (st->str  > 255) ? 255 : st->str;
+	WFIFOB(fd,115) = (st->agi  > 255) ? 255 : st->agi;
+	WFIFOB(fd,116) = (st->vit  > 255) ? 255 : st->vit;
+	WFIFOB(fd,117) = (st->int_ > 255) ? 255 : st->int_;
+	WFIFOB(fd,118) = (st->dex  > 255) ? 255 : st->dex;
+	WFIFOB(fd,119) = (st->luk  > 255) ? 255 : st->luk;
+	WFIFOW(fd,120) = st->char_num;
+	WFIFOW(fd,122) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+	memcpy(WFIFOP(fd,124),st->last_point.map,16);	// 最後に在籍していたMAP名
+	WFIFOL(fd,140) = st->delete_date;	// 削除待機時間
+	WFIFOL(fd,144) = st->robe;	// 肩装備
+	WFIFOL(fd,148) = 0;	// TODO: スロット変更が可能な状態かどうか
+	WFIFOL(fd,152) = 0;	// TODO: Add-Ons
+	WFIFOB(fd,156) = sex;	// 性別
+	WFIFOSET(fd,157);
 #endif
 }
 
@@ -2017,9 +2123,9 @@ int parse_tologin(int fd)
 										st = &sd->found_char[j]->st;
 #if PACKETVER < 20141022
 										WFIFOL(fdc,4+j*144) = st->char_id;
-										WFIFOL(fdc,8+j*144) = st->base_exp;
+										WFIFOL(fdc,8+j*144) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 										WFIFOL(fdc,12+j*144) = st->zeny;
-										WFIFOL(fdc,16+j*144) = st->job_exp;
+										WFIFOL(fdc,16+j*144) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 										WFIFOL(fdc,20+j*144) = st->job_level;
 										WFIFOL(fdc,24+j*144) = 0;
 										WFIFOL(fdc,28+j*144) = 0;
@@ -2062,11 +2168,11 @@ int parse_tologin(int fd)
 										WFIFOL(fdc,144+j*144) = 0;	// TODO: Add-Ons
 									}
 									WFIFOW(fdc,2)=found_num*144+4;
-#else
+#elif PACKETVER < 20170830
 										WFIFOL(fdc,4+j*147) = st->char_id;
-										WFIFOL(fdc,8+j*147) = st->base_exp;
+										WFIFOL(fdc,8+j*147) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 										WFIFOL(fdc,12+j*147) = st->zeny;
-										WFIFOL(fdc,16+j*147) = st->job_exp;
+										WFIFOL(fdc,16+j*147) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 										WFIFOL(fdc,20+j*147) = st->job_level;
 										WFIFOL(fdc,24+j*147) = 0;
 										WFIFOL(fdc,28+j*147) = 0;
@@ -2111,6 +2217,55 @@ int parse_tologin(int fd)
 										WFIFOB(fdc,150+j*147) = st->sex;	// 性別
 									}
 									WFIFOW(fdc,2)=found_num*147+4;
+#else
+										WFIFOL(fdc,4+j*155) = st->char_id;
+										WFIFOQ(fdc,8+j*155) = st->base_exp;
+										WFIFOL(fdc,16+j*155) = st->zeny;
+										WFIFOQ(fdc,20+j*155) = st->job_exp;
+										WFIFOL(fdc,28+j*155) = st->job_level;
+										WFIFOL(fdc,32+j*155) = 0;
+										WFIFOL(fdc,36+j*155) = 0;
+										WFIFOL(fdc,40+j*155) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+										WFIFOL(fdc,44+j*155) = st->karma;
+										WFIFOL(fdc,48+j*155) = st->manner;
+										WFIFOW(fdc,52+j*155) = st->status_point;
+										WFIFOL(fdc,54+j*155) = st->hp;
+										WFIFOL(fdc,58+j*155) = st->max_hp;
+										WFIFOW(fdc,62+j*155) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+										WFIFOW(fdc,64+j*155) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+										WFIFOW(fdc,66+j*155) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+										WFIFOW(fdc,68+j*155) = st->class_;
+										WFIFOW(fdc,70+j*155) = st->hair;
+										WFIFOW(fdc,72+j*155) = st->style;
+										WFIFOW(fdc,74+j*155) = st->weapon;
+										WFIFOW(fdc,76+j*155) = st->base_level;
+										WFIFOW(fdc,78+j*155) = st->skill_point;
+										WFIFOW(fdc,80+j*155) = st->head_bottom;
+										WFIFOW(fdc,82+j*155) = st->shield;
+										WFIFOW(fdc,84+j*155) = st->head_top;
+										WFIFOW(fdc,86+j*155) = st->head_mid;
+										WFIFOW(fdc,88+j*155) = st->hair_color;
+										WFIFOW(fdc,90+j*155) = st->clothes_color;
+										memcpy(WFIFOP(fdc,92+j*155), st->name, 24);
+										WFIFOB(fdc,116+j*155) = (st->str > 255)  ? 255: st->str;
+										WFIFOB(fdc,117+j*155) = (st->agi > 255)  ? 255: st->agi;
+										WFIFOB(fdc,118+j*155) = (st->vit > 255)  ? 255: st->vit;
+										WFIFOB(fdc,119+j*155) = (st->int_ > 255) ? 255: st->int_;
+										WFIFOB(fdc,120+j*155) = (st->dex > 255)  ? 255: st->dex;
+										WFIFOB(fdc,121+j*155) = (st->luk > 255)  ? 255: st->luk;
+										WFIFOW(fdc,122+j*155) = st->char_num;
+										WFIFOW(fdc,124+j*155) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+										memcpy(WFIFOP(fdc,126+j*155),st->last_point.map,16);	// 最後に在籍していたMAP名
+										if(st->delete_date)
+											WFIFOL(fdc,142+j*155) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+										else
+											WFIFOL(fdc,142+j*155) = 0;
+										WFIFOL(fdc,146+j*155) = st->robe;	// 肩装備
+										WFIFOL(fdc,150+j*155) = 0;	// スロット変更が可能な状態かどうか
+										WFIFOL(fdc,154+j*155) = 0;	// TODO: Add-Ons
+										WFIFOB(fdc,158+j*155) = st->sex;	// 性別
+									}
+									WFIFOW(fdc,2)=found_num*155+4;
 #endif
 									WFIFOSET(fdc,WFIFOW(fdc,2));
 								}
@@ -3741,9 +3896,9 @@ int parse_char(int fd)
 					st = &sd->found_char[j]->st;
 #if PACKETVER < 20141022
 					WFIFOL(fd,4+j*144) = st->char_id;
-					WFIFOL(fd,8+j*144) = st->base_exp;
+					WFIFOL(fd,8+j*144) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 					WFIFOL(fd,12+j*144) = st->zeny;
-					WFIFOL(fd,16+j*144) = st->job_exp;
+					WFIFOL(fd,16+j*144) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 					WFIFOL(fd,20+j*144) = st->job_level;
 					WFIFOL(fd,24+j*144) = 0;
 					WFIFOL(fd,28+j*144) = 0;
@@ -3786,11 +3941,11 @@ int parse_char(int fd)
 					WFIFOL(fd,144+j*144) = 0;	// TODO: Add-Ons
 				}
 				WFIFOW(fd,2)=found_num*144+4;
-#else
+#elif PACKETVER < 20170830
 					WFIFOL(fd,4+j*147) = st->char_id;
-					WFIFOL(fd,8+j*147) = st->base_exp;
+					WFIFOL(fd,8+j*147) = (st->base_exp > 0x7fffffff)? 0x7fffffff: (int)st->base_exp;
 					WFIFOL(fd,12+j*147) = st->zeny;
-					WFIFOL(fd,16+j*147) = st->job_exp;
+					WFIFOL(fd,16+j*147) = (st->job_exp > 0x7fffffff)? 0x7fffffff: (int)st->job_exp;
 					WFIFOL(fd,20+j*147) = st->job_level;
 					WFIFOL(fd,24+j*147) = 0;
 					WFIFOL(fd,28+j*147) = 0;
@@ -3835,6 +3990,55 @@ int parse_char(int fd)
 					WFIFOB(fd,150+j*147) = st->sex;	// 性別
 				}
 				WFIFOW(fd,2)=found_num*147+4;
+#else
+					WFIFOL(fd,4+j*155) = st->char_id;
+					WFIFOQ(fd,8+j*155) = st->base_exp;
+					WFIFOL(fd,16+j*155) = st->zeny;
+					WFIFOQ(fd,20+j*155) = st->job_exp;
+					WFIFOL(fd,28+j*155) = st->job_level;
+					WFIFOL(fd,32+j*155) = 0;
+					WFIFOL(fd,36+j*155) = 0;
+					WFIFOL(fd,40+j*155) = ( st->option&0x7e80020 ) ? 0 : st->option;	// 騎乗中のログイン時エラー対策
+					WFIFOL(fd,44+j*155) = st->karma;
+					WFIFOL(fd,48+j*155) = st->manner;
+					WFIFOW(fd,52+j*155) = st->status_point;
+					WFIFOL(fd,54+j*155) = st->hp;
+					WFIFOL(fd,58+j*155) = st->max_hp;
+					WFIFOW(fd,62+j*155) = (st->sp > 0x7fff) ? 0x7fff : st->sp;
+					WFIFOW(fd,64+j*155) = (st->max_sp > 0x7fff) ? 0x7fff : st->max_sp;
+					WFIFOW(fd,66+j*155) = DEFAULT_WALK_SPEED; // char_dat[j].st.speed;
+					WFIFOW(fd,68+j*155) = st->class_;
+					WFIFOW(fd,70+j*155) = st->hair;
+					WFIFOW(fd,72+j*155) = st->style;
+					WFIFOW(fd,74+j*155) = st->weapon;
+					WFIFOW(fd,76+j*155) = st->base_level;
+					WFIFOW(fd,78+j*155) = st->skill_point;
+					WFIFOW(fd,80+j*155) = st->head_bottom;
+					WFIFOW(fd,82+j*155) = st->shield;
+					WFIFOW(fd,84+j*155) = st->head_top;
+					WFIFOW(fd,86+j*155) = st->head_mid;
+					WFIFOW(fd,88+j*155) = st->hair_color;
+					WFIFOW(fd,90+j*155) = st->clothes_color;
+					memcpy(WFIFOP(fd,92+j*155), st->name, 24);
+					WFIFOB(fd,116+j*155) = (st->str > 255)  ? 255: st->str;
+					WFIFOB(fd,117+j*155) = (st->agi > 255)  ? 255: st->agi;
+					WFIFOB(fd,118+j*155) = (st->vit > 255)  ? 255: st->vit;
+					WFIFOB(fd,119+j*155) = (st->int_ > 255) ? 255: st->int_;
+					WFIFOB(fd,120+j*155) = (st->dex > 255)  ? 255: st->dex;
+					WFIFOB(fd,121+j*155) = (st->luk > 255)  ? 255: st->luk;
+					WFIFOW(fd,122+j*155) = st->char_num;
+					WFIFOW(fd,124+j*155) = 1;	// TODO: キャラ名の変更が可能な状態かどうか(0でON 1でOFF)
+					memcpy(WFIFOP(fd,126+j*155),st->last_point.map,16);	// 最後に在籍していたMAP名
+					if(st->delete_date)
+						WFIFOL(fd,142+j*155) = st->delete_date - (unsigned int)time(NULL);	// 削除待機時間
+					else
+						WFIFOL(fd,142+j*155) = 0;
+					WFIFOL(fd,146+j*155) = st->robe;	// 肩装備
+					WFIFOL(fd,150+j*155) = 0;	// スロット変更が可能な状態かどうか
+					WFIFOL(fd,154+j*155) = 0;	// TODO: Add-Ons
+					WFIFOB(fd,158+j*155) = st->sex;	// 性別
+				}
+				WFIFOW(fd,2)=found_num*155+4;
 #endif
 				WFIFOSET(fd,WFIFOW(fd,2));
 			}

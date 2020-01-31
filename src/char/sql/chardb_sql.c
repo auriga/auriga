@@ -335,8 +335,8 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.class_              = atoi(sql_row[3]);
 	p->st.base_level          = atoi(sql_row[4]);
 	p->st.job_level           = atoi(sql_row[5]);
-	p->st.base_exp            = atoi(sql_row[6]);
-	p->st.job_exp             = atoi(sql_row[7]);
+	p->st.base_exp            = _atoi64(sql_row[6]);
+	p->st.job_exp             = _atoi64(sql_row[7]);
 	p->st.zeny                = atoi(sql_row[8]);
 	p->st.str                 = atoi(sql_row[9]);
 	p->st.agi                 = atoi(sql_row[10]);
@@ -588,6 +588,10 @@ bool chardb_sql_save_reg(int account_id, int char_id, int num, struct global_reg
 	if(st1->val != st2->val) {\
 		p += sprintf(p,"%c`"sql"` = '%u'",sep,st2->val); sep = ',';\
 	}
+#define UPDATE_NUM64(val,sql) \
+	if(st1->val != st2->val) {\
+		p += sprintf(p,"%c`"sql"` = '%" BIGNUMCODE "'",sep,st2->val); sep = ',';\
+	}
 #define UPDATE_STR(val,sql) \
 	if(strcmp(st1->val,st2->val)) {\
 		p += sprintf(p,"%c`"sql"` = '%s'",sep,strecpy(buf,st2->val)); sep = ',';\
@@ -623,8 +627,8 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(class_             ,"class");
 	UPDATE_NUM(base_level         ,"base_level");
 	UPDATE_NUM(job_level          ,"job_level");
-	UPDATE_NUM(base_exp           ,"base_exp");
-	UPDATE_NUM(job_exp            ,"job_exp");
+	UPDATE_NUM64(base_exp         ,"base_exp");
+	UPDATE_NUM64(job_exp          ,"job_exp");
 	UPDATE_NUM(zeny               ,"zeny");
 	UPDATE_NUM(str                ,"str");
 	UPDATE_NUM(agi                ,"agi");

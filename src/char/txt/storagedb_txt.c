@@ -106,11 +106,13 @@ static int storage_tostr(char *str, struct storage *p)
 
 	for(i = 0; i < MAX_STORAGE; i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
+			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],
-				p->store_item[i].limit);
+				p->store_item[i].opt[0].id,p->store_item[i].opt[0].val,p->store_item[i].opt[1].id,p->store_item[i].opt[1].val,p->store_item[i].opt[2].id,p->store_item[i].opt[2].val,
+				p->store_item[i].opt[3].id,p->store_item[i].opt[3].val,p->store_item[i].opt[4].id,p->store_item[i].opt[4].val,
+				p->store_item[i].limit,p->store_item[i].private_);
 			f++;
 		}
 	}
@@ -129,7 +131,7 @@ static int storage_tostr(char *str, struct storage *p)
  */
 static int storage_fromstr(char *str, struct storage *p)
 {
-	int tmp_int[12];
+	int tmp_int[23];
 	int set, next, len, i;
 
 	nullpo_retr(1, p);
@@ -143,33 +145,68 @@ static int storage_fromstr(char *str, struct storage *p)
 		return 0;
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++){
-		// Auriga-0300ˆÈ~‚ÌŒ`®
-		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
+		// Auriga-1369ˆÈ~‚ÌŒ`®
+		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set != 12) {
-			tmp_int[11] = 0;	// limit
-			set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
+			&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],
+			&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],
+			&tmp_int[21],&tmp_int[22],&len);
+
+		if(set != 23)
+		{
+			// Auriga-0300ˆÈ~‚ÌŒ`®
+			tmp_int[11] = 0;	// opt[0].id
+			tmp_int[12] = 0;	// opt[0].val
+			tmp_int[13] = 0;	// opt[1].id
+			tmp_int[14] = 0;	// opt[1].val
+			tmp_int[15] = 0;	// opt[2].id
+			tmp_int[16] = 0;	// opt[2].val
+			tmp_int[17] = 0;	// opt[3].id
+			tmp_int[18] = 0;	// opt[3].val
+			tmp_int[19] = 0;	// opt[4].id
+			tmp_int[20] = 0;	// opt[4].val
+			tmp_int[22] = 0;	// private
+			set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 				&tmp_int[4],&tmp_int[5],&tmp_int[6],
-				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-			if(set != 11)
-				return 1;
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
+				&tmp_int[21],&len);
+			if(set != 12) {
+				tmp_int[21] = 0;	// limit
+				set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+					&tmp_int[4],&tmp_int[5],&tmp_int[6],
+					&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+				if(set != 11)
+					return 1;
+			}
 		}
 		if(i < MAX_STORAGE) {
-			p->store_item[i].id        = (unsigned int)tmp_int[0];
-			p->store_item[i].nameid    = tmp_int[1];
-			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = (unsigned int)tmp_int[3];
-			p->store_item[i].identify  = tmp_int[4];
-			p->store_item[i].refine    = tmp_int[5];
-			p->store_item[i].attribute = tmp_int[6];
-			p->store_item[i].card[0]   = tmp_int[7];
-			p->store_item[i].card[1]   = tmp_int[8];
-			p->store_item[i].card[2]   = tmp_int[9];
-			p->store_item[i].card[3]   = tmp_int[10];
-			p->store_item[i].limit     = (unsigned int)tmp_int[11];
+			p->store_item[i].id         = (unsigned int)tmp_int[0];
+			p->store_item[i].nameid     = tmp_int[1];
+			p->store_item[i].amount     = tmp_int[2];
+			p->store_item[i].equip      = (unsigned int)tmp_int[3];
+			p->store_item[i].identify   = tmp_int[4];
+			p->store_item[i].refine     = tmp_int[5];
+			p->store_item[i].attribute  = tmp_int[6];
+			p->store_item[i].card[0]    = tmp_int[7];
+			p->store_item[i].card[1]    = tmp_int[8];
+			p->store_item[i].card[2]    = tmp_int[9];
+			p->store_item[i].card[3]    = tmp_int[10];
+			p->store_item[i].opt[0].id  = tmp_int[11];
+			p->store_item[i].opt[0].val = tmp_int[12];
+			p->store_item[i].opt[1].id  = tmp_int[13];
+			p->store_item[i].opt[1].val = tmp_int[14];
+			p->store_item[i].opt[2].id  = tmp_int[15];
+			p->store_item[i].opt[2].val = tmp_int[16];
+			p->store_item[i].opt[3].id  = tmp_int[17];
+			p->store_item[i].opt[3].val = tmp_int[18];
+			p->store_item[i].opt[4].id  = tmp_int[19];
+			p->store_item[i].opt[4].val = tmp_int[20];
+			p->store_item[i].limit      = (unsigned int)tmp_int[21];
+			p->store_item[i].private_   = tmp_int[22];
 		}
 		next += len;
 		if(str[next] == ' ')
@@ -302,11 +339,13 @@ static int gstorage_tostr(char *str, struct guild_storage *p)
 
 	for(i = 0; i < MAX_GUILD_STORAGE; i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u ",
+			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],
-				p->store_item[i].limit);
+				p->store_item[i].opt[0].id,p->store_item[i].opt[0].val,p->store_item[i].opt[1].id,p->store_item[i].opt[1].val,p->store_item[i].opt[2].id,p->store_item[i].opt[2].val,
+				p->store_item[i].opt[3].id,p->store_item[i].opt[3].val,p->store_item[i].opt[4].id,p->store_item[i].opt[4].val,
+				p->store_item[i].limit,p->store_item[i].private_);
 			f++;
 		}
 	}
@@ -325,7 +364,7 @@ static int gstorage_tostr(char *str, struct guild_storage *p)
  */
 static int gstorage_fromstr(char *str, struct guild_storage *p)
 {
-	int tmp_int[12];
+	int tmp_int[23];
 	int set, next, len, i;
 
 	nullpo_retr(1, p);
@@ -339,33 +378,68 @@ static int gstorage_fromstr(char *str, struct guild_storage *p)
 		return 0;
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		// Auriga-0300ˆÈ~‚ÌŒ`®
-		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
+		// Auriga-1369ˆÈ~‚ÌŒ`®
+		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
-			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&len);
-		if(set != 12) {
-			tmp_int[11] = 0;	// limit
-			set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+			&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
+			&tmp_int[11],&tmp_int[12],&tmp_int[13],&tmp_int[14],&tmp_int[15],&tmp_int[16],
+			&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],
+			&tmp_int[21],&tmp_int[22],&len);
+
+		if(set != 23)
+		{
+			// Auriga-0300ˆÈ~‚ÌŒ`®
+			tmp_int[11] = 0;	// opt[0].id
+			tmp_int[12] = 0;	// opt[0].val
+			tmp_int[13] = 0;	// opt[1].id
+			tmp_int[14] = 0;	// opt[1].val
+			tmp_int[15] = 0;	// opt[2].id
+			tmp_int[16] = 0;	// opt[2].val
+			tmp_int[17] = 0;	// opt[3].id
+			tmp_int[18] = 0;	// opt[3].val
+			tmp_int[19] = 0;	// opt[4].id
+			tmp_int[20] = 0;	// opt[4].val
+			tmp_int[22] = 0;	// private
+			set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 				&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 				&tmp_int[4],&tmp_int[5],&tmp_int[6],
-				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
-			if(set != 11)
-				return 1;
+				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
+				&tmp_int[21],&len);
+			if(set != 12) {
+				tmp_int[21] = 0;	// limit
+				set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
+					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
+					&tmp_int[4],&tmp_int[5],&tmp_int[6],
+					&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&len);
+				if(set != 11)
+					return 1;
+			}
 		}
 		if(i < MAX_GUILD_STORAGE) {
-			p->store_item[i].id        = (unsigned int)tmp_int[0];
-			p->store_item[i].nameid    = tmp_int[1];
-			p->store_item[i].amount    = tmp_int[2];
-			p->store_item[i].equip     = (unsigned int)tmp_int[3];
-			p->store_item[i].identify  = tmp_int[4];
-			p->store_item[i].refine    = tmp_int[5];
-			p->store_item[i].attribute = tmp_int[6];
-			p->store_item[i].card[0]   = tmp_int[7];
-			p->store_item[i].card[1]   = tmp_int[8];
-			p->store_item[i].card[2]   = tmp_int[9];
-			p->store_item[i].card[3]   = tmp_int[10];
-			p->store_item[i].limit     = (unsigned int)tmp_int[11];
+			p->store_item[i].id         = (unsigned int)tmp_int[0];
+			p->store_item[i].nameid     = tmp_int[1];
+			p->store_item[i].amount     = tmp_int[2];
+			p->store_item[i].equip      = (unsigned int)tmp_int[3];
+			p->store_item[i].identify   = tmp_int[4];
+			p->store_item[i].refine     = tmp_int[5];
+			p->store_item[i].attribute  = tmp_int[6];
+			p->store_item[i].card[0]    = tmp_int[7];
+			p->store_item[i].card[1]    = tmp_int[8];
+			p->store_item[i].card[2]    = tmp_int[9];
+			p->store_item[i].card[3]    = tmp_int[10];
+			p->store_item[i].opt[0].id  = tmp_int[11];
+			p->store_item[i].opt[0].val = tmp_int[12];
+			p->store_item[i].opt[1].id  = tmp_int[13];
+			p->store_item[i].opt[1].val = tmp_int[14];
+			p->store_item[i].opt[2].id  = tmp_int[15];
+			p->store_item[i].opt[2].val = tmp_int[16];
+			p->store_item[i].opt[3].id  = tmp_int[17];
+			p->store_item[i].opt[3].val = tmp_int[18];
+			p->store_item[i].opt[4].id  = tmp_int[19];
+			p->store_item[i].opt[4].val = tmp_int[20];
+			p->store_item[i].limit      = (unsigned int)tmp_int[21];
+			p->store_item[i].private_   = tmp_int[22];
 		}
 		next += len;
 		if(str[next] == ' ')

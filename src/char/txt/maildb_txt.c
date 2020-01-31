@@ -78,11 +78,13 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 		return false;
 	}
 
-	fprintf(fp, "%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
+	fprintf(fp, "%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
 		md->mail_num, md->read, md->char_name, md->receive_name, md->title, md->zeny,
 		md->item.id, md->item.nameid, md->item.amount, md->item.equip,
 		md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit,
+		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3],
+		md->item.opt[0].id, md->item.opt[0].val, md->item.opt[1].id, md->item.opt[1].val, md->item.opt[2].id, md->item.opt[2].val,
+		md->item.opt[3].id, md->item.opt[3].val, md->item.opt[4].id, md->item.opt[4].val, md->item.limit,
 		md->times, md->body_size);
 
 	for(i = 0; i < md->body_size; i++) {
@@ -118,11 +120,13 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 
 	while(n < store)
 	{
-		fprintf(fp, "%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
+		fprintf(fp, "%u,%d\t%s\t%s\t%s\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t",
 			md[n].mail_num, md[n].read, md[n].char_name, md[n].receive_name, md[n].title, md[n].zeny,
 			md[n].item.id, md[n].item.nameid, md[n].item.amount, md[n].item.equip,
 			md[n].item.identify, md[n].item.refine, md[n].item.attribute,
-			md[n].item.card[0], md[n].item.card[1], md[n].item.card[2], md[n].item.card[3], md[n].item.limit,
+			md[n].item.card[0], md[n].item.card[1], md[n].item.card[2], md[n].item.card[3],
+			md[n].item.opt[0].id, md[n].item.opt[0].val, md[n].item.opt[1].id, md[n].item.opt[1].val, md[n].item.opt[2].id, md[n].item.opt[2].val,
+			md[n].item.opt[3].id, md[n].item.opt[3].val, md[n].item.opt[4].id, md[n].item.opt[4].val, md[n].item.limit,
 			md[n].times, md[n].body_size);
 
 		for(j = 0; j < md[n].body_size; j++) {
@@ -154,7 +158,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 		ret = false;
 	} else {
 		int s, i = 0, lines = 0;
-		int tmp_int[17];
+		int tmp_int[27];
 		char tmp_str[4][1024];
 		char line[65536];
 
@@ -163,20 +167,38 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 			char *p;
 			lines++;
 
-			// Auriga-0300ˆÈ~‚ÌŒ`Ž®
-			s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
+			// Auriga-1369ˆÈ~‚ÌŒ`Ž®
+			s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
 				&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 				&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-				&tmp_int[14],&tmp_int[15],&tmp_int[16],tmp_str[3]);
-			if(s != 21) {
-				tmp_int[14] = 0;	// limit
-				s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
+				&tmp_int[14],&tmp_int[15],&tmp_int[16],&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],&tmp_int[21],&tmp_int[22],&tmp_int[23],
+				&tmp_int[24],&tmp_int[25],&tmp_int[26],tmp_str[3]);
+			if(s != 31) {
+				// Auriga-0300ˆÈ~‚ÌŒ`Ž®
+				tmp_int[14] = 0;	// opt[0].id
+				tmp_int[15] = 0;	// opt[0].val
+				tmp_int[16] = 0;	// opt[1].id
+				tmp_int[17] = 0;	// opt[1].val
+				tmp_int[18] = 0;	// opt[2].id
+				tmp_int[19] = 0;	// opt[2].val
+				tmp_int[20] = 0;	// opt[3].id
+				tmp_int[21] = 0;	// opt[3].val
+				tmp_int[22] = 0;	// opt[4].id
+				tmp_int[23] = 0;	// opt[4].val
+				s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
 					&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
 					&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-					&tmp_int[15],&tmp_int[16],tmp_str[3]);
-				if(s != 20) {
-					printf("mail_data broken %d line %d\n", char_id, lines);
-					continue;
+					&tmp_int[24],&tmp_int[25],&tmp_int[26],tmp_str[3]);
+				if(s != 21) {
+					tmp_int[24] = 0;	// limit
+					s = sscanf(line, "%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
+						&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
+						&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
+						&tmp_int[25],&tmp_int[26],tmp_str[3]);
+					if(s != 20) {
+						printf("mail_data broken %d line %d\n", char_id, lines);
+						continue;
+					}
 				}
 			}
 			md[i].mail_num = (unsigned int)tmp_int[0];
@@ -184,21 +206,31 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 			memcpy(md[i].char_name, tmp_str[0], 24);
 			memcpy(md[i].receive_name, tmp_str[1], 24);
 			memcpy(md[i].title, tmp_str[2], 40);
-			md[i].zeny           = tmp_int[2];
-			md[i].item.id        = (unsigned int)tmp_int[3];
-			md[i].item.nameid    = tmp_int[4];
-			md[i].item.amount    = tmp_int[5];
-			md[i].item.equip     = (unsigned int)tmp_int[6];
-			md[i].item.identify  = tmp_int[7];
-			md[i].item.refine    = tmp_int[8];
-			md[i].item.attribute = tmp_int[9];
-			md[i].item.card[0]   = tmp_int[10];
-			md[i].item.card[1]   = tmp_int[11];
-			md[i].item.card[2]   = tmp_int[12];
-			md[i].item.card[3]   = tmp_int[13];
-			md[i].item.limit     = (unsigned int)tmp_int[14];
-			md[i].times          = (unsigned int)tmp_int[15];
-			md[i].body_size      = (unsigned int)tmp_int[16];
+			md[i].zeny            = tmp_int[2];
+			md[i].item.id         = (unsigned int)tmp_int[3];
+			md[i].item.nameid     = tmp_int[4];
+			md[i].item.amount     = tmp_int[5];
+			md[i].item.equip      = (unsigned int)tmp_int[6];
+			md[i].item.identify   = tmp_int[7];
+			md[i].item.refine     = tmp_int[8];
+			md[i].item.attribute  = tmp_int[9];
+			md[i].item.card[0]    = tmp_int[10];
+			md[i].item.card[1]    = tmp_int[11];
+			md[i].item.card[2]    = tmp_int[12];
+			md[i].item.card[3]    = tmp_int[13];
+			md[i].item.opt[0].id  = tmp_int[14];
+			md[i].item.opt[0].val = tmp_int[15];
+			md[i].item.opt[1].id  = tmp_int[16];
+			md[i].item.opt[1].val = tmp_int[17];
+			md[i].item.opt[2].id  = tmp_int[18];
+			md[i].item.opt[2].val = tmp_int[19];
+			md[i].item.opt[3].id  = tmp_int[20];
+			md[i].item.opt[3].val = tmp_int[21];
+			md[i].item.opt[4].id  = tmp_int[22];
+			md[i].item.opt[4].val = tmp_int[23];
+			md[i].item.limit      = (unsigned int)tmp_int[24];
+			md[i].times           = (unsigned int)tmp_int[25];
+			md[i].body_size       = (unsigned int)tmp_int[26];
 
 			// force \0 terminal
 			md[i].char_name[23]    = '\0';

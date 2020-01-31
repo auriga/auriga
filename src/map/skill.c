@@ -5600,7 +5600,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SA_LEVELUP:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(sd && pc_nextbaseexp(sd))
-			pc_gainexp(sd,NULL,(atn_bignumber)pc_nextbaseexp(sd)*10/100,0,0);
+			pc_gainexp(sd,NULL,pc_nextbaseexp(sd)*10/100,0,0);
 		break;
 
 	case SA_INSTANTDEATH:
@@ -9172,7 +9172,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case LG_INSPIRATION:		/* インスピレーション */
 		if(sd) {
-			int loss_exp = pc_nextbaseexp(sd) / 1000;
+			atn_bignumber loss_exp = pc_nextbaseexp(sd) / 1000;
 			if(loss_exp > 0) {
 				sd->status.base_exp -= loss_exp;
 				if(sd->status.base_exp < 0)
@@ -14644,7 +14644,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		break;
 	case PR_REDEMPTIO:
 		if(battle_config.redemptio_penalty_type) {
-			int exp = pc_nextbaseexp(sd);
+			atn_bignumber exp = pc_nextbaseexp(sd);
 			if(exp <= 0) {
 				// オーラの場合は現在のレベルに必要な経験値を参照する
 				sd->status.base_level--;

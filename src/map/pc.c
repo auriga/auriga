@@ -66,7 +66,7 @@
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 
-static int exp_table[22][MAX_LEVEL];
+static atn_bignumber exp_table[22][MAX_LEVEL];
 
 // 属性テーブル
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
@@ -700,11 +700,11 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 
 	// レディムプティオのペナルティの場合、オーラならば現在の取得経験値から差し引く
 	if(battle_config.death_penalty_base > 0) {
-		int nextbase;
+		atn_bignumber nextbase;
 		if( battle_config.death_penalty_type&2 && ((nextbase = pc_nextbaseexp(sd)) > 0 || !(type&2)) ) {
-			loss_base = (atn_bignumber)nextbase;
+			loss_base = nextbase;
 		} else {
-			loss_base = (atn_bignumber)sd->status.base_exp;
+			loss_base = sd->status.base_exp;
 		}
 		loss_base = loss_base * battle_config.death_penalty_base / 10000 * per / 100;
 
@@ -721,11 +721,11 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 	}
 
 	if(battle_config.death_penalty_job > 0) {
-		int nextjob;
+		atn_bignumber nextjob;
 		if( battle_config.death_penalty_type&2 && ((nextjob = pc_nextjobexp(sd)) > 0 || !(type&2)) ) {
-			loss_job = (atn_bignumber)nextjob;
+			loss_job = nextjob;
 		} else {
-			loss_job = (atn_bignumber)sd->status.job_exp;
+			loss_job = sd->status.job_exp;
 		}
 		loss_job = loss_job * battle_config.death_penalty_job / 10000 * per / 100;
 
@@ -4760,7 +4760,7 @@ int pc_get_base_class(int class_, int type)
  */
 static int pc_checkbaselevelup(struct map_session_data *sd)
 {
-	int next;
+	atn_bignumber next;
 
 	nullpo_retr(0, sd);
 
@@ -4817,7 +4817,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
  */
 static int pc_checkjoblevelup(struct map_session_data *sd)
 {
-	int next;
+	atn_bignumber next;
 
 	nullpo_retr(0, sd);
 
@@ -4943,21 +4943,19 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 					per -= rate;
 				}
 				base_exp = base_exp + sd->status.base_exp - next;
-				sd->status.base_exp = (int)next;
+				sd->status.base_exp = next;
 				pc_checkbaselevelup(sd);
 				next = pc_nextbaseexp(sd);
 			}
 		}
 		if (next > 0 && battle_config.next_exp_limit > 0 && (base_exp * 100 / next) > per)
-			sd->status.base_exp = (int)(next * per / 100);
+			sd->status.base_exp = next * per / 100;
 #ifndef PRE_RENEWAL
 		else if (next == 0 && base_exp + sd->status.base_exp > 99999999)
 			sd->status.base_exp = 99999999;
 #endif
-		else if (base_exp + sd->status.base_exp > 0x7fffffff)
-			sd->status.base_exp = 0x7fffffff;
 		else
-			sd->status.base_exp += (int)base_exp;
+			sd->status.base_exp += base_exp;
 
 		if (sd->status.base_exp < 0)
 			sd->status.base_exp = 0;
@@ -4985,21 +4983,19 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 					per -= rate;
 				}
 				job_exp = job_exp + sd->status.job_exp - next;
-				sd->status.job_exp = (int)next;
+				sd->status.job_exp = next;
 				pc_checkjoblevelup(sd);
 				next = pc_nextjobexp(sd);
 			}
 		}
 		if (next > 0 && battle_config.next_exp_limit > 0 && (job_exp * 100 / next) > per)
-			sd->status.job_exp = (int)(next * per / 100);
+			sd->status.job_exp = next * per / 100;
 #ifndef PRE_RENEWAL
 		else if (next == 0 && job_exp + sd->status.job_exp > 99999999)
 			sd->status.job_exp = 99999999;
 #endif
-		else if (job_exp + sd->status.job_exp > 0x7fffffff)
-			sd->status.job_exp = 0x7fffffff;
 		else
-			sd->status.job_exp += (int)job_exp;
+			sd->status.job_exp += job_exp;
 
 		if (sd->status.job_exp < 0)
 			sd->status.job_exp = 0;
@@ -5014,7 +5010,7 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
  * base level側必要経験値計算
  *------------------------------------------
  */
-int pc_nextbaseexp(struct map_session_data *sd)
+atn_bignumber pc_nextbaseexp(struct map_session_data *sd)
 {
 	int table;
 
@@ -5199,7 +5195,7 @@ int pc_nextbaseexp(struct map_session_data *sd)
  * job level側必要経験値計算
  *------------------------------------------
  */
-int pc_nextjobexp(struct map_session_data *sd)
+atn_bignumber pc_nextjobexp(struct map_session_data *sd)
 {
 	int table;
 
@@ -5915,8 +5911,8 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 
 	// スパノビがHP0になったとき、Exp99.0%以上かLv100状態ならばHPが全回復して金剛状態になる
 	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && !sd->state.snovice_dead_flag) {
-		int next = pc_nextbaseexp(sd);
-		if( (next > 0 && (atn_bignumber)sd->status.base_exp * 1000 / next >= 990) ||
+		atn_bignumber next = pc_nextbaseexp(sd);
+		if( (next > 0 && sd->status.base_exp * 1000 / next >= 990) ||
 		    (next <= 0 && sd->status.base_exp >= battle_config.snovice_maxexp_border) )
 		{
 			sd->status.hp = sd->status.max_hp;
@@ -6293,16 +6289,16 @@ int pc_readparam(struct map_session_data *sd,int type)
 		val = sd->max_weight;
 		break;
 	case SP_BASEEXP:
-		val = sd->status.base_exp;
+		val = (sd->status.base_exp > 0x7fffffff)? 0x7fffffff: (int)sd->status.base_exp;
 		break;
 	case SP_JOBEXP:
-		val = sd->status.job_exp;
+		val = (sd->status.job_exp > 0x7fffffff)? 0x7fffffff: (int)sd->status.job_exp;
 		break;
 	case SP_NEXTBASEEXP:
-		val = pc_nextbaseexp(sd);
+		val = (pc_nextbaseexp(sd) > 0x7fffffff)? 0x7fffffff: (int)pc_nextbaseexp(sd);
 		break;
 	case SP_NEXTJOBEXP:
-		val = pc_nextjobexp(sd);
+		val = (pc_nextjobexp(sd) > 0x7fffffff)? 0x7fffffff: (int)pc_nextjobexp(sd);
 		break;
 	case SP_HP:
 		val = sd->status.hp;
@@ -9468,12 +9464,12 @@ int pc_readdb(void)
 	}
 	i = 0;
 	while(fgets(line,1020,fp)) {
-		int bn,b1,b2,b3,b4,b5,b6,b7,b8,b9,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10,j11;
+		atn_bignumber bn,b1,b2,b3,b4,b5,b6,b7,b8,b9,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10,j11;
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11) != 22)
+		if(sscanf(line,"%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE "",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11) != 22)
 			continue;
 		exp_table[0][i]  = bn;
 		exp_table[1][i]  = b1;

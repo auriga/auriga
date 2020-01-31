@@ -65,13 +65,18 @@ bool maildb_sql_store_mail(int char_id, struct mail_data *md)
 		"INSERT INTO `" MAIL_DATA_TABLE "` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
 		"`times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`) "
+		"`card0`, `card1`, `card2`, `card3`,"
+		"`opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`,"
+		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`) "
 		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s',"
-		"'%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+		"'%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',"
+		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
 		char_id, md->mail_num, md->read, strecpy(buf[0], md->char_name), strecpy(buf[1], md->receive_name), strecpy(buf[2], md->title),
 		md->times, md->body_size, body_data,
 		md->zeny, md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
+		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3],
+		md->item.opt[0].id, md->item.opt[0].val, md->item.opt[1].id, md->item.opt[1].val, md->item.opt[2].id, md->item.opt[2].val,
+		md->item.opt[3].id, md->item.opt[3].val, md->item.opt[4].id, md->item.opt[4].val, md->item.limit
 	);
 
 	return result;
@@ -94,11 +99,15 @@ bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 	result = sqldbs_query(&mysql_handle,
 		"UPDATE `" MAIL_DATA_TABLE "` SET `read` = '%d', `zeny` = '%d', "
 		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
-		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d', `limit` = '%u' "
+		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d', "
+		"`opt0id` = '%d', `opt0val` = '%d', `opt1id` = '%d', `opt1val` = '%d', `opt2id` = '%d', `opt2val` = '%d', "
+		"`opt3id` = '%d', `opt3val` = '%d', `opt4id` = '%d', `opt4val` = '%d', `limit` = '%u' "
 		"WHERE `char_id` = '%d' AND `number` = '%u'",
 		md[i].read, md[i].zeny,
 		md[i].item.id, md[i].item.nameid, md[i].item.amount, md[i].item.equip, md[i].item.identify, md[i].item.refine, md[i].item.attribute,
-		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3], md[i].item.limit,
+		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3],
+		md[i].item.opt[0].id, md[i].item.opt[0].val, md[i].item.opt[1].id, md[i].item.opt[1].val, md[i].item.opt[2].id, md[i].item.opt[2].val,
+		md[i].item.opt[3].id, md[i].item.opt[3].val, md[i].item.opt[4].id, md[i].item.opt[4].val, md[i].item.limit,
 		char_id, md[i].mail_num
 	);
 
@@ -120,7 +129,9 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 	result = sqldbs_query(&mysql_handle,
 		"SELECT `number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`, "
 		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`"
+		"`card0`, `card1`, `card2`, `card3`, "
+		"`opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
+		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`"
 		" FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
 	);
 	if(result == false)
@@ -151,19 +162,29 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 		}
 		md[i].body_size = n;
 
-		md[i].zeny           = atoi(sql_row[8]);
-		md[i].item.id        = (unsigned int)atoi(sql_row[9]);
-		md[i].item.nameid    = atoi(sql_row[10]);
-		md[i].item.amount    = atoi(sql_row[11]);
-		md[i].item.equip     = (unsigned int)atoi(sql_row[12]);
-		md[i].item.identify  = atoi(sql_row[13]);
-		md[i].item.refine    = atoi(sql_row[14]);
-		md[i].item.attribute = atoi(sql_row[15]);
-		md[i].item.card[0]   = atoi(sql_row[16]);
-		md[i].item.card[1]   = atoi(sql_row[17]);
-		md[i].item.card[2]   = atoi(sql_row[18]);
-		md[i].item.card[3]   = atoi(sql_row[19]);
-		md[i].item.limit     = (unsigned int)atoi(sql_row[20]);
+		md[i].zeny            = atoi(sql_row[8]);
+		md[i].item.id         = (unsigned int)atoi(sql_row[9]);
+		md[i].item.nameid     = atoi(sql_row[10]);
+		md[i].item.amount     = atoi(sql_row[11]);
+		md[i].item.equip      = (unsigned int)atoi(sql_row[12]);
+		md[i].item.identify   = atoi(sql_row[13]);
+		md[i].item.refine     = atoi(sql_row[14]);
+		md[i].item.attribute  = atoi(sql_row[15]);
+		md[i].item.card[0]    = atoi(sql_row[16]);
+		md[i].item.card[1]    = atoi(sql_row[17]);
+		md[i].item.card[2]    = atoi(sql_row[18]);
+		md[i].item.card[3]    = atoi(sql_row[19]);
+		md[i].item.opt[0].id  = atoi(sql_row[20]);
+		md[i].item.opt[0].val = atoi(sql_row[21]);
+		md[i].item.opt[1].id  = atoi(sql_row[22]);
+		md[i].item.opt[1].val = atoi(sql_row[23]);
+		md[i].item.opt[2].id  = atoi(sql_row[24]);
+		md[i].item.opt[2].val = atoi(sql_row[25]);
+		md[i].item.opt[3].id  = atoi(sql_row[26]);
+		md[i].item.opt[3].val = atoi(sql_row[27]);
+		md[i].item.opt[4].id  = atoi(sql_row[28]);
+		md[i].item.opt[4].val = atoi(sql_row[29]);
+		md[i].item.limit      = (unsigned int)atoi(sql_row[30]);
 	}
 	sqldbs_free_result(&mysql_handle);
 

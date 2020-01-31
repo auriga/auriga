@@ -107,7 +107,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 
 	nullpo_retr(1, p);
 
-	str_p += sprintf(str_p, "%d\t%d,%d\t%s\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
+	str_p += sprintf(str_p, "%d\t%d,%d\t%s\t%d,%d,%d\t%" BIGNUMCODE ",%" BIGNUMCODE ",%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d,%u,%d,%d,%d,%d,%d\t",
 		p->st.char_id,p->st.account_id,p->st.char_num,p->st.name,

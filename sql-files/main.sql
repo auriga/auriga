@@ -4,7 +4,7 @@
 CREATE TABLE `cart_inventory` (
   `id` int(11) unsigned NOT NULL default '0',
   `char_id` int(11) NOT NULL default '0',
-  `nameid` smallint(6) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` int(11) unsigned NOT NULL default '0',
   `identify` tinyint(4) NOT NULL default '0',
@@ -40,8 +40,8 @@ CREATE TABLE `char_data` (
   `class` smallint(6) NOT NULL default '0',
   `base_level` smallint(6) unsigned NOT NULL default '1',
   `job_level` smallint(6) unsigned NOT NULL default '1',
-  `base_exp` int(11) NOT NULL default '0',
-  `job_exp` int(11) NOT NULL default '0',
+  `base_exp` bigint(20) NOT NULL default '0',
+  `job_exp` bigint(20) NOT NULL default '0',
   `zeny` int(11) NOT NULL default '500',
   `str` smallint(6) NOT NULL default '0',
   `agi` smallint(6) NOT NULL default '0',
@@ -261,7 +261,7 @@ CREATE TABLE `guild_skill` (
 CREATE TABLE `guild_storage` (
   `id` int(11) unsigned NOT NULL default '0',
   `guild_id` int(11) NOT NULL default '0',
-  `nameid` smallint(6) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` int(11) unsigned NOT NULL default '0',
   `identify` tinyint(4) NOT NULL default '0',
@@ -300,7 +300,7 @@ CREATE TABLE `interlog` (
 CREATE TABLE `inventory` (
   `id` int(11) unsigned NOT NULL default '0',
   `char_id` int(11) NOT NULL default '0',
-  `nameid` smallint(6) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` int(11) unsigned NOT NULL default '0',
   `identify` tinyint(4) NOT NULL default '0',
@@ -393,7 +393,7 @@ CREATE TABLE `party` (
 # 
 CREATE TABLE `pet` (
   `pet_id` int(11) NOT NULL AUTO_INCREMENT,
-  `class` smallint(6) NOT NULL default '0',
+  `class` int(11) NOT NULL default '0',
   `name` varchar(24) NOT NULL default '',
   `account_id` int(11) NOT NULL default '0',
   `char_id` int(11) NOT NULL default '0',
@@ -423,7 +423,7 @@ CREATE TABLE `skill` (
 CREATE TABLE `storage` (
   `id` int(11) unsigned NOT NULL default '0',
   `account_id` int(11) NOT NULL default '0',
-  `nameid` smallint(6) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` int(11) unsigned NOT NULL default '0',
   `identify` tinyint(4) NOT NULL default '0',
@@ -546,7 +546,7 @@ CREATE TABLE `mail_data` (
   `body` blob NOT NULL,
   `zeny` int(11) NOT NULL default '0',
   `id` int(11) unsigned NOT NULL default '0',
-  `nameid` smallint(6) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
   `equip` int(11) unsigned NOT NULL default '0',
   `identify` tinyint(4) NOT NULL default '0',
@@ -556,6 +556,16 @@ CREATE TABLE `mail_data` (
   `card1` smallint(6) NOT NULL default '0',
   `card2` smallint(6) NOT NULL default '0',
   `card3` smallint(6) NOT NULL default '0',
+  `opt0id` smallint(6) NOT NULL default '0',
+  `opt0val` smallint(6) NOT NULL default '0',
+  `opt1id` smallint(6) NOT NULL default '0',
+  `opt1val` smallint(6) NOT NULL default '0',
+  `opt2id` smallint(6) NOT NULL default '0',
+  `opt2val` smallint(6) NOT NULL default '0',
+  `opt3id` smallint(6) NOT NULL default '0',
+  `opt3val` smallint(6) NOT NULL default '0',
+  `opt4id` smallint(6) NOT NULL default '0',
+  `opt4val` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `number`)
 ) ENGINE = InnoDB;

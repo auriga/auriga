@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "utils.h"
+
 #pragma pack(4)
 
 #define AUTH_FIFO_SIZE 256
@@ -491,7 +493,7 @@ enum {
 
 struct item {
 	unsigned int id;
-	short nameid;
+	int nameid;
 	short amount;
 	unsigned int equip;
 	char identify;
@@ -524,7 +526,7 @@ struct s_pet {
 	int account_id;
 	int char_id;
 	int pet_id;
-	short class_;
+	int class_;
 	unsigned short level;
 	short egg_id;
 	short equip;
@@ -554,7 +556,8 @@ struct mmo_charstatus {
 	int parent_id[2];
 	int baby_id;
 
-	int base_exp,job_exp,zeny;
+	atn_bignumber base_exp,job_exp;
+	int zeny;
 
 	short class_;
 	short status_point,skill_point;
