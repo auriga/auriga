@@ -9473,7 +9473,12 @@ int pc_readdb(void)
 			continue;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		if(sscanf(line,"%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE ",%" BIGNUMCODE "",&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11) != 22)
+		if(sscanf(line, "%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
+						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
+						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
+						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE,
+						&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11
+		) != 22)
 			continue;
 		exp_table[0][i]  = bn;
 		exp_table[1][i]  = b1;

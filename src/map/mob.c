@@ -4178,7 +4178,7 @@ static int mob_readdb_mobavail(void)
 	char line[1024];
 	int ln = 0;
 	int class_,j,k;
-	char *str[15],*p,*np;
+	char *str[16],*p,*np;
 	struct mobdb_data *id;
 	const char *filename = "db/mob_avail.txt";
 
@@ -4194,7 +4194,7 @@ static int mob_readdb_mobavail(void)
 			continue;
 		memset(str,0,sizeof(str));
 
-		for(j=0,p=line;j<15;j++){
+		for(j=0,p=line;j<16;j++){
 			if((np=strchr(p,','))!=NULL){
 				str[j]=p;
 				*np=0;

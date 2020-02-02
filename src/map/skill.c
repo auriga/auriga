@@ -5599,7 +5599,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SA_LEVELUP:
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(sd && pc_nextbaseexp(sd))
+		if(sd && pc_nextbaseexp(sd) > 0)
 			pc_gainexp(sd,NULL,pc_nextbaseexp(sd)*10/100,0,0);
 		break;
 

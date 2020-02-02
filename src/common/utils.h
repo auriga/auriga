@@ -118,6 +118,17 @@ typedef int32  intptr;
 #	define BIGNUMCODE "lld"
 #endif
 
+// =====================
+// 大きな数字用の変換指定子
+// ---------------------
+#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#	define BIGNUMSCANCODE ".0lf"
+#elif defined(WINDOWS) && defined(_MSC_VER)
+#	define BIGNUMSCANCODE "I64d"
+#else
+#	define BIGNUMSCANCODE "lld"
+#endif
+
 
 // =====================
 // strcmp 系のエイリアス
