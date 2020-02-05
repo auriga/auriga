@@ -123,7 +123,7 @@ function	script	KafraMain	{
 						"コモドファロス燈台","ジュノー","プロンテラ","ゲフェン","フェイヨン","アルデバラン",
 						"ラヘル","ウンバラ","マラン島";
 		}
-		for(set '@i,0; '@i<getarraysize('@price); set '@i,'@i+1)
+		for(set '@i,0; '@i<getarraysize(getarg(10)); set '@i,'@i+1)
 			set '@place$['@i],'placename$[ getelementofarray(getarg(10),'@i)-1 ] +" -> "+ '@price['@i] +" z";
 		mes "[カプラ職員]";
 		mes "目的地をお選び下さい。";
