@@ -97,6 +97,11 @@
 	#define zlib_crc32       crc32
 #endif
 
+#if defined(WINDOWS) && defined(__64BIT__)
+	#define fseek _fseeki64
+	#define stat  _stat64
+#endif
+
 static int initialized = 0;
 
 //----------------------------
@@ -106,7 +111,7 @@ typedef struct {
 	int  srclen; // compressed size
 	int  srclen_aligned;
 	int  declen; // original size
-	int  srcpos;
+	atn_bignumber  srcpos;
 	int  next; // -1: no next, 0+: pointer to index of next value
 	char cycle;
 	char type;
@@ -508,7 +513,7 @@ int grfio_size(const char *fname)
 
 		if (stat(lfname,&st)==0) {
 			strncpy(lentry.fn, fname, sizeof(lentry.fn)-1 );
-			lentry.declen = st.st_size;
+			lentry.declen = (int)st.st_size;
 			lentry.gentry = 0;	// 0:LocalFile
 			entry = filelist_modify(&lentry);
 		} else if (entry==NULL) {
@@ -547,7 +552,7 @@ void* grfio_reads(const char *fname, int *size)
 		}
 
 		if(stat(lfname, &st) == 0)
-			lentry.declen = st.st_size;
+			lentry.declen = (int)st.st_size;
 		else
 			lentry.declen = 0;
 
@@ -658,7 +663,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	    uint32 version;                    // 42 (0x2a)
 	};*/
 	FILE *fp;
-	long grf_size = 0;
+	atn_bignumber grf_size = 0;
 	unsigned char grf_header[0x2e];
 	int entry, entrys;
 	unsigned int grf_version;
@@ -694,7 +699,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	switch (grf_version & 0xFF00) {
 	case 0x0100: //****** Grf version 01xx ******
 		{
-			long list_size = grf_size - ftell(fp);
+			atn_bignumber list_size = grf_size - ftell(fp);
 			grf_filelist = (char *)aCalloc(1, list_size);
 			fread(grf_filelist, 1, list_size, fp);
 			fclose(fp);
