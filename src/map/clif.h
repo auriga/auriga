@@ -146,6 +146,7 @@ void clif_showdigit(struct map_session_data* sd, unsigned char type, int value);
 void clif_dressing_room(struct map_session_data *sd, int view);
 void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int target);
 void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enable);
+void clif_weight_limit(struct map_session_data* sd);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, const char *name);
@@ -460,6 +461,9 @@ void clif_manner_message(struct map_session_data* sd, int type);
 void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, int type);
 
 int clif_foreachclient(int (*)(struct map_session_data*,va_list),...);
+
+void packetdb_insert_packet(char *line);
+void packetdb_insert_packet_key(unsigned int key1, unsigned int key2, unsigned int key3);
 
 void do_final_clif(void);
 void do_init_clif(void);

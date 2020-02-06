@@ -672,7 +672,7 @@ static int itemdb_read_itemdb(void)
 		if(line[0]=='/' && line[1]=='/')
 			continue;
 		memset(str,0,sizeof(str));
-		for(j=0,np=p=line;j<12 && p;j++){
+		for(j=0,np=p=line;j<13 && p;j++){
 			str[j]=p;
 			p=strchr(p,',');
 			if(p){ *p++=0; np=p; }
@@ -696,6 +696,7 @@ static int itemdb_read_itemdb(void)
 		id->cooldown         = atoi(str[9]);
 		id->flag.buyingable  = (atoi(str[10]) == 0)? 0: 1;
 		id->flag.nonconsume  = (atoi(str[11]) == 0)? 0: 1;
+		id->dropeffect       = atoi(str[12]);
 	}
 	fclose(fp);
 	printf("read %s (count=%d)\n", filename2, ln);

@@ -1,4 +1,13 @@
 ----------------------------------------
+//1376 [2020/02/07] by refis
+
+・packet_dbをluaで読み込み処理するように改修（lua_auriga.conf, packet_db.lua, clif.*, luascript.c）
+
+・2018-04-18bRagexeREのpacket_dbを追加（packet_db.lua, Makefile, bcc32_make.bat, vc_make.bat）
+
+・アイテムドロップエフェクト用にitem_db2にテーブルを追加（item_db2.txt, itemdb.*）
+
+----------------------------------------
 //1375 [2020/02/06] by refis
 
 ・PACKETVERによるクエストリストの表示不具合を修正（clif.*, intif.c, quest.c）

@@ -78,6 +78,7 @@ struct item_data {
 	int zone;	//0:§ŒÀ–³ 1:normal 2:pvp 4:gvg 8:pk 16:turbo 32:noteleport 64:noreturn 128:nobranch
 	int arrow_type;
 	int card_type;
+	short dropeffect;
 };
 
 struct random_item_data {
@@ -124,6 +125,7 @@ struct item_data* itemdb_exists(int nameid);
 #define itemdb_cardtype(n)      itemdb_search(n)->card_type
 #define itemdb_value_notdc(n)   itemdb_search(n)->flag.value_notdc
 #define itemdb_value_notoc(n)   itemdb_search(n)->flag.value_notoc
+#define	itemdb_dropeffect(n)    itemdb_search(n)->dropeffect
 
 #define	itemdb_available(n) (itemdb_exists(n) && itemdb_search(n)->flag.available)
 #define	itemdb_viewid(n)    (itemdb_search(n)->view_id)

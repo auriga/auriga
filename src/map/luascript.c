@@ -100,14 +100,30 @@ static void stackDump(lua_State *L)
  */
 void show_table(lua_State *L, int index)
 {
+	if(lua_gettop(L) == 0) {
+		printf("No stack.\n");
+		return;
+	}
+
+	printf("-----------------------------\n");
+
 	lua_pushnil(L);
 	while(lua_next(L, index)) {
 		switch (lua_type(L, -2)) {  // key を表示
 		case LUA_TNUMBER:
-			printf("key=%td, ", lua_tointeger(L, -2));
+			printf("NUMBER: key=%td, ", lua_tointeger(L, -2));
 			break;
 		case LUA_TSTRING:
-			printf("key=%s, ", lua_tostring(L, -2));
+			printf("STRING: key=%s, ", lua_tostring(L, -2));
+			break;
+		case LUA_TBOOLEAN:
+			printf("BOOLEAN: key=%d, ", lua_toboolean(L, -2));
+			break;
+		case LUA_TTABLE:
+			printf("TABLE:\n");
+			break;
+		case LUA_TFUNCTION:
+			printf("FUNCTION:\n");
 			break;
 		}
 		switch(lua_type(L, -1)) {  // value を表示
@@ -126,6 +142,8 @@ void show_table(lua_State *L, int index)
 		}
 		lua_pop(L, 1);      // 値を取り除く
 	}
+
+	printf("-----------------------------\n");
 }
 
 // 特定 key へのアクセス
@@ -413,6 +431,30 @@ int do_final_luascript(void)
 //
 
 /*==========================================
+ * PACKETVER取得
+ *------------------------------------------
+ */
+static int luafunc_getpacketver(lua_State *NL)
+{
+	lua_pushinteger(NL, PACKETVER);
+	return 1;
+}
+
+/*==========================================
+ * NEW_006b取得
+ *------------------------------------------
+ */
+static int luafunc_getpacketpre(lua_State *NL)
+{
+#if defined(NEW_006b)
+	lua_pushinteger(NL, 0);
+#else
+	lua_pushinteger(NL, 1);
+#endif
+	return 1;
+}
+
+/*==========================================
  * item_randopt_db.lua
  *------------------------------------------
  */
@@ -482,8 +524,65 @@ static int luafunc_addrandopt(lua_State *NL)
 	return 0;
 }
 
+/*==========================================
+ * packet_db.lua
+ *------------------------------------------
+ */
+static int luafunc_addpacket(lua_State *NL)
+{
+	int cmd;
+	short len;
+	const char *name = NULL;
+	char line[1024];
+	short pos[8];
+
+	memset(pos, 0, sizeof(pos));
+
+	cmd = luaL_checkint(NL,1);
+	len = luaL_checkint(NL,2);
+	if(lua_isstring(NL,3))
+		name = luaL_checkstring(NL,3);
+	if(lua_isnumber(NL,4)) {
+		pos[0] = luaL_checkint(NL,4);
+	}
+	else if(lua_istable(NL,4)) {
+		int i;
+		for(i=0; i<8 && i<lua_objlen(NL,4); i++) {
+			lua_rawgeti(NL,4,i + 1);
+			pos[i] = luaL_checkint(NL,-1);
+			lua_pop(NL, 1);      // 値を取り除く
+		}
+	}
+
+	if(name == NULL)
+		sprintf(line, "0x%04x,%d", cmd, len);
+	else
+		sprintf(line, "0x%04x,%d,%s,%d:%d:%d:%d:%d:%d:%d:%d", cmd, len, name, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7]);
+
+	packetdb_insert_packet(line);
+
+	return 0;
+}
+
+static int luafunc_packet_key(lua_State *NL)
+{
+	unsigned int key1, key2, key3;
+
+	key1 = luaL_checkint(NL,1);
+	key2 = luaL_checkint(NL,2);
+	key3 = luaL_checkint(NL,3);
+
+	packetdb_insert_packet_key(key1, key2, key3);
+
+	return 0;
+}
+
 const struct Lua_function luafunc[] = {
+	{"getpacketver",luafunc_getpacketver},
+	{"getpacketpre",luafunc_getpacketpre},
 	{"addrandopt",luafunc_addrandopt},
+	{"addpacket",luafunc_addpacket},
+	{"packet_key",luafunc_packet_key},
 
 	{NULL,NULL}
 };

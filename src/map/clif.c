@@ -515,7 +515,7 @@ void clif_disconnect_ack(int fd, int fail)
  */
 void clif_dropflooritem(struct flooritem_data *fitem)
 {
-	int view;
+	int view, effect;
 	unsigned char buf[24];
 
 	nullpo_retv(fitem);
@@ -538,7 +538,7 @@ void clif_dropflooritem(struct flooritem_data *fitem)
 	WBUFB(buf,14)=fitem->suby;
 	WBUFW(buf,15)=fitem->item_data.amount;
 	clif_send(buf,packet_db[0x9e].len,&fitem->bl,AREA);
-#else
+#elif PACKETVER < 20180418
 	WBUFW(buf,0)=0x84b;
 	WBUFL(buf,2)=fitem->bl.id;
 	if((view = itemdb_viewid(fitem->item_data.nameid)) > 0)
@@ -553,6 +553,29 @@ void clif_dropflooritem(struct flooritem_data *fitem)
 	WBUFB(buf,16)=fitem->suby;
 	WBUFW(buf,17)=fitem->item_data.amount;
 	clif_send(buf,packet_db[0x84b].len,&fitem->bl,AREA);
+#else
+	WBUFW(buf,0)=0xadd;
+	WBUFL(buf,2)=fitem->bl.id;
+	if((view = itemdb_viewid(fitem->item_data.nameid)) > 0)
+		WBUFW(buf,6)=view;
+	else
+		WBUFW(buf,6)=fitem->item_data.nameid;
+	WBUFW(buf,8)=0;	// TODO: unsigned short type;
+	WBUFB(buf,10)=fitem->item_data.identify;
+	WBUFW(buf,11)=fitem->bl.x;
+	WBUFW(buf,13)=fitem->bl.y;
+	WBUFB(buf,15)=fitem->subx;
+	WBUFB(buf,16)=fitem->suby;
+	WBUFW(buf,17)=fitem->item_data.amount;
+	if((effect = itemdb_dropeffect(fitem->item_data.nameid)) > 0) {
+		WBUFB(buf,19)=1;
+		WBUFW(buf,20)=effect - 1;
+	}
+	else {
+		WBUFB(buf,19)=0;
+		WBUFW(buf,20)=0;
+	}
+	clif_send(buf,packet_db[0xadd].len,&fitem->bl,AREA);
 #endif
 
 	return;
@@ -11963,10 +11986,18 @@ void clif_solved_charname(struct map_session_data *sd, int char_id)
 	p = map_charid2nick(char_id);
 	if(p!=NULL){
 		int fd=sd->fd;
+#if PACKETVER < 20180221
 		WFIFOW(fd,0)=0x194;
 		WFIFOL(fd,2)=char_id;
 		memcpy(WFIFOP(fd,6), p, 24);
 		WFIFOSET(fd,packet_db[0x194].len);
+#else
+		WFIFOW(fd,0)=0xaf7;
+		WFIFOW(fd,2)=p[0]? 3 : 2;
+		WFIFOL(fd,4)=char_id;
+		memcpy(WFIFOP(fd,8), p, 24);
+		WFIFOSET(fd,packet_db[0xaf7].len);
+#endif
 	}else{
 		map_reqchariddb(sd,char_id,1);
 		chrif_searchcharid(char_id);
@@ -13646,14 +13677,16 @@ void clif_party_created(struct map_session_data *sd, unsigned char flag)
  */
 void clif_party_main_info(struct party *p, int fd)
 {
-#if PACKETVER < 20170502
-	unsigned char buf[81];
-	int cmd = 0x1e9;
 	int offset = 0;
-#else
+#if PACKETVER < 20170502
+	const int cmd = 0x1e9;
+	unsigned char buf[81];
+#elif PACKETVER < 20171207
+	const int cmd = 0xa43;
 	unsigned char buf[85];
-	int cmd = 0xa43;
-	int offset = 4;
+#else
+	const int cmd = 0xae4;
+	unsigned char buf[89];
 #endif
 	int i;
 	struct map_session_data *sd = NULL;
@@ -13667,20 +13700,45 @@ void clif_party_main_info(struct party *p, int fd)
 	sd = p->member[i].sd;
 
 	WBUFW(buf,0)  = cmd;
+#if PACKETVER < 20170502
 	WBUFL(buf,2)  = p->member[i].account_id;
 	WBUFL(buf,6)  = (p->member[i].leader)? 0: 1;
-#if PACKETVER >= 20170502
+	WBUFW(buf,10) = (sd)? sd->bl.x: 0;
+	WBUFW(buf,12) = (sd)? sd->bl.y: 0;
+	WBUFB(buf,14) = (p->member[i].online)? 0: 1;
+	memcpy(WBUFP(buf,15), p->name, 24);
+	memcpy(WBUFP(buf,39), p->member[i].name, 24);
+	memcpy(WBUFP(buf,63), p->member[i].map, 16);
+	WBUFB(buf,79) = (p->item&1)? 1: 0;
+	WBUFB(buf,80) = (p->item&2)? 1: 0;
+#elif PACKETVER < 20171207
+	WBUFL(buf,2)  = p->member[i].account_id;
+	WBUFL(buf,6)  = (p->member[i].leader)? 0: 1;
 	WBUFW(buf,10) = p->member[i].class_;
 	WBUFW(buf,12) = p->member[i].lv;
+	WBUFW(buf,14) = (sd)? sd->bl.x: 0;
+	WBUFW(buf,16) = (sd)? sd->bl.y: 0;
+	WBUFB(buf,18) = (p->member[i].online)? 0: 1;
+	memcpy(WBUFP(buf,19), p->name, 24);
+	memcpy(WBUFP(buf,43), p->member[i].name, 24);
+	memcpy(WBUFP(buf,67), p->member[i].map, 16);
+	WBUFB(buf,83) = (p->item&1)? 1: 0;
+	WBUFB(buf,84) = (p->item&2)? 1: 0;
+#else
+	WBUFL(buf,2)  = p->member[i].account_id;
+	WBUFL(buf,6)  = p->member[i].char_id;
+	WBUFL(buf,10)  = (p->member[i].leader)? 0: 1;
+	WBUFW(buf,14) = p->member[i].class_;
+	WBUFW(buf,16) = p->member[i].lv;
+	WBUFW(buf,18) = (sd)? sd->bl.x: 0;
+	WBUFW(buf,20) = (sd)? sd->bl.y: 0;
+	WBUFB(buf,22) = (p->member[i].online)? 0: 1;
+	memcpy(WBUFP(buf,23), p->name, 24);
+	memcpy(WBUFP(buf,47), p->member[i].name, 24);
+	memcpy(WBUFP(buf,71), p->member[i].map, 16);
+	WBUFB(buf,87) = (p->item&1)? 1: 0;
+	WBUFB(buf,88) = (p->item&2)? 1: 0;
 #endif
-	WBUFW(buf,offset+10) = (sd)? sd->bl.x: 0;
-	WBUFW(buf,offset+12) = (sd)? sd->bl.y: 0;
-	WBUFB(buf,offset+14) = (p->member[i].online)? 0: 1;
-	memcpy(WBUFP(buf,offset+15), p->name, 24);
-	memcpy(WBUFP(buf,offset+39), p->member[i].name, 24);
-	memcpy(WBUFP(buf,offset+63), p->member[i].map, 13);
-	WBUFB(buf,offset+79) = (p->item&1)? 1: 0;
-	WBUFB(buf,offset+80) = (p->item&2)? 1: 0;
 
 	if(fd >= 0){	// fdが設定されてるならそれに送る
 		memcpy(WFIFOP(fd,0),buf,packet_db[cmd].len);
@@ -13703,42 +13761,74 @@ void clif_party_info(struct party *p, int fd)
 	int i,c;
 	struct map_session_data *sd=NULL;
 #if PACKETVER < 20170502
-	const int size = 46;
 	unsigned char buf[28+MAX_PARTY*46];
-	int cmd = 0xfb;
+#elif PACKETVER < 20171207
+	unsigned char buf[28+MAX_PARTY*50+6];
 #else
-	const int size = 50;
-	unsigned char buf[34+MAX_PARTY*50];
-	int cmd = 0xa44;
+	unsigned char buf[28+MAX_PARTY*54+6];
 #endif
 
 	nullpo_retv(p);
 
-	WBUFW(buf,0)=cmd;
+#if PACKETVER < 20170502
+	WBUFW(buf,0)=0xfb;
 	memcpy(WBUFP(buf,4),p->name,24);
 	for(i=c=0;i<MAX_PARTY;i++){
 		struct party_member *m=&p->member[i];
 		if(m->account_id > 0){
 			if(sd==NULL) sd=m->sd;
-			WBUFL(buf,28+c*size)=m->account_id;
-			memcpy(WBUFP(buf,28+c*size+ 4),m->name,24);
-			memcpy(WBUFP(buf,28+c*size+28),m->map,16);
-			WBUFB(buf,28+c*size+44)=(m->leader)?0:1;
-			WBUFB(buf,28+c*size+45)=(m->online)?0:1;
-#if PACKETVER >= 20170502
-			WBUFW(buf,28+c*size+46)=m->class_;
-			WBUFW(buf,28+c*size+48)=m->lv;
-#endif
+			WBUFL(buf,28+c*46)=m->account_id;
+			memcpy(WBUFP(buf,28+c*46+ 4),m->name,24);
+			memcpy(WBUFP(buf,28+c*46+28),m->map,16);
+			WBUFB(buf,28+c*46+44)=(m->leader)?0:1;
+			WBUFB(buf,28+c*46+45)=(m->online)?0:1;
 			c++;
 		}
 	}
-#if PACKETVER < 20170502
 	WBUFW(buf,2)=28+c*46;
-#else
-	WBUFB(buf,28+c*size) = (p->item & 1) ? 1 : 0;
-	WBUFB(buf,28+c*size+1) = (p->item & 2) ? 1 : 0;
-	WBUFL(buf,28+c*size+2) = 0; // unknown
+#elif PACKETVER < 20171207
+	WBUFW(buf,0)=0xa44;
+	memcpy(WBUFP(buf,4),p->name,24);
+	for(i=c=0;i<MAX_PARTY;i++){
+		struct party_member *m=&p->member[i];
+		if(m->account_id > 0){
+			if(sd==NULL) sd=m->sd;
+			WBUFL(buf,28+c*50)=m->account_id;
+			memcpy(WBUFP(buf,28+c*50+ 4),m->name,24);
+			memcpy(WBUFP(buf,28+c*50+28),m->map,16);
+			WBUFB(buf,28+c*50+44)=(m->leader)?0:1;
+			WBUFB(buf,28+c*50+45)=(m->online)?0:1;
+			WBUFW(buf,28+c*50+46)=m->class_;
+			WBUFW(buf,28+c*50+48)=m->lv;
+			c++;
+		}
+	}
+	WBUFB(buf,28+c*50) = (p->item & 1) ? 1 : 0;
+	WBUFB(buf,28+c*50+1) = (p->item & 2) ? 1 : 0;
+	WBUFL(buf,28+c*50+2) = 0; // unknown
 	WBUFW(buf,2)=28+c*50+6;
+#else
+	WBUFW(buf,0)=0xae5;
+	memcpy(WBUFP(buf,4),p->name,24);
+	for(i=c=0;i<MAX_PARTY;i++){
+		struct party_member *m=&p->member[i];
+		if(m->account_id > 0){
+			if(sd==NULL) sd=m->sd;
+			WBUFL(buf,28+c*54)=m->account_id;
+			WBUFL(buf,28+c*54+ 4)=m->char_id;
+			memcpy(WBUFP(buf,28+c*54+ 8),m->name,24);
+			memcpy(WBUFP(buf,28+c*54+32),m->map,16);
+			WBUFB(buf,28+c*54+48)=(m->leader)?0:1;
+			WBUFB(buf,28+c*54+49)=(m->online)?0:1;
+			WBUFW(buf,28+c*54+50)=m->class_;
+			WBUFW(buf,28+c*54+52)=m->lv;
+			c++;
+		}
+	}
+	WBUFB(buf,28+c*54) = (p->item & 1) ? 1 : 0;
+	WBUFB(buf,28+c*54+1) = (p->item & 2) ? 1 : 0;
+	WBUFL(buf,28+c*54+2) = 0; // unknown
+	WBUFW(buf,2)=28+c*54+6;
 #endif
 	if(fd >= 0){	// fdが設定されてるならそれに送る
 		memcpy(WFIFOP(fd,0),buf,WBUFW(buf,2));
@@ -15681,11 +15771,16 @@ void clif_friend_send_info(struct map_session_data *sd)
 
 	fd = sd->fd;
 	WFIFOW(fd, 0) = 0x201;
-	for(i=0, len=4; i<sd->status.friend_num; i++, len+=32) {
+	for(i=0, len=4; i<sd->status.friend_num; i++) {
 		struct friend_data *frd = &sd->status.friend_data[i];
 		WFIFOL(fd,len  ) = frd->account_id;
 		WFIFOL(fd,len+4) = frd->char_id;
+#if PACKETVER < 20180221
 		memcpy(WFIFOP(fd,len+8), frd->name, 24);
+		len+=32;
+#else
+		len+=8;
+#endif
 	}
 	WFIFOW(fd,2) = len;
 	WFIFOSET(fd,len);
@@ -15699,10 +15794,23 @@ void clif_friend_send_info(struct map_session_data *sd)
  */
 void clif_friend_send_online(const int fd, int account_id, int char_id, int flag)
 {
+#if PACKETVER >= 20180221
+	char *p;
+
+	p = map_charid2nick(char_id);
+#endif
 	WFIFOW(fd, 0) = 0x206;
 	WFIFOL(fd, 2) = account_id;
 	WFIFOL(fd, 6) = char_id;
 	WFIFOB(fd,10) = flag;
+#if PACKETVER >= 20180221
+	if(p!=NULL){
+		memcpy(WFIFOP(fd,11), p, 24);
+	}
+	else {
+		memset(WFIFOP(fd,11), 0, 24);
+	}
+#endif
 	WFIFOSET(fd,packet_db[0x206].len);
 
 	return;
@@ -18693,6 +18801,25 @@ void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enab
 }
 
 /*==========================================
+ * clif_weight_limit送信
+ *------------------------------------------
+ */
+void clif_weight_limit(struct map_session_data* sd)
+{
+#if PACKETVER >= 20171025
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0) = 0xade;
+	WFIFOL(fd, 2) = battle_config.natural_heal_weight_rate;
+	WFIFOSET(fd,packet_db[0xade].len);
+#endif
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -18850,6 +18977,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_updatestatus(sd,SP_CARTINFO);
 	}
 	// weight max , now
+	clif_weight_limit(sd);
 	clif_updatestatus(sd,SP_MAXWEIGHT);
 	clif_updatestatus(sd,SP_WEIGHT);
 
@@ -24351,6 +24479,35 @@ static void packetdb_readdb(void)
 }
 
 /*==========================================
+ * パケットデータベース読み込み
+ *------------------------------------------
+ */
+void packetdb_insert_packet(char *line)
+{
+	if(line == NULL || !line[0])
+		return;
+
+	if(packetdb_readdb_sub(line, 0)) {
+		exit(1);
+	}
+
+	return;
+}
+
+/*==========================================
+ * パケットデータベースキー読み込み
+ *------------------------------------------
+ */
+void packetdb_insert_packet_key(unsigned int key1, unsigned int key2, unsigned int key3)
+{
+	cryptKey[0] = key1;
+	cryptKey[1] = key2;
+	cryptKey[2] = key3;
+
+	return;
+}
+
+/*==========================================
  * Webチャットシステム
  *------------------------------------------
  */
@@ -24467,7 +24624,10 @@ void do_init_clif(void)
 {
 	int i;
 
-	packetdb_readdb();
+	//packetdb_readdb();
+	memset(packet_db, 0, sizeof(packet_db));
+	memset(cryptKey, 0, sizeof(cryptKey));
+
 	set_defaultparse(clif_parse);
 	set_sock_destruct(clif_disconnect);
 	for(i=0;i<10;i++){
