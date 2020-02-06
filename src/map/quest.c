@@ -139,7 +139,6 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 			int time_today;
 			time_t t;
 			struct tm * lt;
-			unsigned char day = quest_db[qid].limit / 86400;
 
 			t = time(NULL);
 			lt = localtime(&t);
@@ -170,8 +169,11 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 	}
 
 	clif_add_questlist(sd, quest_id);
-	clif_questlist(sd);
-	clif_questlist_info(sd);
+#if PACKETVER >= 20150513
+	clif_update_questcount2(sd, quest_id);
+#else
+	clif_update_questcount(sd, quest_id);
+#endif
 	intif_save_quest(sd);
 
 	return 0;
@@ -215,8 +217,23 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 
 	memset(&qd, 0, sizeof(struct quest_data));
 	qd.nameid = quest_db[qid].nameid;
-	if(quest_db[qid].limit)
-		qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
+	if(quest_db[qid].limit) {
+		if(quest_db[qid].limit_type == 0)
+			qd.limit = (unsigned int)time(NULL) + quest_db[qid].limit;
+		else {
+			int time_today;
+			time_t t;
+			struct tm * lt;
+
+			t = time(NULL);
+			lt = localtime(&t);
+			time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+			if(time_today < (int)((quest_db[qid].limit)%86400))
+				qd.limit = (unsigned int)(time(NULL) + quest_db[qid].limit - time_today);
+			else
+				qd.limit = (unsigned int)(time(NULL) + 86400 + quest_db[qid].limit - time_today);
+		}
+	}
 	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
 		qd.mob[i].id  = quest_db[qid].mob[i].id;
 		qd.mob[i].max = quest_db[qid].mob[i].count;
@@ -226,14 +243,18 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 	if(old_idx >= 0) {
 		// 旧クエストを取得してる場合は上書きで更新する
 		memcpy(&sd->quest[old_idx], &qd, sizeof(struct quest_data));
+		clif_del_questlist(sd, old_id);
 	} else {
 		memcpy(&sd->quest[sd->questlist], &qd, sizeof(struct quest_data));
 		sd->questlist++;
 	}
 
 	clif_add_questlist(sd, new_id);
-	clif_questlist(sd);
-	clif_questlist_info(sd);
+#if PACKETVER >= 20150513
+	clif_update_questcount2(sd, new_id);
+#else
+	clif_update_questcount(sd, new_id);
+#endif
 	intif_save_quest(sd);
 
 	return 0;
@@ -258,8 +279,6 @@ int quest_dellist(struct map_session_data *sd, int quest_id)
 	memset(&sd->quest[sd->questlist], 0, sizeof(struct quest_data));
 
 	clif_del_questlist(sd, quest_id);
-	clif_questlist(sd);
-	clif_questlist_info(sd);
 	intif_save_quest(sd);
 
 	return 0;

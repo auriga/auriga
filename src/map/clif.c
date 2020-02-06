@@ -5527,7 +5527,7 @@ void clif_changemapserver(struct map_session_data *sd, const char *mapname, int 
 	WFIFOW(fd,20)=y;
 	WFIFOL(fd,22)=ip;
 	WFIFOW(fd,26)=port;
-	memset(WFIFOP(fd,28), 0, 128);
+	memset(WFIFOP(fd,28), 0, 128);		//TODO: dnshost name
 	WFIFOSET(fd,packet_db[0xac7].len);
 #endif
 
@@ -16784,7 +16784,7 @@ void clif_questlist(struct map_session_data *sd)
 			active++;
 		}
 	}
-#else
+#elif PACKETVER < 20150513
 	WFIFOW(fd,0) = 0x97a;
 	for(i = 0; i < sd->questlist; i++) {
 		int id, j, n;
@@ -16809,6 +16809,38 @@ void clif_questlist(struct map_session_data *sd)
 			}
 			WFIFOW(fd,len+13) = n;
 			len += 15+n*32;
+			active++;
+		}
+	}
+#else
+	WFIFOW(fd,0) = 0x9f8;
+	for(i = 0; i < sd->questlist; i++) {
+		int id, j, n;
+		struct quest_data *qd = &sd->quest[i];
+		if(qd->nameid != 0 && qd->state < 2) {
+			WFIFOL(fd,len)   = qd->nameid;
+			WFIFOB(fd,len+4) = qd->state;
+			WFIFOL(fd,len+5) = qd->limit/* - quest_db[quest_search_db(qd->nameid)].limit*/;
+			WFIFOL(fd,len+9) = qd->limit;
+			for(j = 0, n = 0; j < 3; j++) {
+				if((id = (int)qd->mob[j].id) != 0) {
+					WFIFOL(fd,len*15+n*44) = (qd->nameid * 1000) + j;
+					WFIFOL(fd,len+19+n*44) = 0;
+					WFIFOL(fd,len+23+n*44) = id;
+					WFIFOW(fd,len+27+n*44) = 0;
+					WFIFOW(fd,len+29+n*44) = 0;
+					WFIFOW(fd,len+31+n*44) = qd->mob[j].count;
+					WFIFOW(fd,len+33+n*44) = qd->mob[j].max;
+					if(mobdb_exists(id)) {
+						strncpy(WFIFOP(fd,len+35+n*44),mobdb_search(id)->jname,24);
+					} else {
+						memset(WFIFOP(fd,len+35+n*44), 0, 24);
+					}
+					n++;
+				}
+			}
+			WFIFOW(fd,len+13) = n;
+			len += 15+n*44;
 			active++;
 		}
 	}
@@ -16881,6 +16913,7 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	fd = sd->fd;
 	n = 0;
 
+#if PACKETVER < 20150513
 	WFIFOW(fd,0) = 0x2b3;
 	WFIFOL(fd,2) = qd->nameid;
 	WFIFOB(fd,6) = qd->state;
@@ -16900,7 +16933,31 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	}
 	WFIFOW(fd,15) = n;
 	WFIFOSET(fd,packet_db[0x2b3].len);
-
+#else
+	WFIFOW(fd,0) = 0x9f9;
+	WFIFOL(fd,2) = qd->nameid;
+	WFIFOB(fd,6) = qd->state;
+	WFIFOL(fd,7) = 0;
+	WFIFOL(fd,11) = qd->limit;
+	for(i = 0; i < 3; i++) {
+		if((id = (int)qd->mob[i].id) != 0) {
+			WFIFOL(fd,17+n*42) = (qd->nameid * 1000) + i;
+			WFIFOL(fd,21+n*42) = 0;
+			WFIFOL(fd,25+n*42) = id;
+			WFIFOW(fd,29+n*42) = 0;
+			WFIFOW(fd,31+n*42) = 0;
+			WFIFOW(fd,33+n*42) = qd->mob[i].count;
+			if(mobdb_exists(id)) {
+				strncpy(WFIFOP(fd,35+n*42),mobdb_search(id)->jname,24);
+			} else {
+				memset(WFIFOP(fd,35+n*42), 0, 24);
+			}
+			n++;
+		}
+	}
+	WFIFOW(fd,15) = n;
+	WFIFOSET(fd,packet_db[0x9f9].len);
+#endif
 	return;
 }
 
@@ -16939,6 +16996,7 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 
 	fd = sd->fd;
 
+#if PACKETVER < 20150513
 	WFIFOW(fd,0) = 0x2b5;
 	for(i = 0; i < 3; i++) {
 		if(qd->mob[i].id != 0) {
@@ -16950,10 +17008,57 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 		}
 	}
 	WFIFOW(fd,2) = n * 12 + 6;
+#else
+	WFIFOW(fd,0) = 0x9fa;
+	for(i = 0; i < 3; i++) {
+		if(qd->mob[i].id != 0) {
+			WFIFOL(fd, 6+n*12) = qd->nameid;
+			WFIFOL(fd,10+n*12) = (qd->nameid * 1000) + i;
+			WFIFOW(fd,14+n*12) = qd->mob[i].max;
+			WFIFOW(fd,16+n*12) = qd->mob[i].count;
+			n++;
+		}
+	}
+	WFIFOW(fd,2) = n * 12 + 6;
+#endif
 	WFIFOW(fd,4) = n;
 	WFIFOSET(fd,WFIFOW(fd,2));
 
 	return;
+}
+
+/*==========================================
+ * クエストリスト討伐数更新2
+ *------------------------------------------
+ */
+void clif_update_questcount2(struct map_session_data *sd, int quest_id)
+{
+#if PACKETVER >= 20150513
+	int fd, i, n = 0;
+	struct quest_data *qd;
+
+	nullpo_retv(sd);
+
+	qd = quest_get_data(sd, quest_id);
+	if(qd == NULL)
+		return;
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x8fe;
+	for(i = 0; i < 3; i++) {
+		if(qd->mob[i].id != 0) {
+			WFIFOL(fd, 4+n*12) = qd->nameid;
+			WFIFOL(fd, 8+n*12) = qd->mob[i].id;
+			WFIFOW(fd,12+n*12) = qd->mob[i].max;
+			WFIFOW(fd,14+n*12) = qd->mob[i].count;
+			n++;
+		}
+	}
+	WFIFOW(fd,2) = n * 12 + 4;
+	WFIFOSET(fd,WFIFOW(fd,2));
+
+	return;
+#endif
 }
 
 /*==========================================
@@ -18543,7 +18648,7 @@ void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int ta
 		tbl = bl;
 	}
 
-	if( !tsd->hatEffect.count )
+	if( !tsd || !tsd->hatEffect.count )
 		return;
 
 	len = 9 + tsd->hatEffect.count * 2;
@@ -18559,7 +18664,7 @@ void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int ta
 		WBUFW(buf,9+i*2) = tsd->hatEffect.id[i];
 	}
 
-	clif_send(buf, len,tbl,target);
+	clif_send(buf, len, tbl, target);
 
 	aFree(buf);
 #endif
@@ -18574,14 +18679,15 @@ void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enab
 #if PACKETVER >= 20150513
 	unsigned char buf[13];
 
+	nullpo_retv(sd);
+
 	WBUFW(buf,0) = 0xa3b;
 	WBUFW(buf,2) = 13;
 	WBUFL(buf,4) = sd->bl.id;
 	WBUFB(buf,8) = enable;
 	WBUFL(buf,9) = effectId;
 
-	clif_send(buf,13,&sd->bl,AREA);
-
+	clif_send(buf,packet_db[0xa3b].len,&sd->bl,AREA);
 #endif
 	return;
 }

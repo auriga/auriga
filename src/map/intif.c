@@ -2097,7 +2097,12 @@ static int intif_parse_LoadQuestList(int fd)
 
 	if(i) {
 		clif_questlist(sd);
+#if PACKETVER < 20141022
 		clif_questlist_info(sd);
+		for(i=0; i < sd->questlist; i++) {
+			clif_update_questcount(sd, sd->quest[i].nameid);
+		}
+#endif
 	}
 
 	return 0;

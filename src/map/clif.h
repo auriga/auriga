@@ -422,6 +422,7 @@ void clif_questlist_info(struct map_session_data *sd);
 void clif_add_questlist(struct map_session_data *sd, int quest_id);
 void clif_del_questlist(struct map_session_data *sd, int quest_id);
 void clif_update_questcount(struct map_session_data *sd, int quest_id);
+void clif_update_questcount2(struct map_session_data *sd, int quest_id);
 
 // party_booking
 void clif_bookingregack(struct map_session_data *sd, int flag);
