@@ -96,6 +96,7 @@ static char httpd_cgi_ext_list[256]=".cgi .exe .pl .php .rb ";	// CGI とする拡張
 static char httpd_cgi_server_name[256]="localhost";	// CGI に SERVER_NAME として渡すホスト名
 //static char cgi_logfile[1024]="./log/httpd.log";	// CGI ログファイル名
 //static FILE* cgi_logfp = NULL;
+static int httpd_guild_emblem_enable = 1;
 
 static HTTPD_AUTH_FUNC auth_func[8];	// 認証関数の関数ポインタ
 void httpd_set_auth_func( int func_id, HTTPD_AUTH_FUNC func ) { auth_func[func_id]=func; }
@@ -205,6 +206,9 @@ int httpd_get_external_cgi_process_count(void);
 
 void httpd_page_external_cgi_disconnect( struct httpd_session_data* );
 void httpd_page_external_cgi_final(void);
+
+char* httpd_emblem_download_request( struct httpd_session_data *sd );
+void httpd_emblem_upload_request( struct httpd_session_data *sd );
 
 
 // ==========================================
@@ -418,6 +422,8 @@ const char *httpd_get_error( struct httpd_session_data* sd, int* status )
 	case 414: msg = "Request-URI Too Long";     break;
 	case 416: msg = "Requested Range Not Satisfiable"; break;
 	case 503: msg = "Service Unavailable";      break;
+	case 700:
+		*status = 200; msg = "{\"Type\":1,\"version\":0}";      break;
 	default:
 		*status = 500; msg = "Internal Server Error"; break;
 	}
@@ -1738,6 +1744,20 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 			}
 			return;
 		}
+#if PACKETVER >= 20190605
+		else if( httpd_guild_emblem_enable)
+		{
+			if((p2 = strstr( url, "emblem/download" ) ) != NULL)
+			{
+				sprintf(file_buf,"%s",httpd_emblem_download_request(sd));
+			}
+			else if((p2 = strstr( url, "emblem/upload" ) ) != NULL)
+			{
+				httpd_emblem_upload_request(sd);
+				return;
+			}
+		}
+#endif
 	}
 #endif
 
@@ -3008,6 +3028,146 @@ unsigned int httpd_page_cgi_process_header( struct httpd_session_data *sd, char*
 	return (unsigned int)x;
 }
 
+#if PACKETVER >= 20190605
+
+// ==========================================
+// フォームの値取得
+// ------------------------------------------
+static char* httpd_get_emblem_form(struct httpd_session_data* sd,unsigned char* val1,unsigned char* val2)
+{
+	size_t src_len1 = strlen(val1);
+	size_t src_len2 = strlen(val2);
+	unsigned char* src_p = sd->query;
+
+	if(src_p == NULL) return (char *)aStrdup("");
+
+	do {
+		if(!memcmp(src_p,val1,src_len1) && src_p[src_len1] == '=' && src_p[src_len1+1] == '\"') {
+			src_p = strchr(src_p,'\"');
+			if(*src_p) src_p++;
+			if(!memcmp(src_p,val2,src_len2) && src_p[src_len2] == '\"')
+				break;
+		}
+		if(*src_p) src_p++;
+	} while(src_p);
+
+	if(src_p != NULL) {
+		size_t   dest_len;
+		char dest_p[1024];
+		src_p = strchr(src_p,'\"');
+		src_p++;
+		while(*src_p) {
+			if(src_p[0]=='\r' || src_p[0]=='\n'){
+				;
+			}
+			else if(sscanf(src_p,"%1023[A-Za-z0-9_#]\r\n",dest_p)==1) {
+				break;
+			}
+			src_p++;
+		}
+		if(dest_p) {
+			dest_len = strlen(dest_p);
+			dest_p[dest_len] = '\0';
+		}
+		return (char *)aStrdup(dest_p);
+	}
+	return (char *)aStrdup("");
+}
+
+static void httpd_save_emblem(struct httpd_session_data* sd, char *filename, int srcpos, int size)
+{
+	FILE *fp;
+
+	if((fp=fopen(filename, "wb"))==NULL){
+		printf("httpd_save_emblem: Cant Open Files.\n");
+		return;
+	}
+	fwrite(RFIFOP(sd->fd,srcpos), size, 1, fp);
+	fclose(fp);
+	return;
+}
+
+char* httpd_emblem_download_request( struct httpd_session_data *sd )
+{
+	char *str = NULL;
+	int AID, GID;
+	char WorldName[24];
+	char Version[10];
+	char filename[1024];
+
+	if(str = httpd_get_emblem_form(sd, "name", "AID"))
+		AID = atoi(str);
+	if(str = httpd_get_emblem_form(sd, "name", "GDID"))
+		GID = atoi(str);
+	if(str = httpd_get_emblem_form(sd, "name", "WorldName"))
+		strncpy( WorldName, str, sizeof(WorldName) - 1 );
+	if(str = httpd_get_emblem_form(sd, "name", "Version"))
+		strncpy( Version, str, sizeof(Version) - 1 );
+
+	printf("httpd_emblem_download_request: WorldName: %s, AID: %d, GID: %d, Version: %s.\n",WorldName,AID,GID,Version);
+
+	sprintf(filename,"./save/emblem/%s/%d.BMP",WorldName,GID);
+	return (char *)aStrdup(filename);
+}
+
+void httpd_emblem_upload_request( struct httpd_session_data *sd )
+{
+	char *str = NULL;
+	int AID, GID;
+	char WorldName[24];
+	char ImgType[10];
+	char filename[1024], msg[100];
+	int size = 0, size2, sepsize = 0;
+	int limit = sd->query_len;
+	unsigned char* fp= "application/octet-stream";
+	unsigned char* fp2= "image/gif";
+	unsigned char* src_p = RFIFOP(sd->fd,0);
+
+	if(str = httpd_get_emblem_form(sd, "name", "AID"))
+		AID = atoi(str);
+	if(str = httpd_get_emblem_form(sd, "name", "GDID"))
+		GID = atoi(str);
+	if(str = httpd_get_emblem_form(sd, "name", "WorldName"))
+		strncpy( WorldName, str, sizeof(WorldName) - 1 );
+	if(str = httpd_get_emblem_form(sd, "name", "ImgType"))
+		strncpy( ImgType, str, sizeof(ImgType) - 1 );
+
+	if( sscanf( sd->query, "%99[^\r]\r\n", msg )==1 ) {
+		sepsize = strlen(msg);
+	}
+
+	do {
+		if(!memcmp(src_p, fp,strlen(fp)) || !memcmp(src_p, fp2,strlen(fp2))) {
+			break;
+		}
+		size++;
+		if(src_p) src_p++;
+	} while(*src_p || --limit);
+
+	do {
+		if(strcmp(ImgType,"BMP")==0 && src_p[-2] == '\r' && src_p[-1] == '\n' && src_p[0] == 'B' && src_p[1] == 'M') {
+			break;
+		}
+		if(strcmp(ImgType,"GIF")==0 && src_p[-2] == '\r' && src_p[-1] == '\n' && src_p[0] == 'G' && src_p[1] == 'I' && src_p[2] == 'F') {
+			break;
+		}
+		size++;
+		if(src_p) src_p++;
+	} while(*src_p);
+
+	// "\r\n"(2byte) + "--"(2byte) + "\r\n"(2byte)
+	size2 = sd->header_len - size - sepsize - (2 + 2 + 2);
+
+	printf("httpd_emblem_upload_request: WorldName: %s, AID: %d, GID: %d, ImgType: %s.\n",WorldName,AID,GID,ImgType);
+
+	sprintf(filename,"./save/emblem/%s/%d.%s",WorldName,GID,ImgType);
+	httpd_save_emblem(sd, filename, size, size2);
+	httpd_send_error(sd,700);
+	return;
+}
+
+#endif	// if PACKETVER >= 20190605
+
 /*
 // 作りかけ……
 // access_log に比べたら、無理に apache 互換にする必要ないかなぁ
@@ -3337,6 +3497,10 @@ int httpd_config_read(const char *cfgName)
 		else if(strcmpi(w1,"cgi_server_name")==0)
 		{
 			strncpy( httpd_cgi_server_name, w2, sizeof(httpd_cgi_server_name) - 1 );
+		}
+		else if(strcmpi(w1,"guild_emblem_enable")==0)
+		{
+			httpd_guild_emblem_enable = atoi(w2);
 		}
 		else if(strcmpi(w1,"log_format")==0)
 		{
