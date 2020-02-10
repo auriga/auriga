@@ -604,6 +604,7 @@ bSPRatePenaltyTime	1181
 bMagicAddGroup	1182
 bMagicAddSize	1183
 bAllStatus		1184
+bSubSkillDamageRate		1185
 
 bRestartFullRecover	2000
 bNoCastCancel	2001
@@ -616,6 +617,7 @@ bInfiniteEndure	2007
 bItemNoUse	2008
 bFixDamage	2009
 bNoKnockback	2010
+bNoGearFuel	2011
 
 //bonusånñΩóﬂÇÃèÛë‘àŸèÌ
 Eff_Stone	0

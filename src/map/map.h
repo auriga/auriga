@@ -45,6 +45,7 @@
 #define MAX_ITEMGROUP	15
 #define MAX_EFF_TYPE	16	// アイテムボーナスの状態異常の数
 #define MAX_SKILL_DAMAGE_UP	10	// スキルを強化できる数
+#define MAX_SUB_SKILL_DAMAGE	10	// スキル耐性を強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
 #define MAX_SKILL_HEAL_UP	7	// スキルの回復量を強化できる数
 #define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
@@ -424,6 +425,7 @@ struct map_session_data {
 		unsigned item_no_use : 1;
 		unsigned fix_damage : 1;
 		unsigned no_knockback : 1;
+		unsigned no_gearfuel : 1;
 	} special_state;
 
 	int char_id,login_id1,login_id2,sex;
@@ -640,6 +642,12 @@ struct map_session_data {
 		short rate[MAX_SKILL_DAMAGE_UP];
 		short count;
 	} skill_dmgup;
+
+	struct {
+		short id[MAX_SUB_SKILL_DAMAGE];
+		short rate[MAX_SUB_SKILL_DAMAGE];
+		short count;
+	} sub_skill_damage;
 
 	struct {
 		short id[MAX_SKILL_BLOW];
@@ -1272,11 +1280,12 @@ enum {
 	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,SP_ADD_SP_COST,SP_FIXCASTRATE,SP_ADD_SKILL_SUBHEAL_RATE,   // 1171-1175
 	SP_ADD_CAST_TIME,SP_ADD_COOL_DOWN,SP_ADD_ELEWEAPONDAMAGE_RATE,SP_ADD_ELEMAGICDAMAGE_RATE,   // 1176-1179
 	SP_HP_RATE_PENALTY_TIME,SP_SP_RATE_PENALTY_TIME,SP_MAGIC_ADD_GROUP,SP_MAGIC_ADDSIZE,	// 1180-1183
-	SP_ALLSTATUS,	// 1184
+	SP_ALLSTATUS,SP_SUB_SKILL_DAMAGE_RATE,	// 1184-1185
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005
 	SP_NO_CASTCANCEL2,SP_INFINITE_ENDURE,SP_ITEM_NO_USE,SP_FIX_DAMAGE,SP_NO_KNOCKBACK,	// 2006-2010
+	SP_NO_GEARFUEL,	// 2011
 };
 
 enum {

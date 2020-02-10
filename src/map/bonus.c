@@ -798,6 +798,10 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2)
 			sd->special_state.no_gemstone = 1;
 		break;
+	case SP_NO_GEARFUEL:
+		if(sd->state.lr_flag != 2)
+			sd->special_state.no_gearfuel = 1;
+		break;
 	case SP_INFINITE_ENDURE:
 		if(sd->state.lr_flag != 2) {
 			sd->special_state.infinite_endure = 1;
@@ -1389,6 +1393,24 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_dmgup.id[sd->skill_dmgup.count] = type2;
 		sd->skill_dmgup.rate[sd->skill_dmgup.count] = val;
 		sd->skill_dmgup.count++;
+		break;
+	case SP_SUB_SKILL_DAMAGE_RATE:
+		// update
+		for(i=0; i<sd->sub_skill_damage.count; i++)
+		{
+			if(sd->sub_skill_damage.id[i] == type2)
+			{
+				sd->sub_skill_damage.rate[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->sub_skill_damage.count == MAX_SUB_SKILL_DAMAGE)
+			break;
+		// add
+		sd->sub_skill_damage.id[sd->sub_skill_damage.count] = type2;
+		sd->sub_skill_damage.rate[sd->sub_skill_damage.count] = val;
+		sd->sub_skill_damage.count++;
 		break;
 	case SP_ADD_GROUP:
 		if(type2 < 0 || type2 >= MAX_MOBGROUP)

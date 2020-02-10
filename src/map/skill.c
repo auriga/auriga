@@ -15686,6 +15686,8 @@ static int skill_item_consume(struct block_list *bl, struct skill_condition *cnd
 				}
 			}
 		}
+        if(itemid[i] == 6146 && sd->special_state.no_gearfuel)
+			continue;
 		if((cnd->id == AM_POTIONPITCHER || cnd->id == CR_SLIMPITCHER || cnd->id == CR_CULTIVATION || cnd->id == GN_FIRE_EXPANSION || cnd->id == KO_MAKIBISHI ||
 			cnd->id == SO_SUMMON_AGNI || cnd->id == SO_SUMMON_AQUA || cnd->id == SO_SUMMON_VENTUS || cnd->id == SO_SUMMON_TERA ||
 			cnd->id == SO_FIRE_INSIGNIA || cnd->id == SO_WATER_INSIGNIA || cnd->id == SO_WIND_INSIGNIA || cnd->id == SO_EARTH_INSIGNIA)

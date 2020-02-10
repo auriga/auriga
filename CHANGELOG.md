@@ -1,4 +1,13 @@
 ----------------------------------------
+//1377 [2020/02/10] by refis
+
+・アイテムボーナス「bSubSkillDamageRate」、「bNoGearFuel」追加
+（db/const.txt, doc/item_bonus.txt, bonus.c, map.h, battle.c, skill.c, status.c）
+
+・BCCコンパイル時にdouble値が読み取れない問題の再修正（utils.h）
+	Report #9 , Thanks eni-ro さん
+
+----------------------------------------
 //1376 [2020/02/07] by refis
 
 ・packet_dbをluaで読み込み処理するように改修（lua_auriga.conf, packet_db.lua, clif.*, luascript.c）

@@ -433,6 +433,16 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage_rate = skill_get_damage_rate(skill_num,3);
 		if(damage_rate != 100)
 			damage = damage*damage_rate/100;
+		// �J�[�h���ʂɂ�����X�L���̃_���[�W�ϐ�(�b��)
+		if(tsd && tsd->sub_skill_damage.count > 0) {
+			int i;
+			for(i=0; i<tsd->sub_skill_damage.count; i++) {
+				if(skill_num == tsd->sub_skill_damage.id[i]) {
+					damage = damage*(100-tsd->sub_skill_damage.rate[i])/100;
+					break;
+				}
+			}
+		}
 	}
 
 	if(tmd && tmd->mode&MD_SKILLIMMUNITY && skill_num > 0)

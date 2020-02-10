@@ -631,6 +631,7 @@ L_RECALC:
 	memset(sd->sp_rate_penalty_unrig,0,sizeof(sd->sp_rate_penalty_unrig));
 	sd->mob_class_change_rate = 0;
 	memset(&sd->skill_dmgup,0,sizeof(sd->skill_dmgup));
+	memset(&sd->sub_skill_damage,0,sizeof(sd->sub_skill_damage));
 	memset(&sd->skill_blow,0,sizeof(sd->skill_blow));
 	memset(&sd->autospell,0,sizeof(sd->autospell));
 	memset(&sd->itemheal_rate,0,sizeof(sd->itemheal_rate));

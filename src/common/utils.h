@@ -122,7 +122,7 @@ typedef int32  intptr;
 // ‘å‚«‚È”š—p‚Ì•ÏŠ·w’èq
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
-#	define BIGNUMSCANCODE ".0lf"
+#	define BIGNUMSCANCODE "lf"
 #elif defined(WINDOWS) && defined(_MSC_VER)
 #	define BIGNUMSCANCODE "I64d"
 #else
