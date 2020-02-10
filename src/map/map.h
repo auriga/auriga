@@ -859,7 +859,7 @@ struct map_session_data {
 	} progressbar;
 
 	short hotkey_set;
-	char hotkey_rotate;
+	char hotkey_rotate[2];
 	int shop_point;
 
 #if PACKETVER >= 20150513

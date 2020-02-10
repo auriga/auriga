@@ -9283,6 +9283,7 @@ int battle_config_read(const char *cfgName)
 		{ "ranker_weapon_bonus",                &battle_config.ranker_weapon_bonus,                10       },
 		{ "min_lv100_aspdfix",                  &battle_config.min_lv100_aspdfix,                  1        },
 		{ "min_npc_vendchat_distance",          &battle_config.min_npc_vendchat_distance,          3        },
+		{ "ping_timer_interval",                &battle_config.ping_timer_interval,                30       },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

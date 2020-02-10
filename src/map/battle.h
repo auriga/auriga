@@ -616,6 +616,7 @@ extern struct Battle_Config {
 	int ranker_weapon_bonus;
 	int min_lv100_aspdfix;
 	int min_npc_vendchat_distance;
+	int ping_timer_interval;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

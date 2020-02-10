@@ -168,6 +168,8 @@ void clif_guildstorageitemlist(struct map_session_data *sd, struct guild_storage
 void clif_guildstorageequiplist(struct map_session_data *sd, struct guild_storage *stor);
 void clif_updateguildstorageamount(struct map_session_data *sd, struct guild_storage *stor);
 void clif_guildstorageitemadded(struct map_session_data *sd, struct guild_storage *stor, int idx, int amount);
+void clif_inventoryStart(struct map_session_data *sd, int type, const char *name);
+void clif_inventoryEnd(struct map_session_data *sd, int type);
 
 int clif_pcinsight(struct block_list *bl, va_list ap);
 int clif_pcoutsight(struct block_list *bl, va_list ap);
@@ -269,6 +271,7 @@ void clif_send_murderer(struct map_session_data *sd,int target,int flag);
 void clif_update_temper(struct map_session_data *sd);
 
 void clif_send_hotkey(struct map_session_data *sd);
+void clif_send_hotkeyAll(struct map_session_data *sd);
 void clif_bossmapinfo(struct map_session_data *sd, const char *name, int x, int y, int tick, int type);
 void clif_openbook(struct map_session_data *sd, int nameid, int page);
 void clif_msgstringtable(struct map_session_data *sd, int line);

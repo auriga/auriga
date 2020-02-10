@@ -1092,6 +1092,9 @@ int parse_login(int fd)
 			case 0x0825:
 				printf("parse_login : session #%d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,9));
 				break;
+			case 0x0acf:
+				printf("parse_login : session #%d %3ld 0x%04x %-24s\n",fd,(long)RFIFOREST(fd),cmd,(char*)RFIFOP(fd,6));
+				break;
 			default:
 				if( cmd < 0x7530 )
 					printf("parse_login : session #%d %3ld 0x%04x\n",fd,(long)RFIFOREST(fd),cmd);
@@ -1241,6 +1244,18 @@ int parse_login(int fd)
 				WFIFOSET(fd,26);
 #endif
 			}
+			RFIFOSKIP(fd,RFIFOREST(fd));
+		}
+		break;
+
+		case 0x0acf:	// ワンタイムパスワードログイン要求（langtype=0）
+		{
+			WFIFOW(fd,0) = 0x0ae3;
+			WFIFOW(fd,2) = 34;
+			WFIFOL(fd,4) = 0;
+			strncpy(WFIFOP(fd,8),"S1000", 6);
+			strncpy(WFIFOP(fd,28),"token", 6);
+			WFIFOSET(fd, 34);
 			RFIFOSKIP(fd,RFIFOREST(fd));
 		}
 		break;

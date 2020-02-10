@@ -1609,7 +1609,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	// ホットキーセット
 	sd->hotkey_set = 0;
-	sd->hotkey_rotate = 0;
+	memset(&sd->hotkey_rotate,0,sizeof(sd->hotkey_rotate));
 
 	// 同盟チャットのon
 	sd->state.alliance_message = 0;
