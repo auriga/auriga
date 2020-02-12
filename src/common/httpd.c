@@ -3090,9 +3090,8 @@ static void httpd_save_emblem(struct httpd_session_data* sd, char *filename, int
 char* httpd_emblem_download_request( struct httpd_session_data *sd )
 {
 	char *str = NULL;
-	int AID, GID;
+	int AID, GID, Version;
 	char WorldName[24];
-	char Version[10];
 	char filename[1024];
 
 	if(str = httpd_get_emblem_form(sd, "name", "AID"))
@@ -3102,9 +3101,9 @@ char* httpd_emblem_download_request( struct httpd_session_data *sd )
 	if(str = httpd_get_emblem_form(sd, "name", "WorldName"))
 		strncpy( WorldName, str, sizeof(WorldName) - 1 );
 	if(str = httpd_get_emblem_form(sd, "name", "Version"))
-		strncpy( Version, str, sizeof(Version) - 1 );
+		Version = atoi(str);
 
-	printf("httpd_emblem_download_request: WorldName: %s, AID: %d, GID: %d, Version: %s.\n",WorldName,AID,GID,Version);
+	printf("httpd_emblem_download_request: WorldName: %s, AID: %d, GID: %d, Version: %d.\n",WorldName,AID,GID,Version);
 
 	sprintf(filename,"./save/emblem/%s/%d.BMP",WorldName,GID);
 	return (char *)aStrdup(filename);

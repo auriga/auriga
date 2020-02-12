@@ -23588,10 +23588,11 @@ static void clif_parse_GuildChangeEmblem(int fd,struct map_session_data *sd, int
 static void clif_parse_GuildChangeEmblem2(int fd,struct map_session_data *sd, int cmd)
 {
 	int guild_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
-	unsigned int len;
+	int version  = RFIFOL(fd,GETPACKETPOS(cmd,1));
 	struct guild *g;
+	unsigned char buf[14];
 
-	len    = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	nullpo_retv(sd);
 
 	// only guild master can change emblem.
 	if (sd->status.guild_id == 0 || sd->status.guild_id != guild_id || (g = guild_search(sd->status.guild_id)) == NULL)
@@ -23599,8 +23600,13 @@ static void clif_parse_GuildChangeEmblem2(int fd,struct map_session_data *sd, in
 	if (strcmp(sd->status.name, g->master))
 		return;
 
-	clif_guild_belonginfo(sd,g);
-	clif_guild_emblem(sd,g);
+	WBUFW(buf, 0)=0xb47;
+	WBUFL(buf, 2)=sd->status.guild_id;
+	WBUFL(buf, 6)=version;
+	WBUFL(buf,10)=0;
+
+	clif_send(buf,packet_db[0xb47].len,&sd->bl,GUILD);
+
 	return;
 }
 
@@ -25941,7 +25947,6 @@ int clif_parse(int fd)
 			break;
 		}
 
-		printf("clif_parse2: unsupported packet 0x%04x disconnect session #%d\n", cmd, fd);
 
 		// ゲーム用以外のパケットなので切断
 		if(cmd >= MAX_PACKET_DB || packet_db[cmd].len == 0) {
