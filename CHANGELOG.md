@@ -1,4 +1,12 @@
 ----------------------------------------
+//1378 [2020/02/12] by refis
+
+・アイテムボーナス「bAllStatus」がバッファオーバーランを起こしていた問題を修正（bonus.c）
+
+・2018-04-18bRagexeREのpacket_db定義漏れを修正（packet_db.lua）
+	Issues Report #10 , Thanks eni-ro さん
+
+----------------------------------------
 //1377 [2020/02/10] by refis
 
 ・アイテムボーナス「bSubSkillDamageRate」、「bNoGearFuel」追加

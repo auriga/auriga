@@ -2281,10 +2281,11 @@ end
 
 -- fix unused function
 if(packet_ver > 20080827) then
-	addpacket(0x0072,22)
-	addpacket(0x009b,34)
-	addpacket(0x009f,20)
-	addpacket(0x0190,23)
+	p(0x0072,22)
+	p(0x009b,34)
+	p(0x009f,20)
+	p(0x0190,23)
+	p(0x0439,8,"useitem",{2,4})
 end
 
 if packet_ver >= 20090617 then
@@ -2322,7 +2323,6 @@ if packet_ver >= 20080910 and packet_ver <= 20100803 then
 	p(0x0436,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x0437,7,"actionrequest",{2,6})
 	p(0x0438,10,"useskilltoid",{2,4,6})
-	p(0x0439,8,"useitem",{2,4})
 end
 
 -- 2010-11-24aRagexeRE
@@ -2341,7 +2341,6 @@ if packet_ver == 20101124 then
 	p(0x0436,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x0437,7,"actionrequest",{2,6})
 	p(0x0438,10,"useskilltoid",{2,4,6})
-	p(0x0439,8,"useitem",{2,4})
 end
 
 -- 2011-10-05aRagexeRE
@@ -2353,7 +2352,6 @@ if packet_ver == 20111005 then
 	p(0x0436,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x0437,7,"actionrequest",{2,6})
 	p(0x0438,10,"useskilltoid",{2,4,6})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0815,6,"takeitem",2)
 	p(0x0817,6,"ticksend",2)
 	p(0x0838,6,"solvecharname",2)
@@ -2372,7 +2370,6 @@ if packet_ver == 20111102 then
 	p(0x0366,5,"changedir",{2,4})
 	p(0x0369,10,"useskilltopos",{2,4,6,8})
 	p(0x0436,26,"friendaddrequest",2)
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0811,-1,"convertitem",{2,4,8,12})
 	p(0x0815,6,"takeitem",2)
 	p(0x0817,6,"ticksend",2)
@@ -2403,7 +2400,6 @@ if packet_ver == 20111122 then
 	p(0x0363,90,"useskilltopos",{2,4,6,8,10})
 	p(0x0369,-1,"convertitem",{2,4,8,12})
 	p(0x0436,6,"dropitem",{2,4})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0835,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x0887,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x088c,6,"clickbuyingstorereq",2)
@@ -2437,7 +2433,6 @@ if packet_ver == 20111220 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,6,"takeitem",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2455,7 +2450,6 @@ end
 if packet_ver == 20120214 then
 	packet_key(0x7a255efa,0x30977276,0x2d4a0448)
 	p(0x022d,-1,"sellbuyingstorereq",{2,4,8,12})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0819,2,"closebuyingstorereq",0)
 	p(0x0869,6,"ticksend",2)
 	p(0x086a,26,"friendaddrequest",2)
@@ -2484,7 +2478,6 @@ end
 if packet_ver == 20120328 then
 	packet_key(0x75b8553b,0x37f20b12,0x385c2b40)
 	p(0x0281,6,"solvecharname",2)
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07ec,2,"closebuyingstorereq",0)
 	p(0x0861,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x0865,5,"walktoxy",2)
@@ -2516,7 +2509,6 @@ if packet_ver == 20120410 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0811,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x0815,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x0817,2,"closebuyingstorereq",0)
@@ -2553,7 +2545,6 @@ if packet_ver == 20120618 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,6,"takeitem",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2571,7 +2562,6 @@ if packet_ver == 20130320 then
 	p(0x0360,6,"clickbuyingstorereq",2)
 	p(0x0363,6,"ticksend",2)
 	p(0x0438,6,"dropitem",{2,4})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x086d,26,"friendaddrequest",2)
 	p(0x086f,26,"partyinvite2",2)
 	p(0x0897,5,"hommenu",4)
@@ -2643,7 +2633,6 @@ if packet_ver == 20130703 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,6,"takeitem",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2661,7 +2650,6 @@ if packet_ver == 20130724 then
 	packet_key(0x3c243bf5,0x42cc4e2f,0x02106ec6)
 	p(0x023b,2,"closebuyingstorereq",0)
 	p(0x035f,6,"ticksend",2)
-	p(0x0439,8,"useitem",{2,4})
 	p(0x085a,41,"bookingregreq2",{2,4})
 	p(0x085e,8,"movefromkafra",{2,4})
 	p(0x0867,6,"getcharnamerequest",2)
@@ -2703,7 +2691,6 @@ if packet_ver == 20131223 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,6,"takeitem",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2726,7 +2713,6 @@ if packet_ver == 20140115 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0802,6,"getcharnamerequest",2)
 	p(0x0815,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x0817,6,"closebuyingstorereq",0)
@@ -2760,7 +2746,6 @@ if packet_ver == 20140305 then
 	p(0x0436,10,"useskilltopos",{2,4,6,8})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,19,"wanttoconnection",{2,6,10,14,18})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,26,"friendaddrequest",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2783,7 +2768,6 @@ if packet_ver == 20141022 then
 	p(0x0368,6,"solvecharname",2)
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0811,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x0815,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x0817,2,"closebuyingstorereq",0)
@@ -2813,7 +2797,6 @@ if packet_ver == 20150513 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0811,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x0815,-1,"openbuyingstorereq",{2,4,8,9,89})
 	p(0x0817,5,"hommenu",4)
@@ -2848,7 +2831,6 @@ if packet_ver == 20151029 then
 	p(0x0369,7,"actionrequest",{2,6})
 	p(0x0437,5,"walktoxy",2)
 	p(0x0438,10,"useskilltopos",{2,4,6,8})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x07e4,6,"takeitem",2)
 	p(0x07ec,8,"movetokafra",{2,4})
 	p(0x0802,26,"partyinvite2",2)
@@ -2867,7 +2849,6 @@ end
 if packet_ver == 20161228 then
 	packet_key(0x09366971,0x005672F1,0x6F3712AE)
 	p(0x0362,-1,"sellbuyingstorereq",{2,4,8,12})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x085a,6,"getcharnamerequest",2)
 	p(0x085e,5,"hommenu",4)
 	p(0x0865,90,"useskilltopos",{2,4,6,8,10})
@@ -2921,7 +2902,6 @@ if packet_ver == 20170614 then
 	p(0x0361,5,"walktoxy",2)
 	p(0x0364,5,"hommenu",4)
 	p(0x0367,6,"dropitem",{2,4})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x083c,7,"actionrequest",{2,6})
 	p(0x0838,10,"useskilltopos",{2,4,6,8})
 	p(0x0860,6,"clickbuyingstorereq",2)
@@ -2957,7 +2937,6 @@ if packet_ver == 20170830 then
 	p(0x0281,5,"changedir",{2,4})
 	p(0x02c4,6,"takeitem",2)
 	p(0x0363,18,"bookingregreq2",{2,4})
-	p(0x0439,8,"useitem",{2,4})
 	p(0x0860,2,"closebuyingstorereq",0)
 	p(0x0865,5,"walktoxy",2)
 	p(0x086a,26,"partyinvite2",2)

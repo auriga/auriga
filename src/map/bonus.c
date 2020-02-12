@@ -486,12 +486,12 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		break;
 	case SP_ALLSTATUS:
 		if(sd->state.lr_flag != 2) {
-			sd->parame[SP_STR] += val;
-			sd->parame[SP_AGI] += val;
-			sd->parame[SP_VIT] += val;
-			sd->parame[SP_INT] += val;
-			sd->parame[SP_DEX] += val;
-			sd->parame[SP_LUK] += val;
+			sd->parame[0] += val;
+			sd->parame[1] += val;
+			sd->parame[2] += val;
+			sd->parame[3] += val;
+			sd->parame[4] += val;
+			sd->parame[5] += val;
 		}
 		break;
 	case SP_ATK1:
