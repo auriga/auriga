@@ -71,6 +71,7 @@
 #include "booking.h"
 #include "buyingstore.h"
 #include "elem.h"
+#include "memorial.h"
 #include "bank.h"
 
 /* ÉpÉPÉbÉgÉfÅ[É^ÉxÅ[ÉX */
@@ -1801,7 +1802,7 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,69) = 0xffffffff;
 		WBUFL(buf,73) = 0xffffffff;
 		WBUFB(buf,77) = 0;
-#else
+#elif PACKETVER < 20180704
 		len = 80 + (int)strlen(md->name);
 		memset(buf,0,len);
 
@@ -1841,6 +1842,46 @@ static int clif_mob0078(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,73) = 0xffffffff;
 		WBUFB(buf,77) = 0;
 		WBUFW(buf,78) = 0;
+#else
+		len = 84 + (int)strlen(md->name);
+		memset(buf,0,len);
+
+		WBUFW(buf,0)=0x9ff;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=md->bl.id;
+		WBUFL(buf,9)=0;
+		WBUFW(buf,13)=status_get_speed(&md->bl);
+		WBUFW(buf,15)=md->sc.opt1;
+		WBUFW(buf,17)=md->sc.opt2;
+		WBUFL(buf,19)=md->sc.option;
+		WBUFW(buf,23)=mob_get_viewclass(md->class_);
+		WBUFW(buf,25)=mob_get_hair(md->class_);
+		WBUFL(buf,27)=mob_get_weapon(md->class_);
+		WBUFL(buf,31)=mob_get_shield(md->class_);
+		WBUFW(buf,35)=mob_get_head_bottom(md->class_);
+		WBUFW(buf,37)=mob_get_head_top(md->class_);
+		WBUFW(buf,39)=mob_get_head_mid(md->class_);
+		WBUFW(buf,41)=mob_get_hair_color(md->class_);
+		WBUFW(buf,43)=mob_get_clothes_color(md->class_);
+		WBUFW(buf,47)=mob_get_robe(md->class_);
+		if(md->guild_id){
+			struct guild *g=guild_search(md->guild_id);
+			if(g)
+				WBUFW(buf,53)=g->emblem_id;
+			WBUFL(buf,49)=md->guild_id;
+		}
+		WBUFL(buf,57)=md->sc.opt3;
+		WBUFB(buf,61)=1;
+		WBUFB(buf,62)=mob_get_sex(md->class_);
+		WBUFPOS(buf,63,md->bl.x,md->bl.y,md->dir);
+		WBUFB(buf,66)=5;
+		WBUFB(buf,67)=5;
+		WBUFLV(buf,69,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+		WBUFL(buf,73) = 0xffffffff;
+		WBUFL(buf,77) = 0xffffffff;
+		WBUFB(buf,81) = 0;
+		WBUFW(buf,82) = 0;
 #endif
 		return len;
 	}
@@ -2380,7 +2421,7 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFL(buf,79) = 0xffffffff;
 		WBUFB(buf,83) = 0;
 		strncpy(WBUFP(buf,84),md->name,24);
-#else
+#elif PACKETVER < 20180704
 		len = 86 + (int)strlen(md->name);
 		memset(buf,0,len);
 
@@ -2422,6 +2463,48 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
 		WBUFB(buf,83) = 0;
 		WBUFW(buf,84) = mob_get_style(md->class_);
 		strncpy(WBUFP(buf,86),md->name,24);
+#else
+		len = 90 + (int)strlen(md->name);
+		memset(buf,0,len);
+
+		WBUFW(buf,0)=0x9fd;
+		WBUFW(buf,2)=(unsigned short)len;
+		WBUFB(buf,4)=0;
+		WBUFL(buf,5)=md->bl.id;
+		WBUFL(buf,9)=0;
+		WBUFW(buf,13)=status_get_speed(&md->bl);
+		WBUFW(buf,15)=md->sc.opt1;
+		WBUFW(buf,17)=md->sc.opt2;
+		WBUFL(buf,19)=md->sc.option;
+		WBUFW(buf,23)=mob_get_viewclass(md->class_);
+		WBUFW(buf,25)=mob_get_hair(md->class_);
+		WBUFL(buf,27)=mob_get_weapon(md->class_);
+		WBUFL(buf,31)=mob_get_shield(md->class_);
+		WBUFW(buf,35)=mob_get_head_bottom(md->class_);
+		WBUFL(buf,37)=tick;
+		WBUFW(buf,41)=mob_get_head_top(md->class_);
+		WBUFW(buf,43)=mob_get_head_mid(md->class_);
+		WBUFW(buf,45)=mob_get_hair_color(md->class_);
+		WBUFW(buf,47)=mob_get_clothes_color(md->class_);
+		WBUFW(buf,49)=mob_get_robe(md->class_);
+		if(md->guild_id){
+			struct guild *g=guild_search(md->guild_id);
+			if(g)
+				WBUFW(buf,57)=g->emblem_id;
+			WBUFL(buf,53)=md->guild_id;
+		}
+		WBUFL(buf,61)=md->sc.opt3;
+		WBUFB(buf,65)=1;
+		WBUFB(buf,66)=mob_get_sex(md->class_);
+		WBUFPOS2(buf,67,md->bl.x,md->bl.y,md->ud.to_x,md->ud.to_y,8,8);
+		WBUFB(buf,73)=5;
+		WBUFB(buf,74)=5;
+		WBUFLV(buf,75,status_get_lv(&md->bl),mob_get_viewclass(md->class_));
+		WBUFL(buf,79) = 0xffffffff;
+		WBUFL(buf,83) = 0xffffffff;
+		WBUFB(buf,87) = 0;
+		WBUFW(buf,88) = mob_get_style(md->class_);
+		strncpy(WBUFP(buf,90),md->name,24);
 #endif
 		return len;
 	}
@@ -5831,7 +5914,9 @@ static int clif_set_mobhpinfo(struct block_list *bl, va_list ap)
 	nullpo_retr(0,md=va_arg(ap,struct mob_data *));
 
 	len = clif_mob007b(md,WFIFOP(sd->fd,0));
-#if PACKETVER >= 20131223
+#if PACKETVER >= 20180704
+	offset = 14;
+#elif PACKETVER >= 20131223
 	offset = 10;
 #elif PACKETVER >= 20120328
 	offset = 6;
@@ -9790,7 +9875,7 @@ void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned 
 		WFIFOW(fd,4)=amount;
 		WFIFOB(fd,6)=ok;
 		WFIFOSET(fd,packet_db[0xa8].len);
-#else
+#elif PACKETVER < 20180704
 		unsigned char buf[16];
 
 		WBUFW(buf,0)=0x1c8;
@@ -9802,6 +9887,19 @@ void clif_useitemack(struct map_session_data *sd, int idx, int amount, unsigned 
 		WBUFL(buf,6)=sd->bl.id;
 		WBUFW(buf,10)=amount;
 		WBUFB(buf,12)=ok;
+		clif_send(buf,packet_db[0x1c8].len,&sd->bl,AREA);
+#else
+		unsigned char buf[18];
+
+		WBUFW(buf,0)=0x1c8;
+		WBUFW(buf,2)=idx+2;
+		if(sd->inventory_data[idx] && sd->inventory_data[idx]->view_id > 0)
+			WBUFL(buf,4)=sd->inventory_data[idx]->view_id;
+		else
+			WBUFL(buf,4)=sd->status.inventory[idx].nameid;
+		WBUFL(buf,8)=sd->bl.id;
+		WBUFW(buf,12)=amount;
+		WBUFB(buf,14)=ok;
 		clif_send(buf,packet_db[0x1c8].len,&sd->bl,AREA);
 #endif
 	}
@@ -25858,6 +25956,30 @@ static void clif_parse_Ping(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩAÔøΩÔøΩÔøΩ_ÔøΩÔøΩÔøΩWÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+ *------------------------------------------
+ */
+static void clif_parse_MemorialCommand(int fd,struct map_session_data *sd, int cmd)
+{
+	int menu = RFIFOL(fd,GETPACKETPOS(cmd,0));
+	struct party *pt;
+
+	nullpo_retv(sd);
+
+	// ÔøΩpÔøΩ[ÔøΩeÔøΩBÔøΩ[ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+	if((pt = party_search(sd->status.party_id)) == NULL)
+		return;
+
+	switch(menu) {
+	case 3:
+		memorial_delete(pt->memorial_id);
+		break;
+	}
+
+	return;
+}
+
+/*==========================================
  * ÉNÉâÉCÉAÉìÉgÇÃÉfÉXÉgÉâÉNÉ^
  *------------------------------------------
  */
@@ -26259,6 +26381,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_AttendanceReq,               "attendancereq"             },
 		{ clif_parse_PrivateAirshipReq,           "privateairshipreq"         },
 		{ clif_parse_Ping,                        "ping"                      },
+		{ clif_parse_MemorialCommand,             "memorialcommand"           },
 		{ NULL,                                   NULL                        },
 	};
 
