@@ -433,7 +433,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage_rate = skill_get_damage_rate(skill_num,3);
 		if(damage_rate != 100)
 			damage = damage*damage_rate/100;
-		// ï¿½Jï¿½[ï¿½hï¿½ï¿½ï¿½Ê‚É‚ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½Lï¿½ï¿½ï¿½Ìƒ_ï¿½ï¿½ï¿½[ï¿½Wï¿½Ïï¿½(ï¿½bï¿½ï¿½)
+		// ƒJ[ƒhŒø‰Ê‚É‚æ‚é“Á’èƒXƒLƒ‹‚Ìƒ_ƒ[ƒW‘Ï«(b’è)
 		if(tsd && tsd->sub_skill_damage.count > 0) {
 			int i;
 			for(i=0; i<tsd->sub_skill_damage.count; i++) {
@@ -5045,6 +5045,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix = cardfix*(100-target_sd->long_attack_def_rate)/100;	// ‰“‹——£UŒ‚‚Íƒ_ƒ[ƒWŒ¸­(ƒzƒ‹ƒ“C‚Æ‚©)
 		if(wd.flag&BF_SHORT)
 			cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// ‹ß‹——£UŒ‚‚Íƒ_ƒ[ƒWŒ¸­(ŠY“––³‚µH)
+
 		DMG_FIX( cardfix, 100 );	// ƒJ[ƒh•â³‚É‚æ‚éƒ_ƒ[ƒWŒ¸­
 
 		damage_sbr = damage_sbr * cardfix / 100;	// ƒJ[ƒh•â³‚É‚æ‚éƒ\ƒEƒ‹ƒuƒŒƒCƒJ[‚Ì–‚–@ƒ_ƒ[ƒWŒ¸­
@@ -9284,6 +9285,8 @@ int battle_config_read(const char *cfgName)
 		{ "min_lv100_aspdfix",                  &battle_config.min_lv100_aspdfix,                  1        },
 		{ "min_npc_vendchat_distance",          &battle_config.min_npc_vendchat_distance,          3        },
 		{ "ping_timer_interval",                &battle_config.ping_timer_interval,                30       },
+		{ "enable_pet_autofeed",                &battle_config.enable_pet_autofeed,                1        },
+		{ "enable_hom_autofeed",                &battle_config.enable_hom_autofeed,                1        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

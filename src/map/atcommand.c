@@ -2171,7 +2171,7 @@ int atcommand_repair(const int fd, struct map_session_data* sd, AtCommandType co
 	for (i = 0; i < MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].nameid && sd->status.inventory[i].attribute) {
 			sd->status.inventory[i].attribute = 0;
-			clif_item_repaireffect(sd, 0, sd->status.inventory[i].nameid);
+			clif_item_repaireffect(sd, 0, i);
 			count++;
 		}
 	}

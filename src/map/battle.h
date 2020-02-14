@@ -617,6 +617,8 @@ extern struct Battle_Config {
 	int min_lv100_aspdfix;
 	int min_npc_vendchat_distance;
 	int ping_timer_interval;
+	int enable_pet_autofeed;
+	int enable_hom_autofeed;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

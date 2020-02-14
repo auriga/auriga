@@ -192,6 +192,66 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 }
 
 /*==========================================
+ * エサをあげる
+ *------------------------------------------
+ */
+static int pet_food(struct map_session_data *sd)
+{
+	int i, t;
+
+	nullpo_retr(1, sd);
+	nullpo_retr(1, sd->pd);
+
+	if(sd->petDB == NULL)
+		return 1;
+	i = pc_search_inventory(sd,sd->petDB->FoodID);
+	if(i < 0) {
+		clif_pet_food(sd,sd->petDB->FoodID,0);
+		return 1;
+	}
+	pc_delitem(sd,i,1,0,0);
+	t = sd->pet.intimate;
+
+	if(sd->pet.hungry > 90) {
+		sd->pet.intimate -= sd->petDB->r_full;
+	} else {
+		int k;
+
+		if(battle_config.pet_friendly_rate != 100)
+			k = sd->petDB->r_hungry * battle_config.pet_friendly_rate / 100;
+		else
+			k = sd->petDB->r_hungry;
+		if(sd->pet.hungry > 75) {
+			k /= 2;
+			if(k <= 0)
+				k = 1;
+		}
+		sd->pet.intimate += k;
+	}
+	if(sd->pet.intimate <= 0) {
+		sd->pet.intimate = 0;
+		if(battle_config.pet_status_support && t > 0) {
+			if(sd->bl.prev != NULL)
+				status_calc_pc(sd,0);
+			else
+				status_calc_pc(sd,2);
+		}
+	} else if(sd->pet.intimate > 1000) {
+		sd->pet.intimate = 1000;
+	}
+
+	sd->pet.hungry += sd->petDB->fullness;
+	if(sd->pet.hungry > 100)
+		sd->pet.hungry = 100;
+
+	clif_send_petdata(sd,2,sd->pet.hungry);
+	clif_send_petdata(sd,1,sd->pet.intimate);
+	clif_pet_food(sd,sd->petDB->FoodID,1);
+
+	return 0;
+}
+
+/*==========================================
  * 腹減り
  *------------------------------------------
  */
@@ -213,6 +273,15 @@ static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
 	}
 	sd->pd->hungry_timer = -1;
 	sd->pet.hungry--;
+
+	if(battle_config.enable_pet_autofeed > 0) {
+		if(sd->pet.hungry <= 25 && 
+			(battle_config.enable_pet_autofeed == 1 && sd->status.autofeed&1) || battle_config.enable_pet_autofeed >= 2
+		) {
+			pet_food(sd);
+		}
+	}
+
 	t = sd->pet.intimate;
 
 	if(sd->pet.hungry < 0) {
@@ -366,6 +435,9 @@ static int pet_birth_process(struct map_session_data *sd)
 	map_addblock(&sd->pd->bl);
 	clif_spawnpet(sd->pd);
 	clif_send_petdata(sd,0,0);
+#if PACKETVER >= 20180704
+	clif_send_petdata(sd,6,1);
+#endif
 	clif_send_pethair(sd);
 	clif_pet_equip(sd->pd,sd->pet.equip);
 	clif_send_petstatus(sd);
@@ -534,66 +606,6 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 }
 
 /*==========================================
- * エサをあげる
- *------------------------------------------
- */
-static int pet_food(struct map_session_data *sd)
-{
-	int i, t;
-
-	nullpo_retr(1, sd);
-	nullpo_retr(1, sd->pd);
-
-	if(sd->petDB == NULL)
-		return 1;
-	i = pc_search_inventory(sd,sd->petDB->FoodID);
-	if(i < 0) {
-		clif_pet_food(sd,sd->petDB->FoodID,0);
-		return 1;
-	}
-	pc_delitem(sd,i,1,0,0);
-	t = sd->pet.intimate;
-
-	if(sd->pet.hungry > 90) {
-		sd->pet.intimate -= sd->petDB->r_full;
-	} else {
-		int k;
-
-		if(battle_config.pet_friendly_rate != 100)
-			k = sd->petDB->r_hungry * battle_config.pet_friendly_rate / 100;
-		else
-			k = sd->petDB->r_hungry;
-		if(sd->pet.hungry > 75) {
-			k /= 2;
-			if(k <= 0)
-				k = 1;
-		}
-		sd->pet.intimate += k;
-	}
-	if(sd->pet.intimate <= 0) {
-		sd->pet.intimate = 0;
-		if(battle_config.pet_status_support && t > 0) {
-			if(sd->bl.prev != NULL)
-				status_calc_pc(sd,0);
-			else
-				status_calc_pc(sd,2);
-		}
-	} else if(sd->pet.intimate > 1000) {
-		sd->pet.intimate = 1000;
-	}
-
-	sd->pet.hungry += sd->petDB->fullness;
-	if(sd->pet.hungry > 100)
-		sd->pet.hungry = 100;
-
-	clif_send_petdata(sd,2,sd->pet.hungry);
-	clif_send_petdata(sd,1,sd->pet.intimate);
-	clif_pet_food(sd,sd->petDB->FoodID,1);
-
-	return 0;
-}
-
-/*==========================================
  * パフォーマンス
  *------------------------------------------
  */
@@ -662,6 +674,14 @@ int pet_return_egg(struct map_session_data *sd)
 		else
 			status_calc_pc(sd,2);
 	}
+
+#if PACKETVER >= 20180704
+	clif_inventoryStart(sd, 0, "");
+	clif_itemlist(sd);
+	clif_equiplist(sd);
+	clif_inventoryEnd(sd, 0);
+	clif_send_petdata(sd, 6, 0);
+#endif
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
 	chrif_save(sd,0);

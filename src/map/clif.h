@@ -258,7 +258,7 @@ void clif_weapon_refine_list(struct map_session_data *sd);
 void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid);
 void clif_item_identified(struct map_session_data *sd, int idx, unsigned char flag);
 void clif_item_repair_list(struct map_session_data *sd, struct map_session_data *dstsd);
-void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int nameid);
+void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int idx);
 
 void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, const char *name);
 
@@ -279,7 +279,7 @@ void clif_msgstringtable2(struct map_session_data *sd, int line, const char *mes
 void clif_msgstringtable3(struct map_session_data *sd, int line, int value);
 void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data);
 void clif_break_equip(struct map_session_data *sd, int where);
-void clif_send_equipopen(struct map_session_data *sd);
+void clif_send_config(struct map_session_data *sd);
 void clif_setfont(struct map_session_data *sd);
 void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second);
 void clif_progressbar_abort(struct map_session_data *sd);

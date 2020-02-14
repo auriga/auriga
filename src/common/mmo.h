@@ -600,6 +600,8 @@ struct mmo_charstatus {
 	short font;
 	short style;
 	char sex;
+	char allow_call;
+	char autofeed;
 };
 
 struct registry {
