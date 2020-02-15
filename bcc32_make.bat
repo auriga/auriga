@@ -9,6 +9,7 @@ set PATH=C:\borland\bcc55\bin;C:\borland\bcc55\Include;C:\borland\bcc55\lib;%PAT
 :set __sqllib__=-L"C:\Program Files\MySQL\MySQL Server 5.0\Lib\Opt" libmysql.lib
 
 @rem パケット定義
+@rem 2019-05-30aRagexeRE: 20190530
 @rem 2018-04-18bRagexeRE: 20180418
 @rem 2017-08-30bRagexeRE: 20170830
 @rem 2017-06-14bRagexeRE: 20170614

@@ -34,6 +34,7 @@
 #include "guild.h"
 #include "battle.h"
 #include "chrif.h"
+#include "msg.h"
 
 static struct dbt *storage_db;
 static struct dbt *guild_storage_db;
@@ -200,9 +201,11 @@ int storage_storageopen(struct map_session_data *sd)
 
 	if(stor != NULL) {
 		sd->state.storage_flag = 1;
+		clif_inventoryStart(sd, 2, msg_txt(208));
 		clif_storageitemlist(sd,stor);
 		clif_storageequiplist(sd,stor);
 		clif_updatestorageamount(sd,stor);
+		clif_inventoryEnd(sd, 2);
 	} else {
 		intif_request_storage(sd->status.account_id);
 	}
@@ -243,9 +246,11 @@ int storage_storageload(int account_id, struct storage *s)
 	storage_sortitem(stor->store_item, MAX_STORAGE, &stor->sortkey, battle_config.personal_storage_sort);
 	stor->storage_status   = 1;
 	sd->state.storage_flag = 1;
+	clif_inventoryStart(sd, 2, msg_txt(208));
 	clif_storageitemlist(sd,stor);
 	clif_storageequiplist(sd,stor);
 	clif_updatestorageamount(sd,stor);
+	clif_inventoryEnd(sd, 2);
 
 	return 0;
 }
@@ -546,9 +551,11 @@ int storage_guild_storageopen(struct map_session_data *sd)
 	if((gstor = (struct guild_storage *)numdb_search(guild_storage_db,sd->status.guild_id)) != NULL) {
 		gstor->storage_status  = 1;
 		sd->state.storage_flag = 2;
+		clif_inventoryStart(sd, 3, msg_txt(209));
 		clif_guildstorageitemlist(sd,gstor);
 		clif_guildstorageequiplist(sd,gstor);
 		clif_updateguildstorageamount(sd,gstor);
+		clif_inventoryEnd(sd, 3);
 	} else {
 		intif_request_guild_storage(sd->status.account_id,sd->status.guild_id);
 	}
@@ -598,9 +605,11 @@ int storage_guild_storageload(int account_id, int guild_id, struct guild_storage
 	storage_sortitem(gstor->store_item, MAX_GUILD_STORAGE, &gstor->sortkey, battle_config.guild_storage_sort);
 	gstor->storage_status  = 1;
 	sd->state.storage_flag = 2;
+	clif_inventoryStart(sd, 3, msg_txt(209));
 	clif_guildstorageitemlist(sd,gstor);
 	clif_guildstorageequiplist(sd,gstor);
 	clif_updateguildstorageamount(sd,gstor);
+	clif_inventoryEnd(sd, 3);
 
 	return 0;
 }

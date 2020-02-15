@@ -106,7 +106,7 @@ int homun_get_skilltree_max(int class_,int skillid)
 }
 
 /*==========================================
- * 腹減り
+ * 腹減り(エモーション)
  *------------------------------------------
  */
 static int homun_hungry_cry(int tid,unsigned int tick,int id,void *data)
@@ -128,6 +128,82 @@ static int homun_hungry_cry(int tid,unsigned int tick,int id,void *data)
 	return 0;
 }
 
+/*==========================================
+ * エサをあげる
+ *------------------------------------------
+ */
+static int homun_food(struct map_session_data *sd)
+{
+	int i,t,food,class_,emotion;
+
+	nullpo_retr(1, sd);
+	nullpo_retr(1, sd->hd);
+
+	if(sd->status.homun_id == 0)
+		return 1;
+
+	class_ = sd->hd->status.class_ - HOM_ID;
+	food   = homun_db[class_].FoodID;
+
+	i = pc_search_inventory(sd,food);
+	if(i < 0) {
+		clif_hom_food(sd,food,0);
+		return 1;
+	}
+	pc_delitem(sd,i,1,0,0);
+	t = sd->hd->status.hungry;
+	if(t > 90) {
+		sd->hd->status.intimate -= 50*battle_config.homun_intimate_rate/100;
+		sd->hd->intimate        -= 50*battle_config.homun_intimate_rate/100;
+		emotion = 16;
+	} else if(t > 75) {
+		sd->hd->status.intimate -= 30*battle_config.homun_intimate_rate/100;
+		sd->hd->intimate        -= 30*battle_config.homun_intimate_rate/100;
+		emotion = 19;
+	} else if(t > 25) {
+		sd->hd->status.intimate += 80*battle_config.homun_intimate_rate/100;
+		sd->hd->intimate        += 80*battle_config.homun_intimate_rate/100;
+		emotion = 2;
+	} else if(t > 10) {
+		sd->hd->status.intimate += 100*battle_config.homun_intimate_rate/100;
+		sd->hd->intimate        += 100*battle_config.homun_intimate_rate/100;
+		emotion = 2;
+	} else {
+		sd->hd->status.intimate += 50*battle_config.homun_intimate_rate/100;
+		sd->hd->intimate        += 50*battle_config.homun_intimate_rate/100;
+		emotion = 2;
+	}
+
+	if(sd->hd->status.intimate <= 0)
+		sd->hd->status.intimate = 0;
+	if(sd->hd->status.intimate > 100000)
+		sd->hd->status.intimate = 100000;
+	if(sd->hd->intimate <= 0)
+		sd->hd->intimate = 0;
+	if(sd->hd->intimate > 100000)
+		sd->hd->intimate = 100000;
+	sd->hd->status.hungry += 10;
+	if(sd->hd->status.hungry > 100)
+		sd->hd->status.hungry = 100;
+
+	if(sd->hd->hungry_cry_timer != -1) {
+		delete_timer(sd->hd->hungry_cry_timer,homun_hungry_cry);
+		sd->hd->hungry_cry_timer = -1;
+	}
+
+	clif_emotion(&sd->hd->bl,emotion);
+	clif_send_homdata(sd,2,sd->hd->status.hungry);
+	clif_send_homdata(sd,1,sd->hd->intimate/100);
+	clif_send_homstatus(sd,0);
+	clif_hom_food(sd,food,1);
+
+	return 0;
+}
+
+/*==========================================
+ * 腹減り
+ *------------------------------------------
+ */
 static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
@@ -146,6 +222,14 @@ static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 	sd->hd->hungry_timer = -1;
 
 	sd->hd->status.hungry--;
+
+	if(battle_config.enable_hom_autofeed > 0) {
+		if(sd->hd->status.hungry <= 25 && 
+			(battle_config.enable_hom_autofeed == 1 && sd->status.autofeed&2) || battle_config.enable_hom_autofeed >= 2
+		) {
+			homun_food(sd);
+		}
+	}
 
 	if(sd->hd->status.hungry == 0) {
 		sd->hd->status.hungry = 1;	// 0にはならない
@@ -780,78 +864,6 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 	if(sd->hom.max_hp < sd->hom.hp)
 		sd->hom.hp = sd->hom.max_hp;
 	homun_callhom(sd);
-
-	return 0;
-}
-
-/*==========================================
- * エサをあげる
- *------------------------------------------
- */
-static int homun_food(struct map_session_data *sd)
-{
-	int i,t,food,class_,emotion;
-
-	nullpo_retr(1, sd);
-	nullpo_retr(1, sd->hd);
-
-	if(sd->status.homun_id == 0)
-		return 1;
-
-	class_ = sd->hd->status.class_ - HOM_ID;
-	food   = homun_db[class_].FoodID;
-
-	i = pc_search_inventory(sd,food);
-	if(i < 0) {
-		clif_hom_food(sd,food,0);
-		return 1;
-	}
-	pc_delitem(sd,i,1,0,0);
-	t = sd->hd->status.hungry;
-	if(t > 90) {
-		sd->hd->status.intimate -= 50*battle_config.homun_intimate_rate/100;
-		sd->hd->intimate        -= 50*battle_config.homun_intimate_rate/100;
-		emotion = 16;
-	} else if(t > 75) {
-		sd->hd->status.intimate -= 30*battle_config.homun_intimate_rate/100;
-		sd->hd->intimate        -= 30*battle_config.homun_intimate_rate/100;
-		emotion = 19;
-	} else if(t > 25) {
-		sd->hd->status.intimate += 80*battle_config.homun_intimate_rate/100;
-		sd->hd->intimate        += 80*battle_config.homun_intimate_rate/100;
-		emotion = 2;
-	} else if(t > 10) {
-		sd->hd->status.intimate += 100*battle_config.homun_intimate_rate/100;
-		sd->hd->intimate        += 100*battle_config.homun_intimate_rate/100;
-		emotion = 2;
-	} else {
-		sd->hd->status.intimate += 50*battle_config.homun_intimate_rate/100;
-		sd->hd->intimate        += 50*battle_config.homun_intimate_rate/100;
-		emotion = 2;
-	}
-
-	if(sd->hd->status.intimate <= 0)
-		sd->hd->status.intimate = 0;
-	if(sd->hd->status.intimate > 100000)
-		sd->hd->status.intimate = 100000;
-	if(sd->hd->intimate <= 0)
-		sd->hd->intimate = 0;
-	if(sd->hd->intimate > 100000)
-		sd->hd->intimate = 100000;
-	sd->hd->status.hungry += 10;
-	if(sd->hd->status.hungry > 100)
-		sd->hd->status.hungry = 100;
-
-	if(sd->hd->hungry_cry_timer != -1) {
-		delete_timer(sd->hd->hungry_cry_timer,homun_hungry_cry);
-		sd->hd->hungry_cry_timer = -1;
-	}
-
-	clif_emotion(&sd->hd->bl,emotion);
-	clif_send_homdata(sd,2,sd->hd->status.hungry);
-	clif_send_homdata(sd,1,sd->hd->intimate/100);
-	clif_send_homstatus(sd,0);
-	clif_hom_food(sd,food,1);
 
 	return 0;
 }

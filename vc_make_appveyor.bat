@@ -6,6 +6,9 @@ echo vc_make_appveyor.bat - Auriga makefile for Visual C++
 
 rem ----------------------------------------------------------------
 rem Defined packet versions
+rem 2019-05-30aRagexeRE: 20190530
+rem 2018-04-18bRagexeRE: 20180418
+rem 2017-08-30bRagexeRE: 20170830
 rem 2017-06-14bRagexeRE: 20170614
 rem 2016-12-28aRagexeRE: 20161228
 rem 2015-10-29aRagexeRE: 20151029

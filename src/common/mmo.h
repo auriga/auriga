@@ -62,8 +62,15 @@
 	#define MAX_HOTKEYS 27
 #elif PACKETVER < 20090617
 	#define MAX_HOTKEYS 36
-#else
+#elif PACKETVER < 20190522
 	#define MAX_HOTKEYS 38
+#else
+	#define MAX_HOTKEYS 74
+#endif
+#if PACKETVER < 20190522
+	#define MAX_HOTKEYS_TAB 1
+#else
+	#define MAX_HOTKEYS_TAB 2
 #endif
 
 #define MAX_HAIR_STYLE 28
@@ -593,6 +600,8 @@ struct mmo_charstatus {
 	short font;
 	short style;
 	char sex;
+	char allow_call;
+	char autofeed;
 };
 
 struct registry {

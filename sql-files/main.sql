@@ -90,6 +90,8 @@ CREATE TABLE `char_data` (
   `font` smallint(6) NOT NULL default '0',
   `style` smallint(6) NOT NULL default '0',
   `sex` tinyint(4) unsigned NOT NULL default '99',
+  `allow_call` smallint(6) unsigned NOT NULL default '0',
+  `autofeed` smallint(6) unsigned NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),
