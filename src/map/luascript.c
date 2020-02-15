@@ -547,7 +547,8 @@ static int luafunc_addpacket(lua_State *NL)
 	}
 	else if(lua_istable(NL,4)) {
 		int i;
-		for(i=0; i<8 && i<lua_objlen(NL,4); i++) {
+		int len = (int)lua_objlen(NL,4);
+		for(i=0; i<8 && i<len; i++) {
 			lua_rawgeti(NL,4,i + 1);
 			pos[i] = luaL_checkint(NL,-1);
 			lua_pop(NL, 1);      // 値を取り除く

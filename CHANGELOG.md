@@ -1,4 +1,19 @@
 ----------------------------------------
+//1379 [2020/02/15] by refis
+
+・clif_item_repaireffectのパケット構造の誤りを修正（atcommand.c, clif.*, skill.c）
+	Thanks Dallen さん
+
+・PACKETVER「20081126」以前のclif_send_petstatusのパケット構造の誤りを修正（clif.c）
+
+・デバッグコマンド「@statall」使用時、サモナー用設定が適用されないミスを修正（atcommand.c）
+
+・見えないNPCに対する条件式が逆転していたミスを修正（clif.c）
+
+・Warning修正（luascript.c）
+	Thanks rinaserver さん
+
+----------------------------------------
 //1378 [2020/02/12] by refis
 
 ・アイテムボーナス「bAllStatus」がバッファオーバーランを起こしていた問題を修正（bonus.c）

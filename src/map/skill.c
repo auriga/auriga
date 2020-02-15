@@ -18667,7 +18667,7 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 	if(sd != dstsd) {	// 対象が自分でないなら射程チェック
 		int range = skill_get_fixed_range(&sd->bl,skillid,1);
 		if(!battle_check_range(&sd->bl, &dstsd->bl, range+1)) {
-			clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
+			clif_item_repaireffect(sd, 1, idx);
 			return;
 		}
 	}
@@ -18684,14 +18684,14 @@ void skill_repair_weapon(struct map_session_data *sd, int idx)
 	}
 
 	if((n = pc_search_inventory(sd, itemid)) < 0) {
-		clif_item_repaireffect(sd, 1, dstsd->status.inventory[idx].nameid);
+		clif_item_repaireffect(sd, 1, idx);
 	} else {
 		clif_skill_nodamage(&sd->bl,&dstsd->bl,skillid,1,1);
 		pc_delitem(sd,n,1,0,1);
 		dstsd->status.inventory[idx].attribute = 0;
 		clif_delitem(dstsd, 1, idx, 1);
 		clif_additem(dstsd, idx, 1, 0);
-		clif_item_repaireffect(sd, 0, dstsd->status.inventory[idx].nameid);
+		clif_item_repaireffect(sd, 0, idx);
 	}
 
 	return;

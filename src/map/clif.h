@@ -256,7 +256,7 @@ void clif_weapon_refine_list(struct map_session_data *sd);
 void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid);
 void clif_item_identified(struct map_session_data *sd, int idx, unsigned char flag);
 void clif_item_repair_list(struct map_session_data *sd, struct map_session_data *dstsd);
-void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int nameid);
+void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int idx);
 
 void clif_item_skill(struct map_session_data *sd, int skillid, int skilllv, const char *name);
 

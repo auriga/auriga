@@ -4528,7 +4528,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && nd->option&(OPTION_HIDE | OPTION_CLOAKING)) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE | OPTION_CLOAKING))==0) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 #if PACKETVER < 20071106
@@ -9853,7 +9853,7 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && nd->option&(OPTION_HIDE | OPTION_CLOAKING)) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE | OPTION_CLOAKING))==0) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 	len = clif_npc0078(nd,WFIFOP(sd->fd,0));
@@ -12223,25 +12223,22 @@ void clif_item_repair_list(struct map_session_data *sd, struct map_session_data 
  *
  *------------------------------------------
  */
-void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int nameid)
+void clif_item_repaireffect(struct map_session_data *sd, unsigned char flag, int idx)
 {
-	int view,fd;
+	int fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
 	WFIFOW(fd, 0)=0x1fe;
-	if((view = itemdb_viewid(nameid)) > 0)
-		WFIFOW(fd, 2)=view;
-	else
-		WFIFOW(fd, 2)=nameid;
+	WFIFOW(fd, 2)=idx+2;
 	WFIFOB(fd, 4)=flag;
 	WFIFOSET(fd,packet_db[0x1fe].len);
 
 	if(sd->skill_menu.val && sd->bl.id != sd->skill_menu.val && flag == 0) {	// ¬Œ÷‚µ‚½‚ç‘ŠŽè‚É‚à’Ê’m
 		struct map_session_data *dstsd = map_id2sd(sd->skill_menu.val);
 		if(dstsd)
-			clif_item_repaireffect(dstsd,flag,nameid);
+			clif_item_repaireffect(dstsd,flag,idx);
 	}
 
 	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
@@ -14279,7 +14276,6 @@ void clif_send_petstatus(struct map_session_data *sd)
 	WFIFOW(fd,29)=sd->pet.hungry;
 	WFIFOW(fd,31)=sd->pet.intimate;
 	WFIFOW(fd,33)=sd->pet.equip;
-	WFIFOW(fd,35)=sd->pet.class_;
 	WFIFOSET(fd,packet_db[0x1a2].len);
 #else
 	WFIFOW(fd,0)=0x1a2;

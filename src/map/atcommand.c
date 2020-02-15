@@ -2171,7 +2171,7 @@ int atcommand_repair(const int fd, struct map_session_data* sd, AtCommandType co
 	for (i = 0; i < MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].nameid && sd->status.inventory[i].attribute) {
 			sd->status.inventory[i].attribute = 0;
-			clif_item_repaireffect(sd, 0, sd->status.inventory[i].nameid);
+			clif_item_repaireffect(sd, 0, i);
 			count++;
 		}
 	}
@@ -4988,6 +4988,8 @@ int atcommand_statall(const int fd, struct map_session_data* sd, AtCommandType c
 		max = battle_config.esnv_status_max;
 	else if(sd->status.class_ == PC_CLASS_KG || sd->status.class_ == PC_CLASS_OB)
 		max = battle_config.ko_status_max;
+	else if(sd->status.class_ == PC_CLASS_SUM)
+		max = battle_config.sum_status_max;
 	else if(pc_isbaby(sd))
 		max = battle_config.baby_status_max;
 	else
