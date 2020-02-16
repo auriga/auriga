@@ -1,4 +1,37 @@
 ----------------------------------------
+//1381 [2020/02/16] by refis
+
+・スクリプト命令「opendressroom」に引数を指定できるよう変更（script_ref.txt, script.c）
+
+・スクリプト命令「getoptitem」を追加（script_ref.txt, script.c）
+
+・スクリプト関数「getrandombox」を追加（script_ref.txt, script.c）
+
+・ランダムオプションデータのアイテムIDが誤っていたのを修正（item_randopt_db.lua）
+
+・ランダムオプションデータのMOB_IDキーに存在しないモンスターIDも使えるように変更（luascript.c）
+
+----------------------------------------
+//1380 [2020/02/15] by refis
+
+・OTPログイン「0xacf」追加（login.c）
+
+・PACKETVER「20190530」追加
+	-> MAX_PACKET_DBの拡張（clif.c）
+	-> itemidの拡張に対応（clif.c）
+	-> システム対応のためclif_send_equipopenをclif_send_configに変更（clif.*）
+	-> 新規・変更パケット対応（mmo.h, map.h, clif.*, pc.c, pet.c, storage.c）
+	-> キャラクターデータに「allow_call」「autofeed」を追加、保存させる
+（main.sql, Auriga1380_changetable.sql, chardb_*.c, mmo.h, clif.c）
+
+・受信パケットのエラー対策としてダミー関数を用意する（clif.c）
+
+・戦闘設定「ping_timer_interval」「enable_pet_autofeed」「enable_hom_autofeed」追加
+（battle_auriga.conf, battle.*, homun.c, pet.c）
+
+・2019-05-30aRagexeREのpacket_dbを追加（packet_db.lua, Makefile, bcc32_make.bat, vc_make.bat, vc_make_appveyor.bat）
+
+----------------------------------------
 //1379 [2020/02/15] by refis
 
 ・clif_item_repaireffectのパケット構造の誤りを修正（atcommand.c, clif.*, skill.c）

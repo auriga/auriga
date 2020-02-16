@@ -472,7 +472,7 @@ static int luafunc_addrandopt(lua_State *NL)
 	ro.nameid = nameid;
 
 	mob_id=luaL_checkint(NL,2);
-	if(mob_id >= 0 && !mobdb_exists(mob_id))
+	if(mob_id < 0)
 		return 0;
 	ro.mobid = mob_id;
 

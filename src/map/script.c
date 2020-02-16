@@ -3796,6 +3796,7 @@ int buildin_printarray(struct script_state *st);
 int buildin_getelementofarray(struct script_state *st);
 int buildin_getitem(struct script_state *st);
 int buildin_getitem2(struct script_state *st);
+int buildin_getoptitem(struct script_state *st);
 int buildin_delitem(struct script_state *st);
 int buildin_delcartitem(struct script_state *st);
 int buildin_delitem2(struct script_state *st);
@@ -4083,6 +4084,7 @@ int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
+int buildin_getrandombox(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4114,6 +4116,7 @@ struct script_function buildin_func[] = {
 	{buildin_getelementofarray,"getelementofarray","ii*"},
 	{buildin_getitem,"getitem","ii**"},
 	{buildin_getitem2,"getitem2","iiiiiiiii*"},
+	{buildin_getoptitem,"getoptitem","iiiiiiiii*"},
 	{buildin_delitem,"delitem","ii*"},
 	{buildin_delcartitem,"delcartitem","ii*"},
 	{buildin_delitem2,"delitem2","ii*"},
@@ -4403,8 +4406,9 @@ struct script_function buildin_func[] = {
 	{buildin_sc_onparam,"sc_onparam","ii"},
 	{buildin_showdigit,"showdigit","ii"},
 	{buildin_checkre,"checkre",""},
-	{buildin_opendressroom,"opendressroom",""},
+	{buildin_opendressroom,"opendressroom","*"},
 	{buildin_hateffect,"hateffect","ii"},
+	{buildin_getrandombox,"getrandombox","i"},
 	{NULL,NULL,NULL}
 };
 
@@ -5790,6 +5794,110 @@ int buildin_getitem2(struct script_state *st)
 				map_addflooritem(&item_tmp,(nameid < 0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
 	} while(nameid < 0 && ++i < amount);	// ランダム系はアイテムの再抽選
+
+	return 0;
+}
+
+/*==========================================
+ * オプション付きアイテムの取得
+ *------------------------------------------
+ */
+int buildin_getoptitem(struct script_state *st)
+{
+	int nameid=0, ret=0, i=0, key=0;
+	int iden,ref,attr,c1,c2,c3,c4;
+	unsigned int limit=0;
+	struct map_session_data *sd;
+	struct script_data *data;
+	struct item_data *item_data;
+	struct item item_tmp;
+	struct randopt_item_data ro;
+
+	sd = script_rid2sd(st);
+
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		const char *name = conv_str(st,data);
+		struct item_data *item_data = itemdb_searchname(name);
+		if(item_data)
+			nameid = item_data->nameid;
+	} else {
+		nameid = conv_num(st,data);
+	}
+
+	iden   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	ref    = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	attr   = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	c1     = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	c2     = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	c3     = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	c4     = conv_num(st,& (st->stack->stack_data[st->start+9]));
+	key    = conv_num(st,& (st->stack->stack_data[st->start+10]));
+	if(st->end > st->start+11)
+		limit = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+11]));
+	if(st->end > st->start+12)	// アイテムを指定したIDに渡す
+		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+12])));
+
+	if(sd) {
+		memset(&item_tmp,0,sizeof(item_tmp));
+
+		if(nameid < 0)		// ランダム
+			item_tmp.nameid = itemdb_searchrandomid(-nameid);
+		else
+			item_tmp.nameid = nameid;
+
+		if(!itemdb_exists(item_tmp.nameid))
+			return 0;
+
+		if(!itemdb_randopt_item(item_tmp.nameid))
+			return 0;
+
+		item_data = itemdb_search(item_tmp.nameid);
+
+		if(ref > MAX_REFINE)
+			ref = MAX_REFINE;
+
+		if(iden || battle_config.itemidentify)
+			item_tmp.identify = 1;
+		else
+			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
+
+		item_tmp.refine    = ref;
+		item_tmp.attribute = attr;
+		item_tmp.card[0]   = c1;
+		item_tmp.card[1]   = c2;
+		item_tmp.card[2]   = c3;
+		item_tmp.card[3]   = c4;
+		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
+
+		ro = itemdb_randopt_data(key, item_tmp.nameid);
+		if(ro.nameid) {
+			int slot = 0;
+			int rate = 0;
+			for(i = 0; i < sizeof(ro.opt) / sizeof(ro.opt[0]); i++) {
+				if(ro.opt[i].slot != slot)
+					rate = 0;
+				slot = ro.opt[i].slot;
+				if(item_tmp.opt[slot].id > 0)
+					continue;
+				rate += ro.opt[i].rate;
+				if(rate >= atn_rand()%10000) {
+					item_tmp.opt[slot].id = ro.opt[i].optid;
+					if(ro.opt[i].optval_min != ro.opt[i].optval_max)
+						item_tmp.opt[slot].val = ro.opt[i].optval_min + atn_rand() % (ro.opt[i].optval_max - ro.opt[i].optval_min + 1);
+					else
+						item_tmp.opt[slot].val = ro.opt[i].optval_min;
+					rate = 0;
+				}
+			}
+			if((ret = pc_additem(sd,&item_tmp,1))) {
+				clif_additem(sd,0,0,ret);
+				if(!pc_candrop(sd,item_tmp.nameid))
+					map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
+			}
+		}
+	}
 
 	return 0;
 }
@@ -13725,10 +13833,13 @@ int buildin_checkre(struct script_state *st)
 int buildin_opendressroom(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
+	int view = 1;
 
 	nullpo_retr(0, sd);
 
-	clif_dressing_room(sd, 0);
+	if( st->end > st->start+2 )
+		view = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	clif_dressing_room(sd, view);
 	return 0;
 }
 
@@ -13786,5 +13897,17 @@ int buildin_hateffect(struct script_state *st)
 		clif_hat_effect_single( sd, effectID, enable );
 	}
 #endif
+	return 0;
+}
+
+/*==========================================
+ * ランダム系アイテムのID取得
+ *------------------------------------------
+ */
+int buildin_getrandombox(struct script_state *st)
+{
+	int nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	push_val(st->stack,C_INT,itemdb_searchrandomid(-nameid));
 	return 0;
 }
