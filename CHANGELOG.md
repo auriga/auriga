@@ -1,4 +1,9 @@
 ----------------------------------------
+//1383 [2020/02/17] by refis
+
+・次元の狭間 時の通路内NPCの更新（npc_quest_herovestige.sc）
+
+----------------------------------------
 //1382 [2020/02/17] by refis
 
 ・飛行船襲撃メモリアル実装（map_auriga.conf, memorial_db.txt, mob_skill_db.txt, npc_memorial_heroair.sc）
