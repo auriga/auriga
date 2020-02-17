@@ -1,4 +1,16 @@
 ----------------------------------------
+//1382 [2020/02/17] by refis
+
+・飛行船襲撃メモリアル実装（map_auriga.conf, memorial_db.txt, mob_skill_db.txt, npc_memorial_heroair.sc）
+
+・ランダムオプションデータ最大数登録時のチェック修正（itemdb.c）
+
+・packet_db.luaは直接読み込みするように変更（lua_auriga.conf, clif.c, luascript.*, map.c）
+
+・VC++ 2019 のパスを追加（vc_make.bat）
+	Thanks rinaserver さん
+
+----------------------------------------
 //1381 [2020/02/16] by refis
 
 ・スクリプト命令「opendressroom」に引数を指定できるよう変更（script_ref.txt, script.c）

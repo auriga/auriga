@@ -254,7 +254,7 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
  * chank実行
  *------------------------------------------
  */
-static void luascript_addscript(const char *chunk)
+void luascript_addscript(const char *chunk)
 {
 	lua_State *NL;
 
@@ -264,9 +264,12 @@ static void luascript_addscript(const char *chunk)
 	lua_pushnumber(NL,0);
 	lua_rawset(NL,LUA_GLOBALSINDEX);
 
-	luaL_loadfile(NL,chunk);
-	if(lua_pcall(NL,0,2,0) != 0) {
-		printf("Cannot run chunk %s : %s\n",chunk,lua_tostring(NL,-1));
+	if(luaL_loadfile(NL,chunk) != 0) {
+		printf("luascript_addscript: loadfile [%s] failed !\n",chunk);
+		return;
+	}
+	if(lua_pcall(NL,0,0,0) != 0) {
+		printf("luascript_addscript: cannot run chunk %s : %s\n",chunk,lua_tostring(NL,-1));
 		return;
 	}
 

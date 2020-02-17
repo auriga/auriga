@@ -166,6 +166,14 @@ rem set __VCVER__=2017
 rem set __BITTYPE__=x64
 rem ---- VC++ 2017 64bitコンパイル の設定ここまで
 
+rem ---- VC++ 2019 64bitコンパイル の設定
+rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\bin\Hostx64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\bin;C:\Program Files (x86)\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE;%PATH%
+rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\atlmfc\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt;%INCLUDE%
+rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64;%LIB%
+rem set __VCVER__=2019
+rem set __BITTYPE__=x64
+rem ---- VC++ 2019 64bitコンパイル の設定ここまで
+
 rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
 rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
 rem ---- VC++ .NET 2003 の設定ここまで

@@ -3126,6 +3126,7 @@ int do_init(int argc,char *argv[])
 	do_init_atcommand();
 	do_init_battle();
 	do_init_chrif();
+	do_init_luascript();
 	do_init_clif();
 	do_init_script();	// parse_script ‚ğŒÄ‚Ño‚·‘O‚É‚±‚ê‚ğŒÄ‚Ô
 	do_init_skill();	// skill_db‚ğQÆ‚·‚é‚Ì‚Åpc,homun,merc,guild,npc‚æ‚èæ
@@ -3135,7 +3136,6 @@ int do_init(int argc,char *argv[])
 	do_init_npc();
 	do_init_memorial();
 	do_init_pc();
-	do_init_luascript();
 	do_init_bonus();
 	do_init_party();
 	do_init_booking();

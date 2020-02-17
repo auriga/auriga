@@ -26,5 +26,5 @@
 24,last_room,3600,1@uns.gat,144,36,1@uns.gat,,,,,,,
 25,charleston,3600,1@mcd.gat,127,282,1@mcd.gat,,,,,,,
 26,Sarah and Fenrir,3600,1@glast.gat,367,304,1@glast.gat,,,,,,,
-27,Airship Assault,3600,1@air1.gat,244,73,1@air1.gat,1@air2.gat,,,,,,
+27,hero_air,3600,1@air1.gat,244,73,1@air1.gat,1@air2.gat,,,,,,
 28,Ghost Palace,3600,1@spa.gat,42,196,1@spa.gat,,,,,,,

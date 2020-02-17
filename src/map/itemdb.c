@@ -1055,7 +1055,7 @@ int itemdb_insert_randoptdb(struct randopt_item_data ro)
 	if(!randopt_init++)
 		memset(&randopt_item, 0, sizeof(randopt_item));
 
-	if(randopt_init > MAX_RANDOPT_ENTRY)
+	if(randopt_init >= MAX_RANDOPT_ENTRY)
 		return 0;
 
 	randopt_item[randopt_init - 1] = ro;

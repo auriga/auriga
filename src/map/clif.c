@@ -73,6 +73,7 @@
 #include "elem.h"
 #include "memorial.h"
 #include "bank.h"
+#include "luascript.h"
 
 /* パケットデータベース */
 #define MAX_PACKET_DB 0xB90
@@ -27246,6 +27247,7 @@ void do_init_clif(void)
 	//packetdb_readdb();
 	memset(packet_db, 0, sizeof(packet_db));
 	memset(cryptKey, 0, sizeof(cryptKey));
+	luascript_addscript("db/packet_db.lua");
 
 	set_defaultparse(clif_parse);
 	set_sock_destruct(clif_disconnect);
