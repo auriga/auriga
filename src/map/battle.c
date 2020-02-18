@@ -456,6 +456,9 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				damage = 0;
 		}
 
+		if(sc->data[SC_MAXPAIN].timer != -1)
+			return damage;
+
 		if(sc->data[SC_WHITEIMPRISON].timer != -1) {
 			// ホワイトインプリズン状態は念属性以外はダメージを受けない
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) != ELE_GHOST) ||
@@ -2084,6 +2087,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case ASC_BREAKER:		// ソウルブレイカー
 #endif
 		case NPC_EXPULSION:		// エクスパルシオン
+		case NPC_VENOMFOG:		// ベナムフォグ
 		case RK_DRAGONBREATH:	// ファイアードラゴンブレス
 		case RK_DRAGONBREATH_WATER:	// ウォータードラゴンブレス
 		case GC_PHANTOMMENACE:		// ファントムメナス
@@ -3694,8 +3698,25 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100*skill_lv, 100 );
 			wd.blewcount = 0;
 			break;
-		case NPC_VAMPIRE_GIFT:		/* ヴァンパイアリックタッチ */
+		case NPC_VAMPIRE_GIFT:		// ヴァンパイアリックタッチ
 			DMG_FIX( 100 * ((skill_lv - 1) % 5 + 1), 100 );
+			break;
+		case NPC_VENOMFOG:			// ベナムフォグ
+			wd.damage = status_get_atk(src);
+			DMG_FIX( 50 * skill_lv, 100 );
+			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
+			break;
+		case NPC_REVERBERATION_ATK:	// M振動残響(攻撃)
+			DMG_FIX( 400 + 200 * skill_lv, 100 );
+			if(wflag > 1) {
+				DMG_FIX( 1, wflag );
+			}
+			break;
+		case NPC_ARROWSTORM:		// Mアローストーム
+			DMG_FIX( 1000 + 1000 * (skill_lv >= 5), 100 );
+			break;
+		case NPC_PHANTOMTHRUST:	// Mファントムスラスト
+			DMG_FIX( 100, 100 );
 			break;
 		case HFLI_MOON:		// ムーンライト
 			DMG_FIX( 110+110*skill_lv, 100 );
@@ -4479,6 +4500,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case CR_ACIDDEMONSTRATION:
 		case NJ_ZENYNAGE:
 		case NPC_CRITICALSLASH:
+		case NPC_VENOMFOG:
 		case GS_PIERCINGSHOT:
 		case RA_CLUSTERBOMB:
 		case RA_FIRINGTRAP:
@@ -6199,12 +6221,34 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_PULSESTRIKE2:	// パルスストライクII
 			mgd.damage = status_get_matk1(bl);
 			normalmagic_flag = 0;
+			MATK_FIX( 200, 100 );
 			break;
 		case NPC_FLAMECROSS:	// フレイムクロス
 			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
 				mgd.blewcount = 0;
 			else
 				mgd.blewcount |= SAB_REVERSEBLOW;
+			MATK_FIX( 20 * skill_lv, 100 );		// TODO: Atk * per
+			break;
+		case NPC_COMET:	// Mコメット
+			if(flag == 3) {			// 遠距離
+				MATK_FIX( 1000 + 500 * skill_lv, 100 );
+			} else if(flag == 2) {		// 中距離
+				MATK_FIX( 1500 + 500 * skill_lv, 100 );
+			} else if(flag == 1) {		// 近距離
+				MATK_FIX( 2000 + 500 * skill_lv, 100 );
+			} else {		// 中心
+				MATK_FIX( 2500 + 500 * skill_lv, 100 );
+			}
+			break;
+		case NPC_JACKFROST:		// Mジャックフロスト
+			MATK_FIX( 1000 + 300 * skill_lv, 100 );
+			break;
+		case NPC_FIRESTORM:		// 獄炎
+			MATK_FIX( 300, 100 );
+			break;
+		case NPC_PSYCHIC_WAVE:	// Mサイキックウェーブ
+			MATK_FIX( 500 * skill_lv, 100 );
 			break;
 		case RK_ENCHANTBLADE:	// エンチャントブレイド
 			if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {
@@ -6902,7 +6946,6 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 
 	case NPC_DARKBREATH:
 		{
-			struct status_change *t_sc = status_get_sc(target);
 #ifdef PRE_RENEWAL
 			int hitrate = status_get_hit(bl) - status_get_flee(target) + 80;
 #else
@@ -6915,6 +6958,16 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				hitrate = 1000000;
 			if(atn_rand()%100 < hitrate)
 				mid.damage = t_hp*(skill_lv*6)/100;
+		}
+		break;
+	case NPC_MAXPAIN_ATK:		/* マックスペイン */
+		{
+			struct status_change *sc = status_get_sc(bl);
+			if(sc && sc->data[SC_MAXPAIN].timer != -1)
+				mid.damage = sc->data[SC_MAXPAIN].val2;
+			else
+				mid.damage = 0;
+			damagefix = 0;
 		}
 		break;
 	case PA_PRESSURE:		// プレッシャー
@@ -7239,7 +7292,14 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	}
 
 	if((damage = wd.damage + wd.damage2) > 0 && src != target && (t_sc && t_sc->data[SC_KYOMU].timer == -1)) {
-		if(t_sc && t_sc->data[SC_REFLECTDAMAGE].timer != -1 && atn_rand()%100 < 30 + t_sc->data[SC_REFLECTDAMAGE].val1 * 10) {	// リフレクトダメージ反射
+		if(t_sc && t_sc->data[SC_MAXPAIN].timer != -1) {
+			t_sc->data[SC_MAXPAIN].val2 = (int)(damage * (t_sc->data[SC_MAXPAIN].val1 * 10) / 100);
+			skill_castend_damage_id(target, target, NPC_MAXPAIN_ATK, t_sc->data[SC_MAXPAIN].val1, tick, 0);
+			t_sc->data[SC_MAXPAIN].val2 = 0;
+			wd.damage  = 0;
+			wd.damage2 = 0;
+		}
+		else if(t_sc && t_sc->data[SC_REFLECTDAMAGE].timer != -1 && atn_rand()%100 < 30 + t_sc->data[SC_REFLECTDAMAGE].val1 * 10) {	// リフレクトダメージ反射
 			int maxdamage, rddamage;
 			maxdamage = (int)((atn_bignumber)status_get_max_hp(target) * status_get_lv(target) / 100);
 			rddamage = damage * t_sc->data[SC_REFLECTDAMAGE].val3 / 100;
@@ -7898,6 +7958,13 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 
 	/* ダメージ反射 */
+	if(sc && sc->data[SC_MAXPAIN].timer != -1 && damage > 0) {
+		sc->data[SC_MAXPAIN].val2 = (int)(damage * (sc->data[SC_MAXPAIN].val1 * 10) / 100);
+		skill_castend_damage_id(bl, bl, NPC_MAXPAIN_ATK, sc->data[SC_MAXPAIN].val1, tick, 0);
+		sc->data[SC_MAXPAIN].val2 = 0;
+		damage = 0;
+		dmg.blewcount = 0;
+	}
 	if(attack_type&BF_WEAPON && damage > 0 && src != bl && (sc && sc->data[SC_KYOMU].timer == -1)) {	// 武器スキル＆ダメージあり＆使用者と対象者が違う＆虚無の影ではない
 		if(src == dsrc || (dsrc->type == BL_SKILL && (skillid == SG_SUN_WARM || skillid == SG_MOON_WARM || skillid == SG_STAR_WARM || skillid == GS_DESPERADO))) {
 			if(dmg.flag&BF_SHORT) {	// 近距離攻撃時

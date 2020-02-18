@@ -21695,6 +21695,8 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		WFIFOSET(fd,packet_db[0xadf].len);
 #endif
 		break;
+	case BL_SKILL:
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("clif_parse_GetCharNameRequest : bad type %d(%d)\n",bl->type,account_id);

@@ -1,4 +1,19 @@
 ----------------------------------------
+//1384 [2020/02/18] by refis
+
+・スキル対象の名称参照が飛んでくることがあるのでエラー対策する（clif.c）
+
+・[永久霜]状態異常を追加（const.txt, scdata_db.txt, status.*）
+
+・[エビ三昧][大トロ]のHP回復表示処理を修正（skill.c）
+
+・追加NPCスキルを16種実装
+（scdata_db.txt, skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_unit_db.txt, battle.c, skill.*, status.*）
+
+・[ベナムフォグ][フレイムクロス][パルスストライクII]スキルの挙動、持続時間を修正
+（scdata_db.txt, skill_cast_db.txt, skill_unit_db.txt, battle.c, skill.c, status.*）
+
+----------------------------------------
 //1383 [2020/02/17] by refis
 
 ・次元の狭間 時の通路内NPCの更新（npc_quest_herovestige.sc）

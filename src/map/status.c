@@ -213,7 +213,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 640- */
 	SI_SUHIDE,SI_SU_STOOP,SI_CATNIPPOWDER,SI_SV_ROOTTWIST,SI_BITESCAR,SI_ARCLOUSEDASH,SI_TUNAPARTY,SI_SHRIMP,SI_FRESHSHRIMP,SI_HISS,
 	/* 650- */
-	SI_NYANGGRASS,SI_CHATTERING,SI_GROOMING,SI_PROTECTIONOFSHRIMP,SI_BLANK
+	SI_NYANGGRASS,SI_CHATTERING,SI_GROOMING,SI_PROTECTIONOFSHRIMP,SI_BLANK,SI_BURNT,SI_CHILL,SI_MAXPAIN
 };
 
 /*==========================================
@@ -2195,6 +2195,12 @@ L_RECALC:
 		if(sd->sc.data[SC_PROVIDENCE].timer != -1) {
 			sd->subele[ELE_HOLY]   += sd->sc.data[SC_PROVIDENCE].val2;	// 対聖属性
 			sd->subrace[RCT_DEMON] += sd->sc.data[SC_PROVIDENCE].val2;	// 対悪魔
+		}
+
+		// 獄炎呪
+		if(sd->sc.data[SC_BURNT].timer != -1) {
+			sd->subele[ELE_FIRE]       -= sd->sc.data[SC_BURNT].val1 * 20;
+			sd->def_eleenemy[ELE_FIRE] -= sd->sc.data[SC_BURNT].val1 * 20;
 		}
 
 		// その他
@@ -6847,6 +6853,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(sc->data[SC_WARMER].timer != -1 && (type == SC_FREEZE || type == SC_FROSTMISTY || type == SC_DIAMONDDUST))
 		return 0;
 
+	// 永久霜状態中は獄炎呪無効
+	if(sc->data[SC_CHILL].timer != -1 && type == SC_BURNT)
+		return 0;
+
 	// 行動不能状態異常の優先順位
 	if(type >= SC_STONE && type < SC_SLEEP) {
 		int i;
@@ -7074,6 +7084,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_JP_EVENT04:
 		case SC_RAID:
 		case SC_PHI_DEMON:			/* 古代精霊のお守り */
+		case SC_MAXPAIN:			/* マックスペイン */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -8579,6 +8590,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val3 = 50;	// HP・SP自然回復量増加
 			calc_flag = 1;
 			break;
+		case SC_BURNT:			/* 獄炎呪 */
+			val3 = tick / 1000;
+			tick = 1000;
+			calc_flag = 1;
+			break;
+		case SC_CHILL:			/* 永久霜 */
+			status_change_end(bl,SC_BURNT,-1);
+			break;
 		case SC_MER_FLEE:		/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:		/* 傭兵ボーナス(ATK) */
 		case SC_MER_HIT:		/* 傭兵ボーナス(HIT) */
@@ -9294,6 +9313,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_AKAITSUKI:			/* 幻術 -紅月- */
 		case SC_KYOUGAKU:			/* 幻術 -驚愕- */
 		case SC_GROOMING:			/* グルーミング */
+		case SC_BURNT:				/* 獄炎呪 */
 		case SC_ODINS_POWER:		/* オーディンの力 */
 		case SC_MER_FLEE:			/* 傭兵ボーナス(FLEE) */
 		case SC_MER_ATK:			/* 傭兵ボーナス(ATK) */
@@ -11033,6 +11053,17 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				// 生きていて解除済みでないなら継続
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}
+		}
+		break;
+	case SC_BURNT:			/* 獄炎呪 */
+		if((--sc->data[type].val3) > 0) {
+			int hp = 2000;
+			// 獄炎呪では死なないことにする（仮）
+			if(hp >= status_get_hp(bl))
+				hp = status_get_hp(bl) - 1;
+			unit_heal(bl, -hp, 0);
+			if(!unit_isdead(bl) && sc->data[type].timer != -1)
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_SUMMON_ELEM:	/* サモンエレメンタル */

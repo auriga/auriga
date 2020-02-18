@@ -624,6 +624,9 @@
 652,SC_GROOMING,1,1,0,0				// グルーミング
 653,SC_PROTECTIONOFSHRIMP,1,1,0,0	// エビパーティー
 654,SC_SPIRITOFLAND,0,1,0,0			// 大地の魂
+655,SC_BURNT,0,1,0,0			// 獄炎呪
+656,SC_CHILL,0,1,0,0			// 永久霜
+657,SC_MAXPAIN,0,1,0,0			// マックスペイン
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
