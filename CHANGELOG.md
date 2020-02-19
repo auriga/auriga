@@ -1,4 +1,11 @@
 ----------------------------------------
+//1385 [2020/02/19] by refis
+
+・呪いの剣士メモリアル実装（map_auriga.conf, memorial_db.txt, mob_db.txt, mob_skill_db.txt, npc_memorial_cursedknight.sc）
+
+・サラの記憶メモリアルのクールタイムを初回5時に変更し、文章を更新（quest_db.txt, npc_memorial_sara.sc）
+
+----------------------------------------
 //1384 [2020/02/18] by refis
 
 ・スキル対象の名称参照が飛んでくることがあるのでエラー対策する（clif.c）
