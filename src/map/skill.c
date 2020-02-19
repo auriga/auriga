@@ -6515,7 +6515,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case AS_CLOAKING:		/* クローキング */
 	case GC_CLOAKINGEXCEED:	/* クローキングエクシード */
 	case SC_INVISIBILITY:	/* インビジビリティ */
-	case NPC_INVISIBLE:		/* インビジブル */
 		{
 			int type = GetSkillStatusChangeTable(skillid);
 			clif_skill_nodamage(src,bl,skillid,-1,1);
@@ -6530,6 +6529,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(skillid == AS_CLOAKING && skilllv < 3)
 				skill_check_cloaking(bl);
 		}
+		break;
+	case NPC_INVISIBLE:		/* インビジブル */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 
 	/* 対地スキル */
@@ -8154,7 +8157,6 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_INVINCIBLE:		/* インビンシブル */
 		status_change_end(bl, SC_INVINCIBLEOFF, -1);
 	case NPC_INVINCIBLEOFF:		/* インビンシブルオフ */
-	case MER_INVINCIBLEOFF2:	/* マインドブラスター */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
@@ -8330,6 +8332,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			pc_heal(mcd->msd,hp,0);
 			battle_damage(NULL,&mcd->bl,hp,skillid,skilllv,flag);
 		}
+		break;
+	case MER_INVINCIBLEOFF2:	/* マインドブラスター */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		if(mcd)
+			mcd->skillstatictimer[skillid-MERC_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
 		break;
 	case RK_ENCHANTBLADE:		/* エンチャントブレイド */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);

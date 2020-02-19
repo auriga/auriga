@@ -1,4 +1,15 @@
 ----------------------------------------
+//1387 [2020/02/20] by refis
+
+・魔神の塔メモリアル実装（map_auriga.conf, mob_db.txt, mob_skill_db.txt, quest_db.txt, npc_memorial_towermorocc.sc）
+
+・カードリムーバーNPC[ツーニャ]実装（map_auriga.conf, npc_quest_cardremover.sc）
+
+・[インビジブル]は再使用で効果が切れないはずなので修正（skill.c, status.c）
+
+・[マインドブラスター]の再使用待機時間が反映されてなかったのを修正（skill.c）
+
+----------------------------------------
 //1386 [2020/02/19] by refis
 
 ・typo修正（npc_memorial_cursedknight.sc）

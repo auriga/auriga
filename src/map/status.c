@@ -7826,13 +7826,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_CHASEWALK:		/* チェイスウォーク */
 		case SC_CLOAKING:		/* クローキング */
-		case SC_INVISIBLE:		/* インビジブル */
 			if(sd) {
 				calc_flag = 1;
 				tick = val2;
 			} else {
 				tick = 5000*val1;
 			}
+			break;
+		case SC_INVISIBLE:		/* インビジブル */
 			break;
 		case SC_SIGHTBLASTER:		/* サイトブラスター */
 		case SC_SIGHT:			/* サイト */
@@ -10158,7 +10159,6 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	switch(type) {	/* 特殊な処理になる場合 */
 	case SC_MAXIMIZEPOWER:	/* マキシマイズパワー */
 	case SC_CLOAKING:	/* クローキング */
-	case SC_INVISIBLE:	/* インビジブル */
 		if(sd) {
 			if(sd->status.sp > 0) {	/* SP切れるまで持続 */
 				sd->status.sp--;
