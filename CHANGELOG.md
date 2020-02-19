@@ -1,4 +1,11 @@
 ----------------------------------------
+//1386 [2020/02/19] by refis
+
+・typo修正（npc_memorial_cursedknight.sc）
+
+・[大トロ]の回復量が表記より低く計算されていたのを修正（skill.c）
+
+----------------------------------------
 //1385 [2020/02/19] by refis
 
 ・呪いの剣士メモリアル実装（map_auriga.conf, memorial_db.txt, mob_db.txt, mob_skill_db.txt, npc_memorial_cursedknight.sc）

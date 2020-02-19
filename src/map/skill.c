@@ -10293,7 +10293,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SU_TUNABELLY:	/* ‘åƒgƒ */
 		{
-			int heal = (int)(5 + skilllv * 5 + (skilllv>=5? 20: (skilllv==4? 10: 0)) * (atn_bignumber)status_get_max_hp(bl) / 100);
+			int heal = (int)((5 + skilllv * 5 + (skilllv>=5? 20: (skilllv==4? 10: 0))) * (atn_bignumber)status_get_max_hp(bl) / 100);
 
 			if(sc) {
 				if(sc->data[SC_CRITICALWOUND].timer != -1)
