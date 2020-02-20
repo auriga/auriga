@@ -22797,12 +22797,12 @@ static void clif_parse_SkillUp(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
- * スキル使用（ID指定）
+ * スキル使用（ID指定）本体
  *------------------------------------------
  */
-static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd)
+static void clif_UseSkillToId_Sub(struct map_session_data *sd, int skillnum, int skilllv, int target_id)
 {
-	int skillnum, skilllv, lv, target_id, skilldb_id, inf, change_inf = 0;
+	int lv, skilldb_id, inf, change_inf = 0;
 	unsigned int tick = gettick();
 	struct block_list *bl;
 	struct status_change *sc;
@@ -22815,22 +22815,6 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 		return;
 	if(pc_issit(sd))
 		return;
-
-	skilllv   = RFIFOW(fd,GETPACKETPOS(cmd,0));
-	skillnum  = RFIFOW(fd,GETPACKETPOS(cmd,1));
-	target_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
-
-	// decode for jRO 2005-05-09dRagexe
-	if(packet_db[cmd].pos[0] == 0 && packet_db[cmd].pos[1] == 0 && packet_db[cmd].pos[2] == 0)
-	{
-		int tmp = g_packet_len % 3;
-		const int t1[] = { 138,43,170 }, t2[] = { 103,4,80 }, t3[] = { 130,33,84 }, t4[] = { 134, 39, 166 };
-		int tmp2 = (g_packet_len - t1[tmp]) / 3;
-		skilllv   = RFIFOW(fd, tmp2   + t2[tmp] );
-		skillnum  = RFIFOW(fd, tmp2*2 + t3[tmp] );
-		target_id = RFIFOL(fd, tmp2*3 + t4[tmp] );
-	}
-	// end decode
 
 	bl = map_id2bl(target_id);
 	if(bl == NULL)
@@ -23018,8 +23002,79 @@ static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd
 				sd->state.skill_flag = 0;
 		}
 	}
-
 	return;
+}
+
+/*==========================================
+ * スキル使用（ID指定）
+ *------------------------------------------
+ */
+static void clif_parse_UseSkillToId(int fd, struct map_session_data *sd, int cmd)
+{
+	int skillnum, skilllv, target_id;
+
+	nullpo_retv(sd);
+
+	skilllv   = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	skillnum  = RFIFOW(fd,GETPACKETPOS(cmd,1));
+	target_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
+
+	// decode for jRO 2005-05-09dRagexe
+	if(packet_db[cmd].pos[0] == 0 && packet_db[cmd].pos[1] == 0 && packet_db[cmd].pos[2] == 0)
+	{
+		int tmp = g_packet_len % 3;
+		const int t1[] = { 138,43,170 }, t2[] = { 103,4,80 }, t3[] = { 130,33,84 }, t4[] = { 134, 39, 166 };
+		int tmp2 = (g_packet_len - t1[tmp]) / 3;
+		skilllv   = RFIFOW(fd, tmp2   + t2[tmp] );
+		skillnum  = RFIFOW(fd, tmp2*2 + t3[tmp] );
+		target_id = RFIFOL(fd, tmp2*3 + t4[tmp] );
+	}
+	// end decode
+
+	clif_UseSkillToId_Sub(sd, skillnum, skilllv, target_id);
+	return;
+}
+
+/*==========================================
+ * スキル使用開始（ID指定）
+ *------------------------------------------
+ */
+static void clif_parse_StartUseSkillToId(int fd,struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20181002
+	int skillnum, skilllv, target_id;
+
+	nullpo_retv(sd);
+
+	skillnum  = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	skilllv   = RFIFOW(fd,GETPACKETPOS(cmd,1));
+	target_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
+
+	if(skillnum != GC_ROLLINGCUTTER)
+		// anti hacker
+		return;
+
+	sd->state.autoskill_flag = true;
+
+	clif_UseSkillToId_Sub(sd, skillnum, skilllv, target_id);
+	return;
+#endif
+}
+
+/*==========================================
+ * スキル使用終了（ID指定）
+ *------------------------------------------
+ */
+static void clif_parse_StopUseSkillToId(int fd,struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20181002
+	int skillnum = RFIFOW(fd,GETPACKETPOS(cmd,0));
+	if(skillnum != GC_ROLLINGCUTTER) {
+		// anti hacker
+	}
+	sd->state.autoskill_flag = false;
+	return;
+#endif
 }
 
 /*==========================================
@@ -26921,6 +26976,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_MemorialCommand,             "memorialcommand"           },
 		{ clif_parse_InventoryExpantion,          "inventoryexpantion"        },
 		{ clif_parse_PetEvolution,                "petevolution"              },
+		{ clif_parse_StartUseSkillToId,           "startuseskilltoid"         },
+		{ clif_parse_StopUseSkillToId,            "stopuseskilltoid"          },
 		{ NULL,                                   NULL                        },
 	};
 

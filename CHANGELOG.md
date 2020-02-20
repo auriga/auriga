@@ -1,4 +1,10 @@
 ----------------------------------------
+//1388 [2020/02/20] by refis
+
+・対象指定スキル使用開始・終了[0xb10][0xb11]追加
+（packet_db.lua, clif.c, map.h, skill.c）
+
+----------------------------------------
 //1387 [2020/02/20] by refis
 
 ・魔神の塔メモリアル実装（map_auriga.conf, mob_db.txt, mob_skill_db.txt, quest_db.txt, npc_memorial_towermorocc.sc）

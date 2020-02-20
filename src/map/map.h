@@ -411,6 +411,7 @@ struct map_session_data {
 		unsigned store : 2;	// 0:‰½‚àŠJ‚¢‚Ä‚¢‚È‚¢, 1:˜I“X‚ğŠJ‚¢‚Ä‚¢‚é, 2:w”ƒ˜I“X‚ğŠJ‚¢‚Ä‚¢‚é
 		unsigned blockedmove : 1;
 		unsigned alliance_message : 1;
+		unsigned autoskill_flag : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

@@ -2975,6 +2975,18 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && src_ud->skillid != RA_CAMOUFLAGE) {
 			status_change_end(src,SC_CAMOUFLAGE,-1);
 		}
+		if(src_sd && src_ud && src_sd->state.autoskill_flag) {
+			int casttime = skill_castfix(src, src_ud->skillid, skill_get_cast(src_ud->skillid,src_ud->skilllv), skill_get_fixedcast(src_ud->skillid,src_ud->skilllv));
+			int delay = skill_delayfix(src, src_ud->skillid, src_ud->skilllv);
+			src_ud->canact_tick  = tick + casttime + delay;
+			src_ud->canmove_tick = tick;
+			src_ud->skilltarget  = target->id;
+			src_ud->skillx       = 0;
+			src_ud->skilly       = 0;
+			src_ud->skillid      = src_ud->skillid;
+			src_ud->skilllv      = src_ud->skilllv;
+			src_ud->skilltimer = add_timer(src_ud->canact_tick, skill_castend_id, src->id, NULL);
+		}
 		return 0;
 	} while(0);
 
@@ -2985,6 +2997,7 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		src_sd->skill_item.id      = -1;
 		src_sd->skill_item.lv      = -1;
 		src_sd->skill_item.flag    = 0;
+		src_sd->state.autoskill_flag = false;
 	} else if(src_md) {
 		src_md->skillidx = -1;
 	}
