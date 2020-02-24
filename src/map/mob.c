@@ -4154,6 +4154,8 @@ static int mob_readdb(void)
 		if(!mobdb_exists(class_))
 			continue;
 
+		id = mobdb_search(class_);
+
 		group_id = atoi(str[2]);
 		if(group_id >= MAX_MOBGROUP) {
 			printf("mob_group: invalid group id(%d) class %d\n", group_id, class_);

@@ -1,4 +1,22 @@
 ----------------------------------------
+//1389 [2020/02/24] by refis
+
+・[SQL] : キャラ削除時、クエストデータの削除漏れを修正（chardb_sql.c）
+
+・clif_weight_limitは外部で使用していないためstaticにして隠す（clif.*）
+
+・Patch1370以降、モンスターのグループ設定が反映されないミスを修正（mob.c）
+	Thanks Dallen さん
+
+・ニューマの持続時間が長すぎる問題を修正（skill.c）
+	Issues Report #11 , Thanks eni-ro さん
+
+・タロウの傷状態になったときクラッシュする問題を修正（status.c）
+	Issues Report #12 , Thanks eni-ro さん
+
+・typo fix（quest.c）
+
+----------------------------------------
 //1388 [2020/02/20] by refis
 
 ・対象指定スキル使用開始・終了[0xb10][0xb11]追加

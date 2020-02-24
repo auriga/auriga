@@ -6921,7 +6921,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		}
 	}
 	/* 特定MAPではタロウの傷状態にならない */
-	if(type == SC_BITESCAR && !map[sd->bl.m].flag.pvp && !map[sd->bl.m].flag.gvg && !map[sd->bl.m].flag.turbo)
+	if(type == SC_BITESCAR && !map[bl->m].flag.pvp && !map[bl->m].flag.gvg && !map[bl->m].flag.turbo)
 		return 0;
 
 	if(sc->data[type].timer != -1) {	/* すでに同じ異常になっている場合タイマ解除 */

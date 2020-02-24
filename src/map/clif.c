@@ -21081,7 +21081,7 @@ void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enab
  * clif_weight_limit‘—M
  *------------------------------------------
  */
-void clif_weight_limit(struct map_session_data* sd)
+static void clif_weight_limit(struct map_session_data* sd)
 {
 #if PACKETVER >= 20171025
 	int fd;

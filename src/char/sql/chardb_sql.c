@@ -1077,6 +1077,10 @@ bool chardb_sql_delete_sub(int char_id)
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `" MERC_EMPLOY_TABLE "` WHERE `char_id`='%d'", char_id) == false )
 			break;
 
+		// delete quest
+		if( sqldbs_query(&mysql_handle, "DELETE FROM `" QUEST_TABLE "` WHERE `char_id`='%d'", char_id) == false )
+			break;
+
 		// success
 		result = true;
 

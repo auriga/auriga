@@ -521,8 +521,7 @@ int do_final_quest(void)
 		max_killdb_count = 0;
 	}
 
-	return 0
-;
+	return 0;
 }
 
 /*==========================================

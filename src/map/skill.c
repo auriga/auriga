@@ -12353,8 +12353,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 
 	switch (sg->unit_id) {
 	case UNT_PNEUMA:	/* ニューマ */
-		if(!sc || sc->data[SC_PNEUMA].timer==-1)
-			status_change_start(bl,SC_PNEUMA,sg->skill_lv,src->bl.id,0,0,sg->limit,0);
+		status_change_start(bl,SC_PNEUMA,sg->skill_lv,src->bl.id,0,0,sg->interval+100,0);
 		break;
 	case UNT_WARP_ACTIVE:	/* ワープポータル(発動後) */
 		if (bl->type == BL_PC) {
