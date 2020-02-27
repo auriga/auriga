@@ -21097,6 +21097,25 @@ static void clif_weight_limit(struct map_session_data* sd)
 }
 
 /*==========================================
+ * リベリオンのクリムゾンマーカー送信
+ *------------------------------------------
+ */
+void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, bool remove)
+{
+	unsigned char buf[11];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf, 0) = 0x9c1;
+	WBUFL(buf, 2) = bl->id;
+	WBUFW(buf, 6) = (remove ? -1 : bl->x);
+	WBUFW(buf, 8) = (remove ? -1 : bl->y);
+
+	clif_send(buf,packet_db[0x9c1].len,&sd->bl,PARTY);
+	return;
+}
+
+/*==========================================
  * ping送信タイマー（全クライアント）
  *------------------------------------------
  */

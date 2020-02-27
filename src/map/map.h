@@ -877,6 +877,7 @@ struct map_session_data {
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
 	int overheat;			// 魔導ギア加熱度（暫定）
 	int shadowform_id;		// シャドウフォーム
+	int c_marker[3];		// クリムゾンマーカー
 	int deposit;			// 預金額
 	unsigned int cryptKey;
 };

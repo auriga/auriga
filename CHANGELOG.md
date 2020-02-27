@@ -1,4 +1,28 @@
 ----------------------------------------
+//1390 [2020/02/27] by refis
+
+・リベリオン実装（battle_auriga.conf, const.txt, scdata_db.txt,
+　skill_cast_db.txt, skill_db*.txt, skill_require_db*.txt, skill_tree.txt,
+　skill_unit_db.txt, mmo.h, atcommand.c, battle.*, clif.*, map.h,
+　pc.*, skill.*, status.*, unit.c）
+
+・リベリオン転職試験実装（map_auriga.conf, quest_db.txt, npc_job_48rebellion.sc）
+
+・装備変更時に解除される状態異常を更新（pc.c）
+
+・カートブーストが保存されるよう変更（scdata_db.txt）
+
+・一部NPCスキル、サモナースキルの設定修正（skill_db2.txt）
+
+・キャロットビート追加効果のダメージが下落する場合があったミス修正（battle.c）
+
+・ピッキ突き追加効果の判定式が正しく動いてなかったのを修正（skill.c）
+
+・キャロットビート、ピッキ突きのモーション修正（battle.c）
+
+・ニャングラス再修正（skill_unit_db.txt, skill.c, status.c）
+
+----------------------------------------
 //1389 [2020/02/24] by refis
 
 ・[SQL] : キャラ削除時、クエストデータの削除漏れを修正（chardb_sql.c）

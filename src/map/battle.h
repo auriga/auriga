@@ -600,6 +600,8 @@ extern struct Battle_Config {
 	int esnv_max_aspd;
 	int ko_status_max;
 	int ko_max_aspd;
+	int rl_status_max;
+	int rl_max_aspd;
 	int sum_status_max;
 	int sum_max_aspd;
 	int disable_costume_when_gvg;

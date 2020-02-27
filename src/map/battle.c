@@ -606,6 +606,21 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			if(--scd->val3 <= 0 || scd->val2 <= 0 || skill_num == AL_HOLYLIGHT)
 				status_change_end(bl, SC_KYRIE, -1);
 		}
+		// プラチナムアルター
+		if(sc->data[SC_P_ALTER].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_P_ALTER];
+			clif_misceffect2(bl,336);
+			if(scd->val3 > 0 && scd->val4 > 0) {
+				scd->val3 -= damage;
+				if(flag&BF_WEAPON) {
+					if(scd->val3 >= 0)
+						damage = 0;
+					else
+						damage = -scd->val3;
+				}
+				scd->val4--;
+			}
+		}
 		// セイフティウォール
 		if(sc->data[SC_SAFETYWALL].timer != -1 && damage > 0 && flag&BF_SHORT) {
 			struct skill_unit *unit = map_id2su(sc->data[SC_SAFETYWALL].val2);
@@ -702,6 +717,21 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 			if(--scd->val3 <= 0 || scd->val2 <= 0 || skill_num == AL_HOLYLIGHT)
 				status_change_end(bl, SC_KYRIE, -1);
+		}
+		// プラチナムアルター
+		if(sc->data[SC_P_ALTER].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_P_ALTER];
+			clif_misceffect2(bl,336);
+			if(scd->val3 > 0 && scd->val4 > 0) {
+				scd->val3 -= damage;
+				if(flag&BF_WEAPON) {
+					if(scd->val3 >= 0)
+						damage = 0;
+					else
+						damage = -scd->val3;
+				}
+				scd->val4--;
+			}
 		}
 #endif
 
@@ -1887,10 +1917,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				break;
 			}
+			// エターナルチェーン
+			if(sc && sc->data[SC_E_CHAIN].timer != -1) {
+				if((skill = sc->data[SC_E_CHAIN].val1) > 0 && src_sd->weapontype1 != WT_FIST && atn_rand()%100 < skill*5) {
+					calc_flag.da = 1;
+					status_change_start(src,SC_QD_SHOT_READY,skill,target->id,0,0,skill_get_time2(RL_QD_SHOT,skill),0);
+					break;
+				}
+			}
 			// チェーンアクション
-			if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
-				calc_flag.da = 1;
-				break;
+			else {
+				if((skill = pc_checkskill(src_sd,GS_CHAINACTION)) > 0 && src_sd->weapontype1 == WT_HANDGUN && atn_rand()%100 < skill*5) {
+					calc_flag.da = 1;
+					if(pc_checkskill(src_sd,RL_QD_SHOT) > 0)
+						status_change_start(src,SC_QD_SHOT_READY,skill,target->id,0,0,skill_get_time2(RL_QD_SHOT,skill),0);
+					break;
+				}
 			}
 			// サイドワインダー等
 			if(src_sd->double_rate > 0 && atn_rand()%100 < src_sd->double_rate) {
@@ -2131,6 +2173,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_ZENYNAGE:		// 銭投げ
 		case NPC_CRITICALWOUND:		// 致命傷攻撃
 		case KO_MUCHANAGE:			// 無茶投げ
+		case RL_HAMMER_OF_GOD:	// ハンマーオブゴッド
+		case RL_D_TAIL:			// ドラゴンテイル
 			s_ele = s_ele_ = ELE_NEUTRAL;
 			break;
 		case PA_SHIELDCHAIN:		// シールドチェイン
@@ -2216,6 +2260,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case GN_CART_TORNADO:		// カートトルネード
 			if(src_sd && (skill = pc_checkskill(src_sd,GN_REMODELING_CART)) > 0)
 				calc_flag.hitrate = calc_flag.hitrate+skill*4;
+			break;
+		case RL_SLUGSHOT:		// スラッグショット
+			{
+				int dist = unit_distance(src,target)-1;
+				if(dist > 3)
+					calc_flag.hitrate = calc_flag.hitrate*(100-((11 - skill_lv) * (dist-3)))/100;
+				s_ele = s_ele_ = ELE_NEUTRAL;
+			}
+			break;
+		case RL_H_MINE:		// ハウリングマイン(追撃)
+			if(wflag&1)
+				s_ele = s_ele_ = ELE_FIRE;
 			break;
 		}
 	}
@@ -2808,14 +2864,24 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh)
 					wd.damage2 += sc->data[SC_GN_CARTBOOST].val1 * 10;
 			}
+			// プラチナムアルター
+			if(sc->data[SC_P_ALTER].timer != -1) {
+				wd.damage += sc->data[SC_P_ALTER].val2;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_P_ALTER].val2;
+			}
 		}
 
 		/* （RE）カードによるダメージ減衰処理２ */
 		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
 			int s_race  = status_get_race(src);
 			cardfix = 100;
-			if(src_sd)
-				cardfix = cardfix*(100-target_sd->subrace[s_race]-target_sd->subrace[RCT_PLAYER])/100;			// 種族によるダメージ耐性
+			if(src_sd) {
+				if(t_sc && t_sc->data[SC_ANTI_M_BLAST].timer != -1)
+					cardfix = cardfix*(100-target_sd->subrace[s_race]-target_sd->subrace[RCT_PLAYER]-t_sc->data[SC_ANTI_M_BLAST].val2)/100;			// 種族によるダメージ耐性
+				else
+					cardfix = cardfix*(100-target_sd->subrace[s_race]-target_sd->subrace[RCT_PLAYER])/100;			// 種族によるダメージ耐性
+			}
 			else
 				cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
 			if(!src_sd && pc_isdoram(target_sd) && s_race == RCT_HUMAN)
@@ -2880,6 +2946,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_CURSE].timer != -1)
 				add_rate -= 25;
 #endif
+			// ヒートバレル
+			if(sc->data[SC_HEAT_BARREL].timer != -1)
+				add_rate += sc->data[SC_HEAT_BARREL].val3;
 		}
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
@@ -3593,6 +3662,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_ADD( arr );
 			}
 			DMG_FIX( 50+50*skill_lv, 100 );
+			if(wflag&1)	// フォーリンエンジェル
+				DMG_FIX( 200, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
@@ -4228,6 +4299,81 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KO_HUUMARANKA:	// 風魔手裏剣 -乱華-
 			DMG_FIX( 150 * skill_lv + status_get_agi(src) + status_get_dex(src) + ((src_sd)? pc_checkskill(src_sd, NJ_HUUMA): 0) * 100, 100 );
 			break;
+		case RL_QD_SHOT:		// クイックドローショット
+			{
+				int div_ = 1;
+				if(src_sd) {
+					div_ += src_sd->status.job_level / 20;
+					src_sd->state.arrow_atk = 1;
+					if(!battle_delarrow(src_sd,div_ - 1,0))
+						break;
+				}
+				wd.div_ = div_;
+			}
+			break;
+		case RL_FIREDANCE:	// ファイアーダンス
+			{
+				int rate = 1500 + 100 * skill_lv;
+				if(src_sd) {
+					rate += pc_checkskill(src_sd,GS_DESPERADO) * 50;
+					src_sd->state.arrow_atk = 1;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case RL_MASS_SPIRAL:		// マススパイラル
+			{
+				int rate = status_get_def(target);
+				rate = (200 + (rate > 500? 500: rate)) * skill_lv;
+				DMG_FIX( rate, 100 );
+				if(src_sd)
+					src_sd->state.arrow_atk = 1;
+			}
+			break;
+		case RL_AM_BLAST:		// アンチマテリアルブラスト
+			DMG_FIX( 1500 + 300 * skill_lv, 100 );
+			if(src_sd)
+				src_sd->state.arrow_atk = 1;
+			break;
+		case RL_HAMMER_OF_GOD:	// ハンマーオブゴッド
+			{
+				int rate = 500 * skill_lv;
+				if(t_sc && t_sc->data[SC_C_MARKER].timer != -1)
+					rate += 250 * ((src_sd)? src_sd->coin.num: 1);
+				else
+					rate += 25 * ((src_sd)? src_sd->coin.num: 1);
+				DMG_FIX( rate, 100 );
+				if(src_sd)
+					src_sd->state.arrow_atk = 1;
+			}
+			break;
+		case RL_SLUGSHOT:		// スラッグショット
+			{
+				int rate = 600 * skill_lv * (t_size+2);
+				if(target->type != BL_MOB)
+					rate *= 2;
+				DMG_FIX( rate, 100 );
+				if(src_sd)
+					src_sd->state.arrow_atk = 1;
+			}
+			break;
+		case RL_R_TRIP:			// ラウンドトリップ
+		case RL_R_TRIP_PLUSATK:	// ラウンドトリップ(追撃)
+			DMG_FIX( 150 + 50 * skill_lv, 100 );
+			break;
+		case RL_H_MINE:		// ハウリングマイン
+			if(wflag&1) {	// ハウリングマイン(追撃)
+				DMG_FIX( 1000 + 400 * skill_lv, 100 );
+			} else {
+				DMG_FIX( 400 * skill_lv, 100 );
+			}
+			break;
+		case RL_D_TAIL:			// ドラゴンテイル
+			DMG_FIX( 1000 * skill_lv, 100 );
+			break;
+		case RL_FIRE_RAIN:		// ファイアーレイン
+			DMG_FIX( 500 + 500 * skill_lv, 100 );
+			break;
 		case SU_BITE:	// かみつく
 			if(status_get_hp(target) / status_get_max_hp(target) * 100 <= 70) {
 				DMG_FIX( 1500, 100 );
@@ -4296,6 +4442,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case SU_LUNATICCARROTBEAT:	// キャロットビート
+		case SU_LUNATICCARROTBEAT2:	// キャロットビート
 			{
 				int rate = 2000 + 100 * skill_lv;
 				if(src_sd && pc_checkskill(src_sd,SU_SPIRITOFLIFE)) {	// 生命の魂
@@ -4826,6 +4973,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(calc_flag.lh)
 					wd.damage2 += sc->data[SC_GN_CARTBOOST].val1 * 10;
 			}
+			// プラチナムアルター
+			if(sc->data[SC_P_ALTER].timer != -1) {
+				wd.damage += sc->data[SC_P_ALTER].val2;
+				if(calc_flag.lh)
+					wd.damage2 += sc->data[SC_P_ALTER].val2;
+			}
 		}
 #endif
 
@@ -5204,6 +5357,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #endif
 	case RA_AIMEDBOLT:		// エイムドボルト
 	case LG_HESPERUSLIT:	// ヘスペルスリット
+	case RL_QD_SHOT:		// クイックドローショット
 		// Hit数分修練等が乗るタイプ
 		if(wd.div_ > 1)
 			wd.damage *= wd.div_;
@@ -7047,6 +7201,9 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		mid.damage = battle_attr_fix(mid.damage, ELE_NEUTRAL, status_get_element(target));
 		damagefix = 0;
 		break;
+	case RL_B_FLICKER_ATK:		// バインドトラップ(爆発)
+		mid.damage = status_get_dex(bl) * 10 + status_get_hp(target) * 3 * skill_lv / 100;
+		break;
 	case SU_SV_ROOTTWIST_ATK:	// マタタビの根っこ(攻撃)
 		mid.damage = 100;
 		damagefix = 0;
@@ -8111,6 +8268,13 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		case WL_TETRAVORTEX_WIND:	// テトラボルテックス(風)
 		case WL_TETRAVORTEX_GROUND:	// テトラボルテックス(地)
 			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, WL_TETRAVORTEX, lv, type);
+			break;
+		case SU_LUNATICCARROTBEAT2:
+		case SU_PICKYPECK_DOUBLE_ATK:
+			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, -1, type);
+			break;
+		case RL_FIRE_RAIN:
+			clif_skill_damage(src, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, lv, type);
 			break;
 		default:
 			clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skillid, lv, type);
@@ -9335,6 +9499,8 @@ int battle_config_read(const char *cfgName)
 		{ "esnv_max_aspd",                      &battle_config.esnv_max_aspd,                      140      },
 		{ "ko_status_max",                      &battle_config.ko_status_max,                      120      },
 		{ "ko_max_aspd",                        &battle_config.ko_max_aspd,                        140      },
+		{ "rl_status_max",                      &battle_config.rl_status_max,                      120      },
+		{ "rl_max_aspd",                        &battle_config.rl_max_aspd,                        140      },
 		{ "sum_status_max",                     &battle_config.sum_status_max,                     125      },
 		{ "sum_max_aspd",                       &battle_config.sum_max_aspd,                       140      },
 		{ "disable_costume_when_gvg",           &battle_config.disable_costume_when_gvg,           1        },

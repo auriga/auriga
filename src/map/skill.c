@@ -318,6 +318,16 @@ int QuestSkillStatusChangeTable[MAX_QUESTSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚
 	-1,-1,-1,-1,SC_ODINS_POWER,-1,-1,SC_DISSONANCE,SC_UGLYDANCE
 };
 
+/* (ƒXƒLƒ‹”Ô† - RL_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
+int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
+	/* 2551- */
+	-1,-1,-1,-1,SC_B_TRAP,-1,-1,SC_E_CHAIN,-1,SC_C_MARKER,
+	/* 2561- */
+	-1,SC_H_MINE,SC_P_ALTER,SC_FALLEN_ANGEL,-1,-1,-1,SC_HEAT_BARREL,SC_ANTI_M_BLAST,-1,
+	/* 2571- */
+	-1,-1,-1,
+};
+
 /* (ƒXƒLƒ‹”Ô† - KO_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 3001- */
@@ -443,12 +453,14 @@ static int skill_maelstrom(struct block_list *bl,va_list ap);
 static int skill_trample(struct block_list *bl,va_list ap);
 static int skill_dominion_impulse(struct block_list *bl,va_list ap);
 static int skill_fire_expansion(struct block_list *bl,va_list ap);
+static int skill_flicker(struct block_list *bl, va_list ap);
 
 /* ƒXƒLƒ‹ƒ†ƒjƒbƒg‚Ì”z’uî•ñ‚ğ•Ô‚· */
 static struct skill_unit_layout skill_unit_layout[MAX_SKILL_UNIT_LAYOUT];
 static int firewall_unit_pos;
 static int icewall_unit_pos;
 static int earthstrain_unit_pos;
+static int firerain_unit_pos;
 
 static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,struct block_list *src,int x,int y)
 {
@@ -469,6 +481,8 @@ static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,s
 		return &skill_unit_layout[icewall_unit_pos+dir];
 	else if(skillid == WL_EARTHSTRAIN)
 		return &skill_unit_layout[earthstrain_unit_pos+dir];
+	else if(skillid == RL_FIRE_RAIN)
+		return &skill_unit_layout[firerain_unit_pos+dir];
 
 	printf("unknown unit layout for skill %d, %d\n",skillid,skilllv);
 	return &skill_unit_layout[0];
@@ -487,6 +501,9 @@ int GetSkillStatusChangeTable(int id)
 
 	if(id >= QUEST_SKILLID && id < MAX_QUEST_SKILLID)
 		return QuestSkillStatusChangeTable[id - QUEST_SKILLID];
+
+	if(id >= RL_SKILLID && id < MAX_RL_SKILLID)
+		return SkillStatusChangeTableRL[id - RL_SKILLID];
 
 	if(id >= KO_SKILLID && id < MAX_KO_SKILLID)
 		return SkillStatusChangeTableKO[id - KO_SKILLID];
@@ -1754,6 +1771,19 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*1000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
+	case RL_MASS_SPIRAL:		/* ƒ}ƒXƒXƒpƒCƒ‰ƒ‹ */
+		if(!(status_get_mode(bl)&MD_BOSS) && atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,3000+1000*skilllv,status_get_lv(src)))
+			status_change_pretimer(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case RL_AM_BLAST:		/* ƒAƒ“ƒ`ƒ}ƒeƒŠƒAƒ‹ƒuƒ‰ƒXƒg */
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case RL_S_STORM:		/* ƒVƒƒƒbƒ^[ƒXƒg[ƒ€ */
+		if(atn_rand()%10000 <= 500 * skilllv) {
+			if(dstsd)
+				pc_break_equip2(dstsd, EQUIP_INDEX_HEAD2);
+		}
+		break;
 	case SU_SCRATCH:	/* ‚Ğ‚Á‚©‚­ */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,500 + skilllv*500,status_get_lv(src)))
 			status_change_pretimer(bl,SC_BLEED,1,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -2622,6 +2652,9 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				}
 				break;
 			case GS_DESPERADO:
+				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
+					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,skl->flag);
+				break;
 			case WL_EARTHSTRAIN:	/* ƒA[ƒXƒXƒgƒŒƒCƒ“ */
 				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
@@ -2647,6 +2680,13 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					map_foreachinarea(skill_delunit_by_ganbantein,
 						src->m,skl->x-2,skl->y-2,skl->x+2,skl->y+2,BL_SKILL);
 					skill_unitsetting(src,GN_CRAZYWEED_ATK,skl->skill_lv,skl->x,skl->y,0);
+				}
+				break;
+			case RL_FIRE_RAIN:	/* ƒtƒ@ƒCƒA[ƒŒƒCƒ“ */
+				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS)) {
+					if(atn_rand()%100 < 20 * skl->skill_lv)
+						map_foreachinarea(skill_delunit_by_ganbantein,src->m,skl->x-1,skl->y-1,skl->x+1,skl->y+1,BL_SKILL);
+					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
 				}
 				break;
 			case NPC_WIDESUCK:		/* ƒƒCƒhƒuƒ‰ƒbƒh */
@@ -4240,7 +4280,9 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GS_DESPERADO:	/* ƒfƒXƒyƒ‰[ƒh */
 		{
 			int tmpx, tmpy, i, num;
+			int fa = 0;
 			bl = src;
+			sc = status_get_sc(src);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(sd) {
 				int cost = skill_get_arrow_cost(skillid,skilllv);
@@ -4248,11 +4290,14 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 					break;
 			}
 			num = skill_get_num(skillid,skilllv);
+			if(sc && sc->data[SC_FALLEN_ANGEL].timer != -1)
+				fa = 1;
 			for(i=0; i<num; i++) {
 				tmpx = src->x + (atn_rand()%5 - 2);
 				tmpy = src->y + (atn_rand()%5 - 2);
-				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,0);
+				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,fa);
 			}
+			status_change_end(src,SC_FALLEN_ANGEL,-1);
 		}
 		break;
 
@@ -5173,7 +5218,64 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(sd && sd->elementball.num)
 			pc_delelementball(sd,sd->elementball.num,0);
 		break;
-	case SU_BITE:	// ‚©‚İ‚Â‚­
+	case RL_B_FLICKER_ATK:		/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv(”š”­) */
+		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,flag);
+		status_change_end(bl, SC_B_TRAP, -1);
+		break;
+	case RL_S_STORM:		/* ƒVƒƒƒbƒ^[ƒXƒg[ƒ€ */
+	case RL_HAMMER_OF_GOD:	/* ƒnƒ“ƒ}[ƒIƒuƒSƒbƒh */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		} else {
+			int tx = bl->x, ty = bl->y;
+			skill_area_temp[1] = bl->id;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if(skillid == RL_HAMMER_OF_GOD) {
+				clif_skill_poseffect(src,skillid,skilllv,bl->x,bl->y,tick);
+				sc = status_get_sc(bl);
+				if(!sc || sc->data[SC_C_MARKER].timer == -1 || sc->data[SC_C_MARKER].val2 != src->id) {
+					tx += atn_rand()%10 - 5;
+					ty += atn_rand()%10 - 5;
+				}
+			}
+			/* ‚Ü‚¸ƒ^[ƒQƒbƒg‚ÉUŒ‚‚ğ‰Á‚¦‚é */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+			/* ‚»‚ÌŒãƒ^[ƒQƒbƒgˆÈŠO‚Ì”ÍˆÍ“à‚Ì“G‘S‘Ì‚Éˆ—‚ğs‚¤ */
+			map_foreachinarea(skill_area_sub,
+				bl->m,tx-2,ty-2,tx+2,ty+2,BL_CHAR,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			if(skillid == RL_HAMMER_OF_GOD)
+				pc_delcoin(sd,10,0);
+		}
+		break;
+	case RL_BANISHING_BUSTER:	/* ƒoƒjƒVƒ“ƒOƒoƒXƒ^[ */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		if(atn_rand()%100 >= skilllv*10+50)
+			break;
+		status_change_release(bl,0x02);	// ƒfƒBƒXƒyƒ‹Œø‰Ê
+		break;
+	case RL_H_MINE:		/* ƒnƒEƒŠƒ“ƒOƒ}ƒCƒ“ */
+		if(flag&1) {
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_H_MINE].timer != -1 && sc->data[SC_H_MINE].val2 == src->id) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,sc->data[SC_H_MINE].val1,tick,flag|0x500);
+				status_change_end(bl,SC_H_MINE,-1);
+			}
+		} else {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,src->id,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
+	case RL_MASS_SPIRAL:		/* ƒ}ƒXƒXƒpƒCƒ‰ƒ‹ */
+	case RL_AM_BLAST:		/* ƒAƒ“ƒ`ƒ}ƒeƒŠƒAƒ‹ƒuƒ‰ƒXƒg */
+	case RL_SLUGSHOT:		/* ƒXƒ‰ƒbƒOƒVƒ‡ƒbƒg */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		break;
+	case SU_BITE:			// ‚©‚İ‚Â‚­
 	case SU_SCAROFTAROU:	// ƒ^ƒƒE‚Ì
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
@@ -5197,7 +5299,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		break;
 	case SU_PICKYPECK:	// ƒsƒbƒL“Ë‚«
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		if(status_get_hp(bl) / status_get_max_hp(bl) * 100 <= 20 + skilllv * 10) {	// “G‚ÌHP‚ªˆê’èˆÈ‰º‚È‚ç
+		if((int)((atn_bignumber)status_get_hp(bl) * 100 / status_get_max_hp(bl)) <= 20 + skilllv * 10) {	// “G‚ÌHP‚ªˆê’èˆÈ‰º‚È‚ç
 			battle_skill_attack(BF_WEAPON,src,src,bl,SU_PICKYPECK_DOUBLE_ATK,skilllv,tick,flag);
 		} else {
 			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
@@ -6045,6 +6147,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case GN_CARTBOOST:			/* ƒJ[ƒgƒu[ƒXƒg */
 	case ALL_ODINS_POWER:		/* ƒI[ƒfƒBƒ“‚Ì—Í */
 	case KO_MEIKYOUSISUI:		/* –¾‹¾~… */
+	case RL_E_CHAIN:			/* ƒGƒ^[ƒiƒ‹ƒ`ƒF[ƒ“ */
 	case MS_REFLECTSHIELD:
 	case MER_QUICKEN:			/* ƒEƒFƒ|ƒ“ƒNƒCƒbƒPƒ“ */
 	case MER_AUTOBERSERK:
@@ -6423,7 +6526,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(atn_rand()%100 < 20 + skilllv * 10) {
 				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
 			} else {
-				pc_delcoin(sd,1,0);
+				if(pc_checkskill(sd,RL_RICHS_COIN) < 1)
+					pc_delcoin(sd,1,0);
 			}
 		}
 		break;
@@ -10163,6 +10267,125 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
+	case RL_RICHS_COIN:		/* ƒŠƒbƒ`ƒYƒRƒCƒ“ */
+		if(sd) {
+			int i;
+			if(sd->coin.num >= 10) {
+				clif_skill_fail(sd,skillid,0,0,0);
+				break;
+			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			for(i=0;i<10 && sd->coin.num<10;i++)
+				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
+		}
+		break;
+	case RL_C_MARKER:		/* ƒNƒŠƒ€ƒ]ƒ“ƒ}[ƒJ[ */
+		if(sd) {
+			int i;
+
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 != src->id)
+				status_change_end(bl, SC_C_MARKER, -1);
+
+			for(i=0;i<3;i++) {
+				if(sd->c_marker[i] == bl->id || sd->c_marker[i] == 0)
+					break;
+			}
+			if(i == 3) {
+				clif_skill_fail(sd,skillid,0,0,0);
+				break;
+			}
+			sd->c_marker[i] = bl->id;
+			status_change_start(bl,SC_C_MARKER,skilllv,src->id,i,0,skill_get_time(skillid,skilllv),0);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		else {
+			status_change_start(bl,SC_C_MARKER,skilllv,src->id,0,0,skill_get_time(skillid,skilllv),0);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case RL_FLICKER:		/* ƒtƒŠƒbƒJ[ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		map_foreachinarea(skill_flicker,bl->m,bl->x-15,bl->y-15,bl->x+15,bl->y+15,BL_SKILL,src,tick);
+		map_foreachinarea(skill_area_sub,src->m,
+			src->x-15,src->y-15,
+			src->x+15,src->y+15,
+			BL_CHAR,src,RL_H_MINE,skilllv,tick,flag|BCT_ENEMY|1,
+			skill_castend_damage_id);
+		break;
+	case RL_B_TRAP:			/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv */
+		skill_unitsetting(src,skillid,skilllv,src->x,src->y,0);
+		break;
+	case RL_HEAT_BARREL:	/* ƒq[ƒgƒoƒŒƒ‹ */
+	case RL_P_ALTER:	/* ƒvƒ‰ƒ`ƒiƒ€ƒAƒ‹ƒ^[ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,(sd)? sd->coin.num: 10,skill_get_time(skillid,skilllv),0);
+		if(sd)
+			pc_delcoin(sd,10,0);
+		break;
+	case RL_QD_SHOT:	/* ƒNƒCƒbƒNƒhƒ[ƒVƒ‡ƒbƒg */
+		if(flag&1) {
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 == src->id && skill_area_temp[1] != bl->id)
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = 10;
+			skill_area_temp[1] = bl->id;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+			status_change_end(src, SC_QD_SHOT_READY, -1);
+		}
+		break;
+	case RL_FIREDANCE:	/* ƒtƒ@ƒCƒA[ƒ_ƒ“ƒX */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		} else {
+			int ar = 3;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case RL_R_TRIP:	/* ƒ‰ƒEƒ“ƒhƒgƒŠƒbƒv */
+		if(flag&1) {
+			int dist = unit_distance(src,bl);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+			if(unit_distance(src,bl) < skill_get_blewcount(skillid,skilllv) + dist) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,RL_R_TRIP_PLUSATK,skilllv,tick,0x0500);
+			}
+		} else {
+			int ar = (skilllv==1? 3:(skilllv>=5? 6: 1 + skilllv));
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case RL_D_TAIL:	/* ƒhƒ‰ƒSƒ“ƒeƒCƒ‹ */
+		if(flag&1) {
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 == src->id)
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		} else {
+			int ar = 15;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
 	case SU_HIDE:	/* ‚©‚­‚ê‚é */
 		{
 			int type = GetSkillStatusChangeTable(skillid);
@@ -11363,6 +11586,41 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		if(sd && sd->elementball.num)
 			pc_delelementball(sd,sd->elementball.num,0);
 		break;
+	case RL_FALLEN_ANGEL:		/* ƒtƒH[ƒŠƒ“ƒGƒ“ƒWƒFƒ‹ */
+		if( !map[src->m].flag.turbo && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) && !map[src->m].flag.nojump &&
+		    map_getcell(src->m,x,y,CELL_CHKPASS)
+		) {
+			unit_movepos(src,x,y,1);
+			clif_skill_nodamage(src,src,skillid,skilllv,1);
+			status_change_start(src,SC_FALLEN_ANGEL,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		else if(sd)
+			clif_skill_fail(sd,skillid,0,0,0);
+		break;
+	case RL_FIRE_RAIN:	/* ƒtƒ@ƒCƒA[ƒŒƒCƒ“ */
+		{
+			int dir = (src->x == x && src->y == y)? 0: path_calc_dir(src,x,y);
+			int tmpx, tmpy;
+			int addx = 0, addy = 0;
+			int dist = path_distance(src->x,src->y,x,y);
+			int i;
+
+			// c‚ğ—Dæ
+			addy = diry[dir];
+			addx = (addy == 0)? dirx[dir]: 0;
+
+			// ‰ŠúˆÊ’u‚ğw’è
+			tmpx = src->x + addx * dist;
+			tmpy = src->y + addy * dist;
+
+			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
+			for(i = 1; i <= 10; i++) {
+				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,flag);
+				tmpx += addx;
+				tmpy += addy;
+			}
+		}
+		break;
 	case SU_LOPE:		/* ƒjƒƒƒ“ƒWƒƒƒ“ƒv */
 		if( !map[src->m].flag.turbo && (!map[src->m].flag.noteleport || map[src->m].flag.gvg) && !map[src->m].flag.nojump &&
 		    map_getcell(src->m,x,y,CELL_CHKPASS) && !map_count_oncell(src->m,x,y,BL_PC|BL_MOB|BL_NPC)
@@ -11672,6 +11930,9 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			}
 		}
 		break;
+	case GS_DESPERADO:	/* ƒfƒXƒyƒ‰[ƒh */
+		val2 = flag;
+		break;
 	case GS_GROUNDDRIFT:	/* ƒOƒ‰ƒEƒ“ƒhƒhƒŠƒtƒg */
 		{
 			const unsigned char drift_id[] = {
@@ -11858,6 +12119,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			case DC_FORTUNEKISS:	/* K‰^‚ÌƒLƒX */
 			case DC_SERVICEFORYOU:	/* ƒT[ƒrƒXƒtƒH[ƒ†[ */
 			case CG_HERMODE:		/* ƒwƒ‹ƒ‚[ƒh‚Ìñ */
+			case RL_B_TRAP:			/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv */
 			case NPC_EVILLAND:		/* ƒC[ƒrƒ‹ƒ‰ƒ“ƒh */
 			case NPC_VENOMFOG:		/* ƒxƒiƒ€ƒtƒHƒO */
 			case MA_SKIDTRAP:		/* ƒXƒLƒbƒhƒgƒ‰ƒbƒv */
@@ -11982,6 +12244,7 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 		case UNT_GRAVITATION:
 		case UNT_SUITON:
 		case UNT_MAKIBISHI:
+		case UNT_B_TRAP:
 			return 0;
 		}
 	}
@@ -12245,12 +12508,6 @@ static int skill_unit_onplace(struct skill_unit *src,struct block_list *bl,unsig
 			}
 		}
 		break;
-	case UNT_NYANGGRASS:	/* ƒjƒƒƒ“ƒOƒ‰ƒX */
-		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0) {
-			if(!sc || sc->data[SC_NYANGGRASS].timer==-1)
-				status_change_start(bl,SC_NYANGGRASS,sg->skill_lv,src->bl.id,0,0,sg->limit,0);
-		}
-		break;
 /*	default:
 		if(battle_config.error_log)
 			printf("skill_unit_onplace: Unknown skill unit id=%d block=%d\n",sg->unit_id,bl->id);
@@ -12310,6 +12567,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		case UNT_GRAVITATION:
 		case UNT_SUITON:
 		case UNT_MAKIBISHI:
+		case UNT_B_TRAP:
 			return 0;
 		}
 	}
@@ -12449,6 +12707,8 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_ATTACK_SKILLS:	/* UŒ‚ŒnƒXƒLƒ‹‘S”Ê */
 		switch(sg->skill_id) {
 		case GS_DESPERADO:	/* ƒfƒXƒyƒ‰[ƒh */
+			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,sg->val2|0x0500);
+			break;
 		case GN_CRAZYWEED_ATK:	/* ƒNƒŒƒCƒW[ƒEƒB[ƒh */
 		case KO_HUUMARANKA:		/* •—–‚è— Œ•—‰Ø */
 			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x0500);
@@ -13066,11 +13326,26 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			}
 		}
 		break;
+	case UNT_B_TRAP:		/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv */
+		if(sg->src_id == bl->id || (status_get_mode(bl)&MD_BOSS))
+			break;
+		if(sc && sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1 && battle_check_target(&src->bl, bl, BCT_ENEMY) > 0)
+			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,sg->bl.id,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
+		break;
+	case UNT_FIRE_RAIN:		/* ƒtƒ@ƒCƒA[ƒŒƒCƒ“ */
+		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x500);
+		break;
 	case UNT_CATNIPPOWDER:	/* ƒCƒkƒnƒbƒJƒVƒƒƒ[ */
 		if(sg->src_id == bl->id || (status_get_mode(bl)&MD_BOSS))
 			break;
 		if(sc && sc->data[GetSkillStatusChangeTable(sg->skill_id)].timer == -1 && battle_check_target(&src->bl, bl, BCT_ENEMY) > 0)
 			status_change_start(bl,GetSkillStatusChangeTable(sg->skill_id),sg->skill_lv,0,0,0,sg->limit,0);
+		break;
+	case UNT_NYANGGRASS:	/* ƒjƒƒƒ“ƒOƒ‰ƒX */
+		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0) {
+			if(sc && sc->data[SC_NYANGGRASS].timer == -1)
+				status_change_start(bl,SC_NYANGGRASS,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
+		}
 		break;
 	case UNT_VENOMFOG:	/* ƒxƒiƒ€ƒtƒHƒO */
 		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
@@ -13126,7 +13401,6 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 	case UNT_VOLCANO:	/* ƒ{ƒ‹ƒP[ƒm */
 	case UNT_DELUGE:	/* ƒfƒŠƒ…[ƒW */
 	case UNT_VIOLENTGALE:	/* ƒoƒCƒIƒŒƒ“ƒgƒQƒCƒ‹ */
-	case UNT_NYANGGRASS:	/* ƒjƒƒƒ“ƒOƒ‰ƒX */
 		sc = status_get_sc(bl);
 		type = GetSkillStatusChangeTable(sg->skill_id);
 		if( type == -1 ) break;
@@ -13260,6 +13534,11 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 		if (sc && sc->data[type].timer != -1 && sc->data[type].val2 == src->bl.id) {
 			status_change_end(bl,type,-1);
 		}
+		break;
+	case UNT_NYANGGRASS:	/* ƒjƒƒƒ“ƒOƒ‰ƒX */
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_NYANGGRASS].timer != -1 && sc->data[SC_NYANGGRASS].val2 == src->bl.id)
+			status_change_end(bl,SC_NYANGGRASS,-1);
 		break;
 /*	default:
 		if(battle_config.error_log)
@@ -15158,6 +15437,20 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}
+		break;
+	case RL_B_TRAP:	/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv */
+		/* ”§ŒÀ */
+		if(battle_config.pc_land_skill_limit) {
+			int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
+			if(maxcount > 0 && skill_count_unitgroup(ud,cnd->id) >= maxcount) {
+				clif_skill_fail(sd,cnd->id,0,0,0);
+				return 0;
+			}
+		}
+		break;
+	case RL_QD_SHOT:			/* ƒNƒCƒbƒNƒhƒ[ƒVƒ‡ƒbƒg */
+		if(sd->sc.data[SC_QD_SHOT_READY].timer == -1 || sd->sc.data[SC_QD_SHOT_READY].val2 == sd->bl.id)
+			return 0;
 		break;
 	case GD_BATTLEORDER:		/* —Õí‘Ô¨ */
 	case GD_REGENERATION:		/* Œƒ—ã */
@@ -17539,6 +17832,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case KO_HUUMARANKA:
 		case KO_MAKIBISHI:
 		case KO_ZENKAI:
+		case RL_FIRE_RAIN:
 		case SU_CN_METEOR:
 		case NPC_DISSONANCE:
 		case NPC_UGLYDANCE:
@@ -19740,6 +20034,45 @@ static int skill_fire_expansion( struct block_list *bl, va_list ap )
 }
 
 /*==========================================
+ * ƒtƒŠƒbƒJ[
+ *------------------------------------------
+ */
+static int skill_flicker( struct block_list *bl, va_list ap )
+{
+	int ar;
+	struct block_list *src;
+	struct skill_unit *unit;
+	struct skill_unit_group *sg;
+	unsigned int tick;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, src = va_arg(ap,struct block_list *));
+	nullpo_retr(0, unit = (struct skill_unit *)bl);
+	nullpo_retr(0, sg = unit->group);
+
+	tick = va_arg(ap,unsigned int);
+
+	if(!(skill_get_inf2(sg->skill_id)&INF2_TRAP))
+		return 0;
+
+	if(sg->unit_id == UNT_B_TRAP && sg->src_id == src->id) {
+		ar = unit->range;
+
+		// ã©‚ğ”­“®‚³‚¹‚é
+		map_foreachinarea(skill_area_sub,
+			bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+			src,RL_B_FLICKER_ATK,sg->skill_lv,tick,(0x0f<<20)|BCT_ENEMY|0x0500,
+			skill_castend_damage_id);
+
+		// ‹N“®‚µ‚½ã©‚ÌŒãˆ—
+		sg->unit_id = UNT_USED_TRAPS;
+		clif_changelook(bl,LOOK_BASE,sg->unit_id);
+		sg->limit = DIFF_TICK(gettick(),sg->tick) + 1500;
+	}
+	return 0;
+}
+
+/*==========================================
  * ƒLƒƒƒXƒŠƒ“ƒO‚Ìƒ^[ƒQƒbƒg•ÏX
  *------------------------------------------
  */
@@ -20052,6 +20385,7 @@ static void skill_init_unit_layout(void)
 			case MG_FIREWALL:
 			case WZ_ICEWALL:
 			case WL_EARTHSTRAIN:
+			case RL_FIRE_RAIN:
 				// ƒtƒ@ƒCƒA[ƒEƒH[ƒ‹AƒAƒCƒXƒEƒH[ƒ‹‚Í•ûŒü‚Å•Ï‚í‚é‚Ì‚Å•Êˆ—
 				break;
 			case PR_SANCTUARY:
@@ -20321,6 +20655,23 @@ static void skill_init_unit_layout(void)
 		} else {			/* ã‰º */
 			int dx[] = {-7,-6,-5,-4,-3,-2,-1, 0, 1, 2, 3, 4, 5, 6, 7};
 			int dy[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+			memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
+		}
+		pos++;
+	}
+	// ƒtƒ@ƒCƒA[ƒŒƒCƒ“
+	firerain_unit_pos = pos;
+	for (i=0;i<8;i++) {
+		skill_unit_layout[pos].count = 3;
+		if (i==2 || i==6) {		/* 	¶‰E */
+			int dx[] = { 0, 0, 0};
+			int dy[] = {-1, 0, 1};
+			memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
+			memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
+		} else {			/* ã‰º */
+			int dx[] = {-1, 0, 1};
+			int dy[] = { 0, 0, 0};
 			memcpy(skill_unit_layout[pos].dx,dx,sizeof(dx));
 			memcpy(skill_unit_layout[pos].dy,dy,sizeof(dy));
 		}

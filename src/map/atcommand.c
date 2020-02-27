@@ -2374,6 +2374,10 @@ int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType com
 		max = battle_config.esnv_status_max;
 	else if(sd->status.class_ == PC_CLASS_KG || sd->status.class_ == PC_CLASS_OB)
 		max = battle_config.ko_status_max;
+	else if(sd->status.class_ == PC_CLASS_RL)
+		max = battle_config.rl_status_max;
+	else if(sd->status.class_ == PC_CLASS_SUM)
+		max = battle_config.sum_status_max;
 	else if(pc_isbaby(sd))
 		max = battle_config.baby_status_max;
 	else
@@ -4988,6 +4992,8 @@ int atcommand_statall(const int fd, struct map_session_data* sd, AtCommandType c
 		max = battle_config.esnv_status_max;
 	else if(sd->status.class_ == PC_CLASS_KG || sd->status.class_ == PC_CLASS_OB)
 		max = battle_config.ko_status_max;
+	else if(sd->status.class_ == PC_CLASS_RL)
+		max = battle_config.rl_status_max;
 	else if(sd->status.class_ == PC_CLASS_SUM)
 		max = battle_config.sum_status_max;
 	else if(pc_isbaby(sd))

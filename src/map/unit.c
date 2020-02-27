@@ -1106,6 +1106,12 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(sc && sc->data[SC_WEAPONBLOCKING2].timer != -1)
 			target_id = sc->data[SC_WEAPONBLOCKING2].val2;
 		break;
+	case RL_QD_SHOT:		/* クイックドローショット */
+		if(sc && sc->data[SC_QD_SHOT_READY].timer != -1)
+			target_id = sc->data[SC_QD_SHOT_READY].val2;
+		else
+			target_id = 0;
+		break;
 	}
 
 	if( (target = map_id2bl(target_id)) == NULL ) {
@@ -1177,6 +1183,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		case TK_COUNTER:
 		case GC_WEAPONCRUSH:
 		case SR_FALLENEMPIRE:
+		case RL_QD_SHOT:
 			break;
 		case MO_EXTREMITYFIST:
 		case TK_JUMPKICK:

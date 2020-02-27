@@ -1109,7 +1109,7 @@ unsigned int pc_get_job_bit(int job)
 			bit = 0x08000000;
 			break;
 		case PC_JOB_GS:		// ガンスリンガー
-		case PC_JOB_RB:		// リベリオン（暫定）
+		case PC_JOB_RL:		// リベリオン（暫定）
 			bit = 0x10000000;
 			break;
 		case PC_JOB_NJ:		// 忍者
@@ -1736,6 +1736,13 @@ int pc_calc_skilltree(struct map_session_data *sd)
 				case PC_JOB_SG:
 				case PC_JOB_SL:
 					c = PC_JOB_TK;
+					break;
+				case PC_JOB_KG:
+				case PC_JOB_OB:
+					c = PC_JOB_NJ;
+					break;
+				case PC_JOB_RL:
+					c = PC_JOB_GS;
 					break;
 				default:
 					break;
@@ -3695,9 +3702,11 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	const int skill_list[] = {
 		KN_TWOHANDQUICKEN,
 		KN_ONEHAND,
+#ifdef PRE_RENEWAL
 		LK_AURABLADE,
-		LK_PARRYING,
 		LK_CONCENTRATION,
+#endif
+		LK_PARRYING,
 		CR_SPEARQUICKEN,
 		BS_ADRENALINE,
 		BS_ADRENALINE2,
@@ -3734,6 +3743,26 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	}
 	if( sd->sc.data[SC_SPURT].timer != -1 && (sd->weapontype1 != WT_FIST || sd->weapontype2 != WT_FIST) ) {
 		status_change_end(&sd->bl,SC_SPURT,-1);	// 駆け足STR
+	}
+#ifndef PRE_RENEWAL
+	if( sd->sc.data[SC_AURABLADE].timer != -1) {	// オーラブレード
+		status_change_end(&sd->bl,SC_AURABLADE,-1);
+	}
+	if( sd->sc.data[SC_CONCENTRATION].timer != -1) {	// コンセントレーション
+		status_change_end(&sd->bl,SC_CONCENTRATION,-1);
+	}
+	if( sd->sc.data[SC_TENSIONRELAX].timer != -1) {	// テンションリラックス
+		status_change_end(&sd->bl,SC_TENSIONRELAX,-1);
+	}
+	if( sd->sc.data[SC_OVERTHRUSTMAX].timer != -1) {	// オーバートラストマックス
+		status_change_end(&sd->bl,SC_OVERTHRUSTMAX,-1);
+	}
+#endif
+	if( sd->sc.data[SC_HEAT_BARREL].timer != -1) {	// ヒートバレル
+		status_change_end(&sd->bl,SC_HEAT_BARREL,-1);
+	}
+	if( sd->sc.data[SC_P_ALTER].timer != -1) {	// プラチナムアルター
+		status_change_end(&sd->bl,SC_P_ALTER,-1);
 	}
 
 	if(sd->status.shield <= 0) {
@@ -4063,8 +4092,8 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_OB;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
-		case PC_CLASS_RB:
-			bj.job   = PC_JOB_RB;
+		case PC_CLASS_RL:
+			bj.job   = PC_JOB_RL;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
 		case PC_CLASS_SUM:
@@ -4192,8 +4221,8 @@ int pc_calc_class_job(int job, int upper)
 		case PC_JOB_OB:
 			class_ = PC_CLASS_OB;
 			break;
-		case PC_JOB_RB:
-			class_ = PC_CLASS_RB;
+		case PC_JOB_RL:
+			class_ = PC_CLASS_RL;
 			break;
 		case PC_JOB_SUM:
 			class_ = PC_CLASS_SUM;
@@ -4442,8 +4471,8 @@ int pc_calc_job_class(int class_)
 		case PC_CLASS_OB:
 			job = PC_JOB_OB;
 			break;
-		case PC_CLASS_RB:
-			job = PC_JOB_RB;
+		case PC_CLASS_RL:
+			job = PC_JOB_RL;
 			break;
 		case PC_CLASS_SUM:
 			job = PC_JOB_SUM;
@@ -4749,7 +4778,7 @@ int pc_get_base_class(int class_, int type)
 		case PC_CLASS_OB:
 			class_ = PC_CLASS_NJ;
 			break;
-		case PC_CLASS_RB:
+		case PC_CLASS_RL:
 			class_ = PC_CLASS_GS;
 			break;
 		}
@@ -5155,7 +5184,7 @@ atn_bignumber pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
 		case PC_CLASS_KG:	// 影狼
 		case PC_CLASS_OB:	// 朧
-		case PC_CLASS_RB:	// リベリオン
+		case PC_CLASS_RL:	// リベリオン
 			table = 7;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -5344,7 +5373,7 @@ atn_bignumber pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
 		case PC_CLASS_KG:	// 影狼
 		case PC_CLASS_OB:	// 朧
-		case PC_CLASS_RB:	// リベリオン
+		case PC_CLASS_RL:	// リベリオン
 			table = 19;
 			break;
 		case PC_CLASS_RK_H:	// 転生ルーンナイト
@@ -5415,6 +5444,9 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 			return 0;
 	} else if(sd->status.class_ == PC_CLASS_KG || sd->status.class_ == PC_CLASS_OB) {
 			if(val >= battle_config.ko_status_max)
+				return 0;
+	} else if(sd->status.class_ == PC_CLASS_RL) {
+			if(val >= battle_config.rl_status_max)
 				return 0;
 	} else if(sd->status.class_ == PC_CLASS_SUM) {
 			if(val >= battle_config.sum_status_max)
@@ -5495,6 +5527,8 @@ void pc_statusup(struct map_session_data *sd, unsigned short type, int num)
 		max = battle_config.esnv_status_max;
 	else if(sd->status.class_ == PC_CLASS_KG || sd->status.class_ == PC_CLASS_OB)
 		max = battle_config.ko_status_max;
+	else if(sd->status.class_ == PC_CLASS_RL)
+		max = battle_config.rl_status_max;
 	else if(sd->status.class_ == PC_CLASS_SUM)
 		max = battle_config.sum_status_max;
 	else if(pc_isbaby(sd))
