@@ -309,7 +309,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
 		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`, `style`, `sex`,"
-		"`allow_call`, `autofeed`"
+		"`allow_call`, `autofeed`, `title_id`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id
 	);
 	if(result == false) {
@@ -388,6 +388,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.sex                 = atoi(sql_row[55]);
 	p->st.allow_call          = atoi(sql_row[56]);
 	p->st.autofeed            = atoi(sql_row[57]);
+	p->st.title_id            = atoi(sql_row[58]);
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';
@@ -682,6 +683,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_NUM(sex                ,"sex");
 	UPDATE_UNUM(allow_call        ,"allow_call");
 	UPDATE_UNUM(autofeed          ,"autofeed");
+	UPDATE_NUM(title_id           ,"title_id");
 
 	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;
@@ -1079,6 +1081,10 @@ bool chardb_sql_delete_sub(int char_id)
 
 		// delete quest
 		if( sqldbs_query(&mysql_handle, "DELETE FROM `" QUEST_TABLE "` WHERE `char_id`='%d'", char_id) == false )
+			break;
+
+		// delete achieve
+		if( sqldbs_query(&mysql_handle, "DELETE FROM `" ACHIEVE_TABLE "` WHERE `char_id`='%d'", char_id) == false )
 			break;
 
 		// success

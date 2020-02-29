@@ -38,6 +38,7 @@
 #include "msg.h"
 #include "unit.h"
 #include "status.h"
+#include "achieve.h"
 
 // ˜I“XID
 static unsigned int vending_id = 0;
@@ -219,6 +220,8 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 			return; // ƒAƒCƒeƒ€”’´‰ß
 		}
 	}
+
+	achieve_update_content(sd, ACH_SPEND_ZENY, SP_ZENY, (int)zeny);
 
 	// ƒ[ƒj[x•¥‚¢
 	pc_payzeny(sd, (int)zeny);

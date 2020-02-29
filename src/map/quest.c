@@ -33,6 +33,7 @@
 #include "chrif.h"
 #include "intif.h"
 #include "pc.h"
+#include "achieve.h"
 
 #define QUEST_KILLDB_SIZE 64
 
@@ -167,6 +168,7 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 		memcpy(&sd->quest[sd->questlist], &qd, sizeof(struct quest_data));
 		sd->questlist++;
 	}
+	achieve_update_content(sd, ACH_QUEST, qd.nameid, 1);
 
 	clif_add_questlist(sd, quest_id);
 #if PACKETVER >= 20150513
@@ -248,6 +250,7 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 		memcpy(&sd->quest[sd->questlist], &qd, sizeof(struct quest_data));
 		sd->questlist++;
 	}
+	achieve_update_content(sd, ACH_QUEST, qd.nameid, 1);
 
 	clif_add_questlist(sd, new_id);
 #if PACKETVER >= 20150513
@@ -459,7 +462,7 @@ static int quest_readdb(void)
 			quest_db[i].mob[j].id    = (short)mob_id;
 			quest_db[i].mob[j].count = (short)atoi(split[4+j*2]);
 
-			if(mob_id> 0) {
+			if(mob_id > 0) {
 				int n;
 				for(n = 0; n < max_killdb_count; n++) {
 					if(quest_killdb[n] == mob_id)

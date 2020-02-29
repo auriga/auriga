@@ -154,7 +154,7 @@ int itemdb_randopt_mob(int mobid);
 int itemdb_randopt_item(int nameid);
 struct randopt_item_data itemdb_randopt_data(int mobid, int nameid);
 
-int itemdb_insert_randoptdb(struct randopt_item_data ro);
+bool itemdb_insert_randoptdb(struct randopt_item_data ro);
 
 void itemdb_reload(void);
 void do_final_itemdb(void);

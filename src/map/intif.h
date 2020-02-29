@@ -117,6 +117,10 @@ int intif_save_scdata(struct map_session_data *sd);
 int intif_request_quest(int account_id,int char_id);
 int intif_save_quest(struct map_session_data *sd);
 
+// ÀÑŠÖ˜A
+int intif_request_achieve(int account_id,int char_id);
+int intif_save_achieve(struct map_session_data *sd);
+
 // ‚»‚Ì‘¼
 int intif_jumpto(int account_id,const char *name);
 int intif_where(int account_id,const char *name);

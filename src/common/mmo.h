@@ -135,6 +135,9 @@
 
 #define MAX_QUESTLIST 100
 
+#define MAX_ACHIEVELIST 100
+#define MAX_ACHIEVE_CONTENT  10
+
 // ブロックID定義
 #define MIN_FLOORITEM            2
 #define MAX_FLOORITEM      1999999
@@ -605,6 +608,7 @@ struct mmo_charstatus {
 	char sex;
 	char allow_call;
 	char autofeed;
+	int title_id;
 };
 
 struct registry {

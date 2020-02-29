@@ -41,6 +41,7 @@
 #include "int_merc.h"
 #include "int_quest.h"
 #include "int_elem.h"
+#include "int_achieve.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
@@ -53,7 +54,7 @@ int inter_recv_packet_length[] = {
 	-1, 6,-1, 0, 55,19, 6,-1, 14,-1,-1,-1, 19,22,186,-1,	// 3030-
 	 5, 9, 0, 0,  0, 0, 0, 0,  0, 6,-1,10, 10,10, -1,10,	// 3040-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-
-	10,-1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-
+	10,-1, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3060-
 	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0, -1,14, -1,14,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
@@ -138,6 +139,8 @@ int inter_config_read(const char *cfgName)
 				continue;
 			if(elemdb_config_read_sub(w1,w2))
 				continue;
+			if(achievedb_config_read_sub(w1,w2))
+				continue;
 		}
 	}
 	fclose(fp);
@@ -165,6 +168,7 @@ int inter_sync(void)
 	storagedb_sync();
 	gstoragedb_sync();
 	maildb_sync();
+	achievedb_sync();
 
 	return 0;
 }
@@ -512,6 +516,8 @@ int inter_parse_frommap(int fd)
 			break;
 		if( inter_quest_parse_frommap(fd) )
 			break;
+		if( inter_achieve_parse_frommap(fd) )
+			break;
 		return 0;
 	}
 	RFIFOSKIP(fd, len);
@@ -562,6 +568,7 @@ int inter_init(const char *file)
 	accregdb_init();
 	storagedb_init();
 	maildb_init();
+	achievedb_init();
 
 	return 0;
 }

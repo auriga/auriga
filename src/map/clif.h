@@ -146,6 +146,8 @@ void clif_showdigit(struct map_session_data* sd, unsigned char type, int value);
 void clif_dressing_room(struct map_session_data *sd, int view);
 void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int target);
 void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enable);
+void clif_send_achievement_list(struct map_session_data *sd);
+void clif_send_achievement_update(struct map_session_data *sd, struct achieve_data *ad);
 void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, bool remove);
 
 // trade

@@ -2599,6 +2599,22 @@ AurigaNPCScript
 			type=1	<value>のエフェクトをエフェクト表示リストへ追加し表示します。
 			詳しいvalueの種類はconst.txt参照してください。
 
+		achievement命令
+			achievement <nameid>;
+
+			nameid	数値
+
+			ACH_ADVENTUREタイプの<nameid>の実績を獲得します。
+			詳しくはdoc/db_ref.txtを参照してください。
+
+		achievement2命令
+			achievement2 <type>,<nameid>,<num>;
+
+			type, nameid, num	数値
+
+			<type>タイプの<nameid>の実績を<num>分獲得します。
+			詳しくはdoc/db_ref.txtを参照してください。
+
 
 	＊関数
 		rand関数

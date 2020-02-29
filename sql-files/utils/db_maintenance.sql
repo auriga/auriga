@@ -37,6 +37,7 @@ ANALYZE TABLE `mercenary`;
 ANALYZE TABLE `mercenary_employ`;
 ANALYZE TABLE `quest`;
 ANALYZE TABLE `elemental`;
+ANALYZE TABLE `achieve`;
 
 OPTIMIZE TABLE `cart_inventory`;
 OPTIMIZE TABLE `char_data`;
@@ -74,3 +75,4 @@ OPTIMIZE TABLE `mercenary`;
 OPTIMIZE TABLE `mercenary_employ`;
 OPTIMIZE TABLE `quest`;
 OPTIMIZE TABLE `elemental`;
+OPTIMIZE TABLE `achieve`;

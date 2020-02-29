@@ -77,6 +77,7 @@
 #include "quest.h"
 #include "buyingstore.h"
 #include "memorial.h"
+#include "achieve.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -4085,6 +4086,8 @@ int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
+int buildin_achievement(struct script_state *st);
+int buildin_achievement2(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4409,6 +4412,8 @@ struct script_function buildin_func[] = {
 	{buildin_opendressroom,"opendressroom","*"},
 	{buildin_hateffect,"hateffect","ii"},
 	{buildin_getrandombox,"getrandombox","i"},
+	{buildin_achievement,"achievement","i"},
+	{buildin_achievement2,"achievement2","iii"},
 	{NULL,NULL,NULL}
 };
 
@@ -13909,5 +13914,66 @@ int buildin_getrandombox(struct script_state *st)
 	int nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	push_val(st->stack,C_INT,itemdb_searchrandomid(-nameid));
+	return 0;
+}
+
+/*==========================================
+ * 
+ *------------------------------------------
+ */
+int buildin_achievement(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if(sd)
+		achieve_update_content(sd, ACH_ADVENTURE, nameid, 1);
+	return 0;
+}
+
+/*==========================================
+ * 
+ *------------------------------------------
+ */
+int buildin_achievement2(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	int nameid = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	int num = conv_num(st,& (st->stack->stack_data[st->start+4]));
+
+	if(type <= ACH_NONE || type >= ACH_MAX) {
+		printf("buildin_achievement2: unsupported arg1, type=%d\n", type);
+		return 1;
+	}
+
+	switch(type) {
+	case ACH_LEVEL:
+		if(nameid != SP_BASELEVEL && nameid != SP_JOBLEVEL) {
+			printf("buildin_achievement2: unsupported arg2, type=%d, id=%d\n", type, nameid);
+			return 1;
+		}
+		break;
+	case ACH_STATUS:
+		if(nameid < SP_STR || nameid > SP_LUK) {
+			printf("buildin_achievement2: unsupported arg2, type=%d, id=%d\n", type, nameid);
+			return 1;
+		}
+		break;
+	case ACH_SPEND_ZENY:
+	case ACH_GET_ZENY:
+		if(nameid != SP_ZENY) {
+			printf("buildin_achievement2: unsupported arg2, type=%d, id=%d\n", type, nameid);
+			return 1;
+		}
+		break;
+	case ACH_ACHIEVE:
+	case ACH_QUEST:
+		// 対象の存在チェックはしないよ！
+		break;
+	}
+
+	if(sd)
+		achieve_update_content(sd, type, nameid, num);
 	return 0;
 }

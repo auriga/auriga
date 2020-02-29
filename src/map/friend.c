@@ -33,6 +33,7 @@
 #include "battle.h"
 #include "nullpo.h"
 #include "msg.h"
+#include "achieve.h"
 
 static struct dbt * online_db = NULL;
 
@@ -140,6 +141,9 @@ int friend_add_reply( struct map_session_data *sd, int account_id, int char_id, 
 	// ’Ç‰Á’Ê’m
 	clif_friend_add_ack( sd->fd, tsd->bl.id, tsd->status.char_id, tsd->status.name, 0 );
 	clif_friend_add_ack( tsd->fd, sd->bl.id, sd->status.char_id, sd->status.name, 0 );
+
+	achieve_update_content(sd, ACH_ADD_FRIEND, 1, sd->status.friend_num);
+	achieve_update_content(tsd, ACH_ADD_FRIEND, 1, tsd->status.friend_num);
 
 	return 1;
 }

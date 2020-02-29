@@ -62,6 +62,7 @@
 #include "merc.h"
 #include "buyingstore.h"
 #include "elem.h"
+#include "achieve.h"
 #include "memorial.h"
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
@@ -1425,6 +1426,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	// クエストリストの送信要求
 	intif_request_quest(sd->status.account_id,sd->status.char_id);
 
+	// 実績リストの送信要求
+	intif_request_achieve(sd->status.account_id,sd->status.char_id);
+
 	// ペット初期化
 	sd->petDB = NULL;
 	sd->pd = NULL;
@@ -2290,6 +2294,8 @@ int pc_getzeny(struct map_session_data *sd,int zeny)
 	sd->status.zeny += zeny;
 	clif_updatestatus(sd,SP_ZENY);
 
+	achieve_update_content(sd, ACH_GET_ZENY, SP_ZENY, sd->status.zeny);
+
 	return 0;
 }
 
@@ -2808,6 +2814,10 @@ void pc_useitem(struct map_session_data *sd, int n)
 	{
 		clif_useitemack(sd,n,amount,1);
 	}
+
+	// 実績使用ターゲット
+	if(achieve_search_itemid(nameid))
+		achieve_update_content(sd, ACH_USE_ITEM, nameid, 1);
 
 	if(item) {
 		if(item->use_script)
@@ -4838,6 +4848,8 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 
 		// レベルアップしたのでパーティー情報を更新する（公平範囲チェック）
 		party_send_movemap(sd);
+
+		achieve_update_content(sd, ACH_LEVEL, SP_BASELEVEL, sd->status.base_level);
 		return 1;
 	}
 
@@ -4869,6 +4881,7 @@ static int pc_checkjoblevelup(struct map_session_data *sd)
 			clif_misceffect(&sd->bl,8);
 		else
 			clif_misceffect(&sd->bl,1);
+		achieve_update_content(sd, ACH_LEVEL, SP_JOBLEVEL, sd->status.job_level);
 		return 1;
 	}
 
@@ -5572,6 +5585,8 @@ void pc_statusup(struct map_session_data *sd, unsigned short type, int num)
 	status_calc_pc(sd,0);
 	clif_statusupack(sd,type,1,val);
 
+	achieve_update_content(sd, ACH_STATUS, type, val);
+
 	return;
 }
 
@@ -5646,6 +5661,8 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
 	clif_updatestatus(sd,type);
 	status_calc_pc(sd,0);
 	clif_statusupack(sd,type,1,val);
+
+	achieve_update_content(sd, ACH_STATUS, type, val);
 
 	return 0;
 }
@@ -7003,6 +7020,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	pc_equiplookall(sd);
 	clif_equiplist(sd);
 	clif_skillinfoblock(sd);
+
+	achieve_update_content(sd, ACH_JOBCHANGE, sd->status.class_, 1);
 
 	return 0;
 }
@@ -9344,6 +9363,8 @@ static int pc_autosave_sub(struct map_session_data *sd,va_list ap)
 
 		if(sd->questlist)
 			intif_save_quest(sd);
+		if(sd->achievelist)
+			intif_save_achieve(sd);
 		if(sd->status.pet_id > 0 && sd->pd)
 			intif_save_petdata(sd->status.account_id,&sd->pet);
 		if(sd->status.homun_id > 0 && sd->hd)

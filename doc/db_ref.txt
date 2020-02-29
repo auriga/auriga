@@ -9,38 +9,40 @@
 
 < dbのリスト >
 
-skill_cast_db.txt     スキルのキャスティング時間とディレイ、維持時間等を設定
-skill_db.txt          スキルのデータを設定
-skill_db2.txt         スキルのデータを設定2
-skill_require_db.txt  スキル使用条件を設定
-skill_tree.txt        スキルツリーを設定
-skill_unit_db.txt     スキルユニットに関する設定。
-pet_db.txt            ペットのデータを設定
-packet_db.txt         map-server clif.cで使うパケット定義
-item_db.txt           アイテムのデータを設定
-item_db2.txt          アイテムの追加情報を設定
-item_value_db.txt     アイテム価格のオーバーライド
-item_arrowtype.txt    矢の種類を設定
-item_avail.txt        アイテム使用可否を設定
-mob_db.txt            モンスターのデータを設定
-mob_skill_db.txt      モンスターの使用するスキルを設定
-homun_db.txt          ホムンクルスのデータを設定
-homun_db2.txt         ホムンクルスの成長データを設定
-homun_skill_tree.txt  ホムンクルスのスキルツリーを設定
-produce_db.txt        製造に関連するデータを設定
-scdata_db.txt         ステータス異常のデータを設定
-job_db1.txt           JOB毎の補正値を設定
-booking_map_db.txt    パーティーブッキングで使用するMAPを設定
-booking_job_db.txt    パーティーブッキングで使用するJOBを設定
-atcommand_go_db.txt   @goコマンドの行き先を設定
-merc_db.txt           傭兵のデータを設定
-merc_skill_tree.txt   傭兵が使用するスキルを設定
-memorial_db.txt       メモリアルダンジョンのデータを設定
-item_cardtype.txt     カードの種類を設定
-mob_talk_db.txt       モンスターの発言内容を設定
-elem_db.txt           精霊のデータを設定
-quest_db.txt          クエストのデータを設定
-item_randopt_db.lua   ランダムオプションのリストデータを設定
+skill_cast_db.txt          スキルのキャスティング時間とディレイ、維持時間等を設定
+skill_db.txt               スキルのデータを設定
+skill_db2.txt              スキルのデータを設定2
+skill_require_db.txt       スキル使用条件を設定
+skill_tree.txt             スキルツリーを設定
+skill_unit_db.txt          スキルユニットに関する設定。
+pet_db.txt                 ペットのデータを設定
+packet_db.txt              map-server clif.cで使うパケット定義
+item_db.txt                アイテムのデータを設定
+item_db2.txt               アイテムの追加情報を設定
+item_value_db.txt          アイテム価格のオーバーライド
+item_arrowtype.txt         矢の種類を設定
+item_avail.txt             アイテム使用可否を設定
+mob_db.txt                 モンスターのデータを設定
+mob_skill_db.txt           モンスターの使用するスキルを設定
+homun_db.txt               ホムンクルスのデータを設定
+homun_db2.txt              ホムンクルスの成長データを設定
+homun_skill_tree.txt       ホムンクルスのスキルツリーを設定
+produce_db.txt             製造に関連するデータを設定
+scdata_db.txt              ステータス異常のデータを設定
+job_db1.txt                JOB毎の補正値を設定
+booking_map_db.txt         パーティーブッキングで使用するMAPを設定
+booking_job_db.txt         パーティーブッキングで使用するJOBを設定
+atcommand_go_db.txt        @goコマンドの行き先を設定
+merc_db.txt                傭兵のデータを設定
+merc_skill_tree.txt        傭兵が使用するスキルを設定
+memorial_db.txt            メモリアルダンジョンのデータを設定
+item_cardtype.txt          カードの種類を設定
+mob_talk_db.txt            モンスターの発言内容を設定
+elem_db.txt                精霊のデータを設定
+quest_db.txt               クエストのデータを設定
+item_randopt_db.lua        ランダムオプションのリストデータを設定
+achievement_db.lua         実績のデータを設定
+achievement_level_db.lua   実績ランクレベルの必要経験値データを設定
 
 
 ==========================================================================
@@ -1303,6 +1305,47 @@ OptVal_min  : 付加するオプション効果のランダム幅下限値
 OptVal_max  : 付加するオプション効果のランダム幅上限値（この値は省略可能で、その場合テーブルにしないでください）
 Rate        : 付加する確率（万分率）
               同じSlotの確率と集計されて計算されます
+
+
+==========================================================================
+33. db/achievement_db.lua
+--------------------------------------------------------------------------
+NameID,Name,Type,Content={Number={ID,Count},...},Reward={Title,Script},Score
+
+NameID : 実績のID
+Name   : 名称（ダミー）
+Type   : 実績の種別
+Content : 実績の内容配列、1～10まで設定可能
+	ID      : 対象となるID
+		ACH_KILL_MOB     : 討伐モンスターID
+		ACH_USE_ITEM     : 使用アイテムID
+		ACH_QUEST        : 受注したクエストID、指定IDの受注で達成
+		ACH_LEVEL        : BaseLevel、またはJobLevelの定数、レベル到達で達成
+		ACH_STATUS       : bStrからbLukまでの定数、キャラクター固有のパラメータ量の到達で達成
+		ACH_ACHIEVE      : 達成した実績ID、指定実績の達成
+		ACH_ACHIEVE_RANK : 達成した実績レベル、実績レベル上昇で達成
+		ACH_ADVENTURE    : 固有の番号、スクリプト命令achievement系列でのみ達成
+		ACH_TAMING       : テイミングしたモンスターID、テイミング数で達成
+		ACH_PET_FRIEND   : ペット本来のモンスターID、ペットとの親密度で達成
+		ACH_ADD_FRIEND   : 1で固定、フレンドになった人数で達成
+		ACH_SPEND_ZENY   : Zenyの定数、露店で消費したZenyで達成
+		ACH_GET_ZENY     : Zenyの定数、所持しているZenyで達成
+		ACH_JOBCHANGE    : 職業定義値、転職完了で達成
+	Count   : その必要数
+Reward  : 実績達成で得る報酬内容配列
+	Title   : 設定可能な称号のID
+	Script  : 達成時に実行されるスクリプト
+	          アイテムスクリプト同様の仕様
+Score   : 実績達成で得るスコア
+
+
+==========================================================================
+34. db/achievement_level_db.lua
+--------------------------------------------------------------------------
+[LV1] = EXP1, [LV2] = EXP2, [LV3] = EXP3,...
+
+	LV  : 該当するレベル
+	EXP : 次にレベルが上がるまでに必要なスコア
 
 
 ==========================================================================

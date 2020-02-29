@@ -72,6 +72,7 @@
 #include "buyingstore.h"
 #include "elem.h"
 #include "memorial.h"
+#include "achieve.h"
 #include "bank.h"
 #include "luascript.h"
 
@@ -21140,6 +21141,108 @@ static int clif_pingtimer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
+ * 実績リスト送信
+ *------------------------------------------
+ */
+void clif_send_achievement_list(struct map_session_data *sd)
+{
+#if PACKETVER >= 20141126
+	int fd;
+	int i, j;
+	int score = 0;
+
+	nullpo_retv(sd);
+
+	achieve_calc_level(sd, -1);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0) = 0xa23;
+	WFIFOW(fd, 2) = (50 * sd->achievelist) + 22;
+	WFIFOL(fd, 4) = sd->achievelist;
+	WFIFOL(fd, 8) = sd->as.score;
+	WFIFOW(fd,12) = sd->as.level;
+	WFIFOL(fd,14) = sd->as.current;
+	WFIFOL(fd,18) = sd->as.next;
+
+	if(sd->achievelist > 0) {
+		for(i = 0; i < sd->achievelist; i++) {
+			WFIFOL(fd, i * 50 + 22) = sd->achieve[i].nameid;
+			WFIFOB(fd, i * 50 + 26) = (sd->achieve[i].comp_date > 0? 1: 0);
+			for(j = 0; j < MAX_ACHIEVE_CONTENT; j++) 
+				WFIFOL(fd, (i * 50) + 27 + (j * 4)) = sd->achieve[i].count[j];
+			WFIFOL(fd, i * 50 + 67) = sd->achieve[i].comp_date;
+			WFIFOB(fd, i * 50 + 71) = sd->achieve[i].reward;
+		}
+	}
+	WFIFOSET(fd, WFIFOW(fd, 2));
+#endif
+	return;
+}
+
+/*==========================================
+ * 実績リスト更新
+ *------------------------------------------
+ */
+void clif_send_achievement_update(struct map_session_data *sd, struct achieve_data *ad)
+{
+#if PACKETVER >= 20141126
+	int fd;
+	int i;
+
+	nullpo_retv(sd);
+
+	achieve_calc_level(sd, -1);
+
+	fd = sd->fd;
+	WFIFOW(fd, 0) = 0xa24;
+	WFIFOL(fd, 2) = sd->as.score;
+	WFIFOW(fd, 6) = sd->as.level;
+	WFIFOL(fd, 8) = sd->as.current;
+	WFIFOL(fd,12) = sd->as.next;
+	if(ad) {
+		WFIFOL(fd, 16) = ad->nameid;
+		WFIFOB(fd, 20) = (ad->comp_date > 0? 1: 0);
+		for(i = 0; i < MAX_ACHIEVE_CONTENT; i++)
+			WFIFOL(fd, 21 + (i * 4)) = ad->count[i];
+		WFIFOL(fd, 61) = ad->comp_date;
+		WFIFOB(fd, 65) = ad->reward;
+	} else
+		memset(WFIFOP(fd, 16), 0, 50);
+	WFIFOSET(fd, packet_db[0xa24].len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 実績リスト報酬獲得応答
+ *------------------------------------------
+ */
+static void clif_achievement_reward_ack(int fd, char result, int achieve_id)
+{
+#if PACKETVER >= 20141126
+	WFIFOW(fd, 0) = 0xa26;
+	WFIFOB(fd, 2) = result;
+	WFIFOL(fd, 3) = achieve_id;
+	WFIFOSET(fd, packet_db[0xa26].len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 称号変更応答
+ *------------------------------------------
+ */
+static void clif_change_title_ack(int fd, char result, int title_id)
+{
+#if PACKETVER >= 20150513
+	WFIFOW(fd, 0) = 0xa2f;
+	WFIFOB(fd, 2) = result;
+	WFIFOL(fd, 3) = title_id;
+	WFIFOSET(fd, packet_db[0xa2f].len);
+#endif
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -21611,7 +21714,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 				else
 					strncpy(WFIFOP(fd,78), msg_txt(45), 24); // No Position
 			}
-			WFIFOL(fd,102) = 0;	// TODO: title_id
+			WFIFOL(fd,102) = ssd->status.title_id;
 			WFIFOSET(fd,packet_db[0xa30].len);
 #endif
 			// マーダラー
@@ -26397,7 +26500,27 @@ static void clif_parse_CloseRoulette(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int title_id;
+
+	nullpo_retv(sd);
+
+	title_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+
+	if(title_id == sd->status.title_id)
+		return;
+
+	if(title_id <= 0) {
+		sd->status.title_id = 0;
+	}
+	else {
+		if(achieve_check_title(sd, title_id)) {
+			clif_change_title_ack(sd->fd, 1, title_id);
+			return;
+		}
+	}
+
+	//clif_name_area(&sd->bl);
+	clif_change_title_ack(sd->fd, 0, title_id);
 	return;
 }
 
@@ -26433,7 +26556,17 @@ static void clif_parse_OneClickItemidentify(int fd,struct map_session_data *sd, 
  */
 static void clif_parse_GetRewardReq(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int achieve_id;
+	char result;
+
+	nullpo_retv(sd);
+
+	achieve_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
+
+	result = achieve_check_reward(sd, achieve_id);
+
+	clif_achievement_reward_ack(sd->fd, result, achieve_id);
+
 	return;
 }
 

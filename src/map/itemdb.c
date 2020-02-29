@@ -46,6 +46,8 @@ static struct dbt* item_db = NULL;
 static struct random_item_data random_item[MAX_RAND_ITEM_TYPE];
 static struct randopt_item_data randopt_item[MAX_RANDOPT_ENTRY];
 
+static int randopt_count;
+
 /*==========================================
  * 名前で検索
  *------------------------------------------
@@ -1045,23 +1047,30 @@ static int itemdb_read_cardillustnametable(void)
 }
 
 /*==========================================
+ * ランダムオプションDBの初期化
+ *------------------------------------------
+ */
+static void itemdb_init_randoptdb(void)
+{
+	randopt_count = 0;
+	memset(&randopt_item, 0, sizeof(randopt_item));
+	return;
+}
+
+/*==========================================
  * ランダムオプションDBの登録
  *------------------------------------------
  */
-int itemdb_insert_randoptdb(struct randopt_item_data ro)
+bool itemdb_insert_randoptdb(struct randopt_item_data ro)
 {
-	static int randopt_init;
+	if(randopt_count >= MAX_RANDOPT_ENTRY)
+		return false;
 
-	if(!randopt_init++)
-		memset(&randopt_item, 0, sizeof(randopt_item));
+	randopt_item[randopt_count] = ro;
+	randopt_count++;
 
-	if(randopt_init >= MAX_RANDOPT_ENTRY)
-		return 0;
-
-	randopt_item[randopt_init - 1] = ro;
-
-	printf("read db/item_randopt_db.lua done (count=%d)\n\r", randopt_init);
-	return 0;
+	printf("\rread db/item_randopt_db.lua done (count=%d)", randopt_count);
+	return true;
 }
 
 /*==========================================
@@ -1155,6 +1164,7 @@ void itemdb_reload(void)
 int do_init_itemdb(void)
 {
 	item_db = numdb_init();
+	itemdb_init_randoptdb();
 	itemdb_read();
 
 	return 0;

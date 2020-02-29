@@ -65,7 +65,7 @@ static const int packet_len_table[]={
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
 	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
-	-1, 7, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
+	-1, 7, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0, -1, 7,  3, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
 	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
@@ -1341,6 +1341,65 @@ int intif_save_quest(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 実績データ要求
+ *------------------------------------------
+ */
+int intif_request_achieve(int account_id,int char_id)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3068;
+	WFIFOL(inter_fd,2) = account_id;
+	WFIFOL(inter_fd,6) = char_id;
+	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+
+/*==========================================
+ * 実績データ保存
+ *------------------------------------------
+ */
+int intif_save_achieve(struct map_session_data *sd)
+{
+	int p = 12;
+
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3069;
+	WFIFOL(inter_fd,4) = sd->status.account_id;
+	WFIFOL(inter_fd,8) = sd->status.char_id;
+
+	if(sd->achievelist > 0) {
+		int i;
+		for(i=0; i<sd->achievelist; i++) {
+			if(sd->achieve[i].nameid > 0) {
+				WFIFOL(inter_fd,p)    = sd->achieve[i].nameid;
+				WFIFOL(inter_fd,p+4)  = sd->achieve[i].count[0];
+				WFIFOL(inter_fd,p+8)  = sd->achieve[i].count[1];
+				WFIFOL(inter_fd,p+12) = sd->achieve[i].count[2];
+				WFIFOL(inter_fd,p+16) = sd->achieve[i].count[3];
+				WFIFOL(inter_fd,p+20) = sd->achieve[i].count[4];
+				WFIFOL(inter_fd,p+24) = sd->achieve[i].count[5];
+				WFIFOL(inter_fd,p+28) = sd->achieve[i].count[6];
+				WFIFOL(inter_fd,p+32) = sd->achieve[i].count[7];
+				WFIFOL(inter_fd,p+36) = sd->achieve[i].count[8];
+				WFIFOL(inter_fd,p+40) = sd->achieve[i].count[9];
+				WFIFOL(inter_fd,p+44) = (unsigned int)sd->achieve[i].comp_date;
+				WFIFOB(inter_fd,p+48) = sd->achieve[i].reward;
+				p+=49;
+			}
+		}
+	}
+	WFIFOW(inter_fd,2) = p;
+	WFIFOSET(inter_fd,p);
+
+	return 0;
+}
+
+/*==========================================
  * キャラ鯖の制限人数の変更送信
  *------------------------------------------
  */
@@ -2119,6 +2178,52 @@ static int intif_parse_SaveQuestList(int fd)
 }
 
 /*==========================================
+ * 実績データ関連
+ *------------------------------------------
+ */
+static int intif_parse_LoadAchieveList(int fd)
+{
+	short len = RFIFOW(fd,2);
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
+	int i,p;
+
+	if(sd == NULL)
+		return 0;
+
+	for(i=0,p=8; p<len; i++,p+=49) {
+		sd->achieve[i].nameid    = RFIFOL(fd,p);
+		sd->achieve[i].count[0]  = RFIFOL(fd,p+4);
+		sd->achieve[i].count[1]  = RFIFOL(fd,p+8);
+		sd->achieve[i].count[2]  = RFIFOL(fd,p+12);
+		sd->achieve[i].count[3]  = RFIFOL(fd,p+16);
+		sd->achieve[i].count[4]  = RFIFOL(fd,p+20);
+		sd->achieve[i].count[5]  = RFIFOL(fd,p+24);
+		sd->achieve[i].count[6]  = RFIFOL(fd,p+28);
+		sd->achieve[i].count[7]  = RFIFOL(fd,p+32);
+		sd->achieve[i].count[8]  = RFIFOL(fd,p+36);
+		sd->achieve[i].count[9]  = RFIFOL(fd,p+40);
+		sd->achieve[i].comp_date = (unsigned int)RFIFOL(fd,p+44);
+		sd->achieve[i].reward    = RFIFOB(fd,p+48);
+	}
+	sd->achievelist = i;
+	memset(&sd->hotkey_rotate,0,sizeof(sd->hotkey_rotate));
+
+	clif_send_achievement_list(sd);
+
+	return 0;
+}
+
+static int intif_parse_SaveAchieveList(int fd)
+{
+	if(RFIFOB(fd,6) == 1) {
+		if(battle_config.error_log)
+			printf("achieve data save failure\n");
+	}
+
+	return 0;
+}
+
+/*==========================================
  * キャラが存在したらInterへその位置を返信
  *------------------------------------------
  */
@@ -2297,6 +2402,8 @@ int intif_parse(int fd)
 	case 0x384e: intif_parse_MailCheckOK(fd); break;
 	case 0x3860: intif_parse_LoadQuestList(fd); break;
 	case 0x3861: intif_parse_SaveQuestList(fd); break;
+	case 0x3868: intif_parse_LoadAchieveList(fd); break;
+	case 0x3869: intif_parse_SaveAchieveList(fd); break;
 	case 0x3870: intif_parse_RecvMercData(fd); break;
 	case 0x3871: intif_parse_SaveMercOk(fd); break;
 	case 0x3872: intif_parse_DeleteMercOk(fd); break;

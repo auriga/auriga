@@ -1,4 +1,26 @@
 # Database: Ragnarok
+# Table: 'achieve'
+# 
+CREATE TABLE `achieve` (
+  `char_id` int(11) NOT NULL default '0',
+  `account_id` int(11) NOT NULL default '0',
+  `nameid` int(11) NOT NULL default '0',
+  `count1` int(11) NOT NULL default '0',
+  `count2` int(11) NOT NULL default '0',
+  `count3` int(11) NOT NULL default '0',
+  `count4` int(11) NOT NULL default '0',
+  `count5` int(11) NOT NULL default '0',
+  `count6` int(11) NOT NULL default '0',
+  `count7` int(11) NOT NULL default '0',
+  `count8` int(11) NOT NULL default '0',
+  `count9` int(11) NOT NULL default '0',
+  `count10` int(11) NOT NULL default '0',
+  `comp_date` int(11) unsigned NOT NULL default '0',
+  `reward` tinyint(4) NOT NULL default '0',
+  PRIMARY KEY (`char_id`, `nameid`)
+) ENGINE = InnoDB;
+
+# Database: Ragnarok
 # Table: 'cart_inventory'
 # 
 CREATE TABLE `cart_inventory` (
@@ -92,6 +114,7 @@ CREATE TABLE `char_data` (
   `sex` tinyint(4) unsigned NOT NULL default '99',
   `allow_call` smallint(6) unsigned NOT NULL default '0',
   `autofeed` smallint(6) unsigned NOT NULL default '0',
+  `title_id` int(11) NOT NULL default '0',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),

@@ -19,21 +19,27 @@
  *
  */
 
-#ifndef _LUASCRIPT_H_
-#define _LUASCRIPT_H_
+#ifndef _INT_ACHIEVE_H_
+#define _INT_ACHIEVE_H_
 
-#include "lua.h"
+struct achieve {
+	int account_id;
+	int char_id;
+	short count;
+	struct {
+		int nameid;
+		int count[MAX_ACHIEVE_CONTENT];
+		unsigned int comp_date;
+		char reward;
+	} data[MAX_ACHIEVELIST];
+};
 
-lua_State *L;
+int inter_achieve_parse_frommap(int fd);
 
-extern int lua_respawn_id;
-int luascript_run_function(const char *name,int char_id,const char *format,...);
-void luascript_addscript(const char *chunk);
-
-int luascript_config_read(const char *cfgName);
-void luascript_reload(void);
-
-int do_init_luascript(void);
-int do_final_luascript(void);
-
+#ifdef TXT_ONLY
+	#include "txt/achievedb_txt.h"
+#else
+	#include "sql/achievedb_sql.h"
 #endif
+
+#endif /* _INT_ACHIEVE_H_ */

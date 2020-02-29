@@ -310,6 +310,20 @@ struct quest_data {
 	} mob[3];
 };
 
+struct achieve_data {
+	int nameid;
+	int count[MAX_ACHIEVE_CONTENT];
+	unsigned int comp_date;
+	char reward;
+};
+
+struct achieve_score {
+	int score;
+	short level;
+	int current;
+	int next;
+};
+
 struct buyingstore {
 	int limit_zeny;
 	unsigned char count;
@@ -459,6 +473,9 @@ struct map_session_data {
 	unsigned int booking_id;
 	struct quest_data quest[MAX_QUESTLIST];
 	int questlist;
+	struct achieve_data achieve[MAX_ACHIEVELIST];
+	struct achieve_score as;
+	int achievelist;
 	struct buyingstore buyingstore;
 	int inventory_num;
 
@@ -1413,6 +1430,7 @@ extern char battle_conf_filename[];
 extern char atcommand_conf_filename[];
 extern char script_conf_filename[];
 extern char msg_conf_filename[];
+extern char luascript_conf_filename[];
 
 extern struct map_data *map;
 extern int map_num;

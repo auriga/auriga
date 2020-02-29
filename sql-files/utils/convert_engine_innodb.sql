@@ -36,3 +36,4 @@ ALTER TABLE `mercenary` ENGINE = InnoDB;
 ALTER TABLE `mercenary_employ` ENGINE = InnoDB;
 ALTER TABLE `quest` ENGINE = InnoDB;
 ALTER TABLE `elemental` ENGINE = InnoDB;
+ALTER TABLE `achieve` ENGINE = InnoDB;

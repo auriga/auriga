@@ -69,6 +69,7 @@
 #include "merc.h"
 #include "quest.h"
 #include "booking.h"
+#include "achieve.h"
 #include "elem.h"
 #include "memorial.h"
 #include "extra.h"
@@ -116,6 +117,7 @@ char battle_conf_filename[256]    = "conf/battle_auriga.conf";
 char atcommand_conf_filename[256] = "conf/atcommand_auriga.conf";
 char script_conf_filename[256]    = "conf/script_auriga.conf";
 char msg_conf_filename[256]       = "conf/msg_auriga.conf";
+char luascript_conf_filename[256] = "conf/lua_auriga.conf";
 
 char map_server_tag[MAPSERVER_TAGNAME] = "map01";	// マップサーバタグ名
 char motd_txt[256]           = "conf/motd.txt";
@@ -2986,6 +2988,7 @@ void do_final(void)
 	do_final_booking();
 	do_final_quest();
 	do_final_pet();
+	do_final_achieve();
 	do_final_homun();
 	do_final_merc();
 	do_final_elem();
@@ -3149,8 +3152,10 @@ int do_init(int argc,char *argv[])
 	do_init_friend();
 	do_init_ranking();
 	do_init_unit();
+	do_init_achieve();
 	do_init_extra();
 
+	luascript_config_read(luascript_conf_filename);
 	map_pk_server(map_pk_server_flag);
 	map_pk_nightmaredrop(map_pk_nightmaredrop_flag);
 	map_pk_noteleport(map_pk_noteleport_flag);

@@ -39,3 +39,4 @@ DROP TABLE IF EXISTS `mercenary`;
 DROP TABLE IF EXISTS `mercenary_employ`;
 DROP TABLE IF EXISTS `quest`;
 DROP TABLE IF EXISTS `elemental`;
+DROP TABLE IF EXISTS `achieve`;

@@ -19,21 +19,27 @@
  *
  */
 
-#ifndef _LUASCRIPT_H_
-#define _LUASCRIPT_H_
+#ifndef _ACHIEVEDB_TXT_H_
+#define _ACHIEVEDB_TXT_H_
 
-#include "lua.h"
+#include "../int_achieve.h"
 
-lua_State *L;
+// プロトタイプ宣言
+bool achievedb_txt_init(void);
+int  achievedb_txt_sync(void);
+bool  achievedb_txt_delete(int char_id);
+const struct achieve *achievedb_txt_load(int char_id);
+bool  achievedb_txt_save(struct achieve *a2);
+void achievedb_txt_final(void);
+int achievedb_txt_config_read_sub(const char *w1,const char *w2);
 
-extern int lua_respawn_id;
-int luascript_run_function(const char *name,int char_id,const char *format,...);
-void luascript_addscript(const char *chunk);
+// エイリアス
+#define achievedb_init   achievedb_txt_init
+#define achievedb_sync   achievedb_txt_sync
+#define achievedb_delete achievedb_txt_delete
+#define achievedb_load   achievedb_txt_load
+#define achievedb_save   achievedb_txt_save
+#define achievedb_final  achievedb_txt_final
+#define achievedb_config_read_sub achievedb_txt_config_read_sub
 
-int luascript_config_read(const char *cfgName);
-void luascript_reload(void);
-
-int do_init_luascript(void);
-int do_final_luascript(void);
-
-#endif
+#endif /* _ACHIEVEDB_TXT_H_ */

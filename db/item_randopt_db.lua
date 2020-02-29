@@ -9,15 +9,15 @@ ItemRandoptTBL =
 	},
 };
 
-function main()
-	for k,v in pairs(ItemRandoptTBL) do
-		result,msg = addrandopt(v.ID,v.MOB_ID,v.Option);
-		if(result) then
-			return true,"Success";
+function ItemRandoptInit()
+	for k, v in pairs(ItemRandoptTBL) do
+		result = InsertRandopt(v.ID,v.MOB_ID,v.Option)
+		if not result == true then
+			return false
 		end
 	end
 
-	return false,msg;
+	return true;
 end
 
-main()
+return ItemRandoptInit()

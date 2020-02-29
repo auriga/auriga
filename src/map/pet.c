@@ -46,6 +46,7 @@
 #include "storage.h"
 #include "unit.h"
 #include "skill.h"
+#include "achieve.h"
 
 #define MIN_PETTHINKTIME 100
 
@@ -247,6 +248,8 @@ static int pet_food(struct map_session_data *sd)
 	clif_send_petdata(sd,2,sd->pet.hungry);
 	clif_send_petdata(sd,1,sd->pet.intimate);
 	clif_pet_food(sd,sd->petDB->FoodID,1);
+
+	achieve_update_content(sd, ACH_PET_FRIEND, sd->pd->class_, sd->pet.intimate);
 
 	return 0;
 }
@@ -598,6 +601,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 			clif_additem(sd,0,0,ret);
 			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
+		achieve_update_content(sd, ACH_TAMING, sd->catch_target_class, 1);
 	} else {
 		intif_delete_petdata(pet_id);
 	}

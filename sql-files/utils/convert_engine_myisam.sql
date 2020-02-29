@@ -36,3 +36,4 @@ ALTER TABLE `mercenary` ENGINE = MyISAM;
 ALTER TABLE `mercenary_employ` ENGINE = MyISAM;
 ALTER TABLE `quest` ENGINE = MyISAM;
 ALTER TABLE `elemental` ENGINE = MyISAM;
+ALTER TABLE `achieve` ENGINE = MyISAM;

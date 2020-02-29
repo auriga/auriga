@@ -52,6 +52,7 @@
 #include "ranking.h"
 #include "merc.h"
 #include "quest.h"
+#include "achieve.h"
 #include "elem.h"
 
 #define MOB_LAZYMOVEPERC     50		// 手抜きモードMOBの移動確率（千分率）
@@ -1934,6 +1935,10 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			else if(sd->questlist)
 				quest_killcount(sd, md->class_);
 		}
+
+		// 実績討伐ターゲット
+		if(achieve_search_mobid(md->class_))
+			achieve_update_content(sd, ACH_KILL_MOB, md->class_, 1);
 
 		// テコンミッションターゲット
 		if(sd->status.class_ == PC_CLASS_TK && md->class_ == sd->tk_mission_target) {

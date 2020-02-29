@@ -39,6 +39,7 @@
 #include "npc.h"
 #include "mob.h"
 #include "itemdb.h"
+#include "achieve.h"
 #include "clif.h"
 #include "luascript.h"
 
@@ -46,9 +47,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-static int garbage_collect_interval = 100*20;		// ガベージコレクトの間隔
-
-char luascript_conf_filename[256] = "conf/lua_auriga.conf";
+static int garbage_collect_interval = 1000*30;		// ガベージコレクトの間隔
 
 int lua_respawn_id;
 int gc_threshold = 1000;		// ガベージコレクトの閾値
@@ -264,14 +263,26 @@ void luascript_addscript(const char *chunk)
 	lua_pushnumber(NL,0);
 	lua_rawset(NL,LUA_GLOBALSINDEX);
 
+	printf("read %s...",chunk);
+
 	if(luaL_loadfile(NL,chunk) != 0) {
 		printf("luascript_addscript: loadfile [%s] failed !\n",chunk);
 		return;
 	}
-	if(lua_pcall(NL,0,0,0) != 0) {
-		printf("luascript_addscript: cannot run chunk %s : %s\n",chunk,lua_tostring(NL,-1));
+	if(lua_pcall(NL,0,1,0) != 0) {
+		printf("luascript_addscript: cannot run [%s] : %s\n",chunk,lua_tostring(NL,-1));
 		return;
 	}
+
+	printf("\n");
+
+	if(lua_isboolean(NL, -1)) {
+		int ret = lua_toboolean(NL, -1);
+		if(!ret) {
+			printf("luascript_addscript: catch error response in [%s]\n",chunk);
+		}
+	}
+	lua_pop(NL, 1);
 
 	return;
 }
@@ -309,10 +320,11 @@ static int luascript_garbagecollect(int tid,unsigned int tick,int id,void *data)
 
 		printf("lua_garbagecollect: %d Memory Usage(KB), Execute: %d\n", v, gc_threshold);
 
-		gc_threshold = v + 250;
+		gc_threshold = v + 256;
 	}
 	else {	// 閾値を下げて様子を見る
-		gc_threshold = gc_threshold - 1;
+		if(gc_threshold > 256)
+			gc_threshold = gc_threshold - 1;
 	}
 
 	return 0;
@@ -322,7 +334,7 @@ static int luascript_garbagecollect(int tid,unsigned int tick,int id,void *data)
  * 設定ファイルを読み込む
  *------------------------------------------
  */
-static int luascript_config_read(const char *cfgName)
+int luascript_config_read(const char *cfgName)
 {
 	char line[1024], w1[1024], w2[1024];
 	FILE *fp;
@@ -349,7 +361,7 @@ static int luascript_config_read(const char *cfgName)
 		} else if (strcmpi(w1, "garbage_collect_interval") == 0) {
 			garbage_collect_interval = atoi(w2);
 			if (garbage_collect_interval < 0) {
-				printf("lua_config_read: Invalid garbage_collect_interval value: %d. Set to 0.\n", garbage_collect_interval);
+				printf("luascript_config_read: Invalid garbage_collect_interval value: %d. Set to 0.\n", garbage_collect_interval);
 				garbage_collect_interval = 0;
 			}
 		} else if (strcmpi(w1, "import") == 0) {
@@ -405,7 +417,6 @@ int do_init_luascript(void)
 	lua_pushliteral(L,"char_id");
 	lua_pushnumber(L,0);
 	lua_rawset(L,LUA_GLOBALSINDEX);
-	luascript_config_read(luascript_conf_filename);
 
 	if(garbage_collect_interval > 0) {
 		add_timer_func_list(luascript_garbagecollect);
@@ -458,14 +469,73 @@ static int luafunc_getpacketpre(lua_State *NL)
 }
 
 /*==========================================
+ * packet_db.lua
+ *------------------------------------------
+ */
+static int luafunc_addpacket(lua_State *NL)
+{
+	int cmd;
+	short len;
+	const char *name = NULL;
+	char line[1024];
+	short pos[8];
+
+	memset(pos, 0, sizeof(pos));
+
+	cmd = luaL_checkint(NL,1);
+	len = luaL_checkint(NL,2);
+	if(lua_isstring(NL,3))
+		name = luaL_checkstring(NL,3);
+	if(lua_isnumber(NL,4)) {
+		pos[0] = luaL_checkint(NL,4);
+	}
+	else if(lua_istable(NL,4)) {
+		int i;
+		int len = (int)lua_objlen(NL,4);
+		for(i=0; i<8 && i<len; i++) {
+			lua_rawgeti(NL,4,i + 1);
+			pos[i] = luaL_checkint(NL,-1);
+			lua_pop(NL, 1);      // 値を取り除く
+		}
+	}
+
+	if(name == NULL)
+		sprintf(line, "0x%04x,%d", cmd, len);
+	else
+		sprintf(line, "0x%04x,%d,%s,%d:%d:%d:%d:%d:%d:%d:%d", cmd, len, name, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7]);
+
+	packetdb_insert_packet(line);
+
+	return 0;
+}
+
+/*==========================================
+ * packet_db.lua Encryption key
+ *------------------------------------------
+ */
+static int luafunc_packet_key(lua_State *NL)
+{
+	unsigned int key1, key2, key3;
+
+	key1 = luaL_checkint(NL,1);
+	key2 = luaL_checkint(NL,2);
+	key3 = luaL_checkint(NL,3);
+
+	packetdb_insert_packet_key(key1, key2, key3);
+
+	return 0;
+}
+
+/*==========================================
  * item_randopt_db.lua
  *------------------------------------------
  */
-static int luafunc_addrandopt(lua_State *NL)
+static int luafunc_InsertRandopt(lua_State *NL)
 {
 	int nameid, mob_id, val;
 	int i=0;
 	struct randopt_item_data ro;
+	bool result;
 
 	memset(&ro, 0, sizeof(ro));
 
@@ -522,71 +592,86 @@ static int luafunc_addrandopt(lua_State *NL)
 	}
 	lua_pop(NL, 3);      // 値を取り除く
 
-	itemdb_insert_randoptdb(ro);
+	result = itemdb_insert_randoptdb(ro);
+	lua_pushboolean(NL, result);
 
-	return 0;
+	return 1;
 }
 
 /*==========================================
- * packet_db.lua
+ * achievement_db.lua
  *------------------------------------------
  */
-static int luafunc_addpacket(lua_State *NL)
+static int luafunc_InsertAchieveInfo(lua_State *NL)
 {
-	int cmd;
-	short len;
+	int achieveid, score, title;
+	enum achieve_types type;
 	const char *name = NULL;
-	char line[1024];
-	short pos[8];
+	const char *reward = NULL;
+	bool result;
 
-	memset(pos, 0, sizeof(pos));
+	achieveid = luaL_checkint(NL,1);
+	name    = luaL_checkstring(NL,2);
+	type    = luaL_checkint(NL,3);
+	score   = luaL_checkint(NL,4);
+	title   = luaL_checkint(NL,5);
+	reward  = luaL_checkstring(NL,6);
 
-	cmd = luaL_checkint(NL,1);
-	len = luaL_checkint(NL,2);
-	if(lua_isstring(NL,3))
-		name = luaL_checkstring(NL,3);
-	if(lua_isnumber(NL,4)) {
-		pos[0] = luaL_checkint(NL,4);
-	}
-	else if(lua_istable(NL,4)) {
-		int i;
-		int len = (int)lua_objlen(NL,4);
-		for(i=0; i<8 && i<len; i++) {
-			lua_rawgeti(NL,4,i + 1);
-			pos[i] = luaL_checkint(NL,-1);
-			lua_pop(NL, 1);      // 値を取り除く
-		}
-	}
+	result = achieve_insert_info(achieveid, name, type, score, title, reward);
+	lua_pushboolean(NL, result);
 
-	if(name == NULL)
-		sprintf(line, "0x%04x,%d", cmd, len);
-	else
-		sprintf(line, "0x%04x,%d,%s,%d:%d:%d:%d:%d:%d:%d:%d", cmd, len, name, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7]);
-
-	packetdb_insert_packet(line);
-
-	return 0;
+	return 1;
 }
 
-static int luafunc_packet_key(lua_State *NL)
+static int luafunc_InsertAchieveContent(lua_State *NL)
 {
-	unsigned int key1, key2, key3;
+	int achieveid, nameid, count;
+	bool result;
 
-	key1 = luaL_checkint(NL,1);
-	key2 = luaL_checkint(NL,2);
-	key3 = luaL_checkint(NL,3);
+	achieveid = luaL_checkint(NL,1);
+	nameid    = luaL_checkint(NL,2);
+	count     = luaL_checkint(NL,3);
 
-	packetdb_insert_packet_key(key1, key2, key3);
+	result = achieve_insert_content(achieveid, nameid, count);
+	lua_pushboolean(NL, result);
 
-	return 0;
+	return 1;
+}
+
+static int luafunc_InsertAchieveDBEnd(lua_State *NL)
+{
+	bool result;
+
+	result = achieve_insert_db_end();
+	lua_pushboolean(NL, result);
+
+	return 1;
+}
+
+static int luafunc_InsertAchieveLevelDB(lua_State *NL)
+{
+	int lv, exp;
+	bool result;
+
+	lv  = luaL_checkint(NL,1);
+	exp = luaL_checkint(NL,2);
+
+	result = achieve_insert_leveldb(lv, exp);
+	lua_pushboolean(NL, result);
+
+	return 1;
 }
 
 const struct Lua_function luafunc[] = {
 	{"getpacketver",luafunc_getpacketver},
 	{"getpacketpre",luafunc_getpacketpre},
-	{"addrandopt",luafunc_addrandopt},
 	{"addpacket",luafunc_addpacket},
 	{"packet_key",luafunc_packet_key},
+	{"InsertRandopt",luafunc_InsertRandopt},
+	{"InsertAchieveInfo",luafunc_InsertAchieveInfo},
+	{"InsertAchieveContent",luafunc_InsertAchieveContent},
+	{"InsertAchieveDBEnd",luafunc_InsertAchieveDBEnd},
+	{"InsertAchieveLevelDB",luafunc_InsertAchieveLevelDB},
 
 	{NULL,NULL}
 };

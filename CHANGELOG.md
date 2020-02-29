@@ -1,4 +1,30 @@
 ----------------------------------------
+//1391 [2020/02/29] by refis
+
+・実績、称号システム実装
+(common/mmo.h, achieve.*, map.*, mob.c, clif.*, friend.c, pc.c, pet.c, quest.c, vending.c, 
+　conf/lua_auriga.conf, doc/db_ref.txt, db/achievement_db.lua, db/achievement_level_db.lua)
+
+・セーブデータ対象に実績、称号関連情報を追加 (inter_auriga.conf, map/intif.*, char/inter.c, char/chardb_*.c, char/int_achieve.*, char/achievedb_*.*)
+
+・SQL：DBに実績、称号関連追加
+ (common/sqldbs.h, sql-files/main.sql, sql-files/drop_table.sql, sql-files/db_maintenance.sql,
+　sql-files/convert_engine_myisam.sql, sql-files/convert_engine_innodb.sql, sql-files/Auriga1391_changetable.sql)
+
+・TXT：JOURNAL_IDENTIFIERを19->20に引き上げ (journal.c)
+
+・スクリプト命令に以下を追加（script.c, doc/script_ref.txt）
+	achievement  : ACH_ADVENTUREタイプの実績を達成させます
+	achievement2 : 指定タイプの実績を達成させます
+	※詳しくはscript_ref.txtを参照
+
+・luascriptシステムの調整（map.c, itemdb.*, luascript.*, db/item_randopt_db.lua）
+	-> 現時点でDB利用しかしていないのでガベージコレクトの頻度を下げる
+	-> 読み込み処理を改善し、エラー発生メッセージをわかりやすくする
+	-> 実績DB実装に合わせて関数系を整理
+	-> ランダムオプションの処理において登録処理と初期化を分離
+
+----------------------------------------
 //1390 [2020/02/27] by refis
 
 ・リベリオン実装（battle_auriga.conf, const.txt, scdata_db.txt,
