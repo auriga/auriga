@@ -479,9 +479,29 @@ static int quest_readdb(void)
 			}
 		}
 		for(j = 0; j < sizeof(quest_db[0].drop)/sizeof(quest_db[0].drop[0]); j++) {
-			quest_db[i].drop[j].id     = (short)atoi(split[9+j*3]);
+			int mob_id = atoi(split[9+j*3]);
+			quest_db[i].drop[j].id     = (short)mob_id;
 			quest_db[i].drop[j].nameid = atoi(split[10+j*3]);
 			quest_db[i].drop[j].p      = atoi(split[11+j*3]);
+
+			if(mob_id > 0) {
+				int n;
+				for(n = 0; n < max_killdb_count; n++) {
+					if(quest_killdb[n] == mob_id)
+						break;
+				}
+				if(n != max_killdb_count)
+					continue;
+
+				// 新しく出現したMobIDなので討伐データベースに追加
+				if(n >= size) {
+					size += QUEST_KILLDB_SIZE;
+					quest_killdb = (int *)aRealloc(quest_killdb, sizeof(int) * size);
+					memset(quest_killdb + (size - QUEST_KILLDB_SIZE), 0, sizeof(int) * QUEST_KILLDB_SIZE);
+				}
+				quest_killdb[n] = mob_id;
+				max_killdb_count++;
+			}
 		}
 
 		if(++i >= MAX_QUEST_DB)

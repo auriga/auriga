@@ -89,6 +89,11 @@ ayo_in02.gat	mapflag	nopenalty	dummy
 ayo_in02.gat	mapflag	noicewall	dummy
 ayothaya.gat	mapflag	town	dummy
 ayothaya.gat	mapflag	nopenalty	dummy
+b_labo.gat	mapflag	nomemo	dummy
+b_labo.gat	mapflag	noteleport	dummy
+b_labo.gat	mapflag	nobranch	dummy
+b_labo.gat	mapflag	nopenalty	dummy
+b_labo.gat	mapflag	noicewall	dummy
 beach_dun.gat	mapflag	nomemo	dummy
 beach_dun2.gat	mapflag	nomemo	dummy
 beach_dun3.gat	mapflag	nomemo	dummy
@@ -384,6 +389,12 @@ job_duncer.gat	mapflag	noteleport	dummy
 job_duncer.gat	mapflag	nobranch	dummy
 job_duncer.gat	mapflag	nopenalty	dummy
 job_duncer.gat	mapflag	noicewall	dummy
+job_gun.gat	mapflag	nomemo	dummy
+job_gun.gat	mapflag	noteleport	dummy
+job_gun.gat	mapflag	nosave	SavePoint
+job_gun.gat	mapflag	nobranch	dummy
+job_gun.gat	mapflag	nopenalty	dummy
+job_gun.gat	mapflag	noicewall	dummy
 job_hunte.gat	mapflag	nomemo	dummy
 job_hunte.gat	mapflag	noteleport	dummy
 job_hunte.gat	mapflag	nosave	SavePoint
@@ -396,6 +407,12 @@ job_knt.gat	mapflag	nosave	SavePoint
 job_knt.gat	mapflag	nobranch	dummy
 job_knt.gat	mapflag	nopenalty	dummy
 job_knt.gat	mapflag	noicewall	dummy
+job_ko.gat	mapflag	nomemo	dummy
+job_ko.gat	mapflag	noteleport	dummy
+job_ko.gat	mapflag	nosave	SavePoint
+job_ko.gat	mapflag	nobranch	dummy
+job_ko.gat	mapflag	nopenalty	dummy
+job_ko.gat	mapflag	noicewall	dummy
 job_monk.gat	mapflag	nomemo	dummy
 job_monk.gat	mapflag	noteleport	dummy
 job_monk.gat	mapflag	nobranch	dummy
@@ -526,6 +543,7 @@ lhz_cube.gat	mapflag	nopenalty	dummy
 lhz_dun01.gat	mapflag	nomemo	dummy
 lhz_dun02.gat	mapflag	nomemo	dummy
 lhz_dun03.gat	mapflag	nomemo	dummy
+lhz_dun04.gat	mapflag	nomemo	dummy
 lhz_in01.gat	mapflag	nomemo	dummy
 lhz_in01.gat	mapflag	noteleport	dummy
 lhz_in01.gat	mapflag	nobranch	dummy
@@ -923,6 +941,11 @@ que_job03.gat	mapflag	nosave	SavePoint
 que_job03.gat	mapflag	noteleport	dummy
 que_job03.gat	mapflag	nobranch	dummy
 que_job03.gat	mapflag	noicewall	dummy
+que_lhz.gat	mapflag	nomemo	dummy
+que_lhz.gat	mapflag	nosave	SavePoint
+que_lhz.gat	mapflag	noteleport	dummy
+que_lhz.gat	mapflag	nobranch	dummy
+que_lhz.gat	mapflag	noicewall	dummy
 que_ng.gat	mapflag	nomemo	dummy
 que_ng.gat	mapflag	noteleport	dummy
 que_ng.gat	mapflag	nobranch	dummy

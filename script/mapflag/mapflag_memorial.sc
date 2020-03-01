@@ -208,6 +208,17 @@
 1@sara.gat	mapflag	noabra		dummy
 
 //============================================================
+// 禁忌の研究所 - 1@lhz.gat
+//------------------------------------------------------------
+1@lhz.gat	mapflag	nosave			SavePoint
+1@lhz.gat	mapflag	nomemo			dummy
+1@lhz.gat	mapflag	noteleport		dummy
+1@lhz.gat	mapflag	nobranch		dummy
+1@lhz.gat	mapflag	monster_noteleport	dummy
+1@lhz.gat	mapflag	noicewall	dummy
+1@lhz.gat	mapflag	noabra		dummy
+
+//============================================================
 // ホラーおもちゃ工場 - 1@xm_d.gat
 //------------------------------------------------------------
 1@xm_d.gat	mapflag	nosave			SavePoint
@@ -217,3 +228,69 @@
 1@xm_d.gat	mapflag	monster_noteleport	dummy
 1@xm_d.gat	mapflag	noicewall	dummy
 1@xm_d.gat	mapflag	noabra		dummy
+
+//============================================================
+// 亡霊の王宮 - 1@spa.gat
+//------------------------------------------------------------
+1@spa.gat	mapflag	nosave			SavePoint
+1@spa.gat	mapflag	nomemo			dummy
+1@spa.gat	mapflag	noteleport		dummy
+1@spa.gat	mapflag	nobranch		dummy
+1@spa.gat	mapflag	monster_noteleport	dummy
+1@spa.gat	mapflag	noicewall	dummy
+1@spa.gat	mapflag	noabra		dummy
+
+//============================================================
+// 飛行船 - 1@air1.gat
+//------------------------------------------------------------
+1@air1.gat	mapflag	nosave			SavePoint
+1@air1.gat	mapflag	nomemo			dummy
+1@air1.gat	mapflag	noteleport		dummy
+1@air1.gat	mapflag	nobranch		dummy
+1@air1.gat	mapflag	monster_noteleport	dummy
+1@air1.gat	mapflag	noicewall	dummy
+1@air1.gat	mapflag	noabra		dummy
+
+//============================================================
+// 飛行船 - 1@air2.gat
+//------------------------------------------------------------
+1@air2.gat	mapflag	nosave			SavePoint
+1@air2.gat	mapflag	nomemo			dummy
+1@air2.gat	mapflag	noteleport		dummy
+1@air2.gat	mapflag	nobranch		dummy
+1@air2.gat	mapflag	monster_noteleport	dummy
+1@air2.gat	mapflag	noicewall	dummy
+1@air2.gat	mapflag	noabra		dummy
+
+//============================================================
+// 魔神の塔上層 - 1@tnm1.gat
+//------------------------------------------------------------
+1@tnm1.gat	mapflag	nosave			SavePoint
+1@tnm1.gat	mapflag	nomemo			dummy
+1@tnm1.gat	mapflag	noteleport		dummy
+1@tnm1.gat	mapflag	nobranch		dummy
+1@tnm1.gat	mapflag	monster_noteleport	dummy
+1@tnm1.gat	mapflag	noicewall	dummy
+1@tnm1.gat	mapflag	noabra		dummy
+
+//============================================================
+// 魔神の塔最上階 - 1@tnm2.gat
+//------------------------------------------------------------
+1@tnm2.gat	mapflag	nosave			SavePoint
+1@tnm2.gat	mapflag	nomemo			dummy
+1@tnm2.gat	mapflag	noteleport		dummy
+1@tnm2.gat	mapflag	nobranch		dummy
+1@tnm2.gat	mapflag	monster_noteleport	dummy
+1@tnm2.gat	mapflag	noicewall	dummy
+1@tnm2.gat	mapflag	noabra		dummy
+
+//============================================================
+// モロク城地下 - 1@tnm3.gat
+//------------------------------------------------------------
+1@tnm3.gat	mapflag	nosave			SavePoint
+1@tnm3.gat	mapflag	nomemo			dummy
+1@tnm3.gat	mapflag	noteleport		dummy
+1@tnm3.gat	mapflag	nobranch		dummy
+1@tnm3.gat	mapflag	monster_noteleport	dummy
+1@tnm3.gat	mapflag	noicewall	dummy
+1@tnm3.gat	mapflag	noabra		dummy
