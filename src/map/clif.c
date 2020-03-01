@@ -21495,7 +21495,9 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		// pc_authok() で呼び出すとクライアントにエフェクトが反映されない
 		intif_request_scdata(sd->status.account_id,sd->status.char_id);
 
+#if PACKETVER < 20190101
 		clif_skillinfoblock(sd);
+#endif
 		clif_send_hotkeyAll(sd);
 		clif_send_partyconfig(sd);
 		clif_send_config(sd);
@@ -21536,6 +21538,10 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_changeoption(&sd->bl);
 	clif_changeoption(&sd->bl);
 
+#if PACKETVER >= 20190101
+	clif_skillinfoblock(sd);
+#endif
+
 	// 暫定赤エモ防止処理
 	if(sd->status.manner < 0) {
 		if(battle_config.nomanner_mode)
@@ -21559,7 +21565,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 			npc_event_doall_id("OnPCLogin",sd->bl.id,sd->bl.m);
 	}
 
-	// OnPCLoginイベント
+	// OnPCMapInイベント
 	if (battle_config.pc_mapin_script)
 		npc_event_doall_id("OnPCMapIn",sd->bl.id,sd->bl.m);
 

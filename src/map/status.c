@@ -4807,7 +4807,7 @@ int status_get_matk1(struct block_list *bl)
 
 #ifndef PRE_RENEWAL
 		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
-			matk1 = mobdb_search(status_get_class(bl))->atk2 * 13 / 10;
+			matk1 = mobdb_search(status_get_class(bl))->atk2 * 13 / 10 + int_ + status_get_lv(bl);
 		else
 #endif
 			matk1 = int_+(int_/5)*(int_/5);
@@ -4877,7 +4877,7 @@ int status_get_matk2(struct block_list *bl)
 
 #ifndef PRE_RENEWAL
 		if(battle_config.monster_atk2_to_matk && bl->type == BL_MOB)
-			matk2 = mobdb_search(status_get_class(bl))->atk2 * 7 / 10;
+			matk2 = mobdb_search(status_get_class(bl))->atk2 * 7 / 10 + int_ + status_get_lv(bl);
 		else
 #endif
 			matk2 = int_+(int_/7)*(int_/7);
