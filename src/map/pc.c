@@ -4813,7 +4813,9 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		if(sd->status.base_level >= 100 && battle_config.get_status_point_over_lv100)
+		if(sd->status.base_level >= 151 && battle_config.get_status_point_over_lv100)
+			sd->status.status_point += (sd->status.base_level+45 ) / 7;
+		else if(sd->status.base_level >= 100 && battle_config.get_status_point_over_lv100)
 			sd->status.status_point += (sd->status.base_level+129 ) / 10;
 		else
 			sd->status.status_point += (sd->status.base_level+14) / 5;

@@ -1576,7 +1576,9 @@ int atcommand_baselevelup(const int fd, struct map_session_data* sd, AtCommandTy
 		if (level <= 0)
 			return -1;
 		for (i = 1; i <= level; i++) {
-			if(sd->status.base_level + i >= 100 && battle_config.get_status_point_over_lv100)
+			if(sd->status.base_level + i >= 151 && battle_config.get_status_point_over_lv100)
+				sd->status.status_point += (sd->status.base_level + i + 45 ) / 7;
+			else if(sd->status.base_level + i >= 100 && battle_config.get_status_point_over_lv100)
 				sd->status.status_point += (sd->status.base_level + i + 129 ) / 10;
 			else
 				sd->status.status_point += (sd->status.base_level + i + 14) / 5;
