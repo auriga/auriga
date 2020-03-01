@@ -19167,7 +19167,7 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	}
 	WFIFOW(fd,15) = n;
 	WFIFOSET(fd,packet_db[0x2b3].len);
-#else if PACKETVER < 20181017
+#elif PACKETVER < 20181017
 	WFIFOW(fd,0) = 0x9f9;
 	WFIFOL(fd,2) = qd->nameid;
 	WFIFOB(fd,6) = qd->state;
@@ -19267,7 +19267,7 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 		}
 	}
 	WFIFOW(fd,2) = n * 12 + 6;
-#else if PACKETVER < 20181017
+#elif PACKETVER < 20181017
 	WFIFOW(fd,0) = 0x9fa;
 	for(i = 0; i < 3; i++) {
 		if(qd->mob[i].id != 0) {
