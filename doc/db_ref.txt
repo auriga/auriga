@@ -1200,9 +1200,13 @@ QuestID,Title,Limit,Target1ID,Target1Num,Target2ID,Target2Num,Target3ID,Target3N
 QuestID     : クエストのID
 Title       : クエスト名称
 Limit       : クエストの制限時間
-              整数値の場合、秒
-              DD:HH:MM形式の場合、DD回目のHH時MM分
-              00:05:00なら1回目のAM5:00、02:05:00なら3回目のAM5:00
+              整数値形式      : 秒(s)
+              HH:MM形式       : 1回目のHH時MM分
+              DD:HH:MM形式    : DD回目のHH時MM分
+                  00:05:00なら1回目のAM5:00、02:05:00なら3回目のAM5:00
+              WW:DD:HH:MM形式 : DD回目のWW曜日のHH時MM分
+                  WW = 0:日曜日、1:月曜日、2:火曜日、3:水曜日、4:木曜日、5:金曜日、6:土曜日
+                  02:00:11:00なら1回目の火曜日AM11:00
 Target1ID   : キルカウント対象のMobID
 Target1Num  : キルカウント対象の討伐数
 Target2ID   : 同上

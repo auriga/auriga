@@ -443,17 +443,14 @@ static int quest_readdb(void)
 			quest_db[i].limit_type = 0;
 		}
 		else {
-			unsigned char day, hour, min;
+			int week, day, hour, min;
 
-			day = atoi(split[2]);
-			split[2] = strchr(split[2],':');
-			*split[2] ++= 0;
-			hour = atoi(split[2]);
-			split[2] = strchr(split[2],':');
-			*split[2] ++= 0;
-			min = atoi(split[2]);
-
-			quest_db[i].limit = day * 86400 + hour * 3600 + min * 60;
+			if(sscanf(split[2], "%d:%d:%d:%d", &week, &day, &hour, &min) == 4)
+				quest_db[i].limit = day * 604800 + week * 86400 + hour * 3600 + min * 60;
+			else if(sscanf(split[2], "%d:%d:%d", &day, &hour, &min) == 3)
+				quest_db[i].limit = day * 86400 + hour * 3600 + min * 60;
+			else if(sscanf(split[2], "%d:%d", &hour, &min) == 2)
+				quest_db[i].limit = hour * 3600 + min * 60;
 			quest_db[i].limit_type = 1;
 		}
 
