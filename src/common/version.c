@@ -35,12 +35,7 @@ int get_current_version(void)
 
 	if(auriga_version == 0) {
 		FILE *fp;
-		char filename[256];
-
-		if(AURIGA_REVISION < 100)
-			sprintf(filename, "Readme%03d", AURIGA_REVISION);
-		else
-			sprintf(filename, "Readme%04d", AURIGA_REVISION);
+		char filename[256] = "CHANGELOG.md";
 
 		fp = fopen(filename, "r");
 		if(fp) {
