@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002-2007  Auriga
+ * Copyright (C) 2002-2020  Auriga
  *
  * This file is part of Auriga.
  *
