@@ -334,7 +334,7 @@ bool sqldbs_stmt_simpleprepare(struct sqldbs_stmt *st, const char *query)
 	}
 	st->query = (char *)aStrdup(query);
 
-	if( mysql_stmt_prepare(st->stmt, query, strlen(query)) )
+	if( mysql_stmt_prepare(st->stmt, query, (unsigned long)strlen(query)) )
 	{
 		printf("DB server Error - %s\n  %s\n\n", mysql_stmt_error(st->stmt), query);
 		return false;

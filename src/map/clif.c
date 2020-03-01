@@ -19167,7 +19167,7 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	}
 	WFIFOW(fd,15) = n;
 	WFIFOSET(fd,packet_db[0x2b3].len);
-#else
+#else if PACKETVER < 20181017
 	WFIFOW(fd,0) = 0x9f9;
 	WFIFOL(fd,2) = qd->nameid;
 	WFIFOB(fd,6) = qd->state;
@@ -19191,6 +19191,31 @@ void clif_add_questlist(struct map_session_data *sd, int quest_id)
 	}
 	WFIFOW(fd,15) = n;
 	WFIFOSET(fd,packet_db[0x9f9].len);
+#else
+	WFIFOW(fd,0) = 0xb0c;
+	WFIFOL(fd,2) = qd->nameid;
+	WFIFOB(fd,6) = qd->state;
+	WFIFOL(fd,7) = 0;
+	WFIFOL(fd,11) = qd->limit;
+	for(i = 0; i < 3; i++) {
+		if((id = (int)qd->mob[i].id) != 0) {
+			WFIFOL(fd,17+n*46) = qd->nameid;
+			WFIFOL(fd,21+n*46) = i;
+			WFIFOL(fd,25+n*46) = 0;
+			WFIFOL(fd,29+n*46) = id;
+			WFIFOW(fd,33+n*46) = 0;
+			WFIFOW(fd,35+n*46) = 0;
+			WFIFOW(fd,37+n*46) = qd->mob[i].count;
+			if(mobdb_exists(id)) {
+				strncpy(WFIFOP(fd,39+n*46),mobdb_search(id)->jname,24);
+			} else {
+				memset(WFIFOP(fd,39+n*46), 0, 24);
+			}
+			n++;
+		}
+	}
+	WFIFOW(fd,15) = n;
+	WFIFOSET(fd,packet_db[0xb0c].len);
 #endif
 	return;
 }
@@ -19242,7 +19267,7 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 		}
 	}
 	WFIFOW(fd,2) = n * 12 + 6;
-#else
+#else if PACKETVER < 20181017
 	WFIFOW(fd,0) = 0x9fa;
 	for(i = 0; i < 3; i++) {
 		if(qd->mob[i].id != 0) {
@@ -19254,6 +19279,19 @@ void clif_update_questcount(struct map_session_data *sd, int quest_id)
 		}
 	}
 	WFIFOW(fd,2) = n * 12 + 6;
+#else
+	WFIFOW(fd,0) = 0xafe;
+	for(i = 0; i < 3; i++) {
+		if(qd->mob[i].id != 0) {
+			WFIFOL(fd, 6+n*16) = qd->nameid;
+			WFIFOL(fd,10+n*16) = qd->nameid;
+			WFIFOL(fd,14+n*16) = i;
+			WFIFOW(fd,18+n*16) = qd->mob[i].max;
+			WFIFOW(fd,20+n*16) = qd->mob[i].count;
+			n++;
+		}
+	}
+	WFIFOW(fd,2) = n * 16 + 6;
 #endif
 	WFIFOW(fd,4) = n;
 	WFIFOSET(fd,WFIFOW(fd,2));
