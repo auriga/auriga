@@ -140,14 +140,22 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 			int time_today;
 			time_t t;
 			struct tm * lt;
+			int next;
 
 			t = time(NULL);
 			lt = localtime(&t);
-			time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
-			if(time_today < (int)((quest_db[qid].limit)%86400))
+			if(quest_db[qid].limit_type == 1) {
+				time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+				next = 86400;
+			}
+			else {
+				time_today = (lt->tm_wday) * 86400 + (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+				next = 604800;
+			}
+			if(time_today < (int)((quest_db[qid].limit)%next))
 				qd.limit = (unsigned int)(time(NULL) + quest_db[qid].limit - time_today);
 			else
-				qd.limit = (unsigned int)(time(NULL) + 86400 + quest_db[qid].limit - time_today);
+				qd.limit = (unsigned int)(time(NULL) + next + quest_db[qid].limit - time_today);
 		}
 	}
 	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
@@ -226,14 +234,22 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 			int time_today;
 			time_t t;
 			struct tm * lt;
+			int next;
 
 			t = time(NULL);
 			lt = localtime(&t);
-			time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
-			if(time_today < (int)((quest_db[qid].limit)%86400))
+			if(quest_db[qid].limit_type == 1) {
+				time_today = (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+				next = 86400;
+			}
+			else {
+				time_today = (lt->tm_wday) * 86400 + (lt->tm_hour) * 3600 + (lt->tm_min) * 60 + (lt->tm_sec);
+				next = 604800;
+			}
+			if(time_today < (int)((quest_db[qid].limit)%next))
 				qd.limit = (unsigned int)(time(NULL) + quest_db[qid].limit - time_today);
 			else
-				qd.limit = (unsigned int)(time(NULL) + 86400 + quest_db[qid].limit - time_today);
+				qd.limit = (unsigned int)(time(NULL) + next + quest_db[qid].limit - time_today);
 		}
 	}
 	for(i = 0; i < sizeof(qd.mob)/sizeof(qd.mob[0]); i++) {
@@ -445,13 +461,18 @@ static int quest_readdb(void)
 		else {
 			int week, day, hour, min;
 
-			if(sscanf(split[2], "%d:%d:%d:%d", &week, &day, &hour, &min) == 4)
+			if(sscanf(split[2], "%d:%d:%d:%d", &week, &day, &hour, &min) == 4) {
 				quest_db[i].limit = day * 604800 + week * 86400 + hour * 3600 + min * 60;
-			else if(sscanf(split[2], "%d:%d:%d", &day, &hour, &min) == 3)
+				quest_db[i].limit_type = 2;
+			}
+			else if(sscanf(split[2], "%d:%d:%d", &day, &hour, &min) == 3) {
 				quest_db[i].limit = day * 86400 + hour * 3600 + min * 60;
-			else if(sscanf(split[2], "%d:%d", &hour, &min) == 2)
+				quest_db[i].limit_type = 1;
+			}
+			else if(sscanf(split[2], "%d:%d", &hour, &min) == 2) {
 				quest_db[i].limit = hour * 3600 + min * 60;
-			quest_db[i].limit_type = 1;
+				quest_db[i].limit_type = 1;
+			}
 		}
 
 		for(j = 0; j < sizeof(quest_db[0].mob)/sizeof(quest_db[0].mob[0]); j++) {
