@@ -1798,6 +1798,10 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
+	case SU_CN_METEOR2:	/* イヌハッカメテオ(呪い) */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,2000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_CURSE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
 
 	case NPC_UGLYDANCE:
 		if(dstsd) {
@@ -2640,6 +2644,7 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				break;
 			case WZ_METEOR:
 			case SU_CN_METEOR:				/* イヌハッカメテオ */
+			case SU_CN_METEOR2:				/* イヌハッカメテオ(呪い) */
 				if(skl->type >= 0) {
 					int x = skl->type>>16, y = skl->type&0xffff;
 					if(map_getcell(src->m,x,y,CELL_CHKPASS))
@@ -10418,6 +10423,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SU_CN_POWDERING:	/* イヌハッカシャワー */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		skill_unitsetting(src,skillid,skilllv,bl->x,bl->y,0);
 		break;
 	case SU_SV_ROOTTWIST:	/* マタタビの根っこ */
@@ -10439,7 +10445,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SU_POWEROFFLOCK:	/* 群れの力 */
 		if(flag&1) {
-			int rate = 10 + 5 * skilllv + status_get_dex(src) / 10 + status_get_luk(src) / 10;	// 暫定確率
+			int rate = 1000 + 500 * skilllv + status_get_dex(src) * 10 + status_get_luk(src) * 10;	// 暫定確率
 			if(atn_rand() % 10000 < rate)
 				status_change_pretimer(bl,SC_FEAR,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 			if(atn_rand() % 10000 < status_change_rate(bl,SC_FREEZE,rate,status_get_lv(src)))
@@ -10874,6 +10880,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case RA_ICEBOUNDTRAP:
 	case SC_ESCAPE:
 	case SU_CN_METEOR:
+	case SU_CN_METEOR2:
 		break;
 	default:
 		clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
@@ -11078,7 +11085,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 
 	case WZ_METEOR:			/* メテオストーム */
-	case SU_CN_METEOR:	/* イヌハッカメテオ */
 		{
 			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0;
 			int interval = (skilllv > 10)? 2500: 1000;
@@ -11630,6 +11636,40 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		else if(sd)
 			clif_skill_fail(sd,skillid,0,0,0);
+		break;
+	case SU_CN_METEOR:	/* イヌハッカメテオ */
+	case SU_CN_METEOR2:			/* イヌハッカメテオ(呪い) */
+		{
+			int i, tmpx = 0, tmpy = 0, x1 = 0, y1 = 0, ar;
+			int interval = 650;
+			int skill = SU_CN_METEOR;
+			if(sd) {
+				int nameid, amount, idx = 0;
+
+				nameid = 11602;	// イヌハッカの実
+				amount = 1;
+
+				idx = pc_search_inventory(sd,nameid);
+
+				if(idx >= 0 && sd->status.inventory[idx].amount >= amount) {	// イヌハッカの実を持ってたら消費
+					pc_delitem(sd,idx,amount,0,1);
+					skill = SU_CN_METEOR2;
+				}
+			}
+			for(i=0; i < 7; i++) {
+				ar = ((skilllv > 1)? 17 - skilllv*2: 17);
+				tmpx = x + atn_rand()%ar - ar / 2;
+				tmpy = y + atn_rand()%ar - ar / 2;
+				if(i == 0 && map_getcell(src->m,tmpx,tmpy,CELL_CHKPASS)) {
+					clif_skill_poseffect(src,skill,skilllv,tmpx,tmpy,tick);
+				} else if(i > 0) {
+					skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skill,skilllv,(x1<<16)|y1,0);
+				}
+				x1 = tmpx;
+				y1 = tmpy;
+			}
+			skill_addtimerskill(src,tick+i*interval,0,tmpx,tmpy,skill,skilllv,-1,0);
+		}
 		break;
 	case NPC_LEX_AETERNA:		/* Mレックスエーテルナ */
 		{
@@ -17834,6 +17874,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case KO_ZENKAI:
 		case RL_FIRE_RAIN:
 		case SU_CN_METEOR:
+		case SU_CN_METEOR2:
 		case NPC_DISSONANCE:
 		case NPC_UGLYDANCE:
 			skill_delunit(unit);

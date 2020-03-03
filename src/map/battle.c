@@ -6636,6 +6636,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 			break;
 		case SU_CN_METEOR:	/* イヌハッカメテオ */
+		case SU_CN_METEOR2:	/* イヌハッカメテオ(呪い) */
 			MATK_FIX( 700, 100 );
 			break;
 		case EL_FIRE_MANTLE:	/* ファイアーマントル */

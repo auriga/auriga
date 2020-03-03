@@ -1193,7 +1193,7 @@
 5024,0,0,0,0,0,1,0,no,0,0,0,none,0	//SU_SPRITEMABLE#にゃん魂#
 5025,0,0,0,0,0,1,0,no,0,0,0,none,0	//SU_POWEROFLAND#大地の力#
 5026,9,6,1,0,0,5,1,yes,0,0,0,magic,0	//SU_SV_STEMSPEAR#マタタビランス#
-5027,9,6,1,0,0,5,1,yes,0,0,1,none,0	//SU_CN_POWDERING#イヌハッカシャワー#
+5027,9,6,1,0,1,5,1,yes,0,0,1,none,0	//SU_CN_POWDERING#イヌハッカシャワー#
 5028,9,8,2,0,0,5,5,yes,0,0,0,magic,0	//SU_CN_METEOR#イヌハッカメテオ#
 5029,9,6,1,0,1,5,1,yes,0,0,0,none,0	//SU_SV_ROOTTWIST#マタタビの根っこ#
 5030,9,6,1,0,1,5,1,no,0,0,0,misc,0	//SU_SV_ROOTTWIST_ATK#マタタビの根っこ(攻撃)#
