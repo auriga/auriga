@@ -131,7 +131,7 @@ rockrdg2.gat,301,349,3	script	自警団員#rockrdg2	10220,{
 	mes "お通ししています。";
 	close;
 OnTalk:
-	donpcevent "自警団員 : この先は危険です。BaseLv160以上の方のみお通ししています。";
+	unittalk "自警団員 : この先は危険です。BaseLv160以上の方のみお通ししています。";
 	end;
 }
 
