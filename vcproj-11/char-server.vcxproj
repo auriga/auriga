@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\char\char.h" />
     <ClInclude Include="..\src\char\inter.h" />
+    <ClInclude Include="..\src\char\int_achieve.h" />
     <ClInclude Include="..\src\char\int_elem.h" />
     <ClInclude Include="..\src\char\int_guild.h" />
     <ClInclude Include="..\src\char\int_homun.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="..\src\char\int_status.h" />
     <ClInclude Include="..\src\char\int_storage.h" />
     <ClInclude Include="..\src\char\sql\storagedb_sql.h" />
+    <ClInclude Include="..\src\char\sql\achievedb_sql.h" />
     <ClInclude Include="..\src\char\sql\accregdb_sql.h" />
     <ClInclude Include="..\src\char\sql\chardb_sql.h" />
     <ClInclude Include="..\src\char\sql\charlog_sql.h" />
@@ -196,6 +198,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\char\char.c" />
     <ClCompile Include="..\src\char\inter.c" />
+    <ClCompile Include="..\src\char\int_achieve.c" />
     <ClCompile Include="..\src\char\int_elem.c" />
     <ClCompile Include="..\src\char\int_guild.c" />
     <ClCompile Include="..\src\char\int_homun.c" />
@@ -207,6 +210,7 @@
     <ClCompile Include="..\src\char\int_status.c" />
     <ClCompile Include="..\src\char\int_storage.c" />
     <ClCompile Include="..\src\char\sql\storagedb_sql.c" />
+    <ClCompile Include="..\src\char\sql\achievedb_sql.c" />
     <ClCompile Include="..\src\char\sql\accregdb_sql.c" />
     <ClCompile Include="..\src\char\sql\chardb_sql.c" />
     <ClCompile Include="..\src\char\sql\charlog_sql.c" />

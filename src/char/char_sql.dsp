@@ -153,6 +153,10 @@ SOURCE=..\..\src\char\int_elem.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_achieve.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\sql\accregdb_sql.c
 # End Source File
 # Begin Source File
@@ -190,6 +194,10 @@ SOURCE=..\..\src\char\sql\questdb_sql.c
 # Begin Source File
 
 SOURCE=..\..\src\char\sql\elemdb_sql.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\sql\achievedb_sql.c
 # End Source File
 # Begin Source File
 
@@ -317,6 +325,10 @@ SOURCE=..\..\src\char\int_elem.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\char\int_achieve.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\char\sql\accregdb_sql.h
 # End Source File
 # Begin Source File
@@ -354,6 +366,10 @@ SOURCE=..\..\src\char\sql\questdb_sql.h
 # Begin Source File
 
 SOURCE=..\..\src\char\sql\elemdb_sql.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\char\sql\achievedb_sql.h
 # End Source File
 # Begin Source File
 

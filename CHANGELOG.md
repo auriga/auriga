@@ -1,4 +1,10 @@
 ----------------------------------------
+//1401 [2020/03/03] by refis
+
+・VSのプロジェクトに実績関連ファイルの追加忘れがあったのを修正
+（char*.dsp, map*.dsp, char-server.vcxproj, map-server.vcxproj）
+
+----------------------------------------
 //1400 [2020/03/03] by refis
 
 ・ドラム族スキル修正（skill_db.txt, skill_unit_db.txt, battle.c, skill.c）

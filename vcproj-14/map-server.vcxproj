@@ -138,8 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\map\luascript.h" />
     <ClInclude Include="..\src\map\sql\mapreg_sql.h" />
+    <ClInclude Include="..\src\map\achieve.h" />
     <ClInclude Include="..\src\map\atcommand.h" />
     <ClInclude Include="..\src\map\bank.h" />
     <ClInclude Include="..\src\map\battle.h" />
@@ -157,6 +157,7 @@
     <ClInclude Include="..\src\map\homun.h" />
     <ClInclude Include="..\src\map\intif.h" />
     <ClInclude Include="..\src\map\itemdb.h" />
+    <ClInclude Include="..\src\map\luascript.h" />
     <ClInclude Include="..\src\map\mail.h" />
     <ClInclude Include="..\src\map\map.h" />
     <ClInclude Include="..\src\map\memorial.h" />
@@ -205,8 +206,8 @@
     <ClInclude Include="..\src\common\zlib\zlib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\map\luascript.c" />
     <ClCompile Include="..\src\map\sql\mapreg_sql.c" />
+    <ClCompile Include="..\src\map\achieve.c" />
     <ClCompile Include="..\src\map\atcommand.c" />
     <ClCompile Include="..\src\map\bank.c" />
     <ClCompile Include="..\src\map\battle.c" />
@@ -224,6 +225,7 @@
     <ClCompile Include="..\src\map\homun.c" />
     <ClCompile Include="..\src\map\intif.c" />
     <ClCompile Include="..\src\map\itemdb.c" />
+    <ClCompile Include="..\src\map\luascript.c" />
     <ClCompile Include="..\src\map\mail.c" />
     <ClCompile Include="..\src\map\map.c" />
     <ClCompile Include="..\src\map\memorial.c" />

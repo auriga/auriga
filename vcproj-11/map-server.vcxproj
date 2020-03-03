@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\map\sql\mapreg_sql.h" />
+    <ClInclude Include="..\src\map\achieve.h" />
     <ClInclude Include="..\src\map\atcommand.h" />
     <ClInclude Include="..\src\map\bank.h" />
     <ClInclude Include="..\src\map\battle.h" />
@@ -207,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\map\sql\mapreg_sql.c" />
+    <ClCompile Include="..\src\map\achieve.c" />
     <ClCompile Include="..\src\map\atcommand.c" />
     <ClCompile Include="..\src\map\bank.c" />
     <ClCompile Include="..\src\map\battle.c" />
