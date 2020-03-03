@@ -2602,9 +2602,9 @@ conch_in.gat,159,60,0	warp	lasagnawarp1006	2,2,conch_in.gat,138,60
 // har_in01.gat		ロックリッジ 室内
 //==============================================================
 //ロックリッジ⇔保安官事務室
-harboro1.gat,241,218,0	warp	lasagnawarp1001	1,1,har_in01.gat,18,18
-har_in01.gat,18,15,0	warp	lasagnawarp1002	1,1,harboro1.gat,241,215
+harboro1.gat,241,218,0	warp	rockwarp1001	1,1,har_in01.gat,18,18
+har_in01.gat,18,15,0	warp	rockwarp1002	1,1,harboro1.gat,241,215
 
 //ロックリッジ⇔道具屋
-harboro1.gat,312,193,0	warp	lasagnawarp1003	1,1,har_in01.gat,26,87
-har_in01.gat,26,90,0	warp	lasagnawarp1004	1,1,harboro1.gat,312,197
+harboro1.gat,312,193,0	warp	rockwarp1003	1,1,har_in01.gat,26,87
+har_in01.gat,26,90,0	warp	rockwarp1004	1,1,harboro1.gat,312,197
