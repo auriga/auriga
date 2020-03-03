@@ -1160,3 +1160,15 @@ OnTouch:
 	}
 	end;
 }
+
+//----------------------------------
+// < ロックリッジ >
+//----------------------------------
+
+harboro1.gat,291,207,5	script	カプラ職員#rockridge	117,{
+	cutin "kafra_01",2;
+	set '@code,1;
+	set '@price,2000;
+	callfunc "KafraMain",1,0x1db,"harboro1.gat",298,203,"NULL",0,0,40,800,'@code,'@price;
+	end;
+}

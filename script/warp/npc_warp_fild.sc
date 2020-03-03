@@ -1582,3 +1582,22 @@ lasa_fild02.gat,16,98,0		warp	lasagnawarp0103	2,2,lasagna.gat,355,92
 
 //ラビオル森 01⇒龍の巣 01
 lasa_fild02.gat,348,244,0	warp	lasagnawarp0401	2,2,lasa_dun01.gat,24,143
+
+
+
+//---ロックリッジ追加マップ
+
+
+//==============================================================
+// -----  ロックリッジ -----
+// rockrdg1.gat	キワワ砂漠 01
+// rockrdg2.gat	キワワ砂漠 02
+// -----
+// harboro1.gat	ロックリッジ
+//==============================================================
+//キワワ砂漠 01⇒ロックリッジ
+rockrdg1.gat,33,246,0	warp	rockwarp0101	1,1,harboro1.gat,358,206
+
+//キワワ砂漠 01⇔キワワ砂漠 01
+rockrdg1.gat,371,206,0	warp	rockwarp5001	1,1,rockrdg2.gat,31,207
+rockrdg2.gat,27,207,0	warp	rockwarp5002	1,1,rockrdg1.gat,367,206

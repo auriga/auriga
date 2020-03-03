@@ -30,3 +30,4 @@
 27,ma,malaya.gat,281,211	// 27:ma#ポートマラヤ#
 28,mo,mora.gat,57,142		// 28:mora#レシア族の街 モーラ#
 29,lasa,lasagna.gat,321,222	// 29:lasa#港町ラザーニャ#
+30,rock,harboro1.gat,298,203	// 30:rock#ロックリッジ#

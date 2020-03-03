@@ -1,4 +1,31 @@
 ----------------------------------------
+//1399 [2020/03/03] by refis
+
+・ロックリッジNPC実装（npc_town_rockridge.sc）
+	-> ロックリッジクエスト実装
+	-> ロックリッジウィークリークエスト実装
+	※交換NPC等一部未実装があるので注意してください
+
+・ロックリッジ関連NPC追加 (npc_misc_kafra.sc)
+
+・ロックリッジ追加マップのwarp更新 (npc_warp_dun.sc, npc_warp_fild.sc, npc_warp_town.sc)
+
+・ロックリッジ追加マップのmapflag更新 (mapflag.sc)
+
+・ロックリッジ追加マップのmonster出現定義追加 (npc_monster_rockrdg.sc, npc_monster_harboro.sc, npc_monster_rockmine.sc)
+
+・item_dbのランダム更新 (item_db.txt, item_db2.txt)
+	Thanks a lot kuura さん
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・atcommand_go_dbの更新 (atcommand_go_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1398 [2020/03/03] by refis
 
 ・クエストDBのWW:DD:HH:MM形式処理が正常動作ではなかった (quest.c)

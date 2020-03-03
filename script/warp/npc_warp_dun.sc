@@ -1338,3 +1338,26 @@ lasa_dun02.gat,18,171,0	warp	lasagnawarp4002	2,2,lasa_dun01.gat,153,98
 //龍の巣 02⇔龍の巣 03
 lasa_dun02.gat,146,58,0	warp	lasagnawarp4003	2,2,lasa_dun03.gat,190,18
 lasa_dun03.gat,190,15,0	warp	lasagnawarp4004	2,2,lasa_dun02.gat,146,54
+
+
+
+//---ロックリッジ追加マップ
+
+
+//==============================================================
+// -----  ロックリッジ -----
+// rockmi1.gat	ロックリッジ地下街
+// rockmi1.gat	ロックリッジ地下街 奥地
+// rockmi1.gat	ロックリッジ鉱山 01
+// rockmi3.gat	ロックリッジ鉱山 01 奥地
+// -----
+// rockrdg2.gat	キワワ砂漠 02
+// rockrdg2.gat	キワワ砂漠 02
+//==============================================================
+//ロックリッジ地下街⇒ロックリッジ
+harboro2.gat,284,104,0	warp	rockwarp0501	2,2,harboro1.gat,318,124
+harboro3.gat,284,104,0	warp	rockwarp0502	2,2,harboro1.gat,318,124
+
+//ロックリッジ鉱山⇒キワワ砂漠 02
+rockmi1.gat,247,16,0	warp	rockwarp0503	1,1,rockrdg2.gat,304,344
+rockmi3.gat,247,16,0	warp	rockwarp0504	1,1,rockrdg2.gat,304,344
