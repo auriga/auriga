@@ -202,7 +202,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚
 	/* 730- */
 	-1,-1,-1,-1,-1,SC_MANDRAGORA,-1,-1,-1,-1,
 	/* 740- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,-1,-1,-1,-1,
 };
 
 /* (ƒXƒLƒ‹”Ô† - SECOND_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
@@ -8338,6 +8338,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				battle_heal(NULL,src,heal,0,0);
 			}
 		}
+		break;
+	case NPC_ELECTRICWALK:	/* MƒGƒŒƒNƒgƒŠƒbƒNƒEƒH[ƒN */
+	case NPC_FIREWALK:		/* Mƒtƒ@ƒCƒA[ƒEƒH[ƒN */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
 	case NPC_MANDRAGORA:		/* MƒnƒEƒŠƒ“ƒOƒIƒuƒ}ƒ“ƒhƒ‰ƒSƒ‰ */
 		if(flag&1) {

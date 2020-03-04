@@ -1,4 +1,17 @@
 ----------------------------------------
+//1402 [2020/03/04] by refis
+
+・[RE] : クリティカルスラッシュのダメージ計算式を修正（battle.c）
+
+・[RE] : ラッシュアタック、エスクをスキル倍率加算式に修正（battle.c, status.c）
+
+・[RE] : ラッシュアタックのDEX3倍をFlee2倍に修正（status.c）
+
+・追加NPCスキルを2種実装（skill_cast_db.txt, skill_db.txt, skill_db2.txt, skill_unit_db.txt, battle.c, skill.c, unit.c）
+
+・上記修正のmob_db対応（mob_db.txt, mob_skill_db.txt）
+
+----------------------------------------
 //1401 [2020/03/03] by refis
 
 ・VSのプロジェクトに実績関連ファイルの追加忘れがあったのを修正

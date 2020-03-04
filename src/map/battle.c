@@ -1578,12 +1578,7 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		atkmin = atkmax;
 	}
 
-#ifdef PRE_RENEWAL
-	if(type == 0x0a)
-#else
-	if(type == 0x0a || skill_num == NPC_CRITICALSLASH)
-#endif
-	{
+	if(type == 0x0a) {
 		/* クリティカル攻撃 */
 		damage += atkmax;
 
@@ -2945,6 +2940,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			// 呪い
 			if(sc->data[SC_CURSE].timer != -1)
 				add_rate -= 25;
+			// NPC爆裂波動
+			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && !src_sd)
+				add_rate += 200;
+			// エスク
+			if(sc->data[SC_SKE].timer != -1 && src_md)
+				add_rate += 300;
 #endif
 			// ヒートバレル
 			if(sc->data[SC_HEAT_BARREL].timer != -1)
@@ -3084,6 +3085,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			DMG_FIX( (200 + (500 - 100 * t_size) * skill_lv) * status_get_lv(src) / 150, 100 );
 			break;
+		case NPC_CRITICALSLASH:	// クリティカルスラッシュ
+			if(src_md) {
+				if(battle_config.monster_atk2_to_matk) {
+					wd.damage = mobdb_search(src_md->class_)->atk1 + mobdb_search(src_md->class_)->atk2;
+				}
+				else {
+					int int_ = mobdb_search(src_md->class_)->int_;
+
+					wd.damage  = (mobdb_search(src_md->class_)->atk1 + mobdb_search(src_md->class_)->atk2) / 2;
+					wd.damage += ((int_+(int_/5)*(int_/5)) + (int_+(int_/7)*(int_/7))) / 2;
+				}
+			}
 		}
 
 		if( src_sd && wd.damage > 0 && calc_flag.rh ) {
@@ -3755,6 +3768,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 #endif
 		case NPC_CRITICALSLASH:		// クリティカルスラッシュ
+			DMG_FIX( 100, 100 );
+			break;
 		case NPC_FIREBREATH:		// ファイアブレス
 		case NPC_ICEBREATH:		// アイスブレス
 		case NPC_THUNDERBREATH:		// サンダーブレス
@@ -6403,6 +6418,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			break;
 		case NPC_PSYCHIC_WAVE:	// Mサイキックウェーブ
 			MATK_FIX( 500 * skill_lv, 100 );
+			break;
+		case NPC_ELECTRICWALK:	// Mエレクトリックウォーク
+		case NPC_FIREWALK:		// Mファイアーウォーク
+			MATK_FIX( 100 * skill_lv, 100 );
 			break;
 		case RK_ENCHANTBLADE:	// エンチャントブレイド
 			if(sc && sc->data[SC_ENCHANTBLADE].timer != -1) {

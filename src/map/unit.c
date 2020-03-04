@@ -390,6 +390,12 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		if(md->sc.option&OPTION_CLOAKING)
 			skill_check_cloaking(&md->bl);
 
+			if(md->sc.data[SC_PROPERTYWALK].timer != -1) {
+				skill_unitsetting(&md->bl,md->sc.data[SC_PROPERTYWALK].val2,md->sc.data[SC_PROPERTYWALK].val1,md->bl.x,md->bl.y,0);
+				if(--md->sc.data[SC_PROPERTYWALK].val3 <= 0) {
+					status_change_end(&md->bl, SC_PROPERTYWALK, -1);
+				}
+			}
 		if(map_getcell(md->bl.m,x,y,CELL_CHKNPC))
 			npc_touch_areanpc2(md,md->bl.m,x,y);
 		else

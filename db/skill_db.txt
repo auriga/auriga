@@ -169,7 +169,7 @@
 167,0,6,4,6,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEHOLY#チェンジホーリー#
 168,0,6,4,7,1,10,1,no,0,2,0,magic,0	//NPC_CHANGEDARKNESS#闇属性変化#
 169,0,6,4,8,1,10,1,no,0,2,0,magic,0	//NPC_CHANGETELEKINESIS#チェンジテレキネシス#
-170,-9,6,1,0,0,10,1,no,0,2,0,weapon,0	//NPC_CRITICALSLASH#クリティカルスラッシュ#
+170,-9,6,1,0,0,1,1,no,0,2,0,weapon,0	//NPC_CRITICALSLASH#クリティカルスラッシュ#
 171,-9,8,1,0,0,10,2:3:4:5:6:7:8:9:10:11,no,0,2,0,weapon,0	//NPC_COMBOATTACK#コンボアタック#
 172,-9,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_GUIDEDATTACK#ガイデッドアタック#
 173,5,6,4,3,2,10,1,no,0,2,0,misc,3	//NPC_SELFDESTRUCTION#Mセルフディストラクション#
@@ -743,8 +743,8 @@
 741,7:9:11:13:15,6,1,0,0,5,1,no,0,2,0,weapon,0	//NPC_PHANTOMTHRUST#Mファントムスラスト#
 //742,9,6,1,5,0,2,1,no,0,2,0,none,0	//NPC_POISON_BUSTER#Mポイズンバスター#
 //743,1,6,4,0,1,5,1,no,0,2,0,none,0	//NPC_HALLUCINATIONWALK#Mハルシネーションウォーク#
-//744,1,8,4,4,1,5,1,no,0,2,0,magic,0	//NPC_ELECTRICWALK#Mエレクトリックウォーク#
-//745,1,8,4,3,1,5,1,no,0,2,0,magic,0	//NPC_FIREWALK#Mファイアーウォーク#
+744,0,6,4,4,1,5,1,no,0,2,8:10:12:14:16,magic,0	//NPC_ELECTRICWALK#Mエレクトリックウォーク#
+745,0,6,4,3,1,5,1,no,0,2,8:10:12:14:16,magic,0	//NPC_FIREWALK#Mファイアーウォーク#
 //746,9,6,1,0,1,5,1,no,0,2,0,magic,0	//NPC_WIDEDISPEL#ワイドディスペル#
 747,5:10:15:20:25,6,1,0,1,5,1,no,0,2,0,none,0	//NPC_LEASH#デスハンド#
 748,5:10:15:20:25,6,1,0,1,5,1,no,0,2,0,none,0	//NPC_WIDELEASH#ワイドデスハンド#

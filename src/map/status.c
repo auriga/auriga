@@ -4172,8 +4172,10 @@ int status_get_dex(struct block_list *bl)
 		dex = ((struct elem_data *)bl)->dex;
 
 	if(sc && bl->type != BL_HOM) {
+#ifdef PRE_RENEWAL
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)
 			dex *= 3;	// NPC爆裂波動
+#endif
 		if(sc->data[SC_CONCENTRATE].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
 			dex += dex*(2+sc->data[SC_CONCENTRATE].val1)/100;
 
@@ -4368,6 +4370,10 @@ int status_get_hit(struct block_list *bl)
 
 		hit += status_get_dex(bl) + status_get_lv(bl);
 		if(sc) {
+#ifndef PRE_RENEWAL
+			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
+				hit *= 2;
+#endif
 			if(sc->data[SC_HUMMING].timer != -1)
 				hit += hit*(sc->data[SC_HUMMING].val1*2+sc->data[SC_HUMMING].val2 + sc->data[SC_HUMMING].val3)/100;
 			if(sc->data[SC_TRUESIGHT].timer != -1)		// トゥルーサイト
@@ -4612,9 +4618,11 @@ int status_get_atk(struct block_list *bl)
 			atk -= atk*25/100;
 		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// コンセントレーション
 			atk += atk*(5*sc->data[SC_CONCENTRATION].val1)/100;
-#endif
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
 			rate += 200;
+		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
+			rate += 300;
+#endif
 		if(sc->data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
 			atk -= atk*25/100;
 		if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
@@ -4728,9 +4736,11 @@ int status_get_atk2(struct block_list *bl)
 #ifdef PRE_RENEWAL
 			if(sc->data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
 				atk2 += atk2*(5*sc->data[SC_CONCENTRATION].val1)/100;
-#endif
 			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC爆裂波動
 				rate += 200;
+			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
+				rate += 300;
+#endif
 			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
 				atk2 -= atk2*25/100;
 			if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
@@ -4741,8 +4751,6 @@ int status_get_atk2(struct block_list *bl)
 				atk2 = atk2*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*80/100;
-			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
-				rate += 300;
 			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
