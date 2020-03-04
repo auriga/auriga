@@ -5623,6 +5623,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case GS_MAGICALBULLET:
 		wd.damage = battle_attr_fix(wd.damage, ELE_GHOST, status_get_element(target) );
 		break;
+	case NPC_CRITICALSLASH:
 	case AM_ACIDTERROR:
 	case MO_EXTREMITYFIST:
 	case CR_ACIDDEMONSTRATION:
