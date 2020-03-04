@@ -794,9 +794,9 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 	}
 
 	// Žå‚ª‚¢‚é‚ªA­‚µ‰“‚¢‚Ì‚Å‹ßŠñ‚é
-	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->master_dist < 15) {
-		int i = 0, dx, dy, ret;
-		if(md->master_dist > 2) {
+	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->master_dist < 15 && md->state.norandomwalk) {
+		if(md->master_dist > 2 || md->master_dist == 0) {
+			int i = 0, dx, dy, ret;
 			do {
 				if(i <= 2) {
 					dx = atn_rand()%5-2+mmd->bl.x - md->bl.x;
@@ -806,19 +806,6 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 					dy = mmd->bl.y - md->bl.y + atn_rand()%5 - 2;
 				}
 				ret = unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
-				i++;
-			} while(ret == 0 && i < 5);
-		} else {
-			do {
-				dx = atn_rand()%5 - 2;
-				dy = atn_rand()%5 - 2;
-				if(dx == 0 && dy == 0) {
-					dx = (atn_rand()%2)? 1: -1;
-					dy = (atn_rand()%2)? 1: -1;
-				}
-				dx += mmd->bl.x;
-				dy += mmd->bl.y;
-				ret = unit_walktoxy(&md->bl,mmd->bl.x+dx,mmd->bl.y+dy);
 				i++;
 			} while(ret == 0 && i < 5);
 		}
@@ -1197,7 +1184,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 
 	// •àsˆ—
 	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&		// ˆÚ“®‰Â”\MOB&“®‚¯‚éó‘Ô‚É‚ ‚é
-	    (md->master_id == 0 || md->state.special_mob_ai || md->master_dist > 10) )	// Žæ‚èŠª‚«MOB‚¶‚á‚È‚¢
+	    (md->master_id == 0 || md->state.special_mob_ai || md->master_dist > 10 || !md->state.norandomwalk) )	// Žæ‚èŠª‚«MOB‚¶‚á‚È‚¢
 	{
 		if( DIFF_TICK(md->next_walktime,tick) > 7000 && md->ud.walktimer == -1 ) {
 			md->next_walktime = tick + atn_rand()%2000 + 1000;
@@ -2899,9 +2886,11 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 		if(flag) {
 			md->master_id    = md2->bl.id;
 			md->speed        = md2->speed;
+			md->state.norandomwalk = 1;
 			md->state.nodrop = battle_config.summonslave_no_drop;
 			md->state.noexp  = battle_config.summonslave_no_exp;
 			md->state.nomvp  = battle_config.summonslave_no_mvp;
+			md->mode = md->mode | MD_CANMOVE;
 			switch (battle_config.slave_inherit_mode) {
 			case 0:
 				break;

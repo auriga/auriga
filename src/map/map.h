@@ -970,6 +970,7 @@ struct mob_data {
 		unsigned recall_flag : 1;
 		unsigned rebirth : 1;
 		unsigned angry : 1;
+		unsigned norandomwalk : 1;
 	} state;
 	short view_size;
 	short speed;

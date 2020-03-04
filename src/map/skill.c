@@ -7559,6 +7559,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				unit_stop_walking(&md->bl,1);
 				unit_stopattack(&md->bl);
 				mob_unlocktarget(md, tick);
+				if( md->state.norandomwalk )
+					md->state.norandomwalk = 0;
 			}
 			status_change_end(src,SC_MODECHANGE,-1);
 			if(skillid == NPC_EMOTION_ON)
