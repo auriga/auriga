@@ -1,4 +1,12 @@
 ----------------------------------------
+//1407 [2020/03/06] by refis
+
+・ピラミッドダンジョン・スフィンクスダンジョンのモンスター出現情報を最新のものに更新
+（npc_monster_insphinx.sc, npc_monster_mocpryd.sc）
+
+・新規配置モンスターのデータ、使用スキルを追加（mob_db.txt, mob_skill_db.txt）
+
+----------------------------------------
 //1406 [2020/03/06] by refis
 
 ・定数Job_Starの表記にぶれがあったのを統一（const.txt, npc_misc_pointshop.sc, npc_custom_jobchange.sc）
