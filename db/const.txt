@@ -28,8 +28,8 @@ Job_Taekwon		21
 Job_TaeKwonBoy		21
 Job_StarGladiator	22
 Job_StarGladiator2	22
-job_Star		22
-job_Star2		22
+Job_Star		22
+Job_Star2		22
 Job_SoulLinker		23
 Job_Linker		23
 Job_Gunslinger  	24

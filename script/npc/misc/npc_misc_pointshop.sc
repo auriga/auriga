@@ -97,7 +97,7 @@ prontera.gat,123,62,5	script	•‘•õFt	97,{
 		case Job_SuperNovice:
 		case Job_ExpandedSuperNovice:	return "excolor_supernovice.bmp";
 		case Job_Taekwon:		return "excolor_taekwon.bmp";
-		case job_Star:			return "excolor_kwonsung.bmp";
+		case Job_Star:			return "excolor_kwonsung.bmp";
 		case Job_Linker:		return "excolor_soullinker.bmp";
 		case Job_Gunslinger:	return "excolor_gunslinger.bmp";
 		case Job_Ninja:			return "excolor_ninja.bmp";
@@ -453,7 +453,7 @@ prontera.gat,125,62,4	script	‹Ræ‹¦‰ïL•ñˆõ	832,{
 	case Job_SuperNovice:
 	case Job_ExpandedSuperNovice:	set '@name$,"riding_supernovice.bmp"; break;
 	case Job_Taekwon:		set '@name$,"riding_taekwon.bmp"; break;
-	case job_Star:			set '@name$,"riding_kwonsung.bmp"; break;
+	case Job_Star:			set '@name$,"riding_kwonsung.bmp"; break;
 	case Job_Linker:		set '@name$,"riding_soullinker.bmp"; break;
 	case Job_Gunslinger:	set '@name$,"riding_gunslinger.bmp"; break;
 	case Job_Ninja:			set '@name$,"riding_ninja.bmp"; break;

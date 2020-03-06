@@ -292,7 +292,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 			case Job_Taekwon:
 				set '@job_name$['@i],"テコンキッド";
 				break;
-			case job_Star:
+			case Job_Star:
 				set '@job_name$['@i],"拳聖";
 				break;
 			case Job_Linker:
@@ -465,7 +465,7 @@ prontera.gat,161,192,5	script	転職カプラ	114,{
 		case Job_Alchemist:
 		case Job_Bard:
 		case Job_Dancer:
-		case job_Star:
+		case Job_Star:
 		case Job_Linker:
 		case Job_DeathKnight:
 		case Job_DarkCollector:

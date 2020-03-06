@@ -1,4 +1,17 @@
 ----------------------------------------
+//1406 [2020/03/06] by refis
+
+・定数Job_Starの表記にぶれがあったのを統一（const.txt, npc_misc_pointshop.sc, npc_custom_jobchange.sc）
+
+・タナトスタワー3Fへの入場が一人で可能に変更されているので修正（npc_quest_noghalt.sc）
+
+・タナトスタワー7Fへの入場条件に追加職が含まれてなかったのを修正（npc_warp_dun.sc）
+
+・悪夢のグラストヘイムへの入場条件に追加職が含まれてなかったのを修正（npc_quest_glastheim.sc）
+
+・悪夢のグラストヘイム古城北口の入場地点にワープポイントが重なっているミスを修正（npc_quest_glastheim.sc）
+
+----------------------------------------
 //1405 [2020/03/05] by refis
 
 ・ゲフェニアのモンスター出現情報を最新のものに更新（npc_monster_gefenia.sc）
