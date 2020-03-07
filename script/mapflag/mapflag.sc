@@ -826,6 +826,7 @@ pay_arche.gat	mapflag	nomemo	dummy
 pay_arche.gat	mapflag	noteleport	dummy
 pay_arche.gat	mapflag	nobranch	dummy
 pay_arche.gat	mapflag	nopenalty	dummy
+pay_d03_i.gat	mapflag	nomemo	dummy
 pay_dun00.gat	mapflag	nomemo	dummy
 pay_dun01.gat	mapflag	nomemo	dummy
 pay_dun02.gat	mapflag	nomemo	dummy

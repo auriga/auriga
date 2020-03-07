@@ -13290,11 +13290,17 @@ void clif_GlobalMessage_id(struct block_list *bl, int id, const char *message, i
  */
 void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* mes, size_t len, int target)
 {
-	unsigned char *buf = (unsigned char *)aMalloc(len+12);
+	unsigned char buf[256];
 
 	nullpo_retv(bl);
 
+	if(mes == NULL)
+		return;
+
 	color = (color & 0x0000FF) << 16 | (color & 0x00FF00) | (color & 0xFF0000) >> 16;
+
+	if(len > sizeof(buf) - 12)
+		len = sizeof(buf) - 12;
 
 	WBUFW(buf,0) = 0x2c1;
 	WBUFW(buf,2) = (unsigned short)(len+12);
@@ -13302,8 +13308,6 @@ void clif_GlobalMessage2(struct block_list *bl, unsigned int color, const char* 
 	WBUFL(buf,8) = color;
 	memcpy(WBUFP(buf,12), mes, len);
 	clif_send(buf, WBUFW(buf,2), bl, target);
-
-	aFree(buf);
 
 	return;
 }

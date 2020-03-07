@@ -1,4 +1,23 @@
 ----------------------------------------
+//1408 [2020/03/07] by refis
+
+・月夜花の悪夢クエスト実装（npc_quest_illusionmoonlight.sc, quest_db.txt）
+
+・月夜花の悪夢追加マップのmapflag更新 (mapflag.sc)
+
+・月夜花の悪夢追加マップのmonster出現定義追加（npc_monster_paydun.sc）
+
+・モンスターのデータ、使用スキルを追加（mob_db.txt, mob_skill_db.txt）
+
+・mob_talk_db.txtの更新（mob_talk_db.txt）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・Patch1404のfollow up (mob.c)
+
+・モンスタートークに改行コードが入り込んでいたのを修正 (clif.c, mob.c)
+
+----------------------------------------
 //1407 [2020/03/06] by refis
 
 ・ピラミッドダンジョン・スフィンクスダンジョンのモンスター出現情報を最新のものに更新

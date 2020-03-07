@@ -795,7 +795,7 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 
 	// å‚ª‚¢‚é‚ªA­‚µ‰“‚¢‚Ì‚Å‹ßŠñ‚é
 	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->master_dist < 15 && md->state.norandomwalk) {
-		if(md->master_dist > 2 || md->master_dist == 0) {
+		if(md->master_dist > 2) {
 			int i = 0, dx, dy, ret;
 			do {
 				if(i <= 2) {
@@ -4342,6 +4342,7 @@ static int mob_readtalkdb(void)
 	char line[1024];
 	char *str[3], *p;
 	int msgid, i;
+	size_t len;
 	const char *filename = "db/mob_talk_db.txt";
 
 	memset(&mob_talk_db, 0, sizeof(mob_talk_db));
@@ -4371,7 +4372,8 @@ static int mob_readtalkdb(void)
 
 		mob_talk_db[msgid].color = (unsigned int)strtoul(str[1],NULL,0);
 		strncpy(mob_talk_db[msgid].msg, str[2], 200);
-		mob_talk_db[msgid].msg[199] = '\0';		// force \0 terminal
+		len = strlen(mob_talk_db[msgid].msg);
+		mob_talk_db[msgid].msg[len-1] = '\0';		// force \0 terminal
 	}
 	fclose(fp);
 	printf("read %s done\n", filename);
