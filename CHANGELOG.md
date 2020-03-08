@@ -1,4 +1,14 @@
 ----------------------------------------
+//1410 [2020/03/07] by refis
+
+・PACKETVER[20150513]以降のクエストリストパケット構造に不整合が発生してたミス修正（clif.c）
+	Issues Report #14 , Thanks eni-ro さん
+
+・0xb13のパケ長がおかしかったので調整（packet_db.lua）
+
+・Patch1409 follow up（battle.c）
+
+----------------------------------------
 //1409 [2020/03/07] by refis
 
 ・NPCスキル[Mドラゴンブレス]実装（skill_cast_db.txt, skill_db*.txt, battle.c, skill.c）

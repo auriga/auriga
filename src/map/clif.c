@@ -19062,7 +19062,7 @@ void clif_questlist(struct map_session_data *sd)
 			WFIFOL(fd,len+9) = qd->limit;
 			for(j = 0, n = 0; j < 3; j++) {
 				if((id = (int)qd->mob[j].id) != 0) {
-					WFIFOL(fd,len*15+n*44) = (qd->nameid * 1000) + j;
+					WFIFOL(fd,len+15+n*44) = (qd->nameid * 1000) + j;
 					WFIFOL(fd,len+19+n*44) = 0;
 					WFIFOL(fd,len+23+n*44) = id;
 					WFIFOW(fd,len+27+n*44) = 0;
