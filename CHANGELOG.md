@@ -1,4 +1,13 @@
 ----------------------------------------
+//1409 [2020/03/07] by refis
+
+・NPCスキル[Mドラゴンブレス]実装（skill_cast_db.txt, skill_db*.txt, battle.c, skill.c）
+
+・モンスターのデータ、使用スキルを更新（mob_db.txt, mob_skill_db.txt）
+
+・mob_talk_db.txtの更新（mob_talk_db.txt）
+
+----------------------------------------
 //1408 [2020/03/07] by refis
 
 ・月夜花の悪夢クエスト実装（npc_quest_illusionmoonlight.sc, quest_db.txt）

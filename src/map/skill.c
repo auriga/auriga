@@ -1440,6 +1440,14 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
 		status_change_start(bl,SC_CRITICALWOUND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 		break;
+	case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
+		if(atn_rand() % 10000 < 5000) {
+			if(skilllv < 6)
+				status_change_pretimer(bl,SC_HELLINFERNO,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+			else
+				status_change_pretimer(bl,SC_FROSTMISTY,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		}
+		break;
 	case MER_CRASH:			/* クラッシュ */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*600,status_get_lv(src)))
 			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -3181,6 +3189,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NPC_BLEEDING:		/* 出血攻撃 */
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
 	case NPC_EXPULSION:		/* エクスパルシオン */
+	case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
 	case MS_BASH:
 	case MA_CHARGEARROW:
 	case ML_PIERCE:
@@ -11690,6 +11699,15 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 				skill_castend_nodamage_id);
 		}
+		break;
+	case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
+		skill_area_temp[1] = src->id;
+		skill_area_temp[2] = x;
+		skill_area_temp[3] = y;
+		map_foreachinarea(skill_area_sub,
+			src->m,x-4,y-4,x+4,y+4,(BL_CHAR|BL_SKILL),
+			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+			skill_castend_damage_id);
 		break;
 	case NPC_WIDESUCK:		/* ワイドブラッド */
 		skill_area_temp[1] = src->id;

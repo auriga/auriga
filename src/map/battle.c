@@ -2202,6 +2202,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_SHORT;
 			break;
 #endif
+		case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
+			calc_flag.hitrate = 1000000;
+			if(skilllv < 6)
+				s_ele = s_ele_ = ELE_FIRE;
+			else
+				s_ele = s_ele_ = ELE_WATER;
+			break;
 		case GC_VENOMPRESSURE:	// ベナムプレッシャー
 			calc_flag.hitrate += 10 + skill_lv * 4;
 			break;
@@ -3800,6 +3807,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NPC_ARROWSTORM:		// Mアローストーム
 			DMG_FIX( 1000 + 1000 * (skill_lv >= 5), 100 );
+			break;
+		case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
+			if(skill_lv < 6)
+				DMG_FIX( 500 + 500 * skill_lv, 100 );
+			else
+				DMG_FIX( 500 + 500 * (skill_lv-5), 100 );
 			break;
 		case NPC_PHANTOMTHRUST:	// Mファントムスラスト
 			DMG_FIX( 100, 100 );
