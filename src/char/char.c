@@ -53,6 +53,7 @@
 #include "int_merc.h"
 #include "int_quest.h"
 #include "int_elem.h"
+#include "int_achieve.h"
 
 static struct mmo_map_server server[MAX_MAP_SERVERS];
 static int server_fd[MAX_MAP_SERVERS];
@@ -4464,6 +4465,7 @@ void do_final(void)
 	maildb_final();
 	statusdb_final();
 	questdb_final();
+	achievedb_final();
 	if(gm_account_db) {
 		numdb_final(gm_account_db, gm_account_db_final);
 		gm_account_db = NULL;
