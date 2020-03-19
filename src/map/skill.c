@@ -2877,8 +2877,6 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 
 			if(src_md->ud.skillid != NPC_EMOTION)
 				src_md->last_thinktime = tick + status_get_adelay(src);
-			if(src_md->skillidx >= 0)
-				src_md->skilldelay[src_md->skillidx] = tick;
 		}
 
 		inf2 = skill_get_inf2(src_ud->skillid);
@@ -2968,12 +2966,18 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 		// エモ、チャット
 		if(src_md && src_md->skillidx != -1)
 		{
-			short emotion = mobdb_search(src_md->class_)->skill[src_md->skillidx].emotion;
-			short msg_id = mobdb_search(src_md->class_)->skill[src_md->skillidx].msg_id;
+			int i;
+			struct mob_skill *ms = mobdb_search(src_md->class_)->skill;
+			short emotion = ms[src_md->skillidx].emotion;
+			short msg_id = ms[src_md->skillidx].msg_id;
 			if(emotion >= 0)
 				clif_emotion(&src_md->bl,emotion);
 			if(msg_id > 0)
 				mob_talk(src_md,msg_id);
+			for(i=0; i<mobdb_search(src_md->class_)->maxskill; i++) {
+				if(ms[i].skill_id == src_ud->skillid)
+					src_md->skilldelay[i] = tick + ms[src_md->skillidx].delay;
+			}
 		}
 
 		switch( skill_get_nk(src_ud->skillid)&3 )
@@ -10833,12 +10837,18 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 		// エモ、チャット
 		if(src_md && src_md->skillidx != -1)
 		{
-			short emotion = mobdb_search(src_md->class_)->skill[src_md->skillidx].emotion;
-			short msg_id = mobdb_search(src_md->class_)->skill[src_md->skillidx].msg_id;
+			int i;
+			struct mob_skill *ms = mobdb_search(src_md->class_)->skill;
+			short emotion = ms[src_md->skillidx].emotion;
+			short msg_id = ms[src_md->skillidx].msg_id;
 			if(emotion >= 0)
 				clif_emotion(&src_md->bl,emotion);
 			if(msg_id > 0)
 				mob_talk(src_md,msg_id);
+			for(i=0; i<mobdb_search(src_md->class_)->maxskill; i++) {
+				if(ms[i].skill_id == src_ud->skillid)
+					src_md->skilldelay[i] = tick + ms[src_md->skillidx].delay;
+			}
 		}
 		skill_castend_pos2(src,src_ud->skillx,src_ud->skilly,src_ud->skillid,src_ud->skilllv,tick,0);
 

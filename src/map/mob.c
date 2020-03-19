@@ -344,7 +344,7 @@ int mob_spawn(int id)
 {
 	int x = 0, y = 0, i = 0;
 	const int retry = 50;
-	unsigned int c, tick = gettick();
+	unsigned int tick = gettick();
 	struct mob_data *md;
 
 	md = map_id2md(id);
@@ -425,9 +425,8 @@ int mob_spawn(int id)
 
 	unit_dataset( &md->bl );
 
-	c = tick - 1000 * 3600 * 10;
 	for(i=0; i<MAX_MOBSKILL; i++) {
-		md->skilldelay[i] = c;
+		md->skilldelay[i] = tick;
 	}
 	if(md->lootitem)
 		memset(md->lootitem, 0, sizeof(struct item) * LOOTITEM_SIZE);
@@ -2563,7 +2562,7 @@ int mob_droprate_fix(struct block_list *bl,int item,int drop)
  */
 static int mob_class_change_id(struct mob_data *md,int mob_id)
 {
-	unsigned int c, tick = gettick();
+	unsigned int tick = gettick();
 	int i, hp_rate, max_hp;
 
 	nullpo_retr(0, md);
@@ -2610,9 +2609,8 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 	md->state.noexp  = 0;
 	md->state.nomvp  = 0;
 
-	c = tick - 1000 * 36000 * 10;
 	for(i=0; i<MAX_MOBSKILL; i++) {
-		md->skilldelay[i] = c;
+		md->skilldelay[i] = tick;
 	}
 	md->ud.skillid = 0;
 	md->ud.skilllv = 0;
@@ -3522,7 +3520,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 			continue;
 
 		// ディレイ中
-		if(DIFF_TICK(tick,md->skilldelay[i]) < ms[i].delay)
+		if(DIFF_TICK(tick,md->skilldelay[i]) < 0)
 			continue;
 
 		// コマンド専用
