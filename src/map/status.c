@@ -215,7 +215,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 650- */
 	SI_NYANGGRASS,SI_CHATTERING,SI_GROOMING,SI_PROTECTIONOFSHRIMP,SI_BLANK,SI_BURNT,SI_CHILL,SI_MAXPAIN,SI_HEAT_BARREL,SI_BLANK,
 	/* 660- */
-	SI_P_ALTER,SI_E_CHAIN,SI_C_MARKER,SI_ANTI_M_BLAST,SI_B_TRAP,SI_H_MINE,SI_E_QD_SHOT_READY,
+	SI_P_ALTER,SI_E_CHAIN,SI_C_MARKER,SI_ANTI_M_BLAST,SI_B_TRAP,SI_H_MINE,SI_E_QD_SHOT_READY,SI_OVERLAPEXPUP,SI_JP_OTP,SI_MOVHASTE_INFINITY
 };
 
 /*==========================================
@@ -1698,6 +1698,9 @@ L_RECALC:
 	if(sd->sc.data[SC_INCMHP2].timer != -1) {
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_INCMHP2].val1) / 100);
 	}
+	if(sd->sc.data[SC_SUPPORT_HPSP].timer != -1) {
+		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_SUPPORT_HPSP].val1) / 100);
+	}
 	if(sd->sc.data[SC_EPICLESIS].timer != -1) {		// エピクレシス
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_EPICLESIS].val2) / 100);
 	}
@@ -1728,6 +1731,9 @@ L_RECALC:
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
+	}
+	if(sd->sc.data[SC_SUPPORT_HPSP].timer != -1) {
+		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_SUPPORT_HPSP].val1) / 100);
 	}
 
 	// SP消費
@@ -3495,6 +3501,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 
 		// 速度増加
 		if(sd->sc.data[SC_INCREASEAGI].timer != -1) {
+			if(haste_val1 < 25)
+				haste_val1 = 25;
+		}
+
+		// サポート魔法(移動速度増加)
+		if(sd->sc.data[SC_SUPPORT_SPEED].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
@@ -7161,6 +7173,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_JP_EVENT02:
 		case SC_JP_EVENT03:
 		case SC_JP_EVENT04:
+		case SC_SUPPORT_EXP:
 		case SC_RAID:
 		case SC_PHI_DEMON:			/* 古代精霊のお守り */
 		case SC_MAXPAIN:			/* マックスペイン */
@@ -7297,6 +7310,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ATKPOTION:
 		case SC_MATKPOTION:
 		case SC_ALMIGHTY:
+		case SC_SUPPORT_HPSP:
 			calc_flag = 1;
 			break;
 
@@ -7347,6 +7361,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
 		case SC_POWER_OF_GAIA:		/* パワーオブガイア */
+		case SC_SUPPORT_SPEED:
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;

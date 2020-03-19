@@ -2376,6 +2376,8 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 			sd->skill_item.flag = 0;
 		}
 
+		if(sd->npc_id) npc_timeout_stop(sd);	// タイムアウトタイマー削除
+		if(sd->npc_dynamic_id) npc_dynamicnpc_stop(sd);	// ダイナミックNPCタイマー削除
 		pc_delinvincibletimer(sd,0);		// 無敵タイマー削除
 
 		// PVP タイマー削除

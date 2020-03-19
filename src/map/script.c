@@ -3087,8 +3087,11 @@ void run_script(struct script_code *rootscript,int pos,int rid,int oid)
 	st->oid = oid;
 	st->scriptroot = rootscript;
 	st->sleep.timer = -1;
-	if(sd)
+	if(sd) {
 		npc_timeout_start(sd);
+		if(sd->npc_dynamic_id == sd->npc_id)
+			npc_dynamicnpc_start(sd);
+	}
 	run_script_main(st);	// stのfreeも含めてこの内部で処理する
 }
 
@@ -3152,8 +3155,11 @@ static void run_script_awake(struct script_state *st)
 		st->sleep.tick = 0;
 	}
 	st->sleep.timer = -1;
-	if(sd)
+	if(sd) {
 		npc_timeout_start(sd);
+		if(sd->npc_dynamic_id == sd->npc_id)
+			npc_dynamicnpc_start(sd);
+	}
 
 	run_script_main(st);
 	return;
@@ -4088,6 +4094,7 @@ int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
 int buildin_achievement(struct script_state *st);
 int buildin_achievement2(struct script_state *st);
+int buildin_dynamicnpc(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4414,6 +4421,8 @@ struct script_function buildin_func[] = {
 	{buildin_getrandombox,"getrandombox","i"},
 	{buildin_achievement,"achievement","i"},
 	{buildin_achievement2,"achievement2","iii"},
+	{buildin_dynamicnpc,"dynamicnpc","ssiiii"},
+
 	{NULL,NULL,NULL}
 };
 
@@ -8701,6 +8710,8 @@ int buildin_attachrid(struct script_state *st)
 	if(sd && sd->npc_id == 0) {
 		sd->npc_id = st->oid;
 		npc_timeout_start(sd);
+		if(sd->npc_dynamic_id == sd->npc_id)
+			npc_dynamicnpc_start(sd);
 	}
 	push_val(st->stack,C_INT,(sd ? 1: 0));
 
@@ -12997,6 +13008,8 @@ int buildin_progressbar(struct script_state *st)
 		sd->progressbar.npc_id = 0;
 		sd->progressbar.tick   = 0;
 		npc_timeout_start(sd);
+		if(sd->npc_dynamic_id == sd->npc_id)
+			npc_dynamicnpc_start(sd);
 	}
 
 	return 0;
@@ -13918,7 +13931,7 @@ int buildin_getrandombox(struct script_state *st)
 }
 
 /*==========================================
- * 
+ * クエスト実績獲得
  *------------------------------------------
  */
 int buildin_achievement(struct script_state *st)
@@ -13932,7 +13945,7 @@ int buildin_achievement(struct script_state *st)
 }
 
 /*==========================================
- * 
+ * 実績獲得
  *------------------------------------------
  */
 int buildin_achievement2(struct script_state *st)
@@ -13975,5 +13988,55 @@ int buildin_achievement2(struct script_state *st)
 
 	if(sd)
 		achieve_update_content(sd, type, nameid, num);
+	return 0;
+}
+
+/*==========================================
+ * ダイナミックNPC
+ *------------------------------------------
+ */
+int buildin_dynamicnpc(struct script_state *st)
+{
+	int m,x,y,dir,class_;
+	char *mapname;
+	struct map_session_data *sd;
+	struct npc_data *nd;
+	int i;
+
+	sd = script_rid2sd(st);
+	if(!sd)
+		return 0;
+	if(sd->npc_dynamic_id)
+		return 0;
+
+	nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
+	if(!nd)
+		return 0;
+
+	mapname = conv_str(st,& (st->stack->stack_data[st->start+3]));
+	x       = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	y       = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	dir     = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	class_  = conv_num(st,& (st->stack->stack_data[st->start+7]));
+
+	m  = script_mapname2mapid(st,mapname);
+	if(m < 0) {
+		m = sd->bl.m;
+		for(i=0;i<5;i++) {
+			x = sd->bl.x + (atn_rand()%3 - 1) + (atn_rand()%2? 2: -2);
+			y = sd->bl.y + (atn_rand()%3 - 1) + (atn_rand()%2? 2: -2);
+			if(!map_getcell(m,x,y,CELL_CHKGROUND))
+				break;
+		}
+		if(i == 5) {
+			x = sd->bl.x;
+			y = sd->bl.y;
+		}
+	}
+	dir = (dir%8);
+
+	sd->npc_dynamic_id = nd->bl.id;
+	npc_dynamicnpc_start(sd);
+	clif_spawndynamicnpc(sd, nd, x, y, dir, class_);
 	return 0;
 }

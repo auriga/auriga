@@ -890,6 +890,10 @@ struct map_session_data {
 	int npc_idle_timer;		// NPCのタイムアウト用
 	unsigned int npc_idle_tick;
 
+	int npc_dynamic_timer;		// ダイナミックNPCのタイムアウト用
+	unsigned int npc_dynamic_tick;
+	int npc_dynamic_id;
+
 	int freeze_sp_slot;
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
 	int overheat;			// 魔導ギア加熱度（暫定）

@@ -2615,6 +2615,20 @@ AurigaNPCScript
 			<type>タイプの<nameid>の実績を<num>分獲得します。
 			詳しくはdoc/db_ref.txtを参照してください。
 
+		dynamicnpc命令
+			dynamicnpc <name>,<map>,<x>,<y>,<dir>,<class>;
+
+			name				文字列
+			map					文字列
+			x, y, dir, class	数値
+
+			ユニークな名称<name>を持つNPCを、<class>の見た目で
+			<map>で指定したマップの<x>,<y>座標に<dir>の向きで出現させます。
+			このNPCは実行したプレイヤーにしか見えません。
+			実際にNPCをコピーして配置するわけではありません。
+			そのためコピー元NPCはマップ非配置型が望ましく、NPCの位置情報の取得は推奨されません。
+			指定したマップが存在しない場合、実行プレイヤーの周囲に出現します。
+
 
 	＊関数
 		rand関数

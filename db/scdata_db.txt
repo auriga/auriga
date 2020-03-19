@@ -636,6 +636,9 @@
 664,SC_B_TRAP,0,1,0,0			// バインドトラップ
 665,SC_H_MINE,0,1,0,0			// ハウリングマイン
 666,SC_QD_SHOT_READY,0,1,0,0		// クイックドローショット
+667,SC_SUPPORT_HPSP,1,1,0,0		// サポート魔法(HPSP増加)
+668,SC_SUPPORT_EXP,1,0,0,0		// サポート魔法(EXP増加)
+669,SC_SUPPORT_SPEED,1,1,0,0	// サポート魔法(移動速度増加)
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

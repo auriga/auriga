@@ -676,7 +676,7 @@ int clif_clearchar_delay(unsigned int tick,struct block_list *bl)
  *
  *------------------------------------------
  */
-static void clif_clearchar_id(int id, unsigned char type, int fd)
+void clif_clearchar_id(int id, unsigned char type, int fd)
 {
 	if(fd < 0)
 		return;
@@ -5200,6 +5200,146 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	if(nd->view_size!=0)
 		clif_misceffect2(&nd->bl,422+nd->view_size);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int x, int y, int dir, int class_)
+{
+	unsigned char buf[128];
+	int len;
+
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+
+#if PACKETVER < 20071106
+	len = packet_db[0x7c].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x7c;
+	WBUFL(buf,2)=nd->bl.id;
+	WBUFW(buf,6)=nd->speed;
+	WBUFW(buf,12)=nd->option;
+	WBUFW(buf,20)=class_;
+	WBUFPOS(buf,36,x,y,dir);
+#elif PACKETVER < 20091104
+	len = packet_db[0x7c].len;
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x7c;
+	WBUFB(buf,2)=0;
+	WBUFL(buf,3)=nd->bl.id;
+	WBUFW(buf,7)=nd->speed;
+	WBUFW(buf,13)=nd->option;
+	WBUFW(buf,21)=class_;
+	WBUFPOS(buf,37,x,y,dir);
+#elif PACKETVER < 20110111
+	len = 62 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x7f8;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFW(buf,9)=nd->speed;
+	WBUFL(buf,15)=nd->option;
+	WBUFW(buf,19)=class_;
+	WBUFW(buf,33)=6;
+	WBUFPOS(buf,53,x,y,dir);
+	strncpy(WBUFP(buf,62),nd->name,24);
+#elif PACKETVER < 20120328
+	len = 64 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x858;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFW(buf,9)=nd->speed;
+	WBUFL(buf,15)=nd->option;
+	WBUFW(buf,19)=class_;
+	WBUFW(buf,33)=6;
+	WBUFPOS(buf,55,x,y,dir);
+	strncpy(WBUFP(buf,64),nd->name,24);
+#elif PACKETVER < 20131223
+	len = 73;
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x90f;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFW(buf,9)=nd->speed;
+	WBUFL(buf,15)=nd->option;
+	WBUFW(buf,19)=class_;
+	WBUFW(buf,33)=6;
+	WBUFPOS(buf,55,x,y,dir);
+	WBUFL(buf,64)=0xffffffff;
+	WBUFL(buf,68)=0xffffffff;
+	WBUFB(buf,72)=0;
+#elif PACKETVER < 20150513
+	len = 77 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x9dc;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFL(buf,9)=0;
+	WBUFW(buf,13)=nd->speed;
+	WBUFL(buf,19)=nd->option;
+	WBUFW(buf,23)=class_;
+	WBUFW(buf,37)=6;
+	WBUFPOS(buf,59,x,y,dir);
+	WBUFL(buf,68)=0xffffffff;
+	WBUFL(buf,72)=0xffffffff;
+	WBUFB(buf,76)=0;
+	strncpy(WBUFP(buf,77),nd->name,24);
+#elif PACKETVER < 20180704
+	len = 79 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x9fe;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFL(buf,9)=0;
+	WBUFW(buf,13)=nd->speed;
+	WBUFL(buf,19)=nd->option;
+	WBUFW(buf,23)=class_;
+	WBUFW(buf,37)=6;
+	WBUFPOS(buf,59,x,y,dir);
+	WBUFL(buf,68)=0xffffffff;
+	WBUFL(buf,72)=0xffffffff;
+	WBUFB(buf,76)=0;
+	WBUFW(buf,77)=0;
+	strncpy(WBUFP(buf,79),nd->name,24);
+#else
+	len = 83 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x9fe;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFL(buf,9)=0;
+	WBUFW(buf,13)=nd->speed;
+	WBUFL(buf,19)=nd->option;
+	WBUFW(buf,23)=class_;
+	WBUFW(buf,41)=6;
+	WBUFPOS(buf,63,x,y,dir);
+	WBUFL(buf,72)=0xffffffff;
+	WBUFL(buf,76)=0xffffffff;
+	WBUFB(buf,80)=0;
+	WBUFW(buf,81)=0;
+	strncpy(WBUFP(buf,83),nd->name,24);
+#endif
+	memcpy(WFIFOP(sd->fd,0),buf,len);
+	WFIFOSET(sd->fd,len);
 
 	return;
 }
@@ -21700,7 +21840,7 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 	bl=map_id2bl(account_id);
 	if(bl==NULL)
 		return;
-	if(sd->bl.m != bl->m || unit_distance(&sd->bl,bl) > AREA_SIZE)
+	if((sd->bl.m != bl->m || unit_distance(&sd->bl,bl) > AREA_SIZE) && bl->id != sd->npc_dynamic_id)
 		return;
 
 	memset(WFIFOP(fd,0), 0, packet_db[0xa30].len);

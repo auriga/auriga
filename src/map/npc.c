@@ -577,6 +577,91 @@ int npc_timeout_stop(struct map_session_data *sd)
 }
 
 /*==========================================
+ * ダイナミックNPCタイムアウト実行
+ *------------------------------------------
+ */
+static int npc_dynamicnpc_timer(int tid,unsigned int tick,int id,void *data)
+{
+	struct map_session_data* sd = NULL;
+
+	if((sd = map_id2sd(id)) == NULL || sd->npc_dynamic_id == 0) {
+		if(sd) {
+			sd->npc_dynamic_timer = -1;
+		}
+		return 0;
+	}
+
+	if(DIFF_TICK(tick, sd->npc_dynamic_tick) > (180*1000)) {
+		// タイムアウトタイマーを止める
+		if(sd->npc_id == sd->npc_dynamic_id) {
+			npc_timeout_stop(sd);
+
+			if(sd->stack) {
+				// 元のスタック情報を破棄
+				script_free_stack(sd->stack);
+				sd->stack = NULL;
+			}
+
+			// menu, select, inputの返答待機解除（ギルド倉庫は応答を待つ）
+			if(sd->state.menu_or_input == 1 && sd->state.gstorage_lockreq == 0)
+				sd->state.menu_or_input = 0;
+
+			// プログレスバーの応答待機解除
+			if(sd->progressbar.tick) {
+				sd->progressbar.npc_id = 0;
+				sd->progressbar.tick   = 0;
+			}
+		}
+
+		// ダイナミックNPCタイマーを止める
+		clif_clearchar_id(sd->npc_dynamic_id, 0, sd->fd);
+		sd->npc_dynamic_timer = -1;
+		sd->npc_dynamic_id = 0;
+
+	} else {
+		sd->npc_dynamic_timer = add_timer(gettick()+1000,npc_dynamicnpc_timer,sd->bl.id,0);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * ダイナミックNPCタイマー開始
+ *------------------------------------------
+ */
+int npc_dynamicnpc_start(struct map_session_data *sd)
+{
+	unsigned int tick = gettick();
+
+	nullpo_retr(0, sd);
+
+	if( sd->npc_dynamic_timer == -1 )
+		sd->npc_dynamic_timer = add_timer(tick+1000,npc_dynamicnpc_timer,sd->bl.id,0);
+	sd->npc_dynamic_tick = tick;
+
+	return 0;
+}
+
+/*==========================================
+ * ダイナミックNPCタイマー終了
+ *------------------------------------------
+ */
+int npc_dynamicnpc_stop(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if( sd->npc_dynamic_timer != -1 ) {
+		delete_timer(sd->npc_dynamic_timer,npc_dynamicnpc_timer);
+		sd->npc_dynamic_timer = -1;
+		if(sd->npc_dynamic_id) {
+			clif_clearchar_id(sd->npc_dynamic_id, 0, sd->fd);
+			sd->npc_dynamic_id = 0;
+		}
+	}
+	return 0;
+}
+
+/*==========================================
  * イベント型のNPC処理
  *------------------------------------------
  */
@@ -763,7 +848,7 @@ static int npc_checknear(struct map_session_data *sd, struct npc_data *nd)
 		return 1;
 	}
 
-	if (nd->class_ < 0)	// イベント系は常にOK
+	if (nd->class_ < 0 || sd->npc_dynamic_id == nd->bl.id)	// イベント系は常にOK
 		return 0;
 
 	// エリア判定
@@ -2923,6 +3008,7 @@ int do_init_npc(void)
 	add_timer_func_list(npc_event_do_clock);
 	add_timer_func_list(npc_timerevent);
 	add_timer_func_list(npc_timeout_timer);
+	add_timer_func_list(npc_dynamicnpc_timer);
 
 	return 0;
 }

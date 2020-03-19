@@ -1368,6 +1368,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->booking_id = 0;
 	sd->npc_idle_timer = -1;
 	sd->npc_idle_tick = tick;
+	sd->npc_dynamic_timer = -1;
+	sd->npc_dynamic_tick = tick;
+	sd->npc_dynamic_id = 0;
 
 	sd->trade.partner = 0;
 
@@ -3331,6 +3334,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 					pc_unequipitem(sd,sd->equip_index[i],1);	// 装備外し
 			}
 		}
+		if(sd->sc.data[SC_SUPPORT_HPSP].timer != -1)			// サポート魔法(HPSP増加)
+			status_change_end(&sd->bl, SC_SUPPORT_HPSP, -1);
+		if(sd->sc.data[SC_SUPPORT_SPEED].timer != -1)			// サポート魔法(移動速度増加)
+			status_change_end(&sd->bl, SC_SUPPORT_SPEED, -1);
 	}
 
 	// ペットの移動
@@ -4927,6 +4934,10 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 	}
 	if (sd->sc.data[SC_JOB_COMBATHAN].timer != -1) {
 		job_rate  += sd->sc.data[SC_JOB_COMBATHAN].val1;
+	}
+	if (sd->sc.data[SC_SUPPORT_EXP].timer != -1) {
+		base_rate += sd->sc.data[SC_SUPPORT_EXP].val1;
+		job_rate  += sd->sc.data[SC_SUPPORT_EXP].val1;
 	}
 	if (sd->sc.data[SC_JP_EVENT04].timer != -1 && status_get_race(&md->bl) == RCT_FISH) {
 		base_rate += sd->sc.data[SC_JP_EVENT04].val1;

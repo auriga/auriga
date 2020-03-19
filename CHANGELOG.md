@@ -1,4 +1,16 @@
 ----------------------------------------
+//1413 [2020/03/19] by refis
+
+・スクリプト命令「dynamicnpc」追加（script_ref.txt, clif.*, map.h, npc.*, pc.c, script.c, unit.c）
+	-> プレイヤーの視界内に指定の座標でNPCを出現させます。
+
+・キャッシュアイテム「ジョンダパス」実装（item_db.txt, item_db2.txt, npc_misc_pointshop.sc）
+
+・NPC「ジョンダノービス」実装（const.txt, scdata_db.txt, status.*, npc_misc_dynamicnpc.sc）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1412 [2020/03/19] by refis
 
 ・Patch 0138の使用後ディレイ共有についてfollow up（mob.c, skill.c）

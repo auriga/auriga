@@ -65,8 +65,10 @@ void clif_clearflooritem(struct flooritem_data *fitem, int fd);
 void clif_clearchar(struct block_list *bl, int type);
 int clif_clearchar_delay(unsigned int,struct block_list *);
 #define clif_clearchar_area(bl,type) clif_clearchar(bl,type)
+void clif_clearchar_id(int id, unsigned char type, int fd);
 void clif_spawnpc(struct map_session_data *sd);
 void clif_spawnnpc(struct npc_data *nd);
+void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int x, int y, int dir, int class_);
 void clif_spawnmob(struct mob_data *md);
 void clif_spawnpet(struct pet_data *pd);
 void clif_walkok(struct map_session_data *sd);
