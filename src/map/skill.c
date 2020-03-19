@@ -8688,7 +8688,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if( sd == NULL || sd->status.party_id == 0 )
 				skill_area_temp[0] = 1;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skill_area_temp[0],0,skillid,skill_get_time(skillid,skilllv),0);	// キリエエレイソンと区別するためにval4にskillidを格納
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skill_area_temp[0],skill_get_time(skillid,skilllv),0);	// キリエエレイソンと区別するためにval4にskillidを格納
 		} else {
 			skill_area_temp[0] = 0;
 			/* パーティ全体への処理 */

@@ -7535,8 +7535,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_ASSUMPTIO2].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO2,-1);
 			// キリエを掛ける
-			if(val4 == AB_PRAEFATIO) {		// プラエファティオの場合
-				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 16 + val2 * 2) / 100);	// 耐久度
+			if(val4 > 0) {		// プラエファティオの場合
+				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 16 + val4 * 2) / 100);	// 耐久度
 				val3 = val1 + 6;	// 回数
 			} else {
 				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);	// 耐久度
