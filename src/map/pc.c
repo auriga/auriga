@@ -6822,11 +6822,12 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 		bonus = (sd->paramc[2]<<1) + 100 + pc_checkskill(sd,SM_RECOVERY)*10;
 		if(bonus != 100)
 			hp = hp * bonus / 100;
-		bonus = 100 + pc_checkskill(sd,AM_LEARNINGPOTION)*5;
-		if(bonus != 100)
-			hp = hp * bonus / 100;
+		bonus = 100;
+		if(pc_checkskill(sd,AM_LEARNINGPOTION) > 0)
+			bonus += pc_checkskill(sd,AM_LEARNINGPOTION)*5;
 		// card
-		bonus = 100 + sd->itemheal_rate[itemdb_group(sd->use_itemid)];
+		if(sd->itemheal_rate[itemdb_group(sd->use_itemid)])
+			bonus += sd->itemheal_rate[itemdb_group(sd->use_itemid)];
 		if(bonus != 100)
 			hp = hp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
@@ -6851,19 +6852,20 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 		bonus = (sd->paramc[3]<<1) + 100 + pc_checkskill(sd,MG_SRECOVERY)*10;
 		if(bonus != 100)
 			sp = sp * bonus / 100;
-		bonus = 100 + pc_checkskill(sd,AM_LEARNINGPOTION)*5;
+		bonus = 100;
+		if(pc_checkskill(sd,AM_LEARNINGPOTION) > 0)
+			bonus += pc_checkskill(sd,AM_LEARNINGPOTION)*5;
+		// card
+		if(sd->itemheal_rate[itemdb_group(sd->use_itemid)])
+			bonus += sd->itemheal_rate[itemdb_group(sd->use_itemid)];
 		if(bonus != 100)
 			sp = sp * bonus / 100;
-		// card
-		bonus = 100 + sd->itemheal_rate[itemdb_group(sd->use_itemid)];
-		if(bonus != 100)
-			sp  = sp * bonus / 100;
 		if(sd->use_nameditem && ranking_get_id2rank(sd->use_nameditem,RK_ALCHEMIST))
 		{
 			if (sd->sc.data[SC_ROGUE].timer != -1)
-				hp = hp * battle_config.ranker_potion_bonus_rogue / 100;
+				sp = sp * battle_config.ranker_potion_bonus_rogue / 100;
 			else
-				hp = hp * battle_config.ranker_potion_bonus / 100;
+				sp = sp * battle_config.ranker_potion_bonus / 100;
 		}
 		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
 			sp = sp * 50 / 100;
