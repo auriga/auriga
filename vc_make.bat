@@ -201,6 +201,7 @@ if "%__VCVER__%"=="11" goto SKIPVC8
 if "%__VCVER__%"=="12" goto SKIPVC8
 if "%__VCVER__%"=="14" goto SKIPVC8
 if "%__VCVER__%"=="2017" goto SKIPVC8
+if "%__VCVER__%"=="2019" goto SKIPVC8
 set __OPT_OP__=/Op
 :SKIPVC8
 
