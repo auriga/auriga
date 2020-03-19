@@ -20310,11 +20310,6 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 			tsd = (struct map_session_data *)bl;
 	}
 
-	if(tsc && tsc->data[SC_CRITICALWOUND].timer != -1)
-		heal = heal * (100 - tsc->data[SC_CRITICALWOUND].val1 * 10) / 100;
-	if(tsc && tsc->data[SC_DEATHHURT].timer != -1)
-		heal = heal * (100 - tsc->data[SC_DEATHHURT].val2) / 100;
-
 	if(sc && sc->data[SC_OFFERTORIUM].timer != -1)
 		rate += sc->data[SC_OFFERTORIUM].val1 * 30;
 
@@ -20359,6 +20354,11 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 			}
 		}
 	}
+
+	if(tsc && tsc->data[SC_CRITICALWOUND].timer != -1)
+		heal = heal * (100 - tsc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+	if(tsc && tsc->data[SC_DEATHHURT].timer != -1)
+		heal = heal * (100 - tsc->data[SC_DEATHHURT].val2) / 100;
 
 #ifdef PRE_RENEWAL
 	if(skill > 0)	// メディタティオ
