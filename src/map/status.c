@@ -3239,8 +3239,8 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		bonus_rate -= 30;
 
 	/* フリーキャスト */
-	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)
-		amotion += 5 * amotion * (10 - skilllv) / 100;
+	if(sd->ud.skilltimer != -1 && (skilllv = pc_checkskill(sd,SA_FREECAST)) > 0)
+		bonus_rate += 5 * (10 - skilllv);
 
 	/* bonus_rateの計算 */
 	if(bonus_rate != 0)
