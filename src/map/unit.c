@@ -1350,6 +1350,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		if(src_sd && speed_rate > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed * speed_rate / 100;
+			status_calc_pc(src_sd,0);
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);
@@ -1541,6 +1542,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		if(src_sd && (skill = pc_checkskill(src_sd,SA_FREECAST)) > 0) {
 			src_sd->prev_speed = src_sd->speed;
 			src_sd->speed = src_sd->speed * (175 - 5 * skill) / 100;
+			status_calc_pc(src_sd,0);
 			clif_updatestatus(src_sd,SP_SPEED);
 		} else {
 			unit_stop_walking(src,1);
@@ -2013,12 +2015,6 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 
 	skillid = (type&1 && sd)? sd->skill_used.id: ud->skillid;
 
-	if(sd && (pc_checkskill(sd,SA_FREECAST) > 0 || skillid == LG_EXEEDBREAK)) {
-		sd->speed = sd->prev_speed;
-		clif_updatestatus(sd,SP_SPEED);
-	}
-
-
 	if(skill_get_inf(skillid) & INF_GROUND)
 		ret = delete_timer(ud->skilltimer, skill_castend_pos);
 	else
@@ -2032,6 +2028,12 @@ int unit_skillcastcancel(struct block_list *bl,int type)
 
 	ud->skilltimer = -1;
 	clif_skillcastcancel(bl);
+
+	if(sd && (pc_checkskill(sd,SA_FREECAST) > 0 || skillid == LG_EXEEDBREAK)) {
+		sd->speed = sd->prev_speed;
+		status_calc_pc(sd,0);
+		clif_updatestatus(sd,SP_SPEED);
+	}
 
 	sc = status_get_sc(bl);
 	if(sc && sc->data[SC_SELFDESTRUCTION].timer != -1)
