@@ -151,6 +151,7 @@ void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enab
 void clif_send_achievement_list(struct map_session_data *sd);
 void clif_send_achievement_update(struct map_session_data *sd, struct achieve_data *ad);
 void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, bool remove);
+void clif_dynamicnpc_create_ack(struct map_session_data *sd, int type);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, const char *name);

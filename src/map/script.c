@@ -14006,8 +14006,10 @@ int buildin_dynamicnpc(struct script_state *st)
 	sd = script_rid2sd(st);
 	if(!sd)
 		return 0;
-	if(sd->npc_dynamic_id)
+	if(sd->npc_dynamic_id) {
+		clif_dynamicnpc_create_ack(sd,3);
 		return 0;
+	}
 
 	nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+2])));
 	if(!nd)

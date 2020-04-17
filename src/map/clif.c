@@ -21299,6 +21299,24 @@ void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, boo
 }
 
 /*==========================================
+ * ダイナミックNPC生成要求応答
+ *------------------------------------------
+ */
+void clif_dynamicnpc_create_ack(struct map_session_data *sd, int type)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0)=0xa17;
+	WFIFOL(fd, 2)=type;
+	WFIFOSET(fd,packet_db[0xa17].len);
+
+	return;
+}
+
+/*==========================================
  * ping送信タイマー（全クライアント）
  *------------------------------------------
  */
