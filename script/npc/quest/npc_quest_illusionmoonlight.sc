@@ -1307,11 +1307,11 @@ pay_d03_i.gat,43,150,5	script	村人#ilp22	75,{
 pay_d03_i.gat,0,0,0	script	#IllMoonlight	-1,{
 OnInit:
 	for(set '@i,0;'@i<5;set '@i,'@i+1)
-		areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,"::OnSummon1";
+		areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon1";
 	for(set '@i,0;'@i<5;set '@i,'@i+1)
-		areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,"::OnSummon2";
+		areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon2";
 	for(set '@i,0;'@i<5;set '@i,'@i+1)
-		areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,"::OnSummon3";
+		areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon3";
 	end;
 
 OnSummon1:
@@ -1320,12 +1320,12 @@ OnSummon1:
 		unittalk 'mob1,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
-		areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,"::OnSummon1";
+		areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon1";
 	}
 	end;
 OnKilled1:
 	set 'mob1,0;
-	areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,"::OnSummon1";
+	areamonster "pay_d03_i.gat",40,35,160,115,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon1";
 	end;
 OnSummon2:
 	if('mob2 == 0 && rand(1000) == 0) {
@@ -1333,12 +1333,12 @@ OnSummon2:
 		unittalk 'mob2,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
-		areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,"::OnSummon2";
+		areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon2";
 	}
 	end;
 OnKilled2:
 	set 'mob2,0;
-	areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,"::OnSummon2";
+	areamonster "pay_d03_i.gat",40,140,160,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon2";
 	end;
 OnSummon3:
 	if('mob3 == 0 && rand(1000) == 0) {
@@ -1346,11 +1346,11 @@ OnSummon3:
 		unittalk 'mob3,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
-		areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,"::OnSummon3";
+		areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon3";
 	}
 	end;
 OnKilled3:
 	set 'mob3,0;
-	areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,"::OnSummon3";
+	areamonster "pay_d03_i.gat",150,180,270,260,"--ja--",3759+rand(3),1,strnpcinfo(0)+"::OnSummon3";
 	end;
 }

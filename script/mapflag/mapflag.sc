@@ -333,6 +333,8 @@ hu_in01.gat	mapflag	nopenalty	dummy
 hu_in01.gat	mapflag	noicewall	dummy
 hugel.gat	mapflag	town	dummy
 hugel.gat	mapflag	nopenalty	dummy
+ice_d03_i.gat	mapflag	nomemo	dummy
+ice_d03_i.gat	mapflag	nopenalty	dummy
 ice_dun01.gat	mapflag	nomemo	dummy
 ice_dun02.gat	mapflag	nomemo	dummy
 ice_dun03.gat	mapflag	nomemo	dummy
@@ -827,6 +829,7 @@ pay_arche.gat	mapflag	noteleport	dummy
 pay_arche.gat	mapflag	nobranch	dummy
 pay_arche.gat	mapflag	nopenalty	dummy
 pay_d03_i.gat	mapflag	nomemo	dummy
+pay_d03_i.gat	mapflag	nopenalty	dummy
 pay_dun00.gat	mapflag	nomemo	dummy
 pay_dun01.gat	mapflag	nomemo	dummy
 pay_dun02.gat	mapflag	nomemo	dummy

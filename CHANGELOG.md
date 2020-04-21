@@ -1,4 +1,19 @@
 ----------------------------------------
+//1415 [2020/04/21] by refis
+
+・フローズンメモリークエスト実装（npc_quest_illusionfrozen.sc, quest_db.txt）
+
+・フローズンメモリー追加マップのmapflag更新 (mapflag.sc)
+
+・フローズンメモリー追加マップのmonster出現定義追加（npc_monster_icedun.sc）
+
+・月夜花の悪夢のモンスター出現処理を修正（npc_quest_illusionmoonlight.sc）
+
+・月夜花の悪夢でデスペナルティが発生していた点を修正 (mapflag.sc)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1414 [2020/04/17] by refis
 
 ・キャッシュアイテム「ジョンダパス」のクールタイム修正（item_db2.txt）
