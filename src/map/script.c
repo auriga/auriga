@@ -241,6 +241,10 @@ enum {
 	C_NOT,
 	C_R_SHIFT,
 	C_L_SHIFT,
+	C_ADD_PRE,
+	C_SUB_PRE,
+	C_ADD_POST,
+	C_SUB_POST,
 };
 
 
@@ -587,6 +591,158 @@ static int set_control_code(unsigned char p)
 	return 1;
 }
 
+static void parse_variable_sub_push(int l, unsigned char *p2)
+{
+	if( p2 ) {
+		// array( name[i][j] => getelementofarray(name,i,j) )
+		add_scriptl(search_str("getelementofarray"));
+		add_scriptc(C_ARG);
+		add_scriptl(l);
+		while(*p2 == '[') {
+			p2 = parse_subexpr(p2 + 1,-1);
+			p2 = skip_space(p2);
+			if((*p2++) != ']') {
+				disp_error_message("unmatch ']'",p2 - 1);
+			}
+		}
+		add_scriptc(C_FUNC);
+	} else {
+		// No array index, simply push the variable or value onto the stack
+		add_scriptl(l);
+	}
+}
+
+static unsigned char* parse_variable(unsigned char *p)
+{
+	int c,l;
+	int op = C_NOP;
+	unsigned char *p2;
+	unsigned char *var = NULL;
+
+	nullpo_retr(NULL, p);
+
+	if( ( p[0] == '+' && p[1] == '+' && (op = C_ADD_PRE) ) // pre ++
+	 || ( p[0] == '-' && p[1] == '-' && (op = C_SUB_PRE) ) // pre --
+	) {
+		p=skip_space(p+2);
+	}
+
+	p2 = skip_word(p);
+	// label , register , function etc
+	if(p2 == NULL) {
+		// end of the line or invalid buffer
+		return NULL;
+	}
+	if(p2 == p) {
+		// end of the line or invalid buffer
+		return NULL;
+	}
+
+	c = *p2;
+	*p2 = 0;
+	l = add_str(p);	// ñºëOÇadd_strÇ∑ÇÈ
+
+	*p2 = c;
+
+	if(*p2 == '[') {
+		int i, j;
+		// array variable so process the array as appropriate
+		for(var = p2, i = 0, j = 1; p2; ++ i) {
+			if( *p2 ++ == ']' && --(j) == 0 ) break;
+			if( *p2 == '[' ) ++ j;
+		}
+
+		if( !(p2 = skip_space(p2)) ) {
+			// end of line or invalid characters remaining
+			disp_error_message("Missing right expression or closing bracket for variable.", p);
+		}
+	}
+
+	p2 = skip_space(p2);
+
+	if( op == C_NOP &&
+	!( ( p2[0] == '=' && p2[1] != '=' && (op = C_EQ) ) // =
+	|| ( p2[0] == '+' && p2[1] == '=' && (op = C_ADD) ) // +=
+	|| ( p2[0] == '-' && p2[1] == '=' && (op = C_SUB) ) // -=
+	|| ( p2[0] == '^' && p2[1] == '=' && (op = C_XOR) ) // ^=
+	|| ( p2[0] == '|' && p2[1] == '=' && (op = C_OR) ) // |=
+	|| ( p2[0] == '&' && p2[1] == '=' && (op = C_AND) ) // &=
+	|| ( p2[0] == '*' && p2[1] == '=' && (op = C_MUL) ) // *=
+	|| ( p2[0] == '*' && p2[1] == '*' && p2[2] == '=' && (op = C_POW) ) // **=
+	|| ( p2[0] == '/' && p2[1] == '=' && (op = C_DIV) ) // /=
+	|| ( p2[0] == '%' && p2[1] == '=' && (op = C_MOD) ) // %=
+	|| ( p2[0] == '+' && p2[1] == '+' && (op = C_ADD_POST) ) // post ++
+	|| ( p2[0] == '-' && p2[1] == '-' && (op = C_SUB_POST) ) // post --
+	|| ( p2[0] == '<' && p2[1] == '<' && p2[2] == '=' && (op = C_L_SHIFT) ) // <<=
+	|| ( p2[0] == '>' && p2[1] == '>' && p2[2] == '=' && (op = C_R_SHIFT) ) // >>=
+	) )
+	{// failed to find a matching operator combination so invalid
+		return NULL;
+	}
+
+	switch( op ) {
+		case C_ADD_PRE: // pre ++
+		case C_SUB_PRE: // pre --
+			// (nothing more to skip)
+			break;
+
+		case C_EQ: // =
+			p2 = skip_space( p2 + 1 );
+			break;
+
+		case C_L_SHIFT: // <<=
+		case C_R_SHIFT: // >>=
+		case C_POW: // **=
+			p2 = skip_space( p2 + 3 );
+			break;
+
+		default: // everything else
+			p2 = skip_space( p2 + 2 );
+	}
+
+	if( p2 == NULL ) {
+		// end of line or invalid buffer
+		return NULL;
+	}
+
+	add_scriptl(search_str("set"));
+	add_scriptc(C_ARG);
+
+	if( str_data[l].type == C_FUNC
+	 || str_data[l].type == C_USERFUNC
+	 || str_data[l].type == C_USERFUNC_POS
+	) {
+		// cannot assign a variable which exists as a function or label
+		disp_error_message("Cannot modify a variable which has the same name as a function or label.", p);
+	}
+
+	parse_variable_sub_push(l, var);
+
+	if( op != C_EQ ) {
+		parse_variable_sub_push(l, var);
+	}
+
+	if( op == C_ADD_POST || op == C_SUB_POST ) { // post ++ / --
+		add_scripti(1);
+		add_scriptc(op == C_ADD_POST ? C_ADD : C_SUB);
+
+		parse_variable_sub_push(l, var);
+	} else if( op == C_ADD_PRE || op == C_SUB_PRE ) { // pre ++ / --
+		add_scripti(1);
+		add_scriptc(op == C_ADD_PRE ? C_ADD : C_SUB);
+	} else {
+		// process the value as an expression
+		p2 = parse_subexpr(p2, -1);
+
+		if( op != C_EQ ) {
+			// push the type of modifier onto the stack
+			add_scriptc(op);
+		}
+	}
+	add_scriptc(C_FUNC);
+	return p2;
+}
+
 /*==========================================
  * çÄÇÃâêÕ
  *------------------------------------------
@@ -927,6 +1083,21 @@ static unsigned char* parse_line(unsigned char *p)
 	p2 = parse_syntax(p);
 	if(p2 != NULL)
 		return p2;
+
+	// ïœêîèàóù
+	p2 = parse_variable(p);
+
+	if(p2 != NULL) {
+		// if, for, while ÇÃï¬Ç∂îªíË
+		if(parse_syntax_for_flag) {
+			if(*p2 != ')')
+				disp_error_message("need ')'", p2);
+		} else {
+			if(*p2 != ';')
+				disp_error_message("need ';'", p2);
+		}
+		return parse_syntax_close(p2 + 1);
+	}
 
 	// ç≈èâÇÕä÷êîñº
 	p2 = p;
