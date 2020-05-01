@@ -1790,8 +1790,8 @@ static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const cha
 
 	for(i=0; i<ys; i++) {
 		for(j=0; j<xs; j++) {
-			if(map_getcell(m,x-xs/2+j,y-ys/2+i,CELL_CHKNOPASS))
-				continue;
+//			if(map_getcell(m,x-xs/2+j,y-ys/2+i,CELL_CHKNOPASS))
+//				continue;
 			map_setcell(m,x-xs/2+j,y-ys/2+i,CELL_SETNPC);
 		}
 	}
