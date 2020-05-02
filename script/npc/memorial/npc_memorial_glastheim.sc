@@ -2215,6 +2215,7 @@ OnKilled8:
 	monster '@map$,'@x,'@y,"マゴット",2467,'@num,getmdnpcname(strnpcinfo(0))+"::OnKilled";
 	end;
 OnTimer60000:
+	stopnpctimer;
 	hideoffnpc;
 	end;
 }
@@ -2520,6 +2521,7 @@ OnStart:
 	unittalk "バルムントの幻影 : アムダライスが強力な魔法を使用するぞ！　私の近くまで下がれ！";
 	end;
 OnTimer12000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }
@@ -2535,6 +2537,7 @@ OnStart:
 	unittalk "バルムントの幻影 : 今は攻撃のチャンスだ！　私の近くに来て強化を受けるんだ！";
 	end;
 OnTimer12000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }
@@ -2550,6 +2553,7 @@ OnStart:
 	unittalk "バルムントの幻影 : アムダライスの召喚した魔物にやられる前に、私の近くに来て態勢を立て直すんだ！";
 	end;
 OnTimer12000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }
@@ -2565,6 +2569,7 @@ OnStart:
 	unittalk "バルムントの幻影 : アムダライスの力にやられたくなければ、私の近くで補助を受けるんだ！";
 	end;
 OnTimer12000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }

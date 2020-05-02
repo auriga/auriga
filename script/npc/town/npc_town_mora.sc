@@ -1918,15 +1918,13 @@ spl_fild02.gat,0,0,0	script	茂み#mora	844,{
 
 spl_fild02.gat,0,0,0	script	妖精#mora	844,{
 	end;
-OnInit:
-	hideonnpc strnpcinfo(0);
-	end;
 OnStart:
 	initnpctimer;
 	hideoffnpc strnpcinfo(0);
 	end;
 OnTimer5000:
 	stopnpctimer;
+OnInit:
 	hideonnpc strnpcinfo(0);
 	end;
 }
@@ -8421,14 +8419,13 @@ dic_in01.gat,262,191,0	script	#ep14_1_xq02	139,3,3,{
 
 dic_in01.gat,260,194,4	script	チェシャー#ep14_1	498,{
 	end;
-OnInit:
-	hideonnpc "チェシャー#ep14_1";
-	end;
 OnStart:
 	initnpctimer;
 	hideoffnpc "チェシャー#ep14_1";
 	end;
 OnTimer30000:
+	stopnpctimer;
+OnInit:
 	hideonnpc "チェシャー#ep14_1";
 	end;
 }
@@ -9062,8 +9059,9 @@ OnStart:
 	initnpctimer;
 	hideoffnpc "チェシャー#cheshir_ep14";
 	end;
-OnInit:
 OnTimer600000:
+	stopnpctimer;
+OnInit:
 	hideonnpc "チェシャー#cheshir_ep14";
 	end;
 }

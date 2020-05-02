@@ -5395,8 +5395,10 @@ dew_fild01.gat,247,62,0	script	ÉÑÉVÇÃñÿ#dew01	844,{
 OnTimer20000:
 	if(rand(4))
 		initnpctimer;
-	else
+	else {
+		stopnpctimer;
 		hideoffnpc;
+	}
 	end;
 }
 dew_fild01.gat,276,73,0		duplicate(ÉÑÉVÇÃñÿ#dew01)	ÉÑÉVÇÃñÿ#dew02	844

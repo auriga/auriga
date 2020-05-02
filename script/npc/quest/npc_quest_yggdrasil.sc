@@ -6082,6 +6082,7 @@ nyd_dun01.gat,258,134,0	script	ドラコの卵#ygg_egg01	463,{
 	hideonnpc strnpcinfo(0);
 	close;
 OnTimer420000:
+	stopnpctimer;
 	hideoffnpc strnpcinfo(0);
 	end;
 }
@@ -6116,6 +6117,7 @@ nyd_dun02.gat,68,256,0	script	ドラコの卵#ygg_egg11	463,{
 	hideonnpc strnpcinfo(0);
 	close;
 OnTimer240000:
+	stopnpctimer;
 	hideoffnpc strnpcinfo(0);
 	end;
 }
@@ -6147,6 +6149,7 @@ nyd_dun02.gat,201,166,0	script	ドラコの卵#ygg_egg16	463,{
 	hideonnpc strnpcinfo(0);
 	close;
 OnTimer120000:
+	stopnpctimer;
 	hideoffnpc strnpcinfo(0);
 	end;
 }
@@ -11903,6 +11906,7 @@ OnTimer70000:
 	hideonnpc "nyd_warp_83_2";
 	hideonnpc "nyd_warp_85_2";
 	set 'work,0;
+	stopnpctimer;
 	end;
 OnTouch:
 	misceffect 362;

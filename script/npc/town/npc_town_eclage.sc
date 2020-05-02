@@ -12248,6 +12248,7 @@ OnTimer4000:
 	announce "ƒqƒVƒG : ‚â‚Î‚¢I",0x9,0x7b68ee;
 	end;
 OnTimer8000:
+	stopnpctimer;
 	killmonster "que_avan01.gat","#avtŠÇ—Ò::OnKilled2";
 	end;
 OnKilled1:

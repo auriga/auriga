@@ -863,6 +863,7 @@ OnTimer25000:
 	donpcevent "酔った猫#rockwn11::OnTalk3";
 	end;
 OnTimer28000:
+	stopnpctimer;
 	unittalk "リレンド・ウェンキンス : ロックリッジの開拓民！";
 	donpcevent "カルメン・オニール#rock::OnTalk3";
 	donpcevent "酔った猫#rockwn11::OnTalk4";

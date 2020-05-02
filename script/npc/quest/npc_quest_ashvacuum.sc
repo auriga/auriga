@@ -8614,6 +8614,7 @@ OnKilled:
 	}
 	end;
 OnTimer300000:
+	stopnpctimer;
 	killmonster "mid_campin.gat","AshMeeting::OnKilled";
 	hideoffnpc "òAçáåRéññ±äØ#Ash";
 	end;
@@ -13878,6 +13879,7 @@ OnTimer10000:
 	hideonnpc "éÄëÃ#moc2_event";
 	end;
 OnTimer11000:
+	stopnpctimer;
 	stopnpctimer "#moc2_event";
 	end;
 }
@@ -17756,6 +17758,7 @@ mid_camp.gat,206,286,3	script	ì`óﬂï∫#Ash1	997,{
 		close;
 	}
 OnTimer360000:
+	stopnpctimer;
 	hideonnpc "ì`óﬂï∫#Ash2";
 	hideonnpc "ì`óﬂï∫#Ash3";
 	end;

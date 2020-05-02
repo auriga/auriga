@@ -2450,6 +2450,7 @@ OnTimer8000:
 	monster '@map$,60,75,"—U˜f‚Ì–‚_‚Ì‰e",2939,1;
 	monster '@map$,60,77,"—U˜f‚Ì–‚_‚Ì‰e",2939,1;
 	monster '@map$,80,67,"â”O‚Ì–‚_‚Ì‰e",2941,1;
+	stopnpctimer;
 	end;
 }
 

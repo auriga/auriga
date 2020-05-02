@@ -4184,6 +4184,7 @@ ra_temin.gat,294,149,3	script	ニルエン大神官#ra1	915,{
 	end;
 OnInit:
 OnTimer120000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }
@@ -4333,6 +4334,7 @@ que_san04.gat,122,200,3	script	ニルエン大神官#ra2	915,{
 	end;
 OnInit:
 OnTimer120000:
+	stopnpctimer;
 	hideonnpc;
 	end;
 }

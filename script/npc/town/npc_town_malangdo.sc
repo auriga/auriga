@@ -3162,10 +3162,10 @@ malangdo.gat,221,139,0	duplicate(hide_timer#mal1)	hide_timer#mal10	-1
 
 mal_dun01.gat,136,120,6	script	Œ¾ŒêŠwŽÒƒfƒ{ƒŒ#mald	549,{
 	end;
-OnInit:
 OnTimer60000:
-	hideonnpc;
 	stopnpctimer;
+OnInit:
+	hideonnpc;
 	end;
 }
 

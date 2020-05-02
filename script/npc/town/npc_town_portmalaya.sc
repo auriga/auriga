@@ -10270,6 +10270,7 @@ OnStart:
 	hideoffnpc "Œ¢#totoi";
 	end;
 OnTimer300000:
+	stopnpctimer;
 OnInit:
 	hideonnpc "Œ¢#totoi";
 	end;

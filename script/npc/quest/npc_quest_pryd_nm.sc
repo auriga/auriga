@@ -594,6 +594,7 @@ moc_prydn2.gat,193,16,0	script	#prydn_Secret_B-1	139,1,1,{
 	initnpctimer;
 	end;
 OnTimer8000:
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_B-2";
 	hideoffnpc "#prydn_Secret_B-1";
 	end;
@@ -616,6 +617,7 @@ moc_prydn2.gat,127,47,0	script	#prydn_Secret_C-1	139,1,1,{
 	initnpctimer;
 	end;
 OnTimer8000:
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_C-2";
 	hideoffnpc "#prydn_Secret_C-1";
 	end;
@@ -638,6 +640,7 @@ moc_prydn2.gat,133,75,0	script	#prydn_Secret_C-3	139,1,1,{
 	initnpctimer;
 	end;
 OnTimer8000:
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_C-4";
 	hideoffnpc "#prydn_Secret_C-3";
 	end;
@@ -674,6 +677,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_D-2";
 	hideoffnpc "#prydn_Secret_D-1";
 	end;
@@ -710,6 +714,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_D-4";
 	hideoffnpc "#prydn_Secret_D-3";
 	end;
@@ -746,6 +751,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_E-2";
 	hideoffnpc "#prydn_Secret_E-1";
 	end;
@@ -782,6 +788,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_E-4";
 	hideoffnpc "#prydn_Secret_E-3";
 	end;
@@ -818,6 +825,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_F-2";
 	hideoffnpc "#prydn_Secret_F-1";
 	end;
@@ -854,6 +862,7 @@ OnTouch:
 	}
 OnTimer8000:
 	set 'flag,0;
+	stopnpctimer;
 	hideonnpc "#prydn_Secret_F-4";
 	hideoffnpc "#prydn_Secret_F-3";
 	end;

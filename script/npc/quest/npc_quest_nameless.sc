@@ -6182,6 +6182,7 @@ OnTimer350000:
 	hideonnpc "マーサ#name";
 	hideonnpc "キャットポイ#name";
 	killmonster "z_agit.gat","All";
+	stopnpctimer;
 	set 'mob,0;
 	set 'lock,0;
 	end;

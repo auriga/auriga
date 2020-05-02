@@ -5850,6 +5850,7 @@ OnStart:
 	initnpctimer;
 	end;
 OnTimer30000:
+	stopnpctimer;
 	announce "警備兵クローズ：ふぅ、やっと片付けが終わった！",9,0xFFCC00;
 	hideonnpc;
 	hideoffnpc "ラヘル警備兵#ve2-1";

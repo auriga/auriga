@@ -625,6 +625,7 @@ prt_church.gat,100,128,4	script	主教	60,{
 OnTimer180000:
 	announce "主教: 返事が遅い……次の式を行うとしよう。",9;
 	set 'flag,0;
+	stopnpctimer;
 	//タイムアップの場合は嫁にフラグを仕込む
 	//結婚処理直前にチェックすることで、結婚処理が重複するのを防止！
 	if(attachrid(getcharid(3,'bride$)))

@@ -1294,6 +1294,7 @@ OnTimer10000:
 		initnpctimer;
 	}
 	else {
+		stopnpctimer;
 		donpcevent "tteffect1::OnStop";
 		donpcevent "tteffect2::OnStop";
 		donpcevent "tteffect3::OnStop";

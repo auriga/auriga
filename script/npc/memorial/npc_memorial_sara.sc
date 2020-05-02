@@ -437,8 +437,9 @@ OnStart:
 	initnpctimer;
 	hideoffnpc;
 	end;
-OnInit:
 OnTimer3000:
+	stopnpctimer;
+OnInit:
 	hideonnpc;
 	end;
 }

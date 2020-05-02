@@ -577,6 +577,7 @@ OnTimer1000:
 		announce "警備システム : 第1研究所の保安システムが停止しました。", 0x9, 0xff9977;
 		donpcevent getmdnpcname("1研究室#1_1") +"::OnStart2";
 	}
+	stopnpctimer;
 	end;
 }
 
@@ -892,6 +893,7 @@ OnTimer1000:
 	announce "管理システム : システム停止！　システム停止！　10秒後に研究室の外に脱出経路を開きます。",0x9,0x7799ff;
 	end;
 OnTimer11000:
+	stopnpctimer;
 	announce "管理システム : 脱出してください!!",0x9,0x7799ff;
 	hideoffnpc getmdnpcname("#escape1");
 	hideoffnpc getmdnpcname("#escape2");
