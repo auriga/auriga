@@ -69,6 +69,7 @@ int memorial_create(const char *memorial_name, int party_id);
 int memorial_delete(int memorial_id);
 int memorial_enter(struct map_session_data *sd, const char *memorial_name);
 int memorial_reqinfo(struct map_session_data *sd, int memorial_id);
+int memorial_openstate(struct map_session_data *sd, const char *memorial_name);
 int memorial_addusers(int memorial_id);
 int memorial_delusers(int memorial_id);
 int memorial_mapname2mapid(const char *name, int memorial_id);

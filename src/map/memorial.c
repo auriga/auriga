@@ -605,6 +605,42 @@ int memorial_reqinfo(struct map_session_data *sd, int memorial_id)
 }
 
 /*==========================================
+ * メモリアルダンジョンの開設状況要求
+ *------------------------------------------
+ */
+int memorial_openstate(struct map_session_data *sd, const char *memorial_name)
+{
+	struct memorial_data *md;
+	struct memorial_db *db = memorial_searchname_db(memorial_name);
+	struct party *pt;
+
+	nullpo_retr(-1, sd);
+
+	if(db == NULL)
+		return -1;
+
+	// パーティー未加入
+	if(sd->status.party_id == 0)
+		return -1;
+	if((pt = party_search(sd->status.party_id)) == NULL)
+		return -1;
+
+	// メモリアルダンジョン未生成
+	if(pt->memorial_id == 0)
+		return 0;
+
+	md = &memorial_data[pt->memorial_id-1];
+	if(md->party_id != pt->party_id)
+		return -1;
+	if(md->type != db->type)
+		return 0;
+	if(md->state != MDSTATE_BUSY)
+		return 0;
+
+	return 1;
+}
+
+/*==========================================
  * メモリアルダンジョンのユーザー追加
  *------------------------------------------
  */

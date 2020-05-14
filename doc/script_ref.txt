@@ -1089,6 +1089,16 @@ AurigaNPCScript
 
 			魔導ギアに騎乗します。
 
+		sit命令
+			sit;
+
+			座ります。
+
+		stand命令
+			stand;
+
+			立ちます。
+
 		monster命令
 			monster <gatname>,<x>,<y>,<mobname>,<mobid>,<num>[,<event>[,<guild_id>]];
 
@@ -3779,6 +3789,15 @@ AurigaNPCScript
 			戻り値が1の場合、パーティー未加入エラー、メモリアルダンジョン入場が失敗。
 			戻り値が2の場合、ダンジョン未作成エラー、メモリアルダンジョン入場が失敗。
 			戻り値が上記以外の場合、その他エラー、メモリアルダンジョン入場が失敗を意味します。
+
+		mdopenstate 関数
+			mdopenstate(<mdname>)
+
+			<mdname>	メモリアルダンジョンの名称（memorial_db.txt参照）
+
+			指定したメモリアルダンジョンの生成情報を返します。
+			戻り値が0以下の場合、生成が完了していません。
+			戻り値が1の場合、生成が完了し、メモリアルダンジョンへの入場が可能です。
 
 		getmdmapname 関数
 			getmdmapname(<mapname>)

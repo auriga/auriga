@@ -4029,6 +4029,8 @@ int buildin_setfalcon(struct script_state *st);
 int buildin_setriding(struct script_state *st);
 int buildin_setdragon(struct script_state *st);
 int buildin_setgear(struct script_state *st);
+int buildin_sit(struct script_state *st);
+int buildin_stand(struct script_state *st);
 int buildin_savepoint(struct script_state *st);
 int buildin_gettimetick(struct script_state *st);
 int buildin_gettime(struct script_state *st);
@@ -4267,6 +4269,7 @@ int buildin_getrandombox(struct script_state *st);
 int buildin_achievement(struct script_state *st);
 int buildin_achievement2(struct script_state *st);
 int buildin_dynamicnpc(struct script_state *st);
+int buildin_mdopenstate(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4356,6 +4359,8 @@ struct script_function buildin_func[] = {
 	{buildin_setriding,"setriding",""},
 	{buildin_setdragon,"setdragon","*"},
 	{buildin_setgear,"setgear",""},
+	{buildin_sit,"sit",""},
+	{buildin_stand,"stand",""},
 	{buildin_savepoint,"savepoint","sii"},
 	{buildin_gettimetick,"gettimetick","i"},
 	{buildin_gettime,"gettime","i"},
@@ -4569,6 +4574,7 @@ struct script_function buildin_func[] = {
 	{buildin_mdcreate,"mdcreate","s*"},
 	{buildin_mddelete,"mddelete","*"},
 	{buildin_mdenter,"mdenter","s"},
+	{buildin_mdopenstate,"mdopenstate","s"},
 	{buildin_getmdmapname,"getmdmapname","s"},
 	{buildin_getmdnpcname,"getmdnpcname","s"},
 	{buildin_active_montransform,"active_montransform","i*"},
@@ -7155,6 +7161,42 @@ int buildin_setdragon(struct script_state *st)
 int buildin_setgear(struct script_state *st)
 {
 	pc_setgear( script_rid2sd(st) );
+	return 0;
+}
+
+/*==========================================
+ * 座る
+ *------------------------------------------
+ */
+int buildin_sit(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	if(unit_isdead(&sd->bl))
+		return 0;
+	if(!pc_issit(sd)) {
+		pc_setsit(sd);
+		clif_sitting(&sd->bl, 1);
+		skill_sit(sd,1);	// ギャングスターパラダイスおよびテコン休息設定
+	}
+	return 0;
+}
+
+/*==========================================
+ * 立つ
+ *------------------------------------------
+ */
+int buildin_stand(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	if(unit_isdead(&sd->bl))
+		return 0;
+	if(pc_issit(sd)) {
+		pc_setstand(sd);
+		clif_sitting(&sd->bl, 0);
+		skill_sit(sd,0);	// ギャングスターパラダイスおよびテコン休息解除
+	}
 	return 0;
 }
 
@@ -13351,6 +13393,25 @@ int buildin_mdenter(struct script_state *st)
 
 	if(sd) {
 		ret = memorial_enter(sd, name);
+	}
+
+	push_val(st->stack,C_INT,ret);
+
+	return 0;
+}
+
+/*==========================================
+ * メモリアルダンジョン状態
+ *------------------------------------------
+ */
+int buildin_mdopenstate(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int ret = -1;
+	char *name = conv_str(st,& (st->stack->stack_data[st->start+2]));
+
+	if(sd) {
+		ret = memorial_openstate(sd, name);
 	}
 
 	push_val(st->stack,C_INT,ret);
