@@ -4908,7 +4908,7 @@ int buildin_menu(struct script_state *st)
 				sd->npc_menu++;
 				continue;
 			}
-			while(count <= sd->npc_menu && (p = strchr(p,':')) != NULL) {
+			while(count <= sd->npc_menu && (np = strchr(p,':')) != NULL) {
 				count++;
 				if(np == p) {
 					sd->npc_menu++;
