@@ -3942,6 +3942,10 @@ int status_get_max_hp(struct block_list *bl)
 			}
 		}
 		if(sc) {
+#ifndef PRE_RENEWAL
+			if(sc->data[SC_DELUGE].timer != -1)
+				max_hp += sc->data[SC_DELUGE].val3 * max_hp / 100;
+#endif
 			if(sc->data[SC_APPLEIDUN].timer != -1)
 				max_hp += ((5+sc->data[SC_APPLEIDUN].val1*2+((sc->data[SC_APPLEIDUN].val2+1)>>1)
 						+sc->data[SC_APPLEIDUN].val3/10) * max_hp)/100;

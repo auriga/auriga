@@ -7522,7 +7522,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_DEATHSUMMON:		/* ƒfƒXƒTƒ‚ƒ“ */
 		if(md && md->skillidx != -1) {
 			struct mob_skill *ms = &mobdb_search(md->class_)->skill[md->skillidx];
-			mob_summonslave(md,ms->val,sizeof(ms->val)/sizeof(ms->val[0]),skilllv,(skillid == NPC_SUMMONSLAVE)? 1: 0);
+			mob_summonslave(md,ms->val,sizeof(ms->val)/sizeof(ms->val[0]),skilllv,skillid);
 		}
 		break;
 	case NPC_CALLSLAVE:		/* Žæ‚èŠª‚«ŒÄ‚Ñ–ß‚µ */

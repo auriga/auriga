@@ -2850,7 +2850,7 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 			x = atn_rand()%5-2+bx;
 			y = atn_rand()%5-2+by;
 		}
-		if(i >= 100) {
+		if(i >= 100 || flag == NPC_DEATHSUMMON) {
 			x = bx;
 			y = by;
 		}
@@ -2879,9 +2879,10 @@ int mob_summonslave(struct mob_data *md2,int *value,int size,int amount,int flag
 		map_addiddb(&md->bl);
 		mob_spawn(md->bl.id);
 
-		clif_skill_nodamage(&md->bl,&md->bl,(flag)? NPC_SUMMONSLAVE: NPC_SUMMONMONSTER,amount,1);
+		if(flag != NPC_DEATHSUMMON)
+			clif_skill_nodamage(&md->bl,&md->bl,(flag == NPC_SUMMONSLAVE)? NPC_SUMMONSLAVE: NPC_SUMMONMONSTER,amount,1);
 
-		if(flag) {
+		if(flag == NPC_SUMMONSLAVE) {
 			md->master_id    = md2->bl.id;
 			md->speed        = md2->speed;
 			md->state.norandomwalk = 1;
