@@ -101,6 +101,7 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 	struct map_session_data *sd;
 	struct npc_data *nd;
 	char name[50];
+	int i;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -108,13 +109,22 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
 	if(nd->flag&1) {	// –³Œø‰»‚³‚ê‚Ä‚¢‚é
-		if(sd->areanpc_id == nd->bl.id) {	// NPC‚ÆÚG‚µ‚Ä‚¢‚½‚ç‰ð•ú‚³‚¹‚é
-			sd->areanpc_id = 0;
+		for(i=0; i < MAX_EVENTQUEUE; i++) {
+			if(sd->areanpc_id[i] == nd->bl.id) {	// NPC‚ÆÚG‚µ‚Ä‚¢‚½‚ç‰ð•ú‚³‚¹‚é
+				sd->areanpc_id[i] = 0;
+			}
 		}
 		return 1;
 	}
 
-	sd->areanpc_id = nd->bl.id;
+	for(i=0; i < MAX_EVENTQUEUE; i++) {
+		if(sd->areanpc_id[i] == 0) {
+			sd->areanpc_id[i] = nd->bl.id;
+			break;
+		}
+	}
+	if(i == MAX_EVENTQUEUE)
+		return 1;
 	sprintf(name, "%s::OnTouch", nd->exname);
 
 	switch(nd->subtype) {
@@ -737,6 +747,16 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 	if(sd->npc_id)
 		return 1;
 
+	for(i = 0; i < MAX_EVENTQUEUE; i++) {
+		struct npc_data *nd = map_id2nd(sd->areanpc_id[i]);
+
+		if (!nd || nd->subtype != SCRIPT ||
+			!(nd->bl.m == m &&
+				x >= nd->bl.x - nd->u.scr.xs/2 && x < nd->bl.x - nd->u.scr.xs/2 + nd->u.scr.xs &&
+				y >= nd->bl.y - nd->u.scr.ys/2 && y < nd->bl.y - nd->u.scr.ys/2 + nd->u.scr.ys))
+			sd->areanpc_id[i] = 0;
+	}
+
 	for(i = 0; i < map[m].npc_num; i++) {
 		nd = map[m].npc[i];
 
@@ -757,36 +777,45 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 			continue;
 		}
 		if(x >= nd->bl.x-xs/2 && x < nd->bl.x-xs/2+xs &&
-		   y >= nd->bl.y-ys/2 && y < nd->bl.y-ys/2+ys)
-			break;
+		   y >= nd->bl.y-ys/2 && y < nd->bl.y-ys/2+ys) {
+			switch(nd->subtype) {
+			case WARP:
+				// ‰B‚ê‚Ä‚¢‚é‚Æƒ[ƒv‚Å‚«‚È‚¢
+				if(pc_ishiding(sd))
+					break;
+				skill_stop_dancing(&sd->bl,0);
+				pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
+				break;
+			case SCRIPT:
+				if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
+					char name[50];
+					int j, n = -1;
+					f = 0;
+					for(j = 0; j < MAX_EVENTQUEUE; j++) {
+						if(sd->areanpc_id[j] == 0)
+							n = j;
+						if(sd->areanpc_id[j] == nd->bl.id)
+							break;
+					}
+					if(j == MAX_EVENTQUEUE && n >= 0) {
+						sd->areanpc_id[n] = nd->bl.id;
+						sprintf(name, "%s::OnTouch", nd->exname);
+						if(npc_event(sd,name) > 0)
+							npc_click(sd,nd->bl.id);
+						break;
+					}
+				}
+				break;
+			}
+		}
 	}
-	if(i >= map[m].npc_num) {
+//	if(i >= map[m].npc_num) {
 		if(f) {
 			if(battle_config.error_log)
 				printf("npc_touch_areanpc : some bug \n");
+			return 1;
 		}
-		return 1;
-	}
-	switch(nd->subtype) {
-	case WARP:
-		// ‰B‚ê‚Ä‚¢‚é‚Æƒ[ƒv‚Å‚«‚È‚¢
-		if(pc_ishiding(sd))
-			break;
-		skill_stop_dancing(&sd->bl,0);
-		pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
-		break;
-	case SCRIPT:
-		if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
-			char name[50];
-			if(sd->areanpc_id == nd->bl.id)
-				return 1;
-			sd->areanpc_id = nd->bl.id;
-			sprintf(name, "%s::OnTouch", nd->exname);
-			if(npc_event(sd,name) > 0)
-				npc_click(sd,nd->bl.id);
-		}
-		break;
-	}
+//	}
 
 	return 0;
 }

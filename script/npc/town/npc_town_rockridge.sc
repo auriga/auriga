@@ -1137,14 +1137,6 @@ OnTouch:
 	unittalk "ゼヴァーディー : ロックリッジにようこそ！";
 	misceffect 72,"ゼヴァーディー#rockwn13";
 	emotion 14,"ゼヴァーディー#rockwn13";
-	// 一度に複数のOnTouchが踏めないので…
-	if(distance(getcharid(3),"エイリーン#rockwn14") <= 5)
-		doevent "エイリーン#rockwn14::OnTalk";
-	end;
-OnTalk:
-	unittalk "ゼヴァーディー : ロックリッジにようこそ！";
-	misceffect 72,"ゼヴァーディー#rockwn13";
-	emotion 14,"ゼヴァーディー#rockwn13";
 	end;
 }
 
@@ -1157,14 +1149,6 @@ harboro1.gat,75,219,3	script	エイリーン#rockwn14	96,5,5,{
 	mes "なりますように。";
 	close;
 OnTouch:
-	unittalk "エイリーン : 冒険者様を歓迎しますよ～！";
-	misceffect 72,"エイリーン#rockwn14";
-	emotion 14,"エイリーン#rockwn14";
-	// 一度に複数のOnTouchが踏めないので…
-	if(distance(getcharid(3),"ゼヴァーディー#rockwn13") <= 5)
-		doevent "ゼヴァーディー#rockwn13::OnTalk";
-	end;
-OnTalk:
 	unittalk "エイリーン : 冒険者様を歓迎しますよ～！";
 	misceffect 72,"エイリーン#rockwn14";
 	emotion 14,"エイリーン#rockwn14";

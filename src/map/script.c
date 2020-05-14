@@ -3316,8 +3316,9 @@ static int run_script_timer(int tid, unsigned int tick, int id, void *data)
 static void run_script_awake(struct script_state *st)
 {
 	struct map_session_data *sd = map_id2sd(st->rid);
+	struct mob_data *md = map_id2md(st->rid);
 
-	if( (sd && sd->npc_sleep != &st->sleep) || (st->rid != 0 && !sd) ) {
+	if( (sd && sd->npc_sleep != &st->sleep) || (st->rid != 0 && !sd && !md) ) {
 		st->rid = 0;
 	}
 

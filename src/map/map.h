@@ -457,7 +457,8 @@ struct map_session_data {
 	short speed, prev_speed;
 	char dir,head_dir;
 	unsigned int client_tick;
-	int npc_id,areanpc_id,npc_shopid;
+	int npc_id,npc_shopid;
+	int areanpc_id[MAX_EVENTQUEUE];
 	int npc_allowuseitem;
 	int npc_pos;
 	int npc_menu;

@@ -384,7 +384,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		if(map_getcell(sd->bl.m,x,y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,x,y);
 		else
-			sd->areanpc_id = 0;
+			memset(sd->areanpc_id,0,sizeof(sd->areanpc_id));
 	}
 	else if(md) {
 		if(md->sc.option&OPTION_CLOAKING)
@@ -776,7 +776,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 			npc_touch_areanpc(sd,sd->bl.m,sd->bl.x,sd->bl.y);
 		else
-			sd->areanpc_id=0;
+			memset(sd->areanpc_id,0,sizeof(sd->areanpc_id));
 	}
 	if(md) {
 		struct status_change *sc = NULL;
