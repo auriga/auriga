@@ -147,6 +147,11 @@ dali.gat	mapflag	nopenalty	dummy
 dali.gat	mapflag	nomemo	dummy
 dali.gat	mapflag	noteleport	dummy
 dali.gat	mapflag	nobranch	dummy
+dali02.gat	mapflag	town	dummy
+dali02.gat	mapflag	nopenalty	dummy
+dali02.gat	mapflag	nomemo	dummy
+dali02.gat	mapflag	noteleport	dummy
+dali02.gat	mapflag	nobranch	dummy
 dew_dun01.gat	mapflag	nomemo	dummy
 dew_dun02.gat	mapflag	nomemo	dummy
 dew_in01.gat	mapflag	nomemo	dummy
@@ -742,6 +747,14 @@ monk_test.gat	mapflag	nobranch	dummy
 monk_test.gat	mapflag	noicewall	dummy
 mora.gat	mapflag	town	dummy
 mora.gat	mapflag	nopenalty	dummy
+moro_cav.gat	mapflag	nomemo	dummy
+moro_cav.gat	mapflag	noteleport	dummy
+moro_cav.gat	mapflag	nobranch	dummy
+moro_cav.gat	mapflag	noicewall	dummy
+moro_vol.gat	mapflag	town	dummy
+moro_vol.gat	mapflag	nopenalty	dummy
+moro_vol.gat	mapflag	nomemo	dummy
+moro_vol.gat	mapflag	nobranch	dummy
 morocc.gat	mapflag	town	dummy
 morocc.gat	mapflag	nopenalty	dummy
 morocc_in.gat	mapflag	nomemo	dummy

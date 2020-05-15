@@ -1,4 +1,23 @@
 ----------------------------------------
+//1425 [2020/05/15] by refis
+
+・フレイムヴァレーNPC実装（npc_town_morovol.sc, npc_monster_morovol.sc）
+	-> フレイムヴァレーへの道クエスト実装
+	-> 滅亡祝福教団クエスト実装
+	-> フレイムヴァレーデイリークエスト実装
+
+・item_dbの更新（item_cardtype.txt, item_db.txt）
+	Thanks kuura さん、eni-ro さん
+
+・mob_dbの更新（mob_db.txt, mob_skill_db.txt）
+
+・quest_dbの更新（quest_db.txt）
+
+・mapflagの更新（mapflag.sc）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+----------------------------------------
 //1424 [2020/05/14] by refis
 
 ・スクリプト命令「sit」「stand」追加（script.c）

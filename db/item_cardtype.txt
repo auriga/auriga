@@ -1112,6 +1112,8 @@
 29366,Unknown_Item,強撃1,2
 29367,Unknown_Item,強撃2,2
 29368,Unknown_Item,強撃3,2
+29369,Unknown_Item,強撃4,2
+29370,Unknown_Item,強撃5,2
 29371,Unknown_Item,真理の解放,2
 29372,Unknown_Item,固定詠唱時間 - 50%,2
 29373,Unknown_Item,スキルディレイ - 15%,2
@@ -1126,6 +1128,62 @@
 29384,Unknown_Item,名誉のニーヴ(幸運),2
 29385,Unknown_Item,死のニーヴ(技巧),2
 29386,Unknown_Item,死のニーヴ(幸運),2
+29436,Unknown_Item,覇王,2
+29437,Unknown_Item,スキルディレイ - 8%,2
+29438,Unknown_Item,Z-Knockback,2
+29439,Unknown_Item,Z-Immortal,2
+29440,Unknown_Item,Z-Killgain,2
+29441,Unknown_Item,Z-Reincarnation,2
+29442,Unknown_Item,Z-NoDispell,2
+29443,Unknown_Item,Z-Clairvoyance,2
+29444,Unknown_Item,Z-CastFixed,2
+29445,Unknown_Item,増幅1,2
+29446,Unknown_Item,増幅2,2
+29447,Unknown_Item,増幅3,2
+29448,Unknown_Item,増幅4,2
+29449,Unknown_Item,増幅5,2
+29472,Unknown_Item,<Overclock>,2
+29473,Unknown_Item,<超越者>,2
+29474,Unknown_Item,<剛腕>,2
+29475,Unknown_Item,<呪力>,2
+29476,Unknown_Item,<竜鱗>,2
+29509,Unknown_Item,豪傑,2
+29510,Unknown_Item,傷のニーヴ(プレイヤー),2
+29511,Unknown_Item,Q-Player,2
+29512,Unknown_Item,強靭,2
+29527,Unknown_Item,B-Def,2
+29528,Unknown_Item,B-Mdef,2
+29529,Unknown_Item,B-HPR,2
+29530,Unknown_Item,B-MaxSP,2
+29531,Unknown_Item,B-MaxHP,2
+29532,Unknown_Item,B-SPR,2
+29533,Unknown_Item,Q-Heal,2
+29534,Unknown_Item,B-Atk,2
+29535,Unknown_Item,B-Matk,2
+29536,Unknown_Item,Q-Shooter,2
+29537,Unknown_Item,Q-Speed,2
+29538,Unknown_Item,Q-CastStat,2
+29539,Unknown_Item,Q-Fatal,2
+29540,Unknown_Item,Q-Delay,2
+29541,Unknown_Item,Q-CastFixed,2
+29542,Unknown_Item,Q-Attribute,2
+29543,Unknown_Item,G-DrainHP,2
+29544,Unknown_Item,G-DrainSP,2
+29545,Unknown_Item,G-Life,2
+29546,Unknown_Item,G-Soul,2
+29547,Unknown_Item,X-UnlimitVital,2
+29548,Unknown_Item,X-SpellBuster,2
+29549,Unknown_Item,X-FiringShot,2
+29550,Unknown_Item,X-OverPower,2
+29551,Unknown_Item,X-FatalFlash,2
+29552,Unknown_Item,X-LuckyStrike,2
+29586,Unknown_Item,プレイヤー耐性12,2
+29593,Unknown_Item,凍結耐性,2
+29646,Unknown_Item,<超弩級>,2
+29647,Unknown_Item,<反逆者>,2
+29648,Unknown_Item,<火雷大神>,2
+29649,Unknown_Item,Def50%無視,2
+29650,Unknown_Item,Mdef50%無視,2
 31000,Unknown_Item,ルドカード,0
 31001,Unknown_Item,ローラカード,1
 31002,Unknown_Item,エルヴィラカード,0
@@ -1142,3 +1200,25 @@
 31013,Unknown_Item,[LoVA] 真化バハムートカード,1
 31014,Unknown_Item,[LoVA] ラグナロクカード,0
 31015,Unknown_Item,[LoVA] 真化ラグナロクカード,0
+310012,Unknown_Item,死の欲動,2
+310075,Unknown_Item,グリード詠唱 - 100%,2
+310192,Unknown_Item,<Extreme>,2
+310193,Unknown_Item,ノックバック無効,2
+310194,Unknown_Item,Def + 50,2
+310195,Unknown_Item,マグニフィカートLv5,2
+310196,Unknown_Item,遠距離物理耐性 + 10%,2
+310269,Unknown_Item,石化耐性,2
+310270,Unknown_Item,T-PowerBoost,2
+310271,Unknown_Item,T-MagicBoost,2
+310272,Unknown_Item,T-Assault,2
+310273,Unknown_Item,T-Electricity,2
+310310,Unknown_Item,潜在解放(ルーンナイト),2
+310311,Unknown_Item,潜在解放(ロイヤルガード),2
+310312,Unknown_Item,潜在解放(ソーサラー),2
+310313,Unknown_Item,潜在解放(アークビショップ),2
+310314,Unknown_Item,潜在解放(修羅),2
+310315,Unknown_Item,潜在解放(シャドウチェイサー),2
+310316,Unknown_Item,潜在解放(メカニック),2
+310317,Unknown_Item,潜在解放(ジェネティック),2
+310318,Unknown_Item,必中攻撃 + 25%,2
+310319,Unknown_Item,Hit + 100,2
