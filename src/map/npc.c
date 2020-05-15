@@ -778,6 +778,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 		}
 		if(x >= nd->bl.x-xs/2 && x < nd->bl.x-xs/2+xs &&
 		   y >= nd->bl.y-ys/2 && y < nd->bl.y-ys/2+ys) {
+			f = 0;
 			switch(nd->subtype) {
 			case WARP:
 				// ‰B‚ê‚Ä‚¢‚é‚Æƒ[ƒv‚Å‚«‚È‚¢
@@ -790,7 +791,6 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 				if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
 					char name[50];
 					int j, n = -1;
-					f = 0;
 					for(j = 0; j < MAX_EVENTQUEUE; j++) {
 						if(sd->areanpc_id[j] == 0)
 							n = j;
