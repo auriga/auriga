@@ -294,3 +294,47 @@
 1@tnm3.gat	mapflag	monster_noteleport	dummy
 1@tnm3.gat	mapflag	noicewall	dummy
 1@tnm3.gat	mapflag	noabra		dummy
+
+//============================================================
+// ビオスの島 01 - 1@dth1.gat
+//------------------------------------------------------------
+1@dth1.gat	mapflag	nosave			SavePoint
+1@dth1.gat	mapflag	nomemo			dummy
+1@dth1.gat	mapflag	noteleport		dummy
+1@dth1.gat	mapflag	nobranch		dummy
+1@dth1.gat	mapflag	monster_noteleport	dummy
+1@dth1.gat	mapflag	noicewall	dummy
+1@dth1.gat	mapflag	noabra		dummy
+
+//============================================================
+// ビオスの島 02 - 1@dth2.gat
+//------------------------------------------------------------
+1@dth2.gat	mapflag	nosave			SavePoint
+1@dth2.gat	mapflag	nomemo			dummy
+1@dth2.gat	mapflag	noteleport		dummy
+1@dth2.gat	mapflag	nobranch		dummy
+1@dth2.gat	mapflag	monster_noteleport	dummy
+1@dth2.gat	mapflag	noicewall	dummy
+1@dth2.gat	mapflag	noabra		dummy
+
+//============================================================
+// ビオスの島 03 - 1@dth3.gat
+//------------------------------------------------------------
+1@dth3.gat	mapflag	nosave			SavePoint
+1@dth3.gat	mapflag	nomemo			dummy
+1@dth3.gat	mapflag	noteleport		dummy
+1@dth3.gat	mapflag	nobranch		dummy
+1@dth3.gat	mapflag	monster_noteleport	dummy
+1@dth3.gat	mapflag	noicewall	dummy
+1@dth3.gat	mapflag	noabra		dummy
+
+//============================================================
+// モルスの洞窟 - 1@rev.gat
+//------------------------------------------------------------
+1@rev.gat	mapflag	nosave			SavePoint
+1@rev.gat	mapflag	nomemo			dummy
+1@rev.gat	mapflag	noteleport		dummy
+1@rev.gat	mapflag	nobranch		dummy
+1@rev.gat	mapflag	monster_noteleport	dummy
+1@rev.gat	mapflag	noicewall	dummy
+1@rev.gat	mapflag	noabra		dummy

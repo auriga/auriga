@@ -1301,7 +1301,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 				if(src->type & (BL_PC | BL_HOM | BL_MERC | BL_ELEM))
 					target_md->target_id = src->id;
 			}
-			mobskill_use(target_md,tick,MSC_CASTTARGETED);
+			if( src->id != target->id )
+				mobskill_use(target_md,tick,MSC_CASTTARGETED);
 			target_md->target_id = id;
 		}
 	}

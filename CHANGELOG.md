@@ -1,4 +1,23 @@
 ----------------------------------------
+//1427 [2020/05/22] by refis
+
+・モンスタースキル使用条件「casttargeted」は
+　自己対象スキルで動作しないよう変更（unit.c）
+	-> 代わりに「afterskill」を利用してください
+
+・ビオスの島メモリアル実装（npc_memorial_bios.sc）
+
+・モルスの洞窟メモリアル実装（npc_memorial_mors.sc）
+
+・mob_dbの更新（mob_db.txt, mob_skill_db.txt）
+
+・quest_dbの更新（quest_db.txt）
+
+・mapflagの更新（mapflag_memorial.sc）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+----------------------------------------
 //1426 [2020/05/15] by refis
 
 ・Patch1421以降のワープ型NPC接触時のエラーを修正（npc.c）
