@@ -138,6 +138,11 @@ glast_01.gat,212,273,4	script	魔法職人	66,{
 		mes "装備してから話しかけてください。";
 		close;
 	}
+	if(getequipcardid(6,2)!=0){
+		mes "[魔法職人]";
+		mes "もう限界まで強化済みですね";
+		close;
+	}
 	set '@card4,getequipcardid(6,3);
 	set '@refine,getequiprefinerycnt(6);
 	setarray '@cost[1],5,15,45,135;

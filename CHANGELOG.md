@@ -1,4 +1,21 @@
 ----------------------------------------
+//1428 [2020/05/27] by refis
+
+・魔神殿メモリアル関連データ修正
+	-> item_dbの更新（item_db.txt）
+	-> mob_dbの更新（mob_db.txt, mob_skill_db.txt）
+	-> quest_dbの更新（quest_db.txt）
+	-> map_auriga.confの更新（map_auriga.conf）
+	-> memorial_dbの更新（memorial_db.txt）
+
+・禁忌の研究所メモリアル内の敵出現エラー修正（npc_memorial_worsef.sc）
+	Thanks Dallen さん
+
+・時空ブーツエンチャントNPCで最終エンチャントを繰り返せるミス修正
+（npc_quest_glastheim.sc）
+	Thanks Heaven さん
+
+----------------------------------------
 //1427 [2020/05/22] by refis
 
 ・モンスタースキル使用条件「casttargeted」は

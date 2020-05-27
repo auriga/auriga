@@ -843,7 +843,7 @@ OnStop:
 OnStart:
 	set 'lv,1;
 	setarray 'mob[1],10,20,16,19,20;
-	areamonster getmdmapname("1@lhz.gat"),139,37,164,58,"‹Q‚¦‚½ÀŒ±“®•¨",2242,'mob[lv],getmdnpcname("MobCtrl2#mob02")+"::OnKilled";
+	areamonster getmdmapname("1@lhz.gat"),139,37,164,58,"‹Q‚¦‚½ÀŒ±“®•¨",2242,'mob['lv],getmdnpcname("MobCtrl2#mob02")+"::OnKilled";
 	end;
 OnKilled:
 	set '@count,getmapmobs(getmdmapname("1@lhz.gat"),getmdnpcname("MobCtrl2#mob02")+ "::OnKilled");
@@ -863,7 +863,7 @@ OnKilled:
 OnTimer5000:
 	stopnpctimer;
 	announce "Œx”õƒVƒXƒeƒ€ : " +'lv+ "Ÿ•ÛˆÀƒVƒXƒeƒ€‰Ò“­!!@ŠÖŒWÒ‚Í‘Ş”ğ‚µ‚Ä‰º‚³‚¢B",0x9,0xff9977;
-	areamonster getmdmapname("1@lhz.gat"),139,37,164,58,"‹Q‚¦‚½ÀŒ±“®•¨",2242,'mob[lv],getmdnpcname("MobCtrl2#mob02")+"::OnKilled";
+	areamonster getmdmapname("1@lhz.gat"),139,37,164,58,"‹Q‚¦‚½ÀŒ±“®•¨",2242,'mob['lv],getmdnpcname("MobCtrl2#mob02")+"::OnKilled";
 	end;
 OnSpawn_01:
 	areamonster getmdmapname("1@lhz.gat"),155,43,161,49,"‹Q‚¦‚½ÀŒ±“®•¨",2243,5,getmdnpcname("MobCtrl2#mob02")+"::OnKilled";
