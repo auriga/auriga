@@ -8327,13 +8327,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case NPC_FIRESTORM:		/* –‰Š */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if(flag&1) {
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			if(bl->id != skill_area_temp[1]) {
+				status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			}
 		} else {
 			int ar = 3;
+			skill_area_temp[1] = src->id;
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				src,skillid,skilllv,tick, flag|BCT_ALL|1,
 				skill_castend_nodamage_id);
 		}
 		break;

@@ -13594,11 +13594,15 @@ int buildin_mobuseskill(struct script_state *st)
 	if(!tbl)
 		return 0;
 
-	if(md->ud.skilltimer != -1)
+	if(casttime > 0 && md->ud.skilltimer != -1)
 		unit_skillcastcancel(&md->bl,0);
 
-	if(skill_get_inf(skillid) & INF_GROUND)
-		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	if(skill_get_inf(skillid) & INF_GROUND) {
+		if(casttime <= 0)
+			skill_castend_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, gettick(), 0);
+		else
+			unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	}
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
 
@@ -13632,11 +13636,15 @@ int buildin_mobuseskillpos(struct script_state *st)
 	if(skillid <= 0 || skilllv <= 0)
 		return 0;
 
-	if(md->ud.skilltimer != -1)
+	if(casttime > 0 && md->ud.skilltimer != -1)
 		unit_skillcastcancel(&md->bl,0);
 
-	if(skill_get_inf(skillid) & INF_GROUND)
-		unit_skilluse_pos2(&md->bl, x, y, skillid, skilllv, casttime, cancel);
+	if(skill_get_inf(skillid) & INF_GROUND) {
+		if(casttime <= 0)
+			skill_castend_pos2(&md->bl, x, y, skillid, skilllv, gettick(), 0);
+		else
+			unit_skilluse_pos2(&md->bl, x, y, skillid, skilllv, casttime, cancel);
+	}
 
 	return 0;
 }
@@ -13674,11 +13682,15 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 	if(!tbl)
 		return 0;
 
-	if(md->ud.skilltimer != -1)
+	if(casttime > 0 && md->ud.skilltimer != -1)
 		unit_skillcastcancel(bl,0);
 
-	if(skill_get_inf(skillid) & INF_GROUND)
-		unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	if(skill_get_inf(skillid) & INF_GROUND) {
+		if(casttime <= 0)
+			skill_castend_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, gettick(), 0);
+		else
+			unit_skilluse_pos2(&md->bl, tbl->x, tbl->y, skillid, skilllv, casttime, cancel);
+	}
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
 
