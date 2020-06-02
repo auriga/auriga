@@ -3338,6 +3338,36 @@ static void run_script_awake(struct script_state *st)
 }
 
 /*==========================================
+ * sleep破棄処理
+ *------------------------------------------
+ */
+void script_erase_sleeptimer(struct npc_data *nd)
+{
+	struct linkdb_node *node = (struct linkdb_node *)sleep_db;
+
+	if(nd == NULL)
+		return;
+
+	while(node) {
+		if(PTR2INT(node->key) == nd->bl.id) {
+			struct script_state *st = (struct script_state *)node->data;
+
+			if(st->sleep.timer != -1) {
+				delete_timer(st->sleep.timer, run_script_timer);
+				node = script_erase_sleepdb(node);
+
+				st->pos = -1;
+				script_free_stack(st->stack);
+				aFree(st);
+				break;
+			}
+		}
+		node = node->next;
+	}
+	return;
+}
+
+/*==========================================
  * スクリプトの実行メイン部分
  *------------------------------------------
  */

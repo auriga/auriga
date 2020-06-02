@@ -66,6 +66,7 @@ struct script_code* parse_script(unsigned char *,const char*,int);
 int script_is_error(struct script_code *code);
 void run_script(struct script_code*,int,int,int);
 void script_error(const char *src, const char *file, int start_line, const char *msg, const char *pos);
+void script_erase_sleeptimer(struct npc_data *nd);
 
 void script_free_stack(struct script_stack *stack);
 void script_free_code(struct script_code* code);
