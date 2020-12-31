@@ -1726,7 +1726,7 @@ static int mob_hpinfo(struct block_list *bl, va_list ap)
  */
 int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 {
-	int max_hp;
+	int max_hp, per = 0;
 	unsigned int tick = gettick();
 
 	nullpo_retr(0, md);	// srcはNULLで呼ばれる場合もあるので、他でチェック
@@ -1811,6 +1811,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			md->attacked_id = id;
 	}
 
+	per = md->hp * 20 / max_hp;
 	md->hp -= damage;
 
 	// ハイド状態を解除
@@ -1836,7 +1837,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		map_freeblock_lock();
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
-	} else {
+	} else if(per != md->hp * 20 / max_hp) {
 		map_foreachinarea(mob_hpinfo, md->bl.m,
 						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
 						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
@@ -2677,10 +2678,13 @@ int mob_class_change(struct mob_data *md,const int *value,int value_count)
 int mob_heal(struct mob_data *md,int heal)
 {
 	int max_hp = status_get_max_hp(&md->bl);
+	int per = 0;
 
 	nullpo_retr(0, md);
 
+	per = md->hp * 20 / max_hp;
 	md->hp += heal;
+
 	if( md->hp <= 0 ) {
 		md->hp = 1;		// 死亡時スキル対策
 		mob_damage(NULL,md,1,0);
@@ -2688,10 +2692,11 @@ int mob_heal(struct mob_data *md,int heal)
 	if( max_hp < md->hp )
 		md->hp = max_hp;
 
-	map_foreachinarea(mob_hpinfo, md->bl.m,
-					  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
-					  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
-					  (BL_PC | BL_HOM | BL_MERC | BL_ELEM),md);
+	if(per != md->hp * 20 / max_hp)
+		map_foreachinarea(mob_hpinfo, md->bl.m,
+						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
+						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
+						  (BL_PC | BL_HOM | BL_MERC | BL_ELEM),md);
 
 	return 0;
 }

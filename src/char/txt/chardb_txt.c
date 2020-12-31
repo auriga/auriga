@@ -49,7 +49,7 @@ static char char_txt[1024] = "save/auriga.txt";
 static int  char_id_count = 150000;
 
 /*==========================================
- * è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
+ * İ’èƒtƒ@ƒCƒ‹“Ç
  *------------------------------------------
  */
 int chardb_txt_config_read_sub(const char* w1,const char* w2)
@@ -73,7 +73,7 @@ int chardb_txt_config_read_sub(const char* w1,const char* w2)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰char_datã®Indexã‚’è¿”ã™
+ * ƒLƒƒƒ‰ID‚©‚çchar_dat‚ÌIndex‚ğ•Ô‚·
  *------------------------------------------
  */
 static int char_id2idx(int char_id)
@@ -96,7 +96,7 @@ static int char_id2idx(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã¸å¤‰æ›
+ * ƒLƒƒƒ‰ƒf[ƒ^‚ğ•¶š—ñ‚Ö•ÏŠ·
  *------------------------------------------
  */
 static int mmo_char_tostr(char *str, struct mmo_chardata *p)
@@ -200,7 +200,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã‚’æ–‡å­—åˆ—ã‹ã‚‰å¤‰æ›
+ * ƒLƒƒƒ‰ƒf[ƒ^‚ğ•¶š—ñ‚©‚ç•ÏŠ·
  *------------------------------------------
  */
 static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
@@ -213,7 +213,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
     nullpo_retr(0, p);
 
-    // Auriga-1391ä»¥é™ã®å½¢å¼
+    // Auriga-1391ˆÈ~‚ÌŒ`®
     set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
         "\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
         "\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
@@ -234,7 +234,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 	if(set != 60)
 	{
-		// Auriga-1380ä»¥é™ã®å½¢å¼
+		// Auriga-1380ˆÈ~‚ÌŒ`®
 		tmp_int[56] = 0;	// title_id
 		set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 			"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
@@ -256,7 +256,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 		if(set != 59)
 		{
-			// Auriga-1322ä»¥é™ã®å½¢å¼
+			// Auriga-1322ˆÈ~‚ÌŒ`®
 			tmp_int[54] = 0;	// allow_call
 			tmp_int[55] = 0;	// autofeed
 			set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
@@ -279,7 +279,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 			if(set != 57)
 			{
-				// Auriga-1254ä»¥é™ã®å½¢å¼
+				// Auriga-1254ˆÈ~‚ÌŒ`®
 				tmp_int[53] = 99;	// sex
 				set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 					"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
@@ -301,7 +301,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 				if(set != 56)
 				{
-					// Auriga-0951ä»¥é™ã®å½¢å¼
+					// Auriga-0951ˆÈ~‚ÌŒ`®
 					tmp_int[52] = 0;	// style
 					set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 						"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
@@ -323,7 +323,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 					if(set != 55)
 					{
-						// Auriga-0908ä»¥é™ã®å½¢å¼
+						// Auriga-0908ˆÈ~‚ÌŒ`®
 						tmp_int[30] = 0;	// elem_id
 						set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 							"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
@@ -345,7 +345,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 						if(set != 54)
 						{
-							// Auriga-0904ä»¥é™ã®å½¢å¼
+							// Auriga-0904ˆÈ~‚ÌŒ`®
 							tmp_int[51] = 0;	// font
 							set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 								"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
@@ -366,7 +366,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 							);
 							if(set != 53)
 							{
-								// Auriga-0902ä»¥é™ã®å½¢å¼
+								// Auriga-0902ˆÈ~‚ÌŒ`®
 								set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 									"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d"
 									"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
@@ -387,7 +387,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 								);
 								if(set != 58)
 								{
-									// Auriga-0888ä»¥é™ã®å½¢å¼
+									// Auriga-0888ˆÈ~‚ÌŒ`®
 									set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 										"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d"
 										"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
@@ -408,7 +408,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 									);
 									if(set != 56)
 									{
-										// Auriga-0837ä»¥é™ã®å½¢å¼
+										// Auriga-0837ˆÈ~‚ÌŒ`®
 										tmp_int[36] = 0;	// robe
 										tmp_int[49] = 0;	// refuse_partyinvite
 										tmp_int[50] = 0;	// show_equip
@@ -431,7 +431,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 										);
 										if(set != 53)
 										{
-											// Auriga-0309?0596ãŠã‚ˆã³0600ä»¥é™ã®å½¢å¼
+											// Auriga-0309?0596‚¨‚æ‚Ñ0600ˆÈ~‚ÌŒ`®
 											tmp_int[48] = 0;	// delete_date
 											set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 												"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
@@ -451,7 +451,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 											);
 
 											if(set != 49) {
-												// Auriga-0597?0599ã®å½¢å¼
+												// Auriga-0597?0599‚ÌŒ`®
 												set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 													"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d\t%*d,%*d,%*d,%*d,%*d,%*d\t%d,%d,%d\t%d,%d,%d,%d,%d"
 													"\t%255[^,],%d,%d\t%255[^,],%d,%d,%d,%d,%d,%d%n",
@@ -470,7 +470,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 												);
 
 												if(set != 49) {
-													// Auriga-089ä»¥é™ã®å½¢å¼
+													// Auriga-089ˆÈ~‚ÌŒ`®
 													tmp_int[29] = 0;	// merc_id
 													set = sscanf(str, "%d\t%d,%d\t%255[^\t]\t%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d"
 														"\t%u,%d,%d,%d\t%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d"
@@ -509,7 +509,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 														);
 
 														if(set != 47)
-															return 0;	// Athena1881ä»¥å‰ã®å¤ã„å½¢å¼ã¯ã‚µãƒãƒ¼ãƒˆã—ãªã„
+															return 0;	// Athena1881ˆÈ‘O‚ÌŒÃ‚¢Œ`®‚ÍƒTƒ|[ƒg‚µ‚È‚¢
 													}
 												}
 											}
@@ -539,8 +539,8 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	p->st.class_              = tmp_int[3];
 	p->st.base_level          = tmp_int[4];
 	p->st.job_level           = tmp_int[5];
-   ã€€ã€€ p->st.base_exp            = tmp_int64[0];
-    ã€€ã€€p->st.job_exp             = tmp_int64[1];
+	p->st.base_exp            = tmp_int64[0];
+	p->st.job_exp             = tmp_int64[1];
 	p->st.zeny                = tmp_int[8];
 	p->st.hp                  = tmp_int[9];
 	p->st.max_hp              = tmp_int[10];
@@ -592,11 +592,11 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	p->st.title_id            = tmp_int[56];
 
 	if(str[next] == '\n' || str[next] == '\r')
-		return 1;	// æ–°è¦ãƒ‡ãƒ¼ã‚¿
+		return 1;	// V‹Kƒf[ƒ^
 	next++;
 
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		// Auriga-0587ä»¥é™ã®å½¢å¼
+		// Auriga-0587ˆÈ~‚ÌŒ`®
 		set = sscanf(str + next, "%d,%255[^,],%d,%d%n", &tmp_int[0], tmp_str[0], &tmp_int[1], &tmp_int[2], &len);
 		if(set != 4) {
 			n = i;
@@ -618,7 +618,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		// Auriga-1254ä»¥é™ã®å½¢å¼
+		// Auriga-1254ˆÈ~‚ÌŒ`®
 		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
@@ -627,7 +627,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			&tmp_int[16],&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],
 			&tmp_int[21],&tmp_int[22],&len);
 		if(set != 23) {
-			// Auriga-0995ä»¥é™ã®å½¢å¼
+			// Auriga-0995ˆÈ~‚ÌŒ`®
 			tmp_int[11] = 0;	// opt[0].id
 			tmp_int[12] = 0;	// opt[0].val
 			tmp_int[13] = 0;	// opt[1].id
@@ -644,7 +644,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
 				&tmp_int[21],&tmp_int[22],&len);
 			if(set != 13) {
-				// Auriga-0300ä»¥é™ã®å½¢å¼
+				// Auriga-0300ˆÈ~‚ÌŒ`®
 				tmp_int[22] = 0;	// private
 				set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
@@ -693,7 +693,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	}
 	next++;
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		// Auriga-1254ä»¥é™ã®å½¢å¼
+		// Auriga-1254ˆÈ~‚ÌŒ`®
 		set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d%n",
 			&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
 			&tmp_int[4],&tmp_int[5],&tmp_int[6],
@@ -702,7 +702,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			&tmp_int[16],&tmp_int[17],&tmp_int[18],&tmp_int[19],&tmp_int[20],
 			&tmp_int[21],&tmp_int[22],&len);
 		if(set != 23) {
-			// Auriga-0995ä»¥é™ã®å½¢å¼
+			// Auriga-0995ˆÈ~‚ÌŒ`®
 			tmp_int[11] = 0;	// opt[0].id
 			tmp_int[12] = 0;	// opt[0].val
 			tmp_int[13] = 0;	// opt[1].id
@@ -719,7 +719,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 				&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],
 				&tmp_int[21],&tmp_int[22],&len);
 			if(set != 13) {
-				// Auriga-0300ä»¥é™ã®å½¢å¼
+				// Auriga-0300ˆÈ~‚ÌŒ`®
 				tmp_int[12] = 0;	// private
 				set = sscanf(str + next, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u%n",
 					&tmp_int[0],&tmp_int[1],&tmp_int[2],&tmp_int[3],
@@ -800,7 +800,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	next++;
 
 	for(i = 0; str[next] && str[next] != '\t'; i++) {
-		set = sscanf(str + next, "%d,%d%n", &tmp_int[0], &tmp_int[1], &len); // name ã¯å¾Œã§è§£æ±ºã™ã‚‹
+		set = sscanf(str + next, "%d,%d%n", &tmp_int[0], &tmp_int[1], &len); // name ‚ÍŒã‚Å‰ğŒˆ‚·‚é
 		if(set != 2)
 			return 0;
 		if(i < MAX_FRIEND) {
@@ -832,7 +832,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
 		set = sscanf(str + next, "%d,%d,%d,%d%n", &tmp_int[0], &tmp_int[1], &tmp_int[2], &tmp_int[3], &len);
 		if(set != 4) {
-			// Athenaå½¢å¼ã‚‚æœ‰ã‚Šå¾—ã‚‹ã®ã§æˆåŠŸæ‰±ã„ã«ã™ã‚‹
+			// AthenaŒ`®‚à—L‚è“¾‚é‚Ì‚Å¬Œ÷ˆµ‚¢‚É‚·‚é
 			return 1;
 		}
 		n = tmp_int[0];
@@ -849,7 +849,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	for(i = 0; str[next] && str[next] != '\t' && str[next] != '\n' && str[next] != '\r'; i++) {
 		set = sscanf(str + next, "%d,%d,%d%n", &tmp_int[0], &tmp_int[1], &tmp_int[2], &len);
 		if(set != 3) {
-			// Athenaå½¢å¼ã‚‚æœ‰ã‚Šå¾—ã‚‹ã®ã§æˆåŠŸæ‰±ã„ã«ã™ã‚‹
+			// AthenaŒ`®‚à—L‚è“¾‚é‚Ì‚Å¬Œ÷ˆµ‚¢‚É‚·‚é
 			return 1;
 		}
 		n = tmp_int[0];
@@ -867,20 +867,20 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 
 #ifdef TXT_JOURNAL
 // ==========================================
-// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ç”¨ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+// ƒLƒƒƒ‰ƒNƒ^[ƒf[ƒ^‚ÌƒWƒƒ[ƒiƒ‹‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh—pƒR[ƒ‹ƒoƒbƒNŠÖ”
 // ------------------------------------------
 static int char_journal_rollforward( int key, void* buf, int flag )
 {
 	int idx = char_id2idx( key );
 
-	// å¿µã®ãŸã‚ãƒã‚§ãƒƒã‚¯
+	// ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
 	if( flag == JOURNAL_FLAG_WRITE && key != ((struct mmo_chardata*)buf)->st.char_id )
 	{
 		printf("char_journal: key != char_id !\n");
 		return 0;
 	}
 
-	// ãƒ‡ãƒ¼ã‚¿ã®ç½®ãæ›ãˆ
+	// ƒf[ƒ^‚Ì’u‚«Š·‚¦
 	if( idx >= 0 )
 	{
 		if( flag == JOURNAL_FLAG_DELETE ) {
@@ -891,12 +891,12 @@ static int char_journal_rollforward( int key, void* buf, int flag )
 		return 1;
 	}
 
-	// è¿½åŠ 
+	// ’Ç‰Á
 	if( flag != JOURNAL_FLAG_DELETE )
 	{
 		if(char_num >= char_max)
 		{
-			// ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šãªã„ãªã‚‰æ‹¡å¼µ
+			// ƒƒ‚ƒŠ‚ª‘«‚è‚È‚¢‚È‚çŠg’£
 			char_max += 256;
 			char_dat = (struct mmo_chardata *)aRealloc(char_dat, sizeof(char_dat[0]) * char_max);
 			memset(char_dat + (char_max - 256), '\0', 256 * sizeof(char_dat[0]));
@@ -914,7 +914,7 @@ static int char_journal_rollforward( int key, void* buf, int flag )
 #endif
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
+ * ƒLƒƒƒ‰ƒf[ƒ^ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
  *------------------------------------------
  */
 static bool chardb_txt_read(void)
@@ -958,7 +958,7 @@ static bool chardb_txt_read(void)
 					struct mmo_chardata tmp;
 					int k = char_num;
 
-					// ä½•æ•…ã‹ã‚­ãƒ£ãƒ©IDã®æ˜‡é †ã«ä¸¦ã‚“ã§ãªã„å ´åˆã¯æŒ¿å…¥ã‚½ãƒ¼ãƒˆã™ã‚‹
+					// ‰½ŒÌ‚©ƒLƒƒƒ‰ID‚Ì¸‡‚É•À‚ñ‚Å‚È‚¢ê‡‚Í‘}“üƒ\[ƒg‚·‚é
 					while(--k > 0 && char_id < char_dat[k-1].st.char_id);
 
 					memcpy(&tmp, &char_dat[char_num], sizeof(char_dat[0]));
@@ -974,26 +974,26 @@ static bool chardb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( char_journal_enable )
 	{
-		// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰
+		// ƒWƒƒ[ƒiƒ‹ƒf[ƒ^‚Ìƒ[ƒ‹ƒtƒHƒ[ƒh
 		if( journal_load( &char_journal, sizeof(struct mmo_chardata), char_journal_file ) )
 		{
 			int c = journal_rollforward( &char_journal, char_journal_rollforward );
 
 			printf("char: journal: roll-forward (%d)\n", c );
 
-			// ãƒ­ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¯ãƒ¼ãƒ‰ã—ãŸã®ã§ã€txt ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ ( journal ã‚‚æ–°è¦ä½œæˆã•ã‚Œã‚‹)
+			// ƒ[ƒ‹ƒtƒHƒ[ƒh‚µ‚½‚Ì‚ÅAtxt ƒf[ƒ^‚ğ•Û‘¶‚·‚é ( journal ‚àV‹Kì¬‚³‚ê‚é)
 			chardb_txt_sync();
 		}
 		else
 		{
-			// ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+			// ƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 			journal_final( &char_journal );
 			journal_create( &char_journal, sizeof(struct mmo_chardata), char_journal_cache, char_journal_file );
 		}
 	}
 #endif
 
-	// å‹é”ãƒªã‚¹ãƒˆã®åå‰ã‚’è§£æ±º
+	// —F’BƒŠƒXƒg‚Ì–¼‘O‚ğ‰ğŒˆ
 	for(i = 0; i < char_num; i++)
 	{
 		for(j = 0; j < char_dat[i].st.friend_num; j++)
@@ -1014,7 +1014,7 @@ static bool chardb_txt_read(void)
 }
 
 /*==========================================
- * åŒæœŸ
+ * “¯Šú
  *------------------------------------------
  */
 void chardb_txt_sync(void)
@@ -1044,7 +1044,7 @@ void chardb_txt_sync(void)
 #ifdef TXT_JOURNAL
 	if( char_journal_enable )
 	{
-		// ã‚³ãƒŸãƒƒãƒˆã—ãŸã®ã§ã‚¸ãƒ£ãƒ¼ãƒŠãƒ«ã‚’æ–°è¦ä½œæˆã™ã‚‹
+		// ƒRƒ~ƒbƒg‚µ‚½‚Ì‚ÅƒWƒƒ[ƒiƒ‹‚ğV‹Kì¬‚·‚é
 		journal_final( &char_journal );
 		journal_create( &char_journal, sizeof(struct mmo_chardata), char_journal_cache, char_journal_file );
 	}
@@ -1052,7 +1052,7 @@ void chardb_txt_sync(void)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ä½œæˆ
+ * ƒLƒƒƒ‰ì¬
  *------------------------------------------
  */
 const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, short job, char sex, unsigned char slot, int *flag)
@@ -1079,8 +1079,8 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 	charlog_log("make new char %d %d %s", account_id, slot, name);
 
 	if(char_num >= char_max) {
-		// realloc() ã™ã‚‹ã¨char_datã®ä½ç½®ãŒå¤‰ã‚ã‚‹ã®ã§ã€session ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¦‹ã¦
-		// å¼·åˆ¶çš„ã«ç½®ãæ›ãˆã‚‹å‡¦ç†ã‚’ã—ãªã„ã¨ãƒ€ãƒ¡ã€‚
+		// realloc() ‚·‚é‚Æchar_dat‚ÌˆÊ’u‚ª•Ï‚í‚é‚Ì‚ÅAsession ‚Ìƒf[ƒ^‚ğŒ©‚Ä
+		// ‹­§“I‚É’u‚«Š·‚¦‚éˆ—‚ğ‚µ‚È‚¢‚Æƒ_ƒB
 		int i, j;
 		struct mmo_chardata *char_dat_old = char_dat;
 		struct mmo_chardata *char_dat_new = (struct mmo_chardata *)aMalloc(sizeof(struct mmo_chardata) * (char_max + 256));
@@ -1108,7 +1108,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 	str = agi = vit = int_ = dex = luk = 1;
 #endif
 
-	// ãƒ‰ãƒ©ãƒ æ—ç”¨åˆæœŸè¨­å®š
+	// ƒhƒ‰ƒ€‘°—p‰Šúİ’è
 	if(job == PC_CLASS_SUM) {
 		start_weapon       = doram_start_weapon;
 		start_armor        = doram_start_armor;
@@ -1185,7 +1185,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 }
 
 /*==========================================
- * ã‚¢ã‚«ã‚¦ãƒ³ãƒˆIDã®å…¨ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒAƒJƒEƒ“ƒgID‚Ì‘SƒLƒƒƒ‰ƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 int chardb_txt_load_all(struct char_session_data* sd, int account_id)
@@ -1210,7 +1210,7 @@ int chardb_txt_load_all(struct char_session_data* sd, int account_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©IDã‹ã‚‰ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ­ãƒ¼ãƒ‰
+ * ƒLƒƒƒ‰ID‚©‚çƒLƒƒƒ‰ƒf[ƒ^‚ğƒ[ƒh
  *------------------------------------------
  */
 const struct mmo_chardata* chardb_txt_load(int char_id)
@@ -1221,7 +1221,7 @@ const struct mmo_chardata* chardb_txt_load(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©å¤‰æ•°ã®ã‚»ãƒ¼ãƒ–
+ * ƒLƒƒƒ‰•Ï”‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool chardb_txt_save_reg(int account_id, int char_id, int num, struct global_reg *reg)
@@ -1246,7 +1246,7 @@ bool chardb_txt_save_reg(int account_id, int char_id, int num, struct global_reg
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã®ã‚»ãƒ¼ãƒ–
+ * ƒLƒƒƒ‰ƒf[ƒ^‚ÌƒZ[ƒu
  *------------------------------------------
  */
 bool chardb_txt_save(struct mmo_charstatus *st)
@@ -1269,7 +1269,7 @@ bool chardb_txt_save(struct mmo_charstatus *st)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©å‰Šé™¤
+ * ƒLƒƒƒ‰íœ
  *------------------------------------------
  */
 bool chardb_txt_delete_sub(int char_id)
@@ -1278,7 +1278,7 @@ bool chardb_txt_delete_sub(int char_id)
 
 	if(idx >= 0) {
 		memset(&char_dat[idx], 0, sizeof(char_dat[0]));
-		char_dat[idx].st.char_id = char_id;	// ã‚­ãƒ£ãƒ©IDã¯ç¶­æŒ
+		char_dat[idx].st.char_id = char_id;	// ƒLƒƒƒ‰ID‚ÍˆÛ
 #ifdef TXT_JOURNAL
 		if( char_journal_enable )
 			journal_write( &char_journal, char_id, NULL );
@@ -1288,7 +1288,7 @@ bool chardb_txt_delete_sub(int char_id)
 }
 
 /*==========================================
- * ã‚­ãƒ£ãƒ©åã‹ã‚‰ã‚­ãƒ£ãƒ©ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+ * ƒLƒƒƒ‰–¼‚©‚çƒLƒƒƒ‰ƒf[ƒ^‚ğæ“¾
  *------------------------------------------
  */
 const struct mmo_chardata* chardb_txt_nick2chardata(const char *char_name)
@@ -1305,7 +1305,7 @@ const struct mmo_chardata* chardb_txt_nick2chardata(const char *char_name)
 }
 
 /*==========================================
- * ã‚ªãƒ³ãƒ©ã‚¤ãƒ³
+ * ƒIƒ“ƒ‰ƒCƒ“
  *------------------------------------------
  */
 bool chardb_txt_set_online(int char_id, bool is_online)
@@ -1315,7 +1315,7 @@ bool chardb_txt_set_online(int char_id, bool is_online)
 }
 
 /*==========================================
- * ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã®æ§‹ç¯‰
+ * ƒ‰ƒ“ƒLƒ“ƒO‚Ì\’z
  *------------------------------------------
  */
 bool chardb_txt_build_ranking(void)
@@ -1359,12 +1359,12 @@ bool chardb_txt_build_ranking(void)
 }
 
 /*==========================================
- * çµ‚äº†
+ * I—¹
  *------------------------------------------
  */
 void chardb_txt_final(void)
 {
-	//chardb_txt_sync(); // do_final ã§å‘¼ã‚“ã§ã‚‹ã¯ãš
+	//chardb_txt_sync(); // do_final ‚ÅŒÄ‚ñ‚Å‚é‚Í‚¸
 	aFree(char_dat);
 
 #ifdef TXT_JOURNAL
@@ -1376,7 +1376,7 @@ void chardb_txt_final(void)
 }
 
 /*==========================================
- * åˆæœŸåŒ–
+ * ‰Šú‰»
  *------------------------------------------
  */
 bool chardb_txt_init(void)

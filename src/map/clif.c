@@ -21004,7 +21004,27 @@ void clif_privateitem(struct map_session_data *sd, short idx, char flag)
 */
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 {
-#if PACKETVER >= 20120404
+#if PACKETVER >= 20141126
+	int fd;
+
+	nullpo_retv(sd);
+	nullpo_retv(md);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0xa36;
+	WFIFOL(fd,2) = md->bl.id;
+	// 特定状態異常時・エンペリウム・MVPモンスターには表示しない
+	if(mob_check_hpinfo(sd,md))
+	{
+		WFIFOB(fd, 6) = 0xff;
+	} else {
+		int hp = status_get_hp(&md->bl);
+		int max_hp = status_get_max_hp(&md->bl);
+
+		WFIFOB(fd, 6) = (unsigned char)(hp * 20 / max_hp);
+	}
+	WFIFOSET(fd,packet_db[0xa36].len);
+#elif PACKETVER >= 20120404
 	int fd;
 
 	nullpo_retv(sd);
