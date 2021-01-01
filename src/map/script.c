@@ -6159,7 +6159,7 @@ int buildin_delitem(struct script_state *st)
 			if(!skip_egg &&
 			   sd->inventory_data[i]->flag.pet_egg &&
 			   sd->status.inventory[i].amount > 0 &&
-			   sd->status.inventory[i].card[0] == (short)0xff00 &&
+			   sd->status.inventory[i].card[0] == (int)0xff00 &&
 			   pet_search_data(nameid, PET_EGG) != NULL)
 			{
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
@@ -6213,7 +6213,7 @@ int buildin_delcartitem(struct script_state *st)
 			if(!skip_egg &&
 			   itemdb_search(nameid)->flag.pet_egg &&
 			   sd->status.cart[i].amount > 0 &&
-			   sd->status.cart[i].card[0] == (short)0xff00 &&
+			   sd->status.cart[i].card[0] == (int)0xff00 &&
 			   pet_search_data(nameid, PET_EGG) != NULL)
 			{
 				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
@@ -6256,7 +6256,7 @@ int buildin_delitem2(struct script_state *st)
 	   sd->status.inventory[idx].nameid > 0 &&
 	   sd->inventory_data[idx]->flag.pet_egg &&
 	   sd->status.inventory[idx].amount > 0 &&
-	   sd->status.inventory[idx].card[0] == (short)0xff00 &&
+	   sd->status.inventory[idx].card[0] == (int)0xff00 &&
 	   pet_search_data(sd->status.inventory[idx].nameid, PET_EGG) != NULL)
 	{
 		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
@@ -6294,7 +6294,7 @@ int buildin_delcartitem2(struct script_state *st)
 	   sd->status.cart[idx].nameid > 0 &&
 	   itemdb_search(sd->status.cart[idx].nameid)->flag.pet_egg &&
 	   sd->status.cart[idx].amount > 0 &&
-	   sd->status.cart[idx].card[0] == (short)0xff00 &&
+	   sd->status.cart[idx].card[0] == (int)0xff00 &&
 	   pet_search_data(sd->status.cart[idx].nameid, PET_EGG) != NULL)
 	{
 		intif_delete_petdata(*((int *)(&sd->status.cart[idx].card[1])));
@@ -9589,7 +9589,7 @@ int buildin_getequipcardcnt(struct script_state *st)
 			return 0;
 		}
 		for(n=0; n<sd->inventory_data[i]->slot; n++) {
-			short card_id = sd->status.inventory[i].card[n];
+			int card_id = sd->status.inventory[i].card[n];
 			if(card_id > 0 && itemdb_type(card_id) == ITEMTYPE_CARD)
 				c++;
 		}
@@ -9609,7 +9609,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 {
 	struct item item_tmp;
 	int j,n,flag,removed_flag=0;
-	short card_set[4] = { 0,0,0,0 };
+	int card_set[4] = { 0,0,0,0 };
 
 	nullpo_retr(0, sd);
 
@@ -9622,7 +9622,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 		return 0;
 
 	for(n=0,j=0; n < 4; n++) {
-		short card_id = sd->status.inventory[i].card[n];
+		int card_id = sd->status.inventory[i].card[n];
 		if(card_id <= 0 || itemdb_type(card_id) != ITEMTYPE_CARD)
 			continue;
 		if((pos == 0 || pos-1 == n) && itemdb_cardtype(card_id) != 2) {	// 指定ポジションと一致かつhiddenではない場合
@@ -9961,7 +9961,7 @@ int buildin_clearitem(struct script_state *st)
 		return 0;
 	for (i=0; i<MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount) {
-			if (sd->status.inventory[i].card[0] == (short)0xff00)
+			if (sd->status.inventory[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);
 		}
@@ -9982,7 +9982,7 @@ int buildin_clearcartitem(struct script_state *st)
 		return 0;
 	for (i=0; i<MAX_CART; i++) {
 		if (sd->status.cart[i].amount) {
-			if (sd->status.cart[i].card[0] == (short)0xff00)
+			if (sd->status.cart[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			pc_cart_delitem(sd, i, sd->status.cart[i].amount, !pc_iscarton(sd));
 		}
