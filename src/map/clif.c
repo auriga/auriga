@@ -9723,9 +9723,9 @@ void clif_arrow_create_list(struct map_session_data *sd)
 		   !sd->status.inventory[idx].equip)
 		{
 			if((view = itemdb_viewid(skill_arrow_db[i].nameid)) > 0)
-				WFIFOW(fd,c*4+4) = view;
+				WFIFOL(fd,c*4+4) = view;
 			else
-				WFIFOW(fd,c*4+4) = skill_arrow_db[i].nameid;
+				WFIFOL(fd,c*4+4) = skill_arrow_db[i].nameid;
 			c++;
 		}
 	}
@@ -9782,9 +9782,9 @@ void clif_poison_list(struct map_session_data *sd, short lv)
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
 			if((view = itemdb_viewid(poison_list[i])) > 0)
-				WFIFOW(fd,c*4+4) = view;
+				WFIFOL(fd,c*4+4) = view;
 			else
-				WFIFOW(fd,c*4+4) = poison_list[i];
+				WFIFOL(fd,c*4+4) = poison_list[i];
 			c++;
 		}
 	}
@@ -9846,9 +9846,9 @@ void clif_reading_sb_list(struct map_session_data *sd)
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
 			if((view = itemdb_viewid(sb_list[i])) > 0)
-				WFIFOW(fd,c*4+4) = view;
+				WFIFOL(fd,c*4+4) = view;
 			else
-				WFIFOW(fd,c*4+4) = sb_list[i];
+				WFIFOL(fd,c*4+4) = sb_list[i];
 			c++;
 		}
 	}
@@ -9908,9 +9908,9 @@ void clif_magicdecoy_list(struct map_session_data *sd, short lv, short x, short 
 			!sd->status.inventory[idx].equip && sd->status.inventory[idx].identify)
 		{
 			if((view = itemdb_viewid(ele_list[i])) > 0)
-				WFIFOW(fd,c*4+4) = view;
+				WFIFOL(fd,c*4+4) = view;
 			else
-				WFIFOW(fd,c*4+4) = ele_list[i];
+				WFIFOL(fd,c*4+4) = ele_list[i];
 			c++;
 		}
 	}
@@ -19483,7 +19483,7 @@ void clif_update_questcount2(struct map_session_data *sd, int quest_id)
  */
 void clif_show_partyshareitem(struct map_session_data *sd, struct item *item_data)
 {
-	unsigned char buf[24];
+	unsigned char buf[33];
 	struct item_data *id;
 
 	nullpo_retv(sd);
