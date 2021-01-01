@@ -140,7 +140,7 @@ void clif_baby_req_fail(struct map_session_data *sd, int type);
 void clif_sitting(struct block_list *bl, int sit);
 void clif_convertitem(struct map_session_data *sd, int skillid, int skilllv);
 void clif_skill_message(struct map_session_data *sd, int skillid, int type);
-void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest);
+void clif_dispexp(struct map_session_data *sd, atn_bignumber exp, short type, short quest);
 void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const char *name,int type,int interval);
 void clif_bodyrelocation(struct block_list *bl, int x, int y);
 void clif_showscript(struct block_list *bl, char *mes);
@@ -448,9 +448,9 @@ void clif_showmylist_buyingstore(struct map_session_data *sd);
 void clif_show_buyingstore(struct block_list* bl, const char *shop_title, int fd);
 void clif_close_buyingstore(struct block_list *bl, int fd);
 void clif_itemlist_buyingstore(struct map_session_data *sd, struct map_session_data *ssd);
-void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount, int value, int account_id, int char_id);
+void clif_update_buyingstore(struct map_session_data *sd, int nameid, short amount, int value, int account_id, int char_id);
 void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amount, int value);
-void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid);
+void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, int nameid);
 void clif_failed_trybuyingstore(struct map_session_data *sd, short result);
 
 // memorial

@@ -1138,7 +1138,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 				mob_unlocktarget(md,tick);
 				return search_flag;
 			} else {
-				if(md->lootitem[0].card[0] == (short)0xff00)
+				if(md->lootitem[0].card[0] == (int)0xff00)
 					intif_delete_petdata(*((int *)(&md->lootitem[0].card[1])));
 				memmove(&md->lootitem[0],&md->lootitem[1],sizeof(md->lootitem[0])*(LOOTITEM_SIZE-1));
 				memcpy(&md->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(md->lootitem[0]));
@@ -1588,7 +1588,7 @@ static int mob_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 	nullpo_retr(0, ditem = (struct delay_item_drop2 *)data);
 
 	// ペットの卵ならドロップディレイキューからpopする
-	if(ditem->item_data.card[0] == (short)0xff00) {
+	if(ditem->item_data.card[0] == (int)0xff00) {
 		struct delay_item_drop2 *p = map_pop_delayitem_que();
 		if(p != ditem)
 			printf("mob_delay_item_drop2: que pop error!!\n");
@@ -2254,7 +2254,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
 				ditem->next      = NULL;
 
-				if(ditem->item_data.card[0] == (short)0xff00) {
+				if(ditem->item_data.card[0] == (int)0xff00) {
 					// ペットの卵はドロップディレイキューに保存する
 					map_push_delayitem_que(ditem);
 					add_timer(tick+540,mob_delay_item_drop2,0,ditem);

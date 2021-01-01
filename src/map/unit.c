@@ -2436,7 +2436,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(md->lootitem) {
 			int i;
 			for(i=0; i<md->lootitem_count; i++) {
-				if(md->lootitem[i].card[0] == (short)0xff00)
+				if(md->lootitem[i].card[0] == (int)0xff00)
 					intif_delete_petdata(*((int *)(&md->lootitem[i].card[1])));
 			}
 			md->lootitem_count = 0;

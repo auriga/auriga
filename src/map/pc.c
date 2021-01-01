@@ -1180,7 +1180,7 @@ static int pc_isequip(struct map_session_data *sd,int n)
 {
 	struct item_data *item, *card_data;
 	int i;
-	short card_id;
+	int card_id;
 
 	nullpo_retr(0, sd);
 
@@ -2372,7 +2372,7 @@ static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int 
 	}
 
 	// ŽžŠÔØ‚ê‚É‚æ‚èíœ
-	if(sd->status.inventory[idx].card[0] == (short)0xff00) {
+	if(sd->status.inventory[idx].card[0] == (int)0xff00) {
 		intif_delete_petdata(*((int *)(&sd->status.inventory[idx].card[1])));
 	}
 	if(first) {
@@ -4972,12 +4972,18 @@ int pc_gainexp(struct map_session_data *sd, struct mob_data *md, atn_bignumber b
 		clif_disp_onlyself(sd->fd, output);
 #else
 		if(base_exp) {
-			int bexp = (base_exp > 0x7fffffff)? 0x7fffffff: (int)base_exp;
-			clif_dispexp(sd,bexp,1,quest);
+#if PACKETVER < 20170830
+			clif_dispexp(sd,(base_exp > 0x7fffffff)? 0x7fffffff: base_exp,1,quest);
+#else
+			clif_dispexp(sd,base_exp,1,quest);
+#endif
 		}
 		if(job_exp) {
-			int jexp = (job_exp  > 0x7fffffff)? 0x7fffffff: (int)job_exp;
-			clif_dispexp(sd,jexp,2,quest);
+#if PACKETVER < 20170830
+			clif_dispexp(sd,(job_exp > 0x7fffffff)? 0x7fffffff: job_exp,2,quest);
+#else
+			clif_dispexp(sd,job_exp,2,quest);
+#endif
 		}
 #endif
 	}
@@ -8185,7 +8191,7 @@ int pc_checkitem(struct map_session_data *sd)
 				continue;
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] inventory.\n",itemid,sd->bl.id,sd->status.name);
-			if( sd->status.inventory[i].card[0] == (short)0xff00 )
+			if( sd->status.inventory[i].card[0] == (int)0xff00 )
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd,i,sd->status.inventory[i].amount,3,0);
 		}
@@ -8197,7 +8203,7 @@ int pc_checkitem(struct map_session_data *sd)
 				continue;
 			if( battle_config.error_log )
 				printf("illegal item id %d in %d[%s] cart.\n",itemid,sd->bl.id,sd->status.name);
-			if( sd->status.cart[i].card[0] == (short)0xff00 )
+			if( sd->status.cart[i].card[0] == (int)0xff00 )
 				intif_delete_petdata(*((int *)(&sd->status.cart[i].card[1])));
 			pc_cart_delitem(sd,i,sd->status.cart[i].amount,1);
 		}

@@ -211,7 +211,7 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 							if (pl_sd->status.inventory[j].amount < -quantity)
 								quantity = -pl_sd->status.inventory[j].amount;
 							if (quantity < 0) {
-								if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
+								if (pl_sd->status.inventory[i].card[0] == (int)0xff00)
 									intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 								pc_delitem(pl_sd, j, -quantity, 0, 0);
 								msg_output(pl_sd->fd, msg_txt(151), -quantity, item_data->jname); // Server (special action): you lost %ld %s.

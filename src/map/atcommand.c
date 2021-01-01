@@ -1506,7 +1506,7 @@ int atcommand_itemreset(const int fd, struct map_session_data* sd, AtCommandType
 
 	for (i = 0; i < MAX_INVENTORY; i++) {
 		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0) {
-			if (sd->status.inventory[i].card[0] == (short)0xff00)
+			if (sd->status.inventory[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);
 		}
@@ -1536,7 +1536,7 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 		int i;
 		for (i = 0; i < MAX_INVENTORY; i++) {
 			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
-				if (pl_sd->status.inventory[i].card[0] == (short)0xff00)
+				if (pl_sd->status.inventory[i].card[0] == (int)0xff00)
 	 				intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0, 0);
 			}
@@ -4006,7 +4006,7 @@ static int atcommand_cleanmap_sub(struct block_list *bl,va_list ap)
 	nullpo_retr(0, fitem = (struct flooritem_data *)bl);
 
 	delete_timer(fitem->cleartimer,map_clearflooritem_timer);
-	if (fitem->item_data.card[0] == (short)0xff00)
+	if (fitem->item_data.card[0] == (int)0xff00)
 		intif_delete_petdata(*((int *)(&fitem->item_data.card[1])));
 	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);

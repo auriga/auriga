@@ -1017,7 +1017,7 @@ int map_clearflooritem_timer(int tid,unsigned int tick,int id,void *data)
 	}
 	if(flag == 1)
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
-	else if(fitem->item_data.card[0] == (short)0xff00)
+	else if(fitem->item_data.card[0] == (int)0xff00)
 		intif_delete_petdata(*((int *)(&fitem->item_data.card[1])));
 	clif_clearflooritem(fitem,-1);
 	map_delobject(fitem->bl.id);
@@ -1120,7 +1120,7 @@ int map_addflooritem(struct item *item_data,int amount,int m,int x,int y,int fir
 		aFree(fitem);
 	}
 
-	if(item_data->card[0] == (short)0xff00)
+	if(item_data->card[0] == (int)0xff00)
 		intif_delete_petdata(*((int *)(&item_data->card[1])));
 
 	return 0;

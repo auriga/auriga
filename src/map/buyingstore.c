@@ -174,9 +174,15 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	// アイテムリストのチェック
 	for( i = 0; i < count; i++ )
 	{
-		short nameid = *(short *)(data + 8*i + 0);
+#if PACKETVER < 20180704
+		int nameid = *(short *)(data + 8*i + 0);
 		short amount = *(short *)(data + 8*i + 2);
 		int value    = *(int *)(data + 8*i + 4);
+#else
+		int nameid = *(int *)(data + 10*i + 0);
+		short amount = *(short *)(data + 10*i + 4);
+		int value    = *(int *)(data + 10*i + 6);
+#endif
 		int idx;
 
 		// 自分が所持しているアイテムでないと買取出来ない
@@ -437,9 +443,15 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	// アイテムデータ確認処理
 	for( i = 0; i < count; i++ )
 	{
+#if PACKETVER < 20180704
 		short idx    = *(short *)(data + 6*i + 0) - 2;
-		short nameid = *(short *)(data + 6*i + 2);
+		int nameid = *(short *)(data + 6*i + 2);
 		short amount = *(short *)(data + 6*i + 4);
+#else
+		short idx    = *(short *)(data + 8*i + 0) - 2;
+		int nameid = *(int *)(data + 8*i + 2);
+		short amount = *(short *)(data + 8*i + 6);
+#endif
 
 		// indexの重複チェック
 		if( i )
@@ -447,7 +459,11 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 			int j;
 			for( j = 0; j < i; j++ )
 			{
+#if PACKETVER < 20180704
 				short idx_tmp = *(short *)(data + 6*j + 0) - 2;
+#else
+				short idx_tmp = *(short *)(data + 8*j + 0) - 2;
+#endif
 				if( idx == idx_tmp )
 				{
 					clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
@@ -551,9 +567,15 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	// 買い取り処理
 	for( i = 0; i < count; i++ )
 	{
+#if PACKETVER < 20180704
 		short idx    = *(short *)(data + 6*i + 0) - 2;
-		short nameid = *(short *)(data + 6*i + 2);
+		int nameid = *(short *)(data + 6*i + 2);
 		short amount = *(short *)(data + 6*i + 4);
+#else
+		short idx    = *(short *)(data + 8*i + 0) - 2;
+		int nameid = *(int *)(data + 8*i + 2);
+		short amount = *(short *)(data + 8*i + 6);
+#endif
 
 		// 買い取り商品のZeny計算
 		for( listidx = 0; listidx < ssd->buyingstore.count; listidx++ )

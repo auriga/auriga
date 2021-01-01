@@ -20374,7 +20374,7 @@ void clif_skill_message(struct map_session_data *sd, int skillid, int type)
  * 経験値取得表示
  *------------------------------------------
  */
-void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
+void clif_dispexp(struct map_session_data *sd, atn_bignumber exp, short type, short quest)
 {
 	int fd;
 
@@ -20384,7 +20384,7 @@ void clif_dispexp(struct map_session_data *sd, int exp, short type, short quest)
 #if PACKETVER < 20170830
 	WFIFOW(fd,0) = 0x7f6;
 	WFIFOL(fd,2) = sd->bl.id;
-	WFIFOL(fd,6) = exp;
+	WFIFOL(fd,6) = (int)exp;
 	WFIFOW(fd,10) = type;
 	WFIFOW(fd,12) = quest;
 	WFIFOSET(fd,packet_db[0x7f6].len);
@@ -20819,7 +20819,7 @@ void clif_failed_trybuyingstore(struct map_session_data *sd, short result)
  * 買取露店アイテム更新
  *------------------------------------------
  */
-void clif_update_buyingstore(struct map_session_data *sd, short nameid, short amount, int value, int account_id, int char_id)
+void clif_update_buyingstore(struct map_session_data *sd, int nameid, short amount, int value, int account_id, int char_id)
 {
 	int fd;
 
@@ -20828,13 +20828,13 @@ void clif_update_buyingstore(struct map_session_data *sd, short nameid, short am
 	fd = sd->fd;
 #if PACKETVER < 20140129
 	WFIFOW(fd,0) = 0x81b;
-	WFIFOW(fd,2) = nameid;
+	WFIFOW(fd,2) = (short)nameid;
 	WFIFOW(fd,4) = amount;
 	WFIFOL(fd,6) = sd->buyingstore.limit_zeny;
 	WFIFOSET(fd,packet_db[0x81b].len);
 #elif PACKETVER < 20180704
 	WFIFOW(fd, 0) = 0x9e6;
-	WFIFOW(fd, 2) = nameid;
+	WFIFOW(fd, 2) = (short)nameid;
 	WFIFOW(fd, 4) = amount;
 	WFIFOL(fd, 6) = value;
 	WFIFOL(fd,10) = sd->buyingstore.limit_zeny;
@@ -20879,7 +20879,7 @@ void clif_delete_buyingstore(struct map_session_data *sd, short idx, short amoun
  * 買取露店買い取り失敗
  *------------------------------------------
  */
-void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, short nameid)
+void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, int nameid)
 {
 	int fd;
 
@@ -20889,7 +20889,7 @@ void clif_failed_tradebuyingstore(struct map_session_data *sd, short result, sho
 #if PACKETVER < 20180704
 	WFIFOW(fd,0) = 0x824;
 	WFIFOW(fd,2) = result;
-	WFIFOW(fd,4) = nameid;
+	WFIFOW(fd,4) = (short)nameid;
 	WFIFOSET(fd,packet_db[0x824].len);
 #else
 	WFIFOW(fd,0) = 0x824;
@@ -22699,6 +22699,11 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cmd)
 {
 	int fail, n;
+#if PACKETVER < 20180704
+	short size = 4;
+#else
+	short size = 6;
+#endif
 
 	nullpo_retv(sd);
 
@@ -22712,11 +22717,11 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
-	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /4;
+	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /size;
 	if (n <= 0) // max is checked in npc_buylist function
 		return;
 
-	fail = npc_buylist(sd, n, (unsigned short*)RFIFOP(fd,GETPACKETPOS(cmd,1))); // item_list
+	fail = npc_buylist(sd, n, (unsigned char*)RFIFOP(fd,GETPACKETPOS(cmd,1))); // item_list
 
 	sd->npc_shopid = 0;
 
@@ -22839,8 +22844,13 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 		int len    = RFIFOW(fd,GETPACKETPOS(cmd,0)) - 10;
 		//int points = RFIFOL(fd,GETPACKETPOS(cmd,1));
 		int count  = RFIFOW(fd,GETPACKETPOS(cmd,2));
-		const unsigned short *item_list = (const unsigned short *)RFIFOP(fd,GETPACKETPOS(cmd,3));
-		fail = npc_pointshop_buylist(sd,( len <= 0 ) ? 0 : len/4,count,item_list);
+		const unsigned char *item_list = RFIFOP(fd,GETPACKETPOS(cmd,3));
+#if PACKETVER < 20180704
+		short size = 4;
+#else
+		short size = 6;
+#endif
+		fail = npc_pointshop_buylist(sd,( len <= 0 ) ? 0 : len/size,count,item_list);
 
 		WFIFOW(fd,0)  = 0x289;
 		WFIFOL(fd,2)  = sd->shop_point;
@@ -26231,11 +26241,16 @@ static void clif_parse_OpenBuyingStoreReq(int fd,struct map_session_data *sd, in
 	bool result = ( RFIFOB(fd,GETPACKETPOS(cmd,2)) ) ? true : false;
 	char *store_name = RFIFOP(fd,GETPACKETPOS(cmd,3));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,4));
+#if PACKETVER < 20180704
+	short size = 8;
+#else
+	short size = 10;
+#endif
 
 	// 末尾にnull文字をセット
 	store_name[79] = '\0';
 
-	buyingstore_openstore(sd, limit_zeny, result, store_name, data, ( len <= 0 ) ? 0 : len/8);
+	buyingstore_openstore(sd, limit_zeny, result, store_name, data, ( len <= 0 ) ? 0 : len/size);
 
 	return;
 }
@@ -26274,8 +26289,13 @@ static void clif_parse_SellBuyingStoreReq(int fd,struct map_session_data *sd, in
 	int account_id = RFIFOL(fd,GETPACKETPOS(cmd,1));
 	unsigned int buyer_id = RFIFOL(fd,GETPACKETPOS(cmd,2));
 	const unsigned char *data = RFIFOP(fd,GETPACKETPOS(cmd,3));
+#if PACKETVER < 20180704
+	short size = 6;
+#else
+	short size = 8;
+#endif
 
-	buyingstore_sell(sd, account_id, buyer_id, data, ( len <= 0 ) ? 0 : len/6);
+	buyingstore_sell(sd, account_id, buyer_id, data, ( len <= 0 ) ? 0 : len/size);
 
 	return;
 }

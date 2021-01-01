@@ -311,7 +311,7 @@ bool storagedb_txt_delete(int account_id)
 		int i;
 		for(i = 0; i < s->storage_amount; i++) {
 			// ペット削除
-			if(s->store_item[i].card[0] == (short)0xff00)
+			if(s->store_item[i].card[0] == (int)0xff00)
 				petdb_delete(*((int *)(&s->store_item[i].card[1])));
 		}
 		numdb_erase(storage_db, account_id);
@@ -551,7 +551,7 @@ bool gstoragedb_txt_delete(int guild_id)
 		int i;
 		for(i = 0; i < gs->storage_amount; i++) {
 			// ペット削除
-			if(gs->store_item[i].card[0] == (short)0xff00)
+			if(gs->store_item[i].card[0] == (int)0xff00)
 				petdb_delete(*((int *)(&gs->store_item[i].card[1])));
 		}
 		numdb_erase(gstorage_db, guild_id);

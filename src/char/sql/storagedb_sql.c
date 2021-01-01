@@ -114,7 +114,7 @@ bool storagedb_sql_delete(int account_id)
 			int i;
 			for(i = 0; i < s->storage_amount; i++) {
 				// ペット削除
-				if(s->store_item[i].card[0] == (short)0xff00) {
+				if(s->store_item[i].card[0] == (int)0xff00) {
 					if( petdb_delete(*((int *)(&s->store_item[i].card[1]))) == false )
 						break;
 				}
@@ -235,7 +235,7 @@ bool gstoragedb_sql_delete(int guild_id)
 			int i;
 			for(i = 0; i < s->storage_amount; i++) {
 				// ペット削除
-				if( s->store_item[i].card[0] == (short)0xff00) {
+				if( s->store_item[i].card[0] == (int)0xff00) {
 					if( petdb_delete(*((int *)(&s->store_item[i].card[1]))) == false )
 						break;
 				}

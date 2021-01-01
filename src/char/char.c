@@ -1821,11 +1821,11 @@ static int char_delete(const struct mmo_chardata *cd)
 	if(cd->st.pet_id)
 		petdb_delete(cd->st.pet_id);
 	for(j=0;j<MAX_INVENTORY;j++) {
-		if(cd->st.inventory[j].card[0] == (short)0xff00)
+		if(cd->st.inventory[j].card[0] == (int)0xff00)
 			petdb_delete(*((int *)(&cd->st.inventory[j].card[1])));
 	}
 	for(j=0;j<MAX_CART;j++) {
-		if(cd->st.cart[j].card[0] == (short)0xff00)
+		if(cd->st.cart[j].card[0] == (int)0xff00)
 			petdb_delete(*((int *)(&cd->st.cart[j].card[1])));
 	}
 	// ƒzƒ€ƒ“ƒNƒ‹ƒXíœ

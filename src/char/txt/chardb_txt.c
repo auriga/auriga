@@ -522,6 +522,8 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 				}
 			}
 		}
+		tmp_int64[0] = (atn_bignumber)tmp_int[6];	// base_exp
+		tmp_int64[1] = (atn_bignumber)tmp_int[7];	// job_exp
 	}
 
 	strncpy(p->st.name, tmp_str[0], 24);

@@ -497,7 +497,7 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 	if(egg_index < 0 || egg_index >= MAX_INVENTORY)
 		return 0;
 
-	if(sd->status.inventory[egg_index].card[0] == (short)0xff00) {
+	if(sd->status.inventory[egg_index].card[0] == (int)0xff00) {
 		intif_request_petdata(sd->status.account_id,sd->status.char_id,*((int *)&sd->status.inventory[egg_index].card[1]));
 	} else {
 		if(battle_config.error_log)
@@ -593,7 +593,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 		memset(&tmp_item,0,sizeof(tmp_item));
 		tmp_item.nameid   = db->EggID;
 		tmp_item.identify = 1;
-		tmp_item.card[0]  = (short)0xff00;
+		tmp_item.card[0]  = (int)0xff00;
 		*((int *)(&tmp_item.card[1])) = pet_id;
 		tmp_item.card[3]  = sd->pet.rename_flag;
 
@@ -664,7 +664,7 @@ int pet_return_egg(struct map_session_data *sd)
 	memset(&tmp_item,0,sizeof(tmp_item));
 	tmp_item.nameid   = sd->petDB->EggID;
 	tmp_item.identify = 1;
-	tmp_item.card[0]  = (short)0xff00;
+	tmp_item.card[0]  = (int)0xff00;
 	*((int *)(&tmp_item.card[1])) = sd->pet.pet_id;
 	tmp_item.card[3]  = sd->pet.rename_flag;
 
@@ -1109,7 +1109,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					return 0;
 				}
 				else {
-					if(pd->lootitem[0].card[0] == (short)0xff00)
+					if(pd->lootitem[0].card[0] == (int)0xff00)
 						intif_delete_petdata(*((int *)(&pd->lootitem[0].card[1])));
 					pd->lootitem_weight -= itemdb_weight(pd->lootitem[LOOTITEM_SIZE-1].nameid) * pd->lootitem[LOOTITEM_SIZE-1].amount;
 					pd->lootitem_weight += itemdb_weight(fitem->item_data.nameid) * fitem->item_data.amount;
@@ -1198,7 +1198,7 @@ static int pet_delay_item_drop2(int tid,unsigned int tick,int id,void *data)
 	ditem = (struct delay_item_drop2 *)data;
 
 	// ペットの卵ならドロップディレイキューからpopする
-	if(ditem->item_data.card[0] == (short)0xff00) {
+	if(ditem->item_data.card[0] == (int)0xff00) {
 		struct delay_item_drop2 *p = map_pop_delayitem_que();
 		if(p != ditem)
 			printf("pet_delay_item_drop2: que pop error!!\n");
@@ -1250,7 +1250,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			ditem->third_id  = 0;
 			ditem->next      = NULL;
 
-			if(ditem->item_data.card[0] == (short)0xff00) {
+			if(ditem->item_data.card[0] == (int)0xff00) {
 				// ペットの卵はドロップディレイキューに保存する
 				map_push_delayitem_que(ditem);
 				add_timer(tick+540,pet_delay_item_drop2,0,ditem);
@@ -1278,7 +1278,7 @@ int pet_lootitem_free(struct pet_data *pd)
 	if(pd->lootitem) {
 		int i;
 		for(i=0; i<pd->lootitem_count; i++) {
-			if(pd->lootitem[i].card[0] == (short)0xff00)
+			if(pd->lootitem[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&pd->lootitem[i].card[1])));
 		}
 		aFree(pd->lootitem);

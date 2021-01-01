@@ -275,7 +275,7 @@ bool maildb_sql_delete(int char_id)
 
 			for(i = 0; i < m->store; i++) {
 				// ƒyƒbƒgíœ
-				if(md[i].item.card[0] == (short)0xff00) {
+				if(md[i].item.card[0] == (int)0xff00) {
 					if( petdb_delete(*((int *)(&md[i].item.card[1]))) == false )
 						break;
 				}
