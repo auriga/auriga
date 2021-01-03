@@ -230,6 +230,17 @@
 1@xm_d.gat	mapflag	noabra		dummy
 
 //============================================================
+// ‰ß‹Ž‚ÌƒOƒ‰ƒXƒgƒwƒCƒ€ - 1@glast.gat
+//------------------------------------------------------------
+1@glast.gat	mapflag	nosave			SavePoint
+1@glast.gat	mapflag	nomemo			dummy
+1@glast.gat	mapflag	noteleport		dummy
+1@glast.gat	mapflag	nobranch		dummy
+1@glast.gat	mapflag	monster_noteleport	dummy
+1@glast.gat	mapflag	noicewall	dummy
+1@glast.gat	mapflag	noabra		dummy
+
+//============================================================
 // –S—ì‚Ì‰¤‹{ - 1@spa.gat
 //------------------------------------------------------------
 1@spa.gat	mapflag	nosave			SavePoint

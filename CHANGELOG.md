@@ -1,4 +1,21 @@
 ----------------------------------------
+//1437 [2021/01/03] by refis
+
+・フェンリルとサラメモリアル実装（npc_memorial_fenrirsara.sc）
+
+・mob_dbの更新（mob_db.txt, mob_skill_db.txt）
+
+・quest_dbの更新（quest_db.txt）
+
+・memorial_dbの更新（memorial_db.txt）
+
+・mapflagの更新（mapflag_memorial.sc）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+・market用パケット定義他の更新（packet_db.lua）
+
+----------------------------------------
 //1436 [2021/01/03] by refis
 
 ・NPC商店にmarket型を追加実装
