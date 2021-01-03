@@ -1,4 +1,16 @@
 ----------------------------------------
+//1436 [2021/01/03] by refis
+
+・NPC商店にmarket型を追加実装
+　購入できる最大個数の指定が出来るshopです
+（script_ref.txt, clif.*, map.h, npc.c, script.c）
+
+・スクリプト命令「npcshopitem」追加（script_ref.txt, npc.*, script.c）
+	Thanks Dallen さん
+
+・ロックリッジの商店をnpcshopitemで実装（npc_town_rockridge.sc）
+
+----------------------------------------
 //1435 [2021/01/02] by refis
 
 ・アイテム作成系の送信パケット拡張漏れを修正（clif.c）

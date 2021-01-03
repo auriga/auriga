@@ -4267,6 +4267,7 @@ int buildin_getquestmaxcount(struct script_state *st);
 int buildin_openbuyingstore(struct script_state *st);
 int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
+int buildin_npcshopitem(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
 int buildin_getmercinfo(struct script_state *st);
 int buildin_mercheal(struct script_state *st);
@@ -4597,6 +4598,7 @@ struct script_function buildin_func[] = {
 	{buildin_openbuyingstore,"openbuyingstore","i"},
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
+	{buildin_npcshopitem,"npcshopitem","s*"},
 	{buildin_progressbar,"progressbar","i*"},
 	{buildin_getmercinfo,"getmercinfo","i"},
 	{buildin_mercheal,"mercheal","ii"},
@@ -13194,23 +13196,80 @@ int buildin_callshop(struct script_state *st)
 
 	shopname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	nd = npc_name2id(shopname);
-	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP)) {
+	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP && nd->subtype != MARKET)) {
 		return 0;
 	}
 
 	if(st->end>st->start+3)
 		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	if(nd->subtype == SHOP) {
+	switch(nd->subtype) {
+	case SHOP:
 		switch(flag) {
 			case 1: npc_buysellsel(sd,nd->bl.id,0); break;	//購入ウィンドウ
 			case 2: npc_buysellsel(sd,nd->bl.id,1); break;	//売却ウィンドウ
 			default: clif_npcbuysell(sd,nd->bl.id); break;	//メニューを開く
 		}
-	} else {
+		break;
+	case POINTSHOP:
 		sd->npc_shopid = nd->bl.id;
 		clif_pointshop_list(sd, nd);
+		break;
+	case MARKET:
+		{
+			int i;
+			for (i = 0; nd->u.shop_item[i].nameid; i++) {
+				if (nd->u.shop_item[i].qty) {
+					sd->npc_shopid = nd->bl.id;
+					clif_market_list(sd, nd);
+					break;
+				}
+			}
+		}
+		break;
 	}
+
+	return 0;
+}
+
+/*==========================================
+ * shopを変更する。
+ *------------------------------------------
+ */
+int buildin_npcshopitem(struct script_state *st)
+{
+	struct npc_data *nd;
+	const char *shopname;
+	int n = 0, i;
+	int count, offset = 2;
+
+	shopname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	nd = npc_name2id(shopname);
+	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP && nd->subtype != MARKET)) {
+		return 0;
+	}
+
+	if(nd->subtype == MARKET) {
+#if PACKETVER >= 20131223
+		offset = 3;
+#else
+		return 0;
+#endif
+	}
+
+	count = (st->end-3)/offset;
+
+	map_deliddb( &nd->bl );
+	nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * (count+1));
+	for(n = 0, i = 3; n < count; n++, i+=offset) {
+		nd->u.shop_item[n].nameid = conv_num(st,& (st->stack->stack_data[st->start+i]));
+		nd->u.shop_item[n].value = conv_num(st,& (st->stack->stack_data[st->start+i+1]));
+		if(nd->subtype == MARKET)
+			nd->u.shop_item[n].qty = conv_num(st,& (st->stack->stack_data[st->start+i+2]));
+	}
+	nd->u.shop_item[n++].nameid = 0;
+	npc_refresh(shopname,nd);
+	map_addiddb(&nd->bl);
 
 	return 0;
 }

@@ -100,6 +100,7 @@ enum {
 	SHOP,
 	POINTSHOP,
 	SCRIPT,
+	MARKET,
 };
 
 // Ží‘°
@@ -914,7 +915,7 @@ struct npc_label_list {
 };
 
 struct npc_item_list {
-	int nameid,value;
+	int nameid,value,qty;
 };
 
 struct npc_data {
@@ -1254,6 +1255,11 @@ enum {
 	SP_UPPER,SP_PARTNER,SP_CART,SP_DIE_COUNTER,SP_JOB,	// 56-60
 	SP_CARTINFO=99,	// 99
 	SP_MERC_FLEE=165,SP_MERC_KILLCOUNT=189,SP_MERC_FAME=190,
+
+	SP_POW=219,SP_STA,SP_WIS,SP_SPL,SP_CON,SP_CRT,	// 219-224
+    SP_PATK,SP_SMATK,SP_RES,SP_MRES,SP_HPLUS,SP_CRATE,	// 225-230
+    SP_T_STATUSPOINT,SP_AP,SP_MAXAP,	// 231-233
+	SP_UPOW=247,SP_USTA,SP_UWIS,SP_USPL,SP_UCON,SP_UCRT,	// 247-252
 
 	// globalreg save 500-
 	SP_CLONESKILL_ID=500,SP_CLONESKILL_LV,					// 500-501

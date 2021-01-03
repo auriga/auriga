@@ -43,6 +43,7 @@ int npc_globalmessage(const char *name,const char *mes);
 
 int npc_enable(const char *name,int flag);
 struct npc_data* npc_name2id(const char *name);
+int npc_refresh(const char *name, struct npc_data *nd);
 
 bool npc_isnear(struct block_list *bl);
 

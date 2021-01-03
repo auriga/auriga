@@ -199,6 +199,18 @@ struct npc_data* npc_name2id(const char *name)
 }
 
 /*==========================================
+ * NPCの再登録
+ *------------------------------------------
+ */
+int npc_refresh(const char *name, struct npc_data *nd)
+{
+	strdb_erase(npcname_db,name);
+	strdb_insert(npcname_db,name,nd);
+
+	return 0;
+}
+
+/*==========================================
  * イベントの遅延実行
  *------------------------------------------
  */
@@ -984,6 +996,23 @@ void npc_click(struct map_session_data *sd, int id)
 		clif_pointshop_list(sd,nd);
 		npc_event_dequeue(sd);
 		break;
+	case MARKET:
+#if PACKETVER >= 20131223
+		{
+			int i;
+
+			for (i = 0; nd->u.shop_item[i].nameid; i++) {
+				if (nd->u.shop_item[i].qty) {
+					sd->npc_id     = id;
+					sd->npc_shopid = id;
+					clif_market_list(sd,nd);
+					npc_event_dequeue(sd);
+					break;
+				}
+			}
+		}
+#endif
+		break;
 	case SCRIPT:
 		if(nd->u.scr.script) {
 			sd->npc_id = id;
@@ -1065,6 +1094,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 	double z;
 	int i, j, w, new_add = 0;
 	struct item_data *item_data;
+	short market_qty[MAX_INVENTORY];
 
 	nullpo_retr(3, sd);
 	nullpo_retr(3, item_list);
@@ -1073,25 +1103,33 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 	if (npc_checknear(sd, nd)) // check NULL of nd and if nd->bl.type is BL_NPC
 		return 3;
 
-	if (nd->subtype != SHOP)
+	if (nd->subtype != SHOP && nd->subtype != MARKET)
 		return 3;
 
 	w = 0;
 	z = 0.;
+	memset(market_qty, 0, sizeof(market_qty));
 	for(i = 0; i < n; i++) {
 		int nameid, amount;
 #if PACKETVER < 20180704
-		amount = *(unsigned short *)(item_list + 4*i + 0);
+		if (nd->subtype == MARKET) {
+			nameid = *(unsigned short *)(item_list + 6*i + 0);
+			amount = *(unsigned int *)(item_list + 6*i + 2);
+		} else {
+			amount = *(unsigned short *)(item_list + 4*i + 0);
+			nameid = *(unsigned short *)(item_list + 4*i + 2);
+		}
 #else
-		amount = *(unsigned short *)(item_list + 6*i + 0);
+		if (nd->subtype == MARKET) {
+			nameid = *(unsigned int *)(item_list + 8*i + 0);
+			amount = *(unsigned int *)(item_list + 8*i + 4);
+		} else {
+			amount = *(unsigned short *)(item_list + 6*i + 0);
+			nameid = *(unsigned int *)(item_list + 6*i + 2);
+		}
 #endif
 		if (amount <= 0)
 			return 3;
-#if PACKETVER < 20180704
-		nameid = *(unsigned short *)(item_list + 4*i + 2);
-#else
-		nameid = *(unsigned int *)(item_list + 6*i + 2);
-#endif
 		if (nameid <= 0 || (item_data = itemdb_exists(nameid)) == NULL)
 			return 3;
 
@@ -1101,9 +1139,15 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 				if (view_id == nameid) {
 					// 元のアイテムIDに置き換え
 #if PACKETVER < 20180704
-					*(short *)(item_list + 4*i + 2) = (short)nd->u.shop_item[j].nameid;
+					if (nd->subtype == MARKET)
+						*(short *)(item_list + 6*i + 0) = (short)nd->u.shop_item[j].nameid;
+					else
+						*(short *)(item_list + 4*i + 2) = (short)nd->u.shop_item[j].nameid;
 #else
-					*(int *)(item_list + 6*i + 2) = (int)nd->u.shop_item[j].nameid;
+					if (nd->subtype == MARKET)
+						*(int *)(item_list + 8*i + 0) = (int)nd->u.shop_item[j].nameid;
+					else
+						*(int *)(item_list + 6*i + 2) = (int)nd->u.shop_item[j].nameid;
 #endif
 					break;
 				}
@@ -1118,6 +1162,14 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 			// Player sent a hexed packet trying to buy x of nonstackable item y!
 			return 3;
 		}
+
+#if PACKETVER >= 20131223
+		if (nd->subtype == MARKET) {
+			if (amount > nd->u.shop_item[j].qty)
+				return 3;
+			market_qty[i] = j;
+		}
+#endif
 
 		if (item_data->flag.value_notdc)
 			z += ((double)nd->u.shop_item[j].value * (double)amount);
@@ -1148,20 +1200,38 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 
 	for(i=0; i<n; i++) {
 		struct item item_tmp;
+		unsigned short amount;
 
 		memset(&item_tmp,0,sizeof(item_tmp));
 #if PACKETVER < 20180704
-		item_tmp.nameid = *(unsigned short *)(item_list + 4*i + 2);
+		if (nd->subtype == MARKET) {
+			item_tmp.nameid = *(unsigned short *)(item_list + 6*i + 0);
+			amount = *(unsigned short *)(item_list + 6*i + 2);
+		} else {
+			item_tmp.nameid = *(unsigned short *)(item_list + 4*i + 2);
+			amount = *(unsigned short *)(item_list + 4*i);
+		}
 #else
-		item_tmp.nameid = *(unsigned int *)(item_list + 6*i + 2);
+		if (nd->subtype == MARKET) {
+			item_tmp.nameid = *(unsigned int *)(item_list + 8*i + 0);
+			amount = *(unsigned short *)(item_list + 8*i + 4);
+		} else {
+			item_tmp.nameid = *(unsigned int *)(item_list + 6*i + 2);
+			amount = *(unsigned short *)(item_list + 6*i);
+		}
 #endif
 		item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
 
-#if PACKETVER < 20180704
-		pc_additem(sd,&item_tmp,*(unsigned short *)(item_list + 4*i));
-#else
-		pc_additem(sd,&item_tmp,*(unsigned short *)(item_list + 6*i));
+#if PACKETVER >= 20131223
+		if (nd->subtype == MARKET) {
+			j = market_qty[i];
+			if (amount > nd->u.shop_item[j].qty)
+				return 1;
+			nd->u.shop_item[j].qty -= amount;
+		}
 #endif
+
+		pc_additem(sd,&item_tmp,amount);
 	}
 
 	// 商人経験値
@@ -1516,6 +1586,7 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 		break;
 	case SHOP:
 	case POINTSHOP:
+	case MARKET:
 		{
 			int pos = 0;
 			while(src_nd->u.shop_item[pos++].nameid);
@@ -1883,6 +1954,12 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		subtype = SHOP;
 	else if(strcmp(w2,"pointshop") == 0)
 		subtype = POINTSHOP;
+	else if(strcmp(w2,"market") == 0)
+#if PACKETVER < 20131223
+		return 0;
+#else
+		subtype = MARKET;
+#endif
 	else
 		subtype = 0;
 
@@ -1905,7 +1982,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 			return 0;	// assignされてないMAPなので終了
 	}
 
-	if(subtype == SHOP || subtype == POINTSHOP) {
+	if(subtype == SHOP || subtype == POINTSHOP || subtype == MARKET) {
 		const int max = 100;
 		char *c;
 
@@ -1914,19 +1991,33 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		while(c && pos < max) {
 			struct item_data *id = NULL;
 			int ret, nameid, value = -1;
+			int qty = -1;
 			c++;
-			ret = sscanf(c, "%d:%d", &nameid, &value);
-			if(ret < 1 || (subtype == POINTSHOP && ret < 2)) {
-				char *np = strchr(c, ',');
-				if(np) {
-					np[1] = 0;
+			if(subtype == MARKET) {
+				if(sscanf(c, "%d:%d:%d", &nameid, &value, &qty) < 3) {
+					char *np = strchr(c, ',');
+					if(np) {
+						np[1] = 0;
+					}
+					printf("bad %s item %s : %s line %d\a\n", w2, c, w3, lines);
+					pos = 0;
+					break;
 				}
-				printf("bad %s item %s : %s line %d\a\n", w2, c, w3, lines);
-				pos = 0;
-				break;
+			} else {
+				ret = sscanf(c, "%d:%d", &nameid, &value);
+				if(ret < 1 || (subtype == POINTSHOP && ret < 2)) {
+					char *np = strchr(c, ',');
+					if(np) {
+						np[1] = 0;
+					}
+					printf("bad %s item %s : %s line %d\a\n", w2, c, w3, lines);
+					pos = 0;
+					break;
+				}
 			}
 			id = itemdb_search(nameid);
 			nd->u.shop_item[pos].nameid = nameid;
+			nd->u.shop_item[pos].qty = qty;
 			if(subtype == SHOP) {
 				int sell_max, buy_max;
 				if(value < 0) {
@@ -1947,6 +2038,8 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 					printf("warning shop sell value (id = %d, %dz > %dz) : %s line %d\a\n", nameid, sell_max, buy_max, w3, lines);
 				}
 			}
+			else if(subtype == MARKET && value < 0)
+				value = id->value_buy;
 			nd->u.shop_item[pos].value = value;
 			pos++;
 			c = strchr(c,',');
@@ -1972,7 +2065,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 			printf("bad substore name! (not exist) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
-		if(nd2->subtype != SHOP && nd2->subtype != POINTSHOP) {
+		if(nd2->subtype != SHOP && nd2->subtype != POINTSHOP && nd2->subtype != MARKET) {
 			printf("bad substore name! (not shop) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
@@ -2923,7 +3016,7 @@ static int npc_parse_srcfile(const char *filepath)
 
 		if (strcmpi(w2,"warp") == 0 && count > 3) {
 			ret = npc_parse_warp(w1,w2,w3,w4,lines);
-		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0) && count > 3) {
+		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0 || strcmpi(w2,"market") == 0) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);

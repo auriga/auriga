@@ -83,6 +83,7 @@ void clif_npcbuysell(struct map_session_data* sd, int id);
 void clif_buylist(struct map_session_data *sd, struct npc_data *nd);
 void clif_selllist(struct map_session_data *sd);
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd);
+void clif_market_list(struct map_session_data *sd, struct npc_data *nd);
 void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes);
 void clif_scriptnext(struct map_session_data *sd, int npcid);
 void clif_scriptclose(struct map_session_data *sd, int npcid);

@@ -6706,6 +6706,58 @@ void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd)
 }
 
 /*==========================================
+ * マーケットアイテム販売リスト
+ *------------------------------------------
+ */
+void clif_market_list(struct map_session_data *sd, struct npc_data *nd)
+{
+#if PACKETVER >= 20131223
+	struct item_data *id;
+	int fd,i,val;
+
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+
+	fd  = sd->fd;
+
+	WFIFOW(fd,0) = 0x9d5;
+#if PACKETVER < 20180704
+	for(i=0; nd->u.shop_item[i].nameid > 0; i++) {
+		id  = itemdb_search(nd->u.shop_item[i].nameid);
+		val = nd->u.shop_item[i].value;
+		if(id->view_id > 0)
+			WFIFOW(fd,4+i*13) = id->view_id;
+		else
+			WFIFOW(fd,4+i*13) = nd->u.shop_item[i].nameid;
+		WFIFOB(fd, 6+i*13) = id->type;
+		WFIFOL(fd, 7+i*13) = val;
+		WFIFOL(fd,11+i*13) = nd->u.shop_item[i].qty;
+		WFIFOW(fd,15+i*13) = id->weight;
+	}
+	WFIFOW(fd,2) = 4+i*13;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#else
+	for(i=0; nd->u.shop_item[i].nameid > 0; i++) {
+		id  = itemdb_search(nd->u.shop_item[i].nameid);
+		val = nd->u.shop_item[i].value;
+		if(id->view_id > 0)
+			WFIFOL(fd,4+i*15) = id->view_id;
+		else
+			WFIFOL(fd,4+i*15) = nd->u.shop_item[i].nameid;
+		WFIFOB(fd, 8+i*15) = id->type;
+		WFIFOL(fd, 9+i*15) = val;
+		WFIFOL(fd,13+i*15) = nd->u.shop_item[i].qty;
+		WFIFOW(fd,17+i*15) = id->weight;
+	}
+	WFIFOW(fd,2) = 4+i*15;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
+
+#endif
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -26536,6 +26588,100 @@ static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
+ * マーケットアイテム購入要求
+ *------------------------------------------
+ */
+static void clif_parse_SellMarketReq(int fd,struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20131223
+	int fail, n, c = 0;
+#if PACKETVER < 20180704
+	short size = 6;
+#else
+	short size = 8;
+#endif
+
+	nullpo_retv(sd);
+
+	// 死んでいたり、赤エモの時はNPCをクリックできない
+	if(unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl,1);
+		return;
+	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
+	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+		return;
+
+	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /size;
+	if (n <= 0) // max is checked in npc_buylist function
+		return;
+
+	fail = npc_buylist(sd, n, (unsigned char*)RFIFOP(fd,GETPACKETPOS(cmd,1))); // item_list
+
+#if PACKETVER >= 20190807
+	fail = ( fail == 0 ? 0 : -1 );
+#else
+	fail = ( fail == 0 ? 1 : 0 );
+#endif
+
+	WFIFOW(fd,0)=0x9d7;
+	WFIFOB(fd,4)=fail;
+	if( fail ){
+		int i, j;
+		int nameid, amount;
+		struct npc_data *nd = map_id2nd( sd->npc_shopid );
+
+		size += 2;
+
+		for(i=0; i < n; i++){
+#if PACKETVER < 20180704
+			nameid = *(unsigned short *)RFIFOP(fd,6*i + 0 + GETPACKETPOS(cmd,1));
+			amount = *(unsigned int *)RFIFOP(fd,6*i + 2 + GETPACKETPOS(cmd,1));
+#else
+			nameid = *(unsigned int *)RFIFOP(fd,8*i + 0 + GETPACKETPOS(cmd,1));
+			amount = *(unsigned int *)RFIFOP(fd,8*i + 4 + GETPACKETPOS(cmd,1));
+#endif
+			for(j=0; nd->u.shop_item[j].nameid; j++) {
+				if (nd->u.shop_item[j].nameid == nameid)
+					break;
+			}
+			if (nd->u.shop_item[j].nameid == 0)
+				continue;
+
+#if PACKETVER < 20180704
+			WFIFOW(fd,c*size+5)=nameid;
+			WFIFOW(fd,c*size+7)=amount;
+			WFIFOL(fd,c*size+9)=nd->u.shop_item[j].value;
+#else
+			WFIFOL(fd,c*size+5)=nameid;
+			WFIFOW(fd,c*size+9)=amount;
+			WFIFOL(fd,c*size+11)=nd->u.shop_item[j].value;
+#endif
+			c++;
+		}
+	}
+	WFIFOW(fd,2)=c*size+5;
+	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
+	sd->npc_shopid = 0;
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_CloseMarketReq(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	sd->npc_shopid = 0;
+	return;
+}
+
+/*==========================================
  * クライアントのタイムスタンプ
  * 利用機会がないのでコメントアウト
  *------------------------------------------
@@ -27339,6 +27485,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_BankingDepositReq,           "bankdepositreq"            },
 		{ clif_parse_BankingWithdrawReq,          "bankwithdrawreq"           },
 		{ clif_parse_BankingInfoReq,              "bankinforeq"               },
+		{ clif_parse_SellMarketReq,               "sellmarketreq"             },
+		{ clif_parse_CloseMarketReq,              "closemarketreq"            },
 		{ clif_parse_ClientTimeStamp,             "clienttimestamp"           },
 		{ clif_parse_OpenRoDEX,                   "openrodex"                 },
 		{ clif_parse_CloseRoDEX,                  "closerodex"                },

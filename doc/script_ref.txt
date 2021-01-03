@@ -130,6 +130,31 @@ AurigaNPCScript
 		マップサーバー内には存在していても、実際のマップには配置されないNPCを作成できます。
 		これは後述のコピー店でコピー元として使用します。
 
+	＊マーケット：アイテムの販売を行います。
+		<gatname>,<x>,<y>,<direction><tab>market<tab><displayname><tab><npcid>,<item_id>:<price>:<num>[,<item_id>:<price>:<num>]
+
+		gatname			配置するMAPファイル名を指定します。
+		x			配置する横座標を指定します。
+		y			配置する縦座標を指定します。
+		direction		向きを指定します。
+			directionの詳細：
+				１０７
+				２　６
+				３４５
+
+		displayname		配置する店の表示名を指定します。
+		npcid			配置する店の表示スプライトIDを指定します。
+		item_id			配置する店に置くアイテムIDを指定します。item_dbを参照してください。
+		price			item_idで指定したアイテムの値段を設定します。
+						負数を指定するとitem_db.txtで設定された値段になります。
+		num				item_idが購入できる最大数を設定します。
+						設定数が販売されたアイテムはそれ以上購入することはできません。
+			<item_id>:<price>:<num>は,（カンマ）区切りで複数指定できます。
+
+		「<gatname>,<x>,<y>,<direction><tab>」の部分を、「-<tab>」とすることで、
+		マップサーバー内には存在していても、実際のマップには配置されないNPCを作成できます。
+		これは後述のコピー店でコピー元として使用します。
+
 	＊コピー店：既存のNPC（の店）をコピーします。
 		<gatname>,<x>,<y>,<direction><tab>substore(<source>)<tab><displayname><tab><npcid>
 
@@ -2648,6 +2673,15 @@ AurigaNPCScript
 			実際にNPCをコピーして配置するわけではありません。
 			そのためコピー元NPCはマップ非配置型が望ましく、NPCの位置情報の取得は推奨されません。
 			指定したマップが存在しない場合、実行プレイヤーの周囲に出現します。
+
+		npcshopitem命令
+			npcshopitem <name>,<nameid1>,<price1>{,<num1>}[,<nameid2>,<price2>{,<num2>}...];
+
+			name				文字列
+			nameid, price, num	数値
+
+			ユニークな名称<name>を持つshop、pointshop、market型NPCの商品を更新します。
+			<nameid>を<price>で販売させ、market型の場合は最大<num>個購入できます。
 
 
 	＊関数

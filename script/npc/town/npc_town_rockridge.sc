@@ -7,21 +7,77 @@
 //------------------------------------------------------------
 har_in01.gat,34,84,3	shop	道具屋#rockridge00	68,611,645,656,601,602,1065
 har_in01.gat,19,86,4	shop	武器屋#rockridge01	67,13154,13155,13102,13200,13221,13222,13228,13229,13230,13231,13232
+-	market	rockridge_callshop	-1,2267:100000:10,2268:500000:10,2241:5000:10
+
 har_in01.gat,16,86,4	script	防具屋#rockridge02	50,{
-	// 未実装
+	if(gettime(4) == 0) {	// 日曜日
+		mes "[防具屋]";
+		mes "今日は定休日です。";
+		mes "働くときは働き、";
+		mes "休むときは休む、";
+		mes "長く商売を続けるための基本です。";
+		close;
+	}
 	mes "[防具屋]";
-	mes "今日は定休日です。";
-	mes "働くときは働き、";
-	mes "休むときは休む、";
-	mes "長く商売を続けるための基本です。";
-	close;
+	mes "ここは防具屋です。";
+	mes "今日は";
+	switch('flag) {
+	case 1:
+		mes "^0000ffタバコと";
+		mes "パイプタバコと";
+		mes "白ひげ^000000が";
+		break;
+	case 2:
+		mes "^0000ffソンブレロと";
+		mes "インディアンの鉢巻きと";
+		mes "カウボーイハット^000000が";
+		break;
+	case 3:
+		mes "^0000ffオールドスターロマンスと";
+		mes "ウェスタングレイスと";
+		mes "羽毛帽子^000000が";
+		break;
+	}
+	mes "入荷しています。";
+	next;
+	mes "[防具屋]";
+	mes "防具は毎週運ばれてくる";
+	mes "貨物便に頼っていて、";
+	mes "在庫が十分ではありません。";
+	mes "既に売り切れた商品は";
+	mes "リストから消えています。";
+	next;
+	mes "[防具屋]";
+	mes "なので^0000CD割り引いて";
+	mes "提供するのは難しいです。^000000";
+	mes "それでも^0000CD手に入れ辛い商品を";
+	mes "揃えているので^000000、";
+	mes "一度見ていってください。";
+	close2;
+	callshop "rockridge_callshop";
+	end;
+OnInit:
+OnWeekTime001200:
+	set 'flag,rand(1,3);
+	switch('flag) {
+	case 1:	// タバコ100k、パイプタバコ500k、白ひげ5k　各10
+		npcshopitem "rockridge_callshop",2267,100000,10, 2268,500000,10, 2241,5000,10;
+		break;
+	case 2:	// ソンブレロ700k、インディアンの鉢巻き700k、カウボーイハット700k　各10
+		npcshopitem "rockridge_callshop",5067,700000,10, 5071,700000,10, 5075,700000,10;
+		break;
+	case 3:	// オールドスターロマンス500k、ウェスタングレイス500k、羽毛帽子700k　各10
+		npcshopitem "rockridge_callshop",2247,500000,10, 2248,500000,10, 5018,700000,10;
+		break;
+	}
+	end;
 }
 
--	shop	rockridge_callshop	-1,580
+-	shop	rockridge_callshop2	-1,580
 
 harboro1.gat,314,211,4	script	パン屋の主#dy	886,5,5,{
 	unittalk "パン屋の主 : いらっしゃ～い。";
-	callshop "rockridge_callshop",1;
+	callshop "rockridge_callshop2",1;
 	end;
 OnTouch:
 	switch(rand(7)) {
