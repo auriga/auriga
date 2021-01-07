@@ -1,4 +1,15 @@
 ----------------------------------------
+//1439 [2021/01/07] by refis
+
+・マラン島クエストNPCを更新（npc_town_malangdo.sc, npc_warp_town.sc）
+　->ニャンゲーマーズクエスト実装
+　->鉄人料理長ニャスの伝説クエスト実装
+	Thanks a lot teddy さん
+
+・quest_dbの更新（quest_db.txt）
+	Thanks a lot teddy さん
+
+----------------------------------------
 //1438 [2021/01/04] by refis
 
 ・ランダムオプションのドキュメントを整理（db_ref.txt）

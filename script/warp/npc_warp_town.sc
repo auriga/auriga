@@ -2495,6 +2495,15 @@ malangdo.gat,240,150,0	warp	malangdowarp1033	1,1,mal_in01.gat,11,17
 mal_in01.gat,9,16,0		warp	malangdowarp1034	1,1,malangdo.gat,238,149
 mal_in01.gat,20,15,0	warp	malangdowarp1035	1,1,mal_in01.gat,65,11
 mal_in01.gat,67,12,0	warp	malangdowarp1036	1,1,mal_in01.gat,20,13
+//ニャンゲーマーズ
+malangdo.gat,119,137,0	warp	malangdowarp1037	1,1,mal_in01.gat,36,216
+mal_in01.gat,38,217,0	warp	malangdowarp1038	1,1,malangdo.gat,121,138
+//1F⇔B1F
+mal_in01.gat,11,218,0	warp	malangdowarp1039	1,1,mal_in01.gat,76,220
+mal_in01.gat,75,222,0	warp	malangdowarp1040	1,1,mal_in01.gat,12,221
+//B1F⇔B2F
+mal_in01.gat,79,219,0	warp	malangdowarp1041	1,1,mal_in01.gat,140,216
+mal_in01.gat,140,213,0	warp	malangdowarp1042	1,1,mal_in01.gat,80,216
 
 
 
