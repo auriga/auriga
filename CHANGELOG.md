@@ -1,4 +1,20 @@
 ----------------------------------------
+//1440 [2021/02/21] by refis
+
+・フェイスワームの巣メモリアル実装（npc_memorial_faceworm.sc）
+
+・item_dbの更新（item_db.txt）
+
+・quest_dbの更新（quest_db.txt）
+
+・mapflagの更新（mapflag_memorial.sc）
+
+・map_auriga.confの更新（map_auriga.conf）
+
+・フェンリルとサラの再入場チェックが不十分だった箇所を修正（npc_memorial_fenrirsara.sc）
+	Thanks kuura さん
+
+----------------------------------------
 //1439 [2021/01/07] by refis
 
 ・マラン島クエストNPCを更新（npc_town_malangdo.sc, npc_warp_town.sc）

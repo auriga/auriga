@@ -208,6 +208,17 @@
 1@sara.gat	mapflag	noabra		dummy
 
 //============================================================
+// フェイスワームの巣 - 1@face.gat
+//------------------------------------------------------------
+1@face.gat	mapflag	nosave			SavePoint
+1@face.gat	mapflag	nomemo			dummy
+1@face.gat	mapflag	noteleport		dummy
+1@face.gat	mapflag	nobranch		dummy
+1@face.gat	mapflag	monster_noteleport	dummy
+1@face.gat	mapflag	noicewall	dummy
+1@face.gat	mapflag	noabra		dummy
+
+//============================================================
 // 禁忌の研究所 - 1@lhz.gat
 //------------------------------------------------------------
 1@lhz.gat	mapflag	nosave			SavePoint

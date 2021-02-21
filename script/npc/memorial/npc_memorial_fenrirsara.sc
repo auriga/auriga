@@ -637,6 +637,15 @@ OnInit:
 }
 
 dali02.gat,99,148,3	script	次元移動機#XX1	10007,{
+	if(checkquest(9336)) {
+		mes "‐エネルギー充填が完了していません。";
+		mes "　次元移動機は";
+		mes "　^ff0000入場してから1回目の午前5時以降^000000";
+		mes "　且つ";
+		mes "　^ff0000最後の入場から1時間経過後^000000";
+		mes "　に利用可能です‐";
+		close;
+	}
 	mes "‐フェンリルとサラが";
 	mes "　激しい戦闘を行った";
 	mes "　過去のグラストヘイムへと続く";
@@ -1510,7 +1519,7 @@ OnTimer5000:
 1@glast.gat,357,204,5	script	サラの幻影#chase_5	3190,{}
 1@glast.gat,298,210,5	script	サラの幻影#chase_6	3190,{}
 1@glast.gat,321,250,5	script	サラの幻影#chase_7	3190,{}
-}1@glast.gat,335,262,5	script	サラの幻影#chase_8	3190,{}
+1@glast.gat,335,262,5	script	サラの幻影#chase_8	3190,{}
 1@glast.gat,351,258,5	script	サラの幻影#chase_9	3190,{}
 
 1@glast.gat,133,361,4	script	宝箱#glast_sara1	10005,{

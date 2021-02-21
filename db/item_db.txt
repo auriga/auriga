@@ -11382,7 +11382,7 @@
 22245,Unknown_Item,覚醒特殊環境活動用ブーツ,4,,,1000,,,,1,2074075135,2,64,,99,,1,{},{}
 
 22506,Unknown_Item,新鮮な魔力貝,2,0,,100,,,,,2074075135,2,,,,,,{},{}
-22507,Old_Scroll,フェイヨン移動スクロール,2,1000,,10,,,,,2074075135,2,,,,,,{},{}
+22507,Old_Scroll,フェイヨン移動スクロール,2,1000,,10,,,,,2074075135,2,,,,,,{ switch(rand(8)){ case 0: warp "pay_dun04.gat",120,116; end; case 1: warp "payon_in03.gat",99,182; end; case 2: warp "payon_in02.gat",17,62; end; case 3: warp "payon_in01.gat",144,15; end; case 4: warp "pay_fild01.gat",141,211; end; case 5: warp "pay_fild04.gat",348,333; end; case 6: warp "pay_fild07.gat",200,186; end; case 7: warp "pay_fild10.gat",147,267; end; } },{}
 
 22511,Fenrirs_Power_Scroll,フェンリルの呪符,2,20,,10,,,,,2074075135,2,,,,,,{},{}
 
