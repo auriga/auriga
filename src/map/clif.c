@@ -23757,11 +23757,7 @@ static void clif_parse_RepairItem(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-#if PACKETVER < 20180704
 	skill_repair_weapon(sd,RFIFOW(fd,GETPACKETPOS(cmd,0)));
-#else
-	skill_repair_weapon(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
-#endif
 
 	memset(&sd->skill_menu,0,sizeof(sd->skill_menu));
 

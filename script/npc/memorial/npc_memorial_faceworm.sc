@@ -1527,11 +1527,15 @@ OnTimer11000:
 OnStart:
 OnTimer30000:
 	initnpctimer;
+	killmonster getmdmapname("1@face.gat"),getmdnpcname("#’Ž3_–Ò“Å’n‘Ñ")+"::OnKilled";
 	for(set '@i,0;'@i<40;set '@i,'@i+5) {
 		for(set '@j,0;'@j<40;set '@j,'@j+5) {
 			monster getmdmapname("1@face.gat"),249+'@i,106+'@j,"–Ò“Å‘Ü",2536,1,getmdnpcname("#’Ž3_–Ò“Å’n‘Ñ")+"::OnKilled";
 		}
 	}
+	end;
+OnStop:
+	stopnpctimer;
 	end;
 OnKilled:
 	end;
@@ -1709,6 +1713,7 @@ OnTimer58000:
 OnTimer67000:
 	donpcevent getmdnpcname("#—‰¤’Ž4")+"::OnStart";
 	donpcevent getmdnpcname("#—‰¤’Ž4_timer")+"::OnStart";
+	donpcevent getmdnpcname("#’Ž3_–Ò“Å’n‘Ñ")+"::OnStop";
 	end;
 OnTimer77000:
 	stopnpctimer;
@@ -2256,6 +2261,7 @@ OnTouch:
 }
 
 1@face.gat,214,108,3	script	#’Ž4–JÜ	10005,{
+	donpcevent getmdnpcname("#–Ò“Å“D_timer")+"::OnStop";
 	donpcevent getmdnpcname("#’Ž3_timer")+"::OnStop";
 	set '@time,getnpctimer(0,getmdnpcname("#’Ž3_timer"))/1000;
 	announce "¡‰ñ‚Ìí“¬‚ÉŠ—v‚³‚ê‚½ŽžŠÔ‚Í" +'@time/60+ "•ª" +'@time%60+ "•b‚Å‚·B", 0x9, 0xffff33, 0x190, 12, 0, 0;
@@ -2618,6 +2624,9 @@ OnTimer8000:
 OnTimer18000:
 	initnpctimer;
 	end;
+OnStop:
+	stopnpctimer;
+	end;
 }
 
 1@face.gat,213,155,3	script	‘å¤l‚Ì” #1	10005,{
@@ -2747,6 +2756,7 @@ OnTimer18000:
 		end;
 	}
 OnTimer2000:
+	stopnpctimer;
 	if('flag < 8 && rand(100) < 85)
 		hideoffnpc;
 	end;
