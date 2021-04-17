@@ -728,7 +728,7 @@
 726,0,6,1,0,1,5,1,no,0,2,0,weapon,0	//NPC_REVERBERATION_ATK#M振動残響(攻撃)#
 727,9,6,2,0,1,5,1,no,0,2,0,magic,0	//NPC_LEX_AETERNA#Mレックスエーテルナ#
 728,9,8,1,0,0,5,3,no,0,2,0,weapon,0	//NPC_ARROWSTORM#Mアローストーム#
-//729,1,6,4,6,1,5,1,no,0,2,0,none,0	//NPC_CHEAL#Mハイネスヒール#
+729,1,6,4,6,1,5,1,no,0,2,0,none,0	//NPC_CHEAL#Mハイネスヒール#
 //730,1,6,4,0,1,5,1,no,0,2,0,none,0	//NPC_SR_CURSEDCIRCLE#M呪縛陣#
 731,3,6,2,0,4,10,1,no,0,2,0,weapon,0	//NPC_DRAGONBREATH#Mドラゴンブレス#
 //732,1,6,4,0,1,5,1,no,0,2,0,none,0	//NPC_FATALMENACE#Mフェイタルメナス#

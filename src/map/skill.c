@@ -4655,7 +4655,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1])
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
-			int ar = (skillid==RA_ARROWSTORM ? 3: ((skilllv >= 4 ? 2: 0) + (skilllv * 2 + 1)));
+			int ar = (skillid==NPC_ARROWSTORM ? (skilllv * 2 + 1): (skilllv >= 10 ? 5: (skilllv >= 6 ? 4: 3)));
 			if(sd) {
 				int cost = skill_get_arrow_cost(skillid,skilllv);
 				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
@@ -10684,6 +10684,21 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sg) {
 				status_change_start(src,SC_DANCING,skillid,sg->bl.id,0,0,skill_get_time(skillid,skilllv)+1000,0);
 			}
+		}
+		break;
+	case NPC_CHEAL:			/* Mハイネスヒール */
+		if(flag&1) {
+			int heal = (status_get_lv(src) + status_get_int(src)) / 5 * 30;
+
+			clif_skill_nodamage(src,bl,skillid,heal,1);
+			battle_heal(src,bl,heal,0,0);
+		} else {
+			int ar = skilllv * 2 + 1;
+			map_foreachinarea(skill_area_sub,bl->m,
+				bl->x-ar,bl->y-ar,
+				bl->x+ar,bl->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_NOENEMY|1,
+				skill_castend_nodamage_id);
 		}
 		break;
 	default:
