@@ -1,4 +1,28 @@
 ----------------------------------------
+//1443 [2021/04/18] by refis
+
+・rAthenaを参考にモンスターのターゲッティング範囲に
+　Range2, Range3パラメータを利用するように修正（mob.c）
+
+・クローキング状態NPCについて、プレーヤー毎に可視可能NPCをリスト化して保存するよう修正
+（clif.c, map.h, pc.c, script.c, unit.c）
+
+・クローキング状態NPCについて、OnTouchラベルを無効するよう修正（npc.c）
+
+・PACKETVERによって発生する警告を抑制（clif.c）
+
+・250ページクエスト実装（npc_quest_illusionvampire.sc, quest_db.txt）
+
+・250ページ追加マップのmapflag更新 (mapflag.sc)
+
+・250ページ追加マップのmonster出現定義追加（npc_monster_gefdun.sc）
+
+・アイテム、モンスターデータを更新（item_db2.txt, mob_db.txt, mob_skill_db.txt）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+
+----------------------------------------
 //1442 [2021/04/17] by refis
 
 ・[Mハイネスヒール]実装（db/skill_db.txt, db/skill_db2.txt, skill.c）

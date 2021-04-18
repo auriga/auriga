@@ -8268,9 +8268,25 @@ int buildin_cloakoffnpc(struct script_state *st)
 	if(sd) {
 		// 表示用に一時退避
 		int flag = nd->option;
-		nd->option &= ~OPTION_CLOAKING;
+		int i;
+		nd->option = OPTION_NOTHING;
 		clif_changeoption_single(&nd->bl, sd);
 		nd->option = flag;
+		for(i=0; i < MAX_CLOAKEDNPC; i++) {
+			if(sd->cloaked_npc[i] == nd->bl.id)
+				break;
+		}
+		if(i == MAX_CLOAKEDNPC) {
+			for(i=0; i < MAX_CLOAKEDNPC; i++) {
+				if(sd->cloaked_npc[i] == 0)
+					break;
+			}
+		}
+		if(i == MAX_CLOAKEDNPC) {
+			printf("buildin_cloakoffnpc: fatal error: max cloakednpc list\n");
+			return 0;
+		}
+		sd->cloaked_npc[i] = nd->bl.id;
 	}
 	else	// アタッチがない場合はNPC情報書き換え
 		nd->option &= ~OPTION_CLOAKING;
@@ -8307,9 +8323,16 @@ int buildin_cloakonnpc(struct script_state *st)
 	if(sd) {
 		// 表示用に一時退避
 		int flag = nd->option;
+		int i;
 		nd->option |= OPTION_CLOAKING;
 		clif_changeoption_single(&nd->bl, sd);
 		nd->option = flag;
+		for(i=0; i < MAX_CLOAKEDNPC; i++) {
+			if(sd->cloaked_npc[i] == nd->bl.id) {
+				sd->cloaked_npc[i] = 0;
+				break;
+			}
+		}
 	}
 	else	// アタッチがない場合はNPC情報書き換え
 		nd->option |= OPTION_CLOAKING;

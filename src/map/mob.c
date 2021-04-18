@@ -675,7 +675,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 
 	// アクティブ
 	if( (flag & 1) && (bl->type & BL_CHAR) ) {
-		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: 10;
+		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: mobdb_search(smd->class_)->range2;
 
 		// ハイパーアクティブ追尾は最も近い敵をターゲットする
 		if(smd->state.skillstate == MSS_FOLLOW) {
@@ -693,28 +693,28 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 			    atn_rand()%1000 < 1000/(++cnt[0]) )	// 範囲内PCで等確率にする
 			{
 				smd->target_id = bl->id;
-				smd->min_chase = 13;
+				smd->min_chase = mobdb_search(smd->class_)->range3;
 			}
 		}
 	}
 	// ルート
-	if( (flag & 2) && bl->type == BL_ITEM && smd->target_id < MAX_FLOORITEM && dist < 11 ) {
+	if( (flag & 2) && bl->type == BL_ITEM && smd->target_id < MAX_FLOORITEM && dist < mobdb_search(smd->class_)->range2 ) {
 		if( mob_can_reach(smd,bl,12) && atn_rand()%1000 < 1000/(++cnt[1]) ) {	// 範囲内アイテムで等確率にする
 			smd->target_id = bl->id;
-			smd->min_chase = 13;
+			smd->min_chase = mobdb_search(smd->class_)->range3;
 		}
 	}
 	// リンク
 	if( (flag & 4) && bl->type == BL_MOB ) {
 		struct mob_data *tmd = (struct mob_data *)bl;
-		if( tmd && tmd->class_ == smd->class_ && !tmd->target_id && dist < 13 ) {
+		if( tmd && tmd->class_ == smd->class_ && !tmd->target_id && dist < mobdb_search(smd->class_)->range2 ) {
 			tmd->target_id = smd->target_id;
-			tmd->min_chase = 13;
+			tmd->min_chase = mobdb_search(smd->class_)->range3;
 		}
 	}
 	// 接触反応
 	if( (flag & 8) && (bl->type & BL_CHAR) ) {
-		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: mobdb_search(smd->class_)->range;
+		int range = (smd->sc.data[SC_BLIND].timer != -1 || smd->sc.data[SC_FOGWALLPENALTY].timer != -1)? 1: mobdb_search(smd->class_)->range + 1;
 
 		// 攻撃射程内にいるなら、ロックする
 		if(dist <= range && battle_check_target(&smd->bl,bl,BCT_ENEMY) >= 1 && mob_can_lock(smd,bl)) {
@@ -724,7 +724,7 @@ static int mob_ai_sub_hard_search(struct block_list *bl,va_list ap)
 			    mob_can_reach(smd,bl,range) )
 			{
 				smd->target_id = bl->id;
-				smd->min_chase = 13;
+				smd->min_chase = mobdb_search(smd->class_)->range3;
 			}
 		}
 	}

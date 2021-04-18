@@ -72,6 +72,7 @@
 #define MAX_BOOKING_MEMO_LENGTH 37	// パーティーブッキングの募集メモ最大文字数
 #define MAX_ELEMENTBALL 10	// 影狼・朧の球体最大数
 #define MAX_MEMORIAL_MAP 200	// メモリアルダンジョンマップ最大生成数
+#define MAX_CLOAKEDNPC 50	// クローキング状態NPC最大保存数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -824,6 +825,8 @@ struct map_session_data {
 
 	char eventqueue[MAX_EVENTQUEUE][50];
 	int eventtimer[MAX_EVENTTIMER];
+
+	int cloaked_npc[MAX_CLOAKEDNPC];
 
 	struct {
 		int max_hp, max_sp;

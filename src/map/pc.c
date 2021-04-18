@@ -1371,6 +1371,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	sd->npc_dynamic_timer = -1;
 	sd->npc_dynamic_tick = tick;
 	sd->npc_dynamic_id = 0;
+	memset(&sd->cloaked_npc,0,sizeof(sd->cloaked_npc));
 
 	sd->trade.partner = 0;
 

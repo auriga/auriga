@@ -2382,6 +2382,7 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 		if(sd->npc_id) npc_timeout_stop(sd);	// タイムアウトタイマー削除
 		if(sd->npc_dynamic_id) npc_dynamicnpc_stop(sd);	// ダイナミックNPCタイマー削除
 		pc_delinvincibletimer(sd,0);		// 無敵タイマー削除
+		memset(&sd->cloaked_npc,0,sizeof(sd->cloaked_npc));
 
 		// PVP タイマー削除
 		if(sd->pvp_timer != -1) {

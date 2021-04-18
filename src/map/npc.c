@@ -776,6 +776,18 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 			f = 0;
 			continue;
 		}
+		if(nd->option&OPTION_CLOAKING) {
+			int j;
+			for(j=0; j < MAX_CLOAKEDNPC; j++) {
+				if(sd->cloaked_npc[j] == nd->bl.id) {
+					break;
+				}
+			}
+			if(j == MAX_CLOAKEDNPC) {	// 無効なクローキング状態
+				f = 0;
+				continue;
+			}
+		}
 		switch(nd->subtype) {
 		case WARP:
 			xs = nd->u.warp.xs;

@@ -241,6 +241,10 @@ einbroch.gat	mapflag	nomemo	dummy
 einbroch.gat	mapflag	noteleport	dummy
 einbroch.gat	mapflag	nobranch	dummy
 einbroch.gat	mapflag	nopenalty	dummy
+gef_d01_i.gat	mapflag	nomemo	dummy
+gef_d01_i.gat	mapflag	nosave		SavePoint
+gef_d01_j.gat	mapflag	nomemo	dummy
+gef_d01_j.gat	mapflag	nopenalty	dummy
 gef_dun00.gat	mapflag	nomemo	dummy
 gef_dun01.gat	mapflag	nomemo	dummy
 gef_dun02.gat	mapflag	nomemo	dummy

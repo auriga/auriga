@@ -518,7 +518,7 @@ void clif_disconnect_ack(int fd, int fail)
  */
 void clif_dropflooritem(struct flooritem_data *fitem)
 {
-	int view, effect;
+	int view, effect = 0;
 	unsigned char buf[24];
 
 	nullpo_retv(fitem);
@@ -2702,13 +2702,21 @@ static int clif_mob007b(struct mob_data *md,unsigned char *buf)
  *
  *------------------------------------------
  */
-static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
+static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_session_data* sd)
 {
 	struct guild *g;
 	int len;
+	int option = nd->option;
 
 	nullpo_retr(0, nd);
 
+	if(sd && option&OPTION_CLOAKING) {
+		int i;
+		for(i=0; i < MAX_CLOAKEDNPC; i++) {
+			if(sd->cloaked_npc[i] == nd->bl.id)
+				option &= ~OPTION_CLOAKING;
+		}
+	}
 #if PACKETVER < 20071106
 	len = packet_db[0x78].len;
 	memset(buf,0,len);
@@ -2716,7 +2724,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFW(buf,0)=0x78;
 	WBUFL(buf,2)=nd->bl.id;
 	WBUFW(buf,6)=nd->speed;
-	WBUFW(buf,12)=nd->option;
+	WBUFW(buf,12)=option;
 	WBUFW(buf,14)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2738,7 +2746,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFB(buf,2)=0;
 	WBUFL(buf,3)=nd->bl.id;
 	WBUFW(buf,7)=nd->speed;
-	WBUFW(buf,13)=nd->option;
+	WBUFW(buf,13)=option;
 	WBUFW(buf,15)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2761,7 +2769,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFB(buf,4)=6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
-	WBUFL(buf,15)=nd->option;
+	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2784,7 +2792,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFB(buf,4)=6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
-	WBUFL(buf,15)=nd->option;
+	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2807,7 +2815,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFB(buf,4)=6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
-	WBUFL(buf,15)=nd->option;
+	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2833,7 +2841,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
-	WBUFL(buf,19)=nd->option;
+	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2860,7 +2868,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
-	WBUFL(buf,19)=nd->option;
+	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -2888,7 +2896,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf)
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
-	WBUFL(buf,19)=nd->option;
+	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
@@ -5068,7 +5076,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE | OPTION_CLOAKING))==0) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&OPTION_HIDE)==0) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
 #if PACKETVER < 20071106
@@ -5195,7 +5203,7 @@ void clif_spawnnpc(struct npc_data *nd)
 #endif
 	clif_send(buf,len,&nd->bl,AREA);
 
-	len = clif_npc0078(nd,buf);
+	len = clif_npc0078(nd,buf,NULL);
 	clif_send(buf,len,&nd->bl,AREA);
 
 	if(nd->view_size!=0)
@@ -11604,10 +11612,10 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	nullpo_retv(sd);
 	nullpo_retv(nd);
 
-	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE | OPTION_CLOAKING))==0) || nd->class_ == INVISIBLE_CLASS)
+	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE))==0) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
-	len = clif_npc0078(nd,WFIFOP(sd->fd,0));
+	len = clif_npc0078(nd,WFIFOP(sd->fd,0),sd);
 	WFIFOSET(sd->fd,len);
 
 	if(nd->chat_id){
