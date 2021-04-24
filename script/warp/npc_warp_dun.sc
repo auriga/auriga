@@ -661,6 +661,10 @@ tur_dun04.gat,100,196,0		warp	turtlewarp4006		1,1,tur_dun03.gat,215,75
 tur_dun05.gat,89,69,0		warp	turtlewarp4007		1,1,tur_dun02.gat,148,264
 tur_dun05.gat,9,45,0		warp	turtlewarp4008		1,1,tur_dun01.gat,154,237
 
+tur_d03_i.gat,217,73,0		warp	illturtlewarp4001	2,2,tur_d04_i.gat,99,186
+tur_d04_i.gat,99,191,0		warp	illturtlewarp4002	2,2,tur_d03_i.gat,217,82
+tur_d03_j.gat,217,73,0		warp	illturtlewarp4003	2,2,tur_d04_j.gat,99,186
+tur_d04_j.gat,99,191,0		warp	illturtlewarp4004	2,2,tur_d03_j.gat,217,82
 
 
 //---JP3.0 ’Ç‰Áƒ}ƒbƒv---

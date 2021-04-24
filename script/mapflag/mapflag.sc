@@ -1196,6 +1196,10 @@ tur_dun02.gat	mapflag	nomemo	dummy
 tur_dun03.gat	mapflag	nomemo	dummy
 tur_dun04.gat	mapflag	nomemo	dummy
 //tur_dun04.gat	mapflag	noteleport	dummy
+tur_d03_i.gat	mapflag	nomemo	dummy
+tur_d04_i.gat	mapflag	nomemo	dummy
+tur_d03_j.gat	mapflag	nomemo	dummy
+tur_d04_j.gat	mapflag	nomemo	dummy
 um_dun01.gat	mapflag	nomemo	dummy
 um_dun02.gat	mapflag	nomemo	dummy
 um_in.gat	mapflag	nomemo	dummy
