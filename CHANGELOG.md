@@ -1,4 +1,25 @@
 ----------------------------------------
+//1446 [2021/04/24] by refis
+
+・イリュージョンダンジョンの特殊モンスターが固定位置で出現しないようにする
+（npc_quest_illusionmoonlight.sc, npc_quest_illusionvampire.sc）
+
+----------------------------------------
+//1445 [2021/04/24] by refis
+
+・陽居村の幽霊少女クエスト実装（npc_quest_illusionturtleisland.sc, quest_db.txt）
+
+・陽居村の幽霊少女追加マップのmapflag更新 (mapflag.sc)
+
+・陽居村の幽霊少女追加マップのmonster出現定義追加（npc_monster_turdun.sc）
+
+・陽居村の幽霊少女追加マップのwarp更新 (npc_warp_dun.sc)
+
+・アイテム、モンスターデータを更新（item_db.txt, mob_db.txt, mob_skill_db.txt）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1444 [2021/04/24] by refis
 
 ・スクリプト関数「areacallmonster」を実装（doc/script_ref.txt, script.c）

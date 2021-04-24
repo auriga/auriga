@@ -1316,7 +1316,9 @@ OnInit:
 
 OnSummon1:
 	if('mob1 == 0 && rand(1000) == 0) {
-		set 'mob1,callmonster("pay_d03_i.gat",96,83,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled1");
+		set 'mob1,areacallmonster("pay_d03_i.gat",40,35,160,115,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled1");
+//		mobuseskillpos 'mob1,21,10,96,83,0,0;	// サンダーストーム
+//		mobuseskill 'mob1,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob1,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
@@ -1329,7 +1331,9 @@ OnKilled1:
 	end;
 OnSummon2:
 	if('mob2 == 0 && rand(1000) == 0) {
-		set 'mob2,callmonster("pay_d03_i.gat",94,188,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled2");
+		set 'mob2,areacallmonster("pay_d03_i.gat",40,140,160,260,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled2");
+//		mobuseskillpos 'mob2,21,10,94,188,0,0;	// サンダーストーム
+//		mobuseskill 'mob2,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob2,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
@@ -1342,7 +1346,9 @@ OnKilled2:
 	end;
 OnSummon3:
 	if('mob3 == 0 && rand(1000) == 0) {
-		set 'mob3,callmonster("pay_d03_i.gat",210,221,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled3");
+		set 'mob3,areacallmonster("pay_d03_i.gat",150,180,270,260,"真理の魔法使い",3764,strnpcinfo(0)+"::OnKilled3");
+//		mobuseskillpos 'mob3,21,10,210,221,0,0;	// サンダーストーム
+//		mobuseskill 'mob3,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob3,"真理の魔法使い : 真理のための礎になりなさい";
 	}
 	else {
