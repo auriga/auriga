@@ -752,9 +752,9 @@
 //750,0,0,0,0,0,10,0,no,0,0,0,none,0	//NPC_EARTHQUAKE_K##
 //751,0,0,0,0,0,5,0,no,0,0,0,none,0	//NPC_ALL_STAT_DOWN##
 //752,0,0,0,0,0,3,0,no,0,0,0,none,0	//NPC_GRADUAL_GRAVITY##
-//753,0,0,0,0,0,3,0,no,0,0,0,none,0	//NPC_DAMAGE_HEAL##
-//754,0,0,0,0,0,10,0,no,0,0,0,none,0	//NPC_IMMUNE_PROPERTY##
-//755,0,0,0,0,0,1,0,no,0,0,0,none,0	//NPC_MOVE_COORDINATE##
+//753,0,0,0,0,0,3,0,no,0,0,0,none,0	//NPC_DAMAGE_HEAL#ダメージヒール#
+//754,0,0,0,0,0,10,0,no,0,0,0,none,0	//NPC_IMMUNE_PROPERTY#イミューンプロパティ#
+//755,0,0,0,0,0,1,0,no,0,0,0,none,0	//NPC_MOVE_COORDINATE#ポジションチェンジ#
 //756,0,0,0,0,0,5,0,no,0,0,0,none,0	//NPC_WIDEBLEEDING2##
 //757,0,0,0,0,0,5,0,no,0,0,0,none,0	//NPC_WIDESILENCE2##
 //758,0,0,0,0,0,5,0,no,0,0,0,none,0	//NPC_WIDESTUN2##

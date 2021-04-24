@@ -10690,7 +10690,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(flag&1) {
 			int heal = (status_get_lv(src) + status_get_int(src)) / 5 * 30;
 
-			clif_skill_nodamage(src,bl,skillid,heal,1);
+			clif_skill_nodamage(src,bl,AB_CHEAL,heal,1);
 			battle_heal(src,bl,heal,0,0);
 		} else {
 			int ar = skilllv * 2 + 1;

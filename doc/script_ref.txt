@@ -3866,6 +3866,20 @@ AurigaNPCScript
 			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
 			そのモンスターを倒したとき<event>を開始します。
 
+		areacallmonster 関数
+			areacallmonster(<gatname>,<x0>,<y0>,<x1>,<y1>,<mobname>,<mobid>[,<event>])
+
+			gatname,mobname	文字列
+			x0,y0,x1,y1,mobid	数値
+			event		文字列、省略可
+
+			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内に<mobname>を持つ<mobid>に指定されたID、もしくは名前を持つモンスターを1体出現させます。
+			成功した場合はobject_idを、そうでなければ0を返します。
+
+			<gatname>がthisの場合命令を実行したNPCのMAP、<x0><y0><x1><y1>が共に0以下の場合ランダム座標、
+			<mobname>が--en--の場合英語名、--ja--の場合日本語名、<mobid>が-1の場合ランダム。
+			そのモンスターを倒したとき<event>を開始します。
+
 		removemonster 関数
 			removemonster(<object_id>)
 

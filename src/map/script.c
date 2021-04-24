@@ -4279,6 +4279,7 @@ int buildin_getmdmapname(struct script_state *st);
 int buildin_getmdnpcname(struct script_state *st);
 int buildin_active_montransform(struct script_state *st);
 int buildin_callmonster(struct script_state *st);
+int buildin_areacallmonster(struct script_state *st);
 int buildin_removemonster(struct script_state *st);
 int buildin_mobuseskill(struct script_state *st);
 int buildin_mobuseskillpos(struct script_state *st);
@@ -4611,6 +4612,7 @@ struct script_function buildin_func[] = {
 	{buildin_getmdnpcname,"getmdnpcname","s"},
 	{buildin_active_montransform,"active_montransform","i*"},
 	{buildin_callmonster,"callmonster","siiss*"},
+	{buildin_areacallmonster,"areacallmonster","siiiiss*"},
 	{buildin_removemonster,"removemonster","i"},
 	{buildin_mobuseskill,"mobuseskill","iiiiiii"},
 	{buildin_mobuseskillpos,"mobuseskillpos","iiiiiii"},
@@ -13650,6 +13652,40 @@ int buildin_callmonster(struct script_state *st)
 
 	push_val(st->stack,C_INT,id);
 
+	return 0;
+}
+
+/*==========================================
+ * モンスター発生エリア指定
+ *------------------------------------------
+ */
+int buildin_areacallmonster(struct script_state *st)
+{
+	int mob_id,m,x0,y0,x1,y1,id;
+	char *str,*mapname,*mobname;
+	const char *event = "";
+
+	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	x0      = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	y0      = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	x1      = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	y1      = conv_num(st,& (st->stack->stack_data[st->start+6]));
+	str     = conv_str(st,& (st->stack->stack_data[st->start+7]));
+	mobname = conv_str(st,& (st->stack->stack_data[st->start+8]));
+
+	if((mob_id = atoi(mobname)) == 0)
+		mob_id = mobdb_searchname(mobname);
+	if(mob_id >= 0 && !mobdb_exists(mob_id))
+		return 0;
+
+	if(st->end > st->start+9)
+		event = conv_str(st,& (st->stack->stack_data[st->start+9]));
+
+	m = script_mapname2mapid(st,mapname);
+	if(m >= 0)
+		id = mob_once_spawn_area(map_id2sd(st->rid), m, x0, y0, x1, y1, str, mob_id, 1, event);
+
+	push_val(st->stack,C_INT,id);
 	return 0;
 }
 
