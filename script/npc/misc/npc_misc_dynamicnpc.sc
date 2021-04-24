@@ -43,7 +43,6 @@ function	script	CallDynamicNPC	{
 -	script	Dynamicnpc#zonda	-1,{
 	set '@npcname$,"["+strnpcinfo(1)+"]";
 	if(countitem(14902) < 1) {
-		// 未調査
 		cutin "zonda_" +strnpcinfo(2)+ ".bmp", 2;
 		mes '@npcname$;
 		mes "こんにちは、冒険者様。";
@@ -53,9 +52,24 @@ function	script	CallDynamicNPC	{
 		mes "所持しておられないようです。";
 		next;
 		mes '@npcname$;
-		mes "サポートをお求めの場合、";
-		mes "ジョンダパスを所持した状態で";
-		mes "お声掛けください。";
+		mes "ジョンダパスは";
+		mes "プロンテラなどの各都市にいる";
+		mes "^FF0000スペシャルアイテム販売員^000000にて";
+		mes "ご購入いただける^FF0000ジョンダパスの箱^000000から";
+		mes "取り出すことができる特別なアイテムです。";
+		next;
+		mes "【^0000FFInformation^000000】";
+		mes "^006400ジョンダパスを所持して";
+		mes "ジョンダノービスに話しかけると、";
+		mes "冒険に役立つサポート魔法を";
+		mes "何度でも受けることができます。";
+		mes "詳しくは公式サイトをご覧ください。^000000";
+		next;
+		mes '@npcname$;
+		mes "ジョンダパスをお持ちであれば";
+		mes "ぜひ、お声掛けください。";
+		mes "冒険者様にご満足いただけるよう";
+		mes "尽力させていただきます。";
 		close2;
 		cutin "zonda_n01.bmp", 255;
 		end;
@@ -545,7 +559,6 @@ function	script	CallDynamicNPC	{
 						mes "^FF0000アマツダンジョン^000000の";
 						mes "どちらに向かわれますか？";
 						next;
-						// 未調査
 						switch(select("アマツダンジョン 03","ダンジョン選択へ戻る")) {
 						case 1: set '@map$,"ama_dun03.gat";	set '@x,120;	set '@y,12;	if(AMA_1QUE < 6) set '@flag,1;	break;	// 通行手形クエスト
 						default:
@@ -1137,10 +1150,10 @@ function	script	CallDynamicNPC	{
 									"歪んだ迷宮の森",
 									"ダンジョン選択に戻る"
 					)) {
-					case 1: set '@map$,"pay_dun03.gat";		set '@x,150;	set '@y,45;	break;
-					case 2: set '@map$,"ice_dun02.gat";		set '@x,150;	set '@y,16;	break;
-					case 3: set '@flag,1; break;
-					case 4: set '@flag,1; break;
+					case 1: set '@map$,"pay_dun03.gat";		set '@x,150;	set '@y,45;	if(IL_MOON_QUE < 9) set '@flag,1; break;
+					case 2: set '@map$,"ice_dun02.gat";		set '@x,150;	set '@y,16;	if(!checkquest(202080)) set '@flag,1; break;
+					case 3: set '@map$,"gef_dun01.gat";		set '@x,135;	set '@y,220;	if(IL_VAMP_QUE < 16) set '@flag,1; break;
+					case 4: set '@map$,"alberta.gat";		set '@x,216;	set '@y,28;	if(IL_TUR_QUE < 9) set '@flag,1; break;
 					case 5: set '@flag,1; break;
 					case 6: set '@flag,1; break;
 					case 7: set '@flag,1; break;
@@ -1284,13 +1297,13 @@ function	script	CallDynamicNPC	{
 						mes "どちらに向かわれますか？";
 						next;
 						switch(select("ゲフェン魔法大会","サラの記憶","呪いの剣士","飛行船襲撃","フェイスワームの巣","フェンリルとサラ","魔神の塔","ダンジョン選択に戻る")) {
-						case 1: break;
-						case 2: break;
-						case 3: break;
-						case 4: break;
-						case 5: break;
-						case 6: break;
-						case 7: break;
+						case 1: set '@map$,"dali.gat";		set '@x,94;		set '@y,144;	break;
+						case 2: set '@map$,"dali.gat";		set '@x,134;	set '@y,111;	break;
+						case 3: set '@map$,"dali02.gat";	set '@x,46;		set '@y,129;	break;
+						case 4: set '@map$,"dali02.gat";	set '@x,137;	set '@y,82;		break;
+						case 5: set '@map$,"dali.gat";		set '@x,85;		set '@y,62;		break;
+						case 6: set '@map$,"dali02.gat";	set '@x,91;		set '@y,140;	break;
+						case 7: set '@map$,"dali02.gat";	set '@x,134;	set '@y,112;	break;
 						default:
 							continue;
 						}
