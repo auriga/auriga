@@ -10,6 +10,23 @@
 alberta.gat,211,28,5	script	騎士エイルバル#illtur	405,{
 	switch(IL_TUR_QUE) {
 	case 0:
+		if(BaseLevel < 170) {
+			mes "[騎士エイルバル]";
+			mes "もしかして冒険者様ですか？";
+			mes "もしそうなら是非";
+			mes "お願いしたいことが……。";
+			next;
+			mes "[騎士エイルバル]";
+			mes "……おや、まだ修行中の";
+			mes "冒険者でしたか。";
+			mes "失礼いたしました。";
+			mes "危険な仕事に修行中の方を、";
+			mes "巻き込む訳にはいきません。";
+			next;
+			mes "‐^4d4dffBaseLv170以上の時";
+			mes "　進行可能なクエストです。^000000‐";
+			close;
+		}
 		mes "[騎士エイルバル]";
 		mes "もしかして冒険者様ですか？";
 		mes "もしそうなら是非";
@@ -2258,6 +2275,8 @@ OnInit:
 OnSummon:
 	if('mob == 0 && rand(500) == 0) {
 		set 'mob,areacallmonster("tur_d03_j.gat",0,0,0,0,"不吉なソリッドタートル",3802,strnpcinfo(0)+"::OnKilled");
+//		mobuseskillpos 'mob,21,10,210,221,0,0;	// サンダーストーム
+//		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob,"不吉なソリッドタートル : ……。";
 	}
 	else {
@@ -2278,6 +2297,8 @@ OnInit:
 OnSummon:
 	if('mob == 0 && rand(500) == 0) {
 		set 'mob,areacallmonster("tur_d04_j.gat",0,0,0,0,"不吉なソリッドタートル",3802,strnpcinfo(0)+"::OnKilled");
+//		mobuseskillpos 'mob,21,10,210,221,0,0;	// サンダーストーム
+//		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob,"不吉なソリッドタートル : ……。";
 	}
 	else {
