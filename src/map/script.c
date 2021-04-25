@@ -10878,7 +10878,7 @@ int buildin_getmapxy(struct script_state *st)
 		case 3:		// Get Mob Position
 			if( st->end > st->start+6 )
 				md = map_id2md(conv_num(st,& (st->stack->stack_data[st->start+6])));
-			if ( md==NULL || md->bl.prev == NULL || md->hp <= 0) {	// wrong mob id
+			if( md==NULL || md->bl.prev == NULL ) {	// wrong mob id
 				push_val(st->stack,C_INT,-1);
 				return 0;
 			}
