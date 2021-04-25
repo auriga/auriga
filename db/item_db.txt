@@ -1273,7 +1273,7 @@
 
 2053,Unknown_Item,アビススタッフ,9,,,2400,,,1,1,0,,34,4,165,,1,{},{}
 
-2059,Unknown_Item,イリュージョンサバイバルスタッフ,9,,,1200,100:240,,1,1,134283776,2,34,4,150,23,1,{},{ bonus bInt,3; bonus bDex,3; if(BaseLevel >= 170) '@p = 10; bonus2 bSubSize,Size_Small,20+'@p; bonus2 bSubSize,Size_Medium,20+'@p; bonus2 bSubSize,Size_Big,20+'@p; bonus2 bMagicSubSize,Size_Small,20+'@p; bonus2 bMagicSubSize,Size_Medium,20+'@p; bonus2 bMagicSubSize,Size_Big,20+'@p; if(getequipid(5) == 20847) { '@p = getequiprefinerycnt(4)*3; bonus2 bMagicAddRace,Rct_Boss,10+'@p; bonus2 bMagicAddRace,Rct_NonBoss,10+'@p; for('@i=1;'@i<=4;'@i++) bonus2 bSubEle,'@i,40; bonus bMaxHP,getequiprefinerycnt(5)*1000; }
+2059,Unknown_Item,イリュージョンサバイバルスタッフ,9,,,1200,100:240,,1,1,134283776,2,34,4,150,23,1,{},{ bonus bInt,3; bonus bDex,3; if(BaseLevel >= 170) '@p = 10; bonus2 bSubSize,Size_Small,20+'@p; bonus2 bSubSize,Size_Medium,20+'@p; bonus2 bSubSize,Size_Big,20+'@p; bonus2 bMagicSubSize,Size_Small,20+'@p; bonus2 bMagicSubSize,Size_Medium,20+'@p; bonus2 bMagicSubSize,Size_Big,20+'@p; if(getequipid(5) == 20847) { '@p = getequiprefinerycnt(4)*3; bonus2 bMagicAddRace,Rct_Boss,10+'@p; bonus2 bMagicAddRace,Rct_NonBoss,10+'@p; for('@i=1;'@i<=4;'@i++) bonus2 bSubEle,'@i,40; bonus bMaxHP,getequiprefinerycnt(5)*1000; } }
 
 2061,Unknown_Item,スタッフオブミラクル,9,,,2400,,,1,1,512,,34,4,100,,1,{},{}
 2062,Unknown_Item,グラビテーションスタッフ,9,,,2400,,,1,1,512,,34,4,100,,1,{},{}
