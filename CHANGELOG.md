@@ -1,4 +1,10 @@
 ----------------------------------------
+//1451 [2021/04/25] by refis
+
+・性差メッセージを補完
+（npc_quest_illusionturtleisland.sc, npc_quest_illusionvampire.sc）
+
+----------------------------------------
 //1450 [2021/04/25] by refis
 
 ・スクリプト命令「getmapxy」において、
