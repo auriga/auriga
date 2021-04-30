@@ -768,7 +768,7 @@ OnInit:
 		set '@cost,3;
 		break;
 	}
-	set '@i,printarray('@menu$)-2;
+	set '@i,select(printarray('@menu$))-2;
 	if('@i == -1) {
 		mes "[”L‚ÌèEˆõ]";
 		mes "‚É‚á‚É‚á`";
