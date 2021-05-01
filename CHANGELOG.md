@@ -1,4 +1,12 @@
 ----------------------------------------
+//1455 [2021/05/01] by refis
+
+・battle_auriga.confを設定項目ごとに内容整理（battle_auriga.conf）
+	-> 並び順の入れ替えのみで、設定変更や漏れはないはずですが
+	   運用中のAurigaの場合はbattle_auriga.confをimport/battle_conf.txtへ
+	   反映させる等してください
+
+----------------------------------------
 //1454 [2021/04/30] by refis
 
 ・script_erase_sleeptimerへ構造体で渡さないように修正（map.c, script.*）
