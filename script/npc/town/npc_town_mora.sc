@@ -11499,11 +11499,13 @@ mora.gat,152,97,5	script	アーティファクト管理人	515,{
 			}
 			set '@itemid,getequipid(4);
 			setarray '@artifact,2007,2008,2009,2010,1657,16013;
+			setarray '@gain,2011,2012,2013,2014,1660,16018;
+			setarray '@type,1,1,1,1,2,3;
 			for(set '@i,0; '@i < getarraysize('@artifact); set '@i,'@i+1) {
 				if('@itemid == '@artifact['@i])
 					break;
 			}
-			if('@i == '@len) {
+			if('@i == getarraysize('@artifact)) {
 				mes "[管理人]";
 				mes "ウォーロック、";
 				mes "またはアークビショップの";
@@ -11512,7 +11514,7 @@ mora.gat,152,97,5	script	アーティファクト管理人	515,{
 				mes "装備してから話しかけてください。";
 				close;
 			}
-			set '@refine,getequiprefinerycnt('@menu);
+			set '@refine,getequiprefinerycnt(4);
 			if('@refine < 7) {
 				mes "[管理人]";
 				mes "そのアーティファクトは";
@@ -11522,9 +11524,54 @@ mora.gat,152,97,5	script	アーティファクト管理人	515,{
 				mes "できません。";
 				close;
 			}
-			// 未調査
-			mes "[未調査]";
-			close;
+			set '@card3,getequipcardid(4,2);
+			set '@card4,getequipcardid(4,3);
+			switch('@type['@i]) {
+			case 1:
+				if( ('@card3 == 4711 || '@card3 == 4721) && ('@card4 == 4710 || '@card4 == 4720) )
+					set '@true,1;
+				break;
+			case 2:
+				if( (('@card3 == 4711 || '@card3 == 4721 || '@card3 == 4741) && '@card4 == 4710) ||
+				    (('@card3 == 4711 || '@card3 == 4721) && '@card4 == 4720) ||
+				    ('@card3 == 4711 && '@card4 == 4740) )
+					set '@true,1;
+				break;
+			case 3:
+				if( ('@card3 == 4711 || '@card3 == 4701 || '@card3 == 4721) && ('@card4 == 4710 || '@card4 == 4700 || '@card4 == 4720) )
+					set '@true,1;
+				break;
+			}
+			if('@true) {
+				// 未調査
+				mes "[管理人]";
+				mes "^0000FF" +getitemname('@artifact['@i])+ "^000000を";
+				mes "^0000FF" +getitemname('@gain['@i])+ "^000000と";
+				mes "交換してよろしいですか？";
+				mes "交換した際には精錬値と";
+				mes "オプションは消去されます。";
+				next;
+				if(select("交換しない","交換する") == 1) {
+					mes "[管理人]";
+					mes "そうですか、必要になったら";
+					mes "またいらしてください。";
+					close;
+				}
+				delequip 4;
+				getitem '@gain['@i],1;
+				mes "[管理人]";
+				mes "上位武器に交換致しました。";
+				mes "お受け取りください。";
+				close;
+			}
+			else {
+				mes "[管理人]";
+				mes "残念ながら、";
+				mes "上位の武器を交換することは";
+				mes "できません。";
+				mes "必要なエンチャント効果がありません。";
+				close;
+			}
 		}
 		if('@gain == 0) {
 			mes "[管理人]";
