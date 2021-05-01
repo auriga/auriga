@@ -1,4 +1,9 @@
 ----------------------------------------
+//1457 [2021/05/01] by refis
+
+・item_bonusの説明文を少し修正（item_bonus.txt）
+
+----------------------------------------
 //1456 [2021/05/01] by refis
 
 ・mapflag「nocostume」を追加（const.txt, script_ref.txt, 
