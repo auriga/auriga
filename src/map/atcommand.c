@@ -3856,6 +3856,7 @@ int atcommand_mapinfo(const int fd, struct map_session_data* sd, AtCommandType c
 	msg_output(fd, "No Monster Teleport: %s", (map[m_id].flag.monster_noteleport) ? "True" : "False");
 	msg_output(fd, "No Zeny Penalty: %s", (map[m_id].flag.nozenypenalty) ? "True" : "False");
 	msg_output(fd, "No IceWall: %s", (map[m_id].flag.noicewall) ? "True" : "False");
+	msg_output(fd, "No Costume: %s", (map[m_id].flag.nocostume) ? "True" : "False");
 	msg_output(fd, "PK: %s", (map[m_id].flag.pk) ? "True" : "False");
 
 	switch (list) {

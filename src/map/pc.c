@@ -7708,6 +7708,87 @@ int pc_cleareventtimer(struct map_session_data *sd)
 }
 
 /*==========================================
+ * ï¿½Rï¿½Xï¿½`ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ð”½‰fï¿½ï¿½ï¿½ï¿½
+ *------------------------------------------
+ */
+void pc_costumelook(struct map_session_data *sd)
+{
+	int i = -1, head_low = 0, head_mid = 0, head_top = 0, robe = 0;
+
+	nullpo_retv(sd);
+
+	head_low = sd->status.head_bottom;
+	head_mid = sd->status.head_mid;
+	head_top = sd->status.head_top;
+	robe = sd->status.robe;
+
+	sd->status.head_bottom = sd->status.head_mid = sd->status.head_top = sd->status.robe = 0;
+
+	if((i = sd->equip_index[EQUIP_INDEX_HEAD]) >= 0) {
+		if(sd->inventory_data[i])
+			sd->status.head_bottom = sd->inventory_data[i]->look;
+		else
+			sd->status.head_bottom = 0;
+	}
+	if((i = sd->equip_index[EQUIP_INDEX_HEAD2]) >= 0) {
+		if(sd->inventory_data[i])
+			sd->status.head_top = sd->inventory_data[i]->look;
+		else
+			sd->status.head_top = 0;
+	}
+	if((i = sd->equip_index[EQUIP_INDEX_HEAD3]) >= 0) {
+		if(sd->inventory_data[i])
+			sd->status.head_mid = sd->inventory_data[i]->look;
+		else
+			sd->status.head_mid = 0;
+	}
+	if((i = sd->equip_index[EQUIP_INDEX_ROBE]) >= 0) {
+		if(sd->inventory_data[i])
+			sd->status.robe = sd->inventory_data[i]->look;
+		else
+			sd->status.robe = 0;
+	}
+	if(!map[sd->bl.m].flag.nocostume) {
+		if((i = sd->equip_index[EQUIP_INDEX_COSTUME_HEAD]) >= 0) {
+			if(sd->inventory_data[i])
+				sd->status.head_bottom = sd->inventory_data[i]->look;
+			else
+				sd->status.head_bottom = 0;
+		}
+		if((i = sd->equip_index[EQUIP_INDEX_COSTUME_HEAD2]) >= 0) {
+			if(sd->inventory_data[i])
+				sd->status.head_top = sd->inventory_data[i]->look;
+			else
+				sd->status.head_top = 0;
+		}
+		if((i = sd->equip_index[EQUIP_INDEX_COSTUME_HEAD3]) >= 0) {
+			if(sd->inventory_data[i])
+				sd->status.head_mid = sd->inventory_data[i]->look;
+			else
+				sd->status.head_mid = 0;
+		}
+		if((i = sd->equip_index[EQUIP_INDEX_COSTUME_ROBE]) >= 0) {
+			if(sd->inventory_data[i])
+				sd->status.robe = sd->inventory_data[i]->look;
+			else
+				sd->status.robe = 0;
+		}
+		if((i = sd->equip_index[EQUIP_INDEX_COSTUME_FLOOR]) >= 0) {
+			if(sd->inventory_data[i])
+				clif_changelook(&sd->bl,LOOK_FLOOR,sd->inventory_data[i]->look);
+		}
+	}
+	if(head_low != sd->status.head_bottom)
+		clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
+	if(head_top != sd->status.head_top)
+		clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
+	if(head_mid != sd->status.head_mid)
+		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
+	if(robe != sd->status.robe)
+		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+}
+
+/*==========================================
  * ƒAƒCƒeƒ€‚ð‘•”õ‚·‚é
  *------------------------------------------
  */
@@ -7813,7 +7894,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 		}
 	}
-	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD && !map[sd->bl.m].flag.nocostume) {
 		if(sd->inventory_data[n])
 			sd->status.head_bottom = sd->inventory_data[n]->look;
 		else
@@ -7829,7 +7910,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 		}
 	}
-	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2 && !map[sd->bl.m].flag.nocostume) {
 		if(sd->inventory_data[n])
 			sd->status.head_top = sd->inventory_data[n]->look;
 		else
@@ -7845,7 +7926,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 		}
 	}
-	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
+	if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3 && !map[sd->bl.m].flag.nocostume) {
 		if(sd->inventory_data[n])
 			sd->status.head_mid = sd->inventory_data[n]->look;
 		else
@@ -7863,14 +7944,14 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 			clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
 		}
 	}
-	if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
+	if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE && !map[sd->bl.m].flag.nocostume) {
 		if(sd->inventory_data[n])
 			sd->status.robe = sd->inventory_data[n]->look;
 		else
 			sd->status.robe = 0;
 		clif_changelook(&sd->bl,LOOK_ROBE,sd->inventory_data[n]->look);
 	}
-	if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
+	if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR && !map[sd->bl.m].flag.nocostume) {
 		if(sd->inventory_data[n])
 			clif_changelook(&sd->bl,LOOK_FLOOR,sd->inventory_data[n]->look);
 	}
@@ -7960,7 +8041,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
 			}
 		}
-		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD) {
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD && !map[sd->bl.m].flag.nocostume) {
 			if(sd->equip_index[EQUIP_INDEX_HEAD] < 0) {
 				sd->status.head_bottom = 0;
 				clif_changelook(&sd->bl,LOOK_HEAD_BOTTOM,sd->status.head_bottom);
@@ -7977,7 +8058,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
 			}
 		}
-		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2) {
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD2 && !map[sd->bl.m].flag.nocostume) {
 			if(sd->equip_index[EQUIP_INDEX_HEAD2] < 0) {
 				sd->status.head_top = 0;
 				clif_changelook(&sd->bl,LOOK_HEAD_TOP,sd->status.head_top);
@@ -7994,7 +8075,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 			}
 		}
-		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3) {
+		if(sd->status.inventory[n].equip & LOC_COSTUME_HEAD3 && !map[sd->bl.m].flag.nocostume) {
 			if(sd->equip_index[EQUIP_INDEX_HEAD3] < 0) {
 				sd->status.head_mid = 0;
 				clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
@@ -8013,7 +8094,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
 			}
 		}
-		if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE) {
+		if(sd->status.inventory[n].equip & LOC_COSTUME_ROBE && !map[sd->bl.m].flag.nocostume) {
 			if(sd->equip_index[EQUIP_INDEX_ROBE] < 0) {
 				sd->status.robe = 0;
 				clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
@@ -8024,7 +8105,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 				}
 			}
 		}
-		if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR) {
+		if(sd->status.inventory[n].equip & LOC_COSTUME_FLOOR && !map[sd->bl.m].flag.nocostume) {
 			clif_changelook(&sd->bl,LOOK_FLOOR,0);
 		}
 

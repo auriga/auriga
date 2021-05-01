@@ -13678,13 +13678,13 @@ void clif_mapproperty(struct map_session_data *sd)
 	WFIFOB(fd,23) = (map[sd->bl.m].flag.pvp)? 0x1: 0;	// count pk
 	WFIFOB(fd,24) = 0;	// no party formation
 	WFIFOB(fd,25) = 0;	// battle field
-	WFIFOB(fd,26) = (map[sd->bl.m].flag.gvg)? 0x1: 0;	// disable costume item
-	WFIFOB(fd,27) = 0;
-	WFIFOB(fd,28) = 0;
-	WFIFOB(fd,29) = 0;
-	WFIFOB(fd,30) = 0;
+	WFIFOB(fd,26) = (map[sd->bl.m].flag.nocostume)? 0x1: 0;	// disable costume item
+	WFIFOB(fd,27) = 0;	// prevent party make
+	WFIFOB(fd,28) = 0;	// prevent party join
+	WFIFOB(fd,29) = 0;	// prevent party reave
+	WFIFOB(fd,30) = 0;	// prevent party expel
 	WFIFOB(fd,31) = 1;	// show hp bar
-	WFIFOB(fd,32) = 0;
+	WFIFOB(fd,32) = 0;	// prevent party master change
 	WFIFOSET(fd,WFIFOW(fd,2));
 #else
 	WFIFOW(fd,0) = 0x99b;
@@ -21812,6 +21812,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 #else
 	clif_changelook(&sd->bl,LOOK_WEAPON,0);
 #endif
+	pc_costumelook(sd);
 
 	// option系初期化(クライアントに対する...)
 	// 同一パケを2回送ることでも十分ですが、気持ち悪いので0で初期化という形に

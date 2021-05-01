@@ -1,4 +1,10 @@
 ----------------------------------------
+//1456 [2021/05/01] by refis
+
+・mapflag「nocostume」を追加（const.txt, script_ref.txt, 
+ atcommand.c, clif.c, map.h, npc.c, pc.*, script.c）
+
+----------------------------------------
 //1455 [2021/05/01] by refis
 
 ・battle_auriga.confを設定項目ごとに内容整理（battle_auriga.conf）

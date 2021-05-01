@@ -352,7 +352,8 @@ mf_turbo		38
 mf_norevive		39
 mf_nocommand		40
 mf_nojump		41
-mf_town			42
+mf_nocostume	42
+mf_town			43
 
 //PCステータス
 StatusPoint	9	1

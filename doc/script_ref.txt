@@ -319,6 +319,8 @@ AurigaNPCScript
 				GMレベルが<lv>未満のプレイヤーに対してコマンドの使用を無効にします。
 			nojump<tab>dummy
 				スキル「ノピティギ」の使用を禁止します。
+			nocostume<tab>dummy
+				コスチュームの見た目が反映されなくなります。
 			town<tab>dummy
 				街MAPモードになります。
 
