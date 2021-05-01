@@ -683,9 +683,9 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 
 		// エナジーコート
 #ifdef PRE_RENEWAL
-		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID)
+		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&BF_WEAPON && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID && (src != bl && skill_num == NPC_EARTHQUAKE))
 #else
-		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&(BF_WEAPON|BF_MAGIC) && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID)
+		if(sc->data[SC_ENERGYCOAT].timer != -1 && damage > 0 && flag&(BF_WEAPON|BF_MAGIC) && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID && (src != bl && skill_num == NPC_EARTHQUAKE))
 #endif
 		{
 			if(tsd) {
@@ -1577,6 +1577,9 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		// マキシマイズパワー
 		atkmin = atkmax;
 	}
+	if(skill_num == NPC_EARTHQUAKE)
+		// アースクエイク
+		atkmin = atkmax;
 
 	if(type == 0x0a) {
 		/* クリティカル攻撃 */
@@ -1779,6 +1782,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	) {
 		if( skill_num != CR_GRANDCROSS &&
 		    skill_num != NPC_GRANDDARKNESS &&
+		    skill_num != NPC_EARTHQUAKE &&
 		    skill_num != RA_CLUSTERBOMB &&
 		    skill_num != RA_FIRINGTRAP &&
 		    skill_num != RA_ICEBOUNDTRAP &&
@@ -2123,6 +2127,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case GS_MAGICALBULLET:	// マジカルバレット
 		case ASC_BREAKER:		// ソウルブレイカー
 #endif
+		case NPC_EARTHQUAKE:	// アースクエイク
 		case NPC_EXPULSION:		// エクスパルシオン
 		case NPC_VENOMFOG:		// ベナムフォグ
 		case RK_DRAGONBREATH:	// ファイアードラゴンブレス
@@ -2425,6 +2430,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case KN_AUTOCOUNTER:
 		case CR_GRANDCROSS:
 		case NPC_GRANDDARKNESS:
+		case NPC_EARTHQUAKE:
 		case MO_EXTREMITYFIST:
 		case AM_DEMONSTRATION:
 		case AM_ACIDTERROR:
@@ -2741,6 +2747,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case TF_POISON:
 			case AS_SONICBLOW:
 			case ASC_BREAKER:
+			case NPC_EARTHQUAKE:
 			case GC_CROSSIMPACT:
 			case GC_DARKILLUSION:
 			case GC_VENOMPRESSURE:
@@ -2800,6 +2807,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			case MO_EXTREMITYFIST:
 			case CR_GRANDCROSS:
 			case NPC_GRANDDARKNESS:
+			case NPC_EARTHQUAKE:
 			case AM_DEMONSTRATION:
 			case AM_ACIDTERROR:
 			case PA_SHIELDCHAIN:
@@ -2875,7 +2883,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）カードによるダメージ減衰処理２ */
-		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != NPC_CRITICALSLASH) {	// 対象がPCの場合
+		if( target_sd && (wd.damage > 0 || wd.damage2 > 0) && skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != NPC_CRITICALSLASH && skill_num != NPC_EARTHQUAKE) {	// 対象がPCの場合
 			int s_race  = status_get_race(src);
 			cardfix = 100;
 			if(src_sd) {
@@ -2918,7 +2926,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #endif
 
 		/* スキル倍率計算に加算 */
-		if(sc) {
+		if(sc && skill_num != NPC_EARTHQUAKE) {
 #ifndef PRE_RENEWAL
 			// オーバートラスト
 			if(sc->data[SC_OVERTHRUST].timer != -1)
@@ -4562,6 +4570,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case MO_INVESTIGATE:
 		case MO_EXTREMITYFIST:
 		case CR_ACIDDEMONSTRATION:
+		case NPC_EARTHQUAKE:
 		case NJ_ZENYNAGE:
 		case GN_FIRE_EXPANSION_ACID:
 		case KO_MUCHANAGE:
@@ -4678,6 +4687,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_ZENYNAGE:
 		case NPC_CRITICALSLASH:
 		case NPC_VENOMFOG:
+		case NPC_EARTHQUAKE:
 		case GS_PIERCINGSHOT:
 		case RA_CLUSTERBOMB:
 		case RA_FIRINGTRAP:
@@ -5025,6 +5035,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		    case MO_EXTREMITYFIST:
 		    case CR_GRANDCROSS:
 		    case NPC_GRANDDARKNESS:
+		    case NPC_EARTHQUAKE:
 		    case LK_SPIRALPIERCE:
 		   	case CR_ACIDDEMONSTRATION:
 		    case NJ_ZENYNAGE:
@@ -5408,6 +5419,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case SR_DRAGONCOMBO:	// 双龍脚
 	case SR_SKYNETBLOW:		// 天羅地網
 	case SR_FALLENEMPIRE:	// 大纏崩捶
+	case NPC_ARROWSTORM:	// Mアローストーム
 		// 1Hitを分割して表示するスキル
 		break;
 	}
@@ -5698,7 +5710,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	}
 
 	/* 34．ダメージ最終計算 */
-	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != RA_CLUSTERBOMB && skill_num != RA_FIRINGTRAP && skill_num != RA_ICEBOUNDTRAP &&
+	if(skill_num != CR_GRANDCROSS && skill_num != NPC_GRANDDARKNESS && skill_num != NPC_EARTHQUAKE && skill_num != RA_CLUSTERBOMB && skill_num != RA_FIRINGTRAP && skill_num != RA_ICEBOUNDTRAP &&
 	   skill_num != LG_RAYOFGENESIS && skill_num != SO_VARETYR_SPEAR) {
 		if(wd.damage2 < 1) {		// ダメージ最終修正
 			wd.damage  = battle_calc_damage(src,target,wd.damage,wd.div_,skill_num,skill_lv,wd.flag);
@@ -6380,13 +6392,11 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_EARTHQUAKE:	// アースクエイク
 			{
 				static const int dmg[10] = { 300, 500, 600, 800, 1000, 1200, 1300, 1500, 1600, 1800 };
-				int matk1 = status_get_atk(bl);
-				int matk2 = status_get_atk2(bl);
+				static struct Damage wd = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-				if(matk2 > matk1)
-					mgd.damage = matk1+atn_rand()%(matk2-matk1+1);
-				else
-					mgd.damage = matk1;
+				wd = battle_calc_weapon_attack(bl,bl,skill_num,skill_lv,flag);
+
+				mgd.damage = wd.damage;
 				if(mdef1 < 1000000)
 					mdef1 = mdef2 = 0;	// MDEF無視
 				if(skill_lv <= sizeof(dmg)/sizeof(dmg[0])) {
@@ -6397,6 +6407,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				if(flag > 1) {
 					MATK_FIX( 1, flag );
 				}
+				normalmagic_flag = 0;
 			}
 			break;
 		case NPC_EVILLAND:	// イービルランド
@@ -6770,7 +6781,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 #ifdef PRE_RENEWAL
 	/* ５．カードによるダメージ追加処理 */
-	if(sd && mgd.damage > 0) {
+	if(sd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE) {
 		cardfix = 100;
 		if(tsd)
 			cardfix = cardfix*(100+sd->magic_addrace[t_race]+sd->magic_addrace[RCT_PLAYER])/100;
@@ -6812,7 +6823,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 #endif
 
 	/* ６．カードによるダメージ減衰処理 */
-	if(tsd && mgd.damage > 0) {
+	if(tsd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE) {
 		int s_class = status_get_class(bl);
 		cardfix = 100;
 		cardfix = cardfix*(100-tsd->subele[ele])/100;				// 属性によるダメージ耐性
@@ -6995,7 +7006,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	}
 
 	/* 13．ダメージ最終計算 */
-	if(skill_num != ASC_BREAKER && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID)
+	if(skill_num != ASC_BREAKER && skill_num != CR_ACIDDEMONSTRATION && skill_num != GN_FIRE_EXPANSION_ACID && skill_num != NPC_EARTHQUAKE)
 		mgd.damage = battle_calc_damage(bl,target,mgd.damage,mgd.div_,skill_num,skill_lv,mgd.flag);
 
 	/* 14．魔法でもオートスペル発動(item_bonus) */
