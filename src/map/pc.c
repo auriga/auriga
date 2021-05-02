@@ -3710,6 +3710,34 @@ int pc_checkskill2(struct map_session_data *sd,int skill_id)
 }
 
 /*==========================================
+ * ƒXƒLƒ‹‚ÌŒŸõ Š—L‚µ‚Ä‚¢‚½ê‡Lv‚ª•Ô‚é
+ *------------------------------------------
+ */
+int pc_checkskill_summoner(struct map_session_data *sd, int skill_id) {
+	int count = 0;
+
+	if(sd == NULL)
+		return 0;
+
+	switch(skill_id) {
+	case SU_POWEROFSEA:
+		count = pc_checkskill(sd, SU_TUNABELLY) + pc_checkskill(sd, SU_TUNAPARTY) + pc_checkskill(sd, SU_BUNCHOFSHRIMP) + pc_checkskill(sd, SU_FRESHSHRIMP) +
+			pc_checkskill(sd, SU_GROOMING) + pc_checkskill(sd, SU_PURRING) + pc_checkskill(sd, SU_SHRIMPARTY);
+		break;
+	case SU_POWEROFLAND:
+		count = pc_checkskill(sd, SU_SV_STEMSPEAR) + pc_checkskill(sd, SU_CN_POWDERING) + pc_checkskill(sd, SU_CN_METEOR) + pc_checkskill(sd, SU_SV_ROOTTWIST) +
+			pc_checkskill(sd, SU_CHATTERING) + pc_checkskill(sd, SU_MEOWMEOW) + pc_checkskill(sd, SU_NYANGGRASS);
+		break;
+	case SU_POWEROFLIFE:
+		count = pc_checkskill(sd, SU_SCAROFTAROU) + pc_checkskill(sd, SU_PICKYPECK) + pc_checkskill(sd, SU_ARCLOUSEDASH) + pc_checkskill(sd, SU_LUNATICCARROTBEAT) +
+			pc_checkskill(sd, SU_HISS) + pc_checkskill(sd, SU_POWEROFFLOCK) + pc_checkskill(sd, SU_SVG_SPIRIT);
+		break;
+	}
+
+	return count;
+}
+
+/*==========================================
  * •Ší•ÏX‚É‚æ‚éƒXƒLƒ‹‚ÌŒp‘±ƒ`ƒFƒbƒN
  *------------------------------------------
  */
@@ -7708,7 +7736,7 @@ int pc_cleareventtimer(struct map_session_data *sd)
 }
 
 /*==========================================
- * ï¿½Rï¿½Xï¿½`ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ğ”½‰fï¿½ï¿½ï¿½ï¿½
+ * ƒRƒXƒ`ƒ…[ƒ€‚ğ”½‰f‚·‚é
  *------------------------------------------
  */
 void pc_costumelook(struct map_session_data *sd)

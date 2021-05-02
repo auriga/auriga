@@ -1496,10 +1496,10 @@ L_RECALC:
 	sd->flee2    += sd->paramc[5] + 10;
 	sd->critical += sd->paramc[5] * 3 + 10;
 #else
-	dstr = sd->paramc[3]/8;
+	dstr = sd->paramc[3]/7;
 
-	sd->base_atk += (int)(str + dex/5. + sd->paramc[5]/3. + sd->status.base_level/4.);
-	sd->matk2    += sd->paramc[3] + (dstr*dstr*dstr)/40 + sd->paramc[5]/3;
+	sd->base_atk += (int)(str + dex/5. + sd->paramc[5]/3.);
+	sd->matk2    += sd->paramc[3] + (dstr*dstr)/3 + sd->paramc[4]/5 + sd->paramc[5]/3;
 
 	sd->hit      += 175 + sd->paramc[4] + sd->paramc[5]/3 + sd->status.base_level;
 	sd->flee     += 100 + sd->paramc[1] + sd->paramc[5]/5 + sd->status.base_level;
@@ -1509,7 +1509,7 @@ L_RECALC:
 		sd->flee2    += sd->paramc[5] * 120 / 100 + 10;
 	else
 		sd->flee2    += sd->paramc[5] + 10;
-	sd->critical += sd->paramc[5]*33/10 + 10;
+	sd->critical += sd->paramc[5] / 3 * 10 + 10;
 #endif
 
 	// アイテム補正
@@ -1657,6 +1657,10 @@ L_RECALC:
 	if(pc_checkskill(sd,SU_POWEROFSEA) > 0) {	// 海の力
 		sd->status.max_hp += 1000;
 		sd->status.max_sp += 100;
+		if(pc_checkskill_summoner(sd, SU_POWEROFSEA) >= 20) {
+			sd->status.max_hp += 3000;
+			sd->status.max_sp += 300;
+		}
 	}
 
 	// bAtkRange2,bAtkRangeRate2の射程計算

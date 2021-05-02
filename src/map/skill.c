@@ -20344,7 +20344,11 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 		// メディタティオ
 		skill += pc_checkskill(sd,HP_MEDITATIO) * 2;
 		// 海の力
-		skill += pc_checkskill(sd,SU_POWEROFSEA)>0? 50: 0;
+		if(pc_checkskill(sd,SU_POWEROFSEA) > 0) {
+			skill += 50;
+			if(pc_checkskill_summoner(sd, SU_POWEROFSEA) >= 20)
+				skill += 100;
+		}
 		// 海の魂(新鮮なエビ)
 		if(skill_id == SU_FRESHSHRIMP && pc_checkskill(sd,SU_SPIRITOFSEA) > 0)
 			skill += 30;

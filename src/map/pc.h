@@ -89,6 +89,7 @@ int pc_equippoint(struct map_session_data *sd,int n);
 
 int pc_checkskill(struct map_session_data *sd,int skill_id);
 int pc_checkskill2(struct map_session_data *sd,int skill_id);
+int pc_checkskill_summoner(struct map_session_data *sd, int skill_id);
 int pc_checkequip(struct map_session_data *sd,int pos);
 
 int pc_setpos(struct map_session_data*,const char*,int,int,int);

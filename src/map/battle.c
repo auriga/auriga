@@ -1542,15 +1542,15 @@ static int battle_calc_base_damage(struct block_list *src,struct block_list *tar
 		// 武器があるなら武器Lvとコスト計算
 		if(idx >= 0 && sd->inventory_data[idx]) {
 			int dstr = str/10;
-			damage = str + dstr*dstr*dstr/60;	// Strボーナス計算
+			damage = str + dstr*dstr/3;	// Strボーナス計算
 			wlv = sd->inventory_data[idx]->wlv;
-			cost = (watk*2/3) - (dstr*dstr) * (80 + wlv * 20) / 100;
+			cost = (watk*2/3) - (dstr*dstr) * 4 / wlv;
 			if(cost < 0)	// コストは0以下にならない
 				cost = 0;
 		}
 		// 最大武器Atkと最低武器Atk計算
-		atkmin = atkmin * (80 + wlv * 20) / 100 - cost;
-		atkmax = watk * (140 + wlv * 10) / 100 - cost;
+		atkmax = watk * (100 + wlv * 10) / 100 - cost;
+		atkmin = (watk * 5 + atkmin * (wlv*3+18) + 14) / 15 - cost;
 		if(atkmin > atkmax)
 			atkmin = atkmax;
 #endif
@@ -2422,6 +2422,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			wd.damage += (wd.damage * src_sd->elementball.num * 10) / 100;
 			if(calc_flag.lh)
 				wd.damage2 += (wd.damage2 * src_sd->elementball.num * 10) / 100;
+		}
+
+		if(wd.flag&BF_LONG) {
+			if(src_sd && pc_checkskill(src_sd, SU_POWEROFLIFE) > 0 && pc_checkskill_summoner(src_sd, SU_POWEROFLIFE) >= 20) {
+				wd.damage += wd.damage * 10 / 100;
+				if(calc_flag.lh)
+					wd.damage2 += wd.damage2 * 10 / 100;
+			}
 		}
 
 		/* （RE）防御無視判定および錐効果ダメージ計算 */
@@ -5835,6 +5843,7 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		short wlv = 0;
 		int cost  = 0;
 		int int_  = status_get_int(src);
+		int dex   = status_get_dex(src);
 		int idx   = sd->equip_index[EQUIP_INDEX_RARM];
 
 		damage = matk2;		// ステータスMatkを確保
@@ -5842,13 +5851,13 @@ int battle_calc_base_magic_damage(struct block_list *src)
 		// 武器があるなら武器Lvとコスト計算
 		if(idx >= 0 && sd->inventory_data[idx]) {
 			wlv  = sd->inventory_data[idx]->wlv;
-			cost = matk1-(int_/5)*(8+wlv);
+			cost = matk1*2/3 - (int_/5)*(int_/5)/wlv;
 			if(cost < 0)	// コストは0以下にならない
 				cost = 0;
 		}
 		// 最大武器Matkと最低武器Matk計算
-		matk1 = matk1 * (100+20*wlv)/100 - cost;
-		matk2 = int_/5 * (200+50*wlv)/100 - cost;
+		matk2 = (matk1 * 5 + dex * (12+2*wlv))/15 - cost;
+		matk1 = matk1 * (100+10*wlv)/100 - cost;
 		if(matk2 > matk1)
 			matk2 = matk1;
 	}
@@ -5980,6 +5989,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		// （RE）MATK乗算処理(杖補正以外)
 		if(sd->matk_rate != 100)
 			MATK_FIX( sd->matk_rate, 100 );
+		if(pc_checkskill(sd, SU_POWEROFLAND) > 0 && pc_checkskill_summoner(sd, SU_POWEROFLAND) >= 20)
+			MATK_FIX( 110, 100 );
 	}
 
 	// ファイアーピラー
