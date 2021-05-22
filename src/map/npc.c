@@ -100,7 +100,7 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 {
 	struct map_session_data *sd;
 	struct npc_data *nd;
-	char name[77];
+	char name[76];
 	int i;
 
 	nullpo_retr(0, bl);
@@ -249,16 +249,16 @@ int npc_event_dequeue(struct map_session_data *sd)
 	sd->progressbar.tick = 0;
 
 	if(sd->eventqueue[0][0]) {	// キューのイベント処理
-		char *name = (char *)aCalloc(77,sizeof(char));
+		char *name = (char *)aCalloc(76,sizeof(char));
 		int i;
 		unsigned int tick = gettick();
 
 		// copy the first event
-		memcpy(name,sd->eventqueue[0],77);
+		memcpy(name,sd->eventqueue[0],76);
 
 		// shift queued events down by one
 		for(i=1; i<MAX_EVENTQUEUE; i++)
-			memcpy(sd->eventqueue[i-1],sd->eventqueue[i],77);
+			memcpy(sd->eventqueue[i-1],sd->eventqueue[i],76);
 
 		// clear the last event
 		sd->eventqueue[MAX_EVENTQUEUE-1][0] = 0;
@@ -730,8 +730,8 @@ int npc_event(struct map_session_data *sd,const char *eventname)
 			if (battle_config.error_log)
 				printf("npc_event: event queue is full !\n");
 		} else {
-			strncpy(sd->eventqueue[i],eventname,77);
-			sd->eventqueue[i][76] = '\0';	// force \0 terminal
+			strncpy(sd->eventqueue[i],eventname,76);
+			sd->eventqueue[i][75] = '\0';	// force \0 terminal
 		}
 		return 1;
 	}
@@ -813,7 +813,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 				break;
 			case SCRIPT:
 				if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
-					char name[77];
+					char name[76];
 					int j, n = -1;
 					for(j = 0; j < MAX_EVENTQUEUE; j++) {
 						if(sd->areanpc_id[j] == 0)
@@ -869,7 +869,7 @@ int npc_touch_areanpc2(struct mob_data *md,int m,int x,int y)
 				continue;
 			if(md->sc.data[SC_FORCEWALKING].timer == -1) {
 				struct event_data *ev = NULL;
-				char name[77];
+				char name[76];
 
 				if(md->areanpc_id == nd->bl.id)
 					return 1;
@@ -1693,9 +1693,9 @@ int npc_free(struct npc_data *nd)
 		if(nd->u.scr.label_list) {
 			int i;
 			for(i = 0; i < nd->u.scr.label_list_num; i++) {
-				char key[77];
+				char key[76];
 
-				snprintf(key, 77, "%s::%s", nd->exname, nd->u.scr.label_list[i].name);
+				snprintf(key, 76, "%s::%s", nd->exname, nd->u.scr.label_list[i].name);
 				ev = (struct event_data *)strdb_search(ev_db,key);
 				if(ev) {
 					strdb_erase(ev_db,key);
@@ -2199,11 +2199,11 @@ static int npc_exportlabel_data(struct npc_data *nd)
 
 		// エクスポートされる
 		ev       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-		ev->key  = (char *)aCalloc(77,sizeof(char));
+		ev->key  = (char *)aCalloc(76,sizeof(char));
 		ev->nd   = nd;
 		ev->pos  = pos;
 		ev->next = NULL;
-		snprintf(ev->key, 77, "%s::%s", nd->exname, lname);
+		snprintf(ev->key, 76, "%s::%s", nd->exname, lname);
 		if(strdb_search(ev_db,ev->key)) {
 			printf("npc_exportlabel_data : dup event %s\n",ev->key);
 			aFree(ev->key);
@@ -2222,7 +2222,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
 			if(node == NULL) {
 				// 登録されてないラベルなので新規作成する
 				node       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-				node->key  = (char *)aCalloc(77,sizeof(char));
+				node->key  = (char *)aCalloc(76,sizeof(char));
 				node->nd   = NULL;
 				node->pos  = -1;
 				node->next = NULL;
@@ -2589,8 +2589,8 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		return 0;
 	}
 
-	p = (char *)aCalloc(77,sizeof(char));
-	strncpy(p,w3,76);
+	p = (char *)aCalloc(76,sizeof(char));
+	strncpy(p,w3,75);
 	script_set_userfunc(p, script);
 
 	return 0;
@@ -2642,7 +2642,7 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 				// 数字1文字だけの場合はイベント指定無しとして扱う（何もしない）
 				;
 			} else {
-				strncpy(eventname,p,77);
+				strncpy(eventname,p,76);
 			}
 		}
 	}
@@ -2714,8 +2714,8 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 			md->lootitem = NULL;
 
 		if(eventname[0]) {
-			memcpy(md->npc_event,eventname,77);
-			md->npc_event[76] = '\0';	// froce \0 terminal
+			memcpy(md->npc_event,eventname,76);
+			md->npc_event[75] = '\0';	// froce \0 terminal
 		}
 		md->bl.type = BL_MOB;
 		map_addiddb(&md->bl);

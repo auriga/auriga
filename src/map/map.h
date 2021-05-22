@@ -823,7 +823,7 @@ struct map_session_data {
 		int zeny;
 	} mail_append;
 
-	char eventqueue[MAX_EVENTQUEUE][77];
+	char eventqueue[MAX_EVENTQUEUE][76];
 	int eventtimer[MAX_EVENTTIMER];
 
 	int cloaked_npc[MAX_CLOAKEDNPC];
@@ -913,7 +913,7 @@ struct npc_timerevent_list {
 };
 
 struct npc_label_list {
-	char name[50];
+	char name[24];
 	int pos;
 };
 
@@ -998,7 +998,7 @@ struct mob_data {
 	unsigned int skilldelay[MAX_MOBSKILL];
 	int def_ele;
 	int master_id,master_dist;
-	char npc_event[77];
+	char npc_event[76];
 	short recallmob_count;
 	short recallcount;
 	short guardup_lv;
@@ -1429,7 +1429,7 @@ struct chat_data {
 	struct map_session_data *usersd[20];
 	struct block_list *owner_;
 	struct block_list **owner;
-	char npc_event[77];
+	char npc_event[76];
 	struct linkdb_node *ban_list;
 };
 
