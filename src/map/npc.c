@@ -100,7 +100,7 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 {
 	struct map_session_data *sd;
 	struct npc_data *nd;
-	char name[50];
+	char name[77];
 	int i;
 
 	nullpo_retr(0, bl);
@@ -249,16 +249,16 @@ int npc_event_dequeue(struct map_session_data *sd)
 	sd->progressbar.tick = 0;
 
 	if(sd->eventqueue[0][0]) {	// キューのイベント処理
-		char *name = (char *)aCalloc(50,sizeof(char));
+		char *name = (char *)aCalloc(77,sizeof(char));
 		int i;
 		unsigned int tick = gettick();
 
 		// copy the first event
-		memcpy(name,sd->eventqueue[0],50);
+		memcpy(name,sd->eventqueue[0],77);
 
 		// shift queued events down by one
 		for(i=1; i<MAX_EVENTQUEUE; i++)
-			memcpy(sd->eventqueue[i-1],sd->eventqueue[i],50);
+			memcpy(sd->eventqueue[i-1],sd->eventqueue[i],77);
 
 		// clear the last event
 		sd->eventqueue[MAX_EVENTQUEUE-1][0] = 0;
@@ -730,8 +730,8 @@ int npc_event(struct map_session_data *sd,const char *eventname)
 			if (battle_config.error_log)
 				printf("npc_event: event queue is full !\n");
 		} else {
-			strncpy(sd->eventqueue[i],eventname,50);
-			sd->eventqueue[i][49] = '\0';	// force \0 terminal
+			strncpy(sd->eventqueue[i],eventname,77);
+			sd->eventqueue[i][76] = '\0';	// force \0 terminal
 		}
 		return 1;
 	}
@@ -813,7 +813,7 @@ int npc_touch_areanpc(struct map_session_data *sd,int m,int x,int y)
 				break;
 			case SCRIPT:
 				if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
-					char name[50];
+					char name[77];
 					int j, n = -1;
 					for(j = 0; j < MAX_EVENTQUEUE; j++) {
 						if(sd->areanpc_id[j] == 0)
@@ -869,7 +869,7 @@ int npc_touch_areanpc2(struct mob_data *md,int m,int x,int y)
 				continue;
 			if(md->sc.data[SC_FORCEWALKING].timer == -1) {
 				struct event_data *ev = NULL;
-				char name[50];
+				char name[77];
 
 				if(md->areanpc_id == nd->bl.id)
 					return 1;
@@ -1539,7 +1539,7 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 int npc_addmdnpc(struct npc_data *src_nd, int m)
 {
 	struct npc_data *nd;
-	char newname[24];
+	char newname[50];
 
 	nullpo_retr(0, src_nd);
 
@@ -1555,8 +1555,8 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
 	strcpy(nd->name, src_nd->name);
 	strcpy(nd->exname, newname);
-	nd->name[23] = '\0';
-	nd->exname[23] = '\0';
+	nd->name[49] = '\0';
+	nd->exname[49] = '\0';
 
 	nd->bl.prev = nd->bl.next = NULL;
 	nd->bl.m    = m;
@@ -1693,9 +1693,9 @@ int npc_free(struct npc_data *nd)
 		if(nd->u.scr.label_list) {
 			int i;
 			for(i = 0; i < nd->u.scr.label_list_num; i++) {
-				char key[50];
+				char key[77];
 
-				snprintf(key, 50, "%s::%s", nd->exname, nd->u.scr.label_list[i].name);
+				snprintf(key, 77, "%s::%s", nd->exname, nd->u.scr.label_list[i].name);
 				ev = (struct event_data *)strdb_search(ev_db,key);
 				if(ev) {
 					strdb_erase(ev_db,key);
@@ -1905,14 +1905,14 @@ static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const cha
 		if((p2 = strstr(p,"::")) != NULL) {
 			*p2 = 0;
 		}
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,p,50);
 	} else {
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,w3,50);
 	}
-	nd->name[23]   = '\0';
-	nd->exname[23] = '\0';
+	nd->name[49]   = '\0';
+	nd->exname[49] = '\0';
 
 	nd->chat_id = 0;
 	if (!battle_config.warp_point_debug)
@@ -2104,14 +2104,14 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		if((p2 = strstr(p,"::")) != NULL) {
 			*p2 = 0;
 		}
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,p,50);
 	} else {
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,w3,50);
 	}
-	nd->name[23]   = '\0';
-	nd->exname[23] = '\0';
+	nd->name[49]   = '\0';
+	nd->exname[49] = '\0';
 
 	nd->class_  = atoi(w4);
 	nd->speed   = 200;
@@ -2165,8 +2165,8 @@ static int npc_convertlabel_db(struct npc_data *nd)
 		}
 		c = *p;
 		*p = '\0';
-		strncpy(lst[i].name, (char *)node->key, 24);
-		lst[i].name[23] = '\0';	// force \0 terminal
+		strncpy(lst[i].name, (char *)node->key, 50);
+		lst[i].name[49] = '\0';	// force \0 terminal
 		*p = c;
 		lst[i].pos = PTR2INT(node->data);
 		i++;
@@ -2199,11 +2199,11 @@ static int npc_exportlabel_data(struct npc_data *nd)
 
 		// エクスポートされる
 		ev       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-		ev->key  = (char *)aCalloc(50,sizeof(char));
+		ev->key  = (char *)aCalloc(77,sizeof(char));
 		ev->nd   = nd;
 		ev->pos  = pos;
 		ev->next = NULL;
-		snprintf(ev->key, 50, "%s::%s", nd->exname, lname);
+		snprintf(ev->key, 77, "%s::%s", nd->exname, lname);
 		if(strdb_search(ev_db,ev->key)) {
 			printf("npc_exportlabel_data : dup event %s\n",ev->key);
 			aFree(ev->key);
@@ -2222,7 +2222,7 @@ static int npc_exportlabel_data(struct npc_data *nd)
 			if(node == NULL) {
 				// 登録されてないラベルなので新規作成する
 				node       = (struct event_data *)aCalloc(1,sizeof(struct event_data));
-				node->key  = (char *)aCalloc(50,sizeof(char));
+				node->key  = (char *)aCalloc(77,sizeof(char));
 				node->nd   = NULL;
 				node->pos  = -1;
 				node->next = NULL;
@@ -2424,14 +2424,14 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		if((p2 = strstr(p,"::")) != NULL) {
 			*p2 = 0;
 		}
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,p,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,p,50);
 	} else {
-		strncpy(nd->name,w3,24);
-		strncpy(nd->exname,w3,24);
+		strncpy(nd->name,w3,50);
+		strncpy(nd->exname,w3,50);
 	}
-	nd->name[23]   = '\0';
-	nd->exname[23] = '\0';
+	nd->name[49]   = '\0';
+	nd->exname[49] = '\0';
 
 	nd->bl.prev = nd->bl.next = NULL;
 	nd->bl.m    = m;
@@ -2589,8 +2589,8 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		return 0;
 	}
 
-	p = (char *)aCalloc(50,sizeof(char));
-	strncpy(p,w3,49);
+	p = (char *)aCalloc(77,sizeof(char));
+	strncpy(p,w3,76);
 	script_set_userfunc(p, script);
 
 	return 0;
@@ -2642,7 +2642,7 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 				// 数字1文字だけの場合はイベント指定無しとして扱う（何もしない）
 				;
 			} else {
-				strncpy(eventname,p,50);
+				strncpy(eventname,p,77);
 			}
 		}
 	}
@@ -2714,8 +2714,8 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 			md->lootitem = NULL;
 
 		if(eventname[0]) {
-			memcpy(md->npc_event,eventname,50);
-			md->npc_event[49] = '\0';	// froce \0 terminal
+			memcpy(md->npc_event,eventname,77);
+			md->npc_event[76] = '\0';	// froce \0 terminal
 		}
 		md->bl.type = BL_MOB;
 		map_addiddb(&md->bl);
@@ -3155,7 +3155,7 @@ int do_init_npc(void)
 	time_t now;
 
 	ev_db = strdb_init(48);
-	npcname_db = strdb_init(24);
+	npcname_db = strdb_init(50);
 
 	time(&now);
 	memcpy(&ev_tm_b, localtime(&now), sizeof(ev_tm_b));
