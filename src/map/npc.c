@@ -2165,8 +2165,8 @@ static int npc_convertlabel_db(struct npc_data *nd)
 		}
 		c = *p;
 		*p = '\0';
-		strncpy(lst[i].name, (char *)node->key, 50);
-		lst[i].name[49] = '\0';	// force \0 terminal
+		strncpy(lst[i].name, (char *)node->key, 24);
+		lst[i].name[23] = '\0';	// force \0 terminal
 		*p = c;
 		lst[i].pos = PTR2INT(node->data);
 		i++;
@@ -2589,8 +2589,8 @@ static int npc_parse_function(const char *w1,const char *w2,const char *w3,const
 		return 0;
 	}
 
-	p = (char *)aCalloc(76,sizeof(char));
-	strncpy(p,w3,75);
+	p = (char *)aCalloc(50,sizeof(char));
+	strncpy(p,w3,49);
 	script_set_userfunc(p, script);
 
 	return 0;
@@ -3154,7 +3154,7 @@ int do_init_npc(void)
 	struct npc_src_list *nsl;
 	time_t now;
 
-	ev_db = strdb_init(48);
+	ev_db = strdb_init(76);
 	npcname_db = strdb_init(50);
 
 	time(&now);
