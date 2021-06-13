@@ -12374,14 +12374,20 @@ static void clif_skillinfo(struct map_session_data *sd, int skillid, int type, i
 
 	nullpo_retv(sd);
 
-	if( skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
+	if( skillid < HOM_SKILLID && skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
+		return;
+	if( skillid >= HOM_SKILLID && skillid <= MAX_HOM_SKILLID && !sd->hd )
 		return;
 
 	if(sd->status.class_==PC_CLASS_TK && pc_checkskill2(sd,TK_MISSION)>0 && sd->status.base_level>=90 &&
 			sd->status.skill_point==0 && ranking_get_pc_rank(sd,RK_TAEKWON)>0)
 		tk_ranker_bonus=1;
 
-	if(tk_ranker_bonus && sd->status.skill[skillid].flag == 0)
+	if( skillid >= HOM_SKILLID && skillid <= MAX_HOM_SKILLID && sd->hd ) {
+		id = skillid;
+		skill_lv = sd->hd->status.skill[skillid - HOM_SKILLID].lv;
+	}
+	else if(tk_ranker_bonus && sd->status.skill[skillid].flag == 0)
 		skill_lv = pc_get_skilltree_max(&sd->s_class,id);
 	else if(skillid==sd->skill_clone.id){
 		id = skillid;
@@ -16730,6 +16736,24 @@ void clif_spiritball(struct map_session_data *sd)
 }
 
 /*==========================================
+ * 氣球(ホム用)
+ *------------------------------------------
+ */
+void clif_spiritball2(struct homun_data *hd)
+{
+	unsigned char buf[8];
+
+	nullpo_retv(hd);
+
+	WBUFW(buf,0)=0x1d0;
+	WBUFL(buf,2)=hd->bl.id;
+	WBUFW(buf,6)=hd->spiritball;
+	clif_send(buf,packet_db[0x1d0].len,&hd->bl,AREA);
+
+	return;
+}
+
+/*==========================================
  * コイン
  *------------------------------------------
  */
@@ -18619,6 +18643,8 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 	WFIFOW(fd,0) = 0x235;
 	for(i = 0; i < MAX_HOMSKILL; i++) {
 		if((id = hd->status.skill[i].id) != 0) {
+			if(hd->status.skill[i].id == MUTATION_BASEJOB)
+				continue;
 			skill_lv = hd->status.skill[i].lv;
 			WFIFOW(fd,len  )  = id;
 			WFIFOL(fd,len+2)  = skill_get_inf(id);
@@ -18627,7 +18653,7 @@ void clif_homskillinfoblock(struct map_session_data *sd)
 			WFIFOW(fd,len+10) = skill_get_fixed_range(&hd->bl,id,skill_lv);
 			memset(WFIFOP(fd,len+12),0,24);
 			if(!(skill_get_inf2(id)&INF2_QUEST))
-				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd->status.class_,id) && hd->status.skill[i].flag == 0)? 1: 0;
+				WFIFOB(fd,len+36) = (skill_lv < homun_get_skilltree_max(hd,id) && hd->status.skill[i].flag == 0)? 1: 0;
 			else
 				WFIFOB(fd,len+36) = 0;
 			len += 37;
@@ -18659,7 +18685,7 @@ void clif_homskillup(struct map_session_data *sd, int skill_num)
 	WFIFOW(fd,4) = hd->status.skill[skillid].lv;
 	WFIFOW(fd,6) = skill_get_sp(skill_num,hd->status.skill[skillid].lv);
 	WFIFOW(fd,8) = skill_get_fixed_range(&hd->bl,skill_num,hd->status.skill[skillid].lv);
-	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,hd->status.skill[skillid].id)) ? 1 : 0;
+	WFIFOB(fd,10) = (hd->status.skill[skillid].lv < homun_get_skilltree_max(hd,hd->status.skill[skillid].id)) ? 1 : 0;
 	WFIFOSET(fd,packet_db[0x239].len);
 
 	return;
@@ -23258,10 +23284,21 @@ static void clif_UseSkillToId_Sub(struct map_session_data *sd, int skillnum, int
 			if(DIFF_TICK(tick, hd->skillstatictimer[skillnum-HOM_SKILLID]) < 0)
 				return;
 
-			if(inf & INF_SELF)	// 自分が対象
-				unit_skilluse_id(&hd->bl,hd->bl.id,skillnum,skilllv);
-			else
-				unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
+			if(skillnum == MH_SONIC_CRAW) {
+				if(hd->sc.data[SC_COMBO].timer == -1 || hd->sc.data[SC_COMBO].val1 != MH_MIDNIGHT_FRENZY)
+					change_inf = 1;
+			}
+
+			if(inf & INF_SELF && !change_inf) {
+				// 即時発動ならターゲットを自分自身にする
+				target_id = hd->bl.id;
+			}
+
+			if(change_inf && target_id == hd->bl.id) {
+				clif_skillinfo(hd->msd,skillnum,1,-1);
+				return;
+			}
+			unit_skilluse_id(&hd->bl,target_id,skillnum,skilllv);
 		}
 		return;
 	}
@@ -25839,12 +25876,21 @@ static void clif_parse_Revive(int fd,struct map_session_data *sd, int cmd)
 		return;
 	if(!unit_isdead(&sd->bl))
 		return;
-	if((idx = pc_search_inventory(sd,7621)) < 0)	// ジークフリードの証を所持していない
+	if(sd->sc.data[SC_HELLPOWER].timer != -1)		// ヘルパワー状態は蘇生不可
 		return;
-
-	pc_delitem(sd,idx,1,0,1);
-	sd->status.hp = sd->status.max_hp;
-	sd->status.sp = sd->status.max_sp;
+	if((idx = pc_search_inventory(sd,7621)) < 0) {	// ジークフリードの証を所持していない
+		// 再生の光
+		if(sd->sc.data[SC_LIGHT_OF_REGENE].timer == -1)
+			return;
+		sd->status.hp = sd->status.max_hp * sd->sc.data[SC_LIGHT_OF_REGENE].val2 / 100;
+		sd->status.sp = 0;
+		status_change_end(&sd->bl,SC_LIGHT_OF_REGENE,-1);
+	}
+	else {
+		pc_delitem(sd,idx,1,0,1);
+		sd->status.hp = sd->status.max_hp;
+		sd->status.sp = sd->status.max_sp;
+	}
 	clif_updatestatus(sd,SP_HP);
 	clif_updatestatus(sd,SP_SP);
 	pc_setstand(sd);
@@ -27122,6 +27168,42 @@ static void clif_parse_PetEvolution(int fd,struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20190703
+	const int menu = RFIFOB(fd,GETPACKETPOS(cmd,0));
+	switch (menu) {
+	case 1:		// dragon
+		if (pc_isridingdragon(sd))
+			pc_setoption(sd, sd->sc.option &~ OPTION_DRAGON);
+		break;
+	case 3:		// madogear
+		if (pc_ismadogear(sd))
+			pc_setoption(sd, sd->sc.option &~ OPTION_MADOGEAR);
+		break;
+	case 4:		// peco
+		if (pc_isridingpeco(sd))
+			pc_setoption(sd, sd->sc.option &~ OPTION_RIDING);
+		break;
+	case 5:		// falcon
+		if (pc_isfalcon(sd))
+			pc_setoption(sd, sd->sc.option &~ OPTION_FALCON);
+		break;
+	case 6:		// cart
+		if (sd->sc.data[SC_PUSH_CART])
+			pc_setcart(sd, 0);
+		break;
+	default:	// unused
+		break;
+	}
+#endif
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -27529,6 +27611,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_PetEvolution,                "petevolution"              },
 		{ clif_parse_StartUseSkillToId,           "startuseskilltoid"         },
 		{ clif_parse_StopUseSkillToId,            "stopuseskilltoid"          },
+		{ clif_parse_MountOff,                    "mountoff"                  },
 		{ NULL,                                   NULL                        },
 	};
 

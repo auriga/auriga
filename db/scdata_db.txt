@@ -639,6 +639,20 @@
 667,SC_SUPPORT_HPSP,1,1,0,0		// サポート魔法(HPSP増加)
 668,SC_SUPPORT_EXP,1,0,0,0		// サポート魔法(EXP増加)
 669,SC_SUPPORT_SPEED,1,1,0,0	// サポート魔法(移動速度増加)
+670,SC_PARALYZE,1,1,0,0			// 麻痺
+671,SC_PAIN_KILLER,1,1,0,0			// ペインキラー
+672,SC_LIGHT_OF_REGENE,1,0,0,0		// 再生の光
+673,SC_OVERED_BOOST,1,1,0,0			// オーバードブースト
+674,SC_STYLE_CHANGE,1,0,0,0			// スタイルチェンジ
+675,SC_TINDER_BREAKER,1,0,0,0		// 捕獲
+676,SC_CBC,1,0,0,0					// 絞め技
+677,SC_EQC,1,1,0,0					// E.Q.C
+678,SC_GOLDENE_FERSE,1,1,0,0		// ゴールデンペルジェ
+679,SC_ANGRIFFS_MODUS,1,1,0,0		// アングリフスモドス
+680,SC_MAGMA_FLOW,1,1,0,0			// マグマフロー
+681,SC_GRANITIC_ARMOR,1,1,0,0		// グラニティックアーマー
+682,SC_PYROCLASTIC,1,1,0,0			// パイロクラスティック
+683,SC_VOLCANIC_ASH,1,1,0,0			// 火山灰
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

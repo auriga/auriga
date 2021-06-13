@@ -1078,6 +1078,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case CH_TIGERFIST:		/* 伏虎拳 */
 	case CH_CHAINCRUSH:		/* 連柱崩撃 */
 	case SR_FALLENEMPIRE:	/* 大纏崩捶 */
+	case MH_SILVERVEIN_RUSH:	/* シルバーベインラッシュ */
+	case MH_MIDNIGHT_FRENZY:	/* ミッドナイトフレンジ */
+	case MH_CBC:				/* C.B.C */
+	case MH_EQC:				/* E.Q.C */
 		target_id = src_ud->attacktarget;
 		break;
 	case MO_CHAINCOMBO:		/* 連打掌 */
@@ -1117,6 +1121,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			target_id = sc->data[SC_QD_SHOT_READY].val2;
 		else
 			target_id = 0;
+		break;
+	case MH_SONIC_CRAW:	/* ソニッククロー */
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == MH_MIDNIGHT_FRENZY)
+			target_id = src_ud->attacktarget;
 		break;
 	}
 
@@ -1262,6 +1270,12 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case SR_TIGERCANNON:	/* 號砲 */
 	case SR_GATEOFHELL:		/* 羅刹破凰撃 */
 		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
+			casttime = 0;
+		}
+		forcecast = 1;
+		break;
+	case MH_SONIC_CRAW:	/* ソニッククロー */
+		if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == MH_MIDNIGHT_FRENZY) {
 			casttime = 0;
 		}
 		forcecast = 1;
@@ -1715,7 +1729,10 @@ int unit_can_move(struct block_list *bl)
 			sc->data[SC_MEIKYOUSISUI].timer != -1 ||	// 明鏡止水
 			sc->data[SC_KG_KAGEHUMI].timer != -1 ||	// 影踏み
 			sc->data[SC_SUHIDE].timer != -1	||	// かくれる
-			sc->data[SC_SV_ROOTTWIST].timer != -1	// マタタビの根っこ
+			sc->data[SC_SV_ROOTTWIST].timer != -1 ||	// マタタビの根っこ
+			sc->data[SC_PARALYZE].timer != -1 ||	// 麻痺
+			sc->data[SC_TINDER_BREAKER].timer != -1 ||	// 捕獲
+			sc->data[SC_CBC].timer != -1		// 絞め技
 		)
 			return 0;
 

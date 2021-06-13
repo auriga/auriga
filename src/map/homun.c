@@ -47,7 +47,7 @@
 #include "unit.h"
 #include "skill.h"
 
-struct homun_db homun_db[MAX_HOMUN_DB];
+struct homun_db homun_db[MAX_HOMUN_DB+MAX_HOMUN_S_DB];
 struct random_homun_data embryo_data[MAX_HOMUN_DB];
 int embryo_default = 6001;
 
@@ -61,7 +61,7 @@ static struct homun_skill_tree_entry {
 	} need[5];
 	unsigned short base_level;
 	int intimate;
-} homun_skill_tree[MAX_HOMUN_DB][MAX_HOMSKILL_TREE];
+} homun_skill_tree[MAX_HOMUN_DB+MAX_HOMUN_S_DB][MAX_HOMSKILL_TREE];
 
 /*==========================================
  * スキルツリー情報の検索
@@ -73,7 +73,7 @@ static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int ski
 	int max = MAX_HOMSKILL_TREE;
 	struct homun_skill_tree_entry *st;
 
-	st = homun_skill_tree[class_ - HOM_ID];
+	st = homun_skill_tree[hom_dbcheck_id(class_)];
 
 	// binary search
 	while(max - min > 1) {
@@ -94,13 +94,21 @@ static struct homun_skill_tree_entry* homun_search_skilltree(int class_, int ski
  * スキルのMaxLvを返す
  *------------------------------------------
  */
-int homun_get_skilltree_max(int class_,int skillid)
+int homun_get_skilltree_max(struct homun_data *hd,int skillid)
 {
 	struct homun_skill_tree_entry *st;
+	int m;
 
-	st = homun_search_skilltree(class_, skillid);
-	if(st == NULL)
-		return 0;
+	if((m = homun_checkskill(hd, MUTATION_BASEJOB))>0) {
+		m = m + HOM_ID - 1;
+	}
+
+	st = homun_search_skilltree(hd->status.class_, skillid);
+	if(st == NULL && m) {
+		st = homun_search_skilltree(m, skillid);
+		if(st == NULL)
+			return 0;
+	}
 
 	return st->max;
 }
@@ -142,7 +150,7 @@ static int homun_food(struct map_session_data *sd)
 	if(sd->status.homun_id == 0)
 		return 1;
 
-	class_ = sd->hd->status.class_ - HOM_ID;
+	class_ = hom_dbcheck_id(sd->hd->status.class_);
 	food   = homun_db[class_].FoodID;
 
 	i = pc_search_inventory(sd,food);
@@ -290,7 +298,7 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 
 	nullpo_retr(1, hd);
 
-	class_ = hd->class_ - HOM_ID;
+	class_ = hom_dbcheck_id(hd->class_);
 
 	grow_hp = homun_db[class_].grow_max.hp - homun_db[class_].grow_min.hp + 1;
 	hd->max_hp += homun_db[class_].grow_min.hp + atn_rand()%grow_hp;
@@ -302,31 +310,37 @@ int homun_upstatus(struct mmo_homunstatus *hd)
 	grow_str = homun_db[class_].grow_min.str + atn_rand()%grow_str;
 	hd->str += (grow_str + hd->f_str) / 10;
 	hd->f_str = (grow_str + hd->f_str) % 10;
+	if(hd->str > battle_config.homun_status_max) hd->str = battle_config.homun_status_max;
 
 	grow_agi = homun_db[class_].grow_max.agi - homun_db[class_].grow_min.agi + 1;
 	grow_agi = homun_db[class_].grow_min.agi + atn_rand()%grow_agi;
 	hd->agi += (grow_agi + hd->f_agi) / 10;
 	hd->f_agi = (grow_agi + hd->f_agi) % 10;
+	if(hd->agi > battle_config.homun_status_max) hd->agi = battle_config.homun_status_max;
 
 	grow_vit = homun_db[class_].grow_max.vit - homun_db[class_].grow_min.vit + 1;
 	grow_vit = homun_db[class_].grow_min.vit + atn_rand()%grow_vit;
 	hd->vit += (grow_vit + hd->f_vit) / 10;
 	hd->f_vit = (grow_vit + hd->f_vit) % 10;
+	if(hd->vit > battle_config.homun_status_max) hd->vit = battle_config.homun_status_max;
 
 	grow_int = homun_db[class_].grow_max.int_ - homun_db[class_].grow_min.int_ + 1;
 	grow_int = homun_db[class_].grow_min.int_ + atn_rand()%grow_int;
 	hd->int_ += (grow_int + hd->f_int) / 10;
 	hd->f_int = (grow_int + hd->f_int) % 10;
+	if(hd->int_ > battle_config.homun_status_max) hd->int_ = battle_config.homun_status_max;
 
 	grow_dex = homun_db[class_].grow_max.dex - homun_db[class_].grow_min.dex + 1;
 	grow_dex = homun_db[class_].grow_min.dex + atn_rand()%grow_dex;
 	hd->dex += (grow_dex + hd->f_dex) / 10;
 	hd->f_dex = (grow_dex + hd->f_dex) % 10;
+	if(hd->dex > battle_config.homun_status_max) hd->dex = battle_config.homun_status_max;
 
 	grow_luk = homun_db[class_].grow_max.luk - homun_db[class_].grow_min.luk + 1;
 	grow_luk = homun_db[class_].grow_min.luk + atn_rand()%grow_luk;
 	hd->luk += (grow_luk + hd->f_luk) / 10;
 	hd->f_luk = (grow_luk + hd->f_luk) % 10;
+	if(hd->luk > battle_config.homun_status_max) hd->luk = battle_config.homun_status_max;
 
 	return 0;
 }
@@ -455,7 +469,7 @@ int homun_calc_status(struct homun_data *hd)
 	}
 
 	blv    = hd->status.base_level;
-	aspd_k = homun_db[hd->status.class_-HOM_ID].aspd_k;
+	aspd_k = homun_db[hom_dbcheck_id(hd->status.class_)].aspd_k;
 
 #ifdef PRE_RENEWAL
 	hd->atk      += hd->str * 2 + blv + (hd->str / 10) * (hd->str / 10);
@@ -467,11 +481,11 @@ int homun_calc_status(struct homun_data *hd)
 	hd->critical += hd->luk / 3 + 1;
 #else
 	hd->atk      += (hd->str + hd->dex + hd->luk) / 3 + blv / 10;
-	hd->matk     += hd->int_ + (hd->int_ + hd->dex + hd->luk) + blv / 10 * 2;
+	hd->matk     += hd->int_ + blv + (hd->int_ + hd->dex + hd->luk)/3 + blv/10*2;
 	hd->hit      += hd->dex + blv + 150;
-	hd->flee     += hd->agi + blv + blv / 10;
+	hd->flee     += hd->agi + blv + blv / 10 + 100;
 	hd->def      += (hd->vit + blv / 10) * 2 + (hd->agi + blv / 10) / 2 + blv / 2;
-	hd->mdef     += hd->int_/ 5 + blv / 10;
+	hd->mdef     += hd->int_/ 5 + blv / 2;
 	hd->critical += hd->luk / 3 + 1;
 #endif
 
@@ -483,6 +497,25 @@ int homun_calc_status(struct homun_data *hd)
 	// オーバードスピード
 	if(hd->sc.data[SC_SPEED].timer != -1)
 		hd->flee = hd->flee + 10 + hd->sc.data[SC_SPEED].val1*10;
+	// ペインキラー
+	if(hd->sc.data[SC_PAIN_KILLER].timer != -1)
+		aspd_rate += hd->sc.data[SC_PAIN_KILLER].val1*10;
+	// アングリフスモドス
+	if(hd->sc.data[SC_ANGRIFFS_MODUS].timer != -1) {
+		hd->max_hp += hd->max_hp * hd->sc.data[SC_ANGRIFFS_MODUS].val1 * 5 / 100;
+		hd->atk += hd->sc.data[SC_ANGRIFFS_MODUS].val1 * 50;
+		hd->flee -= hd->sc.data[SC_ANGRIFFS_MODUS].val4;
+		hd->def -= hd->sc.data[SC_ANGRIFFS_MODUS].val3;
+	}
+	// ゴールデンペルジェ
+	if(hd->sc.data[SC_GOLDENE_FERSE].timer != -1) {
+		hd->flee += hd->sc.data[SC_GOLDENE_FERSE].val2;
+		aspd_rate -= hd->sc.data[SC_GOLDENE_FERSE].val3;
+	}
+	// パイロクラスティック
+	if(hd->sc.data[SC_PYROCLASTIC].timer != -1) {
+		hd->atk += hd->sc.data[SC_PYROCLASTIC].val2;
+	}
 	// 補正
 	if(atk_rate != 100)
 		hd->atk = hd->atk*atk_rate/100;
@@ -525,6 +558,16 @@ int homun_calc_status(struct homun_data *hd)
 	if(hd->sprecov_rate != 100)
 		hd->nhealsp = hd->nhealsp*hd->sprecov_rate/100;
 
+	// オーバードブースト
+	if(hd->sc.data[SC_OVERED_BOOST].timer != -1) {
+		hd->flee = hd->sc.data[SC_OVERED_BOOST].val3;
+		hd->aspd = hd->sc.data[SC_OVERED_BOOST].val4>>1;
+	}
+
+	// 捕獲
+	if(hd->sc.data[SC_TINDER_BREAKER].timer != -1)
+		hd->flee = 0;
+
 	homun_calc_skilltree(hd);
 
 	return 0;
@@ -540,7 +583,7 @@ int homun_recalc_status(struct homun_data *hd)
 
 	nullpo_retr(1, hd);
 
-	class_ = hd->status.class_ - HOM_ID;
+	class_ = hom_dbcheck_id(hd->status.class_);
 	hd->status.max_hp = hd->status.hp = homun_db[class_].hp;
 	hd->status.max_sp = hd->status.sp = homun_db[class_].sp;
 	hd->status.str  = homun_db[class_].str;
@@ -587,14 +630,14 @@ static int homun_get_create_homunid(void)
 int homun_create_hom(struct map_session_data *sd,int homunid)
 {
 	struct mmo_homunstatus hd;
-	int class_ = homunid - HOM_ID;	// 作成されるホムの選定方法不明
+	int class_ = hom_dbcheck_id(homunid);	// 作成されるホムの選定方法不明
 
 	nullpo_retr(1, sd);
 
 	memset(&hd, 0, sizeof(hd));
 
 	memcpy(hd.name,homun_db[class_].jname,24);
-	hd.class_       = class_ + HOM_ID;
+	hd.class_       = homunid;
 	hd.account_id   = sd->status.account_id;
 	hd.char_id      = sd->status.char_id;
 	hd.base_level   = homun_db[class_].base_level;
@@ -657,7 +700,7 @@ static int homun_data_init(struct map_session_data *sd)
 
 	memcpy(&sd->hd->status, &sd->hom, sizeof(struct mmo_homunstatus));
 
-	class_ = sd->hd->status.class_ - HOM_ID;
+	class_ = hom_dbcheck_id(sd->hd->status.class_);
 
 	hd->bl.m    = sd->bl.m;
 	hd->bl.prev = hd->bl.next = NULL;
@@ -675,6 +718,7 @@ static int homun_data_init(struct map_session_data *sd)
 	hd->limits_to_growth = 0;
 	hd->msd              = sd;
 	hd->view_class       = homun_db[class_].view_class;
+	hd->spiritball       = 0;
 
 	for(i=0; i<MAX_HOMSKILL; i++)
 		hd->skillstatictimer[i] = tick;
@@ -760,6 +804,8 @@ int homun_callhom(struct map_session_data *sd)
 			homun_save_data(sd);
 			skill_unit_move(&sd->hd->bl,gettick(),1);
 		}
+		if(sd->hd->status.class_ == 6052) 	// エレノア
+			status_change_start(&sd->hd->bl,SC_STYLE_CHANGE,1,0,0,0,skill_get_time(MH_STYLE_CHANGE,1),0);
 	} else if(sd->status.homun_id <= 0 && sd->state.homun_creating == 0) {
 		// 初誕生なら、データ作成
 		int idx = pc_search_inventory(sd,7142);	// エンブリオ所持を確認
@@ -805,7 +851,7 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 		// 生命倫理未習得時格納
 		if(!pc_checkskill(sd, AM_BIOETHICS))
 			sd->hom.incubate = 0;
-		if(sd->hom.incubate && sd->hom.hp > 0)
+		if(sd->hom.incubate == 1 && sd->hom.hp > 0)
 		{
 			if(homun_callhom(sd))
 				clif_homskillinfoblock(sd);
@@ -984,18 +1030,18 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 
 	// use evolved class
 	if( class_ <= 0 )
-		new_class = homun_db[sd->hd->status.class_ - HOM_ID].evo_class;
+		new_class = homun_db[hom_dbcheck_id(sd->hd->status.class_)].evo_class;
 	else
 		new_class = class_;
 
 	// validation
-	if( new_class < HOM_ID || new_class >= HOM_ID + MAX_HOMUN_DB )
+	if( !((new_class >= HOM_ID && new_class < HOM_ID + MAX_HOMUN_DB) || (new_class >= HOM_S_ID && new_class < HOM_S_ID + MAX_HOMUN_S_DB)) )
 		return 1;
 
 	// evolution mode
 	if( class_ == -1 )
 	{
-		class_ = sd->hd->status.class_ - HOM_ID;
+		class_ = hom_dbcheck_id(sd->hd->status.class_);
 
 		// change intimate to 19
 		sd->hd->intimate = 1900;
@@ -1013,9 +1059,101 @@ int homun_change_class( struct map_session_data *sd, int class_ )
 
 	// change class
 	sd->hd->status.class_ = new_class;
-	sd->hd->view_class = homun_db[ new_class - HOM_ID ].view_class;
+	sd->hd->view_class = homun_db[ hom_dbcheck_id(new_class) ].view_class;
 
 	homun_return_embryo( sd );
+	homun_callhom( sd );
+
+	return 0;
+}
+
+/*==========================================
+ * エンブリオ変異
+ *------------------------------------------
+ */
+int homun_morphembryo(struct map_session_data *sd)
+{
+	struct homun_data *hd;
+
+	nullpo_retr(0, sd);
+	nullpo_retr(0, hd = sd->hd);
+
+	if(sd->status.homun_id > 0 && hd->status.incubate == 1) {
+		int ret;
+		struct item tmp_item;
+		memset(&tmp_item,0,sizeof(tmp_item));
+		tmp_item.nameid = 6415;		// 不思議なエンブリオ
+		tmp_item.identify = 1;
+
+		// 親密度保存
+		if(battle_config.save_homun_temporal_intimate)
+			pc_setglobalreg(sd,"HOM_TEMP_INTIMATE",hd->intimate);
+		hd->status.incubate = 2;
+		homun_save_data(sd);
+		unit_free(&hd->bl,0);
+		if(ret = pc_additem(sd,&tmp_item,1)) {
+			clif_additem(sd,0,0,ret);
+		}
+	}
+	return 0;
+}
+
+/*==========================================
+ * ホムンクルス変異
+ *------------------------------------------
+ */
+int homun_mutation( struct map_session_data *sd, int class_ )
+{
+	int skillid, new_class = 0;
+	int idx;
+
+	nullpo_retr(1, sd);
+
+	if( sd->status.homun_id <= 0 )
+		return 1;
+	if( sd->hom.incubate != 2 )
+		return 1;
+
+	// use evolved class
+	new_class = class_;
+
+	// validation
+	if( !(new_class >= HOM_S_ID && new_class < HOM_S_ID + MAX_HOMUN_S_DB) )
+		return 1;
+
+	class_ = hom_dbcheck_id(new_class);
+
+	// change intimate to 19
+	sd->hom.intimate = 1900;
+
+	// 変異ステータスUP
+	sd->hom.max_hp += homun_db[class_].evo_min.hp + atn_rand()%(homun_db[class_].evo_max.hp - homun_db[class_].evo_min.hp + 1);
+	sd->hom.max_sp += homun_db[class_].evo_min.sp + atn_rand()%(homun_db[class_].evo_max.sp - homun_db[class_].evo_min.sp + 1);
+	sd->hom.str += homun_db[class_].evo_min.str + atn_rand()%(homun_db[class_].evo_max.str - homun_db[class_].evo_min.str + 1);
+	sd->hom.agi += homun_db[class_].evo_min.agi + atn_rand()%(homun_db[class_].evo_max.agi - homun_db[class_].evo_min.agi + 1);
+	sd->hom.vit += homun_db[class_].evo_min.vit + atn_rand()%(homun_db[class_].evo_max.vit - homun_db[class_].evo_min.vit + 1);
+	sd->hom.int_ += homun_db[class_].evo_min.int_ + atn_rand()%(homun_db[class_].evo_max.int_ - homun_db[class_].evo_min.int_ + 1);
+	sd->hom.dex += homun_db[class_].evo_min.dex + atn_rand()%(homun_db[class_].evo_max.dex - homun_db[class_].evo_min.dex + 1);
+	sd->hom.luk += homun_db[class_].evo_min.luk + atn_rand()%(homun_db[class_].evo_max.luk - homun_db[class_].evo_min.luk + 1);
+
+	// 元のクラスを格納
+	skillid = MUTATION_BASEJOB - HOM_SKILLID;
+	sd->hom.skill[skillid].id = MUTATION_BASEJOB;
+	sd->hom.skill[skillid].lv = sd->hom.class_ - HOM_ID + 1;
+
+	// change class
+	sd->hom.class_ = new_class;
+
+	// リネーム済みなら再度変更可能にする
+	if(sd->hom.rename_flag == 1)
+		sd->hom.rename_flag = 0;
+
+	idx = pc_search_inventory(sd,6415);	// 不思議なエンブリオ所持を確認
+	if(idx >= 0) {
+		pc_delitem(sd,idx,1,0,1);	// 不思議なエンブリオ消去
+	}
+
+	sd->hom.incubate = 0;
 	homun_callhom( sd );
 
 	return 0;
@@ -1058,7 +1196,7 @@ void homun_skillup(struct map_session_data *sd, int skill_num)
 
 	if( hd->status.skill_point > 0 &&
 	    hd->status.skill[skillid].id != 0 &&
-	    hd->status.skill[skillid].lv < homun_get_skilltree_max(hd->status.class_,skill_num) )
+		hd->status.skill[skillid].lv < homun_get_skilltree_max(hd,skill_num))
 	{
 		hd->status.skill[skillid].lv++;
 		hd->status.skill_point--;
@@ -1077,13 +1215,21 @@ void homun_skillup(struct map_session_data *sd, int skill_num)
  */
 int homun_calc_skilltree(struct homun_data *hd)
 {
-	int i, id, c, flag;
+	int i, id, c, m, flag;
 
 	nullpo_retr(0, hd);
 
-	c = hd->status.class_ - HOM_ID;
+	if(homun_checkskill(hd, MUTATION_BASEJOB)>0) {
+		c = homun_checkskill(hd, MUTATION_BASEJOB) - 1;
+		m = hom_dbcheck_id(hd->status.class_);
+	} else {
+		c = hom_dbcheck_id(hd->status.class_);
+		m = hom_dbcheck_id(hd->status.class_);
+	}
 
 	for(i=0; i<MAX_HOMSKILL; i++) {
+		if(i == MUTATION_BASEJOB - HOM_SKILLID)
+			continue;
 		hd->status.skill[i].id = 0;
 		if(hd->status.skill[i].flag) {		// cardスキルなら
 			hd->status.skill[i].lv   = (hd->status.skill[i].flag == 1)? 0: hd->status.skill[i].flag-2;	// 本当のlvに
@@ -1114,6 +1260,8 @@ int homun_calc_skilltree(struct homun_data *hd)
 			hd->status.skill[id].id = id + HOM_SKILLID;
 			flag = 1;
 		}
+		if(c != m)
+			c = m;
 	} while(flag);
 
 	return 0;
@@ -1233,7 +1381,7 @@ int homun_nextbaseexp(struct homun_data *hd)
 	if(hd->status.base_level >= MAX_LEVEL || hd->status.base_level <= 0)
 		return 0;
 
-	i = homun_db[hd->status.class_-HOM_ID].exp_table;
+	i = homun_db[hom_dbcheck_id(hd->status.class_)].exp_table;
 	/*
 	if(hd->status.class_ >= 6001 && hd->status.class_ < 6005) i=0;		// 第一期ホム（4種）
 	else if(hd->status.class_ >= 6005 && hd->status.class_ < 6009) i=1;	// 第二期ホム（4種）
@@ -1351,6 +1499,53 @@ int homun_isalive(struct map_session_data *sd)
 		return 0;
 
 	return 1;
+}
+
+/*==========================================
+ * 気弾追加
+ *------------------------------------------
+ */
+void homun_addspiritball(struct homun_data *hd, int max)
+{
+	nullpo_retv(hd);
+
+	if (max > MAX_SPIRITBALL)
+		max = MAX_SPIRITBALL;
+	if (hd->spiritball < 0)
+		hd->spiritball = 0;
+
+	if (hd->spiritball && hd->spiritball >= max)
+		hd->spiritball = max;
+	else
+		hd->spiritball++;
+
+	clif_spiritball2(hd);
+	return;
+}
+
+/*==========================================
+ * 気弾削除
+ *------------------------------------------
+ */
+void homun_delspiritball(struct homun_data *hd, int count, int type)
+{
+	nullpo_retv(hd);
+
+	if (hd->spiritball <= 0) {
+		hd->spiritball = 0;
+		return;
+	}
+	if (count <= 0)
+		return;
+	if (count > MAX_SPIRITBALL)
+		count = MAX_SPIRITBALL;
+	if (count > hd->spiritball)
+		count = hd->spiritball;
+
+	hd->spiritball -= count;
+	if (!type)
+		clif_spiritball2(hd);
+	return;
 }
 
 /*==========================================
@@ -1480,7 +1675,7 @@ static int read_homundb(void)
 	const char *filename2;
 
 	// DB情報の初期化
-	for(i=0; i<MAX_HOMUN_DB; i++) {
+	for(i=0; i<MAX_HOMUN_DB+MAX_HOMUN_S_DB; i++) {
 		if(homun_db[i].script)
 			script_free_code(homun_db[i].script);
 	}
@@ -1515,10 +1710,11 @@ static int read_homundb(void)
 			}
 
 			nameid = atoi(str[0]);
-			j = nameid - HOM_ID;
 
-			if(j < 0 || j >= MAX_HOMUN_DB)
+			if( !((nameid >= HOM_ID && nameid < HOM_ID + MAX_HOMUN_DB) || (nameid >= HOM_S_ID && nameid < HOM_S_ID + MAX_HOMUN_S_DB)) )
 				continue;
+
+			j = hom_dbcheck_id(nameid);
 
 			homun_db[j].class_     = nameid;
 			homun_db[j].view_class = atoi(str[1]);
@@ -1604,10 +1800,11 @@ static int read_homundb(void)
 		}
 
 		nameid = atoi(str[0]);
-		j = nameid - HOM_ID;
 
-		if(j < 0 || j >= MAX_HOMUN_DB || homun_db[j].class_ != nameid)
+		if( !((nameid >= HOM_ID && nameid < HOM_ID + MAX_HOMUN_DB) || (nameid >= HOM_S_ID && nameid < HOM_S_ID + MAX_HOMUN_S_DB)) )
 			continue;
+
+		j = hom_dbcheck_id(nameid);
 
 		homun_db[j].grow_min.hp   = atoi(str[1]);
 		homun_db[j].grow_max.hp   = atoi(str[2]);
@@ -1718,9 +1915,11 @@ static int homun_readdb(void)
 		if(j < 15)
 			continue;
 		class_ = atoi(split[0]);
-		i = class_ - HOM_ID;
-		if(i < 0 || i >= MAX_HOMUN_DB)
+
+		if( !((class_ >= HOM_ID && class_ < HOM_ID + MAX_HOMUN_DB) || (class_ >= HOM_S_ID && class_ < HOM_S_ID + MAX_HOMUN_S_DB)) )
 			continue;
+
+		i = hom_dbcheck_id(class_);
 
 		skillid = atoi(split[1]);
 		if(skillid < HOM_SKILLID || skillid >= MAX_HOM_SKILLID)
@@ -1805,9 +2004,9 @@ static int homun_read_embryodb(void)
 				embryo_default = atoi(str[2]);
 			continue;
 		}
-		ln = homunid - HOM_ID;
-		if(ln < 0 || ln >= MAX_HOMUN_DB)
+		if( !((homunid >= HOM_ID && homunid < HOM_ID + MAX_HOMUN_DB) || (homunid >= HOM_S_ID && homunid < HOM_S_ID + MAX_HOMUN_S_DB)) )
 			continue;
+		ln = hom_dbcheck_id(homunid);
 		if(str[2]) {
 			embryo_data[ln].homunid = homunid;
 			embryo_data[ln].per     = atoi(str[2]);
@@ -1857,7 +2056,7 @@ int do_final_homun(void)
 {
 	int i;
 
-	for(i = 0; i < MAX_HOMUN_DB; i++) {
+	for(i = 0; i < MAX_HOMUN_DB+MAX_HOMUN_S_DB; i++) {
 		if(homun_db[i].script) {
 			script_free_code(homun_db[i].script);
 		}

@@ -1309,6 +1309,8 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		return 0;
 	if(sd->sc.data[SC__WEAKNESS].timer != -1 && item->equip & LOC_RLARM)
 		return 0;
+	if(sd->sc.data[SC_PYROCLASTIC].timer != -1 && item->equip & LOC_RARM)
+		return 0;
 
 	return 1;
 }
@@ -6133,6 +6135,12 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		clif_msgstringtable(sd, 0x4f5);
 		merc_delete_data(sd);
 	}
+	if(sd->status.homun_id > 0 && sd->hd) {
+		// Ä¶‚ÌŒõ
+		if(sd->sc.data[SC_LIGHT_OF_REGENE].timer != -1) {
+			homun_damage(NULL, sd->hd, status_get_max_hp(&sd->hd->bl));
+		}
+	}
 
 	unit_stop_walking(&sd->bl,0);
 	unit_skillcastcancel(&sd->bl,0);	// ‰r¥‚Ì’†Ž~
@@ -8009,6 +8017,8 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 	//if(sd->state.casting) return 0;
 
 	if(n < 0 || n >= MAX_INVENTORY)
+		return;
+	if(sd->sc.data[SC_PYROCLASTIC].timer != -1 && sd->inventory_data[n]->equip & LOC_RARM)
 		return;
 
 	if(battle_config.battle_log)

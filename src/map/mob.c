@@ -826,6 +826,73 @@ static int mob_ai_sub_hard_slavemob(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
+ * 取り巻きモンスターの処理
+ *------------------------------------------
+ */
+static int mob_ai_sub_hard_legionmob(struct mob_data *md,unsigned int tick)
+{
+	struct homun_data *mhd = NULL;
+	struct block_list *bl;
+	int old_dist;
+
+	nullpo_retr(0, md);
+
+	if((bl = map_id2bl(md->master_id)) == NULL || unit_isdead(bl)) {	// 主が死亡しているか見つからない
+		if(md->state.special_mob_ai > 0)
+			unit_remove_map(&md->bl,3,0);
+		else
+			unit_remove_map(&md->bl,1,0);
+		return 0;
+	}
+
+	if(bl->type == BL_HOM)
+		mhd = (struct homun_data *)bl;	// 主の情報
+
+	// 主ではない
+	if(!mhd || mhd->bl.id != md->master_id)
+		return 0;
+	// 主が違うマップにいるのでテレポートして追いかける
+	if(mhd->bl.m != md->bl.m) {
+		mob_warp(md,mhd->bl.m,mhd->bl.x,mhd->bl.y,3);
+		md->state.master_check = 1;
+		return 0;
+	}
+
+	// 主との距離を測る
+	old_dist = md->master_dist;
+	md->master_dist = path_distance(md->bl.x,md->bl.y,mhd->bl.x,mhd->bl.y);
+
+	// 直前まで主が近くにいたのでテレポートして追いかける
+	if(old_dist < 10 && md->master_dist > 18) {
+		mob_warp(md,-1,mhd->bl.x,mhd->bl.y,3);
+		md->state.master_check = 1;
+		return 0;
+	}
+
+	// 主がいるが、少し遠いので近寄る
+	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->master_dist < 15 && md->state.norandomwalk) {
+		if(md->master_dist > 2) {
+			int i = 0, dx, dy, ret;
+			do {
+				if(i <= 2) {
+					dx = atn_rand()%5-2+mhd->bl.x - md->bl.x;
+					dy = atn_rand()%5-2+mhd->bl.y - md->bl.y;
+				} else {
+					dx = mhd->bl.x - md->bl.x + atn_rand()%5 - 2;
+					dy = mhd->bl.y - md->bl.y + atn_rand()%5 - 2;
+				}
+				ret = unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
+				i++;
+			} while(ret == 0 && i < 5);
+		}
+		md->next_walktime = tick + 500;
+		md->state.master_check = 1;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * ロックを止めて待機状態に移る。
  *------------------------------------------
  */
@@ -984,7 +1051,10 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	md->state.master_check = 0;
 	// 取り巻きモンスターの処理
 	if(md->master_id > 0) {
-		mob_ai_sub_hard_slavemob(md,tick);
+		if(md->state.special_mob_ai == 4)
+			mob_ai_sub_hard_legionmob(md,tick);
+		else
+			mob_ai_sub_hard_slavemob(md,tick);
 		if(md->bl.prev == NULL)
 			return 0; // 親と同時に死んだ
 	}
@@ -1791,12 +1861,18 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			struct mob_data *src_md = (struct mob_data *)src;
 			if(src_md && src_md->state.special_mob_ai)
 			{
-				struct map_session_data *msd = map_id2sd(src_md->master_id);
+				struct block_list *mbl = map_id2bl(src_md->master_id);
 				// msdがNULLのときはダメージログに記録しない
-				if(msd) {
-					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(msd->status.char_id) ));
-					linkdb_replace( &md->dmglog, INT2PTR(msd->status.char_id), INT2PTR(damage2) );
+				if(mbl->type == BL_PC) {
+					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id) ));
+					linkdb_replace( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id), INT2PTR(damage2) );
 					id = src_md->master_id;
+				}
+				else if(mbl->type == BL_HOM) {
+					// ホムの場合はIDを負に反転する
+					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
+					linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
+					id = src->id;
 				}
 			}
 		} else if(src->type & (BL_HOM | BL_MERC | BL_ELEM)) {
@@ -3495,7 +3571,7 @@ int mobskill_use(struct mob_data *md,unsigned int tick,int event)
 	if(md->sc.data[SC_SELFDESTRUCTION].timer != -1)	// 自爆中はスキルを使わない
 		return 0;
 
-	if(md->state.special_mob_ai >= 2)		// スフィアーマインはスキルを使わない
+	if(md->state.special_mob_ai >= 2 && md->state.special_mob_ai <= 3)		// スフィアーマインはスキルを使わない
 		return 0;
 
 	if(md->state.skillstate != MSS_DEAD) {

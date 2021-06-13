@@ -362,10 +362,16 @@ int SkillStatusChangeTableSUM[MAX_SUMSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚
 
 /* (ƒXƒLƒ‹”Ô† - HOM_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int HomSkillStatusChangeTable[MAX_HOMSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
-	/* 8000- */
+	/* 8001- */
 	-1,SC_AVOID,-1,SC_CHANGE,-1,SC_DEFENCE,-1,SC_BLOODLUST,-1,SC_FLEET,
-	/* 8010- */
-	SC_SPEED,-1,-1,-1,-1,-1,
+	/* 8011- */
+	SC_SPEED,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 8021- */
+	SC_PAIN_KILLER,SC_LIGHT_OF_REGENE,SC_OVERED_BOOST,-1,-1,SC_SILENCE,-1,-1,-1,-1,
+	/* 8031- */
+	-1,SC_GOLDENE_FERSE,SC_SAFETYWALL,-1,SC_ANGRIFFS_MODUS,SC_TINDER_BREAKER,SC_CBC,SC_EQC,SC_MAGMA_FLOW,SC_GRANITIC_ARMOR,
+	/* 8041- */
+	SC_HELLINFERNO,SC_PYROCLASTIC,SC_VOLCANIC_ASH,
 };
 
 /* (ƒXƒLƒ‹”Ô† - MERC_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
@@ -852,6 +858,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 	struct map_session_data *sd = NULL, *dstsd = NULL;
 	struct mob_data         *md = NULL, *dstmd = NULL;
+	struct homun_data       *hd = NULL;
 	struct skill_unit       *unit = NULL;
 	struct status_change    *tsc = NULL;
 	int skill;
@@ -876,6 +883,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	}
 
 	sd    = BL_DOWNCAST( BL_PC,  src );
+	hd    = BL_DOWNCAST( BL_HOM, src );
 	dstsd = BL_DOWNCAST( BL_PC,  bl );
 	dstmd = BL_DOWNCAST( BL_MOB, bl );
 
@@ -1447,6 +1455,51 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			else
 				status_change_pretimer(bl,SC_FROSTMISTY,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		}
+		break;
+	case MH_NEEDLE_OF_PARALYZE:	/* ƒj[ƒhƒ‹ƒIƒuƒpƒ‰ƒ‰ƒCƒY */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_PARALYZE,2500+skilllv*1500,status_get_lv(src)))
+			status_change_start(bl,SC_PARALYZE,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case MH_POISON_MIST:	/* ƒ|ƒCƒYƒ“ƒ~ƒXƒg */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,skilllv*2000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case MH_STAHL_HORN:	/* ƒVƒ…ƒ^[ƒ‹ƒz[ƒ“ */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*2000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case MH_SILVERVEIN_RUSH:	/* ƒVƒ‹ƒo[ƒxƒCƒ“ƒ‰ƒbƒVƒ… */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*2000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case MH_MIDNIGHT_FRENZY:	/* ƒ~ƒbƒhƒiƒCƒgƒtƒŒƒ“ƒW */
+		if(atn_rand() % 10000 < 1000+skilllv*200+(hd? hd->spiritball * 100: 0))
+			status_change_pretimer(bl,SC_FEAR,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case MH_TINDER_BREAKER:	/*ƒeƒBƒ“ƒ_[ƒuƒŒƒCƒJ[ */
+		{
+			struct status_change *sc = status_get_sc(src);
+			int duration = status_get_str(src) / 7 - status_get_str(bl) / 10;
+			if(duration < skilllv)
+				duration = skilllv;
+
+			if(sc && sc->data[SC_TINDER_BREAKER].timer != -1) {
+				struct block_list *target = map_id2bl(sc->data[SC_TINDER_BREAKER].val2);
+				if(target) {
+					status_change_end(target,SC_TINDER_BREAKER,-1);
+				}
+			}
+			status_change_start(src,SC_TINDER_BREAKER,skilllv,bl->id,0,0,duration*1000,0);
+			status_change_start(bl,SC_TINDER_BREAKER,skilllv,src->id,0,0,duration*1000,0);
+		}
+		break;
+	case MH_EQC:	/* E.Q.C */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,10000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case MH_LAVA_SLIDE:		/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
+		if(atn_rand() % 10000 < skilllv * 1000)
+			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case MER_CRASH:			/* ƒNƒ‰ƒbƒVƒ… */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*600,status_get_lv(src)))
@@ -2214,7 +2267,8 @@ static int skill_check_unit_range_sub( struct block_list *bl,va_list ap )
 	{
 		case MG_SAFETYWALL:
 		case AL_PNEUMA:
-			if(ug_id == MG_SAFETYWALL || ug_id == AL_PNEUMA) {
+		case MH_STEINWAND:
+			if(ug_id == MG_SAFETYWALL || ug_id == AL_PNEUMA || ug_id == MH_STEINWAND) {
 				return 1;
 			}
 			break;
@@ -2832,6 +2886,10 @@ int skill_castend_id(int tid, unsigned int tick, int id, void *data)
 
 		// ƒEƒH[ƒ‹ƒIƒuƒtƒHƒO •s”­”»’è
 		if(tsc && (tsc->data[SC_FOGWALL].timer != -1 || tsc->data[SC_FOGWALLPENALTY].timer != -1) && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 75)
+			break;
+
+		// ‰ÎRŠD •s”­”»’è
+		if(sc && sc->data[SC_VOLCANIC_ASH].timer != -1 && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 50)
 			break;
 
 		if(src_ud->skillid == PR_LEXAETERNA) {
@@ -4281,6 +4339,130 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				clif_send_homdata(hd->msd,1,hd->intimate/100);
 			}
 			battle_damage(NULL,src,status_get_hp(src),skillid,skilllv,flag);
+		}
+		break;
+	case MH_NEEDLE_OF_PARALYZE:	/* ƒj[ƒhƒ‹ƒIƒuƒpƒ‰ƒ‰ƒCƒY */
+	case MH_SONIC_CRAW:			/* ƒ\ƒjƒbƒNƒNƒ[ */
+	case MH_SILVERVEIN_RUSH:	/* ƒVƒ‹ƒo[ƒxƒCƒ“ƒ‰ƒbƒVƒ… */
+	case MH_MIDNIGHT_FRENZY:	/* ƒ~ƒbƒhƒiƒCƒgƒtƒŒƒ“ƒW */
+	case MH_STAHL_HORN:			/* ƒVƒ…ƒ^[ƒ‹ƒz[ƒ“ */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+		if(hd)
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		break;
+	case MH_TINDER_BREAKER:	/* ƒeƒBƒ“ƒ_[ƒuƒŒƒCƒJ[ */
+		{
+			int dist = unit_distance(src,bl);
+			if(hd && !map[hd->bl.m].flag.gvg && dist > 1) {
+				int dx = bl->x - hd->bl.x;
+				int dy = bl->y - hd->bl.y;
+
+				if(dx > 0) dx--;
+				else if(dx < 0) dx++;
+				if(dy > 0) dy--;
+				else if(dy < 0) dy++;
+				if(dx == 0 && dy == 0) dx++;
+				if(path_search(NULL,src->m,hd->bl.x,hd->bl.y,hd->bl.x+dx,hd->bl.y+dy,1) == -1) {
+					dx = bl->x - hd->bl.x;
+					dy = bl->y - hd->bl.y;
+					if(path_search(NULL,src->m,hd->bl.x,hd->bl.y,hd->bl.x+dx,hd->bl.y+dy,1) == -1) {
+						clif_skill_fail(hd->msd,skillid,0,0,0);
+						break;
+					}
+				}
+				hd->ud.to_x = hd->bl.x + dx;
+				hd->ud.to_y = hd->bl.y + dy;
+				clif_skill_poseffect(&hd->bl,skillid,skilllv,hd->bl.x,hd->bl.y,tick);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
+				clif_move(&hd->bl);
+				if(dx < 0) dx = -dx;
+				if(dy < 0) dy = -dy;
+				hd->ud.attackabletime = hd->ud.canmove_tick = tick + hd->speed * ((dx > dy)? dx:dy);
+				if(hd->ud.canact_tick < hd->ud.canmove_tick)
+					hd->ud.canact_tick = hd->ud.canmove_tick;
+				unit_movepos(&hd->bl,hd->ud.to_x,hd->ud.to_y,0);
+			} else {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,dist);
+			}
+			if(hd && hd->spiritball >= 1) {
+				hd->spiritball--;
+			}
+			if(hd)
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_CBC:	/* C.B.C */
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_TINDER_BREAKER].timer != -1) {
+			int duration = status_get_str(src) / 7 - status_get_str(bl) / 10;
+			int val3 = 50 * skilllv * status_get_lv(src) / 150;	// HPŒ¸­’l(b’è)
+			int val4 = 10 + (status_get_dex(src) + status_get_lv(src)) / 15;	// SPŒ¸­’l(b’è)
+			if(duration < skilllv)
+				duration = skilllv;
+
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			status_change_end(bl,SC_TINDER_BREAKER,-1);
+			status_change_start(bl,SC_CBC,skilllv,0,val3,val4,duration*1000,0);
+			if(hd && hd->spiritball >= 1) {
+				status_change_start(src,SC_COMBO,skillid,skilllv,0,0,1000,0);
+				clif_combo_delay(src,1000);
+			}
+		}
+		if(hd)
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		break;
+	case MH_EQC:	/* E.Q.C */
+		{
+			int t_hp = status_get_hp(bl);
+			status_change_start(bl,SC_EQC,skilllv,t_hp,0,0,skill_get_time2(skillid,skilllv),0);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			if(hd)
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_ERASER_CUTTER:	/* ƒCƒŒƒCƒT[ƒJƒbƒ^[ */
+	case MH_XENO_SLASHER:		/* ƒ[ƒmƒXƒ‰ƒbƒVƒƒ[ */
+		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,0);
+		if(hd)
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		break;
+	case MH_HEILIGE_STANGE:	/* ƒnƒCƒŠƒG[ƒWƒ…ƒXƒ^ƒ“ƒWƒF */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,0x0500);
+		} else {
+			int ar = (skilllv+1) / 2;
+			skill_area_temp[1] = bl->id;
+			skill_area_temp[2] = bl->x;
+			skill_area_temp[3] = bl->y;
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			/* ‚»‚ÌŒãƒ^[ƒQƒbƒgˆÈŠO‚Ì”ÍˆÍ“à‚Ì“G‘S‘Ì‚Éˆ—‚ğs‚¤ */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_MOB,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			if(hd)
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_MAGMA_FLOW:	/* ƒ}ƒOƒ}ƒtƒ[ */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+		} else {
+			int ar = (skilllv>=4? 2: 1);
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = bl->x;
+			skill_area_temp[3] = bl->y;
+			/* ‚»‚ÌŒãƒ^[ƒQƒbƒgˆÈŠO‚Ì”ÍˆÍ“à‚Ì“G‘S‘Ì‚Éˆ—‚ğs‚¤ */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_MOB,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			if(hd)
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
 		}
 		break;
 	case NJ_TATAMIGAESHI:	/* ô•Ô‚µ */
@@ -8224,6 +8406,119 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
 		break;
+	case MH_GOLDENE_FERSE:	/* ƒS[ƒ‹ƒfƒ“ƒyƒ‹ƒWƒF */
+	case MH_ANGRIFFS_MODUS:	/* ƒAƒ“ƒOƒŠƒtƒXƒ‚ƒhƒX */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		if(hd) {
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_SUMMON_LEGION:	/* ƒTƒ‚ƒ“ƒŒƒMƒIƒ“ */
+		if(hd && hd->msd) {
+			const int summons[5] = {2158, 2159, 2159, 2160, 2160};
+			const int qty[5]     = {3   , 3   , 4   , 4   , 5};
+			struct mob_data *tmpmd = NULL;
+			int i,id;
+
+			for(i=0; i<qty[skilllv - 1]; i++){
+				id = mob_once_spawn_area(hd->msd, src->m, src->x-2, src->y-2, src->x+2, src->y+2, "--ja--", summons[skilllv - 1], 1, "");
+				if((tmpmd = map_id2md(id)) != NULL) {
+					tmpmd->master_id =  src->id;
+					tmpmd->deletetimer  = add_timer(tick+skill_get_time(skillid,skilllv),mob_timer_delete,id,NULL);
+					tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
+					tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
+					tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
+					tmpmd->target_id = bl->id;
+					tmpmd->min_chase = 5 + path_distance(src->x,src->y,bl->x,bl->y);
+					tmpmd->state.master_check = 1;
+					tmpmd->state.norandomwalk = 1;
+					tmpmd->state.special_mob_ai = 4;
+				}
+			}
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_PAIN_KILLER:	/* ƒyƒCƒ“ƒLƒ‰[ */
+		if(hd && hd->msd && bl->type != BL_PC && bl->type != BL_HOM) {
+			clif_emotion(src,9);
+			clif_skill_fail(hd->msd, skillid, 11, 0, 0);
+			return 0;
+		}
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,status_get_lv(src),status_get_lv(bl),0,skill_get_time(skillid,skilllv),0);
+		status_change_start(bl,SC_ENDURE,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		if(hd) {
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_LIGHT_OF_REGENE:	/* Ä¶‚ÌŒõ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(hd) {
+			hd->intimate -= 10000;
+			if(battle_config.homun_skill_intimate_type)
+				hd->status.intimate = 1;
+			clif_send_homdata(hd->msd,1,hd->intimate/100);
+			status_change_start(&hd->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_OVERED_BOOST:	/* ƒI[ƒo[ƒhƒu[ƒXƒg */
+	case MH_GRANITIC_ARMOR:	/* ƒOƒ‰ƒjƒeƒBƒbƒNƒA[ƒ}[ */
+	case MH_PYROCLASTIC:	/* ƒpƒCƒƒNƒ‰ƒXƒeƒBƒbƒN */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(hd) {
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid==MH_PYROCLASTIC? status_get_lv(bl): 0,skill_get_time(skillid,skilllv),0);
+			status_change_start(&hd->msd->bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid==MH_PYROCLASTIC? status_get_lv(bl): 0,skill_get_time(skillid,skilllv),0);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
+	case MH_SILENT_BREEZE:	/* ƒTƒCƒŒƒ“ƒgƒuƒŠ[ƒY */
+		{
+			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
+
+			// ƒGƒtƒFƒNƒgo‚È‚¢‚Ì‚Åƒq[ƒ‹
+			clif_skill_nodamage(src,bl,AL_HEAL,heal,1);
+			clif_skill_nodamage(src,bl,skillid,heal,1);
+			battle_heal(NULL,bl,heal,0,0);
+			status_change_end(bl, SC_HALLUCINATION, -1);
+			status_change_end(bl, SC_CONFUSION, -1);
+			status_change_end(bl, SC_SLEEP, -1);
+			status_change_end(bl, SC_HARMONIZE, -1);
+			status_change_end(bl, SC_DEEP_SLEEP, -1);
+			status_change_end(bl, SC_MANDRAGORA, -1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(hd) {
+				hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+			}
+		}
+		break;
+	case MH_STYLE_CHANGE:	/* ƒXƒ^ƒCƒ‹ƒ`ƒFƒ“ƒW */
+		if(hd) {
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_STYLE_CHANGE].timer != -1) {
+				if(sc->data[SC_STYLE_CHANGE].val1 == 1) sc->data[SC_STYLE_CHANGE].val1 = 2;
+				else sc->data[SC_STYLE_CHANGE].val1 = 1;
+			}
+			else
+				status_change_start(bl,SC_STYLE_CHANGE,1,0,0,0,skill_get_time(skillid,skilllv),0);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
+	case MH_MAGMA_FLOW:		/* ƒ}ƒOƒ}ƒtƒ[ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,skillid,skill_get_time(skillid,skilllv),0);
+		if(hd)
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		break;
+	case MH_STEINWAND:			/* ƒVƒ…ƒ^ƒCƒ“ƒƒ“ƒh */
+		if(hd && hd->msd) {
+			skill_castend_pos2(src,src->x,src->y,skillid,skilllv,tick,0);
+			skill_castend_pos2(src,hd->msd->bl.x,hd->msd->bl.y,skillid,skilllv,tick,0);
+			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
+		}
+		break;
 	case NPC_DRAGONFEAR:		/* ƒhƒ‰ƒSƒ“ƒtƒBƒA[ */
 	case NPC_WIDESILENCE:		/* ”ÍˆÍ’¾–ÙUŒ‚ */
 	case NPC_WIDEFREEZE:		/* ”ÍˆÍ“€Œ‹UŒ‚ */
@@ -10455,8 +10750,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case SU_HISS:	/* Œx‰ú */
 		if(flag&1 || sd == NULL) {
+			int val2 = (skilllv >= 5)? 500: ((skilllv == 4)? 250: skilllv * 50);	// Š®‘S‰ñ”ğ‘‰Á
+			int val3 = (skilllv >= 4)? 60: ((skilllv == 3)? 40: 25);	// ˆÚ“®‘¬“x‘‰Á
+
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),15,val2,val3,0,skill_get_time(skillid,skilllv),0);
 		} else if(sd) {
 			int ar = 9 + (skilllv/2) * 3;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -10754,6 +11052,10 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data)
 		if(unit_isdead(src))
 			break;
 
+		// ‰ÎRŠD •s”­”»’è
+		if(sc && sc->data[SC_VOLCANIC_ASH].timer != -1 && skill_get_misfire(src_ud->skillid) && atn_rand()%100 < 50)
+			break;
+
 		if(src_md) {
 			if(src_md->sc.data[SC_ROKISWEIL].timer != -1)
 				break;
@@ -11009,6 +11311,10 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NJ_TATAMIGAESHI:		/* ô•Ô‚µ */
 	case NJ_BAKUENRYU:			/* —´‰Šw */
 	case NJ_HYOUSYOURAKU:		/* •X’Œ—‚µ */
+	case MH_POISON_MIST:		/* ƒ|ƒCƒYƒ“ƒ~ƒXƒg */
+	case MH_STEINWAND:			/* ƒVƒ…ƒ^ƒCƒ“ƒƒ“ƒh */
+	case MH_LAVA_SLIDE:			/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
+	case MH_VOLCANIC_ASH:		/* ƒ{ƒ‹ƒJƒjƒbƒNƒAƒbƒVƒ… */
 	case NPC_EVILLAND:			/* ƒC[ƒrƒ‹ƒ‰ƒ“ƒh */
 	case NPC_VENOMFOG:			/* ƒxƒiƒ€ƒtƒHƒO */
 	case NPC_FLAMECROSS:		/* ƒtƒŒƒCƒ€ƒNƒƒX */
@@ -11340,6 +11646,19 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 					status_change_end(src, SC_HIDING, -1);
 				}
 			}
+		}
+		break;
+	case MH_XENO_SLASHER:		/*ƒ[ƒmƒXƒ‰ƒbƒVƒƒ[ */
+		{
+			int ar = (skilllv + 1) / 2 + 1;
+
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = x;
+			skill_area_temp[3] = y;
+			map_foreachinarea(skill_area_sub,
+				src->m,x-ar,y-ar,x+ar,y+ar,BL_CHAR,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
 		}
 		break;
 	case RK_WINDCUTTER:	/* ƒEƒBƒ“ƒhƒJƒbƒ^[ */
@@ -12097,6 +12416,14 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 			val1 = ELE_FIRE;	// val1‚Í‘®«’l
 		}
 		break;
+	case MH_STEINWAND:			/* ƒVƒ…ƒ^ƒCƒ“ƒƒ“ƒh */
+		val1 = 300*skilllv;
+		if(sd && sd->hd) val1 += 65 * (sd->hom.int_ + sd->hom.base_level) + sd->hom.max_sp;
+		val2 = skilllv+4;
+		break;
+	case MH_LAVA_SLIDE:			/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
+		val2 = 5;
+		break;
 	case EL_FIRE_MANTLE:		/* ƒtƒ@ƒCƒA[ƒ}ƒ“ƒgƒ‹ */
 		val2 = skilllv;
 		break;
@@ -12838,6 +13165,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 	case UNT_EARTHSTRAIN:	/* ƒA[ƒXƒXƒgƒŒƒCƒ“ */
 	case UNT_PSYCHIC_WAVE:	/* ƒTƒCƒLƒbƒNƒEƒF[ƒu */
 	case UNT_CLOUD_KILL:	/* ƒNƒ‰ƒEƒhƒLƒ‹ */
+	case UNT_POISON_MIST:	/* ƒ|ƒCƒYƒ“ƒ~ƒXƒg */
 		battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0);
 		break;
 	case UNT_FIREPILLAR_WAITING:	/* ƒtƒ@ƒCƒA[ƒsƒ‰[(”­“®‘O) */
@@ -13448,6 +13776,17 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				break;
 			clif_skill_nodamage(&src->bl,bl,AL_HEAL,2000,1);
 			battle_heal(NULL,bl,2000,0,0);
+		}
+		break;
+	case UNT_LAVA_SLIDE:			/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
+		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,MH_LAVA_SLIDE,sg->skill_lv,tick,0);
+		if(--sg->val2 <= 0)
+			skill_delunitgroup(sg);
+		break;
+	case UNT_VOLCANIC_ASH:		/* ƒ{ƒ‹ƒJƒjƒbƒNƒAƒbƒVƒ… */
+		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0) {
+			if(sc && sc->data[SC_VOLCANIC_ASH].timer == -1)
+				status_change_start(bl,SC_VOLCANIC_ASH,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 		}
 		break;
 	}
@@ -15905,7 +16244,7 @@ static int skill_check_condition2_pet(struct pet_data *pd, struct skill_conditio
 // HOM—p”»’è( 0: g—p¸”s 1: g—p¬Œ÷ )
 static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condition *cnd, int type)
 {
-	int i,hp,sp,hp_rate,sp_rate,zeny,state,skilldb_id;
+	int i,hp,sp,hp_rate,sp_rate,zeny,state,spiritball,skilldb_id;
 	struct map_session_data* msd;
 	struct block_list *bl;
 	int itemid[10],amount[10];
@@ -15920,6 +16259,7 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 	sp         = skill_get_sp(cnd->id, cnd->lv);	/* Á”ïSP */
 	hp_rate    = (cnd->lv <= 0)? 0: skill_db[skilldb_id].hp_rate[cnd->lv-1];
 	sp_rate    = (cnd->lv <= 0)? 0: skill_db[skilldb_id].sp_rate[cnd->lv-1];
+	spiritball = (cnd->lv <= 0)? 0: skill_db[skilldb_id].spiritball[cnd->lv-1];
 	zeny       = skill_get_zeny(cnd->id,cnd->lv);
 	state      = skill_db[skilldb_id].state;
 
@@ -15956,14 +16296,104 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		switch(cnd->id)
 		{
 			case HFLI_SBR44:	/* S.B.R.44 */
-				if(hd->intimate < 200)
+				if(hd->intimate < 200) {
+					clif_skill_fail(msd, cnd->id, 80, 0, 0);
 					return 0;
+				}
 				break;
 			case HVAN_EXPLOSION:	/* ƒoƒCƒIƒGƒNƒXƒvƒ[ƒWƒ‡ƒ“ */
-				if(hd->intimate < battle_config.hvan_explosion_intimate)
+				if(hd->intimate < battle_config.hvan_explosion_intimate) {
+					clif_skill_fail(msd, cnd->id, 80, 0, 0);
+					return 0;
+				}
+				break;
+			case MH_LIGHT_OF_REGENE:	/* Ä¶‚ÌŒõ */
+				if(hd->intimate < 91100) {
+					clif_skill_fail(msd, cnd->id, 80, 0, 0);
+					return 0;
+				}
+				break;
+			case MH_GOLDENE_FERSE:	/* ƒS[ƒ‹ƒfƒ“ƒyƒ‹ƒWƒF */
+				if(hd->sc.data[SC_ANGRIFFS_MODUS].timer != -1)
 					return 0;
 				break;
+			case MH_ANGRIFFS_MODUS:	/* ƒAƒ“ƒOƒŠƒtƒXƒ‚ƒhƒX */
+				if(hd->sc.data[SC_GOLDENE_FERSE].timer != -1)
+					return 0;
+				break;
+			case MH_TINDER_BREAKER:	/* ƒeƒBƒ“ƒ_[ƒuƒŒƒCƒJ[ */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 2)) {
+					clif_skill_fail(msd, cnd->id, 82, 1, 0);
+					return 0;
+				}
+				break;
+			case MH_SONIC_CRAW:		/* ƒ\ƒjƒbƒNƒNƒ[ */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 1)) {
+					clif_skill_fail(msd, cnd->id, 81, 0, 0);
+					return 0;
+				}
+				if(hd->spiritball < 1) {
+					clif_skill_fail(hd->msd,cnd->id,74,1,0);		// ‹C‹…•s‘«
+					return 0;
+				}
+				break;
+			case MH_SILVERVEIN_RUSH:	/* ƒVƒ‹ƒo[ƒxƒCƒ“ƒ‰ƒbƒVƒ… */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 1)) {
+					clif_skill_fail(msd, cnd->id, 81, 0, 0);
+					return 0;
+				}
+				if (!(hd->sc.data[SC_COMBO].timer != -1 && hd->sc.data[SC_COMBO].val1 == MH_SONIC_CRAW)) {
+					clif_skill_fail(msd, cnd->id, 73, MH_SONIC_CRAW, 0);
+					return 0;
+				}
+				break;
+			case MH_MIDNIGHT_FRENZY:	/* ƒ~ƒbƒhƒiƒCƒgƒtƒŒƒ“ƒW */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 1)) {
+					clif_skill_fail(msd, cnd->id, 81, 0, 0);
+					return 0;
+				}
+				if (!(hd->sc.data[SC_COMBO].timer != -1 && hd->sc.data[SC_COMBO].val1 == MH_SILVERVEIN_RUSH)) {
+					clif_skill_fail(msd, cnd->id, 73, MH_SILVERVEIN_RUSH, 0);
+					return 0;
+				}
+				break;
+			case MH_CBC:	/* C.B.C */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 2)) {
+					clif_skill_fail(msd, cnd->id, 82, 0, 0);
+					return 0;
+				}
+				if (!(hd->sc.data[SC_COMBO].timer != -1 && hd->sc.data[SC_COMBO].val1 == MH_TINDER_BREAKER)) {
+					clif_skill_fail(msd, cnd->id, 73, MH_TINDER_BREAKER, 0);
+					return 0;
+				}
+				break;
+			case MH_EQC:	/* E.Q.C */
+				if (!(hd->sc.data[SC_STYLE_CHANGE].timer != -1 && hd->sc.data[SC_STYLE_CHANGE].val1 == 2)) {
+					clif_skill_fail(msd, cnd->id, 82, 0, 0);
+					return 0;
+				}
+				if (!(hd->sc.data[SC_COMBO].timer != -1 && hd->sc.data[SC_COMBO].val1 == MH_CBC)) {
+					clif_skill_fail(msd, cnd->id, 73, MH_CBC, 0);
+					return 0;
+				}
+				break;
+			case MH_POISON_MIST:		/* ƒ|ƒCƒYƒ“ƒ~ƒXƒg */
+			case MH_LAVA_SLIDE:			/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
+			case MH_VOLCANIC_ASH:		/* ƒ{ƒ‹ƒJƒjƒbƒNƒAƒbƒVƒ… */
+				{
+					int maxcount = skill_get_maxcount(cnd->id,cnd->lv);
+					if(maxcount > 0 && skill_count_unitgroup(&hd->ud,cnd->id) >= maxcount) {
+						clif_skill_fail(msd, cnd->id, 0, 0, 0);
+						return 0;
+					}
+				}
+				break;
 		}
+	}
+
+	if(spiritball > 0 && hd->spiritball < spiritball) {
+		clif_skill_fail(hd->msd,cnd->id,74,spiritball,0);		// ‹C‹…•s‘«
+		return 0;
 	}
 
 	switch(state) {
@@ -16018,6 +16448,8 @@ static int skill_check_condition2_hom(struct homun_data *hd, struct skill_condit
 		}
 		if(zeny > 0)				// ZenyÁ”ï
 			pc_payzeny(msd,zeny);
+		if(spiritball > 0)				// ‹C‹…Á”ï
+			homun_delspiritball(hd,spiritball,0);
 	}
 	return 1;
 }
@@ -16524,6 +16956,10 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		/* ƒnƒEƒŠƒ“ƒOƒIƒuƒ}ƒ“ƒhƒ‰ƒSƒ‰ */
 		if(sc->data[SC_MANDRAGORA].timer != -1) {
 			fixedtime += sc->data[SC_MANDRAGORA].val3;		// ‹­§ŒÅ’è‰r¥‘‰Á
+		}
+		/* –ƒáƒ */
+		if(sc->data[SC_PARALYZE].timer != -1) {
+			fixedtime += sc->data[SC_PARALYZE].val2;		// ‹­§ŒÅ’è‰r¥‘‰Á
 		}
 		/* \˜Z–é */
 		if(sc->data[SC_IZAYOI].timer != -1)
@@ -17905,6 +18341,9 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case NJ_HYOUSYOURAKU:
 		case NJ_RAIGEKISAI:
 		case NPC_EVILLAND:
+		case MH_STEINWAND:
+		case MH_LAVA_SLIDE:
+		case MH_VOLCANIC_ASH:
 		case GC_POISONSMOKE:
 		case AB_EPICLESIS:
 		case WL_EARTHSTRAIN:

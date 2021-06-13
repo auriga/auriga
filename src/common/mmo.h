@@ -54,7 +54,7 @@
 #define MAX_GUILDCASTLE 30
 #define MAX_GUILDLEVEL 50
 #define MAX_FRIEND 20
-#define MAX_STATUSCHANGE 680
+#define MAX_STATUSCHANGE 690
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
 
@@ -86,6 +86,9 @@
 #define MAX_HOMUN_DB 16			// ホムの数
 #define HOM_ID 6001			// ホムID開始値
 
+#define MAX_HOMUN_S_DB 5		// ホムSの数
+#define HOM_S_ID 6048			// ホムSID開始値
+
 #define MAX_MERC_DB 50			// 傭兵の数
 #define MAX_MERC_TYPE 3			// 傭兵の種類
 
@@ -113,7 +116,7 @@
 #define MAX_KOSKILL      35
 #define MAX_EX3SKILL     15
 #define MAX_SUMSKILL     39
-#define MAX_HOMSKILL     16
+#define MAX_HOMSKILL     43
 #define MAX_MERCSKILL    41
 #define MAX_ELEMSKILL    42
 #define MAX_GUILDSKILL   16
@@ -876,6 +879,10 @@ enum {
 	GD_EMERGENCYCALL,
 	GD_DEVELOPMENT,
 	GD_ITEMEMERGENCYCALL,
+	GD_GUILD_STORAGE,
+	GD_CHARGESHOUT_FLAG,
+	GD_CHARGESHOUT_BEATING,
+	GD_EMERGENCY_MOVE,
 };
 
 struct mail {

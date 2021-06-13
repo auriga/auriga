@@ -972,7 +972,7 @@ struct mob_data {
 		unsigned steal_flag : 1;
 		unsigned steal_coin_flag : 1;
 		unsigned master_check : 1;
-		unsigned special_mob_ai : 3;
+		unsigned special_mob_ai : 4;
 		unsigned nodrop : 1;
 		unsigned noexp : 1;
 		unsigned nomvp : 1;
@@ -1071,6 +1071,7 @@ struct homun_data {
 	int natural_heal_hp,natural_heal_sp;
 	int hungry_timer;
 	int hungry_cry_timer;
+	char spiritball;
 	struct map_session_data *msd;
 };
 

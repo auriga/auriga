@@ -223,6 +223,7 @@ void clif_autospell(struct map_session_data *sd, int skilllv);
 void clif_devotion(struct map_session_data *sd);
 
 void clif_spiritball(struct map_session_data *sd);
+void clif_spiritball2(struct homun_data *hd);
 void clif_coin(struct map_session_data *sd);
 void clif_combo_delay(struct block_list *bl, int wait);
 void clif_bladestop(struct block_list *src, int dst_id, int flag);

@@ -4231,6 +4231,8 @@ int buildin_distance(struct script_state *st);
 int buildin_homundel(struct script_state *st);
 int buildin_homunrename(struct script_state *st);
 int buildin_homunevolution(struct script_state *st);
+int buildin_morphembryo(struct script_state *st);
+int buildin_homunmutation(struct script_state *st);
 int buildin_recalcstatus(struct script_state *st);
 int buildin_sqlquery(struct script_state *st);
 int buildin_strescape(struct script_state *st);
@@ -4532,6 +4534,8 @@ struct script_function buildin_func[] = {
 	{buildin_homundel,"homundel",""},
 	{buildin_homunrename,"homunrename","s*"},
 	{buildin_homunevolution,"homunevolution",""},
+	{buildin_morphembryo,"morphembryo",""},
+	{buildin_homunmutation,"homunmutation","i"},
 #ifndef NO_CSVDB_SCRIPT
 	{buildin_csvgetrows,"csvgetrows","s"},
 	{buildin_csvgetcols,"csvgetcols","si"},
@@ -12157,6 +12161,28 @@ int buildin_homunrename(struct script_state *st)
 int buildin_homunevolution(struct script_state *st)
 {
 	homun_change_class(script_rid2sd(st), -1);
+	return 0;
+}
+
+/*==========================================
+ * エンブリオ変異
+ *------------------------------------------
+ */
+int buildin_morphembryo(struct script_state *st)
+{
+	homun_morphembryo(script_rid2sd(st));
+	return 0;
+}
+
+/*==========================================
+ * ホムンクルス変異
+ *------------------------------------------
+ */
+int buildin_homunmutation(struct script_state *st)
+{
+	int id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	homun_mutation(script_rid2sd(st), id);
 	return 0;
 }
 

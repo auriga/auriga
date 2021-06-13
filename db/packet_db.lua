@@ -1851,21 +1851,24 @@ p(0x0b30,-1)
 p(0x0b31,17)
 p(0x0b32,-1)
 p(0x0b33,17)
-p(0x0b34,50)
-p(0x0b35,3)
+p(0x0b34,26)
+p(0x0b35,3,"mountoff",2)
 p(0x0b36,-1)
 p(0x0b37,-1)
+p(0x0b38,-1)
 p(0x0b39,-1)
+p(0x0b3a,4)
+p(0x0b3b,4)
 p(0x0b3c,4)
 p(0x0b3d,-1)
 p(0x0b3e,-1)
 p(0x0b3f,64)
 p(0x0b40,-1)
-p(0x0b41,70)
-p(0x0b42,62)
-p(0x0b43,48)
-p(0x0b44,58)
-p(0x0b45,58)
+p(0x0b41,41)
+p(0x0b42,30)
+p(0x0b43,47)
+p(0x0b44,32)
+p(0x0b45,32)
 p(0x0b46,10,"guildchangeemblem2",{2,6})
 p(0x0b47,14)
 p(0x0b48,18)
@@ -1873,7 +1876,7 @@ p(0x0b49,4)
 p(0x0b4a,6)
 p(0x0b4b,4)
 p(0x0b4c,2)
-p(0x0b4d,-1)
+p(0x0b4d,6)
 p(0x0b4e,-1)
 p(0x0b4f,2)
 p(0x0b50,2)
@@ -1885,21 +1888,21 @@ p(0x0b55,-1)
 p(0x0b56,-1)
 p(0x0b57,-1)
 p(0x0b58,2)
-p(0x0b59,4)
-p(0x0b5a,-1)
-p(0x0b5b,14)
-p(0x0b5c,2)
-p(0x0b5d,10)
-p(0x0b5e,33)
-p(0x0b5f,-1)
+p(0x0b59,2)
+p(0x0b5a,4)
+p(0x0b5b,-1)
+p(0x0b5c,10)
+p(0x0b5d,2)
+p(0x0b5e,10)
+p(0x0b5f,33)
 p(0x0b60,-1)
 p(0x0b61,-1)
 p(0x0b62,-1)
 p(0x0b63,-1)
 p(0x0b64,-1)
 p(0x0b65,-1)
-p(0x0b66,26)
-p(0x0b67,33)
+p(0x0b66,25)
+p(0x0b67,32)
 p(0x0b68,12)
 p(0x0b69,18)
 p(0x0b6a,-1)
@@ -1907,6 +1910,24 @@ p(0x0b6b,14)
 p(0x0b6c,12)
 p(0x0b6d,6)
 p(0x0b6e,14)
+p(0x0b6f,177)
+p(0x0b70,8)
+p(0x0b71,177)
+p(0x0b72,4)
+p(0x0b73,8)
+p(0x0b74,1026)
+p(0x0b75,1026)
+p(0x0b76,77)
+p(0x0b77,-1)
+p(0x0b78,-1)
+p(0x0b79,-1)
+p(0x0b7a,-1)
+p(0x0b7b,118)
+p(0x0b7c,-1)
+p(0x0b7d,-1)
+p(0x0b7e,60)
+p(0x0b7f,10)
+p(0x0b80,10)
 
 
 
@@ -3151,6 +3172,72 @@ if packet_ver >= 20190522 then
 	p(0x0b2a,40)
 end
 
+if packet_ver >= 20190605 then
+	p(0x0b04,72)
+end
+
+if packet_ver >= 20190619 then
+	p(0x0b1e,14)
+	p(0x0b1f,14)
+end
+
+if packet_ver >= 20200709 then
+	p(0x0b70,-1)
+	p(0x0b72,-1)
+end
+
+if packet_ver >= 20190724 then
+	p(0x0b34,50)
+	p(0x0b4d,6)
+end
+
+if packet_ver >= 20190807 then
+	p(0x0b04,90)
+	p(0x0b4d,-1)
+end
+
+if packet_ver >= 20190904 then
+	p(0x007e,46)
+	p(0x0191,27)
+end
+
+if packet_ver >= 20191002 then
+	p(0x0b5c,14)
+end
+
+if packet_ver >= 20191016 then
+	p(0x0b3f,63)
+	p(0x0b41,69)
+	p(0x0b42,61)
+	p(0x0b44,57)
+	p(0x0b45,57)
+	p(0x0b59,4)
+	p(0x0b5a,-1)
+	p(0x0b5b,14)
+	p(0x0b5c,2)
+	p(0x0b5d,10)
+	p(0x0b5e,33)
+end
+
+if packet_ver >= 20191030 then
+	p(0x0b5f,-1)
+end
+
+if packet_ver >= 20191204 then
+	p(0x0afa,58)
+end
+
+if packet_ver >= 20191224 then
+	p(0x0b3f,64)
+	p(0x0b41,70)
+	p(0x0b42,62)
+	p(0x0b43,48)
+	p(0x0b44,58)
+	p(0x0b45,58)
+	p(0x0b66,26)
+	p(0x0b67,33)
+end
+
 -- 2018-04-18bRagexeRE
 if packet_ver >= 20180321 then
 	p(0x0202,26,"friendaddrequest",2)
@@ -3176,6 +3263,10 @@ if packet_ver >= 20180321 then
 	p(0x0815,2,"closebuyingstorereq",0)
 	p(0x0817,6,"clickbuyingstorereq",2)
 	p(0x0819,-1,"sellbuyingstorereq",{2,4,8,12})
+end
+
+if packet_ver >= 20190904 then
+	p(0x0367,31,"useskilltopos",{2,4,6,8,10})
 end
 
 --dofile("./db/packet_shuffle.lua")

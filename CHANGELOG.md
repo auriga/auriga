@@ -1,4 +1,22 @@
 ----------------------------------------
+//1462 [2021/06/13] by refis
+
+・ホムンクルススペリオール実装準備（db/*, src/*）
+
+・ホムンクルスの進化ボーナスを更新（homun_db2.txt）
+
+・戦闘設定「homun_max_aspd」を暫定で100に補正してみる（battle_auriga.conf）
+
+・戦闘設定「homun_status_max」を追加（battle_auriga.conf, battle.*, homun.c）
+　デフォルト値は150です
+
+・ヘルパワー中でもジークフリードの証が有効だったミスを修正（clif.c）
+
+・警戒スキルの効果が正常に動いていなかったので修正（skill.c, status.c）
+
+・packet_db.luaを更新（db/packet_db.lua, clif.c）
+
+----------------------------------------
 //1461 [2021/06/06] by refis
 
 ・実績レベルの必要ポイントを修正（achievement_level_db.lua）

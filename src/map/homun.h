@@ -27,7 +27,12 @@
 #define HOM_NATURAL_HEAL_HP_INTERVAL 2000
 #define HOM_NATURAL_HEAL_SP_INTERVAL 4000
 
-#define MAX_HOMSKILL_TREE 16
+#define MAX_HOMSKILL_TREE 43
+
+#define hom_dbcheck_id(id) \
+	( ((id) >= HOM_ID && (id) <= HOM_ID+MAX_HOMUN_DB) ? ((id) - HOM_ID) : \
+	  ((id) >= HOM_S_ID && (id) <= HOM_S_ID+MAX_HOMUN_S_DB) ? ((id) - HOM_S_ID + MAX_HOMUN_DB) : \
+	  0 )
 
 struct homun_status {
 	int hp,sp;
@@ -53,14 +58,14 @@ struct homun_db {
 	short skillpoint;
 	struct script_code *script;
 };
-extern struct homun_db homun_db[MAX_HOMUN_DB];
+extern struct homun_db homun_db[MAX_HOMUN_DB+MAX_HOMUN_S_DB];
 
 struct random_homun_data {
 	int homunid;
 	int per;
 };
 
-int homun_get_skilltree_max(int class_,int skillid);
+int homun_get_skilltree_max(struct homun_data *hd,int skillid);
 
 int homun_hungry_timer_delete(struct homun_data *hd);
 
@@ -73,6 +78,8 @@ int homun_recv_homdata(int account_id,int char_id,struct mmo_homunstatus *p,int 
 int homun_return_embryo(struct map_session_data *sd);
 int homun_revive(struct map_session_data *sd,int skilllv);
 int homun_change_class( struct map_session_data *sd, int class_ );
+int homun_morphembryo( struct map_session_data *sd);
+int homun_mutation( struct map_session_data *sd, int class_ );
 
 int homun_checkskill(struct homun_data *hd,int skill_id);
 void homun_skillup(struct map_session_data *sd, int skill_num);
@@ -92,6 +99,9 @@ int homun_delete_data(struct map_session_data *sd);
 int homun_save_data(struct map_session_data *sd);
 
 int homun_isalive(struct map_session_data *sd);
+
+void homun_addspiritball(struct homun_data *hd, int max);
+void homun_delspiritball(struct homun_data *hd, int count, int type);
 
 int do_init_homun(void);
 int do_final_homun(void);
