@@ -1,4 +1,10 @@
 ----------------------------------------
+//1464 [2021/06/17] by refis
+
+・1462の戦闘設定「homun_max_aspd」の補正を差し戻し
+　代わりにstatus.c側の処理を変更（battle_auriga.conf, status.c）
+
+----------------------------------------
 //1463 [2021/06/16] by refis
 
 ・NPCスキル[M呪縛陣]追加（skill_cast_db.txt, skill_db*.txt, skill.c）

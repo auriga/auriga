@@ -5756,8 +5756,13 @@ int status_get_adelay(struct block_list *bl)
 					adelay = battle_config.monster_max_aspd>>1;
 				break;
 			case BL_HOM:
+#ifdef PRE_RENEWAL
 				if(adelay < battle_config.homun_max_aspd)
 					adelay = battle_config.homun_max_aspd;
+#else
+				if(adelay < (battle_config.homun_max_aspd>>1) )
+					adelay = battle_config.homun_max_aspd>>1;
+#endif
 				break;
 			case BL_MERC:
 				if(adelay < (battle_config.merc_max_aspd>>1) )
