@@ -200,7 +200,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç
 	/* 720- */
 	SC_FREEZE,SC_SPIDERWEB,-1,-1,SC_BURNT,-1,-1,SC_AETERNA,-1,-1,
 	/* 730- */
-	-1,-1,-1,-1,-1,SC_MANDRAGORA,-1,-1,-1,-1,
+	SC_CURSEDCIRCLE,-1,-1,-1,-1,SC_MANDRAGORA,-1,-1,-1,-1,
 	/* 740- */
 	-1,-1,-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,-1,-1,-1,-1,
 };
@@ -9779,6 +9779,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case SR_CURSEDCIRCLE:		/* éÙîõêw */
+	case NPC_SR_CURSEDCIRCLE:		/* MéÙîõêw */
 		if(flag&1) {
 			if(!(status_get_mode(bl)&MD_BOSS)) {
 				if(sd) {
@@ -9791,7 +9792,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				}
 			}
 		} else {
-			int ar = (skilllv + 1) / 2;
+			int ar = (skillid==NPC_SR_CURSEDCIRCLE)? skilllv: (skilllv + 1) / 2;
 			status_change_start(bl,SC_CURSEDCIRCLE_USER,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_area_sub,

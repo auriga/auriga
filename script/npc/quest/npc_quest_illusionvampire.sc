@@ -3877,13 +3877,11 @@ OnSummon:
 	end;
 OnTimer15000:
 	stopnpctimer;
-	set '@x,rand(40,250);
-	set '@y,rand(40,250);
-	//set 'mob,callmonster("gef_d01_j.gat",'@x,'@y,"ボミ",3756,strnpcinfo(0)+"::OnBomiKilled");
 	set 'mob,areacallmonster("gef_d01_j.gat",0,0,0,0,"ボミ",3756,strnpcinfo(0)+"::OnBomiKilled");
 	unittalk 'mob,"ボミ : 冒……険……者……さま……逃げ……て……";
-//	mobuseskillpos 'mob,21,10,210,221,0,0;	// サンダーストーム
-//	mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
+	mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
+	mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
 	announce "ボミ : ダ、ダメ……毒が回り始めて……！", 0x9, 0xee0000, 0x0190, 20, 0, 0;
 	donpcevent "ボミ#gef_d01_j::OnSpawn";
 	end;

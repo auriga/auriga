@@ -5,9 +5,8 @@
 //==============================================================================
 ice_dun02.gat,150,11,1	script	#tofrozen	10237,{
 	if(BaseLevel < 170) {
-		//未調査
-		mes "- 精神がぼんやりしている。";
-		mes "  Base170以上で入場可能です。 -";
+		mes "- 170レベル未満のキャラクターは";
+		mes "  進入出来ません。 -";
 		close;
 	}
 	mes "- 精神がぼんやりしている。";
@@ -843,6 +842,9 @@ OnSummon:
 		setarray '@x,211,89,87,209,121,122,178,178;
 		setarray '@y,92,94,206,209,122,177,177,121;
 		set 'mob,callmonster("ice_d03_i.gat",'@x[rand(getarraysize('@x))],'@y[rand(getarraysize('@y))],"狂乱した冒険者",3765,strnpcinfo(0)+"::OnKilled");
+		set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
+		mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
+		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
 		unittalk 'mob,"狂乱した冒険者 : あなたは魔物に惑わされている！僕が救ってあげましょう！";
 	}
 	else {
