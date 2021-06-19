@@ -3181,11 +3181,6 @@ if packet_ver >= 20190619 then
 	p(0x0b1f,14)
 end
 
-if packet_ver >= 20200709 then
-	p(0x0b70,-1)
-	p(0x0b72,-1)
-end
-
 if packet_ver >= 20190724 then
 	p(0x0b34,50)
 	p(0x0b4d,6)
@@ -3236,6 +3231,11 @@ if packet_ver >= 20191224 then
 	p(0x0b45,58)
 	p(0x0b66,26)
 	p(0x0b67,33)
+end
+
+if packet_ver >= 20200709 then
+	p(0x0b70,-1)
+	p(0x0b72,-1)
 end
 
 -- 2018-04-18bRagexeRE
