@@ -949,6 +949,11 @@ que_god02.gat	mapflag	nosave	SavePoint
 que_god02.gat	mapflag	nobranch	dummy
 que_god02.gat	mapflag	nopenalty	dummy
 que_god02.gat	mapflag	noskill	dummy
+que_house_s.gat	mapflag	nomemo	dummy
+que_house_s.gat	mapflag	noteleport	dummy
+que_house_s.gat	mapflag	nobranch	dummy
+que_house_s.gat	mapflag	nopenalty	dummy
+que_house_s.gat	mapflag	noskill	dummy
 que_hugel.gat	mapflag	nomemo	dummy
 que_hugel.gat	mapflag	noteleport	dummy
 que_hugel.gat	mapflag	nosave	SavePoint

@@ -4336,7 +4336,7 @@
 
 6413,New_Insurance,身代わりの護符,3,0,,10,,,,,,,,,,,,{},{}
 
-6415,Strange_Embryo,不思議なエンブリオ,3,0,,0,,,,,,,,,,,,{},{}
+6415,Strange_Embryo,不思議なエンブリオ,3,0,-1,0,,,,,,,,,,,,{},{}
 
 6418,A_Class_Coin,マラン・Aコイン,3,20,,0,,,,,,,,,,,,{},{}
 
@@ -5921,7 +5921,7 @@
 11601,Unknown_Item,おいしいイワシ,0,20,,20,,,,,2074075135,2,,,,,,{ itemheal 650,0; },{}
 11602,Unknown_Item,イヌハッカの実,0,15,,1,,,,,2074075135,2,,,,,,{ itemheal 36,0; },{}
 
-11616,Unknown_Item,美味しいお肉,3,,,10,,,,,,,,,,,,{},{}
+11616,Unknown_Item,美味しいお肉,3,1000,,10,,,,,,,,,,,,{},{}
 
 11620,Unknown_Item,ベアロピー,3,,,10,,,,,,,,,,,,{},{}
 
@@ -11664,9 +11664,9 @@
 
 25224,Unknown_Item,チャーム＜ホワイトボディ＞,3,,,100,,,,,,,,,,,,{},{}
 
-25231,Unknown_Item,不審なボトル,3,,,0,,,,,,,,,,,,{},{}
+25231,Unknown_Item,不審なボトル,3,1000,,0,,,,,,,,,,,,{},{}
 
-25233,Unknown_Item,綿の玉,3,,,10,,,,,,,,,,,,{},{}
+25233,Unknown_Item,綿の玉,3,1000,,10,,,,,,,,,,,,{},{}
 
 25237,Unknown_Item,迷宮の魔力結晶,3,20,,0,,,,,,,,,,,,{},{}
 
@@ -11748,7 +11748,7 @@
 
 25374,Unknown_Item,不思議な石片,3,50000,,1,,,,,,,,,,,,{},{}
 
-25377,Unknown_Item,豪華なペットフード,3,,,0,,,,,,,,,,,,{},{}
+25377,Unknown_Item,豪華なペットフード,3,10000,,0,,,,,,,,,,,,{},{}
 
 25389,Unknown_Item,キャンサーの欠片,3,20,,0,,,,,,2,,,,,,{},{}
 
@@ -12036,7 +12036,7 @@
 26152,Unknown_Item,スタッフオブパフィ,5,,,300,,,1,1,65792,,2,4,100,,1,{},{}
 
 26163,Unknown_Item,虹色の猫じゃらし,5,,,400,,,1,1,1073741824,2,2,4,100,,1,{},{}
-26164,Unknown_Item,エレクトリックフォックス-OS,5,,,400,,,1,,2074075135,2,2,4,150,10,1,{},{ bonus2 bAddEle,Ele_All,20; bonus2 bMagicAddEle,Ele_All,20; bonus3 bAutoSpell,2214,3,300; bonus bBaseAtk,getequiprefinerycnt(4)*10; bonus bMatk,getequiprefinerycnt(4)*10; bonus bAspdAddRate,getequiprefinerycnt(4); if(getequiprefinerycnt(4)>=7){ bonus2 bAddEle,Ele_All,10; bonus2 bMagicAddEle,Ele_All,10; } if(getequiprefinerycnt(4)>=9){ bonus2 bAddEle,Ele_All,10; bonus2 bMagicAddEle,Ele_All,10; } if(getequiprefinerycnt(4)>=10){ bonus2 bAddEleMagicDamageRate,Ele_Wind,50; } }
+26164,Unknown_Item,エレクトリックフォックス-OS,5,,,400,150:180,,1,,2074075135,2,2,4,150,10,1,{},{ bonus2 bAddEle,Ele_All,20; bonus2 bMagicAddEle,Ele_All,20; bonus3 bAutoSpell,2214,3,300; bonus bBaseAtk,getequiprefinerycnt(4)*10; bonus bMatk,getequiprefinerycnt(4)*10; bonus bAspdAddRate,getequiprefinerycnt(4); if(getequiprefinerycnt(4)>=7){ bonus2 bAddEle,Ele_All,10; bonus2 bMagicAddEle,Ele_All,10; } if(getequiprefinerycnt(4)>=9){ bonus2 bAddEle,Ele_All,10; bonus2 bMagicAddEle,Ele_All,10; } if(getequiprefinerycnt(4)>=10){ bonus2 bAddEleMagicDamageRate,Ele_Wind,50; } }
 
 26167,Unknown_Item,宝瓶宮のスタッフ,5,,,300,,,1,1,142672405,,2,4,1,,1,{},{}
 26168,Unknown_Item,クリムゾンローズスティック,5,,,300,,,1,1,512,,2,4,100,,1,{},{}
