@@ -1480,14 +1480,14 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 		mes "まず、スロットを追加したいアイテムの";
 		mes "階級を選んで下さい。";
 		next;
-		set '@class,select("C級","B級","A級","S級","やめる");
+		set '@class,select("C級","B級","A級","S級","SS級","やめる");
 		switch('@class) {
 			case 1:	//C級
 				mes "[プロブルレム]";
 				mes "わかりました。";
 				mes "C級のどの防具にしますか？";
 				next;
-				switch(select("ゴヴニュの軍靴","マグニキャップ","フレイシューズ","駆魔の聖書","やめる")) {
+				switch(select("ゴヴニュの軍靴","マグニキャップ","フレイシューズ","駆魔の聖書","ヴェール","イカロスの羽","名射手のスカーフ","足鎖","やめる")) {
 					case 1:	//ゴヴニュの軍靴
 						set '@delid,2419;
 						set '@getid,2493;
@@ -1516,7 +1516,35 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 						set '@amount,50;
 						set '@price,200000;
 						break;
-					case 5:	//やめる
+					case 5:	//ヴェール
+						set '@delid,2206;
+						set '@getid,5888;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 6:	//イカロスの羽
+						set '@delid,2726;
+						set '@getid,28347;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 7:	//名射手のスカーフ
+						set '@delid,2727;
+						set '@getid,27347;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 8:	//足鎖
+						set '@delid,2408;
+						set '@getid,22105;
+						set '@need,999;
+						set '@amount,50;
+						set '@price,200000;
+						break;
+					case 9:	//やめる
 						mes "[プロブルレム]";
 						mes "わかりました。";
 						mes "もし興味がわきましたら";
@@ -1529,7 +1557,7 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 				mes "わかりました。";
 				mes "B級のどの防具にしますか？";
 				next;
-				switch(select("シャドウウォーカー","ぼろマント","クリティカルリング","やめる")) {
+				switch(select("シャドウウォーカー","ぼろマント","クリティカルリング","お金を失った者の心","銀の懐中時計","ゴヴニュの兜","モリガンのヘルム","真紅の脚絆","ゴヴニュの鎧","サバイバルマント","スプリントリング","やめる")) {
 					case 1:	//シャドウウォーカー
 						set '@delid,2426;
 						set '@getid,2486;
@@ -1551,7 +1579,63 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 						set '@amount,20;
 						set '@price,500000;
 						break;
-					case 4:	//やめる
+					case 4:	//お金を失った者の心
+						set '@delid,5021;
+						set '@getid,18825;
+						set '@need,985;
+						set '@amount,15;
+						set '@price,500000;
+						break;
+					case 5:	//銀の懐中時計
+						set '@delid,2717;
+						set '@getid,2971;
+						set '@need,985;
+						set '@amount,20;
+						set '@price,500000;
+						break;
+					case 6:	//ゴヴニュの兜
+						set '@delid,5128;
+						set '@getid,19043;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 7:	//モリガンのヘルム
+						set '@delid,5127;
+						set '@getid,19044;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 8:	//真紅の脚絆
+						set '@delid,22034;
+						set '@getid,22089;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 9:	//ゴヴニュの鎧
+						set '@delid,2354;
+						set '@getid,15170;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 10:	//サバイバルマント
+						set '@delid,2509;
+						set '@getid,20813;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 11:	//スプリントリング
+						set '@delid,2744;
+						set '@getid,28431;
+						set '@need,985;
+						set '@amount,10;
+						set '@price,500000;
+						break;
+					case 12:	//やめる
 						mes "[プロブルレム]";
 						mes "わかりました。";
 						mes "もし興味がわきましたら";
@@ -1564,7 +1648,7 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 				mes "わかりました。";
 				mes "A級のどの防具にしますか？";
 				next;
-				switch(select("ヴィダルのブーツ","セフィロトシューズ","モリガンのベルト","モルフェウスの腕輪","ゴヴニュの肩飾り","やめる")) {
+				switch(select("ヴィダルのブーツ","セフィロトシューズ","モリガンのベルト","モルフェウスの腕輪","ゴヴニュの肩飾り","ウェディングドレス","モルフェウスのショール","カーズドスター","紳士服","血塗られた鉄球","スピリチュアルリング","やめる")) {
 					case 1:	//ヴィダルのブーツ
 						set '@delid,2418;
 						set '@getid,2489;
@@ -1600,7 +1684,49 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 						set '@amount,50;
 						set '@price,800000;
 						break;
-					case 6:	//やめる
+					case 6:	//ウェディングドレス
+						set '@delid,2338;
+						set '@getid,15114;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 7:	//モルフェウスのショール
+						set '@delid,2518;
+						set '@getid,20760;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 8:	//カーズドスター
+						set '@delid,2748;
+						set '@getid,28349;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 9:	//紳士服
+						set '@delid,15089;
+						set '@getid,15162;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 10:	//血塗られた鉄球
+						set '@delid,2655;
+						set '@getid,28388;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 11:	//スピリチュアルリング
+						set '@delid,2677;
+						set '@getid,28432;
+						set '@need,985;
+						set '@amount,50;
+						set '@price,800000;
+						break;
+					case 12:	//やめる
 						mes "[プロブルレム]";
 						mes "わかりました。";
 						mes "もし興味がわきましたら";
@@ -1613,7 +1739,7 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 				mes "わかりました。";
 				mes "S級のどの防具にしますか？";
 				next;
-				switch(select("モリガンのペンダント","モルフェウスの指輪","ガラスの靴","エベシ嵐のうねり","クレイトス大地の裂け目","シャピニハ海の叫び","ルシウス火山の激しさ","ルーンブーツ","やめる")) {
+				switch(select("モリガンのペンダント","モルフェウスの指輪","ガラスの靴","エベシ嵐のうねり","クレイトス大地の裂け目","シャピニハ海の叫び","ルシウス火山の激しさ","ルーンブーツ","忍の腰帯","暗殺者の靴","漁師の靴","昆虫採集家の靴","退魔の靴","庭師の靴","墓守の靴","堕天使の靴","屠竜の靴","狩人の靴","機工士の靴","ヴェスパーコア1","ヴェスパーコア2","ヴェスパーコア3","ヴェスパーコア4","ヒュッケの黒い尻尾","ヒュッケの黒い猫耳","メディカルブーツ","大型マジェスティックゴート","大型オークヒーローの兜","やめる")) {
 					case 1:	//モリガンのペンダント
 						set '@delid,2651;
 						set '@getid,2901;
@@ -1670,7 +1796,147 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 						set '@amount,1;
 						set '@price,3000000;
 						break;
-					case 9:	//やめる
+					case 9:	//忍の腰帯
+						set '@delid,2654;
+						set '@getid,28350;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 10:	//暗殺者の靴
+						set '@delid,22016;
+						set '@getid,22090;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 11:	//漁師の靴
+						set '@delid,22017;
+						set '@getid,22091;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 12:	//昆虫採集家の靴
+						set '@delid,22031;
+						set '@getid,22092;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 13:	//退魔の靴
+						set '@delid,22032;
+						set '@getid,22093;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 14:	//庭師の靴
+						set '@delid,22050;
+						set '@getid,22094;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 15:	//墓守の靴
+						set '@delid,22052;
+						set '@getid,22095;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 16:	//堕天使の靴
+						set '@delid,22056;
+						set '@getid,22096;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 17:	//屠竜の靴
+						set '@delid,22058;
+						set '@getid,22097;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 18:	//狩人の靴
+						set '@delid,22060;
+						set '@getid,22098;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 19:	//機工士の靴
+						set '@delid,22062;
+						set '@getid,22099;
+						set '@need,6223;
+						set '@amount,1;
+						set '@price,1000000;
+						break;
+					case 20:	//ヴェスパーコア1
+						set '@delid,2659;
+						set '@getid,28302;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 21:	//ヴェスパーコア2
+						set '@delid,2660;
+						set '@getid,28303;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 22:	//ヴェスパーコア3
+						set '@delid,2661;
+						set '@getid,28304;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 23:	//ヴェスパーコア4
+						set '@delid,2662;
+						set '@getid,28305;
+						set '@need,6223;
+						set '@amount,2;
+						set '@price,2000000;
+						break;
+					case 24:	//ヒュッケの黒い尻尾
+						set '@delid,2855;
+						set '@getid,28351;
+						set '@need,969;
+						set '@amount,1;
+						set '@price,3000000;
+						break;
+					case 25:	//ヒュッケの黒い猫耳
+						set '@delid,5360;
+						set '@getid,5986;
+						set '@need,969;
+						set '@amount,1;
+						set '@price,3000000;
+						break;
+					case 26:	//メディカルブーツ
+						set '@delid,5920;
+						set '@getid,22100;
+						set '@need,969;
+						set '@amount,1;
+						set '@price,3000000;
+						break;
+					case 27:	//大型マジェスティックゴート
+						set '@delid,5374;
+						set '@getid,18724;
+						set '@need,969;
+						set '@amount,20;
+						set '@price,200000000;
+						break;
+					case 28:	//大型オークヒーローの兜
+						set '@delid,5375;
+						set '@getid,5889;
+						set '@need,969;
+						set '@amount,20;
+						set '@price,200000000;
+						break;
+					case 29:	//やめる
 						mes "[プロブルレム]";
 						mes "わかりました。";
 						mes "もし興味がわきましたら";
@@ -1678,7 +1944,49 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 						close;
 				}
 				break;
-			case 5:	//やめる
+			case 5:	//SS級
+				mes "[プロブルレム]";
+				mes "わかりました。";
+				mes "SS級のどの防具にしますか？";
+				next;
+				switch(select("ヴァルハラアイドル","グラス","サングラス","バンカーシールド","やめる")) {
+					case 1:	//ヴァルハラアイドル
+						set '@delid,19109;
+						set '@getid,19110;
+						set '@need,6580;
+						set '@amount,1;
+						set '@price,100000;
+						break;
+					case 2:	//グラス
+						set '@delid,2203;
+						set '@getid,2204;
+						set '@need,6580;
+						set '@amount,10;
+						set '@price,1500000;
+						break;
+					case 3:	//サングラス
+						set '@delid,2201;
+						set '@getid,2202;
+						set '@need,6580;
+						set '@amount,10;
+						set '@price,1800000;
+						break;
+					case 4:	//バンカーシールド
+						set '@delid,2184;
+						set '@getid,28915;
+						set '@need,6509;
+						set '@amount,3;
+						set '@price,100000;
+						break;
+					case 5:	//やめる
+						mes "[プロブルレム]";
+						mes "わかりました。";
+						mes "もし興味がわきましたら";
+						mes "またお越しください。";
+						close;
+				}
+				break;
+			case 6:	//やめる
 				mes "[プロブルレム]";
 				mes "わかりました。";
 				mes "もし興味がわきましたら";
@@ -1723,9 +2031,10 @@ prontera.gat,81,106,6	script	プロブルレム	97,{
 			case 2: set '@success,20; break; //B級
 			case 3: set '@success,15; break; //A級
 			case 4: set '@success,10; break; //S級
+			case 5: set '@success,5; break;  //SS級
 		}
 		if(rand(100) < '@success) {
-			if('@class == 4)
+			if('@class >= 4)
 				misceffect 90;
 			else
 				misceffect 83;
