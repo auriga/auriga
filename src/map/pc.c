@@ -1166,6 +1166,8 @@ static int pc_check_prohibition(struct map_session_data *sd, int zone)
 		// テレポ禁止区域で使用不可のアイテムならメッセージ出す
 		if(zone&32)
 			clif_skill_teleportmessage(sd,0);
+		if(zone&128)
+			clif_msgstringtable(sd, 0x743);	// このマップでは召喚アイテムを使用できません。
 		return 1;
 	}
 
