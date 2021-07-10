@@ -1,0 +1,120 @@
+==========================================================================
+ Aurigaのluaファイルのリファレンス
+--------------------------------------------------------------------------
+
+< このファイルは何？ >
+
+Aurigaのluaシステムに関するリファレンスです。
+
+
+< luaシステムの設定 >
+
+confフォルダ内にあるlua_auriga.confで設定されます。
+
+garbage_collect_interval
+　　luaシステム内でどこからも参照されなくなったオブジェクトの総量を
+　　チェックする間隔です。
+　　デフォルトで30000ミリ秒ごとにチェックして閾値を超えていれば、
+　　ガベージコレクトを実行してメモリを回収します。
+　　0を設定すると、チェックを実行しません。
+
+lua
+　　読み込まれるluaファイルのパスを定義します。
+
+
+< luaシステムのスクリプト >
+
+luaファイルは基本的にluaのバージョン5.1.4に準拠します。
+また、luaの基本命令・関数の他に、Aurigaとのリンク用に用意された
+以下の埋め込み関数を扱うことができます。
+
+
+	＊命令文
+		addpacket命令
+			addpacket(num,len{,cmd,pos})
+
+			num		数値
+			len		数値
+			cmd		文字列、省略可
+			pos		数値(配列)、省略可
+
+			パケット番号<num>のパケット長を<len>で追加します
+			また実行するclif.c内の命令があれば<cmd>で設定できます
+			その際の利用位置を<pos>で指定します
+			<pos>が単体の場合は数値で、複数の場合は数値を配列にしてください
+
+		packet_key命令
+			packet_key(key1,key2,key3)
+
+			key1,key2,key3		数値
+
+			戦闘設定「use_packet_obfuscation」のパケット難読化を利用する場合
+			パケット難読化の解除キーを設定します
+
+	＊関数
+		getpacketver関数
+			getpacketver()
+
+			マクロ定義のPACKETVERを返します
+
+		getpacketpre関数
+			getpacketpre()
+
+			マクロ定義のNEW_006bが設定されていれば0 を、
+			されていなければ1 を返します
+
+		InsertRandopt関数
+			InsertRandopt(itemid,mobid,option)
+
+			itemid,mobid	数値
+			option			数値(配列)
+
+			<mobid>が<itemid>をドロップしたとき、ランダムオプションとして
+			<option>を判定するように設定し、成功すれば1 を、失敗すれば0 を
+			返します
+			詳しくはdb_ref.txtを参照してください
+
+		InsertAchieveInfo関数
+			InsertAchieveInfo(id,name,type,score,title,script)
+
+			id,type,score,title		数値
+			name,script				文字列
+
+			<id>番の<name>名称の実績について、実績種別<type>、達成スコア<score>、
+			達成報酬の称号<title>と実行するスクリプト<script>を設定し、
+			成功すれば1 を、失敗すれば0 を返します
+			詳しくはdb_ref.txtを参照してください
+
+		InsertAchieveContent関数
+			InsertAchieveContent(id,targetid,count)
+
+			id,targetid,count		数値
+
+			<id>番の実績について、対象モンスター/アイテムとして<id>を、
+			その必要数<count>を設定し、成功すれば1 を、失敗すれば0 を返します
+			<id>はInsertAchieveInfo関数を先に実行しておいてください
+			詳しくはdb_ref.txtを参照してください
+
+		InsertAchieveDBEnd関数
+			InsertAchieveDBEnd()
+
+			実績データベースの登録が全て終了してから必ず実行してください
+			データベースの最適化を行い、1 を返します
+
+		InsertAchieveLevelDB関数
+			InsertAchieveLevelDB(lv,exp)
+
+			lv,exp		数値
+
+			実績レベル<lv>になるのに必要な達成スコア<exp>を設定し、
+			成功すれば1 を、失敗すれば0 を返します
+
+
+< luaのエラー >
+
+基本的にluaのバージョン5.1.4に準拠したエラーがコンソール出力されます
+
+
+==========================================================================
+EOF
+--------------------------------------------------------------------------
