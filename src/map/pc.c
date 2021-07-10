@@ -9752,7 +9752,7 @@ int pc_readdb(void)
 					printf("skill_tree: invalid param count(%d) line %d\n", j, lineno);
 					continue;
 				}
-				diff = 2;
+				diff = 1;
 			}
 
 			skillid = atoi(split[2]);
@@ -9782,10 +9782,11 @@ int pc_readdb(void)
 			if(st[j].max > skill_get_max(skillid))
 				st[j].max = skill_get_max(skillid);
 
-			for(k=0; k<6; k++) {
+			for(k=0; k<5+diff; k++) {
 				st[j].need[k].id = atoi(split[k*2+4]);
 				st[j].need[k].lv = atoi(split[k*2+5]);
 			}
+			if(diff) diff++;
 			st[j].base_level  = atoi(split[14+diff]);
 			st[j].job_level   = atoi(split[15+diff]);
 			st[j].class_level = atoi(split[16+diff]);
