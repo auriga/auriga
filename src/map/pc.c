@@ -113,7 +113,7 @@ static struct skill_tree_entry {
 	int max;
 	struct {
 		short id,lv;
-	} need[5];
+	} need[6];
 	unsigned short base_level;
 	unsigned short job_level;
 	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2 三次:3
@@ -1805,7 +1805,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 					continue;
 				if(!battle_config.skillfree && !tk_ranker_bonus) {
 					int j, fail = 0;
-					for(j=0; j<5 && skill_tree[s][c][i].need[j].id > 0; j++) {
+					for(j=0; j<6 && skill_tree[s][c][i].need[j].id > 0; j++) {
 						if(pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv) {
 							fail = 1;
 							break;
@@ -9710,21 +9710,24 @@ int pc_readdb(void)
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
 	for(m = 0; m < sizeof(filename2)/sizeof(filename2[0]); m++) {
+		int lineno = 0;
 		fp = fopen(filename2[m], "r");
 		if(fp == NULL) {
 			printf("pc_readdb: open [%s] failed !\n", filename2[m]);
 			break;
 		}
 		while(fgets(line,1020,fp)) {
-			char *split[17];
+			char *split[19];
 			int upper = 0,skillid;
 			struct skill_tree_entry *st;
+			int diff=0;
 
+			lineno++;
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
-			for(j=0,p=line;j<17 && p;j++) {
+			for(j=0,p=line;j<19 && p;j++) {
 				split[j]=p;
 				p=strchr(p,',');
 				if(p) *p++=0;
@@ -9744,8 +9747,13 @@ int pc_readdb(void)
 				continue;
 			}
 
-			if(j<17)
-				continue;
+			if( j != 17 ) {
+				if( j != 19 ) {
+					printf("skill_tree: invalid param count(%d) line %d\n", j, lineno);
+					continue;
+				}
+				diff = 2;
+			}
 
 			skillid = atoi(split[2]);
 			if(skillid < 0 || skillid >= MAX_PCSKILL)
@@ -9774,13 +9782,13 @@ int pc_readdb(void)
 			if(st[j].max > skill_get_max(skillid))
 				st[j].max = skill_get_max(skillid);
 
-			for(k=0; k<5; k++) {
+			for(k=0; k<6; k++) {
 				st[j].need[k].id = atoi(split[k*2+4]);
 				st[j].need[k].lv = atoi(split[k*2+5]);
 			}
-			st[j].base_level  = atoi(split[14]);
-			st[j].job_level   = atoi(split[15]);
-			st[j].class_level = atoi(split[16]);
+			st[j].base_level  = atoi(split[14+diff]);
+			st[j].job_level   = atoi(split[15+diff]);
+			st[j].class_level = atoi(split[16+diff]);
 		}
 		fclose(fp);
 		printf("read %s done\n", filename2[m]);

@@ -206,7 +206,7 @@ amount10: 上同
 ==========================================================================
 5. db/skill_tree.txt
 --------------------------------------------------------------------------
-Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,JobLv,Class
+Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計6個まで繰り返し,BaseLv,JobLv,Class
 
 Upper: 転生フラグ。ただしbattle_auriga.confのbaby_copy_skilltreeをyesにしていた場合、養子の設定は無視されて通常と同一になります。
 	0-通常 1-転生 2-養子
@@ -223,6 +223,8 @@ PreSkill-ID-4: 同上
 PreSkill-Lv-4: 同上
 PreSkill-ID-5: 同上
 PreSkill-Lv-5: 同上
+PreSkill-ID-6: 同上 (省略可能)
+PreSkill-Lv-6: 同上 (省略可能)
 BaseLv: 前提Baseレベル
 JobLv: 前提Jobレベル
 Class: クラス区分。下位のスキルを規定以上取らないと上位スキルが取れません。
