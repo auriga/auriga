@@ -769,7 +769,10 @@ int skill_get_amotion_delay(int id)
 }
 int skill_get_name2id(const char *name)
 {
-	return ((struct skill_db *)strdb_search(skillname_db,name))->id;
+	struct skill_db *skill;
+
+	skill = (struct skill_db *)strdb_search(skillname_db,name);
+	return (skill)? skill->id: 0;
 }
 
 /* •â³Ï‚İË’ö‚ğ•Ô‚· */
@@ -21277,10 +21280,8 @@ static int skill_readdb(void)
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			j = skill_split_str(line,split,16);
-			if(split[15]==NULL || j<16) {
-				printf(line);
+			if(split[15]==NULL || j<16)
 				continue;
-			}
 
 			i = skill_get_skilldb_id(atoi(split[0]));
 			if(i == 0)
