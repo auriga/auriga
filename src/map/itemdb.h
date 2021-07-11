@@ -56,6 +56,8 @@ struct item_data {
 	struct script_code *use_script;
 	struct script_code *equip_script;
 	struct script_code *unequip_script;
+	struct script_code *activate_script;
+	struct script_code *bonus_script;
 	struct {
 		unsigned available : 1;
 		unsigned value_notdc : 1;
@@ -105,27 +107,29 @@ struct item_data* itemdb_searchname(const char *name);
 struct item_data* itemdb_search(int nameid);
 struct item_data* itemdb_exists(int nameid);
 
-#define itemdb_jname(n)         itemdb_search(n)->jname
-#define itemdb_type(n)          itemdb_search(n)->type
-#define itemdb_atk(n)           itemdb_search(n)->atk
-#define itemdb_matk(n)          itemdb_search(n)->matk
-#define itemdb_def(n)           itemdb_search(n)->def
-#define itemdb_mdef(n)          itemdb_search(n)->mdef
-#define itemdb_look(n)          itemdb_search(n)->look
-#define itemdb_weight(n)        itemdb_search(n)->weight
-#define itemdb_equip(n)         itemdb_search(n)->equip
-#define itemdb_usescript(n)     itemdb_search(n)->use_script
-#define itemdb_equipscript(n)   itemdb_search(n)->equip_script
-#define itemdb_unequipscript(n) itemdb_search(n)->unequip_script
-#define itemdb_wlv(n)           itemdb_search(n)->wlv
-#define itemdb_range(n)         itemdb_search(n)->range
-#define itemdb_slot(n)          itemdb_search(n)->slot
-#define itemdb_value_buy(n)     itemdb_search(n)->value_buy
-#define itemdb_value_sell(n)    itemdb_search(n)->value_sell
-#define itemdb_cardtype(n)      itemdb_search(n)->card_type
-#define itemdb_value_notdc(n)   itemdb_search(n)->flag.value_notdc
-#define itemdb_value_notoc(n)   itemdb_search(n)->flag.value_notoc
-#define	itemdb_dropeffect(n)    itemdb_search(n)->dropeffect
+#define itemdb_jname(n)          itemdb_search(n)->jname
+#define itemdb_type(n)           itemdb_search(n)->type
+#define itemdb_atk(n)            itemdb_search(n)->atk
+#define itemdb_matk(n)           itemdb_search(n)->matk
+#define itemdb_def(n)            itemdb_search(n)->def
+#define itemdb_mdef(n)           itemdb_search(n)->mdef
+#define itemdb_look(n)           itemdb_search(n)->look
+#define itemdb_weight(n)         itemdb_search(n)->weight
+#define itemdb_equip(n)          itemdb_search(n)->equip
+#define itemdb_usescript(n)      itemdb_search(n)->use_script
+#define itemdb_equipscript(n)    itemdb_search(n)->equip_script
+#define itemdb_unequipscript(n)  itemdb_search(n)->unequip_script
+#define itemdb_activatescript(n) itemdb_search(n)->activate_script
+#define itemdb_bonusscript(n)    itemdb_search(n)->bonus_script
+#define itemdb_wlv(n)            itemdb_search(n)->wlv
+#define itemdb_range(n)          itemdb_search(n)->range
+#define itemdb_slot(n)           itemdb_search(n)->slot
+#define itemdb_value_buy(n)      itemdb_search(n)->value_buy
+#define itemdb_value_sell(n)     itemdb_search(n)->value_sell
+#define itemdb_cardtype(n)       itemdb_search(n)->card_type
+#define itemdb_value_notdc(n)    itemdb_search(n)->flag.value_notdc
+#define itemdb_value_notoc(n)    itemdb_search(n)->flag.value_notoc
+#define	itemdb_dropeffect(n)     itemdb_search(n)->dropeffect
 
 #define	itemdb_available(n) (itemdb_exists(n) && itemdb_search(n)->flag.available)
 #define	itemdb_viewid(n)    (itemdb_search(n)->view_id)

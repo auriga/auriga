@@ -1,0 +1,14 @@
+//ID,Name,Jname,{ActivateScript},{BonusScript}
+4875,Bears_Power,ŒF‚Ì—Í,{ misceffect 220,""; showmessage "ŒF‚Ì—Í !!,",""; },{ active_montransform 1060; bonus bStr,200; bonus2 bHPPenaltyTime,1000,500; }
+4876,Runaway_Magic,–\‘–‚µ‚½–‚—Í,{ misceffect 220,""; showmessage "–\‘–‚µ‚½–‚—Í !!,",""; },{ bonus bInt,200; bonus2 bSPPenaltyTime,1000,200; }
+4877,Speed_of_Light,Œõ‘¬,{ misceffect 99,""; showmessage "Œõ‘¬ !!,",""; },{ bonus bAspdAddRate,100; bonus bFlee2,100; bonus2 bHPPenaltyTime,1000,400; bonus2 bSPPenaltyTime,1000,40; }
+4878,Muscle_Fool,|ŠZ,{ misceffect 17,""; showmessage "|ŠZ !!,",""; },{ bonus2 bAddRace,Rct_Boss,-50; bonus2 bAddRace,Rct_NonBoss,-50;  bonus bMatkRate,-50; bonus bDef,1000; }
+4879,Hawkeye,‘å˜h‚ÌŠáŒõ,{ misceffect 99,""; showmessage "‘å˜h‚ÌŠáŒõ !!,",""; },{ bonus bDex,200; bonus2 bSPPenaltyTime,1000,50; }
+4880,Lucky_Day,K‰^‚È“ú,{ misceffect 68,""; showmessage "K‰^‚È“ú !!,",""; },{ bonus bLuk,200; bonus3 bAddMonsterDropItem,7444,Rct_Boss,100; bonus3 bAddMonsterDropItem,7444,Rct_NonBoss,100; }
+29176,Unknown_Item,“V’n,{},{ bonus bCastrate,-70; bonus bSkillDelayRate,-70; bonus2 bIgnoreDefRace,Rct_Boss,100; bonus2 bIgnoreDefRace,Rct_NonBoss,100; bonus2 bIgnoreMdefRace,Rct_Boss,100; bonus2 bIgnoreMdefRace,Rct_NonBoss,100; }
+29223,Unknown_Item,…“V,{},{ bonus bCastrate,-70; bonus bSkillDelayRate,-70; bonus bUseSPrate,-70; }
+29363,Unknown_Item,•S‰Î,{},{ bonus bCastrate,-70; bonus bSkillDelayRate,-70; bonus2 bAddEle,Ele_All,70; bonus2 bMagicAddEle,Ele_All,70; }
+29371,Unknown_Item,^—‚Ì‰ğ•ú,{ misceffect 220,""; },{ active_montransform 1639; bonus bFlee2,100; bonus2 bMagicAddRace,Rct_Boss,100; }
+29436,Unknown_Item,”e‰¤,{ misceffect 220,""; },{ active_montransform 2221; bonus bStr,200; }
+29474,Unknown_Item,<„˜r>,{ misceffect 6,""; },{ bonus bBaseAtk,100; }
+29509,Unknown_Item,‹Œ†,{ misceffect 220,""; },{ bonus bFlee2,100; bonus2 bAddRace,Rct_Boss,100; }

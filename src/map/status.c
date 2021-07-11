@@ -744,6 +744,16 @@ L_RECALC:
 		}
 	}
 
+	for(i = 0; i < sd->activeitem.count; i++)
+	{
+		if(sd->activeitem_timer[i] == -1)
+			continue;
+		if(sd->activeitem.id[i] != sd->activeitem_id2[i])
+			continue;
+
+		run_script(itemdb_bonusscript(sd->activeitem_id2[i]),0,sd->bl.id,0);
+	}
+
 	wele    = sd->atk_ele;
 	wele_   = sd->atk_ele_;
 	def_ele = sd->def_ele;

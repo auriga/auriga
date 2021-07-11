@@ -797,6 +797,63 @@ static int itemdb_read_itemdb(void)
 	}
 	fclose(fp);
 	printf("read %s done\n", filename2);
+
+	filename2 = "db/item_autoactive.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
+		return 0;
+	}
+	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(j=0,np=p=line;j<3 && p;j++){
+			str[j]=p;
+			p=strchr(p,',');
+			if(p){ *p++=0; np=p; }
+		}
+		if(str[0] == NULL)
+			continue;
+
+		nameid = atoi(str[0]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
+			continue;
+		//ID,Name,Jname,{ActivateScript},{BonusScript}
+		if((p = strchr(np, '{')) == NULL)
+			continue;
+
+		np = parse_script_line_end(p, filename2, lines);
+		if(!np)
+			continue;
+
+		if(id->activate_script) {
+			script_free_code(id->activate_script);
+		}
+		script = parse_script(p, filename2, lines);
+		id->activate_script = (script_is_error(script))? NULL: script;
+
+		np++;
+		if(*np != ',')
+			continue;
+
+		if((p = strchr(np + 1, '{')) == NULL)
+			continue;
+
+		np = parse_script_line_end(p, filename2, lines);
+		if(!np)
+			continue;
+
+		if(id->bonus_script) {
+			script_free_code(id->bonus_script);
+		}
+		script = parse_script(p, filename2, lines);
+		id->bonus_script = (script_is_error(script))? NULL: script;
+	}
+	fclose(fp);
+	printf("read %s done\n", filename2);
 	return 0;
 }
 
@@ -1114,6 +1171,10 @@ static int itemdb_final(void *key,void *data,va_list ap)
 		script_free_code(id->equip_script);
 	if(id->unequip_script)
 		script_free_code(id->unequip_script);
+	if(id->activate_script)
+		script_free_code(id->activate_script);
+	if(id->bonus_script)
+		script_free_code(id->bonus_script);
 	aFree(id);
 
 	return 0;

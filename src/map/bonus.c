@@ -311,6 +311,8 @@ int bonus_autospellskill_start(struct block_list *src,struct block_list *bl,int 
  */
 static int bonus_add_activeitem(struct map_session_data* sd,int skillid,int id,short rate,unsigned int tick,unsigned int flag)
 {
+	int i;
+
 	nullpo_retr(0, sd);
 
 	// ˆê”t
@@ -318,11 +320,14 @@ static int bonus_add_activeitem(struct map_session_data* sd,int skillid,int id,s
 		return 0;
 
 	// “¯‚¶ID‚ª“o˜^‚³‚ê‚Ä‚¢‚é‚©
-	if(!battle_config.allow_same_activeitem) {
-		int i;
-		for(i = 0; i < sd->activeitem.count; i++) {
-			if(sd->activeitem.id[i] == id && sd->activeitem.skill[i] == skillid)
+	for(i = 0; i < sd->activeitem.count; i++) {
+		if(sd->activeitem.id[i] == id && sd->activeitem.skill[i] == skillid) {
+			if(!battle_config.allow_same_activeitem)
 				return 0;
+
+			// “¯‚¶ID‚ÍŠm—¦‚ð‰ÁŽZ‚·‚é
+			sd->activeitem.rate[i] += rate;
+			return 1;
 		}
 	}
 
@@ -416,6 +421,7 @@ int bonus_activeitem_start(struct map_session_data* sd,unsigned int mode,unsigne
 			// ”­“®
 			sd->activeitem_id2[i] = sd->activeitem.id[i];
 			flag = 1;
+			run_script(itemdb_activatescript(sd->activeitem_id2[i]),0,sd->bl.id,0);
 		}
 		sd->activeitem_timer[i] = add_timer(tick + sd->activeitem.tick[i], bonus_activeitem_timer, sd->bl.id, NULL);
 	}
