@@ -43,7 +43,8 @@ enum {
 	GUILD,
 	GUILD_WOS,
 	GUILD_SAMEMAP_WOS,
-	SELF
+	SELF,
+	WIDE_AREA
 };
 
 void clif_sethost(const char*);

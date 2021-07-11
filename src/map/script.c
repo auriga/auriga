@@ -14057,7 +14057,7 @@ int buildin_unittalk(struct script_state *st)
 				clif_GlobalMessage_id(&sd->bl, bl->id, mes, SELF);
 		}
 		else
-			clif_GlobalMessage(bl, mes, AREA);
+			clif_GlobalMessage(bl, mes, WIDE_AREA);
 	}
 
 	return 0;

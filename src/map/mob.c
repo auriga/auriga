@@ -1992,8 +1992,8 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(quest_search_mobid(md->class_)) {
 			if(sd->status.party_id)
 				map_foreachinarea(quest_killcount_sub,src->m,
-					src->x-AREA_SIZE,src->y-AREA_SIZE,
-					src->x+AREA_SIZE,src->y+AREA_SIZE,
+					src->x-WIDE_AREA_SIZE,src->y-WIDE_AREA_SIZE,
+					src->x+WIDE_AREA_SIZE,src->y+WIDE_AREA_SIZE,
 					BL_PC,sd->status.party_id,md->class_);
 			else if(sd->questlist)
 				quest_killcount(sd, md->class_);

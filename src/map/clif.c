@@ -319,6 +319,9 @@ static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int
 	case AREA_CHAT_WOC:
 		map_foreachinarea(clif_send_sub,bl->m,bl->x-(AREA_SIZE-5),bl->y-(AREA_SIZE-5),bl->x+(AREA_SIZE-5),bl->y+(AREA_SIZE-5),BL_PC,buf,len,bl,AREA_WOC);
 		break;
+	case WIDE_AREA:
+		map_foreachinarea(clif_send_sub,bl->m,bl->x-WIDE_AREA_SIZE,bl->y-WIDE_AREA_SIZE,bl->x+WIDE_AREA_SIZE,bl->y+WIDE_AREA_SIZE,BL_PC,buf,len,bl,type);
+		break;
 	case CHAT:
 	case CHAT_WOS:
 		{

@@ -31,6 +31,7 @@
 #define BLOCK_SIZE 8
 #define AREA_SIZE 14
 #define PT_AREA_SIZE 20
+#define WIDE_AREA_SIZE 18
 #define LOOTITEM_SIZE 10
 #define MAX_SKILL_LEVEL 12
 #define MAX_MOBSKILL	54
