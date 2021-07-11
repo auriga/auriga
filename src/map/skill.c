@@ -59,6 +59,8 @@
 
 #define SKILLUNITTIMER_INVERVAL	100
 
+static struct dbt *skillname_db = NULL;
+
 /* スキル番号＝＞ステータス異常番号変換テーブル */
 int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hのenumのSC_***とあわせること */
 	/* 0- */
@@ -764,6 +766,10 @@ int skill_get_amotion_delay(int id)
 {
 	id = skill_get_skilldb_id(id);
 	return skill_db[id].amotion_delay;
+}
+int skill_get_name2id(const char *name)
+{
+	return ((struct skill_db *)strdb_search(skillname_db,name))->id;
 }
 
 /* 補正済み射程を返す */
@@ -21270,9 +21276,11 @@ static int skill_readdb(void)
 				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
-			j = skill_split_str(line,split,14);
-			if(split[13]==NULL || j<14)
+			j = skill_split_str(line,split,16);
+			if(split[15]==NULL || j<16) {
+				printf(line);
 				continue;
+			}
 
 			i = skill_get_skilldb_id(atoi(split[0]));
 			if(i == 0)
@@ -21307,6 +21315,9 @@ static int skill_readdb(void)
 			else
 				skill_db[i].skill_type = 0;
 			skill_split_atoi(split[13],skill_db[i].blewcount,MAX_SKILL_LEVEL);
+			memcpy(skill_db[i].name,split[14],31);
+			skill_db[i].name[30] = '\0';	// froce \0 terminal
+			strdb_insert(skillname_db,skill_db[i].name,&skill_db[i]);
 			k++;
 		}
 		fclose(fp);
@@ -21787,12 +21798,25 @@ void skill_reload(void)
 }
 
 /*==========================================
+ * 終了
+ *------------------------------------------
+ */
+int do_final_skill(void)
+{
+	if(skillname_db)
+		strdb_final(skillname_db,NULL);
+	return 0;
+}
+
+/*==========================================
  * スキル関係初期化処理
  *------------------------------------------
  */
 int do_init_skill(void)
 {
 	unsigned int tick = gettick();
+
+	skillname_db = strdb_init(31);
 
 	skill_readdb();
 

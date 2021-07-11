@@ -2980,6 +2980,7 @@ void do_final(void)
 	do_final_npc();
 	do_final_script();
 	do_final_itemdb();
+	do_final_skill();
 	do_final_storage();
 	do_final_guild();
 	do_final_clif();

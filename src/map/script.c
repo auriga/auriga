@@ -7022,8 +7022,15 @@ int buildin_bonus4(struct script_state *st)
 int buildin_skill(struct script_state *st)
 {
 	int id,level,flag=1;
+	struct script_data *data;
 
-	id    = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		id = skill_get_name2id(conv_str(st,data));
+	} else {
+		id = conv_num(st,data);
+	}
 	level = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	if(st->end > st->start+4)
 		flag = conv_num(st,&(st->stack->stack_data[st->start+4]) );
@@ -7060,7 +7067,16 @@ int buildin_guildskill(struct script_state *st)
  */
 int buildin_getskilllv(struct script_state *st)
 {
-	int id=conv_num(st,& (st->stack->stack_data[st->start+2]));
+	int id;
+	struct script_data *data;
+
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		id = skill_get_name2id(conv_str(st,data));
+	} else {
+		id = conv_num(st,data);
+	}
 
 	push_val(st->stack,C_INT, pc_checkskill2( script_rid2sd(st) ,id) );
 	return 0;
@@ -7420,10 +7436,17 @@ int buildin_itemskill(struct script_state *st)
 	int id,lv,flag = 0;
 	char *str;
 	struct map_session_data *sd = script_rid2sd(st);
+	struct script_data *data;
 
 	nullpo_retr(0, sd);
 
-	id  = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	data = &(st->stack->stack_data[st->start+2]);
+	get_val(st,data);
+	if( isstr(data) ) {
+		id = skill_get_name2id(conv_str(st,data));
+	} else {
+		id = conv_num(st,data);
+	}
 	lv  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	str = conv_str(st,& (st->stack->stack_data[st->start+4]));
 	if(st->end > st->start+5)

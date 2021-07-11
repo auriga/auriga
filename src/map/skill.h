@@ -69,6 +69,7 @@ struct skill_db {
 	int damage_rate[4];
 	int range_type;
 	int amotion_delay;
+	char name[31];
 };
 
 #define MAX_SKILL_UNIT_LAYOUT	60
@@ -156,6 +157,7 @@ struct skill_material_db {
 };
 extern struct skill_material_db skill_material_db[MAX_SKILL_PRODUCE_DB];
 
+int do_final_skill(void);
 int do_init_skill(void);
 
 int GetSkillStatusChangeTable(int id);
@@ -210,6 +212,7 @@ int skill_get_misfire(int id);
 int skill_get_zone(int id);
 int skill_get_damage_rate(int id,int type);
 int skill_get_range_type(int id);
+int skill_get_name2id(const char *name);
 
 int skill_get_fixed_range(struct block_list *bl,int id,int lv);
 
