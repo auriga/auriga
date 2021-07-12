@@ -1610,6 +1610,16 @@ AurigaNPCScript
 				1	<interval>ミリ秒間隔で繰り返し鳴らす
 				2	繰り返しの停止
 
+		delmisceffect命令
+			delmisceffect <type>[,<name>];
+
+			type	数値
+			name	文字列、省略可
+
+			<name>で指定したNPCの発生済みエフェクトを除去します。
+			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
 		setmapflag命令
 			setmapflag <gatname>,<flag>[,<arg1>,<arg2>,<arg3>];
 

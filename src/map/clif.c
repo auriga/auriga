@@ -10134,6 +10134,38 @@ void clif_misceffect3(int fd, int id, int type)
 }
 
 /*==========================================
+ * blから発生するエフェクト削除
+ *------------------------------------------
+ */
+void clif_remove_misceffect2(struct block_list *bl,int type)
+{
+    unsigned char buf[16];
+
+    nullpo_retv(bl);
+
+    WBUFW(buf,0)=0xb0d;
+    WBUFL(buf,2)=bl->id;
+    WBUFL(buf,6)=type;
+    clif_send(buf,packet_db[0xb0d].len,bl,AREA);
+
+    return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_remove_misceffect3(int fd, int id, int type)
+{
+    WFIFOW(fd,0)=0xb0d;
+    WFIFOL(fd,2)=id;
+    WFIFOL(fd,6)=type;
+    WFIFOSET(fd,packet_db[0xb0d].len);
+
+    return;
+}
+
+/*==========================================
  * 表示オプション変更
  *------------------------------------------
  */

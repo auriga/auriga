@@ -4159,6 +4159,7 @@ int buildin_misceffect(struct script_state *st);
 int buildin_areamisceffect(struct script_state *st);
 int buildin_soundeffect(struct script_state *st);
 int buildin_areasoundeffect(struct script_state *st);
+int buildin_delmisceffect(struct script_state *st);
 int buildin_gmcommand(struct script_state *st);
 int buildin_getusersname(struct script_state *st);
 int buildin_dispbottom(struct script_state *st);
@@ -4493,6 +4494,7 @@ struct script_function buildin_func[] = {
 	{buildin_areamisceffect,"areamisceffect","siiiii"},
 	{buildin_soundeffect,"soundeffect","si*"},
 	{buildin_areasoundeffect,"areasoundeffect","siiiisi*"},
+	{buildin_delmisceffect,"delmisceffect","i*"},
 	{buildin_gmcommand,"gmcommand","s"},
 	{buildin_dispbottom,"dispbottom","s"},
 	{buildin_getusersname,"getusersname",""},
@@ -10250,6 +10252,31 @@ int buildin_areasoundeffect(struct script_state *st)
 	m = script_mapname2mapid(st,str);
 	if(m >= 0)
 		map_foreachinarea(buildin_soundeffect_sub,m,x0,y0,x1,y1,BL_PC,name,type,interval);
+	return 0;
+}
+
+/*==========================================
+ * NPCから発生するエフェクト除去
+ *------------------------------------------
+ */
+int buildin_delmisceffect(struct script_state *st)
+{
+	struct npc_data *nd;
+	int type;
+
+	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	else
+		nd = map_id2nd(st->oid);
+
+	if(nd) {
+		clif_remove_misceffect2(&nd->bl,type);
+	} else {
+		struct block_list *bl = map_id2bl(st->rid);
+		if(bl)
+			clif_remove_misceffect2(bl,type);
+	}
 	return 0;
 }
 
