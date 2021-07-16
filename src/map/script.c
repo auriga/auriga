@@ -6974,7 +6974,34 @@ int buildin_bonus2(struct script_state *st)
 	int type,type2,val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	switch(type) {
+	case SP_ADD_SKILL_DAMAGE_RATE:
+	case SP_SUB_SKILL_DAMAGE_RATE:
+	case SP_ADD_SKILL_BLOW:
+	case SP_ADD_CAST_RATE:
+	case SP_ADD_FIX_CAST_RATE:
+	case SP_ADD_CAST_TIME:
+	case SP_ADD_COOL_DOWN:
+	case SP_ADD_SKILL_HEAL_RATE:
+	case SP_ADD_SKILL_SUBHEAL_RATE:
+	case SP_ADD_SP_COST:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+3]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type2 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type2 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		break;
+	}
+
 	val   = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	bonus_param2(script_rid2sd(st),type,type2,val);
