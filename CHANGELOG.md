@@ -1,4 +1,10 @@
 ----------------------------------------
+//1485 [2021/07/20] by refis
+
+・モンスターデータの更新（mob_db.txt, mob_skill_db.txt, mob_talk_db.txt）
+	Thanks Dallen さん
+
+----------------------------------------
 //1484 [2021/07/20] by refis
 
 ・skill_require_dbに不正な項目があった点を修正（skill_require_db.txt）
