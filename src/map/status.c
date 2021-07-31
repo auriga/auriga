@@ -11815,6 +11815,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_MONK;
 			break;
 		case PC_JOB_SG:
+		case PC_JOB_SE:
 			type = SC_STAR;
 			break;
 		case PC_JOB_SA:
@@ -11842,6 +11843,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_ASSASIN;
 			break;
 		case PC_JOB_SL:
+		case PC_JOB_RE:
 			type = SC_SOULLINKER;
 			break;
 		case PC_JOB_KN:

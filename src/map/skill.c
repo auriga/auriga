@@ -330,6 +330,24 @@ int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚
 	-1,-1,-1,
 };
 
+/* (ƒXƒLƒ‹”Ô† - SJ_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
+int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
+	/* 2574- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 2584- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 2594- */
+	-1,-1
+};
+
+/* (ƒXƒLƒ‹”Ô† - SP_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
+int SkillStatusChangeTableSP[MAX_SPSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
+	/* 2596- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 2606- */
+	-1,-1,-1,-1,-1,-1,-1
+};
+
 /* (ƒXƒLƒ‹”Ô† - KO_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 3001- */
@@ -512,6 +530,12 @@ int GetSkillStatusChangeTable(int id)
 
 	if(id >= RL_SKILLID && id < MAX_RL_SKILLID)
 		return SkillStatusChangeTableRL[id - RL_SKILLID];
+
+	if(id >= RL_SKILLID && id < MAX_SJ_SKILLID)
+		return SkillStatusChangeTableSJ[id - SJ_SKILLID];
+
+	if(id >= RL_SKILLID && id < MAX_SP_SKILLID)
+		return SkillStatusChangeTableSP[id - SP_SKILLID];
 
 	if(id >= KO_SKILLID && id < MAX_KO_SKILLID)
 		return SkillStatusChangeTableKO[id - KO_SKILLID];

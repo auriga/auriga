@@ -1104,9 +1104,11 @@ unsigned int pc_get_job_bit(int job)
 			bit = 0x01000000;
 			break;
 		case PC_JOB_SG:		// 拳聖
+		case PC_JOB_SE:		// 星帝（暫定）
 			bit = 0x02000000;
 			break;
 		case PC_JOB_SL:		// ソウルリンカー
+		case PC_JOB_RE:		// ソウルリーパー（暫定）
 			bit = 0x08000000;
 			break;
 		case PC_JOB_GS:		// ガンスリンガー
@@ -4150,6 +4152,22 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_SUM;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
+		case PC_CLASS_SE:
+		case PC_CLASS_SE_B:
+		case PC_CLASS_SE2:
+		case PC_CLASS_SE2_B:
+		case PC_CLASS_SE3:
+		case PC_CLASS_SE3_B:
+			bj.job   = PC_JOB_SE;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_RE:
+		case PC_CLASS_RE_B:
+		case PC_CLASS_RE2:
+		case PC_CLASS_RE2_B:
+			bj.job   = PC_JOB_RE;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
 		default:
 			bj.job   = PC_JOB_NV;
 			bj.upper = PC_UPPER_NORMAL;
@@ -4276,6 +4294,12 @@ int pc_calc_class_job(int job, int upper)
 			break;
 		case PC_JOB_SUM:
 			class_ = PC_CLASS_SUM;
+			break;
+		case PC_JOB_SE:
+			class_ = PC_CLASS_SE;
+			break;
+		case PC_JOB_RE:
+			class_ = PC_CLASS_RE;
 			break;
 	}
 
@@ -4526,6 +4550,20 @@ int pc_calc_job_class(int class_)
 			break;
 		case PC_CLASS_SUM:
 			job = PC_JOB_SUM;
+			break;
+		case PC_CLASS_SE:
+		case PC_CLASS_SE_B:
+		case PC_CLASS_SE2:
+		case PC_CLASS_SE2_B:
+		case PC_CLASS_SE3:
+		case PC_CLASS_SE3_B:
+			job = PC_JOB_SE;
+			break;
+		case PC_CLASS_RE:
+		case PC_CLASS_RE_B:
+		case PC_CLASS_RE2:
+		case PC_CLASS_RE2_B:
+			job = PC_JOB_RE;
 			break;
 	}
 
@@ -4784,6 +4822,12 @@ int pc_get_base_class(int class_, int type)
 				break;
 			case PC_CLASS_SC:
 				class_ = PC_CLASS_RG;
+				break;
+			case PC_CLASS_SE:
+				class_ = PC_CLASS_SG;
+				break;
+			case PC_CLASS_RE:
+				class_ = PC_CLASS_SL;
 				break;
 		}
 	}
@@ -5275,6 +5319,8 @@ atn_bignumber pc_nextbaseexp(struct map_session_data *sd)
 		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_SUM:	// サモナー
 		case PC_CLASS_SUM_B:	// 養子サモナー
+		case PC_CLASS_SE:	// 星帝
+		case PC_CLASS_RE:	// ソウルリーパー
 			table = 8;
 			break;
 		case PC_CLASS_ESNV:	// 拡張スーパーノービス
@@ -5464,6 +5510,8 @@ atn_bignumber pc_nextjobexp(struct map_session_data *sd)
 		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
 		case PC_CLASS_ESNV:	// 拡張スーパーノービス
 		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
+		case PC_CLASS_SE:	// 星帝
+		case PC_CLASS_RE:	// ソウルリーパー
 			table = 20;
 			break;
 		case PC_CLASS_SUM:	// サモナー
@@ -5810,7 +5858,8 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 			if(skill_get_inf2(i)&INF2_NPC)
 				continue;
 			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
-			if(i == SG_DEVIL)
+			// それに伴い太陽と月と星の浄化も除外
+			if((i == SG_DEVIL) || (i == SJ_PURIFY))
 				continue;
 			// アブラカタブラ専用スキルは設定値により取得判定
 			if(i >= 291 && i <= 303 && !battle_config.gm_allskill_addabra)
