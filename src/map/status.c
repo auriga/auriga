@@ -219,7 +219,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 670- */
 	SI_NEEDLE_OF_PARALYZE,SI_PAIN_KILLER,SI_LIGHT_OF_REGENE,SI_OVERED_BOOST,SI_STYLE_CHANGE,SI_TINDER_BREAKER,SI_CBC,SI_EQC,SI_GOLDENE_FERSE,SI_ANGRIFFS_MODUS,
 	/* 680- */
-	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_BLANK,SI_BLANK,SI_BLANK,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
+	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_LIGHTOFMOON,SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
 	/* 690- */
 	SI_BLANK,SI_BLANK,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 700- */
@@ -6828,9 +6828,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct unit_data        *ud  = NULL;
 	int icon_tick = tick, icon_val1 = 0, icon_val2 = 0, icon_val3 = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
 	unsigned int current_tick = gettick();
-	int i;
-	bool cancel;
-	const int se_stance_list[] = { SC_LUNARSTANCE, SC_UNIVERSESTANCE, SC_SUNSTANCE, SC_STARSTANCE };
 
 	nullpo_retr(0, bl);
 
@@ -6917,18 +6914,28 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_UNIVERSESTANCE:
 		case SC_SUNSTANCE:
 		case SC_STARSTANCE:
-			cancel = false;
-			for( i = 0; i < sizeof(se_stance_list)/sizeof(se_stance_list[0]); i++ ){
-				int sc_checking = se_stance_list[i];
-				if(sc->data[sc_checking].timer != -1){
-					status_change_end(bl,sc_checking,-1);
-					if( sc_checking == type ){
-						cancel = true;
+			{
+				int i;
+				bool cancel = false;
+				const int se_stance_list[] = { SC_LUNARSTANCE, SC_UNIVERSESTANCE, SC_SUNSTANCE, SC_STARSTANCE };
+				const int se_light_list[] = { SC_LIGHTOFMOON, -1, SC_LIGHTOFSUN, SC_LIGHTOFSTAR };
+
+				for( i = 0; i < sizeof(se_stance_list)/sizeof(se_stance_list[0]); i++ ){
+					int sc_checking = se_stance_list[i];
+					if(sc->data[sc_checking].timer != -1){
+						status_change_end(bl,sc_checking,-1);
+						if( sc_checking == type ){
+							cancel = true;
+						}
+						sc_checking = se_light_list[i];
+						if( sc_checking >= 0 && sc->data[sc_checking].timer != -1){
+							status_change_end(bl,sc_checking,-1);
+						}
 					}
 				}
-			}
-			if( cancel ){
-				return 0;
+				if( cancel ){
+					return 0;
+				}
 			}
 			break;
 		// 3éüêVì≈ÉXÉLÉã
@@ -8289,6 +8296,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 600*1000;
 			calc_flag = 1;
 			val2 = val1 * 5;
+			break;
+		case SC_LIGHTOFMOON:
+		case SC_LIGHTOFSUN:
+		case SC_LIGHTOFSTAR:
+			val2 = 5 * val1 + 25;
 			break;
 		case SC_UTSUSEMI:		/* ãÛê‰ */
 			val3 = (val1+1)/2;

@@ -4508,8 +4508,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RL_FIRE_RAIN:		// ƒtƒ@ƒCƒA[ƒŒƒCƒ“
 			DMG_FIX( 500 + 500 * skill_lv, 100 );
 			break;
-		case SJ_PROMINENCEKICK:
+		case SJ_PROMINENCEKICK:	// g‰‹‹r
 			DMG_FIX( 650 + 50 * skill_lv, 100 );
+			break;
+		case SJ_SOLARBURST:	// ‘¾—z”š”­
+			{
+				int rate = ( 1000 + 220 * skill_lv ) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_LIGHTOFSUN].timer != -1 ) {
+					rate += ( rate * sc->data[SC_LIGHTOFSUN].val2 ) / 100;
+				}
+				DMG_FIX( rate, 100 );
+			}
 			break;
 		case SU_BITE:	// ‚©‚Ý‚Â‚­
 			if(status_get_hp(target) / status_get_max_hp(target) * 100 <= 70) {
@@ -8325,16 +8334,14 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			break;
 		case SJ_PROMINENCEKICK:	// g‰‹‹r
 			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
-			if(damage < status_get_hp(bl)){
-				if( pc_checkskill(sd, SJ_SOLARBURST) )
-				{
-						delay += 300 * battle_config.combo_delay_rate /100;
-						// ƒRƒ“ƒ{“ü—ÍŽžŠÔ‚ÌÅ’á•Ûá’Ç‰Á
-						if(delay < battle_config.combo_delay_lower_limits)
-							delay = battle_config.combo_delay_lower_limits;
-				}
-				status_change_start(src,SC_COMBO,skillid,skilllv,0,0,delay,0);
+			if( pc_checkskill(sd, SJ_SOLARBURST) )
+			{
+				delay += 300 * battle_config.combo_delay_rate /100;
+				// ƒRƒ“ƒ{“ü—ÍŽžŠÔ‚ÌÅ’á•Ûá’Ç‰Á
+				if(delay < battle_config.combo_delay_lower_limits)
+					delay = battle_config.combo_delay_lower_limits;
 			}
+			status_change_start(src,SC_COMBO,skillid,skilllv,0,0,delay,0);
 			if(delay > 0)
 			{
 				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
