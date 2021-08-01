@@ -333,9 +333,9 @@ int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚
 /* (ƒXƒLƒ‹”Ô† - SJ_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 2574- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,SC_LUNARSTANCE,-1,-1,SC_STARSTANCE,-1,-1,-1,-1,SC_UNIVERSESTANCE,
 	/* 2584- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,SC_SUNSTANCE,-1,-1,
 	/* 2594- */
 	-1,-1
 };
@@ -5508,6 +5508,26 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
 		break;
+	case SJ_PROMINENCEKICK:
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+		} else {
+			int ar = ((skilllv - 1) >> 1 ) + 1;
+			skill_area_temp[1] = bl->id;
+			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\¦ */
+			//clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			/* ‚Ü‚¸ƒ^[ƒQƒbƒg‚ÉUŒ‚‚ğ‰Á‚¦‚é */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			/* ‚»‚ÌŒãƒ^[ƒQƒbƒgˆÈŠO‚Ì”ÍˆÍ“à‚Ì“G‘S‘Ì‚Éˆ—‚ğs‚¤ */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	case SU_BITE:			// ‚©‚İ‚Â‚­
 	case SU_SCAROFTAROU:	// ƒ^ƒƒE‚Ì
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -6334,6 +6354,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SG_SUN_COMFORT:
 	case SG_MOON_COMFORT:
 	case SG_STAR_COMFORT:
+	case SJ_LUNARSTANCE:	/* Œ‚Ì\‚¦ */
+	case SJ_STARSTANCE:		/* ¯‚Ì\‚¦ */
+	case SJ_UNIVERSESTANCE:	/* ‰F’ˆ‚Ì\‚¦ */
+	case SJ_SUNSTANCE:		/* ‘¾—z‚Ì\‚¦ */
 	case SL_KAIZEL:			/* ƒJƒCƒ[ƒ‹ */
 	case SL_KAITE:			/* ƒJƒCƒg */
 	case SL_KAUPE:			/* ƒJƒEƒv */
@@ -15939,6 +15963,45 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		if(cnd->id == GD_EMERGENCYCALL && battle_config.no_emergency_call) {
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
+		
+	case SJ_SOLARBURST:		/* ‘¾—z”š”­ */
+		if(sd->sc.data[SC_COMBO].timer == -1 || sd->sc.data[SC_COMBO].val1 != SJ_PROMINENCEKICK){
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+	case SJ_PROMINENCEKICK:		/* g‰‹‹r */
+	case SJ_LIGHTOFSUN:		/* ‘¾—z‚ÌŒõ */
+		if((sd->sc.data[SC_SUNSTANCE].timer == -1 ) && (sd->sc.data[SC_UNIVERSESTANCE].timer == -1 )){
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
+	case SJ_NEWMOONKICK:		/* ñŒ‹r */
+	case SJ_FULLMOONKICK:		/* –Œ‹r */
+	case SJ_LIGHTOFMOON:		/* Œ‚ÌŒõ */
+		if((sd->sc.data[SC_LUNARSTANCE].timer == -1 ) && (sd->sc.data[SC_UNIVERSESTANCE].timer == -1 )){
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
+	case SJ_FLASHKICK:		/* ‘MŒõ‹r */
+	case SJ_FALLINGSTAR:		/* —¬¯—‰º */
+	case SJ_LIGHTOFSTAR:		/* ¯‚ÌŒõ */
+		if((sd->sc.data[SC_STARSTANCE].timer == -1 ) && (sd->sc.data[SC_UNIVERSESTANCE].timer == -1 )){
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		break;
+	case SJ_GRAVITYCONTROL:		/* d—Í’²ß */
+	case SJ_NOVAEXPLOSING:		/* V¯”š”­ */
+	case SJ_STAREMPEROR:		/* ¯’é~—Õ */
+	case SJ_BOOKOFCREATINGSTAR:		/* ‘n¯‚Ì‘ */
+	case SJ_BOOKOFDIMENSION:		/* ŸŒ³‚Ì‘ */
+		if(sd->sc.data[SC_UNIVERSESTANCE].timer == -1 ){
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}

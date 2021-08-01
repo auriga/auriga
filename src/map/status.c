@@ -219,7 +219,13 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 670- */
 	SI_NEEDLE_OF_PARALYZE,SI_PAIN_KILLER,SI_LIGHT_OF_REGENE,SI_OVERED_BOOST,SI_STYLE_CHANGE,SI_TINDER_BREAKER,SI_CBC,SI_EQC,SI_GOLDENE_FERSE,SI_ANGRIFFS_MODUS,
 	/* 680- */
-	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH
+	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_BLANK,SI_BLANK,SI_BLANK,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
+	/* 690- */
+	SI_BLANK,SI_BLANK,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	/* 700- */
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	/* 710- */
+	SI_BLANK,SI_BLANK,SI_BLANK
 };
 
 /*==========================================
@@ -1465,6 +1471,16 @@ L_RECALC:
 		if(sd->sc.data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
 			sd->paramb[3] -= sd->sc.data[SC_MELODYOFSINK].val4;
 		}
+		
+		if(sd->sc.data[SC_UNIVERSESTANCE].timer != -1) {	// 宇宙の構え
+			int add = sd->sc.data[SC_UNIVERSESTANCE].val2;
+			sd->paramb[0] += add;
+			sd->paramb[1] += add;
+			sd->paramb[2] += add;
+			sd->paramb[3] += add;
+			sd->paramb[4] += add;
+			sd->paramb[5] += add;
+		}
 	}
 
 	sd->paramc[0] = sd->status.str  + sd->paramb[0] + sd->parame[0];
@@ -1724,6 +1740,9 @@ L_RECALC:
 	}
 	if(sd->sc.data[SC_EQC].timer != -1)
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_EQC].val3 / 100);
+	if(sd->sc.data[SC_LUNARSTANCE].timer != -1) {		// 月の構え
+		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_LUNARSTANCE].val2) / 100);
+	}
 
 	// 最大SP計算
 	calc_val = job_db[sd->s_class.job].sp_base[blv] * (100 + sd->paramc[3]) / 100 + (sd->parame[3] - sd->paramcard[3]);
@@ -2094,6 +2113,9 @@ L_RECALC:
 		if(sd->sc.data[SC_NEUTRALBARRIER].timer != -1) {	// ニュートラルバリアー
 			sd->def2  += (sd->def2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
 			sd->mdef2 += (sd->mdef2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
+		}
+		if(sd->sc.data[SC_SUNSTANCE].timer != -1) {	// 太陽の構え
+			sd->watk += sd->watk * sd->sc.data[SC_SUNSTANCE].val2 / 100;
 		}
 
 		// HIT/FLEE変化系
@@ -3223,6 +3245,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
+		// 星の構え
+		if(sd->sc.data[SC_STARSTANCE].timer != -1)
+			haste_val1 += sd->sc.data[SC_STARSTANCE].val2;
 
 		/* その他 */
 
@@ -6803,6 +6828,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	struct unit_data        *ud  = NULL;
 	int icon_tick = tick, icon_val1 = 0, icon_val2 = 0, icon_val3 = 0, opt_flag = 0, calc_flag = 0, race, mode, elem;
 	unsigned int current_tick = gettick();
+	int i;
+	bool cancel;
+	const int se_stance_list[] = { SC_LUNARSTANCE, SC_UNIVERSESTANCE, SC_SUNSTANCE, SC_STARSTANCE };
 
 	nullpo_retr(0, bl);
 
@@ -6884,6 +6912,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_P_ALTER:
 			status_change_end(bl,SC_MADNESSCANCEL,-1);
 			status_change_end(bl,SC_HEAT_BARREL,-1);
+			break;
+		case SC_LUNARSTANCE:
+		case SC_UNIVERSESTANCE:
+		case SC_SUNSTANCE:
+		case SC_STARSTANCE:
+			cancel = false;
+			for( i = 0; i < sizeof(se_stance_list)/sizeof(se_stance_list[0]); i++ ){
+				int sc_checking = se_stance_list[i];
+				if(sc->data[sc_checking].timer != -1){
+					status_change_end(bl,sc_checking,-1);
+					if( sc_checking == type ){
+						cancel = true;
+					}
+				}
+			}
+			if( cancel ){
+				return 0;
+			}
 			break;
 		// 3次新毒スキル
 		case SC_TOXIN:
@@ -8231,6 +8277,18 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_READYTURN:
 		case SC_READYCOUNTER:
 			tick = 600*1000;
+			break;
+		case SC_LUNARSTANCE:
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 10 - 5;
+			break;
+		case SC_UNIVERSESTANCE:
+		case SC_SUNSTANCE:
+		case SC_STARSTANCE:
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 5;
 			break;
 		case SC_UTSUSEMI:		/* 空蝉 */
 			val3 = (val1+1)/2;
@@ -9617,6 +9675,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TINDER_BREAKER:		/* 捕獲 */
 		case SC_CBC:				/* 絞め技 */
 		case SC_EQC:				/* E.Q.C */
+		case SC_LUNARSTANCE:
+		case SC_UNIVERSESTANCE:
+		case SC_SUNSTANCE:
+		case SC_STARSTANCE:
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -10684,6 +10746,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_READYDOWN:
 	case SC_READYTURN:
 	case SC_READYCOUNTER:
+	case SC_LUNARSTANCE:
+	case SC_UNIVERSESTANCE:
+	case SC_SUNSTANCE:
+	case SC_STARSTANCE:
 	case SC_DODGE:
 	case SC_AUTOBERSERK:
 	case SC_RUN:
