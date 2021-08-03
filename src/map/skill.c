@@ -333,7 +333,7 @@ int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚
 /* (ƒXƒLƒ‹”Ô† - SJ_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 2574- */
-	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,-1,-1,-1,-1,SC_UNIVERSESTANCE,
+	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,-1,-1,-1,SC_UNIVERSESTANCE,
 	/* 2584- */
 	-1,-1,-1,-1,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
 	/* 2594- */
@@ -4714,6 +4714,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC_NEWMOON, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
 						status_change_end(bl, SC_INVISIBLE, -1);
@@ -4920,6 +4921,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC_NEWMOON, -1);
 						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
@@ -5197,6 +5199,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC_NEWMOON, -1);
 						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
@@ -5534,7 +5537,55 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1])
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
 		} else {
+			int ar = skilllv;
+			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\Ž¦ */
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ðo‚·‚½‚ß‚ÌŽb’èˆ’u
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case SJ_NEWMOONKICK:	/* ñŒŽ‹r */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+		} else {
 			int ar = (skilllv - 1 ) / 3 + 1;
+			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\Ž¦ */
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ðo‚·‚½‚ß‚ÌŽb’èˆ’u
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			
+			sc = status_get_sc(src);
+			if(sc) {
+				status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
+		}
+		break;
+	case SJ_FULLMOONKICK:		/* –žŒŽ‹r */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é */
+			if(bl->id != skill_area_temp[1]){
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(src)))
+					status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+			}
+		} else {
+			int ar = ( skilllv - 3 ) / 3 + 4;
 			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\Ž¦ */
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ðo‚·‚½‚ß‚ÌŽb’èˆ’u
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -9395,6 +9446,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					status_change_end(bl, SC_HIDING, -1);
 					status_change_end(bl, SC_CLOAKING, -1);
 					status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+					status_change_end(bl, SC_NEWMOON, -1);
 					status_change_end(bl, SC__INVISIBILITY, -1);
 				}
 				if(sc->option & OPTION_SPECIALHIDING) {
@@ -9515,6 +9567,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						status_change_end(bl, SC_HIDING, -1);
 						status_change_end(bl, SC_CLOAKING, -1);
 						status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+						status_change_end(bl, SC_NEWMOON, -1);
 						status_change_end(bl, SC__INVISIBILITY, -1);
 					}
 					if(sc->option & OPTION_SPECIALHIDING) {
@@ -10582,11 +10635,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sc) {
 				if(sc->data[SC_HIDING].timer != -1 || sc->data[SC_CLOAKING].timer != -1 || sc->data[SC_CLOAKINGEXCEED].timer != -1 ||
 				   sc->data[SC__SHADOWFORM].timer != -1 || sc->data[SC_CAMOUFLAGE].timer != -1 || sc->data[SC_MARIONETTE].timer != -1 ||
-				   sc->data[SC_MARIONETTE2].timer != -1 || sc->data[SC_HARMONIZE].timer != -1)
+				   sc->data[SC_MARIONETTE2].timer != -1 || sc->data[SC_HARMONIZE].timer != -1 || sc->data[SC_NEWMOON].timer != -1)
 				{
 					status_change_end(bl, SC_HIDING, -1);
 					status_change_end(bl, SC_CLOAKING, -1);
 					status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+					status_change_end(bl, SC_NEWMOON, -1);
 					status_change_end(bl, SC__SHADOWFORM, -1);
 					status_change_end(bl, SC_CAMOUFLAGE, -1);
 					status_change_end(bl, SC_MARIONETTE, -1);
@@ -16009,8 +16063,15 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
-	case SJ_NEWMOONKICK:		/* ñŒŽ‹r */
 	case SJ_FULLMOONKICK:		/* –žŒŽ‹r */
+		if(!(type&1)) {	//‰r¥ŠJŽn‚ÅñŒŽó‘Ô‚Í‰ðœ‚³‚ê‚é‚Ì‚ÅA‰r¥I—¹Žž‚Íƒ`ƒFƒbƒN‚µ‚È‚¢
+			if(sd->sc.data[SC_NEWMOON].timer == -1 ){
+				clif_skill_fail(sd,cnd->id,0,0,0);
+				return 0;
+			}
+		}
+		//fall through
+	case SJ_NEWMOONKICK:		/* ñŒŽ‹r */
 		if((sd->sc.data[SC_LUNARSTANCE].timer == -1 ) && (sd->sc.data[SC_UNIVERSESTANCE].timer == -1 )){
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;

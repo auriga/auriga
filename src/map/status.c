@@ -221,7 +221,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 680- */
 	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_LIGHTOFMOON,SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
 	/* 690- */
-	SI_BLANK,SI_BLANK,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 700- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 710- */
@@ -7062,7 +7062,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	// ウォーグバイト状態中はハイディング、クローキング無効
-	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED))
+	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED || type == SC_NEWMOON))
 		return 0;
 
 	// ウォーマー状態中は凍結、氷結、冷凍無効
@@ -9080,6 +9080,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
+		case SC_NEWMOON:		/* 朔月脚 */
+			val2 = 15;	// ダメージ耐性
+			val3 = tick / 1000;
+			tick = 1000;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -9300,6 +9305,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
+		case SC_NEWMOON:			/* 朔月脚 */
 		case SC__INVISIBILITY:		/* インビジビリティ */
 			unit_stopattack(bl);
 			sc->option |= OPTION_CLOAKING;
@@ -9687,10 +9693,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TINDER_BREAKER:		/* 捕獲 */
 		case SC_CBC:				/* 絞め技 */
 		case SC_EQC:				/* E.Q.C */
-		case SC_LUNARSTANCE:
-		case SC_UNIVERSESTANCE:
-		case SC_SUNSTANCE:
-		case SC_STARSTANCE:
+		case SC_LUNARSTANCE:		/* 月の構え */
+		case SC_UNIVERSESTANCE:		/* 宇宙の構え */
+		case SC_SUNSTANCE:			/* 太陽の構え */
+		case SC_STARSTANCE:			/* 星の構え */
+			calc_flag = 1;
+			break;
+		case SC_NEWMOON:			/* 朔月脚 */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -10267,6 +10276,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
+		case SC_NEWMOON:			/* 朔月脚 */
 		case SC__INVISIBILITY:		/* インビジビリティ */
 			sc->option &= ~OPTION_CLOAKING;
 			opt_flag = 1;
@@ -11560,6 +11570,18 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
 		break;
+	case SC_NEWMOON:	/* 朔月脚 */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				int sp = 1;
+				if(sp > 0 && sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			}
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -11611,6 +11633,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
 			status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+			status_change_end(bl, SC_NEWMOON, -1);
 			status_change_end(bl, SC__INVISIBILITY, -1);
 		}
 		if(sc->option & OPTION_SPECIALHIDING) {
@@ -11623,6 +11646,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 				status_change_end(bl, SC_HIDING, -1);
 				status_change_end(bl, SC_CLOAKING, -1);
 				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+				status_change_end(bl, SC_NEWMOON, -1);
 				status_change_end(bl, SC__INVISIBILITY, -1);
 			}
 			if(sc->option & OPTION_SPECIALHIDING) {
@@ -12190,6 +12214,8 @@ int status_change_hidden_end(struct block_list *bl)
 			status_change_end(bl,SC_STEALTHFIELD,-1);
 	 	if(sc->data[SC_SUHIDE].timer != -1)
 			status_change_end(bl,SC_SUHIDE,-1);
+	 	if(sc->data[SC_NEWMOON].timer != -1)
+			status_change_end(bl,SC_NEWMOON,-1);
 	}
 	return 0;
 }

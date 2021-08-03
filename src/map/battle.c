@@ -945,6 +945,11 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 #endif
+		// 朔月脚
+		if(sc->data[SC_NEWMOON].timer != -1 && damage > 0) {
+			if((--sc->data[SC_NEWMOON].val2) <= 0)
+				status_change_end(bl, SC_NEWMOON, -1);
+		}
 		// うずくまる
 		if(sc->data[SC_SU_STOOP].timer != -1) {
 			// ストーンスキン、アンチマジックと競合しない
@@ -4516,6 +4521,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int rate = ( 1000 + 220 * skill_lv ) * status_get_lv(src) / 100;
 				if(sc && sc->data[SC_LIGHTOFSUN].timer != -1 ) {
 					rate += ( rate * sc->data[SC_LIGHTOFSUN].val2 ) / 100;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case SJ_NEWMOONKICK:	/* 朔月脚 */
+			DMG_FIX( 1650 + 50 * skill_lv, 100 );
+			break;
+		case SJ_FULLMOONKICK:	// 満月脚
+			{
+				int rate = ( 500 + 150 * skill_lv ) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_LIGHTOFMOON].timer != -1 ) {
+					rate += ( rate * sc->data[SC_LIGHTOFMOON].val2 ) / 100;
 				}
 				DMG_FIX( rate, 100 );
 			}

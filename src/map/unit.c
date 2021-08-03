@@ -1343,6 +1343,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 	}
 
+	if(sc && sc->data[SC_NEWMOON].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
+		status_change_end(src,SC_NEWMOON,-1);
+	}
+
 	if(sc && sc->data[SC__INVISIBILITY].timer != -1 && skill_num != SC_INVISIBILITY) {
 		status_change_end(src,SC__INVISIBILITY,-1);
 	}
@@ -1550,6 +1554,9 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 
 	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
+
+	if(sc && sc->data[SC_NEWMOON].timer != -1)
+		status_change_end(src,SC_NEWMOON,-1);
 
 	if(casttime > 0) {
 		int skill;
@@ -1962,6 +1969,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 				status_change_end(src,SC_CLOAKING,-1);
 			if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 				status_change_end(src,SC_CLOAKINGEXCEED,-1);
+			if(sc && sc->data[SC_NEWMOON].timer != -1)
+				status_change_end(src,SC_NEWMOON,-1);
 			if(sc && sc->data[SC_CAMOUFLAGE].timer != -1)
 				status_change_end(src,SC_CAMOUFLAGE,-1);
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
