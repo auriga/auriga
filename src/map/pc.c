@@ -6246,6 +6246,17 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		}
 	}
 
+	//星の光 解除
+	for (i = 0; i < MAX_STELLAR_MARKS; i++) {
+		if (sd->stellar_mark[i]) {
+			struct map_session_data *smarksd = map_id2sd(sd->stellar_mark[i]);
+
+			if (smarksd)
+				status_change_end(&smarksd->bl, SC_FLASHKICK, -1);
+			sd->stellar_mark[i] = 0;
+		}
+	}
+
 	// シャドウフォーム終了
 	if(sd->shadowform_id) {
 		status_change_end(map_id2bl(sd->shadowform_id),SC__SHADOWFORM,-1);

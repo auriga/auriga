@@ -4537,6 +4537,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( rate, 100 );
 			}
 			break;
+		case SJ_FLASHKICK:	// ‘MŒõ‹r
+			break;
+		case SJ_FALLINGSTAR_ATK:	// —¬¯—Ž‰º
+		case SJ_FALLINGSTAR_ATK2:
+			{
+				int rate = ( 100 + 100 * skill_lv ) * status_get_lv(src) / 100;
+				if (sc && sc->data[SC_LIGHTOFSTAR].timer != -1 )
+					rate += ( rate * sc->data[SC_LIGHTOFSTAR].val2 ) / 100;
+				DMG_FIX( rate, 100 );
+			}
+			break;
 		case SU_BITE:	// ‚©‚Ý‚Â‚­
 			if(status_get_hp(target) / status_get_max_hp(target) * 100 <= 70) {
 				DMG_FIX( 1500, 100 );
@@ -7921,6 +7932,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		// ƒAƒbƒvƒwƒCƒoƒ‹
 		if(sc->data[SC_UPHEAVAL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
 			skill_castend_damage_id(src,target,WZ_EARTHSPIKE,5,tick,flag);
+		}
+		// —¬¯—Ž‰º
+		if (sc->data[SC_FALLINGSTAR].timer != -1 && (wd.flag&BF_WEAPON) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC_FALLINGSTAR].val2) {
+			skill_castend_damage_id(src, target, SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR].val1, tick, flag);
 		}
 	}
 

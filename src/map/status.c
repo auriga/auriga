@@ -221,7 +221,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 680- */
 	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_LIGHTOFMOON,SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
 	/* 690- */
-	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_FALLINGSTAR,SI_BLANK,SI_BLANK,
 	/* 700- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 710- */
@@ -8302,6 +8302,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_LIGHTOFSTAR:
 			val2 = 5 * val1 + 25;
 			break;
+		case SC_FLASHKICK:
+			break;
+		case SC_FALLINGSTAR:
+			val2 = val1 <= 5 ? 20 : 25;
+			break;
 		case SC_UTSUSEMI:		/* ‹óä */
 			val3 = (val1+1)/2;
 			break;
@@ -11580,6 +11585,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 				}
 			}
+		}
+		break;
+	case SC_FLASHKICK:
+		{
+			struct map_session_data *tsd = map_id2sd(sc->data[type].val1);
+			if( tsd )
+				tsd->stellar_mark[sc->data[type].val2] = 0;
 		}
 		break;
 	}

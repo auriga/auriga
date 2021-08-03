@@ -333,9 +333,9 @@ int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚
 /* (ƒXƒLƒ‹”Ô† - SJ_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 2574- */
-	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,-1,-1,-1,SC_UNIVERSESTANCE,
+	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,SC_FLASHKICK,-1,-1,SC_UNIVERSESTANCE,
 	/* 2584- */
-	-1,-1,-1,-1,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
+	SC_FALLINGSTAR,-1,-1,-1,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
 	/* 2594- */
 	-1,-1
 };
@@ -5599,6 +5599,114 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
+	case SJ_FLASHKICK:	/* ‘MŒõ‹r */
+		{
+			
+			struct map_session_data *tsd = BL_DOWNCAST(BL_PC, bl);
+			struct mob_data *md = BL_DOWNCAST(BL_MOB, src), *tmd = BL_DOWNCAST(BL_MOB, bl);
+
+			if ((!tsd && !tmd) || !sd && !md) {
+				if (sd)
+					clif_skill_fail(sd, skillid, 0, 0, 0);
+				break;
+			}
+
+			// Check if the target is already tagged by another source.
+			if ((tsd && tsd->sc.data[SC_FLASHKICK].timer != -1 && tsd->sc.data[SC_FLASHKICK].val1 != src->id) || (tmd && tmd->sc.data[SC_FLASHKICK].timer != -1 && tmd->sc.data[SC_FLASHKICK].val1 != src->id)) { // Same as the above check, but for monsters.
+				// Can't tag a player that was already tagged from another source.
+				if (sd)
+					clif_skill_fail(sd, skillid, 0, 0, 0);
+				map_freeblock_unlock();
+				return 1;
+			}
+
+			if (sd) { // Tagging the target.
+				int i;
+
+				ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == bl->id);
+				if (i == MAX_STELLAR_MARKS) {
+					ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == 0);
+					if (i == MAX_STELLAR_MARKS) { // Max number of targets tagged. Fail the skill.
+						clif_skill_fail(sd, skillid, 0, 0, 0);
+						map_freeblock_unlock();
+						return 1;
+					}
+				}
+
+				// Tag the target only if damage was done. If it deals no damage, it counts as a miss and won't tag.
+				// Note: Not sure if it works like this in official but you can't mark on something you can't
+				// hit, right? For now well just use this logic until we can get a confirm on if it does this or not. [Rytech]
+				if (battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag) > 0) { // Add the ID of the tagged target to the player's tag list and start the status on the target.
+					sd->stellar_mark[i] = bl->id;
+
+					// Val4 flags if the status was applied by a player or a monster.
+					// This will be important for other skills that work together with this one.
+					// 1 = Player, 2 = Monster.
+					// Note: Because the attacker's ID and the slot number is handled here, we have to
+					// apply the status here. We can't pass this data to skill_additional_effect.
+					status_change_start(bl,GetSkillStatusChangeTable(skillid),src->id, i, skilllv, 1, skill_get_time(skillid,skilllv),0);
+				}
+			} else if (md) { // Monsters can't track with this skill. Just give the status.
+				if (battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag) > 0)
+					status_change_start(bl,GetSkillStatusChangeTable(skillid), 0, 0, skilllv, 2, skill_get_time(skillid,skilllv),0);
+			}
+		}
+		break;
+	case SJ_FALLINGSTAR_ATK:	/* —¬¯—‰º(¯‚Ìˆó‘ÎÛƒ_ƒ) */
+		{
+			if(flag&1) {
+				struct status_change    *tsc = status_get_sc(bl);
+				if (sd) { // If a player used the skill it will search for targets marked by that player. 
+					if (tsc && tsc->data[SC_FLASHKICK].timer != -1 && tsc->data[SC_FLASHKICK].val4 == 1) { // Mark placed by a player.
+						int8 i = 0;
+
+						ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == bl->id);
+						if (i < MAX_STELLAR_MARKS) {
+							battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag);
+							clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
+							skill_castend_damage_id(src, bl, SJ_FALLINGSTAR_ATK2, skilllv, tick, 0);
+						}
+					}
+					else{
+						map_freeblock_unlock();
+						return 1;
+					}
+				} else if ( tsc && tsc->data[SC_FLASHKICK].timer != -1 && tsc->data[SC_FLASHKICK].val4 == 2 ) { // Mark placed by a monster.
+					// If a monster used the skill it will search for targets marked by any monster since they can't track their own targets.
+					battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag);
+					clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
+					skill_castend_damage_id(src, bl, SJ_FALLINGSTAR_ATK2, skilllv, tick, 0);
+				}
+			} else {
+				int ar = 2;
+				map_foreachinarea(skill_area_sub,
+					src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
+			}
+		}
+		break;
+	case SJ_FALLINGSTAR_ATK2:	/* —¬¯—‰º(¯‚Ìˆóü•Óƒ_ƒ) */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1]){
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			}
+		} else {
+			int ar = 1;
+			skill_area_temp[1] = bl->id;
+			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\¦ */
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			/* ‚Ü‚¸ƒ^[ƒQƒbƒg‚ÉUŒ‚‚ğ‰Á‚¦‚é */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
+			/* ‚»‚ÌŒãƒ^[ƒQƒbƒgˆÈŠO‚Ì”ÍˆÍ“à‚Ì“G‘S‘Ì‚Éˆ—‚ğs‚¤ */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	case SU_BITE:			// ‚©‚İ‚Â‚­
 	case SU_SCAROFTAROU:	// ƒ^ƒƒE‚Ì
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -6432,6 +6540,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SJ_LIGHTOFMOON:	/* Œ‚ÌŒõ */
 	case SJ_LIGHTOFSTAR:	/* ¯‚ÌŒõ */
 	case SJ_LIGHTOFSUN:		/* ‘¾—z‚ÌŒõ */
+	case SJ_FALLINGSTAR:	/* —¬¯—‰º */
 	case SL_KAIZEL:			/* ƒJƒCƒ[ƒ‹ */
 	case SL_KAITE:			/* ƒJƒCƒg */
 	case SL_KAUPE:			/* ƒJƒEƒv */
