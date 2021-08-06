@@ -73,11 +73,11 @@ static atn_bignumber exp_table[22][MAX_LEVEL];
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
 
 // JOB TABLE
-//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC,ESNV,KG,OB,RB,SU
+//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC,ESNV,KG,OB,RB,SU,SE,RE
 int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50 }, // 通常
-	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50 }, // 転生
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50 }, // 養子
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,50,50 }, // 通常
+	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,50,50 }, // 転生
+	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,50,50 }, // 養子
 };
 
 static const unsigned int equip_pos[EQUIP_INDEX_MAX] = {
@@ -5869,7 +5869,9 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 	} else {
 		int id;
 		for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
-			if(id == SG_DEVIL)	// ここで除外処理
+			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
+			// それに伴い太陽と月と星の浄化も除外
+			if((i == SG_DEVIL) || (i == SJ_PURIFY))
 				continue;
 			// flagがあるならクエストスキルも取得する
 			if(skill_get_inf2(id)&INF2_QUEST && !flag && !battle_config.quest_skill_learn)

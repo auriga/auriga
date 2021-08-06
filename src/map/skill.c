@@ -11003,6 +11003,25 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case SJ_DOCUMENT:	/* ‘¾—z‚ÆŒ‚Æ¯‚Ì‹L˜^ */
+		{
+			int i;
+			if( skilllv & 0x01 ){
+				for (i = 0; i < 3; i++ ) {
+					sd->feel_index[i] = -1;
+					memset(&sd->status.feel_map[i], 0, sizeof(sd->status.feel_map[0]));
+				}
+			}
+			if( skilllv & 0x02 ){
+				const char *reg[] = { "PC_HATE_MOB_SUN", "PC_HATE_MOB_MOON", "PC_HATE_MOB_STAR" };
+				for (i = 0; i < 3; i++ ) {
+					sd->hate_mob[i] = -1;
+					pc_setglobalreg(sd,reg[i],0);
+				}
+			}
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		}
+		break;
 	case SJ_GRAVITYCONTROL:	/* d—Í’²ß */
 		{
 			int type = GetSkillStatusChangeTable(skillid);
