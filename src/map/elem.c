@@ -551,6 +551,11 @@ int elem_calc_status(struct elem_data *eld)
 
 		if(eld->sc.data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// タイダルウェポン(精霊)
 			atk_rate += eld->sc.data[SC_TIDAL_WEAPON_OPTION].val2;
+		
+		if(eld->sc.data[SC_CREATINGSTAR].timer != -1) {	// 創星の書
+			eld->speed = eld->speed*100/90;	//速度減少率は要調査
+		}
+		
 	}
 
 	// エレメンタルシンパシー

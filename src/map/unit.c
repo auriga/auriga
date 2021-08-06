@@ -1739,7 +1739,8 @@ int unit_can_move(struct block_list *bl)
 			sc->data[SC_SV_ROOTTWIST].timer != -1 ||	// ƒ}ƒ^ƒ^ƒr‚Ìª‚Á‚±
 			sc->data[SC_PARALYZE].timer != -1 ||	// –ƒáƒ
 			sc->data[SC_TINDER_BREAKER].timer != -1 ||	// •ßŠl
-			sc->data[SC_CBC].timer != -1		// i‚ß‹Z
+			sc->data[SC_CBC].timer != -1 ||		// i‚ß‹Z
+			sc->data[SC_GRAVITYCONTROL].timer != -1	// SC_GRAVITYCONTROL
 		)
 			return 0;
 
@@ -1841,7 +1842,9 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_CURSEDCIRCLE].timer != -1 ||
 		   sc->data[SC_DEEP_SLEEP].timer != -1 ||
 		   sc->data[SC_DIAMONDDUST].timer != -1 ||
-		   sc->data[SC_SUHIDE].timer != -1)
+		   sc->data[SC_SUHIDE].timer != -1 ||
+		   sc->data[SC_NOVAEXPLOSING].timer != -1 ||
+		   sc->data[SC_GRAVITYCONTROL].timer != -1 )
 			return 0;
 	}
 	if( tsc ) {

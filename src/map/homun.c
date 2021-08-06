@@ -465,6 +465,9 @@ int homun_calc_status(struct homun_data *hd)
 				hd->agi -= subagi;
 				hd->dex -= subdex;
 			}
+			if(hd->sc.data[SC_CREATINGSTAR].timer != -1) {	// ënêØÇÃèë
+				hd->speed = hd->speed*100/90;	//ë¨ìxå∏è≠ó¶ÇÕóví≤ç∏
+			}
 		}
 	}
 

@@ -221,7 +221,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 680- */
 	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_LIGHTOFMOON,SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
 	/* 690- */
-	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_FALLINGSTAR,SI_BLANK,SI_BLANK,
+	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_DIMENSION,SI_DIMENSION1,SI_DIMENSION2,SI_CREATINGSTAR,SI_FALLINGSTAR,SI_NOVAEXPLOSING,SI_GRAVITYCONTROL,
 	/* 700- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
 	/* 710- */
@@ -3559,6 +3559,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				int penalty = sd->sc.data[SC_B_TRAP].val3;
 				if(slow_val < penalty)
 					slow_val = penalty;
+			}
+			// d—Í’²ß
+			if(sd->sc.data[SC_CREATINGSTAR].timer != -1){
+				if( slow_val < 10 ){
+					slow_val = 10;
+				}
 			}
 		}
 
@@ -8285,28 +8291,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_READYCOUNTER:
 			tick = 600*1000;
 			break;
-		case SC_LUNARSTANCE:
-			tick = 600*1000;
-			calc_flag = 1;
-			val2 = val1 * 10 - 5;
-			break;
-		case SC_UNIVERSESTANCE:
-		case SC_SUNSTANCE:
-		case SC_STARSTANCE:
-			tick = 600*1000;
-			calc_flag = 1;
-			val2 = val1 * 5;
-			break;
-		case SC_LIGHTOFMOON:
-		case SC_LIGHTOFSUN:
-		case SC_LIGHTOFSTAR:
-			val2 = 5 * val1 + 25;
-			break;
-		case SC_FLASHKICK:
-			break;
-		case SC_FALLINGSTAR:
-			val2 = val1 <= 5 ? 20 : 25;
-			break;
 		case SC_UTSUSEMI:		/* ‹óä */
 			val3 = (val1+1)/2;
 			break;
@@ -9085,10 +9069,43 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
+		case SC_LUNARSTANCE:	/* ŒŽ‚Ì\‚¦ */
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 10 - 5;
+			break;
+		case SC_UNIVERSESTANCE:	/* ‰F’ˆ‚Ì\‚¦ */
+		case SC_SUNSTANCE:	/* ‘¾—z‚Ì\‚¦ */
+		case SC_STARSTANCE:	/* ¯‚Ì\‚¦ */
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 5;
+			break;
+		case SC_LIGHTOFMOON:	/* ŒŽ‚ÌŒõ */
+		case SC_LIGHTOFSUN:	/* ‘¾—z‚ÌŒõ */
+		case SC_LIGHTOFSTAR:	/* ¯‚ÌŒõ */
+			val2 = 5 * val1 + 25;
+			break;
+		case SC_FLASHKICK:	/* ‘MŒõ‹r */
+		case SC_NOVAEXPLOSING:	/* V¯”š”­ */
+		case SC_GRAVITYCONTROL:	/* d—Í’²ß */
+		case SC_CREATINGSTAR:	/* ‘n¯‚Ì‘ */
+		case SC_DIMENSION:	/* ŽŸŒ³‚Ì‘ */
+		case SC_DIMENSION1:	/* ŽŸŒ³‚Ì‘ */
+			break;
 		case SC_NEWMOON:		/* ñŒŽ‹r */
 			val2 = 15;	// ƒ_ƒ[ƒW‘Ï«
 			val3 = tick / 1000;
 			tick = 1000;
+			break;
+		case SC_FALLINGSTAR:	/* —¬¯—Ž‰º */
+			val2 = val1 <= 5 ? 20 : 25;
+			break;
+		case SC_DIMENSION2:	/* ŽŸŒ³‚Ì‘ */
+			if(sd){
+				pc_delspiritball(sd, sd->spiritball.num, 0);
+				pc_addspiritball(sd, tick, val1);
+			}
 			break;
 		default:
 			if(battle_config.error_log)
@@ -10112,6 +10129,20 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_BLIND:				/* ˆÃ• */
 		case SC_CURSE:
 			calc_flag = 1;
+			break;
+		case SC_GRAVITYCONTROL:	/* d—Í’²ß */
+			{
+				int fall_damage = sc->data[type].val2;
+				if( fall_damage > 0 ){
+					clif_damage(bl,bl,gettick(),0,0,fall_damage,0,9,0,0);
+					battle_damage(bl,bl,fall_damage,0,0,0);
+				}
+			}
+			break;
+		case SC_DIMENSION2:	/* ŽŸŒ³‚Ì‘ */
+			if(sd){
+				pc_delspiritball(sd, sd->spiritball.num, 0);
+			}
 			break;
 	}
 

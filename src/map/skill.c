@@ -333,9 +333,9 @@ int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚
 /* (ƒXƒLƒ‹”Ô† - SJ_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
 int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚Æ */
 	/* 2574- */
-	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,SC_FLASHKICK,-1,-1,SC_UNIVERSESTANCE,
+	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,SC_FLASHKICK,-1,SC_NOVAEXPLOSING,SC_UNIVERSESTANCE,
 	/* 2584- */
-	SC_FALLINGSTAR,-1,-1,-1,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
+	SC_FALLINGSTAR,SC_GRAVITYCONTROL,SC_DIMENSION,SC_CREATINGSTAR,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
 	/* 2594- */
 	-1,-1
 };
@@ -5537,7 +5537,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			if(bl->id != skill_area_temp[1])
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
 		} else {
-			int ar = skilllv;
+			int ar = (skilllv - 1 ) / 3 + 1;
 			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\Ž¦ */
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ðo‚·‚½‚ß‚ÌŽb’èˆ’u
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -5705,6 +5705,55 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+		}
+		break;
+	case SJ_STAREMPEROR:		/* ¯’é~—Õ */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é */
+			if(bl->id != skill_area_temp[1]){
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(src)))
+					status_change_pretimer(bl,SC_SILENCE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+			}
+		} else {
+			int ar = 3;
+			/* ƒXƒLƒ‹ƒGƒtƒFƒNƒg•\Ž¦ */
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ðo‚·‚½‚ß‚ÌŽb’èˆ’u
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			
+			sc = status_get_sc(src);
+			if(sc) {
+				if( sc->data[SC_DIMENSION].timer != -1 ){
+					status_change_end(src,SC_DIMENSION,-1);
+					//–‚–@‚2ŒÂ‚ª‚Ç‚Ì‚æ‚¤‚É“®ì‚·‚é‚©A‘Ï‹vŠÜ‚ß‚Ä—v’²¸
+					status_change_start(src,SC_DIMENSION2,2,status_get_max_sp(src),0,0,skill_get_time(skillid,skilllv),0);
+				}
+			}
+		}
+		break;
+	case SJ_NOVAEXPLOSING:	// V¯”š”­
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		sc = status_get_sc(src);
+		if(sc) {
+			if( sc->data[SC_DIMENSION].timer != -1 ){
+				status_change_end(src,SC_DIMENSION,-1);
+				status_change_start(src,SC_DIMENSION1,0,0,0,0,10000,0);
+			}
+			else if( sc->data[SC_DIMENSION1].timer != -1 ){
+				//Do nothing
+			}
+			else{
+				status_change_start(src,GetSkillStatusChangeTable(skillid),0,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
 		}
 		break;
 	case SU_BITE:			// ‚©‚Ý‚Â‚­
@@ -6541,6 +6590,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SJ_LIGHTOFSTAR:	/* ¯‚ÌŒõ */
 	case SJ_LIGHTOFSUN:		/* ‘¾—z‚ÌŒõ */
 	case SJ_FALLINGSTAR:	/* —¬¯—Ž‰º */
+	case SJ_BOOKOFDIMENSION:	/* ŽŸŒ³‚Ì‘ */
 	case SL_KAIZEL:			/* ƒJƒCƒ[ƒ‹ */
 	case SL_KAITE:			/* ƒJƒCƒg */
 	case SL_KAUPE:			/* ƒJƒEƒv */
@@ -10953,6 +11003,27 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case SJ_GRAVITYCONTROL:	/* d—Í’²ß */
+		{
+			int type = GetSkillStatusChangeTable(skillid);
+			sc = status_get_sc(bl);
+			if(sc && sc->data[type].timer != -1 ){
+				sc->data[type].val2 = 0;
+				status_change_end(bl, type, -1);
+			}
+			else{
+				int fall_damage = status_get_baseatk(src) + status_get_atk(src) - status_get_def2(bl);
+
+				if (bl->type == BL_PC)
+					fall_damage += dstsd->weight / 10 - status_get_def(bl);
+				else // Monster's don't have weight. Put something in its place.
+					fall_damage += 50 * status_get_lv(src) - status_get_def(bl);
+
+				fall_damage = max(1, fall_damage);
+				status_change_start(bl,type,skilllv,fall_damage,0,0,skill_get_time(skillid,skilllv),0);
+			}
+		}
+		break;
 	case SU_HIDE:	/* ‚©‚­‚ê‚é */
 		{
 			int type = GetSkillStatusChangeTable(skillid);
@@ -11588,6 +11659,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case GN_HELLS_PLANT:		/* ƒwƒ‹ƒYƒvƒ‰ƒ“ƒg */
 	case KO_HUUMARANKA:			/* •—–‚Žè— Œ•—‰Ø */
 	case SU_NYANGGRASS:			/* ƒjƒƒƒ“ƒOƒ‰ƒX */
+	case SJ_BOOKOFCREATINGSTAR:	/* ‘n¯‚Ì‘ */
 	case MA_SKIDTRAP:
 	case MA_LANDMINE:
 	case MA_SANDMAN:
@@ -14033,6 +14105,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				status_change_start(bl,SC_VOLCANIC_ASH,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 		}
 		break;
+	case UNT_CREATINGSTAR:	/* ‘n¯‚Ì‘ */
+		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x500);
+		status_change_start(bl,SC_CREATINGSTAR,sg->skill_lv,0,0,0,sg->interval+100,0);
+		break;
 	}
 
 	if(bl->type == BL_MOB && ss != bl)	/* ƒXƒLƒ‹Žg—pðŒ‚ÌMOBƒXƒLƒ‹ */
@@ -14215,6 +14291,13 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 		sc = status_get_sc(bl);
 		if(sc && sc->data[SC_NYANGGRASS].timer != -1 && sc->data[SC_NYANGGRASS].val2 == src->bl.id)
 			status_change_end(bl,SC_NYANGGRASS,-1);
+		break;
+	case UNT_CREATINGSTAR:	/* ‘n¯‚Ì‘ */
+		sc = status_get_sc(bl);
+		if(sc && sc->data[SC_CREATINGSTAR].timer != -1 && sc->data[SC_CREATINGSTAR].val2 == src->bl.id){
+			sc->data[SC_CREATINGSTAR].val4 = 0;
+			status_change_end(bl,SC_CREATINGSTAR,-1);
+		}
 		break;
 /*	default:
 		if(battle_config.error_log)
@@ -14673,7 +14756,9 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 			(sc->data[SC__INVISIBILITY].timer != -1 && cnd->id != SC_INVISIBILITY) ||
 			sc->data[SC__IGNORANCE].timer != -1 ||
 			sc->data[SC_CURSEDCIRCLE].timer != -1 ||
-			sc->data[SC_DIAMONDDUST].timer != -1)
+			sc->data[SC_DIAMONDDUST].timer != -1 ||
+			sc->data[SC_NOVAEXPLOSING].timer != -1 ||
+			sc->data[SC_GRAVITYCONTROL].timer != -1 )
 			return 0;
 
 		if(sc->data[SC_BLADESTOP].timer != -1) {
@@ -16198,6 +16283,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}
+		break;
 	case SJ_LIGHTOFSTAR:		/* ¯‚ÌŒõ */
 		if(sd->sc.data[SC_STARSTANCE].timer == -1 ){
 			clif_skill_fail(sd,cnd->id,0,0,0);
@@ -16210,6 +16296,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case SJ_BOOKOFCREATINGSTAR:		/* ‘n¯‚Ì‘ */
 	case SJ_BOOKOFDIMENSION:		/* ŽŸŒ³‚Ì‘ */
 		if(sd->sc.data[SC_UNIVERSESTANCE].timer == -1 ){
+			clif_skill_fail(sd,cnd->id,0,0,0);
+			return 0;
+		}
+		if(battle_config.allow_se_univ_skill_limit && !map[bl->m].flag.gvg && !map[bl->m].flag.pvp) {
 			clif_skill_fail(sd,cnd->id,0,0,0);
 			return 0;
 		}
@@ -17376,8 +17466,11 @@ int skill_cooldownfix(struct block_list *bl, int skillid, int skilllv)
 		sd = (struct map_session_data *)bl;
 
 	if(sd) {
+		struct status_change* sc = status_get_sc(bl);
 		if(skillid == SU_TUNABELLY && pc_checkskill(sd,SU_SPIRITOFSEA) > 0)	// ‘åƒgƒ
 			cooldown -= 3000;
+		else if( skillid == SJ_NOVAEXPLOSING && sc && (sc->data[SC_DIMENSION].timer != -1 || sc->data[SC_DIMENSION1].timer != -1 ) && sc->data[SC_DIMENSION2].timer == -1)
+			return 0;
 
 		if(sd->skill_cooldown.count > 0) {
 			int i;
@@ -18670,6 +18763,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case KO_MAKIBISHI:
 		case KO_ZENKAI:
 		case RL_FIRE_RAIN:
+		case SJ_BOOKOFCREATINGSTAR:
 		case SU_CN_METEOR:
 		case SU_CN_METEOR2:
 		case NPC_DISSONANCE:

@@ -465,6 +465,10 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
 			damage = 0;
 		}
+
+		if( sc->data[SC_GRAVITYCONTROL].timer != -1 ){
+			damage = 0;
+		}
 	}
 
 	if(src_sc && src_sc->count > 0) {
@@ -675,6 +679,18 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				damage = -scd->val2;
 			if(scd->val2 <= 0)
 				status_change_end(bl, SC_TUNAPARTY, -1);
+		}
+
+		// 次元の書(魔法盾)
+		if(sc->data[SC_DIMENSION2].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_DIMENSION2];
+			scd->val2 -= damage;
+			if(scd->val2 >= 0)
+				damage = 0;
+			else
+				damage = -scd->val2;
+			if(scd->val2 <= 0)
+				status_change_end(bl, SC_DIMENSION2, -1);
 		}
 
 		// ダーククロー
@@ -2767,14 +2783,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）属性の適用 */
-		if(skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
+		if(skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN && skill_num != SJ_NOVAEXPLOSING) {
 			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 			if(calc_flag.lh)
 				wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
 		}
 
 		/* （RE）属性補正 */
-		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
+		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN && skill_num != SJ_NOVAEXPLOSING) {
 			cardfix = 100;
 			if(sc) {
 				// ボルケーノ
@@ -4525,7 +4541,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( rate, 100 );
 			}
 			break;
-		case SJ_NEWMOONKICK:	/* 朔月脚 */
+		case SJ_NEWMOONKICK:	// 朔月脚
 			DMG_FIX( 1650 + 50 * skill_lv, 100 );
 			break;
 		case SJ_FULLMOONKICK:	// 満月脚
@@ -4547,6 +4563,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					rate += ( rate * sc->data[SC_LIGHTOFSTAR].val2 ) / 100;
 				DMG_FIX( rate, 100 );
 			}
+			break;
+		case SJ_STAREMPEROR:		// 星帝降臨
+			DMG_FIX( 1500 + 500 * skill_lv, 100 );
+			break;
+		case SJ_NOVAEXPLOSING:	// 新星爆発
+			DMG_FIX( 500 + 500 * skill_lv, 100 );
+			DMG_ADD(status_get_max_hp(src) * skill_lv / 5  + status_get_max_sp(src) * skill_lv * 2);
+			break;
+		case SJ_BOOKOFCREATINGSTAR:	// 創星の書
+			DMG_FIX( 500 + 500 * skill_lv, 100 );
 			break;
 		case SU_BITE:	// かみつく
 			if(status_get_hp(target) / status_get_max_hp(target) * 100 <= 70) {
@@ -9628,6 +9654,7 @@ int battle_config_read(const char *cfgName)
 		{ "allow_skill_without_day",            &battle_config.allow_skill_without_day,            0        },
 		{ "save_feel_map",                      &battle_config.save_feel_map,                      1        },
 		{ "save_hate_mob",                      &battle_config.save_hate_mob,                      1        },
+		{ "allow_se_univ_skill_limit",          &battle_config.allow_se_univ_skill_limit,          1        },
 		{ "twilight_party_check",               &battle_config.twilight_party_check,               1        },
 		{ "alchemist_point_type",               &battle_config.alchemist_point_type,               0        },
 		{ "marionette_type",                    &battle_config.marionette_type,                    0        },
