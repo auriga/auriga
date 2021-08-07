@@ -10945,6 +10945,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 		break;
+	case EVT_FULL_THROTTLE:	/* フルスロットル */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		unit_heal(src,status_get_max_hp(src),0);
+		status_change_start(bl,SC_FULL_THROTTLE,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
 	case EL_CIRCLE_OF_FIRE:	/* サークルオブファイア */
 	case EL_FIRE_CLOAK:		/* ファイアークローク */
 	case EL_WATER_SCREEN:	/* ウォータースクリーン */

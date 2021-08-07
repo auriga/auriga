@@ -1246,7 +1246,7 @@
 //5063,0,0,0,0,0,1,0,no,0,0,0,none,0,WE_CALLALLFAMILY,私達が一緒なら
 //5064,0,0,0,0,0,1,0,no,0,0,0,none,0,WE_ONEFOREVER,永遠に続く私達の愛
 //5065,0,0,0,0,0,1,0,no,0,0,0,none,0,WE_CHEERUP,ママ、パパ、頑張って
-//5071,0,0,0,0,0,1,0,no,0,0,0,none,0,EVT_FULL_THROTTLE,フルスロットル
+5071,0,6,4,0,1,1,1,yes,0,1,0,none,0,EVT_FULL_THROTTLE,フルスロットル
 //5075,0,0,0,0,0,5,0,no,0,0,0,none,0,NV_BREAKTHROUGH,ブレイクスルー
 //5076,0,0,0,0,0,1,0,no,0,0,0,none,0,NV_HELPANGEL,天使さま助けて
 //5077,0,0,0,0,0,5,0,no,0,0,0,none,0,NV_TRANSCENDENCE,トランセンデンス

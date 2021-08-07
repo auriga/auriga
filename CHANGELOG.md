@@ -1,4 +1,10 @@
 ----------------------------------------
+//1486 [2021/08/07] by refis
+
+・フルスロットル習得クエスト実装
+（quest_db.txt, skill_*.txt, npc_quest_skillget3.sc, mmo.h, skill.*, status.c）
+
+----------------------------------------
 //1485 [2021/07/20] by refis
 
 ・モンスターデータの更新（mob_db.txt, mob_skill_db.txt, mob_talk_db.txt）
