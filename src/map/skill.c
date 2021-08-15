@@ -8430,6 +8430,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			struct mob_data *tmpmd = NULL;
 			int i,id;
 
+			// レギオンモンスターの削除
+			homun_deletelegion(hd);
+
 			for(i=0; i<qty[skilllv - 1]; i++){
 				id = mob_once_spawn_area(hd->msd, src->m, src->x-2, src->y-2, src->x+2, src->y+2, "--ja--", summons[skilllv - 1], 1, "");
 				if((tmpmd = map_id2md(id)) != NULL) {

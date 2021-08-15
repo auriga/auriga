@@ -103,6 +103,8 @@ int homun_isalive(struct map_session_data *sd);
 void homun_addspiritball(struct homun_data *hd, int max);
 void homun_delspiritball(struct homun_data *hd, int count, int type);
 
+int homun_deletelegion(struct homun_data *hd);
+
 int do_init_homun(void);
 int do_final_homun(void);
 

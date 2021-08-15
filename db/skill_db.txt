@@ -1268,7 +1268,7 @@
 8015,0,0,0,0,1,5,0,no,0,0,0,none,0,HVAN_INSTRUCT,チェンジインストラクション
 8016,0,6,4,0,2,3,0,no,0,0,0,none,0,HVAN_EXPLOSION,バイオエクスプロージョン
 8017,0,0,0,0,0,1,0,no,0,0,0,none,0,MUTATION_BASEJOB,
-8018,9,6,4,0,1,5,1,yes,0,0,0,none,0,MH_SUMMON_LEGION,サモンレギオン
+8018,9,6,1,0,1,5,1,yes,0,0,0,none,0,MH_SUMMON_LEGION,サモンレギオン
 8019,5,6,1,0,0,5,1,yes,0,0,0,weapon,0,MH_NEEDLE_OF_PARALYZE,ニードルオブパラライズ
 8020,5,6,2,5,1,5,1,yes,0,0,1,magic,0,MH_POISON_MIST,ポイズンミスト
 8021,9,6,16,0,1,5,1,yes,0,0,0,none,0,MH_PAIN_KILLER,ペインキラー

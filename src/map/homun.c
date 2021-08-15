@@ -1549,6 +1549,36 @@ void homun_delspiritball(struct homun_data *hd, int count, int type)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static int homun_deletelegion_sub(struct block_list *bl,va_list ap)
+{
+	struct mob_data *md;
+	int id;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, md = (struct mob_data *)bl);
+
+	id = va_arg(ap,int);
+
+	if(md->master_id > 0 && md->master_id == id)
+		unit_remove_map(&md->bl,1,0);
+	return 0;
+}
+
+int homun_deletelegion(struct homun_data *hd)
+{
+	nullpo_retr(0, hd);
+
+	map_foreachinarea(homun_deletelegion_sub, hd->bl.m,
+		0,0,map[hd->bl.m].xs,map[hd->bl.m].ys,
+		BL_MOB,hd->bl.id);
+	return 0;
+}
+
+/*==========================================
  * Ž©‘R‰ñ•œ•¨
  *------------------------------------------
  */

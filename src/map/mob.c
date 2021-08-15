@@ -1862,17 +1862,19 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			if(src_md && src_md->state.special_mob_ai)
 			{
 				struct block_list *mbl = map_id2bl(src_md->master_id);
-				// msdがNULLのときはダメージログに記録しない
-				if(mbl->type == BL_PC) {
-					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id) ));
-					linkdb_replace( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id), INT2PTR(damage2) );
-					id = src_md->master_id;
-				}
-				else if(mbl->type == BL_HOM) {
-					// ホムの場合はIDを負に反転する
-					damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
-					linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
-					id = src->id;
+				// NULLのときはダメージログに記録しない
+				if(mbl) {
+					if(mbl->type == BL_PC) {
+						damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id) ));
+						linkdb_replace( &md->dmglog, INT2PTR(((struct map_session_data *)mbl)->status.char_id), INT2PTR(damage2) );
+						id = src_md->master_id;
+					}
+					else if(mbl->type == BL_HOM) {
+						// ホムの場合はIDを負に反転する
+						damage2 = damage + PTR2INT(linkdb_search( &md->dmglog, INT2PTR(-src->id) ));
+						linkdb_replace( &md->dmglog, INT2PTR(-src->id), INT2PTR(damage2) );
+						id = src->id;
+					}
 				}
 			}
 		} else if(src->type & (BL_HOM | BL_MERC | BL_ELEM)) {
