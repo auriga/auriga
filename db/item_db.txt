@@ -1273,7 +1273,7 @@
 
 2053,Unknown_Item,アビススタッフ,9,,,2400,,,1,1,0,,34,4,165,,1,{},{}
 
-2059,Unknown_Item,イリュージョンサバイバルスタッフ,9,,,1200,100:240,,1,1,134283776,2,34,4,150,23,1,{},{ bonus bInt,3; bonus bDex,3; if(BaseLevel >= 170) '@p = 10; bonus2 bSubSize,Size_Small,20+'@p; bonus2 bSubSize,Size_Medium,20+'@p; bonus2 bSubSize,Size_Big,20+'@p; bonus2 bMagicSubSize,Size_Small,20+'@p; bonus2 bMagicSubSize,Size_Medium,20+'@p; bonus2 bMagicSubSize,Size_Big,20+'@p; if(getequipid(5) == 20847) { '@p = getequiprefinerycnt(4)*3; bonus2 bMagicAddRace,Rct_Boss,10+'@p; bonus2 bMagicAddRace,Rct_NonBoss,10+'@p; for('@i=1;'@i<=4;'@i++) bonus2 bSubEle,'@i,40; bonus bMaxHP,getequiprefinerycnt(5)*1000; } }
+2059,Unknown_Item,イリュージョンサバイバルスタッフ,9,,,1200,100:240,,1,1,134283776,2,34,4,150,23,1,{},{ bonus bInt,3; bonus bDex,3; bonus bMaxHP,2000; if(BaseLevel >= 170) '@p = 10; bonus2 bSubSize,Size_Small,20+'@p; bonus2 bSubSize,Size_Medium,20+'@p; bonus2 bSubSize,Size_Big,20+'@p; bonus2 bMagicSubSize,Size_Small,20+'@p; bonus2 bMagicSubSize,Size_Medium,20+'@p; bonus2 bMagicSubSize,Size_Big,20+'@p; if(getequipid(5) == 20847) { '@p = getequiprefinerycnt(4)*3; bonus2 bMagicAddRace,Rct_Boss,10+'@p; bonus2 bMagicAddRace,Rct_NonBoss,10+'@p; for('@i=1;'@i<=4;'@i++) bonus2 bSubEle,'@i,40; bonus bMaxHP,getequiprefinerycnt(5)*1000; } }
 
 2061,Unknown_Item,スタッフオブミラクル,9,,,2400,,,1,1,512,,34,4,100,,1,{},{}
 2062,Unknown_Item,グラビテーションスタッフ,9,,,2400,,,1,1,512,,34,4,100,,1,{},{}
@@ -5923,7 +5923,7 @@
 
 11616,Unknown_Item,美味しいお肉,3,1000,,10,,,,,,,,,,,,{},{}
 
-11620,Unknown_Item,ベアロピー,3,,,10,,,,,,,,,,,,{},{}
+11620,Unknown_Item,ベアロピー,0,0,,10,,,,,2074075135,2,,,,,,{ itemheal 80,0; },{}
 
 11626,Unknown_Item,復刻メロンパン,3,,,30,,,,,,,,,,,,{},{}
 
@@ -6780,7 +6780,7 @@
 13002,Ginnungagap,ギンヌンガガップ,5,20,,700,148,,1,0,681533167,2,2,4,70,1,1,{},{ bonus2 bAddEff,Eff_Blind,500; bonus2 bAddEff2,Eff_Blind,50; bonus bAtkEle,Ele_Dark; }
 13003,Cowardice_Blade,コワード,5,52000,,700,80,,1,1,537006144,2,2,3,55,1,1,{},{ bonus bDef,5; }
 13004,Cowardice_Blade_,コワード,5,52000,,700,80,,1,2,537006144,2,2,3,55,1,1,{},{ bonus bDef,5; }
-13005,Angelic_Wing_Dagger,天使の羽の短剣,5,20,,600,,,,1,,2,2,,,1,,{},{}
+13005,Angelic_Wing_Dagger,イリュージョンカウンターダガー,5,20,,550,140,,1,1,673144558,2,2,4,150,1,1,{  },{ bonus bCritical,90; if(BaseLevel >= 170) bonus bAddCriticalDamage,10; }
 13006,Khukri,黒麟,5,240000,,600,150:135,,1,0,536870912,2,2,3,65,1,1,{},{ bonus bAtkEle,Ele_Dark; bonus2 bAddEff,Eff_Curse,1000; }
 13007,Jitte,十手,5,20000,,400,70:126,,1,0,536870912,2,2,2,35,1,1,{},{ bonus bBreakWeaponRate,200; }
 13008,Jitte_,十手,5,20000,,400,70:126,,1,1,536870912,2,2,2,35,1,1,{},{ bonus bBreakWeaponRate,200; }
@@ -6940,28 +6940,28 @@
 
 13200,Bullet,バレット,16,1,,1,25,,,,268435456,2,32768,,,,,{},{}
 13201,Surplus_Silver_Bullet,シルバーバレット,16,14,,2,15,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Holy; }
-13202,Surplus_Bloody_Shell,ブラッドバレット,16,30,,2,30,,,,268435456,2,32768,,,,,{},{ bonus2 bAddEff,Eff_Bleed,3; }
+13202,Surplus_Bloody_Shell,ブラッドバレット,16,30,,2,30,,,,268435456,2,32768,,,,,{},{ bonus2 bAddEff,Eff_Bleed,100; }
 13203,Surplus_Incendiary_Grenade,ファイアスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Fire; }
 13204,Surplus_Lightning_Grenade,ウィンドスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Wind; }
-13205,Surplus_Poison_Grenade,ポイズンスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Poison; bonus2 bAddEff,Eff_Poison,3; }
-13206,Surplus_Flash_Grenade,ダークスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Dark; bonus2 bAddEff,Eff_Blind,3; }
+13205,Surplus_Poison_Grenade,ポイズンスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Poison; bonus2 bAddEff,Eff_Poison,500; }
+13206,Surplus_Flash_Grenade,ダークスフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Dark; bonus2 bAddEff,Eff_Blind,500; }
 13207,Surplus_Cryo_Grenade,アイススフィア,16,80,,5,50,,,,268435456,2,32768,,,,,{},{ bonus bAtkEle,Ele_Water; }
-13208,Gongbug,ダンゴムシ,16,0,,5,50,,,,268435456,2,32768,,50,,,{},{}
+13208,Gongbug,ダンゴムシ,16,0,,5,50,,,,268435456,2,32768,,50,,,{},{ bonus2 bAddEff,Eff_Stun,1000; }
 
-13215,Armor_Piercing_Bullet,APバレット,16,14,,2,50,,,,268435456,2,32768,,100,,,{},{}
-13216,Blazing_Bullet,ブレイズバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{}
-13217,Freezing_Bullet,フリージングバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{}
-13218,Lightning_Bullet,エレクトリックバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{}
-13219,Magic_Stone_Bullet,マジカルストーンバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{}
-13220,Purifying_Bullet,サンクタファイドバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{}
-13221,Silver_Bullet,シルバーバレットC,16,5,,2,15,,,,268435456,2,32768,,1,,,{},{}
-13222,Bloody_Shell,ブラッドバレットC,16,10,,1,30,,,,268435456,2,32768,,1,,,{},{}
+13215,Armor_Piercing_Bullet,APバレット,16,15,,2,50,,,,268435456,2,32768,,100,,,{},{}
+13216,Blazing_Bullet,ブレイズバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{ bonus bAtkEle, Ele_Fire; }
+13217,Freezing_Bullet,フリージングバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{ bonus bAtkEle, Ele_Water; }
+13218,Lightning_Bullet,エレクトリックバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{ bonus bAtkEle, Ele_Wind; }
+13219,Magic_Stone_Bullet,マジカルストーンバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{ bonus bAtkEle, Ele_Earth; }
+13220,Purifying_Bullet,サンクタファイドバレット,16,10,,2,40,,,,268435456,2,32768,,100,,,{},{ bonus bAtkEle, Ele_Holy; }
+13221,Silver_Bullet,シルバーバレットC,16,5,,2,15,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle, Ele_Holy; }
+13222,Bloody_Shell,ブラッドバレットC,16,10,,1,30,,,,268435456,2,32768,,1,,,{},{ bonus2 bAddEff,Eff_Bleed,100; }
 
-13228,Flare_Bullet,フレアバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{}
-13229,Lightning_Bullet,ライトニングバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{}
-13230,Ice_Bullet,アイスバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{}
-13231,Poison_Bullet,ポイズンバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{}
-13232,Blinding_Bullet,ブラインドバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{}
+13228,Flare_Bullet,フレアバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle, Ele_Fire; }
+13229,Lightning_Bullet,ライトニングバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle, Ele_Wind; }
+13230,Ice_Bullet,アイスバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle, Ele_Water; }
+13231,Poison_Bullet,ポイズンバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle,Ele_Poison; bonus2 bAddEff,Eff_Poison,500; }
+13232,Blinding_Bullet,ブラインドバレット,16,10,,2,20,,,,268435456,2,32768,,1,,,{},{ bonus bAtkEle,Ele_Dark; bonus2 bAddEff,Eff_Blind,500; }
 
 13250,Shuriken,手裏剣,17,4,,5,10,,,,536870912,2,32768,,,,,{},{}
 13251,Nimbus_Shuriken,雨雲の手裏剣,17,10,,5,30,,,,536870912,2,32768,,20,,,{},{}
@@ -9927,7 +9927,7 @@
 19456,Unknown_Item,鴉天狗の面,4,,,300,,,,1,2074075135,2,512,,80,1287,,{},{}
 
 19460,Unknown_Item,ブラックヴェール,4,,,500,,,,1,2074075135,2,256,,130,1173,1,{},{}
-19461,Unknown_Item,イリュージョン熱血鉢巻き,4,,,100,,,,1,2074075135,2,256,,150,,1,{},{}
+19461,Unknown_Item,イリュージョン熱血鉢巻き,4,20,,100,,3,,1,2074075135,2,256,,150,,1,{  },{ bonus bStr,3; bonus bBaseAtk,50; bonus bAspdAddRate,10; if(BaseLevel >= 170) bonus2 bAddSkillDamageRate,"SR_SKYNETBLOW",5*getequiprefinerycnt(1); if(getequipid(4) == 1846){ '@p = (getskilllv("SR_TIGERCANNON")+ getskilllv("SR_DRAGONCOMBO")+ getskilllv("SR_FALLENEMPIRE")+ getskilllv("SR_SKYNETBLOW"))/6; bonus2 bAddRace,Rct_Boss,10*'@p; bonus2 bAddRace,Rct_NonBoss,10*'@p; bonus bPerfectHitAddRate,5*'@p; bonus2 bIgnoreDefRace,Rct_Boss,10*getequiprefinerycnt(1); } }
 19462,Unknown_Item,くわえたシャムネコ,4,,,300,,,,,2074075135,2,1,,130,,,{},{}
 19463,Unknown_Item,メロンパンハット,4,,,600,,,,,2074075135,2,256,,100,,1,{},{}
 19464,Unknown_Item,[衣装] メロンパンハット,4,,,0,,,,,2074075135,2,256,,1,,,{},{}
@@ -11099,7 +11099,7 @@
 
 20845,Unknown_Item,マラクの皮,4,400000,,600,,15:10,,1,2074075135,2,4,,100,,1,{},{ bonus bStr,5; bonus bLuk,5; bonus2 bSubRace,Rct_Formless,5; bonus2 bMagicSubRace,Rct_Angel,5; bonus2 bSubRace,Rct_Angel,5; bonus2 bMagicSubRace,Rct_Formless,5; bonus2 bSubEle,Ele_Holy,5; bonus2 bSubEle,Ele_Ghost,5; if(getequiprefinerycnt(5)>=7){ bonus bAddCriticalDamage,5; } if(getequiprefinerycnt(5)>=8){ bonus bCritical,(readparam(13)+readparam(18))/20; bonus bAspdAddRate,1; } if(getequiprefinerycnt(5)>=9){ bonus bAddCriticalDamage,5; } }
 20846,Unknown_Item,時空マント,4,20,,400,,38:10,,1,2074075135,2,4,,100,0,1,{},{ bonus2 bSubRace,Rct_Human,5; if(equippeditem(22000 || 22006)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus bBaseAtk,30; } if(equippeditem(22002 || 22010)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus bAspdAddRate,5; } if(equippeditem(22003 || 22007)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus2 bItemHealRate,1,10; bonus2 bAddSkillSubHealRate,"AL_HEAL",10; bonus2 bAddSkillSubHealRate,"AB_CHEAL",10; bonus2 bAddSkillSubHealRate,"AB_HIGHNESSHEAL",10; } if(equippeditem(22001 || 22009)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus bMatk,30; } if(equippeditem(22004 || 22008)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus bAddLongWeaponDamage,5; } if(equippeditem(22005 || 22011)){ bonus2 bSubRace,Rct_Human,5; bonus bMaxHPRate,15; bonus bMdef,10; bonus bAddCriticalDamage,5; } }
-20847,Unknown_Item,イリュージョンサバイバルマント,4,,,550,,10:5,,1,134283776,2,4,,150,,1,{},{ bonus bVit,10; if(BaseLevel>=170) bonus bNoCastCancel,0; }
+20847,Unknown_Item,イリュージョンサバイバルマント,4,20,,550,,10:5,,1,134283776,2,4,,150,,1,{},{ bonus bVit,10; if(BaseLevel>=170) bonus bNoCastCancel,0; }
 
 20852,Unknown_Item,降霊術士の外套,4,20,,1000,,16,,1,2074075135,2,4,,130,,1,{},{ bonus2 bSubEle,Ele_Wind,5*getequiprefinerycnt(5); bonus2 bSubEle,Ele_Fire,5*getequiprefinerycnt(5); if(getequiprefinerycnt(5)>=7){ bonus bCastrate,-5; bonus2 bMagicAddRace,Rct_Boss,5; bonus2 bMagicAddRace,Rct_NonBoss,5; } if(getequiprefinerycnt(5)>=9){ bonus bCastrate,-5; bonus2 bMagicAddRace,Rct_Boss,5; bonus2 bMagicAddRace,Rct_NonBoss,5; } if(getequiprefinerycnt(5)>=9){ bonus bInfiniteEndure,0; } }
 20853,Unknown_Item,ルドの黒い羽,4,20,,600,,6,,1,99072,2,4,,130,,1,{},{ bonus bAspd,1; bonus2 bMagicAddRace,Rct_Boss,3*(getequiprefinerycnt(5)/2); bonus2 bMagicAddRace,Rct_NonBoss,3*(getequiprefinerycnt(5)/2); if(equippeditem(28912)){ bonus2 bSubEle,Ele_Holy,3*getequiprefinerycnt(3); } }
@@ -11365,7 +11365,7 @@
 22223,Unknown_Item,執行者のシューズ,4,,,400,,,,1,2074075135,2,64,,100,,1,{},{}
 22224,Unknown_Item,もこもこお魚シューズ,4,,,100,,,,1,2074075135,2,64,,100,,1,{},{}
 22225,Unknown_Item,裁きの靴,4,,,500,,,,1,2074075135,2,64,,100,,1,{},{}
-22226,Unknown_Item,イリュージョンブーツ,4,,,600,,16,,1,2074075135,2,64,,150,,1,{},{ if(BaseLevel>=170) { bonus bBaseAtk,100; bonus bMatk,100; bonus bMaxHPrate,20; bonus bMaxSPrate,20; } else { bonus bBaseAtk,50; bonus bMatk,50; bonus bMaxHPrate,10; bonus bMaxSPrate,10; } }
+22226,Unknown_Item,イリュージョンブーツ,4,20,,600,,16,,1,2074075135,2,64,,150,,1,{},{ if(BaseLevel>=170) { bonus bBaseAtk,100; bonus bMatk,100; bonus bMaxHPrate,20; bonus bMaxSPrate,20; } else { bonus bBaseAtk,50; bonus bMatk,50; bonus bMaxHPrate,10; bonus bMaxSPrate,10; } }
 22227,Unknown_Item,天秤宮のシューズ,4,,,400,,,,,2074075135,2,64,,1,,1,{},{}
 22228,Unknown_Item,闇御津羽神靴,4,,,300,,,,,2074075135,2,64,,100,,1,{},{}
 22229,Unknown_Item,古びた履き物,4,,,300,,,,,2074075135,2,64,,100,,1,{},{}
@@ -11429,15 +11429,15 @@
 
 22733,Unknown_Item,スペシャルダンジョン入場チケットの箱,2,0,,10,,,,,2074075135,2,,,,,,{},{}
 
-22737,Bloody_Bullet_Case,ブラッドバレットCケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22738,Silver_Bullet_Case,シルバーバレットCケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
+22737,Bloody_Bullet_Case,ブラッドバレットCケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13222,500; },{}
+22738,Silver_Bullet_Case,シルバーバレットCケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13221,500; },{}
 
-22744,Ammo_AP_Bullet_Case,APバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22745,Ammo_Blazing_Bullet_Case,ブレイズバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22746,Ammo_Freezing_Bullet_Case,フリージングバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22747,Ammo_Lightning_Bullet_Case,エレクトリックバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22748,Ammo_Magic_Stone_Bullet_Case,マジカルストーンバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-22749,Ammo_Purifying_Bullet_Case,サンクタファイドバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
+22744,Ammo_AP_Bullet_Case,APバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13215,500; },{}
+22745,Ammo_Blazing_Bullet_Case,ブレイズバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13216,500; },{}
+22746,Ammo_Freezing_Bullet_Case,フリージングバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13217,500; },{}
+22747,Ammo_Lightning_Bullet_Case,エレクトリックバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13218,500; },{}
+22748,Ammo_Magic_Stone_Bullet_Case,マジカルストーンバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13219,500; },{}
+22749,Ammo_Purifying_Bullet_Case,サンクタファイドバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13220,500; },{}
 
 22778,Unknown_Item,金タマゴ,2,0,,10,,,,,2074075135,2,,,,,,{},{}
 22779,Unknown_Item,銀タマゴ,2,0,,10,,,,,2074075135,2,,,,,,{},{}
@@ -11488,19 +11488,19 @@
 
 23044,Unknown_Item,エルヴィラキャンディ,2,20,,10,,,,,2074075135,2,,,,,,{ sc_end 485; sc_end 378; sc_end 379; },{}
 
-23059,Unknown_Item,フェイスペイントボックス,2,20,,150,,,,,2074075135,2,,,,,,{},{}
-23060,Unknown_Item,サーフェイスペイントボックス,2,20,,150,,,,,2074075135,2,,,,,,{},{}
-23061,Unknown_Item,鋭い矢筒,2,20,,250,,,,,2074075135,2,,,,,,{},{}
+23059,Unknown_Item,フェイスペイントボックス,2,20,,150,,,,,2074075135,2,,,,,,{ getitem 6120,500; },{}
+23060,Unknown_Item,サーフェイスペイントボックス,2,20,,150,,,,,2074075135,2,,,,,,{ getitem 6123,500; },{}
+23061,Unknown_Item,鋭い矢筒,2,20,,250,,,,,2074075135,2,,,,,,{ getitem 1764,500; },{}
 
 23063,Unknown_Item,凍りついた夢,2,0,,0,,,,,2074075135,2,,,,,,{},{}
 
 23087,Unknown_Item,小さなレザーバッグ,2,0,,,,,,,2074075135,2,,,1,,,{},{}
 
-23123,Flare_Bullet_Case,フレアバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-23124,Lightning_Bullet_Case,ライトニングバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-23125,Ice_Bullet_Case,アイスバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-23126,Poison_Bullet_Case,ポイズンバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
-23127,Blinding_Bullet_Case,ブラインドバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{},{}
+23123,Flare_Bullet_Case,フレアバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13228,500; },{}
+23124,Lightning_Bullet_Case,ライトニングバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13229,500; },{}
+23125,Ice_Bullet_Case,アイスバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13230,500; },{}
+23126,Poison_Bullet_Case,ポイズンバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13231,500; },{}
+23127,Blinding_Bullet_Case,ブラインドバレットケース,2,2,,250,,,,,2074075135,2,,,,,,{ getitem 13232,500; },{}
 
 23138,Unknown_Item,豊穣の玉,2,20,,1,,,,,2074075135,2,,,,,,{},{}
 23139,Unknown_Item,劈風の玉,2,20,,1,,,,,2074075135,2,,,,,,{},{}
@@ -11837,10 +11837,10 @@
 25582,Unknown_Item,ハロウィンチケット,3,,,0,,,,,,,,,,,,{},{}
 25583,Unknown_Item,歩羅七の目撃情報,3,,,0,,,,,,,,,,,,{},{}
 
-25615,Unknown_Item,ネジリアンのソウルストーン,3,,,10,,,,,,,,,,,,{},{}
-25616,Unknown_Item,緑色のベアロピー,3,,,10,,,,,,,,,,,,{},{}
-25617,Unknown_Item,最高級チョンチョン人形,3,,,10,,,,,,,,,,,,{},{}
-25618,Unknown_Item,ゴシック風の陶磁器人形,3,,,10,,,,,,,,,,,,{},{}
+25615,Unknown_Item,ネジリアンのソウルストーン,3,0,,10,,,,,,,,,,,,{},{}
+25616,Unknown_Item,緑色のベアロピー,3,1500,,10,,,,,,,,,,,,{},{}
+25617,Unknown_Item,最高級チョンチョン人形,3,1500,,10,,,,,,,,,,,,{},{}
+25618,Unknown_Item,ゴシック風の陶磁器人形,3,1200,,10,,,,,,,,,,,,{},{}
 25619,Unknown_Item,粘土人形,3,,,10,,,,,,,,,,,,{},{}
 
 25623,Unknown_Item,ドラムソウル,3,,,0,,,,,,,,,,,,{},{}
@@ -12449,10 +12449,10 @@
 28250,Unknown_Item,アビスガトリングガン,15,,,2500,,,9,1,0,,34,4,165,,1,{},{}
 28251,Unknown_Item,アビスショットガン,15,,,3000,,,9,1,0,,34,4,165,,1,{},{}
 28252,Unknown_Item,アビスグレネードガン,15,,,1400,,,9,1,0,,34,4,165,,1,{},{}
-28253,Unknown_Item,HR-S55-OS,15,,,850,,,9,,268435456,,34,4,150,18,1,{},{ bonus2 bAddEle,Ele_All,60; bonus2 bAddSkillCastTime,"RL_MASS_SPIRAL",-2000; bonus2 bAddSkillDamageRate,"RL_HAMMER_OF_GOD",readparam(bInt)/10*7; if(readparam(bInt)>=110){ bonus2 bAddSkillDamageRate,"RL_HAMMER_OF_GOD",30; } if(getequiprefinerycnt(4)>=7){ bonus2 bAddEle,Ele_All,25; } if(getequiprefinerycnt(4)>=9){ bonus2 bAddEle,Ele_All,25; } if(getequiprefinerycnt(4)>=10){ bonus2 bIgnoreDefRace,Rct_NonBoss,30; bonus2 bIgnoreDefRace,Rct_Boss,30; } }
-28254,Unknown_Item,イリュージョンブッチャー,15,,,2500,,,9,1,0,,34,4,150,,1,{},{}
+28253,Unknown_Item,HR-S55-OS,15,,,850,,,9,,268435456,2,34,4,150,18,1,{},{ bonus2 bAddEle,Ele_All,60; bonus2 bAddSkillCastTime,"RL_MASS_SPIRAL",-2000; bonus2 bAddSkillDamageRate,"RL_HAMMER_OF_GOD",readparam(bInt)/10*7; if(readparam(bInt)>=110){ bonus2 bAddSkillDamageRate,"RL_HAMMER_OF_GOD",30; } if(getequiprefinerycnt(4)>=7){ bonus2 bAddEle,Ele_All,25; } if(getequiprefinerycnt(4)>=9){ bonus2 bAddEle,Ele_All,25; } if(getequiprefinerycnt(4)>=10){ bonus2 bIgnoreDefRace,Rct_NonBoss,30; bonus2 bIgnoreDefRace,Rct_Boss,30; } }
+28254,Unknown_Item,イリュージョンブッチャー,15,20,,2500,,,9,1,268435456,2,34,4,150,,1,{},{}
 
-28259,Unknown_Item,イリュージョンゲートキーパーDD,15,,,1300,,,9,1,0,,34,4,150,,1,{},{}
+28259,Unknown_Item,イリュージョンゲートキーパーDD,15,20,,1300,,,9,1,268435456,2,34,4,150,,1,{},{ bonus bDex,5; bonus bSplashRange,1; bonus2 bSubRace,Rct_Formless,30; bonus2 bMagicSubRace,Rct_Formless,30; bonus2 bAddSkillDamageRate,"RL_SLUGSHOT",readparam(bStr)/10*7; if(readparam(bStr) >= 110) bonus2 bAddSkillDamageRate,"RL_SLUGSHOT",30; set '@refine,getequiprefinerycnt(); bonus bDef,'@refine*50; if('@refine >= 7){ bonus2 bIgnoreDefRace,Rct_Boss,50; bonus2 bIgnoreDefRace,Rct_NonBoss,50; } if('@refine >= 9){ bonus2 bIgnoreDefRace,Rct_Boss,50; bonus2 bIgnoreDefRace,Rct_NonBoss,50; } if(BaseLevel >= 170){ bonus4 bAutoSpell,2557,3,100+'@refine*5,EAS_ATTACK|EAS_WEAPON|EAS_USEBETTER; } }
 
 28300,Unknown_Item,忍の小刀弥,4,20000,,600,,3:1,,,536870912,2,136,,75,,,{},{ bonus bVit,1; bonus bLuk,1; if(equippeditem(2654)||equippeditem(28350)){ bonus2 bAddSpCost,"NJ_KIRIKAGE",-3; bonus2 bAddSkillDamageRate,"NJ_KIRIKAGE",50; bonus bMaxSP,100; } if(equippeditem(2337)||equippeditem(2359)){ bonus2 bAddSpCost,"NJ_KIRIKAGE",-3; bonus bMaxHP,300; } }
 28301,Unknown_Item,風魔の宝珠,4,20000,,600,,3:1,,,536870912,2,136,,75,,,{},{ bonus bInt,1; bonus bDex,1; if(equippeditem(2654)||equippeditem(28350)){ bonus bMaxSP,100; bonus2 bAddSkillDamageRate,"NJ_HUUMA",30; bonus2 bAddSpCost,"NJ_HUUMA",-5; } if(equippeditem(2337)||equippeditem(2359)){ bonus2 bAddSpCost,"NJ_HUUMA",-5; bonus bMaxHP,300; } }

@@ -224,6 +224,15 @@ ecl_tdun04.gat	mapflag	noteleport	dummy
 ecl_tdun04.gat	mapflag	noicewall	dummy
 eclage.gat	mapflag	town	dummy
 eclage.gat	mapflag	nopenalty	dummy
+ein_d02_i.gat	mapflag	nomemo	dummy
+ein_d02_i.gat	mapflag	nopenalty	dummy
+ein_d02_i_q.gat	mapflag	nomemo	dummy
+ein_d02_i_q.gat	mapflag	noteleport	dummy
+ein_d02_i_q.gat	mapflag	nosave		SavePoint
+ein_d02_i_q.gat	mapflag	nobranch	dummy
+ein_d02_i_q.gat	mapflag	nopenalty	dummy
+ein_d02_i_q.gat	mapflag	noicewall	dummy
+ein_d02_i_q.gat	mapflag	noskill		dummy
 ein_dun01.gat	mapflag	nomemo	dummy
 ein_dun02.gat	mapflag	nomemo	dummy
 ein_in01.gat	mapflag	nomemo	dummy

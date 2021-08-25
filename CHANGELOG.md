@@ -1,4 +1,17 @@
 ----------------------------------------
+//1491 [2021/08/26] by refis
+
+・ネジリアン帝国の陰謀クエスト実装（npc_quest_illusionteddybear.sc, quest_db.txt）
+
+・ネジリアン帝国追加マップのmapflag更新 (mapflag.sc)
+
+・ネジリアン帝国追加マップのmonster出現定義追加（npc_monster_eindun.sc）
+
+・アイテム、モンスターデータを更新（item_db.txt, mob_db.txt, mob_skill_db.txt）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1490 [2021/08/15] by refis
 
 ・ロックリッジメインクエストの報酬間違いを修正（npc_town_rockridge.sc）
