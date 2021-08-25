@@ -100,7 +100,10 @@ dali.gat,130,107,5	script	’TŒŸ‰ÆƒŒ[ƒ“#sara	945,{
 		mes "[’TŒŸ‰ÆƒŒ[ƒ“]";
 		mes "‰½‚©”­Œ©‚ª‚ ‚é‚©‚à‚µ‚ê‚È‚¢B";
 		mes "‹A‚Á‚½‚ç„‚É˜b‚ğ•·‚©‚¹‚Ä‚­‚êI";
-		if(!(checkquest(15002) & 0x2) || !(checkquest(118900) & 0x2)) {
+		if(
+			(checkquest(118900) && (!(checkquest(15002) & 0x2) || !(checkquest(118900) & 0x2)) ) ||
+			(!checkquest(118900) && checkquest(15002) && !(checkquest(15002) & 0x2) )
+		) {
 			next;
 			mes "[’TŒŸ‰ÆƒŒ[ƒ“]";
 			mes "ŸŒ³‚Ì‹·ŠÔ‚Ì’TŒŸ‚É¸”s‚µ‚½‚Ì‚©H";
@@ -214,7 +217,10 @@ dali.gat,130,107,5	script	’TŒŸ‰ÆƒŒ[ƒ“#sara	945,{
 		close;
 	default:
 		if(checkquest(15002)) {
-			if(!(checkquest(15002) & 0x2) || !(checkquest(118900) & 0x2)) {
+			if(
+				(checkquest(118900) && (!(checkquest(15002) & 0x2) || !(checkquest(118900) & 0x2)) ) ||
+				(!checkquest(118900) && !(checkquest(15002) & 0x2) )
+			) {
 				mes "[’TŒŸ‰ÆƒŒ[ƒ“]";
 				mes "ŸŒ³‚Ì‹·ŠÔ‚Ì’TŒŸ‚É¸”s‚µ‚½‚Ì‚©H";
 				mes "˜c‚ñ‚¾ŸŒ³‚ªŒ³‚É–ß‚é‚Ü‚Å‚Í";
