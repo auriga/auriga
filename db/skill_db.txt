@@ -1204,14 +1204,14 @@
 5015,1,6,1,0,0,5,1,no,0,0,0,misc,0,NC_MAGMA_ERUPTION_DOTDAMAGE,マグマイラプション(追撃)
 
 5018,0,0,0,0,0,1,0,no,0,0,0,none,0,SU_BASIC_SKILL,ドラム基本スキル
-5019,2,6,1,0,0,1,1,yes,0,0,0,weapon,0,SU_BITE,かみつく
+5019,3,6,1,0,0,1,1,yes,0,0,0,weapon,0,SU_BITE,かみつく
 5020,0,6,4,0,1,1,1,yes,0,0,0,none,0,SU_HIDE,かくれる
-5021,2,6,1,0,0,3,1,yes,0,0,0,weapon,0,SU_SCRATCH,ひっかく
+5021,3,6,1,0,0,3,1,yes,0,0,0,weapon,0,SU_SCRATCH,ひっかく
 5022,0,6,4,0,1,1,1,yes,0,0,0,none,0,SU_STOOP,うずくまる
 5023,6:10:14,6,2,0,1,3,1,yes,0,0,0,none,0,SU_LOPE,ニャンジャンプ
 5024,0,0,0,0,0,1,0,no,0,0,0,none,0,SU_SPRITEMABLE,にゃん魂
 5025,0,0,0,0,0,1,0,no,0,0,0,none,0,SU_POWEROFLAND,大地の力
-5026,9,6,1,0,0,5,1,yes,0,0,0,magic,0,SU_SV_STEMSPEAR,マタタビランス
+5026,13,6,1,0,0,5,1,yes,0,0,0,magic,0,SU_SV_STEMSPEAR,マタタビランス
 5027,9,6,1,0,1,5,1,yes,0,0,1,none,0,SU_CN_POWDERING,イヌハッカシャワー
 5028,9,8,2,0,0,5,5,yes,0,0,0,magic,0,SU_CN_METEOR,イヌハッカメテオ
 5029,9,6,1,0,1,5,1,yes,0,0,0,none,0,SU_SV_ROOTTWIST,マタタビの根っこ
@@ -1223,15 +1223,15 @@
 5035,9,6,16,0,1,5,1,yes,0,0,0,magic,0,SU_ARCLOUSEDASH,アクラウスダッシュ
 5036,9,8,1,0,1,5,3,yes,0,0,0,weapon,0,SU_LUNATICCARROTBEAT,キャロットビート
 5037,0,0,0,0,0,1,0,no,0,0,0,none,0,SU_POWEROFSEA,海の力
-5038,9,6,16,0,1,5,1,yes,0,0,0,magic,0,SU_TUNABELLY,大トロ
+5038,11,6,16,0,1,5,1,yes,0,0,0,magic,0,SU_TUNABELLY,大トロ
 5039,9,6,16,0,1,5,1,yes,0,0,0,magic,0,SU_TUNAPARTY,マグロシールド
 5040,0,6,4,0,1,5,1,yes,0,0,0,magic,0,SU_BUNCHOFSHRIMP,エビ三昧
 5041,9,6,16,0,1,5,1,yes,0,0,0,magic,0,SU_FRESHSHRIMP,新鮮なエビ
 5042,9,8,1,0,0,5,5,no,0,0,0,magic,0,SU_CN_METEOR2,イヌハッカメテオ(呪い)
 5043,9,8,1,0,0,5,3,no,0,0,0,weapon,0,SU_LUNATICCARROTBEAT2,キャロットビート(スタン)
-5044,14,0,0,0,0,1,0,no,0,0,0,none,0,SU_SOULATTACK,ソウルアタック
+5044,13,0,0,0,0,1,0,no,0,0,0,none,0,SU_SOULATTACK,ソウルアタック
 5045,0,6,4,0,1,5,0,yes,0,0,0,magic,0,SU_POWEROFFLOCK,群れの力
-5046,14,6,1,0,0,5,1,yes,0,0,0,weapon,0,SU_SVG_SPIRIT,サベージの魂
+5046,13,6,1,0,0,5,1,yes,0,0,0,weapon,0,SU_SVG_SPIRIT,サベージの魂
 5047,0,6,4,0,1,5,1,yes,0,0,0,magic,0,SU_HISS,警戒
 5048,9,6,2,0,1,5,1,yes,0,0,1,none,0,SU_NYANGGRASS,ニャングラス
 5049,0,6,4,0,1,5,1,yes,0,0,0,magic,0,SU_GROOMING,グルーミング
