@@ -2906,11 +2906,11 @@
 4866,Unknown_Item,ívñΩ4,6,,,,,,,,,,65535,,,,,{},{ bonus bAddCriticalDamage,10; bonus bCritical,4; }
 4867,MHP3,MaxHP3,6,,,,,,,,,,65535,,,,,{},{ bonus bMaxHPrate,3; }
 4868,MHP4,MaxHP4,6,,,,,,,,,,65535,,,,,{},{ bonus bMaxHPrate,4; }
-4869,Delayafterattack1lv,çUåÇë¨ìx1,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,4; }
+4869,Delayafterattack1lv,çUåÇë¨ìx1,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdAddRate,4; }
 4870,SP25,SP + 25,6,,,,,,,,,,65535,,,,,{},{ bonus bMaxSP,25; }
 4871,SP75,SP + 75,6,,,,,,,,,,65535,,,,,{},{ bonus bMaxSP,75; }
-4872,Delayafterattack2lv,çUåÇë¨ìx2,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,6; }
-4873,Delayafterattack3lv,çUåÇë¨ìx3,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,8; }
+4872,Delayafterattack2lv,çUåÇë¨ìx2,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdAddRate,6; }
+4873,Delayafterattack3lv,çUåÇë¨ìx3,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdAddRate,8; }
 4874,Unknown_Item,ètÇÃóŒíåêŒ,6,,,,,,,,,,65535,,,,,{},{}
 4875,Bears_Power,åFÇÃóÕ,6,,,,,,,,,,65535,,,,,{},{ bonus3 bRevAutoActiveWeapon,4875,200,5000; }
 4876,Runaway_Magic,ñ\ëñÇµÇΩñÇóÕ,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4876,150,10000,EAS_MAGIC; }
@@ -2918,7 +2918,7 @@
 4878,Muscle_Fool,ç|äZ,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4878,50,5000,EAS_REVENGE; }
 4879,Hawkeye,ëÂòhÇÃä·åı,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4879,300,5000,EAS_WEAPON; }
 4880,Lucky_Day,çKâ^Ç»ì˙,6,,,,,,,,,,65535,,,,,{},{ bonus4 bAutoActiveItem,4880,100,5000,EAS_WEAPON|EAS_MAGIC|EAS_REVENGE; }
-4881,Attack_Delay_4,çUåÇë¨ìx4,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdRate,10; }
+4881,Attack_Delay_4,çUåÇë¨ìx4,6,,,,,,,,,,65535,,,,,{},{ bonus bAspdAddRate,10; }
 4882,ATK1,Atk + 1%,6,,,0,,,,,,,65535,,,,,{},{ bonus2 bAddRace,Rct_Boss,1; bonus2 bAddRace,Rct_NonBoss,1; }
 4883,MATK1,Matk + 1%,6,,,0,,,,,,,65535,,,,,{},{ bonus bMatkRate,1; }
 4884,HIT1,Hit + 1,6,,,0,,,,,,,65535,,,,,{},{ bonus bHit,1; }

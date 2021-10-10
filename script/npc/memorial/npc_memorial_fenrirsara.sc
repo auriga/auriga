@@ -330,13 +330,31 @@ dali02.gat,93,146,6	script	助手#a1	851,{
 				mes "そうですか。";
 				close;
 			}
+			if(getequipid(2) != 15121) {
+				mes "[助手]";
+				mes "おや？";
+				mes "サラのローブを装備されていませんね。";
+				mes "覚醒させる場合には";
+				mes "サラのローブを装備してから";
+				mes "話しかけてくださいね。";
+				close;
+			}
+			set '@refine,getequiprefinerycnt(2);
+			if('@refine < 9) {
+				mes "[助手]";
+				mes "おや？";
+				mes "サラのローブの精錬値が";
+				mes "不足しているようですね。";
+				mes "サラのローブを覚醒させるには";
+				mes "精錬値が+9以上必要です。";
+				close;
+			}
+			delequip 2;
+			getitem 15157,1;
 			// 未調査
 			mes "[助手]";
-			mes "おや？";
-			mes "サラのローブを装備されていませんね。";
-			mes "覚醒させる場合には";
-			mes "サラのローブを装備してから";
-			mes "話しかけてくださいね。";
+			mes "覚醒は終了しました。";
+			mes "どうぞ、お受け取り下さい。";
 			close;
 		case 2:
 			mes "[助手]";
@@ -358,14 +376,36 @@ dali02.gat,93,146,6	script	助手#a1	851,{
 				mes "そうですか。";
 				close;
 			}
-			// 未調査
+			if(getequipid(2) != 15157) {
+				mes "[助手]";
+				mes "おや？";
+				mes "覚醒ローブを";
+				mes "装備されていませんね。";
+				mes "エンチャントをする場合には";
+				mes "覚醒ローブを装備してから";
+				mes "話しかけてくださいね。";
+				close;
+			}
+			set '@refine,getequiprefinerycnt(2);
+			if('@refine < 9) {
+				mes "[助手]";
+				mes "おや？";
+				mes "覚醒ローブの精錬値が";
+				mes "不足しているようですね。";
+				mes "覚醒ローブに";
+				mes "エンチャントを行なうには";
+				mes "精錬値が9以上必要です。";
+				close;
+			}
+			set '@card[0],getequipcardid(2,0);
+			set '@card[1],getequipcardid(2,1);
+			set '@card[2],getequipcardid(2,2);
+			set '@card[3],4876;		// 暴走した魔力
+			delequip 2;
+			getitem2 15157,1,1,'@refine,0,'@card[0],'@card[1],'@card[2],'@card[3];
 			mes "[助手]";
-			mes "おや？";
-			mes "覚醒ローブを";
-			mes "装備されていませんね。";
-			mes "エンチャントをする場合には";
-			mes "覚醒ローブを装備してから";
-			mes "話しかけてくださいね。";
+			mes "エンチャントは終了しました。";
+			mes "どうぞ、お受け取り下さい。";
 			close;
 		case 3:
 			mes "[助手]";
@@ -576,6 +616,8 @@ dali02.gat,93,146,6	script	助手#a1	851,{
 			mes "荷物を減らしてください。";
 			close;
 		}
+		setarray '@bonus3, 4945, 4946, 4762, 4942, 4949, 4767, 4806, 4869, 4815, 4832; break;
+		setarray '@bonus4, 4946, 4947, 4943, 4944, 4949, 4950, 4815, 4814, 4832, 4833; break;
 		misceffect 182,"";
 		misceffect 205,"";
 		misceffect 102,"";
