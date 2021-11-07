@@ -858,8 +858,8 @@
 2052,11,6,16,0,1,5,1,yes,0,512,0,magic,0,AB_CLEARANCE,クリアランス
 2053,11,6,16,0,1,5,1,yes,0,0,0,none,0,AB_EXPIATIO,エクスピアティオ
 2054,0,6,4,0,1,10,1,yes,0,0,0,none,0,AB_DUPLELIGHT,デュプレライト
-2055,11,6,1,0,0,10,1,yes,0,0,0,weapon,0,AB_DUPLELIGHT_MELEE,デュプレライト(物理)
-2056,11,6,1,0,0,10,1,yes,0,0,0,magic,0,AB_DUPLELIGHT_MAGIC,デュプレライト(魔法)
+2055,11,6,1,0,0,10,1,yes,0,0,0,weapon,0,AB_DUPLELIGHT_MELEE,グレイアムライト
+2056,11,6,1,0,0,10,1,yes,0,0,0,magic,0,AB_DUPLELIGHT_MAGIC,ミリアムライト
 2057,0,6,4,0,5,5,1,yes,0,0,0,none,0,AB_SILENTIUM,シレンティウム
 
 2201,11,6,16,8,1,5,1,yes,0,0,0,magic,0,WL_WHITEIMPRISON,ホワイトインプリズン

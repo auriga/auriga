@@ -2591,12 +2591,12 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					battle_skill_attack(BF_WEAPON,src,src,target,NC_AXEBOOMERANG,1,tick,skl->flag);
 				}
 				break;
-			case AB_DUPLELIGHT_MELEE:		/* デュプレライト(物理) */
+			case AB_DUPLELIGHT_MELEE:		/* グレイアムライト */
 			case WM_REVERBERATION_MELEE:	/* 振動残響(物理) */
 			case NPC_REVERBERATION_ATK:		/* M振動残響(攻撃) */
 				battle_skill_attack(BF_WEAPON,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
-			case AB_DUPLELIGHT_MAGIC:		/* デュプレライト(魔法) */
+			case AB_DUPLELIGHT_MAGIC:		/* ミリアムライト */
 				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
 			case WL_CHAINLIGHTNING_ATK:		/* チェーンライトニング(連鎖) */
@@ -3269,7 +3269,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RK_SONICWAVE:			/* ソニックウェーブ */
 	case RK_DRAGONBREATH:	/* ファイアードラゴンブレス */
 	case RK_DRAGONBREATH_WATER:	/* ウォータードラゴンブレス */
-	case AB_DUPLELIGHT_MELEE:	/* デュプレライト(物理) */
+	case AB_DUPLELIGHT_MELEE:	/* グレイアムライト */
 	case RA_WUGBITE:		/* ウォーグバイト */
 	case NC_BOOSTKNUCKLE:	/* ブーストナックル */
 	case NC_PILEBUNKER:		/* パイルバンカー */
@@ -3995,7 +3995,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_HUUJIN:				/* 風刃 */
 	case AB_HIGHNESSHEAL:		/* ハイネスヒール */
 	case AB_ADORAMUS:			/* アドラムス */
-	case AB_DUPLELIGHT_MAGIC:	/* デュプレライト(魔法) */
+	case AB_DUPLELIGHT_MAGIC:	/* ミリアムライト */
 	case LG_RAYOFGENESIS:		/* レイオブジェネシス */
 	case WM_METALICSOUND:		/* メタリックサウンド */
 	case EL_FIRE_ARROW:			/* ファイアーアロー */
@@ -20690,8 +20690,8 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
 
 	// サブスキルの場合はメインに置き換え
 	switch(skillid) {
-		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
-		case AB_DUPLELIGHT_MAGIC:	// デュプレライト(魔法)
+		case AB_DUPLELIGHT_MELEE:	// グレイアムライト
+		case AB_DUPLELIGHT_MAGIC:	// ミリアムライト
 			skillid = AB_DUPLELIGHT;
 			break;
 		case WL_CHAINLIGHTNING_ATK:	// チェーンライトニング(連鎖)
