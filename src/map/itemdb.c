@@ -604,7 +604,8 @@ static int itemdb_read_itemdb(void)
 			id->zone             = 0;
 
 			// È—ª‚·‚éê‡‚É”õ‚¦‚Ä‚±‚±‚Å‰Šú‰»‚µ‚Ä‚¨‚­
-			id->unequip_script   = NULL;
+			if(!id->unequip_script)
+				id->unequip_script = NULL;
 
 			// force \0 terminal
 			id->name[47]  = '\0';

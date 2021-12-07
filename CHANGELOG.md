@@ -1,4 +1,16 @@
 ----------------------------------------
+//1496 [2021/12/07] by refis
+
+・覚醒ローブが複数回エンチャントできる箇所の修正（npc_memorial_fenrirsara.sc）
+	Thanks Dallen さん
+
+・管理コマンド[reloaditemdb]でメモリリークが発生していたのを修正（skill_db*.txt, battle.c, skill.c）
+	Thanks Dallen さん
+
+・メモリアルダンジョン生成破棄時にセル情報をリセットする（map.c）
+	Thanks Dallen さん
+
+----------------------------------------
 //1495 [2021/11/07] by refis
 
 ・モンスタートーク修正（mob_talk_db.txt）

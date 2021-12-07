@@ -1715,6 +1715,10 @@ int map_addmdmap(const char *name, int id)
 	map[dst_m].memorial_id = id;
 	map[dst_m].users = 0;
 
+	map[dst_m].gat = (unsigned char *)aCalloc(map[dst_m].xs * map[dst_m].ys,sizeof(unsigned char));
+	size = map[dst_m].xs * map[dst_m].ys * sizeof(unsigned char);
+	memcpy(map[dst_m].gat, map[src_m].gat, size);
+
 	memset(map[dst_m].npc, 0, sizeof(map[dst_m].npc));
 	map[dst_m].npc_num = 0;
 	map[dst_m].mvpboss = NULL;
@@ -1803,6 +1807,10 @@ int map_delmdmap(int m)
 	map_foreachinarea(map_mdmap_clean, m, 0, 0, map[m].xs, map[m].ys, BL_ALL);
 
 	// ƒ}ƒbƒvî•ñ‰Šú‰»
+	if(map[m].gat) {
+		aFree(map[m].gat);
+		map[m].gat = NULL;
+	}
 	if(map[m].block)
 		aFree(map[m].block);
 	if(map[m].block_mob)

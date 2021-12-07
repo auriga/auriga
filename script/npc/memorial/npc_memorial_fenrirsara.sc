@@ -386,6 +386,14 @@ dali02.gat,93,146,6	script	助手#a1	851,{
 				mes "話しかけてくださいね。";
 				close;
 			}
+			// エンチャント済み(仮)
+			if(getequipcardid(2,3) == 4876) {
+				mes "[助手]";
+				mes "おや？";
+				mes "その覚醒ローブは";
+				mes "すでにエンチャントされています。";
+				close;
+			}
 			set '@refine,getequiprefinerycnt(2);
 			if('@refine < 9) {
 				mes "[助手]";
