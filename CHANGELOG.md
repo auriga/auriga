@@ -1,4 +1,10 @@
 ----------------------------------------
+//1498 [2021/12/19] by refis
+
+・座る/立つ時に動作するスキルの判定式を修正（skill.c）
+	Thanks Dallen さん
+
+----------------------------------------
 //1497 [2021/12/07] by refis
 
 ・古のグラストヘイムで会話中にスタックする箇所を修正（npc_memorial_glastheim.sc）
@@ -9,7 +15,7 @@
 ・覚醒ローブが複数回エンチャントできる箇所の修正（npc_memorial_fenrirsara.sc）
 	Thanks Dallen さん
 
-・管理コマンド[reloaditemdb]でメモリリークが発生していたのを修正（skill_db*.txt, battle.c, skill.c）
+・管理コマンド[reloaditemdb]でメモリリークが発生していたのを修正（itemdb.c）
 	Thanks Dallen さん
 
 ・メモリアルダンジョン生成破棄時にセル情報をリセットする（map.c）
