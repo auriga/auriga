@@ -27212,23 +27212,23 @@ static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
 	const int menu = RFIFOB(fd,GETPACKETPOS(cmd,0));
 	switch (menu) {
 	case 1:		// dragon
-		if (pc_isridingdragon(sd))
+		if (pc_isdragon(sd))
 			pc_setoption(sd, sd->sc.option &~ OPTION_DRAGON);
 		break;
 	case 3:		// madogear
-		if (pc_ismadogear(sd))
+		if (pc_isgear(sd))
 			pc_setoption(sd, sd->sc.option &~ OPTION_MADOGEAR);
 		break;
 	case 4:		// peco
-		if (pc_isridingpeco(sd))
-			pc_setoption(sd, sd->sc.option &~ OPTION_RIDING);
+		if (pc_isriding(sd))
+			pc_setoption(sd, sd->sc.option &~ OPTION_PECO);
 		break;
 	case 5:		// falcon
 		if (pc_isfalcon(sd))
 			pc_setoption(sd, sd->sc.option &~ OPTION_FALCON);
 		break;
 	case 6:		// cart
-		if (sd->sc.data[SC_PUSH_CART])
+		if (sd->sc.data[SC_ON_PUSH_CART].timer != -1)
 			pc_setcart(sd, 0);
 		break;
 	default:	// unused

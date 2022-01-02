@@ -6,6 +6,7 @@ CC = gcc -pipe
 GCC_MAJOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
 GCC_MINOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f2)
 
+# 2020-02-05aRagexeRE: 20200205
 # 2019-05-30aRagexeRE: 20190530
 # 2018-04-18bRagexeRE: 20180418
 # 2017-08-30bRagexeRE: 20170830
