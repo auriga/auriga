@@ -412,7 +412,15 @@ enum {
 	PC_CLASS_SL_B,			// 養子ソウルリンカー
 	PC_CLASS_GS_B,			// 養子ガンスリンガー
 	PC_CLASS_RL_B,			// 養子リベリオン
-	PC_CLASS_SG2_B = 4238,	// 養子拳聖(融合)
+	PC_CLASS_NJ2_B,			// 養子忍者(騎乗)
+	PC_CLASS_KG2_B,			// 養子影狼(騎乗)
+	PC_CLASS_OB2_B,			// 養子朧(騎乗)
+	PC_CLASS_TK2_B,			// 養子テコンキッド(騎乗)
+	PC_CLASS_SG2_B,			// 養子拳聖(騎乗)
+	PC_CLASS_SL2_B,			// 養子ソウルリンカー(騎乗)
+	PC_CLASS_GS2_B,			// 養子ガンスリンガー(騎乗)
+	PC_CLASS_RL2_B,			// 養子リベリオン(騎乗)
+	PC_CLASS_SG3_B,			// 養子拳聖(融合)
 	PC_CLASS_SE,			// 星帝
 	PC_CLASS_RE,			// ソウルリーパー
 	PC_CLASS_SE_B,			// 養子星帝
@@ -423,7 +431,7 @@ enum {
 	PC_CLASS_RE2,			// ソウルリーパー(騎乗)
 	PC_CLASS_SE3_B,			// 養子星帝(騎乗)
 	PC_CLASS_RE2_B,			// 養子ソウルリーパー(騎乗)
-	PC_CLASS_DR,			// ドラゴンナイト
+	PC_CLASS_DR = 4252,		// ドラゴンナイト
 	PC_CLASS_MT,			// マイスター
 	PC_CLASS_SHC,			// シャドウクロス
 	PC_CLASS_AG,			// アークメイジ
@@ -453,6 +461,21 @@ enum {
 	PC_CLASS_MT3,			// マイスター(騎乗)
 	PC_CLASS_DR3,			// ドラゴンナイト(騎乗)
 	PC_CLASS_IG3,			// インペリアルガード(騎乗)
+	PC_CLASS_SKE = 4302,	// 天帝
+	PC_CLASS_SOA,			// ソウルアセティック
+	PC_CLASS_SK,			// 蜃気楼
+	PC_CLASS_SN,			// 不知火
+	PC_CLASS_NW,			// ナイトウォッチ
+	PC_CLASS_HN,			// ハイパーノービス
+	PC_CLASS_SH,			// スピリットハンドラー
+	PC_CLASS_SKE2,			// 天帝(騎乗)
+	PC_CLASS_SOA2,			// ソウルアセティック(騎乗)
+	PC_CLASS_SK2,			// 蜃気楼(騎乗)
+	PC_CLASS_SN2,			// 不知火(騎乗)
+	PC_CLASS_NW2,			// ナイトウォッチ(騎乗)
+	PC_CLASS_HN2,			// ハイパーノービス(騎乗)
+	PC_CLASS_SH2,			// スピリットハンドラー(騎乗)
+	PC_CLASS_SKE3,			// 天帝(融合)
 	PC_CLASS_MAX
 };
 
@@ -520,6 +543,13 @@ enum {
 	PC_JOB_IQ,		// インクイジター
 	PC_JOB_TRB,		// トルバドゥール
 	PC_JOB_TRV,		// トルヴェール
+	PC_JOB_SKE,		// 天帝
+	PC_JOB_SOA,		// ソウルアセティック
+	PC_JOB_SK,		// 蜃気楼
+	PC_JOB_SN,		// 不知火
+	PC_JOB_NW,		// ナイトウォッチ
+	PC_JOB_HN,		// ハイパーノービス
+	PC_JOB_SH,		// スピリットハンドラー
 	PC_JOB_MAX
 };
 
