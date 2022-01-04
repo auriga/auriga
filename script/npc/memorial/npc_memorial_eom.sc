@@ -633,6 +633,7 @@ OnStart:
 			hideoffnpc getmdnpcname("ニーズヘッグ#eomnyd01");
 			hideoffnpc getmdnpcname("#eom_gate_to_ice");
 			misceffect 135, getmdnpcname("#eom_gate_to_ice");
+			set getvariableofnpc('flag,getmdnpcname("ニーズヘッグ#eomnyd01")),1;
 			set 'dummy,sleep2(1000);
 			misceffect 231, getmdnpcname("#eom_gate_to_ice");
 			close;
@@ -885,7 +886,7 @@ OnTimer97000:
 		end;
 	}
 OnTouch:
-	if('flag > 0)
+	if('flag > 0 && getpartyleader(getcharid(1)) == strcharinfo(0))
 		unittalk "ニーズヘッグ : 待って下さい！";
 	end;
 }
@@ -1836,10 +1837,10 @@ OnTimer10000:
 		//stopnpctimer;
 		unittalk 'mob_id,"再生の半魔神 : このまま終わらせはしないよ！";
 		set '@dummy,removemonster('mob_id);
-		set 'mob_id,callmonster(getmdmapname("1@eom.gat"),102,209,"再生の半魔神#mk01",3096,getmdnpcname("callmon#eom4")+"::OnKilled");
+		set 'mob_id,callmonster('@mdmap$,102,209,"再生の半魔神#mk01",3096,getmdnpcname("callmon#eom4")+"::OnKilled");
 		setmobhp 'mob_id,'@mobhp;
-		set 'mob_id2,callmonster(getmdmapname("1@eom.gat"),114,198,"太古のモロク#origin",3098,getmdnpcname("callmon#eom4")+"::OnKilled2");
-		set 'mob_id3,callmonster(getmdmapname("1@eom.gat"),86,199,"安息のモロク#rest",3099,getmdnpcname("callmon#eom4")+"::OnKilled3");
+		set 'mob_id2,callmonster('@mdmap$,114,198,"太古のモロク#origin",3098,getmdnpcname("callmon#eom4")+"::OnKilled2");
+		set 'mob_id3,callmonster('@mdmap$,86,199,"安息のモロク#rest",3099,getmdnpcname("callmon#eom4")+"::OnKilled3");
 		mobuseskill 'mob_id2,675,4,0,0,0,0;	// ストーンスキン
 		mobuseskill 'mob_id3,676,4,0,0,0,0;	// アンチマジック
 		donpcevent getmdnpcname("callmon#eom4_timer")+"::OnStart";
@@ -1853,11 +1854,11 @@ OnTimer10000:
 		}
 		set '@count,getmapmobs('@mdmap$,getmdnpcname("callmon#eom4")+"::OnKilled4");
 		if('@count < 1) {
-			set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
-			monster getmdmapname("1@eom.gat"),'@x-1,'@y,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
-			monster getmdmapname("1@eom.gat"),'@x,'@y-1,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
-			monster getmdmapname("1@eom.gat"),'@x+1,'@y,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
-			monster getmdmapname("1@eom.gat"),'@x,'@y+1,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
+			set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
+			monster '@mdmap$,'@x-1,'@y,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
+			monster '@mdmap$,'@x,'@y-1,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
+			monster '@mdmap$,'@x+1,'@y,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
+			monster '@mdmap$,'@x,'@y+1,"狂気のカーサ",3089,1,getmdnpcname("callmon#eom4")+"::OnKilled4";
 		}
 	}
 	else {
@@ -1876,7 +1877,7 @@ OnMoroccKidMS:
 	sleep 1000;
 	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
 	sleep 2000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,83,5,'@x-5,'@y,0,0;	// メテオストーム
 	mobuseskillpos 'mob_id,83,5,'@x+5,'@y,0,0;	// メテオストーム
 	mobuseskillpos 'mob_id,83,5,'@x,'@y+5,0,0;	// メテオストーム
@@ -1890,7 +1891,7 @@ OnMoroccKidMS:
 	end;
 OnMoroccKidTS:
 	if(getmobhp('mob_id) < 1) end;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	unittalk 'mob_id,"再生の半魔神 : 脆弱な魂たちの為にレクイエムを！";
 	sleep 2000;
 	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
@@ -2038,6 +2039,7 @@ OnStart:
 
 1@eom.gat,1,1,0	script	callmon#eom5	139,{
 OnStart:
+	set 'flag,0;
 	set 'mob_id,callmonster(getmdmapname("1@eom.gat"),101,194,"絶望の神モロク#ma01",3097,getmdnpcname("callmon#eom5")+"::OnKilled");
 	mobuseskill 'mob_id,653,1,0,0,0,0;	// アースクエイク
 	sleep 1000;
@@ -2093,7 +2095,7 @@ OnMoroccAdtTS:
 	sleep 2000;
 	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-2,'@y,0,0;	// サンダーストーム
 	mobuseskillpos 'mob_id,21,20,'@x+2,'@y,0,0;	// サンダーストーム
 	mobuseskillpos 'mob_id,21,20,'@x,'@y+2,0,0;	// サンダーストーム
@@ -2136,7 +2138,7 @@ OnMoroccAdtLoV:
 	sleep 2000;
 	mobuseskill 'mob_id,664,5,0,0,0,0;	// ワイドフリーズ
 	sleep 2000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,85,5,'@x-7,'@y,0,0;	// ロードオブヴァーミリオン
 	sleep 500;
 	mobuseskillpos 'mob_id,85,5,'@x+7,'@y,0,0;	// ロードオブヴァーミリオン
@@ -2157,7 +2159,7 @@ OnMoroccAdtFP:
 	sleep 2000;
 	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
 	sleep 2000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,80,10,'@x-1,'@y,0,0;	// ファイアーピラー
 	mobuseskillpos 'mob_id,80,10,'@x+1,'@y,0,0;	// ファイアーピラー
 	mobuseskillpos 'mob_id,80,10,'@x,'@y+1,0,0;	// ファイアーピラー
@@ -2221,13 +2223,13 @@ OnMoroccAdtChange:
 	sleep 1000;
 	mobuseskill 'mob_id,289,5,0,0,0,1;	// ディスペル
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
-	monster getmdmapname("1@eom.gat"),'@x+1,'@y," ",20131,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-	monster getmdmapname("1@eom.gat"),'@x-1,'@y," ",20132,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-	monster getmdmapname("1@eom.gat"),'@x,'@y-1," ",20129,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-	monster getmdmapname("1@eom.gat"),'@x,'@y+1," ",20130,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
+	monster '@mdmap$,'@x+1,'@y," ",20131,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+	monster '@mdmap$,'@x-1,'@y," ",20132,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+	monster '@mdmap$,'@x,'@y-1," ",20129,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+	monster '@mdmap$,'@x,'@y+1," ",20130,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
 	sleep 10000;
-	killmonster getmdmapname("1@eom.gat"),getmdnpcname("callmon#eom5")+"::OnKilled2";
+	killmonster '@mdmap$,getmdnpcname("callmon#eom5")+"::OnKilled2";
 	initnpctimer;
 	end;
 OnMoroccAdtEstr:
@@ -2238,7 +2240,7 @@ OnMoroccAdtEstr:
 	sleep 1000;
 	mobuseskill 'mob_id,2216,5,0,0,0,1;	// アースストレイン
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,91,5,'@x-2,'@y,0,0;	// ヘヴンズドライブ
 	mobuseskillpos 'mob_id,91,5,'@x+2,'@y,0,0;	// ヘヴンズドライブ
 	mobuseskillpos 'mob_id,91,5,'@x,'@y+2,0,0;	// ヘヴンズドライブ
@@ -2271,7 +2273,7 @@ OnMoroccAdtJF:
 	sleep 1000;
 	mobuseskill 'mob_id,720,5,0,0,0,0;	// Mジャックフロスト
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,89,10,'@x-2,'@y,0,0;	// ストームガスト
 	mobuseskillpos 'mob_id,89,10,'@x+2,'@y,0,0;	// ストームガスト
 	mobuseskillpos 'mob_id,89,10,'@x,'@y+2,0,0;	// ストームガスト
@@ -2293,7 +2295,7 @@ OnMoroccAdtFW:
 	sleep 2000;
 	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,18,10,'@x-2,'@y,0,0;	// ファイアーウォール
 	mobuseskillpos 'mob_id,18,10,'@x+2,'@y,0,0;	// ファイアーウォール
 	mobuseskillpos 'mob_id,18,10,'@x,'@y+2,0,0;	// ファイアーウォール
@@ -2340,7 +2342,7 @@ OnMoroccAdtTS2:
 	sleep 1000;
 	mobuseskill 'mob_id,84,28,0,0,0,1;	// ユピテルサンダー
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-2,'@y,0,0;	// サンダーストーム
 	mobuseskillpos 'mob_id,21,20,'@x+2,'@y,0,0;	// サンダーストーム
 	mobuseskillpos 'mob_id,21,20,'@x,'@y+2,0,0;	// サンダーストーム
@@ -2392,7 +2394,7 @@ OnMoroccAdtPSHJ:
 OnMoroccAdtComet:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : クッ……!!　人間ごときがあぁぁッ!!";
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	sleep 2000;
 	mobuseskillpos 'mob_id,483,5,'@x-6,'@y,0,0;	// ガンバンテイン
 	mobuseskillpos 'mob_id,483,5,'@x+6,'@y,0,0;	// ガンバンテイン
@@ -2418,7 +2420,7 @@ OnMoroccAdtComet:
 OnMoroccAdtAllMagic:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 貴様ら……いい気になるなよ!!";
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	sleep 2000;
 	mobuseskillpos 'mob_id,483,5,'@x-3,'@y,0,0;	// ガンバンテイン
 	mobuseskillpos 'mob_id,483,5,'@x+3,'@y,0,0;	// ガンバンテイン
@@ -2441,7 +2443,7 @@ OnMoroccAdtAllMagic:
 	mobuseskillpos 'mob_id,83,10,'@x-8,'@y+8,0,0;	// メテオストーム
 	sleep 1000;
 	unittalk 'mob_id,"絶望の神モロク : ……これで終わりだッ!!!!";
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	sleep 1000;
 	mobuseskillpos 'mob_id,83,10,'@x,'@y,0,0;	// メテオストーム
 	mobuseskillpos 'mob_id,83,10,'@x,'@y,0,0;	// メテオストーム
@@ -2456,26 +2458,27 @@ OnMoroccAdtCall:
 	sleep 1000;
 	mobuseskill 'mob_id,289,5,0,0,0,1;	// ディスペル
 	sleep 1000;
-	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
+	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	switch(rand(3)) {
 	case 0:
-		monster getmdmapname("1@eom.gat"),'@x+1,'@y," ",20131,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-		monster getmdmapname("1@eom.gat"),'@x-1,'@y," ",20132,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x+1,'@y," ",20131,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x-1,'@y," ",20132,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
 		break;
 	case 1:
-		monster getmdmapname("1@eom.gat"),'@x+1,'@y," ",20129,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-		monster getmdmapname("1@eom.gat"),'@x-1,'@y," ",20130,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x+1,'@y," ",20129,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x-1,'@y," ",20130,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
 		break;
 	case 2:
-		monster getmdmapname("1@eom.gat"),'@x+1,'@y," ",3096,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
-		monster getmdmapname("1@eom.gat"),'@x-1,'@y," ",3096,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x+1,'@y," ",3096,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
+		monster '@mdmap$,'@x-1,'@y," ",3096,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
 		break;
 	}
 	sleep 10000;
-	killmonster getmdmapname("1@eom.gat"),getmdnpcname("callmon#eom5")+"::OnKilled2";
+	killmonster '@mdmap$,getmdnpcname("callmon#eom5")+"::OnKilled2";
 	initnpctimer;
 	end;
 OnKilled:
+	set 'mob_id,0;
 	announce "モロク : ……私は神だぞ……!?　たかが人間風情にこの私が……私が……ッ!!", 0x9, 0xff0000, 0x0190, 14, 0, 0;
 	sleep 1000;
 	hideoffnpc getmdnpcname("#eom_quest");
@@ -2485,6 +2488,7 @@ OnKilled:
 	hideoffnpc getmdnpcname("ロキ#eomnyd04");
 	hideoffnpc getmdnpcname("ニーズヘッグ#eomnyd04");
 	hideonnpc getmdnpcname("#eom_bgm_change3");
+	set 'users,getmapusers(getmdmapname("1@eom.gat"));
 	end;
 OnKilled2:
 	end;
@@ -2564,6 +2568,7 @@ OnStart:
 	misceffect 62,getmdnpcname("絶望の神モロク#04");
 	misceffect 266,getmdnpcname("絶望の神モロク#04");
 	hideonnpc getmdnpcname("絶望の神モロク#04");
+	donpcevent getmdnpcname("絶望の神モロク#04")+"::OnDrop";
 	sleep 5000;
 	unittalk getnpcid(0,getmdnpcname("ニーズヘッグ#eomnyd04")),"ニーズヘッグ : 確かに私たちの記憶から完全に消えない限り、魔王モロクは残り続けるでしょう……。";
 	sleep 5000;
@@ -2573,6 +2578,22 @@ OnStart:
 	sleep 5000;
 	unittalk getnpcid(0,getmdnpcname("ニーズヘッグ#eomnyd04")),"ニーズヘッグ : ……さあ、帰りましょう。外に出るときは私に話しかけて下さい。";
 	set getvariableofnpc('flag,getmdnpcname("ニーズヘッグ#eomnyd04")),2;
+	end;
+OnDrop:
+	set '@users,getvariableofnpc('users,getmdnpcname("callmon#eom5"));
+	if('@users < 4) {
+		set '@gain,(rand(3)?22537: 22567);
+		set '@amount,1;
+	}
+	else if('@users < 8) {
+		set '@gain,22537;
+		set '@amount,(rand(3)?2: 1);
+	}
+	else {
+		set '@gain,22537;
+		set '@amount,(rand(3)?3: 2);
+	}
+	dropitem getmdmapname("1@eom.gat"),102,197,'@gain,'@amount,0;
 	end;
 }
 
@@ -2600,6 +2621,7 @@ OnStart:
 				misceffect 62,getmdnpcname("絶望の神モロク#04");
 				misceffect 266,getmdnpcname("絶望の神モロク#04");
 				hideonnpc getmdnpcname("絶望の神モロク#04");
+				donpcevent getmdnpcname("絶望の神モロク#04")+"::OnDrop";
 				set 'flag,2;
 				close;
 			}
