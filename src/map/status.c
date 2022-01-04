@@ -7766,7 +7766,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TWOHANDQUICKEN:			/* 2HQ */
 			calc_flag = 1;
 			if(bl->type == BL_MOB && battle_config.monster_skill_over && val1 >= battle_config.monster_skill_over)
-				val2 = 50;
+				val2 = 70;
 			else
 				val2 = 30;
 			break;
