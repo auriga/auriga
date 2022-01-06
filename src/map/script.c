@@ -7032,7 +7032,31 @@ int buildin_bonus3(struct script_state *st)
 	int type,type2,type3,val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	switch(type) {
+	case SP_AUTOSPELL:
+	case SP_AUTOSPELL2:
+	case SP_AUTOSELFSPELL:
+	case SP_AUTOSELFSPELL2:
+	case SP_REVAUTOSPELL:
+	case SP_REVAUTOSPELL2:
+	case SP_REVAUTOSELFSPELL:
+	case SP_REVAUTOSELFSPELL2:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+3]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type2 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type2 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		break;
+	}
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	val   = conv_num(st,& (st->stack->stack_data[st->start+5]));
 
@@ -7050,7 +7074,29 @@ int buildin_bonus4(struct script_state *st)
 	unsigned int val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	switch(type) {
+	case SP_AUTOSPELL:
+	case SP_SKILLAUTOSPELL:
+	case SP_SKILLAUTOSPELL2:
+	case SP_SKILLAUTOSELFSPELL:
+	case SP_SKILLAUTOSELFSPELL2:
+	case SP_AUTOACTIVE_SKILL:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+3]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type2 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type2 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		break;
+	}
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	val   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+6]));
