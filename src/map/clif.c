@@ -21584,6 +21584,113 @@ static void clif_change_title_ack(int fd, char result, int title_id)
 }
 
 /*==========================================
+ * アイテムプレビュー
+ *------------------------------------------
+ */
+void clif_item_preview(struct map_session_data *sd, short idx)
+{
+#if PACKETVER >= 20170621
+	int fd, j;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd, 0) = 0xab9;
+	WFIFOW(fd, 2) = idx + 2;
+	WFIFOW(fd, 4) = sd->status.inventory[idx].refine;
+	if(itemdb_isspecial(sd->status.inventory[idx].card[0])) {
+		if(sd->inventory_data[idx]->flag.pet_egg) {
+			WFIFOL(fd,6) = 0;
+			WFIFOL(fd,10) = 0;
+			WFIFOL(fd,14) = 0;
+		} else {
+			WFIFOL(fd,6) = sd->status.inventory[idx].card[0];
+			WFIFOL(fd,10) = sd->status.inventory[idx].card[1];
+			WFIFOL(fd,14) = sd->status.inventory[idx].card[2];
+		}
+		WFIFOL(fd,18) = sd->status.inventory[idx].card[3];
+	} else {
+		if(sd->status.inventory[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[0])) > 0)
+			WFIFOL(fd,6)= j;
+		else
+			WFIFOL(fd,6)= sd->status.inventory[idx].card[0];
+		if(sd->status.inventory[idx].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[1])) > 0)
+			WFIFOL(fd,10)= j;
+		else
+			WFIFOL(fd,10)= sd->status.inventory[idx].card[1];
+		if(sd->status.inventory[idx].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[2])) > 0)
+			WFIFOL(fd,14)= j;
+		else
+			WFIFOL(fd,14)= sd->status.inventory[idx].card[2];
+		if(sd->status.inventory[idx].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[3])) > 0)
+			WFIFOL(fd,18)= j;
+		else
+			WFIFOL(fd,18)= sd->status.inventory[idx].card[3];
+	}
+	WFIFOW(fd,22)=sd->status.inventory[idx].opt[0].id;
+	WFIFOW(fd,24)=sd->status.inventory[idx].opt[0].val;
+	WFIFOB(fd,26)=0;
+	WFIFOW(fd,27)=sd->status.inventory[idx].opt[1].id;
+	WFIFOW(fd,29)=sd->status.inventory[idx].opt[1].val;
+	WFIFOB(fd,31)=0;
+	WFIFOW(fd,32)=sd->status.inventory[idx].opt[2].id;
+	WFIFOW(fd,34)=sd->status.inventory[idx].opt[2].val;
+	WFIFOB(fd,36)=0;
+	WFIFOW(fd,37)=sd->status.inventory[idx].opt[3].id;
+	WFIFOW(fd,39)=sd->status.inventory[idx].opt[3].val;
+	WFIFOB(fd,41)=0;
+	WFIFOW(fd,42)=sd->status.inventory[idx].opt[4].id;
+	WFIFOW(fd,44)=sd->status.inventory[idx].opt[4].val;
+	WFIFOB(fd,46)=0;
+	WFIFOSET(fd, packet_db[0xab9].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+
+#if PACKETVER < 20180704
+	WFIFOW(fd,0) = 0xab4;
+	WFIFOW(fd,2) = nameid;
+#else
+	WFIFOW(fd,0) = 0xab4;
+	WFIFOL(fd,2) = nameid;
+#endif
+	WFIFOSET(fd,packet_db[0xab4].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_lapineupgradeack(struct map_session_data *sd, int result)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0xab7;
+	WFIFOW(fd,2) = result;
+	WFIFOSET(fd,packet_db[0xab7].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -27206,6 +27313,40 @@ static void clif_parse_PetEvolution(int fd,struct map_session_data *sd, int cmd)
  *
  *------------------------------------------
  */
+static void clif_parse_CloseLapineUpgrade(int fd,struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int cmd)
+{
+	int nameid, idx;
+
+	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+		return;
+
+#if PACKETVER < 20180704
+	nameid = RFIFOW(fd,GETPACKETPOS(cmd,0));
+#else
+	nameid = RFIFOL(fd,GETPACKETPOS(cmd,0));
+#endif
+
+	idx = RFIFOW(fd,GETPACKETPOS(cmd,1)) - 2;
+
+	pc_upgrade_item(sd, nameid, idx);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
 {
 #if PACKETVER >= 20190703
@@ -27646,6 +27787,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_PetEvolution,                "petevolution"              },
 		{ clif_parse_StartUseSkillToId,           "startuseskilltoid"         },
 		{ clif_parse_StopUseSkillToId,            "stopuseskilltoid"          },
+		{ clif_parse_CloseLapineUpgrade,          "closelapineupgrade"        },
+		{ clif_parse_LapineUpgradeAck,            "lapineupgradeack"          },
 		{ clif_parse_MountOff,                    "mountoff"                  },
 		{ NULL,                                   NULL                        },
 	};

@@ -1609,11 +1609,27 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 				rate += ro.opt[i].rate;
 				if(rate >= atn_rand()%10000) {
 					temp_item.opt[slot].id = ro.opt[i].optid;
-					if(ro.opt[i].optval_min != ro.opt[i].optval_max)
+					if(ro.opt[i].optval_plus)
+						temp_item.opt[slot].val = ro.opt[i].optval_min + (atn_rand() % ((ro.opt[i].optval_max - ro.opt[i].optval_min) / ro.opt[i].optval_plus + 1)) * ro.opt[i].optval_plus;
+					else if(ro.opt[i].optval_min != ro.opt[i].optval_max)
 						temp_item.opt[slot].val = ro.opt[i].optval_min + atn_rand() % (ro.opt[i].optval_max - ro.opt[i].optval_min + 1);
 					else
 						temp_item.opt[slot].val = ro.opt[i].optval_min;
 					rate = 0;
+				}
+			}
+			for(i = 0; i < 5-1; i++) {
+				if(temp_item.opt[i].id == 0) {
+					int j;
+					for(j = i+1; j < 5; j++) {
+						if(temp_item.opt[j].id != 0) {
+							temp_item.opt[i].id = temp_item.opt[j].id;
+							temp_item.opt[i].val = temp_item.opt[j].val;
+							temp_item.opt[j].id = 0;
+							temp_item.opt[j].val = 0;
+							break;
+						}
+					}
 				}
 			}
 		}

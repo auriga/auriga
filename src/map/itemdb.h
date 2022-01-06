@@ -31,6 +31,8 @@
 #define MAX_RANDOPT_ENTRY		100
 #define MAX_RANDOPT_TABLE		20
 
+#define MAX_UPGRADE_LIST		10
+
 struct item_data {
 	int nameid;
 	char name[48];
@@ -81,6 +83,10 @@ struct item_data {
 	int arrow_type;
 	int card_type;
 	short dropeffect;
+	struct {
+		int nameid;		// アップグレードに必要なアイテム
+		int table;		// アップグレードテーブル
+	} upgrade[MAX_UPGRADE_LIST];
 };
 
 struct random_item_data {
@@ -99,6 +105,7 @@ struct randopt_item_data {
 		int optid;
 		int optval_min;
 		int optval_max;
+		int optval_plus;
 		int rate;
 	} opt[MAX_RANDOPT_TABLE];
 };

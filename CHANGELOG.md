@@ -1,4 +1,19 @@
 ----------------------------------------
+//1505 [2022/01/06] by refis
+
+・ランダムオプションシステムの改修
+	-> ID項をナンバリングとして扱えるように有効itemidチェックを削除する（script.c）
+	-> optvalテーブルでカウントアップ値を指定できるようテーブル処理を拡張（itemdb.*, luascript.c）
+	-> オプションが付かない項目があった場合、以降のオプションが非表示になるため
+	   オプションを切り詰めるようにする（mob.c, script.c）
+		Thanks エニ さん
+
+・アイテムアップグレードシステムの追加（lapineupgrade_db.txt, packet_db.lua, script_ref.txt, clif.*, itemdb.*, pc.*, script.c）
+	Thanks Dallen さん
+
+・luaデータベースの更新（lua_auriga.conf, enumvar.lua, item_randopt_db.lua）
+
+----------------------------------------
 //1504 [2022/01/04] by refis
 
 ・オーバースキル「ツーハンドクイッケン」の増加量を50%から70%に修正（status.c）

@@ -855,6 +855,43 @@ static int itemdb_read_itemdb(void)
 	}
 	fclose(fp);
 	printf("read %s done\n", filename2);
+
+	filename2 = "db/lapineupgrade_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL){
+		printf("itemdb_read_itemdb: open [%s] failed !\n", filename2);
+		return 0;
+	}
+	while(fgets(line,sizeof(line),fp)){
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0]=='/' && line[1]=='/')
+			continue;
+		memset(str,0,sizeof(str));
+		for(j=0,np=p=line;j<3 && p;j++){
+			str[j]=p;
+			p=strchr(p,',');
+			if(p){ *p++=0; np=p; }
+		}
+		if(str[0] == NULL || str[1] == NULL || str[2] == NULL)
+			continue;
+
+		nameid = atoi(str[1]);
+		if(nameid <= 0 || !(id = itemdb_exists(nameid)))
+			continue;
+		for(j = 0; j < MAX_UPGRADE_LIST; j++) {
+			if(id->upgrade[j].nameid == atoi(str[0]))	// Šù‚É“¯‚¶‚à‚Ì‚ª‚ ‚é
+				break;
+			if(id->upgrade[j].nameid && id->upgrade[j].table)	// Šù‚É–„‚Ü‚Á‚Ä‚¢‚é‚Ì‚ÅŽŸ‚Ö
+				continue;
+			id->upgrade[j].nameid = atoi(str[0]);
+			id->upgrade[j].table  = atoi(str[2]);
+			break;
+		}
+	}
+	fclose(fp);
+	printf("read %s done\n", filename2);
+
 	return 0;
 }
 
