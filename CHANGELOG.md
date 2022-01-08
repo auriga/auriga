@@ -1,4 +1,10 @@
 ----------------------------------------
+//1508 [2022/01/08] by refis
+
+・モロク復興関係NPCを更新（npc_town_morocc.sc, npc_job_thirdclass.sc）
+	Thanks a lot Dallen さん!
+
+----------------------------------------
 //1507 [2022/01/07] by refis
 
 ・1505のitemidミスを修正（lapineupgrade_db.txt）
