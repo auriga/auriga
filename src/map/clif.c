@@ -21598,6 +21598,52 @@ void clif_item_preview(struct map_session_data *sd, short idx)
 	WFIFOW(fd, 0) = 0xab9;
 	WFIFOW(fd, 2) = idx + 2;
 	WFIFOW(fd, 4) = sd->status.inventory[idx].refine;
+#if PACKETVER < 20180704
+	if(itemdb_isspecial(sd->status.inventory[idx].card[0])) {
+		if(sd->inventory_data[idx]->flag.pet_egg) {
+			WFIFOL(fd,6) = 0;
+			WFIFOL(fd,8) = 0;
+			WFIFOL(fd,10) = 0;
+		} else {
+			WFIFOL(fd,6) = sd->status.inventory[idx].card[0];
+			WFIFOL(fd,8) = sd->status.inventory[idx].card[1];
+			WFIFOL(fd,10) = sd->status.inventory[idx].card[2];
+		}
+		WFIFOL(fd,12) = sd->status.inventory[idx].card[3];
+	} else {
+		if(sd->status.inventory[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[0])) > 0)
+			WFIFOL(fd,6)= j;
+		else
+			WFIFOL(fd,6)= sd->status.inventory[idx].card[0];
+		if(sd->status.inventory[idx].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[1])) > 0)
+			WFIFOL(fd,8)= j;
+		else
+			WFIFOL(fd,8)= sd->status.inventory[idx].card[1];
+		if(sd->status.inventory[idx].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[2])) > 0)
+			WFIFOL(fd,10)= j;
+		else
+			WFIFOL(fd,10)= sd->status.inventory[idx].card[2];
+		if(sd->status.inventory[idx].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[3])) > 0)
+			WFIFOL(fd,12)= j;
+		else
+			WFIFOL(fd,12)= sd->status.inventory[idx].card[3];
+	}
+	WFIFOW(fd,14)=sd->status.inventory[idx].opt[0].id;
+	WFIFOW(fd,16)=sd->status.inventory[idx].opt[0].val;
+	WFIFOB(fd,18)=0;
+	WFIFOW(fd,19)=sd->status.inventory[idx].opt[1].id;
+	WFIFOW(fd,21)=sd->status.inventory[idx].opt[1].val;
+	WFIFOB(fd,23)=0;
+	WFIFOW(fd,24)=sd->status.inventory[idx].opt[2].id;
+	WFIFOW(fd,26)=sd->status.inventory[idx].opt[2].val;
+	WFIFOB(fd,28)=0;
+	WFIFOW(fd,29)=sd->status.inventory[idx].opt[3].id;
+	WFIFOW(fd,31)=sd->status.inventory[idx].opt[3].val;
+	WFIFOB(fd,33)=0;
+	WFIFOW(fd,34)=sd->status.inventory[idx].opt[4].id;
+	WFIFOW(fd,36)=sd->status.inventory[idx].opt[4].val;
+	WFIFOB(fd,38)=0;
+#else
 	if(itemdb_isspecial(sd->status.inventory[idx].card[0])) {
 		if(sd->inventory_data[idx]->flag.pet_egg) {
 			WFIFOL(fd,6) = 0;
@@ -21642,6 +21688,7 @@ void clif_item_preview(struct map_session_data *sd, short idx)
 	WFIFOW(fd,42)=sd->status.inventory[idx].opt[4].id;
 	WFIFOW(fd,44)=sd->status.inventory[idx].opt[4].val;
 	WFIFOB(fd,46)=0;
+#endif
 	WFIFOSET(fd, packet_db[0xab9].len);
 #endif
 
@@ -26450,7 +26497,7 @@ static void clif_parse_QuestState(int fd,struct map_session_data *sd, int cmd)
 
 	nameid = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
-	result = quest_update_status(sd, nameid, ( RFIFOL(fd,GETPACKETPOS(cmd,1)) )? 1 : 0);
+	result = quest_update_status(sd, nameid, ( RFIFOB(fd,GETPACKETPOS(cmd,1)) )? 1 : 0);
 	if(result < 0)
 		return;
 
