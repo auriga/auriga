@@ -8885,29 +8885,28 @@ int pc_break_equip2(struct map_session_data *sd,int where)
  * 装備アップグレード
  *------------------------------------------
  */
-void pc_upgrade_item(struct map_session_data *sd, int nameid, int idx)
+int pc_upgrade_item(struct map_session_data *sd, int nameid, int idx)
 {
 	struct item *item_data;
 	struct item_data *item;
 	int i, del_idx;
-	int table;
-	int flag = 0;
+	int table = 0;
 
-	nullpo_retv(sd);
+	nullpo_retr(1, sd);
 
 	if(idx < 0 || idx >= MAX_INVENTORY)
-		return;
+		return 1;
 
 	del_idx = pc_search_inventory(sd,nameid);
 	if(del_idx < 0 || del_idx >= MAX_INVENTORY || sd->inventory_data[del_idx] == NULL || sd->status.inventory[del_idx].amount < 1)
-		return;
+		return 1;
 	if(sd->status.inventory[idx].equip)
-		return;
+		return 1;
 
 	item_data = &sd->status.inventory[idx];
 	item = sd->inventory_data[idx];
 	if(item_data->nameid == 0)
-		return;
+		return 1;
 
 	for(i = 0; i < MAX_UPGRADE_LIST; i++) {
 		if(item->upgrade[i].nameid == nameid) {
@@ -8916,11 +8915,11 @@ void pc_upgrade_item(struct map_session_data *sd, int nameid, int idx)
 		}
 	}
 	if(i >= MAX_UPGRADE_LIST)
-		return;
+		return 1;
 
 	if((!itemdb_isweapon(item_data->nameid) && !itemdb_isarmor(item_data->nameid)) ||	// 装備品じゃない
 		sd->status.inventory[idx].identify == 0)	// 未鑑定
-		return;
+		return 1;
 
 	if(table) {
 		struct randopt_item_data ro = itemdb_randopt_data(1, table);
@@ -8967,9 +8966,8 @@ void pc_upgrade_item(struct map_session_data *sd, int nameid, int idx)
 	}
 	pc_delitem(sd, del_idx, 1, 0, 0);
 	clif_item_preview(sd, idx);
-	clif_lapineupgradeack(sd, 0);
 
-	return;
+	return 0;
 }
 
 /*==========================================

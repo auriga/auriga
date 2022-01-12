@@ -250,7 +250,7 @@ int pc_delcoin(struct map_session_data *sd,int,int);
 int pc_addelementball(struct map_session_data *sd, int interval, int max, short ele);
 int pc_delelementball(struct map_session_data *sd, int count, int type);
 
-void pc_upgrade_item(struct map_session_data *sd, int nameid, int idx);
+int pc_upgrade_item(struct map_session_data *sd, int nameid, int idx);
 
 int pc_runtodir(struct map_session_data *sd);
 

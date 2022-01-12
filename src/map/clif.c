@@ -27373,6 +27373,7 @@ static void clif_parse_CloseLapineUpgrade(int fd,struct map_session_data *sd, in
 static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int cmd)
 {
 	int nameid, idx;
+	int ret;
 
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
@@ -27385,8 +27386,9 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 
 	idx = RFIFOW(fd,GETPACKETPOS(cmd,1)) - 2;
 
-	pc_upgrade_item(sd, nameid, idx);
+	ret = pc_upgrade_item(sd, nameid, idx);
 
+	clif_lapineupgradeack(sd, ret);
 	return;
 }
 
