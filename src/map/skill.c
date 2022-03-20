@@ -531,10 +531,10 @@ int GetSkillStatusChangeTable(int id)
 	if(id >= RL_SKILLID && id < MAX_RL_SKILLID)
 		return SkillStatusChangeTableRL[id - RL_SKILLID];
 
-	if(id >= RL_SKILLID && id < MAX_SJ_SKILLID)
+	if(id >= SJ_SKILLID && id < MAX_SJ_SKILLID)
 		return SkillStatusChangeTableSJ[id - SJ_SKILLID];
 
-	if(id >= RL_SKILLID && id < MAX_SP_SKILLID)
+	if(id >= SP_SKILLID && id < MAX_SP_SKILLID)
 		return SkillStatusChangeTableSP[id - SP_SKILLID];
 
 	if(id >= KO_SKILLID && id < MAX_KO_SKILLID)
