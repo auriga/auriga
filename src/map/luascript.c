@@ -540,8 +540,6 @@ static int luafunc_InsertRandopt(lua_State *NL)
 	memset(&ro, 0, sizeof(ro));
 
 	nameid=luaL_checkint(NL,1);
-	if(!itemdb_exists(nameid))
-		return 0;
 	ro.nameid = nameid;
 
 	mob_id=luaL_checkint(NL,2);
@@ -572,6 +570,11 @@ static int luafunc_InsertRandopt(lua_State *NL)
 						lua_rawgeti(NL,-1,2);
 						ro.opt[i].optval_max = luaL_checkint(NL,-1);
 						lua_pop(NL, 1);      // 値を取り除く
+						if(lua_objlen(NL,-1) >= 3) {
+							lua_rawgeti(NL,-1,3);
+							ro.opt[i].optval_plus = luaL_checkint(NL,-1);
+							lua_pop(NL, 1);      // 値を取り除く
+						}
 					}
 					else {
 						val = luaL_checkint(NL,-1);

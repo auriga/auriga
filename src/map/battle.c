@@ -4064,7 +4064,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case GC_DARKCROW:	// ダーククロー
 			DMG_FIX( 100 * skill_lv, 100 );
 			break;
-		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
+		case AB_DUPLELIGHT_MELEE:	// グレイアムライト
 			DMG_FIX( 100 + 10 * skill_lv, 100 );
 			break;
 		case RA_CLUSTERBOMB:	// クラスターボム
@@ -6715,7 +6715,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			mgd.damage = (skill_lv > 6)? 388: 50*skill_lv;
 			normalmagic_flag = 0;
 			break;
-		case AB_DUPLELIGHT_MAGIC:	// デュプレライト(魔法)
+		case AB_DUPLELIGHT_MAGIC:	// ミリアムライト
 			MATK_FIX( 200 + 20 * skill_lv, 100 );
 			break;
 		case WL_SOULEXPANSION:		// ソウルエクスパンション

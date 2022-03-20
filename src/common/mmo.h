@@ -104,7 +104,8 @@
 #define SP_SKILLID     2596		// ソウルリンカースキルIDの開始値
 #define KO_SKILLID     3001		// 影狼、朧スキルIDの開始値
 #define EX3_SKILLID    5001		// 3次職追加スキルIDの開始値
-#define SUM_SKILLID    5018		// サモナー追加スキルIDの開始値
+#define SUM_SKILLID    5018		// サモナースキルIDの開始値
+#define FOURTH_SKILLID 5063		// 4次職スキルIDの開始値
 #define HOM_SKILLID    8001		// ホムスキルIDの開始値
 #define MERC_SKILLID   8201		// 傭兵スキルIDの開始値
 #define ELEM_SKILLID   8401		// 精霊スキルIDの開始値
@@ -120,6 +121,7 @@
 #define MAX_KOSKILL      35
 #define MAX_EX3SKILL     15
 #define MAX_SUMSKILL     39
+#define MAX_FOURTHSKILL 321
 #define MAX_HOMSKILL     43
 #define MAX_MERCSKILL    41
 #define MAX_ELEMSKILL    42
@@ -129,18 +131,19 @@
 #define MAX_THIRD_SKILLID  (THIRD_SKILLID+MAX_THIRDSKILL)	// 3次職スキルIDの最大値
 #define MAX_QUEST_SKILLID  (QUEST_SKILLID+MAX_QUESTSKILL)	// クエストスキルIDの最大値
 #define MAX_RL_SKILLID     (RL_SKILLID+MAX_RLSKILL)			// リベリオンスキルIDの最大値
-#define MAX_SJ_SKILLID     (SJ_SKILLID+MAX_SJSKILL)			// リベリオンスキルIDの最大値
-#define MAX_SP_SKILLID     (SP_SKILLID+MAX_SPSKILL)			// リベリオンスキルIDの最大値
+#define MAX_SJ_SKILLID     (SJ_SKILLID+MAX_SJSKILL)			// 星帝スキルIDの最大値
+#define MAX_SP_SKILLID     (SP_SKILLID+MAX_SPSKILL)			// ソウルリーパースキルIDの最大値
 #define MAX_KO_SKILLID     (KO_SKILLID+MAX_KOSKILL)			// 影狼、朧スキルIDの最大値
 #define MAX_EX3_SKILLID    (EX3_SKILLID+MAX_EX3SKILL)		// 3次職追加スキルIDの最大値
-#define MAX_SUM_SKILLID    (SUM_SKILLID+MAX_SUMSKILL)		// サモナー追加スキルIDの最大値
+#define MAX_SUM_SKILLID    (SUM_SKILLID+MAX_SUMSKILL)		// サモナースキルIDの最大値
+#define MAX_FOURTH_SKILLID (FOURTH_SKILLID+MAX_FOURTHSKILL)	// 4次職スキルIDの最大値
 #define MAX_HOM_SKILLID    (HOM_SKILLID+MAX_HOMSKILL)		// ホムスキルIDの最大値
 #define MAX_MERC_SKILLID   (MERC_SKILLID+MAX_MERCSKILL)		// 傭兵スキルIDの最大値
 #define MAX_ELEM_SKILLID   (ELEM_SKILLID+MAX_ELEMSKILL)		// 精霊スキルIDの最大値
 #define MAX_GUILD_SKILLID  (GUILD_SKILLID+MAX_GUILDSKILL)	// ギルドスキルIDの最大値
 
-#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_RLSKILL+MAX_SJSKILL+MAX_SPSKILL+MAX_KOSKILL+MAX_EX3SKILL+MAX_SUMSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
-#define MAX_PCSKILL  MAX_SUM_SKILLID		// PCが使用可能の最大のスキルID
+#define MAX_SKILL_DB (MAX_SKILL+MAX_SECONDSKILL+MAX_THIRDSKILL+MAX_QUESTSKILL+MAX_RLSKILL+MAX_SJSKILL+MAX_SPSKILL+MAX_KOSKILL+MAX_EX3SKILL+MAX_SUMSKILL+MAX_FOURTHSKILL+MAX_HOMSKILL+MAX_MERCSKILL+MAX_ELEMSKILL+MAX_GUILDSKILL)
+#define MAX_PCSKILL  MAX_FOURTH_SKILLID		// PCが使用可能の最大のスキルID
 
 #define MAX_QUESTLIST 100
 
@@ -415,7 +418,15 @@ enum {
 	PC_CLASS_SL_B,			// 養子ソウルリンカー
 	PC_CLASS_GS_B,			// 養子ガンスリンガー
 	PC_CLASS_RL_B,			// 養子リベリオン
-	PC_CLASS_SG2_B = 4238,	// 養子拳聖(融合)
+	PC_CLASS_NJ2_B,			// 養子忍者(騎乗)
+	PC_CLASS_KG2_B,			// 養子影狼(騎乗)
+	PC_CLASS_OB2_B,			// 養子朧(騎乗)
+	PC_CLASS_TK2_B,			// 養子テコンキッド(騎乗)
+	PC_CLASS_SG2_B,			// 養子拳聖(騎乗)
+	PC_CLASS_SL2_B,			// 養子ソウルリンカー(騎乗)
+	PC_CLASS_GS2_B,			// 養子ガンスリンガー(騎乗)
+	PC_CLASS_RL2_B,			// 養子リベリオン(騎乗)
+	PC_CLASS_SG3_B,			// 養子拳聖(融合)
 	PC_CLASS_SE,			// 星帝
 	PC_CLASS_RE,			// ソウルリーパー
 	PC_CLASS_SE_B,			// 養子星帝
@@ -426,7 +437,7 @@ enum {
 	PC_CLASS_RE2,			// ソウルリーパー(騎乗)
 	PC_CLASS_SE3_B,			// 養子星帝(騎乗)
 	PC_CLASS_RE2_B,			// 養子ソウルリーパー(騎乗)
-	PC_CLASS_DR,			// ドラゴンナイト
+	PC_CLASS_DR = 4252,		// ドラゴンナイト
 	PC_CLASS_MT,			// マイスター
 	PC_CLASS_SHC,			// シャドウクロス
 	PC_CLASS_AG,			// アークメイジ
@@ -456,6 +467,21 @@ enum {
 	PC_CLASS_MT3,			// マイスター(騎乗)
 	PC_CLASS_DR3,			// ドラゴンナイト(騎乗)
 	PC_CLASS_IG3,			// インペリアルガード(騎乗)
+	PC_CLASS_SKE = 4302,	// 天帝
+	PC_CLASS_SOA,			// ソウルアセティック
+	PC_CLASS_SK,			// 蜃気楼
+	PC_CLASS_SN,			// 不知火
+	PC_CLASS_NW,			// ナイトウォッチ
+	PC_CLASS_HN,			// ハイパーノービス
+	PC_CLASS_SH,			// スピリットハンドラー
+	PC_CLASS_SKE2,			// 天帝(騎乗)
+	PC_CLASS_SOA2,			// ソウルアセティック(騎乗)
+	PC_CLASS_SK2,			// 蜃気楼(騎乗)
+	PC_CLASS_SN2,			// 不知火(騎乗)
+	PC_CLASS_NW2,			// ナイトウォッチ(騎乗)
+	PC_CLASS_HN2,			// ハイパーノービス(騎乗)
+	PC_CLASS_SH2,			// スピリットハンドラー(騎乗)
+	PC_CLASS_SKE3,			// 天帝(融合)
 	PC_CLASS_MAX
 };
 
@@ -523,6 +549,13 @@ enum {
 	PC_JOB_IQ,		// インクイジター
 	PC_JOB_TRB,		// トルバドゥール
 	PC_JOB_TRV,		// トルヴェール
+	PC_JOB_SKE,		// 天帝
+	PC_JOB_SOA,		// ソウルアセティック
+	PC_JOB_SK,		// 蜃気楼
+	PC_JOB_SN,		// 不知火
+	PC_JOB_NW,		// ナイトウォッチ
+	PC_JOB_HN,		// ハイパーノービス
+	PC_JOB_SH,		// スピリットハンドラー
 	PC_JOB_MAX
 };
 

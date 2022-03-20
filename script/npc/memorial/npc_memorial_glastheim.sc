@@ -1349,6 +1349,7 @@ OnTimer5000:
 			setnpctimer 36000;
 			close;
 		}
+		close2;
 	}
 	hideonnpc;
 	initnpctimer;
@@ -1750,6 +1751,7 @@ OnTimer1000:
 			setnpctimer 76000;
 			close;
 		}
+		close2;
 	}
 	hideonnpc;
 	initnpctimer;
@@ -2296,6 +2298,7 @@ OnTimer60000:
 			setnpctimer 88000;
 			close;
 		}
+		close2;
 	}
 	hideonnpc getmdnpcname("ƒqƒƒ‹ƒƒY#22");
 	hideoffnpc getmdnpcname("ƒqƒƒ‹ƒƒY#23");

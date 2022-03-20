@@ -3157,7 +3157,7 @@ har_in01.gat,20,30,5	script	アイアット・ワープ#har_	10211,{
 			next;
 			switch(select("栄光のロックリッジバッジ","名誉のロックリッジバッジ","性能を聞く")) {
 			case 1:
-				set '@gain,28555;
+				set '@gain,28557;
 				break;
 			case 2:
 				set '@gain,28556;

@@ -8944,6 +8944,95 @@ int pc_break_equip2(struct map_session_data *sd,int where)
 }
 
 /*==========================================
+ * 装備アップグレード
+ *------------------------------------------
+ */
+int pc_upgrade_item(struct map_session_data *sd, int nameid, int idx)
+{
+	struct item *item_data;
+	struct item_data *item;
+	int i, del_idx;
+	int table = 0;
+
+	nullpo_retr(1, sd);
+
+	if(idx < 0 || idx >= MAX_INVENTORY)
+		return 1;
+
+	del_idx = pc_search_inventory(sd,nameid);
+	if(del_idx < 0 || del_idx >= MAX_INVENTORY || sd->inventory_data[del_idx] == NULL || sd->status.inventory[del_idx].amount < 1)
+		return 1;
+	if(sd->status.inventory[idx].equip)
+		return 1;
+
+	item_data = &sd->status.inventory[idx];
+	item = sd->inventory_data[idx];
+	if(item_data->nameid == 0)
+		return 1;
+
+	for(i = 0; i < MAX_UPGRADE_LIST; i++) {
+		if(item->upgrade[i].nameid == nameid) {
+			table = item->upgrade[i].table;
+			break;
+		}
+	}
+	if(i >= MAX_UPGRADE_LIST)
+		return 1;
+
+	if((!itemdb_isweapon(item_data->nameid) && !itemdb_isarmor(item_data->nameid)) ||	// 装備品じゃない
+		sd->status.inventory[idx].identify == 0)	// 未鑑定
+		return 1;
+
+	if(table) {
+		struct randopt_item_data ro = itemdb_randopt_data(1, table);
+		if(ro.nameid) {
+			int slot = 0;
+			int rate = 0;
+			for(i = 0; i < 5; i++) {
+				item_data->opt[i].id = 0;
+				item_data->opt[i].val = 0;
+			}
+			for(i = 0; i < sizeof(ro.opt) / sizeof(ro.opt[0]); i++) {
+				if(ro.opt[i].slot != slot)
+					rate = 0;
+				slot = ro.opt[i].slot;
+				if(item_data->opt[slot].id > 0)
+					continue;
+				rate += ro.opt[i].rate;
+				if(rate >= atn_rand()%10000) {
+					item_data->opt[slot].id = ro.opt[i].optid;
+					if(ro.opt[i].optval_plus)
+						item_data->opt[slot].val = ro.opt[i].optval_min + (atn_rand() % ((ro.opt[i].optval_max - ro.opt[i].optval_min) / ro.opt[i].optval_plus + 1)) * ro.opt[i].optval_plus;
+					else if(ro.opt[i].optval_min != ro.opt[i].optval_max)
+						item_data->opt[slot].val = ro.opt[i].optval_min + atn_rand() % (ro.opt[i].optval_max - ro.opt[i].optval_min + 1);
+					else
+						item_data->opt[slot].val = ro.opt[i].optval_min;
+					rate = 0;
+				}
+			}
+			for(i = 0; i < 5-1; i++) {
+				if(item_data->opt[i].id == 0) {
+					int j;
+					for(j = i+1; j < 5; j++) {
+						if(item_data->opt[j].id != 0) {
+							item_data->opt[i].id = item_data->opt[j].id;
+							item_data->opt[i].val = item_data->opt[j].val;
+							item_data->opt[j].id = 0;
+							item_data->opt[j].val = 0;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	pc_delitem(sd, del_idx, 1, 0, 0);
+	clif_item_preview(sd, idx);
+
+	return 0;
+}
+
+/*==========================================
  * 自然回復物
  *------------------------------------------
  */

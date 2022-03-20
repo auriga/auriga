@@ -13626,7 +13626,7 @@ ma_in01_jp.gat,45,148,1	script	ÉCÉXÉR#pin	577,{
 	delitem '@itemid,'@num;
 	if('@itemid == 6497) {
 		set $MalayaFes01,$MalayaFes01+'@num;
-	} else if('@itemid == 6402) {
+	} else if('@itemid == 6502) {
 		set $MalayaFes02,$MalayaFes02+'@num;
 	} else {
 		set $MalayaFes03,$MalayaFes03+'@num;

@@ -319,7 +319,7 @@ function	script	jobchenge3rd_func	{
 }
 
 prt_in.gat,162,24,3	script	“]E‘ãsŒW#runeknight	888,{ callfunc "jobchenge3rd_func",Job_RuneKnight,Job_Knight; }
-morocc.gat,103,144,3	script	“]E‘ãsŒW#warlock	888,{ callfunc "jobchenge3rd_func",Job_Warlock,Job_Wizard; }
+morocc.gat,94,141,3	script	“]E‘ãsŒW#warlock	888,{ callfunc "jobchenge3rd_func",Job_Warlock,Job_Wizard; }
 alberta.gat,223,111,5	script	“]E‘ãsŒW#ranger	888,{ callfunc "jobchenge3rd_func",Job_Ranger,Job_Hunter; }
 prt_church.gat,103,88,3	script	“]E‘ãsŒW#arch	888,{ callfunc "jobchenge3rd_func",Job_ArchBishop,Job_Priest; }
 yuno.gat,129,156,3	script	“]E‘ãsŒW#mechanic	888,{ callfunc "jobchenge3rd_func",Job_Mechanic,Job_Blacksmith; }
@@ -622,7 +622,7 @@ lighthalzen.gat,337,240,4	substore(AlloyTrapShopper)	ƒgƒ‰ƒbƒvê–å‰Æ	66
 	close;
 }
 
-morocc.gat,190,96,4	duplicate(3rdPoisonShopper)	“Å»‘¢ƒLƒbƒg”Ì”„ˆõ#moc	877
+morocc.gat,185,95,4	duplicate(3rdPoisonShopper)	“Å»‘¢ƒLƒbƒg”Ì”„ˆõ#moc	877
 lhz_in02.gat,16,205,4	duplicate(3rdPoisonShopper)	“Å»‘¢ƒLƒbƒg”Ì”„ˆõ#lhz	877
 
 

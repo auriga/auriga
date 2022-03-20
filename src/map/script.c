@@ -4302,6 +4302,7 @@ int buildin_achievement(struct script_state *st);
 int buildin_achievement2(struct script_state *st);
 int buildin_dynamicnpc(struct script_state *st);
 int buildin_mdopenstate(struct script_state *st);
+int buildin_openupgrade(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4637,6 +4638,7 @@ struct script_function buildin_func[] = {
 	{buildin_achievement,"achievement","i"},
 	{buildin_achievement2,"achievement2","iii"},
 	{buildin_dynamicnpc,"dynamicnpc","ssiiii"},
+	{buildin_openupgrade,"openupgrade","i"},
 
 	{NULL,NULL,NULL}
 };
@@ -6079,9 +6081,6 @@ int buildin_getoptitem(struct script_state *st)
 		if(!itemdb_exists(item_tmp.nameid))
 			return 0;
 
-		if(!itemdb_randopt_item(item_tmp.nameid))
-			return 0;
-
 		item_data = itemdb_search(item_tmp.nameid);
 
 		if(ref > MAX_REFINE)
@@ -6100,7 +6099,7 @@ int buildin_getoptitem(struct script_state *st)
 		item_tmp.card[3]   = c4;
 		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 
-		ro = itemdb_randopt_data(key, item_tmp.nameid);
+		ro = itemdb_randopt_data(1, key);
 		if(ro.nameid) {
 			int slot = 0;
 			int rate = 0;
@@ -6113,11 +6112,27 @@ int buildin_getoptitem(struct script_state *st)
 				rate += ro.opt[i].rate;
 				if(rate >= atn_rand()%10000) {
 					item_tmp.opt[slot].id = ro.opt[i].optid;
-					if(ro.opt[i].optval_min != ro.opt[i].optval_max)
+					if(ro.opt[i].optval_plus)
+						item_tmp.opt[slot].val = ro.opt[i].optval_min + (atn_rand() % ((ro.opt[i].optval_max - ro.opt[i].optval_min) / ro.opt[i].optval_plus + 1)) * ro.opt[i].optval_plus;
+					else if(ro.opt[i].optval_min != ro.opt[i].optval_max)
 						item_tmp.opt[slot].val = ro.opt[i].optval_min + atn_rand() % (ro.opt[i].optval_max - ro.opt[i].optval_min + 1);
 					else
 						item_tmp.opt[slot].val = ro.opt[i].optval_min;
 					rate = 0;
+				}
+			}
+			for(i = 0; i < 5-1; i++) {
+				if(item_tmp.opt[i].id == 0) {
+					int j;
+					for(j = i+1; j < 5; j++) {
+						if(item_tmp.opt[j].id != 0) {
+							item_tmp.opt[i].id = item_tmp.opt[j].id;
+							item_tmp.opt[i].val = item_tmp.opt[j].val;
+							item_tmp.opt[j].id = 0;
+							item_tmp.opt[j].val = 0;
+							break;
+						}
+					}
 				}
 			}
 			if((ret = pc_additem(sd,&item_tmp,1))) {
@@ -7017,7 +7032,31 @@ int buildin_bonus3(struct script_state *st)
 	int type,type2,type3,val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	switch(type) {
+	case SP_AUTOSPELL:
+	case SP_AUTOSPELL2:
+	case SP_AUTOSELFSPELL:
+	case SP_AUTOSELFSPELL2:
+	case SP_REVAUTOSPELL:
+	case SP_REVAUTOSPELL2:
+	case SP_REVAUTOSELFSPELL:
+	case SP_REVAUTOSELFSPELL2:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+3]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type2 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type2 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		break;
+	}
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	val   = conv_num(st,& (st->stack->stack_data[st->start+5]));
 
@@ -7035,7 +7074,29 @@ int buildin_bonus4(struct script_state *st)
 	unsigned int val;
 
 	type  = conv_num(st,& (st->stack->stack_data[st->start+2]));
-	type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	switch(type) {
+	case SP_AUTOSPELL:
+	case SP_SKILLAUTOSPELL:
+	case SP_SKILLAUTOSPELL2:
+	case SP_SKILLAUTOSELFSPELL:
+	case SP_SKILLAUTOSELFSPELL2:
+	case SP_AUTOACTIVE_SKILL:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+3]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type2 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type2 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
+		break;
+	}
 	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	val   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+6]));
@@ -14534,5 +14595,25 @@ int buildin_dynamicnpc(struct script_state *st)
 	sd->npc_dynamic_id = nd->bl.id;
 	npc_dynamicnpc_start(sd);
 	clif_spawndynamicnpc(sd, nd, x, y, dir, class_);
+	return 0;
+}
+
+/*==========================================
+ * アップグレードウィンドウ表示
+ *------------------------------------------
+ */
+int buildin_openupgrade(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int nameid;
+
+	nullpo_retr(0, sd);
+
+	nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(nameid <= 0)
+		return 0;
+
+	clif_openlapineupgrade(sd, nameid);
+
 	return 0;
 }

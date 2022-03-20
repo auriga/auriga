@@ -938,13 +938,13 @@ AurigaNPCScript
 			<card2> 差さっているカード、製造武器なら属性と星のかけらの数を設定。星のかけらの数(範囲:0~3)*5*256 + 属性(無:0、火:3、水:1、風:4、土:2)
 			<card3> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの下の2バイト
 			<card4> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの上の2バイト
-			<key>   参照に使うMOB_ID
+			<key>   参照に使うID
 			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
-			<itemid>と<key>が一致するランダムオプション設定がない場合、アイテム入手に失敗します。
+			<key>が一致するランダムオプション設定がない場合、アイテム入手に失敗します。
 
 		delitem命令
 			delitem <itemid>,<num>[,<flag>];
@@ -2695,6 +2695,14 @@ AurigaNPCScript
 
 			ユニークな名称<name>を持つshop、pointshop、market型NPCの商品を更新します。
 			<nameid>を<price>で販売させ、market型の場合は最大<num>個購入できます。
+
+		openupgrade命令
+			openupgrade <itemid>;
+
+			itemid	数値
+
+			<itemid>使用時のupgradeウインドウを開く。
+			upgrade完了後に<itemid>は1個消費されるためNonconsumeフラグを立ててください。
 
 
 	＊関数

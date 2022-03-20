@@ -156,6 +156,7 @@ void clif_send_achievement_list(struct map_session_data *sd);
 void clif_send_achievement_update(struct map_session_data *sd, struct achieve_data *ad);
 void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, bool remove);
 void clif_dynamicnpc_create_ack(struct map_session_data *sd, int type);
+void clif_item_preview(struct map_session_data *sd, short idx);
 
 // trade
 void clif_traderequest(struct map_session_data *sd, const char *name);
@@ -472,6 +473,10 @@ void clif_GM_kickack(struct map_session_data *sd, int id);
 void clif_GM_kick(struct map_session_data *sd, struct map_session_data *tsd, int type);
 void clif_manner_message(struct map_session_data* sd, int type);
 void clif_GM_silence(struct map_session_data *sd, struct map_session_data *tsd, int type);
+
+// lapineupgrade
+void clif_openlapineupgrade(struct map_session_data *sd, int nameid);
+void clif_lapineupgradeack(struct map_session_data *sd, int result);
 
 int clif_foreachclient(int (*)(struct map_session_data*,va_list),...);
 

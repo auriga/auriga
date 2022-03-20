@@ -1471,7 +1471,14 @@ L_RECALC:
 		if(sd->sc.data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
 			sd->paramb[3] -= sd->sc.data[SC_MELODYOFSINK].val4;
 		}
-		
+		if(sd->sc.data[SC_FULL_THROTTLE].timer != -1) {	// フルスロットル
+			sd->paramb[0] += sd->status.str  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+			sd->paramb[1] += sd->status.agi  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+			sd->paramb[2] += sd->status.vit  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+			sd->paramb[3] += sd->status.int_ * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+			sd->paramb[4] += sd->status.dex  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+			sd->paramb[5] += sd->status.luk  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
+		}
 		if(sd->sc.data[SC_UNIVERSESTANCE].timer != -1) {	// 宇宙の構え
 			int add = sd->sc.data[SC_UNIVERSESTANCE].val2;
 			sd->paramb[0] += add;
@@ -1860,6 +1867,9 @@ L_RECALC:
 		sd->nhealsp += sd->nhealsp * sd->sc.data[SC_VITATA_500].val1 / 100;
 		if(sd->nhealsp > 0x7fff)
 			sd->nhealsp = 0x7fff;
+	}
+	if(sd->sc.data[SC_REBOUND].timer != -1) {	// リバウンド
+		sd->nhealhp = sd->nhealsp = 0;
 	}
 
 	// 種族耐性（これでいいの？ ディバインプロテクションと同じ処理がいるかも）
@@ -3375,6 +3385,8 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		return 200;
 	if(sd->ud.skilltimer != -1 && sd->ud.skillid == LG_EXEEDBREAK)		// イクシードブレイクの詠唱中
 		return (150 - 10 * sd->ud.skilllv);
+	if(sd->sc.data[SC_FULL_THROTTLE].timer != -1)		// フルスロットル中
+		return 50;
 
 	/* speedが変化するステータスの計算 */
 	if(sd->sc.count > 0) {
@@ -3565,6 +3577,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				if( slow_val < 10 ){
 					slow_val = 10;
 				}
+			}
+
+			// リバウンド
+			if(sd->sc.data[SC_REBOUND].timer != -1) {
+				if(slow_val < 25)
+					slow_val = 25;
 			}
 		}
 
@@ -7805,7 +7823,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TWOHANDQUICKEN:			/* 2HQ */
 			calc_flag = 1;
 			if(bl->type == BL_MOB && battle_config.monster_skill_over && val1 >= battle_config.monster_skill_over)
-				val2 = 50;
+				val2 = 70;
 			else
 				val2 = 30;
 			break;
@@ -9069,6 +9087,19 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
+		case SC_FULL_THROTTLE:	/* フルスロットル */
+			val2 = 20;
+			val3 = tick / 1000;
+			tick = 1000;
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_REBOUND:	/* リバウンド */
+			val2 = tick / 2000;
+			tick = 2000;
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
 		case SC_LUNARSTANCE:	/* 月の構え */
 			tick = 600*1000;
 			calc_flag = 1;
@@ -9751,6 +9782,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ARCLOUSEDASH:		/* アクラウスダッシュ */
 		case SC_CHATTERING:			/* チャタリング */
 		case SC_WIND_STEP:			/* ウィンドステップ */
+		case SC_REBOUND:			/* リバウンド */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -10118,6 +10150,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			if(sd)
 				pc_break_equip(sd, LOC_RARM);
 			calc_flag = 1;
+			break;
+		case SC_FULL_THROTTLE:		/* フルスロットル */
+			status_change_start(bl,SC_REBOUND,0,0,0,0,10000,0);
+			calc_flag = 1;
+			ud->state.change_speed = 1;
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -11604,6 +11641,31 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 			unit_heal(bl, -hp, -sp);
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+		}
+		break;
+	case SC_FULL_THROTTLE:		/* フルスロットル */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				int sp = (int)((atn_bignumber)status_get_max_sp(&sd->bl) * 5 / 100);
+				if(sp > 0) {
+					if(sd->status.sp >= sp) {
+						sd->status.sp -= sp;
+						clif_updatestatus(sd,SP_SP);
+						timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+					}
+					else if(sd->status.sp > 0) {
+						sd->status.sp = 0;
+						clif_updatestatus(sd,SP_SP);
+						timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+					}
+				}
+			}
+		}
+		break;
+	case SC_REBOUND:	/* リバウンド */
+		clif_emotion(bl,4);
+		if((--sc->data[type].val2) > 0) {
+			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_NEWMOON:	/* 朔月脚 */

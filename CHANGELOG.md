@@ -1,4 +1,185 @@
 ----------------------------------------
+//1510 [2022/01/13] by refis
+
+・アップグレード失敗時にも成功パケットを送っていたのを修正（clif.c, pc.*）
+
+----------------------------------------
+//1509 [2022/01/08] by refis
+
+・クエストステータス変更が正常動作しない誤りを修正（clif.c）
+	Thanks Dallen さん
+
+・アイテムプレビューがitemid拡張に対応してなかったのを修正（clif.c）
+
+----------------------------------------
+//1508 [2022/01/08] by refis
+
+・モロク復興関係NPCを更新（npc_town_morocc.sc, npc_job_thirdclass.sc）
+	Thanks a lot Dallen さん!
+
+----------------------------------------
+//1507 [2022/01/07] by refis
+
+・1505のitemidミスを修正（lapineupgrade_db.txt）
+	Thanks Dallen さん
+
+・対応item_db.txtの更新（item_db*.txt）
+
+----------------------------------------
+//1506 [2022/01/06] by refis
+
+・オートスペル、オートアクティブ系アイテムボーナスでもスキル名称を利用できるよう追加拡張（script.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1505 [2022/01/06] by refis
+
+・ランダムオプションシステムの改修
+	-> ID項をナンバリングとして扱えるように有効itemidチェックを削除する（script.c）
+	-> optvalテーブルでカウントアップ値を指定できるようテーブル処理を拡張（itemdb.*, luascript.c）
+	-> オプションが付かない項目があった場合、以降のオプションが非表示になるため
+	   オプションを切り詰めるようにする（mob.c, script.c）
+		Thanks エニ さん
+
+・アイテムアップグレードシステムの追加（lapineupgrade_db.txt, packet_db.lua, script_ref.txt, clif.*, itemdb.*, pc.*, script.c）
+	Thanks Dallen さん
+
+・luaデータベースの更新（lua_auriga.conf, enumvar.lua, item_randopt_db.lua）
+
+----------------------------------------
+//1504 [2022/01/04] by refis
+
+・オーバースキル「ツーハンドクイッケン」の増加量を50%から70%に修正（status.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1503 [2022/01/04] by refis
+
+・[魔神殿]の進行不具合と報酬ドロップの追加（npc_memorial_eom.sc）
+
+----------------------------------------
+//1502 [2022/01/03] by refis
+
+・メモリアルダンジョン[魔神殿]実装（map_auriga.conf, npc_memorial_eom.sc）
+
+・関連傭兵データの追加（merc_db.txt, mob_db.txt）
+
+----------------------------------------
+//1501 [2022/01/02] by refis
+
+・職業定義テーブルのずれを修正（mmo.h）
+
+・スキルユニット定義を追加（skill.h）
+	Thanks Dallen さん
+
+----------------------------------------
+//1500 [2022/01/02] by refis
+
+・PACKETVER[20190703]以降でコンパイルエラーが出ているのを修正（clif.c）
+
+・2020-02-05aRagexeREをリスト追加（bcc32_make.bat, Makefile, vc_make.bat）
+
+----------------------------------------
+//1499 [2022/01/02] by refis
+
+・文字コードが誤っていたので訂正（npc_memorial_heroair.sc）
+
+----------------------------------------
+//1498 [2021/12/19] by refis
+
+・座る/立つ時に動作するスキルの判定式を修正（skill.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1497 [2021/12/07] by refis
+
+・古のグラストヘイムで会話中にスタックする箇所を修正（npc_memorial_glastheim.sc）
+
+----------------------------------------
+//1496 [2021/12/07] by refis
+
+・覚醒ローブが複数回エンチャントできる箇所の修正（npc_memorial_fenrirsara.sc）
+	Thanks Dallen さん
+
+・管理コマンド[reloaditemdb]でメモリリークが発生していたのを修正（itemdb.c）
+	Thanks Dallen さん
+
+・メモリアルダンジョン生成破棄時にセル情報をリセットする（map.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1495 [2021/11/07] by refis
+
+・モンスタートーク修正（mob_talk_db.txt）
+
+・デュプレライトの名称を修正（skill_db*.txt, battle.c, skill.c）
+
+・ピアスエンチャントのtypo修正（npc_memorial_fenrirsara.sc）
+
+----------------------------------------
+//1494 [2021/10/10] by refis
+
+・攻撃速度系エンチャントを加算タイプに修正（item_db.txt）
+
+・サラのローブ覚醒、エンチャント関係を実装（npc_memorial_fenrirsara.sc）
+
+----------------------------------------
+//1493 [2021/09/09] by refis
+
+・サモナースキルの有効射程を修正（skill_db.txt）
+
+----------------------------------------
+//1492 [2021/08/26] by refis
+
+・サラの記憶の再入場制限条件式を修正（npc_memorial_sara.sc）
+	Thanks rina さん
+
+----------------------------------------
+//1491 [2021/08/26] by refis
+
+・ネジリアン帝国の陰謀クエスト実装（npc_quest_illusionteddybear.sc, quest_db.txt）
+
+・ネジリアン帝国追加マップのmapflag更新 (mapflag.sc)
+
+・ネジリアン帝国追加マップのmonster出現定義追加（npc_monster_eindun.sc）
+
+・アイテム、モンスターデータを更新（item_db.txt, mob_db.txt, mob_skill_db.txt）
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
+//1490 [2021/08/15] by refis
+
+・ロックリッジメインクエストの報酬間違いを修正（npc_town_rockridge.sc）
+	Thanks rina さん
+
+・不必要な定義があったので削除（status.c）
+
+----------------------------------------
+//1489 [2021/08/15] by refis
+
+・[サモンレギオン]スキルの挙動と不具合を修正（skill_db.txt, homun.*, mob.c, skill.c）
+	Thanks rina さん
+
+----------------------------------------
+//1488 [2021/08/15] by refis
+
+・ホムンクルススペリオールの経験値テーブルを修正（exp_homun.txt, homun_db.txt）
+	Thanks rina さん
+
+----------------------------------------
+//1487 [2021/08/12] by refis
+
+・ピンタドスフェスティバルが進行しないミス修正（npc_town_portmalaya.sc）
+	Thanks rina さん
+
+----------------------------------------
+//1486 [2021/08/07] by refis
+
+・フルスロットル習得クエスト実装
+（quest_db.txt, skill_*.txt, npc_quest_skillget3.sc, mmo.h, skill.*, status.c）
+
+----------------------------------------
 //1485 [2021/07/20] by refis
 
 ・モンスターデータの更新（mob_db.txt, mob_skill_db.txt, mob_talk_db.txt）

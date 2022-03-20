@@ -2615,12 +2615,12 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					battle_skill_attack(BF_WEAPON,src,src,target,NC_AXEBOOMERANG,1,tick,skl->flag);
 				}
 				break;
-			case AB_DUPLELIGHT_MELEE:		/* デュプレライト(物理) */
+			case AB_DUPLELIGHT_MELEE:		/* グレイアムライト */
 			case WM_REVERBERATION_MELEE:	/* 振動残響(物理) */
 			case NPC_REVERBERATION_ATK:		/* M振動残響(攻撃) */
 				battle_skill_attack(BF_WEAPON,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
-			case AB_DUPLELIGHT_MAGIC:		/* デュプレライト(魔法) */
+			case AB_DUPLELIGHT_MAGIC:		/* ミリアムライト */
 				battle_skill_attack(BF_MAGIC,src,src,target,skl->skill_id,skl->skill_lv,tick,skl->flag);
 				break;
 			case WL_CHAINLIGHTNING_ATK:		/* チェーンライトニング(連鎖) */
@@ -3293,7 +3293,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case RK_SONICWAVE:			/* ソニックウェーブ */
 	case RK_DRAGONBREATH:	/* ファイアードラゴンブレス */
 	case RK_DRAGONBREATH_WATER:	/* ウォータードラゴンブレス */
-	case AB_DUPLELIGHT_MELEE:	/* デュプレライト(物理) */
+	case AB_DUPLELIGHT_MELEE:	/* グレイアムライト */
 	case RA_WUGBITE:		/* ウォーグバイト */
 	case NC_BOOSTKNUCKLE:	/* ブーストナックル */
 	case NC_PILEBUNKER:		/* パイルバンカー */
@@ -4019,7 +4019,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NJ_HUUJIN:				/* 風刃 */
 	case AB_HIGHNESSHEAL:		/* ハイネスヒール */
 	case AB_ADORAMUS:			/* アドラムス */
-	case AB_DUPLELIGHT_MAGIC:	/* デュプレライト(魔法) */
+	case AB_DUPLELIGHT_MAGIC:	/* ミリアムライト */
 	case LG_RAYOFGENESIS:		/* レイオブジェネシス */
 	case WM_METALICSOUND:		/* メタリックサウンド */
 	case EL_FIRE_ARROW:			/* ファイアーアロー */
@@ -8711,6 +8711,9 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			struct mob_data *tmpmd = NULL;
 			int i,id;
 
+			// レギオンモンスターの削除
+			homun_deletelegion(hd);
+
 			for(i=0; i<qty[skilllv - 1]; i++){
 				id = mob_once_spawn_area(hd->msd, src->m, src->x-2, src->y-2, src->x+2, src->y+2, "--ja--", summons[skilllv - 1], 1, "");
 				if((tmpmd = map_id2md(id)) != NULL) {
@@ -11268,6 +11271,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		status_change_end(bl, SC_REVERSEORCISH, -1);
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+		break;
+	case EVT_FULL_THROTTLE:	/* フルスロットル */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		unit_heal(src,status_get_max_hp(src),0);
+		status_change_start(bl,SC_FULL_THROTTLE,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case EL_CIRCLE_OF_FIRE:	/* サークルオブファイア */
 	case EL_FIRE_CLOAK:		/* ファイアークローク */
@@ -14124,7 +14132,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				status_change_start(bl,SC_VOLCANIC_ASH,sg->skill_lv,0,0,0,skill_get_time2(sg->skill_id,sg->skill_lv),0);
 		}
 		break;
-	case UNT_CREATINGSTAR:	/* 創星の書 */
+	case UNT_CREATINGSTAR2:	/* 創星の書 */
 		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x500);
 		status_change_start(bl,SC_CREATINGSTAR,sg->skill_lv,0,0,0,sg->interval+100,0);
 		break;
@@ -14311,7 +14319,7 @@ static int skill_unit_onout(struct skill_unit *src,struct block_list *bl,unsigne
 		if(sc && sc->data[SC_NYANGGRASS].timer != -1 && sc->data[SC_NYANGGRASS].val2 == src->bl.id)
 			status_change_end(bl,SC_NYANGGRASS,-1);
 		break;
-	case UNT_CREATINGSTAR:	/* 創星の書 */
+	case UNT_CREATINGSTAR2:	/* 創星の書 */
 		sc = status_get_sc(bl);
 		if(sc && sc->data[SC_CREATINGSTAR].timer != -1 && sc->data[SC_CREATINGSTAR].val2 == src->bl.id){
 			sc->data[SC_CREATINGSTAR].val4 = 0;
@@ -17909,7 +17917,7 @@ static int skill_sit_in(struct block_list *bl,va_list ap)
 
 	if(flag&1 && pc_checkskill(sd,RG_GANGSTER) > 0)
 		sd->state.gangsterparadise = 1;
-	else if(flag&2 && sd->s_class.job >= PC_JOB_TK && sd->s_class.job <= PC_JOB_SL)
+	else if(flag&2 && (pc_checkskill(sd,TK_HPTIME) > 0 || pc_checkskill(sd,TK_SPTIME) > 0))
 		sd->state.taekwonrest = 1;
 
 	return 0;
@@ -17917,8 +17925,8 @@ static int skill_sit_in(struct block_list *bl,va_list ap)
 
 static int skill_sit_out(struct block_list *bl,va_list ap)
 {
-	struct map_session_data *sd;
 	int flag;
+	struct map_session_data *sd;
 
 	nullpo_retr(0, bl);
 	nullpo_retr(0, ap);
@@ -17946,9 +17954,9 @@ int skill_sit(struct map_session_data *sd, int type)
 
 	nullpo_retr(0, sd);
 
-	if(pc_checkskill(sd,RG_GANGSTER) > 0)
+	if(pc_checkskill(sd,RG_GANGSTER) > 0 || sd->state.gangsterparadise)
 		flag |= 1;
-	if(pc_checkskill(sd,TK_HPTIME) > 0 || pc_checkskill(sd,TK_SPTIME) > 0)
+	if(pc_checkskill(sd,TK_HPTIME) > 0 || pc_checkskill(sd,TK_SPTIME) > 0 || sd->state.taekwonrest)
 		flag |= 2;
 
 	if(!flag)
@@ -21090,8 +21098,8 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
 
 	// サブスキルの場合はメインに置き換え
 	switch(skillid) {
-		case AB_DUPLELIGHT_MELEE:	// デュプレライト(物理)
-		case AB_DUPLELIGHT_MAGIC:	// デュプレライト(魔法)
+		case AB_DUPLELIGHT_MELEE:	// グレイアムライト
+		case AB_DUPLELIGHT_MAGIC:	// ミリアムライト
 			skillid = AB_DUPLELIGHT;
 			break;
 		case WL_CHAINLIGHTNING_ATK:	// チェーンライトニング(連鎖)
