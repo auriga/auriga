@@ -176,7 +176,7 @@ OnInit:
 
 dali02.gat,141,120,3	script	魔神の塔 次元移動機	10007,{
 	if(checkquest(7577)) {
-		if(checkquest(7577) & 0x4 && checkquest(118909) & 0x4) {
+		if(checkquest(7577) & 0x2 && checkquest(118909) & 0x2) {
 			mes "‐再調査が可能になりました‐";
 			delquest 7577;
 			delquest 118909;
@@ -251,7 +251,7 @@ dali02.gat,137,121,3	script	魔学者アティ#tnm02	620,{
 			mes "結成してくれ。";
 			close;
 		}
-		if(checkquest(7577) & 0x4 && checkquest(118909) & 0x4) {
+		if(checkquest(7577) & 0x2 && checkquest(118909) & 0x2) {
 			mes "‐再調査が可能になりました‐";
 			delquest 7577;
 			delquest 118909;
@@ -324,6 +324,7 @@ OnStart:
 	hideonnpc getmdnpcname("ルシル#tnm04");
 	for(set '@i,1;'@i<=8;set '@i,'@i+1)
 		hideonnpc getmdnpcname("#tnmバリケード" +'@i);
+	areasetcell getmdmapname("1@tnm2.gat"),108,110,112,113,0;
 	hideonnpc getmdnpcname("#tnm3gate01");
 	hideonnpc getmdnpcname("領主の娘#tnm02");
 	hideonnpc getmdnpcname("領主の娘#tnm03");
@@ -574,7 +575,7 @@ OnTalk2:
 		setpartyinmap TNM1_QUE,2;
 		close;
 	}
-	else if(TNM1_QUE >= 2 && TNM1_QUE < 8) {
+	else if(TNM1_QUE >= 2 && TNM1_QUE < 9) {
 		if(countitem(7641)) {
 			mes "[衛生兵ペイマー]";
 			mes "ごめんなさい、補給の都合で";
@@ -657,7 +658,7 @@ OnTalk3:
 	close;
 }
 1@tnm1.gat,39,114,3	script	負傷兵#1_1	687,3,3,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -681,8 +682,8 @@ OnTalk3:
 	hideoffnpc getmdnpcname("負傷兵#1");
 	misceffect 6,getmdnpcname("負傷兵#1");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00,0x190,12,0,0;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00,0x190,12,0,0;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -703,7 +704,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,30,120,3	script	負傷兵#2_1	689,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -727,8 +728,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#2");
 	misceffect 6,getmdnpcname("負傷兵#2");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -748,7 +749,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,25,117,5	script	負傷兵#3_1	692,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -772,8 +773,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#3");
 	misceffect 6,getmdnpcname("負傷兵#3");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -793,7 +794,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,19,118,4	script	負傷兵#4_1	694,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -817,8 +818,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#4");
 	misceffect 6,getmdnpcname("負傷兵#4");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -840,7 +841,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,19,110,4	script	負傷兵#5_1	697,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -864,8 +865,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#5");
 	misceffect 6,getmdnpcname("負傷兵#5");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -886,7 +887,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,24,104,7	script	負傷兵#6_1	699,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -910,8 +911,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#6");
 	misceffect 6,getmdnpcname("負傷兵#6");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -931,7 +932,7 @@ OnTouch:
 	close;
 }
 1@tnm1.gat,31,110,3	script	負傷兵#7_1	689,{
-	if(countitem(7641)) {
+	if(countitem(7641) == 0) {
 		mes "‐負傷兵を治療するには";
 		mes "　治療箱が1個必要です‐";
 		close;
@@ -955,8 +956,8 @@ OnTouch:
 	hideoffnpc getmdnpcname("負傷兵#7");
 	misceffect 6,getmdnpcname("負傷兵#7");
 	setpartyinmap TNM1_QUE,TNM1_QUE + 1;
-	if(TNM1_QUE < 8) {
-		announce "衛生兵ペイマー : 負傷兵はあと" +(8 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
+	if(TNM1_QUE < 9) {
+		announce "衛生兵ペイマー : 負傷兵はあと" +(9 - TNM1_QUE)+ "人です!!",0x9,0x00ff00;
 	}
 	else {
 		announce "衛生兵ペイマー : 全ての負傷兵の治療が終わりました！",0x9,0xff0000;
@@ -980,7 +981,7 @@ OnTouch:
 		end;
 	}
 	switch(TNM1_QUE) {
-	case 8:
+	case 9:
 		stopnpctimer;
 		cutin "tnm_lucile01",0;
 		mes "[ルシル]";
@@ -1075,7 +1076,7 @@ OnTouch:
 		cutin "tnm_lucile01",255;
 		mes "[アサシン・デュー]";
 		mes "お任せください。";
-		setpartyinmap TNM1_QUE,9;
+		setpartyinmap TNM1_QUE,10;
 		donpcevent getmdnpcname("アサシン・デュー#tnm01")+ "::OnStart";
 		next;
 		mes "[副隊長ハイム]";
@@ -1152,7 +1153,7 @@ OnTalk2:
 	mes "[アサシン・デュー]";
 	mes "それでは、ご武運を。";
 	close2;
-	set TNM1_QUE,10;
+	set TNM1_QUE,11;
 	setquest 114815;
 	compquest 114815;
 	warp getmdmapname("1@tnm1.gat"),91,23;
@@ -1208,7 +1209,7 @@ OnKilled:
 		close;
 	}
 	switch(TNM1_QUE) {
-	case 10:
+	case 11:
 		cutin "tnm_lucile02",2;
 		mes "[ルシル]";
 		mes "くっ、魔族に不覚を取り、";
@@ -1254,12 +1255,12 @@ OnKilled:
 		unittalk "ルシル : お願い……します……。";
 		close2;
 		cutin "tnm_lucile03",255;
-		setpartyinmap TNM1_QUE,11;
+		setpartyinmap TNM1_QUE,12;
 		hideoffnpc getmdnpcname("アサシン・ヒュー#hui02");
 		donpcevent getmdnpcname("アサシン・ヒュー#hui02")+ "::OnTalk1";
 		donpcevent getmdnpcname("アサシン・ヒュー#hui02")+ "::OnStart";
 		end;
-	case 11:
+	case 12:
 		mes "‐ルシルの様子を伺う。";
 		mes "　彼女は人の姿をしているが、";
 		mes "　まるで動力が切れた機械のように";
@@ -1282,10 +1283,10 @@ OnKilled:
 		progressbar 30;
 		mes "　^ff0000システムを再起動した。^000000";
 		mes "　再起動したルシルに話しかけよう‐";
-		setpartyinmap TNM1_QUE,12;
+		setpartyinmap TNM1_QUE,13;
 		killmonster getmdmapname("1@tnm1.gat"),getmdnpcname("#tnm1stepmob")+ "::OnKilled";
 		close;
-	case 12:
+	case 13:
 		cutin "tnm_lucile02",2;
 		mes "[ルシル]";
 		mes "ふう……";
@@ -1310,7 +1311,7 @@ OnKilled:
 		unittalk "ルシル : 早くいかないとこの世界が危険です。";
 		close2;
 		cutin "tnm_lucile02",255;
-		setpartyinmap TNM1_QUE,13;
+		setpartyinmap TNM1_QUE,14;
 		initnpctimer;
 		unittalk "ルシル : それでは私はお先に失礼します。世界を救いたいのであれば、一緒に来て下さい。";
 		hideonnpc getmdnpcname("ルシル#tnm02");
@@ -1326,7 +1327,7 @@ OnTimer1000:
 }
 
 1@tnm1.gat,135,99,5	script	アサシン・ヒュー#hui02	10002,{
-	if(TNM1_QUE != 13) {
+	if(TNM1_QUE != 14) {
 		mes "[アサシン・ヒュー]";
 		mes "姉さんが心配です……。";
 		mes "^ff0000機械に近い体^000000なんです。";
@@ -1364,7 +1365,7 @@ OnKilled:
 	set '@count,getmapmobs(getmdmapname("1@tnm1.gat"),getmdnpcname("アサシン・ヒュー#hui02")+ "::OnKilled");
 	if('@count <= 0) {
 		initnpctimer;
-		setpartyinmap TNM1_QUE,12;
+		setpartyinmap TNM1_QUE,13;
 	}
 	end;
 OnTimer1000:
@@ -1761,7 +1762,7 @@ OnKilled2940:
 		cutin "tnm_lucile01",255;
 		end;
 	}
-	if(TNM1_QUE == 13) {
+	if(TNM1_QUE == 14) {
 		cutin "tnm_lucile01",2;
 		mes "[ルシル]";
 		mes "ちょうど良いタイミングですね。";
@@ -1825,7 +1826,7 @@ OnKilled2940:
 		mes "魔神石が入り込まないよう、";
 		mes "ここを死守してください。";
 		unittalk "ルシル : さあ、みなさん。私達のやるべきことが決まりました。魔神石が入り込まないよう、ここを死守してください。";
-		setpartyinmap TNM1_QUE,14;
+		setpartyinmap TNM1_QUE,15;
 		setquest 7573;
 		hideonnpc getmdnpcname("ルシル#tnm03");
 		initnpctimer;
@@ -1833,6 +1834,7 @@ OnKilled2940:
 		cutin "tnm_lucile01",255;
 		end;
 	}
+	end;
 OnTimer2000:
 	announce "ルシル : 塔の5方向からモロクにエネルギーを与える為の魔神石が近づいてきています!!",0x9,0x00ff00,0x190,18,0,0;
 	end;
@@ -1844,7 +1846,7 @@ OnTimer4000:
 }
 
 1@tnm2.gat,145,144,3	script	箱#tnmtop	10005,{
-	setpartyinmap TNM1_QUE,16;
+	setpartyinmap TNM1_QUE,17;
 	misceffect 10,getmdnpcname("箱#tnmtop");
 	hideonnpc getmdnpcname("箱#tnmtop");
 	// 退魔神の杖、退魔神の弓、退魔神の両手剣、退魔神のカタール、退魔神のハンマー、退魔神の短剣
@@ -1868,7 +1870,7 @@ OnTimer4000:
 
 1@tnm2.gat,144,137,3	script	ルシル#tnm04	667,{
 	switch(TNM1_QUE) {
-	case 14:
+	case 15:
 		if(checkquest(114805) & 0x8 == 0) {
 			delquest 7573;
 			mes "‐ルシルに話しかけようとしたその時";
@@ -1900,8 +1902,8 @@ OnTimer4000:
 		close2;
 		cutin "tnm_lucile01",255;
 		end;
-	case 15:
 	case 16:
+	case 17:
 		if(checkquest(114805) & 0x8 == 0) {
 			delquest 7573;
 			mes "‐ルシルに話しかけようとしたその時";
@@ -1913,8 +1915,8 @@ OnTimer4000:
 			mes "　^0000ff魔神の塔入口で精錬可能な権利と";
 			mes "　経験値を獲得！^000000‐";
 			set TNM_REFINE,TNM_REFINE+3;
-			if(TNM_REFINE > 100)
-				set TNM_REFINE,100;
+			if(TNM_REFINE > 1000)
+				set TNM_REFINE,1000;
 			getexp 500000,0;
 			getexp 500000,0;
 			getexp 0,500000;
@@ -2035,11 +2037,11 @@ OnTimer10000:
 }
 
 1@tnm2.gat,142,139,3	script	タナトス#tnm02	10009,{
-	if(TNM1_QUE == 13) {
+	if(TNM1_QUE == 14) {
 		emotion 6,getmdnpcname("タナトス#tnm02");
 		end;
 	}
-	if(TNM1_QUE == 14) {
+	if(TNM1_QUE == 15) {
 		unittalk "タナトス : 悪いな……今は話してる余裕がないんだ。";
 		end;
 	}
@@ -2171,7 +2173,7 @@ OnTimer8000:
 		mes "助けて下さい!!";
 		close;
 	}
-	if(TNM1_QUE == 16) {
+	if(TNM1_QUE == 17) {
 		if(getpartyleader(getcharid(1)) != strcharinfo(0)) {
 			mes "[女の子]";
 			mes "……いきなり魔族が現れて";
@@ -2231,7 +2233,7 @@ OnTimer8000:
 		mes "私も連れて行って下さい！";
 		mes "お願いします！";
 		unittalk "領主の娘 : あそこに見える本棚の後ろにある通路からさらに下の方まで降りて行くことができます！　私も連れて行って下さい！　お願いします！";
-		setpartyinmap TNM1_QUE,17;
+		setpartyinmap TNM1_QUE,18;
 		misceffect 35,getmdnpcname("#tnm3gate01");
 		hideoffnpc getmdnpcname("#tnm3gate01");
 		close;
@@ -2351,9 +2353,9 @@ OnKilled:
 1@tnm3.gat,179,172,3	script	絶念の魔神の影#tnm3	2941,10,10,{
 	end;
 OnTouch:
-	if(TNM1_QUE == 17) {
+	if(TNM1_QUE == 18) {
 		initnpctimer;
-		setpartyinmap TNM1_QUE,18;
+		setpartyinmap TNM1_QUE,19;
 	}
 	end;
 OnTimer3000:
@@ -2397,9 +2399,9 @@ OnKilled:
 1@tnm3.gat,97,18,3	script	誘惑の魔神の影#tnm3	2939,12,12,{
 	end;
 OnTouch:
-	if(TNM1_QUE == 18) {
+	if(TNM1_QUE == 19) {
 		initnpctimer;
-		setpartyinmap TNM1_QUE,19;
+		setpartyinmap TNM1_QUE,20;
 	}
 	end;
 OnTimer1000:
@@ -2760,7 +2762,7 @@ OnStop:
 		cutin "ep14_roki01",255;
 		end;
 	}
-	if(TNM1_QUE < 20) {
+	if(TNM1_QUE < 21) {
 		mes "[ロキ]";
 		mes "……";
 		mes "お前たちはいったいどこから現れた？";
@@ -2780,7 +2782,7 @@ OnStop:
 		hideonnpc getmdnpcname("ロキ#tnmloki02");
 		setquest 114800;
 		compquest 114800;
-		setpartyinmap TNM1_QUE,20;
+		setpartyinmap TNM1_QUE,21;
 		makemerc 2937,900;
 		donpcevent getmdnpcname("#tnm3finalmob")+ "::OnStart";
 		donpcevent getmdnpcname("ロキ#tnmloki02")+ "::OnStart";
@@ -2902,7 +2904,7 @@ OnTimer22000:
 	mes "どうしてあんな事ができる？";
 	mes "俺としては理解出来ない行動だ。";
 	next;
-	if(TNM1_QUE < 22) {
+	if(TNM1_QUE < 23) {
 		mes "‐箱を開封する事により、";
 		mes "　ダンジョンの進行が可能となります‐";
 		close;
@@ -2947,7 +2949,7 @@ OnTimer22000:
 }
 
 1@tnm3.gat,92,47,3	script	箱#tnmbosang	10005,{
-	setpartyinmap TNM1_QUE,22;
+	setpartyinmap TNM1_QUE,23;
 	misceffect 10,getmdnpcname("箱#tnmbosang");
 	hideonnpc getmdnpcname("箱#tnmbosang");
 	// 退魔神の杖、退魔神の弓、退魔神の両手剣、退魔神のカタール、退魔神のハンマー、退魔神の短剣
