@@ -1874,8 +1874,9 @@ OnDamage:
 	end;
 OnKilled:
 	set 'mob,0;
+	stopnpctimer getmdnpcname("#ケイon2");
 	donpcevent getmdnpcname("#女王虫4_bc")+"::OnStop";
-	hideonnpc getmdnpcname("#ケイon3");
+	hideoffnpc getmdnpcname("#ケイon3");
 	hideoffnpc getmdnpcname("ケイオス#6");
 	hideoffnpc getmdnpcname("アイリス#6");
 	hideoffnpc getmdnpcname("大商人の箱#1");
