@@ -4737,6 +4737,8 @@ int status_get_atk(struct block_list *bl)
 			atk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 		if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// イヌハッカシャワー
 			atk -= atk * sc->data[SC_CATNIPPOWDER].val2 / 100;
+		if(sc->data[SC_SHRIMP].timer != -1)		// エビ三昧
+			atk += atk * sc->data[SC_SHRIMP].val3 / 100;
 		if(sc->data[SC_EQC].timer != -1 && bl->type == BL_MOB)		// E.Q.C
 			atk -= atk * sc->data[SC_EQC].val4 / 100;
 		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// 火山灰
@@ -4766,6 +4768,8 @@ int status_get_atk_(struct block_list *bl)
 		if(sd->sc.data[SC_CURSE].timer != -1)
 			atk -= atk*25/100;
 #endif
+		if(sd->sc.data[SC_SHRIMP].timer != -1)		// エビ三昧
+			atk += atk * sd->sc.data[SC_SHRIMP].val3 / 100;
 		return atk;
 	}
 	return 0;
@@ -4941,6 +4945,8 @@ int status_get_matk1(struct block_list *bl)
 			if(sc->data[SC_CHATTERING].timer != -1)	// チャタリング
 				matk1 += sc->data[SC_CHATTERING].val2;
 #endif
+			if(sc->data[SC_SHRIMP].timer != -1)		// エビ三昧
+				matk1 += matk1 * sc->data[SC_SHRIMP].val3 / 100;
 			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// イヌハッカシャワー
 				matk1 -= matk1 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		}
@@ -7264,7 +7270,6 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SU_STOOP:			/* うずくまる */
 		case SC_BITESCAR:			/* タロウの傷 */
 		case SC_TUNAPARTY:			/* マグロシールド */
-		case SC_SHRIMP:				/* エビ三昧 */
 		case SC_PROTECTIONOFSHRIMP:	/* エビパーティー */
 		case SC_SPIRITOFLAND:		/* 大地の魂 */
 		case SC_JP_EVENT01:
@@ -8772,6 +8777,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			break;
+		case SC_SHRIMP:		/* エビ三昧 */
+			if(val2 >= 5)	// WATK/MATK増加
+				val3 = 30;
+			else if(val2 == 1)
+				val3 = 5;
+			else
+				val3 = (val2 - 1) * 5;
+			calc_flag = 1;
+			break;
 		case SC_FRESHSHRIMP:		/* 新鮮なエビ */
 			val3 = 13000 - 2000 * val1;
 			val2 = tick / val3;
@@ -9611,6 +9625,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ZANGETSU:			/* 幻術 -残月- */
 		case SC_AKAITSUKI:			/* 幻術 -紅月- */
 		case SC_KYOUGAKU:			/* 幻術 -驚愕- */
+		case SC_SHRIMP:				/* エビ三昧 */
 		case SC_GROOMING:			/* グルーミング */
 		case SC_NYANGGRASS:			/* ニャングラス */
 		case SC_BURNT:				/* 獄炎呪 */

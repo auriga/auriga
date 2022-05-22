@@ -10837,7 +10837,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case SU_MEOWMEOW:	/* ミャウミャウ */
 		if(flag&1) {
 			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skillid,skilllv,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		} else {
 			int ar = 9 + (skilllv/2) * 3;
 			party_foreachsamemap(skill_area_sub,
@@ -10866,7 +10866,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_skill_nodamage(src,bl,AL_HEAL,heal,1);
 			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
 			battle_heal(NULL,bl,heal,0,0);
-			status_change_start(bl,GetSkillStatusChangeTable(skillid),skillid,skilllv,0,0,skill_get_time(skillid,skilllv),0);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skillid,skilllv,0,0,((sd)? pc_checkskill(sd, SU_SPIRITOFSEA): 0)*30000 + skill_get_time(skillid,skilllv),0);
 		} else {
 			int ar = 9 + (skilllv/2) * 3;
 			party_foreachsamemap(skill_area_sub,
