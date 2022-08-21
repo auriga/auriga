@@ -2141,15 +2141,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {
-			int damage, rate, pid;
-			atn_bignumber base_exp, job_exp;
+			int damage, pid;
+			atn_bignumber rate, base_exp, job_exp;
 			struct map_session_data *tmpsd = NULL;
 
 			if(tmpbl[i] == NULL || tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 				continue;
 
 			damage = PTR2INT(node->data);
-			rate = per * damage / 100;
+			rate = (atn_bignumber)per * damage / 100;
 
 			if(base_exp_rate <= 0) {
 				base_exp = 0;
