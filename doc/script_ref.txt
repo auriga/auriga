@@ -3957,9 +3957,19 @@ AurigaNPCScript
 		getrandombox 関数
 			getrandombox(<type>)
 
-			type ランダム系アイテムのID
+			type	ランダム系アイテムのID
 
 			<type>で指定したランダム系アイテムの中身からひとつIDを返します（item_random.txt）。
+			失敗した場合は0 を返します。
+
+		getrandommob 関数
+			getrandommob(<type>[,<lv>])
+
+			type	ランダム系モンスターアイテムのID
+			lv		モンスターの最大レベル
+
+			<type>で指定したランダム系モンスターアイテムの中身からひとつIDを返します（mob_random.txt）。
+			戦闘設定[random_monster_checklv]が有効の場合、<lv>以下のレベルのモンスターIDになります。
 			失敗した場合は0 を返します。
 
 

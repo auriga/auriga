@@ -6201,7 +6201,7 @@
 12243,M_Berserk_Potion,傭兵用バーサークポーション,2,,,100,,,,,2074075135,2,,,,,,{ mercsc_start SC_SpeedPot2,1800000,0; },{}
 12244,Old_Gift_Box,古いプレゼントボックス,2,,,200,,,,,2074075135,2,,,,,,{ getitem rand(5270,5272),1; },{}
 12245,Green_Ale_US,グリーンエール,2,,,500,,,,,2074075135,2,,,,,,{ percentheal 100,0; },{}
-12246,Mystical_Card_Album,魔力が込められた古いカード帖,2,10000,,50,,,,,2074075135,2,,,,,,{},{}
+12246,Magic_Card_Album,魔力が込められた古いカード帖,2,10000,,50,,,,,2074075135,2,,,,,,{ getitem RAND_MAGIC_CARD_ALBUM,1; },{}
 12247,Halohalo,ハロハロ,2,,,100,,,,,2074075135,2,,,20,,,{ sc_start SC_MSTR,600000,3; sc_start SC_MAGI,600000,3; sc_start SC_MVIT,600000,3; sc_start SC_MINT,600000,3; sc_start SC_MDEX,600000,3; sc_start SC_MLUK,600000,3; },{}
 12248,Masquerade_Ball_Box,仮装舞踏会の箱,2,,,10,,,,,2074075135,2,,,,,,{ getitem 5296,1; getitem 5297,1; getitem 5298,1; },{}
 12249,Payroll_Of_Kafra_,カプラの月給明細書,2,20,,10,,,,,2074075135,2,,,,,,{ set Zeny,Zeny+rand(1,1000000); },{}
@@ -6559,14 +6559,14 @@
 
 12683,Unknown_Item,封印された稀代な宝箱,3,,,500,,,,,,,,,,,,{},{}
 
-12690,Headgear_Card_Album,古いカード帖(兜),3,20,,50,,,,,,,,,,,,{},{}
-12691,Armor_Card_Album,古いカード帖(鎧),3,20,,50,,,,,,,,,,,,{},{}
-12692,Shield_Card_Album,古いカード帖(盾),3,20,,50,,,,,,,,,,,,{},{}
-12693,Garment_Card_Album,古いカード帖(肩),3,20,,50,,,,,,,,,,,,{},{}
-12694,Shoes_Card_Album,古いカード帖(靴),3,20,,50,,,,,,,,,,,,{},{}
-12695,Accessory_Card_Album,古いカード帖(装飾),3,20,,50,,,,,,,,,,,,{},{}
+12690,Old_C_Album_Helm,古いカード帖(兜),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_HELM,1; },{}
+12691,Old_C_Album_Armor,古いカード帖(鎧),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_ARMOR,1; },{}
+12692,Old_C_Album_Shield,古いカード帖(盾),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_SHIELD,1; },{}
+12693,Old_C_Album_Garment,古いカード帖(肩),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_GARMENT,1; },{}
+12694,Old_C_Album_Shoes,古いカード帖(靴),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_SHOES,1; },{}
+12695,Old_C_Album_Acc,古いカード帖(装飾),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_ACC,1; },{}
 
-12698,Weapon_Card_Album,古いカード帖(武器),3,20,,50,,,,,,,,,,,,{},{}
+12698,Old_C_Album_Weapon,古いカード帖(武器),2,20,,50,,,,,2074075135,2,,,,,,{ getitem RAND_C_ALBUM_WEAPON,1; },{}
 12699,Tikbalang_Harness,ティクバランベルト,2,20,,50,,,,,2074075135,2,,,,,,{ pet 2313; },{}
 12700,Inside_Out_Shirt,裏返しのシャツ,2,20,,10,,,,,2074075135,2,,,,,,{ warp "malaya.gat",242,211; },{}
 12701,Old_Blue_Box_F,古く青い箱,2,,,200,,,,,2074075135,2,,,,,,{ getitem rand(7851,7853),1; },{}

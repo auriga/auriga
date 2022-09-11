@@ -4298,6 +4298,7 @@ int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
+int buildin_getrandommob(struct script_state *st);
 int buildin_achievement(struct script_state *st);
 int buildin_achievement2(struct script_state *st);
 int buildin_dynamicnpc(struct script_state *st);
@@ -4635,6 +4636,7 @@ struct script_function buildin_func[] = {
 	{buildin_opendressroom,"opendressroom","*"},
 	{buildin_hateffect,"hateffect","ii"},
 	{buildin_getrandombox,"getrandombox","i"},
+	{buildin_getrandommob,"getrandommob","i*"},
 	{buildin_achievement,"achievement","i"},
 	{buildin_achievement2,"achievement2","iii"},
 	{buildin_dynamicnpc,"dynamicnpc","ssiiii"},
@@ -14482,6 +14484,22 @@ int buildin_getrandombox(struct script_state *st)
 	int nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
 
 	push_val(st->stack,C_INT,itemdb_searchrandomid(-nameid));
+	return 0;
+}
+
+/*==========================================
+ * ランダム系モンスターのID取得
+ *------------------------------------------
+ */
+int buildin_getrandommob(struct script_state *st)
+{
+	int lv = MAX_LEVEL;
+	int nameid = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	if( st->end > st->start+3 )
+		lv = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	push_val(st->stack,C_INT,mobdb_searchrandomid(-nameid,lv));
 	return 0;
 }
 

@@ -1014,7 +1014,7 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param1: unknown type %d %d !\n",type,val);
+			printf("bonus_param1: unknown type %d %d! itemid %d.\n",type,val,current_equip_name_id);
 		break;
 	}
 	return 0;
@@ -1722,7 +1722,7 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param2: unknown type %d %d %d!\n",type,type2,val);
+			printf("bonus_param2: unknown type %d %d %d! itemid %d.\n",type,type2,val,current_equip_name_id);
 		break;
 	}
 
@@ -1866,7 +1866,7 @@ int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int va
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param3: unknown type %d %d %d %d!\n",type,type2,type3,val);
+			printf("bonus_param3: unknown type %d %d %d %d! itemid %d.\n",type,type2,type3,val,current_equip_name_id);
 		break;
 	}
 
@@ -1912,7 +1912,7 @@ int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int ty
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param4: unknown type %d %d %d %d %u!\n",type,type2,type3,type4,val);
+			printf("bonus_param4: unknown type %d %d %d %d %u! itemid %d.\n",type,type2,type3,type4,val,current_equip_name_id);
 		break;
 	}
 
