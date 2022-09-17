@@ -1,6 +1,9 @@
 name: Linux Build (GCC)
 on:
+  pull_request:
   push:
+    branches:
+    - 'master'
     paths:
     - '.github/workflows/integration-linux-build-gcc.yml'
     - '**/Makefile'
@@ -16,4 +19,4 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Build for Auriga
-      run: make -j "$(nproc)" || true
+      run: make -j "$(nproc)"

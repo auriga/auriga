@@ -1,6 +1,9 @@
 name: Windows Build (MSVC 2019)
 on:
+  pull_request:
   push:
+    branches:
+    - 'master'
     paths:
     - '.github/workflows/integration-windows-build-msvc-2019.yml'
     - 'vc_make.bat'
