@@ -1,0 +1,37 @@
+name: Windows Build (MSVC 2019)
+on:
+  push:
+    paths:
+    - '.github/workflows/integration-windows-build-msvc-2019.yml'
+    - 'vc_make.bat'
+    - 'vc_clean.bat'
+    - 'src/**.c'
+    - 'src/**.h'
+permissions:
+  contents: read
+jobs:
+  ci:
+    name: CI
+    runs-on: windows-2019
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Visual Studio
+      env:
+        VISUAL_STUDIO_DIR: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise"
+      run: |
+        cmd.exe /c "call `"${{ env.VISUAL_STUDIO_DIR }}\VC\Auxiliary\Build\vcvars64.bat`" && set > %temp%\vcvars.txt"
+        Get-Content "$env:temp\vcvars.txt" | Foreach-Object {
+          if ($_ -match "^(.*?)=(.*)$") {
+            $key=$matches[1].ToString()
+            $value=$matches[2].ToString()
+            echo "$key=$value" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          }
+        }
+    - name: Build for Auriga
+      run: |
+        set __BITTYPE__=x64
+        set _model_=x64
+        cmd.exe /c "chcp 932 && vc_make.bat"
+    - name: Check Files
+      run: ls
