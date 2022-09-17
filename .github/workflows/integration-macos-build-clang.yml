@@ -1,0 +1,19 @@
+name: MacOS Build (Clang)
+on:
+  push:
+    paths:
+    - '.github/workflows/integration-macos-build-clang.yml'
+    - '**/Makefile'
+    - 'src/**.c'
+    - 'src/**.h'
+permissions:
+  contents: read
+jobs:
+  ci:
+    name: CI
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Build for Auriga
+      run: make -j "$(sysctl -n hw.physicalcpu)" || true
