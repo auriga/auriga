@@ -14096,13 +14096,31 @@ lhz_que01.gat,91,28,0	script	#炉	111,{
 		mes "　その場を離れた‐";
 		close;
 	}
-	if(LHZ_6QUE != 9) {
+	if(LHZ_6QUE != 9 && LHZ_6QUE != 12) {
 		mes "‐どんなに力を込めても、";
 		mes "　開きそうにない‐";
 		close;
 	}
-	chgquest 72020,201485;
-	set LHZ_6QUE,10;
+	mes "‐炉の扉を開けると、中にアイテムが";
+	mes "　入っていた。";
+	mes "　ボルセブの言っていた「ガラクタ」";
+	mes "　とは、きっとこれのことだろう‐";
+	next;
+	if(checkitemblank() == 0) {
+		mes "‐所持しているアイテムの種類数が";
+		mes "　多すぎます。";
+		mes "　種類数を減らしてから、もう一度";
+		mes "　調べてください‐";
+		close;
+	}
+	if(MaxWeight - Weight < 2000) {
+		mes "‐アイテムの重量がいっぱいです。";
+		mes "　重量2000を持てる余裕を作ってから";
+		mes "　もう一度調べてください‐";
+		close;
+	}
+	delquest 72020;
+	set LHZ_6QUE,LHZ_6QUE + 1;
 	set '@rate,rand(1,1000);
 	if('@rate >= 1 && '@rate < 84) {
 		getitem 2582,1;
@@ -14119,20 +14137,16 @@ lhz_que01.gat,91,28,0	script	#炉	111,{
 	} else if('@rate >= 499 && '@rate < 582) {
 		getitem 6471,10;
 	} else if('@rate >= 582 && '@rate < 665) {
-		getitem 6470,10;
+		getitem 6470,20;
 	} else if('@rate >= 665 && '@rate < 748) {
-		getitem 6469,10;
+		getitem 6469,30;
 	} else if('@rate >= 748 && '@rate < 831) {
 		getitem 6471,20;
 	} else if('@rate >= 831 && '@rate < 914) {
-		getitem 6470,20;
+		getitem 6470,40;
 	} else {
-		getitem 6469,20;
+		getitem 6469,60;
 	}
-	mes "‐炉の扉を開けると、";
-	mes "　ボルセブの言った通り";
-	mes "　中にはアイテムが入っていた‐";
-	next;
 	mes "‐アイテムを手に取ると、";
 	mes "　勢いよく炉の扉が閉じ、";
 	mes "　どんなに力を込めても";
