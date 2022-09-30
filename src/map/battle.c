@@ -465,6 +465,10 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
 			damage = 0;
 		}
+
+		if( sc->data[SC_GRAVITYCONTROL].timer != -1 ){
+			damage = 0;
+		}
 	}
 
 	if(src_sc && src_sc->count > 0) {
@@ -675,6 +679,18 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				damage = -scd->val2;
 			if(scd->val2 <= 0)
 				status_change_end(bl, SC_TUNAPARTY, -1);
+		}
+
+		// 次元の書(魔法盾)
+		if(sc->data[SC_DIMENSION2].timer != -1 && damage > 0) {
+			struct status_change_data *scd = &sc->data[SC_DIMENSION2];
+			scd->val2 -= damage;
+			if(scd->val2 >= 0)
+				damage = 0;
+			else
+				damage = -scd->val2;
+			if(scd->val2 <= 0)
+				status_change_end(bl, SC_DIMENSION2, -1);
 		}
 
 		// ダーククロー
@@ -945,6 +961,11 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			}
 		}
 #endif
+		// 朔月脚
+		if(sc->data[SC_NEWMOON].timer != -1 && damage > 0) {
+			if((--sc->data[SC_NEWMOON].val2) <= 0)
+				status_change_end(bl, SC_NEWMOON, -1);
+		}
 		// うずくまる
 		if(sc->data[SC_SU_STOOP].timer != -1) {
 			// ストーンスキン、アンチマジックと競合しない
@@ -2762,14 +2783,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 
 		/* （RE）属性の適用 */
-		if(skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
+		if(skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN && skill_num != SJ_NOVAEXPLOSING) {
 			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 			if(calc_flag.lh)
 				wd.damage2 = battle_attr_fix(wd.damage2, s_ele_, status_get_element(target));
 		}
 
 		/* （RE）属性補正 */
-		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN) {
+		if( (sc || t_sc) && (wd.damage > 0 || wd.damage2 > 0) && skill_num != MO_EXTREMITYFIST && skill_num != NJ_ISSEN && skill_num != SJ_NOVAEXPLOSING) {
 			cardfix = 100;
 			if(sc) {
 				// ボルケーノ
@@ -4506,6 +4527,51 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 1000 * skill_lv, 100 );
 			break;
 		case RL_FIRE_RAIN:		// ファイアーレイン
+			DMG_FIX( 500 + 500 * skill_lv, 100 );
+			break;
+		case SJ_PROMINENCEKICK:	// 紅焔脚
+			DMG_FIX( 650 + 50 * skill_lv, 100 );
+			break;
+		case SJ_SOLARBURST:	// 太陽爆発
+			{
+				int rate = ( 1000 + 220 * skill_lv ) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_LIGHTOFSUN].timer != -1 ) {
+					rate += ( rate * sc->data[SC_LIGHTOFSUN].val2 ) / 100;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case SJ_NEWMOONKICK:	// 朔月脚
+			DMG_FIX( 1650 + 50 * skill_lv, 100 );
+			break;
+		case SJ_FULLMOONKICK:	// 満月脚
+			{
+				int rate = ( 500 + 150 * skill_lv ) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_LIGHTOFMOON].timer != -1 ) {
+					rate += ( rate * sc->data[SC_LIGHTOFMOON].val2 ) / 100;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case SJ_FLASHKICK:	// 閃光脚
+			break;
+		case SJ_FALLINGSTAR_ATK:	// 流星落下
+		case SJ_FALLINGSTAR_ATK2:
+			{
+				int rate = ( 100 + 100 * skill_lv ) * status_get_lv(src) / 100;
+				if (sc && sc->data[SC_LIGHTOFSTAR].timer != -1 )
+					rate += ( rate * sc->data[SC_LIGHTOFSTAR].val2 ) / 100;
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case SJ_STAREMPEROR:		// 星帝降臨
+			DMG_FIX( 1500 + 500 * skill_lv, 100 );
+			break;
+		case SJ_NOVAEXPLOSING:	// 新星爆発
+			DMG_FIX( 500 + 500 * skill_lv, 100 );
+			DMG_ADD(status_get_max_hp(src) * skill_lv / 5  + status_get_max_sp(src) * skill_lv * 2);
+			break;
+		case SJ_BOOKOFCREATINGSTAR:	// 創星の書
 			DMG_FIX( 500 + 500 * skill_lv, 100 );
 			break;
 		case SU_BITE:	// かみつく
@@ -7893,6 +7959,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(sc->data[SC_UPHEAVAL].timer != -1 && (wd.flag&BF_SHORT) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%10000 < 2500) {
 			skill_castend_damage_id(src,target,WZ_EARTHSPIKE,5,tick,flag);
 		}
+		// 流星落下
+		if (sc->data[SC_FALLINGSTAR].timer != -1 && (wd.flag&BF_WEAPON) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC_FALLINGSTAR].val2) {
+			skill_castend_damage_id(src, target, SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR].val1, tick, flag);
+		}
 	}
 
 	// カードによるオートスペル
@@ -8314,6 +8384,22 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				}
 				status_change_start(src,SC_COMBO,SR_FALLENEMPIRE,skilllv,0,0,delay,0);
 			}
+			if(delay > 0)
+			{
+				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
+				clif_combo_delay(src,delay);
+			}
+			break;
+		case SJ_PROMINENCEKICK:	// 紅焔脚
+			delay = 1000 - 4 * status_get_agi(src) - 2 * status_get_dex(src);
+			if( pc_checkskill(sd, SJ_SOLARBURST) )
+			{
+				delay += 300 * battle_config.combo_delay_rate /100;
+				// コンボ入力時間の最低保障追加
+				if(delay < battle_config.combo_delay_lower_limits)
+					delay = battle_config.combo_delay_lower_limits;
+			}
+			status_change_start(src,SC_COMBO,skillid,skilllv,0,0,delay,0);
 			if(delay > 0)
 			{
 				sd->ud.attackabletime = sd->ud.canmove_tick = tick + delay;
@@ -9568,6 +9654,7 @@ int battle_config_read(const char *cfgName)
 		{ "allow_skill_without_day",            &battle_config.allow_skill_without_day,            0        },
 		{ "save_feel_map",                      &battle_config.save_feel_map,                      1        },
 		{ "save_hate_mob",                      &battle_config.save_hate_mob,                      1        },
+		{ "allow_se_univ_skill_limit",          &battle_config.allow_se_univ_skill_limit,          1        },
 		{ "twilight_party_check",               &battle_config.twilight_party_check,               1        },
 		{ "alchemist_point_type",               &battle_config.alchemist_point_type,               0        },
 		{ "marionette_type",                    &battle_config.marionette_type,                    0        },

@@ -240,7 +240,7 @@ static int elem_can_lock(struct elem_data *eld, struct block_list *bl)
 	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
 		return 0;
 	if( tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
-		(tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
+		(tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_NEWMOON].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;
 
 	if(bl->type == BL_PC) {
@@ -551,6 +551,11 @@ int elem_calc_status(struct elem_data *eld)
 
 		if(eld->sc.data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// タイダルウェポン(精霊)
 			atk_rate += eld->sc.data[SC_TIDAL_WEAPON_OPTION].val2;
+		
+		if(eld->sc.data[SC_CREATINGSTAR].timer != -1) {	// 創星の書
+			eld->speed = eld->speed*100/90;	//速度減少率は要調査
+		}
+		
 	}
 
 	// エレメンタルシンパシー

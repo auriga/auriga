@@ -74,6 +74,7 @@
 #define MAX_ELEMENTBALL 10	// 影狼・朧の球体最大数
 #define MAX_MEMORIAL_MAP 200	// メモリアルダンジョンマップ最大生成数
 #define MAX_CLOAKEDNPC 50	// クローキング状態NPC最大保存数
+#define MAX_STELLAR_MARKS 5 // 星の印の最大保存数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -905,6 +906,7 @@ struct map_session_data {
 	int overheat;			// 魔導ギア加熱度（暫定）
 	int shadowform_id;		// シャドウフォーム
 	int c_marker[3];		// クリムゾンマーカー
+	int stellar_mark[MAX_STELLAR_MARKS]; // 星の印
 	int deposit;			// 預金額
 	unsigned int cryptKey;
 };

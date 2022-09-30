@@ -230,7 +230,8 @@ int pc_check_guild_skill_effective_range(struct map_session_data *sd);
 						   (sd)->s_class.job == PC_JOB_KG || (sd)->s_class.job == PC_JOB_OB ||	\
 						   (sd)->s_class.job == PC_JOB_RL)
 
-#define pc_is3rdclass(sd) ((sd)->s_class.job >= PC_JOB_RK && (sd)->s_class.job <= PC_JOB_SC)
+#define pc_is3rdclass(sd) (((sd)->s_class.job >= PC_JOB_RK && (sd)->s_class.job <= PC_JOB_SC) || \
+						   (sd)->s_class.job == PC_JOB_SE || (sd)->s_class.job == PC_JOB_RE )
 
 #define pc_isdoram(sd) ((sd)->s_class.job == PC_JOB_SUM)
 

@@ -219,8 +219,13 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 670- */
 	SI_NEEDLE_OF_PARALYZE,SI_PAIN_KILLER,SI_LIGHT_OF_REGENE,SI_OVERED_BOOST,SI_STYLE_CHANGE,SI_TINDER_BREAKER,SI_CBC,SI_EQC,SI_GOLDENE_FERSE,SI_ANGRIFFS_MODUS,
 	/* 680- */
-	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH
-
+	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_LIGHTOFMOON,SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,
+	/* 690- */
+	SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_DIMENSION,SI_DIMENSION1,SI_DIMENSION2,SI_CREATINGSTAR,SI_FALLINGSTAR,SI_NOVAEXPLOSING,SI_GRAVITYCONTROL,
+	/* 700- */
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	/* 710- */
+	SI_BLANK,SI_BLANK,SI_BLANK
 };
 
 /*==========================================
@@ -1474,6 +1479,15 @@ L_RECALC:
 			sd->paramb[4] += sd->status.dex  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 			sd->paramb[5] += sd->status.luk  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 		}
+		if(sd->sc.data[SC_UNIVERSESTANCE].timer != -1) {	// 宇宙の構え
+			int add = sd->sc.data[SC_UNIVERSESTANCE].val2;
+			sd->paramb[0] += add;
+			sd->paramb[1] += add;
+			sd->paramb[2] += add;
+			sd->paramb[3] += add;
+			sd->paramb[4] += add;
+			sd->paramb[5] += add;
+		}
 	}
 
 	sd->paramc[0] = sd->status.str  + sd->paramb[0] + sd->parame[0];
@@ -1733,6 +1747,9 @@ L_RECALC:
 	}
 	if(sd->sc.data[SC_EQC].timer != -1)
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_EQC].val3 / 100);
+	if(sd->sc.data[SC_LUNARSTANCE].timer != -1) {		// 月の構え
+		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_LUNARSTANCE].val2) / 100);
+	}
 
 	// 最大SP計算
 	calc_val = job_db[sd->s_class.job].sp_base[blv] * (100 + sd->paramc[3]) / 100 + (sd->parame[3] - sd->paramcard[3]);
@@ -2106,6 +2123,9 @@ L_RECALC:
 		if(sd->sc.data[SC_NEUTRALBARRIER].timer != -1) {	// ニュートラルバリアー
 			sd->def2  += (sd->def2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
 			sd->mdef2 += (sd->mdef2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
+		}
+		if(sd->sc.data[SC_SUNSTANCE].timer != -1) {	// 太陽の構え
+			sd->watk += sd->watk * sd->sc.data[SC_SUNSTANCE].val2 / 100;
 		}
 
 		// HIT/FLEE変化系
@@ -3235,6 +3255,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
+		// 星の構え
+		if(sd->sc.data[SC_STARSTANCE].timer != -1)
+			haste_val1 += sd->sc.data[SC_STARSTANCE].val2;
 
 		/* その他 */
 
@@ -3548,6 +3571,12 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				int penalty = sd->sc.data[SC_B_TRAP].val3;
 				if(slow_val < penalty)
 					slow_val = penalty;
+			}
+			// 重力調節
+			if(sd->sc.data[SC_CREATINGSTAR].timer != -1){
+				if( slow_val < 10 ){
+					slow_val = 10;
+				}
 			}
 
 			// リバウンド
@@ -6911,6 +6940,34 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			status_change_end(bl,SC_MADNESSCANCEL,-1);
 			status_change_end(bl,SC_HEAT_BARREL,-1);
 			break;
+		case SC_LUNARSTANCE:
+		case SC_UNIVERSESTANCE:
+		case SC_SUNSTANCE:
+		case SC_STARSTANCE:
+			{
+				int i;
+				bool cancel = false;
+				const int se_stance_list[] = { SC_LUNARSTANCE, SC_UNIVERSESTANCE, SC_SUNSTANCE, SC_STARSTANCE };
+				const int se_light_list[] = { SC_LIGHTOFMOON, -1, SC_LIGHTOFSUN, SC_LIGHTOFSTAR };
+
+				for( i = 0; i < sizeof(se_stance_list)/sizeof(se_stance_list[0]); i++ ){
+					int sc_checking = se_stance_list[i];
+					if(sc->data[sc_checking].timer != -1){
+						status_change_end(bl,sc_checking,-1);
+						if( sc_checking == type ){
+							cancel = true;
+						}
+						sc_checking = se_light_list[i];
+						if( sc_checking >= 0 && sc->data[sc_checking].timer != -1){
+							status_change_end(bl,sc_checking,-1);
+						}
+					}
+				}
+				if( cancel ){
+					return 0;
+				}
+			}
+			break;
 		// 3次新毒スキル
 		case SC_TOXIN:
 		case SC_PARALIZE:
@@ -7035,7 +7092,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	// ウォーグバイト状態中はハイディング、クローキング無効
-	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED))
+	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED || type == SC_NEWMOON))
 		return 0;
 
 	// ウォーマー状態中は凍結、氷結、冷凍無効
@@ -9057,6 +9114,44 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
+		case SC_LUNARSTANCE:	/* 月の構え */
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 10 - 5;
+			break;
+		case SC_UNIVERSESTANCE:	/* 宇宙の構え */
+		case SC_SUNSTANCE:	/* 太陽の構え */
+		case SC_STARSTANCE:	/* 星の構え */
+			tick = 600*1000;
+			calc_flag = 1;
+			val2 = val1 * 5;
+			break;
+		case SC_LIGHTOFMOON:	/* 月の光 */
+		case SC_LIGHTOFSUN:	/* 太陽の光 */
+		case SC_LIGHTOFSTAR:	/* 星の光 */
+			val2 = 5 * val1 + 25;
+			break;
+		case SC_FLASHKICK:	/* 閃光脚 */
+		case SC_NOVAEXPLOSING:	/* 新星爆発 */
+		case SC_GRAVITYCONTROL:	/* 重力調節 */
+		case SC_CREATINGSTAR:	/* 創星の書 */
+		case SC_DIMENSION:	/* 次元の書 */
+		case SC_DIMENSION1:	/* 次元の書 */
+			break;
+		case SC_NEWMOON:		/* 朔月脚 */
+			val2 = 15;	// ダメージ耐性
+			val3 = tick / 1000;
+			tick = 1000;
+			break;
+		case SC_FALLINGSTAR:	/* 流星落下 */
+			val2 = val1 <= 5 ? 20 : 25;
+			break;
+		case SC_DIMENSION2:	/* 次元の書 */
+			if(sd){
+				pc_delspiritball(sd, sd->spiritball.num, 0);
+				pc_addspiritball(sd, tick, val1);
+			}
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -9277,6 +9372,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
+		case SC_NEWMOON:			/* 朔月脚 */
 		case SC__INVISIBILITY:		/* インビジビリティ */
 			unit_stopattack(bl);
 			sc->option |= OPTION_CLOAKING;
@@ -9665,6 +9761,13 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TINDER_BREAKER:		/* 捕獲 */
 		case SC_CBC:				/* 絞め技 */
 		case SC_EQC:				/* E.Q.C */
+		case SC_LUNARSTANCE:		/* 月の構え */
+		case SC_UNIVERSESTANCE:		/* 宇宙の構え */
+		case SC_SUNSTANCE:			/* 太陽の構え */
+		case SC_STARSTANCE:			/* 星の構え */
+			calc_flag = 1;
+			break;
+		case SC_NEWMOON:			/* 朔月脚 */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -10079,6 +10182,20 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_CURSE:
 			calc_flag = 1;
 			break;
+		case SC_GRAVITYCONTROL:	/* 重力調節 */
+			{
+				int fall_damage = sc->data[type].val2;
+				if( fall_damage > 0 ){
+					clif_damage(bl,bl,gettick(),0,0,fall_damage,0,9,0,0);
+					battle_damage(bl,bl,fall_damage,0,0,0);
+				}
+			}
+			break;
+		case SC_DIMENSION2:	/* 次元の書 */
+			if(sd){
+				pc_delspiritball(sd, sd->spiritball.num, 0);
+			}
+			break;
 	}
 
 	if(StatusIconChangeTable[type] != SI_BLANK)	// アイコン消去
@@ -10247,6 +10364,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_CLOAKING:
 		case SC_CLOAKINGEXCEED:		/* クローキングエクシード */
+		case SC_NEWMOON:			/* 朔月脚 */
 		case SC__INVISIBILITY:		/* インビジビリティ */
 			sc->option &= ~OPTION_CLOAKING;
 			opt_flag = 1;
@@ -10738,6 +10856,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_READYDOWN:
 	case SC_READYTURN:
 	case SC_READYCOUNTER:
+	case SC_LUNARSTANCE:
+	case SC_UNIVERSESTANCE:
+	case SC_SUNSTANCE:
+	case SC_STARSTANCE:
 	case SC_DODGE:
 	case SC_AUTOBERSERK:
 	case SC_RUN:
@@ -11561,6 +11683,25 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
+	case SC_NEWMOON:	/* 朔月脚 */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				int sp = 1;
+				if(sp > 0 && sd->status.sp >= sp) {
+					sd->status.sp -= sp;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			}
+		}
+		break;
+	case SC_FLASHKICK:
+		{
+			struct map_session_data *tsd = map_id2sd(sc->data[type].val1);
+			if( tsd )
+				tsd->stellar_mark[sc->data[type].val2] = 0;
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -11612,6 +11753,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 			status_change_end(bl, SC_HIDING, -1);
 			status_change_end(bl, SC_CLOAKING, -1);
 			status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+			status_change_end(bl, SC_NEWMOON, -1);
 			status_change_end(bl, SC__INVISIBILITY, -1);
 		}
 		if(sc->option & OPTION_SPECIALHIDING) {
@@ -11624,6 +11766,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 				status_change_end(bl, SC_HIDING, -1);
 				status_change_end(bl, SC_CLOAKING, -1);
 				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
+				status_change_end(bl, SC_NEWMOON, -1);
 				status_change_end(bl, SC__INVISIBILITY, -1);
 			}
 			if(sc->option & OPTION_SPECIALHIDING) {
@@ -11894,6 +12037,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_MONK;
 			break;
 		case PC_JOB_SG:
+		case PC_JOB_SE:
 			type = SC_STAR;
 			break;
 		case PC_JOB_SA:
@@ -11921,6 +12065,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_ASSASIN;
 			break;
 		case PC_JOB_SL:
+		case PC_JOB_RE:
 			type = SC_SOULLINKER;
 			break;
 		case PC_JOB_KN:
@@ -12189,6 +12334,8 @@ int status_change_hidden_end(struct block_list *bl)
 			status_change_end(bl,SC_STEALTHFIELD,-1);
 	 	if(sc->data[SC_SUHIDE].timer != -1)
 			status_change_end(bl,SC_SUHIDE,-1);
+	 	if(sc->data[SC_NEWMOON].timer != -1)
+			status_change_end(bl,SC_NEWMOON,-1);
 	}
 	return 0;
 }

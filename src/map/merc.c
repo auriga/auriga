@@ -330,6 +330,10 @@ int merc_calc_status(struct merc_data *mcd)
 		   mcd->sc.data[SC_DONTFORGETME].timer == -1 &&
 		   mcd->sc.data[SC_DECREASEAGI].timer == -1)
 			aspd_rate -= 30;
+		
+		if(mcd->sc.data[SC_CREATINGSTAR].timer != -1) {	// ‘n¯‚Ì‘
+			mcd->speed = mcd->speed*100/90;	//‘¬“xŒ¸­—¦‚Í—v’²¸
+		}
 	}
 
 	mcd->matk1    += mcd->int_+(mcd->int_/ 5) * (mcd->int_/ 5);
