@@ -2897,6 +2897,8 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 		map[m].flag.nocostume ^= 1;
 	} else if (strcmpi(w3,"town") == 0) {
 		map[m].flag.town ^= 1;
+	} else if (strcmpi(w3,"damage_rate") == 0) {
+		map[m].flag.damage_rate = atoi(w4);
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
 	}

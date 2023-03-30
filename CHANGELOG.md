@@ -1,4 +1,10 @@
 ----------------------------------------
+//1524 [2023/03/30] by refis
+
+・mapflag「damage_rate」追加
+　（const.txt, script_ref.txt, map/battle.c, map.h, npc.c, script.c）
+
+----------------------------------------
 //1523 [2023/03/19] by refis
 
 ・grf内のファイル名が長すぎるとエラーになっていたので

@@ -323,6 +323,8 @@ AurigaNPCScript
 				コスチュームの見た目が反映されなくなります。
 			town<tab>dummy
 				街MAPモードになります。
+			damage_rate<tab><rate>
+				モンスターに対するダメージ割合を百分率で<rate>に変更します。
 
 	注釈１）
 		NPCの名前は識別子によって管理されています（表示名ではありません）。

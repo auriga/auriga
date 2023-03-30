@@ -9187,6 +9187,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_NOJUMP:             return &map[m].flag.nojump;
 		case MF_NOCOSTUME:          return &map[m].flag.nocostume;
 		case MF_TOWN:               return &map[m].flag.town;
+		case MF_DAMAGE_RATE:        return &map[m].flag.damage_rate;
 	}
 	return NULL;
 }
@@ -9224,6 +9225,7 @@ int buildin_setmapflag(struct script_state *st)
 		case MF_BASEEXP_RATE:
 		case MF_JOBEXP_RATE:
 		case MF_NOCOMMAND:
+		case MF_DAMAGE_RATE:
 			if(st->end > st->start+4) {
 				*flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 			}

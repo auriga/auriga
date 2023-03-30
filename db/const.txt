@@ -354,6 +354,7 @@ mf_nocommand		40
 mf_nojump		41
 mf_nocostume	42
 mf_town			43
+mf_damage_rate		44
 
 //PCステータス
 StatusPoint	9	1

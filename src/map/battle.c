@@ -1100,6 +1100,13 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			if(damage < 1)
 				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
 		}
+
+		// mapflag
+		if(map[bl->m].flag.damage_rate && src->type != BL_MOB) {
+			damage = (map[bl->m].flag.damage_rate < 0)? 0: damage * map[bl->m].flag.damage_rate / 100;
+			if(damage < 1)
+				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
+		}
 	}
 
 	// –‚“±ƒMƒA‚Ì‰Á”M“xã¸
