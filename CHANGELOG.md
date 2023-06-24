@@ -1,4 +1,14 @@
 ----------------------------------------
+//1525 [2023/06/25] by refis
+
+・アカデミー内の付与経験値を分離する（npc_quest_ac_rune.sc）
+
+・ポリン団クエストを追加（map_auriga.conf, quest_db.txt, npc_quest_ac_team_poring.sc）
+	Thanks pneuma さん
+
+・quest_db長を2000から2500に拡張しておく（quest.h）
+
+----------------------------------------
 //1524 [2023/03/30] by refis
 
 ・mapflag「damage_rate」追加
