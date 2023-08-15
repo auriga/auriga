@@ -544,6 +544,7 @@ static unsigned char *skip_space(unsigned char *p)
 static unsigned char *skip_word(unsigned char *p)
 {
 	// prefix
+	if(*p=='.')  p++;	// MD依存変数
 	if(*p=='\'') p++;	// スクリプト依存変数
 	if(*p=='$')  p++;	// MAP鯖内共有変数用
 	if(*p=='@')  p++;	// 一時的変数用(like weiss)
@@ -2355,6 +2356,39 @@ static struct map_session_data *script_rid2sd(struct script_state *st)
 }
 
 /*==========================================
+ * script情報からメモリアルID取得
+ *------------------------------------------
+ */
+static int script_getmemorialid(struct script_state *st)
+{
+	struct npc_data *nd = map_id2nd(st->oid);
+	int memorial_id = 0;
+
+	// 実行NPCから取得
+	if(nd && nd->bl.m >= 0) {
+		memorial_id = map[nd->bl.m].memorial_id;
+	}
+
+	// 実行NPCがメモリアルダンジョン不在の場合はPCから取得
+	if(memorial_id == 0) {
+		struct map_session_data *sd = script_rid2sd(st);
+		if(sd) {
+			memorial_id = map[sd->bl.m].memorial_id;
+
+			// PCがメモリアルダンジョン不在の場合はPTから取得
+			if(memorial_id == 0) {
+				struct party *pt = party_search(sd->status.party_id);
+				if(pt) {
+					memorial_id = pt->memorial_id;
+				}
+			}
+		}
+	}
+
+	return memorial_id;
+}
+
+/*==========================================
  * 変数の読み取り
  *------------------------------------------
  */
@@ -2400,6 +2434,22 @@ static void get_val(struct script_state *st,struct script_data *data)
 						n = &st->script->script_vars;
 					}
 					data->u.str = (char *)linkdb_search(n, INT2PTR(data->u.num));
+				}
+				break;
+			case '.':
+				{
+					struct linkdb_node **n;
+					int memorial_id = script_getmemorialid(st);
+					struct memorial_data *md = memorial_search_data(memorial_id);
+
+					if(md == NULL) {
+						printf("get_val: illegal memorial_id string variable %s\n", name);
+						data->u.str = "";
+					}
+					else {
+						n = &md->vars;
+						data->u.str = (char *)linkdb_search(n, INT2PTR(data->u.num));
+					}
 				}
 				break;
 			default:
@@ -2458,6 +2508,22 @@ static void get_val(struct script_state *st,struct script_data *data)
 						n = &st->script->script_vars;
 					}
 					data->u.num = PTR2INT(linkdb_search(n, INT2PTR(data->u.num)));
+				}
+				break;
+			case '.':
+				{
+					struct linkdb_node **n;
+					int memorial_id = script_getmemorialid(st);
+					struct memorial_data *md = memorial_search_data(memorial_id);
+
+					if(md == NULL) {
+						printf("get_val: illegal memorial_id variable %s\n", name);
+						data->u.num = 0;
+					}
+					else {
+						n = &md->vars;
+						data->u.num = PTR2INT(linkdb_search(n, INT2PTR(data->u.num)));
+					}
 				}
 				break;
 			default:
@@ -2530,8 +2596,30 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 					aFree(old_str);
 			}
 			break;
+		case '.':
+			{
+				char *old_str;
+				struct linkdb_node **n;
+				int memorial_id = script_getmemorialid(st);
+				struct memorial_data *md = memorial_search_data(memorial_id);
+
+				if(md == NULL) {
+					printf("set_reg: illegal memorial_id string variable %s\n", name);
+				}
+				else {
+					n = &md->vars;
+					if( str[0] ) {
+						old_str = (char *)linkdb_replace(n, INT2PTR(num), aStrdup(str));
+					} else {
+						old_str = (char *)linkdb_erase(n, INT2PTR(num));
+					}
+					if(old_str)
+						aFree(old_str);
+				}
+			}
+			break;
 		default:
-			printf("script: set_reg: illegal scope string variable !");
+			printf("script: set_reg: illegal scope string variable !\n");
 			break;
 		}
 	} else {
@@ -2567,6 +2655,25 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 						linkdb_replace(n, INT2PTR(num), INT2PTR(val));
 					} else {
 						linkdb_erase(n, INT2PTR(num));
+					}
+				}
+				break;
+			case '.':
+				{
+					struct linkdb_node **n;
+					int memorial_id = script_getmemorialid(st);
+					struct memorial_data *md = memorial_search_data(memorial_id);
+
+					if(md == NULL) {
+						printf("set_reg: illegal memorial_id variable %s\n", name);
+					}
+					else {
+						n = &md->vars;
+						if( val != 0 ) {
+							linkdb_replace(n, INT2PTR(num), INT2PTR(val));
+						} else {
+							linkdb_erase(n, INT2PTR(num));
+						}
 					}
 				}
 				break;
@@ -2743,7 +2850,7 @@ static void pop_stack(struct script_stack* stack,int start,int end)
  * スクリプト依存変数、関数依存変数の解放
  *------------------------------------------
  */
-static void script_free_vars(struct linkdb_node **node)
+void script_free_vars(struct linkdb_node **node)
 {
 	struct linkdb_node *n = *node;
 
@@ -3671,39 +3778,6 @@ static int script_mapname2mapid(struct script_state *st,const char *mapname)
 		}
 	}
 	return map_mapname2mapid(mapname);
-}
-
-/*==========================================
- * script情報からメモリアルID取得
- *------------------------------------------
- */
-static int script_getmemorialid(struct script_state *st)
-{
-	struct npc_data *nd = map_id2nd(st->oid);
-	int memorial_id = 0;
-
-	// 実行NPCから取得
-	if(nd && nd->bl.m >= 0) {
-		memorial_id = map[nd->bl.m].memorial_id;
-	}
-
-	// 実行NPCがメモリアルダンジョン不在の場合はPCから取得
-	if(memorial_id == 0) {
-		struct map_session_data *sd = script_rid2sd(st);
-		if(sd) {
-			memorial_id = map[sd->bl.m].memorial_id;
-
-			// PCがメモリアルダンジョン不在の場合はPTから取得
-			if(memorial_id == 0) {
-				struct party *pt = party_search(sd->status.party_id);
-				if(pt) {
-					memorial_id = pt->memorial_id;
-				}
-			}
-		}
-	}
-
-	return memorial_id;
 }
 
 /*==========================================
@@ -5297,11 +5371,11 @@ int buildin_setarray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_setarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix != '$' && prefix != '\'' )
+	if( prefix != '$' && prefix != '\'' && prefix != '.' )
 		sd = script_rid2sd(st);
 
 	max = 128 - (num>>24);
@@ -5338,11 +5412,11 @@ int buildin_cleararray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_cleararray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix != '$' && prefix != '\'' )
+	if( prefix != '$' && prefix != '\'' && prefix != '.' )
 		sd = script_rid2sd(st);
 
 	sz = conv_num(st,& (st->stack->stack_data[st->start+4]));
@@ -5386,11 +5460,11 @@ int buildin_copyarray(struct script_state *st)
 	prefix2  = *name2;
 	postfix2 = name2[strlen(name2)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_copyarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix2 != '$' && prefix2 != '@' && prefix2 != '\'' ) {
+	if( prefix2 != '$' && prefix2 != '@' && prefix2 != '\'' && prefix2 != '.' ) {
 		printf("buildin_copyarray: illegal scope !\n");
 		return 0;
 	}
@@ -5398,7 +5472,7 @@ int buildin_copyarray(struct script_state *st)
 		printf("buildin_copyarray: type mismatch !\n");
 		return 0;
 	}
-	if( (prefix != '$' && prefix != '\'') || (prefix2 != '$' && prefix2 != '\'') )
+	if( (prefix != '$' && prefix != '\'' && prefix != '.') || (prefix2 != '$' && prefix2 != '\'' && prefix2 != '.') )
 		sd = script_rid2sd(st);
 
 	sz = conv_num(st,& (st->stack->stack_data[st->start+4]));
@@ -5468,7 +5542,7 @@ int buildin_getarraysize(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_getarraysize: illegal scope !\n");
 		push_val(st->stack,C_INT,0);
 		return 0;
@@ -5499,11 +5573,11 @@ int buildin_deletearray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_deletearray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix != '$' && prefix != '\'' )
+	if( prefix != '$' && prefix != '\'' && prefix != '.' )
 		sd = script_rid2sd(st);
 
 	count = conv_num(st,& (st->stack->stack_data[st->start+3]));
@@ -5548,7 +5622,7 @@ int buildin_printarray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_printarray: illegal scope !\n");
 		return 0;
 	}
@@ -11559,11 +11633,11 @@ int buildin_csvreadarray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_csvreadarray: illegal scope !\n");
 		return 0;
 	}
-	if( prefix != '$' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '\'' && prefix != '.' ) {
 		sd = script_rid2sd(st);
 		if(sd == NULL)
 			return 0;
@@ -11651,7 +11725,7 @@ int buildin_csvwritearray(struct script_state *st)
 	prefix  = *name;
 	postfix = name[strlen(name)-1];
 
-	if( prefix != '$' && prefix != '@' && prefix != '\'' ) {
+	if( prefix != '$' && prefix != '@' && prefix != '\'' && prefix != '.' ) {
 		printf("buildin_csvwritearray: illegal scope !\n");
 		return 0;
 	}
