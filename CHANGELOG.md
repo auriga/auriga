@@ -1,4 +1,26 @@
 ----------------------------------------
+//1527 [2023/08/28] by refis
+
+・cppcheckを使った静的チェック修正
+	-> sscanf で文字列を読み込む場合の長さ指定誤りを修正（atcommand.c, script.c）
+
+	-> 回復量関連のランダムオプションが正常に適用されなかったのを修正（bonus.c）
+
+	-> NULLチェック強化（clif.c）
+
+	-> 配列の初期化漏れの修正（pc.c）
+
+	-> 配列外参照が起きる可能性がある箇所の修正（achieve.c, clif.c, luascript.c, merc.c, skill.c）
+
+	-> 同名で隠れる局所変数の名称を変更（battle.c, clif.c, script.c, skill.c, status.c）
+
+	-> 使われない変数を削除（battle.c, clif.c, luascript.c）
+
+	-> 意味のない初期化を削除（unit.c）
+
+	-> 変数のスコープを局所化
+
+----------------------------------------
 //1526 [2023/08/15] by refis
 
 ・メモリアル依存変数の実装（script_ref.txt, memorial.*, script.*）

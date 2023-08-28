@@ -2297,7 +2297,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case OPT_HEAL_VALUE:
 		{
 			int i, j;
-			int skill[5] = {28,70,231,2043,2051};
+			const int skill[5] = {28,70,231,2043,2051};
 			for(j=0; j<5; j++) {
 				// update
 				for(i=0; i<sd->skill_healup.count; i++)
@@ -2305,14 +2305,14 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 					if(sd->skill_healup.id[i] == skill[j])
 					{
 						sd->skill_healup.rate[i] += val;
-						return 0;
+						continue;
 					}
 				}
 				// full
 				if(sd->skill_healup.count == MAX_SKILL_HEAL_UP)
 					break;
 				// add
-				sd->skill_healup.id[sd->skill_healup.count] = skill[5];
+				sd->skill_healup.id[sd->skill_healup.count] = skill[j];
 				sd->skill_healup.rate[sd->skill_healup.count] = val;
 				sd->skill_healup.count++;
 			}
@@ -2321,7 +2321,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case OPT_HEAL_MODIFY_PERCENT:
 		{
 			int i, j;
-			int skill[4] = {28,70,231,2051};
+			const int skill[4] = {28,70,231,2051};
 			for(j=0; j<4; j++) {
 				// update
 				for(i=0; i<sd->skill_subhealup.count; i++)
@@ -2329,7 +2329,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 					if(sd->skill_subhealup.id[i] == skill[j])
 					{
 						sd->skill_subhealup.rate[i] += val;
-						return 0;
+						continue;
 					}
 				}
 				// full

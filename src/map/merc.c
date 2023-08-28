@@ -655,7 +655,7 @@ int merc_get_fame(struct map_session_data *sd, int class_)
 
 	nullpo_retr(0, sd);
 
-	if(type < 0 || type > MAX_MERC_TYPE)
+	if(type < 0 || type >= MAX_MERC_TYPE)
 		return 0;
 
 	return sd->status.merc_fame[type];
@@ -671,7 +671,7 @@ int merc_set_fame(struct map_session_data *sd, int class_, int val)
 
 	nullpo_retr(0, sd);
 
-	if(type < 0 || type > MAX_MERC_TYPE)
+	if(type < 0 || type >= MAX_MERC_TYPE)
 		return 0;
 
 	sd->status.merc_fame[type] += val;
@@ -693,7 +693,7 @@ int merc_get_call(struct map_session_data *sd, int class_)
 
 	nullpo_retr(0, sd);
 
-	if(type < 0 || type > MAX_MERC_TYPE)
+	if(type < 0 || type >= MAX_MERC_TYPE)
 		return 0;
 
 	return sd->status.merc_call[type];
@@ -709,7 +709,7 @@ int merc_set_call(struct map_session_data *sd, int class_, int val)
 
 	nullpo_retr(0, sd);
 
-	if(type < 0 || type > MAX_MERC_TYPE)
+	if(type < 0 || type >= MAX_MERC_TYPE)
 		return 0;
 
 	sd->status.merc_call[type] += val;

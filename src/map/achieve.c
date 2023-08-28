@@ -124,12 +124,13 @@ int achieve_search_itemid(int item_id)
  */
 int achieve_calc_level(struct map_session_data *sd, int score)
 {
-	int i, idx, p = 0;
+	int i, p = 0;
 	int level = 1;
 
 	nullpo_retr(0, sd);
 
 	if(score < 0) {
+		int idx;
 		for(i = 0; i < sd->achievelist; i++) {
 			if(sd->achieve[i].comp_date > 0)
 				continue;
@@ -152,7 +153,7 @@ int achieve_calc_level(struct map_session_data *sd, int score)
 
 	sd->as.level   = level;
 	sd->as.current = p;
-	sd->as.next    = achieve_exp_table[i];
+	sd->as.next    = (i >= MAX_ACHIEVE_LEVEL)? 0: achieve_exp_table[i];
 
 	return 0;
 }

@@ -3216,7 +3216,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	if(x < 0 || x >= map[m].xs || y < 0 || y >= map[m].ys)
 		x = y = 0;
 	if((x == 0 && y == 0) || map_getcell(m,x,y,CELL_CHKNOPASS)) {
-		int i = 0;
+		i = 0;
 		if(x || y) {
 			if(battle_config.error_log)
 				printf("stacked %s (%d,%d)\n", map[m].name, x, y);
@@ -9812,6 +9812,7 @@ int pc_readdb(void)
 			int diff=0;
 
 			lineno++;
+			memset(split,0,sizeof(split));
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0]=='/' && line[1]=='/')

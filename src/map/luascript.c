@@ -200,8 +200,6 @@ static int luascript_nl2oid(lua_State *NL)
  */
 int luascript_run_function(const char *name,int char_id,const char *format,...)
 {
-	struct block_list *bl = NULL;
-	struct map_session_data *sd;
 	va_list ap;
 	lua_State *NL;
 	int n=0;
@@ -214,6 +212,7 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
 		NL = L;
 	}
 	else {	// それ以外ならコルーチンで実行する
+		struct map_session_data *sd;
 		if((sd = map_id2sd(char_id)) == NULL)
 			return 0;
 		luaL_checkstack(L,1,"Too many thread");
@@ -351,7 +350,7 @@ int luascript_config_read(const char *cfgName)
 		if(line[0] == '/' && line[1] == '/')
 			continue;
 
-		if(sscanf(line, "%[^:]: %[^\r\n]", w1, w2) != 2)
+		if(sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
 		if (strcmpi(w1, "lua") == 0) {
@@ -491,8 +490,8 @@ static int luafunc_addpacket(lua_State *NL)
 	}
 	else if(lua_istable(NL,4)) {
 		int i;
-		int len = (int)lua_objlen(NL,4);
-		for(i=0; i<8 && i<len; i++) {
+		int s_len = (int)lua_objlen(NL,4);
+		for(i=0; i<8 && i<s_len; i++) {
 			lua_rawgeti(NL,4,i + 1);
 			pos[i] = luaL_checkint(NL,-1);
 			lua_pop(NL, 1);      // 値を取り除く

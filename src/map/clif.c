@@ -12409,7 +12409,7 @@ static void clif_skillinfo(struct map_session_data *sd, int skillid, int type, i
 
 	nullpo_retv(sd);
 
-	if( skillid < HOM_SKILLID && skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
+	if( skillid < MAX_FOURTH_SKILLID && skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
 		return;
 	if( skillid >= HOM_SKILLID && skillid <= MAX_HOM_SKILLID && !sd->hd )
 		return;
@@ -15960,7 +15960,6 @@ void clif_party_created(struct map_session_data *sd, unsigned char flag)
  */
 void clif_party_main_info(struct party *p, int fd)
 {
-	int offset = 0;
 #if PACKETVER < 20170502
 	const int cmd = 0x1e9;
 	unsigned char buf[81];
@@ -21489,8 +21488,6 @@ void clif_send_achievement_list(struct map_session_data *sd)
 {
 #if PACKETVER >= 20141126
 	int fd;
-	int i, j;
-	int score = 0;
 
 	nullpo_retv(sd);
 
@@ -21506,6 +21503,7 @@ void clif_send_achievement_list(struct map_session_data *sd)
 	WFIFOL(fd,18) = sd->as.next;
 
 	if(sd->achievelist > 0) {
+		int i, j;
 		for(i = 0; i < sd->achievelist; i++) {
 			WFIFOL(fd, i * 50 + 22) = sd->achieve[i].nameid;
 			WFIFOB(fd, i * 50 + 26) = (sd->achieve[i].comp_date > 0? 1: 0);
@@ -21528,7 +21526,6 @@ void clif_send_achievement_update(struct map_session_data *sd, struct achieve_da
 {
 #if PACKETVER >= 20141126
 	int fd;
-	int i;
 
 	nullpo_retv(sd);
 
@@ -21541,6 +21538,7 @@ void clif_send_achievement_update(struct map_session_data *sd, struct achieve_da
 	WFIFOL(fd, 8) = sd->as.current;
 	WFIFOL(fd,12) = sd->as.next;
 	if(ad) {
+		int i;
 		WFIFOL(fd, 16) = ad->nameid;
 		WFIFOB(fd, 20) = (ad->comp_date > 0? 1: 0);
 		for(i = 0; i < MAX_ACHIEVE_CONTENT; i++)
@@ -21696,7 +21694,7 @@ void clif_item_preview(struct map_session_data *sd, short idx)
 }
 
 /*==========================================
- *
+ * �����A�b�v�O���[�h�E�B���h�E��J��
  *------------------------------------------
  */
 void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
@@ -21720,7 +21718,7 @@ void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
 }
 
 /*==========================================
- *
+ *�@�����A�b�v�O���[�h����
  *------------------------------------------
  */
 void clif_lapineupgradeack(struct map_session_data *sd, int result)
@@ -26295,17 +26293,17 @@ static void clif_parse_GmFullstrip(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_PartyBookingRegisterReq(int fd,struct map_session_data *sd, int cmd)
 {
-	int i,lv,map;
+	int i,lv,mapid;
 	int job[6];
 
 	nullpo_retv(sd);
 
 	lv = RFIFOW(fd,GETPACKETPOS(cmd,0));
-	map = RFIFOW(fd,GETPACKETPOS(cmd,1));
+	mapid = RFIFOW(fd,GETPACKETPOS(cmd,1));
 	for(i=0; i<6; i++)
 		job[i] = RFIFOW(fd,GETPACKETPOS(cmd,2+i));
 
-	booking_register(sd,lv,map,job);
+	booking_register(sd,lv,mapid,job);
 
 	return;
 }
@@ -27375,6 +27373,8 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 	int nameid, idx;
 	int ret;
 
+	nullpo_retv(sd);
+
 	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
 
@@ -27393,13 +27393,16 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- *
+ * �R��֌W���
  *------------------------------------------
  */
 static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
 {
 #if PACKETVER >= 20190703
 	const int menu = RFIFOB(fd,GETPACKETPOS(cmd,0));
+
+	nullpo_retv(sd);
+
 	switch (menu) {
 	case 1:		// dragon
 		if (pc_isdragon(sd))

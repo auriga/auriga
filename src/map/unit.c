@@ -1408,7 +1408,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	struct elem_data        *src_eld = NULL;
 	struct unit_data        *src_ud  = NULL;
 	int zone;
-	unsigned int tick = gettick();
+	unsigned int tick;
 	struct status_change *sc;
 
 	nullpo_retr(0, src);

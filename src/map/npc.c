@@ -2002,7 +2002,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		c = strchr(w4, ',');
 		while(c && pos < max) {
 			struct item_data *id = NULL;
-			int ret, nameid, value = -1;
+			int nameid, value = -1;
 			int qty = -1;
 			c++;
 			if(subtype == MARKET) {
@@ -2016,6 +2016,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 					break;
 				}
 			} else {
+				int ret;
 				ret = sscanf(c, "%d:%d", &nameid, &value);
 				if(ret < 1 || (subtype == POINTSHOP && ret < 2)) {
 					char *np = strchr(c, ',');

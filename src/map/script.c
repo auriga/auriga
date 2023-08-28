@@ -1929,7 +1929,7 @@ static void read_constdb(void)
 			continue;
 		type = 0;
 		if(sscanf(line, "%1023[A-Za-z0-9_#],%1023[-0-9xXA-Fa-f],%d", name, val, &type) >= 2 ||
-		   sscanf(line, "%1023[A-Za-z0-9_#] %1024[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
+		   sscanf(line, "%1023[A-Za-z0-9_#] %1023[-0-9xXA-Fa-f] %d", name, val, &type) >= 2)
 		{
 			n = add_str(name);
 			str_data[n].type  = (type == 0)? C_INT: C_PARAM;
@@ -2438,7 +2438,6 @@ static void get_val(struct script_state *st,struct script_data *data)
 				break;
 			case '.':
 				{
-					struct linkdb_node **n;
 					int memorial_id = script_getmemorialid(st);
 					struct memorial_data *md = memorial_search_data(memorial_id);
 
@@ -2447,6 +2446,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 						data->u.str = "";
 					}
 					else {
+						struct linkdb_node **n;
 						n = &md->vars;
 						data->u.str = (char *)linkdb_search(n, INT2PTR(data->u.num));
 					}
@@ -2512,7 +2512,6 @@ static void get_val(struct script_state *st,struct script_data *data)
 				break;
 			case '.':
 				{
-					struct linkdb_node **n;
 					int memorial_id = script_getmemorialid(st);
 					struct memorial_data *md = memorial_search_data(memorial_id);
 
@@ -2521,6 +2520,7 @@ static void get_val(struct script_state *st,struct script_data *data)
 						data->u.num = 0;
 					}
 					else {
+						struct linkdb_node **n;
 						n = &md->vars;
 						data->u.num = PTR2INT(linkdb_search(n, INT2PTR(data->u.num)));
 					}
@@ -2598,8 +2598,6 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 			break;
 		case '.':
 			{
-				char *old_str;
-				struct linkdb_node **n;
 				int memorial_id = script_getmemorialid(st);
 				struct memorial_data *md = memorial_search_data(memorial_id);
 
@@ -2607,6 +2605,9 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 					printf("set_reg: illegal memorial_id string variable %s\n", name);
 				}
 				else {
+					char *old_str;
+					struct linkdb_node **n;
+
 					n = &md->vars;
 					if( str[0] ) {
 						old_str = (char *)linkdb_replace(n, INT2PTR(num), aStrdup(str));
@@ -2660,7 +2661,6 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 				break;
 			case '.':
 				{
-					struct linkdb_node **n;
 					int memorial_id = script_getmemorialid(st);
 					struct memorial_data *md = memorial_search_data(memorial_id);
 
@@ -2668,6 +2668,8 @@ static int set_reg(struct script_state *st,struct map_session_data *sd,int num,c
 						printf("set_reg: illegal memorial_id variable %s\n", name);
 					}
 					else {
+						struct linkdb_node **n;
+
 						n = &md->vars;
 						if( val != 0 ) {
 							linkdb_replace(n, INT2PTR(num), INT2PTR(val));
@@ -14447,7 +14449,7 @@ int buildin_sc_onparam(struct script_state *st)
 int buildin_showdigit(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
-	unsigned char type = 0;
+	int type = 0;
 	int value;
 
 	nullpo_retr(0, sd);
@@ -14459,7 +14461,7 @@ int buildin_showdigit(struct script_state *st)
 	if(type < 0 || type > 3)
 		return 0;
 
-	clif_showdigit(sd, type, value);
+	clif_showdigit(sd, (unsigned char)type, value);
 	return 0;
 }
 

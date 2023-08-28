@@ -193,8 +193,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 
 	if(tsd) {
 		// ディボーションをかけられている
-		if( tsd &&
-		    tsd->sc.data[SC_DEVOTION].timer != -1 &&
+		if( tsd->sc.data[SC_DEVOTION].timer != -1 &&
 		    tsd->sc.data[SC_DEVOTION].val1 &&
 		    skillid != PA_PRESSURE &&
 		    skillid != SA_COMA &&
@@ -220,8 +219,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			}
 		}
 		// シャドウフォームをかけられている
-		if( tsd &&
-		    tsd->sc.data[SC__SHADOWFORM].timer != -1 &&
+		if( tsd->sc.data[SC__SHADOWFORM].timer != -1 &&
 		    tsd->sc.data[SC__SHADOWFORM].val2 &&
 		    skillid != PA_PRESSURE &&
 		    skillid != SA_COMA &&
@@ -243,7 +241,7 @@ int battle_damage(struct block_list *bl,struct block_list *target,int damage,int
 			}
 		}
 		// ウォータースクリーンをかけられている
-		if( tsd && tsd->eld &&
+		if( tsd->eld &&
 		    tsd->sc.data[SC_WATER_SCREEN].timer != -1 &&
 		    skillid != PA_PRESSURE &&
 		    skillid != SA_COMA &&
@@ -3126,8 +3124,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					int def_lv   = def_elem/20;
 
 					if(def_type >= 0 && def_type < ELE_MAX && def_lv > 0 && def_lv <= MAX_ELE_LEVEL) {
-						int rate = attr_fix_table[def_lv-1][ELE_FIRE][def_type];
-						wd.damage -= wd.damage * (100 - rate) / 100;
+						int r = attr_fix_table[def_lv-1][ELE_FIRE][def_type];
+						wd.damage -= wd.damage * (100 - r) / 100;
 					}
 				} else if(t_mode&MD_BOSS) {
 					wd.damage = wd.damage / 2;
@@ -4528,7 +4526,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SU_PICKYPECK:	// ピッキ突き
 			{
 				int rate = 1250 + 50 * skill_lv;
-				int t_hp = status_get_hp(target) / status_get_max_hp(target) * 100;
 				if(src_sd && pc_checkskill(src_sd,SU_SPIRITOFLIFE)) {	// 生命の魂
 					int s_hp = status_get_hp(target) / status_get_max_hp(target) * 100;
 					if(s_hp >= 100)
@@ -4546,7 +4543,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SU_PICKYPECK_DOUBLE_ATK:	// ピッキ突き(追撃)
 			{
 				int rate = 2500 + 100 * skill_lv;
-				int t_hp = status_get_hp(target) / status_get_max_hp(target) * 100;
 				if(src_sd && pc_checkskill(src_sd,SU_SPIRITOFLIFE)) {	// 生命の魂
 					int s_hp = status_get_hp(target) / status_get_max_hp(target) * 100;
 					if(s_hp >= 100)
@@ -7906,15 +7902,15 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 	if(sd && target != &sd->bl && (wd.damage > 0 || wd.damage2 > 0))
 	{
 		unsigned int asflag = EAS_ATTACK | EAS_NORMAL;
-		unsigned int tick = gettick();
+		unsigned int astick = gettick();
 
 		if(wd.flag&BF_LONG)
 			asflag += EAS_LONG;
 		else
 			asflag += EAS_SHORT;
 
-		bonus_autospell_start(&sd->bl,target,asflag,tick,0);
-		bonus_activeitem_start(sd,asflag,tick);
+		bonus_autospell_start(&sd->bl,target,asflag,astick,0);
+		bonus_activeitem_start(sd,asflag,astick);
 	}
 
 	if(sd && target != &sd->bl && wd.flag&BF_WEAPON && (wd.damage > 0 || wd.damage2 > 0))
@@ -8331,7 +8327,6 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	}
 	if(src->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data *)src;
-		int delay = 0;
 
 		if(hd) {
 			switch(skillid) {
@@ -8339,7 +8334,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			case MH_SILVERVEIN_RUSH:	/* シルバーベインラッシュ */
 			case MH_TINDER_BREAKER:		/* ティンダーブレイカー */
 				if(hd->spiritball >= 1) {
-					delay = 1000;
+					int delay = 1000;
 					if(damage < status_get_hp(bl))
 						status_change_start(src,SC_COMBO,skillid,skilllv,0,0,delay,0);
 					clif_combo_delay(src,delay);
@@ -8348,7 +8343,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			case MH_MIDNIGHT_FRENZY:	/* ミッドナイトフレンジ */
 			case MH_EQC:				/* E.Q.C */
 				if(hd->spiritball >= 2) {
-					delay = 1000;
+					int delay = 1000;
 					if(damage < status_get_hp(bl))
 						status_change_start(src,SC_COMBO,skillid,skilllv,0,0,delay,0);
 					clif_combo_delay(src,delay);

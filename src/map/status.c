@@ -2950,7 +2950,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	char berserk_flag  = 0;
 	int heatbarrel   = 0;
 #ifndef PRE_RENEWAL
-	double penalty   = 100;
+	double base_penalty   = 100;
 #endif
 
 	nullpo_retr(0, sd);
@@ -2980,9 +2980,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	if(sd->status.weapon < WT_MAX) {	// 片手の場合は値をそのまま取得
 		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->status.weapon]) / 10;
 		if(base_amotion > 144)
-			penalty = (100-(base_amotion-144)*2);
+			base_penalty = (100-(base_amotion-144)*2);
 		else
-			penalty = 100;
+			base_penalty = 100;
 	} else {	// 2刀の場合は2刀用の計算を行う
 		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype1]) / 10;
 		base_amotion = base_amotion + (((2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype2]) / 10) - 194) / 4;
@@ -2994,9 +2994,9 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		    sd->status.weapon == WT_MUSICAL ||
 		    sd->status.weapon == WT_WHIP ||
 		    (sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE) )
-			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10-1/(float)400) + sd->paramc[4]*9/(float)49) * penalty/100)));
+			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10-1/(float)400) + sd->paramc[4]*9/(float)49) * base_penalty/100)));
 		else
-			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10+10/(float)111) + sd->paramc[4]*9/(float)49) * penalty/100)));
+			base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10+10/(float)111) + sd->paramc[4]*9/(float)49) * base_penalty/100)));
 	} else {
 		base_amotion = (int)(200-(200-(base_amotion + sqrt(sd->paramc[1]*(10-1/(float)400) + sd->paramc[4]*9/(float)49)*1.05)));
 	}
@@ -7084,18 +7084,18 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 
 	// ブレッシングによる呪い、石化の解除
 	if(type == SC_BLESSING && (sd || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
-		bool flag = false;
+		bool f = false;
 		if(sc->data[SC_CURSE].timer != -1) {
 			status_change_end(bl,SC_CURSE,-1);
-			flag = true;
+			f = true;
 		}
 		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0) {
 			status_change_end(bl,SC_STONE,-1);
-			flag = true;
+			f = true;
 		}
 
 		// 呪い、石化解除時はブレッシング状態にならないので終わる
-		if(flag)
+		if(f)
 			return 0;
 	}
 
@@ -11389,10 +11389,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_C_MARKER:	/* クリムゾンマーカー */
 		{
-			struct map_session_data *sd = map_id2sd(sc->data[type].val2);
+			struct map_session_data *tmpsd = map_id2sd(sc->data[type].val2);
 			if((--sc->data[type].val4) > 0) {
-				if(sd && sd->c_marker[sc->data[type].val3] == bl->id) {
-					clif_crimson_marker(sd, bl, false);
+				if(tmpsd && tmpsd->c_marker[sc->data[type].val3] == bl->id) {
+					clif_crimson_marker(tmpsd, bl, false);
 				}
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}

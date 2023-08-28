@@ -725,7 +725,7 @@ int atcommand_config_read(const char *cfgName)
 			} else {
 				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
 			}
-		} else if (sscanf(line, "%1024[^:]:%1023s", w1, w2) == 2) {
+		} else if (sscanf(line, "%1023[^:]:%1023s", w1, w2) == 2) {
 			if (strcmpi(w1, "import") == 0) {
 				atcommand_config_read(w2);
 			} else if (strcmpi(w1, "command_symbol") == 0) {
@@ -2682,7 +2682,6 @@ int atcommand_recallall(const int fd, struct map_session_data* sd, AtCommandType
 int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char guild_name[100];
-	struct map_session_data *pl_sd;
 	struct guild *g;
 
 	nullpo_retr(-1, sd);
@@ -2693,6 +2692,7 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((g = guild_searchname(guild_name)) != NULL || (g = guild_search(atoi(message))) != NULL) {
+		struct map_session_data *pl_sd;
 		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
@@ -2715,7 +2715,6 @@ int atcommand_recallguild(const int fd, struct map_session_data* sd, AtCommandTy
 int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	char party_name[100];
-	struct map_session_data *pl_sd;
 	struct party *p;
 
 	nullpo_retr(-1, sd);
@@ -2726,6 +2725,7 @@ int atcommand_recallparty(const int fd, struct map_session_data* sd, AtCommandTy
 		return -1;
 
 	if ((p = party_searchname(party_name)) != NULL || (p = party_search(atoi(message))) != NULL) {
+		struct map_session_data *pl_sd;
 		int i;
 		for (i = 0; i < fd_max; i++) {
 			if (session[i] && (pl_sd = (struct map_session_data *)session[i]->session_data) && pl_sd->state.auth &&
