@@ -13133,11 +13133,11 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int s
 	for(i=0,c=0;i<MAX_SKILL_PRODUCE_DB;i++){
 		if( skill_can_produce_mix(sd,i,trigger) ){
 			if((view = itemdb_viewid(skill_produce_db[i].nameid)) > 0)
-				WFIFOW(fd,c*8+ 4)= view;
+				WFIFOW(fd,c*8+ 4) = view;
 			else
-				WFIFOW(fd,c*8+ 4)= skill_produce_db[i].nameid;
-			WFIFOW(fd,c*8+ 6)= 0x0012;
-			WFIFOL(fd,c*8+ 8)= sd->status.char_id;
+				WFIFOW(fd,c*8+ 4) = skill_produce_db[i].nameid;
+			WFIFOW(fd,c*8+ 6) = 0x0012;
+			WFIFOL(fd,c*8+ 8) = sd->status.char_id;
 			c++;
 		}
 	}
@@ -13146,15 +13146,16 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int s
 	for(i=0,c=0;i<MAX_SKILL_PRODUCE_DB;i++){
 		if( skill_can_produce_mix(sd,i,trigger) ){
 			if((view = itemdb_viewid(skill_produce_db[i].nameid)) > 0)
-				WFIFOL(fd,c*10+ 4)= view;
+				WFIFOL(fd,c*16+ 4) = view;
 			else
-				WFIFOL(fd,c*10+ 4)= skill_produce_db[i].nameid;
-			WFIFOW(fd,c*10+ 8)= 0x0012;
-			WFIFOL(fd,c*10+10)= sd->status.char_id;
+				WFIFOL(fd,c*16+ 4) = skill_produce_db[i].nameid;
+			WFIFOL(fd,c*16+ 8) = 0;
+			WFIFOL(fd,c*16+12) = 0;
+			WFIFOL(fd,c*16+16) = 0;
 			c++;
 		}
 	}
-	WFIFOW(fd, 2)=c*10+4;
+	WFIFOW(fd, 2)=c*16+4;
 #endif
 	WFIFOSET(fd,WFIFOW(fd,2));
 

@@ -233,7 +233,7 @@ static int homun_hungry(int tid,unsigned int tick,int id,void *data)
 
 	if(battle_config.enable_hom_autofeed > 0) {
 		if(sd->hd->status.hungry <= 25 && 
-			(battle_config.enable_hom_autofeed == 1 && sd->status.autofeed&2) || battle_config.enable_hom_autofeed >= 2
+			((battle_config.enable_hom_autofeed == 1 && sd->status.autofeed&2) || battle_config.enable_hom_autofeed >= 2)
 		) {
 			homun_food(sd);
 		}

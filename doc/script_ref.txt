@@ -2327,26 +2327,32 @@ AurigaNPCScript
 				７８１
 
 		setcell命令
-			setcell <gatname>,<x>,<y>,<type>;
+			setcell <gatname>,<x>,<y>,<type>[,<area>];
 
 			gatname		文字列
 			x,y		数値
 			type		数値
+			area		数値
 
 			<gatname>で指定したMAPの座標<x>,<y>のセルの属性を<type>に変更します。
+			<area>が0の場合、座標<x>,<y>中心に画面内のプレイヤーに対し、
+			<area>が0以外、または省略した場合、指定MAP全域に変更情報を通知します。
 			type=0		通行可セル
 			type=1		壁型セル
 			type=3		水場セル
 			type=5		障害物セル
 
 		areasetcell命令
-			areasetcell <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;
+			areasetcell <gatname>,<x0>,<y0>,<x1>,<y1>,<type>[,<area>];
 
 			gatname		文字列
 			x0,y0,x1,y1	数値
 			type		数値
+			area		数値
 
 			<gatname>で指定したMAPの座標<x0>,<y0>から<x1>,<y1>の範囲のセルの属性を<type>に変更します。
+			<area>が0の場合、座標<x>,<y>中心に画面内のプレイヤーに対し、
+			<area>が0以外、または省略した場合、指定MAP全域に変更情報を通知します。
 			type=0		通行可セル
 			type=1		壁型セル
 			type=3		水場セル

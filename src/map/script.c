@@ -4659,8 +4659,8 @@ struct script_function buildin_func[] = {
 	{buildin_makemerc,"makemerc","ii"},
 	{buildin_openbook,"openbook","i*"},
 	{buildin_pushpc,"pushpc","ii"},
-	{buildin_setcell,"setcell","siii"},
-	{buildin_areasetcell,"areasetcell","siiiii"},
+	{buildin_setcell,"setcell","siii*"},
+	{buildin_areasetcell,"areasetcell","siiiii*"},
 	{buildin_callguardian,"callguardian","siissi*"},
 	{buildin_getguardianinfo,"getguardianinfo","sii"},
 	{buildin_getmobname,"getmobname","i"},
@@ -12901,19 +12901,22 @@ int buildin_pushpc(struct script_state *st)
 int buildin_setcell(struct script_state *st)
 {
 	int m,x,y,type;
+	int area = 1;
 	char *str;
 
 	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	x    = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	y    = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	type = conv_num(st,& (st->stack->stack_data[st->start+5]));
+	if(st->end>st->start+6)
+		area = conv_num(st,& (st->stack->stack_data[st->start+6]));
 
 	m = script_mapname2mapid(st,str);
 	if(m < 0) {
 		return 0;
 	}
 	map_setcell(m,x,y,type);
-	clif_changemapcell(m,x,y,type,1);
+	clif_changemapcell(m,x,y,type,area);
 
 	return 0;
 }
@@ -12925,6 +12928,7 @@ int buildin_setcell(struct script_state *st)
 int buildin_areasetcell(struct script_state *st)
 {
 	int m,x,y,x0,y0,x1,y1,type;
+	int area = 1;
 	char *str;
 
 	str  = conv_str(st,& (st->stack->stack_data[st->start+2]));
@@ -12933,6 +12937,8 @@ int buildin_areasetcell(struct script_state *st)
 	x1   = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	y1   = conv_num(st,& (st->stack->stack_data[st->start+6]));
 	type = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	if(st->end>st->start+8)
+		area = conv_num(st,& (st->stack->stack_data[st->start+8]));
 
 	m = script_mapname2mapid(st,str);
 	if(m < 0) {
@@ -12942,7 +12948,7 @@ int buildin_areasetcell(struct script_state *st)
 	for(y = y0; y <= y1; y++) {
 		for(x = x0; x <= x1; x++) {
 			map_setcell(m,x,y,type);
-			clif_changemapcell(m,x,y,type,1);
+			clif_changemapcell(m,x,y,type,area);
 		}
 	}
 
