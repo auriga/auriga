@@ -167,7 +167,9 @@
 @reloadstatusdb    ---- ステータス関連DBを再読込する
 @reloadmotd        ---- motdを再読込する
 
-@gm パスワード     ---- GMになる（現在廃止）
+@loadnpc ファイルパス ---- ファイルパス内のNPCを全て配置する
+
+@gm パスワード        ---- GMになる（現在廃止）
 
 @agitstart         ---- 攻城戦開始
 @agitend           ---- 攻城戦終了

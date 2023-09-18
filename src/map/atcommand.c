@@ -236,6 +236,7 @@ ATCOMMAND_FUNC(changemaptype);
 ATCOMMAND_FUNC(hotkeyset);
 ATCOMMAND_FUNC(callmerc);
 ATCOMMAND_FUNC(alliance);
+ATCOMMAND_FUNC(loadnpc);
 
 /*==========================================
  * AtCommandInfo atcommand_info[]構造体の定義
@@ -411,6 +412,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_HotkeySet,          "@hotkeyset",        0, atcommand_hotkeyset,           NULL },
 	{ AtCommand_CallMerc,           "@callmerc",         0, atcommand_callmerc,            NULL },
 	{ AtCommand_Alliance,           "@alliance",         0, atcommand_alliance,            NULL },
+	{ AtCommand_LoadNpc,            "@loadnpc",          0, atcommand_loadnpc,             NULL },
 		// add here
 	{ AtCommand_MapMove,            "@mapmove",          0, NULL,                          NULL },
 	{ AtCommand_Broadcast,          "@broadcast",        0, NULL,                          NULL },
@@ -5720,6 +5722,29 @@ int atcommand_callmerc(const int fd, struct map_session_data* sd, AtCommandType 
 		limit = 1800;
 
 	merc_callmerc(sd, class_, limit);
+
+	return 0;
+}
+
+/*==========================================
+ * NPCファイル読み込み
+ *------------------------------------------
+ */
+int atcommand_loadnpc(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	FILE *fp;
+
+	nullpo_retr(-1, sd);
+
+	if (!message && !*message)
+		return -1;
+	if ((fp = fopen(message, "r")) == NULL)
+		return 1;
+	fclose(fp);
+
+	npc_atcommand_load(message);
+
+	clif_displaymessage(fd, "Script loaded.");
 
 	return 0;
 }
