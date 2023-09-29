@@ -1935,9 +1935,11 @@ int map_getcellp(struct map_data* m,int x,int y,cell_t cellchk)
 		case CELL_GETTYPE:
 			return type;
 		case CELL_CHKNPC:
-			return (type & CELL_NPC);
+			return ((type & CELL_NPC) || (type & CELL_MOVENPC));
 		case CELL_CHKBASILICA:
 			return (type & CELL_BASILICA);
+		case CELL_CHKMOVENPC:
+			return (type & CELL_MOVENPC);
 	}
 	return 0;
 }
@@ -1964,6 +1966,12 @@ void map_setcell(int m,int x,int y,int cell)
 			break;
 		case CELL_CLRBASILICA:
 			map[m].gat[j] &= ~CELL_BASILICA;
+			break;
+		case CELL_SETMOVENPC:
+			map[m].gat[j] |= CELL_MOVENPC;
+			break;
+		case CELL_CLRMOVENPC:
+			map[m].gat[j] &= ~CELL_MOVENPC;
 			break;
 		default:
 			map[m].gat[j] = (map[m].gat[j]&~CELL_MASK) + cell;

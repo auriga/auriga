@@ -74,4 +74,7 @@ int npc_dynamicnpc_stop(struct map_session_data *sd);
 int npc_addmdnpc(struct npc_data *src_nd, int m);
 int npc_free(struct npc_data *nd);
 
+// •àsNPCŠÖ˜A
+int npc_unit_move(struct npc_data *nd, int flag);
+
 #endif

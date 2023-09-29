@@ -5363,6 +5363,8 @@ int status_get_speed(struct block_list *bl)
 			speed = ((struct merc_data *)bl)->speed;
 	} else if(bl->type == BL_ELEM && (struct elem_data *)bl) {
 		speed = ((struct elem_data *)bl)->speed;
+ 	} else if(bl->type == BL_NPC && (struct npc_data *)bl) {
+		speed = ((struct npc_data *)bl)->speed;
 	} else {
 		int bonus_rate;
 		int haste_val  = 0;

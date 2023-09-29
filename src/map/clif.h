@@ -193,6 +193,8 @@ int clif_mercinsight(struct block_list *bl, va_list ap);
 int clif_mercoutsight(struct block_list *bl, va_list ap);
 int clif_eleminsight(struct block_list *bl, va_list ap);
 int clif_elemoutsight(struct block_list *bl, va_list ap);
+int clif_npcinsight(struct block_list *bl,va_list ap);
+int clif_npcoutsight(struct block_list *bl,va_list ap);
 
 void clif_class_change(struct block_list *bl, int class_, int type);
 

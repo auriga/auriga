@@ -924,6 +924,7 @@ struct npc_item_list {
 
 struct npc_data {
 	struct block_list bl;
+	struct unit_data  ud;
 	short n;
 	int class_;
 	short dir,speed;
@@ -935,6 +936,7 @@ struct npc_data {
 	short view_size;
 	char flag;
 	unsigned char subtype;
+	char click_able;
 	union {
 		struct {
 			struct script_code *script;
@@ -946,6 +948,7 @@ struct npc_data {
 			int label_list_num;
 			struct npc_label_list *label_list;
 			int src_id;
+			short moveable;
 		} scr;
 		struct npc_item_list shop_item[1];
 		struct {
@@ -1393,7 +1396,7 @@ enum {
 #define CELL_MASK     0x0f
 #define CELL_NPC      0x80	// NPCセル
 #define CELL_BASILICA 0x40	// BASILICAセル
-
+#define CELL_MOVENPC  0x20	// NPCセル2
 /*
  * map_getcell()で使用されるフラグ
  */
@@ -1407,6 +1410,7 @@ typedef enum {
 	CELL_GETTYPE,			// セルタイプを返す
 	CELL_CHKNPC      = 0x10,	// タッチタイプのNPC(セルタイプ0x80フラグ)
 	CELL_CHKBASILICA,		// バジリカ(セルタイプ0x40フラグ)
+	CELL_CHKMOVENPC,
 } cell_t;
 
 // map_setcell()で使用されるフラグ
@@ -1414,6 +1418,8 @@ enum {
 	CELL_SETNPC      = 0x10,	// タッチタイプのNPCをセット
 	CELL_SETBASILICA,		// バジリカをセット
 	CELL_CLRBASILICA,		// バジリカをクリア
+	CELL_SETMOVENPC,
+	CELL_CLRMOVENPC,
 };
 
 struct chat_data {
