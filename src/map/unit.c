@@ -211,8 +211,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		sd->regen.spiritsptick = 0;
 		sd->state.warp_waiting  = 0;
 		// •à‚¢‚½‚Ì‚Å‰r¥ƒo[•\Ž¦’†’f
-		if(sd->progressbar.npc_id)
+		if(sd->progressbar.npc_id) {
 			clif_progressbar_abort(sd);
+			clif_scriptclose(sd, sd->progressbar.npc_id);
+		}
 	}
 
 	sc = status_get_sc(bl);

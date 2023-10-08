@@ -1455,7 +1455,24 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case NPC_CRITICALWOUND:		/* 致命傷攻撃 */
-		status_change_start(bl,SC_CRITICALWOUND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		status_change_start(bl,SC_CRITICALWOUND,skilllv,skilllv*10,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_WIDECRITICALWOUND:		/* ワイドクリティカルウーンズ */
+		status_change_start(bl,SC_CRITICALWOUND,skilllv,skilllv>=6? (skilllv-5)*20: skilllv*20,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_VENOMIMPRESS:		/* Mベナムインプレス */
+		status_change_start(bl,SC_VENOMIMPRESS,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case NPC_MAGMA_ERUPTION:	/* Mマグマイラプション */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,9000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case NPC_MAGMA_ERUPTION_DOTDAMAGE:	/* Mマグマイラプション(追撃) */
+		status_change_start(bl,SC_HELLINFERNO,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case NPC_RAYOFGENESIS:	/* Mレイオブジェネシス */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,(skilllv<8? 500: 1000),status_get_lv(src)))
+			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case NPC_DRAGONBREATH:	/* Mドラゴンブレス */
 		if(atn_rand() % 10000 < 5000) {
@@ -1804,6 +1821,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_pretimer(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case SO_CLOUD_KILL:		/* クラウドキル */
+	case NPC_CLOUD_KILL:		/* Mクラウドキル */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_POISON,10000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_POISON,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
@@ -2731,11 +2749,22 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
 					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,skl->flag);
 				break;
-			case WL_EARTHSTRAIN:	/* アースストレイン */
-				if(map_getcell(src->m,skl->x,skl->y,CELL_CHKPASS))
-					skill_unitsetting(src,skl->skill_id,skl->skill_lv,skl->x,skl->y,0);
+			case WL_EARTHSTRAIN:    /* アースストレイン */
+				{
+					struct skill_unit_group *sg = NULL;
+					sg = map_id2sg(skl->type);
+					if(sg) {
+						int x = skl->flag>>16, y = skl->flag&0xffff;
+						if(map_getcell(src->m,x,y,CELL_CHKNOPASS)) {
+							skill_delunitgroup(sg);
+						} else {
+							skill_unit_move_unit_group(sg,src->m,skl->x,skl->y);
+						}
+					}
+				}
 				break;
 			case NC_MAGMA_ERUPTION:	/* マグマイラプション */
+			case NPC_MAGMA_ERUPTION:	/* Mマグマイラプション */
 				map_foreachinarea(skill_area_sub,skl->m,
 					skl->x-3,skl->y-3,skl->x+3,skl->y+3,BL_CHAR,
 					src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|1,
@@ -3278,6 +3307,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case NC_ARMSCANNON:		/* アームズキャノン */
 	case NC_AXEBOOMERANG:	/* アックスブーメラン */
 	case NC_MAGMA_ERUPTION:	/* マグマイラプション */
+	case NPC_MAGMA_ERUPTION:	/* Mマグマイラプション */
 	case LG_BANISHINGPOINT:	/* バニシングポイント */
 	case LG_SHIELDPRESS:	/* シールドプレス */
 	case LG_OVERBRAND:		/* オーバーブランド */
@@ -3976,6 +4006,73 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 		break;
+	case NPC_VENOMIMPRESS:		/* Mベナムインプレス */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+			}
+		} else {
+			int ar = skilllv + 1;
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_IGNITIONBREAK:	/* Mイグニッションブレイク */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+			}
+		} else {
+			/* スキルエフェクト表示 */
+			clif_skill_nodamage(src, src, skillid, skilllv, 1);
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-5,src->y-5,src->x+5,src->y+5,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_POISON_BUSTER:		/* Mポイズンバスター */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,0x0500);
+			}
+		} else {
+			skill_area_temp[1] = bl->id;
+			/* ターゲットに攻撃を加える(スキルエフェクト表示) */
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+			/* ターゲット以外の範囲内の敵全体に処理を行う */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-1,bl->y-1,bl->x+1,bl->y+1,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_WIDECRITICALWOUND:		/* ワイドクリティカルウーンズ */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		} else {
+			int ar = (skilllv == 1 || skilllv == 10)? 2: (skilllv >= 5? 14: (skilllv-1)*3+2);
+			skill_area_temp[1] = src->id;
+			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 
 	/* 魔法系スキル */
 	case MG_SOULSTRIKE:			/* ソウルストライク */
@@ -4000,6 +4097,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case WM_METALICSOUND:		/* メタリックサウンド */
 	case EL_FIRE_ARROW:			/* ファイアーアロー */
 	case EL_ICE_NEEDLE:			/* アイスニードル */
+	case NPC_RAYOFGENESIS:		/* Mレイオブジェネシス */
 		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case ALL_RESURRECTION:		/* リザレクション */
@@ -8736,6 +8834,26 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case NPC_WIDEDISPEL:			/* ワイドディスペル */
+		if(flag&1) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			if( dstsd && dstsd->special_state.no_magic_damage )
+				break;
+			// ソウルリンカーは無効
+			if(dstsd && dstsd->status.class_ == PC_CLASS_SL)
+				break;
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_ROGUE].timer != -1)	// ローグの魂中は無効
+				break;
+			status_change_release(bl,0x02);	// ディスペルによるステータス異常解除
+		} else {
+			int ar = (skilllv-1) * 3 + 2;
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
 	case MER_REGAIN:		/* リゲイン */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd && dstsd->special_state.no_magic_damage )
@@ -9805,7 +9923,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		} else {
 			int ar = (skillid==NPC_SR_CURSEDCIRCLE)? skilllv: (skilllv + 1) / 2;
-			status_change_start(bl,SC_CURSEDCIRCLE_USER,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(skillid==SR_CURSEDCIRCLE)
+				status_change_start(bl,SC_CURSEDCIRCLE_USER,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			map_foreachinarea(skill_area_sub,
 				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
@@ -10857,7 +10976,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			if(sc) {
 				if(sc->data[SC_CRITICALWOUND].timer != -1)
-					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val2) / 100;
 				if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
 					heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
 				if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
@@ -10881,7 +11000,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 
 			if(sc) {
 				if(sc->data[SC_CRITICALWOUND].timer != -1)
-					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+					heal = heal * (100 - sc->data[SC_CRITICALWOUND].val2) / 100;
 				if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
 					heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
 				if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
@@ -11338,6 +11457,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NPC_FLAMECROSS:		/* フレイムクロス */
 	case NPC_HELLBURNING:		/* ヘルバーニング */
 	case NPC_REVERBERATION:		/* M振動残響 */
+	case NPC_CLOUD_KILL:			/* Mクラウドキル */
 	case NPC_PSYCHIC_WAVE:		/* Mサイキックウェーブ */
 	case GC_POISONSMOKE:		/* ポイズンスモーク */
 	case SC_MANHOLE:			/* マンホール */
@@ -11729,10 +11849,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		break;
 	case WL_EARTHSTRAIN:		/* アースストレイン */
 		{
-			int dir = (src->x == x && src->y == y)? 6: path_calc_dir(src,x,y);
+			int dir = 4;
 			int tmpx, tmpy;
 			int addx = 0, addy = 0;
 			int i, loop = skilllv + 4;
+			struct skill_unit_group *sg = NULL;
+
+			if(src->type == BL_PC)
+				dir = (src->x == x && src->y == y)? 4: path_calc_dir(src,x,y);
 
 			// 縦を優先
 			addy = diry[dir];
@@ -11742,11 +11866,14 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 			tmpx = src->x + addx;
 			tmpy = src->y + addy;
 
-			clif_skill_poseffect(src,skillid,skilllv,tmpx,tmpy,tick);
-			for(i = 1; i < loop; i++) {
-				skill_addtimerskill(src,tick+i*100,0,tmpx,tmpy,skillid,skilllv,0,flag);
-				tmpx += addx;
-				tmpy += addy;
+			sg = skill_unitsetting(src,skillid,skilllv,tmpx,tmpy,0);
+			if(sg) {
+				for(i = 1; i < loop; i++) {
+					tmpx += addx;
+					tmpy += addy;
+
+					skill_addtimerskill(src,tick+i*200,0,addx,addy,skillid,skilllv,sg->bl.id,(tmpx<<16)|tmpy);
+				}
 			}
 		}
 		break;
@@ -11822,6 +11949,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		break;
 	case NC_MAGMA_ERUPTION:	/* マグマイラプション */
+	case NPC_MAGMA_ERUPTION:	/* Mマグマイラプション */
 		skill_addtimerskill(src,tick+1000,0,x,y,skillid,skilllv,0,flag);
 		break;
 	case LG_OVERBRAND:		/* オーバーブランド */
@@ -11835,13 +11963,17 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		break;
 	case LG_RAYOFGENESIS:	/* レイオブジェネシス */
-		skill_area_temp[1] = src->id;
-		skill_area_temp[2] = x;
-		skill_area_temp[3] = y;
-		map_foreachinarea(skill_area_sub,
-			src->m,x-5,y-5,x+5,y+5,(BL_CHAR|BL_SKILL),
-			src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-			skill_castend_damage_id);
+	case NPC_RAYOFGENESIS:	/* Mレイオブジェネシス */
+		{
+			int ar = (skillid == LG_RAYOFGENESIS)? 5: (skilllv >= 7? 13: (skilllv+1)/2*3 + 2);
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = x;
+			skill_area_temp[3] = y;
+			map_foreachinarea(skill_area_sub,
+				src->m,x-ar,y-ar,x+ar,y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
 		break;
 	case SR_RIDEINLIGHTNING:	/* 雷光弾 */
 		{
@@ -12402,6 +12534,7 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		val3 = flag;		// 罠アイテムID
 		break;
 	case NC_MAGMA_ERUPTION:	/* マグマイラプション */
+	case NPC_MAGMA_ERUPTION:	/* Mマグマイラプション */
 		limit = interval * 10;
 		break;
 	case LG_BANDING:	/* バンディング */
@@ -13107,7 +13240,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 				heal = sg->val2;
 				if(sc) {
 					if(sc->data[SC_CRITICALWOUND].timer != -1)
-						heal = heal * (100 - sc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+						heal = heal * (100 - sc->data[SC_CRITICALWOUND].val2) / 100;
 					if(sc->data[SC_DEATHHURT].timer != -1)	/* デスハート */
 						heal = heal * (100 - sc->data[SC_DEATHHURT].val2) / 100;
 					if(sc->data[SC_BERSERK].timer != -1) /* バーサーク中はヒール０ */
@@ -13566,7 +13699,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		sg->limit=DIFF_TICK(tick,sg->tick)+1500;
 		break;
 	case UNT_MAGMA_ERUPTION:	/* マグマイラプション */
-		battle_skill_attack(BF_MISC,ss,&src->bl,bl,NC_MAGMA_ERUPTION_DOTDAMAGE,sg->skill_lv,tick,0x500);
+		if(sg->skill_id == NC_MAGMA_ERUPTION)
+			battle_skill_attack(BF_MISC,ss,&src->bl,bl,NC_MAGMA_ERUPTION_DOTDAMAGE,sg->skill_lv,tick,0x500);
+		else
+			battle_skill_attack(BF_MISC,ss,&src->bl,bl,NPC_MAGMA_ERUPTION_DOTDAMAGE,sg->skill_lv,tick,0x500);
 		break;
 	case UNT_MANHOLE:	/* マンホール */
 		if(sg->val2 == 0) {
@@ -18900,8 +19036,9 @@ int skill_unit_move_unit_group(struct skill_unit_group *group,int m,int dx,int d
 	     group->skill_id != SG_MOON_WARM &&
 	     group->skill_id != SG_STAR_WARM &&
 	     group->unit_id != UNT_NEUTRALBARRIER &&
-	     group->unit_id != UNT_STEALTHFIELD	&&
-	     group->unit_id != UNT_KINGS_GRACE )
+	     group->unit_id != UNT_STEALTHFIELD &&
+	     group->unit_id != UNT_KINGS_GRACE &&
+	     group->unit_id != UNT_EARTHSTRAIN )
 		return 0;
 	if( group->unit_id == UNT_ANKLESNARE && (battle_config.anklesnare_no_knockbacking || group->val2 > 0) )	// 補足中のアンクルは移動不可
 		return 0;
@@ -20831,7 +20968,7 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 	}
 
 	if(tsc && tsc->data[SC_CRITICALWOUND].timer != -1)
-		heal = heal * (100 - tsc->data[SC_CRITICALWOUND].val1 * 10) / 100;
+		heal = heal * (100 - tsc->data[SC_CRITICALWOUND].val2) / 100;
 	if(tsc && tsc->data[SC_DEATHHURT].timer != -1)
 		heal = heal * (100 - tsc->data[SC_DEATHHURT].val2) / 100;
 

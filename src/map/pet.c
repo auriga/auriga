@@ -279,7 +279,7 @@ static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
 
 	if(battle_config.enable_pet_autofeed > 0) {
 		if(sd->pet.hungry <= 25 && 
-			(battle_config.enable_pet_autofeed == 1 && sd->status.autofeed&1) || battle_config.enable_pet_autofeed >= 2
+			((battle_config.enable_pet_autofeed == 1 && sd->status.autofeed&1) || battle_config.enable_pet_autofeed >= 2)
 		) {
 			pet_food(sd);
 		}

@@ -379,6 +379,12 @@ MaxSp		8	1
 PartnerId	57	1
 Cart		58	1
 DieCounter	59	1
+PlusStr		103
+PlusAgi		104
+PlusVit		105
+PlusInt		106
+PlusDex		107
+PlusLuk		108
 
 //PCƒOƒ[ƒoƒ‹•Ï”
 PC_CLONESKILL_ID	500	1

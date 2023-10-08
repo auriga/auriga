@@ -3879,6 +3879,17 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_FIX( 1, wflag );
 			}
 			break;
+		case NPC_IGNITIONBREAK:	// Mイグニッションブレイク
+			{
+				int dmg = 500 + 500 * skill_lv;
+				int dist = unit_distance(src,target);
+				if(dist > 3)			// 遠距離
+					dmg -= 500;
+				else if(dist > 1)		// 中距離
+					dmg -= 250;
+				DMG_FIX( dmg, 100 );
+			}
+			break;
 		case NPC_ARROWSTORM:		// Mアローストーム
 			DMG_FIX( 1000 + 1000 * (skill_lv >= 5), 100 );
 			break;
@@ -6586,6 +6597,15 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_PSYCHIC_WAVE:	// Mサイキックウェーブ
 			MATK_FIX( 500 * skill_lv, 100 );
 			break;
+		case NPC_RAYOFGENESIS:	// Mレイオブジェネシス
+			MATK_FIX( 200 * skill_lv, 100 );
+			break;
+		case NPC_POISON_BUSTER:	/* Mポイズンバスター */
+			MATK_FIX( 1500 * skill_lv, 100 );
+			break;
+		case NPC_CLOUD_KILL:		/* Mクラウドキル */
+			MATK_FIX( 50 * skill_lv, 100 );
+			break;
 		case NPC_ELECTRICWALK:	// Mエレクトリックウォーク
 		case NPC_FIREWALK:		// Mファイアーウォーク
 			MATK_FIX( 100 * skill_lv, 100 );
@@ -7153,6 +7173,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			case NJ_HYOUSENSOU:
 			case NJ_HUUJIN:
 			case LG_RAYOFGENESIS:
+			case NPC_RAYOFGENESIS:	/* Mレイオブジェネシス */
 			case KO_KAIHOU:	/* 術式 -解放- */
 				if(t_mode&MD_PLANT) // 草・きのこ等
 					mgd.damage = mgd.div_;
@@ -7335,6 +7356,12 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				mid.damage = 0;
 			damagefix = 0;
 		}
+		break;
+	case NPC_MAGMA_ERUPTION_DOTDAMAGE:	/* Mマグマイラプション(追撃) */
+		mid.damage = 1000 * skill_lv;
+		damagefix = 0;
+		flag &= ~(BF_SKILLMASK|BF_RANGEMASK|BF_WEAPONMASK);
+		mid.flag = flag|(mid.flag&~BF_RANGEMASK)|BF_SHORT|BF_WEAPON;
 		break;
 	case PA_PRESSURE:		// プレッシャー
 		mid.damage = 500 + 300 * skill_lv;

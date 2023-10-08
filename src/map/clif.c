@@ -21695,7 +21695,7 @@ void clif_item_preview(struct map_session_data *sd, short idx)
 }
 
 /*==========================================
- * ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½bï¿½vï¿½Oï¿½ï¿½ï¿½[ï¿½hï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½Jï¿½ï¿½
+ * ‘•”õƒAƒbƒvƒOƒŒ[ƒhƒEƒBƒ“ƒhƒE‚ğŠJ‚­
  *------------------------------------------
  */
 void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
@@ -21719,7 +21719,7 @@ void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
 }
 
 /*==========================================
- *ï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½bï¿½vï¿½Oï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½
+ *@‘•”õƒAƒbƒvƒOƒŒ[ƒh‰“š
  *------------------------------------------
  */
 void clif_lapineupgradeack(struct map_session_data *sd, int result)
@@ -27394,7 +27394,7 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 }
 
 /*==========================================
- * ï¿½Rï¿½ï¿½ÖŒWï¿½ï¿½ï¿½
+ * ‹RæŠÖŒW‰ğœ
  *------------------------------------------
  */
 static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)

@@ -5961,8 +5961,10 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// 詠唱バー表示中だったら中断
-	if(sd->progressbar.npc_id)
+	if(sd->progressbar.npc_id) {
 		clif_progressbar_abort(sd);
+		clif_scriptclose(sd, sd->progressbar.npc_id);
+	}
 
 	// 歩いていたら足を止める
 	if(((sd->sc.data[SC_ENDURE].timer == -1 && sd->sc.data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure) || map[sd->bl.m].flag.gvg) && !unit_isrunning(&sd->bl))
@@ -6499,6 +6501,24 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_DIE_COUNTER:
 		val = sd->status.die_counter;
 		break;
+	case SP_PSTR:
+		val = sd->paramc[0];
+		break;
+	case SP_PAGI:
+		val = sd->paramc[1];
+		break;
+	case SP_PVIT:
+		val = sd->paramc[2];
+		break;
+	case SP_PINT:
+		val = sd->paramc[3];
+		break;
+	case SP_PDEX:
+		val = sd->paramc[4];
+		break;
+	case SP_PLUK:
+		val = sd->paramc[5];
+		break;
 	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
 		val = sd->skill_clone.id;
@@ -6885,7 +6905,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
 			hp = hp * 150 / 100;
 		if(sd->sc.data[SC_CRITICALWOUND].timer != -1)
-			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val1 * 10) / 100;
+			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val2) / 100;
 		if(sd->sc.data[SC_DEATHHURT].timer != -1)	// デスハート
 			hp = hp * (100 - sd->sc.data[SC_DEATHHURT].val2) / 100;
 #ifndef PRE_RENEWAL
