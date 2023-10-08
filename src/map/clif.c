@@ -2769,7 +2769,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x7f9;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
@@ -2792,7 +2792,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x857;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
@@ -2815,7 +2815,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x915;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
@@ -2840,7 +2840,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x9dd;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -2867,7 +2867,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x9ff;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -2895,7 +2895,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 
 	WBUFW(buf,0)=0x9ff;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -2917,6 +2917,68 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFB(buf,81) = 0;
 	WBUFW(buf,82) = 0;
 	strncpy(WBUFP(buf,84),nd->name,24);
+#endif
+	return len;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+static int clif_npc007b(struct npc_data *nd,unsigned char *buf,struct map_session_data* sd)
+{
+	int len;
+	unsigned int tick = gettick();
+	int option = nd->option;
+
+	nullpo_retr(0, nd);
+
+	if(sd && option&OPTION_CLOAKING) {
+		int i;
+		for(i=0; i < MAX_CLOAKEDNPC; i++) {
+			if(sd->cloaked_npc[i] == nd->bl.id)
+				option &= ~OPTION_CLOAKING;
+		}
+	}
+
+#if PACKETVER < 20180704
+	len = 86 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x9fd;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFL(buf,9)=0;
+	WBUFW(buf,13)=nd->speed;
+	WBUFL(buf,19)=option;
+	WBUFW(buf,23)=nd->class_;
+	WBUFL(buf,33)=tick;
+	WBUFPOS2(buf,63,nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y,8,8);
+	WBUFL(buf,75) = 0xffffffff;
+	WBUFL(buf,79) = 0xffffffff;
+	WBUFB(buf,83) = 0;
+	WBUFW(buf,84) = 0;
+	strncpy(WBUFP(buf,86),nd->name,24);
+#else
+	len = 90 + (int)strlen(nd->name);
+	memset(buf,0,len);
+
+	WBUFW(buf,0)=0x9fd;
+	WBUFW(buf,2)=(unsigned short)len;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
+	WBUFL(buf,5)=nd->bl.id;
+	WBUFL(buf,9)=0;
+	WBUFW(buf,13)=nd->speed;
+	WBUFL(buf,19)=option;
+	WBUFW(buf,23)=nd->class_;
+	WBUFL(buf,37)=tick;
+	WBUFPOS2(buf,67,nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y,8,8);
+	WBUFL(buf,79) = 0xffffffff;
+	WBUFL(buf,83) = 0xffffffff;
+	WBUFB(buf,87) = 0;
+	WBUFW(buf,88) = 0;
+	strncpy(WBUFP(buf,90),nd->name,24);
 #endif
 	return len;
 }
@@ -5109,7 +5171,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x7f8;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5123,7 +5185,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x858;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5137,7 +5199,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x90f;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5153,7 +5215,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x9dc;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -5171,7 +5233,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x9fe;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -5190,7 +5252,7 @@ void clif_spawnnpc(struct npc_data *nd)
 
 	WBUFW(buf,0)=0x9fe;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -5254,7 +5316,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x7f8;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5268,7 +5330,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x858;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5282,7 +5344,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x90f;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=nd->option;
@@ -5298,7 +5360,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x9dc;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -5316,7 +5378,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x9fe;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -5335,7 +5397,7 @@ void clif_spawndynamicnpc(struct map_session_data *sd, struct npc_data *nd, int 
 
 	WBUFW(buf,0)=0x9fe;
 	WBUFW(buf,2)=(unsigned short)len;
-	WBUFB(buf,4)=6;
+	WBUFB(buf,4)=(nd->u.scr.moveable > 0)? 12: 6;
 	WBUFL(buf,5)=nd->bl.id;
 	WBUFL(buf,9)=0;
 	WBUFW(buf,13)=nd->speed;
@@ -6234,6 +6296,14 @@ static void clif_move_sub(struct block_list *bl)
 			clif_send(buf,len,&eld->bl,AREA_WOS);
 			break;
 		}
+		case BL_NPC:
+		{
+			unsigned char buf[128];
+			struct npc_data *nd = (struct npc_data *)bl;
+			len = clif_npc007b(nd,buf,NULL);
+			clif_send(buf,len,&nd->bl,AREA_WOS);
+			break;
+		}
 		default:
 			break;
 	}
@@ -6489,6 +6559,13 @@ int clif_fixpos2(struct block_list *bl, int x[4], int y[4])
 				len = clif_elem007b(eld,buf);
 			} else {
 				len = clif_elem0078(eld,buf);
+			}
+		} else if( bl->type == BL_NPC ) {
+			struct npc_data *nd = (struct npc_data *)bl;
+			if(nd->ud.walktimer != -1) {
+				len = clif_npc007b(nd,buf,NULL);
+			} else {
+				len = clif_npc0078(nd,buf,NULL);
 			}
 		} else {
 			WBUFW(buf,0)=0x88;
@@ -11650,7 +11727,11 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	if(nd->class_ < 0 || (nd->flag&1 && (nd->option&(OPTION_HIDE))==0) || nd->class_ == INVISIBLE_CLASS)
 		return;
 
-	len = clif_npc0078(nd,WFIFOP(sd->fd,0),sd);
+	if(nd->ud.walktimer != -1) {
+		len = clif_npc007b(nd,WFIFOP(sd->fd,0),sd);
+	} else {
+		len = clif_npc0078(nd,WFIFOP(sd->fd,0),sd);
+	}
 	WFIFOSET(sd->fd,len);
 
 	if(nd->chat_id){
@@ -12394,6 +12475,44 @@ int clif_elemoutsight(struct block_list *bl,va_list ap)
 	nullpo_retr(0, sd = (struct map_session_data *)bl);
 
 	clif_clearchar_id(eld->bl.id,0,sd->fd);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_npcinsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct npc_data *nd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, nd = va_arg(ap,struct npc_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_getareachar_npc(sd,nd);
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int clif_npcoutsight(struct block_list *bl,va_list ap)
+{
+	struct map_session_data *sd;
+	struct npc_data *nd;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, nd = va_arg(ap,struct npc_data*));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	clif_clearchar_id(nd->bl.id,0,sd->fd);
 
 	return 0;
 }

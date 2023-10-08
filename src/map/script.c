@@ -68,6 +68,7 @@
 #include "chat.h"
 #include "battle.h"
 #include "party.h"
+#include "path.h"
 #include "atcommand.h"
 #include "status.h"
 #include "itemdb.h"
@@ -4380,6 +4381,10 @@ int buildin_achievement2(struct script_state *st);
 int buildin_dynamicnpc(struct script_state *st);
 int buildin_mdopenstate(struct script_state *st);
 int buildin_openupgrade(struct script_state *st);
+int buildin_npcwalkto(struct script_state *st);
+int buildin_npcwalkwait(struct script_state *st);
+int buildin_setnpcspeed(struct script_state *st);
+int buildin_npcclickable(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4717,6 +4722,10 @@ struct script_function buildin_func[] = {
 	{buildin_achievement2,"achievement2","iii"},
 	{buildin_dynamicnpc,"dynamicnpc","ssiiii"},
 	{buildin_openupgrade,"openupgrade","i"},
+	{buildin_npcwalkto,"npcwalkto","ii*"},
+	{buildin_npcwalkwait,"npcwalkwait","*"},
+	{buildin_setnpcspeed,"setnpcspeed","i*"},
+	{buildin_npcclickable,"npcclickable","i*"},
 
 	{NULL,NULL,NULL}
 };
@@ -14716,6 +14725,131 @@ int buildin_openupgrade(struct script_state *st)
 		return 0;
 
 	clif_openlapineupgrade(sd, nameid);
+
+	return 0;
+}
+/*==========================================
+ * NPCを移動させる
+ *------------------------------------------
+ */
+int buildin_npcwalkto(struct script_state *st)
+{
+	int x,y;
+	struct npc_data *nd;
+
+	x   = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	y   = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(st->end > st->start+4)
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+4])));
+	else
+		nd = map_id2nd(st->oid);
+
+	if(nd == NULL)
+		return 0;
+	if(nd->flag&1)
+		return 0;
+
+	if(x > map[nd->bl.m].xs || y > map[nd->bl.m].ys )
+		return 0;
+
+	unit_walktoxy(&nd->bl,x,y);
+
+	return 0;
+}
+
+/*==========================================
+ * NPCの移動時間分待機する
+ *------------------------------------------
+ */
+int buildin_npcwalkwait(struct script_state *st)
+{
+	struct npc_data *nd;
+	int delay = 0;
+
+	if(st->end > st->start+2)
+		delay = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	else
+		nd = map_id2nd(st->oid);
+
+	if(nd == NULL)
+		return 0;
+	if(nd->flag&1)
+		return 0;
+
+	if(delay < 0)
+		delay = 0;
+
+	if(st->sleep.tick == 0) {
+		// 初回実行
+		int tick = 0;
+		int dist = path_distance(nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y);
+
+		// 本来は移動中の斜めと直進の数で待機時間が変わる
+		tick = (nd->speed * dist) * 14 / 10 + delay;
+
+		if(tick <= 0) {
+			// 何もしない
+			return 0;
+		}
+		st->state = RERUNLINE;
+		st->sleep.tick = tick;
+	} else {
+		// 続行
+		st->sleep.tick = 0;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * NPCの移動速度を設定する
+ *------------------------------------------
+ */
+int buildin_setnpcspeed(struct script_state *st)
+{
+	struct npc_data *nd;
+	int speed;
+
+	speed = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	else
+		nd = map_id2nd(st->oid);
+
+	if(nd == NULL)
+		return 0;
+
+	if(speed > 0)
+		nd->speed = speed;
+	else
+		nd->speed = 300;
+
+	return 0;
+}
+
+/*==========================================
+ * NPC移動中のクリックを許可するOn / Off
+ *------------------------------------------
+ */
+int buildin_npcclickable(struct script_state *st)
+{
+	struct npc_data *nd;
+	int flag = 0;
+
+	flag = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 ) {
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	}
+	else {
+		nd = map_id2nd(st->oid);
+	}
+
+	if(nd == NULL)
+		return 0;
+
+	nd->click_able = flag;
 
 	return 0;
 }

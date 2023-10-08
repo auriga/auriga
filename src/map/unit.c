@@ -85,6 +85,7 @@ struct unit_data* unit_bl2ud(struct block_list *bl)
 	if( bl->type == BL_HOM  ) return &((struct homun_data*)bl)->ud;
 	if( bl->type == BL_MERC ) return &((struct merc_data*)bl)->ud;
 	if( bl->type == BL_ELEM ) return &((struct elem_data*)bl)->ud;
+	if( bl->type == BL_NPC )  return &((struct npc_data*)bl)->ud;
 	return NULL;
 }
 
@@ -97,6 +98,7 @@ static int unit_walktoxy_sub(struct block_list *bl)
 	int i;
 	struct walkpath_data wpd;
 	struct map_session_data *sd = NULL;
+	struct npc_data         *nd = NULL;
 	struct unit_data        *ud = NULL;
 	struct status_change    *sc = NULL;
 
@@ -108,12 +110,17 @@ static int unit_walktoxy_sub(struct block_list *bl)
 
 	if(bl->type == BL_PC)
 		sd = (struct map_session_data *)bl;
+	if(bl->type == BL_NPC)
+		nd = (struct npc_data *)bl;
 
 	if(sd && pc_iscloaking(sd))	// クローキング時再計算
 		status_calc_pc(sd,0);
 
 	sc = status_get_sc(bl);
 	if(sc && sc->data[SC_FORCEWALKING].timer != -1) {
+		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
+			return 0;
+	} else if(nd) {
 		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
 			return 0;
 	} else {
@@ -173,6 +180,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
 	struct elem_data        *eld = NULL;
+	struct npc_data         *nd  = NULL;
 	struct unit_data        *ud  = NULL;
 	struct status_change    *sc  = NULL;
 
@@ -191,6 +199,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		ud = &mcd->ud;
 	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
 		ud = &eld->ud;
+	} else if( (nd = BL_DOWNCAST( BL_NPC, bl ) ) ) {
+		ud = &nd->ud;
 	}
 	if(ud == NULL) return 0;
 
@@ -229,6 +239,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	else if(hd)  hd->dir  = dir;
 	else if(mcd) mcd->dir = dir;
 	else if(eld) eld->dir = dir;
+	else if(nd)  nd->dir = dir;
 
 	dx = dirx[(int)dir];
 	dy = diry[(int)dir];
@@ -253,6 +264,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	} else if(eld) {
 		map_foreachinmovearea(clif_elemoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,eld);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,dx,dy,BL_MOB,eld,0);
+	} else if(nd) {
+		map_foreachinmovearea(clif_npcoutsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,dx,dy,BL_PC,nd);
+		npc_unit_move(nd,0);
 	}
 	ud->walktimer = -1;
 
@@ -262,12 +276,12 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	if(md && md->min_chase>13)
 		md->min_chase--;
 
-	if(!pd) skill_unit_move(bl,tick,0);
+	if(!pd && !nd) skill_unit_move(bl,tick,0);
 	if(moveblock) map_delblock(bl);
 	bl->x = x;
 	bl->y = y;
 	if(moveblock) map_addblock(bl);
-	if(!pd) skill_unit_move(bl,tick,1);
+	if(!pd && !nd) skill_unit_move(bl,tick,1);
 
 	if(sd) {
 		if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_LONGINGFREEDOM].timer == -1)	// Not 拘束しないで
@@ -307,6 +321,9 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 	} else if(eld) {
 		map_foreachinmovearea(clif_eleminsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,eld);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,x-AREA_SIZE*2,y-AREA_SIZE*2,x+AREA_SIZE*2,y+AREA_SIZE*2,-dx,-dy,BL_MOB,eld,1);
+	} else if(nd) {
+		map_foreachinmovearea(clif_npcinsight,bl->m,x-AREA_SIZE,y-AREA_SIZE,x+AREA_SIZE,y+AREA_SIZE,-dx,-dy,BL_PC,nd);
+		npc_unit_move(nd,1);
 	}
 	ud->walktimer = -1;
 
@@ -446,7 +463,7 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				status_change_end(&sd->bl,SC_WUGDASH,-1);
 				return 0;
 			}
-		} else if(map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
+		} else if(!nd && map_getcell(bl->m,x+dx,y+dy,CELL_CHKNOPASS)) {	// 障害物に当たった
 			if(!sc || sc->data[SC_FORCEWALKING].timer == -1) {
 				clif_fixwalkpos(bl);
 				return 0;
@@ -498,6 +515,7 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
 	struct elem_data        *eld = NULL;
+	struct npc_data         *nd  = NULL;
 	struct status_change    *sc  = NULL;
 
 	nullpo_retr(0, bl);
@@ -514,14 +532,16 @@ int unit_walktoxy(struct block_list *bl, int x, int y)
 		ud = &mcd->ud;
 	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
 		ud = &eld->ud;
+	} else if( (nd = BL_DOWNCAST( BL_NPC, bl ) ) ) {
+		ud = &nd->ud;
 	}
 	if( ud == NULL ) return 0;
 
 	// 移動出来ないユニットは弾く(ペットは除く)
-	if( !pd && !(status_get_mode(bl)&MD_CANMOVE) )
+	if( !pd && !nd && !(status_get_mode(bl)&MD_CANMOVE) )
 		return 0;
 
-	if( !unit_can_move(bl) )
+	if( !nd && !unit_can_move(bl) )
 		return 0;
 
 	sc = status_get_sc(bl);
@@ -632,6 +652,7 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
 	struct elem_data        *eld = NULL;
+	struct npc_data         *nd  = NULL;
 	struct unit_data        *ud  = NULL;
 
 	nullpo_retr(1, bl);
@@ -650,7 +671,10 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		ud = &mcd->ud;
 	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
 		ud = &eld->ud;
+	} else if( (nd = BL_DOWNCAST( BL_NPC, bl ) ) ) {
+		ud = &nd->ud;
 	}
+
 	if( ud == NULL ) return 1;
 
 	unit_stop_walking(bl,1);
@@ -711,14 +735,18 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 	} else if(eld) {
 		map_foreachinmovearea(clif_elemoutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,eld);
 		map_foreachinmovearea(mob_ai_hard_spawn_sub,bl->m,bl->x-AREA_SIZE*2,bl->y-AREA_SIZE*2,bl->x+AREA_SIZE*2,bl->y+AREA_SIZE*2,dx,dy,BL_MOB,eld,0);
+	} else if(nd) {
+		map_foreachinmovearea(clif_npcoutsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,dx,dy,BL_PC,nd);
+	} else if(nd) {
+		map_foreachinmovearea(clif_npcinsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_PC,nd);
 	}
 
-	if(!pd) skill_unit_move(bl,tick,0);
+	if(!pd && !nd) skill_unit_move(bl,tick,0);
 	if(moveblock) map_delblock(bl);
 	bl->x = dst_x;
 	bl->y = dst_y;
 	if(moveblock) map_addblock(bl);
-	if(!pd) skill_unit_move(bl,tick,1);
+	if(!pd && !nd) skill_unit_move(bl,tick,1);
 
 	if(sd) {	/* 画面内に入ってきたので表示 */
 		map_foreachinmovearea(clif_pcinsight,bl->m,bl->x-AREA_SIZE,bl->y-AREA_SIZE,bl->x+AREA_SIZE,bl->y+AREA_SIZE,-dx,-dy,BL_ALL,sd);
@@ -827,6 +855,7 @@ int unit_stop_walking(struct block_list *bl,int type)
 	struct homun_data       *hd  = NULL;
 	struct merc_data        *mcd = NULL;
 	struct elem_data        *eld = NULL;
+	struct npc_data         *nd  = NULL;
 	struct unit_data        *ud  = NULL;
 
 	nullpo_retr(0, bl);
@@ -843,6 +872,8 @@ int unit_stop_walking(struct block_list *bl,int type)
 		ud = &mcd->ud;
 	} else if( (eld = BL_DOWNCAST( BL_ELEM, bl ) ) ) {
 		ud = &eld->ud;
+	} else if( (nd = BL_DOWNCAST( BL_NPC, bl ) ) ) {
+		ud = &nd->ud;
 	}
 	if( ud == NULL ) return 0;
 
