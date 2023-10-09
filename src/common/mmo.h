@@ -54,7 +54,7 @@
 #define MAX_GUILDCASTLE 30
 #define MAX_GUILDLEVEL 50
 #define MAX_FRIEND 20
-#define MAX_STATUSCHANGE 690
+#define MAX_STATUSCHANGE 720
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
 
@@ -109,7 +109,7 @@
 #define ELEM_SKILLID   8401		// 精霊スキルIDの開始値
 #define GUILD_SKILLID 10000		// ギルドスキルIDの開始値
 
-#define MAX_SKILL       750
+#define MAX_SKILL       800
 #define MAX_SECONDSKILL  19
 #define MAX_THIRDSKILL  520
 #define MAX_QUESTSKILL   16

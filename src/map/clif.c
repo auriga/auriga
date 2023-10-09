@@ -6869,6 +6869,68 @@ void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes)
  *
  *------------------------------------------
  */
+void clif_scriptmessize(struct map_session_data *sd, int npcid, int height, int width)
+{
+#if PACKETVER >= 20220504
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xba2;
+	WFIFOL(fd,2)=height;
+	WFIFOL(fd,6)=width;
+	WFIFOSET(fd,packet_db[0xba2].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_scriptmespos(struct map_session_data *sd, int npcid, int x, int y)
+{
+#if PACKETVER >= 20220504
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xba3;
+	WFIFOL(fd,2)=x;
+	WFIFOL(fd,6)=y;
+	WFIFOSET(fd,packet_db[0xba3].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_scriptmesalign(struct map_session_data *sd, int npcid, char align)
+{
+#if PACKETVER >= 20210203
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xba1;
+	WFIFOL(fd,2)=align;
+	WFIFOSET(fd,packet_db[0xba1].len);
+#endif
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 void clif_scriptnext(struct map_session_data *sd, int npcid)
 {
 	int fd;
@@ -10206,6 +10268,25 @@ void clif_misceffect3(int fd, int id, int type)
 	WFIFOL(fd,2)=id;
 	WFIFOL(fd,6)=type;
 	WFIFOSET(fd,packet_db[0x1f3].len);
+
+	return;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_misceffect_value(struct block_list* bl, int type, int num)
+{
+	unsigned char buf[18];
+
+	nullpo_retv(bl);
+
+	WBUFW(buf,0) = 0x284;
+	WBUFL(buf,2) = bl->id;
+	WBUFL(buf,6) = type;
+	WBUFL(buf,10) = num;
+	clif_send(buf,packet_db[0x284].len,bl,AREA);
 
 	return;
 }

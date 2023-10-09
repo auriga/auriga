@@ -729,6 +729,27 @@ AurigaNPCScript
 
 			<string>に記述された文字列をメッセージウィンドウに出力します。
 
+		messize命令
+			messize <height>,<width>;
+
+			height,width	数値
+
+			同記述メッセージウィンドウの文字サイズを<height><width>に変更します。
+
+		mespos命令
+			mespos <x>,<y>;
+
+			x,y		数値
+
+			同記述メッセージウィンドウを<x><y>に表示します。
+
+		mesalign命令
+			mesalign <align>;
+
+			align	数値
+
+			同記述メッセージウィンドウの文字位置を変更します。
+
 		next命令
 			next;
 

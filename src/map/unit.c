@@ -117,18 +117,22 @@ static int unit_walktoxy_sub(struct block_list *bl)
 		status_calc_pc(sd,0);
 
 	sc = status_get_sc(bl);
-	if(sc && sc->data[SC_FORCEWALKING].timer != -1) {
-		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
+	if(sc) {
+		if(sc->data[SC_FORCEWALKING].timer != -1) {
+			if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
+				return 0;
+		} else if(nd) {
+			if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
+				return 0;
+		} else {
+			if(path_search(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
+				return 0;
+		}
+		if(sc->data[SC_PC_STOP].timer != -1)	// ˆÚ“®•s‰Âó‘Ô
 			return 0;
-	} else if(nd) {
-		if(path_search2(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
-			return 0;
-	} else {
-		if(path_search(&wpd,bl->m,bl->x,bl->y,ud->to_x,ud->to_y,0))
-			return 0;
+		if(sc->data[SC_SU_STOOP].timer != -1)	// ‚¤‚¸‚­‚Ü‚é‰ðœ
+			status_change_end(bl, SC_SU_STOOP, -1);
 	}
-	if(sc && sc->data[SC_SU_STOOP].timer != -1)	// ‚¤‚¸‚­‚Ü‚é‰ðœ
-		status_change_end(bl, SC_SU_STOOP, -1);
 
 	if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;

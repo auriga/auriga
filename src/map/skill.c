@@ -205,6 +205,14 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.h‚Ìenum‚ÌSC_***‚Æ‚ ‚í‚¹‚é‚±‚
 	SC_CURSEDCIRCLE,-1,-1,-1,-1,SC_MANDRAGORA,-1,-1,-1,-1,
 	/* 740- */
 	-1,-1,-1,-1,SC_PROPERTYWALK,SC_PROPERTYWALK,-1,-1,-1,-1,
+	/* 750- */
+	-1,SC_ALL_STAT_DOWN,SC_GRADUAL_GRAVITY,SC_DAMAGE_HEAL,-1,-1,-1,-1,-1,-1,
+	/* 760- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 770- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 780- */
+	-1,-1,-1,SC_KILLING_AURA,-1,-1,-1,-1,-1,-1,
 };
 
 /* (ƒXƒLƒ‹”Ô† - SECOND_SKILLID)„ƒXƒe[ƒ^ƒXˆÙí”Ô†•ÏŠ·ƒe[ƒuƒ‹ */
@@ -1447,6 +1455,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 			status_change_pretimer(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case NPC_HELLJUDGEMENT:		/* ƒwƒ‹ƒWƒƒƒbƒWƒƒ“ƒg */
+	case NPC_HELLJUDGEMENT2:		/* ƒfƒ‚ƒjƒbƒNƒwƒ‹ƒWƒƒƒbƒWƒƒ“ƒg */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_CURSE,10000,status_get_lv(src)))
 			status_change_pretimer(bl,SC_CURSE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
@@ -3938,6 +3947,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		}
 		break;
 	case NPC_HELLJUDGEMENT:		/* ƒwƒ‹ƒWƒƒƒbƒWƒƒ“ƒg */
+	case NPC_HELLJUDGEMENT2:		/* ƒfƒ‚ƒjƒbƒNƒwƒ‹ƒWƒƒƒbƒWƒƒ“ƒg */
 		if(flag&1) {
 			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
 			if(bl->id != skill_area_temp[1]) {
@@ -4069,6 +4079,20 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
 			map_foreachinarea(skill_area_sub,
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case NPC_KILLING_AURA:	/* ƒLƒŠƒ“ƒOƒI[ƒ‰ */
+		if(flag&1) {
+			/* ŒÂ•Ê‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é */
+			if(bl->id != skill_area_temp[1]) {
+				battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,0x0500);
+			}
+		} else {
+			skill_area_temp[1] = src->id;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-5,src->y-5,src->x+5,src->y+5,BL_PC,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
 		}
@@ -8854,6 +8878,55 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				skill_castend_nodamage_id);
 		}
 		break;
+	case NPC_ALL_STAT_DOWN:		/* ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“ */
+		{
+			int val = (skilllv>=5)? 100: skilllv*20 - 10;
+			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// ƒGƒtƒFƒNƒg‚ğo‚·‚½‚ß‚Ìb’èˆ’u
+			clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,val,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
+	case NPC_GRADUAL_GRAVITY:		/* ƒOƒ‰ƒfƒ…ƒAƒ‹ƒOƒ‰ƒrƒeƒB */
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,skilllv*30,0,0,skill_get_time(skillid,skilllv),0);
+		clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+		break;
+	case NPC_DAMAGE_HEAL:		/* ƒ_ƒ[ƒWƒq[ƒ‹ */
+	case NPC_KILLING_AURA:	/* ƒLƒŠƒ“ƒOƒI[ƒ‰ */
+		clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case NPC_IMMUNE_PROPERTY:		/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB */
+		{
+			const int sc_type[10] = {
+				SC_IMMUNE_PROPERTY_NOTHING, SC_IMMUNE_PROPERTY_WATER,
+				SC_IMMUNE_PROPERTY_GROUND, SC_IMMUNE_PROPERTY_FIRE, 
+				SC_IMMUNE_PROPERTY_WIND, SC_IMMUNE_PROPERTY_DARKNESS,
+				SC_IMMUNE_PROPERTY_SAINT, SC_IMMUNE_PROPERTY_POISON,
+				SC_IMMUNE_PROPERTY_TELEKINESIS, SC_IMMUNE_PROPERTY_UNDEAD
+			};
+			if(skilllv >= 1 && skilllv <= 10) {
+				clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+				status_change_start(bl,sc_type[skilllv-1],skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			}
+		}
+		break;
+	case NPC_MOVE_COORDINATE:		/* ƒ|ƒWƒVƒ‡ƒ“ƒ`ƒFƒ“ƒW */
+		{
+			int tx = bl->x, ty = bl->y;
+			if (unit_movepos(bl, src->x, src->y, 0))
+				return 0;
+
+			clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+			clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);
+			clif_blown(bl,src->x,src->y);
+
+			if(!(status_get_mode(src)&MD_BOSS)) {
+				if (unit_movepos(src, tx, ty, 0))
+					return 0;
+				clif_blown(src,tx,ty);
+			}
+		}
+		break;
 	case MER_REGAIN:		/* ƒŠƒQƒCƒ“ */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		if( dstsd && dstsd->special_state.no_magic_damage )
@@ -11459,6 +11532,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case NPC_REVERBERATION:		/* MU“®c‹¿ */
 	case NPC_CLOUD_KILL:			/* MƒNƒ‰ƒEƒhƒLƒ‹ */
 	case NPC_PSYCHIC_WAVE:		/* MƒTƒCƒLƒbƒNƒEƒF[ƒu */
+	case NPC_CANE_OF_EVIL_EYE:		/* ƒP[ƒ“ƒIƒuƒCƒrƒ‹ƒAƒC */
 	case GC_POISONSMOKE:		/* ƒ|ƒCƒYƒ“ƒXƒ‚[ƒN */
 	case SC_MANHOLE:			/* ƒ}ƒ“ƒz[ƒ‹ */
 	case SC_DIMENSIONDOOR:		/* ƒfƒBƒƒ“ƒVƒ‡ƒ“ƒhƒA */
@@ -13932,6 +14006,12 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			battle_heal(NULL,bl,2000,0,0);
 		}
 		break;
+	case UNT_CANE_OF_EVIL_EYE:		/* ƒP[ƒ“ƒIƒuƒCƒrƒ‹ƒAƒC */
+		// ‰‰ñƒ_ƒ[ƒW‚ªo‚È‚¢H
+		if(sg->val2 == 1 && battle_check_target(&src->bl,bl,BCT_ENEMY) > 0)
+			battle_skill_attack(BF_MAGIC,ss,&src->bl,bl,NPC_CANE_OF_EVIL_EYE,sg->skill_lv,tick,0x500);
+		sg->val2 = 1;
+ 		break;
 	case UNT_LAVA_SLIDE:			/* ƒ‰[ƒ”ƒ@ƒXƒ‰ƒCƒh */
 		battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,MH_LAVA_SLIDE,sg->skill_lv,tick,0);
 		if(--sg->val2 <= 0)
@@ -17766,7 +17846,7 @@ static int skill_mobskill(int skillid)
 	if(NPC_EARTHQUAKE <= skillid && skillid <= NPC_ALLHEAL)
 		return 1;
 
-	if(NPC_WIDEHEALTHFEAR <= skillid && skillid <= NPC_WIDECRITICALWOUND)
+	if(NPC_WIDEHEALTHFEAR <= skillid && skillid <= NPC_KILLING_AURA)
 		return 1;
 
 	if(skillid == NPC_SELFDESTRUCTION2)
@@ -18491,6 +18571,7 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case NJ_HYOUSYOURAKU:
 		case NJ_RAIGEKISAI:
 		case NPC_EVILLAND:
+		case NPC_CANE_OF_EVIL_EYE:
 		case MH_STEINWAND:
 		case MH_LAVA_SLIDE:
 		case MH_VOLCANIC_ASH:

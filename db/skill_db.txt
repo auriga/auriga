@@ -750,11 +750,11 @@
 748,5:10:15:20:25,6,1,0,1,5,1,no,0,2,0,none,0,NPC_WIDELEASH,ワイドデスハンド
 749,7,6,4,0,0,10,1,no,0,2,0,weapon,0,NPC_WIDECRITICALWOUND,ワイドクリティカルウーンズ
 //750,0,0,0,0,0,10,0,no,0,0,0,none,0,NPC_EARTHQUAKE_K,
-//751,9,0,1,0,1,5,1,no,0,2,0,none,0,NPC_ALL_STAT_DOWN,オールステータスダウン
-//752,9,0,2,0,0,3,0,no,0,2,0,none,0,NPC_GRADUAL_GRAVITY,グラデュアルグラビティ
-//753,0,0,4,0,1,3,1,no,0,2,0,none,0,NPC_DAMAGE_HEAL,ダメージヒール
-//754,0,0,4,0,1,10,1,no,0,2,0,none,0,NPC_IMMUNE_PROPERTY,イミューンプロパティ
-//755,14,0,1,0,1,1,0,no,0,2,0,none,0,NPC_MOVE_COORDINATE,ポジションチェンジ
+751,9,6,1,0,1,5,1,no,0,2,0,none,0,NPC_ALL_STAT_DOWN,オールステータスダウン
+752,9,6,1,0,1,3,1,no,0,2,0,none,0,NPC_GRADUAL_GRAVITY,グラデュアルグラビティ
+753,0,6,4,0,1,3,1,no,0,2,0,none,0,NPC_DAMAGE_HEAL,ダメージヒール
+754,0,6,4,0,1,10,1,no,0,2,0,none,0,NPC_IMMUNE_PROPERTY,イミューンプロパティ
+755,14,6,1,0,1,1,0,no,0,2,0,none,0,NPC_MOVE_COORDINATE,ポジションチェンジ
 //756,0,0,4,0,1,5,0,no,0,2,0,none,0,NPC_WIDEBLEEDING2,デモニックマスブリーディング
 //757,0,0,4,0,1,5,0,no,0,2,0,none,0,NPC_WIDESILENCE2,デモニックマスサイレンス
 //758,0,0,4,0,1,5,0,no,0,2,0,none,0,NPC_WIDESTUN2,デモニックマススタン
@@ -767,7 +767,7 @@
 //765,6,6,1,1,0,10,1,no,0,2,0,weapon,0,NPC_ICEBREATH2,デモニックアイスブレス
 //766,6,6,1,5,0,10,1,no,0,2,0,weapon,0,NPC_ACIDBREATH2,デモニックアシッドブレス
 //767,7,6,2,7,1,10,1,no,0,2,0,none,0,NPC_EVILLAND2,デモニックイービルランド
-//768,0,6,4,0,1,10,1,no,0,2,0,weapon,0,NPC_HELLJUDGEMENT2,デモニックヘルジャッジメント
+768,0,6,4,0,0,10,1,no,0,2,0,weapon,0,NPC_HELLJUDGEMENT2,デモニックヘルジャッジメント
 //769,0,0,0,0,0,10,0,no,0,0,0,none,0,NPC_RAINOFMETEOR,流星雨
 //770,0,0,0,0,0,5,0,no,0,2,0,none,0,NPC_GROUNDDRIVE,グラウンドドライブ
 //771,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_RELIEVE_ON,
@@ -779,10 +779,10 @@
 //777,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_RANDOMBREAK,
 //778,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_STRIP_SHADOW,Mストリップシャドウ
 //779,0,6,4,0,1,5,1,no,0,0,0,none,0,NPC_DEADLYCURSE2,ワイドデッドリーカース
-//780,0,6,4,0,1,5,1,no,0,0,0,none,0,NPC_CANE_OF_EVIL_EYE,ケーンオブイビルアイ
+780,9,6,2,0,1,5,1,no,0,2,0,magic,0,NPC_CANE_OF_EVIL_EYE,ケーンオブイビルアイ
 //781,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_CURSE_OF_RED_CUBE,
 //782,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_CURSE_OF_BLUE_CUBE,
-//783,0,6,4,0,1,5,1,no,0,0,0,none,0,NPC_KILLING_AURA,キリングオーラ
+783,0,6,4,0,1,5,1,no,0,2,0,none,0,NPC_KILLING_AURA,キリングオーラ
 //784,0,6,4,0,1,1,1,no,0,0,0,none,0,All_EVENT_20TH_ANNIVERSARY,Happy 20th Anniversary
 //785,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_TARGET_MARKER,
 //786,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_AIMED_SHOWER,

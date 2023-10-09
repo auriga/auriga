@@ -86,6 +86,9 @@ void clif_selllist(struct map_session_data *sd);
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd);
 void clif_market_list(struct map_session_data *sd, struct npc_data *nd);
 void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes);
+void clif_scriptmessize(struct map_session_data *sd, int npcid, int height, int width);
+void clif_scriptmespos(struct map_session_data *sd, int npcid, int x, int y);
+void clif_scriptmesalign(struct map_session_data *sd, int npcid, char align);
 void clif_scriptnext(struct map_session_data *sd, int npcid);
 void clif_scriptclose(struct map_session_data *sd, int npcid);
 void clif_scriptclear(struct map_session_data *sd, int npcid);
@@ -115,6 +118,7 @@ void clif_unequipitemack(struct map_session_data *sd, int n, int pos, unsigned c
 void clif_misceffect(struct block_list* bl, int type);
 void clif_misceffect2(struct block_list *bl, int type);
 void clif_misceffect3(int fd, int id, int type);
+void clif_misceffect_value(struct block_list* bl, int type, int num);
 void clif_remove_misceffect2(struct block_list *bl,int type);
 void clif_remove_misceffect3(int fd, int id, int type);
 void clif_changeoption(struct block_list *bl);

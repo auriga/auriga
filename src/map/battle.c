@@ -463,6 +463,22 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 				(!(flag&BF_SKILL) && status_get_attack_element(src) != ELE_GHOST) )
 			damage = 0;
 		}
+
+		if(damage > 0) {
+			int ele = (flag&BF_SKILL)? skill_get_pl(skill_num): status_get_attack_element(src);
+			switch(ele) {
+			case ELE_NEUTRAL:	if(sc->data[SC_IMMUNE_PROPERTY_NOTHING].timer != -1) damage = 0; break;
+			case ELE_WATER:	if(sc->data[SC_IMMUNE_PROPERTY_WATER].timer != -1)	damage = 0; break;
+			case ELE_EARTH:		if(sc->data[SC_IMMUNE_PROPERTY_GROUND].timer != -1)	damage = 0; break;
+			case ELE_FIRE:		if(sc->data[SC_IMMUNE_PROPERTY_FIRE].timer != -1)		damage = 0; break;
+			case ELE_WIND:		if(sc->data[SC_IMMUNE_PROPERTY_WIND].timer != -1)	damage = 0; break;
+			case ELE_DARK:		if(sc->data[SC_IMMUNE_PROPERTY_DARKNESS].timer != -1)	damage = 0; break;
+			case ELE_HOLY:		if(sc->data[SC_IMMUNE_PROPERTY_SAINT].timer != -1)		damage = 0; break;
+			case ELE_POISON:	if(sc->data[SC_IMMUNE_PROPERTY_POISON].timer != -1)		damage = 0; break;
+			case ELE_GHOST:	if(sc->data[SC_IMMUNE_PROPERTY_TELEKINESIS].timer != -1)	damage = 0; break;
+			case ELE_UNDEAD:	if(sc->data[SC_IMMUNE_PROPERTY_UNDEAD].timer != -1)		damage = 0; break;
+			}
+		}
 	}
 
 	if(src_sc && src_sc->count > 0) {
@@ -997,8 +1013,22 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		}
 
 		// 明鏡止水(確率暫定)
-		if(sc->data[SC_MEIKYOUSISUI].timer != -1 && atn_rand()%100 < sc->data[SC_MEIKYOUSISUI].val1 * 2) {
+		if(sc->data[SC_MEIKYOUSISUI].timer != -1 && atn_rand()%100 < sc->data[SC_MEIKYOUSISUI].val1 * 2)
 			damage = 0;
+
+		// ダメージヒール
+		if(sc->data[SC_DAMAGE_HEAL].timer != -1 && damage > 0) {
+			if(flag & sc->data[SC_DAMAGE_HEAL].val2) {
+				int heal = (damage > 0xffffffff)? 0xffffffff: damage;
+				if(flag & BF_WEAPON) {
+					clif_misceffect_value(bl, 312, heal);
+				} else {
+					clif_misceffect_value(bl, 1143, heal);
+				}
+				clif_misceffect_value(bl, 657, heal);
+				unit_heal(bl, damage, 0);
+				damage = 0;
+			}
 		}
 	}
 
@@ -3904,6 +3934,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NPC_PHANTOMTHRUST:	// Mファントムスラスト
 			DMG_FIX( 100, 100 );
 			break;
+		case NPC_HELLJUDGEMENT2:		// デモニックヘルジャッジメント
+			DMG_FIX( 1000*skill_lv, 100 );
+			break;
 		case HFLI_MOON:		// ムーンライト
 			DMG_FIX( 110+110*skill_lv, 100 );
 			break;
@@ -6610,6 +6643,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		case NPC_FIREWALK:		// Mファイアーウォーク
 			MATK_FIX( 100 * skill_lv, 100 );
 			break;
+		case NPC_CANE_OF_EVIL_EYE:	// ケーンオブイビルアイ
+			mgd.damage = 150000;
+			normalmagic_flag = 0;
+			break;
 		case MH_POISON_MIST:		// ポイズンミスト
 			MATK_FIX( 40 * skill_lv * status_get_lv(bl) / 100, 100 );
 			break;
@@ -6966,7 +7003,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 #ifdef PRE_RENEWAL
 	/* ５．カードによるダメージ追加処理 */
-	if(sd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE) {
+	if(sd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE && skill_num != NPC_CANE_OF_EVIL_EYE) {
 		cardfix = 100;
 		if(tsd)
 			cardfix = cardfix*(100+sd->magic_addrace[t_race]+sd->magic_addrace[RCT_PLAYER])/100;
@@ -7008,7 +7045,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 #endif
 
 	/* ６．カードによるダメージ減衰処理 */
-	if(tsd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE) {
+	if(tsd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE && skill_num != NPC_CANE_OF_EVIL_EYE) {
 		int s_class = status_get_class(bl);
 		cardfix = 100;
 		cardfix = cardfix*(100-tsd->subele[ele])/100;				// 属性によるダメージ耐性
@@ -7127,6 +7164,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		mgd.damage += wd.damage;
 		mgd.damage = mgd.damage / mgd.div_;
 	}
+	if(skill_num == NPC_RAYOFGENESIS && mgd.damage < 1)	// Mレイオブジェネシス
+		mgd.damage = 1;
 
 	if(skill_num == WZ_WATERBALL)
 		mgd.div_ = 1;
@@ -7366,6 +7405,11 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 	case PA_PRESSURE:		// プレッシャー
 		mid.damage = 500 + 300 * skill_lv;
 		damagefix = 0;
+		break;
+	case NPC_KILLING_AURA:	// キリングオーラ
+		mid.damage = 100000;
+		damagefix = 0;
+		mid.damage = battle_attr_fix(mid.damage, ele, status_get_element(target));
 		break;
 	case SN_FALCONASSAULT:		// ファルコンアサルト
 		if(sd == NULL || (skill = pc_checkskill(sd,HT_STEELCROW)) <= 0)

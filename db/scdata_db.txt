@@ -653,6 +653,21 @@
 681,SC_GRANITIC_ARMOR,1,1,0,0		// グラニティックアーマー
 682,SC_PYROCLASTIC,1,1,0,0			// パイロクラスティック
 683,SC_VOLCANIC_ASH,1,1,0,0			// 火山灰
+684,SC_ALL_STAT_DOWN,0,1,0,0			// オールステータスダウン
+685,SC_GRADUAL_GRAVITY,0,1,0,0			// 重力増加
+686,SC_DAMAGE_HEAL,0,1,0,0			// ダメージヒール
+687,SC_IMMUNE_PROPERTY_NOTHING,0,1,0,0			// イミューンプロパティ(ニュートラル)
+688,SC_IMMUNE_PROPERTY_WATER,0,1,0,0			// イミューンプロパティ(ウォータ)
+689,SC_IMMUNE_PROPERTY_GROUND,0,1,0,0			// イミューンプロパティ(アース)
+690,SC_IMMUNE_PROPERTY_FIRE,0,1,0,0			// イミューンプロパティ(ファイア)
+691,SC_IMMUNE_PROPERTY_WIND,0,1,0,0			// イミューンプロパティ(ウインド)
+692,SC_IMMUNE_PROPERTY_DARKNESS,0,1,0,0			// イミューンプロパティ(ダーク)
+693,SC_IMMUNE_PROPERTY_SAINT,0,1,0,0			// イミューンプロパティ(ホーリー)
+694,SC_IMMUNE_PROPERTY_POISON,0,1,0,0			// イミューンプロパティ(ポイズン)
+695,SC_IMMUNE_PROPERTY_TELEKINESIS,0,1,0,0			// イミューンプロパティ(ゴースト)
+696,SC_IMMUNE_PROPERTY_UNDEAD,0,1,0,0			// イミューンプロパティ(アンデット)
+697,SC_KILLING_AURA,0,1,0,0			// キリングオーラ
+698,SC_PC_STOP,0,1,0,0			// 移動不可
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

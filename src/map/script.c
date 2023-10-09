@@ -4047,6 +4047,9 @@ int do_init_script(void)
 //
 
 int buildin_mes(struct script_state *st);
+int buildin_messize(struct script_state *st);
+int buildin_mespos(struct script_state *st);
+int buildin_mesalign(struct script_state *st);
 int buildin_goto(struct script_state *st);
 int buildin_callsub(struct script_state *st);
 int buildin_callfunc(struct script_state *st);
@@ -4388,6 +4391,9 @@ int buildin_npcclickable(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
+	{buildin_messize,"messize","ii"},
+	{buildin_mespos,"mespos","ii"},
+	{buildin_mesalign,"mesalign","i"},
 	{buildin_next,"next",""},
 	{buildin_close,"close",""},
 	{buildin_close2,"close2",""},
@@ -4741,6 +4747,50 @@ int buildin_mes(struct script_state *st)
 	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	if(*str)
 		clif_scriptmes(script_rid2sd(st),st->oid,str);
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int buildin_messize(struct script_state *st)
+{
+	int height, width;
+
+	height = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	width = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(height && width)
+		clif_scriptmessize(script_rid2sd(st),st->oid,height,width);
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int buildin_mespos(struct script_state *st)
+{
+	int x, y;
+
+	x = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	y = conv_num(st,& (st->stack->stack_data[st->start+3]));
+	if(x && y)
+		clif_scriptmespos(script_rid2sd(st),st->oid,x,y);
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int buildin_mesalign(struct script_state *st)
+{
+	char align;
+
+	align = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(align)
+		clif_scriptmesalign(script_rid2sd(st),st->oid,align);
 	return 0;
 }
 

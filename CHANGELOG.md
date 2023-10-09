@@ -1,4 +1,23 @@
 ----------------------------------------
+//1530 [2023/10/10] by refis
+
+・PACKETVER[20201007]、[20210630]以降に処理を対応（packet_db.lua, char.c）
+
+・引数付misceffect[0x284]追加（clif.*）
+
+・定数更新（skill.h, status.h）
+
+・NPCスキル[Mレイオブジェネシス]で最低ダメージ1保証されるよう変更（battle.c）
+
+・NPCスキル[オールステータスダウン][グラデュアルグラビティ][ダメージヒール][イミューンプロパティ]
+　[ポジションチェンジ][デモニックヘルジャッジメント][ケーンオブイビルアイ][キリングオーラ]追加
+　（scdata_db.txt, skill_cast_db.txt, skill_db*.txt, skill_unit_db.txt, mmo.h, battle.c, pc.c, skill.c, status.*）
+
+・状態異常[移動不可]追加（db/scdata_db.txt, status.*, unit.c）
+
+・スクリプト命令[messize][mespos][mesalign]追加（doc/script_ref.txt, clif.*, script.c）
+
+----------------------------------------
 //1529 [2023/10/09] by refis
 
 ・アースストレインのスキルユニットを随時生成せず初回ユニットを移動させるよう処理を変更（skill.c）

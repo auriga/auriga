@@ -219,7 +219,10 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 670- */
 	SI_NEEDLE_OF_PARALYZE,SI_PAIN_KILLER,SI_LIGHT_OF_REGENE,SI_OVERED_BOOST,SI_STYLE_CHANGE,SI_TINDER_BREAKER,SI_CBC,SI_EQC,SI_GOLDENE_FERSE,SI_ANGRIFFS_MODUS,
 	/* 680- */
-	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH
+	SI_MAGMA_FLOW,SI_GRANITIC_ARMOR,SI_PYROCLASTIC,SI_VOLCANIC_ASH,SI_ALL_STAT_DOWN,SI_GRADUAL_GRAVITY,SI_DAMAGE_HEAL,SI_IMMUNE_PROPERTY_NOTHING,SI_IMMUNE_PROPERTY_WATER,SI_IMMUNE_PROPERTY_GROUND,
+	/* 690- */
+	SI_IMMUNE_PROPERTY_FIRE,SI_IMMUNE_PROPERTY_WIND,SI_IMMUNE_PROPERTY_DARKNESS,SI_IMMUNE_PROPERTY_SAINT,SI_IMMUNE_PROPERTY_POISON,SI_IMMUNE_PROPERTY_TELEKINESIS,SI_IMMUNE_PROPERTY_UNDEAD,SI_KILLING_AURA,SI_PC_STOP
+
 
 };
 
@@ -1465,6 +1468,14 @@ L_RECALC:
 		}
 		if(sd->sc.data[SC_MELODYOFSINK].timer != -1) {	// メロディーオブシンク
 			sd->paramb[3] -= sd->sc.data[SC_MELODYOFSINK].val4;
+		}
+		if(sd->sc.data[SC_ALL_STAT_DOWN].timer != -1) {	// オールステータスダウン
+			sd->paramb[0] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
+			sd->paramb[1] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
+			sd->paramb[2] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
+			sd->paramb[3] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
+			sd->paramb[4] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
+			sd->paramb[5] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
 		}
 		if(sd->sc.data[SC_FULL_THROTTLE].timer != -1) {	// フルスロットル
 			sd->paramb[0] += sd->status.str  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
@@ -4088,6 +4099,8 @@ int status_get_str(struct block_list *bl)
 			str += 5;
 		if(sc->data[SC_CHASEWALK_STR].timer != -1)
 			str += sc->data[SC_CHASEWALK_STR].val1;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			str -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(str < 0) str = 0;
 	return str;
@@ -4140,6 +4153,8 @@ int status_get_agi(struct block_list *bl)
 			agi -= agi * sc->data[SC_MARSHOFABYSS].val3 / 100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			agi += 5;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			agi -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(agi < 0) agi = 0;
 	return agi;
@@ -4176,6 +4191,8 @@ int status_get_vit(struct block_list *bl)
 			vit = vit*60/100;
 		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// トゥルーサイト
 			vit += 5;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			vit -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 
 	if(vit < 0) vit = 0;
@@ -4222,6 +4239,8 @@ int status_get_int(struct block_list *bl)
 			int_ += 5;
 		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
 			int_ = int_ * 80 / 100;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			int_ -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(int_ < 0) int_ = 0;
 	return int_;
@@ -4280,6 +4299,8 @@ int status_get_dex(struct block_list *bl)
 			dex += 5;
 		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ストリップアクセサリー
 			dex = dex * 80 / 100;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			dex -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(dex < 0) dex = 0;
 	return dex;
@@ -4322,6 +4343,8 @@ int status_get_luk(struct block_list *bl)
 			luk = luk * 80 / 100;
 		if(sc->data[SC_BANANA_BOMB].timer != -1 && bl->type != BL_PC)	// バナナ爆弾
 			luk -= luk * sc->data[SC_BANANA_BOMB].val1 / 100;
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// オールステータスダウン
+			luk -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(luk < 0) luk = 0;
 	return luk;
@@ -7283,6 +7306,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_STYLE_CHANGE:		/* スタイルチェンジ */
 		case SC_PHI_DEMON:			/* 古代精霊のお守り */
 		case SC_MAXPAIN:			/* マックスペイン */
+		case SC_IMMUNE_PROPERTY_NOTHING:	/* イミューンプロパティ(ニュートラル) */
+		case SC_IMMUNE_PROPERTY_WATER:	/* イミューンプロパティ(ウォータ) */
+		case SC_IMMUNE_PROPERTY_GROUND:	/* イミューンプロパティ(アース) */
+		case SC_IMMUNE_PROPERTY_FIRE:	/* イミューンプロパティ(ファイア) */
+		case SC_IMMUNE_PROPERTY_WIND	:	/* イミューンプロパティ(ウインド) */
+		case SC_IMMUNE_PROPERTY_DARKNESS:	/* イミューンプロパティ(ダーク) */
+		case SC_IMMUNE_PROPERTY_SAINT:	/* イミューンプロパティ(ホーリー) */
+		case SC_IMMUNE_PROPERTY_POISON:	/* イミューンプロパティ(ポイズン) */
+		case SC_IMMUNE_PROPERTY_TELEKINESIS:	/* イミューンプロパティ(ゴースト) */
+		case SC_IMMUNE_PROPERTY_UNDEAD:	/* イミューンプロパティ(アンデット) */
+		case SC_PC_STOP:		/* 移動不可 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -7418,6 +7452,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ALMIGHTY:
 		case SC_SUPPORT_HPSP:
 		case SC_TINDER_BREAKER:		/* 捕獲 */
+		case SC_ALL_STAT_DOWN:	/* オールステータスダウン */
 			calc_flag = 1;
 			break;
 
@@ -9059,6 +9094,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
+		case SC_DAMAGE_HEAL:
+			switch( val1 ) {
+			case 1:
+				val2 = BF_WEAPON;
+				break;
+			case 2:
+				val2 = BF_MAGIC;
+				break;
+			case 3:
+				val2 = BF_MISC;
+				break;
+			}
+			break;
+		case SC_GRADUAL_GRAVITY:	/* 重力増加 */
+		case SC_KILLING_AURA:	/* キリングオーラ */
+			val3 = tick / 1000;
+			tick = 1000;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -9667,6 +9720,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_TINDER_BREAKER:		/* 捕獲 */
 		case SC_CBC:				/* 絞め技 */
 		case SC_EQC:				/* E.Q.C */
+		case SC_ALL_STAT_DOWN:	/* オールステータスダウン */
 			calc_flag = 1;
 			break;
 		case SC_SPEEDUP0:			/* 移動速度増加(アイテム) */
@@ -11561,6 +11615,31 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		clif_emotion(bl,4);
 		if((--sc->data[type].val2) > 0) {
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_GRADUAL_GRAVITY:	/* 重力増加 */
+		if((--sc->data[type].val3) >= 0) {
+			if(sd) {
+				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * sc->data[type].val2 / 100);
+				unit_heal(bl, -hp, 0);
+				if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+					// 生きていて解除済みでないなら継続
+					timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_KILLING_AURA:	/* キリングオーラ */
+		if((--sc->data[type].val3) > 0) {
+			if(bl && tid != -1) {
+				skill_castend_damage_id(bl,bl,NPC_KILLING_AURA,sc->data[type].val1,gettick(),0);
+			}
+			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
+				// 生きていて解除済みでないなら継続
+				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+			}
 		}
 		break;
 	}
