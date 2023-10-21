@@ -77,7 +77,7 @@
 #include "luascript.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0xB90
+#define MAX_PACKET_DB 0xBF0
 
 struct packet_db {
 	short len;
@@ -6920,7 +6920,7 @@ void clif_scriptmesalign(struct map_session_data *sd, int npcid, char align)
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0xba1;
-	WFIFOL(fd,2)=align;
+	WFIFOB(fd,2)=align;
 	WFIFOSET(fd,packet_db[0xba1].len);
 #endif
 

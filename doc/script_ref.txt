@@ -734,7 +734,7 @@ AurigaNPCScript
 
 			height,width	数値
 
-			同記述メッセージウィンドウの文字サイズを<height><width>に変更します。
+			同記述メッセージウィンドウのサイズを<height><width>に変更します。
 
 		mespos命令
 			mespos <x>,<y>;

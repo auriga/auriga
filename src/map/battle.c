@@ -1942,6 +1942,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		} else {
 			src_sd->state.arrow_atk = 0;	// 初期化
 		}
+		if(pc_checkskill(src_sd,SU_SOULATTACK) > 0 && skill_num == 0) 	// ソウルアタック
+			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;	// 遠距離攻撃フラグを有効
 	} else if(src_md || src_pd || src_mcd || src_eld) {
 		if(status_get_range(src) > 3)
 			wd.flag = (wd.flag&~BF_RANGEMASK)|BF_LONG;

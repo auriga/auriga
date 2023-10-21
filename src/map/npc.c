@@ -1048,6 +1048,9 @@ void npc_scriptcont(struct map_session_data *sd, int id)
 
 	nullpo_retv(sd);
 
+	if (id <= 0)
+		return;
+
 	if (id != sd->npc_id)
 		return;
 
