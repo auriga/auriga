@@ -2774,6 +2774,18 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,21)=nd->hair;
+		WBUFW(buf,23)=0;
+		WBUFW(buf,25)=0;
+		WBUFW(buf,27)=nd->head_bottom;
+		WBUFW(buf,29)=nd->head_top;
+		WBUFW(buf,31)=nd->head_mid;
+		WBUFW(buf,33)=nd->hair_color;
+		WBUFW(buf,35)=nd->clothes_color;
+		WBUFW(buf,37)=0;
+		WBUFB(buf,52)=nd->sex;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2797,6 +2809,19 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,21)=nd->hair;
+		WBUFW(buf,23)=0;
+		WBUFW(buf,25)=0;
+		WBUFW(buf,27)=nd->head_bottom;
+		WBUFW(buf,29)=nd->head_top;
+		WBUFW(buf,31)=nd->head_mid;
+		WBUFW(buf,33)=nd->hair_color;
+		WBUFW(buf,35)=nd->clothes_color;
+		WBUFW(buf,37)=0;
+		WBUFW(buf,39)=nd->robe;
+		WBUFB(buf,54)=nd->sex;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2820,6 +2845,19 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,9)=nd->speed;
 	WBUFL(buf,15)=option;
 	WBUFW(buf,19)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,21)=nd->hair;
+		WBUFW(buf,23)=0;
+		WBUFW(buf,25)=0;
+		WBUFW(buf,27)=nd->head_bottom;
+		WBUFW(buf,29)=nd->head_top;
+		WBUFW(buf,31)=nd->head_mid;
+		WBUFW(buf,33)=nd->hair_color;
+		WBUFW(buf,35)=nd->clothes_color;
+		WBUFW(buf,37)=0;
+		WBUFW(buf,39)=nd->robe;
+		WBUFB(buf,54)=nd->sex;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2846,6 +2884,19 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,13)=nd->speed;
 	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,25)=nd->hair;
+		WBUFW(buf,27)=0;
+		WBUFW(buf,29)=0;
+		WBUFW(buf,31)=nd->head_bottom;
+		WBUFW(buf,33)=nd->head_top;
+		WBUFW(buf,35)=nd->head_mid;
+		WBUFW(buf,37)=nd->hair_color;
+		WBUFW(buf,39)=nd->clothes_color;
+		WBUFW(buf,41)=0;
+		WBUFW(buf,43)=nd->robe;
+		WBUFB(buf,58)=nd->sex;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2873,6 +2924,20 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,13)=nd->speed;
 	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,25)=nd->hair;
+		WBUFW(buf,27)=0;
+		WBUFW(buf,29)=0;
+		WBUFW(buf,31)=nd->head_bottom;
+		WBUFW(buf,33)=nd->head_top;
+		WBUFW(buf,35)=nd->head_mid;
+		WBUFW(buf,37)=nd->hair_color;
+		WBUFW(buf,39)=nd->clothes_color;
+		WBUFW(buf,41)=0;
+		WBUFW(buf,43)=nd->robe;
+		WBUFB(buf,58)=nd->sex;
+		WBUFW(buf,78)=nd->style;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2887,7 +2952,6 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFL(buf,69) = 0xffffffff;
 	WBUFL(buf,73) = 0xffffffff;
 	WBUFB(buf,77) = 0;
-	WBUFW(buf,78) = 0;
 	strncpy(WBUFP(buf,80),nd->name,24);
 #else
 	len = 84 + (int)strlen(nd->name);
@@ -2901,6 +2965,20 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,13)=nd->speed;
 	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,25)=nd->hair;
+		WBUFL(buf,27)=0;
+		WBUFL(buf,31)=0;
+		WBUFW(buf,35)=nd->head_bottom;
+		WBUFW(buf,37)=nd->head_top;
+		WBUFW(buf,39)=nd->head_mid;
+		WBUFW(buf,41)=nd->hair_color;
+		WBUFW(buf,43)=nd->clothes_color;
+		WBUFW(buf,45)=0;
+		WBUFW(buf,47)=nd->robe;
+		WBUFB(buf,62)=nd->sex;
+		WBUFW(buf,82)=nd->style;
+	}
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
@@ -2915,7 +2993,6 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFL(buf,73) = 0xffffffff;
 	WBUFL(buf,77) = 0xffffffff;
 	WBUFB(buf,81) = 0;
-	WBUFW(buf,82) = 0;
 	strncpy(WBUFP(buf,84),nd->name,24);
 #endif
 	return len;
@@ -2953,12 +3030,25 @@ static int clif_npc007b(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,13)=nd->speed;
 	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,25)=nd->hair;
+		WBUFL(buf,27)=0;
+		WBUFL(buf,29)=0;
+		WBUFW(buf,31)=nd->head_bottom;
+		WBUFW(buf,37)=nd->head_top;
+		WBUFW(buf,39)=nd->head_mid;
+		WBUFW(buf,41)=nd->hair_color;
+		WBUFW(buf,43)=nd->clothes_color;
+		WBUFW(buf,45)=0;
+		WBUFW(buf,47)=nd->robe;
+		WBUFB(buf,62)=nd->sex;
+		WBUFW(buf,84)=sd->style;
+	}
 	WBUFL(buf,33)=tick;
 	WBUFPOS2(buf,63,nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y,8,8);
 	WBUFL(buf,75) = 0xffffffff;
 	WBUFL(buf,79) = 0xffffffff;
 	WBUFB(buf,83) = 0;
-	WBUFW(buf,84) = 0;
 	strncpy(WBUFP(buf,86),nd->name,24);
 #else
 	len = 90 + (int)strlen(nd->name);
@@ -2972,12 +3062,25 @@ static int clif_npc007b(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	WBUFW(buf,13)=nd->speed;
 	WBUFL(buf,19)=option;
 	WBUFW(buf,23)=nd->class_;
+	if(npc_is_pcview(nd)) {
+		WBUFW(buf,25)=nd->hair;
+		WBUFL(buf,27)=0;
+		WBUFL(buf,31)=0;
+		WBUFW(buf,35)=nd->head_bottom;
+		WBUFW(buf,41)=nd->head_top;
+		WBUFW(buf,43)=nd->head_mid;
+		WBUFW(buf,45)=nd->hair_color;
+		WBUFW(buf,47)=nd->clothes_color;
+		WBUFW(buf,49)=0;
+		WBUFW(buf,51)=nd->robe;
+		WBUFB(buf,66)=nd->sex;
+		WBUFW(buf,88)=nd->style;
+	}
 	WBUFL(buf,37)=tick;
 	WBUFPOS2(buf,67,nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y,8,8);
 	WBUFL(buf,79) = 0xffffffff;
 	WBUFL(buf,83) = 0xffffffff;
 	WBUFB(buf,87) = 0;
-	WBUFW(buf,88) = 0;
 	strncpy(WBUFP(buf,90),nd->name,24);
 #endif
 	return len;
@@ -22451,9 +22554,9 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 			WFIFOSET(fd,packet_db[0x95].len);
 #else
 			WFIFOW(fd, 0) = 0xadf;
-			WFIFOL(fd, 6) = 0;
+			WFIFOL(fd, 6) = snd->group_id;
 			memcpy(WFIFOP(fd,10),snd->name,24);
-			strncpy(WFIFOP(fd,34),"",24);	// Title_name
+			strncpy(WFIFOP(fd,34),snd->title,24);	// Title_name
 			WFIFOSET(fd,packet_db[0xadf].len);
 #endif
 		}
@@ -22476,9 +22579,9 @@ static void clif_parse_GetCharNameRequest(int fd,struct map_session_data *sd, in
 		WFIFOSET(fd,packet_db[0x95].len);
 #else
 		WFIFOW(fd, 0) = 0xadf;
-		WFIFOL(fd, 6) = 0;
+		WFIFOL(fd, 6) = ((struct mob_data*)bl)->group_id;
 		memcpy(WFIFOP(fd,10),((struct mob_data*)bl)->name,24);
-		strncpy(WFIFOP(fd,34),"",24);	// Title_name
+		strncpy(WFIFOP(fd,34),((struct mob_data*)bl)->title,24);	// Title_name
 		WFIFOSET(fd,packet_db[0xadf].len);
 #endif
 		break;

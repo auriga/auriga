@@ -1,4 +1,21 @@
 ----------------------------------------
+//1532 [2023/10/27] by refis
+
+・スクリプト命令[setnpcgroup][setunitgroup][setnpctitle][setunittitle]を追加
+（doc/script_ref.txt, clif.c, map.h, mob.c, npc.c, script.c）
+
+・スクリプト関数[getmapmoblist]を追加
+（doc/script_ref.txt, script.c）
+
+・スクリプト命令[setnpcdisplay]でPC職業の詳細な見た目を設定できるよう機能拡張
+（doc/script_ref.txt, clif.c, map.h, npc.*, script.c）
+	Thanks Dallen さん
+
+・スクリプト関数[removemonster]で消去時の見た目を設定できるよう機能拡張
+（doc/script_ref.txt, script.c）
+	Thanks Dallen さん
+
+----------------------------------------
 //1531 [2023/10/21] by refis
 
 ・特定のPACKETVERでの[menu][select]を取り消した際の警告を抑制（npc.c）

@@ -4252,6 +4252,7 @@ int buildin_jump_zero(struct script_state *st);
 int buildin_select(struct script_state *st);
 int buildin_getmapmobs(struct script_state *st);
 int buildin_getareamobs(struct script_state *st);
+int buildin_getmapmoblist(struct script_state *st);
 int buildin_getguildrelation(struct script_state *st);
 int buildin_unequip(struct script_state *st);
 int buildin_allowuseitem(struct script_state *st);
@@ -4388,6 +4389,10 @@ int buildin_npcwalkto(struct script_state *st);
 int buildin_npcwalkwait(struct script_state *st);
 int buildin_setnpcspeed(struct script_state *st);
 int buildin_npcclickable(struct script_state *st);
+int buildin_setnpcgroup(struct script_state *st);
+int buildin_setunitgroup(struct script_state *st);
+int buildin_setnpctitle(struct script_state *st);
+int buildin_setunittitle(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	{buildin_mes,"mes","s"},
@@ -4578,7 +4583,7 @@ struct script_function buildin_func[] = {
 	{buildin_getrepairableitemcount,"getrepairableitemcount",""},
 	{buildin_repairitem,"repairitem",""},
 	{buildin_classchange,"classchange","ii"},
-	{buildin_setnpcdisplay,"setnpcdisplay","si"},
+	{buildin_setnpcdisplay,"setnpcdisplay","si*"},
 	{buildin_misceffect,"misceffect","i*"},
 	{buildin_areamisceffect,"areamisceffect","siiiii"},
 	{buildin_soundeffect,"soundeffect","si*"},
@@ -4596,6 +4601,7 @@ struct script_function buildin_func[] = {
 	{buildin_globalmes,"globalmes","s*"},
 	{buildin_getmapmobs,"getmapmobs","s*"},
 	{buildin_getareamobs,"getareamobs","siiii*"},
+	{buildin_getmapmoblist,"getmapmoblist","s*"},
 	{buildin_getguildrelation,"getguildrelation","i*"},
 	{buildin_unequip,"unequip","*"},
 	{buildin_allowuseitem,"allowuseitem","*"},
@@ -4705,7 +4711,7 @@ struct script_function buildin_func[] = {
 	{buildin_active_montransform,"active_montransform","i*"},
 	{buildin_callmonster,"callmonster","siiss*"},
 	{buildin_areacallmonster,"areacallmonster","siiiiss*"},
-	{buildin_removemonster,"removemonster","i"},
+	{buildin_removemonster,"removemonster","i*"},
 	{buildin_mobuseskill,"mobuseskill","iiiiiii"},
 	{buildin_mobuseskillpos,"mobuseskillpos","iiiiiii"},
 	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiii"},
@@ -4732,6 +4738,10 @@ struct script_function buildin_func[] = {
 	{buildin_npcwalkwait,"npcwalkwait","*"},
 	{buildin_setnpcspeed,"setnpcspeed","i*"},
 	{buildin_npcclickable,"npcclickable","i*"},
+	{buildin_setnpcgroup,"setgroupid","i*"},
+	{buildin_setunitgroup,"unitgroupid","ii"},
+	{buildin_setnpctitle,"settitle","s*"},
+	{buildin_setunittitle,"unittitle","si"},
 
 	{NULL,NULL,NULL}
 };
@@ -10352,7 +10362,31 @@ int buildin_setnpcdisplay(struct script_state *st)
 
 	if(class_ != -1 && nd->class_ != class_) {
 		nd->class_ = class_;
-		clif_class_change(&nd->bl,class_,0);
+		if(npc_is_pcview(nd)) {
+			nd->sex = (st->end > st->start+4)? conv_num(st,& (st->stack->stack_data[st->start+4])): 0;
+			nd->hair = (st->end > st->start+5)? conv_num(st,& (st->stack->stack_data[st->start+5])): 0;
+			nd->hair_color = (st->end > st->start+6)? conv_num(st,& (st->stack->stack_data[st->start+6])): 0;
+			nd->clothes_color = (st->end > st->start+7)? conv_num(st,& (st->stack->stack_data[st->start+7])): 0;
+			nd->head_top = (st->end > st->start+8)? conv_num(st,& (st->stack->stack_data[st->start+8])): 0;
+			nd->head_mid = (st->end > st->start+9)? conv_num(st,& (st->stack->stack_data[st->start+9])): 0;
+			nd->head_bottom = (st->end > st->start+10)? conv_num(st,& (st->stack->stack_data[st->start+10])): 0;
+			nd->robe = (st->end > st->start+11)? conv_num(st,& (st->stack->stack_data[st->start+11])): 0;
+			nd->style = (st->end > st->start+12)? conv_num(st,& (st->stack->stack_data[st->start+12])): 0;
+			clif_clearchar(&nd->bl, 4);
+			clif_spawnnpc(nd);
+		}
+		else {
+			nd->sex = 0;
+			nd->hair = 0;
+			nd->hair_color = 0;
+			nd->clothes_color = 0;
+			nd->head_top = 0;
+			nd->head_mid = 0;
+			nd->head_bottom = 0;
+			nd->robe = 0;
+			nd->style = 0;
+			clif_class_change(&nd->bl,class_,0);
+		}
 	}
 
 	return 0;
@@ -10910,6 +10944,88 @@ int buildin_getareamobs(struct script_state *st)
 	}
 	count = map_foreachinarea(buildin_getmapmobs_sub, m, x0, y0, x1, y1, BL_MOB, event, mob_id);
 	push_val(st->stack,C_INT,count);
+	return 0;
+}
+
+/*==========================================
+ * MOBのIDリスト取得
+ *------------------------------------------
+ */
+static int buildin_getmapmoblist_sub(struct block_list *bl,va_list ap)
+{
+	struct mob_data *md;
+	struct map_session_data *sd = va_arg(ap,struct map_session_data *);
+	struct script_state *st = va_arg(ap,struct script_state *);
+	int *count = va_arg(ap,int*);
+	char *event = va_arg(ap,char *);
+	int mob_id = va_arg(ap,int);
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, md = (struct mob_data *)bl);
+
+	// 倒されてる
+	if (md->hp <= 0)
+		return 0;
+
+	if(	(!event && !mob_id) ||	// イベントなし、MobIDの指定なし
+		(event && strcmp(event,((struct mob_data *)bl)->npc_event) == 0) ||	// 対象イベント
+		(mob_id == ((struct mob_data*)bl)->class_) ||	// 対象MobID
+		(*count) < 128
+	) {
+		int num;
+		char *name;
+
+		num     = st->stack->stack_data[st->start+3].u.num;
+		name    = str_buf+str_data[num&0x00ffffff].str;
+		set_reg(st,sd,num + ((*count)++<<24),name,INT2PTR(((struct mob_data *)bl)->bl.id),st->stack->stack_data[st->start+3].ref);
+		return 1;
+	}
+
+	return 0;
+}
+
+int buildin_getmapmoblist(struct script_state *st)
+{
+	struct map_session_data *sd = NULL;
+	int m, n = 0, mob_id = 0;
+	char *mapname, *event = NULL;
+	int num;
+	char *name;
+	char prefix, postfix;
+	int count  = 0;
+
+	mapname = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	m  = script_mapname2mapid(st,mapname);
+	if(m < 0) {
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+
+	if( st->stack->stack_data[st->start+3].type != C_NAME ) {
+		printf("buildin_getmapmoblist: param not name\n");
+		push_val(st->stack,C_INT,-1);
+		return 0;
+	}
+	num     = st->stack->stack_data[st->start+3].u.num;
+	name    = str_buf+str_data[num&0x00ffffff].str;
+	prefix  = *name;
+	postfix = name[strlen(name)-1];
+
+	if(st->end > st->start+4)
+	{
+		struct script_data *data;
+		data = &(st->stack->stack_data[st->start+4]);
+		get_val(st,data);
+
+		if( isstr(data) )
+			event = conv_str(st,data);
+		else
+			mob_id = conv_num(st,data);
+	}
+	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
+
+	n = map_foreachinarea(buildin_getmapmoblist_sub, m, 0, 0, map[m].xs, map[m].ys, BL_MOB, sd, st, &count, event, mob_id);
+	push_val(st->stack,C_INT,n);
 	return 0;
 }
 
@@ -14002,13 +14118,15 @@ int buildin_areacallmonster(struct script_state *st)
  */
 int buildin_removemonster(struct script_state *st)
 {
-	int id;
+	int id, clrtype = 1;
 	struct block_list *bl;
 
 	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(st->end > st->start+3)
+		clrtype = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	bl = map_id2bl(id);
 
-	if(!bl || bl->type != BL_MOB || unit_remove_map(bl,1,0))
+	if(!bl || bl->type != BL_MOB || unit_remove_map(bl,clrtype,0))
 		push_val(st->stack,C_INT,0);
 	else
 		push_val(st->stack,C_INT,1);
@@ -14900,6 +15018,101 @@ int buildin_npcclickable(struct script_state *st)
 		return 0;
 
 	nd->click_able = flag;
+
+	return 0;
+}
+
+/*==========================================
+ * Group_id設定
+ *------------------------------------------
+ */
+int buildin_setnpcgroup(struct script_state *st)
+{
+	struct npc_data *nd;
+	int id;
+
+	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 ) {
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	}
+	else {
+		nd = map_id2nd(st->oid);
+	}
+
+	if(nd == NULL)
+		return 0;
+	if(id < 0)
+		return 0;
+
+	nd->group_id = id;
+
+	return 0;
+}
+
+/*==========================================
+ * ユニットにGroup_id設定
+ *------------------------------------------
+ */
+int buildin_setunitgroup(struct script_state *st)
+{
+	struct block_list *bl;
+	int id;
+
+	id = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+3])));
+
+	if(id < 0)
+		return 0;
+	if(bl == NULL || bl->type != BL_MOB)
+		return 0;
+
+	((struct mob_data*)bl)->group_id  = id;
+
+	return 0;
+}
+
+/*==========================================
+ * Title設定
+ *------------------------------------------
+ */
+int buildin_setnpctitle(struct script_state *st)
+{
+	struct npc_data *nd;
+	char *str;
+
+	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	if( st->end > st->start+3 ) {
+		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
+	}
+	else {
+		nd = map_id2nd(st->oid);
+	}
+
+	if(nd) {
+		strncpy(nd->title, str, 24);
+		nd->title[23] = '\0';
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * ユニットにTitle設定
+ *------------------------------------------
+ */
+int buildin_setunittitle(struct script_state *st)
+{
+	struct block_list *bl;
+	char *str;
+
+	str = conv_str(st,& (st->stack->stack_data[st->start+2]));
+	bl = map_id2bl(conv_num(st,& (st->stack->stack_data[st->start+3])));
+
+	if(bl == NULL || bl->type != BL_MOB)
+		return 0;
+
+	strncpy(((struct mob_data*)bl)->title, str, 24);
+	((struct mob_data*)bl)->title[23] = '\0';
 
 	return 0;
 }

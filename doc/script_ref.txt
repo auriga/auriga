@@ -1586,12 +1586,13 @@ AurigaNPCScript
 			<type>はmobのときは1で他は0?（詳細不明）
 
 		setnpcdisplay命令
-			setnpcdisplay <name>,<npcid>;
+			setnpcdisplay <name>,<class>[,<sex>,<clothcolor>,<hairstyle>,<haircolor>,<helm1>,<helm2>,<helm3>,<robe>,<style>];
 
 			name		文字列
-			npcid	数値
+			class	数値
 
-			<name>で指定したNPCの見た目を<npcid>で指定したスプライトIDに変更します。
+			<name>で指定したNPCの見た目を<class>で指定したスプライトIDに変更します。
+			<class>をプレイヤー職業で指定した場合、追加で詳細な見た目を設定できます。
 
 		misceffect命令
 			misceffect <type>[,<name>];
@@ -2740,6 +2741,40 @@ AurigaNPCScript
 			<itemid>使用時のupgradeウインドウを開く。
 			upgrade完了後に<itemid>は1個消費されるためNonconsumeフラグを立ててください。
 
+		setnpcgroup命令
+			setnpcgroup <group_id>[,<name>];
+
+			group_id	数値
+			name		文字列、省略可
+
+			<name>で指定したNPCに<group_id>のアイコンを表示します。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setunitgroup命令
+			setunitgroup <group_id>,<object_id>;
+
+			group_id	数値
+			object_id	数値
+
+			<object_id>で指定したモンスターに<group_id>のアイコンを表示します。
+
+		setnpctitle命令
+			setnpctitle <title>[,<name>];
+
+			title		文字列
+			name		文字列、省略可
+
+			<name>で指定したNPCに<title>を表示します。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setunittitle命令
+			setunittitle <title>,<object_id>;
+
+			title		文字列
+			object_id	数値
+
+			<object_id>で指定したモンスターに<title>を表示します。
+
 
 	＊関数
 		rand関数
@@ -3253,6 +3288,19 @@ AurigaNPCScript
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
 			イベントの代わりにmobidを措定すると、そのmobidのmobのみ計上します。
+
+		getmapmoblist関数
+			getmapmoblist(<gatname>,<variable>[,<event>|<mobid>])
+
+			gatname		文字列
+			variable	数値変数
+			event		文字列
+			mobid		数値
+
+			指定マップ内に居るmobのobject_idを配列変数<variable>に格納します。
+			128体を越える場合にはそれ以上のモンスターはロードされません。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
+			イベント名を指定すると、そのイベントを持つmobのみ計上します。
 
 		getguildrelation関数
 			getguildrelation(<gld1>[,<gld2>])
@@ -3938,12 +3986,20 @@ AurigaNPCScript
 			そのモンスターを倒したとき<event>を開始します。
 
 		removemonster 関数
-			removemonster(<object_id>)
+			removemonster(<object_id>[,<clrflag>])
 
 			object_id	数値
+			clrflag		数値
 
-			<object_id>のモンスターを殺します。
+			<object_id>のモンスターを<clrflag>扱いで消去します。
 			成功した場合は1を、そうでなければ0を返します。
+			<clrflag>を省略した場合、clrflag 1として扱います。
+
+				clrflag
+					0: 画面外へ消滅
+					1: 死亡
+					2: 画面内で消滅
+					3: テレポート
 
 		getequipcardid 関数
 			getequipcardid(<num>,<pos>)

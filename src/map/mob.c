@@ -193,6 +193,9 @@ static int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
 	md->guild_id    = 0;
 	md->speed       = mobdb_search(class_)->speed;
 
+	md->group_id = 0;
+	md->title[23] = '\0';	// froce \0 terminal
+
 	unit_dataset( &md->bl );
 
 	return 0;

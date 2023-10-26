@@ -932,11 +932,16 @@ struct npc_data {
 	char exname[50];
 	char position[24];
 	int chat_id;
+	int group_id;
+	char title[24];
 	unsigned int option;
 	short view_size;
 	char flag;
 	unsigned char subtype;
 	char click_able;
+	unsigned char sex;
+	short hair,hair_color,clothes_color;
+	short head_top,head_mid,head_bottom,robe,style;
 	union {
 		struct {
 			struct script_code *script;
@@ -996,6 +1001,8 @@ struct mob_data {
 	short lootitem_count;
 	short move_fail_count;
 	int guild_id;
+	int group_id;
+	char title[24];
 	int deletetimer;
 	short min_chase;
 	short skillidx;

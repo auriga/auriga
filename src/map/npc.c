@@ -199,6 +199,22 @@ struct npc_data* npc_name2id(const char *name)
 }
 
 /*==========================================
+ * NPC‚ªƒvƒŒƒCƒ„[‚ÌŒ©‚½–Ú‚©‚Ç‚¤‚©
+ *------------------------------------------
+ */
+int npc_is_pcview(struct npc_data *nd)
+{
+	nullpo_retr(0, nd);
+
+	if(nd->class_ >= 0 && nd->class_ <= PC_CLASS_SU2)
+		return 1;
+	if(nd->class_ >= PC_CLASS_NV_H && nd->class_ < PC_CLASS_MAX)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
  * NPC‚ÌÄ“o˜^
  *------------------------------------------
  */
@@ -1578,6 +1594,10 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd->bl.type = BL_NPC;
 	nd->subtype = src_nd->subtype;
 
+	nd->group_id = src_nd->group_id;
+	strcpy(nd->title, src_nd->title);
+	nd->title[23] = '\0';	// froce \0 terminal
+
 	unit_dataset( &nd->bl );
 
 	switch(nd->subtype) {
@@ -2587,12 +2607,24 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	nd->dir     = dir;
 	nd->flag    = 0;
 	nd->class_  = class_;
+	nd->sex  = 0;
+	nd->hair  = 0;
+	nd->hair_color  = 0;
+	nd->clothes_color  = 0;
+	nd->head_top  = 0;
+	nd->head_mid  = 0;
+	nd->head_bottom  = 0;
+	nd->robe  = 0;
+	nd->style  = 0;
 	nd->speed   = 200;
 	nd->click_able = 0;
 	nd->u.scr.script = script;
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
 	nd->option  = OPTION_NOTHING;
+
+	nd->group_id = 0;
+	nd->title[23] = '\0';	// froce \0 terminal
 
 	npc_script++;
 	nd->bl.type = BL_NPC;
@@ -2856,6 +2888,9 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 		md->target_id   = 0;
 		md->attacked_id = 0;
 		md->speed       = id->speed;
+
+		md->group_id = 0;
+		md->title[23] = '\0';	// froce \0 terminal
 
 		if(id->mode & MD_ITEMLOOT)
 			md->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
