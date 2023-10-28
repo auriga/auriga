@@ -915,26 +915,28 @@ AurigaNPCScript
 			<variable>は配列名を指定すると最初から、要素番号も指定すれば途中から削除できます。
 
 		getitem命令
-			getitem <itemid>,<num>[,<identify>[,<account_id>]];
+			getitem <itemid>,<num>[,<identify>[,<account_id>[,<preview>]]];
 
 			itemid		数値または文字列
 			num		数値
 			identify	数値(省略可)
 			account_id	数値(省略可)
+			preview		数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分入手します。
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 			<identify> 鑑定状態(0で未鑑定、1で鑑定)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 		getitem2命令
 			getitem2 <itemid>,<num>,<identify>,<refine>,<attribute>,<card1>,
-			<card2>,<card3>,<card4>[,<limit>[,<account_id>]]
+			<card2>,<card3>,<card4>[,<limit>[,<account_id>[,<preview>]]]
 
 			itemid		数値または文字列
 			num,identify,refine,attribute,card1,card2,card3,card4	数値
-			limit,account_id	数値(省略可)
+			limit,account_id,preview	数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分入手します。
 			<identify> 鑑定状態(0で未鑑定、1で鑑定)
@@ -946,17 +948,18 @@ AurigaNPCScript
 			<card4> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの上の2バイト
 			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 
 		getoptitem命令
 			getoptitem <itemid>,<identify>,<refine>,<attribute>,<card1>,
-			<card2>,<card3>,<card4>,<key>[,<limit>[,<account_id>]]
+			<card2>,<card3>,<card4>,<key>[,<limit>[,<account_id>[,<preview>]]]
 
 			itemid		数値または文字列
 			identify,refine,attribute,card1,card2,card3,card4,key	数値
-			limit,account_id	数値(省略可)
+			limit,account_id,preview	数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つ装備アイテムを
 			<key>モンスターからドロップ時のランダムオプションを付加して1 個分入手します。
@@ -971,6 +974,7 @@ AurigaNPCScript
 			<key>   参照に使うID
 			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
@@ -1011,6 +1015,13 @@ AurigaNPCScript
 
 			PCのカート内にある<index>番目のアイテムを<num>個分失います。
 			<flag>を1にした場合はペットの卵情報の削除を行いません。
+
+		itempreview命令
+			itempreview <index>;
+
+			index	数値
+
+			PCの所持している<index>番目のアイテムを表示します。
 
 		makepet命令
 			makepet <petid>;
@@ -1567,14 +1578,19 @@ AurigaNPCScript
 			<name>を省略すると、命令を実行したNPCが対象になります。
 
 		emotion命令
-			emotion <n>[,<name>];
+			emotion <n>[,<name>[,<flag>]];
 
 			n		数値
 			name		文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCに<n>エモーションを出します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		classchange命令
 			classchange <class>,<type>;
@@ -1595,14 +1611,19 @@ AurigaNPCScript
 			<class>をプレイヤー職業で指定した場合、追加で詳細な見た目を設定できます。
 
 		misceffect命令
-			misceffect <type>[,<name>];
+			misceffect <type>[,<name>[,<flag>]];
 
 			type	数値
 			name	文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCにエフェクトを出します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		areamisceffect命令
 			areamisceffect <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;
@@ -1642,14 +1663,19 @@ AurigaNPCScript
 				2	繰り返しの停止
 
 		delmisceffect命令
-			delmisceffect <type>[,<name>];
+			delmisceffect <type>[,<name>[,<flag>]];
 
 			type	数値
 			name	文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCの発生済みエフェクトを除去します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		setmapflag命令
 			setmapflag <gatname>,<flag>[,<arg1>,<arg2>,<arg3>];

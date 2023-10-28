@@ -2463,7 +2463,7 @@ int pc_clearitemlimit(struct map_session_data *sd)
  * アイテム追加。個数のみitem構造体の数字を無視
  *------------------------------------------
  */
-int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
+int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,bool flag)
 {
 	struct item_data *data;
 	int i,w;
@@ -2494,6 +2494,8 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 				sd->weight += w;
 				clif_additem(sd,i,amount,0);
 				clif_updatestatus(sd,SP_WEIGHT);
+				if(flag)
+					clif_item_preview(sd, (short)i);
 				return 0;
 			}
 		}
@@ -2518,6 +2520,8 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 	sd->inventory_num++;
 	clif_additem(sd,i,amount,0);
 	clif_updatestatus(sd,SP_WEIGHT);
+	if(flag)
+		clif_item_preview(sd, (short)i);
 
 	if(sd->status.inventory[i].limit > 0) {
 		int tid = pc_checkitemlimit(sd, i, gettick(), (unsigned int)time(NULL), 0);
@@ -2992,7 +2996,7 @@ void pc_getitemfromcart(struct map_session_data *sd, int idx, int amount)
 	if(item_data->nameid == 0 || item_data->amount < amount)
 		return;
 
-	if((flag = pc_additem(sd, item_data, amount)) == 0) {
+	if((flag = pc_additem(sd, item_data, amount, false)) == 0) {
 		pc_cart_delitem(sd, idx, amount, 0);
 		return;
 	}
@@ -3107,7 +3111,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 					tmp_item.identify = !itemdb_isequip3(itemid);
 					if(battle_config.itemidentify)
 						tmp_item.identify = 1;
-					flag = pc_additem(sd,&tmp_item,1);
+					flag = pc_additem(sd,&tmp_item,1, false);
 					if(battle_config.show_steal_in_same_party)
 						party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,itemdb_exists(tmp_item.nameid),0);
 					if(flag) {

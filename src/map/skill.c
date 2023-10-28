@@ -7248,7 +7248,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				item_tmp.card[1] = 0;
 				*((int *)(&item_tmp.card[2]))=sd->status.char_id;	// キャラID
 			}
-			eflag = pc_additem(sd,&item_tmp,1);
+			eflag = pc_additem(sd,&item_tmp,1,false);
 			if(eflag) {
 				clif_additem(sd,0,0,eflag);
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
@@ -7264,7 +7264,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			item_tmp.nameid   = 7049;
 			item_tmp.identify = 1;
 			clif_takeitem(&sd->bl,0);
-			eflag = pc_additem(sd,&item_tmp,1);
+			eflag = pc_additem(sd,&item_tmp,1,false);
 			if(eflag) {
 				clif_additem(sd,0,0,eflag);
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
@@ -8026,7 +8026,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 							item_tmp.amount = skill_db[su->group->skill_id].amount[i];
 						}
 						item_tmp.identify = 1;
-						if((eflag = pc_additem(sd,&item_tmp,item_tmp.amount))) {
+						if((eflag = pc_additem(sd,&item_tmp,item_tmp.amount,false))) {
 							clif_additem(sd,0,0,eflag);
 							map_addflooritem(&item_tmp,item_tmp.amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 						}
@@ -8035,7 +8035,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					memset(&item_tmp,0,sizeof(item_tmp));
 					item_tmp.nameid   = su->group->val3;
 					item_tmp.identify = 1;
-					if((eflag = pc_additem(sd,&item_tmp,1))) {
+					if((eflag = pc_additem(sd,&item_tmp,1,false))) {
 						clif_additem(sd,0,0,eflag);
 						map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 					}
@@ -9131,7 +9131,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			memset(&item_tmp,0,sizeof(item_tmp));
 			item_tmp.nameid   = 12333;
 			item_tmp.identify = 1;
-			pc_additem(sd,&item_tmp,1);
+			pc_additem(sd,&item_tmp,1,false);
 		}
 		break;
 	case AB_CLEMENTIA:		/* クレメンティア */
@@ -19694,7 +19694,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 				clif_skill_message(sd, sd->skill_menu.id, 1574);	// 成功しました。
 				break;
 		}
-		pc_additem(sd,&tmp_item,amount);	// 重量オーバーなら消滅
+		pc_additem(sd,&tmp_item,amount,false);	// 重量オーバーなら消滅
 	} else {
 		/* 失敗 */
 		switch (type) {
@@ -19756,7 +19756,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 					} else {
 						clif_skill_message(sd, sd->skill_menu.id, 1575);	// 失敗しました。
 					}
-					pc_additem(sd,&tmp_item,amount);
+					pc_additem(sd,&tmp_item,amount,false);
 				}
 				break;
 			case PRD_MAKEBOMB:
@@ -19811,7 +19811,7 @@ static int skill_am_twilight_sub(struct map_session_data* sd,int nameid,int coun
 			tmp_item.card[1] = 0;
 			*((int *)(&tmp_item.card[2])) = sd->status.char_id;	// キャラID
 		}
-		pc_additem(sd, &tmp_item, amount);	// 重量オーバーなら消滅
+		pc_additem(sd, &tmp_item, amount,false);	// 重量オーバーなら消滅
 	} else {
 		// 失敗
 		clif_produceeffect(sd,3,nameid);	/* 製薬失敗エフェクト */
@@ -19882,7 +19882,7 @@ void skill_arrow_create(struct map_session_data *sd, int nameid)
 			tmp_item.card[1]=0;
 			*((int *)(&tmp_item.card[2]))=sd->status.char_id;	/* キャラID */
 		}
-		if((flag = pc_additem(sd,&tmp_item,tmp_item.amount))) {
+		if((flag = pc_additem(sd,&tmp_item,tmp_item.amount,false))) {
 			clif_additem(sd,0,0,flag);
 			map_addflooritem(&tmp_item,tmp_item.amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
@@ -20177,7 +20177,7 @@ void skill_changematerial(struct map_session_data *sd, int num, unsigned short *
 				tmp_item.amount += atn_rand() % (mdb->amount[1] * m - mdb->amount[0] * m + 1);
 			}
 			tmp_item.identify = 1;
-			if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+			if((flag = pc_additem(sd, &tmp_item, tmp_item.amount,false))) {
 				clif_additem(sd, 0, 0, flag);
 				map_addflooritem(&tmp_item, tmp_item.amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 0);
 			}
@@ -20261,7 +20261,7 @@ void skill_el_analysis(struct map_session_data *sd, int num, int skilllv, unsign
 		tmp_item.nameid = result;
 		tmp_item.amount = addnum;
 		tmp_item.identify = 1;
-		if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+		if((flag = pc_additem(sd, &tmp_item, tmp_item.amount,false))) {
 			clif_additem(sd, 0, 0, flag);
 			map_addflooritem(&tmp_item, tmp_item.amount, sd->bl.m, sd->bl.x, sd->bl.y, 0, 0, 0, 0);
 		}

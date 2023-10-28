@@ -1264,7 +1264,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 		}
 #endif
 
-		pc_additem(sd,&item_tmp,amount);
+		pc_additem(sd,&item_tmp,amount,false);
 	}
 
 	// 商人経験値
@@ -1431,7 +1431,7 @@ int npc_pointshop_buy(struct map_session_data *sd, int nameid, int amount)
 	item_tmp.nameid   = nd->u.shop_item[i].nameid;
 	item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
 
-	pc_additem(sd, &item_tmp, amount);
+	pc_additem(sd, &item_tmp, amount,false);
 	sd->shop_point -= point;
 
 	return 0;
@@ -1547,7 +1547,7 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 		item_tmp.nameid   = nd->u.shop_item[j].nameid;
 		item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
 
-		pc_additem(sd, &item_tmp, amount);
+		pc_additem(sd, &item_tmp, amount,false);
 	}
 
 	return 0;

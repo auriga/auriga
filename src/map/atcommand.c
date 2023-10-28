@@ -1327,7 +1327,7 @@ int atcommand_item(const int fd, struct map_session_data* sd, AtCommandType comm
 			memset(&item_tmp, 0, sizeof(item_tmp));
 			item_tmp.nameid = item_id;
 			item_tmp.identify = 1;
-			if ((flag = pc_additem(sd, &item_tmp, get_count)))
+			if ((flag = pc_additem(sd, &item_tmp, get_count, false)))
 				clif_additem(sd, 0, 0, flag);
 		}
 		clif_displaymessage(fd, msg_txt(18));
@@ -1411,7 +1411,7 @@ int atcommand_item2(const int fd, struct map_session_data* sd, AtCommandType com
 			item_tmp.card[2]   = c3;
 			item_tmp.card[3]   = c4;
 			item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
-			if ((flag = pc_additem(sd, &item_tmp, get_count)))
+			if ((flag = pc_additem(sd, &item_tmp, get_count, false)))
 				clif_additem(sd, 0, 0, flag);
 		}
 		clif_displaymessage(fd, msg_txt(18));
@@ -1483,7 +1483,7 @@ int atcommand_item3(const int fd, struct map_session_data* sd, AtCommandType com
 			item_tmp.card[0]   = (equip_item) ? 0x00ff : 0x00fe;
 			item_tmp.card[1]   = 0;
 			*((int *)(&item_tmp.card[2])) = pl_sd->status.char_id;
-			if ((flag = pc_additem(sd, &item_tmp, get_count)))
+			if ((flag = pc_additem(sd, &item_tmp, get_count, false)))
 				clif_additem(sd, 0, 0, flag);
 		}
 		clif_displaymessage(fd, msg_txt(18));
@@ -2151,7 +2151,7 @@ int atcommand_produce(const int fd, struct map_session_data* sd, AtCommandType c
 		*((int *)(&tmp_item.card[2])) = sd->status.char_id;
 		clif_produceeffect(sd, 0, item_id); // 製造エフェクトパケット
 		clif_misceffect(&sd->bl, 3); // 他人にも成功を通知
-		if ((flag = pc_additem(sd, &tmp_item, 1)))
+		if ((flag = pc_additem(sd, &tmp_item, 1, false)))
 			clif_additem(sd, 0, 0, flag);
 	} else {
 		clif_displaymessage(fd, msg_txt(192));
@@ -4065,7 +4065,7 @@ static void atcommand_giveitem_sub(struct map_session_data *sd,struct item_data 
 		memset(&item_tmp, 0, sizeof(item_tmp));
 		item_tmp.nameid = item_data->nameid;
 		item_tmp.identify = 1;
-		if ((flag = pc_additem(sd, &item_tmp, get_count)))
+		if ((flag = pc_additem(sd, &item_tmp, get_count, false)))
 			clif_additem(sd, 0, 0, flag);
 	}
 
@@ -4600,7 +4600,7 @@ int atcommand_itemmonster(const int fd, struct map_session_data* sd, AtCommandTy
 		}
 		if (battle_config.itemidentify)
 			item_tmp.identify = 1;
-		if ((flag = pc_additem(sd, &item_tmp, get_count))) {
+		if ((flag = pc_additem(sd, &item_tmp, get_count, false))) {
 			clif_additem(sd, 0, 0, flag);
 		}
 		return 0;

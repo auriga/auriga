@@ -363,6 +363,7 @@ enum {
 	INF2_GUILD_ONLY = 0x00800,
 	INF2_DMG_GVG    = 0x01000,
 	INF2_DMG_PK     = 0x02000,
+	INF2_WARNING_PLANE = 0x04000,
 };
 
 enum {

@@ -1,4 +1,25 @@
 ----------------------------------------
+//1533 [2023/10/28] by refis
+
+・スキル詠唱[0x7fb]上位の[0xb1a]実装（clif.c）
+
+・危機領域警告表示[0xa41]実装
+	-> skill_inf2で危機領域警告表示を指定できるよう設定を追加
+（doc/db_ref.txt, skill_db.txt, clif.*, skill.h, unit.c）
+
+・clif_itempreviewのPACKETVER[20180704]以前のパケット構造ミスを修正（clif.c）
+
+・スクリプト命令[itempreview]を追加
+（doc/script_ref.txt, clif.c, script.c）
+
+・スクリプト命令[getitem][getitem2][getoptitem]でアイテム獲得時にプレビュー表示する項目を追加
+（doc/script_ref.txt, atcommand.c, buyingstore.c, extra.c, homun.c, mail.c, mob.c,
+　npc.c, party.c, pc.*, pet.c, quest.c, script.c, skill.c, storage.c, trede.c, vending.c）
+
+・スクリプト命令[emotion][misceffect][delmisceffect]で個人指定表示できるよう機能拡張
+（doc/script_ref.txt, clif.*, script.c）
+
+----------------------------------------
 //1532 [2023/10/27] by refis
 
 ・スクリプト命令[setnpcgroup][setunitgroup][setnpctitle][setunittitle]を追加

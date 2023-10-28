@@ -12915,7 +12915,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFL(buf,16) = skill_get_pl(skill_num);	// 属性
 	WBUFL(buf,20) = casttime;
 	clif_send(buf,packet_db[0x13e].len, bl, AREA);
-#else
+#elif PACKETVER < 20181212
 	WBUFW(buf,0) = 0x7fb;
 	WBUFL(buf,2) = src_id;
 	WBUFL(buf,6) = dst_id;
@@ -12926,8 +12926,19 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 	WBUFL(buf,20) = casttime;
 	WBUFB(buf,24) = 0;
 	clif_send(buf,packet_db[0x7fb].len, bl, AREA);
+#else
+	WBUFW(buf,0) = 0xb1a;
+	WBUFL(buf,2) = src_id;
+	WBUFL(buf,6) = dst_id;
+	WBUFW(buf,10) = dst_x;
+	WBUFW(buf,12) = dst_y;
+	WBUFW(buf,14) = skill_num;
+	WBUFL(buf,16) = skill_get_pl(skill_num);	// 属性
+	WBUFL(buf,20) = casttime;
+	WBUFB(buf,24) = 0;
+	WBUFL(buf,25) = 0;
+	clif_send(buf,packet_db[0xb1a].len, bl, AREA);
 #endif
-
 	return;
 }
 
@@ -13309,6 +13320,29 @@ void clif_skill_delunit(struct skill_unit *unit)
 	WBUFL(buf, 2)=unit->bl.id;
 	clif_send(buf,packet_db[0x120].len,&unit->bl,AREA);
 
+	return;
+}
+
+/*==========================================
+ * 危機領域警告表示
+ *------------------------------------------
+ */
+void clif_skillscale(struct block_list *bl, int src_id, int x, int y, int skill_num, int skill_lv, int casttime)
+{
+#if PACKETVER >= 20151223
+	unsigned char buf[20];
+
+	nullpo_retv(bl);
+
+	WBUFW(buf, 0) = 0xa41;
+	WBUFL(buf, 2) = src_id;
+	WBUFW(buf, 6) = skill_num;
+	WBUFW(buf, 8) = skill_lv;
+	WBUFW(buf, 10) = x;
+	WBUFW(buf, 12) = y;
+	WBUFL(buf, 14) = casttime;
+	clif_send(buf,packet_db[0xa41].len, bl, AREA);
+#endif
 	return;
 }
 
@@ -18039,6 +18073,21 @@ void clif_emotion(struct block_list *bl,int type)
 	return;
 }
 
+void clif_emotion_self(struct map_session_data *sd,struct block_list *bl,int type)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0) = 0xc0;
+	WFIFOL(fd,2)=bl->id;
+	WFIFOB(fd,6)=type;
+	WFIFOSET(fd,packet_db[0xc0].len);
+
+	return;
+}
+
 /*==========================================
  * トーキーボックス
  *------------------------------------------
@@ -21903,32 +21952,32 @@ void clif_item_preview(struct map_session_data *sd, short idx)
 #if PACKETVER < 20180704
 	if(itemdb_isspecial(sd->status.inventory[idx].card[0])) {
 		if(sd->inventory_data[idx]->flag.pet_egg) {
-			WFIFOL(fd,6) = 0;
-			WFIFOL(fd,8) = 0;
-			WFIFOL(fd,10) = 0;
+			WFIFOW(fd,6) = 0;
+			WFIFOW(fd,8) = 0;
+			WFIFOW(fd,10) = 0;
 		} else {
-			WFIFOL(fd,6) = sd->status.inventory[idx].card[0];
-			WFIFOL(fd,8) = sd->status.inventory[idx].card[1];
-			WFIFOL(fd,10) = sd->status.inventory[idx].card[2];
+			WFIFOW(fd,6) = sd->status.inventory[idx].card[0];
+			WFIFOW(fd,8) = sd->status.inventory[idx].card[1];
+			WFIFOW(fd,10) = sd->status.inventory[idx].card[2];
 		}
-		WFIFOL(fd,12) = sd->status.inventory[idx].card[3];
+		WFIFOW(fd,12) = sd->status.inventory[idx].card[3];
 	} else {
 		if(sd->status.inventory[idx].card[0] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[0])) > 0)
-			WFIFOL(fd,6)= j;
+			WFIFOW(fd,6)= j;
 		else
-			WFIFOL(fd,6)= sd->status.inventory[idx].card[0];
+			WFIFOW(fd,6)= sd->status.inventory[idx].card[0];
 		if(sd->status.inventory[idx].card[1] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[1])) > 0)
-			WFIFOL(fd,8)= j;
+			WFIFOW(fd,8)= j;
 		else
-			WFIFOL(fd,8)= sd->status.inventory[idx].card[1];
+			WFIFOW(fd,8)= sd->status.inventory[idx].card[1];
 		if(sd->status.inventory[idx].card[2] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[2])) > 0)
-			WFIFOL(fd,10)= j;
+			WFIFOW(fd,10)= j;
 		else
-			WFIFOL(fd,10)= sd->status.inventory[idx].card[2];
+			WFIFOW(fd,10)= sd->status.inventory[idx].card[2];
 		if(sd->status.inventory[idx].card[3] > 0 && (j=itemdb_viewid(sd->status.inventory[idx].card[3])) > 0)
-			WFIFOL(fd,12)= j;
+			WFIFOW(fd,12)= j;
 		else
-			WFIFOL(fd,12)= sd->status.inventory[idx].card[3];
+			WFIFOW(fd,12)= sd->status.inventory[idx].card[3];
 	}
 	WFIFOW(fd,14)=sd->status.inventory[idx].opt[0].id;
 	WFIFOW(fd,16)=sd->status.inventory[idx].opt[0].val;

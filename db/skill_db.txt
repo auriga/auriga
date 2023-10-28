@@ -766,8 +766,8 @@
 //764,9,6,1,0,0,5,1,no,0,2,0,weapon,0,NPC_BLEEDING2,デモニックブリーディング
 //765,6,6,1,1,0,10,1,no,0,2,0,weapon,0,NPC_ICEBREATH2,デモニックアイスブレス
 //766,6,6,1,5,0,10,1,no,0,2,0,weapon,0,NPC_ACIDBREATH2,デモニックアシッドブレス
-//767,7,6,2,7,1,10,1,no,0,2,0,none,0,NPC_EVILLAND2,デモニックイービルランド
-768,0,6,4,0,0,10,1,no,0,2,0,weapon,0,NPC_HELLJUDGEMENT2,デモニックヘルジャッジメント
+//767,7,6,2,7,1,10,1,no,0,16386,0,none,0,NPC_EVILLAND2,デモニックイービルランド
+768,0,6,4,0,0,10,1,no,0,16386,0,weapon,0,NPC_HELLJUDGEMENT2,デモニックヘルジャッジメント
 //769,0,0,0,0,0,10,0,no,0,0,0,none,0,NPC_RAINOFMETEOR,流星雨
 //770,0,0,0,0,0,5,0,no,0,2,0,none,0,NPC_GROUNDDRIVE,グラウンドドライブ
 //771,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_RELIEVE_ON,
@@ -779,10 +779,10 @@
 //777,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_RANDOMBREAK,
 //778,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_STRIP_SHADOW,Mストリップシャドウ
 //779,0,6,4,0,1,5,1,no,0,0,0,none,0,NPC_DEADLYCURSE2,ワイドデッドリーカース
-780,9,6,2,0,1,5,1,no,0,2,0,magic,0,NPC_CANE_OF_EVIL_EYE,ケーンオブイビルアイ
+780,9,6,2,0,1,5,1,no,0,16386,0,magic,0,NPC_CANE_OF_EVIL_EYE,ケーンオブイビルアイ
 //781,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_CURSE_OF_RED_CUBE,
 //782,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_CURSE_OF_BLUE_CUBE,
-783,0,6,4,0,1,5,1,no,0,2,0,none,0,NPC_KILLING_AURA,キリングオーラ
+783,0,6,4,0,1,5,1,no,0,16386,0,none,0,NPC_KILLING_AURA,キリングオーラ
 //784,0,6,4,0,1,1,1,no,0,0,0,none,0,All_EVENT_20TH_ANNIVERSARY,Happy 20th Anniversary
 //785,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_TARGET_MARKER,
 //786,0,0,0,0,0,9,0,no,0,0,0,none,0,NPC_AIMED_SHOWER,

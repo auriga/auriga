@@ -4083,6 +4083,7 @@ int buildin_getelementofarray(struct script_state *st);
 int buildin_getitem(struct script_state *st);
 int buildin_getitem2(struct script_state *st);
 int buildin_getoptitem(struct script_state *st);
+int buildin_itempreview(struct script_state *st);
 int buildin_delitem(struct script_state *st);
 int buildin_delcartitem(struct script_state *st);
 int buildin_delitem2(struct script_state *st);
@@ -4428,6 +4429,7 @@ struct script_function buildin_func[] = {
 	{buildin_getitem,"getitem","ii**"},
 	{buildin_getitem2,"getitem2","iiiiiiiii*"},
 	{buildin_getoptitem,"getoptitem","iiiiiiiii*"},
+	{buildin_itempreview,"itempreview","i"},
 	{buildin_delitem,"delitem","ii*"},
 	{buildin_delcartitem,"delcartitem","ii*"},
 	{buildin_delitem2,"delitem2","ii*"},
@@ -6039,6 +6041,7 @@ int buildin_getitem(struct script_state *st)
 	struct map_session_data *sd;
 	struct script_data *data;
 	struct item item_tmp;
+	bool preview = false;
 
 	sd = script_rid2sd(st);
 
@@ -6060,6 +6063,8 @@ int buildin_getitem(struct script_state *st)
 		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+5])));
 	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
+	if(st->end > st->start+6)
+		preview = conv_num(st,& (st->stack->stack_data[st->start+6]));
 
 	do {
 		memset(&item_tmp,0,sizeof(item_tmp));
@@ -6077,7 +6082,7 @@ int buildin_getitem(struct script_state *st)
 		else
 			item_tmp.identify = !itemdb_isequip3(item_tmp.nameid);
 
-		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount))) {
+		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount,preview))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,item_tmp.nameid))
 				map_addflooritem(&item_tmp,(nameid < 0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
@@ -6100,6 +6105,7 @@ int buildin_getitem2(struct script_state *st)
 	struct script_data *data;
 	struct item_data *item_data;
 	struct item item_tmp;
+	bool preview = false;
 
 	sd = script_rid2sd(st);
 
@@ -6128,6 +6134,8 @@ int buildin_getitem2(struct script_state *st)
 		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+12])));
 	if(sd == NULL)			// アイテムを渡す相手がいなかったらお帰り
 		return 0;
+	if(st->end > st->start+13)
+		preview = conv_num(st,& (st->stack->stack_data[st->start+13]));
 
 	do {
 		memset(&item_tmp,0,sizeof(item_tmp));
@@ -6166,7 +6174,7 @@ int buildin_getitem2(struct script_state *st)
 		item_tmp.card[3]   = c4;
 		item_tmp.limit     = (limit > 0)? (unsigned int)time(NULL) + limit: 0;
 
-		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount))) {
+		if((ret = pc_additem(sd,&item_tmp,(nameid < 0)? 1: amount,preview))) {
 			clif_additem(sd,0,0,ret);
 			if(!pc_candrop(sd,item_tmp.nameid))
 				map_addflooritem(&item_tmp,(nameid < 0)? 1: amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
@@ -6190,6 +6198,7 @@ int buildin_getoptitem(struct script_state *st)
 	struct item_data *item_data;
 	struct item item_tmp;
 	struct randopt_item_data ro;
+	bool preview = false;
 
 	sd = script_rid2sd(st);
 
@@ -6216,6 +6225,8 @@ int buildin_getoptitem(struct script_state *st)
 		limit = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+11]));
 	if(st->end > st->start+12)	// アイテムを指定したIDに渡す
 		sd = map_id2sd(conv_num(st,& (st->stack->stack_data[st->start+12])));
+	if(st->end > st->start+13)
+		preview = conv_num(st,& (st->stack->stack_data[st->start+13]));
 
 	if(sd) {
 		memset(&item_tmp,0,sizeof(item_tmp));
@@ -6282,13 +6293,31 @@ int buildin_getoptitem(struct script_state *st)
 					}
 				}
 			}
-			if((ret = pc_additem(sd,&item_tmp,1))) {
+			if((ret = pc_additem(sd,&item_tmp,1,preview))) {
 				clif_additem(sd,0,0,ret);
 				if(!pc_candrop(sd,item_tmp.nameid))
 					map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 			}
 		}
 	}
+
+	return 0;
+}
+
+/*==========================================
+ * 指定idxのアイテムを表示する
+ *------------------------------------------
+ */
+int buildin_itempreview(struct script_state *st)
+{
+	short idx;
+	struct map_session_data *sd = script_rid2sd(st);
+
+	nullpo_retr(0, sd);
+
+	idx   = conv_num(st,& (st->stack->stack_data[st->start+2]));
+	if(idx >= 0 && idx < MAX_INVENTORY)
+		clif_item_preview(sd, idx);
 
 	return 0;
 }
@@ -9576,20 +9605,32 @@ int buildin_gvgoff(struct script_state *st)
 int buildin_emotion(struct script_state *st)
 {
 	struct npc_data *nd;
-	int type;
+	int type, flag = 0;
 
 	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if( st->end > st->start+3 )
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
 	else
 		nd = map_id2nd(st->oid);
+	if( st->end > st->start+4 )
+		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(nd) {
-		clif_emotion(&nd->bl,type);
+		if(flag) {
+			struct map_session_data *sd = map_id2sd(st->rid);
+			if(sd)
+				clif_emotion_self(sd,&nd->bl,type);
+		}
+		else
+			clif_emotion(&nd->bl,type);
 	} else {
 		struct block_list *bl = map_id2bl(st->rid);
-		if(bl)
-			clif_emotion(bl,type);
+		if(bl) {
+			if(flag && bl->type == BL_PC)
+				clif_emotion_self((struct map_session_data *)bl,bl,type);
+			else
+				clif_emotion(bl,type);
+		}
 	}
 	return 0;
 }
@@ -9896,7 +9937,7 @@ int buildin_getequipcardcnt(struct script_state *st)
  * type=0: 両方損失、1:カード損失、2:武具損失、3:損失無し、4:成功
  *-----------------------------------------------------------------
  */
-static int removecards_sub(struct map_session_data *sd,int i,int typefail,int pos)
+static int removecards_sub(struct map_session_data *sd,int i,int typefail,int pos,bool preview)
 {
 	struct item item_tmp;
 	int j,n,flag,removed_flag=0;
@@ -9922,7 +9963,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 				memset(&item_tmp, 0, sizeof(item_tmp));
 				item_tmp.nameid = card_id;
 				item_tmp.identify = 1;
-				if( (flag = pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
+				if( (flag = pc_additem(sd,&item_tmp,1,preview)) ) {	// 持てないならドロップ
 					clif_additem(sd,0,0,flag);
 					map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 				}
@@ -9948,7 +9989,7 @@ static int removecards_sub(struct map_session_data *sd,int i,int typefail,int po
 			item_tmp.attribute = sd->status.inventory[i].attribute;
 			memcpy(&item_tmp.card, &card_set, sizeof(card_set));
 			pc_delitem(sd,i,1,0,0);
-			if( (flag=pc_additem(sd,&item_tmp,1)) ) {	// 持てないならドロップ
+			if( (flag=pc_additem(sd,&item_tmp,1,preview)) ) {	// 持てないならドロップ
 				clif_additem(sd,0,0,flag);
 				map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 			}
@@ -9966,6 +10007,7 @@ int buildin_successremovecards(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
 	int i=-1,num,pos=0;
+	bool preview = false;
 
 	nullpo_retr(0, sd);
 
@@ -9977,7 +10019,11 @@ int buildin_successremovecards(struct script_state *st)
 		pos = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	}
 
-	if(removecards_sub(sd, i, 4, pos)) {	// failtype=4とする
+	if(st->end > st->start+4) {
+		preview = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	}
+
+	if(removecards_sub(sd, i, 4, pos, preview)) {	// failtype=4とする
 		// 成功エフェクト
 		clif_misceffect2(&sd->bl,154);
 	}
@@ -9992,11 +10038,15 @@ int buildin_failedremovecards(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
 	int i=-1,num,typefail,pos=0;
+	bool preview = false;
 
 	nullpo_retr(0, sd);
 
 	num = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	typefail = conv_num(st,& (st->stack->stack_data[st->start+3]));
+
+	if(st->end > st->start+4)
+		preview = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(typefail < 0 || typefail > 3)
 		return 0;
@@ -10007,7 +10057,7 @@ int buildin_failedremovecards(struct script_state *st)
 	if(st->end > st->start+4)
 		pos = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
-	if(removecards_sub(sd, i, typefail, pos)) {
+	if(removecards_sub(sd, i, typefail, pos, preview)) {
 		// 失敗エフェクト
 		clif_misceffect2(&sd->bl,155);
 	}
@@ -10399,20 +10449,32 @@ int buildin_setnpcdisplay(struct script_state *st)
 int buildin_misceffect(struct script_state *st)
 {
 	struct npc_data *nd;
-	int type;
+	int type, flag = 0;
 
 	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if(st->end > st->start+3)
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
 	else
 		nd = map_id2nd(st->oid);
+	if( st->end > st->start+4 )
+		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(nd) {
-		clif_misceffect2(&nd->bl,type);
+		if(flag) {
+			struct map_session_data *sd = map_id2sd(st->rid);
+			if(sd)
+				clif_misceffect3(sd->fd,nd->bl.id,type);
+		}
+		else
+			clif_misceffect2(&nd->bl,type);
 	} else {
 		struct block_list *bl = map_id2bl(st->rid);
-		if(bl)
-			clif_misceffect2(bl,type);
+		if(bl) {
+			if(flag && bl->type == BL_PC)
+				clif_misceffect3(((struct map_session_data *)bl)->fd,bl->id,type);
+			else
+				clif_misceffect2(bl,type);
+		}
 	}
 	return 0;
 }
@@ -10523,20 +10585,32 @@ int buildin_areasoundeffect(struct script_state *st)
 int buildin_delmisceffect(struct script_state *st)
 {
 	struct npc_data *nd;
-	int type;
+	int type, flag = 0;
 
 	type = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	if(st->end > st->start+3)
 		nd = npc_name2id(conv_str(st,& (st->stack->stack_data[st->start+3])));
 	else
 		nd = map_id2nd(st->oid);
+	if( st->end > st->start+4 )
+		flag = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	if(nd) {
-		clif_remove_misceffect2(&nd->bl,type);
+		if(flag) {
+			struct map_session_data *sd = map_id2sd(st->rid);
+			if(sd)
+				clif_remove_misceffect3(sd->fd,nd->bl.id,type);
+		}
+		else
+			clif_remove_misceffect2(&nd->bl,type);
 	} else {
 		struct block_list *bl = map_id2bl(st->rid);
-		if(bl)
-			clif_remove_misceffect2(bl,type);
+		if(bl) {
+			if(flag && bl->type == BL_PC)
+				clif_remove_misceffect3(((struct map_session_data *)bl)->fd,bl->id,type);
+			else
+				clif_remove_misceffect2(bl,type);
+		}
 	}
 	return 0;
 }

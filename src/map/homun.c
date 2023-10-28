@@ -1091,7 +1091,7 @@ int homun_morphembryo(struct map_session_data *sd)
 		hd->status.incubate = 2;
 		homun_save_data(sd);
 		unit_free(&hd->bl,0);
-		if(ret = pc_additem(sd,&tmp_item,1)) {
+		if(ret = pc_additem(sd,&tmp_item,1,false)) {
 			clif_additem(sd,0,0,ret);
 		}
 	}

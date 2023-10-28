@@ -1171,7 +1171,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		return 0;
 	}
 
-	if(skill_get_inf2(skill_num)&0x200 && src->id == target_id)
+	if(skill_get_inf2(skill_num)&INF2_NO_SELF && src->id == target_id)
 		return 0;
 
 	if(src->m != target->m)         return 0; // 同じマップかどうか
@@ -1331,6 +1331,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	tick = gettick();
 	clif_skillcasting(src, src->id, target_id, 0, 0, skill_num,casttime);
+	if(skill_get_inf2(skill_num)&INF2_WARNING_PLANE && src->id == target_id)
+		clif_skillscale(src, src->id, src->x, src->y, skill_num, skill_lv, casttime);
 
 #ifndef PRE_RENEWAL
 	forcecast = 1;		// 詠唱反応用
@@ -1564,6 +1566,8 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 		/* 詠唱が必要 */
 		unit_stop_walking( src, 1 );		// 歩行停止
 		clif_skillcasting( src, src->id, 0, skill_x,skill_y, skill_num,casttime );
+		if(skill_get_inf2(skill_num)&INF2_WARNING_PLANE)
+			clif_skillscale(src, src->id, skill_x, skill_y, skill_num, skill_lv, casttime);
 	}
 
 	if( casttime <= 0 )	/* 詠唱の無いものはキャンセルされない */
