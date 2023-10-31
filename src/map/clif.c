@@ -3042,7 +3042,7 @@ static int clif_npc007b(struct npc_data *nd,unsigned char *buf,struct map_sessio
 		WBUFW(buf,45)=0;
 		WBUFW(buf,47)=nd->robe;
 		WBUFB(buf,62)=nd->sex;
-		WBUFW(buf,84)=sd->style;
+		WBUFW(buf,84)=nd->style;
 	}
 	WBUFL(buf,33)=tick;
 	WBUFPOS2(buf,63,nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y,8,8);

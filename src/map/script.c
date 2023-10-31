@@ -4740,10 +4740,10 @@ struct script_function buildin_func[] = {
 	{buildin_npcwalkwait,"npcwalkwait","*"},
 	{buildin_setnpcspeed,"setnpcspeed","i*"},
 	{buildin_npcclickable,"npcclickable","i*"},
-	{buildin_setnpcgroup,"setgroupid","i*"},
-	{buildin_setunitgroup,"unitgroupid","ii"},
-	{buildin_setnpctitle,"settitle","s*"},
-	{buildin_setunittitle,"unittitle","si"},
+	{buildin_setnpcgroup,"setnpcgroup","i*"},
+	{buildin_setunitgroup,"setunitgroup","ii"},
+	{buildin_setnpctitle,"setnpctitle","s*"},
+	{buildin_setunittitle,"setunittitle","si"},
 
 	{NULL,NULL,NULL}
 };
