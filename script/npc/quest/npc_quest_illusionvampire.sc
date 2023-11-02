@@ -3881,7 +3881,7 @@ OnTimer15000:
 	unittalk 'mob,"ボミ : 冒……険……者……さま……逃げ……て……";
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
 	mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
-	mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+	mobuseskill 'mob,730,1,0,0,-1,0,0;	// M呪縛陣
 	announce "ボミ : ダ、ダメ……毒が回り始めて……！", 0x9, 0xee0000, 0x0190, 20, 0, 0;
 	donpcevent "ボミ#gef_d01_j::OnSpawn";
 	end;

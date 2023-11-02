@@ -2589,20 +2589,21 @@ AurigaNPCScript
 			<itemid>を省略時、記述されたアイテムが参照されます。
 
 		mobuseskill命令
-			mobuseskill <object_id>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<eff_id>,<target_type>;
+			mobuseskill <object_id>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<talk>,<target_type>;
 
 			object_id		数値
 			skillid			使用するスキルのID
 			skilllv			使用するスキルのLv
 			casttime		詠唱時間（ms）
 			cast_cancel		0=中断不可, 1=中断可能
-			eff_id			数値
+			emotion			数値
+			talk			数値
 			target_type		0=自身, 1=ターゲット, 2=マスター, 3=ランダム
 
 			<object_id>で指定したモンスターに対し
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
-			<eff_id>が正の値の場合、スキル使用時に<eff_id>で指定したmob_talkを発言します。
-			<eff_id>が負の値の場合、スキル使用時に<eff_id>で指定したエモーションを出します。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+			スキル使用時に<talk>で指定したmob_talkを発言します。
 
 		mobuseskillpos命令
 			mobuseskillpos <object_id>,<skillid>,<skilllv>,<x>,<y>,<casttime>,<cast_cancel>;
@@ -2618,7 +2619,7 @@ AurigaNPCScript
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<x>,<y>の座標に使用させます。
 
 		areamobuseskill命令
-			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<eff_id>,<target>;
+			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<talk>,<target>;
 
 			gatname				文字列
 			x0,y0,x1,y1,mobid	数値
@@ -2626,14 +2627,15 @@ AurigaNPCScript
 			skilllv				使用するスキルのLv
 			casttime			詠唱時間（ms）
 			cast_cancel			0=中断不可, 1=中断可能
-			eff_id				数値
+			emotion				数値
+			talk				数値
 			target_type			0=自身, 1=ターゲット, 2=マスター, 3=ランダム
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内の<mobid>に指定されたIDのモンスターに対し
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
 			<mobid>が-1の場合、範囲内にいる全てのモンスターが対象になります。
-			<eff_id>が正の値の場合、スキル使用時に<eff_id>で指定したmob_talkを発言します。
-			<eff_id>が負の値の場合、スキル使用時に<eff_id>で指定したエモーションを出します。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+			スキル使用時に<talk>で指定したmob_talkを発言します。
 
 		setpartyinmap命令
 			setpartyinmap <variable>,<n>;

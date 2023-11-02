@@ -4714,9 +4714,9 @@ struct script_function buildin_func[] = {
 	{buildin_callmonster,"callmonster","siiss*"},
 	{buildin_areacallmonster,"areacallmonster","siiiiss*"},
 	{buildin_removemonster,"removemonster","i*"},
-	{buildin_mobuseskill,"mobuseskill","iiiiiii"},
+	{buildin_mobuseskill,"mobuseskill","iiiiiiii"},
 	{buildin_mobuseskillpos,"mobuseskillpos","iiiiiii"},
-	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiii"},
+	{buildin_areamobuseskill,"areamobuseskill","siiiiiiiiiiii"},
 	{buildin_getequipcardid,"getequipcardid","ii"},
 	{buildin_setpartyinmap,"setpartyinmap","ii"},
 	{buildin_getclassjob,"getclassjob","i"},
@@ -7218,6 +7218,7 @@ int buildin_bonus3(struct script_state *st)
 	case SP_REVAUTOSPELL2:
 	case SP_REVAUTOSELFSPELL:
 	case SP_REVAUTOSELFSPELL2:
+	case SP_ADDEFFSKILL:
 		{
 			struct script_data *data;
 			data = &(st->stack->stack_data[st->start+3]);
@@ -7273,7 +7274,26 @@ int buildin_bonus4(struct script_state *st)
 		type2 = conv_num(st,& (st->stack->stack_data[st->start+3]));
 		break;
 	}
-	type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
+	switch(type) {
+	case SP_SKILLAUTOSPELL:
+	case SP_SKILLAUTOSPELL2:
+	case SP_SKILLAUTOSELFSPELL:
+	case SP_SKILLAUTOSELFSPELL2:
+		{
+			struct script_data *data;
+			data = &(st->stack->stack_data[st->start+4]);
+			get_val(st,data);
+			if(isstr(data)) {
+				type3 = skill_get_name2id(conv_str(st,data));
+			} else {
+				type3 = conv_num(st,data);
+			}
+		}
+		break;
+	default:
+		type3 = conv_num(st,& (st->stack->stack_data[st->start+4]));
+		break;
+	}
 	type4 = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	val   = (unsigned int)conv_num(st,& (st->stack->stack_data[st->start+6]));
 
@@ -14216,15 +14236,16 @@ int buildin_mobuseskill(struct script_state *st)
 {
 	struct mob_data *md;
 	struct block_list *tbl;
-	int id,skillid,skilllv,casttime,cancel,eff_id,target;
+	int id,skillid,skilllv,casttime,cancel,emotion,talk,target;
 
 	id       = conv_num(st,& (st->stack->stack_data[st->start+2]));
 	skillid  = conv_num(st,& (st->stack->stack_data[st->start+3]));
 	skilllv  = conv_num(st,& (st->stack->stack_data[st->start+4]));
 	casttime = conv_num(st,& (st->stack->stack_data[st->start+5]));
 	cancel   = conv_num(st,& (st->stack->stack_data[st->start+6]));
-	eff_id   = conv_num(st,& (st->stack->stack_data[st->start+7]));
-	target   = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	emotion   = conv_num(st,& (st->stack->stack_data[st->start+7]));
+	talk   = conv_num(st,& (st->stack->stack_data[st->start+8]));
+	target   = conv_num(st,& (st->stack->stack_data[st->start+9]));
 
 	if((md = map_id2md(id)) == NULL)
 		return 0;
@@ -14253,10 +14274,10 @@ int buildin_mobuseskill(struct script_state *st)
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
 
-	if(eff_id > 0)
-		mob_talk(md, eff_id);
-	else
-		clif_emotion(&md->bl, -1 * eff_id);
+	if(emotion >= 0)
+		clif_emotion(&md->bl, emotion);
+	if(talk > 0)
+		mob_talk(md, talk);
 
 	return 0;
 }
@@ -14309,7 +14330,8 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 	int skilllv  = va_arg(ap,int);
 	int casttime = va_arg(ap,int);
 	int cancel   = va_arg(ap,int);
-	int eff_id   = va_arg(ap,int);
+	int emotion   = va_arg(ap,int);
+	int talk   = va_arg(ap,int);
 	int target   = va_arg(ap,int);
 
 	nullpo_retr(0, md = (struct mob_data *)bl);
@@ -14341,10 +14363,10 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 	else
 		unit_skilluse_id2(&md->bl, tbl->id, skillid, skilllv, casttime, cancel);
 
-	if(eff_id > 0)
-		mob_talk(md, eff_id);
-	else
-		clif_emotion(&md->bl, -1 * eff_id);
+	if(emotion >= 0)
+		clif_emotion(&md->bl, emotion);
+	if(talk > 0)
+		mob_talk(md, talk);
 
 	return 0;
 }
@@ -14352,7 +14374,7 @@ static int buildin_mobuseskill_sub(struct block_list *bl,va_list ap)
 int buildin_areamobuseskill(struct script_state *st)
 {
 	int mob_id,m,x0,y0,x1,y1;
-	int skillid,skilllv,casttime,cancel,eff_id,target;
+	int skillid,skilllv,casttime,cancel,emotion,talk,target;
 	char *mapname;
 
 	mapname  = conv_str(st,& (st->stack->stack_data[st->start+2]));
@@ -14365,12 +14387,13 @@ int buildin_areamobuseskill(struct script_state *st)
 	skilllv  = conv_num(st,& (st->stack->stack_data[st->start+9]));
 	casttime = conv_num(st,& (st->stack->stack_data[st->start+10]));
 	cancel   = conv_num(st,& (st->stack->stack_data[st->start+11]));
-	eff_id   = conv_num(st,& (st->stack->stack_data[st->start+12]));
-	target   = conv_num(st,& (st->stack->stack_data[st->start+13]));
+	emotion   = conv_num(st,& (st->stack->stack_data[st->start+12]));
+	talk   = conv_num(st,& (st->stack->stack_data[st->start+13]));
+	target   = conv_num(st,& (st->stack->stack_data[st->start+14]));
 
 	m = script_mapname2mapid(st,mapname);
 	if(m >= 0)
-		map_foreachinarea(buildin_mobuseskill_sub,m,x0,y0,x1,y1,BL_MOB,mob_id,skillid,skilllv,casttime,cancel,eff_id,target);
+		map_foreachinarea(buildin_mobuseskill_sub,m,x0,y0,x1,y1,BL_MOB,mob_id,skillid,skilllv,casttime,cancel,emotion,talk,target);
 	return 0;
 }
 

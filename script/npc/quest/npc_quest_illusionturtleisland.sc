@@ -2277,7 +2277,7 @@ OnSummon:
 		set 'mob,areacallmonster("tur_d03_j.gat",0,0,0,0,"不吉なソリッドタートル",3802,strnpcinfo(0)+"::OnKilled");
 		set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
 		mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
-		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+		mobuseskill 'mob,730,1,0,0,-1,0,0;	// M呪縛陣
 		unittalk 'mob,"不吉なソリッドタートル : ……。";
 	}
 	else {
@@ -2300,7 +2300,7 @@ OnSummon:
 		set 'mob,areacallmonster("tur_d04_j.gat",0,0,0,0,"不吉なソリッドタートル",3802,strnpcinfo(0)+"::OnKilled");
 		set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
 		mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
-		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+		mobuseskill 'mob,730,1,0,0,-1,0,0;	// M呪縛陣
 		unittalk 'mob,"不吉なソリッドタートル : ……。";
 	}
 	else {

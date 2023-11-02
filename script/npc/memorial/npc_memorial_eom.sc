@@ -1023,7 +1023,7 @@ OnTimer3000:
 		sleep 500;
 		donpcevent getmdnpcname("callmon#eom2")+"::OnReSpawn";
 		set '@mob_id,getvariableofnpc('mob_id,getmdnpcname("callmon#eom2"));
-		mobuseskill '@mob_id,664,5,0,0,0,0;	// ワイドフリーズ
+		mobuseskill '@mob_id,664,5,0,0,-1,0,0;	// ワイドフリーズ
 		sleep 1000;
 		set '@count,getmapmobs('@mdmap$,'@event$ +'type);
 		if('@count <= 0) {
@@ -1070,25 +1070,25 @@ OnHeal:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"ブリナラネア : ふふふ……！";
 	sleep 1000;
-	mobuseskill 'mob_id,28,10,0,0,0,0;	// ヒール
+	mobuseskill 'mob_id,28,10,0,0,-1,0,0;	// ヒール
 	sleep 1000;
-	mobuseskill 'mob_id,28,10,0,0,0,0;	// ヒール
+	mobuseskill 'mob_id,28,10,0,0,-1,0,0;	// ヒール
 	sleep 1000;
-	mobuseskill 'mob_id,28,10,0,0,0,0;	// ヒール
+	mobuseskill 'mob_id,28,10,0,0,-1,0,0;	// ヒール
 	end;
 OnJupitel:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"ブリナラネア : こういうのはいかがですか？";
 	sleep 2000;
-	mobuseskill 'mob_id,664,5,0,0,0,0;	// ワイドフリーズ
+	mobuseskill 'mob_id,664,5,0,0,-1,0,0;	// ワイドフリーズ
 	sleep 2000;
-	mobuseskill 'mob_id,84,28,0,0,0,1;	// ユピテルサンダー
+	mobuseskill 'mob_id,84,28,0,0,-1,0,1;	// ユピテルサンダー
 	end;
 OnThunder1:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"ブリナラネア : これが生まれ変わった私の力です！";
 	sleep 1000;
-	mobuseskill 'mob_id,664,5,0,0,0,0;	// ワイドフリーズ
+	mobuseskill 'mob_id,664,5,0,0,-1,0,0;	// ワイドフリーズ
 	sleep 1500;
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-3,'@y+3,0,0;	// サンダーストーム
@@ -1103,9 +1103,9 @@ OnThunder2:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"ブリナラネア : この素晴らしい魔力、身をもって味わいなさい！";
 	sleep 1000;
-	mobuseskill 'mob_id,664,5,0,0,0,0;	// ワイドフリーズ
+	mobuseskill 'mob_id,664,5,0,0,-1,0,0;	// ワイドフリーズ
 	sleep 1500;
-	mobuseskill 'mob_id,85,5,0,0,0,0;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,5,0,0,-1,0,0;	// ロードオブヴァーミリオン
 	sleep 1000;
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-3,'@y+3,0,0;	// サンダーストーム
@@ -1244,26 +1244,26 @@ OnStart:
 	set '@mob11,callmonster('@mdmap$,174,133,"狂気のカーサ",3089,'@event2$);
 	announce "ムスペルスコール : 灼熱の炎よ、全てを燃やし尽くしなさい！", 0x9, 0xff0000, 0x190, 14, 0, 0;
 	set 'mob1,callmonster('@mdmap$,167,133,"ムスペルスコール#01",3092,'@event1$);
-	mobuseskill 'mob1,81,10,0,0,0,0;	// サイトラッシャー
+	mobuseskill 'mob1,81,10,0,0,-1,0,0;	// サイトラッシャー
 	sleep 1000;
 	unittalk 'mob1,"ムスペルスコール : 全ては我が主の意のままに！";
 	initnpctimer;
 	sleep 2000;
-	mobuseskill 'mob1,724,1,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,724,1,0,0,-1,0,0;	// ファイアストーム
 	end;
 OnTimer7000:
 	unittalk 'mob1,"ムスペルスコール : 我が主の作りだした灼熱の炎を甘く見ないことです！";
 	callsub L_LavaHeal,1,156,117;
 	sleep 2000;
-	mobuseskill 'mob1,724,1,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,724,1,0,0,-1,0,0;	// ファイアストーム
 	if(getmapmobs(getmdmapname("1@eom.gat"),getmdnpcname("callmon#eom3")+"::OnKilled1") < 6)
 		areamonster getmdmapname("1@eom.gat"),156-3,117-3,156+3,117+3,"狂気のカーサ",3089,3,getmdnpcname("callmon#eom3")+"::OnKilled1";
 	end;
 OnTimer10000:
 	callsub L_LavaHeal,2,180,129;
 	sleep 2000;
-	mobuseskill 'mob1,721,1,0,0,0,0;	// ワイドウェブ
-	mobuseskill 'mob1,724,1,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,721,1,0,0,-1,0,0;	// ワイドウェブ
+	mobuseskill 'mob1,724,1,0,0,-1,0,0;	// ファイアストーム
 	if(getmapmobs(getmdmapname("1@eom.gat"),getmdnpcname("callmon#eom3")+"::OnKilled1") < 6)
 		areamonster getmdmapname("1@eom.gat"),180-3,129-3,180+3,129+3,"狂気のカーサ",3089,3,getmdnpcname("callmon#eom3")+"::OnKilled1";
 	end;
@@ -1290,7 +1290,7 @@ L_LavaHeal:
 	if(getvariableofnpc('flag,getmdnpcname("固まった溶岩#0")+getarg(0)) != 1) {
 		announce "ロキ : ムスペルスコールが溶岩を利用して回復をしようとしているぞ！", 0x9, 0x00ff00;
 		for(set '@i,0; '@i<=8; set '@i,'@i+1) {
-			mobuseskill 'mob1,28,10,0,0,0,0;	// ヒール
+			mobuseskill 'mob1,28,10,0,0,-1,0,0;	// ヒール
 			sleep 100;
 		}
 	}
@@ -1303,19 +1303,19 @@ OnWarpReturn:
 	set 'mob1,callmonster(getmdmapname("1@eom.gat"),168,121,"ムスペルスコール#01",3092,getmdnpcname("callmon#eom3")+"::OnFlameWolf");
 	setmobhp 'mob1,'hp;
 	set getvariableofnpc('mob_id,getmdnpcname("ムスペルスコール#npc")),'mob1;
-	mobuseskill 'mob1,252,1,0,0,0,0;	// リフレクトシールド
+	mobuseskill 'mob1,252,1,0,0,-1,0,0;	// リフレクトシールド
 	end;
 OnHellBurning1:
 	if(getmobhp('mob1) < 1) end;
 	unittalk 'mob1,"ムスペルスコール : 灼熱の海に飲まれなさい！";
 	sleep 1000;
-	mobuseskill 'mob1,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 2000;
-	mobuseskill 'mob1,81,10,0,0,0,0;	// サイトラッシャー
+	mobuseskill 'mob1,81,10,0,0,-1,0,0;	// サイトラッシャー
 	end;
 OnHellBurning2:
 	if(getmobhp('mob1) < 1) end;
-	mobuseskill 'mob1,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,724,3,0,0,-1,0,0;	// ファイアストーム
 	unittalk 'mob1,"ムスペルスコール : 灼熱の炎に抱かれなさい！";
 	sleep 2000;
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob1);
@@ -1331,7 +1331,7 @@ OnHellBurning3:
 	if(getmobhp('mob1) < 1) end;
 	unittalk 'mob1,"ムスペルスコール : 灼熱の隕石で朽ち果てなさい!!";
 	sleep 1000;
-	mobuseskill 'mob1,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob1,724,3,0,0,-1,0,0;	// ファイアストーム
 	set '@mdmap$,getmdmapname("1@eom.gat");
 	sleep 1000;
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob1);
@@ -1798,8 +1798,8 @@ OnTimer1000:
 OnStart:
 	initnpctimer;
 	set 'mob_id,callmonster(getmdmapname("1@eom.gat"),102,209,"再生の半魔神#mk01",3096,getmdnpcname("callmon#eom4")+"::OnKilled");
-	mobuseskill 'mob_id,83,10,0,0,0,0;	// メテオストーム
-	mobuseskill 'mob_id,83,10,0,0,0,0;	// メテオストーム
+	mobuseskill 'mob_id,83,10,0,0,-1,0,0;	// メテオストーム
+	mobuseskill 'mob_id,83,10,0,0,-1,0,0;	// メテオストーム
 	end;
 OnTimer3000:
 OnTimer6000:
@@ -1841,8 +1841,8 @@ OnTimer10000:
 		setmobhp 'mob_id,'@mobhp;
 		set 'mob_id2,callmonster('@mdmap$,114,198,"太古のモロク#origin",3098,getmdnpcname("callmon#eom4")+"::OnKilled2");
 		set 'mob_id3,callmonster('@mdmap$,86,199,"安息のモロク#rest",3099,getmdnpcname("callmon#eom4")+"::OnKilled3");
-		mobuseskill 'mob_id2,675,4,0,0,0,0;	// ストーンスキン
-		mobuseskill 'mob_id3,676,4,0,0,0,0;	// アンチマジック
+		mobuseskill 'mob_id2,675,4,0,0,-1,0,0;	// ストーンスキン
+		mobuseskill 'mob_id3,676,4,0,0,-1,0,0;	// アンチマジック
 		donpcevent getmdnpcname("callmon#eom4_timer")+"::OnStart";
 		end;
 	}
@@ -1873,9 +1873,9 @@ OnMoroccKidMS:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"再生の半魔神 : 脆弱な魂たちの為にフィナーレを！";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob_id,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 2000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,83,5,'@x-5,'@y,0,0;	// メテオストーム
@@ -1885,7 +1885,7 @@ OnMoroccKidMS:
 	sleep 4000;
 	unittalk 'mob_id,"再生の半魔神 : ふふふ……！　もっと楽しもうよ！";
 	sleep 2000;
-	mobuseskill 'mob_id,85,10,0,0,0,1;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,10,0,0,-1,0,1;	// ロードオブヴァーミリオン
 	sleep 2000;
 	initnpctimer;
 	end;
@@ -1894,7 +1894,7 @@ OnMoroccKidTS:
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	unittalk 'mob_id,"再生の半魔神 : 脆弱な魂たちの為にレクイエムを！";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
 	mobuseskillpos 'mob_id,21,20,'@x-2,'@y,0,0;	// サンダーストーム
 	mobuseskillpos 'mob_id,21,20,'@x+2,'@y,0,0;	// サンダーストーム
@@ -1934,21 +1934,21 @@ OnMoroccKidLoV:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"再生の半魔神 : ふふふ!!　耐えられるものなら耐えてみるんだね!!";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob_id,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 2000;
-	mobuseskill 'mob_id,85,10,0,0,0,1;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,10,0,0,-1,0,1;	// ロードオブヴァーミリオン
 	sleep 2000;
-	mobuseskill 'mob_id,252,1,0,0,0,0;	// リフレクトシールド
+	mobuseskill 'mob_id,252,1,0,0,-1,0,0;	// リフレクトシールド
 	initnpctimer;
 	end;
 OnHeal1:
-	mobuseskill 'mob_id,28,10,0,0,0,0;	// ヒール
+	mobuseskill 'mob_id,28,10,0,0,-1,0,0;	// ヒール
 	end;
 OnHeal2:
-	mobuseskill 'mob_id,675,5,0,0,0,0;	// ストーンスキン
-	mobuseskill 'mob_id,671,5,0,0,0,0;	// マジックミラー
+	mobuseskill 'mob_id,675,5,0,0,-1,0,0;	// ストーンスキン
+	mobuseskill 'mob_id,671,5,0,0,-1,0,0;	// マジックミラー
 	end;
 OnReStart:
 	set 'flag,2;
@@ -1958,11 +1958,11 @@ OnReStart:
 	setmobhp 'mob_id,'@mobhp;
 	unittalk 'mob_id,"再生の半魔神 : ふふふ……！　まだあきらめないの？";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob_id,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 1000;
-	mobuseskill 'mob_id,17,10,0,0,0,1;	// ファイアーボール
+	mobuseskill 'mob_id,17,10,0,0,-1,0,1;	// ファイアーボール
 	initnpctimer;
 	end;
 OnKilled:
@@ -1972,7 +1972,7 @@ OnKilled:
 	end;
 OnKilled2:
 	unittalk 'mob_id3,"安息のモロク : すべての生者に安息を与えてやる!!　それが私からの慈悲だ!!";
-	mobuseskill 'mob_id3,83,9,800,0,0,0;	// メテオストーム
+	mobuseskill 'mob_id3,83,9,800,0,-1,0,0;	// メテオストーム
 	end;
 OnKilled3:
 	unittalk 'mob_id2,"太古のモロク : ガアアアアアアァァッ!!";
@@ -2041,7 +2041,7 @@ OnStart:
 OnStart:
 	set 'flag,0;
 	set 'mob_id,callmonster(getmdmapname("1@eom.gat"),101,194,"絶望の神モロク#ma01",3097,getmdnpcname("callmon#eom5")+"::OnKilled");
-	mobuseskill 'mob_id,653,1,0,0,0,0;	// アースクエイク
+	mobuseskill 'mob_id,653,1,0,0,-1,0,0;	// アースクエイク
 	sleep 1000;
 	unittalk 'mob_id,"絶望の神モロク : さあ、悲痛の叫びを聞かせてくれ！";
 	initnpctimer;
@@ -2093,7 +2093,7 @@ OnMoroccAdtTS:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 弱者の魂よ、雷に打たれ朽ちるがいい！";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-2,'@y,0,0;	// サンダーストーム
@@ -2134,9 +2134,9 @@ OnMoroccAdtLoV:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 圧倒的な死の落雷を見せてやろう!!";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 2000;
-	mobuseskill 'mob_id,664,5,0,0,0,0;	// ワイドフリーズ
+	mobuseskill 'mob_id,664,5,0,0,-1,0,0;	// ワイドフリーズ
 	sleep 2000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,85,5,'@x-7,'@y,0,0;	// ロードオブヴァーミリオン
@@ -2149,7 +2149,7 @@ OnMoroccAdtLoV:
 	sleep 2500;
 	unittalk 'mob_id,"絶望の神モロク : ……ククク……魂が引き裂かれる痛みに耐えれるか？";
 	sleep 2000;
-	mobuseskill 'mob_id,85,10,0,0,0,1;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,10,0,0,-1,0,1;	// ロードオブヴァーミリオン
 	sleep 2000;
 	initnpctimer;
 	end;
@@ -2157,7 +2157,7 @@ OnMoroccAdtFP:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : ククク……全てを滅してやろう！";
 	sleep 2000;
-	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob_id,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 2000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,80,10,'@x-1,'@y,0,0;	// ファイアーピラー
@@ -2198,20 +2198,20 @@ OnMoroccAdtMS:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 業火に焼かれる苦痛を味わえ!!";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,724,3,0,0,0,0;	// ファイアストーム
+	mobuseskill 'mob_id,724,3,0,0,-1,0,0;	// ファイアストーム
 	sleep 2000;
-	mobuseskill 'mob_id,83,10,0,0,0,0;	// メテオストーム
+	mobuseskill 'mob_id,83,10,0,0,-1,0,0;	// メテオストーム
 	initnpctimer;
 	end;
 OnMoroccAdtFC:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : その命、貰い受けるぞ!!";
 	sleep 2000;
-	mobuseskill 'mob_id,711,1,0,0,0,0;	// フレイムクロス
+	mobuseskill 'mob_id,711,1,0,0,-1,0,0;	// フレイムクロス
 	sleep 1000;
-	mobuseskill 'mob_id,81,10,0,0,0,0;	// サイトラッシャー
+	mobuseskill 'mob_id,81,10,0,0,-1,0,0;	// サイトラッシャー
 	sleep 1000;
 	initnpctimer;
 	end;
@@ -2219,9 +2219,9 @@ OnMoroccAdtChange:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : フフフ……こういうのはどうだ？";
 	sleep 1000;
-	mobuseskill 'mob_id,85,10,0,0,0,0;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,10,0,0,-1,0,0;	// ロードオブヴァーミリオン
 	sleep 1000;
-	mobuseskill 'mob_id,289,5,0,0,0,1;	// ディスペル
+	mobuseskill 'mob_id,289,5,0,0,-1,0,1;	// ディスペル
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	monster '@mdmap$,'@x+1,'@y," ",20131,1,getmdnpcname("callmon#eom5")+"::OnKilled2";
@@ -2236,9 +2236,9 @@ OnMoroccAdtEstr:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 堅固なるツルギに貫かれ、醜態を晒すがいい。";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,2216,5,0,0,0,1;	// アースストレイン
+	mobuseskill 'mob_id,2216,5,0,0,-1,0,1;	// アースストレイン
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,91,5,'@x-2,'@y,0,0;	// ヘヴンズドライブ
@@ -2269,9 +2269,9 @@ OnMoroccAdtJF:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 太古より続く冷たき棺に抱かれ、逝くがよい!!";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,720,5,0,0,0,0;	// Mジャックフロスト
+	mobuseskill 'mob_id,720,5,0,0,-1,0,0;	// Mジャックフロスト
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,89,10,'@x-2,'@y,0,0;	// ストームガスト
@@ -2293,7 +2293,7 @@ OnMoroccAdtFW:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 痛みを感じる間もなく、燃やしつくしてやろう!!";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,18,10,'@x-2,'@y,0,0;	// ファイアーウォール
@@ -2338,9 +2338,9 @@ OnMoroccAdtFW:
 OnMoroccAdtTS2:
 	unittalk 'mob_id,"絶望の神モロク : 裁きの雷にその身を焦がすがいい……！";
 	sleep 2000;
-	mobuseskill 'mob_id,721,1,0,0,0,0;	// ワイドウェブ
+	mobuseskill 'mob_id,721,1,0,0,-1,0,0;	// ワイドウェブ
 	sleep 1000;
-	mobuseskill 'mob_id,84,28,0,0,0,1;	// ユピテルサンダー
+	mobuseskill 'mob_id,84,28,0,0,-1,0,1;	// ユピテルサンダー
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	mobuseskillpos 'mob_id,21,20,'@x-2,'@y,0,0;	// サンダーストーム
@@ -2381,13 +2381,13 @@ OnMoroccAdtPSHJ:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : 虫けらが……もがき苦しむがいい!!";
 	sleep 1000;
-	mobuseskill 'mob_id,289,5,0,0,0,1;	// ディスペル
+	mobuseskill 'mob_id,289,5,0,0,-1,0,1;	// ディスペル
 	sleep 2000;
 	unittalk 'mob_id,"絶望の神モロク : 闇の底に沈めぇぇぇ!!";
 	sleep 1000;
-	mobuseskill 'mob_id,661,3,0,0,0,0;	// パルスストライク
+	mobuseskill 'mob_id,661,3,0,0,-1,0,0;	// パルスストライク
 	sleep 1000;
-	mobuseskill 'mob_id,662,5,0,0,0,0;	// ヘルジャッジメント
+	mobuseskill 'mob_id,662,5,0,0,-1,0,0;	// ヘルジャッジメント
 	sleep 1000;
 	initnpctimer;
 	end;
@@ -2403,18 +2403,18 @@ OnMoroccAdtComet:
 	sleep 1000;
 	unittalk 'mob_id,"絶望の神モロク : 地獄を味わえ！　これでフィナーレだ！";
 	sleep 2000;
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
-	mobuseskill 'mob_id,708,5,0,0,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
+	mobuseskill 'mob_id,708,5,0,0,-1,0,0;	// Mコメット
 	initnpctimer;
 	end;
 OnMoroccAdtAllMagic:
@@ -2454,9 +2454,9 @@ OnMoroccAdtCall:
 	if(getmobhp('mob_id) < 1) end;
 	unittalk 'mob_id,"絶望の神モロク : この神に逆らう愚か者どもめ!!";
 	sleep 2000;
-	mobuseskill 'mob_id,85,10,0,0,0,0;	// ロードオブヴァーミリオン
+	mobuseskill 'mob_id,85,10,0,0,-1,0,0;	// ロードオブヴァーミリオン
 	sleep 1000;
-	mobuseskill 'mob_id,289,5,0,0,0,1;	// ディスペル
+	mobuseskill 'mob_id,289,5,0,0,-1,0,1;	// ディスペル
 	sleep 1000;
 	set '@dummy,getmapxy('@mdmap$,'@x,'@y,3,'mob_id);
 	switch(rand(3)) {

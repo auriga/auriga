@@ -844,7 +844,7 @@ OnSummon:
 		set 'mob,callmonster("ice_d03_i.gat",'@x[rand(getarraysize('@x))],'@y[rand(getarraysize('@y))],"狂乱した冒険者",3765,strnpcinfo(0)+"::OnKilled");
 		set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
 		mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
-		mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+		mobuseskill 'mob,730,1,0,0,-1,0,0;	// M呪縛陣
 		unittalk 'mob,"狂乱した冒険者 : あなたは魔物に惑わされている！僕が救ってあげましょう！";
 	}
 	else {
