@@ -462,6 +462,7 @@ prontera.gat,163,178,3		duplicate(3rdRentalGear)	魔導ギア管理兵#pro		105
 dicastes01.gat,187,203,3	duplicate(3rdRentalGear)	魔導ギア管理兵#dicas	105
 mora.gat,91,112,3			duplicate(3rdRentalGear)	魔導ギア管理兵#mora		105
 ecl_in01.gat,41,25,5		duplicate(3rdRentalGear)	魔導ギア管理兵#ecl		105
+verus04.gat,170,216,3		duplicate(3rdRentalGear)	魔導ギア管理兵#ver		105
 
 //==========================================
 // ルーン原石販売員 - ルーンナイト
@@ -637,6 +638,7 @@ mid_camp.gat,184,263,4	substore(MechanicShopper)	闇販売員	49
 einbroch.gat,122,250,4	substore(MechanicShopper)	闇販売員	49
 ra_in.gat,257,266,4		substore(MechanicShopper)	闇販売員	49
 lhz_in03.gat,181,17,4	substore(MechanicShopper)	闇販売員	49
+verus04.gat,111,251,4	substore(MechanicShopper)	闇販売員	49
 
 
 //==========================================

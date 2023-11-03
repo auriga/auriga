@@ -1,4 +1,37 @@
 ----------------------------------------
+//1536 [2023/11/03] by refis
+
+・時の通路01からマラン島への転送NPC追加（npc_town_malangdo.sc）
+
+・楽園団NPC実装（npc_town_eden.sc）
+
+・ウェルス発掘地NPC実装（npc_town_verus.sc, npc_memorial_centrallab.sc, npc_memorial_lastroom.sc）
+	-> ファンタスマゴリカクエスト実装
+	-> 地下遺跡アドベンチャークエスト実装
+	-> ウェルスデイリークエスト実装
+	-> エクセリオンエンチャント実装
+	-> リペアメモリーエンチャント実装
+	-> 中央実験室メモリアル実装
+	-> 最後の部屋メモリアル実装
+	Thanks a lot Dallen さん
+
+・ウェルス発掘地関連NPC追加 (npc_job_thirdclass.sc, npc_misc_dynamicnpc.sc, npc_misc_zonda.sc)
+
+・ウェルス発掘地追加マップのwarp更新 (npc_warp_dun.sc, npc_warp_town.sc)
+
+・ウェルス発掘地追加マップのmapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・ウェルス発掘地追加マップのmonster出現定義追加 (npc_monster_verus.sc)
+
+・item_dbのランダム更新 (item_db.txt)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1535 [2023/11/02] by refis
 
 ・アイテムボーナス[bAddEffSkill]でスキル名称を指定できるよう処理を拡張（script.c）
