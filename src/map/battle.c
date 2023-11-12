@@ -3901,8 +3901,11 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			DMG_FIX( 100 * ((skill_lv - 1) % 5 + 1), 100 );
 			break;
 		case NPC_VENOMFOG:			// ベナムフォグ
-			wd.damage = status_get_atk(src);
-			DMG_FIX( 50 * skill_lv, 100 );
+			if(src_md)
+				wd.damage = mobdb_search(src_md->class_)->atk1;
+			else
+				wd.damage = status_get_atk(src);
+			DMG_FIX( 100 * skill_lv, 100 );
 			wd.damage = battle_attr_fix(wd.damage, s_ele, status_get_element(target));
 			break;
 		case NPC_REVERBERATION_ATK:	// M振動残響(攻撃)
@@ -5508,6 +5511,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				wd.damage = wd.damage * rate / 100;
 			}
 			break;
+		case NPC_VENOMFOG:
 		case NC_ARMSCANNON:
 		case NC_SELFDESTRUCTION:
 		case SO_VARETYR_SPEAR:

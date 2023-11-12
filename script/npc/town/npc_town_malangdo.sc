@@ -610,7 +610,7 @@ OnInit:
 	end;
 }
 
-ac_cl_area.gat,54,156,5	script	マラン島案内員	545,{
+ac_cl_area.gat,54,156,5	script	マラン島案内員#ac	545,{
 	if(BaseLevel < 40 || BaseLevel > 99 || Upper == 1 || (Job >= Job_ExpandedSuperNovice && Job <= Job_Summoner) ) {
 		mes "[アンニャ]";
 		mes "こんにちは！";
@@ -665,7 +665,7 @@ OnInit:
 	end;
 }
 
-dali.gat,106,93,5	script	マラン島案内員	554,{
+dali.gat,106,93,5	script	マラン島案内員#dali	554,{
 	mes "[カンニャ]";
 	mes "あ～。ねむいにゃ～。";
 	mes "早く^ff0000マラン島^000000に帰りたいにゃ～。";

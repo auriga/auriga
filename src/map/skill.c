@@ -12589,6 +12589,13 @@ struct skill_unit_group *skill_unitsetting( struct block_list *src, int skillid,
 		val1 = (skilllv > 6)? 666: skilllv*100;
 		interval += 500;
 		break;
+	case NPC_VENOMFOG:			// ベナムフォグ
+		if(src->type == BL_MOB)
+			val1 = mobdb_search(((struct mob_data *)src)->class_)->atk1;
+		else
+			val1 = status_get_atk(src);
+		interval += 500;
+		break;
 	case GC_POISONSMOKE:	/* ポイズンスモーク */
 		if(sd) {
 			if(sd->sc.data[SC_POISONINGWEAPON].timer != -1) {
@@ -14000,10 +14007,10 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 		if(battle_check_target(&src->bl,bl,BCT_ENEMY) > 0 && bl->type == BL_PC) {
 			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,NPC_VENOMFOG,sg->skill_lv,tick,0);
 		} else if(bl->type == BL_MOB) {
-			if(status_get_hp(bl) >= status_get_max_hp(bl))
-				break;
-			clif_skill_nodamage(&src->bl,bl,AL_HEAL,2000,1);
-			battle_heal(NULL,bl,2000,0,0);
+			if(status_get_hp(bl) < status_get_max_hp(bl)) {
+				clif_skill_nodamage(&src->bl,bl,AL_HEAL,sg->val1*sg->skill_lv,1);
+				battle_heal(NULL,bl,sg->val1*sg->skill_lv,0,0);
+			}
 		}
 		break;
 	case UNT_CANE_OF_EVIL_EYE:		/* ケーンオブイビルアイ */
