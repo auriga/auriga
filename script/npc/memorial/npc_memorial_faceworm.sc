@@ -1866,7 +1866,7 @@ OnDamage:
 		set '@users,getmapusers(getmdmapname("1@face.gat"));
 		set '@damage,10000 * rand(20,('@users+7)*25);
 		set '@facehp,'hp - '@damage;
-		if('facehp < 5000000)
+		if('@facehp < 5000000)
 			set '@facehp,5000000;
 		setmobhp 'mob,'@facehp;
 		announce "アイリス : さすがケイオス！　攻撃は、女王フェイスワームに効いてるみたい！", 0x9, 0xffffff, 0x190, 18, 0, 0;
@@ -1910,8 +1910,45 @@ OnStart:
 					monster getmdmapname("1@face.gat"),'@x+'@xr['@i],'@y+'@yr['@i],"#毒溜まり",2536,1,getmdnpcname("#女王虫4_bc")+"::OnKilled";
 				}
 			}
+			break;
 		case 2:
+			set '@rate,getmobhp('@boss) / '@maxhp * 100;
+			if('@rate > 50 || '@rate < 20) {
+				setarray '@xr,-4,4;
+				setarray '@yr, 0,0;
+				for(set '@i,0;'@i<getarraysize('@xr);set '@i,'@i+1) {
+					monster getmdmapname("1@face.gat"),'@x+'@xr['@i],'@y+'@yr['@i],"フェイスワームの卵",2540,1,getmdnpcname("#女王虫4_bc")+"::OnKilled2";
+				}
+			}
+			else {
+				setarray '@xr,-4,-4,4,4;
+				setarray '@yr,-4,4,-4,4;
+				for(set '@i,0;'@i<getarraysize('@xr);set '@i,'@i+1) {
+					monster getmdmapname("1@face.gat"),'@x+'@xr['@i],'@y+'@yr['@i],"フェイスワームの卵",2540,1,getmdnpcname("#女王虫4_bc")+"::OnKilled2";
+				}
+			}
+			break;
 		case 3:
+			set '@rate,getmobhp('@boss) / '@maxhp * 100;
+			if('@rate > 50 || '@rate < 20) {
+				setarray '@xr,-5,-3,-1,1,3,5;
+				setarray '@yr,5,3,1,-1,-3,-5;
+				for(set '@i,0;'@i<getarraysize('@xr);set '@i,'@i+1) {
+					for(set '@j,0;'@j<getarraysize('@yr);set '@j,'@j+1) {
+						monster getmdmapname("1@face.gat"),'@x+'@xr['@i],'@y+'@yr['@j],"猛毒袋",2531,1,getmdnpcname("#女王虫4_bc")+"::OnKilled";
+					}
+				}
+			}
+			else {
+				setarray '@xr,-7,-5,-3,-1,1,3,5,7;
+				setarray '@yr,7,5,3,1,-1,-3,-5,-7;
+				for(set '@i,0;'@i<getarraysize('@xr);set '@i,'@i+1) {
+					for(set '@j,0;'@j<getarraysize('@yr);set '@j,'@j+1) {
+						monster getmdmapname("1@face.gat"),'@x+'@xr['@i],'@y+'@yr['@j],"猛毒袋",2531,1,getmdnpcname("#女王虫4_bc")+"::OnKilled";
+					}
+				}
+			}
+			break;
 		}
 	}
 	end;
@@ -1947,6 +1984,30 @@ OnTimer6000:
 		end;
 	case 4: case 5:
 		// dummy
+	}
+	end;
+OnTimer12000:
+	set '@boss,getvariableofnpc('mob,getmdnpcname("#女王虫4"));
+	if('@boss) {
+		set '@num,0;
+		set '@cnt,getmapmoblist("this",'@faceegg,getmdnpcname("#女王虫4_bc")+"::OnKilled2");
+		if('@cnt > 0) {
+			for(set '@i,0;'@i<'@cnt;set '@i,'@i+1) {
+				if('@faceegg['@i]) {
+					set '@dummy,getmapxy('@map$,'@x,'@y,3,'@faceegg['@i]);
+					if('@dummy == -1)
+						break;
+					monster '@map$,'@x,'@y,"フェイスワームの幼虫",2541,1;
+					set '@num,'@num+1;
+					set '@dummy,removemonster('@faceegg['@i]);
+					set '@faceegg['@i],0;
+				}
+			}
+		}
+		if('@num > 0) {
+			announce "アイリス : 女王フェイスワームが卵を" +'@num+ "個食べて、元気を取り戻したみたい……。やっかいね……。", 0x9, 0xff00ee, 0x190, 18, 0, 0;
+			setmobhp '@boss,getmobhp('@boss)+50000*'@num;	// 未調査
+		}
 	}
 	end;
 OnTimer21000:
