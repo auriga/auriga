@@ -609,7 +609,7 @@ ecl_in01.gat,67,39,4	script	複製の専門家パルツ	445,{
 	mes "[パルツ]";
 	mes "^0571B0" +getitemname('@itemlist['@menu])+ "^000000ですね？";
 	next;
-	if('@material['@i] == 0 || countitem('@equiplist['@menu]) < 1) {
+	if('@material['@menu] == 0 || countitem('@equiplist['@menu]) < 1) {
 		emotion 28;
 		mes "[パルツ]";
 		mes "おや……アイテムが足りないようです。";
@@ -5697,7 +5697,7 @@ ecl_in04.gat,223,230,4	script	アルプオカート#ep14_2in	615,{
 //- Registry -------------------------------------------------
 // ECL_3QUE -> 0～
 //------------------------------------------------------------
-ecl_hub01.gat,98,32,3	script	エクラージュガード	461,{
+ecl_in02.gat,98,32,3	script	エクラージュガード	461,{
 	if(ECL_3QUE < 5) {
 		mes "[エクラージュガード]";
 		mes "王のために働く者ではありませんね。";
@@ -6959,7 +6959,7 @@ ecl_in01.gat,32,52,5	script	旅人ポメ#tl01	515,3,3,{
 		mes "旅人にいつも優しいんです。";
 		close;
 	}
-	if(ECL_3QUE == 8) {
+	else if(ECL_3QUE == 8) {
 		if(checkquest(7424)) {
 			mes "[ポメ]";
 			mes "きっと何かがあります。";
@@ -7020,7 +7020,7 @@ ecl_in01.gat,32,52,5	script	旅人ポメ#tl01	515,3,3,{
 		mes "　もっと話を聞いて見よう‐";
 		close;
 	}
-	if(ECL_3QUE == 9) {
+	else if(ECL_3QUE == 9) {
 		mes "[ポメ]";
 		mes "そろそろ次の地域まで移動する";
 		mes "計画をたてます。";
@@ -7028,7 +7028,7 @@ ecl_in01.gat,32,52,5	script	旅人ポメ#tl01	515,3,3,{
 		mes "モーラまで行くか……悩みますね。";
 		close;
 	}
-	if(ECL_3QUE >= 3) {
+	else if(ECL_3QUE >= 3) {
 		mes "[ポメ]";
 		mes "あなたは忙しそうですね。";
 		mes "あなたの名前をあちこちで";
@@ -7038,6 +7038,7 @@ ecl_in01.gat,32,52,5	script	旅人ポメ#tl01	515,3,3,{
 		close;
 	}
 	if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+		hideoffnpc "エクラージュガード#tl01";
 		doevent "エクラージュガード#tl01::OnStart";
 	}
 	mes "[ポメ]";
@@ -7114,6 +7115,7 @@ ecl_in01.gat,32,52,5	script	旅人ポメ#tl01	515,3,3,{
 		next;
 		setquest 7411;
 		if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+			hideoffnpc "エクラージュガード#tl01";
 			doevent "エクラージュガード#tl01::OnStart";
 		}
 		mes "‐ポメという旅人はラフィネ王について";
@@ -7184,14 +7186,14 @@ ecl_in01.gat,32,51,7	script	旅人リトリップ#tl02	513,{
 		mes "行ってみなさい。";
 		close;
 	}
-	if(ECL_3QUE == 2) {
+	else if(ECL_3QUE == 2) {
 		mes "[リトリップ]";
 		mes "おや？";
 		mes "君は東側の出入り口で";
 		mes "誰かと会う約束をしていなかったか？";
 		close;
 	}
-	if(ECL_3QUE == 8) {
+	else if(ECL_3QUE == 8) {
 		mes "[リトリップ]";
 		mes "新しい王が誕生し盛り上がっていた";
 		mes "雰囲気も落ち着いたようだ。";
@@ -7203,7 +7205,7 @@ ecl_in01.gat,32,51,7	script	旅人リトリップ#tl02	513,{
 		mes "気のせいならいいが……";
 		close;
 	}
-	if(ECL_3QUE == 9) {
+	else if(ECL_3QUE == 9) {
 		mes "[リトリップ]";
 		mes "私はチーバー君ともう一度";
 		mes "タワーに挑戦してみるつもりだ。";
@@ -7211,7 +7213,7 @@ ecl_in01.gat,32,51,7	script	旅人リトリップ#tl02	513,{
 		mes "運が良ければモーラまで見えるだろ。";
 		close;
 	}
-	if(ECL_3QUE >= 3) {
+	else if(ECL_3QUE >= 3) {
 		mes "[リトリップ]";
 		mes "この前、あのガードに呼ばれた後、";
 		mes "あらゆるところで君の話を";
@@ -7221,6 +7223,7 @@ ecl_in01.gat,32,51,7	script	旅人リトリップ#tl02	513,{
 		close;
 	}
 	if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+		hideoffnpc "エクラージュガード#tl01";
 		doevent "エクラージュガード#tl01::OnStart";
 	}
 	if(checkquest(7412)) {
@@ -7320,6 +7323,7 @@ ecl_in01.gat,32,51,7	script	旅人リトリップ#tl02	513,{
 	next;
 	setquest 7412;
 	if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+		hideoffnpc "エクラージュガード#tl01";
 		doevent "エクラージュガード#tl01::OnStart";
 	}
 	mes "[リトリップ]";
@@ -7353,7 +7357,7 @@ ecl_in01.gat,35,51,3	script	旅人チーバー#tl03	514,{
 		mes "それも旅の基本だから。";
 		close;
 	}
-	if(ECL_3QUE == 2) {
+	else if(ECL_3QUE == 2) {
 		mes "[チーバー]";
 		mes "エクラージュガードと";
 		mes "何処かに行ったんじゃなかったっけ？";
@@ -7363,7 +7367,7 @@ ecl_in01.gat,35,51,3	script	旅人チーバー#tl03	514,{
 		mes "案内してくれるはずだ。";
 		close;
 	}
-	if(ECL_3QUE >= 8) {
+	else if(ECL_3QUE >= 8) {
 		mes "[チーバー]";
 		mes "むう……霧の森に挑戦してみようかな？";
 		mes "無理かな？　無理だろうな……";
@@ -7371,13 +7375,14 @@ ecl_in01.gat,35,51,3	script	旅人チーバー#tl03	514,{
 		mes "タワーでも行って来ることにしよう。";
 		close;
 	}
-	if(ECL_3QUE >= 3) {
+	else if(ECL_3QUE >= 3) {
 		mes "[チーバー]";
 		mes "君は普通の旅人では";
 		mes "なかったみたいだな！";
 		close;
 	}
 	if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+		hideoffnpc "エクラージュガード#tl01";
 		doevent "エクラージュガード#tl01::OnStart";
 	}
 	if(checkquest(7413)) {
@@ -7613,6 +7618,7 @@ ecl_in01.gat,35,51,3	script	旅人チーバー#tl03	514,{
 	next;
 	setquest 7413;
 	if(checkquest(7411) && checkquest(7412) && checkquest(7413)) {
+		hideoffnpc "エクラージュガード#tl01";
 		doevent "エクラージュガード#tl01::OnStart";
 	}
 	mes "‐チーバーから";
@@ -7629,7 +7635,6 @@ ecl_in01.gat,31,49,7	script	エクラージュガード#tl01	447,{
 	hideonnpc "エクラージュガード#tl01";
 	end;
 OnStart:
-	hideoffnpc "エクラージュガード#tl01";
 	cutin "minuel01",4;
 	mes "[エクラージュガード]";
 	mes "ちょっと、失礼します。";
@@ -7715,7 +7720,7 @@ ecl_in01.gat,82,70,3	script	エクラージュガード#tl02	447,{
 		mes "あなたにお会いしたいという方の所に";
 		mes "案内してもいいですか？";
 		next;
-		if(select("行きましょう","今はそんな余裕がない")) {
+		if(select("行きましょう","今はそんな余裕がない") == 2) {
 			mes "[エクラージュガード]";
 			mes "そ……そうですか？";
 			mes "では、もう少しお待ちします。";
@@ -25689,7 +25694,7 @@ ecl_fild01.gat,237,181,5	script	カワイイラフィネ	446,{
 	close;
 }
 
-ecl_fild01.gat,98,47,5	script	ロシ#0番	893,{
+ecl_tdun01.gat,98,47,5	script	ロシ#0番	893,{
 	mes "‐真面目そうな女性がいる‐";
 	close2;
 	warp "ecl_tdun01a.gat",98,44;
@@ -28111,7 +28116,7 @@ ecl_tdun01a.gat,23,79,4	script	日記カエル6号#copyworm	614,{
 		mes "退治して来てくれたら";
 		mes "気持ちよく日記を聞かせてやるよ。";
 		next;
-		if(select("退治を手伝う","断る") == 1) {
+		if(select("退治を手伝う","断る") == 2) {
 			mes "[日記カエル6号]";
 			mes "ふん。そうかい。";
 			mes "それなら、俺も日記に関しては";
