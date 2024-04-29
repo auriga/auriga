@@ -1192,7 +1192,7 @@
 3039,0,6,1,0,1,1,1,no,0,0,0,none,0,GM_FORCE_TRANSFER,
 3040,0,6,1,0,1,1,1,no,0,0,0,none,0,GM_WIDE_RESURRECTION,
 3041,0,6,4,0,1,1,1,no,0,0,0,none,0,ALL_NIFLHEIM_RECALL,ニブルヘイムへの帰還
-3042,0,6,4,0,1,1,1,no,0,0,0,none,0,ALL_PRONTERA_RECALL,プロンテラへの帰還
+3042,0,6,4,0,1,2,1,no,0,0,0,none,0,ALL_PRONTERA_RECALL,プロンテラへの帰還
 3043,0,6,4,0,1,1,1,no,0,0,0,none,0,ALL_GLASTHEIM_RECALL,グラストヘイムへの帰還
 3044,0,6,4,0,1,1,1,no,0,0,0,none,0,ALL_THANATOS_RECALL,タナトスタワーへの帰還
 3045,0,6,4,0,1,1,1,no,0,0,0,none,0,ALL_LIGHTHALZEN_RECALL,リヒタルゼンへの帰還

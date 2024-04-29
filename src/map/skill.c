@@ -8407,8 +8407,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RETURN_TO_ELDICASTES:		/* エルディカスティスへの帰還 */
 	case ALL_GUARDIAN_RECALL:		/* モーラへの帰還 */
 	case ECLAGE_RECALL:		/* エクラージュへの帰還 */
+	case ALL_NIFLHEIM_RECALL:		/* ニブルヘイムへの帰還 */
 	case ALL_PRONTERA_RECALL:		/* プロンテラへの帰還 */
+	case ALL_GLASTHEIM_RECALL:		/* グラストヘイムへの帰還 */
 	case ALL_THANATOS_RECALL:		/* タナトスタワーへの帰還 */
+	case ALL_LIGHTHALZEN_RECALL:	/* リヒタルゼンへの帰還 */
 		if(sd) {
 			int x, y;
 			const char *mapname;
@@ -8425,14 +8428,26 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				x = 44;
 				y = 151;
 				mapname = "mora.gat";
+			} else if(skillid == ALL_NIFLHEIM_RECALL) {
+				x = 193;
+				y = 186;
+				mapname = "niflheim.gat";
 			} else if(skillid == ALL_PRONTERA_RECALL) {
-				x = 115;
-				y = 72;
+				x = (skilllv==1)? 115: 159;
+				y = (skilllv==1)? 72: 192;
 				mapname = "prontera.gat";
+			} else if(skillid == ALL_GLASTHEIM_RECALL) {
+				x = 200;
+				y = 268;
+				mapname = "glast_01.gat";
 			} else if(skillid == ALL_THANATOS_RECALL) {
 				x = 139;
 				y = 156;
 				mapname = "hu_fild01.gat";
+			} else if(skillid == ALL_LIGHTHALZEN_RECALL) {
+				x = 307;
+				y = 307;
+				mapname = "lighthalzen.gat";
 			} else {
 				x = 47;
 				y = 31;
