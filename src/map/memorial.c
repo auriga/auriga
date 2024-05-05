@@ -96,6 +96,20 @@ static struct memorial_db *memorial_searchname_db(const char *memorial_name)
 }
 
 /*==========================================
+ * 名称からメモリアルDATAのデータを検索
+ *------------------------------------------
+ */
+struct memorial_data *memorial_search_data(int memorial_id)
+{
+	if(memorial_id <= 0 || memorial_id > MAX_MEMORIAL_DATA)
+		return NULL;
+	if(memorial_data[memorial_id-1].state == MDSTATE_FREE)
+		return NULL;
+
+	return &memorial_data[memorial_id-1];
+}
+
+/*==========================================
  * PTIDからメモリアルDATAのIDを検索
  *------------------------------------------
  */
@@ -392,6 +406,7 @@ int memorial_create(const char *memorial_name, int party_id)
 	memorial_data[i].idle_limit = 0;
 	memorial_data[i].idle_timer = -1;
 	memorial_data[i].users = 0;
+	memorial_data[i].vars = NULL;
 	memset(memorial_data[i].map, 0, sizeof(memorial_data[i].map));
 
 	// パーティー情報設定
@@ -512,6 +527,7 @@ int memorial_delete(int memorial_id)
 	md->idle_limit = 0;
 	md->users = 0;
 	memset(memorial_data[memorial_id-1].map, 0, sizeof(memorial_data[memorial_id-1].map));
+	script_free_vars(&md->vars);
 
 	printf("memorial_delete: memorial_id=%03d count=%d\n", memorial_id, count);
 

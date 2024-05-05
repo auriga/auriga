@@ -240,7 +240,7 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 						memset(&item_tmp, 0, sizeof(item_tmp));
 						item_tmp.nameid = item_id;
 						item_tmp.identify = 1;
-						if (pc_additem(pl_sd, &item_tmp, quantity) == 0) { // item added
+						if (pc_additem(pl_sd, &item_tmp, quantity, false) == 0) { // item added
 							msg_output(pl_sd->fd, msg_txt(152), quantity, item_data->jname); // Server (special action): you obtain %ld %s.
 							// line changed -> file must be rewriten
 							extra_dat[i].quantity -= quantity;

@@ -360,3 +360,36 @@
 1@rev.gat	mapflag	monster_noteleport	dummy
 1@rev.gat	mapflag	noicewall	dummy
 1@rev.gat	mapflag	noabra		dummy
+
+//============================================================
+// 中央実験室 - 1@lab.gat
+//------------------------------------------------------------
+1@lab.gat	mapflag	nosave			SavePoint
+1@lab.gat	mapflag	nomemo			dummy
+1@lab.gat	mapflag	noteleport		dummy
+1@lab.gat	mapflag	nobranch		dummy
+1@lab.gat	mapflag	monster_noteleport	dummy
+1@lab.gat	mapflag	noicewall	dummy
+1@lab.gat	mapflag	noabra		dummy
+
+//============================================================
+// 最後の部屋 - 1@uns.gat
+//------------------------------------------------------------
+1@uns.gat	mapflag	nosave			SavePoint
+1@uns.gat	mapflag	nomemo			dummy
+1@uns.gat	mapflag	noteleport		dummy
+1@uns.gat	mapflag	nobranch		dummy
+1@uns.gat	mapflag	monster_noteleport	dummy
+1@uns.gat	mapflag	noicewall	dummy
+1@uns.gat	mapflag	noabra		dummy
+
+//============================================================
+// チャールストン工場 - 1@mcd.gat
+//------------------------------------------------------------
+1@mcd.gat	mapflag	nosave			SavePoint
+1@mcd.gat	mapflag	nomemo			dummy
+1@mcd.gat	mapflag	noteleport		dummy
+1@mcd.gat	mapflag	nobranch		dummy
+1@mcd.gat	mapflag	monster_noteleport	dummy
+1@mcd.gat	mapflag	noicewall	dummy
+1@mcd.gat	mapflag	noabra		dummy

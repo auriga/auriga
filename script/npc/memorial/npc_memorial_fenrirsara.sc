@@ -1899,7 +1899,7 @@ OnTimer40000:
 		mobuseskillpos 'mob_id,85,5,'@x,'@y+7,0,0;	// ロードオブヴァーミリオン
 		mobuseskillpos 'mob_id,85,5,'@x,'@y-7,0,0;	// ロードオブヴァーミリオン
 		sleep 5000;
-		mobuseskill 'mob_id,85,10,0,0,0,1;	// ロードオブヴァーミリオン
+		mobuseskill 'mob_id,85,10,0,0,-1,0,1;	// ロードオブヴァーミリオン
 		end;
 	case 2:
 		mobuseskillpos 'mob_id,85,5,'@x-7,'@y,0,0;	// ロードオブヴァーミリオン
@@ -1928,7 +1928,7 @@ OnTimer40000:
 		mobuseskillpos 'mob_id,21,5,'@x+6,'@y-6,0,0;	// サンダーストーム
 		mobuseskillpos 'mob_id,21,5,'@x+6,'@y+6,0,0;	// サンダーストーム
 		sleep 3000;
-		mobuseskill 'mob_id,85,10,0,0,0,1;	// ロードオブヴァーミリオン
+		mobuseskill 'mob_id,85,10,0,0,-1,0,1;	// ロードオブヴァーミリオン
 		mobuseskillpos 'mob_id,21,5,'@x-3,'@y,0,0;	// サンダーストーム
 		mobuseskillpos 'mob_id,21,5,'@x+3,'@y,0,0;	// サンダーストーム
 		mobuseskillpos 'mob_id,21,5,'@x,'@y+3,0,0;	// サンダーストーム

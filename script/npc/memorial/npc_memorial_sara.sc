@@ -300,11 +300,11 @@ dali.gat,139,118,3	script	次元移動機#sara	10007,{
 		mes "　行けるようだ‐";
 		set '@str1$,"次元の狭間の生成";
 		set '@str2$,"サラの記憶に入場";
+		next;
 	}
 	else {
 		set '@str2$,"サラの記憶に入場";
 	}
-	next;
 	switch(select('@str1$,'@str2$,"やめる")) {
 	case 1:
 		if(getpartyleader(getcharid(1)) != strcharinfo(0)) {

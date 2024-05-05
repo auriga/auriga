@@ -43,6 +43,7 @@ int npc_globalmessage(const char *name,const char *mes);
 
 int npc_enable(const char *name,int flag);
 struct npc_data* npc_name2id(const char *name);
+int npc_is_pcview(struct npc_data *nd);
 int npc_refresh(const char *name, struct npc_data *nd);
 
 bool npc_isnear(struct block_list *bl);
@@ -73,5 +74,8 @@ int npc_dynamicnpc_stop(struct map_session_data *sd);
 // メモリアルダンジョン関連
 int npc_addmdnpc(struct npc_data *src_nd, int m);
 int npc_free(struct npc_data *nd);
+
+// 歩行NPC関連
+int npc_unit_move(struct npc_data *nd, int flag);
 
 #endif

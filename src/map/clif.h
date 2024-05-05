@@ -86,6 +86,9 @@ void clif_selllist(struct map_session_data *sd);
 void clif_pointshop_list(struct map_session_data *sd, struct npc_data *nd);
 void clif_market_list(struct map_session_data *sd, struct npc_data *nd);
 void clif_scriptmes(struct map_session_data *sd, int npcid, const char *mes);
+void clif_scriptmessize(struct map_session_data *sd, int npcid, int height, int width);
+void clif_scriptmespos(struct map_session_data *sd, int npcid, int x, int y);
+void clif_scriptmesalign(struct map_session_data *sd, int npcid, char align);
 void clif_scriptnext(struct map_session_data *sd, int npcid);
 void clif_scriptclose(struct map_session_data *sd, int npcid);
 void clif_scriptclear(struct map_session_data *sd, int npcid);
@@ -115,6 +118,7 @@ void clif_unequipitemack(struct map_session_data *sd, int n, int pos, unsigned c
 void clif_misceffect(struct block_list* bl, int type);
 void clif_misceffect2(struct block_list *bl, int type);
 void clif_misceffect3(int fd, int id, int type);
+void clif_misceffect_value(struct block_list* bl, int type, int num);
 void clif_remove_misceffect2(struct block_list *bl,int type);
 void clif_remove_misceffect3(int fd, int id, int type);
 void clif_changeoption(struct block_list *bl);
@@ -136,6 +140,7 @@ void clif_leavechat(struct chat_data* cd, struct map_session_data *sd, unsigned 
 void clif_changechatstatus(struct chat_data*);
 void clif_changedir( struct block_list *bl, int headdir, int dir );
 void clif_emotion(struct block_list *bl,int type);
+void clif_emotion_self(struct map_session_data *sd,struct block_list *bl,int type);
 void clif_talkiebox(struct block_list *bl,const char* talkie);
 void clif_wedding_effect(struct block_list *bl);
 void clif_callpartner(struct map_session_data *sd);
@@ -193,6 +198,8 @@ int clif_mercinsight(struct block_list *bl, va_list ap);
 int clif_mercoutsight(struct block_list *bl, va_list ap);
 int clif_eleminsight(struct block_list *bl, va_list ap);
 int clif_elemoutsight(struct block_list *bl, va_list ap);
+int clif_npcinsight(struct block_list *bl,va_list ap);
+int clif_npcoutsight(struct block_list *bl,va_list ap);
 
 void clif_class_change(struct block_list *bl, int class_, int type);
 
@@ -208,6 +215,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type);
 void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail);
 void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,unsigned int tick);
+void clif_skillscale(struct block_list *bl, int src_id, int x, int y, int skill_num, int skill_lv, int casttime);
 void clif_skill_estimation(struct map_session_data *sd, struct block_list *dst);
 void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 	const char *map1,const char *map2,const char *map3,const char *map4);

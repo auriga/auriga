@@ -279,7 +279,7 @@ static int pet_hungry_timer(int tid,unsigned int tick,int id,void *data)
 
 	if(battle_config.enable_pet_autofeed > 0) {
 		if(sd->pet.hungry <= 25 && 
-			(battle_config.enable_pet_autofeed == 1 && sd->status.autofeed&1) || battle_config.enable_pet_autofeed >= 2
+			((battle_config.enable_pet_autofeed == 1 && sd->status.autofeed&1) || battle_config.enable_pet_autofeed >= 2)
 		) {
 			pet_food(sd);
 		}
@@ -597,7 +597,7 @@ int pet_get_egg(int account_id,int pet_id,int flag)
 		*((int *)(&tmp_item.card[1])) = pet_id;
 		tmp_item.card[3]  = sd->pet.rename_flag;
 
-		if((ret = pc_additem(sd,&tmp_item,1))) {
+		if((ret = pc_additem(sd,&tmp_item,1,false))) {
 			clif_additem(sd,0,0,ret);
 			map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 		}
@@ -668,7 +668,7 @@ int pet_return_egg(struct map_session_data *sd)
 	*((int *)(&tmp_item.card[1])) = sd->pet.pet_id;
 	tmp_item.card[3]  = sd->pet.rename_flag;
 
-	if((flag = pc_additem(sd,&tmp_item,1))) {
+	if((flag = pc_additem(sd,&tmp_item,1,false))) {
 		clif_additem(sd,0,0,flag);
 		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
@@ -723,7 +723,7 @@ static int pet_unequipitem(struct map_session_data *sd)
 	tmp_item.nameid   = nameid;
 	tmp_item.identify = 1;
 
-	if((flag = pc_additem(sd,&tmp_item,1))) {
+	if((flag = pc_additem(sd,&tmp_item,1,false))) {
 		clif_additem(sd,0,0,flag);
 		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
@@ -1117,7 +1117,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 					memcpy(&pd->lootitem[LOOTITEM_SIZE-1],&fitem->item_data,sizeof(pd->lootitem[0]));
 				}
 			} else if(pd->loottype == 2) {	// ƒyƒbƒg‚ªE‚Á‚½uŠÔ‚É”‚¢å‚Ö
-				if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount)) {
+				if(pc_additem(pd->msd,&fitem->item_data,fitem->item_data.amount,false)) {
 					pet_unlocktarget(pd);
 					return 0;
 				}
@@ -1233,7 +1233,7 @@ int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd)
 			struct item *item_data = &pd->lootitem[i];
 
 			// —‚Æ‚³‚È‚¢‚Å’¼ÚPC‚ÌItem—“‚Ö
-			if((flag = pc_additem(sd,item_data,item_data->amount))) {
+			if((flag = pc_additem(sd,item_data,item_data->amount,false))) {
 				clif_additem(sd,0,0,flag);
 				map_addflooritem(item_data,item_data->amount,pd->bl.m,pd->bl.x,pd->bl.y,0,0,0,0);
 			}

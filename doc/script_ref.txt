@@ -323,6 +323,8 @@ AurigaNPCScript
 				コスチュームの見た目が反映されなくなります。
 			town<tab>dummy
 				街MAPモードになります。
+			damage_rate<tab><rate>
+				モンスターに対するダメージ割合を百分率で<rate>に変更します。
 
 	注釈１）
 		NPCの名前は識別子によって管理されています（表示名ではありません）。
@@ -467,6 +469,7 @@ AurigaNPCScript
 			  ##          アカウント(全ワールド)  永続的            31バイト              指定不可
 			  '           スクリプト              一時的(下記参照)  無制限                無制限
 			  '@          スクリプト              一時的(下記参照)  無制限                無制限
+			  .           メモリアル              一時的(下記参照)  無制限                無制限
 
 		つまり、普通の一時的な変数は@, 保存する必要のある変数は
 		プレフィックスなし、全てのキャラクターで共有すべき変数は $、
@@ -512,9 +515,15 @@ AurigaNPCScript
 			return;
 		}
 
+		.変数はメモリアルダンジョン固有の変数で、生成したメモリアルダンジョンに
+		アクセスできるプレイヤー、NPCから操作できます。
+		メモリアルダンジョンが維持されている間は値が保存され、ダンジョンの破棄
+		でクリアされてアクセスできなくなるため、外部から操作する場合には
+		mdopenstate関数等で生成状況を確認して操作してください。
+
 		また、変数の型はポストフィックスにより指定します。
 		ただし、文字列型はキャラクター一時変数、スクリプト依存変数および、
-		永続的/一時的マップサーバー変数でのみ使用できます。
+		メモリアル依存変数と、永続的/一時的マップサーバー変数でのみ使用できます。
 		（プレフィックス @、$、$@ ）
 
 			ポストフィックス  型
@@ -550,7 +559,7 @@ AurigaNPCScript
 		（ただし、foo[1][0][2] と foo[1][2] は別の変数ですので注意）
 
 		配列変数は一時的キャラクター変数、一時的/永続的マップサーバー変数、
-		およびスクリプト依存変数で使用できます。
+		スクリプト依存変数および、メモリアル依存変数で使用できます。
 		変数の型は数値、文字列両方とも利用できます。
 
 	＊変数の代入
@@ -720,6 +729,27 @@ AurigaNPCScript
 
 			<string>に記述された文字列をメッセージウィンドウに出力します。
 
+		messize命令
+			messize <height>,<width>;
+
+			height,width	数値
+
+			同記述メッセージウィンドウのサイズを<height><width>に変更します。
+
+		mespos命令
+			mespos <x>,<y>;
+
+			x,y		数値
+
+			同記述メッセージウィンドウを<x><y>に表示します。
+
+		mesalign命令
+			mesalign <align>;
+
+			align	数値
+
+			同記述メッセージウィンドウの文字位置を変更します。
+
 		next命令
 			next;
 
@@ -885,26 +915,28 @@ AurigaNPCScript
 			<variable>は配列名を指定すると最初から、要素番号も指定すれば途中から削除できます。
 
 		getitem命令
-			getitem <itemid>,<num>[,<identify>[,<account_id>]];
+			getitem <itemid>,<num>[,<identify>[,<account_id>[,<preview>]]];
 
 			itemid		数値または文字列
 			num		数値
 			identify	数値(省略可)
 			account_id	数値(省略可)
+			preview		数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分入手します。
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 			<identify> 鑑定状態(0で未鑑定、1で鑑定)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 		getitem2命令
 			getitem2 <itemid>,<num>,<identify>,<refine>,<attribute>,<card1>,
-			<card2>,<card3>,<card4>[,<limit>[,<account_id>]]
+			<card2>,<card3>,<card4>[,<limit>[,<account_id>[,<preview>]]]
 
 			itemid		数値または文字列
 			num,identify,refine,attribute,card1,card2,card3,card4	数値
-			limit,account_id	数値(省略可)
+			limit,account_id,preview	数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つアイテムを<num>個分入手します。
 			<identify> 鑑定状態(0で未鑑定、1で鑑定)
@@ -916,17 +948,18 @@ AurigaNPCScript
 			<card4> 差さっているカード、製造武器やキャラの名前が入るアイテムはキャラIDの上の2バイト
 			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
 
 		getoptitem命令
 			getoptitem <itemid>,<identify>,<refine>,<attribute>,<card1>,
-			<card2>,<card3>,<card4>,<key>[,<limit>[,<account_id>]]
+			<card2>,<card3>,<card4>,<key>[,<limit>[,<account_id>[,<preview>]]]
 
 			itemid		数値または文字列
 			identify,refine,attribute,card1,card2,card3,card4,key	数値
-			limit,account_id	数値(省略可)
+			limit,account_id,preview	数値(省略可)
 
 			<itemid>に指定されたアイテムIDを持つ装備アイテムを
 			<key>モンスターからドロップ時のランダムオプションを付加して1 個分入手します。
@@ -941,6 +974,7 @@ AurigaNPCScript
 			<key>   参照に使うID
 			<limit> 使用可能時間、単位は秒(省略すると0で無期限)
 			<account_id>アイテムを渡す相手を指定(省略すると自分)
+			<preview>アイテムのプレビュー表示(省略または0で非表示、1で表示)
 
 			<itemid>が文字列の場合、その名前(name,jname)を持つアイテムのIDを使用します。
 			ただし、アイテム名はitem_db.txtなどに依存するため、テスト目的以外では使用すべきではありません。
@@ -981,6 +1015,13 @@ AurigaNPCScript
 
 			PCのカート内にある<index>番目のアイテムを<num>個分失います。
 			<flag>を1にした場合はペットの卵情報の削除を行いません。
+
+		itempreview命令
+			itempreview <index>;
+
+			index	数値
+
+			PCの所持している<index>番目のアイテムを表示します。
 
 		makepet命令
 			makepet <petid>;
@@ -1537,14 +1578,19 @@ AurigaNPCScript
 			<name>を省略すると、命令を実行したNPCが対象になります。
 
 		emotion命令
-			emotion <n>[,<name>];
+			emotion <n>[,<name>[,<flag>]];
 
 			n		数値
 			name		文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCに<n>エモーションを出します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		classchange命令
 			classchange <class>,<type>;
@@ -1556,22 +1602,28 @@ AurigaNPCScript
 			<type>はmobのときは1で他は0?（詳細不明）
 
 		setnpcdisplay命令
-			setnpcdisplay <name>,<npcid>;
+			setnpcdisplay <name>,<class>[,<sex>,<clothcolor>,<hairstyle>,<haircolor>,<helm1>,<helm2>,<helm3>,<robe>,<style>];
 
 			name		文字列
-			npcid	数値
+			class	数値
 
-			<name>で指定したNPCの見た目を<npcid>で指定したスプライトIDに変更します。
+			<name>で指定したNPCの見た目を<class>で指定したスプライトIDに変更します。
+			<class>をプレイヤー職業で指定した場合、追加で詳細な見た目を設定できます。
 
 		misceffect命令
-			misceffect <type>[,<name>];
+			misceffect <type>[,<name>[,<flag>]];
 
 			type	数値
 			name	文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCにエフェクトを出します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		areamisceffect命令
 			areamisceffect <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;
@@ -1611,14 +1663,19 @@ AurigaNPCScript
 				2	繰り返しの停止
 
 		delmisceffect命令
-			delmisceffect <type>[,<name>];
+			delmisceffect <type>[,<name>[,<flag>]];
 
 			type	数値
 			name	文字列、省略可
+			flag	数値
 
 			<name>で指定したNPCの発生済みエフェクトを除去します。
 			<name>の名称を持つNPCが見つからない場合、プレイヤーが対象になります。
 			<name>を省略すると、命令を実行したNPCが対象になります。
+			<flag>を省略した場合、画面内PCが対象になります。
+
+			flag=0 画面内PC
+			flag=1 自身
 
 		setmapflag命令
 			setmapflag <gatname>,<flag>[,<arg1>,<arg2>,<arg3>];
@@ -2318,26 +2375,32 @@ AurigaNPCScript
 				７８１
 
 		setcell命令
-			setcell <gatname>,<x>,<y>,<type>;
+			setcell <gatname>,<x>,<y>,<type>[,<area>];
 
 			gatname		文字列
 			x,y		数値
 			type		数値
+			area		数値
 
 			<gatname>で指定したMAPの座標<x>,<y>のセルの属性を<type>に変更します。
+			<area>が0の場合、座標<x>,<y>中心に画面内のプレイヤーに対し、
+			<area>が0以外、または省略した場合、指定MAP全域に変更情報を通知します。
 			type=0		通行可セル
 			type=1		壁型セル
 			type=3		水場セル
 			type=5		障害物セル
 
 		areasetcell命令
-			areasetcell <gatname>,<x0>,<y0>,<x1>,<y1>,<type>;
+			areasetcell <gatname>,<x0>,<y0>,<x1>,<y1>,<type>[,<area>];
 
 			gatname		文字列
 			x0,y0,x1,y1	数値
 			type		数値
+			area		数値
 
 			<gatname>で指定したMAPの座標<x0>,<y0>から<x1>,<y1>の範囲のセルの属性を<type>に変更します。
+			<area>が0の場合、座標<x>,<y>中心に画面内のプレイヤーに対し、
+			<area>が0以外、または省略した場合、指定MAP全域に変更情報を通知します。
 			type=0		通行可セル
 			type=1		壁型セル
 			type=3		水場セル
@@ -2526,20 +2589,21 @@ AurigaNPCScript
 			<itemid>を省略時、記述されたアイテムが参照されます。
 
 		mobuseskill命令
-			mobuseskill <object_id>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<eff_id>,<target_type>;
+			mobuseskill <object_id>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<talk>,<target_type>;
 
 			object_id		数値
 			skillid			使用するスキルのID
 			skilllv			使用するスキルのLv
 			casttime		詠唱時間（ms）
 			cast_cancel		0=中断不可, 1=中断可能
-			eff_id			数値
+			emotion			数値
+			talk			数値
 			target_type		0=自身, 1=ターゲット, 2=マスター, 3=ランダム
 
 			<object_id>で指定したモンスターに対し
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
-			<eff_id>が正の値の場合、スキル使用時に<eff_id>で指定したmob_talkを発言します。
-			<eff_id>が負の値の場合、スキル使用時に<eff_id>で指定したエモーションを出します。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+			スキル使用時に<talk>で指定したmob_talkを発言します。
 
 		mobuseskillpos命令
 			mobuseskillpos <object_id>,<skillid>,<skilllv>,<x>,<y>,<casttime>,<cast_cancel>;
@@ -2555,7 +2619,7 @@ AurigaNPCScript
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<x>,<y>の座標に使用させます。
 
 		areamobuseskill命令
-			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<eff_id>,<target>;
+			areamobuseskill <gatname>,<x0>,<y0>,<x1>,<y1>,<mobid>,<skillid>,<skilllv>,<casttime>,<cast_cancel>,<emotion>,<talk>,<target>;
 
 			gatname				文字列
 			x0,y0,x1,y1,mobid	数値
@@ -2563,14 +2627,15 @@ AurigaNPCScript
 			skilllv				使用するスキルのLv
 			casttime			詠唱時間（ms）
 			cast_cancel			0=中断不可, 1=中断可能
-			eff_id				数値
+			emotion				数値
+			talk				数値
 			target_type			0=自身, 1=ターゲット, 2=マスター, 3=ランダム
 
 			<gatname>の<x0>,<y0>から<x1>,<y1>の範囲内の<mobid>に指定されたIDのモンスターに対し
 			<casttime>の詠唱の後<skillid>で指定したスキルを<skilllv>のレベルで<target_type>の対象に使用させます。
 			<mobid>が-1の場合、範囲内にいる全てのモンスターが対象になります。
-			<eff_id>が正の値の場合、スキル使用時に<eff_id>で指定したmob_talkを発言します。
-			<eff_id>が負の値の場合、スキル使用時に<eff_id>で指定したエモーションを出します。
+			スキル使用時に<emotion>で指定したエモーションを出します。
+			スキル使用時に<talk>で指定したmob_talkを発言します。
 
 		setpartyinmap命令
 			setpartyinmap <variable>,<n>;
@@ -2703,6 +2768,40 @@ AurigaNPCScript
 
 			<itemid>使用時のupgradeウインドウを開く。
 			upgrade完了後に<itemid>は1個消費されるためNonconsumeフラグを立ててください。
+
+		setnpcgroup命令
+			setnpcgroup <group_id>[,<name>];
+
+			group_id	数値
+			name		文字列、省略可
+
+			<name>で指定したNPCに<group_id>のアイコンを表示します。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setunitgroup命令
+			setunitgroup <group_id>,<object_id>;
+
+			group_id	数値
+			object_id	数値
+
+			<object_id>で指定したモンスターに<group_id>のアイコンを表示します。
+
+		setnpctitle命令
+			setnpctitle <title>[,<name>];
+
+			title		文字列
+			name		文字列、省略可
+
+			<name>で指定したNPCに<title>を表示します。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setunittitle命令
+			setunittitle <title>,<object_id>;
+
+			title		文字列
+			object_id	数値
+
+			<object_id>で指定したモンスターに<title>を表示します。
 
 
 	＊関数
@@ -3217,6 +3316,19 @@ AurigaNPCScript
 			マップ名を"this"にすると、実行したNPCのMAPを参照します。
 			イベント名を指定すると、そのイベントを持つmobのみ計上します。
 			イベントの代わりにmobidを措定すると、そのmobidのmobのみ計上します。
+
+		getmapmoblist関数
+			getmapmoblist(<gatname>,<variable>[,<event>|<mobid>])
+
+			gatname		文字列
+			variable	数値変数
+			event		文字列
+			mobid		数値
+
+			指定マップ内に居るmobのobject_idを配列変数<variable>に格納します。
+			128体を越える場合にはそれ以上のモンスターはロードされません。
+			マップ名を"this"にすると、実行したNPCのMAPを参照します。
+			イベント名を指定すると、そのイベントを持つmobのみ計上します。
 
 		getguildrelation関数
 			getguildrelation(<gld1>[,<gld2>])
@@ -3902,12 +4014,20 @@ AurigaNPCScript
 			そのモンスターを倒したとき<event>を開始します。
 
 		removemonster 関数
-			removemonster(<object_id>)
+			removemonster(<object_id>[,<clrflag>])
 
 			object_id	数値
+			clrflag		数値
 
-			<object_id>のモンスターを殺します。
+			<object_id>のモンスターを<clrflag>扱いで消去します。
 			成功した場合は1を、そうでなければ0を返します。
+			<clrflag>を省略した場合、clrflag 1として扱います。
+
+				clrflag
+					0: 画面外へ消滅
+					1: 死亡
+					2: 画面内で消滅
+					3: テレポート
 
 		getequipcardid 関数
 			getequipcardid(<num>,<pos>)
@@ -3957,9 +4077,19 @@ AurigaNPCScript
 		getrandombox 関数
 			getrandombox(<type>)
 
-			type ランダム系アイテムのID
+			type	ランダム系アイテムのID
 
 			<type>で指定したランダム系アイテムの中身からひとつIDを返します（item_random.txt）。
+			失敗した場合は0 を返します。
+
+		getrandommob 関数
+			getrandommob(<type>[,<lv>])
+
+			type	ランダム系モンスターアイテムのID
+			lv		モンスターの最大レベル
+
+			<type>で指定したランダム系モンスターアイテムの中身からひとつIDを返します（mob_random.txt）。
+			戦闘設定[random_monster_checklv]が有効の場合、<lv>以下のレベルのモンスターIDになります。
 			失敗した場合は0 を返します。
 
 

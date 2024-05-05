@@ -952,7 +952,7 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 		}
 		while(c > 0) {	// ƒ‰ƒ“ƒ_ƒ€‘I‘ð
 			i = atn_rand()%c;
-			if(pc_additem(psd[i],item_data,item_data->amount)) {
+			if(pc_additem(psd[i],item_data,item_data->amount,false)) {
 				// Žæ“¾Ž¸”s
 				psd[i] = psd[c-1];
 				c--;
@@ -970,7 +970,7 @@ int party_loot_share(struct party *p, struct map_session_data *sd, struct item *
 	}
 
 	// •ª”z‚Å‚«‚È‚¢‚Ì‚ÅŒ³‚Ìsd‚É“n‚·
-	return pc_additem(sd,item_data,item_data->amount);
+	return pc_additem(sd,item_data,item_data->amount,false);
 }
 
 /*==========================================

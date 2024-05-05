@@ -1177,7 +1177,6 @@ void guild_recv_memberinfoshort(int guild_id, int account_id, int char_id, unsig
 void guild_send_message(struct map_session_data *sd, const char *mes, size_t len)
 {
 	struct guild *g;
-	int i;
 
 	nullpo_retv(sd);
 
@@ -1188,6 +1187,7 @@ void guild_send_message(struct map_session_data *sd, const char *mes, size_t len
 
 	if(battle_config.alliance_message && sd->state.alliance_message)
 	{
+		int i;
 		for(i = 0; i < MAX_GUILDALLIANCE; ++i)
 		{
 			if(g->alliance[i].guild_id && g->alliance[i].opposition==0)
@@ -1874,18 +1874,18 @@ void guild_allianceack(int guild_id1, int guild_id2, int account_id1, int accoun
 		}
 	}
 
-	if((flag&0x0f)==0){			// 同盟通知
+	if((flag&0x0f)==0) {			// 同盟通知
 		if( sd[1]!=NULL )
 			clif_guild_allianceack(sd[1],2);
-	}else if((flag&0x0f)==1){	// 敵対通知
+	} else if((flag&0x0f)==1) {	// 敵対通知
 		if( sd[0]!=NULL )
 			clif_guild_oppositionack(sd[0],0);
 	}
 
 
 	for(i=0;i<2-(flag&1);i++) {	// 同盟/敵対リストの再送信
-		struct map_session_data *tmpsd;
 		if(g[i]!=NULL) {
+			struct map_session_data *tmpsd;
 			for(j=0;j<g[i]->max_member;j++) {
 				if((tmpsd=g[i]->member[j].sd)!=NULL)
 					clif_guild_allianceinfo(tmpsd, g[i]);

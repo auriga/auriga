@@ -237,7 +237,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		short amount = *(short *)(data + 4*i + 0);
 		short idx    = *(short *)(data + 4*i + 2) - 2;
 
-		pc_additem(sd, &vsd->status.cart[idx], amount);
+		pc_additem(sd, &vsd->status.cart[idx], amount, false);
 		vsd->vending[vend_list[i]].amount -= amount;
 		pc_cart_delitem(vsd, idx, amount, 0);
 		clif_vendingreport(vsd, idx, amount, sd->bl.id, sd->char_id, vsd->vending[vend_list[i]].value * amount);

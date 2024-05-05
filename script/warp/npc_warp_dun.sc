@@ -1365,3 +1365,29 @@ harboro3.gat,284,104,0	warp	rockwarp0502	2,2,harboro1.gat,318,124
 //ロックリッジ鉱山⇒キワワ砂漠 02
 rockmi1.gat,247,16,0	warp	rockwarp0503	1,1,rockrdg2.gat,304,344
 rockmi3.gat,247,16,0	warp	rockwarp0504	1,1,rockrdg2.gat,304,344
+
+
+
+//---ウェルス追加マップ
+
+
+//==============================================================
+// -----  ウェルス -----
+// ver_eju.gat	ジュピロス東側
+// ver_tunn.gat	ウェルス外郭トンネル
+// verus03.gat	ウェルス中央広場
+//==============================================================
+//ジュピロス廃墟 01⇔ジュピロス東側
+juperos_01.gat,245,87,0	warp	veruswarp4001		1,1,ver_eju.gat,13,148
+ver_eju.gat,10,148,0	warp	veruswarp4002		1,1,juperos_01.gat,242,87
+
+//ジュピロス東側⇔ウェルス外郭トンネル
+ver_eju.gat,107,36,0	warp	veruswarp4003		1,1,ver_tunn.gat,84,82
+ver_tunn.gat,84,86,0	warp	veruswarp4004		1,1,ver_eju.gat,113,38
+
+//ウェルス外郭トンネル⇒ウェルス発掘地
+ver_tunn.gat,10,36,0	warp	veruswarp0101		1,1,verus04.gat,202,165
+
+//ウェルス中央広場⇒ウェルス発掘地
+verus03.gat,122,17,0	warp	veruswarp0102	1,1,verus04.gat,121,264
+verus03.gat,44,17,0	warp	veruswarp0103	1,1,verus04.gat,44,264

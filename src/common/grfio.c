@@ -115,7 +115,7 @@ typedef struct {
 	int  next; // -1: no next, 0+: pointer to index of next value
 	char cycle;
 	char type;
-	char fn[128-4*5]; // file name
+	char fn[256-4*5]; // file name
 	char gentry; // read grf file select
 } FILELIST;
 // gentry ... 0  :ローカルファイルより取得

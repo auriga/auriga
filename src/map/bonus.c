@@ -1014,7 +1014,7 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param1: unknown type %d %d !\n",type,val);
+			printf("bonus_param1: unknown type %d %d! itemid %d.\n",type,val,current_equip_name_id);
 		break;
 	}
 	return 0;
@@ -1722,7 +1722,7 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param2: unknown type %d %d %d!\n",type,type2,val);
+			printf("bonus_param2: unknown type %d %d %d! itemid %d.\n",type,type2,val,current_equip_name_id);
 		break;
 	}
 
@@ -1866,7 +1866,7 @@ int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int va
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param3: unknown type %d %d %d %d!\n",type,type2,type3,val);
+			printf("bonus_param3: unknown type %d %d %d %d! itemid %d.\n",type,type2,type3,val,current_equip_name_id);
 		break;
 	}
 
@@ -1912,7 +1912,7 @@ int bonus_param4(struct map_session_data *sd,int type,int type2,int type3,int ty
 		break;
 	default:
 		if(battle_config.error_log)
-			printf("bonus_param4: unknown type %d %d %d %d %u!\n",type,type2,type3,type4,val);
+			printf("bonus_param4: unknown type %d %d %d %d %u! itemid %d.\n",type,type2,type3,type4,val,current_equip_name_id);
 		break;
 	}
 
@@ -2297,7 +2297,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case OPT_HEAL_VALUE:
 		{
 			int i, j;
-			int skill[5] = {28,70,231,2043,2051};
+			const int skill[5] = {28,70,231,2043,2051};
 			for(j=0; j<5; j++) {
 				// update
 				for(i=0; i<sd->skill_healup.count; i++)
@@ -2305,14 +2305,14 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 					if(sd->skill_healup.id[i] == skill[j])
 					{
 						sd->skill_healup.rate[i] += val;
-						return 0;
+						continue;
 					}
 				}
 				// full
 				if(sd->skill_healup.count == MAX_SKILL_HEAL_UP)
 					break;
 				// add
-				sd->skill_healup.id[sd->skill_healup.count] = skill[5];
+				sd->skill_healup.id[sd->skill_healup.count] = skill[j];
 				sd->skill_healup.rate[sd->skill_healup.count] = val;
 				sd->skill_healup.count++;
 			}
@@ -2321,7 +2321,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case OPT_HEAL_MODIFY_PERCENT:
 		{
 			int i, j;
-			int skill[4] = {28,70,231,2051};
+			const int skill[4] = {28,70,231,2051};
 			for(j=0; j<4; j++) {
 				// update
 				for(i=0; i<sd->skill_subhealup.count; i++)
@@ -2329,7 +2329,7 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 					if(sd->skill_subhealup.id[i] == skill[j])
 					{
 						sd->skill_subhealup.rate[i] += val;
-						return 0;
+						continue;
 					}
 				}
 				// full

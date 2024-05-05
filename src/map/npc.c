@@ -199,6 +199,22 @@ struct npc_data* npc_name2id(const char *name)
 }
 
 /*==========================================
+ * NPCがプレイヤーの見た目かどうか
+ *------------------------------------------
+ */
+int npc_is_pcview(struct npc_data *nd)
+{
+	nullpo_retr(0, nd);
+
+	if(nd->class_ >= 0 && nd->class_ <= PC_CLASS_SU2)
+		return 1;
+	if(nd->class_ >= PC_CLASS_NV_H && nd->class_ < PC_CLASS_MAX)
+		return 1;
+
+	return 0;
+}
+
+/*==========================================
  * NPCの再登録
  *------------------------------------------
  */
@@ -993,6 +1009,8 @@ void npc_click(struct map_session_data *sd, int id)
 
 	if (nd->flag&1)	// 無効化されている
 		return;
+	if (nd->subtype == SCRIPT && nd->ud.walktimer != -1 && nd->click_able < 1)
+		return;
 
 	sd->npc_allowuseitem = -1;
 
@@ -1045,6 +1063,9 @@ void npc_scriptcont(struct map_session_data *sd, int id)
 	struct npc_data *nd;
 
 	nullpo_retv(sd);
+
+	if (id <= 0)
+		return;
 
 	if (id != sd->npc_id)
 		return;
@@ -1243,7 +1264,7 @@ int npc_buylist(struct map_session_data *sd,int n,unsigned char *item_list)
 		}
 #endif
 
-		pc_additem(sd,&item_tmp,amount);
+		pc_additem(sd,&item_tmp,amount,false);
 	}
 
 	// 商人経験値
@@ -1410,7 +1431,7 @@ int npc_pointshop_buy(struct map_session_data *sd, int nameid, int amount)
 	item_tmp.nameid   = nd->u.shop_item[i].nameid;
 	item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
 
-	pc_additem(sd, &item_tmp, amount);
+	pc_additem(sd, &item_tmp, amount,false);
 	sd->shop_point -= point;
 
 	return 0;
@@ -1526,7 +1547,7 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 		item_tmp.nameid   = nd->u.shop_item[j].nameid;
 		item_tmp.identify = 1;	// npc販売アイテムは鑑定済み
 
-		pc_additem(sd, &item_tmp, amount);
+		pc_additem(sd, &item_tmp, amount,false);
 	}
 
 	return 0;
@@ -1568,9 +1589,16 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd->class_  = src_nd->class_;
 	nd->speed   = 200;
 	nd->chat_id = 0;
+	nd->click_able = 0;
 	nd->option  = OPTION_NOTHING;
 	nd->bl.type = BL_NPC;
 	nd->subtype = src_nd->subtype;
+
+	nd->group_id = src_nd->group_id;
+	strcpy(nd->title, src_nd->title);
+	nd->title[23] = '\0';	// froce \0 terminal
+
+	unit_dataset( &nd->bl );
 
 	switch(nd->subtype) {
 	case SCRIPT:
@@ -1741,6 +1769,134 @@ int npc_free(struct npc_data *nd)
 	map_freeblock(nd);
 
 	return 1;
+}
+
+/*==========================================
+
+ *------------------------------------------
+ */
+static int npc_unit_move_sub( struct block_list *bl, va_list ap )
+{
+	struct map_session_data *sd;
+	struct npc_data *nd;
+	int i;
+	int xs,ys;
+
+	nullpo_retr(0, bl);
+	nullpo_retr(0, ap);
+	nullpo_retr(0, nd = va_arg(ap,struct npc_data *));
+	nullpo_retr(0, sd = (struct map_session_data *)bl);
+
+	if(sd == NULL || nd == NULL)
+		return 0;
+
+	for(i = 0; i < MAX_EVENTQUEUE; i++) {
+		if(sd->areanpc_id[i] == nd->bl.id) {
+			if(!(nd->bl.m == nd->bl.m &&
+				sd->bl.x >= nd->bl.x - nd->u.scr.xs/2 && sd->bl.x < nd->bl.x - nd->u.scr.xs/2 + nd->u.scr.xs &&
+				sd->bl.y >= nd->bl.y - nd->u.scr.ys/2 && sd->bl.y < nd->bl.y - nd->u.scr.ys/2 + nd->u.scr.ys))
+			sd->areanpc_id[i] = 0;
+		}
+	}
+
+	switch(nd->subtype) {
+	case WARP:
+		xs = nd->u.warp.xs;
+		ys = nd->u.warp.ys;
+		break;
+	case SCRIPT:
+		xs = nd->u.scr.xs;
+		ys = nd->u.scr.ys;
+		break;
+	default:
+		return 0;
+	}
+
+	if(sd->bl.x >= nd->bl.x-xs/2 && sd->bl.x < nd->bl.x-xs/2+xs &&
+	   sd->bl.y >= nd->bl.y-ys/2 && sd->bl.y < nd->bl.y-ys/2+ys) {
+		switch(nd->subtype) {
+		case WARP:
+			// 隠れているとワープできない
+			if(pc_ishiding(sd))
+				break;
+			skill_stop_dancing(&sd->bl,0);
+			pc_setpos(sd,nd->u.warp.name,nd->u.warp.x,nd->u.warp.y,0);
+			break;
+		case SCRIPT:
+			if(sd->sc.data[SC_FORCEWALKING].timer == -1) {
+				char name[76];
+				int j, n = -1;
+				for(j = 0; j < MAX_EVENTQUEUE; j++) {
+					if(sd->areanpc_id[j] == 0)
+						n = j;
+					if(sd->areanpc_id[j] == nd->bl.id)
+						break;
+				}
+				if(j == MAX_EVENTQUEUE && n >= 0) {
+					sd->areanpc_id[n] = nd->bl.id;
+					sprintf(name, "%s::OnTouch", nd->exname);
+					if(npc_event(sd,name) > 0)
+						npc_click(sd,nd->bl.id);
+					break;
+				}
+			}
+			break;
+		default:
+			return 0;
+		}
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * NPCが移動したときのOnTouch処理
+ * flag : 0 移動前
+ * flag : 1 移動後
+ *------------------------------------------
+ */
+int npc_unit_move(struct npc_data *nd, int flag)
+{
+	int xs = 0, ys = 0;
+
+	nullpo_retr(0, nd);
+
+	if (nd == NULL)
+		return 0;
+
+	switch(nd->subtype) {
+	case WARP:
+		xs = nd->u.warp.xs;
+		ys = nd->u.warp.ys;
+		break;
+	case SCRIPT:
+		xs = nd->u.scr.xs;
+		ys = nd->u.scr.ys;
+		break;
+	default:
+		return 0;
+	}
+	if (xs > 0 || ys > 0) {
+		int i,j;
+		for(i=0; i<ys; i++) {
+			for(j=0; j<xs; j++) {
+				if(map_getcell(nd->bl.m,nd->bl.x-xs/2+j,nd->bl.y-ys/2+i,CELL_CHKNOPASS))
+					continue;
+				if(flag == 1) {
+					map_setcell(nd->bl.m,nd->bl.x-xs/2+j,nd->bl.y-ys/2+i,CELL_SETMOVENPC);
+				} else {
+					map_setcell(nd->bl.m,nd->bl.x-xs/2+j,nd->bl.y-ys/2+i,CELL_CLRMOVENPC);
+				}
+			}
+		}
+		if(flag == 1) {
+			map_foreachinarea(npc_unit_move_sub,
+				nd->bl.m,nd->bl.x-xs,nd->bl.y-ys,nd->bl.x+xs,nd->bl.y+ys,
+				BL_PC,nd);
+		}
+	}
+
+	return 0;
 }
 
 //
@@ -1920,6 +2076,7 @@ static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const cha
 	else
 		nd->class_ = WARP_DEBUG_CLASS;
 	nd->speed  = 200;
+	nd->click_able = 0;
 	nd->option = OPTION_NOTHING;
 	memcpy(nd->u.warp.name,to_mapname,16);
 	nd->u.warp.name[15] = '\0';	// force \0 terminal
@@ -2002,7 +2159,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		c = strchr(w4, ',');
 		while(c && pos < max) {
 			struct item_data *id = NULL;
-			int ret, nameid, value = -1;
+			int nameid, value = -1;
 			int qty = -1;
 			c++;
 			if(subtype == MARKET) {
@@ -2016,6 +2173,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 					break;
 				}
 			} else {
+				int ret;
 				ret = sscanf(c, "%d:%d", &nameid, &value);
 				if(ret < 1 || (subtype == POINTSHOP && ret < 2)) {
 					char *np = strchr(c, ',');
@@ -2115,6 +2273,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 
 	nd->class_  = atoi(w4);
 	nd->speed   = 200;
+	nd->click_able = 0;
 	nd->chat_id = 0;
 	nd->option  = OPTION_NOTHING;
 	npc_shop++;
@@ -2277,6 +2436,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	struct script_code *script;
 	struct npc_data *nd;
 	struct npc_label_list *label_dup = NULL;
+	int move = 0;
 
 	if(strcmp(w1,"-") == 0) {
 		x = 0;
@@ -2288,7 +2448,8 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		int n;
 
 		if(sscanf(w1,"%4095[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
-		   (strcmp(w2,"script") == 0 && strchr(w4,',') == NULL))
+		   (strcmp(w2,"script") == 0 && strchr(w4,',') == NULL) ||
+		   (strcmp(w2,"script2") == 0 && strchr(w4,',') == NULL))
 		{
 			printf("bad script declaration : %s line %d\a\n",w3,*lines);
 			return 0;
@@ -2296,7 +2457,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		m = map_mapname2mapid(mapname);
 	}
 
-	if(strcmp(w2,"script") == 0) {
+	if(strcmp(w2,"script") == 0 || strcmp(w2,"script2") == 0) {
 		// スクリプトの解析
 		// { , } の入れ子許したらこっちでも簡易解析しないといけなくなったりもする
 		size_t len, srclen;
@@ -2385,12 +2546,17 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		label_dup    = nd2->u.scr.label_list;
 		label_dupnum = nd2->u.scr.label_list_num;
 		src_id       = nd2->bl.id;
+		move         = nd2->u.scr.moveable;
 	}
 	// end of スクリプト解析
 
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
 	nd->u.scr.xs = 0;
 	nd->u.scr.ys = 0;
+	if(strcmp(w2,"script2") == 0 || move)
+		nd->u.scr.moveable = 1;
+	else
+		nd->u.scr.moveable = 0;
 
 	if(m == -1) {
 		// スクリプトコピー用のダミーNPC
@@ -2399,7 +2565,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		if(xs >= 0) xs = xs * 2 + 1;
 		if(ys >= 0) ys = ys * 2 + 1;
 
-		if(class_ >= 0) {
+		if(class_ >= 0 && !nd->u.scr.moveable) {
 			int i, j;
 			for(i=0; i<ys; i++) {
 				for(j=0; j<xs; j++) {
@@ -2441,15 +2607,30 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	nd->dir     = dir;
 	nd->flag    = 0;
 	nd->class_  = class_;
+	nd->sex  = 0;
+	nd->hair  = 0;
+	nd->hair_color  = 0;
+	nd->clothes_color  = 0;
+	nd->head_top  = 0;
+	nd->head_mid  = 0;
+	nd->head_bottom  = 0;
+	nd->robe  = 0;
+	nd->style  = 0;
 	nd->speed   = 200;
+	nd->click_able = 0;
 	nd->u.scr.script = script;
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
 	nd->option  = OPTION_NOTHING;
 
+	nd->group_id = 0;
+	nd->title[23] = '\0';	// froce \0 terminal
+
 	npc_script++;
 	nd->bl.type = BL_NPC;
 	nd->subtype = SCRIPT;
+
+	unit_dataset( &nd->bl );
 
 	//printf("script npc %s %d %d read done\n",mapname,nd->bl.id,nd->class_);
 
@@ -2708,6 +2889,9 @@ static int npc_parse_mob(const char *w1,const char *w2,const char *w3,const char
 		md->attacked_id = 0;
 		md->speed       = id->speed;
 
+		md->group_id = 0;
+		md->title[23] = '\0';	// froce \0 terminal
+
 		if(id->mode & MD_ITEMLOOT)
 			md->lootitem = (struct item *)aCalloc(LOOTITEM_SIZE,sizeof(struct item));
 		else
@@ -2897,6 +3081,8 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 		map[m].flag.nocostume ^= 1;
 	} else if (strcmpi(w3,"town") == 0) {
 		map[m].flag.town ^= 1;
+	} else if (strcmpi(w3,"damage_rate") == 0) {
+		map[m].flag.damage_rate = atoi(w4);
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
 	}
@@ -3035,6 +3221,12 @@ static int npc_parse_srcfile(const char *filepath)
 		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if (strcmpi(w2,"script") == 0 && count > 3) {
+			if(strcmpi(w1,"function") == 0) {
+				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
+			} else {
+				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
+			}
+		} else if (strcmpi(w2,"script2") == 0 && count > 3) {
 			if(strcmpi(w1,"function") == 0) {
 				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
 			} else {

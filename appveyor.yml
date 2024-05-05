@@ -9,6 +9,8 @@ platform: x64
 clone_folder: c:\project\auriga
 environment:
   matrix:
+  - PACKETVER: 20180418
+  - PACKETVER: 20161228
   - PACKETVER: 20150513
   - PACKETVER: 20140305
   - PACKETVER: 20130731

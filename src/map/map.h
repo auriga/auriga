@@ -926,6 +926,7 @@ struct npc_item_list {
 
 struct npc_data {
 	struct block_list bl;
+	struct unit_data  ud;
 	short n;
 	int class_;
 	short dir,speed;
@@ -933,10 +934,16 @@ struct npc_data {
 	char exname[50];
 	char position[24];
 	int chat_id;
+	int group_id;
+	char title[24];
 	unsigned int option;
 	short view_size;
 	char flag;
 	unsigned char subtype;
+	char click_able;
+	unsigned char sex;
+	short hair,hair_color,clothes_color;
+	short head_top,head_mid,head_bottom,robe,style;
 	union {
 		struct {
 			struct script_code *script;
@@ -948,6 +955,7 @@ struct npc_data {
 			int label_list_num;
 			struct npc_label_list *label_list;
 			int src_id;
+			short moveable;
 		} scr;
 		struct npc_item_list shop_item[1];
 		struct {
@@ -995,6 +1003,8 @@ struct mob_data {
 	short lootitem_count;
 	short move_fail_count;
 	int guild_id;
+	int group_id;
+	char title[24];
 	int deletetimer;
 	short min_chase;
 	short skillidx;
@@ -1206,6 +1216,7 @@ struct map_data {
 		int nojump;
 		int nocostume;
 		int town;
+		int damage_rate;
 	} flag;
 	struct point save;
 	struct npc_data *npc[MAX_NPC_PER_MAP];
@@ -1262,11 +1273,12 @@ enum {
 	SP_MDEF2,SP_HIT,SP_FLEE1,SP_FLEE2,SP_CRITICAL,SP_ASPD,SP_36,SP_JOBLEVEL,	// 48-55
 	SP_UPPER,SP_PARTNER,SP_CART,SP_DIE_COUNTER,SP_JOB,	// 56-60
 	SP_CARTINFO=99,	// 99
+	SP_PSTR=103,SP_PAGI,SP_PVIT,SP_PINT,SP_PDEX,SP_PLUK,	//103-108
 	SP_MERC_FLEE=165,SP_MERC_KILLCOUNT=189,SP_MERC_FAME=190,
 
 	SP_POW=219,SP_STA,SP_WIS,SP_SPL,SP_CON,SP_CRT,	// 219-224
-    SP_PATK,SP_SMATK,SP_RES,SP_MRES,SP_HPLUS,SP_CRATE,	// 225-230
-    SP_T_STATUSPOINT,SP_AP,SP_MAXAP,	// 231-233
+	SP_PATK,SP_SMATK,SP_RES,SP_MRES,SP_HPLUS,SP_CRATE,	// 225-230
+	SP_T_STATUSPOINT,SP_AP,SP_MAXAP,	// 231-233
 	SP_UPOW=247,SP_USTA,SP_UWIS,SP_USPL,SP_UCON,SP_UCRT,	// 247-252
 
 	// globalreg save 500-
@@ -1387,14 +1399,14 @@ enum {
 	MF_GVG,MF_GVG_NOPARTY,MF_GVG_NIGHTMAREDROP,MF_NOZENYPENALTY,MF_NOTRADE,MF_NOSKILL,MF_NOABRA,MF_NODROP,	// 13-20
 	MF_SNOW,MF_FOG,MF_SAKURA,MF_LEAVES,MF_RAIN,MF_FIREWORKS,MF_CLOUD1,MF_CLOUD2,MF_CLOUD3,MF_BASEEXP_RATE,	// 21-30
 	MF_JOBEXP_RATE,MF_PK,MF_PK_NOPARTY,MF_PK_NOGUILD,MF_PK_NIGHTMAREDROP,MF_PK_NOCALCRANK,MF_NOICEWALL,	// 31-37
-	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,MF_NOCOSTUME,MF_TOWN,							// 38-43
+	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,MF_NOCOSTUME,MF_TOWN,MF_DAMAGE_RATE,						// 38-44
 };
 
 // CELL
 #define CELL_MASK     0x0f
 #define CELL_NPC      0x80	// NPCセル
 #define CELL_BASILICA 0x40	// BASILICAセル
-
+#define CELL_MOVENPC  0x20	// NPCセル2
 /*
  * map_getcell()で使用されるフラグ
  */
@@ -1408,6 +1420,7 @@ typedef enum {
 	CELL_GETTYPE,			// セルタイプを返す
 	CELL_CHKNPC      = 0x10,	// タッチタイプのNPC(セルタイプ0x80フラグ)
 	CELL_CHKBASILICA,		// バジリカ(セルタイプ0x40フラグ)
+	CELL_CHKMOVENPC,
 } cell_t;
 
 // map_setcell()で使用されるフラグ
@@ -1415,6 +1428,8 @@ enum {
 	CELL_SETNPC      = 0x10,	// タッチタイプのNPCをセット
 	CELL_SETBASILICA,		// バジリカをセット
 	CELL_CLRBASILICA,		// バジリカをクリア
+	CELL_SETMOVENPC,
+	CELL_CLRMOVENPC,
 };
 
 struct chat_data {

@@ -385,7 +385,7 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 					tmp_item.nameid = quest_db[qid].drop[j].nameid;
 					tmp_item.amount = 1;
 					tmp_item.identify = 1;
-					if((flag = pc_additem(sd, &tmp_item, tmp_item.amount))) {
+					if((flag = pc_additem(sd, &tmp_item, tmp_item.amount,false))) {
 						clif_additem(sd, 0, 0, flag);
 					}
 				}

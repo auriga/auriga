@@ -1211,7 +1211,7 @@ OnTimer5000:
 	set 'mob,areacallmonster("ein_d02_i.gat",0,0,0,0,"魂の破片",20262,"#IllTeddyBear::OnKilled");
 	set '@dummy,getmapxy('@map$,'@x,'@y,3,'mob);
 	mobuseskillpos 'mob,21,10,'@x,'@y,0,0;	// サンダーストーム
-	mobuseskill 'mob,730,1,0,0,0,1;	// M呪縛陣
+	mobuseskill 'mob,730,1,0,0,-1,0,0;	// M呪縛陣
 	unittalk 'mob,"魂の破片 : 頼んだボディまだ届いてないな。";
 	end;
 }

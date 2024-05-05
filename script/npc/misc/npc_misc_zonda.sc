@@ -24,7 +24,11 @@
 	set '@dummy,getmapxy('@map$,'@dummy,'@dummy,1);
 	if('@map$ == "rachel.gat" || '@map$ == "veins.gat")
 		set '@word$,"空間移動サービス";
-	switch(select("位置セーブサービス","倉庫サービス",'@word$,"カートサービス","終了")) {
+	if('@map$ == "verus04.gat")
+		set '@zeny,50;
+	else
+		set '@zeny,40;
+	switch(select("位置セーブサービス","倉庫サービス -> " +'@zeny+ "zeny",'@word$,"カートサービス","終了")) {
 	case 1:
 		if('@map$ == "lighthalzen.gat")
 			savepoint "lighthalzen.gat",94,240;
@@ -34,6 +38,8 @@
 			savepoint "rachel.gat",115,125;
 		else if('@map$ == "veins.gat")
 			savepoint "veins.gat",205,102;
+		else if('@map$ == "verus04.gat")
+			savepoint "verus04.gat",205,102;
 		mes "[ジョンダ職員]";
 		mes "セーブいたしました。";
 		mes "ご利用頂きまして、";
@@ -47,16 +53,16 @@
 			mes "習得してから利用可能となります。";
 			break;
 		}
-		if(Zeny < 40) {
+		if(Zeny < '@zeny) {
 			mes "[ジョンダ職員]";
 			mes "お客様、倉庫利用料は";
-			mes "40 Zenyとなっております。";
+			mes '@zeny+ " Zenyとなっております。";
 			mes "大変申し訳ございませんが、";
 			mes "所持金をお確かめの上、";
 			mes "再度話し掛けてください。";
 			break;
 		}
-		set Zeny,Zeny-40;
+		set Zeny,Zeny-'@zeny;
 		mes "[ジョンダ職員]";
 		mes "ご利用頂きまして、";
 		mes "誠にありがとうございます。";
@@ -171,6 +177,11 @@ rachel.gat,109,138,5	duplicate(ジョンダ職員#Zonda)	ジョンダ職員	874
 // ベインス-ジョンダ職員
 //------------------------------------------------------------
 veins.gat,208,128,5	duplicate(ジョンダ職員#Zonda)	ジョンダ職員	874
+
+//============================================================
+// ウェルス-ジョンダ職員
+//------------------------------------------------------------
+verus04.gat,121,243,4	duplicate(ジョンダ職員#Zonda)	ジョンダ職員	874
 
 //==========================================
 // 商圏投票

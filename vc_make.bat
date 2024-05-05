@@ -1,21 +1,16 @@
 @echo off
-rem VC++ でのビルド用バッチファイル
+rem Visual Studio でのビルド用バッチファイル
 
 rem 対応するコンパイラのバージョン
-rem  - Visual C++ 6.0
-rem  - Visual C++ .NET (Visual C++ .NET 2002)
-rem  - Visual C++ .NET 2003
-rem  - Visual C++ Toolkit 2003
-rem  - Visual C++ 2005 (Express Edition 含む)
-rem  - Visual C++ 2008 Express Edition
-rem  - Visual C++ 2008 64bitコンパイル
-rem  - Visual C++ 2010 Express Edition
+rem  - Visual Studio 2015
+rem  - Visual Studio 2017
+rem  - Visual Studio 2019
+rem  - Visual Studio 2022
 
 rem ----------------------------------------------------------------
 rem 共通設定
 echo vc_make.bat - Auriga makefile for Visual C++
-set __VCVER__=7
-set __BITTYPE__=x32
+set __BITTYPE__=x64
 
 rem ----------------------------------------------------------------
 rem パケット定義
@@ -77,148 +72,36 @@ set __PACKETDEF__=/D "PACKETVER=20151029" /D "NEW_006b"
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）
 
-rem ---- VC++ Toolkit 2003 の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files\Microsoft Visual C++ Toolkit 2003\bin;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
-rem set INCLUDE=C:\Program Files\Microsoft Visual C++ Toolkit 2003\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
-rem set LIB=C:\Program Files\Microsoft Visual C++ Toolkit 2003\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
-rem ---- VC++ Toolkit 2003 の設定ここまで
-
-rem ---- VC++ 2005 Express Edition の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files\Microsoft Visual Studio 8\VC\bin;C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
-rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
-rem set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
-rem set __VCVER__=8
-rem ---- VC++ 2005 Express Edition の設定ここまで
-
-rem ---- VC++ 2005 (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio 8\VC\bin\VCVARS32.BAT"
-rem set __VCVER__=8
-rem ---- VC++ 2005 (Express以外) の設定ここまで
-
-rem ---- VC++ 2008 Express Edition の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
-rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 9.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
-rem set LIB=C:\Program Files\Microsoft Visual Studio 9.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
-rem set __VCVER__=9
-rem ---- VC++ 2008 Express Edition の設定ここまで
-
-rem ---- VC++ 2008 (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\VCVARS32.BAT"
-rem set __VCVER__=9
-rem ---- VC++ 2008 (Express以外) の設定ここまで
-
-rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE;%PATH%
-rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include;%INCLUDE%
-rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\lib\amd64;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\x64;C:\Program Files (x86)\Microsoft Visual Studio 9.0\SDK\v2.0\lib\amd64;%LIB%
-rem set __VCVER__=9
-rem set __BITTYPE__=x64
-rem ---- VC++ 2008 64bitコンパイル (Express以外) の設定ここまで
-
-rem ---- VC++ 2010 Express Edition の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE;C:\Program Files\Microsoft Platform SDK\Bin;C:\Program Files\Microsoft Platform SDK\Bin\winnt;C:\Program Files\Microsoft Platform SDK\Bin\Win64;%PATH%
-rem set INCLUDE=C:\Program Files\Microsoft Visual Studio 10.0\VC\include;C:\Program Files\Microsoft Platform SDK\include;%INCLUDE%
-rem set LIB=C:\Program Files\Microsoft Visual Studio 10.0\VC\lib;C:\Program Files\Microsoft Platform SDK\Lib;%LIB%
-rem set __VCVER__=10
-rem ---- VC++ 2010 Express Edition の設定ここまで
-
-rem ---- VC++ 2010 (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\VCVARS32.BAT"
-rem set __VCVER__=10
-rem ---- VC++ 2010 (Express以外) の設定ここまで
-
-rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE;%PATH%
-rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\altmfc\include;C:\Program Files\Microsoft SDKs\Windows\v7.1\Include;%INCLUDE%
-rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64;C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\SDK\v2.0\lib\amd64;%LIB%
-rem set __VCVER__=10
-rem set __BITTYPE__=x64
-rem ---- VC++ 2010 64bitコンパイル (Express以外) の設定ここまで
-
-rem ---- VC++ 2012 64bitコンパイル (Express以外) の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin;C:\Program Files\Windows Kits\8.0\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE;%PATH%
-rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;%INCLUDE%
-rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 11.0\SDK\v2.0\lib\amd64;%LIB%
-rem set __VCVER__=11
-rem set __BITTYPE__=x64
-rem ---- VC++ 2012 64bitコンパイル (Express以外) の設定ここまで
-
-rem ---- VC++ 2013 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
-rem sset PATH=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;C:\Program Files (x86)\Windows Kits\8.1\bin\x64;C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
-rem sset INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;%INCLUDE%
-rem sset LIB=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib\amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;%LIB%
-rem sset __VCVER__=12
-rem sset __BITTYPE__=x64
-rem ---- VC++ 2013 64bitコンパイル の設定ここまで
-
-rem ---- VC++ 2015 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
+rem ---- Visual Studio 2015 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
-rem set __VCVER__=14
 rem set __BITTYPE__=x64
-rem ---- VC++ 2015 64bitコンパイル の設定ここまで
+rem ---- Visual Studio 2015 64bitコンパイル の設定ここまで
 
-rem ---- VC++ 2017 64bitコンパイル の設定
+rem ---- Visual Studio 2017 64bitコンパイル の設定
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\ucrt\x64;%LIB%
-rem set __VCVER__=2017
 rem set __BITTYPE__=x64
-rem ---- VC++ 2017 64bitコンパイル の設定ここまで
+rem ---- Visual Studio 2017 64bitコンパイル の設定ここまで
 
-rem ---- VC++ 2019 64bitコンパイル の設定
+rem ---- Visual Studio 2019 64bitコンパイル の設定
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\bin\Hostx64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\bin;C:\Program Files (x86)\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\atlmfc\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt;%INCLUDE%
 rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\lib\x64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64;%LIB%
-rem set __VCVER__=2019
 rem set __BITTYPE__=x64
-rem ---- VC++ 2019 64bitコンパイル の設定ここまで
+rem ---- Visual Studio 2019 64bitコンパイル の設定ここまで
 
-rem ---- VC++ .NET 2003 の設定 / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
-rem ---- VC++ .NET 2003 の設定ここまで
-
-rem ---- VC++ .NET (2002) / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio .NET\Vc7\bin\vcvars32.bat"
-rem ---- VC++ .NET (2002) の設定 ここまで
-
-rem ---- VC++ 6.0 / 必要ならコメントアウトをはずす
-rem call "C:\Program Files\Microsoft Visual Studio\VC98\Bin\vcvars32.bat"
-rem set __VCVER__=6
-rem ---- VC++ 6.0 の設定ここまで
+rem ---- Visual Studio 2022 64bitコンパイル の設定
+rem call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+rem set __BITTYPE__=x64
+rem ---- Visual Studio 2022 64bitコンパイル の設定ここまで
 
 rem ----------------------------------------------------------------
 rem SQL の設定 / 必要ならコメントアウトをはずす
 rem set INCLUDE=C:\Program Files\MySQL\MySQL Server 5.5\include;%INCLUDE%
 rem set LIB=C:\Program Files\MySQL\MySQL Server 5.5\lib;%LIB%
-
-rem ----------------------------------------------------------------
-rem VC8以上 で指定できないオプションの回避処理
-if "%__VCVER__%"=="8" goto SKIPVC8
-if "%__VCVER__%"=="9" goto SKIPVC8
-if "%__VCVER__%"=="10" goto SKIPVC8
-if "%__VCVER__%"=="11" goto SKIPVC8
-if "%__VCVER__%"=="12" goto SKIPVC8
-if "%__VCVER__%"=="14" goto SKIPVC8
-if "%__VCVER__%"=="2017" goto SKIPVC8
-if "%__VCVER__%"=="2019" goto SKIPVC8
-set __OPT_OP__=/Op
-:SKIPVC8
-
-rem ----------------------------------------------------------------
-rem VC6 で指定できないオプションの回避処理
-if "%__VCVER__%"=="6" goto SKIPVC6
-set __FIXOPT2__=/MAP /nologo
-:SKIPVC6
-
-rem ----------------------------------------------------------------
-rem VC9以下 で指定できないオプションの回避処理
-if "%__VCVER__%"=="6" goto SKIPVC9
-if "%__VCVER__%"=="7" goto SKIPVC9
-if "%__VCVER__%"=="8" goto SKIPVC9
-set __MULTIBUILD__=/MP
-:SKIPVC9
 
 rem ----------------------------------------------------------------
 rem ビルドオプションの選択
@@ -341,7 +224,6 @@ rem コンパイルオプションの表示
 
 echo ■コンパイル情報表示■
 echo ◆───────────────────────────────◆
-echo [VCVER = %__VCVER__%]
 echo [BITTYPE = %__BITTYPE__%]
 echo [model = %_model_%]
 echo [CompileOption = %__opt1__%]

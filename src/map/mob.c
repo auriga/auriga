@@ -193,6 +193,9 @@ static int mob_spawn_dataset(struct mob_data *md,const char *mobname,int class_)
 	md->guild_id    = 0;
 	md->speed       = mobdb_search(class_)->speed;
 
+	md->group_id = 0;
+	md->title[23] = '\0';	// froce \0 terminal
+
 	unit_dataset( &md->bl );
 
 	return 0;
@@ -1600,14 +1603,17 @@ static int mob_delay_item_drop(int tid,unsigned int tick,int id,void *data)
 		if(ro.nameid) {
 			int i, slot = 0;
 			int rate = 0;
+			int rnd = atn_rand()%10000;
 			for(i = 0; i < sizeof(ro.opt) / sizeof(ro.opt[0]); i++) {
-				if(ro.opt[i].slot != slot)
+				if(ro.opt[i].slot != slot) {
 					rate = 0;
+					rnd = atn_rand()%10000;
+				}
 				slot = ro.opt[i].slot;
 				if(temp_item.opt[slot].id > 0)
 					continue;
 				rate += ro.opt[i].rate;
-				if(rate >= atn_rand()%10000) {
+				if(rate >= rnd) {
 					temp_item.opt[slot].id = ro.opt[i].optid;
 					if(ro.opt[i].optval_plus)
 						temp_item.opt[slot].val = ro.opt[i].optval_min + (atn_rand() % ((ro.opt[i].optval_max - ro.opt[i].optval_min) / ro.opt[i].optval_plus + 1)) * ro.opt[i].optval_plus;
@@ -2141,15 +2147,15 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {
-			int damage, rate, pid;
-			atn_bignumber base_exp, job_exp;
+			int damage, pid;
+			atn_bignumber rate, base_exp, job_exp;
 			struct map_session_data *tmpsd = NULL;
 
 			if(tmpbl[i] == NULL || tmpbl[i]->m != md->bl.m || unit_isdead(tmpbl[i]))
 				continue;
 
 			damage = PTR2INT(node->data);
-			rate = per * damage / 100;
+			rate = (atn_bignumber)per * damage / 100;
 
 			if(base_exp_rate <= 0) {
 				base_exp = 0;
@@ -2415,7 +2421,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					item.identify = 1;
 				if(battle_config.mvpitem_weight_limit && mvpsd->weight * 100 <= mvpsd->max_weight * battle_config.mvpitem_weight_limit) {
 					clif_mvp_item(mvpsd,item.nameid);
-					if((ret = pc_additem(mvpsd,&item,1))) {
+					if((ret = pc_additem(mvpsd,&item,1,false))) {
 						clif_additem(mvpsd,0,0,ret);
 						map_addflooritem(&item,1,mvpsd->bl.m,mvpsd->bl.x,mvpsd->bl.y,
 							(mvp[0].bl ? mvp[0].bl->id : 0),(mvp[1].bl ? mvp[1].bl->id : 0),(mvp[2].bl ? mvp[2].bl->id : 0),1);

@@ -22,7 +22,7 @@
 #ifndef _QUEST_H_
 #define _QUEST_H_
 
-#define MAX_QUEST_DB 2000
+#define MAX_QUEST_DB 2500
 
 // クエストデータベース
 struct quest_db {

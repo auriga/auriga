@@ -900,7 +900,7 @@ static void process_fdset(fd_set* rfd, fd_set* wfd)
 // Find the log base 2 of an N-bit integer in O(lg(N)) operations
 // in this case for 32bit input it would be 11 operations
 
-inline unsigned long socket_log2(unsigned long v)
+static inline unsigned long socket_log2(unsigned long v)
 {
 	register unsigned long c = 0;
 

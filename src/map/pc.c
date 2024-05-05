@@ -2465,7 +2465,7 @@ int pc_clearitemlimit(struct map_session_data *sd)
  * アイテム追加。個数のみitem構造体の数字を無視
  *------------------------------------------
  */
-int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
+int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,bool flag)
 {
 	struct item_data *data;
 	int i,w;
@@ -2496,6 +2496,8 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 				sd->weight += w;
 				clif_additem(sd,i,amount,0);
 				clif_updatestatus(sd,SP_WEIGHT);
+				if(flag)
+					clif_item_preview(sd, (short)i);
 				return 0;
 			}
 		}
@@ -2520,6 +2522,8 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount)
 	sd->inventory_num++;
 	clif_additem(sd,i,amount,0);
 	clif_updatestatus(sd,SP_WEIGHT);
+	if(flag)
+		clif_item_preview(sd, (short)i);
 
 	if(sd->status.inventory[i].limit > 0) {
 		int tid = pc_checkitemlimit(sd, i, gettick(), (unsigned int)time(NULL), 0);
@@ -2994,7 +2998,7 @@ void pc_getitemfromcart(struct map_session_data *sd, int idx, int amount)
 	if(item_data->nameid == 0 || item_data->amount < amount)
 		return;
 
-	if((flag = pc_additem(sd, item_data, amount)) == 0) {
+	if((flag = pc_additem(sd, item_data, amount, false)) == 0) {
 		pc_cart_delitem(sd, idx, amount, 0);
 		return;
 	}
@@ -3109,7 +3113,7 @@ int pc_steal_item(struct map_session_data *sd,struct mob_data *md)
 					tmp_item.identify = !itemdb_isequip3(itemid);
 					if(battle_config.itemidentify)
 						tmp_item.identify = 1;
-					flag = pc_additem(sd,&tmp_item,1);
+					flag = pc_additem(sd,&tmp_item,1, false);
 					if(battle_config.show_steal_in_same_party)
 						party_foreachsamemap(pc_show_steal,sd,PT_AREA_SIZE,sd,itemdb_exists(tmp_item.nameid),0);
 					if(flag) {
@@ -3218,7 +3222,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	if(x < 0 || x >= map[m].xs || y < 0 || y >= map[m].ys)
 		x = y = 0;
 	if((x == 0 && y == 0) || map_getcell(m,x,y,CELL_CHKNOPASS)) {
-		int i = 0;
+		i = 0;
 		if(x || y) {
 			if(battle_config.error_log)
 				printf("stacked %s (%d,%d)\n", map[m].name, x, y);
@@ -6012,8 +6016,10 @@ int pc_damage(struct block_list *src,struct map_session_data *sd,int damage)
 	}
 
 	// 詠唱バー表示中だったら中断
-	if(sd->progressbar.npc_id)
+	if(sd->progressbar.npc_id) {
 		clif_progressbar_abort(sd);
+		clif_scriptclose(sd, sd->progressbar.npc_id);
+	}
 
 	// 歩いていたら足を止める
 	if(((sd->sc.data[SC_ENDURE].timer == -1 && sd->sc.data[SC_BERSERK].timer == -1 && !sd->special_state.infinite_endure) || map[sd->bl.m].flag.gvg) && !unit_isrunning(&sd->bl))
@@ -6561,6 +6567,24 @@ int pc_readparam(struct map_session_data *sd,int type)
 	case SP_DIE_COUNTER:
 		val = sd->status.die_counter;
 		break;
+	case SP_PSTR:
+		val = sd->paramc[0];
+		break;
+	case SP_PAGI:
+		val = sd->paramc[1];
+		break;
+	case SP_PVIT:
+		val = sd->paramc[2];
+		break;
+	case SP_PINT:
+		val = sd->paramc[3];
+		break;
+	case SP_PDEX:
+		val = sd->paramc[4];
+		break;
+	case SP_PLUK:
+		val = sd->paramc[5];
+		break;
 	// グローバル変数保存タイプ
 	case SP_CLONESKILL_ID:
 		val = sd->skill_clone.id;
@@ -6947,7 +6971,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
 			hp = hp * 150 / 100;
 		if(sd->sc.data[SC_CRITICALWOUND].timer != -1)
-			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val1 * 10) / 100;
+			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val2) / 100;
 		if(sd->sc.data[SC_DEATHHURT].timer != -1)	// デスハート
 			hp = hp * (100 - sd->sc.data[SC_DEATHHURT].val2) / 100;
 #ifndef PRE_RENEWAL
@@ -9874,6 +9898,7 @@ int pc_readdb(void)
 			int diff=0;
 
 			lineno++;
+			memset(split,0,sizeof(split));
 			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 				continue;
 			if(line[0]=='/' && line[1]=='/')

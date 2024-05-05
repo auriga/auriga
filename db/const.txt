@@ -354,6 +354,7 @@ mf_nocommand		40
 mf_nojump		41
 mf_nocostume	42
 mf_town			43
+mf_damage_rate		44
 
 //PCステータス
 StatusPoint	9	1
@@ -378,6 +379,12 @@ MaxSp		8	1
 PartnerId	57	1
 Cart		58	1
 DieCounter	59	1
+PlusStr		103
+PlusAgi		104
+PlusVit		105
+PlusInt		106
+PlusDex		107
+PlusLuk		108
 
 //PCグローバル変数
 PC_CLONESKILL_ID	500	1
@@ -876,6 +883,14 @@ RAND_FOOD	-13
 RAND_COOKIE	-14
 RAND_HIGH_WEAPON	-15
 RAND_MIND_BOX	-16
+RAND_MAGIC_CARD_ALBUM	-17
+RAND_C_ALBUM_ARMOR	-18
+RAND_C_ALBUM_HELM	-19
+RAND_C_ALBUM_ACC	-20
+RAND_C_ALBUM_SHOES	-21
+RAND_C_ALBUM_SHIELD	-22
+RAND_C_ALBUM_GARMENT	-23
+RAND_C_ALBUM_WEAPON	-24
 
 //ランダム召喚系のID（mob_random.txt）
 RAND_BRANCH	-1

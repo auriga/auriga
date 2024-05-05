@@ -32,7 +32,7 @@ struct status_pretimer {
 	int flag;
 };
 
-// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^ƒx[ƒX
+// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
 struct scdata_db {
 	short save;
 	int releasable;
@@ -40,7 +40,7 @@ struct scdata_db {
 	int copyable;
 };
 
-// ƒpƒ‰ƒ[ƒ^æ“¾Œn
+// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å–å¾—ç³»
 int status_get_class(struct block_list *bl);
 int status_get_dir(struct block_list *bl);
 int status_get_lv(struct block_list *bl);
@@ -94,7 +94,7 @@ int status_get_critical(struct block_list *bl);
 int status_get_atk_(struct block_list *bl);
 int status_get_atk_2(struct block_list *bl);
 
-// ó‘ÔˆÙíŠÖ˜A
+// çŠ¶æ…‹ç•°å¸¸é–¢é€£
 int status_can_save(int type);
 int status_is_disable(int type,int mask);
 int status_change_start(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag);
@@ -119,7 +119,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level);
 int status_change_copy(struct block_list *src,struct block_list *bl);
 int status_change_addeff_start(struct block_list *src, struct block_list *bl, int id, int rate, int type, unsigned int tick);
 
-// ó‘Ôƒ`ƒFƒbƒN
+// çŠ¶æ…‹ãƒã‚§ãƒƒã‚¯
 int status_check_no_magic_damage(struct block_list *bl);
 
 #ifdef DYNAMIC_SC_DATA
@@ -128,7 +128,7 @@ int status_free_sc_data(struct status_change *sc);
 extern struct status_change_data dummy_sc_data[MAX_STATUSCHANGE];
 #endif
 
-// ƒXƒe[ƒ^ƒXŒvZ
+// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—
 int status_calc_pc(struct map_session_data* sd,int first);
 int status_calc_pc_stop_begin(struct block_list *bl);
 int status_calc_pc_stop_end(struct block_list *bl);
@@ -138,12 +138,12 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 extern int current_equip_item_index;
 extern int current_equip_name_id;
 
-// DBÄ“Ç—p
+// DBå†èª­è¾¼ç”¨
 int status_readdb(void);
 
 int do_init_status(void);
 
-// ƒXƒe[ƒ^ƒXˆÙí”Ô†ƒe[ƒuƒ‹
+// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ç•ªå·ãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	SC_PROVOKE              = 0,
 	SC_ENDURE               = 1,
@@ -829,45 +829,61 @@ enum {
 	SC_GRANITIC_ARMOR		= 681,
 	SC_PYROCLASTIC			= 682,
 	SC_VOLCANIC_ASH			= 683,
-	SC_LIGHTOFMOON			= 684,
-	SC_LIGHTOFSUN			= 685,
-	SC_LIGHTOFSTAR			= 686,
-	SC_LUNARSTANCE			= 687,
-	SC_UNIVERSESTANCE		= 688,
-	SC_SUNSTANCE			= 689,
-	SC_FLASHKICK			= 690,
-	SC_NEWMOON				= 691,
-	SC_STARSTANCE			= 692,
-	SC_DIMENSION			= 693,
-	SC_DIMENSION1			= 694,
-	SC_DIMENSION2			= 695,
-	SC_CREATINGSTAR			= 696,
-	SC_FALLINGSTAR			= 697,
-	SC_NOVAEXPLOSING		= 698,
-	SC_GRAVITYCONTROL		= 699,
-	SC_SOULCOLLECT			= 700,
-	SC_SOULREAPER			= 701,
-	SC_SOULUNITY			= 702,
-	SC_SOULSHADOW			= 703,
-	SC_SOULFAIRY			= 704,
-	SC_SOULFALCON			= 705,
-	SC_SOULGOLEM			= 706,
-	SC_SOULDIVISION			= 707,
-	SC_SOULENERGY			= 708,
-	SC_USE_SKILL_SP_SPA		= 709,
-	SC_USE_SKILL_SP_SHA		= 710,
-	SC_SP_SHA				= 711,
-	SC_SOULCURSE			= 712,
+	SC_ALL_STAT_DOWN		= 684,
+	SC_GRADUAL_GRAVITY	= 685,
+	SC_DAMAGE_HEAL		= 686,
+	SC_IMMUNE_PROPERTY_NOTHING	= 687,
+	SC_IMMUNE_PROPERTY_WATER	= 688,
+	SC_IMMUNE_PROPERTY_GROUND	= 689,
+	SC_IMMUNE_PROPERTY_FIRE		= 690,
+	SC_IMMUNE_PROPERTY_WIND		= 691,
+	SC_IMMUNE_PROPERTY_DARKNESS	= 692,
+	SC_IMMUNE_PROPERTY_SAINT		= 693,
+	SC_IMMUNE_PROPERTY_POISON	= 694,
+	SC_IMMUNE_PROPERTY_TELEKINESIS	= 695,
+	SC_IMMUNE_PROPERTY_UNDEAD	= 696,
+	SC_KILLING_AURA	= 697,
+	SC_PC_STOP			= 698,
+	SC_LIGHTOFMOON			= 699,
+	SC_LIGHTOFSUN			= 700,
+	SC_LIGHTOFSTAR			= 701,
+	SC_LUNARSTANCE			= 702,
+	SC_UNIVERSESTANCE		= 703,
+	SC_SUNSTANCE			= 704,
+	SC_FLASHKICK			= 705,
+	SC_NEWMOON				= 706,
+	SC_STARSTANCE			= 707,
+	SC_DIMENSION			= 708,
+	SC_DIMENSION1			= 709,
+	SC_DIMENSION2			= 710,
+	SC_CREATINGSTAR			= 711,
+	SC_FALLINGSTAR			= 712,
+	SC_NOVAEXPLOSING		= 713,
+	SC_GRAVITYCONTROL		= 714,
+	SC_SOULCOLLECT			= 715,
+	SC_SOULREAPER			= 716,
+	SC_SOULUNITY			= 717,
+	SC_SOULSHADOW			= 718,
+	SC_SOULFAIRY			= 719,
+	SC_SOULFALCON			= 720,
+	SC_SOULGOLEM			= 721,
+	SC_SOULDIVISION			= 722,
+	SC_SOULENERGY			= 723,
+	SC_USE_SKILL_SP_SPA		= 724,
+	SC_USE_SKILL_SP_SHA		= 725,
+	SC_SP_SHA				= 726,
+	SC_SOULCURSE			= 727,
 
-	// start‚Å‚Íg‚¦‚È‚¢resist‚ğƒAƒCƒeƒ€‘¤‚Å‘S‚ÄƒNƒŠƒA‚·‚é‚½‚ß‚Ì•¨
+
+	// startã§ã¯ä½¿ãˆãªã„resistã‚’ã‚¢ã‚¤ãƒ†ãƒ å´ã§å…¨ã¦ã‚¯ãƒªã‚¢ã™ã‚‹ãŸã‚ã®ç‰©
 	SC_RESISTCLEAR          = 1001,
 	SC_RACECLEAR            = 1002,
 	SC_SOUL                 = 1003,
 	SC_SOULCLEAR            = 1004,
 };
 
-// ó‘ÔƒAƒCƒRƒ“
-// Œµ–§‚É‚ÍƒLƒƒƒ‰ƒNƒ^[‚ÌF‚Ì•Ï‰»‚È‚Ç‚àŠÜ‚Ü‚ê‚Ä‚¢‚é(”š—ô”g“®‚È‚Ç)
+// çŠ¶æ…‹ã‚¢ã‚¤ã‚³ãƒ³
+// å³å¯†ã«ã¯ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®è‰²ã®å¤‰åŒ–ãªã©ã‚‚å«ã¾ã‚Œã¦ã„ã‚‹(çˆ†è£‚æ³¢å‹•ãªã©)
 enum {
 	SI_BLANK            = 43,
 
@@ -1571,7 +1587,7 @@ enum {
 	//SI_FENRIR_CARD = 711,
 	//SI_REUSE_LIMIT_ASPD_POTION = 712,
 	SI_MAXPAIN = 713,
-	//SI_PC_STOP = 714,
+	SI_PC_STOP = 714,
 	SI_FRIGG_SONG = 715,
 	SI_OFFERTORIUM = 716,
 	SI_TELEKINESIS_INTENSE = 717,
@@ -1812,19 +1828,19 @@ enum {
 	//SI_LHZ_DUN_N3 = 1003,
 	//SI_LHZ_DUN_N4 = 1004,
 
-	//SI_ALL_STAT_DOWN = 1013,
-	//SI_GRADUAL_GRAVITY = 1014,
-	//SI_DAMAGE_HEAL = 1015,
-	//SI_IMMUNE_PROPERTY_NOTHING = 1016,
-	//SI_IMMUNE_PROPERTY_WATER = 1017,
-	//SI_IMMUNE_PROPERTY_GROUND = 1018,
-	//SI_IMMUNE_PROPERTY_FIRE = 1019,
-	//SI_IMMUNE_PROPERTY_WIND = 1020,
-	//SI_IMMUNE_PROPERTY_POISON = 1021,
-	//SI_IMMUNE_PROPERTY_SAINT = 1022,
-	//SI_IMMUNE_PROPERTY_DARKNESS = 1023,
-	//SI_IMMUNE_PROPERTY_TELEKINESIS = 1024,
-	//SI_IMMUNE_PROPERTY_UNDEAD = 1025,
+	SI_ALL_STAT_DOWN = 1013,
+	SI_GRADUAL_GRAVITY = 1014,
+	SI_DAMAGE_HEAL = 1015,
+	SI_IMMUNE_PROPERTY_NOTHING = 1016,
+	SI_IMMUNE_PROPERTY_WATER = 1017,
+	SI_IMMUNE_PROPERTY_GROUND = 1018,
+	SI_IMMUNE_PROPERTY_FIRE = 1019,
+	SI_IMMUNE_PROPERTY_WIND = 1020,
+	SI_IMMUNE_PROPERTY_POISON = 1021,
+	SI_IMMUNE_PROPERTY_SAINT = 1022,
+	SI_IMMUNE_PROPERTY_DARKNESS = 1023,
+	SI_IMMUNE_PROPERTY_TELEKINESIS = 1024,
+	SI_IMMUNE_PROPERTY_UNDEAD = 1025,
 	//SI_SPECIALCOOKIE = 1027,
 	//SI_ATK_POPCORN = 1031,
 	//SI_MATK_POPCORN = 1032,
@@ -2019,10 +2035,28 @@ enum {
 	//SI_CLOUD_POISON = 1318,
 	//SI_SPORE_EXPLOSION_DEBUFF = 1319,
 	//SI_MASSIVE_F_BLASTER = 1326,
+	//SI_NOEQUIPWEAPON2 = 1330,
+	//SI_NOEQUIPARMOR2 = 1331,
+	//SI_NOEQUIPSHIELD2 = 1332,
+	//SI_NOEQUIPSHOES2 = 1333,
+	//SI_NOEQUIPPENDANT2 = 1334,
+	//SI_NOEQUIPEARING2 = 1335,
+	//SI_NOEQUIPFULL2 = 1336,
+	//SI_CURSE_R_CUBE = 1337,
+	//SI_CURSE_B_CUBE = 1338,
+	SI_KILLING_AURA = 1339,
+	//SI_RUSH_QUAKE1 = 1402,
+	//SI_RUSH_QUAKE2 = 1403,
+	//SI_VR_BOOK001 = 1432,
+	//SI_VR_BOOK002 = 1433,
+	//SI_VR_BOOK003 = 1434,
+	//SI_VR_BOOK004 = 1435,
+	//SI_VR_BOOK006 = 1440,
+	//SI_VR_BOOK007 = 1441,
 
 };
 
-// opt1ƒe[ƒuƒ‹
+// opt1ãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	OPT1_NORMAL			= 0,
 	OPT1_STONECURSE 	= 1,
@@ -2035,7 +2069,7 @@ enum {
 	OPT1_IMPRISON		= 8,
 };
 
-// opt2ƒe[ƒuƒ‹
+// opt2ãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	OPT2_NORMAL			= 0x0,
 	OPT2_POISON			= 0x1,
@@ -2049,7 +2083,7 @@ enum {
 	OPT2_FEAR			= 0x100,
 };
 
-// opt3ƒe[ƒuƒ‹
+// opt3ãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	OPT3_NORMAL				= 0x0,
 	OPT3_QUICKEN			= 0x1,
@@ -2072,7 +2106,7 @@ enum {
 	OPT3_CONTRACT			= 0x20000,
 };
 
-// ƒIƒvƒVƒ‡ƒ“ƒe[ƒuƒ‹
+// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	OPTION_NOTHING			= 0x0,
 	OPTION_SIGHT			= 0x1,
@@ -2107,7 +2141,7 @@ enum {
 	OPTION_MASK				= 0x7f8d7b8,
 };
 
-// Modeƒe[ƒuƒ‹
+// Modeãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	MD_CANMOVE				= 0x001,
 	MD_ITEMLOOT				= 0x002,
@@ -2125,17 +2159,17 @@ enum {
 	MD_SKILLIMMUNITY		= 0x2000,
 };
 
-// ModeOptƒe[ƒuƒ‹
+// ModeOptãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
-	MDOPT_DOUBLE       = 1, // ƒ_ƒuƒ‹ƒAƒ^ƒbƒN
-	MDOPT_NOATTACK     = 2, // ’ÊíUŒ‚‚È‚µ
-	MDOPT_FATALBLOW    = 3, // ‹}ŠUŒ‚
-	MDOPT_CRITICAL     = 4, // ƒNƒŠƒeƒBƒJƒ‹UŒ‚
-	MDOPT_PERFECT_FREE = 5, // Š®‘S‰ñ”ğ
-	MDOPT_STEELCROW    = 6, // ƒXƒ`[ƒ‹ƒNƒƒE
+	MDOPT_DOUBLE       = 1, // ãƒ€ãƒ–ãƒ«ã‚¢ã‚¿ãƒƒã‚¯
+	MDOPT_NOATTACK     = 2, // é€šå¸¸æ”»æ’ƒãªã—
+	MDOPT_FATALBLOW    = 3, // æ€¥æ‰€æ”»æ’ƒ
+	MDOPT_CRITICAL     = 4, // ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«æ”»æ’ƒ
+	MDOPT_PERFECT_FREE = 5, // å®Œå…¨å›é¿
+	MDOPT_STEELCROW    = 6, // ã‚¹ãƒãƒ¼ãƒ«ã‚¯ãƒ­ã‚¦
 };
 
-// ƒJ[ƒgƒe[ƒuƒ‹
+// ã‚«ãƒ¼ãƒˆãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	CART_TYPE_NOTHING	= 0x0,
 	CART_TYPE_NORMAL	= 0x1,
@@ -2149,7 +2183,7 @@ enum {
 	CART_TYPE_LEVEL131	= 0x9,
 };
 
-// hat_effectƒe[ƒuƒ‹
+// hat_effectãƒ†ãƒ¼ãƒ–ãƒ«
 enum {
 	HAT_EF_MIN = 0,
 	HAT_EF_BLOSSOM_FLUTTERING,

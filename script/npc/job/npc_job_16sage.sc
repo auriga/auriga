@@ -2446,7 +2446,7 @@ yuno_in03.gat,32,102,1	script	生物学教授	755,{
 					mes "まあいい、もう一度言うぞ。";
 					next;
 					for(set '@i,0; '@i<3; set '@i,'@i+1) {
-						mes "^3355FFFD" +getitemname('@need['@i])+ "^000000 5個";
+						mes "^3355FF" +getitemname('@need['@i])+ "^000000 5個";
 					}
 					close;
 				}

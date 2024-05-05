@@ -588,7 +588,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		}
 
 		// ƒAƒCƒeƒ€‚ÌˆÚ“®
-		pc_additem(ssd, &sd->status.inventory[idx], amount);
+		pc_additem(ssd, &sd->status.inventory[idx], amount, false);
 		pc_delitem(sd, idx, amount, 1, 0);
 		ssd->buyingstore.item[listidx].amount -= amount;
 

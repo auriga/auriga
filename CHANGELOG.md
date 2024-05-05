@@ -1,4 +1,379 @@
 ----------------------------------------
+//1546 [2024/05/05] by refis
+
+・笛吹きハンター！クエスト実装
+（map_auriga.conf, quest_db.txt, npc_quest_fuefukihunter.sc）
+	Thanks フリージア さん
+
+----------------------------------------
+//1545 [2024/05/05] by refis
+
+・ルワンダに伝える話クエスト、新人アコライトの幽霊クエスト実装
+（npc_quest_illusionluanda.sc, npc_quest_illusionlabyrinth.sc）
+
+・mapflag更新 (mapflag.sc)
+
+・monster出現定義追加（npc_monster_beachdun.sc, npc_monster_prtmaze.sc）
+
+・item_dbのランダム更新 (item_db.txt)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
+//1544 [2024/04/29] by refis
+
+・マップ帰還系スキルの追加（skill.c）
+
+・ランダムオプションで前方記載が優位にエンチャントされる問題を修正（mob.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1543 [2024/04/29] by refis
+
+・mob_dbを修正（mob_db.txt, mob_skill_db.txt）
+	Thanks Dallen さん、フリージア さん
+
+----------------------------------------
+//1542 [2024/04/21] by refis
+
+・セージ転職クエスト中のメッセージミスを修正（npc_job_16sage.sc）
+	Thanks Lala さん
+
+・エクラージュクエスト関係のエラーを修正（npc_town_eclage.sc）
+	Thanks rina さん
+
+----------------------------------------
+//1541 [2024/04/14] by Cocoa
+
+・vc_make.batの対応コンパイラ整理
+	Visual Studio 2012、2013をサポート切れのため削除
+
+----------------------------------------
+//1540 [2024/04/14] by refis
+
+・1530以降、移動時の探査処理条件が誤っていたのを修正（unit.c）
+	Thanks luin さん
+
+----------------------------------------
+//1539 [2024/03/16] by refis
+
+・フェイスファームの巣MDのギミックと不具合を修正（npc_memorial_faceworm.sc）
+	Thanks rina さん、フリージア さん
+
+----------------------------------------
+//1538 [2023/11/12] by refis
+
+・マラン島転送NPCが名称被りしていたのを修正（npc_town_malangdo.sc）
+	Thanks kuura さん
+
+・NPCスキル[ベナムフォグ]の回復、ダメージ計算式を修正（battle.c, skill.c）
+
+----------------------------------------
+//1537 [2023/11/03] by refis
+
+・map_auriga.confに不要なデータが混入していたミスを修正 (map_auriga.conf)
+
+----------------------------------------
+//1536 [2023/11/03] by refis
+
+・時の通路01からマラン島への転送NPC追加（npc_town_malangdo.sc）
+
+・楽園団NPC実装（npc_town_eden.sc）
+
+・ウェルス発掘地NPC実装（npc_town_verus.sc, npc_memorial_centrallab.sc, npc_memorial_lastroom.sc）
+	-> ファンタスマゴリカクエスト実装
+	-> 地下遺跡アドベンチャークエスト実装
+	-> ウェルスデイリークエスト実装
+	-> エクセリオンエンチャント実装
+	-> リペアメモリーエンチャント実装
+	-> 中央実験室メモリアル実装
+	-> 最後の部屋メモリアル実装
+	Thanks a lot Dallen さん
+
+・ウェルス発掘地関連NPC追加 (npc_job_thirdclass.sc, npc_misc_dynamicnpc.sc, npc_misc_zonda.sc)
+
+・ウェルス発掘地追加マップのwarp更新 (npc_warp_dun.sc, npc_warp_town.sc)
+
+・ウェルス発掘地追加マップのmapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・ウェルス発掘地追加マップのmonster出現定義追加 (npc_monster_verus.sc)
+
+・item_dbのランダム更新 (item_db.txt)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
+//1535 [2023/11/02] by refis
+
+・アイテムボーナス[bAddEffSkill]でスキル名称を指定できるよう処理を拡張（script.c）
+
+・アイテムボーナス[bSkillAutoSpell]系列で発動先スキルもスキル名称を指定できるよう処理を拡張（script.c）
+
+・スクリプト命令[mobuseskill][areamobuseskill]で
+　エモーションとトークを別々に設定できるように引数を追加（doc/script_ref.txt, script.c）
+
+・上記に伴うスクリプトの修正
+
+----------------------------------------
+//1534 [2023/10/31] by refis
+
+・PACKETVER[20180704]以前でコンパイルエラーが出ていたのを修正（clif.c）
+	Thanks Lala さん
+
+・スクリプト命令[setnpcgroup][setunitgroup][setnpctitle][setunittitle]で
+　リファレンス名と実関数名が異なっている誤りを修正（script.c）
+
+----------------------------------------
+//1533 [2023/10/28] by refis
+
+・スキル詠唱[0x7fb]上位の[0xb1a]実装（clif.c）
+
+・危機領域警告表示[0xa41]実装
+	-> skill_inf2で危機領域警告表示を指定できるよう設定を追加
+（doc/db_ref.txt, skill_db.txt, clif.*, skill.h, unit.c）
+
+・clif_itempreviewのPACKETVER[20180704]以前のパケット構造ミスを修正（clif.c）
+
+・スクリプト命令[itempreview]を追加
+（doc/script_ref.txt, clif.c, script.c）
+
+・スクリプト命令[getitem][getitem2][getoptitem]でアイテム獲得時にプレビュー表示する項目を追加
+（doc/script_ref.txt, atcommand.c, buyingstore.c, extra.c, homun.c, mail.c, mob.c,
+　npc.c, party.c, pc.*, pet.c, quest.c, script.c, skill.c, storage.c, trede.c, vending.c）
+
+・スクリプト命令[emotion][misceffect][delmisceffect]で個人指定表示できるよう機能拡張
+（doc/script_ref.txt, clif.*, script.c）
+
+----------------------------------------
+//1532 [2023/10/27] by refis
+
+・スクリプト命令[setnpcgroup][setunitgroup][setnpctitle][setunittitle]を追加
+（doc/script_ref.txt, clif.c, map.h, mob.c, npc.c, script.c）
+
+・スクリプト関数[getmapmoblist]を追加
+（doc/script_ref.txt, script.c）
+
+・スクリプト命令[setnpcdisplay]でPC職業の詳細な見た目を設定できるよう機能拡張
+（doc/script_ref.txt, clif.c, map.h, npc.*, script.c）
+	Thanks Dallen さん
+
+・スクリプト関数[removemonster]で消去時の見た目を設定できるよう機能拡張
+（doc/script_ref.txt, script.c）
+	Thanks Dallen さん
+
+----------------------------------------
+//1531 [2023/10/21] by refis
+
+・特定のPACKETVERでの[menu][select]を取り消した際の警告を抑制（npc.c）
+
+・スクリプト命令[messize]の説明誤りを訂正（doc/script_ref.txt）
+
+・スクリプト命令[mesalign]のパケット構造ミスを修正（clif.c）
+
+・MAX_PACKET_DB長の拡張忘れ（clif.c）
+
+・ソウルアタック習得時、通常攻撃が遠距離判定になっていなかったのを修正（battle.c）
+
+・アカデミー内にマラン島案内員を追加（npc_town_malangdo.sc）
+
+----------------------------------------
+//1530 [2023/10/10] by refis
+
+・PACKETVER[20201007]、[20210630]以降に処理を対応（packet_db.lua, char.c）
+
+・引数付misceffect[0x284]追加（clif.*）
+
+・定数更新（skill.h, status.h）
+
+・NPCスキル[Mレイオブジェネシス]で最低ダメージ1保証されるよう変更（battle.c）
+
+・NPCスキル[オールステータスダウン][グラデュアルグラビティ][ダメージヒール][イミューンプロパティ]
+　[ポジションチェンジ][デモニックヘルジャッジメント][ケーンオブイビルアイ][キリングオーラ]追加
+　（scdata_db.txt, skill_cast_db.txt, skill_db*.txt, skill_unit_db.txt, mmo.h, battle.c, pc.c, skill.c, status.*）
+
+・状態異常[移動不可]追加（db/scdata_db.txt, status.*, unit.c）
+
+・スクリプト命令[messize][mespos][mesalign]追加（doc/script_ref.txt, clif.*, script.c）
+
+----------------------------------------
+//1529 [2023/10/09] by refis
+
+・アースストレインのスキルユニットを随時生成せず初回ユニットを移動させるよう処理を変更（skill.c）
+	Thanks Dallen さん
+
+・ペットの自動給餌設定時の条件式誤りを修正（pet.c）
+	Thanks フリージア さん
+
+・readparam関数で補正後ステータス値を取得できるよう定数を追加（db/const.txt, map.h, pc.c）
+
+・NPC会話中のプログレスバーが中断したとき用にクローズボタンを表示させる（pc.c, unit.c）
+	Thanks Dallen さん
+
+・NPCスキル[M呪縛陣]でスキル使用者が動けるようにする（skill.c）
+
+・NPCスキル[Mマグマイラプション][Mレイオブジェネシス][Mベナムインプレス][Mクラウドキル]
+　[Mイグニッションブレイク][Mポイズンバスター][ワイドディスペル][ワイドクリティカルウーンズ]追加
+　（skill_cast_db.txt, skill_db*.txt, skill_unit_db.txt, battle.c, pc.c, skill.c）
+
+----------------------------------------
+//1528 [2023/09/09] by refis
+
+・スクリプト命令[setcell]、[areasetcell]で変更通知範囲を指定できるよう拡張（script_ref.txt, script.c）
+	Thanks Dallen さん
+
+・ホムの自動給餌設定時の条件式誤りを修正（homun.c）
+	Thanks フリージア さん
+
+・PACKETVER20180704以降製薬リストが正しく表示されなかったのを修正（clif.c）
+	Thanks フリージア さん
+
+----------------------------------------
+//1527 [2023/08/28] by refis
+
+・cppcheckを使った静的チェック修正
+	-> sscanf で文字列を読み込む場合の長さ指定誤りを修正（atcommand.c, script.c）
+
+	-> 回復量関連のランダムオプションが正常に適用されなかったのを修正（bonus.c）
+
+	-> NULLチェック強化（clif.c）
+
+	-> 配列の初期化漏れの修正（pc.c）
+
+	-> 配列外参照が起きる可能性がある箇所の修正（achieve.c, clif.c, luascript.c, merc.c, skill.c）
+
+	-> 同名で隠れる局所変数の名称を変更（battle.c, clif.c, script.c, skill.c, status.c）
+
+	-> 使われない変数を削除（battle.c, clif.c, luascript.c）
+
+	-> 意味のない初期化を削除（unit.c）
+
+	-> 変数のスコープを局所化
+
+----------------------------------------
+//1526 [2023/08/15] by refis
+
+・メモリアル依存変数の実装（script_ref.txt, memorial.*, script.*）
+	プレフィックス[.]の変数はMD内で扱え、MDの破棄まで値が維持されます
+	数値型、文字列型、配列変数として使えます
+	詳細はscript_ref.txtを参照してください
+
+----------------------------------------
+//1525 [2023/06/25] by refis
+
+・アカデミー内の付与経験値を分離する（npc_quest_ac_rune.sc）
+
+・ポリン団クエストを追加（map_auriga.conf, quest_db.txt, npc_quest_ac_team_poring.sc）
+	Thanks pneuma さん
+
+・quest_db長を2000から2500に拡張しておく（quest.h）
+
+----------------------------------------
+//1524 [2023/03/30] by refis
+
+・mapflag「damage_rate」追加
+　（const.txt, script_ref.txt, map/battle.c, map.h, npc.c, script.c）
+
+----------------------------------------
+//1523 [2023/03/19] by refis
+
+・grf内のファイル名が長すぎるとエラーになっていたので
+　配列長を拡張
+
+----------------------------------------
+//1522 [2023/03/15] by refis
+
+・item_dbの更新
+	Thanks Heaven さん
+
+----------------------------------------
+//1521 [2022/11/08] by Cocoa
+
+・経験値テーブルの更新  
+	本鯖で2022年8月30日に適用された経験値テーブルです。
+
+・Job補正の更新
+
+----------------------------------------
+//1520 [2022/11/08] by Cocoa
+
+・経験値テーブルの更新  
+	本鯖で2020年1月28日に適用された経験値テーブルです。  
+	履歴として一旦残すためのコミットになります。
+
+----------------------------------------
+//1519 [2022/09/19] by refis
+
+・レッケンベルの噂クエストの報酬を再受領できるよう修正
+　（npc_town_lighthalzen.sc, npc_memorial_worsef.sc）
+
+----------------------------------------
+//1518 [2022/09/11] by refis
+
+・ランダム系アイテムのリストを修正（item_random.txt）
+
+----------------------------------------
+//1517 [2022/09/11] by refis
+
+・bonus系列でエラーが発生した際、アイテムIDを表示するようチェックを強化（bonus.c）
+
+・ランダム系アイテムのリストをEP14相当に更新（item_random.txt, mob_random.txt）
+
+・ランダム系アイテムの追加（const.txt, item_db.txt）
+
+・スクリプト関数[getrandommob]追加（doc/script_ref.txt, script.c）
+
+・ランダム系アイテムの最大登録数を拡張（itemdb.h）
+
+----------------------------------------
+//1516 [2022/05/22] by Cocoa
+
+・特定条件下で取得経験値が1になる不具合を修正
+	共闘ボーナス×与ダメージがint上限を超えた場合に発生
+
+----------------------------------------
+//1515 [2022/05/22] by Cocoa
+
+・vc_make.batの対応コンパイラ整理
+	サポート切れのコンパイラを削除とVS2022を追加
+	合わせて不要になったコンパイラオプションなどを削除
+
+----------------------------------------
+//1514 [2022/05/22] by Cocoa
+
+・ペットが孵化出来なくなる不具合の修正（sql-files/Auriga1514_changetable.sql, sql-files/main.sql）
+	card0が0xff00(65280)の時にペットの卵と判定しているにも関わらず、DBがshort(上限32767)になっているために発生。
+	inventory、cart_inventory、storage、guild_storage、mail_dataにあるペットの卵のcard0を32767から65280に変更することで既存ペットの卵は救済可能。
+
+----------------------------------------
+//1513 [2022/05/22] by refis
+
+・[エビ三昧]の効果と持続時間計算を修正（skill.c, status.c）
+	Thanks Heaven さん、sabun さん
+
+・[ミャウミャウ]効果がレベルに対して正規的でないミスを修正（skill.c）
+	Thanks Heaven さん
+
+----------------------------------------
+//1512 [2022/04/13] by refis
+
+・サモナースキルでアイテム消費設定抜けがあったものを修正（skill_require_db.txt）
+	Thanks Heaven さん
+
+・PTL以外でサラの記憶に入場できなかった箇所を修正（npc_memorial_sara.sc）
+	Thanks Heaven さん
+
+・フェイスワームの巣の最終イベントのエラーを修正（npc_memorial_faceworm.sc）
+	Thanks kuura さん
+
+----------------------------------------
 //1511 [2022/03/13] by refis
 
 ・魔人の塔メモリアルの再入場チェック、イベントを修正（npc_memorial_towermorocc.sc）

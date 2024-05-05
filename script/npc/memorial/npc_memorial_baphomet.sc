@@ -1386,7 +1386,7 @@ OnTimer22000:
 			delquest 3041;
 		misceffect 87;
 		hideonnpc getmdnpcname("••ˆó–‚–@w#0");
-		areamobuseskill getmdmapname("2@cata.gat"),74,76,84,86,1929,686,1,0,0,26,0;
+		areamobuseskill getmdmapname("2@cata.gat"),74,76,84,86,1929,686,1,0,0,-1,26,0;
 		percentheal -50,0;
 		sc_start Eff_Stone,20000,0;
 		setquest 3041;
@@ -1420,7 +1420,7 @@ OnTimer22000:
 			delquest 3041;
 		misceffect 87;
 		hideonnpc getmdnpcname("••ˆó–‚–@w#2");
-		areamobuseskill getmdmapname("2@cata.gat"),118,104,128,119,1929,686,1,0,0,26,0;
+		areamobuseskill getmdmapname("2@cata.gat"),118,104,128,119,1929,686,1,0,0,-1,26,0;
 		percentheal -50,0;
 		sc_start Eff_Stone,20000,0;
 		setquest 3041;
@@ -1454,7 +1454,7 @@ OnTimer22000:
 			delquest 3041;
 		misceffect 87;
 		hideonnpc getmdnpcname("••ˆó–‚–@w#4");
-		areamobuseskill getmdmapname("2@cata.gat"),118,17,128,27,1929,686,1,0,0,26,0;
+		areamobuseskill getmdmapname("2@cata.gat"),118,17,128,27,1929,686,1,0,0,-1,26,0;
 		percentheal -50,0;
 		sc_start Eff_Stone,20000,0;
 		setquest 3041;
@@ -1488,7 +1488,7 @@ OnTimer22000:
 			delquest 3041;
 		misceffect 87;
 		hideonnpc getmdnpcname("••ˆó–‚–@w#8");
-		areamobuseskill getmdmapname("2@cata.gat"),30,16,40,26,1929,686,1,0,0,26,0;
+		areamobuseskill getmdmapname("2@cata.gat"),30,16,40,26,1929,686,1,0,0,-1,26,0;
 		percentheal -50,0;
 		sc_start Eff_Stone,20000,0;
 		setquest 3041;
@@ -1522,7 +1522,7 @@ OnTimer22000:
 			delquest 3041;
 		misceffect 87;
 		hideonnpc getmdnpcname("••ˆó–‚–@w#10");
-		areamobuseskill getmdmapname("2@cata.gat"),30,104,40,114,1929,686,1,0,0,26,0;
+		areamobuseskill getmdmapname("2@cata.gat"),30,104,40,114,1929,686,1,0,0,-1,26,0;
 		percentheal -50,0;
 		sc_start Eff_Stone,20000,0;
 		setquest 3041;

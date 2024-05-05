@@ -1316,11 +1316,11 @@ function	script	CallDynamicNPC	{
 					case 12: set '@map$,"lhz_dun04.gat";	set '@x,148;	set '@y,273;	break;
 					case 13: set '@flag,1;	break;	// 空中要塞
 					case 14: set '@flag,1;	break;	// コルメモリアル
-					case 15: set '@flag,1;	break;	// 最後の部屋
+					case 15: set '@map$,"un_myst.gat";	set '@x,159;	set '@y,38;	if(VER_2QUE < 39) set '@flag,1;	break;	// 地下遺跡アドベンチャークエスト
 					case 16: set '@flag,1;	break;	// 生体工学研究所の記録
 					case 17: set '@map$,"mal_in01.gat";		set '@x,170;	set '@y,34;	break;
 					case 18: set '@flag,1;	break;	// チャールストン工場
-					case 19: set '@flag,1;	break;	// 中央実験室
+					case 19: set '@map$,"verus01.gat";	set '@x,151;	set '@y,150;	if(VER_1QUE < 20) set '@flag,1;	break;	// ファンタスマゴリカクエスト
 					case 20: set '@map$,"nyd_dun02.gat";	set '@x,94;		set '@y,192;	break;
 					case 21: set '@flag,1;	break;	// ネコリンの秘密研究所
 					case 22: set '@flag,1;	break;	// ハートハンター軍事基地
