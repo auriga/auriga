@@ -60,7 +60,7 @@ static struct job_db {
 	int aspd_base[WT_MAX+1];
 } job_db[PC_JOB_MAX];
 
-static int atkmods[MAX_SIZE_FIX][WT_MAX];	// æ­¦å™¨ATKã‚µã‚¤ã‚ºä¿®æ­£(size_fix.txt)
+static int atkmods[MAX_SIZE_FIX][WT_MAX];	// •ŠíATKƒTƒCƒYC³(size_fix.txt)
 
 static struct refine_db {
 	int safety_bonus[MAX_REFINE];
@@ -69,17 +69,17 @@ static struct refine_db {
 	int per[MAX_REFINE];
 } refine_db[MAX_WEAPON_LEVEL+1];
 
-int current_equip_item_index;	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—ç”¨
+int current_equip_item_index;	// ƒXƒe[ƒ^ƒXŒvZ—p
 int current_equip_name_id;
 
 #ifdef DYNAMIC_SC_DATA
 struct status_change_data dummy_sc_data[MAX_STATUSCHANGE];
 #endif
 
-static int status_calc_amotion_pc(struct map_session_data *sd);	// PCç”¨amotionè¨ˆç®—
-static int status_calc_speed_pc(struct map_session_data *sd,int speed);	// PCç”¨speedè¨ˆç®—
+static int status_calc_amotion_pc(struct map_session_data *sd);	// PC—pamotionŒvZ
+static int status_calc_speed_pc(struct map_session_data *sd,int speed);	// PC—pspeedŒvZ
 
-static struct scdata_db scdata_db[MAX_STATUSCHANGE];	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
+static struct scdata_db scdata_db[MAX_STATUSCHANGE];	// ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^ƒx[ƒX
 
 static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 0- */
@@ -231,7 +231,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 };
 
 /*==========================================
- * éå‰°ç²¾éŒ¬ãƒœãƒ¼ãƒŠã‚¹
+ * ‰ßè¸˜Bƒ{[ƒiƒX
  *------------------------------------------
  */
 int status_get_overrefine_bonus(int lv)
@@ -242,7 +242,7 @@ int status_get_overrefine_bonus(int lv)
 }
 
 /*==========================================
- * ç²¾éŒ¬æˆåŠŸç‡
+ * ¸˜B¬Œ÷—¦
  *------------------------------------------
  */
 int status_percentrefinery(struct map_session_data *sd,struct item *item)
@@ -251,15 +251,15 @@ int status_percentrefinery(struct map_session_data *sd,struct item *item)
 
 	nullpo_retr(0, item);
 
-	if(item->refine < 0 || item->refine >= MAX_REFINE)	// å€¤ãŒã‚¨ãƒ©ãƒ¼ã‚‚ã—ãã¯æ—¢ã«æœ€å¤§å€¤ãªã‚‰0%
+	if(item->refine < 0 || item->refine >= MAX_REFINE)	// ’l‚ªƒGƒ‰[‚à‚µ‚­‚ÍŠù‚ÉÅ‘å’l‚È‚ç0%
 		return 0;
 
 	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine];
 
 	if(battle_config.refinery_research_lv)
-		percent += pc_checkskill(sd,BS_WEAPONRESEARCH);	// æ­¦å™¨ç ”ç©¶ã‚¹ã‚­ãƒ«æ‰€æŒ
+		percent += pc_checkskill(sd,BS_WEAPONRESEARCH);	// •ŠíŒ¤‹†ƒXƒLƒ‹Š
 
-	// ç¢ºç‡ã®æœ‰åŠ¹ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// Šm—¦‚Ì—LŒø”ÍˆÍƒ`ƒFƒbƒN
 	if(percent > 100) {
 		percent = 100;
 	}
@@ -271,7 +271,7 @@ int status_percentrefinery(struct map_session_data *sd,struct item *item)
 }
 
 /*==========================================
- * ç²¾éŒ¬æˆåŠŸç‡ åƒåˆ†ç‡
+ * ¸˜B¬Œ÷—¦ ç•ª—¦
  *------------------------------------------
  */
 int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item *item)
@@ -283,7 +283,7 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, item);
 
-	if(item->refine < 0 || item->refine >= MAX_REFINE)	// å€¤ãŒã‚¨ãƒ©ãƒ¼ã‚‚ã—ãã¯æ—¢ã«æœ€å¤§å€¤ãªã‚‰0%
+	if(item->refine < 0 || item->refine >= MAX_REFINE)	// ’l‚ªƒGƒ‰[‚à‚µ‚­‚ÍŠù‚ÉÅ‘å’l‚È‚ç0%
 		return 0;
 
 	if(sd->status.class_ == PC_CLASS_NC || sd->status.class_ == PC_CLASS_NC_H || sd->status.class_ == PC_CLASS_NC_B)
@@ -297,9 +297,9 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 	percent = refine_db[itemdb_wlv(item->nameid)].per[(int)item->refine]*10 + diff + 4 * diff;
 
 	if(battle_config.allow_weaponrearch_to_weaponrefine)
-		percent += pc_checkskill(sd,BS_WEAPONRESEARCH)*10;	// æ­¦å™¨ç ”ç©¶ã‚¹ã‚­ãƒ«æ‰€æŒ
+		percent += pc_checkskill(sd,BS_WEAPONRESEARCH)*10;	// •ŠíŒ¤‹†ƒXƒLƒ‹Š
 
-	// ç¢ºç‡ã®æœ‰åŠ¹ç¯„å›²ãƒã‚§ãƒƒã‚¯
+	// Šm—¦‚Ì—LŒø”ÍˆÍƒ`ƒFƒbƒN
 	if(percent > 1000) {
 		percent = 1000;
 	}
@@ -311,7 +311,7 @@ int status_percentrefinery_weaponrefine(struct map_session_data *sd,struct item 
 }
 
 /*==========================================
- * ã‚»ãƒ¼ãƒ–å¯èƒ½ãªã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã‹ã©ã†ã‹
+ * ƒZ[ƒu‰Â”\‚ÈƒXƒe[ƒ^ƒXˆÙí‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 int status_can_save(int type)
@@ -324,7 +324,7 @@ int status_can_save(int type)
 }
 
 /*==========================================
- * diableãªã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã‹ã©ã†ã‹
+ * diable‚ÈƒXƒe[ƒ^ƒXˆÙí‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 int status_is_disable(int type,int mask)
@@ -337,15 +337,15 @@ int status_is_disable(int type,int mask)
 }
 
 /*==========================================
- * ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è¨ˆç®—
- * first==0ã®æ™‚ã€è¨ˆç®—å¯¾è±¡ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒå‘¼ã³å‡ºã—å‰ã‹ã‚‰
- * å¤‰åŒ–ã—ãŸå ´åˆè‡ªå‹•ã§sendã™ã‚‹ãŒã€
- * èƒ½å‹•çš„ã«å¤‰åŒ–ã•ã›ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¯è‡ªå‰ã§sendã™ã‚‹ã‚ˆã†ã«
+ * ƒpƒ‰ƒ[ƒ^ŒvZ
+ * first==0‚ÌAŒvZ‘ÎÛ‚Ìƒpƒ‰ƒ[ƒ^‚ªŒÄ‚Ño‚µ‘O‚©‚ç
+ * •Ï‰»‚µ‚½ê‡©“®‚Åsend‚·‚é‚ªA
+ * ”\“®“I‚É•Ï‰»‚³‚¹‚½ƒpƒ‰ƒ[ƒ^‚Í©‘O‚Åsend‚·‚é‚æ‚¤‚É
  *------------------------------------------
  */
 int status_calc_pc(struct map_session_data* sd,int first)
 {
-	// æ³¨æ„ï¼šã“ã“ã§ã¯å¤‰æ•°ã®å®£è¨€ã®ã¿ã«ã¨ã©ã‚ã€åˆæœŸåŒ–ã¯L_RECALCã®å¾Œã«ã‚„ã‚‹ã“ã¨ã€‚
+	// ’ˆÓF‚±‚±‚Å‚Í•Ï”‚ÌéŒ¾‚Ì‚İ‚É‚Æ‚Ç‚ßA‰Šú‰»‚ÍL_RECALC‚ÌŒã‚É‚â‚é‚±‚ÆB
 	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_paramc[6],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
@@ -356,7 +356,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int skill,wele,wele_,def_ele,refinedef;
 	int pele,pdef_ele;
 	int str,dstr,dex;
-	int calclimit = 2; // åˆå›ã¯use scriptè¾¼ã¿ã§å®Ÿè¡Œ
+	int calclimit = 2; // ‰‰ñ‚Íuse script‚İ‚ÅÀs
 #ifndef PRE_RENEWAL
 	int b_plus_atk,b_plus_matk;
 #endif
@@ -371,13 +371,13 @@ int status_calc_pc(struct map_session_data* sd,int first)
 
 	sd->call_status_calc_pc_while_stopping = 0;
 
-	// status_calc_pc ã®å‡¦ç†ä¸­ã«status_calc_pcãŒå‘¼ã³å‡ºã•ã‚Œã‚‹ã¨æœ€åˆã«è¨ˆç®—ã—ã¦ã„ã‚‹
-	// å€¤ãŒç‹‚ã†å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚ã¾ãŸã€ã“ã®é–¢æ•°ãŒå‘¼ã°ã‚Œã‚‹ã¨ã„ã†ã“ã¨ã¯ã€ã‚­ãƒ£ãƒ©ã®çŠ¶æ…‹ãŒ
-	// å¤‰åŒ–ã—ã¦ã„ã‚‹ã“ã¨ã‚’æš—ç¤ºã—ã¦ã„ã‚‹ã®ã§ã€è¨ˆç®—çµæœã‚’æ¨ã¦ã¦å†è¨ˆç®—ã—ãªã‘ã‚Œã°ã„ã‘ãªã„ã€‚
-	// é–¢æ•°ã®çµ‚äº†æ™‚ç‚¹ã§å‘¼ã³å‡ºã—ãŒã‚ã‚Œã°ã€L_RECALCã«é£›ã°ã™ã‚ˆã†ã«ã™ã‚‹ã€‚
+	// status_calc_pc ‚Ìˆ—’†‚Éstatus_calc_pc‚ªŒÄ‚Ño‚³‚ê‚é‚ÆÅ‰‚ÉŒvZ‚µ‚Ä‚¢‚é
+	// ’l‚ª‹¶‚¤‰Â”\«‚ª‚ ‚éB‚Ü‚½A‚±‚ÌŠÖ”‚ªŒÄ‚Î‚ê‚é‚Æ‚¢‚¤‚±‚Æ‚ÍAƒLƒƒƒ‰‚Ìó‘Ô‚ª
+	// •Ï‰»‚µ‚Ä‚¢‚é‚±‚Æ‚ğˆÃ¦‚µ‚Ä‚¢‚é‚Ì‚ÅAŒvZŒ‹‰Ê‚ğÌ‚Ä‚ÄÄŒvZ‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢B
+	// ŠÖ”‚ÌI—¹“_‚ÅŒÄ‚Ño‚µ‚ª‚ ‚ê‚ÎAL_RECALC‚É”ò‚Î‚·‚æ‚¤‚É‚·‚éB
 	if( sd->status_calc_pc_process++ ) return 0;
 
-	// ä»¥å‰ã®çŠ¶æ…‹ã®ä¿å­˜
+	// ˆÈ‘O‚Ìó‘Ô‚Ì•Û‘¶
 	b_speed      = sd->speed;
 	b_max_hp     = sd->status.max_hp;
 	b_max_sp     = sd->status.max_sp;
@@ -415,8 +415,8 @@ int status_calc_pc(struct map_session_data* sd,int first)
 #endif
 
 L_RECALC:
-	// æœ¬æ¥ã®è¨ˆç®—é–‹å§‹(å…ƒã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’æ›´æ–°ã—ãªã„ã®ã¯ã€è¨ˆç®—ä¸­ã«è¨ˆç®—å‡¦ç†ãŒå‘¼ã°ã‚ŒãŸã¨ãã®
-	// åæ˜ åˆ†ã‚‚æ–°ãŸã«é€ä¿¡ã™ã‚‹ãŸã‚)ã€‚
+	// –{—ˆ‚ÌŒvZŠJn(Œ³‚Ìƒpƒ‰ƒ[ƒ^‚ğXV‚µ‚È‚¢‚Ì‚ÍAŒvZ’†‚ÉŒvZˆ—‚ªŒÄ‚Î‚ê‚½‚Æ‚«‚Ì
+	// ”½‰f•ª‚àV‚½‚É‘—M‚·‚é‚½‚ß)B
 
 	pele      = ELE_NEUTRAL;
 	pdef_ele  = ELE_NEUTRAL;
@@ -428,7 +428,7 @@ L_RECALC:
 	sd->special_state.infinite_tigereye = 0;
 	sd->special_state.infinite_endure   = 0;
 
-	pc_calc_skilltree(sd);	// ã‚¹ã‚­ãƒ«ãƒ„ãƒªãƒ¼ã®è¨ˆç®—
+	pc_calc_skilltree(sd);	// ƒXƒLƒ‹ƒcƒŠ[‚ÌŒvZ
 
 	sd->max_weight = job_db[sd->s_class.job].max_weight_base+sd->status.str*battle_config.str_weight;
 
@@ -439,22 +439,22 @@ L_RECALC:
 	else if(battle_config.normal_weight_rate != 100)
 		sd->max_weight = sd->max_weight*battle_config.normal_weight_rate/100;
 
-	// ãƒšã‚³é¨ä¹—æ™‚å¢—ãˆã‚‹ã‚ˆã†ç§»å‹•
-	if(pc_isriding(sd))	// ãƒšã‚³ãƒšã‚³ãƒ»ã‚°ãƒªãƒ•ã‚©ãƒ³
+	// ƒyƒR‹Ræ‘‚¦‚é‚æ‚¤ˆÚ“®
+	if(pc_isriding(sd))	// ƒyƒRƒyƒREƒOƒŠƒtƒHƒ“
 		sd->max_weight += battle_config.riding_weight;
 
-	if(pc_isdragon(sd))	// ãƒ‰ãƒ©ã‚´ãƒ³
+	if(pc_isdragon(sd))	// ƒhƒ‰ƒSƒ“
 		sd->max_weight += 5000 + 2000 * pc_checkskill(sd,RK_DRAGONTRAINING);
 
-	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// æ‰€æŒé‡å¢—åŠ 
+	if((skill = pc_checkskill(sd,MC_INCCARRY)) > 0)	// Š—Ê‘‰Á
 		sd->max_weight += skill*2000;
 
-	if((skill = pc_checkskill(sd,ALL_INCCARRAY)) > 0)	// æ‰€æŒé‡å¢—åŠ R
+	if((skill = pc_checkskill(sd,ALL_INCCARRAY)) > 0)	// Š—Ê‘‰ÁR
 		sd->max_weight += skill*2000;
 
-	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// å¤ªé™½ã¨æœˆã¨æ˜Ÿã®çŸ¥è­˜
+	if((skill = pc_checkskill(sd,SG_KNOWLEDGE)) > 0)	// ‘¾—z‚ÆŒ‚Æ¯‚Ì’m¯
 	{
-	 	if(battle_config.check_knowlege_map) {	// å ´æ‰€ãƒã‚§ãƒƒã‚¯ã‚’è¡Œãªã†
+	 	if(battle_config.check_knowlege_map) {	// êŠƒ`ƒFƒbƒN‚ğs‚È‚¤
 			if(sd->bl.m == sd->feel_index[0] || sd->bl.m == sd->feel_index[1] || sd->bl.m == sd->feel_index[2])
 				sd->max_weight += sd->max_weight*skill/10;
 		} else {
@@ -470,7 +470,7 @@ L_RECALC:
 			sd->weight += sd->inventory_data[i]->weight*sd->status.inventory[i].amount;
 		}
 		sd->cart_max_weight = battle_config.max_cart_weight;
-		if((skill = pc_checkskill(sd,GN_REMODELING_CART)) > 0)	// ã‚«ãƒ¼ãƒˆæ”¹é€ 
+		if((skill = pc_checkskill(sd,GN_REMODELING_CART)) > 0)	// ƒJ[ƒg‰ü‘¢
 			sd->cart_max_weight += skill*5000;
 		sd->cart_weight     = 0;
 		sd->cart_max_num    = MAX_CART;
@@ -548,7 +548,7 @@ L_RECALC:
 	memset(sd->auto_status_calc_pc,0,sizeof(sd->auto_status_calc_pc));
 	memset(sd->eternal_status_change,0,sizeof(sd->eternal_status_change));
 
-	sd->watk_       = 0;	// äºŒåˆ€æµç”¨
+	sd->watk_       = 0;	// “ñ“—¬—p
 	sd->watk_2      = 0;
 	sd->atk_ele_    = ELE_NEUTRAL;
 	sd->star_       = 0;
@@ -686,7 +686,7 @@ L_RECALC:
 		if(i == EQUIP_INDEX_ARROW)
 			continue;
 		idx = sd->equip_index[i];
-		current_equip_item_index = i;	// éƒ¨ä½ãƒã‚§ãƒƒã‚¯ç”¨
+		current_equip_item_index = i;	// •”ˆÊƒ`ƒFƒbƒN—p
 		if(idx < 0)
 			continue;
 		if(i == EQUIP_INDEX_RARM && sd->equip_index[EQUIP_INDEX_LARM] == idx)
@@ -705,12 +705,12 @@ L_RECALC:
 				int j;
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int c;
-					for(j=0; j<4; j++) {	// ã‚«ãƒ¼ãƒ‰
+					for(j=0; j<4; j++) {	// ƒJ[ƒh
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
 						if(sd->inventory_data[idx]->slot < j && itemdb_cardtype(c) != 2)
 							continue;
-						current_equip_name_id = c;		// ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«(é‡è¤‡ãƒã‚§ãƒƒã‚¯ç”¨)
+						current_equip_name_id = c;		// ƒI[ƒgƒXƒyƒ‹(d•¡ƒ`ƒFƒbƒN—p)
 						if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
 							sd->state.lr_flag = 1;
 						if(calclimit == 2)
@@ -719,7 +719,7 @@ L_RECALC:
 						sd->state.lr_flag = 0;
 					}
 				}
-				for(j=0; j<5; j++) {	// ãƒ©ãƒ³ãƒ€ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+				for(j=0; j<5; j++) {	// ƒ‰ƒ“ƒ_ƒ€ƒIƒvƒVƒ‡ƒ“
 					if(sd->status.inventory[idx].opt[j].id <= 0)
 						continue;
 					if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM)
@@ -728,22 +728,22 @@ L_RECALC:
 					sd->state.lr_flag = 0;
 				}
 			}
-			else if(itemdb_isarmor(sd->inventory_data[idx]->nameid)) { // é˜²å…·
+			else if(itemdb_isarmor(sd->inventory_data[idx]->nameid)) { // –h‹ï
 				int j;
 				if( !itemdb_isspecial(sd->status.inventory[idx].card[0]) ) {
 					int c;
-					for(j=0; j<4; j++) {	// ã‚«ãƒ¼ãƒ‰
+					for(j=0; j<4; j++) {	// ƒJ[ƒh
 						if((c = sd->status.inventory[idx].card[j]) <= 0)
 							continue;
 						if(sd->inventory_data[idx]->slot < j && itemdb_cardtype(c) != 2)
 							continue;
-						current_equip_name_id = c;		// ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ«(é‡è¤‡ãƒã‚§ãƒƒã‚¯ç”¨)
+						current_equip_name_id = c;		// ƒI[ƒgƒXƒyƒ‹(d•¡ƒ`ƒFƒbƒN—p)
 						if(calclimit == 2)
 							run_script(itemdb_usescript(c),0,sd->bl.id,0);
 						run_script(itemdb_equipscript(c),0,sd->bl.id,0);
 					}
 				}
-				for(j=0; j<5; j++) {	// ãƒ©ãƒ³ãƒ€ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+				for(j=0; j<5; j++) {	// ƒ‰ƒ“ƒ_ƒ€ƒIƒvƒVƒ‡ƒ“
 					if(sd->status.inventory[idx].opt[j].id <= 0)
 						continue;
 					bonus_randopt(sd, sd->status.inventory[idx].opt[j].id, sd->status.inventory[idx].opt[j].val);
@@ -775,12 +775,12 @@ L_RECALC:
 	}
 	memcpy(sd->paramcard,sd->parame,sizeof(sd->paramcard));
 
-	// è£…å‚™å“ã«ã‚ˆã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã¯ã“ã“ã§å®Ÿè¡Œ
+	// ‘•”õ•i‚É‚æ‚éƒXƒe[ƒ^ƒX•Ï‰»‚Í‚±‚±‚ÅÀs
 	for(i=0; i<EQUIP_INDEX_MAX; i++) {
 		if(i == EQUIP_INDEX_ARROW)
 			continue;
 		idx = sd->equip_index[i];
-		current_equip_item_index = i;	// éƒ¨ä½ãƒã‚§ãƒƒã‚¯ç”¨
+		current_equip_item_index = i;	// •”ˆÊƒ`ƒFƒbƒN—p
 		if(idx < 0)
 			continue;
 		if(i == EQUIP_INDEX_RARM && sd->equip_index[EQUIP_INDEX_LARM] == idx)
@@ -804,23 +804,23 @@ L_RECALC:
 			if(itemdb_isweapon(sd->inventory_data[idx]->nameid)) {
 				int r,wlv = sd->inventory_data[idx]->wlv;
 				if(i == EQUIP_INDEX_LARM && sd->status.inventory[idx].equip == LOC_LARM) {
-					// äºŒåˆ€æµç”¨ãƒ‡ãƒ¼ã‚¿å…¥åŠ›
+					// “ñ“—¬—pƒf[ƒ^“ü—Í
 					sd->watk_ += sd->inventory_data[idx]->atk;
 					if((r = sd->status.inventory[idx].refine) > 0)
-						sd->watk_2 = refine_db[wlv].safety_bonus[r-1];	// ç²¾éŒ¬æ”»æ’ƒåŠ›
+						sd->watk_2 = refine_db[wlv].safety_bonus[r-1];	// ¸˜BUŒ‚—Í
 #ifndef PRE_RENEWAL
-					if(sd->status.weapon != WT_BOW && r > 0)	// å¼“ã«ã¯ç²¾éŒ¬MATKãƒœãƒ¼ãƒŠã‚¹ãŒãªã„
+					if(sd->status.weapon != WT_BOW && r > 0)	// ‹|‚É‚Í¸˜BMATKƒ{[ƒiƒX‚ª‚È‚¢
 						sd->matk1 += refine_db[wlv].safety_bonus[r-1];
 #endif
-					if((r -= refine_db[wlv].limit) > 0)	// éå‰°ç²¾éŒ¬ãƒœãƒ¼ãƒŠã‚¹
+					if((r -= refine_db[wlv].limit) > 0)	// ‰ßè¸˜Bƒ{[ƒiƒX
 						sd->overrefine_ = r*refine_db[wlv].over_bonus;
 
-					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// è£½é€ æ­¦å™¨
-						sd->star_ = (sd->status.inventory[idx].card[1]>>8);	// æ˜Ÿã®ã‹ã‘ã‚‰
+					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// »‘¢•Ší
+						sd->star_ = (sd->status.inventory[idx].card[1]>>8);	// ¯‚Ì‚©‚¯‚ç
 						if(sd->star_ == 15)
 							sd->star_ = 40;
-						wele_= sd->status.inventory[idx].card[1] & 0x0f;	// å± æ€§
-						// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒœãƒ¼ãƒŠã‚¹
+						wele_= sd->status.inventory[idx].card[1] & 0x0f;	// ‘® «
+						// ƒ‰ƒ“ƒLƒ“ƒOƒ{[ƒiƒX
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])), RK_BLACKSMITH))
 							sd->ranker_weapon_bonus_ = battle_config.ranker_weapon_bonus;
 					}
@@ -831,23 +831,23 @@ L_RECALC:
 					run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
 					sd->state.lr_flag = 0;
 				} else {
-					// äºŒåˆ€æµæ­¦å™¨ä»¥å¤–
+					// “ñ“—¬•ŠíˆÈŠO
 					sd->watk  += sd->inventory_data[idx]->atk;
 					if((r = sd->status.inventory[idx].refine) > 0)
-						sd->watk2 += refine_db[wlv].safety_bonus[r-1];	// ç²¾éŒ¬æ”»æ’ƒåŠ›
+						sd->watk2 += refine_db[wlv].safety_bonus[r-1];	// ¸˜BUŒ‚—Í
 #ifndef PRE_RENEWAL
-					if(sd->status.weapon != WT_BOW && r > 0)	// å¼“ã«ã¯ç²¾éŒ¬MATKãƒœãƒ¼ãƒŠã‚¹ãŒãªã„
+					if(sd->status.weapon != WT_BOW && r > 0)	// ‹|‚É‚Í¸˜BMATKƒ{[ƒiƒX‚ª‚È‚¢
 						sd->matk1 += refine_db[wlv].safety_bonus[r-1];
 #endif
-					if((r -= refine_db[wlv].limit) > 0)	// éå‰°ç²¾éŒ¬ãƒœãƒ¼ãƒŠã‚¹
+					if((r -= refine_db[wlv].limit) > 0)	// ‰ßè¸˜Bƒ{[ƒiƒX
 						sd->overrefine += r*refine_db[wlv].over_bonus;
 
-					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// è£½é€ æ­¦å™¨
-						sd->star += (sd->status.inventory[idx].card[1]>>8);	// æ˜Ÿã®ã‹ã‘ã‚‰
+					if(sd->status.inventory[idx].card[0] == 0x00ff) {	// »‘¢•Ší
+						sd->star += (sd->status.inventory[idx].card[1]>>8);	// ¯‚Ì‚©‚¯‚ç
 						if(sd->star == 15)
 							sd->star = 40;
-						wele = sd->status.inventory[idx].card[1] & 0x0f;	// å± æ€§
-						// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒœãƒ¼ãƒŠã‚¹
+						wele = sd->status.inventory[idx].card[1] & 0x0f;	// ‘® «
+						// ƒ‰ƒ“ƒLƒ“ƒOƒ{[ƒiƒX
 						if(ranking_get_id2rank(*((int *)(&sd->status.inventory[idx].card[2])),RK_BLACKSMITH))
 							sd->ranker_weapon_bonus = battle_config.ranker_weapon_bonus;
 					}
@@ -867,9 +867,9 @@ L_RECALC:
 		}
 	}
 
-	if(sd->equip_index[EQUIP_INDEX_ARROW] >= 0) { // çŸ¢
+	if(sd->equip_index[EQUIP_INDEX_ARROW] >= 0) { // –î
 		idx = sd->equip_index[EQUIP_INDEX_ARROW];
-		if(sd->inventory_data[idx]) {		// ã¾ã å±æ€§ãŒå…¥ã£ã¦ã„ãªã„
+		if(sd->inventory_data[idx]) {		// ‚Ü‚¾‘®«‚ª“ü‚Á‚Ä‚¢‚È‚¢
 			current_equip_name_id = sd->inventory_data[idx]->nameid;
 			sd->state.lr_flag = 2;
 			run_script(sd->inventory_data[idx]->equip_script,0,sd->bl.id,0);
@@ -904,13 +904,13 @@ L_RECALC:
 	sd->get_zeny_num2 = (sd->get_zeny_num2 + sd->get_zeny_add_num2 > 100) ? 100 : (sd->get_zeny_num2 + sd->get_zeny_add_num2);
 	sd->splash_range += sd->splash_add_range;
 
-	// æ­¦å™¨ATKã‚µã‚¤ã‚ºè£œæ­£
+	// •ŠíATKƒTƒCƒY•â³
 	for(i=0; i<MAX_SIZE_FIX; i++) {
-		sd->atkmods[i]  = atkmods[i][sd->weapontype1];	// å³æ‰‹
-		sd->atkmods_[i] = atkmods[i][sd->weapontype2];	// å·¦æ‰‹
+		sd->atkmods[i]  = atkmods[i][sd->weapontype1];	// ‰Eè
+		sd->atkmods_[i] = atkmods[i][sd->weapontype2];	// ¶è
 	}
 
-	// jobãƒœãƒ¼ãƒŠã‚¹åˆ†
+	// jobƒ{[ƒiƒX•ª
 	for(i=0; i<sd->status.job_level && i<MAX_LEVEL; i++) {
 		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x01)
 			sd->paramb[0]++;
@@ -926,25 +926,25 @@ L_RECALC:
 			sd->paramb[5]++;
 	}
 
-	if((skill = pc_checkskill(sd,AC_OWL)) > 0) {	// ãµãã‚ã†ã®ç›®
+	if((skill = pc_checkskill(sd,AC_OWL)) > 0) {	// ‚Ó‚­‚ë‚¤‚Ì–Ú
 		sd->paramb[4] += skill;
 	}
-	if(pc_checkskill(sd,BS_HILTBINDING)) {	// ãƒ’ãƒ«ãƒˆãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+	if(pc_checkskill(sd,BS_HILTBINDING)) {	// ƒqƒ‹ƒgƒoƒCƒ“ƒfƒBƒ“ƒO
 		sd->paramb[0] += 1;
-		// æœ¬é¯–æœªå®Ÿè£…ã®ãŸã‚ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
+		// –{I–¢À‘•‚Ì‚½‚ßƒRƒƒ“ƒgƒAƒEƒg
 		//sd->watk += 4;
 	}
-	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ãƒ‰ãƒ©ã‚´ãƒãƒ­ã‚¸ãƒ¼
+	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ƒhƒ‰ƒSƒmƒƒW[
 		sd->paramb[3] += (skill+1)>>1;
 	}
-	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0) {	// ãƒˆãƒ©ãƒƒãƒ—ç ”ç©¶
+	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0) {	// ƒgƒ‰ƒbƒvŒ¤‹†
 		sd->paramb[3] += skill;
 	}
-	if(pc_checkskill(sd,SU_POWEROFLAND) > 0) {	// å¤§åœ°ã®åŠ›
+	if(pc_checkskill(sd,SU_POWEROFLAND) > 0) {	// ‘å’n‚Ì—Í
 		sd->paramb[3] += 7;
 	}
 
-	// ãƒãƒ¼ãƒ€ãƒ©ãƒ¼ãƒœãƒ¼ãƒŠã‚¹
+	// ƒ}[ƒ_ƒ‰[ƒ{[ƒiƒX
 	if(battle_config.pk_murderer_point > 0) {
 		int point = ranking_get_point(sd,RK_PK);
 		if(point >= battle_config.pk_murderer_point * 4) {
@@ -967,7 +967,7 @@ L_RECALC:
 			sd->matk_rate += 10;
 		}
 	}
-	// 1åº¦ã‚‚æ­»ã‚“ã§ãªã„Job70ã‚¹ãƒ‘ãƒãƒ“oræ‹¡å¼µã‚¹ãƒ‘ãƒãƒ“ã«+10
+	// 1“x‚à€‚ñ‚Å‚È‚¢Job70ƒXƒpƒmƒrorŠg’£ƒXƒpƒmƒr‚É+10
 	if(((sd->s_class.job == PC_JOB_SNV && sd->status.job_level >= 70) || sd->s_class.job == PC_JOB_ESNV) && sd->status.die_counter == 0) {
 		sd->paramb[0] += 10;
 		sd->paramb[1] += 10;
@@ -977,35 +977,35 @@ L_RECALC:
 		sd->paramb[5] += 10;
 	}
 
-	// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ«
+	// ƒMƒ‹ƒhƒXƒLƒ‹
 	if(battle_config.guild_hunting_skill_available)
 	{
-		struct guild *g = guild_search(sd->status.guild_id);	// ã‚®ãƒ«ãƒ‰å–å¾—
+		struct guild *g = guild_search(sd->status.guild_id);	// ƒMƒ‹ƒhæ“¾
 		struct map_session_data *gmsd = NULL;
 
 		if(g)
 			gmsd = guild_get_guildmaster_sd(g);
 
-		// ã‚®ãƒ«ãƒ‰æœ‰ && ãƒã‚¹ã‚¿ãƒ¼æ¥ç¶š && è‡ªåˆ†!=ãƒã‚¹ã‚¿ãƒ¼ && åŒã˜ãƒãƒƒãƒ—
+		// ƒMƒ‹ƒh—L && ƒ}ƒXƒ^[Ú‘± && ©•ª!=ƒ}ƒXƒ^[ && “¯‚¶ƒ}ƒbƒv
 		if(g && gmsd && (battle_config.allow_me_guild_skill == 1 || gmsd != sd) && sd->bl.m == gmsd->bl.m)
 		{
-			if(battle_config.guild_skill_check_range) {	// è·é›¢åˆ¤å®šã‚’è¡Œã†
+			if(battle_config.guild_skill_check_range) {	// ‹——£”»’è‚ğs‚¤
 				int dx = abs(sd->bl.x - gmsd->bl.x);
 				int dy = abs(sd->bl.y - gmsd->bl.y);
 				int range;
 
-				if(battle_config.guild_skill_effective_range > 0) {	// åŒä¸€è·é›¢ã§è¨ˆç®—
+				if(battle_config.guild_skill_effective_range > 0) {	// “¯ˆê‹——£‚ÅŒvZ
 					range = battle_config.guild_skill_effective_range;
 					if(dx <= range && dy <= range) {
 						sd->paramb[0] += guild_checkskill(g,GD_LEADERSHIP);	// str
 						sd->paramb[1] += guild_checkskill(g,GD_SOULCOLD);	// agi
 						sd->paramb[2] += guild_checkskill(g,GD_GLORYWOUNDS);	// vit
 						sd->paramb[4] += guild_checkskill(g,GD_HAWKEYES);	// dex
-						sd->under_the_influence_of_the_guild_skill = range+1;	// 0>ã§å½±éŸ¿ä¸‹,é‡ãªã‚‹å ´åˆã‚‚ã‚ã‚‹ã®ã§+1
+						sd->under_the_influence_of_the_guild_skill = range+1;	// 0>‚Å‰e‹¿‰º,d‚È‚éê‡‚à‚ ‚é‚Ì‚Å+1
 					} else {
 						sd->under_the_influence_of_the_guild_skill = 0;
 					}
-				} else {	// å€‹åˆ¥è·é›¢
+				} else {	// ŒÂ•Ê‹——£
 					int min_range = 0x7fffffff;
 					range = skill_get_range(GD_LEADERSHIP,guild_skill_get_lv(g,GD_LEADERSHIP));
 					if(dx <= range && dy <= range) {
@@ -1033,7 +1033,7 @@ L_RECALC:
 					else
 						sd->under_the_influence_of_the_guild_skill = min_range+1;
 				}
-			} else {	// ãƒãƒƒãƒ—å…¨ä½“
+			} else {	// ƒ}ƒbƒv‘S‘Ì
 				sd->paramb[0] += guild_checkskill(g,GD_LEADERSHIP);	// str
 				sd->paramb[1] += guild_checkskill(g,GD_SOULCOLD);	// agi
 				sd->paramb[2] += guild_checkskill(g,GD_GLORYWOUNDS);	// vit
@@ -1043,18 +1043,18 @@ L_RECALC:
 		} else {
 			sd->under_the_influence_of_the_guild_skill = 0;
 		}
-	} else {	// ãƒãƒƒãƒ—ãŒé•ã£ãŸã‚Šâ€¦ç„¡åŠ¹ã ã£ãŸã‚Š
+	} else {	// ƒ}ƒbƒv‚ªˆá‚Á‚½‚èc–³Œø‚¾‚Á‚½‚è
 		sd->under_the_influence_of_the_guild_skill = 0;
 	}
 
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰åŒ–ã«ã‚ˆã‚‹åŸºæœ¬ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è£œæ­£
+	// ƒXƒe[ƒ^ƒX•Ï‰»‚É‚æ‚éŠî–{ƒpƒ‰ƒ[ƒ^•â³
 	if(sd->sc.count) {
-		// é›†ä¸­åŠ›å‘ä¸Š
+		// W’†—ÍŒüã
 		if(sd->sc.data[SC_CONCENTRATE].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1) {
 			sd->paramb[1] += (sd->status.agi+sd->paramb[1]+sd->parame[1]-sd->paramcard[1])*(2+sd->sc.data[SC_CONCENTRATE].val1)/100;
 			sd->paramb[4] += (sd->status.dex+sd->paramb[4]+sd->parame[4]-sd->paramcard[4])*(2+sd->sc.data[SC_CONCENTRATE].val1)/100;
 		}
-		// ã‚´ã‚¹ãƒšãƒ«ALL+20
+		// ƒSƒXƒyƒ‹ALL+20
 		if(sd->sc.data[SC_INCALLSTATUS].timer != -1) {
 			sd->paramb[0] += sd->sc.data[SC_INCALLSTATUS].val1;
 			sd->paramb[1] += sd->sc.data[SC_INCALLSTATUS].val1;
@@ -1064,7 +1064,7 @@ L_RECALC:
 			sd->paramb[5] += sd->sc.data[SC_INCALLSTATUS].val1;
 		}
 
-		// ä¸Šä½ä¸€æ¬¡è·ã®é­‚
+		// ãˆÊˆêŸE‚Ì°
 		if(sd->sc.data[SC_HIGH].timer != -1) {
 			if(sd->status.base_level < 60) {
 				if(sd->status.str < sd->status.base_level-10)  sd->paramb[0] += sd->status.base_level-10 - sd->status.str;
@@ -1084,7 +1084,7 @@ L_RECALC:
 			}
 		}
 
-		// é£Ÿäº‹ç”¨
+		// H–—p
 		if(sd->sc.data[SC_MEAL_INCSTR2].timer != -1)
 			sd->paramb[0] += sd->sc.data[SC_MEAL_INCSTR2].val1;
 		else if(sd->sc.data[SC_MEAL_INCSTR].timer != -1)
@@ -1110,11 +1110,11 @@ L_RECALC:
 		else if(sd->sc.data[SC_MEAL_INCLUK].timer != -1)
 			sd->paramb[5] += sd->sc.data[SC_MEAL_INCLUK].val1;
 
-		// ã‚¿ã‚¤ãƒªã‚®ã®ã‚¹ãƒ‘ãƒ¼ãƒˆçŠ¶æ…‹ STR+10
+		// ƒ^ƒCƒŠƒM‚ÌƒXƒp[ƒgó‘Ô STR+10
 		if(sd->sc.data[SC_SPURT].timer != -1)
 			sd->paramb[0] += 10;
 
-		// ã‚®ãƒ«ãƒ‰ã‚¹ã‚­ãƒ« è‡¨æˆ¦æ…‹å‹¢
+		// ƒMƒ‹ƒhƒXƒLƒ‹ —Õí‘Ô¨
 		if(sd->sc.data[SC_BATTLEORDER].timer != -1) {
 			sd->paramb[0] += 5*sd->sc.data[SC_BATTLEORDER].val1;
 			sd->paramb[3] += 5*sd->sc.data[SC_BATTLEORDER].val1;
@@ -1124,36 +1124,36 @@ L_RECALC:
 		if(sd->sc.data[SC_CHASEWALK_STR].timer != -1)
 			sd->paramb[0] += sd->sc.data[SC_CHASEWALK_STR].val1;
 
-		if(sd->sc.data[SC_INCREASEAGI].timer != -1)	// é€Ÿåº¦å¢—åŠ 
+		if(sd->sc.data[SC_INCREASEAGI].timer != -1)	// ‘¬“x‘‰Á
 			sd->paramb[1] += 2+sd->sc.data[SC_INCREASEAGI].val1;
 
-		if(sd->sc.data[SC_DECREASEAGI].timer != -1)	// é€Ÿåº¦æ¸›å°‘ï¼ˆã‚ªãƒ¼ãƒãƒ¼ã‚¹ã‚­ãƒ«ä»•æ§˜ã¯AGI-50ï¼‰
+		if(sd->sc.data[SC_DECREASEAGI].timer != -1)	// ‘¬“xŒ¸­iƒI[ƒo[ƒXƒLƒ‹d—l‚ÍAGI-50j
 			sd->paramb[1] -= (sd->sc.data[SC_DECREASEAGI].val2)? 50: 2+sd->sc.data[SC_DECREASEAGI].val1;
 
-		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1)	// ã‚¢ã‚¯ãƒ©ã‚¦ã‚¹ãƒ€ãƒƒã‚·ãƒ¥
+		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1)	// ƒAƒNƒ‰ƒEƒXƒ_ƒbƒVƒ…
 			sd->paramb[1] += sd->sc.data[SC_ARCLOUSEDASH].val2;
 
-		if(sd->sc.data[SC_BLESSING].timer != -1) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+		if(sd->sc.data[SC_BLESSING].timer != -1) {	// ƒuƒŒƒbƒVƒ“ƒO
 			sd->paramb[0] += sd->sc.data[SC_BLESSING].val1;
 			sd->paramb[3] += sd->sc.data[SC_BLESSING].val1;
 			sd->paramb[4] += sd->sc.data[SC_BLESSING].val1;
 		}
-		if(sd->sc.data[SC_NEN].timer != -1) {	// å¿µ
+		if(sd->sc.data[SC_NEN].timer != -1) {	// ”O
 			sd->paramb[0] += sd->sc.data[SC_NEN].val1;
 			sd->paramb[3] += sd->sc.data[SC_NEN].val1;
 		}
-		if(sd->sc.data[SC_SUITON].timer != -1) {	// æ°´é
+		if(sd->sc.data[SC_SUITON].timer != -1) {	// …“Ù
 			if(sd->sc.data[SC_SUITON].val3)
 				sd->paramb[1] += sd->sc.data[SC_SUITON].val3;
 		}
 
-		if(sd->sc.data[SC_GLORIA].timer != -1)	// ã‚°ãƒ­ãƒªã‚¢
+		if(sd->sc.data[SC_GLORIA].timer != -1)	// ƒOƒƒŠƒA
 			sd->paramb[5] += 30;
 
-		if(sd->sc.data[SC_LOUD].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1)	// ãƒ©ã‚¦ãƒ‰ãƒœã‚¤ã‚¹
+		if(sd->sc.data[SC_LOUD].timer != -1 && sd->sc.data[SC_QUAGMIRE].timer == -1)	// ƒ‰ƒEƒhƒ{ƒCƒX
 			sd->paramb[0] += 4;
 
-		if(sd->sc.data[SC_TRUESIGHT].timer != -1) {	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sd->sc.data[SC_TRUESIGHT].timer != -1) {	// ƒgƒDƒ‹[ƒTƒCƒg
 			sd->paramb[0] += 5;
 			sd->paramb[1] += 5;
 			sd->paramb[2] += 5;
@@ -1161,16 +1161,16 @@ L_RECALC:
 			sd->paramb[4] += 5;
 			sd->paramb[5] += 5;
 		}
-		if(sd->sc.data[SC_INCREASING].timer != -1) { // ã‚¤ãƒ³ã‚¯ãƒªãƒ¼ã‚·ãƒ³ã‚°ã‚¢ã‚­ãƒ¥ã‚¢ãƒ©ã‚·ãƒ¼
+		if(sd->sc.data[SC_INCREASING].timer != -1) { // ƒCƒ“ƒNƒŠ[ƒVƒ“ƒOƒAƒLƒ…ƒAƒ‰ƒV[
 			sd->paramb[1] += 4;
 			sd->paramb[4] += 4;
 		}
 
-		// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ã‚¹
+		// ƒfƒBƒtƒFƒ“ƒX
 		if(sd->sc.data[SC_DEFENCE].timer != -1)
 			sd->paramb[2] += sd->sc.data[SC_DEFENCE].val1*2;
 
-		if(sd->sc.data[SC_QUAGMIRE].timer != -1) {	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+		if(sd->sc.data[SC_QUAGMIRE].timer != -1) {	// ƒNƒ@ƒOƒ}ƒCƒA
 			short subagi = 0;
 			short subdex = 0;
 #ifdef PRE_RENEWAL
@@ -1188,7 +1188,7 @@ L_RECALC:
 			sd->paramb[4] -= subdex;
 		}
 
-		// ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹
+		// ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX
 		if(sd->sc.data[SC_MARSHOFABYSS].timer != -1) {
 			sd->paramb[1] -= sd->status.agi * (sd->sc.data[SC_MARSHOFABYSS].val3 / 2) / 100;
 			sd->paramb[4] -= sd->status.dex * (sd->sc.data[SC_MARSHOFABYSS].val3 / 2) / 100;
@@ -1215,7 +1215,7 @@ L_RECALC:
 					sd->paramb[4] += ssd->status.dex/2;
 					sd->paramb[5] += ssd->status.luk/2;
 				} else if(map[sd->bl.m].flag.pk) {
-					// ï¼°ï¼«ãƒãƒƒãƒ—ã®MCåˆ¶é™
+					// ‚o‚jƒ}ƒbƒv‚ÌMC§ŒÀ
 					// str
 					if(sd->paramb[0]+sd->parame[0]+sd->status.str < battle_config.max_marionette_pk_str)
 					{
@@ -1259,7 +1259,7 @@ L_RECALC:
 							sd->paramb[5] = battle_config.max_marionette_pk_luk - sd->status.luk;
 					}
 				} else if(map[sd->bl.m].flag.pvp) {
-					// ï¼°ï¼¶ï¼°ãƒãƒƒãƒ—ã®MCåˆ¶é™
+					// ‚o‚u‚oƒ}ƒbƒv‚ÌMC§ŒÀ
 					// str
 					if(sd->paramb[0]+sd->parame[0]+sd->status.str < battle_config.max_marionette_pvp_str)
 					{
@@ -1303,7 +1303,7 @@ L_RECALC:
 							sd->paramb[5] = battle_config.max_marionette_pvp_luk - sd->status.luk;
 					}
 				} else if(map[sd->bl.m].flag.gvg) {
-					// ï¼§ï¼¶ï¼§ãƒãƒƒãƒ—ã®MCåˆ¶é™
+					// ‚f‚u‚fƒ}ƒbƒv‚ÌMC§ŒÀ
 					// str
 					if(sd->paramb[0]+sd->parame[0]+sd->status.str < battle_config.max_marionette_gvg_str)
 					{
@@ -1347,7 +1347,7 @@ L_RECALC:
 							sd->paramb[5] = battle_config.max_marionette_gvg_luk - sd->status.luk;
 					}
 				} else {
-					// é€šå¸¸ã®MCåˆ¶é™
+					// ’Êí‚ÌMC§ŒÀ
 					// str
 					if(sd->paramb[0]+sd->parame[0]+sd->status.str < battle_config.max_marionette_str)
 					{
@@ -1393,9 +1393,9 @@ L_RECALC:
 				}
 			}
 		}
-		if(sd->sc.data[SC_WE_FEMALE].timer != -1) {	// ã‚ãªãŸã«å°½ãã—ã¾ã™
+		if(sd->sc.data[SC_WE_FEMALE].timer != -1) {	// ‚ ‚È‚½‚És‚­‚µ‚Ü‚·
 			if(sd->sc.data[SC_WE_FEMALE].val2 == 1) {
-				// è‡ªåˆ†ã¯å…¨ã¦-1
+				// ©•ª‚Í‘S‚Ä-1
 				sd->paramb[0]--;
 				sd->paramb[1]--;
 				sd->paramb[2]--;
@@ -1403,7 +1403,7 @@ L_RECALC:
 				sd->paramb[4]--;
 				sd->paramb[5]--;
 			} else if(sd->sc.data[SC_WE_FEMALE].val2 == 2) {
-				// ç›¸æ‰‹ã¯å…¨ã¦+1
+				// ‘Šè‚Í‘S‚Ä+1
 				sd->paramb[0]++;
 				sd->paramb[1]++;
 				sd->paramb[2]++;
@@ -1412,13 +1412,13 @@ L_RECALC:
 				sd->paramb[5]++;
 			}
 		}
-		if(sd->sc.data[SC_TURISUSS].timer != -1)	// ã‚¸ãƒ£ã‚¤ã‚¢ãƒ³ãƒˆã‚°ãƒ­ãƒ¼ã‚¹
+		if(sd->sc.data[SC_TURISUSS].timer != -1)	// ƒWƒƒƒCƒAƒ“ƒgƒOƒ[ƒX
 			sd->paramb[0] += 30;
-		if(sd->sc.data[SC_LAUDAAGNUS].timer != -1)	// ãƒ©ã‚¦ãƒ€ã‚¢ã‚°ãƒŒã‚¹
+		if(sd->sc.data[SC_LAUDAAGNUS].timer != -1)	// ƒ‰ƒEƒ_ƒAƒOƒkƒX
 			sd->paramb[2] += sd->sc.data[SC_LAUDAAGNUS].val2;
-		if(sd->sc.data[SC_LAUDARAMUS].timer != -1)	// ãƒ©ã‚¦ãƒ€ãƒ©ãƒ ã‚¹
+		if(sd->sc.data[SC_LAUDARAMUS].timer != -1)	// ƒ‰ƒEƒ_ƒ‰ƒ€ƒX
 			sd->paramb[5] += sd->sc.data[SC_LAUDARAMUS].val2;
-		if(sd->sc.data[SC_INSPIRATION].timer != -1) {	// ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sd->sc.data[SC_INSPIRATION].timer != -1) {	// ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“
 			int param = sd->status.base_level / 10 + sd->status.job_level / 5;
 			sd->paramb[0] += param;
 			sd->paramb[1] += param;
@@ -1427,23 +1427,23 @@ L_RECALC:
 			sd->paramb[4] += param;
 			sd->paramb[5] += param;
 		}
-		if(sd->sc.data[SC_MANDRAGORA].timer != -1)	// ãƒã‚¦ãƒªãƒ³ã‚°ã‚ªãƒ–ãƒãƒ³ãƒ‰ãƒ©ã‚´ãƒ©
+		if(sd->sc.data[SC_MANDRAGORA].timer != -1)	// ƒnƒEƒŠƒ“ƒOƒIƒuƒ}ƒ“ƒhƒ‰ƒSƒ‰
 			sd->paramb[3] -= sd->sc.data[SC_MANDRAGORA].val2;
-		if(sd->sc.data[SC_BANANA_BOMB].timer != -1)		// ãƒãƒŠãƒŠçˆ†å¼¾
+		if(sd->sc.data[SC_BANANA_BOMB].timer != -1)		// ƒoƒiƒi”š’e
 			sd->paramb[5] -= sd->paramb[5] * sd->sc.data[SC_BANANA_BOMB].val1 / 100;
-		if(sd->sc.data[SC_SAVAGE_STEAK].timer != -1)			// ã‚µãƒ™ãƒ¼ã‚¸ã®ä¸¸ç„¼ã
+		if(sd->sc.data[SC_SAVAGE_STEAK].timer != -1)			// ƒTƒx[ƒW‚ÌŠÛÄ‚«
 			sd->paramb[0] += sd->sc.data[SC_SAVAGE_STEAK].val1;
-		if(sd->sc.data[SC_DROCERA_HERB_STEAMED].timer != -1)	// ãƒ‰ãƒ­ã‚»ãƒ©ã®ãƒãƒ¼ãƒ–ç…®
+		if(sd->sc.data[SC_DROCERA_HERB_STEAMED].timer != -1)	// ƒhƒƒZƒ‰‚Ìƒn[ƒuÏ
 			sd->paramb[1] += sd->sc.data[SC_DROCERA_HERB_STEAMED].val1;
-		if(sd->sc.data[SC_MINOR_BBQ].timer != -1)				// ãƒŸãƒã‚¿ã‚¦ãƒ­ã‚¹ã®ç‰›ã‚«ãƒ«ãƒ“
+		if(sd->sc.data[SC_MINOR_BBQ].timer != -1)				// ƒ~ƒmƒ^ƒEƒƒX‚Ì‹ƒJƒ‹ƒr
 			sd->paramb[2] += sd->sc.data[SC_MINOR_BBQ].val1;
-		if(sd->sc.data[SC_COCKTAIL_WARG_BLOOD].timer != -1)		// ã‚«ã‚¯ãƒ†ãƒ«ã‚¦ã‚©ãƒ¼ã‚°ãƒ–ãƒ©ãƒƒãƒ‰
+		if(sd->sc.data[SC_COCKTAIL_WARG_BLOOD].timer != -1)		// ƒJƒNƒeƒ‹ƒEƒH[ƒOƒuƒ‰ƒbƒh
 			sd->paramb[3] += sd->sc.data[SC_COCKTAIL_WARG_BLOOD].val1;
-		if(sd->sc.data[SC_SIROMA_ICE_TEA].timer != -1)			// ã‚·ãƒ­ãƒã‚¢ã‚¤ã‚¹ãƒ†ã‚£ãƒ¼
+		if(sd->sc.data[SC_SIROMA_ICE_TEA].timer != -1)			// ƒVƒƒ}ƒAƒCƒXƒeƒB[
 			sd->paramb[4] += sd->sc.data[SC_SIROMA_ICE_TEA].val1;
-		if(sd->sc.data[SC_PUTTI_TAILS_NOODLES].timer != -1)		// ãƒ—ãƒ†ã‚£ãƒƒãƒˆã®ã—ã£ã½éºº
+		if(sd->sc.data[SC_PUTTI_TAILS_NOODLES].timer != -1)		// ƒvƒeƒBƒbƒg‚Ì‚µ‚Á‚Û–Ë
 			sd->paramb[5] += sd->sc.data[SC_PUTTI_TAILS_NOODLES].val1;
-		if(sd->sc.data[SC_STOMACHACHE].timer != -1) {		// è…¹ç—›
+		if(sd->sc.data[SC_STOMACHACHE].timer != -1) {		// • ’É
 			sd->paramb[0] -= sd->sc.data[SC_STOMACHACHE].val1;
 			sd->paramb[1] -= sd->sc.data[SC_STOMACHACHE].val1;
 			sd->paramb[2] -= sd->sc.data[SC_STOMACHACHE].val1;
@@ -1451,7 +1451,7 @@ L_RECALC:
 			sd->paramb[4] -= sd->sc.data[SC_STOMACHACHE].val1;
 			sd->paramb[5] -= sd->sc.data[SC_STOMACHACHE].val1;
 		}
-		if(sd->sc.data[SC_HARMONIZE].timer != -1) {	// ãƒãƒ¼ãƒ¢ãƒŠã‚¤ã‚º
+		if(sd->sc.data[SC_HARMONIZE].timer != -1) {	// ƒn[ƒ‚ƒiƒCƒY
 			sd->paramb[0] -= sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[1] -= sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[2] -= sd->sc.data[SC_HARMONIZE].val2;
@@ -1459,7 +1459,7 @@ L_RECALC:
 			sd->paramb[4] -= sd->sc.data[SC_HARMONIZE].val2;
 			sd->paramb[5] -= sd->sc.data[SC_HARMONIZE].val2;
 		}
-		if(sd->sc.data[SC_KYOUGAKU].timer != -1) {	// å¹»è¡“ -é©šæ„•-
+		if(sd->sc.data[SC_KYOUGAKU].timer != -1) {	// Œ¶p -‹Áœ±-
 			sd->paramb[0] -= sd->sc.data[SC_KYOUGAKU].val2;
 			sd->paramb[1] -= sd->sc.data[SC_KYOUGAKU].val2;
 			sd->paramb[2] -= sd->sc.data[SC_KYOUGAKU].val2;
@@ -1467,13 +1467,13 @@ L_RECALC:
 			sd->paramb[4] -= sd->sc.data[SC_KYOUGAKU].val2;
 			sd->paramb[5] -= sd->sc.data[SC_KYOUGAKU].val2;
 		}
-		if(sd->sc.data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ãƒ“ãƒ¨ãƒ³ãƒ‰ã‚ªãƒ–ã‚¦ã‚©ãƒ¼ã‚¯ãƒ©ã‚¤
+		if(sd->sc.data[SC_BEYOND_OF_WARCRY].timer != -1) {	// ƒrƒˆƒ“ƒhƒIƒuƒEƒH[ƒNƒ‰ƒC
 			sd->paramb[0] += sd->sc.data[SC_BEYOND_OF_WARCRY].val4;
 		}
-		if(sd->sc.data[SC_MELODYOFSINK].timer != -1) {	// ãƒ¡ãƒ­ãƒ‡ã‚£ãƒ¼ã‚ªãƒ–ã‚·ãƒ³ã‚¯
+		if(sd->sc.data[SC_MELODYOFSINK].timer != -1) {	// ƒƒƒfƒB[ƒIƒuƒVƒ“ƒN
 			sd->paramb[3] -= sd->sc.data[SC_MELODYOFSINK].val4;
 		}
-		if(sd->sc.data[SC_ALL_STAT_DOWN].timer != -1) {	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sd->sc.data[SC_ALL_STAT_DOWN].timer != -1) {	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			sd->paramb[0] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
 			sd->paramb[1] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
 			sd->paramb[2] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
@@ -1481,7 +1481,7 @@ L_RECALC:
 			sd->paramb[4] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
 			sd->paramb[5] -= sd->sc.data[SC_ALL_STAT_DOWN].val2;
 		}
-		if(sd->sc.data[SC_FULL_THROTTLE].timer != -1) {	// ãƒ•ãƒ«ã‚¹ãƒ­ãƒƒãƒˆãƒ«
+		if(sd->sc.data[SC_FULL_THROTTLE].timer != -1) {	// ƒtƒ‹ƒXƒƒbƒgƒ‹
 			sd->paramb[0] += sd->status.str  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 			sd->paramb[1] += sd->status.agi  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 			sd->paramb[2] += sd->status.vit  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
@@ -1489,7 +1489,7 @@ L_RECALC:
 			sd->paramb[4] += sd->status.dex  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 			sd->paramb[5] += sd->status.luk  * sd->sc.data[SC_FULL_THROTTLE].val2 / 100;
 		}
-		if(sd->sc.data[SC_UNIVERSESTANCE].timer != -1) {	// å®‡å®™ã®æ§‹ãˆ
+		if(sd->sc.data[SC_UNIVERSESTANCE].timer != -1) {	// ‰F’ˆ‚Ì\‚¦
 			int add = sd->sc.data[SC_UNIVERSESTANCE].val2;
 			sd->paramb[0] += add;
 			sd->paramb[1] += add;
@@ -1512,7 +1512,7 @@ L_RECALC:
 			sd->paramc[i] = 0;
 	}
 
-	// BASEATKè¨ˆç®—
+	// BASEATKŒvZ
 	if( sd->status.weapon == WT_BOW ||
 	    sd->status.weapon == WT_MUSICAL ||
 	    sd->status.weapon == WT_WHIP ||
@@ -1559,7 +1559,7 @@ L_RECALC:
 	sd->critical += sd->paramc[5] / 3 * 10 + 10;
 #endif
 
-	// ã‚¢ã‚¤ãƒ†ãƒ è£œæ­£
+	// ƒAƒCƒeƒ€•â³
 	if(sd->sc.count > 0) {
 		if(sd->sc.data[SC_MEAL_INCATK].timer != -1)
 			sd->base_atk += sd->sc.data[SC_MEAL_INCATK].val1;
@@ -1583,24 +1583,24 @@ L_RECALC:
 			sd->hit += 5;
 	}
 
-	if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {	// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+	if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {	// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 		sd->base_atk += 100;
 	}
-	if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+	if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 		sd->base_atk += 20+(sd->sc.data[SC_GATLINGFEVER].val1*10);
 	}
 	if(sd->sc.data[SC_VOLCANO].timer != -1
 #ifdef PRE_RENEWAL
 		&& sd->def_ele == ELE_FIRE
 #endif
-	) {	// ãƒœãƒ«ã‚±ãƒ¼ãƒ
+	) {	// ƒ{ƒ‹ƒP[ƒm
 		sd->base_atk += sd->sc.data[SC_VOLCANO].val3;
 	}
 #ifdef PRE_RENEWAL
-	if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// æˆ¦å¤ªé¼“ã®éŸ¿ã
+	if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// í‘¾ŒÛ‚Ì‹¿‚«
 		sd->base_atk += sd->sc.data[SC_DRUMBATTLE].val2;
 		//idx = sd->equip_index[EQUIP_INDEX_LARM];
-		// å·¦æ‰‹ã«ã¯é©ç”¨ã—ãªã„
+		// ¶è‚É‚Í“K—p‚µ‚È‚¢
 		//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 		//	sd->watk_ += sd->sc.data[SC_DRUMBATTLE].val2;
 	}
@@ -1632,18 +1632,18 @@ L_RECALC:
 		sd->mdef2 = (sd->mdef2*sd->mdef2_rate)/100;
 	if(sd->mdef2 < 1) sd->mdef2 = 1;
 
-	// ã‚·ãƒ³ã‚°ãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+	// ƒVƒ“ƒOƒ‹ƒAƒNƒVƒ‡ƒ“
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skill = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
 	{
 		sd->hit += skill*2;
 	}
-	// å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ‚ªé­”
+	// ‘¾—z‚ÆŒ‚Æ¯‚Ìˆ«–‚
 	if((skill = pc_checkskill(sd,SG_DEVIL)) > 0 && sd->status.job_level >= 50)
 	{
 		clif_status_load_id(sd,SI_DEVIL,1);
 	}
 
-	// å¤ªé™½ã¨æœˆã¨æ˜Ÿã®èåˆ
+	// ‘¾—z‚ÆŒ‚Æ¯‚Ì—Z‡
 	if(sd->sc.data[SC_FUSION].timer != -1)
 	{
 		sd->perfect_hit += 100;
@@ -1656,52 +1656,52 @@ L_RECALC:
 	else if(sd->sc.data[SC_SUMMER].timer != -1)
 		b_class = PC_CLASS_SU;
 
-	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ãƒ¯ã‚·ã®ç›®
+	if((skill = pc_checkskill(sd,AC_VULTURE)) > 0) {	// ƒƒV‚Ì–Ú
 		sd->hit += skill;
 		if(sd->status.weapon == WT_BOW)
 			sd->range.attackrange += skill;
 	}
-	if((skill = pc_checkskill(sd,GS_SNAKEEYE)) > 0) {	// ã‚¹ãƒãƒ¼ã‚¯ã‚¢ã‚¤
+	if((skill = pc_checkskill(sd,GS_SNAKEEYE)) > 0) {	// ƒXƒl[ƒNƒAƒC
 		if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE)
 		{
 			sd->range.attackrange += skill;
 			sd->hit += skill;
 		}
 	}
-	if((skill = pc_checkskill(sd,SU_SOULATTACK)) > 0) {	// ã‚½ã‚¦ãƒ«ã‚¢ã‚¿ãƒƒã‚¯
+	if((skill = pc_checkskill(sd,SU_SOULATTACK)) > 0) {	// ƒ\ƒEƒ‹ƒAƒ^ƒbƒN
 		sd->range.attackrange = 13;
 	}
-	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0)	// æ­¦å™¨ç ”ç©¶ã®å‘½ä¸­ç‡å¢—åŠ 
+	if((skill = pc_checkskill(sd,BS_WEAPONRESEARCH)) > 0)	// •ŠíŒ¤‹†‚Ì–½’†—¦‘‰Á
 		sd->hit += skill*2;
-	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// å‰£ä¿®ç·´ã®å‘½ä¸­ç‡å¢—åŠ 
+	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// Œ•C—û‚Ì–½’†—¦‘‰Á
 		sd->hit += skill*3;
 
 	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->status.base_level >= 99)
 	{
 		if(pc_isupper(sd))
 			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.upper_hp_rate/100;
-		else if(pc_isbaby(sd))	// é¤Šå­ã®å ´åˆæœ€å¤§HP70%
+		else if(pc_isbaby(sd))	// —{q‚Ìê‡Å‘åHP70%
 			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.baby_hp_rate/100;
 		else
 			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.normal_hp_rate/100;
 	}
 
-	if((skill = pc_checkskill(sd,CR_TRUST)) > 0) { // ãƒ•ã‚§ã‚¤ã‚¹
+	if((skill = pc_checkskill(sd,CR_TRUST)) > 0) { // ƒtƒFƒCƒX
 		sd->status.max_hp    += skill*200;
 		sd->subele[ELE_HOLY] += skill*5;
 	}
 
-	if((skill = pc_checkskill(sd,BS_SKINTEMPER)) > 0) { // ã‚¹ã‚­ãƒ³ãƒ†ãƒ³ãƒ‘ãƒªãƒ³ã‚°
+	if((skill = pc_checkskill(sd,BS_SKINTEMPER)) > 0) { // ƒXƒLƒ“ƒeƒ“ƒpƒŠƒ“ƒO
 		sd->subele[ELE_FIRE]    += skill*4;
 		sd->subele[ELE_NEUTRAL] += skill*1;
 	}
 
-	if(pc_checkskill(sd,SU_SPRITEMABLE) > 0) {	// ã«ã‚ƒã‚“é­‚
+	if(pc_checkskill(sd,SU_SPRITEMABLE) > 0) {	// ‚É‚á‚ñ°
 		sd->status.max_hp += 2000;
 		sd->status.max_sp += 200;
 		clif_status_load_id(sd,SI_SPRITEMABLE,1);
 	}
-	if(pc_checkskill(sd,SU_POWEROFSEA) > 0) {	// æµ·ã®åŠ›
+	if(pc_checkskill(sd,SU_POWEROFSEA) > 0) {	// ŠC‚Ì—Í
 		sd->status.max_hp += 1000;
 		sd->status.max_sp += 100;
 		if(pc_checkskill_summoner(sd, SU_POWEROFSEA) >= 20) {
@@ -1710,7 +1710,7 @@ L_RECALC:
 		}
 	}
 
-	// bAtkRange2,bAtkRangeRate2ã®å°„ç¨‹è¨ˆç®—
+	// bAtkRange2,bAtkRangeRate2‚ÌË’öŒvZ
 	sd->range.attackrange  += sd->range.add_attackrange;
 	sd->range.attackrange_ += sd->range.add_attackrange;
 	sd->range.attackrange  = sd->range.attackrange  * sd->range.add_attackrange_rate / 100;
@@ -1722,12 +1722,12 @@ L_RECALC:
 
 	blv = (sd->status.base_level > 0)? sd->status.base_level - 1: 0;
 
-	// æœ€å¤§HPè¨ˆç®—
+	// Å‘åHPŒvZ
 	calc_val = job_db[sd->s_class.job].hp_base[blv] * (100 + sd->paramc[2]) / 100;
 
-	if(pc_isupper(sd))	// è»¢ç”Ÿè·ã®å ´åˆæœ€å¤§HP25%UP
+	if(pc_isupper(sd))	// “]¶E‚Ìê‡Å‘åHP25%UP
 		sd->status.max_hp += calc_val * battle_config.upper_hp_rate / 100;
-	else if(pc_isbaby(sd))	// é¤Šå­ã®å ´åˆæœ€å¤§HP70%
+	else if(pc_isbaby(sd))	// —{q‚Ìê‡Å‘åHP70%
 		sd->status.max_hp += calc_val * battle_config.baby_hp_rate / 100;
 	else
 		sd->status.max_hp += calc_val * battle_config.normal_hp_rate / 100;
@@ -1737,13 +1737,13 @@ L_RECALC:
 	if(sd->hprate != 100)
 		sd->status.max_hp = sd->status.max_hp * sd->hprate / 100;
 
-	if(sd->sc.data[SC_VENOMBLEED].timer != -1) {	// ãƒ™ãƒŠãƒ ãƒ–ãƒªãƒ¼ãƒ‰
+	if(sd->sc.data[SC_VENOMBLEED].timer != -1) {	// ƒxƒiƒ€ƒuƒŠ[ƒh
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_VENOMBLEED].val2 / 100);
 	}
-	if(sd->sc.data[SC__WEAKNESS].timer != -1) {	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¦ã‚£ãƒ¼ã‚¯ãƒã‚¹
+	if(sd->sc.data[SC__WEAKNESS].timer != -1) {	// ƒ}ƒXƒJƒŒ[ƒh F ƒEƒB[ƒNƒlƒX
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * (sd->sc.data[SC__WEAKNESS].val1 * 10) / 100);
 	}
-	if(sd->sc.data[SC_BERSERK].timer != -1) {	// ãƒãƒ¼ã‚µãƒ¼ã‚¯
+	if(sd->sc.data[SC_BERSERK].timer != -1) {	// ƒo[ƒT[ƒN
 		sd->status.max_hp *= 3;
 	}
 	if(sd->sc.data[SC_INCMHP2].timer != -1) {
@@ -1752,21 +1752,21 @@ L_RECALC:
 	if(sd->sc.data[SC_SUPPORT_HPSP].timer != -1) {
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_SUPPORT_HPSP].val1) / 100);
 	}
-	if(sd->sc.data[SC_EPICLESIS].timer != -1) {		// ã‚¨ãƒ”ã‚¯ãƒ¬ã‚·ã‚¹
+	if(sd->sc.data[SC_EPICLESIS].timer != -1) {		// ƒGƒsƒNƒŒƒVƒX
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_EPICLESIS].val2) / 100);
 	}
 	if(sd->sc.data[SC_EQC].timer != -1)
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_EQC].val3 / 100);
-	if(sd->sc.data[SC_LUNARSTANCE].timer != -1) {		// æœˆã®æ§‹ãˆ
+	if(sd->sc.data[SC_LUNARSTANCE].timer != -1) {		// Œ‚Ì\‚¦
 		sd->status.max_hp = (int)((atn_bignumber)sd->status.max_hp * (100 + sd->sc.data[SC_LUNARSTANCE].val2) / 100);
 	}
 
-	// æœ€å¤§SPè¨ˆç®—
+	// Å‘åSPŒvZ
 	calc_val = job_db[sd->s_class.job].sp_base[blv] * (100 + sd->paramc[3]) / 100 + (sd->parame[3] - sd->paramcard[3]);
 
-	if(pc_isupper(sd))	// è»¢ç”Ÿè·ã®å ´åˆæœ€å¤§SP125%
+	if(pc_isupper(sd))	// “]¶E‚Ìê‡Å‘åSP125%
 		sd->status.max_sp += calc_val * battle_config.upper_sp_rate / 100;
-	else if(pc_isbaby(sd))	// é¤Šå­ã®å ´åˆæœ€å¤§SP70%
+	else if(pc_isbaby(sd))	// —{q‚Ìê‡Å‘åSP70%
 		sd->status.max_sp += calc_val * battle_config.baby_sp_rate / 100;
 	else
 		sd->status.max_sp += calc_val * battle_config.normal_sp_rate / 100;
@@ -1774,15 +1774,15 @@ L_RECALC:
 	if(sd->sprate != 100)
 		sd->status.max_sp = sd->status.max_sp * sd->sprate / 100;
 
-	if((skill = pc_checkskill(sd,HP_MEDITATIO)) > 0) // ãƒ¡ãƒ‡ã‚£ã‚¿ãƒ†ã‚£ã‚ª
+	if((skill = pc_checkskill(sd,HP_MEDITATIO)) > 0) // ƒƒfƒBƒ^ƒeƒBƒI
 		sd->status.max_sp += sd->status.max_sp * skill / 100;
-	if((skill = pc_checkskill(sd,HW_SOULDRAIN)) > 0) // ã‚½ã‚¦ãƒ«ãƒ‰ãƒ¬ã‚¤ãƒ³
+	if((skill = pc_checkskill(sd,HW_SOULDRAIN)) > 0) // ƒ\ƒEƒ‹ƒhƒŒƒCƒ“
 		sd->status.max_sp += sd->status.max_sp * 2 * skill / 100;
-	if((skill = pc_checkskill(sd,SL_KAINA)) > 0)	// ã‚«ã‚¤ãƒŠ
+	if((skill = pc_checkskill(sd,SL_KAINA)) > 0)	// ƒJƒCƒi
 		sd->status.max_sp += 30 * skill;
-	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// ãƒˆãƒ©ãƒƒãƒ—ç ”ç©¶
+	if((skill = pc_checkskill(sd,RA_RESEARCHTRAP)) > 0)	// ƒgƒ‰ƒbƒvŒ¤‹†
 		sd->status.max_sp += 200 + (skill*20);
-	if((skill = pc_checkskill(sd,WM_LESSON)) > 0)	// ãƒ¬ãƒƒã‚¹ãƒ³
+	if((skill = pc_checkskill(sd,WM_LESSON)) > 0)	// ƒŒƒbƒXƒ“
 		sd->status.max_sp += skill * 30;
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
@@ -1792,31 +1792,31 @@ L_RECALC:
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_SUPPORT_HPSP].val1) / 100);
 	}
 
-	// SPæ¶ˆè²»
-	if((skill = pc_checkskill(sd,HP_MANARECHARGE)) > 0) {	// ãƒãƒŠãƒªãƒãƒ£ãƒ¼ã‚¸
+	// SPÁ”ï
+	if((skill = pc_checkskill(sd,HP_MANARECHARGE)) > 0) {	// ƒ}ƒiƒŠƒ`ƒƒ[ƒW
 		sd->dsprate -= skill * 4;
 		if(sd->dsprate < 0)
 			sd->dsprate = 0;
 	}
 
-	// è‡ªç„¶å›å¾©HP
+	// ©‘R‰ñ•œHP
 	sd->nhealhp = 1 + (sd->paramc[2]/5) + (sd->status.max_hp/200);
-	if((skill = pc_checkskill(sd,SM_RECOVERY)) > 0) {	// HPå›å¾©åŠ›å‘ä¸Š
+	if((skill = pc_checkskill(sd,SM_RECOVERY)) > 0) {	// HP‰ñ•œ—ÍŒüã
 		sd->nshealhp = skill * 5 + sd->status.max_hp * skill / 500;
 		if(sd->nshealhp > 0x7fff)
 			sd->nshealhp = 0x7fff;
 	}
-	if((skill = pc_checkskill(sd,TK_HPTIME)) > 0) {	// å®‰ã‚‰ã‹ãªä¼‘æ¯
+	if((skill = pc_checkskill(sd,TK_HPTIME)) > 0) {	// ˆÀ‚ç‚©‚È‹x‘§
 		sd->regen.tk_hp = skill*30 + (sd->status.max_hp*skill/500);
 		if(sd->regen.tk_hp > 0x7fff)
 			sd->regen.tk_hp = 0x7fff;
 	}
-	if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {	// ç‚¹ç©´ -æ´»-
+	if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {	// “_ŒŠ -Šˆ-
 		sd->nhealhp += sd->nhealhp * (50 + sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 30) / 100;
 		if(sd->nhealhp > 0x7fff)
 			sd->nhealhp = 0x7fff;
 	}
-	if(sd->sc.data[SC_EXTRACT_WHITE_POTION_Z].timer != -1) {	// æ¿ƒç¸®ãƒ›ãƒ¯ã‚¤ãƒˆãƒãƒ¼ã‚·ãƒ§ãƒ³Z
+	if(sd->sc.data[SC_EXTRACT_WHITE_POTION_Z].timer != -1) {	// ”ZkƒzƒƒCƒgƒ|[ƒVƒ‡ƒ“Z
 		sd->nhealhp += sd->nhealhp * sd->sc.data[SC_EXTRACT_WHITE_POTION_Z].val1 / 100;
 		if(sd->nhealhp > 0x7fff)
 			sd->nhealhp = 0x7fff;
@@ -1824,21 +1824,21 @@ L_RECALC:
 	if(sd->sc.data[SC_BERSERK].timer != -1) {
 		sd->nhealhp = 0;
 	}
-	// è‡ªç„¶å›å¾©SP
+	// ©‘R‰ñ•œSP
 	sd->nhealsp = 1 + (sd->paramc[3]/6) + (sd->status.max_sp/100);
 	if(sd->paramc[3] >= 120)
 		sd->nhealsp += ((sd->paramc[3]-120)>>1) + 4;
-	if((skill = pc_checkskill(sd,MG_SRECOVERY)) > 0) {	// SPå›å¾©åŠ›å‘ä¸Š
+	if((skill = pc_checkskill(sd,MG_SRECOVERY)) > 0) {	// SP‰ñ•œ—ÍŒüã
 		sd->nshealsp = skill*3 + (sd->status.max_sp*skill/500);
 		if(sd->nshealsp > 0x7fff)
 			sd->nshealsp = 0x7fff;
 	}
-	if((skill = pc_checkskill(sd,NJ_NINPOU)) > 0) {	// å¿æ³•ä¿®ç·´
+	if((skill = pc_checkskill(sd,NJ_NINPOU)) > 0) {	// ”E–@C—û
 		sd->nshealsp = skill*3 + (sd->status.max_sp*skill/500);
 		if(sd->nshealsp > 0x7fff)
 			sd->nshealsp = 0x7fff;
 	}
-	if((skill = pc_checkskill(sd,WM_LESSON)) > 0) {	// ãƒ¬ãƒƒã‚¹ãƒ³
+	if((skill = pc_checkskill(sd,WM_LESSON)) > 0) {	// ƒŒƒbƒXƒ“
 		sd->nshealsp = 3 + skill * 3;
 		if(sd->nshealsp > 0x7fff)
 			sd->nshealsp = 0x7fff;
@@ -1852,7 +1852,7 @@ L_RECALC:
 		if(sd->nsshealsp > 0x7fff)
 			sd->nsshealsp = 0x7fff;
 	}
-	if((skill = pc_checkskill(sd,TK_SPTIME)) > 0) { // æ¥½ã—ã„ä¼‘æ¯
+	if((skill = pc_checkskill(sd,TK_SPTIME)) > 0) { // Šy‚µ‚¢‹x‘§
 		sd->regen.tk_sp = skill*3 + (sd->status.max_sp*skill/500);
 		if(sd->regen.tk_sp > 0x7fff)
 			sd->regen.tk_sp = 0x7fff;
@@ -1868,87 +1868,87 @@ L_RECALC:
 			sd->nhealsp = 1;
 	}
 	if((skill = pc_checkskill(sd,HP_MEDITATIO)) > 0) {
-		// ãƒ¡ãƒ‡ã‚£ã‚¿ãƒ†ã‚£ã‚ªã¯SPRã§ã¯ãªãè‡ªç„¶å›å¾©ã«ã‹ã‹ã‚‹
+		// ƒƒfƒBƒ^ƒeƒBƒI‚ÍSPR‚Å‚Í‚È‚­©‘R‰ñ•œ‚É‚©‚©‚é
 		sd->nhealsp += (sd->nhealsp)*3*skill/100;
 		if(sd->nhealsp > 0x7fff)
 			sd->nhealsp = 0x7fff;
 	}
-	if(sd->sc.data[SC_VITATA_500].timer != -1) {	// ãƒ“ã‚¿ã‚¿500
+	if(sd->sc.data[SC_VITATA_500].timer != -1) {	// ƒrƒ^ƒ^500
 		sd->nhealsp += sd->nhealsp * sd->sc.data[SC_VITATA_500].val1 / 100;
 		if(sd->nhealsp > 0x7fff)
 			sd->nhealsp = 0x7fff;
 	}
-	if(sd->sc.data[SC_REBOUND].timer != -1) {	// ãƒªãƒã‚¦ãƒ³ãƒ‰
+	if(sd->sc.data[SC_REBOUND].timer != -1) {	// ƒŠƒoƒEƒ“ƒh
 		sd->nhealhp = sd->nhealsp = 0;
 	}
 
-	// ç¨®æ—è€æ€§ï¼ˆã“ã‚Œã§ã„ã„ã®ï¼Ÿ ãƒ‡ã‚£ãƒã‚¤ãƒ³ãƒ—ãƒ­ãƒ†ã‚¯ã‚·ãƒ§ãƒ³ã¨åŒã˜å‡¦ç†ãŒã„ã‚‹ã‹ã‚‚ï¼‰
-	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ãƒ‰ãƒ©ã‚´ãƒãƒ­ã‚¸ãƒ¼
+	// í‘°‘Ï«i‚±‚ê‚Å‚¢‚¢‚ÌH ƒfƒBƒoƒCƒ“ƒvƒƒeƒNƒVƒ‡ƒ“‚Æ“¯‚¶ˆ—‚ª‚¢‚é‚©‚àj
+	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ƒhƒ‰ƒSƒmƒƒW[
 		skill = skill*4;
 		sd->addrace[RCT_DRAGON]  += skill;
 		sd->addrace_[RCT_DRAGON] += skill;
 		sd->subrace[RCT_DRAGON]  += skill;
 	}
-	// Fleeä¸Šæ˜‡
-	if((skill = pc_checkskill(sd,TF_MISS)) > 0) {	// å›é¿ç‡å¢—åŠ 
+	// Fleeã¸
+	if((skill = pc_checkskill(sd,TF_MISS)) > 0) {	// ‰ñ”ğ—¦‘‰Á
 		if(sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_RG || sd->s_class.job == PC_JOB_GC || sd->s_class.job == PC_JOB_SC)
 			sd->flee += skill*4;
 		else
 			sd->flee += skill*3;
 	}
-	if((skill = pc_checkskill(sd,MO_DODGE)) > 0)	// è¦‹åˆ‡ã‚Š
+	if((skill = pc_checkskill(sd,MO_DODGE)) > 0)	// Œ©Ø‚è
 		sd->flee += (skill*3)>>1;
 	if(sd->sc.count > 0) {
 		if(sd->sc.data[SC_INCFLEE].timer != -1)
 			sd->flee += sd->sc.data[SC_INCFLEE].val1;
 		if(sd->sc.data[SC_INCFLEE2].timer != -1)
 			sd->flee += sd->sc.data[SC_INCFLEE2].val1;
-		if(sd->sc.data[SC_GROOMING].timer != -1)	// ã‚°ãƒ«ãƒ¼ãƒŸãƒ³ã‚°
+		if(sd->sc.data[SC_GROOMING].timer != -1)	// ƒOƒ‹[ƒ~ƒ“ƒO
 			sd->flee += sd->sc.data[SC_GROOMING].val2;
 	}
-	if(pc_isdoram(sd) && pc_checkskill(sd,SU_POWEROFLIFE) > 0) {	// ç”Ÿå‘½ã®åŠ›
+	if(pc_isdoram(sd) && pc_checkskill(sd,SU_POWEROFLIFE) > 0) {	// ¶–½‚Ì—Í
 		sd->hit += 50;
 		sd->flee += 50;
 		sd->critical += 200;
 	}
 	// Def
-	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MAINFRAME)) > 0) {		// é­”å°ã‚®ã‚¢ï¼†ãƒ¡ã‚¤ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ æ”¹é€ 
+	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MAINFRAME)) > 0) {		// –‚“±ƒMƒA•ƒƒCƒ“ƒtƒŒ[ƒ€‰ü‘¢
 		if(skill == 1)
 			sd->def += 4;
 		else
 			sd->def += (skill*4) - 1;
 	}
 #ifdef PRE_RENEWAL
-	// MATKä¹—ç®—å‡¦ç†(æ–è£œæ­£ä»¥å¤–)
+	// MATKæZˆ—(ñ•â³ˆÈŠO)
 	if(sd->matk_rate != 100) {
 		sd->matk1 = sd->matk1 * sd->matk_rate / 100;
 		sd->matk2 = sd->matk2 * sd->matk_rate / 100;
 	}
 #endif
-	// amotionã®è¨ˆç®—
+	// amotion‚ÌŒvZ
 	sd->amotion = status_calc_amotion_pc(sd);
 	sd->aspd = sd->amotion<<1;
-	// speedã®è¨ˆç®—
+	// speed‚ÌŒvZ
 	sd->speed = status_calc_speed_pc(sd,sd->speed);
 
-	// ã‚¹ã‚­ãƒ«ã‚„ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã«ã‚ˆã‚‹æ®‹ã‚Šã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è£œæ­£
+	// ƒXƒLƒ‹‚âƒXƒe[ƒ^ƒXˆÙí‚É‚æ‚éc‚è‚Ìƒpƒ‰ƒ[ƒ^•â³
 	if(sd->sc.count > 0) {
-		// å¤ªé™½ã®å®‰æ¥½ DEFå¢—åŠ 
+		// ‘¾—z‚ÌˆÀŠy DEF‘‰Á
 		if(sd->sc.data[SC_SUN_COMFORT].timer != -1)
 			sd->def2 += (sd->status.base_level + sd->status.dex + sd->status.luk)/2;
 			//sd->def += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
-		// æœˆã®å®‰æ¥½
+		// Œ‚ÌˆÀŠy
 		if(sd->sc.data[SC_MOON_COMFORT].timer != -1 && (sd->bl.m == sd->feel_index[1] || sd->sc.data[SC_MIRACLE].timer != -1))
 			sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk)/10;
 			//sd->flee += (sd->status.base_level + sd->status.dex + sd->status.luk + sd->paramb[4] + sd->paramb[5])/10;
 
-		// ã‚¯ãƒ­ãƒ¼ã‚ºã‚³ãƒ³ãƒ•ã‚¡ã‚¤ãƒ³
+		// ƒNƒ[ƒYƒRƒ“ƒtƒ@ƒCƒ“
 		if(sd->sc.data[SC_CLOSECONFINE].timer != -1)
 			sd->flee += 10;
 
-		// ATK/DEFå¤‰åŒ–å½¢
-		if(sd->sc.data[SC_ANGELUS].timer != -1) {	// ã‚¨ãƒ³ã‚¸ã‚§ãƒ©ã‚¹
+		// ATK/DEF•Ï‰»Œ`
+		if(sd->sc.data[SC_ANGELUS].timer != -1) {	// ƒGƒ“ƒWƒFƒ‰ƒX
 #ifdef PRE_RENEWAL
 			sd->def2 = sd->def2*(110+5*sd->sc.data[SC_ANGELUS].val1)/100;
 #else
@@ -1956,42 +1956,42 @@ L_RECALC:
 #endif
 		}
 #ifdef PRE_RENEWAL
-		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// ã‚¤ãƒ ãƒã‚·ãƒ†ã‚£ã‚ªãƒãƒŒã‚¹
+		if(sd->sc.data[SC_IMPOSITIO].timer != -1) {// ƒCƒ€ƒ|ƒVƒeƒBƒIƒ}ƒkƒX
 			sd->watk += sd->sc.data[SC_IMPOSITIO].val1*5;
-			// å·¦æ‰‹ã«ã¯é©ç”¨ã—ãªã„
+			// ¶è‚É‚Í“K—p‚µ‚È‚¢
 			//idx = sd->equip_index[EQUIP_INDEX_LARM];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ += sd->sc.data[SC_IMPOSITIO].val1*5;
 		}
 #endif
-		if(sd->sc.data[SC__BLOODYLUST].timer != -1) {	// ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒ©ã‚¹ãƒˆ
+		if(sd->sc.data[SC__BLOODYLUST].timer != -1) {	// ƒuƒ‰ƒbƒfƒBƒ‰ƒXƒg
 			sd->def2 = sd->def2*(100 - 55) / 100;
 #ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk*(100 + 32) / 100;
 			sd->watk = sd->watk*(100 + 32) / 100;
 #endif
-			// å·¦æ‰‹ã«ã¯é©ç”¨ã—ãªã„
+			// ¶è‚É‚Í“K—p‚µ‚È‚¢
 			//idx = sd->equip_index[EQUIP_INDEX_LARM];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ = sd->watk_*(100+32)/100;
 		}
-		else if(sd->sc.data[SC_PROVOKE].timer != -1) {	// ãƒ—ãƒ­ãƒœãƒƒã‚¯
+		else if(sd->sc.data[SC_PROVOKE].timer != -1) {	// ƒvƒƒ{ƒbƒN
 			sd->def2 = sd->def2*(100 - 5 - 5 * sd->sc.data[SC_PROVOKE].val1) / 100;
 #ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
 			sd->watk = sd->watk*(100 + 2 + 3 * sd->sc.data[SC_PROVOKE].val1) / 100;
 #endif
-			// å·¦æ‰‹ã«ã¯é©ç”¨ã—ãªã„
+			// ¶è‚É‚Í“K—p‚µ‚È‚¢
 			//idx = sd->equip_index[EQUIP_INDEX_LARM];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->type == ITEMTYPE_ARMOR)
 			//	sd->watk_ = sd->watk_*(100+2+3*sd->sc.data[SC_PROVOKE].val1)/100;
 		}
-		if(sd->sc.data[SC_POISON].timer != -1)	// æ¯’çŠ¶æ…‹
+		if(sd->sc.data[SC_POISON].timer != -1)	// “Åó‘Ô
 			sd->def2 = sd->def2*75/100;
 
-		// é‹å‘½ã®ã‚¿ãƒ­ãƒƒãƒˆã‚«ãƒ¼ãƒ‰
+		// ‰^–½‚Ìƒ^ƒƒbƒgƒJ[ƒh
 		if(sd->sc.data[SC_THE_MAGICIAN].timer != -1) {
-			// ATKåŠæ¸›
+			// ATK”¼Œ¸
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			idx = sd->equip_index[EQUIP_INDEX_LARM];
@@ -1999,12 +1999,12 @@ L_RECALC:
 				sd->watk_ = sd->watk_ * 50/100;
 		}
 		if(sd->sc.data[SC_STRENGTH].timer != -1) {
-			// MATKåŠæ¸›
+			// MATK”¼Œ¸
 			sd->matk1 = sd->matk1*50/100;
 			sd->matk2 = sd->matk2*50/100;
 		}
 		if(sd->sc.data[SC_THE_DEVIL].timer != -1) {
-			// ATKåŠæ¸›ã€MATKåŠæ¸›
+			// ATK”¼Œ¸AMATK”¼Œ¸
 			sd->base_atk = sd->base_atk * 50/100;
 			sd->watk = sd->watk * 50/100;
 			idx = sd->equip_index[EQUIP_INDEX_LARM];
@@ -2015,7 +2015,7 @@ L_RECALC:
 			sd->matk2 = sd->matk2*50/100;
 		}
 		if(sd->sc.data[SC_THE_SUN].timer != -1) {
-			// ATKã€MATKã€å›é¿ã€å‘½ä¸­ã€é˜²å¾¡åŠ›ãŒå…¨ã¦20%ãšã¤ä¸‹è½ã™ã‚‹
+			// ATKAMATKA‰ñ”ğA–½’†A–hŒä—Í‚ª‘S‚Ä20%‚¸‚Â‰º—‚·‚é
 			sd->base_atk = sd->base_atk * 80/100;
 			sd->watk = sd->watk * 80/100;
 			idx = sd->equip_index[EQUIP_INDEX_LARM];
@@ -2031,15 +2031,15 @@ L_RECALC:
 			sd->def2 = sd->def2 * 80/100;
 		}
 
-		if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// æˆ¦å¤ªé¼“ã®éŸ¿ã
+		if(sd->sc.data[SC_DRUMBATTLE].timer != -1) {	// í‘¾ŒÛ‚Ì‹¿‚«
 			sd->def  += sd->sc.data[SC_DRUMBATTLE].val3;
 		}
 #ifdef PRE_RENEWAL
-		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ãƒ‹ãƒ¼ãƒ™ãƒ«ãƒ³ã‚°ã®æŒ‡è¼ª
+		if(sd->sc.data[SC_NIBELUNGEN].timer != -1) {	// ƒj[ƒxƒ‹ƒ“ƒO‚Ìw—Ö
 			idx = sd->equip_index[EQUIP_INDEX_RARM];
 			if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 				sd->watk += sd->sc.data[SC_NIBELUNGEN].val2;
-			// å·¦æ‰‹ã«ã¯é©ç”¨ã—ãªã„
+			// ¶è‚É‚Í“K—p‚µ‚È‚¢
 			//idx = sd->equip_index[EQUIP_INDEX_LARM];
 			//if(idx >= 0 && sd->inventory_data[idx] && sd->inventory_data[idx]->wlv >= 4)
 			//	sd->watk_ += sd->sc.data[SC_NIBELUNGEN].val2;
@@ -2052,10 +2052,10 @@ L_RECALC:
 
 		if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1)
 			sd->def = sd->def * (100 - sd->sc.data[SC_SIGNUMCRUCIS].val2)/100;
-		if(sd->sc.data[SC_ETERNALCHAOS].timer != -1)	// ã‚¨ã‚¿ãƒ¼ãƒŠãƒ«ã‚«ã‚ªã‚¹
+		if(sd->sc.data[SC_ETERNALCHAOS].timer != -1)	// ƒGƒ^[ƒiƒ‹ƒJƒIƒX
 			sd->def2 = 0;
 
-		if(sd->sc.data[SC_CONCENTRATION].timer != -1) {	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sd->sc.data[SC_CONCENTRATION].timer != -1) {	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 #ifdef PRE_RENEWAL
 			sd->base_atk = sd->base_atk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 			sd->watk = sd->watk * (100 + 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
@@ -2067,28 +2067,28 @@ L_RECALC:
 			sd->def2 = sd->def2 * (100 - 5*sd->sc.data[SC_CONCENTRATION].val1)/100;
 		}
 
-		if(sd->sc.data[SC_INCATK].timer != -1) {	// ATKä¸Šæ˜‡ (ç¥é…’ç”¨)
+		if(sd->sc.data[SC_INCATK].timer != -1) {	// ATKã¸ (_ğ—p)
 			sd->watk += sd->sc.data[SC_INCATK].val1;
 		}
-		if(sd->sc.data[SC_ATKPOTION].timer != -1) {	// ATKä¸Šæ˜‡
+		if(sd->sc.data[SC_ATKPOTION].timer != -1) {	// ATKã¸
 #ifdef PRE_RENEWAL
 			sd->watk += sd->sc.data[SC_ATKPOTION].val1;
 #else
 			sd->plus_atk += sd->sc.data[SC_ATKPOTION].val1;
 #endif
 		}
-		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// ATKä¸Šæ˜‡ (é£Ÿäº‹ç”¨)
+		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// ATKã¸ (H–—p)
 #ifdef PRE_RENEWAL
 			sd->watk += sd->sc.data[SC_ALMIGHTY].val1;
 #else
 			sd->plus_atk += sd->sc.data[SC_ALMIGHTY].val1;
 #endif
 		}
-		if(sd->sc.data[SC_INCMATK].timer != -1) {	// MATKä¸Šæ˜‡ (ç¥ç§˜ã®è‰ç”¨)
+		if(sd->sc.data[SC_INCMATK].timer != -1) {	// MATKã¸ (_”é‚Ì‘—p)
 			sd->matk1 += sd->sc.data[SC_INCMATK].val1;
 			sd->matk2 += sd->sc.data[SC_INCMATK].val1;
 		}
-		if(sd->sc.data[SC_MATKPOTION].timer != -1) {	// MATKä¸Šæ˜‡
+		if(sd->sc.data[SC_MATKPOTION].timer != -1) {	// MATKã¸
 #ifdef PRE_RENEWAL
 			sd->matk1 += sd->sc.data[SC_MATKPOTION].val1;
 			sd->matk2 += sd->sc.data[SC_MATKPOTION].val1;
@@ -2096,7 +2096,7 @@ L_RECALC:
 			sd->plus_matk += sd->sc.data[SC_MATKPOTION].val1;
 #endif
 		}
-		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// MATKä¸Šæ˜‡ (é£Ÿäº‹ç”¨)
+		if(sd->sc.data[SC_ALMIGHTY].timer != -1) {	// MATKã¸ (H–—p)
 #ifdef PRE_RENEWAL
 			sd->matk1 += sd->sc.data[SC_ALMIGHTY].val2;
 			sd->matk2 += sd->sc.data[SC_ALMIGHTY].val2;
@@ -2111,7 +2111,7 @@ L_RECALC:
 #endif
 			sd->mdef2 -= (sd->mdef2*12*sd->sc.data[SC_MINDBREAKER].val1)/100;
 		}
-		// MATKä¸Šæ˜‡ (ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«ã®ãƒãƒ«ãƒ‰ã‚¥ãƒ¼ã‚¯ã€ãƒãƒ³ã‚·ãƒ¼ç”¨)
+		// MATKã¸ (ƒ‚ƒ“ƒXƒ^[•Ïg‚Ìƒ}ƒ‹ƒhƒD[ƒNAƒoƒ“ƒV[—p)
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && (sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1140 || sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1867)) {
 			sd->matk1 += 25;
 			sd->matk2 += 25;
@@ -2126,43 +2126,43 @@ L_RECALC:
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
 		}
-		if(sd->sc.data[SC_ANALYZE].timer != -1) {	// ã‚¢ãƒŠãƒ©ã‚¤ã‚º
+		if(sd->sc.data[SC_ANALYZE].timer != -1) {	// ƒAƒiƒ‰ƒCƒY
 			sd->def2  -= (sd->def2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
 			sd->mdef2 -= (sd->mdef2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
 		}
-		if(sd->sc.data[SC_NEUTRALBARRIER].timer != -1) {	// ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼
+		if(sd->sc.data[SC_NEUTRALBARRIER].timer != -1) {	// ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[
 			sd->def2  += (sd->def2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
 			sd->mdef2 += (sd->mdef2 * (10 + 5 * sd->sc.data[SC_NEUTRALBARRIER].val1)) / 100;
 		}
-		if(sd->sc.data[SC_SUNSTANCE].timer != -1) {	// å¤ªé™½ã®æ§‹ãˆ
+		if(sd->sc.data[SC_SUNSTANCE].timer != -1) {	// ‘¾—z‚Ì\‚¦
 			sd->watk += sd->watk * sd->sc.data[SC_SUNSTANCE].val2 / 100;
 		}
 
-		// HIT/FLEEå¤‰åŒ–ç³»
+		// HIT/FLEE•Ï‰»Œn
 #ifdef PRE_RENEWAL
-		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // å£ç¬›
+		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // Œû“J
 			sd->flee += sd->sc.data[SC_WHISTLE].val1 + sd->sc.data[SC_WHISTLE].val2 + sd->sc.data[SC_WHISTLE].val3;
-		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // å£ç¬›
+		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // Œû“J
 			sd->flee += sd->sc.data[SC_WHISTLE_].val1 + sd->sc.data[SC_WHISTLE_].val2 + sd->sc.data[SC_WHISTLE_].val3;
 		}
 #else
-		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // å£ç¬›
+		if(sd->sc.data[SC_WHISTLE].timer != -1) {  // Œû“J
 			sd->flee += sd->sc.data[SC_WHISTLE].val1*3 + sd->sc.data[SC_WHISTLE].val2 + sd->sc.data[SC_WHISTLE].val3;
-		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // å£ç¬›
+		} else if(sd->sc.data[SC_WHISTLE_].timer != -1) {  // Œû“J
 			sd->flee += sd->sc.data[SC_WHISTLE_].val1*3 + sd->sc.data[SC_WHISTLE_].val2 + sd->sc.data[SC_WHISTLE_].val3;
 		}
 #endif
 
 #ifdef PRE_RENEWAL
-		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ãƒãƒŸãƒ³ã‚°
+		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ƒnƒ~ƒ“ƒO
 			sd->hit += 10+sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3;
-		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ãƒãƒŸãƒ³ã‚°
+		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ƒnƒ~ƒ“ƒO
 			sd->hit += 10+sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3;
 		}
 #else
-		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ãƒãƒŸãƒ³ã‚°
+		if(sd->sc.data[SC_HUMMING].timer != -1) {  // ƒnƒ~ƒ“ƒO
 			sd->hit += 20+sd->sc.data[SC_HUMMING].val1*2+sd->sc.data[SC_HUMMING].val2+sd->sc.data[SC_HUMMING].val3;
-		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ãƒãƒŸãƒ³ã‚°
+		} else if(sd->sc.data[SC_HUMMING_].timer != -1) {  // ƒnƒ~ƒ“ƒO
 			sd->hit += 20+sd->sc.data[SC_HUMMING_].val1*2+sd->sc.data[SC_HUMMING_].val2+sd->sc.data[SC_HUMMING_].val3;
 		}
 #endif
@@ -2171,20 +2171,20 @@ L_RECALC:
 #ifdef PRE_RENEWAL
 			&& sd->def_ele == ELE_WIND
 #endif
-		) {	// ãƒã‚¤ã‚ªãƒ¬ãƒ³ãƒˆã‚²ã‚¤ãƒ«
+		) {	// ƒoƒCƒIƒŒƒ“ƒgƒQƒCƒ‹
 			sd->flee += sd->flee*sd->sc.data[SC_VIOLENTGALE].val3/100;
 		}
-		if(sd->sc.data[SC_BLIND].timer != -1) {	// æš—é»’
+		if(sd->sc.data[SC_BLIND].timer != -1) {	// ˆÃ•
 			sd->hit  -= sd->hit*25/100;
 			sd->flee -= sd->flee*25/100;
 		}
-		if(sd->sc.data[SC_WINDWALK].timer != -1)	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯
+		if(sd->sc.data[SC_WINDWALK].timer != -1)	// ƒEƒBƒ“ƒhƒEƒH[ƒN
 			sd->flee += sd->sc.data[SC_WINDWALK].val2;
-		if(sd->sc.data[SC_SPIDERWEB].timer != -1)	// ã‚¹ãƒ‘ã‚¤ãƒ€ãƒ¼ã‚¦ã‚§ãƒ–
+		if(sd->sc.data[SC_SPIDERWEB].timer != -1)	// ƒXƒpƒCƒ_[ƒEƒFƒu
 			sd->flee -= 50;
-		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// ƒgƒDƒ‹[ƒTƒCƒg
 			sd->hit += 3*(sd->sc.data[SC_TRUESIGHT].val1);
-		if(sd->sc.data[SC_CONCENTRATION].timer != -1)	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sd->sc.data[SC_CONCENTRATION].timer != -1)	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 			sd->hit += 10*(sd->sc.data[SC_CONCENTRATION].val1);
 		if(sd->sc.data[SC_INCHIT].timer != -1)
 			sd->hit += sd->sc.data[SC_INCHIT].val1;
@@ -2192,52 +2192,52 @@ L_RECALC:
 			sd->hit = sd->hit * (100+sd->sc.data[SC_INCHIT2].val1)/100;
 		if(sd->sc.data[SC_BERSERK].timer != -1)
 			sd->flee -= sd->flee*50/100;
-		if(sd->sc.data[SC_INCFLEE].timer != -1)	// é€Ÿåº¦å¼·åŒ–
+		if(sd->sc.data[SC_INCFLEE].timer != -1)	// ‘¬“x‹­‰»
 			sd->flee += sd->flee*(sd->sc.data[SC_INCFLEE].val2)/100;
-		if(sd->sc.data[SC_HALLUCINATIONWALK].timer != -1)	// ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯
+		if(sd->sc.data[SC_HALLUCINATIONWALK].timer != -1)	// ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN
 			sd->flee += sd->sc.data[SC_HALLUCINATIONWALK].val1 * 50;
-		if(sd->sc.data[SC_INFRAREDSCAN].timer != -1)	// ã‚¤ãƒ³ãƒ•ãƒ©ãƒ¬ãƒƒãƒ‰ã‚¹ã‚­ãƒ£ãƒ³
+		if(sd->sc.data[SC_INFRAREDSCAN].timer != -1)	// ƒCƒ“ƒtƒ‰ƒŒƒbƒhƒXƒLƒƒƒ“
 			sd->flee -= sd->flee*30/100;
 #ifndef PRE_RENEWAL
-		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³
+		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // ƒXƒsƒAƒNƒCƒbƒPƒ“
 			sd->flee += 2*(sd->sc.data[SC_SPEARQUICKEN].val1);
 #endif
-		if(sd->sc.data[SC_C_MARKER].timer != -1)  // ã‚¯ãƒªãƒ ã‚¾ãƒ³ãƒãƒ¼ã‚«ãƒ¼
+		if(sd->sc.data[SC_C_MARKER].timer != -1)  // ƒNƒŠƒ€ƒ]ƒ“ƒ}[ƒJ[
 			sd->flee -= sd->sc.data[SC_C_MARKER].val1 * 10;
-		if(sd->sc.data[SC_HEAT_BARREL].timer != -1)  // ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ«
+		if(sd->sc.data[SC_HEAT_BARREL].timer != -1)  // ƒq[ƒgƒoƒŒƒ‹
 			sd->hit -= sd->sc.data[SC_HEAT_BARREL].val4;
 
-		// ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼ã‚¹ã‚­ãƒ«
-		if(sd->sc.data[SC_FLING].timer != -1) {		// ãƒ•ãƒ©ã‚¤ãƒ³ã‚°
+		// ƒKƒ“ƒXƒŠƒ“ƒK[ƒXƒLƒ‹
+		if(sd->sc.data[SC_FLING].timer != -1) {		// ƒtƒ‰ƒCƒ“ƒO
 			sd->def = sd->def * (100 - 5*sd->sc.data[SC_FLING].val1)/100;
 		}
-		if(sd->sc.data[SC_ADJUSTMENT].timer != -1) {	// ã‚¢ã‚¸ãƒ£ã‚¹ãƒˆãƒ¡ãƒ³ãƒˆ
+		if(sd->sc.data[SC_ADJUSTMENT].timer != -1) {	// ƒAƒWƒƒƒXƒgƒƒ“ƒg
 			sd->hit  -= 30;
 			sd->flee += 30;
 		}
-		if(sd->sc.data[SC_INCREASING].timer != -1) {	// ã‚¤ãƒ³ã‚¯ãƒªãƒ¼ã‚·ãƒ³ã‚°ã‚¢ã‚­ãƒ¥ã‚¢ãƒ©ã‚·ãƒ¼
+		if(sd->sc.data[SC_INCREASING].timer != -1) {	// ƒCƒ“ƒNƒŠ[ƒVƒ“ƒOƒAƒLƒ…ƒAƒ‰ƒV[
 			sd->hit += 20;
 		}
-		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			sd->flee -= sd->sc.data[SC_GATLINGFEVER].val1*5;
 		}
-		if(sd->sc.data[SC_VOLCANIC_ASH].timer != -1) 	// ç«å±±ç°
+		if(sd->sc.data[SC_VOLCANIC_ASH].timer != -1) 	// ‰ÎRŠD
 			sd->hit -= sd->hit * sd->sc.data[SC_VOLCANIC_ASH].val2 / 100;
 
 #ifdef PRE_RENEWAL
-		// ã‚¹ãƒˆãƒ¼ãƒ³ã‚¹ã‚­ãƒ³
+		// ƒXƒg[ƒ“ƒXƒLƒ“
 		if(sd->sc.data[SC_STONESKIN].timer != -1) {
 			sd->def  = sd->def  * (100 + 20 * sd->sc.data[SC_STONESKIN].val1) / 100;
 			sd->mdef = sd->mdef * (100 - 20 * sd->sc.data[SC_STONESKIN].val1) / 100;
 		}
-		// ã‚¢ãƒ³ãƒãƒã‚¸ãƒƒã‚¯
+		// ƒAƒ“ƒ`ƒ}ƒWƒbƒN
 		if(sd->sc.data[SC_ANTIMAGIC].timer != -1) {
 			sd->def  = sd->def  * (100 - 20 * sd->sc.data[SC_ANTIMAGIC].val1) / 100;
 			sd->mdef = sd->mdef * (100 + 20 * sd->sc.data[SC_ANTIMAGIC].val1) / 100;
 		}
 #endif
 
-		// è€æ€§
+		// ‘Ï«
 		if(sd->sc.data[SC_RESISTWATER].timer != -1)
 			sd->subele[ELE_WATER] += sd->sc.data[SC_RESISTWATER].val1;
 		if(sd->sc.data[SC_RESISTGROUND].timer != -1)
@@ -2257,60 +2257,60 @@ L_RECALC:
 		if(sd->sc.data[SC_RESISTUNDEAD].timer != -1)
 			sd->subele[ELE_UNDEAD] += sd->sc.data[SC_RESISTUNDEAD].val1;
 
-		// è€æ€§
+		// ‘Ï«
 		if(sd->sc.data[SC_RESISTALL].timer != -1) {
 			for(i=ELE_WATER; i<ELE_MAX; i++)
-				sd->subele[i] += sd->sc.data[SC_RESISTALL].val1;	// å…¨ã¦ã«è€æ€§å¢—åŠ 
+				sd->subele[i] += sd->sc.data[SC_RESISTALL].val1;	// ‘S‚Ä‚É‘Ï«‘‰Á
 		}
-		// ä¸æ­»èº«ã®ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰
+		// •s€g‚ÌƒW[ƒNƒtƒŠ[ƒh
 		if(sd->sc.data[SC_SIEGFRIED].timer != -1) {
 			for(i=ELE_WATER; i<ELE_MAX; i++)
-				sd->subele[i] += sd->sc.data[SC_SIEGFRIED].val2;	// å…¨ã¦ã«è€æ€§å¢—åŠ 
+				sd->subele[i] += sd->sc.data[SC_SIEGFRIED].val2;	// ‘S‚Ä‚É‘Ï«‘‰Á
 		}
-		// ãƒ—ãƒ­ãƒ´ã‚£ãƒ‡ãƒ³ã‚¹
+		// ƒvƒƒ”ƒBƒfƒ“ƒX
 		if(sd->sc.data[SC_PROVIDENCE].timer != -1) {
-			sd->subele[ELE_HOLY]   += sd->sc.data[SC_PROVIDENCE].val2;	// å¯¾è–å±æ€§
-			sd->subrace[RCT_DEMON] += sd->sc.data[SC_PROVIDENCE].val2;	// å¯¾æ‚ªé­”
+			sd->subele[ELE_HOLY]   += sd->sc.data[SC_PROVIDENCE].val2;	// ‘Î¹‘®«
+			sd->subrace[RCT_DEMON] += sd->sc.data[SC_PROVIDENCE].val2;	// ‘Îˆ«–‚
 		}
 
-		// ç„ç‚å‘ª
+		// –‰Šô
 		if(sd->sc.data[SC_BURNT].timer != -1) {
 			sd->subele[ELE_FIRE]       -= sd->sc.data[SC_BURNT].val1 * 20;
 			sd->def_eleenemy[ELE_FIRE] -= sd->sc.data[SC_BURNT].val1 * 20;
 		}
 
-		// ãã®ä»–
-		if(sd->sc.data[SC_BERSERK].timer != -1) {	// ãƒãƒ¼ã‚µãƒ¼ã‚¯
+		// ‚»‚Ì‘¼
+		if(sd->sc.data[SC_BERSERK].timer != -1) {	// ƒo[ƒT[ƒN
 			sd->def   = 0;
 			sd->def2  = 0;
 			sd->mdef  = 0;
 			sd->mdef2 = 0;
 		}
-		if(sd->sc.data[SC_JOINTBEAT].timer != -1) {	// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+		if(sd->sc.data[SC_JOINTBEAT].timer != -1) {	// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 			switch (sd->sc.data[SC_JOINTBEAT].val4) {
-				case 0:		// è¶³é¦–
+				case 0:		// ‘«ñ
 					break;
-				case 1:		// æ‰‹é¦–
+				case 1:		// èñ
 					break;
-				case 2:		// è†
+				case 2:		// •G
 					break;
-				case 3:		// è‚©
+				case 3:		// Œ¨
 					sd->def2 -= (sd->def2 * 50)/100;
 					break;
-				case 4:		// è…°
+				case 4:		// ˜
 					sd->def2     -= (sd->def2 * 25)/100;
 					sd->base_atk -= (sd->base_atk * 25)/100;
 					break;
-				case 5:		// é¦–
+				case 5:		// ñ
 					sd->critical_def -= (sd->critical_def * 50)/100;
 					break;
 			}
 		}
-		if(sd->sc.data[SC_APPLEIDUN].timer != -1) {	// ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª
+		if(sd->sc.data[SC_APPLEIDUN].timer != -1) {	// ƒCƒhƒDƒ“‚Ì—ÑŒç
 			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN].val1*2+sd->sc.data[SC_APPLEIDUN].val2
 						+sd->sc.data[SC_APPLEIDUN].val3/10) * sd->status.max_hp)/100;
 
-		} else if(sd->sc.data[SC_APPLEIDUN_].timer != -1) {	// ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª
+		} else if(sd->sc.data[SC_APPLEIDUN_].timer != -1) {	// ƒCƒhƒDƒ“‚Ì—ÑŒç
 			sd->status.max_hp += ((5+sd->sc.data[SC_APPLEIDUN_].val1*2+sd->sc.data[SC_APPLEIDUN_].val2
 						+sd->sc.data[SC_APPLEIDUN_].val3/10) * sd->status.max_hp)/100;
 		}
@@ -2319,16 +2319,16 @@ L_RECALC:
 #ifdef PRE_RENEWAL
 			&& sd->def_ele == ELE_WATER
 #endif
-		) {	// ãƒ‡ãƒªãƒ¥ãƒ¼ã‚¸
+		) {	// ƒfƒŠƒ…[ƒW
 			sd->status.max_hp += sd->status.max_hp*sd->sc.data[SC_DELUGE].val3/100;
 		}
-		if(sd->sc.data[SC_SERVICE4U].timer != -1) {	// ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼
+		if(sd->sc.data[SC_SERVICE4U].timer != -1) {	// ƒT[ƒrƒXƒtƒH[ƒ†[
 			sd->status.max_sp += sd->status.max_sp*(15+sd->sc.data[SC_SERVICE4U].val1+sd->sc.data[SC_SERVICE4U].val2
 						+sd->sc.data[SC_SERVICE4U].val3)/100;
 			sd->dsprate -= 20+sd->sc.data[SC_SERVICE4U].val1*3+sd->sc.data[SC_SERVICE4U].val2+sd->sc.data[SC_SERVICE4U].val3;
 			if(sd->dsprate < 0)
 				sd->dsprate = 0;
-		} else if(sd->sc.data[SC_SERVICE4U_].timer != -1) {	// ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼
+		} else if(sd->sc.data[SC_SERVICE4U_].timer != -1) {	// ƒT[ƒrƒXƒtƒH[ƒ†[
 			sd->status.max_sp += sd->status.max_sp*(15+sd->sc.data[SC_SERVICE4U_].val1+sd->sc.data[SC_SERVICE4U_].val2
 						+sd->sc.data[SC_SERVICE4U_].val3)/100;
 			sd->dsprate -= 20+sd->sc.data[SC_SERVICE4U_].val1*3+sd->sc.data[SC_SERVICE4U_].val2+sd->sc.data[SC_SERVICE4U_].val3;
@@ -2336,13 +2336,13 @@ L_RECALC:
 				sd->dsprate = 0;
 		}
 
-		if(sd->sc.data[SC_FORTUNE].timer != -1) {	// å¹¸é‹ã®ã‚­ã‚¹
+		if(sd->sc.data[SC_FORTUNE].timer != -1) {	// K‰^‚ÌƒLƒX
 			sd->critical += (10+sd->sc.data[SC_FORTUNE].val1+sd->sc.data[SC_FORTUNE].val2+sd->sc.data[SC_FORTUNE].val3)*10;
-		} else if(sd->sc.data[SC_FORTUNE_].timer != -1) {	// å¹¸é‹ã®ã‚­ã‚¹
+		} else if(sd->sc.data[SC_FORTUNE_].timer != -1) {	// K‰^‚ÌƒLƒX
 			sd->critical += (10+sd->sc.data[SC_FORTUNE_].val1+sd->sc.data[SC_FORTUNE_].val2+sd->sc.data[SC_FORTUNE_].val3)*10;
 		}
 
-		if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) {	// çˆ†è£‚æ³¢å‹•
+		if(sd->sc.data[SC_EXPLOSIONSPIRITS].timer != -1) {	// ”š—ô”g“®
 			if(sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV)
 				sd->critical += sd->sc.data[SC_EXPLOSIONSPIRITS].val1*100;
 			else
@@ -2350,28 +2350,28 @@ L_RECALC:
 		}
 
 #ifdef PRE_RENEWAL
-		if(sd->sc.data[SC_STEELBODY].timer != -1) {	// é‡‘å‰›
+		if(sd->sc.data[SC_STEELBODY].timer != -1) {	// ‹à„
 			sd->def = 90;
 			sd->mdef = 90;
 		}
 #endif
 		if(sd->sc.data[SC_ENCPOISON].timer != -1)
 			sd->addeff[4] += sd->sc.data[SC_ENCPOISON].val2;
-		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sd->sc.data[SC_TRUESIGHT].timer != -1)	// ƒgƒDƒ‹[ƒTƒCƒg
 			sd->critical += 10*(sd->sc.data[SC_TRUESIGHT].val1);
 #ifndef PRE_RENEWAL
-		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³
+		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1)   // ƒXƒsƒAƒNƒCƒbƒPƒ“
 			sd->critical += 30*(sd->sc.data[SC_SPEARQUICKEN].val1);
 #endif
 
 		/*
-		if(sd->sc.data[SC_VOLCANO].timer != -1)	// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³(å±æ€§ã¯battle.cã§)
+		if(sd->sc.data[SC_VOLCANO].timer != -1)	// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“(‘®«‚Íbattle.c‚Å)
 			sd->addeff[2] += sd->sc.data[SC_VOLCANO].val2;	// % of granting
-		if(sd->sc.data[SC_DELUGE].timer != -1)	// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³(å±æ€§ã¯battle.cã§)
+		if(sd->sc.data[SC_DELUGE].timer != -1)	// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“(‘®«‚Íbattle.c‚Å)
 			sd->addeff[0] += sd->sc.data[SC_DELUGE].val2;	// % of granting
 		*/
 
-		// ãƒ•ã‚¡ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚¹ãƒ”ãƒªãƒƒãƒˆ
+		// ƒtƒ@ƒCƒeƒBƒ“ƒOƒXƒsƒŠƒbƒg
 		if(sd->sc.data[SC_EISIR].timer != -1) {
 #ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_EISIR].val2;
@@ -2379,34 +2379,34 @@ L_RECALC:
 			sd->plus_atk += sd->sc.data[SC_EISIR].val2;
 #endif
 		}
-		// ææ€–
+		// ‹°•|
 		if(sd->sc.data[SC_FEAR].timer != -1) {
 			sd->hit  = sd->hit * 80/100;
 			sd->flee = sd->flee * 80/100;
 		}
-		// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+		// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 		if(sd->sc.data[SC__INVISIBILITY].timer != -1) {
 			sd->critical += sd->critical * (sd->sc.data[SC__INVISIBILITY].val1 * 20) / 100;
 		}
-		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³
+		// ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC__ENERVATION].timer != -1) {
 			sd->base_atk -= sd->base_atk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 			sd->watk -= sd->watk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 		}
-		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+		// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 		if(sd->sc.data[SC__GROOMY].timer != -1) {
 			sd->hit -= sd->hit * (sd->sc.data[SC__GROOMY].val1 * 20) / 100;
 		}
-		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹
+		// ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX
 		if(sd->sc.data[SC__LAZINESS].timer != -1) {
 			sd->flee -= sd->flee*10/100;
 		}
-		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¢ãƒ³ãƒ©ãƒƒã‚­ãƒ¼
+		// ƒ}ƒXƒJƒŒ[ƒh F ƒAƒ“ƒ‰ƒbƒL[
 		if(sd->sc.data[SC__UNLUCKY].timer != -1) {
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
 		}
-		// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF)
+		// ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF)
 		if(sd->sc.data[SC_SHIELDSPELL_DEF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_DEF].val2 == 2) {
 #ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
@@ -2414,7 +2414,7 @@ L_RECALC:
 			sd->plus_atk += sd->sc.data[SC_SHIELDSPELL_DEF].val3;
 #endif
 		}
-		// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(ç²¾éŒ¬)
+		// ƒV[ƒ‹ƒhƒXƒyƒ‹(¸˜B)
 		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1 && sd->sc.data[SC_SHIELDSPELL_REF].val2 == 2) {
 #ifdef PRE_RENEWAL
 			sd->def2 += sd->sc.data[SC_SHIELDSPELL_REF].val3;
@@ -2422,11 +2422,11 @@ L_RECALC:
 			sd->def += sd->sc.data[SC_SHIELDSPELL_REF].val3;
 #endif
 		}
-		// ãƒ•ã‚©ãƒ¼ã‚¹ã‚ªãƒ–ãƒãƒ³ã‚¬ãƒ¼ãƒ‰
+		// ƒtƒH[ƒXƒIƒuƒoƒ“ƒK[ƒh
 		if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1) {
 			sd->status.max_hp += (sd->status.max_hp * sd->sc.data[SC_FORCEOFVANGUARD].val1 * 3) / 100;
 		}
-		// ãƒ—ãƒ¬ã‚¹ãƒ†ã‚£ãƒ¼ã‚¸
+		// ƒvƒŒƒXƒeƒB[ƒW
 		if(sd->sc.data[SC_PRESTIGE].timer != -1) {
 #ifdef PRE_RENEWAL
 			sd->def2 += sd->sc.data[SC_PRESTIGE].val2;
@@ -2434,7 +2434,7 @@ L_RECALC:
 			sd->def += sd->sc.data[SC_PRESTIGE].val2;
 #endif
 		}
-		// ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+		// ƒoƒ“ƒfƒBƒ“ƒO
 		if(sd->sc.data[SC_BANDING].timer != -1 && sd->sc.data[SC_BANDING].val2 > 1) {
 #ifdef PRE_RENEWAL
 			sd->base_atk += (10 + sd->sc.data[SC_BANDING].val1 * 10) * sd->sc.data[SC_BANDING].val2;
@@ -2444,11 +2444,11 @@ L_RECALC:
 			sd->def += (5 + sd->sc.data[SC_BANDING].val1) * sd->sc.data[SC_BANDING].val2;
 #endif
 		}
-		// ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ–
+		// ƒA[ƒXƒhƒ‰ƒCƒu
 		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
 			sd->def -= sd->def * 25 / 100;
 		}
-		// ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		// ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC_INSPIRATION].timer != -1) {
 			sd->status.max_hp += (600 + sd->status.max_hp / 20) * sd->sc.data[SC_INSPIRATION].val1;
 #ifdef PRE_RENEWAL
@@ -2458,47 +2458,47 @@ L_RECALC:
 #endif
 			sd->hit += 25 + sd->sc.data[SC_INSPIRATION].val1 * 5;
 		}
-		// æ½œç«œæ˜‡å¤©
+		// ö—³¸“V
 		if(sd->sc.data[SC_RAISINGDRAGON].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_RAISINGDRAGON].val3 / 100;
 			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_RAISINGDRAGON].val3 / 100;
 		}
-		// ç‚¹ç©´ -å-
+		// “_ŒŠ -”½-
 		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 			sd->status.max_hp -= sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_CHANGE].val1 * 2) / 100;
 		}
-		// ç‚¹ç©´ -æ´»-
+		// “_ŒŠ -Šˆ-
 		if(sd->sc.data[SC_GENTLETOUCH_REVITALIZE].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * (sd->sc.data[SC_GENTLETOUCH_REVITALIZE].val1 * 3) / 100;
 		}
-		// ãƒ•ãƒªãƒƒã‚°ã®æ­Œ
+		// ƒtƒŠƒbƒO‚Ì‰Ì
 		if(sd->sc.data[SC_FRIGG_SONG].timer != -1) {
 			sd->status.max_hp += sd->sc.data[SC_FRIGG_SONG].val3 * sd->status.max_hp / 100;
 		}
-		// ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼
+		// ƒƒ‰ƒ“ƒRƒŠ[
 		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
 			sd->flee -= sd->sc.data[SC_GLOOMYDAY].val1 * 5 + 20;
 		}
-		// ãƒ¬ãƒ¼ãƒ©ã‚ºã®éœ²
+		// ƒŒ[ƒ‰ƒY‚Ì˜I
 		if(sd->sc.data[SC_LERADS_DEW].timer != -1) {
 			sd->status.max_hp += sd->sc.data[SC_LERADS_DEW].val1 * 200 + sd->sc.data[SC_LERADS_DEW].val4 * 300;
 		}
-		// ãƒ“ãƒ¨ãƒ³ãƒ‰ã‚ªãƒ–ã‚¦ã‚©ãƒ¼ã‚¯ãƒ©ã‚¤
+		// ƒrƒˆƒ“ƒhƒIƒuƒEƒH[ƒNƒ‰ƒC
 		if(sd->sc.data[SC_BEYOND_OF_WARCRY].timer != -1) {
 			sd->status.max_hp -= sd->sc.data[SC_BEYOND_OF_WARCRY].val3 * sd->status.max_hp / 100;
 			sd->critical += sd->sc.data[SC_BEYOND_OF_WARCRY].val4 * 10;
 		}
-		// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 		if(sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1) {
 			sd->watk += 100 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1;
 			sd->def -= sd->def * (10 + 10 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
 			sd->flee -= sd->flee * (40 + 10 * sd->sc.data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
 		}
-		// ã‚¹ãƒˆãƒ©ã‚¤ã‚­ãƒ³ã‚°
+		// ƒXƒgƒ‰ƒCƒLƒ“ƒO
 		if(sd->sc.data[SC_STRIKING].timer != -1) {
 			sd->critical += 10 * sd->sc.data[SC_STRIKING].val1;
 		}
-		// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+		// ƒI[ƒfƒBƒ“‚Ì—Í
 		if(sd->sc.data[SC_ODINS_POWER].timer != -1) {
 #ifdef PRE_RENEWAL
 			sd->watk += 60 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
@@ -2511,96 +2511,96 @@ L_RECALC:
 			sd->def -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 			sd->mdef -= 10 + 10 * sd->sc.data[SC_ODINS_POWER].val1;
 		}
-		// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(ç…™å¹•)
+		// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(‰Œ–‹)
 		if(sd->sc.data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1) {
 			sd->flee += sd->flee * sd->sc.data[SC_FIRE_EXPANSION_SMOKE_POWDER].val3 / 100;
 		}
-		// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™)
+		// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—Ü)
 		if(sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1) {
 			sd->hit -= sd->hit * sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
 			sd->flee -= sd->flee * sd->sc.data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
 		}
-		// HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³
+		// HP‘‰Áƒ|[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC_PROMOTE_HEALTH_RESERCH].timer != -1) {
 			sd->status.max_hp += 500 + sd->sc.data[SC_PROMOTE_HEALTH_RESERCH].val1 * 1000 + 4 / 3 * sd->status.base_level;
 		}
-		// SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³
+		// SP‘‰Áƒ|[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC_ENERGY_DRINK_RESERCH].timer != -1) {
 			sd->status.max_sp += sd->status.max_sp * ((sd->sc.data[SC_ENERGY_DRINK_RESERCH].val1 * 5) - 5 + sd->status.base_level / 10) / 100;
 		}
-		// ãƒ“ã‚¿ã‚¿500
+		// ƒrƒ^ƒ^500
 		if(sd->sc.data[SC_VITATA_500].timer != -1) {
 			sd->status.max_sp += sd->status.max_sp * sd->sc.data[SC_VITATA_500].val2 / 100;
 		}
-		// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ã‚¯
+		// ƒtƒ@ƒCƒA[ƒNƒ[ƒN
 		if(sd->sc.data[SC_FIRE_CLOAK].timer != -1) {
 			sd->subele[ELE_FIRE] += sd->sc.data[SC_FIRE_CLOAK].val2;
 			sd->subele[ELE_WATER] -= sd->sc.data[SC_FIRE_CLOAK].val3;
 		}
-		// ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ãƒ‰ãƒ­ãƒƒãƒ—
+		// ƒEƒH[ƒ^[ƒhƒƒbƒv
 		if(sd->sc.data[SC_WATER_DROP].timer != -1) {
 			sd->subele[ELE_WATER] += sd->sc.data[SC_WATER_DROP].val2;
 			sd->subele[ELE_WIND] -= sd->sc.data[SC_WATER_DROP].val3;
 		}
-		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ—
+		// ƒEƒBƒ“ƒhƒXƒeƒbƒv
 		if(sd->sc.data[SC_WIND_STEP].timer != -1) {
 			sd->flee += sd->sc.data[SC_WIND_STEP].val2;
 		}
-		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ†ãƒ³
+		// ƒEƒBƒ“ƒhƒJ[ƒeƒ“
 		if(sd->sc.data[SC_WIND_CURTAIN].timer != -1) {
 			sd->subele[ELE_WIND] += sd->sc.data[SC_WIND_CURTAIN].val2;
 			sd->subele[ELE_EARTH] -= sd->sc.data[SC_WIND_CURTAIN].val3;
 		}
-		// ã‚½ãƒªãƒƒãƒ‰ã‚¹ã‚­ãƒ³
+		// ƒ\ƒŠƒbƒhƒXƒLƒ“
 		if(sd->sc.data[SC_SOLID_SKIN].timer != -1) {
 			sd->def += sd->def * sd->sc.data[SC_SOLID_SKIN].val2 / 100;
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_SOLID_SKIN].val3 / 100;
 		}
-		// ã‚¹ãƒˆãƒ¼ãƒ³ã‚·ãƒ¼ãƒ«ãƒ‰
+		// ƒXƒg[ƒ“ƒV[ƒ‹ƒh
 		if(sd->sc.data[SC_STONE_SHIELD].timer != -1) {
 			sd->subele[ELE_EARTH] += sd->sc.data[SC_STONE_SHIELD].val2;
 			sd->subele[ELE_FIRE] -= sd->sc.data[SC_STONE_SHIELD].val3;
 		}
-		// ãƒ‘ã‚¤ãƒ­ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯
+		// ƒpƒCƒƒeƒNƒjƒbƒN
 		if(sd->sc.data[SC_PYROTECHNIC].timer != -1) {
 			sd->watk += sd->sc.data[SC_PYROTECHNIC].val2;
 		}
-		// ãƒ’ãƒ¼ã‚¿ãƒ¼
+		// ƒq[ƒ^[
 		if(sd->sc.data[SC_HEATER].timer != -1) {
 			sd->watk += sd->sc.data[SC_HEATER].val2;
 		}
-		// ãƒˆãƒ­ãƒ”ãƒƒã‚¯
+		// ƒgƒƒsƒbƒN
 		if(sd->sc.data[SC_TROPIC].timer != -1) {
 			sd->watk += sd->sc.data[SC_TROPIC].val2;
 		}
-		// ã‚¢ã‚¯ã‚¢ãƒ—ãƒ¬ã‚¤
+		// ƒAƒNƒAƒvƒŒƒC
 		if(sd->sc.data[SC_AQUAPLAY].timer != -1) {
 			sd->matk1 += sd->sc.data[SC_AQUAPLAY].val2;
 			sd->matk2 += sd->sc.data[SC_AQUAPLAY].val2;
 		}
-		// ã‚¯ãƒ¼ãƒ©ãƒ¼
+		// ƒN[ƒ‰[
 		if(sd->sc.data[SC_COOLER].timer != -1) {
 			sd->matk1 += sd->sc.data[SC_COOLER].val2;
 			sd->matk2 += sd->sc.data[SC_COOLER].val2;
 		}
-		// ã‚¯ãƒ¼ãƒ«ã‚¨ã‚¢ãƒ¼
+		// ƒN[ƒ‹ƒGƒA[
 		if(sd->sc.data[SC_CHILLY_AIR].timer != -1) {
 			sd->matk1 += sd->sc.data[SC_CHILLY_AIR].val2;
 			sd->matk2 += sd->sc.data[SC_CHILLY_AIR].val2;
 		}
-		// ãƒšãƒˆãƒ­ã‚¸ãƒ¼
+		// ƒyƒgƒƒW[
 		if(sd->sc.data[SC_PETROLOGY].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_PETROLOGY].val2 / 100;
 		}
-		// ã‚«ãƒ¼ã‚¹ãƒ‰ã‚½ã‚¤ãƒ«
+		// ƒJ[ƒXƒhƒ\ƒCƒ‹
 		if(sd->sc.data[SC_CURSED_SOIL].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_CURSED_SOIL].val2 / 100;
 		}
-		// ã‚¢ãƒƒãƒ—ãƒ˜ã‚¤ãƒãƒ«
+		// ƒAƒbƒvƒwƒCƒoƒ‹
 		if(sd->sc.data[SC_UPHEAVAL].timer != -1) {
 			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_UPHEAVAL].val2 / 100;
 		}
-		// åå…­å¤œ
+		// \˜Z–é
 		if(sd->sc.data[SC_IZAYOI].timer != -1) {
 #ifdef PRE_RENEWAL
 			sd->matk1 += sd->sc.data[SC_IZAYOI].val2;
@@ -2609,7 +2609,7 @@ L_RECALC:
 			sd->plus_matk += sd->sc.data[SC_IZAYOI].val2;
 #endif
 		}
-		// å¹»è¡“ -æ®‹æœˆ-
+		// Œ¶p -cŒ-
 		if(sd->sc.data[SC_ZANGETSU].timer != -1) {
 #ifdef PRE_RENEWAL
 			sd->base_atk += sd->sc.data[SC_ZANGETSU].val2;
@@ -2620,23 +2620,23 @@ L_RECALC:
 			sd->plus_matk += sd->sc.data[SC_ZANGETSU].val3;
 #endif
 		}
-		// ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ
+		// ƒAƒ“ƒŠƒ~ƒbƒg
 		if(sd->sc.data[SC_UNLIMIT].timer != -1) {
 			sd->def = sd->def2 = sd->mdef = sd->mdef2 = 1;
 		}
-		// ã‚¤ãƒªãƒ¥ãƒ¼ã‚¸ãƒ§ãƒ³ãƒ‰ãƒ¼ãƒ”ãƒ³ã‚°
+		// ƒCƒŠƒ…[ƒWƒ‡ƒ“ƒh[ƒsƒ“ƒO
 		if(sd->sc.data[SC_ILLUSIONDOPING].timer != -1) {
 			sd->hit -= 50;
 		}
-		// ãƒ‹ãƒ£ãƒ³ã‚°ãƒ©ã‚¹
+		// ƒjƒƒƒ“ƒOƒ‰ƒX
 		if(sd->sc.data[SC_NYANGGRASS].timer != -1) {
 			sd->def = sd->mdef = 0;
 		}
-		// è­¦æˆ’
+		// Œx‰ú
 		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val1 > 0) {
 			sd->flee2 += sd->sc.data[SC_HISS].val2;
 		}
-		// ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼
+		// ƒCƒkƒnƒbƒJƒVƒƒƒ[
 		if(sd->sc.data[SC_CATNIPPOWDER].timer != -1) {
 			sd->watk -= sd->watk * sd->sc.data[SC_CATNIPPOWDER].val2 / 100;
 			sd->matk1 -= sd->matk1 * sd->sc.data[SC_CATNIPPOWDER].val2 / 100;
@@ -2647,7 +2647,7 @@ L_RECALC:
 			if(sd->nhealsp > 0x7fff)
 				sd->nhealsp = 0x7fff;
 		}
-		// ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ãƒ–ãƒ¼ã‚¹ãƒˆ
+		// ƒI[ƒo[ƒhƒu[ƒXƒg
 		if(sd->sc.data[SC_OVERED_BOOST].timer != -1) {
 			sd->flee = sd->sc.data[SC_OVERED_BOOST].val3;
 			sd->aspd = sd->sc.data[SC_OVERED_BOOST].val4;
@@ -2658,13 +2658,13 @@ L_RECALC:
 			sd->watk -= sd->watk * sd->sc.data[SC_EQC].val4 / 100;
 			sd->def2 -= sd->def2 * sd->sc.data[SC_EQC].val4 / 100;
 		}
-		// ãƒ‘ã‚¤ãƒ­ã‚¯ãƒ©ã‚¹ãƒ†ã‚£ãƒƒã‚¯
+		// ƒpƒCƒƒNƒ‰ƒXƒeƒBƒbƒN
 		if(sd->sc.data[SC_PYROCLASTIC].timer != -1) {
 			sd->watk += sd->sc.data[SC_PYROCLASTIC].val2;
 		}
 	}
 
-	// ãƒ†ã‚³ãƒ³ãƒ©ãƒ³ã‚«ãƒ¼ãƒœãƒ¼ãƒŠã‚¹
+	// ƒeƒRƒ“ƒ‰ƒ“ƒJ[ƒ{[ƒiƒX
 	if(sd->status.class_ == PC_CLASS_TK && sd->status.base_level >= 90 && ranking_get_pc_rank(sd,RK_TAEKWON) > 0)
 	{
 		sd->status.max_hp *= 3;
@@ -2672,19 +2672,19 @@ L_RECALC:
 	}
 
 #ifdef PRE_RENEWAL
-	// åœŸç¬¦ï¼šå‰›å¡Š
+	// “y•„F„‰ò
 	if(sd->elementball.num && sd->elementball.ele == ELE_EARTH) {
 		sd->watk += sd->watk * sd->elementball.num * 10 / 100;
 	}
 #endif
 
-	// MATKä¹—ç®—å‡¦ç†(æ–è£œæ­£)
+	// MATKæZˆ—(ñ•â³)
 	if(sd->matk2_rate != 100) {
 		sd->matk1 = sd->matk1 * sd->matk2_rate / 100;
 		sd->matk2 = sd->matk2 * sd->matk2_rate / 100;
 	}
 
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å›ºå®š
+	// ƒXƒe[ƒ^ƒXŒÅ’è
 	if(sd->fix_status.max_hp > 0) {
 		sd->status.max_hp = sd->fix_status.max_hp;
 	}
@@ -2697,7 +2697,7 @@ L_RECALC:
 	}
 	if(sd->fix_status.matk > 0) {
 		sd->matk1 = sd->matk2 = sd->fix_status.matk;
-		// MATKä¹—ç®—å‡¦ç†(å›ºå®šå€¤*(æ–è£œæ­£+æ–è£œæ­£ä»¥å¤–))
+		// MATKæZˆ—(ŒÅ’è’l*(ñ•â³+ñ•â³ˆÈŠO))
 #ifdef PRE_RENEWAL
 		if(sd->matk_rate != 100 || sd->matk2_rate != 100) {
 			sd->matk1 = sd->matk1 * (sd->matk_rate + sd->matk2_rate - 100) / 100;
@@ -2778,7 +2778,7 @@ L_RECALC:
 	if(sd->dmotion < 400)
 		sd->dmotion = 400;
 
-	// MATKæœ€ä½å€¤ä¿éšœ
+	// MATKÅ’á’l•Ûá
 #ifdef PRE_RENEWAL
 	if(sd->matk1 < 1)
 	 	sd->matk1 = 1;
@@ -2804,27 +2804,27 @@ L_RECALC:
 	if(sd->status.sp > sd->status.max_sp)
 		sd->status.sp = sd->status.max_sp;
 
-	// bTigereyeãŒãªããªã£ã¦ã„ãŸã‚‰ãƒ‘ã‚±ãƒƒãƒˆé€ã£ã¦å…ƒã«æˆ»ã™
+	// bTigereye‚ª‚È‚­‚È‚Á‚Ä‚¢‚½‚çƒpƒPƒbƒg‘—‚Á‚ÄŒ³‚É–ß‚·
 	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc.data[SC_TIGEREYE].timer == -1)
 		clif_status_load_id(sd,SI_TIGEREYE,0);
 
-	// bInfiniteEndureãŒãªããªã£ã¦ã„ãŸã‚‰ãƒ‘ã‚±ãƒƒãƒˆã‚’é€ã£ã¦å…ƒã«æˆ»ã™
+	// bInfiniteEndure‚ª‚È‚­‚È‚Á‚Ä‚¢‚½‚çƒpƒPƒbƒg‚ğ‘—‚Á‚ÄŒ³‚É–ß‚·
 	if(b_endure == 1 && sd->special_state.infinite_endure == 0)
 		clif_status_load_id(sd,SI_ENDURE,0);
-	// bSpeedRateãŒãªããªã£ã¦ã„ãŸã‚‰ãƒ‘ã‚±ãƒƒãƒˆã‚’é€ã£ã¦å…ƒã«æˆ»ã™
+	// bSpeedRate‚ª‚È‚­‚È‚Á‚Ä‚¢‚½‚çƒpƒPƒbƒg‚ğ‘—‚Á‚ÄŒ³‚É–ß‚·
 	if(b_speedrate != 0 && sd->speed_rate == 0)
 		clif_status_load_id(sd,SI_MOVHASTE_INFINITY,0);
 	else if(b_speedrate < sd->speed_rate)
 		clif_status_load_id(sd,SI_MOVHASTE_INFINITY,1);
 
-	// è¨ˆç®—å‡¦ç†ã“ã“ã¾ã§
+	// ŒvZˆ—‚±‚±‚Ü‚Å
 	if( sd->status_calc_pc_process > 1 ) {
-		// ã“ã®é–¢æ•°ãŒå†å¸°çš„ã«å‘¼ã°ã‚ŒãŸã®ã§ã€å†è¨ˆç®—ã™ã‚‹
+		// ‚±‚ÌŠÖ”‚ªÄ‹A“I‚ÉŒÄ‚Î‚ê‚½‚Ì‚ÅAÄŒvZ‚·‚é
 		if( --calclimit ) {
 			sd->status_calc_pc_process = 1;
 			goto L_RECALC;
 		} else {
-			// ç„¡é™ãƒ«ãƒ¼ãƒ—ã«ãªã£ãŸã®ã§è¨ˆç®—æ‰“ã¡åˆ‡ã‚Š
+			// –³ŒÀƒ‹[ƒv‚É‚È‚Á‚½‚Ì‚ÅŒvZ‘Å‚¿Ø‚è
 			printf("status_calc_pc: infinity loop!\n");
 		}
 	}
@@ -2856,14 +2856,14 @@ L_RECALC:
 	if( memcmp(b_skill,sd->status.skill,sizeof(sd->status.skill)) || b_attackrange != sd->range.attackrange ) {
 		int type;
 		for(i=0; i<MAX_PCSKILL; i++) {
-			// ã‚«ãƒ¼ãƒ‰ã‚¹ã‚­ãƒ«ã‚’ãƒ­ã‚¹ãƒˆã—ãŸã¨ãå³æ™‚ç™ºå‹•å‹ãªã‚‰çŠ¶æ…‹ç•°å¸¸ã‚’è§£é™¤
+			// ƒJ[ƒhƒXƒLƒ‹‚ğƒƒXƒg‚µ‚½‚Æ‚«‘¦”­“®Œ^‚È‚çó‘ÔˆÙí‚ğ‰ğœ
 			if(b_skill[i].flag == 1 && b_skill[i].lv > 0 && sd->status.skill[i].lv <= 0 && skill_get_inf(i) & INF_SELF) {
 				type = GetSkillStatusChangeTable(i);
 				if(type >= 0 && sd->sc.data[type].timer != -1)
 					status_change_end(&sd->bl, type, -1);
 			}
 		}
-		clif_skillinfoblock(sd);	// ã‚¹ã‚­ãƒ«é€ä¿¡
+		clif_skillinfoblock(sd);	// ƒXƒLƒ‹‘—M
 	}
 
 	if(b_speed != sd->speed) {
@@ -2952,7 +2952,7 @@ L_RECALC:
 	    (sd->sc.data[SC_PROVOKE].timer == -1 || sd->sc.data[SC_PROVOKE].val2 == 0) &&
 	    !unit_isdead(&sd->bl) )
 	{
-		// ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ç™ºå‹•
+		// ƒI[ƒgƒo[ƒT[ƒN”­“®
 		status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
 	}
 
@@ -2960,8 +2960,8 @@ L_RECALC:
 }
 
 /*==========================================
- * PCã®amotionã‚’è¨ˆç®—ã—ã¦è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * PC‚Ìamotion‚ğŒvZ‚µ‚Ä•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 static int status_calc_amotion_pc(struct map_session_data *sd)
@@ -2985,40 +2985,40 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 	nullpo_retr(0, sd);
 
-	/* ASPDå›ºå®šãƒœãƒ¼ãƒŠã‚¹ */
+	/* ASPDŒÅ’èƒ{[ƒiƒX */
 	if(sd->fix_status.aspd) {
 		int fix_aspd = 2000 - sd->fix_status.aspd*10;
 		return (fix_aspd < 100)? 100:fix_aspd;
 	}
 
 #ifdef PRE_RENEWAL
-	/* åŸºæœ¬ASPDã®è¨ˆç®— */
-	if(sd->status.weapon < WT_MAX)	// ç‰‡æ‰‹ã®å ´åˆã¯å€¤ã‚’ãã®ã¾ã¾å–å¾—
+	/* Šî–{ASPD‚ÌŒvZ */
+	if(sd->status.weapon < WT_MAX)	// •Ğè‚Ìê‡‚Í’l‚ğ‚»‚Ì‚Ü‚Üæ“¾
 		base_amotion = job_db[sd->s_class.job].aspd_base[sd->status.weapon];
-	else	// 2åˆ€ã®å ´åˆã¯2åˆ€ç”¨ã®è¨ˆç®—ã‚’è¡Œã†
+	else	// 2“‚Ìê‡‚Í2“—p‚ÌŒvZ‚ğs‚¤
 		base_amotion = (job_db[sd->s_class.job].aspd_base[sd->weapontype1] + job_db[sd->s_class.job].aspd_base[sd->weapontype2]) * 140 / 200;
 
-	/* åŸºæœ¬ASPDã«å„ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒœãƒ¼ãƒŠã‚¹ã‚’é©ç”¨ */
-	if(pc_isriding(sd))	// é¨å…µä¿®ç·´
+	/* Šî–{ASPD‚ÉŠeƒpƒ‰ƒ[ƒ^‚Ìƒ{[ƒiƒX‚ğ“K—p */
+	if(pc_isriding(sd))	// ‹R•ºC—û
 		base_amotion = base_amotion - 1000 * (50+10*pc_checkskill(sd,KN_CAVALIERMASTERY)) / 100 - (base_amotion * sd->paramc[4] / 1000) - (base_amotion * sd->paramc[1] / 250) + 1000;
-	else if(pc_isdragon(sd))	// ãƒ‰ãƒ©ã‚´ãƒ³ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚°
+	else if(pc_isdragon(sd))	// ƒhƒ‰ƒSƒ“ƒgƒŒ[ƒjƒ“ƒO
 		base_amotion = base_amotion - 1000 * (50+10*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100 - (base_amotion * sd->paramc[4] / 1000) - (base_amotion * sd->paramc[1] / 250) + 1000;
-	else	// é¨ä¹—ã—ã¦ã„ãªã„
+	else	// ‹Ræ‚µ‚Ä‚¢‚È‚¢
 		base_amotion = base_amotion - (base_amotion * sd->paramc[4] / 1000) - (base_amotion * sd->paramc[1] / 250);
 #else
-	/* åŸºæœ¬ASPDã®è¨ˆç®— */
-	if(sd->status.weapon < WT_MAX) {	// ç‰‡æ‰‹ã®å ´åˆã¯å€¤ã‚’ãã®ã¾ã¾å–å¾—
+	/* Šî–{ASPD‚ÌŒvZ */
+	if(sd->status.weapon < WT_MAX) {	// •Ğè‚Ìê‡‚Í’l‚ğ‚»‚Ì‚Ü‚Üæ“¾
 		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->status.weapon]) / 10;
 		if(base_amotion > 144)
 			base_penalty = (100-(base_amotion-144)*2);
 		else
 			base_penalty = 100;
-	} else {	// 2åˆ€ã®å ´åˆã¯2åˆ€ç”¨ã®è¨ˆç®—ã‚’è¡Œã†
+	} else {	// 2“‚Ìê‡‚Í2“—p‚ÌŒvZ‚ğs‚¤
 		base_amotion = (2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype1]) / 10;
 		base_amotion = base_amotion + (((2000 - job_db[sd->s_class.job].aspd_base[sd->weapontype2]) / 10) - 194) / 4;
 	}
 
-	/* åŸºæœ¬ASPDã«å„ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ãƒœãƒ¼ãƒŠã‚¹ã‚’é©ç”¨ */
+	/* Šî–{ASPD‚ÉŠeƒpƒ‰ƒ[ƒ^‚Ìƒ{[ƒiƒX‚ğ“K—p */
 	if(sd->status.weapon < WT_MAX){
 		if( sd->status.weapon == WT_BOW ||
 		    sd->status.weapon == WT_MUSICAL ||
@@ -3033,60 +3033,60 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 	base_amotion = (2000-base_amotion*10);
 #endif
 
-	/* ç›¾ãƒšãƒŠãƒ«ãƒ†ã‚£ã®åŠ ç®— */
+	/* ‚ƒyƒiƒ‹ƒeƒB‚Ì‰ÁZ */
 	if(sd->equip_index[EQUIP_INDEX_LARM] >= 0 && sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]] && itemdb_isarmor(sd->inventory_data[sd->equip_index[EQUIP_INDEX_LARM]]->nameid) && job_db[sd->s_class.job].aspd_base[WT_MAX] != 0)
 		base_amotion += job_db[sd->s_class.job].aspd_base[WT_MAX];
 
 	if(sd->sc.count > 0) {
-		// ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ«
+		// ƒq[ƒgƒoƒŒƒ‹
 		if(sd->sc.data[SC_HEAT_BARREL].timer != -1)
 			heatbarrel -= sd->sc.data[SC_HEAT_BARREL].val1 * 10;
 	}
 
 #ifdef PRE_RENEWAL
-	/* ãƒœãƒ¼ãƒŠã‚¹ADD_ASPDã®è¨ˆç®— */
+	/* ƒ{[ƒiƒXADD_ASPD‚ÌŒvZ */
 	amotion = base_amotion + sd->aspd_add + heatbarrel;
 #else
 	amotion = base_amotion;
 #endif
 
-	/* amotionãŒå¤‰åŒ–ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®è¨ˆç®— */
+	/* amotion‚ª•Ï‰»‚·‚éó‘ÔˆÙí‚ÌŒvZ */
 	if(sd->sc.count > 0) {
-		/* amotionãŒå¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+		/* amotion‚ª‘‰Á‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 
-		// ç§ã‚’å¿˜ã‚Œãªã„ã§
+		// „‚ğ–Y‚ê‚È‚¢‚Å
 		if(sd->sc.data[SC_DONTFORGETME].timer != -1) {
 			slow_val = sd->sc.data[SC_DONTFORGETME].val1;
 		}
 
-		// é‡‘å‰›
+		// ‹à„
 		if(sd->sc.data[SC_STEELBODY].timer != -1) {
 			if(slow_val < 25)
 				slow_val = 25;
 		}
 
-		// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+		// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 		if(sd->sc.data[SC_JOINTBEAT].timer != -1) {
 			switch (sd->sc.data[SC_JOINTBEAT].val4) {
-				case 1:		// æ‰‹é¦–
+				case 1:		// èñ
 					if(slow_val < 25)
 						slow_val = 25;
 					break;
-				case 2:		// è†
+				case 2:		// •G
 					if(slow_val < 10)
 						slow_val = 10;
 					break;
 			}
 		}
 
-		// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh
 		if(sd->sc.data[SC_GRAVITATION].timer != -1) {
 			int penalty = sd->sc.data[SC_GRAVITATION].val1*5;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		// ç§ã‚’ç¸›ã‚‰ãªã„ã§
+		// „‚ğ”›‚ç‚È‚¢‚Å
 		if(sd->sc.data[SC_DANCING].timer != -1 && sd->sc.data[SC_BARDDANCER].timer == -1) {
 			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
 				if(sd->sc.data[SC_LONGINGFREEDOM].val1 < 5) {
@@ -3097,100 +3097,100 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			}
 		}
 
-		// ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯(ãƒšãƒŠãƒ«ãƒ†ã‚£)
+		// ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN(ƒyƒiƒ‹ƒeƒB)
 		if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1) {
 			if(slow_val < 50)
 				slow_val = 50;
 		}
 
-		// ãƒ‘ãƒ©ãƒ©ã‚¤ã‚º
+		// ƒpƒ‰ƒ‰ƒCƒY
 		if(sd->sc.data[SC_PARALIZE].timer != -1) {
 			if(slow_val < 10)
 				slow_val = 10;
 		}
 
-		// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+		// ƒtƒƒXƒgƒ~ƒXƒeƒB
 		if(sd->sc.data[SC_FROSTMISTY].timer != -1) {
 			if(slow_val < 15)
 				slow_val = 15;
 		}
 
-		// ãƒœãƒ‡ã‚£ãƒšã‚¤ãƒ³ãƒ†ã‚£ãƒ³ã‚°
+		// ƒ{ƒfƒBƒyƒCƒ“ƒeƒBƒ“ƒO
 		if(sd->sc.data[SC__BODYPAINT].timer != -1) {
 			if(slow_val < 25)
 				slow_val = 25;
 		}
 
-		// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+		// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 		if(sd->sc.data[SC__INVISIBILITY].timer != -1) {
 			int penalty = 50 - 10 * sd->sc.data[SC__INVISIBILITY].val1;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+		// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 		if(sd->sc.data[SC__GROOMY].timer != -1) {
 			int penalty = 20 + 10 * sd->sc.data[SC__GROOMY].val1;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		// ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ–
+		// ƒA[ƒXƒhƒ‰ƒCƒu
 		if(sd->sc.data[SC_EARTHDRIVE].timer != -1) {
 			if(slow_val < 25)
 				slow_val = 25;
 		}
 
-		// ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼
+		// ƒƒ‰ƒ“ƒRƒŠ[
 		if(sd->sc.data[SC_GLOOMYDAY].timer != -1) {
 			int penalty = 15 + 5 * sd->sc.data[SC_GLOOMYDAY].val1;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		// ãƒ¡ãƒ­ãƒ³çˆ†å¼¾
+		// ƒƒƒ“”š’e
 		if(sd->sc.data[SC_MELON_BOMB].timer != -1) {
 			int penalty = sd->sc.data[SC_MELON_BOMB].val1;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		// ãƒšã‚¤ãƒ³ã‚­ãƒ©ãƒ¼
+		// ƒyƒCƒ“ƒLƒ‰[
 		if(sd->sc.data[SC_PAIN_KILLER].timer != -1) {
 			int penalty = sd->sc.data[SC_PAIN_KILLER].val1 * 10;
 			if(slow_val < penalty)
 				slow_val = penalty;
 		}
 
-		/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—1 */
+		/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ1 */
 
-		// å¢—é€Ÿãƒãƒ¼ã‚·ãƒ§ãƒ³
+		// ‘‘¬ƒ|[ƒVƒ‡ƒ“
 		if(sd->sc.data[tmp = SC_SPEEDPOTION2].timer != -1 || sd->sc.data[tmp = SC_SPEEDPOTION1].timer != -1 || sd->sc.data[tmp = SC_SPEEDPOTION0].timer != -1)
 			haste_val1 = sd->sc.data[tmp].val2;
 
-		// æ¿ƒç¸®ã‚µãƒ©ãƒã‚¤ãƒ³ã‚¸ãƒ¥ãƒ¼ã‚¹
+		// ”ZkƒTƒ‰ƒ}ƒCƒ“ƒWƒ…[ƒX
 		if(sd->sc.data[SC_EXTRACT_SALAMINE_JUICE].timer != -1)
 			haste_val1 += sd->sc.data[SC_EXTRACT_SALAMINE_JUICE].val1;
 
-		/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—2 */
+		/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ2 */
 
-		// ãƒ„ãƒ¼ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+		// ƒc[ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 		if(sd->sc.data[SC_TWOHANDQUICKEN].timer != -1)
 			haste_val2 = sd->sc.data[SC_TWOHANDQUICKEN].val2;
 
-		// ã‚¹ãƒ”ã‚¢ã‚¯ã‚£ãƒƒã‚±ãƒ³
+		// ƒXƒsƒAƒNƒBƒbƒPƒ“
 		if(sd->sc.data[SC_SPEARQUICKEN].timer != -1) {
 			if(haste_val2 < sd->sc.data[SC_SPEARQUICKEN].val2)
 				haste_val2 = sd->sc.data[SC_SPEARQUICKEN].val2;
 		}
 
-		// ãƒ¯ãƒ³ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+		// ƒƒ“ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 		if(sd->sc.data[SC_ONEHAND].timer != -1) {
 			if(haste_val2 < 30)
 				haste_val2 = 30;
 		}
 
-		// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥
+		// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…
 		if(sd->sc.data[SC_ADRENALINE].timer != -1) {
 			int bonus;
 			if(sd->sc.data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
@@ -3201,7 +3201,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				haste_val2 = bonus;
 		}
 
-		// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥2
+		// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…2
 		if(sd->sc.data[SC_ADRENALINE2].timer != -1) {
 			int bonus;
 			if(sd->sc.data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
@@ -3212,7 +3212,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				haste_val2 = bonus;
 		}
 
-		// å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹
+		// —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX
 		if(sd->sc.data[SC_ASSNCROS].timer != -1) {
 			int bonus = sd->sc.data[SC_ASSNCROS].val2;
 			if(haste_val2 < bonus)
@@ -3224,54 +3224,54 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				haste_val2 = bonus;
 		}
 
-		// æ˜Ÿã®å®‰æ¥½
+		// ¯‚ÌˆÀŠy
 		if(sd->sc.data[SC_STAR_COMFORT].timer != -1) {
 			comfort_bonus = (sd->status.base_level + sd->status.dex + sd->status.luk)/10;
 			if(haste_val2 < comfort_bonus)
 				haste_val2 = comfort_bonus;
 		}
 
-		// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
 			ferver_bonus = sd->sc.data[SC_GATLINGFEVER].val1*2;
 			if(haste_val2 < ferver_bonus)
 				haste_val2 = ferver_bonus;
 		}
 
-		// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+		// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 		if(sd->sc.data[SC_MADNESSCANCEL].timer != -1) {
 			int bonus = 20+ferver_bonus;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
 
-		// ç‚¹ç©´ -å-
+		// “_ŒŠ -”½-
 		if(sd->sc.data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 			int bonus = sd->sc.data[SC_GENTLETOUCH_CHANGE].val4;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
 
-		// ã‚¹ã‚¤ãƒ³ã‚°ãƒ€ãƒ³ã‚¹
+		// ƒXƒCƒ“ƒOƒ_ƒ“ƒX
 		if(sd->sc.data[SC_SWING].timer != -1) {
 			int bonus = sd->sc.data[SC_SWING].val4;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
 
-		// ãƒ€ãƒ³ã‚¹ã‚¦ã‚£ã‚ºã‚¦ã‚©ãƒ¼ã‚°
+		// ƒ_ƒ“ƒXƒEƒBƒYƒEƒH[ƒO
 		if(sd->sc.data[SC_DANCE_WITH_WUG].timer != -1) {
 			int bonus = 2 + sd->sc.data[SC_DANCE_WITH_WUG].val4;
 			if(haste_val2 < bonus)
 				haste_val2 = bonus;
 		}
-		// æ˜Ÿã®æ§‹ãˆ
+		// ¯‚Ì\‚¦
 		if(sd->sc.data[SC_STARSTANCE].timer != -1)
 			haste_val1 += sd->sc.data[SC_STARSTANCE].val2;
 
-		/* ãã®ä»– */
+		/* ‚»‚Ì‘¼ */
 
-		// ãƒãƒ¼ã‚µãƒ¼ã‚¯
+		// ƒo[ƒT[ƒN
 #ifdef PRE_RENEWAL
 		if(sd->sc.data[SC_BERSERK].timer != -1)
 			berserk_flag = 1;
@@ -3280,98 +3280,98 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 			berserk_flag = 1;
 #endif
 
-		// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+		// ƒfƒBƒtƒFƒ“ƒ_[
 		if(sd->sc.data[SC_DEFENDER].timer != -1)
 			bonus_add += sd->sc.data[SC_DEFENDER].val3;
 
-		// ãƒ•ã‚¡ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚¹ãƒ”ãƒªãƒƒãƒˆ
+		// ƒtƒ@ƒCƒeƒBƒ“ƒOƒXƒsƒŠƒbƒg
 		if(sd->sc.data[SC_EISIR].timer != -1)
 			bonus_add -= sd->sc.data[SC_EISIR].val3;
 
-		// ã‚¬ã‚¹ãƒˆ
+		// ƒKƒXƒg
 		if(sd->sc.data[SC_GUST].timer != -1)
 			bonus_add -= sd->sc.data[SC_GUST].val2;
 
-		// ãƒ–ãƒ©ã‚¹ãƒˆ
+		// ƒuƒ‰ƒXƒg
 		if(sd->sc.data[SC_BLAST].timer != -1)
 			bonus_add -= sd->sc.data[SC_BLAST].val2;
 
-		// ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚¹ãƒˆãƒ¼ãƒ 
+		// ƒƒCƒ‹ƒhƒXƒg[ƒ€
 		if(sd->sc.data[SC_WILD_STORM].timer != -1)
 			bonus_add -= sd->sc.data[SC_WILD_STORM].val2;
 
-		// ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº«ãƒ‡ãƒ“ãƒ«ãƒ
+		// ƒ‚ƒ“ƒXƒ^[•Ïgƒfƒrƒ‹ƒ`
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1109)
 			bonus_add -= -10;
 	}
 
-	/* å¤ªé™½ã¨æœˆã¨æ˜Ÿã®æ‚ªé­” */
+	/* ‘¾—z‚ÆŒ‚Æ¯‚Ìˆ«–‚ */
 	if((skilllv = pc_checkskill(sd,SG_DEVIL)) > 0 && sd->status.job_level >= 50) {
 		int bonus = skilllv*3 + comfort_bonus;
 		if(haste_val2 < bonus)
 			haste_val2 = bonus;
 	}
 
-	/* slow_valã¨haste_val1ã¨haste_val2ã‚’åŠ ç®—ã™ã‚‹ */
+	/* slow_val‚Æhaste_val1‚Æhaste_val2‚ğ‰ÁZ‚·‚é */
 	bonus_rate = slow_val - haste_val1 - haste_val2;
 
 #ifdef PRE_RENEWAL
-	/* bonus_rateã«ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒœãƒ¼ãƒŠã‚¹ã‚’åŠ ç®—ã™ã‚‹ */
+	/* bonus_rate‚ÉƒAƒCƒeƒ€‚Ìƒ{[ƒiƒX‚ğ‰ÁZ‚·‚é */
 	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
 		sd->aspd_rate += sd->aspd_add_rate;
 		bonus_rate -= sd->aspd_rate;
 	}
 #endif
 
-	/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+	/* ƒo[ƒT[ƒN */
 	if(berserk_flag)
 		bonus_rate -= 30;
 
-	/* ãƒ•ãƒªãƒ¼ã‚­ãƒ£ã‚¹ãƒˆ */
+	/* ƒtƒŠ[ƒLƒƒƒXƒg */
 	if(sd->ud.skilltimer != -1 && (skilllv = pc_checkskill(sd,SA_FREECAST)) > 0)
 		bonus_rate += 5 * (10 - skilllv);
 
-	/* bonus_rateã®è¨ˆç®— */
+	/* bonus_rate‚ÌŒvZ */
 	if(bonus_rate != 0)
 		amotion = amotion * (bonus_rate+100) / 100;
 
-	/* ã‚¢ãƒ‰ãƒãƒ³ã‚¹ãƒ‰ãƒ–ãƒƒã‚¯ */
+	/* ƒAƒhƒoƒ“ƒXƒhƒuƒbƒN */
 	if(sd->weapontype1 == WT_BOOK && (skilllv = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0)
 		amotion -= skilllv / 2;
 
-	/* ã‚·ãƒ³ã‚°ãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ */
+	/* ƒVƒ“ƒOƒ‹ƒAƒNƒVƒ‡ƒ“ */
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skilllv = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
 		amotion -= (skilllv+1) / 2 * 10;
 
-	/* bonus_addã®åŠ ç®— */
+	/* bonus_add‚Ì‰ÁZ */
 	if(bonus_add != 0)
 		amotion += bonus_add;
 
 #ifndef PRE_RENEWAL
-	if(pc_isriding(sd))	// é¨å…µä¿®ç·´
+	if(pc_isriding(sd))	// ‹R•ºC—û
 		amotion = amotion * (150-10*pc_checkskill(sd,KN_CAVALIERMASTERY)) / 100;
-	else if(pc_isdragon(sd))	// ãƒ‰ãƒ©ã‚´ãƒ³ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚°
+	else if(pc_isdragon(sd))	// ƒhƒ‰ƒSƒ“ƒgƒŒ[ƒjƒ“ƒO
 		amotion = amotion * (125-5*pc_checkskill(sd,RK_DRAGONTRAINING)) / 100;
 
-	/* ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒœãƒ¼ãƒŠã‚¹ã‚’åŠ ç®—ã™ã‚‹ */
+	/* ƒAƒCƒeƒ€‚Ìƒ{[ƒiƒX‚ğ‰ÁZ‚·‚é */
 	if(sd->aspd_add_rate != 0 || sd->aspd_rate != 0) {
 		sd->aspd_rate += sd->aspd_add_rate;
 		amotion = amotion * (100-sd->aspd_rate) / 100;
 	}
 
-	/* ãƒœãƒ¼ãƒŠã‚¹ADD_ASPDã®è¨ˆç®— */
+	/* ƒ{[ƒiƒXADD_ASPD‚ÌŒvZ */
 	amotion += sd->aspd_add + heatbarrel;
 #endif
 
-	/* å°æ•°åˆ‡ã‚Šä¸Šã’ */
+	/* ¬”Ø‚èã‚° */
 	amotion = ceil(amotion);
 
 	return (amotion < 1)? 1:(int)amotion;
 }
 
 /*==========================================
- * PCã®speedã‚’è¨ˆç®—ã—ã¦è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * PC‚Ìspeed‚ğŒvZ‚µ‚Ä•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 static int status_calc_speed_pc(struct map_session_data *sd, int speed)
@@ -3387,51 +3387,51 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 
 	nullpo_retr(0, sd);
 
-	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED)	// SPEEDå›ºå®š
+	if(sd->fix_status.speed > MIN_WALK_SPEED && sd->fix_status.speed <= MAX_WALK_SPEED)	// SPEEDŒÅ’è
 		return sd->fix_status.speed;
-	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)	// ãƒ•ãƒªãƒ¼ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ãªã‚‰ç§»å‹•é€Ÿåº¦å›ºå®š
+	if(sd->ud.skilltimer != -1 && pc_checkskill(sd,SA_FREECAST) > 0)	// ƒtƒŠ[ƒLƒƒƒXƒgó‘Ô‚È‚çˆÚ“®‘¬“xŒÅ’è
 		return sd->speed * (175 - 5 * pc_checkskill(sd,SA_FREECAST)) / 100;
-	if(sd->sc.data[SC_STEELBODY].timer != -1)	// é‡‘å‰›ã¯ç§»å‹•é€Ÿåº¦å›ºå®š
+	if(sd->sc.data[SC_STEELBODY].timer != -1)	// ‹à„‚ÍˆÚ“®‘¬“xŒÅ’è
 		return 200;
-	if(sd->ud.skilltimer != -1 && sd->ud.skillid == LG_EXEEDBREAK)		// ã‚¤ã‚¯ã‚·ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯ã®è© å”±ä¸­
+	if(sd->ud.skilltimer != -1 && sd->ud.skillid == LG_EXEEDBREAK)		// ƒCƒNƒV[ƒhƒuƒŒƒCƒN‚Ì‰r¥’†
 		return (150 - 10 * sd->ud.skilllv);
-	if(sd->sc.data[SC_FULL_THROTTLE].timer != -1)		// ãƒ•ãƒ«ã‚¹ãƒ­ãƒƒãƒˆãƒ«ä¸­
+	if(sd->sc.data[SC_FULL_THROTTLE].timer != -1)		// ƒtƒ‹ƒXƒƒbƒgƒ‹’†
 		return 50;
 
-	/* speedãŒå¤‰åŒ–ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+	/* speed‚ª•Ï‰»‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 	if(sd->sc.count > 0) {
-		/* speedãŒå¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+		/* speed‚ª‘‰Á‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 
-		// ãƒˆãƒ³ãƒãƒ«ãƒ‰ãƒ©ã‚¤ãƒ–
+		// ƒgƒ“ƒlƒ‹ƒhƒ‰ƒCƒu
 		if(sd->sc.data[SC_HIDING].timer != -1 && pc_checkskill(sd,RG_TUNNELDRIVE) > 0) {
 			slow_val = 120 - 6 * pc_checkskill(sd,RG_TUNNELDRIVE);
-		// ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯(é­‚çŠ¶æ…‹)
+		// ƒ`ƒFƒCƒXƒEƒH[ƒN(°ó‘Ô)
 		} else if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer != -1) {
 			slow_val = -40;
 		} else {
-			// é€Ÿåº¦æ¸›å°‘
+			// ‘¬“xŒ¸­
 			if(sd->sc.data[SC_DECREASEAGI].timer != -1)
 				slow_val = 25;
 
-			// ç§ã‚’ç¸›ã‚‰ãªã„ã§
+			// „‚ğ”›‚ç‚È‚¢‚Å
 			if(sd->sc.data[SC_LONGINGFREEDOM].timer != -1) {
 				int penalty = 50 - 10 * sd->sc.data[SC_LONGINGFREEDOM].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
-			// è¸Šã‚Š/æ¼”å¥
+			// —x‚è/‰‰‘t
 			} else if(sd->sc.data[SC_DANCING].timer != -1) {
 				int penalty = 500 - (40 + 10 * (sd->sc.data[SC_BARDDANCER].timer != -1)) * pc_checkskill(sd,((sd->sex == SEX_MALE)? BA_MUSICALLESSON: DC_DANCINGLESSON));
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+			// ƒNƒ@ƒOƒ}ƒCƒA
 			if(sd->sc.data[SC_QUAGMIRE].timer != -1) {
 				if(slow_val < 50)
 					slow_val = 50;
 			}
 
-			// ç§ã‚’å¿˜ã‚Œãªã„ã§
+			// „‚ğ–Y‚ê‚È‚¢‚Å
 			if(sd->sc.data[SC_DONTFORGETME].timer != -1) {
 				if(slow_val < sd->sc.data[SC_DONTFORGETME].val2)
 					slow_val = sd->sc.data[SC_DONTFORGETME].val2;
@@ -3441,71 +3441,71 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 					slow_val = sd->sc.data[SC_DONTFORGETME_].val2;
 			}
 
-			// å‘ªã„
+			// ô‚¢
 			if(sd->sc.data[SC_CURSE].timer != -1) {
 				if(slow_val < 300)
 					slow_val = 300;
 			}
 
-			// ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯(é€šå¸¸)
+			// ƒ`ƒFƒCƒXƒEƒH[ƒN(’Êí)
 			if(sd->sc.data[SC_CHASEWALK].timer != -1 && sd->sc.data[SC_ROGUE].timer == -1) {
 				int penalty = 35 - 5 * sd->sc.data[SC_CHASEWALK].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹
+			// ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX
 			if(sd->sc.data[SC_MARSHOFABYSS].timer != -1) {
 				if(slow_val < sd->sc.data[SC_MARSHOFABYSS].val2)
 					slow_val = sd->sc.data[SC_MARSHOFABYSS].val2;
 			}
 
-			// ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯(ãƒšãƒŠãƒ«ãƒ†ã‚£)
+			// ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN(ƒyƒiƒ‹ƒeƒB)
 			if(sd->sc.data[SC_HALLUCINATIONWALK2].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ã‚«ãƒ¢ãƒ•ãƒ©ãƒ¼ã‚¸ãƒ¥
+			// ƒJƒ‚ƒtƒ‰[ƒWƒ…
 			if(sd->sc.data[SC_CAMOUFLAGE].timer != -1 && sd->sc.data[SC_CAMOUFLAGE].val1 > 2) {
 				int penalty = 25 * (6 - sd->sc.data[SC_CAMOUFLAGE].val1);
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼(ä½¿ç”¨è€…)
+			// ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[(g—pÒ)
 			if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1) {
 				if(slow_val < 30)
 					slow_val = 30;
 			}
 
-			// ã‚¹ãƒ†ãƒ«ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ä½¿ç”¨è€…)
+			// ƒXƒeƒ‹ƒXƒtƒB[ƒ‹ƒh(g—pÒ)
 			if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1) {
 				if(slow_val < 30)
 					slow_val = 30;
 			}
 
-			// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh
 			if(battle_config.player_gravitation_type && sd->sc.data[SC_GRAVITATION].timer != -1) {
 				int penalty = sd->sc.data[SC_GRAVITATION].val1 * 5;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// çµå©šè¡£è£…
+			// Œ‹¥ˆß‘•
 			if(sd->sc.data[SC_WEDDING].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+			// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 			if(sd->sc.data[SC_JOINTBEAT].timer != -1) {
 				int penalty = 0;
 				switch (sd->sc.data[SC_JOINTBEAT].val4) {
-				case 0:	// è¶³é¦–
+				case 0:	// ‘«ñ
 					penalty = 50;
 					break;
-				case 2:	// è†
+				case 2:	// •G
 					penalty = 30;
 					break;
 				}
@@ -3513,7 +3513,7 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 					slow_val = penalty;
 			}
 
-			// ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°(å¹³åœ°ç§»å‹•)
+			// ƒNƒ[ƒLƒ“ƒO(•½’nˆÚ“®)
 			if(sd->sc.data[SC_CLOAKING].timer != -1) {
 				int i;
 				int check = 1;
@@ -3530,19 +3530,19 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				}
 			}
 
-			// ç§»å‹•é€Ÿåº¦ä½ä¸‹(ã‚¢ã‚¤ãƒ†ãƒ )
+			// ˆÚ“®‘¬“x’á‰º(ƒAƒCƒeƒ€)
 			if(sd->sc.data[SC_SLOWPOTION].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// æ°´é
+			// …“Ù
 			if(sd->sc.data[SC_SUITON].timer != -1) {
 				if(sd->sc.data[SC_SUITON].val4) {
 					if(slow_val < 50)
@@ -3550,84 +3550,84 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				}
 			}
 
-			// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+			// ƒtƒƒXƒgƒ~ƒXƒeƒB
 			if(sd->sc.data[SC_FROSTMISTY].timer != -1) {
 				if(slow_val < 50)
 					slow_val = 50;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX
 			if(sd->sc.data[SC__LAZINESS].timer != -1) {
 				if(slow_val < 10)
 					slow_val = 10;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 			if(sd->sc.data[SC__GROOMY].timer != -1) {
 				int penalty = 5 + 5 * sd->sc.data[SC__GROOMY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ¡ãƒ­ãƒ³çˆ†å¼¾
+			// ƒƒƒ“”š’e
 			if(sd->sc.data[SC_MELON_BOMB].timer != -1) {
 				int penalty = sd->sc.data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒã‚¤ãƒ³ãƒ‰ãƒˆãƒ©ãƒƒãƒ—
+			// ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv
 			if(sd->sc.data[SC_B_TRAP].timer != -1) {
 				int penalty = sd->sc.data[SC_B_TRAP].val3;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
-			// é‡åŠ›èª¿ç¯€
+			// d—Í’²ß
 			if(sd->sc.data[SC_CREATINGSTAR].timer != -1){
 				if( slow_val < 10 ){
 					slow_val = 10;
 				}
 			}
 
-			// ãƒªãƒã‚¦ãƒ³ãƒ‰
+			// ƒŠƒoƒEƒ“ƒh
 			if(sd->sc.data[SC_REBOUND].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 		}
 
-		/* speedãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—1 */
+		/* speed‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒXŒvZ1 */
 
-		// ã‚¹ãƒ”ãƒ¼ãƒ‰ãƒãƒ¼ã‚·ãƒ§ãƒ³
+		// ƒXƒs[ƒhƒ|[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC_SPEEDUP1].timer != -1)
 			haste_val1 = 50;
 
-		// é€Ÿåº¦å¢—åŠ 
+		// ‘¬“x‘‰Á
 		if(sd->sc.data[SC_INCREASEAGI].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// ã‚µãƒãƒ¼ãƒˆé­”æ³•(ç§»å‹•é€Ÿåº¦å¢—åŠ )
+		// ƒTƒ|[ƒg–‚–@(ˆÚ“®‘¬“x‘‰Á)
 		if(sd->sc.data[SC_SUPPORT_SPEED].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯
+		// ƒEƒCƒ“ƒhƒEƒH[ƒN
 		if(sd->sc.data[SC_WINDWALK].timer != -1) {
 			int bonus = 2 * sd->sc.data[SC_WINDWALK].val1;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ
+		// ƒJ[ƒgƒu[ƒXƒg
 		if(sd->sc.data[SC_CARTBOOST].timer != -1) {
 			if(haste_val1 < 20)
 				haste_val1 = 20;
 		}
 
-		// ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°(å£æ²¿ã„ç§»å‹•)
+		// ƒNƒ[ƒLƒ“ƒO(•Ç‰ˆ‚¢ˆÚ“®)
 		if(sd->sc.data[SC_CLOAKING].timer != -1) {
 			int i;
 			int check = 1;
@@ -3644,98 +3644,98 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			}
 		}
 
-		// ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰
+		// ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh
 		if(sd->sc.data[SC_CLOAKINGEXCEED].timer != -1) {
 			int bonus = sd->sc.data[SC_CLOAKINGEXCEED].val1 * 10;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ãƒãƒ¼ã‚µãƒ¼ã‚¯
+		// ƒo[ƒT[ƒN
 		if(sd->sc.data[SC_BERSERK].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// ã‚¿ã‚¤ãƒªã‚®
+		// ƒ^ƒCƒŠƒM
 		if(sd->sc.data[SC_RUN].timer != -1) {
 			if(haste_val1 < 55)
 				haste_val1 = 55;
 		}
 
-		// ç·Šæ€¥å›é¿
+		// ‹Ù‹}‰ñ”ğ
 		if(sd->sc.data[SC_AVOID].timer != -1) {
 			int bonus = 10 * sd->sc.data[SC_AVOID].val1;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ã‚¦ãƒ«ãƒ•ãƒ€ãƒƒã‚·ãƒ¥
+		// ƒEƒ‹ƒtƒ_ƒbƒVƒ…
 		if(sd->sc.data[SC_WUGDASH].timer != -1) {
 			if(haste_val2 < 50)
 				haste_val2 = 50;
 		}
 
-		// ã‚¢ã‚¯ã‚»ãƒ©ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		// ƒAƒNƒZƒ‰ƒŒ[ƒVƒ‡ƒ“
 		if(sd->sc.data[SC_ACCELERATION].timer != -1) {
 			if(haste_val2 < 25)
 				haste_val2 = 25;
 		}
 
-		// ã‚¹ã‚¤ãƒ³ã‚°ãƒ€ãƒ³ã‚¹
+		// ƒXƒCƒ“ƒOƒ_ƒ“ƒX
 		if(sd->sc.data[SC_SWING].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ
+		// ƒJ[ƒgƒu[ƒXƒg
 		if(sd->sc.data[SC_GN_CARTBOOST].timer != -1) {
 			int bonus = 25 + ((sd->sc.data[SC_GN_CARTBOOST].val1 + 1) / 2) * 25;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ç§»å‹•é€Ÿåº¦å¢—åŠ (ã‚¢ã‚¤ãƒ†ãƒ )
+		// ˆÚ“®‘¬“x‘‰Á(ƒAƒCƒeƒ€)
 		if(sd->sc.data[SC_SPEEDUP0].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ—
+		// ƒEƒBƒ“ƒhƒXƒeƒbƒv
 		if(sd->sc.data[SC_WIND_STEP].timer != -1) {
 			int bonus = sd->sc.data[SC_WIND_STEP].val3;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ãƒãƒ£ã‚¿ãƒªãƒ³ã‚°
+		// ƒ`ƒƒƒ^ƒŠƒ“ƒO
 		if(sd->sc.data[SC_CHATTERING].timer != -1) {
 			int bonus = sd->sc.data[SC_CHATTERING].val3;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
 
-		// ã‚¢ã‚¯ãƒ©ã‚¦ã‚¹ãƒ€ãƒƒã‚·ãƒ¥
+		// ƒAƒNƒ‰ƒEƒXƒ_ƒbƒVƒ…
 		if(sd->sc.data[SC_ARCLOUSEDASH].timer != -1) {
 			if(haste_val1 < 25)
 				haste_val1 = 25;
 		}
 
-		// è­¦æˆ’
+		// Œx‰ú
 		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val4 > 0) {
 			if(haste_val1 < sd->sc.data[SC_HISS].val3)
 				haste_val1 = sd->sc.data[SC_HISS].val3;
 		}
 
-		/* speedãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®—2 */
+		/* speed‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒXŒvZ2 */
 
-		// èåˆ
+		// —Z‡
 		if(sd->sc.data[SC_FUSION].timer != -1)
 			haste_val2 = 25;
 
-		/* ãã®ä»– */
+		/* ‚»‚Ì‘¼ */
 
-		// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+		// ƒfƒBƒtƒFƒ“ƒ_[
 		if(sd->sc.data[SC_DEFENDER].timer != -1)
 			defender_flag = 1;
 
@@ -3744,64 +3744,64 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 			walkspeed_flag = 1;
 	}
 
-	// å›é¿ç‡å¢—åŠ 
+	// ‰ñ”ğ—¦‘‰Á
 	if((sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC) && (skilllv = pc_checkskill(sd,TF_MISS)) > 0) {
 		if(haste_val1 < skilllv)
 			haste_val1 = skilllv;
 	}
 
-	// ã‚¢ã‚¤ãƒ†ãƒ ãƒœãƒ¼ãƒŠã‚¹
+	// ƒAƒCƒeƒ€ƒ{[ƒiƒX
 	speed_rate = sd->speed_rate + sd->speed_add_rate;
 	if(speed_rate != 0) {
 		if(haste_val1 < speed_rate)
 			haste_val1 = speed_rate;
 	}
 
-	/* é¨ä¹— */
+	/* ‹Ræ */
 
-	// ãƒšã‚³
+	// ƒyƒR
 	if(pc_isriding(sd)) {
 		if(haste_val2 < 25)
 			haste_val2 = 25;
 	}
 
-	// ãƒ‰ãƒ©ã‚´ãƒ³
+	// ƒhƒ‰ƒSƒ“
 	if(pc_isdragon(sd)) {
 		if(haste_val2 < 25)
 			haste_val2 = 25;
 	}
 
-	// ã‚¦ãƒ«ãƒ•
+	// ƒEƒ‹ƒt
 	if(pc_iswolfmount(sd)) {
 		int bonus = 15 + 5 * pc_checkskill(sd,RA_WUGRIDER);
 		if(haste_val2 < bonus)
 			haste_val2 = bonus;
 	}
 
-	// é¨ä¹—ã‚·ã‚¹ãƒ†ãƒ 
+	// ‹RæƒVƒXƒeƒ€
 	if(sd->sc.data[SC_ALL_RIDING].timer != -1) {
 		if(haste_val2 < 25)
 			haste_val2 = 25;
 	}
 
-	/* bonus_rateã®æœ€ä½å€¤ã‚’è¨­å®š */
+	/* bonus_rate‚ÌÅ’á’l‚ğİ’è */
 	bonus_rate = slow_val - haste_val1 - haste_val2;
 	if(bonus_rate < -60)
 		bonus_rate = -60;
 
-	/* speedã®æœ€çµ‚è¨ˆç®— */
-	if(pc_iscarton(sd))	// ã‚«ãƒ¼ãƒˆ
+	/* speed‚ÌÅIŒvZ */
+	if(pc_iscarton(sd))	// ƒJ[ƒg
 		speed += speed * (50 - 5 * pc_checkskill(sd,MC_PUSHCART)) / 100;
-	if(pc_isgear(sd))	// é­”å°ã‚®ã‚¢æ­ä¹—
+	if(pc_isgear(sd))	// –‚“±ƒMƒA“‹æ
 		speed += speed * (5 - pc_checkskill(sd,NC_MADOLICENCE)) / 10;
 	if(bonus_rate != 0)	// bonus_rate
 		speed = speed * (bonus_rate+100) / 100;
-	if(defender_flag && speed < 200)	// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+	if(defender_flag && speed < 200)	// ƒfƒBƒtƒFƒ“ƒ_[
 		speed = 200;
-	if(walkspeed_flag)	// ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+	if(walkspeed_flag)	// ƒXƒNƒŠƒvƒg—pƒXƒe[ƒ^ƒX
 		speed = speed * 100 / sd->sc.data[SC_WALKSPEED].val1;
 
-	/* æœ€ä½å€¤ã€æœ€å¤§å€¤ã‚’è¨­å®šã™ã‚‹ */
+	/* Å’á’lAÅ‘å’l‚ğİ’è‚·‚é */
 	if(speed < MIN_WALK_SPEED)
 		speed = MIN_WALK_SPEED;
 	if(speed > MAX_WALK_SPEED)
@@ -3811,8 +3811,8 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 }
 
 /*==========================================
- * å¯¾è±¡ã®groupã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚Ìgroup‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_group(struct block_list *bl)
@@ -3821,14 +3821,14 @@ int status_get_group(struct block_list *bl)
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		return mobdb_search(((struct mob_data *)bl)->class_)->group_id;
-	// PC PETã¯0ï¼ˆæœªè¨­å®š)
+	// PC PET‚Í0i–¢İ’è)
 
 	return 0;
 }
 
 /*==========================================
- * å¯¾è±¡ã®Classã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌClass‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_class(struct block_list *bl)
@@ -3852,8 +3852,8 @@ int status_get_class(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®æ–¹å‘ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚Ì•ûŒü‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_dir(struct block_list *bl)
@@ -3877,8 +3877,8 @@ int status_get_dir(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_lv(struct block_list *bl)
@@ -3902,8 +3902,8 @@ int status_get_lv(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®è·æ¥­ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌE‹ÆƒŒƒxƒ‹‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_jlv(struct block_list *bl)
@@ -3927,8 +3927,8 @@ int status_get_jlv(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®å°„ç¨‹ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌË’ö‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_range(struct block_list *bl)
@@ -3952,8 +3952,8 @@ int status_get_range(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®HPã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌHP‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_hp(struct block_list *bl)
@@ -3975,8 +3975,8 @@ int status_get_hp(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®SPã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌSP‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_sp(struct block_list *bl)
@@ -3996,8 +3996,8 @@ int status_get_sp(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MHPã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMHP‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_max_hp(struct block_list *bl)
@@ -4064,8 +4064,8 @@ int status_get_max_hp(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MSPã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMSP‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_max_sp(struct block_list *bl)
@@ -4088,8 +4088,8 @@ int status_get_max_sp(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Strã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌStr‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_str(struct block_list *bl)
@@ -4116,18 +4116,18 @@ int status_get_str(struct block_list *bl)
 	if(sc && bl->type != BL_HOM) {
 		if(sc->data[SC_LOUD].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
 			str += 4;
-		if( sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+		if( sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ƒuƒŒƒbƒVƒ“ƒO
 			int race = status_get_race(bl);
 			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON)
-				str >>= 1;				// æ‚ªé­”/ä¸æ­»
+				str >>= 1;				// ˆ«–‚/•s€
 			else
-				str += sc->data[SC_BLESSING].val1;	// ãã®ä»–
+				str += sc->data[SC_BLESSING].val1;	// ‚»‚Ì‘¼
 		}
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			str += 5;
 		if(sc->data[SC_CHASEWALK_STR].timer != -1)
 			str += sc->data[SC_CHASEWALK_STR].val1;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			str -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(str < 0) str = 0;
@@ -4135,8 +4135,8 @@ int status_get_str(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Agiã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌAgi‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_agi(struct block_list *bl)
@@ -4161,27 +4161,27 @@ int status_get_agi(struct block_list *bl)
 		agi = ((struct elem_data *)bl)->agi;
 
 	if(sc && bl->type != BL_HOM) {
-		if(sc->data[SC_SPEEDUP1].timer != -1 && bl->type != BL_PC)	// é€Ÿåº¦å¼·åŒ–
+		if(sc->data[SC_SPEEDUP1].timer != -1 && bl->type != BL_PC)	// ‘¬“x‹­‰»
 			agi *= 3;
-		if(sc->data[SC_INCREASEAGI].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1 && bl->type != BL_PC)	// é€Ÿåº¦å¢—åŠ (PCã¯pc.cã§)
+		if(sc->data[SC_INCREASEAGI].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && sc->data[SC_DONTFORGETME].timer == -1 && bl->type != BL_PC)	// ‘¬“x‘‰Á(PC‚Ípc.c‚Å)
 			agi += 2+sc->data[SC_INCREASEAGI].val1;
-		if(sc->data[SC_SUITON].timer != -1 && sc->data[SC_SUITON].val3 != 0 && bl->type != BL_PC)	// æ°´é
+		if(sc->data[SC_SUITON].timer != -1 && sc->data[SC_SUITON].val3 != 0 && bl->type != BL_PC)	// …“Ù
 			agi += sc->data[SC_SUITON].val3;
 		if(sc->data[SC_CONCENTRATE].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
 			agi += agi*(2+sc->data[SC_CONCENTRATE].val1)/100;
-		if(sc->data[SC_DECREASEAGI].timer != -1)	// é€Ÿåº¦æ¸›å°‘ï¼ˆã‚ªãƒ¼ãƒãƒ¼ã‚¹ã‚­ãƒ«ä»•æ§˜ã¯AGI-50ï¼‰
+		if(sc->data[SC_DECREASEAGI].timer != -1)	// ‘¬“xŒ¸­iƒI[ƒo[ƒXƒLƒ‹d—l‚ÍAGI-50j
 			agi -= (sc->data[SC_DECREASEAGI].val2)? 50: 2+sc->data[SC_DECREASEAGI].val1;
-		if(sc->data[SC_QUAGMIRE].timer != -1)	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+		if(sc->data[SC_QUAGMIRE].timer != -1)	// ƒNƒ@ƒOƒ}ƒCƒA
 #ifdef PRE_RENEWAL
 			agi -= agi * sc->data[SC_QUAGMIRE].val1*10 / 100;
 #else
 			agi -= (agi/2 < sc->data[SC_QUAGMIRE].val1*10) ? agi/2 : sc->data[SC_QUAGMIRE].val1*10;
 #endif
-		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹
+		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX
 			agi -= agi * sc->data[SC_MARSHOFABYSS].val3 / 100;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			agi += 5;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			agi -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(agi < 0) agi = 0;
@@ -4189,8 +4189,8 @@ int status_get_agi(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Vitã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌVit‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_vit(struct block_list *bl)
@@ -4217,9 +4217,9 @@ int status_get_vit(struct block_list *bl)
 	if(sc && bl->type != BL_HOM) {
 		if(sc->data[SC_STRIPARMOR].timer != -1 && bl->type != BL_PC)
 			vit = vit*60/100;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			vit += 5;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			vit -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 
@@ -4228,8 +4228,8 @@ int status_get_vit(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Intã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌInt‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_int(struct block_list *bl)
@@ -4254,20 +4254,20 @@ int status_get_int(struct block_list *bl)
 		int_ = ((struct elem_data *)bl)->int_;
 
 	if(sc && bl->type != BL_HOM) {
-		if(sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+		if(sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ƒuƒŒƒbƒVƒ“ƒO
 			int race = status_get_race(bl);
 			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON)
-				int_ >>= 1;	// æ‚ªé­”/ä¸æ­»
+				int_ >>= 1;	// ˆ«–‚/•s€
 			else
-				int_ += sc->data[SC_BLESSING].val1;	// ãã®ä»–
+				int_ += sc->data[SC_BLESSING].val1;	// ‚»‚Ì‘¼
 		}
 		if(sc->data[SC_STRIPHELM].timer != -1 && bl->type != BL_PC)
 			int_ = int_*60/100;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			int_ += 5;
-		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ƒXƒgƒŠƒbƒvƒAƒNƒZƒTƒŠ[
 			int_ = int_ * 80 / 100;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			int_ -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(int_ < 0) int_ = 0;
@@ -4275,8 +4275,8 @@ int status_get_int(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Dexã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌDex‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_dex(struct block_list *bl)
@@ -4303,31 +4303,31 @@ int status_get_dex(struct block_list *bl)
 	if(sc && bl->type != BL_HOM) {
 #ifdef PRE_RENEWAL
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)
-			dex *= 3;	// NPCçˆ†è£‚æ³¢å‹•
+			dex *= 3;	// NPC”š—ô”g“®
 #endif
 		if(sc->data[SC_CONCENTRATE].timer != -1 && sc->data[SC_QUAGMIRE].timer == -1 && bl->type != BL_PC)
 			dex += dex*(2+sc->data[SC_CONCENTRATE].val1)/100;
 
-		if(sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°
+		if(sc->data[SC_BLESSING].timer != -1 && bl->type != BL_PC) {	// ƒuƒŒƒbƒVƒ“ƒO
 			int race = status_get_race(bl);
 			if(battle_check_undead(race,status_get_elem_type(bl)) || race == RCT_DEMON)
-				dex >>= 1;	// æ‚ªé­”/ä¸æ­»
+				dex >>= 1;	// ˆ«–‚/•s€
 			else
-				dex += sc->data[SC_BLESSING].val1;	// ãã®ä»–
+				dex += sc->data[SC_BLESSING].val1;	// ‚»‚Ì‘¼
 		}
-		if(sc->data[SC_QUAGMIRE].timer != -1)	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+		if(sc->data[SC_QUAGMIRE].timer != -1)	// ƒNƒ@ƒOƒ}ƒCƒA
 #ifdef PRE_RENEWAL
 			dex -= dex * sc->data[SC_QUAGMIRE].val1*10 / 100;
 #else
 			dex -= (dex/2 < sc->data[SC_QUAGMIRE].val1*10) ? dex/2 : sc->data[SC_QUAGMIRE].val1*10;
 #endif
-		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹
+		if(sc->data[SC_MARSHOFABYSS].timer != -1)	// ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX
 			dex -= dex * sc->data[SC_MARSHOFABYSS].val3 / 100;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			dex += 5;
-		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ƒXƒgƒŠƒbƒvƒAƒNƒZƒTƒŠ[
 			dex = dex * 80 / 100;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			dex -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(dex < 0) dex = 0;
@@ -4335,8 +4335,8 @@ int status_get_dex(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Lukã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌLuk‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_luk(struct block_list *bl)
@@ -4361,17 +4361,17 @@ int status_get_luk(struct block_list *bl)
 		luk = ((struct elem_data *)bl)->luk;
 
 	if(sc && bl->type != BL_HOM) {
-		if(sc->data[SC_GLORIA].timer != -1 && bl->type != BL_PC)	// ã‚°ãƒ­ãƒªã‚¢(PCã¯pc.cã§)
+		if(sc->data[SC_GLORIA].timer != -1 && bl->type != BL_PC)	// ƒOƒƒŠƒA(PC‚Ípc.c‚Å)
 			luk += 30;
-		if(sc->data[SC_CURSE].timer != -1 )		// å‘ªã„
+		if(sc->data[SC_CURSE].timer != -1 )		// ô‚¢
 			luk = 0;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			luk += 5;
-		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼
+		if(sc->data[SC__STRIPACCESSARY].timer != -1 && bl->type != BL_PC)	// ƒXƒgƒŠƒbƒvƒAƒNƒZƒTƒŠ[
 			luk = luk * 80 / 100;
-		if(sc->data[SC_BANANA_BOMB].timer != -1 && bl->type != BL_PC)	// ãƒãƒŠãƒŠçˆ†å¼¾
+		if(sc->data[SC_BANANA_BOMB].timer != -1 && bl->type != BL_PC)	// ƒoƒiƒi”š’e
 			luk -= luk * sc->data[SC_BANANA_BOMB].val1 / 100;
-		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³
+		if(sc->data[SC_ALL_STAT_DOWN].timer != -1 && bl->type != BL_PC)	// ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“
 			luk -= sc->data[SC_ALL_STAT_DOWN].val2;
 	}
 	if(luk < 0) luk = 0;
@@ -4379,8 +4379,8 @@ int status_get_luk(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Fleeã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * ‘ÎÛ‚ÌFlee‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_flee(struct block_list *bl)
@@ -4407,7 +4407,7 @@ int status_get_flee(struct block_list *bl)
 		flee += 100;
 #endif
 
-	/* æ•ç² */
+	/* •ßŠl */
 	if(sc && (sc->data[SC_TINDER_BREAKER].timer != -1 || sc->data[SC_CBC].timer != -1))
 		return 0;
 
@@ -4416,65 +4416,65 @@ int status_get_flee(struct block_list *bl)
 			flee += sc->data[SC_WHISTLE].val1 + sc->data[SC_WHISTLE].val2 + sc->data[SC_WHISTLE].val3;
 		if(sc->data[SC_BLIND].timer != -1 && bl->type != BL_PC)
 			flee -= flee*25/100;
-		if(sc->data[SC_WINDWALK].timer != -1 && bl->type != BL_PC)		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯
+		if(sc->data[SC_WINDWALK].timer != -1 && bl->type != BL_PC)		// ƒEƒBƒ“ƒhƒEƒH[ƒN
 			flee += sc->data[SC_WINDWALK].val2;
-		if(sc->data[SC_SPIDERWEB].timer != -1 && bl->type != BL_PC)	// ã‚¹ãƒ‘ã‚¤ãƒ€ãƒ¼ã‚¦ã‚§ãƒ–
+		if(sc->data[SC_SPIDERWEB].timer != -1 && bl->type != BL_PC)	// ƒXƒpƒCƒ_[ƒEƒFƒu
 			flee -= 50;
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)	// THE SUN
 			flee = flee*80/100;
-		if(sc->data[SC_GATLINGFEVER].timer != -1 && bl->type != BL_PC)	// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		if(sc->data[SC_GATLINGFEVER].timer != -1 && bl->type != BL_PC)	// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			flee -= sc->data[SC_GATLINGFEVER].val1*5;
-		if(sc->data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC)	// ã‚¢ã‚¸ãƒ£ã‚¹ãƒˆãƒ¡ãƒ³ãƒˆ
+		if(sc->data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC)	// ƒAƒWƒƒƒXƒgƒƒ“ƒg
 			flee += 30;
-		if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)		// ææ€–
+		if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)		// ‹°•|
 			flee -= flee*20/100;
-		if(sc->data[SC_HALLUCINATIONWALK].timer != -1 && bl->type != BL_PC)		// ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯
+		if(sc->data[SC_HALLUCINATIONWALK].timer != -1 && bl->type != BL_PC)		// ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN
 			flee += sc->data[SC_HALLUCINATIONWALK].val1 * 50;
-		if(sc->data[SC_INFRAREDSCAN].timer != -1 && bl->type != BL_PC)	// ã‚¤ãƒ³ãƒ•ãƒ©ãƒ¬ãƒƒãƒ‰ã‚¹ã‚­ãƒ£ãƒ³
+		if(sc->data[SC_INFRAREDSCAN].timer != -1 && bl->type != BL_PC)	// ƒCƒ“ƒtƒ‰ƒŒƒbƒhƒXƒLƒƒƒ“
 			flee  -= flee*30/100;
-		if(sc->data[SC__LAZINESS].timer != -1 && bl->type != BL_PC)		// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹
+		if(sc->data[SC__LAZINESS].timer != -1 && bl->type != BL_PC)		// ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX
 			flee  -= flee*10/100;
-		if(sc->data[SC_GLOOMYDAY].timer != -1 && bl->type != BL_PC)		// ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼
+		if(sc->data[SC_GLOOMYDAY].timer != -1 && bl->type != BL_PC)		// ƒƒ‰ƒ“ƒRƒŠ[
 			flee -= sc->data[SC_GLOOMYDAY].val1 * 5 + 20;
-		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)		// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)		// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 			flee -= flee * (40 + sc->data[SC_SATURDAY_NIGHT_FEVER].val1 * 10) / 100;
-		if(sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1 && bl->type != BL_PC)	// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(ç…™å¹•)
+		if(sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].timer != -1 && bl->type != BL_PC)	// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(‰Œ–‹)
 			flee += flee * sc->data[SC_FIRE_EXPANSION_SMOKE_POWDER].val2 / 100;
-		if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™)
+		if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—Ü)
 			flee -= flee * sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2 / 100;
 #ifndef PRE_RENEWAL
-		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)      // ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³
+		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)      // ƒXƒsƒAƒNƒCƒbƒPƒ“
 			flee += sc->data[SC_SPEARQUICKEN].val1 * 2;
 #endif
-		if(sc->data[SC_GROOMING].timer != -1 && bl->type != BL_PC)	// ã‚°ãƒ«ãƒ¼ãƒŸãƒ³ã‚°
+		if(sc->data[SC_GROOMING].timer != -1 && bl->type != BL_PC)	// ƒOƒ‹[ƒ~ƒ“ƒO
 			flee += sc->data[SC_GROOMING].val2;
-		if(sc->data[SC_C_MARKER].timer != -1 && bl->type != BL_PC)  // ã‚¯ãƒªãƒ ã‚¾ãƒ³ãƒãƒ¼ã‚«ãƒ¼
+		if(sc->data[SC_C_MARKER].timer != -1 && bl->type != BL_PC)  // ƒNƒŠƒ€ƒ]ƒ“ƒ}[ƒJ[
 			flee -= sc->data[SC_C_MARKER].val1 * 10;
-		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// ç«å±±ç°
+		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// ‰ÎRŠD
 			flee -= flee * sc->data[SC_VOLCANIC_ASH].val4 / 100;
 	}
 
-	// å›é¿ç‡è£œæ­£
+	// ‰ñ”ğ—¦•â³
 	if(bl->type != BL_HOM)
 		target_count = unit_counttargeted(bl,battle_config.agi_penalty_count_lv);
 
 	if(battle_config.agi_penalty_type > 0 && target_count >= battle_config.agi_penalty_count) {
-		// ãƒšãƒŠãƒ«ãƒ†ã‚£è¨­å®šã‚ˆã‚Šå¯¾è±¡ãŒå¤šã„
+		// ƒyƒiƒ‹ƒeƒBİ’è‚æ‚è‘ÎÛ‚ª‘½‚¢
 		if(battle_config.agi_penalty_type == 1) {
-			// å›é¿ç‡ãŒagi_penalty_num%ãšã¤æ¸›å°‘
+			// ‰ñ”ğ—¦‚ªagi_penalty_num%‚¸‚ÂŒ¸­
 			int flee_rate = (target_count-(battle_config.agi_penalty_count-1)) * battle_config.agi_penalty_num;
 			flee = flee * (100 - flee_rate) / 100;
 		} else if(battle_config.agi_penalty_type == 2) {
-			// å›é¿ç‡ãŒagi_penalty_numåˆ†æ¸›å°‘
+			// ‰ñ”ğ—¦‚ªagi_penalty_num•ªŒ¸­
 			flee -= (target_count - (battle_config.agi_penalty_count - 1))*battle_config.agi_penalty_num;
 		}
 	}
-	// å¯¾äººMAPã§ã®æ¸›å°‘åŠ¹æœ
+	// ‘ÎlMAP‚Å‚ÌŒ¸­Œø‰Ê
 	if(battle_config.gvg_flee_penalty & 1 && map[bl->m].flag.gvg) {
-		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	// å®Ÿéš›ã«GvGã§Fleeã‚’æ¸›å°‘
+		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	// ÀÛ‚ÉGvG‚ÅFlee‚ğŒ¸­
 	}
 	if(battle_config.gvg_flee_penalty & 2 && map[bl->m].flag.pvp) {
-		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	// å®Ÿéš›ã«PvPã§Fleeã‚’æ¸›å°‘
+		flee = flee*(200 - battle_config.gvg_flee_rate)/100;	// ÀÛ‚ÉPvP‚ÅFlee‚ğŒ¸­
 	}
 	if(flee < 1) flee = 1;
 
@@ -4482,8 +4482,8 @@ int status_get_flee(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Hitã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * ‘ÎÛ‚ÌHit‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_hit(struct block_list *bl)
@@ -4510,34 +4510,34 @@ int status_get_hit(struct block_list *bl)
 		hit += status_get_dex(bl) + status_get_lv(bl);
 		if(sc) {
 #ifndef PRE_RENEWAL
-			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPCçˆ†è£‚æ³¢å‹•
+			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC”š—ô”g“®
 				hit *= 2;
 #endif
 			if(sc->data[SC_HUMMING].timer != -1)
 				hit += hit*(sc->data[SC_HUMMING].val1*2+sc->data[SC_HUMMING].val2 + sc->data[SC_HUMMING].val3)/100;
-			if(sc->data[SC_TRUESIGHT].timer != -1)		// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+			if(sc->data[SC_TRUESIGHT].timer != -1)		// ƒgƒDƒ‹[ƒTƒCƒg
 				hit += 3*(sc->data[SC_TRUESIGHT].val1);
-			if(sc->data[SC_CONCENTRATION].timer != -1)	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+			if(sc->data[SC_CONCENTRATION].timer != -1)	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 				hit += 10*(sc->data[SC_CONCENTRATION].val1);
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				hit = hit*80/100;
-			if(sc->data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // ã‚¢ã‚¸ãƒ£ã‚¹ãƒˆãƒ¡ãƒ³ãƒˆ
+			if(sc->data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // ƒAƒWƒƒƒXƒgƒƒ“ƒg
 				hit -= 30;
-			if(sc->data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // ã‚¤ãƒ³ã‚¯ãƒªãƒ¼ã‚·ãƒ³ã‚°ã‚¢ã‚­ãƒ¥ã‚¢ãƒ©ã‚·ãƒ¼
+			if(sc->data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // ƒCƒ“ƒNƒŠ[ƒVƒ“ƒOƒAƒLƒ…ƒAƒ‰ƒV[
 				hit += 20;
-			if(sc->data[SC_INCHIT].timer!=-1 && bl->type != BL_PC)	// ã‚¬ã‚¤ãƒ‡ãƒƒãƒ‰ã‚¢ã‚¿ãƒƒã‚¯
+			if(sc->data[SC_INCHIT].timer!=-1 && bl->type != BL_PC)	// ƒKƒCƒfƒbƒhƒAƒ^ƒbƒN
 				hit += sc->data[SC_INCHIT].val1;
-			if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)	// ææ€–
+			if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)	// ‹°•|
 				hit -= hit*20/100;
-			if(sc->data[SC__GROOMY].timer != -1 && bl->type != BL_PC)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+			if(sc->data[SC__GROOMY].timer != -1 && bl->type != BL_PC)	// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 				hit -= hit*(20*sc->data[SC__GROOMY].val1)/100;
-			if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™)
+			if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—Ü)
 				hit -= hit*(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2)/100;
-			if(sc->data[SC_ILLUSIONDOPING].timer != -1 && bl->type != BL_PC)	// ã‚¤ãƒªãƒ¥ãƒ¼ã‚¸ãƒ§ãƒ³ãƒ‰ãƒ¼ãƒ”ãƒ³ã‚°
+			if(sc->data[SC_ILLUSIONDOPING].timer != -1 && bl->type != BL_PC)	// ƒCƒŠƒ…[ƒWƒ‡ƒ“ƒh[ƒsƒ“ƒO
 				hit -= 50;
-			if(sc->data[SC_HEAT_BARREL].timer != -1 && bl->type != BL_PC)  // ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ«
+			if(sc->data[SC_HEAT_BARREL].timer != -1 && bl->type != BL_PC)  // ƒq[ƒgƒoƒŒƒ‹
 				hit -= sc->data[SC_HEAT_BARREL].val4;
-			if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val2 > 0) 	// ç«å±±ç°
+			if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val2 > 0) 	// ‰ÎRŠD
 				hit -= hit * sc->data[SC_VOLCANIC_ASH].val2 / 100;
 		}
 	}
@@ -4547,8 +4547,8 @@ int status_get_hit(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®å®Œå…¨å›é¿ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * ‘ÎÛ‚ÌŠ®‘S‰ñ”ğ‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_flee2(struct block_list *bl)
@@ -4567,7 +4567,7 @@ int status_get_flee2(struct block_list *bl)
 	}
 
 	if(sc) {
-		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¢ãƒ³ãƒ©ãƒƒã‚­ãƒ¼
+		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// ƒ}ƒXƒJƒŒ[ƒh F ƒAƒ“ƒ‰ƒbƒL[
 			flee2 -= sc->data[SC__UNLUCKY].val1 * 10;
 	}
 
@@ -4576,8 +4576,8 @@ int status_get_flee2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * ‘ÎÛ‚ÌƒNƒŠƒeƒBƒJƒ‹‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_critical(struct block_list *bl)
@@ -4611,16 +4611,16 @@ int status_get_critical(struct block_list *bl)
 			critical += (10+sc->data[SC_FORTUNE].val1+sc->data[SC_FORTUNE].val2+sc->data[SC_FORTUNE].val3)*10;
 		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)
 			critical += sc->data[SC_EXPLOSIONSPIRITS].val2;
-		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ
+		if(sc->data[SC_TRUESIGHT].timer != -1 && bl->type != BL_PC)	// ƒgƒDƒ‹[ƒTƒCƒg
 			critical += 10*sc->data[SC_TRUESIGHT].val1;
-		if(sc->data[SC__INVISIBILITY].timer != -1 && bl->type != BL_PC)	// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+		if(sc->data[SC__INVISIBILITY].timer != -1 && bl->type != BL_PC)	// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 			critical += critical * (sc->data[SC__INVISIBILITY].val1 * 20) / 100;
-		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¢ãƒ³ãƒ©ãƒƒã‚­ãƒ¼
+		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// ƒ}ƒXƒJƒŒ[ƒh F ƒAƒ“ƒ‰ƒbƒL[
 			critical -= critical * (sc->data[SC__UNLUCKY].val1 * 10) / 100;
-		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ã‚¹ãƒˆãƒ©ã‚¤ã‚­ãƒ³ã‚°
+		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ƒXƒgƒ‰ƒCƒLƒ“ƒO
 			critical += 10 * sc->data[SC_STRIKING].val1;
 #ifndef PRE_RENEWAL
-		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)   // ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³
+		if(sc->data[SC_SPEARQUICKEN].timer != -1 && bl->type != BL_PC)   // ƒXƒsƒAƒNƒCƒbƒPƒ“
 			critical += 30*sc->data[SC_SPEARQUICKEN].val1;
 #endif
 	}
@@ -4629,8 +4629,8 @@ int status_get_critical(struct block_list *bl)
 }
 
 /*==========================================
- * base_atkã®å–å¾—
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * base_atk‚Ìæ“¾
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_baseatk(struct block_list *bl)
@@ -4645,7 +4645,7 @@ int status_get_baseatk(struct block_list *bl)
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data *)bl;
 		if(sd) {
-			batk = sd->base_atk;	// è¨­å®šã•ã‚Œã¦ã„ã‚‹base_atk
+			batk = sd->base_atk;	// İ’è‚³‚ê‚Ä‚¢‚ébase_atk
 #ifdef PRE_RENEWAL
 			if(sd->status.weapon < WT_MAX) {
 				batk += sd->weapon_atk[sd->status.weapon];
@@ -4662,30 +4662,30 @@ int status_get_baseatk(struct block_list *bl)
 		batk = 1;
 	} else if(bl->type == BL_ELEM && ((struct elem_data *)bl)) {
 		batk = 1;
-	} else {	// ãã‚Œä»¥å¤–ãªã‚‰
+	} else {	// ‚»‚êˆÈŠO‚È‚ç
 #ifdef PRE_RENEWAL
 		int str, dstr;
 		str  = status_get_str(bl);	// STR
 		dstr = str/10;
-		batk = dstr*dstr + str;	// base_atkã‚’è¨ˆç®—ã™ã‚‹
+		batk = dstr*dstr + str;	// base_atk‚ğŒvZ‚·‚é
 #else
-		batk = status_get_str(bl) + status_get_lv(bl);	// base_atkã‚’è¨ˆç®—ã™ã‚‹
+		batk = status_get_str(bl) + status_get_lv(bl);	// base_atk‚ğŒvZ‚·‚é
 #endif
 	}
-	if(sc) {	// çŠ¶æ…‹ç•°å¸¸ã‚ã‚Š
+	if(sc) {	// ó‘ÔˆÙí‚ ‚è
 #ifdef PRE_RENEWAL
-		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)	// ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒ©ã‚¹ãƒˆ
-			batk = batk*(100+32)/100;	// base_atkå¢—åŠ 
-		else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)	// PCã§ãƒ—ãƒ­ãƒœãƒƒã‚¯(SM_PROVOKE)çŠ¶æ…‹
-			batk = batk*(100+2+3*sc->data[SC_PROVOKE].val1)/100;	// base_atkå¢—åŠ 
-		if(sc->data[SC_CURSE].timer != -1)	// å‘ªã‚ã‚Œã¦ã„ãŸã‚‰
-			batk -= batk*25/100;	// base_atkãŒ25%æ¸›å°‘
-		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)	// ƒuƒ‰ƒbƒfƒBƒ‰ƒXƒg
+			batk = batk*(100+32)/100;	// base_atk‘‰Á
+		else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)	// PC‚Åƒvƒƒ{ƒbƒN(SM_PROVOKE)ó‘Ô
+			batk = batk*(100+2+3*sc->data[SC_PROVOKE].val1)/100;	// base_atk‘‰Á
+		if(sc->data[SC_CURSE].timer != -1)	// ô‚í‚ê‚Ä‚¢‚½‚ç
+			batk -= batk*25/100;	// base_atk‚ª25%Œ¸­
+		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 			batk += batk*(5*sc->data[SC_CONCENTRATION].val1)/100;
 #endif
-		if(sc->data[SC_JOINTBEAT].timer != -1 && sc->data[SC_JOINTBEAT].val4 == 4)	// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆã§è…°
+		if(sc->data[SC_JOINTBEAT].timer != -1 && sc->data[SC_JOINTBEAT].val4 == 4)	// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg‚Å˜
 			batk -= batk*25/100;
-		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 			batk += 100;
 		if(sc->data[SC_THE_MAGICIAN].timer != -1)
 			batk = batk*50/100;
@@ -4693,26 +4693,26 @@ int status_get_baseatk(struct block_list *bl)
 			batk = batk*50/100;
 		if(sc->data[SC_THE_SUN].timer != -1)
 			batk = batk*80/100;
-		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)	// ã‚¨ã‚¹ã‚¯
+		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)	// ƒGƒXƒN
 			batk *= 4;
-		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“
 			batk -= batk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
-		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF)
+		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF)
 			batk += sc->data[SC_SHIELDSPELL_DEF].val3;
-		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 			batk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ƒI[ƒfƒBƒ“‚Ì—Í
 			batk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
-		if(sc->data[SC_CHATTERING].timer != -1 && bl->type == BL_MOB)	// ãƒãƒ£ã‚¿ãƒªãƒ³ã‚°
+		if(sc->data[SC_CHATTERING].timer != -1 && bl->type == BL_MOB)	// ƒ`ƒƒƒ^ƒŠƒ“ƒO
 			batk += sc->data[SC_CHATTERING].val2;
 	}
-	if(batk < 1) batk = 1;	// base_atkã¯æœ€ä½ã§ã‚‚1
+	if(batk < 1) batk = 1;	// base_atk‚ÍÅ’á‚Å‚à1
 	return batk;
 }
 
 /*==========================================
- * å¯¾è±¡ã®Atkã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌAtk‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_atk(struct block_list *bl)
@@ -4757,18 +4757,18 @@ int status_get_atk(struct block_list *bl)
 			atk = atk*(100+2+3*sc->data[SC_PROVOKE].val1)/100;
 		if(sc->data[SC_CURSE].timer != -1)
 			atk -= atk*25/100;
-		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 			atk += atk*(5*sc->data[SC_CONCENTRATION].val1)/100;
-		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPCçˆ†è£‚æ³¢å‹•
+		if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC”š—ô”g“®
 			rate += 200;
-		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ã‚¨ã‚¹ã‚¯
+		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ƒGƒXƒN
 			rate += 300;
 #endif
 		if(sc->data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
 			atk -= atk*25/100;
-		if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ãƒ‡ã‚£ã‚¹ã‚¢ãƒ¼ãƒ 
+		if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ƒfƒBƒXƒA[ƒ€
 			atk -= atk*25/100;
-		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 			atk += 100;
 		if(sc->data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
 			atk = atk*50/100;
@@ -4776,25 +4776,25 @@ int status_get_atk(struct block_list *bl)
 			atk = atk*50/100;
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			atk = atk*80/100;
-		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ã‚¨ã‚¹ã‚¯
+		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ƒGƒXƒN
 			rate += 300;
-		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³
+		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
-		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF)
+		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF)
 			atk += sc->data[SC_SHIELDSPELL_DEF].val3;
-		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+		if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 			atk += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+		if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ƒI[ƒfƒBƒ“‚Ì—Í
 			atk += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
-		if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼
+		if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// ƒCƒkƒnƒbƒJƒVƒƒƒ[
 			atk -= atk * sc->data[SC_CATNIPPOWDER].val2 / 100;
-		if(sc->data[SC_SHRIMP].timer != -1)		// ã‚¨ãƒ“ä¸‰æ˜§
+		if(sc->data[SC_SHRIMP].timer != -1)		// ƒGƒrO–†
 			atk += atk * sc->data[SC_SHRIMP].val3 / 100;
 		if(sc->data[SC_EQC].timer != -1 && bl->type == BL_MOB)		// E.Q.C
 			atk -= atk * sc->data[SC_EQC].val4 / 100;
-		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// ç«å±±ç°
+		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// ‰ÎRŠD
 			atk -= atk * sc->data[SC_VOLCANIC_ASH].val4 / 100;
-		if(rate != 100)	// NPCçˆ†è£‚æ³¢å‹•ã¨ã‚¨ã‚¹ã‚¯ã‚’å€ç‡åŠ ç®—ã•ã›ã‚‹
+		if(rate != 100)	// NPC”š—ô”g“®‚ÆƒGƒXƒN‚ğ”{—¦‰ÁZ‚³‚¹‚é
 			atk = atk * rate / 100;
 	}
 	if(atk < 0) atk = 0;
@@ -4802,8 +4802,8 @@ int status_get_atk(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®å·¦æ‰‹Atkã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚Ì¶èAtk‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_atk_(struct block_list *bl)
@@ -4819,7 +4819,7 @@ int status_get_atk_(struct block_list *bl)
 		if(sd->sc.data[SC_CURSE].timer != -1)
 			atk -= atk*25/100;
 #endif
-		if(sd->sc.data[SC_SHRIMP].timer != -1)		// ã‚¨ãƒ“ä¸‰æ˜§
+		if(sd->sc.data[SC_SHRIMP].timer != -1)		// ƒGƒrO–†
 			atk += atk * sd->sc.data[SC_SHRIMP].val3 / 100;
 		return atk;
 	}
@@ -4827,8 +4827,8 @@ int status_get_atk_(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Atk2ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌAtk2‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_atk2(struct block_list *bl)
@@ -4883,16 +4883,16 @@ int status_get_atk2(struct block_list *bl)
 			if(sc->data[SC_STRIPWEAPON].timer != -1)
 				atk2 -= atk2*10/100;
 #ifdef PRE_RENEWAL
-			if(sc->data[SC_CONCENTRATION].timer != -1)	// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
+			if(sc->data[SC_CONCENTRATION].timer != -1)	// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“
 				atk2 += atk2*(5*sc->data[SC_CONCENTRATION].val1)/100;
-			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPCçˆ†è£‚æ³¢å‹•
+			if(sc->data[SC_EXPLOSIONSPIRITS].timer != -1 && bl->type != BL_PC)	// NPC”š—ô”g“®
 				rate += 200;
-			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ã‚¨ã‚¹ã‚¯
+			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// ƒGƒXƒN
 				rate += 300;
 #endif
-			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ãƒ‡ã‚£ã‚¹ã‚¢ãƒ¼ãƒ 
+			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ƒfƒBƒXƒA[ƒ€
 				atk2 -= atk2*25/100;
-			if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+			if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 				atk2 += 100;
 			if(sc->data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*50/100;
@@ -4900,17 +4900,17 @@ int status_get_atk2(struct block_list *bl)
 				atk2 = atk2*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*80/100;
-			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³
+			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
-			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF)
+			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF)
 				atk2 += sc->data[SC_SHIELDSPELL_DEF].val3;
-			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type == BL_MOB)	// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 				atk2 += 100 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1;
-			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type == BL_MOB)	// ƒI[ƒfƒBƒ“‚Ì—Í
 				atk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
-			if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼
+			if(sc->data[SC_CATNIPPOWDER].timer != -1 && bl->type != BL_PC)		// ƒCƒkƒnƒbƒJƒVƒƒƒ[
 				atk2 -= atk2 * sc->data[SC_CATNIPPOWDER].val2 / 100;
-			if(rate != 100)	// NPCçˆ†è£‚æ³¢å‹•ã¨ã‚¨ã‚¹ã‚¯ã‚’å€ç‡åŠ ç®—ã•ã›ã‚‹
+			if(rate != 100)	// NPC”š—ô”g“®‚ÆƒGƒXƒN‚ğ”{—¦‰ÁZ‚³‚¹‚é
 				atk2 = atk2 * rate / 100;
 		}
 		if(atk2 < 0) atk2 = 0;
@@ -4919,8 +4919,8 @@ int status_get_atk2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®å·¦æ‰‹Atk2ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚Ì¶èAtk2‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_atk_2(struct block_list *bl)
@@ -4934,8 +4934,8 @@ int status_get_atk_2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MAtk1ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMAtk1‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_matk1(struct block_list *bl)
@@ -4969,11 +4969,11 @@ int status_get_matk1(struct block_list *bl)
 #endif
 			matk1 = int_+(int_/5)*(int_/5);
 
-		// MOBã®max_spå€¤ã‚’MATKè£œæ­£å€¤ã§ä¹—ã£å–ã‚‹æ™‚
+		// MOB‚Ìmax_sp’l‚ğMATK•â³’l‚Åæ‚Áæ‚é
 		if(battle_config.mob_take_over_sp == 1) {
 			if(bl->type == BL_MOB) {
-				int b_class = status_get_class(bl);		// ç›´æ¥maxspå–å¾—ç„¡ç†ã®ç‚ºãƒ ãƒªãƒ¤ãƒª
-				if(mobdb_search(b_class)->max_sp > 0) {		// 1ä»¥ä¸Šã®æ™‚ã®ã¿
+				int b_class = status_get_class(bl);		// ’¼Úmaxspæ“¾–³—‚Ìˆ×ƒ€ƒŠƒ„ƒŠ
+				if(mobdb_search(b_class)->max_sp > 0) {		// 1ˆÈã‚Ì‚Ì‚İ
 					matk1 = matk1 * (mobdb_search(b_class)->max_sp/100);
 				}
 			}
@@ -4990,15 +4990,15 @@ int status_get_matk1(struct block_list *bl)
 				matk1 = matk1*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1)
 				matk1 = matk1*80/100;
-			if(sc->data[SC_ODINS_POWER].timer != -1)	// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+			if(sc->data[SC_ODINS_POWER].timer != -1)	// ƒI[ƒfƒBƒ“‚Ì—Í
 				matk1 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
 #ifdef PRE_RENEWAL
-			if(sc->data[SC_CHATTERING].timer != -1)	// ãƒãƒ£ã‚¿ãƒªãƒ³ã‚°
+			if(sc->data[SC_CHATTERING].timer != -1)	// ƒ`ƒƒƒ^ƒŠƒ“ƒO
 				matk1 += sc->data[SC_CHATTERING].val2;
 #endif
-			if(sc->data[SC_SHRIMP].timer != -1)		// ã‚¨ãƒ“ä¸‰æ˜§
+			if(sc->data[SC_SHRIMP].timer != -1)		// ƒGƒrO–†
 				matk1 += matk1 * sc->data[SC_SHRIMP].val3 / 100;
-			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼
+			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// ƒCƒkƒnƒbƒJƒVƒƒƒ[
 				matk1 -= matk1 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		}
 	}
@@ -5006,8 +5006,8 @@ int status_get_matk1(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MAtk2ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMAtk2‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_matk2(struct block_list *bl)
@@ -5041,11 +5041,11 @@ int status_get_matk2(struct block_list *bl)
 #endif
 			matk2 = int_+(int_/7)*(int_/7);
 
-		// MOBã®max_spå€¤ã‚’MATKè£œæ­£å€¤ã§ä¹—ã£å–ã‚‹æ™‚
+		// MOB‚Ìmax_sp’l‚ğMATK•â³’l‚Åæ‚Áæ‚é
 		if(battle_config.mob_take_over_sp == 1) {
 			if(bl->type == BL_MOB) {
-				int b_class = status_get_class(bl);		// ç›´æ¥maxspå–å¾—ç„¡ç†ã®ç‚ºãƒ ãƒªãƒ¤ãƒª
-				if(mobdb_search(b_class)->max_sp > 0) {		// 1ä»¥ä¸Šã®æ™‚ã®ã¿
+				int b_class = status_get_class(bl);		// ’¼Úmaxspæ“¾–³—‚Ìˆ×ƒ€ƒŠƒ„ƒŠ
+				if(mobdb_search(b_class)->max_sp > 0) {		// 1ˆÈã‚Ì‚Ì‚İ
 					matk2 = matk2 * (mobdb_search(b_class)->max_sp/100);
 				}
 			}
@@ -5062,11 +5062,11 @@ int status_get_matk2(struct block_list *bl)
 				matk2 = matk2*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1)
 				matk2 = matk2*80/100;
-			if(sc->data[SC_ODINS_POWER].timer != -1)	// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+			if(sc->data[SC_ODINS_POWER].timer != -1)	// ƒI[ƒfƒBƒ“‚Ì—Í
 				matk2 += 60 + 10 * sc->data[SC_ODINS_POWER].val1;
-			if(sc->data[SC_CHATTERING].timer != -1)	// ãƒãƒ£ã‚¿ãƒªãƒ³ã‚°
+			if(sc->data[SC_CHATTERING].timer != -1)	// ƒ`ƒƒƒ^ƒŠƒ“ƒO
 				matk2 += sc->data[SC_CHATTERING].val2;
-			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼
+			if(sc->data[SC_CATNIPPOWDER].timer != -1)		// ƒCƒkƒnƒbƒJƒVƒƒƒ[
 				matk2 -= matk2 * sc->data[SC_CATNIPPOWDER].val2 / 100;
 		}
 	}
@@ -5074,8 +5074,8 @@ int status_get_matk2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Defã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌDef‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_def(struct block_list *bl)
@@ -5105,84 +5105,84 @@ int status_get_def(struct block_list *bl)
 
 	if(def < 1000000) {
 		if(sc) {
-			// ã‚­ãƒ¼ãƒ”ãƒ³ã‚°æ™‚ã¯DEF100
+			// ƒL[ƒsƒ“ƒO‚ÍDEF100
 			if(sc->data[SC_KEEPING].timer != -1)
 				def *= 2;
-			// ãƒ—ãƒ­ãƒœãƒƒã‚¯æ™‚ã¯æ¸›ç®—
+			// ƒvƒƒ{ƒbƒN‚ÍŒ¸Z
 			if(sc->data[SC__BLOODYLUST].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 55) / 100;
 			else if(sc->data[SC_PROVOKE].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 5 - 5 * sc->data[SC_PROVOKE].val1) / 100;
-			// æˆ¦å¤ªé¼“ã®éŸ¿ãæ™‚ã¯åŠ ç®—
+			// í‘¾ŒÛ‚Ì‹¿‚«‚Í‰ÁZ
 			if(sc->data[SC_DRUMBATTLE].timer != -1 && bl->type != BL_PC)
 				def += sc->data[SC_DRUMBATTLE].val3;
-			// æ¯’ã«ã‹ã‹ã£ã¦ã„ã‚‹æ™‚ã¯æ¸›ç®—
+			// “Å‚É‚©‚©‚Á‚Ä‚¢‚é‚ÍŒ¸Z
 			if(sc->data[SC_POISON].timer != -1 && bl->type != BL_PC)
 				def = def*75/100;
-			// ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚·ãƒ¼ãƒ«ãƒ‰æ™‚ã¯æ¸›ç®—
+			// ƒXƒgƒŠƒbƒvƒV[ƒ‹ƒh‚ÍŒ¸Z
 			if(sc->data[SC_STRIPSHIELD].timer != -1 && bl->type != BL_PC)
 				def = def*85/100;
-			// ã‚·ã‚°ãƒŠãƒ ã‚¯ãƒ«ã‚·ã‚¹æ™‚ã¯æ¸›ç®—
+			// ƒVƒOƒiƒ€ƒNƒ‹ƒVƒX‚ÍŒ¸Z
 			if(sc->data[SC_SIGNUMCRUCIS].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - sc->data[SC_SIGNUMCRUCIS].val2)/100;
-			// æ°¸é ã®æ··æ²Œæ™‚ã¯PCä»¥å¤–DEFãŒ0ã«ãªã‚‹
+			// ‰i‰“‚Ì¬“×‚ÍPCˆÈŠODEF‚ª0‚É‚È‚é
 			if(sc->data[SC_ETERNALCHAOS].timer != -1 && bl->type != BL_PC)
 				def = 0;
-			// å‡çµã€çŸ³åŒ–æ™‚ã¯å³ã‚·ãƒ•ãƒˆ
+			// “€Œ‹AÎ‰»‚Í‰EƒVƒtƒg
 			if(sc->data[SC_FREEZE].timer != -1 || (sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0))
 				def >>= 1;
-			// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³æ™‚ã¯æ¸›ç®—
+			// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“‚ÍŒ¸Z
 			if( sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 5*sc->data[SC_CONCENTRATION].val1) / 100;
-			// NPCãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+			// NPCƒfƒBƒtƒFƒ“ƒ_[
 			if(sc->data[SC_NPC_DEFENDER].timer != -1 && bl->type != BL_PC)
 				def += 100;
 			// THE SUN
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				def = def*80/100;
-			// ãƒ•ãƒ©ã‚¤ãƒ³ã‚°
+			// ƒtƒ‰ƒCƒ“ƒO
 			if(sc->data[SC_FLING].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 5*sc->data[SC_FLING].val1)/100;
-			// ã‚¨ã‚¹ã‚¯
+			// ƒGƒXƒN
 			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)
 				def = def/2;
 #ifdef PRE_RENEWAL
-			// ã‚¹ãƒˆãƒ¼ãƒ³ã‚¹ã‚­ãƒ³
+			// ƒXƒg[ƒ“ƒXƒLƒ“
 			if(sc->data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
 				def = def * (100 + 20 * sc->data[SC_STONESKIN].val1) / 100;
-			// ã‚¢ãƒ³ãƒãƒã‚¸ãƒƒã‚¯
+			// ƒAƒ“ƒ`ƒ}ƒWƒbƒN
 			if(sc->data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
 #endif
-			// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+			// ƒtƒƒXƒgƒ~ƒXƒeƒB
 			if(sc->data[SC_FROSTMISTY].timer != -1 && bl->type != BL_PC)
 				def = def * 90 / 100;
-			// ã‚¢ãƒŠãƒ©ã‚¤ã‚º
+			// ƒAƒiƒ‰ƒCƒY
 			if(sc->data[SC_ANALYZE].timer != -1 && bl->type != BL_PC)
 				def = def * (100 - 14 * sc->data[SC_ANALYZE].val1) / 100;
-			// ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼
+			// ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				def = def * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
-			// ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ–
+			// ƒA[ƒXƒhƒ‰ƒCƒu
 			if(sc->data[SC_EARTHDRIVE].timer != -1 && bl->type != BL_PC)
 				def = def * 85 / 100;
-			// ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			// ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[
 			if(sc->data[SC_SATURDAY_NIGHT_FEVER].timer != -1 && bl->type != BL_PC)
 				def = def * (90 - 10 * sc->data[SC_SATURDAY_NIGHT_FEVER].val1) / 100;
-			// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+			// ƒI[ƒfƒBƒ“‚Ì—Í
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
 				def -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
-			// ãƒ‹ãƒ£ãƒ³ã‚°ãƒ©ã‚¹
+			// ƒjƒƒƒ“ƒOƒ‰ƒX
 			if(sc->data[SC_NYANGGRASS].timer != -1 && bl->type != BL_PC)
 				def >>= 1;
-			// ç«å±±ç°
+			// ‰ÎRŠD
 			if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val3 > 0)
 				def -= def * sc->data[SC_VOLCANIC_ASH].val3 / 100;
-			// ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ
+			// ƒAƒ“ƒŠƒ~ƒbƒg
 			if(sc->data[SC_UNLIMIT].timer != -1)
 				def = 1;
 		}
-		// è© å”±ä¸­ã¯è© å”±æ™‚æ¸›ç®—ç‡ã«åŸºã¥ã„ã¦æ¸›ç®—
+		// ‰r¥’†‚Í‰r¥Œ¸Z—¦‚ÉŠî‚Ã‚¢‚ÄŒ¸Z
 		if(ud && ud->skilltimer != -1) {
 			int def_rate = skill_get_castdef(ud->skillid);
 			if(def_rate != 0)
@@ -5194,8 +5194,8 @@ int status_get_def(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MDefã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMDef‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_mdef(struct block_list *bl)
@@ -5221,36 +5221,36 @@ int status_get_mdef(struct block_list *bl)
 
 	if(mdef < 1000000) {
 		if(sc) {
-			// ãƒãƒªã‚¢ãƒ¼çŠ¶æ…‹æ™‚ã¯MDEF100
+			// ƒoƒŠƒA[ó‘Ô‚ÍMDEF100
 			if(sc->data[SC_BARRIER].timer != -1)
 				mdef += 100;
-			// å‡çµã€çŸ³åŒ–æ™‚ã¯1.25å€
+			// “€Œ‹AÎ‰»‚Í1.25”{
 			if(sc->data[SC_FREEZE].timer != -1 || (sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0))
 				mdef = mdef*125/100;
 #ifdef PRE_RENEWAL
-			// ã‚¹ãƒˆãƒ¼ãƒ³ã‚¹ã‚­ãƒ³
+			// ƒXƒg[ƒ“ƒXƒLƒ“
 			if(sc->data[SC_STONESKIN].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 - 20 * sc->data[SC_STONESKIN].val1) / 100;
-			// ã‚¢ãƒ³ãƒãƒã‚¸ãƒƒã‚¯
+			// ƒAƒ“ƒ`ƒ}ƒWƒbƒN
 			if(sc->data[SC_ANTIMAGIC].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 + 20 * sc->data[SC_ANTIMAGIC].val1) / 100;
 #endif
-			// ã‚¢ãƒŠãƒ©ã‚¤ã‚º
+			// ƒAƒiƒ‰ƒCƒY
 			if(sc->data[SC_ANALYZE].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (100 - 14 * sc->data[SC_ANALYZE].val1) / 100;
-			// ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼
+			// ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[
 			if(sc->data[SC_NEUTRALBARRIER].timer != -1 && bl->type != BL_PC)
 				mdef = mdef * (110 + 5 * sc->data[SC_NEUTRALBARRIER].val1) / 100;
-			// ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ›
+			// ƒI[ƒfƒBƒ“‚Ì—Í
 			if(sc->data[SC_ODINS_POWER].timer != -1 && bl->type != BL_PC)
 				mdef -= 10 + 10 * sc->data[SC_ODINS_POWER].val1;
-			// ç‚¹ç©´ -å-
+			// “_ŒŠ -”½-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
 				mdef -= sc->data[SC_GENTLETOUCH_CHANGE].val3;
-			// ãƒ‹ãƒ£ãƒ³ã‚°ãƒ©ã‚¹
+			// ƒjƒƒƒ“ƒOƒ‰ƒX
 			if(sc->data[SC_NYANGGRASS].timer != -1 && bl->type != BL_PC)
 				mdef >>= 1;
-			// ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ
+			// ƒAƒ“ƒŠƒ~ƒbƒg
 			if(sc->data[SC_UNLIMIT].timer != -1)
 				mdef = 1;
 		}
@@ -5260,8 +5260,8 @@ int status_get_mdef(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Def2ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
+ * ‘ÎÛ‚ÌDef2‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
  *------------------------------------------
  */
 int status_get_def2(struct block_list *bl)
@@ -5303,32 +5303,32 @@ int status_get_def2(struct block_list *bl)
 			def2 = def2 * (100 - 5 - 5 * sc->data[SC_PROVOKE].val1) / 100;
 		if(sc->data[SC_POISON].timer != -1 && bl->type != BL_PC)
 			def2 = def2*75/100;
-		// ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³æ™‚ã¯æ¸›ç®—
+		// ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“‚ÍŒ¸Z
 		if( sc->data[SC_CONCENTRATION].timer != -1 && bl->type != BL_PC)
 			def2 = def2*(100 - 5*sc->data[SC_CONCENTRATION].val1)/100;
-		// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆæ™‚ãªã‚‰æ¸›ç®—
+		// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg‚È‚çŒ¸Z
 		if(sc->data[SC_JOINTBEAT].timer != -1) {
-			if(sc->data[SC_JOINTBEAT].val4 == 3)	// è‚©
+			if(sc->data[SC_JOINTBEAT].val4 == 3)	// Œ¨
 				def2 -= def2*50/100;
-			if(sc->data[SC_JOINTBEAT].val4 == 4)	// è…°
+			if(sc->data[SC_JOINTBEAT].val4 == 4)	// ˜
 				def2 -= def2*25/100;
 		}
-		// æ°¸é ã®æ··æ²Œæ™‚ã¯DEF2ãŒ0ã«ãªã‚‹
+		// ‰i‰“‚Ì¬“×‚ÍDEF2‚ª0‚É‚È‚é
 		if(sc->data[SC_ETERNALCHAOS].timer != -1)
 			def2 = 0;
 		// THE SUN
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			def2 = def2*80/100;
-		// ã‚¨ã‚¹ã‚«
+		// ƒGƒXƒJ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			def2 += 90;
-		// ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«
+		// ƒV[ƒ‹ƒhƒXƒyƒ‹
 		if(sc->data[SC_SHIELDSPELL_REF].timer != -1 && sc->data[SC_SHIELDSPELL_REF].val2 == 2 && bl->type == BL_MOB)
 			def2 += sc->data[SC_SHIELDSPELL_REF].val2;
-		// ãƒ—ãƒ¬ã‚¹ãƒ†ã‚£ãƒ¼ã‚¸
+		// ƒvƒŒƒXƒeƒB[ƒW
 		if(sc->data[SC_PRESTIGE].timer != -1 && bl->type == BL_MOB)
 			def2 += sc->data[SC_PRESTIGE].val2;
-		// ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ
+		// ƒAƒ“ƒŠƒ~ƒbƒg
 		if(sc->data[SC_UNLIMIT].timer != -1)
 			def2 = 1;
 		// E.Q.C
@@ -5340,8 +5340,8 @@ int status_get_def2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®MDef2ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§0ä»¥ä¸Š
+ * ‘ÎÛ‚ÌMDef2‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å0ˆÈã
  *------------------------------------------
  */
 int status_get_mdef2(struct block_list *bl)
@@ -5375,13 +5375,13 @@ int status_get_mdef2(struct block_list *bl)
 		mdef2 = ((struct elem_data *)bl)->int_ + (((struct elem_data *)bl)->vit>>1);
 
 	if(sc) {
-		// ã‚¨ã‚¹ã‚«
+		// ƒGƒXƒJ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			mdef2 = 90;
-		// ãƒã‚¤ãƒ³ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚«ãƒ¼
+		// ƒ}ƒCƒ“ƒhƒuƒŒƒCƒJ[
 		if(sc->data[SC_MINDBREAKER].timer != -1 && bl->type != BL_PC)
 			mdef2 -= (mdef2*12*sc->data[SC_MINDBREAKER].val1)/100;
-		// ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ
+		// ƒAƒ“ƒŠƒ~ƒbƒg
 		if(sc->data[SC_UNLIMIT].timer != -1)
 			mdef2 = 1;
 	}
@@ -5389,9 +5389,9 @@ int status_get_mdef2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®Speed(ç§»å‹•é€Ÿåº¦)ã‚’è¿”ã™
- * æˆ»ã‚Šã¯æ•´æ•°ã§1ä»¥ä¸Š
- * Speedã¯å°ã•ã„ã»ã†ãŒç§»å‹•é€Ÿåº¦ãŒé€Ÿã„
+ * ‘ÎÛ‚ÌSpeed(ˆÚ“®‘¬“x)‚ğ•Ô‚·
+ * –ß‚è‚Í®”‚Å1ˆÈã
+ * Speed‚Í¬‚³‚¢‚Ù‚¤‚ªˆÚ“®‘¬“x‚ª‘¬‚¢
  *------------------------------------------
  */
 int status_get_speed(struct block_list *bl)
@@ -5429,56 +5429,56 @@ int status_get_speed(struct block_list *bl)
 		else if(bl->type == BL_PET && (struct pet_data *)bl)
 			speed = ((struct pet_data *)bl)->speed;
 
-		/* speedãŒå¤‰åŒ–ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+		/* speed‚ª•Ï‰»‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 		if(sc) {
-			/* speedãŒå¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+			/* speed‚ª‘‰Á‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 
-			// é‡‘å‰›ã¯ç§»å‹•é€Ÿåº¦å›ºå®š
+			// ‹à„‚ÍˆÚ“®‘¬“xŒÅ’è
 			if(sc->data[SC_STEELBODY].timer != -1)
 				return 200;
 
-			// é€Ÿåº¦æ¸›å°‘
+			// ‘¬“xŒ¸­
 			if(sc->data[SC_DECREASEAGI].timer != -1)
 				slow_val = 25;
 
-			// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢
+			// ƒNƒ@ƒOƒ}ƒCƒA
 			if(sc->data[SC_QUAGMIRE].timer != -1) {
 				if(slow_val < 50)
 					slow_val = 50;
 			}
 
-			// ç§ã‚’å¿˜ã‚Œãªã„ã§
+			// „‚ğ–Y‚ê‚È‚¢‚Å
 			if(sc->data[SC_DONTFORGETME].timer != -1) {
 				if(slow_val < sc->data[SC_DONTFORGETME].val2)
 					slow_val = sc->data[SC_DONTFORGETME].val2;
 			}
 
-			// å‘ªã„
+			// ô‚¢
 			if(sc->data[SC_CURSE].timer != -1) {
 				if(slow_val < 300)
 					slow_val = 300;
 			}
 
-			// ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹
+			// ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX
 			if(sc->data[SC_MARSHOFABYSS].timer != -1) {
 				if(slow_val < sc->data[SC_MARSHOFABYSS].val2)
 					slow_val = sc->data[SC_MARSHOFABYSS].val2;
 			}
 
-			// ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯(ãƒšãƒŠãƒ«ãƒ†ã‚£)
+			// ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN(ƒyƒiƒ‹ƒeƒB)
 			if(sc->data[SC_HALLUCINATIONWALK2].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+			// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 			if(sc->data[SC_JOINTBEAT].timer != -1) {
 				int penalty = 0;
 				switch (sc->data[SC_JOINTBEAT].val4) {
-				case 0:	// è¶³é¦–
+				case 0:	// ‘«ñ
 					penalty = 50;
 					break;
-				case 2:	// è†
+				case 2:	// •G
 					penalty = 30;
 					break;
 				}
@@ -5486,92 +5486,92 @@ int status_get_speed(struct block_list *bl)
 					slow_val = penalty;
 			}
 
-			// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			if(sc->data[SC_GATLINGFEVER].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ã‚¨ã‚¹ã‚¦
+			// ƒGƒXƒE
 			if(sc->data[SC_SWOO].timer != -1) {
 				if(slow_val < 300)
 					slow_val = 300;
 			}
 
-			// ãƒ‘ãƒ©ãƒ©ã‚¤ã‚º
+			// ƒpƒ‰ƒ‰ƒCƒY
 			if(sc->data[SC_PARALIZE].timer != -1) {
 				if(slow_val < 100)
 					slow_val = 100;
 			}
 
-			// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+			// ƒtƒƒXƒgƒ~ƒXƒeƒB
 			if(sc->data[SC_FROSTMISTY].timer != -1) {
 				if(slow_val < 50)
 					slow_val = 50;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX
 			if(sc->data[SC__LAZINESS].timer != -1) {
 				if(slow_val < 10)
 					slow_val = 10;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 5 + 5 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ¡ãƒ­ãƒ³çˆ†å¼¾
+			// ƒƒƒ“”š’e
 			if(sc->data[SC_MELON_BOMB].timer != -1) {
 				int penalty = sc->data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh
 			if(battle_config.enemy_gravitation_type && sc->data[SC_GRAVITATION].timer != -1) {
 				int penalty = sc->data[SC_GRAVITATION].val1 * 5;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒã‚¤ãƒ³ãƒ‰ãƒˆãƒ©ãƒƒãƒ—
+			// ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv
 			if(sc->data[SC_B_TRAP].timer != -1) {
 				int penalty = sc->data[SC_B_TRAP].val3;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			/* speedãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¨ˆç®— */
+			/* speed‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒXŒvZ */
 
-			// é€Ÿåº¦å¼·åŒ–
+			// ‘¬“x‹­‰»
 			if(sc->data[SC_SPEEDUP1].timer != -1)
 				haste_val = 50;
 
-			// é€Ÿåº¦å¢—åŠ 
+			// ‘¬“x‘‰Á
 			if(sc->data[SC_INCREASEAGI].timer != -1) {
 				if(haste_val < 25)
 					haste_val = 25;
 			}
 
-			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯
+			// ƒEƒCƒ“ƒhƒEƒH[ƒN
 			if(sc->data[SC_WINDWALK].timer != -1) {
 				int bonus = 2 * sc->data[SC_WINDWALK].val1;
 				if(haste_val < bonus)
 					haste_val = bonus;
 			}
 
-			// ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ«
+			// ƒCƒ“ƒrƒ“ƒVƒuƒ‹
 			if(sc->data[SC_INVINCIBLE].timer != -1 && sc->data[SC_INVINCIBLEOFF].timer == -1) {
 				if(haste_val < 75)
 					haste_val = 75;
 			}
 
-			/* ãã®ä»– */
+			/* ‚»‚Ì‘¼ */
 
-			// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+			// ƒfƒBƒtƒFƒ“ƒ_[
 			if(sc->data[SC_DEFENDER].timer != -1)
 				defender_flag = 1;
 
@@ -5580,20 +5580,20 @@ int status_get_speed(struct block_list *bl)
 				walkspeed_flag = 1;
 		}
 
-		/* bonus_rateã®æœ€ä½å€¤ã‚’è¨­å®š */
+		/* bonus_rate‚ÌÅ’á’l‚ğİ’è */
 		bonus_rate = slow_val - haste_val;
 		if(bonus_rate < -60)
 			bonus_rate = -60;
 
-		/* speedã®æœ€çµ‚è¨ˆç®— */
+		/* speed‚ÌÅIŒvZ */
 		if(bonus_rate != 0)	// bonus_rate
 			speed = speed * (bonus_rate+100) / 100;
-		if(defender_flag && speed < 200)	// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+		if(defender_flag && speed < 200)	// ƒfƒBƒtƒFƒ“ƒ_[
 			speed = 200;
-		if(walkspeed_flag)	// ã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+		if(walkspeed_flag)	// ƒXƒNƒŠƒvƒg—pƒXƒe[ƒ^ƒX
 			speed = speed * 100 / sc->data[SC_WALKSPEED].val1;
 
-		/* æœ€ä½å€¤ã€æœ€å¤§å€¤ã‚’è¨­å®šã™ã‚‹ */
+		/* Å’á’lAÅ‘å’l‚ğİ’è‚·‚é */
 		if(speed < MIN_WALK_SPEED)
 			speed = MIN_WALK_SPEED;
 		if(speed > MAX_WALK_SPEED)
@@ -5604,8 +5604,8 @@ int status_get_speed(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®aDelay(æ”»æ’ƒæ™‚ãƒ‡ã‚£ãƒ¬ã‚¤)ã‚’è¿”ã™
- * aDelayã¯å°ã•ã„ã»ã†ãŒæ”»æ’ƒé€Ÿåº¦ãŒé€Ÿã„
+ * ‘ÎÛ‚ÌaDelay(UŒ‚ƒfƒBƒŒƒC)‚ğ•Ô‚·
+ * aDelay‚Í¬‚³‚¢‚Ù‚¤‚ªUŒ‚‘¬“x‚ª‘¬‚¢
  *------------------------------------------
  */
 int status_get_adelay(struct block_list *bl)
@@ -5650,114 +5650,114 @@ int status_get_adelay(struct block_list *bl)
 			calc_adelay = ((struct elem_data *)bl)->adelay;
 		}
 
-		/* amotionãŒå¤‰åŒ–ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®è¨ˆç®— */
+		/* amotion‚ª•Ï‰»‚·‚éó‘ÔˆÙí‚ÌŒvZ */
 		if(sc) {
 
-			/* amotionãŒå¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+			/* amotion‚ª‘‰Á‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 
-			// ç§ã‚’å¿˜ã‚Œãªã„ã§
+			// „‚ğ–Y‚ê‚È‚¢‚Å
 			if(sc->data[SC_DONTFORGETME].timer != -1) {
 				slow_val = sc->data[SC_DONTFORGETME].val1;
 			}
 
-			// é‡‘å‰›
+			// ‹à„
 			if(sc->data[SC_STEELBODY].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+			// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 			if(sc->data[SC_JOINTBEAT].timer != -1) {
 				switch (sc->data[SC_JOINTBEAT].val4) {
-					case 1:		// æ‰‹é¦–
+					case 1:		// èñ
 						if(slow_val < 25)
 							slow_val = 25;
 						break;
-					case 2:		// è†
+					case 2:		// •G
 						if(slow_val < 10)
 							slow_val = 10;
 						break;
 				}
 			}
 
-			// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh
 			if(sc->data[SC_GRAVITATION].timer != -1) {
 				int penalty = sc->data[SC_GRAVITATION].val1*5;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+			// ƒtƒƒXƒgƒ~ƒXƒeƒB
 			if(sc->data[SC_FROSTMISTY].timer != -1) {
 				if(slow_val < 15)
 					slow_val = 15;
 			}
 
-			// ãƒœãƒ‡ã‚£ãƒšã‚¤ãƒ³ãƒ†ã‚£ãƒ³ã‚°
+			// ƒ{ƒfƒBƒyƒCƒ“ƒeƒBƒ“ƒO
 			if(sc->data[SC__BODYPAINT].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+			// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 			if(sc->data[SC__INVISIBILITY].timer != -1) {
 				int penalty = 50 - 10 * sc->data[SC__INVISIBILITY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ–
+			// ƒA[ƒXƒhƒ‰ƒCƒu
 			if(sc->data[SC_EARTHDRIVE].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼
+			// ƒƒ‰ƒ“ƒRƒŠ[
 			if(sc->data[SC_GLOOMYDAY].timer != -1) {
 				int penalty = 15 + 5 * sc->data[SC_GLOOMYDAY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ¡ãƒ­ãƒ³çˆ†å¼¾
+			// ƒƒƒ“”š’e
 			if(sc->data[SC_MELON_BOMB].timer != -1) {
 				int penalty = sc->data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—1 */
+			/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ1 */
 
-			// å¢—é€Ÿãƒãƒ¼ã‚·ãƒ§ãƒ³
+			// ‘‘¬ƒ|[ƒVƒ‡ƒ“
 			if(sc->data[tmp = SC_SPEEDPOTION2].timer != -1 || sc->data[tmp = SC_SPEEDPOTION1].timer != -1 || sc->data[tmp = SC_SPEEDPOTION0].timer != -1)
 				haste_val1 = sc->data[tmp].val2;
 
-			/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—2 */
+			/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ2 */
 
-			// ãƒ„ãƒ¼ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒc[ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
 				haste_val2 = sc->data[SC_TWOHANDQUICKEN].val2;
 
-			// ã‚¹ãƒ”ã‚¢ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒXƒsƒAƒNƒBƒbƒPƒ“
 			if(sc->data[SC_SPEARQUICKEN].timer != -1) {
 				if(haste_val2 < sc->data[SC_SPEARQUICKEN].val2)
 					haste_val2 = sc->data[SC_SPEARQUICKEN].val2;
 			}
 
-			// ãƒ¯ãƒ³ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒƒ“ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 			if(sc->data[SC_ONEHAND].timer != -1) {
 				if(haste_val2 < 30)
 					haste_val2 = 30;
 			}
 
-			// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥
+			// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…
 			if(sc->data[SC_ADRENALINE].timer != -1) {
 				int bonus;
 				if(sc->data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
@@ -5768,7 +5768,7 @@ int status_get_adelay(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
-			// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥2
+			// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…2
 			if(sc->data[SC_ADRENALINE2].timer != -1) {
 				int bonus;
 				if(sc->data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
@@ -5779,64 +5779,64 @@ int status_get_adelay(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
-			// å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹
+			// —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX
 			if(sc->data[SC_ASSNCROS].timer != -1) {
 				int bonus = sc->data[SC_ASSNCROS].val2;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			if(sc->data[SC_GATLINGFEVER].timer != -1) {
 				ferver_bonus = sc->data[SC_GATLINGFEVER].val1*2;
 				if(haste_val2 < ferver_bonus)
 					haste_val2 = ferver_bonus;
 			}
 
-			// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+			// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 			if(sc->data[SC_MADNESSCANCEL].timer != -1) {
 				int bonus = 20+ferver_bonus;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			// ç‚¹ç©´ -å-
+			// “_ŒŠ -”½-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val4;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			/* ãã®ä»– */
+			/* ‚»‚Ì‘¼ */
 
-			// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+			// ƒfƒBƒtƒFƒ“ƒ_[
 			if(sc->data[SC_DEFENDER].timer != -1)
 				defender_flag = 1;
 
-			// ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ«
+			// ƒq[ƒgƒoƒŒƒ‹
 			if(sc->data[SC_HEAT_BARREL].timer != -1)
 				heatbarrel_flag = 1;
 		}
 
-		/* slow_valã¨haste_val1ã¨haste_val2ã‚’åŠ ç®—ã™ã‚‹ */
+		/* slow_val‚Æhaste_val1‚Æhaste_val2‚ğ‰ÁZ‚·‚é */
 		bonus_rate = slow_val - haste_val1 - haste_val2;
 
-		/* bonus_rateã®è¨ˆç®— */
+		/* bonus_rate‚ÌŒvZ */
 		if(bonus_rate != 0)
 			calc_adelay = calc_adelay * (bonus_rate+100) / 100;
 
-		/* ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ */
+		/* ƒfƒBƒtƒFƒ“ƒ_[ */
 		if(defender_flag)
 			calc_adelay += sc->data[SC_DEFENDER].val3;
 
-		/* ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ« */
+		/* ƒq[ƒgƒoƒŒƒ‹ */
 		if(heatbarrel_flag)
 			calc_adelay -= sc->data[SC_HEAT_BARREL].val1 * 10;
 
-		/* å°æ•°åˆ‡ã‚Šä¸Šã’ */
+		/* ¬”Ø‚èã‚° */
 		adelay = (int)ceil(calc_adelay);
 
-		/* æœ€ä½å€¤ã®è¨­å®š */
+		/* Å’á’l‚Ìİ’è */
 		switch(bl->type)
 		{
 			case BL_MOB:
@@ -5867,7 +5867,7 @@ int status_get_adelay(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®amotionã‚’è¿”ã™
+ * ‘ÎÛ‚Ìamotion‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_amotion(struct block_list *bl)
@@ -5905,114 +5905,114 @@ int status_get_amotion(struct block_list *bl)
 			calc_amotion = ((struct elem_data *)bl)->amotion;
 		}
 
-		/* amotionãŒå¤‰åŒ–ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®è¨ˆç®— */
+		/* amotion‚ª•Ï‰»‚·‚éó‘ÔˆÙí‚ÌŒvZ */
 		if(sc) {
 
-			/* amotionãŒå¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®— */
+			/* amotion‚ª‘‰Á‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ */
 
-			// ç§ã‚’å¿˜ã‚Œãªã„ã§
+			// „‚ğ–Y‚ê‚È‚¢‚Å
 			if(sc->data[SC_DONTFORGETME].timer != -1) {
 				slow_val = sc->data[SC_DONTFORGETME].val1;
 			}
 
-			// é‡‘å‰›
+			// ‹à„
 			if(sc->data[SC_STEELBODY].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ
+			// ƒWƒ‡ƒCƒ“ƒgƒr[ƒg
 			if(sc->data[SC_JOINTBEAT].timer != -1) {
 				switch (sc->data[SC_JOINTBEAT].val4) {
-					case 1:		// æ‰‹é¦–
+					case 1:		// èñ
 						if(slow_val < 25)
 							slow_val = 25;
 						break;
-					case 2:		// è†
+					case 2:		// •G
 						if(slow_val < 10)
 							slow_val = 10;
 						break;
 				}
 			}
 
-			// ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+			// ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh
 			if(sc->data[SC_GRAVITATION].timer != -1) {
 				int penalty = sc->data[SC_GRAVITATION].val1*5;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£
+			// ƒtƒƒXƒgƒ~ƒXƒeƒB
 			if(sc->data[SC_FROSTMISTY].timer != -1) {
 				if(slow_val < 15)
 					slow_val = 15;
 			}
 
-			// ãƒœãƒ‡ã‚£ãƒšã‚¤ãƒ³ãƒ†ã‚£ãƒ³ã‚°
+			// ƒ{ƒfƒBƒyƒCƒ“ƒeƒBƒ“ƒO
 			if(sc->data[SC__BODYPAINT].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+			// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 			if(sc->data[SC__INVISIBILITY].timer != -1) {
 				int penalty = 50 - 10 * sc->data[SC__INVISIBILITY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼
+			// ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ–
+			// ƒA[ƒXƒhƒ‰ƒCƒu
 			if(sc->data[SC_EARTHDRIVE].timer != -1) {
 				if(slow_val < 25)
 					slow_val = 25;
 			}
 
-			// ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼
+			// ƒƒ‰ƒ“ƒRƒŠ[
 			if(sc->data[SC_GLOOMYDAY].timer != -1) {
 				int penalty = 15 + 5 * sc->data[SC_GLOOMYDAY].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			// ãƒ¡ãƒ­ãƒ³çˆ†å¼¾
+			// ƒƒƒ“”š’e
 			if(sc->data[SC_MELON_BOMB].timer != -1) {
 				int penalty = sc->data[SC_MELON_BOMB].val1;
 				if(slow_val < penalty)
 					slow_val = penalty;
 			}
 
-			/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—1 */
+			/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ1 */
 
-			// å¢—é€Ÿãƒãƒ¼ã‚·ãƒ§ãƒ³
+			// ‘‘¬ƒ|[ƒVƒ‡ƒ“
 			if(sc->data[tmp = SC_SPEEDPOTION2].timer != -1 || sc->data[tmp = SC_SPEEDPOTION1].timer != -1 || sc->data[tmp = SC_SPEEDPOTION0].timer != -1)
 				haste_val1 = sc->data[tmp].val2;
 
-			/* amotionãŒæ¸›å°‘ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¨ˆç®—2 */
+			/* amotion‚ªŒ¸­‚·‚éƒXƒe[ƒ^ƒX‚ÌŒvZ2 */
 
-			// ãƒ„ãƒ¼ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒc[ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 			if(sc->data[SC_TWOHANDQUICKEN].timer != -1)
 				haste_val2 = sc->data[SC_TWOHANDQUICKEN].val2;
 
-			// ã‚¹ãƒ”ã‚¢ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒXƒsƒAƒNƒBƒbƒPƒ“
 			if(sc->data[SC_SPEARQUICKEN].timer != -1) {
 				if(haste_val2 < sc->data[SC_SPEARQUICKEN].val2)
 					haste_val2 = sc->data[SC_SPEARQUICKEN].val2;
 			}
 
-			// ãƒ¯ãƒ³ãƒãƒ³ãƒ‰ã‚¯ã‚£ãƒƒã‚±ãƒ³
+			// ƒƒ“ƒnƒ“ƒhƒNƒBƒbƒPƒ“
 			if(sc->data[SC_ONEHAND].timer != -1) {
 				if(haste_val2 < 30)
 					haste_val2 = 30;
 			}
 
-			// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥
+			// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…
 			if(sc->data[SC_ADRENALINE].timer != -1) {
 				int bonus;
 				if(sc->data[SC_ADRENALINE].val2 || !battle_config.party_skill_penalty)
@@ -6023,7 +6023,7 @@ int status_get_amotion(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
-			// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥2
+			// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…2
 			if(sc->data[SC_ADRENALINE2].timer != -1) {
 				int bonus;
 				if(sc->data[SC_ADRENALINE2].val2 || !battle_config.party_skill_penalty)
@@ -6034,64 +6034,64 @@ int status_get_amotion(struct block_list *bl)
 					haste_val2 = bonus;
 			}
 
-			// å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹
+			// —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX
 			if(sc->data[SC_ASSNCROS].timer != -1) {
 				int bonus = sc->data[SC_ASSNCROS].val2;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			// ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼
+			// ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[
 			if(sc->data[SC_GATLINGFEVER].timer != -1) {
 				ferver_bonus = sc->data[SC_GATLINGFEVER].val1*2;
 				if(haste_val2 < ferver_bonus)
 					haste_val2 = ferver_bonus;
 			}
 
-			// ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼
+			// ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[
 			if(sc->data[SC_MADNESSCANCEL].timer != -1) {
 				int bonus = 20+ferver_bonus;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			// ç‚¹ç©´ -å-
+			// “_ŒŠ -”½-
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1) {
 				int bonus = sc->data[SC_GENTLETOUCH_CHANGE].val4;
 				if(haste_val2 < bonus)
 					haste_val2 = bonus;
 			}
 
-			/* ãã®ä»– */
+			/* ‚»‚Ì‘¼ */
 
-			// ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼
+			// ƒfƒBƒtƒFƒ“ƒ_[
 			if(sc->data[SC_DEFENDER].timer != -1)
 				defender_flag = 1;
 
-			// ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ«
+			// ƒq[ƒgƒoƒŒƒ‹
 			if(sc->data[SC_HEAT_BARREL].timer != -1)
 				heatbarrel_flag = 1;
 		}
 
-		/* slow_valã¨haste_val1ã¨haste_val2ã‚’åŠ ç®—ã™ã‚‹ */
+		/* slow_val‚Æhaste_val1‚Æhaste_val2‚ğ‰ÁZ‚·‚é */
 		bonus_rate = slow_val - haste_val1 - haste_val2;
 
-		/* bonus_rateã®è¨ˆç®— */
+		/* bonus_rate‚ÌŒvZ */
 		if(bonus_rate != 0)
 			calc_amotion = calc_amotion * (bonus_rate+100) / 100;
 
-		/* ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ */
+		/* ƒfƒBƒtƒFƒ“ƒ_[ */
 		if(defender_flag)
 			calc_amotion += sc->data[SC_DEFENDER].val3;
 
-		/* ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ« */
+		/* ƒq[ƒgƒoƒŒƒ‹ */
 		if(heatbarrel_flag)
 			calc_amotion -= sc->data[SC_HEAT_BARREL].val1 * 10;
 
-		/* å°æ•°åˆ‡ã‚Šä¸Šã’ */
+		/* ¬”Ø‚èã‚° */
 		amotion = (int)ceil(calc_amotion);
 
-		/* æœ€ä½å€¤ã®è¨­å®š */
+		/* Å’á’l‚Ìİ’è */
 		switch(bl->type)
 		{
 			case BL_MOB:
@@ -6118,7 +6118,7 @@ int status_get_amotion(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®dmotionã‚’è¿”ã™
+ * ‘ÎÛ‚Ìdmotion‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_dmotion(struct block_list *bl)
@@ -6163,7 +6163,7 @@ int status_get_dmotion(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®å±æ€§ã‚’è¿”ã™
+ * ‘ÎÛ‚Ì‘®«‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_element(struct block_list *bl)
@@ -6175,31 +6175,31 @@ int status_get_element(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 	if(sc) {
-		if(sc->data[SC_BENEDICTIO].timer != -1)		// è–ä½“é™ç¦
+		if(sc->data[SC_BENEDICTIO].timer != -1)		// ¹‘Ì~•Ÿ
 			ret = 20 + ELE_HOLY;
-		if(sc->data[SC_ELEMENTWATER].timer != -1)	// æ°´
+		if(sc->data[SC_ELEMENTWATER].timer != -1)	// …
 			ret = 20*sc->data[SC_ELEMENTWATER].val1 + ELE_WATER;
-		if(sc->data[SC_ELEMENTGROUND].timer != -1)	// åœŸ
+		if(sc->data[SC_ELEMENTGROUND].timer != -1)	// “y
 			ret = 20*sc->data[SC_ELEMENTGROUND].val1 + ELE_EARTH;
-		if(sc->data[SC_ELEMENTFIRE].timer != -1)		// ç«
+		if(sc->data[SC_ELEMENTFIRE].timer != -1)		// ‰Î
 			ret = 20*sc->data[SC_ELEMENTFIRE].val1 + ELE_FIRE;
-		if(sc->data[SC_ELEMENTWIND].timer != -1)		// é¢¨
+		if(sc->data[SC_ELEMENTWIND].timer != -1)		// •—
 			ret = 20*sc->data[SC_ELEMENTWIND].val1 + ELE_WIND;
-		if(sc->data[SC_ELEMENTPOISON].timer != -1)	// æ¯’
+		if(sc->data[SC_ELEMENTPOISON].timer != -1)	// “Å
 			ret = 20*sc->data[SC_ELEMENTPOISON].val1 + ELE_POISON;
-		if(sc->data[SC_ELEMENTHOLY].timer != -1)		// è–
+		if(sc->data[SC_ELEMENTHOLY].timer != -1)		// ¹
 			ret = 20*sc->data[SC_ELEMENTHOLY].val1 + ELE_HOLY;
-		if(sc->data[SC_ELEMENTDARK].timer != -1)		// é—‡
+		if(sc->data[SC_ELEMENTDARK].timer != -1)		// ˆÅ
 			ret = 20*sc->data[SC_ELEMENTDARK].val1 + ELE_DARK;
-		if(sc->data[SC_ELEMENTELEKINESIS].timer != -1)	// å¿µ
+		if(sc->data[SC_ELEMENTELEKINESIS].timer != -1)	// ”O
 			ret = 20*sc->data[SC_ELEMENTELEKINESIS].val1 + ELE_GHOST;
-		if(sc->data[SC_ELEMENTUNDEAD].timer != -1)	// ä¸æ­»
+		if(sc->data[SC_ELEMENTUNDEAD].timer != -1)	// •s€
 			ret = 20*sc->data[SC_ELEMENTUNDEAD].val1 + ELE_UNDEAD;
-		if(sc->data[SC_FREEZE].timer != -1)		// å‡çµ
+		if(sc->data[SC_FREEZE].timer != -1)		// “€Œ‹
 			ret = 20 + ELE_WATER;
 		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0)
 			ret = 20 + ELE_EARTH;
-		if(sc->data[SC_SHAPESHIFT].timer != -1)		// ã‚·ã‚§ã‚¤ãƒ—ã‚·ãƒ•ãƒˆ
+		if(sc->data[SC_SHAPESHIFT].timer != -1)		// ƒVƒFƒCƒvƒVƒtƒg
 			ret = 20 + sc->data[SC_SHAPESHIFT].val2;
 
 		if(ret != 20)
@@ -6207,11 +6207,11 @@ int status_get_element(struct block_list *bl)
 	}
 
 	if(bl->type == BL_MOB && (struct mob_data *)bl) {
-		// 10ã®ä½ï¼Lv*2ã€ï¼‘ã®ä½ï¼å±æ€§
+		// 10‚ÌˆÊLv*2A‚P‚ÌˆÊ‘®«
 		ret = ((struct mob_data *)bl)->def_ele;
 	}
 	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		// é˜²å¾¡å±æ€§Lv1
+		// –hŒä‘®«Lv1
 		ret = 20+((struct map_session_data *)bl)->def_ele;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl) {
@@ -6235,7 +6235,7 @@ int status_get_element(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®æ”»æ’ƒå±æ€§ã‚’è¿”ã™
+ * ‘ÎÛ‚ÌUŒ‚‘®«‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_attack_element(struct block_list *bl)
@@ -6257,41 +6257,41 @@ int status_get_attack_element(struct block_list *bl)
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 
 	if(sc) {
-		if(sc->data[SC_FROSTWEAPON].timer != -1)		// ãƒ•ãƒ­ã‚¹ãƒˆã‚¦ã‚§ãƒãƒ³
+		if(sc->data[SC_FROSTWEAPON].timer != -1)		// ƒtƒƒXƒgƒEƒFƒ|ƒ“
 			ret = ELE_WATER;
-		if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ã‚µã‚¤ã‚ºãƒŸãƒƒã‚¯ã‚¦ã‚§ãƒãƒ³
+		if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ƒTƒCƒYƒ~ƒbƒNƒEƒFƒ|ƒ“
 			ret = ELE_EARTH;
-		if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ©ãƒ³ãƒãƒ£ãƒ¼
+		if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ƒtƒŒ[ƒ€ƒ‰ƒ“ƒ`ƒƒ[
 			ret = ELE_FIRE;
-		if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ãƒ©ã‚¤ãƒˆãƒ‹ãƒ³ã‚°ãƒ­ãƒ¼ãƒ€ãƒ¼
+		if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ƒ‰ƒCƒgƒjƒ“ƒOƒ[ƒ_[
 			ret = ELE_WIND;
-		if(sc->data[SC_ENCPOISON].timer != -1)		// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³
+		if(sc->data[SC_ENCPOISON].timer != -1)		// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“
 			ret = ELE_POISON;
-		if(sc->data[SC_ASPERSIO].timer != -1)		// ã‚¢ã‚¹ãƒšãƒ«ã‚·ã‚ª
+		if(sc->data[SC_ASPERSIO].timer != -1)		// ƒAƒXƒyƒ‹ƒVƒI
 			ret = ELE_HOLY;
-		if(sc->data[SC_DARKELEMENT].timer != -1)		// é—‡å±æ€§
+		if(sc->data[SC_DARKELEMENT].timer != -1)		// ˆÅ‘®«
 			ret = ELE_DARK;
-		if(sc->data[SC_ATTENELEMENT].timer != -1)	// å¿µå±æ€§
+		if(sc->data[SC_ATTENELEMENT].timer != -1)	// ”O‘®«
 			ret = ELE_GHOST;
-		if(sc->data[SC_UNDEADELEMENT].timer != -1)	// ä¸æ­»å±æ€§
+		if(sc->data[SC_UNDEADELEMENT].timer != -1)	// •s€‘®«
 			ret = ELE_UNDEAD;
-		if(sc->data[SC_SEVENWIND].timer != -1)		// æš–ã‹ã„é¢¨
+		if(sc->data[SC_SEVENWIND].timer != -1)		// ’g‚©‚¢•—
 			ret = sc->data[SC_SEVENWIND].val3;
-		if(sc->data[SC_TIDAL_WEAPON].timer != -1 || sc->data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// ã‚¿ã‚¤ãƒ€ãƒ«ã‚¦ã‚§ãƒãƒ³
+		if(sc->data[SC_TIDAL_WEAPON].timer != -1 || sc->data[SC_TIDAL_WEAPON_OPTION].timer != -1)	// ƒ^ƒCƒ_ƒ‹ƒEƒFƒ|ƒ“
 			ret = ELE_WATER;
 	}
 	return ret;
 }
 
 /*==========================================
- * å¯¾è±¡ã®æ”»æ’ƒå±æ€§ï¼ˆå·¦æ‰‹ï¼‰ã‚’è¿”ã™
+ * ‘ÎÛ‚ÌUŒ‚‘®«i¶èj‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_attack_element2(struct block_list *bl)
@@ -6307,25 +6307,25 @@ int status_get_attack_element2(struct block_list *bl)
 			ret = ((struct map_session_data *)bl)->atk_ele_;
 
 		if(sc) {
-			if(sc->data[SC_FROSTWEAPON].timer != -1)		// ãƒ•ãƒ­ã‚¹ãƒˆã‚¦ã‚§ãƒãƒ³
+			if(sc->data[SC_FROSTWEAPON].timer != -1)		// ƒtƒƒXƒgƒEƒFƒ|ƒ“
 				ret = ELE_WATER;
-			if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ã‚µã‚¤ã‚ºãƒŸãƒƒã‚¯ã‚¦ã‚§ãƒãƒ³
+			if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ƒTƒCƒYƒ~ƒbƒNƒEƒFƒ|ƒ“
 				ret = ELE_EARTH;
-			if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ©ãƒ³ãƒãƒ£ãƒ¼
+			if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ƒtƒŒ[ƒ€ƒ‰ƒ“ƒ`ƒƒ[
 				ret = ELE_FIRE;
-			if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ãƒ©ã‚¤ãƒˆãƒ‹ãƒ³ã‚°ãƒ­ãƒ¼ãƒ€ãƒ¼
+			if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ƒ‰ƒCƒgƒjƒ“ƒOƒ[ƒ_[
 				ret = ELE_WIND;
-			if(sc->data[SC_ENCPOISON].timer != -1)		// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³
+			if(sc->data[SC_ENCPOISON].timer != -1)		// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“
 				ret = ELE_POISON;
-			if(sc->data[SC_ASPERSIO].timer != -1)		// ã‚¢ã‚¹ãƒšãƒ«ã‚·ã‚ª
+			if(sc->data[SC_ASPERSIO].timer != -1)		// ƒAƒXƒyƒ‹ƒVƒI
 				ret = ELE_HOLY;
-			if(sc->data[SC_DARKELEMENT].timer != -1)		// é—‡å±æ€§
+			if(sc->data[SC_DARKELEMENT].timer != -1)		// ˆÅ‘®«
 				ret = ELE_DARK;
-			if(sc->data[SC_ATTENELEMENT].timer != -1)	// å¿µå±æ€§
+			if(sc->data[SC_ATTENELEMENT].timer != -1)	// ”O‘®«
 				ret = ELE_GHOST;
-			if(sc->data[SC_UNDEADELEMENT].timer != -1)	// ä¸æ­»å±æ€§
+			if(sc->data[SC_UNDEADELEMENT].timer != -1)	// •s€‘®«
 				ret = ELE_UNDEAD;
-			if(sc->data[SC_SEVENWIND].timer != -1)		// æš–ã‹ã„é¢¨
+			if(sc->data[SC_SEVENWIND].timer != -1)		// ’g‚©‚¢•—
 				ret = sc->data[SC_SEVENWIND].val3;
 		}
 		return ret;
@@ -6334,7 +6334,7 @@ int status_get_attack_element2(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®æ­¦å™¨å±æ€§ã‚’é™¤ã„ãŸæ”»æ’ƒå±æ€§ã‚’è¿”ã™
+ * ‘ÎÛ‚Ì•Ší‘®«‚ğœ‚¢‚½UŒ‚‘®«‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_attack_element_nw(struct block_list *bl)
@@ -6351,43 +6351,43 @@ int status_get_attack_element_nw(struct block_list *bl)
 			ret = ((struct map_session_data *)bl)->elementball.ele;
 	}
 	else if(bl->type == BL_HOM && (struct homun_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 	else if(bl->type == BL_ELEM && (struct elem_data *)bl)
-		ret = ELE_NONE;	// ç„¡å±æ€§
+		ret = ELE_NONE;	// –³‘®«
 
 	if(sc) {
-		if(sc->data[SC_FROSTWEAPON].timer != -1)		// ãƒ•ãƒ­ã‚¹ãƒˆã‚¦ã‚§ãƒãƒ³
+		if(sc->data[SC_FROSTWEAPON].timer != -1)		// ƒtƒƒXƒgƒEƒFƒ|ƒ“
 			ret = ELE_WATER;
-		if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ã‚µã‚¤ã‚ºãƒŸãƒƒã‚¯ã‚¦ã‚§ãƒãƒ³
+		if(sc->data[SC_SEISMICWEAPON].timer != -1)	// ƒTƒCƒYƒ~ƒbƒNƒEƒFƒ|ƒ“
 			ret = ELE_EARTH;
-		if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ©ãƒ³ãƒãƒ£ãƒ¼
+		if(sc->data[SC_FLAMELAUNCHER].timer != -1)	// ƒtƒŒ[ƒ€ƒ‰ƒ“ƒ`ƒƒ[
 			ret = ELE_FIRE;
-		if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ãƒ©ã‚¤ãƒˆãƒ‹ãƒ³ã‚°ãƒ­ãƒ¼ãƒ€ãƒ¼
+		if(sc->data[SC_LIGHTNINGLOADER].timer != -1)	// ƒ‰ƒCƒgƒjƒ“ƒOƒ[ƒ_[
 			ret = ELE_WIND;
-		if(sc->data[SC_ENCPOISON].timer != -1)		// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³
+		if(sc->data[SC_ENCPOISON].timer != -1)		// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“
 			ret = ELE_POISON;
-		if(sc->data[SC_ASPERSIO].timer != -1)		// ã‚¢ã‚¹ãƒšãƒ«ã‚·ã‚ª
+		if(sc->data[SC_ASPERSIO].timer != -1)		// ƒAƒXƒyƒ‹ƒVƒI
 			ret = ELE_HOLY;
-		if(sc->data[SC_DARKELEMENT].timer != -1)		// é—‡å±æ€§
+		if(sc->data[SC_DARKELEMENT].timer != -1)		// ˆÅ‘®«
 			ret = ELE_DARK;
-		if(sc->data[SC_ATTENELEMENT].timer != -1)	// å¿µå±æ€§
+		if(sc->data[SC_ATTENELEMENT].timer != -1)	// ”O‘®«
 			ret = ELE_GHOST;
-		if(sc->data[SC_UNDEADELEMENT].timer != -1)	// ä¸æ­»å±æ€§
+		if(sc->data[SC_UNDEADELEMENT].timer != -1)	// •s€‘®«
 			ret = ELE_UNDEAD;
-		if(sc->data[SC_SEVENWIND].timer != -1)		// æš–ã‹ã„é¢¨
+		if(sc->data[SC_SEVENWIND].timer != -1)		// ’g‚©‚¢•—
 			ret = sc->data[SC_SEVENWIND].val3;
-		if(sc->data[SC__INVISIBILITY].timer != -1)	// ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£
+		if(sc->data[SC__INVISIBILITY].timer != -1)	// ƒCƒ“ƒrƒWƒrƒŠƒeƒB
 			ret = ELE_GHOST;
-		if(sc->data[SC_PYROCLASTIC].timer != -1)	// ãƒ‘ã‚¤ãƒ­ã‚¯ãƒ©ã‚¹ãƒ†ã‚£ãƒƒã‚¯
+		if(sc->data[SC_PYROCLASTIC].timer != -1)	// ƒpƒCƒƒNƒ‰ƒXƒeƒBƒbƒN
 			ret = ELE_FIRE;
 	}
 	return ret;
 }
 
 /*==========================================
- * å¯¾è±¡ã®ãƒ‘ãƒ¼ãƒ†ã‚£IDã‚’è¿”ã™
+ * ‘ÎÛ‚Ìƒp[ƒeƒBID‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_party_id(struct block_list *bl)
@@ -6424,7 +6424,7 @@ int status_get_party_id(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ã‚®ãƒ«ãƒ‰IDã‚’è¿”ã™
+ * ‘ÎÛ‚ÌƒMƒ‹ƒhID‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_guild_id(struct block_list *bl)
@@ -6455,7 +6455,7 @@ int status_get_guild_id(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ç¨®æ—ã‚’è¿”ã™
+ * ‘ÎÛ‚Ìí‘°‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_race(struct block_list *bl)
@@ -6494,25 +6494,25 @@ int status_get_race(struct block_list *bl)
 	sc = status_get_sc(bl);
 
 	if(sc) {
-		if(sc->data[SC_RACEUNKNOWN].timer != -1)	// ç„¡å½¢
+		if(sc->data[SC_RACEUNKNOWN].timer != -1)	// –³Œ`
 			race = RCT_FORMLESS;
-		if(sc->data[SC_RACEUNDEAD].timer != -1)	// ä¸æ­»
+		if(sc->data[SC_RACEUNDEAD].timer != -1)	// •s€
 			race = RCT_UNDEAD;
-		if(sc->data[SC_RACEBEAST].timer != -1)	// å‹•ç‰©
+		if(sc->data[SC_RACEBEAST].timer != -1)	// “®•¨
 			race = RCT_BRUTE;
-		if(sc->data[SC_RACEPLANT].timer != -1)	// æ¤ç‰©
+		if(sc->data[SC_RACEPLANT].timer != -1)	// A•¨
 			race = RCT_PLANT;
-		if(sc->data[SC_RACEINSECT].timer != -1)	// æ˜†è™«
+		if(sc->data[SC_RACEINSECT].timer != -1)	// ©’
 			race = RCT_INSECT;
-		if(sc->data[SC_RACEFISH].timer != -1)	// é­šè²
+		if(sc->data[SC_RACEFISH].timer != -1)	// ‹›ŠL
 			race = RCT_FISH;
-		if(sc->data[SC_RACEDEVIL].timer != -1)	// æ‚ªé­”
+		if(sc->data[SC_RACEDEVIL].timer != -1)	// ˆ«–‚
 			race = RCT_DEMON;
-		if(sc->data[SC_RACEHUMAN].timer != -1)	// äººé–“
+		if(sc->data[SC_RACEHUMAN].timer != -1)	// lŠÔ
 			race = RCT_HUMAN;
-		if(sc->data[SC_RACEANGEL].timer != -1)	// å¤©ä½¿
+		if(sc->data[SC_RACEANGEL].timer != -1)	// “Vg
 			race = RCT_ANGEL;
-		if(sc->data[SC_RACEDRAGON].timer != -1)	// ç«œ
+		if(sc->data[SC_RACEDRAGON].timer != -1)	// —³
 			race = RCT_DRAGON;
 	}
 
@@ -6520,7 +6520,7 @@ int status_get_race(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ã‚µã‚¤ã‚ºã‚’è¿”ã™
+ * ‘ÎÛ‚ÌƒTƒCƒY‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_size(struct block_list *bl)
@@ -6552,7 +6552,7 @@ int status_get_size(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®ãƒ¢ãƒ¼ãƒ‰ã‚’è¿”ã™
+ * ‘ÎÛ‚Ìƒ‚[ƒh‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_mode(struct block_list *bl)
@@ -6567,11 +6567,11 @@ int status_get_mode(struct block_list *bl)
 		return mobdb_search(((struct pet_data *)bl)->class_)->mode;
 	}
 
-	return MD_CANMOVE;	// ã¨ã‚Šã‚ãˆãšå‹•ãã¨ã„ã†ã“ã¨ã§1
+	return MD_CANMOVE;	// ‚Æ‚è‚ ‚¦‚¸“®‚­‚Æ‚¢‚¤‚±‚Æ‚Å1
 }
 
 /*==========================================
- * å¯¾è±¡ã®MVPExpã‚’è¿”ã™
+ * ‘ÎÛ‚ÌMVPExp‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_mexp(struct block_list *bl)
@@ -6587,7 +6587,7 @@ int status_get_mexp(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®æ•µã‚¿ã‚¤ãƒ—ã‚’è¿”ã™
+ * ‘ÎÛ‚Ì“Gƒ^ƒCƒv‚ğ•Ô‚·
  *------------------------------------------
  */
 int status_get_enemy_type(struct block_list *bl)
@@ -6607,7 +6607,7 @@ int status_get_enemy_type(struct block_list *bl)
 }
 
 /*==========================================
- * å¯¾è±¡ã®æœè‰²ã‚’è¿”ã™
+ * ‘ÎÛ‚Ì•F‚ğ•Ô‚·
  *------------------------------------------
  */
 short status_get_clothes_color(struct block_list *bl)
@@ -6630,7 +6630,7 @@ short status_get_clothes_color(struct block_list *bl)
 }
 
 /*==========================================
- * StatusChangeã®å–å¾—
+ * StatusChange‚Ìæ“¾
  *------------------------------------------
  */
 struct status_change *status_get_sc(struct block_list *bl)
@@ -6652,7 +6652,7 @@ struct status_change *status_get_sc(struct block_list *bl)
 }
 
 /*==========================================
- * é­”æ³•ç„¡åŠ¹ã‹ã©ã†ã‹
+ * –‚–@–³Œø‚©‚Ç‚¤‚©
  *------------------------------------------
  */
 int status_check_no_magic_damage(struct block_list *bl)
@@ -6668,7 +6668,7 @@ int status_check_no_magic_damage(struct block_list *bl)
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã®è€æ€§è¨ˆç®—
+ * ó‘ÔˆÙí‚Ì‘Ï«ŒvZ
  *------------------------------------------
  */
 int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
@@ -6680,75 +6680,75 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 
 	nullpo_retr(0, bl);
 
-	if(type < 0)	// typeãŒ0æœªæº€ã®å ´åˆå¤±æ•—
+	if(type < 0)	// type‚ª0–¢–‚Ìê‡¸”s
 		return 0;
 
-	if(rate <= 0)	// ç¢ºç‡ãŒ0ä»¥ä¸‹ã®ã‚‚ã®ã¯å¤±æ•—
+	if(rate <= 0)	// Šm—¦‚ª0ˆÈ‰º‚Ì‚à‚Ì‚Í¸”s
 		return 0;
 
 #ifndef PRE_RENEWAL
 	cap = src_level - status_get_lv(bl);
-	if(cap <= 0)	// å¯¾è±¡ã®ã»ã†ãŒãƒ¬ãƒ™ãƒ«ãŒé«˜ã„å ´åˆã¯0
+	if(cap <= 0)	// ‘ÎÛ‚Ì‚Ù‚¤‚ªƒŒƒxƒ‹‚ª‚‚¢ê‡‚Í0
 		cap = 0;
 	else
 		cap = cap * cap / 5;
 #endif
 
-	switch(type) {	// çŠ¶æ…‹ç•°å¸¸è€æ€§ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ rateã¯ä¸‡åˆ†ç‡
+	switch(type) {	// ó‘ÔˆÙí‘Ï«ƒXƒe[ƒ^ƒX rate‚Í–œ•ª—¦
 #ifdef PRE_RENEWAL
-		case SC_STONE:	// çŸ³åŒ–
-		case SC_FREEZE:	// å‡çµ
+		case SC_STONE:	// Î‰»
+		case SC_FREEZE:	// “€Œ‹
 			rate += src_level*10 - rate * status_get_mdef(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_STUN:	// ã‚¹ã‚¿ãƒ³
-		case SC_SILENCE:	// æ²ˆé»™
-		case SC_POISON:	// æ¯’
-		case SC_DPOISON:	// çŒ›æ¯’
-		case SC_BLEED:	// å‡ºè¡€
+		case SC_STUN:	// ƒXƒ^ƒ“
+		case SC_SILENCE:	// ’¾–Ù
+		case SC_POISON:	// “Å
+		case SC_DPOISON:	// –Ò“Å
+		case SC_BLEED:	// oŒŒ
 			rate += src_level*10 - rate * status_get_vit(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_SLEEP:	// ç¡çœ 
+		case SC_SLEEP:	// ‡–°
 			rate += src_level*10 - rate * status_get_int(bl)*10 / 1000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_BLIND:	// æš—é»’
+		case SC_BLIND:	// ˆÃ•
 			rate += src_level*10 - rate * (status_get_vit(bl)*10 + status_get_int(bl)*10) / 2000 - status_get_luk(bl)*10 - status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_CURSE:	// å‘ªã„
+		case SC_CURSE:	// ô‚¢
 			rate += src_level*10 - rate * status_get_luk(bl)*10 / 1000 - status_get_luk(bl)*10;
 			sc_flag = 1;
 			break;
-		case SC_CONFUSION:	// æ··ä¹±
+		case SC_CONFUSION:	// ¬—
 			rate += status_get_luk(bl)*10 + -(rate * (status_get_str(bl)*10 + status_get_int(bl)*10) / 2000) - src_level*10 + status_get_lv(bl)*10;
 			sc_flag = 1;
 			break;
 #else
-		case SC_STONE:	// çŸ³åŒ–
-		case SC_FREEZE:	// å‡çµ
+		case SC_STONE:	// Î‰»
+		case SC_FREEZE:	// “€Œ‹
 			rate = rate * (100 - (status_get_mdef(bl) - cap)) / 100;
 			sc_flag = 1;
 			break;
-		case SC_STUN:	// ã‚¹ã‚¿ãƒ³
-		case SC_POISON:	// æ¯’
-		case SC_DPOISON:	// çŒ›æ¯’
+		case SC_STUN:	// ƒXƒ^ƒ“
+		case SC_POISON:	// “Å
+		case SC_DPOISON:	// –Ò“Å
 			rate = rate * (100 - (status_get_vit(bl) - cap)) / 100;
 			sc_flag = 1;
 			break;
-		case SC_SLEEP:	// ç¡çœ 
-		case SC_BLEED:	// å‡ºè¡€
+		case SC_SLEEP:	// ‡–°
+		case SC_BLEED:	// oŒŒ
 			rate = rate * (100 - (status_get_agi(bl) - cap)) / 100;
 			sc_flag = 1;
 			break;
-		case SC_BLIND:	// æš—é»’
-		case SC_SILENCE:	// æ²ˆé»™
+		case SC_BLIND:	// ˆÃ•
+		case SC_SILENCE:	// ’¾–Ù
 			rate = rate * (100 - (status_get_int(bl) - cap)) / 100;
 			sc_flag = 1;
 			break;
-		case SC_CONFUSION:	// æ··ä¹±
-		case SC_CURSE:	// å‘ªã„
+		case SC_CONFUSION:	// ¬—
+		case SC_CURSE:	// ô‚¢
 			rate = rate * (100 - (status_get_luk(bl) - cap)) / 100;
 			sc_flag = 1;
 			break;
@@ -6774,13 +6774,13 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 		struct status_change *sc = status_get_sc(bl);
 		if(sc) {
 			if(sc->data[SC_STATUS_UNCHANGE].timer != -1 && status_is_disable(type,0x10)) {
-				rate = 0;	// ã‚´ã‚¹ãƒšãƒ«ã®å…¨çŠ¶æ…‹ç•°å¸¸è€æ€§ä¸­ãªã‚‰ç„¡åŠ¹
+				rate = 0;	// ƒSƒXƒyƒ‹‚Ì‘Só‘ÔˆÙí‘Ï«’†‚È‚ç–³Œø
 			}
 			if(sc->data[SC_NAUTHIZ].timer != -1 && status_is_disable(type,0x10)) {
-				rate = 0;	// ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥åŠ¹æœä¸­ã¯ç„¡åŠ¹
+				rate = 0;	// ƒŠƒtƒŒƒbƒVƒ…Œø‰Ê’†‚Í–³Œø
 			}
 			if(sc->data[SC_INSPIRATION].timer != -1 && status_is_disable(type,0x10)) {
-				rate = 0;	// ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³åŠ¹æœä¸­ãªã‚‰ç„¡åŠ¹
+				rate = 0;	// ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“Œø‰Ê’†‚È‚ç–³Œø
 			}
 		}
 	}
@@ -6789,7 +6789,7 @@ int status_change_rate(struct block_list *bl,int type,int rate,int src_level)
 }
 
 /*==========================================
- * çŠ¶æ…‹ç•°å¸¸ã®è¤‡å†™ï¼ˆãƒ‡ãƒƒãƒ‰ãƒªãƒ¼ã‚¤ãƒ³ãƒ•ã‚§ã‚¯ãƒˆï¼‰
+ * ó‘ÔˆÙí‚Ì•¡ÊiƒfƒbƒhƒŠ[ƒCƒ“ƒtƒFƒNƒgj
  *------------------------------------------
  */
 int status_change_copy(struct block_list *src,struct block_list *bl)
@@ -6828,7 +6828,7 @@ int status_change_copy(struct block_list *src,struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ‡ãƒ¼ã‚¿ã®å‹•çš„ç¢ºä¿
+ * ƒXƒe[ƒ^ƒXˆÙíƒf[ƒ^‚Ì“®“IŠm•Û
  *------------------------------------------
  */
 #ifdef DYNAMIC_SC_DATA
@@ -6868,7 +6868,7 @@ int status_free_sc_data(struct status_change *sc)
 #endif
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–‹å§‹
+ * ƒXƒe[ƒ^ƒXˆÙíŠJn
  *------------------------------------------
  */
 int status_change_start(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag)
@@ -6911,7 +6911,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	if(type == SC_AETERNA && (sc->data[SC_STONE].timer != -1 || sc->data[SC_FREEZE].timer != -1))
 		return 0;
 
-	// ç‰¹æ®Šç³»
+	// “ÁêŒn
 	if(type >= MAX_STATUSCHANGE) {
 		switch(type) {
 			case SC_SOUL:
@@ -6992,7 +6992,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				}
 			}
 			break;
-		// 3æ¬¡æ–°æ¯’ã‚¹ã‚­ãƒ«
+		// 3ŸV“ÅƒXƒLƒ‹
 		case SC_TOXIN:
 		case SC_PARALIZE:
 		case SC_VENOMBLEED:
@@ -7010,11 +7010,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			   sc->data[SC_OBLIVIONCURSE].timer != -1 ||
 			   sc->data[SC_LEECHEND].timer != -1
 			) {
-				// æ–°æ¯’ã¯é‡è¤‡ã•ã›ãªã„
+				// V“Å‚Íd•¡‚³‚¹‚È‚¢
 				return 0;
 			}
 			break;
-		// 3æ¬¡æ­Œã‚¹ã‚­ãƒ« ç‹¬å¥
+		// 3Ÿ‰ÌƒXƒLƒ‹ “Æ‘t
 		case SC_SWING:
 		case SC_SYMPHONY_LOVE:
 		case SC_MOONLIT_SERENADE:
@@ -7037,7 +7037,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_FRIGG_SONG].timer != -1)
 				status_change_end(bl,SC_FRIGG_SONG,-1);
 			break;
-		// 3æ¬¡æ­Œã‚¹ã‚­ãƒ« åˆå¥
+		// 3Ÿ‰ÌƒXƒLƒ‹ ‡‘t
 		case SC_SIREN:
 		case SC_SIRCLEOFNATURE:
 		case SC_SONG_OF_MANA:
@@ -7047,8 +7047,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_MELODYOFSINK:
 		case SC_BEYOND_OF_WARCRY:
 		case SC_UNLIMITED_HUMMING_VOICE:
-			if(battle_config.third_song_overlap) {	// æˆ¦é—˜è¨­å®šã§æ­Œã‚¹ã‚­ãƒ«é‡è¤‡å¯èƒ½ã®å ´åˆ
-				// ãƒ¡ãƒ­ãƒ‡ã‚£ãƒ¼ã‚ªãƒ–ã‚·ãƒ³ã‚¯ã¨ãƒ“ãƒ¨ãƒ³ãƒ‰ã‚ªãƒ–ã‚¦ã‚©ãƒ¼ã‚¯ãƒ©ã‚¤ã¯é‡è¤‡ã•ã›ãªã„
+			if(battle_config.third_song_overlap) {	// í“¬İ’è‚Å‰ÌƒXƒLƒ‹d•¡‰Â”\‚Ìê‡
+				// ƒƒƒfƒB[ƒIƒuƒVƒ“ƒN‚Æƒrƒˆƒ“ƒhƒIƒuƒEƒH[ƒNƒ‰ƒC‚Íd•¡‚³‚¹‚È‚¢
 				if(type == SC_MELODYOFSINK && sc->data[SC_BEYOND_OF_WARCRY].timer != -1)
 					status_change_end(bl,SC_BEYOND_OF_WARCRY,-1);
 				if(type == SC_BEYOND_OF_WARCRY && sc->data[SC_MELODYOFSINK].timer != -1)
@@ -7087,20 +7087,20 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		if(weapon >= WT_MAX)
 			weapon -= WT_DOUBLE_DD + WT_MAX;
 
-		// ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ã®æ­¦å™¨åˆ¤å®š
+		// ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…‚Ì•Ší”»’è
 		if( type == SC_ADRENALINE && !(skill_get_weapontype(BS_ADRENALINE)&(1<<weapon)) )
 			return 0;
-		// ãƒ•ãƒ«ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ã®æ­¦å™¨åˆ¤å®š
+		// ƒtƒ‹ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ…‚Ì•Ší”»’è
 		if( type == SC_ADRENALINE2 && !(skill_get_weapontype(BS_ADRENALINE2)&(1<<weapon)) )
 			return 0;
-		if( !(flag&8) && SC_STONE <= type && type <= SC_BLEED ) {	/* ã‚«ãƒ¼ãƒ‰ã«ã‚ˆã‚‹è€æ€§ */
+		if( !(flag&8) && SC_STONE <= type && type <= SC_BLEED ) {	/* ƒJ[ƒh‚É‚æ‚é‘Ï« */
 			int scdef = sd->reseff[type-SC_STONE];
-			if(sc->data[SC_SIEGFRIED].timer != -1) {	// ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ã®çŠ¶æ…‹ç•°å¸¸è€æ€§
+			if(sc->data[SC_SIEGFRIED].timer != -1) {	// ƒW[ƒNƒtƒŠ[ƒh‚Ìó‘ÔˆÙí‘Ï«
 				scdef += 5000;
 			}
 			if(scdef > 0 && atn_rand()%10000 < scdef) {
 				if(battle_config.battle_log)
-					printf("PC %d skill_sc_start: cardã«ã‚ˆã‚‹ç•°å¸¸è€æ€§ç™ºå‹•\n", sd->bl.id);
+					printf("PC %d skill_sc_start: card‚É‚æ‚éˆÙí‘Ï«”­“®\n", sd->bl.id);
 				return 0;
 			}
 #ifndef PRE_RENEWAL
@@ -7111,23 +7111,23 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		}
 	}
 
-	// ã‚¢ãƒ³ãƒ‡ãƒƒãƒ‰ã¯å‡çµãƒ»çŸ³åŒ–ãƒ»å‡ºè¡€ç„¡åŠ¹
+	// ƒAƒ“ƒfƒbƒh‚Í“€Œ‹EÎ‰»EoŒŒ–³Œø
 	if((race == RCT_UNDEAD || elem == ELE_UNDEAD) && !(flag&1) && (type == SC_STONE || type == SC_FREEZE || type == SC_BLEED))
 		return 0;
 
-	// ã‚¦ã‚©ãƒ¼ã‚°ãƒã‚¤ãƒˆçŠ¶æ…‹ä¸­ã¯ãƒã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã€ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ç„¡åŠ¹
+	// ƒEƒH[ƒOƒoƒCƒgó‘Ô’†‚ÍƒnƒCƒfƒBƒ“ƒOAƒNƒ[ƒLƒ“ƒO–³Œø
 	if(sc->data[SC_WUGBITE].timer != -1 && (type == SC_HIDING || type == SC_CLOAKING || type == SC_CLOAKINGEXCEED || type == SC_NEWMOON))
 		return 0;
 
-	// ã‚¦ã‚©ãƒ¼ãƒãƒ¼çŠ¶æ…‹ä¸­ã¯å‡çµã€æ°·çµã€å†·å‡ç„¡åŠ¹
+	// ƒEƒH[ƒ}[ó‘Ô’†‚Í“€Œ‹A•XŒ‹A—â“€–³Œø
 	if(sc->data[SC_WARMER].timer != -1 && (type == SC_FREEZE || type == SC_FROSTMISTY || type == SC_DIAMONDDUST))
 		return 0;
 
-	// æ°¸ä¹…éœœçŠ¶æ…‹ä¸­ã¯ç„ç‚å‘ªç„¡åŠ¹
+	// ‰i‹v‘šó‘Ô’†‚Í–‰Šô–³Œø
 	if(sc->data[SC_CHILL].timer != -1 && type == SC_BURNT)
 		return 0;
 
-	// è¡Œå‹•ä¸èƒ½çŠ¶æ…‹ç•°å¸¸ã®å„ªå…ˆé †ä½
+	// s“®•s”\ó‘ÔˆÙí‚Ì—Dæ‡ˆÊ
 	if(type >= SC_STONE && type < SC_SLEEP) {
 		int i;
 		for(i = type; i < SC_SLEEP; i++) {
@@ -7140,30 +7140,30 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		sc->data[type].timer != -1 && sc->data[type].val2 && !val2)
 		return 0;
 
-	// ãƒœã‚¹å±æ€§ã«ã¯ç„¡åŠ¹(ãŸã ã—ã‚«ãƒ¼ãƒ‰ã«ã‚ˆã‚‹åŠ¹æœã¯é©ç”¨ã•ã‚Œã‚‹)
+	// ƒ{ƒX‘®«‚É‚Í–³Œø(‚½‚¾‚µƒJ[ƒh‚É‚æ‚éŒø‰Ê‚Í“K—p‚³‚ê‚é)
 	if( mode&MD_BOSS && !(flag&1) && status_is_disable(type,0x01) ) {
 		if(type == SC_BLESSING && !battle_check_undead(race,elem) && race != RCT_DEMON) {
-			// ãƒ–ãƒ¬ã‚¹ã¯ä¸æ­»/æ‚ªé­”ã§ãªã„ãªã‚‰åŠ¹ã
+			// ƒuƒŒƒX‚Í•s€/ˆ«–‚‚Å‚È‚¢‚È‚çŒø‚­
 			;
 		} else {
 			return 0;
 		}
 	}
 
-	// ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢ä¸­ã¯ç„¡åŠ¹
+	// ƒNƒ@ƒOƒ}ƒCƒA’†‚Í–³Œø
 	if(sc->data[SC_QUAGMIRE].timer != -1 && status_is_disable(type,0x02))
 		return 0;
-	// ç§ã‚’å¿˜ã‚Œãªã„ã§ä¸­ã¯ç„¡åŠ¹
+	// „‚ğ–Y‚ê‚È‚¢‚Å’†‚Í–³Œø
 	if(sc->data[SC_DONTFORGETME].timer != -1 && status_is_disable(type,0x04))
 		return 0;
-	// é€Ÿåº¦æ¸›å°‘ä¸­ã¯ç„¡åŠ¹
+	// ‘¬“xŒ¸­’†‚Í–³Œø
 	if(sc->data[SC_DECREASEAGI].timer != -1 && status_is_disable(type,0x08))
 		return 0;
 
 	if(type == SC_STUN || type == SC_SLEEP)
 		unit_stop_walking(bl,1);
 
-	// ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°ã«ã‚ˆã‚‹å‘ªã„ã€çŸ³åŒ–ã®è§£é™¤
+	// ƒuƒŒƒbƒVƒ“ƒO‚É‚æ‚éô‚¢AÎ‰»‚Ì‰ğœ
 	if(type == SC_BLESSING && (sd || (!battle_check_undead(race,elem) && race != RCT_DEMON))) {
 		bool f = false;
 		if(sc->data[SC_CURSE].timer != -1) {
@@ -7175,12 +7175,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			f = true;
 		}
 
-		// å‘ªã„ã€çŸ³åŒ–è§£é™¤æ™‚ã¯ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚°çŠ¶æ…‹ã«ãªã‚‰ãªã„ã®ã§çµ‚ã‚ã‚‹
+		// ô‚¢AÎ‰»‰ğœ‚ÍƒuƒŒƒbƒVƒ“ƒOó‘Ô‚É‚È‚ç‚È‚¢‚Ì‚ÅI‚í‚é
 		if(f)
 			return 0;
 	}
 
-	/* ã‚­ãƒ³ã‚°ã‚¹ã‚°ãƒ¬ã‚¤ã‚¹çŠ¶æ…‹ã§ã¯ç‰¹å®šç•°å¸¸ã«ã‹ã‹ã‚‰ãªã„ */
+	/* ƒLƒ“ƒOƒXƒOƒŒƒCƒXó‘Ô‚Å‚Í“Á’èˆÙí‚É‚©‚©‚ç‚È‚¢ */
 	if(sc->data[SC_KINGS_GRACE].timer != -1) {
 		if(type >= SC_STONE && type <= SC_BLEED)
 			return 0;
@@ -7190,11 +7190,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				return 0;
 		}
 	}
-	/* ç‰¹å®šMAPã§ã¯ã‚¿ãƒ­ã‚¦ã®å‚·çŠ¶æ…‹ã«ãªã‚‰ãªã„ */
+	/* “Á’èMAP‚Å‚Íƒ^ƒƒE‚Ìó‘Ô‚É‚È‚ç‚È‚¢ */
 	if(type == SC_BITESCAR && !map[bl->m].flag.pvp && !map[bl->m].flag.gvg && !map[bl->m].flag.turbo)
 		return 0;
 
-	if(sc->data[type].timer != -1) {	/* ã™ã§ã«åŒã˜ç•°å¸¸ã«ãªã£ã¦ã„ã‚‹å ´åˆã‚¿ã‚¤ãƒè§£é™¤ */
+	if(sc->data[type].timer != -1) {	/* ‚·‚Å‚É“¯‚¶ˆÙí‚É‚È‚Á‚Ä‚¢‚éê‡ƒ^ƒCƒ}‰ğœ */
 		if(type == SC_ALL_RIDING || type == SC_HAT_EFFECT) {
 			status_change_end(bl,type,-1);
 			return 0;
@@ -7207,9 +7207,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		if((type >= SC_STUN && type <= SC_BLIND) ||
 			type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING || type == SC_ORATIO ||
 			type == SC_FRESHSHRIMP || type == SC_HEAT_BARREL || type == SC_OVERED_BOOST)
-			return 0;	/* ç¶™ãè¶³ã—ãŒã§ããªã„çŠ¶æ…‹ç•°å¸¸ã§ã‚ã‚‹æ™‚ã¯çŠ¶æ…‹ç•°å¸¸ã‚’è¡Œã‚ãªã„ */
+			return 0;	/* Œp‚¬‘«‚µ‚ª‚Å‚«‚È‚¢ó‘ÔˆÙí‚Å‚ ‚é‚Íó‘ÔˆÙí‚ğs‚í‚È‚¢ */
 		if(type == SC_GRAFFITI || type == SC_SEVENWIND || type == SC_SHAPESHIFT || type == SC__AUTOSHADOWSPELL || type == SC_PROPERTYWALK || type == SC_PYROCLASTIC) {
-			// ç•°å¸¸ä¸­ã«ã‚‚ã†ä¸€åº¦çŠ¶æ…‹ç•°å¸¸ã«ãªã£ãŸæ™‚ã«è§£é™¤ã—ã¦ã‹ã‚‰å†åº¦ã‹ã‹ã‚‹
+			// ˆÙí’†‚É‚à‚¤ˆê“xó‘ÔˆÙí‚É‚È‚Á‚½‚É‰ğœ‚µ‚Ä‚©‚çÄ“x‚©‚©‚é
 			status_change_end(bl,type,-1);
 		} else {
 			sc->count--;
@@ -7222,13 +7222,13 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		}
 	}
 
-	switch(type) {	/* ç•°å¸¸ã®ç¨®é¡ã”ã¨ã®å‡¦ç† */
-		case SC_DOUBLE:				/* ãƒ€ãƒ–ãƒ«ã‚¹ãƒˆãƒ¬ã‚¤ãƒ•ã‚£ãƒ³ã‚° */
-		case SC_SUFFRAGIUM:			/* ã‚µãƒ•ãƒ©ã‚®ãƒ  */
-		case SC_MAGNIFICAT:			/* ãƒã‚°ãƒ‹ãƒ•ã‚£ã‚«ãƒ¼ãƒˆ */
-		case SC_AETERNA:			/* ã‚¨ãƒ¼ãƒ†ãƒ«ãƒŠ */
-		case SC_BASILICA:			/* ãƒã‚¸ãƒªã‚« */
-		case SC_TRICKDEAD:			/* æ­»ã‚“ã ãµã‚Š */
+	switch(type) {	/* ˆÙí‚Ìí—Ş‚²‚Æ‚Ìˆ— */
+		case SC_DOUBLE:				/* ƒ_ƒuƒ‹ƒXƒgƒŒƒCƒtƒBƒ“ƒO */
+		case SC_SUFFRAGIUM:			/* ƒTƒtƒ‰ƒMƒ€ */
+		case SC_MAGNIFICAT:			/* ƒ}ƒOƒjƒtƒBƒJ[ƒg */
+		case SC_AETERNA:			/* ƒG[ƒeƒ‹ƒi */
+		case SC_BASILICA:			/* ƒoƒWƒŠƒJ */
+		case SC_TRICKDEAD:			/* €‚ñ‚¾‚Ó‚è */
 		case SC_STRIPWEAPON:
 		case SC_STRIPSHIELD:
 		case SC_STRIPARMOR:
@@ -7237,147 +7237,147 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CP_SHIELD:
 		case SC_CP_ARMOR:
 		case SC_CP_HELM:
-		case SC_DEVOTION:			/* ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³ */
+		case SC_DEVOTION:			/* ƒfƒBƒ{[ƒVƒ‡ƒ“ */
 		case SC_COMBO:
-		case SC_EXTREMITYFIST:			/* é˜¿ä¿®ç¾…è¦‡å‡°æ‹³ */
+		case SC_EXTREMITYFIST:			/* ˆ¢C—…”e™€Œ */
 		case SC_RICHMANKIM:
-		case SC_ROKISWEIL:			/* ãƒ­ã‚­ã®å«ã³ */
-		case SC_INTOABYSS:			/* æ·±æ·µã®ä¸­ã« */
-		case SC_POEMBRAGI:			/* ãƒ–ãƒ©ã‚®ã®è©© */
-		case SC_ANKLE:				/* ã‚¢ãƒ³ã‚¯ãƒ« */
-		case SC_MAGNUM:				/* ãƒã‚°ãƒŠãƒ ãƒ–ãƒ¬ã‚¤ã‚¯ */
-		case SC_TIGERFIST:			/* ä¼è™æ‹³ */
-		case SC_ENERGYCOAT:			/* ã‚¨ãƒŠã‚¸ãƒ¼ã‚³ãƒ¼ãƒˆ */
-		case SC_POEMBRAGI_:			/* ãƒ–ãƒ©ã‚®ã®è©© */
+		case SC_ROKISWEIL:			/* ƒƒL‚Ì‹©‚Ñ */
+		case SC_INTOABYSS:			/* [•£‚Ì’†‚É */
+		case SC_POEMBRAGI:			/* ƒuƒ‰ƒM‚Ì */
+		case SC_ANKLE:				/* ƒAƒ“ƒNƒ‹ */
+		case SC_MAGNUM:				/* ƒ}ƒOƒiƒ€ƒuƒŒƒCƒN */
+		case SC_TIGERFIST:			/* •šŒÕŒ */
+		case SC_ENERGYCOAT:			/* ƒGƒiƒW[ƒR[ƒg */
+		case SC_POEMBRAGI_:			/* ƒuƒ‰ƒM‚Ì */
 		case SC_FOGWALLPENALTY:
 		case SC_FOGWALL:
 		case SC_REVERSEORCISH:
 		case SC_GRAVITATION_USER:
-		case SC_BLADESTOP_WAIT:			/* ç™½åˆƒå–ã‚Š(å¾…ã¡) */
-		case SC_SAFETYWALL:			/* ã‚»ãƒ¼ãƒ•ãƒ†ã‚£ã‚¦ã‚©ãƒ¼ãƒ« */
-		case SC_PNEUMA:				/* ãƒ‹ãƒ¥ãƒ¼ãƒ */
+		case SC_BLADESTOP_WAIT:			/* ”’næ‚è(‘Ò‚¿) */
+		case SC_SAFETYWALL:			/* ƒZ[ƒtƒeƒBƒEƒH[ƒ‹ */
+		case SC_PNEUMA:				/* ƒjƒ…[ƒ} */
 		case SC_KEEPING:
 		case SC_BARRIER:
-		case SC_AURABLADE:			/* ã‚ªãƒ¼ãƒ©ãƒ–ãƒ¬ãƒ¼ãƒ‰ */
-		case SC_HEADCRUSH:			/* ãƒ˜ãƒƒãƒ‰ã‚¯ãƒ©ãƒƒã‚·ãƒ¥ */
-		case SC_MELTDOWN:			/* ãƒ¡ãƒ«ãƒˆãƒ€ã‚¦ãƒ³ */
-		case SC_SPLASHER:			/* ãƒ™ãƒŠãƒ ã‚¹ãƒ—ãƒ©ãƒƒã‚·ãƒ£ãƒ¼ */
-		case SC_GOSPEL:				/* ã‚´ã‚¹ãƒšãƒ« */
-		case SC_STATUS_UNCHANGE:		/* å…¨çŠ¶æ…‹ç•°å¸¸è€æ€§ */
-		case SC_INCDAMAGE:			/* è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸%ä¸Šæ˜‡ */
-		case SC_PRESERVE:			/* ãƒ—ãƒªã‚¶ãƒ¼ãƒ– */
-		case SC_REGENERATION:			/* æ¿€åŠ± */
+		case SC_AURABLADE:			/* ƒI[ƒ‰ƒuƒŒ[ƒh */
+		case SC_HEADCRUSH:			/* ƒwƒbƒhƒNƒ‰ƒbƒVƒ… */
+		case SC_MELTDOWN:			/* ƒƒ‹ƒgƒ_ƒEƒ“ */
+		case SC_SPLASHER:			/* ƒxƒiƒ€ƒXƒvƒ‰ƒbƒVƒƒ[ */
+		case SC_GOSPEL:				/* ƒSƒXƒyƒ‹ */
+		case SC_STATUS_UNCHANGE:		/* ‘Só‘ÔˆÙí‘Ï« */
+		case SC_INCDAMAGE:			/* ”íƒ_ƒ[ƒW%ã¸ */
+		case SC_PRESERVE:			/* ƒvƒŠƒU[ƒu */
+		case SC_REGENERATION:			/* Œƒ—ã */
 		case SC_BATTLEORDER_DELAY:
 		case SC_REGENERATION_DELAY:
 		case SC_RESTORE_DELAY:
 		case SC_EMERGENCYCALL_DELAY:
 		case SC_MEAL_INCEXP:
 		case SC_MEAL_INCJOB:
-		case SC_COMBATHAN:			/* æˆ¦é—˜æ•™ç¯„ */
-		case SC_LIFEINSURANCE:			/* ç”Ÿå‘½ä¿é™ºè¨¼ */
-		case SC_JOB_COMBATHAN:		/* JOBæ•™ç¯„ */
+		case SC_COMBATHAN:			/* í“¬‹³”Í */
+		case SC_LIFEINSURANCE:			/* ¶–½•ÛŒ¯Ø */
+		case SC_JOB_COMBATHAN:		/* JOB‹³”Í */
 		case SC_FORCEWALKING:
-		case SC_TKCOMBO:			/* ãƒ†ã‚³ãƒ³ã‚³ãƒ³ãƒœ */
+		case SC_TKCOMBO:			/* ƒeƒRƒ“ƒRƒ“ƒ{ */
 		case SC_TRIPLEATTACK_RATE_UP:
 		case SC_COUNTER_RATE_UP:
-		case SC_WARM:				/* æ¸©ã‚‚ã‚Š */
-		case SC_KAIZEL:				/* ã‚«ã‚¤ã‚¼ãƒ« */
-		case SC_KAAHI:				/* ã‚«ã‚¢ãƒ’ */
-		case SC_SMA:				/* ã‚¨ã‚¹ãƒ */
-		case SC_MIRACLE:			/* å¤ªé™½ã¨æœˆã¨æ˜Ÿã®å¥‡è·¡ */
-		case SC_ANGEL:				/* å¤ªé™½ã¨æœˆã¨æ˜Ÿã®å¤©ä½¿ */
-		case SC_BABY:				/* ãƒ‘ãƒ‘ã€ãƒãƒã€å¤§å¥½ã */
+		case SC_WARM:				/* ‰·‚à‚è */
+		case SC_KAIZEL:				/* ƒJƒCƒ[ƒ‹ */
+		case SC_KAAHI:				/* ƒJƒAƒq */
+		case SC_SMA:				/* ƒGƒXƒ} */
+		case SC_MIRACLE:			/* ‘¾—z‚ÆŒ‚Æ¯‚ÌŠïÕ */
+		case SC_ANGEL:				/* ‘¾—z‚ÆŒ‚Æ¯‚Ì“Vg */
+		case SC_BABY:				/* ƒpƒpAƒ}ƒ}A‘åD‚« */
 		case SC_DODGE:
 		case SC_DODGE_DELAY:
-		case SC_DOUBLECASTING:			/* ãƒ€ãƒ–ãƒ«ã‚­ãƒ£ã‚¹ãƒ†ã‚£ãƒ³ã‚° */
-		case SC_SHRINK:				/* ã‚·ãƒ¥ãƒªãƒ³ã‚¯ */
+		case SC_DOUBLECASTING:			/* ƒ_ƒuƒ‹ƒLƒƒƒXƒeƒBƒ“ƒO */
+		case SC_SHRINK:				/* ƒVƒ…ƒŠƒ“ƒN */
 		case SC_TIGEREYE:
 		case SC_PK_PENALTY:
 		case SC_HERMODE:
-		case SC_TATAMIGAESHI:			/* ç•³è¿”ã— */
+		case SC_TATAMIGAESHI:			/* ô•Ô‚µ */
 		case SC_NPC_DEFENDER:
-		case SC_SLOWCAST:			/* ã‚¹ãƒ­ã‚¦ã‚­ãƒ£ã‚¹ãƒˆ */
-		case SC_CRITICALWOUND:			/* è‡´å‘½å‚· */
-		case SC_MAGICMIRROR:			/* ãƒã‚¸ãƒƒã‚¯ãƒŸãƒ©ãƒ¼ */
-		case SC_ITEMDROPRATE:			/* ãƒãƒ–ãƒ«ã‚¬ãƒ  */
-		case SC_HAPPY:				/* æ¥½ã—ã„çŠ¶æ…‹ */
-		case SC_NATURAL_HEAL_STOP:		/* è‡ªç„¶å›å¾©åœæ­¢ */
-		case SC_REBIRTH:			/* ãƒªãƒãƒ¼ã‚¹ */
-		case SC_HELLPOWER:			/* ãƒ˜ãƒ«ãƒ‘ãƒ¯ãƒ¼ */
-		case SC_MANU_ATK:			/* ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(ç‰©ç†ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸Šæ˜‡) */
-		case SC_MANU_DEF:			/* ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘) */
-		case SC_MANU_MATK:			/* ãƒãƒŒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(é­”æ³•ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸Šæ˜‡) */
-		case SC_SPL_ATK:			/* ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ†ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(ç‰©ç†ãƒ€ãƒ¡ãƒ¼ã‚¸ä¸Šæ˜‡) */
-		case SC_SPL_DEF:			/* ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ†ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘) */
-		case SC_SPL_MATK:			/* ã‚¹ãƒ—ãƒ¬ãƒ³ãƒ†ã‚£ãƒƒãƒ‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰MOB(é­”æ³•ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘) */
-		case SC_ENCHANTBLADE:		/* ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒ–ãƒ¬ã‚¤ãƒ‰ */
-		case SC_NAUTHIZ:			/* ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ */
-		case SC_ISHA:				/* ãƒã‚¤ã‚¿ãƒªãƒ†ã‚£ã‚¢ã‚¯ãƒ†ã‚£ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_WEAPONBLOCKING2:	/* ã‚¦ã‚§ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼ˆãƒ–ãƒ­ãƒƒã‚¯ï¼‰ */
-		case SC_OFFERTORIUM:		/* ã‚ªãƒ•ã‚§ãƒ«ãƒˆãƒªã‚¦ãƒ  */
-		case SC_WHITEIMPRISON:		/* ãƒ›ãƒ¯ã‚¤ãƒˆã‚¤ãƒ³ãƒ—ãƒªã‚ºãƒ³ */
-		case SC_RECOGNIZEDSPELL:	/* ãƒªã‚´ã‚°ãƒŠã‚¤ã‚ºãƒ‰ã‚¹ãƒšãƒ« */
-		case SC_STASIS:				/* ã‚¹ãƒ†ã‚¤ã‚·ã‚¹ */
-		case SC_SPELLBOOK:			/* ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯ */
-		case SC_WUGBITE:			/* ã‚¦ã‚©ãƒ¼ã‚°ãƒã‚¤ãƒˆ */
-		case SC_HOVERING:			/* ãƒ›ãƒãƒ¼ãƒªãƒ³ã‚° */
-		case SC_STEALTHFIELD:		/* ã‚¹ãƒ†ãƒ«ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ */
-		case SC__DEADLYINFECT:		/* ãƒ‡ãƒƒãƒ‰ãƒªãƒ¼ã‚¤ãƒ³ãƒ•ã‚§ã‚¯ãƒˆ */
-		case SC__IGNORANCE:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¤ã‚°ãƒã‚¢ãƒ©ãƒ³ã‚¹ */
-		case SC__MANHOLE:			/* ãƒãƒ³ãƒ›ãƒ¼ãƒ« */
-		case SC__ESCAPE:			/* ã‚¨ã‚¹ã‚±ãƒ¼ãƒ— */
-		case SC_FALLENEMPIRE:		/* å¤§çºå´©æ¶ */
-		case SC_CRESCENTELBOW:		/* ç ´ç¢æŸ± */
-		case SC_CURSEDCIRCLE_USER:	/* å‘ªç¸›é™£(ä½¿ç”¨è€…) */
-		case SC_CURSEDCIRCLE:		/* å‘ªç¸›é™£ */
-		case SC_LIGHTNINGWALK:		/* é–ƒé›»æ­© */
-		case SC_NETHERWORLD:		/* åœ°ç„ã®æ­Œ */
-		case SC_UNLIMITED_HUMMING_VOICE:	/* ã‚¨ãƒ³ãƒ‰ãƒ¬ã‚¹ãƒãƒŸãƒ³ã‚°ãƒœã‚¤ã‚¹ */
-		case SC_WARMER:				/* ã‚¦ã‚©ãƒ¼ãƒãƒ¼ */
-		case SC_VACUUM_EXTREME:		/* ãƒã‚­ãƒ¥ãƒ¼ãƒ ã‚¨ã‚¯ã‚¹ãƒˆãƒªãƒ¼ãƒ  */
-		case SC_THORNS_TRAP:		/* ã‚½ãƒ¼ãƒ³ãƒˆãƒ©ãƒƒãƒ— */
-		case SC_SPORE_EXPLOSION:	/* ã‚¹ãƒã‚¢ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ã‚¸ãƒ§ãƒ³ */
-		case SC_KG_KAGEHUMI:		/* å¹»è¡“ -å½±è¸ã¿- */
-		case SC_KYOMU:				/* å¹»è¡“ -è™šç„¡ã®å½±- */
-		case SC_AKAITSUKI:			/* å¹»è¡“ -ç´…æœˆ- */
-		case SC_KO_ZENKAI:			/* è¡“å¼ -å±•é–‹- */
-		case SC_KO_JYUMONJIKIRI:	/* åæ–‡å­—æ–¬ã‚Š */
-		case SC_E_CHAIN:			/* ã‚¨ã‚¿ãƒ¼ãƒŠãƒ«ãƒã‚§ãƒ¼ãƒ³ */
-		case SC_QD_SHOT_READY:		/* ã‚¯ã‚¤ãƒƒã‚¯ãƒ‰ãƒ­ãƒ¼ã‚·ãƒ§ãƒƒãƒˆ*/
-		case SC_FALLEN_ANGEL:		/* ãƒ•ã‚©ãƒ¼ãƒªãƒ³ã‚¨ãƒ³ã‚¸ã‚§ãƒ« */
-		case SC_H_MINE:				/* ãƒã‚¦ãƒªãƒ³ã‚°ãƒã‚¤ãƒ³ */
-		case SC_CIRCLE_OF_FIRE:		/* ã‚µãƒ¼ã‚¯ãƒ«ã‚ªãƒ–ãƒ•ã‚¡ã‚¤ã‚¢ */
-		case SC_TIDAL_WEAPON:		/* ã‚¿ã‚¤ãƒ€ãƒ«ã‚¦ã‚§ãƒãƒ³ */
-		case SC_SU_STOOP:			/* ã†ãšãã¾ã‚‹ */
-		case SC_BITESCAR:			/* ã‚¿ãƒ­ã‚¦ã®å‚· */
-		case SC_TUNAPARTY:			/* ãƒã‚°ãƒ­ã‚·ãƒ¼ãƒ«ãƒ‰ */
-		case SC_PROTECTIONOFSHRIMP:	/* ã‚¨ãƒ“ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ */
-		case SC_SPIRITOFLAND:		/* å¤§åœ°ã®é­‚ */
+		case SC_SLOWCAST:			/* ƒXƒƒEƒLƒƒƒXƒg */
+		case SC_CRITICALWOUND:			/* ’v–½ */
+		case SC_MAGICMIRROR:			/* ƒ}ƒWƒbƒNƒ~ƒ‰[ */
+		case SC_ITEMDROPRATE:			/* ƒoƒuƒ‹ƒKƒ€ */
+		case SC_HAPPY:				/* Šy‚µ‚¢ó‘Ô */
+		case SC_NATURAL_HEAL_STOP:		/* ©‘R‰ñ•œ’â~ */
+		case SC_REBIRTH:			/* ƒŠƒo[ƒX */
+		case SC_HELLPOWER:			/* ƒwƒ‹ƒpƒ[ */
+		case SC_MANU_ATK:			/* ƒ}ƒkƒNƒtƒB[ƒ‹ƒhMOB(•¨—ƒ_ƒ[ƒWã¸) */
+		case SC_MANU_DEF:			/* ƒ}ƒkƒNƒtƒB[ƒ‹ƒhMOB(ƒ_ƒ[ƒWŒ¸­) */
+		case SC_MANU_MATK:			/* ƒ}ƒkƒNƒtƒB[ƒ‹ƒhMOB(–‚–@ƒ_ƒ[ƒWã¸) */
+		case SC_SPL_ATK:			/* ƒXƒvƒŒƒ“ƒeƒBƒbƒhƒtƒB[ƒ‹ƒhMOB(•¨—ƒ_ƒ[ƒWã¸) */
+		case SC_SPL_DEF:			/* ƒXƒvƒŒƒ“ƒeƒBƒbƒhƒtƒB[ƒ‹ƒhMOB(ƒ_ƒ[ƒWŒ¸­) */
+		case SC_SPL_MATK:			/* ƒXƒvƒŒƒ“ƒeƒBƒbƒhƒtƒB[ƒ‹ƒhMOB(–‚–@ƒ_ƒ[ƒWŒ¸­) */
+		case SC_ENCHANTBLADE:		/* ƒGƒ“ƒ`ƒƒƒ“ƒgƒuƒŒƒCƒh */
+		case SC_NAUTHIZ:			/* ƒŠƒtƒŒƒbƒVƒ… */
+		case SC_ISHA:				/* ƒoƒCƒ^ƒŠƒeƒBƒAƒNƒeƒBƒx[ƒVƒ‡ƒ“ */
+		case SC_WEAPONBLOCKING2:	/* ƒEƒFƒ|ƒ“ƒuƒƒbƒLƒ“ƒOiƒuƒƒbƒNj */
+		case SC_OFFERTORIUM:		/* ƒIƒtƒFƒ‹ƒgƒŠƒEƒ€ */
+		case SC_WHITEIMPRISON:		/* ƒzƒƒCƒgƒCƒ“ƒvƒŠƒYƒ“ */
+		case SC_RECOGNIZEDSPELL:	/* ƒŠƒSƒOƒiƒCƒYƒhƒXƒyƒ‹ */
+		case SC_STASIS:				/* ƒXƒeƒCƒVƒX */
+		case SC_SPELLBOOK:			/* ƒXƒyƒ‹ƒuƒbƒN */
+		case SC_WUGBITE:			/* ƒEƒH[ƒOƒoƒCƒg */
+		case SC_HOVERING:			/* ƒzƒo[ƒŠƒ“ƒO */
+		case SC_STEALTHFIELD:		/* ƒXƒeƒ‹ƒXƒtƒB[ƒ‹ƒh */
+		case SC__DEADLYINFECT:		/* ƒfƒbƒhƒŠ[ƒCƒ“ƒtƒFƒNƒg */
+		case SC__IGNORANCE:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒCƒOƒmƒAƒ‰ƒ“ƒX */
+		case SC__MANHOLE:			/* ƒ}ƒ“ƒz[ƒ‹ */
+		case SC__ESCAPE:			/* ƒGƒXƒP[ƒv */
+		case SC_FALLENEMPIRE:		/* ‘å“Z•öx */
+		case SC_CRESCENTELBOW:		/* ”jáê’Œ */
+		case SC_CURSEDCIRCLE_USER:	/* ô”›w(g—pÒ) */
+		case SC_CURSEDCIRCLE:		/* ô”›w */
+		case SC_LIGHTNINGWALK:		/* ‘M“d•à */
+		case SC_NETHERWORLD:		/* ’n–‚Ì‰Ì */
+		case SC_UNLIMITED_HUMMING_VOICE:	/* ƒGƒ“ƒhƒŒƒXƒnƒ~ƒ“ƒOƒ{ƒCƒX */
+		case SC_WARMER:				/* ƒEƒH[ƒ}[ */
+		case SC_VACUUM_EXTREME:		/* ƒoƒLƒ…[ƒ€ƒGƒNƒXƒgƒŠ[ƒ€ */
+		case SC_THORNS_TRAP:		/* ƒ\[ƒ“ƒgƒ‰ƒbƒv */
+		case SC_SPORE_EXPLOSION:	/* ƒXƒ|ƒAƒGƒNƒXƒvƒ[ƒWƒ‡ƒ“ */
+		case SC_KG_KAGEHUMI:		/* Œ¶p -‰e“¥‚İ- */
+		case SC_KYOMU:				/* Œ¶p -‹•–³‚Ì‰e- */
+		case SC_AKAITSUKI:			/* Œ¶p -gŒ- */
+		case SC_KO_ZENKAI:			/* p® -“WŠJ- */
+		case SC_KO_JYUMONJIKIRI:	/* \•¶ša‚è */
+		case SC_E_CHAIN:			/* ƒGƒ^[ƒiƒ‹ƒ`ƒF[ƒ“ */
+		case SC_QD_SHOT_READY:		/* ƒNƒCƒbƒNƒhƒ[ƒVƒ‡ƒbƒg*/
+		case SC_FALLEN_ANGEL:		/* ƒtƒH[ƒŠƒ“ƒGƒ“ƒWƒFƒ‹ */
+		case SC_H_MINE:				/* ƒnƒEƒŠƒ“ƒOƒ}ƒCƒ“ */
+		case SC_CIRCLE_OF_FIRE:		/* ƒT[ƒNƒ‹ƒIƒuƒtƒ@ƒCƒA */
+		case SC_TIDAL_WEAPON:		/* ƒ^ƒCƒ_ƒ‹ƒEƒFƒ|ƒ“ */
+		case SC_SU_STOOP:			/* ‚¤‚¸‚­‚Ü‚é */
+		case SC_BITESCAR:			/* ƒ^ƒƒE‚Ì */
+		case SC_TUNAPARTY:			/* ƒ}ƒOƒƒV[ƒ‹ƒh */
+		case SC_PROTECTIONOFSHRIMP:	/* ƒGƒrƒp[ƒeƒB[ */
+		case SC_SPIRITOFLAND:		/* ‘å’n‚Ì° */
 		case SC_JP_EVENT01:
 		case SC_JP_EVENT02:
 		case SC_JP_EVENT03:
 		case SC_JP_EVENT04:
 		case SC_SUPPORT_EXP:
 		case SC_RAID:
-		case SC_STYLE_CHANGE:		/* ã‚¹ã‚¿ã‚¤ãƒ«ãƒã‚§ãƒ³ã‚¸ */
-		case SC_PHI_DEMON:			/* å¤ä»£ç²¾éœŠã®ãŠå®ˆã‚Š */
-		case SC_MAXPAIN:			/* ãƒãƒƒã‚¯ã‚¹ãƒšã‚¤ãƒ³ */
-		case SC_IMMUNE_PROPERTY_NOTHING:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«) */
-		case SC_IMMUNE_PROPERTY_WATER:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ã‚¦ã‚©ãƒ¼ã‚¿) */
-		case SC_IMMUNE_PROPERTY_GROUND:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ã‚¢ãƒ¼ã‚¹) */
-		case SC_IMMUNE_PROPERTY_FIRE:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ãƒ•ã‚¡ã‚¤ã‚¢) */
-		case SC_IMMUNE_PROPERTY_WIND	:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ã‚¦ã‚¤ãƒ³ãƒ‰) */
-		case SC_IMMUNE_PROPERTY_DARKNESS:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ãƒ€ãƒ¼ã‚¯) */
-		case SC_IMMUNE_PROPERTY_SAINT:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ãƒ›ãƒ¼ãƒªãƒ¼) */
-		case SC_IMMUNE_PROPERTY_POISON:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ãƒã‚¤ã‚ºãƒ³) */
-		case SC_IMMUNE_PROPERTY_TELEKINESIS:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ã‚´ãƒ¼ã‚¹ãƒˆ) */
-		case SC_IMMUNE_PROPERTY_UNDEAD:	/* ã‚¤ãƒŸãƒ¥ãƒ¼ãƒ³ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(ã‚¢ãƒ³ãƒ‡ãƒƒãƒˆ) */
-		case SC_PC_STOP:		/* ç§»å‹•ä¸å¯ */
+		case SC_STYLE_CHANGE:		/* ƒXƒ^ƒCƒ‹ƒ`ƒFƒ“ƒW */
+		case SC_PHI_DEMON:			/* ŒÃ‘ã¸—ì‚Ì‚¨ç‚è */
+		case SC_MAXPAIN:			/* ƒ}ƒbƒNƒXƒyƒCƒ“ */
+		case SC_IMMUNE_PROPERTY_NOTHING:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒjƒ…[ƒgƒ‰ƒ‹) */
+		case SC_IMMUNE_PROPERTY_WATER:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒEƒH[ƒ^) */
+		case SC_IMMUNE_PROPERTY_GROUND:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒA[ƒX) */
+		case SC_IMMUNE_PROPERTY_FIRE:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒtƒ@ƒCƒA) */
+		case SC_IMMUNE_PROPERTY_WIND	:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒEƒCƒ“ƒh) */
+		case SC_IMMUNE_PROPERTY_DARKNESS:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒ_[ƒN) */
+		case SC_IMMUNE_PROPERTY_SAINT:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒz[ƒŠ[) */
+		case SC_IMMUNE_PROPERTY_POISON:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒ|ƒCƒYƒ“) */
+		case SC_IMMUNE_PROPERTY_TELEKINESIS:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒS[ƒXƒg) */
+		case SC_IMMUNE_PROPERTY_UNDEAD:	/* ƒCƒ~ƒ…[ƒ“ƒvƒƒpƒeƒB(ƒAƒ“ƒfƒbƒg) */
+		case SC_PC_STOP:		/* ˆÚ“®•s‰Â */
 			break;
 
-		case SC_CONCENTRATE:			/* é›†ä¸­åŠ›å‘ä¸Š */
-		case SC_BLESSING:			/* ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚° */
-		case SC_ANGELUS:			/* ã‚¢ãƒ³ã‚¼ãƒ«ã‚¹ */
+		case SC_CONCENTRATE:			/* W’†—ÍŒüã */
+		case SC_BLESSING:			/* ƒuƒŒƒbƒVƒ“ƒO */
+		case SC_ANGELUS:			/* ƒAƒ“ƒ[ƒ‹ƒX */
 		case SC_RESISTWATER:
 		case SC_RESISTGROUND:
 		case SC_RESISTFIRE:
@@ -7388,53 +7388,53 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_RESISTTELEKINESIS:
 		case SC_RESISTUNDEAD:
 		case SC_RESISTALL:
-		case SC_IMPOSITIO:			/* ã‚¤ãƒ³ãƒã‚·ãƒ†ã‚£ã‚ªãƒãƒŒã‚¹ */
-		case SC_GLORIA:				/* ã‚°ãƒ­ãƒªã‚¢ */
-		case SC_LOUD:				/* ãƒ©ã‚¦ãƒ‰ãƒœã‚¤ã‚¹ */
-		case SC_MINDBREAKER:			/* ãƒã‚¤ãƒ³ãƒ‰ãƒ–ãƒ¬ãƒ¼ã‚«ãƒ¼ */
-		case SC_ETERNALCHAOS:			/* ã‚¨ã‚¿ãƒ¼ãƒŠãƒ«ã‚«ã‚ªã‚¹ */
-		case SC_WHISTLE:			/* å£ç¬› */
-		case SC_ASSNCROS:			/* å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹ */
-		case SC_APPLEIDUN:			/* ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª */
+		case SC_IMPOSITIO:			/* ƒCƒ“ƒ|ƒVƒeƒBƒIƒ}ƒkƒX */
+		case SC_GLORIA:				/* ƒOƒƒŠƒA */
+		case SC_LOUD:				/* ƒ‰ƒEƒhƒ{ƒCƒX */
+		case SC_MINDBREAKER:			/* ƒ}ƒCƒ“ƒhƒuƒŒ[ƒJ[ */
+		case SC_ETERNALCHAOS:			/* ƒGƒ^[ƒiƒ‹ƒJƒIƒX */
+		case SC_WHISTLE:			/* Œû“J */
+		case SC_ASSNCROS:			/* —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX */
+		case SC_APPLEIDUN:			/* ƒCƒhƒDƒ“‚Ì—ÑŒç */
 		case SC_SANTA:
 		case SC_SUMMER:
-		case SC_TRUESIGHT:			/* ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ */
-		case SC_SPIDERWEB:			/* ã‚¹ãƒ‘ã‚¤ãƒ€ãƒ¼ã‚¦ã‚§ãƒƒãƒ– */
-		case SC_CONCENTRATION:			/* ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_MARIONETTE:			/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
-		case SC_MARIONETTE2:			/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
-		case SC_WEDDING:			/* çµå©šç”¨(çµå©šè¡£è£³ã«ãªã£ã¦æ­©ãã®ãŒé…ã„ã¨ã‹) */
-		case SC_HUMMING:			/* ãƒãƒŸãƒ³ã‚° */
-		case SC_FORTUNE:			/* å¹¸é‹ã®ã‚­ã‚¹ */
-		case SC_SERVICE4U:			/* ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼ */
-		case SC_WHISTLE_:			/* å£ç¬› */
-		case SC_ASSNCROS_:			/* å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹ */
-		case SC_APPLEIDUN_:			/* ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª */
-		case SC_HUMMING_:			/* ãƒãƒŸãƒ³ã‚° */
-		case SC_DONTFORGETME_:			/* ç§ã‚’å¿˜ã‚Œãªã„ã§ */
-		case SC_FORTUNE_:			/* å¹¸é‹ã®ã‚­ã‚¹ */
-		case SC_SERVICE4U_:			/* ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼ */
-		case SC_INCATK:				/* ATKä¸Šæ˜‡ (ç¥é…’ç”¨) */
-		case SC_INCMATK:			/* MATKä¸Šæ˜‡ (ç¥ç§˜ã®è‰ç”¨) */
-		case SC_INCHIT:				/* HITä¸Šæ˜‡ */
-		case SC_INCMHP2:			/* MHP%ä¸Šæ˜‡ */
-		case SC_INCMSP2:			/* MSP%ä¸Šæ˜‡ */
-		case SC_INCATK2:			/* ATK%ä¸Šæ˜‡ */
-		case SC_INCHIT2:			/* HIT%ä¸Šæ˜‡ */
-		case SC_INCFLEE2:			/* FLEE%ä¸Šæ˜‡ */
-		case SC_INCALLSTATUS:			/* å…¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ï¼‹20 */
-		case SC_CHASEWALK_STR:			/* STRä¸Šæ˜‡ */
-		case SC_BATTLEORDER:			/* è‡¨æˆ¦æ…‹å‹¢ */
+		case SC_TRUESIGHT:			/* ƒgƒDƒ‹[ƒTƒCƒg */
+		case SC_SPIDERWEB:			/* ƒXƒpƒCƒ_[ƒEƒFƒbƒu */
+		case SC_CONCENTRATION:			/* ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“ */
+		case SC_MARIONETTE:			/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
+		case SC_MARIONETTE2:			/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
+		case SC_WEDDING:			/* Œ‹¥—p(Œ‹¥ˆßÖ‚É‚È‚Á‚Ä•à‚­‚Ì‚ª’x‚¢‚Æ‚©) */
+		case SC_HUMMING:			/* ƒnƒ~ƒ“ƒO */
+		case SC_FORTUNE:			/* K‰^‚ÌƒLƒX */
+		case SC_SERVICE4U:			/* ƒT[ƒrƒXƒtƒH[ƒ†[ */
+		case SC_WHISTLE_:			/* Œû“J */
+		case SC_ASSNCROS_:			/* —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX */
+		case SC_APPLEIDUN_:			/* ƒCƒhƒDƒ“‚Ì—ÑŒç */
+		case SC_HUMMING_:			/* ƒnƒ~ƒ“ƒO */
+		case SC_DONTFORGETME_:			/* „‚ğ–Y‚ê‚È‚¢‚Å */
+		case SC_FORTUNE_:			/* K‰^‚ÌƒLƒX */
+		case SC_SERVICE4U_:			/* ƒT[ƒrƒXƒtƒH[ƒ†[ */
+		case SC_INCATK:				/* ATKã¸ (_ğ—p) */
+		case SC_INCMATK:			/* MATKã¸ (_”é‚Ì‘—p) */
+		case SC_INCHIT:				/* HITã¸ */
+		case SC_INCMHP2:			/* MHP%ã¸ */
+		case SC_INCMSP2:			/* MSP%ã¸ */
+		case SC_INCATK2:			/* ATK%ã¸ */
+		case SC_INCHIT2:			/* HIT%ã¸ */
+		case SC_INCFLEE2:			/* FLEE%ã¸ */
+		case SC_INCALLSTATUS:			/* ‘SƒXƒe[ƒ^ƒX{20 */
+		case SC_CHASEWALK_STR:			/* STRã¸ */
+		case SC_BATTLEORDER:			/* —Õí‘Ô¨ */
 		case SC_THE_MAGICIAN:
 		case SC_STRENGTH:
 		case SC_THE_DEVIL:
 		case SC_THE_SUN:
-		case SC_SPURT:				/* é§†ã‘è¶³ç”¨STR */
-		case SC_SUN_COMFORT:			/* å¤ªé™½ã®å®‰æ¥½ */
-		case SC_MOON_COMFORT:			/* æœˆã®å®‰æ¥½ */
-		case SC_STAR_COMFORT:			/* æ˜Ÿã®å®‰æ¥½ */
-		case SC_FUSION:				/* å¤ªé™½ã¨æœˆã¨æ˜Ÿã®èåˆ */
-		case SC_MEAL_INCHIT:	// é£Ÿäº‹ç”¨
+		case SC_SPURT:				/* ‹ì‚¯‘«—pSTR */
+		case SC_SUN_COMFORT:			/* ‘¾—z‚ÌˆÀŠy */
+		case SC_MOON_COMFORT:			/* Œ‚ÌˆÀŠy */
+		case SC_STAR_COMFORT:			/* ¯‚ÌˆÀŠy */
+		case SC_FUSION:				/* ‘¾—z‚ÆŒ‚Æ¯‚Ì—Z‡ */
+		case SC_MEAL_INCHIT:	// H–—p
 		case SC_MEAL_INCFLEE:
 		case SC_MEAL_INCFLEE2:
 		case SC_MEAL_INCCRITICAL:
@@ -7442,138 +7442,138 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_MEAL_INCMDEF:
 		case SC_MEAL_INCATK:
 		case SC_MEAL_INCMATK:
-		case SC_SKE:				/* ã‚¨ã‚¹ã‚¯ */
-		case SC_SKA:				/* ã‚¨ã‚¹ã‚« */
-		case SC_CLOSECONFINE:			/* ã‚¯ãƒ­ãƒ¼ã‚ºã‚³ãƒ³ãƒ•ã‚¡ã‚¤ãƒ³ */
-		case SC_STOP:				/* ãƒ›ãƒ¼ãƒ«ãƒ‰ã‚¦ã‚§ãƒ– */
-		case SC_DISARM:				/* ãƒ‡ã‚£ã‚¹ã‚¢ãƒ¼ãƒ  */
-		case SC_FLING:				/* ãƒ•ãƒ©ã‚¤ãƒ³ã‚° */
-		case SC_MADNESSCANCEL:			/* ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼ */
-		case SC_ADJUSTMENT:			/* ã‚¢ã‚¸ãƒ£ã‚¹ãƒˆãƒ¡ãƒ³ãƒˆ */
-		case SC_INCREASING:			/* ã‚¤ãƒ³ã‚¯ãƒªãƒ¼ã‚¸ãƒ³ã‚°ã‚¢ã‚­ãƒ¥ã‚¢ãƒ©ã‚·ãƒ¼ */
-		case SC_FULLBUSTER:			/* ãƒ•ãƒ«ãƒã‚¹ã‚¿ãƒ¼ */
-		case SC_NEN:				/* å¿µ */
-		case SC_AVOID:				/* ç·Šæ€¥å›é¿ */
-		case SC_CHANGE:				/* ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸ */
-		case SC_DEFENCE:			/* ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ã‚¹ */
-		case SC_BLOODLUST:			/* ãƒ–ãƒ©ãƒƒãƒ‰ãƒ©ã‚¹ãƒˆ */
-		case SC_FLEET:				/* ãƒ•ãƒªãƒ¼ãƒˆãƒ ãƒ¼ãƒ– */
-		case SC_SPEED:				/* ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ã‚¹ãƒ”ãƒ¼ãƒ‰ */
-		case SC_STONESKIN:			/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚¹ã‚­ãƒ³ */
-		case SC_ANTIMAGIC:			/* ã‚¢ãƒ³ãƒãƒã‚¸ãƒƒã‚¯ */
-		case SC_WEAPONQUICKEN:			/* ã‚¦ã‚§ãƒãƒ³ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
-		case SC_WE_FEMALE:			/* ã‚ãªãŸã«å°½ãã—ã¾ã™ */
-		case SC_TURISUSS:			/* ã‚¸ãƒ£ã‚¤ã‚¢ãƒ³ãƒˆã‚°ãƒ­ãƒ¼ã‚¹ */
-		case SC_HALLUCINATIONWALK2:	/* ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯(ãƒšãƒŠãƒ«ãƒ†ã‚£) */
-		case SC_INFRAREDSCAN:		/* ã‚¤ãƒ³ãƒ•ãƒ©ãƒ¬ãƒƒãƒ‰ã‚¹ã‚­ãƒ£ãƒ³ */
-		case SC_ANALYZE:			/* ã‚¢ãƒŠãƒ©ã‚¤ã‚º */
-		case SC_NEUTRALBARRIER:		/* ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼ */
-		case SC__BODYPAINT:			/* ãƒœãƒ‡ã‚£ãƒšã‚¤ãƒ³ãƒ†ã‚£ãƒ³ã‚° */
-		case SC__ENERVATION:		/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC__UNLUCKY:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¢ãƒ³ãƒ©ãƒƒã‚­ãƒ¼ */
-		case SC__WEAKNESS:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¦ã‚£ãƒ¼ã‚¯ãƒã‚¹ */
-		case SC__STRIPACCESSARY:	/* ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼ */
-		case SC__BLOODYLUST:		/* ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒ©ã‚¹ãƒˆ */
-		case SC_EARTHDRIVE:			/* ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ– */
-		case SC_HARMONIZE:			/* ãƒãƒ¼ãƒ¢ãƒŠã‚¤ã‚º */
-		case SC_GLOOMYDAY:			/* ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼ */
-		case SC_LERADS_DEW:			/* ãƒ¬ãƒ¼ãƒ©ã‚ºã®éœ² */
-		case SC_DANCE_WITH_WUG:		/* ãƒ€ãƒ³ã‚¹ã‚¦ã‚£ã‚ºã‚¦ã‚©ãƒ¼ã‚° */
-		case SC_ILLUSIONDOPING:		/* ã‚¤ãƒªãƒ¥ãƒ¼ã‚¸ãƒ§ãƒ³ãƒ‰ãƒ¼ãƒ”ãƒ³ã‚° */
-		case SC_NYANGGRASS:			/* ãƒ‹ãƒ£ãƒ³ã‚°ãƒ©ã‚¹ */
-		case SC_MYSTERIOUS_POWDER:	/* ä¸æ€è­°ãªç²‰ */
-		case SC_BOOST500:			/* ãƒ–ãƒ¼ã‚¹ãƒˆ500 */
-		case SC_FULL_SWING_K:		/* ãƒ•ãƒ«ã‚¹ã‚¤ãƒ³ã‚°K */
-		case SC_MANA_PLUS:			/* ãƒãƒŠãƒ—ãƒ©ã‚¹ */
-		case SC_MUSTLE_M:			/* ãƒãƒƒã‚¹ãƒ«M */
-		case SC_LIFE_FORCE_F:		/* ãƒ©ã‚¤ãƒ•ãƒ•ã‚©ãƒ¼ã‚¹F */
-		case SC_PROMOTE_HEALTH_RESERCH:	/* HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_ENERGY_DRINK_RESERCH:	/* SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_EXTRACT_WHITE_POTION_Z:	/* æ¿ƒç¸®ãƒ›ãƒ¯ã‚¤ãƒˆãƒãƒ¼ã‚·ãƒ§ãƒ³Z */
-		case SC_VITATA_500:			/* ãƒ“ã‚¿ã‚¿500 */
-		case SC_EXTRACT_SALAMINE_JUICE:	/* æ¿ƒç¸®ã‚µãƒ©ãƒã‚¤ãƒ³ã‚¸ãƒ¥ãƒ¼ã‚¹ */
-		case SC_SAVAGE_STEAK:		/* ã‚µãƒ™ãƒ¼ã‚¸ã®ä¸¸ç„¼ã */
-		case SC_COCKTAIL_WARG_BLOOD:	/* ã‚«ã‚¯ãƒ†ãƒ«ã‚¦ã‚©ãƒ¼ã‚°ãƒ–ãƒ©ãƒƒãƒ‰ */
-		case SC_MINOR_BBQ:			/* ãƒŸãƒã‚¿ã‚¦ãƒ­ã‚¹ã®ç‰›ã‚«ãƒ«ãƒ“ */
-		case SC_SIROMA_ICE_TEA:		/* ã‚·ãƒ­ãƒã‚¢ã‚¤ã‚¹ãƒ†ã‚£ãƒ¼ */
-		case SC_DROCERA_HERB_STEAMED:	/* ãƒ‰ãƒ­ã‚»ãƒ©ã®ãƒãƒ¼ãƒ–ç…® */
-		case SC_PUTTI_TAILS_NOODLES:	/* ãƒ—ãƒ†ã‚£ãƒƒãƒˆã®ã—ã£ã½éºº */
-		case SC_STOMACHACHE:		/* è…¹ç—› */
-		case SC_ODINS_POWER:		/* ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ› */
-		case SC_ZEPHYR:				/* ã‚¼ãƒ•ã‚¡ãƒ¼ */
-		case SC_INVINCIBLE:			/* ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ« */
-		case SC_INVINCIBLEOFF:		/* ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ«ã‚ªãƒ• */
+		case SC_SKE:				/* ƒGƒXƒN */
+		case SC_SKA:				/* ƒGƒXƒJ */
+		case SC_CLOSECONFINE:			/* ƒNƒ[ƒYƒRƒ“ƒtƒ@ƒCƒ“ */
+		case SC_STOP:				/* ƒz[ƒ‹ƒhƒEƒFƒu */
+		case SC_DISARM:				/* ƒfƒBƒXƒA[ƒ€ */
+		case SC_FLING:				/* ƒtƒ‰ƒCƒ“ƒO */
+		case SC_MADNESSCANCEL:			/* ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[ */
+		case SC_ADJUSTMENT:			/* ƒAƒWƒƒƒXƒgƒƒ“ƒg */
+		case SC_INCREASING:			/* ƒCƒ“ƒNƒŠ[ƒWƒ“ƒOƒAƒLƒ…ƒAƒ‰ƒV[ */
+		case SC_FULLBUSTER:			/* ƒtƒ‹ƒoƒXƒ^[ */
+		case SC_NEN:				/* ”O */
+		case SC_AVOID:				/* ‹Ù‹}‰ñ”ğ */
+		case SC_CHANGE:				/* ƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW */
+		case SC_DEFENCE:			/* ƒfƒBƒtƒFƒ“ƒX */
+		case SC_BLOODLUST:			/* ƒuƒ‰ƒbƒhƒ‰ƒXƒg */
+		case SC_FLEET:				/* ƒtƒŠ[ƒgƒ€[ƒu */
+		case SC_SPEED:				/* ƒI[ƒo[ƒhƒXƒs[ƒh */
+		case SC_STONESKIN:			/* ƒXƒg[ƒ“ƒXƒLƒ“ */
+		case SC_ANTIMAGIC:			/* ƒAƒ“ƒ`ƒ}ƒWƒbƒN */
+		case SC_WEAPONQUICKEN:			/* ƒEƒFƒ|ƒ“ƒNƒCƒbƒPƒ“ */
+		case SC_WE_FEMALE:			/* ‚ ‚È‚½‚És‚­‚µ‚Ü‚· */
+		case SC_TURISUSS:			/* ƒWƒƒƒCƒAƒ“ƒgƒOƒ[ƒX */
+		case SC_HALLUCINATIONWALK2:	/* ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN(ƒyƒiƒ‹ƒeƒB) */
+		case SC_INFRAREDSCAN:		/* ƒCƒ“ƒtƒ‰ƒŒƒbƒhƒXƒLƒƒƒ“ */
+		case SC_ANALYZE:			/* ƒAƒiƒ‰ƒCƒY */
+		case SC_NEUTRALBARRIER:		/* ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[ */
+		case SC__BODYPAINT:			/* ƒ{ƒfƒBƒyƒCƒ“ƒeƒBƒ“ƒO */
+		case SC__ENERVATION:		/* ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“ */
+		case SC__UNLUCKY:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒAƒ“ƒ‰ƒbƒL[ */
+		case SC__WEAKNESS:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒEƒB[ƒNƒlƒX */
+		case SC__STRIPACCESSARY:	/* ƒXƒgƒŠƒbƒvƒAƒNƒZƒTƒŠ[ */
+		case SC__BLOODYLUST:		/* ƒuƒ‰ƒbƒfƒBƒ‰ƒXƒg */
+		case SC_EARTHDRIVE:			/* ƒA[ƒXƒhƒ‰ƒCƒu */
+		case SC_HARMONIZE:			/* ƒn[ƒ‚ƒiƒCƒY */
+		case SC_GLOOMYDAY:			/* ƒƒ‰ƒ“ƒRƒŠ[ */
+		case SC_LERADS_DEW:			/* ƒŒ[ƒ‰ƒY‚Ì˜I */
+		case SC_DANCE_WITH_WUG:		/* ƒ_ƒ“ƒXƒEƒBƒYƒEƒH[ƒO */
+		case SC_ILLUSIONDOPING:		/* ƒCƒŠƒ…[ƒWƒ‡ƒ“ƒh[ƒsƒ“ƒO */
+		case SC_NYANGGRASS:			/* ƒjƒƒƒ“ƒOƒ‰ƒX */
+		case SC_MYSTERIOUS_POWDER:	/* •sv‹c‚È•² */
+		case SC_BOOST500:			/* ƒu[ƒXƒg500 */
+		case SC_FULL_SWING_K:		/* ƒtƒ‹ƒXƒCƒ“ƒOK */
+		case SC_MANA_PLUS:			/* ƒ}ƒiƒvƒ‰ƒX */
+		case SC_MUSTLE_M:			/* ƒ}ƒbƒXƒ‹M */
+		case SC_LIFE_FORCE_F:		/* ƒ‰ƒCƒtƒtƒH[ƒXF */
+		case SC_PROMOTE_HEALTH_RESERCH:	/* HP‘‰Áƒ|[ƒVƒ‡ƒ“ */
+		case SC_ENERGY_DRINK_RESERCH:	/* SP‘‰Áƒ|[ƒVƒ‡ƒ“ */
+		case SC_EXTRACT_WHITE_POTION_Z:	/* ”ZkƒzƒƒCƒgƒ|[ƒVƒ‡ƒ“Z */
+		case SC_VITATA_500:			/* ƒrƒ^ƒ^500 */
+		case SC_EXTRACT_SALAMINE_JUICE:	/* ”ZkƒTƒ‰ƒ}ƒCƒ“ƒWƒ…[ƒX */
+		case SC_SAVAGE_STEAK:		/* ƒTƒx[ƒW‚ÌŠÛÄ‚« */
+		case SC_COCKTAIL_WARG_BLOOD:	/* ƒJƒNƒeƒ‹ƒEƒH[ƒOƒuƒ‰ƒbƒh */
+		case SC_MINOR_BBQ:			/* ƒ~ƒmƒ^ƒEƒƒX‚Ì‹ƒJƒ‹ƒr */
+		case SC_SIROMA_ICE_TEA:		/* ƒVƒƒ}ƒAƒCƒXƒeƒB[ */
+		case SC_DROCERA_HERB_STEAMED:	/* ƒhƒƒZƒ‰‚Ìƒn[ƒuÏ */
+		case SC_PUTTI_TAILS_NOODLES:	/* ƒvƒeƒBƒbƒg‚Ì‚µ‚Á‚Û–Ë */
+		case SC_STOMACHACHE:		/* • ’É */
+		case SC_ODINS_POWER:		/* ƒI[ƒfƒBƒ“‚Ì—Í */
+		case SC_ZEPHYR:				/* ƒ[ƒtƒ@[ */
+		case SC_INVINCIBLE:			/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ */
+		case SC_INVINCIBLEOFF:		/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ƒIƒt */
 		case SC_ATKPOTION:
 		case SC_MATKPOTION:
 		case SC_ALMIGHTY:
 		case SC_SUPPORT_HPSP:
-		case SC_TINDER_BREAKER:		/* æ•ç² */
-		case SC_ALL_STAT_DOWN:	/* ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³ */
+		case SC_TINDER_BREAKER:		/* •ßŠl */
+		case SC_ALL_STAT_DOWN:	/* ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“ */
 			calc_flag = 1;
 			break;
 
-		case SC_MONSTER_TRANSFORM:	/* ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº« */
-			icon_val1 = val1;	// val1ã¯ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ID
+		case SC_MONSTER_TRANSFORM:	/* ƒ‚ƒ“ƒXƒ^[•Ïg */
+			icon_val1 = val1;	// val1‚Íƒ‚ƒ“ƒXƒ^[ID
 			calc_flag = 1;
 			break;
-		case SC_ALL_RIDING:			/* é¨ä¹—ã‚·ã‚¹ãƒ†ãƒ  */
+		case SC_ALL_RIDING:			/* ‹RæƒVƒXƒeƒ€ */
 			if(sd) {
-				// æ—¢ã«æ—¢å­˜ã®ä¹—ã‚Šç‰©ã«æ­ä¹—ä¸­ã§ã‚ã‚‹å ´åˆã¯ä½•ã‚‚ã—ãªã„
+				// Šù‚ÉŠù‘¶‚Ìæ‚è•¨‚É“‹æ’†‚Å‚ ‚éê‡‚Í‰½‚à‚µ‚È‚¢
 				if(pc_isriding(sd) || pc_isdragon(sd) || pc_iswolfmount(sd) || pc_isgear(sd))
 					return 0;
-				icon_val1 = 1;	// val1ã¯1
-				icon_val2 = 25;	// val2ã¯25(ç§»å‹•é€Ÿåº¦å‘ä¸Š)
+				icon_val1 = 1;	// val1‚Í1
+				icon_val2 = 25;	// val2‚Í25(ˆÚ“®‘¬“xŒüã)
 				clif_status_load_id(sd,SI_RIDING,1);
 			}
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_KYOUGAKU:			/* å¹»è¡“ -é©šæ„•- */
+		case SC_KYOUGAKU:			/* Œ¶p -‹Áœ±- */
 			icon_val1 = 1002;
 			calc_flag = 1;
 			break;
-		case SC_HAT_EFFECT:			/* é ­è£…å‚™ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ */
+		case SC_HAT_EFFECT:			/* “ª‘•”õƒGƒtƒFƒNƒg */
 			icon_val1 = val1;
 			break;
-		case SC_ACTIVE_MONSTER_TRANSFORM:	/* ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº« */
-			icon_val1 = val1;	// val1ã¯ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ID
+		case SC_ACTIVE_MONSTER_TRANSFORM:	/* ƒAƒNƒeƒBƒuƒ‚ƒ“ƒXƒ^[•Ïg */
+			icon_val1 = val1;	// val1‚Íƒ‚ƒ“ƒXƒ^[ID
 			break;
 
-		case SC_SPEEDUP0:			/* ç§»å‹•é€Ÿåº¦å¢—åŠ (ã‚¢ã‚¤ãƒ†ãƒ ) */
-		case SC_SPEEDUP1:			/* ã‚¹ãƒ”ãƒ¼ãƒ‰ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_WALKSPEED:			/* ç§»å‹•é€Ÿåº¦å¢—åŠ (ã‚¹ã‚¯ãƒªãƒ—ãƒˆ) */
-		case SC_SLOWPOTION:			/* ç§»å‹•é€Ÿåº¦ä½ä¸‹(ã‚¢ã‚¤ãƒ†ãƒ ) */
-		case SC_STEELBODY:			/* é‡‘å‰› */
-		case SC_INCFLEE:			/* FLEEä¸Šæ˜‡ */
-		case SC_GRAVITATION:			/* ã‚°ãƒ©ãƒ“ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ */
-		case SC_SUITON:				/* æ°´é */
-		case SC_GATLINGFEVER:			/* ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼ */
-		case SC_HALLUCINATIONWALK:	/* ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯ */
-		case SC_PARALIZE:			/* ãƒ‘ãƒ©ãƒ©ã‚¤ã‚º */
-		case SC_FROSTMISTY:			/* ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£ */
-		case SC_WUGDASH:			/* ã‚¦ã‚©ãƒ¼ã‚°ãƒ€ãƒƒã‚·ãƒ¥ */
-		case SC_ACCELERATION:		/* ã‚¢ã‚¯ã‚»ãƒ©ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_NEUTRALBARRIER_USER:	/* ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼(ä½¿ç”¨è€…) */
-		case SC__GROOMY:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼ */
-		case SC__LAZINESS:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹ */
-		case SC_GN_CARTBOOST:		/* ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ */
-		case SC_MELON_BOMB:			/* ãƒ¡ãƒ­ãƒ³çˆ†å¼¾ */
-		case SC_POWER_OF_GAIA:		/* ãƒ‘ãƒ¯ãƒ¼ã‚ªãƒ–ã‚¬ã‚¤ã‚¢ */
+		case SC_SPEEDUP0:			/* ˆÚ“®‘¬“x‘‰Á(ƒAƒCƒeƒ€) */
+		case SC_SPEEDUP1:			/* ƒXƒs[ƒhƒ|[ƒVƒ‡ƒ“ */
+		case SC_WALKSPEED:			/* ˆÚ“®‘¬“x‘‰Á(ƒXƒNƒŠƒvƒg) */
+		case SC_SLOWPOTION:			/* ˆÚ“®‘¬“x’á‰º(ƒAƒCƒeƒ€) */
+		case SC_STEELBODY:			/* ‹à„ */
+		case SC_INCFLEE:			/* FLEEã¸ */
+		case SC_GRAVITATION:			/* ƒOƒ‰ƒrƒe[ƒVƒ‡ƒ“ƒtƒB[ƒ‹ƒh */
+		case SC_SUITON:				/* …“Ù */
+		case SC_GATLINGFEVER:			/* ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[ */
+		case SC_HALLUCINATIONWALK:	/* ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN */
+		case SC_PARALIZE:			/* ƒpƒ‰ƒ‰ƒCƒY */
+		case SC_FROSTMISTY:			/* ƒtƒƒXƒgƒ~ƒXƒeƒB */
+		case SC_WUGDASH:			/* ƒEƒH[ƒOƒ_ƒbƒVƒ… */
+		case SC_ACCELERATION:		/* ƒAƒNƒZƒ‰ƒŒ[ƒVƒ‡ƒ“ */
+		case SC_NEUTRALBARRIER_USER:	/* ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[(g—pÒ) */
+		case SC__GROOMY:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[ */
+		case SC__LAZINESS:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX */
+		case SC_GN_CARTBOOST:		/* ƒJ[ƒgƒu[ƒXƒg */
+		case SC_MELON_BOMB:			/* ƒƒƒ“”š’e */
+		case SC_POWER_OF_GAIA:		/* ƒpƒ[ƒIƒuƒKƒCƒA */
 		case SC_SUPPORT_SPEED:
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
 
-		case SC_PROVOKE:			/* ãƒ—ãƒ­ãƒœãƒƒã‚¯ */
+		case SC_PROVOKE:			/* ƒvƒƒ{ƒbƒN */
 			calc_flag = 1;
-			if(tick <= 0) tick = 1000;	/* (ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯) */
+			if(tick <= 0) tick = 1000;	/* (ƒI[ƒgƒo[ƒT[ƒN) */
 			break;
-		case SC_ENDURE:				/* ã‚¤ãƒ³ãƒ‡ãƒ¥ã‚¢ */
+		case SC_ENDURE:				/* ƒCƒ“ƒfƒ…ƒA */
 			if(tick <= 0) tick = 1000 * 60;
 			calc_flag = 1;
-			val2 = 7;	// 7å›æ”»æ’ƒã•ã‚ŒãŸã‚‰è§£é™¤
+			val2 = 7;	// 7‰ñUŒ‚‚³‚ê‚½‚ç‰ğœ
 			if(sd && !map[bl->m].flag.gvg) {
-				// è¢«ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³è€…ã‚‚ã‚¤ãƒ³ãƒ‡ãƒ¥ã‚¢ã«ã™ã‚‹
+				// ”íƒfƒBƒ{[ƒVƒ‡ƒ“Ò‚àƒCƒ“ƒfƒ…ƒA‚É‚·‚é
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
@@ -7582,17 +7582,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				}
 			}
 			break;
-		case SC_INCREASEAGI:		/* é€Ÿåº¦å¢—åŠ  */
+		case SC_INCREASEAGI:		/* ‘¬“x‘‰Á */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(sc->data[SC_DECREASEAGI].timer != -1)
 				status_change_end(bl,SC_DECREASEAGI,-1);
 			break;
-		case SC_DECREASEAGI:		/* é€Ÿåº¦æ¸›å°‘ */
+		case SC_DECREASEAGI:		/* ‘¬“xŒ¸­ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_SIGNUMCRUCIS:		/* ã‚·ã‚°ãƒŠãƒ ã‚¯ãƒ«ã‚·ã‚¹ */
+		case SC_SIGNUMCRUCIS:		/* ƒVƒOƒiƒ€ƒNƒ‹ƒVƒX */
 			calc_flag = 1;
 			val2 = 10 + val1*4;
 			tick = 600*1000;
@@ -7611,111 +7611,111 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_SPEEDPOTION2,-1);
 			calc_flag = 1;
 			break;
-		case SC_ADRENALINE:			/* ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ */
+		case SC_ADRENALINE:			/* ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ… */
 			calc_flag = 1;
 			if(sc->data[SC_ADRENALINE2].timer != -1)
 				status_change_end(bl,SC_ADRENALINE2,-1);
 			if(!(flag&2) && sd && pc_checkskill(sd,BS_HILTBINDING) > 0)
 				icon_tick = tick += tick / 10;
 			break;
-		case SC_ADRENALINE2:			/* ãƒ•ãƒ«ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ */
+		case SC_ADRENALINE2:			/* ƒtƒ‹ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ… */
 			calc_flag = 1;
 			if(sc->data[SC_ADRENALINE].timer != -1)
 				status_change_end(bl,SC_ADRENALINE,-1);
 			if(!(flag&2) && sd && pc_checkskill(sd,BS_HILTBINDING) > 0)
 				icon_tick = tick += tick / 10;
 			break;
-		case SC_WEAPONPERFECTION:		/* ã‚¦ã‚§ãƒãƒ³ãƒ‘ãƒ¼ãƒ•ã‚§ã‚¯ã‚·ãƒ§ãƒ³ */
+		case SC_WEAPONPERFECTION:		/* ƒEƒFƒ|ƒ“ƒp[ƒtƒFƒNƒVƒ‡ƒ“ */
 			if(!(flag&2) && sd && pc_checkskill(sd,BS_HILTBINDING) > 0)
 				icon_tick = tick += tick / 10;
 			break;
-		case SC_OVERTHRUST:			/* ã‚ªãƒ¼ãƒãƒ¼ãƒˆãƒ©ã‚¹ãƒˆ */
+		case SC_OVERTHRUST:			/* ƒI[ƒo[ƒgƒ‰ƒXƒg */
 			if(sc->data[SC_OVERTHRUSTMAX].timer != -1)
 				return 0;
 			val3 = (val2)? val1*5 : val1;
 			if(!(flag&2) && sd && pc_checkskill(sd,BS_HILTBINDING) > 0)
 				icon_tick = tick += tick / 10;
 			break;
-		case SC_MAXIMIZEPOWER:		/* ãƒã‚­ã‚·ãƒã‚¤ã‚ºãƒ‘ãƒ¯ãƒ¼ */
+		case SC_MAXIMIZEPOWER:		/* ƒ}ƒLƒVƒ}ƒCƒYƒpƒ[ */
 			if(sd)
-				tick = val2;	// SPãŒ1æ¸›ã‚‹æ™‚é–“
+				tick = val2;	// SP‚ª1Œ¸‚éŠÔ
 			else
 				tick = 5000*val1;
 			break;
-		case SC_ENCPOISON:			/* ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³ */
+		case SC_ENCPOISON:			/* ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“ */
 			calc_flag = 1;
-			val2 = (((val1 - 1) / 2) + 3)*100;	// æ¯’ä»˜ä¸ç¢ºç‡
+			val2 = (((val1 - 1) / 2) + 3)*100;	// “Å•t—^Šm—¦
 			status_enchant_elemental_end(bl,SC_ENCPOISON);
 			break;
-		case SC_EDP:			/* ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒ‡ãƒƒãƒ‰ãƒªãƒ¼ãƒã‚¤ã‚ºãƒ³ */
-			val2 = 250 + val1 * 50;	// çŒ›æ¯’ä»˜ä¸ç¢ºç‡(%)
+		case SC_EDP:			/* ƒGƒ“ƒ`ƒƒƒ“ƒgƒfƒbƒhƒŠ[ƒ|ƒCƒYƒ“ */
+			val2 = 250 + val1 * 50;	// –Ò“Å•t—^Šm—¦(%)
 			break;
-		case SC_POISONREACT:	/* ãƒã‚¤ã‚ºãƒ³ãƒªã‚¢ã‚¯ãƒˆ */
+		case SC_POISONREACT:	/* ƒ|ƒCƒYƒ“ƒŠƒAƒNƒg */
 			val2 = (val1 + 1) / 2;
 			break;
-		case SC_ASPERSIO:			/* ã‚¢ã‚¹ãƒšãƒ«ã‚·ã‚ª */
+		case SC_ASPERSIO:			/* ƒAƒXƒyƒ‹ƒVƒI */
 			status_enchant_elemental_end(bl,SC_ASPERSIO);
 			break;
-		case SC_BENEDICTIO:			/* è–ä½“ */
+		case SC_BENEDICTIO:			/* ¹‘Ì */
 			status_enchant_armor_elemental_end(bl,SC_BENEDICTIO);
 			break;
-		case SC_ELEMENTWATER:		// æ°´
+		case SC_ELEMENTWATER:		// …
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTWATER);
 			if(sd) {
-				// é˜²å…·ã«æ°´å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É…‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(195));
 			}
 			break;
-		case SC_ELEMENTGROUND:		// åœŸ
+		case SC_ELEMENTGROUND:		// “y
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTGROUND);
 			if(sd) {
-				// é˜²å…·ã«åœŸå±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É“y‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(196));
 			}
 			break;
-		case SC_ELEMENTFIRE:		// ç«
+		case SC_ELEMENTFIRE:		// ‰Î
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTFIRE);
 			if(sd) {
-				// é˜²å…·ã«ç«å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É‰Î‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(197));
 			}
 			break;
-		case SC_ELEMENTWIND:		// é¢¨
+		case SC_ELEMENTWIND:		// •—
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTWIND);
 			if(sd) {
-				// é˜²å…·ã«é¢¨å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É•—‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(198));
 			}
 			break;
-		case SC_ELEMENTHOLY:		// å…‰
+		case SC_ELEMENTHOLY:		// Œõ
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTHOLY);
 			if(sd) {
-				// é˜²å…·ã«è–å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É¹‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(199));
 			}
 			break;
-		case SC_ELEMENTDARK:		// é—‡
+		case SC_ELEMENTDARK:		// ˆÅ
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTDARK);
 			if(sd) {
-				// é˜²å…·ã«é—‡å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚ÉˆÅ‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(200));
 			}
 			break;
-		case SC_ELEMENTELEKINESIS:	// å¿µ
+		case SC_ELEMENTELEKINESIS:	// ”O
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTELEKINESIS);
 			if(sd) {
-				// é˜²å…·ã«å¿µå±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É”O‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(201));
 			}
 			break;
-		case SC_ELEMENTPOISON:		// æ¯’
+		case SC_ELEMENTPOISON:		// “Å
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTPOISON);
 			if(sd) {
-				// é˜²å…·ã«æ¯’å±æ€§ãŒä»˜ä¸ã•ã‚Œã¾ã—ãŸã€‚
+				// –h‹ï‚É“Å‘®«‚ª•t—^‚³‚ê‚Ü‚µ‚½B
 				clif_displaymessage(sd->fd, msg_txt(202));
 			}
 			break;
-		case SC_ELEMENTUNDEAD:		// ä¸æ­»
+		case SC_ELEMENTUNDEAD:		// •s€
 			status_enchant_armor_elemental_end(bl,SC_ELEMENTUNDEAD);
 			if(sc->data[SC_BLESSING].timer != -1)
 				status_change_end(bl,SC_BLESSING,-1);
@@ -7734,29 +7734,29 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_RACEDRAGON:
 			status_change_race_end(bl,type);
 			if(sd) {
-				const char *race_name[] = { "ç„¡å½¢", "ä¸æ­»", "å‹•ç‰©", "æ¤ç‰©", "æ˜†è™«", "", "é­šè²", "æ‚ªé­”", "äººé–“", "å¤©ä½¿", "ç«œ" };
-				msg_output(sd->fd, msg_txt(204), race_name[type-SC_RACEUNKNOWN]);	// ç¨®æ—ãŒ%sã«ãªã‚Šã¾ã—ãŸ
+				const char *race_name[] = { "–³Œ`", "•s€", "“®•¨", "A•¨", "©’", "", "‹›ŠL", "ˆ«–‚", "lŠÔ", "“Vg", "—³" };
+				msg_output(sd->fd, msg_txt(204), race_name[type-SC_RACEUNKNOWN]);	// í‘°‚ª%s‚É‚È‚è‚Ü‚µ‚½
 			}
 			break;
 		case SC_MAGICROD:
 			val2 = val1*20;
 			break;
-		case SC_KYRIE:				/* ã‚­ãƒªã‚¨ã‚¨ãƒ¬ã‚¤ã‚½ãƒ³ */
-			// ã‚¢ã‚¹ãƒ ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤ã—ã¦
+		case SC_KYRIE:				/* ƒLƒŠƒGƒGƒŒƒCƒ\ƒ“ */
+			// ƒAƒXƒ€‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ‚µ‚Ä
 			if(sc->data[SC_ASSUMPTIO].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
 			if(sc->data[SC_ASSUMPTIO2].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO2,-1);
-			// ã‚­ãƒªã‚¨ã‚’æ›ã‘ã‚‹
-			if(val4 > 0) {		// ãƒ—ãƒ©ã‚¨ãƒ•ã‚¡ãƒ†ã‚£ã‚ªã®å ´åˆ
-				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 16 + val4 * 2) / 100);	// è€ä¹…åº¦
-				val3 = val1 + 6;	// å›æ•°
+			// ƒLƒŠƒG‚ğŠ|‚¯‚é
+			if(val4 > 0) {		// ƒvƒ‰ƒGƒtƒ@ƒeƒBƒI‚Ìê‡
+				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 16 + val4 * 2) / 100);	// ‘Ï‹v“x
+				val3 = val1 + 6;	// ‰ñ”
 			} else {
-				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);	// è€ä¹…åº¦
-				val3 = val1 / 2 + 5;	// å›æ•°
+				val2 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 2 + 10) / 100);	// ‘Ï‹v“x
+				val3 = val1 / 2 + 5;	// ‰ñ”
 			}
 			break;
-		case SC_QUAGMIRE:			/* ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢ */
+		case SC_QUAGMIRE:			/* ƒNƒ@ƒOƒ}ƒCƒA */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(sc->data[SC_CONCENTRATE].timer != -1)
@@ -7782,23 +7782,23 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_SPEEDUP1].timer != -1)
 				status_change_end(bl,SC_SPEEDUP1,-1);
 			break;
-		case SC_MAGICPOWER:			/* é­”æ³•åŠ›å¢—å¹… */
-			val2 = 1;	// ä¸€åº¦ã ã‘å¢—å¹…
+		case SC_MAGICPOWER:			/* –‚–@—Í‘• */
+			val2 = 1;	// ˆê“x‚¾‚¯‘•
 			break;
-		case SC_SACRIFICE:			/* ã‚µã‚¯ãƒªãƒ•ã‚¡ã‚¤ã‚¹ */
-			val2 = 5;	// 5å›ã®æ”»æ’ƒã§æœ‰åŠ¹
+		case SC_SACRIFICE:			/* ƒTƒNƒŠƒtƒ@ƒCƒX */
+			val2 = 5;	// 5‰ñ‚ÌUŒ‚‚Å—LŒø
 			break;
-		case SC_FLAMELAUNCHER:		/* ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ©ãƒ³ãƒãƒ£ãƒ¼ */
-		case SC_FROSTWEAPON:		/* ãƒ•ãƒ­ã‚¹ãƒˆã‚¦ã‚§ãƒãƒ³ */
-		case SC_LIGHTNINGLOADER:	/* ãƒ©ã‚¤ãƒˆãƒ‹ãƒ³ã‚°ãƒ­ãƒ¼ãƒ€ãƒ¼ */
-		case SC_SEISMICWEAPON:		/* ã‚µã‚¤ã‚ºãƒŸãƒƒã‚¯ã‚¦ã‚§ãƒãƒ³ */
-		case SC_DARKELEMENT:		/* é—‡å±æ€§ */
-		case SC_ATTENELEMENT:		/* å¿µå±æ€§ */
-		case SC_UNDEADELEMENT:		/* ä¸æ­»å±æ€§ */
+		case SC_FLAMELAUNCHER:		/* ƒtƒŒ[ƒ€ƒ‰ƒ“ƒ`ƒƒ[ */
+		case SC_FROSTWEAPON:		/* ƒtƒƒXƒgƒEƒFƒ|ƒ“ */
+		case SC_LIGHTNINGLOADER:	/* ƒ‰ƒCƒgƒjƒ“ƒOƒ[ƒ_[ */
+		case SC_SEISMICWEAPON:		/* ƒTƒCƒYƒ~ƒbƒNƒEƒFƒ|ƒ“ */
+		case SC_DARKELEMENT:		/* ˆÅ‘®« */
+		case SC_ATTENELEMENT:		/* ”O‘®« */
+		case SC_UNDEADELEMENT:		/* •s€‘®« */
 			status_enchant_elemental_end(bl,type);
 			break;
-		case SC_SEVENWIND:			/* æš–ã‹ã„é¢¨ */
-			status_enchant_elemental_end(bl,SC_ENCPOISON);	// ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³ã¯é‡è¤‡ã—ã¦ã‚‚ã‚ˆã„ï¼Ÿ
+		case SC_SEVENWIND:			/* ’g‚©‚¢•— */
+			status_enchant_elemental_end(bl,SC_ENCPOISON);	// ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“‚Íd•¡‚µ‚Ä‚à‚æ‚¢H
 #ifdef PRE_RENEWAL
 			switch(val1) {
 				case 1:  val2 = SI_SEISMICWEAPON;   val3 = ELE_EARTH; break;
@@ -7823,17 +7823,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				clif_status_change(bl,val2,1,icon_tick,0,0,0);
 			}
 			break;
-		case SC_PROVIDENCE:			/* ãƒ—ãƒ­ãƒ´ã‚£ãƒ‡ãƒ³ã‚¹ */
+		case SC_PROVIDENCE:			/* ƒvƒƒ”ƒBƒfƒ“ƒX */
 			calc_flag = 1;
 			val2 = val1*5;
 			break;
 		case SC_REFLECTSHIELD:
-			// ãƒªãƒ•ãƒ¬ã‚¯ãƒˆãƒ€ãƒ¡ãƒ¼ã‚¸ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+			// ƒŠƒtƒŒƒNƒgƒ_ƒ[ƒW‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_REFLECTDAMAGE].timer != -1)
 				status_change_end(bl,SC_REFLECTDAMAGE,-1);
 			val2 = 10+val1*3;
 			if(sd) {
-				// è¢«ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³è€…ã‚‚ãƒªãƒ•ãƒ¬ã‚¯ãƒˆã‚·ãƒ¼ãƒ«ãƒ‰ã«ã™ã‚‹
+				// ”íƒfƒBƒ{[ƒVƒ‡ƒ“Ò‚àƒŠƒtƒŒƒNƒgƒV[ƒ‹ƒh‚É‚·‚é
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
@@ -7843,7 +7843,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				}
 			}
 			break;
-		case SC_AUTOSPELL:			/* ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ« */
+		case SC_AUTOSPELL:			/* ƒI[ƒgƒXƒyƒ‹ */
 			val4 = 5 + val1*2;
 			break;
 		case SC_VOLCANO:
@@ -7868,7 +7868,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			else
 				val2 = 30;
 			break;
-		case SC_SPEARQUICKEN:		/* ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
+		case SC_SPEARQUICKEN:		/* ƒXƒsƒAƒNƒCƒbƒPƒ“ */
 			calc_flag = 1;
 #ifdef PRE_RENEWAL
 			val2 = 20+val1;
@@ -7876,14 +7876,14 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = 30;
 #endif
 			break;
-		case SC_BLADESTOP:		/* ç™½åˆƒå–ã‚Š */
+		case SC_BLADESTOP:		/* ”’næ‚è */
 			if(val2 == 2)
 				clif_bladestop(map_id2bl(val3),val4,1);
 			break;
-		case SC_LULLABY:			/* å­å®ˆå”„ */
+		case SC_LULLABY:			/* qç‰S */
 			val2 = 11;
 			break;
-		case SC_DRUMBATTLE:			/* æˆ¦å¤ªé¼“ã®éŸ¿ã */
+		case SC_DRUMBATTLE:			/* í‘¾ŒÛ‚Ì‹¿‚« */
 			calc_flag = 1;
 #ifdef PRE_RENEWAL
 			val2 = (val1+1)*25;
@@ -7893,7 +7893,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val3 = val1*10;
 #endif
 			break;
-		case SC_NIBELUNGEN:			/* ãƒ‹ãƒ¼ãƒ™ãƒ«ãƒ³ã‚°ã®æŒ‡è¼ª */
+		case SC_NIBELUNGEN:			/* ƒj[ƒxƒ‹ƒ“ƒO‚Ìw—Ö */
 			calc_flag = 1;
 #ifdef PRE_RENEWAL
 			val2 = (val1+2)*25;
@@ -7901,17 +7901,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1*40;
 #endif
 			break;
-		case SC_SIEGFRIED:			/* ä¸æ­»èº«ã®ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ */
+		case SC_SIEGFRIED:			/* •s€g‚ÌƒW[ƒNƒtƒŠ[ƒh */
 			calc_flag = 1;
 			val2 = 5 + val1*15;
 			break;
-		case SC_DISSONANCE:			/* ä¸å”å’ŒéŸ³ */
+		case SC_DISSONANCE:			/* •s‹¦˜a‰¹ */
 			val2 = 10;
 			break;
-		case SC_UGLYDANCE:			/* è‡ªåˆ†å‹æ‰‹ãªãƒ€ãƒ³ã‚¹ */
+		case SC_UGLYDANCE:			/* ©•ªŸè‚Èƒ_ƒ“ƒX */
 			val2 = 10;
 			break;
-		case SC_DONTFORGETME:		/* ç§ã‚’å¿˜ã‚Œãªã„ã§ */
+		case SC_DONTFORGETME:		/* „‚ğ–Y‚ê‚È‚¢‚Å */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(sc->data[SC_INCREASEAGI].timer != -1)
@@ -7933,18 +7933,18 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_ONEHAND].timer != -1)
 				status_change_end(bl,SC_ONEHAND,-1);
 			break;
-		case SC_LONGINGFREEDOM:		/* ç§ã‚’æ‹˜æŸã—ãªã„ã§ */
+		case SC_LONGINGFREEDOM:		/* „‚ğS‘©‚µ‚È‚¢‚Å */
 			calc_flag = 1;
 			val3 = 1;
 			tick = 1000;
 			break;
-		case SC_DANCING:			/* ãƒ€ãƒ³ã‚¹/æ¼”å¥ä¸­ */
+		case SC_DANCING:			/* ƒ_ƒ“ƒX/‰‰‘t’† */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			val3 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_EXPLOSIONSPIRITS:	/* çˆ†è£‚æ³¢å‹• */
+		case SC_EXPLOSIONSPIRITS:	/* ”š—ô”g“® */
 			calc_flag = 1;
 			val2 = 75 + 25*val1;
 			break;
@@ -7952,28 +7952,28 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val3 = 0;
 			val4 = 0;
 			break;
-		case SC_SPEEDPOTION0:		/* å¢—é€Ÿãƒãƒ¼ã‚·ãƒ§ãƒ³ */
+		case SC_SPEEDPOTION0:		/* ‘‘¬ƒ|[ƒVƒ‡ƒ“ */
 		case SC_SPEEDPOTION1:
 		case SC_SPEEDPOTION2:
 			calc_flag = 1;
 			val2 = 5*(2+type-SC_SPEEDPOTION0);
 			break;
-		case SC_NOCHAT:		/* ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ */
+		case SC_NOCHAT:		/* ƒ`ƒƒƒbƒg‹Ö~ó‘Ô */
 			{
 				time_t timer;
 				tick = 60000;
 				if(!val2)
 					val2 = (int)time(&timer);
 				if(sd)
-					clif_updatestatus(sd,SP_MANNER);	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ã‚‹
+					clif_updatestatus(sd,SP_MANNER);	// ƒXƒe[ƒ^ƒX‚ğƒNƒ‰ƒCƒAƒ“ƒg‚É‘—‚é
 			}
 			break;
-		case SC_SELFDESTRUCTION:	/* è‡ªçˆ† */
+		case SC_SELFDESTRUCTION:	/* ©”š */
 			tick = 100;
 			break;
 
 		/* option1 */
-		case SC_STONE:				/* çŸ³åŒ– */
+		case SC_STONE:				/* Î‰» */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				tick += 100 * status_get_luk(bl) - status_get_mdef(bl) * tick / 100;
@@ -7989,7 +7989,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 1000;
 			val2 = 1;
 			break;
-		case SC_SLEEP:				/* ç¡çœ  */
+		case SC_SLEEP:				/* ‡–° */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_int(bl) / 100;
@@ -7998,7 +7998,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_FREEZE:				/* å‡çµ */
+		case SC_FREEZE:				/* “€Œ‹ */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				tick += 10 * status_get_luk(bl) - tick * status_get_mdef(bl) / 100;
@@ -8007,7 +8007,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_STUN:				/* ã‚¹ã‚¿ãƒ³ï¼ˆval2ã«ãƒŸãƒªç§’ã‚»ãƒƒãƒˆï¼‰ */
+		case SC_STUN:				/* ƒXƒ^ƒ“ival2‚Éƒ~ƒŠ•bƒZƒbƒgj */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100;
@@ -8017,17 +8017,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			break;
 		/* option2 */
-		case SC_DPOISON:			/* çŒ›æ¯’ */
+		case SC_DPOISON:			/* –Ò“Å */
 			{
 				int mhp = status_get_max_hp(bl);
 				int hp  = status_get_hp(bl);
 				if(!(flag&2)) {
-					if(bl->type == BL_PC)	// PCã®å ´åˆã®ã¿è¨ˆç®—å¼ãŒé•ã†
+					if(bl->type == BL_PC)	// PC‚Ìê‡‚Ì‚İŒvZ®‚ªˆá‚¤
 						tick = 5000 + -10000 * status_get_luk(bl) / 100 - 45000 * status_get_vit(bl) / 100 + 55000;
 					else
 						tick = 30000 - 20000 * status_get_vit(bl) / 100;
 				}
-				// MHPã®1/4ä»¥ä¸‹ã«ã¯ãªã‚‰ãªã„
+				// MHP‚Ì1/4ˆÈ‰º‚É‚Í‚È‚ç‚È‚¢
 				if(hp > mhp>>2) {
 					int diff = 0;
 					if(sd)
@@ -8040,10 +8040,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				}
 			}
 			// fall through
-		case SC_POISON:				/* æ¯’ */
+		case SC_POISON:				/* “Å */
 			calc_flag = 1;
 			if(!(flag&2)) {
-				if(bl->type == BL_PC)	// PCã®å ´åˆã®ã¿è¨ˆç®—å¼ãŒé•ã†
+				if(bl->type == BL_PC)	// PC‚Ìê‡‚Ì‚İŒvZ®‚ªˆá‚¤
 					tick = 5000 + -10000 * status_get_luk(bl) / 100 - 45000 * status_get_vit(bl) / 100 + 55000;
 				else
 					tick = 30000 - 20000 * status_get_vit(bl) / 100;
@@ -8052,7 +8052,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(val3 < 1) val3 = 1;
 			tick = 1000;
 			break;
-		case SC_SILENCE:			/* æ²ˆé»™ */
+		case SC_SILENCE:			/* ’¾–Ù */
 			skill_stop_dancing(bl,0);
 			if (sc->data[SC_GOSPEL].timer != -1) {
 				status_change_end(bl,SC_GOSPEL,-1);
@@ -8066,7 +8066,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_BLIND:				/* æš—é»’ */
+		case SC_BLIND:				/* ˆÃ• */
 			calc_flag = 1;
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
@@ -8076,7 +8076,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_CURSE:				/* å‘ªã„ */
+		case SC_CURSE:				/* ô‚¢ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(!(flag&2)) {
@@ -8087,7 +8087,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_CONFUSION:			/* æ··ä¹± */
+		case SC_CONFUSION:			/* ¬— */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				tick += -10 * status_get_luk(bl) - tick * (status_get_str(bl) + status_get_int(bl)) / 200;
@@ -8096,7 +8096,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			break;
-		case SC_BLEED:				/* å‡ºè¡€ */
+		case SC_BLEED:				/* oŒŒ */
 			if(!(flag&2)) {
 #ifdef PRE_RENEWAL
 				icon_tick = tick = -10 * status_get_luk(bl) - tick * status_get_vit(bl) / 100 + tick;
@@ -8105,19 +8105,19 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 #endif
 			}
 			val3 = (tick < 10000)? 1: tick / 10000;
-			tick = 10000;	// ãƒ€ãƒ¡ãƒ¼ã‚¸ç™ºç”Ÿã¯10secæ¯
+			tick = 10000;	// ƒ_ƒ[ƒW”­¶‚Í10sec–ˆ
 			break;
 
 		/* option */
-		case SC_HIDING:		/* ãƒã‚¤ãƒ‡ã‚£ãƒ³ã‚° */
+		case SC_HIDING:		/* ƒnƒCƒfƒBƒ“ƒO */
 			calc_flag = 1;
 			if(sd) {
-				val2 = tick / 1000;		/* æŒç¶šæ™‚é–“ */
+				val2 = tick / 1000;		/* ‘±ŠÔ */
 				tick = 1000;
 			}
 			break;
-		case SC_CHASEWALK:		/* ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯ */
-		case SC_CLOAKING:		/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚° */
+		case SC_CHASEWALK:		/* ƒ`ƒFƒCƒXƒEƒH[ƒN */
+		case SC_CLOAKING:		/* ƒNƒ[ƒLƒ“ƒO */
 			if(sd) {
 				calc_flag = 1;
 				tick = val2;
@@ -8125,11 +8125,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 5000*val1;
 			}
 			break;
-		case SC_INVISIBLE:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ–ãƒ« */
+		case SC_INVISIBLE:		/* ƒCƒ“ƒrƒWƒuƒ‹ */
 			break;
-		case SC_SIGHTBLASTER:		/* ã‚µã‚¤ãƒˆãƒ–ãƒ©ã‚¹ã‚¿ãƒ¼ */
-		case SC_SIGHT:			/* ã‚µã‚¤ãƒˆ */
-		case SC_RUWACH:			/* ãƒ«ã‚¢ãƒ• */
+		case SC_SIGHTBLASTER:		/* ƒTƒCƒgƒuƒ‰ƒXƒ^[ */
+		case SC_SIGHT:			/* ƒTƒCƒg */
+		case SC_RUWACH:			/* ƒ‹ƒAƒt */
 			val2 = tick/250;
 			tick = 10;
 			break;
@@ -8140,7 +8140,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_AUTOGUARD:
 			val2 = (val1 > 10)? 30: (22 - val1) * val1 / 4;
 			if(sd) {
-				// è¢«ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³è€…ã‚‚ã‚ªãƒ¼ãƒˆã‚¬ãƒ¼ãƒ‰ã«ã™ã‚‹
+				// ”íƒfƒBƒ{[ƒVƒ‡ƒ“Ò‚àƒI[ƒgƒK[ƒh‚É‚·‚é
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
@@ -8155,7 +8155,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = 5 + val1*15;
 			val3 = 250 - val1*50;
 			if(sd) {
-				// è¢«ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³è€…ã‚’ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ã«ã™ã‚‹
+				// ”íƒfƒBƒ{[ƒVƒ‡ƒ“Ò‚ğƒfƒBƒtƒFƒ“ƒ_[‚É‚·‚é
 				struct map_session_data *tsd;
 				int i;
 				for(i = 0; i < 5; i++) {
@@ -8166,24 +8166,24 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			break;
 		case SC_HALLUCINATION:
 			if(sd && !battle_config.hallucianation_off) {
-				// onãªã®ã§ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
+				// on‚È‚Ì‚ÅƒAƒCƒRƒ“•\¦
 				clif_status_change(bl, SI_HALLUCINATION, 1, icon_tick, 0, 0, 0);
 			}
 			break;
-		case SC_TENSIONRELAX:	/* ãƒ†ãƒ³ã‚·ãƒ§ãƒ³ãƒªãƒ©ãƒƒã‚¯ã‚¹ */
+		case SC_TENSIONRELAX:	/* ƒeƒ“ƒVƒ‡ƒ“ƒŠƒ‰ƒbƒNƒX */
 			if(sd == NULL)
 				return 0;
 			tick = 10000;
 			break;
-		case SC_PARRYING:		/* ãƒ‘ãƒªã‚¤ãƒ³ã‚° */
+		case SC_PARRYING:		/* ƒpƒŠƒCƒ“ƒO */
 			val2 = 20 + val1*3;
 			break;
-		case SC_JOINTBEAT:		/* ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒ“ãƒ¼ãƒˆ */
+		case SC_JOINTBEAT:		/* ƒWƒ‡ƒCƒ“ƒgƒr[ƒg */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			val4 = atn_rand()%6;
 			if(val4 == 5) {
-				// é¦–ã¯å¼·åˆ¶çš„ã«å‡ºè¡€ä»˜åŠ  ãƒ» ä½¿ç”¨è€…ã®ãƒ¬ãƒ™ãƒ«ãŒå–å¾—ã§ããªã„ã®ã§ã¨ã‚Šã‚ãˆãš0ã‚’å¼•æ•°ã«
+				// ñ‚Í‹­§“I‚ÉoŒŒ•t‰Á E g—pÒ‚ÌƒŒƒxƒ‹‚ªæ“¾‚Å‚«‚È‚¢‚Ì‚Å‚Æ‚è‚ ‚¦‚¸0‚ğˆø”‚É
 				if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,10000,0))
 					status_change_start(bl,SC_BLEED,val1,0,0,0,skill_get_time2(LK_JOINTBEAT,val1),10);
 			}
@@ -8191,147 +8191,147 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = tick - (status_get_agi(bl)/10 + status_get_luk(bl)/4)*1000;
 			}
 			break;
-		case SC_WINDWALK:		/* ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯ */
+		case SC_WINDWALK:		/* ƒEƒCƒ“ƒhƒEƒH[ƒN */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
-			val2 = val1 / 2;	// Fleeä¸Šæ˜‡ç‡
+			val2 = val1 / 2;	// Fleeã¸—¦
 			break;
-		case SC_BERSERK:		/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+		case SC_BERSERK:		/* ƒo[ƒT[ƒN */
 			unit_heal(bl,0,-status_get_sp(bl));
 			if(sd) {
-				clif_status_change(bl,SI_INCREASEAGI,1,icon_tick, 0, 0, 0);	// ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
+				clif_status_change(bl,SI_INCREASEAGI,1,icon_tick, 0, 0, 0);	// ƒAƒCƒRƒ“•\¦
 			}
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_ASSUMPTIO:		/* ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
-		case SC_ASSUMPTIO2:		/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
-			// ã‚­ãƒªã‚¨ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+		case SC_ASSUMPTIO:		/* ƒAƒXƒ€ƒvƒeƒBƒI */
+		case SC_ASSUMPTIO2:		/* ƒLƒƒƒbƒVƒ…ƒAƒXƒ€ƒvƒeƒBƒI */
+			// ƒLƒŠƒG‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_KYRIE].timer != -1)
 				status_change_end(bl,SC_KYRIE,-1);
-			// ã‚«ã‚¤ãƒˆãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+			// ƒJƒCƒg‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_KAITE].timer != -1)
 				status_change_end(bl,SC_KAITE,-1);
 			break;
-		case SC_CARTBOOST:		/* ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ */
+		case SC_CARTBOOST:		/* ƒJ[ƒgƒu[ƒXƒg */
 			calc_flag = 1;
 			if(sc->data[SC_DECREASEAGI].timer != -1)
 				status_change_end(bl,SC_DECREASEAGI,-1);
 			break;
-		case SC_REJECTSWORD:	/* ãƒªã‚¸ã‚§ã‚¯ãƒˆã‚½ãƒ¼ãƒ‰ */
-			val2 = 3; // 3å›æ”»æ’ƒã‚’è·³ã­è¿”ã™
+		case SC_REJECTSWORD:	/* ƒŠƒWƒFƒNƒgƒ\[ƒh */
+			val2 = 3; // 3‰ñUŒ‚‚ğ’µ‚Ë•Ô‚·
 			break;
-		case SC_MEMORIZE:		/* ãƒ¡ãƒ¢ãƒ©ã‚¤ã‚º */
-			val2 = 5; // 5å›è© å”±ã‚’1/2ã«ã™ã‚‹
+		case SC_MEMORIZE:		/* ƒƒ‚ƒ‰ƒCƒY */
+			val2 = 5; // 5‰ñ‰r¥‚ğ1/2‚É‚·‚é
 			break;
-		case SC_GRAFFITI:		/* ã‚°ãƒ©ãƒ•ã‚£ãƒ†ã‚£ */
+		case SC_GRAFFITI:		/* ƒOƒ‰ƒtƒBƒeƒB */
 			{
 				struct skill_unit_group *sg = skill_unitsetting(bl,RG_GRAFFITI,val1,val2,val3,0);
 				if(sg)
 					val4 = sg->bl.id;
 			}
 			break;
-		case SC_OVERTHRUSTMAX:		/* ã‚ªãƒ¼ãƒãƒ¼ãƒˆãƒ©ã‚¹ãƒˆãƒãƒƒã‚¯ã‚¹ */
+		case SC_OVERTHRUSTMAX:		/* ƒI[ƒo[ƒgƒ‰ƒXƒgƒ}ƒbƒNƒX */
 			if(sc->data[SC_OVERTHRUST].timer != -1)
 				status_change_end(bl,SC_OVERTHRUST,-1);
 			calc_flag = 1;
 			break;
 
-		case SC_MEAL_INCSTR:	// é£Ÿäº‹ç”¨
+		case SC_MEAL_INCSTR:	// H–—p
 		case SC_MEAL_INCAGI:
 		case SC_MEAL_INCVIT:
 		case SC_MEAL_INCINT:
 		case SC_MEAL_INCDEX:
 		case SC_MEAL_INCLUK:
 			if(sc->data[type - SC_MEAL_INCSTR + SC_MEAL_INCSTR2].timer != -1) {
-				// åŠ¹æœãŒä½ã„å ´åˆã¯åŠ¹æœãªã—
+				// Œø‰Ê‚ª’á‚¢ê‡‚ÍŒø‰Ê‚È‚µ
 				if(val1 < sc->data[type - SC_MEAL_INCSTR + SC_MEAL_INCSTR2].val1)
 					return 0;
-				// åŒç­‰ã‹é«˜ã„åŠ¹æœãªã‚‰ä½¿ç”¨ä¸­ã®åŠ¹æœã‚’æ¶ˆã™
+				// “¯“™‚©‚‚¢Œø‰Ê‚È‚çg—p’†‚ÌŒø‰Ê‚ğÁ‚·
 				else
 					status_change_end(bl, type - SC_MEAL_INCSTR + SC_MEAL_INCSTR2, -1);
 			}
 			calc_flag = 1;
 			break;
-		case SC_MEAL_INCSTR2:	// èª²é‡‘æ–™ç†ç”¨
+		case SC_MEAL_INCSTR2:	// ‰Û‹à—¿——p
 		case SC_MEAL_INCAGI2:
 		case SC_MEAL_INCVIT2:
 		case SC_MEAL_INCINT2:
 		case SC_MEAL_INCDEX2:
 		case SC_MEAL_INCLUK2:
 			if(sc->data[type - SC_MEAL_INCSTR2 + SC_MEAL_INCSTR].timer != -1) {
-				// åŠ¹æœãŒä½ã„å ´åˆã¯åŠ¹æœãªã—
+				// Œø‰Ê‚ª’á‚¢ê‡‚ÍŒø‰Ê‚È‚µ
 				if(val1 < sc->data[type - SC_MEAL_INCSTR2 + SC_MEAL_INCSTR].val1)
 					return 0;
-				// åŒç­‰ã‹é«˜ã„åŠ¹æœãªã‚‰ä½¿ç”¨ä¸­ã®åŠ¹æœã‚’æ¶ˆã™
+				// “¯“™‚©‚‚¢Œø‰Ê‚È‚çg—p’†‚ÌŒø‰Ê‚ğÁ‚·
 				else
 					status_change_end(bl, type - SC_MEAL_INCSTR2 + SC_MEAL_INCSTR, -1);
 			}
 			calc_flag = 1;
 			break;
-		case SC_ELEMENTFIELD:		/* å±æ€§å ´ */
+		case SC_ELEMENTFIELD:		/* ‘®«ê */
 			tick = val2;
 			break;
-		case SC_RUN:			/* ã‚¿ã‚¤ãƒªã‚® */
+		case SC_RUN:			/* ƒ^ƒCƒŠƒM */
 			val4 = 0;
 			calc_flag = 1;
 			break;
-		case SC_KAUPE:			/* ã‚«ã‚¦ãƒ— */
+		case SC_KAUPE:			/* ƒJƒEƒv */
 			val2 = val1*33;
 			if(val1 >= 3)
 				val2 = 100;
 			break;
-		case SC_KAITE:			/* ã‚«ã‚¤ãƒˆ */
-			// ã‚¢ã‚¹ãƒ ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤ã—ã¦
+		case SC_KAITE:			/* ƒJƒCƒg */
+			// ƒAƒXƒ€‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ‚µ‚Ä
 			if(sc->data[SC_ASSUMPTIO].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO,-1);
 			if(sc->data[SC_ASSUMPTIO2].timer != -1)
 				status_change_end(bl,SC_ASSUMPTIO2,-1);
-			// åå°„å›æ•°
+			// ”½Ë‰ñ”
 			val2 = val1 / 5 + 1;
 			break;
-		case SC_SWOO:			/* ã‚¨ã‚¹ã‚¦ */
+		case SC_SWOO:			/* ƒGƒXƒE */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(status_get_mode(bl)&MD_BOSS)
 				tick /= 5;
 			break;
-		case SC_MONK:			/* ãƒ¢ãƒ³ã‚¯ã®é­‚ */
-		case SC_STAR:			/* ã‚±ãƒ³ã‚»ã‚¤ã®é­‚ */
-		case SC_SAGE:			/* ã‚»ãƒ¼ã‚¸ã®é­‚ */
-		case SC_CRUSADER:		/* ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼ã®é­‚ */
-		case SC_WIZARD:			/* ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã®é­‚ */
-		case SC_PRIEST:			/* ãƒ—ãƒªãƒ¼ã‚¹ãƒˆã®é­‚ */
-		case SC_ROGUE:			/* ãƒ­ãƒ¼ã‚°ã®é­‚ */
-		case SC_ASSASIN:		/* ã‚¢ã‚µã‚·ãƒ³ã®é­‚ */
-		case SC_SOULLINKER:		/* ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼ã®é­‚ */
-		case SC_GUNNER:			/* ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼ã®é­‚ */
-		case SC_NINJA:			/* å¿è€…ã®é­‚ */
-		case SC_DEATHKINGHT:		/* ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_COLLECTOR:		/* ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼ã®é­‚ */
+		case SC_MONK:			/* ƒ‚ƒ“ƒN‚Ì° */
+		case SC_STAR:			/* ƒPƒ“ƒZƒC‚Ì° */
+		case SC_SAGE:			/* ƒZ[ƒW‚Ì° */
+		case SC_CRUSADER:		/* ƒNƒ‹ƒZƒCƒ_[‚Ì° */
+		case SC_WIZARD:			/* ƒEƒBƒU[ƒh‚Ì° */
+		case SC_PRIEST:			/* ƒvƒŠ[ƒXƒg‚Ì° */
+		case SC_ROGUE:			/* ƒ[ƒO‚Ì° */
+		case SC_ASSASIN:		/* ƒAƒTƒVƒ“‚Ì° */
+		case SC_SOULLINKER:		/* ƒ\ƒEƒ‹ƒŠƒ“ƒJ[‚Ì° */
+		case SC_GUNNER:			/* ƒKƒ“ƒXƒŠƒ“ƒK[‚Ì° */
+		case SC_NINJA:			/* ”EÒ‚Ì° */
+		case SC_DEATHKINGHT:		/* ƒfƒXƒiƒCƒg‚Ì° */
+		case SC_COLLECTOR:		/* ƒRƒŒƒNƒ^[‚Ì° */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd, msg_txt(206));	// é­‚çŠ¶æ…‹ã«ãªã‚Šã¾ã—ãŸ
+				clif_disp_onlyself(sd->fd, msg_txt(206));	// °ó‘Ô‚É‚È‚è‚Ü‚µ‚½
 			break;
-		case SC_KNIGHT:			/* ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_ALCHEMIST:		/* ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆã®é­‚ */
-		case SC_BARDDANCER:		/* ãƒãƒ¼ãƒ‰ã¨ãƒ€ãƒ³ã‚µãƒ¼ã®é­‚ */
-		case SC_BLACKSMITH:		/* ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã®é­‚ */
-		case SC_HUNTER:			/* ãƒãƒ³ã‚¿ãƒ¼ã®é­‚ */
-		case SC_HIGH:			/* ä¸€æ¬¡ä¸Šä½è·æ¥­ã®é­‚ */
+		case SC_KNIGHT:			/* ƒiƒCƒg‚Ì° */
+		case SC_ALCHEMIST:		/* ƒAƒ‹ƒPƒ~ƒXƒg‚Ì° */
+		case SC_BARDDANCER:		/* ƒo[ƒh‚Æƒ_ƒ“ƒT[‚Ì° */
+		case SC_BLACKSMITH:		/* ƒuƒ‰ƒbƒNƒXƒ~ƒX‚Ì° */
+		case SC_HUNTER:			/* ƒnƒ“ƒ^[‚Ì° */
+		case SC_HIGH:			/* ˆêŸãˆÊE‹Æ‚Ì° */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd, msg_txt(206));	// é­‚çŠ¶æ…‹ã«ãªã‚Šã¾ã—ãŸ
+				clif_disp_onlyself(sd->fd, msg_txt(206));	// °ó‘Ô‚É‚È‚è‚Ü‚µ‚½
 			calc_flag = 1;
 			break;
-		case SC_SUPERNOVICE:		/* ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒãƒ¼ãƒ“ã‚¹ã®é­‚ */
+		case SC_SUPERNOVICE:		/* ƒX[ƒp[ƒm[ƒrƒX‚Ì° */
 			if(sd) {
-				// 1%ã§æ­»äº¡ãƒ•ãƒ©ã‚°æ¶ˆã™
+				// 1%‚Å€–Sƒtƒ‰ƒOÁ‚·
 				if(atn_rand()%10000 < battle_config.repeal_die_counter_rate) {
-					sd->status.die_counter = 0;	// æ­»ã«ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ãƒªã‚»ãƒƒãƒˆ
+					sd->status.die_counter = 0;	// €‚ÉƒJƒEƒ“ƒ^[ƒŠƒZƒbƒg
 					if(sd->status.job_level >= 70 || sd->s_class.job == PC_JOB_ESNV)
-						clif_misceffect(&sd->bl,7);	// ã‚¹ãƒ‘ãƒãƒ“å¤©ä½¿
+						clif_misceffect(&sd->bl,7);	// ƒXƒpƒmƒr“Vg
 				}
 				if(battle_config.disp_job_soul_state_change)
-					clif_disp_onlyself(sd->fd, msg_txt(206));	// é­‚çŠ¶æ…‹ã«ãªã‚Šã¾ã—ãŸ
+					clif_disp_onlyself(sd->fd, msg_txt(206));	// °ó‘Ô‚É‚È‚è‚Ü‚µ‚½
 			}
 			calc_flag = 1;
 			break;
@@ -8339,7 +8339,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if( status_get_hp(bl) < status_get_max_hp(bl) >> 2 &&
 			    (sc->data[SC_PROVOKE].timer == -1 || sc->data[SC_PROVOKE].val2 == 0) )
 			{
-				// ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ç™ºå‹•
+				// ƒI[ƒgƒo[ƒT[ƒN”­“®
 				status_change_start(&sd->bl,SC_PROVOKE,10,1,0,0,0,0);
 			}
 			tick = 600*1000;
@@ -8350,176 +8350,176 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_READYCOUNTER:
 			tick = 600*1000;
 			break;
-		case SC_UTSUSEMI:		/* ç©ºè‰ */
+		case SC_UTSUSEMI:		/* ‹óä */
 			val3 = (val1+1)/2;
 			break;
-		case SC_BUNSINJYUTSU:		/* åˆ†èº«ã®è¡“ */
+		case SC_BUNSINJYUTSU:		/* •ªg‚Ìp */
 			val3 = (val1+1)/2;
 			if(sd) {
 				val4 = sd->status.clothes_color;
 				pc_changelook(sd, LOOK_CLOTHES_COLOR, 0);
 			}
 			break;
-		case SC_BOSSMAPINFO:		/* å‡¸é¢é¡ */
+		case SC_BOSSMAPINFO:		/* “Ê–Ê‹¾ */
 			if(map[bl->m].mvpboss == NULL) {
 				if(sd) {
-					// å±…ãªã„ã®ã§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºã—ã¦çµ‚äº†
+					// ‹‚È‚¢‚Ì‚ÅƒƒbƒZ[ƒW‚ğo‚µ‚ÄI—¹
 					clif_bossmapinfo(sd, "", 0, 0, 0, 0);
 				}
 				tick = 0;
 			}
 			break;
-		case SC_HAGALAZ:			/* ã‚¹ãƒˆãƒ¼ãƒ³ãƒãƒ¼ãƒ‰ã‚¹ã‚­ãƒ³ */
+		case SC_HAGALAZ:			/* ƒXƒg[ƒ“ƒn[ƒhƒXƒLƒ“ */
 			{
 				val3 = (int)((atn_bignumber)status_get_hp(bl) * 20 / 100);
 				unit_heal(bl, -val3, 0);
 			}
 			break;
-		case SC_BERKANA:			/* ãƒŸãƒ¬ãƒ‹ã‚¢ãƒ ã‚·ãƒ¼ãƒ«ãƒ‰ */
+		case SC_BERKANA:			/* ƒ~ƒŒƒjƒAƒ€ƒV[ƒ‹ƒh */
 			val2 = 2 + atn_rand()%3;
 			val3 = 1000;
 			if(sd)
 				clif_mshield(sd, val2);
 			break;
-		case SC_EISIR:				/* ãƒ•ã‚¡ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚¹ãƒ”ãƒªãƒƒãƒˆ */
+		case SC_EISIR:				/* ƒtƒ@ƒCƒeƒBƒ“ƒOƒXƒsƒŠƒbƒg */
 			calc_flag = 1;
 			val3 = (val3>9)? 4: (val3>7)? 3: (val3>4)? 2: (val3>2)? 1: 0;
 			break;
-		case SC_URUZ:				/* ã‚¢ãƒãƒ³ãƒ€ãƒ³ã‚¹ */
+		case SC_URUZ:				/* ƒAƒoƒ“ƒ_ƒ“ƒX */
 			val3 = tick / 10000;
 			if(val3 < 1)
 				val3 = 1;
 			tick = 10000;
 			break;
-		case SC_DEATHBOUND:			/* ãƒ‡ã‚¹ãƒã‚¦ãƒ³ãƒ‰ */
+		case SC_DEATHBOUND:			/* ƒfƒXƒoƒEƒ“ƒh */
 			val2 = 500+val1*100;
 			break;
-		case SC_FEAR:				/* ææ€– */
+		case SC_FEAR:				/* ‹°•| */
 			calc_flag = 1;
 			clif_emotion(bl,79);
 			val3 = (tick < 2000) ? 2000: tick - 2000;
 			tick = 2000;
 			break;
-		case SC_VENOMIMPRESS:		/* ãƒ™ãƒŠãƒ ã‚¤ãƒ³ãƒ—ãƒ¬ã‚¹ */
+		case SC_VENOMIMPRESS:		/* ƒxƒiƒ€ƒCƒ“ƒvƒŒƒX */
 			val2 = val1 * 10;
 			break;
-		case SC_POISONINGWEAPON:	/* ãƒã‚¤ã‚ºãƒ‹ãƒ³ã‚°ã‚¦ã‚§ãƒãƒ³ */
+		case SC_POISONINGWEAPON:	/* ƒ|ƒCƒYƒjƒ“ƒOƒEƒFƒ|ƒ“ */
 			val3 = 200 + val1 * 200;
 			break;
-		case SC_WEAPONBLOCKING:		/* ã‚¦ã‚§ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚° */
+		case SC_WEAPONBLOCKING:		/* ƒEƒFƒ|ƒ“ƒuƒƒbƒLƒ“ƒO */
 			val2 = 10 + val1 * 2;
 			val3 = tick / 5000;
 			tick = 5000;
 			break;
-		case SC_CLOAKINGEXCEED:		/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰ */
+		case SC_CLOAKINGEXCEED:		/* ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh */
 			calc_flag = 1;
-			val2 = (val1 + 1) / 2;	// ãƒ€ãƒ¡ãƒ¼ã‚¸è€æ€§
+			val2 = (val1 + 1) / 2;	// ƒ_ƒ[ƒW‘Ï«
 			tick = 1000;
 			break;
-		case SC_ROLLINGCUTTER:		/* ãƒ­ãƒ¼ãƒªãƒ³ã‚°ã‚«ãƒƒã‚¿ãƒ¼ */
+		case SC_ROLLINGCUTTER:		/* ƒ[ƒŠƒ“ƒOƒJƒbƒ^[ */
 			tick = 600*1000;
-			icon_val1 = val1;	// val2(å›è»¢æ•°)ã‚’æ¸¡ã—ã¦ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºã™ã‚‹
+			icon_val1 = val1;	// val2(‰ñ“]”)‚ğ“n‚µ‚ÄƒAƒCƒRƒ“•\¦‚·‚é
 			break;
-		case SC_TOXIN:				/* ãƒˆã‚­ã‚·ãƒ³ */
+		case SC_TOXIN:				/* ƒgƒLƒVƒ“ */
 			val2 = tick / 10000;
 			tick = 10000;
 			break;
-		case SC_VENOMBLEED:			/* ãƒ™ãƒŠãƒ ãƒ–ãƒªãƒ¼ãƒ‰ */
+		case SC_VENOMBLEED:			/* ƒxƒiƒ€ƒuƒŠ[ƒh */
 			calc_flag = 1;
 			val2 = 15;
 			break;
-		case SC_MAGICMUSHROOM:		/* ãƒã‚¸ãƒƒã‚¯ãƒãƒƒã‚·ãƒ¥ãƒ«ãƒ¼ãƒ  */
-		case SC_OBLIVIONCURSE:		/* ã‚ªãƒ–ãƒªãƒ“ã‚ªãƒ³ã‚«ãƒ¼ã‚¹ */
+		case SC_MAGICMUSHROOM:		/* ƒ}ƒWƒbƒNƒ}ƒbƒVƒ…ƒ‹[ƒ€ */
+		case SC_OBLIVIONCURSE:		/* ƒIƒuƒŠƒrƒIƒ“ƒJ[ƒX */
 			val2 = tick / 2000;
 			tick = 2000;
 			break;
-		case SC_DEATHHURT:			/* ãƒ‡ã‚¹ãƒãƒ¼ãƒˆ */
+		case SC_DEATHHURT:			/* ƒfƒXƒn[ƒg */
 			val2 = 20;
 			break;
-		case SC_PYREXIA:			/* ãƒ‘ã‚¤ãƒ¬ãƒƒã‚¯ã‚·ã‚¢ */
+		case SC_PYREXIA:			/* ƒpƒCƒŒƒbƒNƒVƒA */
 			val2 = tick / 3000;
 			tick = 3000;
 			break;
-		case SC_LEECHEND:			/* ãƒªãƒ¼ãƒã‚¨ãƒ³ãƒ‰ */
+		case SC_LEECHEND:			/* ƒŠ[ƒ`ƒGƒ“ƒh */
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_DARKCROW:			/* ãƒ€ãƒ¼ã‚¯ã‚¯ãƒ­ãƒ¼ */
+		case SC_DARKCROW:			/* ƒ_[ƒNƒNƒ[ */
 			val2 = val1 * 30;
 			break;
-		case SC_EPICLESIS:			/* ã‚¨ãƒ”ã‚¯ãƒ¬ã‚·ã‚¹ */
+		case SC_EPICLESIS:			/* ƒGƒsƒNƒŒƒVƒX */
 			calc_flag = 1;
 			val2 = val1 * 5;
 			break;
-		case SC_ORATIO:				/* ã‚ªãƒ©ãƒ†ã‚£ã‚ª */
+		case SC_ORATIO:				/* ƒIƒ‰ƒeƒBƒI */
 			val2 = val1 * 5;
 			break;
-		case SC_LAUDAAGNUS:			/* ãƒ©ã‚¦ãƒ€ã‚¢ã‚°ãƒŒã‚¹ */
-		case SC_LAUDARAMUS:			/* ãƒ©ã‚¦ãƒ€ãƒ©ãƒ ã‚¹ */
+		case SC_LAUDAAGNUS:			/* ƒ‰ƒEƒ_ƒAƒOƒkƒX */
+		case SC_LAUDARAMUS:			/* ƒ‰ƒEƒ_ƒ‰ƒ€ƒX */
 			calc_flag = 1;
 			val2 = val1 + 4;
 			break;
-		case SC_RENOVATIO:			/* ãƒ¬ãƒãƒ´ã‚¡ãƒ†ã‚£ã‚ª */
+		case SC_RENOVATIO:			/* ƒŒƒmƒ”ƒ@ƒeƒBƒI */
 			val2 = 3;
 			val3 = tick / 5000;
 			tick = 5000;
 			break;
-		case SC_EXPIATIO:			/* ã‚¨ã‚¯ã‚¹ãƒ”ã‚¢ãƒ†ã‚£ã‚ª */
+		case SC_EXPIATIO:			/* ƒGƒNƒXƒsƒAƒeƒBƒI */
 			val2 = val1 * 20;
 			break;
-		case SC_DUPLELIGHT:			/* ãƒ‡ãƒ¥ãƒ—ãƒ¬ãƒ©ã‚¤ãƒˆ */
-			val2 = 10 + val1 * 2;	// ç‰©ç†æ”»æ’ƒç™ºç”Ÿç¢ºç‡
-			val3 = 10 + val1 * 2;	// é­”æ³•æ”»æ’ƒç™ºç”Ÿç¢ºç‡
+		case SC_DUPLELIGHT:			/* ƒfƒ…ƒvƒŒƒ‰ƒCƒg */
+			val2 = 10 + val1 * 2;	// •¨—UŒ‚”­¶Šm—¦
+			val3 = 10 + val1 * 2;	// –‚–@UŒ‚”­¶Šm—¦
 			break;
-		case SC_SACRAMENT:			/* ã‚µã‚¯ãƒ©ãƒ¡ãƒ³ãƒˆ */
+		case SC_SACRAMENT:			/* ƒTƒNƒ‰ƒƒ“ƒg */
 			val2 = val1 * 10;
 			break;
-		case SC_MARSHOFABYSS:		/* ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹ */
+		case SC_MARSHOFABYSS:		/* ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
-			val2 = val1 * 10;	// ç§»å‹•é€Ÿåº¦æ¸›å°‘ç‡
-			val3 = val1 * 6;	// AGI/DEXæ¸›å°‘ç‡
+			val2 = val1 * 10;	// ˆÚ“®‘¬“xŒ¸­—¦
+			val3 = val1 * 6;	// AGI/DEXŒ¸­—¦
 			break;
-		case SC_SUMMONBALL1:		/* ã‚µãƒ¢ãƒ³ãƒœãƒ¼ãƒ«(1å€‹ç›®) */
-		case SC_SUMMONBALL2:		/* ã‚µãƒ¢ãƒ³ãƒœãƒ¼ãƒ«(2å€‹ç›®) */
-		case SC_SUMMONBALL3:		/* ã‚µãƒ¢ãƒ³ãƒœãƒ¼ãƒ«(3å€‹ç›®) */
-		case SC_SUMMONBALL4:		/* ã‚µãƒ¢ãƒ³ãƒœãƒ¼ãƒ«(4å€‹ç›®) */
-		case SC_SUMMONBALL5:		/* ã‚µãƒ¢ãƒ³ãƒœãƒ¼ãƒ«(5å€‹ç›®) */
-			icon_val1 = val2;	// val2(å±æ€§ã®ç¨®é¡)ã‚’æ¸¡ã—ã¦ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºã™ã‚‹
+		case SC_SUMMONBALL1:		/* ƒTƒ‚ƒ“ƒ{[ƒ‹(1ŒÂ–Ú) */
+		case SC_SUMMONBALL2:		/* ƒTƒ‚ƒ“ƒ{[ƒ‹(2ŒÂ–Ú) */
+		case SC_SUMMONBALL3:		/* ƒTƒ‚ƒ“ƒ{[ƒ‹(3ŒÂ–Ú) */
+		case SC_SUMMONBALL4:		/* ƒTƒ‚ƒ“ƒ{[ƒ‹(4ŒÂ–Ú) */
+		case SC_SUMMONBALL5:		/* ƒTƒ‚ƒ“ƒ{[ƒ‹(5ŒÂ–Ú) */
+			icon_val1 = val2;	// val2(‘®«‚Ìí—Ş)‚ğ“n‚µ‚ÄƒAƒCƒRƒ“•\¦‚·‚é
 			break;
-		case SC_HELLINFERNO:		/* ãƒ˜ãƒ«ã‚¤ãƒ³ãƒ•ã‚§ãƒ«ãƒ */
+		case SC_HELLINFERNO:		/* ƒwƒ‹ƒCƒ“ƒtƒFƒ‹ƒm */
 			calc_flag = 1;
 			val2 = tick / 1000;
 			val3 = 0;
 			tick = 1000;
 			break;
-		case SC_TELEKINESIS_INTENSE:	/* ãƒ†ãƒ¬ã‚­ãƒã‚·ã‚¹ã‚¤ãƒ³ãƒ†ãƒ³ã‚¹ */
-			val2 = val1 * 40;	// å¢—åŠ ç‡
-			val3 = val1 * 10;	// æ¶ˆè²»SPè»½æ¸›ç‡
+		case SC_TELEKINESIS_INTENSE:	/* ƒeƒŒƒLƒlƒVƒXƒCƒ“ƒeƒ“ƒX */
+			val2 = val1 * 40;	// ‘‰Á—¦
+			val3 = val1 * 10;	// Á”ïSPŒyŒ¸—¦
 			break;
-		case SC_FEARBREEZE:			/* ãƒ•ã‚£ã‚¢ãƒ¼ãƒ–ãƒªãƒ¼ã‚º */
-			val2 = (val1 > 1)? val1 * 2 + (val1 - 1) / 2 % 2 : 4;	// ç™ºå‹•ç¢ºç‡
-			val3 = (val1 > 1)? val1: 2;	// æœ€å¤§æ”»æ’ƒå›æ•°
+		case SC_FEARBREEZE:			/* ƒtƒBƒA[ƒuƒŠ[ƒY */
+			val2 = (val1 > 1)? val1 * 2 + (val1 - 1) / 2 % 2 : 4;	// ”­“®Šm—¦
+			val3 = (val1 > 1)? val1: 2;	// Å‘åUŒ‚‰ñ”
 			break;
-		case SC_ELECTRICSHOCKER:	/* ã‚¨ãƒ¬ã‚¯ãƒˆãƒªãƒƒã‚¯ã‚·ãƒ§ãƒƒã‚«ãƒ¼ */
+		case SC_ELECTRICSHOCKER:	/* ƒGƒŒƒNƒgƒŠƒbƒNƒVƒ‡ƒbƒJ[ */
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_CAMOUFLAGE:			/* ã‚«ãƒ¢ãƒ•ãƒ©ãƒ¼ã‚¸ãƒ¥ */
+		case SC_CAMOUFLAGE:			/* ƒJƒ‚ƒtƒ‰[ƒWƒ… */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_UNLIMIT:			/* ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ */
+		case SC_UNLIMIT:			/* ƒAƒ“ƒŠƒ~ƒbƒg */
 			calc_flag = 1;
-			val2 = val1 * 50;	// å¢—åŠ ç‡
+			val2 = val1 * 50;	// ‘‰Á—¦
 			break;
-		case SC_OVERHEAT:			/* åŠ ç†± */
+		case SC_OVERHEAT:			/* ‰Á”M */
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_SHAPESHIFT:			/* ã‚·ã‚§ã‚¤ãƒ—ã‚·ãƒ•ãƒˆ */
+		case SC_SHAPESHIFT:			/* ƒVƒFƒCƒvƒVƒtƒg */
 			switch(val1) {
 				case 1:  val2 = ELE_FIRE;  break;
 				case 2:  val2 = ELE_EARTH; break;
@@ -8527,11 +8527,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				default: val2 = ELE_WATER; break;
 			}
 			break;
-		case SC_MAGNETICFIELD:		/* ãƒã‚°ãƒãƒ†ã‚£ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ */
+		case SC_MAGNETICFIELD:		/* ƒ}ƒOƒlƒeƒBƒbƒNƒtƒB[ƒ‹ƒh */
 			val2 = tick / 3000;
 			tick = 3000;
 			break;
-		case SC_STEALTHFIELD_USER:	/* ã‚¹ãƒ†ãƒ«ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ä½¿ç”¨è€…) */
+		case SC_STEALTHFIELD_USER:	/* ƒXƒeƒ‹ƒXƒtƒB[ƒ‹ƒh(g—pÒ) */
 			val3 = (6000 - 1000 * val1);
 			val3 = (val3 < 1000)? 1000: val3;
 			val2 = tick / val3;
@@ -8539,19 +8539,19 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC__REPRODUCE:		/* ãƒªãƒ—ãƒ­ãƒ‡ãƒ¥ãƒ¼ã‚¹ */
+		case SC__REPRODUCE:		/* ƒŠƒvƒƒfƒ…[ƒX */
 			tick = 1000;
 			break;
-		case SC__AUTOSHADOWSPELL:	/* ã‚·ãƒ£ãƒ‰ã‚¦ã‚ªãƒ¼ãƒˆã‚¹ãƒšãƒ« */
-			val4 = 30 - ((val1%2)? 2: 0) - ((val1+1)/2) * 2;		// ç™ºå‹•ç¢ºç‡
+		case SC__AUTOSHADOWSPELL:	/* ƒVƒƒƒhƒEƒI[ƒgƒXƒyƒ‹ */
+			val4 = 30 - ((val1%2)? 2: 0) - ((val1+1)/2) * 2;		// ”­“®Šm—¦
 			val4 = (val4 < 1)? 1: val4;
 			break;
-		case SC__SHADOWFORM:		/* ã‚·ãƒ£ãƒ‰ã‚¦ãƒ•ã‚©ãƒ¼ãƒ  */
-			val3 = 4 + val1;	// æ®‹ã‚Šå›æ•°
+		case SC__SHADOWFORM:		/* ƒVƒƒƒhƒEƒtƒH[ƒ€ */
+			val3 = 4 + val1;	// c‚è‰ñ”
 			val4 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC__INVISIBILITY:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£ */
+		case SC__INVISIBILITY:		/* ƒCƒ“ƒrƒWƒrƒŠƒeƒB */
 			if(sd) {
 				tick = 1000;
 				calc_flag = 1;
@@ -8559,25 +8559,25 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				tick = 5000*val1;
 			}
 			break;
-		case SC_REFLECTDAMAGE:		/* ãƒªãƒ•ãƒ¬ã‚¯ãƒˆãƒ€ãƒ¡ãƒ¼ã‚¸ */
-			// ãƒªãƒ•ãƒ¬ã‚¯ãƒˆã‚·ãƒ¼ãƒ«ãƒ‰ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+		case SC_REFLECTDAMAGE:		/* ƒŠƒtƒŒƒNƒgƒ_ƒ[ƒW */
+			// ƒŠƒtƒŒƒNƒgƒV[ƒ‹ƒh‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_REFLECTSHIELD].timer != -1)
 				status_change_end(bl,SC_REFLECTSHIELD,-1);
 			val2 = tick / 10000;
-			val3 = val1 * 5 + 15;	// åå°„ç‡
-			val4 = val1 * 5 + 25;	// åå°„å›æ•°
+			val3 = val1 * 5 + 15;	// ”½Ë—¦
+			val4 = val1 * 5 + 25;	// ”½Ë‰ñ”
 			tick = 10000;
 			break;
-		case SC_FORCEOFVANGUARD:	/* ãƒ•ã‚©ãƒ¼ã‚¹ã‚ªãƒ–ãƒãƒ³ã‚¬ãƒ¼ãƒ‰ */
+		case SC_FORCEOFVANGUARD:	/* ƒtƒH[ƒXƒIƒuƒoƒ“ƒK[ƒh */
 			val2 = tick / 10000;
-			val3 = val1 * 12 + 8;	// æ€’ã‚Šã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ç™ºå‹•ç‡
+			val3 = val1 * 12 + 8;	// “{‚èƒJƒEƒ“ƒ^[”­“®—¦
 			tick = 10000;
 			icon_tick = -1;
 			calc_flag = 1;
 			break;
-		case SC_SHIELDSPELL_DEF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF) */
-		case SC_SHIELDSPELL_MDEF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(MDEF) */
-		case SC_SHIELDSPELL_REF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(ç²¾éŒ¬) */
+		case SC_SHIELDSPELL_DEF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF) */
+		case SC_SHIELDSPELL_MDEF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(MDEF) */
+		case SC_SHIELDSPELL_REF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(¸˜B) */
 			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1)
 				status_change_end(bl,SC_SHIELDSPELL_DEF,-1);
 			if(sc->data[SC_SHIELDSPELL_MDEF].timer != -1)
@@ -8586,7 +8586,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				status_change_end(bl,SC_SHIELDSPELL_REF,-1);
 			calc_flag = 1;
 			break;
-		case SC_EXEEDBREAK:			/* ã‚¤ã‚¯ã‚·ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯ */
+		case SC_EXEEDBREAK:			/* ƒCƒNƒV[ƒhƒuƒŒƒCƒN */
 			if(sd) {
 				int idx = sd->equip_index[EQUIP_INDEX_RARM];
 				val2 = 100 + val1 * 150 + sd->status.job_level * 15;
@@ -8598,31 +8598,31 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			tick = 600*1000;
 			break;
-		case SC_PRESTIGE:	/* ãƒ—ãƒ¬ã‚¹ãƒ†ã‚£ãƒ¼ã‚¸ */
-			val2 = val1 * 15 * status_get_lv(bl) / 100;		// Defå¢—åŠ å€¤
+		case SC_PRESTIGE:	/* ƒvƒŒƒXƒeƒB[ƒW */
+			val2 = val1 * 15 * status_get_lv(bl) / 100;		// Def‘‰Á’l
 			if(sd) {
 				val2 += pc_checkskill(sd,CR_DEFENDER) / 5 * status_get_lv(bl) / 2;
 			}
-			val3 = (1 + status_get_agi(bl) / 20 + status_get_luk(bl) / 40) * val1 / 2;		// é­”æ³•å›é¿ç‡
+			val3 = (1 + status_get_agi(bl) / 20 + status_get_luk(bl) / 40) * val1 / 2;		// –‚–@‰ñ”ğ—¦
 			calc_flag = 1;
 			break;
-		case SC_BANDING:	/* ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚° */
+		case SC_BANDING:	/* ƒoƒ“ƒfƒBƒ“ƒO */
 			tick = 5000;
 			icon_tick = 9999;
 			calc_flag = 1;
 			break;
-		case SC_SITDOWN_FORCE:		/* è»¢å€’ */
+		case SC_SITDOWN_FORCE:		/* “]“| */
 			if(sd){
 				pc_setsit(sd);
 				clif_sitting(&sd->bl, 1);
 			}
 			break;
-		case SC_INSPIRATION:	/* ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
+		case SC_INSPIRATION:	/* ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“ */
 			val2 = tick / 6000;
 			tick = 6000;
 			calc_flag = 1;
 			break;
-		case SC_KINGS_GRACE:	/* ã‚­ãƒ³ã‚°ã‚¹ã‚°ãƒ¬ã‚¤ã‚¹ */
+		case SC_KINGS_GRACE:	/* ƒLƒ“ƒOƒXƒOƒŒƒCƒX */
 			status_change_end(bl,SC_POISON,-1);
 			status_change_end(bl,SC_BLIND,-1);
 			status_change_end(bl,SC_FREEZE,-1);
@@ -8648,75 +8648,75 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val4 = 3 + val1;
 			tick = 1000;
 			break;
-		case SC_RAISINGDRAGON:	/* æ½œé¾æ˜‡å¤© */
+		case SC_RAISINGDRAGON:	/* ö—´¸“V */
 			val2 = tick / 5000;
-			val3 = val1 + 2;	// MaxHP,MaxSPå¢—åŠ ç‡
+			val3 = val1 + 2;	// MaxHP,MaxSP‘‰Á—¦
 			tick = 5000;
 			calc_flag = 1;
 			break;
-		case SC_GENTLETOUCH_ENERGYGAIN:	/* ç‚¹ç©´ -çƒ- */
-			// ç‚¹ç©´ -å-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+		case SC_GENTLETOUCH_ENERGYGAIN:	/* “_ŒŠ -‹…- */
+			// “_ŒŠ -”½-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_CHANGE,-1);
-			// ç‚¹ç©´ -æ´»-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+			// “_ŒŠ -Šˆ-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_REVITALIZE,-1);
-			val2 = val1 * 5 + 10;	// æ°—å¼¾ç”Ÿæˆç‡
+			val2 = val1 * 5 + 10;	// ‹C’e¶¬—¦
 			break;
-		case SC_GENTLETOUCH_CHANGE:	/* ç‚¹ç©´ -å- */
-			// ç‚¹ç©´ -çƒ-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+		case SC_GENTLETOUCH_CHANGE:	/* “_ŒŠ -”½- */
+			// “_ŒŠ -‹…-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_ENERGYGAIN,-1);
-			// ç‚¹ç©´ -æ´»-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+			// “_ŒŠ -Šˆ-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_REVITALIZE].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_REVITALIZE,-1);
-			val4 = status_get_agi(bl) / 15;		// ASPDä¸Šæ˜‡å€¤
+			val4 = status_get_agi(bl) / 15;		// ASPDã¸’l
 			calc_flag = 1;
 			break;
-		case SC_GENTLETOUCH_REVITALIZE:	/* ç‚¹ç©´ -æ´»- */
-			// ç‚¹ç©´ -çƒ-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+		case SC_GENTLETOUCH_REVITALIZE:	/* “_ŒŠ -Šˆ- */
+			// “_ŒŠ -‹…-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_ENERGYGAIN].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_ENERGYGAIN,-1);
-			// ç‚¹ç©´ -å-ãŒæ›ã‹ã£ã¦ã„ãŸã‚‰è§£é™¤
+			// “_ŒŠ -”½-‚ªŠ|‚©‚Á‚Ä‚¢‚½‚ç‰ğœ
 			if(sc->data[SC_GENTLETOUCH_CHANGE].timer != -1)
 				status_change_end(bl,SC_GENTLETOUCH_CHANGE,-1);
 			calc_flag = 1;
 			break;
-		case SC_SWING:				/* ã‚¹ã‚¤ãƒ³ã‚°ãƒ€ãƒ³ã‚¹ */
+		case SC_SWING:				/* ƒXƒCƒ“ƒOƒ_ƒ“ƒX */
 			val4 = (val1 * 5) + (val2 * 2 / 10);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_RUSH_WINDMILL:		/* é¢¨è»Šã«å‘ã‹ã£ã¦çªæ’ƒ */
+		case SC_RUSH_WINDMILL:		/* •—Ô‚ÉŒü‚©‚Á‚Ä“ËŒ‚ */
 			val4 = (val1 * 6) + (val2 / 5) + val3;
 			calc_flag = 1;
 			break;
-		case SC_MOONLIT_SERENADE:	/* æœˆæ˜ã‹ã‚Šã®ã‚»ãƒ¬ãƒŠãƒ¼ãƒ‡ */
+		case SC_MOONLIT_SERENADE:	/* Œ–¾‚©‚è‚ÌƒZƒŒƒi[ƒf */
 			val4 = (val1 * 5) + (val2 / 4) + val3;
 			calc_flag = 1;
 			break;
-		case SC_ECHOSONG:			/* ã‚¨ã‚³ãƒ¼ã®æ­Œ */
+		case SC_ECHOSONG:			/* ƒGƒR[‚Ì‰Ì */
 			calc_flag = 1;
 			val4 = (val1 * 6) + (val2 / 4) + val3;
 			break;
-		case SC_SYMPHONY_LOVE:		/* æ‹äººãŸã¡ã®ç‚ºã®ã‚·ãƒ³ãƒ•ã‚©ãƒ‹ãƒ¼ */
+		case SC_SYMPHONY_LOVE:		/* —öl‚½‚¿‚Ìˆ×‚ÌƒVƒ“ƒtƒHƒj[ */
 			calc_flag = 1;
 			val4 = (val1 * 12) + (val2 / 4) + val3;
 			break;
-		case SC_WINKCHARM:	/* é­…æƒ‘ã®ã‚¦ã‚£ãƒ³ã‚¯ */
-		case SC_SIREN:		/* ã‚»ã‚¤ãƒ¬ãƒ¼ãƒ³ã®å£° */
+		case SC_WINKCHARM:	/* –£˜f‚ÌƒEƒBƒ“ƒN */
+		case SC_SIREN:		/* ƒZƒCƒŒ[ƒ“‚Ìº */
 			val3 = tick / 3000;
 			tick = 3000;
 			break;
-		case SC_DEEP_SLEEP:		/* å®‰ã‚‰ãã®å­å®ˆå”„ */
+		case SC_DEEP_SLEEP:		/* ˆÀ‚ç‚¬‚Ìqç‰S */
 			val2 = tick / 2000;
 			tick = 2000;
 			break;
-		case SC_SIRCLEOFNATURE:		/* å¾ªç’°ã™ã‚‹è‡ªç„¶ã®éŸ³ */
+		case SC_SIRCLEOFNATURE:		/* zŠÂ‚·‚é©‘R‚Ì‰¹ */
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_BEYOND_OF_WARCRY:	/* ãƒ“ãƒ¨ãƒ³ãƒ‰ã‚ªãƒ–ã‚¦ã‚©ãƒ¼ã‚¯ãƒ©ã‚¤ */
+		case SC_BEYOND_OF_WARCRY:	/* ƒrƒˆƒ“ƒhƒIƒuƒEƒH[ƒNƒ‰ƒC */
 			val3 = val1 * 4;
 			val4 = val1;
 			if(val2 >= 3 && val2 <= 7) {
@@ -8725,7 +8725,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			calc_flag = 1;
 			break;
-		case SC_MELODYOFSINK:		/* ãƒ¡ãƒ­ãƒ‡ã‚£ãƒ¼ã‚ªãƒ–ã‚·ãƒ³ã‚¯ */
+		case SC_MELODYOFSINK:		/* ƒƒƒfƒB[ƒIƒuƒVƒ“ƒN */
 			val3 = val1 * 2;
 			val4 = val1;
 			if(val2 >= 3 && val2 <= 7) {
@@ -8736,70 +8736,70 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_SONG_OF_MANA:		/* ãƒãƒŠã®æ­Œ */
+		case SC_SONG_OF_MANA:		/* ƒ}ƒi‚Ì‰Ì */
 			val2 = tick / 5000;
 			tick = 5000;
 			break;
-		case SC_SATURDAY_NIGHT_FEVER:	/* ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼ */
+		case SC_SATURDAY_NIGHT_FEVER:	/* ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[ */
 			val3 = 12000 - val1 * 2000;
 			val2 = tick / val3;
 			tick = val3;
 			calc_flag = 1;
 			break;
-		case SC_FRIGG_SONG:			/* ãƒ•ãƒªãƒƒã‚°ã®æ­Œ */
+		case SC_FRIGG_SONG:			/* ƒtƒŠƒbƒO‚Ì‰Ì */
 			val2 = tick / 1000;
 			val3 = val1 * 5;
 			val4 = val1 * 20 + 80;
 			calc_flag = 1;
 			break;
-		case SC_PROPERTYWALK:		/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼/ã‚¨ãƒ¬ã‚¯ãƒˆãƒªãƒƒã‚¯ã‚¦ã‚©ãƒ¼ã‚¯ */
-			val3 = val1 * 2 + 6;	// ç™ºç”Ÿå€‹æ•°
+		case SC_PROPERTYWALK:		/* ƒtƒ@ƒCƒA[/ƒGƒŒƒNƒgƒŠƒbƒNƒEƒH[ƒN */
+			val3 = val1 * 2 + 6;	// ”­¶ŒÂ”
 			break;
-		case SC_DIAMONDDUST:		/* ãƒ€ã‚¤ãƒ¤ãƒ¢ãƒ³ãƒ‰ãƒ€ã‚¹ãƒˆ */
+		case SC_DIAMONDDUST:		/* ƒ_ƒCƒ„ƒ‚ƒ“ƒhƒ_ƒXƒg */
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_SPELLFIST:		/* ã‚¹ãƒšãƒ«ãƒ•ã‚£ã‚¹ãƒˆ */
-			val4 = val1 + 1;	// å›æ•°
+		case SC_SPELLFIST:		/* ƒXƒyƒ‹ƒtƒBƒXƒg */
+			val4 = val1 + 1;	// ‰ñ”
 			break;
-		case SC_STRIKING:			/* ã‚¹ãƒˆãƒ©ã‚¤ã‚­ãƒ³ã‚° */
+		case SC_STRIKING:			/* ƒXƒgƒ‰ƒCƒLƒ“ƒO */
 			val2 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_BLOOD_SUCKER:		/* ãƒ–ãƒ©ãƒƒãƒ‰ã‚µãƒƒã‚«ãƒ¼ */
+		case SC_BLOOD_SUCKER:		/* ƒuƒ‰ƒbƒhƒTƒbƒJ[ */
 			val4 = tick / 1000;
-			tick = 1000;	// ãƒ€ãƒ¡ãƒ¼ã‚¸ç™ºç”Ÿé–“éš”
+			tick = 1000;	// ƒ_ƒ[ƒW”­¶ŠÔŠu
 			break;
-		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(ç…™å¹•) */
-			val2 = 25;		// è¿‘è·é›¢ãƒ»é è·é›¢ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘ç‡
-			val3 = 25;		// Fleeä¸Šæ˜‡ç‡
+		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(‰Œ–‹) */
+			val2 = 25;		// ‹ß‹——£E‰“‹——£ƒ_ƒ[ƒWŒ¸­—¦
+			val3 = 25;		// Fleeã¸—¦
 			calc_flag = 1;
 			break;
-		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™ã‚¬ã‚¹) */
-			val2 = 25;		// Hit,Fleeæ¸›å°‘ç‡
+		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—ÜƒKƒX) */
+			val2 = 25;		// Hit,FleeŒ¸­—¦
 			val3 = tick / 3000;
 			tick = 3000;
 			calc_flag = 1;
 			break;
-		case SC_MANDRAGORA:			/* ãƒã‚¦ãƒªãƒ³ã‚°ã‚ªãƒ–ãƒãƒ³ãƒ‰ãƒ©ã‚´ãƒ© */
-			val2 = val1 * 5 + 5;		// Intæ¸›å°‘å€¤
-			val3 = 3000;		// å›ºå®šè© å”±å¢—åŠ å€¤
+		case SC_MANDRAGORA:			/* ƒnƒEƒŠƒ“ƒOƒIƒuƒ}ƒ“ƒhƒ‰ƒSƒ‰ */
+			val2 = val1 * 5 + 5;		// IntŒ¸­’l
+			val3 = 3000;		// ŒÅ’è‰r¥‘‰Á’l
 			calc_flag = 1;
 			break;
-		case SC_BANANA_BOMB:		/* ãƒãƒŠãƒŠçˆ†å¼¾ */
+		case SC_BANANA_BOMB:		/* ƒoƒiƒi”š’e */
 			if(sd){
 				pc_setsit(sd);
 				clif_sitting(&sd->bl, 1);
 			}
 			calc_flag = 1;
 			break;
-		case SC_MEIKYOUSISUI:		/* æ˜é¡æ­¢æ°´ */
+		case SC_MEIKYOUSISUI:		/* –¾‹¾~… */
 			val2 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_IZAYOI:			/* åå…­å¤œ */
+		case SC_IZAYOI:			/* \˜Z–é */
 			if(sd) {
 				val2 = sd->status.job_level/2 * val1;
 			} else {
@@ -8809,69 +8809,69 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_KAGEMUSYA:		/* å¹»è¡“ -åˆ†èº«- */
+		case SC_KAGEMUSYA:		/* Œ¶p -•ªg- */
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_ZANGETSU:		/* å¹»è¡“ -æ®‹æœˆ- */
+		case SC_ZANGETSU:		/* Œ¶p -cŒ- */
 			if(status_get_hp(bl)%2 == 0)
-				val2 += status_get_lv(bl) / 3 + val1 * 20; 	// HPãŒå¶æ•°ã®å ´åˆ
+				val2 += status_get_lv(bl) / 3 + val1 * 20; 	// HP‚ª‹ô”‚Ìê‡
 			else
-				val2 -= status_get_lv(bl) / 3 + val1 * 30; 	// HPãŒå¥‡æ•°ã®å ´åˆ
+				val2 -= status_get_lv(bl) / 3 + val1 * 30; 	// HP‚ªŠï”‚Ìê‡
 			if(status_get_sp(bl)%2 == 0)
-				val3 += status_get_lv(bl) / 3 + val1 * 20; 	// SPãŒå¶æ•°ã®å ´åˆ
+				val3 += status_get_lv(bl) / 3 + val1 * 20; 	// SP‚ª‹ô”‚Ìê‡
 			else
-				val3 -= status_get_lv(bl) / 3 + val1 * 30; 	// SPãŒå¥‡æ•°ã®å ´åˆ
+				val3 -= status_get_lv(bl) / 3 + val1 * 30; 	// SP‚ªŠï”‚Ìê‡
 			calc_flag = 1;
 			break;
-		case SC_GENSOU:		/* å¹»è¡“ -æœ§å¹»æƒ³- */
-			val2 = val1 * 10; 	// ãƒ€ãƒ¡ãƒ¼ã‚¸åå°„ç‡
+		case SC_GENSOU:		/* Œ¶p -OŒ¶‘z- */
+			val2 = val1 * 10; 	// ƒ_ƒ[ƒW”½Ë—¦
 			break;
-		case SC_C_MARKER:		/* ã‚¯ãƒªãƒ ã‚¾ãƒ³ãƒãƒ¼ã‚«ãƒ¼ */
+		case SC_C_MARKER:		/* ƒNƒŠƒ€ƒ]ƒ“ƒ}[ƒJ[ */
 			if(val3 < 0 || val3 >= 3)
 				return 0;
 			val4 = tick/1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_B_TRAP:			/* ãƒã‚¤ãƒ³ãƒ‰ãƒˆãƒ©ãƒƒãƒ— */
+		case SC_B_TRAP:			/* ƒoƒCƒ“ƒhƒgƒ‰ƒbƒv */
 			val3 = val1 * 25;
 			ud->state.change_speed = 1;
 			break;
-		case SC_HEAT_BARREL:		/* ãƒ’ãƒ¼ãƒˆãƒãƒ¬ãƒ« */
+		case SC_HEAT_BARREL:		/* ƒq[ƒgƒoƒŒƒ‹ */
 			val2 = val4 * 5;		// fixcast
 			val3 = (6 + val1 * 2) * val4; // atk
 			val4 = 25 + val1 * 5; // hit
 			calc_flag = 1;
 			break;
-		case SC_P_ALTER:		/* ãƒ—ãƒ©ãƒãƒŠãƒ ã‚¢ãƒ«ã‚¿ãƒ¼ */
+		case SC_P_ALTER:		/* ƒvƒ‰ƒ`ƒiƒ€ƒAƒ‹ƒ^[ */
 			if(sd) {
 				int idx = sd->equip_index[EQUIP_INDEX_ARROW];
 				if(idx >= 0 && sd->inventory_data[idx] &&
-					(sd->inventory_data[idx]->nameid == 13220 ||		// ã‚µãƒ³ã‚¯ã‚¿ãƒ•ã‚¡ã‚¤ãƒ‰ãƒãƒ¬ãƒƒãƒˆ
-					sd->inventory_data[idx]->nameid == 13221)		// ã‚·ãƒ«ãƒãƒ¼ãƒãƒ¬ãƒƒãƒˆC
+					(sd->inventory_data[idx]->nameid == 13220 ||		// ƒTƒ“ƒNƒ^ƒtƒ@ƒCƒhƒoƒŒƒbƒg
+					sd->inventory_data[idx]->nameid == 13221)		// ƒVƒ‹ƒo[ƒoƒŒƒbƒgC
 				)
 					val2 = 10 + 10 * val4; // atk
 			}
 			else
 				val2 = 10 + 10 * val4; // atk
-			val3 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 5) / 100);	// è€ä¹…åº¦
-			val4 = val1 + 3;	// å›æ•°
+			val3 = (int)((atn_bignumber)status_get_max_hp(bl) * (val1 * 5) / 100);	// ‘Ï‹v“x
+			val4 = val1 + 3;	// ‰ñ”
 			break;
 		case SC_ANTI_M_BLAST:
 			val2 = 15 + val1 * 2;
 			break;
-		case SC_SUHIDE:				/* ã‹ãã‚Œã‚‹ */
+		case SC_SUHIDE:				/* ‚©‚­‚ê‚é */
 			tick = 60 * 1000;
 			break;
-		case SC_ARCLOUSEDASH:		/* ã‚¢ã‚¯ãƒ©ã‚¦ã‚¹ãƒ€ãƒƒã‚·ãƒ¥ */
-			val2 = 3 + ((val1-1) / 2) * 6;	// AGIå¢—åŠ 
-			val3 = 5 + (val1/2) * 5;	// é è·é›¢æ”»æ’ƒå¢—åŠ 
+		case SC_ARCLOUSEDASH:		/* ƒAƒNƒ‰ƒEƒXƒ_ƒbƒVƒ… */
+			val2 = 3 + ((val1-1) / 2) * 6;	// AGI‘‰Á
+			val3 = 5 + (val1/2) * 5;	// ‰“‹——£UŒ‚‘‰Á
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			break;
-		case SC_SHRIMP:		/* ã‚¨ãƒ“ä¸‰æ˜§ */
-			if(val2 >= 5)	// WATK/MATKå¢—åŠ 
+		case SC_SHRIMP:		/* ƒGƒrO–† */
+			if(val2 >= 5)	// WATK/MATK‘‰Á
 				val3 = 30;
 			else if(val2 == 1)
 				val3 = 5;
@@ -8879,62 +8879,62 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				val3 = (val2 - 1) * 5;
 			calc_flag = 1;
 			break;
-		case SC_FRESHSHRIMP:		/* æ–°é®®ãªã‚¨ãƒ“ */
+		case SC_FRESHSHRIMP:		/* V‘N‚ÈƒGƒr */
 			val3 = 13000 - 2000 * val1;
 			val2 = tick / val3;
 			tick = val3;
 			break;
-		case SC_CHATTERING:			/* ãƒãƒ£ã‚¿ãƒªãƒ³ã‚° */
-			if(val1 >= 5)	// ATK/MATKå¢—åŠ 
+		case SC_CHATTERING:			/* ƒ`ƒƒƒ^ƒŠƒ“ƒO */
+			if(val1 >= 5)	// ATK/MATK‘‰Á
 				val2 = 150;
 			else if(val1 == 4)
 				val2 = 100;
 			else
 				val2 = 10 + val1 * 20;
-			val3 = (val1>=5)? 35: 25;	// ç§»å‹•é€Ÿåº¦å¢—åŠ 
+			val3 = (val1>=5)? 35: 25;	// ˆÚ“®‘¬“x‘‰Á
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			break;
-		case SC_HISS:				/* è­¦æˆ’ */
+		case SC_HISS:				/* Œx‰ú */
 			val4 = tick / 1000;
 			tick = 1000;
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			break;
-		case SC_GROOMING:			/* ã‚°ãƒ«ãƒ¼ãƒŸãƒ³ã‚° */
-			val2 = val1 * 10;	// Fleeå¢—åŠ 
+		case SC_GROOMING:			/* ƒOƒ‹[ƒ~ƒ“ƒO */
+			val2 = val1 * 10;	// Flee‘‰Á
 			calc_flag = 1;
 			break;
-		case SC_SV_ROOTTWIST:	/* ãƒã‚¿ã‚¿ãƒ“ã®æ ¹ã£ã“ */
+		case SC_SV_ROOTTWIST:	/* ƒ}ƒ^ƒ^ƒr‚Ìª‚Á‚± */
 			val3 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_CATNIPPOWDER:		/* ã‚¤ãƒŒãƒãƒƒã‚«ã‚·ãƒ£ãƒ¯ãƒ¼ */
-			val2 = 30;	// æ­¦å™¨æ”»æ’ƒåŠ›ã¨Matkæ¸›å°‘
-			val3 = 50;	// HPãƒ»SPè‡ªç„¶å›å¾©é‡å¢—åŠ 
+		case SC_CATNIPPOWDER:		/* ƒCƒkƒnƒbƒJƒVƒƒƒ[ */
+			val2 = 30;	// •ŠíUŒ‚—Í‚ÆMatkŒ¸­
+			val3 = 50;	// HPESP©‘R‰ñ•œ—Ê‘‰Á
 			calc_flag = 1;
 			break;
-		case SC_BURNT:			/* ç„ç‚å‘ª */
+		case SC_BURNT:			/* –‰Šô */
 			val3 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_CHILL:			/* æ°¸ä¹…éœœ */
+		case SC_CHILL:			/* ‰i‹v‘š */
 			status_change_end(bl,SC_BURNT,-1);
 			break;
-		case SC_MER_FLEE:		/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(FLEE) */
-		case SC_MER_ATK:		/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(ATK) */
-		case SC_MER_HIT:		/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(HIT) */
+		case SC_MER_FLEE:		/* —b•ºƒ{[ƒiƒX(FLEE) */
+		case SC_MER_ATK:		/* —b•ºƒ{[ƒiƒX(ATK) */
+		case SC_MER_HIT:		/* —b•ºƒ{[ƒiƒX(HIT) */
 			val2 = val1 * 15;
 			calc_flag = 1;
 			break;
-		case SC_MER_HP:			/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(HP) */
-		case SC_MER_SP:			/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(SP) */
+		case SC_MER_HP:			/* —b•ºƒ{[ƒiƒX(HP) */
+		case SC_MER_SP:			/* —b•ºƒ{[ƒiƒX(SP) */
 			val2 = val1 * 5;
 			calc_flag = 1;
 			break;
-		case SC_ON_PUSH_CART:	/* ã‚«ãƒ¼ãƒˆ */
-			icon_val1 = val1;	// ã‚«ãƒ¼ãƒˆã‚¿ã‚¤ãƒ—ã‚’æ¸¡ã™
+		case SC_ON_PUSH_CART:	/* ƒJ[ƒg */
+			icon_val1 = val1;	// ƒJ[ƒgƒ^ƒCƒv‚ğ“n‚·
 			ud->state.change_speed = 1;
 			calc_flag = 1;
 			if(sd && val2) {
@@ -8944,207 +8944,207 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			val2 = 1;
 			break;
-		case SC_SUMMON_ELEM:	/* ã‚µãƒ¢ãƒ³ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ« */
+		case SC_SUMMON_ELEM:	/* ƒTƒ‚ƒ“ƒGƒŒƒƒ“ƒ^ƒ‹ */
 			val2 = tick / 10000;
 			tick = 10000;
-			val3 = val1 * 3 + 2;		// SPæ¶ˆè²»é‡
+			val3 = val1 * 3 + 2;		// SPÁ”ï—Ê
 			break;
-		case SC_FIRE_CLOAK:		/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ã‚¯ */
-		case SC_WATER_DROP:		/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ãƒ‰ãƒ­ãƒƒãƒ— */
-		case SC_WIND_CURTAIN:	/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ†ãƒ³ */
-		case SC_STONE_SHIELD:	/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚·ãƒ¼ãƒ«ãƒ‰ */
-			val2 = 100;		// å±æ€§è€æ€§å¢—åŠ å€¤
-			val3 = 100;		// å±æ€§è€æ€§æ¸›å°‘å€¤
+		case SC_FIRE_CLOAK:		/* ƒtƒ@ƒCƒA[ƒNƒ[ƒN */
+		case SC_WATER_DROP:		/* ƒEƒH[ƒ^[ƒhƒƒbƒv */
+		case SC_WIND_CURTAIN:	/* ƒEƒBƒ“ƒhƒJ[ƒeƒ“ */
+		case SC_STONE_SHIELD:	/* ƒXƒg[ƒ“ƒV[ƒ‹ƒh */
+			val2 = 100;		// ‘®«‘Ï«‘‰Á’l
+			val3 = 100;		// ‘®«‘Ï«Œ¸­’l
 			calc_flag = 1;
 			break;
-		case SC_WATER_SCREEN:	/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ */
+		case SC_WATER_SCREEN:	/* ƒEƒH[ƒ^[ƒXƒNƒŠ[ƒ“ */
 			val2 = tick / 5000;
 			tick = 5000;
 			break;
-		case SC_WIND_STEP:			/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ— */
-			val2 = 10;	// Fleeå¢—åŠ å€¤
-			val3 = 50;	// ç§»å‹•é€Ÿåº¦å¢—åŠ ç‡
+		case SC_WIND_STEP:			/* ƒEƒBƒ“ƒhƒXƒeƒbƒv */
+			val2 = 10;	// Flee‘‰Á’l
+			val3 = 50;	// ˆÚ“®‘¬“x‘‰Á—¦
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_SOLID_SKIN:			/* ã‚½ãƒªãƒƒãƒ‰ã‚¹ã‚­ãƒ³ */
-			val2 = 10;	// Defå¢—åŠ ç‡
-			val3 = 25;	// MaxHPå¢—åŠ ç‡
+		case SC_SOLID_SKIN:			/* ƒ\ƒŠƒbƒhƒXƒLƒ“ */
+			val2 = 10;	// Def‘‰Á—¦
+			val3 = 25;	// MaxHP‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_PYROTECHNIC:	/* ãƒ‘ã‚¤ãƒ­ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯ */
-			val2 = 40;	// Atkå¢—åŠ å€¤
-			val3 = 10;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_PYROTECHNIC:	/* ƒpƒCƒƒeƒNƒjƒbƒN */
+			val2 = 40;	// Atk‘‰Á’l
+			val3 = 10;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_HEATER:	/* ãƒ’ãƒ¼ã‚¿ãƒ¼ */
-			val2 = 80;	// Atkå¢—åŠ å€¤
-			val3 = 20;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_HEATER:	/* ƒq[ƒ^[ */
+			val2 = 80;	// Atk‘‰Á’l
+			val3 = 20;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_TROPIC:	/* ãƒˆãƒ­ãƒ”ãƒƒã‚¯ */
-			val2 = 120;	// Atkå¢—åŠ å€¤
+		case SC_TROPIC:	/* ƒgƒƒsƒbƒN */
+			val2 = 120;	// Atk‘‰Á’l
 			calc_flag = 1;
 			break;
-		case SC_AQUAPLAY:	/* ã‚¢ã‚¯ã‚¢ãƒ—ãƒ¬ã‚¤ */
-			val2 = 40;	// Matkå¢—åŠ å€¤
-			val3 = 10;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_AQUAPLAY:	/* ƒAƒNƒAƒvƒŒƒC */
+			val2 = 40;	// Matk‘‰Á’l
+			val3 = 10;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_COOLER:	/* ã‚¯ãƒ¼ãƒ©ãƒ¼ */
-			val2 = 80;	// Matkå¢—åŠ å€¤
-			val3 = 20;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_COOLER:	/* ƒN[ƒ‰[ */
+			val2 = 80;	// Matk‘‰Á’l
+			val3 = 20;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_CHILLY_AIR:	/* ã‚¯ãƒ¼ãƒ«ã‚¨ã‚¢ãƒ¼ */
-			val2 = 120;	// Matkå¢—åŠ å€¤
+		case SC_CHILLY_AIR:	/* ƒN[ƒ‹ƒGƒA[ */
+			val2 = 120;	// Matk‘‰Á’l
 			calc_flag = 1;
 			break;
-		case SC_GUST:	/* ã‚¬ã‚¹ãƒˆ */
-			val2 = 50;	// Aspdå¢—åŠ å€¤
-			val3 = 10;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_GUST:	/* ƒKƒXƒg */
+			val2 = 50;	// Aspd‘‰Á’l
+			val3 = 10;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_BLAST:	/* ãƒ–ãƒ©ã‚¹ãƒˆ */
-			val2 = 50;	// Aspdå¢—åŠ å€¤
-			val3 = 10;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_BLAST:	/* ƒuƒ‰ƒXƒg */
+			val2 = 50;	// Aspd‘‰Á’l
+			val3 = 10;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_WILD_STORM:	/* ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚¹ãƒˆãƒ¼ãƒ  */
-			val2 = 50;	// Aspdå¢—åŠ å€¤
+		case SC_WILD_STORM:	/* ƒƒCƒ‹ƒhƒXƒg[ƒ€ */
+			val2 = 50;	// Aspd‘‰Á’l
 			calc_flag = 1;
 			break;
-		case SC_PETROLOGY:	/* ãƒšãƒˆãƒ­ã‚¸ãƒ¼ */
-			val2 = 5;	// MaxHPå¢—åŠ ç‡
-			val3 = 10;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_PETROLOGY:	/* ƒyƒgƒƒW[ */
+			val2 = 5;	// MaxHP‘‰Á—¦
+			val3 = 10;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_CURSED_SOIL:	/* ã‚«ãƒ¼ã‚¹ãƒ‰ã‚½ã‚¤ãƒ« */
-			val2 = 10;	// MaxHPå¢—åŠ ç‡
-			val3 = 20;	// ãƒ€ãƒ¡ãƒ¼ã‚¸å¢—åŠ ç‡
+		case SC_CURSED_SOIL:	/* ƒJ[ƒXƒhƒ\ƒCƒ‹ */
+			val2 = 10;	// MaxHP‘‰Á—¦
+			val3 = 20;	// ƒ_ƒ[ƒW‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_UPHEAVAL:	/* ã‚¢ãƒƒãƒ—ãƒ˜ã‚¤ãƒãƒ« */
-			val2 = 15;	// MaxHPå¢—åŠ ç‡
+		case SC_UPHEAVAL:	/* ƒAƒbƒvƒwƒCƒoƒ‹ */
+			val2 = 15;	// MaxHP‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_TIDAL_WEAPON_OPTION:	/* ã‚¿ã‚¤ãƒ€ãƒ«ã‚¦ã‚§ãƒãƒ³(ç²¾éœŠ) */
-			val2 = 20;	// Atkå¢—åŠ ç‡
+		case SC_TIDAL_WEAPON_OPTION:	/* ƒ^ƒCƒ_ƒ‹ƒEƒFƒ|ƒ“(¸—ì) */
+			val2 = 20;	// Atk‘‰Á—¦
 			calc_flag = 1;
 			break;
-		case SC_CIRCLE_OF_FIRE_OPTION:	/* ã‚µãƒ¼ã‚¯ãƒ«ã‚ªãƒ–ãƒ•ã‚¡ã‚¤ã‚¢(ç²¾éœŠ) */
-		case SC_FIRE_CLOAK_OPTION:		/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ã‚¯(ç²¾éœŠ) */
-		case SC_WATER_SCREEN_OPTION:	/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ã‚¹ã‚¯ãƒªãƒ¼ãƒ³(ç²¾éœŠ) */
-		case SC_WATER_DROP_OPTION:		/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ãƒ‰ãƒ­ãƒƒãƒ—(ç²¾éœŠ) */
-		case SC_WIND_STEP_OPTION:		/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ—(ç²¾éœŠ) */
-		case SC_WIND_CURTAIN_OPTION:	/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ†ãƒ³(ç²¾éœŠ) */
-		case SC_SOLID_SKIN_OPTION:		/* ã‚½ãƒªãƒƒãƒ‰ã‚¹ã‚­ãƒ³(ç²¾éœŠ) */
-		case SC_STONE_SHIELD_OPTION:	/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚·ãƒ¼ãƒ«ãƒ‰(ç²¾éœŠ) */
+		case SC_CIRCLE_OF_FIRE_OPTION:	/* ƒT[ƒNƒ‹ƒIƒuƒtƒ@ƒCƒA(¸—ì) */
+		case SC_FIRE_CLOAK_OPTION:		/* ƒtƒ@ƒCƒA[ƒNƒ[ƒN(¸—ì) */
+		case SC_WATER_SCREEN_OPTION:	/* ƒEƒH[ƒ^[ƒXƒNƒŠ[ƒ“(¸—ì) */
+		case SC_WATER_DROP_OPTION:		/* ƒEƒH[ƒ^[ƒhƒƒbƒv(¸—ì) */
+		case SC_WIND_STEP_OPTION:		/* ƒEƒBƒ“ƒhƒXƒeƒbƒv(¸—ì) */
+		case SC_WIND_CURTAIN_OPTION:	/* ƒEƒBƒ“ƒhƒJ[ƒeƒ“(¸—ì) */
+		case SC_SOLID_SKIN_OPTION:		/* ƒ\ƒŠƒbƒhƒXƒLƒ“(¸—ì) */
+		case SC_STONE_SHIELD_OPTION:	/* ƒXƒg[ƒ“ƒV[ƒ‹ƒh(¸—ì) */
 			val2 = tick / 1000;
 			tick = 1000;
-			val3 = 5;		// SPæ¶ˆè²»é‡
+			val3 = 5;		// SPÁ”ï—Ê
 			break;
-		case SC_PYROTECHNIC_OPTION:	/* ãƒ‘ã‚¤ãƒ­ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯(ç²¾éœŠ) */
-		case SC_AQUAPLAY_OPTION:	/* ã‚¢ã‚¯ã‚¢ãƒ—ãƒ¬ã‚¤(ç²¾éœŠ) */
-		case SC_GUST_OPTION:		/* ã‚¬ã‚¹ãƒˆ(ç²¾éœŠ) */
-		case SC_PETROLOGY_OPTION:	/* ãƒšãƒˆãƒ­ã‚¸ãƒ¼(ç²¾éœŠ) */
+		case SC_PYROTECHNIC_OPTION:	/* ƒpƒCƒƒeƒNƒjƒbƒN(¸—ì) */
+		case SC_AQUAPLAY_OPTION:	/* ƒAƒNƒAƒvƒŒƒC(¸—ì) */
+		case SC_GUST_OPTION:		/* ƒKƒXƒg(¸—ì) */
+		case SC_PETROLOGY_OPTION:	/* ƒyƒgƒƒW[(¸—ì) */
 			val2 = tick / 10000;
 			tick = 10000;
-			val3 = 10;		// SPæ¶ˆè²»é‡
+			val3 = 10;		// SPÁ”ï—Ê
 			break;
-		case SC_HEATER_OPTION:		/* ãƒ’ãƒ¼ã‚¿ãƒ¼(ç²¾éœŠ) */
-		case SC_COOLER_OPTION:		/* ã‚¯ãƒ¼ãƒ©ãƒ¼(ç²¾éœŠ) */
-		case SC_BLAST_OPTION:		/* ãƒ–ãƒ©ã‚¹ãƒˆ(ç²¾éœŠ) */
-		case SC_CURSED_SOIL_OPTION:	/* ã‚«ãƒ¼ã‚¹ãƒ‰ã‚½ã‚¤ãƒ«(ç²¾éœŠ) */
+		case SC_HEATER_OPTION:		/* ƒq[ƒ^[(¸—ì) */
+		case SC_COOLER_OPTION:		/* ƒN[ƒ‰[(¸—ì) */
+		case SC_BLAST_OPTION:		/* ƒuƒ‰ƒXƒg(¸—ì) */
+		case SC_CURSED_SOIL_OPTION:	/* ƒJ[ƒXƒhƒ\ƒCƒ‹(¸—ì) */
 			val2 = tick / 10000;
 			tick = 10000;
-			val3 = 20;		// SPæ¶ˆè²»é‡
+			val3 = 20;		// SPÁ”ï—Ê
 			break;
-		case SC_TROPIC_OPTION:		/* ãƒˆãƒ­ãƒ”ãƒƒã‚¯(ç²¾éœŠ) */
-		case SC_CHILLY_AIR_OPTION:	/* ã‚¯ãƒ¼ãƒ«ã‚¨ã‚¢ãƒ¼(ç²¾éœŠ) */
-		case SC_WILD_STORM_OPTION:	/* ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚¹ãƒˆãƒ¼ãƒ (ç²¾éœŠ) */
-		case SC_UPHEAVAL_OPTION:	/* ã‚¢ãƒƒãƒ—ãƒ˜ã‚¤ãƒãƒ«(ç²¾éœŠ) */
+		case SC_TROPIC_OPTION:		/* ƒgƒƒsƒbƒN(¸—ì) */
+		case SC_CHILLY_AIR_OPTION:	/* ƒN[ƒ‹ƒGƒA[(¸—ì) */
+		case SC_WILD_STORM_OPTION:	/* ƒƒCƒ‹ƒhƒXƒg[ƒ€(¸—ì) */
+		case SC_UPHEAVAL_OPTION:	/* ƒAƒbƒvƒwƒCƒoƒ‹(¸—ì) */
 			val2 = tick / 10000;
 			tick = 10000;
-			val3 = 30;		// SPæ¶ˆè²»é‡
+			val3 = 30;		// SPÁ”ï—Ê
 			break;
-		case SC_PARALYZE:			/* éº»ç—º */
-			val2 = 1000;		// å¼·åˆ¶è© å”±æ™‚é–“(ms)
-			val3 = val1 * 5;	// Def, Mdefæ¸›å°‘ç‡
+		case SC_PARALYZE:			/* –ƒáƒ */
+			val2 = 1000;		// ‹­§‰r¥ŠÔ(ms)
+			val3 = val1 * 5;	// Def, MdefŒ¸­—¦
 			break;
-		case SC_PAIN_KILLER:		/* ãƒšã‚¤ãƒ³ã‚­ãƒ©ãƒ¼ */
-			val4 = val1 * 100;	// ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘ç‡
+		case SC_PAIN_KILLER:		/* ƒyƒCƒ“ƒLƒ‰[ */
+			val4 = val1 * 100;	// ƒ_ƒ[ƒWŒ¸­—¦
 			val4 = val4 * val2 / 100 * val3 / 150;
 			calc_flag = 1;
 			break;
-		case SC_LIGHT_OF_REGENE:	/* å†ç”Ÿã®å…‰ */
+		case SC_LIGHT_OF_REGENE:	/* Ä¶‚ÌŒõ */
 			val2 = 20 * val1;
 			break;
-		case SC_OVERED_BOOST:		/* ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ãƒ–ãƒ¼ã‚¹ãƒˆ */
-			val3 = 300 + val1 * 40;	// Fleeå›ºå®šå€¤
-			val4 = 410 - val1 * 40;	// Aspdå›ºå®šå€¤
+		case SC_OVERED_BOOST:		/* ƒI[ƒo[ƒhƒu[ƒXƒg */
+			val3 = 300 + val1 * 40;	// FleeŒÅ’è’l
+			val4 = 410 - val1 * 40;	// AspdŒÅ’è’l
 			calc_flag = 1;
 			break;
-		case SC_ANGRIFFS_MODUS:		/* ã‚¢ãƒ³ã‚°ãƒªãƒ•ã‚¹ãƒ¢ãƒ‰ã‚¹ */
+		case SC_ANGRIFFS_MODUS:		/* ƒAƒ“ƒOƒŠƒtƒXƒ‚ƒhƒX */
 			val2 = tick / 1000;
-			val3 = 30 + val1 * 20;	// Defæ¸›å°‘å€¤
-			val4 = 40 + val1 * 20;	// Fleeæ¸›å°‘å€¤
+			val3 = 30 + val1 * 20;	// DefŒ¸­’l
+			val4 = 40 + val1 * 20;	// FleeŒ¸­’l
 			tick = 1000;
 			calc_flag = 1;
 			break;
-		case SC_GOLDENE_FERSE:		/* ã‚´ãƒ¼ãƒ«ãƒ‡ãƒ³ãƒšãƒ«ã‚¸ã‚§ */
-			val2 = 10 + val1 * 10;	// Fleeä¸Šæ˜‡å€¤
-			val3 = 6 + val1 * 4;	// Aspdä¸Šæ˜‡ç‡
-			val4 = 25;			// è–å±æ€§è¿½åŠ ãƒ€ãƒ¡ãƒ¼ã‚¸
+		case SC_GOLDENE_FERSE:		/* ƒS[ƒ‹ƒfƒ“ƒyƒ‹ƒWƒF */
+			val2 = 10 + val1 * 10;	// Fleeã¸’l
+			val3 = 6 + val1 * 4;	// Aspdã¸—¦
+			val4 = 25;			// ¹‘®«’Ç‰Áƒ_ƒ[ƒW
 			calc_flag = 1;
 			break;
-		case SC_CBC:		/* çµã‚æŠ€ */
+		case SC_CBC:		/* i‚ß‹Z */
 			val2 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
 		case SC_EQC:				/* E.Q.C */
-			val3 = 2 * val1;	// MaxHPæ¸›å°‘ç‡
-			val4 = 5 * val1;	// Atkã€Defæ¸›å°‘ç‡
+			val3 = 2 * val1;	// MaxHPŒ¸­—¦
+			val4 = 5 * val1;	// AtkADefŒ¸­—¦
 			calc_flag = 1;
 			break;
-		case SC_MAGMA_FLOW:		/* ãƒã‚°ãƒãƒ•ãƒ­ãƒ¼ */
-			val2 = 3 * val1;	// ç™ºå‹•ç‡
+		case SC_MAGMA_FLOW:		/* ƒ}ƒOƒ}ƒtƒ[ */
+			val2 = 3 * val1;	// ”­“®—¦
 			break;
-		case SC_GRANITIC_ARMOR:	/* ã‚°ãƒ©ãƒ‹ãƒ†ã‚£ãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ¼ */
-			val2 = 2 * val1;	// ãƒ€ãƒ¡ãƒ¼ã‚¸æ¸›å°‘ç‡
-			if(val1 >= 4)	// æ¶ˆè²»HPç‡
+		case SC_GRANITIC_ARMOR:	/* ƒOƒ‰ƒjƒeƒBƒbƒNƒA[ƒ}[ */
+			val2 = 2 * val1;	// ƒ_ƒ[ƒWŒ¸­—¦
+			if(val1 >= 4)	// Á”ïHP—¦
 				val3 = (val1 - 2) * 5;
 			else if(val1 >= 2)
 				val3 = (val1 - 1) * 3;
 			else
 				val3 = 1;
 			break;
-		case SC_PYROCLASTIC:	/* ãƒ‘ã‚¤ãƒ­ã‚¯ãƒ©ã‚¹ãƒ†ã‚£ãƒƒã‚¯ */
-			val2 = 10 * val1 + val4;	// è¿½åŠ Atk
-			val3 = 2 * val1;	// HFç‡
+		case SC_PYROCLASTIC:	/* ƒpƒCƒƒNƒ‰ƒXƒeƒBƒbƒN */
+			val2 = 10 * val1 + val4;	// ’Ç‰ÁAtk
+			val3 = 2 * val1;	// HF—¦
 			calc_flag = 1;
 			break;
-		case SC_VOLCANIC_ASH:	/* ç«å±±ç° */
+		case SC_VOLCANIC_ASH:	/* ‰ÎRŠD */
 			val2 = val3 = val4 = 0;
 			if(bl->type == BL_PC || bl->type == BL_MOB)
-				val2 = 50;	// å…¨å¯¾è±¡
+				val2 = 50;	// ‘S‘ÎÛ
 			if(bl->type == BL_MOB) {
 				if(status_get_race(bl) == RCT_PLANT)
-					val3 = 50;	// å¯¾æ¤ç‰©Mob
+					val3 = 50;	// ‘ÎA•¨Mob
 				if((status_get_element(bl)%20) == ELE_WATER)
-					val4 = 50;	// å¯¾æ°´å±æ€§Mob
+					val4 = 50;	// ‘Î…‘®«Mob
 			}
 			calc_flag = 1;
 			break;
-		case SC_FULL_THROTTLE:	/* ãƒ•ãƒ«ã‚¹ãƒ­ãƒƒãƒˆãƒ« */
+		case SC_FULL_THROTTLE:	/* ƒtƒ‹ƒXƒƒbƒgƒ‹ */
 			val2 = 20;
 			val3 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_REBOUND:	/* ãƒªãƒã‚¦ãƒ³ãƒ‰ */
+		case SC_REBOUND:	/* ƒŠƒoƒEƒ“ƒh */
 			val2 = tick / 2000;
 			tick = 2000;
 			calc_flag = 1;
@@ -9163,44 +9163,44 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				break;
 			}
 			break;
-		case SC_GRADUAL_GRAVITY:	/* é‡åŠ›å¢—åŠ  */
-		case SC_KILLING_AURA:	/* ã‚­ãƒªãƒ³ã‚°ã‚ªãƒ¼ãƒ© */
+		case SC_GRADUAL_GRAVITY:	/* d—Í‘‰Á */
+		case SC_KILLING_AURA:	/* ƒLƒŠƒ“ƒOƒI[ƒ‰ */
 			val3 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_LUNARSTANCE:	/* æœˆã®æ§‹ãˆ */
+		case SC_LUNARSTANCE:	/* Œ‚Ì\‚¦ */
 			tick = 600*1000;
 			calc_flag = 1;
 			val2 = val1 * 10 - 5;
 			break;
-		case SC_UNIVERSESTANCE:	/* å®‡å®™ã®æ§‹ãˆ */
-		case SC_SUNSTANCE:	/* å¤ªé™½ã®æ§‹ãˆ */
-		case SC_STARSTANCE:	/* æ˜Ÿã®æ§‹ãˆ */
+		case SC_UNIVERSESTANCE:	/* ‰F’ˆ‚Ì\‚¦ */
+		case SC_SUNSTANCE:	/* ‘¾—z‚Ì\‚¦ */
+		case SC_STARSTANCE:	/* ¯‚Ì\‚¦ */
 			tick = 600*1000;
 			calc_flag = 1;
 			val2 = val1 * 5;
 			break;
-		case SC_LIGHTOFMOON:	/* æœˆã®å…‰ */
-		case SC_LIGHTOFSUN:	/* å¤ªé™½ã®å…‰ */
-		case SC_LIGHTOFSTAR:	/* æ˜Ÿã®å…‰ */
+		case SC_LIGHTOFMOON:	/* Œ‚ÌŒõ */
+		case SC_LIGHTOFSUN:	/* ‘¾—z‚ÌŒõ */
+		case SC_LIGHTOFSTAR:	/* ¯‚ÌŒõ */
 			val2 = 5 * val1 + 25;
 			break;
-		case SC_FLASHKICK:	/* é–ƒå…‰è„š */
-		case SC_NOVAEXPLOSING:	/* æ–°æ˜Ÿçˆ†ç™º */
-		case SC_GRAVITYCONTROL:	/* é‡åŠ›èª¿ç¯€ */
-		case SC_CREATINGSTAR:	/* å‰µæ˜Ÿã®æ›¸ */
-		case SC_DIMENSION:	/* æ¬¡å…ƒã®æ›¸ */
-		case SC_DIMENSION1:	/* æ¬¡å…ƒã®æ›¸ */
+		case SC_FLASHKICK:	/* ‘MŒõ‹r */
+		case SC_NOVAEXPLOSING:	/* V¯”š”­ */
+		case SC_GRAVITYCONTROL:	/* d—Í’²ß */
+		case SC_CREATINGSTAR:	/* ‘n¯‚Ì‘ */
+		case SC_DIMENSION:	/* ŸŒ³‚Ì‘ */
+		case SC_DIMENSION1:	/* ŸŒ³‚Ì‘ */
 			break;
-		case SC_NEWMOON:		/* æœ”æœˆè„š */
-			val2 = 15;	// ãƒ€ãƒ¡ãƒ¼ã‚¸è€æ€§
+		case SC_NEWMOON:		/* ñŒ‹r */
+			val2 = 15;	// ƒ_ƒ[ƒW‘Ï«
 			val3 = tick / 1000;
 			tick = 1000;
 			break;
-		case SC_FALLINGSTAR:	/* æµæ˜Ÿè½ä¸‹ */
+		case SC_FALLINGSTAR:	/* —¬¯—‰º */
 			val2 = val1 <= 5 ? 20 : 25;
 			break;
-		case SC_DIMENSION2:	/* æ¬¡å…ƒã®æ›¸ */
+		case SC_DIMENSION2:	/* ŸŒ³‚Ì‘ */
 			if(sd){
 				pc_delspiritball(sd, sd->spiritball.num, 0);
 				pc_addspiritball(sd, tick, val1);
@@ -9216,20 +9216,20 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	if(StatusIconChangeTable[type] != SI_BLANK)
-		clif_status_change(bl,StatusIconChangeTable[type],1,icon_tick,icon_val1,icon_val2,icon_val3);	// ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
+		clif_status_change(bl,StatusIconChangeTable[type],1,icon_tick,icon_val1,icon_val2,icon_val3);	// ƒAƒCƒRƒ“•\¦
 
-	/* å‡¸é¢é¡ã¯ã‚¢ã‚¤ã‚³ãƒ³é€ä¿¡å¾Œã«å‡¦ç†ã™ã‚‹ */
+	/* “Ê–Ê‹¾‚ÍƒAƒCƒRƒ“‘—MŒã‚Éˆ—‚·‚é */
 	if(type == SC_BOSSMAPINFO) {
 		struct mob_data *mmd = map[bl->m].mvpboss;
 		if(sd && mmd) {
-			if(mmd->bl.prev == NULL) {	// å†æ²¸ãå¾…ã¡ä¸­
+			if(mmd->bl.prev == NULL) {	// Ä•¦‚«‘Ò‚¿’†
 				int diff = DIFF_TICK(mmd->last_spawntime, current_tick);
 				if(diff < 0)
 					diff = 0;
 				clif_bossmapinfo(sd, mmd->name, 0, 0, diff, 3);
 				val3 = -1;
 				val4 = -1;
-			} else {			// å‡ºç¾ä¸­
+			} else {			// oŒ»’†
 				clif_bossmapinfo(sd, mmd->name, 0, 0, 0, 2);
 				if(mmd->bl.m == bl->m) {
 					clif_bossmapinfo(sd, "", mmd->bl.x, mmd->bl.y, 0, 1);
@@ -9242,17 +9242,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		tick = 1000;
 	}
 
-	/* optionã®å¤‰æ›´ */
+	/* option‚Ì•ÏX */
 	switch(type) {
 		// opt1
 		case SC_STONE:
 		case SC_FREEZE:
 		case SC_STUN:
 		case SC_SLEEP:
-			unit_stopattack(bl);	// æ”»æ’ƒåœæ­¢
-			skill_stop_dancing(bl,0);	// æ¼”å¥/ãƒ€ãƒ³ã‚¹ã®ä¸­æ–­
+			unit_stopattack(bl);	// UŒ‚’â~
+			skill_stop_dancing(bl,0);	// ‰‰‘t/ƒ_ƒ“ƒX‚Ì’†’f
 			{
-				// åŒæ™‚ã«æ›ã‹ã‚‰ãªã„ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã‚’è§£é™¤
+				// “¯‚ÉŠ|‚©‚ç‚È‚¢ƒXƒe[ƒ^ƒXˆÙí‚ğ‰ğœ
 				int i;
 				for(i = SC_STONE; i <= SC_SLEEP; i++) {
 					if(sc->data[i].timer != -1) {
@@ -9274,11 +9274,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			}
 			opt_flag = 1;
 			break;
-		case SC_HELLINFERNO:		/* ãƒ˜ãƒ«ã‚¤ãƒ³ãƒ•ã‚§ãƒ«ãƒ */
+		case SC_HELLINFERNO:		/* ƒwƒ‹ƒCƒ“ƒtƒFƒ‹ƒm */
 			sc->opt1 = OPT1_BURNNING;
 			opt_flag = 1;
 			break;
-		case SC_WHITEIMPRISON:		/* ãƒ›ãƒ¯ã‚¤ãƒˆã‚¤ãƒ³ãƒ—ãƒªã‚ºãƒ³ */
+		case SC_WHITEIMPRISON:		/* ƒzƒƒCƒgƒCƒ“ƒvƒŠƒYƒ“ */
 			sc->opt1 = OPT1_IMPRISON;
 			opt_flag = 1;
 			break;
@@ -9299,7 +9299,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 					md->target_id = 0;
 			}
 			break;
-		case SC_ANGELUS:			/* ã‚¢ãƒ³ã‚¼ãƒ«ã‚¹ */
+		case SC_ANGELUS:			/* ƒAƒ“ƒ[ƒ‹ƒX */
 			sc->opt2 |= OPT2_ANGELUS;
 			opt_flag = 1;
 			break;
@@ -9318,61 +9318,61 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
-		case SC_SPEARQUICKEN:		/* ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
-		case SC_CONCENTRATION:		/* ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_WEAPONQUICKEN:		/* ã‚¦ã‚§ãƒãƒ³ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
+		case SC_SPEARQUICKEN:		/* ƒXƒsƒAƒNƒCƒbƒPƒ“ */
+		case SC_CONCENTRATION:		/* ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“ */
+		case SC_WEAPONQUICKEN:		/* ƒEƒFƒ|ƒ“ƒNƒCƒbƒPƒ“ */
 			sc->opt3 |= OPT3_QUICKEN;
 			opt_flag = 2;
 			break;
-		case SC_OVERTHRUST:		/* ã‚ªãƒ¼ãƒãƒ¼ãƒˆãƒ©ã‚¹ãƒˆ */
-		case SC_SWOO:			/* ã‚¨ã‚¹ã‚¦ */
+		case SC_OVERTHRUST:		/* ƒI[ƒo[ƒgƒ‰ƒXƒg */
+		case SC_SWOO:			/* ƒGƒXƒE */
 			sc->opt3 |= OPT3_OVERTHRUST;
 			opt_flag = 2;
 			break;
-		case SC_ENERGYCOAT:		/* ã‚¨ãƒŠã‚¸ãƒ¼ã‚³ãƒ¼ãƒˆ */
-		case SC_SKE:			/* ã‚¨ã‚¹ã‚¯ */
+		case SC_ENERGYCOAT:		/* ƒGƒiƒW[ƒR[ƒg */
+		case SC_SKE:			/* ƒGƒXƒN */
 			sc->opt3 |= OPT3_ENERGYCOAT;
 			opt_flag = 2;
 			break;
-		case SC_EXPLOSIONSPIRITS:	/* çˆ†è£‚æ³¢å‹• */
+		case SC_EXPLOSIONSPIRITS:	/* ”š—ô”g“® */
 			sc->opt3 |= OPT3_EXPLOSIONSPIRITS;
 			opt_flag = 2;
 			break;
-		case SC_STEELBODY:		/* é‡‘å‰› */
-		case SC_SKA:			/* ã‚¨ã‚¹ã‚« */
+		case SC_STEELBODY:		/* ‹à„ */
+		case SC_SKA:			/* ƒGƒXƒJ */
 			sc->opt3 |= OPT3_STEELBODY;
 			opt_flag = 2;
 			break;
-		case SC_BLADESTOP:		/* ç™½åˆƒå–ã‚Š */
+		case SC_BLADESTOP:		/* ”’næ‚è */
 			sc->opt3 |= OPT3_BLADESTOP;
 			opt_flag = 2;
 			break;
-		case SC_AURABLADE:			/* ã‚ªãƒ¼ãƒ©ãƒ–ãƒ¬ãƒ¼ãƒ‰ */
+		case SC_AURABLADE:			/* ƒI[ƒ‰ƒuƒŒ[ƒh */
 			sc->opt3 |= OPT3_AURABLADE;
 			opt_flag = 2;
 			break;
-		case SC_BERSERK:		/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+		case SC_BERSERK:		/* ƒo[ƒT[ƒN */
 			sc->opt3 |= OPT3_BERSERK;
 			opt_flag = 2;
 			break;
-		case SC_DANCING:			/* ãƒ€ãƒ³ã‚¹/æ¼”å¥ä¸­ */
+		case SC_DANCING:			/* ƒ_ƒ“ƒX/‰‰‘t’† */
 			if(sc->data[SC_DANCING].val1 != CG_MOONLIT)
 				break;
 			sc->opt3 |= OPT3_MOON;
 			opt_flag = 2;
 			break;
-		case SC_MARIONETTE:		/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
-		case SC_MARIONETTE2:		/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
+		case SC_MARIONETTE:		/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
+		case SC_MARIONETTE2:		/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
 			sc->opt3 |= OPT3_MARIONETTE;
 			opt_flag = 2;
 			break;
-		case SC_ASSUMPTIO:		/* ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
-		case SC_ASSUMPTIO2:		/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
+		case SC_ASSUMPTIO:		/* ƒAƒXƒ€ƒvƒeƒBƒI */
+		case SC_ASSUMPTIO2:		/* ƒLƒƒƒbƒVƒ…ƒAƒXƒ€ƒvƒeƒBƒI */
 			sc->opt3 |= OPT3_ASSUMPTIO;
 			clif_misceffect2(bl,375);
 			opt_flag = 2;
 			break;
-		case SC_WARM:			/* æ¸©ã‚‚ã‚Š */
+		case SC_WARM:			/* ‰·‚à‚è */
 			sc->opt3 |= OPT3_SUN_WARM;
 			opt_flag = 2;
 			break;
@@ -9380,35 +9380,35 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			sc->opt3 |= OPT3_KAITE;
 			opt_flag = 2;
 			break;
-		case SC_BUNSINJYUTSU:		/* åˆ†èº«ã®è¡“ */
+		case SC_BUNSINJYUTSU:		/* •ªg‚Ìp */
 			sc->opt3 |= OPT3_BUNSIN;
 			opt_flag = 2;
 			break;
-		case SC_MONK:			/* ãƒ¢ãƒ³ã‚¯ã®é­‚ */
-		case SC_STAR:			/* ã‚±ãƒ³ã‚»ã‚¤ã®é­‚ */
-		case SC_SAGE:			/* ã‚»ãƒ¼ã‚¸ã®é­‚ */
-		case SC_CRUSADER:		/* ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼ã®é­‚ */
-		case SC_WIZARD:			/* ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã®é­‚ */
-		case SC_PRIEST:			/* ãƒ—ãƒªãƒ¼ã‚¹ãƒˆã®é­‚ */
-		case SC_ROGUE:			/* ãƒ­ãƒ¼ã‚°ã®é­‚ */
-		case SC_ASSASIN:		/* ã‚¢ã‚µã‚·ãƒ³ã®é­‚ */
-		case SC_SOULLINKER:		/* ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼ã®é­‚ */
-		case SC_KNIGHT:			/* ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_ALCHEMIST:		/* ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆã®é­‚ */
-		case SC_BARDDANCER:		/* ãƒãƒ¼ãƒ‰ã¨ãƒ€ãƒ³ã‚µãƒ¼ã®é­‚ */
-		case SC_BLACKSMITH:		/* ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã®é­‚ */
-		case SC_HUNTER:			/* ãƒãƒ³ã‚¿ãƒ¼ã®é­‚ */
-		case SC_HIGH:			/* ä¸€æ¬¡ä¸Šä½è·æ¥­ã®é­‚ */
-		case SC_SUPERNOVICE:		/* ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒãƒ¼ãƒ“ã‚¹ã®é­‚ */
-		case SC_GUNNER:			/* ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼ã®é­‚ */
-		case SC_NINJA:			/* å¿è€…ã®é­‚ */
-		case SC_DEATHKINGHT:		/* ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_COLLECTOR:		/* ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼ã®é­‚ */
+		case SC_MONK:			/* ƒ‚ƒ“ƒN‚Ì° */
+		case SC_STAR:			/* ƒPƒ“ƒZƒC‚Ì° */
+		case SC_SAGE:			/* ƒZ[ƒW‚Ì° */
+		case SC_CRUSADER:		/* ƒNƒ‹ƒZƒCƒ_[‚Ì° */
+		case SC_WIZARD:			/* ƒEƒBƒU[ƒh‚Ì° */
+		case SC_PRIEST:			/* ƒvƒŠ[ƒXƒg‚Ì° */
+		case SC_ROGUE:			/* ƒ[ƒO‚Ì° */
+		case SC_ASSASIN:		/* ƒAƒTƒVƒ“‚Ì° */
+		case SC_SOULLINKER:		/* ƒ\ƒEƒ‹ƒŠƒ“ƒJ[‚Ì° */
+		case SC_KNIGHT:			/* ƒiƒCƒg‚Ì° */
+		case SC_ALCHEMIST:		/* ƒAƒ‹ƒPƒ~ƒXƒg‚Ì° */
+		case SC_BARDDANCER:		/* ƒo[ƒh‚Æƒ_ƒ“ƒT[‚Ì° */
+		case SC_BLACKSMITH:		/* ƒuƒ‰ƒbƒNƒXƒ~ƒX‚Ì° */
+		case SC_HUNTER:			/* ƒnƒ“ƒ^[‚Ì° */
+		case SC_HIGH:			/* ˆêŸãˆÊE‹Æ‚Ì° */
+		case SC_SUPERNOVICE:		/* ƒX[ƒp[ƒm[ƒrƒX‚Ì° */
+		case SC_GUNNER:			/* ƒKƒ“ƒXƒŠƒ“ƒK[‚Ì° */
+		case SC_NINJA:			/* ”EÒ‚Ì° */
+		case SC_DEATHKINGHT:		/* ƒfƒXƒiƒCƒg‚Ì° */
+		case SC_COLLECTOR:		/* ƒRƒŒƒNƒ^[‚Ì° */
 			sc->opt3 |= OPT3_SOULLINK;
 			clif_misceffect2(bl,424);
 			opt_flag = 2;
 			break;
-		case SC_ELEMENTUNDEAD:		// ä¸æ­»
+		case SC_ELEMENTUNDEAD:		// •s€
 			sc->opt3 |= OPT3_UNDEAD;
 			opt_flag = 2;
 			break;
@@ -9418,16 +9418,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 1;
 			break;
 		case SC_HIDING:
-			if(sd && val3 == 0)	// éœæ–¬ã‚Šã§ãªã„é€šå¸¸ã®ãƒã‚¤ãƒ‰ãªã‚‰ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
+			if(sd && val3 == 0)	// ‰àa‚è‚Å‚È‚¢’Êí‚ÌƒnƒCƒh‚È‚çƒAƒCƒRƒ“•\¦
 				clif_status_change(bl,SI_HIDING,1,icon_tick,0,0,0);
 			unit_stopattack(bl);
 			sc->option |= OPTION_HIDE;
 			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
-		case SC_CLOAKINGEXCEED:		/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰ */
-		case SC_NEWMOON:			/* æœ”æœˆè„š */
-		case SC__INVISIBILITY:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£ */
+		case SC_CLOAKINGEXCEED:		/* ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh */
+		case SC_NEWMOON:			/* ñŒ‹r */
+		case SC__INVISIBILITY:		/* ƒCƒ“ƒrƒWƒrƒŠƒeƒB */
 			unit_stopattack(bl);
 			sc->option |= OPTION_CLOAKING;
 			opt_flag = 1;
@@ -9466,16 +9466,16 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			sc->option |= OPTION_SUMMER;
 			opt_flag = 1;
 			break;
-		case SC_ON_PUSH_CART:	/* ã‚«ãƒ¼ãƒˆ */
+		case SC_ON_PUSH_CART:	/* ƒJ[ƒg */
 #if PACKETVER < 20120201
-			// å¤ã„ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã¯ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°ã™ã‚‹
+			// ŒÃ‚¢ƒNƒ‰ƒCƒAƒ“ƒg‚ÍƒIƒvƒVƒ‡ƒ“‚ğXV‚·‚é
 			sc->option = (sc->option & ~OPTION_CARTMASK) | val1;
 			opt_flag = 1;
 #endif
 			break;
 	}
 
-	/* optionã®å¤‰æ›´ */
+	/* option‚Ì•ÏX */
 	if(opt_flag == 1) {
 		clif_changeoption(bl);
 	} else if(opt_flag == 2) {
@@ -9486,17 +9486,17 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 	status_calloc_sc_data(sc);
 #endif
 
-	sc->count++;	/* ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã®æ•° */
+	sc->count++;	/* ƒXƒe[ƒ^ƒXˆÙí‚Ì” */
 
 	sc->data[type].val1 = val1;
 	sc->data[type].val2 = val2;
 	sc->data[type].val3 = val3;
 	sc->data[type].val4 = val4;
-	/* ã‚¿ã‚¤ãƒãƒ¼è¨­å®š */
+	/* ƒ^ƒCƒ}[İ’è */
 	sc->data[type].timer = add_timer(current_tick + tick, status_change_timer, bl->id, INT2PTR(type));
 
 	if(calc_flag) {
-		// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å†è¨ˆç®—
+		// ƒXƒe[ƒ^ƒXÄŒvZ
 		if(sd) {
 			if(!(flag&4))
 				status_calc_pc(sd,0);
@@ -9512,11 +9512,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			clif_send_elemstatus(eld->msd);
 		}
 	}
-	// è¨ˆç®—å¾Œã«èµ°ã‚‰ã›ã‚‹
+	// ŒvZŒã‚É‘–‚ç‚¹‚é
 	switch(type) {
 		case SC_RUN:
 		case SC_WUGDASH:
-			// clif_skill_nodamage() ã¯å¿…ãš clif_status_change() ã¨ clif_walkok() ã®é–“ã«å‘¼ã³å‡ºã™
+			// clif_skill_nodamage() ‚Í•K‚¸ clif_status_change() ‚Æ clif_walkok() ‚ÌŠÔ‚ÉŒÄ‚Ño‚·
 			if(type == SC_RUN)
 				clif_skill_nodamage(bl,bl,TK_RUN,val1,1);
 			else if(type == SC_WUGDASH)
@@ -9534,7 +9534,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙíI—¹
  *------------------------------------------
  */
 int status_change_end(struct block_list* bl, int type, int tid)
@@ -9583,10 +9583,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	if(tid != -1 && sc->data[type].timer != tid)
 		return 0;
 
-	if(tid == -1)	/* ã‚¿ã‚¤ãƒã‹ã‚‰å‘¼ã°ã‚Œã¦ã„ãªã„ãªã‚‰ã‚¿ã‚¤ãƒå‰Šé™¤ã‚’ã™ã‚‹ */
+	if(tid == -1)	/* ƒ^ƒCƒ}‚©‚çŒÄ‚Î‚ê‚Ä‚¢‚È‚¢‚È‚çƒ^ƒCƒ}íœ‚ğ‚·‚é */
 		delete_timer(sc->data[type].timer,status_change_timer);
 
-	/* è©²å½“ã®ç•°å¸¸ã‚’æ­£å¸¸ã«æˆ»ã™ */
+	/* ŠY“–‚ÌˆÙí‚ğ³í‚É–ß‚· */
 	sc->data[type].timer = -1;
 	sc->count--;
 
@@ -9596,43 +9596,43 @@ int status_change_end(struct block_list* bl, int type, int tid)
 	mcd = BL_DOWNCAST( BL_MERC, bl );
 	eld = BL_DOWNCAST( BL_ELEM, bl );
 
-	switch(type) {	/* ç•°å¸¸ã®ç¨®é¡ã”ã¨ã®å‡¦ç† */
-		case SC_PROVOKE:			/* ãƒ—ãƒ­ãƒœãƒƒã‚¯ */
-		case SC_CONCENTRATE:			/* é›†ä¸­åŠ›å‘ä¸Š */
-		case SC_BLESSING:			/* ãƒ–ãƒ¬ãƒƒã‚·ãƒ³ã‚° */
-		case SC_ANGELUS:			/* ã‚¢ãƒ³ã‚¼ãƒ«ã‚¹ */
-		case SC_SIGNUMCRUCIS:			/* ã‚·ã‚°ãƒŠãƒ ã‚¯ãƒ«ã‚·ã‚¹ */
+	switch(type) {	/* ˆÙí‚Ìí—Ş‚²‚Æ‚Ìˆ— */
+		case SC_PROVOKE:			/* ƒvƒƒ{ƒbƒN */
+		case SC_CONCENTRATE:			/* W’†—ÍŒüã */
+		case SC_BLESSING:			/* ƒuƒŒƒbƒVƒ“ƒO */
+		case SC_ANGELUS:			/* ƒAƒ“ƒ[ƒ‹ƒX */
+		case SC_SIGNUMCRUCIS:			/* ƒVƒOƒiƒ€ƒNƒ‹ƒVƒX */
 		case SC_HIDING:
 		case SC_CLOAKING:
 		case SC_TWOHANDQUICKEN:			/* 2HQ */
 		case SC_ONEHAND:			/* 1HQ */
-		case SC_ADRENALINE:			/* ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ */
-		case SC_ENCPOISON:			/* ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³ */
-		case SC_IMPOSITIO:			/* ã‚¤ãƒ³ãƒã‚·ãƒ†ã‚£ã‚ªãƒãƒŒã‚¹ */
-		case SC_GLORIA:				/* ã‚°ãƒ­ãƒªã‚¢ */
-		case SC_LOUD:				/* ãƒ©ã‚¦ãƒ‰ãƒœã‚¤ã‚¹ */
-		case SC_MINDBREAKER:			/* ãƒã‚¤ãƒ³ãƒ‰ãƒ–ãƒ¬ãƒ¼ã‚«ãƒ¼ */
-		case SC_PROVIDENCE:			/* ãƒ—ãƒ­ãƒ´ã‚£ãƒ‡ãƒ³ã‚¹ */
-		case SC_SPEARQUICKEN:			/* ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
+		case SC_ADRENALINE:			/* ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ… */
+		case SC_ENCPOISON:			/* ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“ */
+		case SC_IMPOSITIO:			/* ƒCƒ“ƒ|ƒVƒeƒBƒIƒ}ƒkƒX */
+		case SC_GLORIA:				/* ƒOƒƒŠƒA */
+		case SC_LOUD:				/* ƒ‰ƒEƒhƒ{ƒCƒX */
+		case SC_MINDBREAKER:			/* ƒ}ƒCƒ“ƒhƒuƒŒ[ƒJ[ */
+		case SC_PROVIDENCE:			/* ƒvƒƒ”ƒBƒfƒ“ƒX */
+		case SC_SPEARQUICKEN:			/* ƒXƒsƒAƒNƒCƒbƒPƒ“ */
 		case SC_VOLCANO:
 		case SC_DELUGE:
 		case SC_VIOLENTGALE:
-		case SC_ETERNALCHAOS:			/* ã‚¨ã‚¿ãƒ¼ãƒŠãƒ«ã‚«ã‚ªã‚¹ */
-		case SC_DRUMBATTLE:			/* æˆ¦å¤ªé¼“ã®éŸ¿ã */
-		case SC_NIBELUNGEN:			/* ãƒ‹ãƒ¼ãƒ™ãƒ«ãƒ³ã‚°ã®æŒ‡è¼ª */
-		case SC_SIEGFRIED:			/* ä¸æ­»èº«ã®ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ */
-		case SC_EXPLOSIONSPIRITS:		/* çˆ†è£‚æ³¢å‹• */
-		case SC_SPEEDPOTION0:			/* å¢—é€Ÿãƒãƒ¼ã‚·ãƒ§ãƒ³ */
+		case SC_ETERNALCHAOS:			/* ƒGƒ^[ƒiƒ‹ƒJƒIƒX */
+		case SC_DRUMBATTLE:			/* í‘¾ŒÛ‚Ì‹¿‚« */
+		case SC_NIBELUNGEN:			/* ƒj[ƒxƒ‹ƒ“ƒO‚Ìw—Ö */
+		case SC_SIEGFRIED:			/* •s€g‚ÌƒW[ƒNƒtƒŠ[ƒh */
+		case SC_EXPLOSIONSPIRITS:		/* ”š—ô”g“® */
+		case SC_SPEEDPOTION0:			/* ‘‘¬ƒ|[ƒVƒ‡ƒ“ */
 		case SC_SPEEDPOTION1:
 		case SC_SPEEDPOTION2:
 		case SC_BLADESTOP_WAIT:
-		case SC_CONCENTRATION:			/* ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_TRUESIGHT:			/* ãƒˆã‚¥ãƒ«ãƒ¼ã‚µã‚¤ãƒˆ */
-		case SC_SPIDERWEB:			/* ã‚¹ãƒ‘ã‚¤ãƒ€ãƒ¼ã‚¦ã‚§ãƒƒãƒ– */
-		case SC_CARTBOOST:			/* ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ */
-		case SC_INCATK:				/* ATKä¸Šæ˜‡ (ç¥é…’ç”¨) */
-		case SC_INCMATK:			/* MATKä¸Šæ˜‡ (ç¥ç§˜ã®è‰ç”¨) */
-		case SC_WEDDING:			/* ã‚¦ã‚§ãƒ‡ã‚£ãƒ³ã‚° */
+		case SC_CONCENTRATION:			/* ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“ */
+		case SC_TRUESIGHT:			/* ƒgƒDƒ‹[ƒTƒCƒg */
+		case SC_SPIDERWEB:			/* ƒXƒpƒCƒ_[ƒEƒFƒbƒu */
+		case SC_CARTBOOST:			/* ƒJ[ƒgƒu[ƒXƒg */
+		case SC_INCATK:				/* ATKã¸ (_ğ—p) */
+		case SC_INCMATK:			/* MATKã¸ (_”é‚Ì‘—p) */
+		case SC_WEDDING:			/* ƒEƒFƒfƒBƒ“ƒO */
 		case SC_SANTA:
 		case SC_SUMMER:
 		case SC_INCALLSTATUS:
@@ -9643,10 +9643,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_INCHIT2:
 		case SC_INCFLEE2:
 		case SC_OVERTHRUSTMAX:
-		case SC_CHASEWALK:			/* ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯ */
+		case SC_CHASEWALK:			/* ƒ`ƒFƒCƒXƒEƒH[ƒN */
 		case SC_CHASEWALK_STR:
 		case SC_BATTLEORDER:
-		case SC_MEAL_INCSTR:	// é£Ÿäº‹ç”¨
+		case SC_MEAL_INCSTR:	// H–—p
 		case SC_MEAL_INCAGI:
 		case SC_MEAL_INCVIT:
 		case SC_MEAL_INCINT:
@@ -9660,18 +9660,18 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_MEAL_INCMDEF:
 		case SC_MEAL_INCATK:
 		case SC_MEAL_INCMATK:
-		case SC_MEAL_INCSTR2:	// èª²é‡‘æ–™ç†ç”¨
+		case SC_MEAL_INCSTR2:	// ‰Û‹à—¿——p
 		case SC_MEAL_INCAGI2:
 		case SC_MEAL_INCVIT2:
 		case SC_MEAL_INCINT2:
 		case SC_MEAL_INCDEX2:
 		case SC_MEAL_INCLUK2:
 		case SC_SPURT:
-		case SC_SUN_COMFORT:			/* å¤ªé™½ã®å®‰æ¥½ */
-		case SC_MOON_COMFORT:			/* æœˆã®å®‰æ¥½ */
-		case SC_STAR_COMFORT:			/* æ˜Ÿã®å®‰æ¥½ */
-		case SC_FUSION:				/* å¤ªé™½ã¨æœˆã¨æ˜Ÿã®èåˆ */
-		case SC_ADRENALINE2:			/* ãƒ•ãƒ«ã‚¢ãƒ‰ãƒ¬ãƒŠãƒªãƒ³ãƒ©ãƒƒã‚·ãƒ¥ */
+		case SC_SUN_COMFORT:			/* ‘¾—z‚ÌˆÀŠy */
+		case SC_MOON_COMFORT:			/* Œ‚ÌˆÀŠy */
+		case SC_STAR_COMFORT:			/* ¯‚ÌˆÀŠy */
+		case SC_FUSION:				/* ‘¾—z‚ÆŒ‚Æ¯‚Ì—Z‡ */
+		case SC_ADRENALINE2:			/* ƒtƒ‹ƒAƒhƒŒƒiƒŠƒ“ƒ‰ƒbƒVƒ… */
 		case SC_RESISTWATER:
 		case SC_RESISTGROUND:
 		case SC_RESISTFIRE:
@@ -9688,179 +9688,179 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_STRENGTH:
 		case SC_THE_DEVIL:
 		case SC_THE_SUN:
-		case SC_DISARM:				/* ãƒ‡ã‚£ã‚¹ã‚¢ãƒ¼ãƒ  */
-		case SC_FLING:				/* ãƒ•ãƒ©ã‚¤ãƒ³ã‚° */
-		case SC_MADNESSCANCEL:			/* ãƒãƒƒãƒ‰ãƒã‚¹ã‚­ãƒ£ãƒ³ã‚»ãƒ©ãƒ¼ */
-		case SC_ADJUSTMENT:			/* ã‚¢ã‚¸ãƒ£ã‚¹ãƒˆãƒ¡ãƒ³ãƒˆ */
-		case SC_INCREASING:			/* ã‚¤ãƒ³ã‚¯ãƒªãƒ¼ã‚¸ãƒ³ã‚°ã‚¢ã‚­ãƒ¥ã‚¢ãƒ©ã‚·ãƒ¼ */
-		case SC_FULLBUSTER:			/* ãƒ•ãƒ«ãƒã‚¹ã‚¿ãƒ¼ */
-		case SC_NEN:				/* å¿µ */
-		case SC_AVOID:				/* ç·Šæ€¥å›é¿ */
-		case SC_CHANGE:				/* ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸ */
-		case SC_DEFENCE:			/* ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ã‚¹ */
-		case SC_BLOODLUST:			/* ãƒ–ãƒ©ãƒƒãƒ‰ãƒ©ã‚¹ãƒˆ */
-		case SC_FLEET:				/* ãƒ•ãƒªãƒ¼ãƒˆãƒ ãƒ¼ãƒ– */
-		case SC_SPEED:				/* ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ã‚¹ãƒ”ãƒ¼ãƒ‰ */
-		case SC_STONESKIN:			/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚¹ã‚­ãƒ³ */
-		case SC_ANTIMAGIC:			/* ã‚¢ãƒ³ãƒãƒã‚¸ãƒƒã‚¯ */
-		case SC_WEAPONQUICKEN:			/* ã‚¦ã‚§ãƒãƒ³ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
-		case SC_WE_FEMALE:			/* ã‚ãªãŸã«å°½ãã—ã¾ã™ */
-		case SC_TURISUSS:			/* ã‚¸ãƒ£ã‚¤ã‚¢ãƒ³ãƒˆã‚°ãƒ­ãƒ¼ã‚¹ */
-		case SC_EISIR:				/* ãƒ•ã‚¡ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚¹ãƒ”ãƒªãƒƒãƒˆ */
-		case SC_FEAR:				/* ææ€– */
-		case SC_UNLIMIT:			/* ã‚¢ãƒ³ãƒªãƒŸãƒƒãƒˆ */
-		case SC_EPICLESIS:			/* ã‚¨ãƒ”ã‚¯ãƒ¬ã‚·ã‚¹ */
-		case SC_LAUDAAGNUS:			/* ãƒ©ã‚¦ãƒ€ã‚¢ã‚°ãƒŒã‚¹ */
-		case SC_LAUDARAMUS:			/* ãƒ©ã‚¦ãƒ€ãƒ©ãƒ ã‚¹ */
-		case SC_TELEKINESIS_INTENSE:	/* ãƒ†ãƒ¬ã‚­ãƒã‚·ã‚¹ã‚¤ãƒ³ãƒ†ãƒ³ã‚¹ */
-		case SC_VENOMIMPRESS:		/* ãƒ™ãƒŠãƒ ã‚¤ãƒ³ãƒ—ãƒ¬ã‚¹ */
-		case SC_CLOAKINGEXCEED:		/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰ */
-		case SC_HALLUCINATIONWALK2:	/* ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯(ãƒšãƒŠãƒ«ãƒ†ã‚£) */
-		case SC_VENOMBLEED:			/* ãƒ™ãƒŠãƒ ãƒ–ãƒªãƒ¼ãƒ‰ */
-		case SC_INFRAREDSCAN:		/* ã‚¤ãƒ³ãƒ•ãƒ©ãƒ¬ãƒƒãƒ‰ã‚¹ã‚­ãƒ£ãƒ³ */
-		case SC_ANALYZE:			/* ã‚¢ãƒŠãƒ©ã‚¤ã‚º */
-		case SC_NEUTRALBARRIER:		/* ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼ */
-		case SC__BODYPAINT:			/* ãƒœãƒ‡ã‚£ãƒšã‚¤ãƒ³ãƒ†ã‚£ãƒ³ã‚° */
-		case SC__INVISIBILITY:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£ */
-		case SC__ENERVATION:		/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¨ãƒŠãƒ¼ãƒ™ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC__UNLUCKY:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚¢ãƒ³ãƒ©ãƒƒã‚­ãƒ¼ */
-		case SC__STRIPACCESSARY:	/* ã‚¹ãƒˆãƒªãƒƒãƒ—ã‚¢ã‚¯ã‚»ã‚µãƒªãƒ¼ */
-		case SC__BLOODYLUST:		/* ãƒ–ãƒ©ãƒƒãƒ‡ã‚£ãƒ©ã‚¹ãƒˆ */
-		case SC_SHIELDSPELL_DEF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(DEF) */
-		case SC_SHIELDSPELL_MDEF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(MDEF) */
-		case SC_SHIELDSPELL_REF:	/* ã‚·ãƒ¼ãƒ«ãƒ‰ã‚¹ãƒšãƒ«(ç²¾éŒ¬) */
-		case SC_PRESTIGE:			/* ãƒ—ãƒ¬ã‚¹ãƒ†ã‚£ãƒ¼ã‚¸ */
-		case SC_EARTHDRIVE:			/* ã‚¢ãƒ¼ã‚¹ãƒ‰ãƒ©ã‚¤ãƒ– */
-		case SC_INSPIRATION:		/* ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_GENTLETOUCH_CHANGE:	/* ç‚¹ç©´ -å- */
-		case SC_GENTLETOUCH_REVITALIZE:	/* ç‚¹ç©´ -æ´»- */
-		case SC_SYMPHONY_LOVE:		/* æ‹äººãŸã¡ã®ç‚ºã®ã‚·ãƒ³ãƒ•ã‚©ãƒ‹ãƒ¼ */
-		case SC_ECHOSONG:			/* ã‚¨ã‚³ãƒ¼ã®æ­Œ */
-		case SC_HARMONIZE:			/* ãƒãƒ¼ãƒ¢ãƒŠã‚¤ã‚º */
-		case SC_GLOOMYDAY:			/* ãƒ¡ãƒ©ãƒ³ã‚³ãƒªãƒ¼ */
-		case SC_LERADS_DEW:			/* ãƒ¬ãƒ¼ãƒ©ã‚ºã®éœ² */
-		case SC_DANCE_WITH_WUG:		/* ãƒ€ãƒ³ã‚¹ã‚¦ã‚£ã‚ºã‚¦ã‚©ãƒ¼ã‚° */
-		case SC_BEYOND_OF_WARCRY:	/* ãƒ“ãƒ¨ãƒ³ãƒ‰ã‚ªãƒ–ã‚¦ã‚©ãƒ¼ã‚¯ãƒ©ã‚¤ */
-		case SC_MELODYOFSINK:		/* ãƒ¡ãƒ­ãƒ‡ã‚£ãƒ¼ã‚ªãƒ–ã‚·ãƒ³ã‚¯ */
-		case SC_FRIGG_SONG:			/* ãƒ•ãƒªãƒƒã‚°ã®æ­Œ */
-		case SC_STRIKING:			/* ã‚¹ãƒˆãƒ©ã‚¤ã‚­ãƒ³ã‚° */
-		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(ç…™å¹•) */
-		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™ã‚¬ã‚¹) */
-		case SC_MANDRAGORA:			/* ãƒã‚¦ãƒªãƒ³ã‚°ã‚ªãƒ–ãƒãƒ³ãƒ‰ãƒ©ã‚´ãƒ© */
-		case SC_BANANA_BOMB:		/* ãƒãƒŠãƒŠçˆ†å¼¾ */
-		case SC_MYSTERIOUS_POWDER:	/* ä¸æ€è­°ãªç²‰ */
-		case SC_BOOST500:			/* ãƒ–ãƒ¼ã‚¹ãƒˆ500 */
-		case SC_FULL_SWING_K:		/* ãƒ•ãƒ«ã‚¹ã‚¤ãƒ³ã‚°K */
-		case SC_MANA_PLUS:			/* ãƒãƒŠãƒ—ãƒ©ã‚¹ */
-		case SC_MUSTLE_M:			/* ãƒãƒƒã‚¹ãƒ«M */
-		case SC_LIFE_FORCE_F:		/* ãƒ©ã‚¤ãƒ•ãƒ•ã‚©ãƒ¼ã‚¹F */
-		case SC_PROMOTE_HEALTH_RESERCH:	/* HPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_ENERGY_DRINK_RESERCH:	/* SPå¢—åŠ ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_EXTRACT_WHITE_POTION_Z:	/* æ¿ƒç¸®ãƒ›ãƒ¯ã‚¤ãƒˆãƒãƒ¼ã‚·ãƒ§ãƒ³Z */
-		case SC_VITATA_500:			/* ãƒ“ã‚¿ã‚¿500 */
-		case SC_EXTRACT_SALAMINE_JUICE:	/* æ¿ƒç¸®ã‚µãƒ©ãƒã‚¤ãƒ³ã‚¸ãƒ¥ãƒ¼ã‚¹ */
-		case SC_SAVAGE_STEAK:		/* ã‚µãƒ™ãƒ¼ã‚¸ã®ä¸¸ç„¼ã */
-		case SC_COCKTAIL_WARG_BLOOD:	/* ã‚«ã‚¯ãƒ†ãƒ«ã‚¦ã‚©ãƒ¼ã‚°ãƒ–ãƒ©ãƒƒãƒ‰ */
-		case SC_MINOR_BBQ:			/* ãƒŸãƒã‚¿ã‚¦ãƒ­ã‚¹ã®ç‰›ã‚«ãƒ«ãƒ“ */
-		case SC_SIROMA_ICE_TEA:		/* ã‚·ãƒ­ãƒã‚¢ã‚¤ã‚¹ãƒ†ã‚£ãƒ¼ */
-		case SC_DROCERA_HERB_STEAMED:	/* ãƒ‰ãƒ­ã‚»ãƒ©ã®ãƒãƒ¼ãƒ–ç…® */
-		case SC_PUTTI_TAILS_NOODLES:	/* ãƒ—ãƒ†ã‚£ãƒƒãƒˆã®ã—ã£ã½éºº */
-		case SC_STOMACHACHE:		/* è…¹ç—› */
-		case SC_MONSTER_TRANSFORM:	/* ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº« */
-		case SC_MEIKYOUSISUI:		/* æ˜é¡æ­¢æ°´ */
-		case SC_IZAYOI:				/* åå…­å¤œ */
-		case SC_KG_KAGEHUMI:		/* å¹»è¡“ -å½±è¸ã¿- */
-		case SC_KYOMU:				/* å¹»è¡“ -è™šç„¡ã®å½±- */
-		case SC_KAGEMUSYA:			/* å¹»è¡“ -åˆ†èº«- */
-		case SC_ZANGETSU:			/* å¹»è¡“ -æ®‹æœˆ- */
-		case SC_AKAITSUKI:			/* å¹»è¡“ -ç´…æœˆ- */
-		case SC_KYOUGAKU:			/* å¹»è¡“ -é©šæ„•- */
-		case SC_SHRIMP:				/* ã‚¨ãƒ“ä¸‰æ˜§ */
-		case SC_GROOMING:			/* ã‚°ãƒ«ãƒ¼ãƒŸãƒ³ã‚° */
-		case SC_NYANGGRASS:			/* ãƒ‹ãƒ£ãƒ³ã‚°ãƒ©ã‚¹ */
-		case SC_BURNT:				/* ç„ç‚å‘ª */
-		case SC_ODINS_POWER:		/* ã‚ªãƒ¼ãƒ‡ã‚£ãƒ³ã®åŠ› */
-		case SC_MER_FLEE:			/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(FLEE) */
-		case SC_MER_ATK:			/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(ATK) */
-		case SC_MER_HP:				/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(HP) */
-		case SC_MER_SP:				/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(SP) */
-		case SC_MER_HIT:			/* å‚­å…µãƒœãƒ¼ãƒŠã‚¹(HIT) */
-		case SC_FIRE_CLOAK:			/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ã‚¯ */
-		case SC_WATER_DROP:			/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ãƒ‰ãƒ­ãƒƒãƒ— */
-		case SC_WIND_CURTAIN:		/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ†ãƒ³ */
-		case SC_SOLID_SKIN:			/* ã‚½ãƒªãƒƒãƒ‰ã‚¹ã‚­ãƒ³ */
-		case SC_STONE_SHIELD:		/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚·ãƒ¼ãƒ«ãƒ‰ */
-		case SC_PYROTECHNIC:		/* ãƒ‘ã‚¤ãƒ­ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯ */
-		case SC_HEATER:				/* ãƒ’ãƒ¼ã‚¿ãƒ¼ */
-		case SC_TROPIC:				/* ãƒˆãƒ­ãƒ”ãƒƒã‚¯ */
-		case SC_AQUAPLAY:			/* ã‚¢ã‚¯ã‚¢ãƒ—ãƒ¬ã‚¤ */
-		case SC_COOLER:				/* ã‚¯ãƒ¼ãƒ©ãƒ¼ */
-		case SC_CHILLY_AIR:			/* ã‚¯ãƒ¼ãƒ«ã‚¨ã‚¢ãƒ¼ */
-		case SC_GUST:				/* ã‚¬ã‚¹ãƒˆ */
-		case SC_BLAST:				/* ãƒ–ãƒ©ã‚¹ãƒˆ */
-		case SC_WILD_STORM:			/* ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚¹ãƒˆãƒ¼ãƒ  */
-		case SC_PETROLOGY:			/* ãƒšãƒˆãƒ­ã‚¸ãƒ¼ */
-		case SC_CURSED_SOIL:		/* ã‚«ãƒ¼ã‚¹ãƒ‰ã‚½ã‚¤ãƒ« */
-		case SC_UPHEAVAL:			/* ã‚¢ãƒƒãƒ—ãƒ˜ã‚¤ãƒãƒ« */
-		case SC_TIDAL_WEAPON_OPTION:	/* ã‚¿ã‚¤ãƒ€ãƒ«ã‚¦ã‚§ãƒãƒ³(ç²¾éœŠ) */
-		case SC_INVINCIBLE:			/* ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ« */
-		case SC_INVINCIBLEOFF:		/* ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ«ã‚ªãƒ• */
+		case SC_DISARM:				/* ƒfƒBƒXƒA[ƒ€ */
+		case SC_FLING:				/* ƒtƒ‰ƒCƒ“ƒO */
+		case SC_MADNESSCANCEL:			/* ƒ}ƒbƒhƒlƒXƒLƒƒƒ“ƒZƒ‰[ */
+		case SC_ADJUSTMENT:			/* ƒAƒWƒƒƒXƒgƒƒ“ƒg */
+		case SC_INCREASING:			/* ƒCƒ“ƒNƒŠ[ƒWƒ“ƒOƒAƒLƒ…ƒAƒ‰ƒV[ */
+		case SC_FULLBUSTER:			/* ƒtƒ‹ƒoƒXƒ^[ */
+		case SC_NEN:				/* ”O */
+		case SC_AVOID:				/* ‹Ù‹}‰ñ”ğ */
+		case SC_CHANGE:				/* ƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW */
+		case SC_DEFENCE:			/* ƒfƒBƒtƒFƒ“ƒX */
+		case SC_BLOODLUST:			/* ƒuƒ‰ƒbƒhƒ‰ƒXƒg */
+		case SC_FLEET:				/* ƒtƒŠ[ƒgƒ€[ƒu */
+		case SC_SPEED:				/* ƒI[ƒo[ƒhƒXƒs[ƒh */
+		case SC_STONESKIN:			/* ƒXƒg[ƒ“ƒXƒLƒ“ */
+		case SC_ANTIMAGIC:			/* ƒAƒ“ƒ`ƒ}ƒWƒbƒN */
+		case SC_WEAPONQUICKEN:			/* ƒEƒFƒ|ƒ“ƒNƒCƒbƒPƒ“ */
+		case SC_WE_FEMALE:			/* ‚ ‚È‚½‚És‚­‚µ‚Ü‚· */
+		case SC_TURISUSS:			/* ƒWƒƒƒCƒAƒ“ƒgƒOƒ[ƒX */
+		case SC_EISIR:				/* ƒtƒ@ƒCƒeƒBƒ“ƒOƒXƒsƒŠƒbƒg */
+		case SC_FEAR:				/* ‹°•| */
+		case SC_UNLIMIT:			/* ƒAƒ“ƒŠƒ~ƒbƒg */
+		case SC_EPICLESIS:			/* ƒGƒsƒNƒŒƒVƒX */
+		case SC_LAUDAAGNUS:			/* ƒ‰ƒEƒ_ƒAƒOƒkƒX */
+		case SC_LAUDARAMUS:			/* ƒ‰ƒEƒ_ƒ‰ƒ€ƒX */
+		case SC_TELEKINESIS_INTENSE:	/* ƒeƒŒƒLƒlƒVƒXƒCƒ“ƒeƒ“ƒX */
+		case SC_VENOMIMPRESS:		/* ƒxƒiƒ€ƒCƒ“ƒvƒŒƒX */
+		case SC_CLOAKINGEXCEED:		/* ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh */
+		case SC_HALLUCINATIONWALK2:	/* ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN(ƒyƒiƒ‹ƒeƒB) */
+		case SC_VENOMBLEED:			/* ƒxƒiƒ€ƒuƒŠ[ƒh */
+		case SC_INFRAREDSCAN:		/* ƒCƒ“ƒtƒ‰ƒŒƒbƒhƒXƒLƒƒƒ“ */
+		case SC_ANALYZE:			/* ƒAƒiƒ‰ƒCƒY */
+		case SC_NEUTRALBARRIER:		/* ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[ */
+		case SC__BODYPAINT:			/* ƒ{ƒfƒBƒyƒCƒ“ƒeƒBƒ“ƒO */
+		case SC__INVISIBILITY:		/* ƒCƒ“ƒrƒWƒrƒŠƒeƒB */
+		case SC__ENERVATION:		/* ƒ}ƒXƒJƒŒ[ƒh F ƒGƒi[ƒx[ƒVƒ‡ƒ“ */
+		case SC__UNLUCKY:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒAƒ“ƒ‰ƒbƒL[ */
+		case SC__STRIPACCESSARY:	/* ƒXƒgƒŠƒbƒvƒAƒNƒZƒTƒŠ[ */
+		case SC__BLOODYLUST:		/* ƒuƒ‰ƒbƒfƒBƒ‰ƒXƒg */
+		case SC_SHIELDSPELL_DEF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(DEF) */
+		case SC_SHIELDSPELL_MDEF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(MDEF) */
+		case SC_SHIELDSPELL_REF:	/* ƒV[ƒ‹ƒhƒXƒyƒ‹(¸˜B) */
+		case SC_PRESTIGE:			/* ƒvƒŒƒXƒeƒB[ƒW */
+		case SC_EARTHDRIVE:			/* ƒA[ƒXƒhƒ‰ƒCƒu */
+		case SC_INSPIRATION:		/* ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“ */
+		case SC_GENTLETOUCH_CHANGE:	/* “_ŒŠ -”½- */
+		case SC_GENTLETOUCH_REVITALIZE:	/* “_ŒŠ -Šˆ- */
+		case SC_SYMPHONY_LOVE:		/* —öl‚½‚¿‚Ìˆ×‚ÌƒVƒ“ƒtƒHƒj[ */
+		case SC_ECHOSONG:			/* ƒGƒR[‚Ì‰Ì */
+		case SC_HARMONIZE:			/* ƒn[ƒ‚ƒiƒCƒY */
+		case SC_GLOOMYDAY:			/* ƒƒ‰ƒ“ƒRƒŠ[ */
+		case SC_LERADS_DEW:			/* ƒŒ[ƒ‰ƒY‚Ì˜I */
+		case SC_DANCE_WITH_WUG:		/* ƒ_ƒ“ƒXƒEƒBƒYƒEƒH[ƒO */
+		case SC_BEYOND_OF_WARCRY:	/* ƒrƒˆƒ“ƒhƒIƒuƒEƒH[ƒNƒ‰ƒC */
+		case SC_MELODYOFSINK:		/* ƒƒƒfƒB[ƒIƒuƒVƒ“ƒN */
+		case SC_FRIGG_SONG:			/* ƒtƒŠƒbƒO‚Ì‰Ì */
+		case SC_STRIKING:			/* ƒXƒgƒ‰ƒCƒLƒ“ƒO */
+		case SC_FIRE_EXPANSION_SMOKE_POWDER:	/* ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(‰Œ–‹) */
+		case SC_FIRE_EXPANSION_TEAR_GAS:	/* ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—ÜƒKƒX) */
+		case SC_MANDRAGORA:			/* ƒnƒEƒŠƒ“ƒOƒIƒuƒ}ƒ“ƒhƒ‰ƒSƒ‰ */
+		case SC_BANANA_BOMB:		/* ƒoƒiƒi”š’e */
+		case SC_MYSTERIOUS_POWDER:	/* •sv‹c‚È•² */
+		case SC_BOOST500:			/* ƒu[ƒXƒg500 */
+		case SC_FULL_SWING_K:		/* ƒtƒ‹ƒXƒCƒ“ƒOK */
+		case SC_MANA_PLUS:			/* ƒ}ƒiƒvƒ‰ƒX */
+		case SC_MUSTLE_M:			/* ƒ}ƒbƒXƒ‹M */
+		case SC_LIFE_FORCE_F:		/* ƒ‰ƒCƒtƒtƒH[ƒXF */
+		case SC_PROMOTE_HEALTH_RESERCH:	/* HP‘‰Áƒ|[ƒVƒ‡ƒ“ */
+		case SC_ENERGY_DRINK_RESERCH:	/* SP‘‰Áƒ|[ƒVƒ‡ƒ“ */
+		case SC_EXTRACT_WHITE_POTION_Z:	/* ”ZkƒzƒƒCƒgƒ|[ƒVƒ‡ƒ“Z */
+		case SC_VITATA_500:			/* ƒrƒ^ƒ^500 */
+		case SC_EXTRACT_SALAMINE_JUICE:	/* ”ZkƒTƒ‰ƒ}ƒCƒ“ƒWƒ…[ƒX */
+		case SC_SAVAGE_STEAK:		/* ƒTƒx[ƒW‚ÌŠÛÄ‚« */
+		case SC_COCKTAIL_WARG_BLOOD:	/* ƒJƒNƒeƒ‹ƒEƒH[ƒOƒuƒ‰ƒbƒh */
+		case SC_MINOR_BBQ:			/* ƒ~ƒmƒ^ƒEƒƒX‚Ì‹ƒJƒ‹ƒr */
+		case SC_SIROMA_ICE_TEA:		/* ƒVƒƒ}ƒAƒCƒXƒeƒB[ */
+		case SC_DROCERA_HERB_STEAMED:	/* ƒhƒƒZƒ‰‚Ìƒn[ƒuÏ */
+		case SC_PUTTI_TAILS_NOODLES:	/* ƒvƒeƒBƒbƒg‚Ì‚µ‚Á‚Û–Ë */
+		case SC_STOMACHACHE:		/* • ’É */
+		case SC_MONSTER_TRANSFORM:	/* ƒ‚ƒ“ƒXƒ^[•Ïg */
+		case SC_MEIKYOUSISUI:		/* –¾‹¾~… */
+		case SC_IZAYOI:				/* \˜Z–é */
+		case SC_KG_KAGEHUMI:		/* Œ¶p -‰e“¥‚İ- */
+		case SC_KYOMU:				/* Œ¶p -‹•–³‚Ì‰e- */
+		case SC_KAGEMUSYA:			/* Œ¶p -•ªg- */
+		case SC_ZANGETSU:			/* Œ¶p -cŒ- */
+		case SC_AKAITSUKI:			/* Œ¶p -gŒ- */
+		case SC_KYOUGAKU:			/* Œ¶p -‹Áœ±- */
+		case SC_SHRIMP:				/* ƒGƒrO–† */
+		case SC_GROOMING:			/* ƒOƒ‹[ƒ~ƒ“ƒO */
+		case SC_NYANGGRASS:			/* ƒjƒƒƒ“ƒOƒ‰ƒX */
+		case SC_BURNT:				/* –‰Šô */
+		case SC_ODINS_POWER:		/* ƒI[ƒfƒBƒ“‚Ì—Í */
+		case SC_MER_FLEE:			/* —b•ºƒ{[ƒiƒX(FLEE) */
+		case SC_MER_ATK:			/* —b•ºƒ{[ƒiƒX(ATK) */
+		case SC_MER_HP:				/* —b•ºƒ{[ƒiƒX(HP) */
+		case SC_MER_SP:				/* —b•ºƒ{[ƒiƒX(SP) */
+		case SC_MER_HIT:			/* —b•ºƒ{[ƒiƒX(HIT) */
+		case SC_FIRE_CLOAK:			/* ƒtƒ@ƒCƒA[ƒNƒ[ƒN */
+		case SC_WATER_DROP:			/* ƒEƒH[ƒ^[ƒhƒƒbƒv */
+		case SC_WIND_CURTAIN:		/* ƒEƒBƒ“ƒhƒJ[ƒeƒ“ */
+		case SC_SOLID_SKIN:			/* ƒ\ƒŠƒbƒhƒXƒLƒ“ */
+		case SC_STONE_SHIELD:		/* ƒXƒg[ƒ“ƒV[ƒ‹ƒh */
+		case SC_PYROTECHNIC:		/* ƒpƒCƒƒeƒNƒjƒbƒN */
+		case SC_HEATER:				/* ƒq[ƒ^[ */
+		case SC_TROPIC:				/* ƒgƒƒsƒbƒN */
+		case SC_AQUAPLAY:			/* ƒAƒNƒAƒvƒŒƒC */
+		case SC_COOLER:				/* ƒN[ƒ‰[ */
+		case SC_CHILLY_AIR:			/* ƒN[ƒ‹ƒGƒA[ */
+		case SC_GUST:				/* ƒKƒXƒg */
+		case SC_BLAST:				/* ƒuƒ‰ƒXƒg */
+		case SC_WILD_STORM:			/* ƒƒCƒ‹ƒhƒXƒg[ƒ€ */
+		case SC_PETROLOGY:			/* ƒyƒgƒƒW[ */
+		case SC_CURSED_SOIL:		/* ƒJ[ƒXƒhƒ\ƒCƒ‹ */
+		case SC_UPHEAVAL:			/* ƒAƒbƒvƒwƒCƒoƒ‹ */
+		case SC_TIDAL_WEAPON_OPTION:	/* ƒ^ƒCƒ_ƒ‹ƒEƒFƒ|ƒ“(¸—ì) */
+		case SC_INVINCIBLE:			/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ */
+		case SC_INVINCIBLEOFF:		/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ƒIƒt */
 		case SC_ATKPOTION:
 		case SC_MATKPOTION:
 		case SC_ALMIGHTY:
-		case SC_PARALYZE:			/* éº»ç—º */
-		case SC_PAIN_KILLER:		/* ãƒšã‚¤ãƒ³ã‚­ãƒ©ãƒ¼ */
-		case SC_ANGRIFFS_MODUS:		/* ã‚¢ãƒ³ã‚°ãƒªãƒ•ã‚¹ãƒ¢ãƒ‰ã‚¹ */
-		case SC_GOLDENE_FERSE:		/* ã‚´ãƒ¼ãƒ«ãƒ‡ãƒ³ãƒšãƒ«ã‚¸ã‚§ */
-		case SC_TINDER_BREAKER:		/* æ•ç² */
-		case SC_CBC:				/* çµã‚æŠ€ */
+		case SC_PARALYZE:			/* –ƒáƒ */
+		case SC_PAIN_KILLER:		/* ƒyƒCƒ“ƒLƒ‰[ */
+		case SC_ANGRIFFS_MODUS:		/* ƒAƒ“ƒOƒŠƒtƒXƒ‚ƒhƒX */
+		case SC_GOLDENE_FERSE:		/* ƒS[ƒ‹ƒfƒ“ƒyƒ‹ƒWƒF */
+		case SC_TINDER_BREAKER:		/* •ßŠl */
+		case SC_CBC:				/* i‚ß‹Z */
 		case SC_EQC:				/* E.Q.C */
-		case SC_ALL_STAT_DOWN:	/* ã‚ªãƒ¼ãƒ«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ€ã‚¦ãƒ³ */
-		case SC_LUNARSTANCE:		/* æœˆã®æ§‹ãˆ */
-		case SC_UNIVERSESTANCE:		/* å®‡å®™ã®æ§‹ãˆ */
-		case SC_SUNSTANCE:			/* å¤ªé™½ã®æ§‹ãˆ */
-		case SC_STARSTANCE:			/* æ˜Ÿã®æ§‹ãˆ */
+		case SC_ALL_STAT_DOWN:	/* ƒI[ƒ‹ƒXƒe[ƒ^ƒXƒ_ƒEƒ“ */
+		case SC_LUNARSTANCE:		/* Œ‚Ì\‚¦ */
+		case SC_UNIVERSESTANCE:		/* ‰F’ˆ‚Ì\‚¦ */
+		case SC_SUNSTANCE:			/* ‘¾—z‚Ì\‚¦ */
+		case SC_STARSTANCE:			/* ¯‚Ì\‚¦ */
 			calc_flag = 1;
 			break;
-		case SC_NEWMOON:			/* æœ”æœˆè„š */
-		case SC_SPEEDUP0:			/* ç§»å‹•é€Ÿåº¦å¢—åŠ (ã‚¢ã‚¤ãƒ†ãƒ ) */
-		case SC_SPEEDUP1:			/* ã‚¹ãƒ”ãƒ¼ãƒ‰ãƒãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_WALKSPEED:			/* ç§»å‹•é€Ÿåº¦å¢—åŠ (ã‚¹ã‚¯ãƒªãƒ—ãƒˆ) */
-		case SC_SLOWPOTION:			/* ç§»å‹•é€Ÿåº¦ä½ä¸‹(ã‚¢ã‚¤ãƒ†ãƒ ) */
-		case SC_STEELBODY:			/* é‡‘å‰› */
-		case SC_INCREASEAGI:			/* é€Ÿåº¦ä¸Šæ˜‡ */
-		case SC_WINDWALK:			/* ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚©ãƒ¼ã‚¯ */
+		case SC_NEWMOON:			/* ñŒ‹r */
+		case SC_SPEEDUP0:			/* ˆÚ“®‘¬“x‘‰Á(ƒAƒCƒeƒ€) */
+		case SC_SPEEDUP1:			/* ƒXƒs[ƒhƒ|[ƒVƒ‡ƒ“ */
+		case SC_WALKSPEED:			/* ˆÚ“®‘¬“x‘‰Á(ƒXƒNƒŠƒvƒg) */
+		case SC_SLOWPOTION:			/* ˆÚ“®‘¬“x’á‰º(ƒAƒCƒeƒ€) */
+		case SC_STEELBODY:			/* ‹à„ */
+		case SC_INCREASEAGI:			/* ‘¬“xã¸ */
+		case SC_WINDWALK:			/* ƒEƒCƒ“ƒhƒEƒH[ƒN */
 		case SC_INCFLEE:
-		case SC_DECREASEAGI:			/* é€Ÿåº¦æ¸›å°‘ */
-		case SC_QUAGMIRE:			/* ã‚¯ã‚¡ã‚°ãƒã‚¤ã‚¢ */
-		case SC_MARSHOFABYSS:		/* ãƒãƒ¼ã‚·ãƒ¥ã‚ªãƒ–ã‚¢ãƒ“ã‚¹ */
-		case SC_DEFENDER:			/* ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ */
+		case SC_DECREASEAGI:			/* ‘¬“xŒ¸­ */
+		case SC_QUAGMIRE:			/* ƒNƒ@ƒOƒ}ƒCƒA */
+		case SC_MARSHOFABYSS:		/* ƒ}[ƒVƒ…ƒIƒuƒAƒrƒX */
+		case SC_DEFENDER:			/* ƒfƒBƒtƒFƒ“ƒ_[ */
 		case SC_GRAVITATION:
-		case SC_SUITON:				/* æ°´é */
-		case SC_GATLINGFEVER:			/* ã‚¬ãƒˆãƒªãƒ³ã‚°ãƒ•ã‚£ãƒ¼ãƒãƒ¼ */
-		case SC_PARALIZE:			/* ãƒ‘ãƒ©ãƒ©ã‚¤ã‚º */
-		case SC_FROSTMISTY:			/* ãƒ•ãƒ­ã‚¹ãƒˆãƒŸã‚¹ãƒ†ã‚£ */
-		case SC_CAMOUFLAGE:			/* ã‚«ãƒ¢ãƒ•ãƒ©ãƒ¼ã‚¸ãƒ¥ */
-		case SC__GROOMY:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ã‚°ãƒ«ãƒ¼ãƒŸãƒ¼ */
-		case SC__LAZINESS:			/* ãƒã‚¹ã‚«ãƒ¬ãƒ¼ãƒ‰ ï¼š ãƒ¬ã‚¤ã‚¸ãƒ¼ãƒã‚¹ */
-		case SC_SWING:				/* ã‚¹ã‚¤ãƒ³ã‚°ãƒ€ãƒ³ã‚¹ */
-		case SC_GN_CARTBOOST:		/* ã‚«ãƒ¼ãƒˆãƒ–ãƒ¼ã‚¹ãƒˆ */
-		case SC_MELON_BOMB:			/* ãƒ¡ãƒ­ãƒ³çˆ†å¼¾ */
-		case SC_HISS:				/* è­¦æˆ’ */
-		case SC_ARCLOUSEDASH:		/* ã‚¢ã‚¯ãƒ©ã‚¦ã‚¹ãƒ€ãƒƒã‚·ãƒ¥ */
-		case SC_CHATTERING:			/* ãƒãƒ£ã‚¿ãƒªãƒ³ã‚° */
-		case SC_WIND_STEP:			/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ— */
-		case SC_REBOUND:			/* ãƒªãƒã‚¦ãƒ³ãƒ‰ */
+		case SC_SUITON:				/* …“Ù */
+		case SC_GATLINGFEVER:			/* ƒKƒgƒŠƒ“ƒOƒtƒB[ƒo[ */
+		case SC_PARALIZE:			/* ƒpƒ‰ƒ‰ƒCƒY */
+		case SC_FROSTMISTY:			/* ƒtƒƒXƒgƒ~ƒXƒeƒB */
+		case SC_CAMOUFLAGE:			/* ƒJƒ‚ƒtƒ‰[ƒWƒ… */
+		case SC__GROOMY:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒOƒ‹[ƒ~[ */
+		case SC__LAZINESS:			/* ƒ}ƒXƒJƒŒ[ƒh F ƒŒƒCƒW[ƒlƒX */
+		case SC_SWING:				/* ƒXƒCƒ“ƒOƒ_ƒ“ƒX */
+		case SC_GN_CARTBOOST:		/* ƒJ[ƒgƒu[ƒXƒg */
+		case SC_MELON_BOMB:			/* ƒƒƒ“”š’e */
+		case SC_HISS:				/* Œx‰ú */
+		case SC_ARCLOUSEDASH:		/* ƒAƒNƒ‰ƒEƒXƒ_ƒbƒVƒ… */
+		case SC_CHATTERING:			/* ƒ`ƒƒƒ^ƒŠƒ“ƒO */
+		case SC_WIND_STEP:			/* ƒEƒBƒ“ƒhƒXƒeƒbƒv */
+		case SC_REBOUND:			/* ƒŠƒoƒEƒ“ƒh */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_ALL_RIDING:			/* é¨ä¹—ã‚·ã‚¹ãƒ†ãƒ  */
+		case SC_ALL_RIDING:			/* ‹RæƒVƒXƒeƒ€ */
 			if(sd)
 				clif_status_load_id(sd,SI_RIDING,0);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_ON_PUSH_CART:		/* ã‚«ãƒ¼ãƒˆ */
+		case SC_ON_PUSH_CART:		/* ƒJ[ƒg */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			if(sc->data[SC_CARTBOOST].timer != -1)
@@ -9870,17 +9870,17 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			if(sd)
 				clif_cart_clear(sd);
 			break;
-		case SC_ELEMENTWATER:		// æ°´
-		case SC_ELEMENTGROUND:		// åœŸ
-		case SC_ELEMENTFIRE:		// ç«
-		case SC_ELEMENTWIND:		// é¢¨
-		case SC_ELEMENTHOLY:		// å…‰
-		case SC_ELEMENTDARK:		// é—‡
-		case SC_ELEMENTELEKINESIS:	// å¿µ
-		case SC_ELEMENTPOISON:		// æ¯’
-		//case SC_ELEMENTUNDEAD:	// ä¸æ­»
+		case SC_ELEMENTWATER:		// …
+		case SC_ELEMENTGROUND:		// “y
+		case SC_ELEMENTFIRE:		// ‰Î
+		case SC_ELEMENTWIND:		// •—
+		case SC_ELEMENTHOLY:		// Œõ
+		case SC_ELEMENTDARK:		// ˆÅ
+		case SC_ELEMENTELEKINESIS:	// ”O
+		case SC_ELEMENTPOISON:		// “Å
+		//case SC_ELEMENTUNDEAD:	// •s€
 			if(sd)
-				clif_displaymessage(sd->fd, msg_txt(203));	// é˜²å…·ã®å±æ€§ãŒå…ƒã«æˆ»ã‚Šã¾ã—ãŸ
+				clif_displaymessage(sd->fd, msg_txt(203));	// –h‹ï‚Ì‘®«‚ªŒ³‚É–ß‚è‚Ü‚µ‚½
 			break;
 		case SC_RACEUNKNOWN:
 		case SC_RACEUNDEAD:
@@ -9893,100 +9893,100 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_RACEANGEL:
 		case SC_RACEDRAGON:
 			if(sd)
-				clif_displaymessage(sd->fd, msg_txt(205));	// ç¨®æ—ãŒå…ƒã«æˆ»ã‚Šã¾ã—ãŸ
+				clif_displaymessage(sd->fd, msg_txt(205));	// í‘°‚ªŒ³‚É–ß‚è‚Ü‚µ‚½
 			break;
-		case SC_RUN:			/* ã‚¿ã‚¤ãƒªã‚® */
-		case SC_WUGDASH:		/* ã‚¦ã‚©ãƒ¼ã‚°ãƒ€ãƒƒã‚·ãƒ¥ */
+		case SC_RUN:			/* ƒ^ƒCƒŠƒM */
+		case SC_WUGDASH:		/* ƒEƒH[ƒOƒ_ƒbƒVƒ… */
 			unit_stop_walking(bl,0);
 			calc_flag = 1;
 			break;
-		case SC_MONK:			/* ãƒ¢ãƒ³ã‚¯ã®é­‚ */
-		case SC_STAR:			/* ã‚±ãƒ³ã‚»ã‚¤ã®é­‚ */
-		case SC_SAGE:			/* ã‚»ãƒ¼ã‚¸ã®é­‚ */
-		case SC_CRUSADER:		/* ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼ã®é­‚ */
-		case SC_WIZARD:			/* ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã®é­‚ */
-		case SC_PRIEST:			/* ãƒ—ãƒªãƒ¼ã‚¹ãƒˆã®é­‚ */
-		case SC_ROGUE:			/* ãƒ­ãƒ¼ã‚°ã®é­‚ */
-		case SC_ASSASIN:		/* ã‚¢ã‚µã‚·ãƒ³ã®é­‚ */
-		case SC_SOULLINKER:		/* ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼ã®é­‚ */
-		case SC_SUPERNOVICE:		/* ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒãƒ¼ãƒ“ã‚¹ã®é­‚ */
-		case SC_GUNNER:			/* ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼ã®é­‚ */
-		case SC_NINJA:			/* å¿è€…ã®é­‚ */
-		case SC_DEATHKINGHT:		/* ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_COLLECTOR:		/* ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼ã®é­‚ */
+		case SC_MONK:			/* ƒ‚ƒ“ƒN‚Ì° */
+		case SC_STAR:			/* ƒPƒ“ƒZƒC‚Ì° */
+		case SC_SAGE:			/* ƒZ[ƒW‚Ì° */
+		case SC_CRUSADER:		/* ƒNƒ‹ƒZƒCƒ_[‚Ì° */
+		case SC_WIZARD:			/* ƒEƒBƒU[ƒh‚Ì° */
+		case SC_PRIEST:			/* ƒvƒŠ[ƒXƒg‚Ì° */
+		case SC_ROGUE:			/* ƒ[ƒO‚Ì° */
+		case SC_ASSASIN:		/* ƒAƒTƒVƒ“‚Ì° */
+		case SC_SOULLINKER:		/* ƒ\ƒEƒ‹ƒŠƒ“ƒJ[‚Ì° */
+		case SC_SUPERNOVICE:		/* ƒX[ƒp[ƒm[ƒrƒX‚Ì° */
+		case SC_GUNNER:			/* ƒKƒ“ƒXƒŠƒ“ƒK[‚Ì° */
+		case SC_NINJA:			/* ”EÒ‚Ì° */
+		case SC_DEATHKINGHT:		/* ƒfƒXƒiƒCƒg‚Ì° */
+		case SC_COLLECTOR:		/* ƒRƒŒƒNƒ^[‚Ì° */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd, msg_txt(207));	// é­‚çŠ¶æ…‹ãŒçµ‚äº†ã—ã¾ã—ãŸ
+				clif_disp_onlyself(sd->fd, msg_txt(207));	// °ó‘Ô‚ªI—¹‚µ‚Ü‚µ‚½
 			break;
-		case SC_KNIGHT:			/* ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_ALCHEMIST:		/* ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆã®é­‚ */
-		case SC_BARDDANCER:		/* ãƒãƒ¼ãƒ‰ã¨ãƒ€ãƒ³ã‚µãƒ¼ã®é­‚ */
-		case SC_BLACKSMITH:		/* ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã®é­‚ */
-		case SC_HUNTER:			/* ãƒãƒ³ã‚¿ãƒ¼ã®é­‚ */
-		case SC_HIGH:			/* ä¸€æ¬¡ä¸Šä½è·æ¥­ã®é­‚ */
+		case SC_KNIGHT:			/* ƒiƒCƒg‚Ì° */
+		case SC_ALCHEMIST:		/* ƒAƒ‹ƒPƒ~ƒXƒg‚Ì° */
+		case SC_BARDDANCER:		/* ƒo[ƒh‚Æƒ_ƒ“ƒT[‚Ì° */
+		case SC_BLACKSMITH:		/* ƒuƒ‰ƒbƒNƒXƒ~ƒX‚Ì° */
+		case SC_HUNTER:			/* ƒnƒ“ƒ^[‚Ì° */
+		case SC_HIGH:			/* ˆêŸãˆÊE‹Æ‚Ì° */
 			if(sd && battle_config.disp_job_soul_state_change)
-				clif_disp_onlyself(sd->fd, msg_txt(207));	// é­‚çŠ¶æ…‹ãŒçµ‚äº†ã—ã¾ã—ãŸ
+				clif_disp_onlyself(sd->fd, msg_txt(207));	// °ó‘Ô‚ªI—¹‚µ‚Ü‚µ‚½
 			calc_flag = 1;
 			break;
-		case SC_POEMBRAGI:			/* ãƒ–ãƒ©ã‚® */
-		case SC_WHISTLE:			/* å£ç¬› */
-		case SC_ASSNCROS:			/* å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹ */
-		case SC_APPLEIDUN:			/* ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª */
-		case SC_HUMMING:			/* ãƒãƒŸãƒ³ã‚° */
-		case SC_DONTFORGETME:			/* ç§ã‚’å¿˜ã‚Œãªã„ã§ */
-		case SC_FORTUNE:			/* å¹¸é‹ã®ã‚­ã‚¹ */
-		case SC_SERVICE4U:			/* ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼ */
+		case SC_POEMBRAGI:			/* ƒuƒ‰ƒM */
+		case SC_WHISTLE:			/* Œû“J */
+		case SC_ASSNCROS:			/* —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX */
+		case SC_APPLEIDUN:			/* ƒCƒhƒDƒ“‚Ì—ÑŒç */
+		case SC_HUMMING:			/* ƒnƒ~ƒ“ƒO */
+		case SC_DONTFORGETME:			/* „‚ğ–Y‚ê‚È‚¢‚Å */
+		case SC_FORTUNE:			/* K‰^‚ÌƒLƒX */
+		case SC_SERVICE4U:			/* ƒT[ƒrƒXƒtƒH[ƒ†[ */
 			calc_flag = 1;
 			if(type == SC_DONTFORGETME)
 				ud->state.change_speed = 1;
-			// è¸Šã‚Šæ¼”å¥æŒç¶šã‚»ãƒƒãƒˆ
+			// —x‚è‰‰‘t‘±ƒZƒbƒg
 			if(sc->data[type + SC_WHISTLE_ - SC_WHISTLE].timer == -1)
 				status_change_start(bl,type + SC_WHISTLE_ - SC_WHISTLE,sc->data[type].val1,
 					sc->data[type].val2,sc->data[type].val3,sc->data[type].val4,battle_config.dance_and_play_duration,0);
 			break;
-		case SC_WHISTLE_:			/* å£ç¬› */
-		case SC_ASSNCROS_:			/* å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹ */
-		case SC_APPLEIDUN_:			/* ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª */
-		case SC_HUMMING_:			/* ãƒãƒŸãƒ³ã‚° */
-		case SC_DONTFORGETME_:			/* ç§ã‚’å¿˜ã‚Œãªã„ã§ */
-		case SC_FORTUNE_:			/* å¹¸é‹ã®ã‚­ã‚¹ */
-		case SC_SERVICE4U_:			/* ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼ */
+		case SC_WHISTLE_:			/* Œû“J */
+		case SC_ASSNCROS_:			/* —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX */
+		case SC_APPLEIDUN_:			/* ƒCƒhƒDƒ“‚Ì—ÑŒç */
+		case SC_HUMMING_:			/* ƒnƒ~ƒ“ƒO */
+		case SC_DONTFORGETME_:			/* „‚ğ–Y‚ê‚È‚¢‚Å */
+		case SC_FORTUNE_:			/* K‰^‚ÌƒLƒX */
+		case SC_SERVICE4U_:			/* ƒT[ƒrƒXƒtƒH[ƒ†[ */
 			calc_flag = 1;
 			break;
-		case SC_MARIONETTE:			/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« (è‡ªåˆ†) */
-		case SC_MARIONETTE2:			/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« (ç›¸æ‰‹) */
+		case SC_MARIONETTE:			/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ (©•ª) */
+		case SC_MARIONETTE2:			/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ (‘Šè) */
 			{
 				struct block_list *tbl = map_id2bl(sc->data[type].val2);
 				if(tbl) {
 					struct status_change *tsc = status_get_sc(tbl);
 					int tmp = (type == SC_MARIONETTE)? SC_MARIONETTE2: SC_MARIONETTE;
-					// ç›¸æ–¹ãŒãƒãƒªã‚ªãƒãƒƒãƒˆçŠ¶æ…‹ãªã‚‰ã„ã£ã—ã‚‡ã«è§£é™¤
+					// ‘Š•û‚ªƒ}ƒŠƒIƒlƒbƒgó‘Ô‚È‚ç‚¢‚Á‚µ‚å‚É‰ğœ
 					if(tsc && tsc->data[tmp].timer != -1)
 						status_change_end(tbl, tmp, -1);
 				}
 			}
 			calc_flag = 1;
 			break;
-		case SC_BERSERK:			/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+		case SC_BERSERK:			/* ƒo[ƒT[ƒN */
 			calc_flag = 1;
 			if(sd) {
-				clif_status_load_id(sd,SI_INCREASEAGI,0);	// ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+				clif_status_load_id(sd,SI_INCREASEAGI,0);	// ƒAƒCƒRƒ“Á‹
 				status_change_start(bl,SC_NATURAL_HEAL_STOP,0,0,0,0,skill_get_time2(LK_BERSERK,sc->data[type].val1),0);
 			}
 			break;
 		case SC_HALLUCINATION:
 			if(sd)
-				clif_status_load_id(sd,SI_HALLUCINATION,0);	// ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+				clif_status_load_id(sd,SI_HALLUCINATION,0);	// ƒAƒCƒRƒ“Á‹
 			break;
 
-		case SC_ENDURE:				/* ã‚¤ãƒ³ãƒ‡ãƒ¥ã‚¢ */
+		case SC_ENDURE:				/* ƒCƒ“ƒfƒ…ƒA */
 			calc_flag = 1;
 			// fall through
-		case SC_AUTOGUARD:			/* ã‚ªãƒ¼ãƒˆã‚¬ãƒ¼ãƒ‰ */
-		case SC_REFLECTSHIELD:			/* ãƒªãƒ•ãƒ¬ã‚¯ãƒˆã‚·ãƒ¼ãƒ«ãƒ‰ */
+		case SC_AUTOGUARD:			/* ƒI[ƒgƒK[ƒh */
+		case SC_REFLECTSHIELD:			/* ƒŠƒtƒŒƒNƒgƒV[ƒ‹ƒh */
 			if(sd) {
 				struct map_session_data *tsd;
 				int i;
-				// è¢«ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³è€…ã‚‚è§£é™¤ã™ã‚‹
+				// ”íƒfƒBƒ{[ƒVƒ‡ƒ“Ò‚à‰ğœ‚·‚é
 				for(i = 0; i < 5; i++) {
 					if(sd->dev.val1[i] && (tsd = map_id2sd(sd->dev.val1[i])) != NULL && tsd->sc.data[type].timer != -1)
 						status_change_end(&tsd->bl, type, -1);
@@ -9994,7 +9994,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			}
 			break;
 
-		case SC_DEVOTION:		/* ãƒ‡ã‚£ãƒœãƒ¼ã‚·ãƒ§ãƒ³ */
+		case SC_DEVOTION:		/* ƒfƒBƒ{[ƒVƒ‡ƒ“ */
 			{
 				struct map_session_data *dsd = map_id2sd(sc->data[type].val1);
 
@@ -10018,7 +10018,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				struct block_list *tbl = map_id2bl(sc->data[type].val4);
 				if(tbl) {
 					struct status_change *tsc = status_get_sc(tbl);
-					// ç‰‡æ–¹ãŒåˆ‡ã‚ŒãŸã®ã§ç›¸æ‰‹ã®ç™½åˆƒçŠ¶æ…‹ãŒåˆ‡ã‚Œã¦ãªã„ã®ãªã‚‰è§£é™¤
+					// •Ğ•û‚ªØ‚ê‚½‚Ì‚Å‘Šè‚Ì”’nó‘Ô‚ªØ‚ê‚Ä‚È‚¢‚Ì‚È‚ç‰ğœ
 					if(tsc && tsc->data[SC_BLADESTOP].timer != -1)
 						status_change_end(tbl,SC_BLADESTOP,-1);
 					if(sc->data[type].val2 == 2)
@@ -10032,7 +10032,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				struct block_list *tbl = map_id2bl(sc->data[type].val4);
 				if(tbl) {
 					struct status_change *tsc = status_get_sc(tbl);
-					// ç‰‡æ–¹ãŒåˆ‡ã‚ŒãŸã®ã§ç›¸æ‰‹ãŒåˆ‡ã‚Œã¦ãªã„ã®ãªã‚‰è§£é™¤
+					// •Ğ•û‚ªØ‚ê‚½‚Ì‚Å‘Šè‚ªØ‚ê‚Ä‚È‚¢‚Ì‚È‚ç‰ğœ
 					if(tsc && tsc->data[type].timer != -1)
 						status_change_end(tbl,type,-1);
 				}
@@ -10042,12 +10042,12 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_DANCING:
 			{
 				struct map_session_data *dsd;
-				// æœˆæ˜ã‚Šã ã‘ã“ã“ã§ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+				// Œ–¾‚è‚¾‚¯‚±‚±‚ÅƒAƒCƒRƒ“Á‹
 				if(sc->data[type].val1 == CG_MOONLIT)
-					clif_status_change(bl,SI_MOONLIT,0,0,0,0,0);	// ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+					clif_status_change(bl,SI_MOONLIT,0,0,0,0,0);	// ƒAƒCƒRƒ“Á‹
 
 				if(sc->data[type].val4 && (dsd = map_id2sd(sc->data[type].val4))) {
-					// åˆå¥ã§ç›¸æ‰‹ãŒã„ã‚‹å ´åˆç›¸æ‰‹ã®val4ã‚’0ã«ã™ã‚‹
+					// ‡‘t‚Å‘Šè‚ª‚¢‚éê‡‘Šè‚Ìval4‚ğ0‚É‚·‚é
 					if(dsd->sc.data[type].timer != -1)
 						dsd->sc.data[type].val4 = 0;
 				}
@@ -10062,52 +10062,52 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_WARM:
 		case SC_GRAVITATION_USER:
 			{
-				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4ãŒgroup_id
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4‚ªgroup_id
 				sc->data[type].val4 = 0;
 				if(sg)
 					skill_delunitgroup(sg);
 			}
 			break;
-		case SC_NOCHAT:			/* ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ */
+		case SC_NOCHAT:			/* ƒ`ƒƒƒbƒg‹Ö~ó‘Ô */
 			if(sd)
 				clif_updatestatus(sd,SP_MANNER);
 			break;
-		case SC_SPLASHER:		/* ãƒ™ãƒŠãƒ ã‚¹ãƒ—ãƒ©ãƒƒã‚·ãƒ£ãƒ¼ */
+		case SC_SPLASHER:		/* ƒxƒiƒ€ƒXƒvƒ‰ƒbƒVƒƒ[ */
 			{
 				struct block_list *src = map_id2bl(sc->data[type].val3);
 				if(src && tid != -1) {
-					// è‡ªåˆ†ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼†å‘¨å›²3*3ã«ãƒ€ãƒ¡ãƒ¼ã‚¸
+					// ©•ª‚Éƒ_ƒ[ƒW•üˆÍ3*3‚Éƒ_ƒ[ƒW
 					skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
 				}
 			}
 			break;
 		case SC_ANKLE:
-		case SC_THORNS_TRAP:	/* ã‚½ãƒ¼ãƒ³ãƒˆãƒ©ãƒƒãƒ— */
+		case SC_THORNS_TRAP:	/* ƒ\[ƒ“ƒgƒ‰ƒbƒv */
 			{
 				struct skill_unit_group *sg = map_id2sg(sc->data[type].val2);
-				// skill_delunitgroupã‹ã‚‰status_change_end ãŒå‘¼ã°ã‚Œãªã„ç‚ºã«ã€
-				// ä¸€ç«¯ç™ºå‹•ã—ã¦ã„ãªã„äº‹ã«ã—ã¦ã‹ã‚‰ã‚°ãƒ«ãƒ¼ãƒ—å‰Šé™¤ã™ã‚‹ã€‚
+				// skill_delunitgroup‚©‚çstatus_change_end ‚ªŒÄ‚Î‚ê‚È‚¢ˆ×‚ÉA
+				// ˆê’[”­“®‚µ‚Ä‚¢‚È‚¢–‚É‚µ‚Ä‚©‚çƒOƒ‹[ƒvíœ‚·‚éB
 				if(sg) {
 					sg->val2 = 0;
 					skill_delunitgroup(sg);
 				}
 			}
 			break;
-		case SC_SELFDESTRUCTION:	/* è‡ªçˆ† */
+		case SC_SELFDESTRUCTION:	/* ©”š */
 			unit_stop_walking(bl,5);
 			if(md) {
 				md->mode &= ~MD_CANMOVE;
 				md->state.special_mob_ai = 2;
 			}
 			break;
-		case SC_BUNSINJYUTSU:	/* åˆ†èº«ã®è¡“ */
+		case SC_BUNSINJYUTSU:	/* •ªg‚Ìp */
 			if(sd) {
 				int color = sc->data[SC_BUNSINJYUTSU].val4;
 				if(color > 0)
 					pc_changelook(sd, LOOK_CLOTHES_COLOR, color);
 			}
 			break;
-		case SC_SEVENWIND:	/* æš–ã‹ã„é¢¨ */
+		case SC_SEVENWIND:	/* ’g‚©‚¢•— */
 			if(sd)
 				clif_status_load_id(sd,sc->data[type].val2,0);
 			break;
@@ -10116,30 +10116,30 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				status_change_end(bl,SC_PROVOKE,-1);
 			}
 			break;
-		case SC_HALLUCINATIONWALK:	/* ãƒãƒ«ã‚·ãƒãƒ¼ã‚·ãƒ§ãƒ³ã‚¦ã‚©ãƒ¼ã‚¯ */
-			// ãƒšãƒŠãƒ«ãƒ†ã‚£é–‹å§‹
+		case SC_HALLUCINATIONWALK:	/* ƒnƒ‹ƒVƒl[ƒVƒ‡ƒ“ƒEƒH[ƒN */
+			// ƒyƒiƒ‹ƒeƒBŠJn
 			status_change_start(bl,SC_HALLUCINATIONWALK2,0,0,0,0,skill_get_time2(GC_HALLUCINATIONWALK,sc->data[type].val1),0);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
-		case SC_WHITEIMPRISON:	/* ãƒ›ãƒ¯ã‚¤ãƒˆã‚¤ãƒ³ãƒ—ãƒªã‚ºãƒ³ */
+		case SC_WHITEIMPRISON:	/* ƒzƒƒCƒgƒCƒ“ƒvƒŠƒYƒ“ */
 			{
 				int dmg = 400 * sc->data[type].val1;
 				clif_damage(bl,bl,gettick(),0,0,dmg,0,9,0,0);
 				battle_damage(bl,bl,dmg,0,0,0);
 			}
 			break;
-		case SC_SPELLBOOK:			/* ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯ */
+		case SC_SPELLBOOK:			/* ƒXƒyƒ‹ƒuƒbƒN */
 			if(sd) {
-				// ä¿å­˜ã‚¹ã‚­ãƒ«æƒ…å ±ã‚’åˆæœŸåŒ–
+				// •Û‘¶ƒXƒLƒ‹î•ñ‚ğ‰Šú‰»
 				memset(sd->freeze_sp_skill, 0, sizeof(sd->freeze_sp_skill[0])*MAX_FREEZE_SPELL);
-				sd->freeze_sp_slot = 0;		// ã‚¹ãƒ­ãƒƒãƒˆæ•°ã‚’åˆæœŸåŒ–
+				sd->freeze_sp_slot = 0;		// ƒXƒƒbƒg”‚ğ‰Šú‰»
 			}
 			break;
-		case SC_NEUTRALBARRIER_USER:	/* ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ©ãƒ«ãƒãƒªã‚¢ãƒ¼(ä½¿ç”¨è€…) */
-		case SC_STEALTHFIELD_USER:		/* ã‚¹ãƒ†ãƒ«ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ä½¿ç”¨è€…) */
+		case SC_NEUTRALBARRIER_USER:	/* ƒjƒ…[ƒgƒ‰ƒ‹ƒoƒŠƒA[(g—pÒ) */
+		case SC_STEALTHFIELD_USER:		/* ƒXƒeƒ‹ƒXƒtƒB[ƒ‹ƒh(g—pÒ) */
 			{
-				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4ãŒgroup_id
+				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4‚ªgroup_id
 				sc->data[type].val4 = 0;
 				if(sg)
 					skill_delunitgroup(sg);
@@ -10147,18 +10147,18 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				ud->state.change_speed = 1;
 			}
 			break;
-		case SC__SHADOWFORM:		/* ã‚·ãƒ£ãƒ‰ã‚¦ãƒ•ã‚©ãƒ¼ãƒ  */
+		case SC__SHADOWFORM:		/* ƒVƒƒƒhƒEƒtƒH[ƒ€ */
 			{
 				struct map_session_data *dsd;
 				if((dsd = map_id2sd(sc->data[type].val2)) != NULL)
 					dsd->shadowform_id = 0;
 			}
 			break;
-		case SC_FORCEOFVANGUARD:	/* ãƒ•ã‚©ãƒ¼ã‚¹ã‚ªãƒ–ãƒãƒ³ã‚¬ãƒ¼ãƒ‰ */
+		case SC_FORCEOFVANGUARD:	/* ƒtƒH[ƒXƒIƒuƒoƒ“ƒK[ƒh */
 			clif_mshield(sd, 0);
 			calc_flag = 1;
 			break;
-		case SC_BANDING:		/* ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚° */
+		case SC_BANDING:		/* ƒoƒ“ƒfƒBƒ“ƒO */
 			{
 				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);
 				sc->data[type].val4 = 0;
@@ -10167,7 +10167,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				calc_flag = 1;
 			}
 			break;
-		case SC_RAISINGDRAGON:		/* æ½œé¾æ˜‡å¤© */
+		case SC_RAISINGDRAGON:		/* ö—´¸“V */
 			if(sd) {
 				int max = pc_checkskill(sd,MO_CALLSPIRITS);
 				if(sd->spiritball.num > max)
@@ -10175,11 +10175,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			}
 			calc_flag = 1;
 			break;
-		case SC_SATURDAY_NIGHT_FEVER:	/* ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼ */
+		case SC_SATURDAY_NIGHT_FEVER:	/* ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[ */
 			status_change_start(bl,SC_SITDOWN_FORCE,0,0,0,0,3000,0);
 			calc_flag = 1;
 			break;
-		case SC_SPORE_EXPLOSION:	/* ã‚¹ãƒã‚¢ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ã‚¸ãƒ§ãƒ³ */
+		case SC_SPORE_EXPLOSION:	/* ƒXƒ|ƒAƒGƒNƒXƒvƒ[ƒWƒ‡ƒ“ */
 			{
 				struct block_list *src = map_id2bl(sc->data[type].val3);
 				if(src && tid != -1) {
@@ -10187,11 +10187,11 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				}
 			}
 			break;
-		case SC_SUMMON_ELEM:	/* ã‚µãƒ¢ãƒ³ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ« */
+		case SC_SUMMON_ELEM:	/* ƒTƒ‚ƒ“ƒGƒŒƒƒ“ƒ^ƒ‹ */
 			if(sd && sd->eld)
 				elem_delete_data(sd);
 			break;
-		case SC_OVERED_BOOST:		/* ã‚ªãƒ¼ãƒãƒ¼ãƒ‰ãƒ–ãƒ¼ã‚¹ãƒˆ */
+		case SC_OVERED_BOOST:		/* ƒI[ƒo[ƒhƒu[ƒXƒg */
 			if(sd) {
 				int sp = status_get_max_sp(bl) / 2;
 				if(sd->status.sp > sp)
@@ -10203,23 +10203,23 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			else if(hd) {
 				hd->status.hungry -= 50;
 				if(hd->status.hungry <= 0) {
-					hd->status.hungry = 1;	// 0ã«ã¯ãªã‚‰ãªã„
+					hd->status.hungry = 1;	// 0‚É‚Í‚È‚ç‚È‚¢
 				}
 			}
 			calc_flag = 1;
 			break;
-		case SC_GRANITIC_ARMOR:		/* ã‚°ãƒ©ãƒ‹ãƒ†ã‚£ãƒƒã‚¯ã‚¢ãƒ¼ãƒãƒ¼ */
+		case SC_GRANITIC_ARMOR:		/* ƒOƒ‰ƒjƒeƒBƒbƒNƒA[ƒ}[ */
 			{
 				int dmg = (int)((atn_bignumber)status_get_max_hp(bl) * sc->data[type].val3 / 100);
 				unit_heal(bl, -dmg, 0);
 			}
 			break;
-		case SC_PYROCLASTIC:		/* ãƒ‘ã‚¤ãƒ­ã‚¯ãƒ©ã‚¹ãƒ†ã‚£ãƒƒã‚¯ */
+		case SC_PYROCLASTIC:		/* ƒpƒCƒƒNƒ‰ƒXƒeƒBƒbƒN */
 			if(sd)
 				pc_break_equip(sd, LOC_RARM);
 			calc_flag = 1;
 			break;
-		case SC_FULL_THROTTLE:		/* ãƒ•ãƒ«ã‚¹ãƒ­ãƒƒãƒˆãƒ« */
+		case SC_FULL_THROTTLE:		/* ƒtƒ‹ƒXƒƒbƒgƒ‹ */
 			status_change_start(bl,SC_REBOUND,0,0,0,0,10000,0);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
@@ -10230,12 +10230,12 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 
 		/* option2 */
-		case SC_POISON:				/* æ¯’ */
-		case SC_BLIND:				/* æš—é»’ */
+		case SC_POISON:				/* “Å */
+		case SC_BLIND:				/* ˆÃ• */
 		case SC_CURSE:
 			calc_flag = 1;
 			break;
-		case SC_GRAVITYCONTROL:	/* é‡åŠ›èª¿ç¯€ */
+		case SC_GRAVITYCONTROL:	/* d—Í’²ß */
 			{
 				int fall_damage = sc->data[type].val2;
 				if( fall_damage > 0 ){
@@ -10244,17 +10244,17 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				}
 			}
 			break;
-		case SC_DIMENSION2:	/* æ¬¡å…ƒã®æ›¸ */
+		case SC_DIMENSION2:	/* ŸŒ³‚Ì‘ */
 			if(sd){
 				pc_delspiritball(sd, sd->spiritball.num, 0);
 			}
 			break;
 	}
 
-	if(StatusIconChangeTable[type] != SI_BLANK)	// ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+	if(StatusIconChangeTable[type] != SI_BLANK)	// ƒAƒCƒRƒ“Á‹
 		clif_status_load(bl,StatusIconChangeTable[type],0);
 
-	switch(type) {	/* æ­£å¸¸ã«æˆ»ã‚‹ã¨ããªã«ã‹å‡¦ç†ãŒå¿…è¦ */
+	switch(type) {	/* ³í‚É–ß‚é‚Æ‚«‚È‚É‚©ˆ—‚ª•K—v */
 		// opt1
 		case SC_STONE:
 		case SC_FREEZE:
@@ -10290,7 +10290,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				opt_flag = 1;
 			}
 			break;
-		case SC_ANGELUS:			/* ã‚¢ãƒ³ã‚¼ãƒ«ã‚¹ */
+		case SC_ANGELUS:			/* ƒAƒ“ƒ[ƒ‹ƒX */
 			sc->opt2 &= ~OPT2_ANGELUS;
 			opt_flag = 1;
 			break;
@@ -10309,97 +10309,97 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		// opt3
 		case SC_ONEHAND:		/* 1HQ */
 		case SC_TWOHANDQUICKEN:		/* 2HQ */
-		case SC_SPEARQUICKEN:		/* ã‚¹ãƒ”ã‚¢ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
-		case SC_CONCENTRATION:		/* ã‚³ãƒ³ã‚»ãƒ³ãƒˆãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
-		case SC_WEAPONQUICKEN:		/* ã‚¦ã‚§ãƒãƒ³ã‚¯ã‚¤ãƒƒã‚±ãƒ³ */
+		case SC_SPEARQUICKEN:		/* ƒXƒsƒAƒNƒCƒbƒPƒ“ */
+		case SC_CONCENTRATION:		/* ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“ */
+		case SC_WEAPONQUICKEN:		/* ƒEƒFƒ|ƒ“ƒNƒCƒbƒPƒ“ */
 			sc->opt3 &= ~OPT3_QUICKEN;
 			opt_flag = 2;
 			break;
-		case SC_OVERTHRUST:		/* ã‚ªãƒ¼ãƒãƒ¼ãƒˆãƒ©ã‚¹ãƒˆ */
-		case SC_SWOO:			/* ã‚¨ã‚¹ã‚¦ */
+		case SC_OVERTHRUST:		/* ƒI[ƒo[ƒgƒ‰ƒXƒg */
+		case SC_SWOO:			/* ƒGƒXƒE */
 			sc->opt3 &= ~OPT3_OVERTHRUST;
 			opt_flag = 2;
 			if(type == SC_SWOO)
 				ud->state.change_speed = 1;
 			break;
-		case SC_ENERGYCOAT:		/* ã‚¨ãƒŠã‚¸ãƒ¼ã‚³ãƒ¼ãƒˆ */
-		case SC_SKE:			/* ã‚¨ã‚¹ã‚¯ */
+		case SC_ENERGYCOAT:		/* ƒGƒiƒW[ƒR[ƒg */
+		case SC_SKE:			/* ƒGƒXƒN */
 			sc->opt3 &= ~OPT3_ENERGYCOAT;
 			opt_flag = 2;
 			break;
-		case SC_EXPLOSIONSPIRITS:	/* çˆ†è£‚æ³¢å‹• */
+		case SC_EXPLOSIONSPIRITS:	/* ”š—ô”g“® */
 			sc->opt3 &= ~OPT3_EXPLOSIONSPIRITS;
 			opt_flag = 2;
 			break;
-		case SC_STEELBODY:		/* é‡‘å‰› */
-		case SC_SKA:			/* ã‚¨ã‚¹ã‚« */
+		case SC_STEELBODY:		/* ‹à„ */
+		case SC_SKA:			/* ƒGƒXƒJ */
 			sc->opt3 &= ~OPT3_STEELBODY;
 			opt_flag = 2;
 			break;
-		case SC_BLADESTOP:		/* ç™½åˆƒå–ã‚Š */
+		case SC_BLADESTOP:		/* ”’næ‚è */
 			sc->opt3 &= ~OPT3_BLADESTOP;
 			opt_flag = 2;
 			break;
-		case SC_AURABLADE:			/* ã‚ªãƒ¼ãƒ©ãƒ–ãƒ¬ãƒ¼ãƒ‰ */
+		case SC_AURABLADE:			/* ƒI[ƒ‰ƒuƒŒ[ƒh */
 			sc->opt3 &= ~OPT3_AURABLADE;
 			opt_flag = 2;
 			break;
-		case SC_BERSERK:		/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+		case SC_BERSERK:		/* ƒo[ƒT[ƒN */
 			sc->opt3 &= ~OPT3_BERSERK;
 			opt_flag = 2;
 			break;
-		case SC_DANCING:			/* ãƒ€ãƒ³ã‚¹/æ¼”å¥ä¸­ */
+		case SC_DANCING:			/* ƒ_ƒ“ƒX/‰‰‘t’† */
 			if(sc->data[SC_DANCING].val1 != CG_MOONLIT)
 				break;
 			sc->opt3 &= ~OPT3_MOON;
 			opt_flag = 2;
 			break;
-		case SC_MARIONETTE:		/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
-		case SC_MARIONETTE2:		/* ãƒãƒªã‚ªãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ« */
+		case SC_MARIONETTE:		/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
+		case SC_MARIONETTE2:		/* ƒ}ƒŠƒIƒlƒbƒgƒRƒ“ƒgƒ[ƒ‹ */
 			sc->opt3 &= ~OPT3_MARIONETTE;
 			opt_flag = 2;
 			break;
-		case SC_ASSUMPTIO:		/* ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
-		case SC_ASSUMPTIO2:		/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¢ã‚¹ãƒ ãƒ—ãƒ†ã‚£ã‚ª */
+		case SC_ASSUMPTIO:		/* ƒAƒXƒ€ƒvƒeƒBƒI */
+		case SC_ASSUMPTIO2:		/* ƒLƒƒƒbƒVƒ…ƒAƒXƒ€ƒvƒeƒBƒI */
 			sc->opt3 &= ~OPT3_ASSUMPTIO;
 			opt_flag = 2;
 			break;
-		case SC_WARM:			/* æ¸©ã‚‚ã‚Š */
+		case SC_WARM:			/* ‰·‚à‚è */
 			sc->opt3 &= ~OPT3_SUN_WARM;
 			opt_flag = 2;
 			break;
-		case SC_KAITE:			/* ã‚«ã‚¤ãƒˆ */
+		case SC_KAITE:			/* ƒJƒCƒg */
 			sc->opt3 &= ~OPT3_KAITE;
 			opt_flag = 2;
 			break;
-		case SC_BUNSINJYUTSU:		/* åˆ†èº«ã®è¡“ */
+		case SC_BUNSINJYUTSU:		/* •ªg‚Ìp */
 			sc->opt3 &= ~OPT3_BUNSIN;
 			opt_flag = 2;
 			break;
-		case SC_MONK:			/* ãƒ¢ãƒ³ã‚¯ã®é­‚ */
-		case SC_STAR:			/* ã‚±ãƒ³ã‚»ã‚¤ã®é­‚ */
-		case SC_SAGE:			/* ã‚»ãƒ¼ã‚¸ã®é­‚ */
-		case SC_CRUSADER:		/* ã‚¯ãƒ«ã‚»ã‚¤ãƒ€ãƒ¼ã®é­‚ */
-		case SC_WIZARD:			/* ã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã®é­‚ */
-		case SC_PRIEST:			/* ãƒ—ãƒªãƒ¼ã‚¹ãƒˆã®é­‚ */
-		case SC_ROGUE:			/* ãƒ­ãƒ¼ã‚°ã®é­‚ */
-		case SC_ASSASIN:		/* ã‚¢ã‚µã‚·ãƒ³ã®é­‚ */
-		case SC_SOULLINKER:		/* ã‚½ã‚¦ãƒ«ãƒªãƒ³ã‚«ãƒ¼ã®é­‚ */
-		case SC_KNIGHT:			/* ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_ALCHEMIST:		/* ã‚¢ãƒ«ã‚±ãƒŸã‚¹ãƒˆã®é­‚ */
-		case SC_BARDDANCER:		/* ãƒãƒ¼ãƒ‰ã¨ãƒ€ãƒ³ã‚µãƒ¼ã®é­‚ */
-		case SC_BLACKSMITH:		/* ãƒ–ãƒ©ãƒƒã‚¯ã‚¹ãƒŸã‚¹ã®é­‚ */
-		case SC_HUNTER:			/* ãƒãƒ³ã‚¿ãƒ¼ã®é­‚ */
-		case SC_HIGH:			/* ä¸€æ¬¡ä¸Šä½è·æ¥­ã®é­‚ */
-		case SC_SUPERNOVICE:		/* ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒãƒ¼ãƒ“ã‚¹ã®é­‚ */
-		case SC_GUNNER:			/* ã‚¬ãƒ³ã‚¹ãƒªãƒ³ã‚¬ãƒ¼ã®é­‚ */
-		case SC_NINJA:			/* å¿è€…ã®é­‚ */
-		case SC_DEATHKINGHT:		/* ãƒ‡ã‚¹ãƒŠã‚¤ãƒˆã®é­‚ */
-		case SC_COLLECTOR:		/* ã‚³ãƒ¬ã‚¯ã‚¿ãƒ¼ã®é­‚ */
+		case SC_MONK:			/* ƒ‚ƒ“ƒN‚Ì° */
+		case SC_STAR:			/* ƒPƒ“ƒZƒC‚Ì° */
+		case SC_SAGE:			/* ƒZ[ƒW‚Ì° */
+		case SC_CRUSADER:		/* ƒNƒ‹ƒZƒCƒ_[‚Ì° */
+		case SC_WIZARD:			/* ƒEƒBƒU[ƒh‚Ì° */
+		case SC_PRIEST:			/* ƒvƒŠ[ƒXƒg‚Ì° */
+		case SC_ROGUE:			/* ƒ[ƒO‚Ì° */
+		case SC_ASSASIN:		/* ƒAƒTƒVƒ“‚Ì° */
+		case SC_SOULLINKER:		/* ƒ\ƒEƒ‹ƒŠƒ“ƒJ[‚Ì° */
+		case SC_KNIGHT:			/* ƒiƒCƒg‚Ì° */
+		case SC_ALCHEMIST:		/* ƒAƒ‹ƒPƒ~ƒXƒg‚Ì° */
+		case SC_BARDDANCER:		/* ƒo[ƒh‚Æƒ_ƒ“ƒT[‚Ì° */
+		case SC_BLACKSMITH:		/* ƒuƒ‰ƒbƒNƒXƒ~ƒX‚Ì° */
+		case SC_HUNTER:			/* ƒnƒ“ƒ^[‚Ì° */
+		case SC_HIGH:			/* ˆêŸãˆÊE‹Æ‚Ì° */
+		case SC_SUPERNOVICE:		/* ƒX[ƒp[ƒm[ƒrƒX‚Ì° */
+		case SC_GUNNER:			/* ƒKƒ“ƒXƒŠƒ“ƒK[‚Ì° */
+		case SC_NINJA:			/* ”EÒ‚Ì° */
+		case SC_DEATHKINGHT:		/* ƒfƒXƒiƒCƒg‚Ì° */
+		case SC_COLLECTOR:		/* ƒRƒŒƒNƒ^[‚Ì° */
 			sc->opt3 &= ~OPT3_SOULLINK;
 			opt_flag = 2;
 			break;
-		case SC_ELEMENTUNDEAD:		// ä¸æ­»
+		case SC_ELEMENTUNDEAD:		// •s€
 			sc->opt3 &= ~OPT3_UNDEAD;
 			opt_flag = 2;
 			break;
@@ -10409,16 +10409,16 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 1;
 			break;
 		case SC_HIDING:
-			// éœæ–¬ã‚Šã§ãªã„é€šå¸¸ã®ãƒã‚¤ãƒ‰ãªã‚‰ã‚¢ã‚¤ã‚³ãƒ³æ¶ˆå»
+			// ‰àa‚è‚Å‚È‚¢’Êí‚ÌƒnƒCƒh‚È‚çƒAƒCƒRƒ“Á‹
 			if(sd && sc->data[type].val3 == 0)
 				clif_status_load_id(sd,SI_HIDING,0);
 			sc->option &= ~OPTION_HIDE;
 			opt_flag = 1;
 			break;
 		case SC_CLOAKING:
-		case SC_CLOAKINGEXCEED:		/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰ */
-		case SC_NEWMOON:			/* æœ”æœˆè„š */
-		case SC__INVISIBILITY:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£ */
+		case SC_CLOAKINGEXCEED:		/* ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh */
+		case SC_NEWMOON:			/* ñŒ‹r */
+		case SC__INVISIBILITY:		/* ƒCƒ“ƒrƒWƒrƒŠƒeƒB */
 			sc->option &= ~OPTION_CLOAKING;
 			opt_flag = 1;
 			break;
@@ -10430,7 +10430,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			sc->option &= ~OPTION_ORCFACE;
 			opt_flag = 1;
 			break;
-		case SC_WEDDING:		/* ã‚¦ã‚§ãƒ‡ã‚£ãƒ³ã‚° */
+		case SC_WEDDING:		/* ƒEƒFƒfƒBƒ“ƒO */
 			sc->option &= ~OPTION_MARRIED;
 			opt_flag = 1;
 			break;
@@ -10438,7 +10438,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			sc->option &= ~OPTION_RUWACH;
 			opt_flag = 1;
 			break;
-		case SC_CHASEWALK:		/* ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯ */
+		case SC_CHASEWALK:		/* ƒ`ƒFƒCƒXƒEƒH[ƒN */
 			sc->option &= ~(OPTION_CLOAKING | OPTION_FOOTPRINT);
 			opt_flag = 1;
 			break;
@@ -10456,14 +10456,14 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			break;
 		case SC_ON_PUSH_CART:
 #if PACKETVER < 20120201
-			// å¤ã„ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã¯ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°ã™ã‚‹
+			// ŒÃ‚¢ƒNƒ‰ƒCƒAƒ“ƒg‚ÍƒIƒvƒVƒ‡ƒ“‚ğXV‚·‚é
 			sc->option &= ~sc->data[type].val1;
 			opt_flag = 1;
 #endif
 			break;
 	}
 
-	/* optionã®å¤‰æ›´ */
+	/* option‚Ì•ÏX */
 	if(opt_flag == 1) {
 		clif_changeoption(bl);
 	} else if(opt_flag == 2) {
@@ -10475,7 +10475,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		status_free_sc_data(sc);
 #endif
 
-	/* ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å†è¨ˆç®— */
+	/* ƒXƒe[ƒ^ƒXÄŒvZ */
 	if(sd) {
 		if(calc_flag || sd->auto_status_calc_pc[type] == 1) {
 			status_calc_pc(sd,0);
@@ -10502,7 +10502,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å†è¨ˆç®—ã‚’ä¸€æ™‚åœæ­¢ã™ã‚‹
+ * ƒXƒe[ƒ^ƒXÄŒvZ‚ğˆê’â~‚·‚é
  *------------------------------------------
  */
 int status_calc_pc_stop_begin(struct block_list *bl)
@@ -10515,7 +10515,7 @@ int status_calc_pc_stop_begin(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å†è¨ˆç®—ã‚’å†é–‹ã™ã‚‹
+ * ƒXƒe[ƒ^ƒXÄŒvZ‚ğÄŠJ‚·‚é
  *------------------------------------------
  */
 int status_calc_pc_stop_end(struct block_list *bl)
@@ -10528,14 +10528,14 @@ int status_calc_pc_stop_end(struct block_list *bl)
 		if(sd->stop_status_calc_pc == 0 && sd->call_status_calc_pc_while_stopping > 0)
 			status_calc_pc(sd,0);
 		if(sd->stop_status_calc_pc < 0) {
-			printf("status_calc_pc_stop_endãŒä¸æ­£ã«å‘¼ã³å‡ºã•ã‚Œã¦ã„ã¾ã™\n");
+			printf("status_calc_pc_stop_end‚ª•s³‚ÉŒÄ‚Ño‚³‚ê‚Ä‚¢‚Ü‚·\n");
 		}
 	}
 	return 0;
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–‹å§‹ã‚¿ã‚¤ãƒãƒ¼
+ * ƒXƒe[ƒ^ƒXˆÙíŠJnƒ^ƒCƒ}[
  *------------------------------------------
  */
 static int status_pretimer_timer(int tid, unsigned int tick, int id, void *data)
@@ -10545,7 +10545,7 @@ static int status_pretimer_timer(int tid, unsigned int tick, int id, void *data)
 	struct unit_data *ud;
 
 	if(bl == NULL)
-		return 0;	// è©²å½“IDãŒã™ã§ã«æ¶ˆæ»…ã—ã¦ã„ã‚‹
+		return 0;	// ŠY“–ID‚ª‚·‚Å‚ÉÁ–Å‚µ‚Ä‚¢‚é
 
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
@@ -10579,7 +10579,7 @@ static int status_pretimer_timer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–‹å§‹ã‚¿ã‚¤ãƒãƒ¼ã®å‰Šé™¤
+ * ƒXƒe[ƒ^ƒXˆÙíŠJnƒ^ƒCƒ}[‚Ìíœ
  *------------------------------------------
  */
 int status_clearpretimer(struct block_list *bl)
@@ -10606,7 +10606,7 @@ int status_clearpretimer(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–‹å§‹ã‚¿ã‚¤ãƒãƒ¼ã®ã‚»ãƒƒãƒˆ
+ * ƒXƒe[ƒ^ƒXˆÙíŠJnƒ^ƒCƒ}[‚ÌƒZƒbƒg
  *------------------------------------------
  */
 int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int val3,int val4,int tick,int flag,int pre_tick)
@@ -10637,16 +10637,16 @@ int status_change_pretimer(struct block_list *bl,int type,int val1,int val2,int 
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸çµ‚äº†ã‚¿ã‚¤ãƒãƒ¼
+ * ƒXƒe[ƒ^ƒXˆÙíI—¹ƒ^ƒCƒ}[
  *
- * ã‚½ãƒ¼ã‚¹ã‚’ä¿®æ­£ã™ã‚‹æ–¹ã¸ã®æ³¨æ„
+ * ƒ\[ƒX‚ğC³‚·‚é•û‚Ö‚Ì’ˆÓ
  *
- * ãƒ»çŠ¶æ…‹ç•°å¸¸ç¶™ç¶šæ™‚ã«ã¯ã€add_timer() ã—ãŸç›´å¾Œã« break ã™ã‚‹ã“ã¨
- * ãƒ»çŠ¶æ…‹ç•°å¸¸çµ‚äº†æ™‚ã«ã¯ã€é–¢æ•°ã®æœ€å¾Œã«ã‚ã‚‹status_change_end() ã®
- *   å‘¼ã³å‡ºã—å‰ã« return ã—ãªã„ã“ã¨
+ * Eó‘ÔˆÙíŒp‘±‚É‚ÍAadd_timer() ‚µ‚½’¼Œã‚É break ‚·‚é‚±‚Æ
+ * Eó‘ÔˆÙíI—¹‚É‚ÍAŠÖ”‚ÌÅŒã‚É‚ ‚éstatus_change_end() ‚Ì
+ *   ŒÄ‚Ño‚µ‘O‚É return ‚µ‚È‚¢‚±‚Æ
  *
- * ã“ã®ï¼’ç‚¹ãŒå®ˆã‚‰ã‚Œã¦ã„ãªã„ã¨ã€ä»–äººã®çŠ¶æ…‹ç•°å¸¸ãŒå‹æ‰‹ã«è§£é™¤ã•ã‚ŒãŸã‚Šã€
- * delete_timer errorãŒå‡ºã¦ãã‚‹ãªã©ã®ãƒã‚°ãŒç™ºç”Ÿã—ã¾ã™ã€‚
+ * ‚±‚Ì‚Q“_‚ªç‚ç‚ê‚Ä‚¢‚È‚¢‚ÆA‘¼l‚Ìó‘ÔˆÙí‚ªŸè‚É‰ğœ‚³‚ê‚½‚èA
+ * delete_timer error‚ªo‚Ä‚­‚é‚È‚Ç‚ÌƒoƒO‚ª”­¶‚µ‚Ü‚·B
  *------------------------------------------
  */
 int status_change_timer(int tid, unsigned int tick, int id, void *data)
@@ -10665,7 +10665,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		return 0;
 
 	if((bl = map_id2bl(id)) == NULL)
-		return 0;	// è©²å½“IDãŒã™ã§ã«æ¶ˆæ»…ã—ã¦ã„ã‚‹ã¨ã„ã†ã®ã¯ã„ã‹ã«ã‚‚ã‚ã‚Šãã†ãªã®ã§ã‚¹ãƒ«ãƒ¼ã—ã¦ã¿ã‚‹
+		return 0;	// ŠY“–ID‚ª‚·‚Å‚ÉÁ–Å‚µ‚Ä‚¢‚é‚Æ‚¢‚¤‚Ì‚Í‚¢‚©‚É‚à‚ ‚è‚»‚¤‚È‚Ì‚ÅƒXƒ‹[‚µ‚Ä‚İ‚é
 
 	nullpo_retr(0, sc = status_get_sc(bl));
 
@@ -10683,21 +10683,21 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 
 	map_freeblock_lock();
 
-	switch(type) {	/* ç‰¹æ®Šãªå‡¦ç†ã«ãªã‚‹å ´åˆ */
-	case SC_MAXIMIZEPOWER:	/* ãƒã‚­ã‚·ãƒã‚¤ã‚ºãƒ‘ãƒ¯ãƒ¼ */
-	case SC_CLOAKING:	/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚° */
+	switch(type) {	/* “Áê‚Èˆ—‚É‚È‚éê‡ */
+	case SC_MAXIMIZEPOWER:	/* ƒ}ƒLƒVƒ}ƒCƒYƒpƒ[ */
+	case SC_CLOAKING:	/* ƒNƒ[ƒLƒ“ƒO */
 		if(sd) {
-			if(sd->status.sp > 0) {	/* SPåˆ‡ã‚Œã‚‹ã¾ã§æŒç¶š */
+			if(sd->status.sp > 0) {	/* SPØ‚ê‚é‚Ü‚Å‘± */
 				sd->status.sp--;
 				clif_updatestatus(sd,SP_SP);
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 					sc->data[type].val2+tick, status_change_timer,
 					bl->id, data);
 			}
 		}
 		break;
 
-	case SC_CHASEWALK:	/* ãƒã‚§ã‚¤ã‚¹ã‚¦ã‚©ãƒ¼ã‚¯ */
+	case SC_CHASEWALK:	/* ƒ`ƒFƒCƒXƒEƒH[ƒN */
 		if(sd) {
 			int sp = 10+sc->data[SC_CHASEWALK].val1*2;
 			if(map[sd->bl.m].flag.gvg)
@@ -10706,20 +10706,20 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				sd->status.sp -= sp;
 				clif_updatestatus(sd,SP_SP);
 				if((++sc->data[SC_CHASEWALK].val4) == 1) {
-					// ãƒ­ãƒ¼ã‚°ã®é­‚ãªã‚‰åŠ¹æœæ™‚é–“10å€
+					// ƒ[ƒO‚Ì°‚È‚çŒø‰ÊŠÔ10”{
 					status_change_start(
 						bl, SC_CHASEWALK_STR, 1<<(sc->data[SC_CHASEWALK].val1-1), 0, 0, 0,
 						((sc->data[SC_ROGUE].timer != -1)? 300000: 30000), 0
 					);
 				}
-				timer = add_timer( /* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer( /* ƒ^ƒCƒ}[Äİ’è */
 					sc->data[type].val2+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
 
-	case SC_HIDING:		/* ãƒã‚¤ãƒ‡ã‚£ãƒ³ã‚° */
-		if(sd) {		/* SPãŒã‚ã£ã¦ã€æ™‚é–“åˆ¶é™ã®é–“ã¯æŒç¶š */
+	case SC_HIDING:		/* ƒnƒCƒfƒBƒ“ƒO */
+		if(sd) {		/* SP‚ª‚ ‚Á‚ÄAŠÔ§ŒÀ‚ÌŠÔ‚Í‘± */
 			if(sd->status.sp > 0 && (--sc->data[type].val2) > 0) {
 #ifdef PRE_RENEWAL
 				if(sc->data[type].val2 % (sc->data[type].val1+3) == 0) {
@@ -10729,7 +10729,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					sd->status.sp--;
 					clif_updatestatus(sd,SP_SP);
 				}
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 					1000+tick, status_change_timer,
 					bl->id, data);
 			}
@@ -10737,8 +10737,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 
 	case SC_SIGHTBLASTER:
-	case SC_SIGHT:		/* ã‚µã‚¤ãƒˆ */
-	case SC_RUWACH:		/* ãƒ«ã‚¢ãƒ• */
+	case SC_SIGHT:		/* ƒTƒCƒg */
+	case SC_RUWACH:		/* ƒ‹ƒAƒt */
 		{
 			int range;
 			if(type == SC_RUWACH)
@@ -10753,14 +10753,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				bl, type, sc->data[type].val1, tick);
 
 			if((--sc->data[type].val2) > 0) {
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 					250+tick, status_change_timer,
 					bl->id, data);
 			}
 		}
 		break;
 
-	case SC_SIGNUMCRUCIS:		/* ã‚·ã‚°ãƒŠãƒ ã‚¯ãƒ«ã‚·ã‚¹ */
+	case SC_SIGNUMCRUCIS:		/* ƒVƒOƒiƒ€ƒNƒ‹ƒVƒX */
 		{
 			int race = status_get_race(bl);
 			if(race == RCT_DEMON || battle_check_undead(race,status_get_elem_type(bl))) {
@@ -10769,15 +10769,15 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 
-	case SC_PROVOKE:	/* ãƒ—ãƒ­ãƒœãƒƒã‚¯/ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ */
-		if(sc->data[type].val2 != 0) {	/* ã‚ªãƒ¼ãƒˆãƒãƒ¼ã‚µãƒ¼ã‚¯ï¼ˆï¼‘ç§’ã”ã¨ã«HPãƒã‚§ãƒƒã‚¯ï¼‰ */
-			if(status_get_hp(bl) > status_get_max_hp(bl)>>2)	/* åœæ­¢ */
+	case SC_PROVOKE:	/* ƒvƒƒ{ƒbƒN/ƒI[ƒgƒo[ƒT[ƒN */
+		if(sc->data[type].val2 != 0) {	/* ƒI[ƒgƒo[ƒT[ƒNi‚P•b‚²‚Æ‚ÉHPƒ`ƒFƒbƒNj */
+			if(status_get_hp(bl) > status_get_max_hp(bl)>>2)	/* ’â~ */
 				break;
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 
-	case SC_DISSONANCE:	/* ä¸å”å’ŒéŸ³ */
+	case SC_DISSONANCE:	/* •s‹¦˜a‰¹ */
 		if((--sc->data[type].val2) > 0) {
 			struct skill_unit *unit = map_id2su(sc->data[type].val4);
 			struct block_list *src;
@@ -10792,7 +10792,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				bl->id, data);
 		}
 		break;
-	case SC_UGLYDANCE:	/* è‡ªåˆ†å‹æ‰‹ãªãƒ€ãƒ³ã‚¹ */
+	case SC_UGLYDANCE:	/* ©•ªŸè‚Èƒ_ƒ“ƒX */
 		if((--sc->data[type].val2) > 0) {
 			struct skill_unit *unit = map_id2su(sc->data[type].val4);
 			struct block_list *src;
@@ -10808,7 +10808,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 
-	case SC_LULLABY:	/* å­å®ˆå”„ */
+	case SC_LULLABY:	/* qç‰S */
 		if((--sc->data[type].val2) > 0) {
 			struct skill_unit *unit = map_id2su(sc->data[type].val4);
 			int interval;
@@ -10847,10 +10847,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if(sc->data[SC_SLOWPOISON].timer == -1 && (--sc->data[type].val3) > 0) {
 			int hp    = status_get_hp(bl);
 			int p_dmg = status_get_max_hp(bl);
-			if(hp > p_dmg>>2) {		// æœ€å¤§HPã®25%ä»¥ä¸Š
+			if(hp > p_dmg>>2) {		// Å‘åHP‚Ì25%ˆÈã
 				p_dmg = 3 + p_dmg*3/200;
 				if(p_dmg >= hp)
-					p_dmg = hp-1;	// æ¯’ã§ã¯æ­»ãªãªã„
+					p_dmg = hp-1;	// “Å‚Å‚Í€‚È‚È‚¢
 				unit_heal(bl, -p_dmg, 0);
 			}
 		}
@@ -10867,7 +10867,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		if(sc->data[type].val3 > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
-			// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+			// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -10875,22 +10875,22 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if(--sc->data[type].val3 > 0) {
 			int dmg = atn_rand()%600 + 200;
 			if(md) {
-				// mobã¯HP50ä»¥ä¸‹ã«ãªã‚‰ãªã„
+				// mob‚ÍHP50ˆÈ‰º‚É‚È‚ç‚È‚¢
 				md->hp = (md->hp - dmg < 50)? 50: md->hp - dmg;
 			} else {
 				unit_heal(bl, -dmg, 0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
-	case SC_TENSIONRELAX:	/* ãƒ†ãƒ³ã‚·ãƒ§ãƒ³ãƒªãƒ©ãƒƒã‚¯ã‚¹ */
-		if(sd) {		/* HPãŒæº€ã‚¿ãƒ³ã§ãªã‘ã‚Œã°ç¶™ç¶š */
+	case SC_TENSIONRELAX:	/* ƒeƒ“ƒVƒ‡ƒ“ƒŠƒ‰ƒbƒNƒX */
+		if(sd) {		/* HP‚ª–ƒ^ƒ“‚Å‚È‚¯‚ê‚ÎŒp‘± */
 			if(sd->status.max_hp > sd->status.hp) {
 				if(sc->data[type].val2 % (sc->data[type].val1+3) == 0)
-					timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+					timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 						10000+tick, status_change_timer,
 						bl->id, data);
 			} else if(sd->status.max_hp <= sd->status.hp) {
@@ -10899,12 +10899,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 
-	/* æ™‚é–“åˆ‡ã‚Œç„¡ã—ï¼Ÿï¼Ÿ */
+	/* ŠÔØ‚ê–³‚µHH */
 	case SC_AETERNA:
 	case SC_TRICKDEAD:
-	case SC_REJECTSWORD:		/* ãƒªã‚¸ã‚§ã‚¯ãƒˆã‚½ãƒ¼ãƒ‰ */
-	case SC_MEMORIZE:		/* ãƒ¡ãƒ¢ãƒ©ã‚¤ã‚º */
-	case SC_SACRIFICE:		/* ã‚µã‚¯ãƒªãƒ•ã‚¡ã‚¤ã‚¹ */
+	case SC_REJECTSWORD:		/* ƒŠƒWƒFƒNƒgƒ\[ƒh */
+	case SC_MEMORIZE:		/* ƒƒ‚ƒ‰ƒCƒY */
+	case SC_SACRIFICE:		/* ƒTƒNƒŠƒtƒ@ƒCƒX */
 	case SC_READYSTORM:
 	case SC_READYDOWN:
 	case SC_READYTURN:
@@ -10924,12 +10924,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_WUGDASH:
 	case SC_EXEEDBREAK:
 	case SC_SUHIDE:
-	case SC_ALL_RIDING:	/* é¨ä¹—ã‚·ã‚¹ãƒ†ãƒ  */
-	case SC_ON_PUSH_CART:	/* ã‚«ãƒ¼ãƒˆ */
-	case SC_HAT_EFFECT:	/* é ­è£…å‚™ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ */
-	case SC_ACTIVE_MONSTER_TRANSFORM:	/* ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼å¤‰èº« */
-	case SC_INVINCIBLE:	/* ã‚¤ãƒ³ãƒ“ãƒ³ã‚·ãƒ–ãƒ« */
-	case SC_STYLE_CHANGE:		/* ã‚¹ã‚¿ã‚¤ãƒ«ãƒã‚§ãƒ³ã‚¸ */
+	case SC_ALL_RIDING:	/* ‹RæƒVƒXƒeƒ€ */
+	case SC_ON_PUSH_CART:	/* ƒJ[ƒg */
+	case SC_HAT_EFFECT:	/* “ª‘•”õƒGƒtƒFƒNƒg */
+	case SC_ACTIVE_MONSTER_TRANSFORM:	/* ƒAƒNƒeƒBƒuƒ‚ƒ“ƒXƒ^[•Ïg */
+	case SC_INVINCIBLE:	/* ƒCƒ“ƒrƒ“ƒVƒuƒ‹ */
+	case SC_STYLE_CHANGE:		/* ƒXƒ^ƒCƒ‹ƒ`ƒFƒ“ƒW */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -10948,7 +10948,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 	case SC_DANCING:
-		if(sd) {	// ãƒ€ãƒ³ã‚¹ã‚¹ã‚­ãƒ«ã®æ™‚é–“SPæ¶ˆè²»
+		if(sd) {	// ƒ_ƒ“ƒXƒXƒLƒ‹‚ÌŠÔSPÁ”ï
 			int cost = 1;
 			if(sc->data[type].val1 == CG_HERMODE)
 				cost = 5;
@@ -10958,35 +10958,35 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				int s = 0;
 
 				switch(sc->data[type].val1) {
-				case BD_RICHMANKIM:			/* ãƒ‹ãƒ¨ãƒ«ãƒ‰ã®å®´ 3ç§’ã«SP1 */
-				case BD_DRUMBATTLEFIELD:		/* æˆ¦å¤ªé¼“ã®éŸ¿ã 3ç§’ã«SP1 */
-				case BD_RINGNIBELUNGEN:			/* ãƒ‹ãƒ¼ãƒ™ãƒ«ãƒ³ã‚°ã®æŒ‡è¼ª 3ç§’ã«SP1 */
-				case BD_SIEGFRIED:			/* ä¸æ­»èº«ã®ã‚¸ãƒ¼ã‚¯ãƒ•ãƒªãƒ¼ãƒ‰ 3ç§’ã«SP1 */
-				case BA_DISSONANCE:			/* ä¸å”å’ŒéŸ³ 3ç§’ã§SP1 */
-				case BA_ASSASSINCROSS:			/* å¤•é™½ã®ã‚¢ã‚µã‚·ãƒ³ã‚¯ãƒ­ã‚¹ 3ç§’ã§SP1 */
-				case DC_UGLYDANCE:			/* è‡ªåˆ†å‹æ‰‹ãªãƒ€ãƒ³ã‚¹ 3ç§’ã§SP1 */
+				case BD_RICHMANKIM:			/* ƒjƒˆƒ‹ƒh‚Ì‰ƒ 3•b‚ÉSP1 */
+				case BD_DRUMBATTLEFIELD:		/* í‘¾ŒÛ‚Ì‹¿‚« 3•b‚ÉSP1 */
+				case BD_RINGNIBELUNGEN:			/* ƒj[ƒxƒ‹ƒ“ƒO‚Ìw—Ö 3•b‚ÉSP1 */
+				case BD_SIEGFRIED:			/* •s€g‚ÌƒW[ƒNƒtƒŠ[ƒh 3•b‚ÉSP1 */
+				case BA_DISSONANCE:			/* •s‹¦˜a‰¹ 3•b‚ÅSP1 */
+				case BA_ASSASSINCROSS:			/* —[—z‚ÌƒAƒTƒVƒ“ƒNƒƒX 3•b‚ÅSP1 */
+				case DC_UGLYDANCE:			/* ©•ªŸè‚Èƒ_ƒ“ƒX 3•b‚ÅSP1 */
 				case CG_LONGINGFREEDOM:
 					s = 3;
 					break;
-				case BD_LULLABY:			/* å­å®ˆæ­Œ 4ç§’ã«SP1 */
-				case BD_ETERNALCHAOS:			/* æ°¸é ã®æ··æ²Œ 4ç§’ã«SP1 */
-				case BD_ROKISWEIL:			/* ãƒ­ã‚­ã®å«ã³ 4ç§’ã«SP1 */
-				case DC_FORTUNEKISS:			/* å¹¸é‹ã®ã‚­ã‚¹ 4ç§’ã§SP1 */
+				case BD_LULLABY:			/* qç‰Ì 4•b‚ÉSP1 */
+				case BD_ETERNALCHAOS:			/* ‰i‰“‚Ì¬“× 4•b‚ÉSP1 */
+				case BD_ROKISWEIL:			/* ƒƒL‚Ì‹©‚Ñ 4•b‚ÉSP1 */
+				case DC_FORTUNEKISS:			/* K‰^‚ÌƒLƒX 4•b‚ÅSP1 */
 					s = 4;
 					break;
-				case BD_INTOABYSS:			/* æ·±æ·µã®ä¸­ã« 5ç§’ã«SP1 */
-				case BA_WHISTLE:			/* å£ç¬› 5ç§’ã§SP1 */
-				case DC_HUMMING:			/* ãƒãƒŸãƒ³ã‚° 5ç§’ã§SP1 */
-				case BA_POEMBRAGI:			/* ãƒ–ãƒ©ã‚®ã®è©© 5ç§’ã§SP1 */
-				case DC_SERVICEFORYOU:			/* ã‚µãƒ¼ãƒ“ã‚¹ãƒ•ã‚©ãƒ¼ãƒ¦ãƒ¼ 5ç§’ã§SP1 */
-				case CG_HERMODE:			/* ãƒ˜ãƒ«ãƒ¢ãƒ¼ãƒ‰ã®æ– */
+				case BD_INTOABYSS:			/* [•£‚Ì’†‚É 5•b‚ÉSP1 */
+				case BA_WHISTLE:			/* Œû“J 5•b‚ÅSP1 */
+				case DC_HUMMING:			/* ƒnƒ~ƒ“ƒO 5•b‚ÅSP1 */
+				case BA_POEMBRAGI:			/* ƒuƒ‰ƒM‚Ì 5•b‚ÅSP1 */
+				case DC_SERVICEFORYOU:			/* ƒT[ƒrƒXƒtƒH[ƒ†[ 5•b‚ÅSP1 */
+				case CG_HERMODE:			/* ƒwƒ‹ƒ‚[ƒh‚Ìñ */
 					s = 5;
 					break;
-				case BA_APPLEIDUN:			/* ã‚¤ãƒ‰ã‚¥ãƒ³ã®æ—æª 6ç§’ã§SP1 */
+				case BA_APPLEIDUN:			/* ƒCƒhƒDƒ“‚Ì—ÑŒç 6•b‚ÅSP1 */
 					s = 6;
 					break;
-				case DC_DONTFORGETME:			/* ç§ã‚’å¿˜ã‚Œãªã„ã§â€¦ 10ç§’ã§SP1 */
-				case CG_MOONLIT:			/* æœˆæ˜ã‚Šã®ä¸‹ã§ 10ç§’ã§SP1ï¼Ÿ */
+				case DC_DONTFORGETME:			/* „‚ğ–Y‚ê‚È‚¢‚Åc 10•b‚ÅSP1 */
+				case CG_MOONLIT:			/* Œ–¾‚è‚Ì‰º‚Å 10•b‚ÅSP1H */
 					s = 10;
 					break;
 				}
@@ -10994,14 +10994,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					sd->status.sp -= cost;
 					clif_updatestatus(sd,SP_SP);
 				}
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 					1000+tick, status_change_timer,
 					bl->id, data);
 			}
 		} else if(md)
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		break;
-	case SC_BERSERK:		/* ãƒãƒ¼ã‚µãƒ¼ã‚¯ */
+	case SC_BERSERK:		/* ƒo[ƒT[ƒN */
 		{
 			int dmg = (int)((atn_bignumber)status_get_max_hp(bl) * 5 / 100);
 			if(status_get_hp(bl) - dmg > 100) {
@@ -11015,7 +11015,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					mcd->status.hp -= dmg;
 					clif_mercupdatestatus(mcd->msd,SP_HP);
 				}
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 					10000+tick, status_change_timer,
 					bl->id, data);
 			} else {
@@ -11032,36 +11032,36 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_NOCHAT:			/* ãƒãƒ£ãƒƒãƒˆç¦æ­¢çŠ¶æ…‹ */
+	case SC_NOCHAT:			/* ƒ`ƒƒƒbƒg‹Ö~ó‘Ô */
 		if(sd) {
-			if(++sd->status.manner && time(NULL) < (sc->data[type].val2 - 60*sd->status.manner)) {	// é–‹å§‹ã‹ã‚‰status.manneråˆ†çµŒã£ã¦ãªã„ã®ã§ç¶™ç¶š
+			if(++sd->status.manner && time(NULL) < (sc->data[type].val2 - 60*sd->status.manner)) {	// ŠJn‚©‚çstatus.manner•ªŒo‚Á‚Ä‚È‚¢‚Ì‚ÅŒp‘±
 				clif_updatestatus(sd,SP_MANNER);
-				timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š(60ç§’) */
+				timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è(60•b) */
 					60000+tick, status_change_timer,
 					bl->id, data);
 			}
 		}
 		break;
-	case SC_SELFDESTRUCTION:		/* è‡ªçˆ† */
+	case SC_SELFDESTRUCTION:		/* ©”š */
 		if(md && unit_iscasting(&md->bl) && md->state.special_mob_ai == 3 && md->mode&MD_CANMOVE && md->speed > 0) {
 			md->speed -= 5;
 			if(md->speed <= 0)
 				md->speed = 1;
 			md->dir = sc->data[type].val4;
-			unit_walktodir(&md->bl,1);	// é€Ÿåº¦ãŒå¤‰ã‚ã‚‹ã®ã§æ¯å›å‘¼ã³å‡ºã™
+			unit_walktodir(&md->bl,1);	// ‘¬“x‚ª•Ï‚í‚é‚Ì‚Å–ˆ‰ñŒÄ‚Ño‚·
 
-			/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+			/* ƒ^ƒCƒ}[Äİ’è */
 			timer = add_timer(100+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_BOSSMAPINFO:			/* å‡¸é¢é¡ */
+	case SC_BOSSMAPINFO:			/* “Ê–Ê‹¾ */
 		if(sd && --sc->data[type].val2 > 0) {
 			struct mob_data *mmd = map[sd->bl.m].mvpboss;
 			if(mmd == NULL)
 				break;
 			if(mmd->bl.prev == NULL) {
 				if(sc->data[type].val3 >= 0) {
-					// å€’ã•ã‚ŒãŸã®ã§æ¬¡å›ã®å‡ºç¾æ™‚é–“ã‚’ã‚¢ãƒŠã‚¦ãƒ³ã‚¹ã—ã¦çµ‚äº†
+					// “|‚³‚ê‚½‚Ì‚ÅŸ‰ñ‚ÌoŒ»ŠÔ‚ğƒAƒiƒEƒ“ƒX‚µ‚ÄI—¹
 					int diff = DIFF_TICK(mmd->last_spawntime, gettick());
 					if(diff < 0)
 						diff = 0;
@@ -11070,11 +11070,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				}
 			} else {
 				if(sc->data[type].val3 < 0) {
-					// å‡ºç¾ã—ãŸã®ã§ã‚¢ãƒŠã‚¦ãƒ³ã‚¹
+					// oŒ»‚µ‚½‚Ì‚ÅƒAƒiƒEƒ“ƒX
 					clif_bossmapinfo(sd, mmd->name, 0, 0, 0, 2);
 				}
 				if(sc->data[type].val3 != mmd->bl.m || sc->data[type].val4 != mmd->bl.x + (mmd->bl.y << 16)) {
-					// å‡ºç¾ä¸­ã§åº§æ¨™ãŒå¤‰åŒ–ã—ã¦ã„ã‚‹ã®ã§ãƒŸãƒ‹MAPã®ãƒ‰ãƒƒãƒˆã‚’æ›´æ–°
+					// oŒ»’†‚ÅÀ•W‚ª•Ï‰»‚µ‚Ä‚¢‚é‚Ì‚Åƒ~ƒjMAP‚Ìƒhƒbƒg‚ğXV
 					if(mmd->bl.m == sd->bl.m) {
 						clif_bossmapinfo(sd, "", mmd->bl.x, mmd->bl.y, 0, 1);
 					} else {
@@ -11084,14 +11084,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					sc->data[type].val4 = mmd->bl.x + (mmd->bl.y << 16);
 				}
 			}
-			/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+			/* ƒ^ƒCƒ}[Äİ’è */
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_CHANGE:		/* ãƒ¡ãƒ³ã‚¿ãƒ«ãƒã‚§ãƒ³ã‚¸ */
-		unit_heal(bl, -status_get_hp(bl)+10, -status_get_sp(bl)+10);	// æ™‚é–“åˆ‡ã‚Œã®ã¨ãã®ã¿HP,SPãŒ10ã«ãªã‚‹
+	case SC_CHANGE:		/* ƒƒ“ƒ^ƒ‹ƒ`ƒFƒ“ƒW */
+		unit_heal(bl, -status_get_hp(bl)+10, -status_get_sp(bl)+10);	// ŠÔØ‚ê‚Ì‚Æ‚«‚Ì‚İHP,SP‚ª10‚É‚È‚é
 		break;
-	case SC_URUZ:		/* ã‚¢ãƒãƒ³ãƒ€ãƒ³ã‚¹ */
+	case SC_URUZ:		/* ƒAƒoƒ“ƒ_ƒ“ƒX */
 		if((--sc->data[type].val3) > 0) {
 			int sp = 60;
 
@@ -11109,13 +11109,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_FEAR:				/* ææ€– */
+	case SC_FEAR:				/* ‹°•| */
 		if(sc->data[type].val3 > 0) {
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 			sc->data[type].val3 = 0;
 		}
 		break;
-	case SC_WEAPONBLOCKING:		/* ã‚¦ã‚§ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚° */
+	case SC_WEAPONBLOCKING:		/* ƒEƒFƒ|ƒ“ƒuƒƒbƒLƒ“ƒO */
 		if((--sc->data[type].val3) > 0) {
 			if(sd) {
 				if(sd->status.sp < 3)
@@ -11126,7 +11126,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_CLOAKINGEXCEED:	/* ã‚¯ãƒ­ãƒ¼ã‚­ãƒ³ã‚°ã‚¨ã‚¯ã‚·ãƒ¼ãƒ‰ */
+	case SC_CLOAKINGEXCEED:	/* ƒNƒ[ƒLƒ“ƒOƒGƒNƒV[ƒh */
 		if(sd) {
 			int sp = 10 - sc->data[type].val1;
 			if(sp > 0 && sd->status.sp >= sp) {
@@ -11136,17 +11136,17 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_TOXIN:		/* ãƒˆã‚­ã‚·ãƒ³ */
+	case SC_TOXIN:		/* ƒgƒLƒVƒ“ */
 		if((--sc->data[type].val2) > 0) {
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
 				unit_heal(bl, 0, -damage);
 			clif_damage(bl,bl,tick,0,status_get_dmotion(bl),1,0,0,0,0);
-			unit_skillcastcancel(bl,0);		// è© å”±å¦¨å®³
+			unit_skillcastcancel(bl,0);		// ‰r¥–WŠQ
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_MAGICMUSHROOM:	/* ãƒã‚¸ãƒƒã‚¯ãƒãƒƒã‚·ãƒ¥ãƒ«ãƒ¼ãƒ  */
+	case SC_MAGICMUSHROOM:	/* ƒ}ƒWƒbƒNƒ}ƒbƒVƒ…ƒ‹[ƒ€ */
 		if((--sc->data[type].val2) > 0) {
 			clif_emotion(bl,18);
 			if(sc->data[type].val2 % 2 == 0) {
@@ -11161,39 +11161,39 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					unit_heal(bl, -damage, 0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
-	case SC_PYREXIA:	/* ãƒ‘ã‚¤ãƒ¬ãƒƒã‚¯ã‚·ã‚¢ */
+	case SC_PYREXIA:	/* ƒpƒCƒŒƒbƒNƒVƒA */
 		if((--sc->data[type].val2) > 0) {
 			clif_damage(bl,bl,tick,0,status_get_dmotion(bl),100,0,0,0,0);
 			battle_damage(bl,bl,100,0,0,0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
-	case SC_OBLIVIONCURSE:	/* ã‚ªãƒ–ãƒªãƒ“ã‚ªãƒ³ã‚«ãƒ¼ã‚¹ */
+	case SC_OBLIVIONCURSE:	/* ƒIƒuƒŠƒrƒIƒ“ƒJ[ƒX */
 		if((--sc->data[type].val2) > 0) {
 			clif_emotion(bl,1);
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_LEECHEND:		/* ãƒªãƒ¼ãƒã‚¨ãƒ³ãƒ‰ */
+	case SC_LEECHEND:		/* ƒŠ[ƒ`ƒGƒ“ƒh */
 		if((--sc->data[type].val2) > 0) {
 			int damage = status_get_max_hp(bl) / 100;
 			if(damage)
 				unit_heal(bl, -damage, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
-	case SC_RENOVATIO:		/* ãƒ¬ãƒãƒ´ã‚¡ãƒ†ã‚£ã‚ª */
+	case SC_RENOVATIO:		/* ƒŒƒmƒ”ƒ@ƒeƒBƒI */
 		if((--sc->data[type].val3) > 0) {
 			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
 			if(heal) {
@@ -11205,7 +11205,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_HELLINFERNO:	/* ãƒ˜ãƒ«ã‚¤ãƒ³ãƒ•ã‚§ãƒ«ãƒ */
+	case SC_HELLINFERNO:	/* ƒwƒ‹ƒCƒ“ƒtƒFƒ‹ƒm */
 		if((--sc->data[type].val2) > 0) {
 			if(++sc->data[type].val3 % 3 == 0) {
 				int damage = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
@@ -11214,12 +11214,12 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				battle_damage(bl,bl,1000 + damage,0,0,0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
-	case SC_SPELLBOOK:	/* ã‚¹ãƒšãƒ«ãƒ–ãƒƒã‚¯ */
+	case SC_SPELLBOOK:	/* ƒXƒyƒ‹ƒuƒbƒN */
 		if(sd) {
 			int sp = sd->freeze_sp_slot;
 			if(sp > 0 && sd->status.sp >= sp) {
@@ -11229,7 +11229,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_ELECTRICSHOCKER:	/* ã‚¨ãƒ¬ã‚¯ãƒˆãƒªãƒƒã‚¯ã‚·ãƒ§ãƒƒã‚«ãƒ¼ */
+	case SC_ELECTRICSHOCKER:	/* ƒGƒŒƒNƒgƒŠƒbƒNƒVƒ‡ƒbƒJ[ */
 		if((--sc->data[type].val2) > 0) {
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * sc->data[type].val1 / 100);
 			if(damage)
@@ -11237,7 +11237,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_CAMOUFLAGE:	/* ã‚«ãƒ¢ãƒ•ãƒ©ãƒ¼ã‚¸ãƒ¥ */
+	case SC_CAMOUFLAGE:	/* ƒJƒ‚ƒtƒ‰[ƒWƒ… */
 		if((--sc->data[type].val2) > 0) {
 			if((++sc->data[type].val3) > 10)
 				sc->data[type].val3 = 10;
@@ -11253,8 +11253,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_OVERHEAT:			/* åŠ ç†± */
-		if(sd && pc_isgear(sd))	// é­”å°ã‚®ã‚¢éæ­ä¹—ãªã‚‰ã°ä¸€å¿œæ­¢ã‚ã‚‹
+	case SC_OVERHEAT:			/* ‰Á”M */
+		if(sd && pc_isgear(sd))	// –‚“±ƒMƒA”ñ“‹æ‚È‚ç‚Îˆê‰~‚ß‚é
 			break;
 		if((--sc->data[type].val2) > 0) {
 			int damage = status_get_max_hp(bl) / 100;
@@ -11263,7 +11263,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_MAGNETICFIELD:		/* ãƒã‚°ãƒãƒ†ã‚£ãƒƒã‚¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ */
+	case SC_MAGNETICFIELD:		/* ƒ}ƒOƒlƒeƒBƒbƒNƒtƒB[ƒ‹ƒh */
 		if((--sc->data[type].val2) > 0) {
 			int damage = 40 + sc->data[type].val1 * 10;
 			if(damage)
@@ -11271,7 +11271,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_STEALTHFIELD_USER:	/* ã‚¹ãƒ†ãƒ«ã‚¹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(ä½¿ç”¨è€…) */
+	case SC_STEALTHFIELD_USER:	/* ƒXƒeƒ‹ƒXƒtƒB[ƒ‹ƒh(g—pÒ) */
 		if((--sc->data[type].val2) > 0) {
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
@@ -11279,7 +11279,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC__REPRODUCE:		/* ãƒªãƒ—ãƒ­ãƒ‡ãƒ¥ãƒ¼ã‚¹ */
+	case SC__REPRODUCE:		/* ƒŠƒvƒƒfƒ…[ƒX */
 		if(sd) {
 			int sp = 9 - (sc->data[type].val1 + 1) / 2;
 			if(sp > 0 && sd->status.sp >= sp) {
@@ -11291,7 +11291,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC__SHADOWFORM:		/* ã‚·ãƒ£ãƒ‰ã‚¦ãƒ•ã‚©ãƒ¼ãƒ  */
+	case SC__SHADOWFORM:		/* ƒVƒƒƒhƒEƒtƒH[ƒ€ */
 		if((--sc->data[type].val4) > 0) {
 			if(sd) {
 				int sp = 11 - sc->data[type].val1;
@@ -11305,7 +11305,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC__INVISIBILITY:		/* ã‚¤ãƒ³ãƒ“ã‚¸ãƒ“ãƒªãƒ†ã‚£ */
+	case SC__INVISIBILITY:		/* ƒCƒ“ƒrƒWƒrƒŠƒeƒB */
 		if(sd) {
 			int sp = sd->status.max_sp * 5 / 100;
 			if(sp > 0 && sd->status.sp >= sp) {
@@ -11315,7 +11315,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_REFLECTDAMAGE:		/* ãƒªãƒ•ãƒ¬ã‚¯ãƒˆãƒ€ãƒ¡ãƒ¼ã‚¸ */
+	case SC_REFLECTDAMAGE:		/* ƒŠƒtƒŒƒNƒgƒ_ƒ[ƒW */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int sp = 20 + sc->data[type].val1 * 10;
@@ -11329,7 +11329,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_FORCEOFVANGUARD:	/* ãƒ•ã‚©ãƒ¼ã‚¹ã‚ªãƒ–ãƒãƒ³ã‚¬ãƒ¼ãƒ‰ */
+	case SC_FORCEOFVANGUARD:	/* ƒtƒH[ƒXƒIƒuƒoƒ“ƒK[ƒh */
 		if(sd) {
 			int sp = 24 - sc->data[type].val1 * 4;
 			if(sd->status.sp >= sp) {
@@ -11339,7 +11339,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_BANDING:		/* ãƒãƒ³ãƒ‡ã‚£ãƒ³ã‚° */
+	case SC_BANDING:		/* ƒoƒ“ƒfƒBƒ“ƒO */
 		if(sd) {
 			int sp = 7 - sc->data[type].val1;
 			if(sd->status.sp >= sp) {
@@ -11349,14 +11349,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_INSPIRATION:	/* ã‚¤ãƒ³ã‚¹ãƒ”ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ */
+	case SC_INSPIRATION:	/* ƒCƒ“ƒXƒsƒŒ[ƒVƒ‡ƒ“ */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = sd->status.max_hp / 100;
 				int sp = sd->status.max_sp / 100;
 				unit_heal(bl, -hp, -sp);
 				if(sd->status.sp > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
-					// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+					// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 					timer = add_timer(6000+tick, status_change_timer,bl->id, data);
 				}
 			} else {
@@ -11364,7 +11364,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_KINGS_GRACE:	/* ã‚­ãƒ³ã‚°ã‚¹ã‚°ãƒ¬ã‚¤ã‚¹ */
+	case SC_KINGS_GRACE:	/* ƒLƒ“ƒOƒXƒOƒŒƒCƒX */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = sd->status.max_hp * sc->data[type].val4 / 100;
@@ -11373,7 +11373,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
 		break;
-	case SC_RAISINGDRAGON:		/* æ½œé¾æ˜‡å¤© */
+	case SC_RAISINGDRAGON:		/* ö—´¸“V */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = sd->status.max_hp / 100;
@@ -11389,14 +11389,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_WINKCHARM:	/* é­…æƒ‘ã®ã‚¦ã‚£ãƒ³ã‚¯ */
-	case SC_SIREN:		/* ã‚»ã‚¤ãƒ¬ãƒ¼ãƒ³ã®å£° */
+	case SC_WINKCHARM:	/* –£˜f‚ÌƒEƒBƒ“ƒN */
+	case SC_SIREN:		/* ƒZƒCƒŒ[ƒ“‚Ìº */
 		if((--sc->data[type].val3) > 0) {
 			clif_emotion(bl,3);
 			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_DEEP_SLEEP:		/* å®‰ã‚‰ãã®å­å®ˆå”„ */
+	case SC_DEEP_SLEEP:		/* ˆÀ‚ç‚¬‚Ìqç‰S */
 		if((--sc->data[type].val2) > 0) {
 			int hp, sp = 0;
 			hp = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
@@ -11407,7 +11407,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_SIRCLEOFNATURE:		/* å¾ªç’°ã™ã‚‹è‡ªç„¶ã®éŸ³ */
+	case SC_SIRCLEOFNATURE:		/* zŠÂ‚·‚é©‘R‚Ì‰¹ */
 		if((--sc->data[type].val2) > 0) {
 			int hp = 300 * sc->data[type].val1;
 			if(sd) {
@@ -11422,7 +11422,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_MELODYOFSINK:		/* ãƒ¡ãƒ­ãƒ‡ã‚£ãƒ¼ã‚ªãƒ–ã‚·ãƒ³ã‚¯ */
+	case SC_MELODYOFSINK:		/* ƒƒƒfƒB[ƒIƒuƒVƒ“ƒN */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				unit_heal(bl, 0, -(sd->status.max_sp * sc->data[type].val3 / 100));
@@ -11430,7 +11430,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 		}
 		break;
-	case SC_SONG_OF_MANA:		/* ãƒãƒŠã®æ­Œ */
+	case SC_SONG_OF_MANA:		/* ƒ}ƒi‚Ì‰Ì */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int sp = 10 + 2 * sc->data[type].val4;
@@ -11445,7 +11445,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(5000+tick, status_change_timer,bl->id, data);	
 		}
 		break;
-	case SC_SATURDAY_NIGHT_FEVER:		/* ãƒ•ãƒ©ã‚¤ãƒ‡ãƒ¼ãƒŠã‚¤ãƒˆãƒ•ã‚£ãƒ¼ãƒãƒ¼ */
+	case SC_SATURDAY_NIGHT_FEVER:		/* ƒtƒ‰ƒCƒf[ƒiƒCƒgƒtƒB[ƒo[ */
 		if(--sc->data[type].val2 > 0) {
 			int hp = 0,sp = 0;
 			hp = (int)((atn_bignumber)status_get_max_hp(bl) / 100);
@@ -11456,14 +11456,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_FRIGG_SONG:			/* ãƒ•ãƒªãƒƒã‚°ã®æ­Œ */
+	case SC_FRIGG_SONG:			/* ƒtƒŠƒbƒO‚Ì‰Ì */
 		if(--sc->data[type].val2 > 0) {
 			unit_heal(bl, sc->data[type].val4, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_DIAMONDDUST:		/* ãƒ€ã‚¤ãƒ¤ãƒ¢ãƒ³ãƒ‰ãƒ€ã‚¹ãƒˆ */
+	case SC_DIAMONDDUST:		/* ƒ_ƒCƒ„ƒ‚ƒ“ƒhƒ_ƒXƒg */
 		if(--sc->data[type].val2 > 0) {
 			int hp = 0,sp = 0;
 			hp = (int)((atn_bignumber)status_get_max_hp(bl) * 2 / 100);
@@ -11476,7 +11476,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_STRIKING:		/* ã‚¹ãƒˆãƒ©ã‚¤ã‚­ãƒ³ã‚° */
+	case SC_STRIKING:		/* ƒXƒgƒ‰ƒCƒLƒ“ƒO */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int sp = 6 - sc->data[type].val1;
@@ -11490,23 +11490,23 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_BLOOD_SUCKER:		/* ãƒ–ãƒ©ãƒƒãƒ‰ã‚µãƒƒã‚«ãƒ¼ */
+	case SC_BLOOD_SUCKER:		/* ƒuƒ‰ƒbƒhƒTƒbƒJ[ */
 		if((--sc->data[type].val4) > 0) {
 			struct block_list *src = map_id2bl(sc->data[type].val3);
 			if(src && tid != -1) {
 				skill_castend_damage_id(src,bl,sc->data[type].val2,sc->data[type].val1,gettick(),0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}
 		}
 		break;
-	case SC_FIRE_EXPANSION_TEAR_GAS:		/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™) */
+	case SC_FIRE_EXPANSION_TEAR_GAS:		/* ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—Ü) */
 		if((--sc->data[type].val3) > 0) {
 			int hp = (int)((atn_bignumber)status_get_max_hp(bl) / 100);
 			clif_emotion(bl,28);
-			// ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¨ã‚¯ã‚¹ãƒ‘ãƒ³ã‚·ãƒ§ãƒ³(å‚¬æ¶™)ã§ã¯æ­»ãªãªã„ã“ã¨ã«ã™ã‚‹ï¼ˆä»®ï¼‰
+			// ƒtƒ@ƒCƒA[ƒGƒNƒXƒpƒ“ƒVƒ‡ƒ“(Ã—Ü)‚Å‚Í€‚È‚È‚¢‚±‚Æ‚É‚·‚éi‰¼j
 			if(hp >= status_get_hp(bl))
 				hp = status_get_hp(bl) - 1;
 			unit_heal(bl, -hp, 0);
@@ -11514,7 +11514,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_MEIKYOUSISUI:		/* æ˜é¡æ­¢æ°´ */
+	case SC_MEIKYOUSISUI:		/* –¾‹¾~… */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * (sc->data[type].val1 * 2) / 100);
@@ -11539,7 +11539,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_IZAYOI:		/* åå…­å¤œ */
+	case SC_IZAYOI:		/* \˜Z–é */
 		if((--sc->data[type].val3) > 0) {
 			if(sd) {
 				int sp = 1 * sc->data[type].val1;
@@ -11553,7 +11553,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_KAGEMUSYA:	/* å½±æ­¦è€… */
+	case SC_KAGEMUSYA:	/* ‰e•Ò */
 		if(sd) {
 			if(sd->status.sp >= 1) {
 				sd->status.sp -= 1;
@@ -11562,7 +11562,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_C_MARKER:	/* ã‚¯ãƒªãƒ ã‚¾ãƒ³ãƒãƒ¼ã‚«ãƒ¼ */
+	case SC_C_MARKER:	/* ƒNƒŠƒ€ƒ]ƒ“ƒ}[ƒJ[ */
 		{
 			struct map_session_data *tmpsd = map_id2sd(sc->data[type].val2);
 			if((--sc->data[type].val4) > 0) {
@@ -11577,35 +11577,35 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_FRESHSHRIMP:		/* æ–°é®®ãªã‚¨ãƒ“ */
+	case SC_FRESHSHRIMP:		/* V‘N‚ÈƒGƒr */
 		if((--sc->data[type].val2) > 0) {
 			unit_heal(bl, sc->data[type].val4, 0);
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_HISS:				/* è­¦æˆ’ */
+	case SC_HISS:				/* Œx‰ú */
 		if((--sc->data[type].val4) > 0) {
 			if(sc->data[type].val1 > 0)
 				sc->data[type].val1--;
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_SV_ROOTTWIST:	/* ãƒã‚¿ã‚¿ãƒ“ã®æ ¹ã£ã“ */
+	case SC_SV_ROOTTWIST:	/* ƒ}ƒ^ƒ^ƒr‚Ìª‚Á‚± */
 		if((--sc->data[type].val3) > 0) {
 			struct block_list *src = map_id2bl(sc->data[type].val2);
 			if(src && tid != -1) {
 				battle_skill_attack(BF_MISC,src,src,bl,SU_SV_ROOTTWIST_ATK,sc->data[type].val1,tick,(0x0f<<20)|0x500);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}
 		}
 		break;
-	case SC_BURNT:			/* ç„ç‚å‘ª */
+	case SC_BURNT:			/* –‰Šô */
 		if((--sc->data[type].val3) > 0) {
 			int hp = 2000;
-			// ç„ç‚å‘ªã§ã¯æ­»ãªãªã„ã“ã¨ã«ã™ã‚‹ï¼ˆä»®ï¼‰
+			// –‰Šô‚Å‚Í€‚È‚È‚¢‚±‚Æ‚É‚·‚éi‰¼j
 			if(hp >= status_get_hp(bl))
 				hp = status_get_hp(bl) - 1;
 			unit_heal(bl, -hp, 0);
@@ -11613,10 +11613,10 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_SUMMON_ELEM:	/* ã‚µãƒ¢ãƒ³ã‚¨ãƒ¬ãƒ¡ãƒ³ã‚¿ãƒ« */
+	case SC_SUMMON_ELEM:	/* ƒTƒ‚ƒ“ƒGƒŒƒƒ“ƒ^ƒ‹ */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
-				// å¬å–šã—ã¦ã„ã‚‹ç²¾éœŠãŒã„ãªã‘ã‚Œã°çµ‚äº†
+				// ¢Š«‚µ‚Ä‚¢‚é¸—ì‚ª‚¢‚È‚¯‚ê‚ÎI—¹
 				if(!sd->eld)
 					break;
 				if(sd->status.sp >= sc->data[type].val3) {
@@ -11629,7 +11629,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_WATER_SCREEN:	/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ */
+	case SC_WATER_SCREEN:	/* ƒEƒH[ƒ^[ƒXƒNƒŠ[ƒ“ */
 		if((--sc->data[type].val2) > 0) {
 			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
 			if(heal)
@@ -11637,14 +11637,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_CIRCLE_OF_FIRE_OPTION:	/* ã‚µãƒ¼ã‚¯ãƒ«ã‚ªãƒ–ãƒ•ã‚¡ã‚¤ã‚¢(ç²¾éœŠ) */
-	case SC_FIRE_CLOAK_OPTION:		/* ãƒ•ã‚¡ã‚¤ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ã‚¯(ç²¾éœŠ) */
-	case SC_WATER_SCREEN_OPTION:	/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ã‚¹ã‚¯ãƒªãƒ¼ãƒ³(ç²¾éœŠ) */
-	case SC_WATER_DROP_OPTION:		/* ã‚¦ã‚©ãƒ¼ã‚¿ãƒ¼ãƒ‰ãƒ­ãƒƒãƒ—(ç²¾éœŠ) */
-	case SC_WIND_STEP_OPTION:		/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚¹ãƒ†ãƒƒãƒ—(ç²¾éœŠ) */
-	case SC_WIND_CURTAIN_OPTION:	/* ã‚¦ã‚£ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ†ãƒ³(ç²¾éœŠ) */
-	case SC_SOLID_SKIN_OPTION:		/* ã‚½ãƒªãƒƒãƒ‰ã‚¹ã‚­ãƒ³(ç²¾éœŠ) */
-	case SC_STONE_SHIELD_OPTION:	/* ã‚¹ãƒˆãƒ¼ãƒ³ã‚·ãƒ¼ãƒ«ãƒ‰(ç²¾éœŠ) */
+	case SC_CIRCLE_OF_FIRE_OPTION:	/* ƒT[ƒNƒ‹ƒIƒuƒtƒ@ƒCƒA(¸—ì) */
+	case SC_FIRE_CLOAK_OPTION:		/* ƒtƒ@ƒCƒA[ƒNƒ[ƒN(¸—ì) */
+	case SC_WATER_SCREEN_OPTION:	/* ƒEƒH[ƒ^[ƒXƒNƒŠ[ƒ“(¸—ì) */
+	case SC_WATER_DROP_OPTION:		/* ƒEƒH[ƒ^[ƒhƒƒbƒv(¸—ì) */
+	case SC_WIND_STEP_OPTION:		/* ƒEƒBƒ“ƒhƒXƒeƒbƒv(¸—ì) */
+	case SC_WIND_CURTAIN_OPTION:	/* ƒEƒBƒ“ƒhƒJ[ƒeƒ“(¸—ì) */
+	case SC_SOLID_SKIN_OPTION:		/* ƒ\ƒŠƒbƒhƒXƒLƒ“(¸—ì) */
+	case SC_STONE_SHIELD_OPTION:	/* ƒXƒg[ƒ“ƒV[ƒ‹ƒh(¸—ì) */
 		if((--sc->data[type].val2) > 0) {
 			if(eld) {
 				if(eld->status.sp >= sc->data[type].val3) {
@@ -11657,18 +11657,18 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_PYROTECHNIC_OPTION:	/* ãƒ‘ã‚¤ãƒ­ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯(ç²¾éœŠ) */
-	case SC_AQUAPLAY_OPTION:	/* ã‚¢ã‚¯ã‚¢ãƒ—ãƒ¬ã‚¤(ç²¾éœŠ) */
-	case SC_GUST_OPTION:		/* ã‚¬ã‚¹ãƒˆ(ç²¾éœŠ) */
-	case SC_PETROLOGY_OPTION:	/* ãƒšãƒˆãƒ­ã‚¸ãƒ¼(ç²¾éœŠ) */
-	case SC_HEATER_OPTION:		/* ãƒ’ãƒ¼ã‚¿ãƒ¼(ç²¾éœŠ) */
-	case SC_COOLER_OPTION:		/* ã‚¯ãƒ¼ãƒ©ãƒ¼(ç²¾éœŠ) */
-	case SC_BLAST_OPTION:		/* ãƒ–ãƒ©ã‚¹ãƒˆ(ç²¾éœŠ) */
-	case SC_CURSED_SOIL_OPTION:	/* ã‚«ãƒ¼ã‚¹ãƒ‰ã‚½ã‚¤ãƒ«(ç²¾éœŠ) */
-	case SC_TROPIC_OPTION:		/* ãƒˆãƒ­ãƒ”ãƒƒã‚¯(ç²¾éœŠ) */
-	case SC_CHILLY_AIR_OPTION:	/* ã‚¯ãƒ¼ãƒ«ã‚¨ã‚¢ãƒ¼(ç²¾éœŠ) */
-	case SC_WILD_STORM_OPTION:	/* ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚¹ãƒˆãƒ¼ãƒ (ç²¾éœŠ) */
-	case SC_UPHEAVAL_OPTION:	/* ã‚¢ãƒƒãƒ—ãƒ˜ã‚¤ãƒãƒ«(ç²¾éœŠ) */
+	case SC_PYROTECHNIC_OPTION:	/* ƒpƒCƒƒeƒNƒjƒbƒN(¸—ì) */
+	case SC_AQUAPLAY_OPTION:	/* ƒAƒNƒAƒvƒŒƒC(¸—ì) */
+	case SC_GUST_OPTION:		/* ƒKƒXƒg(¸—ì) */
+	case SC_PETROLOGY_OPTION:	/* ƒyƒgƒƒW[(¸—ì) */
+	case SC_HEATER_OPTION:		/* ƒq[ƒ^[(¸—ì) */
+	case SC_COOLER_OPTION:		/* ƒN[ƒ‰[(¸—ì) */
+	case SC_BLAST_OPTION:		/* ƒuƒ‰ƒXƒg(¸—ì) */
+	case SC_CURSED_SOIL_OPTION:	/* ƒJ[ƒXƒhƒ\ƒCƒ‹(¸—ì) */
+	case SC_TROPIC_OPTION:		/* ƒgƒƒsƒbƒN(¸—ì) */
+	case SC_CHILLY_AIR_OPTION:	/* ƒN[ƒ‹ƒGƒA[(¸—ì) */
+	case SC_WILD_STORM_OPTION:	/* ƒƒCƒ‹ƒhƒXƒg[ƒ€(¸—ì) */
+	case SC_UPHEAVAL_OPTION:	/* ƒAƒbƒvƒwƒCƒoƒ‹(¸—ì) */
 		if((--sc->data[type].val2) > 0) {
 			if(eld) {
 				if(eld->status.sp >= sc->data[type].val3) {
@@ -11681,7 +11681,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_ANGRIFFS_MODUS:		/* ã‚¢ãƒ³ã‚°ãƒªãƒ•ã‚¹ãƒ¢ãƒ‰ã‚¹ */
+	case SC_ANGRIFFS_MODUS:		/* ƒAƒ“ƒOƒŠƒtƒXƒ‚ƒhƒX */
 		if((--sc->data[type].val2) > 0) {
 			if(hd && hd->status.sp > 0) {
 				if(hd->status.hp >= 100)
@@ -11695,13 +11695,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_CBC:				/* çµã‚æŠ€ */
+	case SC_CBC:				/* i‚ß‹Z */
 		if((--sc->data[type].val2) > 0) {
 			int hp = 0, sp = 0;
-			if(sc->data[type].val2 % 2) {	// 2ç§’æ¯
+			if(sc->data[type].val2 % 2) {	// 2•b–ˆ
 				hp = sc->data[type].val3;
 			}
-			if(sc->data[type].val2 % 3) {	// 3ç§’æ¯
+			if(sc->data[type].val2 % 3) {	// 3•b–ˆ
 				if(bl->type != BL_MOB)
 					sp = sc->data[type].val4;
 				else
@@ -11711,7 +11711,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
 		break;
-	case SC_FULL_THROTTLE:		/* ãƒ•ãƒ«ã‚¹ãƒ­ãƒƒãƒˆãƒ« */
+	case SC_FULL_THROTTLE:		/* ƒtƒ‹ƒXƒƒbƒgƒ‹ */
 		if((--sc->data[type].val3) > 0) {
 			if(sd) {
 				int sp = (int)((atn_bignumber)status_get_max_sp(&sd->bl) * 5 / 100);
@@ -11730,19 +11730,19 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_REBOUND:	/* ãƒªãƒã‚¦ãƒ³ãƒ‰ */
+	case SC_REBOUND:	/* ƒŠƒoƒEƒ“ƒh */
 		clif_emotion(bl,4);
 		if((--sc->data[type].val2) > 0) {
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
-	case SC_GRADUAL_GRAVITY:	/* é‡åŠ›å¢—åŠ  */
+	case SC_GRADUAL_GRAVITY:	/* d—Í‘‰Á */
 		if((--sc->data[type].val3) >= 0) {
 			if(sd) {
 				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * sc->data[type].val2 / 100);
 				unit_heal(bl, -hp, 0);
 				if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-					// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+					// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 					timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 				}
 			} else {
@@ -11750,18 +11750,18 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_KILLING_AURA:	/* ã‚­ãƒªãƒ³ã‚°ã‚ªãƒ¼ãƒ© */
+	case SC_KILLING_AURA:	/* ƒLƒŠƒ“ƒOƒI[ƒ‰ */
 		if((--sc->data[type].val3) > 0) {
 			if(bl && tid != -1) {
 				skill_castend_damage_id(bl,bl,NPC_KILLING_AURA,sc->data[type].val1,gettick(),0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
-				// ç”Ÿãã¦ã„ã¦è§£é™¤æ¸ˆã¿ã§ãªã„ãªã‚‰ç¶™ç¶š
+				// ¶‚«‚Ä‚¢‚Ä‰ğœÏ‚İ‚Å‚È‚¢‚È‚çŒp‘±
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 			}
 		}
 		break;
-	case SC_NEWMOON:	/* æœ”æœˆè„š */
+	case SC_NEWMOON:	/* ñŒ‹r */
 		if((--sc->data[type].val3) > 0) {
 			if(sd) {
 				int sp = 1;
@@ -11778,11 +11778,13 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			struct map_session_data *tsd = map_id2sd(sc->data[type].val1);
 			if( tsd )
 				tsd->stellar_mark[sc->data[type].val2] = 0;
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
 	{
-		timer = add_timer(	/* ã‚¿ã‚¤ãƒãƒ¼å†è¨­å®š */
+		timer = add_timer(	/* ƒ^ƒCƒ}[Äİ’è */
 			sd->eternal_status_change[type]+tick, status_change_timer,
 			bl->id, data);
 	}
@@ -11790,7 +11792,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	map_freeblock_unlock();
 
 	if(timer != -1) {
-		// ã‚¿ã‚¤ãƒãƒ¼IDã‚’ä¿å­˜ã—ã¦ç¶™ç¶šã™ã‚‹
+		// ƒ^ƒCƒ}[ID‚ğ•Û‘¶‚µ‚ÄŒp‘±‚·‚é
 		sc->data[type].timer = timer;
 		return 0;
 	}
@@ -11799,7 +11801,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ã‚¿ã‚¤ãƒãƒ¼ç¯„å›²å‡¦ç†
+ * ƒXƒe[ƒ^ƒXˆÙíƒ^ƒCƒ}[”ÍˆÍˆ—
  *------------------------------------------
  */
 int status_change_timer_sub(struct block_list *bl, va_list ap)
@@ -11823,7 +11825,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 	nullpo_retr(0, sc = status_get_sc(bl));
 
 	switch( type ) {
-	case SC_SIGHT:	/* ã‚µã‚¤ãƒˆ */
+	case SC_SIGHT:	/* ƒTƒCƒg */
 	case SC_CONCENTRATE:
 		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 			status_change_end(bl, SC_HIDING, -1);
@@ -11836,7 +11838,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 			status_change_end(bl, SC_INVISIBLE, -1);
 		}
 		break;
-	case SC_RUWACH:	/* ãƒ«ã‚¢ãƒ• */
+	case SC_RUWACH:	/* ƒ‹ƒAƒt */
 		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
 			if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
 				status_change_end(bl, SC_HIDING, -1);
@@ -11868,7 +11870,7 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸å…¨è§£é™¤
+ * ƒXƒe[ƒ^ƒXˆÙí‘S‰ğœ
  *------------------------------------------
  */
 int status_change_clear(struct block_list *bl,int type)
@@ -11892,7 +11894,7 @@ int status_change_clear(struct block_list *bl,int type)
 		if(i == SC_BABY && type == 0 && unit_isdead(bl))
 			continue;
 
-		/* ç•°å¸¸ãŒã‚ã‚‹ãªã‚‰ã‚¿ã‚¤ãƒãƒ¼ã‚’å‰Šé™¤ã™ã‚‹ */
+		/* ˆÙí‚ª‚ ‚é‚È‚çƒ^ƒCƒ}[‚ğíœ‚·‚é */
 		if(i == SC_DANCING) {
 			skill_stop_dancing(bl,0);
 		} else {
@@ -11916,7 +11918,7 @@ int status_change_clear(struct block_list *bl,int type)
 }
 
 /*==========================================
- * ç‰¹å®šæ¡ä»¶ä¸‹ã«ãŠã‘ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸è§£é™¤
+ * “Á’èğŒ‰º‚É‚¨‚¯‚éƒXƒe[ƒ^ƒXˆÙí‰ğœ
  *------------------------------------------
  */
 int status_change_release(struct block_list *bl,int mask)
@@ -11937,7 +11939,7 @@ int status_change_release(struct block_list *bl,int mask)
 
 	status_calc_pc_stop_begin(bl);
 	for(i = 0; i < MAX_STATUSCHANGE; i++) {
-		// ç•°å¸¸ãŒã‚ã£ã¦ä¸”ã¤ãƒ•ãƒ©ã‚°ãŒã‚ã‚‹ãªã‚‰ã‚¿ã‚¤ãƒãƒ¼ã‚’å‰Šé™¤
+		// ˆÙí‚ª‚ ‚Á‚ÄŠ‚Âƒtƒ‰ƒO‚ª‚ ‚é‚È‚çƒ^ƒCƒ}[‚ğíœ
 		if( (scdata_db[i].releasable & mask) && sc->data[i].timer != -1 ) {
 			if(i == SC_DANCING) {
 				skill_stop_dancing(bl,0);
@@ -11954,7 +11956,7 @@ int status_change_release(struct block_list *bl,int mask)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(æ­¦å™¨ã®å±æ€§)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(•Ší‚Ì‘®«)I—¹
  *------------------------------------------
  */
 int status_enchant_elemental_end(struct block_list *bl,int type)
@@ -11964,32 +11966,32 @@ int status_enchant_elemental_end(struct block_list *bl,int type)
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sc = status_get_sc(bl));
 
-	if( type != SC_ENCPOISON && sc->data[SC_ENCPOISON].timer != -1 )	/* ã‚¨ãƒ³ãƒãƒ£ãƒ³ãƒˆãƒã‚¤ã‚ºãƒ³è§£é™¤ */
+	if( type != SC_ENCPOISON && sc->data[SC_ENCPOISON].timer != -1 )	/* ƒGƒ“ƒ`ƒƒƒ“ƒgƒ|ƒCƒYƒ“‰ğœ */
 		status_change_end(bl,SC_ENCPOISON,-1);
-	if( type != SC_ASPERSIO && sc->data[SC_ASPERSIO].timer != -1 )	/* ã‚¢ã‚¹ãƒšãƒ«ã‚·ã‚ªè§£é™¤ */
+	if( type != SC_ASPERSIO && sc->data[SC_ASPERSIO].timer != -1 )	/* ƒAƒXƒyƒ‹ƒVƒI‰ğœ */
 		status_change_end(bl,SC_ASPERSIO,-1);
-	if( type != SC_FLAMELAUNCHER && sc->data[SC_FLAMELAUNCHER].timer != -1 )	/* ãƒ•ãƒ¬ã‚¤ãƒ ãƒ©ãƒ³ãƒãƒ£è§£é™¤ */
+	if( type != SC_FLAMELAUNCHER && sc->data[SC_FLAMELAUNCHER].timer != -1 )	/* ƒtƒŒƒCƒ€ƒ‰ƒ“ƒ`ƒƒ‰ğœ */
 		status_change_end(bl,SC_FLAMELAUNCHER,-1);
-	if( type != SC_FROSTWEAPON && sc->data[SC_FROSTWEAPON].timer != -1 )	/* ãƒ•ãƒ­ã‚¹ãƒˆã‚¦ã‚§ãƒãƒ³è§£é™¤ */
+	if( type != SC_FROSTWEAPON && sc->data[SC_FROSTWEAPON].timer != -1 )	/* ƒtƒƒXƒgƒEƒFƒ|ƒ“‰ğœ */
 		status_change_end(bl,SC_FROSTWEAPON,-1);
-	if( type != SC_LIGHTNINGLOADER && sc->data[SC_LIGHTNINGLOADER].timer != -1 )	/* ãƒ©ã‚¤ãƒˆãƒ‹ãƒ³ã‚°ãƒ­ãƒ¼ãƒ€ãƒ¼è§£é™¤ */
+	if( type != SC_LIGHTNINGLOADER && sc->data[SC_LIGHTNINGLOADER].timer != -1 )	/* ƒ‰ƒCƒgƒjƒ“ƒOƒ[ƒ_[‰ğœ */
 		status_change_end(bl,SC_LIGHTNINGLOADER,-1);
-	if( type != SC_SEISMICWEAPON && sc->data[SC_SEISMICWEAPON].timer != -1 )	/* ã‚µã‚¤ã‚¹ãƒŸãƒƒã‚¯ã‚¦ã‚§ãƒãƒ³è§£é™¤ */
+	if( type != SC_SEISMICWEAPON && sc->data[SC_SEISMICWEAPON].timer != -1 )	/* ƒTƒCƒXƒ~ƒbƒNƒEƒFƒ|ƒ“‰ğœ */
 		status_change_end(bl,SC_SEISMICWEAPON,-1);
-	if( type != SC_DARKELEMENT && sc->data[SC_DARKELEMENT].timer != -1 )		// é—‡
+	if( type != SC_DARKELEMENT && sc->data[SC_DARKELEMENT].timer != -1 )		// ˆÅ
 		status_change_end(bl,SC_DARKELEMENT,-1);
-	if( type != SC_ATTENELEMENT && sc->data[SC_ATTENELEMENT].timer != -1 )	// å¿µ
+	if( type != SC_ATTENELEMENT && sc->data[SC_ATTENELEMENT].timer != -1 )	// ”O
 		status_change_end(bl,SC_ATTENELEMENT,-1);
-	if( type != SC_UNDEADELEMENT && sc->data[SC_UNDEADELEMENT].timer != -1 )	// ä¸æ­»
+	if( type != SC_UNDEADELEMENT && sc->data[SC_UNDEADELEMENT].timer != -1 )	// •s€
 		status_change_end(bl,SC_UNDEADELEMENT,-1);
-	if( type != SC_SEVENWIND && sc->data[SC_SEVENWIND].timer != -1 )		/* æš–ã‹ã„é¢¨è§£é™¤ */
+	if( type != SC_SEVENWIND && sc->data[SC_SEVENWIND].timer != -1 )		/* ’g‚©‚¢•—‰ğœ */
 		status_change_end(bl,SC_SEVENWIND,-1);
 
 	return 0;
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ä½“ã®å±æ€§)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(‘Ì‚Ì‘®«)I—¹
  *------------------------------------------
  */
 int status_enchant_armor_elemental_end(struct block_list *bl,int type)
@@ -11999,32 +12001,32 @@ int status_enchant_armor_elemental_end(struct block_list *bl,int type)
 	nullpo_retr(0, bl);
 	nullpo_retr(0, sc = status_get_sc(bl));
 
-	if( type != SC_BENEDICTIO && sc->data[SC_BENEDICTIO].timer != -1 )	// è–ä½“
+	if( type != SC_BENEDICTIO && sc->data[SC_BENEDICTIO].timer != -1 )	// ¹‘Ì
 		status_change_end(bl,SC_BENEDICTIO,-1);
-	if( type != SC_ELEMENTWATER && sc->data[SC_ELEMENTWATER].timer != -1 )	// æ°´
+	if( type != SC_ELEMENTWATER && sc->data[SC_ELEMENTWATER].timer != -1 )	// …
 		status_change_end(bl,SC_ELEMENTWATER,-1);
-	if( type != SC_ELEMENTGROUND && sc->data[SC_ELEMENTGROUND].timer != -1 )	// åœ°
+	if( type != SC_ELEMENTGROUND && sc->data[SC_ELEMENTGROUND].timer != -1 )	// ’n
 		status_change_end(bl,SC_ELEMENTGROUND,-1);
-	if( type != SC_ELEMENTWIND && sc->data[SC_ELEMENTWIND].timer != -1 )		// é¢¨
+	if( type != SC_ELEMENTWIND && sc->data[SC_ELEMENTWIND].timer != -1 )		// •—
 		status_change_end(bl,SC_ELEMENTWIND,-1);
-	if( type != SC_ELEMENTFIRE && sc->data[SC_ELEMENTFIRE].timer != -1 )		// ç«
+	if( type != SC_ELEMENTFIRE && sc->data[SC_ELEMENTFIRE].timer != -1 )		// ‰Î
 		status_change_end(bl,SC_ELEMENTFIRE,-1);
-	if( type != SC_ELEMENTHOLY && sc->data[SC_ELEMENTHOLY].timer != -1 )	// å…‰
+	if( type != SC_ELEMENTHOLY && sc->data[SC_ELEMENTHOLY].timer != -1 )	// Œõ
 		status_change_end(bl,SC_ELEMENTHOLY,-1);
-	if( type != SC_ELEMENTDARK && sc->data[SC_ELEMENTDARK].timer != -1 )		// é—‡
+	if( type != SC_ELEMENTDARK && sc->data[SC_ELEMENTDARK].timer != -1 )		// ˆÅ
 		status_change_end(bl,SC_ELEMENTDARK,-1);
-	if( type != SC_ELEMENTELEKINESIS && sc->data[SC_ELEMENTELEKINESIS].timer != -1 )	// å¿µ
+	if( type != SC_ELEMENTELEKINESIS && sc->data[SC_ELEMENTELEKINESIS].timer != -1 )	// ”O
 		status_change_end(bl,SC_ELEMENTELEKINESIS,-1);
-	if( type != SC_ELEMENTPOISON && sc->data[SC_ELEMENTPOISON].timer != -1 )	// æ¯’
+	if( type != SC_ELEMENTPOISON && sc->data[SC_ELEMENTPOISON].timer != -1 )	// “Å
 		status_change_end(bl,SC_ELEMENTPOISON,-1);
-	if( type != SC_ELEMENTUNDEAD && sc->data[SC_ELEMENTUNDEAD].timer != -1 )	// ä¸æ­»
+	if( type != SC_ELEMENTUNDEAD && sc->data[SC_ELEMENTUNDEAD].timer != -1 )	// •s€
 		status_change_end(bl,SC_ELEMENTUNDEAD,-1);
 
 	return 0;
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ç¨®æ—å¤‰æ›´)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(í‘°•ÏX)I—¹
  *------------------------------------------
  */
 int status_change_race_end(struct block_list *bl,int type)
@@ -12057,7 +12059,7 @@ int status_change_race_end(struct block_list *bl,int type)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ç¨®æ—å¤‰æ›´)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(í‘°•ÏX)I—¹
  *------------------------------------------
  */
 int status_change_resistclear(struct block_list *bl)
@@ -12094,7 +12096,7 @@ int status_change_resistclear(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(é­‚)é–‹å§‹
+ * ƒXƒe[ƒ^ƒXˆÙí(°)ŠJn
  *------------------------------------------
  */
 int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int val4,int tick,int flag)
@@ -12193,7 +12195,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(é­‚)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(°)I—¹
  *------------------------------------------
  */
 int status_change_soulclear(struct block_list *bl)
@@ -12248,7 +12250,7 @@ int status_change_soulclear(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ç²¾éœŠ)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(¸—ì)I—¹
  *------------------------------------------
  */
 int status_change_elemclear(struct block_list *bl)
@@ -12357,7 +12359,7 @@ int status_change_elemclear(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(å‡çµãƒ»çŸ³åŒ–ãƒ»ç¡çœ )çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(“€Œ‹EÎ‰»E‡–°)I—¹
  *------------------------------------------
  */
 int status_change_attacked_end(struct block_list *bl)
@@ -12384,7 +12386,7 @@ int status_change_attacked_end(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ãƒã‚¤ãƒ‰)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(ƒnƒCƒh)I—¹
  *------------------------------------------
  */
 int status_change_hidden_end(struct block_list *bl)
@@ -12417,7 +12419,7 @@ int status_change_hidden_end(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸(ãƒãƒƒãƒ—é›¢è„±æ™‚)çµ‚äº†
+ * ƒXƒe[ƒ^ƒXˆÙí(ƒ}ƒbƒv—£’E)I—¹
  *------------------------------------------
  */
 int status_change_removemap_end(struct block_list *bl)
@@ -12477,7 +12479,7 @@ int status_change_removemap_end(struct block_list *bl)
 }
 
 /*==========================================
- * ã‚¢ã‚¤ãƒ†ãƒ ã«ã‚ˆã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸é–‹å§‹
+ * ƒAƒCƒeƒ€‚É‚æ‚éƒXƒe[ƒ^ƒXˆÙíŠJn
  *------------------------------------------
  */
 int status_change_addeff_start(struct block_list *src, struct block_list *bl, int id, int rate, int type, unsigned int tick)
@@ -12511,15 +12513,15 @@ int status_change_addeff_start(struct block_list *src, struct block_list *bl, in
 
 		if(battle_config.battle_log) {
 			if(type==1)
-				printf("PC %d skill_skilladdeff: cardã«ã‚ˆã‚‹çŠ¶æ…‹ç•°å¸¸ç™ºå‹• %d %d %d\n",sd->bl.id,sd->skill_addeff.id[id],id,rate);
+				printf("PC %d skill_skilladdeff: card‚É‚æ‚éó‘ÔˆÙí”­“® %d %d %d\n",sd->bl.id,sd->skill_addeff.id[id],id,rate);
 			else if(type==2)
-				printf("PC %d skill_addeff: cardã«ã‚ˆã‚‹çŠ¶æ…‹ç•°å¸¸ç™ºå‹• %d %d\n",sd->bl.id,id,rate);
+				printf("PC %d skill_addeff: card‚É‚æ‚éó‘ÔˆÙí”­“® %d %d\n",sd->bl.id,id,rate);
 			else if(type==3)
-				printf("PC %d skill_addeff2: cardã«ã‚ˆã‚‹çŠ¶æ…‹ç•°å¸¸ç™ºå‹• %d %d\n",sd->bl.id,id,rate);
+				printf("PC %d skill_addeff2: card‚É‚æ‚éó‘ÔˆÙí”­“® %d %d\n",sd->bl.id,id,rate);
 			else if(type==4)
-				printf("PC %d magic_addeff: cardã«ã‚ˆã‚‹çŠ¶æ…‹ç•°å¸¸ç™ºå‹• %d %d\n",sd->bl.id,id,rate);
+				printf("PC %d magic_addeff: card‚É‚æ‚éó‘ÔˆÙí”­“® %d %d\n",sd->bl.id,id,rate);
 			else
-				printf("PC %d skill_addreveff: cardã«ã‚ˆã‚‹ç•°å¸¸ç™ºå‹• %d %d\n",sd->bl.id,id,sd->addreveff[id]);
+				printf("PC %d skill_addreveff: card‚É‚æ‚éˆÙí”­“® %d %d\n",sd->bl.id,id,sd->addreveff[id]);
 		}
 
 		switch(sc_id[id]) {
@@ -12595,7 +12597,7 @@ static void status_split_atoi(char *str, int *num1, int *num2)
 }
 
 /*==========================================
- * ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹èª­ã¿è¾¼ã¿
+ * ƒf[ƒ^ƒx[ƒX“Ç‚İ‚İ
  *------------------------------------------
  */
 int status_readdb(void)
@@ -12607,7 +12609,7 @@ int status_readdb(void)
 
 	memset(&job_db, 0, sizeof(job_db));
 
-	// JOBè£œæ­£æ•°å€¤ï¼‘
+	// JOB•â³”’l‚P
 #ifdef PRE_RENEWAL
 	filename = "db/pre/job_db1_pre.txt";
 #else
@@ -12642,7 +12644,7 @@ int status_readdb(void)
 			int hp_coefficient2 = atoi(split[2]);
 			int sigma = 0;
 			for(j = 1; j <= MAX_LEVEL; j++) {
-				// åŸºæœ¬HP = 35 + BaseLevel * Jobå€ç‡ + Jobãƒœãƒ¼ãƒŠã‚¹
+				// Šî–{HP = 35 + BaseLevel * Job”{—¦ + Jobƒ{[ƒiƒX
 				job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
 				sigma += hp_coefficient * (j + 1) + 50;
 				sigma -= sigma % 100;
@@ -12652,7 +12654,7 @@ int status_readdb(void)
 		sp_coefficient = atoi(split[3]);
 		if(sp_coefficient >= 0) {
 			for(j = 1; j <= MAX_LEVEL; j++) {
-				// åŸºæœ¬SP = 10 + BaseLevel * Jobä¿‚æ•°
+				// Šî–{SP = 10 + BaseLevel * JobŒW”
 				job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
 			}
 		}
@@ -12666,7 +12668,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// åŸºæœ¬HPå€‹åˆ¥è¨­å®š
+	// Šî–{HPŒÂ•Êİ’è
 	filename = "db/job_hp_db.txt";
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
@@ -12683,7 +12685,7 @@ int status_readdb(void)
 			if(sscanf(p,"%d",&k) == 0)
 				break;
 			if(job_db[j].hp_base[i] == 0) {
-				// job_db1.txtã§HPæœªè¨­å®šã®å ´åˆã®ã¿è£œå®Œ
+				// job_db1.txt‚ÅHP–¢İ’è‚Ìê‡‚Ì‚İ•âŠ®
 				job_db[j].hp_base[i] = (k > 0)? k: 1;
 			}
 			p=strchr(p,',');
@@ -12695,7 +12697,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// åŸºæœ¬SPå€‹åˆ¥è¨­å®š
+	// Šî–{SPŒÂ•Êİ’è
 	filename = "db/job_sp_db.txt";
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
@@ -12712,7 +12714,7 @@ int status_readdb(void)
 			if(sscanf(p,"%d",&k) == 0)
 				break;
 			if(job_db[j].sp_base[i] == 0) {
-				// job_db1.txtã§SPæœªè¨­å®šã®å ´åˆã®ã¿è£œå®Œ
+				// job_db1.txt‚ÅSP–¢İ’è‚Ìê‡‚Ì‚İ•âŠ®
 				job_db[j].sp_base[i] = (k > 0)? k: 1;
 			}
 			p=strchr(p,',');
@@ -12724,7 +12726,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// JOBãƒœãƒ¼ãƒŠã‚¹
+	// JOBƒ{[ƒiƒX
 	filename = "db/job_db2.txt";
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
@@ -12751,7 +12753,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// JOBãƒœãƒ¼ãƒŠã‚¹2 è»¢ç”Ÿè·ç”¨
+	// JOBƒ{[ƒiƒX2 “]¶E—p
 	filename = "db/job_db2-2.txt";
 	fp = fopen(filename, "r");
 	if(fp == NULL) {
@@ -12777,7 +12779,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// ç²¾éŒ¬ãƒ‡ãƒ¼ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«
+	// ¸˜Bƒf[ƒ^ƒe[ƒuƒ‹
 	for(i=0; i<MAX_WEAPON_LEVEL+1; i++) {
 		for(j=0; j<MAX_REFINE; j++)
 			refine_db[i].safety_bonus[j] = 0;
@@ -12813,10 +12815,10 @@ int status_readdb(void)
 			if(p) *p++=0;
 		}
 		for(j=0; j<MAX_REFINE; j++) {
-			refine_db[i].safety_bonus[j] = atoi(split[0]) * (j+1);	// ç²¾éŒ¬ãƒœãƒ¼ãƒŠã‚¹
+			refine_db[i].safety_bonus[j] = atoi(split[0]) * (j+1);	// ¸˜Bƒ{[ƒiƒX
 		}
-		refine_db[i].over_bonus   = atoi(split[1]);	// éå‰°ç²¾éŒ¬ãƒœãƒ¼ãƒŠã‚¹
-		refine_db[i].limit        = atoi(split[2]);	// å®‰å…¨ç²¾éŒ¬é™ç•Œ
+		refine_db[i].over_bonus   = atoi(split[1]);	// ‰ßè¸˜Bƒ{[ƒiƒX
+		refine_db[i].limit        = atoi(split[2]);	// ˆÀ‘S¸˜BŒÀŠE
 		for(j=0; j<MAX_REFINE && split[j+3]; j++) {
 			status_split_atoi(split[j+3], &refine_db[i].per[j], &refine_db[i].safety_bonus[j]);
 		}
@@ -12826,7 +12828,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// ã‚µã‚¤ã‚ºè£œæ­£ãƒ†ãƒ¼ãƒ–ãƒ«
+	// ƒTƒCƒY•â³ƒe[ƒuƒ‹
 	for(i=0; i<MAX_SIZE_FIX; i++) {
 		for(j=0; j<WT_MAX; j++)
 			atkmods[i][j] = 100;
@@ -12862,7 +12864,7 @@ int status_readdb(void)
 	fclose(fp);
 	printf("read %s done\n", filename);
 
-	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç•°å¸¸ãƒ†ãƒ¼ãƒ–ãƒ«
+	// ƒXƒe[ƒ^ƒXˆÙíƒe[ƒuƒ‹
 	memset(&scdata_db, 0, sizeof(scdata_db));
 	filename = "db/scdata_db.txt";
 	fp = fopen(filename, "r");
@@ -12910,7 +12912,7 @@ int status_readdb(void)
 }
 
 /*==========================================
- * ã‚¹ã‚­ãƒ«é–¢ä¿‚åˆæœŸåŒ–å‡¦ç†
+ * ƒXƒLƒ‹ŠÖŒW‰Šú‰»ˆ—
  *------------------------------------------
  */
 int do_init_status(void)
