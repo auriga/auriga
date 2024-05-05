@@ -1,4 +1,22 @@
 ----------------------------------------
+//1545 [2024/05/05] by refis
+
+・ルワンダに伝える話クエスト、新人アコライトの幽霊クエスト実装
+（npc_quest_illusionluanda.sc, npc_quest_illusionlabyrinth.sc）
+
+・mapflag更新 (mapflag.sc)
+
+・monster出現定義追加（npc_monster_beachdun.sc, npc_monster_prtmaze.sc）
+
+・item_dbのランダム更新 (item_db.txt)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1544 [2024/04/29] by refis
 
 ・マップ帰還系スキルの追加（skill.c）
