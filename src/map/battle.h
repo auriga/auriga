@@ -392,6 +392,7 @@ extern struct Battle_Config {
 	int allow_skill_without_day;
 	int save_feel_map;
 	int save_hate_mob;
+	int allow_se_univ_skill_limit;
 	int twilight_party_check;
 	int alchemist_point_type;
 	int marionette_type;

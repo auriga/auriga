@@ -13625,6 +13625,10 @@ void clif_status_change(struct block_list *bl, int type, unsigned char flag, uns
 		case SI_READYDOWN:
 		case SI_READYTURN:
 		case SI_READYCOUNTER:
+		case SI_LUNARSTANCE:
+		case SI_UNIVERSESTANCE:
+		case SI_SUNSTANCE:
+		case SI_STARSTANCE:
 		case SI_DODGE:
 		case SI_DEVIL:
 		case SI_MIRACLE:

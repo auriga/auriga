@@ -1380,6 +1380,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 	}
 
+	if(sc && sc->data[SC_NEWMOON].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
+		status_change_end(src,SC_NEWMOON,-1);
+	}
+
 	if(sc && sc->data[SC__INVISIBILITY].timer != -1 && skill_num != SC_INVISIBILITY) {
 		status_change_end(src,SC__INVISIBILITY,-1);
 	}
@@ -1590,6 +1594,9 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 		status_change_end(src,SC_CLOAKINGEXCEED,-1);
 
+	if(sc && sc->data[SC_NEWMOON].timer != -1)
+		status_change_end(src,SC_NEWMOON,-1);
+
 	if(casttime > 0) {
 		int skill;
 		src_ud->skilltimer = add_timer(tick+casttime, skill_castend_pos, src->id, NULL);
@@ -1771,7 +1778,8 @@ int unit_can_move(struct block_list *bl)
 			sc->data[SC_SV_ROOTTWIST].timer != -1 ||	// ƒ}ƒ^ƒ^ƒr‚Ìª‚Á‚±
 			sc->data[SC_PARALYZE].timer != -1 ||	// –ƒáƒ
 			sc->data[SC_TINDER_BREAKER].timer != -1 ||	// •ßŠl
-			sc->data[SC_CBC].timer != -1		// i‚ß‹Z
+			sc->data[SC_CBC].timer != -1 ||		// i‚ß‹Z
+			sc->data[SC_GRAVITYCONTROL].timer != -1	// SC_GRAVITYCONTROL
 		)
 			return 0;
 
@@ -1873,7 +1881,9 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 		   sc->data[SC_CURSEDCIRCLE].timer != -1 ||
 		   sc->data[SC_DEEP_SLEEP].timer != -1 ||
 		   sc->data[SC_DIAMONDDUST].timer != -1 ||
-		   sc->data[SC_SUHIDE].timer != -1)
+		   sc->data[SC_SUHIDE].timer != -1 ||
+		   sc->data[SC_NOVAEXPLOSING].timer != -1 ||
+		   sc->data[SC_GRAVITYCONTROL].timer != -1 )
 			return 0;
 	}
 	if( tsc ) {
@@ -2001,6 +2011,8 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 				status_change_end(src,SC_CLOAKING,-1);
 			if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1)
 				status_change_end(src,SC_CLOAKINGEXCEED,-1);
+			if(sc && sc->data[SC_NEWMOON].timer != -1)
+				status_change_end(src,SC_NEWMOON,-1);
 			if(sc && sc->data[SC_CAMOUFLAGE].timer != -1)
 				status_change_end(src,SC_CAMOUFLAGE,-1);
 			if(src_sd && src_sd->status.pet_id > 0 && src_sd->pd && src_sd->petDB)
