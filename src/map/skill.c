@@ -2068,7 +2068,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		}
 
 		// 殴ってmob変化
-		if(sd && dstmd && mobdb_search(dstmd->class_)->race != RCT_HUMAN && !map[dstmd->bl.m].flag.nobranch &&
+		if(sd && dstmd && mobdb_search(dstmd->class_)->race != RCT_DEMIHUMAN && !map[dstmd->bl.m].flag.nobranch &&
 		   !(mobdb_search(dstmd->class_)->mode&MD_BOSS) && dstmd->class_ != MOBID_EMPERIUM && dstmd->state.special_mob_ai != 1)
 		{
 			if(atn_rand()%10000 < sd->mob_class_change_rate)
@@ -3601,7 +3601,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GS_BULLSEYE:		/* ブルズアイ */
 		{
 			int race = status_get_race(bl);
-			if(race == RCT_BRUTE || race == RCT_HUMAN) {
+			if(race == RCT_BRUTE || race == RCT_DEMIHUMAN || race == RCT_PLAYER_HUMAN) {
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 			} else {
 				if(sd)
@@ -6514,7 +6514,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			}
 		} else if(dstmd) {
 			int race = status_get_race(&dstmd->bl);
-			if( !(dstmd->mode&MD_BOSS) && (race == RCT_DEMON || race == RCT_HUMAN || race == RCT_ANGEL) ) {
+			if( !(dstmd->mode&MD_BOSS) && (race == RCT_DEMON || race == RCT_DEMIHUMAN || race == RCT_ANGEL) ) {
 				if(atn_rand() % 100 < 40 + status_get_lv(src) - status_get_lv(bl)) {
 					status_change_start(&dstmd->bl,GetSkillStatusChangeTable(skillid),skilllv,src->id,0,0,10000,0);
 					break;

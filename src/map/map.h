@@ -115,17 +115,19 @@ enum {
 	RCT_INSECT,
 	RCT_FISH,
 	RCT_DEMON,
-	RCT_HUMAN,
+	RCT_DEMIHUMAN,
 	RCT_ANGEL,
 	RCT_DRAGON,
+	RCT_PLAYER_HUMAN,
+	RCT_PLAYER_DORAM,
 	RCT_BOSS,
 	RCT_NONBOSS,
-	RCT_PLAYER,
 	RCT_MAX,
 };
 
-// 全種族用
-#define RCT_ALL	10
+#define RCT_ALL 10		// 全種族用
+#define RCT_HUMAN 14	// 人間形用
+#define RCT_PLAYER 15	// プレイヤー用
 
 // 属性
 enum {

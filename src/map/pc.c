@@ -8085,7 +8085,7 @@ void pc_equipitem(struct map_session_data *sd, int n, int pos)
 #if PACKETVER > 20080102
 	clif_skillinfoblock(sd);
 #endif
-	if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
+	if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_DEMIHUMAN,sd->def_ele))
 		status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 
 	return;
@@ -8248,7 +8248,7 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 	}
 	if(!type) {
 		status_calc_pc(sd,0);
-		if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_HUMAN,sd->def_ele))
+		if(sd->sc.data[SC_SIGNUMCRUCIS].timer != -1 && !battle_check_undead(RCT_DEMIHUMAN,sd->def_ele))
 			status_change_end(&sd->bl,SC_SIGNUMCRUCIS,-1);
 	}
 

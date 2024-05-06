@@ -1054,8 +1054,37 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_ADDRACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(!sd->state.lr_flag) {
+					sd->addrace[RCT_DEMIHUMAN] += val;
+					sd->addrace[RCT_PLAYER_HUMAN] += val;
+				}
+				else if(sd->state.lr_flag == 1) {
+					sd->addrace_[RCT_DEMIHUMAN] += val;
+					sd->addrace_[RCT_PLAYER_HUMAN] += val;
+				}
+				else if(sd->state.lr_flag == 2) {
+					sd->arrow_addrace[RCT_DEMIHUMAN] += val;
+					sd->arrow_addrace[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(!sd->state.lr_flag) {
+					sd->addrace[RCT_PLAYER_HUMAN] += val;
+					sd->addrace[RCT_PLAYER_DORAM] += val;
+				}
+				else if(sd->state.lr_flag == 1) {
+					sd->addrace_[RCT_PLAYER_HUMAN] += val;
+					sd->addrace_[RCT_PLAYER_DORAM] += val;
+				}
+				else if(sd->state.lr_flag == 2) {
+					sd->arrow_addrace[RCT_PLAYER_HUMAN] += val;
+					sd->arrow_addrace[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(!sd->state.lr_flag)
 			sd->addrace[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -1098,8 +1127,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_SUBRACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->subrace[RCT_DEMIHUMAN] += val;
+					sd->subrace[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->subrace[RCT_PLAYER_HUMAN] += val;
+					sd->subrace[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->subrace[type2] += val;
 		break;
@@ -1154,8 +1196,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_MAGIC_ADDRACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->magic_addrace[RCT_DEMIHUMAN] += val;
+					sd->magic_addrace[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->magic_addrace[RCT_PLAYER_HUMAN] += val;
+					sd->magic_addrace[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->magic_addrace[type2] += val;
 		break;
@@ -1178,8 +1233,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->magic_addeff[type2] += val;
 		break;
 	case SP_MAGIC_SUBRACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->magic_subrace[RCT_DEMIHUMAN] += val;
+					sd->magic_subrace[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->magic_subrace[RCT_PLAYER_HUMAN] += val;
+					sd->magic_subrace[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->magic_subrace[type2] += val;
 		break;
@@ -1303,8 +1371,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->weapon_coma_ele[type2] += val;
 		break;
 	case SP_WEAPON_COMA_RACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->weapon_coma_race[RCT_DEMIHUMAN] += val;
+					sd->weapon_coma_race[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->weapon_coma_race[RCT_PLAYER_HUMAN] += val;
+					sd->weapon_coma_race[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_race[type2] += val;
 		break;
@@ -1315,8 +1396,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->weapon_coma_ele2[type2] += val;
 		break;
 	case SP_WEAPON_COMA_RACE2:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->weapon_coma_race2[RCT_DEMIHUMAN] += val;
+					sd->weapon_coma_race2[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->weapon_coma_race2[RCT_PLAYER_HUMAN] += val;
+					sd->weapon_coma_race2[RCT_PLAYER_DORAM] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->weapon_coma_race2[type2] += val;
 		break;
@@ -1637,8 +1731,29 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_def_ele_[type2] += val;
 		break;
 	case SP_IGNORE_DEF_RACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(!sd->state.lr_flag) {
+					sd->ignore_def_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_def_race[RCT_PLAYER_HUMAN] += val;
+				}
+				else if(sd->state.lr_flag == 1) {
+					sd->ignore_def_race_[RCT_DEMIHUMAN] += val;
+					sd->ignore_def_race_[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(!sd->state.lr_flag) {
+					sd->ignore_def_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_def_race[RCT_PLAYER_HUMAN] += val;
+				}
+				else if(sd->state.lr_flag == 1) {
+					sd->ignore_def_race_[RCT_DEMIHUMAN] += val;
+					sd->ignore_def_race_[RCT_PLAYER_HUMAN] += val;
+				}
+			}
 			break;
+		}
 		if(!sd->state.lr_flag)
 			sd->ignore_def_race[type2] += val;
 		else if(sd->state.lr_flag == 1)
@@ -1659,8 +1774,21 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 			sd->ignore_mdef_ele[type2] += val;
 		break;
 	case SP_IGNORE_MDEF_RACE:
-		if(type2 < 0 || type2 >= RCT_MAX)
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_mdef_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_mdef_race[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_mdef_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_mdef_race[RCT_PLAYER_HUMAN] += val;
+				}
+			}
 			break;
+		}
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_race[type2] += val;
 		break;

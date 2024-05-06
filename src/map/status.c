@@ -422,7 +422,10 @@ L_RECALC:
 	pdef_ele  = ELE_NEUTRAL;
 	refinedef = 0;
 	sd->view_class = sd->status.class_;
-	sd->race = RCT_HUMAN;
+	if(pc_isdoram(sd))
+		sd->race = RCT_PLAYER_DORAM;
+	else
+		sd->race = RCT_PLAYER_HUMAN;
 	sd->ranker_weapon_bonus  = 0;
 	sd->ranker_weapon_bonus_ = 0;
 	sd->special_state.infinite_tigereye = 0;
@@ -1888,6 +1891,15 @@ L_RECALC:
 		sd->addrace[RCT_DRAGON]  += skill;
 		sd->addrace_[RCT_DRAGON] += skill;
 		sd->subrace[RCT_DRAGON]  += skill;
+	}
+	// Ží‘°Ý’è
+	if(pc_isdoram(sd)) {
+		sd->critical_race[RCT_DEMIHUMAN] += 20;
+		sd->subrace[RCT_DEMIHUMAN] -= 10;
+	}
+	else {
+		sd->addrace[RCT_PLAYER_DORAM]  += 10;
+		sd->addrace_[RCT_PLAYER_DORAM] += 10;
 	}
 	// Fleeã¸
 	if((skill = pc_checkskill(sd,TF_MISS)) > 0) {	// ‰ñ”ð—¦‘‰Á
@@ -6509,7 +6521,7 @@ int status_get_race(struct block_list *bl)
 		if(sc->data[SC_RACEDEVIL].timer != -1)	// ˆ«–‚
 			race = RCT_DEMON;
 		if(sc->data[SC_RACEHUMAN].timer != -1)	// lŠÔ
-			race = RCT_HUMAN;
+			race = RCT_DEMIHUMAN;
 		if(sc->data[SC_RACEANGEL].timer != -1)	// “VŽg
 			race = RCT_ANGEL;
 		if(sc->data[SC_RACEDRAGON].timer != -1)	// —³

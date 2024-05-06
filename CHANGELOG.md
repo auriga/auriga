@@ -1,4 +1,20 @@
 ----------------------------------------
+//1547 [2024/05/07] by refis
+
+・種族設定関係の修正変更
+　プレイヤーの種族をRCT_HUMANからRCT_PLAYER_HUMANとRCT_PLAYER_DORAMに変更 (map.h, status.c)
+　人間形モンスターをRCT_HUMANからRCT_DEMIHUMANに変更 (battle.c, map.h, pc.c, skill.c, status.c)
+	-> itembonus互換性維持のためRCT_HUMANとRCT_PLAYERが扱えるよう処理を追加 (bonus.c)
+	   RCT_HUMANはRCT_DEMIHUMAN及びRCT_PLAYER_HUMANの両方
+	   RCT_PLAYERはRCT_PLAYER_HUMAN及びRCT_PLAYER_DORAMの両方
+	-> bCriticalRaceは該当効果がないためRCT_DEMIHUMANをRCT_PLAYER_HUMANに適用させる (battle.c, item_db.txt)
+　プレイヤーの種族特性をstatus.c側で管理するよう修正 (battle.c, status.c)
+
+・上記に係るテキスト修正 (const.txt, item_bonus.txt)
+
+・bWeaponComaRace2、bAddRace、bAddSizeが動作しない場合がある不具合を修正 (battle.c)
+
+----------------------------------------
 //1546 [2024/05/05] by refis
 
 ・笛吹きハンター！クエスト実装
