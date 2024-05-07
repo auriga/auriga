@@ -2044,7 +2044,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(src_sd) {
 			if(target_sd && !pc_isdoram(target_sd))
 				cri += src_sd->critical_race[RCT_DEMIHUMAN];
-			else
+			else if(t_race < RCT_ALL)
 				cri += src_sd->critical_race[t_race];
 			if(src_sd->state.arrow_atk)
 				cri += src_sd->arrow_cri;
@@ -2063,7 +2063,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(src_sd) {
 			if(target_sd && !pc_isdoram(target_sd))
 				cri += cri * (100 + src_sd->critical_race_rate[RCT_DEMIHUMAN]) / 100;
-			else
+			else if(t_race < RCT_ALL)
 				cri += cri * (100 + src_sd->critical_race_rate[t_race]) / 100;
 			if(cri < 1) cri = 1;
 		}
