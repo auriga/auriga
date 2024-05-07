@@ -1885,12 +1885,11 @@ L_RECALC:
 		sd->nhealhp = sd->nhealsp = 0;
 	}
 
-	// 種族耐性（これでいいの？ ディバインプロテクションと同じ処理がいるかも）
+	// 種族耐性
 	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ドラゴノロジー
 		skill = skill*4;
-		sd->addrace[RCT_DRAGON]  += skill;
-		sd->addrace_[RCT_DRAGON] += skill;
 		sd->subrace[RCT_DRAGON]  += skill;
+		sd->magic_subrace[RCT_DRAGON]  += skill;
 	}
 	// 種族設定
 	if(pc_isdoram(sd)) {

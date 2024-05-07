@@ -2060,6 +2060,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cri = cri * battle_config.enemy_critical_rate / 100;
 			if(cri < 1) cri = 1;
 		}
+		if(src_sd) {
+			if(target_sd && !pc_isdoram(target_sd))
+				cri += cri * (100 + src_sd->critical_race_rate[RCT_DEMIHUMAN]) / 100;
+			else
+				cri += cri * (100 + src_sd->critical_race_rate[t_race]) / 100;
+			if(cri < 1) cri = 1;
+		}
 		if(t_sc && t_sc->data[SC_SLEEP].timer != -1)
 			cri <<= 1;		// 睡眠中はクリティカルが倍に
 		if(sc && sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val3 >= 0)	// カモフラージュ
@@ -3060,6 +3067,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(sc->data[SC_HEAT_BARREL].timer != -1)
 				add_rate += sc->data[SC_HEAT_BARREL].val3;
 		}
+		// ドラゴノロジー
+		if(src_sd && t_race == RCT_DRAGON && (skill = pc_checkskill(src_sd,SA_DRAGONOLOGY)) > 0)
+			add_rate += skill*4;
+
 #ifndef PRE_RENEWAL
 		switch( skill_num ) {
 		case NJ_SYURIKEN:	// 手裏剣投げ
@@ -6235,6 +6246,9 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		}
 #endif
 	}
+	// ドラゴノロジー
+	if(sd && t_race == RCT_DRAGON && pc_checkskill(sd,SA_DRAGONOLOGY) > 0)
+		add_rate += pc_checkskill(sd,SA_DRAGONOLOGY)*2;
 
 	/* ３．基本ダメージ計算(スキルごとに処理) */
 	switch(skill_num)
