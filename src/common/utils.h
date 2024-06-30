@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-
+#include <stdbool.h>
 
 // =====================
 // Platform
@@ -287,15 +287,6 @@ typedef int32  intptr;
 #define UINT2PTR(x) ((void *)(uintptr)(x))
 #define PTR2INT(x)  ((int)(intptr)(x))
 #define PTR2UINT(x) ((unsigned int)(uintptr)(x))
-
-// =====================
-// ò_óùå^
-// ---------------------
-#ifndef __cplusplus
-	typedef char bool;
-	#define false	(1 == 0)
-	#define true	(1 == 1)
-#endif
 
 // =====================
 // utils.c

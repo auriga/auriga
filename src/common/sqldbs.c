@@ -468,7 +468,7 @@ static void sqldbs_stmt_bind_datatype(MYSQL_BIND *bind, int buffer_type, void *b
 	bind->buffer = buffer;
 	bind->buffer_length = (unsigned long)buffer_length;
 	bind->length = length;
-	bind->is_null = (my_bool *)is_null;
+	bind->is_null = (bool *)is_null;
 
 	return;
 }
