@@ -232,7 +232,7 @@ prt_mz01_q.gat,99,24,5	script	イレーネ#1	10337,10,10,{
 	end;
 OnTouch:
 	if(IL_MAZE_QUE == 1)
-		unittalk "イレーネ : きゃあ！　すみません。わたくし幽霊じゃありません。モンスターでもないです!!";
+		unittalk "イレーネ : きゃあ！　すみません。わたくし幽霊じゃありません。モンスターでもないです!!",1;
 	end;
 OnInit:
 	cloakonnpc;
@@ -614,7 +614,7 @@ prontera.gat,212,320,3	script	エスメラルダ#2	677,6,6,{
 	end;
 OnTouch:
 	if(IL_MAZE_QUE == 2)
-		unittalk "エスメラルダ : 光の導きを受ける、私たちプロンテラ司祭ギルドは、新しいギルド員を募集中です。";
+		unittalk "エスメラルダ : 光の導きを受ける、私たちプロンテラ司祭ギルドは、新しいギルド員を募集中です。",1;
 	end;
 OnInit:
 	cloakonnpc;
@@ -958,7 +958,7 @@ prt_fild01.gat,141,367,3	script	エスメラルダ#5	677,5,5,{
 	}
 OnTouch:
 	if(IL_MAZE_QUE == 7)
-		unittalk "エスメラルダ : あの子たちを完全に復活させるのはいつになることやら……。";
+		unittalk "エスメラルダ : あの子たちを完全に復活させるのはいつになることやら……。",1;
 	end;
 OnInit:
 	cloakonnpc;
@@ -1403,13 +1403,13 @@ prt_mz03_i.gat,176,5,0		warp	ilmazewarp5160		1,1,prt_mz03_i.gat,111,95	/*To No.3
 prt_mz03_i.gat,176,34,0		warp	ilmazewarp5161		1,1,prt_mz03_i.gat,88,56	/*To No.3-18*/
 prt_mz03_i.gat,194,15,0		warp	ilmazewarp5162		1,1,prt_mz03_i.gat,8,58		/*To No.3-16*/
 
-prt_mz03_i.gat,0,0,0,0	monster	混沌のバフォメット.Jr	20525,25,5000,0,#IllLabyrinth::OnKilled1
-prt_mz03_i.gat,0,0,0,0	monster	混沌のハンターフライ	20527,15,5000,0,#IllLabyrinth::OnKilled2
-prt_mz03_i.gat,0,0,0,0	monster	混沌のキラーマンティス	20530,10,5000,0,#IllLabyrinth::OnKilled2
-prt_mz03_i.gat,0,0,0,0	monster	混沌のマンティス		20528,10,5000,0,#IllLabyrinth::OnKilled3
-prt_mz03_i.gat,0,0,0,0	monster	混沌のポポリン			20531,25,5000,0,#IllLabyrinth::OnKilled3
-prt_mz03_i.gat,0,0,0,0	monster	混沌のサイドワインダー	20526,25,5000,0,#IllLabyrinth::OnKilled4
-prt_mz03_i.gat,0,0,0,0	monster	混沌のステムワーム		20532,25,5000,0,#IllLabyrinth::OnKilled4
+prt_mz03_i.gat,0,0,0,0	monster	混沌のバフォメット.Jr	20525,25,60000,0,#IllLabyrinth::OnKilled1
+prt_mz03_i.gat,0,0,0,0	monster	混沌のハンターフライ	20527,15,60000,0,#IllLabyrinth::OnKilled2
+prt_mz03_i.gat,0,0,0,0	monster	混沌のキラーマンティス	20530,10,60000,0,#IllLabyrinth::OnKilled2
+prt_mz03_i.gat,0,0,0,0	monster	混沌のマンティス		20528,10,60000,0,#IllLabyrinth::OnKilled3
+prt_mz03_i.gat,0,0,0,0	monster	混沌のポポリン			20531,25,60000,0,#IllLabyrinth::OnKilled3
+prt_mz03_i.gat,0,0,0,0	monster	混沌のサイドワインダー	20526,25,60000,0,#IllLabyrinth::OnKilled4
+prt_mz03_i.gat,0,0,0,0	monster	混沌のステムワーム		20532,25,60000,0,#IllLabyrinth::OnKilled4
 
 prt_mz03_i.gat,0,0,0	script	#IllLabyrinth	-1,{
 OnKilledAndrea:  callsub L_BossKill, 0;
@@ -1444,7 +1444,7 @@ L_BossSummon:
 	}
 	end;
 OnInit:
-	setarray 'cntTbl,3,3,4,6;
+	setarray 'cntTbl,30,30,45,60;
 	setarray 'LabelTbl$,"Andrea","Anes","Silvano","Cecilia";
 	end;
 }

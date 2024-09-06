@@ -1144,9 +1144,6 @@ OnTouch:
 		end;
 	}
 	end;
-OnInit:
-	waitingroom "笛吹きハンター！",0;
-	end;
 }
 
 hugel.gat,224,225,4	script	アリゲーター	1271,{}
