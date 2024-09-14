@@ -294,10 +294,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 		}
 		if(sd->sc.data[SC_WARM].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
-		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1)
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_USER].val4),sd->bl.m,dx,dy);
-		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_NEUTRALBARRIER_MASTER].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_MASTER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_STEALTHFIELD_MASTER].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_MASTER].val4),sd->bl.m,dx,dy);
 		if(sd->sc.data[SC_BANDING].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
 	}
@@ -793,12 +793,12 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_WARM].val4),sd->bl.m,dx,dy);
 		}
 		// ニュートラルバリアーの位置変更
-		if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1) {
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_USER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_NEUTRALBARRIER_MASTER].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_NEUTRALBARRIER_MASTER].val4),sd->bl.m,dx,dy);
 		}
 		// ステルスフィールドの位置変更
-		if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1) {
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_USER].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_STEALTHFIELD_MASTER].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_MASTER].val4),sd->bl.m,dx,dy);
 		}
 		// バンディングの位置変更
 		if(sd->sc.data[SC_BANDING].timer != -1) {
@@ -1148,8 +1148,8 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		}
 		break;
 	case GC_WEAPONCRUSH:	/* ウェポンクラッシュ */
-		if(sc && sc->data[SC_WEAPONBLOCKING2].timer != -1)
-			target_id = sc->data[SC_WEAPONBLOCKING2].val2;
+		if(sc && sc->data[SC_WEAPONBLOCKING_POSTDELAY].timer != -1)
+			target_id = sc->data[SC_WEAPONBLOCKING_POSTDELAY].val2;
 		break;
 	case RL_QD_SHOT:		/* クイックドローショット */
 		if(sc && sc->data[SC_QD_SHOT_READY].timer != -1)
@@ -1301,6 +1301,10 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	case ST_CHASEWALK:	/* チェイスウォーク */
 		if(sc && sc->data[SC_CHASEWALK].timer != -1)
 			casttime = 0;
+		break;
+	case RA_WUGDASH:		/* ウォーグダッシュ */
+		if(sc && sc->data[SC_WUGDASH].timer != -1)
+			unit_stop_walking(src,1);
 		break;
 	case SR_TIGERCANNON:	/* 號砲 */
 	case SR_GATEOFHELL:		/* 羅刹破凰撃 */
@@ -1754,7 +1758,7 @@ int unit_can_move(struct block_list *bl)
 		    (sc->data[SC_GRAVITATION_USER].timer != -1 && battle_config.player_gravitation_type < 2) ||	//グラビテーションフィールド使用者
 		    (battle_config.hermode_no_walking && sc->data[SC_DANCING].timer != -1 && sc->data[SC_DANCING].val1 == CG_HERMODE) ||
 		    (sc->data[SC_FEAR].timer != -1 && sc->data[SC_FEAR].val3 > 0) ||	// 恐怖状態（2秒間）
-		    sc->data[SC_WEAPONBLOCKING2].timer != -1 ||	// ウェポンブロッキング（ブロック中）
+		    sc->data[SC_WEAPONBLOCKING_POSTDELAY].timer != -1 ||	// ウェポンブロッキング（ブロック中）
 		    sc->data[SC_ELECTRICSHOCKER].timer != -1 ||	// エレクトリックショッカー
 		    sc->data[SC_WUGBITE].timer != -1 ||		// ウォーグバイト
 		    (sc->data[SC_CAMOUFLAGE].timer != -1 && sc->data[SC_CAMOUFLAGE].val1 < 3) ||	// カモフラージュ（Lv3未満）

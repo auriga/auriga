@@ -6593,15 +6593,15 @@
 12722,Pyrexia,パイクレシア,2,2,,20,,,,,2074075135,2,,,,,,{ sc_start SC_PYREXIA,300000,0; },{}
 12723,Magic_Mushroom,マジックマッシュルーム,2,2,,20,,,,,2074075135,2,,,,,,{ sc_start SC_MAGICMUSHROOM,300000,0; },{}
 12724,Venom_Bleed,ベナムブリード,2,2,,20,,,,,2074075135,2,,,,,,{ sc_start SC_VENOMBLEED,300000,0; },{}
-12725,Nosiege_Runestone,ナウシズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_REFRESH",1,""; },{}
-12726,Rhydo_Runestone,ライゾルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_CRUSHSTRIKE",1,""; },{}
-12727,Verkana_Runestone,ベルカナルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_MILLENNIUMSHIELD",1,""; },{}
-12728,Isia_Runestone,イスルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_VITALITYACTIVATION",1,""; },{}
-12729,Asir_Runestone,エイシルルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_FIGHTINGSPIRIT",1,""; },{}
-12730,Urj_Runestone,ウルズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_ABUNDANCE",1,""; },{}
-12731,Turisus_Runestone,スリサズルーンストーン,2,0,,20,,,,,2074075135,2,,,,,,{ itemskill "RK_GIANTGROWTH",1,""; },{}
-12732,Pertz_Runestone,ペオースルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_STORMBLAST",1,""; },{}
-12733,Hagalas_Runestone,ハガラズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_STONEHARDSKIN",1,""; },{}
+12725,Nosiege_Runestone,ナウシズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_REFRESH",1,"",1; },{}
+12726,Rhydo_Runestone,ライゾルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_CRUSHSTRIKE",1,"",1; },{}
+12727,Verkana_Runestone,ベルカナルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_MILLENNIUMSHIELD",1,"",1; },{}
+12728,Isia_Runestone,イスルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_VITALITYACTIVATION",1,"",1; },{}
+12729,Asir_Runestone,エイシルルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_FIGHTINGSPIRIT",1,"",1; },{}
+12730,Urj_Runestone,ウルズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_ABUNDANCE",1,"",1; },{}
+12731,Turisus_Runestone,スリサズルーンストーン,2,0,,20,,,,,2074075135,2,,,,,,{ itemskill "RK_GIANTGROWTH",1,"",1; },{}
+12732,Pertz_Runestone,ペオースルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_STORMBLAST",1,"",1; },{}
+12733,Hagalas_Runestone,ハガラズルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_STONEHARDSKIN",1,"",1; },{}
 12734,Quality_Rough_Runestone,高級なルーン原石,2,2,,100,,,,,2074075135,2,,,,,,{ making 1004,500; },{}
 12735,Ancient_Rough_Runestone,古代のルーン原石,2,2,,100,,,,,2074075135,2,,,,,,{ making 1004,1100; },{}
 12736,Mystic_Rough_Runestone,神秘のルーン原石,2,2,,100,,,,,2074075135,2,,,,,,{ making 1004,1400; },{}
@@ -11401,7 +11401,7 @@
 22537,Prize_of_Hero,勇者の戦利品,2,0,,100,,,,,2074075135,2,,,,,,{},{}
 22538,Unknown_Item,[服装] フェイヨン礼服,3,,,100,,,,,,,,,,,,{},{}
 
-22540,Lux_Anima_Runestone,ラクスアニマルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_LUXANIMA",1,""; },{}
+22540,Lux_Anima_Runestone,ラクスアニマルーンストーン,2,0,,100,,,,,2074075135,2,,,,,,{ itemskill "RK_LUXANIMA",1,"",1; },{}
 
 22566,Frost_Crystal,永久霜,2,10,,0,,,,,2074075135,2,,,,,,{ sc_start SC_CHILL,10000,0; },{}
 22567,Squad_Prize,魔神モロク遠征褒賞箱,2,5000,,100,,,,,2074075135,2,,,,,,{},{}

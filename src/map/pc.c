@@ -3274,11 +3274,11 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	if(sd->sc.data[SC_WARM].timer != -1)
 		status_change_end(&sd->bl, SC_WARM, -1);
 	// ニュートラルバリアー削除
-	if(sd->sc.data[SC_NEUTRALBARRIER_USER].timer != -1)
-		status_change_end(&sd->bl, SC_NEUTRALBARRIER_USER, -1);
+	if(sd->sc.data[SC_NEUTRALBARRIER_MASTER].timer != -1)
+		status_change_end(&sd->bl, SC_NEUTRALBARRIER_MASTER, -1);
 	// ステルスフィールド削除
-	if(sd->sc.data[SC_STEALTHFIELD_USER].timer != -1)
-		status_change_end(&sd->bl, SC_STEALTHFIELD_USER, -1);
+	if(sd->sc.data[SC_STEALTHFIELD_MASTER].timer != -1)
+		status_change_end(&sd->bl, SC_STEALTHFIELD_MASTER, -1);
 	// バンディング削除
 	if(sd->sc.data[SC_BANDING].timer != -1)
 		status_change_end(&sd->bl, SC_BANDING, -1);
@@ -3643,7 +3643,6 @@ int pc_runtodir(struct map_session_data *sd)
 			if(pc_checkskill(sd,RA_WUGSTRIKE))
 				skill_castend_damage_id(&sd->bl,&sd->bl,RA_WUGDASH,sd->sc.data[SC_WUGDASH].val1,gettick(),0);
 			status_change_end(&sd->bl,SC_WUGDASH,-1);
-			pc_setdir(sd, sd->dir, sd->head_dir);
 		}
 	} else {
 		unit_walktoxy( &sd->bl, to_x, to_y);
@@ -3767,10 +3766,6 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		BS_ADRENALINE,
 		BS_ADRENALINE2,
 		GS_GATLINGFEVER,
-		RK_ENCHANTBLADE,
-		GC_POISONINGWEAPON,
-		AB_EXPIATIO,
-		RA_FEARBREEZE,
 	};
 
 	nullpo_retr(0, sd);
@@ -3814,6 +3809,15 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		status_change_end(&sd->bl,SC_OVERTHRUSTMAX,-1);
 	}
 #endif
+	if( sd->sc.data[SC_CRUSHSTRIKE].timer != -1) {	// クラッシュストライク
+		status_change_end(&sd->bl,SC_CRUSHSTRIKE,-1);
+	}
+	if( sd->sc.data[SC_POISONINGWEAPON].timer != -1) {	// ポイズニングウェポン
+		status_change_end(&sd->bl,SC_POISONINGWEAPON,-1);
+	}
+	if( sd->sc.data[SC_FEARBREEZE].timer != -1) {	// フィアーブリーズ
+		status_change_end(&sd->bl,SC_FEARBREEZE,-1);
+	}
 	if( sd->sc.data[SC_HEAT_BARREL].timer != -1) {	// ヒートバレル
 		status_change_end(&sd->bl,SC_HEAT_BARREL,-1);
 	}
@@ -6968,7 +6972,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			else
 				hp = hp * battle_config.ranker_potion_bonus / 100;
 		}
-		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
+		if(sd->sc.data[SC_VITALITYACTIVATION].timer != -1)	// バイタリティアクティベーション
 			hp = hp * 150 / 100;
 		if(sd->sc.data[SC_CRITICALWOUND].timer != -1)
 			hp = hp * (100 - sd->sc.data[SC_CRITICALWOUND].val2) / 100;
@@ -6998,7 +7002,7 @@ int pc_itemheal(struct map_session_data *sd,int hp,int sp)
 			else
 				sp = sp * battle_config.ranker_potion_bonus / 100;
 		}
-		if(sd->sc.data[SC_ISHA].timer != -1)		// バイタリティアクティベーション
+		if(sd->sc.data[SC_VITALITYACTIVATION].timer != -1)		// バイタリティアクティベーション
 			sp = sp * 50 / 100;
 	}
 	if(hp+sd->status.hp > sd->status.max_hp)
@@ -9602,14 +9606,14 @@ static int pc_natural_heal_sub(struct map_session_data *sd,va_list ap)
 		if( sd->sc.data[SC_MAXIMIZEPOWER].timer == -1 &&	// マキシマイズパワー状態ではSPが回復しない
 		    sd->sc.data[SC_EXTREMITYFIST].timer == -1 &&	// 阿修羅状態ではSPが回復しない
 		    sd->sc.data[SC_BERSERK].timer == -1 &&		// バーサーク状態ではSPが回復しない
-		    sd->sc.data[SC_ISHA].timer == -1 &&		// バイタリティアクティベーション状態ではSPが回復しない
+		    sd->sc.data[SC_VITALITYACTIVATION].timer == -1 &&	// バイタリティアクティベーション状態ではSPが回復しない
 		    sd->sc.data[SC_WEAPONBLOCKING].timer == -1 &&		// ウェポンブロッキング状態ではSPが回復しない
 		    sd->sc.data[SC_TOXIN].timer == -1 &&	// トキシン状態ではSPが回復しない
 		    sd->sc.data[SC_OBLIVIONCURSE].timer == -1 &&		// オブリビオンカース状態ではSPが回復しない
 		    sd->sc.data[SC_ELECTRICSHOCKER].timer == -1 &&	// エレクトリックショッカー状態ではSPが回復しない
 		    sd->sc.data[SC_CAMOUFLAGE].timer == -1 &&		// カモフラージュ状態ではSPが回復しない
 		    sd->sc.data[SC_MAGNETICFIELD].timer == -1 &&	// マグネティックフィールド状態ではSPが回復しない
-		    sd->sc.data[SC_STEALTHFIELD_USER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
+		    sd->sc.data[SC_STEALTHFIELD_MASTER].timer == -1 &&	// ステルスフィールド(使用者)はSPが回復しない
 		    sd->sc.data[SC__REPRODUCE].timer == -1 &&	// リプロデュース状態はSPが回復しない
 		    sd->sc.data[SC__SHADOWFORM].timer == -1 &&	// シャドウフォーム状態はSPが回復しない
 		    sd->sc.data[SC__INVISIBILITY].timer == -1 &&	// インビジビリティ状態はSPが回復しない

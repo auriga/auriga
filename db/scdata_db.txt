@@ -358,22 +358,22 @@
 386,SC_REBIRTH,0,0,0,0			// リバース
 387,SC_HELLPOWER,1,0,0,1			// ヘルパワー
 388,SC_ENCHANTBLADE,0,513,0,0		// エンチャントブレイド
-389,SC_BERKANA,0,257,0,0			// ミレニアムシールド
-390,SC_NAUTHIZ,0,1,0,0			// リフレッシュ
-391,SC_TURISUSS,0,513,0,0			// ジャイアントグロース
-392,SC_HAGALAZ,0,1,0,0			// ストーンハードスキン
-393,SC_ISHA,0,513,0,0			// バイタリティアクティベーション
-394,SC_EISIR,0,1,0,0			// ファイティングスピリット
-395,SC_URUZ,0,1,0,0			// アバンダンス
+389,SC_MILLENNIUMSHIELD,0,257,0,0	// ミレニアムシールド
+390,SC_REFRESH,0,1,0,0			// リフレッシュ
+391,SC_GIANTGROWTH,0,513,0,0		// ジャイアントグロース
+392,SC_STONEHARDSKIN,0,1,0,0	// ストーンハードスキン
+393,SC_VITALITYACTIVATION,0,513,0,0		// バイタリティアクティベーション
+394,SC_FIGHTINGSPIRIT,0,1,0,0			// ファイティングスピリット
+395,SC_ABUNDANCE,0,1,0,0			// アバンダンス
 396,SC_DEATHBOUND,0,1,0,0			// デスバウンド
 397,SC_FEAR,0,1,1,1			// 恐怖
 398,SC_VENOMIMPRESS,0,1,0,1		// ベナムインプレス
 399,SC_POISONINGWEAPON,0,1,0,0		// ポイズニングウェポン
 400,SC_WEAPONBLOCKING,0,1,0,0		// ウェポンブロッキング
-401,SC_WEAPONBLOCKING2,0,1,0,0		// ウェポンブロッキング（ブロック後）
+401,SC_WEAPONBLOCKING_POSTDELAY,0,1,0,0		// ウェポンブロッキング（ブロック後）
 402,SC_CLOAKINGEXCEED,0,1,0,0		// クローキングエクシード
 403,SC_HALLUCINATIONWALK,0,1,0,0		// ハルシネーションウォーク
-404,SC_HALLUCINATIONWALK2,0,1,0,0		// ハルシネーションウォーク（ペナルティ）
+404,SC_HALLUCINATIONWALK_POSTDELAY,0,1,0,0		// ハルシネーションウォーク（ペナルティ）
 405,SC_ROLLINGCUTTER,0,1,0,0		// ローリングカッター
 406,SC_TOXIN,0,1,1,1			// トキシン
 407,SC_PARALIZE,0,1,1,1			// パラライズ
@@ -410,14 +410,14 @@
 438,SC_CAMOUFLAGE,0,1,0,0			// カモフラージュ
 439,SC_ACCELERATION,0,1,0,0		// アクセラレーション
 440,SC_HOVERING,0,1,0,0			// ホバーリング
-441,SC_OVERHEAT,0,1,0,0			// オーバーヒート
+441,SC_OVERHEAT,1,0,0,0			// オーバーヒート
 442,SC_SHAPESHIFT,0,1,0,0			// シェイプシフト
 443,SC_INFRAREDSCAN,0,1,0,0		// インフラレッドスキャン
 444,SC_ANALYZE,0,1,0,1			// アナライズ
 445,SC_MAGNETICFIELD,0,1,0,0		// マグネティックフィールド
-446,SC_NEUTRALBARRIER_USER,0,1,0,0	// ニュートラルバリアー(使用者)
+446,SC_NEUTRALBARRIER_MASTER,0,1,0,0	// ニュートラルバリアー(使用者)
 447,SC_NEUTRALBARRIER,0,1,0,0		// ニュートラルバリアー
-448,SC_STEALTHFIELD_USER,0,1,0,0		// ステルスフィールド(使用者)
+448,SC_STEALTHFIELD_MASTER,0,1,0,0		// ステルスフィールド(使用者)
 449,SC_STEALTHFIELD,0,1,0,0		// ステルスフィールド
 450,SC_MANU_ATK,0,1,0,0			// マヌクフィールドMOB(物理ダメージ上昇)
 451,SC_MANU_DEF,0,1,0,0			// マヌクフィールドMOB(ダメージ減少)
@@ -697,7 +697,10 @@
 725,SC_USE_SKILL_SP_SHA,0,1,0,0			// エスハ
 726,SC_SP_SHA,0,1,0,0			// エスハ
 727,SC_SOULCURSE,0,1,0,0			// 死霊憑依
-
+728,SC_CRUSHSTRIKE,0,515,0,0		// クラッシュストライク
+729,SC_WEAPONBLOCK_ON,0,1,0,0		// カウンタースラッシュ
+730,SC_ADORAMUS,0,1,0,0			// アドラムス
+731,SC_OVERHEAT_LIMITPOINT,1,0,0,0		// 魔導ギア加熱値
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

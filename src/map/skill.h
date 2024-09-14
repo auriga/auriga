@@ -32,6 +32,7 @@
 #define MAX_SKILL_RAND_DB		5
 #define MAX_SKILL_RAND_ENTRY	100
 #define MAX_SKILL_RAND_RATE		1000
+#define MAX_SKILL_DB_ITEM	10
 
 struct skill_timerskill {
 	int timer;
@@ -56,7 +57,8 @@ struct skill_db {
 	int hp[MAX_SKILL_LEVEL],sp[MAX_SKILL_LEVEL],hp_rate[MAX_SKILL_LEVEL],sp_rate[MAX_SKILL_LEVEL],zeny[MAX_SKILL_LEVEL];
 	unsigned int weapon;
 	int state,spiritball[MAX_SKILL_LEVEL],coin[MAX_SKILL_LEVEL],arrow_cost[MAX_SKILL_LEVEL],arrow_type;
-	int itemid[10],amount[10];
+	int itemid[MAX_SKILL_DB_ITEM],amount[MAX_SKILL_DB_ITEM];
+	int lv_itemid[MAX_SKILL_LEVEL],lv_amount[MAX_SKILL_LEVEL];
 	int unit_id[2];
 	int unit_layout_type[MAX_SKILL_LEVEL];
 	int unit_range[MAX_SKILL_LEVEL];

@@ -1,4 +1,431 @@
 ----------------------------------------
+//1552 [2024/09/15] by Blaze
+
+・スキル要求DBにスキルレベル毎に要求アイテムを指定できるlist_lv_itemid,list_lv_amountを追加
+（db/skill_require_db.txt, db/pre/skill_require_db_pre.txt, skill.c, skill.h）
+
+・以下のアイテム消費スキルの処理を最適化（db/skill_require_db.txt, skill.c）
+　ポーションピッチャー、スリムポーションピッチャー、植物栽培、
+　シェイプシフト、リペア、サモンアグニ、サモンアクア、サモンベントス、サモンテラ
+　ファイアーインシグニア、ウォーターインシグニア、ウィンドインシグニア、アースインシグニア、
+　ファイアーエクスパンション、撒菱
+
+・スキル使用条件のうち、素手以外を指定していたスキル（バッシュなど）に両手杖の判定が入っていなかったのを修正（db/skill_require_db.txt）
+
+・MAX_STATUSCHANGEを730->800に引き上げ（mmo.h）
+
+・（PRE_RENEWAL無効時）ブラックスミススキル「ヒルトバインディング」の追加ダメージ効果を実装（battle.c）
+
+・弾丸、苦無、キャノンボールを必要とするスキルで装備していない場合、専用のスキル失敗メッセージを表示するように（skill.c）
+
+・以下の3-1次職スキルを変更・修正
+　[ルーンナイト]エンチャントブレイド
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・素手を含む全ての武器で使用可能に修正（db/skill_require_db.txt）
+　・武器付け替えで効果が切れないように変更（pc.c）
+　
+　[ルーンナイト]ソニックウェーブ
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・単発から3Hit表示に変更（db/skill_db.txt）
+　・ダメージ計算を修正、命中補正を追加（battle.c）
+　
+　[ルーンナイト]デスバウンド
+　・反射ダメージと自傷ダメージの計算を修正（battle.c）
+　・反射時のノックバック追加（battle.c）
+　・待ち受けの時間がLv毎に変動していたのを2秒固定に修正（skill_cast_db.txt）
+　・消費SP変更（db/skill_require_db.txt）
+　
+　[ルーンナイト]ハンドレッドスピア
+　・ダメージ計算のレベル補正が正しく乗っていなかったのを修正（battle.c）
+　・ノックバック効果を追加（battle.c）
+　・射程距離を1->5に修正（db/skill_db.txt）
+　・再使用時間を2秒->1秒に修正（db/skill_cast_db.txt）
+　
+　[ルーンナイト]ウィンドカッター
+　・詠唱中断されないように修正（db/skill_db.txt）
+　
+　[ルーンナイト]ドラゴントレーニング
+　・ドラゴン騎乗時、槍修練の効果がドラゴントレーニングLv5ではなくLv1以上で効果アップするように修正（battle.c）
+　・ドラゴン騎乗時、所持量増加の効果がドラゴントレーニング未習得の場合でも増加していたのを修正（status.c）
+　・ドラゴン騎乗時、ASPDの減少率を修正（status.c）
+　
+　[ルーンナイト]ファイアードラゴンブレス
+　[ルーンナイト]ウォータードラゴンブレス
+　・ダメージ計算式を修正（battle.c）
+　・状態異常の確率、持続時間を修正（skill.c、db/skill_cast_db.txt）
+　
+　[ルーンナイト]ドラゴンハウリング
+　・詠唱中断されないように修正（db/skill_db.txt）
+　
+　[ルーンナイト]ルーンストーン系スキル共通
+　・ルーンストーン使用時、ルーンマスタリー未習得の場合はスキル失敗するように変更（skill.c, db/item_db.txt, db/skill_require_db.txt）
+　・状態異常の名称を変更（status.c, status.h, skill.c, battle.c, clif.c, db/scdata_db.txt）
+　　SC_BERKANA -> SC_MILLENNIUMSHIELD
+　　SC_NAUTHIZ -> SC_REFRESH
+　　SC_TURISUSS -> SC_GIANTGROWTH
+　　SC_HAGALAZ -> SC_STONEHARDSKIN
+　　SC_ISHA -> SC_VITALITYACTIVATION
+　　SC_EISIR -> SC_FIGHTINGSPIRIT
+　　SC_URUZ -> SC_ABUNDANCE
+　・各スキル詠唱中断されないように修正（db/skill_db.txt）
+
+　[ルーンナイト]ミレニアムシールド
+　・永続効果だったのを3分まで持続するように変更（status.c, db/skill_cast_db.txt）
+　・ラクスアニマでミレニアムシールドをPTメンバーに移した後、エフェクトが残っていたのを修正（status.c）
+　
+　[ルーンナイト]クラッシュストライク
+　・対象指定から即時効果の状態付与スキルに変更（skill.c, battle.c, db/skill_db.txt, db/skill_cast_db.txt, db/scdata_db.txt）
+　
+　[ギロチンクロス]ベナムインプレス
+　・射程距離を5->10に修正（db/skill_db.txt）
+　
+　[ギロチンクロス]ポイズニングウェポン
+　・新毒付与時にメッセージ表示するように変更（skill.c）
+　・装備変更時に効果が切れるように修正（pc.c）
+　・状態中のアイコンがクローキングエクシードで表示されていたのを修正（status.h）
+　
+　[ギロチンクロス]ウェポンブロッキング
+　・ブロック状態の名称を変更　SC_WEAPONBLOCKING -> SC_WEAPONBLOCKING_POSTDELAY（status.c, status.h, skill.c, battle.c, unit.c, db/scdata_db.txt）
+　・ブロック状態を1.5秒->2秒に変更（db/skill_cast_db.txt）
+　・ブロック成功時に10秒間カウンタースラッシュ使用可の付与を実装（battle.c, skill.c, status.c, status.h, db/scdata_db.txt）
+　
+　[ギロチンクロス]カウンタースラッシュ
+　・MaxLvを5->10に拡張（skill.c, db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・ダメージ計算式を修正（battle.c）
+　・使用条件をブロック状態からカウンタースラッシュ使用可に変更（skill.c）
+　・使用時にブロック状態を解除しないように（skill.c）
+　
+　[ギロチンクロス]ウェポンクラッシュ
+　・ダメージ効果がなかったのを追加（skill.c, db/skill_db.txt）
+　・ストリップウェポン効果発生時の最適化（skill.c）
+　※成功時に「ストリップウェポン」とスキル発言するのは仕様です
+　
+　[ギロチンクロス]ポイズンスモーク
+　・スキル効果の配置上限を1に修正（db/skill_db.txt）
+　・新毒付与の基本確立を20%->50%に変更（skill.c）
+　
+　[ギロチンクロス]ハルシネーションウォーク
+　・ペナルティ状態の名称を変更　SC_HALLUCINATIONWALK2 ->SC_HALLUCINATIONWALK_POSTDELAY（status.c, status.h, skill.c, db/scdata_db.txt）
+　・ペナルティ状態の開始・終了時に移動速度再計算をするように修正（status.c）
+　
+　[ギロチンクロス]ローリングカッター
+　・Lv4以上の効果範囲を拡大（skill.c）
+　・回転カウンター状態が永続だったのを5秒で時間切れするように変更（status.c, db/skill_cast_db.txt）
+　
+　[ギロチンクロス]クロスリッパースラッシャー
+　・スキル使用条件にカタール装備になっていなかったのを修正（db/skill_require_db.txt）
+　・ダメージ計算式を修正（battle.c）
+　・射程距離を11固定->9～13のレベルで変動するように変更（db/skill_db.txt）
+　
+　[アークビショップ]ジュデックス
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・ダメージ計算式を修正（battle.c）
+　
+　[アークビショップ]アンシラ
+　・消費SPが現在SPの30%だったのを最大SPの30%消費するように修正（db/skill_require_db.txt）
+　
+　[アークビショップ]アドラムス
+　・速度減少状態を専用のアドラムス状態で付与するように変更（skill.c, status.c, status.h, db/scdata_db.txt）
+　・暗闇状態が個別に成功判定していたのをアドラムス状態の成功時に同時付与するように（skill.c）
+　・詠唱時間と効果時間を変更（db/skill_cast_db.txt）
+　
+　[アークビショップ]クレメンティア
+　[アークビショップ]カントキャンディダス
+　・詠唱時間を変更（db/skill_cast_db.txt）
+　
+　[アークビショップ]コルセオヒール
+　・詠唱時間、固定詠唱時間、ディレイ、再使用時間を変更（db/skill_cast_db.txt）
+　
+　[アークビショップ]エピクレシス
+　・不死属性へのダメージ効果を削除（skill.c, battle.c）
+　・ハイド中の対象へのディテクト効果を追加（skill.c）
+　
+　[アークビショップ]オラティオ
+　・状態異常の定義を最適化（skill.c, db/skill_cast_db.txt）
+　
+　[アークビショップ]ラウダアグヌス
+　[アークビショップ]ラウダラムス
+　・詠唱時間、固定詠唱時間を変更（db/skill_cast_db.txt）
+　・効果時間が6秒しかなかったのを60秒に修正（db/skill_cast_db.txt）
+　
+　[アークビショップ]レノヴァティオ
+　・MaxLvを1->4に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・詠唱時間、固定詠唱時間を変更（db/skill_cast_db.txt）
+　・ヒール効果の表示を変更（skill.c）
+　・付与と同時にヒール効果を発生するように（skill.c）
+　・不死属性の敵にダメージ与えるように（skill.c）
+　
+　[アークビショップ]ハイネスヒール
+　・詠唱時間、固定詠唱時間を変更（db/skill_cast_db.txt）
+　
+　[アークビショップ]クリアランス
+　・自分にもスキル使用可能に変更（db/skill_db.txt）
+　
+　[アークビショップ]エクスピアティオ
+　・固定詠唱時間を削除、効果時間を修正（db/skill_cast_db.txt）
+　・味方以外に使用時にスキル失敗するように（skill.c）
+　・装備切替時でも効果持続するように変更（pc.c, db/skill_require_db.txt）
+　
+　[アークビショップ]デュプレライト
+　・ディレイ時間を変更（db/skill_cast_db.txt）
+　
+　[アークビショップ]サクラメント
+　・味方以外に使用時にスキル失敗するように（skill.c）
+　
+　[ウォーロック]ホワイトインプリズン
+　・自分へ使用時に100%成功していなかったのを修正（skill.c）
+　・プレイヤーへ使用時は成功率が低くなるように変更（skill.c）
+　・効果時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]フロストミスティ
+　・詠唱時間、固定詠唱時間、効果時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]マーシュオブアビス
+　・詠唱時間、固定詠唱時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]リゴグナイズドスペル
+　・消費SPを修正（db/skill_require_db.txt）
+　
+　[ウォーロック]シエナエクセクレイト
+　・効果時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]ステイシス
+　・PK可能エリア以外の一般フィールドでは使用不可に変更（db/skill_db2.txt）
+　・状態異常中のアイコン表示追加（status.c, status.h）
+　・効果時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]ヘルインフェルノ
+　・詠唱時間を修正（db/skill_cast_db.txt）
+　・消費SPを修正（db/skill_require_db.txt）
+　
+　[ウォーロック]コメット
+　・消費SPを修正（db/skill_require_db.txt）
+　
+　[ウォーロック]チェーンライトニング
+　・連撃回数によってダメージ減少するように変更（battle.c, skill.c）
+　・連鎖間隔を700ms->650msに変更（skill.c）
+　
+　[ウォーロック]アースストレイン
+　・見た目のHit数を2に変更（db/skill_db.txt）
+　・固定詠唱時間を修正（db/skill_cast_db.txt）
+　
+　[ウォーロック]テトラボルテックス
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・Lv6以上で範囲攻撃化するように変更（skill.c）
+　・攻撃間隔を250ms->200msに変更（skill.c）
+　・サモンストーン時のスタン効果とサモンボールライトニング時の出血効果が入れ替わっていたのを修正（skill.c）
+　
+　[ウォーロック]サモンファイアボール
+　[ウォーロック]サモンボールライトニング
+　[ウォーロック]サモンウォーターボール
+　[ウォーロック]サモンストーン
+　・エーテル召喚中、毎秒SP消費するように変更（status.c）
+　・リリース時のダメージ計算式を修正（battle.c）
+　
+　[ウォーロック]リリース
+　・Lv2でエーテル召喚数分の連続攻撃するとき、攻撃間隔を400ms->aDelayに依存するように変更（skill.c）
+　
+　[ウォーロック]リーディングスペルブック
+　・保存数上限を超えた場合、失敗メッセージを表示するように（skill.c）
+　・スキル未習得の場合、睡眠状態になるように（skill.c）
+　
+　[ウォーロック]フリージングスペル
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_tree.txt）
+　
+　[レンジャー]アローストーム
+　・ワシの目スキルで射程が変動するように修正（skill.c）
+　
+　[レンジャー]フィアーブリーズ
+　・連撃の発生確率を4%～10%->最大50%に増加、Hit数で一律同確率だったのをHit数に応じて確率を変更（battle.c, status.c）
+　・クリティカル時にも連撃が入るようになったため、計算位置を変更および連撃クリティカル表示を実装（battle.c）
+　
+　[レンジャー]エイムドボルト
+　・相手が足止め状態でなくても無条件で連撃が発生するように変更（skill.c, battle.c）
+　・連撃時の矢消費数が実際の連撃時と合わないことがあるのを修正（skill.c, battle.c）
+　・ワシの目スキルで射程が変動するように修正（skill.c）
+　
+　[レンジャー]エレクトリックショッカー
+　・トラップを重ね置きできないように修正（skill.c）
+　・踏んだ対象者を罠まで吸い込みするように（skill.c）
+　・効果時間を修正（db/skill_cast_db.txt）
+　・拘束時間の計算式を修正、Vitも影響するように（skill.c）
+　・ボスに対する時間短縮と最低保障時間を削除（skill.c）
+　
+　[レンジャー]クラスターボム
+　・トラップをアローシャワーなどで吹き飛ばせるように（skill.c）
+　・トラップを重ね置きできないように修正（skill.c）
+　・クラスターボムの周りに他の罠を設置不能にするために効果範囲を広げ、起動処理の判定処理を修正（skill.c, db/skill_unit_db.txt）
+　・トラップ配置時にモーションが発生していなかったのを修正（skill.c）
+　・トラップが踏まれたとき、範囲攻撃となっていなかったのを修正（skill.c）
+　・ダメージ計算式を修正（battle.c）
+　
+　[レンジャー]ウォーグライダー
+　・歩きながら使用すると引き戻されていた現象を修正（skill.c）
+　・攻撃時に騎乗時では攻撃できないメッセージを表示するように（battle.c）
+　
+　[レンジャー]ウォーグダッシュ
+　・停止時に引き戻される現象の改善のため、停止処理位置を変更（unit.c）
+　・衝突時の不要なキャラ向き再設定処理を削除（pc.c）
+　・攻撃時の属性が装備している矢の属性になっていたのを強制無属性に変更（battle.c）
+　
+　[レンジャー]ウォーグストライク
+　・トゥースオブウォーグによるダメージ増加量を修正（battle.c）
+　・属性が装備している矢の属性になっていたのを強制無属性に変更（battle.c）
+　
+　[レンジャー]ウォーグバイト
+　・トゥースオブウォーグによるダメージ増加量を修正（battle.c）
+　・属性が装備している矢の属性になっていたのを強制無属性に変更（battle.c）
+　・判定を強制遠距離に変更（db/skill_db2.txt）
+　・移動不可状態の確率判定と効果時間を修正（skill.c）
+　・射程距離を14->9に修正（db/skill_db.txt）
+　
+　[レンジャー]カモフラージュ
+　・再使用でカモフラージュ状態を解除できるように修正（skill.c）
+　・10秒で時間切れしていたのをSP切れか再使用するまで持続するように変更（status.c, db/skill_cast_db.txt）
+　・Lv1～2の壁付近判定をスキル使用前に移動し、失敗時はSP消費しないように＆メッセージ表示するように（skill.c）
+　・Lv3以上の移動速度ペナルティを+75%～+25%あったのを+50%～+0%に変更（status.c）
+　
+　[レンジャー]トラップ研究
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_tree.txt）
+　
+　[レンジャー]マゼンタトラップ
+　[レンジャー]コバルトトラップ
+　[レンジャー]メイズトラップ
+　[レンジャー]ヴェルデュールトラップ
+　・トラップをアローシャワーなどで吹き飛ばせるように（skill.c）
+　・トラップを重ね置きできないように修正（skill.c）
+　・属性変更を確率40%->100%で成功するように変更（skill.c）
+　・Mob以外には効果がないように変更（skill,c）
+　・消費アイテムを各種ポイントに変更（db/skill_require_db.txt）
+　
+　[レンジャー]ファイアリングトラップ
+　[レンジャー]アイスバウンドトラップ
+　・トラップをアローシャワーなどで吹き飛ばせるように（skill.c）
+　・トラップを重ね置きできないように修正（skill.c）
+　・トラップ配置時にモーションが発生していなかったのを修正（skill.c）
+　
+　[レンジャー]アンリミット
+　・攻撃力増加がウォーグダッシュ、ウォーグストライク、ウォーグバイトに乗らないように修正（battle.c）
+　
+　[メカニック]魔導ギア関係
+　・魔導ギア搭乗時、マーチャント系列のスキルとテレポート以外は使用不可に変更（skill.c）
+　・魔導ギアの加熱値を状態異常で計算させるように変更（map.h, status.c, status.h, battle.c, skill.c, db/scdata_db.txt）
+　・魔導ギアで火属性の攻撃被弾で加熱値+3させるように（battle.c）
+　・オーバーヒートリミット値を基本値150+メインフレーム改造の上昇値で計算するように（battle.c）
+　・オーバーヒート状態がギア搭乗の判定誤りで即座に切れていたのを修正（status.c）
+　・オーバーヒート状態は加熱値を0にするまで継続するように（status.c, skill.c）
+　・オーバーヒート状態のHP減少では死なないように修正（status.c）
+　・オーバーヒート状態のアイコン表示を追加（status.c）
+　
+　[メカニック]魔導ギアライセンス
+　・魔導ギア搭乗時の追加ダメージを+15～75から+20～100に増加
+　
+　[メカニック]ブーストナックル
+　・ダメージ計算式を修正（battle.c）
+　
+　[メカニック]パイルバンカー
+　・パイルバンカー装備判定はdb参照ではなく直接skill_check_condition2_pcで判定するように（skill.c, db/skill_require_db.txt）
+　・パイルバンカーS、パイルバンカーP、パイルバンカーTを装備中でも使用可に変更（skill.c）
+　・パイルバンカー未装備時の失敗メッセージがUnknwon Item表示になっていたのを修正（skill.c）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]バルカンアーム
+　・単体攻撃から3x3の範囲攻撃に変更（skill.c）
+　・ダメージ計算式を修正（battle.c）
+　・射程を13固定->12～14に変更、詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]フレイムスローワー
+　・直線範囲攻撃から5x5～9x9の正方形の範囲攻撃に変更（skill.c）
+　・ディレイ時間を変更（db/skill_cast_db.txt）
+　
+　[メカニック]コールドスローワー
+　・凍結と氷結効果の確率を変更（skill.c）
+　・効果時間を修正（db/skill_cast_db.txt）
+　
+　[メカニック]アームズキャノン
+　・MaxLvを3->5に拡張（skill.c, db/skill_db.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・地面指定スキルから対象指定スキルに変更（skill.c, db/skill_db.txt）
+　・ダメージ計算式を修正（battle.c）
+　・判定を強制遠距離に変更（db/skill_db2.txt）
+　・射程を7固定->9～13に変更（db/skill_db.txt）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]ホバーリング
+　・ホバーリングブースター装備判定はdb参照ではなく直接skill_check_condition2_pcで判定するように（skill.c, db/skill_require_db.txt）
+　・ホバーリングブースター未装備時の失敗メッセージがUnknwon Item表示になっていたのを修正（skill.c）
+　
+　[メカニック]セルフディストラクション
+　・ダメージ計算式を修正（battle.c）
+　・詠唱時間、固定詠唱時間を修正（db/skill_cast_db.txt）
+
+　[メカニック]シェイプシフト
+　・アイテム消費の処理をレベル別判定するように最適化（db/skill_require_db.txt, skill.c）
+　・使用アイテムを各種ポイント系3つに変更（db/skill_require_db.txt）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]エマージェンシークール
+　・加熱値を一律初期化していたのを45ずつ減算するように（skill.c）
+　
+　[メカニック]インフラレッドスキャン
+　・カモフラージュ、シャドウフォームも解除するように変更（skill.c）
+　・状態異常の付与を50%確率だったのを必ず付与するように変更（skill.c）
+　
+　[メカニック]アナライズ
+　・状態異常の付与の確率を14%～42%->20%～100%に変更（skill.c）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]マグネティックフィールド
+　・状態異常の時間がステータスによって減少していたのを固定値で付与するように（skill.c）
+　・効果範囲が3x3～7x7で変動していたのを5x5固定で発動するように変更（skill.c）
+　・3秒おきにSP消費量50～70だったのを1秒おきに50ずつ消費するように（status.c）
+　・状態異常中のアイコン表示追加（status.c, status.h）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]ニュートラルバリアー
+　・使用者の状態異常名をSC_NEUTRALBARRIER_USER -> SC_NEUTRALBARRIER_MASTERに変更（status.c, status.h, skill.c, pc.c, unit.c, db/scdata_db.txt）
+　・ニュートラルバリアー使用中に移動速度が減少していたのを削除（status.c）
+　・効果範囲が3x3だったのを5x5に拡大（db/skill_unit_db.txt）
+　・消費SPを修正（db/skill_require_db.txt）
+　
+　[メカニック]ステルスフィールド
+　・使用者の状態異常名をSC_STEALTHFIELD_USER -> SC_STEALTHFIELD_MASTERに変更（status.c, status.h, skill.c, pc.c, unit.c, db/scdata_db.txt）
+　・使用者の消費SPの間隔がレベルごとに5秒～3秒で3%ずつ減っていたのを、3秒～5秒ごとに1%消費に変更（status.c）
+　・効果範囲が3x3だったのを5x5に拡大（db/skill_unit_db.txt）
+　
+　[メカニック]リペア
+　・レベル別にリペアA～リペアCを消費するように変更（db/skill_require_db.txt, skill.c）
+　・HP回復量を最大HPの6%～18%からレベルごとに20%、23%、35%、40%、50%回復するように（skill.c）
+　・消費SPを修正（db/skill_require_db.txt）
+　・射程を5固定->5～9に変更（db/skill_db.txt）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]斧鍛錬
+　・スキル名を斧修練 -> 斧鍛錬に変更（db/skill_db.txt, db/skill_db2.txt, db/skill_tree.txt, battle.c）
+　
+　[メカニック]アックスブーメラン
+　・ダメージ計算式を修正（battle.c）
+　・射程を4～8->5～9に変更（db/skill_db.txt）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]パワースイング
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・斧以外でも発動できるように変更（db/skill_require_db.txt）
+　・ダメージ計算式を修正（battle.c）
+　・アックスブーメラン追撃時に斧装備を判定するように（skill.c）
+　・アックスブーメラン追撃の確率が5%固定だったのをレベルごとに5%～50%で変動するように（skill.c）
+　
+　[メカニック]アックストルネード
+　・ダメージ計算式を修正、外周でも減衰しないように、風属性武器判定を削除（battle.c）
+　
+　[メカニック]FAW シルバースナイパー
+　[メカニック]FAW マジックデコイ
+　・固定詠唱時間を修正（db/skill_cast_db.txt）
+　・詠唱中断しないように変更（db/skill_db.txt）
+　
+　[メカニック]FAW 解体
+　・射程を2->5にに変更（db/skill_db.txt）
+
+----------------------------------------
 //1551 [2024/09/06] by refis
 
 ・スキル名称を修正 (skill_db.txt)

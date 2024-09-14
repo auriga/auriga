@@ -905,7 +905,6 @@ struct map_session_data {
 
 	int freeze_sp_slot;
 	int freeze_sp_skill[MAX_FREEZE_SPELL];
-	int overheat;			// 魔導ギア加熱度（暫定）
 	int shadowform_id;		// シャドウフォーム
 	int c_marker[3];		// クリムゾンマーカー
 	int stellar_mark[MAX_STELLAR_MARKS]; // 星の印

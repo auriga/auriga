@@ -5200,8 +5200,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_coin(sd);
 	if(sd->elementball.num > 0)	// ‰e˜TEžO‚Ì‹…‘Ì•\Ž¦
 		clif_elementball(sd);
-	if(sd->sc.data[SC_BERKANA].timer != -1)
-		clif_mshield(sd,sd->sc.data[SC_BERKANA].val2);
+	if(sd->sc.data[SC_MILLENNIUMSHIELD].timer != -1)
+		clif_mshield(sd,sd->sc.data[SC_MILLENNIUMSHIELD].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_FORCEOFVANGUARD].val4);
 	if(sd->view_size!=0)
