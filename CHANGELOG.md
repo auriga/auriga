@@ -1,4 +1,14 @@
 ----------------------------------------
+//1553 [2024/09/16] by refis
+
+・MAX_PACKET_DBを0xC20まで拡張（clif.c）
+
+・PACKETVER「20231220」以降の服コスチュームの仕様変更に対応（char/char.c, common/mmo.h, clif.c, pc.*）
+	-> キャラクターセレクト側は暫定対応
+
+・UnknownPacketが出力されないよう定義だけ追加 (db/packet_db.lua, clif.c)
+
+----------------------------------------
 //1552 [2024/09/15] by Blaze
 
 ・スキル要求DBにスキルレベル毎に要求アイテムを指定できるlist_lv_itemid,list_lv_amountを追加

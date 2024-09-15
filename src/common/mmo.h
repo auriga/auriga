@@ -484,6 +484,19 @@ enum {
 	PC_CLASS_HN2,			// ハイパーノービス(騎乗)
 	PC_CLASS_SH2,			// スピリットハンドラー(騎乗)
 	PC_CLASS_SKE3,			// 天帝(融合)
+	PC_CLASS_RK_2ND = 4332,	// ルーンナイト(セカコス)
+	PC_CLASS_NC_2ND,		// メカニック(セカコス)
+	PC_CLASS_GC_2ND,		// ギロチンクロス(セカコス)
+	PC_CLASS_WL_2ND,		// ウォーロック(セカコス)
+	PC_CLASS_AB_2ND,		// アークビショップ(セカコス)
+	PC_CLASS_RA_2ND,		// レンジャー(セカコス)
+	PC_CLASS_LG_2ND,		// ロイヤルガード(セカコス)
+	PC_CLASS_GN_2ND,		// ジェネティック(セカコス)
+	PC_CLASS_SC_2ND,		// シャドウチェイサー(セカコス)
+	PC_CLASS_SO_2ND,		// ソーサラー(セカコス)
+	PC_CLASS_SR_2ND,		// 修羅(セカコス)
+	PC_CLASS_MI_2ND,		// ミンストレル(セカコス)
+	PC_CLASS_WA_2ND,		// ワンダラー(セカコス)
 	PC_CLASS_MAX
 };
 

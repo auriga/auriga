@@ -7161,6 +7161,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	status_calc_pc_stop_end(&sd->bl);
 
 	clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
+	pc_changebodystyle(sd);
 
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
@@ -7247,7 +7248,8 @@ int pc_changelook(struct map_session_data *sd,int type,int val)
 		break;
 	case LOOK_BODY2:
 		sd->status.style = val;
-		break;
+		pc_changebodystyle(sd);
+		return 0;
 	}
 	clif_changelook(&sd->bl,type,val);
 
@@ -7914,6 +7916,45 @@ void pc_costumelook(struct map_session_data *sd)
 		clif_changelook(&sd->bl,LOOK_HEAD_MID,sd->status.head_mid);
 	if(robe != sd->status.robe)
 		clif_changelook(&sd->bl,LOOK_ROBE,sd->status.robe);
+}
+
+/*==========================================
+ * ƒXƒ^ƒCƒ‹‚ð”½‰f‚·‚é
+ *------------------------------------------
+ */
+void pc_changebodystyle(struct map_session_data *sd)
+{
+	int i = -1, style = 0;
+
+	nullpo_retv(sd);
+
+#if PACKETVER < 20231220
+	style = sd->status.style;
+#else
+	if(sd->status.style > 0) {
+		switch(sd->s_class.job) {
+		case PC_JOB_RK: style = PC_CLASS_RK_2ND; break;
+		case PC_JOB_WL: style = PC_CLASS_WL_2ND; break;
+		case PC_JOB_RA: style = PC_CLASS_RA_2ND; break;
+		case PC_JOB_AB: style = PC_CLASS_AB_2ND; break;
+		case PC_JOB_NC: style = PC_CLASS_NC_2ND; break;
+		case PC_JOB_GC: style = PC_CLASS_GC_2ND; break;
+		case PC_JOB_LG: style = PC_CLASS_LG_2ND; break;
+		case PC_JOB_SO: style = PC_CLASS_SO_2ND; break;
+		case PC_JOB_MI: style = PC_CLASS_MI_2ND; break;
+		case PC_JOB_WA: style = PC_CLASS_WA_2ND; break;
+		case PC_JOB_SR: style = PC_CLASS_SR_2ND; break;
+		case PC_JOB_GN: style = PC_CLASS_GN_2ND; break;
+		case PC_JOB_SC: style = PC_CLASS_SC_2ND; break;
+		default:
+			style = sd->status.class_;
+			break;
+		}
+	}
+	else
+		style = sd->status.class_;
+#endif
+	clif_changelook(&sd->bl,LOOK_BODY2,style);
 }
 
 /*==========================================

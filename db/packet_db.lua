@@ -1908,7 +1908,7 @@ p(0x0b69,18)
 p(0x0b6a,-1)
 p(0x0b6b,14)
 p(0x0b6c,12)
-p(0x0b6d,6)
+p(0x0b6d,6,"cashmarketopen",2)
 p(0x0b6e,14)
 p(0x0b6f,177)
 p(0x0b70,8)
@@ -1981,6 +1981,9 @@ p(0x0bbd,6)
 p(0x0bbe,3)
 p(0x0bbf,12)
 p(0x0bc0,3)
+p(0x0be9,6,"emotion2",4)
+p(0x0bf3,24,"adventureguide",2)
+p(0x0bf5,6,"equippurgereq",2)
 
 
 

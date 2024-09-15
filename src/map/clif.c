@@ -77,7 +77,7 @@
 #include "luascript.h"
 
 /* パケットデータベース */
-#define MAX_PACKET_DB 0xBF0
+#define MAX_PACKET_DB 0xC20
 
 struct packet_db {
 	short len;
@@ -10444,7 +10444,7 @@ void clif_changeoption(struct block_list* bl)
 		sd = (struct map_session_data *)bl;
 	if(sd) {
 		clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
-		clif_changelook(&sd->bl,LOOK_BODY2,sd->status.style);
+		pc_changebodystyle(sd);
 	}
 
 #if PACKETVER < 7
@@ -10487,7 +10487,7 @@ void clif_changeoption_single(struct block_list* bl, struct map_session_data *ts
 		sd = (struct map_session_data *)bl;
 	if(sd) {
 		clif_changelook(&sd->bl,LOOK_BASE,sd->view_class);
-		clif_changelook(&sd->bl,LOOK_BODY2,sd->status.style);
+		pc_changebodystyle(sd);
 	}
 
 	fd=tsd->fd;
@@ -27789,6 +27789,36 @@ static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
 }
 
 /*==========================================
+ * 
+ *------------------------------------------
+ */
+static void clif_parse_CashMarketOpen(int fd, struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * 
+ *------------------------------------------
+ */
+static void clif_parse_AdventureGuide(int fd, struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
+ * 
+ *------------------------------------------
+ */
+static void clif_parse_EquipPurgeReq(int fd, struct map_session_data *sd, int cmd)
+{
+	// TODO
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -27968,6 +27998,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_MapMove,                     "mapmove"                   },
 		{ clif_parse_ChangeDir,                   "changedir"                 },
 		{ clif_parse_Emotion,                     "emotion"                   },
+		{ clif_parse_Emotion,                     "emotion2"                  },
 		{ clif_parse_HowManyConnections,          "howmanyconnections"        },
 		{ clif_parse_ActionRequest,               "actionrequest"             },
 		{ clif_parse_Restart,                     "restart"                   },
@@ -28199,6 +28230,9 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_CloseLapineUpgrade,          "closelapineupgrade"        },
 		{ clif_parse_LapineUpgradeAck,            "lapineupgradeack"          },
 		{ clif_parse_MountOff,                    "mountoff"                  },
+		{ clif_parse_CashMarketOpen,              "cashmarketopen"            },
+		{ clif_parse_AdventureGuide,              "adventureguide"            },
+		{ clif_parse_EquipPurgeReq,               "equippurgereq"             },
 		{ NULL,                                   NULL                        },
 	};
 
