@@ -55,6 +55,7 @@
 #include "utils.h"
 
 #define GRF_HEADER "Master of Magic"
+#define GRF_HEADER2 "Event Horizon"
 
 #if defined(WINDOWS) && !defined(LOCALZLIB)
 	#include <windows.h>
@@ -672,6 +673,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	unsigned char *grf_filelist;
 	int count = 0;
 	struct stat st;
+	int diff = 0;
 
 	if(stat(gfname, &st) == 0)
 		grf_size = st.st_size;
@@ -683,7 +685,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 	}
 
 	fread(grf_header, 1, sizeof(grf_header), fp);
-	if (strcmp((char*)grf_header, GRF_HEADER) || fseek(fp, getlong(grf_header + 0x1e), 1)) { // SEEK_CUR
+	if((strcmp((char*)grf_header, GRF_HEADER) && strcmp((char*)grf_header, GRF_HEADER2)) || fseek(fp, getlong(grf_header + 0x1e), 1)) {	// SEEK_CUR
 		fclose(fp);
 		printf("GRF Data File read error.\n");
 		return 4;	// 4:file format error
@@ -760,22 +762,25 @@ static int grfio_entryread(const char *gfname,int gentry)
 		aFree(grf_filelist);
 		break;
 
+	case 0x0300: //****** Grf version 03xx ******
+		diff = 4;
 	case 0x0200: //****** Grf version 02xx ******
 		{
-			unsigned char eheader[8];
+			unsigned char eheader[8+diff];
 			unsigned char *rBuf;
 			unsigned int rSize;
 			unsigned long eSize;
 
-			/* Size: 8 + compressedLength
+			/* Size: 8 or 12 + compressedLength
 			struct GRF2_FileTableHeader {              // Offset
+				uint32 unknown;						   // 0 (Grf version 03xx only)
 			    uint32 compressedLength;               // 0
 			    uint32 uncompressedLength;             // 4
 			    unsigned char body[compressedLength];  // 8
 			};*/
 			fread(eheader, 1, sizeof(eheader), fp);
-			rSize = getlong(eheader);	// Read Size
-			eSize = getlong(eheader + 4);	// Extend Size
+			rSize = getlong(eheader + diff);	// Read Size
+			eSize = getlong(eheader + 4 + diff);	// Extend Size
 
 			if ((long)rSize > grf_size - ftell(fp)) {
 				fclose(fp);
@@ -792,8 +797,8 @@ static int grfio_entryread(const char *gfname,int gentry)
 		}
 
 		// Get an entry
-		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17){
-			/* Size: sizeof(filename) + 17
+		for(entry=0,ofs=0; entry<entrys; entry++,ofs=ofs2+17+diff){
+			/* Size: sizeof(filename) + 17 or 21
 			Note: The notation sizeof(filename) is the size of the filename, including terminating NULL.
 			struct GRF2_FileTableItem {          // Offset
 			    char filename[];                 // 0                      EUC-KR encoding
@@ -802,6 +807,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 			    uint32 uncompressedLength;       // sizeof(filename) + 8
 			    uint8  flags;                    // sizeof(filename) + 12
 			    uint32 offset;                   // sizeof(filename) + 13
+			    uint32 unknown;                  // sizeof(filename) + 17 (Grf version 03xx only)
 			};
 			Flags (bitmask):
 			    0x01 (FILE) - Whether this flag is a file. If this flag is not set, then this item is a directory.
