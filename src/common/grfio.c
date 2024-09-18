@@ -766,7 +766,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 		diff = 4;
 	case 0x0200: //****** Grf version 02xx ******
 		{
-			unsigned char eheader[8+diff];
+			unsigned char eheader[12];
 			unsigned char *rBuf;
 			unsigned int rSize;
 			unsigned long eSize;
@@ -778,7 +778,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 			    uint32 uncompressedLength;             // 4
 			    unsigned char body[compressedLength];  // 8
 			};*/
-			fread(eheader, 1, sizeof(eheader), fp);
+			fread(eheader, 1, (size_t)(8+diff), fp);
 			rSize = getlong(eheader + diff);	// Read Size
 			eSize = getlong(eheader + 4 + diff);	// Extend Size
 
