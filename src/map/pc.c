@@ -7140,6 +7140,7 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 		return 1;
 
 	sd->status.class_ = sd->view_class = b_class;
+	sd->status.style = 0;
 
 	// Œ³E‹Æ‚ðÄÝ’è
 	sd->s_class = pc_calc_base_job(sd->status.class_);
@@ -7924,7 +7925,7 @@ void pc_costumelook(struct map_session_data *sd)
  */
 void pc_changebodystyle(struct map_session_data *sd)
 {
-	int i = -1, style = 0;
+	int style = 0;
 
 	nullpo_retv(sd);
 

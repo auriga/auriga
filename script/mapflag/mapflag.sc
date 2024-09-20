@@ -488,6 +488,11 @@ job_wiz.gat	mapflag	nosave	SavePoint
 job_wiz.gat	mapflag	nobranch	dummy
 job_wiz.gat	mapflag	nopenalty	dummy
 job_wiz.gat	mapflag	noicewall	dummy
+jtb_01.gat	mapflag	nomemo	dummy
+jtb_01.gat	mapflag	noteleport	dummy
+jtb_01.gat	mapflag	nosave	SavePoint
+jtb_01.gat	mapflag	nobranch	dummy
+jtb_01.gat	mapflag	noskill	dummy
 jupe_area1.gat	mapflag	nomemo	dummy
 jupe_area1.gat	mapflag	noteleport	dummy
 jupe_area1.gat	mapflag	nobranch	dummy

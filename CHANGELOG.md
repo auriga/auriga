@@ -1,4 +1,24 @@
 ----------------------------------------
+//1556 [2024/09/20] by refis
+
+・悪夢のジターバグメモリアル実装（npc_memorial_jitterbug.sc）
+	Thanks a lot フリージア さん、Dallen さん
+
+・mapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・item_dbの更新 (item_db.txt)
+
+・mob_dbの更新、修正 (mob_db.txt, mob_skill_db.txt)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・エラー対策のため転職時にセカコスを解除するよう変更 (pc.c)
+
+・不要な宣言を削除 (pc.c)
+
+----------------------------------------
 //1555 [2024/09/19] by refis
 
 ・Patch1554のエラーを修正（common/grfio.c）

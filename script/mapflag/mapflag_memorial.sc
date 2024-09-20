@@ -318,6 +318,17 @@
 1@tnm3.gat	mapflag	noabra		dummy
 
 //============================================================
+// 悪夢のジターバグ - 1@jtb.gat
+//------------------------------------------------------------
+1@jtb.gat	mapflag	nosave			SavePoint
+1@jtb.gat	mapflag	nomemo			dummy
+1@jtb.gat	mapflag	noteleport		dummy
+1@jtb.gat	mapflag	nobranch		dummy
+1@jtb.gat	mapflag	monster_noteleport	dummy
+1@jtb.gat	mapflag	noicewall	dummy
+1@jtb.gat	mapflag	noabra		dummy
+
+//============================================================
 // ビオスの島 01 - 1@dth1.gat
 //------------------------------------------------------------
 1@dth1.gat	mapflag	nosave			SavePoint
@@ -360,6 +371,28 @@
 1@rev.gat	mapflag	monster_noteleport	dummy
 1@rev.gat	mapflag	noicewall	dummy
 1@rev.gat	mapflag	noabra		dummy
+
+//============================================================
+// 魔神殿入口 - 1@eom_jp.gat
+//------------------------------------------------------------
+1@eom_jp.gat	mapflag	nosave			SavePoint
+1@eom_jp.gat	mapflag	nomemo			dummy
+1@eom_jp.gat	mapflag	noteleport		dummy
+1@eom_jp.gat	mapflag	nobranch		dummy
+1@eom_jp.gat	mapflag	monster_noteleport	dummy
+1@eom_jp.gat	mapflag	noicewall	dummy
+1@eom_jp.gat	mapflag	noabra		dummy
+
+//============================================================
+// 魔神殿 - 1@eom.gat
+//------------------------------------------------------------
+1@eom.gat	mapflag	nosave			SavePoint
+1@eom.gat	mapflag	nomemo			dummy
+1@eom.gat	mapflag	noteleport		dummy
+1@eom.gat	mapflag	nobranch		dummy
+1@eom.gat	mapflag	monster_noteleport	dummy
+1@eom.gat	mapflag	noicewall	dummy
+1@eom.gat	mapflag	noabra		dummy
 
 //============================================================
 // 中央実験室 - 1@lab.gat
