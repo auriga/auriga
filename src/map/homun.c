@@ -792,7 +792,7 @@ int homun_callhom(struct map_session_data *sd)
 		if(!homun_data_init(sd) && sd->bl.prev != NULL)
 		{
 			if(sd->hd->status.hp <= 0) {	// 死亡
-				clif_skill_fail(sd,AM_CALLHOMUN,0,0,0);
+				clif_skill_fail(sd,AM_CALLHOMUN,SKILLFAIL_FAILED,0,0);
 				unit_free(&sd->hd->bl,0);
 				return 0;
 			}
@@ -814,7 +814,7 @@ int homun_callhom(struct map_session_data *sd)
 		int idx = pc_search_inventory(sd,7142);	// エンブリオ所持を確認
 		sd->status.homun_id = 0;
 		if(idx < 0) {
-			clif_skill_fail(sd,AM_CALLHOMUN,0,0,0);
+			clif_skill_fail(sd,AM_CALLHOMUN,SKILLFAIL_FAILED,0,0);
 			return 0;
 		}
 		pc_delitem(sd,idx,1,0,1);	// エンブリオ消去
@@ -901,11 +901,11 @@ int homun_revive(struct map_session_data *sd,int skilllv)
 
 	if(sd->status.homun_id > 0 && sd->status.homun_id == sd->hom.homun_id) {
 		if(sd->hom.hp > 0) {
-			clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0,0);
+			clif_skill_fail(sd,AM_RESURRECTHOMUN,SKILLFAIL_FAILED,0,0);
 			return 0;
 		}
 	} else {
-		clif_skill_fail(sd,AM_RESURRECTHOMUN,0,0,0);
+		clif_skill_fail(sd,AM_RESURRECTHOMUN,SKILLFAIL_FAILED,0,0);
 		return 0;
 	}
 	// 蘇生時HP = 死亡時HP（≦0）+ MAXHP * (Skill Lv * 0.2)

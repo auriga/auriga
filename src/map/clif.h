@@ -47,6 +47,81 @@ enum {
 	WIDE_AREA
 };
 
+// clif_skill_failのスキル失敗Type
+enum {
+	SKILLFAIL_LEVEL					= 0,	// スキル使用失敗（スキルレベル不足）
+	SKILLFAIL_SP					= 1,	// SPが足りません。
+	SKILLFAIL_HP					= 2,	// HPが足りません。
+	SKILLFAIL_MATERIAL				= 3,	// 材料が足りません。
+	SKILLFAIL_INTERVAL				= 4,	// （スキル再使用時間が未経過）
+	SKILLFAIL_ZENY					= 5,	// お金が足りないのでスキルを使う事ができません。
+	SKILLFAIL_WEAPON				= 6,	// この装備ではこのスキルを使用できません。
+	SKILLFAIL_REDJEMSTONE			= 7,	// レッドジェムストーンが必要です。
+	SKILLFAIL_BLUEJEMSTONE			= 8,	// ブルージェムストーンが必要です。
+	SKILLFAIL_WEIGHTOVER			= 9,	// Weightが90%を越えているため、スキルを使えません。
+	SKILLFAIL_FAILED				= 10,	// スキル使用失敗（汎用）
+	SKILLFAIL_TOTARGET				= 11,	// この機能を使うことができない対象です。
+	SKILLFAIL_ANCILLAOVER			= 12,	// アンシラの所有個数を超えてスキルを使用できません。
+	SKILLFAIL_HOLYWATER				= 13,	// 聖水が必要です。
+	SKILLFAIL_ANCILLA				= 14,	// アンシラが必要です。
+	SKILLFAIL_RESTRICT_POS			= 15,	// 制限により、設置できません。
+	SKILLFAIL_OTHERSKILL			= 16,	// このスキルを使用するためには、他のスキルが必要です。
+	SKILLFAIL_PARTNER				= 17,	// このスキルは一人で使用できません。
+	SKILLFAIL_DIRECTION				= 18,	// このスキルは特定方向のみ使用できます。
+	SKILLFAIL_SUMMON_OVER			= 19,	// これ以上、召喚できません。
+	SKILLFAIL_SUMMON_NOTHING		= 20,	// 召喚されたエーテルが存在しません。
+	SKILLFAIL_CLONESKILL			= 21,	// 使用可能なクローンスキルが存在しません。
+	SKILLFAIL_DUPLICATE				= 22,	// このスキルは重複で使用できません。
+	SKILLFAIL_CONDITION				= 23,	// スキル使用が出来ない状態です。
+	SKILLFAIL_PAINTBRUSH			= 24,	// ペイントブラシが必要です。
+	SKILLFAIL_DRAGON				= 25,	// ドラゴン騎乗時のみ使用可能です。
+	SKILLFAIL_POSITION				= 26,	// 指定した位置にスキルを使用することが出来ません。
+
+	SKILLFAIL_NEERWALL				= 28,	// 壁の近くでのみ使用することができます。
+	SKILLFAIL_EXP					= 29,	// このスキルは、1％の経験値が必要になります。
+	SKILLFAIL_PARTNER_SP			= 30,	// パートナーのSPが足りません。
+	SKILLFAIL_GC_WEAPONBLOCKING		= 31,	// ウェポンブロッキングの連携としてのみ使用可能です。
+	SKILLFAIL_GC_POISONINGWEAPON	= 32,	// ギロチンクロスの毒を塗った武器が必要です。
+	SKILLFAIL_MADOGEAR				= 33,	// 魔導ギア搭乗時のみ使用可能です。
+	SKILLFAIL_KUNAI					= 34,	// 苦無を装備した状態でのみ使用可能です。
+	SKILLFAIL_NOT_PLAYER			= 35,	// このスキルはプレイヤーにのみ使用可能です。
+	SKILLFAIL_GVGONLY				= 36,	// このスキルは攻城戦でのみ使用可能です。
+	SKILLFAIL_CANONBALL				= 37,	// キャノンボールを装填してください。
+
+	SKILLFAIL_MADOGEAR_HOVERING		= 40,	// ホバリング状態のみ使用可能です。
+
+	SKILLFAIL_GC_POISON				= 43,	// ギロチンクロスの毒が必要です。
+
+	SKILLFAIL_MADOGEAR_RIDE			= 50,	// 魔導ギア搭乗時は使用できません。
+	SKILLFAIL_SPELLBOOK				= 51,	// 魔法書が必要です。
+	SKILLFAIL_SPELLBOOK_LEARN		= 52,	// 魔法書がとても難しいため、眠くなります。
+	SKILLFAIL_SPELLBOOK_POINT		= 53,	// 保存ポイントが足りません。
+	SKILLFAIL_SPELLBOOK_OVER		= 54,	// これ以上は魔法書を読めません。
+
+	SKILLFAIL_CART					= 57,	// カート装備時のみ使用可能です。
+
+	SKILLFAIL_MORESKILL				= 60,	// これ以上はスキル使用ができません。
+
+	SKILLFAIL_NEED_ITEM				= 71,	// [%s]が %d個必要です。
+	SKILLFAIL_NEED_EQUIP			= 72,	// [%s]を装備した状態のみ、使用できます。
+	SKILLFAIL_COMBOSKILL			= 73,	// 特定スキルの連携スキルです。 -> [%s]の連携スキルです。
+	SKILLFAIL_SPIRITBALL			= 74,	// 気弾が必要です。 -> 気弾 %d個が必要です。
+
+	SKILLFAIL_EL_SUMMON				= 79,	// 召喚された精霊がいません。
+	SKILLFAIL_INTIMATE				= 80,	// 親密度が不足しています。
+	SKILLFAIL_STYLE_FIGHTER			= 81,	// スタイルチェンジファイター状態でのみ使用可能です。
+	SKILLFAIL_STYLE_GRAPPLER		= 82,	// スタイルチェンジグラップラー状態でのみ使用可能です。
+	SKILLFAIL_NEARNPC				= 83,	// 現在の座標では、露店開設・買取露店・チャットルーム開設ができません。NPCやワープリンクから離れてください。
+	SKILLFAIL_BULLET				= 84,	// 弾丸を装備して下さい。
+	SKILLFAIL_COIN					= 85,	// コインが必要です。 -> コインが %d枚必要です。
+	SKILLFAIL_MSGID					= 86,	// （MSG ID指定）
+	SKILLFAIL_MAP					= 87,	// このマップでは使用できないスキルです。
+
+	SKILLFAIL_VENDING				= 89,	// 既に露店を設置中です。
+	SKILLFAIL_AMOUNT_BULLET			= 90,	// スキル発動時、%d個の弾丸が必要です。
+	SKILLFAIL_AMOUNT_ARROW			= 91,	// スキル発動時、%d個の矢が必要です。
+};
+
 void clif_sethost(const char*);
 void clif_setip(void);
 void clif_setport(unsigned short);

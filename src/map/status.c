@@ -229,7 +229,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 720- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_CRUSHSTRIKE,SI_WEAPONBLOCK_ON,
 	/* 730- */
-	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT
+	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK
 };
 
 /*==========================================
@@ -1748,7 +1748,7 @@ L_RECALC:
 	if(sd->sc.data[SC_VENOMBLEED].timer != -1) {	// ベナムブリード
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_VENOMBLEED].val2 / 100);
 	}
-	if(sd->sc.data[SC__WEAKNESS].timer != -1) {	// マスカレード ： ウィークネス
+	if(sd->sc.data[SC__WEAKNESS].timer != -1) {	// マスカレード：ウィークネス
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * (sd->sc.data[SC__WEAKNESS].val1 * 10) / 100);
 	}
 	if(sd->sc.data[SC_BERSERK].timer != -1) {	// バーサーク
@@ -2404,20 +2404,20 @@ L_RECALC:
 		if(sd->sc.data[SC__INVISIBILITY].timer != -1) {
 			sd->critical += sd->critical * (sd->sc.data[SC__INVISIBILITY].val1 * 20) / 100;
 		}
-		// マスカレード ： エナーベーション
+		// マスカレード：エナベーション
 		if(sd->sc.data[SC__ENERVATION].timer != -1) {
 			sd->base_atk -= sd->base_atk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 			sd->watk -= sd->watk * (20 + sd->sc.data[SC__ENERVATION].val1 * 10) / 100;
 		}
-		// マスカレード ： グルーミー
+		// マスカレード：グルーミー
 		if(sd->sc.data[SC__GROOMY].timer != -1) {
 			sd->hit -= sd->hit * (sd->sc.data[SC__GROOMY].val1 * 20) / 100;
 		}
-		// マスカレード ： レイジーネス
+		// マスカレード：レイジネス
 		if(sd->sc.data[SC__LAZINESS].timer != -1) {
 			sd->flee -= sd->flee*10/100;
 		}
-		// マスカレード ： アンラッキー
+		// マスカレード：アンラッキー
 		if(sd->sc.data[SC__UNLUCKY].timer != -1) {
 			sd->critical -= sd->critical * (sd->sc.data[SC__UNLUCKY].val1 * 10) / 100;
 			sd->flee2 -= sd->sc.data[SC__UNLUCKY].val1 * 10;
@@ -3144,7 +3144,7 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 				slow_val = penalty;
 		}
 
-		// マスカレード ： グルーミー
+		// マスカレード：グルーミー
 		if(sd->sc.data[SC__GROOMY].timer != -1) {
 			int penalty = 20 + 10 * sd->sc.data[SC__GROOMY].val1;
 			if(slow_val < penalty)
@@ -3566,13 +3566,13 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 					slow_val = 50;
 			}
 
-			// マスカレード ： レイジーネス
+			// マスカレード：レイジネス
 			if(sd->sc.data[SC__LAZINESS].timer != -1) {
 				if(slow_val < 10)
 					slow_val = 10;
 			}
 
-			// マスカレード ： グルーミー
+			// マスカレード：グルーミー
 			if(sd->sc.data[SC__GROOMY].timer != -1) {
 				int penalty = 5 + 5 * sd->sc.data[SC__GROOMY].val1;
 				if(slow_val < penalty)
@@ -4442,7 +4442,7 @@ int status_get_flee(struct block_list *bl)
 			flee += sc->data[SC_HALLUCINATIONWALK].val1 * 50;
 		if(sc->data[SC_INFRAREDSCAN].timer != -1 && bl->type != BL_PC)	// インフラレッドスキャン
 			flee  -= flee*30/100;
-		if(sc->data[SC__LAZINESS].timer != -1 && bl->type != BL_PC)		// マスカレード ： レイジーネス
+		if(sc->data[SC__LAZINESS].timer != -1 && bl->type != BL_PC)		// マスカレード：レイジネス
 			flee  -= flee*10/100;
 		if(sc->data[SC_GLOOMYDAY].timer != -1 && bl->type != BL_PC)		// メランコリー
 			flee -= sc->data[SC_GLOOMYDAY].val1 * 5 + 20;
@@ -4539,7 +4539,7 @@ int status_get_hit(struct block_list *bl)
 				hit += sc->data[SC_INCHIT].val1;
 			if(sc->data[SC_FEAR].timer != -1 && bl->type != BL_PC)	// 恐怖
 				hit -= hit*20/100;
-			if(sc->data[SC__GROOMY].timer != -1 && bl->type != BL_PC)	// マスカレード ： グルーミー
+			if(sc->data[SC__GROOMY].timer != -1 && bl->type != BL_PC)	// マスカレード：グルーミー
 				hit -= hit*(20*sc->data[SC__GROOMY].val1)/100;
 			if(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].timer != -1 && bl->type != BL_PC)	// ファイアーエクスパンション(催涙)
 				hit -= hit*(sc->data[SC_FIRE_EXPANSION_TEAR_GAS].val2)/100;
@@ -4577,7 +4577,7 @@ int status_get_flee2(struct block_list *bl)
 	}
 
 	if(sc) {
-		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード ： アンラッキー
+		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード：アンラッキー
 			flee2 -= sc->data[SC__UNLUCKY].val1 * 10;
 	}
 
@@ -4625,7 +4625,7 @@ int status_get_critical(struct block_list *bl)
 			critical += 10*sc->data[SC_TRUESIGHT].val1;
 		if(sc->data[SC__INVISIBILITY].timer != -1 && bl->type != BL_PC)	// インビジビリティ
 			critical += critical * (sc->data[SC__INVISIBILITY].val1 * 20) / 100;
-		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード ： アンラッキー
+		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード：アンラッキー
 			critical -= critical * (sc->data[SC__UNLUCKY].val1 * 10) / 100;
 		if(sc->data[SC_STRIKING].timer != -1 && bl->type != BL_PC)	// ストライキング
 			critical += 10 * sc->data[SC_STRIKING].val1;
@@ -4705,7 +4705,7 @@ int status_get_baseatk(struct block_list *bl)
 			batk = batk*80/100;
 		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)	// エスク
 			batk *= 4;
-		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
+		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード：エナベーション
 			batk -= batk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
 			batk += sc->data[SC_SHIELDSPELL_DEF].val3;
@@ -4788,7 +4788,7 @@ int status_get_atk(struct block_list *bl)
 			atk = atk*80/100;
 		if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
 			rate += 300;
-		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
+		if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード：エナベーション
 			atk -= atk * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 		if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
 			atk += sc->data[SC_SHIELDSPELL_DEF].val3;
@@ -4910,7 +4910,7 @@ int status_get_atk2(struct block_list *bl)
 				atk2 = atk2*50/100;
 			if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 				atk2 = atk2*80/100;
-			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード ： エナーベーション
+			if(sc->data[SC__ENERVATION].timer != -1 && bl->type == BL_MOB)	// マスカレード：エナベーション
 				atk2 -= atk2 * (20 + sc->data[SC__ENERVATION].val1 * 10) / 100;
 			if(sc->data[SC_SHIELDSPELL_DEF].timer != -1 && sc->data[SC_SHIELDSPELL_DEF].val2 == 2 && bl->type == BL_MOB)	// シールドスペル(DEF)
 				atk2 += sc->data[SC_SHIELDSPELL_DEF].val3;
@@ -5520,13 +5520,13 @@ int status_get_speed(struct block_list *bl)
 					slow_val = 50;
 			}
 
-			// マスカレード ： レイジーネス
+			// マスカレード：レイジネス
 			if(sc->data[SC__LAZINESS].timer != -1) {
 				if(slow_val < 10)
 					slow_val = 10;
 			}
 
-			// マスカレード ： グルーミー
+			// マスカレード：グルーミー
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 5 + 5 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
@@ -5716,7 +5716,7 @@ int status_get_adelay(struct block_list *bl)
 					slow_val = penalty;
 			}
 
-			// マスカレード ： グルーミー
+			// マスカレード：グルーミー
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
@@ -5971,7 +5971,7 @@ int status_get_amotion(struct block_list *bl)
 					slow_val = penalty;
 			}
 
-			// マスカレード ： グルーミー
+			// マスカレード：グルーミー
 			if(sc->data[SC__GROOMY].timer != -1) {
 				int penalty = 20 + 10 * sc->data[SC__GROOMY].val1;
 				if(slow_val < penalty)
@@ -7334,14 +7334,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_HOVERING:			/* ホバーリング */
 		case SC_STEALTHFIELD:		/* ステルスフィールド */
 		case SC__DEADLYINFECT:		/* デッドリーインフェクト */
-		case SC__IGNORANCE:			/* マスカレード ： イグノアランス */
+		case SC__IGNORANCE:			/* マスカレード：イグノアランス */
 		case SC__MANHOLE:			/* マンホール */
 		case SC__ESCAPE:			/* エスケープ */
 		case SC_FALLENEMPIRE:		/* 大纏崩捶 */
-		case SC_CRESCENTELBOW:		/* 破碎柱 */
 		case SC_CURSEDCIRCLE_USER:	/* 呪縛陣(使用者) */
 		case SC_CURSEDCIRCLE:		/* 呪縛陣 */
-		case SC_LIGHTNINGWALK:		/* 閃電歩 */
 		case SC_NETHERWORLD:		/* 地獄の歌 */
 		case SC_UNLIMITED_HUMMING_VOICE:	/* エンドレスハミングボイス */
 		case SC_WARMER:				/* ウォーマー */
@@ -7386,6 +7384,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_PC_STOP:		/* 移動不可 */
 		case SC_CRUSHSTRIKE:		/* クラッシュストライク */
 		case SC_WEAPONBLOCK_ON:		/* カウンタースラッシュ */
+		case SC__FEINTBOMB:			/* フェイントボム */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -7482,9 +7481,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_NEUTRALBARRIER_MASTER:	/* ニュートラルバリアー(使用者) */
 		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 		case SC__BODYPAINT:			/* ボディペインティング */
-		case SC__ENERVATION:		/* マスカレード ： エナーベーション */
-		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
-		case SC__WEAKNESS:			/* マスカレード ： ウィークネス */
+		case SC__ENERVATION:		/* マスカレード：エナベーション */
+		case SC__UNLUCKY:			/* マスカレード：アンラッキー */
+		case SC__WEAKNESS:			/* マスカレード：ウィークネス */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
 		case SC_EARTHDRIVE:			/* アースドライブ */
@@ -7568,8 +7567,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_WUGDASH:			/* ウォーグダッシュ */
 		case SC_ACCELERATION:		/* アクセラレーション */
 		case SC_HALLUCINATIONWALK_POSTDELAY:	/* ハルシネーションウォーク(ペナルティ) */
-		case SC__GROOMY:			/* マスカレード ： グルーミー */
-		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
+		case SC__GROOMY:			/* マスカレード：グルーミー */
+		case SC__LAZINESS:			/* マスカレード：レイジネス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
 		case SC_POWER_OF_GAIA:		/* パワーオブガイア */
@@ -8658,6 +8657,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val4 = 3 + val1;
 			tick = 1000;
 			break;
+		case SC_CRESCENTELBOW:		/* 破碎柱 */
+			val2 = 40 + val1 * 5 + status_get_jlv(bl) / 2;		// 発動率
+			break;
+		case SC_LIGHTNINGWALK:		/* 閃電歩 */
+			val2 = 40 + val1 * 5 + status_get_jlv(bl) / 2;		// 発動率
+			break;
 		case SC_RAISINGDRAGON:	/* 潜龍昇天 */
 			val2 = tick / 5000;
 			val3 = val1 + 2;	// MaxHP,MaxSP増加率
@@ -8770,7 +8775,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			tick = 1000;
 			break;
 		case SC_SPELLFIST:		/* スペルフィスト */
-			val4 = val1 + 1;	// 回数
+			val4 = val1 * 7;	// 回数
 			break;
 		case SC_STRIKING:			/* ストライキング */
 			val2 = tick / 1000;
@@ -9443,6 +9448,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
+		case SC__FEINTBOMB:			/* フェイントボム */
 			unit_stopattack(bl);
 			sc->option |= OPTION_SPECIALHIDING;
 			opt_flag = 1;
@@ -9731,8 +9737,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_NEUTRALBARRIER:		/* ニュートラルバリアー */
 		case SC__BODYPAINT:			/* ボディペインティング */
 		case SC__INVISIBILITY:		/* インビジビリティ */
-		case SC__ENERVATION:		/* マスカレード ： エナーベーション */
-		case SC__UNLUCKY:			/* マスカレード ： アンラッキー */
+		case SC__ENERVATION:		/* マスカレード：エナベーション */
+		case SC__UNLUCKY:			/* マスカレード：アンラッキー */
 		case SC__STRIPACCESSARY:	/* ストリップアクセサリー */
 		case SC__BLOODYLUST:		/* ブラッディラスト */
 		case SC_SHIELDSPELL_DEF:	/* シールドスペル(DEF) */
@@ -9851,8 +9857,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_PARALIZE:			/* パラライズ */
 		case SC_FROSTMISTY:			/* フロストミスティ */
 		case SC_CAMOUFLAGE:			/* カモフラージュ */
-		case SC__GROOMY:			/* マスカレード ： グルーミー */
-		case SC__LAZINESS:			/* マスカレード ： レイジーネス */
+		case SC__GROOMY:			/* マスカレード：グルーミー */
+		case SC__LAZINESS:			/* マスカレード：レイジネス */
 		case SC_SWING:				/* スイングダンス */
 		case SC_GN_CARTBOOST:		/* カートブースト */
 		case SC_MELON_BOMB:			/* メロン爆弾 */
@@ -10438,6 +10444,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			opt_flag = 1;
 			break;
 		case SC_INVISIBLE:
+		case SC__FEINTBOMB:			/* フェイントボム */
 			sc->option &= ~OPTION_SPECIALHIDING;
 			opt_flag = 1;
 			break;
@@ -11887,32 +11894,12 @@ int status_change_timer_sub(struct block_list *bl, va_list ap)
 
 	switch( type ) {
 	case SC_SIGHT:	/* サイト */
-	case SC_CONCENTRATE:
-		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
-			status_change_end(bl, SC_HIDING, -1);
-			status_change_end(bl, SC_CLOAKING, -1);
-			status_change_end(bl, SC_CLOAKINGEXCEED, -1);
-			status_change_end(bl, SC_NEWMOON, -1);
-			status_change_end(bl, SC__INVISIBILITY, -1);
-		}
-		if(sc->option & OPTION_SPECIALHIDING) {
-			status_change_end(bl, SC_INVISIBLE, -1);
-		}
+	case SC_CONCENTRATE:	/* 集中力向上 */
+		skill_detect(bl);		// ディティクト効果
 		break;
 	case SC_RUWACH:	/* ルアフ */
-		if(sc->option & (OPTION_HIDE | OPTION_CLOAKING | OPTION_SPECIALHIDING)) {
-			if(sc->option & (OPTION_HIDE | OPTION_CLOAKING)) {
-				status_change_end(bl, SC_HIDING, -1);
-				status_change_end(bl, SC_CLOAKING, -1);
-				status_change_end(bl, SC_CLOAKINGEXCEED, -1);
-				status_change_end(bl, SC_NEWMOON, -1);
-				status_change_end(bl, SC__INVISIBILITY, -1);
-			}
-			if(sc->option & OPTION_SPECIALHIDING) {
-				status_change_end(bl, SC_INVISIBLE, -1);
-			}
-			if(battle_check_target(src, bl, BCT_ENEMY) > 0)
-				battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,skilllv,tick,0);
+		if(skill_detect(bl)) {		// ディテクト効果で暴いた相手に
+			battle_skill_attack(BF_MAGIC,src,src,bl,AL_RUWACH,skilllv,tick,0);
 		}
 		break;
 	case SC_SIGHTBLASTER:

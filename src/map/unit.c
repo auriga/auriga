@@ -1087,7 +1087,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 				if(skill_num == AL_TELEPORT || skill_num == AL_WARP)
 					clif_skill_teleportmessage(src_sd,0);
 				else
-					clif_skill_fail(src_sd,skill_num,0,0,0);
+					clif_skill_fail(src_sd,skill_num,SKILLFAIL_MAP,0,0);
 			}
 			return 0;
 		}
@@ -1099,7 +1099,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 	if(sc && sc->data[SC_KYOMU].timer != -1) {
 		if(atn_rand()%100 < 10) {
 			if(src_sd)
-				clif_skill_fail(src_sd,skill_num,0,0,0);
+				clif_skill_fail(src_sd,skill_num,SKILLFAIL_FAILED,0,0);
 		}
 	}
 
@@ -1165,7 +1165,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 
 	if( (target = map_id2bl(target_id)) == NULL ) {
 		if(src_sd)
-			clif_skill_fail(src_sd,skill_num,0,0,0);
+			clif_skill_fail(src_sd,skill_num,SKILLFAIL_FAILED,0,0);
 		return 0;
 	}
 
@@ -1191,7 +1191,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 		case BD_ENCORE:					/* アンコール */
 			 // 前回使用した踊りがないとだめ
 			if(!src_sd->skill_dance.id || pc_checkskill(src_sd,src_sd->skill_dance.id) <= 0) {
-				clif_skill_fail(src_sd,skill_num,0,0,0);
+				clif_skill_fail(src_sd,skill_num,SKILLFAIL_FAILED,0,0);
 				return 0;
 			}
 			src_sd->skill_used.id = skill_num;
@@ -1483,7 +1483,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 	if(sc && sc->data[SC_KYOMU].timer != -1) {
 		if(atn_rand()%100 < 10) {
 			if(src_sd)
-				clif_skill_fail(src_sd,skill_num,0,0,0);
+				clif_skill_fail(src_sd,skill_num,SKILLFAIL_FAILED,0,0);
 		}
 	}
 
@@ -1507,7 +1507,7 @@ int unit_skilluse_pos2( struct block_list *src, int skill_x, int skill_y, int sk
 				if(skill_num == AL_TELEPORT)
 					clif_skill_teleportmessage(src_sd,0);
 				else
-					clif_skill_fail(src_sd,skill_num,0,0,0);
+					clif_skill_fail(src_sd,skill_num,SKILLFAIL_MAP,0,0);
 			}
 			return 0;
 		}
@@ -1954,7 +1954,7 @@ static int unit_attack_timer_sub(int tid,unsigned int tick,int id,void *data)
 	if(!battle_config.sdelay_attack_enable && (!src_sd || pc_checkskill(src_sd,SA_FREECAST) <= 0)) {
 		if(DIFF_TICK(tick , src_ud->canact_tick) < 0) {
 			if(src_sd)
-				clif_skill_fail(src_sd,1,4,0,0);
+				clif_skill_fail(src_sd,1,SKILLFAIL_INTERVAL,0,0);
 			return 0;
 		}
 	}

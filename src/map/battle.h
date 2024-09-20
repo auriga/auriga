@@ -623,6 +623,7 @@ extern struct Battle_Config {
 	int enable_pet_autofeed;
 	int enable_hom_autofeed;
 	int homun_status_max;
+	int skill_unit_interval_limit;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

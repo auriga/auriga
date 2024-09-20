@@ -877,6 +877,7 @@ enum {
 	SC_WEAPONBLOCK_ON		= 729,
 	SC_ADORAMUS				= 730,
 	SC_OVERHEAT_LIMITPOINT	= 731,
+	SC__FEINTBOMB			= 732,
 
 
 	// startでは使えないresistをアイテム側で全てクリアするための物

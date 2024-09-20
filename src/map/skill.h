@@ -54,6 +54,7 @@ struct skill_db {
 	int castcancel,cast_def_rate;
 	int inf2,maxcount[MAX_SKILL_LEVEL],skill_type;
 	int blewcount[MAX_SKILL_LEVEL];
+	int area[MAX_SKILL_LEVEL];
 	int hp[MAX_SKILL_LEVEL],sp[MAX_SKILL_LEVEL],hp_rate[MAX_SKILL_LEVEL],sp_rate[MAX_SKILL_LEVEL],zeny[MAX_SKILL_LEVEL];
 	unsigned int weapon;
 	int state,spiritball[MAX_SKILL_LEVEL],coin[MAX_SKILL_LEVEL],arrow_cost[MAX_SKILL_LEVEL],arrow_type;
@@ -71,6 +72,7 @@ struct skill_db {
 	int damage_rate[4];
 	int range_type;
 	int amotion_delay;
+	int autoshadowspell;
 	char name[31];
 };
 
@@ -204,6 +206,7 @@ int skill_get_inf2(int id);
 int skill_get_maxcount(int id,int lv);
 int skill_get_skill_type(int id);
 int skill_get_blewcount(int id,int lv);
+int skill_get_area(int id,int lv);
 int skill_get_unit_id(int id,int flag);
 int skill_get_unit_layout_type(int id,int lv);
 int skill_get_unit_interval(int id);
@@ -286,6 +289,7 @@ int skill_castend_pos(int tid, unsigned int tick, int id, void *data);
 
 // その他
 int skill_check_cloaking(struct block_list *bl);
+int skill_detect(struct block_list *bl);
 
 // スキル使用かどうかの判定。
 

@@ -1,4 +1,186 @@
 ----------------------------------------
+//1557 [2024/09/21] by Blaze
+
+・スキルDBに範囲スキルの範囲areaを指定できるように拡張（db/skill_db.txt, db/pre/skill_db_pre.txt skill.c, skill.h, doc/db_ref.txt）
+　ついでにスキル名修正など（db/skill_db.txt）
+
+・上記に伴い範囲スキルの処理を最適化（skill.c）
+　罠関係は発動時の効果範囲をunitのrangeではなくareaで判定させるように（skill.c）
+　R化前/後で効果範囲が変わっているアローシャワー、サプライズアタック、風魔手裏剣投げはskill_db_pre.txtで範囲指定するように（db/pre/skill_db_pre.txt）
+　※ブランディッシュスピアは対応見送り
+
+・battle_auriga.confに配置型スキルの消滅間際に効果を発動させないようにする「skill_unit_interval_limit」を追加（battle.c, battle.c, skill.c, conf/battle_auriga.conf）
+　　例）サイキックウェーブLv1で地面に1.5秒間配置し、効果を0.5秒間隔で発動するとき
+　　　yes:発動させない  例の場合は0秒、0.5秒、1.0秒の3回発動（本鯖仕様）
+　　　no :発動させる    例の場合は0秒、0.5秒、1.0秒、1.5秒の4回発動（旧Auriga仕様）
+　　※初期値はyes（LoVなど、これまでと1回分効果が減るスキルがあります）
+
+・上記に伴い、ロードオブヴァーミリオンの効果時間を変更（db/skill_cast_db.txt）
+
+・skill_db2.txtでオートシャドウスペル対象指定が出来るように（db/skill_db2.txt, skill.c, skill.h, clif.c, doc/db_ref.txt）
+
+・スキル失敗表示clif_skill_failのtypeをenum定義値で指定するように（clif.c, clif.h, skill.c, homun.c, vending.c, unit.c）
+
+・上記に伴い一部スキルの失敗メッセージを変更（skill.c, unit.c）
+
+・ハイドなど隠れている相手を暴くディティクト効果を子関数でまとめて処理させるように（skill.c, skill.h, status.c）
+　それに伴い、一部ディティクト効果でカモフラージュ、シャドウフォーム、朔月が解除できなかったのを修正
+
+・ウォーロックとアークビショップのスキルツリーで一部スキルのMaxLvが誤っていたのを修正（db/skill_tree.txt）
+　　Thanks refis さん
+
+・以下のスキルを変更・修正
+　[ルーンナイト]デスバウンド
+　・近接物理スキルによる反射でダメージ表示と状態異常解除が不正だったのを修正（battle.c）
+　・反射ダメージの桁溢れ対策（battle.c）
+　
+　[ウォーロック]コメット
+　[NPC]Mコメット
+　・オブジェクト設置スキルに変更、範囲を15x15から19x19セルに拡大・威力の距離判定を修正（skill.c）
+　・スタン効果が発動していなかったのを修正（db/skill_cast_db.txt）
+　
+　[シャドウチェイサー]フェイタルメナス
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・ダメージ与えた相手とテレポートする効果を削除（skill.c）
+　・全てのマップで使用可に変更（db/skill_db2.txt）
+　・ダメージ計算を修正、短剣装備時に2Hitする効果を追加（battle.c, db/skill_db.txt）
+　
+　[シャドウチェイサー]オートシャドウスペル
+　・クリムゾンロック、ヘルインフェルノ、ソウルエクスパンションを対象に追加（db/skill_db2.txt）
+　
+　[シャドウチェイサー]シャドウフォーム
+　・各種ディティクト効果で解除される際に確率で解除されるように（skill.c）
+　・使用者と離れて解除される距離を15セル以上から12セル以上に変更（skill.c）
+　
+　[シャドウチェイサー]トライアングルショット
+　・ダメージ計算を修正（battle.c）
+　
+　[シャドウチェイサー]ボディペインティング
+　・必要アイテムにフェイスペイントブラシを追加（db/skill_require_db.txt）
+　・ディティクト効果でカモフラージュ・シャドウフォームが解除できなかったのを修正、インビジビリティが解除できていたのを修正（skill.c）
+　
+　[シャドウチェイサー]フェイントボム
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・バックステップ後に姿を隠す効果を追加（status.c, status.h, skill.c, db/scdata_db.txt）
+　・ノックバック距離と範囲が固定だったのを修正（skill.c, db/skill_db.txt）
+　・ダメージ計算を修正（battle.c）
+　・攻撃相手にノックバック効果が発生していたのを修正（battle.c）
+　・PK不可の通常マップでダメージ2倍になるように変更（db/skill_db2.txt）
+　
+　[シャドウチェイサー]エスケープ
+　・設置用トラップが二重で消費されていたのを修正（skill.c）
+　・ディレイ、再使用時間、効果時間を修正（db/skill_cast_db.txt）
+　
+　[ロイヤルガード]バニシングポイント
+　・射程距離を7->11に修正（db/skill_db.txt）
+　
+　[ロイヤルガード]シールドプレス
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・単発から5Hit表示に変更（db/skill_db.txt）
+　・スタン効果を削除（skill.c）
+　・ダメージ計算を修正（battle.c）
+　
+　[ロイヤルガード]レイオブジェネシス
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_tree.txt）
+　・バンディング状態やインスピレーション状態でなくとも使用できるように変更（skill.c）
+　・ダメージ計算を修正、物理＋魔法ダメージから魔法ダメージのみに変更（battle.c）
+　・ディレイ、再使用時間、効果時間を修正（db/skill_cast_db.txt）
+　・消費HP変更、現在HPの3～15%消費だったのをMaxHPの1%消費に（db/skill_require_db.txt）
+　
+　[ロイヤルガード]インスピレーション
+　・一般マップなどで使用不可だったのをどこでも使用可に（skill_db2.txt）
+　
+　[修羅]双龍脚
+　・スキル使用後のディレイに固有ディレイを追加（skill.c）
+　・ディレイは天羅地網、大纒崩捶を習得時に発生するように変更（skill.c）
+　・ダメージ計算を修正（battle.c）
+　
+　[修羅]地雷震
+　・ディティクト効果でカモフラージュ・シャドウフォームが解除できなかったのを修正、インビジビリティが解除できていたのを修正（skill.c）
+　
+　[修羅]大纏崩捶
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・ダメージ計算を修正（battle.c）
+　
+　[修羅]號砲
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・HP/SP消費の処理位置を変更（battle.c, skill.c, db/skill_require_db.txt）
+　
+　[修羅]爆気散弾
+　・判定を強制遠距離に変更（db/skill_db2.txt）
+　
+　[修羅]破碎柱
+　・気弾の消費タイミングを反撃時ではなくスキル使用時に変更（skill.c, db/skill_require_db.txt）
+　・発動率を修正（battle.c, status.c）
+　・反撃ダメージの計算を修正（skill.c, battle.c）
+　・ノックバック後の衝突ダメージを追加（battle.c, skill.c）
+　・反撃スキルのダメージ倍率などの定義を追加（db/skill_db2.txt）
+　
+　[修羅]呪縛陣
+　・気弾の消費タイミングをスキル使用時ではなく効果発動時に変更（skill.c）
+　・スキル使用時にHP消費するように（db/skill_require_db.txt）
+　
+　[修羅]閃電歩
+　・発動率を修正（battle.c, status.c）
+　
+　[修羅]修羅身弾
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　
+　[修羅]潜龍昇天
+　・爆裂波動の効果は習得レベルに依存するように変更（skill.c）
+　
+　[修羅]羅刹破凰撃
+　・爆裂波動状態でなくても使用可能に（db/skill_require_db.txt）
+　・コンボ時のダメージ計算を修正（battle.c）
+　
+　[修羅]点穴 -默-
+　・ダメージ発生に成功率判定を追加（skill.c）
+　
+　[修羅]点穴 -球-
+　[修羅]点穴 -反-
+　・消費HPが現在HPからの比率だったのを最大HPの比率で消費するように修正（db/skill_require_db.txt）
+　
+　[ミンストレル/ワンダラー]メタリックサウンド
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・固有ディレイを修正（db/skill_cast_db.txt）
+　・ダメージ相手のSP減少効果を削除（battle.c）
+　
+　[ミンストレル/ワンダラー]シビアレインストーム
+　・楽器・鞭を装備時でも使用可に（db/skill_require_db.txt）
+　・固有ディレイ、持続時間を変更（db/skill_cast_db.txt）
+　・ダメージ計算を修正（battle.c）
+　
+　[ソーサラー]ファイアーウォーク
+　[ソーサラー]エレクトリックウォーク
+　・耐久回数が1回だったのを1～3回のランダム回数に変更（skill.c）
+　
+　[ソーサラー]スペルフィスト
+　・MaxLvを5->10に拡張（skill.c, db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・効果回数がLv+1回だったのをLv*7回に増加（status.c）
+　
+　[ソーサラー]ポイズンバスター
+　・ダメージ計算を修正（battle.c）
+　
+　[ソーサラー]ヴェラチュールスピアー
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・単発から3Hit表示に変更（db/skill_db.txt）
+　・ダメージ計算を修正、物理＋魔法ダメージから魔法ダメージのみに変更（battle.c）
+　・スタン効果を追加（skill.c, db/skill_cast_db.txt）
+　
+　[ジェネティック]カートトルネード
+　・MaxLvを5->10に拡張（db/skill_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・ノックバック効果を削除（db/skill_db.txt）
+　・単発から3Hit表示に変更（db/skill_db.txt）
+　・ダメージ計算を修正（battle.c）
+　
+　[ジェネティック]スポアエクスプロージョン
+　・MaxLvを5->10に拡張（skill.c, db/skill_db.txt, db/skill_require_db.txt, db/skill_cast_db.txt, db/skill_tree.txt）
+　・単発から3Hit表示に変更（db/skill_db.txt）
+　・誤って魔法攻撃を指定していたのを武器攻撃に修正（skill.c）
+　・ダメージ計算を修正、周辺の対象にはダメージ減衰していたのを削除（battle.c）
+　・PK不可の通常マップでダメージ2倍になるように変更（db/skill_db2.txt）
+
+----------------------------------------
 //1556 [2024/09/20] by refis
 
 ・悪夢のジターバグメモリアル実装（npc_memorial_jitterbug.sc）

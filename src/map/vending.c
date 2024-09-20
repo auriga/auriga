@@ -290,7 +290,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 	vending_skill_lv = pc_checkskill(sd, MC_VENDING);
 	if( vending_skill_lv < 1 || !pc_iscarton(sd) )
 	{
-		clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
+		clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 		return;
 	}
 
@@ -315,7 +315,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 	// check if at least 1 item, and not more than possible
 	if( count < 1 || count > MAX_VENDING || count > 2 + vending_skill_lv )
 	{
-		clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
+		clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 		return;
 	}
 
@@ -332,7 +332,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 		if( idx < 0 || idx >= MAX_CART || amount <= 0 )
 		{
 			memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-			clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
+			clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 			return;
 		}
 
@@ -346,7 +346,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 		if( pc_cartitem_amount(sd, idx, amount) < 0 )
 		{
 			memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-			clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
+			clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 			return;
 		}
 
@@ -358,7 +358,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 		else if( sd->vending[i].value < 0 )
 		{ // hack
 			memset(&sd->vending[0], 0, sizeof(struct vending) * MAX_VENDING);
-			clif_skill_fail(sd, MC_VENDING, 0, 0, 0);
+			clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 			return;
 		}
 	}
