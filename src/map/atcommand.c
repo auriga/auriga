@@ -4943,9 +4943,14 @@ int atcommand_resetstate(const int fd, struct map_session_data* sd, AtCommandTyp
  */
 int atcommand_resetskill(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
+	int flag = 0;
+
 	nullpo_retr(-1, sd);
 
-	pc_resetskill(sd, -1);
+	if (message && *message)
+		flag = atoi(message);
+
+	pc_resetskill(sd, flag);
 
 	return 0;
 }

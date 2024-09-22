@@ -33,7 +33,7 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 		mes "[バグりましたか？]";
 		mes "ノビさんの初期化しますね。";
 		next;
-		resetskill;
+		resetskill 2;
 		set SkillPoint,JobLevel-1;
 		break;
 	case Job_Swordman:
@@ -50,14 +50,14 @@ izlude.gat,125,65,4	script	バグりましたか？	825,{
 		mes "[バグりましたか？]";
 		mes "1次職さんの初期化しますね。";
 		next;
-		resetskill;
+		resetskill 2;
 		set SkillPoint,9+JobLevel-1;	// ノビの9Point+今のJob-1
 		break;
 	default:
 		mes "[バグりましたか？]";
 		mes "2次職さんの初期化しますね。";
 		next;
-		resetskill;
+		resetskill 2;
 		set SkillPoint,58+JobLevel-1;	// ノビの9Point+1次Job50(49P)+現在
 		break;
 	}

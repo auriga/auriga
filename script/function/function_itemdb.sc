@@ -33,12 +33,8 @@ function	script	ItemdbPartyCall	{
 function	script	ItemdbResetSkill	{
 	if(Weight || checkcart() || checkfalcon() || checkriding())
 		return;
-	set '@lv,getskilllv(1);	// 基本スキル
-	resetskill 0;		// クエストスキルはリセットしない
-	if('@lv > 0) {
-		skill 1,'@lv,0;
-		set SkillPoint,SkillPoint - '@lv;
-	}
+	resetskill;		// クエストスキル・基本スキルはリセットしない
+
 	return;
 }
 

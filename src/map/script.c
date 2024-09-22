@@ -8906,7 +8906,7 @@ int buildin_resetstatus(struct script_state *st)
  */
 int buildin_resetskill(struct script_state *st)
 {
-	int flag = -1;
+	int flag = 0;
 
 	if(st->end > st->start+2)
 		flag = conv_num(st,& (st->stack->stack_data[st->start+2]));

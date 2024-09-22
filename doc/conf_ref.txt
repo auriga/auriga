@@ -816,11 +816,6 @@ quest_skill_learn
 	これをyesにするとクェストスキルが普通に表示されてスキルポイントを使って習得することができます。
 	デフォルトは noです。
 
-quest_skill_reset
-	スキルをリセットする時クェストスキルをリセットするかどうかです。
-	デフォルトはyesです。
-	noにしてもquest_skill_learnをyesにすればリセットされます。
-
 basic_skill_check
 	座り、交換、パーティ結成、チャットルーム作り等の時基本スキルをチェックするかどうかです。 
 	これをnoにすれば座り、交換等の基本スキルが必要な行動を基本スキルに関係なく使うことができます。
@@ -1866,7 +1861,6 @@ monster_loot_type: 0
 mob_skill_use: yes
 mob_count_rate: 100
 quest_skill_learn: no
-quest_skill_reset: yes
 basic_skill_check: yes
 guild_emperium_check: yes
 guild_emblem_colors: 0

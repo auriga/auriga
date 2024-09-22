@@ -293,7 +293,7 @@ valkyrie.gat,48,86,4	script	ƒ”ƒ@ƒ‹ƒLƒŠ[	811,{
 	jobchange Job_Novice,UPPER_HIGH;
 	set BaseLevel,1;
 	resetstatus;
-	resetskill;
+	resetskill 3;
 	setoption 0x0000;
 	skill 143,1,0;
 	skill 142,1,0;

@@ -130,6 +130,7 @@ static int pc_nightmare_drop(struct map_session_data *sd,short flag);
 static int pc_equiplookall(struct map_session_data *sd);
 static int pc_checkitemlimit(struct map_session_data *sd, int idx, unsigned int tick, unsigned int now, int first);
 static int pc_setitemlimit(struct map_session_data *sd);
+static int pc_calc_needskillpoint(struct map_session_data *sd, int class_level);
 
 
 /*==========================================
@@ -1681,6 +1682,31 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
 }
 
 /*==========================================
+ * 現在の職業が何次職かを取得
+ *  戻り値= 0:ノービス
+ *          1:一次職、TK、GS、NJ、SNV、サモナー
+ *          2:二次職、SG、SL、RL、KG、OB、ESNV、スピリットハンドラー
+ *          3:三次職、SE、RE
+ *------------------------------------------
+ */
+static int pc_get_classlevel(struct map_session_data *sd)
+{
+	int classlevel = 0;
+
+	nullpo_retr(0, sd);
+
+	if(pc_is1stclass(sd)) {
+		classlevel = 1;
+	} else if(pc_is2ndclass(sd)) {
+		classlevel = 2;
+	} else if(pc_is3rdclass(sd)) {
+		classlevel = 3;
+	}
+
+	return classlevel;
+}
+
+/*==========================================
  * 覚えられるスキルの計算
  *------------------------------------------
  */
@@ -1705,61 +1731,15 @@ int pc_calc_skilltree(struct map_session_data *sd)
 
 	if(battle_config.skillup_limit) {
 		int skill_point = pc_calc_skillpoint(sd);
-		if(skill_point < 9) {
-			c = 0;
-		} else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && c > PC_JOB_TF) {
-			switch(c) {
-				case PC_JOB_KN:
-				case PC_JOB_CR:
-				case PC_JOB_RK:
-				case PC_JOB_LG:
-					c = PC_JOB_SM;
-					break;
-				case PC_JOB_PR:
-				case PC_JOB_MO:
-				case PC_JOB_AB:
-				case PC_JOB_SR:
-					c = PC_JOB_AL;
-					break;
-				case PC_JOB_WZ:
-				case PC_JOB_SA:
-				case PC_JOB_WL:
-				case PC_JOB_SO:
-					c = PC_JOB_MG;
-					break;
-				case PC_JOB_BS:
-				case PC_JOB_AM:
-				case PC_JOB_NC:
-				case PC_JOB_GN:
-					c = PC_JOB_MC;
-					break;
-				case PC_JOB_HT:
-				case PC_JOB_BA:
-				case PC_JOB_DC:
-				case PC_JOB_RA:
-				case PC_JOB_MI:
-				case PC_JOB_WA:
-					c = PC_JOB_AC;
-					break;
-				case PC_JOB_AS:
-				case PC_JOB_RG:
-				case PC_JOB_GC:
-				case PC_JOB_SC:
-					c = PC_JOB_TF;
-					break;
-				case PC_JOB_SG:
-				case PC_JOB_SL:
-					c = PC_JOB_TK;
-					break;
-				case PC_JOB_KG:
-				case PC_JOB_OB:
-					c = PC_JOB_NJ;
-					break;
-				case PC_JOB_RL:
-					c = PC_JOB_GS;
-					break;
-				default:
-					break;
+		if(!pc_isdoram(sd)) {		// ドラム系列以外
+			if(skill_point < pc_calc_needskillpoint(sd,1)) {	// 一次職スキル習得不可（基本スキル未習得）であれば
+				c = PC_JOB_NV;			// ノービス扱い
+			} else if( pc_get_classlevel(sd) > 1 && skill_point < pc_calc_needskillpoint(sd,2)) {	// 二次職以上で一次職のスキルポイント未消化であれば
+				c = pc_get_base_job(c,1);	// 一次職扱い
+			} else if( pc_get_classlevel(sd) > 2 && skill_point < pc_calc_needskillpoint(sd,3)) {	// 三次職以上で一次職/二次職のスキルポイント未消化であれば
+				c = pc_get_base_job(c,2);	// 二次職扱い
+			} else if( pc_get_classlevel(sd) > 3 && skill_point < pc_calc_needskillpoint(sd,4)) {	// 三次職以上で一次職～三次職のスキルポイント未消化であれば
+				c = pc_get_base_job(c,3);	// 三次職扱い
 			}
 		}
 	}
@@ -4890,6 +4870,79 @@ int pc_get_base_class(int class_, int type)
 }
 
 /*==========================================
+ * Jobから前職業のJobを取得
+ *------------------------------------------
+ */
+int pc_get_base_job(int job, int type)
+{
+	/* 4次職から3次職に変換 */
+	if(type < 4) {
+		switch(job){
+			case PC_JOB_DR:  job = PC_JOB_RK; break;		// ドラゴンナイト -> ルーンナイト
+			case PC_JOB_MT:  job = PC_JOB_NC; break;		// マイスター -> メカニック
+			case PC_JOB_SHC: job = PC_JOB_GC; break;		// シャドウクロス -> ギロチンクロス
+			case PC_JOB_AG:  job = PC_JOB_WL; break;		// アークメイジ -> ウォーロック
+			case PC_JOB_CD:  job = PC_JOB_AB; break;		// カーディナル -> アークビショップ
+			case PC_JOB_WH:  job = PC_JOB_RA; break;		// ウィンドホーク -> レンジャー
+			case PC_JOB_IG:  job = PC_JOB_LG; break;		// インペリアルガード -> ロイヤルガード
+			case PC_JOB_BO:  job = PC_JOB_GN; break;		// バイオロ -> ジェネティック
+			case PC_JOB_ABC: job = PC_JOB_SC; break;		// アビスチェイサー -> シャドウチェイサー
+			case PC_JOB_EM:  job = PC_JOB_SO; break;		// エレメンタルマスター -> ソーサラー
+			case PC_JOB_IQ:  job = PC_JOB_SR; break;		// インクイジター -> 修羅
+			case PC_JOB_TRB: job = PC_JOB_MI; break;		// トルバドゥール -> ミンストレル
+			case PC_JOB_TRV: job = PC_JOB_WA; break;		// トルヴェール -> ワンダラー
+			case PC_JOB_SKE: job = PC_JOB_SE; break;		// 天帝 -> 星帝
+			case PC_JOB_SOA: job = PC_JOB_RE; break;		// ソウルアセティック -> ソウルリーパー
+		}
+	}
+
+	/* 3次職から2次職に変換 */
+	if(type < 3) {
+		switch(job){
+			case PC_JOB_RK: job = PC_JOB_KN; break;		// ルーンナイト -> ナイト
+			case PC_JOB_WL: job = PC_JOB_WZ; break;		// ウォーロック -> ウィザード
+			case PC_JOB_RA: job = PC_JOB_HT; break;		// レンジャー -> ハンター
+			case PC_JOB_AB: job = PC_JOB_PR; break;		// アークビショップ -> プリースト
+			case PC_JOB_NC: job = PC_JOB_BS; break;		// メカニック -> ブラックスミス
+			case PC_JOB_GC: job = PC_JOB_AS; break;		// ギロチンクロス -> アサシン
+			case PC_JOB_LG: job = PC_JOB_CR; break;		// ロイヤルガード -> クルセイダー
+			case PC_JOB_SO: job = PC_JOB_SA; break;		// ソーサラー -> セージ
+			case PC_JOB_MI: job = PC_JOB_BA; break;		// ミンストレル -> バード
+			case PC_JOB_WA: job = PC_JOB_DC; break;		// ワンダラー -> ダンサー
+			case PC_JOB_SR: job = PC_JOB_MO; break;		// 修羅 -> モンク
+			case PC_JOB_GN: job = PC_JOB_AM; break;		// ジェネティック -> アルケミスト
+			case PC_JOB_SC: job = PC_JOB_RG; break;		// シャドウチェイサー -> ローグ
+			case PC_JOB_SE: job = PC_JOB_SG; break;		// 星帝 -> 拳聖
+			case PC_JOB_RE: job = PC_JOB_SL; break;		// ソウルリーパー -> ソウルリンカー
+			case PC_JOB_SK: job = PC_JOB_KG; break;		// 蜃気楼 -> 影狼
+			case PC_JOB_SN: job = PC_JOB_OB; break;		// 不知火 -> 朧
+			case PC_JOB_NW: job = PC_JOB_RL; break;		// ナイトウォッチ -> リベリオン
+			case PC_JOB_HN: job = PC_JOB_ESNV; break;	// ハイパーノービス -> スーパーノービス(限界突破)
+		}
+	}
+
+	/* 2次職から1次職に変換 */
+	if(type < 2) {
+		switch(job){
+			case PC_JOB_KN: case PC_JOB_CR: job = PC_JOB_SM; break;		// ナイト/クルセイダー -> ソードマン
+			case PC_JOB_PR: case PC_JOB_MO: job = PC_JOB_AL; break;		// プリースト/モンク -> アコライト
+			case PC_JOB_WZ: case PC_JOB_SA: job = PC_JOB_MG; break; 	// ウィザード/セージ -> マジシャン
+			case PC_JOB_BS: case PC_JOB_AM: job = PC_JOB_MC; break;		// ブラックスミス/アルケミスト -> マーチャント
+			case PC_JOB_HT: case PC_JOB_BA: case PC_JOB_DC: job = PC_JOB_AC; break; 		// ハンター/バード/ダンサー -> アーチャー
+			case PC_JOB_AS: case PC_JOB_RG: job = PC_JOB_TF; break;		// アサシン/ローグ -> シーフ
+			case PC_JOB_SG: case PC_JOB_SL: job = PC_JOB_TK; break;		// 拳聖/ソウルリンカー -> テコンキッド
+			case PC_JOB_DK: case PC_JOB_DA: job = PC_JOB_MB; break;		// デスナイト/ダークコレクター -> キョンシー
+			case PC_JOB_ESNV: job = PC_JOB_SNV; break;		// スーパーノービス(限界突破) -> スーパーノービス
+			case PC_JOB_KG: case PC_JOB_OB: job = PC_JOB_NJ; break;		// 影狼/朧 -> 忍者
+			case PC_JOB_RL:   job = PC_JOB_GS;  break;		// リベリオン -> ガンスリンガー
+			case PC_JOB_SH:   job = PC_JOB_SUM; break;		// スピリットハンドラー -> サモナー
+		}
+	}
+
+	return job;
+}
+
+/*==========================================
  * Baseレベルアップ
  *------------------------------------------
  */
@@ -5776,13 +5829,86 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
 }
 
 /*==========================================
+ * 必要な使用済みスキルポイントを取得
+ *------------------------------------------
+ */
+static int pc_calc_needskillpoint(struct map_session_data *sd, int class_level)
+{
+	int point = 0;
+	int max = 0;
+
+	nullpo_retr(0, sd);
+
+	switch( class_level ) {
+	case 0:		// ノービススキル
+		point = 0;	// ノービススキルは必要ポイント0
+		max = 0;
+		break;
+	case 1:		// 一次職スキル
+		if(pc_isdoram(sd)) {		// ドラム系列
+			point = 0;	// ドラムスキルは必要ポイント0
+			max = 0;
+			break;
+		} else {
+			point = pc_readglobalreg(sd,"PC_USESKILLPOINT_0TH");
+			max = battle_config.max_skillpoint_nv;
+		}
+		break;
+	case 2:		// 二次職スキル
+		point = pc_readglobalreg(sd,"PC_USESKILLPOINT_1ST");
+		if(pc_isexclass(sd)) {		// 忍者・ガンスリンガー系列
+			max = battle_config.max_skillpoint_ex1st;
+		} else if(pc_issnovice(sd)) {		// スーパーノービス系列
+			max = battle_config.max_skillpoint_snv;
+		} else if(pc_isdoram(sd)) {		// ドラム系列
+			max = battle_config.max_skillpoint_doram;
+		} else {
+			max = battle_config.max_skillpoint_1st;
+		}
+		break;
+	case 3:		// 三次職スキル
+		point = pc_readglobalreg(sd,"PC_USESKILLPOINT_2ND");
+		if(pc_istaekwon(sd)) {		// テコン系列
+			max = battle_config.max_skillpoint_tk2nd;
+		} else if(pc_isexclass(sd)) {		// 忍者・ガンスリンガー系列
+			max = battle_config.max_skillpoint_ex2nd;
+		} else if(pc_issnovice(sd)) {		// スーパーノービス系列
+			max = battle_config.max_skillpoint_esnv;
+		} else if(pc_isupper(sd)) {			// 転生職
+			max = battle_config.max_skillpoint_2nd;
+		} else {
+			max = battle_config.max_skillpoint_n2nd;
+		}
+		break;
+	case 4:		// 四次職
+		point = pc_readglobalreg(sd,"PC_USESKILLPOINT_3RD");
+		if(pc_istaekwon(sd)) {		// テコン系列
+			max = battle_config.max_skillpoint_tk3rd;
+		} else if(pc_isupper(sd)) {			// 転生職
+			max = battle_config.max_skillpoint_3rd;
+		} else {
+			max = battle_config.max_skillpoint_n3rd;
+		}
+		break;
+	}
+
+	// 転職記録が無い場合 もしくは 転職記録が最大値を超えている場合
+	if(point == 0 && max > 0 || point > max) {
+		point = max;
+	}
+
+	return point;
+}
+
+/*==========================================
  * スキル取得可能かどうか
  *------------------------------------------
  */
 static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 {
-	int skill_point,up_level;
+	int skill_point,need_point;
 	struct skill_tree_entry *st;
+	char output[100];
 
 	nullpo_retr(0, sd);
 
@@ -5790,18 +5916,38 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 	if(st == NULL)
 		return 0;
 
+	// 現在使用済みスキルポイントを取得
 	skill_point = pc_calc_skillpoint(sd);
+	
+	// 必要な使用済みスキルポイントを取得
+	need_point = pc_calc_needskillpoint(sd, st->class_level);
 
-	if(skill_point < 9 || pc_isdoram(sd))
-		up_level = 0;
-	else if(sd->status.skill_point >= sd->status.job_level && skill_point < 58 && (pc_is2ndclass(sd) || pc_is3rdclass(sd)))
-		up_level = 1;
-	else if(pc_is2ndclass(sd))
-		up_level = 2;
-	else
-		up_level = 3;
+	// 必要な使用済みスキルポイントに達していなければNG
+	if(skill_point  < need_point) {
+		// スキルランクごとにメッセージ表示
+		switch( st->class_level ){
+		case 1:
+			snprintf(output, sizeof(output), msg_txt(213), need_point - skill_point);		// 基本スキル %d個を上げてください。
+			clif_disp_onlyself(sd->fd, output);
+			break;
+		case 2:
+			clif_msgstringtable3(sd, 1566, need_point - skill_point);	// 1次職スキル %d個をもっと上げてください。
+			break;
+		case 3:
+			clif_msgstringtable3(sd, 1567, need_point - skill_point);	// 1次または2次職スキル %d個を上げてください。
+			break;
+		case 4:
+			clif_msgstringtable3(sd, 3690, need_point - skill_point);	// 1次、2次、3次職スキル %d個を上げてください。
+			break;
+		default:
+			snprintf(output, sizeof(output), msg_txt(214), need_point - skill_point);		// 下位職スキル %d個を上げてください。
+			clif_disp_onlyself(sd->fd, output);
+			break;
+		}
+		return 0;
+	}
 
-	return (st->class_level <= up_level);
+	return 1;
 }
 
 /*==========================================
@@ -5967,12 +6113,13 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 
 	nullpo_retv(sd);
 
-	if(flag < 0)
-		flag = battle_config.quest_skill_reset;
-
 	for(i=1; i<MAX_PCSKILL; i++) {
 		if((skill = pc_checkskill2(sd,i)) > 0) {
-			if(!(skill_get_inf2(i)&INF2_QUEST) || battle_config.quest_skill_learn) {
+			if(sd->status.skill[i].id == NV_BASIC && !(flag&2)) {
+				// flagが2以外の場合は基本スキルはリセットしない
+				continue;
+			}
+			else if(!(skill_get_inf2(i)&INF2_QUEST) || battle_config.quest_skill_learn) {
 				if(!sd->status.skill[i].flag) {
 					sd->status.skill_point += skill;
 				} else if(sd->status.skill[i].flag > 2) {
@@ -5980,8 +6127,8 @@ void pc_resetskill(struct map_session_data* sd, int flag)
 				}
 				sd->status.skill[i].lv = 0;
 			}
-			else if(flag) {
-				// クエストスキルもリセットする
+			else if(flag&1) {
+				// flagが1の場合はクエストスキルもリセットする
 				sd->status.skill[i].lv = 0;
 			}
 			sd->status.skill[i].flag = 0;
@@ -7096,6 +7243,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	int i;
 	int b_class = 0;
 	int joblv_nochange = 0;
+	int prev_classlevel;
+	int skill_point;
 
 	nullpo_retr(0, sd);
 
@@ -7139,6 +7288,9 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	   sd->status.class_ == b_class)	// SEX_FEMALEは影狼になれない、SEX_MALEは朧になれない
 		return 1;
 
+	// 前職業の段階を保持
+	prev_classlevel = pc_get_classlevel(sd);
+
 	sd->status.class_ = sd->view_class = b_class;
 	sd->status.style = 0;
 
@@ -7166,6 +7318,43 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
+
+	// 前職業から段階が進んでいる場合
+	if(pc_get_classlevel(sd) > prev_classlevel) {
+		skill_point = pc_calc_skillpoint(sd);	// 使用済みスキルポイントを取得
+		switch(prev_classlevel) {
+		case 0:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_0TH",sd->status.skill_point + skill_point);
+			break;
+		case 1:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_1ST",sd->status.skill_point + skill_point);
+			break;
+		case 2:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_2ND",sd->status.skill_point + skill_point);
+			break;
+		case 3:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_3RD",sd->status.skill_point + skill_point);
+			break;
+		}
+	}
+
+	// 前職業から段階が戻っている場合
+	if(pc_get_classlevel(sd) < prev_classlevel) {
+		switch(pc_get_classlevel(sd)) {
+		case 0:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_0TH",0);
+			// fall through
+		case 1:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_1ST",0);
+			// fall through
+		case 2:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_2ND",0);
+			// fall through
+		case 3:
+			pc_setglobalreg(sd,"PC_USESKILLPOINT_3RD",0);
+			break;
+		}
+	}
 
 	status_calc_pc(sd,0);
 	pc_checkallowskill(sd);

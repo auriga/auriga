@@ -1,4 +1,65 @@
 ----------------------------------------
+//1558 [2024/09/22] by Blaze
+
+・3次職のスキルが下位スキルを未消費でも習得できていたのを以下のように修正（pc.c, pc.h, battle.c, battle.h, pc.c, conf/battle_auriga.conf）
+　jobchange時に以下のキャラ変数に使用スキルポイントを保持するように
+　　ノービス -> 1次職転職時 ： PC_USESKILLPOINT_0TH
+　　1次職 -> 2次職転職時    ： PC_USESKILLPOINT_1ST
+　　2次職 -> 3次職転職時    ： PC_USESKILLPOINT_2ND
+　　3次職 -> 4次職転職時    ： PC_USESKILLPOINT_3RD
+
+　スキルポイント割り振り時に前職の使用ポイントを判定するように変更。
+　（これに伴い、1次職をJobLv40～49で転職したときなどでも正常に使用ポイントを判定できるように）
+
+　キャラ変数の転職記録が無い場合（Patch1558以前のキャラなど）は以下のbattle_confの値を参照し、使用済みポイントとして算出、
+　また、大幅にスキルポイント使用している場合は以下のbattle_confの値を上限とします。
+　　ノービス
+　　max_skillpoint_nv: 9
+　　１次職（未転生・転生共通・テコンキッド）
+　　max_skillpoint_1st: 58
+　　２次職（未転生）
+　　max_skillpoint_n2nd: 107
+　　３次職（未転生）
+　　max_skillpoint_n3rd: 176
+　　上位２次職
+　　max_skillpoint_2nd: 127
+　　３次職
+　　max_skillpoint_3rd: 196
+　　特殊２次職（テコンキッド系列）
+　　max_skillpoint_tk2nd: 107
+　　特殊３次職（テコンキッド系列）
+　　max_skillpoint_tk3rd: 176
+　　特殊１次職（忍者・ガンスリンガー系列）
+　　max_skillpoint_ex1st: 78
+　　特殊２次職（忍者・ガンスリンガー系列）
+　　max_skillpoint_ex2nd: 147
+　　スーパーノービス
+　　max_skillpoint_snv: 107
+　　スーパーノービス（限界突破）
+　　max_skillpoint_esnv: 176
+　　サモナー
+　　max_skillpoint_doram: 59
+
+・下位スキルポイントが未消費でスキルポイント割り振りに失敗した場合にメッセージ表示するように（pc.c, conf/msg_auriga.conf）
+
+・スーパーノービス(限界突破)とスピリットハンドラーは２次職扱い、サモナーは１次職扱いに変更（pc.h）
+
+・サモナーのスキルは１次職扱いとするように変更（db/skill_tree.txt）
+
+・スキルリセットを行うスクリプト命令/@コマンドのresetskillを仕様変更（pc.c, script.c, atcommand.c, doc/script_ref.txt）
+　引数なしではクエストスキルおよび基本スキルはリセットしないように　※ドラム基本スキルはリセットします
+　引数1指定でクエストスキル含めてリセット（従来どおり）
+　引数2指定で基本スキルを含めてリセット、
+　引数3指定でクエストスキル・基本スキル含めた全てのスキルをリセットするように。
+　-1指定のbattle_auriga.conf依存は廃止。
+
+・上記に伴い、battle_auriga.confの「quest_skill_reset」を廃止（battle.c, battle.h, pc.c, conf/battle_auriga.conf, doc/conf_ref.txt）
+
+・スキルリセットNPCのスクリプトを一部修正（script/npc/job/npc_job_transmigration.sc, script/sample/npc_debug_revive.sc）
+
+・キラキラスティック使用時のスクリプトを一部修正（script/function/function_itemdb.sc）
+
+----------------------------------------
 //1557 [2024/09/21] by Blaze
 
 ・スキルDBに範囲スキルの範囲areaを指定できるように拡張（db/skill_db.txt, db/pre/skill_db_pre.txt skill.c, skill.h, doc/db_ref.txt）
