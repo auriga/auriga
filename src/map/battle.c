@@ -441,7 +441,11 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 		}
 	}
 
-	if(tmd && tmd->mode&MD_SKILLIMMUNITY && skill_num > 0)
+	if(tmd && ((tmd->mode&MD_SKILLIMMUNITY && (flag&BF_SKILL)) ||
+				(tmd->mode&MD_IGNORE_MELEE && (flag&BF_WEAPON)) ||
+				(tmd->mode&MD_IGNORE_MAGIC && (flag&BF_MAGIC)) ||
+				(tmd->mode&MD_IGNORE_RANGED && (flag&BF_LONG)) ||
+				(tmd->mode&MD_IGNORE_MISC && (flag&BF_MISC)) ))
 		damage = 0;
 
 	if(sc && sc->count > 0) {
@@ -1151,6 +1155,17 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 			damage = (map[bl->m].flag.damage_rate < 0)? 0: damage * map[bl->m].flag.damage_rate / 100;
 			if(damage < 1)
 				damage = (!battle_config.skill_min_damage && flag&BF_MAGIC && src->type == BL_PC)? 0: 1;
+		}
+
+		// mob mode
+		if(bl->type == BL_MOB) {
+			// –{—ˆ‚Íd•¡‚·‚é‚ª”r‘¼ˆµ‚¢‚ÅÀ‘•‚µ‚Ä‚¨‚­
+			if(status_get_mode(bl)&MD_DAMAGEREDUCTION_1000)
+				damage = damage / 1000;
+			else if(status_get_mode(bl)&MD_DAMAGEREDUCTION_100)
+				damage = damage / 100;
+			else if(status_get_mode(bl)&MD_DAMAGEREDUCTION_10)
+				damage = damage / 10;
 		}
 	}
 

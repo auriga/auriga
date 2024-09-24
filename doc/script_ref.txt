@@ -2100,6 +2100,21 @@ AurigaNPCScript
 			<position>が0のときは全てのカードを取り除きます。
 			1～4の数字を指定した場合はその箇所のカードのみを取り除くことができます。
 
+		setequipcardid命令
+			setequipcardid(<num>,<pos>,<card_id>[,<flag>])
+
+			<num>		1-22までの整数を指定します。詳しくはgetequipidを参照のこと。
+			<pos>		0-3までの整数を指定します。
+			<card_id>	整数
+			<flag>		以下の数値を加算して指定、省略可
+					　0x1	装備を再装着
+					　0x2	更新後装備をプレビュー表示
+					　0x4	精練値を0にする
+
+			指定した部位のアイテムの<pos>に刺さっているカードを<card_id>にした後<flag>の動作をします
+			<card_id>が0の場合、カードは削除されます
+			<flag>を省略した場合、追加動作しません
+
 		wedding命令
 			wedding;
 
@@ -2352,6 +2367,11 @@ AurigaNPCScript
 			time		召喚時間（秒）
 
 			<merc_id>で指定した傭兵を<time>秒の間召喚します。
+
+		delmerc命令
+			delmerc;
+
+			傭兵を解雇します。
 
 		openbook命令
 			openbook <itemid>[,<page>];

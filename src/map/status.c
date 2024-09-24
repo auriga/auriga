@@ -7151,7 +7151,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		return 0;
 
 	// ボス属性には無効(ただしカードによる効果は適用される)
-	if( mode&MD_BOSS && !(flag&1) && status_is_disable(type,0x01) ) {
+	if( (mode&MD_BOSS || mode&MD_STATUSCHANGEIMMUNITY) && !(flag&1) && status_is_disable(type,0x01) ) {
 		if(type == SC_BLESSING && !battle_check_undead(race,elem) && race != RCT_DEMON) {
 			// ブレスは不死/悪魔でないなら効く
 			;

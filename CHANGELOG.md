@@ -1,4 +1,17 @@
 ----------------------------------------
+//1559 [2024/09/25] by refis
+
+・スクリプト命令[delmerc]、[setequipcardid]追加（script_ref.txt, script.c）
+	Thanks フリージア さん、Dallen さん
+
+・mob_dbのmodeを追加（db_ref.txt, battle.c, mob.c, skill.c, status.*）
+	-> ボス属性の持つ悪性状態異常・ハイディング系・ノックバックの各無効特性は維持しています
+	-> 各種攻撃無効、ダメージ補正の計算位置は暫定です
+
+・装備一括解除[0xbad]、[0xbf5]を実装（packet_db.lua, clif.c）
+	Thanks Dallen さん
+
+----------------------------------------
 //1558 [2024/09/22] by Blaze
 
 ・3次職のスキルが下位スキルを未消費でも習得できていたのを以下のように修正（pc.c, pc.h, battle.c, battle.h, pc.c, conf/battle_auriga.conf）

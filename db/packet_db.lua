@@ -1961,7 +1961,7 @@ p(0x0ba9,-1)
 p(0x0baa,22)
 p(0x0bab,22)
 p(0x0bac,22)
-p(0x0bad,2)
+p(0x0bad,2,"unequipitemall",2)
 p(0x0bae,3)
 p(0x0baf,16)
 p(0x0bb0,9)
@@ -1983,7 +1983,7 @@ p(0x0bbf,12)
 p(0x0bc0,3)
 p(0x0be9,6,"emotion2",4)
 p(0x0bf3,24,"adventureguide",2)
-p(0x0bf5,6,"equippurgereq",2)
+p(0x0bf5,6,"unequipitemall2",2)
 
 
 

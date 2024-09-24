@@ -22093,6 +22093,24 @@ void clif_lapineupgradeack(struct map_session_data *sd, int result)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+void clif_unequipitemallack(struct map_session_data *sd, unsigned char ok)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd=sd->fd;
+	WFIFOW(fd,0)=0xbae;
+	WFIFOB(fd,8)=ok;
+	WFIFOSET(fd,packet_db[0xbae].len);
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -27812,9 +27830,68 @@ static void clif_parse_AdventureGuide(int fd, struct map_session_data *sd, int c
  * 
  *------------------------------------------
  */
-static void clif_parse_EquipPurgeReq(int fd, struct map_session_data *sd, int cmd)
+static void clif_parse_UnequipItemAll(int fd, struct map_session_data *sd, int cmd)
 {
-	// TODO
+	int i;
+
+	nullpo_retv(sd);
+
+	if (unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl, 1);
+		return;
+	}
+
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1) {
+		clif_unequipitemallack(sd,1);
+		return;
+	}
+	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
+		clif_unequipitemallack(sd,1);
+		return;
+	}
+
+	for(i=0; i<MAX_INVENTORY; i++) {
+		if(sd->status.inventory[i].equip) {
+			pc_unequipitem(sd,i,0);
+		}
+	}
+
+	clif_unequipitemallack(sd,0);
+	return;
+}
+
+/*==========================================
+ * 
+ *------------------------------------------
+ */
+static void clif_parse_UnequipItemAll2(int fd, struct map_session_data *sd, int cmd)
+{
+	int i;
+	int pos = RFIFOL(fd,GETPACKETPOS(cmd,0));
+
+	nullpo_retv(sd);
+
+	if (unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl, 1);
+		return;
+	}
+
+	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1) {
+		clif_unequipitemallack(sd,1);
+		return;
+	}
+	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
+		clif_unequipitemallack(sd,1);
+		return;
+	}
+
+	for(i=0; i<MAX_INVENTORY; i++) {
+		if(sd->status.inventory[i].equip & pos) {
+			pc_unequipitem(sd,i,0);
+		}
+	}
+
+	clif_unequipitemallack(sd,0);
 	return;
 }
 
@@ -28232,7 +28309,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_MountOff,                    "mountoff"                  },
 		{ clif_parse_CashMarketOpen,              "cashmarketopen"            },
 		{ clif_parse_AdventureGuide,              "adventureguide"            },
-		{ clif_parse_EquipPurgeReq,               "equippurgereq"             },
+		{ clif_parse_UnequipItemAll,              "unequipitemall"            },
+		{ clif_parse_UnequipItemAll2,             "unequipitemall2"           },
 		{ NULL,                                   NULL                        },
 	};
 

@@ -2168,6 +2168,8 @@ int skill_blown( struct block_list *src, struct block_list *target,int count)
 			return 0;
 		if(battle_config.boss_no_knockbacking==2 && mobdb_search(md->class_)->mexp > 0)
 			return 0;
+		if(md->mode&MD_KNOCKBACKIMMUNITY)
+			return 0;
 	} else if(target->type & (BL_PET | BL_SKILL)) {
 		;	// ‰½‚à‚µ‚È‚¢
 	} else {
