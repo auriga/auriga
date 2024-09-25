@@ -1,4 +1,28 @@
 ----------------------------------------
+//1560 [2024/09/25] by refis
+
+・七王家とユミルの心臓クエストNPC実装（npc_quest_royalbanquet.sc, npc_memorial_blessingrituals.sc）
+	-> 関連クエスト実装
+	-> ニーヴエンチャント実装
+	-> 過去の儀式の間メモリアル実装（npc_memorial_ritualroom.sc）
+	-> 空中要塞メモリアル実装（npc_memorial_aerialfortress.sc）
+	Thanks a lot Dallen さん
+
+・追加マップのmapflag更新 (mapflag.sc, mapflag_memorial.sc)
+
+・追加マップのmonster出現定義追加 (npc_monster_prtprison.sc, npc_monster_prtq.sc)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt, mob_talk_db.txt)
+	Thanks Dallen さん
+
+・quest_dbの更新 (quest_db.txt)
+
+・memorial_dbの更新 (memorial_db.txt)
+	Thanks Dallen さん
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+----------------------------------------
 //1559 [2024/09/25] by refis
 
 ・スクリプト命令[delmerc]、[setequipcardid]追加（script_ref.txt, script.c）

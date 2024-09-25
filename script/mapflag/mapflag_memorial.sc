@@ -426,3 +426,58 @@
 1@mcd.gat	mapflag	monster_noteleport	dummy
 1@mcd.gat	mapflag	noicewall	dummy
 1@mcd.gat	mapflag	noabra		dummy
+
+//============================================================
+// ‰ß‹‚Ì‹V®‚ÌŠÔ - 1@mir.gat
+//------------------------------------------------------------
+1@mir.gat	mapflag	nosave			SavePoint
+1@mir.gat	mapflag	nomemo			dummy
+1@mir.gat	mapflag	noteleport		dummy
+1@mir.gat	mapflag	nobranch		dummy
+1@mir.gat	mapflag	monster_noteleport	dummy
+1@mir.gat	mapflag	noicewall	dummy
+1@mir.gat	mapflag	noabra		dummy
+
+//============================================================
+// ‹V®‚ÌŠÔ - 2@mir.gat
+//------------------------------------------------------------
+2@mir.gat	mapflag	nosave			SavePoint
+2@mir.gat	mapflag	nomemo			dummy
+2@mir.gat	mapflag	noteleport		dummy
+2@mir.gat	mapflag	nobranch		dummy
+2@mir.gat	mapflag	monster_noteleport	dummy
+2@mir.gat	mapflag	noicewall	dummy
+2@mir.gat	mapflag	noabra		dummy
+
+//============================================================
+// ‹ó’†—vÇ“à•” - 1@sthb.gat
+//------------------------------------------------------------
+1@sthb.gat	mapflag	nosave			SavePoint
+1@sthb.gat	mapflag	nomemo			dummy
+1@sthb.gat	mapflag	noteleport		dummy
+1@sthb.gat	mapflag	nobranch		dummy
+1@sthb.gat	mapflag	monster_noteleport	dummy
+1@sthb.gat	mapflag	noicewall	dummy
+1@sthb.gat	mapflag	noabra		dummy
+
+//============================================================
+// ‹ó’†—vÇ”é–§‚Ì•”‰® - 1@sthc.gat
+//------------------------------------------------------------
+1@sthc.gat	mapflag	nosave			SavePoint
+1@sthc.gat	mapflag	nomemo			dummy
+1@sthc.gat	mapflag	noteleport		dummy
+1@sthc.gat	mapflag	nobranch		dummy
+1@sthc.gat	mapflag	monster_noteleport	dummy
+1@sthc.gat	mapflag	noicewall	dummy
+1@sthc.gat	mapflag	noabra		dummy
+
+//============================================================
+// ‹ó’†—vÇÅãŠK - 1@sthd.gat
+//------------------------------------------------------------
+1@sthd.gat	mapflag	nosave			SavePoint
+1@sthd.gat	mapflag	nomemo			dummy
+1@sthd.gat	mapflag	noteleport		dummy
+1@sthd.gat	mapflag	nobranch		dummy
+1@sthd.gat	mapflag	monster_noteleport	dummy
+1@sthd.gat	mapflag	noicewall	dummy
+1@sthd.gat	mapflag	noabra		dummy
