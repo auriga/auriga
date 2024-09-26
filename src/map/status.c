@@ -12672,6 +12672,7 @@ int status_readdb(void)
 	while(fgets(line,1020,fp)){
 		char *split[WT_MAX+5];
 		int hp_coefficient, sp_coefficient;
+		int hp_coefficient2, sigma;
 
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
@@ -12687,24 +12688,23 @@ int status_readdb(void)
 			continue;
 		job_db[i].max_weight_base = atoi(split[0]);
 
-		hp_coefficient = atoi(split[1]);
-		if(hp_coefficient >= 0) {
-			int hp_coefficient2 = atoi(split[2]);
-			int sigma = 0;
-			for(j = 1; j <= MAX_LEVEL; j++) {
-				// 基本HP = 35 + BaseLevel * Job倍率 + Jobボーナス
-				job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
-				sigma += hp_coefficient * (j + 1) + 50;
-				sigma -= sigma % 100;
-			}
+		if((hp_coefficient = atoi(split[1])) < 0)
+			hp_coefficient = 0;
+		if((hp_coefficient2 = atoi(split[2])) < 0)
+			hp_coefficient2 = 500;
+		sigma = 0;
+		for(j = 1; j <= MAX_LEVEL; j++) {
+			// 基本HP = 35 + BaseLevel * Job倍率 + Jobボーナス
+			job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
+			sigma += hp_coefficient * (j + 1) + 50;
+			sigma -= sigma % 100;
 		}
 
-		sp_coefficient = atoi(split[3]);
-		if(sp_coefficient >= 0) {
-			for(j = 1; j <= MAX_LEVEL; j++) {
-				// 基本SP = 10 + BaseLevel * Job係数
-				job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
-			}
+		if((sp_coefficient = atoi(split[3])) < 0)
+			sp_coefficient = 100;
+		for(j = 1; j <= MAX_LEVEL; j++) {
+			// 基本SP = 10 + BaseLevel * Job係数
+			job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
 		}
 
 		for(j=0; j<=WT_MAX && split[j+4]; j++) {
@@ -12732,9 +12732,8 @@ int status_readdb(void)
 		for(j=0,p=line;j<PC_JOB_MAX && p;j++){
 			if(sscanf(p,"%d",&k) == 0)
 				break;
-			if(job_db[j].hp_base[i] == 0) {
-				// job_db1.txtでHP未設定の場合のみ補完
-				job_db[j].hp_base[i] = (k > 0)? k: 1;
+			if(k > 0) {
+				job_db[j].hp_base[i] = k;
 			}
 			p=strchr(p,',');
 			if(p) *p++=0;
@@ -12761,9 +12760,8 @@ int status_readdb(void)
 		for(j=0,p=line;j<PC_JOB_MAX && p;j++){
 			if(sscanf(p,"%d",&k) == 0)
 				break;
-			if(job_db[j].sp_base[i] == 0) {
-				// job_db1.txtでSP未設定の場合のみ補完
-				job_db[j].sp_base[i] = (k > 0)? k: 1;
+			if(k > 0) {
+				job_db[j].sp_base[i] = k;
 			}
 			p=strchr(p,',');
 			if(p) *p++=0;

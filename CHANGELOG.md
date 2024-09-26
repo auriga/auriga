@@ -1,4 +1,27 @@
 ----------------------------------------
+//1561 [2024/09/26] by Blaze
+
+・ジョブ設定DB「job_db1.txt」とHP/SP設定DB「job_hp_db.txt/job_sp_db.txt」の仕様変更（status.c, db/job_db1.txt, db/job_hp_db.txt, db/job_sp_db.txt, doc/db_ref.txt）
+　変更前）
+　　job_db1.txtのhp/sp設定が-1のとき、job_hp_db.txt/job_sp_db.txtの値を基本HP/SPとする
+　　※job_db1.txtを優先、job_hp_db.txt/job_sp_db.txtは仕様外含めて全レベル帯の設定が必須
+　変更後）
+　　job_hp_db.txt/job_sp_db.txtの値が-1のレベル帯はjob_db1.txtのhp/spから算出した値を基本HP/SPとする
+　　※job_hp_db.txt/job_sp_db.txtを優先、仕様外のレベル帯は設定任意に
+　→これにより本鯖仕様外の1/2次職のLv100～の個別設定が不要に、3次職の～89までのHP/SPが極端に低かった現象などが改善
+
+・上記により、基本HP/SPが-1指定だった各職業の設定を仮設定（db/job_db1.txt, db/pre/job_db1_pre.txt）
+　※-1指定をした場合はデフォルトのHP係数500、SP係数100になります。
+
+・ついでにガンスリンガー、忍者、影狼、朧、リベリオン、サモナー、星帝、ソウルリーパーのASPDを修正（db/job_db1.txt）
+
+・各職業レベル帯によるHP/SP設定を変更（db/job_hp_db.txt, db/job_sp_db.txt）
+　※3次職Lv150～、ガンスリンガーLv1～、忍者Lv1～、テコンキッドLv71～、拳聖Lv70～、ソウルリンカーLv81～、
+　　スーパーノービス(限界突破)Lv100～、影狼/朧Lv100～、リベリオンLv176～、サモナーLv176～などのHP/SP設定を本鯖仕様に
+
+・未転生・養子の3次職、上位特殊1次職、サモナーのJobボーナスが～Lv70（サモナーは～Lv60）まで無かったのを修正（job_db2.txt）
+
+----------------------------------------
 //1560 [2024/09/25] by refis
 
 ・七王家とユミルの心臓クエストNPC実装（npc_quest_royalbanquet.sc, npc_memorial_blessingrituals.sc）
