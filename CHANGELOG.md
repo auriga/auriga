@@ -1,4 +1,171 @@
 ----------------------------------------
+//1562 [2024/09/28] by Blaze
+
+・スキル使用条件DB2「skill_require_db2.txt」をpre/addonに対応（skill.c, db/pre/skill_require_db2_pre.txt, db/addon/skill_require_db2_add.txt）
+　※他DBと同じくPRE_RENEWAL有効時にpreを読み込み、通常DB読み込み後にaddonで上書きします
+
+・(R後)以下ガンスリンガースキルの前提スキルを変更（db/skill_tree.txt）
+　トリプルアクション、ブルズアイ、マッドネスキャンセラー、アジャストメント、インクリージングアキュラシー、ガトリングフィーバー、スプレッドアタック
+・(R前)上記ガンスリンガーのスキルツリー変更前を退避（db/pre/skill_tree_pre.txt）
+
+・以下のガンスリンガー/忍者/その他スキルを変更
+　[ガンスリンガー]フライング
+　・アイテムの「アカデミーコイン（金）」を消費していた謎仕様をコイン消費するように修正（skill.c）
+　・ダメージをJobLv分固定ダメージになるように（battle.c）
+　・相手がMobの場合、Def2も減算するように（status.c）
+　
+　[ガンスリンガー]トリプルアクション
+　・射程距離修正、スネークアイの射程増加の影響を受けないように（db/skill_db.txt）
+　・ダメージ計算を変更、倍率450%だったのを150%×Hit数3倍になるように（battle.c）
+　
+　[ガンスリンガー]ブルズアイ
+　・対象が人型・動物以外の場合にダメージ効果が無かったのを100%ダメージ与えるように（skill.c, battle.c）
+　・ドラム系にもダメージ増加効果・コーマ効果が出るように追加（skill.c, battle.c）
+　・コーマ判定・処理を修正（skill.c）
+　・射程距離修正、スネークアイの射程増加の影響を受けないように（db/skill_db.txt）
+　
+　[ガンスリンガー]マッドネスキャンセラー
+　・再使用でマッドネスキャンセラー状態を解除するように（skill.c）
+　・(R後)コイン消費量を4枚->1枚に変更（db/skill_require_db2.txt）
+　・(R前)コイン消費量の変更前を退避（db/pre/skill_require_db2_pre.txt）
+　
+　[ガンスリンガー]マジカルバレット
+　・(R後)攻撃スキルから自己バフスキルに変更（skill.c, battle.c, status.c, status.h, db/skill_db.txt, db/skill_cast_db.txt, db/scdata_db.txt）
+　・(R前)上記の変更を退避（db/pre/skill_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+　
+　[ガンスリンガー]クラッカー
+　・射程距離修正、スネークアイの射程増加の影響を受けないように（db/skill_db.txt）
+　
+　[ガンスリンガー]シングルアクション
+　[セージ]アドバンスドブック
+　・攻撃速度上昇が+1～+5の固定値上昇だったのを現在値の+1%～+5%で上昇するように変更（status.c）
+　
+　[ガンスリンガー]トラッキング
+　・射程距離修正、スネークアイの効果を内部処理で増加させるように（db/skill_db.txt, skill.c）
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[ガンスリンガー]ディスアーム
+　・武器解除を専用の状態異常SC_DISARMで処理されていたのをストリップウェポン状態で共通処理させるように（skill.c, status.c, status.h, db/scdata_db.txt）
+　　※SC_DISARMは削除
+　・武器解除の確率をステータスで変動するように（skill.c）
+　・射程距離修正、スネークアイの射程増加の影響を受けないように（db/skill_db.txt）
+　
+　[ガンスリンガー]ピアーシングショット
+　・(R後)ダメージ計算を変更（battle.c）
+　・射程距離修正、スネークアイの効果を内部処理で増加させるように（db/skill_db.txt, skill.c）
+　・不死属性および悪魔型に出血効果が無かったのを変更（skill.c）
+　
+　[ガンスリンガー]ラピッドシャワー
+　・(R後)弾丸消費量を5発->1発に変更（db/skill_require_db2.txt）
+　・(R前)弾丸消費量の変更前を退避（db/pre/skill_require_db2_pre.txt）
+　・射程距離修正、スネークアイの効果を内部処理で増加させるように（db/skill_db.txt, skill.c）
+　
+　[ガンスリンガー]ガトリングフィーバー
+　・(R後)攻撃速度増加量をスキルLv×2%からスキルLv×1%に変更（status.c）
+　
+　[ガンスリンガー]ダスト
+　・(R後)詠唱妨害されるように（db/skill_db.txt）
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[ガンスリンガー]フルバスター
+　・(R後)弾丸消費量を10発->2発に変更（db/skill_require_db2.txt）
+　・(R前)弾丸消費量の変更前を退避（db/pre/skill_require_db2_pre.txt）
+　・暗黒効果が相手に出ていたのを自身がなるように変更（skill.c）
+　・射程距離修正、スネークアイの効果を内部処理で増加させるように（db/skill_db.txt, skill.c）
+　・不要な状態異常SC_FULLBUSTERを削除（status.c, status.h, clif.c, unit.c, skill.c, db/scdata_db.txt）
+　
+　[ガンスリンガー]スプレッドアタック
+　・(R後)ダメージ計算を変更（battle.c）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)上記の変更前を退避（db/pre/skill_require_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+　
+　[ガンスリンガー]グラウンドドリフト
+　・スフィア系弾丸で追加効果を判定していたのを弾丸の属性で判定させるように（skill.c, battle.c）
+　・追加効果なしのユニットUNT_GROUNDDRIFT_NEUTRALを追加（skill.c, skill.h）
+　・創生の書のスキルユニット定義名UNT_CREATINGSTAR2をUNT_CREATINGSTARに変更（skill.c, skill.h）
+　・(R後)ダメージ計算を変更、固定ダメージから通常の武器攻撃での計算に（battle.c）
+　・(R後)踏んだときの効果範囲を3x3に拡大（skill.c）
+　・(R後)消費SPを現象（db/skill_require_db.txt）
+　・(R前)消費SPの変更前を退避（db/pre/skill_require_db_pre.txt）
+　・射程距離修正、スネークアイの効果を内部処理で増加させるように（db/skill_db.txt, skill.c）
+　
+　[忍者]手裏剣投げ
+　・(R後)ダメージ計算を固定ダメージから通常武器攻撃に変更、必中効果を削除（battle.c）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R前)消費SPの変更前を退避（db/pre/skill_require_db_pre.txt）
+　
+　[忍者]苦無投げ
+　・(R後)ダメージ計算を固定ダメージから通常武器攻撃に変更、投擲修練の効果が乗るように、必中効果を削除（battle.c）
+　・(R後)ディレイ時間を変更（db/skill_cast_db.txt）
+　・(R前)ディレイ時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]風魔手裏剣投げ
+　・(R後)地面指定から対象指定に変更（db/skill_db.txt）
+　　　※R前は元々対象指定なので変更なし
+　・(R後)ダメージ計算を変更、投擲修練の効果が乗るように（battle.c）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R後)詠唱時間、ディレイ時間を変更（db/skill_cast_db.txt）
+　・(R前)上記の変更前を退避（db/pre/skill_require_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]霞斬り
+　・(R後)ダメージ計算を変更（battle.c）
+　・(R後)Hit数を単発から2Hitに変更（db/skill_db.txt）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R後)ディレイ時間を変更（db/skill_cast_db.txt）
+　・(R前)上記の変更前を退避（db/pre/skill_db_pre.txt, db/pre/skill_require_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]影斬り
+　・射程を影跳びの習得レベルによって変動するように変更（db/skill_db.txt, skill.c）
+　・(R後)ダメージ計算を変更（battle.c）
+　・(R後)Hit数を単発から3Hitに変更（db/skill_db.txt）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R後)ディレイ時間を変更（db/skill_cast_db.txt）
+　・(R前)上記の変更前を退避（db/pre/skill_db_pre.txt, db/pre/skill_require_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]空蝉
+　・ディレイ時間を変更（db/skill_cast_db.txt）
+　
+　[忍者]紅炎華
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]龍炎陣
+　・ディレイ時間を変更（db/skill_cast_db.txt）
+　
+　[忍者]氷閃槍
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]水遁
+　・射程を変更（db/skill_db.txt）
+　・ディレイ時間を変更（db/skill_cast_db.txt）
+　
+　[忍者]氷柱落し
+　・(R後)ダメージ計算を変更（battle.c）
+　・(R後)Hit数を単発から5Hitに変更（db/skill_db.txt）
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]風刃
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]雷撃砕
+　・(R後)射程を変更（db/skill_db.txt）
+　・(R後)ダメージ計算を変更（battle.c）
+　・(R後)Hit数を単発から3Hitに変更（db/skill_db.txt）
+　・(R後)詠唱時間を変更（db/skill_cast_db.txt）
+　・(R前)詠唱時間の変更前を退避（db/pre/skill_cast_db_pre.txt）
+　
+　[忍者]朔風
+　・(R後)Hit数を単発から5Hitに変更（db/skill_db.txt, skill.c）
+　・(R後)消費SPを変更（db/skill_require_db.txt）
+　・(R前)上記の変更前を退避（db/pre/skill_db_pre.txt, db/pre/skill_require_db_pre.txt, db/pre/skill_cast_db_pre.txt）
+
+----------------------------------------
 //1561 [2024/09/26] by Blaze
 
 ・ジョブ設定DB「job_db1.txt」とHP/SP設定DB「job_hp_db.txt/job_sp_db.txt」の仕様変更（status.c, db/job_db1.txt, db/job_hp_db.txt, db/job_sp_db.txt, doc/db_ref.txt）

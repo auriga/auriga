@@ -1,0 +1,6 @@
+//R化前skill_require_db2.txt＠Auriga
+//id,coin,arrow_type,arrow_cost,reserve1,reserve2
+//スキルID,コイン消費量,矢の種類,矢の消費量,予備1,予備2
+504,4,0,0,0,0	//GS_MADNESSCANCEL#マッドネスキャンセラー#
+515,0,4,5,0,0	//GS_RAPIDSHOWER#ラピッドシャワー#
+519,0,16,2:2:4:4:6:6:8:8:10:10,0,0	//GS_FULLBUSTER#フルバスター#

@@ -1,0 +1,3 @@
+//skill_require_db2.txtへオーバーライド
+//id,coin,arrow_type,arrow_cost,reserve1,reserve2
+//スキルID,コイン消費量,矢の種類,矢の消費量,予備1,予備2

@@ -23184,7 +23184,6 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_TRICKDEAD].timer != -1 ||	// 死んだふり
 	    sd->sc.data[SC_FORCEWALKING].timer != -1 ||	// 強制移動中
 	    sd->sc.data[SC_BERSERK].timer != -1 ||	// バーサーク
-	    sd->sc.data[SC_FULLBUSTER].timer != -1 ||	// フルバスター
 	    sd->sc.data[SC_WEDDING].timer != -1 ||	// 結婚衣装
 	    sd->sc.data[SC_NOCHAT].timer != -1 ||	// 会話禁止
 	    sd->sc.data[SC_GRAVITATION_USER].timer != -1 ||	// グラビテーションフィールド使用者

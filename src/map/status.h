@@ -496,9 +496,9 @@ enum {
 	SC_MADNESSCANCEL        = 348,
 	SC_ADJUSTMENT           = 349,
 	SC_INCREASING           = 350,
-	SC_DISARM               = 351,
+	//
 	SC_GATLINGFEVER         = 352,
-	SC_FULLBUSTER           = 353,
+	//
 	SC_TATAMIGAESHI         = 354,
 	SC_UTSUSEMI             = 355,
 	SC_BUNSINJYUTSU         = 356,
@@ -878,6 +878,7 @@ enum {
 	SC_ADORAMUS				= 730,
 	SC_OVERHEAT_LIMITPOINT	= 731,
 	SC__FEINTBOMB			= 732,
+	SC_MAGICALBULLET		= 733,
 
 
 	// startでは使えないresistをアイテム側で全てクリアするための物
@@ -1809,7 +1810,7 @@ enum {
 	//SI_EP16_2_BUFF_SS = 963,
 	//SI_EP16_2_BUFF_SC = 964,
 	//SI_EP16_2_BUFF_AC = 965,
-	//SI_GS_MAGICAL_BULLET = 966,
+	SI_GS_MAGICAL_BULLET = 966,
 
 	//SI_FALLEN_ANGEL = 976,
 

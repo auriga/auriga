@@ -229,7 +229,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 720- */
 	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_CRUSHSTRIKE,SI_WEAPONBLOCK_ON,
 	/* 730- */
-	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK
+	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK,SI_GS_MAGICAL_BULLET
 };
 
 /*==========================================
@@ -1169,7 +1169,7 @@ L_RECALC:
 			sd->paramb[4] += 5;
 			sd->paramb[5] += 5;
 		}
-		if(sd->sc.data[SC_INCREASING].timer != -1) { // インクリーシングアキュアラシー
+		if(sd->sc.data[SC_INCREASING].timer != -1) { // インクリージングアキュラシー
 			sd->paramb[1] += 4;
 			sd->paramb[4] += 4;
 		}
@@ -2225,13 +2225,13 @@ L_RECALC:
 
 		// ガンスリンガースキル
 		if(sd->sc.data[SC_FLING].timer != -1) {		// フライング
-			sd->def = sd->def * (100 - 5*sd->sc.data[SC_FLING].val1)/100;
+			sd->def = sd->def * (100 - 5*sd->sc.data[SC_FLING].val2)/100;
 		}
 		if(sd->sc.data[SC_ADJUSTMENT].timer != -1) {	// アジャストメント
 			sd->hit  -= 30;
 			sd->flee += 30;
 		}
-		if(sd->sc.data[SC_INCREASING].timer != -1) {	// インクリーシングアキュアラシー
+		if(sd->sc.data[SC_INCREASING].timer != -1) {	// インクリージングアキュラシー
 			sd->hit += 20;
 		}
 		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {	// ガトリングフィーバー
@@ -3249,7 +3249,11 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 		// ガトリングフィーバー
 		if(sd->sc.data[SC_GATLINGFEVER].timer != -1) {
+#ifdef PRE_RENEWAL
 			ferver_bonus = sd->sc.data[SC_GATLINGFEVER].val1*2;
+#else
+			ferver_bonus = sd->sc.data[SC_GATLINGFEVER].val1;
+#endif
 			if(haste_val2 < ferver_bonus)
 				haste_val2 = ferver_bonus;
 		}
@@ -3353,11 +3357,11 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 
 	/* アドバンスドブック */
 	if(sd->weapontype1 == WT_BOOK && (skilllv = pc_checkskill(sd,SA_ADVANCEDBOOK)) > 0)
-		amotion -= skilllv / 2;
+		amotion -= amotion * (skilllv+1) / 2 / 100;
 
 	/* シングルアクション */
 	if(sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE && (skilllv = pc_checkskill(sd,GS_SINGLEACTION)) > 0)
-		amotion -= (skilllv+1) / 2 * 10;
+		amotion -= amotion * (skilllv+1) / 2 / 100;
 
 	/* bonus_addの加算 */
 	if(bonus_add != 0)
@@ -4533,7 +4537,7 @@ int status_get_hit(struct block_list *bl)
 				hit = hit*80/100;
 			if(sc->data[SC_ADJUSTMENT].timer != -1 && bl->type != BL_PC) // アジャストメント
 				hit -= 30;
-			if(sc->data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // インクリーシングアキュアラシー
+			if(sc->data[SC_INCREASING].timer != -1 && bl->type != BL_PC) // インクリージングアキュラシー
 				hit += 20;
 			if(sc->data[SC_INCHIT].timer!=-1 && bl->type != BL_PC)	// ガイデッドアタック
 				hit += sc->data[SC_INCHIT].val1;
@@ -4776,8 +4780,6 @@ int status_get_atk(struct block_list *bl)
 #endif
 		if(sc->data[SC_STRIPWEAPON].timer != -1 && bl->type != BL_PC)
 			atk -= atk*25/100;
-		if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
-			atk -= atk*25/100;
 		if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
 			atk += 100;
 		if(sc->data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
@@ -4891,7 +4893,7 @@ int status_get_atk2(struct block_list *bl)
 				atk2 += sc->data[SC_NIBELUNGEN].val2;
 #endif
 			if(sc->data[SC_STRIPWEAPON].timer != -1)
-				atk2 -= atk2*10/100;
+				atk2 -= atk2*25/100;
 #ifdef PRE_RENEWAL
 			if(sc->data[SC_CONCENTRATION].timer != -1)	// コンセントレーション
 				atk2 += atk2*(5*sc->data[SC_CONCENTRATION].val1)/100;
@@ -4900,8 +4902,6 @@ int status_get_atk2(struct block_list *bl)
 			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)		// エスク
 				rate += 300;
 #endif
-			if(sc->data[SC_DISARM].timer != -1 && bl->type != BL_PC)		// ディスアーム
-				atk2 -= atk2*25/100;
 			if(sc->data[SC_MADNESSCANCEL].timer != -1 && bl->type != BL_PC)	// マッドネスキャンセラー
 				atk2 += 100;
 			if(sc->data[SC_THE_MAGICIAN].timer != -1 && bl->type != BL_PC)
@@ -5152,7 +5152,7 @@ int status_get_def(struct block_list *bl)
 				def = def*80/100;
 			// フライング
 			if(sc->data[SC_FLING].timer != -1 && bl->type != BL_PC)
-				def = def * (100 - 5*sc->data[SC_FLING].val1)/100;
+				def = def * (100 - 5*sc->data[SC_FLING].val2)/100;
 			// エスク
 			if(sc->data[SC_SKE].timer != -1 && bl->type == BL_MOB)
 				def = def/2;
@@ -5329,6 +5329,9 @@ int status_get_def2(struct block_list *bl)
 		// THE SUN
 		if(sc->data[SC_THE_SUN].timer != -1 && bl->type != BL_PC)
 			def2 = def2*80/100;
+		// フライング
+		if(sc->data[SC_FLING].timer != -1 && bl->type != BL_PC)
+			def2 = def2 * (100 - 5*sc->data[SC_FLING].val2)/100;
 		// エスカ
 		if(sc->data[SC_SKA].timer != -1 && bl->type == BL_MOB)
 			def2 += 90;
@@ -7385,6 +7388,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_CRUSHSTRIKE:		/* クラッシュストライク */
 		case SC_WEAPONBLOCK_ON:		/* カウンタースラッシュ */
 		case SC__FEINTBOMB:			/* フェイントボム */
+		case SC_MAGICALBULLET:		/* マジカルバレット */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -7458,12 +7462,10 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_SKA:				/* エスカ */
 		case SC_CLOSECONFINE:			/* クローズコンファイン */
 		case SC_STOP:				/* ホールドウェブ */
-		case SC_DISARM:				/* ディスアーム */
 		case SC_FLING:				/* フライング */
 		case SC_MADNESSCANCEL:			/* マッドネスキャンセラー */
 		case SC_ADJUSTMENT:			/* アジャストメント */
-		case SC_INCREASING:			/* インクリージングアキュアラシー */
-		case SC_FULLBUSTER:			/* フルバスター */
+		case SC_INCREASING:			/* インクリージングアキュラシー */
 		case SC_NEN:				/* 念 */
 		case SC_AVOID:				/* 緊急回避 */
 		case SC_CHANGE:				/* メンタルチェンジ */
@@ -9704,12 +9706,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_STRENGTH:
 		case SC_THE_DEVIL:
 		case SC_THE_SUN:
-		case SC_DISARM:				/* ディスアーム */
 		case SC_FLING:				/* フライング */
 		case SC_MADNESSCANCEL:			/* マッドネスキャンセラー */
 		case SC_ADJUSTMENT:			/* アジャストメント */
-		case SC_INCREASING:			/* インクリージングアキュアラシー */
-		case SC_FULLBUSTER:			/* フルバスター */
+		case SC_INCREASING:			/* インクリージングアキュラシー */
 		case SC_NEN:				/* 念 */
 		case SC_AVOID:				/* 緊急回避 */
 		case SC_CHANGE:				/* メンタルチェンジ */

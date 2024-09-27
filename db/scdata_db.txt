@@ -319,10 +319,10 @@
 347,SC_FLING,0,1,0,0			// フライング
 348,SC_MADNESSCANCEL,0,1,0,0		// マッドネスキャンセラー
 349,SC_ADJUSTMENT,0,1,0,0			// アジャストメント
-350,SC_INCREASING,0,1,0,0			// インクリーシングアキュアラシー
-351,SC_DISARM,0,1,0,0			// ディスアーム
+350,SC_INCREASING,0,1,0,0			// インクリージングアキュラシー
+//
 352,SC_GATLINGFEVER,0,1,0,0		// ガトリングフィーバー
-353,SC_FULLBUSTER,0,1,0,0			// ブルバスター
+//
 354,SC_TATAMIGAESHI,0,1,0,0		// 畳返し
 355,SC_UTSUSEMI,0,67,0,0			// 空蝉
 356,SC_BUNSINJYUTSU,0,67,0,0		// 分身の術
@@ -702,6 +702,7 @@
 730,SC_ADORAMUS,0,1,0,0			// アドラムス
 731,SC_OVERHEAT_LIMITPOINT,1,0,0,0		// 魔導ギア加熱値
 732,SC__FEINTBOMB,0,1,0,0			// フェイントボム
+733,SC_MAGICALBULLET,0,1,0,0			// マジカルバレット
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
