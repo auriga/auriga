@@ -9612,6 +9612,46 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 	case SP_MATK2:
 		WFIFOL(fd,4)=sd->matk2;
 		break;
+#if PACKETVER >= 20200916
+	case SP_PATK:
+		WFIFOL(fd,4)=sd->patk;
+		break;
+	case SP_SMATK:
+		WFIFOL(fd,4)=sd->smatk;
+		break;
+	case SP_RES:
+		WFIFOL(fd,4)=sd->res;
+		break;
+	case SP_MRES:
+		WFIFOL(fd,4)=sd->mres;
+		break;
+	case SP_HPLUS:
+		WFIFOL(fd,4)=sd->hplus;
+		break;
+	case SP_CRATE:
+		WFIFOL(fd,4)=sd->crate;
+		break;
+	case SP_TSTATUSPOINT:
+		WFIFOL(fd,4)=sd->status.tstatus_point;
+		break;
+	case SP_AP:
+		WFIFOL(fd,4)=sd->status.ap;
+		break;
+	case SP_MAXAP:
+		WFIFOL(fd,4)=sd->status.max_ap;
+		break;
+#else
+	case SP_PATK:
+	case SP_SMATK:
+	case SP_RES:
+	case SP_MRES:
+	case SP_HPLUS:
+	case SP_CRATE:
+	case SP_TSTATUSPOINT:
+	case SP_AP:
+	case SP_MAXAP:
+		return;
+#endif
 
 		// 00b1
 	case SP_ZENY:
@@ -9669,6 +9709,26 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOB(fd,4)=pc_need_status_point(sd,type-SP_USTR+SP_STR);
 		len=5;
 		break;
+#if PACKETVER >= 20200916
+	case SP_UPOW:
+	case SP_USTA:
+	case SP_UWIS:
+	case SP_USPL:
+	case SP_UCON:
+	case SP_UCRT:
+		WFIFOW(fd,0)=0xbe;
+		WFIFOB(fd,4)=pc_need_tstatus_point(sd,type-SP_UPOW+SP_POW);
+		len=5;
+		break;
+#else
+	case SP_UPOW:
+	case SP_USTA:
+	case SP_UWIS:
+	case SP_USPL:
+	case SP_UCON:
+	case SP_UCRT:
+		return;
+#endif
 
 		// 013a
 	case SP_ATTACKRANGE:
@@ -9720,7 +9780,60 @@ void clif_updatestatus(struct map_session_data *sd, int type)
 		WFIFOL(fd,10)=sd->paramb[5] + sd->parame[5];
 		len=14;
 		break;
+#if PACKETVER >= 20200916
+	case SP_POW:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.pow;
+		WFIFOL(fd,10)=sd->paramb[6] + sd->parame[6];
+		len=14;
+		break;
+	case SP_STA:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.sta;
+		WFIFOL(fd,10)=sd->paramb[7] + sd->parame[7];
+		len=14;
+		break;
+	case SP_WIS:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.wis;
+		WFIFOL(fd,10)=sd->paramb[8] + sd->parame[8];
+		len=14;
+		break;
+	case SP_SPL:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.spl;
+		WFIFOL(fd,10)=sd->paramb[9] + sd->parame[9];
+		len=14;
+		break;
+	case SP_CON:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.con;
+		WFIFOL(fd,10)=sd->paramb[10] + sd->parame[10];
+		len=14;
+		break;
+	case SP_CRT:
+		WFIFOW(fd,0)=0x141;
+		WFIFOL(fd,2)=type;
+		WFIFOL(fd,6)=sd->status.crt;
+		WFIFOL(fd,10)=sd->paramb[11] + sd->parame[11];
+		len=14;
+		break;
+#else
+	case SP_POW:
+	case SP_STA:
+	case SP_WIS:
+	case SP_SPL:
+	case SP_CON:
+	case SP_CRT:
+		return;
+#endif
 
+		// 0121
 	case SP_CARTINFO:
 		WFIFOW(fd,0)=0x121;
 		WFIFOW(fd,2)=sd->cart_num;
@@ -22373,6 +22486,23 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_updatestatus(sd,SP_NEXTJOBEXP);
 		clif_updatestatus(sd,SP_SKILLPOINT);
 		clif_initialstatus(sd);
+#if PACKETVER >= 20200916
+		clif_updatestatus(sd,SP_PATK);
+		clif_updatestatus(sd,SP_SMATK);
+		clif_updatestatus(sd,SP_RES);
+		clif_updatestatus(sd,SP_MRES);
+		clif_updatestatus(sd,SP_HPLUS);
+		clif_updatestatus(sd,SP_CRATE);
+		clif_updatestatus(sd,SP_TSTATUSPOINT);
+		clif_updatestatus(sd,SP_AP);
+		clif_updatestatus(sd,SP_MAXAP);
+		clif_updatestatus(sd,SP_UPOW);
+		clif_updatestatus(sd,SP_USTA);
+		clif_updatestatus(sd,SP_UWIS);
+		clif_updatestatus(sd,SP_USPL);
+		clif_updatestatus(sd,SP_UCON);
+		clif_updatestatus(sd,SP_UCRT);
+#endif
 		clif_send_personalinfo(sd);
 
 		// キラー情報送信
@@ -22392,6 +22522,14 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	clif_updatestatus(sd,SP_INT);
 	clif_updatestatus(sd,SP_DEX);
 	clif_updatestatus(sd,SP_LUK);
+#if PACKETVER >= 20200916
+	clif_updatestatus(sd,SP_POW);
+	clif_updatestatus(sd,SP_STA);
+	clif_updatestatus(sd,SP_WIS);
+	clif_updatestatus(sd,SP_SPL);
+	clif_updatestatus(sd,SP_CON);
+	clif_updatestatus(sd,SP_CRT);
+#endif
 
 	// view equipment item
 #if PACKETVER < 4
@@ -24611,10 +24749,10 @@ static void clif_parse_ResetChar(int fd,struct map_session_data *sd, int cmd)
 	    pc_isGM(sd) >= get_atcommand_level(AtCommand_ResetState)) {
 		switch(RFIFOW(fd,GETPACKETPOS(cmd,0))){
 		case 0:
-			pc_resetstate(sd);
+			pc_resetstatus(sd, 0);
 			break;
 		case 1:
-			pc_resetskill(sd, -1);
+			pc_resetskill(sd, 0);
 			break;
 		}
 	}
@@ -27895,6 +28033,17 @@ static void clif_parse_UnequipItemAll2(int fd, struct map_session_data *sd, int 
 }
 
 /*==========================================
+ * 特性ステータスアップ
+ *------------------------------------------
+ */
+static void clif_parse_TStatusUp(int fd, struct map_session_data *sd, int cmd)
+{
+	pc_tstatusup(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)), RFIFOW(fd,GETPACKETPOS(cmd,1)));
+
+	return;
+}
+
+/*==========================================
  * クライアントのデストラクタ
  *------------------------------------------
  */
@@ -28310,6 +28459,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_AdventureGuide,              "adventureguide"            },
 		{ clif_parse_UnequipItemAll,              "unequipitemall"            },
 		{ clif_parse_UnequipItemAll2,             "unequipitemall2"           },
+		{ clif_parse_TStatusUp,                   "tstatusup"                 },
 		{ NULL,                                   NULL                        },
 	};
 

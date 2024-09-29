@@ -304,7 +304,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 
 	result = sqldbs_query(&mysql_handle,
 		"SELECT `account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`,"
-		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`,"
+		"`str`, `agi`, `vit`, `int`, `dex`, `luk`, `pow`, `sta`, `wis`, `spl`, `con`, `crt`, `max_hp`, `hp`, `max_sp`, `sp`, `max_ap`, `ap`, `status_point`, `tstatus_point`, `skill_point`,"
 		"`option`, `karma`, `manner`, `die_counter`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `merc_id`, `elem_id`,"
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
@@ -345,50 +345,59 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.int_                = atoi(sql_row[12]);
 	p->st.dex                 = atoi(sql_row[13]);
 	p->st.luk                 = atoi(sql_row[14]);
-	p->st.max_hp              = atoi(sql_row[15]);
-	p->st.hp                  = atoi(sql_row[16]);
-	p->st.max_sp              = atoi(sql_row[17]);
-	p->st.sp                  = atoi(sql_row[18]);
-	p->st.status_point        = atoi(sql_row[19]);
-	p->st.skill_point         = atoi(sql_row[20]);
-	p->st.option              = (unsigned int)atoi(sql_row[21]);
-	p->st.karma               = atoi(sql_row[22]);
-	p->st.manner              = atoi(sql_row[23]);
-	p->st.die_counter         = atoi(sql_row[24]);
-	p->st.party_id            = atoi(sql_row[25]);
-	p->st.guild_id            = atoi(sql_row[26]);
-	p->st.pet_id              = atoi(sql_row[27]);
-	p->st.homun_id            = atoi(sql_row[28]);
-	p->st.merc_id             = atoi(sql_row[29]);
-	p->st.elem_id             = atoi(sql_row[30]);
-	p->st.hair                = atoi(sql_row[31]);
-	p->st.hair_color          = atoi(sql_row[32]);
-	p->st.clothes_color       = atoi(sql_row[33]);
-	p->st.weapon              = atoi(sql_row[34]);
-	p->st.shield              = atoi(sql_row[35]);
-	p->st.robe                = atoi(sql_row[36]);
-	p->st.head_top            = atoi(sql_row[37]);
-	p->st.head_mid            = atoi(sql_row[38]);
-	p->st.head_bottom         = atoi(sql_row[39]);
-	strncpy(p->st.last_point.map, sql_row[40], 24);
-	p->st.last_point.x        = atoi(sql_row[41]);
-	p->st.last_point.y        = atoi(sql_row[42]);
-	strncpy(p->st.save_point.map, sql_row[43], 24);
-	p->st.save_point.x        = atoi(sql_row[44]);
-	p->st.save_point.y        = atoi(sql_row[45]);
-	p->st.partner_id          = atoi(sql_row[46]);
-	p->st.parent_id[0]        = atoi(sql_row[47]);
-	p->st.parent_id[1]        = atoi(sql_row[48]);
-	p->st.baby_id             = atoi(sql_row[49]);
-	p->st.delete_date         = atoi(sql_row[50]);
-	p->st.refuse_partyinvite  = atoi(sql_row[51]);
-	p->st.show_equip          = atoi(sql_row[52]);
-	p->st.font                = atoi(sql_row[53]);
-	p->st.style               = atoi(sql_row[54]);
-	p->st.sex                 = atoi(sql_row[55]);
-	p->st.allow_call          = atoi(sql_row[56]);
-	p->st.autofeed            = atoi(sql_row[57]);
-	p->st.title_id            = atoi(sql_row[58]);
+	p->st.pow                 = atoi(sql_row[15]);
+	p->st.sta                 = atoi(sql_row[16]);
+	p->st.wis                 = atoi(sql_row[17]);
+	p->st.spl                 = atoi(sql_row[18]);
+	p->st.con                 = atoi(sql_row[19]);
+	p->st.crt                 = atoi(sql_row[20]);
+	p->st.max_hp              = atoi(sql_row[21]);
+	p->st.hp                  = atoi(sql_row[22]);
+	p->st.max_sp              = atoi(sql_row[23]);
+	p->st.sp                  = atoi(sql_row[24]);
+	p->st.max_ap              = atoi(sql_row[25]);
+	p->st.ap                  = atoi(sql_row[26]);
+	p->st.status_point        = atoi(sql_row[27]);
+	p->st.tstatus_point       = atoi(sql_row[28]);
+	p->st.skill_point         = atoi(sql_row[29]);
+	p->st.option              = (unsigned int)atoi(sql_row[30]);
+	p->st.karma               = atoi(sql_row[31]);
+	p->st.manner              = atoi(sql_row[32]);
+	p->st.die_counter         = atoi(sql_row[33]);
+	p->st.party_id            = atoi(sql_row[34]);
+	p->st.guild_id            = atoi(sql_row[35]);
+	p->st.pet_id              = atoi(sql_row[36]);
+	p->st.homun_id            = atoi(sql_row[37]);
+	p->st.merc_id             = atoi(sql_row[38]);
+	p->st.elem_id             = atoi(sql_row[39]);
+	p->st.hair                = atoi(sql_row[40]);
+	p->st.hair_color          = atoi(sql_row[41]);
+	p->st.clothes_color       = atoi(sql_row[42]);
+	p->st.weapon              = atoi(sql_row[43]);
+	p->st.shield              = atoi(sql_row[44]);
+	p->st.robe                = atoi(sql_row[45]);
+	p->st.head_top            = atoi(sql_row[46]);
+	p->st.head_mid            = atoi(sql_row[47]);
+	p->st.head_bottom         = atoi(sql_row[48]);
+	strncpy(p->st.last_point.map, sql_row[49], 24);
+	p->st.last_point.x        = atoi(sql_row[50]);
+	p->st.last_point.y        = atoi(sql_row[51]);
+	strncpy(p->st.save_point.map, sql_row[52], 24);
+	p->st.save_point.x        = atoi(sql_row[53]);
+	p->st.save_point.y        = atoi(sql_row[54]);
+	p->st.partner_id          = atoi(sql_row[55]);
+	p->st.parent_id[0]        = atoi(sql_row[56]);
+	p->st.parent_id[1]        = atoi(sql_row[57]);
+	p->st.baby_id             = atoi(sql_row[58]);
+	p->st.delete_date         = atoi(sql_row[59]);
+	p->st.refuse_partyinvite  = atoi(sql_row[60]);
+	p->st.show_equip          = atoi(sql_row[61]);
+	p->st.font                = atoi(sql_row[62]);
+	p->st.style               = atoi(sql_row[63]);
+	p->st.sex                 = atoi(sql_row[64]);
+	p->st.allow_call          = atoi(sql_row[65]);
+	p->st.autofeed            = atoi(sql_row[66]);
+	p->st.title_id            = atoi(sql_row[67]);
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';

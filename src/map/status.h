@@ -22,6 +22,17 @@
 #ifndef _STATUS_H_
 #define _STATUS_H_
 
+// JobDB
+struct job_db {
+	int max_joblv[PC_UPPER_MAX];
+	int max_weight_base;
+	int hp_base[MAX_LEVEL];
+	int sp_base[MAX_LEVEL];
+	int max_ap;
+	int bonus[PC_UPPER_MAX][MAX_LEVEL];
+	int aspd_base[WT_MAX+1];
+} job_db[PC_JOB_MAX];
+
 struct status_pretimer {
 	int timer;
 	int target_id;
@@ -49,14 +60,22 @@ int status_get_range(struct block_list *bl);
 int status_get_group(struct block_list *bl);
 int status_get_hp(struct block_list *bl);
 int status_get_sp(struct block_list *bl);
+int status_get_ap(struct block_list *bl);
 int status_get_max_hp(struct block_list *bl);
 int status_get_max_sp(struct block_list *bl);
+int status_get_max_ap(struct block_list *bl);
 int status_get_str(struct block_list *bl);
 int status_get_agi(struct block_list *bl);
 int status_get_vit(struct block_list *bl);
 int status_get_int(struct block_list *bl);
 int status_get_dex(struct block_list *bl);
 int status_get_luk(struct block_list *bl);
+int status_get_pow(struct block_list *bl);
+int status_get_sta(struct block_list *bl);
+int status_get_wis(struct block_list *bl);
+int status_get_spl(struct block_list *bl);
+int status_get_con(struct block_list *bl);
+int status_get_crt(struct block_list *bl);
 int status_get_hit(struct block_list *bl);
 int status_get_flee(struct block_list *bl);
 int status_get_def(struct block_list *bl);
@@ -71,6 +90,12 @@ int status_get_speed(struct block_list *bl);
 int status_get_adelay(struct block_list *bl);
 int status_get_amotion(struct block_list *bl);
 int status_get_dmotion(struct block_list *bl);
+int status_get_patk(struct block_list *bl);
+int status_get_smatk(struct block_list *bl);
+int status_get_res(struct block_list *bl);
+int status_get_mres(struct block_list *bl);
+int status_get_hplus(struct block_list *bl);
+int status_get_crate(struct block_list *bl);
 int status_get_element(struct block_list *bl);
 int status_get_attack_element(struct block_list *bl);
 int status_get_attack_element2(struct block_list *bl);

@@ -69,16 +69,11 @@
 
 static atn_bignumber exp_table[22][MAX_LEVEL];
 
+int stpoint_table[MAX_LEVEL];
+int tstpoint_table[MAX_LEVEL];
+
 // 属性テーブル
 int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
-
-// JOB TABLE
-//    NV,SM,MG,AC,AL,MC,TF,KN,PR,WZ,BS,HT,AS,CR,MO,SA,RG,AM,BA,DC,SNV,TK,SG,SL,GS,NJ,MB,DK,DA,RK,WL,RA,AB,NC,GC,LG,SO,MI,WA,SR,GN,SC,ESNV,KG,OB,RB,SU,SE,RE
-int max_job_table[PC_UPPER_MAX][PC_JOB_MAX] = {
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,65,65 }, // 通常
-	{ 10,50,50,50,50,50,50,70,70,70,70,70,70,70,70,70,70,70,70,70,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,65,65 }, // 転生
-	{ 10,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,99,50,50,50,70,70,50,50,50,60,60,60,60,60,60,60,60,60,60,60,60,60,50,60,60,60,50,65,65 }, // 養子
-};
 
 static const unsigned int equip_pos[EQUIP_INDEX_MAX] = {
 	LOC_LACCESSORY,
@@ -4958,13 +4953,10 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		// base側レベルアップ処理
 		sd->status.base_exp -= next;
 		sd->status.base_level++;
-		if(sd->status.base_level >= 151 && battle_config.get_status_point_over_lv100)
-			sd->status.status_point += (sd->status.base_level+45 ) / 7;
-		else if(sd->status.base_level >= 100 && battle_config.get_status_point_over_lv100)
-			sd->status.status_point += (sd->status.base_level+129 ) / 10;
-		else
-			sd->status.status_point += (sd->status.base_level+14) / 5;
+		sd->status.status_point += stpoint_table[sd->status.base_level-1];
+		sd->status.tstatus_point += tstpoint_table[sd->status.base_level-1];
 		clif_updatestatus(sd,SP_STATUSPOINT);
+		clif_updatestatus(sd,SP_TSTATUSPOINT);
 		clif_updatestatus(sd,SP_BASELEVEL);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
 
@@ -5829,6 +5821,128 @@ int pc_statusup2(struct map_session_data *sd,int type,int val)
 }
 
 /*==========================================
+ * 必要特性ステータスポイント計算
+ *------------------------------------------
+ */
+int pc_need_tstatus_point(struct map_session_data *sd,int type)
+{
+	int val = -1;
+
+	nullpo_retr(-1, sd);
+
+	switch(type) {
+		case SP_POW:
+			val = sd->status.pow;
+			break;
+		case SP_STA:
+			val = sd->status.sta;
+			break;
+		case SP_WIS:
+			val = sd->status.wis;
+			break;
+		case SP_SPL:
+			val = sd->status.spl;
+			break;
+		case SP_CON:
+			val = sd->status.con;
+			break;
+		case SP_CRT:
+			val = sd->status.crt;
+			break;
+	}
+
+	if(val >= battle_config.pc_tstatus_max)
+		return 0;
+
+	if(val < 0)
+		val = -1;
+	else
+		val = 1;
+
+	return val;
+}
+
+/*==========================================
+ * 特性ステータス成長
+ *------------------------------------------
+ */
+void pc_tstatusup(struct map_session_data *sd, int type, int num)
+{
+	int need, tstatus_point;
+	int val = 0;
+	int max = battle_config.pc_tstatus_max;
+	short *param = NULL;
+
+	nullpo_retv(sd);
+
+	if(type < SP_POW || type > SP_CRT || num <= 0) {
+		clif_statusupack(sd,type,0,0);
+		return;
+	}
+
+	need = pc_need_tstatus_point(sd,type);
+	if(need < 0 || need > sd->status.tstatus_point) {
+		clif_statusupack(sd,type,0,0);
+		return;
+	}
+
+	switch(type) {
+		case SP_POW:
+			param = &sd->status.pow;
+			break;
+		case SP_STA:
+			param = &sd->status.sta;
+			break;
+		case SP_WIS:
+			param = &sd->status.wis;
+			break;
+		case SP_SPL:
+			param = &sd->status.spl;
+			break;
+		case SP_CON:
+			param = &sd->status.con;
+			break;
+		case SP_CRT:
+			param = &sd->status.crt;
+			break;
+		default:
+			clif_statusupack(sd,type,0,0);
+			return;
+	}
+
+	if((*param) >= max) {
+		clif_statusupack(sd,type,0,0);
+		return;
+	}
+
+	val = (*param);
+	if(max > val + num)
+		max = val + num;
+
+	tstatus_point = sd->status.tstatus_point;
+
+	while(max > val && tstatus_point > 0) {
+		val++;
+		tstatus_point--;
+	}
+
+	(*param) = val;
+	sd->status.tstatus_point = tstatus_point;
+	if(need != pc_need_tstatus_point(sd,type)) {
+		clif_updatestatus(sd,type-SP_POW+SP_UPOW);
+	}
+
+	clif_updatestatus(sd,SP_TSTATUSPOINT);
+	clif_updatestatus(sd,type);
+	status_calc_pc(sd,0);
+	clif_statusupack(sd,type,1,val);
+
+	achieve_update_content(sd, ACH_STATUS, type, val);
+
+	return;
+}
+
+/*==========================================
  * 必要な使用済みスキルポイントを取得
  *------------------------------------------
  */
@@ -6050,7 +6164,7 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 #define sumsp(a)	((a)*((a-2)/10+2) - 5*((a-2)/10)*((a-2)/10) - 6*((a-2)/10) -2)
 #define newsumsp(a)	((roundsp(a)*4+12)*(a-100)-((roundsp(a)-2)*(roundsp(a)-1)*10+(roundsp(a)-1)*20))
 
-void pc_resetstate(struct map_session_data* sd)
+void pc_resetstatus(struct map_session_data* sd, int flag)
 {
 	int add = 0;
 	int param[6];
@@ -6058,46 +6172,83 @@ void pc_resetstate(struct map_session_data* sd)
 
 	nullpo_retv(sd);
 
-	param[0] = sd->status.str;
-	param[1] = sd->status.agi;
-	param[2] = sd->status.vit;
-	param[3] = sd->status.int_;
-	param[4] = sd->status.dex;
-	param[5] = sd->status.luk;
+	// 基本ステータスのリセット
+	if(flag == 0 || flag&1) {
+		param[0] = sd->status.str;
+		param[1] = sd->status.agi;
+		param[2] = sd->status.vit;
+		param[3] = sd->status.int_;
+		param[4] = sd->status.dex;
+		param[5] = sd->status.luk;
 
-	for(i = 0; i < 6; i++) {
-		if(battle_config.new_statusup_calc && param[i] > 100) {
-			add += newsumsp(param[i]);
-			param[i] = 100;
+		for(i = 0; i < 6; i++) {
+			if(battle_config.new_statusup_calc && param[i] > 100) {
+				add += newsumsp(param[i]);
+				param[i] = 100;
+			}
+			add += sumsp(param[i]);
 		}
-		add += sumsp(param[i]);
+
+		sd->status.status_point += add;
+
+		clif_updatestatus(sd,SP_STATUSPOINT);
+
+		sd->status.str  = 1;
+		sd->status.agi  = 1;
+		sd->status.vit  = 1;
+		sd->status.int_ = 1;
+		sd->status.dex  = 1;
+		sd->status.luk  = 1;
+
+		clif_updatestatus(sd,SP_STR);
+		clif_updatestatus(sd,SP_AGI);
+		clif_updatestatus(sd,SP_VIT);
+		clif_updatestatus(sd,SP_INT);
+		clif_updatestatus(sd,SP_DEX);
+		clif_updatestatus(sd,SP_LUK);
+
+		clif_updatestatus(sd,SP_USTR);
+		clif_updatestatus(sd,SP_UAGI);
+		clif_updatestatus(sd,SP_UVIT);
+		clif_updatestatus(sd,SP_UINT);
+		clif_updatestatus(sd,SP_UDEX);
+		clif_updatestatus(sd,SP_ULUK);
 	}
 
-	sd->status.status_point += add;
+	// 特性ステータスのリセット
+	if(flag == 0 || flag&2) {
+		sd->status.tstatus_point += sd->status.pow;
+		sd->status.tstatus_point += sd->status.sta;
+		sd->status.tstatus_point += sd->status.wis;
+		sd->status.tstatus_point += sd->status.spl;
+		sd->status.tstatus_point += sd->status.con;
+		sd->status.tstatus_point += sd->status.crt;
+		clif_updatestatus(sd,SP_TSTATUSPOINT);
 
-	clif_updatestatus(sd,SP_STATUSPOINT);
+		sd->status.pow = 0;
+		clif_updatestatus(sd,SP_POW);
+		clif_updatestatus(sd,SP_UPOW);
 
-	sd->status.str  = 1;
-	sd->status.agi  = 1;
-	sd->status.vit  = 1;
-	sd->status.int_ = 1;
-	sd->status.dex  = 1;
-	sd->status.luk  = 1;
+		sd->status.sta = 0;
+		clif_updatestatus(sd,SP_STA);
+		clif_updatestatus(sd,SP_USTA);
 
-	clif_updatestatus(sd,SP_STR);
-	clif_updatestatus(sd,SP_AGI);
-	clif_updatestatus(sd,SP_VIT);
-	clif_updatestatus(sd,SP_INT);
-	clif_updatestatus(sd,SP_DEX);
-	clif_updatestatus(sd,SP_LUK);
+		sd->status.wis = 0;
+		clif_updatestatus(sd,SP_WIS);
+		clif_updatestatus(sd,SP_UWIS);
 
-	clif_updatestatus(sd,SP_USTR);
-	clif_updatestatus(sd,SP_UAGI);
-	clif_updatestatus(sd,SP_UVIT);
-	clif_updatestatus(sd,SP_UINT);
-	clif_updatestatus(sd,SP_UDEX);
-	clif_updatestatus(sd,SP_ULUK);
+		sd->status.spl = 0;
+		clif_updatestatus(sd,SP_SPL);
+		clif_updatestatus(sd,SP_USPL);
 
+		sd->status.con = 0;
+		clif_updatestatus(sd,SP_CON);
+		clif_updatestatus(sd,SP_UCON);
+
+		sd->status.crt = 0;
+		clif_updatestatus(sd,SP_CRT);
+		clif_updatestatus(sd,SP_UCRT);
+	}
 	status_calc_pc(sd,0);
 
 	return;
@@ -6810,14 +6961,17 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_BASELEVEL:
 		if(val > sd->status.base_level) {
 			int i;
-			for(i = 1; i <= (val - sd->status.base_level); i++)
-				sd->status.status_point += (sd->status.base_level + i + 14) / 5;
+			for(i = 1; i <= (val - sd->status.base_level); i++) {
+				sd->status.status_point += stpoint_table[sd->status.base_level+i-1];
+				sd->status.tstatus_point += tstpoint_table[sd->status.base_level+i-1];
+			}
 		}
 		sd->status.base_level = val;
 		sd->status.base_exp = 0;
 		clif_updatestatus(sd, SP_BASELEVEL);
 		clif_updatestatus(sd, SP_NEXTBASEEXP);
 		clif_updatestatus(sd, SP_STATUSPOINT);
+		clif_updatestatus(sd, SP_TSTATUSPOINT);
 		clif_updatestatus(sd, SP_BASEEXP);
 		status_calc_pc(sd, 0);
 		pc_heal(sd, sd->status.max_hp, sd->status.max_sp);
@@ -6825,7 +6979,7 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 	case SP_JOBLEVEL:
 		if(val > 0) {
 			if(val >= sd->status.job_level) {
-				int up_level = max_job_table[sd->s_class.upper][sd->s_class.job];
+				int up_level = job_db[sd->s_class.job].max_joblv[sd->s_class.upper];
 				if(val > up_level)
 					val = up_level;
 				sd->status.skill_point += (val-sd->status.job_level);
@@ -10110,6 +10264,33 @@ int pc_readdb(void)
 		exp_table[19][i] = j9;
 		exp_table[20][i] = j10;
 		exp_table[21][i] = j11;
+		i++;
+		if(i >= MAX_LEVEL)
+			break;
+	}
+	fclose(fp);
+	printf("read %s done\n", filename);
+
+	// ステータスポイントDB
+	filename = "db/pc_stpoint_db.txt";
+	memset(stpoint_table, 0, sizeof(stpoint_table));
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		printf("pc_readdb: open [%s] failed !\n", filename);
+		return 1;
+	}
+	i = 0;
+	while(fgets(line,1020,fp)) {
+		int stpoint,tstpoint;
+		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+			continue;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		if(sscanf(line,"%d,%d",&stpoint,&tstpoint) != 2)
+			continue;
+
+		stpoint_table[i] = stpoint;
+		tstpoint_table[i] = tstpoint;
 		i++;
 		if(i >= MAX_LEVEL)
 			break;

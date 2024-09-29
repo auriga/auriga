@@ -83,7 +83,8 @@
 
 @lvup レベル値     ---- 指定した値分だけLvアップ/ダウンする。上限は255。
 @jobLvup 増加値    ---- 指定した値分だけJobLvアップ/ダウンする。
-@stpoint 数字      ---- ステータスポイントの増減
+@stpoint 数字      ---- 基本ステータスポイントの増減
+@tstpoint 数字     ---- 特性ステータスポイントの増減
 @skpoint 数字      ---- スキルポイントの増減
 @memo 数字         ---- 任意記憶域メモ数字は0～2で、0が最も新しい、2が最も古い
 @zeny 数字         ---- Zenyの増減
@@ -91,6 +92,7 @@
 @hide              ---- 透明 ON/OFF
 @heal HP回復量 SP回復量             ---- HP,SPを回復する。(何も渡さないと完全回復)
 @str,@agi,@vit,@int,@dex,@luk 数字  ---- 基本ステータスの増減
+@pow,@sta,@wis,@spl,@con,@crt 数字  ---- 特性ステータスの増減
 @statall                            ---- 全ステータスMAX、指定された場合は全ステータスの増減
 
 @makepet モンスターのIDor卵のID     ---- ペットの作成
@@ -230,9 +232,11 @@ local_broadcast  ---- 同一マップのみ発言
 mapmove   ---- マップ移動
     /mm マップ名 座標1 座標2
 
-resetstate
-    /resetstate  ---- ステータスリセット
-    @resetstate  ---- 同上
+@resetstate 数字  ---- ステータスリセット
+    数字 1:基本ステータスのみリセット、2:特性ステータスのみリセット、省略:基本/特性ステータス両方リセット
+/resetstate       ---- 同上
+
+resetskill
     /resetskill  ---- スキルリセット
     @resetskill  ---- 同上
 

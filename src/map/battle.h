@@ -590,7 +590,6 @@ extern struct Battle_Config {
 	int third_max_aspd;
 	int third_song_overlap;
 	int clif_fix_level;
-	int get_status_point_over_lv100;
 	int max_buyingstore_zeny;
 	int max_buyingstore_amount;
 	int allow_same_activeitem;
@@ -636,6 +635,7 @@ extern struct Battle_Config {
 	int max_skillpoint_snv;
 	int max_skillpoint_esnv;
 	int max_skillpoint_doram;
+	int pc_tstatus_max;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

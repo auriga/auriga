@@ -4538,7 +4538,7 @@ struct script_function buildin_func[] = {
 	{buildin_debugmes,"debugmes","s"},
 	{buildin_catchpet,"pet","i"},
 	{buildin_birthpet,"bpet",""},
-	{buildin_resetstatus,"resetstatus",""},
+	{buildin_resetstatus,"resetstatus","*"},
 	{buildin_resetskill,"resetskill","*"},
 	{buildin_changebase,"changebase","i*"},
 	{buildin_changesex,"changesex",""},
@@ -8900,7 +8900,12 @@ int buildin_birthpet(struct script_state *st)
  */
 int buildin_resetstatus(struct script_state *st)
 {
-	pc_resetstate( script_rid2sd(st) );
+	int flag = 0;
+
+	if(st->end > st->start+2)
+		flag = conv_num(st,& (st->stack->stack_data[st->start+2]));
+
+	pc_resetstatus(script_rid2sd(st), flag);
 	return 0;
 }
 

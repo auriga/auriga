@@ -52,14 +52,6 @@
 #include "msg.h"
 #include "bonus.h"
 
-static struct job_db {
-	int max_weight_base;
-	int hp_base[MAX_LEVEL];
-	int sp_base[MAX_LEVEL];
-	int bonus[PC_UPPER_MAX][MAX_LEVEL];
-	int aspd_base[WT_MAX+1];
-} job_db[PC_JOB_MAX];
-
 static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
 
 static struct refine_db {
@@ -348,11 +340,12 @@ int status_is_disable(int type,int mask)
 int status_calc_pc(struct map_session_data* sd,int first)
 {
 	// 注意：ここでは変数の宣言のみにとどめ、初期化はL_RECALCの後にやること。
-	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[6],b_paramc[6],b_hit,b_flee;
+	int b_speed,b_max_hp,b_max_sp,b_hp,b_sp,b_weight,b_max_weight,b_paramb[12],b_paramc[12],b_hit,b_flee;
 	int b_aspd,b_watk,b_def,b_watk2,b_def2,b_flee2,b_critical,b_attackrange,b_matk1,b_matk2,b_mdef,b_mdef2,b_class;
 	int b_base_atk;
 	int b_watk_,b_watk_2;
 	int b_tigereye, b_endure, b_speedrate;
+	int b_max_ap,b_ap,b_patk,b_smatk,b_res,b_mres,b_hplus,b_crate;
 	struct skill b_skill[MAX_PCSKILL];
 	int i,blv,calc_val,idx;
 	int skill,wele,wele_,def_ele,refinedef;
@@ -383,8 +376,10 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_speed      = sd->speed;
 	b_max_hp     = sd->status.max_hp;
 	b_max_sp     = sd->status.max_sp;
+	b_max_ap     = sd->status.max_ap;
 	b_hp         = sd->status.hp;
 	b_sp         = sd->status.sp;
+	b_ap         = sd->status.ap;
 	b_weight     = sd->weight;
 	b_max_weight = sd->max_weight;
 	memcpy(b_paramb, &sd->paramb, sizeof(b_paramb));
@@ -411,6 +406,12 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_speedrate   = sd->speed_rate;
 	b_watk_       = sd->watk_;
 	b_watk_2      = sd->watk_2;
+	b_patk        = sd->patk;
+	b_smatk       = sd->smatk;
+	b_res         = sd->res;
+	b_mres        = sd->mres;
+	b_hplus       = sd->hplus;
+	b_crate       = sd->crate;
 #ifndef PRE_RENEWAL
 	b_plus_atk    = sd->plus_atk;
 	b_plus_matk   = sd->plus_matk;
@@ -519,6 +520,13 @@ L_RECALC:
 	sd->fixcastrate_        = 0;
 	sd->dsprate             = 100;
 	sd->base_atk            = 0;
+	sd->status.max_ap       = 0;
+	sd->patk                = 0;
+	sd->smatk               = 0;
+	sd->res                 = 0;
+	sd->mres                = 0;
+	sd->hplus               = 0;
+	sd->crate               = 0;
 #ifndef PRE_RENEWAL
 	sd->plus_atk            = 0;
 	sd->plus_matk           = 0;
@@ -1508,12 +1516,18 @@ L_RECALC:
 		}
 	}
 
-	sd->paramc[0] = sd->status.str  + sd->paramb[0] + sd->parame[0];
-	sd->paramc[1] = sd->status.agi  + sd->paramb[1] + sd->parame[1];
-	sd->paramc[2] = sd->status.vit  + sd->paramb[2] + sd->parame[2];
-	sd->paramc[3] = sd->status.int_ + sd->paramb[3] + sd->parame[3];
-	sd->paramc[4] = sd->status.dex  + sd->paramb[4] + sd->parame[4];
-	sd->paramc[5] = sd->status.luk  + sd->paramb[5] + sd->parame[5];
+	sd->paramc[0]  = sd->status.str  + sd->paramb[0]  + sd->parame[0];
+	sd->paramc[1]  = sd->status.agi  + sd->paramb[1]  + sd->parame[1];
+	sd->paramc[2]  = sd->status.vit  + sd->paramb[2]  + sd->parame[2];
+	sd->paramc[3]  = sd->status.int_ + sd->paramb[3]  + sd->parame[3];
+	sd->paramc[4]  = sd->status.dex  + sd->paramb[4]  + sd->parame[4];
+	sd->paramc[5]  = sd->status.luk  + sd->paramb[5]  + sd->parame[5];
+	sd->paramc[6]  = sd->status.pow  + sd->paramb[6]  + sd->parame[6];
+	sd->paramc[7]  = sd->status.sta  + sd->paramb[7]  + sd->parame[7];
+	sd->paramc[8]  = sd->status.wis  + sd->paramb[8]  + sd->parame[8];
+	sd->paramc[9]  = sd->status.spl  + sd->paramb[9]  + sd->parame[9];
+	sd->paramc[10] = sd->status.con  + sd->paramb[10] + sd->parame[10];
+	sd->paramc[11] = sd->status.crt  + sd->paramb[11] + sd->parame[11];
 
 	for(i=0; i<6; i++) {
 		if(sd->paramc[i] < 0)
@@ -1534,9 +1548,9 @@ L_RECALC:
 #ifdef PRE_RENEWAL
 	dstr = str/10;
 
-	sd->base_atk += str + dstr*dstr + dex/5 + sd->paramc[5]/5;
-	sd->matk1 += sd->paramc[3]+(sd->paramc[3]/5)*(sd->paramc[3]/5);
-	sd->matk2 += sd->paramc[3]+(sd->paramc[3]/7)*(sd->paramc[3]/7);
+	sd->base_atk += str + dstr*dstr + dex/5 + sd->paramc[5]/5 + sd->paramc[6]*5;
+	sd->matk1 += sd->paramc[3]+(sd->paramc[3]/5)*(sd->paramc[3]/5)+sd->paramc[9]*5;
+	sd->matk2 += sd->paramc[3]+(sd->paramc[3]/7)*(sd->paramc[3]/7)+sd->paramc[9]*5;
 
 	if(sd->matk1 < sd->matk2) {
 		int temp = sd->matk2;
@@ -1544,8 +1558,8 @@ L_RECALC:
 		sd->matk1 = temp;
 	}
 
-	sd->hit      += sd->paramc[4] + sd->status.base_level;
-	sd->flee     += sd->paramc[1] + sd->status.base_level;
+	sd->hit      += sd->paramc[4] + sd->status.base_level + sd->paramc[10]*2;
+	sd->flee     += sd->paramc[1] + sd->status.base_level + sd->paramc[10]*2;
 	sd->def2     += sd->paramc[2];
 	sd->mdef2    += sd->paramc[3];
 	sd->flee2    += sd->paramc[5] + 10;
@@ -1553,11 +1567,11 @@ L_RECALC:
 #else
 	dstr = sd->paramc[3]/7;
 
-	sd->base_atk += (int)(str + dex/5. + sd->paramc[5]/3.);
-	sd->matk2    += sd->paramc[3] + (dstr*dstr)/3 + sd->paramc[4]/5 + sd->paramc[5]/3;
+	sd->base_atk += (int)(str + dex/5. + sd->paramc[5]/3. + sd->paramc[6]*5);
+	sd->matk2    += sd->paramc[3] + (dstr*dstr)/3 + sd->paramc[4]/5 + sd->paramc[5]/3 + sd->paramc[9]*5;
 
-	sd->hit      += 175 + sd->paramc[4] + sd->paramc[5]/3 + sd->status.base_level;
-	sd->flee     += 100 + sd->paramc[1] + sd->paramc[5]/5 + sd->status.base_level;
+	sd->hit      += 175 + sd->paramc[4] + sd->paramc[5]/3 + sd->paramc[10]*2 + sd->status.base_level;
+	sd->flee     += 100 + sd->paramc[1] + sd->paramc[5]/5 + sd->paramc[10]*2 + sd->status.base_level;
 	sd->def2     += (int)(sd->paramc[2]/2. + sd->status.base_level/2. + sd->paramc[1]/5.);
 	sd->mdef2    += (int)(sd->paramc[3] + sd->status.base_level/4. + sd->paramc[2]/5. + sd->paramc[4]/5.);
 	if(pc_isdoram(sd))
@@ -1566,6 +1580,12 @@ L_RECALC:
 		sd->flee2    += sd->paramc[5] + 10;
 	sd->critical += sd->paramc[5] / 3 * 10 + 10;
 #endif
+	sd->patk     += sd->paramc[6]/3 + sd->paramc[10]/5;
+	sd->smatk    += sd->paramc[9]/3 + sd->paramc[10]/5;
+	sd->res      += sd->paramc[7] + (sd->paramc[7]/3*5);
+	sd->mres     += sd->paramc[8] + (sd->paramc[8]/3*5);
+	sd->hplus    += sd->paramc[11];
+	sd->crate    += sd->paramc[11]/3;
 
 	// アイテム補正
 	if(sd->sc.count > 0) {
@@ -1799,6 +1819,9 @@ L_RECALC:
 	if(sd->sc.data[SC_SUPPORT_HPSP].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_SUPPORT_HPSP].val1) / 100);
 	}
+
+	// 最大AP
+	sd->status.max_ap = job_db[sd->s_class.job].max_ap;
 
 	// SP消費
 	if((skill = pc_checkskill(sd,HP_MANARECHARGE)) > 0) {	// マナリチャージ
@@ -2814,11 +2837,15 @@ L_RECALC:
 		sd->status.max_hp = 1;
 	if(sd->status.max_sp <= 0)
 		sd->status.max_sp = 1;
+	if(sd->status.max_ap <= 0)
+		sd->status.max_ap = 0;
 
 	if(sd->status.hp > sd->status.max_hp)
 		sd->status.hp = sd->status.max_hp;
 	if(sd->status.sp > sd->status.max_sp)
 		sd->status.sp = sd->status.max_sp;
+	if(sd->status.ap > sd->status.max_ap)
+		sd->status.ap = sd->status.max_ap;
 
 	// bTigereyeがなくなっていたらパケット送って元に戻す
 	if(b_tigereye == 1 && sd->special_state.infinite_tigereye == 0 && sd->sc.data[SC_TIGEREYE].timer == -1)
@@ -2852,9 +2879,11 @@ L_RECALC:
 		clif_updatestatus(sd,SP_SPEED);
 		clif_updatestatus(sd,SP_MAXHP);
 		clif_updatestatus(sd,SP_MAXSP);
+		clif_updatestatus(sd,SP_MAXAP);
 		if(first&1) {
 			clif_updatestatus(sd,SP_HP);
 			clif_updatestatus(sd,SP_SP);
+			clif_updatestatus(sd,SP_AP);
 		}
 		return 0;
 	}
@@ -2893,9 +2922,13 @@ L_RECALC:
 		pc_checkweighticon(sd);
 	}
 
-	for(i=0; i<6; i++) {
-		if(b_paramb[i] + b_paramc[i] != sd->paramb[i] + sd->paramc[i])
-			clif_updatestatus(sd,SP_STR+i);
+	for(i=0; i<12; i++) {
+		if(b_paramb[i] + b_paramc[i] != sd->paramb[i] + sd->paramc[i]) {
+			if(i < 6)
+				clif_updatestatus(sd,SP_STR+i);
+			else
+				clif_updatestatus(sd,SP_POW+i-6);
+		}
 	}
 
 	if(b_hit != sd->hit)
@@ -2947,6 +2980,18 @@ L_RECALC:
 	if(b_mdef != sd->mdef)
 		clif_updatestatus(sd,SP_MDEF2);
 #endif
+	if(b_patk != sd->patk)
+		clif_updatestatus(sd,SP_PATK);
+	if(b_smatk != sd->smatk)
+		clif_updatestatus(sd,SP_SMATK);
+	if(b_res != sd->res)
+		clif_updatestatus(sd,SP_RES);
+	if(b_mres != sd->mres)
+		clif_updatestatus(sd,SP_MRES);
+	if(b_hplus != sd->hplus)
+		clif_updatestatus(sd,SP_HPLUS);
+	if(b_crate != sd->crate)
+		clif_updatestatus(sd,SP_CRATE);
 	if(b_attackrange != sd->range.attackrange)
 		clif_updatestatus(sd,SP_ATTACKRANGE);
 	if(b_max_hp != sd->status.max_hp)
@@ -2957,6 +3002,8 @@ L_RECALC:
 		clif_updatestatus(sd,SP_HP);
 	if(b_sp != sd->status.sp)
 		clif_updatestatus(sd,SP_SP);
+	if(b_ap != sd->status.ap)
+		clif_updatestatus(sd,SP_AP);
 	/*
 	if(before.cart_num != before.cart_num || before.cart_max_num != before.cart_max_num ||
 		before.cart_weight != before.cart_weight || before.cart_max_weight != before.cart_max_weight )
@@ -4010,6 +4057,21 @@ int status_get_sp(struct block_list *bl)
 }
 
 /*==========================================
+ * 対象のAPを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_ap(struct block_list *bl)
+{
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		return ((struct map_session_data *)bl)->status.ap;
+
+	return 0;
+}
+
+/*==========================================
  * 対象のMHPを返す
  * 戻りは整数で0以上
  *------------------------------------------
@@ -4099,6 +4161,21 @@ int status_get_max_sp(struct block_list *bl)
 	}
 
 	return max_sp;
+}
+
+/*==========================================
+ * 対象のMaxAPを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_max_ap(struct block_list *bl)
+{
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && ((struct map_session_data *)bl))
+		return ((struct map_session_data *)bl)->status.max_ap;
+
+	return 0;
 }
 
 /*==========================================
@@ -4390,6 +4467,114 @@ int status_get_luk(struct block_list *bl)
 	}
 	if(luk < 0) luk = 0;
 	return luk;
+}
+
+/*==========================================
+ * 対象のPowを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_pow(struct block_list *bl)
+{
+	int pow = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		pow = ((struct map_session_data *)bl)->paramc[6];
+
+	if(pow < 0) pow = 0;
+	return pow;
+}
+
+/*==========================================
+ * 対象のStaを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_sta(struct block_list *bl)
+{
+	int sta = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		sta = ((struct map_session_data *)bl)->paramc[7];
+
+	if(sta < 0) sta = 0;
+	return sta;
+}
+
+/*==========================================
+ * 対象のWisを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_wis(struct block_list *bl)
+{
+	int wis = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		wis = ((struct map_session_data *)bl)->paramc[8];
+
+	if(wis < 0) wis = 0;
+	return wis;
+}
+
+/*==========================================
+ * 対象のSplを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_spl(struct block_list *bl)
+{
+	int spl = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		spl = ((struct map_session_data *)bl)->paramc[6];
+
+	if(spl < 0) spl = 0;
+	return spl;
+}
+
+/*==========================================
+ * 対象のConを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_con(struct block_list *bl)
+{
+	int con = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		con = ((struct map_session_data *)bl)->paramc[6];
+
+	if(con < 0) con = 0;
+	return con;
+}
+
+/*==========================================
+ * 対象のCrtを返す
+ * 戻りは整数で0以上
+ *------------------------------------------
+ */
+int status_get_crt(struct block_list *bl)
+{
+	int crt = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		crt = ((struct map_session_data *)bl)->paramc[6];
+
+	if(crt < 0) crt = 0;
+	return crt;
 }
 
 /*==========================================
@@ -6173,6 +6358,108 @@ int status_get_dmotion(struct block_list *bl)
 	}
 
 	return dmotion;
+}
+
+/*==========================================
+ * 対象のP.Atkを返す
+ *------------------------------------------
+ */
+int status_get_patk(struct block_list *bl)
+{
+	int patk = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		patk = ((struct map_session_data *)bl)->patk;
+
+	if(patk < 0) patk = 0;
+	return patk;
+}
+
+/*==========================================
+ * 対象のS.Matkを返す
+ *------------------------------------------
+ */
+int status_get_smatk(struct block_list *bl)
+{
+	int smatk = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		smatk = ((struct map_session_data *)bl)->smatk;
+
+	if(smatk < 0) smatk = 0;
+	return smatk;
+}
+
+/*==========================================
+ * 対象のResを返す
+ *------------------------------------------
+ */
+int status_get_res(struct block_list *bl)
+{
+	int res = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		res = ((struct map_session_data *)bl)->res;
+
+	if(res < 0) res = 0;
+	return res;
+}
+
+/*==========================================
+ * 対象のMresを返す
+ *------------------------------------------
+ */
+int status_get_mres(struct block_list *bl)
+{
+	int mres = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		mres = ((struct map_session_data *)bl)->mres;
+
+	if(mres < 0) mres = 0;
+	return mres;
+}
+
+/*==========================================
+ * 対象のH.Plusを返す
+ *------------------------------------------
+ */
+int status_get_hplus(struct block_list *bl)
+{
+	int hplus = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		hplus = ((struct map_session_data *)bl)->hplus;
+
+	if(hplus < 0) hplus = 0;
+	return hplus;
+}
+
+/*==========================================
+ * 対象のC.Rateを返す
+ *------------------------------------------
+ */
+int status_get_crate(struct block_list *bl)
+{
+	int crate = 0;
+
+	nullpo_retr(0, bl);
+
+	if(bl->type == BL_PC && (struct map_session_data *)bl)
+		crate = ((struct map_session_data *)bl)->crate;
+
+	if(crate < 0) crate = 0;
+	return crate;
 }
 
 /*==========================================
@@ -12645,82 +12932,118 @@ static void status_split_atoi(char *str, int *num1, int *num2)
 }
 
 /*==========================================
+ *
+ *------------------------------------------
+ */
+static int status_split_atoi2(char *str,int *val,int num)
+{
+	int i, max = 0;
+
+	for (i=0; i<num; i++) {
+		if (str) {
+			val[i] = max = atoi(str);
+			str = strchr(str,':');
+			if (str)
+				*str++=0;
+		} else {
+			val[i] = max;
+		}
+	}
+	return i;
+}
+
+/*==========================================
  * データベース読み込み
  *------------------------------------------
  */
 int status_readdb(void)
 {
-	int i,j,k;
+	int i,j,k,m;
 	FILE *fp;
 	char line[1024],*p;
-	const char *filename;
+#ifdef PRE_RENEWAL
+	const char *filename[] = {
+		"db/job_db1.txt", "db/pre/job_db1_pre.txt", "db/addon/job_db1_add.txt"
+	};
+	const int max = 3;
+#else
+	const char *filename[] = {
+		"db/job_db1.txt", "db/addon/job_db1_add.txt"
+	};
+	const int max = 2;
+#endif
+	const char *filename2;
 
 	memset(&job_db, 0, sizeof(job_db));
 
-	// JOB補正数値１
-#ifdef PRE_RENEWAL
-	filename = "db/pre/job_db1_pre.txt";
-#else
-	filename = "db/job_db1.txt";
-#endif
-	fp = fopen(filename, "r");
-	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
-		return 1;
+	// JOB補正数値1
+	for(m = 0; m < max; m++) {
+		fp = fopen(filename[m], "r");
+		if(fp == NULL) {
+			if(m > 0)
+				continue;
+			printf("status_readdb: open [%s] failed !\n", filename[m]);
+			return 1;
+		}
+
+		while(fgets(line,1020,fp)){
+			char *split[8+WT_MAX];
+			int hp_coefficient, sp_coefficient;
+			int hp_coefficient2, sigma;
+
+			if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
+				continue;
+			if(line[0]=='/' && line[1]=='/')
+				continue;
+			memset(split,0,sizeof(split));
+			for(j=0,p=line;j<7+WT_MAX && p;j++){
+				split[j]=p;
+				p=strchr(p,',');
+				if(p) *p++=0;
+			}
+			if(j < 7)
+				continue;
+
+			i = atoi(split[0]);
+			if(i < 0 || i >= PC_JOB_MAX)
+				continue;
+
+			status_split_atoi2(split[1],job_db[i].max_joblv,PC_UPPER_MAX);
+			job_db[i].max_weight_base = atoi(split[2]);
+			if((hp_coefficient = atoi(split[3])) < 0)
+				hp_coefficient = 0;
+			if((hp_coefficient2 = atoi(split[4])) < 0)
+				hp_coefficient2 = 500;
+			sigma = 0;
+			for(j = 1; j <= MAX_LEVEL; j++) {
+				// 基本HP = 35 + BaseLevel * Job倍率 + Jobボーナス
+				job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
+				sigma += hp_coefficient * (j + 1) + 50;
+				sigma -= sigma % 100;
+			}
+
+			if((sp_coefficient = atoi(split[5])) < 0)
+				sp_coefficient = 100;
+			for(j = 1; j <= MAX_LEVEL; j++) {
+				// 基本SP = 10 + BaseLevel * Job係数
+				job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
+			}
+
+			job_db[i].max_ap = atoi(split[6]);
+
+			for(j=0; j<=WT_MAX && split[7+j]; j++) {
+				job_db[i].aspd_base[j] = atoi(split[7+j]);
+			}
+		}
+		fclose(fp);
+		printf("read %s done\n", filename[m]);
 	}
-	i=0;
-	while(fgets(line,1020,fp)){
-		char *split[WT_MAX+5];
-		int hp_coefficient, sp_coefficient;
-		int hp_coefficient2, sigma;
-
-		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
-			continue;
-		if(line[0]=='/' && line[1]=='/')
-			continue;
-		memset(split,0,sizeof(split));
-		for(j=0,p=line;j<WT_MAX+5 && p;j++){
-			split[j]=p;
-			p=strchr(p,',');
-			if(p) *p++=0;
-		}
-		if(j < 4)
-			continue;
-		job_db[i].max_weight_base = atoi(split[0]);
-
-		if((hp_coefficient = atoi(split[1])) < 0)
-			hp_coefficient = 0;
-		if((hp_coefficient2 = atoi(split[2])) < 0)
-			hp_coefficient2 = 500;
-		sigma = 0;
-		for(j = 1; j <= MAX_LEVEL; j++) {
-			// 基本HP = 35 + BaseLevel * Job倍率 + Jobボーナス
-			job_db[i].hp_base[j-1] = (3500 + j * hp_coefficient2 + sigma) / 100;
-			sigma += hp_coefficient * (j + 1) + 50;
-			sigma -= sigma % 100;
-		}
-
-		if((sp_coefficient = atoi(split[3])) < 0)
-			sp_coefficient = 100;
-		for(j = 1; j <= MAX_LEVEL; j++) {
-			// 基本SP = 10 + BaseLevel * Job係数
-			job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
-		}
-
-		for(j=0; j<=WT_MAX && split[j+4]; j++) {
-			job_db[i].aspd_base[j] = atoi(split[j+4]);
-		}
-		if(++i >= PC_JOB_MAX)
-			break;
-	}
-	fclose(fp);
-	printf("read %s done\n", filename);
 
 	// 基本HP個別設定
-	filename = "db/job_hp_db.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/job_hp_db.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12742,13 +13065,13 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// 基本SP個別設定
-	filename = "db/job_sp_db.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/job_sp_db.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12770,13 +13093,13 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// JOBボーナス
-	filename = "db/job_db2.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/job_db2.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12797,13 +13120,13 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// JOBボーナス2 転生職用
-	filename = "db/job_db2-2.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/job_db2-2.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12823,7 +13146,7 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// 精錬データテーブル
 	for(i=0; i<MAX_WEAPON_LEVEL+1; i++) {
@@ -12836,13 +13159,13 @@ int status_readdb(void)
 	}
 
 #ifdef PRE_RENEWAL
-	filename = "db/pre/refine_db_pre.txt";
+	filename2 = "db/pre/refine_db_pre.txt";
 #else
-	filename = "db/refine_db.txt";
+	filename2 = "db/refine_db.txt";
 #endif
-	fp = fopen(filename, "r");
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12872,7 +13195,7 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// サイズ補正テーブル
 	for(i=0; i<MAX_SIZE_FIX; i++) {
@@ -12880,10 +13203,10 @@ int status_readdb(void)
 			atkmods[i][j] = 100;
 	}
 
-	filename = "db/size_fix.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/size_fix.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12908,14 +13231,14 @@ int status_readdb(void)
 			break;
 	}
 	fclose(fp);
-	printf("read %s done\n", filename);
+	printf("read %s done\n", filename2);
 
 	// ステータス異常テーブル
 	memset(&scdata_db, 0, sizeof(scdata_db));
-	filename = "db/scdata_db.txt";
-	fp = fopen(filename, "r");
+	filename2 = "db/scdata_db.txt";
+	fp = fopen(filename2, "r");
 	if(fp == NULL) {
-		printf("status_readdb: open [%s] failed !\n", filename);
+		printf("status_readdb: open [%s] failed !\n", filename2);
 		return 1;
 	}
 	i=0;
@@ -12941,7 +13264,7 @@ int status_readdb(void)
 		i++;
 	}
 	fclose(fp);
-	printf("read %s done (count=%d)\n", filename, i);
+	printf("read %s done (count=%d)\n", filename2, i);
 
 #ifdef DYNAMIC_SC_DATA
 	for(i=0; i<MAX_STATUSCHANGE; i++) {

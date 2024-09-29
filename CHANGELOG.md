@@ -1,4 +1,31 @@
 ----------------------------------------
+//1563 [2024/09/29] by Blaze
+
+・特性ステータス（Pow/Sta/Wis/Spl/Con/Crt/P.Atk/S.Matk/Res/Mres/H.Plus/C.Rate/T.StatusPoint）実装
+　（mmo.h, map.h, pc.c, pc.h, status.c, status.h, battle.c, skill.c, db/packet_db.lua）
+　※PCステータスのみ、Mobやスクリプト命令などは今後追加予定
+
+・キャラセーブデータ変更（chardb_txt.c, chardb_sql.c, sql-files/main.sql, sql-files/Auriga1563_changetable.sql）
+　※Auriga-1563以降はセーブデータ形式が変わるため、SQLは同梱のAuriga1563_changetable.sqlを使用してください
+
+・battle_confに特性ステータスの割り振り上限「pc_tstatus_max」を追加（conf/battle_auriga.conf, battle.c, battle.h, pc.c）
+
+・基本/特性ステータスポイントの付与をDB「pc_stpoint_db.txt」で定義できるように仕様変更（pc.c, pc.h, atcommand.c, db/pc_stpoint_db.txt）
+　上記に伴い、battle_confの「get_status_point_over_lv100」を廃止（conf/battle_auriga.conf, battle.c, battle.h, pc.c, atcommand.c）
+
+・ジョブ設定DB「job_db1.txt」の仕様変更
+　addonのDB追加、読み込みを通常DB→(R化前DB)→アドオンDBで上書きできるように（status.c, db/addon/job_db1_add.txt）
+　→上記により、R化前DBは3次職以降は通常DBでサポートするように定義削除（db/pre/job_db1_pre.txt）
+　MaxJobLvの定義をDBに追加、pc.cの定義でMaxJobLvを判定していたのをDB参照するように（pc.c, pc.h, atcommand.c, db/job_db1.txt）
+　→上記により、3次職の最大JobLvが60->70など引き上げられています。
+　最大APの定義をDBに追加（４次職スキルの予約）
+
+・＠コマンド「@pow」「@sta」「@wis」「@spl」「@con」「@crt」「@tstpoint」追加（atcommand.c, atcommand.h, conf/help.txt, conf/atcommand_auriga.conf）
+
+・＠コマンド「@resetstatet」に引数指定できるように変更（atcommand.c, atcommand.h, script.c, conf/help.txt）
+　 引数 1:基本ステータスのみリセット、2:特性ステータスのみリセット、省略:基本/特性ステータス両方リセット
+
+----------------------------------------
 //1562 [2024/09/28] by Blaze
 
 ・スキル使用条件DB2「skill_require_db2.txt」をpre/addonに対応（skill.c, db/pre/skill_require_db2_pre.txt, db/addon/skill_require_db2_add.txt）

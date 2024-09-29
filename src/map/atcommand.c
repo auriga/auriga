@@ -121,8 +121,10 @@ ATCOMMAND_FUNC(gat);
 ATCOMMAND_FUNC(packet);
 ATCOMMAND_FUNC(statuspoint);
 ATCOMMAND_FUNC(skillpoint);
+ATCOMMAND_FUNC(tstatuspoint);
 ATCOMMAND_FUNC(zeny);
 ATCOMMAND_FUNC(param);
+ATCOMMAND_FUNC(param2);
 ATCOMMAND_FUNC(guildlevelup);
 ATCOMMAND_FUNC(guildskillpoint);
 ATCOMMAND_FUNC(makepet);
@@ -288,6 +290,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_GAT,                "@gat",              0, atcommand_gat,                 NULL },
 	{ AtCommand_Packet,             "@packet",           0, atcommand_packet,              NULL },
 	{ AtCommand_StatusPoint,        "@stpoint",          0, atcommand_statuspoint,         NULL },
+	{ AtCommand_TStatusPoint,       "@tstpoint",         0, atcommand_tstatuspoint,        NULL },
 	{ AtCommand_SkillPoint,         "@skpoint",          0, atcommand_skillpoint,          NULL },
 	{ AtCommand_Zeny,               "@zeny",             0, atcommand_zeny,                NULL },
 	{ AtCommand_Strength,           "@str",              0, atcommand_param,               NULL },
@@ -296,6 +299,12 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_Intelligence,       "@int",              0, atcommand_param,               NULL },
 	{ AtCommand_Dexterity,          "@dex",              0, atcommand_param,               NULL },
 	{ AtCommand_Luck,               "@luk",              0, atcommand_param,               NULL },
+	{ AtCommand_Pow,                "@pow",              0, atcommand_param2,              NULL },
+	{ AtCommand_Sta,                "@sta",              0, atcommand_param2,              NULL },
+	{ AtCommand_Wis,                "@wis",              0, atcommand_param2,              NULL },
+	{ AtCommand_Spl,                "@spl",              0, atcommand_param2,              NULL },
+	{ AtCommand_Con,                "@con",              0, atcommand_param2,              NULL },
+	{ AtCommand_Crt,                "@crt",              0, atcommand_param2,              NULL },
 	{ AtCommand_GuildLevelUp,       "@guildlvup",        0, atcommand_guildlevelup,        NULL },
 	{ AtCommand_GuildSkillPoint,    "@guildskpoint",     0, atcommand_guildskillpoint,     NULL },
 	{ AtCommand_MakePet,            "@makepet",          0, atcommand_makepet,             NULL },
@@ -1576,17 +1585,14 @@ int atcommand_baselevelup(const int fd, struct map_session_data* sd, AtCommandTy
 		if (level <= 0)
 			return -1;
 		for (i = 1; i <= level; i++) {
-			if(sd->status.base_level + i >= 151 && battle_config.get_status_point_over_lv100)
-				sd->status.status_point += (sd->status.base_level + i + 45 ) / 7;
-			else if(sd->status.base_level + i >= 100 && battle_config.get_status_point_over_lv100)
-				sd->status.status_point += (sd->status.base_level + i + 129 ) / 10;
-			else
-				sd->status.status_point += (sd->status.base_level + i + 14) / 5;
+			sd->status.status_point += stpoint_table[sd->status.base_level+i-1];
+			sd->status.tstatus_point += tstpoint_table[sd->status.base_level+i-1];
 		}
 		sd->status.base_level += level;
 		clif_updatestatus(sd, SP_BASELEVEL);
 		clif_updatestatus(sd, SP_NEXTBASEEXP);
 		clif_updatestatus(sd, SP_STATUSPOINT);
+		clif_updatestatus(sd, SP_TSTATUSPOINT);
 		status_calc_pc(sd, 0);
 		pc_heal(sd, sd->status.max_hp, sd->status.max_sp);
 		clif_misceffect(&sd->bl, 0);
@@ -1619,7 +1625,7 @@ int atcommand_joblevelup(const int fd, struct map_session_data* sd, AtCommandTyp
 	if (!message || !*message)
 		return -1;
 
-	up_level = max_job_table[sd->s_class.upper][sd->s_class.job];
+	up_level = job_db[sd->s_class.job].max_joblv[sd->s_class.upper];
 
 	level = atoi(message);
 	if (level > up_level)
@@ -2301,6 +2307,30 @@ int atcommand_skillpoint(const int fd, struct map_session_data* sd, AtCommandTyp
  *
  *------------------------------------------
  */
+int atcommand_tstatuspoint(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int point;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+
+	point = atoi(message);
+	if (point > 0 || sd->status.tstatus_point + point >= 0) {
+		sd->status.tstatus_point += point;
+		clif_updatestatus(sd, SP_TSTATUSPOINT);
+	} else {
+		clif_displaymessage(fd, msg_txt(41));
+	}
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
 int atcommand_zeny(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
 	int zeny;
@@ -2394,6 +2424,63 @@ int atcommand_param(const int fd, struct map_session_data* sd, AtCommandType com
 
 	clif_updatestatus(sd, SP_STR + command - AtCommand_Strength);
 	clif_updatestatus(sd, SP_USTR + command - AtCommand_Strength);
+	status_calc_pc(sd, 0);
+	clif_displaymessage(fd, msg_txt(42));
+
+	return 0;
+}
+
+/*==========================================
+ *
+ *------------------------------------------
+ */
+int atcommand_param2(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int value, new_value;
+	int max = battle_config.pc_tstatus_max;
+	short *status = NULL;
+
+	nullpo_retr(-1, sd);
+
+	if (!message || !*message)
+		return -1;
+
+	value = atoi(message);
+	switch (command) {
+		case AtCommand_Pow:
+			status = &sd->status.pow;
+			break;
+		case AtCommand_Sta:
+			status = &sd->status.sta;
+			break;
+		case AtCommand_Wis:
+			status = &sd->status.wis;
+			break;
+		case AtCommand_Spl:
+			status = &sd->status.spl;
+			break;
+		case AtCommand_Con:
+			status = &sd->status.con;
+			break;
+		case AtCommand_Crt:
+			status = &sd->status.crt;
+			break;
+		default:
+			break;
+	}
+	if (status == NULL)
+		return -1;
+
+	new_value = *status + value;
+	if(new_value < 0)
+		*status = 0;
+	else if(new_value > max)
+		*status = max;
+	else
+		*status += value;
+
+	clif_updatestatus(sd, SP_POW + command - AtCommand_Pow);
+	clif_updatestatus(sd, SP_UPOW + command - AtCommand_Pow);
 	status_calc_pc(sd, 0);
 	clif_displaymessage(fd, msg_txt(42));
 
@@ -3039,12 +3126,15 @@ int atcommand_character_baselevel(const int fd, struct map_session_data* sd, AtC
 					level = MAX_LEVEL - (int)pl_sd->status.base_level;
 				if (level <= 0)
 					return -1;
-				for (i = 1; i <= level; i++)
-					pl_sd->status.status_point += (pl_sd->status.base_level + i + 14) / 5;
+				for (i = 1; i <= level; i++) {
+					pl_sd->status.status_point += stpoint_table[pl_sd->status.base_level+i-1];
+					pl_sd->status.tstatus_point += tstpoint_table[pl_sd->status.base_level+i-1];
+				}
 				pl_sd->status.base_level += level;
 				clif_updatestatus(pl_sd, SP_BASELEVEL);
 				clif_updatestatus(pl_sd, SP_NEXTBASEEXP);
 				clif_updatestatus(pl_sd, SP_STATUSPOINT);
+				clif_updatestatus(pl_sd, SP_TSTATUSPOINT);
 				status_calc_pc(pl_sd, 0);
 				pc_heal(pl_sd, pl_sd->status.max_hp, pl_sd->status.max_sp);
 				clif_misceffect(&pl_sd->bl, 0);
@@ -3087,7 +3177,7 @@ int atcommand_character_joblevel(const int fd, struct map_session_data* sd, AtCo
 
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) >= pc_isGM(pl_sd)) {
-			int max_level = max_job_table[pl_sd->s_class.upper][pl_sd->s_class.job];
+			int max_level = job_db[pl_sd->s_class.job].max_joblv[pl_sd->s_class.upper];
 			if (pl_sd->status.job_level == max_level && level > 0) {
 				clif_displaymessage(fd, msg_txt(23));
 			} else if (level >= 1) {
@@ -3651,7 +3741,7 @@ int atcommand_charstreset(const int fd, struct map_session_data* sd, AtCommandTy
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
-		pc_resetstate(pl_sd);
+		pc_resetstatus(pl_sd, 0);
 		msg_output(fd, msg_txt(100), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
@@ -3679,8 +3769,8 @@ int atcommand_charreset(const int fd, struct map_session_data* sd, AtCommandType
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		if (pc_isGM(sd) < pc_isGM(pl_sd))
 			return -1;
-		pc_resetstate(pl_sd);
-		pc_resetskill(pl_sd, -1);
+		pc_resetstatus(pl_sd, 0);
+		pc_resetskill(pl_sd, 0);
 		msg_output(fd, msg_txt(101), character);
 	} else {
 		clif_displaymessage(fd, msg_txt(3));
@@ -4930,9 +5020,14 @@ int atcommand_resethate(const int fd, struct map_session_data* sd, AtCommandType
  */
 int atcommand_resetstate(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
 {
+	int flag = 0;
+
 	nullpo_retr(-1, sd);
 
-	pc_resetstate(sd);
+	if (message && *message)
+		flag = atoi(message);
+
+	pc_resetstatus(sd, flag);
 
 	return 0;
 }

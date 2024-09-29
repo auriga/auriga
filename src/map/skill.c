@@ -21677,6 +21677,9 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 			tsd = (struct map_session_data *)bl;
 	}
 
+	// H.Plus‚É‚æ‚éƒq[ƒ‹Œø‰ÊŒüã
+	rate += status_get_hplus(src);
+
 	if(sc && sc->data[SC_OFFERTORIUM].timer != -1)
 		rate += sc->data[SC_OFFERTORIUM].val1 * 30;
 

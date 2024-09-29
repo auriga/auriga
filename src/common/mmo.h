@@ -695,7 +695,9 @@ struct mmo_charstatus {
 
 	short class_;
 	short status_point,skill_point;
+	short tstatus_point;
 	int hp,max_hp,sp,max_sp;
+	int ap,max_ap;
 	unsigned int option;
 	short karma,manner;
 	int die_counter;
@@ -712,6 +714,7 @@ struct mmo_charstatus {
 	char name[24];
 	unsigned short base_level,job_level;
 	short str,agi,vit,int_,dex,luk;
+	short pow,sta,wis,spl,con,crt;
 	unsigned char char_num;
 
 	struct point last_point, save_point, memo_point[MAX_PORTAL_MEMO];

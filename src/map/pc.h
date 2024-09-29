@@ -68,8 +68,10 @@ enum {
 int pc_is50overweight(struct map_session_data *sd);
 int pc_is90overweight(struct map_session_data *sd);
 
+extern int stpoint_table[MAX_LEVEL];
+extern int tstpoint_table[MAX_LEVEL];
+
 extern int attr_fix_table[MAX_ELE_LEVEL][ELE_MAX][ELE_MAX];
-extern int max_job_table[PC_UPPER_MAX][PC_JOB_MAX];
 
 int pc_get_skilltree_max(struct pc_base_job *bj,int skillid);
 
@@ -136,11 +138,13 @@ int pc_exp_penalty(struct map_session_data *sd, struct map_session_data *ssd, in
 atn_bignumber pc_nextbaseexp(struct map_session_data *);
 atn_bignumber pc_nextjobexp(struct map_session_data *);
 int pc_need_status_point(struct map_session_data *,int);
+int pc_need_tstatus_point(struct map_session_data *,int);
 void pc_statusup(struct map_session_data *sd, unsigned short type,int num);
 int pc_statusup2(struct map_session_data*,int,int);
+void pc_tstatusup(struct map_session_data *sd, int type,int num);
 void pc_skillup(struct map_session_data *sd, int skill_num);
 int pc_allskillup(struct map_session_data* sd,int flag);
-void pc_resetstate(struct map_session_data* sd);
+void pc_resetstatus(struct map_session_data* sd, int flag);
 void pc_resetskill(struct map_session_data* sd, int flag);
 void pc_costumelook(struct map_session_data *sd);
 void pc_changebodystyle(struct map_session_data *sd);
