@@ -2006,7 +2006,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			sp = sd->sp_drain_value_race[race_id];
 
 		if(hp || sp)
-			pc_heal(sd,hp,sp);
+			pc_heal(sd,hp,sp,0,0);
 
 		// 傭兵のキルカウント増加
 		if(sd->mcd)

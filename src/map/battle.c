@@ -341,7 +341,7 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
 	if(target->type == BL_MOB)
 		return mob_heal((struct mob_data *)target,hp);
 	else if(target->type == BL_PC)
-		return pc_heal((struct map_session_data *)target,hp,sp);
+		return pc_heal((struct map_session_data *)target,hp,sp,0,0);
 	else if(target->type == BL_HOM)
 		return homun_heal((struct homun_data *)target,hp,sp);
 	else if(target->type == BL_MERC)
@@ -1047,7 +1047,7 @@ static int battle_calc_damage(struct block_list *src, struct block_list *bl, int
 					clif_misceffect_value(bl, 1143, heal);
 				}
 				clif_misceffect_value(bl, 657, heal);
-				unit_heal(bl, damage, 0);
+				unit_heal(bl, damage, 0, 0, 0);
 				damage = 0;
 			}
 		}
@@ -1365,7 +1365,7 @@ static int battle_attack_drain(struct block_list *bl,int damage,int damage2,int 
 		}
 	}
 	if(hp || sp)
-		pc_heal(sd, hp, sp);
+		pc_heal(sd, hp, sp, 0, 0);
 
 	return 1;
 }
@@ -2852,6 +2852,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// オラティオ
 				if(t_sc->data[SC_ORATIO].timer != -1 && s_ele == ELE_HOLY)
 					cardfix += t_sc->data[SC_ORATIO].val2;
+				// 死霊憑依
+				if(t_sc->data[SC_SOULCURSE].timer != -1 && s_ele == ELE_DARK)
+					cardfix += t_sc->data[SC_SOULCURSE].val2;
 			}
 			DMG_FIX( cardfix, 100 );
 		}
@@ -3086,7 +3089,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				int hp = status_get_hp(src);
 				if(maxhp < hp) {
 					wd.damage = wd.damage * skill_lv + hp;
-					unit_heal(src,-(hp-maxhp),0);
+					unit_heal(src,-(hp-maxhp),0,0,0);
 					if(sc) {
 						if(sc->data[SC_BUNSINJYUTSU].timer != -1 && sc->data[SC_BUNSINJYUTSU].val3 > 0) {
 							wd.div_ = 2 + sc->data[SC_BUNSINJYUTSU].val3;
@@ -3920,7 +3923,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			{
 				int hp = status_get_hp(src);
 				DMG_SET( (s_str*40)+(skill_lv*(hp-1)*8)/100 );
-				unit_heal(src,-hp+1,0);
+				unit_heal(src,-hp+1,0,0,0);
 				if(sc && sc->data[SC_NEN].timer != -1)
 					status_change_end(src,SC_NEN,-1);
 			}
@@ -5629,6 +5632,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
 		if(t_sc->data[SC_ORATIO].timer != -1 && s_ele == ELE_HOLY)		// オラティオ
 			cardfix += t_sc->data[SC_ORATIO].val1;
+		if(t_sc->data[SC_SOULCURSE].timer != -1 && s_ele == ELE_DARK)		// 死霊憑依
+			cardfix += t_sc->data[SC_SOULCURSE].val2;
 #endif
 		if(t_sc->data[SC_DEEP_SLEEP].timer != -1)		// 安息の子守唄
 			cardfix += 50;
@@ -6062,7 +6067,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		else
 			hp = src_sd->status.max_hp * 2 / 100;
 
-		pc_heal(src_sd,-hp,0);
+		pc_heal(src_sd,-hp,0,0,0);
 	}
 
 	/* 40．カアヒ */
@@ -6074,12 +6079,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(target->type == BL_MOB || status_get_sp(target) >= 5*kaahi_lv)	// 対象がmob以外でSPが減少量以下のときは発生しない
 			{
 				int heal = skill_fix_heal(src, target, SL_KAAHI, 200 * kaahi_lv);
-				if(target_sd) {
-					if(target_sd->status.hp + heal > target_sd->status.max_hp)
-						heal = target_sd->status.max_hp - target_sd->status.hp;
-					clif_heal(target_sd->fd,SP_HP,heal);
-				}
-				unit_heal(target,heal,-5*kaahi_lv);
+				unit_heal(target,heal,-5*kaahi_lv,0,1);
 			}
 		}
 	}
@@ -7004,6 +7004,25 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				mgd.div_ = 10;
 			}
 			break;
+		case SP_CURSEEXPLOSION:	// 死霊爆発
+			if(t_sc && t_sc->data[SC_SOULCURSE].timer != -1) {
+				MATK_FIX( 2500 + 250 * skill_lv * status_get_lv(bl) / 100, 100 );
+			} else {
+				MATK_FIX( 2300 + 50 * skill_lv * status_get_lv(bl) / 100, 100 );
+			}
+			break;
+		case SP_SPA:	// エスパ
+			MATK_FIX( 500 + 250 * skill_lv * status_get_lv(bl) / 100, 100 );
+			ele = status_get_attack_element_nw(bl);
+			break;
+		case SP_SHA:	//エスハ
+			MATK_FIX( 2000 + 100 * skill_lv, 100 );
+			ele = status_get_attack_element_nw(bl);
+			break;
+		case SP_SWHOO:	//エスフ
+			MATK_FIX( 1500 + 250 * skill_lv * status_get_lv(bl) / 100, 100 );
+			ele = status_get_attack_element_nw(bl);
+			break;
 		case SU_SV_STEMSPEAR:	/* マタタビランス */
 			{
 				const int ele_type[5] = { ELE_GHOST, ELE_WATER, ELE_WIND, ELE_EARTH, ELE_FIRE };
@@ -7224,6 +7243,8 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			cardfix += t_sc->data[SC_VENOMIMPRESS].val2;
 		if(t_sc->data[SC_ORATIO].timer != -1 && ele == ELE_HOLY)		// オラティオ
 			cardfix += t_sc->data[SC_ORATIO].val1;
+		if(t_sc->data[SC_SOULCURSE].timer != -1 && ele == ELE_DARK)		// 死霊憑依
+			cardfix += t_sc->data[SC_SOULCURSE].val2;
 		if(t_sc->data[SC_DEEP_SLEEP].timer != -1)		// 安息の子守唄（加算でいいのかな？）
 			cardfix += 50;
 		if(cardfix != 100) {
@@ -7585,6 +7606,10 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		break;
 	case RL_B_FLICKER_ATK:		// バインドトラップ(爆発)
 		mid.damage = status_get_dex(bl) * 10 + status_get_hp(target) * 3 * skill_lv / 100;
+		break;
+	case SP_SOULEXPLOSION:		// 魂の崩壊
+		mid.damage = status_get_hp(target)*80/100;
+		damagefix = 0;
 		break;
 	case SU_SV_ROOTTWIST_ATK:	// マタタビの根っこ(攻撃)
 		mid.damage = 100;
@@ -7997,7 +8022,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 					}
 				}
 				if(sd && !fail)
-					pc_heal(sd,0,-sp);
+					pc_heal(sd,0,-sp,0,0);
 			}
 		}
 
@@ -8072,6 +8097,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if (sc->data[SC_FALLINGSTAR].timer != -1 && (wd.flag&BF_WEAPON) && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC_FALLINGSTAR].val2) {
 			skill_castend_damage_id(src, target, SJ_FALLINGSTAR_ATK, sc->data[SC_FALLINGSTAR].val1, tick, flag);
 		}
+		// 魂の収穫
+		if(sd && sc->data[SC_SOULREAPER].timer != 1 && (wd.damage > 0 || wd.damage2 > 0) && atn_rand()%100 < sc->data[SC_SOULREAPER].val2) {
+			pc_addsoulenergy(sd,600000,1);
+		}
 	}
 
 	// カードによるオートスペル
@@ -8096,7 +8125,7 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		{
 			int sp = status_get_sp(target) * sd->sp_vanish.per/100;
 			if(sp > 0)
-				pc_heal(tsd, 0, -sp);
+				pc_heal(tsd, 0, -sp,0,0);
 		}
 	}
 
@@ -8813,7 +8842,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 			if(tsd) {
 				// 號砲のSP消費
 				if(skillid == SR_TIGERCANNON) {
-					pc_heal(tsd,0,-(damage / 10));
+					pc_heal(tsd,0,-(damage / 10),0,0);
 				}
 			}
 		}
@@ -8924,6 +8953,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 	/* サークルオブファイア */
 	if(dmg.flag&BF_SHORT && sc && sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && src != bl && damage > 0) {
 		battle_skill_attack(BF_WEAPON,bl,bl,src,EL_CIRCLE_OF_FIRE,sc->data[SC_CIRCLE_OF_FIRE].val1,tick,(0x0f<<20)|0x0500);
+	}
+	// 魂の収穫
+	if(sd && ssc && ssc->data[SC_SOULREAPER].timer != 1 && damage > 0 && atn_rand()%100 < ssc->data[SC_SOULREAPER].val2) {
+		pc_addsoulenergy(sd,600000,1);
 	}
 
 	map_freeblock_unlock();

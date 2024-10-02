@@ -217,11 +217,11 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 700- */
 	SI_LIGHTOFSUN,SI_LIGHTOFSTAR,SI_LUNARSTANCE,SI_UNIVERSESTANCE,SI_SUNSTANCE,SI_BLANK,SI_NEWMOON,SI_STARSTANCE,SI_DIMENSION,SI_DIMENSION1,
 	/* 710- */
-	SI_DIMENSION2,SI_CREATINGSTAR,SI_FALLINGSTAR,SI_NOVAEXPLOSING,SI_GRAVITYCONTROL,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,
+	SI_DIMENSION2,SI_CREATINGSTAR,SI_FALLINGSTAR,SI_NOVAEXPLOSING,SI_GRAVITYCONTROL,SI_SOULCOLLECT,SI_SOULREAPER,SI_SOULUNITY,SI_SOULSHADOW,SI_SOULFAIRY,
 	/* 720- */
-	SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_BLANK,SI_CRUSHSTRIKE,SI_WEAPONBLOCK_ON,
+	SI_SOULFALCON,SI_SOULGOLEM,SI_SOULDIVISION,SI_BLANK,SI_BLANK,SI_BLANK,SI_SHA,SI_SOULCURSE,SI_CRUSHSTRIKE,SI_WEAPONBLOCK_ON,
 	/* 730- */
-	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK,SI_GS_MAGICAL_BULLET
+	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK,SI_GS_MAGICAL_BULLET,SI_HELPANGEL
 };
 
 /*==========================================
@@ -1704,16 +1704,6 @@ L_RECALC:
 	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// 剣修練の命中率増加
 		sd->hit += skill*3;
 
-	if((sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) && sd->status.base_level >= 99)
-	{
-		if(pc_isupper(sd))
-			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.upper_hp_rate/100;
-		else if(pc_isbaby(sd))	// 養子の場合最大HP70%
-			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.baby_hp_rate/100;
-		else
-			sd->status.max_hp += 2000*(100 + sd->paramc[2])/100 * battle_config.normal_hp_rate/100;
-	}
-
 	if((skill = pc_checkskill(sd,CR_TRUST)) > 0) { // フェイス
 		sd->status.max_hp    += skill*200;
 		sd->subele[ELE_HOLY] += skill*5;
@@ -1765,6 +1755,11 @@ L_RECALC:
 	if(sd->hprate != 100)
 		sd->status.max_hp = sd->status.max_hp * sd->hprate / 100;
 
+	if((skill = pc_checkskill(sd,NV_BREAKTHROUGH)) > 0)	// ブレイクスルー
+		sd->status.max_hp += (skill<5)? skill*350: 2000;
+	if((skill = pc_checkskill(sd,NV_TRANSCENDENCE)) > 0)	// トランセンデンス
+		sd->status.max_hp += (skill<5)? skill*350: 2000;
+
 	if(sd->sc.data[SC_VENOMBLEED].timer != -1) {	// ベナムブリード
 		sd->status.max_hp -= (int)((atn_bignumber)sd->status.max_hp * sd->sc.data[SC_VENOMBLEED].val2 / 100);
 	}
@@ -1812,6 +1807,10 @@ L_RECALC:
 		sd->status.max_sp += 200 + (skill*20);
 	if((skill = pc_checkskill(sd,WM_LESSON)) > 0)	// レッスン
 		sd->status.max_sp += skill * 30;
+	if((skill = pc_checkskill(sd,NV_BREAKTHROUGH)) > 0)	// ブレイクスルー
+		sd->status.max_sp += (skill<5)? skill*30: 200;
+	if((skill = pc_checkskill(sd,NV_TRANSCENDENCE)) > 0)	// トランセンデンス
+		sd->status.max_sp += (skill<5)? skill*30: 200;
 
 	if(sd->sc.data[SC_INCMSP2].timer != -1) {
 		sd->status.max_sp = (int)((atn_bignumber)sd->status.max_sp * (100 + sd->sc.data[SC_INCMSP2].val1) / 100);
@@ -1971,6 +1970,21 @@ L_RECALC:
 	sd->speed = status_calc_speed_pc(sd,sd->speed);
 
 	// スキルやステータス異常による残りのパラメータ補正
+	if((skill = pc_checkskill(sd,NV_BREAKTHROUGH)) > 0) {	// ブレイクスルー
+#ifdef PRE_RENEWAL
+		sd->watk += (skill<5)? skill*15: 100;
+#else
+		sd->plus_atk += (skill<5)? skill*15: 100;
+#endif
+	}
+	if((skill = pc_checkskill(sd,NV_TRANSCENDENCE)) > 0) {	// トランセンデンス
+#ifdef PRE_RENEWAL
+		sd->matk1 += (skill<5)? skill*15: 100;
+		sd->matk2 += (skill<5)? skill*15: 100;
+#else
+		sd->plus_matk += (skill<5)? skill*15: 100;
+#endif
+	}
 	if(sd->sc.count > 0) {
 		// 太陽の安楽 DEF増加
 		if(sd->sc.data[SC_SUN_COMFORT].timer != -1)
@@ -2686,6 +2700,38 @@ L_RECALC:
 			if(sd->nhealsp > 0x7fff)
 				sd->nhealsp = 0x7fff;
 		}
+		// 影の魂
+		if(sd->sc.data[SC_SOULSHADOW].timer != -1) {
+			sd->critical += sd->sc.data[SC_SOULSHADOW].val2;
+		}
+		// 妖精の魂
+		if(sd->sc.data[SC_SOULFAIRY].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->matk1 += sd->sc.data[SC_SOULFAIRY].val2;
+			sd->matk2 += sd->sc.data[SC_SOULFAIRY].val2;
+#else
+			sd->plus_matk += sd->sc.data[SC_SOULFAIRY].val2;
+#endif
+		}
+		// 鷹の魂
+		if(sd->sc.data[SC_SOULFALCON].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->watk += sd->sc.data[SC_SOULFALCON].val2;
+#else
+			sd->plus_atk += sd->sc.data[SC_SOULFALCON].val2;
+#endif
+			sd->hit += sd->sc.data[SC_SOULFALCON].val3;
+		}
+		// ゴーレムの魂
+		if(sd->sc.data[SC_SOULGOLEM].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->def2 += sd->sc.data[SC_SOULGOLEM].val2;
+			sd->mdef2 += sd->sc.data[SC_SOULGOLEM].val3;
+#else
+			sd->def += sd->sc.data[SC_SOULGOLEM].val2;
+			sd->mdef += sd->sc.data[SC_SOULGOLEM].val3;
+#endif
+		}
 		// オーバードブースト
 		if(sd->sc.data[SC_OVERED_BOOST].timer != -1) {
 			sd->flee = sd->sc.data[SC_OVERED_BOOST].val3;
@@ -2716,6 +2762,15 @@ L_RECALC:
 		sd->watk += sd->watk * sd->elementball.num * 10 / 100;
 	}
 #endif
+	// ソウルエナジー
+	if(sd->soulenergy.num > 0) {
+#ifdef PRE_RENEWAL
+		sd->matk1 += sd->soulenergy.num * 3;
+		sd->matk2 += sd->soulenergy.num * 3;
+#else
+		sd->plus_matk += sd->soulenergy.num * 3;
+#endif
+	}
 
 	// MATK乗算処理(杖補正)
 	if(sd->matk2_rate != 100) {
@@ -3370,6 +3425,10 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// モンスター変身デビルチ
 		if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1109)
 			bonus_add -= -10;
+
+		// 影の魂
+		if(sd->sc.data[SC_SOULSHADOW].timer != -1)
+			bonus_add -= sd->sc.data[SC_SOULSHADOW].val3;
 	}
 
 	/* 太陽と月と星の悪魔 */
@@ -5742,6 +5801,12 @@ int status_get_speed(struct block_list *bl)
 					slow_val = penalty;
 			}
 
+			// エスハ
+			if(sc->data[SC_SHA].timer != -1) {
+				if(slow_val < sc->data[SC_SHA].val2)
+					slow_val = sc->data[SC_SHA].val2;
+			}
+
 			/* speedが減少するステータス計算 */
 
 			// 速度強化
@@ -7241,6 +7306,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC__INVISIBILITY:
 		case SC_REFLECTDAMAGE:
 		case SC_FORCEOFVANGUARD:
+		case SC_SOULCOLLECT:		/* 魂の蓄積 */
 			if(sc->data[type].timer != -1) {
 				status_change_end(bl,type,-1);
 				return 0;
@@ -7676,6 +7742,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_WEAPONBLOCK_ON:		/* カウンタースラッシュ */
 		case SC__FEINTBOMB:			/* フェイントボム */
 		case SC_MAGICALBULLET:		/* マジカルバレット */
+		case SC_SOULCURSE:		/* 死霊憑依 */
+		case SC_SWHOO:			/* エスフ詠唱可能状態 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -8338,7 +8406,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 						diff = mhp * 15 / 100;
 					if(hp - diff < mhp>>2)
 						diff = hp - (mhp>>2);
-					unit_heal(bl, -diff, 0);
+					unit_heal(bl, -diff, 0, 0, 0);
 				}
 			}
 			// fall through
@@ -8499,7 +8567,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1 / 2;	// Flee上昇率
 			break;
 		case SC_BERSERK:		/* バーサーク */
-			unit_heal(bl,0,-status_get_sp(bl));
+			unit_heal(bl,0,-status_get_sp(bl),0,0);
 			if(sd) {
 				clif_status_change(bl,SI_INCREASEAGI,1,icon_tick, 0, 0, 0);	// アイコン表示
 			}
@@ -8674,7 +8742,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_STONEHARDSKIN:		/* ストーンハードスキン */
 			{
 				val3 = (int)((atn_bignumber)status_get_hp(bl) * 20 / 100);
-				unit_heal(bl, -val3, 0);
+				unit_heal(bl, -val3, 0, 0, 0);
 			}
 			break;
 		case SC_MILLENNIUMSHIELD:	/* ミレニアムシールド */
@@ -9510,6 +9578,55 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				pc_addspiritball(sd, tick, val1);
 			}
 			break;
+		case SC_SOULCOLLECT:		/* 魂の蓄積 */
+			val2 = tick;		// ソウルエナジー獲得時間
+			icon_tick = -1;
+			break;
+		case SC_SOULREAPER:			/* 魂の収穫 */
+			val2 = val1;		// ソウルエナジー獲得率
+			break;
+		case SC_SOULUNITY:		/* 魂の連結 */
+			{
+				int i, add = 600;
+				for(i = 0; i < val1; i++) {
+					add += 100;
+					val2 = val2 + add;		// HP回復量
+				}
+				val3 = tick / 3000;
+				tick = 3000;
+			}
+			break;
+		case SC_SOULSHADOW:		/* 影の魂 */
+			val2 = 70;				// Cri増加値
+			val3 = (val1+1)/2 * 10;	// Aspd増加値
+			calc_flag = 1;
+			break;
+		case SC_SOULFAIRY:		/* 妖精の魂 */
+			val2 = 50;				// 装備Matk増加値
+			val3 = 25 + val1 * 5;	// 詠唱時間減少率
+			calc_flag = 1;
+			break;
+		case SC_SOULFALCON:		/* 鷹の魂 */
+			val2 = 50;				// 装備Atk増加値
+			val3 = 25 + val1 * 25;	// Hit増加値
+			calc_flag = 1;
+			break;
+		case SC_SOULGOLEM:		/* ゴーレムの魂 */
+			val2 = 100;				// 装備Def増加値
+			val3 = val1 * 10;		// 装備Mdef増加値
+			calc_flag = 1;
+			break;
+		case SC_SOULDIVISION:	/* 魂の分裂 */
+			val2 = 100;				// ディレイ増加率
+			break;
+		case SC_SHA:			/* エスハ */
+			val2 = 50;				// 移動速度低下率
+			ud->state.change_speed = 1;
+			break;
+		case SC_HELPANGEL:		/* 天使さま助けて */
+			val2 = tick / 1000;
+			tick = 1000;
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -10122,6 +10239,10 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_UNIVERSESTANCE:		/* 宇宙の構え */
 		case SC_SUNSTANCE:			/* 太陽の構え */
 		case SC_STARSTANCE:			/* 星の構え */
+		case SC_SOULSHADOW:		/* 影の魂 */
+		case SC_SOULFAIRY:		/* 妖精の魂 */
+		case SC_SOULFALCON:		/* 鷹の魂 */
+		case SC_SOULGOLEM:		/* ゴーレムの魂 */
 			calc_flag = 1;
 			break;
 		case SC_NEWMOON:			/* 朔月脚 */
@@ -10519,7 +10640,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_GRANITIC_ARMOR:		/* グラニティックアーマー */
 			{
 				int dmg = (int)((atn_bignumber)status_get_max_hp(bl) * sc->data[type].val3 / 100);
-				unit_heal(bl, -dmg, 0);
+				unit_heal(bl, -dmg, 0, 0, 0);
 			}
 			break;
 		case SC_PYROCLASTIC:		/* パイロクラスティック */
@@ -11147,7 +11268,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			int hp = status_get_max_hp(bl);
 			if((++sc->data[type].val4)%5 == 0 && status_get_hp(bl) > hp>>2) {
 				hp = (hp < 100)? 1: hp/100;
-				unit_heal(bl,-hp,0);
+				unit_heal(bl,-hp,0,0,0);
 			}
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
@@ -11160,7 +11281,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				p_dmg = 3 + p_dmg*3/200;
 				if(p_dmg >= hp)
 					p_dmg = hp-1;	// 毒では死なない
-				unit_heal(bl, -p_dmg, 0);
+				unit_heal(bl, -p_dmg, 0, 0, 0);
 			}
 		}
 		if(sc->data[type].val3 > 0) {
@@ -11172,7 +11293,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			int hp = status_get_max_hp(bl);
 			if(status_get_hp(bl) > hp>>2) {
 				hp = 3 + hp/50;
-				unit_heal(bl, -hp, 0);
+				unit_heal(bl, -hp, 0, 0, 0);
 			}
 		}
 		if(sc->data[type].val3 > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
@@ -11187,7 +11308,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				// mobはHP50以下にならない
 				md->hp = (md->hp - dmg < 50)? 50: md->hp - dmg;
 			} else {
-				unit_heal(bl, -dmg, 0);
+				unit_heal(bl, -dmg, 0, 0, 0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 				// 生きていて解除済みでないなら継続
@@ -11396,23 +11517,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		}
 		break;
 	case SC_CHANGE:		/* メンタルチェンジ */
-		unit_heal(bl, -status_get_hp(bl)+10, -status_get_sp(bl)+10);	// 時間切れのときのみHP,SPが10になる
+		unit_heal(bl, -status_get_hp(bl)+10, -status_get_sp(bl)+10, 0, 0);	// 時間切れのときのみHP,SPが10になる
 		break;
 	case SC_ABUNDANCE:		/* アバンダンス */
 		if((--sc->data[type].val3) > 0) {
-			int sp = 60;
-
-			if(sd) {
-				if(sd->status.sp < sd->status.max_sp) {
-					if(sd->status.sp + sp > sd->status.max_sp) {
-						sp = sd->status.max_sp - sd->status.sp;
-					}
-					sd->status.sp += sp;
-					clif_heal(sd->fd,SP_SP,sp);
-				}
-			} else {
-				unit_heal(bl, 0, sp);
-			}
+			unit_heal(bl, 0, 60, 0, 1);
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11447,7 +11556,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(damage)
-				unit_heal(bl, 0, -damage);
+				unit_heal(bl, 0, -damage, 0, 0);
 			clif_damage(bl,bl,tick,0,status_get_dmotion(bl),1,0,0,0,0);
 			unit_skillcastcancel(bl,0);		// 詠唱妨害
 			timer = add_timer(10000+tick, status_change_timer, bl->id, data);
@@ -11465,7 +11574,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 					clif_item_skill(sd, sd->skill_item.id, sd->skill_item.lv, "");
 				}
 				if(damage)
-					unit_heal(bl, -damage, 0);
+					unit_heal(bl, -damage, 0, 0, 0);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 				// 生きていて解除済みでないなら継続
@@ -11493,7 +11602,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			int damage = status_get_max_hp(bl) / 100;
 			if(damage)
-				unit_heal(bl, -damage, 0);
+				unit_heal(bl, -damage, 0, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 				// 生きていて解除済みでないなら継続
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
@@ -11506,20 +11615,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(heal) {
 				if(sc->data[SC_AKAITSUKI].timer != -1)
 					unit_fixdamage(bl,bl,gettick(),0,status_get_dmotion(bl),heal,0,0,0,0);
-				else{
-					// PCはヒールエフェクト用に回復量を算出
-					if(sd) {
-						if( sd->status.hp + heal >= sd->status.max_hp )
-							heal = sd->status.max_hp - sd->status.hp;
-						if( heal ){
-							clif_heal(sd->fd,SP_HP,heal);
-							pc_heal(sd,heal,0);
-						}
-					}
-					else{
-						unit_heal(bl, heal, 0);
-					}
-				}
+				else
+					unit_heal(bl,heal,0,0,1);
 			}
 			if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 				// 生きていて解除済みでないなら継続
@@ -11574,7 +11671,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			int damage = (int)((atn_bignumber)status_get_max_sp(bl) * sc->data[type].val1 * 5 / 100);
 			if(damage)
-				unit_heal(bl, 0, -damage);
+				unit_heal(bl, 0, -damage, 0, 0);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11613,14 +11710,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(damage && hp) {
 				if(damage >= hp)
 					damage = hp - 1;	// オーバーヒートでは死なない
-				unit_heal(bl, -damage, 0);
+				unit_heal(bl, -damage, 0, 0, 0);
 			}
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_MAGNETICFIELD:		/* マグネティックフィールド */
 		if((--sc->data[type].val2) > 0) {
-			unit_heal(bl, 0, -50);
+			unit_heal(bl, 0, -50, 0, 0);
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11630,7 +11727,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		else if((--sc->data[type].val2) > 0) {
 			int damage = status_get_max_sp(bl) / 100;
 			if(damage)
-				unit_heal(bl, 0, -damage);
+				unit_heal(bl, 0, -damage, 0, 0);
 			timer = add_timer(tick+sc->data[type].val3, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11709,7 +11806,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd) {
 				int hp = sd->status.max_hp / 100;
 				int sp = sd->status.max_sp / 100;
-				unit_heal(bl, -hp, -sp);
+				unit_heal(bl, -hp, -sp, 0, 0);
 				if(sd->status.sp > 0 && !unit_isdead(bl) && sc->data[type].timer != -1) {
 					// 生きていて解除済みでないなら継続
 					timer = add_timer(6000+tick, status_change_timer,bl->id, data);
@@ -11723,7 +11820,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
 				int hp = sd->status.max_hp * sc->data[type].val4 / 100;
-				unit_heal(bl, hp, 0);
+				unit_heal(bl, hp, 0, 0, 0);
 			}
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
@@ -11758,7 +11855,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd)
 				sp = (int)((atn_bignumber)status_get_max_sp(bl) * 3 / 100);
 			if(hp || sp)
-				unit_heal(bl, hp, sp);
+				unit_heal(bl, hp, sp, 0, 0);
 			timer = add_timer(2000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11768,11 +11865,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			if(sd) {
 				int sp = 4 * sc->data[type].val1;
 				if(sd && sd->status.sp >= sp) {
-					unit_heal(bl, hp, -sp);
+					unit_heal(bl, hp, -sp, 0, 0);
 					timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 				}
 			} else {
-				unit_heal(bl, hp, 0);
+				unit_heal(bl, hp, 0, 0, 0);
 				timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 			}
 		}
@@ -11780,7 +11877,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_MELODYOFSINK:		/* メロディーオブシンク */
 		if((--sc->data[type].val2) > 0) {
 			if(sd) {
-				unit_heal(bl, 0, -(sd->status.max_sp * sc->data[type].val3 / 100));
+				unit_heal(bl, 0, -(sd->status.max_sp * sc->data[type].val3 / 100), 0, 0);
 			}
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);	
 		}
@@ -11806,14 +11903,14 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			hp = (int)((atn_bignumber)status_get_max_hp(bl) / 100);
 			if(sd)
 				sp = (int)((atn_bignumber)status_get_max_sp(bl) / 100);
-			unit_heal(bl, -hp, -sp);
+			unit_heal(bl, -hp, -sp, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	case SC_FRIGG_SONG:			/* フリッグの歌 */
 		if(--sc->data[type].val2 > 0) {
-			unit_heal(bl, sc->data[type].val4, 0);
+			unit_heal(bl, sc->data[type].val4, 0, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
@@ -11826,7 +11923,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				sp = status_get_max_sp(bl) / 100;
 			if(hp >= status_get_hp(bl))
 				hp = status_get_hp(bl) - 1;
-			unit_heal(bl, -hp, -sp);
+			unit_heal(bl, -hp, -sp, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
@@ -11864,7 +11961,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			// ファイアーエクスパンション(催涙)では死なないことにする（仮）
 			if(hp >= status_get_hp(bl))
 				hp = status_get_hp(bl) - 1;
-			unit_heal(bl, -hp, 0);
+			unit_heal(bl, -hp, 0, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(3000+tick, status_change_timer, bl->id, data);
 		}
@@ -11934,7 +12031,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		break;
 	case SC_FRESHSHRIMP:		/* 新鮮なエビ */
 		if((--sc->data[type].val2) > 0) {
-			unit_heal(bl, sc->data[type].val4, 0);
+			unit_heal(bl, sc->data[type].val4, 0, 0, 1);
 			timer = add_timer(sc->data[type].val3+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -11963,7 +12060,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			// 獄炎呪では死なないことにする（仮）
 			if(hp >= status_get_hp(bl))
 				hp = status_get_hp(bl) - 1;
-			unit_heal(bl, -hp, 0);
+			unit_heal(bl, -hp, 0, 0, 0);
 			if(!unit_isdead(bl) && sc->data[type].timer != -1)
 				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
@@ -11988,7 +12085,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val2) > 0) {
 			int heal = (int)((atn_bignumber)status_get_max_hp(bl) * 3 / 100);
 			if(heal)
-				unit_heal(bl, heal, 0);
+				unit_heal(bl, heal, 0, 0, 1);
 			timer = add_timer(5000+tick, status_change_timer, bl->id, data);
 		}
 		break;
@@ -12062,7 +12159,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 				else
 					hp = sc->data[type].val4 * 10;
 			}
-			unit_heal(bl, -hp, -sp);
+			unit_heal(bl, -hp, -sp, 0, 0);
 			timer = add_timer(1000+tick, status_change_timer,bl->id, data);
 		}
 		break;
@@ -12095,7 +12192,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 		if((--sc->data[type].val3) >= 0) {
 			if(sd) {
 				int hp = (int)((atn_bignumber)status_get_max_hp(&sd->bl) * sc->data[type].val2 / 100);
-				unit_heal(bl, -hp, 0);
+				unit_heal(bl, -hp, 0, 0, 0);
 				if(!unit_isdead(bl) && sc->data[type].timer != -1) {
 					// 生きていて解除済みでないなら継続
 					timer = add_timer(1000+tick, status_change_timer, bl->id, data);
@@ -12133,6 +12230,24 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			struct map_session_data *tsd = map_id2sd(sc->data[type].val1);
 			if( tsd )
 				tsd->stellar_mark[sc->data[type].val2] = 0;
+		}
+		break;
+	case SC_SOULCOLLECT:		/* 魂の蓄積 */
+		if(sd) {
+			pc_addsoulenergy(sd,600000,1);
+			timer = add_timer(tick+sc->data[type].val2, status_change_timer,bl->id, data);
+		}
+		break;
+	case SC_SOULUNITY:		/* 魂の連結 */
+		if((--sc->data[type].val3) > 0) {
+			unit_heal(bl, sc->data[type].val2, 0, 0, 1);
+			timer = add_timer(3000+tick, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_HELPANGEL:		/* 天使さま助けて */
+		if((--sc->data[type].val2) > 0) {
+			unit_heal(bl, 1000, 350, 0, 1);
+			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
 	}

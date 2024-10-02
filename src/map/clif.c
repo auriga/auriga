@@ -5077,6 +5077,22 @@ static void clif_elementball_id(const int fd, struct map_session_data *dstsd)
 }
 
 /*==========================================
+ * ソウルエナジー表示(ID指定送信)
+ *------------------------------------------
+ */
+static void clif_soulenergy_id(const int fd, struct map_session_data *dstsd)
+{
+	nullpo_retv(dstsd);
+
+	WFIFOW(fd,0)=0xb73;
+	WFIFOL(fd,2)=dstsd->bl.id;
+	WFIFOW(fd,6)=dstsd->soulenergy.num;
+	WFIFOSET(fd,packet_db[0xb73].len);
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -5200,6 +5216,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_coin(sd);
 	if(sd->elementball.num > 0)	// 影狼・朧の球体表示
 		clif_elementball(sd);
+	if(sd->soulenergy.num > 0)
+		clif_soulenergy(sd);
 	if(sd->sc.data[SC_MILLENNIUMSHIELD].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_MILLENNIUMSHIELD].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
@@ -12002,6 +12020,11 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		clif_elementball_id(sd->fd,dstsd);
 	}
 
+	// ソウルエナジー表示
+	if(dstsd->soulenergy.num > 0) {
+		clif_soulenergy_id(sd->fd,dstsd);
+	}
+
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
 	if(dstsd->view_size != 0)
@@ -12825,7 +12848,7 @@ static void clif_skillinfo(struct map_session_data *sd, int skillid, int type, i
 
 	nullpo_retv(sd);
 
-	if( skillid < MAX_FOURTH_SKILLID && skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
+	if( skillid < MAX_PCSKILL && skillid!=sd->skill_clone.id && (id=sd->status.skill[skillid].id) <= 0 )
 		return;
 	if( skillid >= HOM_SKILLID && skillid <= MAX_HOM_SKILLID && !sd->hd )
 		return;
@@ -22219,6 +22242,24 @@ void clif_unequipitemallack(struct map_session_data *sd, unsigned char ok)
 	WFIFOW(fd,0)=0xbae;
 	WFIFOB(fd,8)=ok;
 	WFIFOSET(fd,packet_db[0xbae].len);
+
+	return;
+}
+
+/*==========================================
+ * ソウルエナジー表示
+ *------------------------------------------
+ */
+void clif_soulenergy(struct map_session_data *sd)
+{
+	unsigned char buf[10];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0xb73;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFW(buf,6)=sd->soulenergy.num;
+	clif_send(buf,packet_db[0xb73].len,&sd->bl,AREA);
 
 	return;
 }

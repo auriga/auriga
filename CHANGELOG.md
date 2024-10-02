@@ -1,4 +1,37 @@
 ----------------------------------------
+//1564 [2024/10/03] by Blaze
+
+・ソウルリーパーとスーパーノービス（限界突破）の新規スキル実装
+　（skill.c, battle.c, status.c, db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/scdata_db.txt,
+
+・スーパーノービス（限界突破）のスキルツリー変更（db/skill_tree.txt）
+　オートガード、シールドチャージ、シールドブーメラン、爆裂波動、練気功、アスペルシオ、マグニフィカート、ロードオブヴァーミリオン、
+　ストームガスト、メテオストーム、スナッチャー、スティールコイン、バックスタブ、サプライズアタック、ランドマイン、ビーストベイン、
+　ポイズンリアクト、ベナムダスト、ベナムスプラッシャー、武器修理、ブレイクスルー、トランセンデンス、天使さま助けて
+　を追加
+　フラッシャー、サンドマン、フリージングトラップを削除
+
+・スーパーノービスで上限を超えるためスキルツリー最大数MAX_SKILL_TREEを100->120に引き上げ（pc.h）
+
+・ソウルリーパーのソウルエナジー表示を実装（map.h, pc.c, pc.h, clif.c, clif.h）
+
+・スーパーノービスLv99以上のHP計算が内部処理で+2000されておりDB設定と重複していたので削除（status.c）
+
+・ヒール系処理「pc_heal」と「unit_heal」の仕様変更（pc.c, pc.h, unit.c, unit.h）
+　　引数 ap: AP回復/減少、引数 flag: 1でエフェクト表示指定（0でエフェクト無し）
+・上記ヒール系処理の変更により使用箇所およびエフェクト処理部分を見直し（atcommand.c, battle.c, bonus.c, mob.c, pc.c, script.c, skill.c, status.c）
+
+・スキルID定義（MAX_xxx_SKILLID、xxx_SKILLIDとステータス異常番号変換テーブル（SkillStatusChangeTablexx）を整理（mmo.h, skill.c, skill.h）
+　星帝、ソウルリーパー、影狼/朧、サモナーが別定義・別テーブルに分かれていたのを3次職系統に含めるように
+　最大値はスキル個数の直値ではなく終端のスキルIDで指定するように
+　4次職スキルの定義などを追加
+
+・職業系魂スキルのジョブ判定を4次職以降でも対応できるように変更（skill.c）
+
+・battle_confのplayer_skillup_limit(スキルリセット等をした時スキルの上げ方に制限をかける)がnoでも前職スキルポイント消化を判定していたのを修正（pc.c）
+・player_skillup_limitの初期値をyesに変更（conf/battle_auriga.conf）
+
+----------------------------------------
 //1563 [2024/09/29] by Blaze
 
 ・特性ステータス（Pow/Sta/Wis/Spl/Con/Crt/P.Atk/S.Matk/Res/Mres/H.Plus/C.Rate/T.StatusPoint）実装

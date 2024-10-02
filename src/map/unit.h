@@ -75,7 +75,7 @@ int unit_counttargeted(struct block_list *bl,int target_lv);
 // unit_data ‚Ì‰Šú‰»ˆ—
 int unit_dataset(struct block_list *bl);
 
-int unit_heal(struct block_list *bl,int hp,int sp);
+int unit_heal(struct block_list *bl,int hp,int sp,int ap,int flag);
 int unit_fixdamage(struct block_list *src,struct block_list *target,unsigned int tick,int sdelay,int ddelay,int damage,int div,int type,int damage2,int is_spdamage);
 // ‚»‚Ì‘¼
 int unit_isdead(struct block_list *bl);

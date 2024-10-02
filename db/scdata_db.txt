@@ -687,15 +687,13 @@
 715,SC_SOULCOLLECT,0,1,0,0			// 魂の蓄積
 716,SC_SOULREAPER,0,1,0,0			// 魂の収穫
 717,SC_SOULUNITY,0,1,0,0			// 魂の連結
-718,SC_SOULSHADOW,0,1,0,0			// 影の魂
-719,SC_SOULFAIRY,0,1,0,0			// 妖精の魂
-720,SC_SOULFALCON,0,1,0,0			// 鷹の魂
-721,SC_SOULGOLEM,0,1,0,0			// ゴーレムの魂
+718,SC_SOULSHADOW,0,19,0,0			// 影の魂
+719,SC_SOULFAIRY,0,19,0,0			// 妖精の魂
+720,SC_SOULFALCON,0,19,0,0			// 鷹の魂
+721,SC_SOULGOLEM,0,19,0,0			// ゴーレムの魂
 722,SC_SOULDIVISION,0,1,0,0			// 魂の分裂
-723,SC_SOULENERGY,0,0,0,0	// ソウルエナジー研究
-724,SC_USE_SKILL_SP_SPA,0,1,0,0			// エスパ
-725,SC_USE_SKILL_SP_SHA,0,1,0,0			// エスハ
-726,SC_SP_SHA,0,1,0,0			// エスハ
+724,SC_SWHOO,0,1,0,0			// エスウ詠唱可能状態
+726,SC_SHA,0,1,0,0				// エスハ
 727,SC_SOULCURSE,0,1,0,0			// 死霊憑依
 728,SC_CRUSHSTRIKE,0,515,0,0		// クラッシュストライク
 729,SC_WEAPONBLOCK_ON,0,1,0,0		// カウンタースラッシュ
@@ -703,6 +701,7 @@
 731,SC_OVERHEAT_LIMITPOINT,1,0,0,0		// 魔導ギア加熱値
 732,SC__FEINTBOMB,0,1,0,0			// フェイントボム
 733,SC_MAGICALBULLET,0,1,0,0			// マジカルバレット
+734,SC_HELPANGEL,0,1,0,0			// 天使さま助けて
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除

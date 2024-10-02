@@ -5297,7 +5297,7 @@ int buildin_heal(struct script_state *st)
 	hp=conv_num(st,& (st->stack->stack_data[st->start+2]));
 	sp=conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	pc_heal(script_rid2sd(st),hp,sp);
+	pc_heal(script_rid2sd(st),hp,sp,0,0);
 	return 0;
 }
 

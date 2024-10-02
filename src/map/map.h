@@ -75,6 +75,7 @@
 #define MAX_MEMORIAL_MAP 200	// メモリアルダンジョンマップ最大生成数
 #define MAX_CLOAKEDNPC 50	// クローキング状態NPC最大保存数
 #define MAX_STELLAR_MARKS 5 // 星の印の最大保存数
+#define MAX_SOULENERGY 15	// ソウルエナジー最大数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -736,6 +737,11 @@ struct map_session_data {
 		short ele;
 		int timer[MAX_ELEMENTBALL];
 	} elementball;
+
+	struct {
+		short num;
+		int timer[MAX_SOULENERGY];
+	} soulenergy;
 
 	int reg_num;
 	struct script_reg *reg;

@@ -2141,12 +2141,12 @@ int unit_dataset(struct block_list *bl)
  *
  *------------------------------------------
  */
-int unit_heal(struct block_list *bl,int hp,int sp)
+int unit_heal(struct block_list *bl,int hp,int sp,int ap,int flag)
 {
 	nullpo_retr(0, bl);
 
 	if(bl->type == BL_PC)
-		pc_heal((struct map_session_data*)bl,hp,sp);
+		pc_heal((struct map_session_data*)bl,hp,sp,ap,flag);
 	else if(bl->type == BL_MOB)
 		mob_heal((struct mob_data*)bl,hp);
 	else if(bl->type == BL_HOM)

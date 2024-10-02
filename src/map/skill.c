@@ -212,7 +212,7 @@ int SkillStatusChangeTable[MAX_SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç
 	/* 770- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 780- */
-	-1,-1,-1,SC_KILLING_AURA,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,SC_KILLING_AURA,-1,
 };
 
 /* (ÉXÉLÉãî‘çÜ - SECOND_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
@@ -223,8 +223,8 @@ int SkillStatusChangeTable2[MAX_SECONDSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌ
 	SC_WINKCHARM,-1,-1,-1,-1,-1,SC_ELEMENTGROUND,SC_ELEMENTFIRE,SC_ELEMENTWIND,
 };
 
-/* (ÉXÉLÉãî‘çÜ - THIRD_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+/* (ÉXÉLÉãî‘çÜ - THIRD1_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable3_1[MAX_THIRD1SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
 	/* 2001- */
 	SC_ENCHANTBLADE,-1,SC_DEATHBOUND,-1,SC_FEAR,-1,-1,SC_HELLINFERNO,SC_FEAR,-1,
 	/* 2011- */
@@ -236,26 +236,11 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇ
 	/* 2041- */
 	SC_BLESSING,SC_INCREASEAGI,-1,SC_EPICLESIS,SC_KYRIE,SC_ORATIO,SC_LAUDAAGNUS,SC_LAUDARAMUS,-1,SC_RENOVATIO,
 	/* 2051- */
-	-1,-1,SC_EXPIATIO,SC_DUPLELIGHT,-1,-1,SC_SILENCE,-1,-1,-1,
-	/* 2061- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 2071- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 2081- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 2091- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 2101- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,SC_EXPIATIO,SC_DUPLELIGHT,-1,-1,SC_SILENCE,
+};
+
+/* (ÉXÉLÉãî‘çÜ - THIRD2_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable3_2[MAX_THIRD2SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
 	/* 2201- */
 	SC_WHITEIMPRISON,-1,SC_FROSTMISTY,SC_FREEZE,SC_MARSHOFABYSS,SC_RECOGNIZEDSPELL,SC_STONE,-1,SC_STASIS,-1,
 	/* 2211- */
@@ -319,45 +304,31 @@ int SkillStatusChangeTable3[MAX_THIRDSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇ
 	/* 2501- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 2511- */
-	-1,-1,-1,-1,SC_SACRAMENT,-1,SC_FEAR,-1,-1,
-};
-
-/* (ÉXÉLÉãî‘çÜ - QUEST_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int QuestSkillStatusChangeTable[MAX_QUESTSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
-	/* 2533- */
-	-1,-1,-1,-1,SC_ODINS_POWER,-1,-1,SC_DISSONANCE,SC_UGLYDANCE
-};
-
-/* (ÉXÉLÉãî‘çÜ - RL_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableRL[MAX_RLSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+	-1,-1,-1,-1,SC_SACRAMENT,-1,SC_FEAR,-1,-1,-1,
+	/* 2521- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 2531- */
+	-1,-1,-1,-1,-1,-1,SC_ODINS_POWER,-1,-1,SC_DISSONANCE,
+	/* 2541- */
+	SC_UGLYDANCE,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 2551- */
 	-1,-1,-1,-1,SC_B_TRAP,-1,-1,SC_E_CHAIN,-1,SC_C_MARKER,
 	/* 2561- */
 	-1,SC_H_MINE,SC_P_ALTER,SC_FALLEN_ANGEL,-1,-1,-1,SC_HEAT_BARREL,SC_ANTI_M_BLAST,-1,
 	/* 2571- */
-	-1,-1,-1,
+	-1,-1,-1,SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,SC_FLASHKICK,
+	/* 2581- */
+	-1,SC_NOVAEXPLOSING,SC_UNIVERSESTANCE,SC_FALLINGSTAR,SC_GRAVITYCONTROL,SC_DIMENSION,SC_CREATINGSTAR,-1,-1,SC_LIGHTOFSUN,
+	/* 2591- */
+	SC_SUNSTANCE,-1,-1,-1,-1,SC_SOULGOLEM,SC_SOULSHADOW,SC_SOULFALCON,SC_SOULFAIRY,-1,
+	/* 2601- */
+	SC_SOULCURSE,SC_SWHOO,SC_SHA,-1,SC_SOULUNITY,SC_SOULDIVISION,SC_SOULREAPER,-1,SC_SOULCOLLECT,-1,
+	/* 2611- */
+	-1,-1,
 };
 
-/* (ÉXÉLÉãî‘çÜ - SJ_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableSJ[MAX_SJSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
-	/* 2574- */
-	SC_LIGHTOFMOON,SC_LUNARSTANCE,-1,SC_LIGHTOFSTAR,SC_STARSTANCE,SC_NEWMOON,SC_FLASHKICK,-1,SC_NOVAEXPLOSING,SC_UNIVERSESTANCE,
-	/* 2584- */
-	SC_FALLINGSTAR,SC_GRAVITYCONTROL,SC_DIMENSION,SC_CREATINGSTAR,-1,-1,SC_LIGHTOFSUN,SC_SUNSTANCE,-1,-1,
-	/* 2594- */
-	-1,-1
-};
-
-/* (ÉXÉLÉãî‘çÜ - SP_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableSP[MAX_SPSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
-	/* 2596- */
-	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	/* 2606- */
-	-1,-1,-1,-1,-1,-1,-1
-};
-
-/* (ÉXÉLÉãî‘çÜ - KO_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+/* (ÉXÉLÉãî‘çÜ - THIRD3_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable3_3[MAX_THIRD3SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
 	/* 3001- */
 	SC_HIDING,-1,-1,SC_KO_JYUMONJIKIRI,-1,-1,-1,-1,-1,-1,
 	/* 3011- */
@@ -365,27 +336,99 @@ int SkillStatusChangeTableKO[MAX_KOSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇ
 	/* 3021- */
 	SC_CONFUSION,SC_IZAYOI,SC_KG_KAGEHUMI,SC_KYOMU,SC_KAGEMUSYA,SC_ZANGETSU,SC_GENSOU,-1,SC_AKAITSUKI,-1,
 	/* 3031- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 3041- */
 	-1,-1,-1,-1,-1,
 };
 
-/* (ÉXÉLÉãî‘çÜ - 3EX_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableEX3[MAX_EX3SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+/* (ÉXÉLÉãî‘çÜ - THIRD4_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable3_4[MAX_THIRD4SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
 	/* 5001- */
 	SC_DARKCROW,SC_UNLIMIT,-1,SC_FROSTMISTY,-1,SC_STUN,SC_FRIGG_SONG,-1,-1,SC__ESCAPE,
 	/* 5011- */
-	SC_OFFERTORIUM,SC_TELEKINESIS_INTENSE,-1,-1,SC_HELLINFERNO,
+	SC_OFFERTORIUM,SC_TELEKINESIS_INTENSE,-1,-1,SC_HELLINFERNO,-1,-1,-1,-1,SC_SUHIDE,
+	/* 5021- */
+	SC_BLEED,SC_SU_STOOP,-1,-1,-1,SC_BLEED,SC_CATNIPPOWDER,-1,SC_SV_ROOTTWIST,-1,
+	/* 5031- */
+	-1,SC_BITESCAR,-1,-1,SC_ARCLOUSEDASH,-1,-1,-1,SC_TUNAPARTY,SC_SHRIMP,
+	/* 5041- */
+	SC_FRESHSHRIMP,-1,-1,-1,-1,-1,SC_HISS,SC_NYANGGRASS,SC_GROOMING,SC_GROOMING,
+	/* 5051- */
+	SC_PROTECTIONOFSHRIMP,-1,SC_CHATTERING,-1,SC_CHATTERING,-1,-1,-1,-1,-1,
+	/* 5061- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5071- */
+	SC_FULL_THROTTLE,-1,-1,-1,-1,SC_HELPANGEL,-1,-1,
 };
 
-/* (ÉXÉLÉãî‘çÜ - SUM_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
-int SkillStatusChangeTableSUM[MAX_SUMSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
-	/* 5018- */
-	-1,-1,SC_SUHIDE,SC_BLEED,SC_SU_STOOP,-1,-1,-1,SC_BLEED,SC_CATNIPPOWDER,
-	/* 5028- */
-	-1,SC_SV_ROOTTWIST,-1,-1,SC_BITESCAR,-1,-1,SC_ARCLOUSEDASH,-1,-1,
-	/* 5038- */
-	-1,SC_TUNAPARTY,SC_SHRIMP,SC_FRESHSHRIMP,-1,-1,-1,-1,-1,SC_HISS,
-	/* 5048- */
-	SC_NYANGGRASS,SC_GROOMING,SC_GROOMING,SC_PROTECTIONOFSHRIMP,-1,SC_CHATTERING,-1,SC_CHATTERING,-1,
+/* (ÉXÉLÉãî‘çÜ - FOURTH1_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable4_1[MAX_FOURTH1SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+	/* 5201- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5211- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5221- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5231- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5241- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5251- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5261- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5271- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5281- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5291- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5301- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5311- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5321- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5331- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5341- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5351- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5361- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5371- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5381- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5391- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5401- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5411- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5421- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5431- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5441- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5451- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5461- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5471- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5481- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 5491- */
+	-1,-1,-1,-1,-1,-1,-1,
+};
+
+/* (ÉXÉLÉãî‘çÜ - FOURTH2_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int SkillStatusChangeTable4_2[MAX_FOURTH2SKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+	/* 6001- */
+	-1,-1,-1,-1,-1,-1,
 };
 
 /* (ÉXÉLÉãî‘çÜ - HOM_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
@@ -399,7 +442,9 @@ int HomSkillStatusChangeTable[MAX_HOMSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇ
 	/* 8031- */
 	-1,SC_GOLDENE_FERSE,SC_SAFETYWALL,-1,SC_ANGRIFFS_MODUS,SC_TINDER_BREAKER,SC_CBC,SC_EQC,SC_MAGMA_FLOW,SC_GRANITIC_ARMOR,
 	/* 8041- */
-	SC_HELLINFERNO,SC_PYROCLASTIC,SC_VOLCANIC_ASH,
+	SC_HELLINFERNO,SC_PYROCLASTIC,SC_VOLCANIC_ASH,-1,-1,-1,-1,-1,-1,-1,
+	/* 8051- */
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
 /* (ÉXÉLÉãî‘çÜ - MERC_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
@@ -427,7 +472,15 @@ int ElemSkillStatusChangeTable[MAX_ELEMSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†Ç
 	/* 8431- */
 	-1,-1,SC_TIDAL_WEAPON,-1,-1,-1,-1,-1,-1,SC_ROCK_CRUSHER,
 	/* 8441- */
-	SC_ROCK_CRUSHER_ATK,-1,
+	SC_ROCK_CRUSHER_ATK,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	/* 8451- */
+	-1,-1,-1,-1,-1,-1,-1,
+};
+
+/* (ÉXÉLÉãî‘çÜ - ABR_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
+int AbrSkillStatusChangeTable[MAX_ABRSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç†ÇÌÇπÇÈÇ±Ç∆ */
+	/* 8601- */
+	-1,-1,-1,-1,-1,
 };
 
 /* (ÉXÉLÉãî‘çÜ - GUILD_SKILLID)ÅÅÅÑÉXÉeÅ[É^ÉXàŸèÌî‘çÜïœä∑ÉeÅ[ÉuÉã */
@@ -435,7 +488,7 @@ int GuildSkillStatusChangeTable[MAX_GUILDSKILL] = {	/* status.hÇÃenumÇÃSC_***Ç∆Ç
 	/* 10000- */
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	/* 10010- */
-	SC_BATTLEORDER,SC_REGENERATION,-1,-1,-1,-1,
+	SC_BATTLEORDER,SC_REGENERATION,-1,-1,-1,-1,-1,-1,-1,-1,
 };
 
 /* ÉXÉLÉãÉfÅ[É^ÉxÅ[ÉX */
@@ -524,35 +577,29 @@ static struct skill_unit_layout *skill_get_unit_layout(int skillid,int skilllv,s
 
 int GetSkillStatusChangeTable(int id)
 {
-	if(id >= 0 && id < MAX_SKILL)
+	if(id >= 0 && id < MAX_SKILLID)
 		return SkillStatusChangeTable[id];
 
 	if(id >= SECOND_SKILLID && id < MAX_SECOND_SKILLID)
 		return SkillStatusChangeTable2[id - SECOND_SKILLID];
 
-	if(id >= THIRD_SKILLID && id < MAX_THIRD_SKILLID)
-		return SkillStatusChangeTable3[id - THIRD_SKILLID];
+	if(id >= THIRD1_SKILLID && id < MAX_THIRD1_SKILLID)
+		return SkillStatusChangeTable3_1[id - THIRD1_SKILLID];
 
-	if(id >= QUEST_SKILLID && id < MAX_QUEST_SKILLID)
-		return QuestSkillStatusChangeTable[id - QUEST_SKILLID];
+	if(id >= THIRD2_SKILLID && id < MAX_THIRD2_SKILLID)
+		return SkillStatusChangeTable3_2[id - THIRD2_SKILLID];
 
-	if(id >= RL_SKILLID && id < MAX_RL_SKILLID)
-		return SkillStatusChangeTableRL[id - RL_SKILLID];
+	if(id >= THIRD3_SKILLID && id < MAX_THIRD3_SKILLID)
+		return SkillStatusChangeTable3_3[id - THIRD3_SKILLID];
 
-	if(id >= SJ_SKILLID && id < MAX_SJ_SKILLID)
-		return SkillStatusChangeTableSJ[id - SJ_SKILLID];
+	if(id >= THIRD4_SKILLID && id < MAX_THIRD4_SKILLID)
+		return SkillStatusChangeTable3_4[id - THIRD4_SKILLID];
 
-	if(id >= SP_SKILLID && id < MAX_SP_SKILLID)
-		return SkillStatusChangeTableSP[id - SP_SKILLID];
+	if(id >= FOURTH1_SKILLID && id < MAX_FOURTH1_SKILLID)
+		return SkillStatusChangeTable4_1[id - FOURTH1_SKILLID];
 
-	if(id >= KO_SKILLID && id < MAX_KO_SKILLID)
-		return SkillStatusChangeTableKO[id - KO_SKILLID];
-
-	if(id >= EX3_SKILLID && id < MAX_EX3_SKILLID)
-		return SkillStatusChangeTableEX3[id - EX3_SKILLID];
-
-	if(id >= SUM_SKILLID && id < MAX_SUM_SKILLID)
-		return SkillStatusChangeTableSUM[id - SUM_SKILLID];
+	if(id >= FOURTH2_SKILLID && id < MAX_FOURTH2_SKILLID)
+		return SkillStatusChangeTable4_2[id - FOURTH2_SKILLID];
 
 	if(id >= HOM_SKILLID && id < MAX_HOM_SKILLID)
 		return HomSkillStatusChangeTable[id - HOM_SKILLID];
@@ -562,6 +609,9 @@ int GetSkillStatusChangeTable(int id)
 
 	if(id >= ELEM_SKILLID && id < MAX_ELEM_SKILLID)
 		return ElemSkillStatusChangeTable[id - ELEM_SKILLID];
+
+	if(id >= ABR_SKILLID && id < MAX_ABR_SKILLID)
+		return AbrSkillStatusChangeTable[id - ABR_SKILLID];
 
 	if(id >= GUILD_SKILLID && id < MAX_GUILD_SKILLID)
 		return GuildSkillStatusChangeTable[id - GUILD_SKILLID];
@@ -1247,7 +1297,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case DC_UGLYDANCE:	/* é©ï™èüéËÇ»É_ÉìÉX */
 		if(dstsd) {
 			int sp = 5+skilllv*(5+pc_checkskill(dstsd,DC_DANCINGLESSON));
-			pc_heal(dstsd,0,-sp);
+			pc_heal(dstsd,0,-sp,0,0);
 		}
 		break;
 
@@ -1281,7 +1331,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(dstsd) {
 			int sp = dstsd->status.max_sp*(10+skilllv*5)/100;
 			if(sp < 1) sp = 1;
-			pc_heal(dstsd,0,-sp);
+			pc_heal(dstsd,0,-sp,0,0);
 		}
 		break;
 	case NPC_WEAPONBRAKER:
@@ -1350,7 +1400,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(dstsd) {
 			// ëŒè€Ç…15% + skilllv*5%ÇÃSPçUåÇ(ïKíÜ)
 			int sp = dstsd->status.sp*(15+5*skilllv)/100;
-			pc_heal(dstsd,0,-sp);
+			pc_heal(dstsd,0,-sp,0,0);
 		}
 		break;
 	case WS_CARTTERMINATION:
@@ -1934,6 +1984,38 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 				pc_break_equip2(dstsd, EQUIP_INDEX_HEAD2);
 		}
 		break;
+	case SP_SPA:			/* ÉGÉXÉp */
+		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case SP_SHA:			/* ÉGÉXÉn */
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+		break;
+	case SP_SOULEXPLOSION:	/* ç∞ÇÃïˆâÛ */
+		status_change_end(bl,SC_ALCHEMIST,-1);
+		status_change_end(bl,SC_MONK,-1);
+		status_change_end(bl,SC_STAR,-1);
+		status_change_end(bl,SC_SAGE,-1);
+		status_change_end(bl,SC_CRUSADER,-1);
+		status_change_end(bl,SC_SUPERNOVICE,-1);
+		status_change_end(bl,SC_KNIGHT,-1);
+		status_change_end(bl,SC_WIZARD,-1);
+		status_change_end(bl,SC_PRIEST,-1);
+		status_change_end(bl,SC_BARDDANCER,-1);
+		status_change_end(bl,SC_ROGUE,-1);
+		status_change_end(bl,SC_ASSASIN,-1);
+		status_change_end(bl,SC_BLACKSMITH,-1);
+		status_change_end(bl,SC_HUNTER,-1);
+		status_change_end(bl,SC_SOULLINKER,-1);
+		status_change_end(bl,SC_HIGH,-1);
+		status_change_end(bl,SC_DEATHKINGHT,-1);
+		status_change_end(bl,SC_COLLECTOR,-1);
+		status_change_end(bl,SC_NINJA,-1);
+		status_change_end(bl,SC_GUNNER,-1);
+		status_change_end(bl,SC_SOULGOLEM,-1);
+		status_change_end(bl,SC_SOULSHADOW,-1);
+		status_change_end(bl,SC_SOULFALCON,-1);
+		status_change_end(bl,SC_SOULFAIRY,-1);
+		break;
 	case SU_SCRATCH:	/* Ç–Ç¡Ç©Ç≠ */
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,500 + skilllv*500,status_get_lv(src)))
 			status_change_pretimer(bl,SC_BLEED,1,0,0,0,skill_get_time(skillid,skilllv),0,tick+status_get_amotion(src));
@@ -1956,7 +2038,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 	case NPC_UGLYDANCE:
 		if(dstsd) {
 			int sp = 5+skilllv*5;
-			pc_heal(dstsd,0,-sp);
+			pc_heal(dstsd,0,-sp,0,0);
 		}
 		break;
 	}
@@ -4443,7 +4525,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			sp = status_get_sp(dstbl);
 			// SPÇ0Ç…Ç∑ÇÈ
 			if(dstbl->type == BL_PC)
-				unit_heal(dstbl,0,-sp);
+				unit_heal(dstbl,0,-sp,0,0);
 			if(skilllv >= 5) {
 				// SP*2ÇÃÉ_ÉÅÅ[ÉWÇó^Ç¶ÇÈ(MDEFÇ≈åvéZ)
 				int damage = sp * 2 * (100 - status_get_mdef(dstbl)) / 100 - status_get_mdef2(dstbl);
@@ -4959,14 +5041,7 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			int heal = battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
 			if(heal > 0 && atn_rand() % 100 < 70 + skilllv * 5) {
 				heal = heal * (skilllv * 8 * status_get_lv(src) / 100) / 100;
-				if(sd) {
-					if(sd->status.hp + heal > sd->status.max_hp)
-						heal = sd->status.max_hp - sd->status.hp;
-					if(heal <= 0)
-						break;
-					clif_heal(sd->fd,SP_HP,heal);
-				}
-				unit_heal(src,heal,0);
+				unit_heal(src,heal,0,0,1);
 			}
 		}
 		break;
@@ -5890,6 +5965,54 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			}
 		}
 		break;
+	case SP_CURSEEXPLOSION:		// éÄóÏîöî≠
+		if(flag&1) {
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case SP_SPA:				// ÉGÉXÉp
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+		break;
+	case SP_SHA:			// ÉGÉXÉn
+		if(flag&1) {
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			status_change_start(src,SC_SMA,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+			if(bl->type != BL_MOB && !battle_config.allow_es_magic_all)
+				status_change_start(src,SC_STUN,skilllv,0,0,0,5000,0);
+		}
+		break;
+	case SP_SWHOO:			// ÉGÉXÉt
+		if(flag&1) {
+			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,
+				battle_config.allow_es_magic_all? (BL_CHAR|BL_SKILL): BL_MOB,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			if(sc && sc->data[SC_SWHOO].timer != -1)
+				status_change_end(bl,SC_SWHOO,-1);
+			status_change_start(src,SC_SMA,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		}
+		break;
+	case SP_SOULEXPLOSION:		// ç∞ÇÃïˆâÛ
+		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,flag);
+		break;
 	case SU_BITE:			// Ç©Ç›Ç¬Ç≠
 	case SU_SCAROFTAROU:	// É^ÉçÉEÇÃèù
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
@@ -6348,7 +6471,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if( dstsd ) {
 				if( dstsd->special_state.no_magic_damage )
 					break;
-				pc_heal(dstsd,heal,dstsd->status.max_sp);
+				pc_heal(dstsd,heal,dstsd->status.max_sp,0,0);
 			}
 			else if(dstmd) {
 				dstmd->hp = status_get_max_hp(bl);
@@ -7893,7 +8016,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd) {
 			int sp = skill_get_sp(sd->skill_used.id,sd->skill_used.lv) * (110 - 20 * skilllv) / 100;
 			if(sp > 0)
-				pc_heal(sd,0,-sp);
+				pc_heal(sd,0,-sp,0,0);
 		}
 		break;
 	case SA_SPELLBREAKER:	/* ÉXÉyÉãÉuÉåÉCÉJÅ[ */
@@ -7920,7 +8043,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(sd) {
 				sp = sd->status.max_sp/5;
 				if(sp < 1) sp = 1;
-				pc_heal(sd,0,-sp);
+				pc_heal(sd,0,-sp,0,0);
 			}
 		} else {
 			struct unit_data *ud = unit_bl2ud(bl);
@@ -7929,7 +8052,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				clif_skill_nodamage(src,bl,skillid,skilllv,1);
 				unit_skillcastcancel(bl,0);
 				if(dstsd)
-					pc_heal(dstsd,0,-sp);
+					pc_heal(dstsd,0,-sp,0,0);
 				if(sd) {
 					sp = sp * 25 * (skilllv - 1) / 100;
 					if(skilllv > 1 && sp < 1) sp = 1;
@@ -8021,8 +8144,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 #ifndef PRE_RENEWAL
 			sp = sp / 2;
 #endif
-			pc_heal(sd,0,-sp);
-			pc_heal(dstsd,0,sp);
+			pc_heal(sd,0,-sp,0,0);
+			pc_heal(dstsd,0,sp,0,1);
 		}
 		break;
 	case NPC_ATTRICHANGE:	/* ÉâÉìÉ_ÉÄëÆê´ïœâª */
@@ -8100,7 +8223,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(atn_rand()%100 < sc_def * (50 + skilllv * 5) / 100) {
 				if(dstsd) {
 					int hp = status_get_hp(bl) - 1;
-					pc_heal(dstsd,-hp,0);
+					pc_heal(dstsd,-hp,0,0,0);
 				}
 				else if(dstmd) {
 					dstmd->hp = 1;
@@ -8114,7 +8237,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if( dstsd && dstsd->special_state.no_weapon_damage )
 			break;
 		if(dstsd)
-			pc_heal(dstsd,0,-100);
+			pc_heal(dstsd,0,-100,0,0);
 		if(atn_rand() % 10000 < status_change_rate(bl,SC_STUN,skilllv*500,status_get_lv(src)))
 			status_change_pretimer(bl,SC_STUN,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
@@ -8286,9 +8409,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				conv_sp = conv_hp * 10 * skilllv / 100;
 				if(sd->status.sp + conv_sp > sd->status.max_sp)
 					conv_sp = sd->status.max_sp - sd->status.sp;
-				pc_heal(sd, -conv_hp, conv_sp);
-				clif_heal(sd->fd, SP_SP, conv_sp);
-				clif_updatestatus(sd, SP_SP);
+				pc_heal(sd, -conv_hp, conv_sp,0,1);
 			}
 		}
 		break;
@@ -8433,7 +8554,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				break;
 
 			// HP1, SP0
-			pc_heal(sd, -sd->status.hp + 1, -sd->status.sp);
+			pc_heal(sd, -sd->status.hp + 1, -sd->status.sp, 0, 0);
 
 			// åoå±ílÉyÉiÉãÉeÉB
 			if(skill_area_temp[0] < 5) {
@@ -8483,7 +8604,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 						// ÉoÅ[ÉTÅ[ÉNíÜÇÃÉÅÉìÉoÅ[Ç…ÇÕégópïsâ¬
 						if(member->sc.data[SC_BERSERK].timer != -1)
 							continue;
-						pc_heal(member, member->status.max_hp * 90 / 100, member->status.max_sp * 90 / 100);
+						pc_heal(member, member->status.max_hp * 90 / 100, member->status.max_sp * 90 / 100, 0, 0);
 					} else {
 						status_change_start(&member->bl,GetSkillStatusChangeTable(skillid),skilllv,skillid,0,0,skill_get_time(skillid,skilllv),0);
 					}
@@ -8846,7 +8967,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case HLIF_CHANGE:		/* ÉÅÉìÉ^ÉãÉ`ÉFÉìÉW */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
-		unit_heal(src,status_get_max_hp(src),0);
+		unit_heal(src,status_get_max_hp(src),0,0,0);
 		if(hd) {
 			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_time2(skillid,skilllv);
 		}
@@ -9019,7 +9140,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(dstsd) {
 				int sp = dstsd->status.max_sp * (((skilllv - 1) % 5 + 1) * 20) / 100;
 				if(sp < 1) sp = 1;
-				pc_heal(dstsd,0,-sp);
+				pc_heal(dstsd,0,-sp,0,0);
 			}
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
@@ -9286,7 +9407,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(mcd && mcd->msd) {
 			int hp = status_get_hp(&mcd->bl);
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			pc_heal(mcd->msd,hp,0);
+			pc_heal(mcd->msd,hp,0,0,0);
 			battle_damage(NULL,&mcd->bl,hp,skillid,skilllv,flag);
 		}
 		break;
@@ -9551,20 +9672,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(heal) {
 				if(sc && sc->data[SC_AKAITSUKI].timer != -1)
 					unit_fixdamage(bl,bl,gettick(),0,status_get_dmotion(bl),heal,0,0,0,0);
-				else{
-					// PCÇÕÉqÅ[ÉãÉGÉtÉFÉNÉgópÇ…âÒïúó ÇéZèo
-					if(sd) {
-						if( sd->status.hp + heal >= sd->status.max_hp )
-							heal = sd->status.max_hp - sd->status.hp;
-						if( heal ){
-							clif_heal(sd->fd,SP_HP,heal);
-							pc_heal(sd,heal,0);
-						}
-					}
-					else{
-						unit_heal(bl, heal, 0);
-					}
-				}
+				else
+					unit_heal(bl,heal,0,0,1);
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -10192,7 +10301,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					if(rate < 50) {			// HPâÒïú
 						int heal = sd->status.max_hp * (1 + sd->status.base_level / 10 + val) / 100;
 						clif_skill_nodamage(src,bl,AL_HEAL,heal,1);
-						pc_heal(sd,heal,0);
+						pc_heal(sd,heal,0,0,0);
 					}
 					else if(rate < 75) {	// äZîjâÛ
 						status_change_start(bl,SC_SHIELDSPELL_REF,skilllv,1,val*10,0,val*30000,0);
@@ -11053,7 +11162,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			else
 				sp -= sp_max * (sp_lv * 3 + skilllv) / 100;
 
-			unit_heal(bl,hp,sp);
+			unit_heal(bl,hp,sp,0,0);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
@@ -11228,6 +11337,79 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				fall_damage = max(1, fall_damage);
 				status_change_start(bl,type,skilllv,fall_damage,0,0,skill_get_time(skillid,skilllv),0);
 			}
+		}
+		break;
+	case SP_SOULGOLEM:			/* ÉSÅ[ÉåÉÄÇÃç∞ */
+	case SP_SOULSHADOW:			/* âeÇÃç∞ */
+	case SP_SOULFALCON:			/* ëÈÇÃç∞ */
+	case SP_SOULFAIRY:			/* ódê∏ÇÃç∞ */
+	case SP_SOULREAPER:			/* ç∞ÇÃé˚än */
+	case SP_SOULCOLLECT:		/* ç∞ÇÃí~êœ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case SP_SOULDIVISION:		/* ç∞ÇÃï™óÙ */
+		clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// ÉGÉtÉFÉNÉgÇèoÇ∑ÇΩÇﬂÇÃébíËèàíu
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case SP_SOULCURSE:			/* éÄóÏúﬂàÀ */
+		if(flag&1) {
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,(status_get_mode(bl)&MD_BOSS)? 20: 100,0,0,skill_get_time(skillid,skilllv),0);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_MOB,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case SP_SOULUNITY:	/* ç∞ÇÃòAåã */
+		if((flag&1) || sd == NULL || sd->status.party_id == 0) {
+			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		} else {
+			/* ÉpÅ[ÉeÉBëSëÃÇ÷ÇÃèàóù */
+			party_foreachsamemap(skill_area_sub,
+				sd,skill_get_area(skillid,skilllv),
+				src,skillid,skilllv,tick,flag|BCT_PARTY|1,
+				skill_castend_nodamage_id);
+		}
+		break;
+	case SP_SOULREVOLVE:		/* ç∞ÇÃèzä¬ */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		status_change_end(bl,SC_ALCHEMIST,-1);
+		status_change_end(bl,SC_MONK,-1);
+		status_change_end(bl,SC_STAR,-1);
+		status_change_end(bl,SC_SAGE,-1);
+		status_change_end(bl,SC_CRUSADER,-1);
+		status_change_end(bl,SC_SUPERNOVICE,-1);
+		status_change_end(bl,SC_KNIGHT,-1);
+		status_change_end(bl,SC_WIZARD,-1);
+		status_change_end(bl,SC_PRIEST,-1);
+		status_change_end(bl,SC_BARDDANCER,-1);
+		status_change_end(bl,SC_ROGUE,-1);
+		status_change_end(bl,SC_ASSASIN,-1);
+		status_change_end(bl,SC_BLACKSMITH,-1);
+		status_change_end(bl,SC_HUNTER,-1);
+		status_change_end(bl,SC_SOULLINKER,-1);
+		status_change_end(bl,SC_HIGH,-1);
+		status_change_end(bl,SC_DEATHKINGHT,-1);
+		status_change_end(bl,SC_COLLECTOR,-1);
+		status_change_end(bl,SC_NINJA,-1);
+		status_change_end(bl,SC_GUNNER,-1);
+		status_change_end(bl,SC_SOULGOLEM,-1);
+		status_change_end(bl,SC_SOULSHADOW,-1);
+		status_change_end(bl,SC_SOULFALCON,-1);
+		status_change_end(bl,SC_SOULFAIRY,-1);
+		unit_heal(bl,0,460,0,1);
+		break;
+	case SP_KAUTE:	/* ÉJÉEÉg */
+		if(sd) {
+			int heal_sp = 0;
+			clif_skill_nodamage(src, bl, skillid, skilllv, 1);
+			heal_sp = (int)((atn_bignumber)status_get_max_sp(bl) * (13+skilllv*3) / 100);
+			unit_heal(bl,0,heal_sp,0,1);
 		}
 		break;
 	case SU_HIDE:	/* Ç©Ç≠ÇÍÇÈ */
@@ -11456,8 +11638,20 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		break;
 	case EVT_FULL_THROTTLE:	/* ÉtÉãÉXÉçÉbÉgÉã */
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		unit_heal(src,status_get_max_hp(src),0);
-		status_change_start(bl,SC_FULL_THROTTLE,skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		unit_heal(src,status_get_max_hp(src),0,0,0);
+		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		break;
+	case NV_HELPANGEL:	/* ìVégÇ≥Ç‹èïÇØÇƒ */
+		if((flag&1) || sd == NULL || sd->status.party_id == 0) {
+			clif_skill_nodamage(bl,bl,skillid,skilllv,1);
+			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
+		} else {
+			/* ÉpÅ[ÉeÉBëSëÃÇ÷ÇÃèàóù */
+			party_foreachsamemap(skill_area_sub,
+				sd,skill_get_area(skillid,skilllv),
+				src,skillid,skilllv,tick,flag|BCT_PARTY|1,
+				skill_castend_nodamage_id);
+		}
 		break;
 	case EL_CIRCLE_OF_FIRE:	/* ÉTÅ[ÉNÉãÉIÉuÉtÉ@ÉCÉA */
 	case EL_FIRE_CLOAK:		/* ÉtÉ@ÉCÉAÅ[ÉNÉçÅ[ÉN */
@@ -13876,7 +14070,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 					status_change_end(bl,SC_GOSPEL,-1);
 					break;
 				}
-				pc_heal(sd,-hp,-sp);
+				pc_heal(sd,-hp,-sp,0,0);
 				break;
 			}
 			if (sd && sd->special_state.no_magic_damage)
@@ -15095,22 +15289,22 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 
 		switch(cnd->id)
 		{
-			case SL_ALCHEMIST:   if(job != PC_JOB_AM && job != PC_JOB_GN) fail = 1; break; // ÉAÉãÉPÉ~ÉXÉgÇÃç∞
-			case SL_MONK:        if(job != PC_JOB_MO && job != PC_JOB_SR) fail = 1; break; // ÉÇÉìÉNÇÃç∞
-			case SL_STAR:        if(job != PC_JOB_SG) fail = 1; break; // ÉPÉìÉZÉCÇÃç∞
-			case SL_SAGE:        if(job != PC_JOB_SA && job != PC_JOB_SO) fail = 1; break; // ÉZÅ[ÉWÇÃç∞
-			case SL_CRUSADER:    if(job != PC_JOB_CR && job != PC_JOB_LG) fail = 1; break; // ÉNÉãÉZÉCÉ_Å[ÇÃç∞
-			case SL_SUPERNOVICE: if(job != PC_JOB_SNV && job != PC_JOB_ESNV) fail = 1; break; // ÉXÅ[ÉpÅ[ÉmÅ[ÉrÉXÇÃç∞
-			case SL_KNIGHT:      if(job != PC_JOB_KN && job != PC_JOB_RK) fail = 1; break; // ÉiÉCÉgÇÃç∞
-			case SL_WIZARD:      if(job != PC_JOB_WZ && job != PC_JOB_WL) fail = 1; break; // ÉEÉBÉUÅ[ÉhÇÃç∞
-			case SL_PRIEST:      if(job != PC_JOB_PR && job != PC_JOB_AB) fail = 1; break; // ÉvÉäÅ[ÉXÉgÇÃç∞
-			case SL_BARDDANCER:  if(job != PC_JOB_BA && job != PC_JOB_DC && job != PC_JOB_MI && job != PC_JOB_WA) fail = 1; break; // ÉoÅ[ÉhÇ∆É_ÉìÉTÅ[ÇÃç∞
-			case SL_ROGUE:       if(job != PC_JOB_RG && job != PC_JOB_SC) fail = 1; break; // ÉçÅ[ÉOÇÃç∞
-			case SL_ASSASIN:     if(job != PC_JOB_AS && job != PC_JOB_GC) fail = 1; break; // ÉAÉTÉVÉìÇÃç∞
-			case SL_BLACKSMITH:  if(job != PC_JOB_BS && job != PC_JOB_NC) fail = 1; break; // ÉuÉâÉbÉNÉXÉ~ÉXÇÃç∞
-			case SL_HUNTER:      if(job != PC_JOB_HT && job != PC_JOB_RA) fail = 1; break; // ÉnÉìÉ^Å[ÇÃç∞
-			case SL_SOULLINKER:  if(job != PC_JOB_SL) fail = 1; break; // É\ÉEÉãÉäÉìÉJÅ[ÇÃç∞
-			case SL_HIGH:        if(job < PC_JOB_SM || job > PC_JOB_TF || target_sd->s_class.upper != PC_UPPER_HIGH) fail = 1; break; // àÍéüè„à êEã∆ÇÃç∞
+			case SL_ALCHEMIST:   if(pc_get_base_job(job,2) != PC_JOB_AM) fail = 1; break; // ÉAÉãÉPÉ~ÉXÉgÇÃç∞
+			case SL_MONK:        if(pc_get_base_job(job,2) != PC_JOB_MO) fail = 1; break; // ÉÇÉìÉNÇÃç∞
+			case SL_STAR:        if(pc_get_base_job(job,2) != PC_JOB_SG) fail = 1; break; // ÉPÉìÉZÉCÇÃç∞
+			case SL_SAGE:        if(pc_get_base_job(job,2) != PC_JOB_SA) fail = 1; break; // ÉZÅ[ÉWÇÃç∞
+			case SL_CRUSADER:    if(pc_get_base_job(job,2) != PC_JOB_CR) fail = 1; break; // ÉNÉãÉZÉCÉ_Å[ÇÃç∞
+			case SL_SUPERNOVICE: if(pc_get_base_job(job,1) != PC_JOB_SNV) fail = 1; break; // ÉXÅ[ÉpÅ[ÉmÅ[ÉrÉXÇÃç∞
+			case SL_KNIGHT:      if(pc_get_base_job(job,2) != PC_JOB_KN) fail = 1; break; // ÉiÉCÉgÇÃç∞
+			case SL_WIZARD:      if(pc_get_base_job(job,2) != PC_JOB_WZ) fail = 1; break; // ÉEÉBÉUÅ[ÉhÇÃç∞
+			case SL_PRIEST:      if(pc_get_base_job(job,2) != PC_JOB_PR) fail = 1; break; // ÉvÉäÅ[ÉXÉgÇÃç∞
+			case SL_BARDDANCER:  if(pc_get_base_job(job,2) != PC_JOB_BA && pc_get_base_job(job,2) != PC_JOB_DC) fail = 1; break; // ÉoÅ[ÉhÇ∆É_ÉìÉTÅ[ÇÃç∞
+			case SL_ROGUE:       if(pc_get_base_job(job,2) != PC_JOB_RG) fail = 1; break; // ÉçÅ[ÉOÇÃç∞
+			case SL_ASSASIN:     if(pc_get_base_job(job,2) != PC_JOB_AS) fail = 1; break; // ÉAÉTÉVÉìÇÃç∞
+			case SL_BLACKSMITH:  if(pc_get_base_job(job,2) != PC_JOB_BS) fail = 1; break; // ÉuÉâÉbÉNÉXÉ~ÉXÇÃç∞
+			case SL_HUNTER:      if(pc_get_base_job(job,2) != PC_JOB_HT) fail = 1; break; // ÉnÉìÉ^Å[ÇÃç∞
+			case SL_SOULLINKER:  if(pc_get_base_job(job,2) != PC_JOB_SL) fail = 1; break; // É\ÉEÉãÉäÉìÉJÅ[ÇÃç∞
+			case SL_HIGH:        if(job < PC_JOB_SM || job > PC_JOB_TF || target_sd->s_class.upper != PC_UPPER_HIGH) fail = 1; break; // ì]ê∂àÍéüêEã∆ÇÃç∞
 			default: fail = 1;
 		}
 		if(battle_config.job_soul_check && fail) {
@@ -15169,7 +15363,7 @@ int skill_check_condition2(struct block_list *bl, struct skill_condition *cnd, i
 		    bl == target ||
 		    target_sd->status.party_id <= 0 ||
 		    status_get_party_id(bl) != target_sd->status.party_id ||
-		    target_sd->status.class_ == PC_CLASS_GS )
+			pc_get_base_job(target_sd->s_class.job,1) == PC_JOB_GS )
 		{
 			if(sd)
 				clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
@@ -15371,8 +15565,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	int i,hp,sp,hp_rate,sp_rate,zeny,weapon,state,spiritball,coin,skilldb_id,arrow;
 	int itemid[MAX_SKILL_DB_ITEM+1],amount[MAX_SKILL_DB_ITEM+1];
 	int item_nocost = 0;
+	int soulenergy = 0;
 	struct block_list *bl = NULL, *target = NULL;
 	struct unit_data  *ud = NULL;
+	struct status_change *sc = NULL, *tsc = NULL;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, cnd);
@@ -15380,6 +15576,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	target = map_id2bl( cnd->target );
+	sc = status_get_sc(bl);
+	if(target != NULL) tsc = status_get_sc(target);
 
 	// É`ÉFÉCÉXÅAÉnÉCÉhÅAÉNÉçÅ[ÉLÉìÉOéûÇÃÉXÉLÉã
 	if(sd->sc.option&OPTION_HIDE) {
@@ -15401,7 +15599,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	 	return 0;
 
 	// É\ÉEÉãÉäÉìÉJÅ[Ç≈égÇ¶Ç»Ç¢ÉXÉLÉã
-	if(sd->status.class_ == PC_CLASS_SL) {
+	if(pc_get_base_job(sd->s_class.job,2) == PC_JOB_SL) {
 		switch(cnd->id) {
 			case TK_READYSTORM:
 			case TK_READYDOWN:
@@ -15605,6 +15803,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		sd->spiritball.old = 0;
 #endif
 
+	// É\ÉEÉãÉäÅ[ÉpÅ[ÇÃÉXÉLÉãÇÕspiritballóvãÅÇsoulenergyÇ…íuÇ´ä∑Ç¶ÇÈ
+	if(cnd->id >= SP_SOULGOLEM && cnd->id <= SP_KAUTE && spiritball > 0) {
+		soulenergy = spiritball;
+		spiritball = 0;
+	}
+
 	switch( cnd->id ) {
 	case SL_SMA:	/* ÉGÉXÉ} */
 		if(!(type&1) && sd->sc.data[SC_SMA].timer==-1){	// ÉGÉXÉ}ârè•â¬î\èÛë‘
@@ -15694,6 +15898,12 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	case RA_WUGDASH:	// ÉEÉHÅ[ÉOÉ_ÉbÉVÉÖ
 		if(!pc_iswolfmount(sd)) {
 			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+			return 0;
+		}
+		break;
+	case SP_SWHOO:	/* ÉGÉXÉt */
+		if(!(type&1) && sd->sc.data[SC_SWHOO].timer == -1){	// ÉGÉXÉtârè•â¬î\èÛë‘
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_OTHERSKILL,0,0);
 			return 0;
 		}
 		break;
@@ -16714,6 +16924,118 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		break;
+	case SP_SOULGOLEM:		/* ÉSÅ[ÉåÉÄÇÃç∞ */
+	case SP_SOULSHADOW:		/* âeÇÃç∞ */
+	case SP_SOULFALCON:		/* ëÈÇÃç∞ */
+	case SP_SOULFAIRY:		/* ódê∏ÇÃç∞ */
+		if(target && target->type != BL_PC) {		// PCà»äOÇÕégópé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+			return 0;
+		}
+		/* égÇ§ÉXÉLÉãà»äOÇÃç∞èÛë‘Ç©ÇîªíË */
+		if(tsc &&
+		   (cnd->id == SP_SOULGOLEM && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+		   (cnd->id == SP_SOULSHADOW && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+		   (cnd->id == SP_SOULFALCON && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+		   (cnd->id == SP_SOULFAIRY && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1)) ||
+		   tsc->data[SC_ALCHEMIST].timer != -1 || tsc->data[SC_MONK].timer != -1 || tsc->data[SC_STAR].timer != -1 || tsc->data[SC_SAGE].timer != -1 ||
+		   tsc->data[SC_CRUSADER].timer != -1 || tsc->data[SC_SUPERNOVICE].timer != -1 || tsc->data[SC_KNIGHT].timer != -1 || tsc->data[SC_WIZARD].timer != -1 ||
+		   tsc->data[SC_PRIEST].timer != -1 || tsc->data[SC_BARDDANCER].timer != -1 || tsc->data[SC_ROGUE].timer != -1 || tsc->data[SC_ASSASIN].timer != -1 ||
+		   tsc->data[SC_BLACKSMITH].timer != -1 || tsc->data[SC_HUNTER].timer != -1 || tsc->data[SC_SOULLINKER].timer != -1 || tsc->data[SC_HIGH].timer != -1 ||
+		   tsc->data[SC_DEATHKINGHT].timer != -1 || tsc->data[SC_COLLECTOR].timer != -1 || tsc->data[SC_NINJA].timer != -1 || tsc->data[SC_GUNNER].timer != -1)
+		{
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+			return 0;
+		}
+		break;
+	case SP_SOULCURSE:		/* éÄóÏúﬂàÀ */
+		if(target && target->type != BL_MOB) {		// MOBà»äOÇÕégópé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+			return 0;
+		}
+		break;
+	case SP_SPA:				/* ÉGÉXÉp */
+	case SP_SWHOO:				/* ÉGÉXÉt */
+		if(target && target->type != BL_MOB && !battle_config.allow_es_magic_all) {		// MOBà»äOÇÕégópé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+			return 0;
+		}
+		break;
+	case SP_SOULDIVISION:		/* ç∞ÇÃï™óÙ */
+		if(target->type != BL_PC) {		// PCà»äOÇÕégópé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+			return 0;
+		}
+		break;
+	case SP_SOULREVOLVE:		/* ç∞ÇÃèzä¬ */
+		if(target->type != BL_PC) {		// PCà»äOÇÕégópé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+			return 0;
+		}
+		if(bl != target) {
+			struct map_session_data *tsd = (struct map_session_data *)target;
+			if(!sd || !tsd || sd->status.party_id == 0 || tsd->status.party_id == 0 || sd->status.party_id != tsd->status.party_id) {	// ìØÇ∂ÉpÅ[ÉeÉBÇ∂Ç·Ç»Ç¢Ç∆É_ÉÅ
+				clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+				return 0;
+			}
+		}
+		// ç∞èÛë‘Ç©ÇîªíË
+		if(!tsc ||
+		  (tsc->data[SC_ALCHEMIST].timer == -1 && tsc->data[SC_MONK].timer == -1 && tsc->data[SC_STAR].timer == -1 && tsc->data[SC_SAGE].timer == -1 &&
+		   tsc->data[SC_CRUSADER].timer == -1 && tsc->data[SC_SUPERNOVICE].timer == -1 && tsc->data[SC_KNIGHT].timer == -1 && tsc->data[SC_WIZARD].timer == -1 &&
+		   tsc->data[SC_PRIEST].timer == -1 && tsc->data[SC_BARDDANCER].timer == -1 && tsc->data[SC_ROGUE].timer == -1 && tsc->data[SC_ASSASIN].timer == -1 &&
+		   tsc->data[SC_BLACKSMITH].timer == -1 && tsc->data[SC_HUNTER].timer == -1 && tsc->data[SC_SOULLINKER].timer == -1 && tsc->data[SC_HIGH].timer == -1 &&
+		   tsc->data[SC_DEATHKINGHT].timer == -1 && tsc->data[SC_COLLECTOR].timer == -1 && tsc->data[SC_NINJA].timer == -1 && tsc->data[SC_GUNNER].timer == -1 &&
+		   tsc->data[SC_SOULGOLEM].timer == -1 && tsc->data[SC_SOULSHADOW].timer == -1 && tsc->data[SC_SOULFALCON].timer == -1 && tsc->data[SC_SOULFAIRY].timer == -1))
+		{
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+			return 0;
+		}
+		break;
+	case SP_SOULEXPLOSION:		/* ç∞ÇÃïˆâÛ */
+		if(status_get_hp(target) < 10) {	// ëŒè€ÇÃHPÇ™10ñ¢ñûÇÕé∏îs
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+			return 0;
+		}
+		// ç∞èÛë‘Ç©ÇîªíË
+		if(!tsc ||
+		  (tsc->data[SC_ALCHEMIST].timer == -1 && tsc->data[SC_MONK].timer == -1 && tsc->data[SC_STAR].timer == -1 && tsc->data[SC_SAGE].timer == -1 &&
+		   tsc->data[SC_CRUSADER].timer == -1 && tsc->data[SC_SUPERNOVICE].timer == -1 && tsc->data[SC_KNIGHT].timer == -1 && tsc->data[SC_WIZARD].timer == -1 &&
+		   tsc->data[SC_PRIEST].timer == -1 && tsc->data[SC_BARDDANCER].timer == -1 && tsc->data[SC_ROGUE].timer == -1 && tsc->data[SC_ASSASIN].timer == -1 &&
+		   tsc->data[SC_BLACKSMITH].timer == -1 && tsc->data[SC_HUNTER].timer == -1 && tsc->data[SC_SOULLINKER].timer == -1 && tsc->data[SC_HIGH].timer == -1 &&
+		   tsc->data[SC_DEATHKINGHT].timer == -1 && tsc->data[SC_COLLECTOR].timer == -1 && tsc->data[SC_NINJA].timer == -1 && tsc->data[SC_GUNNER].timer == -1 &&
+		   tsc->data[SC_SOULGOLEM].timer == -1 && tsc->data[SC_SOULSHADOW].timer == -1 && tsc->data[SC_SOULFALCON].timer == -1 && tsc->data[SC_SOULFAIRY].timer == -1))
+		{
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+			return 0;
+		}
+		break;
+	case SP_KAUTE:		/* ÉJÉEÉg */
+		{
+			struct map_session_data *tsd = (struct map_session_data *)target;
+			if(!tsd) {
+				// ëŒè€Ç™êlà»äOé∏îs
+				clif_skill_fail(sd,cnd->id,SKILLFAIL_TOTARGET,0,0);
+				return 0;
+			}
+			// HPÇ™30%à»è„ïKóv
+			if(sd->status.hp < sd->status.max_hp * 30 / 100) {
+				clif_skill_fail(sd,cnd->id,SKILLFAIL_HP,0,0);
+				return 0;
+			}
+			if(battle_config.soul_linker_battle_mode_ka == 0) {
+				// É\ÉEÉãÉäÉìÉJÅ[ånêEã∆Ç©â∆ë∞à»äOÅAç∞ÇÃòAåãèÛë‘å¯â íÜÇ≈Ç»ÇØÇÍÇŒégópé∏îs
+				if( pc_get_base_job(tsd->s_class.job,2) != PC_JOB_SL &&
+					tsd->status.char_id != sd->status.char_id &&
+				    tsd->status.char_id != sd->status.partner_id &&
+				    tsd->status.char_id != sd->status.baby_id &&
+					tsd->sc.data[SC_SOULUNITY].timer == -1) {
+					clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
+					return 0;
+				}
+			}
+		}
+		break;
 	}
 
 	if(!(type&2)) {
@@ -16749,6 +17071,10 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		if(coin > 0 && sd->coin.num < coin) {
 			clif_skill_fail(sd,cnd->id,SKILLFAIL_COIN,coin,0);
+			return 0;
+		}
+		if(soulenergy > 0 && sd->soulenergy.num < soulenergy) {
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_SOULENERGY,soulenergy,0);
 			return 0;
 		}
 		if(arrow > 0) {						// ñÓïsë´
@@ -16992,6 +17318,8 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			pc_delspiritball(sd,spiritball,0);
 		if(coin > 0)					// ÉRÉCÉìè¡îÔ
 			pc_delcoin(sd,coin,0);
+		if(soulenergy > 0)				// É\ÉEÉãÉGÉiÉWÅ[è¡îÔ
+			pc_delsoulenergy(sd,soulenergy,0);
 	}
 	return 1;
 }
@@ -17732,6 +18060,10 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 			/* ÉeÉåÉLÉlÉVÉXÉCÉìÉeÉìÉX */
 			if(sc->data[SC_TELEKINESIS_INTENSE].timer != -1 && skill_get_pl(skillid) == ELE_GHOST)
 				reduce_time += 10;
+
+			/* ódê∏ÇÃç∞ */
+			if(sc->data[SC_SOULFAIRY].timer != -1)
+				reduce_time += sc->data[SC_SOULFAIRY].val3;
 		}
 
 		// ÉJÅ[ÉhÇ…ÇÊÇÈârè•éûä‘ëùå∏å¯â 
@@ -17866,8 +18198,8 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 						reduce_time -= sd->skill_delay_rate;
 				}
 
-				/* ÉuÉâÉMÇÃéç */
 				if(sc) {
+					/* ÉuÉâÉMÇÃéç */
 					if(sc->data[SC_POEMBRAGI].timer != -1) {
 						int rate = (sc->data[SC_POEMBRAGI].val1 < 10)? 3: 5;
 						reduce_time += (sc->data[SC_POEMBRAGI].val1 * rate + sc->data[SC_POEMBRAGI].val2 * 2
@@ -17876,6 +18208,9 @@ int skill_delayfix(struct block_list *bl, int skillid, int skilllv)
 						int rate = (sc->data[SC_POEMBRAGI_].val1 < 10)? 3: 5;
 						reduce_time += (sc->data[SC_POEMBRAGI_].val1 * rate + sc->data[SC_POEMBRAGI_].val2 * 2
 							+ (sc->data[SC_POEMBRAGI_].val3 & 0xffff));
+					}
+					if(sc->data[SC_SOULDIVISION].timer != -1) {		// ç∞ÇÃï™óÙ
+						reduce_time -= sc->data[SC_SOULDIVISION].val2;
 					}
 				}
 				break;
@@ -18795,7 +19130,7 @@ static int skill_tarot_card_of_fate(struct block_list *src,struct block_list *ta
 			break;
 		case 5:
 			/* óˆêl(The Lovers) - Ç«Ç±Ç©Ç…ÉeÉåÉ|Å[ÉgÇ≥ÇπÇÈ- HPÇ™2000âÒïúÇ≥ÇÍÇÈ */
-			unit_heal(target, 2000, 0);
+			unit_heal(target, 2000, 0, 0, 0);
 			// ÉeÉåÉ|Å[Égïsâ¬ÇÃèÍçáÇÕâÒïúÇÃÇ›
 			if(tsd) {
 				if(!map[tsd->bl.m].flag.noteleport)
@@ -20405,7 +20740,7 @@ void skill_produce_mix(struct map_session_data *sd, int nameid, int slot1, int s
 			case PRD_CDP:
 				clif_produceeffect(sd,3,nameid);	/* ébíËÇ≈êªñÚÉGÉtÉFÉNÉg */
 				clif_misceffect(&sd->bl,6);		/* ëºêlÇ…Ç‡é∏îsÇí ím */
-				pc_heal(sd, -(sd->status.max_hp>>2), 0);
+				pc_heal(sd, -(sd->status.max_hp>>2), 0, 0, 0);
 				break;
 			case PRD_CONVERTER:
 			case PRD_SYN_POTION:
@@ -21302,12 +21637,7 @@ static int skill_maelstrom( struct block_list *bl, va_list ap )
 			/* égópé“Ç™PCÇÃèÍçá */
 			if((*flag) && src->type == BL_PC && (src_sd = (struct map_session_data *)src)) {
 				int sp = unit->group->skill_lv * skilllv + (src_sd->status.job_level / 5);
-				if(src_sd->status.sp + sp > src_sd->status.max_sp)
-					sp = src_sd->status.max_sp - src_sd->status.sp;
-				if(sp) {
-					clif_heal(src_sd->fd,SP_SP,sp);
-					pc_heal(src_sd,0,sp);
-				}
+				pc_heal(src_sd,0,sp,0,1);
 				(*flag)=0;
 			}
 		}
@@ -21664,7 +21994,7 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 {
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc = NULL, *tsc = NULL;
-	int i, skill = 0, rate = 0;
+	int i, skill = 0, rate = 0, t_rate = 0;
 
 	nullpo_retr(0, src);
 
@@ -21704,6 +22034,8 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 		// äCÇÃç∞(êVëNÇ»ÉGÉr)
 		if(skill_id == SU_FRESHSHRIMP && pc_checkskill(sd,SU_SPIRITOFSEA) > 0)
 			skill += 30;
+		// ÉgÉâÉìÉZÉìÉfÉìÉX
+		skill += pc_checkskill(sd,NV_TRANSCENDENCE) * 3;
 	}
 
 #ifndef PRE_RENEWAL
@@ -21720,13 +22052,20 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 		heal += battle_calc_base_magic_damage(src);
 #endif
 
-	if(tsd && tsd->skill_subhealup.count > 0 && heal > 0 && skill_id > 0) {
-		for(i = 0; i < tsd->skill_subhealup.count; i++) {
-			if(skill_id == tsd->skill_subhealup.id[i]) {
-				heal += heal * tsd->skill_subhealup.rate[i] / 100;
-				break;
+	if(tsd) {
+		// ÉuÉåÉCÉNÉXÉãÅ[
+		t_rate += pc_checkskill(tsd,NV_BREAKTHROUGH) * 2;
+
+		if(tsd->skill_subhealup.count > 0 && heal > 0 && skill_id > 0) {
+			for(i = 0; i < tsd->skill_subhealup.count; i++) {
+				if(skill_id == tsd->skill_subhealup.id[i]) {
+					t_rate += tsd->skill_subhealup.rate[i];
+					break;
+				}
 			}
 		}
+		if(t_rate > 0)
+			heal += heal * t_rate / 100;
 	}
 
 	if(tsc && tsc->data[SC_CRITICALWOUND].timer != -1)

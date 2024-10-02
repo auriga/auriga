@@ -667,6 +667,124 @@ int pc_delelementball(struct map_session_data *sd, int count, int type)
 }
 
 /*==========================================
+ * ソウルエナジータイマー
+ *------------------------------------------
+ */
+static int pc_soulenergy_timer(int tid,unsigned int tick,int id,void *data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	int i;
+
+	if(sd == NULL)
+		return 1;
+
+	if(sd->soulenergy.timer[0] != tid) {
+		if(battle_config.error_log)
+			printf("soulenergy_timer %d != %d\n",sd->soulenergy.timer[0],tid);
+		return 0;
+	}
+	sd->soulenergy.timer[0] = -1;
+	for(i=1; i<sd->soulenergy.num; i++) {
+		sd->soulenergy.timer[i-1] = sd->soulenergy.timer[i];
+		sd->soulenergy.timer[i] = -1;
+	}
+	sd->soulenergy.num--;
+	if(sd->soulenergy.num < 0)
+		sd->soulenergy.num = 0;
+	clif_soulenergy(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * ソウルエナジー追加
+ *------------------------------------------
+ */
+int pc_addsoulenergy(struct map_session_data *sd,int interval,int num)
+{
+	int max = 5;
+	int before;
+
+	nullpo_retr(0, sd);
+
+	/* ソウルエナジー研究 */
+	max += pc_checkskill(sd,SP_SOULENERGY) * 3;
+
+	if(max > MAX_SOULENERGY)
+		max = MAX_SOULENERGY;
+
+	if(sd->soulenergy.num < 0)
+		sd->soulenergy.num = 0;
+
+	before = sd->soulenergy.num;
+
+	if(max > 0) {
+		int i, j;
+		unsigned int tick = gettick();
+		for(i = num; i > 0; i--) {
+			if(sd->soulenergy.num >= max) {
+				if(sd->soulenergy.timer[0] != -1) {
+					delete_timer(sd->soulenergy.timer[0],pc_soulenergy_timer);
+					sd->soulenergy.timer[0] = -1;
+				}
+				for(j = 1; j < max; j++) {
+					sd->soulenergy.timer[j-1] = sd->soulenergy.timer[j];
+					sd->soulenergy.timer[j] = -1;
+				}
+			} else {
+				sd->soulenergy.num++;
+			}
+			sd->soulenergy.timer[sd->soulenergy.num-1] = add_timer(tick+interval+sd->soulenergy.num,pc_soulenergy_timer,sd->bl.id,NULL);
+		}
+	}
+	if(sd->soulenergy.num != before)
+		status_calc_pc(sd,0);
+
+	clif_soulenergy(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * ソウルエナジー削除
+ *------------------------------------------
+ */
+int pc_delsoulenergy(struct map_session_data *sd,int count,int type)
+{
+	int i;
+
+	nullpo_retr(0, sd);
+
+	if(sd->soulenergy.num <= 0) {
+		sd->soulenergy.num = 0;
+		return 0;
+	}
+
+	if(count > sd->soulenergy.num)
+		count = sd->soulenergy.num;
+	sd->soulenergy.num -= count;
+	if(count > MAX_SOULENERGY)
+		count = MAX_SOULENERGY;
+
+	for(i=0; i<count; i++) {
+		if(sd->soulenergy.timer[i] != -1) {
+			delete_timer(sd->soulenergy.timer[i],pc_soulenergy_timer);
+			sd->soulenergy.timer[i] = -1;
+		}
+	}
+	for(i=count; i<MAX_SOULENERGY; i++) {
+		sd->soulenergy.timer[i-count] = sd->soulenergy.timer[i];
+		sd->soulenergy.timer[i] = -1;
+	}
+	status_calc_pc(sd,0);
+
+	if(!type)
+		clif_soulenergy(sd);
+
+	return 0;
+}
+
+/*==========================================
  * Expペナルティ
  *   type&1 : 経験値更新
  *   type&2 : レディムプティオ
@@ -4963,7 +5081,7 @@ static int pc_checkbaselevelup(struct map_session_data *sd)
 		status_calc_pc_stop_begin(&sd->bl);
 
 		status_calc_pc(sd,0);
-		pc_heal(sd,sd->status.max_hp,sd->status.max_sp);
+		pc_heal(sd,sd->status.max_hp,sd->status.max_sp,0,0);
 
 		// スパノビはキリエ、イムポ、マニピ、グロ、サフラがかかる
 		if(sd->s_class.job == PC_JOB_SNV || sd->s_class.job == PC_JOB_ESNV) {
@@ -6030,35 +6148,37 @@ static int pc_check_skillup(struct map_session_data *sd,int skill_num)
 	if(st == NULL)
 		return 0;
 
-	// 現在使用済みスキルポイントを取得
-	skill_point = pc_calc_skillpoint(sd);
-	
-	// 必要な使用済みスキルポイントを取得
-	need_point = pc_calc_needskillpoint(sd, st->class_level);
+	if(battle_config.skillup_limit) {
+		// 現在使用済みスキルポイントを取得
+		skill_point = pc_calc_skillpoint(sd);
+		
+		// 必要な使用済みスキルポイントを取得
+		need_point = pc_calc_needskillpoint(sd, st->class_level);
 
-	// 必要な使用済みスキルポイントに達していなければNG
-	if(skill_point  < need_point) {
-		// スキルランクごとにメッセージ表示
-		switch( st->class_level ){
-		case 1:
-			snprintf(output, sizeof(output), msg_txt(213), need_point - skill_point);		// 基本スキル %d個を上げてください。
-			clif_disp_onlyself(sd->fd, output);
-			break;
-		case 2:
-			clif_msgstringtable3(sd, 1566, need_point - skill_point);	// 1次職スキル %d個をもっと上げてください。
-			break;
-		case 3:
-			clif_msgstringtable3(sd, 1567, need_point - skill_point);	// 1次または2次職スキル %d個を上げてください。
-			break;
-		case 4:
-			clif_msgstringtable3(sd, 3690, need_point - skill_point);	// 1次、2次、3次職スキル %d個を上げてください。
-			break;
-		default:
-			snprintf(output, sizeof(output), msg_txt(214), need_point - skill_point);		// 下位職スキル %d個を上げてください。
-			clif_disp_onlyself(sd->fd, output);
-			break;
+		// 必要な使用済みスキルポイントに達していなければNG
+		if(skill_point  < need_point) {
+			// スキルランクごとにメッセージ表示
+			switch( st->class_level ){
+			case 1:
+				snprintf(output, sizeof(output), msg_txt(213), need_point - skill_point);		// 基本スキル %d個を上げてください。
+				clif_disp_onlyself(sd->fd, output);
+				break;
+			case 2:
+				clif_msgstringtable3(sd, 1566, need_point - skill_point);	// 1次職スキル %d個をもっと上げてください。
+				break;
+			case 3:
+				clif_msgstringtable3(sd, 1567, need_point - skill_point);	// 1次または2次職スキル %d個を上げてください。
+				break;
+			case 4:
+				clif_msgstringtable3(sd, 3690, need_point - skill_point);	// 1次、2次、3次職スキル %d個を上げてください。
+				break;
+			default:
+				snprintf(output, sizeof(output), msg_txt(214), need_point - skill_point);		// 下位職スキル %d個を上げてください。
+				clif_disp_onlyself(sd->fd, output);
+				break;
+			}
+			return 0;
 		}
-		return 0;
 	}
 
 	return 1;
@@ -6974,7 +7094,7 @@ int pc_setparam(struct map_session_data *sd,int type,int val)
 		clif_updatestatus(sd, SP_TSTATUSPOINT);
 		clif_updatestatus(sd, SP_BASEEXP);
 		status_calc_pc(sd, 0);
-		pc_heal(sd, sd->status.max_hp, sd->status.max_sp);
+		pc_heal(sd, sd->status.max_hp, sd->status.max_sp,0,0);
 		break;
 	case SP_JOBLEVEL:
 		if(val > 0) {
@@ -7189,10 +7309,30 @@ static int pc_checkoversp(struct map_session_data *sd)
 }
 
 /*==========================================
- * HP/SP回復
+ *
  *------------------------------------------
  */
-int pc_heal(struct map_session_data *sd,int hp,int sp)
+static int pc_checkoverap(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+
+	if(sd->status.ap == sd->status.max_ap)
+		return 1;
+	if(sd->status.ap > sd->status.max_ap) {
+		sd->status.ap = sd->status.max_ap;
+		clif_updatestatus(sd,SP_AP);
+		return 2;
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * HP/SP回復
+ * flag 0:エフェクト無し 1:エフェクト有り
+ *------------------------------------------
+ */
+int pc_heal(struct map_session_data *sd,int hp,int sp,int ap,int flag)
 {
 	nullpo_retr(0, sd);
 
@@ -7201,6 +7341,9 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 
 	if(pc_checkoversp(sd) && sp > 0)
 		sp = 0;
+
+	if(pc_checkoverap(sd) && ap > 0)
+		ap = 0;
 
 	// バーサーク中は回復させない
 	if(sd->sc.data[SC_BERSERK].timer != -1) {
@@ -7212,6 +7355,8 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 		hp = sd->status.max_hp - sd->status.hp;
 	if(sp+sd->status.sp > sd->status.max_sp)
 		sp = sd->status.max_sp - sd->status.sp;
+	if(ap+sd->status.ap > sd->status.max_ap)
+		ap = sd->status.max_ap - sd->status.ap;
 	sd->status.hp += hp;
 	if(sd->status.hp <= 0) {
 		sd->status.hp = 0;
@@ -7221,15 +7366,28 @@ int pc_heal(struct map_session_data *sd,int hp,int sp)
 	sd->status.sp += sp;
 	if(sd->status.sp <= 0)
 		sd->status.sp = 0;
+	sd->status.ap += ap;
+	if(sd->status.ap <= 0)
+		sd->status.ap = 0;
 	if(hp) {
+		if(hp > 0 && flag&1)
+			clif_heal(sd->fd,SP_HP,hp);
 		clif_updatestatus(sd,SP_HP);
 		if(sd->status.party_id > 0 && party_search(sd->status.party_id))
 			clif_party_hp(sd);
 	}
-	if(sp)
+	if(sp) {
+		if(sp > 0 && flag&1)
+			clif_heal(sd->fd,SP_SP,sp);
 		clif_updatestatus(sd,SP_SP);
+	}
+	if(ap) {
+		if(ap > 0 && flag&1)
+			clif_heal(sd->fd,SP_AP,ap);
+		clif_updatestatus(sd,SP_AP);
+	}
 
-	return hp + sp;
+	return hp + sp + ap;
 }
 
 /*==========================================
@@ -8643,15 +8801,15 @@ void pc_unequipitem(struct map_session_data *sd, int n, int type)
 
 	if(hp) {
 		if(sd->status.hp > hp) {
-			pc_heal(sd,-hp,0);
+			pc_heal(sd,-hp,0,0,0);
 		} else {
 			if(!battle_config.death_by_unrig_penalty) {
 				// 一旦HPが0になり、すぐに1に回復する
 				sd->status.hp = 0;
 				clif_updatestatus(sd,SP_HP);
-				pc_heal(sd,1,0);
+				pc_heal(sd,1,0,0,0);
 			} else {
-				pc_heal(sd,-sd->status.hp,0);
+				pc_heal(sd,-sd->status.hp,0,0,0);
 			}
 		}
 	}
@@ -9944,7 +10102,7 @@ static int pc_bleeding(struct map_session_data *sd)
 
 	if(hp) {
 		if(sd->status.hp > hp) {
-			pc_heal(sd,-hp,0);
+			pc_heal(sd,-hp,0,0,0);
 		} else {
 			sd->status.hp = 0;
 			clif_updatestatus(sd,SP_HP);
@@ -9952,7 +10110,7 @@ static int pc_bleeding(struct map_session_data *sd)
 	}
 	if(sp) {
 		if(sd->status.sp > sp) {
-			pc_heal(sd,0,-sp);
+			pc_heal(sd,0,-sp,0,0);
 		} else {
 			sd->status.sp = 0;
 			clif_updatestatus(sd,SP_SP);

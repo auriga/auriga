@@ -1273,11 +1273,7 @@ int atcommand_heal(const int fd, struct map_session_data* sd, AtCommandType comm
 			sp = -sd->status.sp;
 	}
 
-	if (hp > 0)
-		clif_heal(fd, SP_HP, (hp > 0x7fff) ? 0x7fff : hp);
-	if (sp > 0)
-		clif_heal(fd, SP_SP, (sp > 0x7fff) ? 0x7fff : sp);
-	pc_heal(sd, hp, sp);
+	pc_heal(sd, hp, sp, 0, 1);
 	clif_displaymessage(fd, msg_txt(17));
 
 	return 0;
@@ -1594,7 +1590,7 @@ int atcommand_baselevelup(const int fd, struct map_session_data* sd, AtCommandTy
 		clif_updatestatus(sd, SP_STATUSPOINT);
 		clif_updatestatus(sd, SP_TSTATUSPOINT);
 		status_calc_pc(sd, 0);
-		pc_heal(sd, sd->status.max_hp, sd->status.max_sp);
+		pc_heal(sd, sd->status.max_hp, sd->status.max_sp, 0, 0);
 		clif_misceffect(&sd->bl, 0);
 		clif_displaymessage(fd, msg_txt(21));
 	} else if (level < 0) {
@@ -3136,7 +3132,7 @@ int atcommand_character_baselevel(const int fd, struct map_session_data* sd, AtC
 				clif_updatestatus(pl_sd, SP_STATUSPOINT);
 				clif_updatestatus(pl_sd, SP_TSTATUSPOINT);
 				status_calc_pc(pl_sd, 0);
-				pc_heal(pl_sd, pl_sd->status.max_hp, pl_sd->status.max_sp);
+				pc_heal(pl_sd, pl_sd->status.max_hp, pl_sd->status.max_sp, 0, 0);
 				clif_misceffect(&pl_sd->bl, 0);
 				clif_displaymessage(fd, msg_txt(65));
 			} else if (level < 0) {

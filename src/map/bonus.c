@@ -200,7 +200,7 @@ static int bonus_use_autospell(struct map_session_data *sd,struct block_list *bl
 		}
 	}
 	if(!f)
-		pc_heal(sd,0,-sp);
+		pc_heal(sd,0,-sp,0,0);
 
 	/* スキル使用で発動するオートスペル,アクティブアイテム */
 	bonus_autospellskill_start(&sd->bl,target,skillid,tick,0);

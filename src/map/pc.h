@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "map.h"
 
-#define MAX_SKILL_TREE 100
+#define MAX_SKILL_TREE 120
 
 enum {
 	LOOK_BASE = 0,
@@ -154,7 +154,7 @@ int pc_equippeditem(struct map_session_data *sd,int id);
 void pc_useitem(struct map_session_data*, int n);
 
 int pc_damage(struct block_list *,struct map_session_data*,int);
-int pc_heal(struct map_session_data *,int,int);
+int pc_heal(struct map_session_data *,int,int,int,int);
 int pc_itemheal(struct map_session_data *sd,int hp,int sp);
 int pc_percentheal(struct map_session_data *sd,int,int);
 int pc_jobchange(struct map_session_data *,int, int);
@@ -268,6 +268,8 @@ int pc_addcoin(struct map_session_data *sd,int,int);
 int pc_delcoin(struct map_session_data *sd,int,int);
 int pc_addelementball(struct map_session_data *sd, int interval, int max, short ele);
 int pc_delelementball(struct map_session_data *sd, int count, int type);
+int pc_addsoulenergy(struct map_session_data *sd,int interval,int num);
+int pc_delsoulenergy(struct map_session_data *sd,int count,int type);
 
 int pc_upgrade_item(struct map_session_data *sd, int nameid, int idx);
 

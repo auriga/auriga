@@ -120,6 +120,26 @@ enum {
 	SKILLFAIL_VENDING				= 89,	// 既に露店を設置中です。
 	SKILLFAIL_AMOUNT_BULLET			= 90,	// スキル発動時、%d個の弾丸が必要です。
 	SKILLFAIL_AMOUNT_ARROW			= 91,	// スキル発動時、%d個の矢が必要です。
+	// このスキルはパーティー状態で使用可能です。
+	// このスキルはパーティーリーダーだけが使用可能です。
+	// パートナーが存在しないか、パートナーのSPが不足したり、スキル使用不可の状態です。
+	// 武器を装備していません。
+	SKILLFAIL_SOULENERGY			= 96,	// ソウルエナジーが必要です。
+	// ウェポンブロッキング発動後制限時間内に使用可能です。
+	// %d個を超える設置はできません。
+	// リーディングスペルブックに保存された魔法がありません。
+	// APが足りません。
+	// サーヴァントウェポン%d個が必要です。
+	// このスキルは自身が設置した天地万星の範囲内で使用可能です。
+	// このスキルは魂の蓄積状態で使用可能です。
+	// 護符が必要です。
+	// ショットガンかガトリングガンを装備して下さい。
+	// ハンドガンかガトリングガンを装備して下さい。
+	// ライフルかグレネードガンを装備して下さい。
+	// ハンドガンかガトリングガンを装備して下さい。
+	// ショットガンかグレネードガンを装備して下さい。
+	// 盾を装備して下さい。
+	// 移動できない場所の為、スキルを使用できません。
 };
 
 void clif_sethost(const char*);
@@ -389,6 +409,7 @@ void clif_send_partyconfig(struct map_session_data *sd);
 void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
 void clif_mapproperty(struct map_session_data *sd);
 void clif_send_personalinfo(struct map_session_data *sd);
+void clif_soulenergy(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);
