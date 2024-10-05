@@ -2725,7 +2725,7 @@ OnTimer120000:
 	end;
 }
 
-in_rogue.gat,357,174,2	script	Žh‹q#rogue	705,1,1,{
+in_rogue.gat,357,174,2	script(HIDDEN)	Žh‹q#rogue	705,1,1,{
 	end;
 OnTouch:
 	switch(SKILL_CLOSECONFINE) {
@@ -2783,9 +2783,6 @@ OnTouch:
 	default:
 		end;
 	}
-OnInit:
-	hideonnpc;
-	end;
 }
 
 

@@ -3471,7 +3471,7 @@ moc_fild16.gat,201,295,5	script	アサシンギルド関係者	884,{
 	close;
 }
 
-que_job01.gat,10,16,5	script	マルザナ#poison	885,{
+que_job01.gat,10,16,5	script(HIDDEN)	マルザナ#poison	885,{
 	if(PRT_2QUE != 24)
 		end;
 	mes "[マルザナ]";
@@ -3613,9 +3613,6 @@ que_job01.gat,10,16,5	script	マルザナ#poison	885,{
 	mes "さぁ、すみやかに帰りたまえ。";
 	set PRT_2QUE,25;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 morocc.gat,45,103,0	script	#prtcurse	139,2,2,{
@@ -7000,7 +6997,7 @@ OnInit:
 	end;
 }
 
-prt_castle.gat,272,372,1	script	王子#eisen1	983,{
+prt_castle.gat,272,372,1	script(HIDDEN)	王子#eisen1	983,{
 	mes "[アルム]";
 	mes "エリヒ、お前もバカな奴だ。";
 	mes "お前は一生かけても王にはなれん！";
@@ -7114,12 +7111,9 @@ prt_castle.gat,272,372,1	script	王子#eisen1	983,{
 	}
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,336,202,7	script	王子#eisen2	983,{
+prt_castle.gat,336,202,7	script(HIDDEN)	王子#eisen2	983,{
 	mes "[ユルゲン]";
 	mes "今なんと言いました!?";
 	mes "もう一度言ってみなさい！";
@@ -7220,12 +7214,9 @@ prt_castle.gat,336,202,7	script	王子#eisen2	983,{
 	}
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,286,201,7	script	王子#eisen3	983,{
+prt_castle.gat,286,201,7	script(HIDDEN)	王子#eisen3	983,{
 	mes "[アルム]";
 	mes "調子はどうだ？";
 	mes "お前の頭には軍のことしか";
@@ -7323,12 +7314,9 @@ prt_castle.gat,286,201,7	script	王子#eisen3	983,{
 	}
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,388,205,6	script	王子#eisen4	983,{
+prt_castle.gat,388,205,6	script(HIDDEN)	王子#eisen4	983,{
 	mes "[アルム]";
 	mes "ギャンブルが好きなくせに";
 	mes "一国の王を語るだと？";
@@ -7433,12 +7421,9 @@ prt_castle.gat,388,205,6	script	王子#eisen4	983,{
 	}
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,364,372,1	script	王子#eisen5	983,{
+prt_castle.gat,364,372,1	script(HIDDEN)	王子#eisen5	983,{
 	mes "[アルム]";
 	mes "ピーター。";
 	mes "どうして意味のない仕事をする？";
@@ -7523,12 +7508,9 @@ prt_castle.gat,364,372,1	script	王子#eisen5	983,{
 	}
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,368,310,1	script	王子#eisen6	983,{
+prt_castle.gat,368,310,1	script(HIDDEN)	王子#eisen6	983,{
 	mes "[エルンスト]";
 	mes "……に、兄さん？";
 	mes "今、何と言いました？";
@@ -7630,9 +7612,6 @@ prt_castle.gat,368,310,1	script	王子#eisen6	983,{
 	set PRT_3QUE_SUB,13;
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 prt_castle.gat,163,319,0	script	#twonoble	139,3,3,{
@@ -7727,7 +7706,7 @@ prt_castle.gat,163,319,0	script	#twonoble	139,3,3,{
 	end;
 }
 
-prt_castle.gat,156,325,4	script	中年の貴族#1valter	86,{
+prt_castle.gat,156,325,4	script(HIDDEN)	中年の貴族#1valter	86,{
 	mes "[中年の貴族]";
 	mes "無礼者！";
 	mes "私が誰かわかっているのか！";
@@ -7735,12 +7714,9 @@ prt_castle.gat,156,325,4	script	中年の貴族#1valter	86,{
 	next;
 	mes "‐どうやら身分の高い方のようだ‐";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_castle.gat,157,323,3	script	中年の貴族#2rihart	880,{
+prt_castle.gat,157,323,3	script(HIDDEN)	中年の貴族#2rihart	880,{
 	mes "[中年の貴族]";
 	mes "無礼な！";
 	mes "キミは誰かね！";
@@ -7748,9 +7724,6 @@ prt_castle.gat,157,323,3	script	中年の貴族#2rihart	880,{
 	next;
 	mes "‐身分の高い方を怒らせてしまった‐";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 prt_castle.gat,318,276,0	script	#eisen		45,1,1,{

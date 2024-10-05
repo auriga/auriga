@@ -622,14 +622,11 @@ OnTimer30000:
 	end;
 }
 
-tha_t02.gat,227,163,0	script	thawarp1	45,1,1{
+tha_t02.gat,227,163,0	script(HIDDEN)	thawarp1	45,1,1{
 	if(THA_1QUE)
 		warp "tha_t03.gat",219,159;
 	else
 		warp "tha_t02.gat",227,158;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -695,11 +692,8 @@ OnTimer10000:
 	end;
 }
 
-hu_fild05.gat,196,210,0	script	abysswarp	45,1,1{
+hu_fild05.gat,196,210,0	script(HIDDEN)	abysswarp	45,1,1{
 	warp "abyss_01.gat",260,268;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 

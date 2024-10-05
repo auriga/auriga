@@ -2297,12 +2297,7 @@ ra_in01.gat,50,387,4	script	具合が悪そうなバード	51,{
 	}
 }
 
-ra_in01.gat,49,376,0	script	ゼス#ve	707,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+ra_in01.gat,49,376,0	script(HIDDEN)	ゼス#ve	707,{}
 
 ra_in01.gat,58,389,0	script	ボロボロの収監者	929,{
 	if(VE_2QUE > 11) {
@@ -2953,19 +2948,9 @@ ein_in01.gat,176,285,0	script	密会	139,1,1,{
 	end;
 }
 
-ein_in01.gat,181,284,0	script	レッケンベルの人#ve2	109,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+ein_in01.gat,181,284,0	script(HIDDEN)	レッケンベルの人#ve2	109,{}
 
-ein_in01.gat,181,285,0	script	アルナベルツの人#ve2	920,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+ein_in01.gat,181,285,0	script(HIDDEN)	アルナベルツの人#ve2	920,{}
 
 morocc.gat,297,154,0	script	やつれたバード	51,{
 	switch(VE_2QUE) {
@@ -3136,26 +3121,9 @@ morocc.gat,297,154,0	script	やつれたバード	51,{
 	}
 }
 
-morocc.gat,294,152,0	script	????#ve1	899,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
-
-morocc.gat,293,155,6	script	????#ve2	899,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
-
-morocc.gat,298,150,1	script	????#ve3	899,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+morocc.gat,294,152,0	script(HIDDEN)	????#ve1	899,{}
+morocc.gat,293,155,6	script(HIDDEN)	????#ve2	899,{}
+morocc.gat,298,150,1	script(HIDDEN)	????#ve3	899,{}
 
 prontera.gat,109,161,6	script	青年	83,{
 	if(VE_2QUE < 20) {
@@ -5756,10 +5724,7 @@ OnTouch:
 	end;
 }
 
-ra_temin.gat,42,124,3	script	ラヘル警備兵#ve1-2	934,{
-	end;
-OnInit:
-	hideonnpc;
+ra_temin.gat,42,124,3	script(HIDDEN)	ラヘル警備兵#ve1-2	934,{
 	end;
 OnStart:
 	sleep 10000;
@@ -5834,7 +5799,7 @@ OnTouch:
 	end;
 }
 
-ra_temin.gat,113,140,1	script	ラヘル警備兵#ve2-2	934,{
+ra_temin.gat,113,140,1	script(HIDDEN)	ラヘル警備兵#ve2-2	934,{
 	mes "[警備兵クローズ]";
 	mes "あぁ！　花瓶が割れている！";
 	mes "また子供の信徒が";
@@ -5843,9 +5808,6 @@ ra_temin.gat,113,140,1	script	ラヘル警備兵#ve2-2	934,{
 	mes "いけないと思ってるんだ……";
 	mes "……しょうがないなぁ……";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 OnStart:
 	initnpctimer;
 	end;
@@ -6835,18 +6797,8 @@ thor_camp.gat,194,220,0	script	vol_olonel#1	139,5,5,{
 }
 thor_camp.gat,162,182,0	duplicate(vol_olonel#1)	vol_olonel#2	139,7,7
 
-thor_camp.gat,187,228,5	script	ビト大佐#ve1	946,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
-thor_camp.gat,155,175,7	script	ビト大佐#ve2	946,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+thor_camp.gat,187,228,5	script(HIDDEN)	ビト大佐#ve1	946,{}
+thor_camp.gat,155,175,7	script(HIDDEN)	ビト大佐#ve2	946,{}
 
 thor_camp.gat,159,74,3	script	ビト大佐	946,{
 	switch(VE_4QUE) {
@@ -7314,12 +7266,7 @@ thor_camp.gat,148,310,0	script	#buki_vol	139,5,5,{
 	close;
 }
 
-thor_camp.gat,248,104,5	script	アイトラ#ve	939,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+thor_camp.gat,248,104,5	script(HIDDEN)	アイトラ#ve	939,{}
 
 thor_camp.gat,124,314,1	script	軍人	939,{
 	mes "[トール火山基地の軍人]";

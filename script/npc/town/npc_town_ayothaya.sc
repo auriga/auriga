@@ -2420,7 +2420,7 @@ OnTouch:
 	end;
 }
 
-ayo_dun02.gat,91,264,4	script	痩せた青年#ayo	841,{
+ayo_dun02.gat,91,264,4	script(HIDDEN)	痩せた青年#ayo	841,{
 	if(AYO_3QUE != 13) {
 		mes "[痩せた青年]";
 		mes "何だ君は？";
@@ -2650,9 +2650,6 @@ ayo_dun02.gat,91,264,4	script	痩せた青年#ayo	841,{
 	mes "ここも引っ越すことにするよ。";
 	mes "じゃあね、ありがとうー！";
 	close2;
-	hideonnpc;
-	end;
-OnInit:
 	hideonnpc;
 	end;
 }

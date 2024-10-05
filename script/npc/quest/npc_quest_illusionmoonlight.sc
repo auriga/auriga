@@ -343,19 +343,9 @@ pay_arche.gat,48,137,3	script	青年学士#ilp03	92,{
 	}
 }
 
-pay_arche.gat,46,135,5	script	ムヒョン#ilp04	644,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+pay_arche.gat,46,135,5	script(CLOAKED)	ムヒョン#ilp04	644,{}
 
-pay_arche.gat,44,133,7	script	兵士シンジュウヒ#ilp05	708,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+pay_arche.gat,44,133,7	script(CLOAKED)	兵士シンジュウヒ#ilp05	708,{}
 
 payon.gat,103,322,4	script	フェイヨン兵士 #ilp06	708,{
 	if(IL_MOON_QUE == 2) {
@@ -838,33 +828,10 @@ payon_in03.gat,30,96,5	script	ジャギョム#ilp09	901,{
 	}
 }
 
-payon_in03.gat,31,96,5	script	#狐魂ilp10	1180,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-payon_in03.gat,35,96,3	script	#狐魂ilp11	1180,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-payon_in03.gat,31,93,7	script	#狐魂ilp12	1180,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-payon_in03.gat,35,93,1	script	#狐魂ilp13	1180,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+payon_in03.gat,31,96,5	script(CLOAKED)	#狐魂ilp10	1180,{}
+payon_in03.gat,35,96,3	script(CLOAKED)	#狐魂ilp11	1180,{}
+payon_in03.gat,31,93,7	script(CLOAKED)	#狐魂ilp12	1180,{}
+payon_in03.gat,35,93,1	script(CLOAKED)	#狐魂ilp13	1180,{}
 
 pay_dun03.gat,140,46,3	script	揺らぐ空間#ilp14	10043,{
 	if(IL_MOON_QUE < 5) {
@@ -930,19 +897,9 @@ pay_dun03.gat,140,46,3	script	揺らぐ空間#ilp14	10043,{
 	}
 }
 
-pay_dun03.gat,138,43,7	script	青年学士#ilp15	92,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+pay_dun03.gat,138,43,7	script(CLOAKED)	青年学士#ilp15	92,{}
 
-pay_dun03.gat,142,45,3	script	兵士シンジュウヒ#ilp16	708,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+pay_dun03.gat,142,45,3	script(CLOAKED)	兵士シンジュウヒ#ilp16	708,{}
 
 pay_d03_i.gat,149,45,4	script	学士ホドニ#ilp18	92,{
 	if(IL_MOON_QUE == 6) {

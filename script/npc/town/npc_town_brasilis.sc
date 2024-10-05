@@ -3339,8 +3339,7 @@ bra_in01.gat,151,180,0	script	鏡	844,{
 	end;
 }
 
-bra_in01.gat,136,180,5	script	オバケ#bra	1867,{
-OnInit:
+bra_in01.gat,136,180,5	script(HIDDEN)	オバケ#bra	1867,{
 	hideonnpc;
 	end;
 }
@@ -3402,8 +3401,7 @@ bra_in01.gat,206,188,0	script	格子蓋	844,{
 	end;
 }
 
-bra_in01.gat,206,190,3	script	オバケ#bra_end	1867,{
-OnInit:
+bra_in01.gat,206,190,3	script(HIDDEN)	オバケ#bra_end	1867,{
 	hideonnpc;
 	end;
 }

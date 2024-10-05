@@ -9390,10 +9390,7 @@ que_sign01.gat,196,39,4	script	セリン#serin	90,{
 	}
 }
 
-que_sign01.gat,196,39,4	script	セリン#dummy	90,{
-	end;
-OnInit:
-	hideonnpc;
+que_sign01.gat,196,39,4	script(HIDDEN)	セリン#dummy	90,{
 	end;
 OnTimer3000:
 	misceffect 13;
@@ -9412,12 +9409,7 @@ OnTimer13000:
 	end;
 }
 
-que_sign01.gat,196,44,4	script	ダークロード#serin	737,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+que_sign01.gat,196,44,4	script(HIDDEN)	ダークロード#serin	737,{}
 
 geffen.gat,119,48,0	script	噴水台	111,{
 	if(countitem(7025) < 1) {
@@ -9444,7 +9436,7 @@ geffen.gat,119,48,0	script	噴水台	111,{
 	close;
 }
 
-geffen.gat,119,55,0	script	GefeniaWarp	45,1,1,{
+geffen.gat,119,55,0	script(HIDDEN)	GefeniaWarp	45,1,1,{
 OnTouch:
 	//switch(rand(4)) { //旧仕様
 	switch('rand) {
@@ -9453,9 +9445,6 @@ OnTouch:
 		case 2: warp "gefenia03.gat",130,206; break;
 		case 3: warp "gefenia04.gat",133,88; break;
 	}
-	end;
-OnInit:
-	hideonnpc;
 	end;
 OnStart:
 	set 'rand,rand(4);

@@ -1811,11 +1811,7 @@ prt_castle.gat,45,28,3	script	猫を持っている子#Cooking	877,{
 	end;
 }
 
-prt_castle.gat,44,30,4	script	ヒュッケ#Cooking	725,{
-OnInit:
-	hideonnpc;
-	end;
-}
+prt_castle.gat,44,30,4	script(HIDDEN)	ヒュッケ#Cooking	725,{}
 
 payon.gat,209,127,3	script	見習い料理人	88,{
 	switch(QUE_COOKING) {

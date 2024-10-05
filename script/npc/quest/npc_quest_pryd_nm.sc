@@ -524,12 +524,9 @@ moc_prydn1.gat,214,157,0	script	#prydn_Secret_4-1	139,10,0,{
 	end;
 }
 
-moc_prydn1.gat,220,129,0	script	#prydn_Secret_4-2	139,2,1,{
+moc_prydn1.gat,220,129,0	script(HIDDEN)	#prydn_Secret_4-2	139,2,1,{
 	soundeffect "se_door02.wav", 0, 0;
 	warp "moc_prydn1.gat",9,68;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -600,12 +597,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,193,5,0	script	#prydn_Secret_B-2	139,1,1,{
+moc_prydn2.gat,193,5,0	script(HIDDEN)	#prydn_Secret_B-2	139,1,1,{
 	soundeffect "complete.wav", 0, 0;
 	warp "moc_prydn2.gat",101,187;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -623,12 +617,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,128,58,0	script	#prydn_Secret_C-2	139,1,1,{
+moc_prydn2.gat,128,58,0	script(HIDDEN)	#prydn_Secret_C-2	139,1,1,{
 	soundeffect "se_door02.wav", 0, 0;
 	warp "moc_prydn2.gat",135,59;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -646,12 +637,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,133,49,0	script	#prydn_Secret_C-4	139,1,1,{
+moc_prydn2.gat,133,49,0	script(HIDDEN)	#prydn_Secret_C-4	139,1,1,{
 	soundeffect "se_door02.wav", 0, 0;
 	warp "moc_prydn2.gat",126,51;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -683,12 +671,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,44,95,0	script	#prydn_Secret_D-2	139,1,1,{
+moc_prydn2.gat,44,95,0	script(HIDDEN)	#prydn_Secret_D-2	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",49,95;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -720,12 +705,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,45,95,0	script	#prydn_Secret_D-4	139,1,1,{
+moc_prydn2.gat,45,95,0	script(HIDDEN)	#prydn_Secret_D-4	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",40,95;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -757,12 +739,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,44,178,0	script	#prydn_Secret_E-2	139,1,1,{
+moc_prydn2.gat,44,178,0	script(HIDDEN)	#prydn_Secret_E-2	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",51,178;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -794,12 +773,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,47,187,0	script	#prydn_Secret_E-4	139,1,1,{
+moc_prydn2.gat,47,187,0	script(HIDDEN)	#prydn_Secret_E-4	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",40,187;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -831,12 +807,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,156,187,0	script	#prydn_Secret_F-2	139,1,1,{
+moc_prydn2.gat,156,187,0	script(HIDDEN)	#prydn_Secret_F-2	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",163,187;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -868,12 +841,9 @@ OnTimer8000:
 	end;
 }
 
-moc_prydn2.gat,159,178,0	script	#prydn_Secret_F-4	139,1,1,{
+moc_prydn2.gat,159,178,0	script(HIDDEN)	#prydn_Secret_F-4	139,1,1,{
 	soundeffect "se_door01.wav", 0, 0;
 	warp "moc_prydn2.gat",152,178;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 

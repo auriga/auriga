@@ -1563,7 +1563,7 @@ OnTouch:
 	end;
 }
 
-prt_cas.gat,217,150,3	script	侍従ベル#ep16_01	967,{
+prt_cas.gat,217,150,3	script(CLOAKED)	侍従ベル#ep16_01	967,{
 	if(EP16_1QUE == 1) {
 		mes "[侍従ベル]";
 		mes strcharinfo(0)+ "様";
@@ -1596,9 +1596,6 @@ prt_cas.gat,217,150,3	script	侍従ベル#ep16_01	967,{
 		cloakonnpc "侍従ベル#ep16_01";
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_cas.gat,163,163,0	script	#ep16_evt_02_on	139,3,3,{
@@ -1610,7 +1607,7 @@ OnTouch:
 	end;
 }
 
-prt_cas.gat,155,165,4	script	侍従ベル#ep16_02	967,{
+prt_cas.gat,155,165,4	script(CLOAKED)	侍従ベル#ep16_02	967,{
 	if(EP16_1QUE == 1) {
 		mes "[侍従ベル]";
 		mes "貴賓用の客室は";
@@ -1627,9 +1624,6 @@ prt_cas.gat,155,165,4	script	侍従ベル#ep16_02	967,{
 		cloakonnpc "侍従ベル#ep16_02";
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_cas_q.gat,146,8,0	script	#ep16_evt_03_on	139,1,1,{
@@ -1640,7 +1634,7 @@ prt_cas_q.gat,146,8,0	script	#ep16_evt_03_on	139,1,1,{
 	end;
 }
 
-prt_cas_q.gat,135,10,4	script	侍従ベル#ep16_03	967,{
+prt_cas_q.gat,135,10,4	script(CLOAKED)	侍従ベル#ep16_03	967,{
 	if(EP16_1QUE == 1) {
 		mes "[侍従ベル]";
 		mes "詳しい内容につきましては";
@@ -1650,9 +1644,6 @@ prt_cas_q.gat,135,10,4	script	侍従ベル#ep16_03	967,{
 		close2;
 		cloakonnpc;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -2127,7 +2118,7 @@ prt_cas_q.gat,26,30,3	script	侍従ベル#ep16_main	967,{
 	end;
 }
 
-prt_cas_q.gat,28,28,3	script	マジシャン・ニルレム#ep16_wiz01	735,{
+prt_cas_q.gat,28,28,3	script(CLOAKED)	マジシャン・ニルレム#ep16_wiz01	735,{
 	if(EP16_1QUE == 17) {
 		mes "[ニルレム]";
 		mes "はぁい！";
@@ -2229,9 +2220,6 @@ prt_cas_q.gat,28,28,3	script	マジシャン・ニルレム#ep16_wiz01	735,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_cas.gat,197,164,0	script	#ep16_evt_7688	139,3,3,{
@@ -2294,19 +2282,9 @@ OnTouch:
 	end;
 }
 
-prt_cas.gat,197,155,6	script	怪しいお客#ep16_01	865,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,197,155,6	script(CLOAKED)	怪しいお客#ep16_01	865,{}
 
-prt_cas.gat,199,154,2	script	侍従#ep16_01	47,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,199,154,2	script(CLOAKED)	侍従#ep16_01	47,{}
 
 prt_cas.gat,106,240,3	script	スピーカ・ネリウス#ep16_02	10115,{
 	if(EP16_1QUE < 3) {
@@ -3210,26 +3188,11 @@ prt_cas.gat,108,240,3	script	クルックス#ep16_02	10118,{
 	}
 }
 
-prt_cas.gat,107,237,2	script	ニーヒル・ハイネン#ep16_02	10114,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,107,237,2	script(CLOAKED)	ニーヒル・ハイネン#ep16_02	10114,{}
 
-prt_cas.gat,103,235,7	script	ビオルレター・ハイネン#ep16_02	959,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,103,235,7	script(CLOAKED)	ビオルレター・ハイネン#ep16_02	959,{}
 
-prt_cas.gat,108,235,2	script	王宮侍従#ep16_02	80,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,108,235,2	script(CLOAKED)	王宮侍従#ep16_02	80,{}
 
 prt_cas.gat,197,164,0	script	#ep16_evt_7689	139,2,3,{
 OnTouch:
@@ -3335,12 +3298,7 @@ OnTouch:
 	}
 }
 
-prt_cas.gat,202,163,3	script	スキア・ネリウス#ep16_7689	10116,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,202,163,3	script(CLOAKED)	スキア・ネリウス#ep16_7689	10116,{}
 
 prt_cas.gat,31,116,0	script	#ep16_evt_7690	139,1,1,{
 OnTouch:
@@ -3356,7 +3314,7 @@ OnTouch:
 	end;
 }
 
-prt_cas.gat,31,116,3	script	ニーヒル・ハイネン#ep16_7690	10114,{
+prt_cas.gat,31,116,3	script(CLOAKED)	ニーヒル・ハイネン#ep16_7690	10114,{
 	if(EP16_1QUE == 6) {
 		cutin "ep16_nihi_miseria_heine01.bmp",2;
 		mes "[ニーヒル]";
@@ -3525,12 +3483,9 @@ prt_cas.gat,31,116,3	script	ニーヒル・ハイネン#ep16_7690	10114,{
 		cutin "ep16_skia_nerius01.bmp",255;
 		end;
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_cas.gat,29,117,5	script	スキア・ネリウス#ep16_7690	10116,{
+prt_cas.gat,29,117,5	script(CLOAKED)	スキア・ネリウス#ep16_7690	10116,{
 	if(EP16_1QUE == 6) {
 		cutin "ep16_nihi_miseria_heine01.bmp",2;
 		mes "[ニーヒル]";
@@ -3714,9 +3669,6 @@ prt_cas.gat,29,117,5	script	スキア・ネリウス#ep16_7690	10116,{
 		cutin "ep16_skia_nerius01.bmp",255;
 		end;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -4579,20 +4531,12 @@ OnTouch:
 	end;
 }
 
-prt_cas_q.gat,22,80,3	script	ニーヒル・ハイネン#ep16_01	10114,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,22,80,3	script(CLOAKED)	ニーヒル・ハイネン#ep16_01	10114,{}
 
-prt_cas_q.gat,9,90,3	script	ピーター・ハイネン#ep16_02	10117,{
+prt_cas_q.gat,9,90,3	script(CLOAKED)	ピーター・ハイネン#ep16_02	10117,{
 	mes "‐傷が痛むのか苦しそうだ。";
 	mes "　会話ができる状態ではない‐";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_cas_q.gat,142,38,0	script	#ep16_evt_7686	139,5,5,{
@@ -4775,19 +4719,9 @@ OnTouch:
 	end;
 }
 
-prt_cas_q.gat,141,39,5	script	スキア#ep16_7686	10116,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,141,39,5	script(CLOAKED)	スキア#ep16_7686	10116,{}
 
-prt_cas_q.gat,144,38,3	script	ニーヒル#ep16_7686	10114,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,144,38,3	script(CLOAKED)	ニーヒル#ep16_7686	10114,{}
 
 prt_cas_q.gat,19,136,0	script	#ep16_evt_neriusroom	139,12,12,{
 OnTouch:
@@ -5214,7 +5148,7 @@ prt_cas_q.gat,21,140,3	script	護衛騎士クルックス#ep16_room01	10118,{
 	end;
 }
 
-prt_cas_q.gat,18,136,5	script	スピーカ・ネリウス#ep16_room02	10115,{
+prt_cas_q.gat,18,136,5	script(CLOAKED)	スピーカ・ネリウス#ep16_room02	10115,{
 	if(EP16_1QUE == 15) {
 		mes "[スピーカ]";
 		mes "遅かったな……";
@@ -5423,12 +5357,9 @@ prt_cas_q.gat,18,136,5	script	スピーカ・ネリウス#ep16_room02	10115,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_cas_q.gat,23,133,2	script	ニーヒル・ハイネン#ep16_nroom01	10114,{
+prt_cas_q.gat,23,133,2	script(CLOAKED)	ニーヒル・ハイネン#ep16_nroom01	10114,{
 	if(EP16_1QUE == 16) {
 		cutin "ep16_nihi_miseria_heine01.bmp",2;
 		mes "[ニーヒル]";
@@ -5438,9 +5369,6 @@ prt_cas_q.gat,23,133,2	script	ニーヒル・ハイネン#ep16_nroom01	10114,{
 		cutin "ep16_nihi_miseria_heine01.bmp",255;
 		end;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -5878,12 +5806,7 @@ OnTouch:
 	end;
 }
 
-prt_cas_q.gat,23,187,3	script	怪しい人#ep16wal	86,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,23,187,3	script(CLOAKED)	怪しい人#ep16wal	86,{}
 
 prt_cas_q.gat,14,184,5	script	アイゼン・アノ#ep16wal	983,{
 	switch(EP16_3QUE) {
@@ -7685,12 +7608,7 @@ prt_cas_q.gat,82,23,0	script	カタリナ・ウィグナー#ep16wig	71,{
 	}
 }
 
-prt_cas_q.gat,80,23,5	script	ユルゲン・ウィグナー#ep16wig00	989,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,80,23,5	script(CLOAKED)	ユルゲン・ウィグナー#ep16wig00	989,{}
 
 prt_cas_q.gat,95,9,5	script	ユルゲン・ウィグナー#ep16wig	989,{
 	switch(EP16_4QUE) {
@@ -9361,7 +9279,7 @@ prt_cas_q.gat,95,9,5	script	ユルゲン・ウィグナー#ep16wig	989,{
 	end;
 }
 
-prt_cas_q.gat,96,7,1	script	カトリン・ウィグナー#ep16wig	10125,{
+prt_cas_q.gat,96,7,1	script(CLOAKED)	カトリン・ウィグナー#ep16wig	10125,{
 	switch(EP16_4QUE) {
 	case 0:
 		cutin "16kat_nor.bmp",2;
@@ -9541,9 +9459,6 @@ prt_cas_q.gat,96,7,1	script	カトリン・ウィグナー#ep16wig	10125,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_cas_q.gat,90,16,0	script	#ep16wig004	139,14,14,{
@@ -9586,7 +9501,7 @@ OnTouch:
 	end;
 }
 
-prt_cas_q.gat,94,7,7	script	アイザック・ウィグナー#ep16wig	10126,{
+prt_cas_q.gat,94,7,7	script(CLOAKED)	アイザック・ウィグナー#ep16wig	10126,{
 	switch(EP16_6QUE) {
 	case 2:
 		cutin "16isa.bmp",1;
@@ -9788,17 +9703,9 @@ prt_cas_q.gat,94,7,7	script	アイザック・ウィグナー#ep16wig	10126,{
 		cutin "16isa.bmp",255;
 		end;
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_cas_q.gat,93,10,4	script	メイド#ep16wig01	69,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas_q.gat,93,10,4	script(CLOAKED)	メイド#ep16wig01	69,{}
 
 prt_cas.gat,322,216,5	script	メイド#ep16wig02	69,{
 	switch(EP16_4QUE) {
@@ -11378,7 +11285,7 @@ prt_cas_q.gat,153,116,1	script	王宮警備兵#ep16wig02	105,{
 	}
 }
 
-prt_cas_q.gat,95,11,4	script	一途な女性#ep16wig01	68,{
+prt_cas_q.gat,95,11,4	script(HIDDEN)	一途な女性#ep16wig01	68,{
 	mes "[一途な女性]";
 	mes "ユルゲン様は私と";
 	mes "一緒になるのよ……!!";
@@ -11421,26 +11328,13 @@ OnTimer36000:
 OnTimer200000:
 	stopnpctimer;
 	end;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_cas_q.gat,94,12,4	script	王宮警備兵#ep16wig03	105,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+prt_cas_q.gat,94,12,4	script(HIDDEN)	王宮警備兵#ep16wig03	105,{}
 
-prt_cas_q.gat,95,12,4	script	王宮警備兵#ep16wig04	105,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+prt_cas_q.gat,95,12,4	script(HIDDEN)	王宮警備兵#ep16wig04	105,{}
 
-prt_cas_q.gat,98,23,1	script	田舎者の男性#ep16wig01	59,{
+prt_cas_q.gat,98,23,1	script(HIDDEN)	田舎者の男性#ep16wig01	59,{
 	mes "[田舎者の男性]";
 	mes "ユルゲン様と握手もできず……";
 	mes "あちっ！";
@@ -11491,26 +11385,13 @@ OnTimer43000:
 OnTimer200000:
 	stopnpctimer;
 	end;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-prt_cas_q.gat,98,20,7	script	王宮警備兵#ep16wig05	105,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+prt_cas_q.gat,98,20,7	script(HIDDEN)	王宮警備兵#ep16wig05	105,{}
 
-prt_cas_q.gat,96,22,7	script	王宮警備兵#ep16wig06	105,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+prt_cas_q.gat,96,22,7	script(HIDDEN)	王宮警備兵#ep16wig06	105,{}
 
-comodo.gat,36,210,5	script	ウィグナー家の使いの者#ep16wig	99,{
+comodo.gat,36,210,5	script(CLOAKED)	ウィグナー家の使いの者#ep16wig	99,{
 	mes "[ウィグナー家の使いの者]";
 	mes "ユルゲン様のいる場所に";
 	mes "戻られますか？";
@@ -11532,9 +11413,6 @@ comodo.gat,36,210,0	script	#wig_warp	139,10,10,{
 OnTouch:
 	if(EP16_4QUE >= 12)
 		cloakoffnpc "ウィグナー家の使いの者#ep16wig";
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -12271,7 +12149,7 @@ prt_cas_q.gat,86,180,7	script	カルベルン#ep16lug	962,{
 	}
 }
 
-prt_cas_q.gat,92,182,7	script	マイアー・レベンブルグ#ep16lug	10129,{
+prt_cas_q.gat,92,182,7	script(CLOAKED)	マイアー・レベンブルグ#ep16lug	10129,{
 	cutin "16mye_nor.bmp",1;
 	mes "[マイアー]";
 	mes "久しぶりの我が家は安らぎますね。";
@@ -12290,9 +12168,6 @@ prt_cas_q.gat,92,182,7	script	マイアー・レベンブルグ#ep16lug	10129,{
 	mes "言えた立場ではないのですが。";
 	close2;
 	cutin "16mye_nor.bmp",255;
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -14772,7 +14647,7 @@ prontera.gat,268,69,5	script	子ども#ep16lug03	703,{
 	close;
 }
 
-prontera.gat,270,72,3	script	平凡な男#ep16lug02	86,{
+prontera.gat,270,72,3	script(CLOAKED)	平凡な男#ep16lug02	86,{
 	if(EP16_6QUE > 12) {
 		mes "[マイアー]";
 		mes "わざわざ遠い所まで";
@@ -14799,9 +14674,6 @@ prontera.gat,270,72,3	script	平凡な男#ep16lug02	86,{
 		warp "prt_cas_q.gat",84,188;
 		end;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -16538,12 +16410,7 @@ prt_cas.gat,66,217,0	script	#ep16_1噂話7	139,3,3,{
 	end;
 }
 
-prt_cas.gat,66,220,3	script	謎の男#ep16_1	985,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,66,220,3	script(CLOAKED)	謎の男#ep16_1	985,{}
 
 prt_cas.gat,78,250,5	script	王室料理人#ep16_1	46,{
 	if(EP16_7QUE == 1) {
@@ -21748,12 +21615,7 @@ prt_cas.gat,27,16,4	script	モンスター研究家#ep16jp	866,{
 	}
 }
 
-prt_cas.gat,27,24,3	script	マジシャン・ニルレム#ep16_wiz02	735,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+prt_cas.gat,27,24,3	script(CLOAKED)	マジシャン・ニルレム#ep16_wiz02	735,{}
 
 prt_cas.gat,27,27,3	script	グラハム#ep16jp	86,{
 	if(EP16_1QUE < 1) {
@@ -22473,7 +22335,7 @@ mir_q.gat,101,90,3	script	ビジョウ#01	10143,{
 	}
 }
 
-mir_q.gat,105,80,3	script	マジシャン・ニルレム#01	735,{
+mir_q.gat,105,80,3	script(CLOAKED)	マジシャン・ニルレム#01	735,{
 	if(EP16_1QUE == 19) {
 		mes "[ニルレム]";
 		mes "これ以上ここに留まるのは危険です！";
@@ -22488,7 +22350,6 @@ mir_q.gat,105,80,3	script	マジシャン・ニルレム#01	735,{
 		warp "prt_lib_q.gat",88,83;
 		end;
 	}
-OnInit:
 	cloakonnpc;
 	end;
 }

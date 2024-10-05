@@ -4605,11 +4605,8 @@ yuno_fild09.gat,158,217,0	script	木板	111,{
 //============================================================
 // キエルの部屋NPC
 //------------------------------------------------------------
-kh_mansion.gat,27,27,0	script	キエルの部屋入口#kiel	45,1,1,{
+kh_mansion.gat,27,27,0	script(DISABLED)	キエルの部屋入口#kiel	45,1,1,{
 	warp "kh_kiehl01.gat",10,31;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -4711,11 +4708,8 @@ OnTimer30000:
 	disablenpc "kiehlwarp1";
 	end;
 }
-kh_kiehl01.gat,43,33,0	script	kiehlwarp1	45,1,1,{
+kh_kiehl01.gat,43,33,0	script(DISABLED)	kiehlwarp1	45,1,1,{
 	warp "kh_kiehl01.gat",55,34;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -4749,11 +4743,8 @@ OnTimer30000:
 	disablenpc "kiehlwarp2";
 	end;
 }
-kh_kiehl01.gat,174,39,0	script	kiehlwarp2	45,1,1,{
+kh_kiehl01.gat,174,39,0	script(DISABLED)	kiehlwarp2	45,1,1,{
 	warp "kh_kiehl01.gat",173,52;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -4781,11 +4772,8 @@ OnTimer30000:
 	disablenpc "kiehlwarp3";
 	end;
 }
-kh_kiehl01.gat,78,107,0	script	kiehlwarp3	45,1,1,{
+kh_kiehl01.gat,78,107,0	script(DISABLED)	kiehlwarp3	45,1,1,{
 	warp "kh_kiehl01.gat",68,107;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 kh_kiehl01.gat,15,177,0	script	機械人形	111,{}
@@ -4833,12 +4821,9 @@ OnTimer30000:
 	disablenpc "kiehlwarp4";
 	end;
 }
-kh_kiehl01.gat,41,178,0	script	kiehlwarp4	45,1,1,{
+kh_kiehl01.gat,41,178,0	script(DISABLED)	kiehlwarp4	45,1,1,{
 	//warp "kh_kiehl01.gat",47,171;	//スタック位置なので位置補正
 	warp "kh_kiehl01.gat",47,178;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -4921,7 +4906,7 @@ OnTimer30000:
 	disablenpc "kiehlwarp5";
 	end;
 }
-kh_kiehl01.gat,166,186,0	script	kiehlwarp5	45,1,1,{
+kh_kiehl01.gat,166,186,0	script(DISABLED)	kiehlwarp5	45,1,1,{
 	if(KH_QUE >= 48 && KH_QUE <= 53) {
 		enablenpc "kiehlwarp5";
 		initnpctimer "キエル#kiel1";
@@ -4938,9 +4923,6 @@ kh_kiehl01.gat,166,186,0	script	kiehlwarp5	45,1,1,{
 		}
 	}
 	warp "kh_kiehl02.gat",49,6;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -5490,22 +5472,14 @@ OnKilled:
 	end;
 }
 
-kh_kiehl02.gat,49,55,6	script	ミッチェル#kiel	727,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+kh_kiehl02.gat,49,55,6	script(HIDDEN)	ミッチェル#kiel	727,{}
 kh_kiehl02.gat,53,52,4	duplicate(ミッチェル#kiel)	要員#kiel1	880
 kh_kiehl02.gat,51,49,1	duplicate(ミッチェル#kiel)	要員#kiel2	880
 kh_kiehl02.gat,47,50,0	duplicate(ミッチェル#kiel)	要員#kiel3	880
 kh_kiehl02.gat,46,53,6	duplicate(ミッチェル#kiel)	要員#kiel4	880
 kh_kiehl02.gat,48,53,5	duplicate(ミッチェル#kiel)	キエル#kiel2	902
 
-kh_kiehl02.gat,49,56,0	script	kiehlwarp6	45,1,1,{
+kh_kiehl02.gat,49,56,0	script(DISABLED)	kiehlwarp6	45,1,1,{
 	warp "lighthalzen.gat",193,202;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }

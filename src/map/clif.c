@@ -2716,8 +2716,10 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	if(sd && option&OPTION_CLOAKING) {
 		int i;
 		for(i=0; i < MAX_CLOAKEDNPC; i++) {
-			if(sd->cloaked_npc[i] == nd->bl.id)
+			if(sd->cloaked_npc[i] == nd->bl.id) {
 				option &= ~OPTION_CLOAKING;
+				break;
+			}
 		}
 	}
 #if PACKETVER < 20071106
@@ -3013,8 +3015,10 @@ static int clif_npc007b(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	if(sd && option&OPTION_CLOAKING) {
 		int i;
 		for(i=0; i < MAX_CLOAKEDNPC; i++) {
-			if(sd->cloaked_npc[i] == nd->bl.id)
+			if(sd->cloaked_npc[i] == nd->bl.id) {
 				option &= ~OPTION_CLOAKING;
+				break;
+			}
 		}
 	}
 

@@ -168,11 +168,21 @@ AurigaNPCScript
 
 	＊スクリプト：NPCを作成します。
 		<gatname>,<x>,<y>,<direction><tab>script<tab><displayname><tab><npcid>,<xs>,<ys>,{ <script> ... }
+		<gatname>,<x>,<y>,<direction><tab>script2<tab><displayname><tab><npcid>,<xs>,<ys>,{ <script> ... }
+		<gatname>,<x>,<y>,<direction><tab>script(<state>)<tab><displayname><tab><npcid>,<xs>,<ys>,{ <script> ... }
+		<gatname>,<x>,<y>,<direction><tab>script2(<state>)<tab><displayname><tab><npcid>,<xs>,<ys>,{ <script> ... }
+
+		script		通常NPCを記述する際に指定します。
+		script2		専用モーションのある移動NPCの場合指定します。
 
 		gatname			配置するMAPファイル名を指定します。
 		x			配置する横座標を指定する。
 		y			配置する縦座標を指定する。
 		direction		向きを指定します。
+		state			初期配置の状態を指定します。
+						DISABLED	無効状態
+						HIDDEN		ハイディング状態
+						CLOAKED		クローキング状態
 		displayname		配置するNPCの表示名を指定します。npcidが-1の場合、イベント名となります。
 					同表示名別動作イベントを作る場合、表示名::識別子と記述することができます。
 		npcid			配置するNPCの表示スプライトIDを指定します。-1を指定するとmap内イベントになります。
@@ -2789,6 +2799,44 @@ AurigaNPCScript
 
 			<itemid>使用時のupgradeウインドウを開く。
 			upgrade完了後に<itemid>は1個消費されるためNonconsumeフラグを立ててください。
+
+		npcwalkto命令
+			npcwalkto <x>,<y>[,<name>];
+
+			x,y			数値
+			name		文字列、省略可
+
+			<name>で指定したNPCを<x>,<y>座標まで歩かせます。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		npcwalkwait命令
+			npcwalkwait [<ms>[,<name>]];
+
+			ms			数値
+			name		文字列、省略可
+
+			スクリプトの実行を歩行時間+<ms>の間停止します。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		setnpcspeed命令
+			setnpcspeed <speed>[,<name>];
+
+			speed		数値
+			name		文字列、省略可
+
+			NPCの移動速度を設定します。
+			初期値は200。
+			<name>を省略すると、命令を実行したNPCが対象になります。
+
+		npcclickable命令
+			npcclickable <flag>[,<name>];
+
+			flag		数値
+			name		文字列、省略可
+
+			NPCが移動中のクリック応答を許可するかどうか。
+			0で非許可、1で許可。初期値は0。
+			<name>を省略すると、命令を実行したNPCが対象になります。
 
 		setnpcgroup命令
 			setnpcgroup <group_id>[,<name>];

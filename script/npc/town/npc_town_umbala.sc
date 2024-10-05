@@ -1674,7 +1674,7 @@ um_in.gat,139,48,5	script	プレネタン	783,{
 	close;
 }
 
-um_in.gat,144,45,5	script	ウムポコリオタン	789,{
+um_in.gat,144,45,5	script(HIDDEN)	ウムポコリオタン	789,{
 	if(UM_1QUE >= 3) {
 		mes "[ウムポコリオタン]";
 		mes "うう……うちの家内は乱暴";
@@ -1695,9 +1695,6 @@ um_in.gat,144,45,5	script	ウムポコリオタン	789,{
 	next;
 	emotion 6,"プレネタン";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 um_in.gat,101,73,3	script	ウェナタン	783,{
@@ -1804,7 +1801,7 @@ umbala.gat,145,217,3	script	チャビバタン	783,{
 	close;
 }
 
-um_in.gat,141,46,0	script	夫婦喧嘩#um1	139,8,8,{
+um_in.gat,141,46,0	script(HIDDEN)	夫婦喧嘩#um1	139,8,8,{
 	if(UM_2QUE != 4)
 		end;
 	mes "- 家に入ろうとしたら -";
@@ -1825,12 +1822,9 @@ um_in.gat,141,46,0	script	夫婦喧嘩#um1	139,8,8,{
 	hideonnpc;
 	warp "umbala.gat",94,181;
 	end;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-umbala.gat,94,181,0	script	夫婦喧嘩#um2	139,1,1,{
+umbala.gat,94,181,0	script(HIDDEN)	夫婦喧嘩#um2	139,1,1,{
 	if(UM_2QUE != 5)
 		end;
 	mes "- 強引に外へ追い出された。-";
@@ -1849,7 +1843,4 @@ umbala.gat,94,181,0	script	夫婦喧嘩#um2	139,1,1,{
 	set UM_2QUE,6;
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }

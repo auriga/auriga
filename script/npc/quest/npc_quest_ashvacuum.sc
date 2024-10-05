@@ -8575,26 +8575,11 @@ mid_camp.gat,222,218,3	script	ヘンジヌ	931,{
 	}
 }
 
-mid_campin.gat,379,123,5	script	リョースン#Ash	748,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+mid_campin.gat,379,123,5	script(HIDDEN)	リョースン#Ash	748,{}
 
-mid_campin.gat,372,123,5	script	ヒュー#Ash	868,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+mid_campin.gat,372,123,5	script(HIDDEN)	ヒュー#Ash	868,{}
 
-mid_campin.gat,375,129,5	script	ヘンジヌ#Ash	931,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+mid_campin.gat,375,129,5	script(HIDDEN)	ヘンジヌ#Ash	931,{}
 
 mid_campin.gat,0,0,0	script	AshMeeting	-1,{
 OnStart:
@@ -10288,7 +10273,7 @@ mid_camp.gat,49,154,0	script	浄化装置#Ash	139,3,3,{
 	}
 }
 
-mid_camp.gat,45,148,7	script	植物学者#Ash	750,{
+mid_camp.gat,45,148,7	script(HIDDEN)	植物学者#Ash	750,{
 	switch(ASH_4QUE) {
 	case 8:
 		mes "[テリス＝ブラック]";
@@ -10379,9 +10364,6 @@ mid_camp.gat,45,148,7	script	植物学者#Ash	750,{
 		mes "じかに体験～♪";
 		close;
 	}
-OnInit:
-	hideonnpc;
-	end;
 }
 
 mid_camp.gat,52,148,1	script	土の山	844,{
@@ -12977,7 +12959,7 @@ que_job01.gat,11,4,0	script	#roombar1exit	45,1,1,{
 	end;
 }
 
-que_job01.gat,16,21,5	script	バルデス#moc1	55,{
+que_job01.gat,16,21,5	script(HIDDEN)	バルデス#moc1	55,{
 	if(getbaseclass(Class,2) == CLASS_AS) {
 		mes "[バルデス]";
 		mes "今はお前に依頼したい任務はない。";
@@ -12999,9 +12981,6 @@ que_job01.gat,16,21,5	script	バルデス#moc1	55,{
 	if(countitem(7417)) delitem 7417,countitem(7417);
 	if(countitem(7418)) delitem 7418,countitem(7418);
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 que_job01.gat,51,44,0	script	#roombar2	45,1,1,{
@@ -13271,7 +13250,7 @@ que_job01.gat,84,17,3	script	リーン	885,{
 	end;
 }
 
-que_job01.gat,144,54,3	script	リーン#moc2	885,{
+que_job01.gat,144,54,3	script(HIDDEN)	リーン#moc2	885,{
 	if((MaxWeight - Weight) < 3000 || checkitemblank() == 0) {
 		mes "- 所持しているアイテムが";
 		mes "多すぎる為、";
@@ -13549,12 +13528,9 @@ que_job01.gat,144,54,3	script	リーン#moc2	885,{
 	close2;
 	cutin "moc2_rin01",255;
 	end;
-OnInit:
-	hideonnpc;
-	end;
 }
 
-que_job01.gat,143,50,1	script	レイヤン#moc2	456,{
+que_job01.gat,143,50,1	script(HIDDEN)	レイヤン#moc2	456,{
 	mes "- 何かに怯えている -";
 	next;
 	cutin "moc2_rin02",2;
@@ -13563,9 +13539,6 @@ que_job01.gat,143,50,1	script	レイヤン#moc2	456,{
 	mes "どうしてこうなったのだろう……";
 	close2;
 	cutin "moc2_rin02",255;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -14122,12 +14095,7 @@ que_dan02.gat,115,53,3	script	男	456,{
 	end;
 }
 
-que_dan02.gat,115,54,5	script	キド#moc2	884,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+que_dan02.gat,115,54,5	script(HIDDEN)	キド#moc2	884,{}
 
 que_dan02.gat,108,17,3	script	凄惨な……#moc2	457,{
 	mes "- レイヤン・ムーアに裏切られ、";
@@ -17764,7 +17732,7 @@ OnTimer360000:
 	end;
 }
 
-mid_camp.gat,203,286,3	script	伝令兵#Ash2	997,{
+mid_camp.gat,203,286,3	script(HIDDEN)	伝令兵#Ash2	997,{
 	mes "[連合軍要員]";
 	mes "…………";
 	next;
@@ -17772,9 +17740,6 @@ mid_camp.gat,203,286,3	script	伝令兵#Ash2	997,{
 	mes "‐話しかけようとすると、";
 	mes "　男は何も言わず去って行った‐";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 mid_camp.gat,209,286,3	duplicate(伝令兵#Ash2)	伝令兵#Ash3	998

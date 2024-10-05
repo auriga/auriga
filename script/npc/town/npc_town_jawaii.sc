@@ -613,12 +613,7 @@ jawaii_in.gat,28,96,0	script	JawaiiWaitress	139,3,3,{
 	end;
 }
 
-jawaii_in.gat,28,96,0	script	JawaiiWaitress#dummy	724,{	//同一セル封鎖ためのダミー
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+jawaii_in.gat,28,96,0	script(HIDDEN)	JawaiiWaitress#dummy	724,{}	//同一セル封鎖ためのダミー
 
 jawaii_in.gat,25,94,0	script	従業員::JawaiiWaitress00	724,{
 	mes "[従業員トリト]";

@@ -2940,11 +2940,7 @@ nyd_dun01.gat,58,223,0	script	サファ族の石像#ygg	844,{
 
 nyd_dun_jp.gat,58,223,0	duplicate(サファ族の石像#ygg)	サファ族の石像#ygg2	844
 
-nyd_dun01.gat,55,223,5	script	スノーレン#ygg	454,{
-OnInit:
-	hideonnpc;
-	end;
-}
+nyd_dun01.gat,55,223,5	script(HIDDEN)	スノーレン#ygg	454,{}
 
 nyd_dun_jp.gat,58,223,0	duplicate(スノーレン#ygg)	スノーレン#ygg2	844
 
@@ -5700,16 +5696,13 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,206,114,5	script	怪しい男#ygg_dan02	456,3,3,{
+nyd_dun02.gat,206,114,5	script(HIDDEN)	怪しい男#ygg_dan02	456,3,3,{
 	end;
 OnTouch:
 	emotion 0,"";
 	emotion 23;
 	hideonnpc "怪しい男#ygg_dan02";
 	monster "nyd_dun02.gat",206,114,"ダンデリオンのメンバー",2026,1,"ygg_dandelion::OnKilled";
-	end;
-OnInit:
-	hideonnpc "怪しい男#ygg_dan02";
 	end;
 }
 
@@ -12097,10 +12090,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,149,269,0	script	nyd_warp_22_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_22_2";
-	end;
+nyd_dun02.gat,149,269,0	script(HIDDEN)	nyd_warp_22_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_22_2";
 	end;
@@ -12144,10 +12134,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,149,263,0	script	nyd_warp_24_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_24_2";
-	end;
+nyd_dun02.gat,149,263,0	script(HIDDEN)	nyd_warp_24_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_24_2";
 	end;
@@ -12365,10 +12352,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,155,263,0	script	nyd_warp_43_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_43_2";
-	end;
+nyd_dun02.gat,155,263,0	script(HIDDEN)	nyd_warp_43_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_43_2";
 	end;
@@ -12410,10 +12394,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,155,257,0	script	nyd_warp_45_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_45_2";
-	end;
+nyd_dun02.gat,155,257,0	script(HIDDEN)	nyd_warp_45_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_45_2";
 	end;
@@ -12560,10 +12541,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,161,264,0	script	nyd_warp_61_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_61_2";
-	end;
+nyd_dun02.gat,161,264,0	script(HIDDEN)	nyd_warp_61_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_61_2";
 	end;
@@ -12653,10 +12631,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,161,252,0	script	nyd_warp_65_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_65_2";
-	end;
+nyd_dun02.gat,161,252,0	script(HIDDEN)	nyd_warp_65_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_65_2";
 	end;
@@ -12848,10 +12823,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,167,258,0	script	nyd_warp_81_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_81_2";
-	end;
+nyd_dun02.gat,167,258,0	script(HIDDEN)	nyd_warp_81_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_81_2";
 	end;
@@ -12913,10 +12885,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,167,252,0	script	nyd_warp_83_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_83_2";
-	end;
+nyd_dun02.gat,167,252,0	script(HIDDEN)	nyd_warp_83_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_83_2";
 	end;
@@ -12976,10 +12945,7 @@ OnTouch:
 	end;
 }
 
-nyd_dun02.gat,167,246,0	script	nyd_warp_85_2	139,1,1,{
-OnInit:
-	hideonnpc "nyd_warp_85_2";
-	end;
+nyd_dun02.gat,167,246,0	script(HIDDEN)	nyd_warp_85_2	139,1,1,{
 OnStart:
 	hideoffnpc "nyd_warp_85_2";
 	end;

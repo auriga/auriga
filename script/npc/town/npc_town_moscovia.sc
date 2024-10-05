@@ -4817,12 +4817,7 @@ mosk_in.gat,205,268,0	script	石窯	111,{
 	}
 }
 
-mosk_in.gat,202,269,5	script	ミハイル#mosk	962,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+mosk_in.gat,202,269,5	script(HIDDEN)	ミハイル#mosk	962,{}
 
 mosk_in.gat,135,191,5	script	旅館の女将さん	961,{
 	mes "[旅館の女将さん]";
@@ -7788,15 +7783,12 @@ mosk_dun02.gat,53,220,0	script	#ババヤガの家	45,1,1,{
 	}
 }
 
-mosk_dun02.gat,53,215,3	script	兵士1#mosk	966,{
+mosk_dun02.gat,53,215,3	script(HIDDEN)	兵士1#mosk	966,{
 	mes "[兵士]";
 	mes "我々はチャール様の直属軍だ。";
 	mes "ここに緊急配備されている。";
 	mes "くれぐれも我々の邪魔をするな！";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 mosk_dun02.gat,50,217,3	duplicate(兵士1#mosk)	兵士2#mosk	966
 mosk_dun02.gat,56,217,5	duplicate(兵士1#mosk)	兵士3#mosk	966

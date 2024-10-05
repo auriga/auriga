@@ -1557,7 +1557,7 @@ OnKilled2:
 	end;
 }
 
-5@tower.gat,106,109,0	script	水晶#Tower	111,{
+5@tower.gat,106,109,0	script(HIDDEN)	水晶#Tower	111,{
 	mes "-強い光を放つ水晶から";
 	mes "　奇妙な感覚を感じる。";
 	mes "　まるでこちらを歓迎しているかの";
@@ -1576,9 +1576,6 @@ OnKilled2:
 	mes "この闇夜の覇王の所までな……^000000";
 	close2;
 	warp getmdmapname("6@tower.gat"),32,12;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -1685,7 +1682,7 @@ OnKilled5:
 	end;
 }
 
-6@tower.gat,169,127,2	script	彷徨う魂#Tower	796,{
+6@tower.gat,169,127,2	script(HIDDEN)	彷徨う魂#Tower	796,{
 	if((MaxWeight - Weight) < 1000) {
 		mes "-所持アイテムの種類数が多い為";
 		mes "　危険です。";
@@ -1747,9 +1744,6 @@ OnKilled5:
 	mes "お達者で、ありがとう。^000000";
 	close2;
 	warp "alberta.gat",223,36;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 OnTimer1000:
 	misceffect 71;

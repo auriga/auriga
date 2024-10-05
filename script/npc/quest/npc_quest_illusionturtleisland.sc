@@ -1045,12 +1045,7 @@ tur_d03_i.gat,132,194,3	script	光の群れ#illtur01	10042,{
 	end;
 }
 
-tur_d03_i.gat,136,187,5	script	考古学者イエルフェン#i1	740,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+tur_d03_i.gat,136,187,5	script(CLOAKED)	考古学者イエルフェン#i1	740,{}
 
 tur_d03_i.gat,80,180,1	script	気の早い男#illtur01	10239,{
 	switch(IL_TUR_QUE) {
@@ -1596,7 +1591,7 @@ tur_d04_i.gat,26,167,0	script	#illtur01	139,15,15,{
 		cloakoffnpc "考古学者イエルフェン#t2";
 	end;
 }
-tur_d04_i.gat,26,167,5	script	考古学者イエルフェン#t2	740,{
+tur_d04_i.gat,26,167,5	script(CLOAKED)	考古学者イエルフェン#t2	740,{
 	switch(IL_TUR_QUE) {
 	case 3:
 		emotion 0;
@@ -1813,24 +1808,12 @@ tur_d04_i.gat,26,167,5	script	考古学者イエルフェン#t2	740,{
 		close;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-tur_d04_i.gat,100,112,3	script	少女#illtur02	10238,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,101,110,3	script	考古学者イエルフェン#i2	740,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,96,112,5	script	怨霊#illtur01	792,{
+tur_d04_i.gat,100,112,3	script(CLOAKED)	少女#illtur02	10238,{}
+tur_d04_i.gat,101,110,3	script(CLOAKED)	考古学者イエルフェン#i2	740,{}
+
+tur_d04_i.gat,96,112,5	script(CLOAKED)	怨霊#illtur01	792,{
 	unittalk "私は…何をしていたんだろ…";
 	if(!sleep2(3000)) end;
 	cloakonnpc "怨霊#illtur01";
@@ -1843,46 +1826,13 @@ tur_d04_i.gat,96,112,5	script	怨霊#illtur01	792,{
 	if(!sleep2(1000)) end;
 	cloakoffnpc "元気のない女#illtur01";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-tur_d04_i.gat,94,108,7	script	怨霊#illtur02	796,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,91,111,5	script	怨霊#illtur03	792,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,97,104,7	script	怨霊#illtur04	792,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,107,109,3	script	怨霊#illtur05	792,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,104,112,3	script	怨霊#illtur06	796,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-tur_d04_i.gat,102,102,1	script	怨霊#illtur07	796,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+tur_d04_i.gat,94,108,7	script(CLOAKED)	怨霊#illtur02	796,{}
+tur_d04_i.gat,91,111,5	script(CLOAKED)	怨霊#illtur03	792,{}
+tur_d04_i.gat,97,104,7	script(CLOAKED)	怨霊#illtur04	792,{}
+tur_d04_i.gat,107,109,3	script(CLOAKED)	怨霊#illtur05	792,{}
+tur_d04_i.gat,104,112,3	script(CLOAKED)	怨霊#illtur06	796,{}
+tur_d04_i.gat,102,102,1	script(CLOAKED)	怨霊#illtur07	796,{}
 
 //============================================================
 // ダンジョンNPC
@@ -2026,12 +1976,7 @@ tur_d03_j.gat,139,186,3	script	ナリン#illtur01	10238,{
 	close;
 }
 
-tur_d03_j.gat,136,187,5	script	考古学者イエルフェン#i3	740,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+tur_d03_j.gat,136,187,5	script(CLOAKED)	考古学者イエルフェン#i3	740,{}
 
 tur_d03_j.gat,80,180,1	script	気の早い男#illtur02	10239,{
 	mes "[気の早い男]";

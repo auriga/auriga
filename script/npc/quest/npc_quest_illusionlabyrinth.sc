@@ -83,7 +83,7 @@ prt_mz01_q.gat,103,22,0	script	#ilmaze000	139,10,10,{
 	}
 }
 
-prt_mz01_q.gat,108,22,5	script	歪んだ裂け目#1	844,{
+prt_mz01_q.gat,108,22,5	script(CLOAKED)	歪んだ裂け目#1	844,{
 	switch(IL_MAZE_QUE) {
 	case 3:
 	case 5:
@@ -114,12 +114,9 @@ prt_mz01_q.gat,108,22,5	script	歪んだ裂け目#1	844,{
 	mes "　見慣れているようで";
 	mes "　馴染みの無い迷宮の姿が広がっている‐";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,99,24,5	script	イレーネ#1	10337,10,10,{
+prt_mz01_q.gat,99,24,5	script(CLOAKED)	イレーネ#1	10337,10,10,{
 	switch(IL_MAZE_QUE) {
 	case 1:
 		mes "[イレーネ]";
@@ -234,12 +231,9 @@ OnTouch:
 	if(IL_MAZE_QUE == 1)
 		unittalk "イレーネ : きゃあ！　すみません。わたくし幽霊じゃありません。モンスターでもないです!!",1;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,105,24,3	script	エスメラルダ#1	677,{
+prt_mz01_q.gat,105,24,3	script(CLOAKED)	エスメラルダ#1	677,{
 	switch(IL_MAZE_QUE) {
 	case 3:
 		mes "[エスメラルダ]";
@@ -383,12 +377,9 @@ prt_mz01_q.gat,105,24,3	script	エスメラルダ#1	677,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,111,20,1	script	セリシア#1	10316,{
+prt_mz01_q.gat,111,20,1	script(CLOAKED)	セリシア#1	10316,{
 	if(IL_MAZE_QUE == 7) {
 		mes "[セリシア]";
 		mes "私にできることはありますか？";
@@ -412,12 +403,9 @@ prt_mz01_q.gat,111,20,1	script	セリシア#1	10316,{
 	mes "^0000ffアンドレア^000000に";
 	mes "伝言を残しています。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,105,24,5	script	アンドレア#1	10310,{
+prt_mz01_q.gat,105,24,5	script(CLOAKED)	アンドレア#1	10310,{
 	if(IL_MAZE_QUE < 6)
 		end;
 	if(IL_MAZE_QUE == 7) {
@@ -519,12 +507,9 @@ prt_mz01_q.gat,105,24,5	script	アンドレア#1	10310,{
 	close2;
 	warp "prt_fild01.gat",141,365;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,105,20,7	script	アネス#1	10312,{
+prt_mz01_q.gat,105,20,7	script(CLOAKED)	アネス#1	10312,{
 	mes "[アネス]";
 	mes "あたしたちはみんな";
 	mes strcharinfo(0)+"様に";
@@ -535,12 +520,9 @@ prt_mz01_q.gat,105,20,7	script	アネス#1	10312,{
 		mes "伝言を残しています。";
 	}
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_q.gat,111,24,3	script	シルバノ#1	10314,{
+prt_mz01_q.gat,111,24,3	script(CLOAKED)	シルバノ#1	10314,{
 	mes "[シルバノ]";
 	mes "俺たちはみんな";
 	mes strcharinfo(0)+"様に";
@@ -551,9 +533,6 @@ prt_mz01_q.gat,111,24,3	script	シルバノ#1	10314,{
 		mes "詳しくは彼から聞いてください。";
 	}
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prontera.gat,212,320,0	script	#ilmaze002	139,10,10,{
@@ -565,7 +544,7 @@ prontera.gat,212,320,0	script	#ilmaze002	139,10,10,{
 	end;
 }
 
-prontera.gat,212,320,3	script	エスメラルダ#2	677,6,6,{
+prontera.gat,212,320,3	script(CLOAKED)	エスメラルダ#2	677,6,6,{
 	switch(IL_MAZE_QUE) {
 	case 2:
 		mes "[エスメラルダ]";
@@ -616,9 +595,6 @@ OnTouch:
 	if(IL_MAZE_QUE == 2)
 		unittalk "エスメラルダ : 光の導きを受ける、私たちプロンテラ司祭ギルドは、新しいギルド員を募集中です。",1;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_mz03_q.gat,107,104,0	script	#ilmazed01	139,15,15,{
@@ -631,7 +607,7 @@ prt_mz03_q.gat,107,104,0	script	#ilmazed01	139,15,15,{
 	end;
 }
 
-prt_mz03_q.gat,107,104,3	script	アンドレアの痕跡#D	10311,{
+prt_mz03_q.gat,107,104,3	script(CLOAKED)	アンドレアの痕跡#D	10311,{
 	if(checkquest(12484) == 0) {
 		mes "-他の痕跡を探しに向かいますか？-";
 		next;
@@ -673,9 +649,6 @@ prt_mz03_q.gat,107,104,3	script	アンドレアの痕跡#D	10311,{
 	close2;
 	warp "prt_mz03_q.gat",10,16;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_mz03_q.gat,10,18,0	script	#ilmazed02	139,15,15,{
@@ -688,7 +661,7 @@ prt_mz03_q.gat,10,18,0	script	#ilmazed02	139,15,15,{
 	end;
 }
 
-prt_mz03_q.gat,10,18,3	script	アネスの痕跡#D	10313,{
+prt_mz03_q.gat,10,18,3	script(CLOAKED)	アネスの痕跡#D	10313,{
 	if(checkquest(12485) == 0) {
 		mes "-他の痕跡を探しに向かいますか？-";
 		next;
@@ -730,9 +703,6 @@ prt_mz03_q.gat,10,18,3	script	アネスの痕跡#D	10313,{
 	close2;
 	warp "prt_mz03_q.gat",135,66;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_mz03_q.gat,135,68,0	script	#ilmazed03	139,15,15,{
@@ -745,7 +715,7 @@ prt_mz03_q.gat,135,68,0	script	#ilmazed03	139,15,15,{
 	end;
 }
 
-prt_mz03_q.gat,135,68,3	script	シルバノの痕跡#D	10315,{
+prt_mz03_q.gat,135,68,3	script(CLOAKED)	シルバノの痕跡#D	10315,{
 	if(checkquest(12486) == 0) {
 		mes "-他の痕跡を探しに向かいますか？-";
 		next;
@@ -787,9 +757,6 @@ prt_mz03_q.gat,135,68,3	script	シルバノの痕跡#D	10315,{
 	close2;
 	warp "prt_mz03_q.gat",183,24;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_mz03_q.gat,183,26,0	script	#ilmazed04	139,15,15,{
@@ -802,7 +769,7 @@ prt_mz03_q.gat,183,26,0	script	#ilmazed04	139,15,15,{
 	end;
 }
 
-prt_mz03_q.gat,183,26,3	script	セリシアの痕跡#D	10317,{
+prt_mz03_q.gat,183,26,3	script(CLOAKED)	セリシアの痕跡#D	10317,{
 	if(checkquest(12487) == 0) {
 		mes "-他の痕跡を探しに向かいますか？-";
 		next;
@@ -844,9 +811,6 @@ prt_mz03_q.gat,183,26,3	script	セリシアの痕跡#D	10317,{
 	close2;
 	warp "prt_mz03_q.gat",107,102;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_fild01.gat,137,365,0	script	#ilmaze005	139,10,10,{
@@ -868,7 +832,7 @@ prt_fild01.gat,137,365,0	script	#ilmaze005	139,10,10,{
 	end;
 }
 
-prt_fild01.gat,141,367,3	script	エスメラルダ#5	677,5,5,{
+prt_fild01.gat,141,367,3	script(CLOAKED)	エスメラルダ#5	677,5,5,{
 	if(IL_MAZE_QUE == 8) {
 		mes "[エスメラルダ]";
 		mes "いつもありがとうございます。";
@@ -960,9 +924,6 @@ OnTouch:
 	if(IL_MAZE_QUE == 7)
 		unittalk "エスメラルダ : あの子たちを完全に復活させるのはいつになることやら……。",1;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 prt_mz01_i.gat,103,22,0	script	#ilmaze001	139,10,10,{
@@ -978,7 +939,7 @@ prt_mz01_i.gat,103,22,0	script	#ilmaze001	139,10,10,{
 	end;
 }
 
-prt_mz01_i.gat,108,22,5	script	歪んだ裂け目#2	844,{
+prt_mz01_i.gat,108,22,5	script(CLOAKED)	歪んだ裂け目#2	844,{
 	mes "‐歪んだ裂け目の向こうに、";
 	mes "　見慣れているようで";
 	mes "　馴染みの無い迷宮の姿が広がっている。";
@@ -995,12 +956,9 @@ prt_mz01_i.gat,108,22,5	script	歪んだ裂け目#2	844,{
 	close2;
 	warp "prt_mz03_i.gat",102,21;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_i.gat,111,20,1	script	セリシア#2	10316,{
+prt_mz01_i.gat,111,20,1	script(CLOAKED)	セリシア#2	10316,{
 	mes "[セリシア]";
 	mes "私たちはみんな ";
 	mes strcharinfo(0)+"様に";
@@ -1017,12 +975,9 @@ prt_mz01_i.gat,111,20,1	script	セリシア#2	10316,{
 	close2;
 	warp "prt_fild01.gat",136,365;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_i.gat,105,24,5	script	アンドレア#2	10310,{
+prt_mz01_i.gat,105,24,5	script(CLOAKED)	アンドレア#2	10310,{
 	if(checkquest(12490)) {
 		if(checkquest(12490)&0x2 == 0) {
 			mes "[アンドレア]";
@@ -1081,12 +1036,9 @@ prt_mz01_i.gat,105,24,5	script	アンドレア#2	10310,{
 	mes "いつもありがとうございます。";
 	mes "今日もよろしくお願いいたします。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_i.gat,105,20,7	script	アネス#2	10312,{
+prt_mz01_i.gat,105,20,7	script(CLOAKED)	アネス#2	10312,{
 	mes "[アネス]";
 	mes strcharinfo(0)+"様、";
 	mes "歪んだ裂け目の中で、";
@@ -1100,12 +1052,9 @@ prt_mz01_i.gat,105,20,7	script	アネス#2	10312,{
 	mes "負の感情が漏れ出し、";
 	mes "凝縮されて誕生した邪念の塊です。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-prt_mz01_i.gat,111,24,3	script	シルバノ#2	10314,{
+prt_mz01_i.gat,111,24,3	script(CLOAKED)	シルバノ#2	10314,{
 	if(checkquest(12490)) {
 		if(checkquest(12490)&0x2) {
 			mes "[シルバノ]";
@@ -1165,9 +1114,6 @@ prt_mz01_i.gat,111,24,3	script	シルバノ#2	10314,{
 	mes "すべての依頼を完了してから";
 	mes "また来てください。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 // Quest Floor No.01 -------------------------------------------------------------

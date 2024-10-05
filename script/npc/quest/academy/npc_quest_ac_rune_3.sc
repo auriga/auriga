@@ -1340,12 +1340,9 @@ OnEvent:
 	disablenpc "ライラ#AC2";
 	enablenpc "ライラ#AC";
 }
-hu_in01.gat,305,27,4	script	ライラ#AC2	740,{
-OnInit:
-	disablenpc;
-}
-gef_fild07.gat,179,242,4	script	#AC_POMPOM	1083,{
-}
+hu_in01.gat,305,27,4	script(DISABLED)	ライラ#AC2	740,{}
+gef_fild07.gat,179,242,4	script	#AC_POMPOM	1083,{}
+
 gef_fild07.gat,179,241,4	script	ポムポム草#AC	111,{
 	if(AC_QUEST_LV_3!=0 || AC_QUEST_ST_3!=3) goto L_OTHER;
 	mes "[" + strcharinfo(0) + "]";

@@ -421,7 +421,7 @@ OnTimer22000:
 	end;
 }
 
-jupe_area1.gat,83,221,0	script	juperoswarp1#jupe_area1	139,2,2{
+jupe_area1.gat,83,221,0	script(HIDDEN)	juperoswarp1#jupe_area1	139,2,2{
 	set '@n,substr(strnpcinfo(1),11,1);
 	switch('@n) {
 	case 1: warp "jupe_area1.gat",47,259; break;
@@ -432,31 +432,22 @@ jupe_area1.gat,83,221,0	script	juperoswarp1#jupe_area1	139,2,2{
 	if(getvariableofnpc('flag,"jupe_area1") == ('@n-1)*3)
 		donpcevent "jupe_area1::OnSummon"+('@n*2-1)+"";
 	end;
-OnInit:
-	hideonnpc;
-	end;
 }
 jupe_area1.gat,21,225,0	duplicate(juperoswarp1#jupe_area1)	juperoswarp2#jupe_area1	139,2,2
 jupe_area1.gat,33,137,0	duplicate(juperoswarp1#jupe_area1)	juperoswarp3#jupe_area1	139,2,2
 jupe_area1.gat,57,53,0	duplicate(juperoswarp1#jupe_area1)	juperoswarp4#jupe_area1	139,2,2
-jupe_area1.gat,117,157,0	script	juperoswarp5#jupe_area1	139,2,2,{
+jupe_area1.gat,117,157,0	script(HIDDEN)	juperoswarp5#jupe_area1	139,2,2,{
 	warp "jupe_gate.gat",28,29;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
 //============================================================
 // エレベーター
 //------------------------------------------------------------
-jupe_ele_r.gat,51,98,0	script	スイッチ進行中#jupe_ele	844,{
+jupe_ele_r.gat,51,98,0	script(HIDDEN)	スイッチ進行中#jupe_ele	844,{
 	mes "-この機械は、";
 	mes "誰かが使用しているようだ-";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 OnKilled:
 	set 'mob,'mob-1;
 	if('mob == 0) {

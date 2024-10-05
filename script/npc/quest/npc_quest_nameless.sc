@@ -23,12 +23,7 @@ airplane_01.gat,90,63,0	script	飛行船内#name	139,3,3,{
 	end;
 }
 
-airplane_01.gat,95,61,3	script	要員#name	899,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+airplane_01.gat,95,61,3	script(HIDDEN)	要員#name	899,{}
 
 cmd_in02.gat,174,89,7	script	平凡な男	97,{
 	if(NAME_1QUE < 2) {
@@ -728,7 +723,7 @@ ve_fild07.gat,125,128,0	script	船	111,{
 	end;
 }
 
-ve_fild07.gat,128,130,1	script	調査員#name	97,{
+ve_fild07.gat,128,130,1	script(HIDDEN)	調査員#name	97,{
 	if(NAME_1QUE != 16)
 		end;
 	mes "[ラルヒス]";
@@ -749,9 +744,6 @@ ve_fild07.gat,128,130,1	script	調査員#name	97,{
 	hideonnpc "調査員#name";
 	set NAME_1QUE,17;
 	warp "nameless_i.gat",257,217;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 
@@ -969,12 +961,7 @@ nameless_in.gat,13,58,6	script	ラルヒス#name	97,{
 	close;
 }
 
-nameless_in.gat,13,53,0	script	怪人物#name	1864,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+nameless_in.gat,13,53,0	script(HIDDEN)	怪人物#name	1864,{}
 
 nameless_in.gat,13,53,0	script	襲撃#name	139,2,2,{
 	if(NAME_1QUE != 19 || 'flag)
@@ -1000,14 +987,11 @@ OnTimer100000:
 	end;
 }
 
-nameless_in.gat,12,37,0	script	name_warp	45,1,1,{
+nameless_in.gat,12,37,0	script(DISABLED)	name_warp	45,1,1,{
 	if(NAME_1QUE != 19)
 		end;
 	set NAME_1QUE,20;
 	warp "nameless_n.gat",168,252;
-	end;
-OnInit:
-	disablenpc;
 	end;
 }
 
@@ -1035,12 +1019,7 @@ nameless_n.gat,169,254,0	script	名も無き島夜#name	139,2,2,{
 	end;
 }
 
-nameless_n.gat,166,254,7	script	ラルヒス#name2	97,{
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+nameless_n.gat,166,254,7	script(HIDDEN)	ラルヒス#name2	97,{}
 
 nameless_n.gat,259,218,3	script	ラルヒス	97,{
 	if(NAME_1QUE == 23 && countitem(7726)) {
@@ -1168,7 +1147,7 @@ OnTimer100000:
 	end;
 }
 
-abbey03.gat,232,232,4	script	化け物の死骸#name	956,{
+abbey03.gat,232,232,4	script(HIDDEN)	化け物の死骸#name	956,{
 	if(NAME_1QUE != 22)
 		end;
 	mes "[" +strcharinfo(0)+ "]";
@@ -1188,9 +1167,6 @@ abbey03.gat,232,232,4	script	化け物の死骸#name	956,{
 	mes "できなくなる可能性があります。";
 	mes "アイテムの取扱いにご注意ください。";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 //============================================================
@@ -1416,7 +1392,7 @@ moc_ruins.gat,106,133,0	script	異国の商人#name4	139,3,3,{
 }
 
 //morocc.gat,140,160,7	script	異国の商人#name	929,{
-moc_ruins.gat,101,133,7	script	異国の商人#name	929,{
+moc_ruins.gat,101,133,7	script(HIDDEN)	異国の商人#name	929,{
 	if(NAME_2QUE < 1 || NAME_2QUE > 6) {
 		mes "[異国の商人]";
 		mes "すみません。";
@@ -1492,9 +1468,6 @@ moc_ruins.gat,101,133,7	script	異国の商人#name	929,{
 	set NAME_2QUE,7;
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 ra_temin.gat,103,151,7	script	女性信徒	917,{
@@ -6222,7 +6195,7 @@ OnKilled:
 	close;
 }
 
-z_agit.gat,97,101,3	script	ルイ#name	931,{
+z_agit.gat,97,101,3	script(HIDDEN)	ルイ#name	931,{
 	if(NAME_4QUE != 17)
 		end;
 	mes "[マーサ]";
@@ -6358,9 +6331,6 @@ z_agit.gat,97,101,3	script	ルイ#name	931,{
 	set getvariableofnpc('mob,"#zdan_broad"),0;
 	set getvariableofnpc('lock,"#zdan_broad"),0;
 	stopnpctimer "#zdan_broad";
-	end;
-OnInit:
-	hideonnpc;
 	end;
 }
 z_agit.gat,99,101,3	duplicate(ルイ#name)	マーサ#name	101

@@ -776,26 +776,9 @@ gef_dun01.gat,134,224,1	script	モジョ#ilgf	123,{
 	close;
 }
 
-gef_dun01.gat,133,221,1	script	モジョ#ilgf01	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-gef_dun01.gat,130,222,5	script	モジョ#ilgf02	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-gef_dun01.gat,130,224,5	script	モジョ#ilgf03	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_dun01.gat,133,221,1	script(CLOAKED)	モジョ#ilgf01	123,{}
+gef_dun01.gat,130,222,5	script(CLOAKED)	モジョ#ilgf02	123,{}
+gef_dun01.gat,130,224,5	script(CLOAKED)	モジョ#ilgf03	123,{}
 
 gef_d01_i.gat,113,230,5	script	ジェム#ilgf01	79,{
 	switch(IL_VAMP_QUE) {
@@ -1044,7 +1027,7 @@ gef_d01_i.gat,112,228,5	script	マリナ#ilgf01	746,{
 	end;
 }
 
-gef_d01_i.gat,93,178,5	script	マリナ#ilgf03	746,5,5,{
+gef_d01_i.gat,93,178,5	script(CLOAKED)	マリナ#ilgf03	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1053,12 +1036,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf03";
 	cloakonnpc "マリナ#ilgf03";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,127,153,5	script	マリナ#ilgf04	746,5,5,{
+gef_d01_i.gat,127,153,5	script(CLOAKED)	マリナ#ilgf04	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1067,12 +1047,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf04";
 	cloakonnpc "マリナ#ilgf04";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,213,237,5	script	マリナ#ilgf05	746,5,5,{
+gef_d01_i.gat,213,237,5	script(CLOAKED)	マリナ#ilgf05	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1081,12 +1058,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf05";
 	cloakonnpc "マリナ#ilgf05";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,150,224,5	script	マリナ#ilgf06	746,5,5,{
+gef_d01_i.gat,150,224,5	script(CLOAKED)	マリナ#ilgf06	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1095,12 +1069,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf06";
 	cloakonnpc "マリナ#ilgf06";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,208,144,5	script	マリナ#ilgf07	746,5,5,{
+gef_d01_i.gat,208,144,5	script(CLOAKED)	マリナ#ilgf07	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1109,12 +1080,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf07";
 	cloakonnpc "マリナ#ilgf07";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,250,130,5	script	マリナ#ilgf08	746,5,5,{
+gef_d01_i.gat,250,130,5	script(CLOAKED)	マリナ#ilgf08	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1123,12 +1091,9 @@ OnTouch:
 	misceffect 304,"マリナ#ilgf08";
 	cloakonnpc "マリナ#ilgf08";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,255,202,5	script	マリナ#ilgf09	746,5,5,{
+gef_d01_i.gat,255,202,5	script(CLOAKED)	マリナ#ilgf09	746,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 6) end;
@@ -1136,9 +1101,6 @@ OnTouch:
 	if(!sleep2(1500)) end;
 	misceffect 304,"マリナ#ilgf09";
 	cloakonnpc "マリナ#ilgf09";
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -1171,7 +1133,7 @@ gef_d01_i.gat,116,228,3	script	アントワーヌ#ilgf01	669,{
 	close;
 }
 
-gef_d01_i.gat,250,164,5	script	司祭#ilgf01	110,5,5,{
+gef_d01_i.gat,250,164,5	script(CLOAKED)	司祭#ilgf01	110,5,5,{
 	if(IL_VAMP_QUE == 6) {
 		mes "[司祭]";
 		mes "困ったな。";
@@ -1366,31 +1328,13 @@ OnTouch:
 	if(IL_VAMP_QUE == 6)
 		unittalk getnpcid(0,"司祭#ilgf01"),"司祭 : 本当に困ったな……。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,253,165,3	script	マリナ#ilgf10	746,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,253,165,3	script(CLOAKED)	マリナ#ilgf10	746,{}
 
-gef_d01_i.gat,254,162,1	script	アンデッド#ilgf08	3752,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,254,162,1	script(CLOAKED)	アンデッド#ilgf08	3752,{}
 
-gef_d01_i.gat,252,160,1	script	アンデッド#ilgf09	3753,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,252,160,1	script(CLOAKED)	アンデッド#ilgf09	3753,{}
 
 gef_d01_i.gat,250,164,0	script	#ilgf06	139,15,15,{
 	if(IL_VAMP_QUE == 6)
@@ -1400,7 +1344,7 @@ gef_d01_i.gat,250,164,0	script	#ilgf06	139,15,15,{
 	end;
 }
 
-gef_d01_i.gat,81,135,5	script	魔法使い#ilgf01	10224,{
+gef_d01_i.gat,81,135,5	script(CLOAKED)	魔法使い#ilgf01	10224,{
 	switch(IL_VAMP_QUE) {
 	case 7:
 		mes "[魔法使い]";
@@ -2411,21 +2355,13 @@ gef_d01_i.gat,81,135,5	script	魔法使い#ilgf01	10224,{
 		mes "報告は済んだのですか？";
 		close;
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 gef_d01_i.gat,82,132,3	script	キノコ#ilgf01	1084,{}
 
-gef_d01_i.gat,86,133,1	script	ドラキュラ#ilgf01	10137,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,86,133,1	script(CLOAKED)	ドラキュラ#ilgf01	10137,{}
 
-gef_d01_i.gat,189,98,3	script	ドラキュラ#ilgf02	10137,{
+gef_d01_i.gat,189,98,3	script(CLOAKED)	ドラキュラ#ilgf02	10137,{
 	switch(IL_VAMP_QUE) {
 	case 10:
 		mes "[コウモリ]";
@@ -2854,11 +2790,8 @@ gef_d01_i.gat,189,98,3	script	ドラキュラ#ilgf02	10137,{
 		mes "ボミを待つとしよう。";
 		close;
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,185,97,5	script	キング#ilgf01	799,{
+gef_d01_i.gat,185,97,5	script(CLOAKED)	キング#ilgf01	799,{
 	if(IL_VAMP_QUE <= 10) {
 		mes "[キング]";
 		mes "何か用がある？";
@@ -2909,11 +2842,8 @@ gef_d01_i.gat,185,97,5	script	キング#ilgf01	799,{
 	mes "ドラキュラには休息が必要なんだ。";
 	mes "邪魔するなよ。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,191,96,3	script	魔法使い#ilgf02	735,{
+gef_d01_i.gat,191,96,3	script(CLOAKED)	魔法使い#ilgf02	735,{
 	if(IL_VAMP_QUE <= 10) {
 		mes "[ジョジョ]";
 		mes "うう……傷は治ったのに、";
@@ -2948,52 +2878,19 @@ gef_d01_i.gat,191,96,3	script	魔法使い#ilgf02	735,{
 	mes "シスタージェム一行と";
 	mes "モジョにそう伝えてください。";
 	close;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-gef_d01_i.gat,80,139,5	script	ジェム#ilgf02	79,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,80,139,5	script(CLOAKED)	ジェム#ilgf02	79,{}
 
-gef_d01_i.gat,86,133,1	script	マリナ#ilgf02	746,5,5,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,86,133,1	script(CLOAKED)	マリナ#ilgf02	746,5,5,{}
 
-gef_d01_i.gat,85,139,3	script	アントワーヌ#ilgf02	669,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,85,139,3	script(CLOAKED)	アントワーヌ#ilgf02	669,{}
 
-gef_d01_i.gat,84,135,3	script	ドラキュラ#ilgf03	10137,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,84,135,3	script(CLOAKED)	ドラキュラ#ilgf03	10137,{}
 
-gef_d01_i.gat,87,137,3	script	キング#ilgf02	799,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,87,137,3	script(CLOAKED)	キング#ilgf02	799,{}
 
-gef_d01_i.gat,80,132,7	script	ジョジョ#ilgf01	735,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,80,132,7	script(CLOAKED)	ジョジョ#ilgf01	735,{}
 
 gef_d01_i.gat,114,216,0	script	#ilgf01	139,3,0,{
 	misceffect 561,"";
@@ -3126,7 +3023,7 @@ gef_d01_i.gat,204,113,0	duplicate(#illcon05)	#illcon13	139,5,7
 
 //==============================================================================
 
-gef_d01_i.gat,49,113,3	script	魔法使い#ilgf06	669,5,5,{
+gef_d01_i.gat,49,113,3	script(CLOAKED)	魔法使い#ilgf06	669,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3152,26 +3049,13 @@ OnTouch:
 	misceffect 496,"アンデッド#ilgf06";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,46,112,5	script	魔法使い#ilgf07	937,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,47,110,7	script	アンデッド#ilgf06	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,46,112,5	script(CLOAKED)	魔法使い#ilgf07	937,{}
+gef_d01_i.gat,47,110,7	script(CLOAKED)	アンデッド#ilgf06	1036,{}
 
 //==============================================================================
 
-gef_d01_i.gat,137,60,3	script	魔法使い#ilgf08	64,5,5,{
+gef_d01_i.gat,137,60,3	script(CLOAKED)	魔法使い#ilgf08	64,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3188,20 +3072,12 @@ OnTouch:
 	misceffect 496,"名も無き墓#ilgf03";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,136,58,5	script	名も無き墓#ilgf03	557,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,136,58,5	script(CLOAKED)	名も無き墓#ilgf03	557,{}
 
 //==============================================================================
 
-gef_d01_i.gat,67,85,5	script	魔法使い#ilgf09	735,5,5,{
+gef_d01_i.gat,67,85,5	script(CLOAKED)	魔法使い#ilgf09	735,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3228,20 +3104,12 @@ OnTouch:
 	misceffect 496,"魔法使い#ilgf10";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,67,83,1	script	魔法使い#ilgf10	673,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,67,83,1	script(CLOAKED)	魔法使い#ilgf10	673,{}
 
 //==============================================================================
 
-gef_d01_i.gat,156,234,3	script	魔法使い#ilgf11	567,5,5,{
+gef_d01_i.gat,156,234,3	script(CLOAKED)	魔法使い#ilgf11	567,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3258,14 +3126,11 @@ OnTouch:
 	misceffect 496,"魔法使い#ilgf11";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 //==============================================================================
 
-gef_d01_i.gat,48,255,5	script	魔法使い#ilgf12	64,5,5,{
+gef_d01_i.gat,48,255,5	script(CLOAKED)	魔法使い#ilgf12	64,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3291,26 +3156,13 @@ OnTouch:
 	misceffect 496,"名も無き墓#ilgf02";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,50,257,5	script	魔法使い#ilgf13	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,50,254,5	script	名も無き墓#ilgf02	557,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,50,257,5	script(CLOAKED)	魔法使い#ilgf13	123,{}
+gef_d01_i.gat,50,254,5	script(CLOAKED)	名も無き墓#ilgf02	557,{}
 
 //==============================================================================
 
-gef_d01_i.gat,112,267,3	script	魔法使い#ilgf14	735,5,5,{
+gef_d01_i.gat,112,267,3	script(CLOAKED)	魔法使い#ilgf14	735,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3337,26 +3189,13 @@ OnTouch:
 	misceffect 496,"名も無き墓#ilgf01";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,110,266,5	script	魔法使い#ilgf15	937,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,111,264,5	script	名も無き墓#ilgf01	557,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,110,266,5	script(CLOAKED)	魔法使い#ilgf15	937,{}
+gef_d01_i.gat,111,264,5	script(CLOAKED)	名も無き墓#ilgf01	557,{}
 
 //==============================================================================
 
-gef_d01_i.gat,55,167,3	script	魔法使い#ilgf16	937,5,5,{
+gef_d01_i.gat,55,167,3	script(CLOAKED)	魔法使い#ilgf16	937,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3373,20 +3212,12 @@ OnTouch:
 	misceffect 496,"魔法使い#ilgf17";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,53,166,7	script	魔法使い#ilgf17	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,53,166,7	script(CLOAKED)	魔法使い#ilgf17	123,{}
 
 //==============================================================================
 
-gef_d01_i.gat,236,235,1	script	魔法使い#ilgf18	64,5,5,{
+gef_d01_i.gat,236,235,1	script(CLOAKED)	魔法使い#ilgf18	64,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3403,20 +3234,12 @@ OnTouch:
 	misceffect 496,"誰かの夢#ilgf18";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,233,237,5	script	誰かの夢#ilgf18	1061,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,233,237,5	script(CLOAKED)	誰かの夢#ilgf18	1061,{}
 
 //==============================================================================
 
-gef_d01_i.gat,255,201,5	script	魔法使い#ilgf19	673,5,5,{
+gef_d01_i.gat,255,201,5	script(CLOAKED)	魔法使い#ilgf19	673,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3439,26 +3262,13 @@ OnTouch:
 	misceffect 496,"アンデッド#ilgf05";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,254,200,5	script	魔法使い#ilgf20	123,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,256,198,1	script	アンデッド#ilgf05	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,254,200,5	script(CLOAKED)	魔法使い#ilgf20	123,{}
+gef_d01_i.gat,256,198,1	script(CLOAKED)	アンデッド#ilgf05	1036,{}
 
 //==============================================================================
 
-gef_d01_i.gat,204,146,1	script	魔法使い#ilgf21	673,5,5,{
+gef_d01_i.gat,204,146,1	script(CLOAKED)	魔法使い#ilgf21	673,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3488,38 +3298,15 @@ OnTouch:
 	misceffect 496,"魔法使い#ilgf22";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,202,149,5	script	魔法使い#ilgf22	937,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,202,152,5	script	アンデッド#ilgf02	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,200,151,5	script	アンデッド#ilgf03	1015,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,204,151,3	script	アンデッド#ilgf04	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,202,149,5	script(CLOAKED)	魔法使い#ilgf22	937,{}
+gef_d01_i.gat,202,152,5	script(CLOAKED)	アンデッド#ilgf02	1036,{}
+gef_d01_i.gat,200,151,5	script(CLOAKED)	アンデッド#ilgf03	1015,{}
+gef_d01_i.gat,204,151,3	script(CLOAKED)	アンデッド#ilgf04	1036,{}
 
 //==============================================================================
 
-gef_d01_i.gat,257,110,1	script	魔法使い#ilgf23	10224,5,5,{
+gef_d01_i.gat,257,110,1	script(CLOAKED)	魔法使い#ilgf23	10224,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3538,20 +3325,12 @@ OnTouch:
 	misceffect 496,"早いアンデッド#ilgf01";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,253,112,5	script	早いアンデッド#ilgf01	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,253,112,5	script(CLOAKED)	早いアンデッド#ilgf01	1036,{}
 
 //==============================================================================
 
-gef_d01_i.gat,230,76,3	script	魔法使い#ilgf24	704,5,5,{
+gef_d01_i.gat,230,76,3	script(CLOAKED)	魔法使い#ilgf24	704,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3570,20 +3349,12 @@ OnTouch:
 	misceffect 496,"光るキノコ#ilgf01";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,228,75,3	script	光るキノコ#ilgf01	3755,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,228,75,3	script(CLOAKED)	光るキノコ#ilgf01	3755,{}
 
 //==============================================================================
 
-gef_d01_i.gat,93,34,1	script	魔法使い#ilgf25	10224,5,5,{
+gef_d01_i.gat,93,34,1	script(CLOAKED)	魔法使い#ilgf25	10224,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3610,26 +3381,13 @@ OnTouch:
 	misceffect 496,"アンデッド#ilgf01";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,94,37,3	script	魔法使い#ilgf26	64,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-gef_d01_i.gat,91,35,5	script	アンデッド#ilgf01	1036,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,94,37,3	script(CLOAKED)	魔法使い#ilgf26	64,{}
+gef_d01_i.gat,91,35,5	script(CLOAKED)	アンデッド#ilgf01	1036,{}
 
 //==============================================================================
 
-gef_d01_i.gat,101,124,3	script	魔法使い#ilgf27	10224,5,5,{
+gef_d01_i.gat,101,124,3	script(CLOAKED)	魔法使い#ilgf27	10224,5,5,{
 	end;
 OnTouch:
 	if(IL_VAMP_QUE != 7) end;
@@ -3652,16 +3410,8 @@ OnTouch:
 	misceffect 496,"魔法使い#ilgf28";
 	pcblockmove 0;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-gef_d01_i.gat,99,122,7	script	魔法使い#ilgf28	10224,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+gef_d01_i.gat,99,122,7	script(CLOAKED)	魔法使い#ilgf28	10224,{}
 
 //==============================================================================
 

@@ -2835,13 +2835,10 @@ OnTimer5000:
 	end;
 }
 
-hu_in01.gat,385,247,5	script	ポスティール・シュイル#hu	97,{
+hu_in01.gat,385,247,5	script(HIDDEN)	ポスティール・シュイル#hu	97,{
 	mes "[ポスティール]";
 	mes "今、忙しいんだ。";
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 //============================================================
@@ -9175,12 +9172,9 @@ lhz_dun02.gat,244,226,0	script	原子変換器機	111,{
 	close;
 }
 
-lhz_dun02.gat,244,227,0	script	爆発#hu	139,5,5,{
+lhz_dun02.gat,244,227,0	script(HIDDEN)	爆発#hu	139,5,5,{
 	percentheal -10,0;
 	misceffect 4,"";
-	hideonnpc;
-	end;
-OnInit:
 	hideonnpc;
 	end;
 }

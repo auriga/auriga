@@ -1590,7 +1590,7 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd->speed   = 200;
 	nd->chat_id = 0;
 	nd->click_able = 0;
-	nd->option  = OPTION_NOTHING;
+	nd->option  = src_nd->option;
 	nd->bl.type = BL_NPC;
 	nd->subtype = src_nd->subtype;
 
@@ -2437,6 +2437,8 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	struct npc_data *nd;
 	struct npc_label_list *label_dup = NULL;
 	int move = 0;
+	int flag = 1;
+	int option = OPTION_NOTHING;
 
 	if(strcmp(w1,"-") == 0) {
 		x = 0;
@@ -2448,8 +2450,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		int n;
 
 		if(sscanf(w1,"%4095[^,],%d,%d,%d%n",mapname,&x,&y,&dir,&n) != 4 || w1[n] != 0 ||
-		   (strcmp(w2,"script") == 0 && strchr(w4,',') == NULL) ||
-		   (strcmp(w2,"script2") == 0 && strchr(w4,',') == NULL))
+		   (strstr(w2,"script") && strchr(w4,',') == NULL))
 		{
 			printf("bad script declaration : %s line %d\a\n",w3,*lines);
 			return 0;
@@ -2457,7 +2458,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		m = map_mapname2mapid(mapname);
 	}
 
-	if(strcmp(w2,"script") == 0 || strcmp(w2,"script2") == 0) {
+	if(strstr(w2,"script")) {
 		// スクリプトの解析
 		// { , } の入れ子許したらこっちでも簡易解析しないといけなくなったりもする
 		size_t len, srclen;
@@ -2547,16 +2548,13 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 		label_dupnum = nd2->u.scr.label_list_num;
 		src_id       = nd2->bl.id;
 		move         = nd2->u.scr.moveable;
+		option       = nd2->option;
 	}
 	// end of スクリプト解析
 
 	nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));
 	nd->u.scr.xs = 0;
 	nd->u.scr.ys = 0;
-	if(strcmp(w2,"script2") == 0 || move)
-		nd->u.scr.moveable = 1;
-	else
-		nd->u.scr.moveable = 0;
 
 	if(m == -1) {
 		// スクリプトコピー用のダミーNPC
@@ -2621,7 +2619,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	nd->u.scr.script = script;
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
-	nd->option  = OPTION_NOTHING;
+	nd->option  = option;
 
 	nd->group_id = 0;
 	nd->title[23] = '\0';	// froce \0 terminal
@@ -2631,6 +2629,42 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	nd->subtype = SCRIPT;
 
 	unit_dataset( &nd->bl );
+
+	// スクリプト型の状態処理
+	if(strstr(w2,"script") && strcmp(w2,"script") > 0) {
+		char state_name[128] = "";
+		size_t len = strlen(w2);
+		int shift = 7;
+
+		// 歩行NPC(script2)判定
+		if (w2[shift-1] == '2') {
+			move = 1;
+			shift++;
+		}
+
+		// 状態名判定
+		if (w2[shift-1] != '(' || w2[len-1] != ')' || len <= shift || len-shift >= sizeof(state_name)) {
+			if(!move)	// 通常歩行NPC以外はエラー
+				printf("npc_parse_script : invalid npc state %s! name: %s\n", w2, nd->exname);
+		} else {
+			flag = 0;
+			strncpy(state_name, w2+shift, len-shift-1);
+			if (strcmp("CLOAKED", state_name) == 0) {
+				nd->option = OPTION_CLOAKING;
+			} else if (strcmp("HIDDEN", state_name) == 0) {
+				nd->flag |= 1;
+				nd->option = OPTION_HIDE;
+			} else if (strcmp("DISABLED", state_name) == 0) {
+				nd->flag |= 3;
+			} else
+				printf("npc_parse_script : invalid npc state %s! name: %s\n", state_name, nd->exname);
+		}
+	}
+
+	if(move)
+		nd->u.scr.moveable = 1;
+	else
+		nd->u.scr.moveable = 0;
 
 	//printf("script npc %s %d %d read done\n",mapname,nd->bl.id,nd->class_);
 
@@ -2656,7 +2690,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 				aFree(old_ev);
 				fail = 1;
 			}
-		} else {
+		} else if(flag) {
 			clif_spawnnpc(nd);
 		}
 	} else {
@@ -3220,13 +3254,7 @@ static int npc_parse_srcfile(const char *filepath)
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
-		} else if (strcmpi(w2,"script") == 0 && count > 3) {
-			if(strcmpi(w1,"function") == 0) {
-				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
-			} else {
-				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
-			}
-		} else if (strcmpi(w2,"script2") == 0 && count > 3) {
+		} else if (strstr(w2,"script") && count > 3) {
 			if(strcmpi(w1,"function") == 0) {
 				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
 			} else {

@@ -35,7 +35,7 @@ OnTouch:
 	end;
 }
 
-prt_lib.gat,91,78,2	script	マクシーミリアン#ep16_lib01	10133,{
+prt_lib.gat,91,78,2	script(CLOAKED)	マクシーミリアン#ep16_lib01	10133,{
 	if(EP16_1QUE == 9) {
 		mes "[マクシーミリアン]";
 		mes "なんとういうことだ。";
@@ -43,11 +43,8 @@ prt_lib.gat,91,78,2	script	マクシーミリアン#ep16_lib01	10133,{
 		close;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-prt_lib.gat,80,79,3	script	クロネカー・ハイネン#ep16_lib01	10119,{
+prt_lib.gat,80,79,3	script(CLOAKED)	クロネカー・ハイネン#ep16_lib01	10119,{
 	if(EP16_1QUE == 9) {
 		cutin "ep16_kronecker_granz_heine",2;
 		mes "[クロネカー]";
@@ -264,16 +261,10 @@ prt_lib.gat,80,79,3	script	クロネカー・ハイネン#ep16_lib01	10119,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-prt_lib.gat,81,79,5	script	クロネカー・ハイネン#ep16_lib02	10119,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+
+prt_lib.gat,81,79,5	script(CLOAKED)	クロネカー・ハイネン#ep16_lib02	10119,{}
+
 prt_lib.gat,88,80,0	script	#ep16_lib_evt01	139,12,12,{
 OnTouch:
 	if(EP16_1QUE == 9) {
@@ -290,7 +281,7 @@ OnTouch:
 	}
 	end;
 }
-prt_lib.gat,83,80,5	script	ニーヒル・ハイネン#ep16_lib01	10114,{
+prt_lib.gat,83,80,5	script(CLOAKED)	ニーヒル・ハイネン#ep16_lib01	10114,{
 	if(EP16_1QUE == 9) {
 		cutin "ep16_nihi_miseria_heine01",0;
 		mes "‐ニーヒルがいる‐";
@@ -299,11 +290,8 @@ prt_lib.gat,83,80,5	script	ニーヒル・ハイネン#ep16_lib01	10114,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-prt_lib.gat,94,82,3	script	次元移動機#ep16_lib	10007,{
+prt_lib.gat,94,82,3	script(CLOAKED)	次元移動機#ep16_lib	10007,{
 	if(EP16_1QUE > 17) {
 		mes "[ニルレム]";
 		mes "それじゃ強制的に";
@@ -329,11 +317,8 @@ prt_lib.gat,94,82,3	script	次元移動機#ep16_lib	10007,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-prt_lib.gat,85,82,5	script	イアン・バルター#ep16_lib01	55,{
+prt_lib.gat,85,82,5	script(CLOAKED)	イアン・バルター#ep16_lib01	55,{
 	if(EP16_1QUE == 9) {
 		mes "[イアン]";
 		mes "私たちがあなたを";
@@ -667,19 +652,13 @@ prt_lib.gat,85,82,5	script	イアン・バルター#ep16_lib01	55,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
-prt_lib.gat,88,83,4	script	ルヴィエル・ウィグナー#ep16_lib01	10132,{
+prt_lib.gat,88,83,4	script(CLOAKED)	ルヴィエル・ウィグナー#ep16_lib01	10132,{
 	if(EP16_1QUE == 9) {
 		mes "[ルヴィエル]";
 		mes "恐ろしい事態になった……。";
 		close;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -1022,7 +1001,7 @@ prt_lib.gat,91,85,3	script	マジシャン・ニルレム#ep16_warp	735,{
 	}
 	end;
 }
-prt_lib.gat,88,90,1	script	儀式の間への入口#evt_gate01	10007,{
+prt_lib.gat,88,90,1	script(CLOAKED)	儀式の間への入口#evt_gate01	10007,{
 	if(EP16_1QUE == 8) {
 		if(getpartyleader(getcharid(1)) != strcharinfo(0)) {
 			mes "‐^4d4dffこのイベントは";
@@ -1069,9 +1048,6 @@ prt_lib.gat,88,90,1	script	儀式の間への入口#evt_gate01	10007,{
 			close;
 		}
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
 
 2@mir.gat,0,0,0		script	#royal_Control1	-1,{

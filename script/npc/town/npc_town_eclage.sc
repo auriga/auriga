@@ -7627,12 +7627,12 @@ ecl_in01.gat,35,51,3	script	旅人チーバー#tl03	514,{
 	close;
 }
 
-ecl_in01.gat,31,49,7	script	エクラージュガード#tl01	447,{
+ecl_in01.gat,31,49,7	script(HIDDEN)	エクラージュガード#tl01	447,{
 	mes "[エクラージュガード]";
 	mes "あ、急いで元の場所に戻らないと";
 	mes "失礼します。";
 	close2;
-	hideonnpc "エクラージュガード#tl01";
+	hideonnpc;
 	end;
 OnStart:
 	cutin "minuel01",4;
@@ -7697,9 +7697,6 @@ OnStart:
 	setquest 7415;
 	hideonnpc "エクラージュガード#tl01";
 	warp "ecl_in03.gat",244,89;
-	end;
-OnInit:
-	hideonnpc "エクラージュガード#tl01";
 	end;
 }
 
@@ -15598,13 +15595,10 @@ ecl_in04.gat,77,104,5	script	ロサ	520,{
 	}
 }
 
-ecl_in04.gat,80,103,3	script	クルイアン#event	442,{
+ecl_in04.gat,80,103,3	script(HIDDEN)	クルイアン#event	442,{
 	mes "[クルイアン]";
 	mes "これはいったい……？";
 	close;
-OnInit:
-	hideonnpc "クルイアン#event";
-	end;
 }
 
 eclage.gat,164,102,3	script	クルイアン	442,{

@@ -965,12 +965,7 @@ job_duncer.gat,69,113,4	duplicate(#DC_Step1)	#DC_Step4	139,1,1
 job_duncer.gat,66,110,4	duplicate(#DC_Step1)	#DC_Step5	139,1,1
 
 //==============================================================
-job_duncer.gat,69,110,4	script	#DC_Dummy1	101,{	//セルに乗れないようにするためだけのダミーNPC
-	end;
-OnInit:
-	hideonnpc;
-	end;
-}
+job_duncer.gat,69,110,4	script(HIDDEN)	#DC_Dummy1	101,{}	//セルに乗れないようにするためだけのダミーNPC
 
 job_duncer.gat,69,107,4	duplicate(#DC_Dummy1)	#DC_Dummy2	101
 job_duncer.gat,72,110,4	duplicate(#DC_Dummy1)	#DC_Dummy3	101

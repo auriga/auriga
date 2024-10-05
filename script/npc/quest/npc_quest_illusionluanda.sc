@@ -1179,15 +1179,12 @@ com_d02_i_q.gat,208,130,1	duplicate(ゆらぎ#ILU_1)	ゆらぎ#ILU_5	723,1,1
 com_d02_i_q.gat,42,215,1	duplicate(ゆらぎ#ILU_1)	ゆらぎ#ILU_6	723,1,1
 com_d02_i_q.gat,263,72,1	duplicate(ゆらぎ#ILU_1)	ゆらぎ#ILU_7	723,1,1
 
-com_d02_i_q.gat,154,41,4	script	余裕な顔つきの青年#ILU_015	843,{
+com_d02_i_q.gat,154,41,4	script(CLOAKED)	余裕な顔つきの青年#ILU_015	843,{
 	unittalk "余裕な顔つきの青年 : 狩りは退屈だな。ルワンダ。";
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
-com_d02_i_q.gat,152,40,6	script	ルワンダと呼ばれた青年#ILU_016	843,{
+com_d02_i_q.gat,152,40,6	script(CLOAKED)	ルワンダと呼ばれた青年#ILU_016	843,{
 	switch(IL_LUANDA_QUE) {
 	case 4:
 		cloakoffnpc "余裕な顔つきの青年#ILU_015";
@@ -1328,20 +1325,14 @@ com_d02_i_q.gat,152,40,6	script	ルワンダと呼ばれた青年#ILU_016	843,{
 		end;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,156,39,4	script	澄んだ目の青年#ILU_017	843,{
+com_d02_i_q.gat,156,39,4	script(CLOAKED)	澄んだ目の青年#ILU_017	843,{
 	unittalk "澄んだ目の青年 : 準備できたよ。ルワンダ兄。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,121,95,4	script	カル#ILU_018	843,{
+com_d02_i_q.gat,121,95,4	script(CLOAKED)	カル#ILU_018	843,{
 	unittalk getnpcid(0,"アスデン#ILU_019"),"アスデン : カル……今日の狩りはいかがでした？";
 	mes "[アスデン]";
 	mes "カル……";
@@ -1436,20 +1427,14 @@ com_d02_i_q.gat,121,95,4	script	カル#ILU_018	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,120,95,6	script	アスデン#ILU_019	90,{
+com_d02_i_q.gat,120,95,6	script(CLOAKED)	アスデン#ILU_019	90,{
 	unittalk "アスデン : 素敵なところよね……。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,191,271,8	script	壁画を描くルワンダ#ILU_020	843,{
+com_d02_i_q.gat,191,271,8	script(CLOAKED)	壁画を描くルワンダ#ILU_020	843,{
 	unittalk "壁画を描くルワンダ : うん……酷い出来だけど……私の腕にしては立派な壁画だよな。";
 	mes "[壁画を描くルワンダ]";
 	mes "うん……酷い出来だけど……";
@@ -1505,12 +1490,9 @@ com_d02_i_q.gat,191,271,8	script	壁画を描くルワンダ#ILU_020	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,228,95,4	script	マオ#ILU_021	843,{
+com_d02_i_q.gat,228,95,4	script(CLOAKED)	マオ#ILU_021	843,{
 	unittalk "マオ : チクショウ！　何でオレはこんなに弱いんだ！　アニキ達と違って戦闘で役立たずの能力なんて……。";
 	mes "[マオ]";
 	mes "チクショウ！";
@@ -1605,12 +1587,9 @@ com_d02_i_q.gat,228,95,4	script	マオ#ILU_021	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,210,134,6	script	準備をするルワンダ#ILU_022	843,{
+com_d02_i_q.gat,210,134,6	script(CLOAKED)	準備をするルワンダ#ILU_022	843,{
 	unittalk "準備をするルワンダ : 飲み水はこれぐらいで大丈夫かな……。";
 	mes "[準備をするルワンダ]";
 	mes "飲み水はこれぐらいで";
@@ -1651,12 +1630,9 @@ com_d02_i_q.gat,210,134,6	script	準備をするルワンダ#ILU_022	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,157,28,4	script	村長#ILU_023	765,{
+com_d02_i_q.gat,157,28,4	script(CLOAKED)	村長#ILU_023	765,{
 	unittalk getnpcid(0,"村人#ILU_024"),"村人 : なんて数だ！！　モンスターが押し寄せてくる！！";
 	mes "[村人]";
 	mes "なんて数だ！！";
@@ -1742,52 +1718,34 @@ com_d02_i_q.gat,157,28,4	script	村長#ILU_023	765,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,155,29,6	script	村人#ILU_024	748,{
+com_d02_i_q.gat,155,29,6	script(CLOAKED)	村人#ILU_024	748,{
 	unittalk "村人 : どうすれば……。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,153,28,6	script	村人#ILU_025	85,{
+com_d02_i_q.gat,153,28,6	script(CLOAKED)	村人#ILU_025	85,{
 	unittalk "村人 : 三つ子はまだか！";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,154,26,6	script	村人#ILU_026	84,{
+com_d02_i_q.gat,154,26,6	script(CLOAKED)	村人#ILU_026	84,{
 	unittalk "村人 : 早く逃げないと！";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,39,219,6	script	カル#ILU_027	843,{
+com_d02_i_q.gat,39,219,6	script(CLOAKED)	カル#ILU_027	843,{
 	unittalk "カル : ようやく帰れそうだな。マオ。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,41,220,4	script	呆然とするルワンダ#ILU_028	843,{
+com_d02_i_q.gat,41,220,4	script(CLOAKED)	呆然とするルワンダ#ILU_028	843,{
 	unittalk "呆然とするルワンダ : ……。";
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,43,219,4	script	マオ#ILU_029	843,{
+com_d02_i_q.gat,43,219,4	script(CLOAKED)	マオ#ILU_029	843,{
 	unittalk "マオ : 今回の狩りの結果も悪くなかったと思う。";
 	mes "[マオ]";
 	mes "今回の狩りの結果も";
@@ -1858,12 +1816,9 @@ com_d02_i_q.gat,43,219,4	script	マオ#ILU_029	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,116,94,6	script	カル#ILU_030	843,{
+com_d02_i_q.gat,116,94,6	script(CLOAKED)	カル#ILU_030	843,{
 	unittalk "カル : アスデン！　どうして？　なぜ君がこんな目に会わなければならない？　ボ……ボクが君をどんな想いで探したか……。";
 	mes "[カル]";
 	mes "アスデン！どうして？";
@@ -1951,26 +1906,12 @@ com_d02_i_q.gat,116,94,6	script	カル#ILU_030	843,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,117,94,4	script	アスデン#ILU_031	90,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+com_d02_i_q.gat,117,94,4	script(CLOAKED)	アスデン#ILU_031	90,{}
+com_d02_i_q.gat,117,94,4	script(CLOAKED)	アスデン#ILU_032	1148,{}
 
-com_d02_i_q.gat,117,94,4	script	アスデン#ILU_032	1148,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-
-com_d02_i_q.gat,268,75,4	script	シルエット#ILU_033	10029,{
+com_d02_i_q.gat,268,75,4	script(CLOAKED)	シルエット#ILU_033	10029,{
 	unittalk "？？？？ : ククク、ニンゲンドモヲオイダシ、カノチヲテニスルノダ。";
 	mes "[？？？？]";
 	mes "ククク、";
@@ -2030,17 +1971,9 @@ com_d02_i_q.gat,268,75,4	script	シルエット#ILU_033	10029,{
 	}
 	warp "com_d02_i_q.gat", 241, 248;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-com_d02_i_q.gat,266,76,6	script	シルエット#ILU_034	10029,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+com_d02_i_q.gat,266,76,6	script(CLOAKED)	シルエット#ILU_034	10029,{}
 
 com_d02_i.gat,254,243,0	warp	ILU_Luanda#ILU_002	1,1,beach_dun2.gat,249,243
 

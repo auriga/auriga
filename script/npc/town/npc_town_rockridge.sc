@@ -3455,12 +3455,7 @@ har_in01.gat,14,24,5	script	イヴォカ・スクーディー::イヴォカ#rock01	10212,{
 	}
 }
 
-rockrdg1_q.gat,156,302,7	script	イヴォカ・スクーディー::イヴォカ#rock02	10212,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,156,302,7	script(CLOAKED)	イヴォカ・スクーディー::イヴォカ#rock02	10212,{}
 
 rockrdg1_q.gat,153,303,5	script	アイアット・ワープ#revt	10211,{
 	if(ROCKRIDGE_1QUE != 5) {
@@ -3612,40 +3607,15 @@ rockrdg1_q.gat,153,303,5	script	アイアット・ワープ#revt	10211,{
 	end;
 }
 
-rockrdg1_q.gat,160,306,3	script	ジョニー・ジェイムス#re	10213,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,160,306,3	script(CLOAKED)	ジョニー・ジェイムス#re	10213,{}
 
-rockrdg1_q.gat,156,306,5	script	キャクター族のガンマン::ガンマン#rock01	10212,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,156,306,5	script(CLOAKED)	キャクター族のガンマン::ガンマン#rock01	10212,{}
 
-rockrdg1_q.gat,164,306,3	script	キャクター族のガンマン::ガンマン#rock02	10212,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,164,306,3	script(CLOAKED)	キャクター族のガンマン::ガンマン#rock02	10212,{}
 
-rockrdg1_q.gat,161,302,1	script	キャクター族のガンマン::ガンマン#rock03	10212,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,161,302,1	script(CLOAKED)	キャクター族のガンマン::ガンマン#rock03	10212,{}
 
-rockrdg1_q.gat,168,306,3	script	アルバート・フォード#re	10214,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+rockrdg1_q.gat,168,306,3	script(CLOAKED)	アルバート・フォード#re	10214,{}
 
 har_in01.gat,89,26,5	script	ジョニー・ジェイムス#ha	10213,{
 	switch(ROCKRIDGE_1QUE) {
@@ -3927,7 +3897,7 @@ har_in01.gat,89,26,5	script	ジョニー・ジェイムス#ha	10213,{
 	}
 }
 
-har_in01.gat,88,22,6	script	イヴォカ・スクーディー::イヴォカ#rock03	10212,{
+har_in01.gat,88,22,6	script(CLOAKED)	イヴォカ・スクーディー::イヴォカ#rock03	10212,{
 	if(ROCKRIDGE_1QUE == 9) {
 		cutin "rock_iboka_all",0;
 		mes "[イヴォカ・スクーディー]";
@@ -3938,9 +3908,6 @@ har_in01.gat,88,22,6	script	イヴォカ・スクーディー::イヴォカ#rock03	10212,{
 	}
 	cloakonnpc "イヴォカ#rock03";
 	cutin "rock_iboka_all",255;
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 
@@ -4204,7 +4171,7 @@ rockrdg2_q.gat,279,313,3	script	ポッコリと穴の開いた岩#	10042,{
 	end;
 }
 
-rockrdg2_q.gat,282,310,3	script	アルバート・フォード#ro	10214,{
+rockrdg2_q.gat,282,310,3	script(CLOAKED)	アルバート・フォード#ro	10214,{
 	if(ROCKRIDGE_1QUE == 13) {
 		mes "[アルバート・フォード]";
 		mes "お前はロックリッジの！";
@@ -4390,9 +4357,6 @@ rockrdg2_q.gat,282,310,3	script	アルバート・フォード#ro	10214,{
 		warp "har_in01.gat",18,18;
 		end;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 

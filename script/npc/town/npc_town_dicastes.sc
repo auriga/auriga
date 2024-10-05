@@ -2541,15 +2541,12 @@ mid_campin.gat,168,125,3	script	ハウンド#dicas	997,{
 	}
 }
 
-mid_campin.gat,165,127,5	script	アジフ#dicas	459,{
+mid_campin.gat,165,127,5	script(HIDDEN)	アジフ#dicas	459,{
 	mes "[アジフ]";
 	mes "来て早々で悪いが";
 	mes "そろそろ戻らないとな。";
 	close2;
-	hideonnpc "アジフ#dicas";
-	end;
-OnInit:
-	hideonnpc "アジフ#dicas";
+	hideonnpc;
 	end;
 }
 
@@ -7509,14 +7506,11 @@ mid_camp.gat,216,246,0	script	#dicas_event03	139,2,2,{
 	end;
 }
 
-dicastes02.gat,218,250,3	script	謎の男#dicas_loki	494,{
+dicastes02.gat,218,250,3	script(HIDDEN)	謎の男#dicas_loki	494,{
 	mes "[謎の男]";
 	mes "……";
 	hideonnpc;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 }
 
 //============================================================

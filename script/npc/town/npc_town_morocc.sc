@@ -1305,7 +1305,7 @@ OnMyMobDead:
 	end;
 }
 
-moc_fild21.gat,177,239,0	script	次元の狭間#morocc	844,{
+moc_fild21.gat,177,239,0	script(HIDDEN)	次元の狭間#morocc	844,{
 	if(MOC_2QUE != 4 || getnpctimer(0) > 1800000) {
 		mes "-ゆっくりと闇の気配が";
 		mes "広がっていく……-";
@@ -1328,9 +1328,6 @@ moc_fild21.gat,177,239,0	script	次元の狭間#morocc	844,{
 	chgquest 3053,3055;
 	getitem 7820,1;
 	close;
-OnInit:
-	hideonnpc;
-	end;
 OnTimer21600000:
 	hideonnpc;
 	hideoffnpc "闇の結晶体#morocc";
@@ -3468,8 +3465,7 @@ OnTouch:
 	end;
 }
 
-cave.gat,85,101,3	script	セイダー#garas1	401,{
-OnInit:
+cave.gat,85,101,3	script(HIDDEN)	セイダー#garas1	401,{
 	hideonnpc;
 	end;
 }
@@ -4376,8 +4372,7 @@ que_ba.gat,270,270,0	script	#barmunt_living	139,1,1,{
 
 que_ba.gat,263,276,3	script	#barmut_room2	755,{}
 
-que_ba.gat,266,268,3	script	#barmut_onna	982,{
-OnInit:
+que_ba.gat,266,268,3	script(HIDDEN)	#barmut_onna	982,{
 	hideonnpc;
 	end;
 }

@@ -15096,7 +15096,7 @@ int buildin_npcwalkto(struct script_state *st)
 int buildin_npcwalkwait(struct script_state *st)
 {
 	struct npc_data *nd;
-	int delay = 0;
+	int delay = 50;
 
 	if(st->end > st->start+2)
 		delay = conv_num(st,& (st->stack->stack_data[st->start+2]));
@@ -15110,16 +15110,27 @@ int buildin_npcwalkwait(struct script_state *st)
 	if(nd->flag&1)
 		return 0;
 
-	if(delay < 0)
-		delay = 0;
+	if(delay < 50)
+		delay = 50;
 
 	if(st->sleep.tick == 0) {
 		// 初回実行
 		int tick = 0;
 		int dist = path_distance(nd->bl.x,nd->bl.y,nd->ud.to_x,nd->ud.to_y);
 
-		// 本来は移動中の斜めと直進の数で待機時間が変わる
-		tick = (nd->speed * dist) * 14 / 10 + delay;
+		// 同軸ならSpeed * 距離
+		if(nd->bl.x == nd->ud.to_x || nd->bl.y == nd->ud.to_y) {
+			tick = nd->speed * dist + delay;
+		} else {
+			int i, c=0, s=0;
+			for(i=0;i<nd->ud.walkpath.path_len;i++) {
+				if(nd->ud.walkpath.path[i]&1)
+					s++;
+				else
+					c++;
+			}
+			tick = nd->speed * c + nd->speed * s * 14 / 10 + delay;
+		}
 
 		if(tick <= 0) {
 			// 何もしない

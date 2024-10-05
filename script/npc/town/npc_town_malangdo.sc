@@ -804,12 +804,9 @@ OnInit:
 	end;
 }
 
-malangdo.gat,140,139,0	script	時の通路ワープ#malan	45,2,2,{
+malangdo.gat,140,139,0	script(HIDDEN)	時の通路ワープ#malan	45,2,2,{
 OnTouch:
 	warp "dali.gat",109,86;
-	end;
-OnInit:
-	hideonnpc;
 	end;
 OnStart:
 	hideoffnpc;
@@ -3435,11 +3432,10 @@ malangdo.gat,221,139,0	duplicate(hide_timer#mal1)	hide_timer#mal9	-1
 malangdo.gat,242,175,0	duplicate(怪しい砂の山#mal1)	怪しい砂の山#mal10	557
 malangdo.gat,221,139,0	duplicate(hide_timer#mal1)	hide_timer#mal10	-1
 
-mal_dun01.gat,136,120,6	script	言語学者デボレ#mald	549,{
+mal_dun01.gat,136,120,6	script(HIDDEN)	言語学者デボレ#mald	549,{
 	end;
 OnTimer60000:
 	stopnpctimer;
-OnInit:
 	hideonnpc;
 	end;
 }

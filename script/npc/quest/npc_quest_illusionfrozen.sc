@@ -65,7 +65,7 @@ OnTouch:
 	end;
 }
 
-ice_d03_i.gat,150,43,5	script	ブリド#frozen01	10036,{
+ice_d03_i.gat,150,43,5	script(CLOAKED)	ブリド#frozen01	10036,{
 	if(IL_FROZEN_QUE == 3 || IL_FROZEN_QUE == 8) {
 		mes "[ブリド]";
 		mes "まさか本当に壊せるとは……";
@@ -73,19 +73,11 @@ ice_d03_i.gat,150,43,5	script	ブリド#frozen01	10036,{
 		close;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-ice_d03_i.gat,150,43,5	script	ブリド#frozen02	468,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+ice_d03_i.gat,150,43,5	script(CLOAKED)	ブリド#frozen02	468,{}
 
-ice_d03_i.gat,155,43,3	script	ジェイス#frozen01	10035,{
+ice_d03_i.gat,155,43,3	script(CLOAKED)	ジェイス#frozen01	10035,{
 	if(IL_FROZEN_QUE == 0 || IL_FROZEN_QUE == 5) {
 		if(IL_FROZEN_QUE == 5) {
 			mes "^ff0000彼らは以前、氷から救出した筈なのに";
@@ -590,12 +582,9 @@ ice_d03_i.gat,155,43,3	script	ジェイス#frozen01	10035,{
 		close;
 	}
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-ice_d03_i.gat,155,43,3	script	ジェイス#frozen02	467,{
+ice_d03_i.gat,155,43,3	script(CLOAKED)	ジェイス#frozen02	467,{
 	if(IL_FROZEN_QUE == 3 || IL_FROZEN_QUE == 8) {
 		mes "[ジェイス]";
 		mes "まさかと思ったが";
@@ -756,9 +745,6 @@ ice_d03_i.gat,155,43,3	script	ジェイス#frozen02	467,{
 		cloakonnpc "ジェイス#frozen02";
 		close;
 	}
-	end;
-OnInit:
-	cloakonnpc;
 	end;
 }
 

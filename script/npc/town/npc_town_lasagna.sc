@@ -2085,19 +2085,9 @@ lasagna.gat,346,237,5	script	父さん#do_wedd01	10164,{
 	close;
 }
 
-lasagna.gat,347,235,7	script	母さん#do_wedd01	10148,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+lasagna.gat,347,235,7	script(CLOAKED)	母さん#do_wedd01	10148,{}
 
-lasagna.gat,349,237,1	script	子ども#do_wedd01	10167,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+lasagna.gat,349,237,1	script(CLOAKED)	子ども#do_wedd01	10167,{}
 
 lasagna.gat,302,323,3	script	ジャワイブ	10159,{
 	mes "[ジャワイブ]";

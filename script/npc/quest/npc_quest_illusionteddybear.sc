@@ -750,19 +750,9 @@ OnTouch:
 	cloakonnpc "ベアドール#ITB_015";
 	end;
 }
-ein_d02_i_q.gat,169,193,5	script	白色のベアドール#ITB_014	10292,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-ein_d02_i_q.gat,171,193,3	script	ベアドール#ITB_015	10290,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
-ein_d02_i_q.gat,172,192,1	script	サン#ITB_016	798,{
+ein_d02_i_q.gat,169,193,5	script(CLOAKED)	白色のベアドール#ITB_014	10292,{}
+ein_d02_i_q.gat,171,193,3	script(CLOAKED)	ベアドール#ITB_015	10290,{}
+ein_d02_i_q.gat,172,192,1	script(CLOAKED)	サン#ITB_016	798,{
 	if(IL_TBEAR_QUE == 7 || IL_TBEAR_QUE == 8) {
 		mes "[サン]";
 		mes "スティーブンは";
@@ -772,12 +762,9 @@ ein_d02_i_q.gat,172,192,1	script	サン#ITB_016	798,{
 	}
 	cloakonnpc;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 
-ein_d02_i_q.gat,134,240,7	script	スティーブン#ITB_017	98,{
+ein_d02_i_q.gat,134,240,7	script(CLOAKED)	スティーブン#ITB_017	98,{
 	if(IL_TBEAR_QUE == 8) {
 		mes "[スティーブン]";
 		mes "おい！";
@@ -817,27 +804,16 @@ ein_d02_i_q.gat,134,240,7	script	スティーブン#ITB_017	98,{
 		warp "ein_d02_i_q.gat", 135, 235;
 		end;
 	}
-OnInit:
-	cloakonnpc;
-	end;
 }
-ein_d02_i_q.gat,133,238,7	script	サン#ITB_018	798,{
+ein_d02_i_q.gat,133,238,7	script(CLOAKED)	サン#ITB_018	798,{
 	mes "‐物陰に隠れた‐";
 	next;
 	warp "ein_d02_i_q.gat", 135, 235;
 	end;
-OnInit:
-	cloakonnpc;
-	end;
 }
 ein_d02_i_q.gat,142,244,3	duplicate(サン#ITB_018)	？？？？#ITB_019	10291
 ein_d02_i_q.gat,141,244,5	duplicate(サン#ITB_018)	？？？？#ITB_020	10294
-ein_d02_i_q.gat,141,244,5	script	？？？？#ITB_021	10293,{
-	end;
-OnInit:
-	cloakonnpc;
-	end;
-}
+ein_d02_i_q.gat,141,244,5	script(CLOAKED)	？？？？#ITB_021	10293,{}
 ein_d02_i_q.gat,140,244,7	duplicate(サン#ITB_018)	？？？？#ITB_022	10292
 ein_d02_i_q.gat,141,240,5	duplicate(サン#ITB_018)	？？？？#ITB_023	10290
 ein_d02_i_q.gat,139,240,5	duplicate(サン#ITB_018)	？？？？#ITB_024	10292

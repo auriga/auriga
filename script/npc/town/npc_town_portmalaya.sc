@@ -10263,7 +10263,7 @@ OnTouch:
 	end;
 }
 
-ma_in01.gat,43,101,7	script	å¢#totoi	81,{
+ma_in01.gat,43,101,7	script(HIDDEN)	å¢#totoi	81,{
 	end;
 OnStart:
 	initnpctimer;
@@ -10271,7 +10271,6 @@ OnStart:
 	end;
 OnTimer300000:
 	stopnpctimer;
-OnInit:
 	hideonnpc "å¢#totoi";
 	end;
 }
@@ -10464,7 +10463,7 @@ malaya.gat,290,152,5	script	éÎÇËÇÃíBêl	578,{
 	}
 }
 
-malaya.gat,291,152,3	script	#buwaya_soil	557,{
+malaya.gat,291,152,3	script(HIDDEN)	#buwaya_soil	557,{
 	if(MALAYA_5QUE != 9) {
 		mes "Å]âΩÇ©Ç–Ç«Ç≠èLÇ§Ç‡ÇÃÇ™Ç†ÇÈÅ]";
 		close;
@@ -10552,9 +10551,6 @@ malaya.gat,291,152,3	script	#buwaya_soil	557,{
 	setquest 2276;
 	set MALAYA_5QUE,10;
 	close;
-OnInit:
-	hideonnpc "#buwaya_soil";
-	end;
 }
 
 ma_fild02.gat,155,235,3	script	âΩÇ©ÇÃç≠ê’#01	557,{
@@ -10837,7 +10833,7 @@ ma_fild02.gat,307,245,0	script	#todog1	139,3,3,{
 ma_fild02.gat,320,241,0	duplicate(#todog1)	#todog2	139,3,3
 ma_fild02.gat,317,250,0	duplicate(#todog1)	#todog3	139,3,3
 
-ma_fild02.gat,312,259,3	script	å¢#buwaya	81,{
+ma_fild02.gat,312,259,3	script(HIDDEN)	å¢#buwaya	81,{
 	mes "[å¢]";
 	mes "ÉèÉìÉèÉì!!";
 	if(MALAYA_5QUE == 11) {
@@ -10916,17 +10912,9 @@ ma_fild02.gat,312,259,3	script	å¢#buwaya	81,{
 		set MALAYA_5QUE,12;
 	}
 	close;
-OnInit:
-	hideonnpc "å¢#buwaya";
-	end;
 }
 
-ma_fild02.gat,305,268,3	script	åxîıë‡àı#buwaya	570,{
-	end;
-OnInit:
-	hideonnpc "åxîıë‡àı#buwaya";
-	end;
-}
+ma_fild02.gat,305,268,3	script(HIDDEN)	åxîıë‡àı#buwaya	570,{}
 
 //============================================================
 // ÉoÉRÉiÉèÇÃì`ê‡ÉNÉGÉXÉgNPC
