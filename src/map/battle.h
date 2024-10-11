@@ -24,7 +24,7 @@
 
 // ダメージ
 struct Damage {
-	int damage,damage2;
+	atn_bignumber damage,damage2;
 	int type, div_;
 	int amotion, dmotion;
 	int blewcount;
@@ -33,7 +33,7 @@ struct Damage {
 };
 
 // 属性修正計算
-int battle_attr_fix(int damage,int atk_elem,int def_elem);
+atn_bignumber battle_attr_fix(atn_bignumber damage,int atk_elem,int def_elem);
 
 // 最終計算のフラグ
 enum {
@@ -61,8 +61,8 @@ struct mob_data;
 struct block_list;
 
 // 実際にHPを増減
-int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,int damage,int skillid,int skilllv,int flag);
-int battle_damage(struct block_list *bl,struct block_list *target,int damage,int skillid,int skilllv,int flag);
+int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,atn_bignumber damage,int skillid,int skilllv,int flag);
+int battle_damage(struct block_list *bl,struct block_list *target,atn_bignumber damage,int skillid,int skilllv,int flag);
 int battle_damage_area(struct block_list *bl,va_list ap);
 int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,int flag);
 

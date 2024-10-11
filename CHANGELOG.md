@@ -1,4 +1,82 @@
 ----------------------------------------
+//1566 [2024/10/11] by Blaze
+
+・4次職実装（pc.c, pc.h, skill.c, skill.h, battle.c, status.c, status.h, unit.c, atcommand.c,
+ conf/help.txt, db/job_db1.txt, db/job_db2.txt, db/job_db2-2.txt, db/job_hp_db.txt, db/job_sp_db.txt,
+ db/skill_db.txt, db/skill_db2.txt, db/skill_require_db.txt, db/skill_tree.txt, db/skill_unit_db.txt, db/pre/skill_tree_pre.txt）
+　※スキルはドラゴンナイト、アークメイジ、インクイジター、インペリアルガード、カーディナル、シャドウクロスを実装しています。
+　　残りの4次職スキルは後日実装予定
+　※スクリプトで4次職が未対応など、不安定な状態での先行実装のためご注意ください。
+
+・クラス定義名/ジョブ定義名を変更（mmo.h, pc.c, pc.h）
+　デスナイト　　：PC_CLASS_DK / PC_JOB_DK → PC_CLASS_DE / PC_JOB_DE
+　ドラゴンナイト：PC_CLASS_DR / PC_JOB_DR → PC_CLASS_DK / PC_JOB_DK
+　星帝　　　　　：PC_CLASS_SE / PC_JOB_SE → PC_CLASS_SJ / PC_JOB_SJ
+　ソウルリーパー：PC_CLASS_RE / PC_JOB_RE → PC_CLASS_SP / PC_JOB_SP
+
+・スキル設定DB「skill_db.txt」の書式変更（db/skill_db.txt, db/pre/skill_db_pre.txt, skill.c, skill.h, doc/db_ref.txt）
+　AP回復量を指定する「heal_ap」を追加
+
+・スキル要求DB「skill_require_db.txt」の書式変更（db/skill_require_db.txt.txt, db/pre/skill_require_db_pre.txt, skill.c, skill.h,  doc/db_ref.txt）
+　AP消費量を指定する「list_ap」「list_ap_rate」を追加
+
+・上記に伴い、スキル使用時のAP回復/消費を実装。死亡時にAPが0になるように（skill.c, pc.c）
+
+・ジョブ設定DB「job_db1.txt」と経験値テーブル設定「exp.txt」の仕様変更（status.c, status.h, pc.c, db/job_db1.txt, db/pre/job_db1_pre.txt, db/exp.txt）
+　job_db1にbexp_tableとjexp_tableを追加、内部処理で固定でテーブル参照していたのをDBでジョブごとにBase経験値テーブル/Job経験値テーブルの参照を設定できるように変更
+　exp.txtの設定内容を整理、～Lv260までの設定追加と4次職の経験値テーブルを追加
+
+・ジョブボーナス設定DB「job_db2.txt」「job_db2-2.txt」に特性ステータス（Pow/Sta/Wis/Spl/Con/Crt）の増加を指定できるように（db/job_db2.txt, db/job_db2-2.txt, status.c）
+
+・4次職のスキル倍率計算中に32bit上限を超えるため、ダメージ計算中はdamage変数を64bit(atn_bignumber)で演算させるように（battle.c, battle.h, clif.c, clif.h）
+　また、atn_bignumber -> int型のキャストマクロ「BIGNUM2INT(x)」を追加（utils.h）
+
+・最大レベルを255->260に引き上げ（map.h）
+
+・スキルユニットのタイマー間隔を100ms -> 50msに変更（skill.c）
+　※注意：処理負荷が上がります。気になる方はskill.cの「SKILLUNITTIMER_INVERVAL」定義を調節ください。
+
+・上記に伴い、これまで暫定値だったストームガストの設置時間を変更（db/skill_cast_db.txt, db/skill_cast_db_pre.txt）
+
+・(R後)ダブルアタックなどの連撃攻撃にクリティカルが乗るように変更（battle.c）
+
+・クリティカル計算を変更、クリティカルが乗るスキルはアイテム効果のクリティカルダメージUP効果を半減させるように（battle.c）
+
+・ソウルリーパースキル「死霊爆発」「エスパ」「エスフ」のダメージ計算でBaseLevel倍率計算が正しくなかったのを修正（battle.c）
+
+・ソウルリーパーのソウルエナジーが最大15個しか蓄積できなかったのを20個までに修正（map.h）
+
+・ソウルエナジーが最大個数まで達していた場合、追加によるタイマー更新を行わないように変更（pc.c）
+
+・ドラゴンナイトスキルのサーヴァントウェポン武器体表示を実装（map.h, pc.c, pc.h, clif.c, clif.h）
+
+・新クライアントに伴い、以下スキルのエフェクト表示を調整（skill.c, db/skill_db.txt）
+　イグニッションブレイク、ウィンドカッター、ファイアードラゴンブレス、ウォータードラゴンブレス、フロストミスティ、コメット、アースドライブ、獅子吼
+
+・スキル倍率計算のためにクローキングエクシード中のスキル使用時、解除タイミングを変更（unit.c）
+
+----------------------------------------
+//1565 [2024/10/05] by refis
+
+・scriptタイプNPCの機能拡張、及びリファクタリング（npc.c）
+　これまでOnInitを利用してdisable、hideon、cloakonしていた箇所を直接指定できるよう拡張
+　script/script2の後に()を付加し、下記から指定します
+　　DISABLED ：無効状態、disablenpc命令と等価
+　　HIDDEN   ：ハイディング状態、hideonnpc命令と等価
+　　CLOAKED  ：クローキング状態、cloakonnpc命令と等価
+　例： prontera.gat,164,190,4 script(HIDDEN) init hide test 105,{}
+
+・上記機能拡張に伴いduplicate、MDNPC追加時に元NPCのoptionを引き継ぐように変更（npc.c）
+
+・上記機能拡張が利用できるNPCを更新（/npc/*）
+
+・script_ref.txtに上記機能拡張と追記の無い命令について追加（doc/script_ref.txt）
+
+・視認NPCがクローキング状態の時の細かいリファクタリング（clif.c）
+
+・スクリプト命令[npcwalkwait]の待機時間計算に移動パスを加味するよう修正（script.c）
+
+----------------------------------------
 //1564 [2024/10/03] by Blaze
 
 ・ソウルリーパーとスーパーノービス（限界突破）の新規スキル実装

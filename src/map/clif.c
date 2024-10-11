@@ -5222,6 +5222,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_elementball(sd);
 	if(sd->soulenergy.num > 0)
 		clif_soulenergy(sd);
+	if(sd->servantweapon.num > 0)
+		clif_servantweapon(sd);
 	if(sd->sc.data[SC_MILLENNIUMSHIELD].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_MILLENNIUMSHIELD].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
@@ -11872,7 +11874,7 @@ void clif_storageclose(struct map_session_data *sd)
  * 通常攻撃エフェクト＆ダメージ
  *------------------------------------------
  */
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2, int is_spdamage)
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, atn_bignumber damage, int div_, int type, atn_bignumber damage2, int is_spdamage)
 {
 	unsigned char buf[36];
 	struct status_change *sc;
@@ -11900,10 +11902,10 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFL(buf,10)=tick;
 	WBUFL(buf,14)=sdelay;
 	WBUFL(buf,18)=ddelay;
-	WBUFW(buf,22)=(damage > 0x7fff)? 0x7fff: damage;
+	WBUFW(buf,22)=(int)((damage > 0x7fff)? 0x7fff: damage);
 	WBUFW(buf,24)=div_;
 	WBUFB(buf,26)=type;
-	WBUFW(buf,27)=damage2;
+	WBUFW(buf,27)=(int)((damage2 > 0x7fff)? 0x7fff: damage2);
 	clif_send(buf,packet_db[0x8a].len,src,AREA);
 #elif PACKETVER < 20110719
 	WBUFW(buf,0)=0x2e1;
@@ -11912,10 +11914,10 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFL(buf,10)=tick;
 	WBUFL(buf,14)=sdelay;
 	WBUFL(buf,18)=ddelay;
-	WBUFL(buf,22)=damage;
+	WBUFL(buf,22)=BIGNUM2INT(damage);
 	WBUFW(buf,26)=div_;
 	WBUFB(buf,28)=type;
-	WBUFL(buf,29)=damage2;
+	WBUFL(buf,29)=BIGNUM2INT(damage2);
 	clif_send(buf,packet_db[0x2e1].len,src,AREA);
 #else
 	WBUFW(buf,0)=0x8c8;
@@ -11924,11 +11926,11 @@ void clif_damage(struct block_list *src, struct block_list *dst, unsigned int ti
 	WBUFL(buf,10)=tick;
 	WBUFL(buf,14)=sdelay;
 	WBUFL(buf,18)=ddelay;
-	WBUFL(buf,22)=damage;
+	WBUFL(buf,22)=BIGNUM2INT(damage);
 	WBUFB(buf,26)=is_spdamage;
 	WBUFW(buf,27)=div_;
 	WBUFB(buf,29)=type;
-	WBUFL(buf,30)=damage2;
+	WBUFL(buf,30)=BIGNUM2INT(damage2);
 	clif_send(buf,packet_db[0x8c8].len,src,AREA);
 #endif
 
@@ -12027,6 +12029,11 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 	// ソウルエナジー表示
 	if(dstsd->soulenergy.num > 0) {
 		clif_soulenergy_id(sd->fd,dstsd);
+	}
+
+	// サーヴァントウェポン表示
+	if(dstsd->servantweapon.num > 0) {
+		clif_set01e1(sd->fd,dstsd,dstsd->servantweapon.num);
 	}
 
 	if(sd->status.manner < 0)
@@ -13139,7 +13146,7 @@ void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int bt
  *------------------------------------------
  */
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
-	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type)
+	unsigned int tick,int sdelay,int ddelay,atn_bignumber damage,int div_,int skill_id,int skill_lv,int type)
 {
 	unsigned char buf[36];
 	struct status_change *sc;
@@ -13166,7 +13173,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	WBUFL(buf,12)=tick;
 	WBUFL(buf,16)=sdelay;
 	WBUFL(buf,20)=ddelay;
-	WBUFW(buf,24)=damage;
+	WBUFW(buf,24)=(int)((damage > 0x7fff)? 0x7fff: damage);
 	WBUFW(buf,26)=skill_lv;
 	WBUFW(buf,28)=div_;
 	WBUFB(buf,30)=(type>0)?type:skill_get_hit(skill_id);
@@ -13179,7 +13186,7 @@ void clif_skill_damage(struct block_list *src,struct block_list *dst,
 	WBUFL(buf,12)=tick;
 	WBUFL(buf,16)=sdelay;
 	WBUFL(buf,20)=ddelay;
-	WBUFL(buf,24)=damage;
+	WBUFL(buf,24)=BIGNUM2INT(damage);
 	WBUFW(buf,28)=skill_lv;
 	WBUFW(buf,30)=div_;
 	WBUFB(buf,32)=(type>0)?type:skill_get_hit(skill_id);
@@ -13579,7 +13586,7 @@ void clif_skill_estimation(struct map_session_data *sd, struct block_list *bl)
 #endif
 	WBUFW(buf,18)=status_get_elem_type(&md->bl);
 	for(i=0; i<9 && i<ELE_MAX-1; i++)
-		WBUFB(buf,20+i) = battle_attr_fix(100,i+1,md->def_ele);
+		WBUFB(buf,20+i) = (unsigned char)battle_attr_fix(100,i+1,md->def_ele);
 	for( ; i<9; i++)
 		WBUFB(buf,20+i) = 100;	// ELE_MAXが10より小さい場合
 
@@ -22264,6 +22271,24 @@ void clif_soulenergy(struct map_session_data *sd)
 	WBUFL(buf,2)=sd->bl.id;
 	WBUFW(buf,6)=sd->soulenergy.num;
 	clif_send(buf,packet_db[0xb73].len,&sd->bl,AREA);
+
+	return;
+}
+
+/*==========================================
+ * サーヴァントウェポン表示
+ *------------------------------------------
+ */
+void clif_servantweapon(struct map_session_data *sd)
+{
+	unsigned char buf[8];
+
+	nullpo_retv(sd);
+
+	WBUFW(buf,0)=0x1d0;
+	WBUFL(buf,2)=sd->bl.id;
+	WBUFW(buf,6)=sd->servantweapon.num;
+	clif_send(buf,packet_db[0x1d0].len,&sd->bl,AREA);
 
 	return;
 }

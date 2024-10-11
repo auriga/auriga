@@ -287,6 +287,7 @@ typedef int32  intptr;
 #define UINT2PTR(x) ((void *)(uintptr)(x))
 #define PTR2INT(x)  ((int)(intptr)(x))
 #define PTR2UINT(x) ((unsigned int)(uintptr)(x))
+#define BIGNUM2INT(x) (int)(((x) >= (int)(0x7fffffff)) ? (0x7fffffff) : ((x) <= (int)(0x80000000)) ? (0x80000000) : (x))
 
 // =====================
 // utils.c

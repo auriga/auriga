@@ -300,6 +300,8 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_MASTER].val4),sd->bl.m,dx,dy);
 		if(sd->sc.data[SC_BANDING].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
+		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,dx,dy);
 	}
 	if(md) {
 		if(sc && sc->data[SC_DANCING].timer != -1)
@@ -803,6 +805,10 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		// バンディングの位置変更
 		if(sd->sc.data[SC_BANDING].timer != -1) {
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
+		}
+		// ダンシングナイフの位置変更
+		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1) {
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
@@ -1380,10 +1386,6 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 
-	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
-		status_change_end(src,SC_CLOAKINGEXCEED,-1);
-	}
-
 	if(sc && sc->data[SC_NEWMOON].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
 		status_change_end(src,SC_NEWMOON,-1);
 	}
@@ -1420,6 +1422,11 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			src_ud->skilltimer = -1;
 		skill_castend_id(src_ud->skilltimer,tick,src->id,NULL);
 	}
+
+	if(sc && sc->data[SC_CLOAKINGEXCEED].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
+		status_change_end(src,SC_CLOAKINGEXCEED,-1);
+	}
+
 	return 1;
 }
 

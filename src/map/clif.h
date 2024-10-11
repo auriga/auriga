@@ -128,8 +128,8 @@ enum {
 	// ウェポンブロッキング発動後制限時間内に使用可能です。
 	// %d個を超える設置はできません。
 	// リーディングスペルブックに保存された魔法がありません。
-	// APが足りません。
-	// サーヴァントウェポン%d個が必要です。
+	SKILLFAIL_AP					= 100,	// APが足りません。
+	SKILLFAIL_SERVANTWEAPOM			= 101,	// サーヴァントウェポン%d個が必要です。
 	// このスキルは自身が設置した天地万星の範囲内で使用可能です。
 	// このスキルは魂の蓄積状態で使用可能です。
 	// 護符が必要です。
@@ -197,7 +197,7 @@ void clif_delitem(struct map_session_data *sd, short type, int n, int amount);
 void clif_delitem_timeout(struct map_session_data *sd, int n, int itemid);
 void clif_updatestatus(struct map_session_data *sd, int type);
 void clif_changestatus(struct block_list *bl, int type, int val);
-void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, int damage, int div_, int type, int damage2, int is_spdamage);	// area
+void clif_damage(struct block_list *src, struct block_list *dst, unsigned int tick, int sdelay, int ddelay, atn_bignumber damage, int div_, int type, atn_bignumber damage2, int is_spdamage);	// area
 void clif_takeitem(struct block_list *src, int dst_id);
 void clif_changelook(struct block_list *bl, int type, int val);
 //void clif_send_clothcolor(struct block_list *bl);
@@ -307,7 +307,7 @@ void clif_skillcasting(struct block_list* bl,int src_id,int dst_id,int dst_x,int
 void clif_skillcastcancel(struct block_list* bl);
 void clif_skill_fail(struct map_session_data *sd, int skill_id, int type, int btype, int val);
 void clif_skill_damage(struct block_list *src,struct block_list *dst,
-	unsigned int tick,int sdelay,int ddelay,int damage,int div_,int skill_id,int skill_lv,int type);
+	unsigned int tick,int sdelay,int ddelay,atn_bignumber damage,int div_,int skill_id,int skill_lv,int type);
 void clif_skill_nodamage(struct block_list *src,struct block_list *dst,int skill_id,int heal,int fail);
 void clif_skill_poseffect(struct block_list *src,int skill_id,int val,int x,int y,unsigned int tick);
 void clif_skillscale(struct block_list *bl, int src_id, int x, int y, int skill_num, int skill_lv, int casttime);
@@ -410,6 +410,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
 void clif_mapproperty(struct map_session_data *sd);
 void clif_send_personalinfo(struct map_session_data *sd);
 void clif_soulenergy(struct map_session_data *sd);
+void clif_servantweapon(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

@@ -82,7 +82,7 @@ upkeep_time2:スキルによって起こる状態異常の維持時間を設定�
 ==========================================================================
 2. db/skill_db.txt
 --------------------------------------------------------------------------
-id,range,hit,inf,pl,nk,max,list_num,castcancel,cast_defence_rate,inf2,maxcount,skill_type,blow_count,area
+id,range,hit,inf,pl,nk,max,list_num,castcancel,cast_defence_rate,inf2,maxcount,skill_type,blow_count,area,heal_ap
 
 id: スキルのIDです。
 range: スキルの射程距離です。レベル別に設定する場合は「:」を使います。-1はキャラの武器射程と同じと言う意味で-2ならキャラの武器射程+1、-3ならキャラの武器射程+2になります。
@@ -120,7 +120,7 @@ maxcount: 地面スキルのみに適用される物でスキルを置ける最�
 skill_type: スキルの種類を設定します。weaponは武器スキルでmagicは魔法スキル、miscは武器でも魔法でもないスキルです。noneは決め難しい物等に設定します。ただこれを変えたとしてもスキルのダメージ計算がこれに合わせて変わるわけではなくダメージの計算はプログラムレベルで行なっています。これはスペルブレイカーで詠唱中止されるかどうかを設定する為の物です。(他のスキルでこの設定を使用する可能性もありますが今の所スペルブレイカーのみです。) magicに設定するとスペルブレイカーで詠唱中止されます。
 blow_count: スキルによるノックバック距離です。レベル別に設定する場合は「:」を使います。
 area: 範囲スキルの場合の効果範囲です。レベル別に設定する場合は「:」を使います。半径のセル数で指定し、3x3の場合は1を、5x5の場合は2を設定します。0は範囲なしになります。
-
+heal_ap: スキル使用時に回復するAPの量を設定します。レベル別に設定する場合は「:」を使います。
 
 ==========================================================================
 3. db/skill_db2.txt
@@ -148,13 +148,15 @@ reserve: 予約。現在未使用。
 ==========================================================================
 4. db/skill_require_db.txt
 --------------------------------------------------------------------------
-id,list_hp,list_sp,list_hp_rate,list_sp_rate,list_zeny,list_weapon,state,spiritball,itemid1,amount1,itemid2,amount2,itemid3,amount3,itemid4,amount4,itemid5,amount5,itemid6,amount6,itemid7,amount7,itemid8,amount8,itemid9,amount9,itemid10,amount10,list_lv_itemid,list_lv_amount
+id,list_hp,list_sp,list_ap,list_hp_rate,list_sp_rate,list_ap_rate,list_zeny,list_weapon,state,spiritball,itemid1,amount1,itemid2,amount2,itemid3,amount3,itemid4,amount4,itemid5,amount5,itemid6,amount6,itemid7,amount7,itemid8,amount8,itemid9,amount9,itemid10,amount10,list_lv_itemid,list_lv_amount
 
 id: スキルのIDです。
 list_hp: スキル使用で減るHPの量です。レベル別に設定する場合は「:」を使います。
 list_sp: スキル使用で減るSPの量です。レベル別に設定する場合は「:」を使います。
+list_ap: スキル使用で減るAPの量です。レベル別に設定する場合は「:」を使います。
 list_hp_rate: スキル使用で減るHPの比率です。レベル別に設定する場合は「:」を使います。(正数の場合は現在HP、負数の場合は最大HPの比率です。)
 list_sp_rate: スキル使用で減るSPの比率です。レベル別に設定する場合は「:」を使います。(正数の場合は現在SP、負数の場合は最大SPの比率です。)
+list_ap_rate: スキル使用で減るAPの比率です。レベル別に設定する場合は「:」を使います。(正数の場合は現在AP、負数の場合は最大APの比率です。)
 list_zeny: スキル使用で減るゼニの量です。レベル別に設定する場合は「:」を使います。
 list_weapon: スキルを使うことができる武器を設定します。
 	99 - 全ての武器、0 - 素手、1 - 短剣、2 - 片手剣、3 - 両手剣、4 - 片手槍、
@@ -232,9 +234,7 @@ PreSkill-Lv-6: 同上 (省略可能)
 BaseLv: 前提Baseレベル
 JobLv: 前提Jobレベル
 Class: クラス区分。下位のスキルを規定以上取らないと上位スキルが取れません。
-	0-ノービス 1-１次職 2-２次職 3-３次職
-　※性質上一次の転職JOBレベルが当てにならないため
-　　ノビはJOB10まで上げきったものとして計算
+	0-ノービス 1-１次職 2-２次職 3-３次職 4-４次職
 
 　注）仕様上、各職においてSkill-IDの昇順に並ぶように記述されていないと
 　　　データベースの読み込み速度が低下する可能性があります

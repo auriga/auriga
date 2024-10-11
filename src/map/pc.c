@@ -66,8 +66,9 @@
 #include "memorial.h"
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
+#define MAX_EXP_TABLE	18		// 経験値テーブル最大数（exp.txtの列数に合わせる）
 
-static atn_bignumber exp_table[22][MAX_LEVEL];
+static atn_bignumber exp_table[MAX_EXP_TABLE][MAX_LEVEL];
 
 int stpoint_table[MAX_LEVEL];
 int tstpoint_table[MAX_LEVEL];
@@ -719,28 +720,21 @@ int pc_addsoulenergy(struct map_session_data *sd,int interval,int num)
 	before = sd->soulenergy.num;
 
 	if(max > 0) {
-		int i, j;
+		int i;
 		unsigned int tick = gettick();
 		for(i = num; i > 0; i--) {
 			if(sd->soulenergy.num >= max) {
-				if(sd->soulenergy.timer[0] != -1) {
-					delete_timer(sd->soulenergy.timer[0],pc_soulenergy_timer);
-					sd->soulenergy.timer[0] = -1;
-				}
-				for(j = 1; j < max; j++) {
-					sd->soulenergy.timer[j-1] = sd->soulenergy.timer[j];
-					sd->soulenergy.timer[j] = -1;
-				}
-			} else {
-				sd->soulenergy.num++;
+				// 最大数に達している場合は更新しない
+				break;
 			}
+			sd->soulenergy.num++;
 			sd->soulenergy.timer[sd->soulenergy.num-1] = add_timer(tick+interval+sd->soulenergy.num,pc_soulenergy_timer,sd->bl.id,NULL);
 		}
 	}
-	if(sd->soulenergy.num != before)
+	if(sd->soulenergy.num != before) {
 		status_calc_pc(sd,0);
-
-	clif_soulenergy(sd);
+		clif_soulenergy(sd);
+	}
 
 	return 0;
 }
@@ -780,6 +774,107 @@ int pc_delsoulenergy(struct map_session_data *sd,int count,int type)
 
 	if(!type)
 		clif_soulenergy(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * サーヴァントウェポンタイマー
+ *------------------------------------------
+ */
+static int pc_servantweapon_timer(int tid,unsigned int tick,int id,void *data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	int i;
+
+	if(sd == NULL)
+		return 1;
+
+	if(sd->servantweapon.timer[0] != tid) {
+		if(battle_config.error_log)
+			printf("servantweapon_timer %d != %d\n",sd->servantweapon.timer[0],tid);
+		return 0;
+	}
+	sd->servantweapon.timer[0] = -1;
+	for(i=1; i<sd->servantweapon.num; i++) {
+		sd->servantweapon.timer[i-1] = sd->servantweapon.timer[i];
+		sd->servantweapon.timer[i] = -1;
+	}
+	sd->servantweapon.num--;
+	if(sd->servantweapon.num < 0)
+		sd->servantweapon.num = 0;
+	clif_servantweapon(sd);
+
+	return 0;
+}
+
+/*==========================================
+ * サーヴァントウェポン追加
+ *------------------------------------------
+ */
+int pc_addservantweapon(struct map_session_data *sd,int interval,int num)
+{
+	int i;
+	unsigned int tick = gettick();
+	int before;
+
+	nullpo_retr(0, sd);
+
+	if(sd->servantweapon.num < 0)
+		sd->servantweapon.num = 0;
+
+	before = sd->servantweapon.num;
+
+	for(i = num; i > 0; i--) {
+		if(sd->servantweapon.num >= MAX_SERVANTWEAPON) {
+			// 最大数に達している場合は更新しない
+			break;
+		}
+		sd->servantweapon.num++;
+		sd->servantweapon.timer[sd->servantweapon.num-1] = add_timer(tick+interval+sd->servantweapon.num,pc_servantweapon_timer,sd->bl.id,NULL);
+	}
+
+	if(sd->servantweapon.num != before) {
+		clif_servantweapon(sd);
+	}
+
+	return 0;
+}
+
+/*==========================================
+ * サーヴァントウェポン削除
+ *------------------------------------------
+ */
+int pc_delservantweapon(struct map_session_data *sd,int count,int type)
+{
+	int i;
+
+	nullpo_retr(0, sd);
+
+	if(sd->servantweapon.num <= 0) {
+		sd->servantweapon.num = 0;
+		return 0;
+	}
+
+	if(count > sd->servantweapon.num)
+		count = sd->servantweapon.num;
+	sd->servantweapon.num -= count;
+	if(count > MAX_SERVANTWEAPON)
+		count = MAX_SERVANTWEAPON;
+
+	for(i=0; i<count; i++) {
+		if(sd->servantweapon.timer[i] != -1) {
+			delete_timer(sd->servantweapon.timer[i],pc_servantweapon_timer);
+			sd->servantweapon.timer[i] = -1;
+		}
+	}
+	for(i=count; i<MAX_SERVANTWEAPON; i++) {
+		sd->servantweapon.timer[i-count] = sd->servantweapon.timer[i];
+		sd->servantweapon.timer[i] = -1;
+	}
+
+	if(!type)
+		clif_servantweapon(sd);
 
 	return 0;
 }
@@ -1157,57 +1252,70 @@ unsigned int pc_get_job_bit(int job)
 			bit = 0x00000040;
 			break;
 		case PC_JOB_KN:		// ナイト
-		case PC_JOB_DK:		// デスナイト（暫定）
+		case PC_JOB_DE:		// デスナイト（暫定）
 		case PC_JOB_RK:		// ルーンナイト（暫定）
+		case PC_JOB_DK:		// ドラゴンナイト（暫定）
 			bit = 0x00000080;
 			break;
 		case PC_JOB_PR:		// プリースト
 		case PC_JOB_AB:		// アークビショップ（暫定）
+		case PC_JOB_CD:		// カーディナル（暫定）
 			bit = 0x00000100;
 			break;
 		case PC_JOB_WZ:		// ウィザード
 		case PC_JOB_WL:		// ウォーロック（暫定）
+		case PC_JOB_AG:		// アークメイジ（暫定）
 			bit = 0x00000200;
 			break;
 		case PC_JOB_BS:		// ブラックスミス
 		case PC_JOB_NC:		// メカニック（暫定）
+		case PC_JOB_MT:		// マイスター（暫定）
 			bit = 0x00000400;
 			break;
 		case PC_JOB_HT:		// ハンター
 		case PC_JOB_RA:		// レンジャー（暫定）
+		case PC_JOB_WH:		// ウィンドホーク（暫定）
 			bit = 0x00000800;
 			break;
 		case PC_JOB_AS:		// アサシン
 		case PC_JOB_GC:		// ギロチンクロス（暫定）
+		case PC_JOB_SHC:	// シャドウクロス（暫定）
 			bit = 0x00001000;
 			break;
 		case PC_JOB_CR:		// クルセイダー
 		case PC_JOB_LG:		// ロイヤルガード（暫定）
+		case PC_JOB_IG:		// インペリアルガード（暫定）
 			bit = 0x00004000;
 			break;
 		case PC_JOB_MO:		// モンク
 		case PC_JOB_SR:		// 修羅（暫定）
+		case PC_JOB_IQ:		// インクイジター（暫定）
 			bit = 0x00008000;
 			break;
 		case PC_JOB_SA:		// セージ
 		case PC_JOB_SO:		// ソーサラー（暫定）
+		case PC_JOB_EM:		// エレメンタルマスター（暫定）
 			bit = 0x00010000;
 			break;
 		case PC_JOB_RG:		// ローグ
 		case PC_JOB_SC:		// シャドウチェイサー（暫定）
+		case PC_JOB_ABC:	// アビスチェイサー（暫定）
 			bit = 0x00020000;
 			break;
 		case PC_JOB_AM:		// アルケミスト
 		case PC_JOB_DA:		// ダークコレクター（暫定）
 		case PC_JOB_GN:		// ジェネティック（暫定）
+		case PC_JOB_BO:		// バイオロ（暫定）
 			bit = 0x00040000;
 			break;
 		case PC_JOB_BA:		// バード
 		case PC_JOB_MI:		// ミンストレル（暫定）
+		case PC_JOB_TRB:	// トルバドゥール（暫定）
 			bit = 0x00080000;
 			break;
 		case PC_JOB_DC:		// ダンサー
 		case PC_JOB_WA:		// ワンダラー（暫定）
+		case PC_JOB_TRV:	// トルヴェール（暫定）
 			bit = 0x00100000;
 			break;
 		case PC_JOB_SNV:	// スーパーノービス
@@ -1218,11 +1326,11 @@ unsigned int pc_get_job_bit(int job)
 			bit = 0x01000000;
 			break;
 		case PC_JOB_SG:		// 拳聖
-		case PC_JOB_SE:		// 星帝（暫定）
+		case PC_JOB_SJ:		// 星帝（暫定）
 			bit = 0x02000000;
 			break;
 		case PC_JOB_SL:		// ソウルリンカー
-		case PC_JOB_RE:		// ソウルリーパー（暫定）
+		case PC_JOB_SP:		// ソウルリーパー（暫定）
 			bit = 0x08000000;
 			break;
 		case PC_JOB_GS:		// ガンスリンガー
@@ -3336,6 +3444,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		sd->ud.to_x = x;
 		sd->ud.to_y = y;
 		skill_stop_dancing(&sd->bl, 2);	// 移動先にユニットを移動するかどうかの判断もする
+
+		// ダンシングナイフ移動
+		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
+			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,(sd->ud.to_x - sd->bl.x), (sd->ud.to_y - sd->bl.y));
 	} else {
 		// 違うマップなのでダンスユニット削除
 		skill_stop_dancing(&sd->bl, 1);
@@ -3347,6 +3459,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			status_change_end(&sd->bl, SC_MOON_COMFORT, -1);
 		if(sd->sc.data[SC_STAR_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_STAR_COMFORT, -1);
+
+		// ダンシングナイフ削除
+		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
+			status_change_end(&sd->bl, SC_DANCING_KNIFE, -1);
 
 		// 凸面鏡の効果削除
 		if(sd->sc.data[SC_BOSSMAPINFO].timer != -1)
@@ -3859,6 +3975,8 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		BS_ADRENALINE,
 		BS_ADRENALINE2,
 		GS_GATLINGFEVER,
+		DK_CHARGINGPIERCE,
+		SHC_DANCING_KNIFE,
 	};
 
 	nullpo_retr(0, sd);
@@ -3917,6 +4035,9 @@ static int pc_checkallowskill(struct map_session_data *sd)
 	if( sd->sc.data[SC_P_ALTER].timer != -1) {	// プラチナムアルター
 		status_change_end(&sd->bl,SC_P_ALTER,-1);
 	}
+	if( sd->sc.data[SC_SHADOW_WEAPON].timer != -1) {	// エンチャンティングシャドウ
+		status_change_end(&sd->bl,SC_SHADOW_WEAPON,-1);
+	}
 
 	if(sd->status.shield <= 0) {
 		if(sd->sc.data[SC_AUTOGUARD].timer != -1) {		// オートガード
@@ -3939,6 +4060,12 @@ static int pc_checkallowskill(struct map_session_data *sd)
 		}
 		if(sd->sc.data[SC_SHIELDSPELL_REF].timer != -1) {		// シールドスペル(精錬)
 			status_change_end(&sd->bl,SC_SHIELDSPELL_REF,-1);
+		}
+		if(sd->sc.data[SC_GUARD_STANCE].timer != -1) {		// ガードスタンス
+			status_change_end(&sd->bl,SC_GUARD_STANCE,-1);
+		}
+		if(sd->sc.data[SC_HOLY_S].timer != -1) {		// ホーリーシールド
+			status_change_end(&sd->bl,SC_HOLY_S,-1);
 		}
 	}
 	return 0;
@@ -4116,8 +4243,8 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_MB;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
-		case PC_CLASS_DK:
-			bj.job   = PC_JOB_DK;
+		case PC_CLASS_DE:
+			bj.job   = PC_JOB_DE;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
 		case PC_CLASS_DA:
@@ -4253,21 +4380,90 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_SUM;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
-		case PC_CLASS_SE:
-		case PC_CLASS_SE_B:
-		case PC_CLASS_SE2:
-		case PC_CLASS_SE2_B:
-		case PC_CLASS_SE3:
-		case PC_CLASS_SE3_B:
-			bj.job   = PC_JOB_SE;
+		case PC_CLASS_SJ:
+		case PC_CLASS_SJ_B:
+		case PC_CLASS_SJ2:
+		case PC_CLASS_SJ2_B:
+		case PC_CLASS_SJ3:
+		case PC_CLASS_SJ3_B:
+			bj.job   = PC_JOB_SJ;
 			bj.upper = PC_UPPER_NORMAL;
 			break;
-		case PC_CLASS_RE:
-		case PC_CLASS_RE_B:
-		case PC_CLASS_RE2:
-		case PC_CLASS_RE2_B:
-			bj.job   = PC_JOB_RE;
+		case PC_CLASS_SP:
+		case PC_CLASS_SP_B:
+		case PC_CLASS_SP2:
+		case PC_CLASS_SP2_B:
+			bj.job   = PC_JOB_SP;
 			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_DK:
+		case PC_CLASS_DK2:
+		case PC_CLASS_DK3:
+			bj.job   = PC_JOB_DK;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_MT:
+		case PC_CLASS_MT2:
+		case PC_CLASS_MT3:
+			bj.job   = PC_JOB_MT;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_SHC:
+		case PC_CLASS_SHC2:
+			bj.job   = PC_JOB_SHC;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_AG:
+		case PC_CLASS_AG2:
+			bj.job   = PC_JOB_AG;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_CD:
+		case PC_CLASS_CD2:
+			bj.job   = PC_JOB_CD;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_WH:
+		case PC_CLASS_WH2:
+		case PC_CLASS_WH3:
+			bj.job   = PC_JOB_WH;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_IG:
+		case PC_CLASS_IG2:
+		case PC_CLASS_IG3:
+			bj.job   = PC_JOB_IG;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_BO:
+		case PC_CLASS_BO2:
+			bj.job   = PC_JOB_BO;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_ABC:
+		case PC_CLASS_ABC2:
+			bj.job   = PC_JOB_ABC;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_EM:
+		case PC_CLASS_EM2:
+			bj.job   = PC_JOB_EM;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_IQ:
+		case PC_CLASS_IQ2:
+			bj.job   = PC_JOB_IQ;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_TRB:
+		case PC_CLASS_TRB2:
+			bj.job   = PC_JOB_TRB;
+			bj.upper = PC_UPPER_HIGH;
+			break;
+		case PC_CLASS_TRV:
+		case PC_CLASS_TRV2:
+			bj.job   = PC_JOB_TRV;
+			bj.upper = PC_UPPER_HIGH;
 			break;
 		default:
 			bj.job   = PC_JOB_NV;
@@ -4351,8 +4547,8 @@ int pc_calc_class_job(int job, int upper)
 		case PC_JOB_MB:
 			class_ = PC_CLASS_MB;
 			break;
-		case PC_JOB_DK:
-			class_ = PC_CLASS_DK;
+		case PC_JOB_DE:
+			class_ = PC_CLASS_DE;
 			break;
 		case PC_JOB_DA:
 			class_ = PC_CLASS_DA;
@@ -4396,11 +4592,26 @@ int pc_calc_class_job(int job, int upper)
 		case PC_JOB_SUM:
 			class_ = PC_CLASS_SUM;
 			break;
-		case PC_JOB_SE:
-			class_ = PC_CLASS_SE;
+		case PC_JOB_SJ:
+			class_ = PC_CLASS_SJ;
 			break;
-		case PC_JOB_RE:
-			class_ = PC_CLASS_RE;
+		case PC_JOB_SP:
+			class_ = PC_CLASS_SP;
+			break;
+		case PC_JOB_DK:
+		case PC_JOB_MT:
+		case PC_JOB_SHC:
+		case PC_JOB_AG:
+		case PC_JOB_CD:
+		case PC_JOB_WH:
+		case PC_JOB_IG:
+		case PC_JOB_BO:
+		case PC_JOB_ABC:
+		case PC_JOB_EM:
+		case PC_JOB_IQ:
+		case PC_JOB_TRB:
+		case PC_JOB_TRV:
+			class_ = job - PC_JOB_DK + PC_CLASS_DK;
 			break;
 	}
 
@@ -4549,8 +4760,8 @@ int pc_calc_job_class(int class_)
 		case PC_CLASS_MB:
 			job = PC_JOB_MB;
 			break;
-		case PC_CLASS_DK:
-			job = PC_JOB_DK;
+		case PC_CLASS_DE:
+			job = PC_JOB_DE;
 			break;
 		case PC_CLASS_DA:
 			job = PC_JOB_DA;
@@ -4652,19 +4863,19 @@ int pc_calc_job_class(int class_)
 		case PC_CLASS_SUM:
 			job = PC_JOB_SUM;
 			break;
-		case PC_CLASS_SE:
-		case PC_CLASS_SE_B:
-		case PC_CLASS_SE2:
-		case PC_CLASS_SE2_B:
-		case PC_CLASS_SE3:
-		case PC_CLASS_SE3_B:
-			job = PC_JOB_SE;
+		case PC_CLASS_SJ:
+		case PC_CLASS_SJ_B:
+		case PC_CLASS_SJ2:
+		case PC_CLASS_SJ2_B:
+		case PC_CLASS_SJ3:
+		case PC_CLASS_SJ3_B:
+			job = PC_JOB_SJ;
 			break;
-		case PC_CLASS_RE:
-		case PC_CLASS_RE_B:
-		case PC_CLASS_RE2:
-		case PC_CLASS_RE2_B:
-			job = PC_JOB_RE;
+		case PC_CLASS_SP:
+		case PC_CLASS_SP_B:
+		case PC_CLASS_SP2:
+		case PC_CLASS_SP2_B:
+			job = PC_JOB_SP;
 			break;
 	}
 
@@ -4924,10 +5135,10 @@ int pc_get_base_class(int class_, int type)
 			case PC_CLASS_SC:
 				class_ = PC_CLASS_RG;
 				break;
-			case PC_CLASS_SE:
+			case PC_CLASS_SJ:
 				class_ = PC_CLASS_SG;
 				break;
-			case PC_CLASS_RE:
+			case PC_CLASS_SP:
 				class_ = PC_CLASS_SL;
 				break;
 		}
@@ -4965,7 +5176,7 @@ int pc_get_base_class(int class_, int type)
 		case PC_CLASS_SL:
 			class_ = PC_CLASS_TK;
 			break;
-		case PC_CLASS_DK:
+		case PC_CLASS_DE:
 		case PC_CLASS_DA:
 			class_ = PC_CLASS_MB;
 			break;
@@ -4991,7 +5202,7 @@ int pc_get_base_job(int job, int type)
 	/* 4次職から3次職に変換 */
 	if(type < 4) {
 		switch(job){
-			case PC_JOB_DR:  job = PC_JOB_RK; break;		// ドラゴンナイト -> ルーンナイト
+			case PC_JOB_DK:  job = PC_JOB_RK; break;		// ドラゴンナイト -> ルーンナイト
 			case PC_JOB_MT:  job = PC_JOB_NC; break;		// マイスター -> メカニック
 			case PC_JOB_SHC: job = PC_JOB_GC; break;		// シャドウクロス -> ギロチンクロス
 			case PC_JOB_AG:  job = PC_JOB_WL; break;		// アークメイジ -> ウォーロック
@@ -5004,8 +5215,8 @@ int pc_get_base_job(int job, int type)
 			case PC_JOB_IQ:  job = PC_JOB_SR; break;		// インクイジター -> 修羅
 			case PC_JOB_TRB: job = PC_JOB_MI; break;		// トルバドゥール -> ミンストレル
 			case PC_JOB_TRV: job = PC_JOB_WA; break;		// トルヴェール -> ワンダラー
-			case PC_JOB_SKE: job = PC_JOB_SE; break;		// 天帝 -> 星帝
-			case PC_JOB_SOA: job = PC_JOB_RE; break;		// ソウルアセティック -> ソウルリーパー
+			case PC_JOB_SKE: job = PC_JOB_SJ; break;		// 天帝 -> 星帝
+			case PC_JOB_SOA: job = PC_JOB_SP; break;		// ソウルアセティック -> ソウルリーパー
 		}
 	}
 
@@ -5025,8 +5236,8 @@ int pc_get_base_job(int job, int type)
 			case PC_JOB_SR: job = PC_JOB_MO; break;		// 修羅 -> モンク
 			case PC_JOB_GN: job = PC_JOB_AM; break;		// ジェネティック -> アルケミスト
 			case PC_JOB_SC: job = PC_JOB_RG; break;		// シャドウチェイサー -> ローグ
-			case PC_JOB_SE: job = PC_JOB_SG; break;		// 星帝 -> 拳聖
-			case PC_JOB_RE: job = PC_JOB_SL; break;		// ソウルリーパー -> ソウルリンカー
+			case PC_JOB_SJ: job = PC_JOB_SG; break;		// 星帝 -> 拳聖
+			case PC_JOB_SP: job = PC_JOB_SL; break;		// ソウルリーパー -> ソウルリンカー
 			case PC_JOB_SK: job = PC_JOB_KG; break;		// 蜃気楼 -> 影狼
 			case PC_JOB_SN: job = PC_JOB_OB; break;		// 不知火 -> 朧
 			case PC_JOB_NW: job = PC_JOB_RL; break;		// ナイトウォッチ -> リベリオン
@@ -5044,7 +5255,7 @@ int pc_get_base_job(int job, int type)
 			case PC_JOB_HT: case PC_JOB_BA: case PC_JOB_DC: job = PC_JOB_AC; break; 		// ハンター/バード/ダンサー -> アーチャー
 			case PC_JOB_AS: case PC_JOB_RG: job = PC_JOB_TF; break;		// アサシン/ローグ -> シーフ
 			case PC_JOB_SG: case PC_JOB_SL: job = PC_JOB_TK; break;		// 拳聖/ソウルリンカー -> テコンキッド
-			case PC_JOB_DK: case PC_JOB_DA: job = PC_JOB_MB; break;		// デスナイト/ダークコレクター -> キョンシー
+			case PC_JOB_DE: case PC_JOB_DA: job = PC_JOB_MB; break;		// デスナイト/ダークコレクター -> キョンシー
 			case PC_JOB_ESNV: job = PC_JOB_SNV; break;		// スーパーノービス(限界突破) -> スーパーノービス
 			case PC_JOB_KG: case PC_JOB_OB: job = PC_JOB_NJ; break;		// 影狼/朧 -> 忍者
 			case PC_JOB_RL:   job = PC_JOB_GS;  break;		// リベリオン -> ガンスリンガー
@@ -5332,176 +5543,10 @@ atn_bignumber pc_nextbaseexp(struct map_session_data *sd)
 	if(sd->status.base_level >= MAX_LEVEL || sd->status.base_level <= 0)
 		return 0;
 
-	switch(sd->status.class_) {
-		case PC_CLASS_NV:	// ノービス
-		case PC_CLASS_NV_B:	// 養子ノービス
-			table = 0;
-			break;
-		case PC_CLASS_SM:	// ソードマン
-		case PC_CLASS_MG:	// マジシャン
-		case PC_CLASS_AC:	// アーチャー
-		case PC_CLASS_AL:	// アコライト
-		case PC_CLASS_MC:	// マーチャント
-		case PC_CLASS_TF:	// シーフ
-		case PC_CLASS_SM_B:	// 養子ソードマン
-		case PC_CLASS_MG_B:	// 養子マジシャン
-		case PC_CLASS_AC_B:	// 養子アーチャー
-		case PC_CLASS_AL_B:	// 養子アコライト
-		case PC_CLASS_MC_B:	// 養子マーチャント
-		case PC_CLASS_TF_B:	// 養子シーフ
-		case PC_CLASS_TK:	// テコンキッド
-		case PC_CLASS_MB:	// キョンシー
-			table = 1;
-			break;
-		case PC_CLASS_KN:	// ナイト
-		case PC_CLASS_PR:	// プリースト
-		case PC_CLASS_WZ:	// ウィザード
-		case PC_CLASS_BS:	// ブラックスミス
-		case PC_CLASS_HT:	// ハンター
-		case PC_CLASS_AS:	// アサシン
-		case PC_CLASS_KN2:	// ナイト(騎乗)
-		case PC_CLASS_CR:	// クルセイダー
-		case PC_CLASS_MO:	// モンク
-		case PC_CLASS_SA:	// セージ
-		case PC_CLASS_RG:	// ローグ
-		case PC_CLASS_AM:	// アルケミスト
-		case PC_CLASS_BA:	// バード
-		case PC_CLASS_DC:	// ダンサー
-		case PC_CLASS_CR2:	// クルセイダー(騎乗)
-		case PC_CLASS_KN_B:	// 養子ナイト
-		case PC_CLASS_PR_B:	// 養子プリースト
-		case PC_CLASS_WZ_B:	// 養子ウィザード
-		case PC_CLASS_BS_B:	// 養子ブラックスミス
-		case PC_CLASS_HT_B:	// 養子ハンター
-		case PC_CLASS_AS_B:	// 養子アサシン
-		case PC_CLASS_KN2_B:	// 養子ナイト(騎乗)
-		case PC_CLASS_CR_B:	// 養子クルセイダー
-		case PC_CLASS_MO_B:	// 養子モンク
-		case PC_CLASS_SA_B:	// 養子セージ
-		case PC_CLASS_RG_B:	// 養子ローグ
-		case PC_CLASS_AM_B:	// 養子アルケミスト
-		case PC_CLASS_BA_B:	// 養子バード
-		case PC_CLASS_DC_B:	// 養子ダンサー
-		case PC_CLASS_CR2_B:	// 養子クルセイダー(騎乗)
-		case PC_CLASS_SG:	// 拳聖
-		case PC_CLASS_SG2:	// 拳聖(融合)
-		case PC_CLASS_SL:	// ソウルリンカー
-		case PC_CLASS_DK:	// デスナイト
-		case PC_CLASS_DA:	// ダークコレクター
-			table = 2;
-			break;
-		case PC_CLASS_SNV:	// スーパーノービス
-		case PC_CLASS_GS:	// ガンスリンガー
-		case PC_CLASS_NJ:	// 忍者
-		case PC_CLASS_SNV_B:	// 養子スーパーノービス
-			table = 3;
-			break;
-		case PC_CLASS_NV_H:	// 転生ノービス
-			table = 4;
-			break;
-		case PC_CLASS_SM_H:	// 転生ソードマン
-		case PC_CLASS_MG_H:	// 転生マジシャン
-		case PC_CLASS_AC_H:	// 転生アーチャー
-		case PC_CLASS_AL_H:	// 転生アコライト
-		case PC_CLASS_MC_H:	// 転生マーチャント
-		case PC_CLASS_TF_H:	// 転生シーフ
-			table = 5;
-			break;
-		case PC_CLASS_KN_H:	// ロードナイト
-		case PC_CLASS_PR_H:	// ハイプリースト
-		case PC_CLASS_WZ_H:	// ハイウィザード
-		case PC_CLASS_BS_H:	// ホワイトスミス
-		case PC_CLASS_HT_H:	// スナイパー
-		case PC_CLASS_AS_H:	// アサシンクロス
-		case PC_CLASS_KN2_H:	// ロードナイト(騎乗)
-		case PC_CLASS_CR_H:	// パラディン
-		case PC_CLASS_MO_H:	// チャンピオン
-		case PC_CLASS_SA_H:	// プロフェッサー
-		case PC_CLASS_RG_H:	// チェイサー
-		case PC_CLASS_AM_H:	// クリエイター
-		case PC_CLASS_BA_H:	// クラウン
-		case PC_CLASS_DC_H:	// ジプシー
-		case PC_CLASS_CR2_H:	// パラディン(騎乗)
-			table = 6;
-			break;
-		case PC_CLASS_RK:	// ルーンナイト
-		case PC_CLASS_WL:	// ウォーロック
-		case PC_CLASS_RA:	// レンジャー
-		case PC_CLASS_AB:	// アークビショップ
-		case PC_CLASS_NC:	// メカニック
-		case PC_CLASS_GC:	// ギロチンクロス
-		case PC_CLASS_LG:	// ロイヤルガード
-		case PC_CLASS_SO:	// ソーサラー
-		case PC_CLASS_MI:	// ミンストレル
-		case PC_CLASS_WA:	// ワンダラー
-		case PC_CLASS_SR:	// 修羅
-		case PC_CLASS_GN:	// ジェネティック
-		case PC_CLASS_SC:	// シャドウチェイサー
-		case PC_CLASS_RK2:	// ルーンナイト(騎乗)
-		case PC_CLASS_LG2:	// ロイヤルガード(騎乗)
-		case PC_CLASS_RA2:	// レンジャー(騎乗)
-		case PC_CLASS_NC2:	// メカニック(騎乗)
-		case PC_CLASS_RK3:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK4:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK5:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK6:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK_B:	// 養子ルーンナイト
-		case PC_CLASS_WL_B:	// 養子ウォーロック
-		case PC_CLASS_RA_B:	// 養子レンジャー
-		case PC_CLASS_AB_B:	// 養子アークビショップ
-		case PC_CLASS_NC_B:	// 養子メカニック
-		case PC_CLASS_GC_B:	// 養子ギロチンクロス
-		case PC_CLASS_LG_B:	// 養子ロイヤルガード
-		case PC_CLASS_SO_B:	// 養子ソーサラー
-		case PC_CLASS_MI_B:	// 養子ミンストレル
-		case PC_CLASS_WA_B:	// 養子ワンダラー
-		case PC_CLASS_SR_B:	// 養子修羅
-		case PC_CLASS_GN_B:	// 養子ジェネティック
-		case PC_CLASS_SC_B:	// 養子シャドウチェイサー
-		case PC_CLASS_RK2_B:	// 養子ルーンナイト(騎乗)
-		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
-		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
-		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
-		case PC_CLASS_KG:	// 影狼
-		case PC_CLASS_OB:	// 朧
-		case PC_CLASS_RL:	// リベリオン
-			table = 7;
-			break;
-		case PC_CLASS_RK_H:	// 転生ルーンナイト
-		case PC_CLASS_WL_H:	// 転生ウォーロック
-		case PC_CLASS_RA_H:	// 転生レンジャー
-		case PC_CLASS_AB_H:	// 転生アークビショップ
-		case PC_CLASS_NC_H:	// 転生メカニック
-		case PC_CLASS_GC_H:	// 転生ギロチンクロス
-		case PC_CLASS_LG_H:	// 転生ロイヤルガード
-		case PC_CLASS_SO_H:	// 転生ソーサラー
-		case PC_CLASS_MI_H:	// 転生ミンストレル
-		case PC_CLASS_WA_H:	// 転生ワンダラー
-		case PC_CLASS_SR_H:	// 転生修羅
-		case PC_CLASS_GN_H:	// 転生ジェネティック
-		case PC_CLASS_SC_H:	// 転生シャドウチェイサー
-		case PC_CLASS_RK2_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_LG2_H:	// 転生ロイヤルガード(騎乗)
-		case PC_CLASS_RA2_H:	// 転生レンジャー(騎乗)
-		case PC_CLASS_NC2_H:	// 転生メカニック(騎乗)
-		case PC_CLASS_RK3_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_SUM:	// サモナー
-		case PC_CLASS_SUM_B:	// 養子サモナー
-		case PC_CLASS_SE:	// 星帝
-		case PC_CLASS_RE:	// ソウルリーパー
-			table = 8;
-			break;
-		case PC_CLASS_ESNV:	// 拡張スーパーノービス
-		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
-			table = 9;
-			break;
-		default:	// それ以外
-			table = 1;
-			break;
-	}
+	table = job_db[sd->s_class.job].base_exp_table[sd->s_class.upper];
+
+	if(table < 0 || table >= MAX_EXP_TABLE)
+		table = 1;
 
 	return exp_table[table][sd->status.base_level-1];
 }
@@ -5519,180 +5564,10 @@ atn_bignumber pc_nextjobexp(struct map_session_data *sd)
 	if(sd->status.job_level >= MAX_LEVEL || sd->status.job_level <= 0)
 		return 0;
 
-	switch(sd->status.class_) {
-		case PC_CLASS_NV:	// ノービス
-		case PC_CLASS_NV_B:	// 養子ノービス
-			table = 10;
-			break;
-		case PC_CLASS_SM:	// ソードマン
-		case PC_CLASS_MG:	// マジシャン
-		case PC_CLASS_AC:	// アーチャー
-		case PC_CLASS_AL:	// アコライト
-		case PC_CLASS_MC:	// マーチャント
-		case PC_CLASS_TF:	// シーフ
-		case PC_CLASS_SM_B:	// 養子ソードマン
-		case PC_CLASS_MG_B:	// 養子マジシャン
-		case PC_CLASS_AC_B:	// 養子アーチャー
-		case PC_CLASS_AL_B:	// 養子アコライト
-		case PC_CLASS_MC_B:	// 養子マーチャント
-		case PC_CLASS_TF_B:	// 養子シーフ
-		case PC_CLASS_TK:	// テコンキッド
-		case PC_CLASS_MB:	// キョンシー
-			table = 11;
-			break;
-		case PC_CLASS_KN:	// ナイト
-		case PC_CLASS_PR:	// プリースト
-		case PC_CLASS_WZ:	// ウィザード
-		case PC_CLASS_BS:	// ブラックスミス
-		case PC_CLASS_HT:	// ハンター
-		case PC_CLASS_AS:	// アサシン
-		case PC_CLASS_KN2:	// ナイト(騎乗)
-		case PC_CLASS_CR:	// クルセイダー
-		case PC_CLASS_MO:	// モンク
-		case PC_CLASS_SA:	// セージ
-		case PC_CLASS_RG:	// ローグ
-		case PC_CLASS_AM:	// アルケミスト
-		case PC_CLASS_BA:	// バード
-		case PC_CLASS_DC:	// ダンサー
-		case PC_CLASS_CR2:	// クルセイダー(騎乗)
-		case PC_CLASS_KN_B:	// 養子ナイト
-		case PC_CLASS_PR_B:	// 養子プリースト
-		case PC_CLASS_WZ_B:	// 養子ウィザード
-		case PC_CLASS_BS_B:	// 養子ブラックスミス
-		case PC_CLASS_HT_B:	// 養子ハンター
-		case PC_CLASS_AS_B:	// 養子アサシン
-		case PC_CLASS_KN2_B:	// 養子ナイト(騎乗)
-		case PC_CLASS_CR_B:	// 養子クルセイダー
-		case PC_CLASS_MO_B:	// 養子モンク
-		case PC_CLASS_SA_B:	// 養子セージ
-		case PC_CLASS_RG_B:	// 養子ローグ
-		case PC_CLASS_AM_B:	// 養子アルケミスト
-		case PC_CLASS_BA_B:	// 養子バード
-		case PC_CLASS_DC_B:	// 養子ダンサー
-		case PC_CLASS_CR2_B:	// 養子クルセイダー(騎乗)
-		case PC_CLASS_SL:	// ソウルリンカー
-		case PC_CLASS_DK:	// デスナイト
-		case PC_CLASS_DA:	// ダークコレクター
-			table = 12;
-			break;
-		case PC_CLASS_SNV:	// スーパーノービス
-		case PC_CLASS_SNV_B:	// 養子スーパーノービス
-			table = 13;
-			break;
-		case PC_CLASS_NV_H:	// 転生ノービス
-			table = 14;
-			break;
-		case PC_CLASS_SM_H:	// 転生ソードマン
-		case PC_CLASS_MG_H:	// 転生マジシャン
-		case PC_CLASS_AC_H:	// 転生アーチャー
-		case PC_CLASS_AL_H:	// 転生アコライト
-		case PC_CLASS_MC_H:	// 転生マーチャント
-		case PC_CLASS_TF_H:	// 転生シーフ
-			table = 15;
-			break;
-		case PC_CLASS_KN_H:	// ロードナイト
-		case PC_CLASS_PR_H:	// ハイプリースト
-		case PC_CLASS_WZ_H:	// ハイウィザード
-		case PC_CLASS_BS_H:	// ホワイトスミス
-		case PC_CLASS_HT_H:	// スナイパー
-		case PC_CLASS_AS_H:	// アサシンクロス
-		case PC_CLASS_KN2_H:	// ロードナイト(騎乗)
-		case PC_CLASS_CR_H:	// パラディン
-		case PC_CLASS_MO_H:	// チャンピオン
-		case PC_CLASS_SA_H:	// プロフェッサー
-		case PC_CLASS_RG_H:	// チェイサー
-		case PC_CLASS_AM_H:	// クリエイター
-		case PC_CLASS_BA_H:	// クラウン
-		case PC_CLASS_DC_H:	// ジプシー
-		case PC_CLASS_CR2_H:	// パラディン(騎乗)
-			table = 16;
-			break;
-		case PC_CLASS_SG:	// 拳聖
-		case PC_CLASS_SG2:	// 拳聖(融合)
-			table = 17;
-			break;
-		case PC_CLASS_GS:	// ガンスリンガー
-		case PC_CLASS_NJ:	// 忍者
-			table = 18;
-			break;
-		case PC_CLASS_RK:	// ルーンナイト
-		case PC_CLASS_WL:	// ウォーロック
-		case PC_CLASS_RA:	// レンジャー
-		case PC_CLASS_AB:	// アークビショップ
-		case PC_CLASS_NC:	// メカニック
-		case PC_CLASS_GC:	// ギロチンクロス
-		case PC_CLASS_LG:	// ロイヤルガード
-		case PC_CLASS_SO:	// ソーサラー
-		case PC_CLASS_MI:	// ミンストレル
-		case PC_CLASS_WA:	// ワンダラー
-		case PC_CLASS_SR:	// 修羅
-		case PC_CLASS_GN:	// ジェネティック
-		case PC_CLASS_SC:	// シャドウチェイサー
-		case PC_CLASS_RK2:	// ルーンナイト(騎乗)
-		case PC_CLASS_LG2:	// ロイヤルガード(騎乗)
-		case PC_CLASS_RA2:	// レンジャー(騎乗)
-		case PC_CLASS_NC2:	// メカニック(騎乗)
-		case PC_CLASS_RK3:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK4:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK5:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK6:	// ルーンナイト(騎乗)
-		case PC_CLASS_RK_B:	// 養子ルーンナイト
-		case PC_CLASS_WL_B:	// 養子ウォーロック
-		case PC_CLASS_RA_B:	// 養子レンジャー
-		case PC_CLASS_AB_B:	// 養子アークビショップ
-		case PC_CLASS_NC_B:	// 養子メカニック
-		case PC_CLASS_GC_B:	// 養子ギロチンクロス
-		case PC_CLASS_LG_B:	// 養子ロイヤルガード
-		case PC_CLASS_SO_B:	// 養子ソーサラー
-		case PC_CLASS_MI_B:	// 養子ミンストレル
-		case PC_CLASS_WA_B:	// 養子ワンダラー
-		case PC_CLASS_SR_B:	// 養子修羅
-		case PC_CLASS_GN_B:	// 養子ジェネティック
-		case PC_CLASS_SC_B:	// 養子シャドウチェイサー
-		case PC_CLASS_RK2_B:	// 養子ルーンナイト(騎乗)
-		case PC_CLASS_LG2_B:	// 養子ロイヤルガード(騎乗)
-		case PC_CLASS_RA2_B:	// 養子レンジャー(騎乗)
-		case PC_CLASS_NC2_B:	// 養子メカニック(騎乗)
-		case PC_CLASS_KG:	// 影狼
-		case PC_CLASS_OB:	// 朧
-		case PC_CLASS_RL:	// リベリオン
-			table = 19;
-			break;
-		case PC_CLASS_RK_H:	// 転生ルーンナイト
-		case PC_CLASS_WL_H:	// 転生ウォーロック
-		case PC_CLASS_RA_H:	// 転生レンジャー
-		case PC_CLASS_AB_H:	// 転生アークビショップ
-		case PC_CLASS_NC_H:	// 転生メカニック
-		case PC_CLASS_GC_H:	// 転生ギロチンクロス
-		case PC_CLASS_LG_H:	// 転生ロイヤルガード
-		case PC_CLASS_SO_H:	// 転生ソーサラー
-		case PC_CLASS_MI_H:	// 転生ミンストレル
-		case PC_CLASS_WA_H:	// 転生ワンダラー
-		case PC_CLASS_SR_H:	// 転生修羅
-		case PC_CLASS_GN_H:	// 転生ジェネティック
-		case PC_CLASS_SC_H:	// 転生シャドウチェイサー
-		case PC_CLASS_RK2_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_LG2_H:	// 転生ロイヤルガード(騎乗)
-		case PC_CLASS_RA2_H:	// 転生レンジャー(騎乗)
-		case PC_CLASS_NC2_H:	// 転生メカニック(騎乗)
-		case PC_CLASS_RK3_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK4_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK5_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_RK6_H:	// 転生ルーンナイト(騎乗)
-		case PC_CLASS_ESNV:	// 拡張スーパーノービス
-		case PC_CLASS_ESNV_B:	// 養子拡張スーパーノービス
-		case PC_CLASS_SE:	// 星帝
-		case PC_CLASS_RE:	// ソウルリーパー
-			table = 20;
-			break;
-		case PC_CLASS_SUM:	// サモナー
-		case PC_CLASS_SUM_B:	// 養子サモナー
-			table = 21;
-			break;
-		default:
-			table = 11;
-			break;
-	}
+	table = job_db[sd->s_class.job].job_exp_table[sd->s_class.upper];
+
+	if(table < 0 || table >= MAX_EXP_TABLE)
+		table = 8;
 
 	return exp_table[table][sd->status.job_level-1];
 }
@@ -5716,7 +5591,7 @@ int pc_need_status_point(struct map_session_data *sd,int type)
 		case SP_LUK: val = sd->status.luk;  break;
 	}
 
-	if(pc_is3rdclass(sd)) {
+	if(pc_is3rdclass(sd) || pc_is4thclass(sd)) {
 		if(pc_isbaby(sd) && val >= battle_config.third_baby_status_max)
 			return 0;
 		else if(val >= battle_config.third_status_max)
@@ -5803,7 +5678,7 @@ void pc_statusup(struct map_session_data *sd, unsigned short type, int num)
 
 	if(pc_is3rdclass(sd) && pc_isbaby(sd))
 		max = battle_config.third_baby_status_max;
-	else if(pc_is3rdclass(sd))
+	else if(pc_is3rdclass(sd) || pc_is4thclass(sd))
 		max = battle_config.third_status_max;
 	else if(sd->status.class_ == PC_CLASS_ESNV && pc_isbaby(sd))
 		max = battle_config.esnv_baby_status_max;
@@ -6566,6 +6441,17 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		}
 	}
 
+	// アルティメットサクリファイス
+	if(sd->sc.data[SC_ULTIMATE_S].timer != -1) {
+		clif_skill_nodamage(&sd->bl,&sd->bl,IG_ULTIMATE_SACRIFICE,-1,1);
+		sd->status.hp = sd->status.max_hp;
+		sd->status.sp = sd->status.max_sp;
+		clif_updatestatus(sd,SP_HP);
+		clif_updatestatus(sd,SP_SP);
+		status_change_end(&sd->bl,SC_ULTIMATE_S,-1);
+		return 0;
+	}
+
 	// 自動蘇生
 	if(atn_rand()%10000 < sd->autoraise.rate)
 	{
@@ -6651,6 +6537,10 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 	}
 
 	clif_updatestatus(sd,SP_HP);
+
+	sd->status.ap = 0;
+	clif_updatestatus(sd,SP_AP);
+
 	status_calc_pc(sd,0);
 
 	// ドクロドロップ
@@ -7593,10 +7483,12 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 
 	if((sd->sex == SEX_FEMALE && job == PC_JOB_BA) || (sd->sex == SEX_MALE && job == PC_JOB_DC) ||
 	   (sd->sex == SEX_FEMALE && job == PC_JOB_MI) || (sd->sex == SEX_MALE && job == PC_JOB_WA) ||
+	   (sd->sex == SEX_FEMALE && job == PC_JOB_TRB) || (sd->sex == SEX_MALE && job == PC_JOB_TRV) ||
 	   sd->status.class_ == b_class)	// SEX_FEMALEはバードになれない、SEX_MALEはダンサーになれない
 		return 1;
 
 	if((sd->sex == SEX_FEMALE && job == PC_JOB_KG) || (sd->sex == SEX_MALE && job == PC_JOB_OB) ||
+	   (sd->sex == SEX_FEMALE && job == PC_JOB_SK) || (sd->sex == SEX_MALE && job == PC_JOB_SN) ||
 	   sd->status.class_ == b_class)	// SEX_FEMALEは影狼になれない、SEX_MALEは朧になれない
 		return 1;
 
@@ -10388,7 +10280,7 @@ int pc_readdb(void)
 	}
 	i = 0;
 	while(fgets(line,1020,fp)) {
-		atn_bignumber bn,b1,b2,b3,b4,b5,b6,b7,b8,b9,jn,j1,j2,j3,j4,j5,j6,j7,j8,j9,j10,j11;
+		atn_bignumber t[MAX_EXP_TABLE];
 		if(line[0] == '\0' || line[0] == '\r' || line[0] == '\n')
 			continue;
 		if(line[0] == '/' && line[1] == '/')
@@ -10396,32 +10288,13 @@ int pc_readdb(void)
 		if(sscanf(line, "%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
 						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
 						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ","
-						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE,
-						&bn,&b1,&b2,&b3,&b4,&b5,&b6,&b7,&b8,&b9,&jn,&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9,&j10,&j11
-		) != 22)
+						"%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE ",%" BIGNUMSCANCODE,
+						&t[0],&t[1],&t[2],&t[3],&t[4],&t[5],&t[6],&t[7],&t[8],&t[9],&t[10],&t[11],&t[12],&t[13],&t[14],&t[15],&t[16],&t[17]
+		) != MAX_EXP_TABLE)
 			continue;
-		exp_table[0][i]  = bn;
-		exp_table[1][i]  = b1;
-		exp_table[2][i]  = b2;
-		exp_table[3][i]  = b3;
-		exp_table[4][i]  = b4;
-		exp_table[5][i]  = b5;
-		exp_table[6][i]  = b6;
-		exp_table[7][i]  = b7;
-		exp_table[8][i]  = b8;
-		exp_table[9][i]  = b9;
-		exp_table[10][i] = jn;
-		exp_table[11][i] = j1;
-		exp_table[12][i] = j2;
-		exp_table[13][i] = j3;
-		exp_table[14][i] = j4;
-		exp_table[15][i] = j5;
-		exp_table[16][i] = j6;
-		exp_table[17][i] = j7;
-		exp_table[18][i] = j8;
-		exp_table[19][i] = j9;
-		exp_table[20][i] = j10;
-		exp_table[21][i] = j11;
+		for(j = 0; j < MAX_EXP_TABLE; j++) {
+			exp_table[j][i]  = t[j];
+		}
 		i++;
 		if(i >= MAX_LEVEL)
 			break;

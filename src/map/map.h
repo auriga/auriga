@@ -38,7 +38,7 @@
 #define MAX_EVENTQUEUE	2
 #define MAX_EVENTTIMER	32
 #define NATURAL_HEAL_INTERVAL 500
-#define MAX_LEVEL 255
+#define MAX_LEVEL 260
 #define MAX_WALKPATH 32
 #define MAX_DROP_PER_MAP 8
 #define MAX_WIS_REFUSAL 14
@@ -75,7 +75,8 @@
 #define MAX_MEMORIAL_MAP 200	// メモリアルダンジョンマップ最大生成数
 #define MAX_CLOAKEDNPC 50	// クローキング状態NPC最大保存数
 #define MAX_STELLAR_MARKS 5 // 星の印の最大保存数
-#define MAX_SOULENERGY 15	// ソウルエナジー最大数
+#define MAX_SOULENERGY 20	// ソウルエナジー最大数
+#define MAX_SERVANTWEAPON 5	// サーヴァントウェポン最大数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -742,6 +743,11 @@ struct map_session_data {
 		short num;
 		int timer[MAX_SOULENERGY];
 	} soulenergy;
+
+	struct {
+		short num;
+		int timer[MAX_SERVANTWEAPON];
+	} servantweapon;
 
 	int reg_num;
 	struct script_reg *reg;

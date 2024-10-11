@@ -238,7 +238,7 @@ enum {
 	PC_CLASS_SG2,			// 拳聖(融合)
 	PC_CLASS_SL,			// ソウルリンカー
 	PC_CLASS_MB,			// キョンシー
-	PC_CLASS_DK,			// デスナイト
+	PC_CLASS_DE,			// デスナイト
 	PC_CLASS_DA,			// ダークコレクター
 	// 4053
 	PC_CLASS_RK = 4054,		// ルーンナイト
@@ -424,17 +424,17 @@ enum {
 	PC_CLASS_GS2_B,			// 養子ガンスリンガー(騎乗)
 	PC_CLASS_RL2_B,			// 養子リベリオン(騎乗)
 	PC_CLASS_SG3_B,			// 養子拳聖(融合)
-	PC_CLASS_SE,			// 星帝
-	PC_CLASS_RE,			// ソウルリーパー
-	PC_CLASS_SE_B,			// 養子星帝
-	PC_CLASS_RE_B,			// 養子ソウルリーパー
-	PC_CLASS_SE2,			// 星帝(融合)
-	PC_CLASS_SE2_B,			// 養子星帝(融合)
-	PC_CLASS_SE3,			// 星帝(騎乗)
-	PC_CLASS_RE2,			// ソウルリーパー(騎乗)
-	PC_CLASS_SE3_B,			// 養子星帝(騎乗)
-	PC_CLASS_RE2_B,			// 養子ソウルリーパー(騎乗)
-	PC_CLASS_DR = 4252,		// ドラゴンナイト
+	PC_CLASS_SJ,			// 星帝
+	PC_CLASS_SP,			// ソウルリーパー
+	PC_CLASS_SJ_B,			// 養子星帝
+	PC_CLASS_SP_B,			// 養子ソウルリーパー
+	PC_CLASS_SJ2,			// 星帝(融合)
+	PC_CLASS_SJ2_B,			// 養子星帝(融合)
+	PC_CLASS_SJ3,			// 星帝(騎乗)
+	PC_CLASS_SP2,			// ソウルリーパー(騎乗)
+	PC_CLASS_SJ3_B,			// 養子星帝(騎乗)
+	PC_CLASS_SP2_B,			// 養子ソウルリーパー(騎乗)
+	PC_CLASS_DK = 4252,		// ドラゴンナイト
 	PC_CLASS_MT,			// マイスター
 	PC_CLASS_SHC,			// シャドウクロス
 	PC_CLASS_AG,			// アークメイジ
@@ -447,7 +447,7 @@ enum {
 	PC_CLASS_IQ,			// インクイジター
 	PC_CLASS_TRB,			// トルバドゥール
 	PC_CLASS_TRV,			// トルヴェール
-	PC_CLASS_DR2,			// ドラゴンナイト(騎乗)
+	PC_CLASS_DK2,			// ドラゴンナイト(騎乗)
 	PC_CLASS_MT2,			// マイスター(騎乗)
 	PC_CLASS_SHC2,			// シャドウクロス(騎乗)
 	PC_CLASS_AG2,			// アークメイジ(騎乗)
@@ -462,7 +462,7 @@ enum {
 	PC_CLASS_TRV2,			// トルヴェール(騎乗)
 	PC_CLASS_WH3,			// ウインドホーク(騎乗)
 	PC_CLASS_MT3,			// マイスター(騎乗)
-	PC_CLASS_DR3,			// ドラゴンナイト(騎乗)
+	PC_CLASS_DK3,			// ドラゴンナイト(騎乗)
 	PC_CLASS_IG3,			// インペリアルガード(騎乗)
 	PC_CLASS_SKE = 4302,	// 天帝
 	PC_CLASS_SOA,			// ソウルアセティック
@@ -524,7 +524,7 @@ enum {
 	PC_JOB_GS,		// ガンスリンガー
 	PC_JOB_NJ,		// 忍者
 	PC_JOB_MB,		// キョンシー
-	PC_JOB_DK,		// デスナイト
+	PC_JOB_DE,		// デスナイト
 	PC_JOB_DA,		// ダークコレクター
 	PC_JOB_RK,		// ルーンナイト
 	PC_JOB_WL,		// ウォーロック
@@ -544,9 +544,9 @@ enum {
 	PC_JOB_OB,		// 朧
 	PC_JOB_RL,		// リベリオン
 	PC_JOB_SUM,		// サモナー
-	PC_JOB_SE,		// 星帝
-	PC_JOB_RE,		// ソウルリーパー
-	PC_JOB_DR,		// ドラゴンナイト
+	PC_JOB_SJ,		// 星帝
+	PC_JOB_SP,		// ソウルリーパー
+	PC_JOB_DK,		// ドラゴンナイト
 	PC_JOB_MT,		// マイスター
 	PC_JOB_SHC,		// シャドウクロス
 	PC_JOB_AG,		// アークメイジ

@@ -221,7 +221,19 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 720- */
 	SI_SOULFALCON,SI_SOULGOLEM,SI_SOULDIVISION,SI_BLANK,SI_BLANK,SI_BLANK,SI_SHA,SI_SOULCURSE,SI_CRUSHSTRIKE,SI_WEAPONBLOCK_ON,
 	/* 730- */
-	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK,SI_GS_MAGICAL_BULLET,SI_HELPANGEL
+	SI_ADORAMUS,SI_OVERHEAT_LIMITPOINT,SI_BLANK,SI_GS_MAGICAL_BULLET,SI_HELPANGEL,SI_HANDICAPSTATE_DEEPBLIND,SI_HANDICAPSTATE_DEEPSILENCE,SI_HANDICAPSTATE_LASSITUDE,SI_HANDICAPSTATE_FROSTBITE,SI_HANDICAPSTATE_SWOONING,
+	/* 740- */
+	SI_HANDICAPSTATE_LIGHTNINGSTRIKE,SI_HANDICAPSTATE_CRYSTALLIZATION,SI_HANDICAPSTATE_CONFLAGRATION,SI_HANDICAPSTATE_MISFORTUNE,SI_HANDICAPSTATE_DEADLYPOISON,SI_HANDICAPSTATE_DEPRESSION,SI_HANDICAPSTATE_HOLYFLAME,SI_SERVANTWEAPON,SI_SERVANT_SIGN,SI_CHARGINGPIERCE,
+	/* 750- */
+	SI_CHARGINGPIERCE_COUNT,SI_DRAGONIC_AURA,SI_VIGOR,SI_DEADLY_DEFEASANCE,SI_CLIMAX_DES_HU,SI_CLIMAX,SI_CLIMAX_EARTH,SI_CLIMAX_BLOOM,SI_CLIMAX_CRYIMP,SI_POWERFUL_FAITH,
+	/* 760- */
+	SI_FIRM_FAITH,SI_HOLY_OIL,SI_SINCERE_FAITH,SI_MASSIVE_F_BLASTER,SI_FIRST_BRAND,SI_FIRST_FAITH_POWER,SI_SECOND_JUDGE,SI_SECOND_BRAND,SI_THIRD_EXOR_FLAME,SI_GUARD_STANCE,
+	/* 770- */
+	SI_GUARDIAN_S,SI_REBOUND_S,SI_ATTACK_STANCE,SI_ULTIMATE_S,SI_HOLY_S,SI_SPEAR_SCAR,SI_SHIELD_POWER,SI_MEDIALE,SI_A_VITA,SI_A_TELUM,
+	/* 780- */
+	SI_PRE_ACIES,SI_COMPETENTIA,SI_RELIGIO,SI_BENEDICTUM,SI_SHADOW_EXCEED,SI_DANCING_KNIFE,SI_E_SLASH_COUNT,SI_POTENT_VENOM,SI_SHADOW_WEAPON,SI_SHADOW_SCAR,
+	/* 790- */
+	
 };
 
 /*==========================================
@@ -937,6 +949,18 @@ L_RECALC:
 			sd->paramb[4]++;
 		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x20)
 			sd->paramb[5]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x040)
+			sd->paramb[6]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x080)
+			sd->paramb[7]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x100)
+			sd->paramb[8]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x200)
+			sd->paramb[9]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x400)
+			sd->paramb[10]++;
+		if(job_db[sd->s_class.job].bonus[sd->s_class.upper][i] & 0x800)
+			sd->paramb[11]++;
 	}
 
 	if((skill = pc_checkskill(sd,AC_OWL)) > 0) {	// ふくろうの目
@@ -1514,6 +1538,18 @@ L_RECALC:
 			sd->paramb[4] += add;
 			sd->paramb[5] += add;
 		}
+		// レリギオ
+		if(sd->sc.data[SC_RELIGIO].timer != -1) {
+			sd->paramb[7] += sd->sc.data[SC_RELIGIO].val2;
+			sd->paramb[8] += sd->sc.data[SC_RELIGIO].val3;
+			sd->paramb[9] += sd->sc.data[SC_RELIGIO].val4;
+		}
+		// ベネディクトゥム
+		if(sd->sc.data[SC_BENEDICTUM].timer != -1) {
+			sd->paramb[6] += sd->sc.data[SC_BENEDICTUM].val2;
+			sd->paramb[10] += sd->sc.data[SC_BENEDICTUM].val3;
+			sd->paramb[11] += sd->sc.data[SC_BENEDICTUM].val4;
+		}
 	}
 
 	sd->paramc[0]  = sd->status.str  + sd->paramb[0]  + sd->parame[0];
@@ -1703,6 +1739,10 @@ L_RECALC:
 		sd->hit += skill*2;
 	if((sd->status.weapon == WT_DAGGER || sd->status.weapon == WT_1HSWORD) && ((skill = pc_checkskill(sd,GN_TRAINING_SWORD)) > 0))	// 剣修練の命中率増加
 		sd->hit += skill*3;
+
+	if((sd->status.weapon == WT_1HSWORD || sd->status.weapon == WT_1HSPEAR || sd->status.weapon == WT_2HSPEAR) && (skill = pc_checkskill(sd,IG_SPEAR_SWORD_M)) > 0) {		// 槍＆片手剣修練
+		sd->hit += skill*10;
+	}
 
 	if((skill = pc_checkskill(sd,CR_TRUST)) > 0) { // フェイス
 		sd->status.max_hp    += skill*200;
@@ -1912,12 +1952,44 @@ L_RECALC:
 		sd->nhealhp = sd->nhealsp = 0;
 	}
 
+	// 魔法ダメージ増加
+	if((skill = pc_checkskill(sd,CD_FIDUS_ANIMUS)) > 0) {		// フィドスアニムス
+		const int add_list[10] = { 1,2,3,4,5,7,9,12,15,20 };
+		if(skill > 10) skill = 10;
+		sd->skill_elemagic_dmgup[ELE_HOLY] += add_list[skill-1];
+	}
+
+	// 種族特攻
+	if(sd->status.weapon == WT_KNUCKLE && (skill = pc_checkskill(sd,IQ_WILL_OF_FAITH)) > 0) {		// 信仰の意志
+		const int add_list[10] = { 1,2,3,4,5,7,9,11,15,20 };
+		if(skill > 10) skill = 10;
+		sd->addrace[RCT_UNDEAD] += add_list[skill-1];
+		sd->addrace[RCT_DEMON] += add_list[skill-1];
+	}
+
 	// 種族耐性
 	if((skill = pc_checkskill(sd,SA_DRAGONOLOGY)) > 0) {	// ドラゴノロジー
 		skill = skill*4;
 		sd->subrace[RCT_DRAGON]  += skill;
 		sd->magic_subrace[RCT_DRAGON]  += skill;
 	}
+
+	// サイズ特攻
+	if((sd->status.weapon == WT_MACE || sd->status.weapon == WT_BOOK) && (skill = pc_checkskill(sd,CD_MACE_BOOK_M)) > 0) {		// 鈍器＆本修練
+		const int add_list[10] = { 1,2,3,4,5,7,9,11,15,20 };
+		if(skill > 10) skill = 10;
+		sd->addsize[0] += add_list[skill-1];
+		sd->addsize[1] += add_list[skill-1];
+		sd->addsize[2] += add_list[skill-1];
+	}
+
+	// サイズ耐性
+	if((sd->status.weapon == WT_2HSWORD || sd->status.weapon == WT_2HSPEAR || sd->status.weapon == WT_2HAXE) && (skill = pc_checkskill(sd,DK_TWOHANDDEF)) > 0) {		// ツーハンドディフェンディング
+		sd->subsize[0] += skill;
+		sd->subsize[1] += skill;
+		sd->subsize[2] += skill;
+	}
+
 	// 種族設定
 	if(pc_isdoram(sd)) {
 		sd->critical_race[RCT_DEMIHUMAN] += 20;
@@ -1949,6 +2021,18 @@ L_RECALC:
 		sd->flee += 50;
 		sd->critical += 200;
 	}
+	if((skill = pc_checkskill(sd,SHC_SHADOW_SENSE)) > 0) {		// シャドウセンス
+		const int add_fleelist[10] = { 10,20,30,40,50,60,70,85,100,150 };
+		if(skill > 10) skill = 10;
+		sd->flee += add_fleelist[skill-1];
+		if(sd->weapontype1 == WT_DAGGER) {
+			const int add_crilist[10] = { 2,4,6,8,10,12,14,20,30,50 };
+			sd->critical += add_crilist[skill-1];
+		} else if(sd->status.weapon == WT_KATAR) {
+			const int add_crilist[10] = { 1,2,3,4,5,6,7,10,15,25 };
+			sd->critical += add_crilist[skill-1];
+		}
+	}
 	// Def
 	if(pc_isgear(sd) && (skill = pc_checkskill(sd,NC_MAINFRAME)) > 0) {		// 魔導ギア＆メインフレーム改造
 		if(skill == 1)
@@ -1956,6 +2040,19 @@ L_RECALC:
 		else
 			sd->def += (skill*4) - 1;
 	}
+
+	// S.Matk
+	if(sd->status.weapon == WT_2HSTAFF && (skill = pc_checkskill(sd,AG_TWOHANDSTAFF)) > 0) {		// 両手杖修練
+		const int add_2hstaff_list[10] = { 1,3,5,8,11,14,17,21,25,30 };
+		if(skill > 10) skill = 10;
+		sd->smatk += add_2hstaff_list[skill-1];
+	}
+
+	// Res
+	if(sd->status.shield > 0 && (skill = pc_checkskill(sd,IG_SHIELD_MASTERY)) > 0) {		// 盾修練
+		sd->res += skill*10;
+	}
+
 #ifdef PRE_RENEWAL
 	// MATK乗算処理(杖補正以外)
 	if(sd->matk_rate != 100) {
@@ -2176,9 +2273,32 @@ L_RECALC:
 #endif
 			sd->matk2 += sd->sc.data[SC_CHATTERING].val2;
 		}
+		// クライマックスハリケーン
+		if(sd->sc.data[SC_CLIMAX_DES_HU].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->matk1 += sd->sc.data[SC_CLIMAX_DES_HU].val2;
+			sd->matk2 += sd->sc.data[SC_CLIMAX_DES_HU].val2;
+#else
+			sd->plus_matk += sd->sc.data[SC_CLIMAX_DES_HU].val2;
+#endif
+			sd->skill_elemagic_dmgup[ELE_WIND] += sd->sc.data[SC_CLIMAX_DES_HU].val3;
+		}
 		if(sd->sc.data[SC_ENDURE].timer != -1) {
 			sd->mdef += sd->sc.data[SC_ENDURE].val1;
 		}
+		// クライマックスインパクト
+		if(sd->sc.data[SC_CLIMAX_CRYIMP].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->def2 += sd->sc.data[SC_CLIMAX_CRYIMP].val2;
+			sd->mdef2 += sd->sc.data[SC_CLIMAX_CRYIMP].val3;
+#else
+			sd->def += sd->sc.data[SC_CLIMAX_CRYIMP].val2;
+			sd->mdef += sd->sc.data[SC_CLIMAX_CRYIMP].val3;
+#endif
+			sd->skill_elemagic_dmgup[ELE_WATER] += sd->sc.data[SC_CLIMAX_CRYIMP].val4;
+			sd->subele[ELE_WATER] += sd->sc.data[SC_CLIMAX_CRYIMP].val4;
+		}
+
 		if(sd->sc.data[SC_ANALYZE].timer != -1) {	// アナライズ
 			sd->def2  -= (sd->def2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
 			sd->mdef2 -= (sd->mdef2 * 14 * sd->sc.data[SC_ANALYZE].val1) / 100;
@@ -2746,6 +2866,68 @@ L_RECALC:
 		// パイロクラスティック
 		if(sd->sc.data[SC_PYROCLASTIC].timer != -1) {
 			sd->watk += sd->sc.data[SC_PYROCLASTIC].val2;
+		}
+		// 漆黒
+		if(sd->sc.data[SC_HANDICAPSTATE_DEEPBLIND].timer != -1) {
+			sd->flee = 0;
+			sd->flee2 = 0;
+		}
+		// デッドリープロジェクション
+		if(sd->sc.data[SC_DEADLY_DEFEASANCE].timer != -1) {
+			sd->special_state.no_magic_damage = 0;
+		}
+		// 強靭な信念
+		if(sd->sc.data[SC_POWERFUL_FAITH].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->watk += sd->sc.data[SC_POWERFUL_FAITH].val2;
+#else
+			sd->plus_atk += sd->sc.data[SC_POWERFUL_FAITH].val2;
+#endif
+			sd->patk += sd->sc.data[SC_POWERFUL_FAITH].val3;
+		}
+		// 堅固な信念
+		if(sd->sc.data[SC_FIRM_FAITH].timer != -1) {
+			sd->status.max_hp += sd->status.max_hp * sd->sc.data[SC_FIRM_FAITH].val2 / 100;
+			sd->res += sd->sc.data[SC_FIRM_FAITH].val3;
+		}
+		// 忠実な信念
+		if(sd->sc.data[SC_SINCERE_FAITH].timer != -1) {
+			sd->perfect_hit += sd->sc.data[SC_SINCERE_FAITH].val3;
+		}
+		// ガードスタンス
+		if(sd->sc.data[SC_GUARD_STANCE].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->def2 += sd->sc.data[SC_GUARD_STANCE].val2;
+			sd->watk -= sd->sc.data[SC_GUARD_STANCE].val3;
+#else
+			sd->def += sd->sc.data[SC_GUARD_STANCE].val2;
+			sd->plus_atk -= sd->sc.data[SC_GUARD_STANCE].val3;
+#endif
+		}
+		// アタックスタンス
+		if(sd->sc.data[SC_ATTACK_STANCE].timer != -1) {
+			sd->patk += sd->sc.data[SC_ATTACK_STANCE].val2;
+			sd->smatk += sd->sc.data[SC_ATTACK_STANCE].val2;
+#ifdef PRE_RENEWAL
+			sd->def2 -= sd->sc.data[SC_ATTACK_STANCE].val3;
+#else
+			sd->def -= sd->sc.data[SC_ATTACK_STANCE].val3;
+#endif
+		}
+		// ホーリーシールド
+		if(sd->sc.data[SC_HOLY_S].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_HOLY] += sd->sc.data[SC_HOLY_S].val2;
+			sd->subele[ELE_DARK] += sd->sc.data[SC_HOLY_S].val3;
+			sd->subele[ELE_UNDEAD] += sd->sc.data[SC_HOLY_S].val3;
+		}
+		// プレセンスアキエース
+		if(sd->sc.data[SC_PRE_ACIES].timer != -1) {
+			sd->crate += sd->sc.data[SC_PRE_ACIES].val2;
+		}
+		// コンペテンティア
+		if(sd->sc.data[SC_COMPETENTIA].timer != -1) {
+			sd->patk += sd->sc.data[SC_COMPETENTIA].val2;
+			sd->smatk += sd->sc.data[SC_COMPETENTIA].val3;
 		}
 	}
 
@@ -3429,6 +3611,14 @@ static int status_calc_amotion_pc(struct map_session_data *sd)
 		// 影の魂
 		if(sd->sc.data[SC_SOULSHADOW].timer != -1)
 			bonus_add -= sd->sc.data[SC_SOULSHADOW].val3;
+
+		// 忠実な信念
+		if(sd->sc.data[SC_SINCERE_FAITH].timer != -1)
+			bonus_add -= sd->sc.data[SC_SINCERE_FAITH].val2;
+
+		// 静寂
+		if(sd->sc.data[SC_HANDICAPSTATE_DEEPSILENCE].timer != -1)
+			bonus_add += sd->sc.data[SC_HANDICAPSTATE_DEEPSILENCE].val2;
 	}
 
 	/* 太陽と月と星の悪魔 */
@@ -4710,6 +4900,8 @@ int status_get_flee(struct block_list *bl)
 			flee -= sc->data[SC_C_MARKER].val1 * 10;
 		if(sc->data[SC_VOLCANIC_ASH].timer != -1 && sc->data[SC_VOLCANIC_ASH].val4 > 0) 	// 火山灰
 			flee -= flee * sc->data[SC_VOLCANIC_ASH].val4 / 100;
+		if(sc->data[SC_HANDICAPSTATE_DEEPBLIND].timer != -1 && bl->type != BL_PC)	// 漆黒
+			flee = 0;
 	}
 
 	// 回避率補正
@@ -4827,6 +5019,8 @@ int status_get_flee2(struct block_list *bl)
 	if(sc) {
 		if(sc->data[SC__UNLUCKY].timer != -1 && bl->type != BL_PC)	// マスカレード：アンラッキー
 			flee2 -= sc->data[SC__UNLUCKY].val1 * 10;
+		if(sc->data[SC_HANDICAPSTATE_DEEPBLIND].timer != -1 && bl->type != BL_PC)	// 漆黒
+			flee2 = 0;
 	}
 
 	if(flee2 < 1) flee2 = 1;
@@ -5887,8 +6081,7 @@ int status_get_adelay(struct block_list *bl)
 		int bonus_rate     = 0;
 		int ferver_bonus   = 0;
 		int tmp            = 0;
-		char defender_flag = 0;
-		char heatbarrel_flag = 0;
+		int add_val        = 0;
 		struct status_change *sc = status_get_sc(bl);
 
 		if(bl->type == BL_MOB && (struct mob_data *)bl) {
@@ -6074,11 +6267,15 @@ int status_get_adelay(struct block_list *bl)
 
 			// ディフェンダー
 			if(sc->data[SC_DEFENDER].timer != -1)
-				defender_flag = 1;
+				add_val += sc->data[SC_DEFENDER].val3;
 
 			// ヒートバレル
 			if(sc->data[SC_HEAT_BARREL].timer != -1)
-				heatbarrel_flag = 1;
+				add_val -= sc->data[SC_HEAT_BARREL].val1 * 10;
+
+			// 静寂
+			if(sc->data[SC_HANDICAPSTATE_DEEPSILENCE].timer != -1)
+				add_val += sc->data[SC_HANDICAPSTATE_DEEPSILENCE].val2;
 		}
 
 		/* slow_valとhaste_val1とhaste_val2を加算する */
@@ -6088,13 +6285,9 @@ int status_get_adelay(struct block_list *bl)
 		if(bonus_rate != 0)
 			calc_adelay = calc_adelay * (bonus_rate+100) / 100;
 
-		/* ディフェンダー */
-		if(defender_flag)
-			calc_adelay += sc->data[SC_DEFENDER].val3;
-
-		/* ヒートバレル */
-		if(heatbarrel_flag)
-			calc_adelay -= sc->data[SC_HEAT_BARREL].val1 * 10;
+		/* add_valの加算 */
+		if(add_val != 0)
+			calc_adelay += add_val;
 
 		/* 小数切り上げ */
 		adelay = (int)ceil(calc_adelay);
@@ -7440,6 +7633,46 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_UNLIMITED_HUMMING_VOICE].timer != -1)
 				status_change_end(bl,SC_UNLIMITED_HUMMING_VOICE,-1);
 			break;
+		case SC_POWERFUL_FAITH:
+		case SC_FIRM_FAITH:
+		case SC_SINCERE_FAITH:
+			if(sc->data[SC_POWERFUL_FAITH].timer != -1)
+				status_change_end(bl,SC_POWERFUL_FAITH,-1);
+			if(sc->data[SC_FIRM_FAITH].timer != -1)
+				status_change_end(bl,SC_FIRM_FAITH,-1);
+			if(sc->data[SC_SINCERE_FAITH].timer != -1)
+				status_change_end(bl,SC_SINCERE_FAITH,-1);
+			break;
+		case SC_FIRST_FAITH_POWER:
+			if(sc->data[SC_SECOND_JUDGE].timer != -1)
+				status_change_end(bl,SC_SECOND_JUDGE,-1);
+			if(sc->data[SC_THIRD_EXOR_FLAME].timer != -1)
+				status_change_end(bl,SC_THIRD_EXOR_FLAME,-1);
+			break;
+		case SC_SECOND_JUDGE:
+			if(sc->data[SC_FIRST_FAITH_POWER].timer != -1)
+				status_change_end(bl,SC_FIRST_FAITH_POWER,-1);
+			break;
+		case SC_THIRD_EXOR_FLAME:
+			if(sc->data[SC_SECOND_JUDGE].timer != -1)
+				status_change_end(bl,SC_SECOND_JUDGE,-1);
+			break;
+		case SC_GUARD_STANCE:
+			if(sc->data[SC_GUARD_STANCE].timer != -1) {
+				status_change_end(bl,SC_GUARD_STANCE,-1);
+				return 0;
+			}
+			if(sc->data[SC_ATTACK_STANCE].timer != -1)
+				status_change_end(bl,SC_ATTACK_STANCE,-1);
+			break;
+		case SC_ATTACK_STANCE:
+			if(sc->data[SC_ATTACK_STANCE].timer != -1) {
+				status_change_end(bl,SC_ATTACK_STANCE,-1);
+				return 0;
+			}
+			if(sc->data[SC_GUARD_STANCE].timer != -1)
+				status_change_end(bl,SC_GUARD_STANCE,-1);
+			break;
 	}
 
 	sd  = BL_DOWNCAST( BL_PC,   bl );
@@ -7568,7 +7801,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		if(sc->data[type].val1 > val1 && type != SC_COMBO && type != SC_DANCING && type != SC_DEVOTION &&
 			type != SC_SPEEDPOTION0 && type != SC_SPEEDPOTION1 && type != SC_SPEEDPOTION2 &&
 			type != SC_DOUBLE && type != SC_TKCOMBO && type != SC_DODGE && type != SC_SPURT && type != SC_SEVENWIND &&
-			type != SC_SHAPESHIFT && type != SC_ON_PUSH_CART && type != SC_TINDER_BREAKER && type != SC_CBC && type != SC_PYROCLASTIC)
+			type != SC_SHAPESHIFT && type != SC_ON_PUSH_CART && type != SC_TINDER_BREAKER && type != SC_CBC && type != SC_PYROCLASTIC &&
+			type != SC_CLIMAX)
 			return 0;
 		if((type >= SC_STUN && type <= SC_BLIND) ||
 			type == SC_DPOISON || type == SC_FOGWALLPENALTY || type == SC_FORCEWALKING || type == SC_ORATIO ||
@@ -7744,6 +7978,23 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_MAGICALBULLET:		/* マジカルバレット */
 		case SC_SOULCURSE:		/* 死霊憑依 */
 		case SC_SWHOO:			/* エスフ詠唱可能状態 */
+		case SC_SERVANT_SIGN:		/* サーヴァントサイン */
+		case SC_CHARGINGPIERCE:		/* チャージングピアース */
+		case SC_DRAGONIC_AURA:		/* ドラゴニックオーラ */
+		case SC_VIGOR:			/* ヴィゴール */
+		case SC_MASSIVE_F_BLASTER:	/* 炎火滅魔神弾 */
+		case SC_FIRST_BRAND:	/* 第一撃：烙印 */
+		case SC_FIRST_FAITH_POWER:	/* 第一章：信念の力 */
+		case SC_SECOND_JUDGE:	/* 第二章：審判者 */
+		case SC_SECOND_BRAND:	/* 第二撃：烙印 */
+		case SC_THIRD_EXOR_FLAME:	/* 最終章：滅魔の炎 */
+		case SC_GUARDIAN_S:		/* ガーディアンシールド */
+		case SC_REBOUND_S:		/* リバウンドシールド */
+		case SC_ULTIMATE_S:		/* アルティメットサクリファイス */
+		case SC_SPEAR_SCAR:		/* グランドジャッジメント */
+		case SC_SHIELD_POWER:	/* シールドシューティング */
+		case SC_SHADOW_EXCEED:	/* シャドウエクシード */
+		case SC_DANCING_KNIFE:	/* ダンシングナイフ */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -7879,6 +8130,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_TINDER_BREAKER:		/* 捕獲 */
 		case SC_ALL_STAT_DOWN:	/* オールステータスダウン */
 		case SC_ADORAMUS:		/* アドラムス */
+		case SC_HANDICAPSTATE_DEEPBLIND:	/* 漆黒 */
+		case SC_DEADLY_DEFEASANCE:		/* デッドリープロジェクション */
 			calc_flag = 1;
 			break;
 
@@ -9627,6 +9880,120 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = tick / 1000;
 			tick = 1000;
 			break;
+		case SC_HANDICAPSTATE_DEEPSILENCE:		/* 静寂 */
+			val2 = 500;		// ASPD減少値
+			calc_flag = 1;
+			break;
+		case SC_SERVANTWEAPON:		/* サーヴァントウェポン */
+			val2 = 10 * val1;		// 武器体攻撃発動率
+			val3 = skill_get_time2(DK_SERVANTWEAPON,val1);	// 武器体生成時間
+			val3 = (val3 < 100)? 100: val3;
+			val4 = tick / val3;
+			tick = val3;
+			if(sd)
+				pc_addservantweapon(sd,600000,MAX_SERVANTWEAPON);
+			break;
+		case SC_CHARGINGPIERCE_COUNT:		/* チャージングスピア(回数) */
+			icon_val1 = val1;	// val1(回数)を渡してアイコン表示する
+			break;
+		case SC_CLIMAX_DES_HU:	/* クライマックスハリケーン */
+			val2 = 200;			// Matk増加値
+			val3 = 50;			// 風属性ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_CLIMAX:			/* クライマックス */
+			icon_val1 = val1;	// val1(使用レベル)を渡してアイコン表示する
+			break;
+		case SC_CLIMAX_EARTH:	/* クライマックスクエイク */
+			val2 = 50;			// 地属性ダメージ増加率
+			break;
+		case SC_CLIMAX_BLOOM:	/* クライマックスブルーム */
+			val2 = 50;			// 火属性ダメージ増加率
+			break;
+		case SC_CLIMAX_CRYIMP:	/* クライマックスインパクト */
+			val2 = 300;			// Def増加値
+			val3 = 50;			// Mdef増加値
+			val4 = 25;			// 水属性ダメージ減少率/水属性ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_POWERFUL_FAITH:		/* 強靭な信念 */
+			val2 = 100;			// Atk増加値
+			val3 = (val1 > 2)? 5*(val1-2): 1+2*(val1-1);	// P.Atk増加値
+			calc_flag = 1;
+			break;
+		case SC_FIRM_FAITH:		/* 堅固な信念 */
+			val2 = 10;			// MaxHP増加率
+			val3 = (val1 > 2)? 10+30*(val1-2): 10*val1;		// Res増加値
+			calc_flag = 1;
+			break;
+		case SC_SINCERE_FAITH:		/* 忠実な信念 */
+			val2 = 10;			// Aspd増加値
+			val3 = (val1 > 2)? 5*(val1-2): 1+2*(val1-1);	// 必中攻撃増加率
+			calc_flag = 1;
+			break;
+		case SC_GUARD_STANCE:		/* ガードスタンス */
+			val2 = (val1 > 4)? 60*val1: 50*val1;		// Def増加値
+			val3 = 10*val1;		// Atk減少値
+			calc_flag = 1;
+			break;
+		case SC_ATTACK_STANCE:		/* アタックスタンス */
+			val2 = (val1 > 2)? 5*(val1-2): 1+2*(val1-1);	// P.Atk/S.Matk増加値
+			val3 = 10*val1;		// Def減少値
+			calc_flag = 1;
+			break;
+		case SC_HOLY_S:		/* ホーリーシールド */
+			val2 = 5*val1;		// 聖属性魔法ダメージ増加率
+			val3 = 3*val1;		// 闇/不死属性ダメージ減少率
+			calc_flag = 1;
+			break;
+		case SC_MEDIALE:		/* メディアリボトゥム */
+			//val2				// 効果範囲(スキル使用時に設定)
+			val3 = skill_get_time2(CD_MEDIALE_VOTUM,val1);	// 回復間隔
+			val3 = (val3 < 100)? 100: val3;
+			val4 = tick / val3;
+			tick = val3;
+			skill_castend_nodamage_id(bl,bl,CD_MEDIALE_VOTUM,val1,tick,0x10|val2);
+			break;
+		case SC_A_VITA:			/* アルグトゥスヴィタ */
+			val2 = 5*val1;		// Mres無視率
+			break;
+		case SC_A_TELUM:		/* アルグトゥステルム */
+			val2 = 5*val1;		// Res無視率
+			break;
+		case SC_PRE_ACIES:		/* プレセンスアキエース */
+			val2 = 5*val1;		// C.Rate増加値
+			calc_flag = 1;
+			break;
+		case SC_COMPETENTIA:	/* コンペテンティア */
+			val2 = 20+val1*2;	// P.Atk増加値
+			val3 = 20+val1*2;	// S.Matk増加値
+			calc_flag = 1;
+			break;
+		case SC_RELIGIO:		/* レリギオ */
+			val2 = val1*2;		// Sta増加値
+			val3 = val1*2;		// Wis増加値
+			val4 = val1*2;		// Spl増加値
+			calc_flag = 1;
+			break;
+		case SC_BENEDICTUM:		/* ベネディクトゥム */
+			val2 = val1*2;		// Pow増加値
+			val3 = val1*2;		// Con増加値
+			val4 = val1*2;		// Crt増加値
+			calc_flag = 1;
+			break;
+		case SC_E_SLASH_COUNT:		/* エターナルカウンター */
+			icon_val1 = val1;	// val1(回数)を渡してアイコン表示する
+			break;
+		case SC_POTENT_VENOM:		/* ポテントベナム */
+			val2 = 20+val1;		// Res無視率
+			break;
+		case SC_SHADOW_WEAPON:		/* エンチャンティングシャドウ */
+			val2 = val1;		// シャドウペイン付与率
+			break;
+		case SC_SHADOW_SCAR:		/* シャドウペイン */
+			icon_val1 = val1;		// val1(回数)を渡してアイコン表示する
+			val2 = val1 * 3;		// 近接ダメージ増加率
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -10243,6 +10610,20 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SOULFAIRY:		/* 妖精の魂 */
 		case SC_SOULFALCON:		/* 鷹の魂 */
 		case SC_SOULGOLEM:		/* ゴーレムの魂 */
+		case SC_HANDICAPSTATE_DEEPBLIND:	/* 漆黒 */
+		case SC_HANDICAPSTATE_DEEPSILENCE:	/* 静寂 */
+		case SC_DEADLY_DEFEASANCE:		/* デッドリープロジェクション */
+		case SC_CLIMAX_DES_HU:		/* クライマックスハリケーン */
+		case SC_CLIMAX_CRYIMP:		/* クライマックスインパクト */
+		case SC_POWERFUL_FAITH:		/* 強靭な信念 */
+		case SC_FIRM_FAITH:		/* 堅固な信念 */
+		case SC_SINCERE_FAITH:		/* 忠実な信念 */
+		case SC_ATTACK_STANCE:		/* アタックスタンス */
+		case SC_HOLY_S:		/* ホーリーシールド */
+		case SC_PRE_ACIES:		/* プレセンスアキエース */
+		case SC_COMPETENTIA:	/* コンペテンティア */
+		case SC_RELIGIO:		/* レリギオ */
+		case SC_BENEDICTUM:		/* ベネディクトゥム */
 			calc_flag = 1;
 			break;
 		case SC_NEWMOON:			/* 朔月脚 */
@@ -10485,6 +10866,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_GRAFFITI:
 		case SC_WARM:
 		case SC_GRAVITATION_USER:
+		case SC_DANCING_KNIFE:
 			{
 				struct skill_unit_group *sg = map_id2sg(sc->data[type].val4);	// val4がgroup_id
 				sc->data[type].val4 = 0;
@@ -10652,6 +11034,21 @@ int status_change_end(struct block_list* bl, int type, int tid)
 			status_change_start(bl,SC_REBOUND,0,0,0,0,10000,0);
 			calc_flag = 1;
 			ud->state.change_speed = 1;
+			break;
+		case SC_SERVANTWEAPON:		/* サーヴァントウェポン */
+			if(sd)
+				pc_delservantweapon(sd,sd->servantweapon.num,0);
+			break;
+		case SC_CHARGINGPIERCE:		/* チャージングスピア */
+			if(sc->data[SC_CHARGINGPIERCE_COUNT].timer != -1)
+				status_change_end(bl,SC_CHARGINGPIERCE_COUNT,-1);
+			break;
+		case SC_GUARD_STANCE:		/* ガードスタンス */
+			if(sc->data[SC_GUARDIAN_S].timer != -1)
+				status_change_end(bl,SC_GUARDIAN_S,-1);
+			if(sc->data[SC_REBOUND_S].timer != -1)
+				status_change_end(bl,SC_REBOUND_S,-1);
+			calc_flag = 1;
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -11358,6 +11755,8 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_ACTIVE_MONSTER_TRANSFORM:	/* アクティブモンスター変身 */
 	case SC_INVINCIBLE:	/* インビンシブル */
 	case SC_STYLE_CHANGE:		/* スタイルチェンジ */
+	case SC_GUARD_STANCE:		/* ガードスタンス */
+	case SC_ATTACK_STANCE:		/* アタックスタンス */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -12250,6 +12649,19 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 		}
 		break;
+	case SC_SERVANTWEAPON:		/* サーヴァントウェポン */
+		if((--sc->data[type].val4) > 0) {
+			if(sd)
+				pc_addservantweapon(sd,600000,1);
+			timer = add_timer(tick+sc->data[type].val3, status_change_timer,bl->id, data);
+		}
+		break;
+	case SC_MEDIALE:		/* メディアリボトゥム */
+		if((--sc->data[type].val4) > 0) {
+			skill_castend_nodamage_id(bl,bl,CD_MEDIALE_VOTUM,sc->data[type].val1,tick,0x10|sc->data[type].val2);
+			timer = add_timer(tick+sc->data[type].val3, status_change_timer,bl->id, data);
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -12565,7 +12977,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_MONK;
 			break;
 		case PC_JOB_SG:
-		case PC_JOB_SE:
+		case PC_JOB_SJ:
 			type = SC_STAR;
 			break;
 		case PC_JOB_SA:
@@ -12593,7 +13005,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 			type = SC_ASSASIN;
 			break;
 		case PC_JOB_SL:
-		case PC_JOB_RE:
+		case PC_JOB_SP:
 			type = SC_SOULLINKER;
 			break;
 		case PC_JOB_KN:
@@ -12628,7 +13040,7 @@ int status_change_soulstart(struct block_list *bl,int val1,int val2,int val3,int
 		case PC_JOB_NJ:
 			type = SC_NINJA;
 			break;
-		case PC_JOB_DK:
+		case PC_JOB_DE:
 			type = SC_DEATHKINGHT;
 			break;
 		case PC_JOB_DA:
@@ -13102,7 +13514,7 @@ int status_readdb(void)
 		}
 
 		while(fgets(line,1020,fp)){
-			char *split[8+WT_MAX];
+			char *split[10+WT_MAX];
 			int hp_coefficient, sp_coefficient;
 			int hp_coefficient2, sigma;
 
@@ -13111,12 +13523,12 @@ int status_readdb(void)
 			if(line[0]=='/' && line[1]=='/')
 				continue;
 			memset(split,0,sizeof(split));
-			for(j=0,p=line;j<7+WT_MAX && p;j++){
+			for(j=0,p=line;j<9+WT_MAX && p;j++){
 				split[j]=p;
 				p=strchr(p,',');
 				if(p) *p++=0;
 			}
-			if(j < 7)
+			if(j < 9)
 				continue;
 
 			i = atoi(split[0]);
@@ -13124,10 +13536,12 @@ int status_readdb(void)
 				continue;
 
 			status_split_atoi2(split[1],job_db[i].max_joblv,PC_UPPER_MAX);
-			job_db[i].max_weight_base = atoi(split[2]);
-			if((hp_coefficient = atoi(split[3])) < 0)
+			status_split_atoi2(split[2],job_db[i].base_exp_table,PC_UPPER_MAX);
+			status_split_atoi2(split[3],job_db[i].job_exp_table,PC_UPPER_MAX);
+			job_db[i].max_weight_base = atoi(split[4]);
+			if((hp_coefficient = atoi(split[5])) < 0)
 				hp_coefficient = 0;
-			if((hp_coefficient2 = atoi(split[4])) < 0)
+			if((hp_coefficient2 = atoi(split[6])) < 0)
 				hp_coefficient2 = 500;
 			sigma = 0;
 			for(j = 1; j <= MAX_LEVEL; j++) {
@@ -13137,17 +13551,17 @@ int status_readdb(void)
 				sigma -= sigma % 100;
 			}
 
-			if((sp_coefficient = atoi(split[5])) < 0)
+			if((sp_coefficient = atoi(split[7])) < 0)
 				sp_coefficient = 100;
 			for(j = 1; j <= MAX_LEVEL; j++) {
 				// 基本SP = 10 + BaseLevel * Job係数
 				job_db[i].sp_base[j-1] = (1000 + j * sp_coefficient) / 100;
 			}
 
-			job_db[i].max_ap = atoi(split[6]);
+			job_db[i].max_ap = atoi(split[8]);
 
-			for(j=0; j<=WT_MAX && split[7+j]; j++) {
-				job_db[i].aspd_base[j] = atoi(split[7+j]);
+			for(j=0; j<=WT_MAX && split[9+j]; j++) {
+				job_db[i].aspd_base[j] = atoi(split[9+j]);
 			}
 		}
 		fclose(fp);
