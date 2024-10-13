@@ -636,6 +636,9 @@ extern struct Battle_Config {
 	int max_skillpoint_esnv;
 	int max_skillpoint_doram;
 	int pc_tstatus_max;
+	int mob_ai_area_size;
+	int mob_ai_sleeptime;
+	int boss_ai_sleeptime;
 } battle_config;
 
 int battle_config_read(const char *cfgName);

@@ -2223,7 +2223,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 
 		// 殴ってmob変化
 		if(sd && dstmd && mobdb_search(dstmd->class_)->race != RCT_DEMIHUMAN && !map[dstmd->bl.m].flag.nobranch &&
-		   !(mobdb_search(dstmd->class_)->mode&MD_BOSS) && dstmd->class_ != MOBID_EMPERIUM && dstmd->state.special_mob_ai != 1)
+		   !(mobdb_search(dstmd->class_)->mode&MD_BOSS) && dstmd->class_ != MOBID_EMPERIUM && dstmd->state.special_mob_ai == MOB_AI_NONE)
 		{
 			if(atn_rand()%10000 < sd->mob_class_change_rate)
 			{
@@ -9558,7 +9558,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					tmpmd->min_chase = 5 + path_distance(src->x,src->y,bl->x,bl->y);
 					tmpmd->state.master_check = 1;
 					tmpmd->state.norandomwalk = 1;
-					tmpmd->state.special_mob_ai = 4;
+					tmpmd->state.special_mob_ai = MOB_AI_LEGION;
 				}
 			}
 			hd->skillstatictimer[skillid-HOM_SKILLID] = tick + skill_get_cooldown(skillid,skilllv);
@@ -12938,7 +12938,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
 				tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
-				tmpmd->state.special_mob_ai = 1;
+				tmpmd->state.special_mob_ai = MOB_AI_SUMMON;
 			}
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
@@ -12984,7 +12984,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->state.nodrop = battle_config.spheremine_no_drop;
 				tmpmd->state.noexp  = battle_config.spheremine_no_exp;
 				tmpmd->state.nomvp  = battle_config.spheremine_no_mvp;
-				tmpmd->state.special_mob_ai = 2;
+				tmpmd->state.special_mob_ai = MOB_AI_SPHERE1;
 			}
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
@@ -13179,7 +13179,7 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 				tmpmd->state.nodrop = battle_config.cannibalize_no_drop;
 				tmpmd->state.noexp  = battle_config.cannibalize_no_exp;
 				tmpmd->state.nomvp  = battle_config.cannibalize_no_mvp;
-				tmpmd->state.special_mob_ai = 1;
+				tmpmd->state.special_mob_ai = MOB_AI_SUMMON;
 			}
 			clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		}
@@ -18306,7 +18306,7 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 		case NPC_SUMMONSLAVE:
 			if(md->master_id <= 0)
 				break;
-			if(md->state.special_mob_ai) {
+			if(md->state.special_mob_ai != MOB_AI_NONE) {
 				// 召還主がPCなら使用不可
 				return 0;
 			}
@@ -18326,7 +18326,7 @@ static int skill_check_condition2_mob(struct mob_data *md, struct skill_conditio
 			}
 			break;
 		case NPC_DEATHSUMMON:		/* デスサモン */
-			if(md->master_id > 0 && md->state.special_mob_ai) {
+			if(md->master_id > 0 && md->state.special_mob_ai != MOB_AI_NONE) {
 				// 召還主がPCなら使用不可
 				return 0;
 			}
@@ -22099,7 +22099,7 @@ void skill_magicdecoy(struct map_session_data *sd, int nameid)
 						md->state.nodrop = battle_config.cannibalize_no_drop;
 						md->state.noexp  = battle_config.cannibalize_no_exp;
 						md->state.nomvp  = battle_config.cannibalize_no_mvp;
-						md->state.special_mob_ai = 1;
+						md->state.special_mob_ai = MOB_AI_SUMMON;
 					}
 					break;
 				}

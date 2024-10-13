@@ -787,7 +787,7 @@ int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int f
 				return 0;
 			}
 			map_addblock(&sd->eld->bl);
-			mob_ai_hard_spawn( &sd->eld->bl, 1 );
+			mob_ai_hard_spawn(&sd->eld->bl);
 			clif_spawnelem(sd->eld);
 			clif_send_elemstatus(sd);
 			elem_save_data(sd);

@@ -1110,7 +1110,7 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 				} else {
 					return 0;
 				}
-			} else if(!tmd->master_id && !tmd->state.special_mob_ai) {
+			} else if(!tmd->master_id && tmd->state.special_mob_ai == MOB_AI_NONE) {
 				// ÇªÇÃëºÇÃGvä÷òAÇÃMOB
 				if(src->type == BL_PC) {
 					struct guild *g = guild_search(((struct map_session_data *)src)->status.guild_id);
@@ -9629,13 +9629,13 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 		if(md && md->master_id > 0) {
 			if(md->master_id == target->id)	// éÂÇ»ÇÁçmíË
 				return 1;
-			if(md->state.special_mob_ai) {
+			if(md->state.special_mob_ai != MOB_AI_NONE) {
 				if(target->type == BL_MOB) {	// special_mob_aiÇ≈ëŒè€Ç™Mob
 					struct mob_data *tmd = (struct mob_data *)target;
 					if(tmd) {
 						if(tmd->master_id != md->master_id)	// è¢ä´éÂÇ™àÍèèÇ≈Ç»ÇØÇÍÇŒî€íË
 							return 0;
-						else if(md->state.special_mob_ai == 3)	// è¢ä´éÂÇ™àÍèèÇ»ÇÃÇ≈çmíËÇµÇΩÇ¢ÇØÇ«é©îöÇÕî€íË
+						else if(md->state.special_mob_ai == MOB_AI_SPHERE2)	// è¢ä´éÂÇ™àÍèèÇ»ÇÃÇ≈çmíËÇµÇΩÇ¢ÇØÇ«é©îöÇÕî€íË
 							return 0;
 						else
 							return 1;
@@ -9667,7 +9667,7 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 		struct guild_castle *gc = NULL;
 
 		// ÉåÉMÉIÉìÉÇÉìÉXÉ^Å[
-		if(md->state.special_mob_ai == 4) {
+		if(md->state.special_mob_ai == MOB_AI_LEGION) {
 			if(sd->hd && sd->hd->bl.id == md->master_id)
 				return 1;
 		}
@@ -9830,7 +9830,7 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 
 	if((ss->type & (BL_HOM | BL_MERC | BL_ELEM)) && target->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)target;
-		if(md && md->state.special_mob_ai == 4 && md->master_id > 0) {
+		if(md && md->state.special_mob_ai == MOB_AI_LEGION && md->master_id > 0) {
 			if(md->master_id == ss->id)	// éÂÇ»ÇÁçmíË
 				return 1;
 		}
@@ -10537,6 +10537,9 @@ int battle_config_read(const char *cfgName)
 		{ "max_skillpoint_esnv",                &battle_config.max_skillpoint_esnv,                176      },
 		{ "max_skillpoint_doram",               &battle_config.max_skillpoint_doram,               59       },
 		{ "pc_tstatus_max",                     &battle_config.pc_tstatus_max,                     100      },
+		{ "mob_ai_area_size",                   &battle_config.mob_ai_area_size,                   36       },
+		{ "mob_ai_sleeptime",                   &battle_config.mob_ai_sleeptime,                   60000    },
+		{ "boss_ai_sleeptime",                  &battle_config.boss_ai_sleeptime,                  300000   },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

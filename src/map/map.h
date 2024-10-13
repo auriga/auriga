@@ -1029,7 +1029,8 @@ struct mob_data {
 	short recallmob_count;
 	short recallcount;
 	short guardup_lv;
-	int ai_pc_count; // 近くにいるPCの数
+	short is_pcnear;					// 近くにPCが居るかどうか
+	unsigned int last_pcneartime;		// 近くにPCが居た最後の時間
 	struct mob_data *ai_next, *ai_prev; // まじめAI用のリンクリスト
 	int areanpc_id;
 };

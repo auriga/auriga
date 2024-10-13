@@ -11309,7 +11309,7 @@ int buildin_summon(struct script_state *st)
 
 	id = mob_once_spawn(sd, sd->bl.m, 0, 0, str, class_, 1, event);
 	if((md = map_id2md(id)) != NULL) {
-		md->state.special_mob_ai = 1;
+		md->state.special_mob_ai = MOB_AI_SUMMON;
 		md->master_id   = sd->bl.id;
 		md->mode        = mobdb_search(md->class_)->mode | MD_AGGRESSIVE;
 		md->deletetimer = add_timer(tick+60000,mob_timer_delete,id,NULL);

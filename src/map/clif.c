@@ -22470,7 +22470,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
 		clif_spawnpc(sd);	// spawn
 	}
-	mob_ai_hard_spawn(&sd->bl, 1);
+	mob_ai_hard_spawn(&sd->bl);
 
 	// party
 	party_send_movemap(sd);
@@ -22519,7 +22519,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	// ƒzƒ€
 	if(sd->hd) {
 		map_addblock(&sd->hd->bl);
-		mob_ai_hard_spawn(&sd->hd->bl, 1);
+		mob_ai_hard_spawn(&sd->hd->bl);
 		clif_spawnhom(sd->hd);
 		clif_send_homdata(sd,0,0);
 		clif_send_homstatus(sd,1);
@@ -22528,7 +22528,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	// —b•º
 	if(sd->mcd) {
 		map_addblock(&sd->mcd->bl);
-		mob_ai_hard_spawn( &sd->mcd->bl, 1 );
+		mob_ai_hard_spawn(&sd->mcd->bl);
 		clif_spawnmerc(sd->mcd);
 		clif_send_mercstatus(sd);
 		clif_mercskillinfoblock(sd);
@@ -22536,7 +22536,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	// ¸—ì
 	if(sd->eld) {
 		map_addblock(&sd->eld->bl);
-		mob_ai_hard_spawn( &sd->eld->bl, 1 );
+		mob_ai_hard_spawn(&sd->eld->bl);
 		clif_spawnelem(sd->eld);
 		clif_send_elemstatus(sd);
 	}

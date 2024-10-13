@@ -797,7 +797,7 @@ int homun_callhom(struct map_session_data *sd)
 				return 0;
 			}
 			map_addblock(&sd->hd->bl);
-			mob_ai_hard_spawn( &sd->hd->bl, 1 );
+			mob_ai_hard_spawn(&sd->hd->bl);
 			clif_spawnhom(sd->hd);
 			clif_send_homdata(sd,0,0);
 			clif_send_homstatus(sd,1);

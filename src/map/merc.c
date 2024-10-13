@@ -557,7 +557,7 @@ int merc_recv_mercdata(int account_id,int char_id,struct mmo_mercstatus *p,int f
 				return 0;
 			}
 			map_addblock(&sd->mcd->bl);
-			mob_ai_hard_spawn( &sd->mcd->bl, 1 );
+			mob_ai_hard_spawn(&sd->mcd->bl);
 			clif_spawnmerc(sd->mcd);
 			clif_send_mercstatus(sd);
 			clif_mercskillinfoblock(sd);

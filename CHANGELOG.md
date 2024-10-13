@@ -1,4 +1,28 @@
 ----------------------------------------
+//1568 [2024/10/14] by Blaze
+
+・モンスターAI変更（mob.c, mob.h, map.h, unit.c, clif.c, homun.c, merc.c, elem.c）
+　モンスターがPCの視界外に出たとき即座に思考停止していたのをbattle_confの設定で視界外でもAI実行する猶予時間を持たせるように。
+　モンスターAIのPC判定をクライアント側の移動で判断していたのをMOB側で判定させるように。
+
+・battle_confにモンスターAI関連の設定を追加（conf/battle_auriga.conf, battle.c, battle.h, mob.c）
+　　MOBのAIがPCを認識してアクティブ化する距離（-1でマップ内にPCが居ればアクティブ化）
+　　　mob_ai_area_size　　※デフォルトは36セル
+
+　　通常MOBがプレイヤーの視界外に出たときにMOBのAIがスリープ状態になるまでの時間(単位はms）
+　　　mob_ai_sleeptime　　※デフォルトは60000ms（1分）
+
+　　ボス型MOBがプレイヤーの視界外に出たときにMOBのAIがスリープ状態になるまでの時間(単位はms）
+　　　boss_ai_sleeptime　　※デフォルトは300000ms（5分）
+
+・モンスターAIの時間監視のため、手抜きAIタイマーmob_ai_lazyの周期を2000msから1000msに変更（mob.c）
+　※負荷が気になる方はmob.cの「MIN_MOBTHINKTIME_LAZY」定義を調整ください。
+
+・取り巻きモンスターの挙動を変更、主が移動しているとき移動途中セルを基に追従していたのを移動先のセル中心に追従するように（mob.c）
+
+・モンスター特殊AIの定義名を追加（mob.h, mob.c, atcommand.c, battle.c, script.c, skill.c）
+
+----------------------------------------
 //1567 [2024/10/13] by refis
 
 ・ゲフェン魔法大会メモリアル実装（npc_memorial_magictournament.sc）
