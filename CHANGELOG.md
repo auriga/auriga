@@ -1,4 +1,28 @@
 ----------------------------------------
+//1567 [2024/10/13] by refis
+
+・ゲフェン魔法大会メモリアル実装（npc_memorial_magictournament.sc）
+	Thanks a lot! フリージア さん、Dallen さん
+
+・mapflag更新 (mapflag_memorial.sc)
+
+・item_dbの更新 (item_db.txt, item_cardtype.txt)
+
+・mob_dbの更新 (mob_db.txt, mob_skill_db.txt, mob_talk_db.txt)
+
+・追加メッセージが入らないのでmob_talk_dbのメッセージ長を200Bから210Bに拡張 (map/mob.*)
+
+・quest_dbの更新 (quest_db.txt)
+
+・map_auriga.conf更新 (map_auriga.conf)
+
+・[getequippos]関数を追加 (script_ref.txt, map/script.c)
+	-> アイテムスクリプトに記述で、スクリプト判定中の装着箇所を返します
+		Thanks Dallen さん
+
+・[delequip]命令で全装備削除時、装備以外のアイテムが対象になる不具合を修正 (map/script.c)
+
+----------------------------------------
 //1566 [2024/10/11] by Blaze
 
 ・4次職実装（pc.c, pc.h, skill.c, skill.h, battle.c, status.c, status.h, unit.c, atcommand.c,

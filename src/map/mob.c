@@ -4475,7 +4475,7 @@ static int mob_readtalkdb(void)
 			continue;
 
 		mob_talk_db[msgid].color = (unsigned int)strtoul(str[1],NULL,0);
-		strncpy(mob_talk_db[msgid].msg, str[2], 200);
+		strncpy(mob_talk_db[msgid].msg, str[2], sizeof(mob_talk_db[msgid].msg));
 		len = strlen(mob_talk_db[msgid].msg);
 		mob_talk_db[msgid].msg[len-1] = '\0';		// force \0 terminal
 	}

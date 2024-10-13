@@ -208,6 +208,39 @@
 1@sara.gat	mapflag	noabra		dummy
 
 //============================================================
+// ゲフェン魔法大会 - 1@ge_st.gat
+//------------------------------------------------------------
+1@ge_st.gat	mapflag	nosave			SavePoint
+1@ge_st.gat	mapflag	nomemo			dummy
+1@ge_st.gat	mapflag	noteleport		dummy
+1@ge_st.gat	mapflag	nobranch		dummy
+1@ge_st.gat	mapflag	monster_noteleport	dummy
+1@ge_st.gat	mapflag	noicewall	dummy
+1@ge_st.gat	mapflag	noabra		dummy
+
+//============================================================
+// ゲフェン魔法大会 - 1@gef.gat
+//------------------------------------------------------------
+1@gef.gat	mapflag	nosave			SavePoint
+1@gef.gat	mapflag	nomemo			dummy
+1@gef.gat	mapflag	noteleport		dummy
+1@gef.gat	mapflag	nobranch		dummy
+1@gef.gat	mapflag	monster_noteleport	dummy
+1@gef.gat	mapflag	noicewall	dummy
+1@gef.gat	mapflag	noabra		dummy
+
+//============================================================
+// ゲフェン魔法大会 - 1@gef_in.gat
+//------------------------------------------------------------
+1@gef_in.gat	mapflag	nosave			SavePoint
+1@gef_in.gat	mapflag	nomemo			dummy
+1@gef_in.gat	mapflag	noteleport		dummy
+1@gef_in.gat	mapflag	nobranch		dummy
+1@gef_in.gat	mapflag	monster_noteleport	dummy
+1@gef_in.gat	mapflag	noicewall	dummy
+1@gef_in.gat	mapflag	noabra		dummy
+
+//============================================================
 // フェイスワームの巣 - 1@face.gat
 //------------------------------------------------------------
 1@face.gat	mapflag	nosave			SavePoint

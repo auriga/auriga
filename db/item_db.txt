@@ -12251,21 +12251,21 @@
 27246,Unknown_Item,ジターバグカード,6,20,,10,,,,,,,16,,,,,{},{ bonus bInt,3; bonus bNoKnockback,0; if(getclassjob(4068)||getclassjob(4069)){ bonus2 bResEff,Eff_Freeze,10000; skill "SN_SIGHT",1; } }
 27247,Unknown_Item,fff・ジターバグカード,6,20,,10,,,,,,,136,,,,,{},{ bonus2 bResEff,Eff_Freeze,5000; bonus2 bAddSkillDamageRate,"WM_METALICSOUND",50; if(equippeditem(311074)){ bonus2 bAddEleMagicDamageRate,Ele_Neutral,10; bonus2 bAddEffMagic,Eff_Sleep,10000; } } }
 27248,Unknown_Item,サラの幻影カード,6,20,,10,,,,,,,769,,,,,{},{ bonus2 bSubEle,Ele_Fire,10; bonus2 bSubEle,Ele_Dark,10; skill "MG_ENERGYCOAT",1; bonus2 bAddSkillDamageRate,"WL_HELLINFERNO",10*getequiprefinerycnt(); if(equippeditem(311074)){ bonus2 bAddEleMagicDamageRate,Ele_Dark,15; skill "WL_HELLINFERNO",5; } } }
-27249,Unknown_Item,アルヒカード,6,,,10,,,,,,,136,,,,,{},{}
-27250,Unknown_Item,ディオ・アネモスカード,6,,,10,,,,,,,64,,,,,{},{}
-27251,Unknown_Item,ブラック・カネイリーカード,6,,,10,,,,,,,256,,,,,{},{}
-27252,Unknown_Item,ヒピア・スニキカード,6,,,10,,,,,,,136,,,,,{},{}
-27253,Unknown_Item,ビリー・コスルリースカード,6,,,10,,,,,,,64,,,,,{},{}
-27254,Unknown_Item,フェモンカード,6,,,10,,,,,,,32,,,,,{},{}
-27255,Unknown_Item,オルドルカード,6,,,10,,,,,,,16,,,,,{},{}
-27256,Unknown_Item,ブルート・ハゼカード,6,,,10,,,,,,,136,,,,,{},{}
-27257,Unknown_Item,黒魔カード,6,,,10,,,,,,,4,,,,,{},{}
-27258,Unknown_Item,イフォドスカード,6,,,10,,,,,,,64,,,,,{},{}
-27259,Unknown_Item,レチェニエカード,6,,,10,,,,,,,136,,,,,{},{}
-27260,Unknown_Item,ユメヒメカード,6,,,10,,,,,,,64,,,,,{},{}
-27261,Unknown_Item,ジューカード,6,,,10,,,,,,,136,,,,,{},{}
-27262,Unknown_Item,ディワイカード,6,,,10,,,,,,,136,,,,,{},{}
-27263,Unknown_Item,フェイ・カナビアンカード,6,,,10,,,,,,,4,,,,,{},{}
+27249,Unknown_Item,アルヒカード,6,,,10,,,,,,,136,,,,,{},{ bonus bMatk,15; bonus3 bAutoSpell2,"MG_THUNDERSTORM",5,1000; }
+27250,Unknown_Item,ディオ・アネモスカード,6,,,10,,,,,,,64,,,,,{},{ bonus bMatkRate,5; bonus2 bAddSkillDamageRate,"MG_THUNDERSTORM",(BaseLevel/3*2); if(equippeditem(27249)){ bonus bMaxHP,1000; bonus bMaxSP,100; bonus2 bExpRate,Rct_All,5; } }
+27251,Unknown_Item,ブラック・カネイリーカード,6,,,10,,,,,,,769,,,,,{},{ bonus bAspdAddRate,3; bonus3 bAutoSpell,"RG_STEALCOIN",5,500; }
+27252,Unknown_Item,ヒピア・スニキカード,6,,,10,,,,,,,136,,,,,{},{ skill "BS_HAMMERFALL",3; }
+27253,Unknown_Item,ビリー・コスルリースカード,6,,,10,,,,,,,64,,,,,{},{ bonus2 bAddRace,Rct_NonBoss,5; bonus2 bAddRace,Rct_Boss,5; bonus2 bAddSkillDamageRate,"TF_POISON",2*BaseLevel; if(equippeditem(27251) && equippeditem(27252)){ bonus bStr,5; bonus bAgi,5; bonus bMaxHPrate,10; bonus2 bAddRace,Rct_NonBoss,5; bonus2 bAddRace,Rct_Boss,5; } }
+27254,Unknown_Item,フェモンカード,6,,,10,,,,,,,32,,,,,{},{ bonus bMaxSP,100; bonus2 bAddSkillDamageRate,"MO_EXTREMITYFIST",10; bonus2 bAddCastRate,"MO_EXTREMITYFIST",-100; }
+27255,Unknown_Item,オルドルカード,6,,,10,,,,,,,16,,,,,{},{ bonus bMaxHP,400; bonus bMaxSP,50; bonus3 bAutoSpell,"WZ_STORMGUST",1,500; if(equippeditem(27254) && equippeditem(27256)){ bonus bMaxHPrate,15; bonus bMaxSPrate,15; bonus2 bSubRace,Rct_Boss,40; bonus2 bMagicSubRace,Rct_Boss,40; bonus bDefEle,Ele_Holy; } }
+27256,Unknown_Item,ブルート・ハゼカード,6,,,10,,,,,,,136,,,,,{},{ bonus bAtk,15; bonus2 bAddSkillDamageRate,"CR_GRANDCROSS",50; }
+27257,Unknown_Item,黒魔カード,6,,,10,,,,,,,4,,,,,{},{ bonus bAspdAddRate,10; skill "NJ_UTSUSEMI",1; bonus2 bAddSkillCoolDown,"NJ_UTSUSEMI",30000; if(equippeditem(27258) && equippeditem(27259)){ bonus bAspd,2; bonus2 bAddRace,Rct_NonBoss,10; bonus2 bAddRace,Rct_Boss,10; } }
+27258,Unknown_Item,イフォドスカード,6,,,10,,,,,,,64,,,,,{},{ bonus2 bAddRace,Rct_NonBoss,5; bonus2 bAddRace,Rct_Boss,5; bonus2 bAddSkillDamageRate,"KN_SPEARBOOMERANG",4*BaseLevel; }
+27259,Unknown_Item,レチェニエカード,6,,,10,,,,,,,136,,,,,{},{ if(getequippos() == 7){ bonus3 bAutoSelfSpell2,"MG_SAFETYWALL",5,300; } if(getequippos() == 8){ bonus3 bAutoSelfSpell,"AL_PNEUMA",1,300; } }
+27260,Unknown_Item,ユメヒメカード,6,,,10,,,,,,,64,,,,,{},{ bonus2 bAddRace,Rct_NonBoss,5; bonus2 bAddRace,Rct_Boss,5; bonus2 bAddSkillDamageRate,"AC_SHOWER",2*BaseLevel; if(equippeditem(27263)){ bonus bPerfectHitRate,10; } }
+27261,Unknown_Item,ジューカード,6,,,10,,,,,,,136,,,,,{},{ bonus2 bAddEleMagicDamageRate,Ele_Water,4; }
+27262,Unknown_Item,ディワイカード,6,,,10,,,,,,,136,,,,,{},{ bonus2 bAddEleMagicDamageRate,Ele_Earth,4; if(equippeditem(27261)){ bonus bDex,7; bonus bMatkRate,4; } }
+27263,Unknown_Item,フェイ・カナビアンカード,6,,,10,,,,,,,4,,,,,{},{ bonus bAddLongWeaponDamage,5; bonus2 bSubSkillDamageRate,"AM_ACIDTERROR",50; }
 27264,Unknown_Item,魔神の信者カード,6,,,10,,,,,,,136,,,,,{},{}
 27265,Unknown_Item,魔神の巨影カード,6,,,10,,,,,,,64,,,,,{},{ bonus4 bSkillAutoSpell2,"AS_VENOMKNIFE","GC_CROSSIMPACT",1,10000; bonus2 bAddSkillDamageRate,"GC_CROSSIMPACT",10*getskilllv("GC_CROSSIMPACT"); if(equippeditem(311074)){ bonus2 bAddRace,Rct_Human,30; } } }
 

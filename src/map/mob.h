@@ -91,7 +91,7 @@ struct random_mob_data {
 
 struct mob_talk {
 	unsigned int color;
-	char msg[200];
+	char msg[210];
 };
 
 enum {

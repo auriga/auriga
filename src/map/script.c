@@ -4115,6 +4115,7 @@ int buildin_delequip(struct script_state *st);
 int buildin_successrefitem(struct script_state *st);
 int buildin_failedrefitem(struct script_state *st);
 int buildin_downrefitem(struct script_state *st);
+int buildin_getequippos(struct script_state *st);
 int buildin_cutin(struct script_state *st);
 int buildin_cutincard(struct script_state *st);
 int buildin_statusup(struct script_state *st);
@@ -4469,6 +4470,7 @@ struct script_function buildin_func[] = {
 	{buildin_successrefitem,"successrefitem","i"},
 	{buildin_failedrefitem,"failedrefitem","i"},
 	{buildin_downrefitem,"downrefitem","i*"},
+	{buildin_getequippos,"getequippos",""},
 	{buildin_statusup,"statusup","i"},
 	{buildin_statusup2,"statusup2","ii"},
 	{buildin_bonus,"bonus","ii"},
@@ -7033,7 +7035,7 @@ int buildin_delequip(struct script_state *st)
 	} else {
 		for(i=0;i<EQUIP_INDEX_MAX;i++) {
 			if(sd->equip_index[i] >= 0)
-				pc_delitem(sd,i,1,0,0);
+				pc_delitem(sd,sd->equip_index[i],1,0,0);
 		}
 	}
 	return 0;
@@ -7114,6 +7116,30 @@ int buildin_downrefitem(struct script_state *st)
 	}
 
 	return 0;
+}
+
+/*==========================================
+ * ‘•”õ•i‚Ì‘•”õˆÊ’u
+ *------------------------------------------
+ */
+int buildin_getequippos(struct script_state *st)
+{
+	struct map_session_data *sd;
+	int pos = 0, idx, i;
+
+	sd  = script_rid2sd(st);
+	idx = sd->equip_index[current_equip_item_index];
+	if(sd->status.inventory[idx].equip) {
+		for(i=0;i<EQUIP_INDEX_MAX;i++) {
+			if(sd->status.inventory[idx].equip & equip_pos[i]) {
+				pos = i + 1;
+				break;
+			}
+		}
+	}
+	push_val(st->stack,C_INT,pos);
+
+    return 0;
 }
 
 /*==========================================
