@@ -55,7 +55,7 @@
 #define MAX_GUILDLEVEL 50
 #define MAX_FRIEND 20
 
-#define MAX_STATUSCHANGE 800
+#define MAX_STATUSCHANGE 850
 
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
@@ -618,6 +618,7 @@ enum {
 	LOC_SHOES_SHADOW      = 0x080000,	// シューズシャドウ
 	LOC_RACCESSORY_SHADOW = 0x100000,	// アクセサリ右シャドウ
 	LOC_LACCESSORY_SHADOW = 0x200000,	// アクセサリ左シャドウ
+	LOC_SHADOW_ALL        = 0x3F0000,	// シャドウ全部位
 };
 
 struct item {

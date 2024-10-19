@@ -779,10 +779,10 @@ int pc_delsoulenergy(struct map_session_data *sd,int count,int type)
 }
 
 /*==========================================
- * サーヴァントウェポンタイマー
+ * 球体タイマー
  *------------------------------------------
  */
-static int pc_servantweapon_timer(int tid,unsigned int tick,int id,void *data)
+static int pc_ball_timer(int tid,unsigned int tick,int id,void *data)
 {
 	struct map_session_data *sd = map_id2sd(id);
 	int i;
@@ -790,29 +790,29 @@ static int pc_servantweapon_timer(int tid,unsigned int tick,int id,void *data)
 	if(sd == NULL)
 		return 1;
 
-	if(sd->servantweapon.timer[0] != tid) {
+	if(sd->ball.timer[0] != tid) {
 		if(battle_config.error_log)
-			printf("servantweapon_timer %d != %d\n",sd->servantweapon.timer[0],tid);
+			printf("ball_timer %d != %d\n",sd->ball.timer[0],tid);
 		return 0;
 	}
-	sd->servantweapon.timer[0] = -1;
-	for(i=1; i<sd->servantweapon.num; i++) {
-		sd->servantweapon.timer[i-1] = sd->servantweapon.timer[i];
-		sd->servantweapon.timer[i] = -1;
+	sd->ball.timer[0] = -1;
+	for(i=1; i<sd->ball.num; i++) {
+		sd->ball.timer[i-1] = sd->ball.timer[i];
+		sd->ball.timer[i] = -1;
 	}
-	sd->servantweapon.num--;
-	if(sd->servantweapon.num < 0)
-		sd->servantweapon.num = 0;
-	clif_servantweapon(sd);
+	sd->ball.num--;
+	if(sd->ball.num < 0)
+		sd->ball.num = 0;
+	clif_ball(sd);
 
 	return 0;
 }
 
 /*==========================================
- * サーヴァントウェポン追加
+ * 球体追加
  *------------------------------------------
  */
-int pc_addservantweapon(struct map_session_data *sd,int interval,int num)
+int pc_addball(struct map_session_data *sd,int interval,int num)
 {
 	int i;
 	unsigned int tick = gettick();
@@ -820,61 +820,61 @@ int pc_addservantweapon(struct map_session_data *sd,int interval,int num)
 
 	nullpo_retr(0, sd);
 
-	if(sd->servantweapon.num < 0)
-		sd->servantweapon.num = 0;
+	if(sd->ball.num < 0)
+		sd->ball.num = 0;
 
-	before = sd->servantweapon.num;
+	before = sd->ball.num;
 
 	for(i = num; i > 0; i--) {
-		if(sd->servantweapon.num >= MAX_SERVANTWEAPON) {
+		if(sd->ball.num >= MAX_BALL) {
 			// 最大数に達している場合は更新しない
 			break;
 		}
-		sd->servantweapon.num++;
-		sd->servantweapon.timer[sd->servantweapon.num-1] = add_timer(tick+interval+sd->servantweapon.num,pc_servantweapon_timer,sd->bl.id,NULL);
+		sd->ball.num++;
+		sd->ball.timer[sd->ball.num-1] = add_timer(tick+interval+sd->ball.num,pc_ball_timer,sd->bl.id,NULL);
 	}
 
-	if(sd->servantweapon.num != before) {
-		clif_servantweapon(sd);
+	if(sd->ball.num != before) {
+		clif_ball(sd);
 	}
 
 	return 0;
 }
 
 /*==========================================
- * サーヴァントウェポン削除
+ * 球体削除
  *------------------------------------------
  */
-int pc_delservantweapon(struct map_session_data *sd,int count,int type)
+int pc_delball(struct map_session_data *sd,int count,int type)
 {
 	int i;
 
 	nullpo_retr(0, sd);
 
-	if(sd->servantweapon.num <= 0) {
-		sd->servantweapon.num = 0;
+	if(sd->ball.num <= 0) {
+		sd->ball.num = 0;
 		return 0;
 	}
 
-	if(count > sd->servantweapon.num)
-		count = sd->servantweapon.num;
-	sd->servantweapon.num -= count;
-	if(count > MAX_SERVANTWEAPON)
-		count = MAX_SERVANTWEAPON;
+	if(count > sd->ball.num)
+		count = sd->ball.num;
+	sd->ball.num -= count;
+	if(count > MAX_BALL)
+		count = MAX_BALL;
 
 	for(i=0; i<count; i++) {
-		if(sd->servantweapon.timer[i] != -1) {
-			delete_timer(sd->servantweapon.timer[i],pc_servantweapon_timer);
-			sd->servantweapon.timer[i] = -1;
+		if(sd->ball.timer[i] != -1) {
+			delete_timer(sd->ball.timer[i],pc_ball_timer);
+			sd->ball.timer[i] = -1;
 		}
 	}
-	for(i=count; i<MAX_SERVANTWEAPON; i++) {
-		sd->servantweapon.timer[i-count] = sd->servantweapon.timer[i];
-		sd->servantweapon.timer[i] = -1;
+	for(i=count; i<MAX_BALL; i++) {
+		sd->ball.timer[i-count] = sd->ball.timer[i];
+		sd->ball.timer[i] = -1;
 	}
 
 	if(!type)
-		clif_servantweapon(sd);
+		clif_ball(sd);
 
 	return 0;
 }
@@ -1537,6 +1537,8 @@ static int pc_isequip(struct map_session_data *sd,int n)
 		return 0;
 	if(sd->sc.data[SC_PYROCLASTIC].timer != -1 && item->equip & LOC_RARM)
 		return 0;
+	if(sd->sc.data[SC_SHADOW_STRIP].timer != -1 && item->equip & LOC_SHADOW_ALL)
+		return 0;
 
 	return 1;
 }
@@ -1906,8 +1908,9 @@ static int pc_calc_skillpoint(struct map_session_data* sd)
  * 現在の職業が何次職かを取得
  *  戻り値= 0:ノービス
  *          1:一次職、TK、GS、NJ、SNV、サモナー
- *          2:二次職、SG、SL、RL、KG、OB、ESNV、スピリットハンドラー
+ *          2:二次職、SG、SL、RL、KG、OB、ESNV
  *          3:三次職、SE、RE
+ *          4:四次職、拡張四次職
  *------------------------------------------
  */
 static int pc_get_classlevel(struct map_session_data *sd)
@@ -1922,6 +1925,8 @@ static int pc_get_classlevel(struct map_session_data *sd)
 		classlevel = 2;
 	} else if(pc_is3rdclass(sd)) {
 		classlevel = 3;
+	} else if(pc_is4thclass(sd)) {
+		classlevel = 4;
 	}
 
 	return classlevel;
@@ -3444,10 +3449,6 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		sd->ud.to_x = x;
 		sd->ud.to_y = y;
 		skill_stop_dancing(&sd->bl, 2);	// 移動先にユニットを移動するかどうかの判断もする
-
-		// ダンシングナイフ移動
-		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,(sd->ud.to_x - sd->bl.x), (sd->ud.to_y - sd->bl.y));
 	} else {
 		// 違うマップなのでダンスユニット削除
 		skill_stop_dancing(&sd->bl, 1);
@@ -3459,11 +3460,6 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			status_change_end(&sd->bl, SC_MOON_COMFORT, -1);
 		if(sd->sc.data[SC_STAR_COMFORT].timer != -1)
 			status_change_end(&sd->bl, SC_STAR_COMFORT, -1);
-
-		// ダンシングナイフ削除
-		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
-			status_change_end(&sd->bl, SC_DANCING_KNIFE, -1);
-
 		// 凸面鏡の効果削除
 		if(sd->sc.data[SC_BOSSMAPINFO].timer != -1)
 			status_change_end(&sd->bl, SC_BOSSMAPINFO, -1);
@@ -7539,6 +7535,11 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 		case 3:
 			pc_setglobalreg(sd,"PC_USESKILLPOINT_3RD",sd->status.skill_point + skill_point);
 			break;
+		}
+		// 4次職に転職時は特性ステータスポイントを付与
+		if(pc_get_classlevel(sd) == 4) {
+			sd->status.tstatus_point += battle_config.fourth_jobchange_tstpoint;
+			clif_updatestatus(sd,SP_TSTATUSPOINT);
 		}
 	}
 

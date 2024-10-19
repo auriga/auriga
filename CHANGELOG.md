@@ -1,4 +1,45 @@
 ----------------------------------------
+//1569 [2024/10/20] by Blaze
+
+・マイスター、アビスチェイサー、ウィンドホークのスキル実装（skill.c, skill.h, battle.c, status.c, status.h, unit.c, db/skill_db.txt, db/skill_db2.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_tree.txt, db/skill_unit_db.txt, db/scdata_db.txt ）
+
+・マイスタースキル関連のアイテムDB、モンスターDB、製造DBを追加（db/item_db.txt, db/item_db2.txt, db/mob_db.txt, db/produce_db.txt）
+
+・ABR/植物モンスターのAI実装（mob.c, skill.c, battle.c）
+
+・MOB召喚時にステータス変更ができるよう、MOBステータスをDB参照からデータ保存するように変更（mob.c, status.c, map.h）
+
+・ステータス取得IF「status_get_xxx」のうち特性ステータスSpl～Crtの参照が誤っていたのを修正（status.c）
+
+・スキルユニットのintervalをスキルレベル毎に設定できるように変更（skill.c, skill.h, db/skill_unit_db.txt）
+
+・4次職の転職時に特性ステータスポイントを付与するように、付与するポイント数を戦闘設定で設定できるように（battle.c, battle.h, pc.c, conf/battle_auriga.conf）
+　　4次職に転職時に得られる特性ステータスポイント
+　　　fourth_jobchange_tstpoint　　※デフォルトは7
+
+・MAX_STATUSCHANGEを800->850に引き上げ（mmo.h）
+
+・シャドウ装備の全部位指定の定義値を追加（mmo.h）
+
+・4次職状態異常（漆黒、静寂など）のレベルによる成功率計算およびステータスによる効果時間減少を実装（status.c）
+
+・4次職状態異常（漆黒、静寂など）がボス型に効かないように変更（db/scdata_db.txt）
+
+・シャドウスタブ、ドラゴニックブレスの防御力無視効果が正常に適用されていなかったのを修正（battle.c）
+
+・4次職スキルの近距離/遠距離設定・最低ディレイ設定を見直し（db/skill_db2.txt）
+
+・4次職の最大ASPDが3次職より低くなっていたのを修正（status.c）
+
+・自動ブリッツビートの発動スキルレベルについて3次職と4次職はJobレベル依存ではなく習得レベルで発動するように（skill.c）
+
+・サーヴァントウェポンの処理やデータをアビス体などと共通化させるために汎用球体として処理変更（status.c, pc.c, pc.h, clif.c, clif.h, map.h）
+
+・ダンシングナイフの攻撃処理をユニット配置型から状態異常で発生させるように変更（skill.c, unit.c, db/skill_db.txt, db/skill_cast_db.txt, db/skill_unit_db.txt）
+
+・製造スキルの種別をclif_making_listで渡すように変更（clif.c, clif.h, skill.c, script.c）
+
+----------------------------------------
 //1568 [2024/10/14] by Blaze
 
 ・モンスターAI変更（mob.c, mob.h, map.h, unit.c, clif.c, homun.c, merc.c, elem.c）

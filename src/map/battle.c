@@ -2107,8 +2107,15 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case SHC_ETERNAL_SLASH:		// エターナルスラッシュ
 	case SHC_IMPACT_CRATER:		// インパクトクレーター
 	case SHC_FATAL_SHADOW_CROW:	// フェイタルシャドウクロー
+	case ABC_FRENZY_SHOT:		// フレンジショット
+	case WH_HAWKRUSH:			// ホークラッシュ
+	case WH_HAWKBOOMERANG:		// ホークブーメラン
 	case MA_SHARPSHOOTING:		// シャープシューティング（傭兵）
 		calc_flag.critical = 1;		// クリティカル判定を判定中に
+		break;
+	case WH_GALESTORM:			// ゲイルストーム
+		if(sc && sc->data[SC_CALAMITYGALE].timer != -1)
+			calc_flag.critical = 1;		// カラミティゲイル中のみクリティカル判定
 		break;
 	}
 	if( calc_flag.critical != 0 && (!src_md || battle_config.enemy_critical || mobdb_search(src_md->class_)->mode_opt[MDOPT_CRITICAL]) &&
@@ -2928,6 +2935,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				// 死霊憑依
 				if(t_sc->data[SC_SOULCURSE].timer != -1 && s_ele == ELE_DARK)
 					cardfix += t_sc->data[SC_SOULCURSE].val2;
+				// 激流
+				if(t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].timer != -1 && s_ele == ELE_EARTH)
+					cardfix += t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].val2;
+				// 強毒
+				if(t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].timer != -1 && s_ele == ELE_POISON)
+					cardfix += t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].val2;
 				// クライマックスクエイク
 				if(t_sc->data[SC_CLIMAX_EARTH].timer != -1 && s_ele == ELE_EARTH)
 					cardfix += t_sc->data[SC_CLIMAX_EARTH].val2;
@@ -3109,9 +3122,13 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				if(src_sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1 && src_sd->sc.data[SC_MONSTER_TRANSFORM].val1 == 1002)
 					add_rate += 5;
 
-				// スキル攻撃の場合はダメージ倍率を1/2に
-				if(skill_num != 0)
+				if(skill_num == WH_HAWKRUSH) {			// ホークラッシュの場合はダメージ倍率を1/4に
+					add_rate = add_rate/4;
+				} else if(skill_num == WH_HAWKBOOMERANG) {		// ホークブーメランの場合はダメージ倍率を1.25倍に
+					add_rate = add_rate * 125 / 100;
+				} else if(skill_num != 0) {					// その他のスキル攻撃の場合はダメージ倍率を1/2に
 					add_rate = add_rate/2;
+				}
 				wd.damage = wd.damage * (100 + add_rate) / 100;
 			}
 		}
@@ -3285,6 +3302,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_ADD( src_sd->arrow_atk );
 			}
 			DMG_FIX( (300 + (400 - 50 * t_size) * skill_lv) * status_get_lv(src) / 120, 100 );
+			if(sc && sc->data[SC_ABR_DUAL_CANNON].timer != -1) {
+				wd.div_ = 2;
+			}
 			break;
 		case NPC_CRITICALSLASH:	// クリティカルスラッシュ
 			if(src_md) {
@@ -4261,12 +4281,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case NC_BOOSTKNUCKLE:	// ブーストナックル
 			DMG_FIX( (200 + 100 * skill_lv + status_get_dex(src)) * status_get_lv(src) / 120, 100 );
+			if(sc && sc->data[SC_ABR_DUAL_CANNON].timer != -1) {
+				wd.div_ = 2;
+			}
 			break;
 		case NC_PILEBUNKER:	// パイルバンカー
 			DMG_FIX( (300 + 100 * skill_lv + status_get_str(src)) * status_get_lv(src) / 100, 100 );
 			break;
 		case NC_VULCANARM:	// バルカンアーム
 			DMG_FIX( (70 * skill_lv + status_get_dex(src)) * status_get_lv(src) / 120, 100 );
+			if(sc && sc->data[SC_ABR_DUAL_CANNON].timer != -1) {
+				wd.div_ = 2;
+			}
 			break;
 		case NC_FLAMELAUNCHER:	// フレイムスローワー
 		case NC_COLDSLOWER:		// コールドスローワー
@@ -4290,10 +4316,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case NC_POWERSWING:	// パワースイング
-			DMG_FIX( 300 + 100 * skill_lv + (status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 100, 100 );
+			if(sc && sc->data[SC_ABR_BATTLE_WARIOR].timer != -1) {
+				DMG_FIX( 500 + 150 * skill_lv + (status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( 300 + 100 * skill_lv + (status_get_str(src) + status_get_dex(src)) * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case NC_AXETORNADO:	// アックストルネード
-			DMG_FIX( (200 + 180 * skill_lv + status_get_vit(src)) * status_get_lv(src) / 100, 100 );
+			if(sc && sc->data[SC_AXE_STOMP].timer != -1) {
+				DMG_FIX( (230 + 230 * skill_lv + status_get_vit(src)*2) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( (200 + 180 * skill_lv + status_get_vit(src)) * status_get_lv(src) / 100, 100 );
+			}
 			break;
 #ifdef PRE_RENEWAL
 		case NC_ARMSCANNON:	// アームズキャノン
@@ -4301,15 +4335,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				DMG_ADD( src_sd->arrow_atk );
 			}
 			DMG_FIX( (300 + (400 - 50 * t_size) * skill_lv) * status_get_lv(src) / 120, 100 );
+			if(sc && sc->data[SC_ABR_DUAL_CANNON].timer != -1) {
+				wd.div_ = 2;
+			}
 			break;
 #endif
 		case NC_MAGMA_ERUPTION:	/* マグマイラプション */
 			DMG_FIX( 450 + 50 * skill_lv, 100 );
 			break;
 		case SC_FATALMENACE:	// フェイタルメナス
+			if(sc && sc->data[SC_ABYSS_DAGGER].timer != -1) {
+				DMG_FIX( (120 + 120 * skill_lv) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( (100 + 100 * skill_lv) * status_get_lv(src) / 100, 100 );
+			}
 			if(src_sd && src_sd->status.weapon == WT_DAGGER)
 				wd.div_ = 2;
-			DMG_FIX( (skill_lv + 1) * 100 * status_get_lv(src) / 100 * wd.div_, 100 );
 			break;
 		case SC_TRIANGLESHOT:	// トライアングルショット
 			DMG_FIX( ((skill_lv - 1) * status_get_agi(src) / 2 + 300) * status_get_lv(src) / 120, 100 );
@@ -4983,7 +5024,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			} else {
 				DMG_FIX( (500 + 500 * skill_lv + status_get_pow(src)*10) * status_get_lv(src) / 100, 100 );
 			}
-			calc_flag.idef = calc_flag.idef_ = 0;
+			calc_flag.idef = calc_flag.idef_ = 1;
 			break;
 		case SHC_IMPACT_CRATER:		/* インパクトクレーター */
 			DMG_FIX( (50 + 50 * skill_lv + status_get_pow(src)) * status_get_lv(src) / 100, 100 );
@@ -4994,13 +5035,81 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case SHC_FATAL_SHADOW_CROW:		/* フェイタルシャドウクロー */
 			DMG_FIX( (600 + 150 * skill_lv + status_get_pow(src)*7) * status_get_lv(src) / 100, 100 );
 			break;
+		case MT_AXE_STOMP:		/* アックスストンプ */
+			DMG_FIX( (3150 + 750 * skill_lv + status_get_pow(src)*10) * status_get_lv(src) / 100, 100 );
+			if(src_sd && src_sd->status.weapon == WT_2HAXE) {
+				wd.div_ = 2;
+			}
+			break;
+		case MT_RUSH_QUAKE:		/* ラッシュクエイク */
+			DMG_FIX( (2700 * skill_lv + status_get_pow(src)*40) * status_get_lv(src) / 100, 100 );
+			break;
+		case MT_A_MACHINE:		/* 攻撃装置有効化 */
+			DMG_FIX( (300 * skill_lv + status_get_pow(src)*5) * status_get_lv(src) / 100, 100 );
+			break;
+		case ABC_ABYSS_DAGGER:		/* アビスダガー */
+			DMG_FIX( (3150 + 750 * skill_lv + status_get_pow(src)*8) * status_get_lv(src) / 100, 100 );
+			break;
+		case ABC_UNLUCKY_RUSH:		/* アンラッキーラッシュ */
+			DMG_FIX( (2100 + 600 * skill_lv + status_get_pow(src)*15) * status_get_lv(src) / 100, 100 );
+			break;
+		case ABC_CHAIN_REACTION_SHOT:		/* チェーンリアクションショット */
+		case ABC_CHAIN_REACTION_SHOT_ATK:	/* チェーンリアクションショット(攻撃) */
+			DMG_FIX( (2350 + 550 * skill_lv + status_get_con(src)*14) * status_get_lv(src) / 100, 100 );
+			break;
+		case ABC_DEFT_STAB:		/* デフトスタブ */
+			DMG_FIX( (3400 + 350 * skill_lv + status_get_pow(src)*10) * status_get_lv(src) / 100, 100 );
+			break;
+		case ABC_FRENZY_SHOT:	/* フレンジショット */
+			DMG_FIX( (1100 + 100 * skill_lv + status_get_con(src)*7) * status_get_lv(src) / 100, 100 );
+			if(atn_rand()%100 < skill_lv * 5) {
+				wd.div_ = 3;
+			}
+			break;
+		case WH_HAWKRUSH:		/* ホークラッシュ */
+			DMG_FIX( (1000 + 100 * skill_lv + status_get_con(src)*5) * ((src_sd)? 100+pc_checkskill(src_sd,WH_NATUREFRIENDLY)*20: 100) / 100 * status_get_lv(src) / 100, 100 );
+			break;
+		case WH_GALESTORM:		/* ゲイルストーム */
+			DMG_FIX( (1000 + 200 * skill_lv + status_get_con(src)*10) * status_get_lv(src) / 100, 100 );
+			if(sc && sc->data[SC_CALAMITYGALE].timer != -1 && (t_race == RCT_BRUTE || t_race == RCT_FISH)) {
+				DMG_FIX( 200, 100);
+			}
+			break;
+		case WH_HAWKBOOMERANG:	/* ホークブーメラン */
+			DMG_FIX( (1000 + 100 * skill_lv + status_get_con(src)*5) * ((src_sd)? 100+pc_checkskill(src_sd,WH_NATUREFRIENDLY)*20: 100) / 100 * status_get_lv(src) / 100, 100 );
+			break;
+		case WH_CRESCIVE_BOLT:		/* クレッシブボルト */
+			DMG_FIX( (1000 + 200 * skill_lv + status_get_con(src)*10) * status_get_lv(src) / 100, 100 );
+			if(sc && sc->data[SC_CRESCIVEBOLT].timer != -1) {
+				if(sc->data[SC_CRESCIVEBOLT].val1 == 1) {
+					DMG_FIX( 110, 100);
+				} else if(sc->data[SC_CRESCIVEBOLT].val1 == 2) {
+					DMG_FIX( 125, 100);
+				} else {
+					DMG_FIX( 150, 100);
+				}
+			}
+			if(sc && sc->data[SC_CALAMITYGALE].timer != -1) {
+				if(t_race == RCT_BRUTE || t_race == RCT_FISH) {
+					DMG_FIX( 200, 100);
+				} else {
+					DMG_FIX( 125, 100);
+				}
+			}
+			break;
+		case WH_DEEPBLINDTRAP:	/* ディープブラインドトラップ */
+		case WH_SOLIDTRAP:		/* ソリッドトラップ */
+		case WH_SWIFTTRAP:		/* スイフトトラップ */
+		case WH_FLAMETRAP:		/* フレイムトラップ */
+			DMG_FIX( (1500 + 300 * skill_lv + status_get_con(src)*3) * ((src_sd)? 100+pc_checkskill(src_sd,WH_ADVANCED_TRAP)*20: 100) / 100 * status_get_lv(src) / 100, 100 );
+			break;
 		case DK_DRAGONIC_BREATH:	/* ドラゴニックブレス */
 			if(sc && sc->data[SC_DRAGONIC_AURA].timer != -1) {
 				DMG_FIX( (3500 + skill_lv*400 + status_get_pow(src)*20 + status_get_max_hp(src)/500 + status_get_max_sp(src)/20) * status_get_lv(src) / 100, 100 );
 			} else {
 				DMG_FIX( (2750 + skill_lv*325 + status_get_pow(src)*10 + status_get_max_hp(src)/500 + status_get_max_sp(src)/20) * status_get_lv(src) / 100, 100 );
 			}
-			calc_flag.idef = calc_flag.idef_ = 0;
+			calc_flag.idef = calc_flag.idef_ = 1;
 			break;
 		case EL_CIRCLE_OF_FIRE:	// サークルオブファイア
 			DMG_FIX( 300, 100 );
@@ -5034,6 +5143,18 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case EL_STONE_RAIN:	// ストーンレイン
 			DMG_FIX( 800, 100 );
+			break;
+		case ABR_BATTLE_BUSTER:		/* バトルバスター */
+			DMG_FIX( 300 * status_get_lv(src) / 100, 100 );
+			calc_flag.idef = calc_flag.idef_ = 1;
+			break;
+		case ABR_DUAL_CANNON_FIRE:	/* デュアルキャノンファイヤー */
+			DMG_FIX( 150 * status_get_lv(src) / 100, 100 );
+			calc_flag.idef = calc_flag.idef_ = 1;
+			break;
+		case ABR_INFINITY_BUSTER:	/* インフィニティバスター */
+			DMG_FIX( 500 * status_get_lv(src) / 100, 100 );
+			calc_flag.idef = calc_flag.idef_ = 1;
 			break;
 		case 0:			// 通常攻撃
 			DMG_FIX( 100, 100 );
@@ -5939,6 +6060,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			cardfix += t_sc->data[SC_ORATIO].val1;
 		if(t_sc->data[SC_SOULCURSE].timer != -1 && s_ele == ELE_DARK)		// 死霊憑依
 			cardfix += t_sc->data[SC_SOULCURSE].val2;
+		if(t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].timer != -1 && s_ele == ELE_EARTH)		// 激流
+			cardfix += t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].val2;
+		if(t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].timer != -1 && s_ele == ELE_POISON)		// 強毒
+			cardfix += t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].val2;
 		// クライマックスクエイク
 		if(t_sc->data[SC_CLIMAX_EARTH].timer != -1 && s_ele == ELE_EARTH)
 			cardfix += t_sc->data[SC_CLIMAX_EARTH].val2;
@@ -5966,6 +6091,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case LK_SPIRALPIERCE:	// スパイラルピアース
 	case PA_SHIELDCHAIN:	// シールドチェイン
 #endif
+	case NC_BOOSTKNUCKLE:	// ブーストナックル
+	case NC_VULCANARM:		// バルカンアーム
+	case NC_ARMSCANNON:		// アームズキャノン
+	case SC_FATALMENACE:	// フェイタルメナス
 	case LG_HESPERUSLIT:	// ヘスペルスリット
 	case SR_DRAGONCOMBO:	// 双龍脚
 	case RL_QD_SHOT:		// クイックドローショット
@@ -5981,7 +6110,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	case SHC_SAVAGE_IMPACT:		// サベージインパクト
 	case SHC_ETERNAL_SLASH:		// エターナルスラッシュ
 	case SHC_IMPACT_CRATER:		// インパクトクレーター
+	case MT_AXE_STOMP:		// アックスストンプ
 	case MH_SONIC_CRAW:		// ソニッククロー
+	case ABC_FRENZY_SHOT:	// フレンジショット
 		// Hit数分修練等が乗るタイプ
 		if(wd.div_ > 1)
 			wd.damage *= wd.div_;
@@ -7495,6 +7626,18 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				MATK_FIX( (600 * skill_lv + ((sd)? pc_checkskill(sd,CD_FIDUS_ANIMUS): 0) * (skill_lv * 30) +  status_get_spl(bl) * 30) * status_get_lv(bl) / 100, 100 );
 			}
 			break;
+		case ABC_FROM_THE_ABYSS_ATK:	/* フロムジアビス(攻撃) */
+			MATK_FIX( (1500 + 1500 * skill_lv + status_get_spl(bl) * 20) * status_get_lv(bl) / 100, 100 );
+			break;
+		case ABC_ABYSS_STRIKE:	/* オメガアビスストライク */
+			MATK_FIX( (7000 + 2000 * skill_lv + status_get_spl(bl) * 60) * status_get_lv(bl) / 100, 100 );
+			break;
+		case ABC_ABYSS_SQUARE:	/* アビススクエア */
+			MATK_FIX( (150 * skill_lv + ((sd)? pc_checkskill(sd,ABC_MAGIC_SWORD_M): 0) * (skill_lv * 15) +  status_get_spl(bl) * 5) * status_get_lv(bl) / 100, 100 );
+			if(flag) {
+				mgd.div_ += 1;
+			}
+			break;
 		case EL_FIRE_MANTLE:	/* ファイアーマントル */
 			if((t_ele == ELE_FIRE || battle_check_undead(t_race,t_ele)) && target->type != BL_PC)
 				mgd.blewcount = 0;
@@ -7718,6 +7861,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			cardfix += t_sc->data[SC_ORATIO].val1;
 		if(t_sc->data[SC_SOULCURSE].timer != -1 && ele == ELE_DARK)		// 死霊憑依
 			cardfix += t_sc->data[SC_SOULCURSE].val2;
+		if(t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].timer != -1 && ele == ELE_EARTH)		// 激流
+			cardfix += t_sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].val2;
+		if(t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].timer != -1 && ele == ELE_POISON)			// 強毒
+			cardfix += t_sc->data[SC_HANDICAPSTATE_DEADLYPOISON].val2;
 		if(t_sc->data[SC_CLIMAX_EARTH].timer != -1 && ele == ELE_EARTH)		// クライマックスクエイク
 			cardfix += t_sc->data[SC_CLIMAX_EARTH].val2;
 		if(t_sc->data[SC_CLIMAX_BLOOM].timer != -1 && ele == ELE_FIRE)		// クライマックスブルーム
@@ -7816,6 +7963,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			case AG_SOUL_VC_STRIKE:		/* ソウルバルカンストライク */
 			case AG_CRYSTAL_IMPACT:		/* クリスタルインパクト */
 			case AG_CRIMSON_ARROW_ATK:		/* クリムゾンアロー(攻撃) */
+			case ABC_ABYSS_SQUARE:		/* アビススクエア */
 				if(t_mode&MD_PLANT) // 草・きのこ等
 					mgd.damage = mgd.div_;
 				else
@@ -8594,9 +8742,20 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			pc_addsoulenergy(sd,600000,1);
 		}
 		// サーヴァントウェポン
-		if(sd && sc->data[SC_SERVANTWEAPON].timer != -1 && sd->servantweapon.num > 0 && atn_rand()%100 < sc->data[SC_SERVANTWEAPON].val2) {
+		if(sd && sc->data[SC_SERVANTWEAPON].timer != -1 && sd->ball.num > 0 && atn_rand()%100 < sc->data[SC_SERVANTWEAPON].val2) {
 			skill_castend_damage_id(src,target,DK_SERVANTWEAPON_ATK,sc->data[SC_SERVANTWEAPON].val1,tick,flag);
-			pc_delservantweapon(sd,1,0);
+			pc_delball(sd,1,0);
+		}
+		// フロムジアビス
+		if(sd && sc->data[SC_ABYSSFORCEWEAPON].timer != -1) {
+			int skill;
+			if(sd->ball.num > 0 && atn_rand()%100 < sc->data[SC_ABYSSFORCEWEAPON].val2) {
+				skill_castend_damage_id(src,target,ABC_FROM_THE_ABYSS_ATK,sc->data[SC_ABYSSFORCEWEAPON].val1,tick,flag);
+				pc_delball(sd,1,0);
+			}
+			if((skill = pc_checkskill(sd,ABC_ABYSS_SQUARE)) > 0 && atn_rand()%100 < sc->data[SC_ABYSSFORCEWEAPON].val1) {
+				skill_castend_pos2(src,target->x,target->y,ABC_ABYSS_SQUARE,skill,tick,flag);
+			}
 		}
 	}
 
@@ -8711,6 +8870,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 		if(t_sc->data[SC_CIRCLE_OF_FIRE].timer != -1 && wd.flag&BF_SHORT && (wd.damage > 0 || wd.damage2 > 0)) {	// サークルオブファイア
 			battle_skill_attack(BF_WEAPON,target,target,src,EL_CIRCLE_OF_FIRE,t_sc->data[SC_CIRCLE_OF_FIRE].val1,tick,(0x0f<<20)|0x0500);
 		}
+		if(t_sc->data[SC_WINDSIGN].timer != -1 && atn_rand()%100 < t_sc->data[SC_WINDSIGN].val2 && sd && sd->s_class.job == PC_JOB_WH && sd->status.weapon == WT_BOW && (wd.damage > 0 || wd.damage2 > 0)) {	// ウィンドサイン
+			pc_heal(sd,0,0,1,0);
+		}
 	}
 
 	map_freeblock_unlock();
@@ -8800,6 +8962,9 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				case RA_AIMEDBOLT:
 				case NC_ARMSCANNON:
 				case KO_HAPPOKUNAI:
+				case ABC_CHAIN_REACTION_SHOT:	/* チェーンリアクションショット */
+				case ABC_CHAIN_REACTION_SHOT_ATK:	/* チェーンリアクションショット(攻撃) */
+				case WH_CALAMITYGALE:		/* カラミティゲイル */
 					// 既に消費処理は完了しているので除外
 					break;
 				case SN_SHARPSHOOTING:
@@ -8888,7 +9053,7 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 		break;
 	case DK_SERVANT_W_DEMOL:	// サーヴァントウェポン：デモリッション
 		if(sd)
-			pc_addservantweapon(sd,600000,1);
+			pc_addball(sd,600000,1);
 		break;
 	}
 
@@ -9626,27 +9791,37 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 	// Mobでmaster_idがあってspecial_mob_aiなら、召喚主を求める
 	if( src->type == BL_MOB ) {
 		struct mob_data *md = (struct mob_data *)src;
-		if(md && md->master_id > 0) {
-			if(md->master_id == target->id)	// 主なら肯定
-				return 1;
-			if(md->state.special_mob_ai != MOB_AI_NONE) {
-				if(target->type == BL_MOB) {	// special_mob_aiで対象がMob
-					struct mob_data *tmd = (struct mob_data *)target;
-					if(tmd) {
-						if(tmd->master_id != md->master_id)	// 召喚主が一緒でなければ否定
-							return 0;
-						else if(md->state.special_mob_ai == MOB_AI_SPHERE2)	// 召喚主が一緒なので肯定したいけど自爆は否定
-							return 0;
-						else
-							return 1;
+		if(md) {
+			if(md->master_id > 0) {
+				if(md->master_id == target->id)	// 主なら肯定
+					return 1;
+				if(md->state.special_mob_ai != MOB_AI_NONE) {
+					if(target->type == BL_MOB) {	// special_mob_aiで対象がMob
+						struct mob_data *tmd = (struct mob_data *)target;
+						if(tmd) {
+							if(tmd->master_id != md->master_id)	// 召喚主が一緒でなければ否定
+								return 0;
+							else if(md->state.special_mob_ai == MOB_AI_SPHERE2)	// 召喚主が一緒なので肯定したいけど自爆は否定
+								return 0;
+							else
+								return 1;
+						}
+					} else if(target->type & (BL_HOM | BL_MERC | BL_ELEM)) {
+						// special_mob_aiで対象がホム、傭兵、精霊ならエラーで返す
+						return -1;
 					}
-				} else if(target->type & (BL_HOM | BL_MERC | BL_ELEM)) {
-					// special_mob_aiで対象がホム、傭兵、精霊ならエラーで返す
+				}
+				if((ss = map_id2bl(md->master_id)) == NULL)
 					return -1;
+			}
+			// 通常AIモンスターで相手がモンスター
+			if(md->state.special_mob_ai == MOB_AI_NONE && target->type == BL_MOB) {
+				struct mob_data *tmd = (struct mob_data *)target;
+				if(tmd && (tmd->state.special_mob_ai == MOB_AI_ABR || tmd->state.special_mob_ai == MOB_AI_BIONIC)) {
+					// 相手がABRまたはバイオニックMOBなら否定
+					return 0;
 				}
 			}
-			if((ss = map_id2bl(md->master_id)) == NULL)
-				return -1;
 		}
 	}
 
@@ -9670,6 +9845,16 @@ int battle_check_target( struct block_list *src, struct block_list *target, int 
 		if(md->state.special_mob_ai == MOB_AI_LEGION) {
 			if(sd->hd && sd->hd->bl.id == md->master_id)
 				return 1;
+		}
+
+		// ABR/バイオニックモンスター
+		if(md->state.special_mob_ai == MOB_AI_ABR || md->state.special_mob_ai == MOB_AI_BIONIC) {
+			// 主を求める
+			struct block_list *master = map_id2bl(md->master_id);
+			if(master == NULL)
+				return -1;
+			// 主に置き換えて再探索
+			return battle_check_target(src, master, flag);
 		}
 
 		// 砦のガーディアンかどうか
@@ -10540,6 +10725,7 @@ int battle_config_read(const char *cfgName)
 		{ "mob_ai_area_size",                   &battle_config.mob_ai_area_size,                   36       },
 		{ "mob_ai_sleeptime",                   &battle_config.mob_ai_sleeptime,                   60000    },
 		{ "boss_ai_sleeptime",                  &battle_config.boss_ai_sleeptime,                  300000   },
+		{ "fourth_jobchange_tstpoint",          &battle_config.fourth_jobchange_tstpoint,          7        },
 		{ NULL,                                 NULL,                                              0        },
 	};
 

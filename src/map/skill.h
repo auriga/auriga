@@ -64,7 +64,7 @@ struct skill_db {
 	int unit_id[2];
 	int unit_layout_type[MAX_SKILL_LEVEL];
 	int unit_range[MAX_SKILL_LEVEL];
-	int unit_interval;
+	int unit_interval[MAX_SKILL_LEVEL];
 	int unit_target;
 	int unit_flag[MAX_SKILL_LEVEL];
 	int cloneable;
@@ -116,6 +116,7 @@ enum {
 	PRD_S_PHARMACY   = 1006,
 	PRD_MIX_COOKING  = 1007,
 	PRD_MAKEBOMB     = 1008,
+	PRD_M_MACHINE    = 1009,
 };
 
 extern struct skill_db skill_db[MAX_SKILL_DB];
@@ -210,7 +211,7 @@ int skill_get_area(int id,int lv);
 int skill_get_healap(int id,int lv);
 int skill_get_unit_id(int id,int flag);
 int skill_get_unit_layout_type(int id,int lv);
-int skill_get_unit_interval(int id);
+int skill_get_unit_interval(int id,int lv);
 int skill_get_unit_range(int id,int lv);
 int skill_get_unit_target(int id);
 int skill_get_unit_flag(int id,int lv);

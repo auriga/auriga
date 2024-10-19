@@ -458,6 +458,20 @@ int mob_spawn(int id)
 	md->sc.opt3   = OPT3_NORMAL;
 	md->sc.option = OPTION_NOTHING;
 
+	md->st.max_hp = mobdb_search(md->class_)->max_hp;
+	md->st.str    = mobdb_search(md->class_)->str;
+	md->st.agi    = mobdb_search(md->class_)->agi;
+	md->st.vit    = mobdb_search(md->class_)->vit;
+	md->st.int_   = mobdb_search(md->class_)->int_;
+	md->st.dex    = mobdb_search(md->class_)->dex;
+	md->st.luk    = mobdb_search(md->class_)->luk;
+	md->st.atk    = mobdb_search(md->class_)->atk1;
+	md->st.matk   = mobdb_search(md->class_)->atk2;
+	md->st.def    = mobdb_search(md->class_)->def;
+	md->st.mdef   = mobdb_search(md->class_)->mdef;
+	md->st.hit    = status_get_dex(&md->bl) + status_get_lv(&md->bl);
+	md->st.flee   = status_get_agi(&md->bl) + status_get_lv(&md->bl);
+
 	md->hp = status_get_max_hp(&md->bl);
 	if(md->hp <= 0) {
 		mob_makedummymobdb(md->class_);
@@ -938,6 +952,99 @@ static int mob_ai_sub_hard_legionmob(struct mob_data *md,unsigned int tick)
 }
 
 /*==========================================
+ * PCに追従する取り巻きモンスターの処理
+ *------------------------------------------
+ */
+static int mob_ai_sub_hard_pcslavemob(struct mob_data *md, unsigned int tick)
+{
+	struct map_session_data *msd = NULL;
+	struct block_list *bl;
+	int dist;
+
+	nullpo_retr(0, md);
+
+	if((bl = map_id2bl(md->master_id)) == NULL || unit_isdead(bl)) {	// 主が死亡しているか見つからない
+		if(md->state.special_mob_ai != MOB_AI_NONE)
+			unit_remove_map(&md->bl,3,0);
+		else
+			unit_remove_map(&md->bl,1,0);
+		return 0;
+	}
+
+	// 主がPC
+
+	if(bl->type == BL_PC)
+		msd = (struct map_session_data *)bl;	// 主の情報
+
+	// 主ではない
+	if(!msd || msd->bl.id != md->master_id)
+		return 0;
+
+	// 主が違うマップにいるのでテレポートして追いかける
+	if(msd->bl.m != md->bl.m) {
+		mob_warp(md,msd->bl.m,msd->bl.x,msd->bl.y,3);
+		return 0;
+	}
+
+	// 主との距離を測る
+	md->master_dist = path_distance(md->bl.x,md->bl.y,bl->x,bl->y);
+
+	// 主が遠いのでテレポートして追いかける
+	if(md->master_dist > 18) {
+		mob_warp(md,-1,bl->x,bl->y,3);
+		return 0;
+	}
+
+	// 主がいるが、少し遠いので近寄る
+	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->state.norandomwalk) {
+		// クラスごとに追従距離が異なる
+		switch( md->class_ ) {
+		case 20835:		// デュアルキャノン
+			dist = 3;
+			break;
+		case 20836:		// マザーネット
+			dist = 4;
+			break;
+		case 20837:		// インフィニティ
+			dist = 5;
+			break;
+		case 20834:		// バトルウォリアー
+		default:
+			dist = 2;
+			break;
+		}
+		if(md->master_dist > dist) {
+			int i = 0, dx, dy, ret;
+			do {
+				// 主が歩いている場合は行き先付近に移動
+				if(msd->ud.walktimer != 1) {
+					if(i <= 2) {
+						dx = atn_rand()%(dist*2+1)-dist+msd->ud.to_x - md->bl.x;
+						dy = atn_rand()%(dist*2+1)-dist+msd->ud.to_y - md->bl.y;
+					} else {
+						dx = msd->ud.to_x - md->bl.x + atn_rand()%(dist*2+1)-dist;
+						dy = msd->ud.to_x - md->bl.y + atn_rand()%(dist*2+1)-dist;
+					}
+				} else {
+					if(i <= 2) {
+						dx = atn_rand()%(dist*2+1)-dist+msd->bl.x - md->bl.x;
+						dy = atn_rand()%(dist*2+1)-dist+msd->bl.y - md->bl.y;
+					} else {
+						dx = msd->bl.x - md->bl.x + atn_rand()%(dist*2+1)-dist;
+						dy = msd->bl.y - md->bl.y + atn_rand()%(dist*2+1)-dist;
+					}
+				}
+				ret = unit_walktoxy(&md->bl,md->bl.x+dx,md->bl.y+dy);
+				i++;
+			} while(ret == 0 && i < 5);
+		}
+		md->next_walktime = tick + 500;
+	}
+
+	return 0;
+}
+
+/*==========================================
  * ロックを止めて待機状態に移る。
  *------------------------------------------
  */
@@ -1119,6 +1226,8 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	if(md->master_id > 0) {
 		if(md->state.special_mob_ai == MOB_AI_LEGION)
 			mob_ai_sub_hard_legionmob(md,tick);
+		if(md->state.special_mob_ai == MOB_AI_ABR || md->state.special_mob_ai == MOB_AI_BIONIC)
+			mob_ai_sub_hard_pcslavemob(md,tick);
 		else
 			mob_ai_sub_hard_slavemob(md,tick);
 		if(md->bl.prev == NULL)
@@ -1318,7 +1427,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	// 歩行処理
-	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) &&		// 移動可能MOB&動ける状態にある
+	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->state.special_mob_ai != MOB_AI_ABR &&		// 移動可能MOB&動ける状態にある
 	    (md->master_id == 0 || md->state.special_mob_ai != MOB_AI_NONE || md->master_dist > 10 || !md->state.norandomwalk) )	// 取り巻きMOBじゃない
 	{
 		if( DIFF_TICK(md->next_walktime,tick) > 7000 && md->ud.walktimer == -1 ) {
@@ -1639,7 +1748,10 @@ static int mob_ai_sub_lazy(void * key,void * data,va_list ap)
 
 	// 取り巻きモンスターの処理
 	if(md->master_id > 0) {
-		mob_ai_sub_hard_slavemob(md,tick);
+		if(md->state.special_mob_ai == MOB_AI_ABR || md->state.special_mob_ai == MOB_AI_BIONIC)
+			mob_ai_sub_hard_pcslavemob(md,tick);
+		else
+			mob_ai_sub_hard_slavemob(md,tick);
 		return 0;
 	}
 

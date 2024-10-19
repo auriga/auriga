@@ -271,8 +271,8 @@ int pc_addelementball(struct map_session_data *sd, int interval, int max, short 
 int pc_delelementball(struct map_session_data *sd, int count, int type);
 int pc_addsoulenergy(struct map_session_data *sd,int interval,int num);
 int pc_delsoulenergy(struct map_session_data *sd,int count,int type);
-int pc_addservantweapon(struct map_session_data *sd,int interval,int num);
-int pc_delservantweapon(struct map_session_data *sd,int count,int type);
+int pc_addball(struct map_session_data *sd,int interval,int num);
+int pc_delball(struct map_session_data *sd,int count,int type);
 
 int pc_upgrade_item(struct map_session_data *sd, int nameid, int idx);
 

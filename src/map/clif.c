@@ -5097,6 +5097,22 @@ static void clif_soulenergy_id(const int fd, struct map_session_data *dstsd)
 }
 
 /*==========================================
+ * 球体表示(ID指定送信)
+ *------------------------------------------
+ */
+static void clif_ball_id(const int fd, struct map_session_data *dstsd)
+{
+	nullpo_retv(dstsd);
+
+	WFIFOW(fd,0)=0x1d0;
+	WFIFOL(fd,2)=dstsd->bl.id;
+	WFIFOW(fd,6)=dstsd->ball.num;
+	WFIFOSET(fd,packet_db[0x1d0].len);
+
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -5222,8 +5238,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_elementball(sd);
 	if(sd->soulenergy.num > 0)
 		clif_soulenergy(sd);
-	if(sd->servantweapon.num > 0)
-		clif_servantweapon(sd);
+	if(sd->ball.num > 0)
+		clif_ball(sd);
 	if(sd->sc.data[SC_MILLENNIUMSHIELD].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_MILLENNIUMSHIELD].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
@@ -12031,9 +12047,9 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 		clif_soulenergy_id(sd->fd,dstsd);
 	}
 
-	// サーヴァントウェポン表示
-	if(dstsd->servantweapon.num > 0) {
-		clif_set01e1(sd->fd,dstsd,dstsd->servantweapon.num);
+	// 球体表示
+	if(dstsd->ball.num > 0) {
+		clif_ball_id(sd->fd,dstsd);
 	}
 
 	if(sd->status.manner < 0)
@@ -13655,7 +13671,7 @@ void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int s
  * 料理リスト
  *------------------------------------------
  */
-void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv)
+void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv, int type)
 {
 	int i,c,view,fd;
 
@@ -13663,7 +13679,7 @@ void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int
 
 	fd=sd->fd;
 	WFIFOW(fd, 0)=0x25a;
-	WFIFOW(fd, 4)=1;
+	WFIFOW(fd, 4)=type;
 
 #if PACKETVER < 20180704
 	for(i=0,c=0;i<MAX_SKILL_PRODUCE_DB;i++){
@@ -22276,10 +22292,10 @@ void clif_soulenergy(struct map_session_data *sd)
 }
 
 /*==========================================
- * サーヴァントウェポン表示
+ * 球体表示
  *------------------------------------------
  */
-void clif_servantweapon(struct map_session_data *sd)
+void clif_ball(struct map_session_data *sd)
 {
 	unsigned char buf[8];
 
@@ -22287,7 +22303,7 @@ void clif_servantweapon(struct map_session_data *sd)
 
 	WBUFW(buf,0)=0x1d0;
 	WBUFL(buf,2)=sd->bl.id;
-	WBUFW(buf,6)=sd->servantweapon.num;
+	WBUFW(buf,6)=sd->ball.num;
 	clif_send(buf,packet_db[0x1d0].len,&sd->bl,AREA);
 
 	return;
@@ -23402,7 +23418,11 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 	    sd->sc.data[SC_DEEP_SLEEP].timer != -1 ||	// 安らぎの子守唄
 	    sd->sc.data[SC_SATURDAY_NIGHT_FEVER].timer != -1 ||	// フライデーナイトフィーバー
 		sd->sc.data[SC_DIAMONDDUST].timer != -1 ||	// ダイヤモンドダスト
-		sd->sc.data[SC_SUHIDE].timer != -1 )	// かくれる
+		sd->sc.data[SC_SUHIDE].timer != -1 ||	// かくれる
+		sd->sc.data[SC_HANDICAPSTATE_FROSTBITE].timer != -1 ||	// 急冷
+		sd->sc.data[SC_HANDICAPSTATE_SWOONING].timer != -1 ||	// 失神
+		sd->sc.data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].timer != -1 ||	// 激流
+		sd->sc.data[SC_HANDICAPSTATE_CRYSTALLIZATION].timer != -1 )	// 結晶化
 	{
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;

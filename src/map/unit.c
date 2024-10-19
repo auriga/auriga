@@ -295,8 +295,6 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_STEALTHFIELD_MASTER].val4),sd->bl.m,dx,dy);
 		if(sd->sc.data[SC_BANDING].timer != -1)
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
-		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1)
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,dx,dy);
 	}
 	if(md) {
 		if(sc && sc->data[SC_DANCING].timer != -1)
@@ -395,6 +393,10 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 				if(--sd->sc.data[SC_PROPERTYWALK].val3 <= 0) {
 					status_change_end(&sd->bl, SC_PROPERTYWALK, -1);
 				}
+			}
+			/* クレッシブボルト回数リセット */
+			if(sd->sc.data[SC_CRESCIVEBOLT].timer != -1) {
+				status_change_end(&sd->bl,SC_CRESCIVEBOLT,-1);
 			}
 		}
 		// ギルドスキル有効
@@ -796,10 +798,6 @@ int unit_movepos(struct block_list *bl,int dst_x,int dst_y,int flag)
 		// バンディングの位置変更
 		if(sd->sc.data[SC_BANDING].timer != -1) {
 			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_BANDING].val4),sd->bl.m,dx,dy);
-		}
-		// ダンシングナイフの位置変更
-		if(sd->sc.data[SC_DANCING_KNIFE].timer != -1) {
-			skill_unit_move_unit_group(map_id2sg(sd->sc.data[SC_DANCING_KNIFE].val4),sd->bl.m,dx,dy);
 		}
 
 		if(map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
@@ -1781,7 +1779,11 @@ int unit_can_move(struct block_list *bl)
 			sc->data[SC_PARALYZE].timer != -1 ||	// 麻痺
 			sc->data[SC_TINDER_BREAKER].timer != -1 ||	// 捕獲
 			sc->data[SC_CBC].timer != -1 ||		// 絞め技
-			sc->data[SC_GRAVITYCONTROL].timer != -1	// SC_GRAVITYCONTROL
+			sc->data[SC_GRAVITYCONTROL].timer != -1 ||	// SC_GRAVITYCONTROL
+			sc->data[SC_HANDICAPSTATE_FROSTBITE].timer != -1 ||		// 急冷
+			sc->data[SC_HANDICAPSTATE_SWOONING].timer != -1 ||		// 失神
+			sc->data[SC_HANDICAPSTATE_LIGHTNINGSTRIKE].timer != -1 ||		// 激流
+			sc->data[SC_HANDICAPSTATE_CRYSTALLIZATION].timer != -1			// 結晶化
 		)
 			return 0;
 

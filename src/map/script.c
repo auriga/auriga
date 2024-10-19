@@ -11716,7 +11716,7 @@ int buildin_making(struct script_state *st)
 	sd = script_rid2sd(st);
 	if(sd && sd->skill_menu.id == 0){
 		int rate = conv_num(st,& (st->stack->stack_data[st->start+3]));
-		clif_making_list(sd,makeid,1,rate);
+		clif_making_list(sd,makeid,1,rate,1);
 	}
 	return 0;
 }

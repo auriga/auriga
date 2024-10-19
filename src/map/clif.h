@@ -317,7 +317,7 @@ void clif_skill_warppoint(struct map_session_data *sd,int skill_num,
 void clif_skill_memo(struct map_session_data *sd, unsigned char flag);
 void clif_skill_teleportmessage(struct map_session_data *sd, unsigned short flag);
 void clif_skill_produce_mix_list(struct map_session_data *sd, int trigger, int skillid, int skilllv);
-void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv);
+void clif_making_list(struct map_session_data *sd, int trigger, int skillid, int skilllv, int type);
 
 void clif_produceeffect(struct map_session_data *sd, unsigned short flag, int nameid);
 
@@ -410,7 +410,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md);
 void clif_mapproperty(struct map_session_data *sd);
 void clif_send_personalinfo(struct map_session_data *sd);
 void clif_soulenergy(struct map_session_data *sd);
-void clif_servantweapon(struct map_session_data *sd);
+void clif_ball(struct map_session_data *sd);
 
 // vending
 void clif_openvendingreq(struct map_session_data *sd, int num);

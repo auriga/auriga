@@ -76,7 +76,7 @@
 #define MAX_CLOAKEDNPC 50	// クローキング状態NPC最大保存数
 #define MAX_STELLAR_MARKS 5 // 星の印の最大保存数
 #define MAX_SOULENERGY 20	// ソウルエナジー最大数
-#define MAX_SERVANTWEAPON 5	// サーヴァントウェポン最大数
+#define MAX_BALL 5	// 球体最大数
 
 #ifndef DEFAULT_AUTOSAVE_INTERVAL
 #define DEFAULT_AUTOSAVE_INTERVAL 60*1000
@@ -384,6 +384,17 @@ struct npc_data;
 struct pet_db;
 struct item_data;
 struct square;
+
+// ステータスデータ
+struct status_data {
+	int max_hp;
+	short str,agi,vit,int_,dex,luk;
+	short pow,sta,wis,spl,con,crt;
+	int atk,matk;
+	int def,mdef;
+	int hit,flee;
+	int patk,smatk,res,mres,hplus,crate;
+};
 
 struct map_session_data {
 	struct block_list bl;
@@ -746,8 +757,8 @@ struct map_session_data {
 
 	struct {
 		short num;
-		int timer[MAX_SERVANTWEAPON];
-	} servantweapon;
+		int timer[MAX_BALL];
+	} ball;
 
 	int reg_num;
 	struct script_reg *reg;
@@ -1006,6 +1017,7 @@ struct mob_data {
 		unsigned angry : 1;
 		unsigned norandomwalk : 1;
 	} state;
+	struct status_data st;
 	short view_size;
 	short speed;
 	int hp;

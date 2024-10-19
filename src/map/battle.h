@@ -639,6 +639,7 @@ extern struct Battle_Config {
 	int mob_ai_area_size;
 	int mob_ai_sleeptime;
 	int boss_ai_sleeptime;
+	int fourth_jobchange_tstpoint;
 } battle_config;
 
 int battle_config_read(const char *cfgName);
