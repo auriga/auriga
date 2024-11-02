@@ -1,4 +1,9 @@
 ----------------------------------------
+//1570 [2024/11/03] by refis
+
+・クローキング状態NPCをクリックした際にクロークオフリストをチェックするよう修正（npc.c）
+
+----------------------------------------
 //1569 [2024/10/20] by Blaze
 
 ・マイスター、アビスチェイサー、ウィンドホークのスキル実装（skill.c, skill.h, battle.c, status.c, status.h, unit.c, db/skill_db.txt, db/skill_db2.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_tree.txt, db/skill_unit_db.txt, db/scdata_db.txt ）

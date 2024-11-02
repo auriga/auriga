@@ -1011,6 +1011,16 @@ void npc_click(struct map_session_data *sd, int id)
 		return;
 	if (nd->subtype == SCRIPT && nd->ud.walktimer != -1 && nd->click_able < 1)
 		return;
+	if (nd->option&OPTION_CLOAKING) {
+		int i;
+		for(i=0; i < MAX_CLOAKEDNPC; i++) {
+			if(sd->cloaked_npc[i] == nd->bl.id) {
+				break;
+			}
+		}
+		if(i == MAX_CLOAKEDNPC)
+			return;
+	}
 
 	sd->npc_allowuseitem = -1;
 
