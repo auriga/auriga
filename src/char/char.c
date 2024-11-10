@@ -1616,7 +1616,7 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOB(fd,156) = sex;	// ê´ï 
 	WFIFOSET(fd,157);
 #elif PACKETVER < 20231220
-	WFIFOW(fd,0) = 0x6d;
+	WFIFOW(fd,0) = 0xb6f;
 	WFIFOL(fd,2) = st->char_id;
 	WFIFOQ(fd,6) = st->base_exp;
 	WFIFOL(fd,14) = st->zeny;
@@ -1662,7 +1662,7 @@ static void mmo_char_send006d(int fd, const struct mmo_charstatus *st, int sex)
 	WFIFOB(fd,176) = st->sex;	// ê´ï 
 	WFIFOSET(fd,177);
 #else
-	WFIFOW(fd,0) = 0x6d;
+	WFIFOW(fd,0) = 0xb6f;
 	WFIFOL(fd,2) = st->char_id;
 	WFIFOQ(fd,6) = st->base_exp;
 	WFIFOL(fd,14) = st->zeny;
@@ -2026,6 +2026,9 @@ static int char_delete(const struct mmo_chardata *cd)
 	// ROÉÅÅ[ÉãçÌèú
 	maildb_delete(cd->st.char_id);
 
+	// é¿ê—çÌèú
+	achievedb_delete(cd->st.char_id);
+
 	// ÉâÉìÉLÉìÉOçÌèú
 	char_ranking_delete(cd->st.char_id);
 
@@ -2329,7 +2332,11 @@ int parse_tologin(int fd)
 									int found_num = chardb_load_all(sd,sd->account_id);
 									int j;
 									const struct mmo_charstatus *st;
+#if PACKETVER < 20201007
 									WFIFOW(fdc,0)=0x99d;
+#else
+									WFIFOW(fdc,0)=0xb72;
+#endif
 									for( j = 0; j < max_char_slot ; j++ ) {
 										if(sd->found_char[j] == NULL)
 											continue;
