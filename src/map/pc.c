@@ -1254,96 +1254,103 @@ unsigned int pc_get_job_bit(int job)
 			break;
 		case PC_JOB_KN:		// ナイト
 		case PC_JOB_DE:		// デスナイト（暫定）
-		case PC_JOB_RK:		// ルーンナイト（暫定）
-		case PC_JOB_DK:		// ドラゴンナイト（暫定）
+		case PC_JOB_RK:		// ルーンナイト
+		case PC_JOB_DK:		// ドラゴンナイト
 			bit = 0x00000080;
 			break;
 		case PC_JOB_PR:		// プリースト
-		case PC_JOB_AB:		// アークビショップ（暫定）
-		case PC_JOB_CD:		// カーディナル（暫定）
+		case PC_JOB_AB:		// アークビショップ
+		case PC_JOB_CD:		// カーディナル
 			bit = 0x00000100;
 			break;
 		case PC_JOB_WZ:		// ウィザード
-		case PC_JOB_WL:		// ウォーロック（暫定）
-		case PC_JOB_AG:		// アークメイジ（暫定）
+		case PC_JOB_WL:		// ウォーロック
+		case PC_JOB_AG:		// アークメイジ
 			bit = 0x00000200;
 			break;
 		case PC_JOB_BS:		// ブラックスミス
-		case PC_JOB_NC:		// メカニック（暫定）
-		case PC_JOB_MT:		// マイスター（暫定）
+		case PC_JOB_NC:		// メカニック
+		case PC_JOB_MT:		// マイスター
 			bit = 0x00000400;
 			break;
 		case PC_JOB_HT:		// ハンター
-		case PC_JOB_RA:		// レンジャー（暫定）
-		case PC_JOB_WH:		// ウィンドホーク（暫定）
+		case PC_JOB_RA:		// レンジャー
+		case PC_JOB_WH:		// ウィンドホーク
 			bit = 0x00000800;
 			break;
 		case PC_JOB_AS:		// アサシン
-		case PC_JOB_GC:		// ギロチンクロス（暫定）
-		case PC_JOB_SHC:	// シャドウクロス（暫定）
+		case PC_JOB_GC:		// ギロチンクロス
+		case PC_JOB_SHC:	// シャドウクロス
 			bit = 0x00001000;
 			break;
 		case PC_JOB_CR:		// クルセイダー
-		case PC_JOB_LG:		// ロイヤルガード（暫定）
-		case PC_JOB_IG:		// インペリアルガード（暫定）
+		case PC_JOB_LG:		// ロイヤルガード
+		case PC_JOB_IG:		// インペリアルガード
 			bit = 0x00004000;
 			break;
 		case PC_JOB_MO:		// モンク
-		case PC_JOB_SR:		// 修羅（暫定）
-		case PC_JOB_IQ:		// インクイジター（暫定）
+		case PC_JOB_SR:		// 修羅
+		case PC_JOB_IQ:		// インクイジター
 			bit = 0x00008000;
 			break;
 		case PC_JOB_SA:		// セージ
-		case PC_JOB_SO:		// ソーサラー（暫定）
-		case PC_JOB_EM:		// エレメンタルマスター（暫定）
+		case PC_JOB_SO:		// ソーサラー
+		case PC_JOB_EM:		// エレメンタルマスター
 			bit = 0x00010000;
 			break;
 		case PC_JOB_RG:		// ローグ
-		case PC_JOB_SC:		// シャドウチェイサー（暫定）
-		case PC_JOB_ABC:	// アビスチェイサー（暫定）
+		case PC_JOB_SC:		// シャドウチェイサー
+		case PC_JOB_ABC:	// アビスチェイサー
 			bit = 0x00020000;
 			break;
 		case PC_JOB_AM:		// アルケミスト
 		case PC_JOB_DA:		// ダークコレクター（暫定）
-		case PC_JOB_GN:		// ジェネティック（暫定）
-		case PC_JOB_BO:		// バイオロ（暫定）
+		case PC_JOB_GN:		// ジェネティック
+		case PC_JOB_BO:		// バイオロ
 			bit = 0x00040000;
 			break;
 		case PC_JOB_BA:		// バード
-		case PC_JOB_MI:		// ミンストレル（暫定）
-		case PC_JOB_TRB:	// トルバドゥール（暫定）
+		case PC_JOB_MI:		// ミンストレル
+		case PC_JOB_TRB:	// トルバドゥール
 			bit = 0x00080000;
 			break;
 		case PC_JOB_DC:		// ダンサー
-		case PC_JOB_WA:		// ワンダラー（暫定）
-		case PC_JOB_TRV:	// トルヴェール（暫定）
+		case PC_JOB_WA:		// ワンダラー
+		case PC_JOB_TRV:	// トルヴェール
 			bit = 0x00100000;
 			break;
 		case PC_JOB_SNV:	// スーパーノービス
 		case PC_JOB_ESNV:	// 拡張スーパーノービス
+		case PC_JOB_HN:		// ハイパーノービス
 			bit = 0x00800000;
 			break;
 		case PC_JOB_TK:		// テコンキッド
 			bit = 0x01000000;
 			break;
 		case PC_JOB_SG:		// 拳聖
-		case PC_JOB_SJ:		// 星帝（暫定）
+		case PC_JOB_SJ:		// 星帝
+		case PC_JOB_SKE:	// 天帝
 			bit = 0x02000000;
 			break;
 		case PC_JOB_SL:		// ソウルリンカー
-		case PC_JOB_SP:		// ソウルリーパー（暫定）
+		case PC_JOB_SP:		// ソウルリーパー
+		case PC_JOB_SOA:	// ソウルアセティック
 			bit = 0x08000000;
 			break;
 		case PC_JOB_GS:		// ガンスリンガー
-		case PC_JOB_RL:		// リベリオン（暫定）
+		case PC_JOB_RL:		// リベリオン
+		case PC_JOB_NW:		// ナイトウォッチ
 			bit = 0x10000000;
 			break;
 		case PC_JOB_NJ:		// 忍者
-		case PC_JOB_KG:		// 影狼（暫定）
-		case PC_JOB_OB:		// 朧（暫定）
+		case PC_JOB_KG:		// 影狼
+		case PC_JOB_OB:		// 朧
+		case PC_JOB_SK:		// 蜃気楼
+		case PC_JOB_SN:		// 不知火
 			bit = 0x20000000;
 			break;
-		case PC_JOB_SUM:		// サモナー（暫定）
+		case PC_JOB_SUM:		// サモナー
+		case PC_JOB_SH:			// スピリットハンドラー
 			bit = 0x40000000;
 			break;
 	}
@@ -4464,6 +4471,42 @@ struct pc_base_job pc_calc_base_job(int b_class)
 			bj.job   = PC_JOB_TRV;
 			bj.upper = PC_UPPER_HIGH;
 			break;
+		case PC_CLASS_SKE:
+		case PC_CLASS_SKE2:
+		case PC_CLASS_SKE3:
+			bj.job   = PC_JOB_SKE;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SOA:
+		case PC_CLASS_SOA2:
+			bj.job   = PC_JOB_SOA;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SK:
+		case PC_CLASS_SK2:
+			bj.job   = PC_JOB_SK;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SN:
+		case PC_CLASS_SN2:
+			bj.job   = PC_JOB_SN;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_NW:
+		case PC_CLASS_NW2:
+			bj.job   = PC_JOB_NW;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_HN:
+		case PC_CLASS_HN2:
+			bj.job   = PC_JOB_HN;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
+		case PC_CLASS_SH:
+		case PC_CLASS_SH2:
+			bj.job   = PC_JOB_SH;
+			bj.upper = PC_UPPER_NORMAL;
+			break;
 		default:
 			bj.job   = PC_JOB_NV;
 			bj.upper = PC_UPPER_NORMAL;
@@ -4611,6 +4654,15 @@ int pc_calc_class_job(int job, int upper)
 		case PC_JOB_TRB:
 		case PC_JOB_TRV:
 			class_ = job - PC_JOB_DK + PC_CLASS_DK;
+			break;
+		case PC_JOB_SKE:
+		case PC_JOB_SOA:
+		case PC_JOB_SK:
+		case PC_JOB_SN:
+		case PC_JOB_NW:
+		case PC_JOB_HN:
+		case PC_JOB_SH:
+			class_ = job - PC_JOB_SKE + PC_CLASS_SKE;
 			break;
 	}
 
@@ -4876,6 +4928,91 @@ int pc_calc_job_class(int class_)
 		case PC_CLASS_SP2_B:
 			job = PC_JOB_SP;
 			break;
+		case PC_CLASS_DK:
+		case PC_CLASS_DK2:
+		case PC_CLASS_DK3:
+			job = PC_JOB_DK;
+			break;
+		case PC_CLASS_MT:
+		case PC_CLASS_MT2:
+		case PC_CLASS_MT3:
+			job = PC_JOB_MT;
+			break;
+		case PC_CLASS_SHC:
+		case PC_CLASS_SHC2:
+			job = PC_JOB_SHC;
+			break;
+		case PC_CLASS_AG:
+		case PC_CLASS_AG2:
+			job = PC_JOB_AG;
+			break;
+		case PC_CLASS_CD:
+		case PC_CLASS_CD2:
+			job = PC_JOB_CD;
+			break;
+		case PC_CLASS_WH:
+		case PC_CLASS_WH2:
+		case PC_CLASS_WH3:
+			job = PC_JOB_WH;
+			break;
+		case PC_CLASS_IG:
+		case PC_CLASS_IG2:
+		case PC_CLASS_IG3:
+			job = PC_JOB_IG;
+			break;
+		case PC_CLASS_BO:
+		case PC_CLASS_BO2:
+			job = PC_JOB_BO;
+			break;
+		case PC_CLASS_ABC:
+		case PC_CLASS_ABC2:
+			job = PC_JOB_ABC;
+			break;
+		case PC_CLASS_EM:
+		case PC_CLASS_EM2:
+			job = PC_JOB_EM;
+			break;
+		case PC_CLASS_IQ:
+		case PC_CLASS_IQ2:
+			job = PC_JOB_IQ;
+			break;
+		case PC_CLASS_TRB:
+		case PC_CLASS_TRB2:
+			job = PC_JOB_TRB;
+			break;
+		case PC_CLASS_TRV:
+		case PC_CLASS_TRV2:
+			job = PC_JOB_TRV;
+			break;
+		case PC_CLASS_SKE:
+		case PC_CLASS_SKE2:
+		case PC_CLASS_SKE3:
+			job = PC_JOB_SKE;
+			break;
+		case PC_CLASS_SOA:
+		case PC_CLASS_SOA2:
+			job = PC_JOB_SOA;
+			break;
+		case PC_CLASS_SK:
+		case PC_CLASS_SK2:
+			job = PC_JOB_SK;
+			break;
+		case PC_CLASS_SN:
+		case PC_CLASS_SN2:
+			job = PC_JOB_SN;
+			break;
+		case PC_CLASS_NW:
+		case PC_CLASS_NW2:
+			job = PC_JOB_NW;
+			break;
+		case PC_CLASS_HN:
+		case PC_CLASS_HN2:
+			job = PC_JOB_HN;
+			break;
+		case PC_CLASS_SH:
+		case PC_CLASS_SH2:
+			job = PC_JOB_SH;
+			break;
 	}
 
 	return job;
@@ -5090,6 +5227,156 @@ int pc_get_base_class(int class_, int type)
 		case PC_CLASS_SC_B:
 			class_ = PC_CLASS_SC;
 			break;
+		case PC_CLASS_SJ:
+		case PC_CLASS_SJ_B:
+		case PC_CLASS_SJ2:
+		case PC_CLASS_SJ2_B:
+		case PC_CLASS_SJ3:
+		case PC_CLASS_SJ3_B:
+			class_ = PC_CLASS_SJ;
+			break;
+		case PC_CLASS_SP:
+		case PC_CLASS_SP_B:
+		case PC_CLASS_SP2:
+		case PC_CLASS_SP2_B:
+			class_ = PC_CLASS_SP;
+			break;
+		case PC_CLASS_DK:
+		case PC_CLASS_DK2:
+		case PC_CLASS_DK3:
+			class_ = PC_CLASS_DK;
+			break;
+		case PC_CLASS_MT:
+		case PC_CLASS_MT2:
+		case PC_CLASS_MT3:
+			class_ = PC_CLASS_MT;
+			break;
+		case PC_CLASS_SHC:
+		case PC_CLASS_SHC2:
+			class_ = PC_CLASS_SHC;
+			break;
+		case PC_CLASS_AG:
+		case PC_CLASS_AG2:
+			class_ = PC_CLASS_AG;
+			break;
+		case PC_CLASS_CD:
+		case PC_CLASS_CD2:
+			class_ = PC_CLASS_CD;
+			break;
+		case PC_CLASS_WH:
+		case PC_CLASS_WH2:
+		case PC_CLASS_WH3:
+			class_ = PC_CLASS_WH;
+			break;
+		case PC_CLASS_IG:
+		case PC_CLASS_IG2:
+		case PC_CLASS_IG3:
+			class_ = PC_CLASS_IG;
+			break;
+		case PC_CLASS_BO:
+		case PC_CLASS_BO2:
+			class_ = PC_CLASS_BO;
+			break;
+		case PC_CLASS_ABC:
+		case PC_CLASS_ABC2:
+			class_ = PC_CLASS_ABC;
+			break;
+		case PC_CLASS_EM:
+		case PC_CLASS_EM2:
+			class_ = PC_CLASS_EM;
+			break;
+		case PC_CLASS_IQ:
+		case PC_CLASS_IQ2:
+			class_ = PC_CLASS_IQ;
+			break;
+		case PC_CLASS_TRB:
+		case PC_CLASS_TRB2:
+			class_ = PC_CLASS_TRB;
+			break;
+		case PC_CLASS_TRV:
+		case PC_CLASS_TRV2:
+			class_ = PC_CLASS_TRV;
+			break;
+		case PC_CLASS_SKE:
+		case PC_CLASS_SKE2:
+		case PC_CLASS_SKE3:
+			class_ = PC_CLASS_SKE;
+			break;
+		case PC_CLASS_SOA:
+		case PC_CLASS_SOA2:
+			class_ = PC_CLASS_SOA;
+			break;
+		case PC_CLASS_SK:
+		case PC_CLASS_SK2:
+			class_ = PC_CLASS_SK;
+			break;
+		case PC_CLASS_SN:
+		case PC_CLASS_SN2:
+			class_ = PC_CLASS_SN;
+			break;
+		case PC_CLASS_NW:
+		case PC_CLASS_NW2:
+			class_ = PC_CLASS_NW;
+			break;
+		case PC_CLASS_HN:
+		case PC_CLASS_HN2:
+			class_ = PC_CLASS_HN;
+			break;
+		case PC_CLASS_SH:
+		case PC_CLASS_SH2:
+			class_ = PC_CLASS_SH;
+			break;
+	}
+
+	if(type < 4) {
+		/* 4次職から3次職に変換 */
+		switch(class_){
+			case PC_CLASS_DK:
+				class_ = PC_CLASS_RK;
+				break;
+			case PC_CLASS_MT:
+				class_ = PC_CLASS_NC;
+				break;
+			case PC_CLASS_SHC:
+				class_ = PC_CLASS_GC;
+				break;
+			case PC_CLASS_AG:
+				class_ = PC_CLASS_WL;
+				break;
+			case PC_CLASS_CD:
+				class_ = PC_CLASS_AB;
+				break;
+			case PC_CLASS_WH:
+				class_ = PC_CLASS_RA;
+				break;
+			case PC_CLASS_IG:
+				class_ = PC_CLASS_LG;
+				break;
+			case PC_CLASS_BO:
+				class_ = PC_CLASS_GN;
+				break;
+			case PC_CLASS_ABC:
+				class_ = PC_CLASS_SC;
+				break;
+			case PC_CLASS_EM:
+				class_ = PC_CLASS_SO;
+				break;
+			case PC_CLASS_IQ:
+				class_ = PC_CLASS_SR;
+				break;
+			case PC_CLASS_TRB:
+				class_ = PC_CLASS_MI;
+				break;
+			case PC_CLASS_TRV:
+				class_ = PC_CLASS_WA;
+				break;
+			case PC_CLASS_SKE:
+				class_ = PC_CLASS_SJ;
+				break;
+			case PC_CLASS_SOA:
+				class_ = PC_CLASS_SP;
+				break;
+		}
 	}
 
 	if(type < 3) {
@@ -5140,6 +5427,18 @@ int pc_get_base_class(int class_, int type)
 			case PC_CLASS_SP:
 				class_ = PC_CLASS_SL;
 				break;
+			case PC_CLASS_SK:
+				class_ = PC_CLASS_KG;
+				break;
+			case PC_CLASS_SN:
+				class_ = PC_CLASS_OB;
+				break;
+			case PC_CLASS_NW:
+				class_ = PC_CLASS_RL;
+				break;
+			case PC_CLASS_HN:
+				class_ = PC_CLASS_ESNV;
+				break;
 		}
 	}
 
@@ -5185,6 +5484,12 @@ int pc_get_base_class(int class_, int type)
 			break;
 		case PC_CLASS_RL:
 			class_ = PC_CLASS_GS;
+			break;
+		case PC_CLASS_ESNV:
+			class_ = PC_CLASS_SNV;
+			break;
+		case PC_CLASS_SH:
+			class_ = PC_CLASS_SUM;
 			break;
 		}
 	}
@@ -7455,8 +7760,8 @@ int pc_jobchange(struct map_session_data *sd,int job, int upper)
 	if(job >= PC_JOB_MAX)
 		return 1;
 
-	// サモナーと他職業は相互に転職不可
-	if((sd->s_class.job != PC_JOB_SUM && job == PC_JOB_SUM) || (sd->s_class.job == PC_JOB_SUM && job != PC_JOB_SUM))
+	// ドラム系職業と他職業は相互に転職不可
+	if((pc_isdoram(sd) && (job != PC_JOB_SUM && job != PC_JOB_SH)) || (!pc_isdoram(sd) && (job == PC_JOB_SUM || job == PC_JOB_SH)))
 		return 1;
 
 	// 転生・養子なしの職業

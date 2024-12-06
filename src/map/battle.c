@@ -10868,7 +10868,6 @@ int battle_config_read(const char *cfgName)
 		{ "pk_murderer_point",                  &battle_config.pk_murderer_point,                  100      },
 		{ "sg_miracle_rate",                    &battle_config.sg_miracle_rate,                    1        },
 		{ "sg_angel_rate",                      &battle_config.sg_angel_rate,                      2        },
-		{ "baby_copy_skilltree",                &battle_config.baby_copy_skilltree,                1        },
 		{ "skill_autospell_delay_enable",       &battle_config.skill_autospell_delay_enable,       1        },
 		{ "bonus_autospell_delay_enable",       &battle_config.bonus_autospell_delay_enable,       1        },
 		{ "merc_speed_is_same_as_pc",           &battle_config.merc_speed_is_same_as_pc,           1        },

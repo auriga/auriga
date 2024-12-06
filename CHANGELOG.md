@@ -1,4 +1,16 @@
 ----------------------------------------
+//1573 [2024/12/6] by Blaze
+
+・拡張四次職（天帝、ソウルアセティック、蜃気楼、不知火、ナイトウォッチ、ハイパーノービス、スピリットハンドラー）仮実装
+　（pc.c, db/job_db1.txt, db/job_db2.txt, db/job_db2-2.txt, db/job_hp_db.txt, db/job_sp_db.txt, db/skill_tree.txt, db/pre/skill_tree_pre.txt, conf/help.txt）
+　※ジョブ変更・旧スキル使用まで。新スキルは後日実装
+
+・カードをドロップ時にドロップエフェクト表示するようにアイテム定義変更（db/item_db2.txt）
+
+・Patch 1572のコミット漏れ
+　スキルツリー仕様変更で不要となる養子のスキルツリー設定「baby_copy_skilltree」を削除（conf/battle_auriga.conf, battle.c, battle.h）
+
+----------------------------------------
 //1572 [2024/12/6] by Blaze
 
 ・スキルツリーDBの仕様変更（pc.c, db/skill_tree.txt, db/pre/skill_tree_pre.txt, doc/db_ref.txt）
