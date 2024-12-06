@@ -572,7 +572,7 @@ static int mob_can_lock(struct mob_data *md, struct block_list *bl)
 
 	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
 		return 0;
-	if( !(mode&MD_BOSS) && !(mode&MD_DETECTOR) && tsc && ( ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
+	if( !(mode&MD_BOSS) && !(mode&MD_DETECTOR) && tsc && ( ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1 || tsc->data[SC_ELEMENTAL_VEIL].timer != -1) &&
 		((race != RCT_INSECT && race != RCT_DEMON) || tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_NEWMOON].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)
 		|| tsc->data[SC_SUHIDE].timer != -1) )
 		return 0;
@@ -999,16 +999,16 @@ static int mob_ai_sub_hard_pcslavemob(struct mob_data *md, unsigned int tick)
 	if(!md->target_id && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->ud.walktimer == -1 && md->state.norandomwalk) {
 		// クラスごとに追従距離が異なる
 		switch( md->class_ ) {
-		case 20835:		// デュアルキャノン
+		case MOBID_ABR_DUAL_CANNON:		// デュアルキャノン
 			dist = 3;
 			break;
-		case 20836:		// マザーネット
+		case MOBID_ABR_MOTHER_NET:		// マザーネット
 			dist = 4;
 			break;
-		case 20837:		// インフィニティ
+		case MOBID_ABR_INFINITY:		// インフィニティ
 			dist = 5;
 			break;
-		case 20834:		// バトルウォリアー
+		case MOBID_ABR_BATTLE_WARIOR:		// バトルウォリアー
 		default:
 			dist = 2;
 			break;
@@ -1427,7 +1427,7 @@ int mob_ai_sub_hard(struct mob_data *md,unsigned int tick)
 	}
 
 	// 歩行処理
-	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->state.special_mob_ai != MOB_AI_ABR &&		// 移動可能MOB&動ける状態にある
+	if( mode&MD_CANMOVE && unit_can_move(&md->bl) && !unit_isrunning(&md->bl) && md->state.special_mob_ai != MOB_AI_ABR && md->state.special_mob_ai != MOB_AI_BIONIC &&		// 移動可能MOB&動ける状態にある
 	    (md->master_id == 0 || md->state.special_mob_ai != MOB_AI_NONE || md->master_dist > 10 || !md->state.norandomwalk) )	// 取り巻きMOBじゃない
 	{
 		if( DIFF_TICK(md->next_walktime,tick) > 7000 && md->ud.walktimer == -1 ) {

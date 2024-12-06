@@ -113,7 +113,8 @@ static struct skill_tree_entry {
 	unsigned short base_level;
 	unsigned short job_level;
 	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2 三次:3
-} skill_tree[PC_UPPER_MAX][PC_JOB_MAX][MAX_SKILL_TREE];
+	short upper;
+} skill_tree[PC_JOB_MAX][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
 
@@ -141,7 +142,7 @@ static struct skill_tree_entry* pc_search_skilltree(struct pc_base_job *bj, int 
 
 	nullpo_retr(NULL, bj);
 
-	st = skill_tree[bj->upper][bj->job];
+	st = skill_tree[bj->job];
 
 	// binary search
 	while(max - min > 1) {
@@ -2008,21 +2009,23 @@ int pc_calc_skilltree(struct map_session_data *sd)
 		int id, flag;
 		do {
 			flag = 0;
-			for(i=0; (id = skill_tree[s][c][i].id) > 0; i++) {
+			for(i=0; (id = skill_tree[c][i].id) > 0; i++) {
 				if(sd->status.skill[id].id > 0)
 					continue;
 				if(!battle_config.skillfree && !tk_ranker_bonus) {
 					int j, fail = 0;
-					for(j=0; j<6 && skill_tree[s][c][i].need[j].id > 0; j++) {
-						if(pc_checkskill2(sd,skill_tree[s][c][i].need[j].id) < skill_tree[s][c][i].need[j].lv) {
+					for(j=0; j<6 && skill_tree[c][i].need[j].id > 0; j++) {
+						if(pc_checkskill2(sd,skill_tree[c][i].need[j].id) < skill_tree[c][i].need[j].lv) {
 							fail = 1;
 							break;
 						}
 					}
 					if(fail)
 						continue;
-					if(sd->status.base_level < skill_tree[s][c][i].base_level ||
-					   sd->status.job_level < skill_tree[s][c][i].job_level)
+					if(sd->status.base_level < skill_tree[c][i].base_level ||
+					   sd->status.job_level < skill_tree[c][i].job_level)
+						continue;
+					if(skill_tree[c][i].upper > 0 && sd->s_class.upper != skill_tree[c][i].upper)
 						continue;
 				}
 				sd->status.skill[id].id = id;
@@ -6127,16 +6130,19 @@ int pc_allskillup(struct map_session_data *sd,int flag)
 		}
 	} else {
 		int id;
-		for(i=0; (id = skill_tree[sd->s_class.upper][sd->s_class.job][i].id) > 0; i++) {
+		for(i=0; (id = skill_tree[sd->s_class.job][i].id) > 0; i++) {
 			// 太陽と月と星の悪魔は除外（ペナルティの永続暗闇がきついので）
 			// それに伴い太陽と月と星の浄化も除外
 			if((i == SG_DEVIL) || (i == SJ_PURIFY))
+				continue;
+			// 転生条件があるスキルは転生条件を判定
+			if(skill_tree[sd->s_class.job][i].upper > 0 && sd->s_class.upper != skill_tree[sd->s_class.job][i].upper)
 				continue;
 			// flagがあるならクエストスキルも取得する
 			if(skill_get_inf2(id)&INF2_QUEST && !flag && !battle_config.quest_skill_learn)
 				continue;
 			sd->status.skill[id].id = id;
-			sd->status.skill[id].lv = skill_tree[sd->s_class.upper][sd->s_class.job][i].max;
+			sd->status.skill[id].lv = skill_tree[sd->s_class.job][i].max;
 		}
 	}
 	status_calc_pc(sd,0);
@@ -10341,9 +10347,8 @@ int pc_readdb(void)
 		}
 		while(fgets(line,1020,fp)) {
 			char *split[19];
-			int upper = 0,skillid;
+			int skillid;
 			struct skill_tree_entry *st;
-			int diff=0;
 
 			lineno++;
 			memset(split,0,sizeof(split));
@@ -10356,34 +10361,26 @@ int pc_readdb(void)
 				p=strchr(p,',');
 				if(p) *p++=0;
 			}
-			upper = atoi(split[0]);
-			if(upper == PC_UPPER_HIGH && battle_config.enable_upper_class == 0)	// confで無効になっていたら
-				continue;
-			if(upper < 0 || upper >= PC_UPPER_MAX)
-				continue;
 
-			i = atoi(split[1]);
+			i = atoi(split[0]);
 			if(i < 0 || i >= PC_JOB_MAX)
 				continue;
 
-			if( strcmp(split[2],"clear") == 0 ) {
-				memset(skill_tree[upper][i],0,sizeof(skill_tree[0][0]));
+			if( strcmp(split[1],"clear") == 0 ) {
+				memset(skill_tree[i],0,sizeof(skill_tree[0]));
 				continue;
 			}
 
-			if( j != 17 ) {
-				if( j != 19 ) {
-					printf("skill_tree: invalid param count(%d) line %d\n", j, lineno);
-					continue;
-				}
-				diff = 1;
+			if( j != 19 ) {
+				printf("skill_tree: invalid param count(%d) line %d\n", j, lineno);
+				continue;
 			}
 
-			skillid = atoi(split[2]);
+			skillid = atoi(split[1]);
 			if(skillid < 0 || skillid >= MAX_PCSKILL)
 				continue;
 
-			st = skill_tree[upper][i];
+			st = skill_tree[i];
 			for(j=0; st[j].id && st[j].id != skillid; j++);
 
 			if(j >= MAX_SKILL_TREE-1) {
@@ -10401,26 +10398,22 @@ int pc_readdb(void)
 			}
 
 			st[j].id  = skillid;
-			st[j].max = atoi(split[3]);
+			st[j].max = atoi(split[2]);
 
 			if(st[j].max > skill_get_max(skillid))
 				st[j].max = skill_get_max(skillid);
 
-			for(k=0; k<5+diff; k++) {
-				st[j].need[k].id = atoi(split[k*2+4]);
-				st[j].need[k].lv = atoi(split[k*2+5]);
+			for(k=0; k<6; k++) {
+				st[j].need[k].id = atoi(split[k*2+3]);
+				st[j].need[k].lv = atoi(split[k*2+4]);
 			}
-			if(diff) diff++;
-			st[j].base_level  = atoi(split[14+diff]);
-			st[j].job_level   = atoi(split[15+diff]);
-			st[j].class_level = atoi(split[16+diff]);
+			st[j].base_level  = atoi(split[15]);
+			st[j].job_level   = atoi(split[16]);
+			st[j].class_level = atoi(split[17]);
+			st[j].upper       = atoi(split[18]);
 		}
 		fclose(fp);
 		printf("read %s done\n", filename2[m]);
-	}
-	if(battle_config.baby_copy_skilltree) {
-		// 養子のスキルツリーを通常職と同一にする場合
-		memcpy(&skill_tree[PC_UPPER_BABY], &skill_tree[PC_UPPER_NORMAL], sizeof(skill_tree[PC_UPPER_NORMAL]));
 	}
 
 	// 属性修正テーブル

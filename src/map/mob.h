@@ -188,6 +188,17 @@ enum {
 	MOB_AI_BIONIC  = 6,	// バイオニック
 };
 
+enum {
+	MOBID_ABR_BATTLE_WARIOR    = 20834,	// バトルウォリアー
+	MOBID_ABR_DUAL_CANNON      = 20835,	// デュアルキャノン
+	MOBID_ABR_MOTHER_NET       = 20836,	// マザーネット
+	MOBID_ABR_INFINITY         = 20837,	// インフィニティ
+	MOBID_SUMMON_WOODENWARRIOR = 20848,	// ウドゥンウォリアー
+	MOBID_SUMMON_WOODEN_FAIRY  = 20849,	// ウドゥンフェアリー
+	MOBID_SUMMON_CREEPER       = 20850,	// クリーパー
+	MOBID_SUMMON_HELLTREE      = 20851,	// ヘルツリー
+};
+
 struct mobdb_data* mobdb_exists(int mob_id);
 struct mobdb_data* mobdb_search(int mob_id);
 int mobdb_searchname(const char *name);

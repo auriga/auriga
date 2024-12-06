@@ -535,6 +535,11 @@ struct map_session_data {
 	struct {
 		short id;
 		short lv;
+	} skill_4thdance;
+
+	struct {
+		short id;
+		short lv;
 	} skill_clone;
 
 	struct {

@@ -117,6 +117,7 @@ enum {
 	PRD_MIX_COOKING  = 1007,
 	PRD_MAKEBOMB     = 1008,
 	PRD_M_MACHINE    = 1009,
+	PRD_BIONIC_PHARMACY = 1010,
 };
 
 extern struct skill_db skill_db[MAX_SKILL_DB];

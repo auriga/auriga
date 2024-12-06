@@ -239,7 +239,7 @@ static int elem_can_lock(struct elem_data *eld, struct block_list *bl)
 
 	if( tsc && (tsc->data[SC_TRICKDEAD].timer != -1 || tsc->data[SC_FORCEWALKING].timer != -1) )
 		return 0;
-	if( tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1) &&
+	if( tsc && ((tsc->option&(OPTION_HIDE | OPTION_CLOAKING | OPTION_FOOTPRINT)) || tsc->data[SC_CAMOUFLAGE].timer != -1 || tsc->data[SC_ELEMENTAL_VEIL].timer != -1) &&
 		(tsc->data[SC_CLOAKINGEXCEED].timer != -1 || tsc->data[SC_NEWMOON].timer != -1 || tsc->data[SC_STEALTHFIELD].timer != -1)  )
 		return 0;
 
@@ -459,17 +459,40 @@ int elem_calc_status(struct elem_data *eld)
 	if(db == NULL)
 		return 1;
 
-	eld->atk1     = db->atk1;
-	eld->atk2     = db->atk2;
-	eld->matk1    = 0;
-	eld->matk2    = 0;
-	eld->hit      = 0;
-	eld->flee     = 0;
-	eld->def      = db->def;
-	eld->mdef     = db->mdef;
+	if(eld->msd) {
+		if(elem_is4thclass(eld)) {
+			int skill = pc_checkskill(eld->msd,EM_ELEMENTAL_SPIRIT_M);	// エレメンタルスピリットマスタリー
+			const int add_max_hp[11] = { 0, 25000, 50000, 75000, 112500, 150000, 187500, 225000, 275000, 375000, 500000 };
+			const int add_max_sp[11] = { 0, 250, 750, 1250, 2000, 2750, 3500, 4250, 5000, 7500, 10000 };
+			const int add_atk[11]    = { 0, 100, 300, 500, 800, 1100, 1400, 1700, 2000, 2500, 3000 };
+			const int add_matk[11]   = { 0, 50, 150, 250, 400, 550, 700, 850, 1000, 1500, 2000 };
+			const int add_def[11]    = { 0, 160, 320, 480, 640, 800, 960, 1120, 1280, 1440, 1600 };
+			const int add_mdef[11]   = { 0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400 };
+
+			eld->max_hp = status_get_max_hp(&eld->msd->bl) + add_max_hp[skill];
+			eld->max_sp = status_get_max_sp(&eld->msd->bl) + add_max_sp[skill];
+			eld->atk1   = 200 + ((status_get_matk1(&eld->msd->bl) + status_get_matk2(&eld->msd->bl)) * 15 / 10 + add_atk[skill]) * 8 / 10;
+			eld->atk2   = 200 + ((status_get_matk1(&eld->msd->bl) + status_get_matk2(&eld->msd->bl)) * 15 / 10 + add_atk[skill]) * 12 / 10;
+			eld->matk1  = (status_get_matk1(&eld->msd->bl) + status_get_matk2(&eld->msd->bl) + add_matk[skill]) * 7 / 10;
+			eld->matk2  = (status_get_matk1(&eld->msd->bl) + status_get_matk2(&eld->msd->bl) + add_matk[skill]) * 13 / 10;
+			eld->hit    = status_get_hit(&eld->msd->bl);
+			eld->flee   = status_get_flee(&eld->msd->bl);
+			eld->def    = status_get_def(&eld->msd->bl) * 8 / 10 + add_def[skill];
+			eld->mdef   = status_get_mdef(&eld->msd->bl) * 8 / 10 + add_mdef[skill];
+		}
+	} else {
+		eld->max_hp   = db->max_hp;
+		eld->max_sp   = db->max_sp;
+		eld->atk1     = db->atk1;
+		eld->atk2     = db->atk2;
+		eld->matk1    = 0;
+		eld->matk2    = 0;
+		eld->hit      = 0;
+		eld->flee     = 0;
+		eld->def      = db->def;
+		eld->mdef     = db->mdef;
+	}
 	eld->critical = 0;
-	eld->max_hp   = db->max_hp;
-	eld->max_sp   = db->max_sp;
 	eld->str      = db->str;
 	eld->agi      = db->agi;
 	eld->vit      = db->vit;
@@ -786,6 +809,8 @@ int elem_recv_elemdata(int account_id,int char_id,struct mmo_elemstatus *p,int f
 				sd->state.elem_creating = 0;
 				return 0;
 			}
+			sd->eld->status.hp = sd->eld->max_hp;
+			sd->eld->status.sp = sd->eld->max_sp;
 			map_addblock(&sd->eld->bl);
 			mob_ai_hard_spawn(&sd->eld->bl);
 			clif_spawnelem(sd->eld);

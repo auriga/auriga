@@ -94,7 +94,7 @@
 #define MAX_MERC_DB 50			// 傭兵の数
 #define MAX_MERC_TYPE 3			// 傭兵の種類
 
-#define MAX_ELEM_DB 12			// 精霊の数
+#define MAX_ELEM_DB 17			// 精霊の数
 #define ELEM_ID 2114			// 精霊IDの開始値
 
 // スキルID定義

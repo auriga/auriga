@@ -1449,6 +1449,11 @@
 5304,0,6,4,0,1,4,1,yes,0,0,1,weapon,0,0,8,MT_SUMMON_ABR_MOTHER_NET,ABR マザーネット
 5305,0,6,4,0,1,4,1,yes,0,0,1,weapon,0,0,0,MT_SUMMON_ABR_INFINITY,ABR インフィニティ
 
+5307,0,6,1,1,0,5,1,yes,0,0,0,weapon,0,0,0,BO_ACIDIFIED_ZONE_WATER_INSTALL_ON_GROUND,アシディファイドゾーン(水)(設置)
+5308,0,6,1,2,0,5,1,yes,0,0,0,weapon,0,0,0,BO_ACIDIFIED_ZONE_GROUND_INSTALL_ON_GROUND,アシディファイドゾーン(地)(設置)
+5309,0,6,1,4,0,5,1,yes,0,0,0,weapon,0,0,0,BO_ACIDIFIED_ZONE_WIND_INSTALL_ON_GROUND,アシディファイドゾーン(風)(設置)
+5310,0,6,1,3,0,5,1,yes,0,0,0,weapon,0,0,0,BO_ACIDIFIED_ZONE_FIRE_INSTALL_ON_GROUND,アシディファイドゾーン(火)(設置)
+
 // アビスチェイサー
 5311,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,ABC_DAGGER_AND_BOW_M,短剣＆弓修練
 5312,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,ABC_MAGIC_SWORD_M,魔法剣修練
@@ -1478,11 +1483,78 @@
 5334,5,6,1,0,0,10,1,yes,0,0,0,weapon,0,0,0,WH_CRESCIVE_BOLT,クレッシブボルト
 5335,1,6,2,3,1,5,1,yes,0,0,3,weapon,0,0,0,WH_FLAMETRAP,フレイムトラップ
 
+// バイオロ
+5336,0,6,4,0,1,5,1,yes,0,0,0,weapon,0,0,0,BO_BIONIC_PHARMACY,バイオニックファーマシー
+5337,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,BO_BIONICS_M,バイオニックスマスタリー
+5338,0,6,4,0,1,5,1,yes,0,0,0,weapon,0,7:9:11:13:15,0,BO_THE_WHOLE_PROTECTION,ホールフルケミカルチャージ
+5339,9,6,16,0,1,4,1,yes,0,0,0,weapon,0,0,0,BO_ADVANCE_PROTECTION,フルシャドウチャージ
+5340,9,8,1,1,0,5,3,yes,0,0,0,weapon,0,1:1:2:2:3,3,BO_ACIDIFIED_ZONE_WATER,アシディファイドゾーン(水)
+5341,9,8,1,2,0,5,3,yes,0,0,0,weapon,0,1:1:2:2:3,3,BO_ACIDIFIED_ZONE_GROUND,アシディファイドゾーン(地)
+5342,9,8,1,4,0,5,3,yes,0,0,0,weapon,0,1:1:2:2:3,3,BO_ACIDIFIED_ZONE_WIND,アシディファイドゾーン(風)
+5343,9,8,1,3,0,5,3,yes,0,0,0,weapon,0,1:1:2:2:3,3,BO_ACIDIFIED_ZONE_FIRE,アシディファイドゾーン(火)
+5344,0,6,4,0,1,5,1,yes,0,0,1,weapon,0,0,8,BO_WOODENWARRIOR,クリエイトウドゥンウォリアー
+5345,0,6,4,0,1,5,1,yes,0,0,1,weapon,0,0,8,BO_WOODEN_FAIRY,クリエイトウドゥンフェアリー
+5346,0,6,4,0,1,5,1,yes,0,0,1,weapon,0,0,8,BO_CREEPER,クリエイトクリーパー
+5347,0,6,4,0,1,1,1,yes,0,0,0,weapon,0,0,0,BO_RESEARCHREPORT,リサーチレポート
+5348,0,6,4,0,1,5,1,yes,0,0,1,weapon,0,0,0,BO_HELLTREE,クリエイトヘルツリー
+
+// トルバドゥール/トルヴェール
+5349,0,0,0,0,0,5,0,yes,0,0,0,none,0,0,0,TR_STAGE_MANNER,ステージマナー
+5350,0,6,4,0,1,1,1,yes,0,0,0,weapon,0,0,0,TR_RETROSPECTION,回想
+5351,0,6,4,0,1,1,1,yes,0,0,0,weapon,0,0,0,TR_MYSTIC_SYMPHONY,ミスティックシンフォニー
+5352,0,6,4,0,1,1,1,yes,0,0,0,weapon,0,0,0,TR_KVASIR_SONATA,ソナタオブクヴァシル
+5353,9,8,1,0,0,5,2,yes,0,0,0,weapon,0,0,2,TR_ROSEBLOSSOM,ロゼブロッサム
+5354,0,5,1,0,0,5,1,yes,0,0,0,weapon,0,1:1:2:2:3,0,TR_ROSEBLOSSOM_ATK,ロゼブロッサム(攻撃)
+5355,5,8,1,0,0,5,3,yes,0,0,0,weapon,0,0,2,TR_RHYTHMSHOOTING,リズムシューティング
+5356,9,8,1,0,0,5,2,yes,0,0,0,magic,0,2:2:2:3:4,1,TR_METALIC_FURY,メタリックフューリー
+5357,15,6,1,0,1,5,1,yes,0,0,0,magic,0,0,2,TR_SOUNDBLEND,サウンドブレンド
+5358,0,6,4,0,1,5,1,yes,0,0,0,misc,0,7:7:8:10:11,0,TR_GEF_NOCTURN,ゲフェニアノクターン
+5359,0,6,4,0,1,5,1,yes,0,0,0,misc,0,5:6:7:8:9,0,TR_ROKI_CAPRICCIO,ロキの気まぐれ
+5360,0,6,4,0,1,5,1,yes,0,0,0,misc,0,7:7:8:10:11,0,TR_AIN_RHAPSODY,鉱員のラプソディ
+5361,0,6,4,0,1,5,1,yes,0,0,0,misc,0,7:7:8:10:11,15,TR_MUSICAL_INTERLUDE,ミュージカルインタールード
+5362,0,6,4,0,1,5,1,yes,0,0,0,misc,0,7:7:8:10:11,15,TR_JAWAII_SERENADE,夕焼けのセレナーデ
+5363,0,6,4,0,1,5,1,yes,0,0,0,misc,0,5:6:7:8:9,0,TR_NIPELHEIM_REQUIEM,死者たちへのレクイエム
+5364,0,6,4,0,1,5,1,yes,0,0,0,misc,0,7:7:8:10:11,15,TR_PRON_MARCH,プロンテラマーチ
+
+// エレメンタルマスター
+5365,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,EM_MAGIC_BOOK_M,魔法本修練
+5366,9,6,16,0,1,5,1,yes,0,0,0,magic,0,0,0,EM_SPELL_ENCHANTING,スペルエンチャンティング
+5367,9,6,1,0,1,5,1,yes,0,0,0,magic,0,0,0,EM_ACTIVITY_BURN,アクティビティバーン
+5368,9,6,16,0,1,5,1,yes,0,0,0,magic,0,0,0,EM_INCREASING_ACTIVITY,インクリーシングアクティビティ
+5369,9,8,2,1,0,5,5,yes,0,0,0,magic,0,0,2,EM_DIAMOND_STORM,ダイヤモンドストーム
+5370,9,6,2,4,0,5,1,yes,0,0,0,magic,0,0,7,EM_LIGHTNING_LAND,ライトニングランド
+5371,9,6,2,5,0,5,1,yes,0,0,0,magic,0,0,7,EM_VENOM_SWAMP,ベナムスワンプ
+5372,9,6,2,3,0,5,1,yes,0,0,0,magic,0,0,7,EM_CONFLAGRATION,コンフラグレーション
+5373,9,8,2,2,0,5,5,yes,0,0,0,magic,0,0,2,EM_TERRA_DRIVE,テラドライブ
+5374,0,0,0,0,0,10,0,yes,0,0,0,none,0,0,0,EM_ELEMENTAL_SPIRIT_M,エレメンタルスピリットマスタリー
+5375,0,6,4,3,1,1,1,yes,0,0,0,magic,0,0,0,EM_SUMMON_ELEMENTAL_ARDOR,サモンアルドール
+5376,0,6,4,1,1,1,1,yes,0,0,0,magic,0,0,0,EM_SUMMON_ELEMENTAL_DILUVIO,サモンディルビオ
+5377,0,6,4,4,1,1,1,yes,0,0,0,magic,0,0,0,EM_SUMMON_ELEMENTAL_PROCELLA,サモンプロセラ
+5378,0,6,4,2,1,1,1,yes,0,0,0,magic,0,0,0,EM_SUMMON_ELEMENTAL_TERREMOTUS,サモンテレモトゥス
+5379,0,6,4,5,1,1,1,yes,0,0,0,magic,0,0,0,EM_SUMMON_ELEMENTAL_SERPENS,サモンサーペンス
+5380,0,8,4,0,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER,エレメンタルバスター
+5381,0,6,4,0,1,5,1,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_VEIL,エレメンタルヴェール
+
 5382,9,6,1,0,0,5,1,yes,0,0,0,weapon,0,1:2:3:4:5,0,ABC_CHAIN_REACTION_SHOT_ATK,チェーンリアクションショット(攻撃)
 5383,0,5,1,0,0,5,1,yes,0,0,0,magic,0,4,0,ABC_FROM_THE_ABYSS_ATK,フロムジアビス(攻撃)
+5384,-1,5,1,0,0,1,1,yes,0,0,0,weapon,0,3,0,NPC_BO_THROWROCK,スローロック
+5385,-1,5,1,0,0,1,1,yes,0,0,0,weapon,0,3,0,NPC_BO_WOODEN_ATTACK,ウドゥンアタック
+5386,0,5,4,7,0,1,1,yes,0,0,0,magic,0,5,0,NPC_BO_HELL_HOWLING,ヘルハウリング
+5387,-9,6,16,0,1,1,1,yes,0,0,0,magic,0,0,0,NPC_BO_HELL_DUSTY,ヘルダスティ
+5388,0,5,4,0,0,1,1,yes,0,0,0,magic,0,5,0,NPC_BO_FAIRY_DUSTY,フェアリーダスティ
+5389,0,8,4,3,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER_FIRE,エレメンタルバスター(火)
+5390,0,8,4,1,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER_WATER,エレメンタルバスター(水)
+5391,0,8,4,4,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER_WIND,エレメンタルバスター(風)
+5392,0,8,4,2,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER_GROUND,エレメンタルバスター(地)
+5393,0,8,4,5,0,10,3,yes,0,0,0,magic,0,0,0,EM_ELEMENTAL_BUSTER_POISON,エレメンタルバスター(毒)
 
 // 四次職追加スキル
 6001,9,6,1,0,0,10,1,yes,0,0,0,weapon,0,1:1:1:2:2:2:3:3:3:4,1,DK_DRAGONIC_BREATH,ドラゴニックブレス
+6002,9,8,1,0,0,10,2,yes,0,0,0,weapon,0,1:1:1:2:2:2:3:3:3:4,1,MT_SPARK_BLASTER,スパークブラスター
+6003,9,8,1,0,0,5,3,yes,0,0,0,weapon,0,0,0,MT_TRIPLE_LASER,トリプルレーザー
+6004,0,6,4,0,0,10,1,yes,0,0,0,weapon,0,1:1:1:1:2:2:2:3:3:3,0,MT_MIGHTY_SMASH,マイティスマッシュ
+6005,0,8,4,0,0,5,3,yes,0,0,0,weapon,0,1:1:2:2:3,1,BO_EXPLOSIVE_POWDER,エクスプロッシブパウダー
+6006,9,8,1,0,0,10,3,yes,0,0,0,weapon,0,1:1:1:2:2:2:3:3:3:4,1,BO_MAYHEMIC_THORNS,メイヘミックソーンズ
 
 // ホムンクルス
 8001,9,6,16,0,1,5,0,no,0,0,0,magic,0,0,0,HLIF_HEAL,治癒の手(ヒール)
@@ -1615,6 +1687,21 @@
 8440,3,6,1,2,0,1,1,no,0,0,0,weapon,0,0,0,EL_ROCK_CRUSHER,ロックランチャー
 8441,5,6,1,2,0,1,1,no,0,0,0,magic,0,0,0,EL_ROCK_CRUSHER_ATK,ロックランチャー(攻撃)
 8442,9,8,1,2,0,1,5,no,0,0,0,weapon,0,0,0,EL_STONE_RAIN,ストーンレイン
+8443,0,6,4,3,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_FLAMETECHNIC,フレイムテクニック
+8444,0,6,4,3,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_FLAMEARMOR,フレイムアーマー
+8445,11,8,1,3,0,1,2,no,0,0,0,magic,0,4,0,EM_EL_FLAMEROCK,フレイムロック
+8446,0,6,4,1,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_COLD_FORCE,コールドフォース
+8447,0,6,4,1,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_CRYSTAL_ARMOR,クリスタルアーマー
+8448,0,8,4,1,0,1,4,no,0,0,0,magic,0,5,0,EM_EL_AGE_OF_ICE,エイジオブアイス
+8449,0,6,4,4,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_GRACE_BREEZE,グレイスブリーズ
+8450,0,6,4,4,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_EYES_OF_STORM,アイズオブストーム
+8451,11,8,1,4,0,1,4,no,0,0,0,magic,0,4,0,EM_EL_STORM_WIND,ストームウインド
+8452,0,6,4,2,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_EARTH_CARE,アースケア
+8453,0,6,4,2,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_STRONG_PROTECTION,ストロングプロテクション
+8454,11,8,1,2,0,1,7,no,0,0,0,magic,0,4,0,EM_EL_AVALANCHE,アバランチェ
+8455,0,6,4,5,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_DEEP_POISONING,ディープポイズニング
+8456,0,6,4,5,1,1,1,no,0,0,0,magic,0,0,0,EM_EL_POISON_SHIELD,ポイズンシールド
+8457,11,8,4,5,0,1,5,no,0,0,0,magic,0,4,0,EM_EL_DEADLY_POISON,デッドリーポイズン
 
 // ABRスキル
 8601,-1,6,1,0,0,1,1,yes,0,0,0,weapon,0,0,0,ABR_BATTLE_BUSTER,バトルバスター

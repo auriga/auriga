@@ -40,6 +40,26 @@ enum {
 	ELMODE_OFFENSIVE,
 };
 
+enum {
+	ELEMID_EL_AGNI_S		= 2114,		// アグニ(小型)
+	ELEMID_EL_AGNI_M		= 2115,		// アグニ(中型)
+	ELEMID_EL_AGNI_L		= 2116,		// アグニ(大型)
+	ELEMID_EL_AQUA_S		= 2117,		// アクア(小型)
+	ELEMID_EL_AQUA_M		= 2118,		// アクア(中型)
+	ELEMID_EL_AQUA_L		= 2119,		// アクア(大型)
+	ELEMID_EL_VENTUS_S		= 2120,		// ベントス(小型)
+	ELEMID_EL_VENTUS_M		= 2121,		// ベントス(中型)
+	ELEMID_EL_VENTUS_L		= 2122,		// ベントス(大型)
+	ELEMID_EL_TERA_S		= 2123,		// テラ(小型)
+	ELEMID_EL_TERA_M		= 2124,		// テラ(中型)
+	ELEMID_EL_TERA_L		= 2125,		// テラ(大型)
+	ELEMID_EM_DILUVIO		= 20816,	// ディルビオ
+	ELEMID_EM_ARDOR			= 20817,	// アルドール
+	ELEMID_EM_PROCELLA		= 20818,	// プロセラ
+	ELEMID_EM_TERREMOTUS	= 20819,	// テレモトゥス
+	ELEMID_EM_SERPENS		= 20820,	// サーペンス
+};
+
 struct elem_db {
 	short class_;
 	char name[24],jname[24];
@@ -54,6 +74,8 @@ struct elem_db {
 	int speed,adelay,amotion,dmotion;
 	struct script_code *script;
 };
+
+#define elem_is4thclass(eld) ((eld)->status.class_ >= ELEMID_EM_DILUVIO && (eld)->status.class_ <= ELEMID_EM_SERPENS)
 
 struct elem_db* elem_search_data(int nameid);
 int elem_get_skilltree_max(int class_,int skillid);

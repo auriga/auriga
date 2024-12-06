@@ -24187,6 +24187,13 @@ static void clif_UseSkillToId_Sub(struct map_session_data *sd, int skillnum, int
 		clif_skill_fail(sd,skillnum,SKILLFAIL_INTERVAL,0,0);
 		return;
 	}
+	// ‰ñ‘z‚Ìê‡‚Í‰‰‘t‚ÌÄŽg—pŽžŠÔ‚ð”»’è
+	if(skillnum == TR_RETROSPECTION && sd->skill_4thdance.id) {
+		if(DIFF_TICK(tick, sd->skillcooldown[skill_get_skilldb_id(sd->skill_4thdance.id)]) < 0) {
+			clif_skill_fail(sd,skillnum,SKILLFAIL_INTERVAL,0,0);
+			return;
+		}
+	}
 
 	if( (sd->sc.data[SC_TRICKDEAD].timer != -1 && skillnum != NV_TRICKDEAD) ||
 	    sd->sc.data[SC_NOCHAT].timer != -1 ||

@@ -235,7 +235,16 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 790- */
 	SI_AXE_STOMP,SI_RUSH_QUAKE1,SI_RUSH_QUAKE2,SI_A_MACHINE,SI_D_MACHINE,SI_ABR_BATTLE_WARIOR,SI_ABR_DUAL_CANNON,SI_ABR_MOTHER_NET,SI_ABR_INFINITY,SI_SHADOW_STRIP,
 	/* 800- */
-	SI_ABYSS_DAGGER,SI_ABYSSFORCEWEAPON,SI_ABYSS_SLAYER,SI_WINDSIGN,SI_CALAMITYGALE,SI_CRESCIVEBOLT,
+	SI_ABYSS_DAGGER,SI_ABYSSFORCEWEAPON,SI_ABYSS_SLAYER,SI_WINDSIGN,SI_CALAMITYGALE,SI_CRESCIVEBOLT,SI_PROTECTSHADOWEQUIP,SI_RESEARCHREPORT,SI_BO_HELL_DUSTY,SI_BLANK,
+	/* 810- */
+	SI_BLANK,SI_BLANK,SI_BLANK,SI_MYSTIC_SYMPHONY,SI_KVASIR_SONATA,SI_ROSEBLOSSOM,SI_SOUNDBLEND,SI_GEF_NOCTURN,SI_AIN_RHAPSODY,SI_MUSICAL_INTERLUDE,
+	/* 820- */
+	SI_JAWAII_SERENADE,SI_PRON_MARCH,SI_SPELL_ENCHANTING,SI_SUMMON_ELEMENTAL_ARDOR,SI_SUMMON_ELEMENTAL_DILUVIO,SI_SUMMON_ELEMENTAL_PROCELLA,SI_SUMMON_ELEMENTAL_TERREMOTUS,SI_SUMMON_ELEMENTAL_SERPENS,SI_FLAMETECHNIC,SI_FLAMETECHNIC_OPTION,
+	/* 830- */
+	SI_FLAMEARMOR,SI_FLAMEARMOR_OPTION,SI_COLD_FORCE,SI_COLD_FORCE_OPTION,SI_CRYSTAL_ARMOR,SI_CRYSTAL_ARMOR_OPTION,SI_GRACE_BREEZE,SI_GRACE_BREEZE_OPTION,SI_EYES_OF_STORM,SI_EYES_OF_STORM_OPTION,
+	/* 840- */
+	SI_EARTH_CARE,SI_EARTH_CARE_OPTION,SI_STRONG_PROTECTION,SI_STRONG_PROTECTION_OPTION,SI_DEEP_POISONING,SI_DEEP_POISONING_OPTION,SI_POISON_SHIELD,SI_POISON_SHIELD_OPTION,SI_ELEMENTAL_VEIL,
+
 };
 
 /*==========================================
@@ -1960,6 +1969,14 @@ L_RECALC:
 		if(skill > 10) skill = 10;
 		sd->skill_elemagic_dmgup[ELE_HOLY] += add_list[skill-1];
 	}
+	if(sd->status.weapon == WT_BOOK && (skill = pc_checkskill(sd,EM_MAGIC_BOOK_M)) > 0) {		// 魔法本修練
+		const int add_list[10] = { 1,2,3,4,5,8,11,14,17,20 };
+		if(skill > 10) skill = 10;
+		sd->skill_elemagic_dmgup[ELE_FIRE]  += add_list[skill-1];
+		sd->skill_elemagic_dmgup[ELE_WATER] += add_list[skill-1];
+		sd->skill_elemagic_dmgup[ELE_WIND]  += add_list[skill-1];
+		sd->skill_elemagic_dmgup[ELE_EARTH] += add_list[skill-1];
+	}
 
 	// 種族特攻
 	if(sd->status.weapon == WT_KNUCKLE && (skill = pc_checkskill(sd,IQ_WILL_OF_FAITH)) > 0) {		// 信仰の意志
@@ -2062,6 +2079,14 @@ L_RECALC:
 			sd->def += 4;
 		else
 			sd->def += (skill*4) - 1;
+	}
+
+	// P.Atk
+	if((sd->status.weapon == WT_BOW || sd->status.weapon == WT_MUSICAL || sd->status.weapon == WT_WHIP) && (skill = pc_checkskill(sd,TR_STAGE_MANNER)) > 0) {		// ステージマナー
+		const int add_manner_list[5] = { 1,3,5,10,15 };
+		if(skill > 5) skill = 5;
+		sd->patk  += add_manner_list[skill-1];
+		sd->smatk += add_manner_list[skill-1];
 	}
 
 	// S.Matk
@@ -2966,6 +2991,121 @@ L_RECALC:
 			sd->patk += sd->sc.data[SC_ABYSS_SLAYER].val2;
 			sd->smatk += sd->sc.data[SC_ABYSS_SLAYER].val2;
 			sd->hit += sd->sc.data[SC_ABYSS_SLAYER].val3;
+		}
+		// ヘルダスティ
+		if(sd->sc.data[SC_BO_HELL_DUSTY].timer != -1) {
+			sd->addrace[RCT_FORMLESS] += sd->sc.data[SC_BO_HELL_DUSTY].val2;
+			sd->addrace[RCT_PLANT] += sd->sc.data[SC_BO_HELL_DUSTY].val2;
+			sd->long_weapon_damege_rate += sd->sc.data[SC_BO_HELL_DUSTY].val3;
+		}
+		// ミスティックシンフォニー
+		if(sd->sc.data[SC_MYSTIC_SYMPHONY].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = TR_SOUNDBLEND;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_MYSTIC_SYMPHONY].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = TR_RHYTHMSHOOTING;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_MYSTIC_SYMPHONY].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = TR_ROSEBLOSSOM;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_MYSTIC_SYMPHONY].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = TR_ROSEBLOSSOM_ATK;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_MYSTIC_SYMPHONY].val2;
+			sd->skill_dmgup.count++;
+		}
+		// ゲフェニアノクターン
+		if(sd->sc.data[SC_GEF_NOCTURN].timer != -1) {
+			sd->mres -= sd->sc.data[SC_GEF_NOCTURN].val3;
+		}
+		// 鉱員のラプソディ
+		if(sd->sc.data[SC_AIN_RHAPSODY].timer != -1) {
+			sd->res -= sd->sc.data[SC_AIN_RHAPSODY].val3;
+		}
+		// ミュージカルインタールード
+		if(sd->sc.data[SC_MUSICAL_INTERLUDE].timer != -1) {
+			sd->res += sd->sc.data[SC_MUSICAL_INTERLUDE].val3;
+		}
+		// 夕焼けのセレナーデ
+		if(sd->sc.data[SC_JAWAII_SERENADE].timer != -1) {
+			sd->smatk += sd->sc.data[SC_JAWAII_SERENADE].val3;
+		}
+		// プロンテラマーチ
+		if(sd->sc.data[SC_PRON_MARCH].timer != -1) {
+			sd->patk += sd->sc.data[SC_PRON_MARCH].val3;
+		}
+		// スペルエンチャンティング
+		if(sd->sc.data[SC_SPELL_ENCHANTING].timer != -1) {
+			sd->smatk += sd->sc.data[SC_SPELL_ENCHANTING].val2;
+		}
+		// サモンアルドール
+		if(sd->sc.data[SC_SUMMON_ELEMENTAL_ARDOR].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_FIRE] += sd->sc.data[SC_SUMMON_ELEMENTAL_ARDOR].val2;
+		}
+		// サモンディルビオ
+		if(sd->sc.data[SC_SUMMON_ELEMENTAL_DILUVIO].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_WATER] += sd->sc.data[SC_SUMMON_ELEMENTAL_DILUVIO].val2;
+		}
+		// サモンプロセラ
+		if(sd->sc.data[SC_SUMMON_ELEMENTAL_PROCELLA].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_WIND] += sd->sc.data[SC_SUMMON_ELEMENTAL_PROCELLA].val2;
+		}
+		// サモンテレモトゥス
+		if(sd->sc.data[SC_SUMMON_ELEMENTAL_TERREMOTUS].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_EARTH] += sd->sc.data[SC_SUMMON_ELEMENTAL_TERREMOTUS].val2;
+		}
+		// サモンサーペンス
+		if(sd->sc.data[SC_SUMMON_ELEMENTAL_SERPENS].timer != -1) {
+			sd->skill_elemagic_dmgup[ELE_POISON] += sd->sc.data[SC_SUMMON_ELEMENTAL_SERPENS].val2;
+		}
+		// フレイムテクニック
+		if(sd->sc.data[SC_FLAMETECHNIC].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = MG_FIREBOLT;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_FLAMETECHNIC].val2;
+			sd->skill_dmgup.count++;
+		}
+		// コールドフォース
+		if(sd->sc.data[SC_COLD_FORCE].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = MG_COLDBOLT;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_COLD_FORCE].val2;
+			sd->skill_dmgup.count++;
+		}
+		// グレイスブリーズ
+		if(sd->sc.data[SC_GRACE_BREEZE].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = MG_LIGHTNINGBOLT;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_GRACE_BREEZE].val2;
+			sd->skill_dmgup.count++;
+		}
+		// アースケア
+		if(sd->sc.data[SC_EARTH_CARE].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = WZ_EARTHSPIKE;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_EARTH_CARE].val2;
+			sd->skill_dmgup.count++;
+		}
+		// ディープポイズニング
+		if(sd->sc.data[SC_DEEP_POISONING].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = SO_CLOUD_KILL;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_DEEP_POISONING].val2;
+			sd->skill_dmgup.count++;
+		}
+		// フレイムアーマー
+		if(sd->sc.data[SC_FLAMEARMOR].timer != -1) {
+			sd->subele[ELE_FIRE] += sd->sc.data[SC_FLAMEARMOR].val2;
+		}
+		// クリスタルアーマー
+		if(sd->sc.data[SC_CRYSTAL_ARMOR].timer != -1) {
+			sd->subele[ELE_WATER] += sd->sc.data[SC_CRYSTAL_ARMOR].val2;
+		}
+		// アイズオブストーム
+		if(sd->sc.data[SC_EYES_OF_STORM].timer != -1) {
+			sd->subele[ELE_WIND] += sd->sc.data[SC_EYES_OF_STORM].val2;
+		}
+		// ストロングプロテクション
+		if(sd->sc.data[SC_STRONG_PROTECTION].timer != -1) {
+			sd->subele[ELE_EARTH] += sd->sc.data[SC_STRONG_PROTECTION].val2;
+		}
+		// ポイズンシールド
+		if(sd->sc.data[SC_POISON_SHIELD].timer != -1) {
+			sd->subele[ELE_POISON] += sd->sc.data[SC_POISON_SHIELD].val2;
 		}
 		// 漆黒
 		if(sd->sc.data[SC_HANDICAPSTATE_DEEPBLIND].timer != -1) {
@@ -4103,6 +4243,20 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		if(sd->sc.data[SC_HISS].timer != -1 && sd->sc.data[SC_HISS].val4 > 0) {
 			if(haste_val1 < sd->sc.data[SC_HISS].val3)
 				haste_val1 = sd->sc.data[SC_HISS].val3;
+		}
+
+		// 夕焼けのセレナーデ
+		if(sd->sc.data[SC_JAWAII_SERENADE].timer != -1) {
+			int bonus = sd->sc.data[SC_JAWAII_SERENADE].val4;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// プロンテラマーチ
+		if(sd->sc.data[SC_PRON_MARCH].timer != -1) {
+			int bonus = sd->sc.data[SC_PRON_MARCH].val3;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
 		}
 
 		/* speedが減少するステータス計算2 */
@@ -6773,6 +6927,8 @@ int status_get_res(struct block_list *bl)
 		if(sc) {
 			if(sc->data[SC_SHADOW_STRIP].timer != -1) 	// ストリップシャドウ
 				res -= sc->data[SC_SHADOW_STRIP].val2;
+			if(sc->data[SC_AIN_RHAPSODY].timer != -1) 	// 鉱員のラプソディ
+				res -= sc->data[SC_AIN_RHAPSODY].val3;
 		}
 	}
 
@@ -6801,6 +6957,8 @@ int status_get_mres(struct block_list *bl)
 		if(sc) {
 			if(sc->data[SC_SHADOW_STRIP].timer != -1) 	// ストリップシャドウ
 				mres -= sc->data[SC_SHADOW_STRIP].val2;
+			if(sc->data[SC_GEF_NOCTURN].timer != -1) 	// ゲフェニアノクターン
+				mres -= sc->data[SC_GEF_NOCTURN].val3;
 		}
 	}
 
@@ -6875,6 +7033,16 @@ int status_get_element(struct block_list *bl)
 			ret = 20*sc->data[SC_ELEMENTELEKINESIS].val1 + ELE_GHOST;
 		if(sc->data[SC_ELEMENTUNDEAD].timer != -1)	// 不死
 			ret = 20*sc->data[SC_ELEMENTUNDEAD].val1 + ELE_UNDEAD;
+		if(sc->data[SC_FLAMEARMOR].timer != -1)	// フレイムアーマー
+			ret = 20 + ELE_FIRE;
+		if(sc->data[SC_CRYSTAL_ARMOR].timer != -1)	// クリスタルアーマー
+			ret = 20 + ELE_WATER;
+		if(sc->data[SC_EYES_OF_STORM].timer != -1)	// アイズオブストーム
+			ret = 20 + ELE_WIND;
+		if(sc->data[SC_STRONG_PROTECTION].timer != -1)	// ストロングプロテクション
+			ret = 20 + ELE_EARTH;
+		if(sc->data[SC_POISON_SHIELD].timer != -1)	// ポイズンシールド
+			ret = 20 + ELE_POISON;
 		if(sc->data[SC_FREEZE].timer != -1)		// 凍結
 			ret = 20 + ELE_WATER;
 		if(sc->data[SC_STONE].timer != -1 && sc->data[SC_STONE].val2 == 0)
@@ -8146,6 +8314,15 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ABYSS_DAGGER:		/* アビスダガー */
 		case SC_CALAMITYGALE:		/* カラミティゲイル */
 		case SC_CRESCIVEBOLT:		/* クレッシブボルト */
+		case SC_PROTECTSHADOWEQUIP:	/* フルシャドウチャージ */
+		case SC_RESEARCHREPORT:		/* リサーチレポート */
+		case SC_BO_WOODENWARRIOR:	/* ウドゥンウォリアー */
+		case SC_BO_WOODEN_FAIRY:	/* ウドゥンフェアリー */
+		case SC_BO_CREEPER:			/* クリーパー */
+		case SC_BO_HELLTREE:		/* ヘルツリー */
+		case SC_KVASIR_SONATA:		/* ソナタオブクヴァシル */
+		case SC_ROSEBLOSSOM:		/* ロゼブロッサム */
+		case SC_ELEMENTAL_VEIL:		/* エレメンタルヴェール */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -10236,6 +10413,140 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_WINDSIGN:	/* ウィンドサイン */
 			val2 = 50 + val1 * 10;		// AP回復確率
 			break;
+		case SC_BO_HELL_DUSTY:		/* ヘルダスティ */
+			val2 = 20;		// 無・植物形ダメージ増加率
+			val3 = 20;		// 遠距離ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_MYSTIC_SYMPHONY:	/* ミスティックシンフォニー */
+			val2 = 50;		// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_SOUNDBLEND:			/* サウンドブレンド */
+			tick = tick - 200;
+			break;
+		case SC_GEF_NOCTURN:		/* ゲフェニアノクターン */
+			val3 = 10 * val1;
+			if(val2 > 1) {		// パートナーが居る場合
+				val3 = val3 * 15 / 10;
+			}
+			calc_flag = 1;
+			break;
+		case SC_AIN_RHAPSODY:		/* 鉱員のラプソディ */
+			val3 = 10 * val1;
+			if(val2 > 1) {		// パートナーが居る場合
+				val3 = val3 * 15 / 10;
+			}
+			calc_flag = 1;
+			break;
+		case SC_MUSICAL_INTERLUDE:	/* ミュージカルインタールード */
+			val3 = ((val1 < 4)? 10+val1*10: (val1 == 4)? 60: 100);		// Res増加値
+			if(val2 > 1) {		// パートナーが居る場合
+				val3 = val3 * 15 / 10;
+			}
+			calc_flag = 1;
+			break;
+		case SC_JAWAII_SERENADE:	/* 夕焼けのセレナーデ */
+			val3 = 1 + ((val1 > 1)? 2: 0) + ((val1 > 2)? 2: 0) + ((val1 > 3)? 3: 0) + ((val1 > 4)? 4: 0);		// S.Matk増加値
+			if(val2 > 1) {		// パートナーが居る場合
+				val3 = val3 * 15 / 10;
+			}
+			val4 = 35;			// 移動ディレイ減少率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_PRON_MARCH:			/* プロンテラマーチ */
+			val3 = 1 + ((val1 > 1)? 2: 0) + ((val1 > 2)? 2: 0) + ((val1 > 3)? 3: 0) + ((val1 > 4)? 4: 0);		// P.Atk増加値
+			if(val2 > 1) {		// パートナーが居る場合
+				val3 = val3 * 15 / 10;
+			}
+			val4 = 35;			// 移動ディレイ減少率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_SPELL_ENCHANTING:	/* スペルエンチャンティング */
+			val2 = val1*5;	// S.Matk増加値
+			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEMENTAL_ARDOR:			/* サモンアルドール */
+		case SC_SUMMON_ELEMENTAL_DILUVIO:		/* サモンディルビオ */
+		case SC_SUMMON_ELEMENTAL_PROCELLA:		/* サモンプロセラ */
+		case SC_SUMMON_ELEMENTAL_TERREMOTUS:	/* サモンテレモトゥス */
+		case SC_SUMMON_ELEMENTAL_SERPENS:		/* サモンサーペンス */
+			val2 = 10;	// 属性魔法ダメージ増加率
+			val3 = tick / 1000;
+			tick = 1000;
+			calc_flag = 1;
+			break;
+		case SC_FLAMETECHNIC:		/* フレイムテクニック */
+		case SC_COLD_FORCE:			/* コールドフォース */
+		case SC_GRACE_BREEZE:		/* グレイスブリーズ */
+		case SC_EARTH_CARE:			/* アースケア */
+			val2 = 75;		// ボルト系ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_DEEP_POISONING:		/* ディープポイズニング */
+			val2 = 200;		// クラウドキルダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_FLAMEARMOR:			/* フレイムアーマー */
+		case SC_CRYSTAL_ARMOR:		/* クリスタルアーマー */
+		case SC_EYES_OF_STORM:		/* アイズオブストーム */
+		case SC_STRONG_PROTECTION:	/* ストロングプロテクション */
+		case SC_POISON_SHIELD:		/* ポイズンシールド */
+			val2 = 95;		// 属性ダメージ軽減率
+			calc_flag = 1;
+			break;
+		case SC_FLAMETECHNIC_OPTION:		/* フレイムテクニック(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = skill_get_sp(EM_EL_FLAMETECHNIC,val1);		// SP消費量
+			break;
+		case SC_FLAMEARMOR_OPTION:			/* フレイムアーマー(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = skill_get_sp(EM_EL_FLAMEARMOR,val1) / 10;		// SP消費量
+			break;
+		case SC_COLD_FORCE_OPTION:			/* コールドフォース(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = skill_get_sp(EM_EL_COLD_FORCE,val1);		// SP消費量
+			break;
+		case SC_CRYSTAL_ARMOR_OPTION:		/* クリスタルアーマー(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = skill_get_sp(EM_EL_CRYSTAL_ARMOR,val1) / 10;		// SP消費量
+			break;
+		case SC_GRACE_BREEZE_OPTION:		/* グレイスブリーズ(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = skill_get_sp(EM_EL_GRACE_BREEZE,val1);		// SP消費量
+			break;
+		case SC_EYES_OF_STORM_OPTION:		/* アイズオブストーム(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = skill_get_sp(EM_EL_EYES_OF_STORM,val1) / 10;		// SP消費量
+			break;
+		case SC_EARTH_CARE_OPTION:			/* アースケア(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = skill_get_sp(EM_EL_EARTH_CARE,val1);		// SP消費量
+			break;
+		case SC_STRONG_PROTECTION_OPTION:	/* ストロングプロテクション(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = skill_get_sp(EM_EL_STRONG_PROTECTION,val1) / 10;		// SP消費量
+			break;
+		case SC_DEEP_POISONING_OPTION:		/* ディープポイズニング(精霊) */
+			val2 = tick / 10000;
+			tick = 10000;
+			val3 = skill_get_sp(EM_EL_DEEP_POISONING,val1);		// SP消費量
+			break;
+		case SC_POISON_SHIELD_OPTION:		/* ポイズンシールド(精霊) */
+			val2 = tick / 1000;
+			tick = 1000;
+			val3 = skill_get_sp(EM_EL_POISON_SHIELD,val1) / 10;		// SP消費量
+			break;
 		default:
 			if(battle_config.error_log)
 				printf("UnknownStatusChange [%d]\n", type);
@@ -10874,6 +11185,22 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_D_MACHINE:		/* 防御装置有効化 */
 		case SC_SHADOW_STRIP:	/* ストリップシャドウ */
 		case SC_ABYSS_SLAYER:	/* アビススレイヤー */
+		case SC_BO_HELL_DUSTY:	/* ヘルダスティ */
+		case SC_MYSTIC_SYMPHONY:	/* ミスティックシンフォニー */
+		case SC_GEF_NOCTURN:		/* ゲフェニアノクターン */
+		case SC_AIN_RHAPSODY:		/* 鉱員のラプソディ */
+		case SC_MUSICAL_INTERLUDE:	/* ミュージカルインタールード */
+		case SC_SPELL_ENCHANTING:	/* スペルエンチャンティング */
+		case SC_FLAMETECHNIC:		/* フレイムテクニック */
+		case SC_COLD_FORCE:			/* コールドフォース */
+		case SC_GRACE_BREEZE:		/* グレイスブリーズ */
+		case SC_EARTH_CARE:			/* アースケア */
+		case SC_DEEP_POISONING:		/* ディープポイズニング */
+		case SC_FLAMEARMOR:			/* フレイムアーマー */
+		case SC_CRYSTAL_ARMOR:		/* クリスタルアーマー */
+		case SC_EYES_OF_STORM:		/* アイズオブストーム */
+		case SC_STRONG_PROTECTION:	/* ストロングプロテクション */
+		case SC_POISON_SHIELD:		/* ポイズンシールド */
 			calc_flag = 1;
 			break;
 		case SC_NEWMOON:			/* 朔月脚 */
@@ -10907,6 +11234,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_WIND_STEP:			/* ウィンドステップ */
 		case SC_REBOUND:			/* リバウンド */
 		case SC_HANDICAPSTATE_LASSITUDE:		/* 無気力 */
+		case SC_JAWAII_SERENADE:	/* 夕焼けのセレナーデ */
+		case SC_PRON_MARCH:			/* プロンテラマーチ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -11304,6 +11633,39 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_ABYSSFORCEWEAPON:		/* フロムジアビス */
 			if(sd)
 				pc_delball(sd,sd->ball.num,0);
+			break;
+		case SC_ROSEBLOSSOM:			/* ロゼブロッサム */
+			{
+				struct block_list *src = map_id2bl(sc->data[type].val2);
+				if(src && tid != -1) {
+					skill_castend_damage_id(src,bl,TR_ROSEBLOSSOM_ATK,sc->data[type].val1,gettick(),0);
+				}
+			}
+			break;
+		case SC_SUMMON_ELEMENTAL_ARDOR:		/* サモンアルドール */
+			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_ARDOR)
+				elem_delete_data(sd);
+			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEMENTAL_DILUVIO:		/* サモンディルビオ */
+			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_DILUVIO)
+				elem_delete_data(sd);
+			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEMENTAL_PROCELLA:		/* サモンプロセラ */
+			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_PROCELLA)
+				elem_delete_data(sd);
+			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEMENTAL_TERREMOTUS:	/* サモンテレモトゥス */
+			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_TERREMOTUS)
+				elem_delete_data(sd);
+			calc_flag = 1;
+			break;
+		case SC_SUMMON_ELEMENTAL_SERPENS:		/* サモンサーペンス */
+			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_SERPENS)
+				elem_delete_data(sd);
+			calc_flag = 1;
 			break;
 		/* option1 */
 		case SC_FREEZE:
@@ -12962,6 +13324,118 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			timer = add_timer(tick+sc->data[type].val3, status_change_timer,bl->id, data);
 		}
 		break;
+	case SC_SOUNDBLEND:			/* サウンドブレンド */
+		if(sc->data[type].val2 != 0) {
+			struct block_list *src = map_id2bl(sc->data[type].val2);
+			if(src) {
+				skill_castend_damage_id(src,bl,TR_SOUNDBLEND,sc->data[type].val1,tick,0);
+			}
+			sc->data[type].val2 = 0;
+			timer = add_timer(tick+200, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SUMMON_ELEMENTAL_ARDOR:		/* サモンアルドール */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->eld->status.class_ != ELEMID_EM_ARDOR)
+					break;
+			}
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SUMMON_ELEMENTAL_DILUVIO:		/* サモンディルビオ */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->eld->status.class_ != ELEMID_EM_DILUVIO)
+					break;
+			}
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SUMMON_ELEMENTAL_PROCELLA:		/* サモンプロセラ */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->eld->status.class_ != ELEMID_EM_PROCELLA)
+					break;
+			}
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SUMMON_ELEMENTAL_TERREMOTUS:	/* サモンテレモトゥス */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->eld->status.class_ != ELEMID_EM_TERREMOTUS)
+					break;
+			}
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_SUMMON_ELEMENTAL_SERPENS:		/* サモンサーペンス */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				// 召喚している精霊がいなければ終了
+				if(!sd->eld)
+					break;
+				if(sd->eld->status.class_ != ELEMID_EM_SERPENS)
+					break;
+			}
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_FLAMETECHNIC_OPTION:		/* フレイムテクニック(精霊) */
+	case SC_COLD_FORCE_OPTION:			/* コールドフォース(精霊) */
+	case SC_GRACE_BREEZE_OPTION:		/* グレイスブリーズ(精霊) */
+	case SC_EARTH_CARE_OPTION:			/* アースケア(精霊) */
+	case SC_DEEP_POISONING_OPTION:		/* ディープポイズニング(精霊) */
+		if((--sc->data[type].val2) > 0) {
+			if(eld) {
+				if(eld->status.sp >= sc->data[type].val3) {
+					eld->status.sp -= sc->data[type].val3;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					timer = add_timer(tick+10000, status_change_timer,bl->id, data);
+				} else {
+					eld->status.sp = 0;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					elem_change_mode(eld,ELMODE_WAIT);
+				}
+			} else {
+				timer = add_timer(tick+10000, status_change_timer, bl->id, data);
+			}
+		}
+		break;
+	case SC_FLAMEARMOR_OPTION:			/* フレイムアーマー(精霊) */
+	case SC_CRYSTAL_ARMOR_OPTION:		/* クリスタルアーマー(精霊) */
+	case SC_EYES_OF_STORM_OPTION:		/* アイズオブストーム(精霊) */
+	case SC_STRONG_PROTECTION_OPTION:	/* ストロングプロテクション(精霊) */
+	case SC_POISON_SHIELD_OPTION:		/* ポイズンシールド(精霊) */
+		if((--sc->data[type].val2) > 0) {
+			if(eld) {
+				if(eld->status.sp >= sc->data[type].val3) {
+					eld->status.sp -= sc->data[type].val3;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					timer = add_timer(tick+1000, status_change_timer,bl->id, data);
+				} else {
+					eld->status.sp = 0;
+					clif_elemupdatestatus(eld->msd,SP_SP);
+					elem_change_mode(eld,ELMODE_WAIT);
+				}
+			} else {
+				timer = add_timer(tick+1000, status_change_timer, bl->id, data);
+			}
+		}
+		break;
 	}
 
 	if(timer == -1 && sd && sd->eternal_status_change[type] > 0 && !unit_isdead(&sd->bl))
@@ -13516,6 +13990,46 @@ int status_change_elemclear(struct block_list *bl)
 	//	status_change_end(bl,SC_ROCK_CRUSHER,-1);
 	//if(sc->data[SC_ROCK_CRUSHER_ATK].timer != -1)
 	//	status_change_end(bl,SC_ROCK_CRUSHER_ATK,-1);
+	if(sc->data[SC_FLAMETECHNIC].timer != -1)
+		status_change_end(bl,SC_FLAMETECHNIC,-1);
+	if(sc->data[SC_FLAMETECHNIC_OPTION].timer != -1)
+		status_change_end(bl,SC_FLAMETECHNIC_OPTION,-1);
+	if(sc->data[SC_FLAMEARMOR].timer != -1)
+		status_change_end(bl,SC_FLAMEARMOR,-1);
+	if(sc->data[SC_FLAMEARMOR_OPTION].timer != -1)
+		status_change_end(bl,SC_FLAMEARMOR_OPTION,-1);
+	if(sc->data[SC_COLD_FORCE].timer != -1)
+		status_change_end(bl,SC_COLD_FORCE,-1);
+	if(sc->data[SC_COLD_FORCE_OPTION].timer != -1)
+		status_change_end(bl,SC_COLD_FORCE_OPTION,-1);
+	if(sc->data[SC_CRYSTAL_ARMOR].timer != -1)
+		status_change_end(bl,SC_CRYSTAL_ARMOR,-1);
+	if(sc->data[SC_CRYSTAL_ARMOR_OPTION].timer != -1)
+		status_change_end(bl,SC_CRYSTAL_ARMOR_OPTION,-1);
+	if(sc->data[SC_GRACE_BREEZE].timer != -1)
+		status_change_end(bl,SC_GRACE_BREEZE,-1);
+	if(sc->data[SC_GRACE_BREEZE_OPTION].timer != -1)
+		status_change_end(bl,SC_GRACE_BREEZE_OPTION,-1);
+	if(sc->data[SC_EYES_OF_STORM].timer != -1)
+		status_change_end(bl,SC_EYES_OF_STORM,-1);
+	if(sc->data[SC_EYES_OF_STORM_OPTION].timer != -1)
+		status_change_end(bl,SC_EYES_OF_STORM_OPTION,-1);
+	if(sc->data[SC_EARTH_CARE].timer != -1)
+		status_change_end(bl,SC_EARTH_CARE,-1);
+	if(sc->data[SC_EARTH_CARE_OPTION].timer != -1)
+		status_change_end(bl,SC_EARTH_CARE_OPTION,-1);
+	if(sc->data[SC_STRONG_PROTECTION].timer != -1)
+		status_change_end(bl,SC_STRONG_PROTECTION,-1);
+	if(sc->data[SC_STRONG_PROTECTION_OPTION].timer != -1)
+		status_change_end(bl,SC_STRONG_PROTECTION_OPTION,-1);
+	if(sc->data[SC_DEEP_POISONING].timer != -1)
+		status_change_end(bl,SC_DEEP_POISONING,-1);
+	if(sc->data[SC_DEEP_POISONING_OPTION].timer != -1)
+		status_change_end(bl,SC_DEEP_POISONING_OPTION,-1);
+	if(sc->data[SC_POISON_SHIELD].timer != -1)
+		status_change_end(bl,SC_POISON_SHIELD,-1);
+	if(sc->data[SC_POISON_SHIELD_OPTION].timer != -1)
+		status_change_end(bl,SC_POISON_SHIELD_OPTION,-1);
 
 	return 0;
 }

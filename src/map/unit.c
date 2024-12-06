@@ -1191,6 +1191,14 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			}
 			src_sd->skill_used.id = skill_num;
 			break;
+		case TR_RETROSPECTION:			/* ‰ñ‘z */
+			 // ‘O‰ñg—p‚µ‚½4ŸE‰‰‘t‚ª‚È‚¢‚Æ‚¾‚ß
+			if(!src_sd->skill_4thdance.id) {
+				clif_skill_fail(src_sd,skill_num,SKILLFAIL_FAILED,0,0);
+				return 0;
+			}
+			src_sd->skill_used.id = skill_num;
+			break;
 		}
 	}
 

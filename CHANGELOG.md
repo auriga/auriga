@@ -1,4 +1,24 @@
 ----------------------------------------
+//1572 [2024/12/6] by Blaze
+
+・スキルツリーDBの仕様変更（pc.c, db/skill_tree.txt, db/pre/skill_tree_pre.txt, doc/db_ref.txt）
+　UpperとJobNoをキーとして2次～3次職の定義が倍になっていたのを、Upper指定はオプションとして該当スキルの習得条件と判定するように
+　上記に伴い、2次職・上位2次職、3次職の定義を集約
+　前提スキル指定を5個(6番目は任意)→6個に拡張・変更
+
+・上記のスキルツリー仕様変更で不要となる養子のスキルツリー設定「baby_copy_skilltree」を削除（conf/battle_auriga.conf, battle.c, battle.h）
+
+・バイオロ、トルバドゥール/トルヴェール、エレメンタルマスターのスキル、マイスターの追加スキル実装（skill.c, skill.h, battle.c, status.c, status.h, clif.c, mob.c, unit.c, map.h, db/skill_db.txt, db/skill_db2.txt, db/skill_cast_db.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_unit_db.txt, db/scdata_db.txt ）
+
+・アークメイジ、インクイジター、アビスチェイサー、ウィンドホークの一部攻撃スキルでダメージ計算のステータス補正値を修正（battle.c）
+
+・カーディナルなどのパーティー対象範囲スキル処理をパーティー未加入時と共通化するために処理変更（skill.c）
+
+・上位精霊の定義追加（mmo.h, elem.c, elem.h, db/elem_db.txt, db/elem_skill_tree.txt）
+
+・バイオロ関連のアイテム定義、モンスター定義追加（db/item_db.txt, db/item_db2.txt, db/produce_db.txt, db/mob_db.txt, db/mob_skill_db.txt）
+
+----------------------------------------
 //1571 [2024/11/10] by refis
 
 ・キャラクター削除時に実績データの削除がされていなかったのを修正（char.c）
