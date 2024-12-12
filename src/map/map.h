@@ -68,7 +68,8 @@
 #define MAX_ELE_LEVEL 4		// 最大属性Lv
 #define MAX_SIZE_FIX 3		// サイズの種類
 #define MAX_FREEZE_SPELL 7	// リーディングスペルブックで保持できるスキル数
-#define MAX_SPIRITBALL 15	// 気功・コインの最大数
+#define MAX_SPIRITBALL 15	// 気功の最大数
+#define MAX_COIN 10			// コインの最大数
 #define MAX_BUYINGSTORE_COUNT 5	// 購買露店最大アイテム登録数
 #define MAX_BOOKING_MEMO_LENGTH 37	// パーティーブッキングの募集メモ最大文字数
 #define MAX_ELEMENTBALL 10	// 影狼・朧の球体最大数
@@ -746,7 +747,7 @@ struct map_session_data {
 
 	struct {
 		short num;
-		int timer[MAX_SPIRITBALL];
+		int timer[MAX_COIN];
 	} coin;
 
 	struct {

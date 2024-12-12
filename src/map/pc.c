@@ -448,8 +448,8 @@ int pc_addcoin(struct map_session_data *sd,int interval,int max)
 {
 	nullpo_retr(0, sd);
 
-	if(max > MAX_SPIRITBALL)
-		max = MAX_SPIRITBALL;
+	if(max > MAX_COIN)
+		max = MAX_COIN;
 	if(sd->coin.num < 0)
 		sd->coin.num = 0;
 
@@ -493,8 +493,8 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 	if(count > sd->coin.num)
 		count = sd->coin.num;
 	sd->coin.num -= count;
-	if(count > MAX_SPIRITBALL)
-		count = MAX_SPIRITBALL;
+	if(count > MAX_COIN)
+		count = MAX_COIN;
 
 	for(i=0; i<count; i++) {
 		if(sd->coin.timer[i] != -1) {
@@ -502,7 +502,7 @@ int pc_delcoin(struct map_session_data *sd,int count,int type)
 			sd->coin.timer[i] = -1;
 		}
 	}
-	for(i=count; i<MAX_SPIRITBALL; i++) {
+	for(i=count; i<MAX_COIN; i++) {
 		sd->coin.timer[i-count] = sd->coin.timer[i];
 		sd->coin.timer[i] = -1;
 	}
@@ -1626,6 +1626,9 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 
 	for(i=0; i<MAX_SPIRITBALL; i++) {
 		sd->spiritball.timer[i] = -1;
+	}
+
+	for(i=0; i<MAX_COIN; i++) {
 		sd->coin.timer[i]   = -1;
 	}
 
@@ -6873,7 +6876,7 @@ static int pc_dead(struct block_list *src,struct map_session_data *sd)
 		}
 	}
 
-	//¯‚ÌŒõ ‰ğœ
+	//¯‚Ìˆó ‰ğœ
 	for (i = 0; i < MAX_STELLAR_MARKS; i++) {
 		if (sd->stellar_mark[i]) {
 			struct map_session_data *smarksd = map_id2sd(sd->stellar_mark[i]);

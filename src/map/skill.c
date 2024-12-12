@@ -2016,14 +2016,25 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl,int s
 		if(!(status_get_mode(bl)&MD_BOSS) && atn_rand() % 10000 < status_change_rate(bl,SC_BLEED,3000+1000*skilllv,status_get_lv(src)))
 			status_change_pretimer(bl,SC_BLEED,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
+	case RL_BANISHING_BUSTER:	/* バニシングバスター */
+		if(atn_rand()%100 < skilllv*10+50)
+			status_change_release(bl,0x02);	// ディスペル効果
+		break;
 	case RL_AM_BLAST:		/* アンチマテリアルブラスト */
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 		break;
 	case RL_S_STORM:		/* シャッターストーム */
-		if(atn_rand()%10000 <= 500 * skilllv) {
-			if(dstsd)
-				pc_break_equip2(dstsd, EQUIP_INDEX_HEAD2);
+		if(dstsd && atn_rand()%10000 <= 500 * skilllv) {
+			pc_break_equip2(dstsd, EQUIP_INDEX_HEAD2);
 		}
+		break;
+	case SJ_FULLMOONKICK:	/* 満月脚 */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
+		break;
+	case SJ_STAREMPEROR:		/* 星帝降臨 */
+		if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(src)))
+			status_change_pretimer(bl,SC_SILENCE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 		break;
 	case SP_SPA:			/* エスパ */
 		status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
@@ -2974,6 +2985,14 @@ static int skill_timerskill_timer(int tid, unsigned int tick, int id, void *data
 					}
 				}
 				break;
+			case SJ_FALLINGSTAR_ATK2:	/* 流星落下(追撃) */
+				clif_skill_nodamage(src,target,skl->skill_id,skl->skill_lv,1);
+				range = skill_get_area(skl->skill_id,skl->skill_lv);
+				map_foreachinarea(skill_area_sub,target->m,
+					target->x-range,target->y-range,target->x+range,target->y+range,BL_CHAR,
+					src,skl->skill_id,skl->skill_lv,tick,skl->flag|BCT_ENEMY|1,
+					skill_castend_damage_id);
+				break;
 			case AG_DESTRUCTIVE_HURRICANE:		/* ディストラクティブハリケーン */
 			case AG_CRYSTAL_IMPACT_ATK:	/* クリスタルインパクト(追撃) */
 			case AG_CRIMSON_ARROW_ATK:	/* クリムゾンアロー(攻撃) */
@@ -3606,7 +3625,6 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GN_FIRE_EXPANSION_ACID:	/* ファイアーエクスパンション(塩酸) */
 	case GN_SLINGITEM_RANGEMELEEATK:	/* スリングアイテム(遠距離攻撃) */
 	case KO_SETSUDAN:		/* 霊魂絶断 */
-	case KO_BAKURETSU:		/* 爆裂苦無 */
 	case EL_WIND_SLASH:		/* ウィンドスラッシュ */
 	case EL_STONE_HAMMER:	/* ストーンハンマー */
 	case NPC_DISSONANCE:
@@ -5761,6 +5779,25 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				skill_castend_damage_id);
 		}
 		break;
+	case KO_BAKURETSU:		/* 爆裂苦無 */
+	case KO_HUUMARANKA:		/* 風魔手裏剣 -乱華- */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			skill_area_temp[1] = bl->id;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			/* まずターゲットに攻撃を加える */
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
 	case KO_HAPPOKUNAI:		/* 八方苦無 */
 		if(flag&1) {
 			/* 個別にダメージを与える */
@@ -5797,93 +5834,141 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(sd && sd->elementball.num)
 			pc_delelementball(sd,sd->elementball.num,0);
 		break;
+	case RL_MASS_SPIRAL:		/* マススパイラル */
+	case RL_BANISHING_BUSTER:	/* バニシングバスター */
+	case RL_AM_BLAST:			/* アンチマテリアルブラスト */
+	case RL_SLUGSHOT:			/* スラッグショット */
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		break;
 	case RL_B_FLICKER_ATK:		/* バインドトラップ(爆発) */
 		battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,flag);
 		status_change_end(bl, SC_B_TRAP, -1);
 		break;
 	case RL_S_STORM:		/* シャッターストーム */
+	case RL_D_TAIL:			/* ドラゴンテイル */
 	case RL_HAMMER_OF_GOD:	/* ハンマーオブゴッド */
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
 			int tx = bl->x, ty = bl->y;
 			skill_area_temp[1] = bl->id;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			if(skillid == RL_HAMMER_OF_GOD) {
-				clif_skill_poseffect(src,skillid,skilllv,bl->x,bl->y,tick);
-				sc = status_get_sc(bl);
-				if(!sc || sc->data[SC_C_MARKER].timer == -1 || sc->data[SC_C_MARKER].val2 != src->id) {
-					tx += atn_rand()%10 - 5;
-					ty += atn_rand()%10 - 5;
-				}
-			}
 			/* まずターゲットに攻撃を加える */
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
 			map_foreachinarea(skill_area_sub,
-				bl->m,tx-ar,ty-ar,tx+ar,ty+ar,BL_CHAR,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,BL_CHAR,
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
 			if(skillid == RL_HAMMER_OF_GOD)
-				pc_delcoin(sd,10,0);
+				pc_delcoin(sd,MAX_COIN,0);
 		}
 		break;
-	case RL_BANISHING_BUSTER:	/* バニシングバスター */
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
-		if(atn_rand()%100 >= skilllv*10+50)
-			break;
-		status_change_release(bl,0x02);	// ディスペル効果
+	case RL_QD_SHOT:	/* クイックドローショット */
+		if(flag&0x10) {
+			sc = status_get_sc(bl);
+			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 == src->id && skill_area_temp[1] != bl->id)
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int div_ = 1;
+			int ar = skill_get_area(skillid,skilllv);
+			if(sd) {
+				div_ += sd->status.job_level / 20;
+				if(div_ > 4)
+					div_ = 4;
+				if(!battle_delarrow(sd,div_,0))
+					break;
+			}
+			skill_area_temp[1] = bl->id;
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|div_);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|0x10|div_,
+				skill_castend_damage_id);
+			status_change_end(src, SC_QD_SHOT_READY, -1);
+		}
+		break;
+	case RL_FIREDANCE:	/* ファイアーダンス */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
+		}
 		break;
 	case RL_H_MINE:		/* ハウリングマイン */
-		if(flag&1) {
+		if(flag&2) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|flag|0x500);
+		} else if(flag&1) {
 			sc = status_get_sc(bl);
 			if(sc && sc->data[SC_H_MINE].timer != -1 && sc->data[SC_H_MINE].val2 == src->id) {
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,sc->data[SC_H_MINE].val1,tick,flag|0x500);
+				int ar = skill_get_area(skillid,skilllv);
+				status_change_start(bl,SC_H_MINE_SPLASH,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
+				map_foreachinarea(skill_area_sub,bl->m,
+					bl->x-ar,bl->y-ar,
+					bl->x+ar,bl->y+ar,
+					BL_CHAR,src,skillid,sc->data[SC_H_MINE].val1,tick,flag|BCT_ENEMY|2,
+					skill_castend_damage_id);
 				status_change_end(bl,SC_H_MINE,-1);
 			}
 		} else {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 			status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,src->id,0,0,skill_get_time(skillid,skilllv),0);
 		}
 		break;
-	case RL_MASS_SPIRAL:		/* マススパイラル */
-	case RL_AM_BLAST:		/* アンチマテリアルブラスト */
-	case RL_SLUGSHOT:		/* スラッグショット */
-		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
-		break;
-	case SJ_PROMINENCEKICK:
+	case RL_R_TRIP:	/* ラウンドトリップ */
 		if(flag&1) {
-			/* 個別にダメージを与える */
-			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+			int dist = unit_distance(src,bl);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			if(unit_distance(src,bl) < skill_get_blewcount(skillid,skilllv) + dist) {
+				battle_skill_attack(BF_WEAPON,src,src,bl,RL_R_TRIP_PLUSATK,skilllv,tick,(0x0f<<20)|flag);
+			}
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
-			skill_area_temp[1] = bl->id;
-			/* スキルエフェクト表示 */
-			//clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			/* まずターゲットに攻撃を加える */
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
-			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
-			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+			map_foreachinarea(skill_area_sub,src->m,
+				src->x-ar,src->y-ar,
+				src->x+ar,src->y+ar,
+				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
+			if(sd) {
+				int cost = skill_get_arrow_cost(skillid,skilllv);
+				if(cost > 0 && !battle_delarrow(sd, cost, skillid))	// 矢の消費
+					break;
+			}
 		}
 		break;
-	case SJ_SOLARBURST:		/* 太陽爆発 */
+	case SJ_FULLMOONKICK:		/* 満月脚 */
 		if(flag&1) {
 			/* 個別にダメージを与える */
-			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+			if(bl->id != skill_area_temp[1]){
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			}
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
+			status_change_end(src, SC_NEWMOON, -1);
 			/* スキルエフェクト表示 */
-			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
 			skill_area_temp[1] = src->id;
@@ -5899,13 +5984,11 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 		if(flag&1) {
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1])
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
 			/* スキルエフェクト表示 */
-			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-
 			skill_area_temp[1] = src->id;
 			skill_area_temp[2] = src->x;
 			skill_area_temp[3] = src->y;
@@ -5913,142 +5996,33 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
-			
 			sc = status_get_sc(src);
-			if(sc) {
+			if(sc && sc->data[GetSkillStatusChangeTable(skillid)].timer != -1) {
+				status_change_end(src, GetSkillStatusChangeTable(skillid), -1);
+			} else {
 				status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
 		}
 		break;
-	case SJ_FULLMOONKICK:		/* 満月脚 */
-		if(flag&1) {
-			/* 個別にダメージを与える */
-			if(bl->id != skill_area_temp[1]){
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
-				if(atn_rand() % 10000 < status_change_rate(bl,SC_BLIND,10000,status_get_lv(src)))
-					status_change_pretimer(bl,SC_BLIND,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
-			}
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			/* スキルエフェクト表示 */
-			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-
-			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = src->x;
-			skill_area_temp[3] = src->y;
-			map_foreachinarea(skill_area_sub,
-				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
-		}
-		break;
 	case SJ_FLASHKICK:	/* 閃光脚 */
-		{
-			
-			struct map_session_data *tsd = BL_DOWNCAST(BL_PC, bl);
-			struct mob_data *md = BL_DOWNCAST(BL_MOB, src), *tmd = BL_DOWNCAST(BL_MOB, bl);
-
-			if ((!tsd && !tmd) || !sd && !md) {
-				if (sd)
-					clif_skill_fail(sd, skillid, SKILLFAIL_FAILED, 0, 0);
-				break;
-			}
-
-			// Check if the target is already tagged by another source.
-			if ((tsd && tsd->sc.data[SC_FLASHKICK].timer != -1 && tsd->sc.data[SC_FLASHKICK].val1 != src->id) || (tmd && tmd->sc.data[SC_FLASHKICK].timer != -1 && tmd->sc.data[SC_FLASHKICK].val1 != src->id)) { // Same as the above check, but for monsters.
-				// Can't tag a player that was already tagged from another source.
-				if (sd)
-					clif_skill_fail(sd, skillid, SKILLFAIL_FAILED, 0, 0);
-				map_freeblock_unlock();
-				return 1;
-			}
-
-			if (sd) { // Tagging the target.
+		clif_skill_nodamage(src,bl,skillid,skilllv,1);
+		if(battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag) > 0) {
+			if(sd) {
 				int i;
 
-				ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == bl->id);
-				if (i == MAX_STELLAR_MARKS) {
-					ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == 0);
-					if (i == MAX_STELLAR_MARKS) { // Max number of targets tagged. Fail the skill.
-						clif_skill_fail(sd, skillid, SKILLFAIL_FAILED, 0, 0);
-						map_freeblock_unlock();
-						return 1;
-					}
-				}
+				sc = status_get_sc(bl);
+				if(sc && sc->data[SC_FLASHKICK].timer != -1 && sc->data[SC_FLASHKICK].val2 != src->id)
+					status_change_end(bl, SC_FLASHKICK, -1);
 
-				// Tag the target only if damage was done. If it deals no damage, it counts as a miss and won't tag.
-				// Note: Not sure if it works like this in official but you can't mark on something you can't
-				// hit, right? For now well just use this logic until we can get a confirm on if it does this or not. [Rytech]
-				if (battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag) > 0) { // Add the ID of the tagged target to the player's tag list and start the status on the target.
+				for(i=0; i<MAX_STELLAR_MARKS; i++) {
+					if(sd->stellar_mark[i] == bl->id || sd->stellar_mark[i] == 0)
+						break;
+				}
+				if(i < MAX_STELLAR_MARKS) {
 					sd->stellar_mark[i] = bl->id;
-
-					// Val4 flags if the status was applied by a player or a monster.
-					// This will be important for other skills that work together with this one.
-					// 1 = Player, 2 = Monster.
-					// Note: Because the attacker's ID and the slot number is handled here, we have to
-					// apply the status here. We can't pass this data to skill_additional_effect.
-					status_change_start(bl,GetSkillStatusChangeTable(skillid),src->id, i, skilllv, 1, skill_get_time(skillid,skilllv),0);
+					status_change_start(bl,SC_FLASHKICK,skilllv,src->id,i,0,skill_get_time(skillid,skilllv),0);
 				}
-			} else if (md) { // Monsters can't track with this skill. Just give the status.
-				if (battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag) > 0)
-					status_change_start(bl,GetSkillStatusChangeTable(skillid), 0, 0, skilllv, 2, skill_get_time(skillid,skilllv),0);
 			}
-		}
-		break;
-	case SJ_FALLINGSTAR_ATK:	/* 流星落下(星の印対象ダメ) */
-		{
-			if(flag&1) {
-				struct status_change    *tsc = status_get_sc(bl);
-				if (sd) { // If a player used the skill it will search for targets marked by that player. 
-					if (tsc && tsc->data[SC_FLASHKICK].timer != -1 && tsc->data[SC_FLASHKICK].val4 == 1) { // Mark placed by a player.
-						int8 i = 0;
-
-						ARR_FIND(0, MAX_STELLAR_MARKS, i, sd->stellar_mark[i] == bl->id);
-						if (i < MAX_STELLAR_MARKS) {
-							battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag);
-							clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
-							skill_castend_damage_id(src, bl, SJ_FALLINGSTAR_ATK2, skilllv, tick, 0);
-						}
-					}
-					else{
-						map_freeblock_unlock();
-						return 1;
-					}
-				} else if ( tsc && tsc->data[SC_FLASHKICK].timer != -1 && tsc->data[SC_FLASHKICK].val4 == 2 ) { // Mark placed by a monster.
-					// If a monster used the skill it will search for targets marked by any monster since they can't track their own targets.
-					battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag);
-					clif_skill_damage(src, bl, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
-					skill_castend_damage_id(src, bl, SJ_FALLINGSTAR_ATK2, skilllv, tick, 0);
-				}
-			} else {
-				int ar = skill_get_area(skillid,skilllv);
-				map_foreachinarea(skill_area_sub,
-					src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
-					src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-					skill_castend_damage_id);
-			}
-		}
-		break;
-	case SJ_FALLINGSTAR_ATK2:	/* 流星落下(星の印周辺ダメ) */
-		if(flag&1) {
-			/* 個別にダメージを与える */
-			if(bl->id != skill_area_temp[1]){
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
-				clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			}
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			skill_area_temp[1] = bl->id;
-			/* スキルエフェクト表示 */
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			/* まずターゲットに攻撃を加える */
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0);
-			/* その後ターゲット以外の範囲内の敵全体に処理を行う */
-			map_foreachinarea(skill_area_sub,
-				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
 		}
 		break;
 	case SJ_STAREMPEROR:		/* 星帝降臨 */
@@ -6056,13 +6030,10 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 			/* 個別にダメージを与える */
 			if(bl->id != skill_area_temp[1]){
 				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x0500);
-				if(atn_rand() % 10000 < status_change_rate(bl,SC_SILENCE,10000,status_get_lv(src)))
-					status_change_pretimer(bl,SC_SILENCE,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0,tick+status_get_amotion(src));
 			}
 		} else {
 			int ar = skill_get_area(skillid,skilllv);
 			/* スキルエフェクト表示 */
-			clif_skill_damage(src, src, tick, 0, 0, -1, 1, skillid, -1, 0);	// エフェクトを出すための暫定処置
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 
 			skill_area_temp[1] = src->id;
@@ -6072,33 +6043,82 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
 				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
 				skill_castend_damage_id);
-			
 			sc = status_get_sc(src);
 			if(sc) {
-				if( sc->data[SC_DIMENSION].timer != -1 ){
+				if(sc->data[SC_DIMENSION].timer != -1){
 					status_change_end(src,SC_DIMENSION,-1);
-					//魔法盾2個がどのように動作するか、耐久含めて要調査
-					status_change_start(src,SC_DIMENSION2,2,status_get_max_sp(src),0,0,skill_get_time(skillid,skilllv),0);
+					status_change_start(src,SC_DIMENSION2,skilllv,0,0,status_get_max_sp(src)*2,skill_get_time(skillid,skilllv),0);
 				}
 			}
 		}
 		break;
 	case SJ_NOVAEXPLOSING:	// 新星爆発
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
-		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		sc = status_get_sc(src);
 		if(sc) {
 			if( sc->data[SC_DIMENSION].timer != -1 ){
 				status_change_end(src,SC_DIMENSION,-1);
-				status_change_start(src,SC_DIMENSION1,0,0,0,0,10000,0);
+				status_change_start(src,SC_DIMENSION1,skilllv,0,0,0,skill_get_time2(skillid,skilllv),0);
 			}
 			else if( sc->data[SC_DIMENSION1].timer != -1 ){
 				//Do nothing
 			}
 			else{
-				status_change_start(src,GetSkillStatusChangeTable(skillid),0,0,0,0,skill_get_time(skillid,skilllv),0);
+				status_change_start(src,GetSkillStatusChangeTable(skillid),skilllv,0,0,0,skill_get_time(skillid,skilllv),0);
 			}
 		}
+		break;
+	case SJ_SOLARBURST:		/* 太陽爆発 */
+		if(flag&1) {
+			/* 個別にダメージを与える */
+			if(bl->id != skill_area_temp[1])
+				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			/* スキルエフェクト表示 */
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			skill_area_temp[1] = src->id;
+			skill_area_temp[2] = src->x;
+			skill_area_temp[3] = src->y;
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case SJ_PROMINENCEKICK:	/* 紅焔脚 */
+		if(flag&1) {
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag|0x500);
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			/* スキルエフェクト表示 */
+			clif_skill_nodamage(src,bl,skillid,skilllv,1);
+			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
+			map_foreachinarea(skill_area_sub,
+				bl->m,bl->x-ar,bl->y-ar,bl->x+ar,bl->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case SJ_FALLINGSTAR_ATK:	/* 流星落下(攻撃) */
+		if(flag&1) {
+			sc = status_get_sc(bl);
+			if (sc && sc->data[SC_FLASHKICK].timer != -1 && sc->data[SC_FLASHKICK].val2 == src->id) {
+				clif_skill_nodamage(src,bl,skillid,skilllv,1);
+				battle_skill_attack(BF_WEAPON, src, src, bl, skillid, skilllv, tick, flag);
+				skill_addtimerskill(src,tick+300,bl->id,0,0,SJ_FALLINGSTAR_ATK2,skilllv,0,flag);
+			}
+		} else {
+			int ar = skill_get_area(skillid,skilllv);
+			map_foreachinarea(skill_area_sub,
+				src->m,src->x-ar,src->y-ar,src->x+ar,src->y+ar,(BL_CHAR|BL_SKILL),
+				src,skillid,skilllv,tick, flag|BCT_ENEMY|1,
+				skill_castend_damage_id);
+		}
+		break;
+	case SJ_FALLINGSTAR_ATK2:	/* 流星落下(追撃) */
+		battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
 		break;
 	case SP_CURSEEXPLOSION:		// 死霊爆発
 		if(flag&1) {
@@ -8101,7 +8121,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		if(sd) {
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			if(atn_rand()%100 < 20 + skilllv * 10) {
-				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
+				pc_addcoin(sd,skill_get_time(skillid,skilllv),MAX_COIN);
 			} else {
 				if(pc_checkskill(sd,RL_RICHS_COIN) < 1)
 					pc_delcoin(sd,1,0);
@@ -12029,13 +12049,13 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case RL_RICHS_COIN:		/* リッチズコイン */
 		if(sd) {
 			int i;
-			if(sd->coin.num >= 10) {
+			if(sd->coin.num >= MAX_COIN) {
 				clif_skill_fail(sd,skillid,SKILLFAIL_FAILED,0,0);
 				break;
 			}
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			for(i=0;i<10 && sd->coin.num<10;i++)
-				pc_addcoin(sd,skill_get_time(skillid,skilllv),10);
+			for(i=0;i<MAX_COIN && sd->coin.num<MAX_COIN;i++)
+				pc_addcoin(sd,skill_get_time(skillid,skilllv),MAX_COIN);
 		}
 		break;
 	case RL_C_MARKER:		/* クリムゾンマーカー */
@@ -12083,70 +12103,7 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		clif_skill_nodamage(src,bl,skillid,skilllv,1);
 		status_change_start(bl,GetSkillStatusChangeTable(skillid),skilllv,0,0,(sd)? sd->coin.num: 10,skill_get_time(skillid,skilllv),0);
 		if(sd)
-			pc_delcoin(sd,10,0);
-		break;
-	case RL_QD_SHOT:	/* クイックドローショット */
-		if(flag&1) {
-			sc = status_get_sc(bl);
-			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 == src->id && skill_area_temp[1] != bl->id)
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			skill_area_temp[1] = bl->id;
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,flag);
-			map_foreachinarea(skill_area_sub,src->m,
-				src->x-ar,src->y-ar,
-				src->x+ar,src->y+ar,
-				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_nodamage_id);
-			status_change_end(src, SC_QD_SHOT_READY, -1);
-		}
-		break;
-	case RL_FIREDANCE:	/* ファイアーダンス */
-		if(flag&1) {
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			map_foreachinarea(skill_area_sub,src->m,
-				src->x-ar,src->y-ar,
-				src->x+ar,src->y+ar,
-				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_nodamage_id);
-		}
-		break;
-	case RL_R_TRIP:	/* ラウンドトリップ */
-		if(flag&1) {
-			int dist = unit_distance(src,bl);
-			battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
-			if(unit_distance(src,bl) < skill_get_blewcount(skillid,skilllv) + dist) {
-				battle_skill_attack(BF_WEAPON,src,src,bl,RL_R_TRIP_PLUSATK,skilllv,tick,0x0500);
-			}
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			map_foreachinarea(skill_area_sub,src->m,
-				src->x-ar,src->y-ar,
-				src->x+ar,src->y+ar,
-				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_nodamage_id);
-		}
-		break;
-	case RL_D_TAIL:	/* ドラゴンテイル */
-		if(flag&1) {
-			sc = status_get_sc(bl);
-			if(sc && sc->data[SC_C_MARKER].timer != -1 && sc->data[SC_C_MARKER].val2 == src->id)
-				battle_skill_attack(BF_WEAPON,src,src,bl,skillid,skilllv,tick,0x500);
-		} else {
-			int ar = skill_get_area(skillid,skilllv);
-			clif_skill_nodamage(src,bl,skillid,skilllv,1);
-			map_foreachinarea(skill_area_sub,src->m,
-				src->x-ar,src->y-ar,
-				src->x+ar,src->y+ar,
-				BL_CHAR,src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_nodamage_id);
-		}
+			pc_delcoin(sd,MAX_COIN,0);
 		break;
 	case SJ_DOCUMENT:	/* 太陽と月と星の記録 */
 		{
@@ -13411,7 +13368,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 	case GN_THORNS_TRAP:		/* ソーントラップ */
 	case GN_DEMONIC_FIRE:		/* デモニックファイアー */
 	case GN_HELLS_PLANT:		/* ヘルズプラント */
-	case KO_HUUMARANKA:			/* 風魔手裏剣乱華 */
 	case SU_NYANGGRASS:			/* ニャングラス */
 	case SJ_BOOKOFCREATINGSTAR:	/* 創星の書 */
 	case AG_RAIN_OF_CRYSTAL:	/* レインオブクリスタル */
@@ -13992,18 +13948,6 @@ int skill_castend_pos2( struct block_list *src, int x,int y,int skillid,int skil
 		}
 		clif_skill_poseffect(src,skillid,skilllv,x,y,tick);
 		map_foreachinarea(skill_fire_expansion,src->m,x-2,y-2,x+2,y+2,BL_SKILL,src,skilllv,tick);
-		break;
-	case KO_BAKURETSU:		/* 爆裂苦無 */
-		{
-			int ar = skill_get_area(skillid,skilllv);
-			skill_area_temp[1] = src->id;
-			skill_area_temp[2] = x;
-			skill_area_temp[3] = y;
-			map_foreachinarea(skill_area_sub,
-				src->m,x-ar,y-ar,x+ar,y+ar,(BL_CHAR|BL_SKILL),
-				src,skillid,skilllv,tick,flag|BCT_ENEMY|1,
-				skill_castend_damage_id);
-		}
 		break;
 	case KO_MUCHANAGE:		/* 無茶投げ */
 		{
@@ -15301,7 +15245,6 @@ static int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl
 			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,sg->val2|0x0500);
 			break;
 		case GN_CRAZYWEED_ATK:	/* クレイジーウィード */
-		case KO_HUUMARANKA:		/* 風魔手裏剣乱華 */
 			battle_skill_attack(BF_WEAPON,ss,&src->bl,bl,sg->skill_id,sg->skill_lv,tick,0x0500);
 			break;
 		case SG_SUN_WARM:	/* 温もり */
@@ -17946,7 +17889,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case GS_GLITTERING:		/* フリップザコイン */
-		if(sd->coin.num >= 10) {
+		if(sd->coin.num >= MAX_COIN) {
 			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
 			return 0;
 		}
@@ -18437,11 +18380,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 		}
 		break;
 	case SJ_FULLMOONKICK:		/* 満月脚 */
-		if(!(type&1)) {	//詠唱開始で朔月状態は解除されるので、詠唱終了時はチェックしない
-			if(sd->sc.data[SC_NEWMOON].timer == -1 ){
-				clif_skill_fail(sd,cnd->id,SKILLFAIL_OTHERSKILL,0,0);
-				return 0;
-			}
+		if(sd->sc.data[SC_NEWMOON].timer == -1 ){
+			clif_skill_fail(sd,cnd->id,SKILLFAIL_OTHERSKILL,0,0);
+			return 0;
 		}
 		//fall through
 	case SJ_NEWMOONKICK:		/* 朔月脚 */
@@ -21482,7 +21423,6 @@ static int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap )
 		case MA_LANDMINE:
 		case MA_SANDMAN:
 		case MA_FREEZINGTRAP:
-		case KO_HUUMARANKA:
 		case KO_MAKIBISHI:
 		case KO_ZENKAI:
 		case RL_FIRE_RAIN:

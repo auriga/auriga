@@ -2348,6 +2348,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 		if(battle_config.joint_struggle_limit && per > battle_config.joint_struggle_limit)
 			per = battle_config.joint_struggle_limit;
 
+#ifdef PRE_RENEWAL
 		// j•Ÿ
 		if(sd) {
 			if (sd->sc.data[SC_MIRACLE].timer != -1) { // ‘¾—z‚ÆŒŽ‚Æ¯‚ÌŠïÕ
@@ -2361,6 +2362,7 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 					tk_exp_rate = 20 * pc_checkskill(sd, SG_STAR_BLESS);
 			}
 		}
+#endif
 
 		node = md->dmglog;
 		for(i=0; node; node = node->next,i++) {

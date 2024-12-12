@@ -51,6 +51,7 @@
 #include "elem.h"
 #include "msg.h"
 #include "bonus.h"
+#include "date.h"
 
 static int atkmods[MAX_SIZE_FIX][WT_MAX];	// 武器ATKサイズ修正(size_fix.txt)
 
@@ -243,7 +244,7 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	/* 830- */
 	SI_FLAMEARMOR,SI_FLAMEARMOR_OPTION,SI_COLD_FORCE,SI_COLD_FORCE_OPTION,SI_CRYSTAL_ARMOR,SI_CRYSTAL_ARMOR_OPTION,SI_GRACE_BREEZE,SI_GRACE_BREEZE_OPTION,SI_EYES_OF_STORM,SI_EYES_OF_STORM_OPTION,
 	/* 840- */
-	SI_EARTH_CARE,SI_EARTH_CARE_OPTION,SI_STRONG_PROTECTION,SI_STRONG_PROTECTION_OPTION,SI_DEEP_POISONING,SI_DEEP_POISONING_OPTION,SI_POISON_SHIELD,SI_POISON_SHIELD_OPTION,SI_ELEMENTAL_VEIL,
+	SI_EARTH_CARE,SI_EARTH_CARE_OPTION,SI_STRONG_PROTECTION,SI_STRONG_PROTECTION_OPTION,SI_DEEP_POISONING,SI_DEEP_POISONING_OPTION,SI_POISON_SHIELD,SI_POISON_SHIELD_OPTION,SI_ELEMENTAL_VEIL,SI_H_MINE_SPLASH,
 
 };
 
@@ -991,6 +992,24 @@ L_RECALC:
 	if(pc_checkskill(sd,SU_POWEROFLAND) > 0) {	// 大地の力
 		sd->paramb[3] += 7;
 	}
+#ifndef PRE_RENEWAL
+	if((skill = pc_checkskill(sd,SG_STAR_BLESS)) > 0 && (battle_config.allow_skill_without_day || is_day_of_star())) {	// 星の祝福
+		sd->paramb[0] += skill * 2;
+		sd->paramb[1] += skill * 2;
+		sd->paramb[2] += skill * 2;
+		sd->paramb[3] += skill * 2;
+		sd->paramb[4] += skill * 2;
+		sd->paramb[5] += skill * 2;
+	} else if((skill = pc_checkskill(sd,SG_SUN_BLESS)) > 0 && (battle_config.allow_skill_without_day || is_day_of_sun())) {	// 太陽の祝福
+		sd->paramb[0] += skill * 2;
+		sd->paramb[2] += skill * 2;
+		sd->paramb[4] += skill * 2;
+	} else if((skill = pc_checkskill(sd,SG_MOON_BLESS)) > 0 && (battle_config.allow_skill_without_day || is_day_of_moon())) {	// 月の祝福
+		sd->paramb[1] += skill * 2;
+		sd->paramb[3] += skill * 2;
+		sd->paramb[5] += skill * 2;
+	}
+#endif
 
 	// マーダラーボーナス
 	if(battle_config.pk_murderer_point > 0) {
@@ -2830,6 +2849,21 @@ L_RECALC:
 			sd->plus_matk += sd->sc.data[SC_IZAYOI].val2;
 #endif
 		}
+		// 幻術 -分身-
+		if(sd->sc.data[SC_KAGEMUSYA].timer != -1) {
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = KO_BAKURETSU;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_KAGEMUSYA].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = KO_HAPPOKUNAI;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_KAGEMUSYA].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = KO_JYUMONJIKIRI;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_KAGEMUSYA].val2;
+			sd->skill_dmgup.count++;
+			sd->skill_dmgup.id[sd->skill_dmgup.count] = KO_HUUMARANKA;
+			sd->skill_dmgup.rate[sd->skill_dmgup.count] = sd->sc.data[SC_KAGEMUSYA].val2;
+			sd->skill_dmgup.count++;
+		}
 		// 幻術 -残月-
 		if(sd->sc.data[SC_ZANGETSU].timer != -1) {
 #ifdef PRE_RENEWAL
@@ -3136,6 +3170,22 @@ L_RECALC:
 		if(sd->sc.data[SC_HANDICAPSTATE_DEADLYPOISON].timer != -1) {
 			sd->def = 0;
 			sd->def2 = 0;
+		}
+	}
+
+	// 影狼・朧の球体
+	if(sd->elementball.num >= MAX_ELEMENTBALL) {
+		if(sd->elementball.ele == ELE_FIRE) {			/* 火符：炎天 */
+			sd->addele[ELE_EARTH] += 30;
+		}
+		else if(sd->elementball.ele == ELE_WATER) {		/* 氷符：吹雪 */
+			sd->addele[ELE_FIRE] += 30;
+		}
+		else if(sd->elementball.ele == ELE_WIND) {		/* 風符：青嵐 */
+			sd->addele[ELE_WATER] += 30;
+		}
+		else if(sd->elementball.ele == ELE_EARTH) {		/* 土符：剛塊 */
+			sd->addele[ELE_WIND] += 30;
 		}
 	}
 
@@ -7105,10 +7155,7 @@ int status_get_attack_element(struct block_list *bl)
 	if(bl->type == BL_MOB && (struct mob_data *)bl)
 		ret = ELE_NEUTRAL;
 	else if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
-			ret = ((struct map_session_data *)bl)->elementball.ele;
-		else
-			ret = ((struct map_session_data *)bl)->atk_ele;
+		ret = ((struct map_session_data *)bl)->atk_ele;
 	}
 	else if(bl->type == BL_PET && (struct pet_data *)bl)
 		ret = ELE_NEUTRAL;
@@ -7157,10 +7204,7 @@ int status_get_attack_element2(struct block_list *bl)
 	if(bl->type == BL_PC && (struct map_session_data *)bl) {
 		int ret;
 		struct status_change *sc = status_get_sc(bl);
-		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
-			ret = ((struct map_session_data *)bl)->elementball.ele;
-		else
-			ret = ((struct map_session_data *)bl)->atk_ele_;
+		ret = ((struct map_session_data *)bl)->atk_ele_;
 
 		if(sc) {
 			if(sc->data[SC_FROSTWEAPON].timer != -1)		// フロストウェポン
@@ -7202,11 +7246,7 @@ int status_get_attack_element_nw(struct block_list *bl)
 
 	sc = status_get_sc(bl);
 
-	if(bl->type == BL_PC && (struct map_session_data *)bl) {
-		if(((struct map_session_data *)bl)->elementball.num >= MAX_ELEMENTBALL)
-			ret = ((struct map_session_data *)bl)->elementball.ele;
-	}
-	else if(bl->type == BL_HOM && (struct homun_data *)bl)
+	if(bl->type == BL_HOM && (struct homun_data *)bl)
 		ret = ELE_NONE;	// 無属性
 	else if(bl->type == BL_MERC && (struct merc_data *)bl)
 		ret = ELE_NONE;	// 無属性
@@ -8323,6 +8363,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_KVASIR_SONATA:		/* ソナタオブクヴァシル */
 		case SC_ROSEBLOSSOM:		/* ロゼブロッサム */
 		case SC_ELEMENTAL_VEIL:		/* エレメンタルヴェール */
+		case SC_H_MINE_SPLASH:		/* ハウリングマイン(分散) */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -9762,6 +9803,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 		case SC_KAGEMUSYA:		/* 幻術 -分身- */
+			val2 = 20;		// ダメージ増加率
+			val3 = tick / 1000;
 			tick = 1000;
 			calc_flag = 1;
 			break;
@@ -10142,7 +10185,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_GRAVITYCONTROL:	/* 重力調節 */
 		case SC_CREATINGSTAR:	/* 創星の書 */
 		case SC_DIMENSION:	/* 次元の書 */
-		case SC_DIMENSION1:	/* 次元の書 */
+		case SC_DIMENSION1:	/* 次元の書(新星爆発) */
 			break;
 		case SC_NEWMOON:		/* 朔月脚 */
 			val2 = 15;	// ダメージ耐性
@@ -10152,11 +10195,11 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_FALLINGSTAR:	/* 流星落下 */
 			val2 = val1 <= 5 ? 20 : 25;
 			break;
-		case SC_DIMENSION2:	/* 次元の書 */
-			if(sd){
-				pc_delspiritball(sd, sd->spiritball.num, 0);
-				pc_addspiritball(sd, tick, val1);
-			}
+		case SC_DIMENSION2:	/* 次元の書(星帝降臨) */
+			val2 = 2;		// 盾の個数
+			val3 = val4;	// 盾の耐久値
+			if(sd)
+				clif_mshield(sd, val2);
 			break;
 		case SC_SOULCOLLECT:		/* 魂の蓄積 */
 			val2 = tick;		// ソウルエナジー獲得時間
@@ -11687,10 +11730,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 				}
 			}
 			break;
-		case SC_DIMENSION2:	/* 次元の書 */
-			if(sd){
-				pc_delspiritball(sd, sd->spiritball.num, 0);
-			}
+		case SC_DIMENSION2:	/* 次元の書(星帝降臨) */
+			if(sd)
+				clif_mshield(sd, 0);
 			break;
 	}
 
@@ -13021,12 +13063,16 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_KAGEMUSYA:	/* 影武者 */
-		if(sd) {
-			if(sd->status.sp >= 1) {
-				sd->status.sp -= 1;
-				clif_updatestatus(sd,SP_SP);
-				timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+	case SC_KAGEMUSYA:	/* 幻術 -分身- */
+		if((--sc->data[type].val3) > 0) {
+			if(sd) {
+				if(sd->status.sp >= 1) {
+					sd->status.sp -= 1;
+					clif_updatestatus(sd,SP_SP);
+					timer = add_timer(1000+tick, status_change_timer,bl->id, data);
+				}
+			} else {
+				timer = add_timer(1000+tick, status_change_timer, bl->id, data);
 			}
 		}
 		break;
@@ -13241,11 +13287,11 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			}
 		}
 		break;
-	case SC_FLASHKICK:
+	case SC_FLASHKICK:		/* 星の印 */
 		{
-			struct map_session_data *tsd = map_id2sd(sc->data[type].val1);
+			struct map_session_data *tsd = map_id2sd(sc->data[type].val2);
 			if( tsd )
-				tsd->stellar_mark[sc->data[type].val2] = 0;
+				tsd->stellar_mark[sc->data[type].val3] = 0;
 		}
 		break;
 	case SC_SOULCOLLECT:		/* 魂の蓄積 */

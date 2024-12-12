@@ -710,14 +710,19 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 				status_change_end(bl, SC_TUNAPARTY, -1);
 		}
 
-		// 次元の書(魔法盾)
+		// 次元の書(星帝降臨)
 		if(sc->data[SC_DIMENSION2].timer != -1 && damage > 0) {
 			struct status_change_data *scd = &sc->data[SC_DIMENSION2];
-			scd->val2 -= BIGNUM2INT(damage);
-			if(scd->val2 >= 0)
-				damage = 0;
-			else
-				damage = -scd->val2;
+
+			if(damage >= scd->val3) {
+				scd->val3 = scd->val4;
+				scd->val2--;
+				if(tsd)
+					clif_mshield(tsd,scd->val2);
+			} else {
+				scd->val3 -= BIGNUM2INT(damage);
+			}
+			damage = 0;
 			if(scd->val2 <= 0)
 				status_change_end(bl, SC_DIMENSION2, -1);
 		}
@@ -4614,24 +4619,30 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case KO_JYUMONJIKIRI:	// 十文字斬り
-			{
-				int rate = 150 * skill_lv * status_get_lv(src) / 120;
-
-				if( t_sc && t_sc->data[SC_KO_JYUMONJIKIRI].timer != -1 )
-					rate += status_get_lv(src) * skill_lv;
-				DMG_FIX( rate, 100 );
+			if(t_sc && t_sc->data[SC_KO_JYUMONJIKIRI].timer != -1) {
+				DMG_FIX( 300 * skill_lv * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( 200 * skill_lv * status_get_lv(src) / 100, 100 );
 			}
 			break;
 		case KO_SETSUDAN:		// 黄泉返し
 			{
-				int rate = 150 * skill_lv;
+				int rate = 100 * skill_lv;
 
 				if(t_sc) {
 					int soul;
 
 					for(soul = SC_ALCHEMIST; soul <= SC_GUNNER; soul++) {
 						if(t_sc->data[soul].timer != -1) {
-							rate += rate;
+							rate += 200 * t_sc->data[soul].val1;
+							break;
+						}
+					}
+					for(soul = SC_SOULSHADOW; soul <= SC_SOULGOLEM; soul++) {
+						if(t_sc->data[soul].timer != -1) {
+							rate += 200 * t_sc->data[soul].val1;
+							status_change_end(target,soul,-1);
+							break;
 						}
 					}
 				}
@@ -4641,7 +4652,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case KO_BAKURETSU:		// 爆裂苦無
-			DMG_FIX( ((skill_lv * (50 + status_get_dex(src) / 4)) * ((src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU): 0) * 4 / 10 * status_get_lv(src) / 120) + status_get_jlv(src) * 10, 100);
+			DMG_FIX( ((skill_lv * (50 + status_get_dex(src) / 4)) * ((src_sd)? pc_checkskill(src_sd,NJ_TOBIDOUGU): 1) * 4 / 10 * status_get_lv(src) / 100) + status_get_jlv(src) * 10, 100);
 			break;
 		case KO_HAPPOKUNAI:		// 八方苦無
 			DMG_FIX( 300 + 60 * skill_lv, 100 );
@@ -4668,29 +4679,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		case KO_HUUMARANKA:	// 風魔手裏剣 -乱華-
-			DMG_FIX( 150 * skill_lv + status_get_agi(src) + status_get_dex(src) + ((src_sd)? pc_checkskill(src_sd, NJ_HUUMA): 0) * 100, 100 );
-			break;
-		case RL_QD_SHOT:		// クイックドローショット
-			{
-				int div_ = 1;
-				if(src_sd) {
-					div_ += src_sd->status.job_level / 20;
-					src_sd->state.arrow_atk = 1;
-					if(!battle_delarrow(src_sd,div_ - 1,0))
-						break;
-				}
-				wd.div_ = div_;
-			}
-			break;
-		case RL_FIREDANCE:	// ファイアーダンス
-			{
-				int rate = 1500 + 100 * skill_lv;
-				if(src_sd) {
-					rate += pc_checkskill(src_sd,GS_DESPERADO) * 50;
-					src_sd->state.arrow_atk = 1;
-				}
-				DMG_FIX( rate, 100 );
-			}
+			DMG_FIX( (150 * skill_lv + status_get_str(src) + ((src_sd)? pc_checkskill(src_sd, NJ_HUUMA): 0) * 100) * status_get_lv(src) / 100, 100 );
 			break;
 		case RL_MASS_SPIRAL:		// マススパイラル
 			{
@@ -4701,49 +4690,81 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					src_sd->state.arrow_atk = 1;
 			}
 			break;
-		case RL_AM_BLAST:		// アンチマテリアルブラスト
-			DMG_FIX( 1500 + 300 * skill_lv, 100 );
+		case RL_BANISHING_BUSTER:	// バニシングバスター
+			DMG_FIX( 200 * skill_lv * status_get_lv(src) / 100, 100 );
+			break;
+		case RL_S_STORM:		// シャッターストーム
+			DMG_FIX( 1700 + 200 * skill_lv, 100 );
+			break;
+		case RL_QD_SHOT:		// クイックドローショット
+			if(src_sd)
+				src_sd->state.arrow_atk = 1;
+			wd.div_ = wflag&0xf;
+			break;
+		case RL_FIREDANCE:		// ファイアーダンス
+			DMG_FIX( (1000 + 100 * skill_lv + ((src_sd)? pc_checkskill(src_sd,GS_DESPERADO): 0) * 20) * status_get_lv(src) / 100, 100 );
 			if(src_sd)
 				src_sd->state.arrow_atk = 1;
 			break;
-		case RL_HAMMER_OF_GOD:	// ハンマーオブゴッド
-			{
-				int rate = 500 * skill_lv;
-				if(t_sc && t_sc->data[SC_C_MARKER].timer != -1)
-					rate += 250 * ((src_sd)? src_sd->coin.num: 1);
-				else
-					rate += 25 * ((src_sd)? src_sd->coin.num: 1);
-				DMG_FIX( rate, 100 );
-				if(src_sd)
-					src_sd->state.arrow_atk = 1;
-			}
-			break;
-		case RL_SLUGSHOT:		// スラッグショット
-			{
-				int rate = 600 * skill_lv * (t_size+2);
-				if(target->type != BL_MOB)
-					rate *= 2;
-				DMG_FIX( rate, 100 );
-				if(src_sd)
-					src_sd->state.arrow_atk = 1;
-			}
-			break;
-		case RL_R_TRIP:			// ラウンドトリップ
-		case RL_R_TRIP_PLUSATK:	// ラウンドトリップ(追撃)
-			DMG_FIX( 150 + 50 * skill_lv, 100 );
-			break;
-		case RL_H_MINE:		// ハウリングマイン
-			if(wflag&1) {	// ハウリングマイン(追撃)
+		case RL_H_MINE:			// ハウリングマイン
+			if(wflag&1) {		// ハウリングマイン(追撃)
 				DMG_FIX( 1000 + 400 * skill_lv, 100 );
 			} else {
 				DMG_FIX( 400 * skill_lv, 100 );
 			}
 			break;
+		case RL_R_TRIP:			// ラウンドトリップ
+		case RL_R_TRIP_PLUSATK:	// ラウンドトリップ(追撃)
+			DMG_FIX( (100 + 40 * skill_lv) * status_get_lv(src) / 100, 100 );
+			break;
 		case RL_D_TAIL:			// ドラゴンテイル
-			DMG_FIX( 1000 * skill_lv, 100 );
+			if(t_sc && t_sc->data[SC_C_MARKER].timer != -1) {
+				DMG_FIX( (1000 + 400 * skill_lv) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( (500 + 200 * skill_lv) * status_get_lv(src) / 100, 100 );
+			}
 			break;
 		case RL_FIRE_RAIN:		// ファイアーレイン
 			DMG_FIX( 500 + 500 * skill_lv, 100 );
+			break;
+		case RL_AM_BLAST:		// アンチマテリアルブラスト
+			DMG_FIX( 1500 + 300 * skill_lv, 100 );
+			if(src_sd)
+				src_sd->state.arrow_atk = 1;
+			break;
+		case RL_SLUGSHOT:		// スラッグショット
+			{
+				int rate = 1200 * skill_lv * (t_size+2);
+				if(target->type == BL_PC)
+					rate /= 2;
+				DMG_FIX( rate, 100 );
+				if(src_sd)
+					src_sd->state.arrow_atk = 1;
+			}
+			break;
+		case RL_HAMMER_OF_GOD:	// ハンマーオブゴッド
+			if(t_sc && t_sc->data[SC_C_MARKER].timer != -1) {
+				DMG_FIX( (500 + 100 * skill_lv + ((src_sd)? src_sd->coin.num: 0) * 200) * status_get_lv(src) / 100, 100 );
+			} else {
+				DMG_FIX( (500 + 100 * skill_lv + ((src_sd)? src_sd->coin.num: 0) * 50) * status_get_lv(src) / 100, 100 );
+			}
+			if(src_sd)
+				src_sd->state.arrow_atk = 1;
+			break;
+		case SJ_FULLMOONKICK:	// 満月脚
+			{
+				int rate = ( 500 + 150 * skill_lv ) * status_get_lv(src) / 100;
+				if(sc && sc->data[SC_LIGHTOFMOON].timer != -1 ) {
+					rate += ( rate * sc->data[SC_LIGHTOFMOON].val2 ) / 100;
+				}
+				DMG_FIX( rate, 100 );
+			}
+			break;
+		case SJ_NEWMOONKICK:	// 朔月脚
+			DMG_FIX( 1650 + 50 * skill_lv, 100 );
+			break;
+		case SJ_FLASHKICK:		// 閃光脚
+			DMG_FIX( 100, 100 );
 			break;
 		case SJ_PROMINENCEKICK:	// 紅焔脚
 			DMG_FIX( 650 + 50 * skill_lv, 100 );
@@ -4756,20 +4777,6 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 				DMG_FIX( rate, 100 );
 			}
-			break;
-		case SJ_NEWMOONKICK:	// 朔月脚
-			DMG_FIX( 1650 + 50 * skill_lv, 100 );
-			break;
-		case SJ_FULLMOONKICK:	// 満月脚
-			{
-				int rate = ( 500 + 150 * skill_lv ) * status_get_lv(src) / 100;
-				if(sc && sc->data[SC_LIGHTOFMOON].timer != -1 ) {
-					rate += ( rate * sc->data[SC_LIGHTOFMOON].val2 ) / 100;
-				}
-				DMG_FIX( rate, 100 );
-			}
-			break;
-		case SJ_FLASHKICK:	// 閃光脚
 			break;
 		case SJ_FALLINGSTAR_ATK:	// 流星落下
 		case SJ_FALLINGSTAR_ATK2:
@@ -5815,21 +5822,22 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 #endif
 
 			if(target->type & BL_CHAR) {
+				int skill = 0;
 				int rate = 0;
-				int s_dex = status_get_dex(src);
-				int s_luk = status_get_luk(src);
 				int tclass = status_get_class(target);
 
-				if(sc && sc->data[SC_MIRACLE].timer != -1) {	// 太陽と月と星の奇跡
-					// 全ての敵が星
-					rate = (src_sd->status.base_level + s_dex + s_luk + s_str) / (12 - 3 * pc_checkskill(src_sd,SG_STAR_ANGER));
-				} else {
-					if(tclass == src_sd->hate_mob[0] && pc_checkskill(src_sd,SG_SUN_ANGER) > 0)		// 太陽の怒り
-						rate = (src_sd->status.base_level + s_dex + s_luk) / (12 - 3 * pc_checkskill(src_sd,SG_SUN_ANGER));
-					else if(tclass == src_sd->hate_mob[1] && pc_checkskill(src_sd,SG_MOON_ANGER) > 0)	// 月の怒り
-						rate = (src_sd->status.base_level + s_dex + s_luk) / (12 - 3 * pc_checkskill(src_sd,SG_MOON_ANGER));
-					else if(tclass == src_sd->hate_mob[2] && pc_checkskill(src_sd,SG_STAR_ANGER) > 0)	// 星の怒り
-						rate = (src_sd->status.base_level + s_dex + s_luk + s_str) / (12 - 3 * pc_checkskill(src_sd,SG_STAR_ANGER));
+				if((skill = pc_checkskill(src_sd,SG_STAR_ANGER)) > 0 && ((sc && sc->data[SC_MIRACLE].timer != -1) || tclass == src_sd->hate_mob[2])) {	//  星の怒り
+					rate = (src_sd->status.base_level + status_get_dex(src) + status_get_luk(src) + s_str) / (12 - 3 * skill);
+					if(rate > skill * 70)
+						rate = skill * 70;
+				} else if((skill = pc_checkskill(src_sd,SG_SUN_ANGER)) > 0 && tclass == src_sd->hate_mob[0]) {		// 太陽の怒り
+					rate = (src_sd->status.base_level + status_get_dex(src) + status_get_luk(src)) / (12 - 3 * skill);
+					if(rate > skill * 50)
+						rate = skill * 50;
+				} else if((skill = pc_checkskill(src_sd,SG_MOON_ANGER)) > 0 && tclass == src_sd->hate_mob[1]) {		// 月の怒り
+					rate = (src_sd->status.base_level + status_get_dex(src) + status_get_luk(src)) / (12 - 3 * skill);
+					if(rate > skill * 50)
+						rate = skill * 50;
 				}
 				if(rate > 0) {
 					DMG_FIX( 100 + rate, 100 );
@@ -6049,11 +6057,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					rate += 100;
 			}
 			// ファイティング
-			if((skill = pc_checkskill(src_sd,TK_POWER)) > 0 && src_sd->status.party_id > 0) {
-				int member_num = party_check_same_map_member_count(src_sd);
-				if(member_num > 0) {
-					rate += member_num * skill * 2;
-				}
+			if((skill = pc_checkskill(src_sd,TK_POWER)) > 0) {
+				rate += skill * 20;
 			}
 		}
 		if(sc) {
@@ -7150,7 +7155,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			{
 				int rate = 50;
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_FIRE)
-					rate += sd->elementball.num * 10;
+					rate += sd->elementball.num * 20;
 				MATK_FIX( rate, 100 );
 			}
 			break;
@@ -7170,7 +7175,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			{
 				int rate = 70;
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WATER)
-					rate += sd->elementball.num * 5;
+					rate += sd->elementball.num * 20;
 				if(t_sc && t_sc->data[SC_SUITON].timer != -1)
 					rate += 2 * t_sc->data[SC_SUITON].val1;
 				MATK_FIX( rate, 100 );
@@ -7180,7 +7185,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			{
 				int rate = 150 + 150 * skill_lv;
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_FIRE)
-					rate += sd->elementball.num * 15;
+					rate += sd->elementball.num * 100;
 				MATK_FIX( rate, 100 );
 			}
 			break;
@@ -7192,7 +7197,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				int rate = 150 + 150 * skill_lv;
 #endif
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WATER)
-					rate += sd->elementball.num * 25;
+					rate += sd->elementball.num * 100;
 				MATK_FIX( rate, 100 );
 			}
 			break;
@@ -7204,7 +7209,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				int rate = 100 + 100 * skill_lv;
 #endif
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WIND)
-					rate += sd->elementball.num * 15;
+					rate += sd->elementball.num * 20;
 				MATK_FIX( rate, 100 );
 			}
 			break;
@@ -7212,7 +7217,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			{
 				int rate = 100 + 100 * skill_lv;
 				if(sd && sd->elementball.num && sd->elementball.ele == ELE_WIND)
-					rate += sd->elementball.num * 10;
+					rate += sd->elementball.num * 100;
 				MATK_FIX( rate, 100 );
 			}
 			break;
@@ -9183,6 +9188,10 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				case RA_ARROWSTORM:
 				case RA_AIMEDBOLT:
 				case NC_ARMSCANNON:
+				case RL_S_STORM:	/* シャッターストーム */
+				case RL_QD_SHOT:	/* クイックドローショット */
+				case RL_FIREDANCE:	/* ファイアーダンス */
+				case RL_R_TRIP:		/* ラウンドトリップ */
 				case KO_HAPPOKUNAI:
 				case ABC_CHAIN_REACTION_SHOT:	/* チェーンリアクションショット */
 				case ABC_CHAIN_REACTION_SHOT_ATK:	/* チェーンリアクションショット(攻撃) */

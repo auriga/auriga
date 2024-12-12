@@ -1383,7 +1383,7 @@ int unit_skilluse_id2(struct block_list *src, int target_id, int skill_num, int 
 			status_change_end(src,SC_CLOAKING,-1);
 	}
 
-	if(sc && sc->data[SC_NEWMOON].timer != -1 && skill_num != GC_CLOAKINGEXCEED) {
+	if(sc && sc->data[SC_NEWMOON].timer != -1 && skill_num != SJ_FULLMOONKICK && skill_num != SJ_NEWMOONKICK) {
 		status_change_end(src,SC_NEWMOON,-1);
 	}
 

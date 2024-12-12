@@ -678,8 +678,8 @@
 706,SC_NEWMOON,0,1,0,0			// 朔月脚
 707,SC_STARSTANCE,0,1,0,0			// 星の構え
 708,SC_DIMENSION,0,1,0,0			// 次元の書
-709,SC_DIMENSION1,0,1,0,0			// 次元の書
-710,SC_DIMENSION2,0,1,0,0			// 次元の書
+709,SC_DIMENSION1,0,1,0,0			// 次元の書(新星爆発)
+710,SC_DIMENSION2,0,1,0,0			// 次元の書(星帝降臨)
 711,SC_CREATINGSTAR,0,1,0,0			// 創星の書
 712,SC_FALLINGSTAR,0,1,0,0			// 流星落下
 713,SC_NOVAEXPLOSING,0,1,0,0			// 新星爆発
@@ -816,6 +816,7 @@
 846,SC_POISON_SHIELD,0,1,0,0		// ポイズンシールド
 847,SC_POISON_SHIELD_OPTION,0,1,0,0		// ポイズンシールド(精霊)
 848,SC_ELEMENTAL_VEIL,0,1,0,0		// エレメンタルヴェール
+849,SC_H_MINE_SPLASH,0,1,0,0			// ハウリングマイン(分散)
 
 //startでは使えないresistをアイテム側で全てクリアするための物
 //1001,SC_RESISTCLEAR		// 全耐性解除
