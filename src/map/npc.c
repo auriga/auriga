@@ -1595,7 +1595,7 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd->bl.y    = src_nd->bl.y;
 	nd->bl.id   = npc_get_new_npc_id();
 	nd->dir     = src_nd->dir;
-	nd->flag    = 0;
+	nd->flag    = src_nd->flag;
 	nd->class_  = src_nd->class_;
 	nd->speed   = 200;
 	nd->chat_id = 0;
