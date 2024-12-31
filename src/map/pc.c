@@ -67,6 +67,7 @@
 
 #define PVP_CALCRANK_INTERVAL 1000	// PVP順位計算の間隔
 #define MAX_EXP_TABLE	18		// 経験値テーブル最大数（exp.txtの列数に合わせる）
+#define MAX_SKILL_NEED	9		// スキルツリーの要求スキル最大数（skill_tree.txt）
 
 static atn_bignumber exp_table[MAX_EXP_TABLE][MAX_LEVEL];
 
@@ -107,13 +108,13 @@ static struct dbt *gm_account_db = NULL;
 static struct skill_tree_entry {
 	int id;
 	int max;
-	struct {
-		short id,lv;
-	} need[6];
 	unsigned short base_level;
 	unsigned short job_level;
 	short class_level;	// 再振り時の不正防止　ノビ:0 一次:1 二次:2 三次:3
 	short upper;
+	struct {
+		short id,lv;
+	} need[MAX_SKILL_NEED];
 } skill_tree[PC_JOB_MAX][MAX_SKILL_TREE];
 
 static int dummy_gm_account = 0;
@@ -2024,7 +2025,7 @@ int pc_calc_skilltree(struct map_session_data *sd)
 					continue;
 				if(!battle_config.skillfree && !tk_ranker_bonus) {
 					int j, fail = 0;
-					for(j=0; j<6 && skill_tree[c][i].need[j].id > 0; j++) {
+					for(j=0; j<MAX_SKILL_NEED && skill_tree[c][i].need[j].id > 0; j++) {
 						if(pc_checkskill2(sd,skill_tree[c][i].need[j].id) < skill_tree[c][i].need[j].lv) {
 							fail = 1;
 							break;
@@ -10573,7 +10574,7 @@ void pc_read_gm_account(void)
  */
 int pc_readdb(void)
 {
-	int i,j,k,m;
+	int i,j,k,m,count;
 	FILE *fp;
 	char line[1024],*p;
 	const char *filename;
@@ -10647,14 +10648,16 @@ int pc_readdb(void)
 	// スキルツリー
 	memset(skill_tree,0,sizeof(skill_tree));
 	for(m = 0; m < sizeof(filename2)/sizeof(filename2[0]); m++) {
+		int x,y;
 		int lineno = 0;
+		count = 0;
 		fp = fopen(filename2[m], "r");
 		if(fp == NULL) {
 			printf("pc_readdb: open [%s] failed !\n", filename2[m]);
 			break;
 		}
 		while(fgets(line,1020,fp)) {
-			char *split[19];
+			char *split[6+MAX_SKILL_NEED*2];
 			int skillid;
 			struct skill_tree_entry *st;
 
@@ -10664,7 +10667,7 @@ int pc_readdb(void)
 				continue;
 			if(line[0]=='/' && line[1]=='/')
 				continue;
-			for(j=0,p=line;j<19 && p;j++) {
+			for(j=0,p=line;j<7+MAX_SKILL_NEED*2 && p;j++) {
 				split[j]=p;
 				p=strchr(p,',');
 				if(p) *p++=0;
@@ -10679,7 +10682,7 @@ int pc_readdb(void)
 				continue;
 			}
 
-			if( j != 19 ) {
+			if( j < 7 ) {
 				printf("skill_tree: invalid param count(%d) line %d\n", j, lineno);
 				continue;
 			}
@@ -10711,17 +10714,19 @@ int pc_readdb(void)
 			if(st[j].max > skill_get_max(skillid))
 				st[j].max = skill_get_max(skillid);
 
-			for(k=0; k<6; k++) {
-				st[j].need[k].id = atoi(split[k*2+3]);
-				st[j].need[k].lv = atoi(split[k*2+4]);
+			st[j].base_level  = atoi(split[3]);
+			st[j].job_level   = atoi(split[4]);
+			st[j].class_level = atoi(split[5]);
+			st[j].upper       = atoi(split[6]);
+
+			for(x = 7, y = 0; split[x] && split[x + 1] && y < MAX_SKILL_NEED; x += 2, y++) {
+				st[j].need[y].id = atoi(split[x]);
+				st[j].need[y].lv = atoi(split[x + 1]);
 			}
-			st[j].base_level  = atoi(split[15]);
-			st[j].job_level   = atoi(split[16]);
-			st[j].class_level = atoi(split[17]);
-			st[j].upper       = atoi(split[18]);
+			count++;
 		}
 		fclose(fp);
-		printf("read %s done\n", filename2[m]);
+		printf("read %s done (count=%d)\n", filename2[m], count);
 	}
 
 	// 属性修正テーブル

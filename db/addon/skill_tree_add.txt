@@ -1,2 +1,2 @@
 //skill_tree.txtへオーバーライド
-// Upper,JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,JobLv,Class
+// JobNo,Skill-ID,MaxLv,BaseLv,JobLv,Class,Upper[,PreSkill-ID-n,PreSkill-Lv-n,…]

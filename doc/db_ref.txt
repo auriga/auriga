@@ -212,29 +212,20 @@ list_lv_amount: スキルレベル毎に必要なアイテムの数。レベル�
 ==========================================================================
 5. db/skill_tree.txt
 --------------------------------------------------------------------------
-JobNo,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計6個まで繰り返し,BaseLv,JobLv,Class,Upper
+JobNo,Skill-ID,MaxLv,BaseLv,JobLv,Class,Upper[,PreSkill-ID-n,PreSkill-Lv-n,…]
 
 JobNo: 職番号
 Skill-ID: 取得スキルID
 MaxLv: 取得可能なスキルの最大レベル。ただしskill_db.txtのMaxLv以下になります。
-PreSkill-ID-1: 前提スキルID
-PreSkill-Lv-1: 前提スキルレベル
-PreSkill-ID-2: 同上
-PreSkill-Lv-2: 同上
-PreSkill-ID-3: 同上
-PreSkill-Lv-3: 同上
-PreSkill-ID-4: 同上
-PreSkill-Lv-4: 同上
-PreSkill-ID-5: 同上
-PreSkill-Lv-5: 同上
-PreSkill-ID-6: 同上
-PreSkill-Lv-6: 同上
 BaseLv: 前提Baseレベル
 JobLv: 前提Jobレベル
 Class: クラス区分。下位のスキルを規定以上取らないと上位スキルが取れません。
 	0-ノービス 1-１次職 2-２次職 3-３次職 4-４次職
 Upper: 転生フラグ。
 	0-条件なし 1-転生 2-養子
+PreSkill-ID-n: 前提スキルID(省略可)
+PreSkill-Lv-n: 前提スキルレベル(省略可)
+	※PreSkill-IDとPreSkill-Lvは最大9個まで
 
 　注）仕様上、各職においてSkill-IDの昇順に並ぶように記述されていないと
 　　　データベースの読み込み速度が低下する可能性があります

@@ -398,6 +398,14 @@ static int unit_walktoxy_timer(int tid,unsigned int tick,int id,void *data)
 			if(sd->sc.data[SC_CRESCIVEBOLT].timer != -1) {
 				status_change_end(&sd->bl,SC_CRESCIVEBOLT,-1);
 			}
+			/* インテンシブエイムリセット */
+			if(sd->sc.data[SC_INTENSIVE_AIM].timer != -1) {
+				status_change_end(&sd->bl,SC_INTENSIVE_AIM,-1);
+			}
+			/* タートルランページ解除 */
+			if(sd->sc.data[SC_KI_SUL_RAMPAGE].timer != -1) {
+				status_change_end(&sd->bl,SC_KI_SUL_RAMPAGE,-1);
+			}
 		}
 		// ギルドスキル有効
 		pc_check_guild_skill_effective_range(sd);

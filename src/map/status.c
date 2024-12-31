@@ -245,7 +245,16 @@ static int StatusIconChangeTable[MAX_STATUSCHANGE] = {
 	SI_FLAMEARMOR,SI_FLAMEARMOR_OPTION,SI_COLD_FORCE,SI_COLD_FORCE_OPTION,SI_CRYSTAL_ARMOR,SI_CRYSTAL_ARMOR_OPTION,SI_GRACE_BREEZE,SI_GRACE_BREEZE_OPTION,SI_EYES_OF_STORM,SI_EYES_OF_STORM_OPTION,
 	/* 840- */
 	SI_EARTH_CARE,SI_EARTH_CARE_OPTION,SI_STRONG_PROTECTION,SI_STRONG_PROTECTION_OPTION,SI_DEEP_POISONING,SI_DEEP_POISONING_OPTION,SI_POISON_SHIELD,SI_POISON_SHIELD_OPTION,SI_ELEMENTAL_VEIL,SI_H_MINE_SPLASH,
-
+	/* 850- */
+	SI_INTENSIVE_AIM,SI_INTENSIVE_AIM_COUNT,SI_GRENADE_FRAGMENT_1,SI_GRENADE_FRAGMENT_2,SI_GRENADE_FRAGMENT_3,SI_GRENADE_FRAGMENT_4,SI_GRENADE_FRAGMENT_5,SI_GRENADE_FRAGMENT_6,SI_AUTO_FIRING_LAUNCHEREFST,SI_HIDDEN_CARD,
+	/* 860- */
+	SI_TALISMAN_OF_PROTECTION,SI_TALISMAN_OF_WARRIOR,SI_TALISMAN_OF_MAGICIAN,SI_TALISMAN_OF_FIVE_ELEMENTS,SI_T_FIRST_GOD,SI_T_SECOND_GOD,SI_T_THIRD_GOD,SI_T_FOURTH_GOD,SI_T_FIVETH_GOD,SI_HEAVEN_AND_EARTH,
+	/* 870- */
+	SI_HOGOGONG,SI_MARINE_FESTIVAL,SI_SANDY_FESTIVAL,SI_KI_SUL_RAMPAGE,SI_COLORS_OF_HYUN_ROK_1,SI_COLORS_OF_HYUN_ROK_2,SI_COLORS_OF_HYUN_ROK_3,SI_COLORS_OF_HYUN_ROK_4,SI_COLORS_OF_HYUN_ROK_5,SI_COLORS_OF_HYUN_ROK_6,
+	/* 880- */
+	SI_COLORS_OF_HYUN_ROK_BUFF,SI_TEMPORARY_COMMUNION,SI_BLESSING_OF_M_CREATURES,SI_BLESSING_OF_M_C_DEBUFF,SI_SHIELDCHAINRUSHF,SI_MISTYFROST,SI_GROUNDGRAVITY,SI_BREAKINGLIMIT,SI_RULEBREAK,SI_RISING_SUN,
+	/* 890- */
+	SI_NOON_SUN,SI_SUNSET_SUN,SI_RISING_MOON,SI_MIDNIGHT_MOON,SI_DAWN_MOON,SI_STAR_BURST,SI_SKY_ENCHANT,SI_SHADOW_CLOCK,SI_SHINKIROU_CALL,SI_NIGHTMARE,
 };
 
 /*==========================================
@@ -992,6 +1001,12 @@ L_RECALC:
 	if(pc_checkskill(sd,SU_POWEROFLAND) > 0) {	// 大地の力
 		sd->paramb[3] += 7;
 	}
+	if((skill = pc_checkskill(sd,NW_GRENADE_MASTERY)) > 0) {	// グレネードマスタリー
+		sd->paramb[10] += skill;
+	}
+	if((skill = pc_checkskill(sd,SOA_SOUL_MASTERY)) > 0) {	// 霊道術修練
+		sd->paramb[9] += skill;
+	}
 #ifndef PRE_RENEWAL
 	if((skill = pc_checkskill(sd,SG_STAR_BLESS)) > 0 && (battle_config.allow_skill_without_day || is_day_of_star())) {	// 星の祝福
 		sd->paramb[0] += skill * 2;
@@ -1580,6 +1595,18 @@ L_RECALC:
 			sd->paramb[10] += sd->sc.data[SC_BENEDICTUM].val3;
 			sd->paramb[11] += sd->sc.data[SC_BENEDICTUM].val4;
 		}
+		// マリンフェスティバル
+		if(sd->sc.data[SC_MARINE_FESTIVAL].timer != -1) {
+			sd->paramb[6] += sd->sc.data[SC_MARINE_FESTIVAL].val2;
+			sd->paramb[10] += sd->sc.data[SC_MARINE_FESTIVAL].val3;
+			sd->paramb[11] += sd->sc.data[SC_MARINE_FESTIVAL].val4;
+		}
+		// サンドフェスティバル
+		if(sd->sc.data[SC_SANDY_FESTIVAL].timer != -1) {
+			sd->paramb[7] += sd->sc.data[SC_SANDY_FESTIVAL].val2;
+			sd->paramb[8] += sd->sc.data[SC_SANDY_FESTIVAL].val3;
+			sd->paramb[9] += sd->sc.data[SC_SANDY_FESTIVAL].val4;
+		}
 	}
 
 	sd->paramc[0]  = sd->status.str  + sd->paramb[0]  + sd->parame[0];
@@ -2107,12 +2134,39 @@ L_RECALC:
 		sd->patk  += add_manner_list[skill-1];
 		sd->smatk += add_manner_list[skill-1];
 	}
+	if((sd->status.weapon >= WT_HANDGUN && sd->status.weapon <= WT_GRENADE) && (skill = pc_checkskill(sd,NW_P_F_I)) > 0) {		// P.F.I
+		sd->patk += skill;
+	}
+	if((skill = pc_checkskill(sd,SH_MYSTICAL_CREATURE_MASTERY)) > 0) {		// スピリットマスタリー
+		sd->patk  += skill + ((skill >= 10)? 5: (skill >= 9)? 3: 0);
+		sd->smatk += skill + ((skill >= 10)? 5: (skill >= 9)? 3: 0);
+	}
+	if((skill = pc_checkskill(sd,HN_SELFSTUDY_TATICS)) > 0) {		// 独学 -戦闘学-
+		const int add_list[10] = { 1,2,3,4,5,6,7,9,12,15 };
+		if(skill > 10) skill = 10;
+		sd->patk += add_list[skill-1];
+	}
+	if((skill = pc_checkskill(sd,SKE_WAR_BOOK_MASTERY)) > 0) {		// 兵法修練
+		const int add_hit_list[10]  = { 3, 6, 9,12,15,20,25,30,40,50 };
+		const int add_patk_list[10] = { 1, 2, 3, 4, 5, 7, 9,11,13,15 };
+		if(skill > 10) skill = 10;
+		sd->hit  += add_hit_list[skill-1];
+		sd->patk += add_patk_list[skill-1];
+	}
 
 	// S.Matk
 	if(sd->status.weapon == WT_2HSTAFF && (skill = pc_checkskill(sd,AG_TWOHANDSTAFF)) > 0) {		// 両手杖修練
 		const int add_2hstaff_list[10] = { 1,3,5,8,11,14,17,21,25,30 };
 		if(skill > 10) skill = 10;
 		sd->smatk += add_2hstaff_list[skill-1];
+	}
+	if((skill = pc_checkskill(sd,SOA_TALISMAN_MASTERY)) > 0) {		// 護符修練
+		sd->smatk += skill;
+	}
+	if((skill = pc_checkskill(sd,HN_SELFSTUDY_SOCERY)) > 0) {		// 独学 -魔導学-
+		const int add_list[10] = { 1,2,3,4,5,6,7,9,12,15 };
+		if(skill > 10) skill = 10;
+		sd->smatk += add_list[skill-1];
 	}
 
 	// Res
@@ -3141,6 +3195,63 @@ L_RECALC:
 		if(sd->sc.data[SC_POISON_SHIELD].timer != -1) {
 			sd->subele[ELE_POISON] += sd->sc.data[SC_POISON_SHIELD].val2;
 		}
+		// インテンシブエイム
+		if(sd->sc.data[SC_INTENSIVE_AIM].timer != -1) {
+#ifdef PRE_RENEWAL
+			sd->watk += sd->sc.data[SC_INTENSIVE_AIM].val2;
+#else
+			sd->plus_atk += sd->sc.data[SC_INTENSIVE_AIM].val2;
+#endif
+			sd->hit += sd->sc.data[SC_INTENSIVE_AIM].val3;
+			sd->critical += sd->sc.data[SC_INTENSIVE_AIM].val4 * 10;
+		}
+		// ヒドゥンカード
+		if(sd->sc.data[SC_HIDDEN_CARD].timer != -1) {
+			sd->patk += sd->sc.data[SC_HIDDEN_CARD].val2;
+			sd->long_weapon_damege_rate += sd->sc.data[SC_HIDDEN_CARD].val3;
+		}
+		// 武士符
+		if(sd->sc.data[SC_TALISMAN_OF_WARRIOR].timer != -1) {
+			sd->patk += sd->sc.data[SC_TALISMAN_OF_WARRIOR].val2;
+		}
+		// 法師符
+		if(sd->sc.data[SC_TALISMAN_OF_MAGICIAN].timer != -1) {
+			sd->smatk += sd->sc.data[SC_TALISMAN_OF_MAGICIAN].val2;
+		}
+		// 五行符
+		if(sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].timer != -1) {
+			sd->addele[ELE_FIRE]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_WATER] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_WIND]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_EARTH] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_FIRE]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_WATER] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_WIND]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_EARTH] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+		}
+		// 四方五行陣
+		if(sd->sc.data[SC_T_FIVETH_GOD].timer != -1) {
+			sd->smatk += sd->sc.data[SC_T_FIVETH_GOD].val2;
+		}
+		// 天地神霊
+		if(sd->sc.data[SC_HEAVEN_AND_EARTH].timer != -1) {
+			sd->short_weapon_damege_rate += sd->sc.data[SC_HEAVEN_AND_EARTH].val2;
+			sd->long_weapon_damege_rate += sd->sc.data[SC_HEAVEN_AND_EARTH].val2;
+			for(i = 0; i < ELE_MAX; i++) {
+				sd->magic_addele[i] += sd->sc.data[SC_HEAVEN_AND_EARTH].val2;
+			}
+		}
+		// 三霊一体
+		if(sd->sc.data[SC_TEMPORARY_COMMUNION].timer != -1) {
+			sd->patk += sd->sc.data[SC_TEMPORARY_COMMUNION].val2;
+			sd->smatk += sd->sc.data[SC_TEMPORARY_COMMUNION].val3;
+			sd->hplus += sd->sc.data[SC_TEMPORARY_COMMUNION].val4;
+		}
+		// にゃんブレッシング
+		if(sd->sc.data[SC_BLESSING_OF_M_CREATURES].timer != -1) {
+			sd->patk += sd->sc.data[SC_BLESSING_OF_M_CREATURES].val2;
+			sd->smatk += sd->sc.data[SC_BLESSING_OF_M_CREATURES].val3;
+		}
 		// 漆黒
 		if(sd->sc.data[SC_HANDICAPSTATE_DEEPBLIND].timer != -1) {
 			sd->flee = 0;
@@ -4162,6 +4273,20 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 				if(slow_val < 25)
 					slow_val = 25;
 			}
+
+			// シールドチェーンラッシュ
+			if(sd->sc.data[SC_SHIELDCHAINRUSH].timer != -1) {
+				int penalty = sd->sc.data[SC_SHIELDCHAINRUSH].val3;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
+
+			// グラウンドグラビテーション
+			if(sd->sc.data[SC_GROUNDGRAVITY].timer != -1) {
+				int penalty = sd->sc.data[SC_GROUNDGRAVITY].val3;
+				if(slow_val < penalty)
+					slow_val = penalty;
+			}
 		}
 
 		/* speedが減少するステータス計算1 */
@@ -4305,6 +4430,13 @@ static int status_calc_speed_pc(struct map_session_data *sd, int speed)
 		// プロンテラマーチ
 		if(sd->sc.data[SC_PRON_MARCH].timer != -1) {
 			int bonus = sd->sc.data[SC_PRON_MARCH].val3;
+			if(haste_val1 < bonus)
+				haste_val1 = bonus;
+		}
+
+		// 影隠れ
+		if(sd->sc.data[SC_SHADOW_CLOCK].timer != -1) {
+			int bonus = sd->sc.data[SC_SHADOW_CLOCK].val3;
 			if(haste_val1 < bonus)
 				haste_val1 = bonus;
 		}
@@ -6305,6 +6437,18 @@ int status_get_speed(struct block_list *bl)
 					slow_val = sc->data[SC_SHA].val2;
 			}
 
+			// シールドチェーンラッシュ
+			if(sc->data[SC_SHIELDCHAINRUSH].timer != -1) {
+				if(slow_val < sc->data[SC_SHIELDCHAINRUSH].val3)
+					slow_val = sc->data[SC_SHIELDCHAINRUSH].val3;
+			}
+
+			// グラウンドグラビテーション
+			if(sc->data[SC_GROUNDGRAVITY].timer != -1) {
+				if(slow_val < sc->data[SC_GROUNDGRAVITY].val3)
+					slow_val = sc->data[SC_GROUNDGRAVITY].val3;
+			}
+
 			/* speedが減少するステータス計算 */
 
 			// 速度強化
@@ -8025,6 +8169,12 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			if(sc->data[SC_GUARD_STANCE].timer != -1)
 				status_change_end(bl,SC_GUARD_STANCE,-1);
 			break;
+		case SC_INTENSIVE_AIM:		/* インテンシブエイム */
+			if(sc->data[SC_INTENSIVE_AIM].timer != -1) {
+				status_change_end(bl,SC_INTENSIVE_AIM,-1);
+				return 0;
+			}
+			break;
 	}
 
 	sd  = BL_DOWNCAST( BL_PC,   bl );
@@ -8364,6 +8514,22 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		case SC_ROSEBLOSSOM:		/* ロゼブロッサム */
 		case SC_ELEMENTAL_VEIL:		/* エレメンタルヴェール */
 		case SC_H_MINE_SPLASH:		/* ハウリングマイン(分散) */
+		case SC_T_FIRST_GOD:		/* 青龍符 */
+		case SC_T_SECOND_GOD:		/* 白虎符 */
+		case SC_T_THIRD_GOD:		/* 朱雀符 */
+		case SC_T_FOURTH_GOD:		/* 玄武符 */
+		case SC_HOGOGONG:			/* タイガーハウリング */
+		case SC_BLESSING_OF_M_C_DEBUFF:	/* にゃんブレッシングリバウンド */
+		case SC_BREAKINGLIMIT:		/* ブレイキングリミット */
+		case SC_RULEBREAK:			/* ルールブレイク */
+		case SC_RISING_SUN:			/* 日出 */
+		case SC_NOON_SUN:			/* 正午 */
+		case SC_SUNSET_SUN:			/* 日没 */
+		case SC_RISING_MOON:		/* 月出 */
+		case SC_MIDNIGHT_MOON:		/* 正子 */
+		case SC_DAWN_MOON:			/* 月没 */
+		case SC_STAR_BURST:			/* 天命落星 */
+		case SC_NIGHTMARE:			/* 悪夢 */
 			break;
 
 		case SC_CONCENTRATE:			/* 集中力向上 */
@@ -10387,12 +10553,18 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			calc_flag = 1;
 			break;
 		case SC_RELIGIO:		/* レリギオ */
+			// サンドフェスティバルが掛かっていたら解除
+			if(sc->data[SC_SANDY_FESTIVAL].timer != -1)
+				status_change_end(bl,SC_SANDY_FESTIVAL,-1);
 			val2 = val1*2;		// Sta増加値
 			val3 = val1*2;		// Wis増加値
 			val4 = val1*2;		// Spl増加値
 			calc_flag = 1;
 			break;
 		case SC_BENEDICTUM:		/* ベネディクトゥム */
+			// マリンフェスティバルが掛かっていたら解除
+			if(sc->data[SC_MARINE_FESTIVAL].timer != -1)
+				status_change_end(bl,SC_MARINE_FESTIVAL,-1);
 			val2 = val1*2;		// Pow増加値
 			val3 = val1*2;		// Con増加値
 			val4 = val1*2;		// Crt増加値
@@ -10589,6 +10761,149 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = tick / 1000;
 			tick = 1000;
 			val3 = skill_get_sp(EM_EL_POISON_SHIELD,val1) / 10;		// SP消費量
+			break;
+		case SC_INTENSIVE_AIM:			/* インテンシブエイム */
+			tick = 300;
+			val2 = 100;			// 装備Atk増加値
+			val3 = 250;			// Hit増加値
+			val4 = 50;			// Cri増加値
+			calc_flag = 1;
+			break;
+		case SC_INTENSIVE_AIM_COUNT:	/* インテンシブエイム(カウント) */
+			tick = 600*1000;
+			icon_val1 = val1;	// val1(回数)を渡してアイコン表示する
+			break;
+		case SC_GRENADE_FRAGMENT_1:		/* グレネードフラグメント(水属性) */
+		case SC_GRENADE_FRAGMENT_2:		/* グレネードフラグメント(風属性) */
+		case SC_GRENADE_FRAGMENT_3:		/* グレネードフラグメント(地属性) */
+		case SC_GRENADE_FRAGMENT_4:		/* グレネードフラグメント(火属性) */
+		case SC_GRENADE_FRAGMENT_5:		/* グレネードフラグメント(闇属性) */
+		case SC_GRENADE_FRAGMENT_6:		/* グレネードフラグメント(聖属性) */
+			{
+				int i;
+				for(i = SC_GRENADE_FRAGMENT_1; i <= SC_GRENADE_FRAGMENT_6; i++) {
+					if(i == type)
+						continue;
+					if(sc->data[i].timer != -1)
+						status_change_end(bl,i,-1);
+				}
+			}
+			break;
+		case SC_AUTO_FIRING_LAUNCHEREFST:	/* オートファイアリングランチャー */
+			val2 = 450 + val1 * 50;		// ベーシックグレネード確率(万分率)
+			val3 = 200 + val1 * 50;		// ヘイスティファイアインザホール確率(万分率)
+			val4 = 100 + val1 * 50;		// グレネーズドロッピング確率(万分率)
+			break;
+		case SC_HIDDEN_CARD:			/* ヒドゥンカード */
+			val2 = 5 + val1;		// P.Atk増加値
+			val3 = 100 + val1 * 5;	// 遠距離物理増加値
+			calc_flag = 1;
+			break;
+		case SC_TALISMAN_OF_PROTECTION:	/* 守護符 */
+			val3 = tick / 3000;
+			tick = 3000;
+			break;
+		case SC_TALISMAN_OF_WARRIOR:	/* 武士符 */
+			val2 = val1 * 2;		// P.Atk増加値
+			calc_flag = 1;
+			break;
+		case SC_TALISMAN_OF_MAGICIAN:	/* 法師符 */
+			val2 = val1 * 2;		// S.Matk増加値
+			calc_flag = 1;
+			break;
+		case SOA_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
+			val2 = val1 * 2;		// 属性モンスターダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_T_FIVETH_GOD:			/* 四方五行陣 */
+			val2 = val1 * 2;		// S.Matk増加値
+			calc_flag = 1;
+			break;
+		case SC_HEAVEN_AND_EARTH:		/* 天地神霊 */
+			val2 = 10 + val1;		// ダメージ増加率
+			calc_flag = 1;
+			break;
+		case SC_MARINE_FESTIVAL:	/* マリンフェスティバル */
+			// ベネディクトゥムが掛かっていたら解除
+			if(sc->data[SC_BENEDICTUM].timer != -1)
+				status_change_end(bl,SC_BENEDICTUM,-1);
+			val2 = val1*2;		// Pow増加値
+			val3 = val1*2;		// Con増加値
+			val4 = val1*2;		// Crt増加値
+			calc_flag = 1;
+			break;
+		case SC_SANDY_FESTIVAL:		/* サンドフェスティバル */
+			// レリギオが掛かっていたら解除
+			if(sc->data[SC_RELIGIO].timer != -1)
+				status_change_end(bl,SC_RELIGIO,-1);
+			val2 = val1*2;		// Sta増加値
+			val3 = val1*2;		// Wis増加値
+			val4 = val1*2;		// Spl増加値
+			calc_flag = 1;
+			break;
+		case SC_KI_SUL_RAMPAGE:		/* タートルランページ */
+			//val2				// 強化フラグ(スキル使用時に設定)
+			val3 = tick / 1000;
+			tick = 1000;
+			skill_castend_nodamage_id(bl,bl,SH_KI_SUL_RAMPAGE,val1,tick,0x10|val2);
+			break;
+		case SC_COLORS_OF_HYUN_ROK_1:		/* レインボーホーン(水属性) */
+		case SC_COLORS_OF_HYUN_ROK_2:		/* レインボーホーン(風属性) */
+		case SC_COLORS_OF_HYUN_ROK_3:		/* レインボーホーン(地属性) */
+		case SC_COLORS_OF_HYUN_ROK_4:		/* レインボーホーン(火属性) */
+		case SC_COLORS_OF_HYUN_ROK_5:		/* レインボーホーン(闇属性) */
+		case SC_COLORS_OF_HYUN_ROK_6:		/* レインボーホーン(聖属性) */
+			{
+				int i;
+				for(i = SC_COLORS_OF_HYUN_ROK_1; i <= SC_COLORS_OF_HYUN_ROK_6; i++) {
+					if(i == type)
+						continue;
+					if(sc->data[i].timer != -1)
+						status_change_end(bl,i,-1);
+				}
+			}
+			break;
+		case SC_TEMPORARY_COMMUNION:	/* 三霊一体 */
+			val2 = val1 * 3;		// P.Atk増加値
+			val3 = val1 * 3;		// S.Matk増加値
+			val4 = val1 * 3;		// H.Plus増加値
+			calc_flag = 1;
+			break;
+		case SC_BLESSING_OF_M_CREATURES:	/* にゃんブレッシング */
+			val2 = val1 * 5;		// P.Atk増加値
+			val3 = val1 * 5;		// S.Matk増加値
+			calc_flag = 1;
+			break;
+		case SC_SHIELDCHAINRUSH:		/* シールドチェーンラッシュ */
+			val2 = 10;	// 物理ダメージ増加率（未実装）
+			val3 = 20;	// 移動速度低下率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_MISTYFROST:			/* ジャックフロストノヴァ */
+			val2 = 15;	// 水属性ダメージ増加率
+			break;
+		case SC_GROUNDGRAVITY:		/* グラウンドグラビテーション */
+			val2 = 10;	// ダメージ増加率（未実装）
+			val3 = 30;	// 移動速度低下率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_SHADOW_CLOCK:		/* 影隠れ */
+			val2 = 85;	// 物理・魔法ダメージ減少率（未実装）
+			val3 = 30;	// 移動速度増加率
+			calc_flag = 1;
+			ud->state.change_speed = 1;
+			break;
+		case SC_SKY_ENCHANT:		/* 天気の身 */
+			{
+				int i;
+				// 日出～月没は解除
+				for(i = SC_RISING_SUN; i <= SC_DAWN_MOON; i++) {
+					if(sc->data[i].timer != -1)
+						status_change_end(bl,i,-1);
+				}
+			}
 			break;
 		default:
 			if(battle_config.error_log)
@@ -11244,6 +11559,15 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_EYES_OF_STORM:		/* アイズオブストーム */
 		case SC_STRONG_PROTECTION:	/* ストロングプロテクション */
 		case SC_POISON_SHIELD:		/* ポイズンシールド */
+		case SC_HIDDEN_CARD:		/* ヒドゥンカード */
+		case SC_TALISMAN_OF_WARRIOR:	/* 武士符 */
+		case SC_TALISMAN_OF_MAGICIAN:	/* 法師符 */
+		case SOA_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
+		case SC_T_FIVETH_GOD:		/* 四方五行陣 */
+		case SC_HEAVEN_AND_EARTH:	/* 天地神霊 */
+		case SC_MARINE_FESTIVAL:	/* マリンフェスティバル */
+		case SC_SANDY_FESTIVAL:		/* サンドフェスティバル */
+		case SC_TEMPORARY_COMMUNION:	/* 三霊一体 */
 			calc_flag = 1;
 			break;
 		case SC_NEWMOON:			/* 朔月脚 */
@@ -11279,6 +11603,9 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_HANDICAPSTATE_LASSITUDE:		/* 無気力 */
 		case SC_JAWAII_SERENADE:	/* 夕焼けのセレナーデ */
 		case SC_PRON_MARCH:			/* プロンテラマーチ */
+		case SC_SHIELDCHAINRUSH:	/* シールドチェーンラッシュ */
+		case SC_GROUNDGRAVITY:		/* グラウンドグラビテーション */
+		case SC_SHADOW_CLOCK:		/* 影隠れ */
 			calc_flag = 1;
 			ud->state.change_speed = 1;
 			break;
@@ -11708,6 +12035,16 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_SUMMON_ELEMENTAL_SERPENS:		/* サモンサーペンス */
 			if(sd && sd->eld && sd->eld->status.class_ == ELEMID_EM_SERPENS)
 				elem_delete_data(sd);
+			calc_flag = 1;
+			break;
+		case SC_INTENSIVE_AIM:			/* インテンシブエイム */
+			if(sc->data[SC_INTENSIVE_AIM_COUNT].timer != -1)
+				status_change_end(bl,SC_INTENSIVE_AIM_COUNT,-1);
+			calc_flag = 1;
+			break;
+		case SC_BLESSING_OF_M_CREATURES:	/* にゃんブレッシング */
+			unit_heal(bl,0,0,-200,0);
+			status_change_start(bl,SC_BLESSING_OF_M_C_DEBUFF,sc->data[type].val1,0,0,0,skill_get_time2(SH_BLESSING_OF_MYSTICAL_CREATURES,sc->data[type].val1),0);
 			calc_flag = 1;
 			break;
 		/* option1 */
@@ -12416,6 +12753,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 	case SC_STYLE_CHANGE:		/* スタイルチェンジ */
 	case SC_GUARD_STANCE:		/* ガードスタンス */
 	case SC_ATTACK_STANCE:		/* アタックスタンス */
+	case SC_INTENSIVE_AIM_COUNT:	/* インテンシブエイム(カウント) */
 		timer = add_timer(1000 * 600 + tick, status_change_timer, bl->id, data);
 		break;
 	case SC_MODECHANGE:
@@ -13480,6 +13818,30 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			} else {
 				timer = add_timer(tick+1000, status_change_timer, bl->id, data);
 			}
+		}
+		break;
+	case SC_INTENSIVE_AIM:			/* インテンシブエイム */
+		if(sc->data[SC_INTENSIVE_AIM_COUNT].timer != -1) {
+			if(sc->data[SC_INTENSIVE_AIM_COUNT].val1 < 10) {
+				status_change_start(bl,SC_INTENSIVE_AIM_COUNT,sc->data[SC_INTENSIVE_AIM_COUNT].val1+1,0,0,0,0,0);
+			}
+		} else {
+			status_change_start(bl,SC_INTENSIVE_AIM_COUNT,1,0,0,0,0,0);
+		}
+		timer = add_timer(tick+300, status_change_timer, bl->id, data);
+		break;
+	case SC_TALISMAN_OF_PROTECTION:		/* 守護符 */
+		if((--sc->data[type].val3) > 0) {
+			clif_misceffect_value(bl, 312, sc->data[type].val2);
+			clif_misceffect_value(bl, 657, sc->data[type].val2);
+			unit_heal(bl,sc->data[type].val2,0,0,1);
+			timer = add_timer(tick+3000, status_change_timer, bl->id, data);
+		}
+		break;
+	case SC_KI_SUL_RAMPAGE:		/* タートルランページ */
+		if((--sc->data[type].val3) > 0) {
+			skill_castend_nodamage_id(bl,bl,SH_KI_SUL_RAMPAGE,sc->data[type].val1,tick,0x10|sc->data[type].val2);
+			timer = add_timer(tick+1000, status_change_timer, bl->id, data);
 		}
 		break;
 	}

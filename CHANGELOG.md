@@ -1,4 +1,23 @@
 ----------------------------------------
+//1576 [2024/12/31] by Blaze
+
+・拡張四次職（天帝、ソウルアセティック、蜃気楼、不知火、ナイトウォッチ、ハイパーノービス、スピリットハンドラー）のスキル実装
+　（skill.c, skill.h, battle.c, status.c, status.h, clif.h, db/skill_db.txt, db/skill_db2.txt, db/skill_require_db.txt, db/skill_require_db2.txt, db/skill_tree.txt, db/skill_unit_db.txt, db/scdata_db.txt）
+
+・MAX_STATUSCHANGEを850->900に引き上げ（mmo.h）
+
+・スキルツリーDBの仕様変更（pc.c, db/skill_tree.txt, db/addon/skill_tree_add.txt, db/pre/skill_tree_pre.txt）
+　前提スキル(PreSkill-ID,PreSkill-Lv)を省略可に、可変式で最大9個まで指定できるように
+　BaseLv,JobLv,Class,Upperのカラム位置を変更
+　※注意：これまでのスキルツリーと互換性が無くなるため、addon/skill_tree_add.txtは一旦初期化されます。オーバーライドで使用している方はご注意ください。
+
+・サモナースキル「キャロットビート」「イヌハッカメテオ」のダメージ計算式を変更（battle.c）
+
+・サモナースキル「イヌハッカメテオ」のダメージ分割表示を単発表示に変更（db/skill_db.txt）
+
+・拡張四次職の関連アイテム定義追加（db/item_db.txt）
+
+----------------------------------------
 //1575 [2024/12/21] by refis
 
 ・パケット長の更新（packet_db.lua）
