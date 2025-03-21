@@ -10657,7 +10657,7 @@ int pc_readdb(void)
 			break;
 		}
 		while(fgets(line,1020,fp)) {
-			char *split[6+MAX_SKILL_NEED*2];
+			char *split[7+MAX_SKILL_NEED*2];
 			int skillid;
 			struct skill_tree_entry *st;
 
