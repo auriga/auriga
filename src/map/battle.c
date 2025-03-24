@@ -769,7 +769,7 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 		// キリエエレイソン
 		if(sc->data[SC_KYRIE].timer != -1 && damage > 0) {
 			struct status_change_data *scd = &sc->data[SC_KYRIE];
-			scd->val2 -= damage;
+			scd->val2 -= BIGNUM2INT(damage);
 			if(flag&BF_WEAPON) {
 				if(scd->val2 >= 0)
 					damage = 0;
@@ -784,7 +784,7 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 			struct status_change_data *scd = &sc->data[SC_P_ALTER];
 			clif_misceffect2(bl,336);
 			if(scd->val3 > 0 && scd->val4 > 0) {
-				scd->val3 -= damage;
+				scd->val3 -= BIGNUM2INT(damage);
 				if(flag&BF_WEAPON) {
 					if(scd->val3 >= 0)
 						damage = 0;
@@ -6581,7 +6581,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 	/* 29．スキル修正４（追加ダメージ） */
 	if(sc && sc->data[SC_MAGNUM].timer != -1) {	// マグナムブレイク状態
-		int bonus_damage = battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target)) * 20/100;	// 火属性攻撃ダメージの20%を追加
+		int bonus_damage = BIGNUM2INT(battle_attr_fix(wd.damage, ELE_FIRE, status_get_element(target)) * 20/100);	// 火属性攻撃ダメージの20%を追加
 		if(bonus_damage > 0) {
 			DMG_ADD( bonus_damage );
 		}

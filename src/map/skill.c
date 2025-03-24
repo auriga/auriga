@@ -13297,7 +13297,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				switch(skillid){
 				case MT_SUMMON_ABR_BATTLE_WARIOR:	/* ABR バトルウォリアー */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 12 / 10 + add_abr_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (status_get_atk(src) + sd->base_atk) * 12 / 10 + add_abr_atk[n];
+#else
 					tmpmd->st.atk = 200 + (status_get_atk(src) + sd->plus_atk) * 12 / 10 + add_abr_atk[n];
+#endif
 					tmpmd->st.def = status_get_def(src) * 8 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 3 / 10 + n * 40;
 					tmpmd->st.flee = status_get_flee(src) * 8 / 10 + n * 10;
@@ -13305,7 +13309,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case MT_SUMMON_ABR_DUAL_CANNON:		/* ABR デュアルキャノン */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 9 / 10 + add_abr_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 12 / 10 + add_abr_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 12 / 10 + add_abr_atk[n];
+#endif
 					tmpmd->st.def = status_get_def(src) * 6 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 4 / 10 + n * 40;
 					tmpmd->st.flee = status_get_flee(src) * 9 / 10 + n * 10;
@@ -13313,7 +13321,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case MT_SUMMON_ABR_MOTHER_NET:		/* ABR マザーネット */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 8 / 10 + add_abr_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 8 / 10 + add_abr_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 8 / 10 + add_abr_atk[n];
+#endif
 					tmpmd->st.def = status_get_def(src) * 5 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 8 / 10 + n * 40;
 					tmpmd->st.flee = status_get_flee(src) * 8 / 10 + n * 10;
@@ -13321,7 +13333,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case MT_SUMMON_ABR_INFINITY:		/* ABR インフィニティ */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 15 / 10 + add_abr_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 15 / 10 + add_abr_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 15 / 10 + add_abr_atk[n];
+#endif
 					tmpmd->st.def = status_get_def(src) * 9 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 9 / 10 + n * 40;
 					tmpmd->st.flee = status_get_flee(src) * 9 / 10 + n * 10;
@@ -13386,7 +13402,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				switch(skillid){
 				case BO_WOODENWARRIOR:		/* クリエイトウドゥンウォリアー */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 12 / 10 + add_bionic_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (status_get_atk(src) + sd->base_atk) * 12 / 10 + add_bionic_atk[n];
+#else
 					tmpmd->st.atk = 200 + (status_get_atk(src) + sd->plus_atk) * 12 / 10 + add_bionic_atk[n];
+#endif
 					tmpmd->st.matk = 100 + (status_get_matk1(src) + status_get_matk2(src)) * 12 / 10 + add_bionic_matk[n];
 					tmpmd->st.def = status_get_def(src) * 8 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 3 / 10 + n * 40;
@@ -13395,7 +13415,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case BO_WOODEN_FAIRY:		/* クリエイトウドゥンフェアリー */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 9 / 10 + add_bionic_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 12 / 10 + add_bionic_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 12 / 10 + add_bionic_atk[n];
+#endif
 					tmpmd->st.matk = 100 + (status_get_matk1(src) + status_get_matk2(src)) * 12 / 10 + add_bionic_matk[n];
 					tmpmd->st.def = status_get_def(src) * 6 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 4 / 10 + n * 40;
@@ -13404,7 +13428,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case BO_CREEPER:			/* クリエイトクリーパー */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 8 / 10 + add_bionic_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 8 / 10 + add_bionic_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 8 / 10 + add_bionic_atk[n];
+#endif
 					tmpmd->st.matk = 100 + (status_get_matk1(src) + status_get_matk2(src)) * 8 / 10 + add_bionic_matk[n];
 					tmpmd->st.def = status_get_def(src) * 5 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 8 / 10 + n * 40;
@@ -13413,7 +13441,11 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 					break;
 				case BO_HELLTREE:			/* クリエイトヘルツリー */
 					tmpmd->hp = tmpmd->st.max_hp = BIGNUM2INT((atn_bignumber)status_get_max_hp(src) * 15 / 10 + add_bionic_max_hp[n]);
+#ifdef PRE_RENEWAL
+					tmpmd->st.atk = 200 + (sd->watk + sd->base_atk) * 15 / 10 + add_bionic_atk[n];
+#else
 					tmpmd->st.atk = 200 + (sd->watk + sd->plus_atk) * 15 / 10 + add_bionic_atk[n];
+#endif
 					tmpmd->st.matk = 100 + (status_get_matk1(src) + status_get_matk2(src)) * 15 / 10 + add_bionic_matk[n];
 					tmpmd->st.def = status_get_def(src) * 9 / 10 + n * 160;
 					tmpmd->st.mdef = status_get_mdef(src) * 9 / 10 + n * 40;
