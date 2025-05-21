@@ -58,6 +58,8 @@ extern const struct Lua_function {
 	lua_CFunction f;
 } luafunc[];
 
+lua_State *L;
+
 /*==========================================
  * Stackのdump
  *------------------------------------------

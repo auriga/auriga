@@ -24,7 +24,7 @@
 
 #include "lua.h"
 
-lua_State *L;
+extern lua_State *L;
 
 extern int lua_respawn_id;
 int luascript_run_function(const char *name,int char_id,const char *format,...);
