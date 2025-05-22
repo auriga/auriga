@@ -290,23 +290,23 @@ CFLAGS += -DDYNAMIC_SC_DATA
 MKDEF = CC="$(CC)" CFLAGS="$(CFLAGS)" LIBS="$(LIBS)"
 
 all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
-	cd src ; cd common ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd common ; cd lua ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd common ; cd zlib ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd login ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd char ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd converter ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd map ; $(MAKE) $(MKDEF) $@ ; cd ..
+	$(MAKE) -C src/common $(MKDEF) $@
+	$(MAKE) -C src/common/lua $(MKDEF) $@
+	$(MAKE) -C src/common/zlib $(MKDEF) $@
+	$(MAKE) -C src/login $(MKDEF) $@
+	$(MAKE) -C src/char $(MKDEF) $@
+	$(MAKE) -C src/converter $(MKDEF) $@
+	$(MAKE) -C src/map $(MKDEF) $@
 
 ifdef SQLFLAG
 sql: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
-	cd src ; cd common ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
-	cd src ; cd common ; cd lua ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd common ; cd zlib ; $(MAKE) $(MKDEF) $@ ; cd ..
-	cd src ; cd login ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
-	cd src ; cd char ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
-	cd src ; cd converter ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
-	cd src ; cd map ; $(MAKE) $(MKDEF) $@ SQLFLAG=1; cd ..
+	$(MAKE) -C src/common $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/common/lua $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/common/zlib $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/login $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/char $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/converter $(MKDEF) SQLFLAG=1 $@
+	$(MAKE) -C src/map $(MKDEF) SQLFLAG=1 $@
 else
 sql:
 	$(MAKE) CC="$(CC)" SQLFLAG=1
