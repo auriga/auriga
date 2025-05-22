@@ -62,6 +62,8 @@ static struct refine_db {
 	int per[MAX_REFINE];
 } refine_db[MAX_WEAPON_LEVEL+1];
 
+struct job_db job_db[PC_JOB_MAX];
+
 int current_equip_item_index;	// ステータス計算用
 int current_equip_name_id;
 

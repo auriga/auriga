@@ -297,4 +297,12 @@ unsigned long strtobxul(const char *s, char **endptr, int base);
 
 void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
+// =====================
+// skill.c
+// ---------------------
+
+#ifndef WINDOWS
+#define max(a,b) ({int _a = (a), _b = (b); _a > _b ? _a : _b;})
+#endif
+
 #endif	// _UTILS_H_

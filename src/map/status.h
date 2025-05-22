@@ -33,7 +33,9 @@ struct job_db {
 	int max_ap;
 	int bonus[PC_UPPER_MAX][MAX_LEVEL];
 	int aspd_base[WT_MAX+1];
-} job_db[PC_JOB_MAX];
+};
+
+extern struct job_db job_db[PC_JOB_MAX];
 
 struct status_pretimer {
 	int timer;
