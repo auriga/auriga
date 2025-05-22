@@ -1,4 +1,11 @@
 ----------------------------------------
+//1581 [2025/05/23] by Gorockn
+
+・GCCコンパイル時の警告に対応（Makefile）
+　・`_BSD_SOURCE` を `_DEFAULT_SOURCE` に変更
+　・glibc 2.20以降は `_BSD_SOURCE` は非推奨のため
+
+----------------------------------------
 //1580 [2025/05/21] by gorockn
 
 ・Linux/GCCのビルドエラーを修正（utils.h, luascript.c, luascript.h, status.c, status.h）

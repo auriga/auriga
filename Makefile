@@ -79,7 +79,7 @@ else
     MAKE = make
 endif
 
-CFLAGS = -D_XOPEN_SOURCE -D_BSD_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
 LIBS = -lm
 
 #Link Zlib(NOTrecommended)
