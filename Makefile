@@ -2,10 +2,6 @@
 
 CC = gcc -pipe
 
-# Detecting gcc version
-GCC_MAJOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f1)
-GCC_MINOR_VERSION = $(shell $(CC) -v 2>&1 | grep '^gcc' | cut -d' ' -f3 | cut -d'.' -f2)
-
 # 2020-02-05aRagexeRE: 20200205
 # 2019-05-30aRagexeRE: 20190530
 # 2018-04-18bRagexeRE: 20180418
@@ -92,26 +88,7 @@ CFLAGS += -g
 #CFLAGS += -O2
 #CFLAGS += -O3
 #CFLAGS += -ffast-math
-ifeq ($(GCC_MAJOR_VERSION), 4)
-    ifeq ($(GCC_MINOR_VERSION), 7)
-        CFLAGS += -O2
-    endif
-    ifeq ($(GCC_MINOR_VERSION), 8)
-        CFLAGS += -Og
-    endif
-    ifeq ($(GCC_MINOR_VERSION), 9)
-        CFLAGS += -Og
-    endif
-endif
-ifeq ($(GCC_MAJOR_VERSION), 5)
-    CFLAGS += -Og
-endif
-ifeq ($(GCC_MAJOR_VERSION), 6)
-    CFLAGS += -Og
-endif
-ifeq ($(GCC_MAJOR_VERSION), 7)
-    CFLAGS += -Og
-endif
+CFLAGS += -Og
 
 # C Standard - ISO/IEC 9899:1999
 CFLAGS += -std=c99
