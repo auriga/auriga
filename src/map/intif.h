@@ -20,7 +20,7 @@
  */
 
 #ifndef _INTIF_H_
-#define _INFIF_H_
+#define _INTIF_H_
 
 #include "utils.h"
 

@@ -20,7 +20,7 @@
  */
 
 #ifndef _HOMUNDB_TXT_H_
-#define _HOMUMDB_TXT_H_
+#define _HOMUNDB_TXT_H_
 
 #include "mmo.h"
 #include "utils.h"
