@@ -1,0 +1,22 @@
+name: Linux Build (Clang)
+on:
+  pull_request:
+  push:
+    branches:
+    - 'master'
+    paths:
+    - '.github/workflows/integration-linux-build-clang.yml'
+    - '**/Makefile'
+    - 'src/**.c'
+    - 'src/**.h'
+permissions:
+  contents: read
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Build for Auriga
+      run: make -j "$(nproc)" CC=clang
