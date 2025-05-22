@@ -7,7 +7,6 @@ Build Status:
 [![Linux GCC Build Status](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-gcc.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-gcc.yml)
 [![MacOS Clang Build Status](https://github.com/auriga/auriga/actions/workflows/integration-macos-build-clang.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-macos-build-clang.yml)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/0f7ga3eijanjfje0?svg=true)](https://ci.appveyor.com/project/poporing-popori/auriga-cbnmq)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/0f7ga3eijanjfje0?svg=true)](https://ci.appveyor.com/project/poporing-popori/auriga-cbnmq)
 
 Community:  
 [Official HP](http://auriga.moe.hm/)  
