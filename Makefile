@@ -1,6 +1,6 @@
 # $Id: Makefile,v 1.1 2003/06/20 05:30:43 lemit Exp $
 
-CC = gcc -pipe
+CC ?= gcc
 
 # 2020-02-05aRagexeRE: 20200205
 # 2019-05-30aRagexeRE: 20190530
@@ -75,7 +75,7 @@ else
     MAKE = make
 endif
 
-CFLAGS = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -pipe -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
 LIBS = -lm
 
 #Link Zlib(NOTrecommended)
