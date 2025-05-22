@@ -121,6 +121,10 @@ else
     endif
 endif
 
+ifeq ($(findstring Linux,$(PLATFORM)), Linux)
+    CFLAGS += -DLUA_USE_POSIX
+endif
+
 #-----------------BUILD OPTION-------------------
 # change authfifo comparing data
 #CFLAGS += -DCMP_AUTHFIFO_IP
