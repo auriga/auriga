@@ -49,12 +49,11 @@ check_account() {
 	fi
 
 	if [ ! -f ./save/account.txt ]; then
-		i=0
-		while [ $i -le 4 ];
-		do
-			echo -e "$i\ts`expr $i + 1`\tp`expr $i + 1`\t-\tS\t0\t0\t@\t\r" >> save/account.txt
-			i=`expr $i + 1`
-		done
+		echo "0\ts1\tp1\t-\tS\t0\t0\t0\t@\t000000" >> save/account.txt
+		echo "1\ts2\tp2\t-\tS\t0\t0\t0\t@\t000000" >> save/account.txt
+		echo "2\ts3\tp3\t-\tS\t0\t0\t0\t@\t000000" >> save/account.txt
+		echo "3\ts4\tp4\t-\tS\t0\t0\t0\t@\t000000" >> save/account.txt
+		echo "4\ts5\tp5\t-\tS\t0\t0\t0\t@\t000000" >> save/account.txt
 	fi
 
 	if [ ! -f ./save/accreg.txt ]; then
