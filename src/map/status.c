@@ -3221,15 +3221,15 @@ L_RECALC:
 			sd->smatk += sd->sc.data[SC_TALISMAN_OF_MAGICIAN].val2;
 		}
 		// 五行符
-		if(sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].timer != -1) {
-			sd->addele[ELE_FIRE]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->addele[ELE_WATER] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->addele[ELE_WIND]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->addele[ELE_EARTH] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->magic_addele[ELE_FIRE]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->magic_addele[ELE_WATER] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->magic_addele[ELE_WIND]  += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
-			sd->magic_addele[ELE_EARTH] += sd->sc.data[SOA_TALISMAN_OF_FIVE_ELEMENTS].val2;
+		if(sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].timer != -1) {
+			sd->addele[ELE_FIRE]  += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_WATER] += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_WIND]  += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->addele[ELE_EARTH] += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_FIRE]  += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_WATER] += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_WIND]  += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
+			sd->magic_addele[ELE_EARTH] += sd->sc.data[SC_TALISMAN_OF_FIVE_ELEMENTS].val2;
 		}
 		// 四方五行陣
 		if(sd->sc.data[SC_T_FIVETH_GOD].timer != -1) {
@@ -10813,7 +10813,7 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 			val2 = val1 * 2;		// S.Matk増加値
 			calc_flag = 1;
 			break;
-		case SOA_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
+		case SC_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
 			val2 = val1 * 2;		// 属性モンスターダメージ増加率
 			calc_flag = 1;
 			break;
@@ -11564,7 +11564,7 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		case SC_HIDDEN_CARD:		/* ヒドゥンカード */
 		case SC_TALISMAN_OF_WARRIOR:	/* 武士符 */
 		case SC_TALISMAN_OF_MAGICIAN:	/* 法師符 */
-		case SOA_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
+		case SC_TALISMAN_OF_FIVE_ELEMENTS:	/* 五行符 */
 		case SC_T_FIVETH_GOD:		/* 四方五行陣 */
 		case SC_HEAVEN_AND_EARTH:	/* 天地神霊 */
 		case SC_MARINE_FESTIVAL:	/* マリンフェスティバル */
