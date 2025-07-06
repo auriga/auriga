@@ -939,6 +939,10 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2)
 			sd->magic_damage_return += val;
 		break;
+	case SP_SUB_RETURN_DAMAGE:
+		if(sd->state.lr_flag != 2)
+			sd->sub_return_damage += val;
+		break;
 	case SP_ADD_SHORT_WEAPON_DAMAGE:
 		if(sd->state.lr_flag != 2)
 			sd->short_weapon_damege_rate += val;
@@ -1649,6 +1653,24 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		sd->skill_addcast.id[sd->skill_addcast.count] = type2;
 		sd->skill_addcast.time[sd->skill_addcast.count] = val;
 		sd->skill_addcast.count++;
+		break;
+	case SP_ADD_FIXCAST_TIME:
+		// update
+		for(i=0; i<sd->skill_addfixcast.count; i++)
+		{
+			if(sd->skill_addfixcast.id[i] == type2)
+			{
+				sd->skill_addfixcast.time[i] += val;
+				return 0;
+			}
+		}
+		// full
+		if(sd->skill_addfixcast.count == MAX_SKILL_ADDFIXCASTTIME)
+			break;
+		// add
+		sd->skill_addfixcast.id[sd->skill_addfixcast.count] = type2;
+		sd->skill_addfixcast.time[sd->skill_addfixcast.count] = val;
+		sd->skill_addfixcast.count++;
 		break;
 	case SP_ADD_COOL_DOWN:
 		// update

@@ -613,6 +613,8 @@ bMagicAddGroup	1182
 bMagicAddSize	1183
 bAllStatus		1184
 bSubSkillDamageRate		1185
+bAddSkillFixCastTime	1186
+bSubReturnDamage		1187
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

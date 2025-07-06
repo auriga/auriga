@@ -9332,6 +9332,10 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 			maxdamage = (atn_bignumber)status_get_max_hp(target) * status_get_lv(target) / 100;
 			rddamage = damage * t_sc->data[SC_REFLECTDAMAGE].val3 / 100;
 			rddamage = (rddamage > maxdamage) ? maxdamage: rddamage;
+			// 反射耐性、位置は仮です
+			// 攻撃者の反射耐性参照で拡散ダメージを決定する？
+			if(sd && sd->sub_return_damage && rddamage > 0)
+				rddamage = rddamage * (100 - sd->sub_return_damage) / 100;
 
 			map_foreachinarea(battle_damage_area,target->m,
 				target->x-ar,target->y-ar,target->x+ar,target->y+ar,BL_CHAR,
@@ -9356,6 +9360,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				if(rsdamage > status_get_max_hp(target))
 					rsdamage = status_get_max_hp(target);
 #endif
+				// 反射耐性
+				if(sd && sd->sub_return_damage && rsdamage > 0)
+					rsdamage = rsdamage * (100 - sd->sub_return_damage) / 100;
 			}
 			// デスバウンド反射
 			if(t_sc && t_sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && path_check_dir(path_calc_dir(src,target->x,target->y),status_get_dir(target)))
@@ -9388,6 +9395,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				tmpwd = battle_calc_weapon_attack(target,src,SR_CRESCENTELBOW_AUTOSPELL,lv,flag);
 				rsdamage += tmpwd.damage;
 				wd.damage = rsdamage / 10;
+				// 反射耐性
+				if(tsd && tsd->sub_return_damage && wd.damage > 0)
+					wd.damage = wd.damage * (100 - tsd->sub_return_damage) / 100;
 				skill_blown(target,src,skill_get_blewcount(SR_CRESCENTELBOW_AUTOSPELL,lv)|SAB_NODAMAGE);
 				if(unit_distance(target,src) < skill_get_blewcount(SR_CRESCENTELBOW_AUTOSPELL,lv) + dist) {
 					skill_addtimerskill(target,tick+200,src->id,0,0,SR_CRESCENTELBOW,lv,tick,(0x0f<<20)|0x0500);
@@ -9402,6 +9412,9 @@ int battle_weapon_attack( struct block_list *src,struct block_list *target,unsig
 				ridamage += damage * tsd->long_weapon_damage_return / 100;
 			}
 		}
+		// アイテム効果に対する反射耐性
+		if(sd && sd->sub_return_damage && ridamage > 0)
+			ridamage = ridamage * (100 - sd->sub_return_damage) / 100;
 		if(rsdamage > 0)
 			clif_damage(src,src,tick,wd.amotion,wd.dmotion,rsdamage,1,4,0,0);
 		if(ridamage > 0)
@@ -10203,6 +10216,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 #endif
 					if(rdamage < 1) rdamage = 1;
 				}
+				// 反射耐性
+				if(sd && sd->sub_return_damage && rdamage > 0) {
+					rdamage = rdamage * (100 - sd->sub_return_damage) / 100;
+					if(rdamage < 1) rdamage = 1;
+				}
 				// デスバウンド時
 				if(sc && sc->data[SC_DEATHBOUND].timer != -1 && !(status_get_mode(src)&MD_BOSS) && path_check_dir(path_calc_dir(src,bl->x,bl->y),status_get_dir(bl)))
 				{
@@ -10245,6 +10263,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 						rdamage += damage * tsd->long_weapon_damage_return / 100;
 						if(rdamage < 1) rdamage = 1;
 					}
+				}
+				// 反射耐性
+				if(sd && sd->sub_return_damage && rdamage > 0) {
+					rdamage = rdamage * (100 - sd->sub_return_damage) / 100;
+					if(rdamage < 1) rdamage = 1;
 				}
 			}
 			if(rdamage > 0)
@@ -10289,6 +10312,11 @@ int battle_skill_attack(int attack_type,struct block_list* src,struct block_list
 				rdamage += damage;
 				damage = -1;	// ダメージ0だがmissを出さない
 			}
+		}
+		// 反射耐性
+		if(sd && sd->sub_return_damage && rdamage > 0) {
+			rdamage = rdamage * (100 - sd->sub_return_damage) / 100;
+			if(rdamage < 1) rdamage = 1;
 		}
 		// 幻術 -朧幻想-
 		if(damage > 0 && sc && sc->data[SC_GENSOU].timer != -1) {

@@ -20933,6 +20933,24 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 	if(casttime < 0)
 		casttime = 0;
 
+	// カードによる詠唱時間増減効果
+	if(fixedtime > 0 && sd && sd->skill_addfixcast.count > 0) {
+		for(i=0; i<sd->skill_addfixcast.count; i++) {
+			if(skillid == sd->skill_addfixcast.id[i])
+				fixedtime += sd->skill_addfixcast.time[i];
+		}
+	}
+	if(sc) {
+		/* ハウリングオブマンドラゴラ */
+		if(sc->data[SC_MANDRAGORA].timer != -1) {
+			fixedtime += sc->data[SC_MANDRAGORA].val3;		// 強制固定詠唱増加
+		}
+		/* 麻痺 */
+		if(sc->data[SC_PARALYZE].timer != -1) {
+			fixedtime += sc->data[SC_PARALYZE].val2;		// 強制固定詠唱増加
+		}
+	}
+
 	if(fixedtime > 0) {
 		int reduce_time2 = 0;	// 固定詠唱削減時間
 
@@ -20957,25 +20975,24 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 		}
 
 		if(sd) {
-			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_;
-
 			// カードによる固定詠唱時間増減効果
 			if(sd->skill_fixcastrate.count > 0) {
 				for(i=0; i<sd->skill_fixcastrate.count; i++) {
 					if(skillid == sd->skill_fixcastrate.id[i])
-						fixedtime = fixedtime * (100 + sd->skill_fixcastrate.rate[i]) / 100;
+						reduce_time2 = (reduce_time2 < sd->skill_fixcastrate.rate[i])? sd->skill_fixcastrate.rate[i]: reduce_time2;
 				}
 			}
+			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_;
 		}
 
 		if(sc) {
-			/* スロウキャスト */
-			if(sc->data[SC_SLOWCAST].timer != -1)
-				reduce_time2 -= sc->data[SC_SLOWCAST].val1 * 20;
-
 			/* フロストミスティ */
 			if(sc->data[SC_FROSTMISTY].timer != -1)
 				reduce_time2 -= 15;
+
+			/* 十六夜 */
+			if(sc->data[SC_IZAYOI].timer != -1)
+				reduce_time2 += 100;
 		}
 
 		fixedtime = fixedtime * (100 - reduce_time2) / 100;
@@ -20985,19 +21002,6 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 	if(sd && skillid == GD_EMERGENCYCALL && pc_checkskill(sd,SU_LOPE) > 0) {
 		casttime  <<= 1;
 		fixedtime <<= 1;
-	}
-	if(sc) {
-		/* ハウリングオブマンドラゴラ */
-		if(sc->data[SC_MANDRAGORA].timer != -1) {
-			fixedtime += sc->data[SC_MANDRAGORA].val3;		// 強制固定詠唱増加
-		}
-		/* 麻痺 */
-		if(sc->data[SC_PARALYZE].timer != -1) {
-			fixedtime += sc->data[SC_PARALYZE].val2;		// 強制固定詠唱増加
-		}
-		/* 十六夜 */
-		if(sc->data[SC_IZAYOI].timer != -1)
-			fixedtime = 0;
 	}
 	if(fixedtime < 0)
 		fixedtime = 0;

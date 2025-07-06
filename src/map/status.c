@@ -660,7 +660,7 @@ L_RECALC:
 	memset(&sd->sp_drain,0,sizeof(sd->sp_drain));
 	memset(&sd->hp_drain_,0,sizeof(sd->hp_drain_));
 	memset(&sd->sp_drain_,0,sizeof(sd->sp_drain_));
-	sd->short_weapon_damage_return = sd->long_weapon_damage_return = sd->magic_damage_return = 0;
+	sd->short_weapon_damage_return = sd->long_weapon_damage_return = sd->magic_damage_return = sd->sub_return_damage = 0;
 	sd->break_weapon_rate = sd->break_armor_rate = 0;
 	sd->add_steal_rate    = 0;
 	sd->unbreakable_equip = LOC_NOTHING;
@@ -722,6 +722,7 @@ L_RECALC:
 	memset(&sd->skill_addspcost,0,sizeof(sd->skill_addspcost));
 	memset(&sd->skill_subhealup,0,sizeof(sd->skill_subhealup));
 	memset(&sd->skill_addcast,0,sizeof(sd->skill_addcast));
+	memset(&sd->skill_addfixcast,0,sizeof(sd->skill_addfixcast));
 	memset(&sd->skill_cooldown,0,sizeof(sd->skill_cooldown));
 	memset(&sd->skill_eleweapon_dmgup,0,sizeof(sd->skill_eleweapon_dmgup));
 	memset(&sd->skill_elemagic_dmgup,0,sizeof(sd->skill_elemagic_dmgup));

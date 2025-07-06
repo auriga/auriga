@@ -49,9 +49,10 @@
 #define MAX_SUB_SKILL_DAMAGE	10	// スキル耐性を強化できる数
 #define MAX_SKILL_BLOW  5		// スキルを吹き飛ばし化
 #define MAX_SKILL_HEAL_UP	7	// スキルの回復量を強化できる数
-#define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTRATE	10 	//スキルの詠唱時間を減らせる数
+#define MAX_SKILL_FIXCASTRATE	10	// スキルの固定詠唱時間を減らせる数
 #define MAX_SKILL_ADDCASTTIME	10 	//スキルの詠唱時間を減らせる数
+#define MAX_SKILL_ADDFIXCASTTIME	10 	//スキルの固定詠唱時間を減らせる数
 #define MAX_SKILL_ADDCOOLDOWN	10 	//スキルのクールタイムを減らせる数
 #define MAX_SKILL_ADDEFF	10	// スキルで追加状態異常化できる数
 #define MAX_SKILL_ADDSPCOST	10 	//スキルの消費SPを増やせる数
@@ -627,7 +628,7 @@ struct map_session_data {
 		short value;
 	} hp_drain, sp_drain, hp_drain_, sp_drain_;
 
-	int short_weapon_damage_return,long_weapon_damage_return,magic_damage_return;
+	int short_weapon_damage_return,long_weapon_damage_return,magic_damage_return,sub_return_damage;
 	int weapon_coma_ele[ELE_MAX],weapon_coma_race[RCT_MAX];
 	int weapon_coma_ele2[ELE_MAX],weapon_coma_race2[RCT_MAX];
 	short break_weapon_rate,break_armor_rate;
@@ -885,6 +886,12 @@ struct map_session_data {
 		int time[MAX_SKILL_ADDCASTTIME];
 		short count;
 	} skill_addcast;
+
+	struct {
+		short id[MAX_SKILL_ADDFIXCASTTIME];
+		int time[MAX_SKILL_ADDFIXCASTTIME];
+		short count;
+	} skill_addfixcast;
 
 	struct {
 		short id[MAX_SKILL_ADDCOOLDOWN];
@@ -1364,7 +1371,7 @@ enum {
 	SP_ADDEFFMAGIC,SP_DEF_ELEENEMY,SP_ADD_SP_COST,SP_FIXCASTRATE,SP_ADD_SKILL_SUBHEAL_RATE,   // 1171-1175
 	SP_ADD_CAST_TIME,SP_ADD_COOL_DOWN,SP_ADD_ELEWEAPONDAMAGE_RATE,SP_ADD_ELEMAGICDAMAGE_RATE,   // 1176-1179
 	SP_HP_RATE_PENALTY_TIME,SP_SP_RATE_PENALTY_TIME,SP_MAGIC_ADD_GROUP,SP_MAGIC_ADDSIZE,	// 1180-1183
-	SP_ALLSTATUS,SP_SUB_SKILL_DAMAGE_RATE,	// 1184-1185
+	SP_ALLSTATUS,SP_SUB_SKILL_DAMAGE_RATE,SP_ADD_FIXCAST_TIME,SP_SUB_RETURN_DAMAGE,	// 1184-1187
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005
