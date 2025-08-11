@@ -1676,7 +1676,8 @@ const char* httpd_complement_file( const char* url, char* buf )
 	// スラッシュで終わっていたらデフォルトを追加
 	if( url[strlen(url)-1] == '/' )
 	{
-        snprintf( buf, sizeof(buf), "%s%s", url, cfile );
+        // 'buf' は呼び出し側から渡された 1536 バイトのバッファ
+        snprintf( buf, 1536, "%s%s", url, cfile );
 		return buf;
 	}
 
@@ -1690,7 +1691,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 		{
 			if( st.st_mode & S_IFDIR )
 			{
-                snprintf( buf, sizeof(buf), "%s/%s", url, cfile );
+                snprintf( buf, 1536, "%s/%s", url, cfile );
 				return buf;
 			}
 		}

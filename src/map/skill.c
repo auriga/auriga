@@ -7925,11 +7925,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		sc = status_get_sc(bl);
 		if(sc && sc->data[SC_HIGH].timer != -1)
 			status_change_end(bl,SC_HIGH,-1);
-		if(dstsd && dstsd->sc.data[SC_ELEMENTUNDEAD].timer != -1) {
+        if(dstsd && dstsd->sc.data[SC_ELEMENTUNDEAD].timer != -1) {
 			battle_skill_attack(BF_MAGIC,src,src,bl,skillid,skilllv,tick,flag);
-			break;
+            break;
 		}
-	case PR_SLOWPOISON:
+        /* fall through */
+    case PR_SLOWPOISON:
 	case PR_IMPOSITIO:		/* イムポシティオマヌス */
 	case PR_LEXAETERNA:		/* レックスエーテルナ */
 	case PR_SUFFRAGIUM:		/* サフラギウム */
@@ -17956,9 +17957,9 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	int itemid[MAX_SKILL_DB_ITEM+1],amount[MAX_SKILL_DB_ITEM+1];
 	int item_nocost = 0;
 	int soulenergy = 0, servantweapon = 0;
-	struct block_list *bl = NULL, *target = NULL;
-	struct unit_data  *ud = NULL;
-	struct status_change *sc = NULL, *tsc = NULL;
+    struct block_list *bl = NULL, *target = NULL;
+    struct unit_data  *ud = NULL;
+    struct status_change */*sc = NULL,*/ *tsc = NULL;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, cnd);
@@ -17966,7 +17967,7 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 	nullpo_retr(0, ud = unit_bl2ud(bl));
 
 	target = map_id2bl( cnd->target );
-	sc = status_get_sc(bl);
+    /* sc = status_get_sc(bl); */
 	if(target != NULL) tsc = status_get_sc(target);
 
 	// チェイス、ハイド、クローキング時のスキル

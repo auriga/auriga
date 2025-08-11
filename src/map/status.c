@@ -380,7 +380,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	int b_base_atk;
 	int b_watk_,b_watk_2;
 	int b_tigereye, b_endure, b_speedrate;
-	int b_max_ap,b_ap,b_patk,b_smatk,b_res,b_mres,b_hplus,b_crate;
+    int /*b_max_ap,*/ b_ap,b_patk,b_smatk,b_res,b_mres,b_hplus,b_crate;
 	struct skill b_skill[MAX_PCSKILL];
 	int i,blv,calc_val,idx;
 	int skill,wele,wele_,def_ele,refinedef;
@@ -411,7 +411,7 @@ int status_calc_pc(struct map_session_data* sd,int first)
 	b_speed      = sd->speed;
 	b_max_hp     = sd->status.max_hp;
 	b_max_sp     = sd->status.max_sp;
-	b_max_ap     = sd->status.max_ap;
+    /* b_max_ap   = sd->status.max_ap; */
 	b_hp         = sd->status.hp;
 	b_sp         = sd->status.sp;
 	b_ap         = sd->status.ap;
@@ -6760,10 +6760,11 @@ int status_get_adelay(struct block_list *bl)
 					adelay = battle_config.homun_max_aspd>>1;
 #endif
 				break;
-			case BL_MERC:
-				if(adelay < (battle_config.merc_max_aspd>>1) )
-					adelay = battle_config.merc_max_aspd>>1;
-			case BL_ELEM:
+            case BL_MERC:
+                if(adelay < (battle_config.merc_max_aspd>>1) )
+                    adelay = battle_config.merc_max_aspd>>1;
+                /* fall through */
+            case BL_ELEM:
 				if(adelay < (battle_config.elem_max_aspd>>1) )
 					adelay = battle_config.elem_max_aspd>>1;
 				break;

@@ -5794,9 +5794,21 @@ int buildin_getelementofarray(struct script_state *st)
 		if((p = strchr(var,'[')) != NULL)
 			*p = 0;
 
-		p = var + strlen(var);
-        for(i=0; i<count; i++) {
-            p += snprintf(p, (size_t)(buf + sizeof(buf) - p), "[%d]", list[i]);
+        p = var + strlen(var);
+        {
+            size_t base_capacity = 1 + len + count*5; // var の確保サイズと一致
+            for(i=0; i<count; i++) {
+                size_t used = (size_t)(p - var);
+                size_t remain = (used < base_capacity) ? (base_capacity - used) : 0;
+                int w = snprintf(p, remain, "[%d]", list[i]);
+                if(w < 0 || (size_t)w >= remain) {
+                    // これ以上書けないので打ち切る
+                    p = var + base_capacity - 1;
+                    *p = '\0';
+                    break;
+                }
+                p += w;
+            }
         }
 		if(postfix == '$')
 			strcat(var,"$");
