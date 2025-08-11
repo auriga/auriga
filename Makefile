@@ -90,8 +90,8 @@ CFLAGS += -g
 #CFLAGS += -ffast-math
 CFLAGS += -Og
 
-# C Standard - ISO/IEC 9899:1999
-CFLAGS += -std=c99
+# C Standard - ISO/IEC 9899:2011
+CFLAGS += -std=c11
 
 # Ignore Warning
 CFLAGS += -Wno-unused-function -Wno-unused-parameter -Wno-unused-result -Wno-unused-value -Wno-unused-variable
