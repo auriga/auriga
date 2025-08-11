@@ -497,8 +497,8 @@ int httpd_make_date( char* dst, time_t date )
 // ------------------------------------------
 void httpd_send_head(struct httpd_session_data* sd,int status,const char *content_type,int content_len)
 {
-	char head[1024];
-	int  len;
+    char head[1024];
+    int  len = 0;
 	const char* msg;
 
 	if(sd->status != HTTPD_REQUEST_OK) return;
@@ -513,13 +513,13 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 		sd->persist = 0;
 	}
 
-	len = sprintf( head,
-		"HTTP/1.%d %d %s\r\n"
-		"Server: %s/revision%d\r\n", sd->http_ver,status,msg, servername, AURIGA_REVISION );
+    len += snprintf( head + len, sizeof(head) - (size_t)len,
+        "HTTP/1.%d %d %s\r\nServer: %s/revision%d\r\n",
+        sd->http_ver, status, msg, servername, AURIGA_REVISION );
 
 	if( content_type )	// コンテントタイプ
 	{
-		len += sprintf( head + len, "Content-Type: %s\r\n",content_type );
+        len += snprintf( head + len, sizeof(head) - (size_t)len, "Content-Type: %s\r\n", content_type );
 	}
 
 	if( content_len == -1 )		// 長さが分からない
@@ -527,21 +527,21 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 		if( status!=304 )
 			sd->persist = 0;
 	} else {
-		len += sprintf(head + len,"Content-Length: %d\r\n",content_len);
+        len += snprintf(head + len, sizeof(head) - (size_t)len, "Content-Length: %d\r\n", content_len);
 	}
 
 	if( status==206 )	// Content-Range 通知
 	{
-		len += sprintf(head + len,"Content-Range: bytes %d-%d/%d\r\n", sd->range_start, sd->range_end, sd->inst_len );
+        len += snprintf(head + len, sizeof(head) - (size_t)len, "Content-Range: bytes %d-%d/%d\r\n", sd->range_start, sd->range_end, sd->inst_len );
 	}
 
 	if( sd->persist==0 )	// 持続性かどうか
 	{
-		len += sprintf(head + len,"Connection: close\r\n");
+        len += snprintf(head + len, sizeof(head) - (size_t)len, "Connection: close\r\n");
 	}
 	else if( sd->http_ver==0 ) // HTTP/1.0 なら Keep-Alive 通知
 	{
-		len += sprintf(head + len,"Connection: Keep-Alive\r\n");
+        len += snprintf(head + len, sizeof(head) - (size_t)len, "Connection: Keep-Alive\r\n");
 	}
 
 	if( status==401 )	// 認証が必要
@@ -570,45 +570,43 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 				strcpy( nonce_log[ nonce_log_pos ].nonce, nonce );
 				nonce_log_pos = ( nonce_log_pos + 1 ) % NONCE_LOG_SIZE;
 			}
-			len += sprintf( head+len,
-				"WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\", algorithm=MD5, qop=\"auth\", stale=%s\r\n",
-				sd->access->realm, nonce, stale[sd->auth_digest_stale] );
+            len += snprintf( head+len, sizeof(head) - (size_t)len,
+                "WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\", algorithm=MD5, qop=\"auth\", stale=%s\r\n",
+                sd->access->realm, nonce, stale[sd->auth_digest_stale] );
 		}
 		else
 		{
-			len += sprintf( head+len,
-				"WWW-Authenticate: Basic realm=\"%s\"\r\n", sd->access->realm );
+            len += snprintf( head+len, sizeof(head) - (size_t)len,
+                "WWW-Authenticate: Basic realm=\"%s\"\r\n", sd->access->realm );
 		}
 	}
 
 	if( status==503 )	// Retry-after 通知
 	{
-		len += sprintf( head + len, "Retry-After: %d\r\n", (server_max_requests_period+999)/1000 );
+        len += snprintf( head + len, sizeof(head) - (size_t)len, "Retry-After: %d\r\n", (server_max_requests_period+999)/1000 );
 	}
 
 	if( sd->reshead_flag & HTTPD_RESHEAD_ACCRANGE )	// Accept-Ranges 通知
 	{
-		len += sprintf( head + len, "Accept-Ranges: bytes\r\n" );
+        len += snprintf( head + len, sizeof(head) - (size_t)len, "Accept-Ranges: bytes\r\n" );
 	}
 
 	if( sd->date && (sd->reshead_flag & HTTPD_RESHEAD_LASTMOD))	// Last-modified の通知
 	{
-		strcpy( head+len, "Last-Modified: " );
-		len += 15;
+        len += snprintf( head+len, sizeof(head) - (size_t)len, "Last-Modified: " );
 		len += httpd_make_date( head+len, sd->date );
 	}
 
 	if( status!=500 )	// Date の通知
 	{
 		time_t tmp = time( &tmp );
-		strcpy( head+len, "Date: " );
-		len += 6;
+        len += snprintf( head+len, sizeof(head) - (size_t)len, "Date: " );
 		len += httpd_make_date( head+len, tmp );
 	}
 
 	httpd_log( sd, status, content_len );	// ログに記録
 
-	len += sprintf( head+len, "\r\n" );
+    len += snprintf( head+len, sizeof(head) - (size_t)len, "\r\n" );
 	memcpy(WFIFOP(sd->fd,0),head,len);
 	WFIFOSET(sd->fd,len);
 	sd->status   = HTTPD_SEND_HEADER;
