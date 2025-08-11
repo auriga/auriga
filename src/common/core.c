@@ -274,11 +274,7 @@ static LONG WINAPI core_ExceptionRoutine(struct _EXCEPTION_POINTERS *e)
 		e->ContextRecord, NULL, SymFunctionTableAccess, SymGetModuleBase, NULL)
 #endif
 	) {
-#ifdef __BORLANDC__
-		// BCC の場合はシンボル名が分からないのでアドレスは引かない。
-		// シンボル名の出力はcrashdump.plで行う。
-		len = wsprintf(buf, "\t0x%08x : unknown\r\n", stack.AddrPC.Offset);
-#elif defined(_WIN64)
+#ifdef _WIN64
 		// SymGetSymFromAddr64 は使用するべきじゃないらしい…。
 		if(SymGetSymFromAddr(hProcess, stack.AddrPC.Offset, &offset, symbol)) {
 			len = wsprintf(
