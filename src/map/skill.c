@@ -19380,16 +19380,19 @@ static int skill_check_condition2_pc(struct map_session_data *sd, struct skill_c
 			return 0;
 		}
 		/* 使うスキル以外の魂状態かを判定 */
-		if(tsc &&
-		   (cnd->id == SP_SOULGOLEM && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
-		   (cnd->id == SP_SOULSHADOW && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
-		   (cnd->id == SP_SOULFALCON && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
-		   (cnd->id == SP_SOULFAIRY && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1)) ||
-		   tsc->data[SC_ALCHEMIST].timer != -1 || tsc->data[SC_MONK].timer != -1 || tsc->data[SC_STAR].timer != -1 || tsc->data[SC_SAGE].timer != -1 ||
-		   tsc->data[SC_CRUSADER].timer != -1 || tsc->data[SC_SUPERNOVICE].timer != -1 || tsc->data[SC_KNIGHT].timer != -1 || tsc->data[SC_WIZARD].timer != -1 ||
-		   tsc->data[SC_PRIEST].timer != -1 || tsc->data[SC_BARDDANCER].timer != -1 || tsc->data[SC_ROGUE].timer != -1 || tsc->data[SC_ASSASIN].timer != -1 ||
-		   tsc->data[SC_BLACKSMITH].timer != -1 || tsc->data[SC_HUNTER].timer != -1 || tsc->data[SC_SOULLINKER].timer != -1 || tsc->data[SC_HIGH].timer != -1 ||
-		   tsc->data[SC_DEATHKINGHT].timer != -1 || tsc->data[SC_COLLECTOR].timer != -1 || tsc->data[SC_NINJA].timer != -1 || tsc->data[SC_GUNNER].timer != -1)
+        if(
+           tsc && (
+             (cnd->id == SP_SOULGOLEM && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+             (cnd->id == SP_SOULSHADOW && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+             (cnd->id == SP_SOULFALCON && (tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFAIRY].timer != -1)) ||
+             (cnd->id == SP_SOULFAIRY && (tsc->data[SC_SOULGOLEM].timer != -1 || tsc->data[SC_SOULSHADOW].timer != -1 || tsc->data[SC_SOULFALCON].timer != -1)) ||
+             tsc->data[SC_ALCHEMIST].timer != -1 || tsc->data[SC_MONK].timer != -1 || tsc->data[SC_STAR].timer != -1 || tsc->data[SC_SAGE].timer != -1 ||
+             tsc->data[SC_CRUSADER].timer != -1 || tsc->data[SC_SUPERNOVICE].timer != -1 || tsc->data[SC_KNIGHT].timer != -1 || tsc->data[SC_WIZARD].timer != -1 ||
+             tsc->data[SC_PRIEST].timer != -1 || tsc->data[SC_BARDDANCER].timer != -1 || tsc->data[SC_ROGUE].timer != -1 || tsc->data[SC_ASSASIN].timer != -1 ||
+             tsc->data[SC_BLACKSMITH].timer != -1 || tsc->data[SC_HUNTER].timer != -1 || tsc->data[SC_SOULLINKER].timer != -1 || tsc->data[SC_HIGH].timer != -1 ||
+             tsc->data[SC_DEATHKINGHT].timer != -1 || tsc->data[SC_COLLECTOR].timer != -1 || tsc->data[SC_NINJA].timer != -1 || tsc->data[SC_GUNNER].timer != -1
+           )
+        )
 		{
 			clif_skill_fail(sd,cnd->id,SKILLFAIL_FAILED,0,0);
 			return 0;
