@@ -82,10 +82,10 @@ static int accregdb_tostr(char *str, struct accreg *reg)
 
 	nullpo_retr(1, reg);
 
-	p += sprintf(p, "%d\t", reg->account_id);
+	p += snprintf(p, 8192 - (size_t)(p - str), "%d\t", reg->account_id);
 	for(j = 0; j < reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0)
-			p += sprintf(p, "%s,%d ", reg->reg[j].str, reg->reg[j].value);
+			p += snprintf(p, 8192 - (size_t)(p - str), "%s,%d ", reg->reg[j].str, reg->reg[j].value);
 	}
 	return 0;
 }

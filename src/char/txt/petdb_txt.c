@@ -52,14 +52,14 @@ static int pet_journal_cache = 1000;
 int petdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"pet_txt")==0){
-		strncpy(pet_txt, w2, sizeof(pet_txt) - 1);
+		auriga_strlcpy(pet_txt, w2, sizeof(pet_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"pet_journal_enable")==0){
 		pet_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"pet_journal_file")==0){
-		strncpy( pet_journal_file, w2, sizeof(pet_journal_file) - 1 );
+		auriga_strlcpy( pet_journal_file, w2, sizeof(pet_journal_file) );
 	}
 	else if(strcmpi(w1,"pet_journal_cache_interval")==0){
 		pet_journal_cache = atoi( w2 );
@@ -89,7 +89,7 @@ static int pet_tostr(char *str, struct s_pet *p)
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
 
-	sprintf(str, "%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
+	snprintf(str, 1024, "%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		p->pet_id, p->class_, p->name,p->account_id, p->char_id, p->level, p->egg_id,
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate);
 
@@ -119,8 +119,7 @@ static int pet_fromstr(char *str, struct s_pet *p)
 
 	p->pet_id      = tmp_int[0];
 	p->class_      = tmp_int[1];
-	memcpy(p->name, tmp_str, 24);
-	p->name[23] = '\0';	// force \0 terminal
+	auriga_strlcpy(p->name, tmp_str, sizeof(p->name));
 	p->account_id  = tmp_int[2];
 	p->char_id     = tmp_int[3];
 	p->level       = tmp_int[4];

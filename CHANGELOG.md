@@ -1,4 +1,14 @@
 ----------------------------------------
+//1593 [2025/08/11] by Cocoa
+
+・C11 モダナイズと安全な文字列操作の全面適用
+	・既存コードを C11 準拠へモダナイズし、安全で明確な文字列処理へ置換
+	・主要な危険API（sprintf/strcpy/strncpy/strcat/strncat）を snprintf と auriga_strlcpy/auriga_strlcat に統一
+	・固定幅整数の利用・可搬なフォーマット指定への移行（<stdint.h>, <inttypes.h>、PRId64/SCNd64 等）
+	・フォーマット文字列警告の解消（例: fprintf(fp, output) → fputs(output, fp)）
+詳細はPR（https://github.com/auriga/auriga/pull/47）を参照
+
+----------------------------------------
 //1592 [2025/08/11] by Cocoa
 
 ・Makefile の標準指定を C11 に変更

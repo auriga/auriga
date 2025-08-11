@@ -28,6 +28,7 @@
 #include "malloc.h"
 #include "timer.h"
 #include "grfio.h"
+#include "utils.h"
 
 #ifndef WINDOWS
 #	include <unistd.h>
@@ -65,7 +66,7 @@ static void journal_init_( struct journal* j, size_t datasize, const char* filen
 	j->unusedchunk_queue = NULL;
 	j->cache_timer = -1;
 	j->mode = 0;
-	strncpy( j->filename, filename, sizeof(j->filename)-1 );
+	auriga_strlcpy( j->filename, filename, sizeof(j->filename) );
 }
 
 // ==========================================

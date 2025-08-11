@@ -49,14 +49,14 @@ static int achieve_journal_cache = 1000;
 int achievedb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"achieve_txt")==0) {
-		strncpy(achieve_txt, w2, sizeof(achieve_txt) - 1);
+		auriga_strlcpy(achieve_txt, w2, sizeof(achieve_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"achieve_journal_enable")==0) {
 		achieve_journal_enable = atoi(w2);
 	}
 	else if(strcmpi(w1,"achieve_journal_file")==0) {
-		strncpy(achieve_journal_file, w2, sizeof(achieve_journal_file) - 1);
+		auriga_strlcpy(achieve_journal_file, w2, sizeof(achieve_journal_file));
 	}
 	else if(strcmpi(w1,"achieve_journal_cache_interval")==0) {
 		achieve_journal_cache = atoi(w2);
@@ -80,10 +80,10 @@ static int achievedb_tostr(char *str, struct achieve *a)
 
 	nullpo_retr(1, a);
 
-	str_p += sprintf(str, "%d,%d\t", a->char_id, a->account_id);
+	str_p += snprintf(str, 8192, "%d,%d\t", a->char_id, a->account_id);
 
 	for(i = 0; i < a->count; i++) {
-		str_p += sprintf(str_p, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
+		str_p += snprintf(str_p, 8192 - (size_t)(str_p - str), "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 			a->data[i].nameid,
 			a->data[i].count[0],a->data[i].count[1],a->data[i].count[2],
 			a->data[i].count[3],a->data[i].count[4],a->data[i].count[5],

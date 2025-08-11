@@ -102,11 +102,11 @@ static int storage_tostr(char *str, struct storage *p)
 
 	nullpo_retr(1, p);
 
-	str_p += sprintf(str_p, "%d,%d\t", p->account_id, p->storage_amount);
+	str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%d\t", p->account_id, p->storage_amount);
 
 	for(i = 0; i < MAX_STORAGE; i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],
@@ -335,11 +335,11 @@ static int gstorage_tostr(char *str, struct guild_storage *p)
 
 	nullpo_retr(1, p);
 
-	str_p += sprintf(str, "%d,%d\t", p->guild_id, p->storage_amount);
+	str_p += snprintf(str, 65536, "%d,%d\t", p->guild_id, p->storage_amount);
 
 	for(i = 0; i < MAX_GUILD_STORAGE; i++) {
 		if(p->store_item[i].nameid && p->store_item[i].amount) {
-			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 				p->store_item[i].id,p->store_item[i].nameid,p->store_item[i].amount,p->store_item[i].equip,
 				p->store_item[i].identify,p->store_item[i].refine,p->store_item[i].attribute,
 				p->store_item[i].card[0],p->store_item[i].card[1],p->store_item[i].card[2],p->store_item[i].card[3],

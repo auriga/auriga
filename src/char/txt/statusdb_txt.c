@@ -52,14 +52,14 @@ static int status_journal_cache = 1000;
 int statusdb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"status_txt")==0) {
-		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
+		auriga_strlcpy(scdata_txt, w2, sizeof(scdata_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"status_journal_enable")==0) {
 		status_journal_enable = atoi(w2);
 	}
 	else if(strcmpi(w1,"status_journal_file")==0) {
-		strncpy(status_journal_file, w2, sizeof(status_journal_file) - 1);
+		auriga_strlcpy(status_journal_file, w2, sizeof(status_journal_file));
 	}
 	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
 		status_journal_cache = atoi(w2);
@@ -83,10 +83,10 @@ static int status_tostr(char *str, struct scdata *sc)
 
 	nullpo_retr(1, sc);
 
-	str_p += sprintf(str,"%d,%d\t",sc->char_id, sc->account_id);
+	str_p += snprintf(str, 8192, "%d,%d\t", sc->char_id, sc->account_id);
 
 	for(i = 0; i < sc->count; i++) {
-		str_p += sprintf(str_p, "%d,%d,%d,%d,%d,%d ",
+		str_p += snprintf(str_p, 8192 - (size_t)(str_p - str), "%d,%d,%d,%d,%d,%d ",
 			sc->data[i].type, sc->data[i].val1, sc->data[i].val2, sc->data[i].val3, sc->data[i].val4, sc->data[i].tick);
 	}
 	*(str_p++) = '\t';

@@ -54,12 +54,12 @@ static int party_journal_cache = 1000;
 int partydb_txt_config_read_sub(const char *w1,const char *w2)
 {
 	if( strcmpi(w1,"party_txt") == 0 )
-		strncpy(party_txt, w2, sizeof(party_txt) - 1);
+		auriga_strlcpy(party_txt, w2, sizeof(party_txt));
 #ifdef TXT_JOURNAL
 	else if( strcmpi(w1,"party_journal_enable") == 0 )
 		party_journal_enable = atoi( w2 );
 	else if( strcmpi(w1,"party_journal_file") == 0 )
-		strncpy( party_journal_file, w2, sizeof(party_journal_file) - 1 );
+		auriga_strlcpy( party_journal_file, w2, sizeof(party_journal_file) );
 	else if( strcmpi(w1,"party_journal_cache_interval") == 0 )
 		party_journal_cache = atoi( w2 );
 #endif
@@ -79,12 +79,12 @@ static int party_tostr(char *str, struct party *p)
 
 	nullpo_retr(1, p);
 
-	len = sprintf(str, "%d\t%s\t%d,%d\t",
+	len = snprintf(str, 8192, "%d\t%s\t%d,%d\t",
 		p->party_id, p->name, p->exp, p->item);
 
 	for(i = 0; i < MAX_PARTY; i++) {
 		struct party_member *m = &p->member[i];
-		len += sprintf(str + len, "%d,%d,%d\t%s\t",
+		len += snprintf(str + len, 8192 - (size_t)len, "%d,%d,%d\t%s\t",
 			m->account_id, m->char_id, m->leader, ((m->account_id > 0)? m->name: "NoMember"));
 	}
 	return 0;
@@ -110,7 +110,7 @@ static int party_fromstr(char *str, struct party *p)
 		return 1;
 
 	p->party_id = tmp_int[0];
-	strncpy(p->name, tmp_str, 24);
+	auriga_strlcpy(p->name, tmp_str, sizeof(p->name));
 	p->name[23] = '\0';	// force \0 terminal
 	p->exp  = tmp_int[1];
 	p->item = tmp_int[2];
@@ -138,7 +138,7 @@ static int party_fromstr(char *str, struct party *p)
 		m->account_id = tmp_int[0];
 		m->char_id    = tmp_int[1];
 		m->leader     = tmp_int[2];
-		strncpy(m->name, tmp_str, 24);
+		auriga_strlcpy(m->name, tmp_str, sizeof(m->name));
 		m->name[23] = '\0';	// force \0 terminal
 
 		for(j = 0; j < 2 && str != NULL; j++)

@@ -673,9 +673,8 @@ static void memmer_exit(void)
 
 int do_init_memmgr(const char* file)
 {
-	strncpy(memmer_logfile, file, sizeof(memmer_logfile) - 5);
-	memmer_logfile[sizeof(memmer_logfile)-5] = '\0';
-	strcat(memmer_logfile, ".log");
+	auriga_strlcpy(memmer_logfile, file, sizeof(memmer_logfile) - 5);
+	auriga_strlcat(memmer_logfile, ".log", sizeof(memmer_logfile));
 
 	atexit(memmer_exit);
 	printf("memmgr: initialized: %s\n", memmer_logfile);

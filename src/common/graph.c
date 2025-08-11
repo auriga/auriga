@@ -348,8 +348,8 @@ static void graph_data(struct graph* g,double value)
 				char buf2[256];
 				memset(buf2, ' ', len);
 				buf2[len] = 0;
-				strcat(buf2, buf);
-				strcpy(buf, buf2);
+				auriga_strlcat(buf2, buf, sizeof(buf2));
+				auriga_strlcpy(buf, buf2, sizeof(buf));
 			} else {
 				buf[6] = 0; // ÇUï∂éöà»ç~ÇÉJÉbÉg
 			}

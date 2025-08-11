@@ -106,12 +106,12 @@ static void login_httpd_account(struct httpd_session_data *sd,const char* url)
 			struct mmo_account ma;
 			char   buf[32];
 			memset(&ma,0,sizeof(ma));
-			strncpy(ma.userid,userid,24);
-			strncpy(ma.pass  ,passwd,24);
+			auriga_strlcpy(ma.userid, userid, sizeof(ma.userid));
+			auriga_strlcpy(ma.pass  , passwd, sizeof(ma.pass));
 			ma.sex = gender[0];
-			strncpy(ma.mail  ,"@"     ,40); // Žb’è
-			strncpy(ma.birth ,"000000", 7);
-			sprintf(buf,"( httpd %08lx )",httpd_get_ip(sd));
+			auriga_strlcpy(ma.mail  , "@"     , sizeof(ma.mail)); // Žb’è
+			auriga_strlcpy(ma.birth , "000000", sizeof(ma.birth));
+			snprintf(buf, sizeof(buf), "( httpd %08lx )", httpd_get_ip(sd));
 			if( !account_new(&ma,buf) ) {
 				msg = "Account creation failed.";
 			} else {
@@ -138,10 +138,11 @@ static void login_httpd_socket_ctrl_panel_func(int fd,char* usage,char* user,cha
 	struct socket_data *sd = session[fd];
 	struct login_session_data *ld = (struct login_session_data *)sd->session_data;
 
-	strcpy( usage,
+	auriga_strlcpy( usage,
 		( sd->func_parse == parse_login )? "login user" :
 		( sd->func_parse == parse_admin )? "administration" :
-		( sd->func_parse == parse_fromchar)? "char server" : "unknown" );
+		( sd->func_parse == parse_fromchar)? "char server" : "unknown",
+		256 );
 
 	if( sd->func_parse == parse_fromchar && sd->auth )
 	{
@@ -150,11 +151,11 @@ static void login_httpd_socket_ctrl_panel_func(int fd,char* usage,char* user,cha
 			if(server_fd[id]==fd)
 				break;
 		if( id<MAX_CHAR_SERVERS )
-			sprintf( user, "%s (%s)", ld->userid, server[id].name );
+			snprintf( user, 256, "%s (%s)", ld->userid, server[id].name );
 	}
 	else if( sd->func_parse == parse_login && sd->auth )
 	{
-		sprintf( user, "%s (%d)", ld->userid, ld->account_id );
+		snprintf( user, 256, "%s (%d)", ld->userid, ld->account_id );
 	}
 }
 
@@ -171,7 +172,7 @@ static int login_httpd_auth_func( struct httpd_access* a, struct httpd_session_d
 	if( !acc )
 		return 0;
 
-	strcpy( passwd, acc->pass );
+	auriga_strlcpy( passwd, acc->pass, 24 );
 	return 1;
 }
 
@@ -181,7 +182,7 @@ int login_httpd_config_read(const char *w1, const char *w2)
 {
 	char w3[1026];
 
-	memcpy(w3, w2, sizeof(w3));
+	auriga_strlcpy(w3, w2, sizeof(w3));
 
 	if( strcmpi(w1, "httpd_enable") == 0 )
 		socket_enable_httpd(atoi(w3));

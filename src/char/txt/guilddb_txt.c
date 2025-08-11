@@ -60,17 +60,17 @@ static int guildcastle_journal_cache = 1000;
 int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"guild_txt")==0){
-		strncpy(guild_txt,w2,sizeof(guild_txt) - 1);
+		auriga_strlcpy(guild_txt,w2,sizeof(guild_txt));
 	}
 	else if(strcmpi(w1,"castle_txt")==0){
-		strncpy(castle_txt,w2,sizeof(castle_txt) - 1);
+		auriga_strlcpy(castle_txt,w2,sizeof(castle_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"guild_journal_enable")==0){
 		guild_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"guild_journal_file")==0){
-		strncpy( guild_journal_file, w2, sizeof(guild_journal_file) - 1 );
+		auriga_strlcpy( guild_journal_file, w2, sizeof(guild_journal_file) );
 	}
 	else if(strcmpi(w1,"guild_journal_cache_interval")==0){
 		guild_journal_cache = atoi( w2 );
@@ -79,7 +79,7 @@ int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 		guildcastle_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"castle_journal_file")==0){
-		strncpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) - 1 );
+		auriga_strlcpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) );
 	}
 	else if(strcmpi(w1,"castle_journal_cache_interval")==0){
 		guildcastle_journal_cache = atoi( w2 );
@@ -103,14 +103,14 @@ static int guild_tostr(char *str, struct guild *g)
 	nullpo_retr(1, g);
 
 	// 基本データ
-	len = sprintf(str, "%d\t%s\t%s\t%d,%d,%d,%d\t%s#\t%s#\t",
+	len = snprintf(str, 16384, "%d\t%s\t%s\t%d,%d,%d,%d\t%s#\t%s#\t",
 		g->guild_id, g->name, g->master,
 		g->guild_lv, g->max_member, g->exp, g->skill_point, g->mes1, g->mes2);
 
 	// メンバー
 	for(i = 0; i < g->max_member; i++) {
 		struct guild_member *m = &g->member[i];
-		len += sprintf(str + len, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%s\t",
+		len += snprintf(str + len, 16384 - (size_t)len, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%s\t",
 			m->account_id,m->char_id,
 			m->hair,m->hair_color,m->gender,
 			m->class_,m->lv,m->exp,m->exp_payper,m->position,
@@ -120,26 +120,26 @@ static int guild_tostr(char *str, struct guild *g)
 	// 役職
 	for(i = 0; i < MAX_GUILDPOSITION; i++) {
 		struct guild_position *p = &g->position[i];
-		len += sprintf(str + len, "%d,%d\t%s#\t", p->mode, p->exp_mode, p->name);
+		len += snprintf(str + len, 16384 - (size_t)len, "%d,%d\t%s#\t", p->mode, p->exp_mode, p->name);
 	}
 
 	// エンブレム
-	len += sprintf(str + len, "%d,%d,", g->emblem_len, g->emblem_id);
+	len += snprintf(str + len, 16384 - (size_t)len, "%d,%d,", g->emblem_len, g->emblem_id);
 	for(i = 0; i < g->emblem_len; i++) {
-		len += sprintf(str + len, "%02x", (unsigned char)(g->emblem_data[i]));
+		len += snprintf(str + len, 16384 - (size_t)len, "%02x", (unsigned char)(g->emblem_data[i]));
 	}
-	len += sprintf(str + len, "$\t");
+	len += snprintf(str + len, 16384 - (size_t)len, "$\t");
 
 	// 同盟/敵対リスト
 	for(i = 0, c = 0; i < MAX_GUILDALLIANCE; i++) {
 		if(g->alliance[i].guild_id > 0)
 			c++;
 	}
-	len += sprintf(str + len, "%d\t", c);
+	len += snprintf(str + len, 16384 - (size_t)len, "%d\t", c);
 	for(i = 0; i < MAX_GUILDALLIANCE; i++) {
 		struct guild_alliance *a = &g->alliance[i];
 		if(a->guild_id > 0)
-			len += sprintf(str + len, "%d,%d\t%s\t", a->guild_id, a->opposition, a->name);
+			len += snprintf(str + len, 16384 - (size_t)len, "%d,%d\t%s\t", a->guild_id, a->opposition, a->name);
 	}
 
 	// 追放リスト
@@ -147,18 +147,18 @@ static int guild_tostr(char *str, struct guild *g)
 		if(g->explusion[i].account_id > 0)
 			c++;
 	}
-	len += sprintf(str + len, "%d\t", c);
+	len += snprintf(str + len, 16384 - (size_t)len, "%d\t", c);
 	for(i = 0; i < MAX_GUILDEXPLUSION; i++) {
 		struct guild_explusion *e = &g->explusion[i];
 		if(e->account_id > 0)
-			len += sprintf(str + len, "%d\t%s\t%s#\t", e->account_id, e->name, e->mes);
+			len += snprintf(str + len, 16384 - (size_t)len, "%d\t%s\t%s#\t", e->account_id, e->name, e->mes);
 	}
 
 	// ギルドスキル
 	for(i = 0; i < MAX_GUILDSKILL; i++) {
-		len += sprintf(str + len, "%d,%d ", g->skill[i].id, g->skill[i].lv);
+		len += snprintf(str + len, 16384 - (size_t)len, "%d,%d ", g->skill[i].id, g->skill[i].lv);
 	}
-	len += sprintf(str + len, "\t");
+	len += snprintf(str + len, 16384 - (size_t)len, "\t");
 
 	return 0;
 }
@@ -197,12 +197,12 @@ static int guild_fromstr(char *str, struct guild *g)
 	g->max_member  = tmp_int[2];
 	g->exp         = tmp_int[3];
 	g->skill_point = tmp_int[4];
-	strncpy(g->name, tmp_str[0], 24);
-	strncpy(g->master, tmp_str[1], 24);
+	auriga_strlcpy(g->name, tmp_str[0], sizeof(g->name));
+	auriga_strlcpy(g->master, tmp_str[1], sizeof(g->master));
 	tmp_str[2][strlen(tmp_str[2]) - 1] = 0;
-	strncpy(g->mes1, tmp_str[2], 60);
+	auriga_strlcpy(g->mes1, tmp_str[2], sizeof(g->mes1));
 	tmp_str[3][strlen(tmp_str[3]) - 1] = 0;
-	strncpy(g->mes2, tmp_str[3], 120);
+	auriga_strlcpy(g->mes2, tmp_str[3], sizeof(g->mes2));
 
 	// force \0 terminal
 	g->name[23]   = '\0';
@@ -233,7 +233,7 @@ static int guild_fromstr(char *str, struct guild *g)
 		m->exp        = tmp_int[7];
 		m->exp_payper = tmp_int[8];
 		m->position   = tmp_int[9];
-		strncpy(m->name, tmp_str[0], 24);
+		auriga_strlcpy(m->name, tmp_str[0], sizeof(m->name));
 		m->name[23] = '\0';	// force \0 terminal
 
 		for(j = 0; j < 2 && str != NULL; j++)	// 位置スキップ
@@ -254,7 +254,7 @@ static int guild_fromstr(char *str, struct guild *g)
 		p->mode     = tmp_int[0];
 		p->exp_mode = tmp_int[1];
 		tmp_str[0][strlen(tmp_str[0])-1] = 0;
-		strncpy(p->name, tmp_str[0], 24);
+		auriga_strlcpy(p->name, tmp_str[0], sizeof(p->name));
 		p->name[23] = '\0';	// force \0 terminal
 
 		for(j = 0; j < 2 && str != NULL; j++)	// 位置スキップ
@@ -290,7 +290,7 @@ static int guild_fromstr(char *str, struct guild *g)
 
 		a->guild_id   = tmp_int[0];
 		a->opposition = tmp_int[1];
-		strncpy(a->name, tmp_str[0], 24);
+		auriga_strlcpy(a->name, tmp_str[0], sizeof(a->name));
 		a->name[23] = '\0';	// force \0 terminal
 
 		for(j = 0; j < 2 && str != NULL; j++)	// 位置スキップ
@@ -321,9 +321,9 @@ static int guild_fromstr(char *str, struct guild *g)
 			step = 4;
 		}
 		e->account_id = tmp_int[0];
-		strncpy(e->name, tmp_str[0], 24);
+		auriga_strlcpy(e->name, tmp_str[0], sizeof(e->name));
 		tmp_str[1][strlen(tmp_str[1]) - 1] = 0;
-		strncpy(e->mes, tmp_str[1], 40);
+		auriga_strlcpy(e->mes, tmp_str[1], sizeof(e->mes));
 
 		// force \0 terminal
 		e->name[23] = '\0';
@@ -643,7 +643,7 @@ static int guildcastle_tostr(char *str, struct guild_castle *gc)
 {
 	nullpo_retr(1, gc);
 
-	sprintf(str, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+	snprintf(str, 1024, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		gc->castle_id,gc->guild_id,gc->economy,gc->defense,gc->triggerE,
 		gc->triggerD,gc->nextTime,gc->payTime,gc->createTime,gc->visibleC,
 		gc->guardian[0].visible,gc->guardian[1].visible,gc->guardian[2].visible,gc->guardian[3].visible,gc->guardian[4].visible,

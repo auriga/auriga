@@ -236,14 +236,14 @@ static int mmo_auth(struct login_session_data *sd)
 		time_t time_;
 		time(&time_);
 		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&time_));
-		sprintf(tmpstr+len,".%03d",0);
+		snprintf(tmpstr + len, sizeof(tmpstr) - len, ".%03d", 0);
 	}
 #else
 	{
 		struct timeval tv;
 		gettimeofday(&tv,NULL);
 		len = strftime(tmpstr,sizeof(tmpstr),"%Y-%m-%d %H:%M:%S",localtime(&(tv.tv_sec)));
-		sprintf(tmpstr+len,".%03d",(int)tv.tv_usec/1000);
+		snprintf(tmpstr + len, sizeof(tmpstr) - len, ".%03d", (int)tv.tv_usec/1000);
 	}
 #endif
 
@@ -279,8 +279,8 @@ static int mmo_auth(struct login_session_data *sd)
 			// V‹Kì¬
 			struct mmo_account ac2;
 			memset( &ac2, 0, sizeof(ac2) );
-			strncpy(ac2.userid,sd->userid,24);
-			strncpy(ac2.pass  ,sd->pass  ,24);
+			auriga_strlcpy(ac2.userid, sd->userid, sizeof(ac2.userid));
+			auriga_strlcpy(ac2.pass  , sd->pass  , sizeof(ac2.pass));
 			ac2.sex = sd->userid[len+1];
 			if( account_new(&ac2, tmpstr) == false )	// ì¬Ž¸”s
 				loginlog_log("auth new failed %s %s %d %s", tmpstr, sd->userid, newaccount, sd->pass);
@@ -330,13 +330,13 @@ static int mmo_auth(struct login_session_data *sd)
 			// ”FØŽ¸”s
 			char logbuf[1024],*p=logbuf;
 			int j;
-			p += sprintf(p, "auth failed pass error %s %s enc=%d recv[", tmpstr, sd->userid, sd->passwdenc);
+			p += snprintf(p, (size_t)(logbuf + sizeof(logbuf) - p), "auth failed pass error %s %s enc=%d recv[", tmpstr, sd->userid, sd->passwdenc);
 			for( j = 0; j < 16; j++ )
-				p += sprintf(p, "%02x", ((unsigned char *)sd->pass)[j]);
-			p += sprintf(p, "] calc[");
+				p += snprintf(p, (size_t)(logbuf + sizeof(logbuf) - p), "%02x", ((unsigned char *)sd->pass)[j]);
+			p += snprintf(p, (size_t)(logbuf + sizeof(logbuf) - p), "] calc[");
 			for( j = 0; j < 16; j++ )
-				p += sprintf(p, "%02x", ((unsigned char *)md5bin)[j]);
-			p += sprintf(p, "] keylen=%d newaccount=%d", sd->md5keylen, newaccount);
+				p += snprintf(p, (size_t)(logbuf + sizeof(logbuf) - p), "%02x", ((unsigned char *)md5bin)[j]);
+			p += snprintf(p, (size_t)(logbuf + sizeof(logbuf) - p), "] keylen=%d newaccount=%d", sd->md5keylen, newaccount);
 			loginlog_log(logbuf);
 
 			return 1;
@@ -1208,8 +1208,8 @@ int parse_login(int fd)
 			}
 
 			{
-				unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
-				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
+			unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
+			snprintf(sd->lastip, sizeof(sd->lastip), "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
 				loginlog_log("client connection request %s from %s", sd->userid, sd->lastip);
 			}
 
@@ -1253,8 +1253,8 @@ int parse_login(int fd)
 			WFIFOW(fd,0) = 0x0ae3;
 			WFIFOW(fd,2) = 34;
 			WFIFOL(fd,4) = 0;
-			strncpy(WFIFOP(fd,8),"S1000", 6);
-			strncpy(WFIFOP(fd,28),"token", 6);
+			auriga_strlcpy(WFIFOP(fd,8),  "S1000", 6);
+			auriga_strlcpy(WFIFOP(fd,28), "token", 6);
 			WFIFOSET(fd, 34);
 			RFIFOSKIP(fd,RFIFOREST(fd));
 		}
@@ -1300,8 +1300,8 @@ int parse_login(int fd)
 			}
 
 			{
-				unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
-				sprintf(sd->lastip,"%d.%d.%d.%d",p[0],p[1],p[2],p[3]);
+			unsigned char *p = (unsigned char *)&session[fd]->client_addr.sin_addr;
+			snprintf(sd->lastip, sizeof(sd->lastip), "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
 				loginlog_log(
 					"server connection request %s @ %d.%d.%d.%d:%d (%s)",
 					RFIFOP(fd,60),RFIFOB(fd,54),RFIFOB(fd,55),RFIFOB(fd,56),RFIFOB(fd,57),
@@ -1451,11 +1451,11 @@ static void login_config_set_defaultvalue(void)
 	config.login_port = 6900;
 	config.login_sport = 0;
 	config.login_sip = 0;
-	strncpy(config.login_shost,"",sizeof(config.login_shost));
-	strncpy(config.admin_pass,"",sizeof(config.admin_pass));
-	strncpy(config.ladmin_pass,"",sizeof(config.ladmin_pass));
-	strncpy(config.login_conf_filename,"conf/login_auriga.conf",sizeof(config.login_conf_filename));
-	strncpy(config.GM_account_filename,"conf/GM_account.txt",sizeof(config.GM_account_filename));
+	auriga_strlcpy(config.login_shost, "", sizeof(config.login_shost));
+	auriga_strlcpy(config.admin_pass, "", sizeof(config.admin_pass));
+	auriga_strlcpy(config.ladmin_pass, "", sizeof(config.ladmin_pass));
+	auriga_strlcpy(config.login_conf_filename, "conf/login_auriga.conf", sizeof(config.login_conf_filename));
+	auriga_strlcpy(config.GM_account_filename, "conf/GM_account.txt", sizeof(config.GM_account_filename));
 	config.login_autosave_time = 600;
 	config.login_version = 0;
 	config.login_type = 0;
@@ -1490,15 +1490,13 @@ static void login_config_read(const char *cfgName)
 
 		if( strcmpi(w1, "admin_pass") == 0 )
 		{
-			strncpy(config.admin_pass, w2, sizeof(config.admin_pass) -1);
-			config.admin_pass[sizeof(config.admin_pass) - 1] = '\0';
+			auriga_strlcpy(config.admin_pass, w2, sizeof(config.admin_pass));
 		}
 		else if( strcmpi(w1, "new_account") == 0 )
 			config.new_account_flag = ( atoi(w2) != 0 )? true : false;
 		else if( strcmpi(w1, "gm_account_filename") == 0 )
 		{
-			strncpy(config.GM_account_filename, w2, sizeof(config.GM_account_filename) - 1);
-			config.GM_account_filename[sizeof(config.GM_account_filename) - 1] = '\0';
+			auriga_strlcpy(config.GM_account_filename, w2, sizeof(config.GM_account_filename));
 		}
 		else if (strcmpi(w1, "login_port") == 0)
 		{
@@ -1521,8 +1519,7 @@ static void login_config_read(const char *cfgName)
 		}
 		else if( strcmpi(w1, "login_sip") == 0 )
 		{
-			memcpy(config.login_shost, w2, sizeof(config.login_shost));
-			config.login_shost[sizeof(config.login_shost)-1] = '\0';	// force \0 terminal
+			auriga_strlcpy(config.login_shost, w2, sizeof(config.login_shost));
 		}
 		else if( strcmpi(w1, "login_sport") == 0 )
 		{
@@ -1543,8 +1540,7 @@ static void login_config_read(const char *cfgName)
 			config.login_autosave_time = atoi(w2);
 		else if( strcmpi(w1, "ladmin_pass") == 0 )
 		{
-			strncpy(config.ladmin_pass, w2, sizeof(config.ladmin_pass) -1);
-			config.ladmin_pass[sizeof(config.ladmin_pass) - 1] = '\0';
+			auriga_strlcpy(config.ladmin_pass, w2, sizeof(config.ladmin_pass));
 		}
 		else if( strcmpi(w1, "detect_multiple_login") == 0 )
 			config.detect_multiple_login = ( atoi(w2) != 0)? true : false;
@@ -1694,7 +1690,6 @@ int do_init(int argc,char **argv)
 		if(strcmp(argv[i], "--login_config") == 0 || strcmp(argv[i], "--login-config") == 0)
 		{
 			strncpy(config.login_conf_filename, argv[i+1], sizeof(config.login_conf_filename));
-			config.login_conf_filename[sizeof(config.login_conf_filename)-1] = '\0';
 		}
 	}
 

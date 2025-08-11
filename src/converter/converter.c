@@ -29,6 +29,7 @@
 #include "malloc.h"
 #include "timer.h"
 #include "version.h"
+#include "utils.h"
 #include "sqldbs.h"
 
 #include "converter.h"
@@ -95,54 +96,54 @@ static int config_read(const char *cfgName)
 		// TXT files
 		if(strcmpi(w1,"account_filename")==0){
 			printf("set account_filename : %s\n",w2);
-			strncpy(account_filename, w2, sizeof(account_filename));
+			auriga_strlcpy(account_filename, w2, sizeof(account_filename));
 		} else if(strcmpi(w1,"char_txt")==0){
 			printf("set char_txt : %s\n",w2);
-			strncpy(char_txt, w2, sizeof(char_txt));
+			auriga_strlcpy(char_txt, w2, sizeof(char_txt));
 		} else if(strcmpi(w1,"GM_account_filename")==0){
 			printf("set GM_account_filename : %s\n",w2);
-			strncpy(GM_account_filename, w2, sizeof(GM_account_filename));
+			auriga_strlcpy(GM_account_filename, w2, sizeof(GM_account_filename));
 		} else if(strcmpi(w1,"pet_txt")==0){
 			printf("set pet_txt : %s\n",w2);
-			strncpy(pet_txt, w2, sizeof(pet_txt));
+			auriga_strlcpy(pet_txt, w2, sizeof(pet_txt));
 		} else if(strcmpi(w1,"storage_txt")==0){
 			printf("set storage_txt : %s\n",w2);
-			strncpy(storage_txt, w2, sizeof(storage_txt));
+			auriga_strlcpy(storage_txt, w2, sizeof(storage_txt));
 		} else if(strcmpi(w1,"party_txt")==0){
 			printf("set party_txt : %s\n",w2);
-			strncpy(party_txt, w2, sizeof(party_txt));
+			auriga_strlcpy(party_txt, w2, sizeof(party_txt));
 		} else if(strcmpi(w1,"guild_txt")==0){
 			printf("set guild_txt : %s\n",w2);
-			strncpy(guild_txt, w2, sizeof(guild_txt));
+			auriga_strlcpy(guild_txt, w2, sizeof(guild_txt));
 		} else if(strcmpi(w1,"guild_storage_txt")==0){
 			printf("set guild_storage_txt : %s\n",w2);
-			strncpy(guild_storage_txt, w2, sizeof(guild_storage_txt));
+			auriga_strlcpy(guild_storage_txt, w2, sizeof(guild_storage_txt));
 		} else if(strcmpi(w1,"castle_txt")==0){
 			printf("set castle_txt : %s\n",w2);
-			strncpy(castle_txt, w2, sizeof(castle_txt));
+			auriga_strlcpy(castle_txt, w2, sizeof(castle_txt));
 		} else if(strcmpi(w1,"homun_txt")==0){
 			printf("set homun_txt : %s\n",w2);
-			strncpy(homun_txt, w2, sizeof(homun_txt));
+			auriga_strlcpy(homun_txt, w2, sizeof(homun_txt));
 		} else if(strcmpi(w1,"account_reg_txt")==0){
 			printf("set account_reg_txt : %s\n",w2);
-			strncpy(account_reg_txt, w2, sizeof(account_reg_txt));
+			auriga_strlcpy(account_reg_txt, w2, sizeof(account_reg_txt));
 		} else if(strcmpi(w1,"scdata_txt")==0){
 			printf("set scdata_txt : %s\n",w2);
-			strncpy(scdata_txt, w2, sizeof(scdata_txt));
+			auriga_strlcpy(scdata_txt, w2, sizeof(scdata_txt));
 		} else if(strcmpi(w1,"mail_txt")==0){
 			printf("set mail_txt : %s\n",w2);
-			strncpy(mail_txt, w2, sizeof(mail_txt));
+			auriga_strlcpy(mail_txt, w2, sizeof(mail_txt));
 		} else if(strcmpi(w1,"mail_dir")==0){
 			printf("set mail_dir : %s\n",w2);
-			strncpy(mail_dir, w2, sizeof(mail_dir));
+			auriga_strlcpy(mail_dir, w2, sizeof(mail_dir));
 		} else if(strcmpi(w1,"mapreg_txt")==0){
 			printf("set mapreg_txt : %s\n",w2);
-			strncpy(mapreg_txt, w2, sizeof(mapreg_txt));
+			auriga_strlcpy(mapreg_txt, w2, sizeof(mapreg_txt));
 		}
 
 		// add for DB connection
 		else if(strcmpi(w1,"db_server_ip")==0){
-			strncpy(db_server_ip, w2, sizeof(db_server_ip));
+			auriga_strlcpy(db_server_ip, w2, sizeof(db_server_ip));
 			printf("set db_server_ip : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_port")==0){
@@ -150,19 +151,19 @@ static int config_read(const char *cfgName)
 			printf("set db_server_port : %d\n",db_server_port);
 		}
 		else if(strcmpi(w1,"db_server_id")==0){
-			strncpy(db_server_id, w2, sizeof(db_server_id));
+			auriga_strlcpy(db_server_id, w2, sizeof(db_server_id));
 			printf("set db_server_id : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_pw")==0){
-			strncpy(db_server_pw, w2, sizeof(db_server_pw));
+			auriga_strlcpy(db_server_pw, w2, sizeof(db_server_pw));
 			printf("set db_server_pw : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_logindb")==0){
-			strncpy(db_server_logindb, w2, sizeof(db_server_logindb));
+			auriga_strlcpy(db_server_logindb, w2, sizeof(db_server_logindb));
 			printf("set db_server_logindb : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_charset")==0){
-			strncpy(db_server_charset, w2, sizeof(db_server_charset));
+			auriga_strlcpy(db_server_charset, w2, sizeof(db_server_charset));
 			printf("set db_server_charset : %s\n",w2);
 		}
 		else if(strcmpi(w1,"db_server_keepalive")==0){
@@ -172,26 +173,25 @@ static int config_read(const char *cfgName)
 
 		// login SQL DB configuration
 		else if(strcmpi(w1,"login_db")==0){
-			strncpy(login_db, w2, sizeof(login_db));
+			auriga_strlcpy(login_db, w2, sizeof(login_db));
 			printf("set login_db : %s\n",w2);
 		} else if(strcmpi(w1,"login_db_account_id")==0){
-			strncpy(login_db_account_id, w2, sizeof(login_db_account_id));
+			auriga_strlcpy(login_db_account_id, w2, sizeof(login_db_account_id));
 			printf("set login_db_account_id : %s\n",w2);
 		} else if(strcmpi(w1,"login_db_userid")==0){
-			strncpy(login_db_userid, w2, sizeof(login_db_userid));
+			auriga_strlcpy(login_db_userid, w2, sizeof(login_db_userid));
 			printf("set login_db_userid : %s\n",w2);
 		} else if(strcmpi(w1,"login_db_user_pass")==0){
-			strncpy(login_db_user_pass, w2, sizeof(login_db_user_pass));
+			auriga_strlcpy(login_db_user_pass, w2, sizeof(login_db_user_pass));
 			printf("set login_db_user_pass : %s\n",w2);
 		} else if(strcmpi(w1,"login_db_level")==0){
-			strncpy(login_db_level, w2, sizeof(login_db_level));
+			auriga_strlcpy(login_db_level, w2, sizeof(login_db_level));
 			printf("set login_db_level : %s\n",w2);
 		}
 
 		// Map Server Tag Name
 		else if(strcmpi(w1,"map_server_tag")==0){
-			strncpy(map_server_tag, w2, sizeof(map_server_tag));
-			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
+			auriga_strlcpy(map_server_tag, w2, sizeof(map_server_tag));
 			printf("set map_server_tag : %s\n",map_server_tag);
 		}
 
@@ -224,8 +224,7 @@ int do_init(int argc,char **argv)
 
 	for(i = 1; i < argc - 1; i += 2) {
 		if(strcmp(argv[i], "--converter_config") == 0 || strcmp(argv[i], "--converter-config") == 0) {
-			strncpy(converter_conf_filename, argv[i+1], sizeof(converter_conf_filename));
-			converter_conf_filename[sizeof(converter_conf_filename)-1] = '\0';
+			auriga_strlcpy(converter_conf_filename, argv[i+1], sizeof(converter_conf_filename));
 		}
 	}
 

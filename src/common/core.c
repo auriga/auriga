@@ -66,8 +66,7 @@ static void pid_create(const char* file)
 	int lock;
 	size_t i;
 
-	strncpy(pid_file, file, sizeof(pid_file) - 5);
-	pid_file[sizeof(pid_file)-5] = '\0';
+	auriga_strlcpy(pid_file, file, sizeof(pid_file) - 5);
 
 	for(i = strlen(pid_file); i != 0; i--) {
 		if(pid_file[i] == '/' || pid_file[i] == '\\')
@@ -78,7 +77,7 @@ static void pid_create(const char* file)
 		}
 	}
 
-	strcat(pid_file, ".pid");
+	auriga_strlcat(pid_file, ".pid", sizeof(pid_file));
 	fp = lock_fopen(pid_file, &lock);
 	if(fp) {
 #ifdef WINDOWS

@@ -30,6 +30,7 @@
 #include "db.h"
 #include "malloc.h"
 #include "sqldbs.h"
+#include "utils.h"
 
 #include "converter.h"
 #include "login-converter.h"
@@ -184,8 +185,7 @@ int login_convert(void)
 					p += n;
 					if(sscanf(p, "%255[^\t,],%d%n", str, &val, &n)!=2)
 						break;
-					strncpy(dat.reg[j].str, str, 32);
-					dat.reg[j].str[31] = '\0';	// force \0 terminal
+					auriga_strlcpy(dat.reg[j].str, str, sizeof(dat.reg[j].str));
 					dat.reg[j].value   = val;
 					if(p[n] != ' ')
 						break;
@@ -202,7 +202,7 @@ int login_convert(void)
 
 			// åxçêó}êßÇÃÇΩÇﬂïœä∑ÇµÇƒÇ®Ç≠
 			if(strcmp(lastlogin,"-") == 0)
-				strcpy(lastlogin,"0000-00-00 00:00:00");
+				auriga_strlcpy(lastlogin, "0000-00-00 00:00:00", sizeof(lastlogin));
 
 			sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s` = '%d'", login_db, login_db_account_id, account_id);
 

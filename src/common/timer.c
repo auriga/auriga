@@ -69,7 +69,7 @@ int add_timer_func_list_real(int (*func)(int,unsigned int,int,void*),const char*
 	tfl = (struct timer_func_list *)aCalloc(1, sizeof(struct timer_func_list) + strlen(name) + 1);
 	tfl->next = tfl_root;
 	tfl->func = func;
-	strncpy(tfl->name, name, strlen(name) + 1);
+	auriga_strlcpy(tfl->name, name, strlen(name) + 1);
 	tfl_root = tfl;
 
 	return 0;

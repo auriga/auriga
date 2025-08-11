@@ -248,8 +248,8 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 		size_t len;
 		time_t time_;
 		time(&time_);
-		len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
-		sprintf(timestr+len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
+	len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+	snprintf(timestr+len, sizeof(timestr)-len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 	}
 
 	ip = (unsigned char*) &session[sd->fd]->client_addr.sin_addr;
@@ -262,7 +262,7 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 	}
 	else
 	{
-		sprintf(lenstr,"%d",len );
+		snprintf(lenstr, sizeof(lenstr), "%d", len);
 	}
 
 	// ログを出力
@@ -486,7 +486,7 @@ int httpd_make_date( char* dst, time_t date )
 {
 	const struct tm *t = gmtime( &date );
 
-	return sprintf( dst,
+	return snprintf( dst, 512,
 		"%s, %02d %s %04d %02d:%02d:%02d GMT\r\n",
 		weekdaymsg[t->tm_wday], t->tm_mday, monthmsg[t->tm_mon], (t->tm_year<1900)? t->tm_year+1900: t->tm_year,
 		t->tm_hour, t->tm_min, t->tm_sec );
@@ -513,13 +513,13 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 		sd->persist = 0;
 	}
 
-	len = sprintf( head,
+	len = snprintf( head, sizeof(head),
 		"HTTP/1.%d %d %s\r\n"
 		"Server: %s/revision%d\r\n", sd->http_ver,status,msg, servername, AURIGA_REVISION );
 
 	if( content_type )	// コンテントタイプ
 	{
-		len += sprintf( head + len, "Content-Type: %s\r\n",content_type );
+		len += snprintf( head + len, sizeof(head) - (size_t)len, "Content-Type: %s\r\n",content_type );
 	}
 
 	if( content_len == -1 )		// 長さが分からない
@@ -527,21 +527,21 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 		if( status!=304 )
 			sd->persist = 0;
 	} else {
-		len += sprintf(head + len,"Content-Length: %d\r\n",content_len);
+		len += snprintf(head + len, sizeof(head) - (size_t)len, "Content-Length: %d\r\n",content_len);
 	}
 
 	if( status==206 )	// Content-Range 通知
 	{
-		len += sprintf(head + len,"Content-Range: bytes %d-%d/%d\r\n", sd->range_start, sd->range_end, sd->inst_len );
+		len += snprintf(head + len, sizeof(head) - (size_t)len, "Content-Range: bytes %d-%d/%d\r\n", sd->range_start, sd->range_end, sd->inst_len );
 	}
 
 	if( sd->persist==0 )	// 持続性かどうか
 	{
-		len += sprintf(head + len,"Connection: close\r\n");
+		len += snprintf(head + len, sizeof(head) - (size_t)len, "Connection: close\r\n");
 	}
 	else if( sd->http_ver==0 ) // HTTP/1.0 なら Keep-Alive 通知
 	{
-		len += sprintf(head + len,"Connection: Keep-Alive\r\n");
+		len += snprintf(head + len, sizeof(head) - (size_t)len, "Connection: Keep-Alive\r\n");
 	}
 
 	if( status==401 )	// 認証が必要
@@ -555,8 +555,8 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 			{
 				char buf[128];
 				int i;
-				sprintf( buf, "%08x:%s", gettick(), sd->access->privkey );
-				sprintf( nonce, "%08x", gettick() );
+				snprintf( buf, sizeof(buf), "%08x:%s", gettick(), sd->access->privkey );
+				snprintf( nonce, sizeof(nonce), "%08x", gettick() );
 				MD5_String( buf, nonce+8 );
 
 				for( i=0; nonce_log[ nonce_log_pos ].access_flag && i<NONCE_LOG_SIZE; i++ )
@@ -567,33 +567,33 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 
 				nonce_log[ nonce_log_pos ].access_flag = 1;
 				nonce_log[ nonce_log_pos ].nc = 1;
-				strcpy( nonce_log[ nonce_log_pos ].nonce, nonce );
+				auriga_strlcpy( (char*)nonce_log[ nonce_log_pos ].nonce, nonce, sizeof(nonce_log[ nonce_log_pos ].nonce) );
 				nonce_log_pos = ( nonce_log_pos + 1 ) % NONCE_LOG_SIZE;
 			}
-			len += sprintf( head+len,
+			len += snprintf( head+len, sizeof(head) - (size_t)len,
 				"WWW-Authenticate: Digest realm=\"%s\", nonce=\"%s\", algorithm=MD5, qop=\"auth\", stale=%s\r\n",
 				sd->access->realm, nonce, stale[sd->auth_digest_stale] );
 		}
 		else
 		{
-			len += sprintf( head+len,
+			len += snprintf( head+len, sizeof(head) - (size_t)len,
 				"WWW-Authenticate: Basic realm=\"%s\"\r\n", sd->access->realm );
 		}
 	}
 
 	if( status==503 )	// Retry-after 通知
 	{
-		len += sprintf( head + len, "Retry-After: %d\r\n", (server_max_requests_period+999)/1000 );
+		len += snprintf( head + len, sizeof(head) - (size_t)len, "Retry-After: %d\r\n", (server_max_requests_period+999)/1000 );
 	}
 
 	if( sd->reshead_flag & HTTPD_RESHEAD_ACCRANGE )	// Accept-Ranges 通知
 	{
-		len += sprintf( head + len, "Accept-Ranges: bytes\r\n" );
+		len += snprintf( head + len, sizeof(head) - (size_t)len, "Accept-Ranges: bytes\r\n" );
 	}
 
 	if( sd->date && (sd->reshead_flag & HTTPD_RESHEAD_LASTMOD))	// Last-modified の通知
 	{
-		strcpy( head+len, "Last-Modified: " );
+		auriga_strlcpy( head+len, "Last-Modified: ", sizeof(head) - (size_t)len );
 		len += 15;
 		len += httpd_make_date( head+len, sd->date );
 	}
@@ -601,14 +601,14 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 	if( status!=500 )	// Date の通知
 	{
 		time_t tmp = time( &tmp );
-		strcpy( head+len, "Date: " );
+		auriga_strlcpy( head+len, "Date: ", sizeof(head) - (size_t)len );
 		len += 6;
 		len += httpd_make_date( head+len, tmp );
 	}
 
 	httpd_log( sd, status, content_len );	// ログに記録
 
-	len += sprintf( head+len, "\r\n" );
+	len += snprintf( head+len, sizeof(head) - (size_t)len, "\r\n" );
 	memcpy(WFIFOP(sd->fd,0),head,len);
 	WFIFOSET(sd->fd,len);
 	sd->status   = HTTPD_SEND_HEADER;
@@ -970,7 +970,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n>=sizeof(username) )
 					return 0;
-				strcpy( username, buf );
+				auriga_strlcpy( username, buf, sizeof(username) );
 				i += 11 + n;
 			}
 			else
@@ -982,7 +982,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n>=sizeof(realm) || strcmp(buf,a->realm)!=0 )
 					return 0;
-				strcpy( realm, buf );
+				auriga_strlcpy( realm, buf, sizeof(realm) );
 				i += 8 + n;
 			}
 			else
@@ -994,7 +994,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n>=sizeof(nonce) || n<40  )
 					return 0;
-				strcpy( nonce, buf );
+				auriga_strlcpy( nonce, buf, sizeof(nonce) );
 				i += 8 + n;
 			}
 			else
@@ -1033,7 +1033,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n>=sizeof(cnonce))
 					return 0;
-				strcpy( cnonce, buf );
+				auriga_strlcpy( cnonce, buf, sizeof(cnonce) );
 				i+= 9 + n;
 			}
 			else
@@ -1045,7 +1045,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n!=8 )
 					return 0;
-				strcpy( nc, buf );
+				auriga_strlcpy( nc, buf, sizeof(nc) );
 				i += 11;
 			}
 			else
@@ -1057,7 +1057,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			{
 				if( n!=32 )
 					return 0;
-				strcpy( response, buf );
+				auriga_strlcpy( response, buf, sizeof(response) );
 				i += 43;
 			}
 			else
@@ -1181,12 +1181,12 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		// A1 計算
 		if( passwd[0] )								// 認証関数による
 		{
-			sprintf( buf, "%s:%s:%s", username, realm, passwd );
+			snprintf( buf, sizeof(buf), "%s:%s:%s", username, realm, passwd );
 			MD5_String( buf, a1 );
 		}
 		else if( au->type == HTTPD_USER_PASSWD_PLAIN )	// プレーンパスワード
 		{
-			sprintf( buf, "%s:%s:%s", username, realm, au->passwd );
+			snprintf( buf, sizeof(buf), "%s:%s:%s", username, realm, au->passwd );
 			MD5_String( buf, a1 );
 		}
 		else if( au->type == HTTPD_USER_PASSWD_DIGEST )	// 計算済み
@@ -1197,16 +1197,16 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			return 0;
 
 		// A2 計算
-		sprintf( buf,"%s:%s", method[sd->method], uri );
+		snprintf( buf, sizeof(buf), "%s:%s", method[sd->method], uri );
 		MD5_String( buf, a2 );
 
 		// response 計算
-		sprintf( buf,"%s:%s:%s:%s:%s:%s", a1, nonce, nc, cnonce, "auth", a2 );
+		snprintf( buf, sizeof(buf), "%s:%s:%s:%s:%s:%s", a1, nonce, nc, cnonce, "auth", a2 );
 		MD5_String( buf, res );
 
 		if( strcmpi( res, response )==0 )
 		{
-			strcpy( sd->user, username );
+			auriga_strlcpy( sd->user, username, sizeof(sd->user) );
 			return 1;
 		}
 	}
@@ -1233,7 +1233,7 @@ int httpd_check_access_user_basic( struct httpd_access *a, struct httpd_session_
 		// 登録された認証関数があればそれを使って比較する
 		if( auth_func[a->auth_func_id] && auth_func[a->auth_func_id]( a, sd, name, passwd2 ) && strcmp(passwd, passwd2)==0 )
 		{
-			strcpy( sd->user, name );
+			auriga_strlcpy( sd->user, name, sizeof(sd->user) );
 			return 1;
 		}
 
@@ -2000,8 +2000,8 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		int i = atn_rand() ^ gettick();
 		char tmp_out[256], tmp_err[256];
-		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		snprintf( tmp_out, sizeof(tmp_out), "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+		snprintf( tmp_err, sizeof(tmp_err), "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		sd->cgi_hOut = CreateFile( tmp_out, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
 									FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
 		sd->cgi_hErr = CreateFile( tmp_err, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
@@ -2043,7 +2043,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		size_t i, x;
 		int j, y;
-		sprintf( szCwd, "%s\\", szPath );
+		snprintf( szCwd, sizeof(szCwd), "%s\\", szPath );
 		for( j=y=0, x=i=strlen(szCwd); sd->url[j]; j++,i++ )
 		{
 			szCwd[i] = ( sd->url[j] == '/' )? '\\' : sd->url[j];
@@ -2054,7 +2054,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		}
 		szCwd[x]='\0';
 		szCmd[0]='.'; szCmd[1]='\\';
-		strcpy( szCmd+2, sd->url+y );
+		auriga_strlcpy( szCmd+2, sd->url+y, sizeof(szCmd) - 2 );
 	}
 
 	// ------------
@@ -2063,7 +2063,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		FILE *fp;
 		char buf[256], cmd2[2048];
-		sprintf( cmd2, "%s%s", document_root, sd->url );
+		snprintf( cmd2, sizeof(cmd2), "%s%s", document_root, sd->url );
 		if( (fp = fopen( cmd2, "rb" )) ==NULL )
 		{
 			// 失敗
@@ -2418,7 +2418,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// ------------
 	{
 		int j, i, x, y;
-		sprintf( cwd, "%s/", path );
+		snprintf( cwd, sizeof(cwd), "%s/", path );
 		for( j=y=0, x=i=strlen(cwd); sd->url[j]; j++,i++ )
 		{
 			cwd[i] = ( sd->url[j] == '\\' )? '/' : sd->url[j];
@@ -2429,7 +2429,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		}
 		cwd[x]='\0';
 		cmd[0]='.'; cmd[1]='/';
-		strcpy( cmd+2, sd->url+y );
+		auriga_strlcpy( cmd+2, sd->url+y, sizeof(cmd) - 2 );
 	}
 
 	// ------------
@@ -2838,26 +2838,26 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	envsize /= sizeof(char*);
 
 	// 必ず設定するもの
-	i  = sprintf( envp[ j++ ] = env    , "REMOTE_ADDR=%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3] ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "REMOTE_PORT=%d", port ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "DOCUMENT_ROOT=%s", path ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SCRIPT_NAME=/%s", sd->url ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_SOFTWARE=%s/revision%d", servername, AURIGA_REVISION ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_PROTOCOL=HTTP/1.0" ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_NAME=%s", httpd_cgi_server_name ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "REQUEST_METHOD=%s", method[ httpd_get_method(sd) ] ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "GATEWAY_INTERFACE=CGI/1.1" ) + 1;
+	i  = snprintf( envp[ j++ ] = env    , envsize - i, "REMOTE_ADDR=%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3] ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "REMOTE_PORT=%d", port ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "DOCUMENT_ROOT=%s", path ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "SCRIPT_NAME=/%s", sd->url ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_SOFTWARE=%s/revision%d", servername, AURIGA_REVISION ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_PROTOCOL=HTTP/1.0" ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_NAME=%s", httpd_cgi_server_name ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "REQUEST_METHOD=%s", method[ httpd_get_method(sd) ] ) + 1;
+	i += snprintf( envp[ j++ ] = env + i, envsize - i, "GATEWAY_INTERFACE=CGI/1.1" ) + 1;
 
 	if( httpd_get_method(sd) == HTTPD_METHOD_POST )		// POST ならクエリの長さと Content-type
 	{
-		i += sprintf( envp[ j++ ] = env + i, "CONTENT_LENGTH=%d", sd->query_len ) + 1;
-		i += sprintf( envp[ j++ ] = env + i, "CONTENT_TYPE=%s",
+		i += snprintf( envp[ j++ ] = env + i, envsize - i, "CONTENT_LENGTH=%d", sd->query_len ) + 1;
+		i += snprintf( envp[ j++ ] = env + i, envsize - i, "CONTENT_TYPE=%s",
 						sd->content_type ? (char*)sd->content_type : "application/x-www-form-urlencoded" ) + 1;
 	}
 	else if( httpd_get_method(sd) == HTTPD_METHOD_GET )	// GET ならクエリを直接埋め込み
 	{
-		i += sprintf( envp[ j++ ] = env + i, "QUERY_STRING=%s", sd->query ? (char*)sd->query : "" ) + 1;
+		i += snprintf( envp[ j++ ] = env + i, envsize - i, "QUERY_STRING=%s", sd->query ? (char*)sd->query : "" ) + 1;
 	}
 
 	if( sd->user[0] )	// 認証してるならユーザー名と認証方法
@@ -3159,8 +3159,8 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 
 	// ユーザー追加
 	au = a->user + (a->user_count++);
-	strcpy( au->name, name );
-	strcpy( au->passwd, passwd );
+	auriga_strlcpy( au->name, name, sizeof(au->name) );
+	auriga_strlcpy( au->passwd, passwd, sizeof(au->passwd) );
 	au->type = type;
 
 	// Digest 認証モードで、プレーンパスワードだった場合、あらかじめ A1 を計算しておく
@@ -3168,7 +3168,7 @@ void httpd_config_read_add_authuser( struct httpd_access *a, const char *name, c
 	{
 		char buf[512];
 		au->type = HTTPD_USER_PASSWD_DIGEST;
-		sprintf( buf, "%s:%s:%s", name, a->realm, passwd );
+		snprintf( buf, sizeof(buf), "%s:%s:%s", name, a->realm, passwd );
 		MD5_String( buf, au->passwd );
 	}
 }

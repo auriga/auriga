@@ -51,14 +51,14 @@ static int elem_journal_cache = 1000;
 int elemdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"elem_txt")==0){
-		strncpy(elem_txt, w2, sizeof(elem_txt) - 1);
+		auriga_strlcpy(elem_txt, w2, sizeof(elem_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"elem_journal_enable")==0){
 		elem_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"elem_journal_file")==0){
-		strncpy( elem_journal_file, w2, sizeof(elem_journal_file) - 1 );
+		auriga_strlcpy( elem_journal_file, w2, sizeof(elem_journal_file) );
 	}
 	else if(strcmpi(w1,"elem_journal_cache_interval")==0){
 		elem_journal_cache = atoi( w2 );
@@ -81,7 +81,7 @@ static int elem_tostr(char *str, struct mmo_elemstatus *e)
 
 	nullpo_retr(1, e);
 
-	str_p += sprintf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
+	str_p += snprintf(str, 8192, "%d,%d\t%d,%d\t%d,%d,%d,%u",
 		e->elem_id, e->class_, e->account_id, e->char_id, e->mode, e->hp,e->sp, e->limit);
 
 	*(str_p++) = '\t';

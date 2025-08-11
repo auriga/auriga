@@ -70,20 +70,21 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 	size_t i, j;
 	char *output, *p;
 
-	output = (char *)aCalloc((3 + (len - 1) / 16) * 96, sizeof(char));	// 1行あたり96文字として計算
+	{
+		const size_t output_size = (3 + (len ? ((len - 1) / 16) : 0)) * 96;
+		output = (char *)aCalloc(output_size, sizeof(char));	// 1行あたり96文字として計算
 
-	strcat(output, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" NEWLINE);
-	strcat(output, "----  -----------------------------------------------   ----------------");
+		auriga_strlcpy(output, "      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F   0123456789ABCDEF" NEWLINE, output_size);
+		auriga_strlcat(output, "----  -----------------------------------------------   ----------------", output_size);
 
-	p = output + strlen(output);
+		p = output + strlen(output);
 	for(i = 0; i < len; i += 16) {
-		p += sprintf(p, NEWLINE "%04lX  ", (unsigned long)i);
+		p += snprintf(p, (output + output_size) - p, NEWLINE "%04lX  ", (unsigned long)i);
 		for(j = i; j < i + 16; j++) {
 			if(j < len) {
-				p += sprintf(p, "%02x ", buf[j]);
+				p += snprintf(p, (output + output_size) - p, "%02x ", buf[j]);
 			} else {
-				strcat(p, "   ");
-				p += 3;
+				p += snprintf(p, (output + output_size) - p, "   ");
 			}
 		}
 		*p++ = ' ';
@@ -96,12 +97,47 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 				*p++ = ' ';
 		}
 	}
-	strcat(p, NEWLINE);
+	auriga_strlcat(p, NEWLINE, (output + output_size) - p);
+	}
 
-	fprintf(fp, output);
+	fputs(output, fp);
 	fflush(fp);
 
 	aFree(output);
+}
+
+/*==========================================
+ * 安全な文字列ユーティリティ
+ *------------------------------------------
+ */
+size_t auriga_strlcpy(char *dst, const char *src, size_t siz)
+{
+    size_t src_len = strlen(src);
+    if (siz != 0) {
+        size_t copy_len = (src_len >= siz) ? (siz - 1) : src_len;
+        if (copy_len > 0) {
+            memcpy(dst, src, copy_len);
+        }
+        dst[copy_len] = '\0';
+    }
+    return src_len;
+}
+
+size_t auriga_strlcat(char *dst, const char *src, size_t siz)
+{
+    size_t dst_len = strlen(dst);
+    size_t src_len = strlen(src);
+    if (dst_len < siz) {
+        size_t space = siz - dst_len - 1;
+        size_t copy_len = (src_len > space) ? space : src_len;
+        if (copy_len > 0) {
+            memcpy(dst + dst_len, src, copy_len);
+            dst[dst_len + copy_len] = '\0';
+        } else {
+            dst[dst_len] = '\0';
+        }
+    }
+    return dst_len + src_len;
 }
 
 /*==========================================

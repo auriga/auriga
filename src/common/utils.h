@@ -26,6 +26,24 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+// C11 固定幅整数と書式マクロ
+#if defined(_MSC_VER)
+#  include <stdint.h>
+#  if _MSC_VER >= 1800
+#    include <inttypes.h>
+#  else
+#    ifndef PRId64
+#      define PRId64 "I64d"
+#    endif
+#    ifndef SCNd64
+#      define SCNd64 "I64d"
+#    endif
+#  endif
+#else
+#  include <stdint.h>
+#  include <inttypes.h>
+#endif
+
 // =====================
 // Platform
 // ---------------------
@@ -43,37 +61,48 @@
 
 
 // =====================
-// stdint.h
+// 固定幅整数型（C11 標準）
+// 既存コードのエイリアスは維持しつつ、基盤は <stdint.h> に統一
 // ---------------------
-typedef char  int8;
-typedef short int16;
-typedef int   int32;
+typedef int8_t   int8;
+typedef int16_t  int16;
+typedef int32_t  int32;
 
-typedef signed char  sint8;
-typedef signed short sint16;
-typedef signed int   sint32;
+typedef int8_t   sint8;
+typedef int16_t  sint16;
+typedef int32_t  sint32;
 
-typedef unsigned char  uint8;
-typedef unsigned short uint16;
-typedef unsigned int   uint32;
+typedef uint8_t  uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
 
-#if defined(_MSC_VER)
-typedef __int64          int64;
-typedef signed __int64   sint64;
-typedef unsigned __int64 uint64;
-#else
-typedef long long          int64;
-typedef signed long long   sint64;
-typedef unsigned long long uint64;
-#endif
+typedef int64_t   int64;
+typedef int64_t   sint64;
+typedef uint64_t  uint64;
 
 #ifdef __64BIT__
-typedef uint64 uintptr;
-typedef int64  intptr;
+typedef uintptr_t uintptr;
+typedef intptr_t  intptr;
 #else
-typedef uint32 uintptr;
-typedef int32  intptr;
+typedef uint32_t  uintptr;
+typedef int32_t   intptr;
 #endif
+
+// 型サイズの妥当性確認（ビルド時チェック）
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#  define AURIGA_STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
+#else
+#  define AURIGA_STATIC_ASSERT(cond, msg)
+#endif
+
+AURIGA_STATIC_ASSERT(sizeof(int8)   == 1,  "int8 size must be 1 byte");
+AURIGA_STATIC_ASSERT(sizeof(uint8)  == 1,  "uint8 size must be 1 byte");
+AURIGA_STATIC_ASSERT(sizeof(int16)  == 2,  "int16 size must be 2 bytes");
+AURIGA_STATIC_ASSERT(sizeof(uint16) == 2,  "uint16 size must be 2 bytes");
+AURIGA_STATIC_ASSERT(sizeof(int32)  == 4,  "int32 size must be 4 bytes");
+AURIGA_STATIC_ASSERT(sizeof(uint32) == 4,  "uint32 size must be 4 bytes");
+AURIGA_STATIC_ASSERT(sizeof(int64)  == 8,  "int64 size must be 8 bytes");
+AURIGA_STATIC_ASSERT(sizeof(uint64) == 8,  "uint64 size must be 8 bytes");
 
 
 // =====================
@@ -112,10 +141,8 @@ typedef int32  intptr;
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE)
 #	define BIGNUMCODE ".0f"
-#elif defined(WINDOWS) && defined(_MSC_VER)
-#	define BIGNUMCODE "I64d"
 #else
-#	define BIGNUMCODE "lld"
+#	define BIGNUMCODE PRId64
 #endif
 
 // =====================
@@ -123,10 +150,8 @@ typedef int32  intptr;
 // ---------------------
 #if defined(BIGNUMBER_DOUBLE)
 #	define BIGNUMSCANCODE "lf"
-#elif defined(WINDOWS) && defined(_MSC_VER)
-#	define BIGNUMSCANCODE "I64d"
 #else
-#	define BIGNUMSCANCODE "lld"
+#	define BIGNUMSCANCODE SCNd64
 #endif
 
 
@@ -295,11 +320,19 @@ unsigned long strtobxul(const char *s, char **endptr, int base);
 void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 // =====================
+// 安全な文字列ユーティリティ
+// ---------------------
+size_t auriga_strlcpy(char *dst, const char *src, size_t siz);
+size_t auriga_strlcat(char *dst, const char *src, size_t siz);
+
+// =====================
 // skill.c
 // ---------------------
 
 #ifndef WINDOWS
-#define max(a,b) ({int _a = (a), _b = (b); _a > _b ? _a : _b;})
+#  ifndef max
+#    define max(a,b) (( (a) > (b) ) ? (a) : (b))
+#  endif
 #endif
 
 #endif	// _UTILS_H_

@@ -51,14 +51,14 @@ static int homun_journal_cache = 1000;
 int homundb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"homun_txt")==0){
-		strncpy(homun_txt, w2, sizeof(homun_txt) - 1);
+		auriga_strlcpy(homun_txt, w2, sizeof(homun_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"homun_journal_enable")==0){
 		homun_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"homun_journal_file")==0){
-		strncpy( homun_journal_file, w2, sizeof(homun_journal_file) - 1 );
+		auriga_strlcpy( homun_journal_file, w2, sizeof(homun_journal_file) );
 	}
 	else if(strcmpi(w1,"homun_journal_cache_interval")==0){
 		homun_journal_cache = atoi( w2 );
@@ -92,7 +92,7 @@ static int homun_tostr(char *str, struct mmo_homunstatus *h)
 	else if(h->intimate > 100000)
 		h->intimate = 100000;
 
-	str_p += sprintf(str, "%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
+	str_p += snprintf(str, 8192, "%d,%d,%s\t%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d\t%d,%d,%d,%d,%d",
 		h->homun_id,h->class_,h->name,
 		h->account_id,h->char_id,
 		h->base_level,h->base_exp,h->max_hp,h->hp,h->max_sp,h->sp,
@@ -106,7 +106,7 @@ static int homun_tostr(char *str, struct mmo_homunstatus *h)
 	for( i= 0; i < MAX_HOMSKILL; i++) {
 		if(h->skill[i].id && h->skill[i].flag != 1) {
 			sk_lv = (h->skill[i].flag == 0)? h->skill[i].lv: h->skill[i].flag - 2;
-			str_p += sprintf(str_p, "%d,%d ", h->skill[i].id, sk_lv);
+			str_p += snprintf(str_p, 8192 - (size_t)(str_p - str), "%d,%d ", h->skill[i].id, sk_lv);
 		}
 	}
 	*(str_p++) = '\t';
