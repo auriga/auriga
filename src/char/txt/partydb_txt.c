@@ -54,12 +54,12 @@ static int party_journal_cache = 1000;
 int partydb_txt_config_read_sub(const char *w1,const char *w2)
 {
 	if( strcmpi(w1,"party_txt") == 0 )
-		strncpy(party_txt, w2, sizeof(party_txt) - 1);
+		auriga_strlcpy(party_txt, w2, sizeof(party_txt));
 #ifdef TXT_JOURNAL
 	else if( strcmpi(w1,"party_journal_enable") == 0 )
 		party_journal_enable = atoi( w2 );
 	else if( strcmpi(w1,"party_journal_file") == 0 )
-		strncpy( party_journal_file, w2, sizeof(party_journal_file) - 1 );
+		auriga_strlcpy( party_journal_file, w2, sizeof(party_journal_file) );
 	else if( strcmpi(w1,"party_journal_cache_interval") == 0 )
 		party_journal_cache = atoi( w2 );
 #endif

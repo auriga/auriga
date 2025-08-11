@@ -60,17 +60,17 @@ static int guildcastle_journal_cache = 1000;
 int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"guild_txt")==0){
-		strncpy(guild_txt,w2,sizeof(guild_txt) - 1);
+		auriga_strlcpy(guild_txt,w2,sizeof(guild_txt));
 	}
 	else if(strcmpi(w1,"castle_txt")==0){
-		strncpy(castle_txt,w2,sizeof(castle_txt) - 1);
+		auriga_strlcpy(castle_txt,w2,sizeof(castle_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"guild_journal_enable")==0){
 		guild_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"guild_journal_file")==0){
-		strncpy( guild_journal_file, w2, sizeof(guild_journal_file) - 1 );
+		auriga_strlcpy( guild_journal_file, w2, sizeof(guild_journal_file) );
 	}
 	else if(strcmpi(w1,"guild_journal_cache_interval")==0){
 		guild_journal_cache = atoi( w2 );
@@ -79,7 +79,7 @@ int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 		guildcastle_journal_enable = atoi( w2 );
 	}
 	else if(strcmpi(w1,"castle_journal_file")==0){
-		strncpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) - 1 );
+		auriga_strlcpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) );
 	}
 	else if(strcmpi(w1,"castle_journal_cache_interval")==0){
 		guildcastle_journal_cache = atoi( w2 );

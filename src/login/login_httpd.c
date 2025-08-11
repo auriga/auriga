@@ -182,7 +182,7 @@ int login_httpd_config_read(const char *w1, const char *w2)
 {
 	char w3[1026];
 
-	memcpy(w3, w2, sizeof(w3));
+	auriga_strlcpy(w3, w2, sizeof(w3));
 
 	if( strcmpi(w1, "httpd_enable") == 0 )
 		socket_enable_httpd(atoi(w3));

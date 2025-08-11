@@ -45,10 +45,10 @@ static char mail_txt[1024] = "save/mail.txt";
 int maildb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"mail_txt")==0) {
-		strncpy(mail_txt, w2, sizeof(mail_txt) - 1);
+		auriga_strlcpy(mail_txt, w2, sizeof(mail_txt));
 	}
 	else if(strcmpi(w1,"mail_dir")==0) {
-		strncpy(mail_dir, w2, sizeof(mail_dir) - 1);
+		auriga_strlcpy(mail_dir, w2, sizeof(mail_dir));
 	}
 	else {
 		return 0;
@@ -69,7 +69,7 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 
 	nullpo_retr(false, md);
 
-	sprintf(filename, "%s%d.txt", mail_dir, char_id);
+	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
 
 	fp = fopen(filename, "a");
 	if(fp == NULL)
@@ -109,7 +109,7 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data md[MAI
 
 	nullpo_retr(false, md);
 
-	sprintf(filename, "%s%d.txt", mail_dir, char_id);
+	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
 
 	fp = lock_fopen(filename, &lock);
 	if(fp == NULL)
@@ -152,7 +152,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data md
 
 	nullpo_retr(false, md);
 
-	sprintf(filename, "%s%d.txt", mail_dir, char_id);
+	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
 	if((fp = fopen(filename, "r")) == NULL) {
 		printf("maildb_txt_read_mail: open [%s] failed !\n", filename);
 		ret = false;
@@ -437,7 +437,7 @@ bool maildb_txt_delete(int char_id)
 			aFree(m);
 		}
 	}
-	sprintf(filename, "%s%d.txt", mail_dir, char_id);
+	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
 	remove(filename);
 
 	return false;

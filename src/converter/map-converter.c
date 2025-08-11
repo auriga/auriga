@@ -60,7 +60,7 @@ static int mapreg_fromstr(const char *line,struct script_mapreg *reg)
 			return 1;
 		reg->u.value = v;
 	}
-	strncpy(reg->name, buf, 256);
+	auriga_strlcpy(reg->name, buf, sizeof(reg->name));
 	reg->index = i;
 
 	return 0;
@@ -73,15 +73,15 @@ static int mapreg_tosql(struct script_mapreg *reg)
 	char tmp_sql[65536];
 	char *p = tmp_sql;
 
-	p += sprintf(p, "INSERT INTO `mapreg` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d',",
+	p += snprintf(p, (size_t)(tmp_sql + sizeof(tmp_sql) - p), "INSERT INTO `mapreg` (`server_tag`,`reg`,`index`,`value`) VALUES ('%s','%s','%d',",
 		strecpy(buf1,map_server_tag), strecpy(buf2,reg->name), reg->index);
 
 	if(reg->name[strlen(reg->name)-1] == '$') {
 		char buf3[4096];
-		sprintf(p, "'%s')", strecpy(buf3,reg->u.str));
+		snprintf(p, (size_t)(tmp_sql + sizeof(tmp_sql) - p), "'%s')", strecpy(buf3,reg->u.str));
 		aFree(reg->u.str);
 	} else {
-		sprintf(p, "'%d')", reg->u.value);
+		snprintf(p, (size_t)(tmp_sql + sizeof(tmp_sql) - p), "'%d')", reg->u.value);
 	}
 
 	sqldbs_simplequery(&mysql_handle, tmp_sql);

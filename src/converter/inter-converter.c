@@ -83,7 +83,7 @@ static int accreg_tosql(struct accreg *reg)
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
 			sqldbs_query(&mysql_handle,
 				"INSERT INTO `accountreg` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
-				reg->account_id, strecpy(temp_str,reg->reg[j].str), reg->reg[j].value
+				reg->account_id, auriga_strlcpy(temp_str,reg->reg[j].str,sizeof(temp_str)), reg->reg[j].value
 			);
 		}
 	}
@@ -355,7 +355,7 @@ int inter_convert(void)
 		// mail_data
 		for(i=0; i<list_num; i++) {
 			char filename[1056];
-			sprintf(filename,"%s%d.txt",mail_dir,charid_list[i]);
+			snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, charid_list[i]);
 			fp = fopen(filename,"r");
 			if(fp == NULL) {
 				printf("cant't read : %s\n",filename);
