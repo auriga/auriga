@@ -762,8 +762,13 @@ static int grfio_entryread(const char *gfname,int gentry)
 		aFree(grf_filelist);
 		break;
 
-	case 0x0300: //****** Grf version 03xx ******
-		diff = 4;
+    case 0x0300: //****** Grf version 03xx ******
+        diff = 4;
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+        __attribute__((fallthrough));
+#else
+        /* fall through */
+#endif
 	case 0x0200: //****** Grf version 02xx ******
 		{
 			unsigned char eheader[12];
