@@ -1704,13 +1704,25 @@ static void socket_httpd_page_connection(struct httpd_session_data *hsd, const c
 
 		ip = (unsigned char *)(&sd->client_addr.sin_addr);
 
-		auriga_strlcpy(usage,
-		       (sd->func_recv == connect_client) ? "server" :
-		       (sd->func_parse == httpd_parse) ? ((type = 1), "httpd") : ((type = 2), "unknown"));
-		auriga_strlcpy(status,
-		       (sd->func_recv == connect_client) ? "listen" :
-		       (sd->auth == 1) ? "authorized" :
-		       (sd->auth == 0) ? "unauthorized" : "permanent connection");
+		if (sd->func_recv == connect_client) {
+			auriga_strlcpy(usage, "server", sizeof(usage));
+		} else if (sd->func_parse == httpd_parse) {
+			type = 1;
+			auriga_strlcpy(usage, "httpd", sizeof(usage));
+		} else {
+			type = 2;
+			auriga_strlcpy(usage, "unknown", sizeof(usage));
+		}
+
+		if (sd->func_recv == connect_client) {
+			auriga_strlcpy(status, "listen", sizeof(status));
+		} else if (sd->auth == 1) {
+			auriga_strlcpy(status, "authorized", sizeof(status));
+		} else if (sd->auth == 0) {
+			auriga_strlcpy(status, "unauthorized", sizeof(status));
+		} else {
+			auriga_strlcpy(status, "permanent connection", sizeof(status));
+		}
 
 		if (type == 1)
 			auriga_strlcpy(user, ((struct httpd_session_data*)session[fd]->session_data2)->user, sizeof(user));

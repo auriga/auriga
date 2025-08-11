@@ -100,7 +100,7 @@ void hex_dump(FILE *fp, const unsigned char *buf, size_t len)
 	auriga_strlcat(p, NEWLINE, (output + output_size) - p);
 	}
 
-	fprintf(fp, output);
+	fputs(output, fp);
 	fflush(fp);
 
 	aFree(output);
