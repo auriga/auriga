@@ -65,7 +65,7 @@ int mapreg_txt_config_read_sub(const char *w1, const char *w2)
 		mapreg_journal_enable = atoi(w2);
 	}
 	else if(strcmpi(w1,"mapreg_journal_file") == 0) {
-		strncpy(mapreg_journal_file, w2, sizeof(mapreg_journal_file) - 1);
+		auriga_strlcpy(mapreg_journal_file, w2, sizeof(mapreg_journal_file));
 	}
 	else if(strcmpi(w1,"mapreg_journal_cache_interval") == 0) {
 		mapreg_journal_cache = atoi(w2);
