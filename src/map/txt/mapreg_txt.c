@@ -58,8 +58,7 @@ struct mapreg_data {
 int mapreg_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"mapreg_txt") == 0) {
-		strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
-		mapreg_txt[sizeof(mapreg_txt) - 1] = '\0';
+		auriga_strlcpy(mapreg_txt, w2, sizeof(mapreg_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"mapreg_journal_enable") == 0) {
@@ -107,10 +106,9 @@ bool mapreg_txt_setreg(int num, int val, int eternal)
 			if(val != 0) {
 				struct mapreg_data data;
 
-				strncpy(data.name, script_get_str(num), sizeof(data.name) - 1);
-				data.name[sizeof(data.name) - 1] = '\0';
+				auriga_strlcpy(data.name, script_get_str(num), sizeof(data.name));
 				data.idx = num >> 24;
-				sprintf(data.value, "%d", val);
+				snprintf(data.value, sizeof(data.value), "%d", val);
 
 				journal_write( &mapreg_journal, num, &data );
 			} else {
@@ -156,11 +154,9 @@ bool mapreg_txt_setregstr(int num, const char *str, int eternal)
 			if(str && *str) {
 				struct mapreg_data data;
 
-				strncpy(data.name, script_get_str(num), sizeof(data.name) - 1);
-				data.name[sizeof(data.name) - 1] = '\0';
+				auriga_strlcpy(data.name, script_get_str(num), sizeof(data.name));
 				data.idx = num >> 24;
-				strncpy(data.value, str, sizeof(data.value) - 1);
-				data.value[sizeof(data.value) - 1] = '\0';
+				auriga_strlcpy(data.value, str, sizeof(data.value));
 
 				journal_write( &mapreg_journal, num, &data );
 			} else {

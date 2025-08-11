@@ -49,22 +49,22 @@ static int  map_server_keepalive   = 0;
 int mapreg_sql_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"map_server_ip") == 0) {
-		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
+		auriga_strlcpy(map_server_ip, w2, sizeof(map_server_ip));
 	}
 	else if(strcmpi(w1,"map_server_port") == 0) {
 		map_server_port = (unsigned short)atoi(w2);
 	}
 	else if(strcmpi(w1,"map_server_id") == 0) {
-		strncpy(map_server_id, w2, sizeof(map_server_id) - 1);
+		auriga_strlcpy(map_server_id, w2, sizeof(map_server_id));
 	}
 	else if(strcmpi(w1,"map_server_pw") == 0) {
-		strncpy(map_server_pw, w2, sizeof(map_server_pw) - 1);
+		auriga_strlcpy(map_server_pw, w2, sizeof(map_server_pw));
 	}
 	else if(strcmpi(w1,"map_server_db") == 0) {
-		strncpy(map_server_db, w2, sizeof(map_server_db) - 1);
+		auriga_strlcpy(map_server_db, w2, sizeof(map_server_db));
 	}
 	else if(strcmpi(w1,"map_server_charset") == 0) {
-		strncpy(map_server_charset, w2, sizeof(map_server_charset) - 1);
+		auriga_strlcpy(map_server_charset, w2, sizeof(map_server_charset));
 	}
 	else if(strcmpi(w1,"map_server_keepalive") == 0) {
 		map_server_keepalive = atoi(w2);
@@ -190,8 +190,7 @@ static int mapreg_sql_load(void)
 			i = atoi(sql_row[1]);
 			if(i < 0 || i >= 128)
 				continue;
-			strncpy(name, sql_row[0], 256);
-			name[255] = '\0';	// force \0 terminal
+			auriga_strlcpy(name, sql_row[0], sizeof(name));
 			s = script_add_str(name);
 
 			if(name[strlen(name) - 1] == '$') {
