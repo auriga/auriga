@@ -46,6 +46,12 @@
 // =====================
 // Fixed width integer aliases (C11 stdint)
 // ---------------------
+// Fallback for pre-C99 compilers that may not support 'inline'
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L)
+#ifndef inline
+#define inline
+#endif
+#endif
 typedef int8_t   int8;
 typedef int16_t  int16;
 typedef int32_t  int32;

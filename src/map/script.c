@@ -12803,8 +12803,10 @@ int buildin_sqlquery(struct script_state *st)
 		for(count = 0; elem < 128 && (sql_row = sqldbs_fetch(handle)); count++) {
 			int i, tmp_num;
 
-			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
-                snprintf(var + len, (size_t)((name_len + 6) - len), "[%d]%s", elem, (postfix == '$')? "$": "");
+            if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
+                size_t capacity = strlen(name) + 6; // var は確保時に name 長 + 6
+                size_t remain = (len < (int)capacity) ? (capacity - (size_t)len) : 0;
+                snprintf(var + len, remain, "[%d]%s", elem, (postfix == '$')? "$": "");
 				tmp_num = add_str(var) + (num&0xff000000);
 			} else {
 				tmp_num = num;
