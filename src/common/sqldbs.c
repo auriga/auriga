@@ -440,13 +440,11 @@ static void sqldbs_stmt_bind_datatype(MYSQL_BIND *bind, int buffer_type, void *b
 		bind->buffer_type = sqldbs_num2datatype(sizeof(long));
 		buffer_length = sizeof(long);
 		break;
-#ifndef __BORLANDC__
 	case SQL_DATA_TYPE_ULONGLONG: bind->is_unsigned = 1;
 	case SQL_DATA_TYPE_LONGLONG:
 		bind->buffer_type = sqldbs_num2datatype(sizeof(long long));
 		buffer_length = sizeof(long long);
 		break;
-#endif
 	case SQL_DATA_TYPE_FLOAT:
 		bind->buffer_type = MYSQL_TYPE_FLOAT;
 		buffer_length = 4;
