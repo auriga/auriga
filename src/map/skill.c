@@ -25608,18 +25608,18 @@ static int skill_readdb(void)
 
 			skill_split_atoi(split[7],skill_db[i].num,MAX_SKILL_LEVEL);
 
-			if(strcmpi(split[8],"yes") == 0)
+			if(strcasecmp(split[8],"yes") == 0)
 				skill_db[i].castcancel = 1;
 			else
 				skill_db[i].castcancel = 0;
 			skill_db[i].cast_def_rate = atoi(split[9]);
 			skill_db[i].inf2          = (int)strtol(split[10], NULL, 0);
 			skill_split_atoi(split[11],skill_db[i].maxcount,MAX_SKILL_LEVEL);
-			if(strcmpi(split[12],"weapon") == 0)
+			if(strcasecmp(split[12],"weapon") == 0)
 				skill_db[i].skill_type = BF_WEAPON;
-			else if(strcmpi(split[12],"magic") == 0)
+			else if(strcasecmp(split[12],"magic") == 0)
 				skill_db[i].skill_type = BF_MAGIC;
-			else if(strcmpi(split[12],"misc") == 0)
+			else if(strcasecmp(split[12],"misc") == 0)
 				skill_db[i].skill_type = BF_MISC;
 			else
 				skill_db[i].skill_type = 0;
@@ -25721,24 +25721,24 @@ static int skill_readdb(void)
 				p++;
 			}
 
-			if( strcmpi(split[9],"hiding") == 0 )                   skill_db[i].state = SST_HIDING;
-			else if( strcmpi(split[9],"cloaking") == 0 )            skill_db[i].state = SST_CLOAKING;
-			else if( strcmpi(split[9],"chasewalking") == 0 )        skill_db[i].state = SST_CHASEWALKING;
-			else if( strcmpi(split[9],"hidden") == 0 )              skill_db[i].state = SST_HIDDEN;
-			else if( strcmpi(split[9],"riding") == 0 )              skill_db[i].state = SST_RIDING;
-			else if( strcmpi(split[9],"falcon") == 0 )              skill_db[i].state = SST_FALCON;
-			else if( strcmpi(split[9],"cart") == 0 )                skill_db[i].state = SST_CART;
-			else if( strcmpi(split[9],"shield") == 0 )              skill_db[i].state = SST_SHIELD;
-			else if( strcmpi(split[9],"sight") == 0 )               skill_db[i].state = SST_SIGHT;
-			else if( strcmpi(split[9],"explosionspirits") == 0 )    skill_db[i].state = SST_EXPLOSIONSPIRITS;
-			else if( strcmpi(split[9],"cartboost") == 0 )           skill_db[i].state = SST_CARTBOOST;
-			else if( strcmpi(split[9],"nen") == 0 )                 skill_db[i].state = SST_NEN;
-			else if( strcmpi(split[9],"recover_weight_rate") == 0 ) skill_db[i].state = SST_RECOV_WEIGHT_RATE;
-			else if( strcmpi(split[9],"move_enable") == 0 )         skill_db[i].state = SST_MOVE_ENABLE;
-			else if( strcmpi(split[9],"water") == 0 )               skill_db[i].state = SST_WATER;
-			else if( strcmpi(split[9],"dragon") == 0 )              skill_db[i].state = SST_DRAGON;
-			else if( strcmpi(split[9],"wolf") == 0 )                skill_db[i].state = SST_WOLF;
-			else if( strcmpi(split[9],"gear") == 0 )                skill_db[i].state = SST_GEAR;
+			if( strcasecmp(split[9],"hiding") == 0 )                   skill_db[i].state = SST_HIDING;
+			else if( strcasecmp(split[9],"cloaking") == 0 )            skill_db[i].state = SST_CLOAKING;
+			else if( strcasecmp(split[9],"chasewalking") == 0 )        skill_db[i].state = SST_CHASEWALKING;
+			else if( strcasecmp(split[9],"hidden") == 0 )              skill_db[i].state = SST_HIDDEN;
+			else if( strcasecmp(split[9],"riding") == 0 )              skill_db[i].state = SST_RIDING;
+			else if( strcasecmp(split[9],"falcon") == 0 )              skill_db[i].state = SST_FALCON;
+			else if( strcasecmp(split[9],"cart") == 0 )                skill_db[i].state = SST_CART;
+			else if( strcasecmp(split[9],"shield") == 0 )              skill_db[i].state = SST_SHIELD;
+			else if( strcasecmp(split[9],"sight") == 0 )               skill_db[i].state = SST_SIGHT;
+			else if( strcasecmp(split[9],"explosionspirits") == 0 )    skill_db[i].state = SST_EXPLOSIONSPIRITS;
+			else if( strcasecmp(split[9],"cartboost") == 0 )           skill_db[i].state = SST_CARTBOOST;
+			else if( strcasecmp(split[9],"nen") == 0 )                 skill_db[i].state = SST_NEN;
+			else if( strcasecmp(split[9],"recover_weight_rate") == 0 ) skill_db[i].state = SST_RECOV_WEIGHT_RATE;
+			else if( strcasecmp(split[9],"move_enable") == 0 )         skill_db[i].state = SST_MOVE_ENABLE;
+			else if( strcasecmp(split[9],"water") == 0 )               skill_db[i].state = SST_WATER;
+			else if( strcasecmp(split[9],"dragon") == 0 )              skill_db[i].state = SST_DRAGON;
+			else if( strcasecmp(split[9],"wolf") == 0 )                skill_db[i].state = SST_WOLF;
+			else if( strcasecmp(split[9],"gear") == 0 )                skill_db[i].state = SST_GEAR;
 			else                                                    skill_db[i].state = SST_NONE;
 
 			skill_split_atoi(split[10],skill_db[i].spiritball,MAX_SKILL_LEVEL);
@@ -26149,3 +26149,4 @@ int do_init_skill(void)
 
 	return 0;
 }
+

@@ -64,7 +64,7 @@ static int itemdb_searchname_sub(void *key,void *data,va_list ap)
 	if(*dst)
 		return 0;
 
-	if( strcmpi(item->name,str) == 0 || strcmp(item->jname,str) == 0 )
+	if( strcasecmp(item->name,str) == 0 || strcmp(item->jname,str) == 0 )
 		*dst = item;
 
 	return 0;
@@ -1268,3 +1268,4 @@ int do_init_itemdb(void)
 
 	return 0;
 }
+

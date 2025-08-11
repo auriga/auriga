@@ -329,7 +329,7 @@ static int search_str(const unsigned char *p)
 	int i = str_hash[calc_hash(p)];
 
 	while(i){
-		if(strcmpi(str_buf+str_data[i].str,p)==0){
+		if(strcasecmp(str_buf+str_data[i].str,p)==0){
 			return i;
 		}
 		i=str_data[i].next;
@@ -354,7 +354,7 @@ int add_str(const unsigned char *p)
 	} else {
 		i=str_hash[i];
 		for(;;){
-			if(strcmpi(str_buf+str_data[i].str,p)==0){
+			if(strcasecmp(str_buf+str_data[i].str,p)==0){
 				return i;
 			}
 			if(str_data[i].next==0)
@@ -3696,66 +3696,66 @@ int script_config_read(const char *cfgName)
 		if(sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if(strcmpi(w1, "debug_vars") == 0) {
+		if(strcasecmp(w1, "debug_vars") == 0) {
 			script_config.debug_vars = atoi(w2);
 		}
-		else if(strcmpi(w1, "refine_posword") == 0) {
+		else if(strcasecmp(w1, "refine_posword") == 0) {
 			set_posword(w2);
 		}
-		else if(strcmpi(w1, "check_cmdcount") == 0) {
+		else if(strcasecmp(w1, "check_cmdcount") == 0) {
 			script_config.check_cmdcount = atoi(w2);
 		}
-		else if(strcmpi(w1, "check_gotocount") == 0) {
+		else if(strcasecmp(w1, "check_gotocount") == 0) {
 			script_config.check_gotocount = atoi(w2);
 		}
-		else if(strcmpi(w1, "error_marker_start") == 0) {
+		else if(strcasecmp(w1, "error_marker_start") == 0) {
 			strncpy(error_marker_start, w2, 16);
 			error_marker_start[15] = '\0';
 		}
-		else if(strcmpi(w1, "error_marker_end") == 0) {
+		else if(strcasecmp(w1, "error_marker_end") == 0) {
 			strncpy(error_marker_end, w2, 16);
 			error_marker_end[15] = '\0';
 		}
-		else if(strcmpi(w1, "debug_mode_log") == 0) {
+		else if(strcasecmp(w1, "debug_mode_log") == 0) {
 			script_config.debug_mode_log = atoi(w2);
 		}
-		else if(strcmpi(w1, "error_log") == 0) {
+		else if(strcasecmp(w1, "error_log") == 0) {
 			script_config.error_log = atoi(w2);
 		}
-		else if (strcmpi(w1, "mapreg_autosave_time") == 0) {
+		else if (strcasecmp(w1, "mapreg_autosave_time") == 0) {
 			mapreg_autosave_interval = atoi(w2) * 1000;
 			if (mapreg_autosave_interval <= 0) {
 				printf("script_config_read: Invalid autosave_time value: %d. Set to %d (default).\n", mapreg_autosave_interval, (int)(MAPREG_AUTOSAVE_INTERVAL / 1000));
 				mapreg_autosave_interval = MAPREG_AUTOSAVE_INTERVAL;
 			}
 		}
-		if (strcmpi(w1, "sql_script_enable") == 0) {
+		if (strcasecmp(w1, "sql_script_enable") == 0) {
 			script_config.sql_script_enable = atoi(w2);
 		}
 #ifndef TXT_ONLY
-		else if(strcmpi(w1,"script_server_ip") == 0) {
+		else if(strcasecmp(w1,"script_server_ip") == 0) {
 			strncpy(script_server_ip, w2, sizeof(script_server_ip) - 1);
 		}
-		else if(strcmpi(w1,"script_server_port") == 0) {
+		else if(strcasecmp(w1,"script_server_port") == 0) {
 			script_server_port = (unsigned short)atoi(w2);
 		}
-		else if(strcmpi(w1,"script_server_id") == 0) {
+		else if(strcasecmp(w1,"script_server_id") == 0) {
 			strncpy(script_server_id, w2, sizeof(script_server_id) - 1);
 		}
-		else if(strcmpi(w1,"script_server_pw") == 0) {
+		else if(strcasecmp(w1,"script_server_pw") == 0) {
 			strncpy(script_server_pw, w2, sizeof(script_server_pw) - 1);
 		}
-		else if(strcmpi(w1,"script_server_db") == 0) {
+		else if(strcasecmp(w1,"script_server_db") == 0) {
 			strncpy(script_server_db, w2, sizeof(script_server_db) - 1);
 		}
-		else if(strcmpi(w1,"script_server_charset") == 0) {
+		else if(strcasecmp(w1,"script_server_charset") == 0) {
 			strncpy(script_server_charset, w2, sizeof(script_server_charset) - 1);
 		}
-		else if(strcmpi(w1,"script_server_keepalive") == 0) {
+		else if(strcasecmp(w1,"script_server_keepalive") == 0) {
 			script_server_keepalive = atoi(w2);
 		}
 #endif
-		else if(strcmpi(w1,"import") == 0) {
+		else if(strcasecmp(w1,"import") == 0) {
 			script_config_read(w2);
 		}
 	}

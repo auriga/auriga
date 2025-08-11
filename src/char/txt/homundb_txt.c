@@ -50,17 +50,17 @@ static int homun_journal_cache = 1000;
  */
 int homundb_txt_config_read_sub(const char* w1,const char *w2)
 {
-	if(strcmpi(w1,"homun_txt")==0){
+	if(strcasecmp(w1,"homun_txt")==0){
 		strncpy(homun_txt, w2, sizeof(homun_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"homun_journal_enable")==0){
+	else if(strcasecmp(w1,"homun_journal_enable")==0){
 		homun_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"homun_journal_file")==0){
+	else if(strcasecmp(w1,"homun_journal_file")==0){
 		strncpy( homun_journal_file, w2, sizeof(homun_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"homun_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"homun_journal_cache_interval")==0){
 		homun_journal_cache = atoi( w2 );
 	}
 #endif
@@ -478,3 +478,4 @@ bool homundb_txt_init(void)
 {
 	return homundb_txt_read();
 }
+

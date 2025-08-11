@@ -1140,7 +1140,7 @@ int inter_guild_leave(int guild_id,int account_id,int char_id)
 // ƒMƒ‹ƒhİ’è“Ç‚İ‚İ
 int guild_config_read(const char *w1,const char* w2)
 {
-	if(strcmpi(w1,"guild_extension_increment")==0)
+	if(strcasecmp(w1,"guild_extension_increment")==0)
 	{
 		guild_extension_increment = atoi(w2);
 		if(guild_extension_increment < 0)
@@ -1149,7 +1149,7 @@ int guild_config_read(const char *w1,const char* w2)
 			guild_extension_increment = 6;
 		return 1;
 	}
-	if(strcmpi(w1,"guild_join_limit")==0)
+	if(strcasecmp(w1,"guild_join_limit")==0)
 	{
 		guild_join_limit = atoi(w2);
 		return 1;
@@ -1157,3 +1157,4 @@ int guild_config_read(const char *w1,const char* w2)
 
 	return guilddb_config_read_sub(w1,w2);
 }
+

@@ -57,7 +57,7 @@ int interlog_log_txt(const char *fmt, ...)
  */
 int interlog_config_read_txt(const char *w1, const char *w2)
 {
-	if( strcmpi(w1, "inter_log_filename") == 0 ) {
+	if( strcasecmp(w1, "inter_log_filename") == 0 ) {
 		strncpy(inter_log_filename, w2, sizeof(inter_log_filename) - 1);
 		inter_log_filename[sizeof(inter_log_filename) - 1] = '\0';
 	} else {
@@ -66,3 +66,4 @@ int interlog_config_read_txt(const char *w1, const char *w2)
 
 	return 1;
 }
+

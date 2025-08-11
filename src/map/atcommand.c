@@ -461,7 +461,7 @@ static AtCommandInfo* get_atcommandinfo_byname(const char* name)
 	AtCommandInfo *p = command_hash_table[command2hash(name)];
 
 	while (p) {
-		if (strcmpi(p->command + 1, name) == 0) {
+		if (strcasecmp(p->command + 1, name) == 0) {
 			return p;
 		}
 		p = p->next;
@@ -735,9 +735,9 @@ int atcommand_config_read(const char *cfgName)
 				printf("Error in %s file: GM command '%s' of synonym '%s' doesn't exist.\n", cfgName, w2, w1);
 			}
 		} else if (sscanf(line, "%1023[^:]:%1023s", w1, w2) == 2) {
-			if (strcmpi(w1, "import") == 0) {
+			if (strcasecmp(w1, "import") == 0) {
 				atcommand_config_read(w2);
-			} else if (strcmpi(w1, "command_symbol") == 0) {
+			} else if (strcasecmp(w1, "command_symbol") == 0) {
 				if (!iscntrl(w2[0]) && // w2[0] > 31 &&
 				    w2[0] != '/' && // symbol of standard ragnarok GM commands
 				    w2[0] != '%' && // symbol of party chat speaking
@@ -1925,7 +1925,7 @@ int atcommand_go(const int fd, struct map_session_data* sd, AtCommandType comman
 	else {
 		// DB‚Ì—ªÌ–¼(code)‚©‚çŒŸõ
 		for(i=0; i<MAX_ATCOMMAND_GO; i++) {
-			if(strcmpi(atcommand_go_db[i].code,map_code) == 0) {
+			if(strcasecmp(atcommand_go_db[i].code,map_code) == 0) {
 				idx = i;
 				break;
 			}
@@ -5922,3 +5922,4 @@ int do_init_atcommand(void)
 
 	return 0;
 }
+

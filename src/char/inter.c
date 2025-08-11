@@ -111,7 +111,7 @@ int inter_config_read(const char *cfgName)
 		if(sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 			continue;
 
-		if(strcmpi(w1,"import") == 0) {
+		if(strcasecmp(w1,"import") == 0) {
 			inter_config_read(w2);
 		}
 		else {
@@ -572,3 +572,4 @@ int inter_init(const char *file)
 
 	return 0;
 }
+

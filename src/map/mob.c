@@ -118,7 +118,7 @@ static int mobdb_searchname_sub(void *key,void *data,va_list ap)
 	if(*dst)
 		return 0;
 
-	if( strcmpi(id->name,str) == 0 || strcmp(id->jname,str) == 0 )
+	if( strcasecmp(id->name,str) == 0 || strcmp(id->jname,str) == 0 )
 		*dst = id;
 
 	return 0;
@@ -5137,3 +5137,4 @@ int do_final_mob(void)
 	aFree( mob_ai_hard_next_id );
 	return 0;
 }
+

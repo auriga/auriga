@@ -47,10 +47,10 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-static int garbage_collect_interval = 1000*30;		// ガベージコレクトの間隔
+static int garbage_collect_interval = 1000*30;		// ガベ�Eジコレクト�E間隔
 
 int lua_respawn_id;
-int gc_threshold = 1000;		// ガベージコレクトの閾値
+int gc_threshold = 1000;		// ガベ�Eジコレクト�E閾値
 static int lua_lock_script = 0;	/* リロード用 */
 
 extern const struct Lua_function {
@@ -141,13 +141,13 @@ void show_table(lua_State *L, int index)
 			printf("value=%s\n", lua_typename(L, lua_type(L, -1)));
 			break;
 		}
-		lua_pop(L, 1);      // 値を取り除く
+		lua_pop(L, 1);      // 値を取り除ぁE
 	}
 
 	printf("-----------------------------\n");
 }
 
-// 特定 key へのアクセス
+// 特宁Ekey へのアクセス
 void show_table_item(lua_State *L, const char *key, int index)
 {
 	lua_pushstring(L, key);
@@ -197,7 +197,7 @@ static int luascript_nl2oid(lua_State *NL)
 }
 
 /*==========================================
- * functionの実行
+ * functionの実衁E
  *------------------------------------------
  */
 int luascript_run_function(const char *name,int char_id,const char *format,...)
@@ -206,14 +206,14 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
 	lua_State *NL;
 	int n=0;
 
-	if(lua_lock_script) {	// 再読み込み中なので実行しない
+	if(lua_lock_script) {	// 再読み込み中なので実行しなぁE
 		return 0;
 	}
 
-	if(char_id == 0) {	// 共有ステートメントで実行する
+	if(char_id == 0) {	// 共有スチE�Eトメントで実行すめE
 		NL = L;
 	}
-	else {	// それ以外ならコルーチンで実行する
+	else {	// それ以外ならコルーチンで実行すめE
 		struct map_session_data *sd;
 		if((sd = map_id2sd(char_id)) == NULL)
 			return 0;
@@ -224,10 +224,10 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
 		lua_rawset(NL,LUA_GLOBALSINDEX);
 	}
 
-	lua_getglobal(NL,name);		// functionをスタックに積む
+	lua_getglobal(NL,name);		// functionをスタチE��に積�E
 
 	va_start(ap,format);
-	while(*format) {	// 'format'に沿って変数をスタックに積む
+	while(*format) {	// 'format'に沿って変数をスタチE��に積�E
 		switch (*format++) {
 		case 'i':
 			lua_pushnumber(NL,va_arg(ap,int));
@@ -241,7 +241,7 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
 	}
 	va_end(ap);
 
-	// functionの実行
+	// functionの実衁E
 	if(lua_resume(NL,n) > 1 && lua_tostring(NL,-1) != NULL) {
 		printf("luascript_run_function: can't run function %s : %s\n",name,lua_tostring(NL,-1));
 		return 0;
@@ -251,7 +251,7 @@ int luascript_run_function(const char *name,int char_id,const char *format,...)
 }
 
 /*==========================================
- * chank実行
+ * chank実衁E
  *------------------------------------------
  */
 void luascript_addscript(const char *chunk)
@@ -307,15 +307,15 @@ static void luascript_register_function(void)
 }
 
 /*==========================================
- * ガベージコレクタTimer
+ * ガベ�EジコレクタTimer
  *------------------------------------------
  */
 static int luascript_garbagecollect(int tid,unsigned int tick,int id,void *data)
 {
-	int dummy = 0;	// 実際には使わないダミー
-	int v = lua_gc(L, LUA_GCCOUNT, dummy);	// Luaの使用メモリ取得（キロバイト単位）
+	int dummy = 0;	// 実際には使わなぁE��ミ�E
+	int v = lua_gc(L, LUA_GCCOUNT, dummy);	// Luaの使用メモリ取得（キロバイト単位！E
 
-	// メモリ使用量が多ければガベージコレクトする
+	// メモリ使用量が多けれ�Eガベ�EジコレクトすめE
 	if(v > gc_threshold) {
 		lua_gc(L, LUA_GCSTEP, 2000);
 
@@ -355,17 +355,17 @@ int luascript_config_read(const char *cfgName)
 		if(sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if (strcmpi(w1, "lua") == 0) {
+		if (strcasecmp(w1, "lua") == 0) {
 			luascript_addscript(w2);
-//		} else if (strcmpi(w1, "dellua") == 0) {
+//		} else if (strcasecmp(w1, "dellua") == 0) {
 //			luascript_delscript(w2);
-		} else if (strcmpi(w1, "garbage_collect_interval") == 0) {
+		} else if (strcasecmp(w1, "garbage_collect_interval") == 0) {
 			garbage_collect_interval = atoi(w2);
 			if (garbage_collect_interval < 0) {
 				printf("luascript_config_read: Invalid garbage_collect_interval value: %d. Set to 0.\n", garbage_collect_interval);
 				garbage_collect_interval = 0;
 			}
-		} else if (strcmpi(w1, "import") == 0) {
+		} else if (strcasecmp(w1, "import") == 0) {
 			luascript_config_read(w2);
 		}
 	}
@@ -375,19 +375,19 @@ int luascript_config_read(const char *cfgName)
 }
 
 /*==========================================
- * Luaのリロード
+ * LuaのリローチE
  *------------------------------------------
  */
 void luascript_reload(void)
 {
-	// 再読み込み中にステートメントを呼ばれると困るのでロックする
+	// 再読み込み中にスチE�Eトメントを呼ばれると困る�EでロチE��する
 	lua_lock_script = 1;
 
-	// 一度ステートメントを削除する
+	// 一度スチE�Eトメントを削除する
 	lua_close(L);
 	L = NULL;
 
-	// 古いステートメントを呼ばないようにインクリメントさせる
+	// 古ぁE��チE�Eトメントを呼ばなぁE��ぁE��インクリメントさせる
 	lua_respawn_id++;
 
 	// 新たに開きなおす
@@ -400,12 +400,12 @@ void luascript_reload(void)
 	lua_rawset(L,LUA_GLOBALSINDEX);
 	luascript_config_read(luascript_conf_filename);
 
-	// ロック解除
+	// ロチE��解除
 	lua_lock_script = 0;
 }
 
 /*==========================================
- * 初期化処理
+ * 初期化�E琁E
  *------------------------------------------
  */
 int do_init_luascript(void)
@@ -428,7 +428,7 @@ int do_init_luascript(void)
 }
 
 /*==========================================
- * 終了
+ * 終亁E
  *------------------------------------------
  */
 int do_final_luascript(void)
@@ -446,7 +446,7 @@ int do_final_luascript(void)
 //
 
 /*==========================================
- * PACKETVER取得
+ * PACKETVER取征E
  *------------------------------------------
  */
 static int luafunc_getpacketver(lua_State *NL)
@@ -456,7 +456,7 @@ static int luafunc_getpacketver(lua_State *NL)
 }
 
 /*==========================================
- * NEW_006b取得
+ * NEW_006b取征E
  *------------------------------------------
  */
 static int luafunc_getpacketpre(lua_State *NL)
@@ -496,7 +496,7 @@ static int luafunc_addpacket(lua_State *NL)
 		for(i=0; i<8 && i<s_len; i++) {
 			lua_rawgeti(NL,4,i + 1);
 			pos[i] = luaL_checkint(NL,-1);
-			lua_pop(NL, 1);      // 値を取り除く
+			lua_pop(NL, 1);      // 値を取り除ぁE
 		}
 	}
 
@@ -567,14 +567,14 @@ static int luafunc_InsertRandopt(lua_State *NL)
 					if(lua_istable(NL,-1)) {
 						lua_rawgeti(NL,-1,1);
 						ro.opt[i].optval_min = luaL_checkint(NL,-1);
-						lua_pop(NL, 1);      // 値を取り除く
+						lua_pop(NL, 1);      // 値を取り除ぁE
 						lua_rawgeti(NL,-1,2);
 						ro.opt[i].optval_max = luaL_checkint(NL,-1);
-						lua_pop(NL, 1);      // 値を取り除く
+						lua_pop(NL, 1);      // 値を取り除ぁE
 						if(lua_objlen(NL,-1) >= 3) {
 							lua_rawgeti(NL,-1,3);
 							ro.opt[i].optval_plus = luaL_checkint(NL,-1);
-							lua_pop(NL, 1);      // 値を取り除く
+							lua_pop(NL, 1);      // 値を取り除ぁE
 						}
 					}
 					else {
@@ -587,14 +587,14 @@ static int luafunc_InsertRandopt(lua_State *NL)
 					ro.opt[i].rate = luaL_checkint(NL,-1);
 					break;
 				}
-				lua_pop(NL, 1);      // 値を取り除く
+				lua_pop(NL, 1);      // 値を取り除ぁE
 			}
-			lua_pop(NL, 1);      // 値を取り除く
+			lua_pop(NL, 1);      // 値を取り除ぁE
 			if(++i >= MAX_RANDOPT_TABLE)
 				break;
 		}
 	}
-	lua_pop(NL, 3);      // 値を取り除く
+	lua_pop(NL, 3);      // 値を取り除ぁE
 
 	result = itemdb_insert_randoptdb(ro);
 	lua_pushboolean(NL, result);
@@ -679,3 +679,4 @@ const struct Lua_function luafunc[] = {
 
 	{NULL,NULL}
 };
+

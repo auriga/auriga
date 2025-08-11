@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // =====================
 // Platform
@@ -43,37 +44,26 @@
 
 
 // =====================
-// stdint.h
+// Fixed width integer aliases (C11 stdint)
 // ---------------------
-typedef char  int8;
-typedef short int16;
-typedef int   int32;
+typedef int8_t   int8;
+typedef int16_t  int16;
+typedef int32_t  int32;
 
-typedef signed char  sint8;
-typedef signed short sint16;
-typedef signed int   sint32;
+typedef int8_t   sint8;
+typedef int16_t  sint16;
+typedef int32_t  sint32;
 
-typedef unsigned char  uint8;
-typedef unsigned short uint16;
-typedef unsigned int   uint32;
+typedef uint8_t  uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
 
-#if defined(_MSC_VER)
-typedef __int64          int64;
-typedef signed __int64   sint64;
-typedef unsigned __int64 uint64;
-#else
-typedef long long          int64;
-typedef signed long long   sint64;
-typedef unsigned long long uint64;
-#endif
+typedef int64_t   int64;
+typedef int64_t   sint64;
+typedef uint64_t  uint64;
 
-#ifdef __64BIT__
-typedef uint64 uintptr;
-typedef int64  intptr;
-#else
-typedef uint32 uintptr;
-typedef int32  intptr;
-#endif
+typedef uintptr_t uintptr;
+typedef intptr_t  intptr;
 
 
 // =====================
@@ -131,58 +121,45 @@ typedef int32  intptr;
 
 
 // =====================
-// strcmp 系のエイリアス
+// strcmp 系のエイリアス（標準APIへ集約）
 // ---------------------
 #include <string.h>
-
 #ifndef WINDOWS
-#	ifndef strcmpi
-#		define strcmpi  strcasecmp
-#	endif
-#	ifndef stricmp
-#		define stricmp  strcasecmp
-#	endif
-#	ifndef strncmpi
-#		define strncmpi strncasecmp
-#	endif
-#	ifndef strnicmp
-#		define strnicmp strncasecmp
-#	endif
+#	include <strings.h>
+#endif
 
-#elif defined(_MSC_VER)
-#	define strcmpi     _stricmp
-#	define stricmp     _stricmp
+#if defined(_MSC_VER)
 #	define strcasecmp  _stricmp
-#	define strncmpi    _strnicmp
-#	define strnicmp    _strnicmp
 #	define strncasecmp _strnicmp
-
-#else
-#	ifndef strcmpi
-#		define strcmpi     stricmp
-#	endif
-#	ifndef strcasecmp
-#		define strcasecmp  stricmp
-#	endif
-#	ifndef strncmpi
-#		define strncmpi    strnicmp
-#	endif
-#	ifndef strncasecmp
-#		define strncasecmp strnicmp
-#	endif
-
 #endif
 
 
 // =====================
 // VC での追加処理
 // ---------------------
-#if defined(WINDOWS) && defined(_MSC_VER)
-
+#if defined(WINDOWS) && defined(_MSC_VER) && (_MSC_VER < 1900)
+// VS2015(1900) 未満は C の snprintf/vsnprintf が未実装
 #	define snprintf  _snprintf
 #	define vsnprintf _vsnprintf
+#endif
 
-#endif	// if VC
+// =====================
+// Compile-time size checks (C11 static assert)
+// ---------------------
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+#	define ATN_STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
+#else
+#	define ATN_STATIC_ASSERT(cond, msg) typedef char atn_static_assert_##__LINE__[(cond)?1:-1]
+#endif
+
+ATN_STATIC_ASSERT(sizeof(int8)  == 1,  "int8 must be 1 byte");
+ATN_STATIC_ASSERT(sizeof(uint8) == 1,  "uint8 must be 1 byte");
+ATN_STATIC_ASSERT(sizeof(int16) == 2,  "int16 must be 2 bytes");
+ATN_STATIC_ASSERT(sizeof(uint16)== 2,  "uint16 must be 2 bytes");
+ATN_STATIC_ASSERT(sizeof(int32) == 4,  "int32 must be 4 bytes");
+ATN_STATIC_ASSERT(sizeof(uint32)== 4,  "uint32 must be 4 bytes");
+ATN_STATIC_ASSERT(sizeof(int64) == 8,  "int64 must be 8 bytes");
+ATN_STATIC_ASSERT(sizeof(uint64)== 8,  "uint64 must be 8 bytes");
 
 
 // =====================
@@ -195,6 +172,42 @@ typedef int32  intptr;
 #		define va_copy(dst, src) memcpy(&(dst), &(src), sizeof(va_list))
 #	endif
 #endif
+
+
+// =====================
+// Safe append snprintf helper
+// ---------------------
+static inline int atn_appendf(char *dst, size_t capacity, int *length, const char *fmt, ...)
+{
+    size_t available = 0;
+    int written;
+    va_list ap;
+
+    if (dst == NULL || length == NULL || capacity == 0) {
+        return -1;
+    }
+
+    if ((size_t)(*length) < capacity) {
+        available = capacity - (size_t)(*length);
+    } else {
+        return -1;
+    }
+
+    va_start(ap, fmt);
+    written = vsnprintf(dst + *length, available, fmt, ap);
+    va_end(ap);
+
+    if (written < 0) {
+        return -1;
+    }
+    if ((size_t)written >= available) {
+        *length = (int)(capacity - 1);
+        return -1;
+    }
+
+    *length += written;
+    return written;
+}
 
 
 // =====================

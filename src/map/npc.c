@@ -1939,7 +1939,7 @@ void npc_addsrcfile(const char *name)
 {
 	struct npc_src_list *node;
 
-	if(strcmpi(name,"clear") == 0) {
+	if(strcasecmp(name,"clear") == 0) {
 		npc_clearsrcfile();
 		return;
 	}
@@ -1968,7 +1968,7 @@ void npc_delsrcfile(const char *name)
 {
 	struct npc_src_list *node, *node2;
 
-	if(strcmpi(name,"all") == 0) {
+	if(strcasecmp(name,"all") == 0) {
 		npc_clearsrcfile();
 		return;
 	}
@@ -3019,7 +3019,7 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 	if(m < 0 || m >= map_num)
 		return 0;
 
-	if (strcmpi(w3,"nosave") == 0) {
+	if (strcasecmp(w3,"nosave") == 0) {
 		char savemap[4096];
 		int savex, savey;
 		if (strcmp(w4,"SavePoint") == 0) {
@@ -3036,96 +3036,96 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 		} else {
 			map[m].flag.nosave = 0;
 		}
-	} else if (strcmpi(w3,"nomemo") == 0) {
+	} else if (strcasecmp(w3,"nomemo") == 0) {
 		map[m].flag.nomemo ^= 1;
-	} else if (strcmpi(w3,"noteleport") == 0) {
+	} else if (strcasecmp(w3,"noteleport") == 0) {
 		map[m].flag.noteleport ^= 1;
-	} else if (strcmpi(w3,"noportal") == 0) {
+	} else if (strcasecmp(w3,"noportal") == 0) {
 		map[m].flag.noportal ^= 1;
-	} else if (strcmpi(w3,"noreturn") == 0) {
+	} else if (strcasecmp(w3,"noreturn") == 0) {
 		map[m].flag.noreturn ^= 1;
-	} else if (strcmpi(w3,"monster_noteleport") == 0) {
+	} else if (strcasecmp(w3,"monster_noteleport") == 0) {
 		map[m].flag.monster_noteleport ^= 1;
-	} else if (strcmpi(w3,"nobranch") == 0) {
+	} else if (strcasecmp(w3,"nobranch") == 0) {
 		map[m].flag.nobranch ^= 1;
-	} else if (strcmpi(w3,"nopenalty") == 0) {
+	} else if (strcasecmp(w3,"nopenalty") == 0) {
 		map[m].flag.nopenalty ^= 1;
-	} else if (strcmpi(w3,"pvp") == 0) {
+	} else if (strcasecmp(w3,"pvp") == 0) {
 		map[m].flag.pvp ^= 1;
-	} else if (strcmpi(w3,"pvp_noparty") == 0) {
+	} else if (strcasecmp(w3,"pvp_noparty") == 0) {
 		map[m].flag.pvp_noparty ^= 1;
-	} else if (strcmpi(w3,"pvp_noguild") == 0) {
+	} else if (strcasecmp(w3,"pvp_noguild") == 0) {
 		map[m].flag.pvp_noguild ^= 1;
-	} else if (strcmpi(w3,"pvp_nightmaredrop") == 0) {
+	} else if (strcasecmp(w3,"pvp_nightmaredrop") == 0) {
 		if (npc_set_mapflag_sub(m, w4, MF_PVP_NIGHTMAREDROP))
 			map[m].flag.pvp_nightmaredrop = 1;
-	} else if (strcmpi(w3,"pvp_nocalcrank") == 0) {
+	} else if (strcasecmp(w3,"pvp_nocalcrank") == 0) {
 		map[m].flag.pvp_nocalcrank ^= 1;
-	} else if (strcmpi(w3,"gvg") == 0) {
+	} else if (strcasecmp(w3,"gvg") == 0) {
 		map[m].flag.gvg ^= 1;
-	} else if (strcmpi(w3,"gvg_noparty") == 0) {
+	} else if (strcasecmp(w3,"gvg_noparty") == 0) {
 		map[m].flag.gvg_noparty ^= 1;
-	} else if (strcmpi(w3,"gvg_nightmaredrop") == 0) {
+	} else if (strcasecmp(w3,"gvg_nightmaredrop") == 0) {
 		if (npc_set_mapflag_sub(m, w4, MF_GVG_NIGHTMAREDROP))
 			map[m].flag.gvg_nightmaredrop = 1;
-	} else if (strcmpi(w3,"nozenypenalty") == 0) {
+	} else if (strcasecmp(w3,"nozenypenalty") == 0) {
 		map[m].flag.nozenypenalty ^= 1;
-	} else if (strcmpi(w3,"notrade") == 0) {
+	} else if (strcasecmp(w3,"notrade") == 0) {
 		map[m].flag.notrade ^= 1;
-	} else if (strcmpi(w3,"noskill") == 0) {
+	} else if (strcasecmp(w3,"noskill") == 0) {
 		map[m].flag.noskill ^= 1;
-	} else if (strcmpi(w3,"noabra") == 0) {
+	} else if (strcasecmp(w3,"noabra") == 0) {
 		map[m].flag.noabra ^= 1;
-	} else if (strcmpi(w3,"nodrop") == 0) {
+	} else if (strcasecmp(w3,"nodrop") == 0) {
 		map[m].flag.nodrop ^= 1;
-	} else if (strcmpi(w3,"snow") == 0) {
+	} else if (strcasecmp(w3,"snow") == 0) {
 		map[m].flag.snow ^= 1;
-	} else if (strcmpi(w3,"fog") == 0) {
+	} else if (strcasecmp(w3,"fog") == 0) {
 		map[m].flag.fog ^= 1;
-	} else if (strcmpi(w3,"sakura") == 0) {
+	} else if (strcasecmp(w3,"sakura") == 0) {
 		map[m].flag.sakura ^= 1;
-	} else if (strcmpi(w3,"leaves") == 0) {
+	} else if (strcasecmp(w3,"leaves") == 0) {
 		map[m].flag.leaves ^= 1;
-	} else if (strcmpi(w3,"rain") == 0) {
+	} else if (strcasecmp(w3,"rain") == 0) {
 		map[m].flag.rain ^= 1;
-	} else if (strcmpi(w3,"fireworks") == 0) {
+	} else if (strcasecmp(w3,"fireworks") == 0) {
 		map[m].flag.fireworks ^= 1;
-	} else if (strcmpi(w3,"cloud1") == 0) {
+	} else if (strcasecmp(w3,"cloud1") == 0) {
 		map[m].flag.cloud1 ^= 1;
-	} else if (strcmpi(w3,"cloud2") == 0) {
+	} else if (strcasecmp(w3,"cloud2") == 0) {
 		map[m].flag.cloud2 ^= 1;
-	} else if (strcmpi(w3,"cloud3") == 0) {
+	} else if (strcasecmp(w3,"cloud3") == 0) {
 		map[m].flag.cloud3 ^= 1;
-	} else if (strcmpi(w3,"base_exp_rate") == 0) {
+	} else if (strcasecmp(w3,"base_exp_rate") == 0) {
 		map[m].flag.base_exp_rate = atoi(w4);
-	} else if (strcmpi(w3,"job_exp_rate") == 0) {
+	} else if (strcasecmp(w3,"job_exp_rate") == 0) {
 		map[m].flag.job_exp_rate = atoi(w4);
-	} else if (strcmpi(w3,"pk") == 0) {
+	} else if (strcasecmp(w3,"pk") == 0) {
 		map[m].flag.pk ^= 1;
-	} else if (strcmpi(w3,"pk_noparty") == 0) {
+	} else if (strcasecmp(w3,"pk_noparty") == 0) {
 		map[m].flag.pk_noparty ^= 1;
-	} else if (strcmpi(w3,"pk_noguild") == 0) {
+	} else if (strcasecmp(w3,"pk_noguild") == 0) {
 		map[m].flag.pk_noguild ^= 1;
-	} else if (strcmpi(w3,"pk_nightmaredrop") == 0) {
+	} else if (strcasecmp(w3,"pk_nightmaredrop") == 0) {
 		if (npc_set_mapflag_sub(m, w4, MF_PK_NIGHTMAREDROP))
 			map[m].flag.pk_nightmaredrop = 1;
-	} else if (strcmpi(w3,"pk_nocalcrank") == 0) {
+	} else if (strcasecmp(w3,"pk_nocalcrank") == 0) {
 		map[m].flag.pk_nocalcrank ^= 1;
-	} else if (strcmpi(w3,"noicewall") == 0) {
+	} else if (strcasecmp(w3,"noicewall") == 0) {
 		map[m].flag.noicewall ^= 1;
-	} else if (strcmpi(w3,"turbo") == 0) {
+	} else if (strcasecmp(w3,"turbo") == 0) {
 		map[m].flag.turbo ^= 1;
-	} else if (strcmpi(w3,"norevive") == 0) {
+	} else if (strcasecmp(w3,"norevive") == 0) {
 		map[m].flag.norevive ^= 1;
-	} else if (strcmpi(w3,"nocommand") == 0) {
+	} else if (strcasecmp(w3,"nocommand") == 0) {
 		map[m].flag.nocommand = atoi(w4);
-	} else if (strcmpi(w3,"nojump") == 0) {
+	} else if (strcasecmp(w3,"nojump") == 0) {
 		map[m].flag.nojump ^= 1;
-	} else if (strcmpi(w3,"nocostume") == 0) {
+	} else if (strcasecmp(w3,"nocostume") == 0) {
 		map[m].flag.nocostume ^= 1;
-	} else if (strcmpi(w3,"town") == 0) {
+	} else if (strcasecmp(w3,"town") == 0) {
 		map[m].flag.town ^= 1;
-	} else if (strcmpi(w3,"damage_rate") == 0) {
+	} else if (strcasecmp(w3,"damage_rate") == 0) {
 		map[m].flag.damage_rate = atoi(w4);
 	} else {
 		return -1;	// 存在しないマップフラグなのでエラー
@@ -3247,7 +3247,7 @@ static int npc_parse_srcfile(const char *filepath)
 
 		// マップ名として記述されているか確認
 		// MAPの存在チェック自体は各parserで行う
-		if(strcmp(w1,"-") != 0 && strcmpi(w1,"function") != 0) {
+		if(strcmp(w1,"-") != 0 && strcasecmp(w1,"function") != 0) {
 			size_t len;
 			char mapname[4096] = "";
 			sscanf(w1,"%4095[^,]",mapname);
@@ -3258,23 +3258,23 @@ static int npc_parse_srcfile(const char *filepath)
 			}
 		}
 
-		if (strcmpi(w2,"warp") == 0 && count > 3) {
+		if (strcasecmp(w2,"warp") == 0 && count > 3) {
 			ret = npc_parse_warp(w1,w2,w3,w4,lines);
-		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0 || strcmpi(w2,"market") == 0) && count > 3) {
+		} else if ((strcasecmp(w2,"shop") == 0 || strcasecmp(w2,"pointshop") == 0 || strcasecmp(w2,"market") == 0) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if (strstr(w2,"script") && count > 3) {
-			if(strcmpi(w1,"function") == 0) {
+			if(strcasecmp(w1,"function") == 0) {
 				ret = npc_parse_function(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
 			} else {
 				ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
 			}
 		} else if ((i = 0, sscanf(w2,"duplicate%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_script(w1,w2,w3,w4,line+w4pos,fp,&lines,filepath);
-		} else if (strcmpi(w2,"monster") == 0 && count > 3) {
+		} else if (strcasecmp(w2,"monster") == 0 && count > 3) {
 			ret = npc_parse_mob(w1,w2,w3,w4,lines);
-		} else if (strcmpi(w2,"mapflag") == 0 && count >= 3) {
+		} else if (strcasecmp(w2,"mapflag") == 0 && count >= 3) {
 			ret = npc_parse_mapflag(w1,w2,w3,w4,lines);
 		} else {
 			script_error(lp, filepath, lines, "npc file syntax error", lp+strlen(w1)+1);
@@ -3408,3 +3408,4 @@ int do_init_npc(void)
 
 	return 0;
 }
+

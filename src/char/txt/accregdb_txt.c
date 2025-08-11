@@ -50,17 +50,17 @@ static int accreg_journal_cache = 1000;
  */
 int accregdb_txt_config_read_sub(const char *w1,const char *w2)
 {
-	if(strcmpi(w1,"accreg_txt")==0){
+	if(strcasecmp(w1,"accreg_txt")==0){
 		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"accreg_journal_enable")==0){
+	else if(strcasecmp(w1,"accreg_journal_enable")==0){
 		accreg_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"accreg_journal_file")==0){
+	else if(strcasecmp(w1,"accreg_journal_file")==0){
 		strncpy( accreg_journal_file, w2, sizeof(accreg_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"accreg_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"accreg_journal_cache_interval")==0){
 		accreg_journal_cache = atoi( w2 );
 	}
 #endif
@@ -328,3 +328,4 @@ bool accregdb_txt_init(void)
 {
 	return accregdb_txt_read();
 }
+

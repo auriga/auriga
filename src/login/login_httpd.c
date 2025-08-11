@@ -183,15 +183,15 @@ int login_httpd_config_read(const char *w1, const char *w2)
 
 	memcpy(w3, w2, sizeof(w3));
 
-	if( strcmpi(w1, "httpd_enable") == 0 )
+	if( strcasecmp(w1, "httpd_enable") == 0 )
 		socket_enable_httpd(atoi(w3));
-	else if ( strcmpi(w1, "httpd_document_root") == 0 )
+	else if ( strcasecmp(w1, "httpd_document_root") == 0 )
 		httpd_set_document_root(w3);
-	else if ( strcmpi(w1, "httpd_new_account") == 0 )
+	else if ( strcasecmp(w1, "httpd_new_account") == 0 )
 		httpd_new_account_flag = (atoi(w3) ? true : false);
-	else if (strcmpi(w1, "httpd_log_filename") == 0 )
+	else if (strcasecmp(w1, "httpd_log_filename") == 0 )
 		httpd_set_logfile(w3);
-	else if (strcmpi(w1, "httpd_config") == 0 )
+	else if (strcasecmp(w1, "httpd_config") == 0 )
 		httpd_config_read(w3);
 	else
 		return 0;
@@ -215,3 +215,4 @@ void login_httpd_init(void)
 
 	return;
 }
+

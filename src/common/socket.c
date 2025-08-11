@@ -1367,14 +1367,14 @@ static void socket_config_read2(const char *filename)
 		if (sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if (strcmpi(w1, "order") == 0) {
-			if (strcmpi(w2, "deny,allow")          == 0) access_order = ACO_DENY_ALLOW;
-			else if (strcmpi(w2, "allow,deny")     == 0) access_order = ACO_ALLOW_DENY;
-			else if (strcmpi(w2, "mutual-failure") == 0) access_order = ACO_MUTUAL_FAILURE;
+		if (strcasecmp(w1, "order") == 0) {
+			if (strcasecmp(w2, "deny,allow")          == 0) access_order = ACO_DENY_ALLOW;
+			else if (strcasecmp(w2, "allow,deny")     == 0) access_order = ACO_ALLOW_DENY;
+			else if (strcasecmp(w2, "mutual-failure") == 0) access_order = ACO_MUTUAL_FAILURE;
 			else                                         access_order = atoi(w2);
 
-		} else if (strcmpi(w1, "allow") == 0) {
-			if (strcmpi(w2, "clear") == 0) {
+		} else if (strcasecmp(w1, "allow") == 0) {
+			if (strcasecmp(w2, "clear") == 0) {
 				if (access_allow != NULL) {
 					aFree(access_allow);
 					access_allow = NULL;
@@ -1386,8 +1386,8 @@ static void socket_config_read2(const char *filename)
 					access_allownum++;
 			}
 
-		} else if (strcmpi(w1, "deny") == 0) {
-			if (strcmpi(w2, "clear") == 0) {
+		} else if (strcasecmp(w1, "deny") == 0) {
+			if (strcasecmp(w2, "clear") == 0) {
 				if (access_deny != NULL) {
 					aFree(access_deny);
 					access_deny = NULL;
@@ -1399,18 +1399,18 @@ static void socket_config_read2(const char *filename)
 					access_denynum++;
 			}
 
-		} else if (strcmpi(w1, "httpd_config") == 0) {
+		} else if (strcasecmp(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
 
-		} else if (strcmpi(w1, "socket_ctrl_panel_url") == 0) {
+		} else if (strcasecmp(w1, "socket_ctrl_panel_url") == 0) {
 			strncpy(socket_ctrl_panel_url, w2, sizeof(socket_ctrl_panel_url) - 1);
 
-		} else if (strcmpi(w1, "import") == 0) {
+		} else if (strcasecmp(w1, "import") == 0) {
 			socket_config_read2(w2);
 
 		} else {
 			for(i = 0; i < sizeof(list) / sizeof(list[0]); i++) {
-				if (strcmpi(w1, list[i].name) == 0) {
+				if (strcasecmp(w1, list[i].name) == 0) {
 					*list[i].ptr = atoi(w2);
 					break;
 				}
@@ -1785,3 +1785,4 @@ void socket_httpd_page(struct httpd_session_data* sd, const char* url)
 
 	return;
 }
+

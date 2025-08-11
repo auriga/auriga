@@ -51,17 +51,17 @@ static int status_journal_cache = 1000;
  */
 int statusdb_txt_config_read_sub(const char *w1, const char *w2)
 {
-	if(strcmpi(w1,"status_txt")==0) {
+	if(strcasecmp(w1,"status_txt")==0) {
 		strncpy(scdata_txt, w2, sizeof(scdata_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"status_journal_enable")==0) {
+	else if(strcasecmp(w1,"status_journal_enable")==0) {
 		status_journal_enable = atoi(w2);
 	}
-	else if(strcmpi(w1,"status_journal_file")==0) {
+	else if(strcasecmp(w1,"status_journal_file")==0) {
 		strncpy(status_journal_file, w2, sizeof(status_journal_file) - 1);
 	}
-	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
+	else if(strcasecmp(w1,"status_journal_cache_interval")==0) {
 		status_journal_cache = atoi(w2);
 	}
 #endif
@@ -379,3 +379,4 @@ bool statusdb_txt_init(void)
 }
 
 #endif
+

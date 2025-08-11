@@ -118,7 +118,7 @@ int msg_config_read(const char *cfgName)
 		if (sscanf(line,"%d: %1023[^\r\n]",&msg_number,w2) != 2) {
 			if (sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 				continue;
-			if (strcmpi(w1,"import") == 0) {
+			if (strcasecmp(w1,"import") == 0) {
 				msg_config_read(w2);
 			}
 			continue;
@@ -221,3 +221,4 @@ int do_init_msg(void)
 
 	return 0;
 }
+

@@ -50,17 +50,17 @@ static int merc_journal_cache = 1000;
  */
 int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 {
-	if(strcmpi(w1,"merc_txt")==0){
+	if(strcasecmp(w1,"merc_txt")==0){
 		strncpy(merc_txt, w2, sizeof(merc_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"merc_journal_enable")==0){
+	else if(strcasecmp(w1,"merc_journal_enable")==0){
 		merc_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"merc_journal_file")==0){
+	else if(strcasecmp(w1,"merc_journal_file")==0){
 		strncpy( merc_journal_file, w2, sizeof(merc_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"merc_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"merc_journal_cache_interval")==0){
 		merc_journal_cache = atoi( w2 );
 	}
 #endif
@@ -392,3 +392,4 @@ bool mercdb_txt_init(void)
 {
 	return mercdb_txt_read();
 }
+

@@ -28653,7 +28653,7 @@ static void packetdb_readdb(void)
 			continue;
 
 		if(sscanf(line,"%1023[^:]: %1023[^\r\n]", w1, w2) == 2) {
-			if(strcmpi(w1, "#packet_ver") == 0) {
+			if(strcasecmp(w1, "#packet_ver") == 0) {
 				int ver = atoi(w2);
 				if(ver <= PACKETVER && ver >= stock.version) {
 					// PACKETVER‚ÉÅ‚à‹ß‚¢“ú•t‚ªŒ©‚Â‚©‚Á‚½‚Ì‚ÅŒÃ‚¢î•ñ‚ğ”jŠü‚·‚é
@@ -28667,7 +28667,7 @@ static void packetdb_readdb(void)
 				}
 				continue;
 			}
-			if(strcmpi(w1, "#packet_key") == 0) {
+			if(strcasecmp(w1, "#packet_key") == 0) {
 				int i;
 				char *str[3], *p;
 				for(i = 0, p = w2; i < 3 && p; i++) {
@@ -28915,3 +28915,4 @@ void do_init_clif(void)
 
 	return;
 }
+

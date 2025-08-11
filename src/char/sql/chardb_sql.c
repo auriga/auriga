@@ -47,19 +47,19 @@ static int  char_server_keepalive   = 0;
  */
 int chardb_sql_config_read_sub(const char* w1,const char* w2)
 {
-	if( strcmpi(w1,"char_server_ip") == 0 )
+	if( strcasecmp(w1,"char_server_ip") == 0 )
 		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
-	else if( strcmpi(w1,"char_server_port") == 0 )
+	else if( strcasecmp(w1,"char_server_port") == 0 )
 		char_server_port = (unsigned short)atoi(w2);
-	else if( strcmpi(w1,"char_server_id") == 0 )
+	else if( strcasecmp(w1,"char_server_id") == 0 )
 		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
-	else if( strcmpi(w1,"char_server_pw") == 0 )
+	else if( strcasecmp(w1,"char_server_pw") == 0 )
 		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
-	else if( strcmpi(w1,"char_server_db") == 0 )
+	else if( strcasecmp(w1,"char_server_db") == 0 )
 		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
-	else if( strcmpi(w1,"char_server_charset") == 0 )
+	else if( strcasecmp(w1,"char_server_charset") == 0 )
 		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
-	else if( strcmpi(w1,"char_server_keepalive") ==0 )
+	else if( strcasecmp(w1,"char_server_keepalive") ==0 )
 		char_server_keepalive = atoi(w2);
 	else
 		return 0;
@@ -1236,3 +1236,4 @@ bool chardb_sql_init(void)
 
 	return true;
 }
+

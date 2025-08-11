@@ -59,7 +59,7 @@ int loginlog_log_txt(const char *fmt, ...)
  */
 int loginlog_config_read_txt(const char *w1, const char *w2)
 {
-	if( strcmpi(w1, "login_log_filename") == 0 ) {
+	if( strcasecmp(w1, "login_log_filename") == 0 ) {
 		strncpy(loginlog_filename, w2, sizeof(loginlog_filename) - 1);
 		loginlog_filename[sizeof(loginlog_filename) - 1] = '\0';
 	} else {
@@ -68,3 +68,4 @@ int loginlog_config_read_txt(const char *w1, const char *w2)
 
 	return 1;
 }
+

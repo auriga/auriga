@@ -44,10 +44,10 @@ static char mail_txt[1024] = "save/mail.txt";
  */
 int maildb_txt_config_read_sub(const char *w1, const char *w2)
 {
-	if(strcmpi(w1,"mail_txt")==0) {
+	if(strcasecmp(w1,"mail_txt")==0) {
 		strncpy(mail_txt, w2, sizeof(mail_txt) - 1);
 	}
-	else if(strcmpi(w1,"mail_dir")==0) {
+	else if(strcasecmp(w1,"mail_dir")==0) {
 		strncpy(mail_dir, w2, sizeof(mail_dir) - 1);
 	}
 	else {
@@ -516,3 +516,4 @@ bool maildb_txt_init(void)
 {
 	return maildb_txt_read();
 }
+

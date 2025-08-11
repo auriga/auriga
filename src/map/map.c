@@ -2473,7 +2473,7 @@ static void map_addmap(const char *mapname)
 	int i;
 	size_t len;
 
-	if(strcmpi(mapname, "clear") == 0) {
+	if(strcasecmp(mapname, "clear") == 0) {
 		if(map != NULL) {
 			aFree(map);
 			map = NULL;
@@ -2511,7 +2511,7 @@ static void map_delmap(const char *mapname)
 {
 	int i;
 
-	if(strcmpi(mapname, "all") == 0) {
+	if(strcasecmp(mapname, "all") == 0) {
 		map_num = 0;
 		map_max = 0;
 		if(map != NULL) {
@@ -2795,102 +2795,102 @@ static int map_config_read(const char *cfgName)
 		if (sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if (strcmpi(w1, "userid") == 0) {
+		if (strcasecmp(w1, "userid") == 0) {
 			chrif_setuserid(w2);
-		} else if (strcmpi(w1, "passwd") == 0) {
+		} else if (strcasecmp(w1, "passwd") == 0) {
 			chrif_setpasswd(w2);
-		} else if (strcmpi(w1, "char_ip") == 0) {
+		} else if (strcasecmp(w1, "char_ip") == 0) {
 			chrif_sethost(w2);
-		} else if (strcmpi(w1, "char_port") == 0) {
+		} else if (strcasecmp(w1, "char_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
 				printf("map_config_read: Invalid char_port value: %d. Set to 6121 (default).\n", n);
 				n = 6121; // default
 			}
 			chrif_setport((unsigned short)n);
-		} else if (strcmpi(w1, "map_ip") == 0) {
+		} else if (strcasecmp(w1, "map_ip") == 0) {
 			clif_sethost(w2);
-		} else if (strcmpi(w1, "map_port") == 0) {
+		} else if (strcasecmp(w1, "map_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
 				printf("map_config_read: Invalid map_port value: %d. Set to 5121 (default).\n", n);
 				n = 5121; // default
 			}
 			clif_setport((unsigned short)n);
-		} else if (strcmpi(w1, "listen_ip") == 0) {
+		} else if (strcasecmp(w1, "listen_ip") == 0) {
 			unsigned long ip_result = host2ip(w2, NULL);
 			if (ip_result == INADDR_NONE) // not always -1
 				printf("map_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
-		} else if (strcmpi(w1, "map_server_tag") == 0) {
+		} else if (strcasecmp(w1, "map_server_tag") == 0) {
 			strncpy(map_server_tag, w2, sizeof(map_server_tag) - 1);
 			map_server_tag[sizeof(map_server_tag) - 1] = '\0';
-		} else if (strcmpi(w1, "water_height") == 0) {
+		} else if (strcasecmp(w1, "water_height") == 0) {
 			strncpy(water_height_txt, w2, sizeof(water_height_txt) - 1);
 			water_height_txt[sizeof(water_height_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "gm_account_filename") == 0) {
+		} else if (strcasecmp(w1, "gm_account_filename") == 0) {
 			pc_set_gm_account_fname(w2);
-		} else if (strcmpi(w1, "grf_path_txt") == 0) {
+		} else if (strcasecmp(w1, "grf_path_txt") == 0) {
 			strncpy(grf_path_txt, w2, sizeof(grf_path_txt) - 1);
 			grf_path_txt[sizeof(grf_path_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "map") == 0) {
+		} else if (strcasecmp(w1, "map") == 0) {
 			map_addmap(w2);
-		} else if (strcmpi(w1, "delmap") == 0) {
+		} else if (strcasecmp(w1, "delmap") == 0) {
 			map_delmap(w2);
-		} else if (strcmpi(w1, "npc") == 0) {
+		} else if (strcasecmp(w1, "npc") == 0) {
 			npc_addsrcfile(w2);
-		} else if (strcmpi(w1, "delnpc") == 0) {
+		} else if (strcasecmp(w1, "delnpc") == 0) {
 			npc_delsrcfile(w2);
-		} else if (strcmpi(w1, "packet_parse_time") == 0) {
+		} else if (strcasecmp(w1, "packet_parse_time") == 0) {
 			packet_parse_time = atoi(w2);
 			if (packet_parse_time < 0) {
 				printf("map_config_read: Invalid packet_parse_time value: %d. Set to 0 (default).\n", packet_parse_time);
 				packet_parse_time = 0;
 			}
-		} else if (strcmpi(w1, "autosave_time") == 0) {
+		} else if (strcasecmp(w1, "autosave_time") == 0) {
 			autosave_interval = atoi(w2) * 1000;
 			if (autosave_interval <= 0) {
 				printf("map_config_read: Invalid autosave_time value: %d. Set to %d (default).\n", autosave_interval, (int)(DEFAULT_AUTOSAVE_INTERVAL / 1000));
 				autosave_interval = DEFAULT_AUTOSAVE_INTERVAL;
 			}
-		} else if (strcmpi(w1, "autosave_gvg_rate") == 0) {
+		} else if (strcasecmp(w1, "autosave_gvg_rate") == 0) {
 			autosave_gvg_rate = atoi(w2);
 			if (autosave_gvg_rate < 100) {
 				printf("map_config_read: Invalid autosave_gvg_rate value: %d. Set to 100 (minimum).\n", autosave_gvg_rate);
 				autosave_gvg_rate = 100;
 			}
-		} else if (strcmpi(w1, "extra_check_interval") == 0) {
+		} else if (strcasecmp(w1, "extra_check_interval") == 0) {
 			extra_check_interval = atoi(w2);
-		} else if (strcmpi(w1, "motd_txt") == 0) {
+		} else if (strcasecmp(w1, "motd_txt") == 0) {
 			strncpy(motd_txt, w2, sizeof(motd_txt) - 1);
 			motd_txt[sizeof(motd_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "help_txt") == 0) {
+		} else if (strcasecmp(w1, "help_txt") == 0) {
 			strncpy(help_txt, w2, sizeof(help_txt) - 1);
 			help_txt[sizeof(help_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "extra_add_file_txt") == 0) {
+		} else if (strcasecmp(w1, "extra_add_file_txt") == 0) {
 			strncpy(extra_add_file_txt, w2, sizeof(extra_add_file_txt) - 1);
 			extra_add_file_txt[sizeof(extra_add_file_txt) - 1] = '\0';
-		} else if (strcmpi(w1, "read_map_from_cache") == 0) {
+		} else if (strcasecmp(w1, "read_map_from_cache") == 0) {
 			map_read_flag = atoi(w2);
-		} else if (strcmpi(w1, "map_cache_file") == 0) {
+		} else if (strcasecmp(w1, "map_cache_file") == 0) {
 			strncpy(map_cache_file, w2, sizeof(map_cache_file) - 1);
 			map_cache_file[sizeof(map_cache_file) - 1] = '\0';
-		} else if (strcmpi(w1, "httpd_enable") == 0) {
+		} else if (strcasecmp(w1, "httpd_enable") == 0) {
 			socket_enable_httpd(atoi(w2));
-		} else if (strcmpi(w1, "httpd_document_root") == 0) {
+		} else if (strcasecmp(w1, "httpd_document_root") == 0) {
 			httpd_set_document_root(w2);
-		} else if (strcmpi(w1, "httpd_log_filename") == 0) {
+		} else if (strcasecmp(w1, "httpd_log_filename") == 0) {
 			httpd_set_logfile(w2);
-		} else if (strcmpi(w1, "httpd_config") == 0) {
+		} else if (strcasecmp(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
-		} else if (strcmpi(w1, "map_pk_server") == 0) {
+		} else if (strcasecmp(w1, "map_pk_server") == 0) {
 			map_pk_server_flag = atoi(w2);
-		} else if (strcmpi(w1, "map_pk_nightmaredrop") == 0) {
+		} else if (strcasecmp(w1, "map_pk_nightmaredrop") == 0) {
 			map_pk_nightmaredrop_flag = atoi(w2);
-		} else if (strcmpi(w1, "map_pk_noteleport") == 0) {
+		} else if (strcasecmp(w1, "map_pk_noteleport") == 0) {
 			map_pk_noteleport_flag = atoi(w2);
-		} else if (strcmpi(w1, "import") == 0) {
+		} else if (strcasecmp(w1, "import") == 0) {
 			map_config_read(w2);
 		} else {
 			mapreg_config_read_sub(w1, w2);
@@ -3192,3 +3192,4 @@ int do_init(int argc,char *argv[])
 
 	return 0;
 }
+

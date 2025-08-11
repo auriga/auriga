@@ -1115,14 +1115,14 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 			req_uri[i++] = *(line++);
 		req_uri[i]='\0';
 
-		if( strcmpi( req_uri, uri )!=0 )
+		if( strcasecmp( req_uri, uri )!=0 )
 		{
 			// ie のバグ吸収
 			for( i=0; req_uri[i] && req_uri[i]!='?'; i++ );
 			if( req_uri[i]!='?' )
 				return 0;
 			req_uri[i]='\0';
-			if( strcmpi( req_uri, uri )!=0 )	// uri があわない
+			if( strcasecmp( req_uri, uri )!=0 )	// uri があわない
 				return 0;
 		}
 	}
@@ -1136,7 +1136,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 		sprintf( buf, "%08x:%s", tick, a->privkey );
 		MD5_String( buf, buf2 );
-		if( strcmpi( nonce+8, buf2 )!=0 )	// 計算方法が違う
+		if( strcasecmp( nonce+8, buf2 )!=0 )	// 計算方法が違う
 			return 0;
 
 		if( DIFF_TICK( gettick(), tick ) > auth_digest_period )	// 有効期限が切れたので stale フラグ設定
@@ -1158,7 +1158,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 
 		for( i=0; i<NONCE_LOG_SIZE; i++ )
 		{
-			if( strcmpi( nonce_log[i].nonce, nonce )==0 )
+			if( strcasecmp( nonce_log[i].nonce, nonce )==0 )
 			{
 				if( nonce_log[i].nc != nci )		// nc があわない
 					return 0;
@@ -1204,7 +1204,7 @@ int httpd_check_access_user_digest( struct httpd_access *a, struct httpd_session
 		sprintf( buf,"%s:%s:%s:%s:%s:%s", a1, nonce, nc, cnonce, "auth", a2 );
 		MD5_String( buf, res );
 
-		if( strcmpi( res, response )==0 )
+		if( strcasecmp( res, response )==0 )
 		{
 			strcpy( sd->user, username );
 			return 1;
@@ -2876,8 +2876,8 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 		char w1[1024], w2[1024];
 		if( sscanf( sd->req_head[x], "%1023[^:]: %1023[^\r\n]", w1, w2 ) == 2 )
 		{
-			if( strcmpi( w1, "Content-Type"   )!=0 &&
-				strcmpi( w1, "Content-Length" )!=0 )
+			if( strcasecmp( w1, "Content-Type"   )!=0 &&
+				strcasecmp( w1, "Content-Length" )!=0 )
 			{
 				int z;
 				for( z=0; w1[z]; z++ )
@@ -3182,13 +3182,13 @@ static void httpd_config_read_add_ip( unsigned long **list, int *count, int *max
 	unsigned long ip, mask;
 	unsigned char *pip = (unsigned char *)&ip, *pmask = (unsigned char *)&mask;
 
-	if( strcmpi( w2,"clear" ) == 0 )	// clear
+	if( strcasecmp( w2,"clear" ) == 0 )	// clear
 	{
 		aFree( *list );
 		*list = NULL;
 		*count = *max = 0;
 	}
-	else if( strcmpi( w2,"all") == 0 )	// all
+	else if( strcasecmp( w2,"all") == 0 )	// all
 	{
 		ip = mask = 0;
 	}
@@ -3267,88 +3267,88 @@ int httpd_config_read(const char *cfgName)
 		if(sscanf(line,"%1023[^:]: %1023[^\r\n]",w1,w2) != 2)
 			continue;
 
-		if(strcmpi(w1,"enable")==0)
+		if(strcasecmp(w1,"enable")==0)
 		{
 			socket_enable_httpd( atoi(w2) );
 		}
-		else if(strcmpi(w1,"log_filename")==0)
+		else if(strcasecmp(w1,"log_filename")==0)
 		{
 			strncpy( logfile, w2, sizeof(logfile) - 1 );
 		}
-		else if(strcmpi(w1,"request_timeout_first")==0)
+		else if(strcasecmp(w1,"request_timeout_first")==0)
 		{
 			httpd_set_request_timeout( 0, atoi(w2) );
 		}
-		else if(strcmpi(w1,"request_timeout_persist")==0)
+		else if(strcasecmp(w1,"request_timeout_persist")==0)
 		{
 			httpd_set_request_timeout( 1, atoi(w2) );
 		}
-		else if(strcmpi(w1,"max_persist_requests")==0)
+		else if(strcasecmp(w1,"max_persist_requests")==0)
 		{
 			httpd_set_max_persist_requests( atoi(w2) );
 		}
-		else if(strcmpi(w1,"timezone")==0)
+		else if(strcasecmp(w1,"timezone")==0)
 		{
-			if( strcmpi(w2,"auto") == 0)
+			if( strcasecmp(w2,"auto") == 0)
 				httpd_set_timezone( -1 );
 			else
 				httpd_set_timezone( atoi(w2)*(-60) );
 		}
-		else if(strcmpi(w1,"auth_digest_period")==0)
+		else if(strcasecmp(w1,"auth_digest_period")==0)
 		{
 			httpd_set_auth_digest_period( atoi(w2) );
 		}
-		else if(strcmpi(w1,"log_no_flush")==0)
+		else if(strcasecmp(w1,"log_no_flush")==0)
 		{
 			log_no_flush = atoi(w2);
 		}
-		else if(strcmpi(w1,"max_uri_length")==0)
+		else if(strcasecmp(w1,"max_uri_length")==0)
 		{
 			max_uri_length = atoi(w2);
 		}
-		else if(strcmpi(w1,"server_max_requests_per_second")==0)
+		else if(strcasecmp(w1,"server_max_requests_per_second")==0)
 		{
 			server_max_requests_per_second = atoi(w2);
 		}
-		else if(strcmpi(w1,"server_max_requests_period")==0)
+		else if(strcasecmp(w1,"server_max_requests_period")==0)
 		{
 			server_max_requests_period = atoi(w2);
 		}
-		else if(strcmpi(w1,"cgi_enable")==0)
+		else if(strcasecmp(w1,"cgi_enable")==0)
 		{
 			httpd_cgi_enable = atoi(w2);
 		}
-		else if(strcmpi(w1,"max_cgi_process")==0)
+		else if(strcasecmp(w1,"max_cgi_process")==0)
 		{
 			httpd_max_cgi_process = atoi(w2);
 		}
-		else if(strcmpi(w1,"cgi_process_timeout")==0)
+		else if(strcasecmp(w1,"cgi_process_timeout")==0)
 		{
 			httpd_cgi_timeout = atoi(w2);
 		}
-		else if(strcmpi(w1,"cgi_kill_timeout")==0)
+		else if(strcasecmp(w1,"cgi_kill_timeout")==0)
 		{
 			httpd_cgi_kill_timeout = atoi(w2);
 		}
-		else if(strcmpi(w1,"cgi_temp_dir")==0)
+		else if(strcasecmp(w1,"cgi_temp_dir")==0)
 		{
 			strncpy( httpd_cgi_temp_dir, w2, sizeof(httpd_cgi_temp_dir) - 1 );
 		}
-		else if(strcmpi(w1,"cgi_server_name")==0)
+		else if(strcasecmp(w1,"cgi_server_name")==0)
 		{
 			strncpy( httpd_cgi_server_name, w2, sizeof(httpd_cgi_server_name) - 1 );
 		}
-		else if(strcmpi(w1,"log_format")==0)
+		else if(strcasecmp(w1,"log_format")==0)
 		{
 			httpd_log_format = atoi(w2);
 		}
-		else if(strcmpi(w1,"document_root")==0)
+		else if(strcasecmp(w1,"document_root")==0)
 		{
 			httpd_set_document_root( w2 );
 		}
-		else if( strcmpi(w1,"target")==0 )
+		else if( strcasecmp(w1,"target")==0 )
 		{
-			if( strcmpi( w2,"clear" )==0 )		// clear
+			if( strcasecmp( w2,"clear" )==0 )		// clear
 			{
 				int i;
 				for( i=0; i<htaccess_count; i++ )
@@ -3363,7 +3363,7 @@ int httpd_config_read(const char *cfgName)
 				htaccess_count = htaccess_max = 0;
 				a = NULL;
 			}
-			else if( strcmpi( w2,"none" )==0 ||  strcmpi( w2,"end" )==0 )
+			else if( strcasecmp( w2,"none" )==0 ||  strcasecmp( w2,"end" )==0 )
 			{
 				a = NULL;
 			}
@@ -3422,27 +3422,27 @@ int httpd_config_read(const char *cfgName)
 				}
 			}
 		}
-		else if(strcmpi(w1,"satisfy")==0 )
+		else if(strcasecmp(w1,"satisfy")==0 )
 		{
-			int i = (strcmpi(w2,"any")==0)? HTTPD_ACCESS_SAT_ANY : (strcmpi(w2,"all")==0)? HTTPD_ACCESS_SAT_ALL : -1;
+			int i = (strcasecmp(w2,"any")==0)? HTTPD_ACCESS_SAT_ANY : (strcasecmp(w2,"all")==0)? HTTPD_ACCESS_SAT_ALL : -1;
 			CHECK_ACCES_TARGET("satisfy");
 			if( i<0 )
 				printf("httpd_config_read: satisfy: unknown satisfy option [%s]\n", w2);
 			else
 				a->type = (a->type & ~HTTPD_ACCESS_SAT_MASK) | i;
 		}
-		else if(strcmpi(w1,"authtype")==0)
+		else if(strcasecmp(w1,"authtype")==0)
 		{
-			int i = (strcmpi(w2,"basic")==0)? HTTPD_ACCESS_AUTH_BASIC :
-					(strcmpi(w2,"digest")==0)? HTTPD_ACCESS_AUTH_DIGEST :
-					(strcmpi(w2,"none")==0)? HTTPD_ACCESS_AUTH_NONE : -1;
+			int i = (strcasecmp(w2,"basic")==0)? HTTPD_ACCESS_AUTH_BASIC :
+					(strcasecmp(w2,"digest")==0)? HTTPD_ACCESS_AUTH_DIGEST :
+					(strcasecmp(w2,"none")==0)? HTTPD_ACCESS_AUTH_NONE : -1;
 			CHECK_ACCES_TARGET("authtype");
 			if( i<0 )
 				printf("httpd_config_read: authtype: unknown authtype [%s]\n", w2);
 			else
 				a->type = (a->type & ~HTTPD_ACCESS_AUTH_MASK) | i;
 		}
-		else if(strcmpi(w1,"authfunc")==0)
+		else if(strcasecmp(w1,"authfunc")==0)
 		{
 			int i = atoi(w2);
 			CHECK_ACCES_TARGET("authfunc");
@@ -3451,7 +3451,7 @@ int httpd_config_read(const char *cfgName)
 			else
 				a->auth_func_id = i;
 		}
-		else if(strcmpi(w1,"authname")==0 || strcmpi(w1,"authrealm")==0 )
+		else if(strcasecmp(w1,"authname")==0 || strcasecmp(w1,"authrealm")==0 )
 		{
 			CHECK_ACCES_TARGET("authname");
 			if( strlen(w2)>=sizeof(a->realm) )
@@ -3459,7 +3459,7 @@ int httpd_config_read(const char *cfgName)
 			else
 				strcpy( a->realm, w2 );
 		}
-		else if(strcmpi(w1,"authuser")==0 )
+		else if(strcasecmp(w1,"authuser")==0 )
 		{
 			char u[1024], p[1024];
 			CHECK_ACCES_TARGET("authuser");
@@ -3467,7 +3467,7 @@ int httpd_config_read(const char *cfgName)
 			{
 				httpd_config_read_add_authuser( a, u, p );
 			}
-			else if( strcmpi(w2,"clear") == 2 )
+			else if( strcasecmp(w2,"clear") == 2 )
 			{
 				aFree( a->user );
 				a->user_count = a->user_max = 0;
@@ -3477,32 +3477,32 @@ int httpd_config_read(const char *cfgName)
 				printf("httpd_config_read: authuser: [user:pass] needed\n");
 			}
 		}
-		else if(strcmpi(w1,"order")==0 )
+		else if(strcasecmp(w1,"order")==0 )
 		{
-			int i = (strcmpi(w2,"deny,allow"    )==0)? HTTPD_ACCESS_IP_DENY   :
-					(strcmpi(w2,"allow,deny"    )==0)? HTTPD_ACCESS_IP_ALLOW  :
-					(strcmpi(w2,"mutual-failure")==0)? HTTPD_ACCESS_IP_MUTUAL :
-					(strcmpi(w2,"none"			)==0)? HTTPD_ACCESS_IP_NONE   : -1;
+			int i = (strcasecmp(w2,"deny,allow"    )==0)? HTTPD_ACCESS_IP_DENY   :
+					(strcasecmp(w2,"allow,deny"    )==0)? HTTPD_ACCESS_IP_ALLOW  :
+					(strcasecmp(w2,"mutual-failure")==0)? HTTPD_ACCESS_IP_MUTUAL :
+					(strcasecmp(w2,"none"			)==0)? HTTPD_ACCESS_IP_NONE   : -1;
 			CHECK_ACCES_TARGET("order");
 			if( i<0 )
 				printf("httpd_config_read: order: unknown order option [%s]\n", w2);
 			else
 				a->type = (a->type & ~HTTPD_ACCESS_IP_MASK) | i;
 		}
-		else if(strcmpi(w1,"allow")==0 )
+		else if(strcasecmp(w1,"allow")==0 )
 		{
 			CHECK_ACCES_TARGET("allow");
 			httpd_config_read_add_ip( &a->aip, &a->aip_count, &a->aip_max, w2 );
 		}
-		else if(strcmpi(w1,"deny")==0 )
+		else if(strcasecmp(w1,"deny")==0 )
 		{
 			CHECK_ACCES_TARGET("deny");
 			httpd_config_read_add_ip( &a->dip, &a->dip_count, &a->dip_max, w2 );
 		}
-		else if(strcmpi(w1,"cgi_ext_list")==0 )
+		else if(strcasecmp(w1,"cgi_ext_list")==0 )
 		{
 			char* p = a ? a->cgi_ext_list : httpd_cgi_ext_list;
-			if( strcmpi(w2,"none") == 0 )
+			if( strcasecmp(w2,"none") == 0 )
 			{
 				p[0]='\0';
 			}
@@ -3515,7 +3515,7 @@ int httpd_config_read(const char *cfgName)
 				sprintf( p, "%s ", w2 );
 			}
 		}
-		else if(strcmpi(w1,"import")==0)
+		else if(strcasecmp(w1,"import")==0)
 		{
 			httpd_config_read(w2);
 		}
@@ -3581,3 +3581,4 @@ int httpd_decode_base64( char *dest, const char *src)
 	*dest = '\0';
 	return 1;
 }
+

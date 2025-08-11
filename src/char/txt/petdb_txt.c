@@ -51,17 +51,17 @@ static int pet_journal_cache = 1000;
  */
 int petdb_txt_config_read_sub(const char* w1,const char *w2)
 {
-	if(strcmpi(w1,"pet_txt")==0){
+	if(strcasecmp(w1,"pet_txt")==0){
 		strncpy(pet_txt, w2, sizeof(pet_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"pet_journal_enable")==0){
+	else if(strcasecmp(w1,"pet_journal_enable")==0){
 		pet_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"pet_journal_file")==0){
+	else if(strcasecmp(w1,"pet_journal_file")==0){
 		strncpy( pet_journal_file, w2, sizeof(pet_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"pet_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"pet_journal_cache_interval")==0){
 		pet_journal_cache = atoi( w2 );
 	}
 #endif
@@ -390,3 +390,4 @@ bool petdb_txt_init(void)
 {
 	return petdb_txt_read();
 }
+

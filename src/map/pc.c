@@ -8308,7 +8308,7 @@ int pc_readregistry(struct map_session_data *sd, const char *reg, int type)
 	}
 
 	for(i = 0; i < num; i++) {
-		if(strcmpi(gr[i].str, reg) == 0)
+		if(strcasecmp(gr[i].str, reg) == 0)
 			return gr[i].value;
 	}
 	return 0;
@@ -8369,7 +8369,7 @@ int pc_setregistry(struct map_session_data *sd, const char *reg, int val, int ty
 	if(val == 0) {
 		// delete registry
 		for(i = 0; i < *num; i++) {
-			if(strcmpi(gr[i].str, reg) == 0) {
+			if(strcasecmp(gr[i].str, reg) == 0) {
 				gr[i] = gr[(*num) - 1];
 				(*num)--;
 				func(sd);
@@ -8379,7 +8379,7 @@ int pc_setregistry(struct map_session_data *sd, const char *reg, int val, int ty
 		return 0;
 	}
 	for(i = 0; i < *num; i++) {
-		if(strcmpi(gr[i].str, reg) == 0) {
+		if(strcasecmp(gr[i].str, reg) == 0) {
 			// replace registry
 			if(gr[i].value != val) {
 				gr[i].value = val;
@@ -10836,3 +10836,4 @@ int do_init_pc(void)
 
 	return 0;
 }
+

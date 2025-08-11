@@ -4660,19 +4660,19 @@ static void char_config_read(const char *cfgName)
 		if (sscanf(line,"%1023[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if (strcmpi(w1, "userid") == 0) {
+		if (strcasecmp(w1, "userid") == 0) {
 			memcpy(userid, w2, 24);
 			userid[23] = '\0';
-		} else if (strcmpi(w1, "passwd") == 0) {
+		} else if (strcasecmp(w1, "passwd") == 0) {
 			memcpy(passwd ,w2, 24);
 			passwd[23] = '\0';
-		} else if (strcmpi(w1, "server_name") == 0) {
+		} else if (strcasecmp(w1, "server_name") == 0) {
 			memcpy(server_name, w2, 20);
 			server_name[19] = '\0';
-		} else if (strcmpi(w1, "login_ip") == 0) {
+		} else if (strcasecmp(w1, "login_ip") == 0) {
 			memcpy(login_host, w2, sizeof(login_host));
 			login_host[sizeof(login_host)-1] = '\0';	// force \0 terminal
-		} else if (strcmpi(w1, "login_port") == 0) {
+		} else if (strcasecmp(w1, "login_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
 				printf("char_config_read: Invalid login_port value: %d. Set to 6900 (default).\n", n);
@@ -4680,10 +4680,10 @@ static void char_config_read(const char *cfgName)
 			} else {
 				login_port = (unsigned short)n;
 			}
-		} else if (strcmpi(w1, "char_ip") == 0) {
+		} else if (strcasecmp(w1, "char_ip") == 0) {
 			memcpy(char_host, w2, sizeof(char_host));
 			char_host[sizeof(char_host)-1] = '\0';	// force \0 terminal
-		} else if (strcmpi(w1, "char_port") == 0) {
+		} else if (strcasecmp(w1, "char_port") == 0) {
 			int n = atoi(w2);
 			if (n < 0 || n > 65535) {
 				printf("char_config_read: Invalid char_port value: %d. Set to 6121 (default).\n", n);
@@ -4691,16 +4691,16 @@ static void char_config_read(const char *cfgName)
 			} else {
 				char_port = (unsigned short)n;
 			}
-		} else if (strcmpi(w1, "listen_ip") == 0) {
+		} else if (strcasecmp(w1, "listen_ip") == 0) {
 			unsigned long ip_result = host2ip(w2, NULL);
 			if(ip_result == INADDR_NONE) // not always -1
 				printf("char_config_read: Invalid listen_ip value: %s.\n", w2);
 			else
 				listen_ip = ip_result;
-		} else if (strcmpi(w1, "char_sip") == 0) {
+		} else if (strcasecmp(w1, "char_sip") == 0) {
 			memcpy(char_shost, w2, sizeof(char_shost));
 			char_shost[sizeof(char_shost)-1] = '\0';	// force \0 terminal
-		} else if (strcmpi(w1, "char_sport") == 0) {
+		} else if (strcasecmp(w1, "char_sport") == 0) {
 			int n = atoi(w2);
 			if (n< 0 || n > 65535) {
 				printf("char_config_read: Invalid char_sport value: %d. Set to 0 (default).\n", n);
@@ -4708,23 +4708,23 @@ static void char_config_read(const char *cfgName)
 			} else {
 				char_sport = (unsigned short)n;
 			}
-		} else if (strcmpi(w1, "char_maintenance") == 0) {
+		} else if (strcasecmp(w1, "char_maintenance") == 0) {
 			char_maintenance = atoi(w2);
-		} else if (strcmpi(w1, "char_loginaccess_autorestart") == 0) {
+		} else if (strcasecmp(w1, "char_loginaccess_autorestart") == 0) {
 			char_loginaccess_autorestart = atoi(w2);
-		} else if (strcmpi(w1, "char_new")==0){
+		} else if (strcasecmp(w1, "char_new")==0){
 			char_new = atoi(w2);
-		} else if (strcmpi(w1, "max_connect_user") == 0) {
+		} else if (strcasecmp(w1, "max_connect_user") == 0) {
 			max_connect_user = atoi(w2);
 			if (max_connect_user < 0) {
 				printf("char_config_read: Invalid max_connect_user value: %d. Set to 0 (default).\n", max_connect_user);
 				max_connect_user = 0;
 			}
-		} else if (strcmpi(w1, "autosave_time") == 0) {
+		} else if (strcasecmp(w1, "autosave_time") == 0) {
 			autosave_interval = atoi(w2) * 1000;
 			if (autosave_interval <= 0)
 				autosave_interval = DEFAULT_AUTOSAVE_INTERVAL_CS;
-		} else if (strcmpi(w1, "human_start_point") == 0) {
+		} else if (strcasecmp(w1, "human_start_point") == 0) {
 			char map[1024];
 			int x, y;
 			if (sscanf(w2, "%1023[^,],%d,%d", map, &x, &y) < 3)
@@ -4733,17 +4733,17 @@ static void char_config_read(const char *cfgName)
 			human_start_point.map[15] = '\0';
 			human_start_point.x       = x;
 			human_start_point.y       = y;
-		} else if (strcmpi(w1, "human_start_zeny") == 0) {
+		} else if (strcasecmp(w1, "human_start_zeny") == 0) {
 			human_start_zeny = atoi(w2);
 			if (human_start_zeny < 0) {
 				printf("char_config_read: Invalid human_start_zeny value: %d. Set to 0 (default).\n", human_start_zeny);
 				human_start_zeny = 0;
 			}
-		} else if (strcmpi(w1, "human_start_weapon") == 0) {
+		} else if (strcasecmp(w1, "human_start_weapon") == 0) {
 			human_start_weapon = atoi(w2);
-		} else if (strcmpi(w1, "human_start_armor") == 0) {
+		} else if (strcasecmp(w1, "human_start_armor") == 0) {
 			human_start_armor = atoi(w2);
-		} else if (strcmpi(w1, "doram_start_point") == 0) {
+		} else if (strcasecmp(w1, "doram_start_point") == 0) {
 			char map[1024];
 			int x, y;
 			if (sscanf(w2, "%1023[^,],%d,%d", map, &x, &y) < 3)
@@ -4752,43 +4752,43 @@ static void char_config_read(const char *cfgName)
 			doram_start_point.map[15] = '\0';
 			doram_start_point.x       = x;
 			doram_start_point.y       = y;
-		} else if (strcmpi(w1, "doram_start_zeny") == 0) {
+		} else if (strcasecmp(w1, "doram_start_zeny") == 0) {
 			doram_start_zeny = atoi(w2);
 			if (doram_start_zeny < 0) {
 				printf("char_config_read: Invalid doram_start_zeny value: %d. Set to 0 (default).\n", doram_start_zeny);
 				doram_start_zeny = 0;
 			}
-		} else if (strcmpi(w1, "doram_start_weapon") == 0) {
+		} else if (strcasecmp(w1, "doram_start_weapon") == 0) {
 			doram_start_weapon = atoi(w2);
-		} else if (strcmpi(w1, "doram_start_armor") == 0) {
+		} else if (strcasecmp(w1, "doram_start_armor") == 0) {
 			doram_start_armor = atoi(w2);
-		} else if (strcmpi(w1, "unknown_char_name") == 0) {
+		} else if (strcasecmp(w1, "unknown_char_name") == 0) {
 			strncpy(unknown_char_name, w2, 24);
 			unknown_char_name[23] = '\0';
-		} else if (strcmpi(w1, "default_map_type") == 0) {
+		} else if (strcasecmp(w1, "default_map_type") == 0) {
 			default_map_type = atoi(w2);
-		} else if (strcmpi(w1, "default_map_name") == 0) {
+		} else if (strcasecmp(w1, "default_map_name") == 0) {
 			strncpy(default_map_name, w2, 16);
 			default_map_name[15] = '\0';
-		} else if (strcmpi(w1, "max_char_slot") == 0) {
+		} else if (strcasecmp(w1, "max_char_slot") == 0) {
 			max_char_slot = atoi(w2);
 			if (max_char_slot <= 0 || max_char_slot > MAX_CHAR_SLOT) {
 				printf("char_config_read: Invalid max_char_slot value: %d. Set to %d (default).\n", max_char_slot, MAX_CHAR_SLOT);
 				max_char_slot = MAX_CHAR_SLOT;
 			}
-		} else if (strcmpi(w1, "check_status_polygon") == 0) {
+		} else if (strcasecmp(w1, "check_status_polygon") == 0) {
 			check_status_polygon = atoi(w2);
-		} else if (strcmpi(w1, "delete_delay_time") == 0) {
+		} else if (strcasecmp(w1, "delete_delay_time") == 0) {
 			delete_delay_time = atoi(w2);
-		} else if (strcmpi(w1, "httpd_enable") == 0) {
+		} else if (strcasecmp(w1, "httpd_enable") == 0) {
 			socket_enable_httpd(atoi(w2));
-		} else if (strcmpi(w1, "httpd_document_root") == 0) {
+		} else if (strcasecmp(w1, "httpd_document_root") == 0) {
 			httpd_set_document_root(w2);
-		} else if (strcmpi(w1, "httpd_log_filename") == 0) {
+		} else if (strcasecmp(w1, "httpd_log_filename") == 0) {
 			httpd_set_logfile(w2);
-		} else if (strcmpi(w1, "httpd_config") == 0) {
+		} else if (strcasecmp(w1, "httpd_config") == 0) {
 			httpd_config_read(w2);
-		} else if (strcmpi(w1, "import") == 0) {
+		} else if (strcasecmp(w1, "import") == 0) {
 			char_config_read(w2);
 		} else {
 			if(charlog_config_read(w1, w2))
@@ -4980,3 +4980,4 @@ int do_init(int argc,char **argv)
 
 	return 0;
 }
+

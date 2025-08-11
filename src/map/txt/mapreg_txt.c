@@ -57,18 +57,18 @@ struct mapreg_data {
  */
 int mapreg_txt_config_read_sub(const char *w1, const char *w2)
 {
-	if(strcmpi(w1,"mapreg_txt") == 0) {
+	if(strcasecmp(w1,"mapreg_txt") == 0) {
 		strncpy(mapreg_txt, w2, sizeof(mapreg_txt) - 1);
 		mapreg_txt[sizeof(mapreg_txt) - 1] = '\0';
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"mapreg_journal_enable") == 0) {
+	else if(strcasecmp(w1,"mapreg_journal_enable") == 0) {
 		mapreg_journal_enable = atoi(w2);
 	}
-	else if(strcmpi(w1,"mapreg_journal_file") == 0) {
+	else if(strcasecmp(w1,"mapreg_journal_file") == 0) {
 		strncpy(mapreg_journal_file, w2, sizeof(mapreg_journal_file) - 1);
 	}
-	else if(strcmpi(w1,"mapreg_journal_cache_interval") == 0) {
+	else if(strcasecmp(w1,"mapreg_journal_cache_interval") == 0) {
 		mapreg_journal_cache = atoi(w2);
 	}
 #endif
@@ -431,3 +431,4 @@ bool mapreg_txt_init(void)
 
 	return true;
 }
+

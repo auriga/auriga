@@ -1488,19 +1488,19 @@ static void login_config_read(const char *cfgName)
 		if( sscanf(line, "%1023[^:]: %1023[^\r\n]", w1, w2) != 2 )
 			continue;
 
-		if( strcmpi(w1, "admin_pass") == 0 )
+		if( strcasecmp(w1, "admin_pass") == 0 )
 		{
 			strncpy(config.admin_pass, w2, sizeof(config.admin_pass) -1);
 			config.admin_pass[sizeof(config.admin_pass) - 1] = '\0';
 		}
-		else if( strcmpi(w1, "new_account") == 0 )
+		else if( strcasecmp(w1, "new_account") == 0 )
 			config.new_account_flag = ( atoi(w2) != 0 )? true : false;
-		else if( strcmpi(w1, "gm_account_filename") == 0 )
+		else if( strcasecmp(w1, "gm_account_filename") == 0 )
 		{
 			strncpy(config.GM_account_filename, w2, sizeof(config.GM_account_filename) - 1);
 			config.GM_account_filename[sizeof(config.GM_account_filename) - 1] = '\0';
 		}
-		else if (strcmpi(w1, "login_port") == 0)
+		else if (strcasecmp(w1, "login_port") == 0)
 		{
 			int n = atoi(w2);
 			if( n < 1024 || n > 65535 )
@@ -1511,7 +1511,7 @@ static void login_config_read(const char *cfgName)
 			else
 				config.login_port = (unsigned short)n;
 		}
-		else if( strcmpi(w1, "listen_ip") == 0 )
+		else if( strcasecmp(w1, "listen_ip") == 0 )
 		{
 			unsigned long ip_result = host2ip(w2, NULL);
 			if (ip_result == INADDR_NONE) // not always -1
@@ -1519,12 +1519,12 @@ static void login_config_read(const char *cfgName)
 			else
 				listen_ip = ip_result;
 		}
-		else if( strcmpi(w1, "login_sip") == 0 )
+		else if( strcasecmp(w1, "login_sip") == 0 )
 		{
 			memcpy(config.login_shost, w2, sizeof(config.login_shost));
 			config.login_shost[sizeof(config.login_shost)-1] = '\0';	// force \0 terminal
 		}
-		else if( strcmpi(w1, "login_sport") == 0 )
+		else if( strcasecmp(w1, "login_sport") == 0 )
 		{
 			int n = atoi(w2);
 			if( n < 1024 || n > 65535 )
@@ -1535,22 +1535,22 @@ static void login_config_read(const char *cfgName)
 			else
 				config.login_sport = (unsigned short)n;
 		}
-		else if( strcmpi(w1, "login_version") == 0 )
+		else if( strcasecmp(w1, "login_version") == 0 )
 			config.login_version = atoi(w2);
-		else if( strcmpi(w1, "login_type") == 0 )
+		else if( strcasecmp(w1, "login_type") == 0 )
 			config.login_type = atoi(w2);
-		else if( strcmpi(w1, "autosave_time") == 0 )
+		else if( strcasecmp(w1, "autosave_time") == 0 )
 			config.login_autosave_time = atoi(w2);
-		else if( strcmpi(w1, "ladmin_pass") == 0 )
+		else if( strcasecmp(w1, "ladmin_pass") == 0 )
 		{
 			strncpy(config.ladmin_pass, w2, sizeof(config.ladmin_pass) -1);
 			config.ladmin_pass[sizeof(config.ladmin_pass) - 1] = '\0';
 		}
-		else if( strcmpi(w1, "detect_multiple_login") == 0 )
+		else if( strcasecmp(w1, "detect_multiple_login") == 0 )
 			config.detect_multiple_login = ( atoi(w2) != 0)? true : false;
-		else if( strcmpi(w1, "ristrict_admin_local") == 0 )
+		else if( strcasecmp(w1, "ristrict_admin_local") == 0 )
 			config.ristrict_admin_local = ( atoi(w2) != 0 )? true : false;
-		else if( strcmpi(w1, "import") == 0 )
+		else if( strcasecmp(w1, "import") == 0 )
 			login_config_read(w2);
 		else
 		{
@@ -1731,3 +1731,4 @@ int do_init(int argc,char **argv)
 
 	return 0;
 }
+

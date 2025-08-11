@@ -11092,9 +11092,9 @@ void battle_join_struggle(struct mob_data *md,struct block_list *src)
  */
 static int battle_config_switch(const char *str)
 {
-	if(strcmpi(str,"on") == 0 || strcmpi(str,"yes") == 0)
+	if(strcasecmp(str,"on") == 0 || strcasecmp(str,"yes") == 0)
 		return 1;
-	if(strcmpi(str,"off") == 0 || strcmpi(str,"no") == 0)
+	if(strcasecmp(str,"off") == 0 || strcasecmp(str,"no") == 0)
 		return 0;
 	return atoi(str);
 }
@@ -11677,11 +11677,11 @@ int battle_config_read(const char *cfgName)
 		if(sscanf(line,"%1023[^:]:%1023s",w1,w2) != 2)
 			continue;
 
-		if(strcmpi(w1,"import") == 0) {
+		if(strcasecmp(w1,"import") == 0) {
 			battle_config_read(w2);
 		} else {
 			for(i=0; data[i].val; i++) {
-				if(strcmpi(w1,data[i].str) == 0) {
+				if(strcasecmp(w1,data[i].str) == 0) {
 					*data[i].val = battle_config_switch(w2);
 					break;
 				}
@@ -11898,3 +11898,4 @@ int do_final_battle(void)
 	// nothing to do
 	return 0;
 }
+

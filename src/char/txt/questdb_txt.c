@@ -48,17 +48,17 @@ static int quest_journal_cache = 1000;
  */
 int questdb_txt_config_read_sub(const char *w1, const char *w2)
 {
-	if(strcmpi(w1,"quest_txt")==0) {
+	if(strcasecmp(w1,"quest_txt")==0) {
 		strncpy(quest_txt, w2, sizeof(quest_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"quest_journal_enable")==0) {
+	else if(strcasecmp(w1,"quest_journal_enable")==0) {
 		quest_journal_enable = atoi(w2);
 	}
-	else if(strcmpi(w1,"quest_journal_file")==0) {
+	else if(strcasecmp(w1,"quest_journal_file")==0) {
 		strncpy(quest_journal_file, w2, sizeof(quest_journal_file) - 1);
 	}
-	else if(strcmpi(w1,"quest_journal_cache_interval")==0) {
+	else if(strcasecmp(w1,"quest_journal_cache_interval")==0) {
 		quest_journal_cache = atoi(w2);
 	}
 #endif
@@ -384,3 +384,4 @@ bool questdb_txt_init(void)
 {
 	return questdb_txt_read();
 }
+

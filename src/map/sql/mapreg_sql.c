@@ -48,25 +48,25 @@ static int  map_server_keepalive   = 0;
  */
 int mapreg_sql_config_read_sub(const char *w1, const char *w2)
 {
-	if(strcmpi(w1,"map_server_ip") == 0) {
+	if(strcasecmp(w1,"map_server_ip") == 0) {
 		strncpy(map_server_ip, w2, sizeof(map_server_ip) - 1);
 	}
-	else if(strcmpi(w1,"map_server_port") == 0) {
+	else if(strcasecmp(w1,"map_server_port") == 0) {
 		map_server_port = (unsigned short)atoi(w2);
 	}
-	else if(strcmpi(w1,"map_server_id") == 0) {
+	else if(strcasecmp(w1,"map_server_id") == 0) {
 		strncpy(map_server_id, w2, sizeof(map_server_id) - 1);
 	}
-	else if(strcmpi(w1,"map_server_pw") == 0) {
+	else if(strcasecmp(w1,"map_server_pw") == 0) {
 		strncpy(map_server_pw, w2, sizeof(map_server_pw) - 1);
 	}
-	else if(strcmpi(w1,"map_server_db") == 0) {
+	else if(strcasecmp(w1,"map_server_db") == 0) {
 		strncpy(map_server_db, w2, sizeof(map_server_db) - 1);
 	}
-	else if(strcmpi(w1,"map_server_charset") == 0) {
+	else if(strcasecmp(w1,"map_server_charset") == 0) {
 		strncpy(map_server_charset, w2, sizeof(map_server_charset) - 1);
 	}
-	else if(strcmpi(w1,"map_server_keepalive") == 0) {
+	else if(strcasecmp(w1,"map_server_keepalive") == 0) {
 		map_server_keepalive = atoi(w2);
 	}
 	else {
@@ -258,3 +258,4 @@ bool mapreg_sql_init(void)
 
 	return true;
 }
+

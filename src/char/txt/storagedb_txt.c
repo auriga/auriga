@@ -58,29 +58,29 @@ static int guild_storage_journal_cache = 1000;
  */
 int storagedb_txt_config_read_sub(const char* w1,const char* w2)
 {
-	if(strcmpi(w1,"storage_txt")==0){
+	if(strcasecmp(w1,"storage_txt")==0){
 		strncpy(storage_txt, w2, sizeof(storage_txt) - 1);
 	}
-	else if(strcmpi(w1,"guild_storage_txt")==0){
+	else if(strcasecmp(w1,"guild_storage_txt")==0){
 		strncpy(guild_storage_txt, w2, sizeof(guild_storage_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"storage_journal_enable")==0){
+	else if(strcasecmp(w1,"storage_journal_enable")==0){
 		storage_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"storage_journal_file")==0){
+	else if(strcasecmp(w1,"storage_journal_file")==0){
 		strncpy( storage_journal_file, w2, sizeof(storage_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"storage_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"storage_journal_cache_interval")==0){
 		storage_journal_cache = atoi( w2 );
 	}
-	else if(strcmpi(w1,"guild_storage_journal_enable")==0){
+	else if(strcasecmp(w1,"guild_storage_journal_enable")==0){
 		guild_storage_journal_enable = atoi( w2 );
 	}
-	else if(strcmpi(w1,"guild_storage_journal_file")==0){
+	else if(strcasecmp(w1,"guild_storage_journal_file")==0){
 		strncpy( guild_storage_journal_file, w2, sizeof(guild_storage_journal_file) - 1 );
 	}
-	else if(strcmpi(w1,"guild_storage_journal_cache_interval")==0){
+	else if(strcasecmp(w1,"guild_storage_journal_cache_interval")==0){
 		guild_storage_journal_cache = atoi( w2 );
 	}
 #endif
@@ -832,3 +832,4 @@ bool storagedb_txt_init(void)
 
 	return (gstoragedb_txt_read() && result)? true: false;
 }
+

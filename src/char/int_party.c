@@ -540,7 +540,7 @@ void inter_party_leave(int party_id, int account_id, int char_id)
 // パーティー設定読み込み
 int party_config_read(const char *w1,const char* w2)
 {
-	if(strcmpi(w1,"party_share_level")==0) {
+	if(strcasecmp(w1,"party_share_level")==0) {
 		party_share_level = atoi(w2);
 		if(party_share_level < 0) {
 			party_share_level = 0;
@@ -550,3 +550,4 @@ int party_config_read(const char *w1,const char* w2)
 
 	return partydb_config_read_sub(w1,w2);
 }
+
