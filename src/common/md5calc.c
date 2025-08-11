@@ -204,7 +204,7 @@ void MD5_Binary(const char * string, int len, char * output)
 
 	// 1-3
 	copy_len = string_byte_len % 64;	// 残ったバイト数を算出
-	strncpy((char *)padding_message, (char *)pstring, copy_len);	// 拡張ビット列へメッセージをコピー
+	memcpy(padding_message, pstring, copy_len);	// 拡張ビット列へメッセージをコピー
 	memset(padding_message+copy_len, 0, 64 - copy_len);	// 拡張ビット長になるまで0で埋める
 	padding_message[copy_len] |= 0x80;	// メッセージの次は1
 

@@ -1097,7 +1097,7 @@ unsigned long host2ip(const char *host, const char *mes)
 	struct hostent *h = gethostbyname(host);
 
 	if(h) {
-		sprintf(ip, "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
+		snprintf(ip, sizeof(ip), "%d.%d.%d.%d", (unsigned char)h->h_addr[0], (unsigned char)h->h_addr[1], (unsigned char)h->h_addr[2], (unsigned char)h->h_addr[3]);
 		if(mes) {
 			printf("%s : %s -> %s\n", mes, host, ip);
 		}
@@ -1704,16 +1704,16 @@ static void socket_httpd_page_connection(struct httpd_session_data *hsd, const c
 
 		ip = (unsigned char *)(&sd->client_addr.sin_addr);
 
-		strcpy(usage,
+		auriga_strlcpy(usage,
 		       (sd->func_recv == connect_client) ? "server" :
 		       (sd->func_parse == httpd_parse) ? ((type = 1), "httpd") : ((type = 2), "unknown"));
-		strcpy(status,
+		auriga_strlcpy(status,
 		       (sd->func_recv == connect_client) ? "listen" :
 		       (sd->auth == 1) ? "authorized" :
 		       (sd->auth == 0) ? "unauthorized" : "permanent connection");
 
 		if (type == 1)
-			strcpy(user, ((struct httpd_session_data*)session[fd]->session_data2)->user);
+			auriga_strlcpy(user, ((struct httpd_session_data*)session[fd]->session_data2)->user, sizeof(user));
 		else if (type == 2 && socket_httpd_page_connection_func != NULL)
 			socket_httpd_page_connection_func(i, usage, user, status);
 

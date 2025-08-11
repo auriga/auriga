@@ -320,6 +320,12 @@ unsigned long strtobxul(const char *s, char **endptr, int base);
 void hex_dump(FILE *fp, const unsigned char *buf, size_t len);
 
 // =====================
+// 安全な文字列ユーティリティ
+// ---------------------
+size_t auriga_strlcpy(char *dst, const char *src, size_t siz);
+size_t auriga_strlcat(char *dst, const char *src, size_t siz);
+
+// =====================
 // skill.c
 // ---------------------
 
