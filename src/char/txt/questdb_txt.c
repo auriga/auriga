@@ -49,14 +49,14 @@ static int quest_journal_cache = 1000;
 int questdb_txt_config_read_sub(const char *w1, const char *w2)
 {
 	if(strcmpi(w1,"quest_txt")==0) {
-		strncpy(quest_txt, w2, sizeof(quest_txt) - 1);
+		auriga_strlcpy(quest_txt, w2, sizeof(quest_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"quest_journal_enable")==0) {
 		quest_journal_enable = atoi(w2);
 	}
 	else if(strcmpi(w1,"quest_journal_file")==0) {
-		strncpy(quest_journal_file, w2, sizeof(quest_journal_file) - 1);
+		auriga_strlcpy(quest_journal_file, w2, sizeof(quest_journal_file));
 	}
 	else if(strcmpi(w1,"quest_journal_cache_interval")==0) {
 		quest_journal_cache = atoi(w2);
@@ -80,10 +80,10 @@ static int questdb_tostr(char *str, struct quest *q)
 
 	nullpo_retr(1, q);
 
-	str_p += sprintf(str, "%d,%d\t", q->char_id, q->account_id);
+	str_p += snprintf(str, 8192, "%d,%d\t", q->char_id, q->account_id);
 
 	for(i = 0; i < q->count; i++) {
-		str_p += sprintf(str_p, "%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
+		str_p += snprintf(str_p, 8192 - (size_t)(str_p - str), "%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d ",
 			q->data[i].nameid,q->data[i].state,q->data[i].limit,
 			q->data[i].mob[0].id,q->data[i].mob[0].max,q->data[i].mob[0].cnt,
 			q->data[i].mob[1].id,q->data[i].mob[1].max,q->data[i].mob[1].cnt,

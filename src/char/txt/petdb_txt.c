@@ -89,7 +89,7 @@ static int pet_tostr(char *str, struct s_pet *p)
 	else if(p->intimate > 1000)
 		p->intimate = 1000;
 
-	sprintf(str, "%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
+	snprintf(str, 1024, "%d,%d,%s\t%d,%d,%d,%d,%d,%d,%d,%d,%d",
 		p->pet_id, p->class_, p->name,p->account_id, p->char_id, p->level, p->egg_id,
 		p->equip, p->intimate, p->hungry, p->rename_flag, p->incubate);
 
@@ -119,8 +119,7 @@ static int pet_fromstr(char *str, struct s_pet *p)
 
 	p->pet_id      = tmp_int[0];
 	p->class_      = tmp_int[1];
-	memcpy(p->name, tmp_str, 24);
-	p->name[23] = '\0';	// force \0 terminal
+	auriga_strlcpy(p->name, tmp_str, sizeof(p->name));
 	p->account_id  = tmp_int[2];
 	p->char_id     = tmp_int[3];
 	p->level       = tmp_int[4];

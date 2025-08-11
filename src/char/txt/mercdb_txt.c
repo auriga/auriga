@@ -51,7 +51,7 @@ static int merc_journal_cache = 1000;
 int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 {
 	if(strcmpi(w1,"merc_txt")==0){
-		strncpy(merc_txt, w2, sizeof(merc_txt) - 1);
+		auriga_strlcpy(merc_txt, w2, sizeof(merc_txt));
 	}
 #ifdef TXT_JOURNAL
 	else if(strcmpi(w1,"merc_journal_enable")==0){
@@ -81,7 +81,7 @@ static int merc_tostr(char *str, struct mmo_mercstatus *m)
 
 	nullpo_retr(1, m);
 
-	str_p += sprintf(str, "%d,%d\t%d,%d\t%d,%d,%d,%u",
+	str_p += snprintf(str, 8192, "%d,%d\t%d,%d\t%d,%d,%d,%u",
 		m->merc_id, m->class_, m->account_id, m->char_id,
 		m->hp, m->sp, m->kill_count, m->limit);
 

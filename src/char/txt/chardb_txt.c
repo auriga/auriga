@@ -55,14 +55,14 @@ static int  char_id_count = 150000;
 int chardb_txt_config_read_sub(const char* w1,const char* w2)
 {
 	if( strcmpi(w1,"char_txt") == 0 )
-		strncpy(char_txt,w2,sizeof(char_txt) - 1);
+		auriga_strlcpy(char_txt, w2, sizeof(char_txt));
 	else if( strcmpi(w1,"gm_account_filename") == 0 )
-		strncpy(GM_account_filename,w2,sizeof(GM_account_filename) - 1);
+		auriga_strlcpy(GM_account_filename, w2, sizeof(GM_account_filename));
 #ifdef TXT_JOURNAL
 	else if( strcmpi(w1,"char_journal_enable") == 0 )
 		char_journal_enable = atoi( w2 );
 	else if( strcmpi(w1,"char_journal_file") == 0 )
-		strncpy( char_journal_file, w2, sizeof(char_journal_file) - 1 );
+		auriga_strlcpy( char_journal_file, w2, sizeof(char_journal_file) );
 	else if(strcmpi( w1,"char_journal_cache_interval") == 0 )
 		char_journal_cache = atoi( w2 );
 #endif
@@ -107,7 +107,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 
 	nullpo_retr(1, p);
 
-	str_p += sprintf(str_p, "%d\t%d,%d\t%s\t%d,%d,%d\t%" BIGNUMCODE ",%" BIGNUMCODE ",%d"
+	str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d\t%d,%d\t%s\t%d,%d,%d\t%" BIGNUMCODE ",%" BIGNUMCODE ",%d"
 		"\t%d,%d,%d,%d,%d,%d\t%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%d,%d,%d"
 		"\t%u,%d,%d,%d\t%d,%d,%d,%d,%d,%d\t%d,%d,%d\t%d,%d,%d,%d,%d,%d"
 		"\t%s,%d,%d\t%s,%d,%d,%d,%d,%d,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d\t",
@@ -130,13 +130,13 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 	);
 	for(i = 0; i < MAX_PORTAL_MEMO; i++) {
 		if(p->st.memo_point[i].map[0])
-			str_p += sprintf(str_p, "%d,%s,%d,%d ", i, p->st.memo_point[i].map, p->st.memo_point[i].x, p->st.memo_point[i].y);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%s,%d,%d ", i, p->st.memo_point[i].map, p->st.memo_point[i].x, p->st.memo_point[i].y);
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < MAX_INVENTORY; i++) {
 		if(p->st.inventory[i].nameid) {
-			str_p += sprintf(str_p, "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 			p->st.inventory[i].id,p->st.inventory[i].nameid,p->st.inventory[i].amount,p->st.inventory[i].equip,
 			p->st.inventory[i].identify,p->st.inventory[i].refine,p->st.inventory[i].attribute,
 			p->st.inventory[i].card[0],p->st.inventory[i].card[1],p->st.inventory[i].card[2],p->st.inventory[i].card[3],
@@ -149,7 +149,7 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 
 	for(i = 0; i < MAX_CART; i++) {
 		if(p->st.cart[i].nameid) {
-			str_p += sprintf(str_p,"%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d ",
 			p->st.cart[i].id,p->st.cart[i].nameid,p->st.cart[i].amount,p->st.cart[i].equip,
 			p->st.cart[i].identify,p->st.cart[i].refine,p->st.cart[i].attribute,
 			p->st.cart[i].card[0],p->st.cart[i].card[1],p->st.cart[i].card[2],p->st.cart[i].card[3],
@@ -163,37 +163,37 @@ static int mmo_char_tostr(char *str, struct mmo_chardata *p)
 	for(i = 0; i < MAX_PCSKILL; i++) {
 		if(p->st.skill[i].id && p->st.skill[i].flag != 1) {
 			sk_lv = (p->st.skill[i].flag == 0)? p->st.skill[i].lv: p->st.skill[i].flag - 2;
-			str_p += sprintf(str_p, "%d,%d ",p->st.skill[i].id, sk_lv);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%d ",p->st.skill[i].id, sk_lv);
 		}
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < p->reg.global_num; i++) {
 		if(p->reg.global[i].str[0] && p->reg.global[i].value != 0)
-			str_p += sprintf(str_p, "%s,%d ", p->reg.global[i].str, p->reg.global[i].value);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%s,%d ", p->reg.global[i].str, p->reg.global[i].value);
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < p->st.friend_num; i++) {
-		str_p += sprintf(str_p, "%d,%d ", p->st.friend_data[i].account_id, p->st.friend_data[i].char_id);
+		str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%d ", p->st.friend_data[i].account_id, p->st.friend_data[i].char_id);
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < 3; i++) {
 		if(p->st.feel_map[i][0])
-			str_p += sprintf(str_p, "%s,%d ", p->st.feel_map[i], i);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%s,%d ", p->st.feel_map[i], i);
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < MAX_HOTKEYS; i++) {
 		if(p->st.hotkey[i].id > 0)
-			str_p += sprintf(str_p, "%d,%d,%d,%d ", i, p->st.hotkey[i].type, p->st.hotkey[i].id, p->st.hotkey[i].lv);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%d,%d,%d ", i, p->st.hotkey[i].type, p->st.hotkey[i].id, p->st.hotkey[i].lv);
 	}
 	*(str_p++) = '\t';
 
 	for(i = 0; i < MAX_MERC_TYPE; i++) {
 		if(p->st.merc_fame[i] > 0 || p->st.merc_call[i] > 0)
-			str_p += sprintf(str_p, "%d,%d,%d ", i, p->st.merc_fame[i], p->st.merc_call[i]);
+			str_p += snprintf(str_p, 65536 - (size_t)(str_p - str), "%d,%d,%d ", i, p->st.merc_fame[i], p->st.merc_call[i]);
 	}
 	*(str_p++) = '\t';
 

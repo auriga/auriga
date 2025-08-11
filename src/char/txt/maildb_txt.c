@@ -308,7 +308,7 @@ static int mail_tostr(char *str, struct mail *m)
 {
 	nullpo_retr(1, m);
 
-	sprintf(str, "%d,%d,%u,%d",
+	snprintf(str, 64, "%d,%d,%u,%d",
 		m->char_id, m->account_id, m->rates,m->store);
 
 	return 0;

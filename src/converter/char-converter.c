@@ -33,6 +33,7 @@
 #include "sqldbs.h"
 
 #include "converter.h"
+#include "utils.h"
 #include "char-converter.h"
 
 
@@ -120,9 +121,9 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 	if(set != 55)
 		return 1;
 
-	strncpy(p->st.name, tmp_str[0], 24);
-	strncpy(p->st.last_point.map, tmp_str[1], 24);
-	strncpy(p->st.save_point.map, tmp_str[2], 24);
+	auriga_strlcpy(p->st.name, tmp_str[0], sizeof(p->st.name));
+	auriga_strlcpy(p->st.last_point.map, tmp_str[1], sizeof(p->st.last_point.map));
+	auriga_strlcpy(p->st.save_point.map, tmp_str[2], sizeof(p->st.save_point.map));
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';
@@ -192,7 +193,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		if(set!=3)
 			return 1;
 		if(i < MAX_PORTAL_MEMO) {
-			strncpy(p->st.memo_point[i].map, tmp_str[0], 24);
+			auriga_strlcpy(p->st.memo_point[i].map, tmp_str[0], sizeof(p->st.memo_point[i].map));
 			p->st.memo_point[i].map[23] = '\0';	// force \0 terminal
 			p->st.memo_point[i].x       = tmp_int[0];
 			p->st.memo_point[i].y       = tmp_int[1];
@@ -277,7 +278,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 		if(set!=2)
 			return 1;
 		if(i < GLOBAL_REG_NUM) {
-			strncpy(p->reg.global[i].str, tmp_str[0], 32);
+			auriga_strlcpy(p->reg.global[i].str, tmp_str[0], sizeof(p->reg.global[i].str));
 			p->reg.global[i].str[31] = '\0';	// force \0 terminal
 			p->reg.global[i].value   = tmp_int[0];
 		} else {
@@ -309,7 +310,7 @@ static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
 			return 1;
 		n = tmp_int[0];
 		if(n >= 0 && n < 3) {
-			strncpy(p->st.feel_map[n], tmp_str[0], 24);
+			auriga_strlcpy(p->st.feel_map[n], tmp_str[0], sizeof(p->st.feel_map[n]));
 			p->st.feel_map[n][23] = '\0';	// force \0 terminal
 		}
 		next+=len;

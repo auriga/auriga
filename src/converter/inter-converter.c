@@ -81,9 +81,10 @@ static int accreg_tosql(struct accreg *reg)
 
 	for(j=0; j<reg->reg_num; j++) {
 		if(reg->reg[j].str[0] && reg->reg[j].value != 0) {
+			auriga_strlcpy(temp_str, reg->reg[j].str, sizeof(temp_str));
 			sqldbs_query(&mysql_handle,
 				"INSERT INTO `accountreg` (`account_id`, `reg`, `value`) VALUES ('%d','%s','%d')",
-				reg->account_id, auriga_strlcpy(temp_str,reg->reg[j].str,sizeof(temp_str)), reg->reg[j].value
+				reg->account_id, temp_str, reg->reg[j].value
 			);
 		}
 	}
