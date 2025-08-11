@@ -21,17 +21,16 @@ Auriga の構築方法を解説するドキュメントです。
 2. コンパイラの用意
 
 Auriga は C 言語で記述されているため、C コンパイラが必要です。
-動作が確認されているコンパイラは gcc/bcc/vc です。
+動作が確認されているコンパイラは gcc/clang および Visual C++ (vc) です。
 
 	Linux の場合
 	・gcc を用いると良いでしょう。
 
-	Windows の場合
-	・Cygwin + gcc
-	・MinGW + gcc
-	・Borland C++    (以下 bcc)
-	・Visual C++     (以下 vc)
-	などのどれか一つを用意すればいいでしょう。
+    Windows の場合
+    ・Cygwin + gcc
+    ・MinGW-w64 + gcc/clang
+    ・Visual C++     (以下 vc)
+    などのどれか一つを用意すればいいでしょう。
 
 
 --------------------------------------------------------------------------
@@ -56,7 +55,7 @@ Auriga は C 言語で記述されているため、C コンパイラが必要�
 --------------------------------------------------------------------------
 3. ビルドオプションの設定
 
-gcc の場合は makefile, bcc の場合は bcc32_make.bat, vc の場合は vc_make.bat を
+gcc/clang の場合は Makefile、vc の場合は vc_make.bat を
 エディタで開き、ビルドオプションを変更します。
 
 これらのファイルにはコメントで変更すべき場所が書いてあるのでそれを参考に
@@ -66,7 +65,7 @@ gcc の場合は makefile, bcc の場合は bcc32_make.bat, vc の場合は vc_m
 
 PACKETVER
 　　使用するクライアントに合わせて調整して下さい。
-　　各PACKETVERに対応するクライアントはmakefile,bcc32_make.bat,vc_make.batに書かれています。
+    各PACKETVERに対応するクライアントは Makefile, vc_make.bat に書かれています。
 
 TXT_ONLY
 　　定義するとデータの保存形式をテキスト形式にします。
@@ -145,10 +144,6 @@ TIMER_CACHE
 　　configure は用意されていないので、実行する必要はありません。
 　　リビルドする場合 make clean 後に make して下さい。
 
-・bcc の場合
-　　bcc32_make.bat を実行してビルドしてください。
-　　リビルドする場合 bcc32_clean.bat 実行後にビルドしてください。
-
 ・vc の場合
 　　vc_make.bat を実行してビルドしてください。
 　　リビルドする場合 vc_clean.bat 実行後にビルドしてください。
@@ -199,10 +194,10 @@ TIMER_CACHE
 --------------------------------------------------------------------------
 8. Auriga 起動
 
-　gcc の場合は start または auriga-start を、
-　bcc/vc の場合は win32_start.bat を使って起動します。
+  gcc の場合は start または auriga-start を、
+  vc の場合は win32_start.bat を使って起動します。
 
-　なお、Cygwin が入っている場合、bcc/vc でも start や auriga-start を
+  なお、Cygwin が入っている場合、vc でも start や auriga-start を
 　利用できます。
 
 　もちろん、個別に実行ファイルを起動してやることもできます。
@@ -229,7 +224,7 @@ TIMER_CACHE
 　・個別に実行した場合
 　　　ctrl+c や kill コマンドなどで終了します。
 
-※bcc/vc で終了時に「応答が無い」というウィンドウが出る場合※
+※vc で終了時に「応答が無い」というウィンドウが出る場合※
 　シャットダウン時やウィンドウを閉じるときなどにプログラムの応答が無いという
 　ダイアログが表示され、終了を待つか、強制的に終了させるかの選択を要求される
 　場合がありますが、必ず「終了を待つ」を選択してください。

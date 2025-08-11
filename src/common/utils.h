@@ -37,7 +37,7 @@
 #define __64BIT__
 #endif
 
-#if (defined(__WIN32__) || defined(__WIN32) || defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(_MSC_VER) || defined(__BORLANDC__)) && !defined(WINDOWS)
+#if (defined(__WIN32__) || defined(__WIN32) || defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(_MSC_VER)) && !defined(WINDOWS)
 #define WINDOWS
 #endif
 
@@ -57,7 +57,7 @@ typedef unsigned char  uint8;
 typedef unsigned short uint16;
 typedef unsigned int   uint32;
 
-#if defined(_MSC_VER) || defined(__BORLANDC__)
+#if defined(_MSC_VER)
 typedef __int64          int64;
 typedef signed __int64   sint64;
 typedef unsigned __int64 uint64;
@@ -101,7 +101,7 @@ typedef int32  intptr;
 // =====================
 // 大きな数字用の型
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#if defined(BIGNUMBER_DOUBLE)
 	typedef double atn_bignumber;
 #else
 	typedef int64 atn_bignumber;
@@ -110,7 +110,7 @@ typedef int32  intptr;
 // =====================
 // 大きな数字用の変換指定子
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#if defined(BIGNUMBER_DOUBLE)
 #	define BIGNUMCODE ".0f"
 #elif defined(WINDOWS) && defined(_MSC_VER)
 #	define BIGNUMCODE "I64d"
@@ -121,7 +121,7 @@ typedef int32  intptr;
 // =====================
 // 大きな数字用の変換指定子
 // ---------------------
-#if defined(BIGNUMBER_DOUBLE) || defined(__BORLANDC__)
+#if defined(BIGNUMBER_DOUBLE)
 #	define BIGNUMSCANCODE "lf"
 #elif defined(WINDOWS) && defined(_MSC_VER)
 #	define BIGNUMSCANCODE "I64d"
@@ -203,13 +203,10 @@ typedef int32  intptr;
 #ifndef WINDOWS
 #	define RANDOMSTD2X
 
+
 #elif defined(_MSC_VER)
 	// random の精度とビット数を上げる
 #	define RANDOM64
-
-#elif defined(__BORLANDC__)
-	// random のビット数を上げる
-#	define RANDOM32
 
 #else
 #	define RANDOMSTD
