@@ -22,6 +22,8 @@
 #ifndef _BATTLE_H_
 #define _BATTLE_H_
 
+#include "map.h"
+
 // ƒ_ƒ[ƒW
 struct Damage {
 	atn_bignumber damage,damage2;
@@ -58,7 +60,6 @@ enum {
 
 struct map_session_data;
 struct mob_data;
-struct block_list;
 
 // ÀÛ‚ÉHP‚ğ‘Œ¸
 int battle_delay_damage(unsigned int tick,struct block_list *src,struct block_list *target,atn_bignumber damage,int skillid,int skilllv,int flag);
