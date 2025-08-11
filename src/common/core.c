@@ -66,7 +66,7 @@ static void pid_create(const char* file)
 	int lock;
 	size_t i;
 
-	strncpy(pid_file, file, sizeof(pid_file) - 5);
+    atn_strlcpy(pid_file, file, sizeof(pid_file));
 	pid_file[sizeof(pid_file)-5] = '\0';
 
 	for(i = strlen(pid_file); i != 0; i--) {

@@ -56,7 +56,7 @@ typedef void (*HttpdFunc)(struct httpd_session_data*,const char*);
 static const char configfile[]="./conf/httpd.conf";	// 共通コンフィグ
 
 static char logfile[1024]="./log/httpd.log";	// ログファイル名
-void httpd_set_logfile( const char *str ) { strncpy( logfile, str, sizeof(logfile) - 1 ); }
+void httpd_set_logfile( const char *str ) { atn_strlcpy( logfile, str, sizeof(logfile) ); }
 
 static int log_no_flush = 0;	// ログをフラッシュしないかどうか
 
@@ -72,7 +72,7 @@ static int request_timeout[] = { 2500, 60*1000 };	// タイムアウト(最初、持続)
 void httpd_set_request_timeout( int idx, int t ) { request_timeout[idx] = t; }
 
 static char document_root[256]="./httpd/";	// ドキュメントルート
-void httpd_set_document_root( const char *str ) { strncpy( document_root, str, sizeof(document_root) - 1 ); }
+void httpd_set_document_root( const char *str ) { atn_strlcpy( document_root, str, sizeof(document_root) ); }
 
 static int bigfile_threshold = 256*1024;	// 巨大ファイル転送モードに入る閾値
 static int bigfile_splitsize = 256*1024;	// 巨大ファイル転送モードの FIFO サイズ(128KB以上)
@@ -248,8 +248,8 @@ void httpd_log( struct httpd_session_data *sd, int status, int len )
 		size_t len;
 		time_t time_;
 		time(&time_);
-		len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
-		sprintf(timestr+len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
+        len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+        snprintf(timestr+len, sizeof(timestr) - (size_t)len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 	}
 
 	ip = (unsigned char*) &session[sd->fd]->client_addr.sin_addr;
@@ -486,7 +486,7 @@ int httpd_make_date( char* dst, time_t date )
 {
 	const struct tm *t = gmtime( &date );
 
-	return sprintf( dst,
+    return snprintf( dst, 128,
 		"%s, %02d %s %04d %02d:%02d:%02d GMT\r\n",
 		weekdaymsg[t->tm_wday], t->tm_mday, monthmsg[t->tm_mon], (t->tm_year<1900)? t->tm_year+1900: t->tm_year,
 		t->tm_hour, t->tm_min, t->tm_sec );
@@ -555,8 +555,8 @@ void httpd_send_head(struct httpd_session_data* sd,int status,const char *conten
 			{
 				char buf[128];
 				int i;
-				sprintf( buf, "%08x:%s", gettick(), sd->access->privkey );
-				sprintf( nonce, "%08x", gettick() );
+                snprintf( buf, sizeof(buf), "%08x:%s", gettick(), sd->access->privkey );
+                snprintf( nonce, sizeof(nonce), "%08x", gettick() );
 				MD5_String( buf, nonce+8 );
 
 				for( i=0; nonce_log[ nonce_log_pos ].access_flag && i<NONCE_LOG_SIZE; i++ )
@@ -1676,12 +1676,12 @@ const char* httpd_complement_file( const char* url, char* buf )
 	// スラッシュで終わっていたらデフォルトを追加
 	if( url[strlen(url)-1] == '/' )
 	{
-		sprintf( buf, "%s%s", url, cfile );
+        snprintf( buf, sizeof(buf), "%s%s", url, cfile );
 		return buf;
 	}
 
 	// url の最大長は約 1010 バイト以内なのでオーバーフローしない
-	sprintf(file_buf,"%s%s",document_root,url);
+    snprintf(file_buf, sizeof(file_buf), "%s%s", document_root, url);
 
 	// ディレクトリだったらデフォルトを追加
 	{
@@ -1690,7 +1690,7 @@ const char* httpd_complement_file( const char* url, char* buf )
 		{
 			if( st.st_mode & S_IFDIR )
 			{
-				sprintf( buf, "%s/%s", url, cfile );
+                snprintf( buf, sizeof(buf), "%s/%s", url, cfile );
 				return buf;
 			}
 		}
@@ -1716,7 +1716,7 @@ void httpd_send_file(struct httpd_session_data* sd,const char* url)
 	url = httpd_complement_file( url, url_buf );
 
 	// url の最大長は補完されても 1536 バイト以内なのでオーバーフローしない
-	sprintf(file_buf,"%s%s",document_root,url);
+    snprintf(file_buf, sizeof(file_buf), "%s%s", document_root, url);
 
 #ifndef NO_HTTPD_CGI
 	if( httpd_cgi_enable )
@@ -1861,7 +1861,7 @@ void httpd_send_bigfile( struct httpd_session_data* sd )
 	url = httpd_complement_file( url, url_buf );
 
 	// url の最大長は補完されても 1536 バイト以内なのでオーバーフローしない
-	sprintf(file_buf,"%s%s",document_root,url);
+    snprintf(file_buf, sizeof(file_buf), "%s%s", document_root, url);
 
 	// 日付確認
 	if( sd->date )
@@ -1998,8 +1998,8 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		int i = atn_rand() ^ gettick();
 		char tmp_out[256], tmp_err[256];
-		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+        snprintf( tmp_out, sizeof(tmp_out), "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+        snprintf( tmp_err, sizeof(tmp_err), "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 		sd->cgi_hOut = CreateFile( tmp_out, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
 									FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
 		sd->cgi_hErr = CreateFile( tmp_err, GENERIC_READ | GENERIC_WRITE, 0, &sa, CREATE_ALWAYS,
@@ -2041,7 +2041,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		size_t i, x;
 		int j, y;
-		sprintf( szCwd, "%s\\", szPath );
+        snprintf( szCwd, sizeof(szCwd), "%s\\", szPath );
 		for( j=y=0, x=i=strlen(szCwd); sd->url[j]; j++,i++ )
 		{
 			szCwd[i] = ( sd->url[j] == '/' )? '\\' : sd->url[j];
@@ -2061,7 +2061,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	{
 		FILE *fp;
 		char buf[256], cmd2[2048];
-		sprintf( cmd2, "%s%s", document_root, sd->url );
+        snprintf( cmd2, sizeof(cmd2), "%s%s", document_root, sd->url );
 		if( (fp = fopen( cmd2, "rb" )) ==NULL )
 		{
 			// 失敗
@@ -2087,7 +2087,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 			buf[i]='\0';
 
 			strcpy( cmd2, szCmd );
-			sprintf( szCmd, "%s %s", buf+k, cmd2 );
+            snprintf( szCmd, sizeof(szCmd), "%s %s", buf+k, cmd2 );
 		}
 	}
 
@@ -2361,9 +2361,9 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 		int i = atn_rand() ^ gettick();
 		char tmp_in[256], tmp_out[256], tmp_err[256];
 		// 名前を作る
-		sprintf( tmp_in,  "%sauriga_httpd_in%04x%08x.tmp",  httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_out, "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
-		sprintf( tmp_err, "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+        snprintf( tmp_in,  sizeof(tmp_in),  "%sauriga_httpd_in%04x%08x.tmp",  httpd_cgi_temp_dir, sd->fd, i );
+        snprintf( tmp_out, sizeof(tmp_out), "%sauriga_httpd_out%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
+        snprintf( tmp_err, sizeof(tmp_err), "%sauriga_httpd_err%04x%08x.tmp", httpd_cgi_temp_dir, sd->fd, i );
 
 		// 開く
 		sd->cgi_in  = open( tmp_in , O_RDWR | O_CREAT | O_TRUNC, 0644 );
@@ -2416,7 +2416,7 @@ void httpd_page_external_cgi_fork( struct httpd_session_data* sd )
 	// ------------
 	{
 		int j, i, x, y;
-		sprintf( cwd, "%s/", path );
+        snprintf( cwd, sizeof(cwd), "%s/", path );
 		for( j=y=0, x=i=strlen(cwd); sd->url[j]; j++,i++ )
 		{
 			cwd[i] = ( sd->url[j] == '\\' )? '/' : sd->url[j];
@@ -2836,33 +2836,33 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 	envsize /= sizeof(char*);
 
 	// 必ず設定するもの
-	i  = sprintf( envp[ j++ ] = env    , "REMOTE_ADDR=%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3] ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "REMOTE_PORT=%d", port ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "DOCUMENT_ROOT=%s", path ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SCRIPT_NAME=/%s", sd->url ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_SOFTWARE=%s/revision%d", servername, AURIGA_REVISION ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_PROTOCOL=HTTP/1.0" ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_NAME=%s", httpd_cgi_server_name ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "REQUEST_METHOD=%s", method[ httpd_get_method(sd) ] ) + 1;
-	i += sprintf( envp[ j++ ] = env + i, "GATEWAY_INTERFACE=CGI/1.1" ) + 1;
+    i  = snprintf( envp[ j++ ] = env    , envsize - i, "REMOTE_ADDR=%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3] ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "REMOTE_PORT=%d", port ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "DOCUMENT_ROOT=%s", path ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "SCRIPT_NAME=/%s", sd->url ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_SOFTWARE=%s/revision%d", servername, AURIGA_REVISION ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_PROTOCOL=HTTP/1.0" ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_NAME=%s", httpd_cgi_server_name ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "SERVER_PORT=%d", session[sd->fd]->server_port ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "REQUEST_METHOD=%s", method[ httpd_get_method(sd) ] ) + 1;
+    i += snprintf( envp[ j++ ] = env + i, envsize - i, "GATEWAY_INTERFACE=CGI/1.1" ) + 1;
 
 	if( httpd_get_method(sd) == HTTPD_METHOD_POST )		// POST ならクエリの長さと Content-type
 	{
-		i += sprintf( envp[ j++ ] = env + i, "CONTENT_LENGTH=%d", sd->query_len ) + 1;
-		i += sprintf( envp[ j++ ] = env + i, "CONTENT_TYPE=%s",
-						sd->content_type ? (char*)sd->content_type : "application/x-www-form-urlencoded" ) + 1;
+        i += snprintf( envp[ j++ ] = env + i, envsize - i, "CONTENT_LENGTH=%d", sd->query_len ) + 1;
+        i += snprintf( envp[ j++ ] = env + i, envsize - i, "CONTENT_TYPE=%s",
+                        sd->content_type ? (char*)sd->content_type : "application/x-www-form-urlencoded" ) + 1;
 	}
 	else if( httpd_get_method(sd) == HTTPD_METHOD_GET )	// GET ならクエリを直接埋め込み
 	{
-		i += sprintf( envp[ j++ ] = env + i, "QUERY_STRING=%s", sd->query ? (char*)sd->query : "" ) + 1;
+        i += snprintf( envp[ j++ ] = env + i, envsize - i, "QUERY_STRING=%s", sd->query ? (char*)sd->query : "" ) + 1;
 	}
 
 	if( sd->user[0] )	// 認証してるならユーザー名と認証方法
 	{
 		static const char *type[] = { "None", "Basic", "Digest", "Unknown" };
-		i += sprintf( envp[ j++ ] = env + i, "REMOTE_USER=%s", sd->user ) + 1;
-		i += sprintf( envp[ j++ ] = env + i, "AUTH_TYPE=%s", type[ sd->access->type & HTTPD_ACCESS_AUTH_MASK ] ) + 1;
+        i += snprintf( envp[ j++ ] = env + i, envsize - i, "REMOTE_USER=%s", sd->user ) + 1;
+        i += snprintf( envp[ j++ ] = env + i, envsize - i, "AUTH_TYPE=%s", type[ sd->access->type & HTTPD_ACCESS_AUTH_MASK ] ) + 1;
 	}
 
 	// リクエストヘッダから設定
@@ -2887,7 +2887,7 @@ void httpd_page_cgi_setenv( struct httpd_session_data *sd, char* env, size_t env
 				if( i + z + strlen(w2) + 16 > envsize )	// バッファオーバーフロー対策
 					break;
 
-				i += sprintf( envp[ j++ ] = env + i, "HTTP_%s=%s", w1, w2 ) + 1;
+                i += snprintf( envp[ j++ ] = env + i, envsize - i, "HTTP_%s=%s", w1, w2 ) + 1;
 			}
 		}
 	}
@@ -3041,8 +3041,8 @@ void httpd_cgi_log( struct httpd_session_data *sd, const char* str )
 		size_t len;
 		time_t time_;
 		time(&time_);
-		len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
-		sprintf(timestr+len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
+        len = strftime(timestr,sizeof(timestr),"%d/%b/%Y:%H:%M:%S",localtime(&time_) );
+        snprintf(timestr+len, sizeof(timestr) - (size_t)len, " %c%02d%02d", sign[(tz<0)?1:0], abs(tz)/60, abs(tz)%60 );
 	}
 
 	ip = sd ? (unsigned char*) &session[sd->fd]->client_addr.sin_addr : 0;

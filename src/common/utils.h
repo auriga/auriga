@@ -211,6 +211,25 @@ static inline int atn_appendf(char *dst, size_t capacity, int *length, const cha
 
 
 // =====================
+// Safe string copy (null-terminating)
+// ---------------------
+static inline size_t atn_strlcpy(char *dst, const char *src, size_t size)
+{
+    size_t n = 0;
+    if (size == 0) {
+        return 0;
+    }
+    while (n + 1 < size && src[n]) {
+        dst[n] = src[n];
+        n++;
+    }
+    dst[n] = '\0';
+    // Return the number of bytes copied (excluding terminator)
+    return n;
+}
+
+
+// =====================
 // atn_rand() ’è‹`
 // ---------------------
 #ifndef WINDOWS

@@ -1200,32 +1200,32 @@ static unsigned char* parse_curly_close(unsigned char *p)
 			int l;
 
 			// 一時変数を消す
-			sprintf(label,"set $@__SW%x_VAL,0;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "set $@__SW%x_VAL,0;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// 無条件で終了ポインタに移動
-			sprintf(label,"goto __SW%x_FIN;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "goto __SW%x_FIN;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// 現在地のラベルを付ける
-			sprintf(label,"__SW%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
+            snprintf(label, sizeof(label), "__SW%x_%x", syntax.curly[pos].index, syntax.curly[pos].count);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
 			if(syntax.curly[pos].flag) {
 				// default が存在する
-				sprintf(label,"goto __SW%x_DEF;",syntax.curly[pos].index);
+                snprintf(label, sizeof(label), "goto __SW%x_DEF;", syntax.curly[pos].index);
 				syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 				parse_line(label);
 				syntax.curly_count--;
 			}
 
 			// 終了ラベルを付ける
-			sprintf(label,"__SW%x_FIN",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__SW%x_FIN", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
@@ -1261,16 +1261,16 @@ static unsigned char* parse_syntax(unsigned char *p)
 
 			while(pos >= 0) {
 				if(syntax.curly[pos].type == TYPE_DO) {
-					sprintf(label,"goto __DO%x_FIN;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __DO%x_FIN;", syntax.curly[pos].index);
 					break;
 				} else if(syntax.curly[pos].type == TYPE_FOR) {
-					sprintf(label,"goto __FR%x_FIN;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __FR%x_FIN;", syntax.curly[pos].index);
 					break;
 				} else if(syntax.curly[pos].type == TYPE_WHILE) {
-					sprintf(label,"goto __WL%x_FIN;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __WL%x_FIN;", syntax.curly[pos].index);
 					break;
 				} else if(syntax.curly[pos].type == TYPE_SWITCH) {
-					sprintf(label,"goto __SW%x_FIN;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __SW%x_FIN;", syntax.curly[pos].index);
 					break;
 				}
 				pos--;
@@ -1305,13 +1305,13 @@ static unsigned char* parse_syntax(unsigned char *p)
 			}
 			if(syntax.curly[pos].count != 1) {
 				// FALLTHRU 用のジャンプ
-				sprintf(label,"goto __SW%x_%xJ;",syntax.curly[pos].index,syntax.curly[pos].count);
+                snprintf(label, sizeof(label), "goto __SW%x_%xJ;", syntax.curly[pos].index, syntax.curly[pos].count);
 				syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 				parse_line(label);
 				syntax.curly_count--;
 
 				// 現在地のラベルを付ける
-				sprintf(label,"__SW%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
+                snprintf(label, sizeof(label), "__SW%x_%x", syntax.curly[pos].index, syntax.curly[pos].count);
 				l=add_str(label);
 				set_label(l,script_pos,p);
 			}
@@ -1350,8 +1350,8 @@ static unsigned char* parse_syntax(unsigned char *p)
 			}
 			linkdb_insert(&syntax.curly[pos].case_label, INT2PTR(v), INT2PTR(1));
 
-			sprintf(label,"if(%d != $@__SW%x_VAL) goto __SW%x_%x;",
-				v,syntax.curly[pos].index,syntax.curly[pos].index,syntax.curly[pos].count+1);
+            snprintf(label, sizeof(label), "if(%d != $@__SW%x_VAL) goto __SW%x_%x;",
+                v, syntax.curly[pos].index, syntax.curly[pos].index, syntax.curly[pos].count+1);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			// ２回parse しないとダメ
 			p2 = parse_line(label);
@@ -1359,12 +1359,12 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly_count--;
 			if(syntax.curly[pos].count != 1) {
 				// FALLTHRU 終了後のラベル
-				sprintf(label,"__SW%x_%xJ",syntax.curly[pos].index,syntax.curly[pos].count);
+                snprintf(label, sizeof(label), "__SW%x_%xJ", syntax.curly[pos].index, syntax.curly[pos].count);
 				l=add_str(label);
 				set_label(l,script_pos,p);
 			}
 			// 一時変数を消す
-			sprintf(label,"set $@__SW%x_VAL,0;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "set $@__SW%x_VAL,0;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
@@ -1378,14 +1378,14 @@ static unsigned char* parse_syntax(unsigned char *p)
 
 			while(pos >= 0) {
 				if(syntax.curly[pos].type == TYPE_DO) {
-					sprintf(label,"goto __DO%x_NXT;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __DO%x_NXT;", syntax.curly[pos].index);
 					syntax.curly[pos].flag = 1; // continue 用のリンク張るフラグ
 					break;
 				} else if(syntax.curly[pos].type == TYPE_FOR) {
-					sprintf(label,"goto __FR%x_NXT;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __FR%x_NXT;", syntax.curly[pos].index);
 					break;
 				} else if(syntax.curly[pos].type == TYPE_WHILE) {
-					sprintf(label,"goto __WL%x_NXT;",syntax.curly[pos].index);
+                    snprintf(label, sizeof(label), "goto __WL%x_NXT;", syntax.curly[pos].index);
 					break;
 				}
 				pos--;
@@ -1425,18 +1425,18 @@ static unsigned char* parse_syntax(unsigned char *p)
 			if(*p != ':') {
 				disp_error_message("need ':'",p);
 			}
-			sprintf(label,"__SW%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
+            snprintf(label, sizeof(label), "__SW%x_%x", syntax.curly[pos].index, syntax.curly[pos].count);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
 			// 無条件で次のリンクに飛ばす
-			sprintf(label,"goto __SW%x_%x;",syntax.curly[pos].index,syntax.curly[pos].count+1);
+            snprintf(label, sizeof(label), "goto __SW%x_%x;", syntax.curly[pos].index, syntax.curly[pos].count+1);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// default のラベルを付ける
-			sprintf(label,"__SW%x_DEF",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__SW%x_DEF", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
@@ -1454,7 +1454,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly[syntax.curly_count].index = syntax.index++;
 			syntax.curly[syntax.curly_count].flag  = 0;
 			// 現在地のラベル形成する
-			sprintf(label,"__DO%x_BGN",syntax.curly[syntax.curly_count].index);
+            snprintf(label, sizeof(label), "__DO%x_BGN", syntax.curly[syntax.curly_count].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 			syntax.curly_count++;
@@ -1487,7 +1487,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly_count--;
 
 			// 条件判断開始のラベル形成する
-			sprintf(label,"__FR%x_J",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__FR%x_J", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
@@ -1497,7 +1497,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 				;
 			} else {
 				// 条件が偽なら終了地点に飛ばす
-				sprintf(label,"__FR%x_FIN",syntax.curly[pos].index);
+                snprintf(label, sizeof(label), "__FR%x_FIN", syntax.curly[pos].index);
 				add_scriptl(search_str("jump_zero"));
 				add_scriptc(C_ARG);
 				p=parse_expr(p);
@@ -1511,13 +1511,13 @@ static unsigned char* parse_syntax(unsigned char *p)
 			p++;
 
 			// ループ開始に飛ばす
-			sprintf(label,"goto __FR%x_BGN;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "goto __FR%x_BGN;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// 次のループへのラベル形成する
-			sprintf(label,"__FR%x_NXT",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__FR%x_NXT", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
@@ -1530,13 +1530,13 @@ static unsigned char* parse_syntax(unsigned char *p)
 			parse_syntax_for_flag = 0;
 
 			// 条件判定処理に飛ばす
-			sprintf(label,"goto __FR%x_J;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "goto __FR%x_J;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// ループ開始のラベル付け
-			sprintf(label,"__FR%x_BGN",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__FR%x_BGN", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 			return p;
@@ -1580,7 +1580,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 				syntax.curly_count++;
 
 				// 関数終了まで飛ばす
-				sprintf(label,"goto __FN%x_FIN;",syntax.curly[syntax.curly_count-1].index);
+                snprintf(label, sizeof(label), "goto __FN%x_FIN;", syntax.curly[syntax.curly_count-1].index);
 				syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 				parse_line(label);
 				syntax.curly_count--;
@@ -1617,7 +1617,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly[syntax.curly_count].count = 1;
 			syntax.curly[syntax.curly_count].index = syntax.index++;
 			syntax.curly[syntax.curly_count].flag  = 0;
-			sprintf(label,"__IF%x_%x",syntax.curly[syntax.curly_count].index,syntax.curly[syntax.curly_count].count);
+            snprintf(label, sizeof(label), "__IF%x_%x", syntax.curly[syntax.curly_count].index, syntax.curly[syntax.curly_count].count);
 			syntax.curly_count++;
 			add_scriptl(search_str("jump_zero"));
 			add_scriptc(C_ARG);
@@ -1643,7 +1643,7 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly[syntax.curly_count].count = 1;
 			syntax.curly[syntax.curly_count].index = syntax.index++;
 			syntax.curly[syntax.curly_count].flag  = 0;
-			sprintf(label,"$@__SW%x_VAL",syntax.curly[syntax.curly_count].index);
+            snprintf(label, sizeof(label), "$@__SW%x_VAL", syntax.curly[syntax.curly_count].index);
 			syntax.curly_count++;
 			add_scriptl(search_str("set"));
 			add_scriptc(C_ARG);
@@ -1682,12 +1682,12 @@ static unsigned char* parse_syntax(unsigned char *p)
 			syntax.curly[syntax.curly_count].index = syntax.index++;
 			syntax.curly[syntax.curly_count].flag  = 0;
 			// 条件判断開始のラベル形成する
-			sprintf(label,"__WL%x_NXT",syntax.curly[syntax.curly_count].index);
+            snprintf(label, sizeof(label), "__WL%x_NXT", syntax.curly[syntax.curly_count].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
 			// 条件が偽なら終了地点に飛ばす
-			sprintf(label,"__WL%x_FIN",syntax.curly[syntax.curly_count].index);
+            snprintf(label, sizeof(label), "__WL%x_FIN", syntax.curly[syntax.curly_count].index);
 			add_scriptl(search_str("jump_zero"));
 			add_scriptc(C_ARG);
 			p=parse_expr(p);
@@ -1726,13 +1726,13 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 			unsigned char *p2;
 
 			// if 最終場所へ飛ばす
-			sprintf(label,"goto __IF%x_FIN;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "goto __IF%x_FIN;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// 現在地のラベルを付ける
-			sprintf(label,"__IF%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
+            snprintf(label, sizeof(label), "__IF%x_%x", syntax.curly[pos].index, syntax.curly[pos].count);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 
@@ -1749,7 +1749,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 					if(*p != '(') {
 						disp_error_message("need '('",p);
 					}
-					sprintf(label,"__IF%x_%x",syntax.curly[pos].index,syntax.curly[pos].count);
+                    snprintf(label, sizeof(label), "__IF%x_%x", syntax.curly[pos].index, syntax.curly[pos].count);
 					add_scriptl(search_str("jump_zero"));
 					add_scriptc(C_ARG);
 					p=parse_expr(p);
@@ -1768,7 +1768,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 				}
 			}
 			// 最終地のラベルを付ける
-			sprintf(label,"__IF%x_FIN",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__IF%x_FIN", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 			if(syntax.curly[pos].flag == 1) {
@@ -1785,7 +1785,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 
 			if(syntax.curly[pos].flag) {
 				// 現在地のラベル形成する(continue でここに来る)
-				sprintf(label,"__DO%x_NXT",syntax.curly[pos].index);
+                snprintf(label, sizeof(label), "__DO%x_NXT", syntax.curly[pos].index);
 				l=add_str(label);
 				set_label(l,script_pos,p);
 			}
@@ -1801,7 +1801,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 			if(*p != '(') {
 				disp_error_message("need '('",p);
 			}
-			sprintf(label,"__DO%x_FIN",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__DO%x_FIN", syntax.curly[pos].index);
 			add_scriptl(search_str("jump_zero"));
 			add_scriptc(C_ARG);
 			p=parse_expr(p);
@@ -1810,13 +1810,13 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 			add_scriptc(C_FUNC);
 
 			// 開始地点に飛ばす
-			sprintf(label,"goto __DO%x_BGN;",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "goto __DO%x_BGN;", syntax.curly[pos].index);
 			syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 			parse_line(label);
 			syntax.curly_count--;
 
 			// 条件終了地点のラベル形成する
-			sprintf(label,"__DO%x_FIN",syntax.curly[pos].index);
+            snprintf(label, sizeof(label), "__DO%x_FIN", syntax.curly[pos].index);
 			l=add_str(label);
 			set_label(l,script_pos,p);
 			if(*p != ';') {
@@ -1829,13 +1829,13 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 		break;
 	case TYPE_FOR:
 		// 次のループに飛ばす
-		sprintf(label,"goto __FR%x_NXT;",syntax.curly[pos].index);
+        snprintf(label, sizeof(label), "goto __FR%x_NXT;", syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
 		// for 終了のラベル付け
-		sprintf(label,"__FR%x_FIN",syntax.curly[pos].index);
+        snprintf(label, sizeof(label), "__FR%x_FIN", syntax.curly[pos].index);
 		l=add_str(label);
 		set_label(l,script_pos,p);
 		syntax.curly_count--;
@@ -1843,13 +1843,13 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 		break;
 	case TYPE_WHILE:
 		// while 条件判断へ飛ばす
-		sprintf(label,"goto __WL%x_NXT;",syntax.curly[pos].index);
+        snprintf(label, sizeof(label), "goto __WL%x_NXT;", syntax.curly[pos].index);
 		syntax.curly[syntax.curly_count++].type = TYPE_NULL;
 		parse_line(label);
 		syntax.curly_count--;
 
 		// while 終了のラベル付け
-		sprintf(label,"__WL%x_FIN",syntax.curly[pos].index);
+        snprintf(label, sizeof(label), "__WL%x_FIN", syntax.curly[pos].index);
 		l=add_str(label);
 		set_label(l,script_pos,p);
 		syntax.curly_count--;
@@ -1862,7 +1862,7 @@ static unsigned char* parse_syntax_close_sub(unsigned char *p,int *flag)
 		add_scriptc(C_FUNC);
 
 		// 現在地のラベルを付ける
-		sprintf(label,"__FN%x_FIN",syntax.curly[pos].index);
+        snprintf(label, sizeof(label), "__FN%x_FIN", syntax.curly[pos].index);
 		l=add_str(label);
 		set_label(l,script_pos,p);
 		syntax.curly_count--;
@@ -2700,8 +2700,8 @@ static char* conv_str(struct script_state *st,struct script_data *data)
 	switch(data->type) {
 	case C_INT:
 		{
-			char *buf = (char *)aCalloc(16, sizeof(char));
-			sprintf(buf, "%d", data->u.num);
+            char *buf = (char *)aCalloc(16, sizeof(char));
+            snprintf(buf, 16, "%d", data->u.num);
 			data->type  = C_STR;
 			data->u.str = buf;
 		}
@@ -5736,8 +5736,8 @@ int buildin_printarray(struct script_state *st)
 		if( postfix == '$' ) {
 			strcat(buf, (char*)list[i]);
 		} else {
-			char val[16];
-			sprintf(val, "%d", PTR2INT(list[i]));
+            char val[16];
+            snprintf(val, sizeof(val), "%d", PTR2INT(list[i]));
 			strcat(buf, val);
 		}
 	}
@@ -5795,9 +5795,9 @@ int buildin_getelementofarray(struct script_state *st)
 			*p = 0;
 
 		p = var + strlen(var);
-		for(i=0; i<count; i++) {
-			p += sprintf(p,"[%d]",list[i]);
-		}
+        for(i=0; i<count; i++) {
+            p += snprintf(p, (size_t)(buf + sizeof(buf) - p), "[%d]", list[i]);
+        }
 		if(postfix == '$')
 			strcat(var,"$");
 
@@ -6871,7 +6871,7 @@ int buildin_getequipname(struct script_state *st)
 		} else {
 			int last = sizeof(refine_posword) / sizeof(refine_posword[0]);
 			buf = (char *)aMalloc(sizeof(refine_posword[0]) * 2 + 4);
-			sprintf(buf,"%s-[%s]",refine_posword[num-1],refine_posword[last-1]);
+            snprintf(buf, (size_t)(sizeof(refine_posword[0]) * 2 + 4), "%s-[%s]", refine_posword[num-1], refine_posword[last-1]);
 		}
 		push_str(st->stack,C_STR,buf);
 	} else {
@@ -9298,7 +9298,7 @@ int buildin_getwaitingpcid(struct script_state *st)
 			void *v;
 			if( postfix == '$' ) {
 				char str[16];
-				sprintf(str,"%d",pl_sd->bl.id);
+                snprintf(str, sizeof(str), "%d", pl_sd->bl.id);
 				v = (void*)str;
 			} else {
 				v = INT2PTR(pl_sd->bl.id);
@@ -10331,11 +10331,11 @@ int buildin_getskilllist(struct script_state *st)
 			pc_setreg(sd,add_str("@skilllist_flag")+(j<<24),sd->status.skill[i].flag);
 		} else {
 			char buf[32];
-			sprintf(buf,"@skilllist_id[%d]",k);
+            snprintf(buf, sizeof(buf), "@skilllist_id[%d]", k);
 			pc_setreg(sd,add_str(buf)+(j<<24),sd->status.skill[i].id);
-			sprintf(buf,"@skilllist_lv[%d]",k);
+            snprintf(buf, sizeof(buf), "@skilllist_lv[%d]", k);
 			pc_setreg(sd,add_str(buf)+(j<<24),sd->status.skill[i].lv);
-			sprintf(buf,"@skilllist_flag[%d]",k);
+            snprintf(buf, sizeof(buf), "@skilllist_flag[%d]", k);
 			pc_setreg(sd,add_str(buf)+(j<<24),sd->status.skill[i].flag);
 		}
 		j++;
@@ -11456,7 +11456,7 @@ int buildin_getmapxy(struct script_state *st)
 	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
 	if(postfix == '$') {
 		char str[16];
-		sprintf(str, "%d", x);
+        snprintf(str, sizeof(str), "%d", x);
 		v = (void*)str;
 	} else {
 		v = INT2PTR(x);
@@ -11472,7 +11472,7 @@ int buildin_getmapxy(struct script_state *st)
 	sd = (prefix != '$' && prefix != '\'')? script_rid2sd(st): NULL;
 	if(postfix == '$') {
 		char str[16];
-		sprintf(str, "%d", y);
+        snprintf(str, sizeof(str), "%d", y);
 		v = (void*)str;
 	} else {
 		v = INT2PTR(y);
@@ -12804,7 +12804,7 @@ int buildin_sqlquery(struct script_state *st)
 			int i, tmp_num;
 
 			if(count > 0) {	// 結果セットが複数行あるので変数名を合成する
-				sprintf(var + len, "[%d]%s", elem, (postfix == '$')? "$": "");
+                snprintf(var + len, (size_t)((name_len + 6) - len), "[%d]%s", elem, (postfix == '$')? "$": "");
 				tmp_num = add_str(var) + (num&0xff000000);
 			} else {
 				tmp_num = num;
@@ -14130,7 +14130,7 @@ int buildin_getmdnpcname(struct script_state *st)
 	int id = script_getmemorialid(st);
 
 	if(id > 0 && nd) {
-		sprintf(name, "mdnpc_%03d_%d", id, nd->bl.id);
+        snprintf(name, 24, "mdnpc_%03d_%d", id, nd->bl.id);
 		name[23] = '\0';
 	} else {
 		strncpy(name, str, 24);
