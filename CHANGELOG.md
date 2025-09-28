@@ -1,4 +1,35 @@
 ----------------------------------------
+//1595 [2025/09/28] by Blaze
+
+・3次職転職クエスト「ルーンナイト転職」「アークビショップ転職」「メカニック転職」実装（map_auriga.conf, npc_job_29runeknight.sc, npc_job_32archbishop.sc, npc_job_33mechanic.sc, npc_job_thirdclass.sc, db/quest_db.txt）
+
+・3次職転職クエスト報酬のステータス・スキル一括リセットNPCを追加（npc_job_thirdclass.sc）
+
+・各都市に簡易倉庫NPCを追加（map_auriga.conf, npc_misc_storage.sc）
+　※サブ倉庫1～3は未実装です
+
+・メカニック転職クエストに出現するモンスターのデータを暫定で追加（db/mob_db.txt, db/mob_skill_db.txt）
+
+・転職クエストのスクリプトファイル名をジョブ番号でソートし直し（map_auriga.conf）
+　npc_job_14crusader.sc      -> npc_job_13crusader.sc
+　npc_job_15monk.sc          -> npc_job_14monk.sc
+　npc_job_16sage.sc          -> npc_job_15sage.sc
+　npc_job_17rogue.sc         -> npc_job_16rogue.sc
+　npc_job_18alchemist.sc     -> npc_job_17alchemist.sc
+　npc_job_19bard.sc          -> npc_job_18bard.sc
+　npc_job_20dancer.sc        -> npc_job_19dancer.sc
+　npc_job_23supernovice.sc   -> npc_job_20supernovice.sc
+　npc_job_24taekwonkid.sc    -> npc_job_21taekwon.sc
+　npc_job_25stargladiator.sc -> npc_job_22stargladiator.sc
+　npc_job_27soullinker.sc    -> npc_job_23soullinker.sc
+　npc_job_28gunslinger.sc    -> npc_job_24gunslinger.sc
+　npc_job_29ninja.sc         -> npc_job_25ninja.sc
+　npc_job_46supernovice2.sc  -> npc_job_42supernovice2.sc
+　npc_job_47kaboro.sc        -> npc_job_43kaboro.sc
+　npc_job_48rebellion.sc     -> npc_job_45rebellion.sc
+　npc_job_49summoner.sc      -> npc_job_46summoner.sc
+
+----------------------------------------
 //1594 [2025/09/28] by Blaze
 
 ・メモリアルダンジョン「オークの記憶」実装（map_auriga.conf, npc_memorial_orcs.sc, mapflag_memorial.sc）
