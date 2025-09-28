@@ -1,4 +1,31 @@
 ----------------------------------------
+//1594 [2025/09/28] by Blaze
+
+・メモリアルダンジョン「オークの記憶」実装（map_auriga.conf, npc_memorial_orcs.sc, mapflag_memorial.sc）
+
+・メモリアルダンジョン「地下排水路」実装（map_auriga.conf, npc_memorial_pump.sc, npc_warp_town.sc, mapflag_memorial.sc, db/memorial_db.txt）
+
+・マラン島に猫武器販売NPCを追加（npc_town_malangdo.sc）
+
+・const.txtに4次職のJob定義・CLASS定義を追加（db/const.txt）
+
+・メモリアルダンジョン予約処理間隔の時間を60秒から10秒に短縮（memorial.c）
+
+・db/mob_avail.txtの仕様を変更（db/mob_avail.txt, mob.c, 
+　3番目のパラメータ「見た目サイズ」をサイズ変更含めたエフェクト全般を表示できるように拡張
+　※従来のサイズ変更は小=421、大=423で指定可能です。その他MOBにオーラ表示させるなどサーバー側でエフェクト制御が可能になります
+　2番目以降のパラメータは省略可能なようにDB読み込み処理を変更
+
+・map_session_data、npc_data、mob_data、pet_data、homun_data、merc_data、elem_dataの各構造体メンバ「view_size」を「effect」に変更
+　（map.h, clif.c, elem.c, homun.c, merc.c, mob.c, mob.h, npc.c, pc.c, pet.c, unit.c）
+
+・上記に伴い、スクリプト命令の見た目サイズ変更「changeviewsize」の処理を変更（unit.c）
+
+・J蔵以外でエラー落ちしないようにmob_avail.txtに「オーク兵」「スタラクタイトゴーレム（オークの記憶）」のスプライトをすり替え定義を追加（db/mob_avail.txt）
+
+・「オークの記憶」「地下排水路」関連のMOBデータを暫定で追加（db/mob_db.txt, db/mob_skill_db.txt）
+
+----------------------------------------
 //1593 [2025/08/11] by Cocoa
 
 ・C11 モダナイズと安全な文字列操作の全面適用

@@ -5,7 +5,7 @@
 3,Orc's Memory,3600,1@orcs.gat,179,15,1@orcs.gat,2@orcs.gat,,,,,,
 4,the Nest of Nidhog,14400,1@nyd.gat,32,36,1@nyd.gat,2@nyd.gat,,,,,,
 5,mistwood,7200,1@mist.gat,89,29,1@mist.gat,,,,,,,
-6,Culvert,3600,1@pump.gat,84,105,1@pump.gat,2@pump.gat,,,,,,
+6,Pump,3600,1@pump.gat,63,98,1@pump.gat,2@pump.gat,,,,,,
 7,Octopus Cave,3600,1@cash.gat,199,99,1@cash.gat,,,,,,,
 8,Bangungot 2F,3600,1@ma_h.gat,40,157,1@ma_h.gat,,,,,,,
 9,Buwaya Cave,3600,1@ma_c.gat,31,56,1@ma_c.gat,,,,,,,

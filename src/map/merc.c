@@ -514,7 +514,7 @@ static int merc_data_init(struct map_session_data *sd)
 		diff = 1;
 	mcd->limit_timer = add_timer(tick+diff,merc_employ_timer,sd->bl.id,NULL);
 
-	mcd->view_size = 0;
+	mcd->effect = -1;
 
 	return 0;
 }

@@ -399,7 +399,7 @@ static int pet_data_init(struct map_session_data *sd)
 	pd->lootitem_count  = 0;
 	pd->lootitem_weight = 0;
 	pd->lootitem_timer  = tick;
-	pd->view_size       = mobdb_search(pd->class_)->view_size;
+	pd->effect          = mobdb_search(pd->class_)->effect;
 
 	return 0;
 }

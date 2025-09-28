@@ -2317,34 +2317,34 @@ int unit_changeviewsize(struct block_list *bl,int size)
 {
 	nullpo_retr(0, bl);
 
-	size = (size < 0)? -1: (size > 0)? 1: 0;
+	size = (size < 0)? 421: (size > 0)? 423: -1;
 
 	if(bl->type == BL_PC) {
 		struct map_session_data *sd = (struct map_session_data*)bl;
-		sd->view_size = size;
+		sd->effect = size;
 	} else if(bl->type == BL_MOB) {
 		struct mob_data *md = (struct mob_data *)bl;
-		md->view_size = size;
+		md->effect = size;
 	} else if(bl->type == BL_PET) {
 		struct pet_data *pd = (struct pet_data *)bl;
-		pd->view_size = size;
+		pd->effect = size;
 	} else if(bl->type == BL_HOM) {
 		struct homun_data *hd = (struct homun_data *)bl;
-		hd->view_size = size;
+		hd->effect = size;
 	} else if(bl->type == BL_MERC) {
 		struct merc_data *mcd = (struct merc_data *)bl;
-		mcd->view_size = size;
+		mcd->effect = size;
 	} else if(bl->type == BL_ELEM) {
 		struct elem_data *eld = (struct elem_data *)bl;
-		eld->view_size = size;
+		eld->effect = size;
 	} else if(bl->type == BL_NPC) {
 		struct npc_data *nd = (struct npc_data *)bl;
-		nd->view_size = size;
+		nd->effect = size;
 	} else {
 		return 0;
 	}
-	if(size != 0)
-		clif_misceffect2(bl,421+size);
+	if(size != -1)
+		clif_misceffect2(bl,size);
 	return 0;
 }
 

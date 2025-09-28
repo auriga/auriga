@@ -1601,6 +1601,7 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	nd->chat_id = 0;
 	nd->click_able = 0;
 	nd->option  = src_nd->option;
+	nd->effect  = src_nd->effect;
 	nd->bl.type = BL_NPC;
 	nd->subtype = src_nd->subtype;
 
@@ -2088,6 +2089,7 @@ static int npc_parse_warp(const char *w1,const char *w2,const char *w3,const cha
 	nd->speed  = 200;
 	nd->click_able = 0;
 	nd->option = OPTION_NOTHING;
+	nd->effect = -1;
 	memcpy(nd->u.warp.name,to_mapname,16);
 	nd->u.warp.name[15] = '\0';	// force \0 terminal
 	xs += 2;
@@ -2286,6 +2288,7 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 	nd->click_able = 0;
 	nd->chat_id = 0;
 	nd->option  = OPTION_NOTHING;
+	nd->effect  = -1;
 	npc_shop++;
 	nd->bl.type = BL_NPC;
 	nd->subtype = subtype;
@@ -2630,6 +2633,7 @@ static int npc_parse_script(const char *w1,const char *w2,const char *w3,const c
 	nd->u.scr.src_id = src_id;
 	nd->chat_id = 0;
 	nd->option  = option;
+	nd->effect = -1;
 
 	nd->group_id = 0;
 	nd->title[23] = '\0';	// froce \0 terminal

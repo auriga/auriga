@@ -5244,8 +5244,8 @@ void clif_spawnpc(struct map_session_data *sd)
 		clif_mshield(sd,sd->sc.data[SC_MILLENNIUMSHIELD].val2);
 	if(sd->sc.data[SC_FORCEOFVANGUARD].timer != -1)
 		clif_mshield(sd,sd->sc.data[SC_FORCEOFVANGUARD].val4);
-	if(sd->view_size!=0)
-		clif_misceffect2(&sd->bl,422+sd->view_size);
+	if(sd->effect>=0)
+		clif_misceffect2(&sd->bl,sd->effect);
 
 	if (map[sd->bl.m].flag.rain)
 		clif_misceffect3(sd->fd, sd->bl.id, 161);
@@ -5414,8 +5414,8 @@ void clif_spawnnpc(struct npc_data *nd)
 	len = clif_npc0078(nd,buf,NULL);
 	clif_send(buf,len,&nd->bl,AREA);
 
-	if(nd->view_size!=0)
-		clif_misceffect2(&nd->bl,422+nd->view_size);
+	if(nd->effect>=0)
+		clif_misceffect2(&nd->bl,nd->effect);
 
 	return;
 }
@@ -5722,8 +5722,8 @@ void clif_spawnmob(struct mob_data *md)
 	len = clif_mob0078(md,buf);
 	clif_send(buf,len,&md->bl,AREA);
 
-	if(md->view_size!=0)
-		clif_misceffect2(&md->bl,422+md->view_size);
+	if(md->effect>=0)
+		clif_misceffect2(&md->bl,md->effect);
 
 	return;
 }
@@ -5866,8 +5866,8 @@ void clif_spawnpet(struct pet_data *pd)
 	len = clif_pet0078(pd,buf);
 	clif_send(buf,len,&pd->bl,AREA);
 
-	if(pd->view_size!=0)
-		clif_misceffect2(&pd->bl,422+pd->view_size);
+	if(pd->effect>=0)
+		clif_misceffect2(&pd->bl,pd->effect);
 
 	return;
 }
@@ -6011,8 +6011,8 @@ void clif_spawnhom(struct homun_data *hd)
 	//len = clif_hom0078(hd,buf);
 	//clif_send(buf,len,&hd->bl,AREA);
 
-	if(hd->view_size!=0)
-		clif_misceffect2(&hd->bl,422+hd->view_size);
+	if(hd->effect>=0)
+		clif_misceffect2(&hd->bl,hd->effect);
 
 	return;
 }
@@ -6152,8 +6152,8 @@ void clif_spawnmerc(struct merc_data *mcd)
 #endif
 	clif_send(buf,len,&mcd->bl,AREA);
 
-	if(mcd->view_size!=0)
-		clif_misceffect2(&mcd->bl,422+mcd->view_size);
+	if(mcd->effect>=0)
+		clif_misceffect2(&mcd->bl,mcd->effect);
 
 	return;
 }
@@ -6293,8 +6293,8 @@ void clif_spawnelem(struct elem_data *eld)
 #endif
 	clif_send(buf,len,&eld->bl,AREA);
 
-	if(eld->view_size!=0)
-		clif_misceffect2(&eld->bl,422+eld->view_size);
+	if(eld->effect>=0)
+		clif_misceffect2(&eld->bl,eld->effect);
 
 	return;
 }
@@ -12054,8 +12054,8 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 
 	if(sd->status.manner < 0)
 		clif_changestatus(&sd->bl,SP_MANNER,sd->status.manner);
-	if(dstsd->view_size != 0)
-		clif_misceffect2(&dstsd->bl,422+dstsd->view_size);
+	if(dstsd->effect >= 0)
+		clif_misceffect2(&dstsd->bl,dstsd->effect);
 
 	return;
 }
@@ -12085,8 +12085,8 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 		clif_dispchat(map_id2cd(nd->chat_id),sd->fd);
 	}
 
-	if(nd->view_size!=0)
-		clif_misceffect2(&nd->bl,422+nd->view_size);
+	if(nd->effect>=0)
+		clif_misceffect2(&nd->bl,nd->effect);
 
 	return;
 }
@@ -12133,8 +12133,8 @@ static void clif_getareachar_mob(struct map_session_data* sd, struct mob_data* m
 	}
 	WFIFOSET(sd->fd,len);
 
-	if(md->view_size!=0)
-		clif_misceffect2(&md->bl,422+md->view_size);
+	if(md->effect>=0)
+		clif_misceffect2(&md->bl,md->effect);
 
 	return;
 }
@@ -12158,8 +12158,8 @@ static void clif_getareachar_pet(struct map_session_data* sd, struct pet_data* p
 		WFIFOSET(sd->fd,len);
 	}
 
-	if(pd->view_size!=0)
-		clif_misceffect2(&pd->bl,422+pd->view_size);
+	if(pd->effect>=0)
+		clif_misceffect2(&pd->bl,pd->effect);
 
 	return;
 }
@@ -12187,8 +12187,8 @@ static void clif_getareachar_hom(struct map_session_data* sd, struct homun_data*
 	len = clif_hom007b(hd,WFIFOP(sd->fd,0));
 	WFIFOSET(sd->fd,len);
 
-	if(hd->view_size != 0)
-		clif_misceffect2(&hd->bl,422+hd->view_size);
+	if(hd->effect >= 0)
+		clif_misceffect2(&hd->bl,hd->effect);
 
 	return;
 }
@@ -12216,8 +12216,8 @@ static void clif_getareachar_merc(struct map_session_data* sd, struct merc_data*
 	len = clif_merc007b(mcd,WFIFOP(sd->fd,0));
 	WFIFOSET(sd->fd,len);
 
-	if(mcd->view_size != 0)
-		clif_misceffect2(&mcd->bl,422+mcd->view_size);
+	if(mcd->effect >= 0)
+		clif_misceffect2(&mcd->bl,mcd->effect);
 
 	return;
 }
@@ -12245,8 +12245,8 @@ static void clif_getareachar_elem(struct map_session_data* sd, struct elem_data*
 	len = clif_elem007b(eld,WFIFOP(sd->fd,0));
 	WFIFOSET(sd->fd,len);
 
-	if(eld->view_size != 0)
-		clif_misceffect2(&eld->bl,422+eld->view_size);
+	if(eld->effect >= 0)
+		clif_misceffect2(&eld->bl,eld->effect);
 
 	return;
 }

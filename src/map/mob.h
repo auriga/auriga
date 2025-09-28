@@ -69,7 +69,7 @@ struct mobdb_data {
 		int p;
 	} mvpitem[3];
 	int view_class;
-	short view_size;
+	short effect;
 	short hair,hair_color,clothes_color;
 	short weapon,shield,robe,head_top,head_mid,head_bottom;
 	short style;

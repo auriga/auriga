@@ -2504,6 +2504,9 @@ mal_in01.gat,75,222,0	warp	malangdowarp1040	1,1,mal_in01.gat,12,221
 //B1FÅÃB2F
 mal_in01.gat,79,219,0	warp	malangdowarp1041	1,1,mal_in01.gat,140,216
 mal_in01.gat,140,213,0	warp	malangdowarp1042	1,1,mal_in01.gat,80,216
+//ï€ä«å…
+malangdo.gat,135,276,0	warp	malangdowarp1043	1,1,mal_in01.gat,164,15
+mal_in01.gat,163,13,0	warp	malangdowarp1044	1,1,malangdo.gat,135,274
 
 
 

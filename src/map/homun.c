@@ -769,7 +769,7 @@ static int homun_data_init(struct map_session_data *sd)
 		hd->hungry_cry_timer = add_timer(tick+20*1000,homun_hungry_cry,sd->bl.id,NULL);
 	else
 		hd->hungry_cry_timer = -1;
-	hd->view_size = 0;
+	hd->effect = -1;
 
 	return 0;
 }

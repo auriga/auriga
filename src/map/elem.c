@@ -767,7 +767,7 @@ static int elem_data_init(struct map_session_data *sd)
 		diff = 1;
 	eld->limit_timer = add_timer(tick+diff,elem_summon_timer,sd->bl.id,NULL);
 
-	eld->view_size = 0;
+	eld->effect = -1;
 
 	return 0;
 }

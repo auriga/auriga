@@ -8182,3 +8182,133 @@ malangdo.gat,176,165,3	script	甲板員ブビ	544,{
 	mes "気づいちゃったにゃん？";
 	close;
 }
+
+//============================================================
+// 猫武器販売NPC
+//------------------------------------------------------------
+malangdo.gat,153,138,5	script	猫武器販売員	495,{
+	mes "[猫武器販売員]";
+	mes "よってらっしゃい";
+	mes "見てらっしゃいにゃあ！";
+	mes "マラン島特産の猫武器がにゃんと";
+	mes "どれでもおひとつ";
+	mes "^ff0000マラン島特産缶詰50個!!!^000000";
+	mes "どうですかお客さんにゃあ～！";
+	next;
+	setarray '@itemid,28111,21021,2031,28012,18135,28710;
+	while(1) {
+		switch(select("商品を買う","商品の説明を見る","会話をやめる")) {
+		case 1:
+			mes "[猫武器販売員]";
+			mes "商品を^ff0000買う^000000のですね。";
+			mes "どれにしますかにゃ？";
+			next;
+			while(1) {
+				switch(select("戻る",getitemname('@itemid[0]),getitemname('@itemid[1]),getitemname('@itemid[2]),getitemname('@itemid[3]),getitemname('@itemid[4]),getitemname('@itemid[5]),"見るのをやめる")) {
+				case 1:
+					mes "[猫武器販売員]";
+					mes "どうしますかにゃあ？";
+					next;
+					break;
+				default:
+					set '@buyid,'@itemid[@menu-2];
+					mes "[猫武器販売員]";
+					mes "<ITEM>"+getitemname('@buyid)+"<INFO>"+'@buyid+"</INFO></ITEM>";
+					mes "ですにゃ。";
+					mes "お代はマラン島特産缶詰50個";
+					mes "いただきますにゃ！";
+					mes " ";
+					mes "よろしいですかにゃ？";
+					next;
+					if(select("買う","買わない") == 2) {
+						mes "[猫武器販売員]";
+						mes "にゃにゃ！";
+						mes "買わないんですにゃ!?";
+						mes "それではどうしますかにゃ？";
+						next;
+						continue;
+					}
+					if(!checkitemblank()) {
+						mes "[猫武器販売員]";
+						mes "ぬにゃあぁ～。";
+						mes "^ff0000荷物がいっぱい^000000ですにゃ。";
+						mes "荷物の数を少し減らして";
+						mes "また来てくださいにゃ。";
+						close;
+					}
+					if(!checkweight('@buyid,1)) {
+						mes "[猫武器販売員]";
+						mes "ぬにゃあぁ～。";
+						mes "^ff0000荷物が重たい^000000ですにゃ。";
+						mes "荷物の重さを少し減らして";
+						mes "また来てくださいにゃ。";
+						close;
+					}
+					if(countitem(12636) < 50) {
+						mes "[猫武器販売員]";
+						mes "ぬにゃあぁ～。";
+						mes "^ff0000マラン島特産缶詰が足りない^000000ですにゃ。";
+						mes "^ff000050個^000000必要ですにゃ。";
+						mes "50個集めてまた来てくださいにゃ。";
+						close;
+					}
+					mes "[猫武器販売員]";
+					mes "毎度ありですにゃ～！";
+					delitem 12636,50;
+					getitem '@buyid,1;
+					close;
+				case 8:
+					mes "[猫武器販売員]";
+					mes "またのお越しを";
+					mes "お待ちしていますにゃ～。";
+					close;
+				}
+				break;
+			}
+			continue;
+		case 2:
+			mes "[猫武器販売員]";
+			mes "商品の^ff0000説明を見る^000000のですね。";
+			mes "どれにしますかにゃ？";
+			next;
+			while(1) {
+				switch(select("戻る",getitemname('@itemid[0]),getitemname('@itemid[1]),getitemname('@itemid[2]),getitemname('@itemid[3]),getitemname('@itemid[4]),getitemname('@itemid[5]),"見るのをやめる")) {
+				case 1:
+					mes "[猫武器販売員]";
+					mes "どうしますかにゃあ？";
+					next;
+					break;
+				default:
+					mes "[猫武器販売員]";
+					mes "<ITEM>"+getitemname('@itemid[@menu-2])+"<INFO>"+'@itemid[@menu-2]+"</INFO></ITEM>";
+					mes "こんな性能になっていますにゃ。";
+					mes " ";
+					mes "-上記アイテム名をクリックして";
+					mes "効果をご確認ください-";
+					next;
+					mes "[猫武器販売員]";
+					mes "他にも色々ありますにゃ。";
+					next;
+					continue;
+				case 8:
+					mes "[猫武器販売員]";
+					mes "またのお越しを";
+					mes "お待ちしていますにゃ～。";
+					close;
+				}
+				break;
+			}
+			continue;
+		case 3:
+			mes "[猫武器販売員]";
+			mes "またのお越しを";
+			mes "お待ちしていますにゃ～。";
+			close;
+		}
+	}
+
+	end;
+OnInit:
+	waitingroom "猫武器販売!!",0;
+	end;
+}

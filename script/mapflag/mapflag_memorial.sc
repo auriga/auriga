@@ -87,6 +87,28 @@
 2@cata.gat	mapflag	noabra		dummy
 
 //============================================================
+// オーク地下洞窟 01（過去） - 1@orcs.gat
+//------------------------------------------------------------
+1@orcs.gat	mapflag	nosave			SavePoint
+1@orcs.gat	mapflag	nomemo			dummy
+1@orcs.gat	mapflag	noteleport		dummy
+1@orcs.gat	mapflag	nobranch		dummy
+1@orcs.gat	mapflag	monster_noteleport	dummy
+1@orcs.gat	mapflag	noicewall	dummy
+1@orcs.gat	mapflag	noabra		dummy
+
+//============================================================
+// オーク地下洞窟 02（過去） - 2@orcs.gat
+//------------------------------------------------------------
+2@orcs.gat	mapflag	nosave			SavePoint
+2@orcs.gat	mapflag	nomemo			dummy
+2@orcs.gat	mapflag	noteleport		dummy
+2@orcs.gat	mapflag	nobranch		dummy
+2@orcs.gat	mapflag	monster_noteleport	dummy
+2@orcs.gat	mapflag	noicewall	dummy
+2@orcs.gat	mapflag	noabra		dummy
+
+//============================================================
 // ニーズヘッグの巣 - 1@nyd.gat
 //------------------------------------------------------------
 1@nyd.gat	mapflag	nosave			SavePoint
@@ -459,6 +481,28 @@
 1@mcd.gat	mapflag	monster_noteleport	dummy
 1@mcd.gat	mapflag	noicewall	dummy
 1@mcd.gat	mapflag	noabra		dummy
+
+//============================================================
+// 地下排水路 - 1@pump.gat
+//------------------------------------------------------------
+1@pump.gat	mapflag	nosave			SavePoint
+1@pump.gat	mapflag	nomemo			dummy
+1@pump.gat	mapflag	noteleport		dummy
+1@pump.gat	mapflag	nobranch		dummy
+1@pump.gat	mapflag	monster_noteleport	dummy
+1@pump.gat	mapflag	noicewall	dummy
+1@pump.gat	mapflag	noabra		dummy
+
+//============================================================
+// 地下排水路 最奥部 - 2@pump.gat
+//------------------------------------------------------------
+2@pump.gat	mapflag	nosave			SavePoint
+2@pump.gat	mapflag	nomemo			dummy
+2@pump.gat	mapflag	noteleport		dummy
+2@pump.gat	mapflag	nobranch		dummy
+2@pump.gat	mapflag	monster_noteleport	dummy
+2@pump.gat	mapflag	noicewall	dummy
+2@pump.gat	mapflag	noabra		dummy
 
 //============================================================
 // 過去の儀式の間 - 1@mir.gat

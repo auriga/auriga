@@ -404,7 +404,7 @@ int mob_spawn(int id)
 	md->ud.to_x = md->bl.x = x;
 	md->ud.to_y = md->bl.y = y;
 	md->dir = 0;
-	md->view_size = mobdb_search(md->class_)->view_size;
+	md->effect = mobdb_search(md->class_)->effect;
 
 	memset(&md->state,0,sizeof(md->state));
 
@@ -4425,7 +4425,7 @@ static int mob_readdb(void)
 
 			memset(id->skill, 0, sizeof(id->skill));
 			id->maxskill      = 0;
-			id->view_size     = 0;
+			id->effect        = -1;
 			id->sex           = SEX_FEMALE;
 			id->hair          = 0;
 			id->hair_color    = 0;
@@ -4497,7 +4497,7 @@ static int mob_readdb_mobavail(void)
 	char line[1024];
 	int ln = 0;
 	int class_,j,k;
-	char *str[16],*p,*np;
+	char *str[16],*p;
 	struct mobdb_data *id;
 	const char *filename = "db/mob_avail.txt";
 
@@ -4513,14 +4513,10 @@ static int mob_readdb_mobavail(void)
 			continue;
 		memset(str,0,sizeof(str));
 
-		for(j=0,p=line;j<16;j++){
-			if((np=strchr(p,','))!=NULL){
-				str[j]=p;
-				*np=0;
-				p=np+1;
-			} else {
-				str[j]=p;
-			}
+		for(j=0,p=line; j<16 && p; j++){
+			str[j]=p;
+			p=strchr(p,',');
+			if(p) *p++=0;
 		}
 		if(str[0] == NULL)
 			continue;
@@ -4540,9 +4536,13 @@ static int mob_readdb_mobavail(void)
 			else
 				id->pcview_flag = 0;
 		}
-		id->view_size = atoi(str[2]);
-
-		if(id->pcview_flag) {
+		if(j > 2) {
+			if(strlen(str[2]) > 1)
+				id->effect = atoi(str[2]);
+			else
+				id->effect = -1;
+		}
+		if(j > 3 && id->pcview_flag) {
 			id->sex           = atoi(str[3]);
 			id->hair          = atoi(str[4]);
 			id->hair_color    = atoi(str[5]);

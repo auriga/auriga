@@ -491,7 +491,7 @@ struct map_session_data {
 	char npc_str[256];
 	int chatID;
 	short race;
-	short view_size;
+	short effect;
 	unsigned int booking_id;
 	struct quest_data quest[MAX_QUESTLIST];
 	int questlist;
@@ -975,7 +975,7 @@ struct npc_data {
 	int group_id;
 	char title[24];
 	unsigned int option;
-	short view_size;
+	short effect;
 	char flag;
 	unsigned char subtype;
 	char click_able;
@@ -1031,7 +1031,7 @@ struct mob_data {
 		unsigned norandomwalk : 1;
 	} state;
 	struct status_data st;
-	short view_size;
+	short effect;
 	short speed;
 	int hp;
 	int target_id,attacked_id,attacked_players;
@@ -1083,7 +1083,7 @@ struct pet_data {
 	int class_;
 	short dir,speed;
 	char name[24];
-	short view_size;
+	short effect;
 	int equip;
 	int target_id;
 	unsigned int next_walktime,last_thinktime;
@@ -1106,7 +1106,7 @@ struct homun_data {
 	struct mmo_homunstatus status;
 	short dir;
 	short speed;
-	short view_size;
+	short effect;
 	int invincible_timer;
 	int hp_sub,sp_sub;
 	int max_hp,max_sp;
@@ -1136,7 +1136,7 @@ struct merc_data {
 	char name[24];
 	short dir;
 	short speed;
-	short view_size;
+	short effect;
 	int invincible_timer;
 	int base_level;
 	int hp_sub,sp_sub;
@@ -1167,7 +1167,7 @@ struct elem_data {
 	char name[24];
 	short dir;
 	short speed;
-	short view_size;
+	short effect;
 	int invincible_timer;
 	int base_level;
 	int max_hp,max_sp;
