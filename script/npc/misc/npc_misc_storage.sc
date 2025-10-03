@@ -104,11 +104,11 @@ payon.gat,179,66,4	script	サブ倉庫1	464,{
 	callfunc "Func_Storage",50,1;
 	end;
 }
-payon.gat,179,66,4	script	サブ倉庫2	464,{
+payon.gat,181,66,4	script	サブ倉庫2	464,{
 	callfunc "Func_Storage",50,2;
 	end;
 }
-payon.gat,179,66,4	script	サブ倉庫3	464,{
+payon.gat,183,66,4	script	サブ倉庫3	464,{
 	callfunc "Func_Storage",50,3;
 	end;
 }

@@ -1040,6 +1040,7 @@ L_ABOUTTEST:
 		mes "もちろん、ポリン団から";
 		mes "もらった単位も有効よ。";
 	}
+	next;
 	if('@chklv || '@chkct){
 		if('@chklv && '@chkct){
 			next;

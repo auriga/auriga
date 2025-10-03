@@ -1,4 +1,11 @@
 ----------------------------------------
+//1596 [2025/10/03] by Cocoa
+
+・誤字修正
+
+・一部制御script修正
+
+----------------------------------------
 //1595 [2025/09/28] by Blaze
 
 ・3次職転職クエスト「ルーンナイト転職」「アークビショップ転職」「メカニック転職」実装（map_auriga.conf, npc_job_29runeknight.sc, npc_job_32archbishop.sc, npc_job_33mechanic.sc, npc_job_thirdclass.sc, db/quest_db.txt）
