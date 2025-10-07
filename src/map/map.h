@@ -612,9 +612,13 @@ struct map_session_data {
 	short add_def_class_count,add_mdef_class_count;
 	short add_def_classid[MAX_BONUS_CLASS],add_mdef_classid[MAX_BONUS_CLASS];
 	int add_def_classrate[MAX_BONUS_CLASS],add_mdef_classrate[MAX_BONUS_CLASS];
-	short monster_drop_item_count;
-	int monster_drop_itemid[MAX_BONUS_ADDDROP];
-	int monster_drop_race[MAX_BONUS_ADDDROP],monster_drop_itemrate[MAX_BONUS_ADDDROP];
+	struct {
+		int itemid;
+		int target;
+		int rate;
+		char type;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+	} add_drop[MAX_BONUS_ADDDROP];
+	short add_drop_count;
 	int double_add_rate,speed_add_rate,aspd_add_rate,perfect_hit_add, get_zeny_add_num,get_zeny_add_num2;
 	short splash_range,splash_add_range;
 #ifndef PRE_RENEWAL
@@ -1372,6 +1376,7 @@ enum {
 	SP_ADD_CAST_TIME,SP_ADD_COOL_DOWN,SP_ADD_ELEWEAPONDAMAGE_RATE,SP_ADD_ELEMAGICDAMAGE_RATE,   // 1176-1179
 	SP_HP_RATE_PENALTY_TIME,SP_SP_RATE_PENALTY_TIME,SP_MAGIC_ADD_GROUP,SP_MAGIC_ADDSIZE,	// 1180-1183
 	SP_ALLSTATUS,SP_SUB_SKILL_DAMAGE_RATE,SP_ADD_FIXCAST_TIME,SP_SUB_RETURN_DAMAGE,	// 1184-1187
+	SP_ADD_MONSTERRACE_DROP_ITEM,SP_ADD_MONSTERELE_DROP_ITEM,SP_ADD_MONSTERID_DROP_ITEM,SP_ADD_MONSTERGROUP_DROP_ITEM,	// 1188-1191
 
 	// special state 2000-
 	SP_RESTART_FULL_RECORVER=2000,SP_NO_CASTCANCEL,SP_NO_SIZEFIX,SP_NO_MAGIC_DAMAGE,SP_NO_WEAPON_DAMAGE,SP_NO_GEMSTONE,	// 2000-2005

@@ -1970,8 +1970,8 @@
 2793,Ring_Of_Resonance_I,リングオブレゾナンス,4,,,0,,2:2,,0,2088832,2,136,,0,,,{},{ bonus bAgi,2; bonus bVit,1; bonus3 bRevAutoSpell,92,1,500; bonus4 bAutoSpell,141,10,200,EAS_REVENGE|EAS_NOSP; bonus3 bRevAutoSelfSpell,28,10,300; bonus3 bRevAutoSelfSpell,361,3,200; bonus3 bRevAutoSpell,489,5,200; }
 2794,Magic_Stone_Ring,魔力石の指輪,4,0,,0,,0,,1,128,2,136,,90,,,{},{ bonus bStr,2; }
 2795,Green_Apple_Ring,熟していないリンゴの指輪,4,0,,0,,0,,0,2088832,2,136,,90,,,{},{ if(JobLevel<31){ bonus bAgi,6-(JobLevel-1)/5; bonus bVit,6-(JobLevel-1)/5; bonus bInt,6-(JobLevel-1)/5; bonus bStr,6-(JobLevel-1)/5; bonus bDex,6-(JobLevel-1)/5; bonus bLuk,6-(JobLevel-1)/5; } }
-2796,Magical_Stone_Splendide,魔力を秘めた石（スプレンディッド）,4,0,,200,,0,,0,134283780,2,136,,90,,,{},{}
-2797,Magical_Stone_Manuk,魔力を秘めた石（マヌク）,4,0,,200,,0,,0,134283780,2,136,,90,,,{},{}
+2796,Magical_Stone_Splendide,魔力を秘めた石（スプレンディッド）,4,0,,200,,0,,0,134283780,2,136,,90,,,{},{ bonus3 bAddMonsterIdDropItem,6152,2047,2500; }
+2797,Magical_Stone_Manuk,魔力を秘めた石（マヌク）,4,0,,200,,0,,0,134283780,2,136,,90,,,{},{ bonus3 bAddMonsterIdDropItem,6151,2049,2500; }
 2798,Will_of_Exhausted_Warrior,くたびれた天使の意思,4,0,,200,,0,,0,2088832,2,136,,90,,,{},{}
 2799,Kuirpenring,クイールペンリング,4,,,100,,1:1,,1,2074075135,2,136,,0,,,{},{ if(equippeditem(2714)==0) end; bonus bMaxHP,BaseLevel*3; bonus bMaxSP,JobLevel; bonus2 bSubEle,Ele_Neutral,3; }
 2800,Accelerator,加速装置,4,100000,,100,,0,,1,1024,2,136,,90,,,{},{ bonus bAgi,2; }
@@ -6339,10 +6339,10 @@
 12381,Ancient_Language_Scroll,古代言語の巻物,2,10,,10,,,,,2074075135,2,,,,,,{ makemerc 2037,1800; },{}
 12382,Ancient_Language_Scroll,古代言語の巻物,2,10,,10,,,,,2074075135,2,,,,,,{ makemerc 2038,1800; },{}
 12383,Vulcan_Bullet_Magazine,バルカンバレットマガジン,2,11000,,500,,,,,2074075135,2,,,,,,{ getitem 6145,1000; },{}
-12384,Rainbow_Ruby,虹色のルビー ウォーター,2,0,,50,,,,,2074075135,2,,,,,,{},{}
-12385,Rainbow_Ruby,虹色のルビー アース,2,0,,50,,,,,2074075135,2,,,,,,{},{}
-12386,Rainbow_Ruby,虹色のルビー ファイアー,2,0,,50,,,,,2074075135,2,,,,,,{},{}
-12387,Rainbow_Ruby,虹色のルビー ウィンド,2,0,,50,,,,,2074075135,2,,,,,,{},{}
+12384,Rainbow_Ruby_Water,虹色のルビー(水),2,0,,50,,,,,2074075135,2,,,,,,{ if(getmapname("") == "job3_war02.gat") itemskill "WL_FROSTMISTY",5,""; },{}
+12385,Rainbow_Ruby_Earth,虹色のルビー(地),2,0,,50,,,,,2074075135,2,,,,,,{ if(getmapname("") == "job3_war02.gat") itemskill "WL_EARTHSTRAIN",5,""; },{}
+12386,Rainbow_Ruby_Fire,虹色のルビー(火),2,0,,50,,,,,2074075135,2,,,,,,{ if(getmapname("") == "job3_war02.gat") itemskill "WL_CRIMSONROCK",5,""; },{}
+12387,Rainbow_Ruby_Wind,虹色のルビー(風),2,0,,50,,,,,2074075135,2,,,,,,{ if(getmapname("") == "job3_war02.gat") itemskill "WL_CHAINLIGHTNING",5,""; },{}
 12388,Rhydo_Runestone_For_Apprentice,練習用ライゾルーンストーン,2,0,,10,,,,,2074075135,2,,,,,,{},{}
 12389,Pertz_Runestone_For_Apprentice,練習用ペオースルーンストーン,2,0,,10,,,,,2074075135,2,,,,,,{},{}
 12390,Verkana_Runestone_For_Apprentice,練習用ベルカナルーンストーン,2,0,,10,,,,,2074075135,2,,,,,,{},{}

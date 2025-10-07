@@ -1,4 +1,19 @@
 ----------------------------------------
+//1597 [2025/10/07] by Blaze
+
+・3次職転職クエスト「ウォーロック転職」実装（map_auriga.conf, npc_job_30warlock.sc, npc_job_thirdclass.sc, db/quest_db.txt）
+
+・アイテムボーナスに以下を追加・変更（map.h, bonus.c, status.c, mob.c, db/const.txt, doc/item_bonus.txt）
+　bonus2 bAddMonsterDropItem        ：全てのモンスターを倒したとき、指定アイテムをドロップ
+　bonus3 bAddMonsterRaceDropItem    ：指定した種族のモンスターを倒したとき、指定アイテムをドロップ
+　　※既存のbonus3 bAddMonsterDropItemと同じ機能（別名定義）、既存の方も今まで通り使用可能です。
+　bonus3 bAddMonsterEleDropItem     ：指定した属性のモンスターを倒したとき、指定アイテムをドロップ
+　bonus3 bAddMonsterIdDropItem      ：指定したモンスターIDのモンスターを倒したとき、指定アイテムをドロップ
+　bonus3 bAddMonsterGroupDropItem   ：指定したグループのモンスターを倒したとき、指定アイテムをドロップ
+
+・ウォーロック転職クエスト関連のアイテム、モンスターを暫定定義で追加（db/item_db.txt, db/mob_db.txt, db/mob_skill_db.txt）
+
+----------------------------------------
 //1596 [2025/10/03] by Cocoa
 
 ・誤字修正

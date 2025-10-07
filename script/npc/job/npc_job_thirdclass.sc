@@ -1060,7 +1060,7 @@ function	script	jobchenge3rd_func	{
 }
 
 //prt_in.gat,162,24,3	script	ì]êEë„çsåW#runeknight	888,{ callfunc "jobchenge3rd_func",Job_RuneKnight,Job_Knight; }
-morocc.gat,94,141,3	script	ì]êEë„çsåW#warlock	888,{ callfunc "jobchenge3rd_func",Job_Warlock,Job_Wizard; }
+//morocc.gat,94,141,3	script	ì]êEë„çsåW#warlock	888,{ callfunc "jobchenge3rd_func",Job_Warlock,Job_Wizard; }
 alberta.gat,223,111,5	script	ì]êEë„çsåW#ranger	888,{ callfunc "jobchenge3rd_func",Job_Ranger,Job_Hunter; }
 //prt_church.gat,103,88,3	script	ì]êEë„çsåW#arch	888,{ callfunc "jobchenge3rd_func",Job_ArchBishop,Job_Priest; }
 //yuno.gat,129,156,3	script	ì]êEë„çsåW#mechanic	888,{ callfunc "jobchenge3rd_func",Job_Mechanic,Job_Blacksmith; }

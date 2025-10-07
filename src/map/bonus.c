@@ -1870,6 +1870,28 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		sd->sp_rate_penalty_time = type2;
 		sd->sp_rate_penalty_value = val;
 		break;
+	case SP_ADD_MONSTER_DROP_ITEM:
+		if(sd->state.lr_flag != 2) {
+			if(battle_config.dropitem_itemrate_fix == 1)
+				val = mob_droprate_fix(&sd->bl,type2,val);
+			else if(battle_config.dropitem_itemrate_fix > 1)
+				val = val * battle_config.dropitem_itemrate_fix / 100;
+			for(i=0; i<sd->add_drop_count; i++) {
+				if(sd->add_drop[i].itemid == type2 && sd->add_drop[i].type == 0) {	// 同じアイテムIDでtypeがAll指定(0)
+					if(sd->add_drop[i].rate < val)
+						sd->add_drop[i].rate = val;
+					break;
+				}
+			}
+			if(i >= sd->add_drop_count && sd->add_drop_count < MAX_BONUS_ADDDROP) {
+				sd->add_drop[sd->add_drop_count].itemid = type2;
+				sd->add_drop[sd->add_drop_count].target = 0;
+				sd->add_drop[sd->add_drop_count].rate = val;
+				sd->add_drop[sd->add_drop_count].type = 0;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+				sd->add_drop_count++;
+			}
+		}
+		break;
 	default:
 		if(battle_config.error_log)
 			printf("bonus_param2: unknown type %d %d %d! itemid %d.\n",type,type2,val,current_equip_name_id);
@@ -1891,24 +1913,99 @@ int bonus_param3(struct map_session_data *sd,int type,int type2,int type3,int va
 
 	switch(type) {
 	case SP_ADD_MONSTER_DROP_ITEM:
+	case SP_ADD_MONSTERRACE_DROP_ITEM:
+		if(type3 < 0 || type3 >= RCT_MAX)
+			break;
 		if(sd->state.lr_flag != 2) {
 			if(battle_config.dropitem_itemrate_fix == 1)
 				val = mob_droprate_fix(&sd->bl,type2,val);
 			else if(battle_config.dropitem_itemrate_fix > 1)
 				val = val * battle_config.dropitem_itemrate_fix / 100;
-			for(i=0; i<sd->monster_drop_item_count; i++) {
-				if(sd->monster_drop_itemid[i] == type2) {
-					sd->monster_drop_race[i] |= 1<<type3;
-					if(sd->monster_drop_itemrate[i] < val)
-						sd->monster_drop_itemrate[i] = val;
+			for(i=0; i<sd->add_drop_count; i++) {
+				if(sd->add_drop[i].itemid == type2 && sd->add_drop[i].type == 1) {	// 同じアイテムIDでtypeがRace指定(1)
+					sd->add_drop[i].target |= 1<<type3;
+					if(sd->add_drop[i].rate < val)
+						sd->add_drop[i].rate = val;
 					break;
 				}
 			}
-			if(i >= sd->monster_drop_item_count && sd->monster_drop_item_count < MAX_BONUS_ADDDROP) {
-				sd->monster_drop_itemid[sd->monster_drop_item_count] = type2;
-				sd->monster_drop_race[sd->monster_drop_item_count] |= 1<<type3;
-				sd->monster_drop_itemrate[sd->monster_drop_item_count] = val;
-				sd->monster_drop_item_count++;
+			if(i >= sd->add_drop_count && sd->add_drop_count < MAX_BONUS_ADDDROP) {
+				sd->add_drop[sd->add_drop_count].itemid = type2;
+				sd->add_drop[sd->add_drop_count].target |= 1<<type3;
+				sd->add_drop[sd->add_drop_count].rate = val;
+				sd->add_drop[sd->add_drop_count].type = 1;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+				sd->add_drop_count++;
+			}
+		}
+		break;
+	case SP_ADD_MONSTERELE_DROP_ITEM:
+		if(type3 < 0 || type3 >= ELE_MAX)
+			break;
+		if(sd->state.lr_flag != 2) {
+			if(battle_config.dropitem_itemrate_fix == 1)
+				val = mob_droprate_fix(&sd->bl,type2,val);
+			else if(battle_config.dropitem_itemrate_fix > 1)
+				val = val * battle_config.dropitem_itemrate_fix / 100;
+			for(i=0; i<sd->add_drop_count; i++) {
+				if(sd->add_drop[i].itemid == type2 && sd->add_drop[i].type == 2) {	// 同じアイテムIDでtypeがEle指定(2)
+					sd->add_drop[i].target |= 1<<type3;
+					if(sd->add_drop[i].rate < val)
+						sd->add_drop[i].rate = val;
+					break;
+				}
+			}
+			if(i >= sd->add_drop_count && sd->add_drop_count < MAX_BONUS_ADDDROP) {
+				sd->add_drop[sd->add_drop_count].itemid = type2;
+				sd->add_drop[sd->add_drop_count].target |= 1<<type3;
+				sd->add_drop[sd->add_drop_count].rate = val;
+				sd->add_drop[sd->add_drop_count].type = 2;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+				sd->add_drop_count++;
+			}
+		}
+		break;
+	case SP_ADD_MONSTERID_DROP_ITEM:
+		if(sd->state.lr_flag != 2) {
+			if(battle_config.dropitem_itemrate_fix == 1)
+				val = mob_droprate_fix(&sd->bl,type2,val);
+			else if(battle_config.dropitem_itemrate_fix > 1)
+				val = val * battle_config.dropitem_itemrate_fix / 100;
+			for(i=0; i<sd->add_drop_count; i++) {
+				if(sd->add_drop[i].itemid == type2 && sd->add_drop[i].target == type3 && sd->add_drop[i].type == 3) {	// 同じアイテムID、同じモンスターIDでtypeがMobID指定(3)
+					if(sd->add_drop[i].rate < val)
+						sd->add_drop[i].rate = val;
+					break;
+				}
+			}
+			if(i >= sd->add_drop_count && sd->add_drop_count < MAX_BONUS_ADDDROP) {
+				sd->add_drop[sd->add_drop_count].itemid = type2;
+				sd->add_drop[sd->add_drop_count].target = type3;
+				sd->add_drop[sd->add_drop_count].rate = val;
+				sd->add_drop[sd->add_drop_count].type = 3;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+				sd->add_drop_count++;
+			}
+		}
+		break;
+	case SP_ADD_MONSTERGROUP_DROP_ITEM:
+		if(type3 < 0 || type3 >= MAX_MOBGROUP)
+			break;
+		if(sd->state.lr_flag != 2) {
+			if(battle_config.dropitem_itemrate_fix == 1)
+				val = mob_droprate_fix(&sd->bl,type2,val);
+			else if(battle_config.dropitem_itemrate_fix > 1)
+				val = val * battle_config.dropitem_itemrate_fix / 100;
+			for(i=0; i<sd->add_drop_count; i++) {
+				if(sd->add_drop[i].itemid == type2 && sd->add_drop[i].target == type3 && sd->add_drop[i].type == 4) {	// 同じアイテムID、同じモンスターIDでtypeがGroup指定(4)
+					if(sd->add_drop[i].rate < val)
+						sd->add_drop[i].rate = val;
+					break;
+				}
+			}
+			if(i >= sd->add_drop_count && sd->add_drop_count < MAX_BONUS_ADDDROP) {
+				sd->add_drop[sd->add_drop_count].itemid = type2;
+				sd->add_drop[sd->add_drop_count].target = type3;
+				sd->add_drop[sd->add_drop_count].rate = val;
+				sd->add_drop[sd->add_drop_count].type = 4;	// 0:All, 1:Race, 2:Ele, 3:MobID, 4:Group
+				sd->add_drop_count++;
 			}
 		}
 		break;

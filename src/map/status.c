@@ -644,14 +644,13 @@ L_RECALC:
 	sd->get_zeny_num = sd->get_zeny_num2 = 0;
 	sd->add_damage_class_count = sd->add_damage_class_count_ = sd->add_magic_damage_class_count = 0;
 	sd->add_def_class_count = sd->add_mdef_class_count = 0;
-	sd->monster_drop_item_count = 0;
 	memset(sd->add_damage_classrate,0,sizeof(sd->add_damage_classrate));
 	memset(sd->add_damage_classrate_,0,sizeof(sd->add_damage_classrate_));
 	memset(sd->add_magic_damage_classrate,0,sizeof(sd->add_magic_damage_classrate));
 	memset(sd->add_def_classrate,0,sizeof(sd->add_def_classrate));
 	memset(sd->add_mdef_classrate,0,sizeof(sd->add_mdef_classrate));
-	memset(sd->monster_drop_race,0,sizeof(sd->monster_drop_race));
-	memset(sd->monster_drop_itemrate,0,sizeof(sd->monster_drop_itemrate));
+	memset(&sd->add_drop,0,sizeof(sd->add_drop));
+	sd->add_drop_count = 0;
 	sd->sp_gain_value = 0;
 	sd->hp_gain_value = 0;
 	sd->double_add_rate = sd->perfect_hit_add = sd->get_zeny_add_num = sd->get_zeny_add_num2 = 0;

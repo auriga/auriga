@@ -722,6 +722,10 @@ bAllStatus		1184
 bSubSkillDamageRate		1185
 bAddSkillFixCastTime	1186
 bSubReturnDamage		1187
+bAddMonsterRaceDropItem	1188
+bAddMonsterEleDropItem	1189
+bAddMonsterIdDropItem	1190
+bAddMonsterGroupDropItem	1191
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

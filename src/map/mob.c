@@ -2496,40 +2496,60 @@ static int mob_dead(struct block_list *src,struct mob_data *md,int type,unsigned
 			}
 		}
 		if(sd) {
-			for(i=0; i<sd->monster_drop_item_count; i++) {
+			for(i=0; i<sd->add_drop_count; i++) {
 				struct delay_item_drop *ditem;
-				int race = status_get_race(&md->bl);
-				int mode = status_get_mode(&md->bl);
+				int itemid;
 
-				if(sd->monster_drop_itemrate[i] <= 0)
+				if(sd->add_drop[i].rate <= 0)
 					continue;
-				if(sd->monster_drop_race[i] & (1<<race) ||
-				   (mode & MD_BOSS && sd->monster_drop_race[i] & 1<<RCT_BOSS) ||
-				   (!(mode & MD_BOSS) && sd->monster_drop_race[i] & 1<<RCT_NONBOSS) )
-				{
-					int itemid;
-					if(sd->monster_drop_itemrate[i] <= atn_rand()%10000)
-						continue;
 
-					ditem = (struct delay_item_drop *)aCalloc(1,sizeof(struct delay_item_drop));
-					if(sd->monster_drop_itemid[i] < 0) {
-						itemid = itemdb_searchrandomid(-sd->monster_drop_itemid[i]);
-						if(itemid <= 0)
+				switch(sd->add_drop[i].type) {
+				case 0:		// 0:All
+					break;
+				case 1:		// 1:Race
+					{
+						int mode = status_get_mode(&md->bl);
+						if(((sd->add_drop[i].target & 1<<status_get_race(&md->bl)) == 0) &&
+						   ((mode & MD_BOSS && (sd->add_drop[i].target & 1<<RCT_BOSS)) == 0) &&
+						   ((!(mode & MD_BOSS) && (sd->add_drop[i].target & 1<<RCT_NONBOSS)) == 0))
 							continue;
-					} else {
-						itemid = sd->monster_drop_itemid[i];
 					}
-					ditem->nameid    = itemid;
-					ditem->amount    = 1;
-					ditem->m         = md->bl.m;
-					ditem->x         = md->bl.x;
-					ditem->y         = md->bl.y;
-					ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
-					ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
-					ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
-					ditem->randopt   = 0;
-					add_timer2(tick+520+i,mob_delay_item_drop,0,ditem);
+					break;
+				case 2:		// 2:Ele
+					if((sd->add_drop[i].target & (1<<status_get_elem_type(&md->bl))) == 0)
+						continue;
+					break;
+				case 3:		// 3:MobID
+					if(sd->add_drop[i].target != md->base_class)
+						continue;
+					break;
+				case 4:		// 4:Group
+					if(sd->add_drop[i].target != status_get_group(&md->bl))
+						continue;
+					break;
 				}
+
+				if(sd->add_drop[i].rate <= atn_rand()%10000)
+					continue;
+
+				ditem = (struct delay_item_drop *)aCalloc(1,sizeof(struct delay_item_drop));
+				if(sd->add_drop[i].itemid < 0) {
+					itemid = itemdb_searchrandomid(-sd->add_drop[i].itemid);
+					if(itemid <= 0)
+						continue;
+				} else {
+					itemid = sd->add_drop[i].itemid;
+				}
+				ditem->nameid    = itemid;
+				ditem->amount    = 1;
+				ditem->m         = md->bl.m;
+				ditem->x         = md->bl.x;
+				ditem->y         = md->bl.y;
+				ditem->first_id  = (mvp[0].bl)? mvp[0].bl->id: 0;
+				ditem->second_id = (mvp[1].bl)? mvp[1].bl->id: 0;
+				ditem->third_id  = (mvp[2].bl)? mvp[2].bl->id: 0;
+				ditem->randopt   = 0;
+				add_timer2(tick+520+i,mob_delay_item_drop,0,ditem);
 			}
 			if(sd->get_zeny_num > 0)
 				pc_getzeny(sd,mobdb_search(md->class_)->lv*10 + atn_rand()%(sd->get_zeny_num+1));
