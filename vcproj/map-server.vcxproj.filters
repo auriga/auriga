@@ -4,6 +4,12 @@
     <ClCompile Include="..\src\map\sql\mapreg_sql.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\achieve.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\luascript.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\atcommand.c">
       <Filter>map_sql</Filter>
     </ClCompile>
@@ -190,6 +196,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\map\sql\mapreg_sql.h">
+      <Filter>map_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\achieve.h">
+      <Filter>map_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\luascript.h">
       <Filter>map_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\atcommand.h">

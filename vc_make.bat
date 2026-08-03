@@ -2,10 +2,10 @@
 rem Visual Studio でのビルド用バッチファイル
 
 rem 対応するコンパイラのバージョン
-rem  - Visual Studio 2015
 rem  - Visual Studio 2017
 rem  - Visual Studio 2019
 rem  - Visual Studio 2022
+rem  - Visual Studio 2026
 
 rem ----------------------------------------------------------------
 rem 共通設定
@@ -72,13 +72,6 @@ set __PACKETDEF__=/D "PACKETVER=20151029" /D "NEW_006b"
 rem ----------------------------------------------------------------
 rem コンパイラごとの設定（自分の環境にあうもののコメントアウトをはずす）
 
-rem ---- Visual Studio 2015 64bitコンパイル の設定 / 必要ならコメントアウトをはずす
-rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\bin;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE;%PATH%
-rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\altmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;%INCLUDE%
-rem set LIB=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64;C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK\v3.5\lib\amd64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10150.0\ucrt\x64;%LIB%
-rem set __BITTYPE__=x64
-rem ---- Visual Studio 2015 64bitコンパイル の設定ここまで
-
 rem ---- Visual Studio 2017 64bitコンパイル の設定
 rem set PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin\HostX64\x64;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files\Windows Kits\8.1\bin;C:\Program Files\Windows Kits\10\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\bin;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE;%PATH%
 rem set INCLUDE=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include;C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10150.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Li\10.0.14393.0\ucrt;%INCLUDE%
@@ -97,6 +90,12 @@ rem ---- Visual Studio 2022 64bitコンパイル の設定
 rem call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 rem set __BITTYPE__=x64
 rem ---- Visual Studio 2022 64bitコンパイル の設定ここまで
+
+rem ---- Visual Studio 2026 64bitコンパイル の設定
+rem call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
+rem set __BITTYPE__=x64
+rem ---- Visual Studio 2026 64bitコンパイル の設定ここまで
+
 
 rem ----------------------------------------------------------------
 rem SQL の設定 / 必要ならコメントアウトをはずす
