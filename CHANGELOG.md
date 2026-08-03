@@ -1,5 +1,5 @@
 ----------------------------------------
-//1599 [2026/08/03]
+//1599 [2026/08/03] by Cocoa
 
 ・Visual Studio 対応の整理
 	Visual Studio 2015以前のソリューション（Auriga-11.sln, Auriga-14.sln, vcproj-11, vcproj-14）を削除
