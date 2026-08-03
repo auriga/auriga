@@ -94,7 +94,8 @@ fabric.properties
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -150,6 +151,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+
+### Visual Studio
+.vs/
 
 ### Auriga
 src/**/GNUmakefile

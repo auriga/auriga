@@ -1,4 +1,13 @@
 ----------------------------------------
+//1599 [2026/08/03]
+
+・Visual Studio 対応の整理
+	Visual Studio 2015以前のソリューション（Auriga-11.sln, Auriga-14.sln, vcproj-11, vcproj-14）を削除
+	VS2026向けに Auriga.sln / vcproj（Platform Toolset v145, x64）を追加
+	vc_make.bat は VS2017以降を継続サポートし、VS2026設定を追加
+	CI を Windows Server 2025 + MSVC 2026 に更新
+
+----------------------------------------
 //1598 [2025/11/26] by Mintmoon
 
 ・SQL環境下でAP及び特性ステータスポイント関連が保存されない問題を修正（chardb_sql.c）

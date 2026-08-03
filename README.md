@@ -2,6 +2,7 @@ Auriga
 ========
 
 Build Status:  
+[![MSVC 2026 Build Status](https://github.com/auriga/auriga/actions/workflows/integration-windows-build-msvc-2026.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-windows-build-msvc-2026.yml)
 [![MSVC 2022 Build Status](https://github.com/auriga/auriga/actions/workflows/integration-windows-build-msvc-2022.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-windows-build-msvc-2022.yml)
 [![Linux GCC Build Status](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-gcc.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-gcc.yml)
 [![Linux Clang Build Status](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-clang.yml/badge.svg)](https://github.com/auriga/auriga/actions/workflows/integration-linux-build-clang.yml)
