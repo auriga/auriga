@@ -112,6 +112,9 @@
     <ClCompile Include="..\src\map\buildin_npc.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\buildin_party.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\skill.c">
       <Filter>map_sql</Filter>
     </ClCompile>

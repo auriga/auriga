@@ -1,4 +1,8 @@
 ----------------------------------------
+//1607 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第4弾）: party / guild / agit・castle / marriage・adoption 等を buildin_party.c へ分離（挙動変更なし）（script.c, buildin_party.c, map-server.vcxproj）
+----------------------------------------
 //1606 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第3弾）: NPC 制御 / タイマー / waitingroom / npcskill・walk 等を buildin_npc.c へ分離。sleep/awake 用 API を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_npc.c, script_internal.h, map-server.vcxproj）
