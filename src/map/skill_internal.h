@@ -36,4 +36,19 @@ int skill_flicker(struct block_list *bl, va_list ap);
 int skill_count_unitgroup(struct unit_data *ud, int skillid);
 int skill_castle_mob_changetarget(struct block_list *bl, va_list ap);
 
+int skill_area_trap_sub(struct block_list *bl, va_list ap);
+int skill_count_water(struct block_list *src, int range);
+int skill_tarot_card_of_fate(struct block_list *src, struct block_list *target, int skillid, int skilllv, unsigned int tick, int wheel);
+int skill_balkyoung(struct block_list *bl, va_list ap);
+int skill_delunit_by_ganbantein(struct block_list *bl, va_list ap);
+int skill_shimiru(struct block_list *bl, va_list ap);
+int skill_shinkirou(struct block_list *bl, va_list ap);
+int skill_kunaikussetsu(struct block_list *bl, va_list ap);
+
+int skill_clear_element_field(struct block_list *bl);
+int skill_detonator(struct block_list *bl, va_list ap);
+int skill_dominion_impulse(struct block_list *bl, va_list ap);
+int skill_fire_expansion(struct block_list *bl, va_list ap);
+int skill_fuumakouchiku(struct block_list *bl, va_list ap);
+
 #endif /* _SKILL_INTERNAL_H_ */
