@@ -1,4 +1,13 @@
 ----------------------------------------
+//1600 [2026/08/09] by Cocoa
+
+・0078/007b スパウンパケット組み立ての共通化（clif.c）
+	・PC / Mob / NPC / Pet / Hom / Merc / Elem 向けの同型組み立てを struct clif_spawn_info と clif_spawn_build78 / clif_spawn_build7b に統合
+	・呼び出し側シグネチャは維持し、PACKETVER 分岐とエンティティ固有 quirk（cloaking、EMP guild、名前非コピー等）を保全
+	・旧 PACKETVER 向けに CLIF_SPAWN_F_SKIP_LEVEL と NPC pcview 充填ゲートを追加し、NPC 0078 互換（レベル未書き込み・外見未書き込み）を復元
+詳細はPR（https://github.com/auriga/auriga/pull/65）を参照
+
+----------------------------------------
 //1599 [2026/08/03] by Cocoa
 
 ・Visual Studio 対応の整理
