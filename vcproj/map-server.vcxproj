@@ -207,6 +207,8 @@
     <ClCompile Include="..\src\map\ranking.c" />
     <ClCompile Include="..\src\map\script.c" />
     <ClCompile Include="..\src\map\skill.c" />
+    <ClCompile Include="..\src\map\skill_castend_damage.c" />
+    <ClCompile Include="..\src\map\skill_castend_ground.c" />
     <ClCompile Include="..\src\map\skill_castend_support.c" />
     <ClCompile Include="..\src\map\status.c" />
     <ClCompile Include="..\src\map\storage.c" />

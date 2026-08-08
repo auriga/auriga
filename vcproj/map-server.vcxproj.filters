@@ -106,6 +106,12 @@
     <ClCompile Include="..\src\map\skill.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\skill_castend_damage.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\skill_castend_ground.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\skill_castend_support.c">
       <Filter>map_sql</Filter>
     </ClCompile>
