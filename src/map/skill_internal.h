@@ -14,9 +14,12 @@
 
 #include "skill.h"
 
+#define SKILLUNITTIMER_INVERVAL	50
+
 typedef int (*SkillFunc)(struct block_list *,struct block_list *,int,int,unsigned int,int);
 
 extern int skill_area_temp[8];
+extern struct dbt *skillname_db;
 
 int skill_area_sub(struct block_list *bl, va_list ap);
 int skill_area_sub_count(struct block_list *src, struct block_list *target, int skillid, int skilllv, unsigned int tick, int flag);
@@ -50,5 +53,23 @@ int skill_detonator(struct block_list *bl, va_list ap);
 int skill_dominion_impulse(struct block_list *bl, va_list ap);
 int skill_fire_expansion(struct block_list *bl, va_list ap);
 int skill_fuumakouchiku(struct block_list *bl, va_list ap);
+
+int skill_unit_onplace(struct skill_unit *src, struct block_list *bl, unsigned int tick);
+int skill_unit_onplace_timer(struct skill_unit *src, struct block_list *bl, unsigned int tick);
+int skill_count_target(struct block_list *bl, va_list ap);
+int skill_trap_splash(struct block_list *bl, va_list ap);
+
+int skill_item_consume(struct block_list *bl, struct skill_condition *cnd, int type, int *itemid, int *amount);
+int skill_check_unit_id(struct block_list *bl, va_list ap);
+int skill_check_condition_char_sub(struct block_list *bl, va_list ap);
+int skill_check_condition_use_sub(struct block_list *bl, va_list ap);
+int skill_check_condition_mob_master_sub(struct block_list *bl, va_list ap);
+int skill_check_condition2_pc(struct map_session_data *sd, struct skill_condition *cnd, int type);
+
+int skill_split_str(char *str, char **val, int num);
+int skill_split_atoi(char *str, int *val, int num);
+int skill_split_strtol(char *str, int *val, int num, int base);
+void skill_init_unit_layout(void);
+int skill_readdb(void);
 
 #endif /* _SKILL_INTERNAL_H_ */

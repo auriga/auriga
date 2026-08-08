@@ -115,6 +115,15 @@
     <ClCompile Include="..\src\map\skill_castend_support.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\skill_check_condition.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\skill_readdb.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\skill_unit_onplace.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\status.c">
       <Filter>map_sql</Filter>
     </ClCompile>
