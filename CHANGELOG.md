@@ -1,4 +1,8 @@
 ----------------------------------------
+//1608 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第5弾）: dialog / UI 系を buildin_dialog.c、PC / status 系を buildin_pc.c へ分離（挙動変更なし）（script.c, buildin_dialog.c, buildin_pc.c, map-server.vcxproj）
+----------------------------------------
 //1607 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第4弾）: party / guild / agit・castle / marriage・adoption 等を buildin_party.c へ分離（挙動変更なし）（script.c, buildin_party.c, map-server.vcxproj）
