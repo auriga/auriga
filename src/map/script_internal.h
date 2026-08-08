@@ -94,4 +94,7 @@ int script_mapname2mapid(struct script_state *st, const char *mapname);
 
 int script_warp(struct map_session_data *sd, const char *mapname, int x, int y);
 
+/* configured by script_config_read / set_posword in script.c */
+extern char refine_posword[EQUIP_INDEX_MAX + 1][32];
+
 #endif /* _SCRIPT_INTERNAL_H_ */
