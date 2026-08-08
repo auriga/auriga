@@ -97,4 +97,10 @@ int script_warp(struct map_session_data *sd, const char *mapname, int x, int y);
 /* configured by script_config_read / set_posword in script.c */
 extern char refine_posword[EQUIP_INDEX_MAX + 1][32];
 
+/* sleep / awake support (owned by script.c) */
+extern struct linkdb_node *sleep_db;
+struct linkdb_node *script_erase_sleepdb(struct linkdb_node *n);
+int run_script_timer(int tid, unsigned int tick, int id, void *data);
+void run_script_awake(struct script_state *st);
+
 #endif /* _SCRIPT_INTERNAL_H_ */

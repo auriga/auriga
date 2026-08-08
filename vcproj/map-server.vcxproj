@@ -209,6 +209,7 @@
     <ClCompile Include="..\src\map\script.c" />
     <ClCompile Include="..\src\map\buildin_item.c" />
     <ClCompile Include="..\src\map\buildin_map.c" />
+    <ClCompile Include="..\src\map\buildin_npc.c" />
     <ClCompile Include="..\src\map\skill.c" />
     <ClCompile Include="..\src\map\skill_castend_damage.c" />
     <ClCompile Include="..\src\map\skill_castend_ground.c" />
