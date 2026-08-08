@@ -682,7 +682,7 @@ int buildin_equippeditem(struct script_state *st)
 }
 
 // pc.c‚Ìequip_pos‚Æ‡”Ô‚ªˆÙ‚È‚é‚±‚Æ‚É’ˆÓ
-const unsigned int equip_pos[EQUIP_INDEX_MAX] = {
+static const unsigned int equip_pos[EQUIP_INDEX_MAX] = {
 	LOC_HEAD2,
 	LOC_BODY,
 	LOC_LARM,
