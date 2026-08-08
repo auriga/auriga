@@ -1,4 +1,8 @@
 ----------------------------------------
+//1604 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第1弾）: map 系命令（warp / announce / mapflag / pvp・gvg 等）を buildin_map.c へ分離。共有ヘルパーを script_internal.h 経由で公開（挙動変更なし）（script.c, buildin_map.c, script_internal.h, map-server.vcxproj）
+----------------------------------------
 //1603 [2026/08/09] by Cocoa
 
 ・skill.c の巨大 switch 分割（第3弾）: skill_check_condition2_pc / skill_unit_onplace_timer / skill_readdb をそれぞれ skill_check_condition.c / skill_unit_onplace.c / skill_readdb.c へ分離（挙動変更なし）（skill.c, skill_check_condition.c, skill_unit_onplace.c, skill_readdb.c, skill_internal.h, map-server.vcxproj）
