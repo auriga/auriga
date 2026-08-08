@@ -1,4 +1,9 @@
 ----------------------------------------
+//1601 [2026/08/09] by Cocoa
+
+・skill.c の巨大 switch 分割（第1弾）: skill_castend_nodamage_id を skill_castend_support.c へ分離（挙動変更なし）（skill.c, skill_castend_support.c, skill_internal.h, map-server.vcxproj）
+
+----------------------------------------
 //1600 [2026/08/09] by Cocoa
 
 ・0078/007b スパウンパケット組み立ての共通化（clif.c）
