@@ -1,4 +1,8 @@
 ----------------------------------------
+//1606 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第3弾）: NPC 制御 / タイマー / waitingroom / npcskill・walk 等を buildin_npc.c へ分離。sleep/awake 用 API を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_npc.c, script_internal.h, map-server.vcxproj）
+----------------------------------------
 //1605 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第2弾）: item / 装備 / 精錬 / カード系命令を buildin_item.c へ分離。refine_posword を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_item.c, script_internal.h, map-server.vcxproj）
