@@ -764,6 +764,7 @@ enum {
 #define CLIF_SPAWN_F_TYPE_AT_2    0x40 /* write objecttype at buf[2] (elem old) */
 #define CLIF_SPAWN_F_NPC_PCVIEW   0x80 /* npc pcview appearance fields */
 #define CLIF_SPAWN_F_MERC_TICK33  0x100 /* merc007b >=20180704 tick@33 quirk */
+#define CLIF_SPAWN_F_SKIP_LEVEL   0x200 /* npc old 0078: no level field */
 
 struct clif_spawn_info {
 	int packet_style;
@@ -904,7 +905,8 @@ static int clif_spawn_build78(const struct clif_spawn_info *info, unsigned char 
 		WBUFPOS(buf,46,info->x,info->y,info->dir);
 		WBUFB(buf,49)=info->xsize;
 		WBUFB(buf,50)=info->ysize;
-		clif_spawn_write_level(buf,52,info);
+		if(!(info->flags & CLIF_SPAWN_F_SKIP_LEVEL))
+			clif_spawn_write_level(buf,52,info);
 		clif_spawn_npc_guild78(buf, info);
 		return len;
 #elif PACKETVER < 20091104
@@ -935,10 +937,12 @@ static int clif_spawn_build78(const struct clif_spawn_info *info, unsigned char 
 		WBUFB(buf,50)=info->xsize;
 		WBUFB(buf,51)=info->ysize;
 		/* mob non-pcview keeps LV at 52; others use 53 */
-		if(info->flags & CLIF_SPAWN_F_EMP_GUILD)
-			clif_spawn_write_level(buf,52,info);
-		else
-			clif_spawn_write_level(buf,53,info);
+		if(!(info->flags & CLIF_SPAWN_F_SKIP_LEVEL)) {
+			if(info->flags & CLIF_SPAWN_F_EMP_GUILD)
+				clif_spawn_write_level(buf,52,info);
+			else
+				clif_spawn_write_level(buf,53,info);
+		}
 		clif_spawn_npc_guild78(buf, info);
 		return len;
 #endif
@@ -2147,9 +2151,11 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 	info.name = nd->name;
 	info.objecttype = (nd->u.scr.moveable > 0) ? 12 : 6;
 #if PACKETVER < 20091104
+	info.flags |= CLIF_SPAWN_F_SKIP_LEVEL;
 	info.xsize = 5;
 	info.ysize = 5;
 #endif
+#if PACKETVER >= 20091104
 	if(npc_is_pcview(nd)) {
 		info.flags |= CLIF_SPAWN_F_NPC_PCVIEW;
 		info.hair = nd->hair;
@@ -2162,6 +2168,7 @@ static int clif_npc0078(struct npc_data *nd,unsigned char *buf,struct map_sessio
 		info.sex = nd->sex;
 		info.style = nd->style;
 	}
+#endif
 	if( nd->subtype != WARP &&
 	    nd->class_ == WARP_DEBUG_CLASS &&
 	    nd->u.scr.guild_id > 0 &&
