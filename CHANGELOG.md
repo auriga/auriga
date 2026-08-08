@@ -1,4 +1,9 @@
 ----------------------------------------
+//1603 [2026/08/09] by Cocoa
+
+・skill.c の巨大 switch 分割（第3弾）: skill_check_condition2_pc / skill_unit_onplace_timer / skill_readdb をそれぞれ skill_check_condition.c / skill_unit_onplace.c / skill_readdb.c へ分離（挙動変更なし）（skill.c, skill_check_condition.c, skill_unit_onplace.c, skill_readdb.c, skill_internal.h, map-server.vcxproj）
+
+----------------------------------------
 //1602 [2026/08/09] by Cocoa
 
 ・skill.c の巨大 switch 分割（第2弾）: skill_castend_damage_id / skill_castend_pos2 をそれぞれ skill_castend_damage.c / skill_castend_ground.c へ分離（挙動変更なし）（skill.c, skill_castend_damage.c, skill_castend_ground.c, skill_internal.h, map-server.vcxproj）
