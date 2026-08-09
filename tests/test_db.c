@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "unity.h"
 #include "utils.h"
 #include "db.h"
@@ -37,6 +40,21 @@ void test_linkdb_replace(void)
 	old = linkdb_replace(&head, &key, &data2);
 	TEST_ASSERT_EQUAL_PTR(&data1, old);
 	TEST_ASSERT_EQUAL_PTR(&data2, linkdb_search(&head, &key));
+
+	linkdb_final(&head);
+}
+
+void test_linkdb_replace_inserts_missing(void)
+{
+	struct linkdb_node *head = NULL;
+	int key = 9;
+	int data = 99;
+	void *old;
+
+	old = linkdb_replace(&head, &key, &data);
+	TEST_ASSERT_NULL(old);
+	TEST_ASSERT_TRUE(linkdb_exists(&head, &key));
+	TEST_ASSERT_EQUAL_PTR(&data, linkdb_search(&head, &key));
 
 	linkdb_final(&head);
 }
@@ -101,4 +119,77 @@ void test_strdb_crud(void)
 	TEST_ASSERT_FALSE(strdb_exists(db, "alpha"));
 
 	strdb_final(db, NULL);
+}
+
+void test_csvdb_memory_ops(void)
+{
+	struct csvdb_data *csv;
+	const char *path = "auriga_ut_csvdb_missing.csv";
+
+	csv = csvdb_open(path, 0);
+	TEST_ASSERT_NOT_NULL(csv);
+	TEST_ASSERT_EQUAL_INT(0, csvdb_get_rows(csv));
+
+	TEST_ASSERT_TRUE(csvdb_set_num(csv, 0, 0, 30));
+	TEST_ASSERT_TRUE(csvdb_set_str(csv, 0, 1, "carol"));
+	TEST_ASSERT_TRUE(csvdb_set_num(csv, 1, 0, 10));
+	TEST_ASSERT_TRUE(csvdb_set_str(csv, 1, 1, "alice"));
+	TEST_ASSERT_TRUE(csvdb_set_num(csv, 2, 0, 20));
+	TEST_ASSERT_TRUE(csvdb_set_str(csv, 2, 1, "bob"));
+	TEST_ASSERT_EQUAL_INT(3, csvdb_get_rows(csv));
+	TEST_ASSERT_EQUAL_INT(2, csvdb_get_columns(csv, 0));
+
+	TEST_ASSERT_EQUAL_INT(1, csvdb_find_num(csv, 0, 10));
+	TEST_ASSERT_EQUAL_INT(2, csvdb_find_str(csv, 1, "bob"));
+	TEST_ASSERT_EQUAL_STRING("carol", csvdb_get_str(csv, 0, 1));
+
+	TEST_ASSERT_TRUE(csvdb_sort(csv, 0, 1));
+	TEST_ASSERT_EQUAL_INT(10, csvdb_get_num(csv, 0, 0));
+	TEST_ASSERT_EQUAL_INT(20, csvdb_get_num(csv, 1, 0));
+	TEST_ASSERT_EQUAL_INT(30, csvdb_get_num(csv, 2, 0));
+
+	TEST_ASSERT_TRUE(csvdb_delete_row(csv, 1));
+	TEST_ASSERT_EQUAL_INT(2, csvdb_get_rows(csv));
+	TEST_ASSERT_EQUAL_INT(-1, csvdb_find_num(csv, 0, 20));
+
+	/* Avoid flush of a missing path on close. */
+	csv->dirty = 0;
+	csvdb_close(csv);
+	remove(path);
+}
+
+void test_csvdb_open_parse_file(void)
+{
+	struct csvdb_data *csv;
+	const char *path = "auriga_ut_csvdb_sample.csv";
+	FILE *fp = fopen(path, "wb");
+
+	TEST_ASSERT_NOT_NULL(fp);
+	fputs("1,hello\n", fp);
+	fputs("// comment\n", fp);
+	fputs("2,world\n", fp);
+	fclose(fp);
+
+	csv = csvdb_open(path, 1);
+	TEST_ASSERT_NOT_NULL(csv);
+	TEST_ASSERT_EQUAL_INT(2, csvdb_get_rows(csv));
+	TEST_ASSERT_EQUAL_INT(1, csvdb_get_num(csv, 0, 0));
+	TEST_ASSERT_EQUAL_STRING("hello", csvdb_get_str(csv, 0, 1));
+	TEST_ASSERT_EQUAL_INT(2, csvdb_get_num(csv, 1, 0));
+	TEST_ASSERT_EQUAL_STRING("world", csvdb_get_str(csv, 1, 1));
+
+	csvdb_close(csv);
+	remove(path);
+}
+
+void test_arr_find(void)
+{
+	int list[] = { 3, 7, 9, 12 };
+	int i = -1;
+
+	ARR_FIND(0, 4, i, list[i] == 9);
+	TEST_ASSERT_EQUAL_INT(2, i);
+
+	ARR_FIND(0, 4, i, list[i] == 99);
+	TEST_ASSERT_EQUAL_INT(4, i);
 }

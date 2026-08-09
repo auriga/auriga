@@ -1,4 +1,8 @@
 ----------------------------------------
+//1620 [2026/08/09] by Cocoa
+
+・ユニットテスト追加: csvdb（メモリ操作・ファイル読込）、ARR_FIND、HMAC/MD5 追加ベクトル、linkdb replace 未登録、INT2PTR 系（挙動変更なし）（tests/test_db.c, tests/test_md5calc.c, tests/test_misc.c, tests/test_main.c）
+----------------------------------------
 //1619 [2026/08/09] by Cocoa
 
 ・ユニットテスト拡充: HMAC-MD5 / MD5_String2binary、strtobxul・BIGNUM2INT、linkdb / numdb / strdb、nullpo_chk、DIFF_TICK を追加（挙動変更なし）（tests/test_*.c, tests/Makefile, tests/vc_test.bat）

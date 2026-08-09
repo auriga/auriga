@@ -38,8 +38,8 @@ src 以下の本番 *.o はリンクしません（main / グローバル初期�
 対象は src/common の純粋・低依存 API から開始しています。
 
 	md5calc … MD5_String / MD5_Binary / MD5_String2binary / HMAC_MD5_Binary
-	utils   … auriga_strlcpy / auriga_strlcat / strtobxul / BIGNUM2INT
-	db      … linkdb / numdb / strdb（CRUD）
+	utils   … auriga_strlcpy / auriga_strlcat / strtobxul / BIGNUM2INT / INT2PTR 系
+	db      … linkdb / numdb / strdb / csvdb / ARR_FIND
 	nullpo  … nullpo_chk
 	timer   … DIFF_TICK（ヘッダマクロ）
 

@@ -167,3 +167,4 @@ src/common/lua/luac
 *.pid
 /tests/unit_tests
 /tests/unit_tests.exe
+/tests/auriga_ut_*.csv

@@ -1,6 +1,7 @@
 #include "unity.h"
 #include "nullpo.h"
 #include "timer.h"
+#include "utils.h"
 
 void test_nullpo_chk_ok(void)
 {
@@ -27,4 +28,12 @@ void test_diff_tick_wraparound(void)
 
 	/* (int)(2 - 0xfffffffe) == 4 */
 	TEST_ASSERT_EQUAL_INT(4, DIFF_TICK(a, b));
+}
+
+void test_ptr_int_cast_macros(void)
+{
+	void *p = INT2PTR(42);
+
+	TEST_ASSERT_EQUAL_INT(42, PTR2INT(p));
+	TEST_ASSERT_EQUAL_UINT(7u, PTR2UINT(UINT2PTR(7u)));
 }

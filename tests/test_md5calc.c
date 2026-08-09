@@ -17,6 +17,14 @@ void test_md5_string_abc(void)
 	TEST_ASSERT_EQUAL_STRING("900150983cd24fb0d6963f7d28e17f72", out);
 }
 
+void test_md5_string_message_digest(void)
+{
+	char out[33];
+
+	MD5_String("message digest", out);
+	TEST_ASSERT_EQUAL_STRING("f96b697d7cb7938d525a2f31aaf161d0", out);
+}
+
 void test_md5_binary_abc(void)
 {
 	unsigned char out[16];
@@ -69,5 +77,25 @@ void test_hmac_md5_rfc_jefe(void)
 	const char *data = "what do ya want for nothing?";
 
 	HMAC_MD5_Binary("Jefe", 4, data, 28, (char *)out);
+	TEST_ASSERT_EQUAL_MEMORY(expected, out, 16);
+}
+
+void test_hmac_md5_rfc_aa_dd(void)
+{
+	unsigned char key[16];
+	unsigned char data[50];
+	unsigned char out[16];
+	const unsigned char expected[16] = {
+		0x56, 0xbe, 0x34, 0x52, 0x1d, 0x14, 0x4c, 0x88,
+		0xdb, 0xb8, 0xc7, 0x33, 0xf0, 0xe8, 0xb3, 0xf6
+	};
+	int i;
+
+	for (i = 0; i < 16; i++)
+		key[i] = 0xaa;
+	for (i = 0; i < 50; i++)
+		data[i] = 0xdd;
+
+	HMAC_MD5_Binary((const char *)key, 16, (const char *)data, 50, (char *)out);
 	TEST_ASSERT_EQUAL_MEMORY(expected, out, 16);
 }
