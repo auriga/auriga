@@ -1,4 +1,8 @@
 ----------------------------------------
+//1613 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第10弾）: misceffect / soundeffect / musiceffect 系を buildin_effect.c へ分離（挙動変更なし）（script.c, buildin_effect.c, map-server.vcxproj）
+----------------------------------------
 //1612 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第9弾）: quest 系を buildin_quest.c へ分離（挙動変更なし）（script.c, buildin_quest.c, map-server.vcxproj）
