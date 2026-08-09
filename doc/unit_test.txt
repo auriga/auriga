@@ -1,0 +1,97 @@
+==========================================================================
+ ユニットテスト
+--------------------------------------------------------------------------
+
+Auriga のユニットテスト手順です。フレームワークは ThrowTheSwitch Unity
+（純 C、vendored 版 2.7.1）を third_party/unity に同梱しています。
+
+
+--------------------------------------------------------------------------
+1. 実行方法
+
+	make test
+
+ルートの Makefile から tests/ をビルドし、テストバイナリ unit_tests を
+実行します。失敗すると非ゼロで終了します。
+
+クリーン:
+
+	make test-clean
+
+（または make -C tests clean）
+
+
+--------------------------------------------------------------------------
+2. 構成
+
+	third_party/unity/   Unity 本体（unity.c / ヘッダ / LICENSE）
+	tests/               テストソースと Makefile
+	tests/stubs/         本番以外のスタブ（malloc 等）
+
+本番サーバーのビルド（make / make sql）とは独立です。
+src 以下の本番 *.o はリンクしません（main / グローバル初期化の衝突回避）。
+
+
+--------------------------------------------------------------------------
+3. 初回スコープ
+
+対象は src/common の純粋・低依存 API から開始しています。
+
+	md5calc … MD5_String / MD5_Binary / MD5_String2binary / HMAC_MD5_Binary
+	utils   … auriga_strlcpy / auriga_strlcat / strtobxul / BIGNUM2INT / INT2PTR 系
+	db      … linkdb / numdb / strdb / csvdb / ARR_FIND
+	nullpo  … nullpo_chk
+	timer   … DIFF_TICK（ヘッダマクロ）
+
+map の戦闘・スクリプト・ソケット等は後続課題です。
+
+
+--------------------------------------------------------------------------
+4. スタブについて
+
+md5calc / utils は malloc.h の aMalloc_ 系を参照します。
+テストでは tests/stubs/malloc_stub.c が標準の malloc/free にマップします。
+本番の memmgr は使いません。
+
+
+--------------------------------------------------------------------------
+5. CI
+
+GitHub Actions で次の環境でユニットテストを実行します（いずれも既存の
+サーバービルド用 workflow とは別ジョブ）。
+
+	unit-test-linux-gcc.yml
+	unit-test-linux-clang.yml
+	unit-test-macos-clang.yml
+	unit-test-windows-msvc-2022.yml
+	unit-test-windows-msvc-2026.yml
+
+Unix 系は make test（Clang 環境は make test CC=clang）。
+Windows MSVC は tests\vc_test.bat（vcvars64 後）を実行します。
+
+
+--------------------------------------------------------------------------
+6. Windows（MSVC）での実行
+
+Developer Command Prompt、または vcvars64.bat 適用後:
+
+	tests\vc_test.bat
+
+クリーン:
+
+	tests\vc_test_clean.bat
+
+
+--------------------------------------------------------------------------
+7. テストの追加
+
+	1. tests/test_*.c にテスト関数を書く
+	2. tests/test_main.c で宣言し RUN_TEST する
+	3. 新規 .c を足す場合は次を同じ内容で揃える
+	   - tests/Makefile の TEST_SRCS / COMMON_NAMES
+	   - tests/vc_test.bat の for 一覧
+	   - tests/vc_test_clean.bat の for 一覧
+	4. make test（または vc_test.bat）で確認する
+
+Makefile 側はパターンルール化済み。bat 側は for ループで
+ソース一覧を1か所に寄せている。

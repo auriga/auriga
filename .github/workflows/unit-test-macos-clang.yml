@@ -1,0 +1,24 @@
+name: Unit Tests (macOS Clang)
+on:
+  pull_request:
+  push:
+    branches:
+    - 'master'
+    paths:
+    - '.github/workflows/unit-test-macos-clang.yml'
+    - 'Makefile'
+    - 'tests/**'
+    - 'third_party/unity/**'
+    - 'src/common/**.c'
+    - 'src/common/**.h'
+permissions:
+  contents: read
+jobs:
+  unit-test:
+    name: Unit Test
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run unit tests
+      run: make test CC=clang

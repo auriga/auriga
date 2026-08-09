@@ -1,4 +1,8 @@
 ----------------------------------------
+//1617 [2026/08/09] by Cocoa
+
+・Unity によるユニットテスト基盤を追加。`make test` / `tests\vc_test.bat` と GitHub Actions（Linux GCC/Clang・macOS Clang・Windows MSVC 2022/2026）で実行可能に。md5calc / HMAC-MD5、utils、linkdb / numdb / strdb / csvdb、nullpo、DIFF_TICK 等をカバー（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-*.yml, doc/unit_test.txt）
+----------------------------------------
 //1616 [2026/08/09] by Cocoa
 
 ・script.c の未使用ヘッダー削除と余分な空行整理。buildin 分割後に残っていた #include とセクション見出し前の二重空行を除去（挙動変更なし）（script.c）
