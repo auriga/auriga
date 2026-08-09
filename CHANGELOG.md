@@ -1,4 +1,8 @@
 ----------------------------------------
+//1614 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第11弾）: memorial dungeon 系を buildin_md.c へ分離（挙動変更なし）（script.c, buildin_md.c, map-server.vcxproj）
+----------------------------------------
 //1613 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第10弾）: misceffect / soundeffect / musiceffect 系を buildin_effect.c へ分離（挙動変更なし）（script.c, buildin_effect.c, map-server.vcxproj）
