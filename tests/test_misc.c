@@ -53,7 +53,8 @@ void test_nullpo_chk_null(void)
 	saved = AURIGA_UT_DUP(AURIGA_UT_STDOUT);
 	if (saved >= 0) {
 		nullfd = AURIGA_UT_OPEN(AURIGA_UT_DEVNULL, O_WRONLY);
-		if (nullfd >= 0 && AURIGA_UT_DUP2(nullfd, AURIGA_UT_STDOUT) == 0) {
+		/* POSIX dup2 returns the new fd on success; MSVC _dup2 returns 0. */
+		if (nullfd >= 0 && AURIGA_UT_DUP2(nullfd, AURIGA_UT_STDOUT) != -1) {
 			AURIGA_UT_CLOSE(nullfd);
 			nullfd = -1;
 			rc = nullpo_chk(__FILE__, __LINE__, __func__, NULL);
