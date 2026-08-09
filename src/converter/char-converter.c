@@ -35,64 +35,8 @@
 #include "converter.h"
 #include "utils.h"
 #include "char-converter.h"
+#include "../char/sql/item_sql.h"
 
-
-static int char_sql_saveitem(struct item *item, int max, int id, int tableswitch)
-{
-	int i;
-	const char *tablename;
-	const char *selectoption;
-	char *p, tmp_sql[65536 * 2];
-	char sep = ' ';
-
-	switch (tableswitch) {
-	case TABLE_INVENTORY:
-		tablename    = "inventory";
-		selectoption = "char_id";
-		break;
-	case TABLE_CART:
-		tablename    = "cart_inventory";
-		selectoption = "char_id";
-		break;
-	case TABLE_STORAGE:
-		tablename    = "storage";
-		selectoption = "account_id";
-		break;
-	case TABLE_GUILD_STORAGE:
-		tablename    = "guild_storage";
-		selectoption = "guild_id";
-		break;
-	default:
-		printf("Invalid table name!\n");
-		return 1;
-	}
-
-	// delete
-	sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id);
-
-	p  = tmp_sql;
-	p += sprintf(
-		p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-		"`attribute`, `card0`, `card1`, `card2`, `card3`, `limit`, `private`) VALUES",tablename,selectoption
-	);
-
-	for(i = 0 ; i < max ; i++) {
-		if(item[i].nameid) {
-			p += sprintf(
-				p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u','%d')",
-				sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
-				item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],
-				item[i].card[2],item[i].card[3],item[i].limit,item[i].private_
-			);
-			sep = ',';
-		}
-	}
-	if(sep == ',') {
-		sqldbs_simplequery(&mysql_handle, tmp_sql);
-	}
-
-	return 0;
-}
 
 // キャラクターデータを文字列から変換
 static int mmo_char_fromstr(char *str, struct mmo_chardata *p)
@@ -397,10 +341,10 @@ static int mmo_char_tosql(int char_id, struct mmo_charstatus *st)
 	}
 
 	// inventory
-	char_sql_saveitem(st->inventory, MAX_INVENTORY, st->char_id, TABLE_INVENTORY);
+	item_sql_saveitem(st->inventory, MAX_INVENTORY, st->char_id, TABLE_NUM_INVENTORY);
 
 	// cart
-	char_sql_saveitem(st->cart, MAX_CART, st->char_id, TABLE_CART);
+	item_sql_saveitem(st->cart, MAX_CART, st->char_id, TABLE_NUM_CART);
 
 	// skill
 	sqldbs_query(&mysql_handle, "DELETE FROM `skill` WHERE `char_id`='%d'", char_id);
@@ -1257,7 +1201,7 @@ int char_convert(void)
 				s.account_id = tmp_int[0];
 			}
 			if(s.account_id > 0 && storage_fromstr(line,&s) == 0) {
-				char_sql_saveitem(s.store_item,MAX_STORAGE,s.account_id,TABLE_STORAGE);
+				item_sql_saveitem(s.store_item,MAX_STORAGE,s.account_id,TABLE_NUM_STORAGE);
 			} else {
 				printf("storage: broken data [%s] line %d\n",storage_txt,c);
 			}
@@ -1379,7 +1323,7 @@ int char_convert(void)
 			if(sscanf(line,"%d,%d",&tmp_int[0],&tmp_int[1]) == 2)
 				gs.guild_id = tmp_int[0];
 			if(gs.guild_id > 0 && gstorage_fromstr(line,&gs) == 0) {
-				char_sql_saveitem(gs.store_item,MAX_GUILD_STORAGE,gs.guild_id,TABLE_GUILD_STORAGE);
+				item_sql_saveitem(gs.store_item,MAX_GUILD_STORAGE,gs.guild_id,TABLE_NUM_GUILD_STORAGE);
 			} else {
 				printf("gstorage: broken data [%s] line %d\n",guild_storage_txt,c);
 			}

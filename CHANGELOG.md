@@ -1,4 +1,8 @@
 ----------------------------------------
+//1620 [2026/08/10] by Cocoa
+
+・Issue #58: アイテム SQL load/save を item_sql へ抽出し、converter の saveitem を現行スキーマに同期（opt 列欠落を修正）（item_sql.c, item_sql.h, chardb_sql.c, chardb_sql.h, maildb_sql.c, char-converter.c, char-converter.h, Makefile, char-server.vcxproj）
+--------------------------------------------------------------------------------
 //1619 [2026/08/10] by Cocoa
 
 ・Issue #58: SQL 接続設定を sqldbs_conninfo に共通化（login/char/map/converter）（挙動変更なし）（sqldbs.c, sqldbs.h, account_sql.c, chardb_sql.c, mapreg_sql.c, converter.c）
