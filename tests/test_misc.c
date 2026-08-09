@@ -1,3 +1,7 @@
+#ifndef _WIN32
+#  define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -7,18 +11,18 @@
 #  define AURIGA_UT_DUP2 _dup2
 #  define AURIGA_UT_CLOSE _close
 #  define AURIGA_UT_OPEN _open
-#  define AURIGA_UT_FILENO _fileno
-#  define AURIGA_UT_DEVNULL "NUL"
 #  ifndef O_WRONLY
 #    define O_WRONLY _O_WRONLY
 #  endif
+#  define AURIGA_UT_STDOUT 1
+#  define AURIGA_UT_DEVNULL "NUL"
 #else
 #  include <unistd.h>
 #  define AURIGA_UT_DUP dup
 #  define AURIGA_UT_DUP2 dup2
 #  define AURIGA_UT_CLOSE close
 #  define AURIGA_UT_OPEN open
-#  define AURIGA_UT_FILENO fileno
+#  define AURIGA_UT_STDOUT STDOUT_FILENO
 #  define AURIGA_UT_DEVNULL "/dev/null"
 #endif
 
@@ -36,25 +40,36 @@ void test_nullpo_chk_ok(void)
 
 void test_nullpo_chk_null(void)
 {
-	int saved;
-	int nullfd;
-	int rc;
+	int saved = -1;
+	int nullfd = -1;
+	int rc = -1;
+	int silenced = 0;
 
-	/* nullpo_chk(NULL) prints a banner; silence stdout for CI logs. */
+	/*
+	 * nullpo_chk(NULL) prints a banner. Silence stdout while calling it,
+	 * then restore before any Unity assertions (so FAIL text is visible).
+	 */
 	fflush(stdout);
-	saved = AURIGA_UT_DUP(AURIGA_UT_FILENO(stdout));
-	TEST_ASSERT_TRUE(saved >= 0);
-	nullfd = AURIGA_UT_OPEN(AURIGA_UT_DEVNULL, O_WRONLY);
-	TEST_ASSERT_TRUE(nullfd >= 0);
-	TEST_ASSERT_EQUAL_INT(0, AURIGA_UT_DUP2(nullfd, AURIGA_UT_FILENO(stdout)));
-	AURIGA_UT_CLOSE(nullfd);
+	saved = AURIGA_UT_DUP(AURIGA_UT_STDOUT);
+	if (saved >= 0) {
+		nullfd = AURIGA_UT_OPEN(AURIGA_UT_DEVNULL, O_WRONLY);
+		if (nullfd >= 0 && AURIGA_UT_DUP2(nullfd, AURIGA_UT_STDOUT) == 0) {
+			AURIGA_UT_CLOSE(nullfd);
+			nullfd = -1;
+			rc = nullpo_chk(__FILE__, __LINE__, __func__, NULL);
+			fflush(stdout);
+			silenced = 1;
+		}
+	}
+	if (nullfd >= 0)
+		AURIGA_UT_CLOSE(nullfd);
+	if (saved >= 0) {
+		AURIGA_UT_DUP2(saved, AURIGA_UT_STDOUT);
+		AURIGA_UT_CLOSE(saved);
+		clearerr(stdout);
+	}
 
-	rc = nullpo_chk(__FILE__, __LINE__, __func__, NULL);
-
-	fflush(stdout);
-	AURIGA_UT_DUP2(saved, AURIGA_UT_FILENO(stdout));
-	AURIGA_UT_CLOSE(saved);
-
+	TEST_ASSERT_TRUE(silenced);
 	TEST_ASSERT_EQUAL_INT(1, rc);
 }
 
