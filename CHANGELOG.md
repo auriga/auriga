@@ -1,4 +1,8 @@
 ----------------------------------------
+//1616 [2026/08/09] by Cocoa
+
+・script.c の未使用ヘッダー削除と余分な空行整理。buildin 分割後に残っていた #include とセクション見出し前の二重空行を除去（挙動変更なし）（script.c）
+----------------------------------------
 //1615 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第12弾）: 残り misc 系（time / map util / string / sql / unit / achievement 等）を buildin_misc.c へ分離。エンジン核（goto/set/array/jump_zero）は script.c に残置。getmapxy/sqlquery の str_buf 直参照を get_str() に置換。script_sql_enabled() / mysql_handle_script を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_misc.c, script_internal.h, map-server.vcxproj）
