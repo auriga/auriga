@@ -130,6 +130,9 @@
     <ClCompile Include="..\src\map\buildin_csv.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\buildin_quest.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\skill.c">
       <Filter>map_sql</Filter>
     </ClCompile>
