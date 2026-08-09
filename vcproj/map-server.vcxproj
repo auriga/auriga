@@ -228,6 +228,11 @@
     <ClCompile Include="..\src\map\skill_readdb.c" />
     <ClCompile Include="..\src\map\skill_unit_onplace.c" />
     <ClCompile Include="..\src\map\status.c" />
+    <ClCompile Include="..\src\map\status_calc_ctrl.c" />
+    <ClCompile Include="..\src\map\status_calc_pc.c" />
+    <ClCompile Include="..\src\map\status_change_end.c" />
+    <ClCompile Include="..\src\map\status_change_handlers.c" />
+    <ClCompile Include="..\src\map\status_change_start.c" />
     <ClCompile Include="..\src\map\storage.c" />
     <ClCompile Include="..\src\map\trade.c" />
     <ClCompile Include="..\src\map\unit.c" />

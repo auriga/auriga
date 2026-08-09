@@ -1,4 +1,8 @@
 ----------------------------------------
+//1618 [2026/08/10] by Cocoa
+
+・Issue #57: status_calc_pc / status_change_start / status_change_end をリファクタ。L_RECALC 再入を status_calc_ctrl で Unity 固定し、calc を phase 分割のうえ status_calc_pc.c へ、start/end を別 TU へ分離。SC ハンドラテーブルを導入し代表バッチを移行（挙動変更なし）（status.c, status_calc_ctrl.c, status_calc_ctrl.h, status_calc_pc.c, status_change_start.c, status_change_end.c, status_change_handlers.c, status_internal.h, tests/, map-server.vcxproj）
+----------------------------------------
 //1617 [2026/08/09] by Cocoa
 
 ・Unity によるユニットテスト基盤を追加。`make test` / `tests\vc_test.bat` と GitHub Actions（Linux GCC/Clang・macOS Clang・Windows MSVC 2022/2026）で実行可能に。md5calc / HMAC-MD5、utils、linkdb / numdb / strdb / csvdb、nullpo、DIFF_TICK 等をカバー（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-*.yml, doc/unit_test.txt）

@@ -42,6 +42,7 @@ src 以下の本番 *.o はリンクしません（main / グローバル初期�
 	db      … linkdb / numdb / strdb / csvdb / ARR_FIND
 	nullpo  … nullpo_chk
 	timer   … DIFF_TICK（ヘッダマクロ）
+	status_calc_ctrl … status_calc_pc の L_RECALC 再入制御（src/map/status_calc_ctrl.c）
 
 map の戦闘・スクリプト・ソケット等は後続課題です。
 

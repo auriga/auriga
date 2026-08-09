@@ -42,6 +42,16 @@ void test_diff_tick_basic(void);
 void test_diff_tick_wraparound(void);
 void test_ptr_int_cast_macros(void);
 
+void test_status_calc_ctrl_begin_run(void);
+void test_status_calc_ctrl_begin_delayed(void);
+void test_status_calc_ctrl_begin_busy(void);
+void test_status_calc_ctrl_finish_done(void);
+void test_status_calc_ctrl_finish_recalc(void);
+void test_status_calc_ctrl_finish_infinity(void);
+void test_status_calc_ctrl_recalc_then_done(void);
+void test_status_calc_ctrl_stop_nesting(void);
+void test_status_calc_ctrl_stop_underflow(void);
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -79,6 +89,16 @@ int main(void)
 	RUN_TEST(test_diff_tick_basic);
 	RUN_TEST(test_diff_tick_wraparound);
 	RUN_TEST(test_ptr_int_cast_macros);
+
+	RUN_TEST(test_status_calc_ctrl_begin_run);
+	RUN_TEST(test_status_calc_ctrl_begin_delayed);
+	RUN_TEST(test_status_calc_ctrl_begin_busy);
+	RUN_TEST(test_status_calc_ctrl_finish_done);
+	RUN_TEST(test_status_calc_ctrl_finish_recalc);
+	RUN_TEST(test_status_calc_ctrl_finish_infinity);
+	RUN_TEST(test_status_calc_ctrl_recalc_then_done);
+	RUN_TEST(test_status_calc_ctrl_stop_nesting);
+	RUN_TEST(test_status_calc_ctrl_stop_underflow);
 
 	return UNITY_END();
 }
