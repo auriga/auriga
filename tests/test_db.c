@@ -124,7 +124,13 @@ void test_strdb_crud(void)
 void test_csvdb_memory_ops(void)
 {
 	struct csvdb_data *csv;
-	const char *path = "auriga_ut_csvdb_missing.csv";
+	const char *path = "auriga_ut_csvdb_scratch.csv";
+	FILE *fp;
+
+	/* Create a real temp path so close()/flush does not depend on csv->dirty. */
+	fp = fopen(path, "wb");
+	TEST_ASSERT_NOT_NULL(fp);
+	fclose(fp);
 
 	csv = csvdb_open(path, 0);
 	TEST_ASSERT_NOT_NULL(csv);
@@ -152,8 +158,6 @@ void test_csvdb_memory_ops(void)
 	TEST_ASSERT_EQUAL_INT(2, csvdb_get_rows(csv));
 	TEST_ASSERT_EQUAL_INT(-1, csvdb_find_num(csv, 0, 20));
 
-	/* Avoid flush of a missing path on close. */
-	csv->dirty = 0;
 	csvdb_close(csv);
 	remove(path);
 }

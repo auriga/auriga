@@ -1,4 +1,8 @@
 # Unit tests (Unity). Independent from production server builds.
+#
+# Source lists are shared conceptually with vc_test.bat / vc_test_clean.bat.
+# When adding a test .c under tests/, update TEST_SRCS here and the matching
+# for-loops in the .bat files (see doc/unit_test.txt).
 
 # Use gcc by default (Make's built-in CC is "cc", so ?= would not override it).
 CC = gcc
@@ -8,20 +12,18 @@ COMMON_DIR = ../src/common
 
 CFLAGS = -std=c11 -Wall -Wextra -Og -I$(COMMON_DIR) -I$(UNITY_DIR)
 
-# Object paths kept under tests/ (not next to production .c files).
-LOCAL_OBJS = \
-	test_main.o \
-	test_md5calc.o \
-	test_utils.o \
-	test_db.o \
-	test_misc.o \
-	stubs/malloc_stub.o \
-	md5calc.o \
-	utils.o \
-	db.o \
-	lock.o \
-	nullpo.o \
-	unity.o
+TEST_SRCS = \
+	test_main.c \
+	test_md5calc.c \
+	test_utils.c \
+	test_db.c \
+	test_misc.c
+
+COMMON_NAMES = md5calc utils db lock nullpo
+
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+COMMON_OBJS = $(addsuffix .o,$(COMMON_NAMES))
+LOCAL_OBJS = $(TEST_OBJS) stubs/malloc_stub.o $(COMMON_OBJS) unity.o
 
 TARGET = unit_tests
 
@@ -35,37 +37,13 @@ test: $(TARGET)
 $(TARGET): $(LOCAL_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(LOCAL_OBJS)
 
-test_main.o: test_main.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-test_md5calc.o: test_md5calc.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-test_utils.o: test_utils.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-test_db.o: test_db.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-test_misc.o: test_misc.c
+$(TEST_OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 stubs/malloc_stub.o: stubs/malloc_stub.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-md5calc.o: $(COMMON_DIR)/md5calc.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-utils.o: $(COMMON_DIR)/utils.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-db.o: $(COMMON_DIR)/db.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-lock.o: $(COMMON_DIR)/lock.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-nullpo.o: $(COMMON_DIR)/nullpo.c
+$(COMMON_OBJS): %.o: $(COMMON_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 unity.o: $(UNITY_DIR)/unity.c

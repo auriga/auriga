@@ -1,3 +1,27 @@
+#include <fcntl.h>
+#include <stdio.h>
+
+#ifdef _WIN32
+#  include <io.h>
+#  define AURIGA_UT_DUP _dup
+#  define AURIGA_UT_DUP2 _dup2
+#  define AURIGA_UT_CLOSE _close
+#  define AURIGA_UT_OPEN _open
+#  define AURIGA_UT_FILENO _fileno
+#  define AURIGA_UT_DEVNULL "NUL"
+#  ifndef O_WRONLY
+#    define O_WRONLY _O_WRONLY
+#  endif
+#else
+#  include <unistd.h>
+#  define AURIGA_UT_DUP dup
+#  define AURIGA_UT_DUP2 dup2
+#  define AURIGA_UT_CLOSE close
+#  define AURIGA_UT_OPEN open
+#  define AURIGA_UT_FILENO fileno
+#  define AURIGA_UT_DEVNULL "/dev/null"
+#endif
+
 #include "unity.h"
 #include "nullpo.h"
 #include "timer.h"
@@ -12,7 +36,26 @@ void test_nullpo_chk_ok(void)
 
 void test_nullpo_chk_null(void)
 {
-	TEST_ASSERT_EQUAL_INT(1, nullpo_chk(__FILE__, __LINE__, __func__, NULL));
+	int saved;
+	int nullfd;
+	int rc;
+
+	/* nullpo_chk(NULL) prints a banner; silence stdout for CI logs. */
+	fflush(stdout);
+	saved = AURIGA_UT_DUP(AURIGA_UT_FILENO(stdout));
+	TEST_ASSERT_TRUE(saved >= 0);
+	nullfd = AURIGA_UT_OPEN(AURIGA_UT_DEVNULL, O_WRONLY);
+	TEST_ASSERT_TRUE(nullfd >= 0);
+	TEST_ASSERT_EQUAL_INT(0, AURIGA_UT_DUP2(nullfd, AURIGA_UT_FILENO(stdout)));
+	AURIGA_UT_CLOSE(nullfd);
+
+	rc = nullpo_chk(__FILE__, __LINE__, __func__, NULL);
+
+	fflush(stdout);
+	AURIGA_UT_DUP2(saved, AURIGA_UT_FILENO(stdout));
+	AURIGA_UT_CLOSE(saved);
+
+	TEST_ASSERT_EQUAL_INT(1, rc);
 }
 
 void test_diff_tick_basic(void)

@@ -1,4 +1,8 @@
 ----------------------------------------
+//1621 [2026/08/09] by Cocoa
+
+・ユニットテストのレビュー指摘対応: csvdb は一時ファイル経由で close/flush、Makefile パターンルール化と bat の一覧集約、Unity 2.7.1 記載、nullpo の stdout 抑制（挙動変更なし）（tests/, doc/unit_test.txt）
+----------------------------------------
 //1620 [2026/08/09] by Cocoa
 
 ・ユニットテスト追加: csvdb（メモリ操作・ファイル読込）、ARR_FIND、HMAC/MD5 追加ベクトル、linkdb replace 未登録、INT2PTR 系（挙動変更なし）（tests/test_db.c, tests/test_md5calc.c, tests/test_misc.c, tests/test_main.c）

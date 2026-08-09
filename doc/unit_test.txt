@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------
 
 Auriga のユニットテスト手順です。フレームワークは ThrowTheSwitch Unity
-（純 C）を third_party/unity に同梱しています。
+（純 C、vendored 版 2.7.1）を third_party/unity に同梱しています。
 
 
 --------------------------------------------------------------------------
@@ -87,5 +87,11 @@ Developer Command Prompt、または vcvars64.bat 適用後:
 
 	1. tests/test_*.c にテスト関数を書く
 	2. tests/test_main.c で宣言し RUN_TEST する
-	3. 必要なら tests/Makefile と tests/vc_test.bat のオブジェクト一覧を更新する
+	3. 新規 .c を足す場合は次を同じ内容で揃える
+	   - tests/Makefile の TEST_SRCS / COMMON_NAMES
+	   - tests/vc_test.bat の for 一覧
+	   - tests/vc_test_clean.bat の for 一覧
 	4. make test（または vc_test.bat）で確認する
+
+Makefile 側はパターンルール化済み。bat 側は for ループで
+ソース一覧を1か所に寄せている。
