@@ -54,14 +54,35 @@ md5calc / utils は malloc.h の aMalloc_ 系を参照します。
 --------------------------------------------------------------------------
 5. CI
 
-GitHub Actions の unit-test-linux-gcc.yml が Linux 上で make test を実行します。
-既存のサーバービルド用 workflow とは別ジョブです。
+GitHub Actions で次の環境でユニットテストを実行します（いずれも既存の
+サーバービルド用 workflow とは別ジョブ）。
+
+	unit-test-linux-gcc.yml
+	unit-test-linux-clang.yml
+	unit-test-macos-clang.yml
+	unit-test-windows-msvc-2022.yml
+	unit-test-windows-msvc-2026.yml
+
+Unix 系は make test（Clang 環境は make test CC=clang）。
+Windows MSVC は tests\vc_test.bat（vcvars64 後）を実行します。
 
 
 --------------------------------------------------------------------------
-6. テストの追加
+6. Windows（MSVC）での実行
+
+Developer Command Prompt、または vcvars64.bat 適用後:
+
+	tests\vc_test.bat
+
+クリーン:
+
+	tests\vc_test_clean.bat
+
+
+--------------------------------------------------------------------------
+7. テストの追加
 
 	1. tests/test_*.c にテスト関数を書く
 	2. tests/test_main.c で宣言し RUN_TEST する
-	3. 必要なら tests/Makefile の LOCAL_OBJS にオブジェクトを足す
-	4. make test で確認する
+	3. 必要なら tests/Makefile と tests/vc_test.bat のオブジェクト一覧を更新する
+	4. make test（または vc_test.bat）で確認する

@@ -1,4 +1,8 @@
 ----------------------------------------
+//1618 [2026/08/09] by Cocoa
+
+・ユニットテスト CI を Linux Clang / macOS Clang / Windows MSVC 2022・2026 に拡大。MSVC 用に tests/vc_test.bat を追加（挙動変更なし）（.github/workflows/unit-test-*.yml, tests/vc_test.bat, tests/vc_test_clean.bat, doc/unit_test.txt）
+----------------------------------------
 //1617 [2026/08/09] by Cocoa
 
 ・Unity によるユニットテスト基盤を追加。`make test` と GitHub Actions（Linux GCC）で md5calc / utils の最小テストを実行可能に（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-linux-gcc.yml, doc/unit_test.txt）

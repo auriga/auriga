@@ -166,3 +166,4 @@ src/common/lua/luac
 /map-server
 *.pid
 /tests/unit_tests
+/tests/unit_tests.exe
