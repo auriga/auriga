@@ -105,6 +105,13 @@ void run_script_awake(struct script_state *st);
 
 int getarraysize(struct script_state *st, int num, char postfix, struct linkdb_node **ref);
 
+int script_sql_enabled(void);
+
+#ifndef TXT_ONLY
+struct sqldbs_handle;
+extern struct sqldbs_handle mysql_handle_script;
+#endif
+
 #ifndef NO_CSVDB_SCRIPT
 int script_csvinit(void);
 int script_csvfinal(void);
