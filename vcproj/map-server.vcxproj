@@ -219,6 +219,7 @@
     <ClCompile Include="..\src\map\buildin_quest.c" />
     <ClCompile Include="..\src\map\buildin_effect.c" />
     <ClCompile Include="..\src\map\buildin_md.c" />
+    <ClCompile Include="..\src\map\buildin_misc.c" />
     <ClCompile Include="..\src\map\skill.c" />
     <ClCompile Include="..\src\map\skill_castend_damage.c" />
     <ClCompile Include="..\src\map\skill_castend_ground.c" />
