@@ -1,27 +1,7 @@
 ----------------------------------------
-//1622 [2026/08/09] by Cocoa
-
-・nullpo テストの stdout 抑制を POSIX/MSVC 両対応に修正（CI の Linux/macOS 失敗を解消）（test_misc.c）
-----------------------------------------
-//1621 [2026/08/09] by Cocoa
-
-・ユニットテストのレビュー指摘対応: csvdb は一時ファイル経由で close/flush、Makefile パターンルール化と bat の一覧集約、Unity 2.7.1 記載、nullpo の stdout 抑制（挙動変更なし）（tests/, doc/unit_test.txt）
-----------------------------------------
-//1620 [2026/08/09] by Cocoa
-
-・ユニットテスト追加: csvdb（メモリ操作・ファイル読込）、ARR_FIND、HMAC/MD5 追加ベクトル、linkdb replace 未登録、INT2PTR 系（挙動変更なし）（tests/test_db.c, tests/test_md5calc.c, tests/test_misc.c, tests/test_main.c）
-----------------------------------------
-//1619 [2026/08/09] by Cocoa
-
-・ユニットテスト拡充: HMAC-MD5 / MD5_String2binary、strtobxul・BIGNUM2INT、linkdb / numdb / strdb、nullpo_chk、DIFF_TICK を追加（挙動変更なし）（tests/test_*.c, tests/Makefile, tests/vc_test.bat）
-----------------------------------------
-//1618 [2026/08/09] by Cocoa
-
-・ユニットテスト CI を Linux Clang / macOS Clang / Windows MSVC 2022・2026 に拡大。MSVC 用に tests/vc_test.bat を追加（挙動変更なし）（.github/workflows/unit-test-*.yml, tests/vc_test.bat, tests/vc_test_clean.bat, doc/unit_test.txt）
-----------------------------------------
 //1617 [2026/08/09] by Cocoa
 
-・Unity によるユニットテスト基盤を追加。`make test` と GitHub Actions（Linux GCC）で md5calc / utils の最小テストを実行可能に（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-linux-gcc.yml, doc/unit_test.txt）
+・Unity によるユニットテスト基盤を追加。`make test` / `tests\vc_test.bat` と GitHub Actions（Linux GCC/Clang・macOS Clang・Windows MSVC 2022/2026）で実行可能に。md5calc / HMAC-MD5、utils、linkdb / numdb / strdb / csvdb、nullpo、DIFF_TICK 等をカバー（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-*.yml, doc/unit_test.txt）
 ----------------------------------------
 //1616 [2026/08/09] by Cocoa
 
