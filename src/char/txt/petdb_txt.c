@@ -39,10 +39,8 @@ static char pet_txt[1024] = "save/pet.txt";
 static int pet_newid = 100;
 
 #ifdef TXT_JOURNAL
-static int pet_journal_enable = 1;
+static struct journal_config pet_journal_cfg = { 1, "./save/pet.journal", 1000 };
 static struct journal pet_journal;
-static char pet_journal_file[1024] = "./save/pet.journal";
-static int pet_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -55,14 +53,7 @@ int petdb_txt_config_read_sub(const char* w1,const char *w2)
 		auriga_strlcpy(pet_txt, w2, sizeof(pet_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"pet_journal_enable")==0){
-		pet_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"pet_journal_file")==0){
-		auriga_strlcpy( pet_journal_file, w2, sizeof(pet_journal_file) );
-	}
-	else if(strcmpi(w1,"pet_journal_cache_interval")==0){
-		pet_journal_cache = atoi( w2 );
+	else if(journal_config_read(&pet_journal_cfg, "pet_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -218,25 +209,11 @@ static bool petdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( pet_journal_enable )
+	if( journal_setup( &pet_journal, &pet_journal_cfg, sizeof(struct s_pet), pet_journal_rollforward, "inter: pet_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &pet_journal, sizeof(struct s_pet), pet_journal_file ) )
-		{
-			int c = journal_rollforward( &pet_journal, pet_journal_rollforward );
-
-			printf("int_pet: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			petdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &pet_journal );
-			journal_create( &pet_journal, sizeof(struct s_pet), pet_journal_cache, pet_journal_file );
-		}
+		petdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -274,11 +251,10 @@ int petdb_txt_sync(void)
 	lock_fclose(fp,pet_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( pet_journal_enable )
+	if( pet_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &pet_journal );
-		journal_create( &pet_journal, sizeof(struct s_pet), pet_journal_cache, pet_journal_file );
+		journal_recreate( &pet_journal, &pet_journal_cfg, sizeof(struct s_pet) );
 	}
 #endif
 
@@ -301,7 +277,7 @@ bool petdb_txt_delete(int pet_id)
 	printf("pet_id: %d deleted\n", pet_id);
 
 #ifdef TXT_JOURNAL
-	if( pet_journal_enable )
+	if( pet_journal_cfg.enable )
 		journal_write( &pet_journal, pet_id, NULL );
 #endif
 
@@ -335,7 +311,7 @@ bool petdb_txt_save(struct s_pet *p2)
 	memcpy(p1, p2, sizeof(struct s_pet));
 
 #ifdef TXT_JOURNAL
-	if( pet_journal_enable )
+	if( pet_journal_cfg.enable )
 		journal_write( &pet_journal, p1->pet_id, p1 );
 #endif
 	return true;
@@ -374,7 +350,7 @@ void petdb_txt_final(void)
 		numdb_final(pet_db, petdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( pet_journal_enable )
+	if( pet_journal_cfg.enable )
 	{
 		journal_final( &pet_journal );
 	}

@@ -37,10 +37,8 @@
 #include "chardb_txt.h"
 
 #ifdef TXT_JOURNAL
-static int char_journal_enable = 1;
+static struct journal_config char_journal_cfg = { 1, "./save/auriga.journal", 1000 };
 static struct journal char_journal;
-static char char_journal_file[1024] = "./save/auriga.journal";
-static int char_journal_cache = 1000;
 #endif
 
 static struct mmo_chardata *char_dat = NULL;
@@ -59,12 +57,8 @@ int chardb_txt_config_read_sub(const char* w1,const char* w2)
 	else if( strcmpi(w1,"gm_account_filename") == 0 )
 		auriga_strlcpy(GM_account_filename, w2, sizeof(GM_account_filename));
 #ifdef TXT_JOURNAL
-	else if( strcmpi(w1,"char_journal_enable") == 0 )
-		char_journal_enable = atoi( w2 );
-	else if( strcmpi(w1,"char_journal_file") == 0 )
-		auriga_strlcpy( char_journal_file, w2, sizeof(char_journal_file) );
-	else if(strcmpi( w1,"char_journal_cache_interval") == 0 )
-		char_journal_cache = atoi( w2 );
+	else if(journal_config_read(&char_journal_cfg, "char_journal", w1, w2)) {
+	}
 #endif
 	else
 		return 0;
@@ -1017,25 +1011,11 @@ static bool chardb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( char_journal_enable )
+	if( journal_setup( &char_journal, &char_journal_cfg, sizeof(struct mmo_chardata), char_journal_rollforward, "char: journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &char_journal, sizeof(struct mmo_chardata), char_journal_file ) )
-		{
-			int c = journal_rollforward( &char_journal, char_journal_rollforward );
-
-			printf("char: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			chardb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &char_journal );
-			journal_create( &char_journal, sizeof(struct mmo_chardata), char_journal_cache, char_journal_file );
-		}
+		chardb_txt_sync();
 	}
+
 #endif
 
 	// 友達リストの名前を解決
@@ -1087,11 +1067,10 @@ void chardb_txt_sync(void)
 	lock_fclose(fp, char_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( char_journal_enable )
+	if( char_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &char_journal );
-		journal_create( &char_journal, sizeof(struct mmo_chardata), char_journal_cache, char_journal_file );
+		journal_recreate( &char_journal, &char_journal_cfg, sizeof(struct mmo_chardata) );
 	}
 #endif
 }
@@ -1231,7 +1210,7 @@ const struct mmo_chardata *chardb_txt_make(int account_id, const unsigned char *
 	char_num++;
 
 #ifdef TXT_JOURNAL
-	if( char_journal_enable )
+	if( char_journal_cfg.enable )
 		journal_write( &char_journal, char_dat[n].st.char_id, &char_dat[n] );
 #endif
 
@@ -1290,7 +1269,7 @@ bool chardb_txt_save_reg(int account_id, int char_id, int num, struct global_reg
 			memcpy(&char_dat[idx].reg.global, reg, sizeof(char_dat[idx].reg.global));
 			char_dat[idx].reg.global_num = num;
 #ifdef TXT_JOURNAL
-			if( char_journal_enable )
+			if( char_journal_cfg.enable )
 				journal_write( &char_journal, char_id, &char_dat[idx] );
 #endif
 		}
@@ -1314,7 +1293,7 @@ bool chardb_txt_save(struct mmo_charstatus *st)
 		if(char_dat[idx].st.account_id == st->account_id) {
 			memcpy(&char_dat[idx].st, st, sizeof(struct mmo_charstatus));
 #ifdef TXT_JOURNAL
-			if( char_journal_enable )
+			if( char_journal_cfg.enable )
 				journal_write( &char_journal, st->char_id, &char_dat[idx] );
 #endif
 		}
@@ -1334,7 +1313,7 @@ bool chardb_txt_delete_sub(int char_id)
 		memset(&char_dat[idx], 0, sizeof(char_dat[0]));
 		char_dat[idx].st.char_id = char_id;	// キャラIDは維持
 #ifdef TXT_JOURNAL
-		if( char_journal_enable )
+		if( char_journal_cfg.enable )
 			journal_write( &char_journal, char_id, NULL );
 #endif
 	}
@@ -1422,7 +1401,7 @@ void chardb_txt_final(void)
 	aFree(char_dat);
 
 #ifdef TXT_JOURNAL
-	if( char_journal_enable )
+	if( char_journal_cfg.enable )
 	{
 		journal_final( &char_journal );
 	}

@@ -49,7 +49,7 @@ int guilddb_txt_config_read_sub(const char* w1,const char *w2);
 #define guilddb_config_read_sub guilddb_txt_config_read_sub
 
 #ifdef TXT_JOURNAL
-extern int guildcastle_journal_enable;
+extern struct journal_config guildcastle_journal_cfg;
 extern struct journal guildcastle_journal;
 #endif
 
