@@ -1,4 +1,8 @@
 ----------------------------------------
+//1622 [2026/08/09] by Cocoa
+
+・nullpo テストの stdout 抑制を POSIX/MSVC 両対応に修正（CI の Linux/macOS 失敗を解消）（test_misc.c）
+----------------------------------------
 //1621 [2026/08/09] by Cocoa
 
 ・ユニットテストのレビュー指摘対応: csvdb は一時ファイル経由で close/flush、Makefile パターンルール化と bat の一覧集約、Unity 2.7.1 記載、nullpo の stdout 抑制（挙動変更なし）（tests/, doc/unit_test.txt）
