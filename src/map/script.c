@@ -35,15 +35,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#ifndef WINDOWS
-	#include <sys/time.h>
-#endif
-#include <time.h>
 #include <math.h>
 #include <setjmp.h>
 
 #include "db.h"
-#include "socket.h"
 #include "timer.h"
 #include "malloc.h"
 #include "mmo.h"
@@ -52,34 +47,12 @@
 #include "sqldbs.h"
 
 #include "map.h"
-#include "guild.h"
-#include "clif.h"
-#include "chrif.h"
-#include "itemdb.h"
 #include "pc.h"
-#include "bonus.h"
 #include "script.h"
 #include "script_internal.h"
-#include "storage.h"
-#include "mob.h"
 #include "npc.h"
-#include "pet.h"
-#include "intif.h"
-#include "skill.h"
-#include "chat.h"
-#include "battle.h"
 #include "party.h"
-#include "path.h"
-#include "atcommand.h"
-#include "status.h"
-#include "itemdb.h"
-#include "unit.h"
-#include "homun.h"
-#include "merc.h"
-#include "quest.h"
-#include "buyingstore.h"
 #include "memorial.h"
-#include "achieve.h"
 
 #define SCRIPT_BLOCK_SIZE 512
 
@@ -206,7 +179,6 @@ struct script_function {
 
 struct linkdb_node *sleep_db = NULL;
 
-
 /*==========================================
  * ローカルプロトタイプ宣言 (必要な物のみ)
  *------------------------------------------
@@ -218,7 +190,6 @@ static unsigned char* parse_syntax(unsigned char *p);
 static unsigned char* parse_subexpr(unsigned char *,int);
 static int get_com(unsigned char *script,int *pos);
 static int get_num(unsigned char *script,int *pos);
-
 
 /*==========================================
  * ユーザー定義関数の取得
@@ -4700,7 +4671,6 @@ struct script_function buildin_func[] = {
 	{NULL,NULL,NULL}
 };
 
-
 /*==========================================
  *
  *------------------------------------------
@@ -4892,7 +4862,6 @@ int buildin_return(struct script_state *st)
 	return 0;
 }
 
-
 /*==========================================
  *
  *------------------------------------------
@@ -4921,7 +4890,6 @@ int buildin_rand(struct script_state *st)
 	}
 	return 0;
 }
-
 
 /*==========================================
  * 変数設定
@@ -5337,7 +5305,6 @@ int buildin_getelementofarray(struct script_state *st)
 	return 0;
 }
 
-
 /*==========================================
  *
  *------------------------------------------
@@ -5357,5 +5324,3 @@ int buildin_jump_zero(struct script_state *st)
 	}
 	return 0;
 }
-
-
