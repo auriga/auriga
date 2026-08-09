@@ -103,4 +103,11 @@ struct linkdb_node *script_erase_sleepdb(struct linkdb_node *n);
 int run_script_timer(int tid, unsigned int tick, int id, void *data);
 void run_script_awake(struct script_state *st);
 
+int getarraysize(struct script_state *st, int num, char postfix, struct linkdb_node **ref);
+
+#ifndef NO_CSVDB_SCRIPT
+int script_csvinit(void);
+int script_csvfinal(void);
+#endif
+
 #endif /* _SCRIPT_INTERNAL_H_ */

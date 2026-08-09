@@ -215,6 +215,7 @@
     <ClCompile Include="..\src\map\buildin_pc.c" />
     <ClCompile Include="..\src\map\buildin_pet.c" />
     <ClCompile Include="..\src\map\buildin_mob.c" />
+    <ClCompile Include="..\src\map\buildin_csv.c" />
     <ClCompile Include="..\src\map\skill.c" />
     <ClCompile Include="..\src\map\skill_castend_damage.c" />
     <ClCompile Include="..\src\map\skill_castend_ground.c" />
