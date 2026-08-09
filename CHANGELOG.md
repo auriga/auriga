@@ -1,4 +1,8 @@
 ----------------------------------------
+//1609 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第6弾）: monster / guardian / mob skill 系を buildin_mob.c へ分離。getmapmoblist の str_buf 直参照を get_str() に置換（挙動変更なし）（script.c, buildin_mob.c, map-server.vcxproj）
+----------------------------------------
 //1608 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第5弾）: dialog / UI 系を buildin_dialog.c、PC / status 系を buildin_pc.c へ分離（挙動変更なし）（script.c, buildin_dialog.c, buildin_pc.c, map-server.vcxproj）

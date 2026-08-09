@@ -213,6 +213,7 @@
     <ClCompile Include="..\src\map\buildin_party.c" />
     <ClCompile Include="..\src\map\buildin_dialog.c" />
     <ClCompile Include="..\src\map\buildin_pc.c" />
+    <ClCompile Include="..\src\map\buildin_mob.c" />
     <ClCompile Include="..\src\map\skill.c" />
     <ClCompile Include="..\src\map\skill_castend_damage.c" />
     <ClCompile Include="..\src\map\skill_castend_ground.c" />
