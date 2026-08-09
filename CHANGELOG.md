@@ -1,4 +1,8 @@
 ----------------------------------------
+//1622 [2026/08/10] by Cocoa
+
+・fix: gstoragedb_txt_save が個人倉庫ジャーナルへ書いていたのを guild_storage_journal へ修正（#93 と同内容・journal_config 化後の識別子）（storagedb_txt.c）
+----------------------------------------
 //1621 [2026/08/10] by Cocoa
 
 ・Issue #58: txt ジャーナル配線を journal_config / journal_setup / journal_recreate に共通化（挙動変更なし）（journal.c, journal.h, *_txt.c, guilddb_txt.h, int_guild.c, doc/journal.txt）

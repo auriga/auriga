@@ -468,8 +468,8 @@ bool gstoragedb_txt_save(struct guild_storage *gs2, int easy)
 	}
 	memcpy(gs1, gs2, sizeof(struct guild_storage));
 #ifdef TXT_JOURNAL
-	if( storage_journal_cfg.enable )
-		journal_write( &storage_journal, gs1->guild_id, gs1 );
+	if( guild_storage_journal_cfg.enable )
+		journal_write( &guild_storage_journal, gs1->guild_id, gs1 );
 #endif
 	return true;
 }
