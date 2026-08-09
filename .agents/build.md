@@ -7,9 +7,13 @@
 ```bash
 make          # ビルド
 make clean    # クリーン後に再ビルド
+make test     # ユニットテスト（Unity）
+make test-clean
 ```
 
 ビルドオプションはルートの `Makefile` で定義する（`PACKETVER`、`TXT_ONLY`、`PRE_RENEWAL`、`LOCALZLIB` など）。
+
+ユニットテストの詳細は `doc/unit_test.txt` を参照。
 
 ## Windows（MSVC）
 
@@ -29,8 +33,9 @@ vc_clean.bat      # クリーン
 
 GitHub Actions で次を検証している。
 
-- Windows MSVC 2022 / 2026
-- Linux GCC / Clang
-- macOS Clang
+- Windows MSVC 2022 / 2026（ビルド）
+- Linux GCC / Clang（ビルド）
+- macOS Clang（ビルド）
+- Linux GCC（ユニットテスト: `unit-test-linux-gcc.yml`）
 
-`src/**/*.c`、`src/**/*.h`、`vc_make.bat` などを変更した場合は、関連ワークフローが通ることを意識する。
+`src/**/*.c`、`src/**/*.h`、`vc_make.bat`、`tests/**` などを変更した場合は、関連ワークフローが通ることを意識する。

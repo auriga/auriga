@@ -302,6 +302,13 @@ all clean: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakef
 	$(MAKE) -C src/converter $(MKDEF) $@
 	$(MAKE) -C src/map $(MKDEF) $@
 
+# Unit tests (Unity). Does not build server binaries.
+test:
+	$(MAKE) -C tests
+
+test-clean:
+	$(MAKE) -C tests clean
+
 ifdef SQLFLAG
 sql: src/common/zlib/GNUmakefile src/common/GNUmakefile src/login/GNUmakefile src/char/GNUmakefile src/map/GNUmakefile src/converter/GNUmakefile
 	$(MAKE) -C src/common $(MKDEF) SQLFLAG=1 $@

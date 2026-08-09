@@ -1,4 +1,8 @@
 ----------------------------------------
+//1617 [2026/08/09] by Cocoa
+
+・Unity によるユニットテスト基盤を追加。`make test` と GitHub Actions（Linux GCC）で md5calc / utils の最小テストを実行可能に（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-linux-gcc.yml, doc/unit_test.txt）
+----------------------------------------
 //1616 [2026/08/09] by Cocoa
 
 ・script.c の未使用ヘッダー削除と余分な空行整理。buildin 分割後に残っていた #include とセクション見出し前の二重空行を除去（挙動変更なし）（script.c）

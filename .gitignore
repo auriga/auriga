@@ -165,3 +165,4 @@ src/common/lua/luac
 /char-server
 /map-server
 *.pid
+/tests/unit_tests
