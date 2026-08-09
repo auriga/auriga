@@ -1,4 +1,8 @@
 ----------------------------------------
+//1611 [2026/08/09] by Cocoa
+
+・script.c のビルドイン命令分割（第8弾）: CSV 系命令を buildin_csv.c へ分離。csvinit/final・getarraysize を script_internal.h 経由で共有。csvreadarray/csvwritearray の str_buf 直参照を get_str() に置換（挙動変更なし）（script.c, buildin_csv.c, script_internal.h, map-server.vcxproj）
+----------------------------------------
 //1610 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第7弾）: monster / guardian / mob skill 系を buildin_mob.c へ分離。getmapmoblist の str_buf 直参照を get_str() に置換（挙動変更なし）（script.c, buildin_mob.c, map-server.vcxproj）
