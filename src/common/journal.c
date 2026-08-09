@@ -499,8 +499,6 @@ int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int 
 	return c;
 }
 
-#endif
-
 void journal_config_init(struct journal_config *cfg, int enable, const char *file, int cache)
 {
 	if(cfg == NULL)
@@ -571,6 +569,7 @@ int journal_setup_with_convert(struct journal *j, const struct journal_config *c
 	journal_create(j, datasize, cfg->cache, cfg->file);
 	return 0;
 }
+
 void journal_recreate(struct journal *j, const struct journal_config *cfg, size_t datasize)
 {
 	if(j == NULL || cfg == NULL || !cfg->enable)
@@ -579,3 +578,5 @@ void journal_recreate(struct journal *j, const struct journal_config *cfg, size_
 	journal_final(j);
 	journal_create(j, datasize, cfg->cache, cfg->file);
 }
+
+#endif

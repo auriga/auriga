@@ -109,6 +109,7 @@ int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int 
 //const char* journal_get( struct journal* j, int key, int* flag );
 //int journal_delete( struct journal* j, int key );
 
+#ifdef TXT_JOURNAL
 struct journal_config {
 	int enable;
 	char file[1024];
@@ -127,5 +128,6 @@ int journal_setup_with_convert(struct journal *j, const struct journal_config *c
 
 /* Recreate empty journal after txt sync. */
 void journal_recreate(struct journal *j, const struct journal_config *cfg, size_t datasize);
+#endif /* TXT_JOURNAL */
 
 #endif
