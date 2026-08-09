@@ -121,6 +121,9 @@
     <ClCompile Include="..\src\map\buildin_pc.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\buildin_pet.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\skill.c">
       <Filter>map_sql</Filter>
     </ClCompile>
