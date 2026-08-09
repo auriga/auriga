@@ -1,4 +1,8 @@
 ----------------------------------------
+//1619 [2026/08/09] by Cocoa
+
+・ユニットテスト拡充: HMAC-MD5 / MD5_String2binary、strtobxul・BIGNUM2INT、linkdb / numdb / strdb、nullpo_chk、DIFF_TICK を追加（挙動変更なし）（tests/test_*.c, tests/Makefile, tests/vc_test.bat）
+----------------------------------------
 //1618 [2026/08/09] by Cocoa
 
 ・ユニットテスト CI を Linux Clang / macOS Clang / Windows MSVC 2022・2026 に拡大。MSVC 用に tests/vc_test.bat を追加（挙動変更なし）（.github/workflows/unit-test-*.yml, tests/vc_test.bat, tests/vc_test_clean.bat, doc/unit_test.txt）

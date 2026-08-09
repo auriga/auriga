@@ -35,10 +35,13 @@ src 以下の本番 *.o はリンクしません（main / グローバル初期�
 --------------------------------------------------------------------------
 3. 初回スコープ
 
-対象は src/common の純粋関数から開始しています。
+対象は src/common の純粋・低依存 API から開始しています。
 
-	md5calc … MD5_String / MD5_Binary（既知ベクトル）
-	utils   … auriga_strlcpy / auriga_strlcat / strtobxul
+	md5calc … MD5_String / MD5_Binary / MD5_String2binary / HMAC_MD5_Binary
+	utils   … auriga_strlcpy / auriga_strlcat / strtobxul / BIGNUM2INT
+	db      … linkdb / numdb / strdb（CRUD）
+	nullpo  … nullpo_chk
+	timer   … DIFF_TICK（ヘッダマクロ）
 
 map の戦闘・スクリプト・ソケット等は後続課題です。
 

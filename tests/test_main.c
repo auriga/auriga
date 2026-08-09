@@ -11,12 +11,29 @@ void tearDown(void)
 void test_md5_string_empty(void);
 void test_md5_string_abc(void);
 void test_md5_binary_abc(void);
+void test_md5_string2binary_abc(void);
+void test_hmac_md5_rfc_hi_there(void);
+void test_hmac_md5_rfc_jefe(void);
 
 void test_auriga_strlcpy_full_copy(void);
 void test_auriga_strlcpy_truncates(void);
 void test_auriga_strlcat_appends(void);
 void test_auriga_strlcat_truncates(void);
 void test_strtobxul_binary_prefix(void);
+void test_strtobxul_leading_space(void);
+void test_strtobxul_hex_via_strtoul(void);
+void test_strtobxul_decimal_base10(void);
+void test_bignum2int_clamps(void);
+
+void test_linkdb_insert_search_erase(void);
+void test_linkdb_replace(void);
+void test_numdb_crud(void);
+void test_strdb_crud(void);
+
+void test_nullpo_chk_ok(void);
+void test_nullpo_chk_null(void);
+void test_diff_tick_basic(void);
+void test_diff_tick_wraparound(void);
 
 int main(void)
 {
@@ -25,12 +42,29 @@ int main(void)
 	RUN_TEST(test_md5_string_empty);
 	RUN_TEST(test_md5_string_abc);
 	RUN_TEST(test_md5_binary_abc);
+	RUN_TEST(test_md5_string2binary_abc);
+	RUN_TEST(test_hmac_md5_rfc_hi_there);
+	RUN_TEST(test_hmac_md5_rfc_jefe);
 
 	RUN_TEST(test_auriga_strlcpy_full_copy);
 	RUN_TEST(test_auriga_strlcpy_truncates);
 	RUN_TEST(test_auriga_strlcat_appends);
 	RUN_TEST(test_auriga_strlcat_truncates);
 	RUN_TEST(test_strtobxul_binary_prefix);
+	RUN_TEST(test_strtobxul_leading_space);
+	RUN_TEST(test_strtobxul_hex_via_strtoul);
+	RUN_TEST(test_strtobxul_decimal_base10);
+	RUN_TEST(test_bignum2int_clamps);
+
+	RUN_TEST(test_linkdb_insert_search_erase);
+	RUN_TEST(test_linkdb_replace);
+	RUN_TEST(test_numdb_crud);
+	RUN_TEST(test_strdb_crud);
+
+	RUN_TEST(test_nullpo_chk_ok);
+	RUN_TEST(test_nullpo_chk_null);
+	RUN_TEST(test_diff_tick_basic);
+	RUN_TEST(test_diff_tick_wraparound);
 
 	return UNITY_END();
 }
