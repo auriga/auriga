@@ -1,23 +1,7 @@
 ----------------------------------------
-//1622 [2026/08/10] by Cocoa
-
-・Issue #57 (PR4): status_change_start/end にハンドラテーブル＋フォールバック switch を導入。単純 SC（ATKPOTION/MATKPOTION/ALMIGHTY/BLESSING/IMPOSITIO/SUPPORT_HPSP/PROVOKE/INCREASEAGI/SPEEDUP0/SPEEDUP1）をテーブルへ移行（挙動変更なし）（status_change_handlers.c, status_internal.h, status_change_start.c, status_change_end.c, status.c, map-server.vcxproj）
-----------------------------------------
-//1621 [2026/08/10] by Cocoa
-
-・Issue #57 (PR3): status_change_start / status_change_end をそれぞれ status_change_start.c / status_change_end.c へ分離。status_internal.h で StatusIconChangeTable を共有（挙動変更なし）（status.c, status_change_start.c, status_change_end.c, status_internal.h, map-server.vcxproj）
-----------------------------------------
-//1620 [2026/08/10] by Cocoa
-
-・Issue #57 (PR2): status_calc_pc 本体と phase / amotion / speed 計算を status_calc_pc.c へ分離。status_internal.h で atkmods / refine_db を共有（挙動変更なし）（status.c, status_calc_pc.c, status_internal.h, map-server.vcxproj）
-----------------------------------------
-//1619 [2026/08/10] by Cocoa
-
-・Issue #57 (PR1): status_calc_pc の再計算本体を status.c 内の静的 phase 関数へ分割（reset/clear/equip/job/sc_base/derived/sc_rest）。共有ローカルは struct status_calc_pc_work 経由（挙動変更なし）（status.c）
-----------------------------------------
 //1618 [2026/08/10] by Cocoa
 
-・Issue #57 (PR0): status_calc_pc の L_RECALC 再入契約を status_calc_ctrl に切り出し、goto を do/while へ置換。Unity で begin/finish/stop ネストを固定（挙動変更なし）（status.c, status_calc_ctrl.c, status_calc_ctrl.h, tests/, map-server.vcxproj）
+・Issue #57: status_calc_pc / status_change_start / status_change_end をリファクタ。L_RECALC 再入を status_calc_ctrl で Unity 固定し、calc を phase 分割のうえ status_calc_pc.c へ、start/end を別 TU へ分離。SC ハンドラテーブルを導入し代表バッチを移行（挙動変更なし）（status.c, status_calc_ctrl.c, status_calc_ctrl.h, status_calc_pc.c, status_change_start.c, status_change_end.c, status_change_handlers.c, status_internal.h, tests/, map-server.vcxproj）
 ----------------------------------------
 //1617 [2026/08/09] by Cocoa
 
