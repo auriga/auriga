@@ -138,7 +138,8 @@ int status_change_end(struct block_list* bl, int type, int tid)
 		if(hr == STATUS_CHANGE_HANDLER_ABORT)
 			return 0;
 	} else {
-	switch(type) {	/* 異常の種類ごとの処理 */
+		/* fallback: handler 未登録の type のみ */
+		switch(type) {	/* 異常の種類ごとの処理 */
 		case SC_CONCENTRATE:			/* 集中力向上 */
 		case SC_ANGELUS:			/* アンゼルス */
 		case SC_SIGNUMCRUCIS:			/* シグナムクルシス */

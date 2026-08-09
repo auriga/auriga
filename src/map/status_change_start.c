@@ -488,7 +488,8 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 		if(hr == STATUS_CHANGE_HANDLER_ABORT)
 			return 0;
 	} else {
-	switch(type) {	/* 異常の種類ごとの処理 */
+		/* fallback: handler 未登録の type のみ */
+		switch(type) {	/* 異常の種類ごとの処理 */
 		case SC_DOUBLE:				/* ダブルストレイフィング */
 		case SC_SUFFRAGIUM:			/* サフラギム */
 		case SC_MAGNIFICAT:			/* マグニフィカート */

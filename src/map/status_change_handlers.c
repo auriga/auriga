@@ -34,7 +34,14 @@ static int sc_end_set_calc_flag(struct status_change_end_ctx *ctx)
 	return STATUS_CHANGE_HANDLER_OK;
 }
 
-/* Shared: calc_flag + movement speed recalc. */
+/*
+ * Shared: calc_flag + movement speed recalc.
+ *
+ * When peeling SCs out of a fall-through group into handlers, verify:
+ * - both start and end paths
+ * - body matches former group mates (side effects beyond calc_flag)
+ * - corresponding case labels removed from the fallback switch
+ */
 static int sc_start_set_calc_flag_speed(struct status_change_start_ctx *ctx)
 {
 	*ctx->calc_flag = 1;
