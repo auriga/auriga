@@ -1078,7 +1078,7 @@ int mapif_parse_GuildCastleDataSave(int fd,int castle_id,int idx,int value)
 			return 0;
 	}
 #if defined(TXT_ONLY) && defined(TXT_JOURNAL)
-	if( guildcastle_journal_enable )
+	if( guildcastle_journal_cfg.enable )
 		journal_write( &guildcastle_journal, gc->castle_id, gc );
 #endif
 	return mapif_guild_castle_datasave(gc->castle_id,idx,value);

@@ -38,10 +38,8 @@ static char elem_txt[1024] = "save/elemental.txt";
 static int elem_newid = 100;
 
 #ifdef TXT_JOURNAL
-static int elem_journal_enable = 1;
+static struct journal_config elem_journal_cfg = { 1, "./save/elemental.journal", 1000 };
 static struct journal elem_journal;
-static char elem_journal_file[1024] = "./save/elemental.journal";
-static int elem_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -54,14 +52,7 @@ int elemdb_txt_config_read_sub(const char* w1,const char *w2)
 		auriga_strlcpy(elem_txt, w2, sizeof(elem_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"elem_journal_enable")==0){
-		elem_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"elem_journal_file")==0){
-		auriga_strlcpy( elem_journal_file, w2, sizeof(elem_journal_file) );
-	}
-	else if(strcmpi(w1,"elem_journal_cache_interval")==0){
-		elem_journal_cache = atoi( w2 );
+	else if(journal_config_read(&elem_journal_cfg, "elem_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -200,25 +191,11 @@ static bool elemdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( elem_journal_enable )
+	if( journal_setup( &elem_journal, &elem_journal_cfg, sizeof(struct mmo_elemstatus), elem_journal_rollforward, "inter: elem_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_file ) )
-		{
-			int c = journal_rollforward( &elem_journal, elem_journal_rollforward );
-
-			printf("int_elem: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			elemdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &elem_journal );
-			journal_create( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_cache, elem_journal_file );
-		}
+		elemdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -255,11 +232,10 @@ int elemdb_txt_sync(void)
 	lock_fclose(fp, elem_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( elem_journal_enable )
+	if( elem_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &elem_journal );
-		journal_create( &elem_journal, sizeof(struct mmo_elemstatus), elem_journal_cache, elem_journal_file );
+		journal_recreate( &elem_journal, &elem_journal_cfg, sizeof(struct mmo_elemstatus) );
 	}
 #endif
 
@@ -282,7 +258,7 @@ bool elemdb_txt_delete(int elem_id)
 	printf("elem_id: %d deleted\n", elem_id);
 
 #ifdef TXT_JOURNAL
-	if( elem_journal_enable )
+	if( elem_journal_cfg.enable )
 		journal_write( &elem_journal, elem_id, NULL );
 #endif
 
@@ -316,7 +292,7 @@ bool elemdb_txt_save(struct mmo_elemstatus *p2)
 	memcpy(p1, p2, sizeof(struct mmo_elemstatus));
 
 #ifdef TXT_JOURNAL
-	if( elem_journal_enable )
+	if( elem_journal_cfg.enable )
 		journal_write( &elem_journal, p1->elem_id, p1 );
 #endif
 	return true;
@@ -359,7 +335,7 @@ void elemdb_txt_final(void)
 		numdb_final(elem_db, elemdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( elem_journal_enable )
+	if( elem_journal_cfg.enable )
 	{
 		journal_final( &elem_journal );
 	}

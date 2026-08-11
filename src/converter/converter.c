@@ -40,13 +40,25 @@
 
 char converter_conf_filename[256] = "conf/converter_auriga.conf";
 
-char db_server_ip[16] = "127.0.0.1";
+static struct sqldbs_conninfo db_server_info = {
+	"127.0.0.1", 3306, "ragnarok", "ragnarok", "ragnarok", "", 0
+};
+
+/* header compatibility aliases */
 unsigned short db_server_port = 3306;
+char db_server_ip[16] = "127.0.0.1";
 char db_server_id[32] = "ragnarok";
 char db_server_pw[32] = "ragnarok";
 char db_server_logindb[32] = "ragnarok";
-char db_server_charset[32] = "";
-int  db_server_keepalive   = 0;
+
+static void sync_db_server_globals(void)
+{
+	db_server_port = db_server_info.port;
+	auriga_strlcpy(db_server_ip, db_server_info.host, sizeof(db_server_ip));
+	auriga_strlcpy(db_server_id, db_server_info.user, sizeof(db_server_id));
+	auriga_strlcpy(db_server_pw, db_server_info.passwd, sizeof(db_server_pw));
+	auriga_strlcpy(db_server_logindb, db_server_info.db, sizeof(db_server_logindb));
+}
 
 char login_db[1024]            = "login";
 char login_db_account_id[1024] = "account_id";
@@ -142,33 +154,12 @@ static int config_read(const char *cfgName)
 		}
 
 		// add for DB connection
-		else if(strcmpi(w1,"db_server_ip")==0){
-			auriga_strlcpy(db_server_ip, w2, sizeof(db_server_ip));
-			printf("set db_server_ip : %s\n",w2);
-		}
-		else if(strcmpi(w1,"db_server_port")==0){
-			db_server_port = (unsigned short)atoi(w2);
-			printf("set db_server_port : %d\n",db_server_port);
-		}
-		else if(strcmpi(w1,"db_server_id")==0){
-			auriga_strlcpy(db_server_id, w2, sizeof(db_server_id));
-			printf("set db_server_id : %s\n",w2);
-		}
-		else if(strcmpi(w1,"db_server_pw")==0){
-			auriga_strlcpy(db_server_pw, w2, sizeof(db_server_pw));
-			printf("set db_server_pw : %s\n",w2);
-		}
-		else if(strcmpi(w1,"db_server_logindb")==0){
-			auriga_strlcpy(db_server_logindb, w2, sizeof(db_server_logindb));
-			printf("set db_server_logindb : %s\n",w2);
-		}
-		else if(strcmpi(w1,"db_server_charset")==0){
-			auriga_strlcpy(db_server_charset, w2, sizeof(db_server_charset));
-			printf("set db_server_charset : %s\n",w2);
-		}
-		else if(strcmpi(w1,"db_server_keepalive")==0){
-			db_server_keepalive = atoi(w2);
-			printf("set db_server_keepalive : %d\n",db_server_keepalive);
+		else if(sqldbs_conninfo_config_read_ex(&db_server_info, "db_server", "logindb", w1, w2)){
+			sync_db_server_globals();
+			if(strcmpi(w1,"db_server_port")==0)
+				printf("set db_server_port : %d\n", db_server_info.port);
+			else
+				printf("set %s : %s\n", w1, w2);
 		}
 
 		// login SQL DB configuration
@@ -232,9 +223,7 @@ int do_init(int argc,char **argv)
 	config_read(converter_conf_filename);
 
 	// DB connection initialized
-	rc = sqldbs_connect(&mysql_handle,
-		db_server_ip, db_server_id, db_server_pw, db_server_logindb, db_server_port, db_server_charset, db_server_keepalive, "CONVERTER"
-	);
+	rc = sqldbs_connect_info(&mysql_handle, &db_server_info, "CONVERTER");
 	if(rc == false) {
 		printf("FATAL ERROR: sqldbs_connect() failed !!\n");
 		exit(1);

@@ -31,15 +31,12 @@
 
 #include "../char.h"
 #include "chardb_sql.h"
+#include "item_sql.h"
 
 static struct dbt *char_db_;
-static unsigned short char_server_port = 3306;
-static char char_server_ip[32]      = "127.0.0.1";
-static char char_server_id[32]      = "ragnarok";
-static char char_server_pw[32]      = "ragnarok";
-static char char_server_db[32]      = "ragnarok";
-static char char_server_charset[32] = "";
-static int  char_server_keepalive   = 0;
+static struct sqldbs_conninfo char_server_info = {
+	"127.0.0.1", 3306, "ragnarok", "ragnarok", "ragnarok", "", 0
+};
 
 /*==========================================
  * 設定ファイル読込
@@ -47,189 +44,18 @@ static int  char_server_keepalive   = 0;
  */
 int chardb_sql_config_read_sub(const char* w1,const char* w2)
 {
-	if( strcmpi(w1,"char_server_ip") == 0 )
-		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
-	else if( strcmpi(w1,"char_server_port") == 0 )
-		char_server_port = (unsigned short)atoi(w2);
-	else if( strcmpi(w1,"char_server_id") == 0 )
-		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
-	else if( strcmpi(w1,"char_server_pw") == 0 )
-		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
-	else if( strcmpi(w1,"char_server_db") == 0 )
-		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
-	else if( strcmpi(w1,"char_server_charset") == 0 )
-		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
-	else if( strcmpi(w1,"char_server_keepalive") ==0 )
-		char_server_keepalive = atoi(w2);
-	else
-		return 0;
-
-	return 1;
+	return sqldbs_conninfo_config_read(&char_server_info, "char_server", w1, w2);
 }
 
-/*==========================================
- * アイテムのロードの共通関数
- *------------------------------------------
- */
 int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch)
 {
-	int i = 0;
-	const char *tablename;
-	const char *selectoption;
-	char **sql_row;
-	bool result = false;
-
-	nullpo_retr(-1, item);
-
-	memset(item, 0, sizeof(struct item) * max);
-
-	switch (tableswitch) {
-	case TABLE_NUM_INVENTORY:
-		tablename    = INVENTORY_TABLE;
-		selectoption = "char_id";
-		break;
-	case TABLE_NUM_CART:
-		tablename    = CART_TABLE;
-		selectoption = "char_id";
-		break;
-	case TABLE_NUM_STORAGE:
-		tablename    = STORAGE_TABLE;
-		selectoption = "account_id";
-		break;
-	case TABLE_NUM_GUILD_STORAGE:
-		tablename    = GUILD_STORAGE_TABLE;
-		selectoption = "guild_id";
-		break;
-	default:
-		printf("Invalid table name!\n");
-		return -1;
-	}
-
-	result = sqldbs_query(&mysql_handle,
-		"SELECT `id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
-		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`, `private` FROM `%s` WHERE `%s`='%d'",
-		tablename, selectoption, id
-	);
-	if(result == false)
-		return -1;
-
-	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < max; i++) {
-		item[i].id         = (unsigned int)atoi(sql_row[0]);
-		item[i].nameid     = atoi(sql_row[1]);
-		item[i].amount     = atoi(sql_row[2]);
-		item[i].equip      = (unsigned int)atoi(sql_row[3]);
-		item[i].identify   = atoi(sql_row[4]);
-		item[i].refine     = atoi(sql_row[5]);
-		item[i].attribute  = atoi(sql_row[6]);
-		item[i].card[0]    = atoi(sql_row[7]);
-		item[i].card[1]    = atoi(sql_row[8]);
-		item[i].card[2]    = atoi(sql_row[9]);
-		item[i].card[3]    = atoi(sql_row[10]);
-		item[i].opt[0].id  = atoi(sql_row[11]);
-		item[i].opt[0].val = atoi(sql_row[12]);
-		item[i].opt[1].id  = atoi(sql_row[13]);
-		item[i].opt[1].val = atoi(sql_row[14]);
-		item[i].opt[2].id  = atoi(sql_row[15]);
-		item[i].opt[2].val = atoi(sql_row[16]);
-		item[i].opt[3].id  = atoi(sql_row[17]);
-		item[i].opt[3].val = atoi(sql_row[18]);
-		item[i].opt[4].id  = atoi(sql_row[19]);
-		item[i].opt[4].val = atoi(sql_row[20]);
-		item[i].limit      = (unsigned int)atoi(sql_row[21]);
-		item[i].private_   = atoi(sql_row[22]);
-	}
-	sqldbs_free_result(&mysql_handle);
-
-	return i;
+	return item_sql_loaditem(item, max, id, tableswitch);
 }
 
-/*==========================================
- * アイテムのセーブの共通関数
- *------------------------------------------
- */
 bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch)
 {
-	const char *tablename;
-	const char *selectoption;
-	char *p, tmp_sql[65536 * 2];
-	char sep = ' ';
-	bool result = false;
-
-	nullpo_retr(false, item);
-
-	switch (tableswitch) {
-	case TABLE_NUM_INVENTORY:
-		tablename    = INVENTORY_TABLE;
-		selectoption = "char_id";
-		break;
-	case TABLE_NUM_CART:
-		tablename    = CART_TABLE;
-		selectoption = "char_id";
-		break;
-	case TABLE_NUM_STORAGE:
-		tablename    = STORAGE_TABLE;
-		selectoption = "account_id";
-		break;
-	case TABLE_NUM_GUILD_STORAGE:
-		tablename    = GUILD_STORAGE_TABLE;
-		selectoption = "guild_id";
-		break;
-	default:
-		printf("Invalid table name!\n");
-		return false;
-	}
-
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return false;
-
-	// try
-	do
-	{
-		int i;
-
-		// delete
-		if( sqldbs_query(&mysql_handle, "DELETE FROM `%s` WHERE `%s`='%d'", tablename, selectoption, id) == false)
-			break;
-
-		p  = tmp_sql;
-		p += sprintf(
-			p,"INSERT INTO `%s`(`id`, `%s`, `nameid`, `amount`, `equip`, `identify`, `refine`, "
-			"`attribute`, `card0`, `card1`, `card2`, `card3`, `opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
-			"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`, `private`) VALUES",tablename,selectoption
-		);
-
-		for(i = 0; i < max; i++) {
-			if(item[i].nameid) {
-				p += sprintf(
-					p,"%c('%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u',%d)",
-					sep,item[i].id,id,item[i].nameid,item[i].amount,item[i].equip,item[i].identify,
-					item[i].refine,item[i].attribute,item[i].card[0],item[i].card[1],item[i].card[2],item[i].card[3],
-					item[i].opt[0].id,item[i].opt[0].val,item[i].opt[1].id,item[i].opt[1].val,item[i].opt[2].id,item[i].opt[2].val,
-					item[i].opt[3].id,item[i].opt[3].val,item[i].opt[4].id,item[i].opt[4].val,item[i].limit,item[i].private_
-				);
-				sep = ',';
-			}
-		}
-
-		if(sep == ',') {
-			if( sqldbs_simplequery(&mysql_handle, tmp_sql) == false )
-				break;
-		}
-
-		// success
-		result = true;
-	} while(0);
-
-	sqldbs_transaction_end(&mysql_handle, result);
-
-	return result;
+	return item_sql_saveitem(item, max, id, tableswitch);
 }
-
-/*==========================================
- * 同期
- *------------------------------------------
- */
 void chardb_sql_sync(void)
 {
 	// nothing to do
@@ -1237,7 +1063,7 @@ bool chardb_sql_init(void)
 	// DB connection initialized
 	bool is_connect;
 
-	is_connect = sqldbs_connect(&mysql_handle, char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset, char_server_keepalive, "CHAR");
+	is_connect = sqldbs_connect_info(&mysql_handle, &char_server_info, "CHAR");
 	if(is_connect == false)
 		return false;
 

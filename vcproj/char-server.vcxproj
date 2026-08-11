@@ -120,6 +120,7 @@
     <ClInclude Include="..\src\char\sql\achievedb_sql.h" />
     <ClInclude Include="..\src\char\sql\accregdb_sql.h" />
     <ClInclude Include="..\src\char\sql\chardb_sql.h" />
+    <ClInclude Include="..\src\char\sql\item_sql.h" />
     <ClInclude Include="..\src\char\sql\charlog_sql.h" />
     <ClInclude Include="..\src\char\sql\elemdb_sql.h" />
     <ClInclude Include="..\src\char\sql\guilddb_sql.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="..\src\char\sql\achievedb_sql.c" />
     <ClCompile Include="..\src\char\sql\accregdb_sql.c" />
     <ClCompile Include="..\src\char\sql\chardb_sql.c" />
+    <ClCompile Include="..\src\char\sql\item_sql.c" />
     <ClCompile Include="..\src\char\sql\charlog_sql.c" />
     <ClCompile Include="..\src\char\sql\elemdb_sql.c" />
     <ClCompile Include="..\src\char\sql\guilddb_sql.c" />

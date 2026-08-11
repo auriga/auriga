@@ -39,10 +39,8 @@ int mapreg_dirty = 0;
 char mapreg_txt[256] = "save/mapreg.txt";
 
 #ifdef TXT_JOURNAL
-static int mapreg_journal_enable = 1;
+static struct journal_config mapreg_journal_cfg = { 1, "./save/mapreg.journal", 1000 };
 static struct journal mapreg_journal;
-static char mapreg_journal_file[1024] = "./save/mapreg.journal";
-static int mapreg_journal_cache = 1000;
 
 struct mapreg_data {
 	char name[256];
@@ -61,15 +59,9 @@ int mapreg_txt_config_read_sub(const char *w1, const char *w2)
 		auriga_strlcpy(mapreg_txt, w2, sizeof(mapreg_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"mapreg_journal_enable") == 0) {
-		mapreg_journal_enable = atoi(w2);
+	else if(journal_config_read(&mapreg_journal_cfg, "mapreg_journal", w1, w2)) {
 	}
-	else if(strcmpi(w1,"mapreg_journal_file") == 0) {
-		auriga_strlcpy(mapreg_journal_file, w2, sizeof(mapreg_journal_file));
-	}
-	else if(strcmpi(w1,"mapreg_journal_cache_interval") == 0) {
-		mapreg_journal_cache = atoi(w2);
-	}
+
 #endif
 	else {
 		return 0;
@@ -102,7 +94,7 @@ bool mapreg_txt_setreg(int num, int val, int eternal)
 		mapreg_dirty = 1;
 
 #ifdef TXT_JOURNAL
-		if( mapreg_journal_enable ) {
+		if( mapreg_journal_cfg.enable ) {
 			if(val != 0) {
 				struct mapreg_data data;
 
@@ -150,7 +142,7 @@ bool mapreg_txt_setregstr(int num, const char *str, int eternal)
 		mapreg_dirty = 1;
 
 #ifdef TXT_JOURNAL
-		if( mapreg_journal_enable ) {
+		if( mapreg_journal_cfg.enable ) {
 			if(str && *str) {
 				struct mapreg_data data;
 
@@ -288,25 +280,11 @@ static bool mapreg_txt_load(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( mapreg_journal_enable )
+	if( journal_setup_with_convert( &mapreg_journal, &mapreg_journal_cfg, sizeof(struct mapreg_data), mapreg_journal_rollforward, mapreg_journal_convert, "map: mapreg_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load_with_convert( &mapreg_journal, sizeof(struct mapreg_data), mapreg_journal_file, mapreg_journal_convert ) )
-		{
-			int c = journal_rollforward( &mapreg_journal, mapreg_journal_rollforward );
-
-			printf("map: mapreg_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			mapreg_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &mapreg_journal );
-			journal_create( &mapreg_journal, sizeof(struct mapreg_data), mapreg_journal_cache, mapreg_journal_file );
-		}
+		mapreg_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -363,11 +341,10 @@ static int mapreg_txt_sync(void)
 	mapreg_dirty = 0;
 
 #ifdef TXT_JOURNAL
-	if( mapreg_journal_enable )
+	if( mapreg_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &mapreg_journal );
-		journal_create( &mapreg_journal, sizeof(struct mapreg_data), mapreg_journal_cache, mapreg_journal_file );
+		journal_recreate( &mapreg_journal, &mapreg_journal_cfg, sizeof(struct mapreg_data) );
 	}
 #endif
 
@@ -408,7 +385,7 @@ int mapreg_txt_final(void)
 		numdb_final(mapregstr_db, mapreg_txt_strdb_final);
 
 #ifdef TXT_JOURNAL
-	if( mapreg_journal_enable )
+	if( mapreg_journal_cfg.enable )
 		journal_final( &mapreg_journal );
 #endif
 

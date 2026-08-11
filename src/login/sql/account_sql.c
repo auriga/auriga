@@ -33,17 +33,7 @@
 #include "../login.h"
 #include "account_sql.h"
 
-struct sql_config {
-	unsigned short login_server_port;
-	char login_server_ip[32];
-	char login_server_id[32];
-	char login_server_pw[32];
-	char login_server_db[32];
-	char login_server_charset[32];
-	int  login_server_keepalive;
-};
-
-static struct sql_config config;
+static struct sqldbs_conninfo config;
 static struct dbt *account_db = NULL;
 
 /*==========================================
@@ -52,13 +42,7 @@ static struct dbt *account_db = NULL;
  */
 void account_sql_set_default_configvalue(void)
 {
-	config.login_server_port = 3306;
-	auriga_strlcpy(config.login_server_ip, "127.0.0.1", sizeof(config.login_server_ip));
-	auriga_strlcpy(config.login_server_id, "ragnarok", sizeof(config.login_server_id));
-	auriga_strlcpy(config.login_server_pw, "ragnarok", sizeof(config.login_server_pw));
-	auriga_strlcpy(config.login_server_db, "ragnarok", sizeof(config.login_server_db));
-	auriga_strlcpy(config.login_server_charset, "", sizeof(config.login_server_charset));
-	config.login_server_keepalive = 0;
+	sqldbs_conninfo_set_defaults(&config);
 
 	return;
 }
@@ -69,35 +53,22 @@ void account_sql_set_default_configvalue(void)
  */
 int account_sql_config_read_sub(const char *w1, const char *w2)
 {
-	if( strcmpi(w1,"login_server_ip") == 0 )
-		auriga_strlcpy(config.login_server_ip, w2, sizeof(config.login_server_ip));
-	else if( strcmpi(w1,"login_server_port") == 0 )
+	if( strcmpi(w1,"login_server_port") == 0 )
 	{
 		int n = atoi(w2);
 		if( n < 1024 || n > 65535 )
 		{
 			printf("Warning: Invalid login_server_port value: %d. Set to 3306 (default).\n", n);
-			config.login_server_port = 3306; // default
+			config.port = 3306; // default
 		}
 		else
 		{
-			config.login_server_port = (unsigned short)n;
+			config.port = (unsigned short)n;
 		}
+		return 1;
 	}
-	else if( strcmpi(w1, "login_server_id") == 0 )
-		auriga_strlcpy(config.login_server_id, w2, sizeof(config.login_server_id));
-	else if( strcmpi(w1, "login_server_pw") == 0 )
-		auriga_strlcpy(config.login_server_pw, w2, sizeof(config.login_server_pw));
-	else if( strcmpi(w1, "login_server_db") == 0 )
-		auriga_strlcpy(config.login_server_db, w2, sizeof(config.login_server_db));
-	else if( strcmpi(w1, "login_server_charset") == 0 )
-		auriga_strlcpy(config.login_server_charset, w2, sizeof(config.login_server_charset));
-	else if( strcmpi(w1, "login_server_keepalive") == 0 )
-		config.login_server_keepalive = atoi(w2);
-	else
-		return 0;
 
-	return 1;
+	return sqldbs_conninfo_config_read(&config, "login_server", w1, w2);
 }
 
 /*==========================================
@@ -106,10 +77,10 @@ int account_sql_config_read_sub(const char *w1, const char *w2)
  */
 void display_conf_warnings_sql(void)
 {
-	if( config.login_server_pw[0] == '\0' )
+	if( config.passwd[0] == '\0' )
 		printf("SQL SECURITY warning: login_server_pw is not defined (void).\n");
-	else if( strcmp(config.login_server_pw, "ragnarok") == 0 )
-		printf("SQL SECURITY warning: using default login_server_pw ('%s').\n", config.login_server_pw);
+	else if( strcmp(config.passwd, "ragnarok") == 0 )
+		printf("SQL SECURITY warning: using default login_server_pw ('%s').\n", config.passwd);
 
 	return;
 }
@@ -486,7 +457,7 @@ bool account_sql_init(void)
 	bool is_connect;
 
 	// DB connection start
-	is_connect = sqldbs_connect(&mysql_handle, config.login_server_ip, config.login_server_id, config.login_server_pw, config.login_server_db, config.login_server_port, config.login_server_charset, config.login_server_keepalive, "LOGIN");
+	is_connect = sqldbs_connect_info(&mysql_handle, &config, "LOGIN");
 
 	// DB connection error
 	if( is_connect == false )

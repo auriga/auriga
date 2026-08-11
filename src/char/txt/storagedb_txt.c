@@ -42,14 +42,10 @@ static char storage_txt[1024] = "save/storage.txt";
 static char guild_storage_txt[1024] = "save/g_storage.txt";
 
 #ifdef TXT_JOURNAL
-static int storage_journal_enable = 1;
+static struct journal_config storage_journal_cfg = { 1, "./save/storage.journal", 1000 };
 static struct journal storage_journal;
-static char storage_journal_file[1024] = "./save/storage.journal";
-static int storage_journal_cache = 1000;
-static int guild_storage_journal_enable = 1;
+static struct journal_config guild_storage_journal_cfg = { 1, "./save/g_storage.journal", 1000 };
 static struct journal guild_storage_journal;
-static char guild_storage_journal_file[1024] = "./save/g_storage.journal";
-static int guild_storage_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -65,23 +61,9 @@ int storagedb_txt_config_read_sub(const char* w1,const char* w2)
 		strncpy(guild_storage_txt, w2, sizeof(guild_storage_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"storage_journal_enable")==0){
-		storage_journal_enable = atoi( w2 );
+	else if(journal_config_read(&storage_journal_cfg, "storage_journal", w1, w2)) {
 	}
-	else if(strcmpi(w1,"storage_journal_file")==0){
-		strncpy( storage_journal_file, w2, sizeof(storage_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"storage_journal_cache_interval")==0){
-		storage_journal_cache = atoi( w2 );
-	}
-	else if(strcmpi(w1,"guild_storage_journal_enable")==0){
-		guild_storage_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"guild_storage_journal_file")==0){
-		strncpy( guild_storage_journal_file, w2, sizeof(guild_storage_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"guild_storage_journal_cache_interval")==0){
-		guild_storage_journal_cache = atoi( w2 );
+	else if(journal_config_read(&guild_storage_journal_cfg, "guild_storage_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -250,7 +232,7 @@ bool storagedb_txt_save(struct storage *s2)
 	}
 	memcpy(s1, s2, sizeof(struct storage));
 #ifdef TXT_JOURNAL
-	if( storage_journal_enable )
+	if( storage_journal_cfg.enable )
 		journal_write( &storage_journal, s1->account_id, s1 );
 #endif
 	return true;
@@ -289,11 +271,10 @@ int storagedb_txt_sync(void)
 	lock_fclose(fp, storage_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( storage_journal_enable )
+	if( storage_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &storage_journal );
-		journal_create( &storage_journal, sizeof(struct storage), storage_journal_cache, storage_journal_file );
+		journal_recreate( &storage_journal, &storage_journal_cfg, sizeof(struct storage) );
 	}
 #endif
 	return 0;
@@ -317,7 +298,7 @@ bool storagedb_txt_delete(int account_id)
 		numdb_erase(storage_db, account_id);
 		aFree(s);
 #ifdef TXT_JOURNAL
-		if( storage_journal_enable )
+		if( storage_journal_cfg.enable )
 			journal_write( &storage_journal, account_id, NULL );
 #endif
 	}
@@ -487,7 +468,7 @@ bool gstoragedb_txt_save(struct guild_storage *gs2, int easy)
 	}
 	memcpy(gs1, gs2, sizeof(struct guild_storage));
 #ifdef TXT_JOURNAL
-	if( guild_storage_journal_enable )
+	if( guild_storage_journal_cfg.enable )
 		journal_write( &guild_storage_journal, gs1->guild_id, gs1 );
 #endif
 	return true;
@@ -528,12 +509,10 @@ int gstoragedb_txt_sync(void)
 	lock_fclose(fp, guild_storage_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( guild_storage_journal_enable )
+	if( guild_storage_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &guild_storage_journal );
-		journal_create( &guild_storage_journal, sizeof(struct guild_storage),
-						 guild_storage_journal_cache, guild_storage_journal_file );
+		journal_recreate( &guild_storage_journal, &guild_storage_journal_cfg, sizeof(struct guild_storage) );
 	}
 #endif
 	return 0;
@@ -557,7 +536,7 @@ bool gstoragedb_txt_delete(int guild_id)
 		numdb_erase(gstorage_db, guild_id);
 		aFree(gs);
 #ifdef TXT_JOURNAL
-		if( guild_storage_journal_enable )
+		if( guild_storage_journal_cfg.enable )
 			journal_write( &guild_storage_journal, guild_id, NULL );
 #endif
 	}
@@ -681,25 +660,11 @@ static bool storagedb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( storage_journal_enable )
+	if( journal_setup( &storage_journal, &storage_journal_cfg, sizeof(struct storage), storage_journal_rollforward, "inter: storage_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &storage_journal, sizeof(struct storage), storage_journal_file ) )
-		{
-			int c = journal_rollforward( &storage_journal, storage_journal_rollforward );
-
-			printf("int_storage: storage_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			storagedb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &storage_journal );
-			journal_create( &storage_journal, sizeof(struct storage), storage_journal_cache, storage_journal_file );
-		}
+		storagedb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -743,26 +708,11 @@ static bool gstoragedb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( guild_storage_journal_enable )
+	if( journal_setup( &guild_storage_journal, &guild_storage_journal_cfg, sizeof(struct guild_storage), guild_storage_journal_rollforward, "inter: guild_storage_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &guild_storage_journal, sizeof(struct guild_storage), guild_storage_journal_file ) )
-		{
-			int c = journal_rollforward( &guild_storage_journal, guild_storage_journal_rollforward );
-
-			printf("int_storage: guild_storage_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			gstoragedb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &guild_storage_journal );
-			journal_create( &guild_storage_journal, sizeof(struct guild_storage),
-							 guild_storage_journal_cache, guild_storage_journal_file );
-		}
+		gstoragedb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -787,7 +737,7 @@ void storagedb_txt_final(void)
 		numdb_final(storage_db, storage_db_final);
 
 #ifdef TXT_JOURNAL
-	if( storage_journal_enable )
+	if( storage_journal_cfg.enable )
 	{
 		journal_final( &storage_journal );
 	}
@@ -813,7 +763,7 @@ void gstoragedb_txt_final(void)
 		numdb_final(gstorage_db, gstorage_db_final);
 
 #ifdef TXT_JOURNAL
-	if( guild_storage_journal_enable )
+	if( guild_storage_journal_cfg.enable )
 	{
 		journal_final( &guild_storage_journal );
 	}

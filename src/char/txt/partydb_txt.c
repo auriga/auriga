@@ -41,10 +41,8 @@ static char party_txt[1024] = "save/party.txt";
 static int party_newid=100;
 
 #ifdef TXT_JOURNAL
-static int party_journal_enable = 1;
+static struct journal_config party_journal_cfg = { 1, "./save/party.journal", 1000 };
 static struct journal party_journal;
-static char party_journal_file[1024] = "./save/party.journal";
-static int party_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -56,12 +54,8 @@ int partydb_txt_config_read_sub(const char *w1,const char *w2)
 	if( strcmpi(w1,"party_txt") == 0 )
 		auriga_strlcpy(party_txt, w2, sizeof(party_txt));
 #ifdef TXT_JOURNAL
-	else if( strcmpi(w1,"party_journal_enable") == 0 )
-		party_journal_enable = atoi( w2 );
-	else if( strcmpi(w1,"party_journal_file") == 0 )
-		auriga_strlcpy( party_journal_file, w2, sizeof(party_journal_file) );
-	else if( strcmpi(w1,"party_journal_cache_interval") == 0 )
-		party_journal_cache = atoi( w2 );
+	else if(journal_config_read(&party_journal_cfg, "party_journal", w1, w2)) {
+	}
 #endif
 	else
 		return 0;
@@ -229,25 +223,11 @@ static bool partydb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( party_journal_enable )
+	if( journal_setup( &party_journal, &party_journal_cfg, sizeof(struct party), party_journal_rollforward, "inter: party_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &party_journal, sizeof(struct party), party_journal_file ) )
-		{
-			int c = journal_rollforward( &party_journal, party_journal_rollforward );
-
-			printf("int_party: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			partydb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &party_journal );
-			journal_create( &party_journal, sizeof(struct party), party_journal_cache, party_journal_file );
-		}
+		partydb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -285,11 +265,10 @@ int partydb_txt_sync(void)
 	lock_fclose(fp, party_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( party_journal_enable )
+	if( party_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &party_journal );
-		journal_create( &party_journal, sizeof(struct party), party_journal_cache, party_journal_file );
+		journal_recreate( &party_journal, &party_journal_cfg, sizeof(struct party) );
 	}
 #endif
 
@@ -351,7 +330,7 @@ bool partydb_txt_save(struct party *p2)
 	}
 	memcpy(p1, p2, sizeof(struct party));
 #ifdef TXT_JOURNAL
-	if( party_journal_enable )
+	if( party_journal_cfg.enable )
 		journal_write( &party_journal, p1->party_id, p1 );
 #endif
 	return true;
@@ -369,7 +348,7 @@ bool partydb_txt_delete(int party_id)
 		numdb_erase(party_db, p->party_id);
 		aFree(p);
 #ifdef TXT_JOURNAL
-		if( party_journal_enable )
+		if( party_journal_cfg.enable )
 			journal_write( &party_journal, party_id, NULL );
 #endif
 	}
@@ -387,7 +366,7 @@ bool partydb_txt_new(struct party *p)
 	p->party_id = party_newid++;
 	numdb_insert(party_db, p->party_id, p);
 #ifdef TXT_JOURNAL
-	if( party_journal_enable )
+	if( party_journal_cfg.enable )
 		journal_write( &party_journal, p->party_id, p );
 #endif
 	return true;
@@ -412,7 +391,7 @@ void partydb_txt_final(void)
 		numdb_final(party_db, partydb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( party_journal_enable )
+	if( party_journal_cfg.enable )
 	{
 		journal_final( &party_journal );
 	}

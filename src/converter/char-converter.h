@@ -32,11 +32,4 @@ struct mmo_chardata {
 	struct registry reg;
 };
 
-enum {
-	TABLE_INVENTORY,
-	TABLE_CART,
-	TABLE_STORAGE,
-	TABLE_GUILD_STORAGE,
-};
-
 #endif /* _CHAR_CONVERTER_H_ */
