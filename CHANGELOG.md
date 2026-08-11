@@ -1,9 +1,14 @@
 ----------------------------------------
-//1621 [2026/08/10] by Cocoa
+//1620 [2026/08/10] by Cocoa
 
 ・Issue #58: txt ジャーナル配線を journal_config / journal_setup / journal_recreate に共通化（挙動変更なし）（journal.c, journal.h, *_txt.c, guilddb_txt.h, int_guild.c, doc/journal.txt）
 
 ・fix: gstoragedb_txt_save が個人倉庫ジャーナルへ書いていたのを guild_storage_journal へ修正（#93 と同内容・journal_config 化後の識別子）（storagedb_txt.c）
+
+----------------------------------------
+//1619 [2026/08/10] by Cocoa
+
+・Issue #58: SQL 接続設定を sqldbs_conninfo に共通化（login/char/map/converter）（挙動変更なし）（sqldbs.c, sqldbs.h, account_sql.c, chardb_sql.c, mapreg_sql.c, converter.c）
 
 --------------------------------------------------------------------------------
 //1618 [2026/08/10] by Cocoa

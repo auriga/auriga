@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "utils.h"
 #include "db.h"
@@ -758,6 +759,72 @@ void sqldbs_close(struct sqldbs_handle *hd)
  * Ú‘±
  *------------------------------------------
  */
+void sqldbs_conninfo_set_defaults(struct sqldbs_conninfo *info)
+{
+	if(info == NULL)
+		return;
+
+	memset(info, 0, sizeof(*info));
+	info->port = 3306;
+	auriga_strlcpy(info->host, "127.0.0.1", sizeof(info->host));
+	auriga_strlcpy(info->user, "ragnarok", sizeof(info->user));
+	auriga_strlcpy(info->passwd, "ragnarok", sizeof(info->passwd));
+	auriga_strlcpy(info->db, "ragnarok", sizeof(info->db));
+	auriga_strlcpy(info->charset, "", sizeof(info->charset));
+	info->keepalive = 0;
+}
+
+int sqldbs_conninfo_config_read_ex(struct sqldbs_conninfo *info, const char *prefix, const char *db_suffix, const char *w1, const char *w2)
+{
+	char key[64];
+
+	if(info == NULL || prefix == NULL || db_suffix == NULL || w1 == NULL || w2 == NULL)
+		return 0;
+
+	snprintf(key, sizeof(key), "%s_ip", prefix);
+	if(strcmpi(w1, key) == 0) {
+		auriga_strlcpy(info->host, w2, sizeof(info->host));
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_port", prefix);
+	if(strcmpi(w1, key) == 0) {
+		info->port = (unsigned short)atoi(w2);
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_id", prefix);
+	if(strcmpi(w1, key) == 0) {
+		auriga_strlcpy(info->user, w2, sizeof(info->user));
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_pw", prefix);
+	if(strcmpi(w1, key) == 0) {
+		auriga_strlcpy(info->passwd, w2, sizeof(info->passwd));
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_%s", prefix, db_suffix);
+	if(strcmpi(w1, key) == 0) {
+		auriga_strlcpy(info->db, w2, sizeof(info->db));
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_charset", prefix);
+	if(strcmpi(w1, key) == 0) {
+		auriga_strlcpy(info->charset, w2, sizeof(info->charset));
+		return 1;
+	}
+	snprintf(key, sizeof(key), "%s_keepalive", prefix);
+	if(strcmpi(w1, key) == 0) {
+		info->keepalive = atoi(w2);
+		return 1;
+	}
+
+	return 0;
+}
+
+int sqldbs_conninfo_config_read(struct sqldbs_conninfo *info, const char *prefix, const char *w1, const char *w2)
+{
+	return sqldbs_conninfo_config_read_ex(info, prefix, "db", w1, w2);
+}
+
 bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user, const char *passwd,
 	const char *db, unsigned short port, const char *charset, int keepalive, const char *tag)
 {
@@ -802,6 +869,15 @@ bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user
 		hd->tag = (char *)aStrdup(tag);
 
 	return true;
+}
+
+bool sqldbs_connect_info(struct sqldbs_handle *hd, const struct sqldbs_conninfo *info, const char *tag)
+{
+	if(info == NULL)
+		return false;
+
+	return sqldbs_connect(hd, info->host, info->user, info->passwd, info->db,
+		info->port, info->charset, info->keepalive, tag);
 }
 
 #endif /* ifndef TXT_ONLY */
