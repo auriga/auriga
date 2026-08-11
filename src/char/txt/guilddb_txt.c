@@ -41,15 +41,11 @@ static char guild_txt[1024]  = "save/guild.txt";
 static char castle_txt[1024] = "save/castle.txt";
 
 #ifdef TXT_JOURNAL
-static int guild_journal_enable = 1;
+static struct journal_config guild_journal_cfg = { 1, "./save/guild.journal", 1000 };
 static struct journal guild_journal;
-static char guild_journal_file[1024] = "./save/guild.journal";
-static int guild_journal_cache = 1000;
 
-int guildcastle_journal_enable = 1;
+struct journal_config guildcastle_journal_cfg = { 1, "./save/castle.journal", 1000 };
 struct journal guildcastle_journal;
-static char guildcastle_journal_file[1024] = "./save/castle.journal";
-static int guildcastle_journal_cache = 1000;
 
 #endif
 
@@ -66,24 +62,12 @@ int guilddb_txt_config_read_sub(const char* w1,const char *w2)
 		auriga_strlcpy(castle_txt,w2,sizeof(castle_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"guild_journal_enable")==0){
-		guild_journal_enable = atoi( w2 );
+	else if(journal_config_read(&guild_journal_cfg, "guild_journal", w1, w2)) {
 	}
-	else if(strcmpi(w1,"guild_journal_file")==0){
-		auriga_strlcpy( guild_journal_file, w2, sizeof(guild_journal_file) );
+
+	else if(journal_config_read(&guildcastle_journal_cfg, "castle_journal", w1, w2)) {
 	}
-	else if(strcmpi(w1,"guild_journal_cache_interval")==0){
-		guild_journal_cache = atoi( w2 );
-	}
-	else if(strcmpi(w1,"castle_journal_enable")==0){
-		guildcastle_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"castle_journal_file")==0){
-		auriga_strlcpy( guildcastle_journal_file, w2, sizeof(guildcastle_journal_file) );
-	}
-	else if(strcmpi(w1,"castle_journal_cache_interval")==0){
-		guildcastle_journal_cache = atoi( w2 );
-	}
+
 #endif
 	else {
 		return 0;
@@ -438,25 +422,11 @@ static bool guilddb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( guild_journal_enable )
+	if( journal_setup( &guild_journal, &guild_journal_cfg, sizeof(struct guild), guild_journal_rollforward, "int_guild: guild_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &guild_journal, sizeof(struct guild), guild_journal_file ) )
-		{
-			int c = journal_rollforward( &guild_journal, guild_journal_rollforward );
-
-			printf("int_guild: guild_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			guilddb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &guild_journal );
-			journal_create( &guild_journal, sizeof(struct guild), guild_journal_cache, guild_journal_file );
-		}
+		guilddb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -507,11 +477,10 @@ int guilddb_txt_sync(void)
 	lock_fclose(fp, guild_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( guild_journal_enable )
+	if( guild_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &guild_journal );
-		journal_create( &guild_journal, sizeof(struct guild), guild_journal_cache, guild_journal_file );
+		journal_recreate( &guild_journal, &guild_journal_cfg, sizeof(struct guild) );
 	}
 #endif
 
@@ -562,7 +531,7 @@ static int guilddb_txt_delete_sub(void *key, void *data, va_list ap)
 		{
 			g->alliance[i].guild_id = 0;
 #ifdef TXT_JOURNAL
-			if( guild_journal_enable )
+			if( guild_journal_cfg.enable )
 				journal_write( &guild_journal, g->guild_id, g );
 #endif
 		}
@@ -582,7 +551,7 @@ bool guilddb_txt_delete(int guild_id)
 		aFree(g);
 
 #ifdef TXT_JOURNAL
-		if( guild_journal_enable )
+		if( guild_journal_cfg.enable )
 			journal_write( &guild_journal, guild_id, NULL );
 #endif
 	}
@@ -605,7 +574,7 @@ bool guilddb_txt_new(struct guild *g2)
 	memcpy(g1, g2, sizeof(struct guild));
 	numdb_insert(guild_db, g2->guild_id, g1);
 #ifdef TXT_JOURNAL
-	if( guild_journal_enable )
+	if( guild_journal_cfg.enable )
 		journal_write( &guild_journal, g1->guild_id, g1 );
 #endif
 
@@ -629,7 +598,7 @@ bool guilddb_txt_save(struct guild* g2)
 	}
 	memcpy(g1, g2, sizeof(struct guild));
 #ifdef TXT_JOURNAL
-	if( guild_journal_enable )
+	if( guild_journal_cfg.enable )
 		journal_write( &guild_journal, g1->guild_id, g1 );
 #endif
 	return true;
@@ -765,25 +734,11 @@ static bool guildcastle_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( guildcastle_journal_enable )
+	if( journal_setup( &guildcastle_journal, &guildcastle_journal_cfg, sizeof(struct guild_castle), guildcastle_journal_rollforward, "int_guild: castle_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &guildcastle_journal, sizeof(struct guild_castle), guildcastle_journal_file ) )
-		{
-			int c = journal_rollforward( &guildcastle_journal, guildcastle_journal_rollforward );
-
-			printf("int_guild: castle_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			guildcastle_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &guildcastle_journal );
-			journal_create( &guildcastle_journal, sizeof(struct guild_castle), guildcastle_journal_cache, guildcastle_journal_file );
-		}
+		guildcastle_txt_sync();
 	}
+
 #endif
 	return ret;
 }
@@ -810,11 +765,10 @@ static int guildcastle_txt_sync(void)
 	lock_fclose(fp, castle_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( guildcastle_journal_enable )
+	if( guildcastle_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &guildcastle_journal );
-		journal_create( &guildcastle_journal, sizeof(struct guild_castle), guildcastle_journal_cache, guildcastle_journal_file );
+		journal_recreate( &guildcastle_journal, &guildcastle_journal_cfg, sizeof(struct guild_castle) );
 	}
 #endif
 
@@ -840,11 +794,11 @@ void guilddb_txt_final(void)
 		numdb_final(guild_db, guild_txt_db_final);
 
 #ifdef TXT_JOURNAL
-	if( guild_journal_enable )
+	if( guild_journal_cfg.enable )
 	{
 		journal_final( &guild_journal );
 	}
-	if( guildcastle_journal_enable )
+	if( guildcastle_journal_cfg.enable )
 	{
 		journal_final( &guildcastle_journal );
 	}

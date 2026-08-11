@@ -36,10 +36,8 @@ static char achieve_txt[1024] = "save/achieve.txt";
 static struct dbt *achieve_db = NULL;
 
 #ifdef TXT_JOURNAL
-static int achieve_journal_enable = 1;
+static struct journal_config achieve_journal_cfg = { 1, "./save/achieve.journal", 1000 };
 static struct journal achieve_journal;
-static char achieve_journal_file[1024] = "./save/achieve.journal";
-static int achieve_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -52,14 +50,7 @@ int achievedb_txt_config_read_sub(const char *w1, const char *w2)
 		auriga_strlcpy(achieve_txt, w2, sizeof(achieve_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"achieve_journal_enable")==0) {
-		achieve_journal_enable = atoi(w2);
-	}
-	else if(strcmpi(w1,"achieve_journal_file")==0) {
-		auriga_strlcpy(achieve_journal_file, w2, sizeof(achieve_journal_file));
-	}
-	else if(strcmpi(w1,"achieve_journal_cache_interval")==0) {
-		achieve_journal_cache = atoi(w2);
+	else if(journal_config_read(&achieve_journal_cfg, "achieve_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -223,25 +214,11 @@ static bool achievedb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( achieve_journal_enable )
+	if( journal_setup( &achieve_journal, &achieve_journal_cfg, sizeof(struct achieve), achieve_journal_rollforward, "inter: achieve_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &achieve_journal, sizeof(struct achieve), achieve_journal_file ) )
-		{
-			int c = journal_rollforward( &achieve_journal, achieve_journal_rollforward );
-
-			printf("int_achieve: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			achievedb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &achieve_journal );
-			journal_create( &achieve_journal, sizeof(struct achieve), achieve_journal_cache, achieve_journal_file );
-		}
+		achievedb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -282,11 +259,10 @@ int achievedb_txt_sync(void)
 	lock_fclose(fp, achieve_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( achieve_journal_enable )
+	if( achieve_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &achieve_journal );
-		journal_create( &achieve_journal, sizeof(struct achieve), achieve_journal_cache, achieve_journal_file );
+		journal_recreate( &achieve_journal, &achieve_journal_cfg, sizeof(struct achieve) );
 	}
 #endif
 
@@ -308,7 +284,7 @@ bool achievedb_txt_delete(int char_id)
 	aFree(a);
 
 #ifdef TXT_JOURNAL
-	if( achieve_journal_enable )
+	if( achieve_journal_cfg.enable )
 		journal_write( &achieve_journal, char_id, NULL );
 #endif
 
@@ -347,7 +323,7 @@ bool achievedb_txt_save(struct achieve *a2)
 		memcpy(a1, a2, sizeof(struct achieve));
 
 #ifdef TXT_JOURNAL
-	if( achieve_journal_enable )
+	if( achieve_journal_cfg.enable )
 		journal_write( &achieve_journal, a1->char_id, a1 );
 #endif
 	return true;
@@ -372,7 +348,7 @@ void achievedb_txt_final(void)
 		numdb_final(achieve_db, achievedb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( achieve_journal_enable )
+	if( achieve_journal_cfg.enable )
 	{
 		journal_final( &achieve_journal );
 	}

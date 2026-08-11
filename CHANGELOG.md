@@ -1,71 +1,95 @@
 ----------------------------------------
+//1621 [2026/08/11] by Cocoa
+
+・Issue #58: アイテム SQL load/save を item_sql へ抽出し、converter の saveitem を現行スキーマに同期（opt 列欠落を修正）（item_sql.c, item_sql.h, chardb_sql.c, chardb_sql.h, maildb_sql.c, char-converter.c, char-converter.h, Makefile, char-server.vcxproj, char-server.vcxproj.filters）
+
+----------------------------------------
 //1620 [2026/08/10] by Cocoa
 
-・Issue #58: アイテム SQL load/save を item_sql へ抽出し、converter の saveitem を現行スキーマに同期（opt 列欠落を修正）（item_sql.c, item_sql.h, chardb_sql.c, chardb_sql.h, maildb_sql.c, char-converter.c, char-converter.h, Makefile, char-server.vcxproj）
---------------------------------------------------------------------------------
+・Issue #58: txt ジャーナル配線を journal_config / journal_setup / journal_recreate に共通化（挙動変更なし）（journal.c, journal.h, *_txt.c, guilddb_txt.h, int_guild.c, doc/journal.txt）
+
+・fix: gstoragedb_txt_save が個人倉庫ジャーナルへ書いていたのを guild_storage_journal へ修正（#93 と同内容・journal_config 化後の識別子）（storagedb_txt.c）
+
+----------------------------------------
 //1619 [2026/08/10] by Cocoa
 
 ・Issue #58: SQL 接続設定を sqldbs_conninfo に共通化（login/char/map/converter）（挙動変更なし）（sqldbs.c, sqldbs.h, account_sql.c, chardb_sql.c, mapreg_sql.c, converter.c）
+
 --------------------------------------------------------------------------------
 //1618 [2026/08/10] by Cocoa
 
 ・Issue #57: status_calc_pc / status_change_start / status_change_end をリファクタ。L_RECALC 再入を status_calc_ctrl で Unity 固定し、calc を phase 分割のうえ status_calc_pc.c へ、start/end を別 TU へ分離。SC ハンドラテーブルを導入し代表バッチを移行（挙動変更なし）（status.c, status_calc_ctrl.c, status_calc_ctrl.h, status_calc_pc.c, status_change_start.c, status_change_end.c, status_change_handlers.c, status_internal.h, tests/, map-server.vcxproj）
+
 ----------------------------------------
 //1617 [2026/08/09] by Cocoa
 
 ・Unity によるユニットテスト基盤を追加。`make test` / `tests\vc_test.bat` と GitHub Actions（Linux GCC/Clang・macOS Clang・Windows MSVC 2022/2026）で実行可能に。md5calc / HMAC-MD5、utils、linkdb / numdb / strdb / csvdb、nullpo、DIFF_TICK 等をカバー（挙動変更なし）（third_party/unity/, tests/, Makefile, .github/workflows/unit-test-*.yml, doc/unit_test.txt）
+
 ----------------------------------------
 //1616 [2026/08/09] by Cocoa
 
 ・script.c の未使用ヘッダー削除と余分な空行整理。buildin 分割後に残っていた #include とセクション見出し前の二重空行を除去（挙動変更なし）（script.c）
+
 ----------------------------------------
 //1615 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第12弾）: 残り misc 系（time / map util / string / sql / unit / achievement 等）を buildin_misc.c へ分離。エンジン核（goto/set/array/jump_zero）は script.c に残置。getmapxy/sqlquery の str_buf 直参照を get_str() に置換。script_sql_enabled() / mysql_handle_script を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_misc.c, script_internal.h, map-server.vcxproj）
+
 ----------------------------------------
 //1614 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第11弾）: memorial dungeon 系を buildin_md.c へ分離（挙動変更なし）（script.c, buildin_md.c, map-server.vcxproj）
+
 ----------------------------------------
 //1613 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第10弾）: misceffect / soundeffect / musiceffect 系を buildin_effect.c へ分離（挙動変更なし）（script.c, buildin_effect.c, map-server.vcxproj）
+
 ----------------------------------------
 //1612 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第9弾）: quest 系を buildin_quest.c へ分離（挙動変更なし）（script.c, buildin_quest.c, map-server.vcxproj）
+
 ----------------------------------------
 //1611 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第8弾）: CSV 系命令を buildin_csv.c へ分離。csvinit/final・getarraysize を script_internal.h 経由で共有。csvreadarray/csvwritearray の str_buf 直参照を get_str() に置換（挙動変更なし）（script.c, buildin_csv.c, script_internal.h, map-server.vcxproj）
+
 ----------------------------------------
 //1610 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第7弾）: monster / guardian / mob skill 系を buildin_mob.c へ分離。getmapmoblist の str_buf 直参照を get_str() に置換（挙動変更なし）（script.c, buildin_mob.c, map-server.vcxproj）
+
 ----------------------------------------
 //1609 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第6弾）: pet / homunculus / mercenary 系を buildin_pet.c へ分離（挙動変更なし）（script.c, buildin_pet.c, map-server.vcxproj）
+
 ----------------------------------------
 //1608 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第5弾）: dialog / UI 系を buildin_dialog.c、PC / status 系を buildin_pc.c へ分離（挙動変更なし）（script.c, buildin_dialog.c, buildin_pc.c, map-server.vcxproj）
+
 ----------------------------------------
 //1607 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第4弾）: party / guild / agit・castle / marriage・adoption 等を buildin_party.c へ分離（挙動変更なし）（script.c, buildin_party.c, map-server.vcxproj）
+
 ----------------------------------------
 //1606 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第3弾）: NPC 制御 / タイマー / waitingroom / npcskill・walk 等を buildin_npc.c へ分離。sleep/awake 用 API を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_npc.c, script_internal.h, map-server.vcxproj）
+
 ----------------------------------------
 //1605 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第2弾）: item / 装備 / 精錬 / カード系命令を buildin_item.c へ分離。refine_posword を script_internal.h 経由で共有（挙動変更なし）（script.c, buildin_item.c, script_internal.h, map-server.vcxproj）
+
 ----------------------------------------
 //1604 [2026/08/09] by Cocoa
 
 ・script.c のビルドイン命令分割（第1弾）: map 系命令（warp / announce / mapflag / pvp・gvg 等）を buildin_map.c へ分離。共有ヘルパーを script_internal.h 経由で公開（挙動変更なし）（script.c, buildin_map.c, script_internal.h, map-server.vcxproj）
+
 ----------------------------------------
 //1603 [2026/08/09] by Cocoa
 

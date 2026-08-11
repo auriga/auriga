@@ -39,10 +39,8 @@ static char scdata_txt[1024] = "save/scdata.txt";
 static struct dbt *scdata_db = NULL;
 
 #ifdef TXT_JOURNAL
-static int status_journal_enable = 1;
+static struct journal_config status_journal_cfg = { 1, "./save/scdata.journal", 1000 };
 static struct journal status_journal;
-static char status_journal_file[1024] = "./save/scdata.journal";
-static int status_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -55,14 +53,7 @@ int statusdb_txt_config_read_sub(const char *w1, const char *w2)
 		auriga_strlcpy(scdata_txt, w2, sizeof(scdata_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"status_journal_enable")==0) {
-		status_journal_enable = atoi(w2);
-	}
-	else if(strcmpi(w1,"status_journal_file")==0) {
-		auriga_strlcpy(status_journal_file, w2, sizeof(status_journal_file));
-	}
-	else if(strcmpi(w1,"status_journal_cache_interval")==0) {
-		status_journal_cache = atoi(w2);
+	else if(journal_config_read(&status_journal_cfg, "status_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -212,25 +203,11 @@ static bool statusdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( status_journal_enable )
+	if( journal_setup( &status_journal, &status_journal_cfg, sizeof(struct scdata), status_journal_rollforward, "inter: status_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &status_journal, sizeof(struct scdata), status_journal_file ) )
-		{
-			int c = journal_rollforward( &status_journal, status_journal_rollforward );
-
-			printf("int_status: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			statusdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &status_journal );
-			journal_create( &status_journal, sizeof(struct scdata), status_journal_cache, status_journal_file );
-		}
+		statusdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -271,11 +248,10 @@ int statusdb_txt_sync(void)
 	lock_fclose(fp, scdata_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( status_journal_enable )
+	if( status_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &status_journal );
-		journal_create( &status_journal, sizeof(struct scdata), status_journal_cache, status_journal_file );
+		journal_recreate( &status_journal, &status_journal_cfg, sizeof(struct scdata) );
 	}
 #endif
 
@@ -297,7 +273,7 @@ bool statusdb_txt_delete(int char_id)
 	aFree(sc);
 
 #ifdef TXT_JOURNAL
-	if( status_journal_enable )
+	if( status_journal_cfg.enable )
 		journal_write( &status_journal, char_id, NULL );
 #endif
 
@@ -337,7 +313,7 @@ bool statusdb_txt_save(struct scdata *sc2)
 		memcpy(sc1, sc2, sizeof(struct scdata));
 
 #ifdef TXT_JOURNAL
-	if( status_journal_enable )
+	if( status_journal_cfg.enable )
 		journal_write( &status_journal, sc1->char_id, sc1 );
 #endif
 	return true;
@@ -362,7 +338,7 @@ void statusdb_txt_final(void)
 		numdb_final(scdata_db, statusdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( status_journal_enable )
+	if( status_journal_cfg.enable )
 	{
 		journal_final( &status_journal );
 	}
