@@ -34,10 +34,8 @@
 #include "account_txt.h"
 
 #ifdef TXT_JOURNAL
-static int login_journal_enable = 1;
+static struct journal_config login_journal_cfg = { 1, "./save/account.journal", 1000 };
 static struct journal login_journal;
-static char login_journal_file[1024]="./save/account.journal";
-static int login_journal_cache = 1000;
 #endif
 
 static char account_filename[1024] = "save/account.txt";
@@ -63,12 +61,9 @@ int account_txt_config_read_sub(const char* w1,const char* w2)
 	if( strcmpi(w1, "account_filename") == 0 )
 		auriga_strlcpy(account_filename, w2, sizeof(account_filename));
 #ifdef TXT_JOURNAL
-	else if( strcmpi(w1, "account_journal_enable") == 0 )
-		login_journal_enable = atoi(w2);
-	else if( strcmpi(w1, "account_journal_file") == 0 )
-		auriga_strlcpy( login_journal_file, w2, sizeof(login_journal_file) );
-	else if( strcmpi(w1, "account_journal_cache_interval") == 0 )
-		login_journal_cache = atoi(w2);
+	else if(journal_config_read(&login_journal_cfg, "account_journal", w1, w2)) {
+	}
+
 #endif
 	else
 		return 0;
@@ -293,25 +288,11 @@ static bool account_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( login_journal_enable )
+	if( journal_setup( &login_journal, &login_journal_cfg, sizeof(struct mmo_account), login_journal_rollforward, "login_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &login_journal, sizeof(struct mmo_account), login_journal_file ) )
-		{
-			int c = journal_rollforward( &login_journal, login_journal_rollforward );
-
-			printf("login_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			account_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &login_journal );
-			journal_create( &login_journal, sizeof(struct mmo_account), login_journal_cache, login_journal_file );
-		}
+		account_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -357,11 +338,10 @@ void account_txt_sync(void)
 	lock_fclose(fp, account_filename, &lock);
 
 #ifdef TXT_JOURNAL
-	if( login_journal_enable )
+	if( login_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &login_journal );
-		journal_create( &login_journal, sizeof(struct mmo_account), login_journal_cache, login_journal_file );
+		journal_recreate( &login_journal, &login_journal_cfg, sizeof(struct mmo_account) );
 	}
 #endif
 
@@ -420,7 +400,7 @@ bool account_txt_account_save(struct mmo_account *account)
 	if(idx >= 0) {
 		memcpy(&auth_dat[idx], account, sizeof(struct mmo_account));
 #ifdef TXT_JOURNAL
-		if( login_journal_enable )
+		if( login_journal_cfg.enable )
 			journal_write( &login_journal, account->account_id, account );
 #endif
 		return false;
@@ -440,7 +420,7 @@ bool account_txt_account_delete(int account_id)
 		memset(&auth_dat[idx], 0, sizeof(struct mmo_account));
 		auth_dat[idx].account_id = account_id;	// アカウントIDは維持
 #ifdef TXT_JOURNAL
-		if( login_journal_enable )
+		if( login_journal_cfg.enable )
 			journal_write( &login_journal, account_id, NULL );
 #endif
 		return false;
@@ -504,7 +484,7 @@ bool account_txt_account_new(struct mmo_account *account, const char *tmpstr)
 	auth_dat[i].account_reg2_num = 0;
 	auth_num++;
 #ifdef TXT_JOURNAL
-	if( login_journal_enable )
+	if( login_journal_cfg.enable )
 		journal_write( &login_journal, auth_dat[i].account_id, &auth_dat[i] );
 #endif
 	return true;
@@ -520,7 +500,7 @@ void account_txt_final(void)
 		aFree(auth_dat);
 
 #ifdef TXT_JOURNAL
-	if( login_journal_enable )
+	if( login_journal_cfg.enable )
 	{
 		journal_final( &login_journal );
 	}

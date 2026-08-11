@@ -38,10 +38,8 @@ static char merc_txt[1024] = "save/mercenary.txt";
 static int merc_newid = 100;
 
 #ifdef TXT_JOURNAL
-static int merc_journal_enable = 1;
+static struct journal_config merc_journal_cfg = { 1, "./save/mercenary.journal", 1000 };
 static struct journal merc_journal;
-static char merc_journal_file[1024] = "./save/mercenary.journal";
-static int merc_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -54,14 +52,7 @@ int mercdb_txt_config_read_sub(const char* w1,const char *w2)
 		auriga_strlcpy(merc_txt, w2, sizeof(merc_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"merc_journal_enable")==0){
-		merc_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"merc_journal_file")==0){
-		strncpy( merc_journal_file, w2, sizeof(merc_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"merc_journal_cache_interval")==0){
-		merc_journal_cache = atoi( w2 );
+	else if(journal_config_read(&merc_journal_cfg, "merc_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -216,25 +207,11 @@ static bool mercdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( merc_journal_enable )
+	if( journal_setup( &merc_journal, &merc_journal_cfg, sizeof(struct mmo_mercstatus), merc_journal_rollforward, "inter: merc_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_file ) )
-		{
-			int c = journal_rollforward( &merc_journal, merc_journal_rollforward );
-
-			printf("int_merc: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			mercdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &merc_journal );
-			journal_create( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_cache, merc_journal_file );
-		}
+		mercdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -272,11 +249,10 @@ int mercdb_txt_sync(void)
 	lock_fclose(fp, merc_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( merc_journal_enable )
+	if( merc_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &merc_journal );
-		journal_create( &merc_journal, sizeof(struct mmo_mercstatus), merc_journal_cache, merc_journal_file );
+		journal_recreate( &merc_journal, &merc_journal_cfg, sizeof(struct mmo_mercstatus) );
 	}
 #endif
 
@@ -299,7 +275,7 @@ bool mercdb_txt_delete(int merc_id)
 	printf("merc_id: %d deleted\n", merc_id);
 
 #ifdef TXT_JOURNAL
-	if( merc_journal_enable )
+	if( merc_journal_cfg.enable )
 		journal_write( &merc_journal, merc_id, NULL );
 #endif
 
@@ -333,7 +309,7 @@ bool mercdb_txt_save(struct mmo_mercstatus *p2)
 	memcpy(p1, p2, sizeof(struct mmo_mercstatus));
 
 #ifdef TXT_JOURNAL
-	if( merc_journal_enable )
+	if( merc_journal_cfg.enable )
 		journal_write( &merc_journal, p1->merc_id, p1 );
 #endif
 	return true;
@@ -377,7 +353,7 @@ void mercdb_txt_final(void)
 		numdb_final(merc_db, mercdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( merc_journal_enable )
+	if( merc_journal_cfg.enable )
 	{
 		journal_final( &merc_journal );
 	}

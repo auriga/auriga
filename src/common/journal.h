@@ -109,4 +109,25 @@ int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int 
 //const char* journal_get( struct journal* j, int key, int* flag );
 //int journal_delete( struct journal* j, int key );
 
+#ifdef TXT_JOURNAL
+struct journal_config {
+	int enable;
+	char file[1024];
+	int cache;
+};
+
+void journal_config_init(struct journal_config *cfg, int enable, const char *file, int cache);
+int journal_config_read(struct journal_config *cfg, const char *prefix, const char *w1, const char *w2);
+
+/* Returns 1 if roll-forward ran (caller should sync txt), 0 otherwise. */
+int journal_setup(struct journal *j, const struct journal_config *cfg, size_t datasize,
+	int (*rollforward)(int key, void *buf, int flag), const char *log_tag);
+int journal_setup_with_convert(struct journal *j, const struct journal_config *cfg, size_t datasize,
+	int (*rollforward)(int key, void *buf, int flag),
+	void (*convert)(struct journal_header *jhd, void *buf), const char *log_tag);
+
+/* Recreate empty journal after txt sync. */
+void journal_recreate(struct journal *j, const struct journal_config *cfg, size_t datasize);
+#endif /* TXT_JOURNAL */
+
 #endif

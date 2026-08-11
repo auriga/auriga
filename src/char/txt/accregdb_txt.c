@@ -38,10 +38,8 @@ static struct dbt *accreg_db = NULL;
 static char accreg_txt[1024] = "save/accreg.txt";
 
 #ifdef TXT_JOURNAL
-static int accreg_journal_enable = 1;
+static struct journal_config accreg_journal_cfg = { 1, "./save/accreg.journal", 1000 };
 static struct journal accreg_journal;
-static char accreg_journal_file[1024] = "./save/accreg.journal";
-static int accreg_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -54,14 +52,7 @@ int accregdb_txt_config_read_sub(const char *w1,const char *w2)
 		strncpy(accreg_txt, w2, sizeof(accreg_txt) - 1);
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"accreg_journal_enable")==0){
-		accreg_journal_enable = atoi( w2 );
-	}
-	else if(strcmpi(w1,"accreg_journal_file")==0){
-		strncpy( accreg_journal_file, w2, sizeof(accreg_journal_file) - 1 );
-	}
-	else if(strcmpi(w1,"accreg_journal_cache_interval")==0){
-		accreg_journal_cache = atoi( w2 );
+	else if(journal_config_read(&accreg_journal_cfg, "accreg_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -193,25 +184,11 @@ static bool accregdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
+	if( journal_setup( &accreg_journal, &accreg_journal_cfg, sizeof(struct accreg), accregdb_journal_rollforward, "inter: accreg_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &accreg_journal, sizeof(struct accreg), accreg_journal_file ) )
-		{
-			int c = journal_rollforward( &accreg_journal, accregdb_journal_rollforward );
-
-			printf("inter: accreg_journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			accregdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &accreg_journal );
-			journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
-		}
+		accregdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -251,11 +228,10 @@ int accregdb_txt_sync(void)
 	lock_fclose(fp, accreg_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
+	if( accreg_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &accreg_journal );
-		journal_create( &accreg_journal, sizeof(struct accreg), accreg_journal_cache, accreg_journal_file );
+		journal_recreate( &accreg_journal, &accreg_journal_cfg, sizeof(struct accreg) );
 	}
 #endif
 
@@ -289,7 +265,7 @@ bool accregdb_txt_save(struct accreg *reg2)
 	memcpy(reg1, reg2, sizeof(struct accreg));
 
 #ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
+	if( accreg_journal_cfg.enable )
 		journal_write( &accreg_journal, reg2->account_id, reg2 );
 #endif
 
@@ -315,7 +291,7 @@ void accregdb_txt_final(void)
 		numdb_final(accreg_db, accregdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( accreg_journal_enable )
+	if( accreg_journal_cfg.enable )
 		journal_final( &accreg_journal );
 #endif
 }

@@ -111,3 +111,13 @@ journal.c
 		よいと思われます。
 		データによってはジャーナルのファイルサイズに大きく影響します。
 
+==========================================================================
+・実装メモ（共通ヘルパ）
+--------------------------------------------------------------------------
+
+・各 txt モジュールの journal_enable / journal_file / journal_cache_interval
+　設定キーは journal_config_read() で共通読み込みする。
+・起動時の load / roll-forward / create は journal_setup()
+　（mapreg は journal_setup_with_convert()）、
+　txt 同期後のジャーナル再作成は journal_recreate() を利用する。
+・セーブ形式および conf キー名は従来どおり。

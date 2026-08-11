@@ -36,10 +36,8 @@ static char quest_txt[1024] = "save/quest.txt";
 static struct dbt *quest_db = NULL;
 
 #ifdef TXT_JOURNAL
-static int quest_journal_enable = 1;
+static struct journal_config quest_journal_cfg = { 1, "./save/quest.journal", 1000 };
 static struct journal quest_journal;
-static char quest_journal_file[1024] = "./save/quest.journal";
-static int quest_journal_cache = 1000;
 #endif
 
 /*==========================================
@@ -52,14 +50,7 @@ int questdb_txt_config_read_sub(const char *w1, const char *w2)
 		auriga_strlcpy(quest_txt, w2, sizeof(quest_txt));
 	}
 #ifdef TXT_JOURNAL
-	else if(strcmpi(w1,"quest_journal_enable")==0) {
-		quest_journal_enable = atoi(w2);
-	}
-	else if(strcmpi(w1,"quest_journal_file")==0) {
-		auriga_strlcpy(quest_journal_file, w2, sizeof(quest_journal_file));
-	}
-	else if(strcmpi(w1,"quest_journal_cache_interval")==0) {
-		quest_journal_cache = atoi(w2);
+	else if(journal_config_read(&quest_journal_cfg, "quest_journal", w1, w2)) {
 	}
 #endif
 	else {
@@ -220,25 +211,11 @@ static bool questdb_txt_read(void)
 	}
 
 #ifdef TXT_JOURNAL
-	if( quest_journal_enable )
+	if( journal_setup( &quest_journal, &quest_journal_cfg, sizeof(struct quest), quest_journal_rollforward, "inter: quest_journal" ) )
 	{
-		// ジャーナルデータのロールフォワード
-		if( journal_load( &quest_journal, sizeof(struct quest), quest_journal_file ) )
-		{
-			int c = journal_rollforward( &quest_journal, quest_journal_rollforward );
-
-			printf("int_quest: journal: roll-forward (%d)\n", c );
-
-			// ロールフォワードしたので、txt データを保存する ( journal も新規作成される)
-			questdb_txt_sync();
-		}
-		else
-		{
-			// ジャーナルを新規作成する
-			journal_final( &quest_journal );
-			journal_create( &quest_journal, sizeof(struct quest), quest_journal_cache, quest_journal_file );
-		}
+		questdb_txt_sync();
 	}
+
 #endif
 
 	return ret;
@@ -279,11 +256,10 @@ int questdb_txt_sync(void)
 	lock_fclose(fp, quest_txt, &lock);
 
 #ifdef TXT_JOURNAL
-	if( quest_journal_enable )
+	if( quest_journal_cfg.enable )
 	{
 		// コミットしたのでジャーナルを新規作成する
-		journal_final( &quest_journal );
-		journal_create( &quest_journal, sizeof(struct quest), quest_journal_cache, quest_journal_file );
+		journal_recreate( &quest_journal, &quest_journal_cfg, sizeof(struct quest) );
 	}
 #endif
 
@@ -305,7 +281,7 @@ bool questdb_txt_delete(int char_id)
 	aFree(q);
 
 #ifdef TXT_JOURNAL
-	if( quest_journal_enable )
+	if( quest_journal_cfg.enable )
 		journal_write( &quest_journal, char_id, NULL );
 #endif
 
@@ -344,7 +320,7 @@ bool questdb_txt_save(struct quest *q2)
 		memcpy(q1, q2, sizeof(struct quest));
 
 #ifdef TXT_JOURNAL
-	if( quest_journal_enable )
+	if( quest_journal_cfg.enable )
 		journal_write( &quest_journal, q1->char_id, q1 );
 #endif
 	return true;
@@ -369,7 +345,7 @@ void questdb_txt_final(void)
 		numdb_final(quest_db, questdb_txt_final_sub);
 
 #ifdef TXT_JOURNAL
-	if( quest_journal_enable )
+	if( quest_journal_cfg.enable )
 	{
 		journal_final( &quest_journal );
 	}
