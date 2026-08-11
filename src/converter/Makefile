@@ -11,6 +11,7 @@ COMMON_SRC += $(shell ls ../common/zlib/*.c)
 endif
 
 CONVERTER_SRC = $(shell ls *.c)
+CONVERTER_SRC += ../char/sql/item_sql.c
 
 txt-converter: $(CONVERTER_SRC:.c=.o) $(COMMON_SRC:.c=.o)
 	$(CC) -o ../../$@ $> $(LIBS)

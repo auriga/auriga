@@ -1,4 +1,9 @@
 ----------------------------------------
+//1621 [2026/08/11] by Cocoa
+
+・Issue #58: アイテム SQL load/save を item_sql へ抽出し、converter の saveitem を現行スキーマに同期（opt 列欠落を修正）（item_sql.c, item_sql.h, chardb_sql.c, chardb_sql.h, maildb_sql.c, char-converter.c, char-converter.h, Makefile, char-server.vcxproj, char-server.vcxproj.filters）
+
+----------------------------------------
 //1620 [2026/08/10] by Cocoa
 
 ・Issue #58: txt ジャーナル配線を journal_config / journal_setup / journal_recreate に共通化（挙動変更なし）（journal.c, journal.h, *_txt.c, guilddb_txt.h, int_guild.c, doc/journal.txt）

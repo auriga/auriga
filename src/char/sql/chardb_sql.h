@@ -26,15 +26,9 @@
 #include "utils.h"
 #include "../char.h"
 
-// 更新定義
-enum {
-	TABLE_NUM_INVENTORY,
-	TABLE_NUM_CART,
-	TABLE_NUM_STORAGE,
-	TABLE_NUM_GUILD_STORAGE,
-};
+#include "item_sql.h"
 
-// プロトタイプ宣言
+/* compatibility wrappers (implemented in chardb_sql.c) */
 int chardb_sql_loaditem(struct item *item, int max, int id, int tableswitch);
 bool chardb_sql_saveitem(struct item *item, int max, int id, int tableswitch);
 const struct mmo_chardata* chardb_sql_make(int account_id, const unsigned char *name, short str, short agi, short vit, short int_, short dex, short luk, short hair_color, short hair, short job, char sex, unsigned char slot, int *flag);

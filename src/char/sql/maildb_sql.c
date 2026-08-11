@@ -32,6 +32,7 @@
 
 #include "petdb_sql.h"
 #include "maildb_sql.h"
+#include "item_sql.h"
 
 static struct dbt *mail_db = NULL;
 
@@ -128,10 +129,7 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 
 	result = sqldbs_query(&mysql_handle,
 		"SELECT `number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`, "
-		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, "
-		"`opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`, "
-		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`"
+		ITEM_SQL_COLUMNS
 		" FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
 	);
 	if(result == false)
@@ -162,29 +160,8 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 		}
 		md[i].body_size = n;
 
-		md[i].zeny            = atoi(sql_row[8]);
-		md[i].item.id         = (unsigned int)atoi(sql_row[9]);
-		md[i].item.nameid     = atoi(sql_row[10]);
-		md[i].item.amount     = atoi(sql_row[11]);
-		md[i].item.equip      = (unsigned int)atoi(sql_row[12]);
-		md[i].item.identify   = atoi(sql_row[13]);
-		md[i].item.refine     = atoi(sql_row[14]);
-		md[i].item.attribute  = atoi(sql_row[15]);
-		md[i].item.card[0]    = atoi(sql_row[16]);
-		md[i].item.card[1]    = atoi(sql_row[17]);
-		md[i].item.card[2]    = atoi(sql_row[18]);
-		md[i].item.card[3]    = atoi(sql_row[19]);
-		md[i].item.opt[0].id  = atoi(sql_row[20]);
-		md[i].item.opt[0].val = atoi(sql_row[21]);
-		md[i].item.opt[1].id  = atoi(sql_row[22]);
-		md[i].item.opt[1].val = atoi(sql_row[23]);
-		md[i].item.opt[2].id  = atoi(sql_row[24]);
-		md[i].item.opt[2].val = atoi(sql_row[25]);
-		md[i].item.opt[3].id  = atoi(sql_row[26]);
-		md[i].item.opt[3].val = atoi(sql_row[27]);
-		md[i].item.opt[4].id  = atoi(sql_row[28]);
-		md[i].item.opt[4].val = atoi(sql_row[29]);
-		md[i].item.limit      = (unsigned int)atoi(sql_row[30]);
+		md[i].zeny = atoi(sql_row[8]);
+		item_sql_loadrow(&md[i].item, &sql_row[9], 0);
 	}
 	sqldbs_free_result(&mysql_handle);
 

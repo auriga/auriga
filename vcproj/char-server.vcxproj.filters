@@ -46,6 +46,9 @@
     <ClCompile Include="..\src\char\sql\chardb_sql.c">
       <Filter>char_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\char\sql\item_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\char\sql\charlog_sql.c">
       <Filter>char_sql</Filter>
     </ClCompile>
@@ -196,6 +199,9 @@
       <Filter>char_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\char\sql\chardb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\item_sql.h">
       <Filter>char_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\char\sql\charlog_sql.h">
