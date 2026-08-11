@@ -1,4 +1,8 @@
 ----------------------------------------
+//1619 [2026/08/10] by Cocoa
+
+・Issue #58: SQL 接続設定を sqldbs_conninfo に共通化（login/char/map/converter）（挙動変更なし）（sqldbs.c, sqldbs.h, account_sql.c, chardb_sql.c, mapreg_sql.c, converter.c）
+--------------------------------------------------------------------------------
 //1618 [2026/08/10] by Cocoa
 
 ・Issue #57: status_calc_pc / status_change_start / status_change_end をリファクタ。L_RECALC 再入を status_calc_ctrl で Unity 固定し、calc を phase 分割のうえ status_calc_pc.c へ、start/end を別 TU へ分離。SC ハンドラテーブルを導入し代表バッチを移行（挙動変更なし）（status.c, status_calc_ctrl.c, status_calc_ctrl.h, status_calc_pc.c, status_change_start.c, status_change_end.c, status_change_handlers.c, status_internal.h, tests/, map-server.vcxproj）

@@ -33,13 +33,9 @@
 #include "chardb_sql.h"
 
 static struct dbt *char_db_;
-static unsigned short char_server_port = 3306;
-static char char_server_ip[32]      = "127.0.0.1";
-static char char_server_id[32]      = "ragnarok";
-static char char_server_pw[32]      = "ragnarok";
-static char char_server_db[32]      = "ragnarok";
-static char char_server_charset[32] = "";
-static int  char_server_keepalive   = 0;
+static struct sqldbs_conninfo char_server_info = {
+	"127.0.0.1", 3306, "ragnarok", "ragnarok", "ragnarok", "", 0
+};
 
 /*==========================================
  * ê›íËÉtÉ@ÉCÉãì«çû
@@ -47,24 +43,7 @@ static int  char_server_keepalive   = 0;
  */
 int chardb_sql_config_read_sub(const char* w1,const char* w2)
 {
-	if( strcmpi(w1,"char_server_ip") == 0 )
-		strncpy(char_server_ip, w2, sizeof(char_server_ip) - 1);
-	else if( strcmpi(w1,"char_server_port") == 0 )
-		char_server_port = (unsigned short)atoi(w2);
-	else if( strcmpi(w1,"char_server_id") == 0 )
-		strncpy(char_server_id, w2, sizeof(char_server_id) - 1);
-	else if( strcmpi(w1,"char_server_pw") == 0 )
-		strncpy(char_server_pw, w2, sizeof(char_server_pw) - 1);
-	else if( strcmpi(w1,"char_server_db") == 0 )
-		strncpy(char_server_db, w2, sizeof(char_server_db) - 1);
-	else if( strcmpi(w1,"char_server_charset") == 0 )
-		strncpy(char_server_charset, w2, sizeof(char_server_charset) - 1);
-	else if( strcmpi(w1,"char_server_keepalive") ==0 )
-		char_server_keepalive = atoi(w2);
-	else
-		return 0;
-
-	return 1;
+	return sqldbs_conninfo_config_read(&char_server_info, "char_server", w1, w2);
 }
 
 /*==========================================
@@ -1237,7 +1216,7 @@ bool chardb_sql_init(void)
 	// DB connection initialized
 	bool is_connect;
 
-	is_connect = sqldbs_connect(&mysql_handle, char_server_ip, char_server_id, char_server_pw, char_server_db, char_server_port, char_server_charset, char_server_keepalive, "CHAR");
+	is_connect = sqldbs_connect_info(&mysql_handle, &char_server_info, "CHAR");
 	if(is_connect == false)
 		return false;
 

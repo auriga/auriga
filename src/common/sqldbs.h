@@ -171,8 +171,23 @@ void sqldbs_stmt_close(struct sqldbs_stmt *st);
 
 // ê⁄ë±
 void sqldbs_close(struct sqldbs_handle *hd);
+struct sqldbs_conninfo {
+	char host[32];
+	unsigned short port;
+	char user[32];
+	char passwd[32];
+	char db[32];
+	char charset[32];
+	int keepalive;
+};
+
+void sqldbs_conninfo_set_defaults(struct sqldbs_conninfo *info);
+int sqldbs_conninfo_config_read(struct sqldbs_conninfo *info, const char *prefix, const char *w1, const char *w2);
+int sqldbs_conninfo_config_read_ex(struct sqldbs_conninfo *info, const char *prefix, const char *db_suffix, const char *w1, const char *w2);
+
 bool sqldbs_connect(struct sqldbs_handle *hd, const char *host, const char *user, const char *passwd,
 	const char *db, unsigned short port, const char *charset, int keepalive, const char *tag);
+bool sqldbs_connect_info(struct sqldbs_handle *hd, const struct sqldbs_conninfo *info, const char *tag);
 
 #endif	// if TXT
 
