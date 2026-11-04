@@ -1,4 +1,15 @@
 ----------------------------------------
+//1622 [2026/11/05] by refis
+
+・特性ステータス系アイテムボーナスの実装
+　-> bPow/bSta/bWis/bSpl/bCon/bCrt/bPAtk/bSMatk/bRes/bMRes/bHPlus/bCRate
+　-> bIgnoreResRace/bIgnoreMResRace
+（bonus.c, battle.c, status_calc_pc.c, map.h, db/const.txt, doc/item_bonus.txt）
+
+・ランダムオプションの効果を追加、実装
+（bonus.c, battle.c, status_calc_pc.c, map.h, db/const.txt, db/enumvar.lua, doc/db_ref.txt）
+
+----------------------------------------
 //1621 [2026/08/11] by Cocoa
 
 ・Issue #58: アイテム SQL load/save を item_sql へ抽出し、converter の saveitem を現行スキーマに同期（opt 列欠落を修正）（item_sql.c, item_sql.h, chardb_sql.c, chardb_sql.h, maildb_sql.c, char-converter.c, char-converter.h, Makefile, char-server.vcxproj, char-server.vcxproj.filters）

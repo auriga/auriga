@@ -2159,10 +2159,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	{
 		int cri = status_get_critical(src);
 		if(src_sd) {
-			if(target_sd && !pc_isdoram(target_sd))
+			if(target_sd && !pc_isdoram(target_sd)) {
 				cri += src_sd->critical_race[RCT_DEMIHUMAN];
-			else if(t_race < RCT_ALL)
+				cri += src_sd->critical_race[RCT_PLAYER_HUMAN];
+			} else if(target_sd && pc_isdoram(target_sd)) {
+				cri += src_sd->critical_race[RCT_PLAYER_DORAM];
+			} else if(t_race < RCT_ALL) {
 				cri += src_sd->critical_race[t_race];
+			}
 			if(src_sd->state.arrow_atk)
 				cri += src_sd->arrow_cri;
 			if(src_sd->status.weapon == WT_KATAR)
@@ -2179,7 +2183,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 		if(src_sd) {
 			if(target_sd && !pc_isdoram(target_sd))
-				cri += cri * (100 + src_sd->critical_race_rate[RCT_DEMIHUMAN]) / 100;
+				cri += cri * (100 + src_sd->critical_race_rate[RCT_DEMIHUMAN] + src_sd->critical_race_rate[RCT_PLAYER_HUMAN]) / 100;
+			else if(target_sd && pc_isdoram(target_sd))
+				cri += cri * (100 + src_sd->critical_race_rate[RCT_PLAYER_DORAM]) / 100;
 			else if(t_race < RCT_ALL)
 				cri += cri * (100 + src_sd->critical_race_rate[t_race]) / 100;
 			if(cri < 1) cri = 1;
@@ -5704,7 +5710,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					res_rate -= sc->data[SC_POTENT_VENOM].val2;
 				}
 			}
-
+			if(src_sd) {
+				if(t_race >= 0 && t_race < RCT_MAX)
+					res_rate -= src_sd->ignore_res_race[t_race];
+				if(t_mode & MD_BOSS)
+					res_rate -= src_sd->ignore_res_race[RCT_BOSS];
+				else
+					res_rate -= src_sd->ignore_res_race[RCT_NONBOSS];
+			}
 			if(res_rate < 50) {
 				res_rate = 50;
 			}
@@ -6722,6 +6735,31 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		}
 	}
 #endif
+
+	/* 命中物理攻撃で与えるダメージ+%(クリティカル除く) */
+	if(src_sd && src_sd->hit_weapon_damage_rate && wd.type == 0 && (wd.flag&BF_WEAPON) && wd.damage > 0) {
+		int exclude = 0;
+		switch(skill_num) {
+		case CR_SHIELDBOOMERANG:
+		case AM_DEMONSTRATION:
+		case RK_DRAGONBREATH:
+		case RK_DRAGONBREATH_WATER:
+		case NJ_ISSEN:
+		case SR_TIGERCANNON:
+		case PA_SHIELDCHAIN:
+		case DK_DRAGONIC_BREATH:
+		case HW_MAGICCRASHER:
+		case IQ_THIRD_FLAME_BOMB:
+		case ASC_BREAKER:
+			exclude = 1;
+			break;
+		}
+		if(!exclude) {
+			wd.damage = wd.damage * (100 + src_sd->hit_weapon_damage_rate) / 100;
+			if(calc_flag.lh && wd.damage2 > 0)
+				wd.damage2 = wd.damage2 * (100 + src_sd->hit_weapon_damage_rate) / 100;
+		}
+	}
 
 #ifndef PRE_RENEWAL
 	/* （RE）クリティカル */
@@ -8552,7 +8590,14 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 						mres_rate -= sc->data[SC_A_VITA].val2;
 					}
 				}
-
+				if(sd) {
+					if(t_race >= 0 && t_race < RCT_MAX)
+						mres_rate -= sd->ignore_mres_race[t_race];
+					if(t_mode & MD_BOSS)
+						mres_rate -= sd->ignore_mres_race[RCT_BOSS];
+					else
+						mres_rate -= sd->ignore_mres_race[RCT_NONBOSS];
+				}
 				if(mres_rate < 50) {
 					mres_rate = 50;
 				}

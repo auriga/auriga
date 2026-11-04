@@ -74,6 +74,19 @@
 	bonus bDex,n;                       DEX+n
 	bonus bLuk,n;                       LUK+n
 	bonus bAllStatus,n;                 全てのステータス+n
+	bonus bPow,n;                       POW+n
+	bonus bSta,n;                       STA+n
+	bonus bWis,n;                       WIS+n
+	bonus bSpl,n;                       SPL+n
+	bonus bCon,n;                       CON+n
+	bonus bCrt,n;                       CRT+n
+-------------------------------------------------------------------------------------------------------------------------------------------
+	bonus bPAtk,n;                      P.Atk+n
+	bonus bSMatk,n;                     S.Matk+n
+	bonus bRes,n;                       Res+n
+	bonus bMRes,n;                      Mres+n
+	bonus bHPlus,n;                     H.Plus+n
+	bonus bCRate,n;                     C.Rate+n
 -------------------------------------------------------------------------------------------------------------------------------------------
 	bonus bMaxHP,n;                     最大HP+n
 	bonus bMaxSP,n;                     最大SP+n
@@ -260,6 +273,8 @@
 -------------------------------------------------------------------------------------------------------------------------------------------
 	bonus2 bIgnoreDefRace,n,x;          n種族に対してx%の防御力無視ダメージ
 	bonus2 bIgnoreMDefRace,n,x;         n種族に対してx%の魔法防御力無視ダメージ
+	bonus2 bIgnoreResRace,n,n;          n種族のResをn%無視
+	bonus2 bIgnoreMResRace,n,n;         n種族のMresをn%無視
 	bonus bDefRatioAtkRace,n;           n種族に対して防御力が高ければ高いほど大きなダメージを与える(防御無視)
                                             Rct_Formless     無形             Rct_Undead       不死
                                             Rct_Brute        動物             Rct_Plant        植物

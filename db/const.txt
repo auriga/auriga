@@ -534,6 +534,18 @@ bFlee		50
 bFlee2		51
 bCritical	52
 bAspd		53
+bPow		219
+bSta		220
+bWis		221
+bSpl		222
+bCon		223
+bCrt		224
+bPAtk		225
+bSMatk		226
+bRes		227
+bMRes		228
+bHPlus		229
+bCRate		230
 bAtkRange	1000
 bAtkEle		1001
 bDefEle		1002
@@ -726,6 +738,8 @@ bAddMonsterRaceDropItem	1188
 bAddMonsterEleDropItem	1189
 bAddMonsterIdDropItem	1190
 bAddMonsterGroupDropItem	1191
+bIgnoreResRace	1192
+bIgnoreMResRace	1193
 
 bRestartFullRecover	2000
 bNoCastCancel	2001

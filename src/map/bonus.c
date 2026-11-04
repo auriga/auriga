@@ -490,6 +490,15 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 		if(sd->state.lr_flag != 2)
 			sd->parame[type-SP_STR] += val;
 		break;
+	case SP_POW:
+	case SP_STA:
+	case SP_WIS:
+	case SP_SPL:
+	case SP_CON:
+	case SP_CRT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[type-SP_POW+6] += val;
+		break;
 	case SP_ALLSTATUS:
 		if(sd->state.lr_flag != 2) {
 			sd->parame[0] += val;
@@ -499,6 +508,30 @@ int bonus_param1(struct map_session_data *sd,int type,int val)
 			sd->parame[4] += val;
 			sd->parame[5] += val;
 		}
+		break;
+	case SP_PATK:
+		if(sd->state.lr_flag != 2)
+			sd->patk += val;
+		break;
+	case SP_SMATK:
+		if(sd->state.lr_flag != 2)
+			sd->smatk += val;
+		break;
+	case SP_RES:
+		if(sd->state.lr_flag != 2)
+			sd->res += val;
+		break;
+	case SP_MRES:
+		if(sd->state.lr_flag != 2)
+			sd->mres += val;
+		break;
+	case SP_HPLUS:
+		if(sd->state.lr_flag != 2)
+			sd->hplus += val;
+		break;
+	case SP_CRATE:
+		if(sd->state.lr_flag != 2)
+			sd->crate += val;
 		break;
 	case SP_ATK1:
 		if(!sd->state.lr_flag)
@@ -1820,6 +1853,44 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		if(sd->state.lr_flag != 2)
 			sd->ignore_mdef_enemy[type2] += val;
 		break;
+	case SP_IGNORE_RES_RACE:
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_res_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_res_race[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_res_race[RCT_PLAYER_HUMAN] += val;
+					sd->ignore_res_race[RCT_PLAYER_DORAM] += val;
+				}
+			}
+			break;
+		}
+		if(sd->state.lr_flag != 2)
+			sd->ignore_res_race[type2] += val;
+		break;
+	case SP_IGNORE_MRES_RACE:
+		if(type2 < 0 || type2 >= RCT_MAX) {
+			if(type2 == RCT_HUMAN) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_mres_race[RCT_DEMIHUMAN] += val;
+					sd->ignore_mres_race[RCT_PLAYER_HUMAN] += val;
+				}
+			}
+			else if(type2 == RCT_PLAYER) {
+				if(sd->state.lr_flag != 2) {
+					sd->ignore_mres_race[RCT_PLAYER_HUMAN] += val;
+					sd->ignore_mres_race[RCT_PLAYER_DORAM] += val;
+				}
+			}
+			break;
+		}
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mres_race[type2] += val;
+		break;
 	case SP_DEF_ELEENEMY:
 		if(type2 < 0 || type2 > ELE_MAX)
 			break;
@@ -2638,6 +2709,174 @@ int bonus_randopt(struct map_session_data *sd,int id,int val)
 	case OPT_MDAMAGE_SIZE_MIDIUM_USER:
 	case OPT_MDAMAGE_SIZE_LARGE_USER:
 		sd->magic_subsize[id-OPT_MDAMAGE_SIZE_SMALL_USER] += val;
+		break;
+	case OPT_ATTR_TOLERACE_ALLELE:
+		if(sd->state.lr_flag != 2) {
+			int i;
+			for(i=0;i<ELE_MAX;i++)
+				sd->subele[i] += val;
+		}
+		break;
+	case OPT_RACE_TOLERACE_PLAYER_HUMAN:
+		if(sd->state.lr_flag != 2)
+			sd->subrace[RCT_PLAYER_HUMAN] += val;
+		break;
+	case OPT_RACE_TOLERACE_PLAYER_DORAM:
+		if(sd->state.lr_flag != 2)
+			sd->subrace[RCT_PLAYER_DORAM] += val;
+		break;
+	case OPT_RACE_DAMAGE_PLAYER_HUMAN:
+		if(!sd->state.lr_flag)
+			sd->addrace[RCT_PLAYER_HUMAN] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->addrace_[RCT_PLAYER_HUMAN] += val;
+		else if(sd->state.lr_flag == 2)
+			sd->arrow_addrace[RCT_PLAYER_HUMAN] += val;
+		break;
+	case OPT_RACE_DAMAGE_PLAYER_DORAM:
+		if(!sd->state.lr_flag)
+			sd->addrace[RCT_PLAYER_DORAM] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->addrace_[RCT_PLAYER_DORAM] += val;
+		else if(sd->state.lr_flag == 2)
+			sd->arrow_addrace[RCT_PLAYER_DORAM] += val;
+		break;
+	case OPT_RACE_MDAMAGE_PLAYER_HUMAN:
+		if(sd->state.lr_flag != 2)
+			sd->magic_addrace[RCT_PLAYER_HUMAN] += val;
+		break;
+	case OPT_RACE_MDAMAGE_PLAYER_DORAM:
+		if(sd->state.lr_flag != 2)
+			sd->magic_addrace[RCT_PLAYER_DORAM] += val;
+		break;
+	case OPT_RACE_CRI_PLAYER_HUMAN:
+		sd->critical_race[RCT_PLAYER_HUMAN] += val*10;
+		break;
+	case OPT_RACE_CRI_PLAYER_DORAM:
+		sd->critical_race[RCT_PLAYER_DORAM] += val*10;
+		break;
+	case OPT_RACE_IGNORE_DEF_PLAYER_HUMAN:
+		if(!sd->state.lr_flag)
+			sd->ignore_def_race[RCT_PLAYER_HUMAN] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->ignore_def_race_[RCT_PLAYER_HUMAN] += val;
+		break;
+	case OPT_RACE_IGNORE_DEF_PLAYER_DORAM:
+		if(!sd->state.lr_flag)
+			sd->ignore_def_race[RCT_PLAYER_DORAM] += val;
+		else if(sd->state.lr_flag == 1)
+			sd->ignore_def_race_[RCT_PLAYER_DORAM] += val;
+		break;
+	case OPT_RACE_IGNORE_MDEF_PLAYER_HUMAN:
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mdef_race[RCT_PLAYER_HUMAN] += val;
+		break;
+	case OPT_RACE_IGNORE_MDEF_PLAYER_DORAM:
+		if(sd->state.lr_flag != 2)
+			sd->ignore_mdef_race[RCT_PLAYER_DORAM] += val;
+		break;
+	case OPT_REFLECT_DAMAGE_PERCENT:
+		if(sd->state.lr_flag != 2)
+			sd->sub_return_damage += val;
+		break;
+	case OPT_MELEE_ATTACK_DAMAGE_TARGET:
+		if(sd->state.lr_flag != 2)
+			sd->short_weapon_damege_rate += val;
+		break;
+	case OPT_MELEE_ATTACK_DAMAGE_USER:
+		if(sd->state.lr_flag != 2)
+			sd->near_attack_def_rate += val;
+		break;
+	case OPT_ADDSKILLMDAMAGE_NOTHING:
+	case OPT_ADDSKILLMDAMAGE_WATER:
+	case OPT_ADDSKILLMDAMAGE_GROUND:
+	case OPT_ADDSKILLMDAMAGE_FIRE:
+	case OPT_ADDSKILLMDAMAGE_WIND:
+	case OPT_ADDSKILLMDAMAGE_POISON:
+	case OPT_ADDSKILLMDAMAGE_SAINT:
+	case OPT_ADDSKILLMDAMAGE_DARKNESS:
+	case OPT_ADDSKILLMDAMAGE_TELEKINESIS:
+	case OPT_ADDSKILLMDAMAGE_UNDEAD:
+		if(sd->state.lr_flag != 2)
+			sd->skill_elemagic_dmgup[id-OPT_ADDSKILLMDAMAGE_NOTHING] += val;
+		break;
+	case OPT_ADDSKILLMDAMAGE_ALL:
+		if(sd->state.lr_flag != 2) {
+			int i;
+			for(i=0;i<ELE_MAX;i++)
+				sd->skill_elemagic_dmgup[i] += val;
+		}
+		break;
+	case OPT_ADDEXPPERCENT_KILLRACE_NOTHING:
+	case OPT_ADDEXPPERCENT_KILLRACE_UNDEAD:
+	case OPT_ADDEXPPERCENT_KILLRACE_ANIMAL:
+	case OPT_ADDEXPPERCENT_KILLRACE_PLANT:
+	case OPT_ADDEXPPERCENT_KILLRACE_INSECT:
+	case OPT_ADDEXPPERCENT_KILLRACE_FISHS:
+	case OPT_ADDEXPPERCENT_KILLRACE_DEVIL:
+	case OPT_ADDEXPPERCENT_KILLRACE_HUMAN:
+	case OPT_ADDEXPPERCENT_KILLRACE_ANGEL:
+	case OPT_ADDEXPPERCENT_KILLRACE_DRAGON:
+		sd->exp_rate[id-OPT_ADDEXPPERCENT_KILLRACE_NOTHING] += val;
+		break;
+	case OPT_ADDEXPPERCENT_KILLRACE_ALL:
+		{
+			int i;
+			for(i=0;i<RCT_ALL;i++)
+				sd->exp_rate[i] += val;
+		}
+		break;
+	case OPT_POWAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[6] += val;
+		break;
+	case OPT_SPLAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[9] += val;
+		break;
+	case OPT_STAAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[7] += val;
+		break;
+	case OPT_WISAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[8] += val;
+		break;
+	case OPT_CONAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[10] += val;
+		break;
+	case OPT_CRTAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->parame[11] += val;
+		break;
+	case OPT_PATKAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->patk += val;
+		break;
+	case OPT_SMATKAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->smatk += val;
+		break;
+	case OPT_RESAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->res += val;
+		break;
+	case OPT_MRESAMOUNT:
+		if(sd->state.lr_flag != 2)
+			sd->mres += val;
+		break;
+	case OPT_HEAL_PLUS:
+		if(sd->state.lr_flag != 2)
+			sd->hplus += val;
+		break;
+	case OPT_CRITICAL_RATE:
+		if(sd->state.lr_flag != 2)
+			sd->crate += val;
+		break;
+	case OPT_DAMAGE_HIT_TARGET:
+		if(sd->state.lr_flag != 2)
+			sd->hit_weapon_damage_rate += val;
 		break;
 	default:
 		if(battle_config.error_log)
