@@ -4719,17 +4719,28 @@ void clif_navigateto(struct map_session_data *sd, const char *name, int x, int y
 {
 #if PACKETVER >= 20111010
 	int fd;
+	size_t name_len;
 	nullpo_retv(sd);
 	nullpo_retv(name);
+	name_len = strlen(name);
+	if(name_len >= 4 && name[name_len - 4] == '.' &&
+	   tolower((unsigned char)name[name_len - 3]) == 'g' &&
+	   tolower((unsigned char)name[name_len - 2]) == 'a' &&
+	   tolower((unsigned char)name[name_len - 1]) == 't')
+		name_len -= 4;
+	if(name_len == 0 || name_len >= 16) {
+		printf("clif_navigateto: invalid map name: %s\n", name);
+		return;
+	}
 	fd = sd->fd;
 	WFIFOW(fd,0) = 0x08e2;
-	WFIFOB(fd,2) = mob_id > 0 ? 3 : (x > 0 && y > 0 ? 0 : 1);
+	WFIFOB(fd,2) = (x > 0 && y > 0) ? 0 : (mob_id > 0 ? 3 : 1);
 	WFIFOB(fd,3) = flag;
 	WFIFOB(fd,4) = hide != 0;
 	memset(WFIFOP(fd,5), 0, 16);
-	strncpy((char *)WFIFOP(fd,5), name, 15);
-	WFIFOW(fd,21) = mob_id > 0 || x <= 0 || y <= 0 ? 0 : x;
-	WFIFOW(fd,23) = mob_id > 0 || x <= 0 || y <= 0 ? 0 : y;
+	memcpy(WFIFOP(fd,5), name, name_len);
+	WFIFOW(fd,21) = x > 0 && y > 0 ? x : 0;
+	WFIFOW(fd,23) = x > 0 && y > 0 ? y : 0;
 	WFIFOW(fd,25) = mob_id;
 	WFIFOSET(fd,27);
 #endif

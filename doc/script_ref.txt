@@ -1043,7 +1043,13 @@ AurigaNPCScript
 		navigateto命令
 			navigateto <map>[,<x>,<y>,<flag>,<hide>,<mob id>,<char id>];
 			クライアントのナビゲーションを開始します。PACKETVER 20111010以降。
+			mapは拡張子なし、または.gat付きで指定します。
 			flagは移動手段の指定、hideはウィンドウ非表示の指定です。
+			xとyが正の場合は座標案内（type 0）となり、mob idも同時に送ります。
+			座標を省略した場合、mob idが正ならモンスター案内（type 3）、それ以外はマップ案内（type 1）です。
+			mapは拡張子を除いて15バイト以内で指定します。
+			案内先のマップやモンスターにはクライアント側のナビゲーションデータが必要です。
+			例: navigateto "new_1-1.gat",100,111,NAV_KAFRA_AND_AIRSHIP,0;
 
 		viewpointmap命令
 			viewpointmap <map>,<type>,<x>,<y>,<id>,<color>;
