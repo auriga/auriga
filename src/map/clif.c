@@ -9632,6 +9632,8 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 	}
 	WFIFOSET(sd->fd,len);
 
+	clif_progressbar_npc(nd, sd);
+
 	if(nd->chat_id){
 		clif_dispchat(map_id2cd(nd->chat_id),sd->fd);
 	}
@@ -18385,6 +18387,26 @@ void clif_setfont(struct map_session_data *sd)
  * ‰r¥ƒo[•\Ž¦
  *------------------------------------------
  */
+void clif_progressbar_npc(struct npc_data *nd, struct map_session_data *sd)
+{
+#if PACKETVER >= 20130821
+	unsigned char buf[14];
+	int remaining;
+	nullpo_retv(nd);
+	remaining = DIFF_TICK(nd->progressbar_tick, gettick());
+	if(remaining <= 0)
+		return;
+	WBUFW(buf,0) = 0x09d1;
+	WBUFL(buf,2) = nd->bl.id;
+	WBUFL(buf,6) = nd->progressbar_color;
+	WBUFL(buf,10) = remaining / 1000 + (remaining % 1000 != 0);
+	if(sd)
+		clif_send(buf, sizeof(buf), &sd->bl, SELF);
+	else
+		clif_send(buf, sizeof(buf), &nd->bl, AREA);
+#endif
+}
+
 void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second)
 {
 	int fd;

@@ -2571,6 +2571,11 @@ AurigaNPCScript
 			type=1		購入ウィンドウを開く
 			type=2		売却ウィンドウを開く
 
+		progressbar_npc命令
+			progressbar_npc <color>,<sec>[,<NPC名>];
+			NPCの頭上にプログレスバーを表示し、指定秒数待機します。
+			colorは "0xRRGGBB" 形式の文字列です。PACKETVER 20130821以降。
+
 		progressbar命令
 			progressbar <sec>[,<color>];
 

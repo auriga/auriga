@@ -4272,6 +4272,7 @@ int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
 int buildin_npcshopitem(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
+int buildin_progressbar_npc(struct script_state *st);
 int buildin_getmercinfo(struct script_state *st);
 int buildin_mercheal(struct script_state *st);
 int buildin_mercsc_start(struct script_state *st);
@@ -4628,6 +4629,7 @@ struct script_function buildin_func[] = {
 	{buildin_callshop,"callshop","s*"},
 	{buildin_npcshopitem,"npcshopitem","s*"},
 	{buildin_progressbar,"progressbar","i*"},
+	{buildin_progressbar_npc,"progressbar_npc","si*"},
 	{buildin_getmercinfo,"getmercinfo","i"},
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},

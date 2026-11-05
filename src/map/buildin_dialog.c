@@ -501,6 +501,42 @@ int buildin_showevent(struct script_state *st)
  * ‰r¥ƒo[•\Ž¦
  *------------------------------------------
  */
+int buildin_progressbar_npc(struct script_state *st)
+{
+#if PACKETVER >= 20130821
+	struct npc_data *nd;
+	int second = conv_num(st, &st->stack->stack_data[st->start+3]);
+	if(st->end > st->start+4)
+		nd = npc_name2id(conv_str(st, &st->stack->stack_data[st->start+4]));
+	else
+		nd = map_id2nd(st->oid);
+	if(!nd || second < 0 || second > 2147483) {
+		st->sleep.tick = 0;
+		st->state = END;
+		return 0;
+	}
+	if(st->sleep.tick > 0) {
+		st->sleep.tick = 0;
+		nd->progressbar_tick = 0;
+		nd->progressbar_color = 0;
+		return 0;
+	}
+	if(second == 0)
+		return 0;
+	if(nd->progressbar_tick && DIFF_TICK(nd->progressbar_tick, gettick()) > 0) {
+		printf("buildin_progressbar_npc: NPC is busy\n");
+		st->state = END;
+		return 0;
+	}
+	nd->progressbar_color = (unsigned int)strtoul(conv_str(st, &st->stack->stack_data[st->start+2]), NULL, 0);
+	st->sleep.tick = second * 1000;
+	nd->progressbar_tick = gettick() + st->sleep.tick;
+	st->state = RERUNLINE;
+	clif_progressbar_npc(nd, NULL);
+#endif
+	return 0;
+}
+
 int buildin_progressbar(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);

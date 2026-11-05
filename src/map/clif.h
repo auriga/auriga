@@ -398,6 +398,7 @@ void clif_break_equip(struct map_session_data *sd, int where);
 void clif_send_config(struct map_session_data *sd);
 void clif_setfont(struct map_session_data *sd);
 void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second);
+void clif_progressbar_npc(struct npc_data *nd, struct map_session_data *sd);
 void clif_progressbar_abort(struct map_session_data *sd);
 void clif_skill_cooldown(struct map_session_data *sd, int skillid, unsigned int tick);
 void clif_autoshadowspell(struct map_session_data *sd, short lv);
