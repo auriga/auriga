@@ -25354,9 +25354,33 @@ static void clif_parse_OpenUi(int fd,struct map_session_data *sd, int cmd)
  *
  *------------------------------------------
  */
+void clif_camerainfo(struct map_session_data *sd, int show, float range, float rotation, float latitude)
+{
+#if PACKETVER >= 20160525
+	int fd;
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x0a78;
+	WFIFOB(fd,2) = show;
+	memcpy(WFIFOP(fd,3), &range, sizeof(range));
+	memcpy(WFIFOP(fd,7), &rotation, sizeof(rotation));
+	memcpy(WFIFOP(fd,11), &latitude, sizeof(latitude));
+	WFIFOSET(fd,15);
+#endif
+}
+
 static void clif_parse_CameraInfo(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20160525
+	float range, rotation, latitude;
+	int show;
+	nullpo_retv(sd);
+	show = RFIFOB(fd,2) == 1;
+	memcpy(&range, RFIFOP(fd,3), sizeof(range));
+	memcpy(&rotation, RFIFOP(fd,7), sizeof(rotation));
+	memcpy(&latitude, RFIFOP(fd,11), sizeof(latitude));
+	clif_camerainfo(sd, show, range, rotation, latitude);
+#endif
 	return;
 }
 

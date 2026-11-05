@@ -1074,6 +1074,21 @@ int buildin_checkre(struct script_state *st)
  * ドレスルームを開く
  *------------------------------------------
  */
+int buildin_camerainfo(struct script_state *st)
+{
+#if PACKETVER >= 20160525
+	struct map_session_data *sd = script_rid2sd(st);
+	int range = conv_num(st, &st->stack->stack_data[st->start+2]);
+	int rotation = conv_num(st, &st->stack->stack_data[st->start+3]);
+	int latitude = conv_num(st, &st->stack->stack_data[st->start+4]);
+	if(st->end > st->start+5)
+		sd = map_charid2sd(conv_num(st, &st->stack->stack_data[st->start+5]));
+	if(sd)
+		clif_camerainfo(sd, 0, range / 100.0f, rotation / 100.0f, latitude / 100.0f);
+#endif
+	return 0;
+}
+
 int buildin_opendressroom(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);

@@ -2737,6 +2737,11 @@ AurigaNPCScript
 			type=2	負の<value>から始まるカウントダウンタイマーを表示します。
 			type=3	<value>から始まるカウントダウンタイマーを表示し、0になると消去します。
 
+		camerainfo命令
+			camerainfo <range>,<rotation>,<latitude>[,<char id>];
+			カメラの距離・回転・角度を設定します。各値は100分の1単位です。
+			PACKETVER 20160525以降で有効です。
+
 		opendressroom命令
 			opendressroom [<type>];
 

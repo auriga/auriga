@@ -4299,6 +4299,7 @@ int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
+int buildin_camerainfo(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
 int buildin_getrandommob(struct script_state *st);
@@ -4654,6 +4655,7 @@ struct script_function buildin_func[] = {
 	{buildin_showdigit,"showdigit","ii"},
 	{buildin_checkre,"checkre",""},
 	{buildin_opendressroom,"opendressroom","*"},
+	{buildin_camerainfo,"camerainfo","iii*"},
 	{buildin_hateffect,"hateffect","ii"},
 	{buildin_getrandombox,"getrandombox","i"},
 	{buildin_getrandommob,"getrandommob","i*"},

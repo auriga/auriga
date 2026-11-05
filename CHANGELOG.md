@@ -1,6 +1,8 @@
 ----------------------------------------
 //1623 [2026/11/05]
 
+・カメラ表示・設定パケットとcamerainfo命令を追加（clif.c, clif.h, buildin_misc.c, script.c, doc/script_ref.txt）
+
 ・マップ全体に座標マーカーを表示するviewpointmap命令を追加（buildin_dialog.c, script.c, doc/script_ref.txt）
 
 ----------------------------------------
