@@ -25311,6 +25311,38 @@ static void clif_parse_CloseRoulette(int fd,struct map_session_data *sd, int cmd
  *
  *------------------------------------------
  */
+static void clif_title_name_area(struct map_session_data *sd)
+{
+#if PACKETVER >= 20141126
+	unsigned char buf[106] = {0};
+	struct party *p = NULL;
+	struct guild *g = NULL;
+	int i, pos = -1;
+	if(sd->status.party_id > 0) p = party_search(sd->status.party_id);
+	if(sd->status.guild_id > 0) g = guild_search(sd->status.guild_id);
+	WBUFW(buf,0) = 0x0a30;
+	WBUFL(buf,2) = sd->bl.id;
+	memcpy(WBUFP(buf,6), sd->status.name, 24);
+	if(p && (battle_config.show_always_party_name || g))
+		memcpy(WBUFP(buf,30), p->name, 24);
+	if(g) {
+		memcpy(WBUFP(buf,54), g->name, 24);
+		for(i = 0; i < g->max_member; i++) {
+			if(g->member[i].char_id == sd->status.char_id) {
+				pos = g->member[i].position;
+				break;
+			}
+		}
+		if(pos >= 0 && pos < MAX_GUILDPOSITION)
+			memcpy(WBUFP(buf,78), g->position[pos].name, 24);
+		else
+			strncpy(WBUFP(buf,78), msg_txt(45), 24);
+	}
+	WBUFL(buf,102) = sd->status.title_id;
+	clif_send(buf, sizeof(buf), &sd->bl, AREA);
+#endif
+}
+
 static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cmd)
 {
 	int title_id;
@@ -25324,6 +25356,7 @@ static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cm
 
 	if(title_id <= 0) {
 		sd->status.title_id = 0;
+		title_id = 0;
 	}
 	else {
 		if(achieve_check_title(sd, title_id)) {
@@ -25332,7 +25365,7 @@ static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cm
 		}
 	}
 
-	//clif_name_area(&sd->bl);
+	clif_title_name_area(sd);
 	clif_change_title_ack(sd->fd, 0, title_id);
 	return;
 }
