@@ -4723,11 +4723,6 @@ void clif_navigateto(struct map_session_data *sd, const char *name, int x, int y
 	nullpo_retv(sd);
 	nullpo_retv(name);
 	name_len = strlen(name);
-	if(name_len >= 4 && name[name_len - 4] == '.' &&
-	   tolower((unsigned char)name[name_len - 3]) == 'g' &&
-	   tolower((unsigned char)name[name_len - 2]) == 'a' &&
-	   tolower((unsigned char)name[name_len - 1]) == 't')
-		name_len -= 4;
 	if(name_len == 0 || name_len >= 16) {
 		printf("clif_navigateto: invalid map name: %s\n", name);
 		return;
