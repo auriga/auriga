@@ -58,6 +58,8 @@ struct script_state {
 	int rid,oid;
 	struct script_code *script, *scriptroot;
 	struct script_sleep sleep;
+	int progressbar_npc_id;
+	unsigned int progressbar_npc_tick;
 };
 
 char* parse_script_line_curly(unsigned char *p,int *curly_count,int line);

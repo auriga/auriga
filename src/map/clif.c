@@ -18393,6 +18393,8 @@ void clif_progressbar_npc(struct npc_data *nd, struct map_session_data *sd)
 	unsigned char buf[14];
 	int remaining;
 	nullpo_retv(nd);
+	if(!nd->progressbar_active)
+		return;
 	remaining = DIFF_TICK(nd->progressbar_tick, gettick());
 	if(remaining <= 0)
 		return;

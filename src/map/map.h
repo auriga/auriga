@@ -990,6 +990,7 @@ struct npc_data {
 	short hair,hair_color,clothes_color;
 	short head_top,head_mid,head_bottom,robe,style;
 	unsigned int progressbar_tick, progressbar_color;
+	unsigned char progressbar_active;
 	union {
 		struct {
 			struct script_code *script;

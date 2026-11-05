@@ -517,13 +517,17 @@ int buildin_progressbar_npc(struct script_state *st)
 	}
 	if(st->sleep.tick > 0) {
 		st->sleep.tick = 0;
-		nd->progressbar_tick = 0;
-		nd->progressbar_color = 0;
+		if(nd->bl.id == st->progressbar_npc_id && nd->progressbar_active &&
+		   nd->progressbar_tick == st->progressbar_npc_tick) {
+			nd->progressbar_active = 0;
+			nd->progressbar_tick = 0;
+			nd->progressbar_color = 0;
+		}
 		return 0;
 	}
 	if(second == 0)
 		return 0;
-	if(nd->progressbar_tick && DIFF_TICK(nd->progressbar_tick, gettick()) > 0) {
+	if(nd->progressbar_active && DIFF_TICK(nd->progressbar_tick, gettick()) > 0) {
 		printf("buildin_progressbar_npc: NPC is busy\n");
 		st->state = END;
 		return 0;
@@ -531,6 +535,9 @@ int buildin_progressbar_npc(struct script_state *st)
 	nd->progressbar_color = (unsigned int)strtoul(conv_str(st, &st->stack->stack_data[st->start+2]), NULL, 0);
 	st->sleep.tick = second * 1000;
 	nd->progressbar_tick = gettick() + st->sleep.tick;
+	nd->progressbar_active = 1;
+	st->progressbar_npc_id = nd->bl.id;
+	st->progressbar_npc_tick = nd->progressbar_tick;
 	st->state = RERUNLINE;
 	clif_progressbar_npc(nd, NULL);
 #endif
