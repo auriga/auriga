@@ -1040,6 +1040,21 @@ AurigaNPCScript
 
 			<petid>に指定されたアイテムIDを持つペットの卵を作成します。
 
+		navigateto命令
+			navigateto <map>[,<x>,<y>,<flag>,<hide>,<mob id>,<char id>];
+			クライアントのナビゲーションを開始します。PACKETVER 20111010以降。
+			mapは拡張子なし、または.gat付きで指定します。
+			flagは移動手段の指定、hideはウィンドウ非表示の指定です。
+			xとyが正の場合は座標案内（type 0）となり、mob idも同時に送ります。
+			座標を省略した場合、mob idが正ならモンスター案内（type 3）、それ以外はマップ案内（type 1）です。
+			mapは拡張子を含め15バイト以内で指定します。
+			案内先のマップやモンスターにはクライアント側のナビゲーションデータが必要です。
+			例: navigateto "new_1-1.gat",100,111,NAV_KAFRA_AND_AIRSHIP,0;
+
+		viewpointmap命令
+			viewpointmap <map>,<type>,<x>,<y>,<id>,<color>;
+			指定マップのプレイヤー全員に座標マーカーを表示・削除します。
+
 		viewpoint命令
 			viewpoint <type>,<x>,<y>,<id>,<color>;
 
@@ -2562,6 +2577,11 @@ AurigaNPCScript
 			type=1		購入ウィンドウを開く
 			type=2		売却ウィンドウを開く
 
+		progressbar_npc命令
+			progressbar_npc <color>,<sec>[,<NPC名>];
+			NPCの頭上にプログレスバーを表示し、指定秒数待機します。
+			colorは "0xRRGGBB" 形式の文字列です。PACKETVER 20130821以降。
+
 		progressbar命令
 			progressbar <sec>[,<color>];
 
@@ -2732,6 +2752,11 @@ AurigaNPCScript
 			type=1	負の<value>から始まるカウントアップタイマーを表示します。
 			type=2	負の<value>から始まるカウントダウンタイマーを表示します。
 			type=3	<value>から始まるカウントダウンタイマーを表示し、0になると消去します。
+
+		camerainfo命令
+			camerainfo <range>,<rotation>,<latitude>[,<char id>];
+			カメラの距離・回転・角度を設定します。各値は100分の1単位です。
+			PACKETVER 20160525以降で有効です。
 
 		opendressroom命令
 			opendressroom [<type>];

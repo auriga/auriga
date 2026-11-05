@@ -4006,6 +4006,8 @@ int buildin_delcartitem(struct script_state *st);
 int buildin_delitem2(struct script_state *st);
 int buildin_delcartitem2(struct script_state *st);
 int buildin_viewpoint(struct script_state *st);
+int buildin_viewpointmap(struct script_state *st);
+int buildin_navigateto(struct script_state *st);
 int buildin_countitem(struct script_state *st);
 int buildin_countcartitem(struct script_state *st);
 int buildin_checkweight(struct script_state *st);
@@ -4270,6 +4272,7 @@ int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
 int buildin_npcshopitem(struct script_state *st);
 int buildin_progressbar(struct script_state *st);
+int buildin_progressbar_npc(struct script_state *st);
 int buildin_getmercinfo(struct script_state *st);
 int buildin_mercheal(struct script_state *st);
 int buildin_mercsc_start(struct script_state *st);
@@ -4298,6 +4301,7 @@ int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
+int buildin_camerainfo(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
 int buildin_getrandommob(struct script_state *st);
@@ -4357,6 +4361,8 @@ struct script_function buildin_func[] = {
 	{buildin_cutin,"cutin","si"},
 	{buildin_cutincard,"cutincard","i"},
 	{buildin_viewpoint,"viewpoint","iiiii"},
+	{buildin_viewpointmap,"viewpointmap","siiiii"},
+	{buildin_navigateto,"navigateto","s*"},
 	{buildin_heal,"heal","ii"},
 	{buildin_itemheal,"itemheal","ii"},
 	{buildin_percentheal,"percentheal","ii"},
@@ -4623,6 +4629,7 @@ struct script_function buildin_func[] = {
 	{buildin_callshop,"callshop","s*"},
 	{buildin_npcshopitem,"npcshopitem","s*"},
 	{buildin_progressbar,"progressbar","i*"},
+	{buildin_progressbar_npc,"progressbar_npc","si*"},
 	{buildin_getmercinfo,"getmercinfo","i"},
 	{buildin_mercheal,"mercheal","ii"},
 	{buildin_mercsc_start,"mercsc_start","iii"},
@@ -4652,6 +4659,7 @@ struct script_function buildin_func[] = {
 	{buildin_showdigit,"showdigit","ii"},
 	{buildin_checkre,"checkre",""},
 	{buildin_opendressroom,"opendressroom","*"},
+	{buildin_camerainfo,"camerainfo","iii*"},
 	{buildin_hateffect,"hateffect","ii"},
 	{buildin_getrandombox,"getrandombox","i"},
 	{buildin_getrandommob,"getrandommob","i*"},

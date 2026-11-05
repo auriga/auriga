@@ -4715,6 +4715,32 @@ void clif_scriptinputstr(struct map_session_data *sd, int npcid)
  *
  *------------------------------------------
  */
+void clif_navigateto(struct map_session_data *sd, const char *name, int x, int y, int flag, int hide, int mob_id)
+{
+#if PACKETVER >= 20111010
+	int fd;
+	size_t name_len;
+	nullpo_retv(sd);
+	nullpo_retv(name);
+	name_len = strlen(name);
+	if(name_len == 0 || name_len >= 16) {
+		printf("clif_navigateto: invalid map name: %s\n", name);
+		return;
+	}
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x08e2;
+	WFIFOB(fd,2) = (x > 0 && y > 0) ? 0 : (mob_id > 0 ? 3 : 1);
+	WFIFOB(fd,3) = flag;
+	WFIFOB(fd,4) = hide != 0;
+	memset(WFIFOP(fd,5), 0, 16);
+	memcpy(WFIFOP(fd,5), name, name_len);
+	WFIFOW(fd,21) = x > 0 && y > 0 ? x : 0;
+	WFIFOW(fd,23) = x > 0 && y > 0 ? y : 0;
+	WFIFOW(fd,25) = mob_id;
+	WFIFOSET(fd,27);
+#endif
+}
+
 void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, int y, int id, int color)
 {
 	int fd;
@@ -9611,6 +9637,8 @@ static void clif_getareachar_npc(struct map_session_data* sd,struct npc_data* nd
 		len = clif_npc0078(nd,WFIFOP(sd->fd,0),sd);
 	}
 	WFIFOSET(sd->fd,len);
+
+	clif_progressbar_npc(nd, sd);
 
 	if(nd->chat_id){
 		clif_dispchat(map_id2cd(nd->chat_id),sd->fd);
@@ -18365,6 +18393,28 @@ void clif_setfont(struct map_session_data *sd)
  * ‰r¥ƒo[•\Ž¦
  *------------------------------------------
  */
+void clif_progressbar_npc(struct npc_data *nd, struct map_session_data *sd)
+{
+#if PACKETVER >= 20130821
+	unsigned char buf[14];
+	int remaining;
+	nullpo_retv(nd);
+	if(!nd->progressbar_active)
+		return;
+	remaining = DIFF_TICK(nd->progressbar_tick, gettick());
+	if(remaining <= 0)
+		return;
+	WBUFW(buf,0) = 0x09d1;
+	WBUFL(buf,2) = nd->bl.id;
+	WBUFL(buf,6) = nd->progressbar_color;
+	WBUFL(buf,10) = remaining / 1000 + (remaining % 1000 != 0);
+	if(sd)
+		clif_send(buf, sizeof(buf), &sd->bl, SELF);
+	else
+		clif_send(buf, sizeof(buf), &nd->bl, AREA);
+#endif
+}
+
 void clif_progressbar(struct map_session_data *sd, unsigned int color, unsigned int second)
 {
 	int fd;
@@ -19754,6 +19804,7 @@ void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
 
 	nullpo_retv(sd);
 
+	sd->lapine_upgrade_id = nameid;
 	fd=sd->fd;
 
 #if PACKETVER < 20180704
@@ -25268,6 +25319,38 @@ static void clif_parse_CloseRoulette(int fd,struct map_session_data *sd, int cmd
  *
  *------------------------------------------
  */
+static void clif_title_name_area(struct map_session_data *sd)
+{
+#if PACKETVER >= 20141126
+	unsigned char buf[106] = {0};
+	struct party *p = NULL;
+	struct guild *g = NULL;
+	int i, pos = -1;
+	if(sd->status.party_id > 0) p = party_search(sd->status.party_id);
+	if(sd->status.guild_id > 0) g = guild_search(sd->status.guild_id);
+	WBUFW(buf,0) = 0x0a30;
+	WBUFL(buf,2) = sd->bl.id;
+	memcpy(WBUFP(buf,6), sd->status.name, 24);
+	if(p && (battle_config.show_always_party_name || g))
+		memcpy(WBUFP(buf,30), p->name, 24);
+	if(g) {
+		memcpy(WBUFP(buf,54), g->name, 24);
+		for(i = 0; i < g->max_member; i++) {
+			if(g->member[i].char_id == sd->status.char_id) {
+				pos = g->member[i].position;
+				break;
+			}
+		}
+		if(pos >= 0 && pos < MAX_GUILDPOSITION)
+			memcpy(WBUFP(buf,78), g->position[pos].name, 24);
+		else
+			strncpy(WBUFP(buf,78), msg_txt(45), 24);
+	}
+	WBUFL(buf,102) = sd->status.title_id;
+	clif_send(buf, sizeof(buf), &sd->bl, AREA);
+#endif
+}
+
 static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cmd)
 {
 	int title_id;
@@ -25281,6 +25364,7 @@ static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cm
 
 	if(title_id <= 0) {
 		sd->status.title_id = 0;
+		title_id = 0;
 	}
 	else {
 		if(achieve_check_title(sd, title_id)) {
@@ -25289,7 +25373,7 @@ static void clif_parse_ChangeTitleReq(int fd,struct map_session_data *sd, int cm
 		}
 	}
 
-	//clif_name_area(&sd->bl);
+	clif_title_name_area(sd);
 	clif_change_title_ack(sd->fd, 0, title_id);
 	return;
 }
@@ -25354,9 +25438,33 @@ static void clif_parse_OpenUi(int fd,struct map_session_data *sd, int cmd)
  *
  *------------------------------------------
  */
+void clif_camerainfo(struct map_session_data *sd, int show, float range, float rotation, float latitude)
+{
+#if PACKETVER >= 20160525
+	int fd;
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x0a78;
+	WFIFOB(fd,2) = show;
+	memcpy(WFIFOP(fd,3), &range, sizeof(range));
+	memcpy(WFIFOP(fd,7), &rotation, sizeof(rotation));
+	memcpy(WFIFOP(fd,11), &latitude, sizeof(latitude));
+	WFIFOSET(fd,15);
+#endif
+}
+
 static void clif_parse_CameraInfo(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20160525
+	float range, rotation, latitude;
+	int show;
+	nullpo_retv(sd);
+	show = RFIFOB(fd,2) == 1;
+	memcpy(&range, RFIFOP(fd,3), sizeof(range));
+	memcpy(&rotation, RFIFOP(fd,7), sizeof(rotation));
+	memcpy(&latitude, RFIFOP(fd,11), sizeof(latitude));
+	clif_camerainfo(sd, show, range, rotation, latitude);
+#endif
 	return;
 }
 
@@ -25500,7 +25608,8 @@ static void clif_parse_PetEvolution(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CloseLapineUpgrade(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	nullpo_retv(sd);
+	sd->lapine_upgrade_id = 0;
 	return;
 }
 
@@ -25525,6 +25634,9 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 #endif
 
 	idx = RFIFOW(fd,GETPACKETPOS(cmd,1)) - 2;
+
+	if(sd->lapine_upgrade_id <= 0 || sd->lapine_upgrade_id != nameid)
+		return;
 
 	ret = pc_upgrade_item(sd, nameid, idx);
 

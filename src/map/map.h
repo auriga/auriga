@@ -931,6 +931,7 @@ struct map_session_data {
 	short hotkey_set;
 	char hotkey_rotate[MAX_HOTKEYS_TAB];
 	int shop_point;
+	int lapine_upgrade_id;
 
 #if PACKETVER >= 20150513
 	struct {
@@ -988,6 +989,8 @@ struct npc_data {
 	unsigned char sex;
 	short hair,hair_color,clothes_color;
 	short head_top,head_mid,head_bottom,robe,style;
+	unsigned int progressbar_tick, progressbar_color;
+	unsigned char progressbar_active;
 	union {
 		struct {
 			struct script_code *script;

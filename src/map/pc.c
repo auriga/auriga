@@ -3393,6 +3393,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	int m, i, move_flag = 0;
 
 	nullpo_retr(1, sd);
+	sd->lapine_upgrade_id = 0;
 
 	// À‚Á‚Ä‚¢‚½‚ç—§‚¿ã‚ª‚é
 	if(pc_issit(sd)) {

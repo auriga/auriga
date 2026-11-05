@@ -1,4 +1,19 @@
 ----------------------------------------
+//1623 [2026/11/05] by refis
+
+・称号変更時に周辺プレイヤーへ表示を更新（clif.c）
+
+・NPC頭上にプログレスバーを表示するprogressbar_npc命令を追加（map.h, clif.c, clif.h, buildin_dialog.c, script.c, doc/script_ref.txt）
+
+・ラピネアップグレード画面の終了時に状態を解除し、画面外からの要求を拒否（clif.c, map.h）
+
+・ナビゲーション開始パケットとnavigateto命令を追加（clif.c, clif.h, buildin_dialog.c, script.c, db/packet_db.lua, doc/script_ref.txt）
+
+・カメラ表示・設定パケットとcamerainfo命令を追加（clif.c, clif.h, buildin_misc.c, script.c, doc/script_ref.txt）
+
+・マップ全体に座標マーカーを表示するviewpointmap命令を追加（buildin_dialog.c, script.c, doc/script_ref.txt）
+
+----------------------------------------
 //1622 [2026/11/05] by refis
 
 ・特性ステータス系アイテムボーナスの実装

@@ -292,6 +292,53 @@ int buildin_cutin(struct script_state *st)
  *
  *------------------------------------------
  */
+static int buildin_viewpointmap_sub(struct block_list *bl, va_list ap)
+{
+	int oid = va_arg(ap, int);
+	int type = va_arg(ap, int);
+	int x = va_arg(ap, int);
+	int y = va_arg(ap, int);
+	int id = va_arg(ap, int);
+	int color = va_arg(ap, int);
+	clif_viewpoint((struct map_session_data *)bl, oid, type, x, y, id, color);
+	return 0;
+}
+
+int buildin_viewpointmap(struct script_state *st)
+{
+	const char *name = conv_str(st, &st->stack->stack_data[st->start+2]);
+	int m = map_mapname2mapid(name);
+	int type, x, y, id, color;
+	if(m < 0) {
+		printf("buildin_viewpointmap: map not found: %s\n", name);
+		return 0;
+	}
+	type = conv_num(st, &st->stack->stack_data[st->start+3]);
+	x = conv_num(st, &st->stack->stack_data[st->start+4]);
+	y = conv_num(st, &st->stack->stack_data[st->start+5]);
+	id = conv_num(st, &st->stack->stack_data[st->start+6]);
+	color = conv_num(st, &st->stack->stack_data[st->start+7]);
+	map_foreachinarea(buildin_viewpointmap_sub, m, 0, 0, map[m].xs, map[m].ys, BL_PC, st->oid, type, x, y, id, color);
+	return 0;
+}
+
+int buildin_navigateto(struct script_state *st)
+{
+#if PACKETVER >= 20111010
+	const char *name = conv_str(st, &st->stack->stack_data[st->start+2]);
+	struct map_session_data *sd = script_rid2sd(st);
+	int x = 0, y = 0, flag = 101, hide = 1, mob_id = 0;
+	if(st->end > st->start+3) x = conv_num(st, &st->stack->stack_data[st->start+3]);
+	if(st->end > st->start+4) y = conv_num(st, &st->stack->stack_data[st->start+4]);
+	if(st->end > st->start+5) flag = conv_num(st, &st->stack->stack_data[st->start+5]);
+	if(st->end > st->start+6) hide = conv_num(st, &st->stack->stack_data[st->start+6]);
+	if(st->end > st->start+7) mob_id = conv_num(st, &st->stack->stack_data[st->start+7]);
+	if(st->end > st->start+8) sd = map_charid2sd(conv_num(st, &st->stack->stack_data[st->start+8]));
+	if(sd) clif_navigateto(sd, name, x, y, flag, hide, mob_id);
+#endif
+	return 0;
+}
+
 int buildin_viewpoint(struct script_state *st)
 {
 	int type,x,y,id,color;
@@ -454,6 +501,49 @@ int buildin_showevent(struct script_state *st)
  * ‰r¥ƒo[•\Ž¦
  *------------------------------------------
  */
+int buildin_progressbar_npc(struct script_state *st)
+{
+#if PACKETVER >= 20130821
+	struct npc_data *nd;
+	int second = conv_num(st, &st->stack->stack_data[st->start+3]);
+	if(st->end > st->start+4)
+		nd = npc_name2id(conv_str(st, &st->stack->stack_data[st->start+4]));
+	else
+		nd = map_id2nd(st->oid);
+	if(!nd || second < 0 || second > 2147483) {
+		st->sleep.tick = 0;
+		st->state = END;
+		return 0;
+	}
+	if(st->sleep.tick > 0) {
+		st->sleep.tick = 0;
+		if(nd->bl.id == st->progressbar_npc_id && nd->progressbar_active &&
+		   nd->progressbar_tick == st->progressbar_npc_tick) {
+			nd->progressbar_active = 0;
+			nd->progressbar_tick = 0;
+			nd->progressbar_color = 0;
+		}
+		return 0;
+	}
+	if(second == 0)
+		return 0;
+	if(nd->progressbar_active && DIFF_TICK(nd->progressbar_tick, gettick()) > 0) {
+		printf("buildin_progressbar_npc: NPC is busy\n");
+		st->state = END;
+		return 0;
+	}
+	nd->progressbar_color = (unsigned int)strtoul(conv_str(st, &st->stack->stack_data[st->start+2]), NULL, 0);
+	st->sleep.tick = second * 1000;
+	nd->progressbar_tick = gettick() + st->sleep.tick;
+	nd->progressbar_active = 1;
+	st->progressbar_npc_id = nd->bl.id;
+	st->progressbar_npc_tick = nd->progressbar_tick;
+	st->state = RERUNLINE;
+	clif_progressbar_npc(nd, NULL);
+#endif
+	return 0;
+}
+
 int buildin_progressbar(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);
