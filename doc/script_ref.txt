@@ -1040,6 +1040,11 @@ AurigaNPCScript
 
 			<petid>に指定されたアイテムIDを持つペットの卵を作成します。
 
+		navigateto命令
+			navigateto <map>[,<x>,<y>,<flag>,<hide>,<mob id>,<char id>];
+			クライアントのナビゲーションを開始します。PACKETVER 20111010以降。
+			flagは移動手段の指定、hideはウィンドウ非表示の指定です。
+
 		viewpointmap命令
 			viewpointmap <map>,<type>,<x>,<y>,<id>,<color>;
 			指定マップのプレイヤー全員に座標マーカーを表示・削除します。

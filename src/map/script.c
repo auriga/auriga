@@ -4007,6 +4007,7 @@ int buildin_delitem2(struct script_state *st);
 int buildin_delcartitem2(struct script_state *st);
 int buildin_viewpoint(struct script_state *st);
 int buildin_viewpointmap(struct script_state *st);
+int buildin_navigateto(struct script_state *st);
 int buildin_countitem(struct script_state *st);
 int buildin_countcartitem(struct script_state *st);
 int buildin_checkweight(struct script_state *st);
@@ -4360,6 +4361,7 @@ struct script_function buildin_func[] = {
 	{buildin_cutincard,"cutincard","i"},
 	{buildin_viewpoint,"viewpoint","iiiii"},
 	{buildin_viewpointmap,"viewpointmap","siiiii"},
+	{buildin_navigateto,"navigateto","s*"},
 	{buildin_heal,"heal","ii"},
 	{buildin_itemheal,"itemheal","ii"},
 	{buildin_percentheal,"percentheal","ii"},

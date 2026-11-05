@@ -322,6 +322,23 @@ int buildin_viewpointmap(struct script_state *st)
 	return 0;
 }
 
+int buildin_navigateto(struct script_state *st)
+{
+#if PACKETVER >= 20111010
+	const char *name = conv_str(st, &st->stack->stack_data[st->start+2]);
+	struct map_session_data *sd = script_rid2sd(st);
+	int x = 0, y = 0, flag = 101, hide = 1, mob_id = 0;
+	if(st->end > st->start+3) x = conv_num(st, &st->stack->stack_data[st->start+3]);
+	if(st->end > st->start+4) y = conv_num(st, &st->stack->stack_data[st->start+4]);
+	if(st->end > st->start+5) flag = conv_num(st, &st->stack->stack_data[st->start+5]);
+	if(st->end > st->start+6) hide = conv_num(st, &st->stack->stack_data[st->start+6]);
+	if(st->end > st->start+7) mob_id = conv_num(st, &st->stack->stack_data[st->start+7]);
+	if(st->end > st->start+8) sd = map_charid2sd(conv_num(st, &st->stack->stack_data[st->start+8]));
+	if(sd) clif_navigateto(sd, name, x, y, flag, hide, mob_id);
+#endif
+	return 0;
+}
+
 int buildin_viewpoint(struct script_state *st)
 {
 	int type,x,y,id,color;

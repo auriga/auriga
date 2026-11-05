@@ -4715,6 +4715,26 @@ void clif_scriptinputstr(struct map_session_data *sd, int npcid)
  *
  *------------------------------------------
  */
+void clif_navigateto(struct map_session_data *sd, const char *name, int x, int y, int flag, int hide, int mob_id)
+{
+#if PACKETVER >= 20111010
+	int fd;
+	nullpo_retv(sd);
+	nullpo_retv(name);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x08e2;
+	WFIFOB(fd,2) = mob_id > 0 ? 3 : (x > 0 && y > 0 ? 0 : 1);
+	WFIFOB(fd,3) = flag;
+	WFIFOB(fd,4) = hide != 0;
+	memset(WFIFOP(fd,5), 0, 16);
+	strncpy((char *)WFIFOP(fd,5), name, 15);
+	WFIFOW(fd,21) = mob_id > 0 || x <= 0 || y <= 0 ? 0 : x;
+	WFIFOW(fd,23) = mob_id > 0 || x <= 0 || y <= 0 ? 0 : y;
+	WFIFOW(fd,25) = mob_id;
+	WFIFOSET(fd,27);
+#endif
+}
+
 void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, int y, int id, int color)
 {
 	int fd;

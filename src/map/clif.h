@@ -191,6 +191,7 @@ void clif_scriptmenu(struct map_session_data *sd, int npcid, const char *mes);
 void clif_scriptinput(struct map_session_data *sd, int npcid);
 void clif_scriptinputstr(struct map_session_data *sd, int npcid);
 void clif_viewpoint(struct map_session_data *sd, int npc_id, int type, int x, int y, int id, int color);
+void clif_navigateto(struct map_session_data *sd, const char *name, int x, int y, int flag, int hide, int mob_id);
 void clif_cutin(struct map_session_data *sd, const char *image, int type);
 void clif_additem(struct map_session_data *sd, int n, int amount, unsigned char fail);
 void clif_delitem(struct map_session_data *sd, short type, int n, int amount);
