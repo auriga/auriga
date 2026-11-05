@@ -19774,6 +19774,7 @@ void clif_openlapineupgrade(struct map_session_data *sd, int nameid)
 
 	nullpo_retv(sd);
 
+	sd->lapine_upgrade_id = nameid;
 	fd=sd->fd;
 
 #if PACKETVER < 20180704
@@ -25544,7 +25545,8 @@ static void clif_parse_PetEvolution(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CloseLapineUpgrade(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+	nullpo_retv(sd);
+	sd->lapine_upgrade_id = 0;
 	return;
 }
 
@@ -25569,6 +25571,9 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 #endif
 
 	idx = RFIFOW(fd,GETPACKETPOS(cmd,1)) - 2;
+
+	if(sd->lapine_upgrade_id <= 0 || sd->lapine_upgrade_id != nameid)
+		return;
 
 	ret = pc_upgrade_item(sd, nameid, idx);
 

@@ -1,6 +1,8 @@
 ----------------------------------------
 //1623 [2026/11/05]
 
+・ラピネアップグレード画面の終了時に状態を解除し、画面外からの要求を拒否（clif.c, map.h）
+
 ・ナビゲーション開始パケットとnavigateto命令を追加（clif.c, clif.h, buildin_dialog.c, script.c, db/packet_db.lua, doc/script_ref.txt）
 
 ・カメラ表示・設定パケットとcamerainfo命令を追加（clif.c, clif.h, buildin_misc.c, script.c, doc/script_ref.txt）
