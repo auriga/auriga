@@ -262,6 +262,8 @@ static void status_calc_pc_phase_clear(struct map_session_data *sd)
 	memset(sd->ignore_mdef_ele,0,sizeof(sd->ignore_mdef_ele));
 	memset(sd->ignore_mdef_race,0,sizeof(sd->ignore_mdef_race));
 	memset(sd->ignore_mdef_enemy,0,sizeof(sd->ignore_mdef_enemy));
+	memset(sd->ignore_res_race,0,sizeof(sd->ignore_res_race));
+	memset(sd->ignore_mres_race,0,sizeof(sd->ignore_mres_race));
 	sd->arrow_cri = 0;
 	sd->magic_def_rate = sd->misc_def_rate = 0;
 	memset(sd->arrow_addele,0,sizeof(sd->arrow_addele));
@@ -348,6 +350,7 @@ static void status_calc_pc_phase_clear(struct map_session_data *sd)
 	memset(sd->break_myequip_rate_when_hit,0,sizeof(sd->break_myequip_rate_when_hit));
 	sd->loss_equip_flag = 0;
 	sd->short_weapon_damege_rate = sd->long_weapon_damege_rate = 0;
+	sd->hit_weapon_damage_rate = 0;
 	sd->range.add_attackrange = 0;
 	sd->range.add_attackrange_rate = 100;
 	sd->special_state.item_no_use = 0;
