@@ -292,6 +292,36 @@ int buildin_cutin(struct script_state *st)
  *
  *------------------------------------------
  */
+static int buildin_viewpointmap_sub(struct block_list *bl, va_list ap)
+{
+	int oid = va_arg(ap, int);
+	int type = va_arg(ap, int);
+	int x = va_arg(ap, int);
+	int y = va_arg(ap, int);
+	int id = va_arg(ap, int);
+	int color = va_arg(ap, int);
+	clif_viewpoint((struct map_session_data *)bl, oid, type, x, y, id, color);
+	return 0;
+}
+
+int buildin_viewpointmap(struct script_state *st)
+{
+	const char *name = conv_str(st, &st->stack->stack_data[st->start+2]);
+	int m = map_mapname2mapid(name);
+	int type, x, y, id, color;
+	if(m < 0) {
+		printf("buildin_viewpointmap: map not found: %s\n", name);
+		return 0;
+	}
+	type = conv_num(st, &st->stack->stack_data[st->start+3]);
+	x = conv_num(st, &st->stack->stack_data[st->start+4]);
+	y = conv_num(st, &st->stack->stack_data[st->start+5]);
+	id = conv_num(st, &st->stack->stack_data[st->start+6]);
+	color = conv_num(st, &st->stack->stack_data[st->start+7]);
+	map_foreachinarea(buildin_viewpointmap_sub, m, 0, 0, map[m].xs, map[m].ys, BL_PC, st->oid, type, x, y, id, color);
+	return 0;
+}
+
 int buildin_viewpoint(struct script_state *st)
 {
 	int type,x,y,id,color;

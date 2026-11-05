@@ -1040,6 +1040,10 @@ AurigaNPCScript
 
 			<petid>に指定されたアイテムIDを持つペットの卵を作成します。
 
+		viewpointmap命令
+			viewpointmap <map>,<type>,<x>,<y>,<id>,<color>;
+			指定マップのプレイヤー全員に座標マーカーを表示・削除します。
+
 		viewpoint命令
 			viewpoint <type>,<x>,<y>,<id>,<color>;
 
