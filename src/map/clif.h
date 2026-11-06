@@ -478,6 +478,7 @@ void clif_set0199(int fd, unsigned short type);
 void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type);
 void clif_send0199(int m, unsigned short type);
 void clif_refine(int fd, unsigned short fail, int idx, int val);
+int clif_refineui_open(struct map_session_data *sd);
 void clif_send_packet(struct map_session_data *sd, const char *message);
 
 // petsystem

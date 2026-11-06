@@ -58,6 +58,7 @@
 int atkmods[MAX_SIZE_FIX][WT_MAX];	// ïêäÌATKÉTÉCÉYèCê≥(size_fix.txt)
 
 struct refine_db refine_db[MAX_WEAPON_LEVEL+1];
+static struct { int material, price; } refine_cost_db[MAX_WEAPON_LEVEL+1];
 
 struct job_db job_db[PC_JOB_MAX];
 
@@ -268,6 +269,17 @@ int status_get_overrefine_bonus(int lv)
  * ê∏òBê¨å˜ó¶
  *------------------------------------------
  */
+int status_refine_cost(int level, int *material, int *price)
+{
+	if(level < 0 || level > MAX_WEAPON_LEVEL || refine_cost_db[level].material <= 0)
+		return 0;
+	if(material)
+		*material = refine_cost_db[level].material;
+	if(price)
+		*price = refine_cost_db[level].price;
+	return 1;
+}
+
 int status_percentrefinery(struct map_session_data *sd,struct item *item)
 {
 	int percent;
@@ -6392,6 +6404,29 @@ int status_readdb(void)
 		for(j=0; j<WT_MAX; j++)
 			atkmods[i][j] = 100;
 	}
+
+	memset(refine_cost_db, 0, sizeof(refine_cost_db));
+	filename2 = "db/refine_cost_db.txt";
+	fp = fopen(filename2, "r");
+	if(fp == NULL) {
+		printf("status_readdb: open [%s] failed !\n", filename2);
+		return 1;
+	}
+	while(fgets(line, sizeof(line), fp)) {
+		int level, material, price;
+		if(line[0] == '/' && line[1] == '/')
+			continue;
+		if(sscanf(line, "%d,%d,%d", &level, &material, &price) != 3 ||
+		   level < 0 || level > MAX_WEAPON_LEVEL || material <= 0 || price < 0) {
+			if(line[0] != '\r' && line[0] != '\n' && line[0] != '\0')
+				printf("status_readdb: invalid refine cost: %s", line);
+			continue;
+		}
+		refine_cost_db[level].material = material;
+		refine_cost_db[level].price = price;
+	}
+	fclose(fp);
+	printf("read %s done\n", filename2);
 
 	filename2 = "db/size_fix.txt";
 	fp = fopen(filename2, "r");

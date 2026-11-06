@@ -42,7 +42,7 @@ void bank_deposit(struct map_session_data *sd, int target_id, int zeny)
 		return;
 
 	// 取引不可チェック
-	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
 	    sd->state.mail_appending || sd->chatID != 0 )
 		return;
 
@@ -88,7 +88,7 @@ void bank_withdraw(struct map_session_data *sd, int target_id, int zeny)
 		return;
 
 	// 取引不可チェック
-	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
 	    sd->state.mail_appending || sd->chatID != 0 )
 		return;
 

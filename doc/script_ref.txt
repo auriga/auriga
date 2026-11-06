@@ -3022,6 +3022,23 @@ AurigaNPCScript
 			12,コスチューム上段、13,コスチューム中段、14,コスチューム下段、15,コスチューム肩、16,コスチュームFloor
 			17,アーマーシャドウ、18,ウェポンシャドウ、19,シールドシャドウ、20,シューズシャドウ、21,アクセサリ右シャドウ、22,アクセサリ左シャドウ
 
+		getrefinecost関数
+			getrefinecost(<武器レベル>,<種類>)
+
+			通常精錬の素材ID（種類0）または費用（種類1）を返します。
+			武器レベル0は防具です。設定がない場合や引数が不正な場合は-1を返します。
+
+		openrefineui関数
+			openrefineui()
+
+			精錬ウィンドウを開きます（PACKETVER 20161012以降）。
+			開いた場合、または既に開いている場合は1を返します。
+			未対応のPACKETVER、対象プレイヤーがいない場合、または取引・倉庫等を利用中の場合は0を返します。
+			成功率はrefine_db.txt、素材と費用はrefine_cost_db.txtを参照し、
+			失敗すると装備は消滅します。
+			精錬上限は+10です。濃縮鉱石と祝福は使用できません。
+			例: if(openrefineui()) close;
+
 		getequippercentrefinery関数
 			getequippercentrefinery(<n>)
 

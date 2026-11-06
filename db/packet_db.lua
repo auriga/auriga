@@ -3057,6 +3057,12 @@ if packet_ver >= 20160921 then
 	p(0x0a37,59)
 end
 
+if packet_ver >= 20161012 then
+	p(0x0aa1,4,"refineuiselect",2)
+	p(0x0aa4,2,"refineuiclose",0)
+	p(0x0aa3,7,"refineuirequest",{2,4,6})
+end
+
 -- 2016-12-28aRagexeRE
 if packet_ver == 20161228 then
 	packet_key(0x09366971,0x005672F1,0x6F3712AE)
@@ -3262,7 +3268,7 @@ if packet_ver >= 20180704 then
 	p(0x0a4e,6)
 	p(0x0a89,61)
 	p(0x0a96,61)
-	p(0x0aa3,9)
+	p(0x0aa3,9,"refineuirequest",{2,4,8})
 	p(0x0ab4,6)
 	p(0x0ab6,8,"lapineupgradeack",{2,6})
 	p(0x0ab9,47)

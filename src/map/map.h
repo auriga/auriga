@@ -447,6 +447,7 @@ struct map_session_data {
 		unsigned blockedmove : 1;
 		unsigned alliance_message : 1;
 		unsigned autoskill_flag : 1;
+		unsigned refineui_open : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;

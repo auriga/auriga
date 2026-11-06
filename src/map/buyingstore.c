@@ -112,6 +112,11 @@ void buyingstore_openstore(struct map_session_data *sd, int limit_zeny, bool res
 	struct item_data *id;
 
 	nullpo_retv(sd);
+	if(sd->state.refineui_open) {
+		sd->buyingstore.count = 0;
+		clif_failed_openbuyingstore(sd, FAILED_OPEN_INVALIDDATA, 0);
+		return;
+	}
 
 	// 買取露店キャンセル
 	if( result == false )
@@ -305,6 +310,8 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 	struct map_session_data *ssd;
 
 	nullpo_retv(sd);
+	if(sd->state.refineui_open)
+		return;
 
 	// 対象が存在するかチェック
 	if( (ssd = map_id2sd(account_id)) == NULL )
@@ -363,6 +370,10 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 	struct map_session_data *ssd;
 
 	nullpo_retv(sd);
+	if(sd->state.refineui_open) {
+		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
+		return;
+	}
 
 	// 対象が存在するかチェック
 	if( (ssd = map_id2sd(account_id)) == NULL )

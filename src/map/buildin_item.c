@@ -922,6 +922,29 @@ int buildin_delequip(struct script_state *st)
  * ¸˜B¬Œ÷
  *------------------------------------------
  */
+int buildin_getrefinecost(struct script_state *st)
+{
+	int level = conv_num(st, &(st->stack->stack_data[st->start+2]));
+	int type = conv_num(st, &(st->stack->stack_data[st->start+3]));
+	int material, price, value = -1;
+
+	if(status_refine_cost(level, &material, &price)) {
+		if(type == 0)
+			value = material;
+		else if(type == 1)
+			value = price;
+	}
+	push_val(st->stack, C_INT, value);
+	return 0;
+}
+
+int buildin_openrefineui(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	push_val(st->stack, C_INT, clif_refineui_open(sd));
+	return 0;
+}
+
 int buildin_successrefitem(struct script_state *st)
 {
 	int num, i = -1;
