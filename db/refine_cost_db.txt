@@ -1,0 +1,6 @@
+// Normal refine cost: weapon level (0 = armor), material item ID, zeny
+0,985,5000
+1,1010,100
+2,1011,500
+3,984,5000
+4,984,10000

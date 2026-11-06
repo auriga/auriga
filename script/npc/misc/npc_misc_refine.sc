@@ -12,9 +12,19 @@ function	script	Refine1	{
 	mes "どの装備アイテムを";
 	mes "精錬したいのかい？";
 	next;
-	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
-				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
+	set '@i,select(
+		(getequipid(1)!=0? "^nItemID^" +getequipid(1): ""),
+		(getequipid(2)!=0? "^nItemID^" +getequipid(2): ""),
+		(getequipid(3)!=0? "^nItemID^" +getequipid(3): ""),
+		(getequipid(4)!=0? "^nItemID^" +getequipid(4): ""),
+		(getequipid(5)!=0? "^nItemID^" +getequipid(5): ""),
+		(getequipid(6)!=0? "^nItemID^" +getequipid(6): ""),
+		"やっぱりやめる");
 	mes "["+getarg(0)+"]";
+	if('@i == 7) {
+		mes "また来るんだな。";
+		return;
+	}
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
@@ -40,15 +50,6 @@ function	script	Refine1	{
 		case 6:
 			mes "君の足の臭いすごいぜ！";
 			break;
-		case 7:
-		case 8:
-			mes "どこにアクセサリーがあるのかい？";
-			break;
-		case 9:
-		case 10:
-			mes "何を精錬しろと言うんだ？";
-			mes "他のアイテムの事かい？";
-			break;
 		}
 		return;
 	}
@@ -64,41 +65,83 @@ function	script	Refine1	{
 		mes "これ以上は精錬できないぞ。";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
-	if('price[0]==0) {
-		setarray 'price,5000,100,500,5000,10000;
-		setarray 'itemid,985,1010,1011,984,984;
-	}
 	set '@wlv,getequipweaponlv('@i);
+	if(getequippercentrefinery('@i) >= 100) {
+		mes "この装備をどうするんだ？";
+		mes "安全圏内は一気に精錬出来るぜ。";
+		mes "一気に精錬するなら";
+		mes "安全圏分の素材とZenyが必要だ。";
+		next;
+		switch(select("精錬する","一気に精錬する","やめる")) {
+		case 1:
+			set '@cnt,0;
+			break;
+		case 2:
+			set '@cnt,'@wlv==0? 4: 8 - '@wlv;
+			set '@cnt,'@cnt - getequiprefinerycnt('@i);
+			break;
+		case 3:
+			mes "["+getarg(0)+"]";
+			mes "また来るんだな。";
+			return;
+		}
+		mes "["+getarg(0)+"]";
+		if('@cnt >= 1) {
+			mes "君が選んだ装備を精錬するには";
+			mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+" "+'@cnt+"個^000000と";
+			mes "^0000FF手数料 "+getrefinecost('@wlv, 1)*'@cnt+"Zeny^000000が必要だ。";
+			mes "精錬を続けるかい？";
+			next;
+			if(select("はい","やっぱりやめる") == 2) {
+				mes "["+getarg(0)+"]";
+				mes "また来るんだな。";
+				return;
+			}
+			if(countitem(getrefinecost('@wlv, 0)) < '@cnt) {
+				mes "["+getarg(0)+"]";
+				mes getitemname(getrefinecost('@wlv, 0))+"が足りないようだな。";
+				mes "必要な分の"+getitemname(getrefinecost('@wlv, 0))+"を";
+				mes "持って来るんだな。";
+				return;
+			}
+			if(Zeny < getrefinecost('@wlv, 1) * '@cnt) {
+				mes "["+getarg(0)+"]";
+				mes "それが君が持ってる全部かい？";
+				mes "残念だが、材料が足りないんじゃ";
+				mes "仕方がないな。";
+				mes "俺はただでやってやるほど";
+				mes "心が広くないからな。";
+				return;
+			}
+			for(set '@j,0; '@j<'@cnt; set '@j,'@j+1) {
+				if(getequippercentrefinery('@i) < 100) {
+					mes "["+getarg(0)+"]";
+					mes "何かがおかしいぞ？";
+					return;
+				}
+				delitem getrefinecost('@wlv, 0),1;
+				set Zeny,Zeny-getrefinecost('@wlv, 1);
+				cutin "hollgrehenn_01",255;
+				successrefitem '@i;
+			}
+			cutin "hollgrehenn_02",2;
+			mes "["+getarg(0)+"]";
+			mes "さぁ出来たぞ。";
+			mes "持って行くと良い。";
+			return;
+		}
+	}
 	switch('@wlv) {
 	case 0:
 		mes "君が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と";
-		mes "手数料5000Zenyが必要だな。";
+		mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "続けるかい？";
 		break;
-	case 1:
-		mes "レベル1の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 2:
-		mes "レベル2の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 3:
-		mes "レベル3の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 4:
-		mes "レベル4の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だな。";
+	default:
+		mes "レベル"+'@wlv+"の武器を精錬したいのかい？";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	}
@@ -133,7 +176,7 @@ function	script	Refine1	{
 			return;
 		}
 	}
-	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+	if(countitem(getrefinecost('@wlv, 0))<1 || Zeny<getrefinecost('@wlv, 1)) {
 		mes "["+getarg(0)+"]";
 		mes "それが君が持ってる全部かい？";
 		mes "残念だが、材料が足りないんじゃ";
@@ -142,8 +185,8 @@ function	script	Refine1	{
 		mes "心が広くないからな。";
 		return;
 	}
-	delitem 'itemid['@wlv],1;
-	set Zeny,Zeny-'price['@wlv];
+	delitem getrefinecost('@wlv, 0),1;
+	set Zeny,Zeny-getrefinecost('@wlv, 1);
 	mes "["+getarg(0)+"]";
 	mes "カン！ カン！ カン!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
@@ -183,9 +226,20 @@ function	script	Refine2	{
 	mes "来たか。まあとにかく";
 	mes "精錬したい装備を出せ。";
 	next;
-	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
-				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
+	set '@i,select(
+		(getequipid(1)!=0? "^nItemID^" +getequipid(1): ""),
+		(getequipid(2)!=0? "^nItemID^" +getequipid(2): ""),
+		(getequipid(3)!=0? "^nItemID^" +getequipid(3): ""),
+		(getequipid(4)!=0? "^nItemID^" +getequipid(4): ""),
+		(getequipid(5)!=0? "^nItemID^" +getequipid(5): ""),
+		(getequipid(6)!=0? "^nItemID^" +getequipid(6): ""),
+		"やっぱりやめる");
 	mes "["+getarg(0)+"]";
+	if('@i == 7) {
+		mes "俺は忙しいんだ。";
+		mes "二度と来るな。";
+		return;
+	}
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
@@ -209,18 +263,6 @@ function	script	Refine2	{
 			mes "くだらない悪戯に付き合う";
 			mes "暇は無いんだ！";
 			break;
-		case 7:
-			mes "精錬しないのなら用は無いだろ？";
-			break;
-		case 8:
-			mes "俺は忙しい！";
-			break;
-		case 9:
-			mes "どこを精錬するって？";
-			break;
-		case 10:
-			mes "帰ってくれないか？";
-			break;
 		}
 		return;
 	}
@@ -239,41 +281,94 @@ function	script	Refine2	{
 		mes "無いぞ！";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
-	if('price[0]==0 || 'itemid[0]==0) {
-		setarray 'price,5000,100,500,5000,10000;
-		setarray 'itemid,985,1010,1011,984,984;
-	}
 	set '@wlv,getequipweaponlv('@i);
+	if(getequippercentrefinery('@i) >= 100) {
+		mes "この装備をどうするんだ？";
+		mes "安全圏内は一気に精錬出来るぜ。";
+		mes "一気に精錬するなら";
+		mes "安全圏分の素材とZenyが必要だ。";
+		next;
+		switch(select("精錬する","一気に精錬する","やめる")) {
+		case 1:
+			set '@cnt,0;
+			break;
+		case 2:
+			set '@cnt,'@wlv==0? 4: 8 - '@wlv;
+			set '@cnt,'@cnt - getequiprefinerycnt('@i);
+			break;
+		case 3:
+			mes "["+getarg(0)+"]";
+			mes "また来るんだな。";
+			return;
+		}
+		mes "["+getarg(0)+"]";
+		if('@cnt >= 1) {
+			mes "精錬するなら";
+			mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+" "+'@cnt+"個^000000と";
+			mes "^0000FF手数料 "+getrefinecost('@wlv, 1)*'@cnt+"Zeny^000000が必要だ。";
+			mes "精錬を続けるか？";
+			next;
+			if(select("はい","やっぱりやめる") == 2) {
+				mes "["+getarg(0)+"]";
+				mes "冷やかしなら帰れ！";
+				return;
+			}
+			mes "["+getarg(0)+"]";
+			if(countitem(getrefinecost('@wlv, 0)) < '@cnt) {
+				mes getitemname(getrefinecost('@wlv, 0))+"が足りないようだな。";
+				mes "必要な分の"+getitemname(getrefinecost('@wlv, 0))+"を";
+				mes "持って来るんだな。";
+				return;
+			}
+			if(Zeny < getrefinecost('@wlv, 1) * '@cnt) {
+				mes "1Zenyも負けられないから";
+				mes "精錬したければお金を持ってきな。";
+				return;
+			}
+			for(set '@j,0; '@j<'@cnt; set '@j,'@j+1) {
+				if(getequippercentrefinery('@i) < 100) {
+					mes "["+getarg(0)+"]";
+					mes "何かがおかしいぞ？";
+					return;
+				}
+				delitem getrefinecost('@wlv, 0),1;
+				set Zeny,Zeny-getrefinecost('@wlv, 1);
+				successrefitem '@i;
+			}
+			mes "さぁ出来たぞ。";
+			mes "持って行くと良い。";
+			return;
+		}
+	}
 	switch('@wlv) {
 	case 0:
 		mes "お前が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と";
-		mes "手数料5000Zenyが必要だな。";
+		mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 1:
 		mes "レベル1の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だな。";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 2:
 		mes "レベル2の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だな。";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "ビタ1Zeny負けられない。";
 		break;
 	case 3:
 		mes "レベル3の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だな。";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "久しぶりに俺の実力を見せてやるか。";
 		break;
 	case 4:
 		mes "レベル4の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だな。";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "レベル4の武器か…興奮するぜ！";
 		break;
 	}
@@ -297,14 +392,14 @@ function	script	Refine2	{
 			return;
 		}
 	}
-	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+	if(countitem(getrefinecost('@wlv, 0))<1 || Zeny<getrefinecost('@wlv, 1)) {
 		mes "["+getarg(0)+"]";
 		mes "1Zenyも負けられないから";
 		mes "精錬したければお金を持ってきな。";
 		return;
 	}
-	delitem 'itemid['@wlv],1;
-	set Zeny,Zeny-'price['@wlv];
+	delitem getrefinecost('@wlv, 0),1;
+	set Zeny,Zeny-getrefinecost('@wlv, 1);
 	mes "["+getarg(0)+"]";
 	mes "カン！ カン！ カン!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
@@ -345,9 +440,19 @@ function	script	Refine3	{
 	mes "どの装備アイテムを";
 	mes "精錬したいのか？";
 	next;
-	set '@i,select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),
-				getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
+	set '@i,select(
+		(getequipid(1)!=0? "^nItemID^" +getequipid(1): ""),
+		(getequipid(2)!=0? "^nItemID^" +getequipid(2): ""),
+		(getequipid(3)!=0? "^nItemID^" +getequipid(3): ""),
+		(getequipid(4)!=0? "^nItemID^" +getequipid(4): ""),
+		(getequipid(5)!=0? "^nItemID^" +getequipid(5): ""),
+		(getequipid(6)!=0? "^nItemID^" +getequipid(6): ""),
+		"やっぱりやめる");
 	mes "["+getarg(0)+"]";
+	if('@i == 7) {
+		mes "また来るんだな。";
+		return;
+	}
 	if(getequipisequiped('@i)==0) {
 		switch('@i) {
 		case 1:
@@ -371,15 +476,6 @@ function	script	Refine3	{
 		case 6:
 			mes "臭い…";
 			break;
-		case 7:
-		case 8:
-			mes "どのアクセサリーか？";
-			break;
-		case 9:
-		case 10:
-			mes "何を精錬せよと言う？";
-			mes "他のアイテムの事か？";
-			break;
 		}
 		return;
 	}
@@ -395,41 +491,79 @@ function	script	Refine3	{
 		mes "これ以上は精錬できない。";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムIDをそれぞれ格納
-	if('price[0]==0 || 'itemid[0]==0) {
-		setarray 'price,5000,100,500,5000,10000;
-		setarray 'itemid,985,1010,1011,984,984;
-	}
 	set '@wlv,getequipweaponlv('@i);
+	if(getequippercentrefinery('@i) >= 100) {
+		mes "この装備をどうするんだ？";
+		mes "安全圏内は一気に精錬出来るぜ。";
+		mes "一気に精錬するなら";
+		mes "安全圏分の素材とZenyが必要だ。";
+		next;
+		switch(select("精錬する","一気に精錬する","やめる")) {
+		case 1:
+			set '@cnt,0;
+			break;
+		case 2:
+			set '@cnt,'@wlv==0? 4: 8 - '@wlv;
+			set '@cnt,'@cnt - getequiprefinerycnt('@i);
+			break;
+		case 3:
+			mes "["+getarg(0)+"]";
+			mes "また来るんだな。";
+			return;
+		}
+		mes "["+getarg(0)+"]";
+		if('@cnt >= 1) {
+			mes "汝が選んだ装備を精錬するには";
+			mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+" "+'@cnt+"個^000000と";
+			mes "^0000FF手数料 "+getrefinecost('@wlv, 1)*'@cnt+"Zeny^000000が必要だ。";
+			mes "精錬を続けるかい？";
+			next;
+			if(select("はい","やっぱりやめる") == 2) {
+				mes "["+getarg(0)+"]";
+				mes "また来るんだな。";
+				return;
+			}
+			mes "["+getarg(0)+"]";
+			if(countitem(getrefinecost('@wlv, 0)) < '@cnt) {
+				mes getitemname(getrefinecost('@wlv, 0))+"が足りないようだな。";
+				mes "必要な分の"+getitemname(getrefinecost('@wlv, 0))+"を";
+				mes "持って来るんだな。";
+				return;
+			}
+			if(Zeny < getrefinecost('@wlv, 1) * '@cnt) {
+				mes "それが汝が持ってる全部か？";
+				mes "残念だが、材料が足りないならば";
+				mes "仕方がない。";
+				mes "私はただでやってさしあげるほど";
+				mes "心が広くない。";
+				return;
+			}
+			for(set '@j,0; '@j<'@cnt; set '@j,'@j+1) {
+				if(getequippercentrefinery('@i) < 100) {
+					mes "["+getarg(0)+"]";
+					mes "何かがおかしいぞ？";
+					return;
+				}
+				delitem getrefinecost('@wlv, 0),1;
+				set Zeny,Zeny-getrefinecost('@wlv, 1);
+				successrefitem '@i;
+			}
+			mes "さぁ出来たぞ。";
+			mes "持って行くと良い。";
+			return;
+		}
+	}
 	switch('@wlv) {
 	case 0:
 		mes "汝が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と ";
-		mes "手数料5000Zenyが必要だ。";
+		mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と ";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だ。";
 		mes "続けるか？";
 		break;
-	case 1:
-		mes "レベル1の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だ。";
-		mes "続けるか？";
-		break;
-	case 2:
-		mes "レベル2の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だ。";
-		mes "続けるか？";
-		break;
-	case 3:
-		mes "レベル3の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だ。";
-		mes "続けるか？";
-		break;
-	case 4:
-		mes "レベル4の武器を精錬したいのか？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だ。";
+	default:
+		mes "レベル"+'@wlv+"の武器を精錬したいのか？";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だ。";
 		mes "続けるか？";
 		break;
 	}
@@ -464,7 +598,7 @@ function	script	Refine3	{
 			return;
 		}
 	}
-	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+	if(countitem(getrefinecost('@wlv, 0))<1 || Zeny<getrefinecost('@wlv, 1)) {
 		mes "["+getarg(0)+"]";
 		mes "それが汝が持ってる全部か？";
 		mes "残念だが、材料が足りないならば";
@@ -473,8 +607,8 @@ function	script	Refine3	{
 		mes "心が広くない。";
 		return;
 	}
-	delitem 'itemid['@wlv],1;
-	set Zeny,Zeny-'price['@wlv];
+	delitem getrefinecost('@wlv, 0),1;
+	set Zeny,Zeny-getrefinecost('@wlv, 1);
 	mes "["+getarg(0)+"]";
 	mes "カン！ カン！ カン!!";
 	if(getequippercentrefinery('@i) > rand(100)) {
@@ -720,8 +854,11 @@ alberta_in.gat,28,58,4	script	フレドリック	85,{
 }
 // ----- プロンテラ -----
 prt_in.gat,63,60,0	script	ホルグレン	85,{
+	cutin "hollgrehenn_01",2;
 	callfunc "Refine1","ホルグレン",21,23;
-	close;
+	close2;
+	cutin "hollgrehenn_01",255;
+	end;
 }
 // ----- モロク -----
 morocc_in.gat,73,38,4	script	アラガム	99,{
@@ -1179,12 +1316,11 @@ function	script	BlackSmith	{
 			getequipisequiped(5)? "^nItemID^"+getequipid(5): "",
 			getequipisequiped(6)? "^nItemID^"+getequipid(6): "",
 			"やっぱりやめる");
+	mes "["+getarg(0)+"]";
 	if('@i == 7) {
-		mes "[鍛冶職人]";
 		mes "また来るんだな。";
 		return;
 	}
-	mes "["+getarg(0)+"]";
 	if(getequipisenableref('@i)==0) {
 		mes "このアイテムは精錬不可能だ。";
 		return;
@@ -1197,14 +1333,8 @@ function	script	BlackSmith	{
 		mes "これ以上は精錬できないぞ。";
 		return;
 	}
-	//初回呼び出し時のみ料金とアイテムID、連続精練上限をそれぞれ格納
-	if('price[0]==0) {
-		setarray 'price,5000,100,500,5000,10000;
-		setarray 'itemid,985,1010,1011,984,984;
-		setarray 'max,4,7,6,5,4;
-	}
 	set '@wlv,getequipweaponlv('@i);
-	if(getequiprefinerycnt('@i)<'max) {
+	if(getequippercentrefinery('@i) >= 100) {
 		mes "この装備をどうするんだ？";
 		mes "安全圏内は一気に精錬出来るぜ。";
 		mes "一気に精錬するなら";
@@ -1215,11 +1345,12 @@ function	script	BlackSmith	{
 			mes "["+getarg(0)+"]";
 			break;
 		case 2:
-			set '@num,'max - getequiprefinerycnt('@i);
+			set '@cnt,'@wlv==0? 4: 8 - '@wlv;
+			set '@cnt,'@cnt - getequiprefinerycnt('@i);
 			mes "["+getarg(0)+"]";
 			mes "君が選んだ装備を精錬するには";
-			mes "^0000FF" +getitemname('itemid['@wlv])+ " " +'@num+ "個^000000と";
-			mes "^0000FF手数料 " +('price['@wlv]*'@num)+ "Zeny^000000が必要だ。";
+			mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+" "+'@cnt+"個^000000と";
+			mes "^0000FF手数料 "+getrefinecost('@wlv, 1)*'@cnt+"Zeny^000000が必要だ。";
 			mes "精錬を続けるかい？";
 			next;
 			if(select("はい","やっぱりやめる") == 2) {
@@ -1227,7 +1358,7 @@ function	script	BlackSmith	{
 				mes "また来るんだな。";
 				return;
 			}
-			if(countitem('itemid['@wlv])<'@num || Zeny<'price['@wlv]*'@num) {
+			if(countitem(getrefinecost('@wlv, 0))<'@cnt || Zeny<getrefinecost('@wlv, 1) * '@cnt) {
 				mes "["+getarg(0)+"]";
 				mes "それが君が持ってる全部かい？";
 				mes "残念だが、材料が足りないんじゃ";
@@ -1236,14 +1367,14 @@ function	script	BlackSmith	{
 				mes "心が広くないからな。";
 				return;
 			}
-			for(set '@j,0; '@j<'@num; set '@j,'@j+1) {
+			for(set '@j,0; '@j<'@cnt; set '@j,'@j+1) {
 				if(getequippercentrefinery('@i) < 100) {
 					mes "["+getarg(0)+"]";
 					mes "何かがおかしいぞ？";
 					return;
 				}
-				delitem 'itemid['@wlv],1;
-				set Zeny,Zeny-'price['@wlv];
+				delitem getrefinecost('@wlv, 0),1;
+				set Zeny,Zeny-getrefinecost('@wlv, 1);
 				successrefitem '@i;
 			}
 			mes "["+getarg(0)+"]";
@@ -1260,32 +1391,14 @@ function	script	BlackSmith	{
 	switch('@wlv) {
 	case 0:
 		mes "君が選んだ装備を精錬するには";
-		mes "^ff9999エルニウム^000000と";
-		mes "手数料5000Zenyが必要だな。";
+		mes "^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "続けるかい？";
 		break;
-	case 1:
-		mes "レベル1の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999プラコン^000000と";
-		mes "手数料100Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 2:
-		mes "レベル2の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999エンベルタコン^000000と";
-		mes "手数料500Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 3:
-		mes "レベル3の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料5000Zenyが必要だな。";
-		mes "続けるのか？";
-		break;
-	case 4:
-		mes "レベル4の武器を精錬したいのかい？";
-		mes "精錬するため、 ^ff9999オリデオコン^000000と";
-		mes "手数料10000Zenyが必要だな。";
+	default:
+		mes "レベル"+'@wlv+"の武器を精錬したいのかい？";
+		mes "精錬するため、 ^0000FF"+getitemname(getrefinecost('@wlv, 0))+"^000000と";
+		mes "手数料"+getrefinecost('@wlv, 1)+"Zenyが必要だな。";
 		mes "続けるのか？";
 		break;
 	}
@@ -1320,7 +1433,7 @@ function	script	BlackSmith	{
 			return;
 		}
 	}
-	if(countitem('itemid['@wlv])<1 || Zeny<'price['@wlv]) {
+	if(countitem(getrefinecost('@wlv, 0))<1 || Zeny<getrefinecost('@wlv, 1)) {
 		mes "["+getarg(0)+"]";
 		mes "それが君が持ってる全部かい？";
 		mes "残念だが、材料が足りないんじゃ";
@@ -1329,8 +1442,8 @@ function	script	BlackSmith	{
 		mes "心が広くないからな。";
 		return;
 	}
-	delitem 'itemid['@wlv],1;
-	set Zeny,Zeny-'price['@wlv];
+	delitem getrefinecost('@wlv, 0),1;
+	set Zeny,Zeny-getrefinecost('@wlv, 1);
 	mes "["+getarg(0)+"]";
 	mes "カン！ カン！ カン!!";
 	if(getequippercentrefinery('@i) > rand(100)) {

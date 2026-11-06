@@ -1,4 +1,14 @@
 ----------------------------------------
+//1624 [2026/11/06] by refis
+
+・通常精錬の素材・費用をDB化し、getrefinecost関数とopenrefineui関数を追加
+（clif.*, pc.c, map.h, bank.c, trade.c, vending.c, buyingstore.c, status.*, buildin_item.c,
+　script.c, db/packet_db.lua, db/refine_cost_db.txt, doc/script_ref.txt, doc/db_ref.txt）
+
+・通常精錬NPCを更新
+（npc/misc/npc_misc_refine.sc）
+
+----------------------------------------
 //1623 [2026/11/05] by refis
 
 ・称号変更時に周辺プレイヤーへ表示を更新（clif.c）
@@ -12,6 +22,7 @@
 ・カメラ表示・設定パケットとcamerainfo命令を追加（clif.c, clif.h, buildin_misc.c, script.c, doc/script_ref.txt）
 
 ・マップ全体に座標マーカーを表示するviewpointmap命令を追加（buildin_dialog.c, script.c, doc/script_ref.txt）
+
 
 ----------------------------------------
 //1622 [2026/11/05] by refis

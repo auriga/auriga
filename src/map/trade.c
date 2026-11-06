@@ -44,6 +44,10 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 	struct map_session_data *target_sd;
 
 	nullpo_retv(sd);
+	if(sd->state.refineui_open) {
+		clif_tradestart(sd, 4);
+		return;
+	}
 
 	if(sd->npc_id)
 		npc_event_dequeue(sd);
@@ -54,7 +58,7 @@ void trade_traderequest(struct map_session_data *sd,int target_id)
 			clif_tradestart(sd, 5);
 			return;
 		}
-		if(target_sd->state.store || target_sd->state.mail_appending) {
+		if(target_sd->state.refineui_open || target_sd->state.store || target_sd->state.mail_appending) {
 			clif_tradestart(sd, 4);
 			return;
 		}
@@ -106,6 +110,10 @@ void trade_tradeack(struct map_session_data *sd, unsigned char type)
 
 	target_sd = map_id2sd(sd->trade.partner);
 	if(target_sd && target_sd->bl.prev) {
+		if(sd->state.refineui_open || target_sd->state.refineui_open) {
+			trade_tradecancel(sd);
+			return;
+		}
 		if(sd->bl.m != target_sd->bl.m || unit_distance(&sd->bl, &target_sd->bl) > 2) {
 			trade_tradecancel(sd);
 			return;

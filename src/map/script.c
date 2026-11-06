@@ -4030,6 +4030,8 @@ int buildin_getequipisidentify(struct script_state *st);
 int buildin_getequiprefinerycnt(struct script_state *st);
 int buildin_getequipweaponlv(struct script_state *st);
 int buildin_getequippercentrefinery(struct script_state *st);
+int buildin_openrefineui(struct script_state *st);
+int buildin_getrefinecost(struct script_state *st);
 int buildin_delequip(struct script_state *st);
 int buildin_successrefitem(struct script_state *st);
 int buildin_failedrefitem(struct script_state *st);
@@ -4389,6 +4391,8 @@ struct script_function buildin_func[] = {
 	{buildin_getequiprefinerycnt,"getequiprefinerycnt","*"},
 	{buildin_getequipweaponlv,"getequipweaponlv","i"},
 	{buildin_getequippercentrefinery,"getequippercentrefinery","i"},
+	{buildin_openrefineui,"openrefineui",""},
+	{buildin_getrefinecost,"getrefinecost","ii"},
 	{buildin_delequip,"delequip","*"},
 	{buildin_successrefitem,"successrefitem","i"},
 	{buildin_failedrefitem,"failedrefitem","i"},

@@ -1156,6 +1156,7 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 	sd->client_tick = client_tick;
 	sd->sex         = sex;
 	sd->state.auth  = 0;
+	sd->state.refineui_open = 0;
 	sd->bl.type     = BL_PC;
 	sd->status_calc_pc_process  = 0;
 	sd->state.waitingdisconnect = 0;
@@ -3394,6 +3395,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 
 	nullpo_retr(1, sd);
 	sd->lapine_upgrade_id = 0;
+	// Reset refine UI state on position changes.
+	sd->state.refineui_open = 0;
+
 
 	// À‚Á‚Ä‚¢‚½‚ç—§‚¿ã‚ª‚é
 	if(pc_issit(sd)) {

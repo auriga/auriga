@@ -11839,6 +11839,29 @@ void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum, char type
  * 精錬エフェクトを送信する
  *------------------------------------------
  */
+int clif_refineui_open(struct map_session_data *sd)
+{
+#if PACKETVER >= 20161012
+	int fd;
+	if(!sd)
+		return 0;
+	if(sd->state.refineui_open)
+		return 1;
+	if(sd->state.store || sd->state.deal_mode || sd->trade.partner ||
+	   sd->state.storage_flag || sd->state.mail_appending || sd->chatID)
+		return 0;
+	unit_stop_walking(&sd->bl, 1);
+	unit_stopattack(&sd->bl);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x0aa0;
+	WFIFOSET(fd,2);
+	sd->state.refineui_open = 1;
+	return 1;
+#else
+	return 0;
+#endif
+}
+
 void clif_refine(int fd, unsigned short fail, int idx, int val)
 {
 	WFIFOW(fd,0)=0x188;
@@ -12333,6 +12356,79 @@ void clif_weapon_refine_res(struct map_session_data *sd, int flag, int nameid)
 
 	return;
 }
+
+/*==========================================
+ * 精錬ウィンドウを開く
+ *------------------------------------------
+ */
+#if PACKETVER >= 20161012
+static int clif_refineui_requirements(struct map_session_data *sd, int index, int *material, int *price)
+{
+	struct item_data *data;
+	struct item *item;
+	int level;
+
+	if(index < 0 || index >= MAX_INVENTORY || !(data = sd->inventory_data[index]))
+		return 0;
+	item = &sd->status.inventory[index];
+	level = data->wlv;
+	if(item->nameid <= 0 || item->amount != 1 || !item->identify || item->attribute ||
+	   !itemdb_isequip2(data) || !data->refine || item->refine < 0 ||
+	   item->refine >= MAX_REFINE || level < 0 || level > MAX_WEAPON_LEVEL)
+		return 0;
+	/* pc_unequipitem cannot remove weapons under Pyroclastic. */
+	if(item->equip && sd->sc.data[SC_PYROCLASTIC].timer != -1 && (data->equip & LOC_RARM))
+		return 0;
+	if(!status_refine_cost(level, material, price))
+		return 0;
+#if PACKETVER < 20180704
+	if(*material > 65535)
+		return 0;
+#endif
+	return 1;
+}
+
+static int clif_refineui_material_index(struct map_session_data *sd, int material, int target)
+{
+	int i;
+
+	for(i = 0; i < MAX_INVENTORY; i++) {
+		struct item *item = &sd->status.inventory[i];
+		struct item_data *data = sd->inventory_data[i];
+
+		if(i == target || !data || item->nameid != material || item->amount <= 0)
+			continue;
+		if(item->equip && sd->sc.data[SC_PYROCLASTIC].timer != -1 && (data->equip & LOC_RARM))
+			continue;
+		return i;
+	}
+	return -1;
+}
+
+static void clif_refineui_info(struct map_session_data *sd, int index)
+{
+	int material, price, fd = sd->fd, len = 7;
+	int valid = clif_refineui_requirements(sd, index, &material, &price);
+	WFIFOW(fd,0) = 0x0aa2;
+	WFIFOW(fd,4) = index + 2;
+	WFIFOB(fd,6) = 0;
+	if(valid) {
+#if PACKETVER >= 20180704
+		WFIFOL(fd,7) = material;
+		WFIFOB(fd,11) = status_percentrefinery(sd, &sd->status.inventory[index]);
+		WFIFOL(fd,12) = price;
+		len += 9;
+#else
+		WFIFOW(fd,7) = material;
+		WFIFOB(fd,9) = status_percentrefinery(sd, &sd->status.inventory[index]);
+		WFIFOL(fd,10) = price;
+		len += 7;
+#endif
+	}
+	WFIFOW(fd,2) = len;
+	WFIFOSET(fd,len);
+}
+#endif
 
 /*==========================================
  * アイテムによる一時的なスキル効果
@@ -20279,7 +20375,7 @@ static void clif_parse_WalkToXY(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID != 0 )
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->chatID != 0 )
 		return;
 	if( sd->state.storage_flag )
 		return;
@@ -20660,7 +20756,7 @@ static void clif_parse_ActionRequest(int fd,struct map_session_data *sd, int cmd
 		clif_clearchar_area(&sd->bl,1);
 		return;
 	}
-	if(sd->npc_id != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->sc.option&OPTION_HIDE || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->sc.option&OPTION_HIDE || sd->state.storage_flag || sd->state.deal_mode != 0 || sd->chatID || sd->state.mail_appending)
 		return;
 	if(sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||	// オートカウンター
 	   sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -20871,7 +20967,7 @@ static void clif_parse_TakeItem(int fd,struct map_session_data *sd, int cmd)
 		return;
 	}
 
-	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->chatID || sd->state.mail_appending ||
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->chatID || sd->state.mail_appending ||
 	    sd->state.storage_flag || pc_iscloaking(sd) ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -20926,7 +21022,7 @@ static void clif_parse_DropItem(int fd,struct map_session_data *sd, int cmd)
 		printf("%s\n", output);
 	}
 
-	if( sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending || sd->state.storage_flag || sd->chatID ||
 	    DIFF_TICK(tick, sd->anti_hacker.drop_delay_tick) < 0 ||
 	    sd->sc.data[SC_AUTOCOUNTER].timer != -1 ||		// オートカウンター
 	    sd->sc.data[SC_DEATHBOUND].timer != -1 ||	// デスバウンド
@@ -20982,7 +21078,7 @@ static void clif_parse_UseItem(int fd,struct map_session_data *sd, int cmd)
 		clif_useitemack(sd, idx, sd->status.inventory[idx].amount, 0);
 		return;
 	}
-	if( (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
+	if( sd->state.refineui_open || (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	    sd->special_state.item_no_use != 0 || sd->state.store || sd->state.deal_mode != 0 ||
 		(sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_STONECURSE_ING && sd->sc.opt1 != OPT1_BURNNING) ||
 	    sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
@@ -21034,7 +21130,7 @@ static void clif_parse_EquipItem(int fd,struct map_session_data *sd, int cmd)
 	if (idx < 0 || idx >= MAX_INVENTORY)
 		return;
 
-	if ((sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
+	if (sd->state.refineui_open || (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid) ||
 	     sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1)
@@ -21092,7 +21188,7 @@ static void clif_parse_UnequipItem(int fd,struct map_session_data *sd, int cmd)
 
 	if (sd->sc.data[SC_BLADESTOP].timer != -1 || sd->sc.data[SC_BERSERK].timer != -1 || sd->sc.data[SC_KYOUGAKU].timer != -1 || sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending)
 		return;
 
 	// 取引要請中
@@ -21121,7 +21217,7 @@ static void clif_parse_NpcClicked(int fd,struct map_session_data *sd, int cmd)
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->ud.skilltimer != -1 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_click(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
 
@@ -21143,7 +21239,7 @@ static void clif_parse_NpcBuySellSelected(int fd,struct map_session_data *sd, in
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	npc_buysellsel(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)),RFIFOB(fd,GETPACKETPOS(cmd,1)));
 
@@ -21172,7 +21268,7 @@ static void clif_parse_NpcBuyListSend(int fd,struct map_session_data *sd, int cm
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
 	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /size;
@@ -21207,7 +21303,7 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
 	n = (RFIFOW(fd,GETPACKETPOS(cmd,0))-4) /4;
@@ -21274,7 +21370,7 @@ static void clif_parse_NpcPointShopBuy(int fd,struct map_session_data *sd, int c
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 	else
 	{
@@ -21429,7 +21525,7 @@ static void clif_parse_TradeRequest(int fd,struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.notrade)
 		return;
-	if(sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
+	if(sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
 
 	gmlvl = pc_isGM(sd);
@@ -21533,7 +21629,7 @@ static void clif_parse_PutItemToCart(int fd,struct map_session_data *sd, int cmd
 {
 	nullpo_retv(sd);
 
-	if (sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || pc_iscarton(sd) == 0)
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || pc_iscarton(sd) == 0)
 		return;
 	pc_putitemtocart(sd,RFIFOW(fd,GETPACKETPOS(cmd,0))-2,RFIFOL(fd,GETPACKETPOS(cmd,1)));
 
@@ -21548,7 +21644,7 @@ static void clif_parse_GetItemFromCart(int fd,struct map_session_data *sd, int c
 {
 	nullpo_retv(sd);
 
-	if (sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || pc_iscarton(sd) == 0)
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || pc_iscarton(sd) == 0)
 		return;
 	pc_getitemfromcart(sd,RFIFOW(fd,GETPACKETPOS(cmd,0))-2,RFIFOL(fd,GETPACKETPOS(cmd,1)));
 
@@ -21563,7 +21659,7 @@ static void clif_parse_RemoveOption(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
 
-	if (sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending)
 		return;
 	pc_setoption(sd,0);
 
@@ -21627,7 +21723,7 @@ static void clif_UseSkillToId_Sub(struct map_session_data *sd, int skillnum, int
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
 	if(pc_issit(sd))
 		return;
@@ -21924,7 +22020,7 @@ static void clif_parse_UseSkillToPos(int fd, struct map_session_data *sd, int cm
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
 
 	skilllv  = RFIFOW(fd,GETPACKETPOS(cmd,0));
@@ -22072,7 +22168,7 @@ static void clif_parse_UseSkillMap(int fd, struct map_session_data *sd, int cmd)
 
 	if(map[sd->bl.m].flag.noskill)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
 
 	if(sd->sc.data[SC_TRICKDEAD].timer != -1 ||
@@ -22198,6 +22294,64 @@ static void clif_parse_WeaponRefine(int fd,struct map_session_data *sd, int cmd)
 
 	skill_weapon_refine(sd, RFIFOW(fd,GETPACKETPOS(cmd,0)) - 2); // index
 
+	return;
+}
+
+/*==========================================
+ * 精錬ウィンドウ
+ *------------------------------------------
+ */
+static void clif_parse_RefineUISelect(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20161012
+	int index = RFIFOW(fd,2) - 2;
+	if(sd && sd->state.refineui_open && index >= 0 && index < MAX_INVENTORY)
+		clif_refineui_info(sd, index);
+#endif
+	return;
+}
+
+static void clif_parse_RefineUIRequest(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20161012
+	int index = RFIFOW(fd,2) - 2, material, price, material_index, equipped;
+#if PACKETVER >= 20180704
+	unsigned int requested = RFIFOL(fd,4);
+	int blessing = RFIFOB(fd,8);
+#else
+	unsigned int requested = RFIFOW(fd,4);
+	int blessing = RFIFOB(fd,6);
+#endif
+	if(!sd || !sd->state.refineui_open || blessing ||
+	   !clif_refineui_requirements(sd, index, &material, &price) || requested != (unsigned int)material)
+		return;
+	material_index = clif_refineui_material_index(sd, material, index);
+	if(material_index < 0 || sd->status.zeny < price)
+		return;
+	if(pc_payzeny(sd, price))
+		return;
+	pc_delitem(sd, material_index, 1, 0, 0);
+	if(atn_rand() % 100 < status_percentrefinery(sd, &sd->status.inventory[index])) {
+		equipped = sd->status.inventory[index].equip;
+		if(equipped)
+			pc_unequipitem(sd, index, 1);
+		skill_success_weaponrefine(sd, index);
+		if(equipped)
+			pc_equipitem(sd, index, equipped);
+		clif_refineui_info(sd, index);
+	} else {
+		skill_fail_weaponrefine(sd, index);
+	}
+#endif
+	return;
+}
+
+static void clif_parse_RefineUIClose(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20161012
+	if(sd)
+		sd->state.refineui_open = 0;
+#endif
 	return;
 }
 
@@ -22385,7 +22539,7 @@ static void clif_parse_InsertCard(int fd,struct map_session_data *sd, int cmd)
 	if (idx < 0 || idx >= MAX_INVENTORY)
 		return;
 
-	if (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid)
+	if (sd->state.refineui_open || (sd->npc_id != 0 && sd->npc_allowuseitem != 0 && sd->npc_allowuseitem != sd->status.inventory[idx].nameid))
 		return;
 	if (sd->state.store || sd->state.deal_mode != 0 || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 < OPT1_STONECURSE_ING) || sd->state.storage_flag || sd->chatID || sd->state.mail_appending)
 		return;
@@ -22481,7 +22635,7 @@ static void clif_parse_MoveToKafra(int fd,struct map_session_data *sd, int cmd)
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || sd->sc.data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-2;
@@ -22505,7 +22659,7 @@ static void clif_parse_MoveFromKafra(int fd,struct map_session_data *sd, int cmd
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || sd->sc.data[SC_BERSERK].timer != -1)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
 
 	idx    = RFIFOW(fd,GETPACKETPOS(cmd,0))-1;
@@ -22529,7 +22683,7 @@ static void clif_parse_MoveToKafraFromCart(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending ||
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending ||
 	   pc_iscarton(sd) == 0 || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
 
@@ -22554,7 +22708,7 @@ static void clif_parse_MoveFromKafraToCart(int fd,struct map_session_data *sd, i
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending ||
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->state.mail_appending ||
 	   pc_iscarton(sd) == 0 || sd->sc.data[SC_BERSERK].timer != -1)
 		return;
 
@@ -22817,7 +22971,7 @@ static void clif_parse_VendingListReq(int fd,struct map_session_data *sd, int cm
 {
 	nullpo_retv(sd);
 
-	if(sd->state.store)
+	if(sd->state.store || sd->state.refineui_open)
 		return;
 
 	vending_vendinglistreq(sd,RFIFOL(fd,GETPACKETPOS(cmd,0)));
@@ -25004,7 +25158,7 @@ static void clif_parse_BankingInfoReq(int fd,struct map_session_data *sd, int cm
 	tmpsd = map_id2sd(account_id);
 	if(!tmpsd || sd != tmpsd)
 		result = 1;
-	if( sd->npc_id != 0 || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
+	if( sd->npc_id != 0 || sd->state.refineui_open || sd->state.storage_flag || sd->state.store || sd->state.deal_mode != 0 ||
 	    sd->state.mail_appending || sd->chatID != 0 )
 		result = 1;
 
@@ -25039,7 +25193,7 @@ static void clif_parse_SellMarketReq(int fd,struct map_session_data *sd, int cmd
 	}
 	if(sd->sc.data[SC_SUHIDE].timer != -1)
 		return;
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
 		return;
 
 	n = (RFIFOW(fd,GETPACKETPOS(cmd,0)) - 4) /size;
@@ -25624,7 +25778,7 @@ static void clif_parse_LapineUpgradeAck(int fd,struct map_session_data *sd, int 
 
 	nullpo_retv(sd);
 
-	if(sd->npc_id != 0 || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove)
 		return;
 
 #if PACKETVER < 20180704
@@ -25722,7 +25876,7 @@ static void clif_parse_UnequipItemAll(int fd, struct map_session_data *sd, int c
 		clif_unequipitemallack(sd,1);
 		return;
 	}
-	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
 		clif_unequipitemallack(sd,1);
 		return;
 	}
@@ -25757,7 +25911,7 @@ static void clif_parse_UnequipItemAll2(int fd, struct map_session_data *sd, int 
 		clif_unequipitemallack(sd,1);
 		return;
 	}
-	if (sd->npc_id != 0 || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
+	if (sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || (sd->sc.opt1 > OPT1_NORMAL && sd->sc.opt1 != OPT1_BURNNING) || sd->state.mail_appending) {
 		clif_unequipitemallack(sd,1);
 		return;
 	}
@@ -26008,6 +26162,9 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_ProduceMix,                  "producemix"                },
 		{ clif_parse_RepairItem,                  "repairitem"                },
 		{ clif_parse_WeaponRefine,                "weaponrefine"              },
+		{ clif_parse_RefineUISelect,              "refineuiselect"            },
+		{ clif_parse_RefineUIRequest,             "refineuirequest"           },
+		{ clif_parse_RefineUIClose,               "refineuiclose"             },
 		{ clif_parse_NpcSelectMenu,               "npcselectmenu"             },
 		{ clif_parse_NpcNextClicked,              "npcnextclicked"            },
 		{ clif_parse_NpcAmountInput,              "npcamountinput"            },
