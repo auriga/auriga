@@ -1150,6 +1150,8 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 {
 	nullpo_retv(sd);
 
+	sd->questinfo.timer = -1;
+	sd->questinfo.map = -1;
 	sd->bl.id       = account_id;
 	sd->char_id     = char_id;
 	sd->login_id1   = login_id1;
@@ -2719,6 +2721,7 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,boo
 				clif_updatestatus(sd,SP_WEIGHT);
 				if(flag)
 					clif_item_preview(sd, (short)i);
+				npc_questinfo_request(sd);
 				return 0;
 			}
 		}
@@ -2752,6 +2755,7 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,boo
 			linkdb_insert(&sd->inventory_timer, INT2PTR(i), INT2PTR(tid));
 	}
 
+	npc_questinfo_request(sd);
 	return 0;
 }
 
@@ -2802,6 +2806,7 @@ void pc_delitem(struct map_session_data *sd, int n, int amount, int type, short 
 	if(!(type&2))
 		clif_updatestatus(sd,SP_WEIGHT);
 
+	npc_questinfo_request(sd);
 	return;
 }
 

@@ -20340,6 +20340,10 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 	if (battle_config.pc_mapin_script)
 		npc_event_doall_id("OnPCMapIn",sd->bl.id,sd->bl.m);
 
+	// 同一マップ内のワープを含め、マップ読込後にクエスト表示を再送する
+	sd->questinfo.map = -1;
+	npc_questinfo_request(sd);
+
 	if(map_getcell(sd->bl.m,sd->bl.x,sd->bl.y,CELL_CHKNPC))
 		npc_touch_areanpc(sd,sd->bl.m,sd->bl.x,sd->bl.y);
 	else
@@ -25948,6 +25952,8 @@ static int clif_disconnect(int fd)
 	if(sd && sd->state.auth) {
 		clif_quitsave(sd);
 	}
+	if(sd)
+		npc_questinfo_cancel(sd);
 	close(fd);
 
 	if(sd) {

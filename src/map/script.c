@@ -3201,6 +3201,17 @@ static int run_func(struct script_state *st)
 		str_buf+str_data[func].str,func,str_data[func].type,st->pos-1
 	);
 #endif
+	// 条件式では状態を変更しない関数だけを実行する
+	if(st->questinfo_condition) {
+		const char *name = str_buf + str_data[func].str;
+		if(strcmpi(name, "questinfo_condition_result") && strcmpi(name, "checkquest") &&
+		   strcmpi(name, "countitem") && strcmpi(name, "getvariableofnpc") &&
+		   strcmpi(name, "getelementofarray")) {
+			printf("questinfo: unsupported function %s\n", name);
+			st->state = END;
+			return 0;
+		}
+	}
 	if(str_data[func].func) {
 		str_data[func].func(st);
 	} else {
@@ -3392,6 +3403,100 @@ void script_erase_sleeptimer(int id)
 }
 
 /*==========================================
+ * questinfo条件式の評価結果用の内部命令
+ *------------------------------------------
+ */
+static int buildin_questinfo_condition_result(struct script_state *st)
+{
+	if(!st->questinfo_condition) {
+		st->state = END;
+		return 0;
+	}
+	st->questinfo_result = conv_num(st, &st->stack->stack_data[st->start+2]);
+	st->questinfo_valid = 1;
+	st->state = END;
+	return 0;
+}
+
+/* スタック領域を保持し、再利用前に内容を解放する */
+static void script_clear_questinfo_stack(struct script_stack *stack)
+{
+	int i;
+
+	for(i = 0; i < stack->sp; i++) {
+		if(stack->stack_data[i].type == C_STR) {
+			aFree(stack->stack_data[i].u.str);
+		} else if(i > 0 && stack->stack_data[i].type == C_RETINFO) {
+			struct linkdb_node **n = (struct linkdb_node **)stack->stack_data[i-1].u.ptr;
+			script_free_vars(n);
+			aFree(n);
+		}
+	}
+	script_free_vars(stack->var_function);
+	stack->sp = stack->defsp = 0;
+}
+
+int script_eval_questinfo(struct script_code *code, int rid, int oid, int *result)
+{
+	static struct script_state st_buf;
+	static struct script_stack stack_buf;
+	static int inited, in_use;
+	struct script_state *st;
+	int valid, oneshot = 0;
+
+	if(!code || !result || !map_id2sd(rid))
+		return 0;
+
+	// 会話中のスクリプト状態とは独立して条件式を評価する
+	// 状態を再利用し、再入時は別の領域を確保する
+	if(in_use) {
+		oneshot = 1;
+		st = (struct script_state *)aCalloc(1, sizeof(*st));
+		st->stack = (struct script_stack *)aCalloc(1, sizeof(*st->stack));
+		st->stack->sp_max = 64;
+		st->stack->stack_data = (struct script_data *)aCalloc(64, sizeof(st->stack->stack_data[0]));
+		st->stack->var_function = (struct linkdb_node **)aCalloc(1, sizeof(struct linkdb_node *));
+	} else {
+		in_use = 1;
+		if(!inited) {
+			memset(&st_buf, 0, sizeof(st_buf));
+			memset(&stack_buf, 0, sizeof(stack_buf));
+			stack_buf.sp_max = 64;
+			stack_buf.stack_data = (struct script_data *)aCalloc(64, sizeof(stack_buf.stack_data[0]));
+			stack_buf.var_function = (struct linkdb_node **)aCalloc(1, sizeof(struct linkdb_node *));
+			st_buf.stack = &stack_buf;
+			inited = 1;
+		} else {
+			script_clear_questinfo_stack(&stack_buf);
+			memset(&st_buf, 0, sizeof(st_buf));
+			st_buf.stack = &stack_buf;
+		}
+		st = &st_buf;
+	}
+
+	st->pos = 0;
+	st->state = RUN;
+	st->rid = rid;
+	st->oid = oid;
+	st->script = st->scriptroot = code;
+	st->questinfo_condition = 1;
+	st->questinfo_result = 0;
+	st->questinfo_valid = 0;
+	run_script_main(st);
+	valid = st->questinfo_valid;
+	*result = st->questinfo_result;
+
+	if(oneshot) {
+		script_free_stack(st->stack);
+		aFree(st);
+	} else {
+		script_clear_questinfo_stack(st->stack);
+		in_use = 0;
+	}
+	return valid;
+}
+
+/*==========================================
  * スクリプトの実行メイン部分
  *------------------------------------------
  */
@@ -3491,6 +3596,9 @@ static void run_script_main(struct script_state *st)
 			st->state = END;
 		}
 	}
+
+	if(st->questinfo_condition)
+		return;
 
 	sd = map_id2sd(st->rid);
 	if(st->sleep.tick > 0) {
@@ -4257,6 +4365,8 @@ int buildin_callguardian(struct script_state *st);
 int buildin_getguardianinfo(struct script_state *st);
 int buildin_getmobname(struct script_state *st);
 int buildin_checkactiveitem(struct script_state *st);
+int buildin_questinfo(struct script_state *st);
+int buildin_questinfo_refresh(struct script_state *st);
 int buildin_showevent(struct script_state *st);
 int buildin_musiceffect(struct script_state *st);
 int buildin_areamusiceffect(struct script_state *st);
@@ -4322,6 +4432,9 @@ int buildin_setnpctitle(struct script_state *st);
 int buildin_setunittitle(struct script_state *st);
 
 struct script_function buildin_func[] = {
+	/* サーバー内部処理用buildin_func */
+	{buildin_questinfo_condition_result,"questinfo_condition_result","i"},
+
 	{buildin_mes,"mes","s"},
 	{buildin_messize,"messize","ii"},
 	{buildin_mespos,"mespos","ii"},
@@ -4616,6 +4729,8 @@ struct script_function buildin_func[] = {
 	{buildin_getguardianinfo,"getguardianinfo","sii"},
 	{buildin_getmobname,"getmobname","i"},
 	{buildin_checkactiveitem,"checkactiveitem","*"},
+	{buildin_questinfo,"questinfo","i**"},
+	{buildin_questinfo_refresh,"questinfo_refresh","*"},
 	{buildin_showevent,"showevent","i**"},
 	{buildin_musiceffect,"musiceffect","s"},
 	{buildin_areamusiceffect,"areamusiceffect","siiiis"},

@@ -58,6 +58,7 @@ struct script_state {
 	int rid,oid;
 	struct script_code *script, *scriptroot;
 	struct script_sleep sleep;
+	int questinfo_condition, questinfo_result, questinfo_valid;
 	int progressbar_npc_id;
 	unsigned int progressbar_npc_tick;
 };
@@ -67,6 +68,7 @@ char* parse_script_line_end(unsigned char *src, const char *file, int line);
 struct script_code* parse_script(unsigned char *,const char*,int);
 int script_is_error(struct script_code *code);
 void run_script(struct script_code*,int,int,int);
+int script_eval_questinfo(struct script_code*,int,int,int*);
 void script_error(const char *src, const char *file, int start_line, const char *msg, const char *pos);
 void script_erase_sleeptimer(int id);
 
