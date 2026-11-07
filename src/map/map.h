@@ -383,6 +383,8 @@ struct pc_base_job {
 };
 
 struct npc_data;
+struct npc_questinfo;
+struct questinfo_slot { int npc_id, icon, color; };
 struct pet_db;
 struct item_data;
 struct square;
@@ -865,6 +867,13 @@ struct map_session_data {
 		int zeny;
 	} mail_append;
 
+	struct {
+		int timer, map, index, count;
+		unsigned int generation;
+		struct questinfo_slot *slots;
+		unsigned char dirty, running;
+	} questinfo;
+
 	char eventqueue[MAX_EVENTQUEUE][76];
 	int eventtimer[MAX_EVENTTIMER];
 
@@ -995,6 +1004,7 @@ struct npc_data {
 	union {
 		struct {
 			struct script_code *script;
+			struct npc_questinfo *questinfo;
 			short xs,ys;
 			int guild_id;
 			int timer,timerid,timeramount,nexttimer;
@@ -1219,6 +1229,9 @@ struct map_data {
 	short xs,ys;
 	short bxs,bys;
 	int npc_num;
+	unsigned int questinfo_generation;
+	int questinfo_count;
+	struct npc_questinfo *questinfo_npcs;
 	int users;
 	struct {
 		int normal;

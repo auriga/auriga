@@ -29,6 +29,7 @@
 
 #include "map.h"
 #include "quest.h"
+#include "npc.h"
 #include "clif.h"
 #include "chrif.h"
 #include "intif.h"
@@ -185,6 +186,7 @@ int quest_addlist(struct map_session_data *sd, int quest_id)
 	clif_update_questcount(sd, quest_id);
 #endif
 	intif_save_quest(sd);
+	npc_questinfo_request(sd);
 
 	return 0;
 }
@@ -275,6 +277,7 @@ int quest_updatelist(struct map_session_data *sd, int old_id, int new_id)
 	clif_update_questcount(sd, new_id);
 #endif
 	intif_save_quest(sd);
+	npc_questinfo_request(sd);
 
 	return 0;
 }
@@ -299,6 +302,7 @@ int quest_dellist(struct map_session_data *sd, int quest_id)
 
 	clif_del_questlist(sd, quest_id);
 	intif_save_quest(sd);
+	npc_questinfo_request(sd);
 
 	return 0;
 }
@@ -317,6 +321,8 @@ int quest_update_status(struct map_session_data *sd, int quest_id, char state)
 	if(idx < 0 || idx > sd->questlist)
 		return -1;
 
+	if(sd->quest[idx].state != state)
+		npc_questinfo_request(sd);
 	sd->quest[idx].state = state;
 
 	if(state < 2)
@@ -367,6 +373,7 @@ int quest_killcount(struct map_session_data *sd, int mob_id)
 			for(j = 0; j < sizeof(qd->mob)/sizeof(qd->mob[0]); j++) {
 				if(qd->mob[j].id == mob_id && qd->mob[j].count < qd->mob[j].max) {
 					qd->mob[j].count++;
+					npc_questinfo_request(sd);
 					clif_update_questcount(sd, qd->nameid);
 				}
 			}

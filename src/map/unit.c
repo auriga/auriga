@@ -2479,6 +2479,8 @@ int unit_remove_map(struct block_list *bl, int clrtype, int flag)
 
 		skill_sit(sd,0);			// ギャングスターパラダイスおよびテコン休息削除
 
+		npc_questinfo_cancel(sd);
+
 		clif_clearchar_area(&sd->bl,clrtype&0xffff);
 		map_delblock(&sd->bl);
 	} else if(bl->type == BL_MOB) {

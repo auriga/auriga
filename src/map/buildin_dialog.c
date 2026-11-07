@@ -459,6 +459,37 @@ int buildin_select(struct script_state *st)
  * NPCイベント表示
  *------------------------------------------
  */
+int buildin_questinfo(struct script_state *st)
+{
+	struct npc_data *nd = map_id2nd(st->oid);
+	int icon = conv_num(st, &st->stack->stack_data[st->start+2]);
+	int color = 0;
+	const char *condition = NULL;
+
+	if(st->end > st->start+3)
+		color = conv_num(st, &st->stack->stack_data[st->start+3]);
+	if(st->end > st->start+4)
+		condition = conv_str(st, &st->stack->stack_data[st->start+4]);
+
+	if(!npc_questinfo_register(nd, icon, color, condition))
+		printf("questinfo: invalid registration for npc %d\n", st->oid);
+	return 0;
+}
+
+int buildin_questinfo_refresh(struct script_state *st)
+{
+	struct map_session_data *attached = map_id2sd(st->rid), *target = attached;
+	struct npc_data *nd = map_id2nd(st->oid);
+
+	if(st->end > st->start+2)
+		target = map_charid2sd(conv_num(st, &st->stack->stack_data[st->start+2]));
+
+	if(target && ((attached && target->bl.m == attached->bl.m) ||
+	   (!attached && nd && target->bl.m == nd->bl.m)))
+		npc_questinfo_request(target);
+	return 0;
+}
+
 int buildin_showevent(struct script_state *st)
 {
 	struct map_session_data *sd = script_rid2sd(st);

@@ -2470,6 +2470,40 @@ AurigaNPCScript
 			そのモンスターを倒したとき<event>を開始します。
 			<index>を指定すると、砦データのガーディアン1～8の領域に情報を書き込みます。
 
+		questinfo命令
+			questinfo <icon>[,<color>[,<condition>]];
+
+			icon		数値
+			color		数値、省略可
+			condition	文字列、省略可
+
+			実行したNPCのクエスト表示条件を登録します。
+			OnInitで登録し、複数登録した場合は最初に成立した条件の表示を使います。
+			<icon>にはQTYPE_で始まる定数を指定します。指定できる値はPACKETVERにより異なります。
+			PACKETVERが20090218未満では送信されません。
+			20090218以上20120410未満では0～7、20120410以上20170315未満では0～6と8、
+			20170315以降では0～10を指定でき、いずれもQTYPE_NONE（9999）を指定できます。
+			<color>にはミニMAPの表示をQMARK_で始まる定数で指定します。省略時はQMARK_NONEです。
+			<condition>には判定式を文字列で指定します。省略または空文字列の場合は常に成立します。
+			式には変数と演算子のほか、checkquest、countitem、getvariableofnpc、getelementofarrayを使用できます。
+			NPC固有の'変数の参照にはgetvariableofnpcを使用してください。
+
+			例: questinfo QTYPE_QUEST,QMARK_YELLOW,"countitem(909) > 0";
+
+			ログイン・マップ進入、所持品やクエスト情報・状態の変化、NPCの表示状態変更時に、
+			同じマップの表示条件を遅延更新します。NPCとの会話中も更新します。
+			レベル変更・転職・変数変更だけでは更新されません。
+
+		questinfo_refresh命令
+			questinfo_refresh [<char_id>];
+
+			char_id		数値、省略可
+
+			対象プレイヤーのいるマップのクエスト表示条件を再評価します。
+			<char_id>を省略した場合はアタッチ中のプレイヤーが対象です。
+			指定した場合は、アタッチ中のプレイヤーと同じマップのキャラクターが対象です。
+			アタッチ中のプレイヤーがいない場合は、実行NPCと同じマップのキャラクターが対象です。
+
 		showevent命令
 			showevent <state>[,<type>[,<name>]];
 
