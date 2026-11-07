@@ -1,6 +1,7 @@
 all: char-server
 
 COMMON_SRC = $(shell ls ../common/*.c)
+COMMON_SRC += ../../third_party/lz4/lz4.c
 
 ifeq ($(findstring LOCALZLIB,$(CFLAGS)), LOCALZLIB)
 COMMON_SRC += $(shell ls ../common/zlib/*.c)

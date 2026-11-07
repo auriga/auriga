@@ -75,7 +75,7 @@ else
     MAKE = make
 endif
 
-CFLAGS = -pipe -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -Wall -Wextra -I../common -I../common/lua $(PACKETDEF) $(OS_TYPE)
+CFLAGS = -pipe -D_XOPEN_SOURCE -D_DEFAULT_SOURCE -Wall -Wextra -I../common -I../common/lua -I../../third_party/xxhash -I../../third_party/lz4 $(PACKETDEF) $(OS_TYPE)
 LIBS = -lm
 
 #Link Zlib(NOTrecommended)
