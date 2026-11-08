@@ -52,6 +52,19 @@ void test_status_calc_ctrl_recalc_then_done(void);
 void test_status_calc_ctrl_stop_nesting(void);
 void test_status_calc_ctrl_stop_underflow(void);
 
+void test_grf_protected_roundtrip_stored_269(void);
+void test_grf_protected_roundtrip_stored_259_260(void);
+void test_grf_protected_roundtrip_lz4_269(void);
+void test_grf_protected_archive_key(void);
+void test_grf_protected_reject_short_payload(void);
+void test_grf_protected_reject_size_mismatch(void);
+void test_grf_protected_reject_name_mismatch(void);
+void test_grf_protected_reject_rc5_padding(void);
+void test_grf_protected_reject_corrupt_body(void);
+void test_grf_protected_reject_corrupt_header(void);
+void test_grf_protected_reject_bad_header_fields(void);
+void test_grf_protected_encode_rejects_unsupported(void);
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -99,6 +112,19 @@ int main(void)
 	RUN_TEST(test_status_calc_ctrl_recalc_then_done);
 	RUN_TEST(test_status_calc_ctrl_stop_nesting);
 	RUN_TEST(test_status_calc_ctrl_stop_underflow);
+
+	RUN_TEST(test_grf_protected_roundtrip_stored_269);
+	RUN_TEST(test_grf_protected_roundtrip_stored_259_260);
+	RUN_TEST(test_grf_protected_roundtrip_lz4_269);
+	RUN_TEST(test_grf_protected_archive_key);
+	RUN_TEST(test_grf_protected_reject_short_payload);
+	RUN_TEST(test_grf_protected_reject_size_mismatch);
+	RUN_TEST(test_grf_protected_reject_name_mismatch);
+	RUN_TEST(test_grf_protected_reject_rc5_padding);
+	RUN_TEST(test_grf_protected_reject_corrupt_body);
+	RUN_TEST(test_grf_protected_reject_corrupt_header);
+	RUN_TEST(test_grf_protected_reject_bad_header_fields);
+	RUN_TEST(test_grf_protected_encode_rejects_unsupported);
 
 	return UNITY_END();
 }

@@ -60,7 +60,7 @@
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4100;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../src/common/lua/;../src/common/;../src/common/zlib/;C:/Program Files/MySQL/MySQL Server 5.5/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src/common/lua/;../src/common/;../src/common/zlib/;C:/Program Files/MySQL/MySQL Server 5.5/include;../third_party/xxhash;../third_party/lz4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;ws2_32.lib;libmysql.lib;$(OutDir)lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -88,7 +88,7 @@
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4100;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../src/common/lua/;../src/common/;../src/common/zlib/;C:/Program Files/MySQL/MySQL Server 5.5/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src/common/lua/;../src/common/;../src/common/zlib/;C:/Program Files/MySQL/MySQL Server 5.5/include;../third_party/xxhash;../third_party/lz4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;$(OutDir)lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -110,6 +110,9 @@
     <ClInclude Include="..\src\common\core.h" />
     <ClInclude Include="..\src\common\db.h" />
     <ClInclude Include="..\src\common\graph.h" />
+    <ClInclude Include="..\src\common\grf_protected.h" />
+    <ClInclude Include="..\third_party\xxhash\xxhash.h" />
+    <ClInclude Include="..\third_party\lz4\lz4.h" />
     <ClInclude Include="..\src\common\grfio.h" />
     <ClInclude Include="..\src\common\httpd.h" />
     <ClInclude Include="..\src\common\lock.h" />
@@ -142,6 +145,8 @@
     <ClCompile Include="..\src\common\core.c" />
     <ClCompile Include="..\src\common\db.c" />
     <ClCompile Include="..\src\common\graph.c" />
+    <ClCompile Include="..\src\common\grf_protected.c" />
+    <ClCompile Include="..\third_party\lz4\lz4.c" />
     <ClCompile Include="..\src\common\grfio.c" />
     <ClCompile Include="..\src\common\httpd.c" />
     <ClCompile Include="..\src\common\lock.c" />

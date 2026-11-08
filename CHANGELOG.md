@@ -1,4 +1,28 @@
 ----------------------------------------
+//1626 [2026/11/08] by refis
+
+・protected GRF エントリの読み込み前に、エントリサイズ（104 バイト以上・上限以下）と
+　GRF ファイル内の範囲を検証し、fseek の失敗も検出するようにした（grfio.c, grf_protected.h）
+
+・マップ読み込み時に gat データ長を検証し、ヘッダ不足・サイズ不正・本体の切り詰めを
+　拒否するようにした。不正時のメモリリークも修正（map.c）
+
+・protected GRF 復号のユニットテストを追加し、テスト用のエンコーダ
+　grf_protected_encode_for_test を追加（grf_protected.*, tests/*, doc/unit_test.txt）
+
+----------------------------------------
+//1625 [2026/11/08] by refis
+
+・protected GRF エントリ（type & 0x80）の復号に対応し、暗号化されたマップ等を読めるようにした
+　-> ヘッダ暗号 1/2/15/0x71/241、ボディ暗号 259/260/269、圧縮 stored/zlib/LZ4 に対応
+　-> ボディ暗号 259/260/269 向けにアーカイブ鍵 ID 1〜3 の既定鍵を内蔵
+　-> conf/grf-files.txt に protected_key 設定を追加（既定鍵の上書き用）
+（grfio.c, grf_protected.*, conf/grf-files.txt, Makefile, vc_make.bat, vcproj/*）
+
+・xxHash / LZ4 を third_party に追加し、ライセンスを同梱
+（third_party/xxhash/*, third_party/lz4/*）
+
+----------------------------------------
 //1624 [2026/11/06] by refis
 
 ・通常精錬の素材・費用をDB化し、getrefinecost関数とopenrefineui関数を追加

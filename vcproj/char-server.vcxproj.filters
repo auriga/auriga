@@ -91,6 +91,12 @@
     <ClCompile Include="..\src\common\graph.c">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\common\grf_protected.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\lz4\lz4.c">
+      <Filter>common</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\common\grfio.c">
       <Filter>common</Filter>
     </ClCompile>
@@ -244,6 +250,15 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\graph.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\grf_protected.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\xxhash\xxhash.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\lz4\lz4.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\grfio.h">

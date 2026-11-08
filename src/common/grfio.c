@@ -51,6 +51,7 @@
 
 #include "mmo.h"
 #include "grfio.h"
+#include "grf_protected.h"
 #include "malloc.h"
 #include "utils.h"
 
@@ -119,6 +120,7 @@ typedef struct {
 	char type;
 	char fn[256-4*5]; // file name
 	char gentry; // read grf file select
+	char *rawfn; // raw table file name (protected entry only)
 } FILELIST;
 // gentry ... 0  :ローカルファイルより取得
 //            1>=:gentry_table[gentry-1]のリソースファイルより取得
@@ -135,6 +137,9 @@ static int filelist_maxentry = 0;
 
 static char **gentry_table = NULL;
 static int gentry_entrys   = 0;
+
+static char **rawname_table = NULL;
+static int rawname_entrys   = 0;
 
 //----------------------------
 //	file list hash table
@@ -502,6 +507,19 @@ static void filelist_adjust(void)
 	return;
 }
 
+/*==========================================
+ *	File List : raw file name keep (protected entry)
+ *------------------------------------------
+ */
+static char* rawname_add(const char *name)
+{
+	if ((rawname_entrys & 255) == 0)
+		rawname_table = (char **)aRealloc(rawname_table, (rawname_entrys + 256) * sizeof(char*));
+	rawname_table[rawname_entrys] = (char *)aStrdup(name);
+
+	return rawname_table[rawname_entrys++];
+}
+
 /***********************************************************
  ***                  Grfio Subroutines                  ***
  ***********************************************************/
@@ -529,6 +547,7 @@ int grfio_size(const char *fname)
 		}
 
 		if (stat(lfname,&st)==0) {
+			memset(&lentry, 0, sizeof(lentry));
 			auriga_strlcpy(lentry.fn, fname, sizeof(lentry.fn));
 			lentry.declen = (int)st.st_size;
 			lentry.gentry = 0;	// 0:LocalFile
@@ -568,6 +587,7 @@ void* grfio_reads(const char *fname, int *size)
 				*p = '/';
 		}
 
+		memset(&lentry, 0, sizeof(lentry));
 		if(stat(lfname, &st) == 0)
 			lentry.declen = (int)st.st_size;
 		else
@@ -594,7 +614,53 @@ void* grfio_reads(const char *fname, int *size)
 			}
 		}
 	}
-	if (entry!=NULL && entry->gentry>0) {	// Archive[GRF] File Read
+	if (entry!=NULL && entry->gentry>0 && (entry->type & 0x80)) {	// Archive[GRF] protected File Read
+		const char *rawfn = (entry->rawfn != NULL) ? entry->rawfn : entry->fn;
+		unsigned int olen = 0;
+		struct stat st;
+		atn_bignumber gsize;
+
+		if (entry->srclen < (int)GRF_PROTECTED_HEADER_SIZE) {
+			printf("%s: invalid protected entry size %d.\n", fname, entry->srclen);
+			goto errret;
+		}
+		if ((unsigned int)entry->srclen > GRF_PROTECTED_MAX_PAYLOAD) {
+			printf("%s: protected entry too large (%d bytes).\n", fname, entry->srclen);
+			goto errret;
+		}
+		gfname = gentry_table[entry->gentry-1];
+		in = fopen(gfname,"rb");
+		if(in==NULL) {
+			printf("%s not found.\n", gfname);
+			goto errret;
+		}
+		if (stat(gfname, &st) != 0) {
+			printf("%s: stat failed.\n", gfname);
+			goto errret;
+		}
+		gsize = (atn_bignumber)st.st_size;
+		if (entry->srcpos < 0 || entry->srcpos > gsize || (atn_bignumber)entry->srclen > gsize - entry->srcpos) {
+			printf("%s: protected entry out of range (size %d).\n", fname, entry->srclen);
+			goto errret;
+		}
+		if (fseek(in,entry->srcpos,SEEK_SET) != 0) {
+			printf("%s: protected entry seek error.\n", fname);
+			goto errret;
+		}
+		buf = (unsigned char *)aCalloc(entry->srclen, sizeof(char));
+		if (fread(buf,1,entry->srclen,in) != (size_t)entry->srclen) {
+			printf("%s: protected entry read error.\n", fname);
+			goto errret;
+		}
+		fclose(in);
+		in = NULL;
+		buf2 = (unsigned char *)grf_protected_decode(buf, (unsigned int)entry->srclen, rawfn, (unsigned int)strlen(rawfn), (unsigned int)entry->declen, &olen);
+		aFree(buf);
+		if (buf2 == NULL) {
+			printf("%s: protected entry decode failed.\n", fname);
+			goto errret;
+		}
+	} else if (entry!=NULL && entry->gentry>0) {	// Archive[GRF] File Read
 		buf = (unsigned char *)aCalloc(entry->srclen_aligned + 1024, sizeof(char));
 		gfname = gentry_table[entry->gentry-1];
 		in = fopen(gfname,"rb");
@@ -759,12 +825,14 @@ static int grfio_entryread(const char *gfname,int gentry)
 					continue;
 				}
 
+				memset(&aentry, 0, sizeof(aentry));
 				aentry.srclen         = srclen;
 				aentry.srclen_aligned = getlong(grf_filelist+ofs2+4)-37579;
 				aentry.declen         = getlong(grf_filelist+ofs2+8);
 				aentry.srcpos         = getlong(grf_filelist+ofs2+13)+0x2e;
-				aentry.cycle          = srccount;
+				aentry.cycle          = (type & 0x80) ? -1 : srccount;
 				aentry.type           = type;
+				aentry.rawfn          = (type & 0x80) ? rawname_add((const char *)fname) : NULL;
 				auriga_strlcpy(aentry.fn,fname,sizeof(aentry.fn));
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
 #ifdef GRFIO_LOCAL
@@ -853,7 +921,7 @@ static int grfio_entryread(const char *gfname,int gentry)
 				continue;
 
 			type = grf_filelist[ofs2+12];
-			if ((type & 0x01) == 0x01) { // type 1, 2 or 3
+			if ((type & 0x01) || (type & 0x80)) { // type 1, 2 or 3, or protected (0x80)
 				int srclen = getlong(grf_filelist + ofs2);
 				int srccount;
 
@@ -868,16 +936,18 @@ static int grfio_entryread(const char *gfname,int gentry)
 				case 5:
 					srccount = 0;
 					break;
-				default: // 1
+				default: // 1 or protected
 					srccount = -1;
 					break;
 				}
+				memset(&aentry, 0, sizeof(aentry));
 				aentry.srclen         = srclen;
 				aentry.srclen_aligned = getlong(grf_filelist+ofs2+4);
 				aentry.declen         = getlong(grf_filelist+ofs2+8);
 				aentry.srcpos         = getlong64(grf_filelist+ofs2+13)+0x2e;
 				aentry.cycle          = srccount;
 				aentry.type           = type;
+				aentry.rawfn          = (type & 0x80) ? rawname_add((const char *)fname) : NULL;
 				auriga_strlcpy(aentry.fn,fname,sizeof(aentry.fn));
 				aentry.fn[sizeof(aentry.fn)-1] = '\0';
 #ifdef GRFIO_LOCAL
@@ -1002,6 +1072,15 @@ static void grfio_final(void)
 	}
 	gentry_entrys = 0;
 
+	if (rawname_table != NULL) {
+		int lop;
+		for(lop=0;lop<rawname_entrys;lop++) {
+			aFree(rawname_table[lop]);
+		}
+		aFree(rawname_table);
+	}
+	rawname_entrys = 0;
+
 #if defined(WINDOWS) && !defined(LOCALZLIB)
 	FreeLibrary(zlib_dll);
 	zlib_inflateInit_ = NULL;
@@ -1088,6 +1167,8 @@ void grfio_init(const char *fname)
 					result |= grfio_add(w2);
 				else if(strcmp(w1,"datadir") == 0)
 					strcpy(data_dir, w2);
+				else if(strcmp(w1,"protected_key") == 0)
+					grf_protected_parse_key(w2);
 			}
 		}
 		fclose(data_conf);
