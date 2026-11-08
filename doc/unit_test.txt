@@ -43,6 +43,10 @@ src 以下の本番 *.o はリンクしません（main / グローバル初期�
 	nullpo  … nullpo_chk
 	timer   … DIFF_TICK（ヘッダマクロ）
 	status_calc_ctrl … status_calc_pc の L_RECALC 再入制御（src/map/status_calc_ctrl.c）
+	grf_protected … protected GRF エントリの復号（ボディ暗号 259/260/269、stored/LZ4）
+	                grf_protected_encode_for_test で生成したペイロードの往復と、
+	                短すぎる・サイズ不一致・RC5 パディング不正・ヘッダ値不正などの拒否
+	                （third_party/xxhash・third_party/lz4 を include、lz4.c をリンク）
 
 map の戦闘・スクリプト・ソケット等は後続課題です。
 
@@ -53,6 +57,10 @@ map の戦闘・スクリプト・ソケット等は後続課題です。
 md5calc / utils は malloc.h の aMalloc_ 系を参照します。
 テストでは tests/stubs/malloc_stub.c が標準の malloc/free にマップします。
 本番の memmgr は使いません。
+
+grf_protected は grfio.c の decode_zip を参照します。テストでは zlib を
+リンクせず、tests/stubs/grfio_stub.c の decode_zip が常に失敗を返します
+（zlib 圧縮ボディは拒否されることのみ確認）。
 
 
 --------------------------------------------------------------------------

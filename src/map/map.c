@@ -2553,7 +2553,7 @@ static int map_readmap(int m,const char *fn,int *cache)
 		(*cache)++;
 	} else {
 		int wh;
-		int x,y,xs,ys;
+		int x,y,xs,ys,gat_len = 0;
 		unsigned char *gat;
 		struct gat_1cell {
 			float high[4];
@@ -2561,17 +2561,28 @@ static int map_readmap(int m,const char *fn,int *cache)
 		} *p;
 
 		// read & convert fn
-		gat = (unsigned char *)grfio_read(fn);
+		gat = (unsigned char *)grfio_reads(fn, &gat_len);
 		if(gat == NULL) {
 			// さすがにマップが読めないのはまずいので終了する
 			printf("Map '%s' not found: removed from maplist.\n", fn);
 			return -1;
 		}
 
+		if (gat_len < 14) {
+			printf("Map '%s' is truncated (%d bytes): removed from maplist.\n", fn, gat_len);
+			aFree(gat);
+			return -1;
+		}
 		xs = *(int*)(gat + 6);
 		ys = *(int*)(gat + 10);
-		if (xs == 0 || ys == 0) { // ?? but possible
+		if (xs <= 0 || ys <= 0) { // ?? but possible
 			printf("Invalid size for map '%s' (xs,ys: %d,%d): removed from maplist.\n", fn, xs, ys);
+			aFree(gat);
+			return -1;
+		}
+		if ((size_t)xs > ((size_t)gat_len - 14) / 20 / (size_t)ys) {
+			printf("Map '%s' is truncated (%d bytes, xs,ys: %d,%d): removed from maplist.\n", fn, gat_len, xs, ys);
+			aFree(gat);
 			return -1;
 		}
 		map[m].xs = xs;
