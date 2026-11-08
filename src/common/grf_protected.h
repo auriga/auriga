@@ -26,6 +26,10 @@
 
 #define GRF_PROTECTED_KEY_SIZE 60
 
+#define GRF_PROTECTED_HEADER_SIZE   104u
+#define GRF_PROTECTED_MAX_PLAINTEXT (256u * 1024u * 1024u)
+#define GRF_PROTECTED_MAX_PAYLOAD   (GRF_PROTECTED_MAX_PLAINTEXT + 104u + 8u)
+
 /* Decode protected payload (GRF entry with type & 0x80).
  * On success returns plaintext allocated with aCalloc (size + 1024 bytes, zero filled,
  * same convention as grfio_reads); caller frees with aFree.
@@ -54,5 +58,25 @@ int grf_protected_parse_key(const char *str);
  * Known key records are not embedded, so this never loads keys and always returns 0.
  */
 int grf_protected_try_load_envelope(const void *blob, size_t len);
+
+/* Allocate protected payload for tests; caller aFree's. Returns NULL on failure.
+ * Header cipher is 1 (AES-128-CBC fixed IV) and flags are 0.
+ * body_cipher: 259/260/269, compression: 0=stored, 2=LZ4 (zlib is not supported)
+ * key_id: 0 = inline material from key60, otherwise key60 must match the key
+ *         the decoder resolves for key_id (archive key or built-in default key)
+ */
+unsigned char *grf_protected_encode_for_test(
+	const unsigned char *plain, unsigned int plain_len,
+	const char *raw_name, unsigned int name_len,
+	unsigned int body_cipher,
+	unsigned int compression,
+	unsigned int key_id,
+	const unsigned char key60[GRF_PROTECTED_KEY_SIZE],
+	unsigned int *out_payload_len);
+
+/* Fill checksum (hdr+4) and encrypt hdr+8..103 with header cipher 1, in place.
+ * hdr holds the plaintext header; hdr[0]/hdr[1] are set to 1. For tests.
+ */
+void grf_protected_seal_header_for_test(unsigned char hdr[GRF_PROTECTED_HEADER_SIZE]);
 
 #endif /* _GRF_PROTECTED_H_ */

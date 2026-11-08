@@ -39,8 +39,8 @@
 
 #include "lz4.h"
 
-#define GRFP_HEADER_SIZE   104
-#define GRFP_MAX_SIZE      (256u * 1024u * 1024u)
+#define GRFP_HEADER_SIZE   GRF_PROTECTED_HEADER_SIZE
+#define GRFP_MAX_SIZE      GRF_PROTECTED_MAX_PLAINTEXT
 #define GRFP_MAX_KEYS      256
 #define GRFP_PLAIN_HEAD    128
 #define GRFP_RC5_OFFSET    2176
@@ -166,7 +166,7 @@ static void native_hash(const void *data, size_t len, unsigned long long seed, u
 }
 
 /*==========================================
- *	AES-128 (decrypt only)
+ *	AES-128
  *------------------------------------------
  */
 static unsigned char aes_sbox[256];
@@ -288,6 +288,52 @@ static void aes128_cbc_decrypt(const unsigned char key[16], const unsigned char 
 		for(i = 0; i < 16; i++)
 			buf[ofs + i] ^= prev[i];
 		memcpy(prev, cur, 16);
+	}
+}
+
+static void aes128_encrypt_block(const unsigned char rk[176], const unsigned char in[16], unsigned char out[16])
+{
+	unsigned char s[16], t[16];
+	int round, c, r, i;
+
+	for(i = 0; i < 16; i++)
+		s[i] = (unsigned char)(in[i] ^ rk[i]);
+
+	for(round = 1; round <= 10; round++) {
+		/* SubBytes + ShiftRows */
+		for(c = 0; c < 4; c++) {
+			for(r = 0; r < 4; r++)
+				t[c * 4 + r] = aes_sbox[s[((c + r) & 3) * 4 + r]];
+		}
+		/* MixColumns */
+		if(round < 10) {
+			for(c = 0; c < 4; c++) {
+				unsigned char a0 = t[c * 4], a1 = t[c * 4 + 1], a2 = t[c * 4 + 2], a3 = t[c * 4 + 3];
+				t[c * 4]     = (unsigned char)(aes_gmul(a0, 2) ^ aes_gmul(a1, 3) ^ a2 ^ a3);
+				t[c * 4 + 1] = (unsigned char)(a0 ^ aes_gmul(a1, 2) ^ aes_gmul(a2, 3) ^ a3);
+				t[c * 4 + 2] = (unsigned char)(a0 ^ a1 ^ aes_gmul(a2, 2) ^ aes_gmul(a3, 3));
+				t[c * 4 + 3] = (unsigned char)(aes_gmul(a0, 3) ^ a1 ^ a2 ^ aes_gmul(a3, 2));
+			}
+		}
+		for(i = 0; i < 16; i++)
+			s[i] = (unsigned char)(t[i] ^ rk[round * 16 + i]);
+	}
+	memcpy(out, s, 16);
+}
+
+static void aes128_cbc_encrypt(const unsigned char key[16], const unsigned char iv[16], unsigned char *buf, size_t len)
+{
+	unsigned char rk[176];
+	const unsigned char *prev = iv;
+	size_t ofs;
+	int i;
+
+	aes128_expand_key(key, rk);
+	for(ofs = 0; ofs + 16 <= len; ofs += 16) {
+		for(i = 0; i < 16; i++)
+			buf[ofs + i] ^= prev[i];
+		aes128_encrypt_block(rk, buf + ofs, buf + ofs);
+		prev = buf + ofs;
 	}
 }
 
@@ -624,6 +670,27 @@ static void tea_cfb_decrypt(int xtea, const unsigned char key[16], const unsigne
 		memcpy(reg, buf + ofs, 8);
 		for(i = 0; i < 8; i++)
 			buf[ofs + i] ^= ks[i];
+	}
+}
+
+static void tea_cfb_encrypt(int xtea, const unsigned char key[16], const unsigned char iv[8], unsigned char *buf, size_t len)
+{
+	unsigned int k[4];
+	unsigned char reg[8];
+	size_t ofs;
+	int i;
+
+	for(i = 0; i < 4; i++)
+		k[i] = rd_be32(key + i * 4);
+	memcpy(reg, iv, 8);
+	for(ofs = 0; ofs + 8 <= len; ofs += 8) {
+		if(xtea)
+			xtea_encrypt_block(k, reg, GRFP_TEA_ROUNDS);
+		else
+			tea_encrypt_block(k, reg, GRFP_TEA_ROUNDS);
+		for(i = 0; i < 8; i++)
+			buf[ofs + i] ^= reg[i];
+		memcpy(reg, buf + ofs, 8);
 	}
 }
 
@@ -1082,4 +1149,149 @@ err:
 		aFree(out);
 
 	return NULL;
+}
+
+/*==========================================
+ *	Protected entry encode (for unit tests)
+ *------------------------------------------
+ */
+void grf_protected_seal_header_for_test(unsigned char hdr[GRF_PROTECTED_HEADER_SIZE])
+{
+	hdr[0] = 1;
+	hdr[1] = 1;
+	wr_le32(hdr + 4, XXH32(hdr + 8, 96, 0));
+	aes128_cbc_encrypt(master_key, aes_iv_type1, hdr + 8, 96);
+}
+
+unsigned char *grf_protected_encode_for_test(
+	const unsigned char *plain, unsigned int plain_len,
+	const char *raw_name, unsigned int name_len,
+	unsigned int body_cipher,
+	unsigned int compression,
+	unsigned int key_id,
+	const unsigned char key60[GRF_PROTECTED_KEY_SIZE],
+	unsigned int *out_payload_len)
+{
+	unsigned char hdr[GRFP_HEADER_SIZE];
+	unsigned char name_hash[16], output_hash[16], mask[16];
+	unsigned char *comp = NULL, *payload, *body;
+	unsigned int compressed, padded;
+	size_t rc5_plain = 0, pad = 0;
+
+	if(out_payload_len != NULL)
+		*out_payload_len = 0;
+
+	if(plain == NULL || raw_name == NULL || key60 == NULL || plain_len > GRFP_MAX_SIZE)
+		return NULL;
+	if(body_cipher != 259 && body_cipher != 260 && body_cipher != 269)
+		return NULL;
+	if(key_id >= GRFP_MAX_KEYS)
+		return NULL;
+
+	switch(compression) {
+	case 0:
+		comp = (unsigned char *)aMalloc(plain_len + 1);
+		memcpy(comp, plain, plain_len);
+		compressed = plain_len;
+		break;
+	case 2:
+		{
+			int bound = LZ4_compressBound((int)plain_len);
+			int ret;
+
+			if(bound <= 0)
+				return NULL;
+			comp = (unsigned char *)aMalloc((size_t)bound);
+			ret = LZ4_compress_default((const char *)plain, (char *)comp, (int)plain_len, bound);
+			if(ret <= 0) {
+				aFree(comp);
+				return NULL;
+			}
+			compressed = (unsigned int)ret;
+		}
+		break;
+	default:
+		return NULL;
+	}
+
+	padded = compressed;
+	if(body_cipher == 269 && compressed > GRFP_RC5_OFFSET) {
+		rc5_plain = compressed - GRFP_RC5_OFFSET;
+		if(rc5_plain > GRFP_RC5_MAX)
+			rc5_plain = GRFP_RC5_MAX;
+		pad     = 8 - (rc5_plain & 7);
+		padded += (unsigned int)pad;
+	}
+
+	payload = (unsigned char *)aCalloc(GRFP_HEADER_SIZE + padded + 1, sizeof(unsigned char));
+	body    = payload + GRFP_HEADER_SIZE;
+	memcpy(body, comp, compressed);
+
+	native_hash(raw_name, name_len, 0, name_hash);
+	native_hash(plain, plain_len, 0, output_hash);
+
+	if(compressed <= GRFP_PLAIN_HEAD) {
+		/* stored as-is (decoder skips body transform) */
+	} else if(body_cipher == 269) {
+		idea_make_mask(name_hash, output_hash, key60 + 50, mask);
+		if(compressed <= GRFP_RC5_OFFSET) {
+			apply_mask(body, GRFP_PLAIN_HEAD, compressed, mask);
+		} else {
+			unsigned char tmp[GRFP_RC5_MAX + 8];
+			size_t rest = compressed - (GRFP_RC5_OFFSET + rc5_plain), i;
+
+			apply_mask(body, GRFP_PLAIN_HEAD, GRFP_RC5_OFFSET, mask);
+			memcpy(tmp, comp + GRFP_RC5_OFFSET, rc5_plain);
+			memset(tmp + rc5_plain, (int)pad, pad);
+			rc5_ofb_crypt(key60 + 16, key60, tmp, body + GRFP_RC5_OFFSET, rc5_plain + pad);
+			for(i = 0; i < rest; i++) {
+				size_t pos = GRFP_RC5_OFFSET + rc5_plain + i;
+				body[pos + pad] = (unsigned char)(comp[pos] ^ mask[pos & 15]);
+			}
+		}
+	} else if(body_cipher == 259) {
+		size_t count = padded - GRFP_PLAIN_HEAD;
+
+		if(count > 1024)
+			count = 1024;
+		count &= ~(size_t)7;
+		idea_make_mask(output_hash, name_hash, key60 + 50, mask);
+		apply_mask(body, GRFP_PLAIN_HEAD, padded, mask);
+		tea_cfb_encrypt(1, key60, key60 + 32, body + GRFP_PLAIN_HEAD, count);
+	} else {
+		size_t tail = padded - GRFP_PLAIN_HEAD, ofs, count;
+
+		if(tail >= 3072) {
+			ofs   = 2176;
+			count = 1024;
+		} else {
+			ofs   = GRFP_PLAIN_HEAD;
+			count = tail & ~(size_t)7;
+		}
+		idea_make_mask(name_hash, output_hash, key60 + 48, mask);
+		apply_mask(body, GRFP_PLAIN_HEAD, padded, mask);
+		tea_cfb_encrypt(0, key60 + 32, key60, body + ofs, count);
+	}
+	aFree(comp);
+
+	memset(hdr, 0, sizeof(hdr));
+	hdr[8]  = (unsigned char)body_cipher;
+	hdr[9]  = (unsigned char)(body_cipher >> 8);
+	hdr[10] = (unsigned char)compression;
+	hdr[11] = 0;
+	wr_le32(hdr + 12, padded);
+	wr_le32(hdr + 16, compressed);
+	wr_le32(hdr + 20, plain_len);
+	memcpy(hdr + 24, output_hash, 16);
+	hdr[40] = (unsigned char)key_id;
+	hdr[41] = (unsigned char)(key_id >> 8);
+	if(key_id == 0)
+		memcpy(hdr + 44, key60, GRF_PROTECTED_KEY_SIZE);
+	grf_protected_seal_header_for_test(hdr);
+	memcpy(payload, hdr, GRFP_HEADER_SIZE);
+
+	if(out_payload_len != NULL)
+		*out_payload_len = GRFP_HEADER_SIZE + padded;
+
+	return payload;
 }

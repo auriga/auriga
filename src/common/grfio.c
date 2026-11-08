@@ -617,19 +617,37 @@ void* grfio_reads(const char *fname, int *size)
 	if (entry!=NULL && entry->gentry>0 && (entry->type & 0x80)) {	// Archive[GRF] protected File Read
 		const char *rawfn = (entry->rawfn != NULL) ? entry->rawfn : entry->fn;
 		unsigned int olen = 0;
+		struct stat st;
+		atn_bignumber gsize;
 
-		if (entry->srclen <= 0) {
+		if (entry->srclen < (int)GRF_PROTECTED_HEADER_SIZE) {
 			printf("%s: invalid protected entry size %d.\n", fname, entry->srclen);
 			goto errret;
 		}
-		buf = (unsigned char *)aCalloc(entry->srclen, sizeof(char));
+		if ((unsigned int)entry->srclen > GRF_PROTECTED_MAX_PAYLOAD) {
+			printf("%s: protected entry too large (%d bytes).\n", fname, entry->srclen);
+			goto errret;
+		}
 		gfname = gentry_table[entry->gentry-1];
 		in = fopen(gfname,"rb");
 		if(in==NULL) {
 			printf("%s not found.\n", gfname);
 			goto errret;
 		}
-		fseek(in,entry->srcpos,0);
+		if (stat(gfname, &st) != 0) {
+			printf("%s: stat failed.\n", gfname);
+			goto errret;
+		}
+		gsize = (atn_bignumber)st.st_size;
+		if (entry->srcpos < 0 || entry->srcpos > gsize || (atn_bignumber)entry->srclen > gsize - entry->srcpos) {
+			printf("%s: protected entry out of range (size %d).\n", fname, entry->srclen);
+			goto errret;
+		}
+		if (fseek(in,entry->srcpos,SEEK_SET) != 0) {
+			printf("%s: protected entry seek error.\n", fname);
+			goto errret;
+		}
+		buf = (unsigned char *)aCalloc(entry->srclen, sizeof(char));
 		if (fread(buf,1,entry->srclen,in) != (size_t)entry->srclen) {
 			printf("%s: protected entry read error.\n", fname);
 			goto errret;

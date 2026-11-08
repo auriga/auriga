@@ -9,24 +9,28 @@ cd /d "%~dp0"
 set COMMON=..\src\common
 set MAP=..\src\map
 set UNITY=..\third_party\unity\src
-set CFLAGS=/nologo /W3 /Od /D_CRT_SECURE_NO_WARNINGS /I"%COMMON%" /I"%MAP%" /I"%UNITY%" /TC
+set XXHASH=..\third_party\xxhash
+set LZ4=..\third_party\lz4
+set CFLAGS=/nologo /W3 /Od /D_CRT_SECURE_NO_WARNINGS /I"%COMMON%" /I"%MAP%" /I"%UNITY%" /I"%XXHASH%" /I"%LZ4%" /TC
 
 if not exist stubs mkdir stubs
 
 echo Building unit tests (MSVC)...
 
 set OBJS=
-for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c) do (
+for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c test_grf_protected.c) do (
   cl %CFLAGS% /c /Fo%%~nF.obj %%F
   if errorlevel 1 exit /b 1
   set OBJS=!OBJS! %%~nF.obj
 )
 
-cl %CFLAGS% /c /Fostubs\malloc_stub.obj stubs\malloc_stub.c
-if errorlevel 1 exit /b 1
-set OBJS=!OBJS! stubs\malloc_stub.obj
+for %%S in (malloc_stub grfio_stub) do (
+  cl %CFLAGS% /c /Fostubs\%%S.obj stubs\%%S.c
+  if errorlevel 1 exit /b 1
+  set OBJS=!OBJS! stubs\%%S.obj
+)
 
-for %%N in (md5calc utils db lock nullpo) do (
+for %%N in (md5calc utils db lock nullpo grf_protected) do (
   cl %CFLAGS% /c /Fo%%N.obj "%COMMON%\%%N.c"
   if errorlevel 1 exit /b 1
   set OBJS=!OBJS! %%N.obj
@@ -35,6 +39,10 @@ for %%N in (md5calc utils db lock nullpo) do (
 cl %CFLAGS% /c /Fostatus_calc_ctrl.obj "%MAP%\status_calc_ctrl.c"
 if errorlevel 1 exit /b 1
 set OBJS=!OBJS! status_calc_ctrl.obj
+
+cl %CFLAGS% /c /Folz4.obj "%LZ4%\lz4.c"
+if errorlevel 1 exit /b 1
+set OBJS=!OBJS! lz4.obj
 
 cl %CFLAGS% /c /Founity.obj "%UNITY%\unity.c"
 if errorlevel 1 exit /b 1
