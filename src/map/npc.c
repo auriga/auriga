@@ -147,6 +147,22 @@ static int npc_enable_sub( struct block_list *bl, va_list ap )
 	return 0;
 }
 
+static int npc_questinfo_enable_sub(struct block_list *bl, va_list ap)
+{
+	struct map_session_data *sd = (struct map_session_data *)bl;
+	int npc_id = va_arg(ap, int), invalidate = va_arg(ap, int), i;
+
+	for(i = 0; i < sd->questinfo.count; i++) {
+		if(sd->questinfo.slots[i].npc_id == npc_id) {
+			if(invalidate)
+				sd->questinfo.slots[i].icon = -1;
+			break;
+		}
+	}
+	npc_questinfo_request(sd);
+	return 0;
+}
+
 int npc_enable(const char *name,int flag)
 {
 	struct npc_data *nd = (struct npc_data *)strdb_search(npcname_db,name);
@@ -185,6 +201,9 @@ int npc_enable(const char *name,int flag)
 			nd->bl.m,nd->bl.x-xs/2,nd->bl.y-ys/2,nd->bl.x+xs/2,nd->bl.y+ys/2,
 			BL_PC,nd);
 	}
+	if(nd->bl.m >= 0 && map[nd->bl.m].questinfo_count > 0)
+		map_foreachinarea(npc_questinfo_enable_sub, nd->bl.m, 0, 0,
+			map[nd->bl.m].xs-1, map[nd->bl.m].ys-1, BL_PC, nd->bl.id, (flag & 3) != 0);
 
 	return 0;
 }
@@ -332,6 +351,263 @@ int npc_event_doall_map(const char *name, int m)
 	}
 
 	return c;
+}
+
+/* NPCイベントキューとは別に管理するクエスト表示条件 */
+struct questinfo_rule {
+	int icon, color;
+	struct script_code *condition;
+	struct questinfo_rule *next;
+};
+struct npc_questinfo {
+	int npc_id;
+	struct questinfo_rule *first, *last;
+	struct npc_questinfo *next;
+};
+
+/*==========================================
+ * Questinfoイベント登録
+ *------------------------------------------
+ */
+int npc_questinfo_register(struct npc_data *nd, int icon, int color, const char *condition)
+{
+	struct npc_questinfo *entry;
+	struct questinfo_rule *rule;
+	struct script_code *code = NULL;
+
+	if(!nd || nd->subtype != SCRIPT || nd->bl.m < 0 || color < 0 || color > 3)
+		return 0;
+#if PACKETVER >= 20170315
+	if((icon < 0 || icon > 10) && icon != 9999)
+		return 0;
+#elif PACKETVER >= 20120410
+	if((icon < 0 || icon > 8 || icon == 7) && icon != 9999)
+		return 0;
+#else
+	if((icon < 0 || icon > 7) && icon != 9999)
+		return 0;
+#endif
+
+	if(condition && *condition) {
+		size_t size = strlen(condition) + 40;
+		char *source = (char *)aMalloc(size);
+
+		// 条件式を既存のスクリプト構文で評価し、内部命令で結果を受け取る
+		snprintf(source, size, "{ questinfo_condition_result %s; }", condition);
+		code = parse_script((unsigned char *)source, "questinfo", 1);
+		aFree(source);
+		if(!code || script_is_error(code))
+			return 0;
+	}
+
+	entry = nd->u.scr.questinfo;
+	if(!entry) {
+		entry = (struct npc_questinfo *)aCalloc(1, sizeof(*entry));
+		entry->npc_id = nd->bl.id;
+		entry->next = map[nd->bl.m].questinfo_npcs;
+		map[nd->bl.m].questinfo_npcs = entry;
+		nd->u.scr.questinfo = entry;
+		map[nd->bl.m].questinfo_count++;
+	}
+
+	rule = (struct questinfo_rule *)aCalloc(1, sizeof(*rule));
+	rule->icon = icon;
+	rule->color = color;
+	rule->condition = code;
+
+	if(entry->last)
+		entry->last->next = rule;
+	else
+		entry->first = rule;
+	entry->last = rule;
+
+	map[nd->bl.m].questinfo_generation++;
+	if(map[nd->bl.m].users > 0)
+		map_foreachinarea(npc_questinfo_enable_sub, nd->bl.m, 0, 0,
+			map[nd->bl.m].xs-1, map[nd->bl.m].ys-1, BL_PC, nd->bl.id, 1);
+	return 1;
+}
+
+/*==========================================
+ * Questinfoイベント解放
+ *------------------------------------------
+ */
+static int npc_questinfo_remove_sub(struct block_list *bl, va_list ap)
+{
+	struct map_session_data *sd = (struct map_session_data *)bl;
+	struct npc_data *nd = va_arg(ap, struct npc_data *);
+	int i;
+
+	for(i = 0; i < sd->questinfo.count; i++) {
+		struct questinfo_slot *slot = &sd->questinfo.slots[i];
+		if(slot->npc_id != nd->bl.id)
+			continue;
+		if(slot->icon != -1 && slot->icon != 9999) {
+#if PACKETVER >= 20090218 && PACKETVER < 20120410
+			clif_showevent(sd, &nd->bl, 0, 0);
+#elif PACKETVER >= 20120410
+			clif_showevent(sd, &nd->bl, 9999, 0);
+#endif
+		}
+		break;
+	}
+
+	npc_questinfo_request(sd);
+	return 0;
+}
+
+static void npc_questinfo_free(struct npc_data *nd)
+{
+	struct npc_questinfo *entry = nd->u.scr.questinfo, **p;
+	struct questinfo_rule *rule, *next;
+	if(!entry)
+		return;
+	if(nd->bl.m >= 0) {
+		for(p = &map[nd->bl.m].questinfo_npcs; *p && *p != entry; p = &(*p)->next);
+		if(*p)
+			*p = entry->next;
+		map[nd->bl.m].questinfo_count--;
+		map[nd->bl.m].questinfo_generation++;
+	}
+	for(rule = entry->first; rule; rule = next) {
+		next = rule->next;
+		if(rule->condition)
+			script_free_code(rule->condition);
+		aFree(rule);
+	}
+	nd->u.scr.questinfo = NULL;
+	aFree(entry);
+}
+
+/*==========================================
+ * Questinfoイベント遅延実行
+ *------------------------------------------
+ */
+static int npc_questinfo_timer(int tid, unsigned int tick, int id, void *data)
+{
+	struct map_session_data *sd = map_id2sd(id);
+	struct npc_questinfo *entry;
+	int processed = 0;
+
+	if(!sd || sd->questinfo.timer != tid)
+		return 0;
+	sd->questinfo.timer = -1;
+	if(!sd->bl.prev || sd->bl.m < 0)
+		return 0;
+
+	if(sd->questinfo.map != sd->bl.m || sd->questinfo.generation != map[sd->bl.m].questinfo_generation) {
+		int count = map[sd->bl.m].questinfo_count, i;
+		int same_map = sd->questinfo.map == sd->bl.m;
+		int old_count = sd->questinfo.count;
+		struct questinfo_slot *old_slots = sd->questinfo.slots;
+		struct npc_data *nd;
+		sd->questinfo.slots = NULL;
+		sd->questinfo.map = sd->bl.m;
+		sd->questinfo.generation = map[sd->bl.m].questinfo_generation;
+		sd->questinfo.index = sd->questinfo.count = 0;
+		if(count)
+			sd->questinfo.slots = (struct questinfo_slot *)aCalloc(count, sizeof(*sd->questinfo.slots));
+		for(entry = map[sd->bl.m].questinfo_npcs; entry; entry = entry->next) {
+			nd = map_id2nd(entry->npc_id);
+			if(nd) {
+				struct questinfo_slot *slot = &sd->questinfo.slots[sd->questinfo.count++];
+				slot->npc_id = entry->npc_id;
+				slot->icon = -1;
+				if(same_map) {
+					for(i = 0; i < old_count; i++) {
+						if(old_slots[i].npc_id == slot->npc_id) {
+							*slot = old_slots[i];
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(old_slots)
+			aFree(old_slots);
+		sd->questinfo.dirty = 1;
+	}
+
+	if(sd->questinfo.index == sd->questinfo.count && sd->questinfo.dirty) {
+		sd->questinfo.index = 0;
+		sd->questinfo.dirty = 0;
+	}
+
+	// 1回の処理数を制限し、残りは次のタイマーで処理する
+	sd->questinfo.running = 1;
+	while(sd->questinfo.index < sd->questinfo.count && processed++ < 16) {
+		struct questinfo_slot *slot = &sd->questinfo.slots[sd->questinfo.index++];
+		struct npc_data *nd = map_id2nd(slot->npc_id);
+		struct questinfo_rule *rule;
+		int icon = 9999, color = 0;
+
+		if(!nd || nd->bl.m != sd->bl.m || nd->subtype != SCRIPT || !nd->u.scr.questinfo)
+			continue;
+
+		if(!(nd->flag & 3)) {
+			for(rule = nd->u.scr.questinfo->first; rule; rule = rule->next) {
+				int result = 1;
+				if(rule->condition && !script_eval_questinfo(rule->condition, sd->bl.id, nd->bl.id, &result))
+					result = 0;
+				if(result) { icon = rule->icon; color = rule->color; break; }
+			}
+		}
+
+		if(slot->icon != icon || slot->color != color) {
+			if(slot->icon != -1 || icon != 9999) {
+#if PACKETVER >= 20090218 && PACKETVER < 20120410
+				clif_showevent(sd, &nd->bl, icon == 9999 ? 0 : icon + 1, color);
+#elif PACKETVER >= 20120410
+				clif_showevent(sd, &nd->bl, icon, color);
+#endif
+			}
+			slot->icon = icon;
+			slot->color = color;
+		}
+	}
+
+	sd->questinfo.running = 0;
+	if(sd->questinfo.index == sd->questinfo.count && !sd->questinfo.dirty)
+		return 0;
+
+	sd->questinfo.timer = add_timer(tick + 100, npc_questinfo_timer, id, NULL);
+	return 0;
+}
+
+/*==========================================
+ * Questinfoイベント再評価要求
+ *------------------------------------------
+ */
+void npc_questinfo_request(struct map_session_data *sd)
+{
+	if(!sd || sd->bl.m < 0 || !sd->bl.prev)
+		return;
+
+	if(map[sd->bl.m].questinfo_count == 0) {
+		if(!sd->questinfo.running && (sd->questinfo.timer != -1 || sd->questinfo.slots))
+			npc_questinfo_cancel(sd);
+		return;
+	}
+
+	sd->questinfo.dirty = 1;
+	if(sd->questinfo.timer == -1 && !sd->questinfo.running)
+		sd->questinfo.timer = add_timer(gettick() + 100, npc_questinfo_timer, sd->bl.id, NULL);
+}
+
+/*==========================================
+ * Questinfoイベントキャンセル
+ *------------------------------------------
+ */
+void npc_questinfo_cancel(struct map_session_data *sd)
+{
+	if(sd->questinfo.timer != -1)
+		delete_timer(sd->questinfo.timer, npc_questinfo_timer);
+	if(sd->questinfo.slots)
+		aFree(sd->questinfo.slots);
+	sd->questinfo.slots = NULL;
+	sd->questinfo.timer = sd->questinfo.map = -1;
+	sd->questinfo.index = sd->questinfo.count = 0;
+	sd->questinfo.dirty = sd->questinfo.running = 0;
 }
 
 /*==========================================
@@ -1720,6 +1996,12 @@ int npc_free(struct npc_data *nd)
 	}
 
 	if(nd->subtype == SCRIPT) {
+		int had_questinfo = nd->u.scr.questinfo != NULL;
+		npc_questinfo_free(nd);
+		if(had_questinfo && nd->bl.m >= 0 && map[nd->bl.m].users > 0)
+			map_foreachinarea(npc_questinfo_remove_sub, nd->bl.m, 0, 0,
+				map[nd->bl.m].xs-1, map[nd->bl.m].ys-1, BL_PC, nd);
+
 		// タイマー解放
 		if(nd->u.scr.timer_event)
 			aFree(nd->u.scr.timer_event);
@@ -3334,6 +3616,7 @@ int do_final_npc(void)
 					cd = NULL;
 				}
 				if(nd->subtype == SCRIPT) {
+					npc_questinfo_free(nd);
 					if(nd->u.scr.timer_event)
 						aFree(nd->u.scr.timer_event);
 				 	if(nd->u.scr.src_id == 0) {
@@ -3404,6 +3687,7 @@ int do_init_npc(void)
 	printf("\nread %d npcs done (%d warp, %d shop, %d script, %d mob)\n",
 		   npc_id-START_NPC_NUM,npc_warp,npc_shop,npc_script,npc_mob);
 
+	add_timer_func_list(npc_questinfo_timer);
 	add_timer_func_list(npc_event_timer);
 	add_timer_func_list(npc_event_do_clock);
 	add_timer_func_list(npc_timerevent);

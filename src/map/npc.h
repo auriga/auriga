@@ -59,6 +59,9 @@ int npc_event_do_oninit(void);
 int npc_event_doall(const char *name);
 int npc_event_doall_map(const char *name,int m);
 int npc_event_doall_id(const char *name,int rid,int m);
+void npc_questinfo_request(struct map_session_data *sd);
+void npc_questinfo_cancel(struct map_session_data *sd);
+int npc_questinfo_register(struct npc_data *nd, int icon, int color, const char *condition);
 int npc_event_do(const char *name);
 
 int npc_timerevent_start(struct npc_data *nd);

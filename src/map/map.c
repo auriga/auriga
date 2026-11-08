@@ -1363,6 +1363,8 @@ int map_quit(struct map_session_data *sd)
 		sd->stack = NULL;
 	}
 
+	npc_questinfo_cancel(sd);
+
 #ifdef DYNAMIC_SC_DATA
 	status_free_sc_data(&sd->sc);
 #endif
@@ -1721,6 +1723,9 @@ int map_addmdmap(const char *name, int id)
 
 	memset(map[dst_m].npc, 0, sizeof(map[dst_m].npc));
 	map[dst_m].npc_num = 0;
+	map[dst_m].questinfo_generation = 0;
+	map[dst_m].questinfo_count = 0;
+	map[dst_m].questinfo_npcs = NULL;
 	map[dst_m].mvpboss = NULL;
 
 	size = map[dst_m].bxs * map[dst_m].bys * sizeof(struct block_list*);

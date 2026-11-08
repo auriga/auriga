@@ -1,4 +1,14 @@
 ----------------------------------------
+//1627 [2026/11/08] by refis
+
+・通常クエスト表示の条件登録と更新を行うquestinfo・questinfo_refresh命令を追加
+　NPCの表示状態変更・マップ読み込み・クエスト討伐数の更新時に表示を再評価し、旧クライアントの非表示値を変換
+　questinfo未登録マップでの不要な更新を抑制し、マップ退出時に更新状態を解放
+　NPCの非表示・破棄時に表示と更新状態を整理
+　マップ単位の登録リスト参照・マップ外でのタイマー停止・条件評価用script_stateの再利用で更新負荷を抑制
+（npc.*, map.*, unit.c, pc.c, quest.c, clif.c, script.*, buildin_dialog.c, db/const.txt, doc/script_ref.txt）
+
+----------------------------------------
 //1626 [2026/11/08] by refis
 
 ・protected GRF エントリの読み込み前に、エントリサイズ（104 バイト以上・上限以下）と
@@ -46,7 +56,6 @@
 ・カメラ表示・設定パケットとcamerainfo命令を追加（clif.c, clif.h, buildin_misc.c, script.c, doc/script_ref.txt）
 
 ・マップ全体に座標マーカーを表示するviewpointmap命令を追加（buildin_dialog.c, script.c, doc/script_ref.txt）
-
 
 ----------------------------------------
 //1622 [2026/11/05] by refis
