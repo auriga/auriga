@@ -2482,13 +2482,27 @@ int pc_checkadditem(struct map_session_data *sd,int nameid,int amount)
  * 空きアイテム欄の個数
  *------------------------------------------
  */
+int pc_inventory_slots(struct map_session_data *sd)
+{
+	int n;
+
+	nullpo_retr(INVENTORY_BASE_SIZE, sd);
+	n = (int)sd->status.inventory_slots;
+	if(n < INVENTORY_BASE_SIZE)
+		n = INVENTORY_BASE_SIZE;
+	if(n > MAX_INVENTORY)
+		n = MAX_INVENTORY;
+	return n;
+}
+
 int pc_inventoryblank(struct map_session_data *sd)
 {
-	int i,b = 0;
+	int i,b = 0, max;
 
 	nullpo_retr(0, sd);
 
-	for(i=0; i<MAX_INVENTORY; i++) {
+	max = pc_inventory_slots(sd);
+	for(i=0; i<max; i++) {
 		if(sd->status.inventory[i].nameid == 0)
 			b++;
 	}
@@ -2542,10 +2556,13 @@ int pc_search_inventory(struct map_session_data *sd,int item_id)
 
 	nullpo_retr(-1, sd);
 
-	for(i=0; i<MAX_INVENTORY; i++) {
-		if(sd->status.inventory[i].nameid == item_id &&
-		   (sd->status.inventory[i].amount > 0 || item_id == 0))
-			return i;
+	{
+		int max = pc_inventory_slots(sd);
+		for(i=0; i<max; i++) {
+			if(sd->status.inventory[i].nameid == item_id &&
+			   (sd->status.inventory[i].amount > 0 || item_id == 0))
+				return i;
+		}
 	}
 
 	return -1;
@@ -2704,8 +2721,9 @@ int pc_additem(struct map_session_data *sd,struct item *item_data,int amount,boo
 		return 2;
 
 	if(!itemdb_isequip2(data)) {
+		int max = pc_inventory_slots(sd);
 		// 装備品ではないので、既所有品なら個数のみ変化させる
-		for(i=0; i<MAX_INVENTORY; i++) {
+		for(i=0; i<max; i++) {
 			if(sd->status.inventory[i].nameid  == item_data->nameid  &&
 			   sd->status.inventory[i].card[0] == item_data->card[0] &&
 			   sd->status.inventory[i].card[1] == item_data->card[1] &&

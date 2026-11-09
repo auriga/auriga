@@ -503,6 +503,8 @@ struct map_session_data {
 	int achievelist;
 	struct buyingstore buyingstore;
 	int inventory_num;
+	int inventory_expansion_confirmation;
+	unsigned short inventory_expansion_amount;
 
 	char wis_refusal[MAX_WIS_REFUSAL][24];	// Wis‹‘”ÛƒŠƒXƒg
 

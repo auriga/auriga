@@ -124,6 +124,7 @@ CREATE TABLE `char_data` (
   `allow_call` smallint(6) unsigned NOT NULL default '0',
   `autofeed` smallint(6) unsigned NOT NULL default '0',
   `title_id` int(11) NOT NULL default '0',
+  `inventory_slots` smallint(6) unsigned NOT NULL default '100',
   `online` tinyint(4) NOT NULL default '0',
   PRIMARY KEY (`char_id`),
   UNIQUE `account_slot` (`account_id`, `char_num`),

@@ -1,4 +1,12 @@
 ----------------------------------------
+//1628 [2026/11/10] by refis
+
+・インベントリ拡張を追加（PACKETVER >= 20181031）。
+　inventory_slotsをTXT・SQLに保存し、クーポンで所持枠を拡張する。
+　旧TXTジャーナルを移行し、旧PACKETVERでは拡張済みキャラクターの読み込みを拒否する。
+　（mmo.h, map.h, pc.*, clif.c, chardb_*.c, trade.c, db/packet_db.lua, sql-files/*）
+
+----------------------------------------
 //1627 [2026/11/08] by refis
 
 ・通常クエスト表示の条件登録と更新を行うquestinfo・questinfo_refresh命令を追加
