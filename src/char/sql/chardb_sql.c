@@ -135,7 +135,7 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 		"`hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `robe`, `head_top`, `head_mid`, `head_bottom`,"
 		"`last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`,"
 		"`partner_id`, `parent_id`, `parent_id2`, `baby_id`, `delete_date`, `refuse_partyinvite`, `show_equip`, `font`, `style`, `sex`,"
-		"`allow_call`, `autofeed`, `title_id`"
+		"`allow_call`, `autofeed`, `title_id`, `inventory_slots`"
 		" FROM `" CHAR_TABLE "` WHERE `char_id` = '%d'", char_id
 	);
 	if(result == false) {
@@ -146,6 +146,11 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	sql_row = sqldbs_fetch(&mysql_handle);
 	if(sql_row == NULL) {
 		// Œ©‚Â‚©‚ç‚È‚­‚Ä‚à³í
+		sqldbs_free_result(&mysql_handle);
+		return NULL;
+	}
+	if(atoi(sql_row[68]) > MAX_INVENTORY) {
+		printf("chardb_sql: inventory slots exceed this build limit, char_id=%d\n", char_id);
 		sqldbs_free_result(&mysql_handle);
 		return NULL;
 	}
@@ -224,6 +229,11 @@ const struct mmo_chardata* chardb_sql_load(int char_id)
 	p->st.allow_call          = atoi(sql_row[65]);
 	p->st.autofeed            = atoi(sql_row[66]);
 	p->st.title_id            = atoi(sql_row[67]);
+	p->st.inventory_slots     = (unsigned short)atoi(sql_row[68]);
+	if(p->st.inventory_slots < INVENTORY_BASE_SIZE)
+		p->st.inventory_slots = INVENTORY_BASE_SIZE;
+	if(p->st.inventory_slots > MAX_INVENTORY)
+		p->st.inventory_slots = MAX_INVENTORY;
 
 	// force \0 terminal
 	p->st.name[23]           = '\0';
@@ -528,6 +538,7 @@ bool chardb_sql_save(struct mmo_charstatus *st2)
 	UPDATE_UNUM(allow_call        ,"allow_call");
 	UPDATE_UNUM(autofeed          ,"autofeed");
 	UPDATE_NUM(title_id           ,"title_id");
+	UPDATE_UNUM(inventory_slots   ,"inventory_slots");
 
 	if( sqldbs_transaction_start(&mysql_handle) == false )
 		return false;

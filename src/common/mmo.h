@@ -34,7 +34,13 @@
 #define AUTH_FIFO_SIZE 256
 #define MAPSERVER_TAGNAME 16
 
-#define MAX_INVENTORY 100
+#define INVENTORY_BASE_SIZE 100
+#if PACKETVER >= 20181031
+#define INVENTORY_EXPANSION_SIZE 100
+#else
+#define INVENTORY_EXPANSION_SIZE 0
+#endif
+#define MAX_INVENTORY (INVENTORY_BASE_SIZE + INVENTORY_EXPANSION_SIZE)
 #define MAX_AMOUNT 30000
 #define MAX_ZENY 2147483647
 #define MAX_CART 100
@@ -729,6 +735,7 @@ struct mmo_charstatus {
 	char allow_call;
 	char autofeed;
 	int title_id;
+	unsigned short inventory_slots;
 };
 
 struct registry {

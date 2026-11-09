@@ -280,9 +280,14 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 	struct item inventory2[MAX_INVENTORY];
 	struct item_data *data;
 	int trade_i, i, amount, idx;
+	int slots, slots2;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, target_sd);
+
+	// ƒCƒ“ƒxƒ“ƒgƒŠŠg’£
+	slots = pc_inventory_slots(sd);
+	slots2 = pc_inventory_slots(target_sd);
 
 	// get inventory of players
 	memcpy(&inventory, &sd->status.inventory, sizeof(struct item) * MAX_INVENTORY);
@@ -300,10 +305,10 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 				if (amount > 0) {
 					// search if it's possible to add item (for full inventory)
 					data = itemdb_search(inventory[idx].nameid);
-					i = MAX_INVENTORY;
+					i = slots2;
 					// check for non-equipement items
 					if (!itemdb_isequip2(data)) {
-						for(i = 0; i < MAX_INVENTORY; i++)
+						for(i = 0; i < slots2; i++)
 							if (inventory2[i].nameid == inventory[idx].nameid &&
 								inventory2[i].card[0] == inventory[idx].card[0] && inventory2[i].card[1] == inventory[idx].card[1] &&
 								inventory2[i].card[2] == inventory[idx].card[2] && inventory2[i].card[3] == inventory[idx].card[3]) {
@@ -317,8 +322,8 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 							}
 					}
 					// check for equipement
-					if (i == MAX_INVENTORY) {
-						for(i = 0; i < MAX_INVENTORY; i++) {
+					if (i == slots2) {
+						for(i = 0; i < slots2; i++) {
 							if (inventory2[i].nameid == 0) {
 								memcpy(&inventory2[i], &inventory[idx], sizeof(struct item));
 								inventory2[i].amount = amount;
@@ -328,7 +333,7 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 								break;
 							}
 						}
-						if (i == MAX_INVENTORY)
+						if (i == slots2)
 							return 0;
 					}
 				}
@@ -344,10 +349,10 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 				if (amount > 0) {
 					// search if it's possible to add item (for full inventory)
 					data = itemdb_search(inventory2[idx].nameid);
-					i = MAX_INVENTORY;
+					i = slots;
 					// check for non-equipement items
 					if (!itemdb_isequip2(data)) {
-						for(i = 0; i < MAX_INVENTORY; i++)
+						for(i = 0; i < slots; i++)
 							if (inventory[i].nameid == inventory2[idx].nameid &&
 								inventory[i].card[0] == inventory2[idx].card[0] && inventory[i].card[1] == inventory2[idx].card[1] &&
 								inventory[i].card[2] == inventory2[idx].card[2] && inventory[i].card[3] == inventory2[idx].card[3]) {
@@ -361,8 +366,8 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 							}
 					}
 					// check for equipement
-					if (i == MAX_INVENTORY) {
-						for(i = 0; i < MAX_INVENTORY; i++) {
+					if (i == slots) {
+						for(i = 0; i < slots; i++) {
 							if (inventory[i].nameid == 0) {
 								memcpy(&inventory[i], &inventory2[idx], sizeof(struct item));
 								inventory[i].amount = amount;
@@ -372,7 +377,7 @@ static int trade_check(struct map_session_data *sd, struct map_session_data *tar
 								break;
 							}
 						}
-						if (i == MAX_INVENTORY)
+						if (i == slots)
 							return 0;
 					}
 				}

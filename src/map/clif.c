@@ -283,6 +283,8 @@ static int clif_send_sub(struct block_list *bl,va_list ap)
  *
  *------------------------------------------
  */
+static void clif_inventory_expansion_info(struct map_session_data *sd);
+
 static void clif_send(unsigned char *buf, size_t len, struct block_list *bl, int type)
 {
 	int i;
@@ -462,6 +464,14 @@ void clif_authok(struct map_session_data *sd)
 	WFIFOW(fd,11)=sd->status.font;
 	WFIFOB(fd,13)=sd->sex;
 	WFIFOSET(fd,packet_db[0xa18].len);
+#endif
+
+	if(sd->status.inventory_slots < INVENTORY_BASE_SIZE)
+		sd->status.inventory_slots = INVENTORY_BASE_SIZE;
+	if(sd->status.inventory_slots > MAX_INVENTORY)
+		sd->status.inventory_slots = MAX_INVENTORY;
+#if PACKETVER >= 20181031
+	clif_inventory_expansion_info(sd);
 #endif
 
 	return;
@@ -19988,6 +19998,59 @@ void clif_ball(struct map_session_data *sd)
 }
 
 /*==========================================
+ * インベントリ拡張
+ *------------------------------------------
+ */
+static void clif_inventory_expansion_info(struct map_session_data *sd)
+{
+	int fd;
+	int expand;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	expand = (int)sd->status.inventory_slots - INVENTORY_BASE_SIZE;
+	if(expand < 0)
+		expand = 0;
+	WFIFOW(fd,0) = 0xb18;
+	WFIFOW(fd,2) = (unsigned short)expand;
+	WFIFOSET(fd, packet_db[0xb18].len);
+
+	return;
+}
+
+static void clif_inventory_expansion_response(struct map_session_data *sd, int result)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0xb15;
+	WFIFOB(fd,2) = (unsigned char)result;
+	WFIFOL(fd,3) = sd->inventory_expansion_confirmation;
+	WFIFOSET(fd, packet_db[0xb15].len);
+
+	return;
+}
+
+static void clif_inventory_expansion_result(struct map_session_data *sd, int result)
+{
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0xb17;
+	WFIFOB(fd,2) = (unsigned char)result;
+	WFIFOSET(fd, packet_db[0xb17].len);
+	sd->inventory_expansion_confirmation = 0;
+	sd->inventory_expansion_amount = 0;
+
+	return;
+}
+
+/*==========================================
  * send packet デバッグ用
  *------------------------------------------
  */
@@ -25741,12 +25804,124 @@ static void clif_parse_MemorialCommand(int fd,struct map_session_data *sd, int c
 }
 
 /*==========================================
- *
+ * インベントリ拡張
  *------------------------------------------
  */
+#define ITEMID_INVENTORY_EX_EVT 25791
+#define ITEMID_INVENTORY_EX_DIS 25792
+#define ITEMID_INVENTORY_EX     25793
+
+enum {
+	INVEXP_RESP_ASK = 0,
+	INVEXP_RESP_FAILED,
+	INVEXP_RESP_BUSY,
+	INVEXP_RESP_MISSING_ITEM,
+	INVEXP_RESP_MAXIMUM
+};
+
+enum {
+	INVEXP_RES_SUCCESS = 0,
+	INVEXP_RES_FAILED,
+	INVEXP_RES_BUSY,
+	INVEXP_RES_MISSING_ITEM,
+	INVEXP_RES_MAXIMUM
+};
+
 static void clif_parse_InventoryExpantion(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20181031
+	static const int coupons[][2] = {
+		{ ITEMID_INVENTORY_EX_EVT, 10 },
+		{ ITEMID_INVENTORY_EX_DIS, 10 },
+		{ ITEMID_INVENTORY_EX, 10 },
+	};
+	int i, found_over = 0;
+
+	nullpo_retv(sd);
+
+	if(unit_isdead(&sd->bl) || sd->npc_id || sd->state.store ||
+	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID ||
+	   sd->inventory_expansion_confirmation)
+	{
+		clif_inventory_expansion_response(sd, INVEXP_RESP_BUSY);
+		return;
+	}
+	if(sd->status.inventory_slots >= MAX_INVENTORY) {
+		clif_inventory_expansion_response(sd, INVEXP_RESP_MAXIMUM);
+		return;
+	}
+
+	sd->inventory_expansion_confirmation = 0;
+	sd->inventory_expansion_amount = 0;
+	for(i = 0; i < 3; i++) {
+		int idx = pc_search_inventory(sd, coupons[i][0]);
+		if(idx < 0)
+			continue;
+		if(sd->status.inventory_slots + coupons[i][1] > MAX_INVENTORY) {
+			found_over = 1;
+			continue;
+		}
+		sd->inventory_expansion_confirmation = coupons[i][0];
+		sd->inventory_expansion_amount = (unsigned short)coupons[i][1];
+		found_over = 0;
+		break;
+	}
+
+	if(sd->inventory_expansion_confirmation == 0) {
+		clif_inventory_expansion_response(sd, found_over ? INVEXP_RESP_MAXIMUM : INVEXP_RESP_MISSING_ITEM);
+		return;
+	}
+	clif_inventory_expansion_response(sd, INVEXP_RESP_ASK);
+
+	return;
+#endif
+}
+
+static void clif_parse_InventoryExpantionConfirm(int fd,struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20181031
+	int idx;
+
+	nullpo_retv(sd);
+
+	if(sd->inventory_expansion_confirmation == 0)
+		return;
+	if(unit_isdead(&sd->bl) || sd->npc_id || sd->state.store ||
+	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID) {
+		clif_inventory_expansion_result(sd, INVEXP_RES_BUSY);
+		return;
+	}
+	if(sd->status.inventory_slots >= MAX_INVENTORY) {
+		clif_inventory_expansion_result(sd, INVEXP_RES_MAXIMUM);
+		return;
+	}
+	idx = pc_search_inventory(sd, sd->inventory_expansion_confirmation);
+	if(idx < 0 || sd->inventory_data[idx] == NULL) {
+		clif_inventory_expansion_result(sd, INVEXP_RES_MISSING_ITEM);
+		return;
+	}
+	if(sd->status.inventory_slots + sd->inventory_expansion_amount > MAX_INVENTORY) {
+		clif_inventory_expansion_result(sd, INVEXP_RES_MAXIMUM);
+		return;
+	}
+	pc_delitem(sd, idx, 1, 0, 0);
+	sd->status.inventory_slots += sd->inventory_expansion_amount;
+	if(sd->status.inventory_slots > MAX_INVENTORY)
+		sd->status.inventory_slots = MAX_INVENTORY;
+	sd->inventory_expansion_amount = 0;
+	chrif_save(sd, 0);
+	clif_inventory_expansion_result(sd, INVEXP_RES_SUCCESS);
+	clif_inventory_expansion_info(sd);
+#endif
+
+	return;
+}
+
+static void clif_parse_InventoryExpantionReject(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+	sd->inventory_expansion_confirmation = 0;
+	sd->inventory_expansion_amount = 0;
 	return;
 }
 
@@ -26352,6 +26527,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_Ping,                        "ping"                      },
 		{ clif_parse_MemorialCommand,             "memorialcommand"           },
 		{ clif_parse_InventoryExpantion,          "inventoryexpantion"        },
+		{ clif_parse_InventoryExpantionConfirm,   "inventoryexpantionconfirm" },
+		{ clif_parse_InventoryExpantionReject,    "inventoryexpantionreject"  },
 		{ clif_parse_PetEvolution,                "petevolution"              },
 		{ clif_parse_StartUseSkillToId,           "startuseskilltoid"         },
 		{ clif_parse_StopUseSkillToId,            "stopuseskilltoid"          },

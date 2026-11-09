@@ -101,6 +101,7 @@ void pc_memo(struct map_session_data *sd, int i);
 
 int pc_clearitemlimit(struct map_session_data *sd);
 int pc_checkadditem(struct map_session_data*,int,int);
+int pc_inventory_slots(struct map_session_data *sd);
 int pc_inventoryblank(struct map_session_data*);
 int pc_search_inventory(struct map_session_data *sd,int item_id);
 int pc_payzeny(struct map_session_data*,int);
