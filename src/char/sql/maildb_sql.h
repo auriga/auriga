@@ -33,6 +33,7 @@ bool maildb_sql_init(void);
 int maildb_sql_sync(void);
 bool maildb_sql_delete(int char_id);
 const struct mail* maildb_sql_load(int char_id);
+bool maildb_sql_next(int *char_id);
 bool maildb_sql_save(struct mail* m2);
 bool maildb_sql_new(int account_id,int char_id);
 void maildb_sql_final(void);
@@ -46,6 +47,8 @@ int maildb_sql_config_read_sub(const char *w1,const char *w2);
 #define maildb_init            maildb_sql_init
 #define maildb_sync            maildb_sql_sync
 #define maildb_delete          maildb_sql_delete
+#define maildb_scan_enable()   ((void)0)
+#define maildb_next            maildb_sql_next
 #define maildb_load            maildb_sql_load
 #define maildb_save            maildb_sql_save
 #define maildb_new             maildb_sql_new

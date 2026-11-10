@@ -24,6 +24,10 @@
 ・システムメールを送信するsysmail命令を追加。
 　（buildin_misc.c, script.c, mail.*, intif.*, int_mail.*, doc/script_ref.txt）
 ・TXT形式のメールで空の本文を読み込めるようにした（maildb_txt.c）
+・メールの期限切れをchar-serverで定期的に少しずつ処理する設定を追加（初期値は無効）。
+　TXT保存時の件数不一致を復旧し、不正な本文を上書きしないようにした。
+　TXTからSQLへのメール変換を複数添付に対応し、本文の上限を500バイトにした。
+　RoDEX無効時の実績アイテム報酬は所持欄へ直接渡す。
 ・メールの返送、保管期限、プレイヤー間の添付可否の設定を追加。
 　（int_mail.*, inter.c, intif.*, mail.*, battle.*, conf/*_auriga.conf, doc/conf_ref.txt）
 

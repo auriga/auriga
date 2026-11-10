@@ -23,6 +23,7 @@
 #define _INT_MAIL_H_
 
 int mapif_mail_res(const int fd,int account,int char_id,int flag,unsigned int token);
+int inter_mail_init(void);
 int inter_mail_config_read(const char *key, const char *value);
 int inter_mail_parse_frommap(int fd);
 

@@ -978,7 +978,7 @@ struct mail_data {
 	int read;
 	unsigned int times;
 	char title[40];
-	char body[35*14];
+	char body[500];
 	unsigned int body_size;
 	int zeny;
 	struct item item[MAIL_MAX_ITEM];

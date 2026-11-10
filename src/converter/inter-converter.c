@@ -21,6 +21,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
+#include <ctype.h>
 
 #include "mmo.h"
 #include "malloc.h"
@@ -168,100 +171,186 @@ static int mail_fromstr(char *str,struct mail *m)
 	return 0;
 }
 
-// メールデータの削除
-static int mail_delete_fromsql(int char_id)
-{
-	sqldbs_query(&mysql_handle, "DELETE FROM `mail` WHERE `char_id` = '%d'", char_id);
-
-	return 0;
-}
-
 // メールデータを書き込み
 static int mail_tosql(struct mail* m)
 {
-	mail_delete_fromsql(m->char_id);
-
-	// `mail` (`char_id`, `account_id`, `rates`, `store`)
-	sqldbs_query(&mysql_handle,
-		"INSERT INTO `mail` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d')",
+	return sqldbs_query(&mysql_handle,
+		"INSERT INTO `mail` (`char_id`, `account_id`, `rates`, `store`) VALUES ('%d','%d','%u','%d') "
+		"ON DUPLICATE KEY UPDATE `account_id`=VALUES(`account_id`), `rates`=VALUES(`rates`), `store`=VALUES(`store`)",
 		m->char_id, m->account_id, m->rates, m->store
-	);
+	) ? 0 : 1;
+}
 
+// 添付アイテムをCSVから変換（旧形式・ランダムオプション形式）
+static int mailbox_item_fromstr(char *str, struct item *item)
+{
+	long long v[22];
+	char *p = str, *end;
+	int count = 0, i;
+
+	while(*p && count < 22) {
+		errno = 0;
+		v[count] = strtoll(p, &end, 10);
+		if(end == p || errno == ERANGE)
+			return 1;
+		count++;
+		if(*end == '\0') {
+			p = end;
+			break;
+		}
+		if(*end != ',')
+			return 1;
+		p = end + 1;
+		if(!*p) return 1;
+	}
+	if(*p || (count != 11 && count != 12 && count != 22))
+		return 1;
+	for(i = 0; i < count; i++) {
+		int is_unsigned = i == 0 || i == 3 || (i == count - 1 && count != 11);
+		if((is_unsigned && (v[i] < 0 || v[i] > UINT_MAX)) ||
+		   (!is_unsigned && (v[i] < INT_MIN || v[i] > INT_MAX)))
+			return 1;
+	}
+	if(v[2] < SHRT_MIN || v[2] > SHRT_MAX ||
+	   v[4] < CHAR_MIN || v[4] > CHAR_MAX || v[5] < CHAR_MIN || v[5] > CHAR_MAX ||
+	   v[6] < CHAR_MIN || v[6] > CHAR_MAX)
+		return 1;
+	if(count == 22) {
+		for(i = 11; i <= 20; i++)
+			if(v[i] < SHRT_MIN || v[i] > SHRT_MAX) return 1;
+	}
+	memset(item, 0, sizeof(*item));
+	item->id = (unsigned int)v[0];
+	item->nameid = (int)v[1];
+	item->amount = (short)v[2];
+	item->equip = (unsigned int)v[3];
+	item->identify = (char)v[4];
+	item->refine = (char)v[5];
+	item->attribute = (char)v[6];
+	for(i = 0; i < 4; i++) item->card[i] = (int)v[7+i];
+	if(count == 22) {
+		for(i = 0; i < 5; i++) {
+			item->opt[i].id = (short)v[11+i*2];
+			item->opt[i].val = (short)v[12+i*2];
+		}
+		item->limit = (unsigned int)v[21];
+	} else if(count == 12) {
+		item->limit = (unsigned int)v[11];
+	}
 	return 0;
 }
 
 // 個人メールBOXを文字列から変換
 static int mailbox_fromstr(char *str,struct mail_data *md,char *body_data)
 {
-	int n;
-	int tmp_int[17];
-	char tmp_str[3][1024];
+	char *field[16], *p, *end;
+	unsigned int number, times, body_size;
+	int readf, send_id = 0, nfield = 0, nitem, i, header_len = 0;
+	long value;
+	char extra;
 
-	n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%u\t%u\t%u\t%1023[^\r\n]",
-		&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
-		&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-		&tmp_int[14],&tmp_int[15],&tmp_int[16],body_data);
-	if(n!=21) {
-		// 一度も開かれてないメールBOXはAuriga-0300より古い形式のままの可能性がある
-		tmp_int[14] = 0;
-		n=sscanf(str,"%u,%d\t%1023[^\t]\t%1023[^\t]\t%1023[^\t]\t%d\t%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\t%u\t%u\t%1023[^\r\n]",
-			&tmp_int[0],&tmp_int[1],tmp_str[0],tmp_str[1],tmp_str[2],&tmp_int[2],
-			&tmp_int[3],&tmp_int[4],&tmp_int[5],&tmp_int[6],&tmp_int[7],&tmp_int[8],&tmp_int[9],&tmp_int[10],&tmp_int[11],&tmp_int[12],&tmp_int[13],
-			&tmp_int[15],&tmp_int[16],body_data);
-		if(n!=20)
-			return 1;
+	str[strcspn(str, "\r\n")] = '\0';
+	for(p = str; nfield < 16; ) {
+		field[nfield++] = p;
+		p = strchr(p, '\t');
+		if(!p) break;
+		*p++ = '\0';
 	}
-	md->mail_num = (unsigned int)tmp_int[0];
-	md->read     = tmp_int[1];
-	memcpy(md->char_name,tmp_str[0],24);
-	memcpy(md->receive_name,tmp_str[1],24);
-	memcpy(md->title,tmp_str[2],40);
-	md->zeny           = tmp_int[2];
-	md->item.id        = (unsigned int)tmp_int[3];
-	md->item.nameid    = tmp_int[4];
-	md->item.amount    = tmp_int[5];
-	md->item.equip     = (unsigned int)tmp_int[6];
-	md->item.identify  = tmp_int[7];
-	md->item.refine    = tmp_int[8];
-	md->item.attribute = tmp_int[9];
-	md->item.card[0]   = tmp_int[10];
-	md->item.card[1]   = tmp_int[11];
-	md->item.card[2]   = tmp_int[12];
-	md->item.card[3]   = tmp_int[13];
-	md->item.limit     = (unsigned int)tmp_int[14];
-	md->times          = (unsigned int)tmp_int[15];
-	md->body_size      = (unsigned int)tmp_int[16];
+	if(nfield < 8 || sscanf(field[0], "%u,%d%n", &number, &readf, &header_len) != 2 || number == 0)
+		return 1;
+	if(field[0][header_len] == ',') {
+		char extra;
+		if(sscanf(field[0] + header_len, ",%d%c", &send_id, &extra) != 1)
+			return 1;
+	} else if(field[0][header_len] != '\0') {
+		return 1;
+	}
+	md->mail_num = number;
+	md->read = readf;
+	md->char_id = send_id;
+	auriga_strlcpy(md->char_name, field[1], sizeof(md->char_name));
+	auriga_strlcpy(md->receive_name, field[2], sizeof(md->receive_name));
+	auriga_strlcpy(md->title, field[3], sizeof(md->title));
+	errno = 0;
+	value = strtol(field[4], &end, 10);
+	if(errno == ERANGE || end == field[4] || *end || value < INT_MIN || value > INT_MAX)
+		return 1;
+	md->zeny = (int)value;
 
-	// force \0 terminal
-	md->char_name[23]    = '\0';
-	md->receive_name[23] = '\0';
-	md->title[39]        = '\0';
-
-	// md->bodyは使わない
-
+	if(strchr(field[5], ',')) {
+		if(nfield < 8 || mailbox_item_fromstr(field[5], &md->item[0]))
+			return 1;
+		i = 6;
+	} else {
+		errno = 0;
+		value = strtol(field[5], &end, 10);
+		if(errno == ERANGE || end == field[5] || *end || value < 0 || value > MAIL_MAX_ITEM)
+			return 1;
+		nitem = (int)value;
+		if(nfield < 8 + nitem)
+			return 1;
+		for(i = 0; i < nitem; i++) {
+			if(mailbox_item_fromstr(field[6+i], &md->item[i]))
+				return 1;
+		}
+		i = 6 + nitem;
+	}
+	if(sscanf(field[i], "%u%c", &times, &extra) != 1 ||
+	   sscanf(field[i+1], "%u%c", &body_size, &extra) != 1 || body_size > sizeof(md->body))
+		return 1;
+	md->times = times;
+	md->body_size = body_size;
+	body_data[0] = '\0';
+	if(nfield == i + 3) {
+		char *body = field[i+2];
+		size_t len = strlen(body), j;
+		if(len != (size_t)body_size * 2 || len >= 1024)
+			return 1;
+		for(j = 0; j < len; j++)
+			if(!isxdigit((unsigned char)body[j])) return 1;
+		memcpy(body_data, body, len);
+		body_data[len] = '\0';
+	} else if(nfield != i + 2 || body_size != 0) {
+		return 1;
+	}
 	return 0;
 }
 
 // 個人メールBOXを書き込み
-static int mailbox_tosql(struct mail_data *md,const char *body_data)
+static int mailbox_tosql(int char_id, struct mail_data *md,const char *body_data)
 {
 	char buf[3][256];
+	int i;
+	bool ok = false;
 
-	sqldbs_query(&mysql_handle, "DELETE FROM `mail_data` WHERE `char_id` = '%d' AND `number` = '%d'", md->char_id, md->mail_num);
-
-	sqldbs_query(&mysql_handle,
-		"INSERT INTO `mail_data` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
-		"`times`, `size`, `body`, `zeny`, "
-		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`, `limit`) "
-		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
-		md->char_id, md->mail_num, md->read, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name), strecpy(buf[2],md->title),
-		md->times, md->body_size, body_data, md->zeny,
-		md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3], md->item.limit
-	);
-
-	return 0;
+	if(!sqldbs_transaction_start(&mysql_handle))
+		return 1;
+	do {
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `mail_attachment` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, md->mail_num) ||
+		   !sqldbs_query(&mysql_handle, "DELETE FROM `mail_data` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, md->mail_num))
+			break;
+		if(!sqldbs_query(&mysql_handle,
+			"INSERT INTO `mail_data` (`char_id`,`number`,`read`,`send_id`,`send_name`,`receive_name`,`title`,`times`,`size`,`body`,`zeny`) "
+			"VALUES ('%d','%u','%d','%d','%s','%s','%s','%u','%u','%s','%d')",
+			char_id, md->mail_num, md->read, md->char_id, strecpy(buf[0],md->char_name), strecpy(buf[1],md->receive_name),
+			strecpy(buf[2],md->title), md->times, md->body_size, body_data, md->zeny))
+			break;
+		for(i = 0; i < MAIL_MAX_ITEM; i++) {
+			struct item *it = &md->item[i];
+			if(it->nameid <= 0 || it->amount <= 0) continue;
+			if(!sqldbs_query(&mysql_handle,
+				"INSERT INTO `mail_attachment` (`char_id`,`number`,`idx`,`id`,`nameid`,`amount`,`equip`,`identify`,`refine`,`attribute`,"
+				"`card0`,`card1`,`card2`,`card3`,`opt0id`,`opt0val`,`opt1id`,`opt1val`,`opt2id`,`opt2val`,`opt3id`,`opt3val`,`opt4id`,`opt4val`,`limit`) "
+				"VALUES ('%d','%u','%d','%u','%d','%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
+				char_id,md->mail_num,i,it->id,it->nameid,it->amount,it->equip,it->identify,it->refine,it->attribute,
+				it->card[0],it->card[1],it->card[2],it->card[3],it->opt[0].id,it->opt[0].val,it->opt[1].id,it->opt[1].val,
+				it->opt[2].id,it->opt[2].val,it->opt[3].id,it->opt[3].val,it->opt[4].id,it->opt[4].val,it->limit))
+				break;
+		}
+		if(i == MAIL_MAX_ITEM) ok = true;
+	} while(0);
+	if(!sqldbs_transaction_end(&mysql_handle, ok)) return 1;
+	return ok ? 0 : 1;
 }
 
 int inter_convert(void)
@@ -324,7 +413,7 @@ int inter_convert(void)
 		struct mail m;
 		struct mail_data md;
 		int list_num=0, list_size, i;
-		int *charid_list;
+		int *charid_list, *store_list;
 
 		printf("\nConverting Mail Data...\n");
 
@@ -336,16 +425,24 @@ int inter_convert(void)
 		}
 		list_size = 256;
 		charid_list = (int *)aCalloc(list_size, sizeof(int));
+		store_list = (int *)aCalloc(list_size, sizeof(int));
 		while(fgets(line, sizeof(line)-1, fp)) {
 			c++;
 			memset(&m, 0, sizeof(m));
 			if(mail_fromstr(line, &m) == 0) {
-				mail_tosql(&m);
+				if(mail_tosql(&m) != 0) {
+					fclose(fp);
+					aFree(charid_list);
+					aFree(store_list);
+					return 1;
+				}
 				if(list_num >= list_size) {
 					list_size += 256;
 					charid_list = (int *)aRealloc(charid_list, list_size*sizeof(int));
+					store_list = (int *)aRealloc(store_list, list_size*sizeof(int));
 					memset(charid_list+(list_size-256), 0, 256*sizeof(int));
 				}
+				store_list[list_num] = m.store;
 				charid_list[list_num++] = m.char_id;	// キャラIDをリストに保存
 			} else {
 				printf("mail: broken data [%s] line %d\n", mail_txt, c);
@@ -356,12 +453,16 @@ int inter_convert(void)
 		// mail_data
 		for(i=0; i<list_num; i++) {
 			char filename[1056];
+			unsigned int last = 0;
 			snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, charid_list[i]);
 			fp = fopen(filename,"r");
 			if(fp == NULL) {
+				if(errno == ENOENT && store_list[i] == 0)
+					continue;
 				printf("cant't read : %s\n",filename);
-				mail_delete_fromsql(charid_list[i]);	// 整合性が取れないので `mail` から削除
-				continue;
+				aFree(charid_list);
+				aFree(store_list);
+				return 1;
 			}
 			c = 0;
 			while(fgets(line, sizeof(line), fp)) {
@@ -369,15 +470,38 @@ int inter_convert(void)
 				c++;
 				memset(&md, 0, sizeof(md));
 				if(mailbox_fromstr(line, &md, body_data) == 0) {
-					md.char_id = charid_list[i];
-					mailbox_tosql(&md, body_data);
+					if(mailbox_tosql(charid_list[i], &md, body_data) != 0) {
+						printf("mailbox: SQL write failed [%s] line %d\n", filename, c);
+						fclose(fp);
+						aFree(charid_list);
+						aFree(store_list);
+						return 1;
+					}
+					if(md.mail_num > last)
+						last = md.mail_num;
 				} else {
 					printf("mailbox: broken data [%s] line %d\n", filename, c);
+					fclose(fp);
+					aFree(charid_list);
+					aFree(store_list);
+					return 1;
 				}
 			}
+			if(ferror(fp)) {
+				fclose(fp);
+				aFree(charid_list);
+				aFree(store_list);
+				return 1;
+			}
 			fclose(fp);
+			if(!sqldbs_query(&mysql_handle, "UPDATE `mail` SET `store` = '%d', `rates` = GREATEST(`rates`, '%u') WHERE `char_id` = '%d'", c, last, charid_list[i])) {
+				aFree(charid_list);
+				aFree(store_list);
+				return 1;
+			}
 		}
 		aFree(charid_list);
+		aFree(store_list);
 	}
 	while(getchar() != '\n');
 

@@ -29,6 +29,7 @@
 
 #include "socket.h"
 #include "utils.h"
+#include "timer.h"
 
 #include "char.h"
 #include "int_mail.h"
@@ -40,6 +41,7 @@ static int mail_return_days;
 static int mail_delete_days;
 static int mail_returned_expire_days;
 static int mail_return_keep_attach = 1;
+static int mail_expire_check_interval;
 
 /*==========================================
  * メールの設定を読み込む
@@ -57,6 +59,8 @@ int inter_mail_config_read(const char *key, const char *value)
 		mail_delete_days = atoi(value);
 	else if(strcmpi(key, "mail_returned_expire_days") == 0)
 		mail_returned_expire_days = atoi(value);
+	else if(strcmpi(key, "mail_expire_check_interval") == 0)
+		mail_expire_check_interval = atoi(value);
 	else if(strcmpi(key, "mail_return_keep_attach") == 0)
 		mail_return_keep_attach = atoi(value);
 	else
@@ -299,7 +303,7 @@ static int mail_return_one(int owner_char_id, struct mail_data *md, int fd_notif
 	return 1;
 }
 
-static void mail_apply_lifecycle(int char_id, struct mail_data *md, int capacity, int fd_notify)
+static void mail_apply_lifecycle(int char_id, struct mail_data *md, int capacity, int fd_notify, int max_actions)
 {
 	const struct mail *m;
 	unsigned int now;
@@ -358,6 +362,8 @@ static void mail_apply_lifecycle(int char_id, struct mail_data *md, int capacity
 		}
 
 		if(acted) {
+			if(max_actions > 0 && --max_actions == 0)
+				return;
 			memset(md, 0, sizeof(struct mail_data) * capacity);
 			m = maildb_load(char_id);
 			if(m == NULL || m->store <= 0)
@@ -369,6 +375,46 @@ static void mail_apply_lifecycle(int char_id, struct mail_data *md, int capacity
 		}
 		i++;
 	}
+}
+
+/* 期限処理は一度に一つの受信箱から最大一通ずつ進める。 */
+static int inter_mail_expire_timer(int tid, unsigned int tick, int id, void *data)
+{
+	int char_id, capacity;
+	const struct mail *m;
+	struct mail_data *md;
+
+	if(!mail_system_expire_days && !mail_return_days && !mail_delete_days && !mail_returned_expire_days)
+		return 0;
+	if(!maildb_next(&char_id))
+		return 0;
+	m = maildb_load(char_id);
+	if(m == NULL || m->store <= 0)
+		return 0;
+	capacity = m->store;
+	md = (struct mail_data *)calloc((size_t)capacity, sizeof(*md));
+	if(md == NULL)
+		return 0;
+	if(maildb_read_mail(char_id, m, md, capacity))
+		mail_apply_lifecycle(char_id, md, capacity, 0, 1);
+	free(md);
+	return 0;
+}
+
+int inter_mail_init(void)
+{
+	int interval;
+
+	if(mail_expire_check_interval <= 0 ||
+	   (!mail_system_expire_days && !mail_return_days && !mail_delete_days && !mail_returned_expire_days))
+		return 0;
+	if(mail_expire_check_interval > INT_MAX / 1000)
+		mail_expire_check_interval = INT_MAX / 1000;
+	interval = mail_expire_check_interval * 1000;
+	maildb_scan_enable();
+	add_timer_func_list(inter_mail_expire_timer);
+	add_timer_interval(gettick() + interval, inter_mail_expire_timer, 0, NULL, interval);
+	return 0;
 }
 
 /* 全メールの未読状態を調べる */
@@ -408,7 +454,7 @@ int mapif_parse_OpenMailBox(int fd)
 		return 0;
 	}
 	if(mail_system_expire_days || mail_return_days || mail_delete_days || mail_returned_expire_days) {
-		mail_apply_lifecycle(char_id, md, capacity, fd);
+		mail_apply_lifecycle(char_id, md, capacity, fd, 0);
 		m = maildb_load(char_id);
 		if(m == NULL || m->store == 0) {
 			mapif_send_mailbox(fd, rd->st.name, 0, &empty, 0);

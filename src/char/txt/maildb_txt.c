@@ -19,8 +19,13 @@
  *
  */
 
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef WINDOWS
+#include <windows.h>
+#endif
 
 #include "mmo.h"
 #include "socket.h"
@@ -31,9 +36,52 @@
 #include "nullpo.h"
 
 #include "petdb_txt.h"
+#include "chardb_txt.h"
 #include "maildb_txt.h"
 
 static struct dbt *mail_db = NULL;
+static struct dbt *mail_checked_db = NULL;
+static struct dbt *mail_scan_db = NULL;
+static int *mail_scan_ids = NULL;
+static size_t mail_scan_count = 0, mail_scan_capacity = 0, mail_scan_cursor = 0;
+
+/* 定期処理の走査対象を登録する。 */
+static void maildb_txt_scan_add(int char_id)
+{
+	if(mail_scan_db == NULL || numdb_search(mail_scan_db, char_id))
+		return;
+	if(mail_scan_count == mail_scan_capacity) {
+		mail_scan_capacity = mail_scan_capacity ? mail_scan_capacity * 2 : 256;
+		mail_scan_ids = (int *)aRealloc(mail_scan_ids, mail_scan_capacity * sizeof(*mail_scan_ids));
+	}
+	mail_scan_ids[mail_scan_count++] = char_id;
+	numdb_insert(mail_scan_db, char_id, INT2PTR(1));
+}
+
+static int maildb_txt_scan_add_sub(void *key, void *data, va_list ap)
+{
+	const struct mail *m = (const struct mail *)data;
+	maildb_txt_scan_add(m->char_id);
+	return 0;
+}
+
+void maildb_txt_scan_enable(void)
+{
+	if(mail_scan_db)
+		return;
+	mail_scan_db = numdb_init();
+	numdb_foreach(mail_db, maildb_txt_scan_add_sub);
+}
+
+bool maildb_txt_next(int *char_id)
+{
+	if(mail_scan_count == 0)
+		return false;
+	if(mail_scan_cursor >= mail_scan_count)
+		mail_scan_cursor = 0;
+	*char_id = mail_scan_ids[mail_scan_cursor++];
+	return true;
+}
 
 static char mail_dir[1024] = "save/mail_data/";
 static char mail_txt[1024] = "save/mail.txt";
@@ -131,8 +179,11 @@ bool maildb_txt_store_mail(int char_id, struct mail_data *md)
 		return false;
 	}
 	mail_txt_write_md(fp, md);
-	fclose(fp);
-	return true;
+	{
+		int failed = ferror(fp);
+		if(fclose(fp) != 0) failed = 1;
+		return failed ? false : true;
+	}
 }
 
 /*==========================================
@@ -159,8 +210,23 @@ bool maildb_txt_save_mail(int char_id, int i, int store, struct mail_data *md)
 		mail_txt_write_md(fp, &md[n]);
 		n++;
 	}
-	if(lock_fclose(fp, filename, &lock) != 0)
-		return false;
+	{
+		char temporary[2048];
+		int failed = fflush(fp) != 0 || ferror(fp);
+		snprintf(temporary, sizeof(temporary), "%s_%04d.tmp", filename, lock);
+		if(fclose(fp) != 0) failed = 1;
+		if(!failed) {
+#ifdef WINDOWS
+			failed = !MoveFileExA(temporary, filename, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+#else
+			failed = rename(temporary, filename) != 0;
+#endif
+		}
+		if(failed) {
+			remove(temporary);
+			return false;
+		}
+	}
 	return true;
 }
 
@@ -188,7 +254,11 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data *m
 		char tmp_str[4][1024];
 		char line[65536];
 
-		while(fgets(line,sizeof(line),fp) && i < capacity) {
+		while(fgets(line,sizeof(line),fp)) {
+			if(i >= capacity) {
+				ret = false;
+				break;
+			}
 			unsigned int n;
 			char *p;
 			lines++;
@@ -297,6 +367,7 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data *m
 						&tmp_int[25],&tmp_int[26],tmp_str[3]);
 					if(s != 20 && !(s == 19 && tmp_int[26] == 0)) {
 						printf("mail_data broken %d line %d\n", char_id, lines);
+						ret = false;
 						continue;
 					}
 				}
@@ -349,17 +420,13 @@ bool maildb_txt_read_mail(int char_id, const struct mail *m, struct mail_data *m
 			md[i].body_size = n;
 			i++;
 		}
+		if(ferror(fp))
+			ret = false;
 		fclose(fp);
 
-		if(i != m->store && m->store <= capacity) {	// 数に相違あり？
-			struct mail m2;
-			printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
-			memcpy(&m2,m,sizeof(struct mail));
-			if(i > 0 && m2.rates < md[i-1].mail_num) {
-				m2.rates = md[i-1].mail_num;
-			}
-			m2.store = i;
-			maildb_txt_save(&m2);
+		if(i != m->store || !ret) {
+			printf("mail_read_mail: %d stored number mismatch or invalid data (%d != %d)\n", char_id, i, m->store);
+			ret = false;
 		}
 	}
 
@@ -455,6 +522,7 @@ static bool maildb_txt_read(void)
 	bool ret = true;
 
 	mail_db = numdb_init();
+	mail_checked_db = numdb_init();
 
 	if((fp = fopen(mail_txt, "r")) == NULL) {
 		printf("maildb_txt_read: open [%s] failed !\n", mail_txt);
@@ -467,6 +535,7 @@ static bool maildb_txt_read(void)
 			struct mail *m = (struct mail *)aCalloc(1, sizeof(struct mail));
 			if(mail_fromstr(line, m) == 0 && m->char_id > 0 && m->store >= 0) {
 				numdb_insert(mail_db, m->char_id, m);
+				maildb_txt_scan_add(m->char_id);
 			} else {
 				printf("maildb_txt_read: broken data [%s] line %d\n", mail_txt, c);
 				aFree(m);
@@ -518,7 +587,7 @@ int maildb_txt_sync(void)
 bool maildb_txt_delete(int char_id)
 {
 	char filename[1056];
-	struct mail *m = (struct mail *)numdb_search(mail_db, char_id);
+	struct mail *m = (struct mail *)maildb_txt_load(char_id);
 
 	if(m)
 	{
@@ -554,6 +623,7 @@ bool maildb_txt_delete(int char_id)
 	}
 	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
 	remove(filename);
+	numdb_erase(mail_checked_db, char_id);
 
 	return false;
 }
@@ -564,7 +634,66 @@ bool maildb_txt_delete(int char_id)
  */
 const struct mail* maildb_txt_load(int char_id)
 {
-	return (const struct mail *)numdb_search(mail_db, char_id);
+	struct mail *m = (struct mail *)numdb_search(mail_db, char_id);
+	static struct mail invalid;
+	char filename[1056], line[65536];
+	FILE *fp;
+	unsigned int last = 0, number;
+	int count = 0, readf;
+
+	if(numdb_search(mail_checked_db, char_id))
+		return m;
+	snprintf(filename, sizeof(filename), "%s%d.txt", mail_dir, char_id);
+	fp = fopen(filename, "r");
+	if(fp == NULL) {
+		if(errno == ENOENT && (m == NULL || m->store == 0)) {
+			numdb_insert(mail_checked_db, char_id, INT2PTR(1));
+			return m;
+		}
+		goto invalid_data;
+	}
+	// mail.txtの件数は同期前のクラッシュで本文ファイルより古い場合がある
+	while(fgets(line, sizeof(line), fp)) {
+		if((strchr(line, '\n') == NULL && !feof(fp)) ||
+		   sscanf(line, "%u,%d", &number, &readf) != 2 || number == 0 ||
+		   number <= last || count == INT_MAX) {
+			fclose(fp);
+			goto invalid_data;
+		}
+		last = number;
+		count++;
+	}
+	if(ferror(fp)) {
+		fclose(fp);
+		goto invalid_data;
+	}
+	fclose(fp);
+	if(m == NULL && count > 0) {
+		const struct mmo_chardata *cd = chardb_txt_load(char_id);
+		if(cd == NULL)
+			goto invalid_data;
+		m = (struct mail *)aCalloc(1, sizeof(*m));
+		m->char_id = char_id;
+		m->account_id = cd->st.account_id;
+		numdb_insert(mail_db, char_id, m);
+		maildb_txt_scan_add(char_id);
+	}
+	if(m) {
+		if(m->store != count)
+			printf("maildb_txt_load: recovered %d mail count (%d -> %d)\n", char_id, m->store, count);
+		m->store = count;
+		if(last > m->rates) m->rates = last;
+	}
+	numdb_insert(mail_checked_db, char_id, INT2PTR(1));
+	return m;
+
+invalid_data:
+	// 壊れたファイルは消去や上書きを行わず、管理者による復旧を待つ
+	printf("maildb_txt_load: cannot safely read mailbox %d\n", char_id);
+	memset(&invalid, 0, sizeof(invalid));
+	invalid.char_id = char_id;
+	invalid.store = -1;
+	return &invalid;
 }
 
 /*==========================================
@@ -581,6 +710,7 @@ bool maildb_txt_save(struct mail *m2)
 	if(m1 == NULL) {
 		m1 = (struct mail *)aCalloc(1, sizeof(struct mail));
 		numdb_insert(mail_db, m2->char_id, m1);
+		maildb_txt_scan_add(m2->char_id);
 	}
 	memcpy(m1, m2, sizeof(struct mail));
 
@@ -600,6 +730,7 @@ bool maildb_txt_new(int account_id, int char_id)
 	m->rates = 1;
 	m->store = 1;
 	numdb_insert(mail_db, char_id, m);
+	maildb_txt_scan_add(char_id);
 
 	return true;
 }
@@ -621,6 +752,12 @@ void maildb_txt_final(void)
 {
 	if(mail_db)
 		numdb_final(mail_db, maildb_txt_final_sub);
+	if(mail_checked_db)
+		numdb_final(mail_checked_db, NULL);
+	if(mail_scan_db)
+		numdb_final(mail_scan_db, NULL);
+	if(mail_scan_ids)
+		aFree(mail_scan_ids);
 }
 
 /*==========================================

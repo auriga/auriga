@@ -570,6 +570,7 @@ int inter_init(const char *file)
 	accregdb_init();
 	storagedb_init();
 	maildb_init();
+	inter_mail_init();
 	achievedb_init();
 
 	return 0;

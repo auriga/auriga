@@ -36,6 +36,27 @@
 
 static struct dbt *mail_db = NULL;
 
+/* 主キー順に一件ずつ走査し、末尾で先頭に戻る。 */
+bool maildb_sql_next(int *char_id)
+{
+	static int cursor = 0;
+	char **row;
+	bool found = false;
+
+	if(!sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" MAIL_TABLE "` WHERE `char_id` > '%d' ORDER BY `char_id` LIMIT 1", cursor))
+		return false;
+	row = sqldbs_fetch(&mysql_handle);
+	if(row) {
+		cursor = atoi(row[0]);
+		*char_id = cursor;
+		found = true;
+	} else {
+		cursor = 0;
+	}
+	sqldbs_free_result(&mysql_handle);
+	return found;
+}
+
 /*==========================================
  * 設定ファイルの読込
  *------------------------------------------

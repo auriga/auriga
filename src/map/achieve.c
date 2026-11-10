@@ -34,6 +34,8 @@
 
 #include "achieve.h"
 #include "map.h"
+#include "pc.h"
+#include "battle.h"
 #include "clif.h"
 #include "mail.h"
 #include "itemdb.h"
@@ -307,6 +309,20 @@ int achieve_check_reward(struct map_session_data *sd, int achieve_id)
 				return 1;
 			if(sd->achievement_mail_pending_flag)
 				return 1;
+			if(!battle_config.romail) {
+				struct item reward;
+				int flag;
+
+				memset(&reward, 0, sizeof(reward));
+				reward.nameid = achieve_db[idx].reward_item;
+				reward.amount = 1;
+				reward.identify = 1;
+				if((flag = pc_additem(sd, &reward, 1, false)) != 0) {
+					clif_additem(sd, 0, 0, flag);
+					return 1;
+				}
+				goto reward_claimed;
+			}
 			memset(&md, 0, sizeof(md));
 			md.char_id = sd->status.char_id;
 			md.send_token = (unsigned int)achieve_id;
@@ -326,6 +342,7 @@ int achieve_check_reward(struct map_session_data *sd, int achieve_id)
 			}
 			return 2;
 		}
+reward_claimed:
 		sd->achieve[i].reward = ACH_REWARD_CLAIMED;
 		intif_save_achieve(sd);
 		clif_send_achievement_update(sd, &sd->achieve[i]);
