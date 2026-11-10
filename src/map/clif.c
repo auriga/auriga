@@ -16874,7 +16874,7 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 
 	fd=sd->fd;
 #if PACKETVER >= 20150513
-	text_len = min(md->body_size, sizeof(md->body));
+	text_len = (md->body_size < sizeof(md->body)) ? (int)md->body_size : (int)sizeof(md->body);
 	item_cnt = 0;
 	for(i = 0; i < MAIL_MAX_ITEM; i++) {
 		if(md->item[i].nameid > 0 && md->item[i].amount > 0)

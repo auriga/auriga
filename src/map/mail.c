@@ -357,7 +357,7 @@ void mail_refund_pending(struct map_session_data *sd)
 
 	if(sd->mail_pending.zeny > 0 || sd->mail_pending.send_fee > 0) {
 		int refund = sd->mail_pending.zeny + sd->mail_pending.send_fee;
-		sd->status.zeny += min(refund, MAX_ZENY - sd->status.zeny);
+		sd->status.zeny += (refund < MAX_ZENY - sd->status.zeny) ? refund : MAX_ZENY - sd->status.zeny;
 		clif_updatestatus(sd, SP_ZENY);
 	}
 	{
