@@ -1579,24 +1579,11 @@ p(0x0a0f,-1)
 p(0x0a10,-1)
 p(0x0a11,-1)
 p(0x0a12,27)
-if packet_ver >= 20160302 and packet_ver < 20211103 then
-	p(0x0a13,26,"checknamerodex",2)
-else
-	p(0x0a13,26)
-end
+p(0x0a13,26)
 p(0x0a14,10)
 p(0x0a15,12)
 p(0x0a16,26)
 p(0x0a17,6)
-if packet_ver >= 20150513 then
-	p(0x09e7,3)
-	p(0x09f2,12)
-	p(0x09f4,12)
-	p(0x0a04,6,"additemrodex",{2,4})
-	p(0x0a05,53)
-	p(0x0a06,6,"delitemrodex",{2,4})
-	p(0x0a07,9)
-end
 p(0x0a18,14)
 p(0x0a19,2,"openroulette",0)
 p(0x0a1a,23)
@@ -1952,11 +1939,7 @@ p(0x0b93,12)
 p(0x0b94,14)
 p(0x0b95,-1)
 p(0x0b96,26)
-if packet_ver >= 20211103 then
-	p(0x0b97,27,"checknamerodex",2)
-else
-	p(0x0b97,27)
-end
+p(0x0b97,27)
 p(0x0b98,6,"returnmail",2)
 p(0x0b99,10)
 p(0x0b9a,11)
@@ -3014,6 +2997,16 @@ if packet_ver == 20141022 then
 	p(0x096a,6,"getcharnamerequest",2)
 end
 
+if packet_ver >= 20150513 then
+	p(0x09e7,3)
+	p(0x09f2,12)
+	p(0x09f4,12)
+	p(0x0a04,6,"additemrodex",{2,4})
+	p(0x0a05,53)
+	p(0x0a06,6,"delitemrodex",{2,4})
+	p(0x0a07,9)
+end
+
 -- 2015-05-13aRagexe
 if packet_ver == 20150513 then
 	packet_key(0x62C86D09,0x75944F17,0x112C133D)
@@ -3068,6 +3061,10 @@ if packet_ver == 20151029 then
 	p(0x0817,2,"closebuyingstorereq",0)
 	p(0x083c,10,"useskilltoid",{2,4,6})
 	p(0x096a,6,"getcharnamerequest",2)
+end
+
+if packet_ver >= 20160302 and packet_ver < 20211103 then
+	p(0x0a13,26,"checknamerodex",2)
 end
 
 if packet_ver >= 20160921 then
@@ -3426,6 +3423,10 @@ end
 
 if packet_ver >= 20210630 then
 	p(0x0436,23,"wanttoconnection",{2,6,10,14,22})
+end
+
+if packet_ver >= 20211103 then
+	p(0x0b97,27,"checknamerodex",2)
 end
 
 if packet_ver >= 20220831 then

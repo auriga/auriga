@@ -21,6 +21,7 @@
 
 #define DUMP_UNKNOWN_PACKET	1
 
+#include <limits.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -16555,6 +16556,21 @@ void clif_openmailbox(const int fd)
  *  0x23fの応答
  *------------------------------------------
  */
+#if PACKETVER >= 20150513
+/* 期限までの秒数を一覧パケットの範囲に収める。 */
+static unsigned int clif_mail_remaining(const struct mail_data *md, uint64 now)
+{
+	uint64 remaining;
+
+	if(md->expires_at == 0)
+		return 365 * 24 * 60 * 60;
+	if(md->expires_at <= now)
+		return 0;
+	remaining = md->expires_at - now;
+	return (remaining > INT_MAX) ? INT_MAX : (unsigned int)remaining;
+}
+#endif
+
 static void clif_send_mailbox_page(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX],uint64 cursor)
 {
 	int i,fd;
@@ -16565,9 +16581,7 @@ static void clif_send_mailbox_page(struct map_session_data *sd,int store,struct 
 #if PACKETVER >= 20150513
 	{
 		int offset, title_len;
-#if PACKETVER < 20170419
-		unsigned int now = (unsigned int)time(NULL);
-#endif
+		uint64 now = (uint64)time(NULL);
 		char title[41];
 		unsigned char mail_type;
 
@@ -16646,7 +16660,7 @@ static void clif_send_mailbox_page(struct map_session_data *sd,int store,struct 
 			WFIFOL(fd, offset + 34) = (md[i].times <= now) ? (now - md[i].times) : 0;
 			offset += 4;
 #endif
-			WFIFOL(fd, offset + 34) = 365 * 24 * 60 * 60;
+			WFIFOL(fd, offset + 34) = clif_mail_remaining(&md[i], now);
 
 			memcpy(title, md[i].title, 40);
 			title[40] = '\0';
@@ -25812,7 +25826,8 @@ static void clif_parse_CloseRoDEX(int fd,struct map_session_data *sd, int cmd)
 #if PACKETVER >= 20150513
 	nullpo_retv(sd);
 	sd->state.rodex_open = 0;
-	mail_removeitem(sd, 0);
+	if(!sd->mail_preflight_token)
+		mail_removeitem(sd, 0);
 	sd->state.mail_writing = 0;
 #endif
 	return;
@@ -25859,8 +25874,10 @@ static void clif_parse_WriteRoDEX(int fd,struct map_session_data *sd, int cmd)
 	if(clif_rodex_forbidden(sd))
 		return;
 
-	if(!sd->state.mail_writing)
+	if(!sd->state.mail_writing) {
+		clif_res_sendmail(fd, 1);
 		return;
+	}
 	if(sd->mail_preflight_token || sd->mail_pending_flag) {
 		clif_res_sendmail(fd, 1);
 		return;
@@ -25872,16 +25889,22 @@ static void clif_parse_WriteRoDEX(int fd,struct map_session_data *sd, int cmd)
 	}
 
 	packet_len = RFIFOW(fd, 2);
-	if(packet_len < string_off)
+	if(packet_len < string_off) {
+		clif_res_sendmail(fd, 1);
+		mail_removeitem(sd, 0);
 		return;
+	}
 
 	memcpy(receive, RFIFOP(fd,4), sizeof(receive));
 	receive[sizeof(receive)-1] = '\0';
 	zeny = (int64)RFIFOQ(fd, 52);
 	title_len = RFIFOW(fd, 60);
 	body_len = RFIFOW(fd, 62);
-	if(title_len < 1 || string_off + title_len + body_len > packet_len)
+	if(title_len < 1 || string_off + title_len + body_len > packet_len) {
+		clif_res_sendmail(fd, 1);
+		mail_removeitem(sd, 0);
 		return;
+	}
 
 	if(zeny < 0)
 		zeny = 0;
@@ -26029,7 +26052,8 @@ static void clif_parse_CancelWriteRoDEX(int fd,struct map_session_data *sd, int 
 {
 #if PACKETVER >= 20150513
 	nullpo_retv(sd);
-	mail_removeitem(sd, 0);
+	if(!sd->mail_preflight_token)
+		mail_removeitem(sd, 0);
 	sd->state.mail_writing = 0;
 #endif
 	return;

@@ -116,15 +116,14 @@ void mail_setitem(struct map_session_data *sd, int idx, int amount)
 				break;
 		}
 		if(i == sd->mail_append.count) {
-			if(i >= limit) {
+			if(i >= limit || amount > sd->status.inventory[idx].amount) {
 				clif_res_sendmail_setappend(sd->fd, idx, 1);
 				return;
 			}
 			sd->mail_append.index[i] = idx;
 			sd->mail_append.amount[i] = 0;
 			sd->mail_append.count++;
-		}
-		if(amount > sd->status.inventory[idx].amount - sd->mail_append.amount[i]) {
+		} else if(amount > sd->status.inventory[idx].amount - sd->mail_append.amount[i]) {
 			clif_res_sendmail_setappend(sd->fd, idx, 1);
 			return;
 		}
@@ -141,7 +140,9 @@ int mail_removeitem(struct map_session_data *sd, int flag)
 	sd->mail_preflight_token = 0;
 	if(!(flag & 2)) {
 		for(i = 0; i < sd->mail_append.count; i++) {
+#if PACKETVER < 20150513
 			clif_additem(sd, sd->mail_append.index[i], sd->mail_append.amount[i], 0);
+#endif
 			sd->mail_append.index[i] = -1;
 			sd->mail_append.amount[i] = 0;
 		}
@@ -167,7 +168,9 @@ int mail_removeitem_index(struct map_session_data *sd, int client_idx, int *out_
 			continue;
 		if(out_amount == NULL || *out_amount <= 0 || *out_amount > sd->mail_append.amount[i])
 			return 0;
+#if PACKETVER < 20150513
 		clif_additem(sd, idx, *out_amount, 0);
+#endif
 		sd->mail_append.amount[i] -= *out_amount;
 		if(sd->mail_append.amount[i] > 0)
 			return 1;
@@ -211,8 +214,13 @@ static int mail_checkappend(struct map_session_data *sd, struct mail_data *md)
 	md->send_fee = mail_calc_fee(md->zeny, sd->mail_append.count);
 	if(md->send_fee < 0 || (int64)md->zeny + md->send_fee > sd->status.zeny)
 		return 1;
-	for(i = 0; i < sd->mail_append.count; i++)
+	for(i = 0; i < sd->mail_append.count; i++) {
+#if PACKETVER >= 20150513
+		pc_delitem(sd, sd->mail_append.index[i], sd->mail_append.amount[i], 0, 0);
+#else
 		pc_delitem(sd, sd->mail_append.index[i], sd->mail_append.amount[i], 1, 0);
+#endif
+	}
 	sd->status.zeny -= md->zeny + md->send_fee;
 	clif_updatestatus(sd, SP_ZENY);
 	return 0;

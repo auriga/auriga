@@ -225,6 +225,7 @@ S 3049 <char_id>.l
 	メールBOX更新要求
 R 3849 <len>.w <store>.l <char_name>.24B <unread>.l { <struct mail_data>.?B }.?B*
 	メール一覧送信
+	mail_dataのexpires_atは一覧表示用の返送・削除期限（UNIX時刻、0は無期限）。
 S 304a <len>.w <struct mail_data>.?B
 	メール送信
 	mail_dataのsend_feeは送信失敗時に添付とともに返却する手数料。

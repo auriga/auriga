@@ -68,6 +68,23 @@ int inter_mail_config_read(const char *key, const char *value)
 	return 1;
 }
 
+/* ˆê——‚ÌŠúŒÀ•\Ž¦‚ÍŽÀÛ‚Ì•Ô‘—EíœðŒ‚É‡‚í‚¹‚éB */
+static uint64 mail_expiration_time(const struct mail_data *md)
+{
+	int days = 0;
+
+	if(md->times == 0)
+		return 0;
+	if((md->read & MAIL_READ_RETURNED) && mail_returned_expire_days > 0)
+		days = mail_returned_expire_days;
+	else if((md->read & MAIL_READ_SYSTEM) && mail_system_expire_days > 0 && mail_system_expire_action != 1)
+		days = mail_system_expire_days;
+	else if(!(md->read & (MAIL_READ_SYSTEM | MAIL_READ_RETURNED)))
+		days = (md->read & MAIL_READ_OPENED) ? mail_delete_days : mail_return_days;
+
+	return days > 0 ? (uint64)md->times + (uint64)days * 24u * 60u * 60u : 0;
+}
+
 //------------------------------------------------------------------------
 int mapif_mail_res(const int fd,int account,int char_id,int flag,unsigned int token)
 {
@@ -91,8 +108,11 @@ int mapif_send_mailbox(int fd,const char *char_name,int store,struct mail_data m
 	WFIFOL(fd,4)=store;
 	memcpy(WFIFOP(fd,8),char_name,24);
 	WFIFOL(fd,32) = unread ? 1 : 0;
-	for(i=0;i<store;i++)
-		memcpy(WFIFOP(fd,36+i*size),&md[i],size);
+	for(i=0;i<store;i++) {
+		struct mail_data entry = md[i];
+		entry.expires_at = mail_expiration_time(&entry);
+		memcpy(WFIFOP(fd,36+i*size),&entry,size);
+	}
 	WFIFOW(fd,2)=36+i*size;
 	WFIFOSET(fd,WFIFOW(fd,2));
 	return 0;
@@ -522,8 +542,6 @@ int mapif_parse_SendMail(int fd)
 
 	memcpy(&md,RFIFOP(fd,4),sizeof(struct mail_data));
 	md.read = 0;
-	if(md.body_size > sizeof(md.body))
-		return 0;
 
 	md.char_name[sizeof(md.char_name)-1] = '\0';
 	md.receive_name[sizeof(md.receive_name)-1] = '\0';
@@ -531,6 +549,10 @@ int mapif_parse_SendMail(int fd)
 	sd = chardb_load(md.char_id);
 	if(sd == NULL)
 		return 0;
+	if(md.body_size > sizeof(md.body)) {
+		mapif_mail_send_failed(fd, sd, &md);
+		return 0;
+	}
 
 	rd = chardb_nick2chardata(md.receive_name);
 
@@ -769,12 +791,15 @@ int mapif_parse_GetAppend(int fd)
 
 int mapif_parse_CheckMail(int fd)
 {
-	int send_id = RFIFOL(fd,4);
-	struct mail_data *md = (struct mail_data *)RFIFOP(fd,8);
+	int send_id;
+	struct mail_data *md;
 	const struct mmo_chardata *rd;
 
-	if(md == NULL)
+	if(RFIFOW(fd,2) != 8 + sizeof(*md))
 		return 0;
+	send_id = RFIFOL(fd,4);
+	md = (struct mail_data *)RFIFOP(fd,8);
+	md->receive_name[sizeof(md->receive_name)-1] = '\0';
 
 	rd = chardb_nick2chardata(md->receive_name);
 

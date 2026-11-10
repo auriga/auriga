@@ -982,6 +982,7 @@ struct mail_data {
 	unsigned int body_size;
 	int zeny;
 	struct item item[MAIL_MAX_ITEM];
+	uint64 expires_at;
 };
 
 struct Ranking_Data {
