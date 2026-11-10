@@ -26,8 +26,8 @@
 
 // プロトタイプ宣言
 bool maildb_txt_store_mail(int char_id,struct mail_data *md);
-bool maildb_txt_save_mail(int char_id,int i,int store,struct mail_data md[MAIL_STORE_MAX]);
-bool maildb_txt_read_mail(int char_id,const struct mail *m,struct mail_data md[MAIL_STORE_MAX]);
+bool maildb_txt_save_mail(int char_id,int i,int store,struct mail_data *md);
+bool maildb_txt_read_mail(int char_id,const struct mail *m,struct mail_data *md,int capacity);
 bool maildb_txt_deletemail(int char_id,unsigned int mail_num,const struct mail *m);
 bool maildb_txt_init(void);
 int maildb_txt_sync(void);

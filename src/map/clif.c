@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #ifndef WINDOWS
 	#include <unistd.h>	// sleep
 #else
@@ -16554,26 +16555,149 @@ void clif_openmailbox(const int fd)
  *  0x23fの応答
  *------------------------------------------
  */
-void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX])
+static void clif_send_mailbox_page(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX],uint64 cursor)
 {
 	int i,fd;
 
 	nullpo_retv(sd);
 
 	fd=sd->fd;
+#if PACKETVER >= 20150513
+	{
+		int offset, title_len;
+#if PACKETVER < 20170419
+		unsigned int now = (unsigned int)time(NULL);
+#endif
+		char title[41];
+		unsigned char mail_type;
+
+		// RoDEXの受信箱を1ページで送信する
+#if PACKETVER >= 20170419
+		WFIFOW(fd,0) = 0xac2;
+		WFIFOB(fd,4) = 1;
+		offset = 5;
+#else
+		int count = 0, start = store - 1, remaining = 0;
+
+		if(cursor != 0) {
+			for(i = 0; i < store; i++) {
+				if(md[i].mail_num == cursor)
+					break;
+			}
+			if(i == store || i == 0)
+				return;
+			start = i - 1;
+		}
+		for(i = start; i >= 0; i--) {
+			unsigned char inbox = (md[i].read & MAIL_READ_RETURNED) ? 2 : 0;
+			if(inbox == sd->rodex_opentype)
+				remaining++;
+		}
+
+#if PACKETVER >= 20160601
+		WFIFOW(fd,0) = 0xa7d;
+#else
+		WFIFOW(fd,0) = 0x9f0;
+#endif
+		WFIFOB(fd,4) = sd->rodex_opentype;
+		WFIFOB(fd,6) = (remaining <= 7); // 最終ページ
+		offset = 7;
+#endif
+
+#if PACKETVER < 20170419
+		for(i = start; i >= 0; i--) {
+#else
+		for(i = store - 1; i >= 0; i--) {
+#endif
+			unsigned char inbox = (md[i].read & MAIL_READ_RETURNED) ? 2 : 0;
+
+#if PACKETVER >= 20170419
+			WFIFOB(fd, offset++) = inbox;
+#else
+			if(inbox != sd->rodex_opentype)
+				continue;
+			if(count >= 7)
+				break;
+			count++;
+#endif
+			WFIFOQ(fd, offset + 0) = (uint64)md[i].mail_num;
+			WFIFOB(fd, offset + 8) = (md[i].read & MAIL_READ_OPENED) ? 1 : 0;
+
+			mail_type = 0; /* MAIL_TYPE_TEXT */
+			if(md[i].zeny > 0)
+				mail_type |= 0x2; /* MAIL_TYPE_ZENY */
+			{
+				int k;
+				for(k = 0; k < MAIL_MAX_ITEM; k++) {
+					if(md[i].item[k].nameid > 0 && md[i].item[k].amount > 0) {
+						mail_type |= 0x4; /* MAIL_TYPE_ITEM */
+						break;
+					}
+				}
+			}
+#if PACKETVER >= 20170419
+			if(md[i].read & MAIL_READ_SYSTEM)
+				mail_type |= 0x8; // システムメール
+#endif
+			WFIFOB(fd, offset + 9) = mail_type;
+
+			memcpy(WFIFOP(fd, offset + 10), md[i].char_name, 24);
+#if PACKETVER < 20170419
+			WFIFOL(fd, offset + 34) = (md[i].times <= now) ? (now - md[i].times) : 0;
+			offset += 4;
+#endif
+			WFIFOL(fd, offset + 34) = 365 * 24 * 60 * 60;
+
+			memcpy(title, md[i].title, 40);
+			title[40] = '\0';
+			title_len = (int)strlen(title) + 1;
+			WFIFOW(fd, offset + 38) = title_len;
+			memcpy(WFIFOP(fd, offset + 40), title, title_len);
+			offset += 40 + title_len;
+		}
+#if PACKETVER < 20170419
+		WFIFOB(fd,5) = count;
+#endif
+		WFIFOW(fd,2) = (unsigned short)offset;
+		WFIFOSET(fd, offset);
+	}
+#else
 	WFIFOW(fd,0) = 0x240;
 	WFIFOL(fd,4) = store;	// 0のときは画面のクリア
 	for(i=0;i<store;i++){
 		WFIFOL(fd,8+73*i)  = md[i].mail_num;
 		memcpy(WFIFOP(fd,12+73*i),md[i].title,40);
-		WFIFOB(fd,52+73*i) = md[i].read;
+		WFIFOB(fd,52+73*i) = (md[i].read & MAIL_READ_OPENED) ? 1 : 0;
 		memcpy(WFIFOP(fd,53+73*i),md[i].char_name,24);
 		WFIFOL(fd,77+73*i) = md[i].times;
 	}
 	WFIFOW(fd,2) = 8+73*i;
 	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
 
 	return;
+}
+
+void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX],int unread)
+{
+	nullpo_retv(sd);
+#if PACKETVER >= 20150513
+	WFIFOW(sd->fd,0) = 0x9e7;
+	WFIFOB(sd->fd,2) = unread ? 1 : 0;
+	WFIFOSET(sd->fd, packet_db[0x9e7].len);
+	if(!sd->state.rodex_open)
+		return;
+#else
+	(void)unread;
+#endif
+#if PACKETVER >= 20150513 && PACKETVER < 20170419
+	if(store < 0 || store > MAIL_STORE_MAX)
+		return;
+	sd->rodex_mail_count = store;
+	if(store > 0)
+		memcpy(sd->rodex_mail_cache, md, sizeof(struct mail_data) * store);
+#endif
+	clif_send_mailbox_page(sd, store, md, 0);
 }
 
 /*==========================================
@@ -16582,9 +16706,21 @@ void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md
  */
 void clif_res_sendmail(const int fd,int fail)
 {
+#if PACKETVER >= 20150513
+	{
+		struct map_session_data *sd = (struct map_session_data *)session[fd]->session_data;
+		if(sd)
+			sd->state.mail_writing = 0;
+	}
+	/* RoDEX write result 0x09ed: 0=success */
+	WFIFOW(fd,0) = 0x9ed;
+	WFIFOB(fd,2) = (unsigned char)fail;
+	WFIFOSET(fd, packet_db[0x9ed].len);
+#else
 	WFIFOW(fd,0) = 0x249;
 	WFIFOB(fd,2) = fail;
 	WFIFOSET(fd,packet_db[0x249].len);
+#endif
 
 	return;
 }
@@ -16595,10 +16731,94 @@ void clif_res_sendmail(const int fd,int fail)
  */
 void clif_res_sendmail_setappend(const int fd,int idx,int flag)
 {
+#if PACKETVER >= 20150513
+	{
+		struct map_session_data *sd = (struct map_session_data *)session[fd]->session_data;
+		int n, j, view;
+		int weight = 0, attached = 0;
+
+#if PACKETVER >= 20180704
+		const int item_extra = 2, card_size = 4;
+#else
+		const int item_extra = 0, card_size = 2;
+#endif
+#if PACKETVER >= 20200723
+		const int card_offset = 12 + item_extra;
+#else
+		const int card_offset = 13 + item_extra;
+#endif
+		const int option_offset = card_offset + 4 * card_size;
+		const int weight_offset = option_offset + 25;
+#if PACKETVER >= 20200723
+		const int packet_len = weight_offset + 9;
+#else
+		const int packet_len = weight_offset + 7;
+#endif
+
+		memset(WFIFOP(fd,0), 0, packet_len);
+#if PACKETVER >= 20200723
+		WFIFOW(fd,0) = 0xb3f;
+#else
+		WFIFOW(fd,0) = 0xa05;
+#endif
+		WFIFOB(fd,2) = (unsigned char)flag;
+		if(flag == 0 && sd) {
+			n = idx;
+			for(j = 0; j < sd->mail_append.count; j++) {
+				if(sd->mail_append.index[j] == n) {
+					attached = sd->mail_append.amount[j];
+					break;
+				}
+			}
+			if(n >= 0 && n < MAX_INVENTORY && sd->status.inventory[n].nameid > 0) {
+				WFIFOW(fd,3) = n + 2;
+				WFIFOW(fd,5) = attached;
+				if(sd->inventory_data[n] && sd->inventory_data[n]->view_id > 0)
+					view = sd->inventory_data[n]->view_id;
+				else
+					view = sd->status.inventory[n].nameid;
+#if PACKETVER >= 20180704
+				WFIFOL(fd,7) = view;
+#else
+				WFIFOW(fd,7) = view;
+#endif
+				WFIFOB(fd,9 + item_extra) = sd->inventory_data[n] ? sd->inventory_data[n]->type : 0;
+				WFIFOB(fd,10 + item_extra) = sd->status.inventory[n].identify;
+				WFIFOB(fd,11 + item_extra) = sd->status.inventory[n].attribute;
+#if PACKETVER >= 20200723
+				WFIFOB(fd,weight_offset + 7) = sd->status.inventory[n].refine;
+				WFIFOB(fd,weight_offset + 8) = 0;
+#else
+				WFIFOB(fd,12 + item_extra) = sd->status.inventory[n].refine;
+#endif
+				for(j = 0; j < 4; j++) {
+					int card = sd->status.inventory[n].card[j];
+					if(!itemdb_isspecial(sd->status.inventory[n].card[0]) &&
+					   card > 0 && (view = itemdb_viewid(card)) > 0)
+						card = view;
+#if PACKETVER >= 20180704
+					WFIFOL(fd, card_offset + j * card_size) = card;
+#else
+					WFIFOW(fd, card_offset + j * card_size) = card;
+#endif
+				}
+				for(j = 0; j < 5; j++) {
+					WFIFOW(fd, option_offset + j * 5) = sd->status.inventory[n].opt[j].id;
+					WFIFOW(fd, option_offset + j * 5 + 2) = sd->status.inventory[n].opt[j].val;
+				}
+				weight = mail_append_weight(sd);
+				WFIFOW(fd, weight_offset) = weight;
+				WFIFOL(fd, weight_offset + 3) = pc_equippoint(sd, n);
+			}
+		}
+		WFIFOSET(fd, packet_len);
+	}
+#else
 	WFIFOW(fd,0) = 0x255;
 	WFIFOW(fd,2) = idx + 2;
 	WFIFOB(fd,4) = flag;
 	WFIFOSET(fd,packet_db[0x256].len);
+#endif
 
 	return;
 }
@@ -16624,11 +16844,18 @@ void clif_arrive_newmail(const int fd,struct mail_data *md)
 {
 	nullpo_retv(md);
 
+#if PACKETVER >= 20150513
+	/* RoDEX unread icon 0x09e7 */
+	WFIFOW(fd,0) = 0x9e7;
+	WFIFOB(fd,2) = 1;
+	WFIFOSET(fd, packet_db[0x9e7].len);
+#else
 	WFIFOW(fd,0) = 0x24a;
 	WFIFOL(fd,2) = md->mail_num;
 	memcpy(WFIFOP(fd, 6),md->char_name,24);
 	memcpy(WFIFOP(fd,30),md->title,40);
 	WFIFOSET(fd,packet_db[0x24a].len);
+#endif
 
 	return;
 }
@@ -16639,12 +16866,87 @@ void clif_arrive_newmail(const int fd,struct mail_data *md)
  */
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 {
-	int fd,view;
+	int fd,view,i,j,offset,text_len,item_cnt;
+	struct item_data *id;
 
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
 	fd=sd->fd;
+#if PACKETVER >= 20150513
+	text_len = min(md->body_size, sizeof(md->body));
+	item_cnt = 0;
+	for(i = 0; i < MAIL_MAX_ITEM; i++) {
+		if(md->item[i].nameid > 0 && md->item[i].amount > 0)
+			item_cnt++;
+	}
+
+#if PACKETVER >= 20200723
+	WFIFOW(fd,0) = 0xb63;
+#else
+	WFIFOW(fd,0) = 0x9eb;
+#endif
+	WFIFOB(fd,4) = sd->rodex_opentype;
+	WFIFOQ(fd,5) = (uint64)md->mail_num;
+	WFIFOW(fd,13) = text_len + 1;
+	WFIFOQ(fd,15) = (uint64)md->zeny;
+	WFIFOB(fd,23) = (unsigned char)item_cnt;
+	if(text_len > 0)
+		memcpy(WFIFOP(fd,24), md->body, text_len);
+	WFIFOB(fd,24 + text_len) = 0;
+	offset = 25 + text_len;
+
+	for(i = 0; i < MAIL_MAX_ITEM; i++) {
+		if(md->item[i].nameid <= 0 || md->item[i].amount <= 0)
+			continue;
+		id = itemdb_exists(md->item[i].nameid);
+		WFIFOW(fd, offset + 0) = md->item[i].amount;
+		view = itemdb_viewid(md->item[i].nameid);
+		if(view <= 0)
+			view = md->item[i].nameid;
+#if PACKETVER >= 20180704
+		WFIFOL(fd, offset + 2) = view;
+		offset += 6;
+#else
+		WFIFOW(fd, offset + 2) = view;
+		offset += 4;
+#endif
+		WFIFOB(fd, offset++) = md->item[i].identify;
+		WFIFOB(fd, offset++) = md->item[i].attribute;
+#if PACKETVER < 20200723
+		WFIFOB(fd, offset++) = md->item[i].refine;
+#endif
+		for(j = 0; j < 4; j++) {
+			int card = md->item[i].card[j];
+			if(!itemdb_isspecial(md->item[i].card[0]) && card > 0 && (view = itemdb_viewid(card)) > 0)
+				card = view;
+#if PACKETVER >= 20180704
+			WFIFOL(fd, offset) = card;
+			offset += 4;
+#else
+			WFIFOW(fd, offset) = card;
+			offset += 2;
+#endif
+		}
+		WFIFOL(fd, offset) = id ? id->equip : 0;
+		WFIFOB(fd, offset + 4) = id ? id->type : 0;
+		WFIFOW(fd, offset + 5) = id ? id->look : 0;
+		WFIFOW(fd, offset + 7) = 0;
+		offset += 9;
+		for(j = 0; j < 5; j++) {
+			WFIFOW(fd, offset) = md->item[i].opt[j].id;
+			WFIFOW(fd, offset + 2) = md->item[i].opt[j].val;
+			WFIFOB(fd, offset + 4) = 0;
+			offset += 5;
+		}
+#if PACKETVER >= 20200723
+		WFIFOB(fd, offset++) = md->item[i].refine;
+		WFIFOB(fd, offset++) = 0;
+#endif
+	}
+	WFIFOW(fd,2) = (unsigned short)offset;
+	WFIFOSET(fd, offset);
+#else
 	WFIFOW(fd,0)=0x242;
 	WFIFOW(fd,2)=md->body_size+99;
 	WFIFOL(fd,4)=md->mail_num;
@@ -16652,21 +16954,22 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
 	memcpy(WFIFOP(fd,48),md->char_name,24);
 	WFIFOL(fd,72)=0x22;	// 境界？
 	WFIFOL(fd,76)=md->zeny;
-	WFIFOL(fd,80)=md->item.amount;
-	if((view = itemdb_viewid(md->item.nameid)) > 0)
+	WFIFOL(fd,80)=md->item[0].amount;
+	if((view = itemdb_viewid(md->item[0].nameid)) > 0)
 		WFIFOW(fd,84)=view;
 	else
-		WFIFOW(fd,84)=md->item.nameid;
+		WFIFOW(fd,84)=md->item[0].nameid;
 	WFIFOW(fd,86)=0;
-	WFIFOB(fd,88)=md->item.identify;
-	WFIFOB(fd,89)=md->item.attribute;
-	WFIFOB(fd,90)=md->item.refine;
-	WFIFOW(fd,91)=md->item.card[0];
-	WFIFOW(fd,93)=md->item.card[1];
-	WFIFOW(fd,95)=md->item.card[2];
-	WFIFOW(fd,97)=md->item.card[3];
+	WFIFOB(fd,88)=md->item[0].identify;
+	WFIFOB(fd,89)=md->item[0].attribute;
+	WFIFOB(fd,90)=md->item[0].refine;
+	WFIFOW(fd,91)=md->item[0].card[0];
+	WFIFOW(fd,93)=md->item[0].card[1];
+	WFIFOW(fd,95)=md->item[0].card[2];
+	WFIFOW(fd,97)=md->item[0].card[3];
 	memcpy(WFIFOP(fd,99),md->body,md->body_size);
 	WFIFOSET(fd,WFIFOW(fd,2));
+#endif
 
 	return;
 }
@@ -16677,11 +16980,45 @@ void clif_receive_mail(struct map_session_data *sd,struct mail_data *md)
  */
 void clif_deletemail_res(const int fd,int mail_num,int flag)
 {
+#if PACKETVER >= 20150513
+	{
+		struct map_session_data *sd = (struct map_session_data *)session[fd]->session_data;
+
+		/* RoDEX delete ACK is success-only */
+		if(flag == 0) {
+			WFIFOW(fd,0) = 0x9f6;
+			WFIFOB(fd,2) = sd ? sd->rodex_opentype : 0;
+			WFIFOQ(fd,3) = (uint64)mail_num;
+			WFIFOSET(fd, packet_db[0x9f6].len);
+		}
+	}
+#else
 	WFIFOW(fd,0) = 0x257;
 	WFIFOL(fd,2) = mail_num;
 	WFIFOW(fd,6) = flag;
 	WFIFOSET(fd,packet_db[0x257].len);
+#endif
 
+	return;
+}
+
+/*==========================================
+ * Mail return result (0x0274)
+ *------------------------------------------
+ */
+void clif_returnmail_res(const int fd,int mail_num,int flag)
+{
+#if PACKETVER >= 20150513
+	WFIFOW(fd,0) = 0xb99;
+	WFIFOL(fd,2) = mail_num;
+	WFIFOL(fd,6) = flag;
+	WFIFOSET(fd, packet_db[0xb99].len);
+#else
+	WFIFOW(fd,0) = 0x274;
+	WFIFOL(fd,2) = mail_num;
+	WFIFOW(fd,6) = flag;
+	WFIFOSET(fd, packet_db[0x274].len);
+#endif
 	return;
 }
 
@@ -19763,7 +20100,7 @@ void clif_send_achievement_update(struct map_session_data *sd, struct achieve_da
  * 実績リスト報酬獲得応答
  *------------------------------------------
  */
-static void clif_achievement_reward_ack(int fd, char result, int achieve_id)
+void clif_achievement_reward_ack(int fd, char result, int achieve_id)
 {
 #if PACKETVER >= 20141126
 	WFIFOW(fd, 0) = 0xa26;
@@ -20331,6 +20668,10 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_updatestatus(sd,SP_UCRT);
 #endif
 		clif_send_personalinfo(sd);
+#if PACKETVER >= 20150513
+		if(battle_config.romail)
+			intif_mailbox(sd->status.char_id);
+#endif
 
 		// キラー情報送信
 		if(battle_config.save_pckiller_type)
@@ -24131,7 +24472,7 @@ static void clif_parse_MailGetAppend(int fd,struct map_session_data *sd, int cmd
 
 	nullpo_retv(sd);
 
-	intif_mail_getappend(sd->status.char_id,mail_num);
+	intif_mail_getappend(sd->status.char_id, mail_num, MAIL_ATTACH_ALL);
 	return;
 }
 
@@ -24204,12 +24545,26 @@ static void clif_parse_DeleteMail(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ReturnMail(int fd,struct map_session_data *sd, int cmd)
 {
-	//int mail_num = RFIFOL(fd,GETPACKETPOS(cmd,0));
-	//char *name = (char*)RFIFOP(fd,GETPACKETPOS(cmd,1));
+	int mail_num = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
 	nullpo_retv(sd);
+#if PACKETVER >= 20150513
+	if(sd->bl.m >= 0 && map[sd->bl.m].flag.norodex) {
+		clif_displaymessage(sd->fd, "このマップではRoDEXを利用できません。");
+		return;
+	}
+#endif
+	if(sd->state.storage_flag || sd->state.deal_mode || sd->state.store ||
+	   sd->npc_id || sd->state.refineui_open || sd->chatID)
+		return;
 
-	// とりあえず未実装
+	if(mail_num <= 0) {
+		clif_returnmail_res(fd, mail_num, 1);
+		return;
+	}
+
+	if(intif_mail_return(sd->status.char_id, mail_num) < 0)
+		clif_returnmail_res(fd, mail_num, 1);
 	return;
 }
 
@@ -25355,9 +25710,96 @@ static void clif_parse_ClientTimeStamp(int fd,struct map_session_data *sd, int c
  *
  *------------------------------------------
  */
+#if PACKETVER >= 20150513
+/* RoDEX get-attachment ACK (0x09f2 / 0x09f4) */
+void clif_rodex_getappend_ack(struct map_session_data *sd, unsigned int mail_num, enum mail_attachment_type type, int flag)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+
+	WFIFOW(fd,0) = (type == MAIL_ATTACH_ITEM) ? 0x9f4 : 0x9f2;
+	WFIFOQ(fd,2) = (uint64)mail_num;
+	WFIFOB(fd,10) = sd->rodex_opentype;
+	WFIFOB(fd,11) = (unsigned char)flag;
+	WFIFOSET(fd, 12);
+	return;
+}
+
+/* RoDEX remove-item ACK 0x0a07 */
+static void clif_rodex_removeitem_ack(struct map_session_data *sd, int success, int idx, int amount, int weight)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0xa07;
+	WFIFOB(fd,2) = success ? 1 : 0;
+	WFIFOW(fd,3) = idx + 2;
+	WFIFOW(fd,5) = amount;
+	WFIFOW(fd,7) = weight;
+	WFIFOSET(fd, packet_db[0xa07].len);
+	return;
+}
+#endif
+
+#if PACKETVER >= 20160302
+void clif_rodex_recipient(struct map_session_data *sd, int char_id, int class_, int level, const char *name)
+{
+	int fd = sd->fd;
+
+	WFIFOW(fd,0) = 0xa51;
+	WFIFOL(fd,2) = char_id;
+	WFIFOW(fd,6) = class_;
+	WFIFOW(fd,8) = level;
+	memcpy(WFIFOP(fd,10), name, 24);
+	WFIFOSET(fd,34);
+}
+#endif
+
+#if PACKETVER >= 20150513
+static bool clif_rodex_forbidden(struct map_session_data *sd)
+{
+	if(sd->bl.m >= 0 && map[sd->bl.m].flag.norodex) {
+		clif_displaymessage(sd->fd, "このマップではRoDEXを利用できません。");
+		return true;
+	}
+	return sd->state.storage_flag || sd->state.deal_mode || sd->state.store ||
+	       sd->npc_id || sd->state.refineui_open || sd->chatID || sd->inventory_expansion_confirmation;
+}
+#endif
+
+static void clif_parse_CheckNameRoDEX(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20160302
+	char name[24];
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!battle_config.romail)
+		return;
+
+	memcpy(name, RFIFOP(fd, GETPACKETPOS(cmd,0)), sizeof(name));
+	name[sizeof(name)-1] = '\0';
+	if(intif_mail_recipient(sd->status.char_id, name) < 0)
+		clif_rodex_recipient(sd, 0, 0, 0, name);
+#endif
+}
+
 static void clif_parse_OpenRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!battle_config.romail)
+		return;
+	sd->state.rodex_open = 1;
+	sd->rodex_opentype = (cmd == 0xac0 || cmd == 0xac1) ? 0 : RFIFOB(fd, GETPACKETPOS(cmd,0));
+	intif_mailbox(sd->status.char_id);
+#endif
 	return;
 }
 
@@ -25367,7 +25809,12 @@ static void clif_parse_OpenRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CloseRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	nullpo_retv(sd);
+	sd->state.rodex_open = 0;
+	mail_removeitem(sd, 0);
+	sd->state.mail_writing = 0;
+#endif
 	return;
 }
 
@@ -25377,7 +25824,20 @@ static void clif_parse_CloseRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ReadRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	uint64 mail_num;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!sd->state.rodex_open)
+		return;
+	sd->rodex_opentype = RFIFOB(fd, 2);
+	mail_num = RFIFOQ(fd, 3);
+	if(mail_num == 0 || mail_num > 0xffffffffu)
+		return;
+	intif_readmail(sd->status.char_id, (unsigned int)mail_num);
+#endif
 	return;
 }
 
@@ -25387,7 +25847,64 @@ static void clif_parse_ReadRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_WriteRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	int packet_len, title_len, body_len;
+	const int string_off = (cmd == 0xa6e) ? 68 : 64;
+	int64 zeny;
+	char title[40];
+	char receive[24];
+	const char *body;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+
+	if(!sd->state.mail_writing)
+		return;
+	if(sd->mail_preflight_token || sd->mail_pending_flag) {
+		clif_res_sendmail(fd, 1);
+		return;
+	}
+
+	if(!battle_config.romail) {
+		clif_res_sendmail(fd, 1);
+		return;
+	}
+
+	packet_len = RFIFOW(fd, 2);
+	if(packet_len < string_off)
+		return;
+
+	memcpy(receive, RFIFOP(fd,4), sizeof(receive));
+	receive[sizeof(receive)-1] = '\0';
+	zeny = (int64)RFIFOQ(fd, 52);
+	title_len = RFIFOW(fd, 60);
+	body_len = RFIFOW(fd, 62);
+	if(title_len < 1 || string_off + title_len + body_len > packet_len)
+		return;
+
+	if(zeny < 0)
+		zeny = 0;
+	if(!battle_config.mail_player_attach) {
+		zeny = 0;
+		if(sd->mail_append.count > 0)
+			mail_removeitem(sd, 0);
+	}
+	if(zeny > sd->status.zeny)
+		zeny = sd->status.zeny;
+	sd->mail_append.zeny = (int)zeny;
+	if(zeny > 0 || sd->mail_append.count > 0)
+		sd->state.mail_appending = 1;
+
+	memset(title, 0, sizeof(title));
+	memcpy(title, RFIFOP(fd, string_off), (title_len < 40) ? title_len : 39);
+	body = (const char *)RFIFOP(fd, string_off + title_len);
+	/* body_len from client includes '\0' in some clients; trim like old mail */
+	if(body_len > 0 && body[body_len - 1] == '\0')
+		body_len -= 1;
+
+	mail_checkmail(sd, receive, title, body, body_len);
+#endif
 	return;
 }
 
@@ -25397,7 +25914,22 @@ static void clif_parse_WriteRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_NextListRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!battle_config.romail)
+		return;
+	sd->state.rodex_open = 1;
+	sd->rodex_opentype = (cmd == 0xac0 || cmd == 0xac1) ? 0 : RFIFOB(fd, GETPACKETPOS(cmd,0));
+	// 受信箱の一覧を再送する
+#if PACKETVER < 20170419
+	if(RFIFOQ(fd,3) != 0 && sd->rodex_mail_count > 0)
+		clif_send_mailbox_page(sd, sd->rodex_mail_count, sd->rodex_mail_cache, RFIFOQ(fd,3));
+	else
+#endif
+		intif_mailbox(sd->status.char_id);
+#endif
 	return;
 }
 
@@ -25407,7 +25939,16 @@ static void clif_parse_NextListRoDEX(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_RefreshRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!battle_config.romail)
+		return;
+	sd->state.rodex_open = 1;
+	sd->rodex_opentype = (cmd == 0xac0 || cmd == 0xac1) ? 0 : RFIFOB(fd, GETPACKETPOS(cmd,0));
+	intif_mailbox(sd->status.char_id);
+#endif
 	return;
 }
 
@@ -25417,7 +25958,20 @@ static void clif_parse_RefreshRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ZenyfromRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	uint64 mail_num;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!sd->state.rodex_open)
+		return;
+	mail_num = RFIFOQ(fd, 2);
+	sd->rodex_opentype = RFIFOB(fd, 10);
+	if(mail_num == 0 || mail_num > 0xffffffffu)
+		return;
+	intif_mail_getappend(sd->status.char_id, (unsigned int)mail_num, MAIL_ATTACH_ZENY);
+#endif
 	return;
 }
 
@@ -25427,7 +25981,20 @@ static void clif_parse_ZenyfromRoDEX(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_ItemfromRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	uint64 mail_num;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!sd->state.rodex_open)
+		return;
+	mail_num = RFIFOQ(fd, 2);
+	sd->rodex_opentype = RFIFOB(fd, 10);
+	if(mail_num == 0 || mail_num > 0xffffffffu)
+		return;
+	intif_mail_getappend(sd->status.char_id, (unsigned int)mail_num, MAIL_ATTACH_ITEM);
+#endif
 	return;
 }
 
@@ -25437,7 +26004,20 @@ static void clif_parse_ItemfromRoDEX(int fd,struct map_session_data *sd, int cmd
  */
 static void clif_parse_DeleteRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	uint64 mail_num;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	if(!sd->state.rodex_open)
+		return;
+	sd->rodex_opentype = RFIFOB(fd, 2);
+	mail_num = RFIFOQ(fd, 3);
+	if(mail_num == 0 || mail_num > 0xffffffffu)
+		return;
+	intif_deletemail(sd->status.char_id, (unsigned int)mail_num);
+#endif
 	return;
 }
 
@@ -25447,7 +26027,11 @@ static void clif_parse_DeleteRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CancelWriteRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	nullpo_retv(sd);
+	mail_removeitem(sd, 0);
+	sd->state.mail_writing = 0;
+#endif
 	return;
 }
 
@@ -25457,7 +26041,18 @@ static void clif_parse_CancelWriteRoDEX(int fd,struct map_session_data *sd, int 
  */
 static void clif_parse_AdditemRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	int idx, amount;
+
+	nullpo_retv(sd);
+	if(clif_rodex_forbidden(sd))
+		return;
+	idx = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	amount = RFIFOW(fd, GETPACKETPOS(cmd,1));
+	if(!battle_config.romail)
+		return;
+	mail_setitem(sd, idx, amount);
+#endif
 	return;
 }
 
@@ -25467,7 +26062,18 @@ static void clif_parse_AdditemRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_DelitemRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	int idx, amount;
+
+	nullpo_retv(sd);
+	idx = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	amount = RFIFOW(fd, GETPACKETPOS(cmd,1));
+	if(mail_removeitem_index(sd, idx, &amount)) {
+		clif_rodex_removeitem_ack(sd, 1, (idx >= 2) ? idx - 2 : idx, amount, mail_append_weight(sd));
+		return;
+	}
+	clif_rodex_removeitem_ack(sd, 0, (idx >= 2) ? idx - 2 : idx, amount, 0);
+#endif
 	return;
 }
 
@@ -25477,7 +26083,27 @@ static void clif_parse_DelitemRoDEX(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_OpenWriteRoDEX(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20150513
+	char name[24];
+	int ok;
+
+	nullpo_retv(sd);
+	ok = battle_config.romail && !clif_rodex_forbidden(sd) &&
+	     !sd->state.mail_writing && !sd->state.mail_appending &&
+	     !sd->mail_preflight_token && !sd->mail_pending_flag;
+	if(ok) {
+		mail_removeitem(sd, 0);
+		sd->state.mail_writing = 1;
+	}
+	memset(name, 0, sizeof(name));
+	memcpy(name, RFIFOP(fd, GETPACKETPOS(cmd,0)), 24);
+	name[23] = '\0';
+
+	WFIFOW(fd,0) = 0xa12;
+	memcpy(WFIFOP(fd,2), name, 24);
+	WFIFOB(fd,26) = ok ? 1 : 0;
+	WFIFOSET(fd, packet_db[0xa12].len);
+#endif
 	return;
 }
 
@@ -25639,6 +26265,8 @@ static void clif_parse_GetRewardReq(int fd,struct map_session_data *sd, int cmd)
 	achieve_id = RFIFOL(fd,GETPACKETPOS(cmd,0));
 
 	result = achieve_check_reward(sd, achieve_id);
+	if(result == 2)
+		return;
 
 	clif_achievement_reward_ack(sd->fd, result, achieve_id);
 
@@ -25840,7 +26468,7 @@ static void clif_parse_InventoryExpantion(int fd,struct map_session_data *sd, in
 	nullpo_retv(sd);
 
 	if(unit_isdead(&sd->bl) || sd->npc_id || sd->state.store ||
-	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID ||
+	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID || sd->state.mail_appending || sd->mail_preflight_token ||
 	   sd->inventory_expansion_confirmation)
 	{
 		clif_inventory_expansion_response(sd, INVEXP_RESP_BUSY);
@@ -25887,7 +26515,7 @@ static void clif_parse_InventoryExpantionConfirm(int fd,struct map_session_data 
 	if(sd->inventory_expansion_confirmation == 0)
 		return;
 	if(unit_isdead(&sd->bl) || sd->npc_id || sd->state.store ||
-	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID) {
+	   sd->state.deal_mode || sd->state.deal_locked || sd->state.storage_flag || sd->state.refineui_open || sd->chatID || sd->state.mail_appending || sd->mail_preflight_token) {
 		clif_inventory_expansion_result(sd, INVEXP_RES_BUSY);
 		return;
 	}
@@ -26494,6 +27122,7 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_SellMarketReq,               "sellmarketreq"             },
 		{ clif_parse_CloseMarketReq,              "closemarketreq"            },
 		{ clif_parse_ClientTimeStamp,             "clienttimestamp"           },
+		{ clif_parse_CheckNameRoDEX,              "checknamerodex"            },
 		{ clif_parse_OpenRoDEX,                   "openrodex"                 },
 		{ clif_parse_CloseRoDEX,                  "closerodex"                },
 		{ clif_parse_ReadRoDEX,                   "readrodex"                 },

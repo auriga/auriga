@@ -2928,3 +2928,45 @@ R 09dd <len>.w <type>.B <ID>.l <CCADE>.l <speed>.w <opt1>.w <opt2>.w <option>.l 
 	type=8 HOM
 	type=9 MER
 	type=10 ELEM(ソーサラーの妖精)
+
+
+RoDEX（PACKETVER 20150513以降）
+S 09e8 <type>.B <mail_num>.Q
+	受信箱を開く
+S 09e9
+	受信箱を閉じる
+S 09ea <type>.B <mail_num>.Q
+	メール本文を読む
+S 09ec <len>.w <receive_name>.24B <send_name>.24B <zeny>.Q <title_len>.w <body_len>.w <title>.?B <body>.?B
+	メールを送信する。送信者名はログイン中のキャラクター名を使用する。
+S 0a6e <len>.w <receive_name>.24B <send_name>.24B <zeny>.Q <title_len>.w <body_len>.w <receive_char_id>.l <title>.?B <body>.?B
+	宛先IDを含む送信形式。宛先はキャラクター名で照合する。
+S 0a13 <name>.24B
+S 0b97 <name>.24B <own_char>.B
+	0b97は20211103以降の宛先照会。
+R 0a51 <char_id>.l <class>.w <level>.w <name>.24B
+	宛先照会と結果。宛先が存在しない場合はchar_idが0。
+S 0ac0 <mail_num>.Q <unknown>.16B
+S 0ac1 <mail_num>.Q <unknown>.16B
+	20170419以降の受信箱を開く要求と更新要求
+R 09eb <len>.w <type>.B <mail_num>.Q <body_len>.w <zeny>.Q <item_count>.B <body>.?B <items>.?B
+	メール本文と添付。20200723より前の形式。
+R 0b63 <len>.w <type>.B <mail_num>.Q <body_len>.w <zeny>.Q <item_count>.B <body>.?B <items>.?B
+	20200723以降の添付形式。精錬値とグレードは添付データ末尾に配置される。
+R 0a05 <result>.B <item_data>.?B
+R 0b3f <result>.B <item_data>.?B
+	添付追加結果。0b3fは20200723以降の形式。
+S 09f1 <mail_num>.Q <type>.B
+	Zenyを受け取る
+S 09f3 <mail_num>.Q <type>.B
+	アイテムを受け取る
+R 09f0 <len>.w <type>.B <count>.B <last_page>.B
+	受信箱の一覧。1ページにつき最大7件を送信する。
+R 0a7d <len>.w <type>.B <count>.B <last_page>.B
+	20160601以降20170419未満の受信箱の一覧。各行は09f0と同じ形式。
+R 0ac2 <len>.w <flag>.B
+	20170419以降の受信箱の一覧。各行の先頭に受信箱種別を付け、受信後の経過秒数を省く。
+R 09f2 <mail_num>.Q <type>.B <flag>.B
+	Zenyの受け取り結果
+R 09f4 <mail_num>.Q <type>.B <flag>.B
+	アイテムの受け取り結果

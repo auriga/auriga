@@ -103,11 +103,15 @@ void intif_delete_elemdata(int account_id, int char_id, int elem_id);
 // ƒ[ƒ‹ŠÖ˜A
 int intif_mailbox(int char_id);
 int intif_sendmail(struct mail_data *md);
+int intif_send_sysmail(struct mail_data *md);
 int intif_deletemail(int char_id, int mail_num);
 int intif_readmail(int char_id, int mail_num);
-int intif_mail_getappend(int char_id, int mail_num);
+int intif_mail_getappend(int char_id, unsigned int mail_num, enum mail_attachment_type type);
 int intif_mail_checkmail(int accound_id, struct mail_data *md);
 int intif_mail_deleteappend(int char_id, int mail_num);
+int intif_mail_recipient(int char_id, const char *name);
+int intif_mail_return(int char_id, int mail_num);
+int intif_mail_restoreappend(int char_id, int mail_num, int zeny, struct item *item);
 
 // ó‘ÔˆÙíŠÖ˜A
 int intif_request_scdata(int account_id,int char_id);

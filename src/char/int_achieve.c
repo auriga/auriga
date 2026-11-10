@@ -89,6 +89,45 @@ int mapif_parse_LoadAchieveList(int fd)
 	return 0;
 }
 
+/* メール報酬の保存状態を取得する。対象外の場合は-1を返す */
+int achievement_mail_state(int char_id, int achievement_id)
+{
+	const struct achieve *a = achievedb_load(char_id);
+	int i;
+
+	if(a == NULL)
+		return -1;
+	for(i = 0; i < a->count; i++) {
+		if(a->data[i].nameid != achievement_id)
+			continue;
+		if(a->data[i].comp_date == 0)
+			return -1;
+		return a->data[i].reward;
+	}
+	return -1;
+}
+
+/* メール保存後に実績報酬を受取済みにする */
+bool achievement_mail_saved(int char_id, int achievement_id)
+{
+	const struct achieve *previous = achievedb_load(char_id);
+	struct achieve current;
+	int i;
+
+	if(previous == NULL)
+		return false;
+	memcpy(&current, previous, sizeof(current));
+	for(i = 0; i < current.count; i++) {
+		if(current.data[i].nameid != achievement_id || current.data[i].comp_date == 0)
+			continue;
+		if(current.data[i].reward != ACH_REWARD_UNCLAIMED)
+			return true;
+		current.data[i].reward = ACH_REWARD_CLAIMED;
+		return achievedb_save(&current);
+	}
+	return false;
+}
+
 // ----------------------------------------------------------
 // 実績データ保存要求受信
 // ----------------------------------------------------------
@@ -96,6 +135,7 @@ int mapif_parse_SaveAchieveList(int fd)
 {
 	struct achieve a;
 	int i,p;
+	const struct achieve *previous;
 	short len = RFIFOW(fd,2);
 
 	a.account_id = RFIFOL(fd,4);
@@ -118,6 +158,20 @@ int mapif_parse_SaveAchieveList(int fd)
 	}
 	a.count = i;
 
+	/* メール保存後に届いた古いmap側データで受取状態を巻き戻さない */
+	previous = achievedb_load(a.char_id);
+	if(previous) {
+		int j, k;
+		for(j = 0; j < a.count; j++) {
+			for(k = 0; k < previous->count; k++) {
+				if(a.data[j].nameid != previous->data[k].nameid)
+					continue;
+				if(previous->data[k].reward == ACH_REWARD_CLAIMED)
+					a.data[j].reward = previous->data[k].reward;
+				break;
+			}
+		}
+	}
 	achievedb_save(&a);
 	mapif_save_achieve_ack(fd,a.char_id,0);
 

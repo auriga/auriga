@@ -48,6 +48,7 @@
 #include "atcommand.h"
 #include "buyingstore.h"
 #include "achieve.h"
+#include "mail.h"
 #include "script.h"
 #include "script_internal.h"
 
@@ -1295,5 +1296,49 @@ int buildin_setunittitle(struct script_state *st)
 	strncpy(((struct mob_data*)bl)->title, str, 24);
 	((struct mob_data*)bl)->title[23] = '\0';
 
+	return 0;
+}
+
+/*==========================================
+ * システムメール送信
+ *------------------------------------------
+ */
+int buildin_sysmail(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	const char *sender, *title, *body, *dest;
+	int zeny, nameid, amount, body_len;
+	struct item it;
+
+	sender = conv_str(st, &(st->stack->stack_data[st->start+2]));
+	title  = conv_str(st, &(st->stack->stack_data[st->start+3]));
+	body   = conv_str(st, &(st->stack->stack_data[st->start+4]));
+	zeny   = conv_num(st, &(st->stack->stack_data[st->start+5]));
+	nameid = conv_num(st, &(st->stack->stack_data[st->start+6]));
+	amount = conv_num(st, &(st->stack->stack_data[st->start+7]));
+
+	if(st->end > st->start+8)
+		dest = conv_str(st, &(st->stack->stack_data[st->start+8]));
+	else if(sd)
+		dest = sd->status.name;
+	else
+		return 0;
+
+	if(dest == NULL || dest[0] == '\0')
+		return 0;
+
+	body_len = body ? (int)strlen(body) : 0;
+	memset(&it, 0, sizeof(it));
+	if(zeny < 0 || zeny > MAX_ZENY || amount < 0 || amount > MAX_AMOUNT ||
+	   (amount > 0 && (nameid <= 0 || !itemdb_exists(nameid))))
+		return 0;
+	if(amount > 0) {
+		it.nameid = nameid;
+		it.amount = amount;
+		it.identify = 1;
+	}
+
+	mail_send_system(dest, sender, title, body, body_len, zeny,
+		(it.nameid > 0) ? &it : NULL);
 	return 0;
 }

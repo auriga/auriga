@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <string.h>
 #include <time.h>
 
@@ -32,97 +33,188 @@
 #include "mail.h"
 #include "clif.h"
 #include "intif.h"
+#include "chrif.h"
 #include "itemdb.h"
 #include "pc.h"
+#include "battle.h"
 
 /*==========================================
  * アイテムやZenyを添付
  *------------------------------------------
  */
+/* 添付重量はクライアント表示単位で計算する */
+static int64 mail_append_total_weight(struct map_session_data *sd)
+{
+	int i;
+	int64 weight = 0;
+
+	nullpo_retr(0, sd);
+	for(i = 0; i < sd->mail_append.count; i++) {
+		int idx = sd->mail_append.index[i];
+		if(idx >= 0 && idx < MAX_INVENTORY && sd->inventory_data[idx])
+			weight += (int64)(sd->inventory_data[idx]->weight / 10) * sd->mail_append.amount[i];
+	}
+	return weight;
+}
+
+/* 送金手数料と添付種類ごとの料金を合算する */
+static int mail_calc_fee(int zeny, int item_count)
+{
+	int64 fee = 0;
+
+	if(zeny > 0 && battle_config.mail_zeny_fee > 0)
+		fee += (int64)zeny * battle_config.mail_zeny_fee / 100;
+	if(item_count > 0 && battle_config.mail_attachment_price > 0)
+		fee += (int64)item_count * battle_config.mail_attachment_price;
+	return fee > MAX_ZENY ? -1 : (int)fee;
+}
+
+int mail_append_weight(struct map_session_data *sd)
+{
+	int64 weight = mail_append_total_weight(sd);
+	return (weight > 65535) ? 65535 : (int)weight;
+}
+
 void mail_setitem(struct map_session_data *sd, int idx, int amount)
 {
-	nullpo_retv(sd);
+	int i, limit;
 
+	nullpo_retv(sd);
+	if(sd->mail_preflight_token || sd->mail_pending_flag || sd->state.storage_flag || sd->state.deal_mode || sd->state.store ||
+	   sd->npc_id || sd->state.refineui_open || sd->chatID || sd->inventory_expansion_confirmation) {
+		clif_res_sendmail_setappend(sd->fd, idx - 2, 1);
+		return;
+	}
 	idx -= 2;
+	if(!battle_config.mail_player_attach || amount <= 0) {
+		clif_res_sendmail_setappend(sd->fd, idx, 1);
+		return;
+	}
 	if(idx == -2) {
-		if(sd->status.zeny < amount)
+		if(amount > sd->status.zeny)
 			amount = sd->status.zeny;
 		sd->mail_append.zeny = amount;
 	} else {
-		if(idx < 0 || idx >= MAX_INVENTORY)
-			return;
-
-		if( sd->status.inventory[idx].nameid > 0 &&
-		    sd->status.inventory[idx].amount >= amount &&
-		    itemdb_isdropable(sd->status.inventory[idx].nameid) ) {
-			sd->mail_append.amount = amount;
-			sd->mail_append.index  = idx;
-		} else {
-			// 添付不可
-			clif_res_sendmail_setappend(sd->fd,idx,1);
+		if(idx < 0 || idx >= MAX_INVENTORY || sd->status.inventory[idx].nameid <= 0 ||
+		   sd->inventory_data[idx] == NULL || sd->status.inventory[idx].amount < amount ||
+		   !itemdb_isdropable(sd->status.inventory[idx].nameid)) {
+			clif_res_sendmail_setappend(sd->fd, idx, 1);
 			return;
 		}
+		if(battle_config.mail_attachment_weight > 0 &&
+		   mail_append_total_weight(sd) + (int64)(sd->inventory_data[idx]->weight / 10) * amount > battle_config.mail_attachment_weight) {
+			clif_res_sendmail_setappend(sd->fd, idx, 1);
+			return;
+		}
+#if PACKETVER >= 20150513
+		limit = MAIL_MAX_ITEM;
+#else
+		limit = 1;
+#endif
+		for(i = 0; i < sd->mail_append.count; i++) {
+			if(sd->mail_append.index[i] == idx)
+				break;
+		}
+		if(i == sd->mail_append.count) {
+			if(i >= limit) {
+				clif_res_sendmail_setappend(sd->fd, idx, 1);
+				return;
+			}
+			sd->mail_append.index[i] = idx;
+			sd->mail_append.amount[i] = 0;
+			sd->mail_append.count++;
+		}
+		if(amount > sd->status.inventory[idx].amount - sd->mail_append.amount[i]) {
+			clif_res_sendmail_setappend(sd->fd, idx, 1);
+			return;
+		}
+		sd->mail_append.amount[i] += amount;
 	}
-
-	// 添付成功
 	sd->state.mail_appending = 1;
-	clif_res_sendmail_setappend(sd->fd,idx,0);
-
-	return;
+	clif_res_sendmail_setappend(sd->fd, idx, 0);
 }
 
-/*==========================================
- * 添付アイテムを初期化
- *------------------------------------------
- */
 int mail_removeitem(struct map_session_data *sd, int flag)
 {
+	int i;
 	nullpo_retr(0, sd);
-
-	if(!(flag&2) && sd->mail_append.index >= 0) {
-		clif_additem(sd, sd->mail_append.index, sd->mail_append.amount, 0);	// アイテム返却
-		sd->mail_append.index  = -1;
-		sd->mail_append.amount = 0;
+	sd->mail_preflight_token = 0;
+	if(!(flag & 2)) {
+		for(i = 0; i < sd->mail_append.count; i++) {
+			clif_additem(sd, sd->mail_append.index[i], sd->mail_append.amount[i], 0);
+			sd->mail_append.index[i] = -1;
+			sd->mail_append.amount[i] = 0;
+		}
+		sd->mail_append.count = 0;
 	}
-	if(!(flag&1) && sd->mail_append.zeny > 0) {
-		clif_updatestatus(sd, SP_ZENY);		// Zeny返却
+	if(!(flag & 1) && sd->mail_append.zeny > 0) {
+		clif_updatestatus(sd, SP_ZENY);
 		sd->mail_append.zeny = 0;
 	}
-
-	if(sd->mail_append.index == -1 && sd->mail_append.zeny == 0)
+	if(sd->mail_append.count == 0 && sd->mail_append.zeny == 0)
 		sd->state.mail_appending = 0;
-
 	return 0;
 }
 
-/*==========================================
- * 添付アイテムやZenyをチェックして減らす
- *------------------------------------------
- */
+int mail_removeitem_index(struct map_session_data *sd, int client_idx, int *out_amount)
+{
+	int i, j, idx = client_idx - 2;
+	nullpo_retr(0, sd);
+	if(sd->mail_preflight_token)
+		return 0;
+	for(i = 0; i < sd->mail_append.count; i++) {
+		if(sd->mail_append.index[i] != idx)
+			continue;
+		if(out_amount == NULL || *out_amount <= 0 || *out_amount > sd->mail_append.amount[i])
+			return 0;
+		clif_additem(sd, idx, *out_amount, 0);
+		sd->mail_append.amount[i] -= *out_amount;
+		if(sd->mail_append.amount[i] > 0)
+			return 1;
+		for(j = i; j + 1 < sd->mail_append.count; j++) {
+			sd->mail_append.index[j] = sd->mail_append.index[j+1];
+			sd->mail_append.amount[j] = sd->mail_append.amount[j+1];
+		}
+		sd->mail_append.count--;
+		sd->mail_append.index[sd->mail_append.count] = -1;
+		sd->mail_append.amount[sd->mail_append.count] = 0;
+		if(sd->mail_append.count == 0 && sd->mail_append.zeny == 0)
+			sd->state.mail_appending = 0;
+		return 1;
+	}
+	return 0;
+}
+
 static int mail_checkappend(struct map_session_data *sd, struct mail_data *md)
 {
+	int i;
 	nullpo_retr(1, sd);
 	nullpo_retr(1, md);
-
+	if(!battle_config.mail_player_attach)
+		mail_removeitem(sd, 0);
 	if(sd->mail_append.zeny < 0 || sd->mail_append.zeny > sd->status.zeny)
 		return 1;
-
 	md->zeny = sd->mail_append.zeny;
-
-	if(sd->mail_append.amount > 0) {
-		int idx = sd->mail_append.index;
-		if( idx < 0 ||
-		    sd->status.inventory[idx].nameid <= 0 ||
-		    sd->status.inventory[idx].amount < sd->mail_append.amount )
+	memset(md->item, 0, sizeof(md->item));
+	for(i = 0; i < sd->mail_append.count; i++) {
+		int idx = sd->mail_append.index[i], amount = sd->mail_append.amount[i];
+		if(idx < 0 || idx >= MAX_INVENTORY || amount <= 0 ||
+		   sd->status.inventory[idx].nameid <= 0 || sd->status.inventory[idx].amount < amount ||
+		   sd->inventory_data[idx] == NULL || !itemdb_isdropable(sd->status.inventory[idx].nameid))
 			return 1;
-
-		memcpy(&md->item, &sd->status.inventory[idx], sizeof(struct item));
-		md->item.amount = sd->mail_append.amount;
-		pc_delitem(sd, idx, md->item.amount, 1, 0);
+		memcpy(&md->item[i], &sd->status.inventory[idx], sizeof(struct item));
+		md->item[i].amount = amount;
 	}
-	sd->status.zeny -= md->zeny;
-	clif_updatestatus(sd,SP_ZENY);
-
+	if(battle_config.mail_attachment_weight > 0 &&
+	   mail_append_total_weight(sd) > battle_config.mail_attachment_weight)
+		return 1;
+	md->send_fee = mail_calc_fee(md->zeny, sd->mail_append.count);
+	if(md->send_fee < 0 || (int64)md->zeny + md->send_fee > sd->status.zeny)
+		return 1;
+	for(i = 0; i < sd->mail_append.count; i++)
+		pc_delitem(sd, sd->mail_append.index[i], sd->mail_append.amount[i], 1, 0);
+	sd->status.zeny -= md->zeny + md->send_fee;
+	clif_updatestatus(sd, SP_ZENY);
 	return 0;
 }
 
@@ -130,12 +222,54 @@ static int mail_checkappend(struct map_session_data *sd, struct mail_data *md)
  * 送信前チェック
  *------------------------------------------
  */
+/* アカウントごとの送信回数をサーバーのローカル日付で管理する */
+static int mail_daily_consume(struct map_session_data *sd)
+{
+	time_t now = time(NULL);
+	struct tm *local = localtime(&now);
+	int64 day, packed;
+	int previous, count;
+
+	if(!sd->state.accountreg_ready || !chrif_isconnect() || local == NULL)
+		return 2;
+	day = (int64)local->tm_year * 512 + local->tm_yday;
+	packed = day * 128;
+	if(day <= 0 || packed > INT_MAX - 100)
+		return 2;
+	previous = pc_readaccountreg(sd, "#PC_RODEX_DAILY");
+	count = (previous > 0 && previous / 128 == day) ? previous % 128 : 0;
+	if(count >= 100)
+		return 1;
+	if(pc_setaccountreg(sd, "#PC_RODEX_DAILY", (int)packed + count + 1) != 0)
+		return 2;
+	return 0;
+}
+
 int mail_checkmail(struct map_session_data *sd, const char *name, const char *title, const char *body, int len)
 {
-	struct map_session_data *rd = map_nick2sd(name);
+	static unsigned int next_preflight_token;
+	struct map_session_data *rd;
 	struct mail_data md;
 
 	nullpo_retr(0, sd);
+
+	{
+		int daily = mail_daily_consume(sd);
+		if(daily != 0) {
+			if(daily == 1)
+				clif_displaymessage(sd->fd, "メールは1日100通まで送信できます。");
+			clif_res_sendmail(sd->fd, 1);
+			mail_removeitem(sd, 0);
+			return 0;
+		}
+	}
+
+	if(sd->mail_preflight_token || sd->mail_pending_flag) {
+		clif_res_sendmail(sd->fd, 1);
+		return 0;
+	}
+
+	rd = map_nick2sd(name);
 
 	// 本文の長さが不正、または送信相手が自分ならダメ
 	if(len <= 0 || len > sizeof(md.body) || rd == sd) {
@@ -149,7 +283,7 @@ int mail_checkmail(struct map_session_data *sd, const char *name, const char *ti
 	strncpy(md.char_name, sd->status.name, 24);
 	md.char_id = sd->status.char_id;
 
-	memcpy(md.receive_name, name, 24);
+	strncpy(md.receive_name, name, sizeof(md.receive_name)-1);
 	md.receive_name[23] = '\0';	// force \0 terminal
 	strncpy(md.title, title, sizeof(md.title));
 	md.title[sizeof(md.title)-1] = '\0';
@@ -157,10 +291,16 @@ int mail_checkmail(struct map_session_data *sd, const char *name, const char *ti
 	memcpy(md.body, body, len);
 	md.body_size = len;
 
-	if(rd)
-		mail_sendmail(sd,&md);
-	else
-		intif_mail_checkmail(sd->status.account_id,&md);	// 受け取る人がいるかInterサーバに確認要求
+	if(++next_preflight_token == 0)
+		++next_preflight_token;
+	md.send_token = next_preflight_token;
+	sd->mail_preflight_token = next_preflight_token;
+	if(intif_mail_checkmail(sd->status.account_id,&md) < 0) {
+		sd->mail_preflight_token = 0;
+		// 宛先確認を送れなかった場合は送信を中止する
+		clif_res_sendmail(sd->fd,1);
+		mail_removeitem(sd,0);
+	}
 
 	return 0;
 }
@@ -171,17 +311,34 @@ int mail_checkmail(struct map_session_data *sd, const char *name, const char *ti
  */
 int mail_sendmail(struct map_session_data *sd, struct mail_data *md)
 {
+	static unsigned int next_token = 0;
 	nullpo_retr(0, sd);
 	nullpo_retr(0, md);
+
+	if(sd->mail_pending_flag || md->char_id != sd->status.char_id) {
+		clif_res_sendmail(sd->fd, 1);
+		return 0;
+	}
 
 	// 日付の保存
 	md->times = (unsigned int)time(NULL);
 	// アイテム・Zenyチェック
-	if(mail_checkappend(sd,md) == 0)
-		intif_sendmail(md);
+	if(mail_checkappend(sd,md) == 0) {
+		if(++next_token == 0)
+			++next_token;
+		md->send_token = next_token;
+		memcpy(&sd->mail_pending, md, sizeof(struct mail_data));
+		sd->mail_pending_flag = 1;
+		if(intif_sendmail(md) < 0) {
+			mail_refund_pending(sd);
+			clif_res_sendmail(sd->fd, 1);
+		}
+	} else {
+		mail_removeitem(sd, 0);
+		clif_res_sendmail(sd->fd, 1);
+	}
 
-	sd->mail_append.index    = -1;
-	sd->mail_append.amount   = 0;
+	sd->mail_append.count    = 0;
 	sd->mail_append.zeny     = 0;
 	sd->state.mail_appending = 0;
 
@@ -189,62 +346,136 @@ int mail_sendmail(struct map_session_data *sd, struct mail_data *md)
 }
 
 /*==========================================
+ * 添付アイテムやZenyの返送
+ *------------------------------------------
+ */
+void mail_refund_pending(struct map_session_data *sd)
+{
+	nullpo_retv(sd);
+	if(!sd->mail_pending_flag)
+		return;
+
+	if(sd->mail_pending.zeny > 0 || sd->mail_pending.send_fee > 0) {
+		int refund = sd->mail_pending.zeny + sd->mail_pending.send_fee;
+		sd->status.zeny += min(refund, MAX_ZENY - sd->status.zeny);
+		clif_updatestatus(sd, SP_ZENY);
+	}
+	{
+		int i;
+		for(i = 0; i < MAIL_MAX_ITEM; i++) {
+			if(sd->mail_pending.item[i].nameid > 0 && sd->mail_pending.item[i].amount > 0)
+				pc_additem(sd, &sd->mail_pending.item[i], sd->mail_pending.item[i].amount, false);
+		}
+	}
+
+	memset(&sd->mail_pending, 0, sizeof(sd->mail_pending));
+	sd->mail_pending_flag = 0;
+}
+
+/*==========================================
  * 添付アイテムやZenyを取得
  *------------------------------------------
  */
-void mail_getappend(int account_id, int zeny, int mail_num, struct item *item)
+void mail_getappend(int account_id, int char_id, int zeny, unsigned int mail_num, enum mail_attachment_type type, struct item *item)
 {
-	bool result = true;
 	struct map_session_data *sd;
+	bool result = true, delivered = false, has_item = false;
+	int i, flag = 0;
 
 	nullpo_retv(item);
-
 	sd = map_id2sd(account_id);
-	if(sd == NULL)
+	if(sd == NULL || sd->status.char_id != char_id) {
+		if(char_id > 0)
+			intif_mail_restoreappend(char_id, mail_num, zeny, item);
 		return;
-
-	// アイテムチェック
-	if( item->nameid > 0 && item->amount > 0 )
-	{
-		switch(pc_checkadditem(sd,item->nameid,item->amount))
-		{
-			case ADDITEM_EXIST:
-				clif_mail_getappend(sd->fd,0);
-				break;
-			case ADDITEM_OVERAMOUNT:
-				clif_mail_getappend(sd->fd,2);
-				result = false;
-				break;
-			default:
-				clif_mail_getappend(sd->fd,1);
-				result = false;
-		}
 	}
 
-	// Zenyチェック
-	if( zeny > 0 )
-	{
-		if( sd->status.zeny > MAX_ZENY - zeny )
-			result = false;
+	for(i = 0; i < MAIL_MAX_ITEM; i++) {
+		if(item[i].nameid > 0 && item[i].amount > 0)
+			has_item = true;
 	}
-
-	// アイテムの取得に成功した場合、添付ファイルの削除をキャラ鯖に要求する
-	if( result == true )
-	{
-		// アイテムの取得
-		if( item->nameid > 0 && item->amount > 0 )
-		{
-			pc_additem(sd, item, item->amount, false);
+	if(zeny > 0 && sd->status.zeny > MAX_ZENY - zeny) {
+		result = false;
+		flag = 1;
+	}
+	if(result) {
+		for(i = 0; i < MAIL_MAX_ITEM; i++) {
+			if(item[i].nameid <= 0 || item[i].amount <= 0)
+				continue;
+			if(pc_additem(sd, &item[i], item[i].amount, false) != 0) {
+				result = false;
+				flag = 1;
+				continue;
+			}
+			memset(&item[i], 0, sizeof(item[i]));
+			delivered = true;
 		}
-
-		// Zenyの取得
-		if( zeny > 0 )
-		{
+		if(result && zeny > 0) {
 			sd->status.zeny += zeny;
-			clif_updatestatus(sd,SP_ZENY);
+			clif_updatestatus(sd, SP_ZENY);
+			zeny = 0;
+			delivered = true;
 		}
-		intif_mail_deleteappend(sd->status.char_id,mail_num);
+	}
+	if(!result)
+		intif_mail_restoreappend(char_id, mail_num, zeny, item);
+	if(delivered)
+		chrif_save(sd, 0);
+
+#if PACKETVER >= 20150513
+	if(type != MAIL_ATTACH_ALL) {
+		if(!delivered && result) {
+			result = false;
+			flag = 1;
+		}
+		clif_rodex_getappend_ack(sd, mail_num, type, result ? 0 : flag);
+		if(result)
+			intif_mailbox(sd->status.char_id);
+		return;
+	}
+#endif
+	if(has_item)
+		clif_mail_getappend(sd->fd, result ? 0 : flag);
+}
+
+int mail_send_system(const char *dest_name, const char *sender_name,
+	const char *title, const char *body, int body_len,
+	int zeny, const struct item *item)
+{
+	struct mail_data md;
+
+	if(dest_name == NULL || dest_name[0] == '\0')
+		return -1;
+	if(body_len < 0 || body_len > (int)sizeof(md.body))
+		return -1;
+
+	memset(&md, 0, sizeof(md));
+	md.char_id = 0;
+	if(sender_name && sender_name[0])
+		strncpy(md.char_name, sender_name, sizeof(md.char_name)-1);
+	else
+		strncpy(md.char_name, "Server", sizeof(md.char_name)-1);
+
+	strncpy(md.receive_name, dest_name, sizeof(md.receive_name)-1);
+	md.receive_name[sizeof(md.receive_name)-1] = '\0';
+
+	if(title)
+		strncpy(md.title, title, sizeof(md.title)-1);
+
+	if(body && body_len > 0) {
+		memcpy(md.body, body, body_len);
+		md.body_size = body_len;
+	} else {
+		md.body[0] = '\0';
+		md.body_size = 0;
 	}
 
-	return;
+	md.zeny = (zeny > 0) ? zeny : 0;
+	if(item && item->nameid > 0 && item->amount > 0)
+		memcpy(&md.item[0], item, sizeof(struct item));
+
+	md.times = (unsigned int)time(NULL);
+	md.read = MAIL_READ_SYSTEM;
+
+	return intif_send_sysmail(&md);
 }

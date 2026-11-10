@@ -88,6 +88,7 @@ extern struct sqldbs_handle mysql_handle;
 #define HOMUN_SKILL_TABLE     "homunculus_skill"
 #define MAIL_TABLE            "mail"
 #define MAIL_DATA_TABLE       "mail_data"
+#define MAIL_ATTACHMENT_TABLE "mail_attachment"
 #define MERC_TABLE            "mercenary"
 #define MERC_EMPLOY_TABLE     "mercenary_employ"
 #define PARTY_TABLE           "party"

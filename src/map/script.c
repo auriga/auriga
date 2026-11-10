@@ -4430,6 +4430,7 @@ int buildin_setnpcgroup(struct script_state *st);
 int buildin_setunitgroup(struct script_state *st);
 int buildin_setnpctitle(struct script_state *st);
 int buildin_setunittitle(struct script_state *st);
+int buildin_sysmail(struct script_state *st);
 
 struct script_function buildin_func[] = {
 	/* サーバー内部処理用buildin_func */
@@ -4794,6 +4795,7 @@ struct script_function buildin_func[] = {
 	{buildin_setunitgroup,"setunitgroup","ii"},
 	{buildin_setnpctitle,"setnpctitle","s*"},
 	{buildin_setunittitle,"setunittitle","si"},
+	{buildin_sysmail,"sysmail","sssiii*"},
 
 	{NULL,NULL,NULL}
 };

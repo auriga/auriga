@@ -35,6 +35,8 @@
 #include "achieve.h"
 #include "map.h"
 #include "clif.h"
+#include "mail.h"
+#include "itemdb.h"
 #include "intif.h"
 
 #define MAX_ACHIEVE_LEVEL 20
@@ -252,7 +254,7 @@ int achieve_update_content(struct map_session_data *sd, enum achieve_types type,
 						if(sd->achieve[k].comp_date > 0)		// ƒNƒŠƒAÏ‚İ
 							break;
 						for(j = 0; j < achieve_db[i].num; j++) {
-							if(sd->achieve[k].count[j] < achieve_db[i].content[j].id)
+							if(sd->achieve[k].count[j] < achieve_db[i].content[j].count)
 								if(flag & 1)	// ŒÅ’è’l‚ÅXV‚³‚¹‚é
 									sd->achieve[k].count[j] = update_count[j];
 								else
@@ -268,6 +270,8 @@ int achieve_update_content(struct map_session_data *sd, enum achieve_types type,
 						sd->achieve[k].count[j] += update_count[j];
 					sd->achievelist++;
 				}
+				if(k >= sd->achievelist)
+					continue;
 				if(sd->achieve[k].comp_date == 0) {
 					achieve_check_complete(sd, i, k);
 					clif_send_achievement_update(sd, &sd->achieve[k]);
@@ -296,17 +300,66 @@ int achieve_check_reward(struct map_session_data *sd, int achieve_id)
 		if(sd->achieve[i].reward > 0)
 			return 1;
 
-		sd->achieve[i].reward = 1;
+		idx = achieve_search_db(sd->achieve[i].nameid);
+		if(idx >= 0 && achieve_db[idx].reward_item > 0) {
+			struct mail_data md;
+			if(itemdb_exists(achieve_db[idx].reward_item) == NULL)
+				return 1;
+			if(sd->achievement_mail_pending_flag)
+				return 1;
+			memset(&md, 0, sizeof(md));
+			md.char_id = sd->status.char_id;
+			md.send_token = (unsigned int)achieve_id;
+			auriga_strlcpy(md.char_name, "System", sizeof(md.char_name));
+			auriga_strlcpy(md.receive_name, sd->status.name, sizeof(md.receive_name));
+			auriga_strlcpy(md.title, "ÀÑ’B¬•ñV", sizeof(md.title));
+			auriga_strlcpy(md.body, "ÀÑ‚Ì’B¬•ñV‚ğ‚¨‘—‚è‚µ‚Ü‚·B", sizeof(md.body));
+			md.body_size = (unsigned int)strlen(md.body);
+			md.item[0].nameid = achieve_db[idx].reward_item;
+			md.item[0].amount = 1;
+			md.item[0].identify = 1;
+			sd->achievement_mail_pending = achieve_id;
+			sd->achievement_mail_pending_flag = 1;
+			if(intif_send_sysmail(&md) < 0) {
+				sd->achievement_mail_pending_flag = 0;
+				return 1;
+			}
+			return 2;
+		}
+		sd->achieve[i].reward = ACH_REWARD_CLAIMED;
 		intif_save_achieve(sd);
 		clif_send_achievement_update(sd, &sd->achieve[i]);
-
-		idx = achieve_search_db(sd->achieve[i].nameid);
 		if(idx >= 0 && achieve_db[idx].reward) {
 			run_script(achieve_db[idx].reward,0,sd->bl.id,0);
 		}
 		return 0;
 	}
 	return 1;
+}
+
+void achieve_mail_result(struct map_session_data *sd, int achieve_id, int result)
+{
+	int i, idx;
+
+	nullpo_retv(sd);
+	if(!sd->achievement_mail_pending_flag || sd->achievement_mail_pending != achieve_id)
+		return;
+	sd->achievement_mail_pending_flag = 0;
+	for(i = 0; i < sd->achievelist; i++) {
+		if(sd->achieve[i].nameid != achieve_id)
+			continue;
+		if(result == 0 || result == 2) {
+			sd->achieve[i].reward = ACH_REWARD_CLAIMED;
+			clif_send_achievement_update(sd, &sd->achieve[i]);
+			clif_achievement_reward_ack(sd->fd, 0, achieve_id);
+			idx = achieve_search_db(achieve_id);
+			if(result == 0 && idx >= 0 && achieve_db[idx].reward)
+				run_script(achieve_db[idx].reward, 0, sd->bl.id, 0);
+			return;
+		}
+		clif_achievement_reward_ack(sd->fd, 1, achieve_id);
+		return;
+	}
 }
 
 /*==========================================
@@ -351,13 +404,13 @@ static int achieve_sort_id(const void *_i1, const void *_i2)
  * ÀÑDB‚ÌŠî‘b“o˜^
  *------------------------------------------
  */
-bool achieve_insert_info(int achieveid, const char* name, enum achieve_types type, int score, int title, const char* reward)
+bool achieve_insert_info(int achieveid, const char* name, enum achieve_types type, int score, int title, const char* reward, int reward_item)
 {
 	int i;
 	char *p;
 	struct script_code *script = NULL;
 
-	if(achieveid < 0)
+	if(achieveid < 0 || reward_item < 0)
 		return false;
 
 	for(i = 0; i < achieve_count; i++) {
@@ -384,6 +437,7 @@ bool achieve_insert_info(int achieveid, const char* name, enum achieve_types typ
 	achieve_db[i].type = type;
 	achieve_db[i].score = score;
 	achieve_db[i].title = title;
+	achieve_db[i].reward_item = reward_item;
 
 	if(achieve_db[i].reward) {
 		script_free_code(achieve_db[i].reward);

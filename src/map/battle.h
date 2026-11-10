@@ -506,6 +506,10 @@ extern struct Battle_Config {
 	int mes_send_type;
 
 	int romail;
+	int mail_player_attach;
+	int mail_zeny_fee;
+	int mail_attachment_price;
+	int mail_attachment_weight;
 
 	int pc_die_script;
 	int pc_kill_script;

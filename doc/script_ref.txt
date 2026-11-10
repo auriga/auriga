@@ -335,6 +335,8 @@ AurigaNPCScript
 				街MAPモードになります。
 			damage_rate<tab><rate>
 				モンスターに対するダメージ割合を百分率で<rate>に変更します。
+			norodex<tab>dummy
+				RoDEXの利用を禁止します。
 
 	注釈１）
 		NPCの名前は識別子によって管理されています（表示名ではありません）。
@@ -2930,6 +2932,18 @@ AurigaNPCScript
 			object_id	数値
 
 			<object_id>で指定したモンスターに<title>を表示します。
+
+		sysmail命令
+			sysmail <sender>,<title>,<body>,<zeny>,<item_id>,<amount>[,<dest>];
+
+			sender, title, body		文字列
+			zeny, item_id, amount		数値
+			dest					文字列、省略可
+			システムメールを送信します。
+			<dest>を省略すると、スクリプトを実行しているキャラクターが対象になります。
+			Zenyを添付しない場合は<zeny>に0を指定します。
+			アイテムを添付しない場合は<item_id>と<amount>に0を指定します。
+			宛先が存在しない場合や受信箱に空きがない場合は送信できません。
 
 
 	＊関数

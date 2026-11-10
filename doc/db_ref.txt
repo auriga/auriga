@@ -1349,7 +1349,7 @@ Rate        : 付加する確率（万分率）
 ==========================================================================
 33. db/achievement_db.lua
 --------------------------------------------------------------------------
-NameID,Name,Type,Content={Number={ID,Count},...},Reward={Title,Script},Score
+NameID,Name,Type,Content={Number={ID,Count},...},Reward={Title,Item,Script},Score
 
 NameID : 実績のID
 Name   : 名称（ダミー）
@@ -1373,6 +1373,9 @@ Content : 実績の内容配列、1～10まで設定可能
 	Count   : その必要数
 Reward  : 実績達成で得る報酬内容配列
 	Title   : 設定可能な称号のID
+	Item    : メールで送付するアイテムID。省略時は0、個数は1。
+	          メールの保存成功後、同じ報酬のScriptを実行します。
+	          応答前にログアウトした場合などはScriptが実行されない場合があります。
 	Script  : 達成時に実行されるスクリプト
 	          アイテムスクリプト同様の仕様
 Score   : 実績達成で得るスコア

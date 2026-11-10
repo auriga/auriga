@@ -396,6 +396,33 @@ accreg_txt: save/accreg.txt
 party_share_level: 10
 guild_join_limit: 1
 guild_extension_increment: 4
+
+mail_system_expire_days
+mail_return_days
+mail_delete_days
+mail_returned_expire_days
+	メールの送信時点から数えた保管日数です。0で期限を無効にします。
+	受信箱を開いたときに判定します。期限を過ぎた未開封のプレイヤーメールは
+	送信者に返送し、開封済みメールと返送済みメールは削除します。
+
+mail_system_expire_action
+	期限切れのシステムメールを削除する場合は0、保持する場合は1を指定します。
+
+mail_return_keep_attach
+	返送時に添付を破棄する場合は0、保持する場合は1を指定します。
+
+conf/battle_auriga.conf の mail_player_attach
+	プレイヤー間のアイテムとZenyの添付を許可します。既定値はyesです。
+
+mail_zeny_fee
+	添付Zenyに対する手数料をパーセントで指定します。端数は切り捨てます。
+
+mail_attachment_price
+	添付するアイテム1枠ごとの手数料をZenyで指定します。
+
+mail_attachment_weight
+	添付アイテムの合計重量上限をクライアント表示単位で指定します。
+	これらの設定はconf/battle_auriga.confにあり、既定値0は無効です。
 inter_log_file: log/inter.log
 
 
