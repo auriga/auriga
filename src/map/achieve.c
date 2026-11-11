@@ -38,6 +38,7 @@
 #include "battle.h"
 #include "clif.h"
 #include "mail.h"
+#include "msg.h"
 #include "itemdb.h"
 #include "intif.h"
 
@@ -304,13 +305,14 @@ int achieve_check_reward(struct map_session_data *sd, int achieve_id)
 
 		idx = achieve_search_db(sd->achieve[i].nameid);
 		if(idx >= 0 && achieve_db[idx].reward_item > 0) {
-			struct mail_data md;
+			struct item reward;
+			char body[sizeof(((struct mail_data *)0)->body)];
+			int body_len;
 			if(itemdb_exists(achieve_db[idx].reward_item) == NULL)
 				return 1;
 			if(sd->achievement_mail_pending_flag)
 				return 1;
 			if(!battle_config.romail) {
-				struct item reward;
 				int flag;
 
 				memset(&reward, 0, sizeof(reward));
@@ -323,20 +325,21 @@ int achieve_check_reward(struct map_session_data *sd, int achieve_id)
 				}
 				goto reward_claimed;
 			}
-			memset(&md, 0, sizeof(md));
-			md.char_id = sd->status.char_id;
-			md.send_token = (unsigned int)achieve_id;
-			auriga_strlcpy(md.char_name, "System", sizeof(md.char_name));
-			auriga_strlcpy(md.receive_name, sd->status.name, sizeof(md.receive_name));
-			auriga_strlcpy(md.title, "ÀÑ’B¬•ñV", sizeof(md.title));
-			auriga_strlcpy(md.body, "ÀÑ‚Ì’B¬•ñV‚ğ‚¨‘—‚è‚µ‚Ü‚·B", sizeof(md.body));
-			md.body_size = (unsigned int)strlen(md.body);
-			md.item[0].nameid = achieve_db[idx].reward_item;
-			md.item[0].amount = 1;
-			md.item[0].identify = 1;
+			memset(&reward, 0, sizeof(reward));
+			reward.nameid = achieve_db[idx].reward_item;
+			reward.amount = 1;
+			reward.identify = 1;
+
+			body_len = snprintf(body, sizeof(body), msg_txt(217), achieve_db[idx].name);
+			if(body_len < 0)
+				return 1;
+			if(body_len >= (int)sizeof(body))
+				body_len = (int)sizeof(body) - 1;
+
 			sd->achievement_mail_pending = achieve_id;
 			sd->achievement_mail_pending_flag = 1;
-			if(intif_send_sysmail(&md) < 0) {
+			if(mail_send_achievement(sd->status.name, msg_txt(215), msg_txt(216), body, body_len,
+				&reward, sd->status.char_id, (unsigned int)achieve_id) < 0) {
 				sd->achievement_mail_pending_flag = 0;
 				return 1;
 			}

@@ -446,9 +446,9 @@ void mail_getappend(int account_id, int char_id, int zeny, unsigned int mail_num
 		clif_mail_getappend(sd->fd, result ? 0 : flag);
 }
 
-int mail_send_system(const char *dest_name, const char *sender_name,
+static int mail_send_system_sub(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
-	int zeny, const struct item *item)
+	int zeny, const struct item *item, int reward_char_id, unsigned int reward_id)
 {
 	struct mail_data md;
 
@@ -458,7 +458,8 @@ int mail_send_system(const char *dest_name, const char *sender_name,
 		return -1;
 
 	memset(&md, 0, sizeof(md));
-	md.char_id = 0;
+	md.char_id = reward_char_id;
+	md.send_token = reward_id;
 	if(sender_name && sender_name[0])
 		strncpy(md.char_name, sender_name, sizeof(md.char_name)-1);
 	else
@@ -486,4 +487,18 @@ int mail_send_system(const char *dest_name, const char *sender_name,
 	md.read = MAIL_READ_SYSTEM;
 
 	return intif_send_sysmail(&md);
+}
+
+int mail_send_system(const char *dest_name, const char *sender_name,
+	const char *title, const char *body, int body_len,
+	int zeny, const struct item *item)
+{
+	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, zeny, item, 0, 0);
+}
+
+int mail_send_achievement(const char *dest_name, const char *sender_name,
+	const char *title, const char *body, int body_len,
+	const struct item *item, int char_id, unsigned int achievement_id)
+{
+	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, 0, item, char_id, achievement_id);
 }
