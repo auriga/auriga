@@ -1856,8 +1856,7 @@ int pc_authok(int id,struct mmo_charstatus *st,struct registry *reg)
 	}
 
 	// MailData
-	sd->mail_append.index  = -1;
-	sd->mail_append.amount = 0;
+	sd->mail_append.count  = 0;
 	sd->mail_append.zeny   = 0;
 
 	// ホットキーセット

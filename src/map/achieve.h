@@ -59,6 +59,7 @@ struct achieve_db {
 	} content[MAX_ACHIEVE_CONTENT];
 	char num;
 	int title;
+	int reward_item;
 	struct script_code *reward;
 };
 
@@ -67,9 +68,10 @@ int achieve_search_itemid(int item_id);
 int achieve_calc_level(struct map_session_data *sd, int score);
 int achieve_update_content(struct map_session_data *sd, enum achieve_types type, int id, int num);
 int achieve_check_reward(struct map_session_data *sd, int achieve_id);
+void achieve_mail_result(struct map_session_data *sd, int achieve_id, int result);
 int achieve_check_title(struct map_session_data *sd, int title_id);
 
-bool achieve_insert_info(int achieveid, const char* name, enum achieve_types type, int score, int title, const char *reward);
+bool achieve_insert_info(int achieveid, const char* name, enum achieve_types type, int score, int title, const char *reward, int reward_item);
 bool achieve_insert_content(int achieveid, int nameid, int count);
 bool achieve_insert_db_end(void);
 bool achieve_insert_leveldb(int lv, int exp);

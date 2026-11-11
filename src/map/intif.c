@@ -54,6 +54,7 @@
 #include "msg.h"
 #include "status.h"
 #include "mail.h"
+#include "achieve.h"
 #include "npc.h"
 #include "merc.h"
 #include "elem.h"
@@ -63,8 +64,8 @@ static const int packet_len_table[]={
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
 	35,-1,39,13, 38,35, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
-	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
-	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
+	 9, 9,-1,-1,  0, 0, 0, 0, 15,-1,-1,-1, 11,-1, -1, 0,	// 3840-
+	 0,11,-1,38,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	-1, 7, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0, -1, 7,  3, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
@@ -422,6 +423,7 @@ int intif_saveaccountreg(struct map_session_data *sd)
 int intif_request_accountreg(struct map_session_data *sd)
 {
 	nullpo_retr(0, sd);
+	sd->state.accountreg_ready = 0;
 
 	if (inter_fd < 0)
 		return -1;
@@ -1132,6 +1134,23 @@ int intif_sendmail(struct mail_data *md)
 	return 0;
 }
 
+int intif_send_sysmail(struct mail_data *md)
+{
+	int size;
+
+	if (inter_fd < 0)
+		return -1;
+	nullpo_retr(-1, md);
+
+	size = sizeof(struct mail_data);
+	WFIFOW(inter_fd,0) = 0x3050;
+	WFIFOW(inter_fd,2) = 4+size;
+	memcpy(WFIFOP(inter_fd,4), md, size);
+	WFIFOSET(inter_fd, 4+size);
+
+	return 0;
+}
+
 /*==========================================
  * ƒ[ƒ‹‚Ìíœ—v‹
  *------------------------------------------
@@ -1170,7 +1189,7 @@ int intif_readmail(int char_id,int mail_num)
  * ƒ[ƒ‹‚É“Y•t‚³‚ê‚½‚à‚ÌóM
  *------------------------------------------
  */
-int intif_mail_getappend(int char_id,int mail_num)
+int intif_mail_getappend(int char_id, unsigned int mail_num, enum mail_attachment_type type)
 {
 	if (inter_fd < 0)
 		return -1;
@@ -1178,7 +1197,8 @@ int intif_mail_getappend(int char_id,int mail_num)
 	WFIFOW(inter_fd,0) = 0x304d;
 	WFIFOL(inter_fd,2) = char_id;
 	WFIFOL(inter_fd,6) = mail_num;
-	WFIFOSET(inter_fd, 10);
+	WFIFOB(inter_fd,10) = (unsigned char)type;
+	WFIFOSET(inter_fd, 11);
 
 	return 0;
 }
@@ -1217,6 +1237,62 @@ int intif_mail_deleteappend(int char_id, int mail_num)
 	WFIFOL(inter_fd,2)  = char_id;
 	WFIFOL(inter_fd,6)  = mail_num;
 	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+
+/*==========================================
+ * RoDEX‚Ìˆ¶æ‚ğÆ‰ï‚·‚é
+ *------------------------------------------
+ */
+int intif_mail_recipient(int char_id, const char *name)
+{
+	if(inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3053;
+	WFIFOL(inter_fd,2) = char_id;
+	memcpy(WFIFOP(inter_fd,6), name, 24);
+	WFIFOSET(inter_fd,30);
+	return 0;
+}
+
+/*==========================================
+ * ƒ[ƒ‹‚Ì•Ô‘—
+ *------------------------------------------
+ */
+int intif_mail_return(int char_id, int mail_num)
+{
+	if (inter_fd < 0)
+		return -1;
+
+	WFIFOW(inter_fd,0) = 0x3051;
+	WFIFOL(inter_fd,2) = char_id;
+	WFIFOL(inter_fd,6) = mail_num;
+	WFIFOSET(inter_fd, 10);
+
+	return 0;
+}
+
+/*==========================================
+ * “Y•t•¨‚Ì•Ô‘—
+ *------------------------------------------
+ */
+int intif_mail_restoreappend(int char_id, int mail_num, int zeny, struct item *item)
+{
+	int size;
+
+	if (inter_fd < 0 || item == NULL)
+		return -1;
+
+	size = sizeof(struct item) * MAIL_MAX_ITEM;
+	WFIFOW(inter_fd,0) = 0x3052;
+	WFIFOW(inter_fd,2) = 16 + size;
+	WFIFOL(inter_fd,4) = char_id;
+	WFIFOL(inter_fd,8) = mail_num;
+	WFIFOL(inter_fd,12) = zeny;
+	memcpy(WFIFOP(inter_fd,16), item, size);
+	WFIFOSET(inter_fd, 16 + size);
 
 	return 0;
 }
@@ -1479,6 +1555,7 @@ static int intif_parse_AccountReg(int fd)
 		sd->save_reg.account[j].value   = RFIFOL(fd,p+32);
 	}
 	sd->save_reg.account_num = j;
+	sd->state.accountreg_ready = 1;
 
 	// —a‹àî•ñ‚ğŠi”[
 	sd->deposit = pc_readaccountreg(sd,"#PC_DEPOSIT");
@@ -2013,22 +2090,49 @@ static int intif_parse_DeleteElemOk(int fd)
 static int intif_parse_MailSendRes(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
-	int fail = RFIFOB(fd,6);
+	int result = RFIFOB(fd,6);
+	unsigned int token = RFIFOL(fd,11);
 
-	if(sd) {
-		clif_res_sendmail(sd->fd,fail);
-		if(fail)
-			mail_removeitem(sd,0);
+	if(sd == NULL || sd->status.char_id != RFIFOL(fd,7))
+		return 0;
+	if(token != 0 && token == sd->mail_preflight_token) {
+		sd->mail_preflight_token = 0;
+		clif_res_sendmail(sd->fd, 1);
+		mail_removeitem(sd, 0);
+		return 0;
+	}
+	if(token != 0 && (!sd->mail_pending_flag || sd->mail_pending.send_token != token))
+		return 0;
+	clif_res_sendmail(sd->fd, result != 0);
+	if(token == 0) {
+		if(result != 0)
+			mail_removeitem(sd, 0);
+		return 0;
+	}
+	if(result == 1) {
+		mail_refund_pending(sd);
+	} else if(result == 0 || result == 2) {
+		memset(&sd->mail_pending, 0, sizeof(sd->mail_pending));
+		sd->mail_pending_flag = 0;
+		chrif_save(sd, 0);
 	}
 	return 0;
 }
 
 static int intif_parse_MailBoxLoad(int fd)
 {
-	struct map_session_data *sd = map_nick2sd(RFIFOP(fd,8));
+	struct map_session_data *sd;
+	unsigned int count;
 
+	if(RFIFOW(fd,2) < 36)
+		return 0;
+	count = RFIFOL(fd,4);
+	if(count > MAIL_STORE_MAX || RFIFOW(fd,2) != 36 + count * sizeof(struct mail_data) ||
+	   memchr(RFIFOP(fd,8), 0, 24) == NULL)
+		return 0;
+	sd = map_nick2sd(RFIFOP(fd,8));
 	if(sd)
-		clif_send_mailbox(sd,RFIFOL(fd,4),(struct mail_data *)RFIFOP(fd,32));
+		clif_send_mailbox(sd,count,(struct mail_data *)RFIFOP(fd,36),RFIFOL(fd,32));
 
 	return 0;
 }
@@ -2042,6 +2146,10 @@ static int intif_parse_ArriveNewMail(int fd)
 	if((sd = map_nick2sd(md.receive_name))==NULL)
 		return 0;
 	clif_arrive_newmail(sd->fd,&md);
+#if PACKETVER >= 20150513
+	if(sd->state.rodex_open)
+		intif_mailbox(sd->status.char_id);
+#endif
 	return 0;
 }
 
@@ -2061,24 +2169,88 @@ static int intif_parse_MailDeleteRes(int fd)
 {
 	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
 
-	if(sd)
+	if(sd) {
 		clif_deletemail_res(sd->fd,RFIFOL(fd,6),RFIFOB(fd,10));
+#if PACKETVER >= 20150513
+		if(RFIFOB(fd,10) == 0)
+			intif_mailbox(sd->status.char_id);
+#endif
+	}
+	return 0;
+}
+
+static int intif_parse_MailReturnRes(int fd)
+{
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd,2));
+	int mail_num = RFIFOL(fd,6);
+	int flag = RFIFOB(fd,10);
+
+	if(sd) {
+		clif_returnmail_res(sd->fd, mail_num, flag);
+		if(flag == 0)
+			intif_mailbox(sd->status.char_id);
+	}
 	return 0;
 }
 
 static int intif_parse_MailGetAppend(int fd)
 {
-	mail_getappend(RFIFOL(fd,4),RFIFOL(fd,8),RFIFOL(fd,12),(struct item *)RFIFOP(fd,16));
+	struct item item[MAIL_MAX_ITEM];
+
+	if(RFIFOW(fd,2) == 21 + sizeof(item)) {
+		memcpy(item, RFIFOP(fd,21), sizeof(item));
+		mail_getappend(RFIFOL(fd,4), RFIFOL(fd,16), RFIFOL(fd,8), RFIFOL(fd,12),
+			RFIFOB(fd,20), item);
+	}
 
 	return 0;
 }
 
+static int intif_parse_SysMailRes(int fd)
+{
+	struct mail_data md;
+	int result;
+
+	if(RFIFOW(fd,2) != 5 + sizeof(md))
+		return 0;
+	result = RFIFOB(fd,4);
+	memcpy(&md, RFIFOP(fd,5), sizeof(md));
+	if(md.send_token != 0 && md.char_id > 0) {
+		struct map_session_data *sd = map_charid2sd(md.char_id);
+		if(sd)
+			achieve_mail_result(sd, md.send_token, result);
+		return 0;
+	}
+	if(result != 0)
+		printf("sysmail: delivery failed for %.*s\n", (int)sizeof(md.receive_name), md.receive_name);
+	return 0;
+}
+
+static void intif_parse_MailRecipient(int fd)
+{
+#if PACKETVER >= 20160302
+	struct map_session_data *sd = map_charid2sd(RFIFOL(fd,2));
+	if(sd)
+		clif_rodex_recipient(sd, RFIFOL(fd,6), RFIFOW(fd,10), RFIFOW(fd,12), RFIFOP(fd,14));
+#endif
+}
+
 static int intif_parse_MailCheckOK(int fd)
 {
-	struct map_session_data *sd = map_id2sd(RFIFOL(fd,4));
+	struct map_session_data *sd;
+	struct mail_data md;
 
-	if(sd)
-		mail_sendmail(sd,(struct mail_data *)RFIFOP(fd,8));
+	if(RFIFOW(fd,2) != 8 + sizeof(md))
+		return 0;
+	sd = map_id2sd(RFIFOL(fd,4));
+	if(!sd)
+		return 0;
+	memcpy(&md, RFIFOP(fd,8), sizeof(md));
+	if(md.char_id != sd->status.char_id || md.send_token == 0 ||
+	   md.send_token != sd->mail_preflight_token)
+		return 0;
+	sd->mail_preflight_token = 0;
+	mail_sendmail(sd, &md);
 
 	return 0;
 }
@@ -2398,6 +2570,9 @@ int intif_parse(int fd)
 	case 0x384a: intif_parse_ArriveNewMail(fd); break;
 	case 0x384b: intif_parse_ReadMail(fd); break;
 	case 0x384c: intif_parse_MailDeleteRes(fd); break;
+	case 0x3851: intif_parse_MailReturnRes(fd); break;
+	case 0x3852: intif_parse_SysMailRes(fd); break;
+	case 0x3853: intif_parse_MailRecipient(fd); break;
 	case 0x384d: intif_parse_MailGetAppend(fd); break;
 	case 0x384e: intif_parse_MailCheckOK(fd); break;
 	case 0x3860: intif_parse_LoadQuestList(fd); break;

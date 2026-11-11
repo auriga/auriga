@@ -608,7 +608,7 @@ static int luafunc_InsertRandopt(lua_State *NL)
  */
 static int luafunc_InsertAchieveInfo(lua_State *NL)
 {
-	int achieveid, score, title;
+	int achieveid, score, title, reward_item;
 	enum achieve_types type;
 	const char *name = NULL;
 	const char *reward = NULL;
@@ -620,8 +620,9 @@ static int luafunc_InsertAchieveInfo(lua_State *NL)
 	score   = luaL_checkint(NL,4);
 	title   = luaL_checkint(NL,5);
 	reward  = luaL_checkstring(NL,6);
+	reward_item = luaL_optint(NL,7,0);
 
-	result = achieve_insert_info(achieveid, name, type, score, title, reward);
+	result = achieve_insert_info(achieveid, name, type, score, title, reward, reward_item);
 	lua_pushboolean(NL, result);
 
 	return 1;

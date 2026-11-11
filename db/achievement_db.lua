@@ -104,7 +104,7 @@ AchievementTBL =
 		},
 		Reward = {
 			Title = 2001,
-			Script = "{ getitem 31141,1; }"
+			Item = 31141
 		},
 		Score = 1,
 	},
@@ -655,7 +655,7 @@ AchievementTBL =
 		},
 		Reward = {
 			Title = 2036,
-			Script = "{ getitem 31826,1; }"
+			Item = 31826
 		},
 		Score = 1,
 	},
@@ -673,6 +673,90 @@ AchievementTBL =
 		},
 		Score = 1,
 	},
+	[500051] = {
+		Name = "討伐「エルヴィラ」",
+		Type = ACH_KILL_MOB,
+		Content = {
+			[1] = {
+				ID = 3583,				--エルヴィラ
+				Count = 5000
+			}
+		},
+		Reward = {
+			Title = 2048
+		},
+		Score = 1,
+	},
+	[500052] = {
+		Name = "討伐「ソヒョン」",
+		Type = ACH_KILL_MOB,
+		Content = {
+			[1] = {
+				ID = 3587,				--ソヒョン
+				Count = 5000
+			}
+		},
+		Reward = {
+			Title = 2049
+		},
+		Score = 1,
+	},
+	[500054] = {
+		Name = "討伐「ローラ」",
+		Type = ACH_KILL_MOB,
+		Content = {
+			[1] = {
+				ID = 3595,				--ローラ
+				Count = 5000
+			}
+		},
+		Reward = {
+			Title = 2051
+		},
+		Score = 1,
+	},
+	[500056] = {
+		Name = "討伐「狂信者ヒュリエル」",
+		Type = ACH_KILL_MOB,
+		Content = {
+			[1] = {
+				ID = 3596,				--狂信者ヒュリエル
+				Count = 1
+			}
+		},
+		Reward = {
+			Title = 2053
+		},
+		Score = 1,
+	},
+	[500057] = {
+		Name = "討伐「無慈悲なジオイア」",
+		Type = ACH_KILL_MOB,
+		Content = {
+			[1] = {
+				ID = 3584,				--無慈悲なジオイア
+				Count = 1
+			}
+		},
+		Reward = {
+			Title = 2054
+		},
+		Score = 1,
+	},
+	[500341] = {
+		Name = "カボチャケーキをもっと食べよう！",
+		Type = ACH_USE_ITEM,
+		Content = {
+			[1] = {
+				ID = 11550,				--カボチャケーキ
+				Count = 3000
+			}
+		},
+		Reward = {
+			Title = 2338
+		},
+		Score = 1,
+	},
 };
 
 function AchievementInit()
@@ -683,7 +767,10 @@ function AchievementInit()
 		if nil == achieveInfo.Reward.Script then
 			achieveInfo.Reward.Script = "{}"
 		end
-		result = InsertAchieveInfo(achieveID, achieveInfo.Name, achieveInfo.Type, achieveInfo.Score, achieveInfo.Reward.Title, achieveInfo.Reward.Script)
+		if nil == achieveInfo.Reward.Item then
+			achieveInfo.Reward.Item = 0
+		end
+		result = InsertAchieveInfo(achieveID, achieveInfo.Name, achieveInfo.Type, achieveInfo.Score, achieveInfo.Reward.Title, achieveInfo.Reward.Script, achieveInfo.Reward.Item)
 		if not result == true then
 			return false
 		end

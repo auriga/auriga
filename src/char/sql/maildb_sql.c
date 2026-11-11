@@ -36,6 +36,27 @@
 
 static struct dbt *mail_db = NULL;
 
+/* 主キー順に一件ずつ走査し、末尾で先頭に戻る。 */
+bool maildb_sql_next(int *char_id)
+{
+	static int cursor = 0;
+	char **row;
+	bool found = false;
+
+	if(!sqldbs_query(&mysql_handle, "SELECT `char_id` FROM `" MAIL_TABLE "` WHERE `char_id` > '%d' ORDER BY `char_id` LIMIT 1", cursor))
+		return false;
+	row = sqldbs_fetch(&mysql_handle);
+	if(row) {
+		cursor = atoi(row[0]);
+		*char_id = cursor;
+		found = true;
+	} else {
+		cursor = 0;
+	}
+	sqldbs_free_result(&mysql_handle);
+	return found;
+}
+
 /*==========================================
  * 設定ファイルの読込
  *------------------------------------------
@@ -45,6 +66,71 @@ int maildb_sql_config_read_sub(const char *w1, const char *w2)
 	return 0;
 }
 
+static bool maildb_sql_save_attachments(int char_id, unsigned int mail_num, const struct mail_data *md)
+{
+	int i;
+	bool result;
+
+	result = sqldbs_query(&mysql_handle,
+		"DELETE FROM `" MAIL_ATTACHMENT_TABLE "` WHERE `char_id`='%d' AND `number`='%u'",
+		char_id, mail_num);
+	if(result == false)
+		return false;
+
+	/* 添付はすべてmail_attachmentに保存する */
+	for(i = 0; i < MAIL_MAX_ITEM; i++) {
+		const struct item *it = &md->item[i];
+		if(it->nameid <= 0 || it->amount <= 0)
+			continue;
+		result = sqldbs_query(&mysql_handle,
+			"INSERT INTO `" MAIL_ATTACHMENT_TABLE "` (`char_id`,`number`,`idx`,"
+			"`id`,`nameid`,`amount`,`equip`,`identify`,`refine`,`attribute`,"
+			"`card0`,`card1`,`card2`,`card3`,"
+			"`opt0id`,`opt0val`,`opt1id`,`opt1val`,`opt2id`,`opt2val`,"
+			"`opt3id`,`opt3val`,`opt4id`,`opt4val`,`limit`) VALUES ("
+			"'%d','%u','%d',"
+			"'%u','%d','%d','%u','%d','%d','%d',"
+			"'%d','%d','%d','%d',"
+			"'%d','%d','%d','%d','%d','%d',"
+			"'%d','%d','%d','%d','%u')",
+			char_id, mail_num, i,
+			it->id, it->nameid, it->amount, it->equip, it->identify, it->refine, it->attribute,
+			it->card[0], it->card[1], it->card[2], it->card[3],
+			it->opt[0].id, it->opt[0].val, it->opt[1].id, it->opt[1].val, it->opt[2].id, it->opt[2].val,
+			it->opt[3].id, it->opt[3].val, it->opt[4].id, it->opt[4].val, it->limit);
+		if(result == false)
+			return false;
+	}
+	return true;
+}
+
+static bool maildb_sql_load_attachments(int char_id, struct mail_data *md, int store)
+{
+	int i = 0;
+	char **sql_row;
+	bool result;
+
+	result = sqldbs_query(&mysql_handle,
+		"SELECT `number`, `idx`, " ITEM_SQL_COLUMNS
+		" FROM `" MAIL_ATTACHMENT_TABLE "` WHERE `char_id`='%d' ORDER BY `number`,`idx`",
+		char_id);
+	if(result == false)
+		return false;
+
+	while((sql_row = sqldbs_fetch(&mysql_handle)) != NULL) {
+		unsigned int number = (unsigned int)atoi(sql_row[0]);
+		int idx = atoi(sql_row[1]);
+		if(idx < 0 || idx >= MAIL_MAX_ITEM)
+			continue;
+		while(i < store && md[i].mail_num < number)
+			i++;
+		if(i < store && md[i].mail_num == number)
+			item_sql_loadrow(&md[i].item[idx], &sql_row[2], 0);
+	}
+	sqldbs_free_result(&mysql_handle);
+	return true;
+}
+
 /*==========================================
  * メール本文の保存
  *------------------------------------------
@@ -52,7 +138,7 @@ int maildb_sql_config_read_sub(const char *w1, const char *w2)
 bool maildb_sql_store_mail(int char_id, struct mail_data *md)
 {
 	unsigned int i;
-	char buf[3][256], body_data[1024];
+	char buf[3][256], body_data[1024] = "";
 	char *p = body_data;
 	bool result = false;
 
@@ -62,24 +148,26 @@ bool maildb_sql_store_mail(int char_id, struct mail_data *md)
 	for(i = 0; i< md->body_size; i++)
 		p += sprintf(p, "%02X", (unsigned char)(md->body[i]));
 
-	result = sqldbs_query(&mysql_handle,
-		"INSERT INTO `" MAIL_DATA_TABLE "` (`char_id`, `number`, `read`, `send_name`, `receive_name`, `title`, "
-		"`times`, `size`, `body`, `zeny`, "
-		"`id`, `nameid`, `amount`, `equip`, `identify`, `refine`, `attribute`, "
-		"`card0`, `card1`, `card2`, `card3`,"
-		"`opt0id`, `opt0val`, `opt1id`, `opt1val`, `opt2id`, `opt2val`,"
-		"`opt3id`, `opt3val`, `opt4id`, `opt4val`, `limit`) "
-		"VALUES ('%d','%u','%d','%s','%s','%s','%u','%u','%s',"
-		"'%d','%u','%d','%d','%d','%d','%d','%d','%d','%d','%d','%d',"
-		"'%d','%d','%d','%d','%d','%d','%d','%d','%d','%d','%u')",
-		char_id, md->mail_num, md->read, strecpy(buf[0], md->char_name), strecpy(buf[1], md->receive_name), strecpy(buf[2], md->title),
-		md->times, md->body_size, body_data,
-		md->zeny, md->item.id, md->item.nameid, md->item.amount, md->item.equip, md->item.identify, md->item.refine, md->item.attribute,
-		md->item.card[0], md->item.card[1], md->item.card[2], md->item.card[3],
-		md->item.opt[0].id, md->item.opt[0].val, md->item.opt[1].id, md->item.opt[1].val, md->item.opt[2].id, md->item.opt[2].val,
-		md->item.opt[3].id, md->item.opt[3].val, md->item.opt[4].id, md->item.opt[4].val, md->item.limit
-	);
+	if(sqldbs_transaction_start(&mysql_handle) == false)
+		return false;
 
+	result = false;
+	do {
+		if(sqldbs_query(&mysql_handle,
+			"INSERT INTO `" MAIL_DATA_TABLE "` (`char_id`, `number`, `read`, `send_id`, `send_name`, `receive_name`, `title`, "
+			"`times`, `size`, `body`, `zeny`) "
+			"VALUES ('%d','%u','%d','%d','%s','%s','%s','%u','%u','%s','%d')",
+			char_id, md->mail_num, md->read, md->char_id, strecpy(buf[0], md->char_name), strecpy(buf[1], md->receive_name), strecpy(buf[2], md->title),
+			md->times, md->body_size, body_data, md->zeny
+		) == false)
+			break;
+		if(maildb_sql_save_attachments(char_id, md->mail_num, md) == false)
+			break;
+		result = true;
+	} while(0);
+
+	if(!sqldbs_transaction_end(&mysql_handle, result))
+		return false;
 	return result;
 }
 
@@ -87,31 +175,35 @@ bool maildb_sql_store_mail(int char_id, struct mail_data *md)
  * メールのセーブ
  *------------------------------------------
  */
-bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAIL_STORE_MAX])
+bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data *md)
 {
 	bool result = false;
 
 	nullpo_retr(false, md);
 
-	if(i < 0 || i >= MAIL_STORE_MAX)
+	if(i < 0 || i >= store)
 		return false;
 
-	// readもしくはzeny,itemデータを更新するだけでよい
-	result = sqldbs_query(&mysql_handle,
-		"UPDATE `" MAIL_DATA_TABLE "` SET `read` = '%d', `zeny` = '%d', "
-		"`id` = '%u', `nameid` = '%d', `amount` = '%d', `equip` = '%d', `identify` = '%d', `refine` = '%d', `attribute` = '%d', "
-		"`card0` = '%d', `card1` = '%d', `card2` = '%d', `card3` = '%d', "
-		"`opt0id` = '%d', `opt0val` = '%d', `opt1id` = '%d', `opt1val` = '%d', `opt2id` = '%d', `opt2val` = '%d', "
-		"`opt3id` = '%d', `opt3val` = '%d', `opt4id` = '%d', `opt4val` = '%d', `limit` = '%u' "
-		"WHERE `char_id` = '%d' AND `number` = '%u'",
-		md[i].read, md[i].zeny,
-		md[i].item.id, md[i].item.nameid, md[i].item.amount, md[i].item.equip, md[i].item.identify, md[i].item.refine, md[i].item.attribute,
-		md[i].item.card[0], md[i].item.card[1], md[i].item.card[2], md[i].item.card[3],
-		md[i].item.opt[0].id, md[i].item.opt[0].val, md[i].item.opt[1].id, md[i].item.opt[1].val, md[i].item.opt[2].id, md[i].item.opt[2].val,
-		md[i].item.opt[3].id, md[i].item.opt[3].val, md[i].item.opt[4].id, md[i].item.opt[4].val, md[i].item.limit,
-		char_id, md[i].mail_num
-	);
+	/* メール情報と添付をそれぞれ更新する */
+	if(sqldbs_transaction_start(&mysql_handle) == false)
+		return false;
 
+	result = false;
+	do {
+		if(sqldbs_query(&mysql_handle,
+			"UPDATE `" MAIL_DATA_TABLE "` SET `read` = '%d', `send_id` = '%d', `zeny` = '%d' "
+			"WHERE `char_id` = '%d' AND `number` = '%u'",
+			md[i].read, md[i].char_id, md[i].zeny,
+			char_id, md[i].mail_num
+		) == false)
+			break;
+		if(maildb_sql_save_attachments(char_id, md[i].mail_num, &md[i]) == false)
+			break;
+		result = true;
+	} while(0);
+
+	if(!sqldbs_transaction_end(&mysql_handle, result))
+		return false;
 	return result;
 }
 
@@ -119,33 +211,36 @@ bool maildb_sql_save_mail(int char_id, int i, int store, struct mail_data md[MAI
  * メールの読み取り
  *------------------------------------------
  */
-bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md[MAIL_STORE_MAX])
+bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data *md, int capacity)
 {
 	int i;
 	char **sql_row;
 	bool result = false;
 
 	nullpo_retr(false, md);
+	if(capacity <= 0 || m == NULL || m->store > capacity)
+		return false;
 
 	result = sqldbs_query(&mysql_handle,
-		"SELECT `number`, `read`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny`, "
-		ITEM_SQL_COLUMNS
-		" FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
+		"SELECT `number`, `read`, `send_id`, `send_name`, `receive_name`, `title`, `times`, `size`, `body`, `zeny` "
+		"FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' ORDER BY `number`", char_id
 	);
 	if(result == false)
 		return false;
 
-	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < MAIL_STORE_MAX; i++) {
+	for(i = 0; (sql_row = sqldbs_fetch(&mysql_handle)) && i < capacity; i++) {
 		unsigned int n;
 		char *p;
 
+		memset(&md[i], 0, sizeof(md[i]));
 		md[i].mail_num = (unsigned int)atoi(sql_row[0]);
 		md[i].read     = atoi(sql_row[1]);
-		strncpy(md[i].char_name, sql_row[2] ,24);
-		strncpy(md[i].receive_name, sql_row[3], 24);
-		strncpy(md[i].title, sql_row[4], 40);
-		md[i].times     = (unsigned int)atoi(sql_row[5]);
-		md[i].body_size = (unsigned int)atoi(sql_row[6]);
+		md[i].char_id  = atoi(sql_row[2]);
+		strncpy(md[i].char_name, sql_row[3] ,24);
+		strncpy(md[i].receive_name, sql_row[4], 24);
+		strncpy(md[i].title, sql_row[5], 40);
+		md[i].times     = (unsigned int)atoi(sql_row[6]);
+		md[i].body_size = (unsigned int)atoi(sql_row[7]);
 
 		if(md[i].body_size > sizeof(md[i].body)) {
 			printf("mail_read_mail: %d invalid body size %d!!\n", char_id, md[i].body_size);
@@ -153,19 +248,23 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
 		}
 
 		// SELECT UNHEX()
-		for(n = 0, p = sql_row[7]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
+		for(n = 0, p = sql_row[8]; n < md[i].body_size && p[0] && p[1]; n++, p += 2) {
 			int c = 0;
 			sscanf(p, "%02x", &c);
 			md[i].body[n] = c;
 		}
 		md[i].body_size = n;
 
-		md[i].zeny = atoi(sql_row[8]);
-		item_sql_loadrow(&md[i].item, &sql_row[9], 0);
+		md[i].zeny = atoi(sql_row[9]);
 	}
 	sqldbs_free_result(&mysql_handle);
 
-	if(i != m->store) {	// 数に相違あり？
+	if(i > 0 && maildb_sql_load_attachments(char_id, md, i) == false) {
+		printf("mail_read_mail: %d attachment load failed\n", char_id);
+		return false;
+	}
+
+	if(i != m->store && m->store <= capacity) {	// 数に相違あり？
 		struct mail m2;
 		printf("mail_read_mail: %d stored number mismatch!! (%d != %d)\n", char_id, i, m->store);
 		memcpy(&m2, m, sizeof(struct mail));
@@ -184,36 +283,38 @@ bool maildb_sql_read_mail(int char_id, const struct mail *m, struct mail_data md
  */
 bool maildb_sql_deletemail(int char_id, unsigned int mail_num, const struct mail *m)
 {
-	struct mail_data md[MAIL_STORE_MAX];
 	struct mail m2;
-	int i;
 	bool result = false;
 
 	nullpo_retr(false, m);
+	if(m->store <= 0)
+		return false;
 
-	memset(md, 0, sizeof(md));
-	maildb_sql_read_mail(char_id, m, md);
+	if(!sqldbs_transaction_start(&mysql_handle))
+		return false;
 
-	for(i = 0; i < m->store; i++) {
-		if(md[i].mail_num == mail_num)
+	result = false;
+	do {
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_ATTACHMENT_TABLE "` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, mail_num))
 			break;
-	}
-	if(i >= m->store)
-		return false;
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, mail_num))
+			break;
+		if(sqldbs_affected_rows(&mysql_handle) <= 0)
+			break;
+		memcpy(&m2, m, sizeof(struct mail));
+		m2.store--;
+		if(!sqldbs_query(&mysql_handle, "UPDATE `" MAIL_TABLE "` SET `store` = '%d' WHERE `char_id` = '%d'", m2.store, char_id))
+			break;
+		result = true;
+	} while(0);
 
-	result = sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d' AND `number` = '%u'", char_id, mail_num);
-	if(result == false)
+	if(!sqldbs_transaction_end(&mysql_handle, result) || !result)
 		return false;
-
-	if(sqldbs_affected_rows(&mysql_handle) <= 0)
 	{
-		// 削除失敗
-		return false;
+		struct mail *cached = (struct mail *)numdb_search(mail_db, char_id);
+		if(cached)
+			memcpy(cached, &m2, sizeof(struct mail));
 	}
-
-	memcpy(&m2, m, sizeof(struct mail));
-	m2.store--;
-	maildb_sql_save(&m2);
 
 	return true;
 }
@@ -237,52 +338,52 @@ bool maildb_sql_delete(int char_id)
 	struct mail *m = (struct mail *)numdb_search(mail_db, char_id);
 	bool result = false;
 
-	if( sqldbs_transaction_start(&mysql_handle) == false )
-		return result;
-
-	// try
-	do
-	{
+	if(!sqldbs_transaction_start(&mysql_handle))
+		return false;
+	do {
 		if(m) {
-			int i;
-			struct mail_data md[MAIL_STORE_MAX];
-
-			memset(md, 0, sizeof(md));
-			maildb_sql_read_mail(char_id, m, md);
-
-			for(i = 0; i < m->store; i++) {
-				// ペット削除
-				if(md[i].item.card[0] == (int)0xff00) {
-					if( petdb_delete(*((int *)(&md[i].item.card[1]))) == false )
-						break;
+			int i, j;
+			struct mail_data *md = NULL;
+			if(m->store < 0)
+				break;
+			if(m->store > 0) {
+				int capacity = m->store;
+				md = (struct mail_data *)calloc((size_t)capacity, sizeof(*md));
+				if(md == NULL)
+					break;
+				if(!maildb_sql_read_mail(char_id, m, md, capacity)) {
+					free(md);
+					break;
 				}
 			}
-			if(i != m->store)
+			for(i = 0; i < m->store; i++) {
+				for(j = 0; j < MAIL_MAX_ITEM; j++) {
+					if(md[i].item[j].card[0] == (int)0xff00 &&
+					   !petdb_delete(*((int *)(&md[i].item[j].card[1]))))
+						break;
+				}
+				if(j < MAIL_MAX_ITEM)
+					break;
+			}
+			free(md);
+			if(i < m->store)
 				break;
 		}
-
-		// delete mail
-		if( sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_TABLE "` WHERE `char_id` = '%d'", char_id) == false )
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_ATTACHMENT_TABLE "` WHERE `char_id` = '%d'", char_id))
 			break;
-
-		// delete mail data
-		if( sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d'", char_id) == false )
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_DATA_TABLE "` WHERE `char_id` = '%d'", char_id))
 			break;
-
-		// success
+		if(!sqldbs_query(&mysql_handle, "DELETE FROM `" MAIL_TABLE "` WHERE `char_id` = '%d'", char_id))
+			break;
 		result = true;
-
-		if(m && m->char_id == char_id)
-		{
-			// cache delete
-			numdb_erase(mail_db, char_id);
-			aFree(m);
-		}
 	} while(0);
-
-	sqldbs_transaction_end(&mysql_handle, result);
-
-	return false;
+	if(!sqldbs_transaction_end(&mysql_handle, result) || !result)
+		return false;
+	if(m && m->char_id == char_id) {
+		numdb_erase(mail_db, char_id);
+		aFree(m);
+	}
+	return true;
 }
 
 /*==========================================
@@ -320,13 +421,13 @@ const struct mail* maildb_sql_load(int char_id)
 		m->rates      = (unsigned int)atoi(sql_row[1]);
 		m->store      = atoi(sql_row[2]);
 
-		if(m->store < 0 || m->store >= MAIL_STORE_MAX) {	// 値が異常なので補正する
-			struct mail_data md[MAIL_STORE_MAX];
-			memset(md, 0, sizeof(md));
-			maildb_sql_read_mail(m->char_id, m, md);
+		if(m->store < 0) {
+			m->char_id = -1;
+			m = NULL;
 		}
 	} else {
 		// 見つからなくても正常
+		m->char_id = -1;
 		m = NULL;
 	}
 	sqldbs_free_result(&mysql_handle);

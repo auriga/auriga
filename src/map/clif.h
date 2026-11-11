@@ -256,6 +256,7 @@ void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int ta
 void clif_hat_effect_single(struct map_session_data* sd, int effectId, bool enable);
 void clif_send_achievement_list(struct map_session_data *sd);
 void clif_send_achievement_update(struct map_session_data *sd, struct achieve_data *ad);
+void clif_achievement_reward_ack(int fd, char result, int achieve_id);
 void clif_crimson_marker(struct map_session_data *sd, struct block_list *bl, bool remove);
 void clif_dynamicnpc_create_ack(struct map_session_data *sd, int type);
 void clif_item_preview(struct map_session_data *sd, short idx);
@@ -513,13 +514,18 @@ void clif_rankinglist(const int fd,const char *charname[10],const int point[10],
 
 // mail
 void clif_openmailbox(const int fd);
-void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX]);
+void clif_send_mailbox(struct map_session_data *sd,int store,struct mail_data md[MAIL_STORE_MAX],int unread);
 void clif_receive_mail(struct map_session_data *sd,struct mail_data *md);
 void clif_res_sendmail(const int fd,int fail);
 void clif_res_sendmail_setappend(const int fd,int idx,int flag);
 void clif_mail_getappend(const int fd,int flag);
+#if PACKETVER >= 20150513
+void clif_rodex_recipient(struct map_session_data *sd, int char_id, int class_, int level, const char *name);
+void clif_rodex_getappend_ack(struct map_session_data *sd, unsigned int mail_num, enum mail_attachment_type type, int flag);
+#endif
 void clif_arrive_newmail(const int fd,struct mail_data *md);
 void clif_deletemail_res(const int fd,int mail_num,int flag);
+void clif_returnmail_res(const int fd,int mail_num,int flag);
 
 // homun
 void clif_spawnhom(struct homun_data *hd);

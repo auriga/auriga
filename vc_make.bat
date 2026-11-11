@@ -269,7 +269,7 @@ if "%__TXTCONVERTER__%"=="SKIP" goto NOCONVERTER1
 
 echo コンバーターコンパイル
 cd ..\converter
-cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c
+cl %__warning__% %__cpu__% %__opt1__% %__include__% *.c ..\char\sql\item_sql.c
 link %__opt2__% /out:"../../txt-converter.exe"
 :NOCONVERTER1
 

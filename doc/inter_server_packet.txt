@@ -7,7 +7,7 @@ R 3800-389f
 	-1, 7, 0, 0,  0, 0, 0, 0, -1,11,15, 7,  6, 0,  0, 0,	// 3810-
 	35,-1,39,13, 38,33, 7,-1, 14, 0, 0, 0,  0, 0,  0, 0,	// 3820-
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 15,67,186,-1,	// 3830-
-	 9, 9,-1,-1,  0, 0, 0, 0,  7,-1,-1,-1, 11,-1, -1, 0,	// 3840-
+	 9, 9,-1,-1,  0, 0, 0, 0, 15,-1,-1,-1, 11,-1, -1, 0,	// 3840-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3850-
 	 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3870-
@@ -217,14 +217,18 @@ R 3842 <len>.w { <guild_castle>.?B }.?B
 	ギルド城データ一括送信
 R 3843 <len>.w { <maxlv>.l }.?B
 	ギルドスキルツリー最大値
-R 3848 <account>.l <flag>.B
+R 3848 <account>.l <flag>.B <char_id>.l <send_token>.l
+	flag: 0=送信成功、1=送信失敗、2=送信失敗・添付を返却メールに保存
+	send_token: 送信要求ごとの識別値。宛先確認の失敗時は0。
 	メールが送れたかどうかの応答
 S 3049 <char_id>.l
 	メールBOX更新要求
-R 3849 <len>.w <store>.l <char_name>.24B { <struct mail_data>.?B }.?B*
+R 3849 <len>.w <store>.l <char_name>.24B <unread>.l { <struct mail_data>.?B }.?B*
 	メール一覧送信
+	mail_dataのexpires_atは一覧表示用の返送・削除期限（UNIX時刻、0は無期限）。
 S 304a <len>.w <struct mail_data>.?B
 	メール送信
+	mail_dataのsend_feeは送信失敗時に添付とともに返却する手数料。
 R 384a <len>.w <struct mail_data>.?B
 	新着メール通知
 S 304b <char_id>.l <mail_num>.l
@@ -235,9 +239,9 @@ S 304c <char_id>.l <mail_num>.l
 	メールの選択受信
 R 384c <account>.l <mail_num>.l <flag>.B
 	メールの削除通知
-S 304d <char_id>.l <mail_num>.l
+S 304d <char_id>.l <mail_num>.l <type>.B
 	メールに添付されたもの受信
-R 384d <len>.w <account>.l <zeny>.l <mail_num>.l <struct item>.?B
+R 384d <len>.w <account>.l <zeny>.l <mail_num>.l <char_id>.l <type>.B <struct item>[MAIL_MAX_ITEM]
 	指定されたメールに添付されていた物の情報送信
 S 304e <len>.w <account>.l <struct mail_data>.?B
 	メールを受け取る人がいるか確認要求
@@ -245,6 +249,21 @@ R 384e <len>.w <account>.l <struct mail_data>.?B
 	メールチェックOK
 S 304f <char_id>.l <mail_num>.l
 	mail_numの添付アイテム、Zenyの情報更新
+S 3050 <len>.w <struct mail_data>.?B
+	システムメール送信
+	実績報酬の場合、mail_dataのchar_idに受取キャラクターID、send_tokenに実績IDを設定する。
+S 3051 <char_id>.l <mail_num>.l
+	メール返送
+S 3052 <len>.w <char_id>.l <mail_num>.l <zeny>.l <struct item>[MAIL_MAX_ITEM]
+	受け取りに失敗した添付の復元
+S 3053 <char_id>.l <name>.24B
+	RoDEXの宛先を照会する
+R 3853 <char_id>.l <dest_char_id>.l <class>.w <level>.w <name>.24B
+	RoDEXの宛先照会結果。宛先が存在しない場合はdest_char_idが0。
+R 3851 <account>.l <mail_num>.l <flag>.B
+	メール返送結果
+R 3852 <len>.w <flag>.B <struct mail_data>.?B
+	システムメール送信結果。flagは0:成功、1:失敗、2:実績報酬受取済み。
 
 S 3070 <len>.w <account_id>.l <char_id>.l <struct mmo_mercstatus>.?B
 	傭兵生成要求

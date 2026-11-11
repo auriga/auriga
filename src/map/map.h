@@ -423,6 +423,7 @@ struct map_session_data {
 		unsigned autoloot : 1;
 		unsigned refuse_emergencycall : 1;
 		unsigned reg_dirty : 1;
+		unsigned accountreg_ready : 1;
 		unsigned gstorage_lockreq : 2;	// 0:無し, 1:scriptからロック要求中, 2:atcommandからロック要求中
 		unsigned inventory_dirty : 1;
 		unsigned cart_dirty : 1;
@@ -441,6 +442,7 @@ struct map_session_data {
 		unsigned wis_all : 1;	// Wis全拒否許可フラグ
 		unsigned joinchat : 1;	// 参加or主催
 		unsigned mail_appending : 1;
+		unsigned mail_writing : 1;
 		unsigned snovice_dead_flag : 1;
 		unsigned sn_doridori : 1;
 		unsigned tk_doridori_hp : 1;
@@ -450,6 +452,7 @@ struct map_session_data {
 		unsigned alliance_message : 1;
 		unsigned autoskill_flag : 1;
 		unsigned refineui_open : 1;
+		unsigned rodex_open : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -864,10 +867,21 @@ struct map_session_data {
 
 	// メール添付情報
 	struct {
-		int index;
-		int amount;
+		int index[MAIL_MAX_ITEM];
+		int amount[MAIL_MAX_ITEM];
+		int count;
 		int zeny;
 	} mail_append;
+	struct mail_data mail_pending; // 送信結果を受け取るまで添付を保持
+	unsigned char mail_pending_flag;
+	unsigned int mail_preflight_token;
+	unsigned char rodex_opentype;
+	int achievement_mail_pending;
+	unsigned char achievement_mail_pending_flag;
+#if PACKETVER >= 20150513 && PACKETVER < 20170419
+	int rodex_mail_count;
+	struct mail_data rodex_mail_cache[MAIL_STORE_MAX];
+#endif
 
 	struct {
 		int timer, map, index, count;
@@ -1282,6 +1296,7 @@ struct map_data {
 		int nocostume;
 		int town;
 		int damage_rate;
+		int norodex;
 	} flag;
 	struct point save;
 	struct npc_data *npc[MAX_NPC_PER_MAP];
@@ -1486,7 +1501,7 @@ enum {
 	MF_GVG,MF_GVG_NOPARTY,MF_GVG_NIGHTMAREDROP,MF_NOZENYPENALTY,MF_NOTRADE,MF_NOSKILL,MF_NOABRA,MF_NODROP,	// 13-20
 	MF_SNOW,MF_FOG,MF_SAKURA,MF_LEAVES,MF_RAIN,MF_FIREWORKS,MF_CLOUD1,MF_CLOUD2,MF_CLOUD3,MF_BASEEXP_RATE,	// 21-30
 	MF_JOBEXP_RATE,MF_PK,MF_PK_NOPARTY,MF_PK_NOGUILD,MF_PK_NIGHTMAREDROP,MF_PK_NOCALCRANK,MF_NOICEWALL,	// 31-37
-	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,MF_NOCOSTUME,MF_TOWN,MF_DAMAGE_RATE,						// 38-44
+	MF_TURBO,MF_NOREVIVE,MF_NOCOMMAND,MF_NOJUMP,MF_NOCOSTUME,MF_TOWN,MF_DAMAGE_RATE,MF_NORODEX,						// 38-45
 };
 
 // CELL

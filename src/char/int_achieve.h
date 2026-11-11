@@ -34,6 +34,8 @@ struct achieve {
 	} data[MAX_ACHIEVELIST];
 };
 
+int achievement_mail_state(int char_id, int achievement_id);
+bool achievement_mail_saved(int char_id, int achievement_id);
 int inter_achieve_parse_frommap(int fd);
 
 #ifdef TXT_ONLY

@@ -65,6 +65,22 @@
 
 #define MAX_PORTAL_MEMO 3
 #define MAIL_STORE_MAX 30
+#define MAIL_MAX_ITEM 5
+
+/* ���ѕ�V�̕ۑ���� */
+enum achievement_reward_state {
+	ACH_REWARD_UNCLAIMED = 0,
+	ACH_REWARD_CLAIMED = 1,
+};
+
+enum mail_attachment_type {
+	MAIL_ATTACH_ALL,
+	MAIL_ATTACH_ZENY,
+	MAIL_ATTACH_ITEM
+};
+#define MAIL_READ_OPENED   0x01
+#define MAIL_READ_RETURNED 0x02
+#define MAIL_READ_SYSTEM   0x04
 
 #if PACKETVER < 20090603
 	#define MAX_HOTKEYS 27
@@ -954,16 +970,19 @@ struct mail {
 
 struct mail_data {
 	unsigned int mail_num;
+	unsigned int send_token;
+	int send_fee;	// 送信失敗時に添付とともに返却する手数料
 	int char_id;
 	char char_name[24];
 	char receive_name[24];
 	int read;
 	unsigned int times;
 	char title[40];
-	char body[35*14];
+	char body[500];
 	unsigned int body_size;
 	int zeny;
-	struct item item;
+	struct item item[MAIL_MAX_ITEM];
+	uint64 expires_at;
 };
 
 struct Ranking_Data {

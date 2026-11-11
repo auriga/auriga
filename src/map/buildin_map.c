@@ -548,6 +548,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_NOCOSTUME:          return &map[m].flag.nocostume;
 		case MF_TOWN:               return &map[m].flag.town;
 		case MF_DAMAGE_RATE:        return &map[m].flag.damage_rate;
+		case MF_NORODEX:            return &map[m].flag.norodex;
 	}
 	return NULL;
 }

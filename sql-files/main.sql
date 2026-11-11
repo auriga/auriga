@@ -573,6 +573,7 @@ CREATE TABLE `mail_data` (
   `char_id` int(11) NOT NULL default '0',
   `number` int(11) unsigned NOT NULL default '0',
   `read` int(11) NOT NULL default '0',
+  `send_id` int(11) NOT NULL default '0',
   `send_name` varchar(23) NOT NULL default '',
   `receive_name` varchar(23) NOT NULL default '',
   `title` varchar(39) NOT NULL default '',
@@ -580,6 +581,17 @@ CREATE TABLE `mail_data` (
   `size` int(11) unsigned NOT NULL default '0',
   `body` blob NOT NULL,
   `zeny` int(11) NOT NULL default '0',
+  PRIMARY KEY (`char_id`, `number`)
+) ENGINE = InnoDB;
+
+# Database: Ragnarok
+# Table: 'mail_attachment'
+# メールの添付アイテム（idx 0..MAIL_MAX_ITEM-1）
+#
+CREATE TABLE `mail_attachment` (
+  `char_id` int(11) NOT NULL default '0',
+  `number` int(11) unsigned NOT NULL default '0',
+  `idx` tinyint(4) NOT NULL default '0',
   `id` int(11) unsigned NOT NULL default '0',
   `nameid` int(11) NOT NULL default '0',
   `amount` smallint(6) NOT NULL default '0',
@@ -602,8 +614,9 @@ CREATE TABLE `mail_data` (
   `opt4id` smallint(6) NOT NULL default '0',
   `opt4val` smallint(6) NOT NULL default '0',
   `limit` int(11) unsigned NOT NULL default '0',
-  PRIMARY KEY (`char_id`, `number`)
+  PRIMARY KEY (`char_id`, `number`, `idx`)
 ) ENGINE = InnoDB;
+
 
 # Database: Ragnarok
 # Table: 'mapreg'
