@@ -16,6 +16,7 @@ skill_require_db.txt       スキル使用条件を設定
 skill_tree.txt             スキルツリーを設定
 skill_unit_db.txt          スキルユニットに関する設定。
 pet_db.txt                 ペットのデータを設定
+pet_evolution_db.txt       ペットの進化条件を設定
 packet_db.lua              map-server clif.cで使うパケット定義
 item_db.txt                アイテムのデータを設定
 item_db2.txt               アイテムの追加情報を設定
@@ -289,7 +290,7 @@ R_Full: とても満腹時餌やり親密度減少量
 Intimate: 捕獲時親密度
 Die: 死亡時親密度減少量
 Capture: 捕獲率(万分率)
-Speed: 移動速度
+Speed: 移動速度。0以下の場合は飼い主と同じ速度
 S_Performance: スペシャルパフォマンスがあるかどうか(1であり0でなし)
 talk_convert_class: 台詞を他のペットの物に変更。変更したいペットのモンスターIDを入れます。0の場合変更なしでマイナスを入れるとエモーション以外の物(台詞)は全て無視されます。
 attack_rate: 支援攻撃確率。(万分率) 主人が攻撃をしかけた場合。
@@ -299,7 +300,20 @@ pet_script: ペットを持っている時適用されるステータスボー�
 
 
 ==========================================================================
-8. db/packet_db.lua
+8. db/pet_evolution_db.txt
+--------------------------------------------------------------------------
+BeforeEggID,Name,AfterEggID,ItemID1:ID1Num[...,ItemID8:ID8Num]
+
+BeforeEggID: 進化前卵ID
+Name:        名前(ダミー)
+AfterEggID:  進化後卵ID
+ItemID:      進化用のアイテムID
+IDNum:       その必要数
+親密度が901以上でアクセサリーを外している場合に進化できます。
+
+
+==========================================================================
+9. db/packet_db.lua
 --------------------------------------------------------------------------
 addpacket(Num,Len,Cmd,Pos)
 
@@ -310,7 +324,7 @@ Pos: clif.c内の関数で使用される変数に使う項目のパケット位
 
 
 ==========================================================================
-9. db/item_db.txt
+10. db/item_db.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Type,Price,Sell,Weight,ATK:MATK,DEF:MDEF,Range,Slot,Job,Gender,Loc,wLV,eLV,View,Refine,{UseScript},{EquipScript},{UnEquipScript}
 
@@ -444,9 +458,9 @@ ID,Name,Jname,Type,Price,Sell,Weight,ATK:MATK,DEF:MDEF,Range,Slot,Job,Gender,Loc
 
 
 ==========================================================================
-10. db/item_db2.txt
+11. db/item_db2.txt
 --------------------------------------------------------------------------
-ID,Upper,Zone,Dropable,Sellable,Storageable,GuildStorageable,Cartable,Dalay,Cooldown,Buyingable,Nonconsume
+ID,Upper,Zone,Dropable,Sellable,Storageable,GuildStorageable,Cartable,Dalay,Cooldown,Buyingable,Nonconsume,DropEffect
 
 ID          = アイテムID
 Upper       = 転生による使用・装備制限
@@ -483,10 +497,12 @@ Buyingable       = 買取露店で買い取り可能かどうか
                    0 : 不可（デフォルト） 1 : 可
 Nonconsume       = 使用時アイテム数を消費しない
                    0 : 消費する（デフォルト） 1 : 消費しない
+DropEffect       = ドロップ時のエフェクトを表示
+                   0 : しない（デフォルト） 1 : する
 
 
 ==========================================================================
-11. db/item_value_db.txt
+12. db/item_value_db.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Price,Sell,DC_Notflag,OC_Notflag
 
@@ -503,7 +519,7 @@ OC_Notflag : OC可能かどうか	0で可、1で不可
 
 
 ==========================================================================
-12. db/item_arrowtype.txt
+13. db/item_arrowtype.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Arrow_Type
 
@@ -517,7 +533,7 @@ Arrow_Type : 矢の種類を決定
 
 
 ==========================================================================
-13. db/item_avail.txt
+14. db/item_avail.txt
 --------------------------------------------------------------------------
 ID,Flag
 
@@ -530,7 +546,7 @@ Flag       : アイテム使用可否フラグ
 
 
 ==========================================================================
-14. db/mob_db.txt
+15. db/mob_db.txt
 --------------------------------------------------------------------------
 ID,Name,JName,LV,HP,SP,EXP,JEXP,Range1,ATK1,ATK2,DEF,MDEF,STR,AGI,VIT,INT,DEX,LUK,Range2,Range3,Scale,Race,Element,Mode,Speed,ADelay,aMotion,dMotion,Drop1id,Drop1per,Drop2id,Drop2per,Drop3id,Drop3per,Drop4id,Drop4per,Drop5id,Drop5per,Drop6id,Drop6per,Drop7id,Drop7per,Drop8id,Drop8per,Drop9id,Drop9per,Cardid,Cardper,MEXP,ExpPer,MVP1id,MVP1per,MVP2id,MVP2per,MVP3id,MVP3per
 
@@ -621,7 +637,7 @@ MVP1id(id),MVP1per,(per)～MVP3id(id),MVP3per,(per) : MVPドロップアイテ�
 
 
 ==========================================================================
-15. db/mob_skill_db.txt
+16. db/mob_skill_db.txt
 --------------------------------------------------------------------------
 MOB_ID,ダミー文字列,STATE,SKILL_ID,SKILL_LV,万分率,casttime,delay,妨害可能,ターゲット,条件タイプ,条件値,値1,値2,値3,値4,値5[,値6],使用時エモーション
 
@@ -825,7 +841,7 @@ delay    : スキル使用後のディレイ時間（ms）、ただしディレ�
 		1131,モードチェンジ(ルート)＠ジョーカー,idle,0,0,500,0,30000,no,modechange,always,0,self,0,151,,,
 
 ==========================================================================
-16. db/homun_db.txt
+17. db/homun_db.txt
 --------------------------------------------------------------------------
 Class,ViewClass,Name,JName,Lv,AcceID,FoodID,HP,SP,Str,Agi,Vit,Int,Dex,Luk,[Rate->]Base,HP_max,HP_min,SP_max,SP_min,Str,Agi,Vit,Int,Dex,Luk,aspd,Size,Race,Element,EvoClass,ExpTable,{homun_script}
 
@@ -858,7 +874,7 @@ homun_script: ホムンクルスを持っている時適用されるステータ
 
 
 ==========================================================================
-17. db/homun_db2.txt
+18. db/homun_db2.txt
 --------------------------------------------------------------------------
 Class,MinHP,MaxHP,MinSP,MaxSP,MinStr,MaxStr,MinAgi,MaxAgi,MinVit,MaxVit,MinInt,MaxInt,MinDex,MaxDex,MinLuk,MaxLuk,EvoMinHP,EvoMaxHP,EvoMinSP,EvoMaxSP,EvoMinStr,EvoMaxStr,EvoMinAgi,EvoMaxAgi,EvoMinVit,EvoMaxVit,EvoMinInt,EvoMaxInt,EvoMinDex,EvoMaxDex,EvoMinLuk,EvoMaxLuk
 
@@ -887,7 +903,7 @@ EvoMinVit,EvoMaxVit,EvoMinInt,EvoMaxInt,EvoMinDex,EvoMaxDex,EvoMinLuk,EvoMaxLuk
 
 
 ==========================================================================
-18. db/homun_skill_tree.txt
+19. db/homun_skill_tree.txt
 --------------------------------------------------------------------------
 Class,Skill-ID,MaxLv,PreSkill-ID-1,PreSkill-Lv-1,計5個まで繰り返し,BaseLv,Intimate
 
@@ -912,7 +928,7 @@ Intimate: 必要な親密度
 
 
 ==========================================================================
-19. db/produce_db.txt
+20. db/produce_db.txt
 --------------------------------------------------------------------------
 ID,ItemLV,RequireSkillid,RequireSkilllv,FixPer,MaterialID1,MaterialAmount1,MaterialID2,MaterialAmount2,MaterialID3,MaterialAmount3,MaterialID4,MaterialAmount4,MaterialID5,MaterialAmount5,MaterialID6,MaterialAmount6,MaterialID7,MaterialAmount7,MaterialID8,MaterialAmount8,MaterialID9,MaterialAmount9,MaterialID10,MaterialAmount10
 
@@ -962,7 +978,7 @@ MaterialAmount10: 同上
 
 
 ==========================================================================
-20. db/scdata_db.txt
+21. db/scdata_db.txt
 --------------------------------------------------------------------------
 ID,Name,SaveFlag,Releasable,Disable,Copyable
 
@@ -999,7 +1015,7 @@ Copyable: 状態異常の複写を許可するかどうか
 	1 = 許可
 
 ==========================================================================
-21. db/job_db1.txt
+22. db/job_db1.txt
 --------------------------------------------------------------------------
 weight,hp,hp2,sp,aspd*24(素手,短剣,片手剣,両手剣,片手槍,両手槍,片手斧,両手斧,片手鈍器,両手鈍器,杖,弓,爪,楽器,鞭,本,カタール,ハンドガン,ライフル,ショットガン,ガトリンガン,グレネードガン,風魔手裏剣,両手杖,盾)
 
@@ -1011,7 +1027,7 @@ aspd   : 各武器における基本ASPD
 
 
 ==========================================================================
-22. db/booking_map_db.txt
+23. db/booking_map_db.txt
 --------------------------------------------------------------------------
 MapId,MapName
 
@@ -1020,7 +1036,7 @@ MapName : 該当MapIdに対するMap名
 
 
 ==========================================================================
-23. db/booking_job_db.txt
+24. db/booking_job_db.txt
 --------------------------------------------------------------------------
 JobId,JobName
 
@@ -1029,7 +1045,7 @@ JobName : 該当JobIdに対する職業名
 
 
 ==========================================================================
-24. db/atcommand_go_db.txt
+25. db/atcommand_go_db.txt
 --------------------------------------------------------------------------
 ID,MapCode,GatName,MapX,MapY
 
@@ -1041,7 +1057,7 @@ MapY    : 行き先のY座標
 
 
 ==========================================================================
-25. db/merc_db.txt
+26. db/merc_db.txt
 --------------------------------------------------------------------------
 Class,Name,JName,Lv,HP,SP,Range,Atk1,Atk2,Def,Mdef,Str,Agi,Vit,Int,Dex,Luk,Size,Race,Element,Speed,ADelay,aMotion,dMotion,{merc_script}
 
@@ -1095,7 +1111,7 @@ merc_script: (未実装)
 
 
 ==========================================================================
-26. db/merc_skill_tree.txt
+27. db/merc_skill_tree.txt
 --------------------------------------------------------------------------
 Class,SkillID,SkillLv
 
@@ -1105,7 +1121,7 @@ SkillLv   : 傭兵が使用するスキルのレベル
 
 
 ==========================================================================
-27. db/memorial_db.txt
+28. db/memorial_db.txt
 --------------------------------------------------------------------------
 ID,Name,LimitTime,EnterMap,EnterX,EnterY,Map1,Map2,Map3,Map4,Map5,Map6,Map7,Map8
 
@@ -1119,7 +1135,7 @@ Map1～8   : メモリアルダンジョン生成時に複製するマップ名
 
 
 ==========================================================================
-28. db/item_cardtype.txt
+29. db/item_cardtype.txt
 --------------------------------------------------------------------------
 ID,Name,Jname,Composition_Type
 
@@ -1133,7 +1149,7 @@ Composition_Type : カードの種類を決定
 
 
 ==========================================================================
-29. db/mob_talk_db.txt
+30. db/mob_talk_db.txt
 --------------------------------------------------------------------------
 ID,Color,Message
 
@@ -1143,7 +1159,7 @@ Message : メッセージ
 
 
 ==========================================================================
-30. db/elem_db.txt
+31. db/elem_db.txt
 --------------------------------------------------------------------------
 Class,Name,JName,Lv,HP,SP,Range,Atk1,Atk2,Def,Mdef,Str,Agi,Vit,Int,Dex,Luk,Size,Race,Element,Speed,ADelay,aMotion,dMotion,{elem_script}
 
@@ -1197,7 +1213,7 @@ elem_script: (未実装)
 
 
 ==========================================================================
-31. db/quest_db.txt
+32. db/quest_db.txt
 --------------------------------------------------------------------------
 QuestID,Title,Limit,Target1ID,Target1Num,Target2ID,Target2Num,Target3ID,Target3Num,Drop1MobID,Drop1ItemID,Drop1Rate,Drop2MobID,Drop2ItemID,Drop2Rate,Drop3MobID,Drop3ItemID,Drop3Rate
 
@@ -1229,7 +1245,7 @@ Drop3Rate   : 同上
 
 
 ==========================================================================
-32. db/item_randopt_db.lua
+33. db/item_randopt_db.lua
 --------------------------------------------------------------------------
 ID,MOB_ID,{Slot,OptID,{OptVal_min,OptVal_max},Rate}
 
@@ -1347,7 +1363,7 @@ Rate        : 付加する確率（万分率）
 
 
 ==========================================================================
-33. db/achievement_db.lua
+34. db/achievement_db.lua
 --------------------------------------------------------------------------
 NameID,Name,Type,Content={Number={ID,Count},...},Reward={Title,Item,Script},Score
 
@@ -1382,7 +1398,7 @@ Score   : 実績達成で得るスコア
 
 
 ==========================================================================
-34. db/achievement_level_db.lua
+35. db/achievement_level_db.lua
 --------------------------------------------------------------------------
 [LV1] = EXP1, [LV2] = EXP2, [LV3] = EXP3,...
 
@@ -1391,7 +1407,7 @@ Score   : 実績達成で得るスコア
 
 
 ==========================================================================
-35. db/refine_cost_db.txt
+36. db/refine_cost_db.txt
 --------------------------------------------------------------------------
 wLv,MaterialID,zeny
 	openrefineui関数とgetrefinecost関数で参照する通常精錬の素材と費用を設定

@@ -2329,8 +2329,8 @@ int skill_castend_damage_id( struct block_list* src, struct block_list *bl,int s
 	case GN_BLOOD_SUCKER:	/* ブラッドサッカー */
 		if(unit_distance(src,bl) < 12){
 			int heal = battle_skill_attack(BF_MISC,src,src,bl,skillid,skilllv,tick,(0x0f<<20)|0x500);
-			heal = heal * (5 + skilllv * 5) / 100;
-			if(status_get_hp(src) + heal > status_get_max_hp(src))
+			heal = BIGNUM2INT((atn_bignumber)heal * (5 + skilllv * 5) / 100);
+			if((atn_bignumber)status_get_hp(src) + heal > status_get_max_hp(src))
 				heal = status_get_max_hp(src) - status_get_hp(src);
 			if(heal > 0) {
 				battle_heal(NULL,src,heal,0,0);

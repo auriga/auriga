@@ -14682,23 +14682,28 @@ void clif_sendegg(struct map_session_data *sd)
  *
  *------------------------------------------
  */
-void clif_send_petdata(struct map_session_data *sd, unsigned char type, int param)
+void clif_send_petdata_id(struct map_session_data *sd, int pet_bl_id, unsigned char type, int param)
 {
 	int fd;
 
 	nullpo_retv(sd);
 
-	if(!sd->pd)
-		return; // êVñßìx0Ç…Ç»ÇÈÇ∆NULL
+	if(pet_bl_id <= 0)
+		return;
 
 	fd=sd->fd;
 	WFIFOW(fd,0)=0x1a4;
 	WFIFOB(fd,2)=type;
-	WFIFOL(fd,3)=sd->pd->bl.id;
+	WFIFOL(fd,3)=pet_bl_id;
 	WFIFOL(fd,7)=param;
 	WFIFOSET(fd,packet_db[0x1a4].len);
+}
 
-	return;
+void clif_send_petdata(struct map_session_data *sd, unsigned char type, int param)
+{
+	nullpo_retv(sd);
+	if(sd->pd)
+		clif_send_petdata_id(sd, sd->pd->bl.id, type, param);
 }
 
 /*==========================================
@@ -19699,7 +19704,7 @@ void clif_monster_hpinfo(struct map_session_data *sd, struct mob_data *md)
 		int hp = status_get_hp(&md->bl);
 		int max_hp = status_get_max_hp(&md->bl);
 
-		WFIFOB(fd, 6) = (unsigned char)(hp * 20 / max_hp);
+		WFIFOB(fd, 6) = (unsigned char)((atn_bignumber)hp * 20 / max_hp);
 	}
 	WFIFOSET(fd,packet_db[0xa36].len);
 #elif PACKETVER >= 20120404
@@ -26581,10 +26586,43 @@ static void clif_parse_InventoryExpantionReject(int fd,struct map_session_data *
  *
  *------------------------------------------
  */
+void clif_pet_evolution_result(struct map_session_data *sd, int result)
+{
+#if PACKETVER >= 20141008
+	int fd;
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x09fc;
+	WFIFOL(fd,2) = result;
+	WFIFOSET(fd, packet_db[0x09fc].len);
+#endif
+}
+
 static void clif_parse_PetEvolution(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
-	return;
+#if PACKETVER >= 20141008
+	int egg_id;
+
+	nullpo_retv(sd);
+	if(sd->npc_id || sd->state.refineui_open || sd->state.store || sd->state.deal_mode ||
+	   sd->chatID || sd->state.storage_flag || sd->state.mail_appending || sd->state.blockedmove) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_UNKNOWN);
+		return;
+	}
+#if PACKETVER >= 20180704
+	if(RFIFOW(fd,2) < 8) return;
+	egg_id = RFIFOL(fd, GETPACKETPOS(cmd,0));
+#else
+	if(RFIFOW(fd,2) < 6) return;
+	egg_id = RFIFOW(fd, GETPACKETPOS(cmd,0));
+#endif
+	if(!pet_search_data(egg_id, PET_EGG)) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_NOT_PETEGG);
+		return;
+	}
+	pet_evolution(sd, egg_id);
+#endif
 }
 
 /*==========================================

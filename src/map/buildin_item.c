@@ -503,7 +503,7 @@ int buildin_delitem(struct script_state *st)
 		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
 	for(i=0; i<MAX_INVENTORY; i++) {
-		if(sd->status.inventory[i].nameid == nameid) {
+		if(sd->status.inventory[i].nameid == nameid && !pet_is_hatched_egg(&sd->status.inventory[i])) {
 			if(!skip_egg &&
 			   sd->inventory_data[i]->flag.pet_egg &&
 			   sd->status.inventory[i].amount > 0 &&
@@ -597,7 +597,7 @@ int buildin_delitem2(struct script_state *st)
 	if(st->end > st->start+4)
 		skip_egg = conv_num(st,& (st->stack->stack_data[st->start+4]));
 
-	if(idx < 0 || idx >= MAX_INVENTORY || amount <= 0)
+	if(idx < 0 || idx >= MAX_INVENTORY || amount <= 0 || pet_is_hatched_egg(&sd->status.inventory[idx]))
 		return 0;
 
 	if(!skip_egg &&
@@ -1358,7 +1358,7 @@ int buildin_clearitem(struct script_state *st)
 	if(sd == NULL)
 		return 0;
 	for (i=0; i<MAX_INVENTORY; i++) {
-		if (sd->status.inventory[i].amount) {
+		if (sd->status.inventory[i].amount && !pet_is_hatched_egg(&sd->status.inventory[i])) {
 			if (sd->status.inventory[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);

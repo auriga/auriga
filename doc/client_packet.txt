@@ -2970,3 +2970,9 @@ R 09f2 <mail_num>.Q <type>.B <flag>.B
 	Zenyの受け取り結果
 R 09f4 <mail_num>.Q <type>.B <flag>.B
 	アイテムの受け取り結果
+
+S 09fb <len>.w <eggId>.w/.l {<index>.w <amount>.w}*
+	ペット進化要求（PACKETVER >= 20141008）。eggIdは進化先の卵アイテムID。
+	PACKETVER >= 20180704ではeggIdは4バイト。
+R 09fc <result>.l
+	ペット進化結果（0:不明な失敗、1:進化先なし、2:卵でない、3:レシピ不正、4:素材不足、5:親密度不足または装備中、6:成功）

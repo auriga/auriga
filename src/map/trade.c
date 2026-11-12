@@ -29,6 +29,7 @@
 #include "map.h"
 #include "trade.h"
 #include "pc.h"
+#include "pet.h"
 #include "npc.h"
 #include "battle.h"
 #include "chrif.h"
@@ -165,7 +166,7 @@ void trade_tradeadditem(struct map_session_data *sd, int idx, int amount)
 					clif_tradeitemok(sd, idx, 1); //fail to add item
 				}
 			}
-		} else if (amount <= sd->status.inventory[idx-2].amount && amount > 0 && itemdb_isdropable(sd->status.inventory[idx-2].nameid)) {
+		} else if (!pet_is_hatched_egg(&sd->status.inventory[idx-2]) && amount <= sd->status.inventory[idx-2].amount && amount > 0 && itemdb_isdropable(sd->status.inventory[idx-2].nameid)) {
 			int trade_i;
 			int trade_weight = 0;
 

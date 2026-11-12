@@ -22,15 +22,15 @@
 #ifndef _PET_H_
 #define _PET_H_
 
-#define MAX_PET_DB	100
+#define MAX_PET_DB	256
 
 struct pet_db {
 	short class_;
 	char name[24],jname[24];
-	short itemID;
+	int itemID;
 	short EggID;
 	short AcceID;
-	short FoodID;
+	int FoodID;
 	int fullness;
 	int hungry_delay;
 	int r_hungry;
@@ -45,6 +45,16 @@ struct pet_db {
 	int defence_attack_rate;
 	int change_target_rate;
 	struct script_code *script;
+};
+
+enum e_pet_evolution_result {
+	PET_EVOL_FAIL_UNKNOWN = 0,
+	PET_EVOL_FAIL_NOTEXIST_CALLPET = 1,
+	PET_EVOL_FAIL_NOT_PETEGG = 2,
+	PET_EVOL_FAIL_RECIPE = 3,
+	PET_EVOL_FAIL_MATERIAL = 4,
+	PET_EVOL_FAIL_RG_FAMILIAR = 5,
+	PET_EVOL_SUCCESS = 6,
 };
 
 enum {
@@ -64,10 +74,16 @@ int pet_select_egg(struct map_session_data *sd,short egg_index);
 int pet_catch_process1(struct map_session_data *sd,int target_class);
 int pet_catch_process2(struct map_session_data *sd,int target_id);
 int pet_get_egg(int account_id,int pet_id,int flag);
+int pet_egg_search(struct map_session_data *sd, int pet_id);
+int pet_is_hatched_egg(const struct item *item);
 int pet_return_egg(struct map_session_data *sd);
+int pet_return_egg_nodrop(struct map_session_data *sd);
+void pet_nopet_update(struct map_session_data *sd);
+void pet_mapflag_update(int m);
 int pet_menu(struct map_session_data *sd,int menunum);
 int pet_change_name(struct map_session_data *sd,const char *name);
 void pet_equipitem(struct map_session_data *sd, int idx);
+void pet_evolution(struct map_session_data *sd, int egg_id);
 int pet_lootitem_drop(struct pet_data *pd,struct map_session_data *sd);
 int pet_lootitem_free(struct pet_data *pd);
 int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data);

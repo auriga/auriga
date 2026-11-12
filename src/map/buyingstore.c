@@ -36,6 +36,7 @@
 #include "path.h"
 #include "npc.h"
 #include "pc.h"
+#include "pet.h"
 #include "trade.h"
 #include "unit.h"
 
@@ -491,7 +492,7 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		}
 
 		// indexにアイテムは存在するかチェック
-		if( sd->inventory_data[idx] == NULL )
+		if( sd->inventory_data[idx] == NULL || pet_is_hatched_egg(&sd->status.inventory[idx]) )
 		{
 			clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 			return;

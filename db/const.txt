@@ -463,6 +463,7 @@ mf_nocostume	42
 mf_town			43
 mf_damage_rate		44
 mf_norodex		45
+mf_nopet		46
 
 //PCステータス
 StatusPoint	9	1

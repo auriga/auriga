@@ -37,6 +37,7 @@
 #include "itemdb.h"
 #include "pc.h"
 #include "battle.h"
+#include "pet.h"
 
 /*==========================================
  * アイテムやZenyを添付
@@ -96,7 +97,7 @@ void mail_setitem(struct map_session_data *sd, int idx, int amount)
 		sd->mail_append.zeny = amount;
 	} else {
 		if(idx < 0 || idx >= MAX_INVENTORY || sd->status.inventory[idx].nameid <= 0 ||
-		   sd->inventory_data[idx] == NULL || sd->status.inventory[idx].amount < amount ||
+		   sd->inventory_data[idx] == NULL || pet_is_hatched_egg(&sd->status.inventory[idx]) || sd->status.inventory[idx].amount < amount ||
 		   !itemdb_isdropable(sd->status.inventory[idx].nameid)) {
 			clif_res_sendmail_setappend(sd->fd, idx, 1);
 			return;

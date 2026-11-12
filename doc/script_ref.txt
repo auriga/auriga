@@ -331,6 +331,9 @@ AurigaNPCScript
 				スキル「ノピティギ」の使用を禁止します。
 			nocostume<tab>dummy
 				コスチュームの見た目が反映されなくなります。
+			nopet<tab>dummy
+				ペットの孵化を禁止し、所持欄に卵を戻せる場合は自動的に戻します。
+				戻せない場合はペットを維持し、ペットスクリプトと支援行動を無効にします。
 			town<tab>dummy
 				街MAPモードになります。
 			damage_rate<tab><rate>
@@ -2203,7 +2206,7 @@ AurigaNPCScript
 		clearitem命令
 			clearitem;
 
-			インベントリーから全てのアイテムを削除します
+			インベントリーから全てのアイテムを削除します（孵化中のペットの卵を除く）
 
 		clearcartitem命令
 			clearcartitem;
