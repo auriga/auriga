@@ -2559,6 +2559,7 @@ int pc_search_inventory(struct map_session_data *sd,int item_id)
 		int max = pc_inventory_slots(sd);
 		for(i=0; i<max; i++) {
 			if(sd->status.inventory[i].nameid == item_id &&
+			   (item_id == 0 || !pet_is_hatched_egg(&sd->status.inventory[i])) &&
 			   (sd->status.inventory[i].amount > 0 || item_id == 0))
 				return i;
 		}
@@ -2840,7 +2841,8 @@ int pc_dropitem(struct map_session_data *sd, int n, int amount)
 	if(amount <= 0)
 		return 0;
 
-	if(sd->status.inventory[n].nameid <= 0 || sd->status.inventory[n].amount < amount)
+	if(sd->status.inventory[n].nameid <= 0 || sd->status.inventory[n].amount < amount ||
+	   pet_is_hatched_egg(&sd->status.inventory[n]))
 		return 0;
 
 	if(itemdb_isdropable(sd->status.inventory[n].nameid) == 0)
@@ -2991,6 +2993,8 @@ void pc_useitem(struct map_session_data *sd, int n)
 	if(n < 0 || n >= MAX_INVENTORY)
 		return;
 
+	if(pet_is_hatched_egg(&sd->status.inventory[n]))
+		return;
 	item   = sd->inventory_data[n];
 	nameid = sd->status.inventory[n].nameid;
 	amount = sd->status.inventory[n].amount;
@@ -3192,6 +3196,8 @@ void pc_putitemtocart(struct map_session_data *sd, int idx, int amount)
 		return;
 
 	item_data = &sd->status.inventory[idx];
+	if(pet_is_hatched_egg(item_data))
+		return;
 	if(item_data->nameid == 0 || item_data->amount < amount)
 		return;
 
@@ -3414,6 +3420,7 @@ int pc_steal_coin(struct map_session_data *sd,struct mob_data *md)
 int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int clrtype)
 {
 	int m, i, move_flag = 0;
+	int pet_flag_changed = 0;
 
 	nullpo_retr(1, sd);
 	sd->lapine_upgrade_id = 0;
@@ -3484,6 +3491,10 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 			return 1;
 		}
 	}
+
+	// ペットを安全に卵へ戻せる場合のみ戻す
+	if(m != sd->bl.m && map[m].flag.nopet && sd->pd)
+		pet_return_egg_nodrop(sd);
 
 	if(m == sd->bl.m) {
 		// 同じマップなのでダンスユニット引き継ぎ
@@ -3574,6 +3585,8 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		npc_event_doall_id("OnPCMapOut",sd->bl.id,sd->bl.m);
 
 	strncpy(sd->mapname,mapname,24);
+	if(sd->bl.m >= 0 && sd->bl.m < map_num)
+		pet_flag_changed = map[sd->bl.m].flag.nopet != map[m].flag.nopet;
 	sd->bl.m = m;
 	sd->bl.x = x;
 	sd->bl.y = y;
@@ -3604,6 +3617,9 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 		sd->pd->bl.y = sd->pd->ud.to_y = y;
 		sd->pd->dir  = sd->dir;
 	}
+	if(pet_flag_changed && sd->pd)
+		pet_nopet_update(sd);
+
 	// ホムの移動
 	if(sd->status.homun_id > 0 && sd->hd) {
 		sd->hd->bl.m = m;

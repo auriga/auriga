@@ -487,11 +487,13 @@ void clif_catch_process(struct map_session_data *sd);
 void clif_pet_rulet(struct map_session_data *sd, unsigned char data);
 void clif_sendegg(struct map_session_data *sd);
 void clif_send_petdata(struct map_session_data *sd, unsigned char type, int param);
+void clif_send_petdata_id(struct map_session_data *sd, int pet_bl_id, unsigned char type, int param);
 void clif_send_pethair(struct map_session_data *sd);
 void clif_send_petstatus(struct map_session_data *sd);
 void clif_pet_performance(struct block_list *bl, int param);
 void clif_pet_equip(struct pet_data *pd, int nameid);
 void clif_pet_food(struct map_session_data *sd, int foodid, unsigned char fail);
+void clif_pet_evolution_result(struct map_session_data *sd, int result);
 
 // friend
 void clif_friend_send_info( struct map_session_data *sd );

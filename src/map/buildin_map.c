@@ -37,6 +37,7 @@
 #include "clif.h"
 #include "itemdb.h"
 #include "pc.h"
+#include "pet.h"
 #include "script.h"
 #include "script_internal.h"
 #include "mob.h"
@@ -546,6 +547,7 @@ static int* script_conv_mapflag(int m,int type)
 		case MF_NOCOMMAND:          return &map[m].flag.nocommand;
 		case MF_NOJUMP:             return &map[m].flag.nojump;
 		case MF_NOCOSTUME:          return &map[m].flag.nocostume;
+		case MF_NOPET:              return &map[m].flag.nopet;
 		case MF_TOWN:               return &map[m].flag.town;
 		case MF_DAMAGE_RATE:        return &map[m].flag.damage_rate;
 		case MF_NORODEX:            return &map[m].flag.norodex;
@@ -571,6 +573,8 @@ int buildin_setmapflag(struct script_state *st)
 	if(flag)
 	{
 		*flag = 1;
+		if(type == MF_NOPET)
+			pet_mapflag_update(m);
 		switch (type) {		// 特殊処理が必要なマップフラグ
 		case MF_NOSAVE:
 			if(st->end > st->start+6) {
@@ -627,6 +631,8 @@ int buildin_removemapflag(struct script_state *st)
 	if(flag)
 	{
 		*flag = 0;
+		if(type == MF_NOPET)
+			pet_mapflag_update(m);
 		switch (type) {		// 特殊処理が必要なマップフラグ
 		case MF_PVP_NIGHTMAREDROP:
 		case MF_GVG_NIGHTMAREDROP:

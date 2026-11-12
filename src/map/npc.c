@@ -1601,7 +1601,7 @@ int npc_selllist(struct map_session_data *sd,int n,unsigned short *item_list)
 	for(i = 0; i < n; i++) {
 		int nameid, amount;
 		idx = item_list[i * 2] - 2;
-		if (idx < 0 || idx >= MAX_INVENTORY)
+		if (idx < 0 || idx >= MAX_INVENTORY || pet_is_hatched_egg(&inventory[idx]))
 			return 1;
 		amount = item_list[i * 2 + 1];
 		if (amount <= 0 || inventory[idx].amount < amount)
@@ -3407,6 +3407,9 @@ int npc_set_mapflag(int m,const char *w3,const char *w4)
 		map[m].flag.nocommand = atoi(w4);
 	} else if (strcmpi(w3,"nojump") == 0) {
 		map[m].flag.nojump ^= 1;
+	} else if (strcmpi(w3,"nopet") == 0) {
+		map[m].flag.nopet ^= 1;
+		pet_mapflag_update(m);
 	} else if (strcmpi(w3,"nocostume") == 0) {
 		map[m].flag.nocostume ^= 1;
 	} else if (strcmpi(w3,"town") == 0) {

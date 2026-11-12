@@ -34,6 +34,7 @@
 #include "extra.h"
 #include "battle.h"
 #include "pc.h"
+#include "pet.h"
 #include "itemdb.h"
 #include "msg.h"
 #include "clif.h"
@@ -207,7 +208,8 @@ static int extra_timer(int tid, unsigned int tick, int id, void *data)
 				int j;
 				if (quantity < 0) { // remove items
 					for (j = 0; j < MAX_INVENTORY; j++) {
-						if (pl_sd->status.inventory[j].nameid == item_id && pl_sd->status.inventory[j].equip == LOC_NOTHING) {
+						if (pl_sd->status.inventory[j].nameid == item_id && pl_sd->status.inventory[j].equip == LOC_NOTHING &&
+						    !pet_is_hatched_egg(&pl_sd->status.inventory[j])) {
 							if (pl_sd->status.inventory[j].amount < -quantity)
 								quantity = -pl_sd->status.inventory[j].amount;
 							if (quantity < 0) {

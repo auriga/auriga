@@ -161,6 +161,7 @@ extern struct Battle_Config {
 	int pc_invincible_time;
 	int pet_catch_rate;
 	int pet_rename;
+	int feature_petevolution;
 	int pet_friendly_rate;
 	int pet_hungry_delay_rate;
 	int pet_hungry_friendly_decrease;

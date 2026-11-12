@@ -1335,9 +1335,9 @@ int status_change_start(struct block_list *bl,int type,int val1,int val2,int val
 				if(hp > mhp>>2) {
 					int diff = 0;
 					if(sd)
-						diff = mhp * 10 / 100;
+						diff = BIGNUM2INT((atn_bignumber)mhp * 10 / 100);
 					else if(md)
-						diff = mhp * 15 / 100;
+						diff = BIGNUM2INT((atn_bignumber)mhp * 15 / 100);
 					if(hp - diff < mhp>>2)
 						diff = hp - (mhp>>2);
 					unit_heal(bl, -diff, 0, 0, 0);

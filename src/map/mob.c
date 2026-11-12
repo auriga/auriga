@@ -2128,7 +2128,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 			md->attacked_id = id;
 	}
 
-	per = md->hp * 20 / max_hp;
+	per = BIGNUM2INT((atn_bignumber)md->hp * 20 / max_hp);
 	md->hp -= damage;
 
 	// ハイド状態を解除
@@ -2154,7 +2154,7 @@ int mob_damage(struct block_list *src,struct mob_data *md,int damage,int type)
 		map_freeblock_lock();
 		mob_dead(src, md, type, tick);
 		map_freeblock_unlock();
-	} else if(per != md->hp * 20 / max_hp) {
+	} else if(per != BIGNUM2INT((atn_bignumber)md->hp * 20 / max_hp)) {
 		map_foreachinarea(mob_hpinfo, md->bl.m,
 						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
 						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,
@@ -2776,7 +2776,7 @@ static int mob_rebirth(struct mob_data *md, unsigned int tick)
 
 	md->attacked_id      = 0;
 	md->attacked_players = 0;
-	md->hp               = mobdb_search(md->class_)->max_hp * 10 * skilllv / 100;
+	md->hp               = BIGNUM2INT((atn_bignumber)mobdb_search(md->class_)->max_hp * 10 * skilllv / 100);
 	md->state.rebirth    = 1;
 	md->state.skillstate = MSS_IDLE;
 	md->last_thinktime   = tick;
@@ -2913,7 +2913,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 		return 0;
 
 	max_hp  = status_get_max_hp(&md->bl);	// max_hp>0は保証
-	hp_rate = md->hp * 100 / max_hp;
+	hp_rate = BIGNUM2INT((atn_bignumber)md->hp * 100 / max_hp);
 	clif_class_change(&md->bl,mob_get_viewclass(mob_id),1);
 
 	md->class_ = mob_id;
@@ -2922,7 +2922,7 @@ static int mob_class_change_id(struct mob_data *md,int mob_id)
 		md->hp = max_hp;
 		linkdb_final( &md->dmglog );
 	} else {
-		md->hp = max_hp * hp_rate / 100;
+		md->hp = BIGNUM2INT((atn_bignumber)max_hp * hp_rate / 100);
 	}
 	if(md->hp > max_hp)
 		md->hp = max_hp;
@@ -3016,13 +3016,13 @@ int mob_class_change(struct mob_data *md,const int *value,int value_count)
  */
 int mob_heal(struct mob_data *md,int heal)
 {
-	int max_hp = status_get_max_hp(&md->bl);
-	int per = 0;
+	int max_hp, per;
 
 	nullpo_retr(0, md);
 
-	per = md->hp * 20 / max_hp;
-	md->hp += heal;
+	max_hp = status_get_max_hp(&md->bl);
+	per = BIGNUM2INT((atn_bignumber)md->hp * 20 / max_hp);
+	md->hp = BIGNUM2INT((atn_bignumber)md->hp + heal);
 
 	if( md->hp <= 0 ) {
 		md->hp = 1;		// 死亡時スキル対策
@@ -3031,7 +3031,7 @@ int mob_heal(struct mob_data *md,int heal)
 	if( max_hp < md->hp )
 		md->hp = max_hp;
 
-	if(per != md->hp * 20 / max_hp)
+	if(per != BIGNUM2INT((atn_bignumber)md->hp * 20 / max_hp))
 		map_foreachinarea(mob_hpinfo, md->bl.m,
 						  md->bl.x-AREA_SIZE,md->bl.y-AREA_SIZE,
 						  md->bl.x+AREA_SIZE,md->bl.y+AREA_SIZE,

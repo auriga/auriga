@@ -738,7 +738,7 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 
 		// レックスエーテルナ
 		if(sc->data[SC_AETERNA].timer != -1 && damage > 0) {
-			damage <<= 1;
+			damage *= 2;
 			status_change_end(bl,SC_AETERNA,-1);
 		}
 
@@ -855,7 +855,7 @@ static atn_bignumber battle_calc_damage(struct block_list *src, struct block_lis
 			if( (flag&BF_SKILL && skill_get_pl(skill_num) == ELE_FIRE) ||
 			    (!(flag&BF_SKILL) && status_get_attack_element(src) == ELE_FIRE) )
 			{
-				damage <<= 1;
+				damage *= 2;
 				status_change_end(bl, SC_SPIDERWEB, -1);
 			}
 		}
@@ -2957,9 +2957,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 		// スパイダーウェブ
 		if(t_sc && t_sc->data[SC_SPIDERWEB].timer != -1 && s_ele == ELE_FIRE) {
-			wd.damage <<= 1;
+			wd.damage *= 2;
 			if(calc_flag.lh)
-				wd.damage2 <<= 1;
+				wd.damage2 *= 2;
 			status_change_end(target, SC_SPIDERWEB, -1);
 		}
 
@@ -4093,7 +4093,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case NJ_ISSEN:		// 一閃
 			{
 				int hp = status_get_hp(src);
-				DMG_SET( (s_str*40)+(skill_lv*(hp-1)*8)/100 );
+				DMG_SET( (s_str*40)+((atn_bignumber)skill_lv*(hp-1)*8)/100);
 				unit_heal(src,-hp+1,0,0,0);
 				if(sc && sc->data[SC_NEN].timer != -1)
 					status_change_end(src,SC_NEN,-1);
@@ -4249,7 +4249,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		case RK_DRAGONBREATH:	// ファイアードラゴンブレス
 		case RK_DRAGONBREATH_WATER:	// ウォータードラゴンブレス
 			{
-				atn_bignumber dmg = (status_get_hp(src) / 50 + status_get_max_sp(src) / 4) * skill_lv;
+				atn_bignumber dmg = (atn_bignumber)(status_get_hp(src) / 50 + status_get_max_sp(src) / 4) * skill_lv;
 				int aura = 0;
 				if(src_sd) {
 					dmg = dmg * ( 95 + pc_checkskill(src_sd,RK_DRAGONTRAINING) * 5 ) / 100;
@@ -4546,9 +4546,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					sp = (int)((atn_bignumber)status_get_max_sp(src) * (5 + skill_lv) / 100);
 				}
 				if(sc && sc->data[SC_COMBO].timer != -1 && sc->data[SC_COMBO].val1 == SR_FALLENEMPIRE) {
-					DMG_FIX( (hp + sp) / 2 * status_get_lv(src) / 100 , 100 );		// コンボ発動時
+					DMG_FIX( BIGNUM2INT((atn_bignumber)BIGNUM2INT(((atn_bignumber)hp + sp) / 2) * status_get_lv(src) / 100) , 100 );		// コンボ発動時
 				} else {
-					DMG_FIX( (hp + sp) / 4 * status_get_lv(src) / 100 , 100 );			// 通常時
+					DMG_FIX( BIGNUM2INT((atn_bignumber)BIGNUM2INT(((atn_bignumber)hp + sp) / 4) * status_get_lv(src) / 100) , 100 );			// 通常時
 				}
 			}
 			break;
@@ -4850,7 +4850,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			break;
 		case SJ_NOVAEXPLOSING:	// 新星爆発
 			DMG_FIX( 500 + 500 * skill_lv, 100 );
-			DMG_ADD(status_get_max_hp(src) * skill_lv / 5  + status_get_max_sp(src) * skill_lv * 2);
+			DMG_ADD(((atn_bignumber)status_get_max_hp(src) * skill_lv / 5) + status_get_max_sp(src) * skill_lv * 2);
 			break;
 		case SJ_BOOKOFCREATINGSTAR:	// 創星の書
 			DMG_FIX( 500 + 500 * skill_lv, 100 );
@@ -5358,9 +5358,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 
 				DMG_FIX( rate, 100 );
 				if(status_get_hp(target) < status_get_max_hp(target)/2) {
-					wd.damage <<= 1;
+					wd.damage *= 2;
 					if(calc_flag.lh)
-						wd.damage2 <<= 1;
+						wd.damage2 *= 2;
 				}
 			}
 			break;
@@ -7310,7 +7310,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 				int hp, mhp, thres;
 				hp = status_get_hp(target);
 				mhp = status_get_max_hp(target);
-				thres = skill_lv * 20 + status_get_luk(bl) + status_get_int(bl) + status_get_lv(bl) + 200 - (hp * 200 / mhp);
+				thres = skill_lv * 20 + status_get_luk(bl) + status_get_int(bl) + status_get_lv(bl) + 200 - BIGNUM2INT((atn_bignumber)hp * 200 / mhp);
 				if(thres > 700)
 					thres = 700;
 				if(atn_rand()%1000 < thres && !(t_mode&MD_BOSS))	// 成功
@@ -8707,7 +8707,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 #ifndef PRE_RENEWAL
 	if(t_sc && t_sc->data[SC_SPIDERWEB].timer != -1 && ele == ELE_FIRE && mgd.damage > 0 && normalmagic_flag) {	// スパイダーウェブ
-		mgd.damage <<= 1;
+		mgd.damage *= 2;
 		status_change_end(bl, SC_SPIDERWEB, -1);
 	}
 #endif
@@ -9014,7 +9014,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 				t_sc->data[SC_FREEZE].timer != -1 || (t_sc->data[SC_STONE].timer != -1 && t_sc->data[SC_STONE].val2 == 0) ) )
 				hitrate = 1000000;
 			if(atn_rand()%100 < hitrate)
-				mid.damage = t_hp*(skill_lv*6)/100;
+				mid.damage = (atn_bignumber)t_hp*(skill_lv*6)/100;
 		}
 		break;
 	case NPC_MAXPAIN_ATK:		/* マックスペイン */
@@ -9115,10 +9115,10 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		damagefix = 0;
 		break;
 	case RL_B_FLICKER_ATK:		// バインドトラップ(爆発)
-		mid.damage = status_get_dex(bl) * 10 + status_get_hp(target) * 3 * skill_lv / 100;
+		mid.damage = status_get_dex(bl) * 10 + (atn_bignumber)status_get_hp(target) * 3 * skill_lv / 100;
 		break;
 	case SP_SOULEXPLOSION:		// 魂の崩壊
-		mid.damage = status_get_hp(target)*80/100;
+		mid.damage = (atn_bignumber)status_get_hp(target)*80/100;
 		damagefix = 0;
 		break;
 	case SU_SV_ROOTTWIST_ATK:	// マタタビの根っこ(攻撃)
@@ -9126,7 +9126,7 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		damagefix = 0;
 		break;
 	case HVAN_EXPLOSION:		// バイオエクスプロージョン
-		mid.damage = status_get_hp(bl)*(50+50*skill_lv)/100;
+		mid.damage = (atn_bignumber)status_get_hp(bl)*(50+50*skill_lv)/100;
 		break;
 	case NPC_DISSONANCE:
 		mid.damage = 30 + skill_lv * 10;
@@ -11233,6 +11233,7 @@ int battle_config_read(const char *cfgName)
 		{ "player_invincible_time" ,            &battle_config.pc_invincible_time,                 5000     },
 		{ "pet_catch_rate",                     &battle_config.pet_catch_rate,                     100      },
 		{ "pet_rename",                         &battle_config.pet_rename,                         0        },
+		{ "feature_petevolution",               &battle_config.feature_petevolution,               1        },
 		{ "pet_friendly_rate",                  &battle_config.pet_friendly_rate,                  100      },
 		{ "pet_hungry_delay_rate",              &battle_config.pet_hungry_delay_rate,              100      },
 		{ "pet_hungry_friendly_decrease",       &battle_config.pet_hungry_friendly_decrease,       5        },

@@ -19,6 +19,8 @@
  *
  */
 
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -152,6 +154,9 @@ int pet_target_check(struct map_session_data *sd,struct block_list *bl,int type)
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, pd = sd->pd);
+
+	if(map[sd->bl.m].flag.nopet)
+		return 0;
 
 	if(bl == NULL || bl->type != BL_MOB)
 		return 0;
@@ -353,7 +358,10 @@ static int pet_data_init(struct map_session_data *sd)
 		return 1;
 	}
 
-	db = pet_search_data(sd->pet.class_, PET_CLASS);
+	// 同一モンスターに複数の卵がある場合は保存された卵を優先する
+	db = pet_search_data(sd->pet.egg_id, PET_EGG);
+	if(db == NULL || db->class_ != sd->pet.class_)
+		db = pet_search_data(sd->pet.class_, PET_CLASS);
 	if(db == NULL) {
 		sd->status.pet_id = 0;
 		return 1;
@@ -373,7 +381,7 @@ static int pet_data_init(struct map_session_data *sd)
 	pd->class_ = sd->pet.class_;
 	pd->equip  = sd->pet.equip;
 	pd->dir    = sd->dir;
-	if(battle_config.pet_speed_is_same_as_pc == 1)
+	if(battle_config.pet_speed_is_same_as_pc == 1 || sd->petDB->speed <= 0)
 		pd->speed = status_get_speed(&sd->bl);
 	else
 		pd->speed = sd->petDB->speed;
@@ -408,6 +416,29 @@ static int pet_data_init(struct map_session_data *sd)
  * 孵化
  *------------------------------------------
  */
+int pet_egg_search(struct map_session_data *sd, int pet_id)
+{
+	int i;
+	if(sd == NULL || pet_id <= 0)
+		return -1;
+
+	for(i = 0; i < MAX_INVENTORY; i++) {
+		int id;
+		struct item *item = &sd->status.inventory[i];
+		if(item->nameid <= 0 || item->card[0] != (int)0xff00)
+			continue;
+		memcpy(&id, &item->card[1], sizeof(id));
+		if(id == pet_id)
+			return i;
+	}
+	return -1;
+}
+
+int pet_is_hatched_egg(const struct item *item)
+{
+	return item && item->nameid > 0 && item->card[0] == (int)0xff00 && item->attribute != 0;
+}
+
 static int pet_birth_process(struct map_session_data *sd)
 {
 	nullpo_retr(1, sd);
@@ -462,19 +493,49 @@ int pet_recv_petdata(int account_id,struct s_pet *p,int flag)
 		sd->status.pet_id = 0;
 		return 1;
 	}
+	if((p->incubate == 1 && (sd->status.pet_id || sd->pd)) ||
+	   (p->incubate != 1 && sd->status.pet_id != p->pet_id))
+		return 1;
 	memcpy(&sd->pet,p,sizeof(struct s_pet));
 	if(sd->pet.incubate == 1) {
-		pet_birth_process(sd);
+		int idx = pet_egg_search(sd, sd->pet.pet_id);
+		if(idx < 0 || map[sd->bl.m].flag.nopet || sd->status.pet_id || sd->pd ||
+		   sd->state.deal_mode || sd->state.storage_flag || sd->state.store)
+			return 1;
+		sd->status.inventory[idx].attribute = 1;
+		if(pet_birth_process(sd)) {
+			sd->status.inventory[idx].attribute = 0;
+			return 1;
+		}
 	} else {
 		pet_data_init(sd);
+		if(sd->pd && sd->petDB && pet_egg_search(sd, sd->pet.pet_id) < 0) {
+			struct item egg;
+			memset(&egg, 0, sizeof(egg));
+			egg.nameid = sd->petDB->EggID;
+			egg.identify = 1;
+			egg.attribute = 1;
+			egg.card[0] = (int)0xff00;
+			memcpy(&egg.card[1], &sd->pet.pet_id, sizeof(sd->pet.pet_id));
+			egg.card[3] = sd->pet.rename_flag;
+			if(pc_additem(sd, &egg, 1, false) == 0)
+				chrif_save(sd, 0);
+		}
 		if(sd->pd && sd->bl.prev != NULL) {
 			map_addblock(&sd->pd->bl);
 			clif_spawnpet(sd->pd);
 			clif_send_petdata(sd,0,0);
+#if PACKETVER >= 20180704
+			clif_send_petdata(sd,6,1);
+#endif
 			clif_send_pethair(sd);
 			//clif_pet_equip(sd->pd,sd->pet.equip);
 			clif_send_petstatus(sd);
 		}
+	}
+	if(map[sd->bl.m].flag.nopet && sd->pd) {
+		pet_nopet_update(sd);
+		return 0;
 	}
 	if(battle_config.pet_status_support && sd->pet.intimate > 0) {
 		if(sd->bl.prev != NULL)
@@ -494,7 +555,13 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 {
 	nullpo_retr(0, sd);
 
-	if(egg_index < 0 || egg_index >= MAX_INVENTORY)
+	if(map[sd->bl.m].flag.nopet)
+		return 0;
+
+	if(egg_index < 0 || egg_index >= pc_inventory_slots(sd) || sd->status.pet_id || sd->pd ||
+	   sd->state.deal_mode || sd->state.storage_flag || sd->state.store ||
+	   pet_is_hatched_egg(&sd->status.inventory[egg_index]) ||
+	   !pet_search_data(sd->status.inventory[egg_index].nameid, PET_EGG))
 		return 0;
 
 	if(sd->status.inventory[egg_index].card[0] == (int)0xff00) {
@@ -503,7 +570,6 @@ int pet_select_egg(struct map_session_data *sd,short egg_index)
 		if(battle_config.error_log)
 			printf("wrong egg item inventory %d\n",egg_index);
 	}
-	pc_delitem(sd,egg_index,1,0,0);
 
 	return 0;
 }
@@ -547,7 +613,7 @@ int pet_catch_process2(struct map_session_data *sd,int target_id)
 		return 1;
 	}
 
-	pet_catch_rate = (db->capture + (sd->status.base_level - mobdb_search(md->class_)->lv) * 30 + sd->paramc[5] * 20) * (200 - md->hp * 100 / mobdb_search(md->class_)->max_hp) / 100;
+	pet_catch_rate = (db->capture + (sd->status.base_level - mobdb_search(md->class_)->lv) * 30 + sd->paramc[5] * 20) * (200 - BIGNUM2INT((atn_bignumber)md->hp * 100 / mobdb_search(md->class_)->max_hp)) / 100;
 	if(pet_catch_rate < 1)
 		pet_catch_rate = 1;
 	if(battle_config.pet_catch_rate != 100)
@@ -640,26 +706,22 @@ static int pet_performance(struct map_session_data *sd)
  * 卵に戻す
  *------------------------------------------
  */
-int pet_return_egg(struct map_session_data *sd)
+static int pet_return_egg_sub(struct map_session_data *sd, int no_drop)
 {
 	struct item tmp_item;
-	int flag;
+	int flag, egg_index, pet_bl_id;
 
 	nullpo_retr(0, sd);
 	nullpo_retr(0, sd->pd);
 
 	if(sd->status.pet_id <= 0)
 		return 0;
-
-	// ルートしたItemを落とさせる
-	pet_lootitem_drop(sd->pd,sd);
-	unit_free(&sd->pd->bl,0);
-	sd->status.pet_id = 0;
-	sd->pd = NULL;
+	pet_bl_id = sd->pd->bl.id;
+	if(sd->pet.intimate <= 0)
+		return 1;
 
 	if(sd->petDB == NULL)
 		return 1;
-	sd->pet.incubate = 1;
 
 	memset(&tmp_item,0,sizeof(tmp_item));
 	tmp_item.nameid   = sd->petDB->EggID;
@@ -668,7 +730,23 @@ int pet_return_egg(struct map_session_data *sd)
 	*((int *)(&tmp_item.card[1])) = sd->pet.pet_id;
 	tmp_item.card[3]  = sd->pet.rename_flag;
 
-	if((flag = pc_additem(sd,&tmp_item,1,false))) {
+	// 禁止マップへの移動時は卵を確保できなければペットを維持する
+	egg_index = pet_egg_search(sd, sd->pet.pet_id);
+	if(egg_index >= 0) {
+		sd->status.inventory[egg_index].attribute = 0;
+		sd->status.inventory[egg_index].card[3] = sd->pet.rename_flag;
+	} else if(no_drop && pc_additem(sd,&tmp_item,1,false)) {
+		return 1;
+	}
+
+	// ルートしたItemを落とさせる
+	pet_lootitem_drop(sd->pd,sd);
+	unit_free(&sd->pd->bl,0);
+	sd->status.pet_id = 0;
+	sd->pd = NULL;
+	sd->pet.incubate = 1;
+
+	if(egg_index < 0 && !no_drop && (flag = pc_additem(sd,&tmp_item,1,false))) {
 		clif_additem(sd,0,0,flag);
 		map_addflooritem(&tmp_item,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0);
 	}
@@ -684,7 +762,7 @@ int pet_return_egg(struct map_session_data *sd)
 	clif_itemlist(sd);
 	clif_equiplist(sd);
 	clif_inventoryEnd(sd, 0);
-	clif_send_petdata(sd, 6, 0);
+	clif_send_petdata_id(sd, pet_bl_id, 6, 0);
 #endif
 
 	intif_save_petdata(sd->status.account_id,&sd->pet);
@@ -695,6 +773,64 @@ int pet_return_egg(struct map_session_data *sd)
 	sd->petDB = NULL;
 
 	return 0;
+}
+
+int pet_return_egg(struct map_session_data *sd)
+{
+	return pet_return_egg_sub(sd, 0);
+}
+
+int pet_return_egg_nodrop(struct map_session_data *sd)
+{
+	return pet_return_egg_sub(sd, 1);
+}
+
+/*==========================================
+ * ペット禁止マップの状態を反映
+ *------------------------------------------
+ */
+void pet_nopet_update(struct map_session_data *sd)
+{
+	struct pet_data *pd;
+
+	nullpo_retv(sd);
+	if((pd = sd->pd) == NULL)
+		return;
+
+	if(map[sd->bl.m].flag.nopet) {
+		if(pet_return_egg_nodrop(sd) == 0)
+			return;
+		unit_stopattack(&pd->bl);
+		unit_skillcastcancel(&pd->bl,0);
+		pd->target_id = 0;
+		if(pd->a_skill) {
+			aFree(pd->a_skill);
+			pd->a_skill = NULL;
+		}
+		if(pd->s_skill) {
+			if(pd->s_skill->timer != -1)
+				delete_timer(pd->s_skill->timer, pet_skill_support_timer);
+			aFree(pd->s_skill);
+			pd->s_skill = NULL;
+		}
+	}
+	if(battle_config.pet_status_support)
+		status_calc_pc(sd, sd->bl.prev ? 0 : 2);
+}
+
+static int pet_mapflag_update_sub(struct block_list *bl, va_list ap)
+{
+	struct map_session_data *sd = (struct map_session_data *)bl;
+
+	pet_nopet_update(sd);
+	return 0;
+}
+
+void pet_mapflag_update(int m)
+{
+	if(m < 0 || m >= map_num || map[m].block == NULL)
+		return;
+	map_foreachinarea(pet_mapflag_update_sub, m, 0, 0, map[m].xs, map[m].ys, BL_PC);
 }
 
 /*==========================================
@@ -955,7 +1091,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 	}
 
 	if(sd->pet.intimate <= 0) {
-		if(battle_config.pet_leave) {	// 新密度0で即刻消えるか
+		if(battle_config.pet_leave) {
+			// 新密度0で即刻消えるか
 			unit_free(&sd->pd->bl,0);
 			sd->status.pet_id = 0;
 			sd->pd = NULL;
@@ -963,7 +1100,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			if(sd->state.storage_flag == 1)
 				storage_storage_save(sd);
 		} else {
-			if(battle_config.pet_speed_is_same_as_pc == 1)
+			if(battle_config.pet_speed_is_same_as_pc == 1 || sd->petDB->speed <= 0)
 				pd->speed = status_get_speed(&sd->bl);
 			else
 				pd->speed = sd->petDB->speed;
@@ -992,6 +1129,8 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 	}
 
 	// ペットによるルート
+	if(map[sd->bl.m].flag.nopet)
+		return 0;
 	if(battle_config.pet_lootitem) {
 		if( pd->target_id <= 0 &&
 		    (!battle_config.pet_loot_type || pd->lootitem_count < LOOTITEM_SIZE) &&
@@ -1026,7 +1165,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			} else {
 				int dx, dy, ret, i = 0;
 
-				if(battle_config.pet_speed_is_same_as_pc == 1)
+				if(battle_config.pet_speed_is_same_as_pc == 1 || sd->petDB->speed <= 0)
 					pd->speed = status_get_speed(&sd->bl);
 				else
 					pd->speed = sd->petDB->speed;
@@ -1085,7 +1224,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 			pd->next_walktime = tick + 500;
 			dx = bl_item->x - pd->bl.x;
 			dy = bl_item->y - pd->bl.y;
-			if(battle_config.pet_speed_is_same_as_pc == 1)
+			if(battle_config.pet_speed_is_same_as_pc == 1 || sd->petDB->speed <= 0)
 				pd->speed = status_get_speed(&sd->bl);
 			else
 				pd->speed = sd->petDB->speed;
@@ -1150,7 +1289,7 @@ static int pet_ai_sub_hard(struct pet_data *pd,unsigned int tick)
 		*/
 		if(dist <= 3 || (pd->ud.walktimer != -1 && path_distance(pd->ud.to_x,pd->ud.to_y,sd->bl.x,sd->bl.y) < 3))
 			return 0;
-		if(battle_config.pet_speed_is_same_as_pc == 1)
+		if(battle_config.pet_speed_is_same_as_pc == 1 || sd->petDB->speed <= 0)
 			pd->speed = status_get_speed(&sd->bl);
 		else
 			pd->speed = sd->petDB->speed;
@@ -1309,7 +1448,7 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 		return 0;
 	}
 
-	if( unit_isdead(&sd->bl) || pd->ud.walktimer != -1 || pd->ud.skilltimer != -1 ||
+	if( map[sd->bl.m].flag.nopet || unit_isdead(&sd->bl) || pd->ud.walktimer != -1 || pd->ud.skilltimer != -1 ||
 	    (rate = sd->status.sp*100/sd->status.max_sp) > pd->s_skill->sp ||
 	    (rate = sd->status.hp*100/sd->status.max_hp) > pd->s_skill->hp )
 	{
@@ -1333,6 +1472,253 @@ int pet_skill_support_timer(int tid,unsigned int tick,int id,void *data)
 	return 0;
 }
 
+#define MAX_PET_EVOLUTION_DB 256
+#define MAX_PET_EVOLUTION_MATERIALS 8
+
+struct pet_evolution_material {
+	int nameid;
+	int amount;
+};
+
+struct pet_evolution_entry {
+	int source_egg;
+	int target_egg;
+	int count;
+	struct pet_evolution_material material[MAX_PET_EVOLUTION_MATERIALS];
+};
+
+static struct pet_evolution_entry pet_evolution_db[MAX_PET_EVOLUTION_DB];
+static int pet_evolution_count;
+
+/*==========================================
+ * ペット進化DBの数値を読む
+ *------------------------------------------
+ */
+static int pet_evolution_read_number(char **p, int *value)
+{
+	char *end;
+	long number;
+
+	while(**p == ' ' || **p == '\t')
+		(*p)++;
+	if(**p < '0' || **p > '9')
+		return 0;
+	errno = 0;
+	number = strtol(*p, &end, 10);
+	if(errno == ERANGE || number <= 0 || number > INT_MAX)
+		return 0;
+	*p = end;
+	while(**p == ' ' || **p == '\t')
+		(*p)++;
+	*value = (int)number;
+	return 1;
+}
+
+/*==========================================
+ * ペット進化DBを読み込む
+ *------------------------------------------
+ */
+static int read_pet_evolution_db(void)
+{
+	FILE *fp;
+	char line[1024];
+	int lines = 0;
+
+	pet_evolution_count = 0;
+	fp = fopen("db/pet_evolution_db.txt", "r");
+	if(fp == NULL) {
+		printf("read_pet_evolution_db: open [db/pet_evolution_db.txt] failed !\n");
+		return -1;
+	}
+	while(fgets(line, sizeof(line), fp)) {
+		struct pet_evolution_entry entry;
+		char *p = line;
+		int valid = 1, i;
+
+		lines++;
+		if(!strchr(line, '\n') && !feof(fp)) {
+			int ch;
+			while((ch = fgetc(fp)) != '\n' && ch != EOF) {}
+			printf("read_pet_evolution_db: line too long (line %d)\n", lines);
+			continue;
+		}
+		while(*p == ' ' || *p == '\t') p++;
+		if(!*p || *p == '\r' || *p == '\n' || (p[0] == '/' && p[1] == '/'))
+			continue;
+		memset(&entry, 0, sizeof(entry));
+		if(!pet_evolution_read_number(&p, &entry.source_egg) || *p++ != ',')
+			valid = 0;
+		if(valid) {
+			char *name_end = strchr(p, ',');
+			if(name_end == NULL)
+				valid = 0;
+			else
+				p = name_end + 1;
+		}
+		if(valid && (!pet_evolution_read_number(&p, &entry.target_egg) || *p++ != ','))
+			valid = 0;
+		while(valid) {
+			struct pet_evolution_material *material;
+			if(entry.count >= MAX_PET_EVOLUTION_MATERIALS) {
+				valid = 0;
+				break;
+			}
+			material = &entry.material[entry.count];
+			if(!pet_evolution_read_number(&p, &material->nameid) || *p++ != ':' ||
+			   !pet_evolution_read_number(&p, &material->amount)) {
+				valid = 0;
+				break;
+			}
+			for(i = 0; i < entry.count; i++) {
+				if(entry.material[i].nameid == material->nameid)
+					valid = 0;
+			}
+			entry.count++;
+			if(*p != ',') break;
+			p++;
+		}
+		if(valid && *p && *p != '\r' && *p != '\n') valid = 0;
+		for(i = 0; i < pet_evolution_count; i++) {
+			if(pet_evolution_db[i].source_egg == entry.source_egg &&
+			   pet_evolution_db[i].target_egg == entry.target_egg)
+				valid = 0;
+		}
+		if(!valid || !entry.count || pet_evolution_count >= MAX_PET_EVOLUTION_DB) {
+			printf("read_pet_evolution_db: invalid entry (line %d)\n", lines);
+			continue;
+		}
+		pet_evolution_db[pet_evolution_count++] = entry;
+	}
+	fclose(fp);
+	printf("read db/pet_evolution_db.txt done (count=%d)\n", pet_evolution_count);
+	return 0;
+}
+
+/*==========================================
+ * ペットの進化
+ *------------------------------------------
+ */
+void pet_evolution(struct map_session_data *sd, int egg_id)
+{
+	struct pet_evolution_entry *entry = NULL;
+	struct pet_db *dst_db;
+	struct mobdb_data *mdb;
+	int i, j, egg_index;
+
+	nullpo_retv(sd);
+	if(!battle_config.feature_petevolution || map[sd->bl.m].flag.nopet || !sd->pd || !sd->petDB || sd->status.pet_id <= 0 || !sd->pd->bl.prev) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_UNKNOWN);
+		return;
+	}
+	if(sd->pet.intimate <= 900 || sd->pet.equip) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_RG_FAMILIAR);
+		return;
+	}
+	for(i = 0; i < pet_evolution_count; i++) {
+		if(pet_evolution_db[i].source_egg == sd->pet.egg_id && pet_evolution_db[i].target_egg == egg_id) {
+			entry = &pet_evolution_db[i];
+			break;
+		}
+	}
+	dst_db = pet_search_data(egg_id, PET_EGG);
+	if(!entry || !dst_db || !mobdb_exists(dst_db->class_) || !itemdb_exists(egg_id)) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_NOTEXIST_CALLPET);
+		return;
+	}
+	// 消費前に全素材を確認する。削除できないスロットは数えない
+	egg_index = pet_egg_search(sd, sd->pet.pet_id);
+	if(egg_index >= 0 && !pet_is_hatched_egg(&sd->status.inventory[egg_index])) {
+		clif_pet_evolution_result(sd, PET_EVOL_FAIL_UNKNOWN);
+		return;
+	}
+	for(i = 0; i < entry->count; i++) {
+		int remaining = entry->material[i].amount;
+		for(j = 0; j < MAX_INVENTORY && remaining > 0; j++) {
+			if(sd->inventory_data[j] && sd->status.inventory[j].nameid == entry->material[i].nameid &&
+			   !pet_is_hatched_egg(&sd->status.inventory[j]) && sd->status.inventory[j].amount > 0) {
+				int amount = sd->status.inventory[j].amount;
+				remaining -= (amount < remaining)? amount: remaining;
+			}
+		}
+		if(remaining > 0) {
+			clif_pet_evolution_result(sd, PET_EVOL_FAIL_MATERIAL);
+			return;
+		}
+	}
+	for(i = 0; i < entry->count; i++) {
+		int remaining = entry->material[i].amount;
+		for(j = 0; j < MAX_INVENTORY && remaining > 0; j++) {
+			if(sd->inventory_data[j] && sd->status.inventory[j].nameid == entry->material[i].nameid &&
+			   !pet_is_hatched_egg(&sd->status.inventory[j]) && sd->status.inventory[j].amount > 0) {
+				int amount = sd->status.inventory[j].amount;
+				if(amount > remaining) amount = remaining;
+				pc_delitem(sd, j, amount, 0, 0);
+				remaining -= amount;
+			}
+		}
+	}
+
+	unit_remove_map(&sd->pd->bl, 0, 0);
+	// 進化前のペットスキルと空腹タイマーを引き継がない
+	if(sd->pd->a_skill) {
+		aFree(sd->pd->a_skill);
+		sd->pd->a_skill = NULL;
+	}
+	if(sd->pd->s_skill) {
+		if(sd->pd->s_skill->timer != -1)
+			delete_timer(sd->pd->s_skill->timer, pet_skill_support_timer);
+		aFree(sd->pd->s_skill);
+		sd->pd->s_skill = NULL;
+	}
+	pet_hungry_timer_delete(sd->pd);
+	if(egg_index >= 0) {
+		struct item_data *new_item = itemdb_search(dst_db->EggID);
+		clif_delitem(sd, egg_index, 1, 0);
+		sd->weight += new_item->weight - sd->inventory_data[egg_index]->weight;
+		sd->status.inventory[egg_index].nameid = dst_db->EggID;
+		sd->inventory_data[egg_index] = new_item;
+		clif_additem(sd, egg_index, 1, 0);
+		clif_updatestatus(sd, SP_WEIGHT);
+	}
+	sd->pet.class_ = dst_db->class_;
+	sd->pet.egg_id = dst_db->EggID;
+	sd->pet.intimate = dst_db->intimate;
+	if(sd->pet.intimate < 0) sd->pet.intimate = 0;
+	if(sd->pet.intimate > 1000) sd->pet.intimate = 1000;
+	mdb = mobdb_search(dst_db->class_);
+	if(!sd->pet.rename_flag) {
+		strncpy(sd->pet.name, mdb->jname, sizeof(sd->pet.name) - 1);
+		sd->pet.name[sizeof(sd->pet.name) - 1] = '\0';
+		memcpy(sd->pd->name, sd->pet.name, sizeof(sd->pd->name));
+	}
+	sd->petDB = dst_db;
+	{
+		int interval = dst_db->hungry_delay;
+		if(battle_config.pet_hungry_delay_rate != 100)
+			interval = interval * battle_config.pet_hungry_delay_rate / 100;
+		if(interval <= 0) interval = 1;
+		sd->pd->hungry_timer = add_timer(gettick()+interval, pet_hungry_timer, sd->bl.id, NULL);
+	}
+	sd->pd->class_ = dst_db->class_;
+	sd->pd->effect = mdb->effect;
+	sd->pd->speed = (battle_config.pet_speed_is_same_as_pc == 1 || dst_db->speed <= 0)? status_get_speed(&sd->bl): dst_db->speed;
+	map_addblock(&sd->pd->bl);
+	intif_save_petdata(sd->status.account_id, &sd->pet);
+	chrif_save(sd, 0);
+	clif_spawnpet(sd->pd);
+	clif_send_petdata(sd, 0, 0);
+#if PACKETVER >= 20180704
+	clif_send_petdata(sd, 6, 1);
+#endif
+	clif_send_pethair(sd);
+	clif_pet_equip(sd->pd, sd->pet.equip);
+	clif_send_petstatus(sd);
+	clif_emotion(&sd->bl, 15);
+	if(battle_config.pet_status_support)
+		status_calc_pc(sd, sd->bl.prev ? 0 : 2);
+	clif_pet_evolution_result(sd, PET_EVOL_SUCCESS);
+}
+
 /*==========================================
  * ペットデータ読み込み
  *------------------------------------------
@@ -1344,9 +1730,10 @@ int read_petdb(void)
 	int i, j, k;
 	int lines, count = 0;
 	struct script_code *script = NULL;
-	const char *filename[] = { "db/pet_db.txt","db/addon/pet_db_add.txt" };
+	const char *filename[] = { "db/pet_db.txt", "db/addon/pet_db_add.txt",
+		"db/addon/pet_db_evolution_add.txt" };
 
-	for(i = 0; i < 2; i++) {
+	for(i = 0; i < 3; i++) {
 		fp = fopen(filename[i], "r");
 		if(fp == NULL) {
 			if(i > 0)
@@ -1383,7 +1770,13 @@ int read_petdb(void)
 			if(nameid <= 0 || !mobdb_exists(nameid))
 				continue;
 
-			k = pet_search_index(nameid, PET_CLASS);
+			// 進化ペット用DBでは卵ID単位で定義する
+			if((i == 0 || i == 2) && atoi(str[4]) <= 0)
+				continue;
+			if(i == 0 || i == 2)
+				k = pet_search_index(atoi(str[4]), PET_EGG);
+			else
+				k = pet_search_index(nameid, PET_CLASS);
 			j = (k >= 0)? k: pet_count;
 
 			pet_db[j].class_       = nameid;
@@ -1438,6 +1831,7 @@ int read_petdb(void)
 		fclose(fp);
 		printf("read %s done (count=%d)\n", filename[i], count);
 	}
+	read_pet_evolution_db();
 	return 0;
 }
 

@@ -2632,6 +2632,10 @@ int unit_free(struct block_list *bl, int clrtype)
 		struct map_session_data *sd = pd->msd;
 		if(sd && sd->status.pet_id > 0 && sd->pd) {
 			if(sd->pet.intimate <= 0) {
+				int egg_index = pet_egg_search(sd, sd->status.pet_id);
+
+				if(egg_index >= 0)
+					pc_delitem(sd, egg_index, 1, 0, 0);
 				intif_delete_petdata(sd->status.pet_id);
 				sd->status.pet_id = 0;
 				sd->pd = NULL;

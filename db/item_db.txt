@@ -5690,24 +5690,55 @@
 9096,Unknown_Item,キャットナインテイルの卵,4,,,0,,,,,,,,,,,,{},{}
 
 9099,Unknown_Item,ベアドールの卵,4,,,0,,,,,,,,,,,,{},{}
-
+9100,Unknown_Item,グレムリンの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 9101,Unknown_Item,ニブルキャット用携帯ケージ,4,,,0,,,,,,,,,,,,{},{}
-
+9102,Unknown_Item,マミーの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9105,Unknown_Item,ホドレムリンの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 9106,Unknown_Item,メタルラの卵,4,,,0,,,,,,,,,,,,{},{}
-
+9107,Unknown_Item,エンシェントマミーの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 9108,Unknown_Item,捨てられたクマ人形の卵,4,,,0,,,,,,,,,,,,{},{}
-
 9109,Unknown_Item,スウィートドロップスの卵,4,,,0,,,,,,,,,,,,{},{}
-
 9112,Unknown_Item,月夜花の卵,4,,,0,,,,,,,,,,,,{},{}
 9113,Unknown_Item,ニブルレオンの卵,4,,,0,,,,,,,,,,,,{},{}
-
 9115,Unknown_Item,ペクソジンの卵,4,,,0,,,,,,,,,,,,{},{}
-
+9117,Unknown_Item,汚染された彷徨う者の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9118,Unknown_Item,エリオットの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9119,Unknown_Item,エリセルの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9120,Unknown_Item,エリザの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 9121,Unknown_Item,オークヒーローの卵,4,,,0,,,,,,,,,,,,{},{}
-
+9122,Unknown_Item,グルームアンダーナイトの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 9123,Unknown_Item,ちび管理者ベータの卵,4,,,0,,,,,,,,,,,,{},{}
 9124,Unknown_Item,ちび管理者アルファの卵,4,,,0,,,,,,,,,,,,{},{}
+9126,Unknown_Item,キエル-D-01の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9128,Unknown_Item,ダークプリーストの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9130,Unknown_Item,混沌のバフォメット.Jrの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9135,Unknown_Item,ワイルドローズの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9136,Unknown_Item,エドガの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9137,Unknown_Item,バフォメットの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9139,Unknown_Item,ダークイリュージョンの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9140,Unknown_Item,ブルームーンロリルリの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9145,Unknown_Item,コポの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9146,Unknown_Item,グレーアイスウィンドの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9147,Unknown_Item,ホワイトアイスウィンドの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9148,Unknown_Item,ダークロードの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9153,Unknown_Item,ミストレスの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9154,Unknown_Item,ジャイアントホーネットの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9155,Unknown_Item,ホーネットの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9158,Unknown_Item,タナトスの苦悩の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9159,Unknown_Item,タナトスの絶望の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9160,Unknown_Item,魔剣士タナトスの思念体の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9163,Unknown_Item,魔王モロクの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9164,Unknown_Item,再生の半魔神の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9165,Unknown_Item,絶望の神モロクの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9166,Unknown_Item,プレゼントがない幽霊の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9167,Unknown_Item,包装されなかった人形の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9168,Unknown_Item,セリーヌ・キミの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9185,Unknown_Item,ランドグリスの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9186,Unknown_Item,エンジェゴルトブルーの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9187,Unknown_Item,スケゴルトブラウンの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9188,Unknown_Item,タイムホルダーの卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9189,Unknown_Item,時計塔管理者の卵,4,20,,0,,,,,,,,,,,,{},{},{}
+9190,Unknown_Item,クロックの卵,4,20,,0,,,,,,,,,,,,{},{},{}
 
 9956,Unknown_Item,王級生ハムメロン,3,,,30,,,,,,,,,,,,{},{}
 9957,Unknown_Item,高級メロン箱(50食),3,,,1500,,,,,,,,,,,,{},{}
@@ -11672,7 +11703,7 @@
 25224,Unknown_Item,チャーム＜ホワイトボディ＞,3,,,100,,,,,,,,,,,,{},{}
 
 25231,Unknown_Item,不審なボトル,3,1000,,0,,,,,,,,,,,,{},{}
-
+25232,Unknown_Item,安い潤滑油,3,1000,,1,,,,,,,,,,,,{},{},{}
 25233,Unknown_Item,綿の玉,3,1000,,10,,,,,,,,,,,,{},{}
 
 25237,Unknown_Item,迷宮の魔力結晶,3,20,,0,,,,,,,,,,,,{},{}
@@ -14058,6 +14089,8 @@
 
 200089,Unknown_Item,コスたまHairCollectionVI(暗色),3,,,10,,,,,,,,,,,,{},{}
 
+300008,Unknown_Item,エンジェゴルトカード,6,20,,10,,,,,,,16,,,,,{},{ bonus2 bMagicAddRace,Rct_Demon,getequiprefinerycnt(); if(getequiprefinerycnt() >= 9) { bonus2 bMagicAddRace,Rct_Demon,10; } }
+
 300078,Unknown_Item,スウィーティカード,6,,,10,,,,,,,64,,,,,{},{}
 300079,Unknown_Item,レッドペッパーカッパカード,6,,,10,,,,,,,256,,,,,{},{}
 
@@ -14117,9 +14150,13 @@
 300238,Unknown_Item,真面目なビタタカード,6,20,,10,,,,,,,4,,,,,{},{ bonus2 bAddEleMagicDamageRate,Ele_Earth,50; bonus2 bSubEle,Ele_Earth,70; if(equippeditem(311075)>=1){ bonus2 bMagicAddRace,Rct_Boss,10; bonus2 bMagicAddRace,Rct_NonBoss,10; skill "PR_SANCTUARY",10; } }
 300239,Unknown_Item,無口なマヤーカード,6,20,,10,,,,,,,64,,,,,{},{ bonus2 bAddRace,Rct_Boss,10; bonus2 bAddRace,Rct_NonBoss,10; bonus2 bAddRace,Rct_Plant,50; bonus2 bAddRace,Rct_Insect,50; bonus bMaxSPrate,-50; if(equippeditem(311075)>=1){ bonus2 bAddRace,Rct_Boss,10; bonus2 bAddRace,Rct_NonBoss,10; skill "CR_AUTOGUARD",10; } }
 
+300245,Unknown_Item,ブルームーンロリルリカード,6,20,,10,,,,,,,16,,,,,{},{ bonus3 bRevAutoSelfSpell,"AB_HIGHNESSHEAL",3,500; }
+
 300282,Unknown_Item,隠者のカード(逆位置),6,,,10,,,,,,,1023,,,,,{},{ bonus2 bAddSkillDamageRate,2038,5+getequiprefinerycnt(); if(getequiprefinerycnt()>=10){ bonus2 bAddSkillDamageRate,2038,5; } if(equippeditem(29585)){ bonus2 bAddSkillSubHealRate,"AL_HEAL",5; bonus2 bAddSkillSubHealRate,"PR_SANCTUARY",5; bonus2 bAddSkillSubHealRate,"AM_POTIONPITCHER",5; bonus2 bAddSkillSubHealRate,"AB_CHEAL",5; bonus2 bAddSkillSubHealRate,"AB_HIGHNESSHEAL",5; bonus2 bSPPenaltyTime,5000,-50; bonus2 bAddSkillDamageRate,2038,50; } }
 300284,Unknown_Item,法王のカード(逆位置),6,,,10,,,,,,,1023,,,,,{},{ bonus2 bAddSkillDamageRate,2481,5+getequiprefinerycnt(); if(getequiprefinerycnt()>=10){ bonus2 bAddSkillDamageRate,2481,5; } if(equippeditem(29585)){ bonus bVit,3; bonus2 bItemHealRate,1,200; bonus2 bAddSkillDamageRate,2481,50; } }
 
+300457,Unknown_Item,グレーアイスウィンドカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bStr,5; if(readparam(bPow) >= 100) { bonus2 bAddRace,Rct_Boss,5; bonus2 bAddRace,Rct_NonBoss,5; } }
+300458,Unknown_Item,ホワイトアイスウィンドカード,6,20,,10,,,,,,,136,,,,,{},{ bonus bInt,5; if(readparam(bSpl) >= 100) { bonus2 bMagicAddRace,Rct_Boss,5; bonus2 bMagicAddRace,Rct_NonBoss,5; } }
 
 310012,Unknown_Item,死の欲動,6,,,0,,,,,,2,65535,,1,,,{},{ bonus4 bAutoActiveItem,310012,100,10000,EAS_WEAPON; if(checkactiveitem()){ misceffect 220,""; active_montransform 1635; bonus bFlee,150; bonus bSkillDelayRate,-100; } }
 
@@ -14808,6 +14845,9 @@
 
 1000418,Unknown_Item,アミノVit platinum,3,,,0,,,,,,,,,,,,{},{}
 
+1000552,Unknown_Item,邪悪な水,3,1000,,1,,,,,,,,,,,,{},{},{}
+1000553,Unknown_Item,ペット用パイプタバコ,3,20,,10,,,,,,,,,,,,{},{},{}
+
 1000563,Soa_Charm,護符,3,,,1,,,,,,,,,,,,{},{}
 1000564,Nw_Grenade,手榴弾,3,,,1,,,,,,,,,,,,{},{}
 1000565,SS_Charm,漆黒の陽炎,3,,,1,,,,,,,,,,,,{},{}
@@ -14815,3 +14855,32 @@
 1000567,SS_Charm_W,氷雪の陽炎,3,,,1,,,,,,,,,,,,{},{}
 1000568,SS_Charm_G,大地の陽炎,3,,,1,,,,,,,,,,,,{},{}
 1000569,SS_Charm_L,朔風の陽炎,3,,,1,,,,,,,,,,,,{},{}
+
+1000623,Unknown_Item,ペット用シンブレイド,3,20,,10,,,,,,,,,,,,{},{},{}
+1000624,Unknown_Item,ペット用グリッタリングクロース,3,20,,10,,,,,,,,,,,,{},{},{}
+1000625,Unknown_Item,ペット用ヴァーリのマント,3,20,,10,,,,,,,,,,,,{},{},{}
+1000626,Unknown_Item,ペット用アリスのエプロン,3,20,,10,,,,,,,,,,,,{},{},{}
+1000627,Unknown_Item,ペット用村正,3,20,,10,,,,,,,,,,,,{},{},{}
+1001057,Unknown_Item,ペット用花火,3,20,,10,,,,,,,,,,,,{},{},{}
+1001058,Unknown_Item,ペット用暗黒の意志,3,20,,10,,,,,,,,,,,,{},{},{}
+1001059,Unknown_Item,ペット用冷めた溶岩,3,20,,10,,,,,,,,,,,,{},{},{}
+1001150,Unknown_Item,ペット用くさった包帯,3,20,,10,,,,,,,,,,,,{},{},{}
+1001237,Unknown_Item,天使のしっぽ,3,20,,10,,,,,,,,,,,,{},{},{}
+1001348,Unknown_Item,ペット用マジェスティックゴート,3,20,,10,,,,,,,,,,,,{},{},{}
+1001349,Unknown_Item,ペット用悪魔の角,3,20,,10,,,,,,,,,,,,{},{},{}
+1001495,Unknown_Item,ペット用クロノス,3,20,,10,,,,,,,,,,,,{},{},{}
+1001496,Unknown_Item,ペット用骸骨の杖,3,20,,10,,,,,,,,,,,,{},{},{}
+1001576,Unknown_Item,ペット用ローヤルゼリー,3,20,,10,,,,,,,,,,,,{},{},{}
+1001577,Unknown_Item,ペット用ハチ蜜,3,20,,10,,,,,,,,,,,,{},{},{}
+1001773,Unknown_Item,ペット用ヴァルキリーマント,3,20,,10,,,,,,,,,,,,{},{},{}
+1001774,Unknown_Item,ペット用祝福のエッセンス,3,20,,10,,,,,,,,,,,,{},{},{}
+1001779,Unknown_Item,ペット用銀の懐中時計,3,20,,10,,,,,,,,,,,,{},{},{}
+1001780,Unknown_Item,ペット用時計塔のカギ,3,20,,10,,,,,,,,,,,,{},{},{}
+1001918,Unknown_Item,ペット用魔剣士タナトスの剣,3,0,,10,,,,,,,,,,,,{},{},{}
+1001919,Unknown_Item,ペット用タナトスの絶望仮面,3,0,,10,,,,,,,,,,,,{},{},{}
+1002225,Unknown_Item,ペット用魔神モロクの忠実な下僕,3,0,,10,,,,,,,,,,,,{},{},{}
+1002226,Unknown_Item,[ブランク]再生の半魔神カード,3,0,,10,,,,,,,,,,,,{},{},{}
+1002227,Unknown_Item,ペット用魔神の指輪,3,0,,10,,,,,,,,,,,,{},{},{}
+1002233,Unknown_Item,ペット用赤いろうそく,3,0,,10,,,,,,,,,,,,{},{},{}
+1002234,Unknown_Item,ペット用悪霊の糸の手袋,3,0,,10,,,,,,,,,,,,{},{},{}
+1002401,Unknown_Item,ペット用蒼い月の欠片,3,0,,10,,,,,,,,,,,,{},{},{}

@@ -1,4 +1,25 @@
 ----------------------------------------
+//1630 [2026/11/13] by refis
+
+・ペット進化処理と進化レシピDBを追加
+　進化前後の卵IDと素材を照合し、同一MobIDの異なる卵を登録可能
+　（pet.*, clif.*, battle.*, db/pet_db.txt, db/pet_evolution_db.txt, db/item_db.txt,
+　　db/packet_db.lua, conf/battle_auriga.conf, doc/db_ref.txt, doc/conf_ref.txt, doc/client_packet.txt）
+・孵化中の卵を所持欄に保持し、卵へ戻した際は同じ位置に表示するよう修正
+　旧方式で孵化中のペットは再読込時に空き枠を確保できる場合に移行
+　孵化中の卵は取引・倉庫などへ移動できず、clearitem命令の削除対象からも除外する
+・親密度0によるペット消失時、マップ移動・ログアウトが重なると不整合が起こる不具合を修正
+
+・mob_db.txtの更新と高HPモンスターに対する処理を修正
+　高HP時の回復、最大HP補正、割合攻撃、毒、変身、HP表示と捕獲率の計算あふれを修正
+　（mob.c, status.c, status_change_start.c, battle.c, skill_castend_damage.c, clif.c, pet.c）
+
+・ペット禁止mapflag nopetを追加し、卵を所持できる場合のみ自動的に戻す
+　卵を戻せない場合はペットの効果と支援行動を無効にする
+　GvGMAPにnopetを適用
+　（pet.*, pc.c, status_calc_pc.c, map.h, npc.c, buildin_map.c, db/const.txt, doc/script_ref.txt, mapflag/mapflag_gvg.sc）
+
+----------------------------------------
 //1629 [2026/11/08] by refis
 
 ・PACKETVER 20150513以降のRoDEX対応クライアントでメールの一覧表示、送受信、添付の受け取りを行えるようにした。

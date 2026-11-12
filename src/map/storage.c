@@ -30,6 +30,7 @@
 #include "clif.h"
 #include "intif.h"
 #include "pc.h"
+#include "pet.h"
 #include "storage.h"
 #include "guild.h"
 #include "battle.h"
@@ -351,6 +352,8 @@ void storage_storageadd(struct map_session_data *sd, int idx, int amount)
 	if(!stor->storage_status)
 		return;
 	if(idx < 0 || idx >= MAX_INVENTORY)
+		return;
+	if(pet_is_hatched_egg(&sd->status.inventory[idx]))
 		return;
 	if(itemdb_isstorageable(sd->status.inventory[idx].nameid) == 0)
 		return;
@@ -711,6 +714,8 @@ void storage_guild_storageadd(struct map_session_data *sd, int idx, int amount)
 	if(!stor->storage_status)
 		return;
 	if(idx < 0 || idx >= MAX_INVENTORY)
+		return;
+	if(pet_is_hatched_egg(&sd->status.inventory[idx]))
 		return;
 	if(itemdb_isguildstorageable(sd->status.inventory[idx].nameid) == 0)
 		return;

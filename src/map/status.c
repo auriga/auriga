@@ -578,7 +578,8 @@ int status_get_ap(struct block_list *bl)
  */
 int status_get_max_hp(struct block_list *bl)
 {
-	int max_hp = 1;
+	// Å‘åHP‚ÌŠ„‡•â³‚ÍãŒÀˆ—‚Ü‚ÅL‚¢Œ^‚ÅŒvZ‚·‚é
+	atn_bignumber max_hp = 1;
 
 	nullpo_retr(1, bl);
 
@@ -636,7 +637,7 @@ int status_get_max_hp(struct block_list *bl)
 		if(max_hp < 1) max_hp = 1;
 	}
 
-	return max_hp;
+	return BIGNUM2INT(max_hp);
 }
 
 /*==========================================
@@ -4114,7 +4115,7 @@ int status_change_timer(int tid, unsigned int tick, int id, void *data)
 			int hp    = status_get_hp(bl);
 			int p_dmg = status_get_max_hp(bl);
 			if(hp > p_dmg>>2) {		// Å‘åHP‚Ì25%ˆÈã
-				p_dmg = 3 + p_dmg*3/200;
+				p_dmg = 3 + BIGNUM2INT((atn_bignumber)p_dmg * 3 / 200);
 				if(p_dmg >= hp)
 					p_dmg = hp-1;	// “Å‚Å‚Í€‚È‚È‚¢
 				unit_heal(bl, -p_dmg, 0, 0, 0);

@@ -460,7 +460,7 @@ static void status_calc_pc_phase_equip(struct map_session_data *sd, struct statu
 	w->wele_   = sd->atk_ele_;
 	w->def_ele = sd->def_ele;
 	if(battle_config.pet_status_support) {
-		if(sd->status.pet_id > 0 && sd->petDB && sd->pet.intimate > 0) {
+		if(sd->status.pet_id > 0 && sd->petDB && sd->pet.intimate > 0 && !map[sd->bl.m].flag.nopet) {
 			run_script(sd->petDB->script,0,sd->bl.id,0);
 		}
 		w->pele        = sd->atk_ele;

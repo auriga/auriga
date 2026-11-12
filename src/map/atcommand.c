@@ -1510,7 +1510,8 @@ int atcommand_itemreset(const int fd, struct map_session_data* sd, AtCommandType
 	nullpo_retr(-1, sd);
 
 	for (i = 0; i < MAX_INVENTORY; i++) {
-		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0) {
+		if (sd->status.inventory[i].amount && sd->status.inventory[i].equip == 0 &&
+		    !pet_is_hatched_egg(&sd->status.inventory[i])) {
 			if (sd->status.inventory[i].card[0] == (int)0xff00)
 				intif_delete_petdata(*((int *)(&sd->status.inventory[i].card[1])));
 			pc_delitem(sd, i, sd->status.inventory[i].amount, 0, 0);
@@ -1540,7 +1541,8 @@ int atcommand_charitemreset(const int fd, struct map_session_data* sd, AtCommand
 	if ((pl_sd = map_nick2sd(character)) != NULL) {
 		int i;
 		for (i = 0; i < MAX_INVENTORY; i++) {
-			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0) {
+			if (pl_sd->status.inventory[i].amount && pl_sd->status.inventory[i].equip == 0 &&
+			    !pet_is_hatched_egg(&pl_sd->status.inventory[i])) {
 				if (pl_sd->status.inventory[i].card[0] == (int)0xff00)
 	 				intif_delete_petdata(*((int *)(&pl_sd->status.inventory[i].card[1])));
 				pc_delitem(pl_sd, i, pl_sd->status.inventory[i].amount, 0, 0);
