@@ -65,6 +65,14 @@ void test_grf_protected_reject_corrupt_header(void);
 void test_grf_protected_reject_bad_header_fields(void);
 void test_grf_protected_encode_rejects_unsupported(void);
 
+void test_pc_ui_exclusive_pairs(void);
+void test_pc_ui_end_wrong_type(void);
+void test_pc_ui_preserves_mail_transaction(void);
+void test_pc_ui_mail_compose_lifecycle(void);
+void test_pc_ui_policy_preserves_actions(void);
+void test_pc_ui_warp_policy(void);
+void test_pc_ui_invalid_state(void);
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -125,6 +133,14 @@ int main(void)
 	RUN_TEST(test_grf_protected_reject_corrupt_header);
 	RUN_TEST(test_grf_protected_reject_bad_header_fields);
 	RUN_TEST(test_grf_protected_encode_rejects_unsupported);
+
+	RUN_TEST(test_pc_ui_exclusive_pairs);
+	RUN_TEST(test_pc_ui_end_wrong_type);
+	RUN_TEST(test_pc_ui_preserves_mail_transaction);
+	RUN_TEST(test_pc_ui_mail_compose_lifecycle);
+	RUN_TEST(test_pc_ui_policy_preserves_actions);
+	RUN_TEST(test_pc_ui_warp_policy);
+	RUN_TEST(test_pc_ui_invalid_state);
 
 	return UNITY_END();
 }

@@ -2147,7 +2147,7 @@ static int intif_parse_ArriveNewMail(int fd)
 		return 0;
 	clif_arrive_newmail(sd->fd,&md);
 #if PACKETVER >= 20150513
-	if(sd->state.rodex_open)
+	if(pc_ui_is(sd, PC_UI_RODEX))
 		intif_mailbox(sd->status.char_id);
 #endif
 	return 0;

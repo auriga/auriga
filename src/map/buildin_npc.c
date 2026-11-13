@@ -1178,8 +1178,8 @@ int buildin_callshop(struct script_state *st)
 	if(st->end>st->start+3)
 		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
-	sd->state.barter_open = 0;
-	sd->state.exbarter_open = 0;
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_OTHER_UI))
+		return 0;
 	switch(nd->subtype) {
 	case SHOP:
 		switch(flag) {

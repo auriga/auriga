@@ -133,6 +133,7 @@
     <ClInclude Include="..\src\map\party.h" />
     <ClInclude Include="..\src\map\path.h" />
     <ClInclude Include="..\src\map\pc.h" />
+    <ClInclude Include="..\src\map\pc_ui.h" />
     <ClInclude Include="..\src\map\pet.h" />
     <ClInclude Include="..\src\map\quest.h" />
     <ClInclude Include="..\src\map\ranking.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="..\src\map\party.c" />
     <ClCompile Include="..\src\map\path.c" />
     <ClCompile Include="..\src\map\pc.c" />
+    <ClCompile Include="..\src\map\pc_ui.c" />
     <ClCompile Include="..\src\map\pet.c" />
     <ClCompile Include="..\src\map\quest.c" />
     <ClCompile Include="..\src\map\ranking.c" />

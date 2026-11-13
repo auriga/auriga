@@ -26,6 +26,7 @@
 
 #include "mmo.h"
 #include "script.h"
+#include "pc_ui.h"
 
 #define MAX_NPC_PER_MAP 512
 #define BLOCK_SIZE 8
@@ -453,10 +454,7 @@ struct map_session_data {
 		unsigned blockedmove : 1;
 		unsigned alliance_message : 1;
 		unsigned autoskill_flag : 1;
-		unsigned refineui_open : 1;
-		unsigned rodex_open : 1;
-		unsigned barter_open : 1;
-		unsigned exbarter_open : 1;
+		enum pc_ui_type open_ui;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -1053,6 +1051,7 @@ struct npc_data {
 			int src_id;
 			short moveable;
 		} scr;
+		// subtypeに応じて、どちらか一方だけを可変長の商品配列として使う。
 		struct npc_item_list shop_item[1];
 		struct npc_barter_item barter_item[1];
 		struct {
@@ -1061,7 +1060,7 @@ struct npc_data {
 			char name[16];
 		} warp;
 	} u;
-	// ここにメンバを追加してはならない(shop_itemが可変長の為)
+	// ここにメンバを追加してはならない(shop_item・barter_itemが可変長の為)
 };
 
 struct mob_data {

@@ -1303,8 +1303,8 @@ void npc_click(struct map_session_data *sd, int id)
 
 	sd->npc_allowuseitem = -1;
 
-	sd->state.barter_open = 0;
-	sd->state.exbarter_open = 0;
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_OTHER_UI) && nd->subtype != SCRIPT)
+		return;
 	switch(nd->subtype) {
 	case SHOP:
 		sd->npc_id = id;
@@ -1857,19 +1857,22 @@ void npc_barter_open(struct map_session_data *sd, struct npc_data *nd)
 {
 	nullpo_retv(sd);
 	nullpo_retv(nd);
+	if(sd->state.store || sd->state.deal_mode || sd->trade.partner ||
+	   sd->state.storage_flag || sd->state.mail_appending || sd->chatID)
+		return;
 
 	if(nd->subtype == BARTER) {
 #if PACKETVER >= 20190116
+		if(!pc_ui_begin(sd, PC_UI_BARTER))
+			return;
 		sd->npc_shopid = nd->bl.id;
-		sd->state.barter_open = 1;
-		sd->state.exbarter_open = 0;
 		clif_barter_list(sd, nd);
 #endif
 	} else if(nd->subtype == EXBARTER) {
 #if PACKETVER >= 20191106
+		if(!pc_ui_begin(sd, PC_UI_EXBARTER))
+			return;
 		sd->npc_shopid = nd->bl.id;
-		sd->state.barter_open = 0;
-		sd->state.exbarter_open = 1;
 		clif_exbarter_list(sd, nd);
 #endif
 	}
@@ -1931,10 +1934,10 @@ static int npc_barter_purchase(struct map_session_data *sd, int n, const unsigne
 	nullpo_retr(3, list);
 	if(n <= 0 || n > MAX_BARTER_ITEMS)
 		return 3;
-	if(sd->npc_id || sd->state.refineui_open || sd->state.store || sd->state.deal_mode ||
+	if(sd->npc_id || sd->state.store || sd->state.deal_mode ||
 	   sd->state.mail_appending || sd->state.storage_flag || sd->status.manner < 0 || unit_isdead(&sd->bl))
 		return 3;
-	if(expanded ? !sd->state.exbarter_open : !sd->state.barter_open)
+	if(!pc_ui_is(sd, expanded ? PC_UI_EXBARTER : PC_UI_BARTER))
 		return 3;
 	nd = map_id2nd(sd->npc_shopid);
 	if(nd == NULL || nd->bl.type != BL_NPC || nd->subtype != (expanded ? EXBARTER : BARTER) ||
@@ -2108,8 +2111,6 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	strcpy(nd->title, src_nd->title);
 	nd->title[23] = '\0';	// froce \0 terminal
 
-	unit_dataset( &nd->bl );
-
 	switch(nd->subtype) {
 	case SCRIPT:
 		{
@@ -2167,6 +2168,9 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 		}
 		break;
 	}
+
+	// 可変長の商品配列を再確保した後で、自身を指すud.blを初期化する。
+	unit_dataset(&nd->bl);
 
 	if(m >= 0) {
 		map_addblock(&nd->bl);

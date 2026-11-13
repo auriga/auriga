@@ -24,6 +24,7 @@
 
 #include "utils.h"
 #include "map.h"
+#include "pc_ui.h"
 
 #define MAX_SKILL_TREE 120
 
