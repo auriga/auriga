@@ -108,6 +108,8 @@ enum {
 	POINTSHOP,
 	SCRIPT,
 	MARKET,
+	BARTER,
+	EXBARTER,
 };
 
 // 種族
@@ -453,6 +455,8 @@ struct map_session_data {
 		unsigned autoskill_flag : 1;
 		unsigned refineui_open : 1;
 		unsigned rodex_open : 1;
+		unsigned barter_open : 1;
+		unsigned exbarter_open : 1;
 	} state;
 	struct {
 		unsigned restart_full_recover : 1;
@@ -995,6 +999,24 @@ struct npc_item_list {
 	int nameid,value,qty;
 };
 
+#define MAX_BARTER_ITEMS 100
+#define MAX_BARTER_CURRENCY 5
+
+struct npc_barter_req {
+	int nameid;
+	int amount;
+	short refine; /* -1: 精錬値不問 */
+};
+
+struct npc_barter_item {
+	int nameid;
+	int stock; /* 負数: 無制限、0以上: 残り在庫 */
+	int zeny;  /* 拡張バーターの必要Zeny */
+	int index;
+	int ncurrency;
+	struct npc_barter_req currency[MAX_BARTER_CURRENCY];
+};
+
 struct npc_data {
 	struct block_list bl;
 	struct unit_data  ud;
@@ -1032,6 +1054,7 @@ struct npc_data {
 			short moveable;
 		} scr;
 		struct npc_item_list shop_item[1];
+		struct npc_barter_item barter_item[1];
 		struct {
 			short xs,ys;
 			short x,y;

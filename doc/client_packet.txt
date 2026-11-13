@@ -2976,3 +2976,21 @@ S 09fb <len>.w <eggId>.w/.l {<index>.w <amount>.w}*
 	PACKETVER >= 20180704ではeggIdは4バイト。
 R 09fc <result>.l
 	ペット進化結果（0:不明な失敗、1:進化先なし、2:卵でない、3:レシピ不正、4:素材不足、5:親密度不足または装備中、6:成功）
+
+S 0b0f <len>.w {<itemId>.l <amount>.l <invIndex>.w <shopIndex>.l}*
+S 0b12
+	バーター購入と画面終了（PACKETVER >= 20190116）。invIndexはクライアント送信の補助情報。
+	商品行と交換条件はサーバー側のNPC定義から検証する。
+R 0b0e <len>.w {<itemId>.l <type>.B <stock>.l <materialId>.l <amount>.l <weight>.l <shopIndex>.l}*
+R 0b78 <len>.w {<itemId>.l <type>.B <stock>.l <materialId>.l <amount>.l <weight>.l <shopIndex>.l <view>.w <location>.l}*
+	バーターの商品一覧。RE基準で20211103以降は0b78を使用する。
+S 0b57 <len>.w {<itemId>.l <shopIndex>.l <amount>.l}*
+S 0b58
+	拡張バーター購入と画面終了（PACKETVER >= 20191106、RE基準）。
+R 0b56 <len>.w <count>.l {<itemId>.l <type>.w <stock>.l <weight>.l <shopIndex>.l <zeny>.l <materialCount>.l <materials>.?B}*
+R 0b79 <len>.w <count>.l {<itemId>.l <type>.w <stock>.l <weight>.l <shopIndex>.l <zeny>.l <view>.w <location>.l <materialCount>.l <materials>.?B}*
+	拡張バーターの商品一覧。RE基準で20211103以降は0b79を使用する。
+	materialsは{<itemId>.l <refine>.w <amount>.l <type>.w}の繰り返し。
+	stockは-1で無制限。素材の精錬値不問は一覧上では0を送信する。
+R 00ca <result>.B
+	購入結果（0:成功、1:Zeny不足、2:重量・所持数超過、3:交換不可）。

@@ -87,6 +87,7 @@ void pc_setnewpc(struct map_session_data*,int,int,int,int,int);
 int pc_authok(int,struct mmo_charstatus *st,struct registry *reg);
 int pc_authfail(int);
 
+int pc_equippoint_data(struct map_session_data *sd, const struct item_data *data);
 int pc_equippoint(struct map_session_data *sd,int n);
 
 int pc_checkskill(struct map_session_data *sd,int skill_id);

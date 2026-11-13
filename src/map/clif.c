@@ -4532,6 +4532,126 @@ void clif_market_list(struct map_session_data *sd, struct npc_data *nd)
 }
 
 /*==========================================
+ * バーターの商品一覧
+ *------------------------------------------
+ */
+void clif_barter_list(struct map_session_data *sd, struct npc_data *nd)
+{
+#if PACKETVER >= 20190116
+	struct item_data *id, *cid;
+	int fd, i, len = 4;
+
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+
+	fd = sd->fd;
+#if PACKETVER >= 20211103
+	WFIFOW(fd, 0) = 0xb78;
+#else
+	WFIFOW(fd, 0) = 0xb0e;
+#endif
+	WFIFORESERVE(fd, 4 + MAX_BARTER_ITEMS * 31);
+	for(i = 0; nd->u.barter_item[i].nameid > 0; i++) {
+		int amount;
+		if(nd->u.barter_item[i].stock == 0)
+			continue;
+		id = itemdb_search(nd->u.barter_item[i].nameid);
+		cid = itemdb_search(nd->u.barter_item[i].currency[0].nameid);
+		amount = (nd->u.barter_item[i].stock < 0) ? -1 : nd->u.barter_item[i].stock;
+		if(id->view_id > 0)
+			WFIFOL(fd, len + 0) = id->view_id;
+		else
+			WFIFOL(fd, len + 0) = nd->u.barter_item[i].nameid;
+		WFIFOB(fd, len + 4) = (unsigned char)id->type;
+		WFIFOL(fd, len + 5) = amount;
+		if(cid->view_id > 0)
+			WFIFOL(fd, len + 9) = cid->view_id;
+		else
+			WFIFOL(fd, len + 9) = nd->u.barter_item[i].currency[0].nameid;
+		WFIFOL(fd, len + 13) = nd->u.barter_item[i].currency[0].amount;
+		WFIFOL(fd, len + 17) = id->weight;
+		WFIFOL(fd, len + 21) = nd->u.barter_item[i].index;
+#if PACKETVER >= 20211103
+		WFIFOW(fd, len + 25) = id->look;
+		WFIFOL(fd, len + 27) = pc_equippoint_data(sd, id);
+		len += 31;
+#else
+		len += 25;
+#endif
+	}
+	WFIFOW(fd, 2) = len;
+	WFIFOSET(fd, len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 拡張バーターの商品一覧
+ *------------------------------------------
+ */
+void clif_exbarter_list(struct map_session_data *sd, struct npc_data *nd)
+{
+#if PACKETVER >= 20191106
+	struct item_data *id, *cid;
+	int fd, i, c, len = 8;
+	int count = 0;
+
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+
+	fd = sd->fd;
+#if PACKETVER >= 20211103
+	WFIFOW(fd, 0) = 0xb79;
+#else
+	WFIFOW(fd, 0) = 0xb56;
+#endif
+	WFIFORESERVE(fd, 8 + MAX_BARTER_ITEMS * (32 + MAX_BARTER_CURRENCY * 12));
+	for(i = 0; nd->u.barter_item[i].nameid > 0; i++) {
+		int amount, entry;
+		if(nd->u.barter_item[i].stock == 0)
+			continue;
+		id = itemdb_search(nd->u.barter_item[i].nameid);
+		amount = (nd->u.barter_item[i].stock < 0) ? -1 : nd->u.barter_item[i].stock;
+		entry = len;
+		if(id->view_id > 0)
+			WFIFOL(fd, entry + 0) = id->view_id;
+		else
+			WFIFOL(fd, entry + 0) = nd->u.barter_item[i].nameid;
+		WFIFOW(fd, entry + 4) = (unsigned short)id->type;
+		WFIFOL(fd, entry + 6) = amount;
+		WFIFOL(fd, entry + 10) = id->weight;
+		WFIFOL(fd, entry + 14) = nd->u.barter_item[i].index;
+		WFIFOL(fd, entry + 18) = nd->u.barter_item[i].zeny;
+#if PACKETVER >= 20211103
+		WFIFOW(fd, entry + 22) = id->look;
+		WFIFOL(fd, entry + 24) = pc_equippoint_data(sd, id);
+		WFIFOL(fd, entry + 28) = nd->u.barter_item[i].ncurrency;
+		len = entry + 32;
+#else
+		WFIFOL(fd, entry + 22) = nd->u.barter_item[i].ncurrency;
+		len = entry + 26;
+#endif
+		for(c = 0; c < nd->u.barter_item[i].ncurrency; c++) {
+			cid = itemdb_search(nd->u.barter_item[i].currency[c].nameid);
+			if(cid->view_id > 0)
+				WFIFOL(fd, len + 0) = cid->view_id;
+			else
+				WFIFOL(fd, len + 0) = nd->u.barter_item[i].currency[c].nameid;
+			WFIFOW(fd, len + 4) = (unsigned short)((nd->u.barter_item[i].currency[c].refine < 0) ? 0 : nd->u.barter_item[i].currency[c].refine);
+			WFIFOL(fd, len + 6) = nd->u.barter_item[i].currency[c].amount;
+			WFIFOW(fd, len + 10) = (unsigned short)cid->type;
+			len += 12;
+		}
+		count++;
+	}
+	WFIFOL(fd, 4) = count;
+	WFIFOW(fd, 2) = len;
+	WFIFOSET(fd, len);
+#endif
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -25694,6 +25814,110 @@ static void clif_parse_SellMarketReq(int fd,struct map_session_data *sd, int cmd
 }
 
 /*==========================================
+ * バーターの購入要求
+ *------------------------------------------
+ */
+static void clif_parse_BarterBuy(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20190116
+	int fail, n, len;
+
+	nullpo_retv(sd);
+
+	if(unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl, 1);
+		return;
+	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+		return;
+	if(!sd->state.barter_open)
+		return;
+
+	len = RFIFOW(fd, GETPACKETPOS(cmd, 0));
+	if(len < 4 || (len - 4) % 14 != 0 || len > RFIFOREST(fd))
+		return;
+	n = (len - 4) / 14;
+	if(n <= 0 || n > MAX_BARTER_ITEMS)
+		return;
+
+	fail = npc_barter_buy(sd, n, (const unsigned char *)RFIFOP(fd, GETPACKETPOS(cmd, 1)));
+
+	WFIFOW(fd, 0) = 0xca;
+	WFIFOB(fd, 2) = fail;
+	WFIFOSET(fd, packet_db[0xca].len);
+#endif
+	return;
+}
+
+/*==========================================
+ * バーター画面を閉じる
+ *------------------------------------------
+ */
+static void clif_parse_BarterClose(int fd, struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+	if(sd->state.barter_open) {
+		sd->npc_shopid = 0;
+		sd->state.barter_open = 0;
+	}
+	return;
+}
+
+/*==========================================
+ * 拡張バーターの購入要求
+ *------------------------------------------
+ */
+static void clif_parse_ExBarterBuy(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20191106
+	int fail, n, len;
+
+	nullpo_retv(sd);
+
+	if(unit_isdead(&sd->bl)) {
+		clif_clearchar_area(&sd->bl, 1);
+		return;
+	}
+	if(sd->sc.data[SC_SUHIDE].timer != -1)
+		return;
+	if(sd->npc_id != 0 || sd->state.refineui_open || sd->state.store || sd->state.deal_mode != 0 || sd->status.manner < 0 || sd->state.mail_appending)
+		return;
+	if(!sd->state.exbarter_open)
+		return;
+
+	len = RFIFOW(fd, GETPACKETPOS(cmd, 0));
+	if(len < 4 || (len - 4) % 12 != 0 || len > RFIFOREST(fd))
+		return;
+	n = (len - 4) / 12;
+	if(n <= 0 || n > MAX_BARTER_ITEMS)
+		return;
+
+	fail = npc_exbarter_buy(sd, n, (const unsigned char *)RFIFOP(fd, GETPACKETPOS(cmd, 1)));
+
+	WFIFOW(fd, 0) = 0xca;
+	WFIFOB(fd, 2) = fail;
+	WFIFOSET(fd, packet_db[0xca].len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 拡張バーター画面を閉じる
+ *------------------------------------------
+ */
+static void clif_parse_ExBarterClose(int fd, struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+	if(sd->state.exbarter_open) {
+		sd->npc_shopid = 0;
+		sd->state.exbarter_open = 0;
+	}
+	return;
+}
+
+/*==========================================
  *
  *------------------------------------------
  */
@@ -27183,6 +27407,10 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_BankingInfoReq,              "bankinforeq"               },
 		{ clif_parse_SellMarketReq,               "sellmarketreq"             },
 		{ clif_parse_CloseMarketReq,              "closemarketreq"            },
+		{ clif_parse_BarterBuy,                   "barterbuy"                 },
+		{ clif_parse_BarterClose,                 "barterclose"               },
+		{ clif_parse_ExBarterBuy,                 "exbarterbuy"                },
+		{ clif_parse_ExBarterClose,               "exbarterclose"             },
 		{ clif_parse_ClientTimeStamp,             "clienttimestamp"           },
 		{ clif_parse_CheckNameRoDEX,              "checknamerodex"            },
 		{ clif_parse_OpenRoDEX,                   "openrodex"                 },
