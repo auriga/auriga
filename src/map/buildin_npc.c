@@ -1171,13 +1171,15 @@ int buildin_callshop(struct script_state *st)
 
 	shopname = conv_str(st,& (st->stack->stack_data[st->start+2]));
 	nd = npc_name2id(shopname);
-	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP && nd->subtype != MARKET)) {
+	if(!nd || nd->bl.type != BL_NPC || (nd->subtype != SHOP && nd->subtype != POINTSHOP && nd->subtype != MARKET && nd->subtype != BARTER && nd->subtype != EXBARTER)) {
 		return 0;
 	}
 
 	if(st->end>st->start+3)
 		flag = conv_num(st,& (st->stack->stack_data[st->start+3]));
 
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_OTHER_UI))
+		return 0;
 	switch(nd->subtype) {
 	case SHOP:
 		switch(flag) {
@@ -1189,6 +1191,10 @@ int buildin_callshop(struct script_state *st)
 	case POINTSHOP:
 		sd->npc_shopid = nd->bl.id;
 		clif_pointshop_list(sd, nd);
+		break;
+	case BARTER:
+	case EXBARTER:
+		npc_barter_open(sd, nd);
 		break;
 	case MARKET:
 		{

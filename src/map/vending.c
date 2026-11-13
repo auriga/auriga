@@ -120,7 +120,7 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 	struct vending vending[MAX_VENDING]; // against duplicate packets/items
 
 	nullpo_retv(sd);
-	if(sd->state.refineui_open)
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_INTERACT))
 		return;
 
 	vsd = map_id2sd(account_id);
@@ -284,7 +284,7 @@ void vending_openvending(struct map_session_data *sd, short count, const char *s
 	int i, vending_skill_lv;
 
 	nullpo_retv(sd);
-	if(sd->state.refineui_open) {
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_INTERACT)) {
 		clif_skill_fail(sd, MC_VENDING, SKILLFAIL_FAILED, 0, 0);
 		return;
 	}

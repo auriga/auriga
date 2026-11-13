@@ -82,7 +82,7 @@ void mail_setitem(struct map_session_data *sd, int idx, int amount)
 
 	nullpo_retv(sd);
 	if(sd->mail_preflight_token || sd->mail_pending_flag || sd->state.storage_flag || sd->state.deal_mode || sd->state.store ||
-	   sd->npc_id || sd->state.refineui_open || sd->chatID || sd->inventory_expansion_confirmation) {
+	   sd->npc_id || !pc_ui_can_open(sd, PC_UI_RODEX) || sd->chatID || sd->inventory_expansion_confirmation) {
 		clif_res_sendmail_setappend(sd->fd, idx - 2, 1);
 		return;
 	}
@@ -261,6 +261,12 @@ int mail_checkmail(struct map_session_data *sd, const char *name, const char *ti
 	struct mail_data md;
 
 	nullpo_retr(0, sd);
+
+	// 旧メールパケットからも、別の排他画面を利用中の送信を受け付けない。
+	if(!pc_ui_can_open(sd, PC_UI_RODEX)) {
+		clif_res_sendmail(sd->fd, 1);
+		return 0;
+	}
 
 	{
 		int daily = mail_daily_consume(sd);

@@ -27,12 +27,15 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <limits.h>
+#include <errno.h>
 
 #include "db.h"
 #include "timer.h"
 #include "nullpo.h"
 #include "malloc.h"
 #include "utils.h"
+#include "socket.h"
 
 #include "map.h"
 #include "npc.h"
@@ -1300,6 +1303,8 @@ void npc_click(struct map_session_data *sd, int id)
 
 	sd->npc_allowuseitem = -1;
 
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_OTHER_UI) && nd->subtype != SCRIPT)
+		return;
 	switch(nd->subtype) {
 	case SHOP:
 		sd->npc_id = id;
@@ -1328,6 +1333,11 @@ void npc_click(struct map_session_data *sd, int id)
 			}
 		}
 #endif
+		break;
+	case BARTER:
+	case EXBARTER:
+		npc_barter_open(sd, nd);
+		npc_event_dequeue(sd);
 		break;
 	case SCRIPT:
 		if(nd->u.scr.script) {
@@ -1840,6 +1850,222 @@ int npc_pointshop_buylist(struct map_session_data *sd, int len, int count, const
 }
 
 /*==========================================
+ * バーター購入の検証と交換
+ *------------------------------------------
+ */
+void npc_barter_open(struct map_session_data *sd, struct npc_data *nd)
+{
+	nullpo_retv(sd);
+	nullpo_retv(nd);
+	if(sd->state.store || sd->state.deal_mode || sd->trade.partner ||
+	   sd->state.storage_flag || sd->state.mail_appending || sd->chatID)
+		return;
+
+	if(nd->subtype == BARTER) {
+#if PACKETVER >= 20190116
+		if(!pc_ui_begin(sd, PC_UI_BARTER))
+			return;
+		sd->npc_shopid = nd->bl.id;
+		clif_barter_list(sd, nd);
+#endif
+	} else if(nd->subtype == EXBARTER) {
+#if PACKETVER >= 20191106
+		if(!pc_ui_begin(sd, PC_UI_EXBARTER))
+			return;
+		sd->npc_shopid = nd->bl.id;
+		clif_exbarter_list(sd, nd);
+#endif
+	}
+}
+
+static struct npc_barter_item *npc_barter_find(struct npc_data *nd, unsigned int index)
+{
+	int i;
+
+	for(i = 0; nd->u.barter_item[i].nameid; i++) {
+		if((unsigned int)nd->u.barter_item[i].index == index)
+			return &nd->u.barter_item[i];
+	}
+	return NULL;
+}
+
+/* 消費後の所持品に対して、pc_additemと同じ順序で格納先を確認する。 */
+static int npc_barter_checkadd(struct item *inventory, int slots, struct item_data *data, int amount)
+{
+	int i, j, count = itemdb_isequip2(data) ? amount : 1;
+
+	for(j = 0; j < count; j++) {
+		if(!itemdb_isequip2(data)) {
+			for(i = 0; i < slots; i++) {
+				struct item *it = &inventory[i];
+				if(it->nameid == data->nameid && it->limit == 0 &&
+				   it->card[0] == 0 && it->card[1] == 0 && it->card[2] == 0 && it->card[3] == 0) {
+					if(amount > MAX_AMOUNT - it->amount)
+						return 2;
+					it->amount += amount;
+					break;
+				}
+			}
+			if(i < slots)
+				continue;
+		}
+		for(i = 0; i < slots && inventory[i].nameid; i++);
+		if(i == slots)
+			return 2;
+		memset(&inventory[i], 0, sizeof(inventory[i]));
+		inventory[i].nameid = data->nameid;
+		inventory[i].amount = itemdb_isequip2(data) ? 1 : amount;
+	}
+	return 0;
+}
+
+/* 戻り値: 0 成功、1 Zeny不足、2 重量・所持数超過、3 交換不可 */
+static int npc_barter_purchase(struct map_session_data *sd, int n, const unsigned char *list, int expanded)
+{
+	struct npc_data *nd;
+	struct npc_barter_item *items[MAX_BARTER_ITEMS];
+	struct item_data *data[MAX_BARTER_ITEMS];
+	int amount[MAX_BARTER_ITEMS], need[MAX_INVENTORY] = { 0 };
+	struct item *inventory;
+	atn_bignumber zeny = 0, weight;
+	int i, j, c, pass, slots, result = 0, size = expanded ? 12 : 14;
+
+	nullpo_retr(3, sd);
+	nullpo_retr(3, list);
+	if(n <= 0 || n > MAX_BARTER_ITEMS)
+		return 3;
+	if(sd->npc_id || sd->state.store || sd->state.deal_mode ||
+	   sd->state.mail_appending || sd->state.storage_flag || sd->status.manner < 0 || unit_isdead(&sd->bl))
+		return 3;
+	if(!pc_ui_is(sd, expanded ? PC_UI_EXBARTER : PC_UI_BARTER))
+		return 3;
+	nd = map_id2nd(sd->npc_shopid);
+	if(nd == NULL || nd->bl.type != BL_NPC || nd->subtype != (expanded ? EXBARTER : BARTER) ||
+	   (nd->flag & 1) || (nd->bl.m >= 0 && npc_checknear(sd, nd)))
+		return 3;
+
+	slots = pc_inventory_slots(sd);
+	weight = sd->weight;
+	for(i = 0; i < n; i++) {
+		const unsigned char *p = list + size * i;
+		unsigned int index = RBUFL(p, expanded ? 4 : 10);
+		unsigned int count = RBUFL(p, expanded ? 8 : 4);
+
+		items[i] = npc_barter_find(nd, index);
+		if(items[i] == NULL || count == 0 || count > MAX_AMOUNT)
+			return 3;
+		data[i] = itemdb_exists(items[i]->nameid);
+		if(data[i] == NULL || (items[i]->stock >= 0 && count > (unsigned int)items[i]->stock))
+			return 3;
+		if(RBUFL(p, 0) != (unsigned int)(data[i]->view_id > 0 ? data[i]->view_id : data[i]->nameid))
+			return 3;
+		/* 同じ商品・同じ入手アイテムの重複指定を受け付けない。 */
+		for(j = 0; j < i; j++) {
+			if(items[j] == items[i] || items[j]->nameid == items[i]->nameid)
+				return 3;
+		}
+		amount[i] = (int)count;
+		zeny += (atn_bignumber)items[i]->zeny * amount[i];
+		if(zeny > sd->status.zeny)
+			return 1;
+		weight += (atn_bignumber)data[i]->weight * amount[i];
+	}
+
+	/* 精錬指定のある素材を先に確保し、同じ所持品の二重消費を防ぐ。 */
+	for(pass = 0; pass < 2; pass++) {
+		for(i = 0; i < n; i++) {
+			for(c = 0; c < items[i]->ncurrency; c++) {
+				struct npc_barter_req *req = &items[i]->currency[c];
+				int left;
+
+				if((req->refine < 0) != pass)
+					continue;
+				if(req->amount <= 0 || amount[i] > INT_MAX / req->amount)
+					return 3;
+				left = req->amount * amount[i];
+				for(j = 0; j < slots && left > 0; j++) {
+					struct item *it = &sd->status.inventory[j];
+					int take;
+
+					if(it->nameid != req->nameid || it->equip || it->limit ||
+					   it->card[0] == (int)0xff00 || sd->inventory_data[j] == NULL)
+						continue;
+					if(req->refine >= 0 && it->refine != req->refine)
+						continue;
+					take = it->amount - need[j];
+					if(take <= 0)
+						continue;
+					if(take > left)
+						take = left;
+					need[j] += take;
+					left -= take;
+					weight -= (atn_bignumber)sd->inventory_data[j]->weight * take;
+				}
+				if(left > 0)
+					return 3;
+			}
+		}
+	}
+	if(weight > sd->max_weight || weight < 0)
+		return 2;
+
+	/* 素材で空く枠も含め、全商品を受け取れることを消費前に確認する。 */
+	inventory = (struct item *)aMalloc(sizeof(sd->status.inventory));
+	memcpy(inventory, sd->status.inventory, sizeof(sd->status.inventory));
+	for(i = 0; i < slots; i++) {
+		if(need[i] > 0) {
+			inventory[i].amount -= need[i];
+			if(inventory[i].amount == 0)
+				memset(&inventory[i], 0, sizeof(inventory[i]));
+		}
+	}
+	for(i = 0; i < n; i++) {
+		result = npc_barter_checkadd(inventory, slots, data[i], amount[i]);
+		if(result)
+			break;
+	}
+	aFree(inventory);
+	if(result)
+		return result;
+
+	/* 以降は事前検証済み。途中にスクリプト実行やインター通信を挟まない。 */
+	for(i = 0; i < slots; i++) {
+		if(need[i] > 0)
+			pc_delitem(sd, i, need[i], 0, 0);
+	}
+	if(zeny > 0)
+		pc_payzeny(sd, BIGNUM2INT(zeny));
+	for(i = 0; i < n; i++) {
+		struct item it;
+		int count = itemdb_isequip2(data[i]) ? amount[i] : 1;
+		int each = itemdb_isequip2(data[i]) ? 1 : amount[i];
+
+		memset(&it, 0, sizeof(it));
+		it.nameid = items[i]->nameid;
+		it.identify = 1;
+		for(j = 0; j < count; j++) {
+			if(pc_additem(sd, &it, each, false)) {
+				printf("npc_barter_purchase: prevalidated purchase failed (%s, %d)\n", nd->exname, it.nameid);
+				return 3;
+			}
+		}
+		if(items[i]->stock >= 0)
+			items[i]->stock -= amount[i];
+	}
+	return 0;
+}
+
+int npc_barter_buy(struct map_session_data *sd, int n, const unsigned char *list)
+{
+	return npc_barter_purchase(sd, n, list, 0);
+}
+
+int npc_exbarter_buy(struct map_session_data *sd, int n, const unsigned char *list)
+{
+	return npc_barter_purchase(sd, n, list, 1);
+}
+
+/*==========================================
  * メモリアルダンジョンNPC追加
  *------------------------------------------
  */
@@ -1885,8 +2111,6 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 	strcpy(nd->title, src_nd->title);
 	nd->title[23] = '\0';	// froce \0 terminal
 
-	unit_dataset( &nd->bl );
-
 	switch(nd->subtype) {
 	case SCRIPT:
 		{
@@ -1921,6 +2145,15 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 			memcpy(&nd->u.shop_item, &src_nd->u.shop_item, sizeof(src_nd->u.shop_item[0]) * pos);
 		}
 		break;
+	case BARTER:
+	case EXBARTER:
+		{
+			int pos = 0;
+			while(src_nd->u.barter_item[pos++].nameid);
+			nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(src_nd->u.barter_item[0]) * pos);
+			memcpy(&nd->u.barter_item, &src_nd->u.barter_item, sizeof(src_nd->u.barter_item[0]) * pos);
+		}
+		break;
 	case WARP:
 		{
 			int warp_m = memorial_mapname2mapid(src_nd->u.warp.name, map[m].memorial_id);
@@ -1935,6 +2168,9 @@ int npc_addmdnpc(struct npc_data *src_nd, int m)
 		}
 		break;
 	}
+
+	// 可変長の商品配列を再確保した後で、自身を指すud.blを初期化する。
+	unit_dataset(&nd->bl);
 
 	if(m >= 0) {
 		map_addblock(&nd->bl);
@@ -2423,6 +2659,18 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 #else
 		subtype = MARKET;
 #endif
+	else if(strcmp(w2,"barter") == 0)
+#if PACKETVER < 20190116
+		return 0;
+#else
+		subtype = BARTER;
+#endif
+	else if(strcmp(w2,"exbarter") == 0)
+#if PACKETVER < 20191106
+		return 0;
+#else
+		subtype = EXBARTER;
+#endif
 	else
 		subtype = 0;
 
@@ -2515,6 +2763,115 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 		nd->u.shop_item[pos++].nameid = 0;
 
 		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.shop_item[0]) * pos);
+	} else if(subtype == BARTER || subtype == EXBARTER) {
+		const int max = MAX_BARTER_ITEMS;
+		char *c;
+
+		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd->u.barter_item[0]) * (max + 1));
+		c = strchr(w4, ',');
+		while(c && pos < max) {
+			int fields[3 + MAX_BARTER_CURRENCY * 3];
+			int nfields = 0, invalid = 0;
+			char *p, *endp;
+			struct npc_barter_item *bi;
+			int k;
+
+			c++;
+			p = c;
+			while(*p && *p != ',' && nfields < (int)(sizeof(fields)/sizeof(fields[0]))) {
+				long value;
+				errno = 0;
+				value = strtol(p, &endp, 10);
+				if(p == endp || errno == ERANGE || value < INT_MIN || value > INT_MAX) {
+					invalid = 1;
+					break;
+				}
+				fields[nfields] = (int)value;
+				nfields++;
+				p = endp;
+				if(*p == ':') {
+					p++;
+					if(*p == 0 || *p == ',')
+						invalid = 1;
+				}
+				else
+					break;
+			}
+			if(invalid || (*p && *p != ',') || nfields < 2 || fields[1] < 0) {
+				printf("bad %s item : %s line %d\a\n", w2, w3, lines);
+				pos = 0;
+				break;
+			}
+			if(subtype == BARTER) {
+				/* 商品ID:在庫数:素材ID:必要数 */
+				if(nfields != 4 || fields[0] <= 0 || fields[2] <= 0 || fields[3] <= 0) {
+					printf("bad %s item : %s line %d\a\n", w2, w3, lines);
+					pos = 0;
+					break;
+				}
+				if(itemdb_exists(fields[0]) == NULL || itemdb_exists(fields[2]) == NULL) {
+					printf("bad %s item id : %s line %d\a\n", w2, w3, lines);
+					pos = 0;
+					break;
+				}
+				bi = &nd->u.barter_item[pos];
+				memset(bi, 0, sizeof(*bi));
+				bi->nameid = fields[0];
+				bi->stock = (fields[1] == 0) ? -1 : fields[1];
+				bi->zeny = 0;
+				bi->index = pos;
+				bi->ncurrency = 1;
+				bi->currency[0].nameid = fields[2];
+				bi->currency[0].amount = fields[3];
+				bi->currency[0].refine = -1;
+			} else {
+				/* 商品ID:在庫数:Zeny:素材ID:必要数:精錬値[:...] */
+				if(nfields < 6 || ((nfields - 3) % 3) != 0 || fields[0] <= 0 || fields[2] < 0) {
+					printf("bad %s item : %s line %d\a\n", w2, w3, lines);
+					pos = 0;
+					break;
+				}
+				if(itemdb_exists(fields[0]) == NULL) {
+					printf("bad %s item id : %s line %d\a\n", w2, w3, lines);
+					pos = 0;
+					break;
+				}
+				bi = &nd->u.barter_item[pos];
+				memset(bi, 0, sizeof(*bi));
+				bi->nameid = fields[0];
+				bi->stock = (fields[1] == 0) ? -1 : fields[1];
+				bi->zeny = fields[2];
+				bi->index = pos;
+				bi->ncurrency = (nfields - 3) / 3;
+				if(bi->ncurrency <= 0 || bi->ncurrency > MAX_BARTER_CURRENCY) {
+					printf("bad %s currency count : %s line %d\a\n", w2, w3, lines);
+					pos = 0;
+					break;
+				}
+				for(k = 0; k < bi->ncurrency; k++) {
+					int base = 3 + k * 3;
+					if(fields[base] <= 0 || fields[base + 1] <= 0 || fields[base + 2] < -1 ||
+					   fields[base + 2] > MAX_REFINE || itemdb_exists(fields[base]) == NULL) {
+						printf("bad %s currency : %s line %d\a\n", w2, w3, lines);
+						pos = 0;
+						break;
+					}
+					bi->currency[k].nameid = fields[base];
+					bi->currency[k].amount = fields[base + 1];
+					bi->currency[k].refine = (short)fields[base + 2];
+				}
+				if(k < bi->ncurrency)
+					break;
+			}
+			pos++;
+			c = strchr(c, ',');
+		}
+		if(pos == 0 || c != NULL) {
+			aFree(nd);
+			return 0;
+		}
+		nd->u.barter_item[pos++].nameid = 0;
+		nd = (struct npc_data *)aRealloc(nd, sizeof(struct npc_data) + sizeof(nd->u.barter_item[0]) * pos);
 	} else {
 		// substoreはコピーするだけ
 		char srcname[4096];
@@ -2529,15 +2886,20 @@ static int npc_parse_shop(const char *w1,const char *w2,const char *w3,const cha
 			printf("bad substore name! (not exist) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
-		if(nd2->subtype != SHOP && nd2->subtype != POINTSHOP && nd2->subtype != MARKET) {
+		if(nd2->subtype != SHOP && nd2->subtype != POINTSHOP && nd2->subtype != MARKET && nd2->subtype != BARTER && nd2->subtype != EXBARTER) {
 			printf("bad substore name! (not shop) : %s line %d\a\n",srcname,lines);
 			return 0;
 		}
 		subtype = nd2->subtype;
-		while(nd2->u.shop_item[pos++].nameid);
-
-		nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
-		memcpy(&nd->u.shop_item, &nd2->u.shop_item, sizeof(nd2->u.shop_item[0]) * pos);
+		if(subtype == BARTER || subtype == EXBARTER) {
+			while(nd2->u.barter_item[pos++].nameid);
+			nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.barter_item[0]) * pos);
+			memcpy(&nd->u.barter_item, &nd2->u.barter_item, sizeof(nd2->u.barter_item[0]) * pos);
+		} else {
+			while(nd2->u.shop_item[pos++].nameid);
+			nd = (struct npc_data *)aCalloc(1, sizeof(struct npc_data) + sizeof(nd2->u.shop_item[0]) * pos);
+			memcpy(&nd->u.shop_item, &nd2->u.shop_item, sizeof(nd2->u.shop_item[0]) * pos);
+		}
 	}
 
 	nd->bl.prev = nd->bl.next = NULL;
@@ -3551,7 +3913,7 @@ static int npc_parse_srcfile(const char *filepath)
 
 		if (strcmpi(w2,"warp") == 0 && count > 3) {
 			ret = npc_parse_warp(w1,w2,w3,w4,lines);
-		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0 || strcmpi(w2,"market") == 0) && count > 3) {
+		} else if ((strcmpi(w2,"shop") == 0 || strcmpi(w2,"pointshop") == 0 || strcmpi(w2,"market") == 0 || strcmpi(w2,"barter") == 0 || strcmpi(w2,"exbarter") == 0) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);
 		} else if ((i = 0, sscanf(w2,"substore%n",&i), (i > 0 && w2[i] == '(')) && count > 3) {
 			ret = npc_parse_shop(w1,w2,w3,w4,lines);

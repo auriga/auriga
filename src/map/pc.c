@@ -1158,7 +1158,7 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 	sd->client_tick = client_tick;
 	sd->sex         = sex;
 	sd->state.auth  = 0;
-	sd->state.refineui_open = 0;
+	sd->state.open_ui = PC_UI_NONE;
 	sd->bl.type     = BL_PC;
 	sd->status_calc_pc_process  = 0;
 	sd->state.waitingdisconnect = 0;
@@ -1170,23 +1170,28 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
  * 装備箇所を返す
  *------------------------------------------
  */
-int pc_equippoint(struct map_session_data *sd,int n)
+/* 商品一覧など、所持品以外の装備位置も同じ条件で判定する。 */
+int pc_equippoint_data(struct map_session_data *sd, const struct item_data *data)
 {
-	int ep = LOC_NOTHING;
+	int ep;
 
 	nullpo_retr(LOC_NOTHING, sd);
-
-	if(sd->inventory_data[n]) {
-		int look = sd->inventory_data[n]->look;
-		ep = sd->inventory_data[n]->equip;
-		if(look == WT_DAGGER || look == WT_1HSWORD || look == WT_1HAXE) {
-			if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC || 
-				pc_checkskill(sd,KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB))
-				return LOC_RARM | LOC_LARM;
-		}
+	if(data == NULL)
+		return LOC_NOTHING;
+	ep = data->equip;
+	if(data->look == WT_DAGGER || data->look == WT_1HSWORD || data->look == WT_1HAXE) {
+		if(ep == LOC_RARM && (pc_checkskill(sd,AS_LEFT) > 0 || sd->s_class.job == PC_JOB_AS || sd->s_class.job == PC_JOB_GC ||
+		   pc_checkskill(sd,KO_LEFT) > 0 || sd->s_class.job == PC_JOB_KG || sd->s_class.job == PC_JOB_OB))
+			return LOC_RARM | LOC_LARM;
 	}
-
 	return ep;
+}
+
+int pc_equippoint(struct map_session_data *sd,int n)
+{
+	nullpo_retr(LOC_NOTHING, sd);
+
+	return pc_equippoint_data(sd, sd->inventory_data[n]);
 }
 
 /*==========================================
@@ -3423,9 +3428,8 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 	int pet_flag_changed = 0;
 
 	nullpo_retr(1, sd);
+	pc_ui_on_warp(sd);
 	sd->lapine_upgrade_id = 0;
-	// Reset refine UI state on position changes.
-	sd->state.refineui_open = 0;
 
 
 	// 座っていたら立ち上がる

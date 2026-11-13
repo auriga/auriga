@@ -155,6 +155,38 @@ AurigaNPCScript
 		マップサーバー内には存在していても、実際のマップには配置されないNPCを作成できます。
 		これは後述のコピー店でコピー元として使用します。
 
+	＊バーター：アイテムを素材と交換する店を配置します。
+		<gatname>,<x>,<y>,<direction><tab>barter<tab><displayname><tab><npcid>,<item_id>:<stock>:<material_id>:<amount>[,...]
+
+		対応クライアント：PACKETVER 20190116以降。
+		配置位置・表示名・npcidは通常の店と同じです。
+		item_id			入手するアイテムID。item_dbに存在するIDを指定します。
+		stock			0で無制限、1以上で販売可能な個数を指定します。
+		material_id		素材のアイテムID。item_dbに存在するIDを指定します。
+		amount			商品1個あたりの素材必要数。1以上を指定します。
+
+	＊拡張バーター：複数の素材とZenyで交換する店を配置します。
+		<gatname>,<x>,<y>,<direction><tab>exbarter<tab><displayname><tab><npcid>,<item_id>:<stock>:<zeny>:<material_id>:<amount>:<refine>[:<material_id>:<amount>:<refine>...][,...]
+
+		対応クライアント：PACKETVER 20191106以降（RE基準）。
+		zeny			商品1個あたりの必要Zeny。0以上を指定します。
+		refine			素材の精錬値。-1で不問、0以上で指定値と一致するものを使います。
+						指定可能な上限はMAX_REFINEです。
+		それ以外の引数はバーターと同じです。素材は1商品につき最大5種類です。
+
+		共通事項：
+		・商品はカンマ区切りで最大100件まで指定できます。
+		・1回の購入数は商品ごとに1～MAX_AMOUNTです。装備は1個ずつ所持枠を使用します。
+		・1回の購入要求では、入手アイテムIDが同じ商品を複数指定できません。
+		・装備中の品、レンタル品、ペット情報を持つ卵は素材に使いません。
+		・全商品の素材・Zeny・重量・所持数を確認してから交換します。
+		　素材を消費して空く枠も、商品の受け取りに使用できます。
+		・在庫はNPCごとに管理し、再起動やNPCの再読み込みで定義値に戻ります。
+		・「<gatname>,<x>,<y>,<direction><tab>」を「-<tab>」にすると、配置しない店を定義できます。
+		　substoreによるコピー、メモリアルダンジョンでの複製に対応します。
+		・callshopでも開けます。バーターではtype引数を無視します。
+		　会話スクリプトから呼ぶ場合は、closeなどで会話を終了してから購入します。
+
 	＊コピー店：既存のNPC（の店）をコピーします。
 		<gatname>,<x>,<y>,<direction><tab>substore(<source>)<tab><displayname><tab><npcid>
 

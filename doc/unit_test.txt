@@ -43,6 +43,7 @@ src 以下の本番 *.o はリンクしません（main / グローバル初期�
 	nullpo  … nullpo_chk
 	timer   … DIFF_TICK（ヘッダマクロ）
 	status_calc_ctrl … status_calc_pc の L_RECALC 再入制御（src/map/status_calc_ctrl.c）
+	pc_ui … 排他UIの状態遷移、画面別制限、ワープ時の解除、メール送信状態の保持
 	grf_protected … protected GRF エントリの復号（ボディ暗号 259/260/269、stored/LZ4）
 	                grf_protected_encode_for_test で生成したペイロードの往復と、
 	                短すぎる・サイズ不一致・RC5 パディング不正・ヘッダ値不正などの拒否

@@ -21,6 +21,7 @@ TEST_SRCS = \
 	test_db.c \
 	test_misc.c \
 	test_status_calc_ctrl.c \
+	test_pc_ui.c \
 	test_grf_protected.c
 
 COMMON_NAMES = md5calc utils db lock nullpo grf_protected
@@ -29,11 +30,12 @@ STUB_SRCS = stubs/malloc_stub.c stubs/grfio_stub.c
 
 MAP_CTRL_SRC = ../src/map/status_calc_ctrl.c
 MAP_CTRL_OBJ = status_calc_ctrl.o
+MAP_UI_OBJ = pc_ui.o
 
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 STUB_OBJS = $(STUB_SRCS:.c=.o)
 COMMON_OBJS = $(addsuffix .o,$(COMMON_NAMES))
-LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) lz4.o unity.o
+LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) $(MAP_UI_OBJ) lz4.o unity.o
 
 TARGET = unit_tests
 
@@ -57,6 +59,9 @@ $(COMMON_OBJS): %.o: $(COMMON_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(MAP_CTRL_OBJ): $(MAP_CTRL_SRC)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(MAP_UI_OBJ): ../src/map/pc_ui.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 lz4.o: $(LZ4_DIR)/lz4.c

@@ -3299,6 +3299,12 @@ if packet_ver >= 20180919 then
 	p(0x0b08,-1)
 end
 
+-- バーター（RE）
+if packet_ver >= 20190116 then
+	p(0x0b0f,-1,"barterbuy",{2,4})
+	p(0x0b12,2,"barterclose",{})
+end
+
 if packet_ver >= 20190227 then
 	p(0x0b1c,2,"ping",0);
 end
@@ -3368,6 +3374,12 @@ end
 
 if packet_ver >= 20191030 then
 	p(0x0b5f,-1)
+end
+
+-- 拡張バーター（RE）
+if packet_ver >= 20191106 then
+	p(0x0b57,-1,"exbarterbuy",{2,4})
+	p(0x0b58,2,"exbarterclose",{})
 end
 
 if packet_ver >= 20191204 then
