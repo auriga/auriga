@@ -26911,7 +26911,20 @@ static void clif_parse_EquipSwitchReqSingle(int fd,struct map_session_data *sd, 
  */
 static void clif_parse_ChangeDress(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20180103
+	static const int costumes[] = { SC_WEDDING, SC_SANTA, SC_SUMMER };
+	int i;
+
+	nullpo_retv(sd);
+
+	// 同時に有効な衣装は通常1つ。既存の終了処理で外見と状態を戻す。
+	for(i = 0; i < (int)(sizeof(costumes) / sizeof(costumes[0])); i++) {
+		if(sd->sc.data[costumes[i]].timer != -1) {
+			status_change_end(&sd->bl, costumes[i], -1);
+			break;
+		}
+	}
+#endif
 	return;
 }
 
