@@ -2994,3 +2994,48 @@ R 0b79 <len>.w <count>.l {<itemId>.l <type>.w <stock>.l <weight>.l <shopIndex>.l
 	stockは-1で無制限。素材の精錬値不問は一覧上では0を送信する。
 R 00ca <result>.B
 	購入結果（0:成功、1:Zeny不足、2:重量・所持数超過、3:交換不可）。
+
+S 0844
+S 0b6d <tab>.l
+	キャッシュショップを開く。0b6dはPACKETVER 20191224以降。
+R 0845 <cash>.l <kafra>.l
+R 0a2b <cash>.l <kafra>.l <tab>.l
+R 0b6e <cash>.l <kafra>.l <tab>.l
+	開いた結果。RE基準で20140730以降は0a2b、20200205以降は0b6e。
+S 0b4c
+	アカウント単位の限定販売一覧要求（PACKETVER >= 20190724）。
+	rAthenaと同様、受信のみ行い、応答や販売件数の変更は行わない。
+S 08c9
+R 08ca <len>.w <count>.w <tab>.w {<itemId>.w <price>.l}*
+	キャッシュショップの商品一覧。20180704以降のitemIdは.l。
+S 0848 <len>.w <count>.w <kafra>.l {<itemId>.l <amount>.l <tab>.w}*
+R 0849 <itemId>.l <result>.w <cash>.l <kafra>.l
+	購入要求と結果。購入全体を先に検証し、成功時は商品ごとに結果を返す。
+S 084a
+S 09d4
+	キャッシュショップ終了。NPCポイントショップの0x0288購入とは別に扱う。
+R 0a38 <uiType>.B
+R 0ae2 <uiType>.B <data>.l
+	uiType=1でスタイルショップを開く。20171122以降は0ae2。
+S 0a46 <headPalette>.w <headStyle>.w <bodyPalette>.w <top>.w <mid>.w <bottom>.w
+S 0afc <headPalette>.w <headStyle>.w <bodyPalette>.w <top>.w <mid>.w <bottom>.w <bodyStyle>.w
+	スタイルショップ購入。0afcは20180516以降。各値は選択番号、0は変更なし。
+S 0bf7 <len>.w <count>.w {<action>.w <reserved>.w <index>.w <reserved>.w}*
+	20231220以降のスタイルショップ購入。actionは0～5と9（職業別衣装）。
+	件数・パケット長・同じactionの重複・選択番号を検証する。
+R 0a47 <failed>.B
+S 0a48
+	スタイルショップの結果（0:成功、1:失敗）と終了。
+S 0a88
+	/resetcooltime。通常のGMコマンド権限判定を通して実行する。
+
+魔導ギアの表示状態（PACKETVER >= 20191106、RE基準）
+	OPTION_MADOGEARに加え、状態アイコン1149（MADOGEAR_TYPE）を通知する。
+	搭乗時はflag=1、val1=0（通常機体）、持続時間=-1。降車時はflag=0。
+	既存の状態通知0x0983を利用し、ログイン・MAP移動・視界への出現時にも再送する。
+	保存形式はOPTION_MADOGEARを維持し、新しい保存領域は追加しない。
+
+S 0ae8
+	/changedress・/nocosplayによる衣装解除要求（PACKETVER >= 20180103、RE基準）。
+	ウェディング、サンタ、サマーの順で有効な状態を探し、最初の1状態だけを終了する。
+	外見・表示オプションの更新は既存の状態終了処理で行う。対象がなければ何もしない。

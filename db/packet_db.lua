@@ -1121,7 +1121,7 @@ p(0x0844,2,"npcpointshopopen",0)
 p(0x0845,10)
 p(0x0846,4)
 p(0x0847,-1)
-p(0x0848,-1,"npcpointshopbuy",2)
+p(0x0848,-1,"cashshopbuy",2)
 p(0x0849,16)
 p(0x084a,2,"npcpointshopclose",0)
 p(0x084b,19)
@@ -1630,9 +1630,9 @@ p(0x0a42,43)
 p(0x0a43,85)
 p(0x0a44,-1)
 p(0x0a45,2)
-p(0x0a46,14)
+p(0x0a46,14,"stylistbuy",0)
 p(0x0a47,3)
-p(0x0a48,2)
+p(0x0a48,2,"stylistclose",0)
 p(0x0a49,22)
 p(0x0a4a,6)
 p(0x0a4b,22)
@@ -1797,7 +1797,7 @@ p(0x0af8,11)
 p(0x0af9,6)
 p(0x0afa,54)
 p(0x0afb,-1)
-p(0x0afc,16)
+p(0x0afc,16,"stylistbuy",0)
 p(0x0afd,-1)
 p(0x0afe,-1)
 p(0x0aff,-1)
@@ -3429,6 +3429,11 @@ if packet_ver >= 20180321 then
 	p(0x0819,-1,"sellbuyingstorereq",{2,4,8,12})
 end
 
+-- アカウント限定販売一覧要求（受信のみ）
+if packet_ver >= 20190724 then
+	p(0x0b4c,2,"cashshopaccountsalelist",0)
+end
+
 if packet_ver >= 20190904 then
 	p(0x0367,31,"useskilltopos",{2,4,6,8,10})
 end
@@ -3443,6 +3448,11 @@ end
 
 if packet_ver >= 20220831 then
 	p(0x0bbe,6)
+end
+
+-- 2023-12-20以降のスタイルショップ（職業別衣装変更を含む）
+if packet_ver >= 20231220 then
+	p(0x0bf7,-1,"stylistbuy",0)
 end
 
 --dofile("./db/packet_shuffle.lua")

@@ -51,6 +51,7 @@
 #include "mail.h"
 #include "script.h"
 #include "script_internal.h"
+#include "stylist.h"
 
 /* Split from script.c (Issue #61) */
 
@@ -1087,6 +1088,14 @@ int buildin_camerainfo(struct script_state *st)
 	if(sd)
 		clif_camerainfo(sd, 0, range / 100.0f, rotation / 100.0f, latitude / 100.0f);
 #endif
+	return 0;
+}
+
+int buildin_openstylist(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+
+	push_val(st->stack, C_INT, clif_stylist_open(sd));
 	return 0;
 }
 

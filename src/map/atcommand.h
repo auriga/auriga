@@ -29,6 +29,7 @@ typedef enum {
 	AtCommand_MapMove,
 	AtCommand_ResetState,
 	AtCommand_ResetSkill,
+	AtCommand_ResetCooltime,
 	AtCommand_RuraP,
 	AtCommand_Rura,
 	AtCommand_Where,

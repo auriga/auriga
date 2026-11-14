@@ -3111,6 +3111,17 @@ AurigaNPCScript
 			通常精錬の素材ID（種類0）または費用（種類1）を返します。
 			武器レベル0は防具です。設定がない場合や引数が不正な場合は-1を返します。
 
+		openstylist関数
+			openstylist()
+
+			引数: なし。
+			スタイルショップを開きます（PACKETVER 20151202以降）。
+			戻り値: 開いた場合は1、未対応VER・機能無効・取引等の利用中は0。
+			対象: アタッチされたプレイヤー。対象がいなければ0。
+			商品・料金・必要アイテムはdb/stylist_db.luaを参照します。
+			既存のopendressroom命令は試着表示用で、購入画面とは別です。
+			例: if(openstylist()) close;
+
 		openrefineui関数
 			openrefineui()
 

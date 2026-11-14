@@ -24,6 +24,7 @@
 #include <ctype.h>
 
 #include "utils.h"
+#include "mmo.h"
 #include "malloc.h"
 
 
@@ -254,3 +255,112 @@ int atn_int31_randommt(void)
 }
 
 #endif	// ifdef RANDOMMT
+
+/* 新形式の外見IDへ変換する。旧保存値0/1はそのまま利用できる。 */
+int mmo_body_style(int class_, int style)
+{
+	if(style > 1)
+		return style;
+	if(style <= 0)
+		return class_;
+	switch(class_) {
+	case PC_CLASS_RK:
+	case PC_CLASS_RK_H:
+	case PC_CLASS_RK2:
+	case PC_CLASS_RK2_H:
+	case PC_CLASS_RK3:
+	case PC_CLASS_RK3_H:
+	case PC_CLASS_RK4:
+	case PC_CLASS_RK4_H:
+	case PC_CLASS_RK5:
+	case PC_CLASS_RK5_H:
+	case PC_CLASS_RK6:
+	case PC_CLASS_RK6_H:
+	case PC_CLASS_RK_B:
+	case PC_CLASS_RK2_B:
+	case PC_CLASS_RK7:
+	case PC_CLASS_RK7_B:
+		return PC_CLASS_RK_2ND;
+	case PC_CLASS_WL:
+	case PC_CLASS_WL_H:
+	case PC_CLASS_WL_B:
+	case PC_CLASS_WL2:
+	case PC_CLASS_WL2_B:
+		return PC_CLASS_WL_2ND;
+	case PC_CLASS_RA:
+	case PC_CLASS_RA_H:
+	case PC_CLASS_RA2:
+	case PC_CLASS_RA2_H:
+	case PC_CLASS_RA_B:
+	case PC_CLASS_RA2_B:
+	case PC_CLASS_RA3:
+	case PC_CLASS_RA3_B:
+		return PC_CLASS_RA_2ND;
+	case PC_CLASS_AB:
+	case PC_CLASS_AB_H:
+	case PC_CLASS_AB_B:
+	case PC_CLASS_AB2:
+	case PC_CLASS_AB2_B:
+		return PC_CLASS_AB_2ND;
+	case PC_CLASS_NC:
+	case PC_CLASS_NC_H:
+	case PC_CLASS_NC2:
+	case PC_CLASS_NC2_H:
+	case PC_CLASS_NC_B:
+	case PC_CLASS_NC2_B:
+	case PC_CLASS_NC3:
+	case PC_CLASS_NC3_B:
+		return PC_CLASS_NC_2ND;
+	case PC_CLASS_GC:
+	case PC_CLASS_GC_H:
+	case PC_CLASS_GC_B:
+	case PC_CLASS_GC2:
+	case PC_CLASS_GC2_B:
+		return PC_CLASS_GC_2ND;
+	case PC_CLASS_LG:
+	case PC_CLASS_LG_H:
+	case PC_CLASS_LG2:
+	case PC_CLASS_LG2_H:
+	case PC_CLASS_LG_B:
+	case PC_CLASS_LG2_B:
+	case PC_CLASS_LG3:
+	case PC_CLASS_LG3_B:
+		return PC_CLASS_LG_2ND;
+	case PC_CLASS_SO:
+	case PC_CLASS_SO_H:
+	case PC_CLASS_SO_B:
+	case PC_CLASS_SO2:
+	case PC_CLASS_SO2_B:
+		return PC_CLASS_SO_2ND;
+	case PC_CLASS_MI:
+	case PC_CLASS_MI_H:
+	case PC_CLASS_MI_B:
+	case PC_CLASS_MI2:
+	case PC_CLASS_MI2_B:
+		return PC_CLASS_MI_2ND;
+	case PC_CLASS_WA:
+	case PC_CLASS_WA_H:
+	case PC_CLASS_WA_B:
+	case PC_CLASS_WA2:
+	case PC_CLASS_WA2_B:
+		return PC_CLASS_WA_2ND;
+	case PC_CLASS_SR:
+	case PC_CLASS_SR_H:
+	case PC_CLASS_SR_B:
+	case PC_CLASS_SR2:
+	case PC_CLASS_SR2_B:
+		return PC_CLASS_SR_2ND;
+	case PC_CLASS_GN:
+	case PC_CLASS_GN_H:
+	case PC_CLASS_GN_B:
+	case PC_CLASS_GN2:
+	case PC_CLASS_GN2_B:
+		return PC_CLASS_GN_2ND;
+	case PC_CLASS_SC:
+	case PC_CLASS_SC_H:
+	case PC_CLASS_SC_B:
+		return PC_CLASS_SC_2ND;
+	default:
+		return class_;
+	}
+}

@@ -455,10 +455,13 @@ void mail_getappend(int account_id, int char_id, int zeny, unsigned int mail_num
 
 static int mail_send_system_sub(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
-	int zeny, const struct item *item, int reward_char_id, unsigned int reward_id)
+	int zeny, const struct item *item, int item_count, int reward_char_id, unsigned int reward_id)
 {
 	struct mail_data md;
+	int i;
 
+	if(item_count < 0 || item_count > MAIL_MAX_ITEM || (item_count && !item))
+		return -1;
 	if(dest_name == NULL || dest_name[0] == '\0')
 		return -1;
 	if(body_len < 0 || body_len > (int)sizeof(md.body))
@@ -487,8 +490,11 @@ static int mail_send_system_sub(const char *dest_name, const char *sender_name,
 	}
 
 	md.zeny = (zeny > 0) ? zeny : 0;
-	if(item && item->nameid > 0 && item->amount > 0)
-		memcpy(&md.item[0], item, sizeof(struct item));
+	for(i = 0; i < item_count; i++) {
+		if(item[i].nameid <= 0 || item[i].amount <= 0)
+			return -1;
+		memcpy(&md.item[i], &item[i], sizeof(struct item));
+	}
 
 	md.times = (unsigned int)time(NULL);
 	md.read = MAIL_READ_SYSTEM;
@@ -500,12 +506,20 @@ int mail_send_system(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
 	int zeny, const struct item *item)
 {
-	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, zeny, item, 0, 0);
+	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, zeny, item, (item && item->nameid > 0 && item->amount > 0) ? 1 : 0, 0, 0);
 }
 
 int mail_send_achievement(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
 	const struct item *item, int char_id, unsigned int achievement_id)
 {
-	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, 0, item, char_id, achievement_id);
+	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, 0, item, (item && item->nameid > 0 && item->amount > 0) ? 1 : 0, char_id, achievement_id);
+}
+
+/* システムメール1通に複数の商品をまとめて添付する。 */
+int mail_send_system_items(const char *dest_name, const char *sender_name,
+	const char *title, const char *body, int body_len,
+	int zeny, const struct item *items, int count)
+{
+	return mail_send_system_sub(dest_name, sender_name, title, body, body_len, zeny, items, count, 0, 0);
 }
