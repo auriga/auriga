@@ -33,6 +33,9 @@ void mail_refund_pending(struct map_session_data *sd);
 int mail_send_system(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
 	int zeny, const struct item *item);
+int mail_send_system_items(const char *dest_name, const char *sender_name,
+	const char *title, const char *body, int body_len,
+	int zeny, const struct item *items, int count);
 int mail_send_achievement(const char *dest_name, const char *sender_name,
 	const char *title, const char *body, int body_len,
 	const struct item *item, int char_id, unsigned int achievement_id);

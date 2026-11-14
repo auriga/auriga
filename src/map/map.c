@@ -48,6 +48,8 @@
 #include "intif.h"
 #include "npc.h"
 #include "pc.h"
+#include "cashshop.h"
+#include "stylist.h"
 #include "bonus.h"
 #include "mob.h"
 #include "chat.h"
@@ -3011,6 +3013,8 @@ void do_final(void)
 	do_final_memorial();
 	do_final_npc();
 	do_final_script();
+	stylist_clear();
+	do_final_cashshop();
 	do_final_itemdb();
 	do_final_skill();
 	do_final_storage();
@@ -3168,6 +3172,8 @@ int do_init(int argc,char *argv[])
 	do_init_script();	// parse_script を呼び出す前にこれを呼ぶ
 	do_init_skill();	// skill_dbを参照するのでpc,homun,merc,guild,npcより先
 	do_init_itemdb();
+	do_init_cashshop();
+	stylist_clear();
 	do_init_quest();
 	do_init_mob();		// npcの初期化時内でmob_spawnして、mob_dbを参照するのでinit_npcより先
 	do_init_npc();

@@ -46,6 +46,8 @@
 #include "chrif.h"
 #include "clif.h"
 #include "pc.h"
+#include "cashshop.h"
+#include "stylist.h"
 #include "npc.h"
 #include "itemdb.h"
 #include "chat.h"
@@ -1903,7 +1905,7 @@ static int clif_set0078(struct map_session_data *sd,unsigned char *buf)
 	info.level = sd->status.base_level;
 	info.level_class = sd->status.class_;
 	info.font = sd->status.font;
-	info.style = sd->status.style;
+	info.style = pc_getbodystyle(sd);
 	info.name = sd->status.name;
 	return clif_spawn_build78(&info, buf);
 }
@@ -1960,7 +1962,7 @@ static int clif_set007b(struct map_session_data *sd,unsigned char *buf)
 	info.level = sd->status.base_level;
 	info.level_class = sd->status.class_;
 	info.font = sd->status.font;
-	info.style = sd->status.style;
+	info.style = pc_getbodystyle(sd);
 	info.name = sd->status.name;
 	return clif_spawn_build7b(&info, buf);
 }
@@ -2659,6 +2661,20 @@ static void clif_ball_id(const int fd, struct map_session_data *dstsd)
  *
  *------------------------------------------
  */
+/* 新しいクライアントではOPTION_MADOGEARに加えて機体種別の通知が必要。 */
+static void clif_madogear_status(struct map_session_data *sd, struct map_session_data *viewer)
+{
+#if PACKETVER >= 20191106
+	if(!sd || (!pc_isgear(sd) && sd->s_class.job != PC_JOB_NC && sd->s_class.job != PC_JOB_MT))
+		return;
+	// Aurigaの既存搭乗処理は通常機体（種別0）。表示状態は保存済みoptionから復元する。
+	if(viewer)
+		clif_status_change_id(viewer, sd->bl.id, SI_MADOGEAR_TYPE, pc_isgear(sd) ? 1 : 0, UINT_MAX, 0, 0, 0);
+	else
+		clif_status_change(&sd->bl, SI_MADOGEAR_TYPE, pc_isgear(sd) ? 1 : 0, UINT_MAX, 0, 0, 0);
+#endif
+}
+
 void clif_spawnpc(struct map_session_data *sd)
 {
 	int len;
@@ -2731,7 +2747,7 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOL(sd->fd,68)=0xffffffff;
 	WFIFOL(sd->fd,72)=0xffffffff;
 	WFIFOB(sd->fd,76)=0;
-	WFIFOW(sd->fd,77)=sd->status.style;
+	WFIFOW(sd->fd,77)=pc_getbodystyle(sd);
 	strncpy(WFIFOP(sd->fd,79),sd->status.name,24);
 #else
 	len = 83 + (int)strlen(sd->status.name);
@@ -2743,13 +2759,14 @@ void clif_spawnpc(struct map_session_data *sd)
 	WFIFOL(sd->fd,72)=0xffffffff;
 	WFIFOL(sd->fd,76)=0xffffffff;
 	WFIFOB(sd->fd,80)=0;
-	WFIFOW(sd->fd,81)=sd->status.style;
+	WFIFOW(sd->fd,81)=pc_getbodystyle(sd);
 	strncpy(WFIFOP(sd->fd,83),sd->status.name,24);
 #endif
 	clif_send(WFIFOP(sd->fd,0),len,&sd->bl,AREA_WOS);
 
 	// 完全なインビジブルモードなら送信しない
 	if(!battle_config.gm_perfect_hide || !pc_isinvisible(sd)) {
+		clif_madogear_status(sd, NULL);
 		if(sd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
 			clif_seteffect_enter(&sd->bl,SI_KYOUGAKU,0,MOBID_PORING,0,0);
 //		else if(sd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
@@ -7621,7 +7638,7 @@ void clif_changestatus(struct block_list *bl, int type, int val)
  */
 void clif_changelook(struct block_list *bl, int type, int val)
 {
-	unsigned char buf[16];
+	unsigned char buf[16] = { 0 };
 	int shield = 0;
 
 	nullpo_retv(bl);
@@ -8307,6 +8324,8 @@ void clif_changeoption(struct block_list* bl)
 	clif_send(buf,packet_db[0x229].len,bl,AREA);
 #endif
 
+	clif_madogear_status(sd, NULL);
+
 	return;
 }
 
@@ -8350,6 +8369,8 @@ void clif_changeoption_single(struct block_list* bl, struct map_session_data *ts
 	WFIFOB(fd,14) = (sd) ? (unsigned char)sd->status.karma : ( bl->type == BL_MOB )? mob_is_pcview(((struct mob_data *)bl)->class_) : 0;
 	WFIFOSET(fd,packet_db[0x229].len);
 #endif
+
+	clif_madogear_status(sd, tsd);
 
 	return;
 }
@@ -9682,6 +9703,7 @@ static void clif_getareachar_pc(struct map_session_data* sd,struct map_session_d
 			WFIFOSET(sd->fd,len);
 		}
 
+		clif_madogear_status(dstsd, sd);
 		if(dstsd->sc.data[SC_KYOUGAKU].timer != -1)	// 驚愕
 			clif_status_change_id(sd,dstsd->bl.id,SI_KYOUGAKU,1,0,MOBID_PORING,0,0);
 		else if(dstsd->sc.data[SC_MONSTER_TRANSFORM].timer != -1)	// モンスター変身システム
@@ -20006,6 +20028,104 @@ void clif_showdigit(struct map_session_data* sd, unsigned char type, int value)
  * ドレスルーム表示
  *------------------------------------------
  */
+/* スタイルショップのみ排他管理する。ドレスルームの試着表示とは別機能。 */
+int clif_stylist_open(struct map_session_data *sd)
+{
+#if PACKETVER >= 20151202
+	int fd;
+
+	if(!sd || !battle_config.feature_stylist || sd->npc_shopid || sd->state.store ||
+	   sd->state.deal_mode || sd->state.storage_flag || sd->chatID || sd->state.mail_appending ||
+	   sd->status.manner < 0 || unit_isdead(&sd->bl) || !pc_ui_begin(sd, PC_UI_STYLIST))
+		return 0;
+	fd = sd->fd;
+#if PACKETVER >= 20171122
+	WFIFOW(fd,0) = 0x0ae2;
+	WFIFOB(fd,2) = 1;
+	WFIFOL(fd,3) = 0;
+	WFIFOSET(fd,7);
+#else
+	WFIFOW(fd,0) = 0x0a38;
+	WFIFOB(fd,2) = 1;
+	WFIFOSET(fd,3);
+#endif
+	return 1;
+#else
+	return 0;
+#endif
+}
+
+static void clif_stylist_response(struct map_session_data *sd, int failed)
+{
+#if PACKETVER >= 20151104
+	int fd = sd->fd;
+
+	WFIFOW(fd,0) = 0x0a47;
+	WFIFOB(fd,2) = failed ? 1 : 0;
+	WFIFOSET(fd,3);
+	if(!failed)
+		pc_ui_end(sd, PC_UI_STYLIST);
+#endif
+}
+
+static void clif_parse_StylistClose(int fd, struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+	pc_ui_end(sd, PC_UI_STYLIST);
+}
+
+static void clif_parse_StylistBuy(int fd, struct map_session_data *sd, int cmd)
+{
+	int selection[7] = { 0 };
+	int i, count, failed = 0;
+#if PACKETVER >= 20231220
+	int len;
+	unsigned int seen = 0;
+#endif
+
+	nullpo_retv(sd);
+	if(!pc_ui_is(sd, PC_UI_STYLIST))
+		return;
+#if PACKETVER >= 20231220
+	if(cmd != 0x0bf7) {
+		clif_stylist_response(sd, 1);
+		return;
+	}
+	len = RFIFOW(fd,2);
+	if(len < 6) {
+		clif_stylist_response(sd, 1);
+		return;
+	}
+	count = RFIFOW(fd,4);
+	if(count < 1 || count > 7 || len != 6 + count * 8) {
+		clif_stylist_response(sd, 1);
+		return;
+	}
+	for(i = 0; i < count; i++) {
+		int action = RFIFOW(fd,6 + i * 8);
+		int index = RFIFOW(fd,10 + i * 8);
+
+		if(action == 9)
+			action = 6;
+		else if(action > 5) {
+			failed = 1;
+			break;
+		}
+		if(index <= 0 || index > 0x7fff || (seen & (1u << action))) {
+			failed = 1;
+			break;
+		}
+		seen |= 1u << action;
+		selection[action] = index;
+	}
+#else
+	count = cmd == 0x0afc ? 7 : 6;
+	for(i = 0; i < count; i++)
+		selection[i] = RFIFOW(fd,2 + i * 2);
+#endif
+	clif_stylist_response(sd, failed || !stylist_buy(sd, selection));
+}
+
 void clif_dressing_room(struct map_session_data *sd, int view)
 {
 #if PACKETVER >= 20150513
@@ -21875,10 +21995,151 @@ static void clif_parse_NpcSellListSend(int fd,struct map_session_data *sd, int c
  * スペシャルアイテム購入アイコン
  *------------------------------------------
  */
+static void clif_cashshop_open_ack(struct map_session_data *sd, int tab)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+
+#if PACKETVER >= 20200205
+	WFIFOW(fd,0) = 0xb6e;
+	WFIFOL(fd,2) = sd->shop_point;
+	WFIFOL(fd,6) = 0;	/* 未対応のカプラポイント */
+	WFIFOL(fd,10) = tab;
+	WFIFOSET(fd, 14);
+#elif PACKETVER >= 20140730
+	WFIFOW(fd,0) = 0xa2b;
+	WFIFOL(fd,2) = sd->shop_point;
+	WFIFOL(fd,6) = 0;
+	WFIFOL(fd,10) = tab;
+	WFIFOSET(fd, 14);
+#else
+	WFIFOW(fd,0) = 0x845;
+	WFIFOL(fd,2) = sd->shop_point;
+	WFIFOL(fd,6) = 0;
+	WFIFOSET(fd, 10);
+	(void)tab;
+#endif
+}
+
+static void clif_cashshop_result(struct map_session_data *sd, int nameid, int result)
+{
+	int fd;
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0x849;
+	WFIFOL(fd,2) = nameid;
+	WFIFOW(fd,6) = (unsigned short)result;
+	WFIFOL(fd,8) = sd->shop_point;
+	WFIFOL(fd,12) = 0;
+	WFIFOSET(fd, 16);
+}
+
+static void clif_cashshop_send_tab(struct map_session_data *sd, int tab)
+{
+	int fd, i, count = 0, offset;
+#if PACKETVER >= 20180704
+	const int entry = 8;	/* アイテムID.L + 価格.L */
+#else
+	const int entry = 6;	/* アイテムID.W + 価格.L */
+#endif
+
+	nullpo_retv(sd);
+	fd = sd->fd;
+	WFIFORESERVE(fd, 8 + CASHSHOP_ITEM_MAX * entry);
+	offset = 8;
+	WFIFOW(fd,0) = 0x8ca;
+	WFIFOW(fd,6) = (unsigned short)tab;
+
+	for(i = 0; i < cashshop_item_count(); i++) {
+		const struct cashshop_item *it = cashshop_item_at(i);
+		if(it == NULL || it->tab != tab)
+			continue;
+		if(!cashshop_item_available(it))
+			continue;
+#if PACKETVER >= 20180704
+		WFIFOL(fd, offset) = it->nameid;
+		WFIFOL(fd, offset + 4) = it->price;
+#else
+		if(it->nameid > 0xffff)
+			continue;
+		WFIFOW(fd, offset) = (unsigned short)it->nameid;
+		WFIFOL(fd, offset + 2) = it->price;
+#endif
+		offset += entry;
+		count++;
+	}
+	if(count == 0)
+		return;
+	WFIFOW(fd,2) = (unsigned short)offset;
+	WFIFOW(fd,4) = (unsigned short)count;
+	WFIFOSET(fd, offset);
+}
+
+static void clif_cashshop_send_list(struct map_session_data *sd)
+{
+	int tab;
+
+	nullpo_retv(sd);
+	for(tab = 0; tab < CASHSHOP_TAB_MAX; tab++)
+		clif_cashshop_send_tab(sd, tab);
+}
+
+/* 既存のNPCショップとは独立したクライアント常設ショップ。 */
+static void clif_cashshop_open(struct map_session_data *sd, unsigned int tab)
+{
+#if PACKETVER >= 20120328
+	if(!battle_config.feature_cashshop || tab >= CASHSHOP_TAB_MAX || sd->npc_id || sd->npc_shopid ||
+	   sd->state.store || sd->state.deal_mode || sd->state.storage_flag || sd->chatID ||
+	   sd->state.mail_appending || sd->status.manner < 0 || unit_isdead(&sd->bl) ||
+	   !pc_ui_begin(sd, PC_UI_CASHSHOP))
+		return;
+	clif_cashshop_open_ack(sd, (int)tab);
+#endif
+}
+
+/* アカウント限定販売一覧要求。rAthenaと同様、受信のみ行う。 */
+static void clif_parse_CashShopAccountSaleList(int fd,struct map_session_data *sd, int cmd)
+{
+	return;
+}
+
+static void clif_parse_CashShopBuy(int fd,struct map_session_data *sd, int cmd)
+{
+	int len, count, result;
+	unsigned int kafra;
+
+	nullpo_retv(sd);
+	if(!battle_config.feature_cashshop || !pc_ui_is(sd, PC_UI_CASHSHOP))
+		return;
+	len = RFIFOW(fd,2);
+	if(len < 10) {
+		clif_cashshop_result(sd, 0, CASHSHOP_RESULT_ERROR_SYSTEM);
+		return;
+	}
+	count = RFIFOW(fd,4);
+	kafra = RFIFOL(fd,6);
+	if(count <= 0 || count > CASHSHOP_ITEM_MAX || len != 10 + count * 10) {
+		clif_cashshop_result(sd, 0, CASHSHOP_RESULT_ERROR_SYSTEM);
+		return;
+	}
+	result = cashshop_buy(sd, kafra, count, RFIFOP(fd,10));
+	if(result == CASHSHOP_RESULT_SUCCESS) {
+		int i;
+		for(i = 0; i < count; i++)
+			clif_cashshop_result(sd, (int)RFIFOL(fd,10 + i * 10), result);
+	} else {
+		clif_cashshop_result(sd, (int)RFIFOL(fd,10), result);
+	}
+}
+
+
 static void clif_parse_NpcPointShopOpen(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
-	return;
+	nullpo_retv(sd);
+	clif_cashshop_open(sd, 0);
 }
 
 /*==========================================
@@ -21888,11 +22149,11 @@ static void clif_parse_NpcPointShopOpen(int fd,struct map_session_data *sd, int 
 static void clif_parse_NpcPointShopClose(int fd,struct map_session_data *sd, int cmd)
 {
 	nullpo_retv(sd);
+	if(pc_ui_end(sd, PC_UI_CASHSHOP))
+		return;
 	if(pc_ui_blocks(sd, PC_UI_BLOCK_OTHER_UI))
 		return;
-
 	sd->npc_shopid = 0;
-	return;
 }
 
 /*==========================================
@@ -21901,8 +22162,12 @@ static void clif_parse_NpcPointShopClose(int fd,struct map_session_data *sd, int
  */
 static void clif_parse_NpcPointShopItemList(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
-	return;
+	nullpo_retv(sd);
+	if(!battle_config.feature_cashshop || sd->state.cashshop_sent)
+		return;
+	// クライアントは一覧を保持するため、同じセッションへ重複送信しない。
+	clif_cashshop_send_list(sd);
+	sd->state.cashshop_sent = 1;
 }
 
 /*==========================================
@@ -26588,7 +26853,15 @@ static void clif_parse_CameraInfo(int fd,struct map_session_data *sd, int cmd)
  */
 static void clif_parse_ResetCooldown(int fd,struct map_session_data *sd, int cmd)
 {
-	// TODO
+#if PACKETVER >= 20160622
+	char command[40];
+
+	nullpo_retv(sd);
+
+	// クライアントのGMコマンドにも通常の権限判定を適用する。
+	snprintf(command, sizeof(command), "%cresetcooltime", GM_Symbol());
+	is_atcommand_sub(fd, sd, command, 0);
+#endif
 	return;
 }
 
@@ -26948,8 +27221,10 @@ static void clif_parse_MountOff(int fd, struct map_session_data *sd, int cmd)
  */
 static void clif_parse_CashMarketOpen(int fd, struct map_session_data *sd, int cmd)
 {
-	// TODO
-	return;
+#if PACKETVER >= 20191224
+	nullpo_retv(sd);
+	clif_cashshop_open(sd, RFIFOL(fd,GETPACKETPOS(cmd,0)));
+#endif
 }
 
 /*==========================================
@@ -27239,6 +27514,10 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_NpcBuySellSelected,          "npcbuysellselected"        },
 		{ clif_parse_NpcBuyListSend,              "npcbuylistsend"            },
 		{ clif_parse_NpcSellListSend,             "npcselllistsend"           },
+		{ clif_parse_StylistBuy,                  "stylistbuy"                },
+		{ clif_parse_StylistClose,                "stylistclose"              },
+		{ clif_parse_CashShopAccountSaleList,     "cashshopaccountsalelist"    },
+		{ clif_parse_CashShopBuy,                 "cashshopbuy"               },
 		{ clif_parse_NpcPointShopOpen,            "npcpointshopopen"          },
 		{ clif_parse_NpcPointShopClose,           "npcpointshopclose"         },
 		{ clif_parse_NpcPointShopItemList,        "npcpointshopitemlist"      },

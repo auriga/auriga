@@ -11233,6 +11233,8 @@ int battle_config_read(const char *cfgName)
 		{ "player_invincible_time" ,            &battle_config.pc_invincible_time,                 5000     },
 		{ "pet_catch_rate",                     &battle_config.pet_catch_rate,                     100      },
 		{ "pet_rename",                         &battle_config.pet_rename,                         0        },
+		{ "feature_stylist",                    &battle_config.feature_stylist,                    1        },
+		{ "feature_cashshop",                   &battle_config.feature_cashshop,                   1        },
 		{ "feature_petevolution",               &battle_config.feature_petevolution,               1        },
 		{ "pet_friendly_rate",                  &battle_config.pet_friendly_rate,                  100      },
 		{ "pet_hungry_delay_rate",              &battle_config.pet_hungry_delay_rate,              100      },

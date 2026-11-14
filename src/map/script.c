@@ -4413,6 +4413,7 @@ int buildin_sc_onparam(struct script_state *st);
 int buildin_showdigit(struct script_state *st);
 int buildin_checkre(struct script_state *st);
 int buildin_opendressroom(struct script_state *st);
+int buildin_openstylist(struct script_state *st);
 int buildin_camerainfo(struct script_state *st);
 int buildin_hateffect(struct script_state *st);
 int buildin_getrandombox(struct script_state *st);
@@ -4506,6 +4507,7 @@ struct script_function buildin_func[] = {
 	{buildin_getequipweaponlv,"getequipweaponlv","i"},
 	{buildin_getequippercentrefinery,"getequippercentrefinery","i"},
 	{buildin_openrefineui,"openrefineui",""},
+	{buildin_openstylist,"openstylist",""},
 	{buildin_getrefinecost,"getrefinecost","ii"},
 	{buildin_delequip,"delequip","*"},
 	{buildin_successrefitem,"successrefitem","i"},

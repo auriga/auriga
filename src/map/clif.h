@@ -252,6 +252,7 @@ void clif_soundeffect(struct map_session_data *sd,struct block_list *bl,const ch
 void clif_bodyrelocation(struct block_list *bl, int x, int y);
 void clif_showscript(struct block_list *bl, char *mes);
 void clif_showdigit(struct map_session_data* sd, unsigned char type, int value);
+int clif_stylist_open(struct map_session_data *sd);
 void clif_dressing_room(struct map_session_data *sd, int view);
 void clif_camerainfo(struct map_session_data *sd, int show, float range, float rotation, float latitude);
 void clif_hat_effects(struct map_session_data* sd, struct block_list* bl, int target);

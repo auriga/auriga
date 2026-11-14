@@ -1159,6 +1159,7 @@ void pc_setnewpc(struct map_session_data *sd,int account_id,int char_id,int logi
 	sd->sex         = sex;
 	sd->state.auth  = 0;
 	sd->state.open_ui = PC_UI_NONE;
+	sd->state.cashshop_sent = 0;
 	sd->bl.type     = BL_PC;
 	sd->status_calc_pc_process  = 0;
 	sd->state.waitingdisconnect = 0;
@@ -8679,39 +8680,22 @@ void pc_costumelook(struct map_session_data *sd)
  * ƒXƒ^ƒCƒ‹‚ð”½‰f‚·‚é
  *------------------------------------------
  */
+int pc_getbodystyle(struct map_session_data *sd)
+{
+	nullpo_retr(0, sd);
+#if PACKETVER >= 20231220
+	return mmo_body_style(sd->status.class_, sd->status.style);
+#else
+	if(sd->status.style > 1)
+		return sd->status.style == mmo_body_style(sd->status.class_, 1) ? 1 : 0;
+	return sd->status.style;
+#endif
+}
+
 void pc_changebodystyle(struct map_session_data *sd)
 {
-	int style = 0;
-
 	nullpo_retv(sd);
-
-#if PACKETVER < 20231220
-	style = sd->status.style;
-#else
-	if(sd->status.style > 0) {
-		switch(sd->s_class.job) {
-		case PC_JOB_RK: style = PC_CLASS_RK_2ND; break;
-		case PC_JOB_WL: style = PC_CLASS_WL_2ND; break;
-		case PC_JOB_RA: style = PC_CLASS_RA_2ND; break;
-		case PC_JOB_AB: style = PC_CLASS_AB_2ND; break;
-		case PC_JOB_NC: style = PC_CLASS_NC_2ND; break;
-		case PC_JOB_GC: style = PC_CLASS_GC_2ND; break;
-		case PC_JOB_LG: style = PC_CLASS_LG_2ND; break;
-		case PC_JOB_SO: style = PC_CLASS_SO_2ND; break;
-		case PC_JOB_MI: style = PC_CLASS_MI_2ND; break;
-		case PC_JOB_WA: style = PC_CLASS_WA_2ND; break;
-		case PC_JOB_SR: style = PC_CLASS_SR_2ND; break;
-		case PC_JOB_GN: style = PC_CLASS_GN_2ND; break;
-		case PC_JOB_SC: style = PC_CLASS_SC_2ND; break;
-		default:
-			style = sd->status.class_;
-			break;
-		}
-	}
-	else
-		style = sd->status.class_;
-#endif
-	clif_changelook(&sd->bl,LOOK_BODY2,style);
+	clif_changelook(&sd->bl, LOOK_BODY2, pc_getbodystyle(sd));
 }
 
 /*==========================================
