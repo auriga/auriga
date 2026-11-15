@@ -22100,10 +22100,19 @@ static void clif_cashshop_open(struct map_session_data *sd, unsigned int tab)
 #endif
 }
 
-/* アカウント限定販売一覧要求。rAthenaと同様、受信のみ行う。 */
+/* アカウント限定販売一覧の要求。空の一覧を返す。 */
 static void clif_parse_CashShopAccountSaleList(int fd,struct map_session_data *sd, int cmd)
 {
-	return;
+#if PACKETVER >= 20190724
+	nullpo_retv(sd);
+	if(!battle_config.feature_cashshop || !pc_ui_is(sd, PC_UI_CASHSHOP))
+		return;
+
+	WFIFOW(fd,0) = 0xb4d;
+	WFIFOW(fd,2) = 6;
+	WFIFOW(fd,4) = 0;
+	WFIFOSET(fd,6);
+#endif
 }
 
 static void clif_parse_CashShopBuy(int fd,struct map_session_data *sd, int cmd)

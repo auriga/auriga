@@ -3004,7 +3004,9 @@ R 0b6e <cash>.l <kafra>.l <tab>.l
 	開いた結果。RE基準で20140730以降は0a2b、20200205以降は0b6e。
 S 0b4c
 	アカウント単位の限定販売一覧要求（PACKETVER >= 20190724）。
-	rAthenaと同様、受信のみ行い、応答や販売件数の変更は行わない。
+	限定販売商品は未対応のため、空の一覧を返す。
+R 0b4d <len>.w <count>.w
+	限定販売一覧。len=6、count=0。
 S 08c9
 R 08ca <len>.w <count>.w <tab>.w {<itemId>.w <price>.l}*
 	キャッシュショップの商品一覧。20180704以降のitemIdは.l。
@@ -3028,12 +3030,6 @@ S 0a48
 	スタイルショップの結果（0:成功、1:失敗）と終了。
 S 0a88
 	/resetcooltime。通常のGMコマンド権限判定を通して実行する。
-
-魔導ギアの表示状態（PACKETVER >= 20191106、RE基準）
-	OPTION_MADOGEARに加え、状態アイコン1149（MADOGEAR_TYPE）を通知する。
-	搭乗時はflag=1、val1=0（通常機体）、持続時間=-1。降車時はflag=0。
-	既存の状態通知0x0983を利用し、ログイン・MAP移動・視界への出現時にも再送する。
-	保存形式はOPTION_MADOGEARを維持し、新しい保存領域は追加しない。
 
 S 0ae8
 	/changedress・/nocosplayによる衣装解除要求（PACKETVER >= 20180103、RE基準）。
