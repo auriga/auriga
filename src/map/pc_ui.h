@@ -30,6 +30,8 @@ enum pc_ui_type {
 	PC_UI_RODEX_WRITE,
 	PC_UI_BARTER,
 	PC_UI_EXBARTER,
+	PC_UI_CASHSHOP,
+	PC_UI_STYLIST,
 	PC_UI_MAX
 };
 

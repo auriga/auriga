@@ -1,5 +1,22 @@
 #include "unity.h"
 
+void test_stylist_costume_selection(void);
+void test_stylist_doram_coloring(void);
+void test_stylist_box_fallback_and_total_price(void);
+
+void test_stylist_shared_material_preflight(void);
+void test_stylist_index_mapping_and_noop(void);
+void test_stylist_accessory_mail_and_failure(void);
+void test_stylist_job_and_species_validation(void);
+void test_body_style_legacy_and_explicit_values(void);
+
+void test_cashshop_equipment_quantity(void);
+void test_cashshop_preflight_no_partial_purchase(void);
+void test_cashshop_cumulative_inventory_limit(void);
+void test_cashshop_arithmetic_limits(void);
+void test_cashshop_catalog_validation(void);
+void test_cashshop_state_and_request_validation(void);
+
 void setUp(void)
 {
 }
@@ -141,6 +158,23 @@ int main(void)
 	RUN_TEST(test_pc_ui_policy_preserves_actions);
 	RUN_TEST(test_pc_ui_warp_policy);
 	RUN_TEST(test_pc_ui_invalid_state);
+
+	RUN_TEST(test_cashshop_equipment_quantity);
+	RUN_TEST(test_cashshop_preflight_no_partial_purchase);
+	RUN_TEST(test_cashshop_cumulative_inventory_limit);
+	RUN_TEST(test_cashshop_arithmetic_limits);
+	RUN_TEST(test_cashshop_catalog_validation);
+	RUN_TEST(test_cashshop_state_and_request_validation);
+
+	RUN_TEST(test_stylist_shared_material_preflight);
+	RUN_TEST(test_stylist_index_mapping_and_noop);
+	RUN_TEST(test_stylist_accessory_mail_and_failure);
+	RUN_TEST(test_stylist_job_and_species_validation);
+	RUN_TEST(test_body_style_legacy_and_explicit_values);
+
+	RUN_TEST(test_stylist_costume_selection);
+	RUN_TEST(test_stylist_doram_coloring);
+	RUN_TEST(test_stylist_box_fallback_and_total_price);
 
 	return UNITY_END();
 }

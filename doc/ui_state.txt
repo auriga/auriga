@@ -11,6 +11,8 @@
   PC_UI_RODEX_WRITE : 受信箱を開かずに利用するメール作成画面
   PC_UI_BARTER      : 通常バーター
   PC_UI_EXBARTER    : 拡張バーター
+  PC_UI_CASHSHOP    : キャッシュショップ
+  PC_UI_STYLIST     : スタイルショップ
 
 ■ 開始と終了
   pc_ui_can_openは、開始先と現在の画面の排他関係だけを確認します。

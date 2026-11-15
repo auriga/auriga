@@ -97,9 +97,9 @@ enum mail_attachment_type {
 	#define MAX_HOTKEYS_TAB 2
 #endif
 
-#define MAX_HAIR_STYLE 28
+#define MAX_HAIR_STYLE 46
 #define MAX_HAIR_COLOR 9
-#define MAX_CLOTH_COLOR 5
+#define MAX_CLOTH_COLOR 8
 
 #define WEDDING_RING_M 2634
 #define WEDDING_RING_F 2635

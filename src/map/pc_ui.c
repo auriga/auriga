@@ -35,6 +35,8 @@ static const struct pc_ui_policy pc_ui_policies[] = {
 	{ PC_UI_BLOCK_OTHER_UI, 0 },
 	{ PC_UI_BLOCK_OTHER_UI, 0 },
 	{ PC_UI_BLOCK_OTHER_UI, 1 },
+	{ PC_UI_BLOCK_OTHER_UI, 1 },
+	{ PC_UI_BLOCK_OTHER_UI, 1 },
 	{ PC_UI_BLOCK_OTHER_UI, 1 }
 };
 

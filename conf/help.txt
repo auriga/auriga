@@ -297,3 +297,7 @@ changemaptype
 @callmerc 値 [時間(秒)]   ---- 傭兵を召喚する
 
 @alliance    ---- 戦闘設定「alliance_message」有効時、同盟間チャットをOn/Offする
+
+resetcooltime
+    /resetcooltime  ---- 自分のスキル・アイテムのクールタイムを解除（GM権限が必要）
+    @resetcooltime  ---- 同上

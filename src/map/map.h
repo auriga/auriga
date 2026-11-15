@@ -446,6 +446,7 @@ struct map_session_data {
 		unsigned joinchat : 1;	// 参加or主催
 		unsigned mail_appending : 1;
 		unsigned mail_writing : 1;
+		unsigned cashshop_sent : 1;	// 商品一覧の送信済み状態（画面の開閉とは独立）
 		unsigned snovice_dead_flag : 1;
 		unsigned sn_doridori : 1;
 		unsigned tk_doridori_hp : 1;

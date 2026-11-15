@@ -880,6 +880,14 @@ pet_rename
 	ペットの名前を変更するかどうかを決めます。デフォルトはnoです。
 	yesは何度でも名前の変更が可能。noは一度変更するともう変更不可能になる。
 
+feature_cashshop
+	キャッシュショップを利用可能にします。初期値はyes。
+	PACKETVER 20120328以降（RE基準）。商品はdb/cashshop.luaを参照します。
+
+feature_stylist
+	スタイルショップを利用可能にします。初期値はyes。
+	openstylist()から開きます。商品と料金はdb/stylist_db.luaを参照します。
+
 feature_petevolution
 	ペットの進化を有効にします。デフォルトはyesです。
 

@@ -40,6 +40,8 @@
 #include "mob.h"
 #include "itemdb.h"
 #include "achieve.h"
+#include "cashshop.h"
+#include "stylist.h"
 #include "clif.h"
 #include "luascript.h"
 
@@ -667,6 +669,46 @@ static int luafunc_InsertAchieveLevelDB(lua_State *NL)
 	return 1;
 }
 
+static int luafunc_ClearCashshop(lua_State *NL)
+{
+	cashshop_clear();
+	lua_pushboolean(NL, 1);
+	return 1;
+}
+
+static int luafunc_InsertCashshopItem(lua_State *NL)
+{
+	int tab, nameid, price;
+	unsigned int start_date, end_date;
+	int result;
+
+	tab = luaL_checkint(NL, 1);
+	nameid = luaL_checkint(NL, 2);
+	price = luaL_checkint(NL, 3);
+	start_date = (unsigned int)luaL_optint(NL, 4, 0);
+	end_date = (unsigned int)luaL_optint(NL, 5, 0);
+
+	result = cashshop_insert(tab, nameid, price, start_date, end_date);
+	lua_pushboolean(NL, result != 0);
+	return 1;
+}
+
+static int luafunc_ClearStylist(lua_State *NL)
+{
+	stylist_clear();
+	return 0;
+}
+
+static int luafunc_InsertStylistEntry(lua_State *NL)
+{
+	int args[8], i;
+
+	for(i = 0; i < 8; i++)
+		args[i] = luaL_checkint(NL, i + 1);
+	lua_pushboolean(NL, stylist_insert(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], luaL_optint(NL, 9, 1)));
+	return 1;
+}
+
 const struct Lua_function luafunc[] = {
 	{"getpacketver",luafunc_getpacketver},
 	{"getpacketpre",luafunc_getpacketpre},
@@ -677,6 +719,11 @@ const struct Lua_function luafunc[] = {
 	{"InsertAchieveContent",luafunc_InsertAchieveContent},
 	{"InsertAchieveDBEnd",luafunc_InsertAchieveDBEnd},
 	{"InsertAchieveLevelDB",luafunc_InsertAchieveLevelDB},
+
+	{"ClearCashshop",luafunc_ClearCashshop},
+	{"InsertCashshopItem",luafunc_InsertCashshopItem},
+	{"ClearStylist",luafunc_ClearStylist},
+	{"InsertStylistEntry",luafunc_InsertStylistEntry},
 
 	{NULL,NULL}
 };

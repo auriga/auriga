@@ -335,4 +335,6 @@ size_t auriga_strlcat(char *dst, const char *src, size_t siz);
 #  endif
 #endif
 
+int mmo_body_style(int class_, int style);
+
 #endif	// _UTILS_H_

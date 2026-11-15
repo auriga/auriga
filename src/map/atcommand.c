@@ -215,6 +215,7 @@ ATCOMMAND_FUNC(resetfeel);
 ATCOMMAND_FUNC(resethate);
 ATCOMMAND_FUNC(resetstate);
 ATCOMMAND_FUNC(resetskill);
+ATCOMMAND_FUNC(resetcooltime);
 ATCOMMAND_FUNC(emotion);
 ATCOMMAND_FUNC(statall);
 ATCOMMAND_FUNC(rankingpoint);
@@ -397,6 +398,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ResetHate,          "@resethate",        0, atcommand_resethate,           NULL },
 	{ AtCommand_ResetState,         "@resetstate",       0, atcommand_resetstate,          NULL },
 	{ AtCommand_ResetSkill,         "@resetskill",       0, atcommand_resetskill,          NULL },
+	{ AtCommand_ResetCooltime,      "@resetcooltime",    1, atcommand_resetcooltime,       NULL },
 	{ AtCommand_emotion,            "@emotion",          0, atcommand_emotion,             NULL },
 	{ AtCommand_statall,            "@statall",          0, atcommand_statall,             NULL },
 	{ AtCommand_RankingPoint,       "@rankingpoint",     0, atcommand_rankingpoint,        NULL },
@@ -665,7 +667,7 @@ int atcommand_config_read(const char *cfgName)
 		atcommand_synonym_free();
 
 		for (i = 0; atcommand_info[i].type != AtCommand_Unknown; i++) {
-			atcommand_info[i].level = 0;
+			atcommand_info[i].level = (atcommand_info[i].type == AtCommand_ResetCooltime) ? 1 : 0;
 			atcommand_info[i].next  = NULL;
 		}
 		atcommand_info[i].level = 100; // AtCommand_Unknown
@@ -5044,6 +5046,32 @@ int atcommand_resetskill(const int fd, struct map_session_data* sd, AtCommandTyp
 		flag = atoi(message);
 
 	pc_resetskill(sd, flag);
+
+	return 0;
+}
+
+/*==========================================
+ * スキル・アイテムのクールタイムを解除する
+ *------------------------------------------
+ */
+int atcommand_resetcooltime(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	unsigned int tick;
+	int i;
+
+	nullpo_retr(-1, sd);
+	(void)fd;
+	(void)command;
+	(void)message;
+
+	tick = gettick();
+	for(i = 0; i < MAX_SKILL_DB; i++) {
+		if(DIFF_TICK(sd->skillcooldown[i], tick) > 0 && skill_db[i].id > 0)
+			clif_skill_cooldown(sd, skill_db[i].id, 0);
+		sd->skillcooldown[i] = tick;
+		sd->skillstatictimer[i] = tick;
+	}
+	memset(sd->itemcooldown, 0, sizeof(sd->itemcooldown));
 
 	return 0;
 }

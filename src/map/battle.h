@@ -162,6 +162,8 @@ extern struct Battle_Config {
 	int pet_catch_rate;
 	int pet_rename;
 	int feature_petevolution;
+	int feature_cashshop;
+	int feature_stylist;
 	int pet_friendly_rate;
 	int pet_hungry_delay_rate;
 	int pet_hungry_friendly_decrease;

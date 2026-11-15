@@ -110,6 +110,26 @@ luaファイルは基本的にluaのバージョン5.1.4に準拠します。
 			成功すれば1 を、失敗すれば0 を返します
 
 
+		ClearCashshop関数
+			ClearCashshop()
+			登録済みのキャッシュショップ商品を消去します。戻り値はtrue。
+
+		InsertCashshopItem関数
+			InsertCashshopItem(tab,itemId,price[,startDate,endDate])
+			引数は数値。販売期間はYYYYMMDDで、省略時は0（制限なし）。
+			商品を登録し、成功時true、無効値・重複・上限超過時falseを返します。
+
+		ClearStylist命令
+			ClearStylist()
+			登録済みのスタイルショップ商品を消去します。戻り値なし。
+
+		InsertStylistEntry関数
+			InsertStylistEntry(action,index,value,zeny,item,box,species,job[,coloring])
+			引数は数値。coloringの省略値は1（ドラム髪型の染色可）。
+			対応表を登録し、成功時true、無効値・重複・上限超過時falseを返します。
+			各引数の意味と許容値はdb_ref.txtのstylist_db.luaを参照してください。
+
+
 < luaのエラー >
 
 基本的にluaのバージョン5.1.4に準拠したエラーがコンソール出力されます

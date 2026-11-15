@@ -150,6 +150,7 @@ int pc_allskillup(struct map_session_data* sd,int flag);
 void pc_resetstatus(struct map_session_data* sd, int flag);
 void pc_resetskill(struct map_session_data* sd, int flag);
 void pc_costumelook(struct map_session_data *sd);
+int pc_getbodystyle(struct map_session_data *sd);
 void pc_changebodystyle(struct map_session_data *sd);
 void pc_equipitem(struct map_session_data*, int n, int pos);
 void pc_unequipitem(struct map_session_data*, int n, int type);

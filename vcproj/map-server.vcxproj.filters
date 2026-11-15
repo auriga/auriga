@@ -94,6 +94,12 @@
     <ClCompile Include="..\src\map\pc_ui.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\cashshop.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\stylist.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\pet.c">
       <Filter>map_sql</Filter>
     </ClCompile>
@@ -367,6 +373,12 @@
       <Filter>map_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\pc_ui.h">
+      <Filter>map_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\cashshop.h">
+      <Filter>map_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\stylist.h">
       <Filter>map_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\pet.h">
