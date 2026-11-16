@@ -18,7 +18,7 @@ if not exist stubs mkdir stubs
 echo Building unit tests (MSVC)...
 
 set OBJS=
-for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c test_pc_ui.c test_cashshop.c test_stylist.c test_grf_protected.c) do (
+for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c test_pc_ui.c test_cashshop.c test_stylist.c test_searchstore.c test_grf_protected.c) do (
   cl %CFLAGS% /c /Fo%%~nF.obj %%F
   if errorlevel 1 exit /b 1
   set OBJS=!OBJS! %%~nF.obj
@@ -51,6 +51,10 @@ set OBJS=!OBJS! cashshop.obj
 cl %CFLAGS% /c /Fostylist.obj "%MAP%\stylist.c"
 if errorlevel 1 exit /b 1
 set OBJS=!OBJS! stylist.obj
+
+cl %CFLAGS% /c /Fosearchstore.obj "%MAP%\searchstore.c"
+if errorlevel 1 exit /b 1
+set OBJS=!OBJS! searchstore.obj
 
 cl %CFLAGS% /c /Folz4.obj "%LZ4%\lz4.c"
 if errorlevel 1 exit /b 1

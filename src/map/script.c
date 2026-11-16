@@ -4380,6 +4380,7 @@ int buildin_getquestlimit(struct script_state *st);
 int buildin_getquestcount(struct script_state *st);
 int buildin_getquestmaxcount(struct script_state *st);
 int buildin_openbuyingstore(struct script_state *st);
+int buildin_searchstores(struct script_state *st);
 int buildin_setfont(struct script_state *st);
 int buildin_callshop(struct script_state *st);
 int buildin_npcshopitem(struct script_state *st);
@@ -4747,6 +4748,7 @@ struct script_function buildin_func[] = {
 	{buildin_getquestcount,"getquestcount","i*"},
 	{buildin_getquestmaxcount,"getquestmaxcount","i*"},
 	{buildin_openbuyingstore,"openbuyingstore","i"},
+	{buildin_searchstores,"searchstores","ii*"},
 	{buildin_setfont,"setfont","i"},
 	{buildin_callshop,"callshop","s*"},
 	{buildin_npcshopitem,"npcshopitem","s*"},

@@ -884,6 +884,20 @@ feature_cashshop
 	キャッシュショップを利用可能にします。初期値はyes。
 	PACKETVER 20120328以降（RE基準）。商品はdb/cashshop.luaを参照します。
 
+feature_search_stores
+	販売露店・買取露店の検索を有効にします。初期値はyes。
+	PACKETVER 20100706以降（RE基準）。searchstores命令から開きます。
+	検索対象は同じmap-server内の露店です。
+
+searchstore_querydelay
+	再検索できるまでの間隔を秒で指定します。初期値は10。
+	0以下は待ち時間なしとして扱います。
+
+searchstore_maxresults
+	1回の検索で保持する結果の最大件数です。初期値は30。
+	上限を超えた場合は通知し、上限までの結果を表示します。
+	1未満は1として扱います。1ページには10件表示します。
+
 feature_stylist
 	スタイルショップを利用可能にします。初期値はyes。
 	openstylist()から開きます。商品と料金はdb/stylist_db.luaを参照します。

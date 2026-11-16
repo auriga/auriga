@@ -1102,14 +1102,14 @@ p(0x082b,6)
 p(0x082c,14)
 p(0x082d,-1)
 
-p(0x0835,-1)
+p(0x0835,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
 p(0x0836,-1)
 p(0x0837,3)
-p(0x0838,2)
+p(0x0838,2,"searchstorenext",0)
 p(0x0839,66)
 p(0x083a,5)
-p(0x083b,2)
-p(0x083c,12)
+p(0x083b,2,"closesearchstore",0)
+p(0x083c,12,"searchstoreclick",{2,6,10})
 p(0x083d,6)
 p(0x083e,26)
 p(0x083f,22)
@@ -2558,20 +2558,32 @@ end
 -- 2011-10-05aRagexeRE
 if packet_ver == 20111005 then
 	packet_key(0x291e6762,0x77cd391a,0x60ac2f16)
-	p(0x0364,5,"walktoxy",2)
-	p(0x0366,5,"changedir",{2,4})
-	p(0x0369,10,"useskilltopos",{2,4,6,8})
+	p(0x023b,6,"dropitem",{2,4})
+	p(0x02c4,10,"useskilltoid",{2,4,6})
+	p(0x035f,6,"clickbuyingstorereq",2)
+	p(0x0361,18,"bookingregreq",{2,4,6,8,10,12,14,16})
+	p(0x0365,-1,"openbuyingstorereq",{2,4,8,9,89})
+	p(0x0366,90,"useskilltopos",{2,4,6,8,10})
+	p(0x0367,6,"ticksend",2)
+	p(0x0368,6,"solvecharname",2)
 	p(0x0436,19,"wanttoconnection",{2,6,10,14,18})
-	p(0x0437,7,"actionrequest",{2,6})
-	p(0x0438,10,"useskilltoid",{2,4,6})
-	p(0x0815,6,"takeitem",2)
-	p(0x0817,6,"ticksend",2)
-	p(0x0838,6,"solvecharname",2)
-	p(0x0885,6,"dropitem",{2,4})
-	p(0x088a,6,"getcharnamerequest",2)
-	p(0x0893,8,"movetokafra",{2,4})
-	p(0x0897,8,"movefromkafra",{2,4})
-	p(0x08ad,90,"useskilltopos",{2,4,6,8,10})
+	p(0x0437,5,"walktoxy",2)
+	p(0x0438,10,"useskilltopos",{2,4,6,8})
+	p(0x07ec,7,"actionrequest",{2,6})
+	p(0x0802,8,"movefromkafra",{2,4})
+	p(0x0811,-1,"sellbuyingstorereq",{2,4,8,12})
+	p(0x0815,5,"changedir",{2,4})
+	p(0x0817,2,"closebuyingstorereq",0)
+	p(0x0835,26,"friendaddrequest",2)
+	p(0x083c,26,"partyinvite2",2)
+	p(0x0885,5,"hommenu",4)
+	p(0x0887,6,"getcharnamerequest",2)
+	p(0x0889,-1,"convertitem",{2,4,8,12})
+	p(0x08a4,8,"movetokafra",{2,4})
+	p(0x08a7,6,"takeitem",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0202,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 --  2011-11-02aRagexeRE
@@ -2600,6 +2612,9 @@ if packet_ver == 20111102 then
 	p(0x08a5,18,"bookingregreq",{2,4,6,8,10,12,14,16})
 	p(0x08aa,7,"actionrequest",{2,6})
 	p(0x08ad,90,"useskilltopos",{2,4,6,8,10})
+	p(0x08ab,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x088b,2,"searchstorenext",0)
+	p(0x08a2,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2011-11-22aRagexeRE
@@ -2628,6 +2643,9 @@ if packet_ver == 20111122 then
 	p(0x08a4,8,"movetokafra",{2,4})
 	p(0x08a9,2,"closebuyingstorereq",0)
 	p(0x08ad,10,"useskilltopos",{2,4,6,8})
+	p(0x07ec,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0815,2,"searchstorenext",0)
+	p(0x0366,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2011-12-20bRagexeRE
@@ -2656,6 +2674,9 @@ if packet_ver == 20111220 then
 	p(0x0892,26,"friendaddrequest",2)
 	p(0x08a4,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x08ad,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2012-02-14bRagexeRE
@@ -2711,6 +2732,9 @@ if packet_ver == 20120328 then
 	p(0x095d,26,"partyinvite2",2)
 	p(0x0963,6,"dropitem",{2,4})
 	p(0x0967,10,"useskilltoid",{2,4,6})
+	p(0x091b,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x086f,2,"searchstorenext",0)
+	p(0x0874,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2012-04-10aRagexeRE
@@ -2738,6 +2762,9 @@ if packet_ver == 20120410 then
 	p(0x0938,6,"takeitem",2)
 	p(0x0945,-1,"convertitem",{2,4,8,12})
 	p(0x094b,19,"wanttoconnection",{2,6,10,14,18})
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2012-06-18aRagexeRE
@@ -2765,6 +2792,9 @@ if packet_ver == 20120618 then
 	p(0x083c,10,"useskilltoid",{2,4,6})
 	p(0x0940,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2013-03-20eRagexe
@@ -2792,6 +2822,9 @@ if packet_ver == 20130320 then
 	p(0x093f,5,"changedir",{2,4})
 	p(0x094c,6,"solvecharname",2)
 	p(0x0959,10,"useskilltopos",{2,4,6,8})
+	p(0x094e,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x092e,2,"searchstorenext",0)
+	p(0x0365,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20130327 then
@@ -2855,6 +2888,9 @@ if packet_ver == 20130703 then
 	p(0x0930,5,"changedir",{2,4})
 	p(0x094a,5,"hommenu",4)
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2013-07-24eRagexe
@@ -2883,6 +2919,9 @@ if packet_ver == 20130724 then
 	p(0x095c,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x095d,8,"movetokafra",{2,4})
 	p(0x0966,5,"changedir",{2,4})
+	p(0x0965,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0890,2,"searchstorenext",0)
+	p(0x0956,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2013-12-23cRagexe
@@ -2911,6 +2950,9 @@ if packet_ver == 20131223 then
 	p(0x0817,2,"closebuyingstorereq",0)
 	p(0x083c,10,"useskilltoid",{2,4,6})
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2014-01-15eRagexe
@@ -2939,6 +2981,9 @@ if packet_ver == 20140115 then
 	p(0x0965,-1,"convertitem",{2,4,8,12})
 	p(0x0966,19,"wanttoconnection",{2,6,10,14,18})
 	p(0x096a,18,"bookingregreq2",{2,4})
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2014-03-05bRagexe
@@ -2967,6 +3012,9 @@ if packet_ver == 20140305 then
 	p(0x083c,10,"useskilltoid",{2,4,6})
 	p(0x0934,5,"hommenu",4)
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2014-10-22bRagexe
@@ -2995,6 +3043,9 @@ if packet_ver == 20141022 then
 	p(0x094e,6,"takeitem",2)
 	p(0x0955,18,"bookingregreq2",{2,4})
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0940,2,"searchstorenext",0)
+	p(0x0835,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20150513 then
@@ -3033,6 +3084,9 @@ if packet_ver == 20150513 then
 	p(0x0958,6,"takeitem",2)
 	p(0x0960,-1,"convertitem",{2,4,8,12})
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 -- 2015-10-29aRagexeRE
@@ -3061,6 +3115,9 @@ if packet_ver == 20151029 then
 	p(0x0817,2,"closebuyingstorereq",0)
 	p(0x083c,10,"useskilltoid",{2,4,6})
 	p(0x096a,6,"getcharnamerequest",2)
+	p(0x0819,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0835,2,"searchstorenext",0)
+	p(0x0838,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20160302 and packet_ver < 20211103 then
@@ -3103,6 +3160,9 @@ if packet_ver == 20161228 then
 	p(0x0934,26,"partyinvite2",2)
 	p(0x093d,7,"actionrequest",{2,6})
 	p(0x0944,6,"ticksend",2)
+	p(0x0870,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x092c,2,"searchstorenext",0)
+	p(0x087f,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20170118 then
@@ -3153,6 +3213,9 @@ if packet_ver == 20170614 then
 	p(0x092f,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x0936,6,"getcharnamerequest",2)
 	p(0x0944,19,"wanttoconnection",{2,6,10,14,18})
+	p(0x086c,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0928,2,"searchstorenext",0)
+	p(0x0963,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20170705 then
@@ -3189,6 +3252,9 @@ if packet_ver == 20170830 then
 	p(0x0940,6,"solvecharname",2)
 	p(0x0947,-1,"sellbuyingstorereq",{2,4,8,12})
 	p(0x0959,10,"useskilltopos",{2,4,6,8})
+	p(0x0943,-1,"searchstoreinfo",{2,4,5,9,13,14,15})
+	p(0x0951,2,"searchstorenext",0)
+	p(0x0942,12,"searchstoreclick",{2,6,10})
 end
 
 if packet_ver >= 20171115 then
@@ -3217,6 +3283,7 @@ if packet_ver >= 20180404 then
 end
 
 if packet_ver >= 20180704 then
+	p(0x083c,14,"searchstoreclick",{2,6,10})
 	p(0x009d,19)
 	p(0x009e,19)
 	p(0x00a0,33)

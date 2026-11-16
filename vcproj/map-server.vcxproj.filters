@@ -100,6 +100,9 @@
     <ClCompile Include="..\src\map\stylist.c">
       <Filter>map_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\searchstore.c">
+      <Filter>map_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\map\pet.c">
       <Filter>map_sql</Filter>
     </ClCompile>
@@ -379,6 +382,9 @@
       <Filter>map_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\stylist.h">
+      <Filter>map_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\searchstore.h">
       <Filter>map_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\pet.h">

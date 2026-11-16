@@ -1,4 +1,13 @@
 ----------------------------------------
+//1634 [2026/11/17] by refis
+
+・販売露店・買取露店の検索とsearchstores命令を追加（PACKETVER 20100706以降、RE基準）。
+　（searchstore.*, clif.*, map.*, pc.c, vending.c, buyingstore.c, battle.*, buildin_misc.c,
+　　script.c, db/*, conf/battle_auriga.conf, doc/*, tests/*, vcproj/map-server.vcxproj*）
+
+・対応アイテムの更新　（db/item_db.txt）
+
+----------------------------------------
 //1633 [2026/11/14] by refis
 
 ・キャッシュショップの一覧・購入・終了処理と商品DBを追加（PACKETVER 20120328以降、RE基準）。

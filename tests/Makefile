@@ -24,6 +24,7 @@ TEST_SRCS = \
 	test_pc_ui.c \
 	test_cashshop.c \
 	test_stylist.c \
+	test_searchstore.c \
 	test_grf_protected.c
 
 COMMON_NAMES = md5calc utils db lock nullpo grf_protected
@@ -39,7 +40,7 @@ MAP_STYLIST_OBJ = stylist.o
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 STUB_OBJS = $(STUB_SRCS:.c=.o)
 COMMON_OBJS = $(addsuffix .o,$(COMMON_NAMES))
-LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) $(MAP_UI_OBJ) $(MAP_CASH_OBJ) $(MAP_STYLIST_OBJ) lz4.o unity.o
+LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) $(MAP_UI_OBJ) $(MAP_CASH_OBJ) $(MAP_STYLIST_OBJ) searchstore.o lz4.o unity.o
 
 TARGET = unit_tests
 
@@ -72,6 +73,9 @@ $(MAP_CASH_OBJ): ../src/map/cashshop.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(MAP_STYLIST_OBJ): ../src/map/stylist.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+searchstore.o: ../src/map/searchstore.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 lz4.o: $(LZ4_DIR)/lz4.c

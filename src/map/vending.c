@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "clif.h"
+#include "searchstore.h"
 #include "itemdb.h"
 #include "map.h"
 #include "path.h"
@@ -96,11 +97,12 @@ void vending_vendinglistreq(struct map_session_data *sd, int id)
 		clif_buyvending(sd, 0, 0, VENDING_FAIL_TRADING);
 		return;
 	}
-	if( sd->bl.m != vsd->bl.m )
-		return;
-	if( path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
+	if(!searchstore_queryremote(sd, vsd, SEARCHTYPE_VENDING) &&
+	   (sd->bl.m != vsd->bl.m || path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE))
 		return;
 
+	if(pc_ui_blocks(sd, PC_UI_BLOCK_INTERACT))
+		return;
 	clif_vendinglist(sd, vsd);
 
 	return;
@@ -130,9 +132,8 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		return;
 	if( vsd->bl.id == sd->bl.id )
 		return;
-	if( sd->bl.m != vsd->bl.m )
-		return;
-	if( path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE )
+	if(!searchstore_queryremote(sd, vsd, SEARCHTYPE_VENDING) &&
+	   (sd->bl.m != vsd->bl.m || path_distance(sd->bl.x,sd->bl.y,vsd->bl.x,vsd->bl.y) > AREA_SIZE))
 		return;
 	if( sd->state.store )
 		return;
@@ -145,6 +146,8 @@ void vending_purchasereq(struct map_session_data *sd, short count, int account_i
 		clif_buyvending(sd, 0, 0, VENDING_FAIL_INVALIDVID);
 		return;
 	}
+
+	searchstore_clearremote(sd);
 
 	// check number of buying items
 	if( count < 1 || count > MAX_VENDING || count > vsd->vend_num )

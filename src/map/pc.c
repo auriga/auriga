@@ -36,6 +36,7 @@
 #include "path.h"
 #include "chrif.h"
 #include "clif.h"
+#include "searchstore.h"
 #include "intif.h"
 #include "msg.h"
 #include "pc.h"
@@ -3430,6 +3431,7 @@ int pc_setpos(struct map_session_data *sd,const char *mapname,int x,int y,int cl
 
 	nullpo_retr(1, sd);
 	pc_ui_on_warp(sd);
+	searchstore_clearremote(sd);
 	sd->lapine_upgrade_id = 0;
 
 
