@@ -136,6 +136,7 @@
     <ClInclude Include="..\src\map\pc_ui.h" />
     <ClInclude Include="..\src\map\cashshop.h" />
     <ClInclude Include="..\src\map\stylist.h" />
+    <ClInclude Include="..\src\map\searchstore.h" />
     <ClInclude Include="..\src\map\pet.h" />
     <ClInclude Include="..\src\map\quest.h" />
     <ClInclude Include="..\src\map\ranking.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="..\src\map\pc_ui.c" />
     <ClCompile Include="..\src\map\cashshop.c" />
     <ClCompile Include="..\src\map\stylist.c" />
+    <ClCompile Include="..\src\map\searchstore.c" />
     <ClCompile Include="..\src\map\pet.c" />
     <ClCompile Include="..\src\map\quest.c" />
     <ClCompile Include="..\src\map\ranking.c" />

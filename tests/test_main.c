@@ -90,6 +90,12 @@ void test_pc_ui_policy_preserves_actions(void);
 void test_pc_ui_warp_policy(void);
 void test_pc_ui_invalid_state(void);
 
+void test_searchstore_filters_and_map_zero(void);
+void test_searchstore_paging_and_overflow(void);
+void test_searchstore_remote_identity_and_stale_result(void);
+void test_searchstore_buying_and_coordinate_effect(void);
+void test_searchstore_throttle_uses_and_ui(void);
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -175,6 +181,12 @@ int main(void)
 	RUN_TEST(test_stylist_costume_selection);
 	RUN_TEST(test_stylist_doram_coloring);
 	RUN_TEST(test_stylist_box_fallback_and_total_price);
+
+	RUN_TEST(test_searchstore_filters_and_map_zero);
+	RUN_TEST(test_searchstore_paging_and_overflow);
+	RUN_TEST(test_searchstore_remote_identity_and_stale_result);
+	RUN_TEST(test_searchstore_buying_and_coordinate_effect);
+	RUN_TEST(test_searchstore_throttle_uses_and_ui);
 
 	return UNITY_END();
 }

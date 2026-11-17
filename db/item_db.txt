@@ -6565,8 +6565,8 @@
 12577,Lucky_Egg_C6,Lucky_Egg_C6,2,,,10,,,,,,,,,,,,{},{}
 12578,Rapid_Life_Water,高速生命水,2,,,10,,,,,,,,,,,,{},{}
 12579,Ring_Of_Valkyrie_Box,ヴァルキリーの指輪Rの箱,2,,,10,,,,,,,,,,,,{},{}
-12580,Vending_Search_Scroll,万能カタログ シルバー,2,,,10,,,,,,,,,,,,{},{}
-12581,Vending_Search_Scroll2,万能カタログ ゴールド,2,,,10,,,,,,,,,,,,{},{}
+12580,Vending_Search_Scroll,万能カタログ シルバー,2,,,10,,,,,,,,,,,,{ searchstores 10,0; },{}
+12581,Vending_Search_Scroll2,万能カタログ ゴールド,2,,,10,,,,,,,,,,,,{ searchstores 10,1; },{}
 12590,Unknown_Item,コインホルダー,2,20,,10,,,,,2074075135,2,,,,,,{},{}
 12591,Uni_Catalog_Bz,万能カタログ ブロンズ,2,,,10,,,,,,,,,,,,{},{}
 
@@ -11569,6 +11569,7 @@
 23360,Unknown_Item,RBマッスル15mg,2,20,,10,,,,,2074075135,2,,,100,,,{ sc_start 501,90000,5; },{}
 23361,Unknown_Item,抗毒血清,2,20,,10,,,,,2074075135,2,,,100,,,{ sc_end SC_TOXIN; sc_end SC_PARALIZE; sc_end SC_VENOMBLEED; sc_end SC_MAGICMUSHROOM; sc_end SC_PYREXIA; sc_end SC_OBLIVIONCURSE; sc_end SC_LEECHEND; sc_end SC_DEATHHURT; },{}
 
+23368,Unknown_Item,特殊カタログ,2,,,0,,,,,2074075135,2,,,,,,{ searchstores 10,1; },{}
 23372,Unknown_Item,反逆の箱,2,20,,200,,,,,2074075135,2,,,,,,{},{}
 
 23705,Unknown_Item,ラザーニャ特産缶詰,0,0,,0,,,,,2074075135,2,,,,,,{ misceffect 34,""; warp "lasagna.gat",321,222; },{}

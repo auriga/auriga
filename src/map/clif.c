@@ -45,6 +45,7 @@
 #include "map.h"
 #include "chrif.h"
 #include "clif.h"
+#include "searchstore.h"
 #include "pc.h"
 #include "cashshop.h"
 #include "stylist.h"
@@ -4664,6 +4665,154 @@ void clif_exbarter_list(struct map_session_data *sd, struct npc_data *nd)
 	WFIFOL(fd, 4) = count;
 	WFIFOW(fd, 2) = len;
 	WFIFOSET(fd, len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 露店検索の開始・結果・失敗・座標通知
+ *------------------------------------------
+ */
+int clif_open_search_store_info(struct map_session_data *sd)
+{
+#if PACKETVER >= 20100706
+	int fd;
+
+	nullpo_retr(0, sd);
+
+	fd = sd->fd;
+	WFIFOW(fd, 0) = 0x83a;
+	WFIFOW(fd, 2) = sd->searchstore.effect;
+	WFIFOB(fd, 4) = (unsigned char)sd->searchstore.uses;
+	WFIFOSET(fd, 5);
+	return 1;
+#else
+	return 0;
+#endif
+}
+
+/*==========================================
+ * 露店検索の応答
+ *------------------------------------------
+ */
+void clif_search_store_info_ack(struct map_session_data *sd)
+{
+#if PACKETVER >= 20100706
+	int fd, i, j, len = 7;
+	int start, end;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	start = sd->searchstore.pages * SEARCHSTORE_RESULTS_PER_PAGE;
+	end = sd->searchstore.count;
+
+	if(end > start + SEARCHSTORE_RESULTS_PER_PAGE)
+		end = start + SEARCHSTORE_RESULTS_PER_PAGE;
+#if PACKETVER >= 20200723
+	WFIFOW(fd, 0) = 0xb64;
+#else
+	WFIFOW(fd, 0) = 0x836;
+#endif
+	WFIFOB(fd, 4) = (sd->searchstore.pages == 0);
+	WFIFOB(fd, 5) = searchstore_querynext(sd);
+	WFIFOB(fd, 6) = (unsigned char)sd->searchstore.uses;
+
+	for(i = start; i < end; i++) {
+		const struct s_search_store_info_item *it = &sd->searchstore.items[i];
+		struct item_data *id = itemdb_search(it->nameid);
+		int view = (id->view_id > 0) ? id->view_id : it->nameid;
+
+		WFIFOL(fd, len) = it->store_id;
+		WFIFOL(fd, len + 4) = it->account_id;
+		memcpy(WFIFOP(fd, len + 8), it->store_name, SEARCHSTORE_SHOPNAME_SIZE);
+		len += 88;
+#if PACKETVER >= 20180704
+		WFIFOL(fd, len) = view;
+		len += 4;
+#else
+		WFIFOW(fd, len) = view;
+		len += 2;
+#endif
+		WFIFOB(fd, len) = id->type;
+		WFIFOL(fd, len + 1) = it->price;
+		WFIFOW(fd, len + 5) = it->amount;
+		len += 7;
+#if PACKETVER < 20200723
+		WFIFOB(fd, len++) = it->refine;
+#endif
+		for(j = 0; j < 4; j++) {
+			view = it->card[j];
+			if(itemdb_isspecial(it->card[0])) {
+				if(id->flag.pet_egg && j < 3)
+					view = 0;
+			} else if(view > 0) {
+				int card_view = itemdb_viewid(view);
+				if(card_view > 0)
+					view = card_view;
+			}
+#if PACKETVER >= 20180704
+			WFIFOL(fd, len) = view;
+			len += 4;
+#else
+			WFIFOW(fd, len) = view;
+			len += 2;
+#endif
+		}
+#if PACKETVER >= 20150226
+		for(j = 0; j < 5; j++) {
+			WFIFOW(fd, len) = it->opt[j].id;
+			WFIFOW(fd, len + 2) = it->opt[j].val;
+			WFIFOB(fd, len + 4) = 0;
+			len += 5;
+		}
+#endif
+#if PACKETVER >= 20200723
+		WFIFOB(fd, len++) = it->refine;
+		WFIFOB(fd, len++) = 0; /* エンチャントグレードは未実装。 */
+#endif
+	}
+	WFIFOW(fd, 2) = len;
+	WFIFOSET(fd, len);
+#endif
+	return;
+}
+
+/*==========================================
+ * 露店検索の失敗
+ *------------------------------------------
+ */
+void clif_search_store_info_failed(struct map_session_data *sd, unsigned char reason)
+{
+#if PACKETVER >= 20100706
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd, 0) = 0x837;
+	WFIFOB(fd, 2) = reason;
+	WFIFOSET(fd, 3);
+#endif
+	return;
+}
+
+/*==========================================
+ * 露店検索の目標座標
+ *------------------------------------------
+ */
+void clif_search_store_info_click_ack(struct map_session_data *sd, short x, short y)
+{
+#if PACKETVER >= 20100706
+	int fd;
+
+	nullpo_retv(sd);
+
+	fd = sd->fd;
+	WFIFOW(fd, 0) = 0x83d;
+	WFIFOW(fd, 2) = x;
+	WFIFOW(fd, 4) = y;
+	WFIFOSET(fd, 6);
 #endif
 	return;
 }
@@ -26205,6 +26354,83 @@ static void clif_parse_CloseMarketReq(int fd,struct map_session_data *sd, int cm
 }
 
 /*==========================================
+ * 露店検索・次ページ・終了・検索結果の選択
+ *------------------------------------------
+ */
+static void clif_parse_SearchStoreInfo(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20100706
+	int items, cards, i, pos;
+	int itemlist[255], cardlist[255];
+	int len = RFIFOW(fd, GETPACKETPOS(cmd, 0));
+#if PACKETVER >= 20180704
+	const int item_size = 4;
+#else
+	const int item_size = 2;
+#endif
+
+	nullpo_retv(sd);
+
+	/* 件数などの固定部も、読み出す前に長さを確認する。 */
+	pos = GETPACKETPOS(cmd, 6);
+	if(len < pos)
+		return;
+	items = RFIFOB(fd, GETPACKETPOS(cmd, 4));
+	cards = RFIFOB(fd, GETPACKETPOS(cmd, 5));
+	if(len < pos + (items + cards) * item_size || (len - pos) % item_size)
+		return;
+	for(i = 0; i < items + cards; i++, pos += item_size) {
+#if PACKETVER >= 20180704
+		int nameid = RFIFOL(fd, pos);
+#else
+		int nameid = RFIFOW(fd, pos);
+#endif
+		if(i < items)
+			itemlist[i] = nameid;
+		else
+			cardlist[i - items] = nameid;
+	}
+	searchstore_query(sd, RFIFOB(fd, GETPACKETPOS(cmd, 1)),
+		RFIFOL(fd, GETPACKETPOS(cmd, 3)), RFIFOL(fd, GETPACKETPOS(cmd, 2)),
+		itemlist, items, cardlist, cards);
+#endif
+	return;
+}
+
+static void clif_parse_SearchStoreInfoNextPage(int fd, struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	searchstore_next(sd);
+	return;
+}
+
+static void clif_parse_CloseSearchStoreInfo(int fd, struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+
+	searchstore_close(sd);
+	return;
+}
+
+static void clif_parse_SearchStoreInfoListItemClick(int fd, struct map_session_data *sd, int cmd)
+{
+#if PACKETVER >= 20100706
+#if PACKETVER >= 20180704
+	int nameid = RFIFOL(fd, GETPACKETPOS(cmd, 2));
+#else
+	int nameid = RFIFOW(fd, GETPACKETPOS(cmd, 2));
+#endif
+
+	nullpo_retv(sd);
+
+	searchstore_click(sd, RFIFOL(fd, GETPACKETPOS(cmd, 0)),
+		RFIFOL(fd, GETPACKETPOS(cmd, 1)), nameid);
+#endif
+	return;
+}
+
+/*==========================================
  * クライアントのタイムスタンプ
  * 利用機会がないのでコメントアウト
  *------------------------------------------
@@ -27605,6 +27831,10 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_PartyMessage,                "partymessage"              },
 		{ clif_parse_CloseVending,                "closevending"              },
 		{ clif_parse_VendingListReq,              "vendinglistreq"            },
+		{ clif_parse_SearchStoreInfo,             "searchstoreinfo"           },
+		{ clif_parse_SearchStoreInfoNextPage,     "searchstorenext"           },
+		{ clif_parse_CloseSearchStoreInfo,        "closesearchstore"          },
+		{ clif_parse_SearchStoreInfoListItemClick,"searchstoreclick"          },
 		{ clif_parse_PurchaseReq,                 "purchasereq"               },
 		{ clif_parse_PurchaseReq2,                "purchasereq2"              },
 		{ clif_parse_OpenVending,                 "openvending"               },

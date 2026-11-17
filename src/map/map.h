@@ -23,6 +23,7 @@
 #define _MAP_H_
 
 #include <stdarg.h>
+#include <time.h>
 
 #include "mmo.h"
 #include "script.h"
@@ -347,6 +348,33 @@ struct buyingstore {
 	} item[MAX_BUYINGSTORE_COUNT];
 };
 
+#define SEARCHSTORE_RESULTS_PER_PAGE 10
+#define SEARCHSTORE_SHOPNAME_SIZE 80
+
+struct s_search_store_info_item {
+	unsigned int store_id;
+	int account_id;
+	char store_name[SEARCHSTORE_SHOPNAME_SIZE];
+	int nameid;
+	unsigned short amount;
+	unsigned int price;
+	int card[4];
+	unsigned char refine;
+	struct { short id, val; } opt[5];
+};
+
+struct s_search_store_info {
+	struct s_search_store_info_item *items;
+	int count, capacity, pages;
+	unsigned short uses;
+	int remote_id;
+	unsigned int remote_store_id;
+	time_t nextquerytime;
+	unsigned char effect, type;
+	short mapid;
+	unsigned char open;
+};
+
 struct skill_unit_group;
 
 struct skill_unit {
@@ -508,6 +536,7 @@ struct map_session_data {
 	struct achieve_score as;
 	int achievelist;
 	struct buyingstore buyingstore;
+	struct s_search_store_info searchstore;
 	int inventory_num;
 	int inventory_expansion_confirmation;
 	unsigned short inventory_expansion_amount;

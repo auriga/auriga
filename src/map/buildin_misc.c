@@ -37,6 +37,7 @@
 
 #include "map.h"
 #include "clif.h"
+#include "searchstore.h"
 #include "pc.h"
 #include "npc.h"
 #include "mob.h"
@@ -930,7 +931,7 @@ int buildin_getbaseclass(struct script_state *st)
 }
 
 /*==========================================
- * w”ƒ˜I“XƒEƒCƒ“ƒhƒEƒI[ƒvƒ“
+ * ”ƒŽæ˜I“XƒEƒCƒ“ƒhƒEƒI[ƒvƒ“
  *------------------------------------------
  */
 int buildin_openbuyingstore(struct script_state *st)
@@ -944,6 +945,38 @@ int buildin_openbuyingstore(struct script_state *st)
 
 	buyingstore_openstorewindow(sd, count);
 
+	return 0;
+}
+
+/*==========================================
+ * ”Ì”„˜I“XE”ƒŽæ˜I“X‚ÌŒŸõ‰æ–Ê‚ðŠJ‚­
+ *------------------------------------------
+ */
+int buildin_searchstores(struct script_state *st)
+{
+	struct map_session_data *sd = script_rid2sd(st);
+	int uses = conv_num(st, &(st->stack->stack_data[st->start+2]));
+	int effect = conv_num(st, &(st->stack->stack_data[st->start+3]));
+	int mapid;
+
+	nullpo_retr(0, sd);
+	if(uses < 1 || uses > 255 || effect < SEARCHSTORE_EFFECT_NORMAL || effect > SEARCHSTORE_EFFECT_REMOTE) {
+		printf("buildin_searchstores: invalid uses or effect.\n");
+		return 0;
+	}
+
+	mapid = sd->bl.m;
+	if(st->end > st->start+4) {
+		const char *name = conv_str(st, &(st->stack->stack_data[st->start+4]));
+		if(strcmpi(name, "all") == 0)
+			mapid = -1;
+		else if(strcmpi(name, "this") != 0) {
+			mapid = script_mapname2mapid(st, name);
+			if(mapid < 0)
+				return 0;
+		}
+	}
+	searchstore_open(sd, (unsigned short)uses, (unsigned char)effect, (short)mapid);
 	return 0;
 }
 

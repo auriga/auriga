@@ -31,6 +31,7 @@
 #include "chat.h"
 #include "chrif.h"
 #include "clif.h"
+#include "searchstore.h"
 #include "itemdb.h"
 #include "map.h"
 #include "path.h"
@@ -338,12 +339,8 @@ void buyingstore_itemlist(struct map_session_data* sd, int account_id)
 	if( ssd->state.deal_mode != 0 || sd->state.deal_mode != 0 )
 		return;
 
-	// 対象と自身が同じMAPかチェック
-	if( sd->bl.m != ssd->bl.m )
-		return;
-
-	// 対象と自身がAREA_SIZE内に居るかチェック
-	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
+	if(!searchstore_queryremote(sd, ssd, SEARCHTYPE_BUYING_STORE) &&
+	   (sd->bl.m != ssd->bl.m || path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE))
 		return;
 
 	// アイテムリストを送る
@@ -397,16 +394,8 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		return;
 	}
 
-	// 対象と自身が同一MAPかチェック
-	if( ssd->bl.m != sd->bl.m )
-	{
-		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
-		return;
-	}
-
-	// 対象と自身がAREA_SIZE内かチェック
-	if( path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE )
-	{
+	if(!searchstore_queryremote(sd, ssd, SEARCHTYPE_BUYING_STORE) &&
+	   (sd->bl.m != ssd->bl.m || path_distance(sd->bl.x,sd->bl.y,ssd->bl.x,ssd->bl.y) > AREA_SIZE)) {
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
@@ -424,6 +413,8 @@ void buyingstore_sell(struct map_session_data *sd, int account_id, unsigned int 
 		clif_failed_tradebuyingstore(sd, FAILED_TRADE_INVALIDDATA, 0);
 		return;
 	}
+
+	searchstore_clearremote(sd);
 
 	// countの範囲チェック
 	if( count <= 0 || count > ssd->buyingstore.count )

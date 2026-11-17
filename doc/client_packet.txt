@@ -3035,3 +3035,6 @@ S 0ae8
 	/changedress・/nocosplayによる衣装解除要求（PACKETVER >= 20180103、RE基準）。
 	ウェディング、サンタ、サマーの順で有効な状態を探し、最初の1状態だけを終了する。
 	外見・表示オプションの更新は既存の状態終了処理で行う。対象がなければ何もしない。
+
+R 0b64 <len>.w <IsFirstPage>.B <IsNexPage>.B <RemainedSearchCnt>.B { <SSI_ID>.l <ID>.l <StoreName>.80B <item_id>.l <item_type>.B <price>.l <count>.w <card>.4l }.142B
+	露店検索システム検索応答

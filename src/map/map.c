@@ -45,6 +45,7 @@
 #include "msg.h"
 #include "chrif.h"
 #include "clif.h"
+#include "searchstore.h"
 #include "intif.h"
 #include "npc.h"
 #include "pc.h"
@@ -1366,6 +1367,7 @@ int map_quit(struct map_session_data *sd)
 	}
 
 	npc_questinfo_cancel(sd);
+	searchstore_close(sd);
 
 #ifdef DYNAMIC_SC_DATA
 	status_free_sc_data(&sd->sc);

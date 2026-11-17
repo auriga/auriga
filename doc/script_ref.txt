@@ -2623,7 +2623,25 @@ AurigaNPCScript
 
 			count		数値
 
-			最大<count>種類買い取り可能な購買露店を開設します。
+			最大<count>種類買い取り可能な買取露店を開設します。
+
+		searchstores命令
+			searchstores <uses>,<effect>[,"<map>"];
+
+			uses		数値、1～255
+			effect		数値、0または1
+			map		文字列、省略可
+
+			販売露店・買取露店の検索画面を開きます。PACKETVER 20100706以降（RE基準）で有効です。
+			usesは検索可能回数です。再検索で1回消費し、ページ送りや結果の選択では消費しません。
+			effectは0で選択した露店の位置を表示し、1で遠隔購入・売却画面を開きます。
+			mapを省略するか"this"を指定すると現在のマップ、"all"では同じmap-server全域を検索します。
+			それ以外はマップ名を指定します。他のmap-server上のマップや無効なマップ名は指定できません。
+			検索結果の保持件数・再検索間隔はbattle_auriga.confで設定します。
+			既に検索画面を開いている場合、回数や検索条件は変更しません。
+
+			例: searchstores 10,0;
+			    searchstores 10,1,"all";
 
 		setfont命令
 			setfont <type>;
